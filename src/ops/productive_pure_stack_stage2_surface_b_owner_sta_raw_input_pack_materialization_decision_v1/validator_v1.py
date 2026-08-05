@@ -94,6 +94,34 @@ def _validate_authorize_detail_fields_provable_closed(detail_fields: Mapping[str
         )
 
 
+def _validate_open_null_instance_fields_all_null(open_fields: Mapping[str, Any]) -> None:
+    for key in C.NULL_INSTANCE_KEYS:
+        if key not in open_fields:
+            raise RawInputPackMaterializationDecisionErrorV1(f"OPEN_NULL_FIELD_MISSING:{key}")
+        _assert_null(open_fields.get(key), label=f"open_null_instance_fields.{key}")
+
+
+def _validate_open_null_instance_fields_provable_closed(
+    open_fields: Mapping[str, Any],
+) -> None:
+    for key in C.NULL_INSTANCE_KEYS:
+        if key not in open_fields:
+            raise RawInputPackMaterializationDecisionErrorV1(f"OPEN_NULL_FIELD_MISSING:{key}")
+    for field in C.PROVABLE_INSTANCE_FIELDS:
+        expected = C.PROVABLE_INSTANCE_FIELD_VALUES[field]
+        value = open_fields.get(field)
+        _assert_exact(value, expected, label=f"open_null_instance_fields.{field}")
+        if isinstance(value, Mapping):
+            for nested_value in value.values():
+                _assert_no_forbidden_source_token(
+                    nested_value, label=f"open_null_instance_fields.{field}"
+                )
+        else:
+            _assert_no_forbidden_source_token(value, label=f"open_null_instance_fields.{field}")
+    for key in C.REMAINING_NULL_INSTANCE_KEYS:
+        _assert_null(open_fields.get(key), label=f"open_null_instance_fields.{key}")
+
+
 def load_canonical_raw_input_pack_materialization_decisions_manifest_v1(
     repo_root: Path | str | None = None,
 ) -> dict[str, Any]:
@@ -184,10 +212,6 @@ def validate_raw_input_pack_materialization_manifest_v1(
     open_fields = _require_mapping(
         manifest.get("open_null_instance_fields"), label="open_null_instance_fields"
     )
-    for key in C.NULL_INSTANCE_KEYS:
-        if key not in open_fields:
-            raise RawInputPackMaterializationDecisionErrorV1(f"OPEN_NULL_FIELD_MISSING:{key}")
-        _assert_null(open_fields.get(key), label=f"open_null_instance_fields.{key}")
 
     parent_refs = _require_mapping(
         manifest.get("parent_authority_refs"), label="parent_authority_refs"
@@ -203,17 +227,6 @@ def validate_raw_input_pack_materialization_manifest_v1(
         if token not in forbidden_sources:
             raise RawInputPackMaterializationDecisionErrorV1(
                 f"FORBIDDEN_SOURCE_TOKEN_MISSING:{token}"
-            )
-
-    sta_inputs = manifest.get("sta_open_external_inputs")
-    if not isinstance(sta_inputs, Sequence) or isinstance(sta_inputs, (str, bytes)):
-        raise RawInputPackMaterializationDecisionErrorV1(
-            "STA_OPEN_EXTERNAL_INPUTS_MUST_BE_SEQUENCE"
-        )
-    for required in C.STA_OPEN_EXTERNAL_INPUTS:
-        if required not in sta_inputs:
-            raise RawInputPackMaterializationDecisionErrorV1(
-                f"STA_OPEN_EXTERNAL_INPUT_MISSING:{required}"
             )
 
     reject_sem = _require_mapping(manifest.get("reject_semantics"), label="reject_semantics")
@@ -306,8 +319,16 @@ def validate_raw_input_pack_materialization_manifest_v1(
         require_open_status = surface_status == C.STATUS_SURFACE_OPEN
 
     authorize_detail_provable_refs_closed = False
-    expected_provable_closed = surface_status == C.STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED
-    if authorize_sem.get("authorize_detail_provable_refs_closed") is not expected_provable_closed:
+    provable_instance_fields_closed = False
+    expected_provable_refs_closed = surface_status in (
+        C.STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED,
+        C.STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED,
+    )
+    expected_provable_instance_closed = surface_status == C.STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED
+    if (
+        authorize_sem.get("authorize_detail_provable_refs_closed")
+        is not expected_provable_refs_closed
+    ):
         raise RawInputPackMaterializationDecisionErrorV1(
             "AUTHORIZE_SEMANTICS_INVALID:authorize_detail_provable_refs_closed"
         )
@@ -315,6 +336,42 @@ def validate_raw_input_pack_materialization_manifest_v1(
         raise RawInputPackMaterializationDecisionErrorV1(
             "AUTHORIZE_SEMANTICS_INVALID:authorize_detail_fields_complete"
         )
+    if (
+        authorize_sem.get("provable_instance_fields_closed", False)
+        is not expected_provable_instance_closed
+    ):
+        raise RawInputPackMaterializationDecisionErrorV1(
+            "AUTHORIZE_SEMANTICS_INVALID:provable_instance_fields_closed"
+        )
+    if (
+        authorize_sem.get("require_explicit_owner_values_for_non_provable_fields", False)
+        is not expected_provable_instance_closed
+    ):
+        raise RawInputPackMaterializationDecisionErrorV1(
+            "AUTHORIZE_SEMANTICS_INVALID:require_explicit_owner_values_for_non_provable_fields"
+        )
+    if authorize_sem.get("silent_defaults", False) is not False:
+        raise RawInputPackMaterializationDecisionErrorV1(
+            "AUTHORIZE_SEMANTICS_INVALID:silent_defaults"
+        )
+
+    closed_sta = manifest.get("closed_sta_external_inputs")
+    if not isinstance(closed_sta, Sequence) or isinstance(closed_sta, (str, bytes)):
+        raise RawInputPackMaterializationDecisionErrorV1(
+            "CLOSED_STA_EXTERNAL_INPUTS_MUST_BE_SEQUENCE"
+        )
+    require_owner = manifest.get("require_explicit_owner_values_for")
+    if not isinstance(require_owner, Sequence) or isinstance(require_owner, (str, bytes)):
+        raise RawInputPackMaterializationDecisionErrorV1(
+            "REQUIRE_EXPLICIT_OWNER_VALUES_FOR_MUST_BE_SEQUENCE"
+        )
+
+    sta_inputs = manifest.get("sta_open_external_inputs")
+    if not isinstance(sta_inputs, Sequence) or isinstance(sta_inputs, (str, bytes)):
+        raise RawInputPackMaterializationDecisionErrorV1(
+            "STA_OPEN_EXTERNAL_INPUTS_MUST_BE_SEQUENCE"
+        )
+
     if require_open_status:
         if surface_status != C.STATUS_SURFACE_OPEN:
             raise RawInputPackMaterializationDecisionErrorV1("STATUS_MUST_REMAIN_SURFACE_OPEN")
@@ -325,9 +382,24 @@ def validate_raw_input_pack_materialization_manifest_v1(
         if mat_dec.get("status") != C.DECISION_STATUS_OPEN:
             raise RawInputPackMaterializationDecisionErrorV1("DECISIONS_STATUS_MUST_REMAIN_OPEN")
         _validate_authorize_detail_fields_all_null(detail_fields)
+        _validate_open_null_instance_fields_all_null(open_fields)
+        if tuple(closed_sta) != ():
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "CLOSED_STA_EXTERNAL_INPUTS_MUST_BE_EMPTY_WHILE_OPEN"
+            )
+        if tuple(require_owner) != ():
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "REQUIRE_EXPLICIT_OWNER_VALUES_FOR_MUST_BE_EMPTY_WHILE_OPEN"
+            )
+        # Historical open surface listed all eight STA inputs.
+        historical_open_sta = C.CLOSED_STA_EXTERNAL_INPUTS + C.STA_OPEN_EXTERNAL_INPUTS
+        for required in historical_open_sta:
+            if required not in sta_inputs:
+                raise RawInputPackMaterializationDecisionErrorV1(
+                    f"STA_OPEN_EXTERNAL_INPUT_MISSING:{required}"
+                )
     elif surface_status == C.STATUS_OWNER_VALUE_RECORDED:
         # Historical intermediate status (authorize details still all null).
-        # Canonical surface advances to STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED.
         if decision_status != C.DECISION_STATUS_RATIFIED:
             raise RawInputPackMaterializationDecisionErrorV1("DECISION_STATUS_MUST_BE_RATIFIED")
         if owner_value != C.RECORDED_OWNER_VALUE:
@@ -340,7 +412,57 @@ def validate_raw_input_pack_materialization_manifest_v1(
             raise RawInputPackMaterializationDecisionErrorV1("DECISIONS_STATUS_MUST_BE_RATIFIED")
         _assert_no_forbidden_source_token(owner_value, label="owner_value")
         _validate_authorize_detail_fields_all_null(detail_fields)
+        _validate_open_null_instance_fields_all_null(open_fields)
+        if tuple(closed_sta) != ():
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "CLOSED_STA_EXTERNAL_INPUTS_MUST_BE_EMPTY_WHILE_OWNER_VALUE_ONLY"
+            )
+        if tuple(require_owner) != ():
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "REQUIRE_EXPLICIT_OWNER_VALUES_FOR_MUST_BE_EMPTY_WHILE_OWNER_VALUE_ONLY"
+            )
+        historical_open_sta = C.CLOSED_STA_EXTERNAL_INPUTS + C.STA_OPEN_EXTERNAL_INPUTS
+        for required in historical_open_sta:
+            if required not in sta_inputs:
+                raise RawInputPackMaterializationDecisionErrorV1(
+                    f"STA_OPEN_EXTERNAL_INPUT_MISSING:{required}"
+                )
     elif surface_status == C.STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED:
+        # Historical intermediate status before instance-field closeout.
+        if (
+            str(manifest.get("owner_go_base_sha") or "")
+            != "61d9abb07d4d88a0f1be19b9476db8ca0d3ba135"
+        ):
+            raise RawInputPackMaterializationDecisionErrorV1("OWNER_GO_BASE_SHA_MISMATCH")
+        if decision_status != C.DECISION_STATUS_RATIFIED:
+            raise RawInputPackMaterializationDecisionErrorV1("DECISION_STATUS_MUST_BE_RATIFIED")
+        if owner_value != C.RECORDED_OWNER_VALUE:
+            raise RawInputPackMaterializationDecisionErrorV1("OWNER_VALUE_MUST_MATCH_RECORDED")
+        if mat_dec.get("owner_value") != C.RECORDED_OWNER_VALUE:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "DECISIONS_OWNER_VALUE_MUST_MATCH_RECORDED"
+            )
+        if mat_dec.get("status") != C.DECISION_STATUS_RATIFIED:
+            raise RawInputPackMaterializationDecisionErrorV1("DECISIONS_STATUS_MUST_BE_RATIFIED")
+        _assert_no_forbidden_source_token(owner_value, label="owner_value")
+        _validate_authorize_detail_fields_provable_closed(detail_fields)
+        _validate_open_null_instance_fields_all_null(open_fields)
+        authorize_detail_provable_refs_closed = True
+        if tuple(closed_sta) != ():
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "CLOSED_STA_EXTERNAL_INPUTS_MUST_BE_EMPTY_WHILE_REFS_ONLY"
+            )
+        if tuple(require_owner) != ():
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "REQUIRE_EXPLICIT_OWNER_VALUES_FOR_MUST_BE_EMPTY_WHILE_REFS_ONLY"
+            )
+        historical_open_sta = C.CLOSED_STA_EXTERNAL_INPUTS + C.STA_OPEN_EXTERNAL_INPUTS
+        for required in historical_open_sta:
+            if required not in sta_inputs:
+                raise RawInputPackMaterializationDecisionErrorV1(
+                    f"STA_OPEN_EXTERNAL_INPUT_MISSING:{required}"
+                )
+    elif surface_status == C.STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED:
         if str(manifest.get("owner_go_base_sha") or "") != C.OWNER_GO_BASE_SHA:
             raise RawInputPackMaterializationDecisionErrorV1("OWNER_GO_BASE_SHA_MISMATCH")
         if decision_status != C.DECISION_STATUS_RATIFIED:
@@ -355,7 +477,25 @@ def validate_raw_input_pack_materialization_manifest_v1(
             raise RawInputPackMaterializationDecisionErrorV1("DECISIONS_STATUS_MUST_BE_RATIFIED")
         _assert_no_forbidden_source_token(owner_value, label="owner_value")
         _validate_authorize_detail_fields_provable_closed(detail_fields)
+        _validate_open_null_instance_fields_provable_closed(open_fields)
         authorize_detail_provable_refs_closed = True
+        provable_instance_fields_closed = True
+        if tuple(closed_sta) != C.CLOSED_STA_EXTERNAL_INPUTS:
+            raise RawInputPackMaterializationDecisionErrorV1("CLOSED_STA_EXTERNAL_INPUTS_MISMATCH")
+        if tuple(require_owner) != C.REQUIRE_EXPLICIT_OWNER_VALUES_FOR:
+            raise RawInputPackMaterializationDecisionErrorV1(
+                "REQUIRE_EXPLICIT_OWNER_VALUES_FOR_MISMATCH"
+            )
+        for required in C.STA_OPEN_EXTERNAL_INPUTS:
+            if required not in sta_inputs:
+                raise RawInputPackMaterializationDecisionErrorV1(
+                    f"STA_OPEN_EXTERNAL_INPUT_MISSING:{required}"
+                )
+        for closed in C.CLOSED_STA_EXTERNAL_INPUTS:
+            if closed in sta_inputs:
+                raise RawInputPackMaterializationDecisionErrorV1(
+                    f"STA_OPEN_EXTERNAL_INPUT_MUST_BE_CLOSED:{closed}"
+                )
     else:
         raise RawInputPackMaterializationDecisionErrorV1("STATUS_UNSUPPORTED")
 
@@ -372,6 +512,9 @@ def validate_raw_input_pack_materialization_manifest_v1(
         "authorize_detail_fields_null": not authorize_detail_provable_refs_closed,
         "authorize_detail_provable_refs_closed": authorize_detail_provable_refs_closed,
         "authorize_detail_fields_complete": False,
+        "provable_instance_fields_closed": provable_instance_fields_closed,
+        "require_explicit_owner_values_for_non_provable_fields": (provable_instance_fields_closed),
+        "silent_defaults": False,
         "input_authority": False,
         "runtime_implemented": False,
         "raw_input_pack_created": False,

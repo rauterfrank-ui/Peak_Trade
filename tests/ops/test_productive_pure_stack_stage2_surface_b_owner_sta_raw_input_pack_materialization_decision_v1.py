@@ -17,6 +17,7 @@ from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_mat
     AUTHORIZE_OWNER_VALUE,
     BASELINE_ORIGIN_MAIN_SHA,
     CAPABILITY_SCOPE,
+    CLOSED_STA_EXTERNAL_INPUTS,
     CYBERSECURITY_MIRROR_REL,
     DECISION_ID,
     DECISIONS_MANIFEST_REL,
@@ -27,11 +28,15 @@ from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_mat
     PARENT_STA_OPEN_INPUTS_CLOSEOUT_REL,
     PARENT_SURFACE_B_RATIFICATION_REL,
     PARENT_TRIAD_DECISION_REL,
+    PROVABLE_INSTANCE_FIELD_VALUES,
+    PROVABLE_INSTANCE_FIELDS,
     RECORDED_OWNER_VALUE,
     REJECT_OWNER_VALUE,
+    REMAINING_NULL_INSTANCE_KEYS,
+    REQUIRE_EXPLICIT_OWNER_VALUES_FOR,
     SCHEMA_REL,
     STA_OPEN_EXTERNAL_INPUTS,
-    STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED,
+    STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED,
 )
 from src.ops.productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decision_v1.validator_v1 import (
     RawInputPackMaterializationDecisionErrorV1,
@@ -45,7 +50,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "DOCUMENT_TYPE=OWNER_STA_RAW_INPUT_PACK_MATERIALIZATION_DECISION",
     f"CAPABILITY_SCOPE={CAPABILITY_SCOPE}",
-    f"STATUS={STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED}",
+    f"STATUS={STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED}",
     f"DECISION_ID={DECISION_ID}",
     "DECISION_STATUS=RATIFIED",
     f"OWNER_VALUE={RECORDED_OWNER_VALUE}",
@@ -72,6 +77,9 @@ REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "REPOSITORY_IS_SSOT=true",
     "AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED=true",
     "AUTHORIZE_DETAIL_FIELDS_COMPLETE=false",
+    "PROVABLE_INSTANCE_FIELDS_CLOSED=true",
+    "REQUIRE_EXPLICIT_OWNER_VALUES_FOR_NON_PROVABLE_FIELDS=true",
+    "SILENT_DEFAULTS=false",
     "AUTHORIZE_SURFACE_B_RAW_INPUT_PACK_MATERIALIZATION",
     "EXPLICITLY_REJECT_RAW_INPUT_PACK_MATERIALIZATION",
 )
@@ -111,21 +119,28 @@ def test_materialization_document_markers_v1() -> None:
         assert f"{field}={value}" in text, field
     for field in AUTHORIZE_DETAIL_INSTANCE_NULL_FIELDS:
         assert f"{field}=null" in text, field
+    for key, value in PROVABLE_INSTANCE_FIELD_VALUES["instrument_binding"].items():
+        assert f"{key}={value}" in text, key
     for item in STA_OPEN_EXTERNAL_INPUTS:
+        assert item in text, item
+    for item in CLOSED_STA_EXTERNAL_INPUTS:
         assert item in text, item
 
 
-def test_canonical_manifest_provable_refs_closed_v1() -> None:
+def test_canonical_manifest_provable_instance_fields_closed_v1() -> None:
     manifest = load_canonical_raw_input_pack_materialization_decisions_manifest_v1(REPO_ROOT)
     result = validate_raw_input_pack_materialization_manifest_v1(manifest)
     assert result["ok"] is True
     assert result["decision_id"] == DECISION_ID
-    assert result["status"] == STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED
+    assert result["status"] == STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED
     assert result["decision_status"] == "RATIFIED"
     assert result["owner_value"] == RECORDED_OWNER_VALUE
     assert result["allowed_owner_values"] == list(ALLOWED_OWNER_VALUES)
     assert result["authorize_detail_provable_refs_closed"] is True
     assert result["authorize_detail_fields_complete"] is False
+    assert result["provable_instance_fields_closed"] is True
+    assert result["require_explicit_owner_values_for_non_provable_fields"] is True
+    assert result["silent_defaults"] is False
     assert result["input_authority"] is False
     assert result["runtime_implemented"] is False
     assert result["raw_input_pack_created"] is False
@@ -141,11 +156,18 @@ def test_canonical_manifest_provable_refs_closed_v1() -> None:
         )
     for field in AUTHORIZE_DETAIL_INSTANCE_NULL_FIELDS:
         assert manifest["authorize_detail_fields"][field] is None
+    for field in PROVABLE_INSTANCE_FIELDS:
+        assert manifest["open_null_instance_fields"][field] == PROVABLE_INSTANCE_FIELD_VALUES[field]
+    for field in REMAINING_NULL_INSTANCE_KEYS:
+        assert manifest["open_null_instance_fields"][field] is None
+    assert tuple(manifest["closed_sta_external_inputs"]) == CLOSED_STA_EXTERNAL_INPUTS
+    assert tuple(manifest["sta_open_external_inputs"]) == STA_OPEN_EXTERNAL_INPUTS
+    assert tuple(manifest["require_explicit_owner_values_for"]) == REQUIRE_EXPLICIT_OWNER_VALUES_FOR
 
 
-def test_schema_allows_provable_refs_closed_v1() -> None:
+def test_schema_allows_provable_instance_fields_closed_v1() -> None:
     schema = json.loads((REPO_ROOT / SCHEMA_REL).read_text(encoding="utf-8"))
-    assert STATUS_AUTHORIZE_DETAIL_PROVABLE_REFS_CLOSED in schema["properties"]["status"]["enum"]
+    assert STATUS_PROVABLE_INSTANCE_FIELDS_CLOSED in schema["properties"]["status"]["enum"]
     assert "RATIFIED" in schema["properties"]["decision_status"]["enum"]
     assert schema["properties"]["raw_input_pack_materialization_authorized"]["const"] is False
     assert schema["properties"]["pack_materialization"]["const"] is False
@@ -204,6 +226,25 @@ def test_manifest_rejects_invented_instance_detail_field_v1() -> None:
     manifest = load_canonical_raw_input_pack_materialization_decisions_manifest_v1(REPO_ROOT)
     bad = copy.deepcopy(manifest)
     bad["authorize_detail_fields"]["campaign_id"] = "invented-campaign"
+    with pytest.raises(RawInputPackMaterializationDecisionErrorV1, match="MUST_REMAIN_NULL"):
+        validate_raw_input_pack_materialization_manifest_v1(bad)
+
+
+def test_manifest_rejects_non_exact_instrument_binding_v1() -> None:
+    manifest = load_canonical_raw_input_pack_materialization_decisions_manifest_v1(REPO_ROOT)
+    bad = copy.deepcopy(manifest)
+    bad["open_null_instance_fields"]["instrument_binding"] = {
+        **PROVABLE_INSTANCE_FIELD_VALUES["instrument_binding"],
+        "venue_instrument_id": "BTC-USDT-SWAP",
+    }
+    with pytest.raises(RawInputPackMaterializationDecisionErrorV1, match="VALUE_MISMATCH"):
+        validate_raw_input_pack_materialization_manifest_v1(bad)
+
+
+def test_manifest_rejects_silent_default_seed_v1() -> None:
+    manifest = load_canonical_raw_input_pack_materialization_decisions_manifest_v1(REPO_ROOT)
+    bad = copy.deepcopy(manifest)
+    bad["open_null_instance_fields"]["seed"] = 0
     with pytest.raises(RawInputPackMaterializationDecisionErrorV1, match="MUST_REMAIN_NULL"):
         validate_raw_input_pack_materialization_manifest_v1(bad)
 
