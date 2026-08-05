@@ -2099,7 +2099,9 @@ using public market data and internal simulated execution only.
     truth SHA `b0e882b9714a615f633fb09b8ee4f9a19f54d470`
     (`phase_9_2_public_md_one_hour_governed_session_noproxy_b0e882b9714a`);
 3.  restart/recovery session --- next ladder step; harness/contracts
-    exist; full ladder not closed;
+    and real Public-MD wallclock binding exist
+    (`PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RESTART_RECOVERY_REAL_NETWORK_WALLCLOCK_BINDING_V1`);
+    full ladder not closed until a later governed real session verifier PASS;
 4.  rate-limit and reconnect session --- open;
 5.  prolonged natural-market session --- open;
 6.  adverse/stale-data session --- open;
