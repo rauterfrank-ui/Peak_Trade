@@ -1,0 +1,159 @@
+{
+  "authorization_consumed": false,
+  "cases": {
+    "confirm_token_argv_rejected": {
+      "authorization_consumed": false,
+      "blockers": [
+        "CONFIRM_TOKEN_FAILURE",
+        "CONFIRM_TOKEN_IN_ARGV_FORBIDDEN",
+        "EXECUTION_PERMIT_NOT_AUTHORIZED_IN_THIS_CAPABILITY",
+        "NETWORK_SESSION_ALLOWED_FALSE"
+      ],
+      "confirm_token_consumed": false,
+      "network_session_started": false,
+      "ok": false,
+      "terminal_class": "AUTHORIZATION_FAILURE"
+    },
+    "confirm_token_env_rejected": {
+      "authorization_consumed": false,
+      "blockers": [
+        "CONFIRM_TOKEN_ENV_FALLBACK_FORBIDDEN",
+        "CONFIRM_TOKEN_FAILURE",
+        "EXECUTION_PERMIT_NOT_AUTHORIZED_IN_THIS_CAPABILITY",
+        "NETWORK_SESSION_ALLOWED_FALSE"
+      ],
+      "confirm_token_consumed": false,
+      "network_session_started": false,
+      "ok": false,
+      "terminal_class": "AUTHORIZATION_FAILURE"
+    },
+    "expired_authorization": {
+      "authorization_consumed": false,
+      "blockers": [
+        "AUTHORIZATION_EXPIRED",
+        "AUTHORIZATION_FAILURE",
+        "EXECUTION_PERMIT_NOT_AUTHORIZED_IN_THIS_CAPABILITY",
+        "NETWORK_SESSION_ALLOWED_FALSE"
+      ],
+      "confirm_token_consumed": false,
+      "network_session_started": false,
+      "ok": false,
+      "terminal_class": "AUTHORIZATION_FAILURE"
+    },
+    "missing_confirm_token": {
+      "authorization_consumed": false,
+      "blockers": [
+        "CONFIRM_TOKEN_FAILURE",
+        "CONFIRM_TOKEN_MISSING",
+        "EXECUTION_PERMIT_NOT_AUTHORIZED_IN_THIS_CAPABILITY",
+        "NETWORK_SESSION_ALLOWED_FALSE"
+      ],
+      "confirm_token_consumed": false,
+      "network_session_started": false,
+      "ok": false,
+      "terminal_class": "AUTHORIZATION_FAILURE"
+    },
+    "network_without_authorization": {
+      "authorization_consumed": false,
+      "blockers": [
+        "AUTHORIZATION_DIGEST_MISSING",
+        "AUTHORIZATION_FAILURE",
+        "AUTHORIZATION_ID_MISSING",
+        "EXECUTION_PERMIT_NOT_AUTHORIZED_IN_THIS_CAPABILITY",
+        "NETWORK_SESSION_ALLOWED_FALSE"
+      ],
+      "confirm_token_consumed": false,
+      "network_session_started": false,
+      "ok": false,
+      "terminal_class": "AUTHORIZATION_FAILURE"
+    },
+    "request_real_network_fail_closed": {
+      "blockers": [
+        "NETWORK_SESSION_ALLOWED_FALSE",
+        "REAL_NETWORK_SESSION_FORBIDDEN_IN_THIS_CAPABILITY",
+        "SEPARATE_OWNER_GO_REQUIRED_FOR_STEP5_SESSION"
+      ],
+      "network_session_started": false,
+      "ok": false,
+      "terminal_class": "AUTHORIZATION_FAILURE"
+    },
+    "reused_authorization": {
+      "authorization_consumed": false,
+      "blockers": [
+        "AUTHORIZATION_ALREADY_CONSUMED",
+        "AUTHORIZATION_FAILURE",
+        "EXECUTION_PERMIT_NOT_AUTHORIZED_IN_THIS_CAPABILITY",
+        "NETWORK_SESSION_ALLOWED_FALSE"
+      ],
+      "confirm_token_consumed": false,
+      "network_session_started": false,
+      "ok": false,
+      "terminal_class": "AUTHORIZATION_FAILURE"
+    },
+    "wrong_config_digest": {
+      "authorization_consumed": false,
+      "blockers": [
+        "BINDING_CONFIG_DIGEST_MISMATCH"
+      ],
+      "confirm_token_consumed": false,
+      "network_session_started": false,
+      "ok": false,
+      "terminal_class": "CONTRACT_MISMATCH"
+    },
+    "wrong_confirm_token_digest": {
+      "authorization_consumed": false,
+      "blockers": [
+        "CONFIRM_TOKEN_DIGEST_MISMATCH",
+        "CONFIRM_TOKEN_FAILURE",
+        "EXECUTION_PERMIT_NOT_AUTHORIZED_IN_THIS_CAPABILITY",
+        "NETWORK_SESSION_ALLOWED_FALSE"
+      ],
+      "confirm_token_consumed": false,
+      "network_session_started": false,
+      "ok": false,
+      "terminal_class": "AUTHORIZATION_FAILURE"
+    },
+    "wrong_contract_digest": {
+      "authorization_consumed": false,
+      "blockers": [
+        "SESSION_CONTRACT_DIGEST_MISMATCH"
+      ],
+      "confirm_token_consumed": false,
+      "network_session_started": false,
+      "ok": false,
+      "terminal_class": "CONTRACT_MISMATCH"
+    },
+    "wrong_scope": {
+      "authorization_consumed": false,
+      "blockers": [
+        "EXECUTION_PERMIT_NOT_AUTHORIZED_IN_THIS_CAPABILITY",
+        "NETWORK_SESSION_ALLOWED_FALSE"
+      ],
+      "confirm_token_consumed": false,
+      "network_session_started": false,
+      "ok": false,
+      "terminal_class": "AUTHORIZATION_FAILURE"
+    },
+    "wrong_sha": {
+      "authorization_consumed": false,
+      "blockers": [
+        "AUTHORIZATION_FAILURE",
+        "AUTHORIZATION_SHA_MISMATCH",
+        "EXECUTION_PERMIT_NOT_AUTHORIZED_IN_THIS_CAPABILITY",
+        "NETWORK_SESSION_ALLOWED_FALSE"
+      ],
+      "confirm_token_consumed": false,
+      "network_session_started": false,
+      "ok": false,
+      "terminal_class": "AUTHORIZATION_FAILURE"
+    }
+  },
+  "confirm_token_consumed": false,
+  "network_session_started": false,
+  "notes": [
+    "FAILURE_INJECTION_OFFLINE_ONLY=true",
+    "NO_FORCED_DECISION_OR_FILL=true"
+  ],
+  "ok": true,
+  "planned_session_duration_seconds": 7200
+}
