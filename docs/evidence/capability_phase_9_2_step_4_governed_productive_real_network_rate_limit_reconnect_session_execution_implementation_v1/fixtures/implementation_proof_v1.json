@@ -1,0 +1,214 @@
+{
+  "authorization_consumed": false,
+  "binding_capability_id": "PHASE_9_2_STEP_4_GOVERNED_REAL_NETWORK_EXECUTION_CAPABILITY_BINDING_SESSION_REQUEST_PLUS_NETWORK_ALLOWED_WITH_CANONICAL_HIDDEN_PTY_CONFIRM_HANDOFF_V1",
+  "blockers": [],
+  "call_graph_after": [
+    "Canonical Session Request",
+    "Authorization Validation",
+    "Hidden-PTY Confirm Handoff",
+    "Governed Execution Binding (fail-closed defaults preserved)",
+    "Productive Wallclock Session Runner (canonical, not stub)",
+    "Public-MD GET-only Network Adapter",
+    "Rate-Limit / Retry / Backoff / Reconnect Handling",
+    "Evidence Manifest",
+    "Evidence Verifier"
+  ],
+  "call_graph_before": [
+    "Authorization issuance artifacts",
+    "build_canonical_session_request_from_issuance_artifacts_v1",
+    "explicit governed-public-network mode",
+    "network_allowed from issuance",
+    "canonical hidden-PTY confirm-token acquisition",
+    "validate_authorization_binding_v1",
+    "validate_confirm_token_binding_v1",
+    "SessionLockV1.acquire",
+    "consume_authorization_binding_v1",
+    "consume_confirm_token_binding_v1",
+    "run_productive_wallclock_session_v1 (injected stub only in binding capability)",
+    "REAL_NETWORK_SESSION_FORBIDDEN_IN_BINDING_CAPABILITY"
+  ],
+  "capability_id": "PHASE_9_2_STEP_4_GOVERNED_PRODUCTIVE_REAL_NETWORK_RATE_LIMIT_RECONNECT_SESSION_EXECUTION_IMPLEMENTATION_V1",
+  "claims": {
+    "AUTHORIZATION_CONSUMED": false,
+    "AUTHORIZATION_CONSUMPTION_ALLOWED": false,
+    "AUTH_HEADER_REACHABLE": false,
+    "CONFIRM_TOKEN_CONSUMED": false,
+    "CONFIRM_TOKEN_CONSUMPTION_ALLOWED": false,
+    "CONFIRM_TOKEN_PERSISTED": false,
+    "CONFIRM_TOKEN_PLAINTEXT_EXPOSED": false,
+    "CORE_LOGIC_CHANGE": false,
+    "DRY_NO_NETWORK": true,
+    "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+    "GOVERNED_EXECUTION_BINDING_PRESERVED": true,
+    "GOVERNED_EXECUTION_BINDING_REAL_NETWORK_SIDE_EFFECTS_AUTHORIZED": false,
+    "HTTP_METHOD_ALLOWLIST": "GET_ONLY",
+    "NETWORK_SESSION_ALLOWED": false,
+    "NETWORK_SESSION_EXECUTED": false,
+    "NO_SECOND_SESSION_ON_EVIDENCE_FAILURE": true,
+    "ORDER_ENDPOINT_REACHABLE": false,
+    "PRIVATE_ENDPOINT_REACHABLE": false,
+    "PRODUCTIVE_CALL_GRAPH_COMPLETE": true,
+    "PRODUCTIVE_RUNNER_IS_CANONICAL_NOT_STUB": true,
+    "PRODUCTIVE_WALLCLOCK_RUNNER_BOUND": true,
+    "PUBLIC_MD_ALLOWLIST": "OKX_EEA_PUBLIC_MARKET_DATA_ENDPOINTS_ONLY",
+    "RATE_LIMIT_RECONNECT_LADDER_STEP_CLOSED": false,
+    "READY_FOR_SEPARATE_GOVERNED_SESSION_EXECUTION": true,
+    "REAL_NETWORK_REQUESTS_ALLOWED": false,
+    "REAL_NETWORK_REQUEST_COUNT": 0,
+    "SESSION_EXECUTION_IMPLEMENTATION_CAPABILITY_ID": "PHASE_9_2_STEP_4_GOVERNED_PRODUCTIVE_REAL_NETWORK_RATE_LIMIT_RECONNECT_SESSION_EXECUTION_IMPLEMENTATION_V1",
+    "SESSION_EXECUTION_RUNTIME_CAPABILITY_ID": "PHASE_9_2_STEP_4_GOVERNED_PRODUCTIVE_REAL_NETWORK_RATE_LIMIT_RECONNECT_SESSION_EXECUTION_V1",
+    "SESSION_EXECUTION_SIDE_EFFECTS_AUTHORIZED": false,
+    "WALLCLOCK_RUNNER_INVOCATION_COUNT": 0,
+    "WALLCLOCK_RUNNER_INVOKED": false
+  },
+  "confirm_token_consumed": false,
+  "evidence_template": {
+    "auth_header_present": false,
+    "authorization_id_or_digest": "",
+    "backoff_timeline": [],
+    "claims": {
+      "OBSERVED_SESSION": false,
+      "RATE_LIMIT_PATH_PRODUCTIVELY_OBSERVED": false,
+      "RATE_LIMIT_RECONNECT_LADDER_STEP_CLOSED": false,
+      "RECONNECT_PATH_PRODUCTIVELY_OBSERVED": false
+    },
+    "config_digest": "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b",
+    "confirmation_advance_count": 0,
+    "confirmation_session_id": "phase_9_2_rate_limit_reconnect_confirmation_session_v1",
+    "credential_access_reachable": false,
+    "duplicate_observation_count": 0,
+    "ended_at": null,
+    "fill_count": 0,
+    "heartbeat_state_transitions": [],
+    "manifest_digest": "8c3047f35a10e1be5e01d2758d5447b8063b48fc9146e9cb948b6b68cc92e87e",
+    "order_side_effect_occurred": false,
+    "private_endpoint_reachable": false,
+    "process_health_after": null,
+    "process_health_before": null,
+    "public_endpoint_classification": "PUBLIC_GET_ONLY_NOT_YET_OBSERVED",
+    "rate_limit_classifications": [],
+    "rate_limit_event_count": 0,
+    "reconnect_count": 0,
+    "reconnect_timeline": [],
+    "repository_sha": "de4be60c084212600cfc97015439e42e98efd2bd",
+    "request_count": 0,
+    "request_interval_distribution": {},
+    "retry_count": 0,
+    "runtime_session_id": "",
+    "schema_version": "phase_9_2_rate_limit_reconnect_session_evidence.v1",
+    "session_id": "phase_9_2_public_md_rate_limit_reconnect_session_v1",
+    "stale_state_transitions": [],
+    "started_at": null,
+    "state_digest_after": "",
+    "state_digest_before": "",
+    "verifier_result": {
+      "notes": [
+        "TEMPLATE_ONLY_WIRING_CAPABILITY"
+      ],
+      "observed_session": false,
+      "ok": false
+    }
+  },
+  "fault_path": {
+    "cases": {
+      "http_429_retry_after_backoff": {
+        "http_429_count": 1,
+        "ok": true,
+        "owner": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1",
+        "scheduled_backoff_seconds": 2.0
+      },
+      "http_429_session_budget_exceeded": {
+        "error": "RATE_LIMIT_SESSION_BUDGET_EXCEEDED",
+        "http_429_count": 2,
+        "ok": true,
+        "owner": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1"
+      },
+      "pacing_no_zero_interval": {
+        "ok": true,
+        "owner": "research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.public_md_rate_limit_policy_v1",
+        "zero_rejected": true
+      },
+      "rate_limit_classified_reconnectable": {
+        "class_a": "TRANSPORT_FAILURE",
+        "class_b": "TRANSPORT_FAILURE",
+        "ok": true,
+        "owner": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_runtime_v1",
+        "reconnectable_a": true,
+        "reconnectable_b": true
+      },
+      "rate_limit_metric_hygiene": {
+        "count": 2,
+        "ok": true,
+        "owner": "ops.phase_9_2_public_md_session_preflight_v1.rate_limit_metric_v1"
+      },
+      "reconnect_state_transitions": {
+        "ok": true,
+        "owner": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_runtime_v1",
+        "reconnect_attempt_limit": 3
+      },
+      "stale_data_gate": {
+        "kill": "STALE_DATA",
+        "ok": true,
+        "owner": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1",
+        "status": "kill"
+      }
+    },
+    "claims": {
+      "BOUNDED_BACKOFF_USED": true,
+      "GOVERNED_FAULT_PATH_BOUND": true,
+      "HTTP_429_BUDGET_ENFORCED": true,
+      "HTTP_429_CLASSIFIED": true,
+      "NO_IMPROVISED_HARNESS": true,
+      "RATE_LIMIT_METRIC_BOUND": true,
+      "RECONNECT_STATE_BOUND": true,
+      "STALE_DATA_GATE_BOUND": true,
+      "ZERO_INTERVAL_RETRY": false
+    },
+    "deterministic_injection_only": true,
+    "fault_session_started": false,
+    "network_session_started": false,
+    "ok": true
+  },
+  "network_boundary": {
+    "AUTH_HEADER_PRESENT": false,
+    "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+    "GET_ONLY_BOUND": true,
+    "NETWORK_ALLOWLIST": "OKX_EEA_PUBLIC_MARKET_DATA_ENDPOINTS_ONLY",
+    "ORDER_SIDE_EFFECT_OCCURRED": false,
+    "PRIVATE_ENDPOINT_REACHABLE": false,
+    "PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED": false,
+    "PUBLIC_MD_ONLY_BOUND": true,
+    "blockers": [],
+    "notes": [
+      "REUSES_WALLCLOCK_NETWORK_BOUNDARY_GUARD",
+      "NO_PARALLEL_TRANSPORT_AUTHORITY",
+      "WIRING_CAPABILITY_DOES_NOT_START_NETWORK"
+    ],
+    "ok": true
+  },
+  "network_session_executed": false,
+  "notes": [
+    "SESSION_EXECUTION_IMPLEMENTATION_CAPABILITY_ID=PHASE_9_2_STEP_4_GOVERNED_PRODUCTIVE_REAL_NETWORK_RATE_LIMIT_RECONNECT_SESSION_EXECUTION_IMPLEMENTATION_V1",
+    "SESSION_EXECUTION_RUNTIME_CAPABILITY_ID=PHASE_9_2_STEP_4_GOVERNED_PRODUCTIVE_REAL_NETWORK_RATE_LIMIT_RECONNECT_SESSION_EXECUTION_V1",
+    "GOVERNED_EXECUTION_BINDING_CAPABILITY_ID=PHASE_9_2_STEP_4_GOVERNED_REAL_NETWORK_EXECUTION_CAPABILITY_BINDING_SESSION_REQUEST_PLUS_NETWORK_ALLOWED_WITH_CANONICAL_HIDDEN_PTY_CONFIRM_HANDOFF_V1",
+    "CANONICAL_WALLCLOCK_RUNNER=src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+    "PACING_POLICY_OWNER=research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.public_md_rate_limit_policy_v1",
+    "EEA_TRANSPORT_OWNER=ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1",
+    "SESSION_RUNTIME_OWNER=ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_runtime_v1",
+    "STALENESS_OWNER=ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1",
+    "RATE_LIMIT_METRIC_OWNER=ops.phase_9_2_public_md_session_preflight_v1.rate_limit_metric_v1",
+    "BUNDLE_VERIFIER_OWNER=ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.bundle_verifier_v1",
+    "NO_REAL_NETWORK_SESSION_IN_IMPLEMENTATION=true",
+    "NO_AUTHORIZATION_CONSUMPTION_IN_IMPLEMENTATION=true",
+    "NO_CONFIRM_TOKEN_CONSUMPTION_IN_IMPLEMENTATION=true",
+    "BINDING_LAYER_SIDE_EFFECTS_REMAIN_FALSE=true",
+    "GOVERNED_PRODUCTIVE_SESSION_EXECUTION_IMPLEMENTATION_PROVEN=true"
+  ],
+  "ok": true,
+  "productive_runner_bound": true,
+  "real_network_request_count": 0,
+  "runner_result": null,
+  "runtime_capability_id": "PHASE_9_2_STEP_4_GOVERNED_PRODUCTIVE_REAL_NETWORK_RATE_LIMIT_RECONNECT_SESSION_EXECUTION_V1",
+  "wallclock_runner_invocation_count": 0,
+  "wallclock_runner_invoked": false
+}

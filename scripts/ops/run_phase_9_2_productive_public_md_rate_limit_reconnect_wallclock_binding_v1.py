@@ -52,6 +52,7 @@ from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_bindi
     GOVERNED_EXECUTION_BINDING_CAPABILITY_ID,
     NETWORK_SESSION_ALLOWED,
     OWNER_PERMIT_WIRING_CAPABILITY_ID,
+    SESSION_EXECUTION_IMPLEMENTATION_CAPABILITY_ID,
     SESSION_REQUEST_ADAPTER_CAPABILITY_ID,
     TARGET_SESSION_ID,
     WIRING_CAPABILITY_ID,
@@ -64,6 +65,12 @@ from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_bindi
 )
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.governed_execution_binding_v1 import (  # noqa: E402
     execute_governed_step4_execution_binding_v1,
+)
+from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.governed_productive_session_execution_evidence_v1 import (  # noqa: E402
+    materialize_session_execution_implementation_evidence_v1,
+)
+from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.governed_productive_session_execution_v1 import (  # noqa: E402
+    prove_governed_productive_session_execution_implementation_v1,
 )
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.parity_v1 import (  # noqa: E402
     prove_phase92_rate_limit_reconnect_wallclock_binding_parity_v1,
@@ -114,6 +121,8 @@ def build_parser() -> argparse.ArgumentParser:
             "materialize-evidence",
             "gate",
             "prove-fault-path",
+            "prove-governed-productive-execution",
+            "materialize-session-execution-implementation-evidence",
             "execute-productive-session",
         ),
     )
@@ -275,6 +284,30 @@ def main(argv: list[str] | None = None) -> int:
         fault = prove_governed_fault_path_offline_v1()
         print(json.dumps(redact_mapping_for_logs(fault), sort_keys=True, indent=2))
         return 0 if fault.get("ok") else 1
+
+    if args.command == "prove-governed-productive-execution":
+        proof = prove_governed_productive_session_execution_implementation_v1(
+            expected_repository_sha=sha,
+            expected_config_digest=cfg,
+            expected_capability_id=SESSION_EXECUTION_IMPLEMENTATION_CAPABILITY_ID,
+            now_unix=float(time.time()),
+            allow_real_network_side_effects=False,
+            allow_authorization_consumption=False,
+            allow_confirm_token_consumption=False,
+            environ=os.environ,
+            argv=raw_argv,
+        )
+        print(json.dumps(redact_mapping_for_logs(proof.to_dict()), sort_keys=True, indent=2))
+        return 0 if proof.ok else 2
+
+    if args.command == "materialize-session-execution-implementation-evidence":
+        summary = materialize_session_execution_implementation_evidence_v1(
+            repository_sha=sha,
+            evidence_root=args.evidence_root,
+            repo_root=_REPO_ROOT,
+        )
+        print(json.dumps(redact_mapping_for_logs(summary), sort_keys=True, indent=2))
+        return 0 if summary.get("ok") else 1
 
     if args.command == "execute-productive-session":
         if args.request_real_network:
