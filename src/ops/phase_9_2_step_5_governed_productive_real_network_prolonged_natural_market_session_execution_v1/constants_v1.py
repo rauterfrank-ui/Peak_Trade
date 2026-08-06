@@ -172,7 +172,7 @@ CALL_GRAPH_AFTER = [
     "authorization/token scope validation",
     "ephemeral NETWORK_SESSION_GO gate (default false; parameter-only)",
     "Step-5 activation wiring / canonical Public-MD fetcher resolve",
-    "single-use consumption boundary (deferred to later session capability)",
+    "final-generic single-use consumption boundary",
     "execution permit validation",
     "bounded prolonged Public-MD executor",
     "pacing / retry / backoff / reconnect control",
