@@ -168,6 +168,17 @@ CLI_PROVE_GOVERNED_PRODUCTIVE_EXECUTION_FLAG = "--prove-governed-productive-exec
 # Canonical public-MD network scope reused from Operator-GO / productive issuance.
 GOVERNED_PUBLIC_MD_NETWORK_SCOPE = "okx_eea_futures_public_md_observe_v1"
 GOVERNED_PUBLIC_MD_SESSION_EXECUTION_SCOPE = "paper_shadow_observation_wallclock_v1"
+# V2 authorization_artifact.network_scope layer (distinct from Operator-GO venue scope).
+PRODUCTIVE_V2_ARTIFACT_NETWORK_SCOPE = "PUBLIC_MARKET_DATA_ONLY"
+# Config digest domains for Step-4 governed network authorization binding.
+CONFIG_DIGEST_DOMAIN_WALLCLOCK_CONFIG_IDENTITY = "wallclock_config_identity"
+CONFIG_DIGEST_DOMAIN_PRODUCTIVE_CODE_IDENTITY = "productive_code_identity"
+CONFIG_DIGEST_DOMAIN_EFFECTIVE_SESSION_CONFIG = "effective_session_config"
+CONFIG_DIGEST_DOMAIN_ACTIVATION_CONFIG = "activation_config"
+# Bounded fix capability: productive V2 artifact scope/digest binding for Step-4.
+PRODUCTIVE_V2_AUTHORIZATION_ARTIFACT_BINDING_FIX_CAPABILITY_ID = (
+    "PHASE_9_2_STEP_4_PRODUCTIVE_V2_AUTHORIZATION_ARTIFACT_BINDING_FIX_V1"
+)
 SESSION_LOCK_OWNER = (
     "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.session_lock_v1"
 )
