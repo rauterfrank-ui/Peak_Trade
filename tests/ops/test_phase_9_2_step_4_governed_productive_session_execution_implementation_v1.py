@@ -600,7 +600,10 @@ def test_runtime_execute_fail_closed_no_side_effects(
     assert result.authorization_consumed is False
     assert result.confirm_token_consumed is False
     assert result.real_network_request_count == 0
-    assert "RUNTIME_SESSION_REQUIRES_SEPARATE_OWNER_GO_AFTER_IMPLEMENTATION_MERGE" in (
+    assert (
+        "OWNER_GO_REQUIRED" in result.blockers or "NETWORK_SESSION_GO_REQUIRED" in result.blockers
+    )
+    assert "RUNTIME_SESSION_REQUIRES_SEPARATE_OWNER_GO_AFTER_IMPLEMENTATION_MERGE" not in (
         result.blockers
     )
 
