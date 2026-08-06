@@ -100,6 +100,19 @@ GOVERNED_EXECUTION_BINDING_CAPABILITY_ID = (
     "PHASE_9_2_STEP_4_GOVERNED_REAL_NETWORK_EXECUTION_CAPABILITY_BINDING_"
     "SESSION_REQUEST_PLUS_NETWORK_ALLOWED_WITH_CANONICAL_HIDDEN_PTY_CONFIRM_HANDOFF_V1"
 )
+# Implementation capability: closes productive runner call graph; no network session.
+SESSION_EXECUTION_IMPLEMENTATION_CAPABILITY_ID = (
+    "PHASE_9_2_STEP_4_GOVERNED_PRODUCTIVE_REAL_NETWORK_RATE_LIMIT_RECONNECT_"
+    "SESSION_EXECUTION_IMPLEMENTATION_V1"
+)
+# Future separately authorized session runtime capability (not activated here).
+SESSION_EXECUTION_RUNTIME_CAPABILITY_ID = (
+    "PHASE_9_2_STEP_4_GOVERNED_PRODUCTIVE_REAL_NETWORK_RATE_LIMIT_RECONNECT_SESSION_EXECUTION_V1"
+)
+SESSION_EXECUTION_EVIDENCE_DIRNAME = (
+    "capability_phase_9_2_step_4_governed_productive_real_network_"
+    "rate_limit_reconnect_session_execution_implementation_v1"
+)
 NETWORK_SESSION_ALLOWED = False
 FAULT_SESSION_ALLOWED = False
 PRODUCTIVE_SESSION_REACHABLE = True
@@ -111,10 +124,17 @@ PRODUCTIVE_SESSION_PATH_STRUCTURALLY_RUNTIME_REACHABLE = True
 RATE_LIMIT_RECONNECT_LADDER_STEP_CLOSED = False
 # This binding capability never authorizes productive real-network side effects.
 GOVERNED_EXECUTION_BINDING_REAL_NETWORK_SIDE_EFFECTS_AUTHORIZED = False
+# Implementation + permanent defaults: no real requests / no consumption.
+REAL_NETWORK_REQUESTS_ALLOWED = False
+AUTHORIZATION_CONSUMPTION_ALLOWED = False
+CONFIRM_TOKEN_CONSUMPTION_ALLOWED = False
+# Runtime session side effects remain unauthorized until separate Owner-GO.
+SESSION_EXECUTION_SIDE_EFFECTS_AUTHORIZED = False
 # Explicit CLI owner-session permit for canonical runner invoke (default false).
 CLI_OWNER_SESSION_PERMIT_DEFAULT = False
 CLI_OWNER_SESSION_PERMIT_FLAG = "--permit-canonical-runner-invoke"
 CLI_GOVERNED_EXECUTION_BINDING_ONLY_FLAG = "--governed-execution-binding-only"
+CLI_PROVE_GOVERNED_PRODUCTIVE_EXECUTION_FLAG = "--prove-governed-productive-execution"
 # Canonical public-MD network scope reused from Operator-GO / productive issuance.
 GOVERNED_PUBLIC_MD_NETWORK_SCOPE = "okx_eea_futures_public_md_observe_v1"
 GOVERNED_PUBLIC_MD_SESSION_EXECUTION_SCOPE = "paper_shadow_observation_wallclock_v1"

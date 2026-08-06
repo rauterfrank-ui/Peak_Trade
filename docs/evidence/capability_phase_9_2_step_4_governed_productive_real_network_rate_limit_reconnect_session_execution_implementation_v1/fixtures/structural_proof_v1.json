@@ -1,0 +1,38 @@
+{
+  "authorization_consumed": false,
+  "binding_capability_id": "PHASE_9_2_STEP_4_GOVERNED_REAL_NETWORK_EXECUTION_CAPABILITY_BINDING_SESSION_REQUEST_PLUS_NETWORK_ALLOWED_WITH_CANONICAL_HIDDEN_PTY_CONFIRM_HANDOFF_V1",
+  "call_graph_after": [
+    "Canonical Session Request",
+    "Authorization Validation",
+    "Hidden-PTY Confirm Handoff",
+    "Governed Execution Binding (fail-closed defaults preserved)",
+    "Productive Wallclock Session Runner (canonical, not stub)",
+    "Public-MD GET-only Network Adapter",
+    "Rate-Limit / Retry / Backoff / Reconnect Handling",
+    "Evidence Manifest",
+    "Evidence Verifier"
+  ],
+  "call_graph_before": [
+    "Authorization issuance artifacts",
+    "build_canonical_session_request_from_issuance_artifacts_v1",
+    "explicit governed-public-network mode",
+    "network_allowed from issuance",
+    "canonical hidden-PTY confirm-token acquisition",
+    "validate_authorization_binding_v1",
+    "validate_confirm_token_binding_v1",
+    "SessionLockV1.acquire",
+    "consume_authorization_binding_v1",
+    "consume_confirm_token_binding_v1",
+    "run_productive_wallclock_session_v1 (injected stub only in binding capability)",
+    "REAL_NETWORK_SESSION_FORBIDDEN_IN_BINDING_CAPABILITY"
+  ],
+  "confirm_token_consumed": false,
+  "http_method_allowlist": "GET_ONLY",
+  "implementation_capability_id": "PHASE_9_2_STEP_4_GOVERNED_PRODUCTIVE_REAL_NETWORK_RATE_LIMIT_RECONNECT_SESSION_EXECUTION_IMPLEMENTATION_V1",
+  "network_allowlist": "OKX_EEA_PUBLIC_MARKET_DATA_ENDPOINTS_ONLY",
+  "productive_entrypoint": "scripts/ops/run_phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.py",
+  "productive_session_runner": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+  "real_network_session_started": false,
+  "runtime_capability_id": "PHASE_9_2_STEP_4_GOVERNED_PRODUCTIVE_REAL_NETWORK_RATE_LIMIT_RECONNECT_SESSION_EXECUTION_V1",
+  "session_request_adapter_capability_id": "PHASE_9_2_STEP_4_PRODUCTIVE_SESSION_REQUEST_CLI_OPERATOR_ADAPTER_V1"
+}
