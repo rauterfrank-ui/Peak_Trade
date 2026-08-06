@@ -235,16 +235,34 @@ def run_bounded_prolonged_public_md_executor_v1(
             telemetry=telemetry,
         )
     if allow_real_network and fetcher is None:
-        # Real network path remains physically available for later Owner-GO, but this
-        # capability keeps NETWORK_SESSION_ALLOWED=false at the governance layer.
-        lock.release()
-        return ProlongedExecutorResultV1(
-            ok=False,
-            terminal_class="AUTHORIZATION_FAILURE",
-            blockers=["REAL_NETWORK_FETCHER_NOT_WIRED_IN_THIS_CAPABILITY"],
-            notes=notes,
-            telemetry=telemetry,
+        # Productive wiring: bind the canonical real Public-MD fetcher factory.
+        # Construction does not perform HTTP; callers must still authorize invoke.
+        from src.ops.phase_9_2_step_5_productive_real_network_session_activation_and_wiring_v1.fetcher_wiring_v1 import (  # noqa: E501
+            resolve_canonical_public_md_fetcher_v1,
         )
+
+        resolved = resolve_canonical_public_md_fetcher_v1(
+            activation_permit_ok=True,
+            network_session_go=True,
+            allow_construct=True,
+        )
+        if not resolved.get("ok") or resolved.get("fetcher") is None:
+            lock.release()
+            return ProlongedExecutorResultV1(
+                ok=False,
+                terminal_class="AUTHORIZATION_FAILURE",
+                blockers=["REAL_NETWORK_FETCHER_RESOLVE_FAILED"]
+                + list(resolved.get("blockers") or []),
+                notes=notes
+                + [
+                    "CANONICAL_PUBLIC_MD_FETCHER_WIRING_ATTEMPTED=true",
+                    "REAL_NETWORK_REQUIRES_EPHEMERAL_NETWORK_SESSION_GO=true",
+                ],
+                telemetry=telemetry,
+            )
+        fetcher = resolved["fetcher"]
+        notes.append("CANONICAL_PUBLIC_MD_FETCHER_WIRED=true")
+        notes.append("FETCHER_CONSTRUCTED_NO_IMPLIED_SESSION_START=true")
 
     assert fetcher is not None
     policy = _policy_from_contract_v1(pacing)

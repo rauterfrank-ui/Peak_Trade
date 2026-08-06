@@ -332,25 +332,38 @@ def execute_governed_step5_session_v1(
     authorization_binding_config_digest: str = "",
     authorization_planned_duration_seconds: int | None = None,
     authorization_repository_sha: str = "",
+    network_session_go: bool = False,
+    owner_go: bool = False,
+    operator_authorization_explicit: bool = False,
 ) -> GovernedStep5ExecutionResultV1:
-    """Governed execution path. Fail-closed without separate session authorization."""
+    """Governed execution path. Fail-closed without ephemeral NETWORK_SESSION_GO + bindings."""
     blockers: list[str] = []
     notes = [
         f"CAPABILITY_ID={CAPABILITY_ID}",
         "EXECUTE_GOVERNED_SESSION_OFFLINE_FAIL_CLOSED_DEFAULT=true",
+        "EPHEMERAL_NETWORK_SESSION_GO_REQUIRED_FOR_REAL_SIDE_EFFECTS=true",
     ]
     blockers.extend(reject_confirm_token_argv_v1(argv))
     blockers.extend(reject_confirm_token_env_fallback_v1(environ))
 
-    # Permanent constants remain false — this capability never authorizes live side effects.
-    if allow_real_network_side_effects:
-        blockers.append("REAL_NETWORK_SIDE_EFFECTS_FORBIDDEN_IN_THIS_CAPABILITY")
-    if allow_authorization_consumption:
-        blockers.append("AUTHORIZATION_CONSUMPTION_FORBIDDEN_IN_THIS_CAPABILITY")
-    if allow_confirm_token_consumption:
-        blockers.append("CONFIRM_TOKEN_CONSUMPTION_FORBIDDEN_IN_THIS_CAPABILITY")
+    # Permanent constants remain false. Real side effects require ephemeral GO + bindings.
     if NETWORK_SESSION_ALLOWED or SESSION_EXECUTION_SIDE_EFFECTS_AUTHORIZED:
         blockers.append("PERMANENT_ENABLE_MUST_REMAIN_FALSE")
+    if allow_authorization_consumption and not (
+        network_session_go and owner_go and operator_authorization_explicit
+    ):
+        blockers.append("AUTHORIZATION_CONSUMPTION_FORBIDDEN_WITHOUT_EPHEMERAL_GO")
+    if allow_confirm_token_consumption and not (
+        network_session_go and owner_go and operator_authorization_explicit
+    ):
+        blockers.append("CONFIRM_TOKEN_CONSUMPTION_FORBIDDEN_WITHOUT_EPHEMERAL_GO")
+    # Issuance/consumption remain deferred to a later session capability by default.
+    if allow_authorization_consumption:
+        blockers.append("AUTHORIZATION_CONSUMPTION_DEFERRED_TO_LATER_SESSION_CAPABILITY")
+    if allow_confirm_token_consumption:
+        blockers.append("CONFIRM_TOKEN_CONSUMPTION_DEFERRED_TO_LATER_SESSION_CAPABILITY")
+    if allow_real_network_side_effects and not network_session_go:
+        blockers.append("REAL_NETWORK_SIDE_EFFECTS_REQUIRE_NETWORK_SESSION_GO")
 
     digest_check = validate_digest_bindings_v1(
         expected_session_contract_digest=expected_session_contract_digest,
@@ -460,9 +473,50 @@ def execute_governed_step5_session_v1(
     if not boundary.get("ok"):
         blockers.extend([f"NETWORK_BOUNDARY:{b}" for b in boundary.get("blockers") or []])
 
-    # Execution permit: this capability keeps side effects unauthorized.
-    blockers.append("EXECUTION_PERMIT_NOT_AUTHORIZED_IN_THIS_CAPABILITY")
-    blockers.append("NETWORK_SESSION_ALLOWED_FALSE")
+    activation_permit_ok = False
+    if network_session_go and owner_go and operator_authorization_explicit:
+        from src.ops.phase_9_2_step_5_productive_real_network_session_activation_and_wiring_v1.activation_gate_v1 import (  # noqa: E501
+            evaluate_step5_activation_gate_v1,
+        )
+
+        gate = evaluate_step5_activation_gate_v1(
+            expected_repository_sha=expected_repository_sha,
+            expected_session_contract_digest=expected_session_contract_digest,
+            expected_binding_config_digest=expected_binding_config_digest,
+            authorization_id=authorization_id,
+            authorization_digest=authorization_digest,
+            confirm_token_binding_sha256=confirm_token_binding_sha256,
+            confirm_token_plaintext=str(token_plain or ""),
+            now_unix=now_unix,
+            network_session_go=True,
+            owner_go=True,
+            operator_authorization_explicit=True,
+            authorization_expires_at=authorization_expires_at,
+            confirm_token_expires_at=confirm_token_expires_at,
+            authorization_scope=authorization_scope,
+            authorization_session_id=authorization_session_id,
+            authorization_capability_id=authorization_capability_id,
+            authorization_session_contract_digest=authorization_session_contract_digest
+            or expected_session_contract_digest,
+            authorization_binding_config_digest=authorization_binding_config_digest
+            or expected_binding_config_digest,
+            authorization_repository_sha=authorization_repository_sha or expected_repository_sha,
+            argv=argv,
+            environ=environ,
+            repo_root=repo_root,
+        )
+        activation_permit_ok = bool(gate.get("ok"))
+        if not activation_permit_ok:
+            blockers.extend([str(b) for b in gate.get("blockers") or []])
+            blockers.append("ACTIVATION_GATE_FAILED")
+        else:
+            notes.append("STEP5_ACTIVATION_WIRING_GATE_PASS=true")
+            notes.append("PUBLIC_MD_FETCHER_PRODUCTIVELY_WIRED=true")
+            notes.append("CONSUMPTION_STILL_DEFERRED_TO_LATER_SESSION_CAPABILITY=true")
+    else:
+        # Default fail-closed permit: wiring exists, but ephemeral GO not provided.
+        blockers.append("EXECUTION_PERMIT_NOT_AUTHORIZED_WITHOUT_EPHEMERAL_NETWORK_SESSION_GO")
+        blockers.append("NETWORK_SESSION_ALLOWED_FALSE")
 
     executor_result = None
     terminal = "AUTHORIZATION_FAILURE"
@@ -475,7 +529,7 @@ def execute_governed_step5_session_v1(
             for b in blockers
             if b
             not in {
-                "EXECUTION_PERMIT_NOT_AUTHORIZED_IN_THIS_CAPABILITY",
+                "EXECUTION_PERMIT_NOT_AUTHORIZED_WITHOUT_EPHEMERAL_NETWORK_SESSION_GO",
                 "NETWORK_SESSION_ALLOWED_FALSE",
             }
         ]
@@ -514,16 +568,15 @@ def execute_governed_step5_session_v1(
                 minimum_successful_wallclock_seconds=minimum,
             )
             terminal = str(classified["terminal_class"])
-            # Still fail-closed at capability layer: no auth/token consumption, no real network.
             notes.append("OFFLINE_INJECTED_EXECUTOR_RAN_WITHOUT_CONSUMPTION=true")
-            notes.append("CAPABILITY_LAYER_STILL_FORBIDS_REAL_NETWORK=true")
+            notes.append("CAPABILITY_LAYER_STILL_FORBIDS_REAL_NETWORK_WITHOUT_LATER_SESSION=true")
             return GovernedStep5ExecutionResultV1(
                 ok=False,
                 blockers=sorted(
                     set(
                         blockers
                         + [
-                            "EXECUTION_PERMIT_NOT_AUTHORIZED_IN_THIS_CAPABILITY",
+                            "EXECUTION_PERMIT_NOT_AUTHORIZED_WITHOUT_EPHEMERAL_NETWORK_SESSION_GO",
                             "NETWORK_SESSION_ALLOWED_FALSE",
                         ]
                     )
@@ -537,6 +590,8 @@ def execute_governed_step5_session_v1(
                     "CONFIRM_TOKEN_PERSISTED": False,
                     "OFFLINE_INJECTED_EXECUTOR_OBSERVED": True,
                     "EXECUTOR_TERMINAL_CLASS": terminal,
+                    "PUBLIC_MD_FETCHER_PRODUCTIVELY_WIRED": True,
+                    "ACTIVATION_PERMIT_OK": activation_permit_ok,
                     **dict(executed.claims),
                 },
                 terminal_class=terminal,
@@ -558,6 +613,18 @@ def execute_governed_step5_session_v1(
                 },
             )
 
+    # Real-network executor path remains reserved for a later session capability that
+    # explicitly authorizes consumption + NETWORK_SESSION_GO with side effects.
+    if (
+        activation_permit_ok
+        and allow_real_network_side_effects
+        and network_session_go
+        and not allow_authorization_consumption
+        and not allow_confirm_token_consumption
+    ):
+        notes.append("ACTIVATION_WIRING_READY_CONSUMPTION_STILL_REQUIRED_BY_LATER_SESSION=true")
+        blockers.append("LATER_SESSION_CAPABILITY_REQUIRED_FOR_CONSUME_AND_START")
+
     return GovernedStep5ExecutionResultV1(
         ok=False,
         blockers=sorted(set(blockers)),
@@ -569,6 +636,10 @@ def execute_governed_step5_session_v1(
             "CONFIRM_TOKEN_PLAINTEXT_EXPOSED": False,
             "CONFIRM_TOKEN_PERSISTED": False,
             "CONFIRM_TOKEN_SHELL_HISTORY": False,
+            "PUBLIC_MD_FETCHER_PRODUCTIVELY_WIRED": True,
+            "ACTIVATION_PERMIT_OK": activation_permit_ok,
+            "EPHEMERAL_NETWORK_SESSION_GO_BOUND": True,
+            "NETWORK_SESSION_GO": bool(network_session_go),
         },
         terminal_class=terminal,
         authorization_consumed=False,

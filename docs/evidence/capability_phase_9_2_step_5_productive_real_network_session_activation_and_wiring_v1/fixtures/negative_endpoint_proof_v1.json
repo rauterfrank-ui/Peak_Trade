@@ -1,0 +1,14 @@
+{
+  "auth_header": {
+    "error": "AUTH_HEADER_REJECTED",
+    "ok": true
+  },
+  "non_get": {
+    "error": "NON_GET_METHOD_REJECTED:POST",
+    "ok": true
+  },
+  "private": {
+    "error": "PRIVATE_ENDPOINT_REJECTED",
+    "ok": true
+  }
+}
