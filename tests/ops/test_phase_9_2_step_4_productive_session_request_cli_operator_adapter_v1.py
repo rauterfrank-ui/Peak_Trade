@@ -330,7 +330,11 @@ def test_cli_dry_probe_integration_no_network_no_consume(tmp_path: Path) -> None
     assert claims.get("PRODUCTIVE_SESSION_PATH_DRY_PROBE_REACHABLE") is True
 
 
-def test_cli_network_requires_governed_binding_only_flag(tmp_path: Path) -> None:
+def test_cli_network_final_generic_activation_requires_hidden_pty(tmp_path: Path) -> None:
+    """After final generic activation binding, network-allowed issuance no longer
+    hard-requires --governed-execution-binding-only. Without a real Hidden-PTY the
+    path still fail-closes before consume/network.
+    """
     sha = _sha()
     paths = _write_issuance_bundle(tmp_path, sha=sha)
     proc = subprocess.run(
@@ -358,9 +362,21 @@ def test_cli_network_requires_governed_binding_only_flag(tmp_path: Path) -> None
     )
     assert proc.returncode == 2
     payload = json.loads(proc.stdout)
-    assert "GOVERNED_EXECUTION_BINDING_ONLY_REQUIRED" in payload["blockers"]
-    assert payload["network_session_started"] is False
-    assert payload["authorization_consumed"] is False
+    blockers = payload.get("blockers") or []
+    assert "GOVERNED_EXECUTION_BINDING_ONLY_REQUIRED" not in blockers
+    assert any(
+        b in blockers
+        for b in (
+            "CANONICAL_HIDDEN_PTY_CONFIRM_TOKEN_PATH_NOT_AVAILABLE",
+            "REAL_PTY_TTY_REQUIRED",
+            "OWNER_GO_REQUIRED",
+            "NETWORK_SESSION_GO_REQUIRED",
+            "CONFIRM_TOKEN_MISSING",
+        )
+    )
+    assert bool(payload.get("network_session_started")) is False
+    assert bool(payload.get("network_session_executed")) is False
+    assert bool(payload.get("authorization_consumed")) is False
 
 
 def test_regression_permit_wiring_still_present() -> None:

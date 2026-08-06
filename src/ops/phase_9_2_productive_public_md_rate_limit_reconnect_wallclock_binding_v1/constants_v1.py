@@ -113,6 +113,33 @@ SESSION_EXECUTION_EVIDENCE_DIRNAME = (
     "capability_phase_9_2_step_4_governed_productive_real_network_"
     "rate_limit_reconnect_session_execution_implementation_v1"
 )
+# Final generic Step-4 activation binding: closes productive E2E call graph.
+# Permanent side-effect defaults remain false; each session needs a new single-use auth.
+FINAL_GENERIC_SESSION_ACTIVATION_BINDING_CAPABILITY_ID = (
+    "PHASE_9_2_STEP_4_FINAL_GENERIC_SESSION_ACTIVATION_BINDING_V1"
+)
+FINAL_GENERIC_SESSION_ACTIVATION_SCHEMA_VERSION = (
+    "phase_9_2_step_4_final_generic_session_activation_binding.v1"
+)
+FINAL_GENERIC_SESSION_ACTIVATION_EVIDENCE_DIRNAME = (
+    "capability_phase_9_2_step_4_final_generic_session_activation_binding_v1"
+)
+FINAL_GENERIC_SESSION_ACTIVATION_CONFIG_RELATIVE_PATH = (
+    "config/ops/phase_9_2_step_4_final_generic_session_activation_binding_v1.json"
+)
+FINAL_GENERIC_SIDE_EFFECT_AUTH_LEDGER_FILENAME = (
+    "step4_final_generic_side_effect_authorization_consumption_ledger_v1.jsonl"
+)
+FINAL_GENERIC_RUNTIME_MODE = "PUBLIC_MD_GET_ONLY"
+FINAL_GENERIC_SESSION_TYPE = "PHASE_9_2_STEP_4_RATE_LIMIT_RECONNECT"
+FINAL_GENERIC_ACTIVATION_OWNER = (
+    "ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1."
+    "final_generic_session_activation_binding_v1"
+)
+AUTHORIZATION_ISSUANCE_OWNER = (
+    "ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_"
+    "execution_v1.productive_operator_go_producer_v1.issue_productive_authorization_v1"
+)
 NETWORK_SESSION_ALLOWED = False
 FAULT_SESSION_ALLOWED = False
 PRODUCTIVE_SESSION_REACHABLE = True
@@ -128,8 +155,11 @@ GOVERNED_EXECUTION_BINDING_REAL_NETWORK_SIDE_EFFECTS_AUTHORIZED = False
 REAL_NETWORK_REQUESTS_ALLOWED = False
 AUTHORIZATION_CONSUMPTION_ALLOWED = False
 CONFIRM_TOKEN_CONSUMPTION_ALLOWED = False
-# Runtime session side effects remain unauthorized until separate Owner-GO.
+# Permanent default remains false; ephemeral single-use grant may authorize one session.
 SESSION_EXECUTION_SIDE_EFFECTS_AUTHORIZED = False
+DEFAULT_SESSION_EXECUTION_SIDE_EFFECTS_AUTHORIZED = False
+PERMANENT_UNSCOPED_ENABLE = False
+GENERIC_STEP4_ACTIVATION_BINDING_COMPLETE = True
 # Explicit CLI owner-session permit for canonical runner invoke (default false).
 CLI_OWNER_SESSION_PERMIT_DEFAULT = False
 CLI_OWNER_SESSION_PERMIT_FLAG = "--permit-canonical-runner-invoke"

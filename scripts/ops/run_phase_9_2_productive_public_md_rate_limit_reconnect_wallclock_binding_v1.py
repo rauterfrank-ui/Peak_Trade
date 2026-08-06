@@ -123,6 +123,8 @@ def build_parser() -> argparse.ArgumentParser:
             "prove-fault-path",
             "prove-governed-productive-execution",
             "materialize-session-execution-implementation-evidence",
+            "prove-final-generic-activation",
+            "materialize-final-generic-activation-evidence",
             "execute-productive-session",
         ),
     )
@@ -309,6 +311,31 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(redact_mapping_for_logs(summary), sort_keys=True, indent=2))
         return 0 if summary.get("ok") else 1
 
+    if args.command == "prove-final-generic-activation":
+        from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.final_generic_session_activation_binding_v1 import (  # noqa: E501
+            prove_final_generic_activation_binding_complete_v1,
+        )
+
+        proof = prove_final_generic_activation_binding_complete_v1(
+            expected_repository_sha=sha,
+            expected_config_digest=cfg,
+        )
+        print(json.dumps(redact_mapping_for_logs(proof), sort_keys=True, indent=2))
+        return 0 if proof.get("ok") else 2
+
+    if args.command == "materialize-final-generic-activation-evidence":
+        from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.final_generic_session_activation_evidence_v1 import (  # noqa: E501
+            materialize_final_generic_activation_evidence_v1,
+        )
+
+        summary = materialize_final_generic_activation_evidence_v1(
+            repository_sha=sha,
+            evidence_root=args.evidence_root,
+            repo_root=_REPO_ROOT,
+        )
+        print(json.dumps(redact_mapping_for_logs(summary), sort_keys=True, indent=2))
+        return 0 if summary.get("ok") else 1
+
     if args.command == "execute-productive-session":
         if args.request_real_network:
             network_allowed = bool(args.network_session_allowed)
@@ -326,26 +353,10 @@ def main(argv: list[str] | None = None) -> int:
             adapter_payload: dict | None = None
             if _issuance_paths_requested(args) or args.confirm_token_file is not None:
                 governed = bool(network_allowed)
-                if governed and not bool(args.governed_execution_binding_only):
-                    print(
-                        json.dumps(
-                            {
-                                "ok": False,
-                                "blockers": [
-                                    "GOVERNED_EXECUTION_BINDING_ONLY_REQUIRED",
-                                    "REAL_NETWORK_SESSION_FORBIDDEN_IN_THIS_CAPABILITY",
-                                    "USE_SEPARATE_GOVERNED_SESSION_ORDER_AFTER_BINDING_MERGE",
-                                ],
-                                "network_session_started": False,
-                                "authorization_consumed": False,
-                                "confirm_token_consumed": False,
-                                "capability_id": GOVERNED_EXECUTION_BINDING_CAPABILITY_ID,
-                            },
-                            sort_keys=True,
-                            indent=2,
-                        )
-                    )
-                    return 2
+                # Final generic activation replaces the stub-only gate. The legacy
+                # --governed-execution-binding-only path remains available for offline
+                # binding proofs without consume/runner.
+                use_final_generic = governed and not bool(args.governed_execution_binding_only)
                 adapter = build_canonical_session_request_from_issuance_artifacts_v1(
                     preregistration_path=args.preregistration,
                     operator_go_path=args.operator_go,
@@ -376,9 +387,90 @@ def main(argv: list[str] | None = None) -> int:
                     return 2
                 session_request = adapter.session_request
 
-                if governed:
-                    # Binding-only path: never open sockets; require explicit stub via
-                    # activation refusal — call governed binding with a no-op stub.
+                if governed and session_request is None:
+                    print(
+                        json.dumps(
+                            {
+                                "ok": False,
+                                "blockers": ["SESSION_REQUEST_MISSING_AFTER_ADAPTER"],
+                            },
+                            sort_keys=True,
+                            indent=2,
+                        )
+                    )
+                    return 2
+
+                if governed and use_final_generic:
+                    from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.constants_v1 import (  # noqa: E501
+                        FINAL_GENERIC_SESSION_ACTIVATION_BINDING_CAPABILITY_ID,
+                        SESSION_EXECUTION_RUNTIME_CAPABILITY_ID,
+                    )
+                    from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.governed_productive_session_execution_v1 import (  # noqa: E501
+                        execute_governed_productive_session_execution_v1,
+                    )
+
+                    go_obj = session_request.get("go")
+                    binding_sha = ""
+                    expires_at = float(time.time()) + 3600.0
+                    if go_obj is not None:
+                        binding_sha = str(getattr(go_obj, "confirm_token_binding_sha256", "") or "")
+                        try:
+                            expires_at = float(getattr(go_obj, "expires_at", expires_at))
+                        except (TypeError, ValueError):
+                            expires_at = float(time.time()) + 3600.0
+                    token_plain = str(session_request.get("confirm_token") or "")
+                    persistence = args.persistence_root or (_REPO_ROOT / "var" / "phase92_rl")
+
+                    def _dry_runner(**kwargs: object) -> dict:
+                        # CLI default: never open sockets in this process unless a later
+                        # separately authorized session sets use_real_network on the
+                        # canonical runner under NETWORK_SESSION_GO.
+                        return {
+                            "ok": True,
+                            "dry": True,
+                            "use_real_network": bool(kwargs.get("use_real_network")),
+                            "network_request_count": 0,
+                        }
+
+                    result = execute_governed_productive_session_execution_v1(
+                        expected_capability_id=SESSION_EXECUTION_RUNTIME_CAPABILITY_ID,
+                        expected_repository_sha=sha,
+                        expected_config_digest=cfg,
+                        session_request=session_request,
+                        network_allowed_from_authorization=bool(
+                            adapter.network_allowed_from_authorization
+                        ),
+                        authorization_id=str(adapter.authorization_id or args.authorization_id),
+                        authorization_digest=str(
+                            adapter.authorization_digest or args.authorization_digest
+                        ),
+                        confirm_token_binding_sha256=binding_sha
+                        or str(args.confirm_token_binding_sha256 or ""),
+                        confirm_token_plaintext=token_plain,
+                        confirm_token_expires_at=expires_at,
+                        now_unix=float(time.time()),
+                        persistence_root=Path(persistence),
+                        wallclock_runner=_dry_runner,
+                        allow_real_network_side_effects=False,
+                        owner_go=bool(args.owner_go),
+                        operator_authorization_explicit=True,
+                        network_session_go=bool(network_allowed),
+                        invoke_runner=True,
+                        environ=os.environ,
+                        argv=raw_argv,
+                    )
+                    if isinstance(session_request, dict):
+                        session_request["confirm_token"] = "[REDACTED]"
+                    out = result.to_dict()
+                    out["session_request_adapter"] = adapter_payload
+                    out["final_generic_activation_capability_id"] = (
+                        FINAL_GENERIC_SESSION_ACTIVATION_BINDING_CAPABILITY_ID
+                    )
+                    print(json.dumps(redact_mapping_for_logs(out), sort_keys=True, indent=2))
+                    return 0 if result.ok else 2
+
+                if governed and bool(args.governed_execution_binding_only):
+                    # Legacy offline binding-only stub path (no consume / no runner side effects).
                     def _binding_stub_runner(**_kwargs: object) -> dict:
                         return {
                             "ok": True,
@@ -387,18 +479,6 @@ def main(argv: list[str] | None = None) -> int:
                             "network_request_count": 0,
                         }
 
-                    if session_request is None:
-                        print(
-                            json.dumps(
-                                {
-                                    "ok": False,
-                                    "blockers": ["SESSION_REQUEST_MISSING_AFTER_ADAPTER"],
-                                },
-                                sort_keys=True,
-                                indent=2,
-                            )
-                        )
-                        return 2
                     go_obj = session_request.get("go")
                     binding_sha = ""
                     scope_digest = ""
@@ -410,9 +490,6 @@ def main(argv: list[str] | None = None) -> int:
                             expires_at = float(getattr(go_obj, "expires_at", expires_at))
                         except (TypeError, ValueError):
                             expires_at = float(time.time()) + 3600.0
-                    # Re-acquire token is impossible without getpass; CLI governed path
-                    # without injected getpass fails at adapter. For operator TTY, adapter
-                    # already placed plaintext into session_request (memory only).
                     token_plain = str(session_request.get("confirm_token") or "")
                     persistence = args.persistence_root or (_REPO_ROOT / "var" / "phase92_rl")
                     binding = execute_governed_step4_execution_binding_v1(
@@ -443,7 +520,6 @@ def main(argv: list[str] | None = None) -> int:
                         confirm_token_expected_scope_digest=scope_digest,
                         runtime_session_id=str(session_request.get("session_id") or ""),
                     )
-                    # Clear plaintext from local session_request copy before serialize.
                     if isinstance(session_request, dict):
                         session_request["confirm_token"] = "[REDACTED]"
                     out = binding.to_dict()

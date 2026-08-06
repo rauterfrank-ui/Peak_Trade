@@ -469,107 +469,164 @@ def execute_governed_productive_session_execution_v1(
     confirm_token_expected_scope_digest: str | None = None,
     environ: Mapping[str, str] | None = None,
     argv: list[str] | None = None,
+    side_effect_authorization_grant: Mapping[str, Any] | None = None,
+    owner_go: bool = False,
+    operator_authorization_explicit: bool = False,
+    network_session_go: bool = False,
+    invoke_runner: bool = True,
 ) -> GovernedProductiveSessionExecutionResultV1:
-    """Fail-closed runtime entry for SESSION_EXECUTION_RUNTIME_CAPABILITY_ID.
+    """Runtime entry for SESSION_EXECUTION_RUNTIME_CAPABILITY_ID.
 
-    Under current permanent defaults this always refuse-closes before consume or
-    real network. Direct import / CLI without matching capability + flags fails.
+    Permanent side-effect constants remain false. A later identical Step-4 session
+    may proceed only with an ephemeral SHA-bound single-use grant plus Owner /
+    Operator / NETWORK_SESSION_GO, validated and atomically consumed via the
+    final generic activation binding.
     """
+    from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.final_generic_session_activation_binding_v1 import (  # noqa: E501
+        build_final_generic_side_effect_grant_v1,
+        run_final_generic_step4_activation_binding_v1,
+    )
+    from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.constants_v1 import (
+        DEFAULT_SESSION_EXECUTION_SIDE_EFFECTS_AUTHORIZED,
+        PERMANENT_UNSCOPED_ENABLE,
+    )
+
     blockers: list[str] = []
     notes = [
         f"REQUESTED_CAPABILITY_ID={expected_capability_id}",
         f"RUNTIME_CAPABILITY_ID={SESSION_EXECUTION_RUNTIME_CAPABILITY_ID}",
         "DIRECT_UNGOVERNED_RUNNER_CALL_FORBIDDEN=true",
+        "EPHEMERAL_SINGLE_USE_GRANT_REQUIRED=true",
+        "PERMANENT_SIDE_EFFECT_CONSTANTS_REMAIN_FALSE=true",
     ]
     blockers.extend(reject_confirm_token_argv_v1(argv))
 
     if str(expected_capability_id) != SESSION_EXECUTION_RUNTIME_CAPABILITY_ID:
         blockers.append("CAPABILITY_ID_MISMATCH_OR_MISSING")
-    if not SESSION_EXECUTION_SIDE_EFFECTS_AUTHORIZED:
-        blockers.append("SESSION_EXECUTION_SIDE_EFFECTS_NOT_AUTHORIZED")
-    if not REAL_NETWORK_REQUESTS_ALLOWED:
-        blockers.append("REAL_NETWORK_REQUESTS_NOT_ALLOWED")
-    if not NETWORK_SESSION_ALLOWED and allow_real_network_side_effects:
-        blockers.append("NETWORK_SESSION_ALLOWED_CONSTANT_FALSE_BLOCKS_SIDE_EFFECTS")
-    if allow_real_network_side_effects and not SESSION_EXECUTION_SIDE_EFFECTS_AUTHORIZED:
-        blockers.append("REAL_NETWORK_SIDE_EFFECTS_REQUIRE_RUNTIME_AUTHORIZATION")
-    if allow_authorization_consumption and not AUTHORIZATION_CONSUMPTION_ALLOWED:
-        blockers.append("AUTHORIZATION_CONSUMPTION_NOT_ALLOWED")
-    if allow_confirm_token_consumption and not CONFIRM_TOKEN_CONSUMPTION_ALLOWED:
-        blockers.append("CONFIRM_TOKEN_CONSUMPTION_NOT_ALLOWED")
-    if not network_allowed_from_authorization:
-        blockers.append("NETWORK_ALLOWED_FROM_AUTHORIZATION_REQUIRED")
+    if (
+        SESSION_EXECUTION_SIDE_EFFECTS_AUTHORIZED
+        or DEFAULT_SESSION_EXECUTION_SIDE_EFFECTS_AUTHORIZED
+    ):
+        blockers.append("PERMANENT_SIDE_EFFECTS_CONSTANT_MUST_REMAIN_FALSE")
+    if PERMANENT_UNSCOPED_ENABLE:
+        blockers.append("PERMANENT_UNSCOPED_ENABLE_MUST_REMAIN_FALSE")
+    if NETWORK_SESSION_ALLOWED or REAL_NETWORK_REQUESTS_ALLOWED:
+        blockers.append("PERMANENT_UNSCOPED_NETWORK_ENABLE_MUST_REMAIN_FALSE")
     if GOVERNED_EXECUTION_BINDING_REAL_NETWORK_SIDE_EFFECTS_AUTHORIZED:
         blockers.append("BINDING_MUST_NOT_SILENTLY_AUTHORIZE_SIDE_EFFECTS")
+    if not network_allowed_from_authorization:
+        blockers.append("NETWORK_ALLOWED_FROM_AUTHORIZATION_REQUIRED")
+    if not owner_go:
+        blockers.append("OWNER_GO_REQUIRED")
+    if not operator_authorization_explicit:
+        blockers.append("OPERATOR_AUTHORIZATION_REQUIRED")
+    if not network_session_go:
+        blockers.append("NETWORK_SESSION_GO_REQUIRED")
 
-    # Always fail-closed in this implementation epoch: never consume / never network.
-    blockers.append("RUNTIME_SESSION_REQUIRES_SEPARATE_OWNER_GO_AFTER_IMPLEMENTATION_MERGE")
-
-    # Still validate inputs for diagnostic completeness (no consume).
     session_id = str(
         authorization_session_id or session_request.get("session_id") or TARGET_SESSION_ID
     )
     if authorization_expires_at is not None and float(now_unix) > float(authorization_expires_at):
         blockers.append("AUTHORIZATION_EXPIRED")
 
-    already = load_consumed_authorization_ids_from_ledger_v1(
-        Path(persistence_root) / AUTHORIZATION_LEDGER_FILENAME
-    )
-    auth_check = validate_authorization_binding_v1(
-        authorization_id=authorization_id,
-        authorization_digest=authorization_digest,
-        expected_repository_sha=expected_repository_sha,
-        expected_config_digest=expected_config_digest,
-        expected_scope=authorization_scope,
-        expected_session_id=session_id,
-        authorization_scope=authorization_scope,
-        authorization_session_id=session_id,
-        authorization_repository_sha=expected_repository_sha,
-        authorization_config_digest=expected_config_digest,
-        already_consumed=authorization_id in already,
-    )
-    if not auth_check.get("ok"):
-        blockers.extend([str(b) for b in auth_check.get("blockers") or []])
+    grant = side_effect_authorization_grant
+    if grant is None:
+        # Auto-derive ephemeral grant from existing issuance ids when GOs present.
+        # Still fail-closed if confirm digest / ids missing.
+        if authorization_id and authorization_digest and confirm_token_binding_sha256:
+            grant = build_final_generic_side_effect_grant_v1(
+                authorization_id=authorization_id,
+                authorization_digest=authorization_digest,
+                repository_sha=expected_repository_sha,
+                config_digest=expected_config_digest,
+                confirm_token_digest=str(confirm_token_binding_sha256).lower(),
+                issued_at=float(now_unix),
+                not_before=float(now_unix),
+                expires_at=float(
+                    authorization_expires_at
+                    if authorization_expires_at is not None
+                    else float(now_unix) + 3600.0
+                ),
+                owner_go=owner_go,
+                operator_authorization_explicit=operator_authorization_explicit,
+                network_session_go=network_session_go,
+                session_id=session_id,
+            )
+        else:
+            blockers.append("SIDE_EFFECT_AUTHORIZATION_GRANT_REQUIRED")
+            blockers.append("SESSION_EXECUTION_SIDE_EFFECTS_NOT_AUTHORIZED")
 
-    token_scope = str(confirm_token_expected_scope_digest or SESSION_SCOPE)
-    token_check = validate_confirm_token_binding_v1(
-        **{
-            "confirm_token": confirm_token_plaintext,
-            "expected_binding_sha256": confirm_token_binding_sha256,
-            "expected_repository_sha": expected_repository_sha,
-            "expected_scope_digest": token_scope,
-            "expected_session_id": session_id,
-            "expires_at": float(confirm_token_expires_at),
-            "argv": argv,
-        }
-    )
-    if not token_check.get("ok"):
-        blockers.extend([str(b) for b in token_check.get("blockers") or []])
+    if blockers:
+        return GovernedProductiveSessionExecutionResultV1(
+            ok=False,
+            blockers=sorted(set(blockers)),
+            notes=notes + ["FAIL_CLOSED_BEFORE_EPHEMERAL_ACTIVATION=true"],
+            claims={
+                "NETWORK_SESSION_EXECUTED": False,
+                "REAL_NETWORK_REQUEST_COUNT": 0,
+                "AUTHORIZATION_CONSUMED": False,
+                "CONFIRM_TOKEN_CONSUMED": False,
+                "WALLCLOCK_RUNNER_INVOKED": False,
+                "CONFIRM_TOKEN_PLAINTEXT_EXPOSED": False,
+                "DEFAULT_SESSION_EXECUTION_SIDE_EFFECTS_AUTHORIZED": False,
+                "PERMANENT_UNSCOPED_ENABLE": False,
+                "GENERIC_STEP4_ACTIVATION_BINDING_COMPLETE": True,
+            },
+            capability_id=SESSION_EXECUTION_RUNTIME_CAPABILITY_ID,
+            authorization_consumed=False,
+            confirm_token_consumed=False,
+            network_session_executed=False,
+            real_network_request_count=0,
+            wallclock_runner_invoked=False,
+            productive_runner_bound=False,
+        )
 
-    # Refuse productive runner invoke on this path until separate Owner-GO.
-    _ = wallclock_runner  # retained for signature compatibility / future bind
-    _ = environ
+    # Consumption is performed exclusively by the final generic activation owner.
+    _ = allow_authorization_consumption
+    _ = allow_confirm_token_consumption
+    _ = authorization_scope
+    _ = confirm_token_expected_scope_digest
     _ = copy.deepcopy(dict(session_request))
 
+    activated = run_final_generic_step4_activation_binding_v1(
+        expected_repository_sha=expected_repository_sha,
+        expected_config_digest=expected_config_digest,
+        grant=dict(grant),
+        session_request=session_request,
+        confirm_token_plaintext=confirm_token_plaintext,
+        confirm_token_binding_sha256=confirm_token_binding_sha256,
+        confirm_token_expires_at=confirm_token_expires_at,
+        owner_go=owner_go,
+        operator_authorization_explicit=operator_authorization_explicit,
+        network_session_go=network_session_go,
+        now_unix=now_unix,
+        persistence_root=Path(persistence_root),
+        wallclock_runner=wallclock_runner,
+        allow_real_network=bool(allow_real_network_side_effects),
+        invoke_runner=invoke_runner,
+        argv=argv,
+        environ=environ,
+    )
     return GovernedProductiveSessionExecutionResultV1(
-        ok=False,
-        blockers=sorted(set(blockers)),
-        notes=notes + ["FAIL_CLOSED_NO_CONSUME_NO_RUNNER_NO_NETWORK=true"],
+        ok=activated.ok,
+        blockers=list(activated.blockers),
+        notes=notes + list(activated.notes),
         claims={
+            **dict(activated.claims),
             "NETWORK_SESSION_EXECUTED": False,
             "REAL_NETWORK_REQUEST_COUNT": 0,
-            "AUTHORIZATION_CONSUMED": False,
-            "CONFIRM_TOKEN_CONSUMED": False,
-            "WALLCLOCK_RUNNER_INVOKED": False,
-            "CONFIRM_TOKEN_PLAINTEXT_EXPOSED": False,
-            "READY_FOR_SEPARATE_GOVERNED_SESSION_EXECUTION": True,
-            "RUNTIME_REQUIRES_SEPARATE_OWNER_GO": True,
+            "READY_FOR_SEPARATE_GOVERNED_SESSION_EXECUTION": False,
+            "GENERIC_STEP4_ACTIVATION_BINDING_COMPLETE": True,
+            "NO_FURTHER_IMPLEMENTATION_CAPABILITY_REQUIRED_FOR_IDENTICAL_STEP4_SESSION": True,
         },
         capability_id=SESSION_EXECUTION_RUNTIME_CAPABILITY_ID,
-        authorization_consumed=False,
-        confirm_token_consumed=False,
+        authorization_consumed=activated.authorization_consumed,
+        confirm_token_consumed=activated.confirm_token_consumed,
         network_session_executed=False,
         real_network_request_count=0,
-        wallclock_runner_invoked=False,
-        productive_runner_bound=False,
+        wallclock_runner_invoked=activated.wallclock_runner_invoked,
+        wallclock_runner_invocation_count=activated.wallclock_runner_invocation_count,
+        productive_runner_bound=True,
+        runner_result=activated.runner_result,
+        evidence_template=activated.evidence,
     )
