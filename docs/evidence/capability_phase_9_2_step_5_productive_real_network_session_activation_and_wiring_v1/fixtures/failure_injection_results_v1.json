@@ -1,0 +1,190 @@
+{
+  "authorization_consumed": false,
+  "authorization_issued": false,
+  "capability_id": "PHASE_9_2_STEP_5_PRODUCTIVE_REAL_NETWORK_SESSION_ACTIVATION_AND_WIRING_V1",
+  "cases": {
+    "auth_header_rejected": {
+      "authorization_consumed": false,
+      "blockers": [
+        "AUTH_HEADER_REQUEST_REJECTED"
+      ],
+      "confirm_token_consumed": false,
+      "fetcher_resolved": false,
+      "network_session_started": false,
+      "ok": false
+    },
+    "authorization_without_confirm_token": {
+      "authorization_consumed": false,
+      "blockers": [
+        "CONFIRM_TOKEN_FAILURE",
+        "CONFIRM_TOKEN_MISSING"
+      ],
+      "confirm_token_consumed": false,
+      "fetcher_resolved": false,
+      "network_session_started": false,
+      "ok": false
+    },
+    "capability_scope_mismatch": {
+      "authorization_consumed": false,
+      "blockers": [
+        "CAPABILITY_SCOPE_MISMATCH"
+      ],
+      "confirm_token_consumed": false,
+      "fetcher_resolved": false,
+      "network_session_started": false,
+      "ok": false
+    },
+    "config_digest_mismatch": {
+      "authorization_consumed": false,
+      "blockers": [
+        "BINDING_CONFIG_DIGEST_MISMATCH"
+      ],
+      "confirm_token_consumed": false,
+      "fetcher_resolved": false,
+      "network_session_started": false,
+      "ok": false
+    },
+    "credential_rejected": {
+      "authorization_consumed": false,
+      "blockers": [
+        "CREDENTIAL_ACCESS_REQUEST_REJECTED"
+      ],
+      "confirm_token_consumed": false,
+      "fetcher_resolved": false,
+      "network_session_started": false,
+      "ok": false
+    },
+    "default_without_session_go": {
+      "authorization_consumed": false,
+      "blockers": [
+        "NETWORK_SESSION_GO_REQUIRED"
+      ],
+      "confirm_token_consumed": false,
+      "fetcher_resolved": false,
+      "network_session_started": false,
+      "ok": false
+    },
+    "env_cannot_enable_network_session_go": {
+      "blockers": [
+        "NETWORK_SESSION_GO_ENV_FORBIDDEN:NETWORK_SESSION_GO",
+        "NETWORK_SESSION_GO_REQUIRED"
+      ],
+      "fetcher_resolved": false,
+      "network_session_started": false,
+      "ok": false
+    },
+    "non_get_rejected": {
+      "authorization_consumed": false,
+      "blockers": [
+        "NON_GET_METHOD_REJECTED"
+      ],
+      "confirm_token_consumed": false,
+      "fetcher_resolved": false,
+      "network_session_started": false,
+      "ok": false
+    },
+    "order_submit_rejected": {
+      "authorization_consumed": false,
+      "blockers": [
+        "ORDER_SIDE_EFFECT_REQUEST_REJECTED"
+      ],
+      "confirm_token_consumed": false,
+      "fetcher_resolved": false,
+      "network_session_started": false,
+      "ok": false
+    },
+    "private_endpoint_rejected": {
+      "authorization_consumed": false,
+      "blockers": [
+        "PRIVATE_ENDPOINT_REQUEST_REJECTED"
+      ],
+      "confirm_token_consumed": false,
+      "fetcher_resolved": false,
+      "network_session_started": false,
+      "ok": false
+    },
+    "reused_authorization": {
+      "authorization_consumed": false,
+      "blockers": [
+        "AUTHORIZATION_ALREADY_CONSUMED",
+        "AUTHORIZATION_FAILURE"
+      ],
+      "confirm_token_consumed": false,
+      "fetcher_resolved": false,
+      "network_session_started": false,
+      "ok": false
+    },
+    "reused_confirm_token": {
+      "authorization_consumed": false,
+      "blockers": [
+        "CONFIRM_TOKEN_ALREADY_CONSUMED",
+        "CONFIRM_TOKEN_FAILURE"
+      ],
+      "confirm_token_consumed": false,
+      "fetcher_resolved": false,
+      "network_session_started": false,
+      "ok": false
+    },
+    "session_go_without_authorization": {
+      "authorization_consumed": false,
+      "blockers": [
+        "AUTHORIZATION_DIGEST_MISSING",
+        "AUTHORIZATION_FAILURE",
+        "AUTHORIZATION_ID_MISSING",
+        "AUTHORIZATION_MISSING"
+      ],
+      "confirm_token_consumed": false,
+      "fetcher_resolved": false,
+      "network_session_started": false,
+      "ok": false
+    },
+    "sha_mismatch": {
+      "authorization_consumed": false,
+      "blockers": [
+        "AUTHORIZATION_FAILURE",
+        "AUTHORIZATION_SHA_MISMATCH"
+      ],
+      "confirm_token_consumed": false,
+      "fetcher_resolved": false,
+      "network_session_started": false,
+      "ok": false
+    },
+    "token_scope_mismatch": {
+      "authorization_consumed": false,
+      "blockers": [
+        "AUTHORIZATION_SCOPE_MISMATCH"
+      ],
+      "confirm_token_consumed": false,
+      "fetcher_resolved": false,
+      "network_session_started": false,
+      "ok": false
+    }
+  },
+  "cleanup": {
+    "child_processes_remaining": 0,
+    "notes": [
+      "NO_WATCHER_NO_TAIL_NO_BACKGROUND_LEFT=true"
+    ],
+    "ok": true,
+    "remaining_pids": [],
+    "terminated_pids": []
+  },
+  "confirm_token_consumed": false,
+  "confirm_token_issued": false,
+  "negative_endpoint_proof": {
+    "auth_header": {
+      "error": "AUTH_HEADER_REJECTED",
+      "ok": true
+    },
+    "non_get": {
+      "error": "NON_GET_METHOD_REJECTED:POST",
+      "ok": true
+    },
+    "private": {
+      "error": "PRIVATE_ENDPOINT_REJECTED",
+      "ok": true
+    }
+  },
+  "network_session_started": false,
+  "ok": true
+}

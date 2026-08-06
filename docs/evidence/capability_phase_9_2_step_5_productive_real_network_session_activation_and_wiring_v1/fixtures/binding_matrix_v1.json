@@ -1,0 +1,12 @@
+{
+  "authorization_scope": "PHASE_9_2_PROLONGED_NATURAL_MARKET_SESSION",
+  "binding_config_digest": "42772ed8339bf35912433a9bffd021f9f027acaa37617decdece84b6e780efb7",
+  "capability_scope": "PHASE_9_2_STEP_5_PRODUCTIVE_REAL_NETWORK_SESSION_ACTIVATION_AND_WIRING_V1",
+  "config_digest": "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b",
+  "confirm_token_scope": "PHASE_9_2_PROLONGED_NATURAL_MARKET_SESSION",
+  "maximum_seconds": 21600,
+  "minimum_seconds": 7200,
+  "planned_seconds": 7200,
+  "repository_sha": "d42ac0d890e4af00d14fc40828c96ac5d5504660",
+  "session_contract_digest": "074b04142e0ffd2d1ded56527c63ec7d6ccb3c9abd25f86017cd873b6d5a7d17"
+}
