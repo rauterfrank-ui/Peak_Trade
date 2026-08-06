@@ -6,6 +6,8 @@ Commands:
   assemble-execution-request
   request-real-network      — offline fail-closed (no session)
   execute-governed-session  — offline fail-closed without separate Owner-GO
+  prove-final-generic-consume-start-binding — structural binding proof
+  materialize-final-generic-consume-start-evidence
   verify-session            — verify a materialized terminal evidence manifest
   materialize-terminal-evidence
   prove-implementation      — alias of preflight proof path
@@ -13,9 +15,12 @@ Commands:
 Binding CLI remains separate and binding-only:
   scripts/ops/run_phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1.py
 
+Final-generic consume/start binding CLI:
+  scripts/ops/run_phase_9_2_step_5_final_generic_session_authorization_consume_and_network_start_binding_v1.py
+
 Confirm tokens: hidden PTY/stdin getpass only. Plaintext --confirm-token argv
-and env fallbacks are rejected. This CLI never issues/consumes auth/tokens and
-never starts a real network session under this capability.
+and env fallbacks are rejected. This CLI never issues real production auth/tokens
+and never starts a real network session under permanent constants.
 """
 
 from __future__ import annotations
@@ -87,6 +92,8 @@ def build_parser() -> argparse.ArgumentParser:
             "assemble-execution-request",
             "request-real-network",
             "execute-governed-session",
+            "prove-final-generic-consume-start-binding",
+            "materialize-final-generic-consume-start-evidence",
             "verify-session",
             "materialize-terminal-evidence",
         ),
@@ -175,6 +182,33 @@ def main(argv: list[str] | None = None) -> int:
         payload["network_session_allowed"] = NETWORK_SESSION_ALLOWED
         print(json.dumps(payload, sort_keys=True, indent=2))
         return 2
+
+    if args.command == "prove-final-generic-consume-start-binding":
+        from src.ops.phase_9_2_step_5_final_generic_session_authorization_consume_and_network_start_binding_v1.binding_v1 import (  # noqa: E501
+            prove_step5_final_generic_consume_start_binding_complete_v1,
+        )
+
+        proof = prove_step5_final_generic_consume_start_binding_complete_v1(
+            expected_repository_sha=sha,
+            expected_config_digest=cfg,
+            repo_root=_REPO_ROOT,
+            argv=raw,
+        )
+        print(json.dumps(proof, sort_keys=True, indent=2))
+        return 0 if proof.get("ok") else 1
+
+    if args.command == "materialize-final-generic-consume-start-evidence":
+        from src.ops.phase_9_2_step_5_final_generic_session_authorization_consume_and_network_start_binding_v1.evidence_v1 import (  # noqa: E501
+            materialize_step5_final_generic_binding_evidence_v1,
+        )
+
+        summary = materialize_step5_final_generic_binding_evidence_v1(
+            repository_sha=sha,
+            evidence_root=args.evidence_root,
+            repo_root=_REPO_ROOT,
+        )
+        print(json.dumps(summary, sort_keys=True, indent=2))
+        return 0 if summary.get("ok") else 1
 
     if args.command == "execute-governed-session":
         persistence = args.persistence_root or (

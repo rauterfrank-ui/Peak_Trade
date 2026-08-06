@@ -173,9 +173,27 @@ def record_authorization_consumption_boundary_v1(
     session_id: str,
     now_unix: float,
     allow_consume: bool = False,
+    allow_ephemeral_consume: bool = False,
 ) -> dict[str, Any]:
-    """Single-use consumption boundary. Forbidden unless allow_consume (later Owner-GO)."""
-    if not allow_consume or not AUTHORIZATION_CONSUMPTION_ALLOWED:
+    """Single-use consumption boundary.
+
+    Permanent AUTHORIZATION_CONSUMPTION_ALLOWED must remain false. Ephemeral
+    consume is permitted only when a later binding capability passes
+    allow_consume=True with allow_ephemeral_consume=True under Owner-GO.
+    """
+    if not allow_consume:
+        return {
+            "ok": False,
+            "consumed": False,
+            "blockers": ["AUTHORIZATION_CONSUMPTION_FORBIDDEN_IN_THIS_CAPABILITY"],
+        }
+    if AUTHORIZATION_CONSUMPTION_ALLOWED and not allow_ephemeral_consume:
+        return {
+            "ok": False,
+            "consumed": False,
+            "blockers": ["AUTHORIZATION_CONSUMPTION_MUST_REMAIN_FALSE_IN_CONSTANTS"],
+        }
+    if not AUTHORIZATION_CONSUMPTION_ALLOWED and not allow_ephemeral_consume:
         return {
             "ok": False,
             "consumed": False,

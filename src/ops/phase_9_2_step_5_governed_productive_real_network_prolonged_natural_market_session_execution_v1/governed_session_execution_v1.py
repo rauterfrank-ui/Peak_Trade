@@ -335,6 +335,7 @@ def execute_governed_step5_session_v1(
     network_session_go: bool = False,
     owner_go: bool = False,
     operator_authorization_explicit: bool = False,
+    authority_already_consumed_by_binding: bool = False,
 ) -> GovernedStep5ExecutionResultV1:
     """Governed execution path. Fail-closed without ephemeral NETWORK_SESSION_GO + bindings."""
     blockers: list[str] = []
@@ -342,6 +343,7 @@ def execute_governed_step5_session_v1(
         f"CAPABILITY_ID={CAPABILITY_ID}",
         "EXECUTE_GOVERNED_SESSION_OFFLINE_FAIL_CLOSED_DEFAULT=true",
         "EPHEMERAL_NETWORK_SESSION_GO_REQUIRED_FOR_REAL_SIDE_EFFECTS=true",
+        "FINAL_GENERIC_CONSUME_START_BINDING_MAY_AUTHORIZE_EPHEMERAL_CONSUME=true",
     ]
     blockers.extend(reject_confirm_token_argv_v1(argv))
     blockers.extend(reject_confirm_token_env_fallback_v1(environ))
@@ -357,11 +359,6 @@ def execute_governed_step5_session_v1(
         network_session_go and owner_go and operator_authorization_explicit
     ):
         blockers.append("CONFIRM_TOKEN_CONSUMPTION_FORBIDDEN_WITHOUT_EPHEMERAL_GO")
-    # Issuance/consumption remain deferred to a later session capability by default.
-    if allow_authorization_consumption:
-        blockers.append("AUTHORIZATION_CONSUMPTION_DEFERRED_TO_LATER_SESSION_CAPABILITY")
-    if allow_confirm_token_consumption:
-        blockers.append("CONFIRM_TOKEN_CONSUMPTION_DEFERRED_TO_LATER_SESSION_CAPABILITY")
     if allow_real_network_side_effects and not network_session_go:
         blockers.append("REAL_NETWORK_SIDE_EFFECTS_REQUIRE_NETWORK_SESSION_GO")
 
@@ -388,6 +385,11 @@ def execute_governed_step5_session_v1(
 
     already = load_consumed_authorization_ids_from_ledger_v1(
         Path(persistence_root) / AUTHORIZATION_LEDGER_FILENAME
+    )
+    # When the final-generic binding already burned the single-use auth, this
+    # handoff is the authorized executor invoke — do not treat as replay.
+    already_consumed_for_validate = (
+        False if authority_already_consumed_by_binding else (authorization_id in already)
     )
     auth = validate_execution_authorization_artifact_v1(
         authorization_id=authorization_id,
@@ -422,7 +424,7 @@ def execute_governed_step5_session_v1(
         authorization_evidence_root=str(evidence_root),
         authorization_expires_at=authorization_expires_at,
         now_unix=now_unix,
-        already_consumed=authorization_id in already,
+        already_consumed=already_consumed_for_validate,
     )
     if not auth.get("ok"):
         blockers.extend([str(b) for b in auth.get("blockers") or []])
@@ -512,7 +514,12 @@ def execute_governed_step5_session_v1(
         else:
             notes.append("STEP5_ACTIVATION_WIRING_GATE_PASS=true")
             notes.append("PUBLIC_MD_FETCHER_PRODUCTIVELY_WIRED=true")
-            notes.append("CONSUMPTION_STILL_DEFERRED_TO_LATER_SESSION_CAPABILITY=true")
+            if authority_already_consumed_by_binding:
+                notes.append("AUTHORITY_ALREADY_CONSUMED_BY_FINAL_GENERIC_BINDING=true")
+            elif allow_authorization_consumption and allow_confirm_token_consumption:
+                notes.append("EPHEMERAL_CONSUME_AUTHORIZED_BY_FINAL_GENERIC_BINDING=true")
+            else:
+                notes.append("CONSUME_REQUIRES_FINAL_GENERIC_BINDING_OR_EXPLICIT_FLAGS=true")
     else:
         # Default fail-closed permit: wiring exists, but ephemeral GO not provided.
         blockers.append("EXECUTION_PERMIT_NOT_AUTHORIZED_WITHOUT_EPHEMERAL_NETWORK_SESSION_GO")
@@ -520,10 +527,48 @@ def execute_governed_step5_session_v1(
 
     executor_result = None
     terminal = "AUTHORIZATION_FAILURE"
+    authorization_consumed = bool(authority_already_consumed_by_binding)
+    confirm_token_consumed = bool(authority_already_consumed_by_binding)
+
+    # Ephemeral single-use consume when explicitly authorized and not already burned
+    # by the final-generic binding layer.
+    if (
+        activation_permit_ok
+        and allow_authorization_consumption
+        and allow_confirm_token_consumption
+        and network_session_go
+        and owner_go
+        and operator_authorization_explicit
+        and not authority_already_consumed_by_binding
+        and not blockers
+    ):
+        from src.ops.phase_9_2_step_5_governed_productive_real_network_prolonged_natural_market_session_execution_v1.authorization_gate_v1 import (  # noqa: E501
+            record_authorization_consumption_boundary_v1,
+        )
+
+        auth_ledger = Path(persistence_root) / AUTHORIZATION_LEDGER_FILENAME
+        recorded = record_authorization_consumption_boundary_v1(
+            ledger_path=auth_ledger,
+            authorization_id=authorization_id,
+            authorization_digest=authorization_digest,
+            session_id=authorization_session_id,
+            now_unix=now_unix,
+            allow_consume=True,
+            allow_ephemeral_consume=True,
+        )
+        if not recorded.get("ok"):
+            blockers.extend([str(b) for b in recorded.get("blockers") or []])
+            blockers.append("AUTHORIZATION_CONSUMPTION_FAILED")
+        else:
+            authorization_consumed = True
+            confirm_token_consumed = True
+            notes.append("EPHEMERAL_SINGLE_USE_CONSUMPTION_COMMITTED=true")
+
+    # Offline injected executor may run after auth/token validation. When the
+    # final-generic binding already consumed authority, permit blockers that only
+    # reflect permanent NETWORK_SESSION_ALLOWED=false are cleared for the offline
+    # handoff (still no real network).
     if invoke_executor and fetcher is not None and not allow_real_network_side_effects:
-        # Offline injected executor may run for tests after auth/token validation shape,
-        # but never under real-network permit. Clear the permanent permit blockers only
-        # when explicitly invoking offline injected executor for proof — still no consume.
         offline_blockers = [
             b
             for b in blockers
@@ -568,35 +613,42 @@ def execute_governed_step5_session_v1(
                 minimum_successful_wallclock_seconds=minimum,
             )
             terminal = str(classified["terminal_class"])
-            notes.append("OFFLINE_INJECTED_EXECUTOR_RAN_WITHOUT_CONSUMPTION=true")
-            notes.append("CAPABILITY_LAYER_STILL_FORBIDS_REAL_NETWORK_WITHOUT_LATER_SESSION=true")
+            notes.append("OFFLINE_INJECTED_EXECUTOR_RAN=true")
+            notes.append(
+                "REAL_NETWORK_STILL_REQUIRES_ALLOW_REAL_NETWORK_SIDE_EFFECTS_UNDER_GO=true"
+            )
             return GovernedStep5ExecutionResultV1(
                 ok=False,
                 blockers=sorted(
                     set(
                         blockers
-                        + [
-                            "EXECUTION_PERMIT_NOT_AUTHORIZED_WITHOUT_EPHEMERAL_NETWORK_SESSION_GO",
-                            "NETWORK_SESSION_ALLOWED_FALSE",
-                        ]
+                        + (
+                            []
+                            if authority_already_consumed_by_binding
+                            else [
+                                "EXECUTION_PERMIT_NOT_AUTHORIZED_WITHOUT_EPHEMERAL_NETWORK_SESSION_GO",
+                                "NETWORK_SESSION_ALLOWED_FALSE",
+                            ]
+                        )
                     )
                 ),
                 notes=notes,
                 claims={
                     "NETWORK_SESSION_STARTED": False,
-                    "AUTHORIZATION_CONSUMED": False,
-                    "CONFIRM_TOKEN_CONSUMED": False,
+                    "AUTHORIZATION_CONSUMED": authorization_consumed,
+                    "CONFIRM_TOKEN_CONSUMED": confirm_token_consumed,
                     "CONFIRM_TOKEN_PLAINTEXT_EXPOSED": False,
                     "CONFIRM_TOKEN_PERSISTED": False,
                     "OFFLINE_INJECTED_EXECUTOR_OBSERVED": True,
                     "EXECUTOR_TERMINAL_CLASS": terminal,
                     "PUBLIC_MD_FETCHER_PRODUCTIVELY_WIRED": True,
                     "ACTIVATION_PERMIT_OK": activation_permit_ok,
+                    "STEP5_NETWORK_START_EDGE_PRODUCTIVELY_BOUND": True,
                     **dict(executed.claims),
                 },
                 terminal_class=terminal,
-                authorization_consumed=False,
-                confirm_token_consumed=False,
+                authorization_consumed=authorization_consumed,
+                confirm_token_consumed=confirm_token_consumed,
                 network_session_started=False,
                 contract_bundle=bundle,
                 executor_result=executor_result,
@@ -613,26 +665,105 @@ def execute_governed_step5_session_v1(
                 },
             )
 
-    # Real-network executor path remains reserved for a later session capability that
-    # explicitly authorizes consumption + NETWORK_SESSION_GO with side effects.
+    # Real-network start is productively bound via final-generic consume+start binding.
+    # This executor still defaults to no real network unless allow_real_network_side_effects
+    # is explicitly set under ephemeral NETWORK_SESSION_GO (never from permanent constants).
     if (
         activation_permit_ok
         and allow_real_network_side_effects
         and network_session_go
-        and not allow_authorization_consumption
-        and not allow_confirm_token_consumption
+        and (authorization_consumed or authority_already_consumed_by_binding)
+        and (confirm_token_consumed or authority_already_consumed_by_binding)
+        and not blockers
     ):
-        notes.append("ACTIVATION_WIRING_READY_CONSUMPTION_STILL_REQUIRED_BY_LATER_SESSION=true")
-        blockers.append("LATER_SESSION_CAPABILITY_REQUIRED_FOR_CONSUME_AND_START")
+        from src.ops.phase_9_2_step_5_productive_real_network_session_activation_and_wiring_v1.fetcher_wiring_v1 import (  # noqa: E501
+            resolve_canonical_public_md_fetcher_v1,
+        )
+
+        resolved = resolve_canonical_public_md_fetcher_v1(
+            activation_permit_ok=True,
+            network_session_go=True,
+            allow_construct=True,
+            injected_fetcher=fetcher,
+            environ=environ,
+        )
+        if not resolved.get("ok"):
+            blockers.extend([str(b) for b in resolved.get("blockers") or []])
+            blockers.append("REAL_NETWORK_FETCHER_RESOLVE_FAILED")
+        elif resolved.get("fetcher") is not None and invoke_executor:
+            notes.append("NETWORK_START_EDGE_PRODUCTIVELY_REACHED=true")
+            notes.append("REAL_NETWORK_INVOKE_REQUIRES_CALLER_ALLOW_FLAG=true")
+            # Callers that want a real session must pass allow_real_network_side_effects
+            # under a separately authorized Operator session. This return still does not
+            # invent a second runner — it reuses the prolonged executor below.
+            planned = int(bundle["planned_session_duration_seconds"])
+            minimum = int(bundle["minimum_successful_wallclock_seconds"])
+            executed = run_bounded_prolonged_public_md_executor_v1(
+                pacing=bundle["pacing"],
+                planned_session_duration_seconds=planned,
+                minimum_successful_wallclock_seconds=minimum,
+                evidence_root=Path(evidence_root),
+                persistence_root=Path(persistence_root),
+                fetcher=resolved["fetcher"],
+                allow_real_network=True,
+                monotonic_clock=monotonic_clock,
+                sleep_fn=sleep_fn,
+                interrupt_check=interrupt_check,
+                force_max_cycles=force_max_cycles,
+                stale_receive_lag_seconds=stale_receive_lag_seconds,
+            )
+            executor_result = executed.to_dict()
+            classified = classify_terminal_v1(
+                proposed_terminal=executed.terminal_class,
+                telemetry=executed.telemetry.to_dict(),
+                evidence_verified=True,
+                claims_match_telemetry=True,
+                blockers=list(executed.blockers),
+                minimum_successful_wallclock_seconds=minimum,
+            )
+            terminal = str(classified["terminal_class"])
+            return GovernedStep5ExecutionResultV1(
+                ok=bool(executed.ok) and not blockers,
+                blockers=sorted(set(blockers + list(executed.blockers))),
+                notes=notes + ["REAL_NETWORK_EXECUTOR_PATH_INVOKED=true"],
+                claims={
+                    "NETWORK_SESSION_STARTED": bool(executed.claims.get("NETWORK_SESSION_STARTED")),
+                    "AUTHORIZATION_CONSUMED": True,
+                    "CONFIRM_TOKEN_CONSUMED": True,
+                    "CONFIRM_TOKEN_PLAINTEXT_EXPOSED": False,
+                    "CONFIRM_TOKEN_PERSISTED": False,
+                    "PUBLIC_MD_FETCHER_PRODUCTIVELY_WIRED": True,
+                    "ACTIVATION_PERMIT_OK": True,
+                    "STEP5_NETWORK_START_EDGE_PRODUCTIVELY_BOUND": True,
+                    **dict(executed.claims),
+                },
+                terminal_class=terminal,
+                authorization_consumed=True,
+                confirm_token_consumed=True,
+                network_session_started=bool(executed.claims.get("NETWORK_SESSION_STARTED", False)),
+                contract_bundle=bundle,
+                executor_result=executor_result,
+                evidence={
+                    "authorization": redact_authorization_mapping_v1(auth),
+                    "confirm_token": {
+                        "confirm_token_id": token.get("confirm_token_id"),
+                        "fingerprint": token.get("fingerprint"),
+                        "binding_sha256": token.get("binding_sha256"),
+                        "consumed_status": "CONSUMED",
+                    },
+                    "network_boundary": boundary,
+                    "terminal": classified,
+                },
+            )
 
     return GovernedStep5ExecutionResultV1(
         ok=False,
         blockers=sorted(set(blockers)),
-        notes=notes + ["FAIL_CLOSED_NO_NETWORK_NO_CONSUME=true"],
+        notes=notes + ["FAIL_CLOSED_NO_NETWORK_DEFAULT=true"],
         claims={
             "NETWORK_SESSION_STARTED": False,
-            "AUTHORIZATION_CONSUMED": False,
-            "CONFIRM_TOKEN_CONSUMED": False,
+            "AUTHORIZATION_CONSUMED": authorization_consumed,
+            "CONFIRM_TOKEN_CONSUMED": confirm_token_consumed,
             "CONFIRM_TOKEN_PLAINTEXT_EXPOSED": False,
             "CONFIRM_TOKEN_PERSISTED": False,
             "CONFIRM_TOKEN_SHELL_HISTORY": False,
@@ -640,10 +771,11 @@ def execute_governed_step5_session_v1(
             "ACTIVATION_PERMIT_OK": activation_permit_ok,
             "EPHEMERAL_NETWORK_SESSION_GO_BOUND": True,
             "NETWORK_SESSION_GO": bool(network_session_go),
+            "STEP5_NETWORK_START_EDGE_PRODUCTIVELY_BOUND": True,
         },
         terminal_class=terminal,
-        authorization_consumed=False,
-        confirm_token_consumed=False,
+        authorization_consumed=authorization_consumed,
+        confirm_token_consumed=confirm_token_consumed,
         network_session_started=False,
         contract_bundle=bundle,
         executor_result=executor_result,
