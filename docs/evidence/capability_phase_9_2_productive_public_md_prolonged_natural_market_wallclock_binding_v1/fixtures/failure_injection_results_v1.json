@@ -1,0 +1,637 @@
+{
+  "authorization_consumed": false,
+  "authorization_issued": false,
+  "cases": {
+    "authorization_missing": {
+      "authority": {
+        "activation_status": "ACTIVE",
+        "capability_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_PROLONGED_NATURAL_MARKET_WALLCLOCK_BINDING_V1",
+        "confirm_token_required": true,
+        "entrypoint_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_PROLONGED_NATURAL_MARKET_WALLCLOCK_BINDING_V1",
+        "entrypoint_path": "scripts/ops/run_phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1.py",
+        "expected_config_digest": "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b",
+        "expected_repository_sha": "69c02a0bb0df718de67e248aaa3e76291194dfb6",
+        "expires_at": 1700003600.0,
+        "fixture_non_authoritative": false,
+        "http_get_only": true,
+        "issued_at": 1700000000.0,
+        "max_session_duration_seconds": 21600,
+        "min_session_duration_seconds": 7200,
+        "network_session_execution_authorized_by_this_go": true,
+        "not_before": 1700000000.0,
+        "notes": [],
+        "owner_go_required": true,
+        "owner_session_go_required": true,
+        "planned_session_duration_seconds": 7200,
+        "public_md_only": true,
+        "schema_version": "phase_9_2_productive_prolonged_natural_market_session_go.v1",
+        "session_go_digest": "e610376d75f97403871762ac70e348abb7462768055d40352e84dc9466d3f314",
+        "session_go_id": "sgo_phase92_step5_binding_fi_v1",
+        "session_id": "phase_9_2_public_md_prolonged_natural_market_session_v1",
+        "session_scope": "PHASE_9_2_PROLONGED_NATURAL_MARKET_SESSION",
+        "single_use_authorization_required": true
+      },
+      "authorization_may_proceed": false,
+      "blockers": [
+        "AUTHORIZATION_REQUIRED"
+      ],
+      "confirm_token_path_ok": true,
+      "fault_session_started": false,
+      "network_session_started": false,
+      "notes": [
+        "CAPABILITY_ID=PHASE_9_2_PRODUCTIVE_PUBLIC_MD_PROLONGED_NATURAL_MARKET_WALLCLOCK_BINDING_V1",
+        "AUTHORITY_OWNER=ops.phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1",
+        "CANONICAL_WALLCLOCK_RUNNER=src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+        "REAL_NETWORK_REQUIRES_BOUND_SESSION_GO=true",
+        "REAL_NETWORK_REQUIRES_OWNER_GO=true",
+        "REAL_NETWORK_REQUIRES_OWNER_SESSION_GO=true",
+        "NO_PERMANENT_UNSCOPED_ENABLE_FLAG=True",
+        "PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED_CONSTANT=False",
+        "NETWORK_SESSION_ALLOWED_BY_CAPABILITY_CONFIG=False",
+        "FAULT_SESSION_EXECUTION_AUTHORIZED=False",
+        "NO_MARKET_PHASE_INJECTION=true",
+        "NO_DECISION_INJECTION=true",
+        "NO_INTENT_INJECTION=true",
+        "NO_FILL_INJECTION=true",
+        "NO_NETWORK_ERROR_INJECTION_IN_NATURAL_SESSION=true",
+        "SESSION_GO_AUTHORITY_OWNER=ops.phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1",
+        "SESSION_GO_EVALUATION_BEFORE_AUTHORIZATION=true",
+        "SESSION_GO_EVALUATION_BEFORE_LOCK=true",
+        "SESSION_GO_EVALUATION_BEFORE_NETWORK=true",
+        "SESSION_GO_EVALUATION_BEFORE_SESSION_START=true",
+        "NO_SIDE_EFFECTS_IN_SESSION_GO_GATE=true",
+        "STEP4_AUTHORIZATION_REUSE_FORBIDDEN=true",
+        "STEP4_CONFIRM_TOKEN_REUSE_FORBIDDEN=true",
+        "PROLONGED_NATURAL_MARKET_BINDING_IMPLEMENTED=true",
+        "REQUEST_REAL_NETWORK=True"
+      ],
+      "ok": false,
+      "productive_session_execution_permitted": false,
+      "prolonged_natural_market_path_bound": true,
+      "real_network_may_proceed": false,
+      "real_network_requires_bound_session_go": true,
+      "session_go_authority_satisfied": false
+    },
+    "authorization_step4_reuse": {
+      "authorization_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "authorization_id": "auth_step4",
+      "authorization_scope_match": true,
+      "authorization_sha_match": true,
+      "authorization_valid": false,
+      "blockers": [
+        "STEP4_AUTHORIZATION_REUSE_FORBIDDEN"
+      ],
+      "consumed": false,
+      "notes": [
+        "AUTHORIZATION_VALIDATE_ONLY_NO_CONSUME=true",
+        "STEP4_AUTHORIZATION_REUSE_FORBIDDEN=true"
+      ],
+      "ok": false
+    },
+    "claim_semantics": {
+      "binding_claim_matrix": {
+        "claim_fields": [
+          "STEP5_RUNTIME_REACHABLE",
+          "STEP5_SESSION_STARTED",
+          "STEP5_DURATION_COMPLETED",
+          "STEP5_GRACEFUL_STOP_OBSERVED",
+          "STEP5_INTERRUPT_RECOVERY_OBSERVED",
+          "STEP5_RESTART_RECOVERY_OBSERVED",
+          "RECONNECT_PATH_REACHABLE",
+          "RECONNECT_NATURALLY_OCCURRED",
+          "RECONNECT_OBSERVED",
+          "STALE_DATA_NATURALLY_OCCURRED",
+          "STALE_DATA_OBSERVED",
+          "ENTRY_OBSERVED",
+          "REDUCE_OBSERVED",
+          "EXIT_OBSERVED",
+          "NO_ORDER_BOUNDARY_PROVEN",
+          "EVIDENCE_VERIFIED",
+          "CAPABILITY_CLOSED"
+        ],
+        "claims": {
+          "CAPABILITY_CLOSED": false,
+          "ENTRY_OBSERVED": false,
+          "EVIDENCE_VERIFIED": false,
+          "EXIT_OBSERVED": false,
+          "NO_ORDER_BOUNDARY_PROVEN": true,
+          "RECONNECT_NATURALLY_OCCURRED": false,
+          "RECONNECT_OBSERVED": false,
+          "RECONNECT_PATH_REACHABLE": true,
+          "REDUCE_OBSERVED": false,
+          "STALE_DATA_NATURALLY_OCCURRED": false,
+          "STALE_DATA_OBSERVED": false,
+          "STEP5_DURATION_COMPLETED": false,
+          "STEP5_GRACEFUL_STOP_OBSERVED": false,
+          "STEP5_INTERRUPT_RECOVERY_OBSERVED": false,
+          "STEP5_RESTART_RECOVERY_OBSERVED": false,
+          "STEP5_RUNTIME_REACHABLE": true,
+          "STEP5_SESSION_STARTED": false
+        },
+        "missing_claim_fields": [],
+        "notes": [
+          "BINDING_PR_LEAVES_CAPABILITY_CLOSED_FALSE=true",
+          "REACHABLE_NE_OBSERVED_NE_NATURALLY_OCCURRED_NE_CLOSED=true"
+        ],
+        "ok": true,
+        "reconnect_detail": {
+          "RECONNECT_NATURALLY_OCCURRED": false,
+          "RECONNECT_OBSERVED": false,
+          "RECONNECT_PATH_REACHABLE": true,
+          "RECONNECT_PATH_STATUS": "NOT_NATURALLY_OCCURRED_CLASSIFIED",
+          "notes": [
+            "REACHABLE_NE_NATURALLY_OCCURRED_NE_OBSERVED=true",
+            "RECONNECT_PATH_STATUS_NOT_NATURAL_NEVER_OBSERVED=True"
+          ]
+        },
+        "stale_detail": {
+          "STALE_DATA_NATURALLY_OCCURRED": false,
+          "STALE_DATA_OBSERVED": false,
+          "STALE_NATURAL_ABSENCE_IS_NOT_DEFECT": true
+        },
+        "trade_detail": {
+          "ENTRY_OBSERVED": false,
+          "EXIT_OBSERVED": false,
+          "NATURAL_ABSENCE_ALLOWED": true,
+          "REDUCE_OBSERVED": false,
+          "notes": [
+            "ZERO_TRADE_COUNTS_MAY_COEXIST_WITH_PASS=true",
+            "NATURAL_ABSENCE_IS_NOT_AUTOMATIC_FAIL=true"
+          ]
+        }
+      },
+      "blockers": [],
+      "claims": {
+        "CLAIM_SEMANTICS_BOUND": true,
+        "NATURAL_ABSENCE_ALLOWED": true,
+        "RECONNECT_PATH_STATUS_NOT_NATURAL_NEVER_OBSERVED": true
+      },
+      "fault_session_started": false,
+      "natural_absence": {
+        "RECONNECT_NATURALLY_OCCURRED": false,
+        "RECONNECT_OBSERVED": false,
+        "RECONNECT_PATH_REACHABLE": true,
+        "RECONNECT_PATH_STATUS": "NOT_NATURALLY_OCCURRED_CLASSIFIED",
+        "notes": [
+          "REACHABLE_NE_NATURALLY_OCCURRED_NE_OBSERVED=true",
+          "RECONNECT_PATH_STATUS_NOT_NATURAL_NEVER_OBSERVED=True"
+        ]
+      },
+      "natural_reconnect": {
+        "RECONNECT_NATURALLY_OCCURRED": true,
+        "RECONNECT_OBSERVED": true,
+        "RECONNECT_PATH_REACHABLE": true,
+        "RECONNECT_PATH_STATUS": "NATURALLY_OCCURRED_CLASSIFIED",
+        "notes": [
+          "REACHABLE_NE_NATURALLY_OCCURRED_NE_OBSERVED=true",
+          "RECONNECT_PATH_STATUS_NOT_NATURAL_NEVER_OBSERVED=False"
+        ]
+      },
+      "network_session_started": false,
+      "ok": true,
+      "trade_zero": {
+        "ENTRY_OBSERVED": false,
+        "EXIT_OBSERVED": false,
+        "NATURAL_ABSENCE_ALLOWED": true,
+        "REDUCE_OBSERVED": false,
+        "notes": [
+          "ZERO_TRADE_COUNTS_MAY_COEXIST_WITH_PASS=true",
+          "NATURAL_ABSENCE_IS_NOT_AUTOMATIC_FAIL=true"
+        ]
+      }
+    },
+    "confirm_token_argv": {
+      "blockers": [
+        "CONFIRM_TOKEN_IN_ARGV_FORBIDDEN"
+      ],
+      "ok": false
+    },
+    "confirm_token_step4_reuse": {
+      "binding_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "blockers": [
+        "STEP4_CONFIRM_TOKEN_REUSE_FORBIDDEN"
+      ],
+      "confirm_token_id": "tok1",
+      "consumed_status": "NOT_CONSUMED",
+      "consumption_path_owner": "ops.phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1.hidden_pty_confirm_handoff_v1",
+      "fingerprint": "fp1",
+      "issuance_owner": "ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1",
+      "notes": [
+        "CONFIRM_TOKEN_VALIDATE_ONLY_NO_CONSUME=true",
+        "EVIDENCE_FIELDS_DIGEST_ID_ONLY=true",
+        "STEP4_CONFIRM_TOKEN_REUSE_FORBIDDEN=true"
+      ],
+      "ok": false,
+      "plaintext_persisted": false,
+      "scope_digest": "633e16f2c259ce9054693d015db4c1d03d4433fcf03a6f5050fe109d678cb851"
+    },
+    "disk_and_evidence_bounds": {
+      "blockers": [],
+      "growth_fail": {
+        "blockers": [
+          "EVIDENCE_GROWTH_BOUND_EXCEEDED_TOTAL",
+          "EVIDENCE_GROWTH_BOUND_EXCEEDED_RATE"
+        ],
+        "classification": "EVIDENCE_GROWTH_BOUND_EXCEEDED",
+        "evidence_bytes": 536870913,
+        "evidence_growth_rate": 2097153.0,
+        "max_evidence_bytes": 536870912,
+        "max_evidence_growth_bytes_per_minute": 2097152,
+        "ok": false
+      },
+      "growth_ok": {
+        "blockers": [],
+        "classification": "EVIDENCE_GROWTH_WITHIN_BOUNDS",
+        "evidence_bytes": 1024,
+        "evidence_growth_rate": 1024.0,
+        "max_evidence_bytes": 536870912,
+        "max_evidence_growth_bytes_per_minute": 2097152,
+        "ok": true
+      },
+      "network_session_started": false,
+      "ok": true,
+      "preflight_fail": {
+        "STEP5_SESSION_STARTED": false,
+        "blockers": [
+          "DISK_PREFLIGHT_FAIL"
+        ],
+        "check_path": "/Users/frnkhrz/Peak_Trade/docs/evidence/capability_phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1/fixtures/failure_injection/disk_check",
+        "classification": "DISK_PREFLIGHT_FAIL",
+        "disk_free_bytes_before": 1610612735,
+        "disk_free_minimum_bytes_before": 1610612736,
+        "disk_reserve_bytes": 1073741824,
+        "notes": [
+          "FAIL_CLOSED_ON_PREFLIGHT_FAIL=true",
+          "RUNTIME_DISK_PRESSURE_IF_FREE_LT_RESERVE=true"
+        ],
+        "ok": false,
+        "runtime_disk_pressure": false
+      },
+      "preflight_ok": {
+        "STEP5_SESSION_STARTED": null,
+        "blockers": [],
+        "check_path": "/Users/frnkhrz/Peak_Trade/docs/evidence/capability_phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1/fixtures/failure_injection/disk_check",
+        "classification": "DISK_PREFLIGHT_PASS",
+        "disk_free_bytes_before": 1610612737,
+        "disk_free_minimum_bytes_before": 1610612736,
+        "disk_reserve_bytes": 1073741824,
+        "notes": [
+          "FAIL_CLOSED_ON_PREFLIGHT_FAIL=true",
+          "RUNTIME_DISK_PRESSURE_IF_FREE_LT_RESERVE=true"
+        ],
+        "ok": true,
+        "runtime_disk_pressure": false
+      }
+    },
+    "duration_below_min": {
+      "gaps": [
+        "DURATION_BELOW_MIN"
+      ],
+      "ok": true
+    },
+    "duration_drift_contract": {
+      "gaps": [
+        "MAX_DURATION_MISMATCH"
+      ],
+      "ok": true
+    },
+    "duration_over_max": {
+      "gaps": [
+        "DURATION_BOUND_VIOLATION"
+      ],
+      "ok": true
+    },
+    "network_preauth_contract": {
+      "gaps": [
+        "NETWORK_SESSION_PREAUTHORIZED"
+      ],
+      "ok": true
+    },
+    "owner_go_missing": {
+      "authority": {
+        "activation_status": "ACTIVE",
+        "capability_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_PROLONGED_NATURAL_MARKET_WALLCLOCK_BINDING_V1",
+        "confirm_token_required": true,
+        "entrypoint_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_PROLONGED_NATURAL_MARKET_WALLCLOCK_BINDING_V1",
+        "entrypoint_path": "scripts/ops/run_phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1.py",
+        "expected_config_digest": "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b",
+        "expected_repository_sha": "69c02a0bb0df718de67e248aaa3e76291194dfb6",
+        "expires_at": 1700003600.0,
+        "fixture_non_authoritative": false,
+        "http_get_only": true,
+        "issued_at": 1700000000.0,
+        "max_session_duration_seconds": 21600,
+        "min_session_duration_seconds": 7200,
+        "network_session_execution_authorized_by_this_go": true,
+        "not_before": 1700000000.0,
+        "notes": [],
+        "owner_go_required": true,
+        "owner_session_go_required": true,
+        "planned_session_duration_seconds": 7200,
+        "public_md_only": true,
+        "schema_version": "phase_9_2_productive_prolonged_natural_market_session_go.v1",
+        "session_go_digest": "e610376d75f97403871762ac70e348abb7462768055d40352e84dc9466d3f314",
+        "session_go_id": "sgo_phase92_step5_binding_fi_v1",
+        "session_id": "phase_9_2_public_md_prolonged_natural_market_session_v1",
+        "session_scope": "PHASE_9_2_PROLONGED_NATURAL_MARKET_SESSION",
+        "single_use_authorization_required": true
+      },
+      "authorization_may_proceed": false,
+      "blockers": [
+        "OWNER_GO_REQUIRED"
+      ],
+      "confirm_token_path_ok": true,
+      "fault_session_started": false,
+      "network_session_started": false,
+      "notes": [
+        "CAPABILITY_ID=PHASE_9_2_PRODUCTIVE_PUBLIC_MD_PROLONGED_NATURAL_MARKET_WALLCLOCK_BINDING_V1",
+        "AUTHORITY_OWNER=ops.phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1",
+        "CANONICAL_WALLCLOCK_RUNNER=src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+        "REAL_NETWORK_REQUIRES_BOUND_SESSION_GO=true",
+        "REAL_NETWORK_REQUIRES_OWNER_GO=true",
+        "REAL_NETWORK_REQUIRES_OWNER_SESSION_GO=true",
+        "NO_PERMANENT_UNSCOPED_ENABLE_FLAG=True",
+        "PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED_CONSTANT=False",
+        "NETWORK_SESSION_ALLOWED_BY_CAPABILITY_CONFIG=False",
+        "FAULT_SESSION_EXECUTION_AUTHORIZED=False",
+        "NO_MARKET_PHASE_INJECTION=true",
+        "NO_DECISION_INJECTION=true",
+        "NO_INTENT_INJECTION=true",
+        "NO_FILL_INJECTION=true",
+        "NO_NETWORK_ERROR_INJECTION_IN_NATURAL_SESSION=true",
+        "SESSION_GO_AUTHORITY_OWNER=ops.phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1",
+        "SESSION_GO_EVALUATION_BEFORE_AUTHORIZATION=true",
+        "SESSION_GO_EVALUATION_BEFORE_LOCK=true",
+        "SESSION_GO_EVALUATION_BEFORE_NETWORK=true",
+        "SESSION_GO_EVALUATION_BEFORE_SESSION_START=true",
+        "NO_SIDE_EFFECTS_IN_SESSION_GO_GATE=true",
+        "STEP4_AUTHORIZATION_REUSE_FORBIDDEN=true",
+        "STEP4_CONFIRM_TOKEN_REUSE_FORBIDDEN=true",
+        "PROLONGED_NATURAL_MARKET_BINDING_IMPLEMENTED=true",
+        "REQUEST_REAL_NETWORK=True"
+      ],
+      "ok": false,
+      "productive_session_execution_permitted": false,
+      "prolonged_natural_market_path_bound": true,
+      "real_network_may_proceed": false,
+      "real_network_requires_bound_session_go": true,
+      "session_go_authority_satisfied": false
+    },
+    "request_real_network_without_network_auth": {
+      "authority": {
+        "activation_status": "ACTIVE",
+        "capability_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_PROLONGED_NATURAL_MARKET_WALLCLOCK_BINDING_V1",
+        "confirm_token_required": true,
+        "entrypoint_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_PROLONGED_NATURAL_MARKET_WALLCLOCK_BINDING_V1",
+        "entrypoint_path": "scripts/ops/run_phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1.py",
+        "expected_config_digest": "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b",
+        "expected_repository_sha": "69c02a0bb0df718de67e248aaa3e76291194dfb6",
+        "expires_at": 1700003600.0,
+        "fixture_non_authoritative": false,
+        "http_get_only": true,
+        "issued_at": 1700000000.0,
+        "max_session_duration_seconds": 21600,
+        "min_session_duration_seconds": 7200,
+        "network_session_execution_authorized_by_this_go": false,
+        "not_before": 1700000000.0,
+        "notes": [],
+        "owner_go_required": true,
+        "owner_session_go_required": true,
+        "planned_session_duration_seconds": 7200,
+        "public_md_only": true,
+        "schema_version": "phase_9_2_productive_prolonged_natural_market_session_go.v1",
+        "session_go_digest": "3a2f363187584f1a70d60fd951f92a808eb8628ab0e1f924de11f786ccc7f282",
+        "session_go_id": "sgo_phase92_step5_no_net_v1",
+        "session_id": "phase_9_2_public_md_prolonged_natural_market_session_v1",
+        "session_scope": "PHASE_9_2_PROLONGED_NATURAL_MARKET_SESSION",
+        "single_use_authorization_required": true
+      },
+      "authorization_may_proceed": true,
+      "blockers": [
+        "SESSION_GO_NETWORK_EXECUTION_NOT_AUTHORIZED_BY_THIS_GO"
+      ],
+      "confirm_token_path_ok": true,
+      "fault_session_started": false,
+      "network_session_started": false,
+      "notes": [
+        "CAPABILITY_ID=PHASE_9_2_PRODUCTIVE_PUBLIC_MD_PROLONGED_NATURAL_MARKET_WALLCLOCK_BINDING_V1",
+        "AUTHORITY_OWNER=ops.phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1",
+        "CANONICAL_WALLCLOCK_RUNNER=src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+        "REAL_NETWORK_REQUIRES_BOUND_SESSION_GO=true",
+        "REAL_NETWORK_REQUIRES_OWNER_GO=true",
+        "REAL_NETWORK_REQUIRES_OWNER_SESSION_GO=true",
+        "NO_PERMANENT_UNSCOPED_ENABLE_FLAG=True",
+        "PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED_CONSTANT=False",
+        "NETWORK_SESSION_ALLOWED_BY_CAPABILITY_CONFIG=False",
+        "FAULT_SESSION_EXECUTION_AUTHORIZED=False",
+        "NO_MARKET_PHASE_INJECTION=true",
+        "NO_DECISION_INJECTION=true",
+        "NO_INTENT_INJECTION=true",
+        "NO_FILL_INJECTION=true",
+        "NO_NETWORK_ERROR_INJECTION_IN_NATURAL_SESSION=true",
+        "SESSION_GO_AUTHORITY_OWNER=ops.phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1",
+        "SESSION_GO_EVALUATION_BEFORE_AUTHORIZATION=true",
+        "SESSION_GO_EVALUATION_BEFORE_LOCK=true",
+        "SESSION_GO_EVALUATION_BEFORE_NETWORK=true",
+        "SESSION_GO_EVALUATION_BEFORE_SESSION_START=true",
+        "NO_SIDE_EFFECTS_IN_SESSION_GO_GATE=true",
+        "STEP4_AUTHORIZATION_REUSE_FORBIDDEN=true",
+        "STEP4_CONFIRM_TOKEN_REUSE_FORBIDDEN=true",
+        "PROLONGED_NATURAL_MARKET_BINDING_IMPLEMENTED=true",
+        "REQUEST_REAL_NETWORK=True"
+      ],
+      "ok": false,
+      "productive_session_execution_permitted": true,
+      "prolonged_natural_market_path_bound": true,
+      "real_network_may_proceed": false,
+      "real_network_requires_bound_session_go": true,
+      "session_go_authority_satisfied": true
+    },
+    "session_go_missing": {
+      "authority": null,
+      "authorization_may_proceed": false,
+      "blockers": [
+        "SESSION_GO_MISSING"
+      ],
+      "confirm_token_path_ok": true,
+      "fault_session_started": false,
+      "network_session_started": false,
+      "notes": [
+        "CAPABILITY_ID=PHASE_9_2_PRODUCTIVE_PUBLIC_MD_PROLONGED_NATURAL_MARKET_WALLCLOCK_BINDING_V1",
+        "AUTHORITY_OWNER=ops.phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1",
+        "CANONICAL_WALLCLOCK_RUNNER=src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+        "REAL_NETWORK_REQUIRES_BOUND_SESSION_GO=true",
+        "REAL_NETWORK_REQUIRES_OWNER_GO=true",
+        "REAL_NETWORK_REQUIRES_OWNER_SESSION_GO=true",
+        "NO_PERMANENT_UNSCOPED_ENABLE_FLAG=True",
+        "PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED_CONSTANT=False",
+        "NETWORK_SESSION_ALLOWED_BY_CAPABILITY_CONFIG=False",
+        "FAULT_SESSION_EXECUTION_AUTHORIZED=False",
+        "NO_MARKET_PHASE_INJECTION=true",
+        "NO_DECISION_INJECTION=true",
+        "NO_INTENT_INJECTION=true",
+        "NO_FILL_INJECTION=true",
+        "NO_NETWORK_ERROR_INJECTION_IN_NATURAL_SESSION=true",
+        "MISSING_SESSION_GO_FAILS_CLOSED=true"
+      ],
+      "ok": false,
+      "productive_session_execution_permitted": false,
+      "prolonged_natural_market_path_bound": true,
+      "real_network_may_proceed": false,
+      "real_network_requires_bound_session_go": true,
+      "session_go_authority_satisfied": false
+    },
+    "unbounded_reconnect_contract": {
+      "gaps": [
+        "UNBOUNDED_OR_EMPTY_RECONNECT",
+        "BUDGET_DRIFT:reconnect_attempt_limit"
+      ],
+      "ok": true
+    },
+    "wrong_config_digest": {
+      "authority": {
+        "activation_status": "ACTIVE",
+        "capability_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_PROLONGED_NATURAL_MARKET_WALLCLOCK_BINDING_V1",
+        "confirm_token_required": true,
+        "entrypoint_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_PROLONGED_NATURAL_MARKET_WALLCLOCK_BINDING_V1",
+        "entrypoint_path": "scripts/ops/run_phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1.py",
+        "expected_config_digest": "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b",
+        "expected_repository_sha": "69c02a0bb0df718de67e248aaa3e76291194dfb6",
+        "expires_at": 1700003600.0,
+        "fixture_non_authoritative": false,
+        "http_get_only": true,
+        "issued_at": 1700000000.0,
+        "max_session_duration_seconds": 21600,
+        "min_session_duration_seconds": 7200,
+        "network_session_execution_authorized_by_this_go": true,
+        "not_before": 1700000000.0,
+        "notes": [],
+        "owner_go_required": true,
+        "owner_session_go_required": true,
+        "planned_session_duration_seconds": 7200,
+        "public_md_only": true,
+        "schema_version": "phase_9_2_productive_prolonged_natural_market_session_go.v1",
+        "session_go_digest": "e610376d75f97403871762ac70e348abb7462768055d40352e84dc9466d3f314",
+        "session_go_id": "sgo_phase92_step5_binding_fi_v1",
+        "session_id": "phase_9_2_public_md_prolonged_natural_market_session_v1",
+        "session_scope": "PHASE_9_2_PROLONGED_NATURAL_MARKET_SESSION",
+        "single_use_authorization_required": true
+      },
+      "authorization_may_proceed": false,
+      "blockers": [
+        "SESSION_GO_CONFIG_DIGEST_MISMATCH"
+      ],
+      "confirm_token_path_ok": true,
+      "fault_session_started": false,
+      "network_session_started": false,
+      "notes": [
+        "CAPABILITY_ID=PHASE_9_2_PRODUCTIVE_PUBLIC_MD_PROLONGED_NATURAL_MARKET_WALLCLOCK_BINDING_V1",
+        "AUTHORITY_OWNER=ops.phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1",
+        "CANONICAL_WALLCLOCK_RUNNER=src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+        "REAL_NETWORK_REQUIRES_BOUND_SESSION_GO=true",
+        "REAL_NETWORK_REQUIRES_OWNER_GO=true",
+        "REAL_NETWORK_REQUIRES_OWNER_SESSION_GO=true",
+        "NO_PERMANENT_UNSCOPED_ENABLE_FLAG=True",
+        "PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED_CONSTANT=False",
+        "NETWORK_SESSION_ALLOWED_BY_CAPABILITY_CONFIG=False",
+        "FAULT_SESSION_EXECUTION_AUTHORIZED=False",
+        "NO_MARKET_PHASE_INJECTION=true",
+        "NO_DECISION_INJECTION=true",
+        "NO_INTENT_INJECTION=true",
+        "NO_FILL_INJECTION=true",
+        "NO_NETWORK_ERROR_INJECTION_IN_NATURAL_SESSION=true",
+        "SESSION_GO_AUTHORITY_OWNER=ops.phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1",
+        "SESSION_GO_EVALUATION_BEFORE_AUTHORIZATION=true",
+        "SESSION_GO_EVALUATION_BEFORE_LOCK=true",
+        "SESSION_GO_EVALUATION_BEFORE_NETWORK=true",
+        "SESSION_GO_EVALUATION_BEFORE_SESSION_START=true",
+        "NO_SIDE_EFFECTS_IN_SESSION_GO_GATE=true",
+        "STEP4_AUTHORIZATION_REUSE_FORBIDDEN=true",
+        "STEP4_CONFIRM_TOKEN_REUSE_FORBIDDEN=true",
+        "PROLONGED_NATURAL_MARKET_BINDING_IMPLEMENTED=true",
+        "REQUEST_REAL_NETWORK=True"
+      ],
+      "ok": false,
+      "productive_session_execution_permitted": false,
+      "prolonged_natural_market_path_bound": true,
+      "real_network_may_proceed": false,
+      "real_network_requires_bound_session_go": true,
+      "session_go_authority_satisfied": false
+    },
+    "wrong_repository_sha": {
+      "authority": {
+        "activation_status": "ACTIVE",
+        "capability_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_PROLONGED_NATURAL_MARKET_WALLCLOCK_BINDING_V1",
+        "confirm_token_required": true,
+        "entrypoint_id": "PHASE_9_2_PRODUCTIVE_PUBLIC_MD_PROLONGED_NATURAL_MARKET_WALLCLOCK_BINDING_V1",
+        "entrypoint_path": "scripts/ops/run_phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1.py",
+        "expected_config_digest": "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b",
+        "expected_repository_sha": "69c02a0bb0df718de67e248aaa3e76291194dfb6",
+        "expires_at": 1700003600.0,
+        "fixture_non_authoritative": false,
+        "http_get_only": true,
+        "issued_at": 1700000000.0,
+        "max_session_duration_seconds": 21600,
+        "min_session_duration_seconds": 7200,
+        "network_session_execution_authorized_by_this_go": true,
+        "not_before": 1700000000.0,
+        "notes": [],
+        "owner_go_required": true,
+        "owner_session_go_required": true,
+        "planned_session_duration_seconds": 7200,
+        "public_md_only": true,
+        "schema_version": "phase_9_2_productive_prolonged_natural_market_session_go.v1",
+        "session_go_digest": "e610376d75f97403871762ac70e348abb7462768055d40352e84dc9466d3f314",
+        "session_go_id": "sgo_phase92_step5_binding_fi_v1",
+        "session_id": "phase_9_2_public_md_prolonged_natural_market_session_v1",
+        "session_scope": "PHASE_9_2_PROLONGED_NATURAL_MARKET_SESSION",
+        "single_use_authorization_required": true
+      },
+      "authorization_may_proceed": false,
+      "blockers": [
+        "SESSION_GO_REPOSITORY_SHA_MISMATCH"
+      ],
+      "confirm_token_path_ok": true,
+      "fault_session_started": false,
+      "network_session_started": false,
+      "notes": [
+        "CAPABILITY_ID=PHASE_9_2_PRODUCTIVE_PUBLIC_MD_PROLONGED_NATURAL_MARKET_WALLCLOCK_BINDING_V1",
+        "AUTHORITY_OWNER=ops.phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1",
+        "CANONICAL_WALLCLOCK_RUNNER=src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+        "REAL_NETWORK_REQUIRES_BOUND_SESSION_GO=true",
+        "REAL_NETWORK_REQUIRES_OWNER_GO=true",
+        "REAL_NETWORK_REQUIRES_OWNER_SESSION_GO=true",
+        "NO_PERMANENT_UNSCOPED_ENABLE_FLAG=True",
+        "PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED_CONSTANT=False",
+        "NETWORK_SESSION_ALLOWED_BY_CAPABILITY_CONFIG=False",
+        "FAULT_SESSION_EXECUTION_AUTHORIZED=False",
+        "NO_MARKET_PHASE_INJECTION=true",
+        "NO_DECISION_INJECTION=true",
+        "NO_INTENT_INJECTION=true",
+        "NO_FILL_INJECTION=true",
+        "NO_NETWORK_ERROR_INJECTION_IN_NATURAL_SESSION=true",
+        "SESSION_GO_AUTHORITY_OWNER=ops.phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1",
+        "SESSION_GO_EVALUATION_BEFORE_AUTHORIZATION=true",
+        "SESSION_GO_EVALUATION_BEFORE_LOCK=true",
+        "SESSION_GO_EVALUATION_BEFORE_NETWORK=true",
+        "SESSION_GO_EVALUATION_BEFORE_SESSION_START=true",
+        "NO_SIDE_EFFECTS_IN_SESSION_GO_GATE=true",
+        "STEP4_AUTHORIZATION_REUSE_FORBIDDEN=true",
+        "STEP4_CONFIRM_TOKEN_REUSE_FORBIDDEN=true",
+        "PROLONGED_NATURAL_MARKET_BINDING_IMPLEMENTED=true",
+        "REQUEST_REAL_NETWORK=True"
+      ],
+      "ok": false,
+      "productive_session_execution_permitted": false,
+      "prolonged_natural_market_path_bound": true,
+      "real_network_may_proceed": false,
+      "real_network_requires_bound_session_go": true,
+      "session_go_authority_satisfied": false
+    }
+  },
+  "confirm_token_consumed": false,
+  "confirm_token_issued": false,
+  "fault_session_started": false,
+  "network_session_started": false,
+  "ok": true
+}

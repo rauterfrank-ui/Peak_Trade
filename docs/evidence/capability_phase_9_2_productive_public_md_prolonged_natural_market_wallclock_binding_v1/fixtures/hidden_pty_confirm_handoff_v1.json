@@ -1,0 +1,24 @@
+{
+  "confirm_token_consumed": false,
+  "confirm_token_issued": false,
+  "consumption_path": "canonical_hidden_pty_only",
+  "evidence_fields": [
+    "confirm_token_id",
+    "fingerprint",
+    "binding_sha256",
+    "scope_digest",
+    "consumed_status"
+  ],
+  "handoff_owner": "ops.phase_9_2_productive_public_md_prolonged_natural_market_wallclock_binding_v1.hidden_pty_confirm_handoff_v1",
+  "issuance_owner": "ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1",
+  "notes": [
+    "BINDING_ONLY_NO_ISSUANCE=true",
+    "BINDING_ONLY_NO_CONSUMPTION=true",
+    "FAIL_CLOSED_ON_SCOPE_SHA_CONFIG_SESSION_EXPIRY_MISMATCH=true"
+  ],
+  "ok": true,
+  "plaintext_argv": false,
+  "plaintext_log": false,
+  "plaintext_persistence": false,
+  "single_use": true
+}
