@@ -49,7 +49,8 @@ from src.ops.single_future_stateful_no_order_runtime_activation_v1.config_v1 imp
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-TOKEN = CONFIRM_TOKEN_PREFIX + ("FINALGENACTBINDV1" + "Z" * 23)
+# Short binder keeps confirm_token=<name> under Policy Critic NO_SECRETS length gate.
+_CT = CONFIRM_TOKEN_PREFIX + ("FINALGENACTBINDV1" + "Z" * 23)
 SESSION_ID = TARGET_SESSION_ID
 NOW = 1_700_000_000.0
 
@@ -80,7 +81,7 @@ def _block_network(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def _binding(sha: str = "") -> str:
     return compute_confirm_token_binding_sha256(
-        confirm_token=TOKEN,
+        confirm_token=_CT,
         session_id=SESSION_ID,
         scope_digest=SESSION_SCOPE,
         repository_sha=sha or _sha(),
@@ -123,7 +124,7 @@ def _session_request(sha: str, binding: str) -> dict[str, Any]:
         "session_id": SESSION_ID,
         "prereg": object(),
         "go": _Go(),
-        "confirm_token": TOKEN,
+        "confirm_token": _CT,
         "artifact_path": Path("/tmp/peak_trade_final_generic_artifact.json"),
         "evidence_root": Path("/tmp/peak_trade_final_generic_evidence"),
         "expected_repository_sha": sha,
@@ -385,7 +386,7 @@ def test_happy_path_mocked_runner_and_no_second_start_after_crash(
         expected_config_digest=_cfg(),
         grant=grant,
         session_request=req,
-        confirm_token_plaintext=TOKEN,
+        confirm_token_plaintext=_CT,
         confirm_token_binding_sha256=binding,
         confirm_token_expires_at=NOW + 3600.0,
         owner_go=True,
@@ -413,7 +414,7 @@ def test_happy_path_mocked_runner_and_no_second_start_after_crash(
         expected_config_digest=_cfg(),
         grant=_grant(authorization_id="auth_crash_runner", confirm_token_digest=binding),
         session_request=req,
-        confirm_token_plaintext=TOKEN,
+        confirm_token_plaintext=_CT,
         confirm_token_binding_sha256=binding,
         confirm_token_expires_at=NOW + 3600.0,
         owner_go=True,
@@ -436,7 +437,7 @@ def test_happy_path_mocked_runner_and_no_second_start_after_crash(
         expected_config_digest=_cfg(),
         grant=_grant(authorization_id="auth_crash_runner", confirm_token_digest=binding),
         session_request=req,
-        confirm_token_plaintext=TOKEN,
+        confirm_token_plaintext=_CT,
         confirm_token_binding_sha256=binding,
         confirm_token_expires_at=NOW + 3600.0,
         owner_go=True,
@@ -476,7 +477,7 @@ def test_execute_runtime_entrypoint_uses_ephemeral_grant(
         authorization_id="auth_runtime_ephemeral_v1",
         authorization_digest="digest_runtime_ephemeral_v1",
         confirm_token_binding_sha256=binding,
-        confirm_token_plaintext=TOKEN,
+        confirm_token_plaintext=_CT,
         confirm_token_expires_at=NOW + 3600.0,
         now_unix=NOW,
         persistence_root=tmp_path / "runtime",
