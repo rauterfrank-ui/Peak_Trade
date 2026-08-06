@@ -114,7 +114,7 @@ bounded retry/backoff/reconnect/heartbeat/staleness.
 ## Evidence and verifier
 
 Terminal evidence under
-`docs/evidence/capability_phase_9_2_step_5_governed_productive_real_network_prolonged_natural_market_session_execution_v1`
+`docs/evidence/capability_phase_9_2_step_5_governed_productive_real_network_prolonged_natural_market_session_execution_v1/SUMMARY.json`
 with manifest digest verification and claims-vs-telemetry checks.
 
 ## Failure semantics
