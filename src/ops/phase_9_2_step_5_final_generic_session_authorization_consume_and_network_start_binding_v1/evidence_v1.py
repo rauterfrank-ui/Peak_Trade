@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import tempfile
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
@@ -38,6 +39,10 @@ from src.ops.single_future_stateful_no_order_runtime_activation_v1.config_v1 imp
 
 NOW = 1_700_000_000.0
 FIXTURE_TOKEN = "step5-final-generic-fixture-token-v1"
+# Historical shared path (must NOT be used by evidence materialization).
+LEGACY_SHARED_FAILURE_INJECTION_PERSISTENCE_RELPATH = (
+    "var/tmp/step5_final_generic_failure_injection"
+)
 
 
 def _token_binding(token: str = FIXTURE_TOKEN) -> str:
@@ -242,7 +247,16 @@ def materialize_step5_final_generic_binding_evidence_v1(
     repository_sha: str,
     evidence_root: Path | None = None,
     repo_root: Path | None = None,
+    failure_injection_persistence_root: Path | None = None,
 ) -> dict[str, Any]:
+    """Materialize binding evidence with per-call isolated FI persistence.
+
+    Failure-injection consumption ledgers are written only under an exclusive
+    persistence root for this invocation. By default that root is created inside
+    a TemporaryDirectory and removed on success or exception. Callers may inject
+    an explicit root for tests; the legacy shared ``var/tmp/...`` path is never
+    selected by this materializer.
+    """
     root = repo_root_v1() if repo_root is None else Path(repo_root)
     cfg = str(
         load_activation_config_v1(
@@ -263,67 +277,110 @@ def materialize_step5_final_generic_binding_evidence_v1(
         expected_config_digest=cfg,
         repo_root=root,
     )
-    fi = run_step5_final_generic_failure_injection_v1(
-        repository_sha=repository_sha,
-        config_digest=cfg,
-        persistence_root=root / "var" / "tmp" / "step5_final_generic_failure_injection",
-        repo_root=root,
-    )
-    bundle = load_execution_contract_bundle_v1(repo_root=root)
-    claims = dict(proof.get("claims") or {})
-    claims.update(
-        {
-            "FAILURE_INJECTION_OK": bool(fi.get("ok")),
-            "PLANNED_SESSION_DURATION_SECONDS": PLANNED_SESSION_DURATION_SECONDS,
-            "MINIMUM_SUCCESSFUL_WALLCLOCK_SECONDS": MINIMUM_SUCCESSFUL_WALLCLOCK_SECONDS,
-            "MAX_SESSION_DURATION_SECONDS": MAX_SESSION_DURATION_SECONDS,
-            "SESSION_CONTRACT_DIGEST": bundle["session_contract_digest"],
-            "BINDING_CONFIG_DIGEST": bundle["binding_config_digest"],
-            "CONFIG_DIGEST": cfg,
-        }
-    )
-    manifest = {
-        "schema_version": "phase_9_2_step_5_final_generic_consume_start_binding_evidence.v1",
-        "capability_id": CAPABILITY_ID,
-        "runtime_capability_id": STEP5_EXECUTION_CAPABILITY_ID,
-        "repository_sha": repository_sha,
-        "claims": claims,
-        "call_graph_before": list(CALL_GRAPH_BEFORE),
-        "call_graph_after": list(CALL_GRAPH_AFTER),
-        "productive_entrypoint": PRODUCTIVE_ENTRYPOINT_PATH,
-        "target_session_id": TARGET_SESSION_ID,
-        "network_session_started": False,
-        "authorization_issued": False,
-        "authorization_consumed": False,
-        "confirm_token_issued": False,
-        "confirm_token_consumed": False,
-    }
-    verifier = verify_step5_final_generic_binding_manifest_v1(manifest)
-    write_json_atomic_v1(fixtures / "structural_proof_v1.json", proof)
-    write_json_atomic_v1(fixtures / "failure_injection_v1.json", fi)
-    write_json_atomic_v1(fixtures / "manifest_v1.json", manifest)
-    write_json_atomic_v1(fixtures / "verifier_result_v1.json", verifier)
 
-    summary = {
-        "ok": bool(proof.get("ok")) and bool(fi.get("ok")) and bool(verifier.get("ok")),
-        "capability_id": CAPABILITY_ID,
-        "repository_sha": repository_sha,
-        "config_digest": cfg,
-        "session_contract_digest": bundle["session_contract_digest"],
-        "binding_config_digest": bundle["binding_config_digest"],
-        "claims": claims,
-        "verifier": verifier,
-        "evidence_root": str(out_root),
-        "network_session_started": False,
-        "authorization_issued": False,
-        "authorization_consumed": False,
-        "confirm_token_issued": False,
-        "confirm_token_consumed": False,
-        "manifest_digest": sha256_canonical_v1(manifest),
-        "claims_match_evidence": bool(verifier.get("ok")),
-    }
-    write_json_atomic_v1(out_root / "SUMMARY.json", summary)
-    (out_root / "MANIFEST.sha256").write_text(
-        summary["manifest_digest"] + "  fixtures/manifest_v1.json\n", encoding="utf-8"
-    )
-    return summary
+    owned_tmpdir: tempfile.TemporaryDirectory | None = None
+    isolation_mode = "explicit_injected"
+    fi_root: Path
+    try:
+        if failure_injection_persistence_root is not None:
+            fi_root = Path(failure_injection_persistence_root)
+            fi_root.mkdir(parents=True, exist_ok=True)
+            isolation_mode = "explicit_injected"
+        else:
+            owned_tmpdir = tempfile.TemporaryDirectory(prefix="step5_final_generic_fi_ephemeral_")
+            fi_root = Path(owned_tmpdir.name) / "failure_injection"
+            fi_root.mkdir(parents=True, exist_ok=True)
+            isolation_mode = "ephemeral_temporary_directory"
+
+        legacy_shared = (root / LEGACY_SHARED_FAILURE_INJECTION_PERSISTENCE_RELPATH).resolve()
+        if fi_root.resolve() == legacy_shared:
+            raise ValueError("SHARED_FAILURE_INJECTION_PERSISTENCE_ROOT_FORBIDDEN_FOR_MATERIALIZE")
+
+        # Redacted uniqueness: parent temp-dir basename (ephemeral) or leaf name (injected).
+        # Never embed absolute filesystem paths into evidence.
+        uniqueness_label = (
+            fi_root.parent.name
+            if isolation_mode == "ephemeral_temporary_directory"
+            else fi_root.name
+        )
+        fi_root_token = sha256_canonical_v1({"kind": isolation_mode, "label": uniqueness_label})
+        fi = run_step5_final_generic_failure_injection_v1(
+            repository_sha=repository_sha,
+            config_digest=cfg,
+            persistence_root=fi_root,
+            repo_root=root,
+        )
+        happy = dict((fi.get("cases") or {}).get("happy_path_once") or {})
+        reuse = dict((fi.get("cases") or {}).get("authorization_reuse_blocked") or {})
+        bundle = load_execution_contract_bundle_v1(repo_root=root)
+        claims = dict(proof.get("claims") or {})
+        claims.update(
+            {
+                "FAILURE_INJECTION_OK": bool(fi.get("ok")),
+                "PLANNED_SESSION_DURATION_SECONDS": PLANNED_SESSION_DURATION_SECONDS,
+                "MINIMUM_SUCCESSFUL_WALLCLOCK_SECONDS": MINIMUM_SUCCESSFUL_WALLCLOCK_SECONDS,
+                "MAX_SESSION_DURATION_SECONDS": MAX_SESSION_DURATION_SECONDS,
+                "SESSION_CONTRACT_DIGEST": bundle["session_contract_digest"],
+                "BINDING_CONFIG_DIGEST": bundle["binding_config_digest"],
+                "CONFIG_DIGEST": cfg,
+            }
+        )
+        manifest = {
+            "schema_version": "phase_9_2_step_5_final_generic_consume_start_binding_evidence.v1",
+            "capability_id": CAPABILITY_ID,
+            "runtime_capability_id": STEP5_EXECUTION_CAPABILITY_ID,
+            "repository_sha": repository_sha,
+            "claims": claims,
+            "call_graph_before": list(CALL_GRAPH_BEFORE),
+            "call_graph_after": list(CALL_GRAPH_AFTER),
+            "productive_entrypoint": PRODUCTIVE_ENTRYPOINT_PATH,
+            "target_session_id": TARGET_SESSION_ID,
+            "network_session_started": False,
+            "authorization_issued": False,
+            "authorization_consumed": False,
+            "confirm_token_issued": False,
+            "confirm_token_consumed": False,
+        }
+        verifier = verify_step5_final_generic_binding_manifest_v1(manifest)
+        write_json_atomic_v1(fixtures / "structural_proof_v1.json", proof)
+        write_json_atomic_v1(fixtures / "failure_injection_v1.json", fi)
+        write_json_atomic_v1(fixtures / "manifest_v1.json", manifest)
+        write_json_atomic_v1(fixtures / "verifier_result_v1.json", verifier)
+
+        isolation = {
+            "mode": isolation_mode,
+            "shared_var_tmp_path_used": False,
+            "legacy_shared_relpath": LEGACY_SHARED_FAILURE_INJECTION_PERSISTENCE_RELPATH,
+            "persistence_root_name_redacted": True,
+            "persistence_root_token": fi_root_token,
+            "happy_path_once_ok": bool(happy.get("ok")),
+            "intra_run_reuse_blocked": bool(reuse.get("ok")),
+            "owned_ephemeral_cleanup_scheduled": owned_tmpdir is not None,
+        }
+        summary = {
+            "ok": bool(proof.get("ok")) and bool(fi.get("ok")) and bool(verifier.get("ok")),
+            "capability_id": CAPABILITY_ID,
+            "repository_sha": repository_sha,
+            "config_digest": cfg,
+            "session_contract_digest": bundle["session_contract_digest"],
+            "binding_config_digest": bundle["binding_config_digest"],
+            "claims": claims,
+            "verifier": verifier,
+            "evidence_root": str(out_root),
+            "network_session_started": False,
+            "authorization_issued": False,
+            "authorization_consumed": False,
+            "confirm_token_issued": False,
+            "confirm_token_consumed": False,
+            "manifest_digest": sha256_canonical_v1(manifest),
+            "claims_match_evidence": bool(verifier.get("ok")),
+            "failure_injection_persistence_isolation": isolation,
+        }
+        write_json_atomic_v1(out_root / "SUMMARY.json", summary)
+        (out_root / "MANIFEST.sha256").write_text(
+            summary["manifest_digest"] + "  fixtures/manifest_v1.json\n", encoding="utf-8"
+        )
+        return summary
+    finally:
+        if owned_tmpdir is not None:
+            owned_tmpdir.cleanup()

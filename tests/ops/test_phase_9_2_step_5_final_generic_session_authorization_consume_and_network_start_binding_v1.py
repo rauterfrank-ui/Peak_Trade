@@ -391,16 +391,97 @@ def test_failure_injection_matrix(tmp_path: Path, monkeypatch: pytest.MonkeyPatc
 
 def test_materialize_evidence(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     _block_network(monkeypatch)
-    summary = materialize_step5_final_generic_binding_evidence_v1(
+    # Seed legacy shared path with consumed state; materialize must ignore it.
+    shared = REPO_ROOT / "var" / "tmp" / "step5_final_generic_failure_injection"
+    (shared / "happy_reuse" / "persistence").mkdir(parents=True, exist_ok=True)
+    ledger = (
+        shared / "happy_reuse" / "persistence" / "step5_authorization_consumption_ledger_v1.jsonl"
+    )
+    ledger.write_text('{"authorization_id":"auth_happy_reuse","consumed":true}\n', encoding="utf-8")
+
+    root_a = tmp_path / "fi_a"
+    root_b = tmp_path / "fi_b"
+    first = materialize_step5_final_generic_binding_evidence_v1(
         repository_sha=_sha(),
-        evidence_root=tmp_path / "evidence_out",
+        evidence_root=tmp_path / "evidence_out_1",
+        repo_root=REPO_ROOT,
+        failure_injection_persistence_root=root_a,
+    )
+    second = materialize_step5_final_generic_binding_evidence_v1(
+        repository_sha=_sha(),
+        evidence_root=tmp_path / "evidence_out_2",
+        repo_root=REPO_ROOT,
+        failure_injection_persistence_root=root_b,
+    )
+    assert first["ok"] is True
+    assert second["ok"] is True
+    assert first["claims"]["FAILURE_INJECTION_OK"] is True
+    assert second["claims"]["FAILURE_INJECTION_OK"] is True
+    iso_a = first["failure_injection_persistence_isolation"]
+    iso_b = second["failure_injection_persistence_isolation"]
+    assert iso_a["shared_var_tmp_path_used"] is False
+    assert iso_b["shared_var_tmp_path_used"] is False
+    assert iso_a["persistence_root_token"] != iso_b["persistence_root_token"]
+    assert iso_a["happy_path_once_ok"] is True
+    assert iso_b["happy_path_once_ok"] is True
+    assert iso_a["intra_run_reuse_blocked"] is True
+    assert iso_b["intra_run_reuse_blocked"] is True
+    assert first["manifest_digest"] == second["manifest_digest"]
+    assert (tmp_path / "evidence_out_1" / "SUMMARY.json").is_file()
+    assert (tmp_path / "evidence_out_2" / "MANIFEST.sha256").is_file()
+    assert first["network_session_started"] is False
+    assert first["authorization_issued"] is False
+    text = (tmp_path / "evidence_out_1" / "SUMMARY.json").read_text(encoding="utf-8")
+    assert "step5-final-generic-fixture-token-v1" not in text
+    assert str(root_a) not in text
+
+
+def test_materialize_evidence_ephemeral_double_run_and_cleanup(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Regression: two consecutive materialize calls must both PASS without shared FI state."""
+    _block_network(monkeypatch)
+    observed_roots: list[Path] = []
+    real_fi = run_step5_final_generic_failure_injection_v1
+
+    def _capture_fi(**kwargs: Any) -> dict[str, Any]:
+        root = Path(kwargs["persistence_root"])
+        observed_roots.append(root)
+        return real_fi(**kwargs)
+
+    monkeypatch.setattr(
+        "src.ops.phase_9_2_step_5_final_generic_session_authorization_consume_and_network_start_binding_v1.evidence_v1.run_step5_final_generic_failure_injection_v1",
+        _capture_fi,
+    )
+    first = materialize_step5_final_generic_binding_evidence_v1(
+        repository_sha=_sha(),
+        evidence_root=tmp_path / "ev1",
         repo_root=REPO_ROOT,
     )
-    assert summary["ok"] is True
-    assert (tmp_path / "evidence_out" / "SUMMARY.json").is_file()
-    assert (tmp_path / "evidence_out" / "MANIFEST.sha256").is_file()
-    assert summary["network_session_started"] is False
-    assert summary["authorization_issued"] is False
+    second = materialize_step5_final_generic_binding_evidence_v1(
+        repository_sha=_sha(),
+        evidence_root=tmp_path / "ev2",
+        repo_root=REPO_ROOT,
+    )
+    assert first["ok"] is True
+    assert second["ok"] is True
+    assert first["claims"]["FAILURE_INJECTION_OK"] is True
+    assert second["claims"]["FAILURE_INJECTION_OK"] is True
+    assert len(observed_roots) == 2
+    assert observed_roots[0].resolve() != observed_roots[1].resolve()
+    assert (
+        first["failure_injection_persistence_isolation"]["persistence_root_token"]
+        != second["failure_injection_persistence_isolation"]["persistence_root_token"]
+    )
+    for root in observed_roots:
+        assert "step5_final_generic_failure_injection" not in str(root)
+        assert not root.exists(), "ephemeral FI persistence root must be cleaned up"
+    assert first["failure_injection_persistence_isolation"]["mode"] == (
+        "ephemeral_temporary_directory"
+    )
+    assert first["failure_injection_persistence_isolation"]["intra_run_reuse_blocked"] is True
+    assert second["failure_injection_persistence_isolation"]["intra_run_reuse_blocked"] is True
+    assert first["manifest_digest"] == second["manifest_digest"]
 
 
 def test_existing_executor_no_longer_deferred_with_binding_flags(
