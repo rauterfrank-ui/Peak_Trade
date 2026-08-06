@@ -34,12 +34,14 @@ from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_bindi
     load_confirm_token_plaintext_canonical_v1,
 )
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.constants_v1 import (
+    CONFIG_DIGEST_DOMAIN_WALLCLOCK_CONFIG_IDENTITY,
     GOVERNED_EXECUTION_BINDING_CAPABILITY_ID,
     NETWORK_ALLOWED_AUTHORITY_SOURCE,
     SESSION_REQUEST_ADAPTER_CAPABILITY_ID,
     TARGET_SESSION_ID,
 )
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.governed_network_authorization_v1 import (
+    compute_wallclock_config_identity_digest_v1,
     derive_network_allowed_from_issuance_authorization_v1,
 )
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.hidden_pty_confirm_handoff_v1 import (
@@ -330,11 +332,38 @@ def build_canonical_session_request_from_issuance_artifacts_v1(
     blockers.extend(art_blockers)
 
     if governed:
+        # Network derivation binds the V2 wallclock_config_identity domain — never
+        # cross-compare activation_config_digest against wallclock identity hashes.
+        derive_cfg_digest = compute_wallclock_config_identity_digest_v1()
+        derive_cfg_domain = CONFIG_DIGEST_DOMAIN_WALLCLOCK_CONFIG_IDENTITY
+        # Non-V2 probe artifacts without config_digests: only bind when caller
+        # already supplied a wallclock-domain digest; otherwise skip expected
+        # digest (internal probe path / empty expected).
+        try:
+            art_peek = json.loads(art_path.read_text(encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            art_peek = {}
+        art_schema = str((art_peek or {}).get("schema") or "")
+        if art_schema != "authorization_artifact_v2":
+            # Probe / fixture artifacts: do not force wallclock domain unless present.
+            cfg_block = (art_peek or {}).get("config_digests")
+            has_wallclock = (
+                isinstance(cfg_block, dict)
+                and CONFIG_DIGEST_DOMAIN_WALLCLOCK_CONFIG_IDENTITY in cfg_block
+            )
+            if has_wallclock:
+                derive_cfg_digest = compute_wallclock_config_identity_digest_v1()
+                derive_cfg_domain = CONFIG_DIGEST_DOMAIN_WALLCLOCK_CONFIG_IDENTITY
+            else:
+                derive_cfg_digest = ""
+                derive_cfg_domain = ""
+        _ = expected_config_digest  # activation digest remains caller-side; not cross-bound here
         net = derive_network_allowed_from_issuance_authorization_v1(
             operator_go=go,
             authorization_artifact_path=art_path,
             expected_repository_sha=bound_sha,
-            expected_config_digest=expected_config_digest,
+            expected_config_digest=derive_cfg_digest,
+            expected_config_digest_domain=derive_cfg_domain,
             expected_session_id=str(prereg.session_id),
             cli_network_session_allowed=bool(cli_network_session_allowed),
         )

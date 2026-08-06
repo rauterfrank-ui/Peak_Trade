@@ -31,6 +31,7 @@ from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_bindi
     NETWORK_ALLOWLIST,
     NETWORK_ALLOWED_AUTHORITY_SOURCE,
     NETWORK_SESSION_ALLOWED,
+    PRODUCTIVE_V2_ARTIFACT_NETWORK_SCOPE,
     SESSION_SCOPE,
 )
 from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.digest_v1 import (
@@ -183,7 +184,7 @@ def _write_governed_issuance(
             "authorization_id": "auth_governed_binding_v1",
             "preregistration_id": SESSION_ID,
             "repository_sha": sha,
-            "network_scope": GOVERNED_PUBLIC_MD_NETWORK_SCOPE,
+            "network_scope": PRODUCTIVE_V2_ARTIFACT_NETWORK_SCOPE,
             "network_authorized": network_authorized,
             "confirm_token_fingerprint": fingerprint_confirm_token(token),
             "notes": ["GOVERNED_BINDING_UNIT_ONLY", "NOT_A_FULL_V2_ARTIFACT"],
