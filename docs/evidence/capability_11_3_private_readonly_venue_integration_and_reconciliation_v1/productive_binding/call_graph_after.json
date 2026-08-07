@@ -1,0 +1,20 @@
+{
+  "activation": "not_activated",
+  "network_session": "forbidden",
+  "path": [
+    "Canonical Stateful Trading Core (unchanged)",
+    "Canonical Intent / Lifecycle Contracts (Cap 11.1 retained)",
+    "Credential / Authorization / Account-Identity Boundary (Cap 11.2 retained)",
+    "Private Read-Only Venue Integration Contracts (Cap 11.3)",
+    "PrivateReadonlyVenuePortDeclarationV1 (declared / unreachable)",
+    "VenueSessionStateRecordV1 (schema only; start forbidden)",
+    "ExchangeClockSyncRecordV1 (schema only; query forbidden)",
+    "PrivateAccountStateSnapshotV1 (fixture-only ingestion)",
+    "ReconciliationHierarchyContractV1 (layers/outcomes/gates)",
+    "VenueAdapterAntiCorruptionV1 (read-only responsibilities)",
+    "Mode-Specific Execution Boundary (Simulated sole reachable)",
+    "Accounting / Portfolio / Reconciliation / Evidence"
+  ],
+  "private_readonly_venue_port": "declared_unreachable_in_capability_11_3",
+  "reconciliation_hierarchy_contract": "bound_not_activated"
+}

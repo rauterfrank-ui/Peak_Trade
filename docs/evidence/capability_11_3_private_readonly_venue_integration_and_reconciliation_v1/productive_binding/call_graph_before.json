@@ -1,0 +1,12 @@
+{
+  "network_session": "forbidden",
+  "path": [
+    "Canonical Stateful Trading Core",
+    "Canonical Intent / Lifecycle Contracts (Cap 11.1)",
+    "Credential / Authorization / Account-Identity Boundary (Cap 11.2)",
+    "Mode-Specific Execution Boundary (Simulated sole reachable)",
+    "Accounting / Portfolio / Reconciliation / Evidence"
+  ],
+  "private_readonly_venue_port": "absent",
+  "reconciliation_hierarchy_contract": "absent_as_phase11_capability"
+}

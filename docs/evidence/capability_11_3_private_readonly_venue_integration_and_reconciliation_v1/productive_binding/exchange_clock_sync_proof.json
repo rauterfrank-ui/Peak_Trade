@@ -1,0 +1,14 @@
+{
+  "EXCHANGE_CLOCK_QUERY_PERFORMED": false,
+  "EXCHANGE_CLOCK_SYNC_SCHEMA_BOUND": true,
+  "OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+  "allowed_sync_statuses": [
+    "UNSYNCED",
+    "SYNCED",
+    "DRIFT_DETECTED",
+    "SYNC_FAILED"
+  ],
+  "ok": true,
+  "query_blocked": true,
+  "unknown_sync_status_blocked": true
+}
