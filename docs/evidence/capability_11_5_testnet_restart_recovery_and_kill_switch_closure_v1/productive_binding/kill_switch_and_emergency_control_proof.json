@@ -1,0 +1,28 @@
+{
+  "CANCEL_ALL_PATH_INDEPENDENT_OF_ALPHA": true,
+  "EXIT_OR_REDUCE_POLICY_INDEPENDENT_OF_ALPHA": true,
+  "KILL_SWITCH_AND_EMERGENCY_CONTROL_CONTRACT_BOUND": true,
+  "KILL_SWITCH_CANNOT_BE_CLEARED_BY_RUNTIME": true,
+  "KILL_SWITCH_CHECKED_BEFORE_EVERY_SIDE_EFFECT": true,
+  "KILL_SWITCH_CONTRACT_ACTIVATED": false,
+  "KILL_SWITCH_FAIL_CLOSED": true,
+  "KILL_SWITCH_PERSISTED": true,
+  "KILL_SWITCH_SURVIVES_RESTART": true,
+  "OWNER": "ops.capability_11_5_testnet_restart_recovery_and_kill_switch_closure_v1",
+  "OWNER_AUTHORITY_REQUIRED_TO_CLEAR": true,
+  "TESTNET_KILL_SWITCH_PROVEN": false,
+  "TESTNET_ORDER_SUBMIT_PERFORMED_IN_CAPABILITY_11_5": false,
+  "commands_bound": [
+    "BLOCK_NEW_ENTRY",
+    "CANCEL_ALL",
+    "EXIT_ONLY",
+    "HALT_AFTER_CANCEL",
+    "PERSISTENT_KILL",
+    "REDUCE_ONLY"
+  ],
+  "ok": true,
+  "risk_increase_blocked": true,
+  "runtime_clear_blocked": true,
+  "side_effect_bypass_blocked": true,
+  "unknown_command_blocked": true
+}
