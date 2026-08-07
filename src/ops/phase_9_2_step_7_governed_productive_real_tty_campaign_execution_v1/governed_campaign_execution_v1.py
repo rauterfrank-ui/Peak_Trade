@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Mapping, Sequence
 
 from src.ops.phase_9_2_step_6_governed_adverse_stale_data_session_execution_v1.network_boundary_v1 import (
     prove_public_md_only_boundary_v1,
@@ -27,6 +27,9 @@ from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1
 from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1.campaign_start_invoke_v1 import (
     invoke_step7_productive_campaign_sessions_v1,
     prove_public_md_fetcher_symbol_bound_v1,
+)
+from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1.wallclock_packaging_v1 import (
+    prove_step7_wallclock_packaging_bound_v1,
 )
 from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1.confirm_token_path_v1 import (
     reject_confirm_token_argv_v1,
@@ -279,6 +282,11 @@ def prove_step7_campaign_execution_owner_implementation_v1(
     if not callable(verify_campaign_bundle_v1):
         blockers.append("STEP7_CAMPAIGN_VERIFIER_UNRESOLVED")
 
+    packaging_proof = prove_step7_wallclock_packaging_bound_v1()
+    if not packaging_proof.get("ok"):
+        blockers.extend(list(packaging_proof.get("blockers") or []))
+        blockers.append("STEP7_WALLCLOCK_PACKAGING_BINDING_FAILED")
+
     if repo_root is not None:
         for label, rel in (
             ("CAMPAIGN_OWNER_ENTRYPOINT_MISSING", PRODUCTIVE_ENTRYPOINT_PATH),
@@ -418,6 +426,7 @@ def prove_step7_campaign_execution_owner_implementation_v1(
         and bool(harness.get("ok"))
         and bool(handoff.get("ok"))
         and bool(delegated_broker.get("ok"))
+        and bool(packaging_proof.get("ok"))
         and bool(reuse.get("ok"))
         and bool(fetcher_proof.get("ok"))
         and STEP7_PRODUCTIVE_CAMPAIGN_INVOKE_EDGE_PRESENT
@@ -466,6 +475,8 @@ def prove_step7_campaign_execution_owner_implementation_v1(
         "TOKEN_ROLE": CONFIRM_TOKEN_ROLE_EPHEMERAL_EXECUTION_LATCH,
         "HIDDEN_CONFIRM_HANDOFF_BOUND": bool(handoff.get("ok")),
         "DELEGATED_CURSOR_SECURE_CONFIRM_BROKER_BOUND": bool(delegated_broker.get("ok")),
+        "STEP7_WALLCLOCK_PACKAGING_BOUND": bool(packaging_proof.get("ok")),
+        "SESSION_IDENTITY_PACKAGING_PATH": packaging_proof.get("session_identity_packaging_path"),
         "HIDDEN_CONFIRM_HANDOFF_USED": False,
         "CONFIRM_TOKEN_MINTED": False,
         "CONFIRM_TOKEN_CONSUMED": False,
@@ -530,6 +541,7 @@ def prove_step7_campaign_execution_owner_implementation_v1(
             "reuse": reuse,
             "hidden_pty_handoff": handoff,
             "delegated_cursor_secure_confirm_broker": delegated_broker,
+            "wallclock_packaging": packaging_proof,
             "boundary": boundary,
             "fetcher_proof": fetcher_proof,
             "gate_single_session": {k: v for k, v in one_session.items() if k != "notes"},
@@ -731,6 +743,7 @@ def execute_governed_step7_campaign_v1(
     expected_capability_id: str = TARGET_CAMPAIGN_CAPABILITY_ID,
     wallclock_runner: Callable[..., Any] | None = None,
     wallclock_kwargs: Mapping[str, Any] | None = None,
+    per_session_wallclock_packages: Sequence[Mapping[str, Any]] | None = None,
     campaign_start_state: dict[str, Any] | None = None,
     runtime_overrides: Mapping[str, Any] | None = None,
     authorization_channel: str | None = None,
@@ -976,6 +989,7 @@ def execute_governed_step7_campaign_v1(
             planned_session_count=planned_session_count,
             runtime_overrides=dict(runtime_overrides or {}),
             wallclock_kwargs=wallclock_kwargs,
+            per_session_wallclock_packages=per_session_wallclock_packages,
             wallclock_runner=wallclock_runner,
             campaign_start_state=start_state,
             allow_real_network=True,

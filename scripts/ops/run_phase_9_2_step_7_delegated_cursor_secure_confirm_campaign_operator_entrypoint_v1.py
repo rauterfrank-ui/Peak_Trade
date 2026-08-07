@@ -50,6 +50,9 @@ from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1
 from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1.governed_campaign_execution_v1 import (  # noqa: E402
     execute_governed_step7_campaign_v1,
 )
+from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1.wallclock_packaging_v1 import (  # noqa: E402
+    prove_step7_wallclock_packaging_bound_v1,
+)
 from src.ops.single_future_stateful_no_order_runtime_activation_v1.config_v1 import (  # noqa: E402
     load_activation_config_v1,
 )
@@ -110,6 +113,29 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(payload, sort_keys=True, indent=2 if args.json else None))
         return 2
 
+    packaging = prove_step7_wallclock_packaging_bound_v1()
+    if not packaging.get("ok"):
+        payload = {
+            "ok": False,
+            "blockers": sorted(
+                set(
+                    list(packaging.get("blockers") or [])
+                    + ["STEP7_WALLCLOCK_PACKAGING_BINDING_FAILED"]
+                )
+            ),
+            "AUTHORIZATION_CHANNEL": AUTH_CHANNEL_DELEGATED_CURSOR_SECURE_CONFIRM,
+            "TOKEN_ROLE": CONFIRM_TOKEN_ROLE_EPHEMERAL_EXECUTION_LATCH,
+            "network_session_started": False,
+            "confirm_token_minted": False,
+            "confirm_token_consumed": False,
+            "confirm_token_plaintext_exposed": False,
+            "STEP7_WALLCLOCK_PACKAGING_BOUND": False,
+            "REAL_TTY_VERIFIED": False,
+            "DELEGATED_SECURE_CONFIRM_VERIFIED": False,
+        }
+        print(json.dumps(payload, sort_keys=True, indent=2 if args.json else None))
+        return 2
+
     sha = args.expected_repository_sha or _repo_sha()
     cfg = _cfg()
     latch = mint_delegated_cursor_secure_confirm_latch_v1()
@@ -141,6 +167,7 @@ def main(argv: list[str] | None = None) -> int:
         payload["confirm_token_digest_sha256"] = token_digest
         payload["AUTHORIZATION_CHANNEL"] = AUTH_CHANNEL_DELEGATED_CURSOR_SECURE_CONFIRM
         payload["TOKEN_ROLE"] = CONFIRM_TOKEN_ROLE_EPHEMERAL_EXECUTION_LATCH
+        payload["STEP7_WALLCLOCK_PACKAGING_BOUND"] = True
         # Hard disclosure guard: never emit latch repr secrets (digest-only already).
         blob = json.dumps(payload, sort_keys=True, indent=2 if args.json else None)
         print(blob)

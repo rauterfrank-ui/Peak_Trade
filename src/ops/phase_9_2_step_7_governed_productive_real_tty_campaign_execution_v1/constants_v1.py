@@ -221,6 +221,8 @@ CALL_GRAPH_AFTER = [
     "dual confirm channels: REAL_TTY_HUMAN_CONFIRM | DELEGATED_CURSOR_SECURE_CONFIRM",
     "campaign_may_start + Owner-GO + NETWORK_SESSION_GO + channel-bound confirm latch",
     "TOKEN_ROLE=EPHEMERAL_EXECUTION_LATCH (not human TTY presence proof)",
+    "wallclock kwargs packaged via Step-4 build_canonical_wallclock_runner_kwargs_v1",
+    "session_id is campaign metadata only (never runner kwarg)",
     "MULTI_SESSION_REQUIREMENT_EXPRESSION=>1",
     "reuse Step-7 harness + verifier + per-session evidence + campaign bundle",
     "reuse Step-3 restart / Step-4 reconnect / Step-6 stale-adverse",
