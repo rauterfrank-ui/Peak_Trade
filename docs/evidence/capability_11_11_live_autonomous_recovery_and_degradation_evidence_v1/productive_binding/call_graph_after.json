@@ -1,0 +1,27 @@
+{
+  "activation": "not_activated",
+  "capability_11_12": "forbidden",
+  "live_autonomous_degradation": "bound_fixture_only_not_activated",
+  "live_autonomous_recovery": "bound_fixture_only_not_activated",
+  "live_autonomous_recovery_evidence_ladder": "bound_fixture_only_not_observed",
+  "path": [
+    "Canonical Stateful Trading Core (unchanged)",
+    "Canonical Intent / Lifecycle Contracts (Cap 11.1 retained)",
+    "Credential / Authorization / Account-Identity Boundary (Cap 11.2 retained)",
+    "Private Read-Only Venue Integration Contracts (Cap 11.3 retained)",
+    "Testnet Execution Adapter and Lifecycle Closure Contracts (Cap 11.4 retained)",
+    "Testnet Restart / Recovery / Kill-Switch Closure Contracts (Cap 11.5 retained)",
+    "Long-Running Autonomous Testnet Evidence Contracts (Cap 11.6 retained)",
+    "Live Private Read-Only and Shadow Reconciliation Contracts (Cap 11.7 retained)",
+    "Live Dry-Run Order-Plan Parity Contracts (Cap 11.8 retained)",
+    "Live Canary Order Execution Contracts (Cap 11.9 retained)",
+    "Live Bounded Single-Future Continuity Contracts (Cap 11.10 retained)",
+    "Live Autonomous Recovery and Degradation Evidence Contracts (Cap 11.11)",
+    "LiveOperatingStateTransitionRecordV1 (fixture-only; activation forbidden)",
+    "LiveAutonomousRecoveryRecordV1 (fixture-only; submit forbidden)",
+    "LiveAutonomousRecoveryEvidenceLadderFieldRecordV1 (fixture-only; observed overclaim forbidden)",
+    "Mode-Specific Execution Boundary (Simulated sole reachable)",
+    "Accounting / Portfolio / Reconciliation / Evidence"
+  ],
+  "private_network_session": "forbidden"
+}
