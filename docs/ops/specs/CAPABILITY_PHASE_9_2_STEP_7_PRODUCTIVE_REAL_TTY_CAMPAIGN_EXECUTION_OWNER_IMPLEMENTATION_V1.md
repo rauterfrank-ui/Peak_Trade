@@ -62,8 +62,40 @@ prove&#47;materialize.
   `scripts&#47;ops&#47;run_phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1.py`
 - Later Real-TTY operator entrypoint (separate Owner-GO only):
   `scripts&#47;ops&#47;run_phase_9_2_step_7_real_tty_campaign_operator_entrypoint_v1.py`
+  (`AUTHORIZATION_CHANNEL=REAL_TTY_HUMAN_CONFIRM`)
+- Later Delegated Cursor secure-confirm operator entrypoint (separate Owner-GO only):
+  `scripts&#47;ops&#47;run_phase_9_2_step_7_delegated_cursor_secure_confirm_campaign_operator_entrypoint_v1.py`
+  (`AUTHORIZATION_CHANNEL=DELEGATED_CURSOR_SECURE_CONFIRM`)
 - Productive library symbol:
   `execute_governed_step7_campaign_v1`
+
+## Confirm &#47; Authorization Channels
+
+```text
+AUTH_CHANNEL_REAL_TTY_HUMAN_CONFIRM
+AUTH_CHANNEL_DELEGATED_CURSOR_SECURE_CONFIRM
+TOKEN_ROLE=EPHEMERAL_EXECUTION_LATCH
+```
+
+The confirm token is an **ephemeral execution latch**, not a proof of human
+Real-TTY presence. Real-TTY channel remains fully supported. Delegated Cursor
+channel is an additional governed path requiring Owner-GO, exact capability
+binding, `HEAD == origin&#47;main`, tracked worktree clean, `authorization-valid`,
+and explicit `--request-real-network`. Digest-only evidence; no argv&#47;env&#47;
+stdout&#47;stderr plaintext; one-time use with replay fail-closed.
+
+## Threat Model (Delegated Cursor Channel)
+
+| Threat | Control |
+| --- | --- |
+| Token in argv &#47; shell history | argv&#47;env rejectors; no `--confirm-token` |
+| Token in stdout&#47;stderr&#47;logs | broker never prints plaintext; evidence digest-only |
+| Token persisted in evidence | SHA-256 digest only; redact mapping |
+| Replay | one-time consume; `CONFIRM_TOKEN_REPLAY` fail-closed |
+| Dirty&#47;drifted tree | `HEAD == origin&#47;main` + tracked worktree clean |
+| Wrong capability | exact `TARGET_CAMPAIGN_CAPABILITY_ID` bind |
+| Order&#47;Live&#47;Testnet escalation | unchanged public-MD-only boundary; no credential path |
+| Tempfile leak | chmod 0600 outside repo&#47;evidence; cleanup on success&#47;failure |
 
 ## Out of scope
 

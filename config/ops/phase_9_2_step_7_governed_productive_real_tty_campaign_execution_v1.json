@@ -10,6 +10,7 @@
   "target_session_ladder_step": "MULTI_SESSION_CONTINUITY_CAMPAIGN",
   "target_entrypoint_path": "scripts/ops/run_phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1.py",
   "real_tty_operator_entrypoint_path": "scripts/ops/run_phase_9_2_step_7_real_tty_campaign_operator_entrypoint_v1.py",
+  "delegated_cursor_operator_entrypoint_path": "scripts/ops/run_phase_9_2_step_7_delegated_cursor_secure_confirm_campaign_operator_entrypoint_v1.py",
   "path_entrypoint_path": "scripts/ops/run_phase_9_2_step_7_productive_campaign_execution_path_v1.py",
   "binding_entrypoint_path": "scripts/ops/run_phase_9_2_step_7_repeated_multi_session_continuity_campaign_binding_v1.py",
   "canonical_wallclock_runner": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
@@ -22,7 +23,15 @@
   "campaign_execution_allowed_by_capability_config": false,
   "network_session_go_default": false,
   "productive_network_session_execution_authorized": false,
-  "real_tty_required_for_campaign_mode": true,
+  "real_tty_channel_supported": true,
+  "delegated_cursor_secure_confirm_supported": true,
+  "confirm_token_role": "EPHEMERAL_EXECUTION_LATCH",
+  "authorization_channels": [
+    "REAL_TTY_HUMAN_CONFIRM",
+    "DELEGATED_CURSOR_SECURE_CONFIRM"
+  ],
+  "real_tty_required_for_real_tty_channel": true,
+  "real_tty_required_for_delegated_cursor_channel": false,
   "step7_productive_campaign_execution_path_present": true,
   "step7_productive_campaign_execution_path_absent": false,
   "step7_real_tty_campaign_owner_present": true,
@@ -34,12 +43,15 @@
   "campaign_executed": false,
   "network_session_started": false,
   "ready_for_separate_owner_go_real_tty_campaign": true,
+  "ready_for_separate_owner_go_delegated_cursor_campaign": true,
   "core_logic_change": false,
   "notes": [
-    "Closes only the productive Real-TTY campaign start/execution owner and invoke edge.",
+    "Closes only the productive campaign start/execution owner and invoke edge.",
     "Binding-only and Path-implementation remain permanently non-starting.",
+    "Dual confirm channels: REAL_TTY_HUMAN_CONFIRM and DELEGATED_CURSOR_SECURE_CONFIRM.",
+    "Confirm token role is EPHEMERAL_EXECUTION_LATCH (not human TTY presence proof).",
     "Offline fail-closed execute path remains deferred and non-starting.",
     "This capability never starts a real Public-MD multi-session campaign.",
-    "PHASE_9_2_STEP_7_STATUS remains OPEN until a later Owner-GO Real-TTY campaign verifier PASS."
+    "PHASE_9_2_STEP_7_STATUS remains OPEN until a later Owner-GO campaign verifier PASS."
   ]
 }

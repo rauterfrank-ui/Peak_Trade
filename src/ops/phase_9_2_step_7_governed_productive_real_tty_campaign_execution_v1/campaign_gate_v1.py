@@ -1,4 +1,9 @@
-"""Campaign-owned may-start gates for Step-7 Real-TTY multi-session campaign."""
+"""Campaign-owned may-start gates for Step-7 multi-session campaign.
+
+Supports two confirm/authorization channels:
+  REAL_TTY_HUMAN_CONFIRM — Hidden-PTY + Real-TTY required
+  DELEGATED_CURSOR_SECURE_CONFIRM — EPHEMERAL_EXECUTION_LATCH; Real-TTY not required
+"""
 
 from __future__ import annotations
 
@@ -8,12 +13,17 @@ from src.ops.phase_9_2_step_6_governed_productive_real_network_session_executor_
     assert_real_tty_v1,
 )
 from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1.constants_v1 import (
+    ALLOWED_AUTHORIZATION_CHANNELS,
+    AUTH_CHANNEL_DELEGATED_CURSOR_SECURE_CONFIRM,
+    AUTH_CHANNEL_REAL_TTY_HUMAN_CONFIRM,
     AUTHORIZATION_CONSUMPTION_ALLOWED,
     CAMPAIGN_EXECUTION_ALLOWED,
     CAMPAIGN_EXECUTION_SIDE_EFFECTS_AUTHORIZED,
     CONFIRM_TOKEN_CONSUMPTION_ALLOWED,
     CONFIRM_TOKEN_ISSUANCE_ALLOWED,
     CONFIRM_TOKEN_MINTING_ALLOWED,
+    CONFIRM_TOKEN_ROLE_EPHEMERAL_EXECUTION_LATCH,
+    DEFAULT_AUTHORIZATION_CHANNEL,
     MODE_GOVERNED_MULTI_SESSION_CAMPAIGN,
     MODE_PROVE_IMPLEMENTATION_ONLY,
     MULTI_SESSION_REQUIREMENT_EXPRESSION,
@@ -61,9 +71,14 @@ def evaluate_campaign_execution_gate_v1(
     credential_path_reachable: bool = False,
     order_side_effect_reachable: bool = False,
     allow_real_network_side_effects: bool = False,
+    authorization_channel: str | None = None,
+    delegated_secure_confirm_verified: bool = False,
+    head_equals_origin_main: bool = False,
+    tracked_worktree_clean: bool = False,
 ) -> dict[str, Any]:
     """Campaign-layer gate. Owns may_start; does not weaken Binding/Path forbid constants."""
     blockers: list[str] = []
+    channel = str(authorization_channel or DEFAULT_AUTHORIZATION_CHANNEL)
     if NETWORK_SESSION_ALLOWED or REAL_NETWORK_REQUESTS_ALLOWED:
         blockers.append("PERMANENT_NETWORK_ENABLE_MUST_REMAIN_FALSE")
     if PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED:
@@ -93,6 +108,8 @@ def evaluate_campaign_execution_gate_v1(
             "mode": MODE_PROVE_IMPLEMENTATION_ONLY,
             "campaign_may_start": False,
             "network_session_may_start": False,
+            "AUTHORIZATION_CHANNEL": channel,
+            "TOKEN_ROLE": CONFIRM_TOKEN_ROLE_EPHEMERAL_EXECUTION_LATCH,
             "notes": ["IMPLEMENTATION_PROOF_MODE_NEVER_STARTS_NETWORK=true"],
         }
 
@@ -104,7 +121,12 @@ def evaluate_campaign_execution_gate_v1(
             "mode": mode,
             "campaign_may_start": False,
             "network_session_may_start": False,
+            "AUTHORIZATION_CHANNEL": channel,
+            "TOKEN_ROLE": CONFIRM_TOKEN_ROLE_EPHEMERAL_EXECUTION_LATCH,
         }
+
+    if channel not in ALLOWED_AUTHORIZATION_CHANNELS:
+        blockers.append("UNKNOWN_AUTHORIZATION_CHANNEL")
 
     if not owner_go:
         blockers.append("OWNER_GO_REQUIRED")
@@ -132,9 +154,31 @@ def evaluate_campaign_execution_gate_v1(
         blockers.append("REPOSITORY_SHA_MISMATCH")
     if not config_digest_match:
         blockers.append("CONFIG_DIGEST_MISMATCH")
-    if not hidden_confirm_handoff_reachable:
-        blockers.append("HIDDEN_CONFIRM_HANDOFF_UNREACHABLE")
-    blockers.extend(assert_real_tty_v1(stdin_isatty=stdin_isatty))
+
+    real_tty_verified = False
+    delegated_verified = False
+    if channel == AUTH_CHANNEL_REAL_TTY_HUMAN_CONFIRM:
+        if not hidden_confirm_handoff_reachable:
+            blockers.append("HIDDEN_CONFIRM_HANDOFF_UNREACHABLE")
+        tty_blockers = assert_real_tty_v1(stdin_isatty=stdin_isatty)
+        blockers.extend(tty_blockers)
+        real_tty_verified = not tty_blockers and bool(stdin_isatty)
+    elif channel == AUTH_CHANNEL_DELEGATED_CURSOR_SECURE_CONFIRM:
+        # Real-TTY explicitly NOT required; latch is EPHEMERAL_EXECUTION_LATCH.
+        if not delegated_secure_confirm_verified:
+            blockers.append("DELEGATED_SECURE_CONFIRM_REQUIRED")
+        if not head_equals_origin_main:
+            blockers.append("HEAD_NOT_EQUAL_ORIGIN_MAIN")
+        if not tracked_worktree_clean:
+            blockers.append("TRACKED_WORKTREE_DIRTY")
+        if not allow_real_network_side_effects:
+            blockers.append("REQUEST_REAL_NETWORK_REQUIRED_FOR_DELEGATED_CURSOR")
+        delegated_verified = bool(
+            delegated_secure_confirm_verified
+            and head_equals_origin_main
+            and tracked_worktree_clean
+            and allow_real_network_side_effects
+        )
 
     if private_endpoint_reachable:
         blockers.append("PRIVATE_ENDPOINT_REACHABLE_FORBIDDEN")
@@ -151,8 +195,13 @@ def evaluate_campaign_execution_gate_v1(
         "CAMPAIGN_OWNED_MAY_START_GATE=true",
         "BINDING_AND_PATH_FORBID_CONSTANTS_UNCHANGED=true",
         "EPHEMERAL_GO_REQUIRED=true",
+        f"AUTHORIZATION_CHANNEL={channel}",
+        f"TOKEN_ROLE={CONFIRM_TOKEN_ROLE_EPHEMERAL_EXECUTION_LATCH}",
+        "TOKEN_IS_NOT_HUMAN_TTY_PRESENCE_PROOF=true",
         f"MULTI_SESSION_REQUIREMENT_EXPRESSION={MULTI_SESSION_REQUIREMENT_EXPRESSION}",
         f"PLANNED_SESSION_COUNT={int(planned_session_count)}",
+        f"REAL_TTY_VERIFIED={real_tty_verified}",
+        f"DELEGATED_SECURE_CONFIRM_VERIFIED={delegated_verified}",
     ]
     if allow_real_network_side_effects and not structural_ok:
         notes.append("REQUEST_REAL_NETWORK_IGNORED_WHILE_GATES_FAIL=true")
@@ -167,5 +216,9 @@ def evaluate_campaign_execution_gate_v1(
         "planned_session_count": int(planned_session_count),
         "multi_session_requirement_expression": MULTI_SESSION_REQUIREMENT_EXPRESSION,
         "allow_real_network_side_effects_requested": bool(allow_real_network_side_effects),
+        "AUTHORIZATION_CHANNEL": channel,
+        "TOKEN_ROLE": CONFIRM_TOKEN_ROLE_EPHEMERAL_EXECUTION_LATCH,
+        "REAL_TTY_VERIFIED": bool(real_tty_verified),
+        "DELEGATED_SECURE_CONFIRM_VERIFIED": bool(delegated_verified),
         "notes": notes,
     }
