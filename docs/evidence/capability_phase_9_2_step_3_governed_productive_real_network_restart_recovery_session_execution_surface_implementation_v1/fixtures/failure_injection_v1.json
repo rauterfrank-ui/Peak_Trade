@@ -1,0 +1,58 @@
+{
+  "authorization_consumed": false,
+  "capability_id": "PHASE_9_2_STEP_3_GOVERNED_PRODUCTIVE_REAL_NETWORK_RESTART_RECOVERY_SESSION_EXECUTION_SURFACE_IMPLEMENTATION_V1",
+  "cases": {
+    "authorization_config_digest_mismatch": {
+      "ok": true
+    },
+    "authorization_sha_mismatch": {
+      "ok": true
+    },
+    "confirm_token_argv_rejected": {
+      "ok": true
+    },
+    "execute_flag_required": {
+      "ok": true
+    },
+    "implementation_proof": {
+      "blockers": [],
+      "ok": true
+    },
+    "instrument_scope_mismatch": {
+      "ok": true
+    },
+    "manifest_digest_tamper": {
+      "ok": true
+    },
+    "manifest_template_ok": {
+      "ok": true
+    },
+    "overclaim_network_session": {
+      "ok": true
+    },
+    "request_real_network_fail_closed": {
+      "ok": true
+    },
+    "step5_evidence_relabel_rejected": {
+      "ok": true
+    },
+    "without_authorization": {
+      "ok": true
+    },
+    "without_confirm_token": {
+      "ok": true
+    },
+    "without_network_session_go": {
+      "ok": true
+    },
+    "without_operator_authorization": {
+      "ok": true
+    },
+    "without_owner_go": {
+      "ok": true
+    }
+  },
+  "confirm_token_consumed": false,
+  "network_session_started": false,
+  "ok": true
+}

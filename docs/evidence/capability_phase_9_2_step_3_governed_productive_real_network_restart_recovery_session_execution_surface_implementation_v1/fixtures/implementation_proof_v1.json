@@ -1,0 +1,174 @@
+{
+  "authorization_consumed": false,
+  "binding_cli_path": "scripts/ops/run_phase_9_2_productive_public_md_restart_recovery_real_network_wallclock_binding_v1.py",
+  "blockers": [],
+  "call_graph_after": [
+    "Governed Step-3 execution request",
+    "exact repository SHA validation",
+    "exact config digest validation",
+    "exact session-contract / binding-config digest validation",
+    "Session-GO ACTIVE artifact validation",
+    "OWNER_GO + OPERATOR_AUTHORIZATION + NETWORK_SESSION_GO gates",
+    "authorization artifact scope/SHA/config/instrument validation",
+    "hidden confirm-token handoff binding (no argv/env plaintext)",
+    "canonical Public-MD GET-only provider contract",
+    "PRE_RESTART segment via bound segment_runner + offline provider",
+    "controlled process/session boundary (exit 82)",
+    "POST_RESTART segment in new-process identity",
+    "reconciliation before alpha",
+    "duplicate observation/confirmation/intent/fill guards",
+    "session manifest schema",
+    "offline/bundle verifier bindings",
+    "REAL_NETWORK remains fail-closed in this surface capability"
+  ],
+  "call_graph_before": [
+    "Step-3 Binding CLI (binding-only; refuses --request-real-network)",
+    "Network entrypoint execute-post-unlock (real network forbidden)",
+    "Session-GO / segment auth / offline harness / bundle verifier exist",
+    "NO productive Step-3 governed execution surface entrypoint"
+  ],
+  "campaign_result": null,
+  "capability_id": "PHASE_9_2_STEP_3_GOVERNED_PRODUCTIVE_REAL_NETWORK_RESTART_RECOVERY_SESSION_EXECUTION_SURFACE_IMPLEMENTATION_V1",
+  "claims": {
+    "AUTHORIZATION_CONSUMED": false,
+    "AUTHORIZATION_ISSUED": false,
+    "AUTHORIZATION_MODEL_REUSED": true,
+    "BACKOFF_BASE_SECONDS": 1.0,
+    "BACKOFF_MAX_SECONDS": 30.0,
+    "BOUNDED_BACKOFF": true,
+    "BOUNDED_RECONNECT": true,
+    "CALL_ORDER_PARITY_PROVEN": true,
+    "CONFIG_NUMERIC_VALUES_CHANGED": false,
+    "CONFIRM_TOKEN_CANONICAL_PATH_USED": true,
+    "CONFIRM_TOKEN_CONSUMED": false,
+    "CONTROLLED_RESTART_BOUNDARY_EXPLICIT": true,
+    "CORE_LOGIC_CHANGED": false,
+    "DECISION_REASON_PARITY_PROVEN": true,
+    "DECISION_SEMANTICS_CHANGED": false,
+    "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+    "EXIT_PRECEDENCE_PARITY_PROVEN": true,
+    "INPUT_OUTPUT_PARITY_PROVEN": true,
+    "MAX_RETRY_ATTEMPTS": 3,
+    "MIN_REQUEST_INTERVAL_SECONDS": 2.0,
+    "NETWORK_SESSION_STARTED": false,
+    "ORDER_SIDE_EFFECT_OCCURRED": false,
+    "PACING_POLICY_OWNER": "research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.public_md_rate_limit_policy_v1",
+    "POST_RESTART_STATE_LOAD_REQUIRED": true,
+    "PRIVATE_ENDPOINT_REACHABLE": false,
+    "PROCESS_OR_SESSION_BOUNDARY_MODELED": true,
+    "PRODUCTIVE_CALLER_ADDED": true,
+    "PUBLIC_MD_PROVIDER_BOUND": true,
+    "REAL_EXECUTION_ADAPTER_CONSTRUCTED": false,
+    "REAL_PUBLIC_MD_RESTART_SESSION_COMPLETED": false,
+    "RECONCILIATION_BEFORE_ALPHA_AFTER_RESTART": true,
+    "RESTART_RECOVERY_LADDER_STEP_CLOSED": false,
+    "RESTART_REQUEST_MODEL_EXPLICIT": true,
+    "RISK_PARITY_PROVEN": true,
+    "RUNTIME_REACHABLE": true,
+    "SAFETY_PARITY_PROVEN": true,
+    "STALENESS_OWNER": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1",
+    "STATE_TRANSITION_PARITY_PROVEN": true,
+    "STEP3_ENTRYPOINT_CANONICAL": true,
+    "STEP3_GOVERNED_CAPABILITY_BOUND": true,
+    "STEP3_PRODUCTIVE_ENTRYPOINT_FOUND": true,
+    "TRADING_LOGIC_CHANGED": false,
+    "ZERO_INTERVAL_RETRY_BURST": false
+  },
+  "confirm_token_consumed": false,
+  "contract_bundle_digests": {
+    "binding_config_digest": "7f7f319f0c24c67b1346b2d40a1942e8c6ba8a729cc7c028a9479252e48427cc",
+    "session_contract_digest": "8413ce5686a65b030f43448e3aa158295cfeed2b7be546f76f9d0d626e9e90e0",
+    "surface_config_digest": "c7bc8b0c631f0e05625571b8b1b01d673c722c66968967ebd351d42291c43b82"
+  },
+  "evidence": {
+    "binding_parity": {
+      "blockers": [],
+      "claims": {
+        "CANONICAL_WALLCLOCK_RUNNER": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+        "CANONICAL_WALLCLOCK_RUNNER_BOUND": true,
+        "CORE_LOGIC_CHANGE": false,
+        "DASHBOARD_AUTHORITY_EFFECT": "NONE",
+        "DASHBOARD_READ_ONLY_CONSUMER": true,
+        "EFFECTIVE_NUMERIC_VALUES_UNCHANGED": true,
+        "NO_PERMANENT_UNSCOPED_ENABLE_FLAG": true
+      },
+      "ok": true
+    },
+    "network_boundary": {
+      "AUTH_HEADER_REACHABLE": false,
+      "EXCHANGE_CREDENTIAL_PATH_REACHABLE": false,
+      "HTTP_METHOD_ALLOWLIST": "GET_ONLY",
+      "NETWORK_ALLOWLIST": "OKX_EEA_PUBLIC_MARKET_DATA_ENDPOINTS_ONLY",
+      "ORDER_SIDE_EFFECT_OCCURRED": false,
+      "ORDER_SUBMIT_PATH_REACHABLE": false,
+      "PRIVATE_ENDPOINT_REACHABLE": false,
+      "PUBLIC_MD_GET_ONLY": true,
+      "REAL_EXECUTION_ADAPTER_CONSTRUCTED": false,
+      "blockers": [],
+      "entrypoint_boundary": {
+        "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+        "EXCHANGE_ORDER_SUBMIT_REACHABLE": false,
+        "GET_ONLY_BOUND": true,
+        "NETWORK_ALLOWLIST": "OKX_EEA_PUBLIC_MARKET_DATA_ENDPOINTS_ONLY",
+        "PRIVATE_ENDPOINT_REACHABLE": false,
+        "PRODUCTIVE_NETWORK_SESSION_EXECUTION_ALLOWED": false,
+        "PUBLIC_MD_ONLY_BOUND": true,
+        "REAL_EXECUTION_ADAPTER_CONSTRUCTED": false,
+        "blockers": [],
+        "notes": [
+          "REUSES_WALLCLOCK_NETWORK_BOUNDARY_GUARD",
+          "NO_REAL_NETWORK_IN_IMPLEMENTATION_DEFAULT"
+        ],
+        "ok": true
+      },
+      "notes": [
+        "REUSES_STEP3_ENTRYPOINT_NETWORK_BOUNDARY=true",
+        "NO_PARALLEL_TRANSPORT_AUTHORITY=true"
+      ],
+      "ok": true
+    },
+    "pacing": {
+      "backoff_schedule_seconds": [
+        1.0,
+        2.0,
+        4.0
+      ],
+      "blockers": [],
+      "claims": {
+        "BACKOFF_BASE_SECONDS": 1.0,
+        "BACKOFF_MAX_SECONDS": 30.0,
+        "BOUNDED_BACKOFF": true,
+        "BOUNDED_RECONNECT": true,
+        "MAX_RETRY_ATTEMPTS": 3,
+        "MIN_REQUEST_INTERVAL_SECONDS": 2.0,
+        "PACING_POLICY_OWNER": "research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.public_md_rate_limit_policy_v1",
+        "STALENESS_OWNER": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1",
+        "ZERO_INTERVAL_RETRY_BURST": false
+      },
+      "notes": [
+        "REUSES_PHASE92_PACING_CONVENTIONS=true",
+        "NO_PARALLEL_PACING_AUTHORITY=true"
+      ],
+      "ok": true
+    }
+  },
+  "network_session_started": false,
+  "notes": [
+    "CAPABILITY_ID=PHASE_9_2_STEP_3_GOVERNED_PRODUCTIVE_REAL_NETWORK_RESTART_RECOVERY_SESSION_EXECUTION_SURFACE_IMPLEMENTATION_V1",
+    "RUNTIME_CAPABILITY_ID=PHASE_9_2_STEP_3_GOVERNED_PRODUCTIVE_REAL_NETWORK_RESTART_RECOVERY_SESSION_EXECUTION_V1",
+    "BINDING_PACKAGE=ops.phase_9_2_productive_public_md_restart_recovery_real_network_wallclock_binding_v1",
+    "HARNESS_PACKAGE=ops.phase_9_2_restart_recovery_session_contract_and_productive_harness_v1",
+    "SESSION_GO_PACKAGE=ops.phase_9_2_productive_restart_recovery_session_go_capability_v1",
+    "CONFIRM_TOKEN_OWNER=ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1",
+    "NO_REAL_NETWORK_SESSION_IN_IMPLEMENTATION=true",
+    "NO_AUTHORIZATION_CONSUMPTION_IN_IMPLEMENTATION=true",
+    "NO_CONFIRM_TOKEN_CONSUMPTION_IN_IMPLEMENTATION=true",
+    "STEP4_STEP5_PATTERN_REUSED_WITHOUT_SEMANTIC_RELABEL=true",
+    "BINDING_CLI_UNCHANGED=true"
+  ],
+  "ok": true,
+  "productive_entrypoint": "scripts/ops/run_phase_9_2_step_3_governed_productive_real_network_restart_recovery_session_execution_v1.py",
+  "runtime_capability_id": "PHASE_9_2_STEP_3_GOVERNED_PRODUCTIVE_REAL_NETWORK_RESTART_RECOVERY_SESSION_EXECUTION_V1",
+  "session_request": null,
+  "terminal_class": "PASS"
+}
