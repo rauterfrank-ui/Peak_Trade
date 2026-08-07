@@ -207,6 +207,8 @@ class WallclockSessionRuntimeV1:
         self.stale_gate_activation_count = 0
         self._post_reconnect_reconciliation_required = False
         self._expected_repository_sha = ""
+        self._runtime_overrides: dict[str, Any] = {}
+        self._governed_stale_data_control: Any = None
         self.natural_transport_fault_count = 0
         self.last_retry_after_raw: str | None = None
         self.last_retry_after_parsed_seconds: float | None = None
@@ -539,6 +541,13 @@ class WallclockSessionRuntimeV1:
         session_id = go.session_id
         self.session_id = session_id
         self._expected_repository_sha = str(expected_repository_sha)
+        # Optional governed stale-data control (Step-6). Default absent/disabled.
+        # Duck-typed: must expose resolve_receive_ts_v1(wall_now=, natural_receive_ts=).
+        # Must not fabricate observation payloads. Step-4 transport fault remains separate.
+        self._runtime_overrides = dict(runtime_overrides or {})
+        self._governed_stale_data_control = self._runtime_overrides.get(
+            "governed_stale_data_control"
+        )
         # Fail-closed: V1 artifact objects are never accepted for productive start.
         if artifact is not None:
             self.state = WallclockSessionState.INVALID
@@ -785,7 +794,40 @@ class WallclockSessionRuntimeV1:
                     )
                     price = float(normalized.mark_px)
                     self.sequence += 1
-                    receive_ts = now_wall
+                    # Natural receive timestamp from wall clock; optional Step-6
+                    # governed stale control may adjust receive_ts for classification
+                    # only (RECEIVE_LAG / DATA_HOLD). Observation payload stays natural.
+                    receive_ts = float(now_wall)
+                    stale_ctrl = self._governed_stale_data_control
+                    if stale_ctrl is not None and hasattr(stale_ctrl, "resolve_receive_ts_v1"):
+                        faults_before = int(
+                            getattr(getattr(stale_ctrl, "telemetry", None), "faults_applied", 0)
+                            or 0
+                        )
+                        receive_ts = float(
+                            stale_ctrl.resolve_receive_ts_v1(
+                                wall_now=float(now_wall),
+                                natural_receive_ts=float(receive_ts),
+                            )
+                        )
+                        faults_after = int(
+                            getattr(getattr(stale_ctrl, "telemetry", None), "faults_applied", 0)
+                            or 0
+                        )
+                        if faults_after > faults_before:
+                            events = list(
+                                getattr(getattr(stale_ctrl, "telemetry", None), "events", []) or []
+                            )
+                            if events:
+                                last_evt = events[-1]
+                                if str(last_evt.get("kind") or "") == "DATA_HOLD":
+                                    hold_s = float(last_evt.get("hold_seconds") or 0.0)
+                                    if hold_s > 0.0:
+                                        self.sleep(hold_s)
+                                        now_wall = self.clock_wall()
+                                        now_mono = self.clock_mono()
+                        if hasattr(stale_ctrl, "assert_no_decision_injection_v1"):
+                            stale_ctrl.assert_no_decision_injection_v1()
                     tick = ObservationMarketTickV1(
                         instrument_id=normalized.canonical_instrument_id,
                         venue=VENUE_OKX,
