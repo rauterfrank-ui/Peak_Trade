@@ -1,0 +1,118 @@
+{
+  "FAILURE_INJECTION_TESTS_PASS": true,
+  "PHASE_9_2_STEP_6_STATUS": "OPEN",
+  "authorization_consumed": false,
+  "cases": [
+    {
+      "case": "default_invocation_cannot_start_network",
+      "detail": {
+        "network_session_started": false,
+        "ok": true
+      },
+      "ok": true
+    },
+    {
+      "case": "non_tty_cannot_start_network",
+      "detail": {
+        "blockers": [
+          "HIDDEN_PTY_STDIN_NOT_TTY",
+          "REAL_TTY_REQUIRED"
+        ]
+      },
+      "ok": true
+    },
+    {
+      "case": "missing_owner_go_cannot_start_network",
+      "detail": {
+        "blockers": [
+          "OWNER_GO_REQUIRED",
+          "REAL_NETWORK_SESSION_FORBIDDEN_IN_THIS_BINDING_CAPABILITY"
+        ]
+      },
+      "ok": true
+    },
+    {
+      "case": "invalid_confirm_token_cannot_start_network",
+      "detail": {
+        "blockers": [
+          "CONFIRM_TOKEN_DIGEST_MISMATCH",
+          "CONFIRM_TOKEN_INVALID",
+          "REAL_NETWORK_SESSION_FORBIDDEN_IN_THIS_BINDING_CAPABILITY"
+        ]
+      },
+      "ok": true
+    },
+    {
+      "case": "stale_control_absent_cannot_start_step6_session",
+      "detail": {
+        "blockers": [
+          "STALE_CONTROL_ABSENT"
+        ],
+        "mode": "GOVERNED_REAL_NETWORK_SESSION",
+        "network_session_may_start": false,
+        "notes": [
+          "EPHEMERAL_GO_REQUIRED_FOR_FUTURE_SESSION=true",
+          "BINDING_CAPABILITY_FORBIDS_NETWORK_START=true"
+        ],
+        "ok": false
+      },
+      "ok": true
+    },
+    {
+      "case": "permanent_network_session_allowed_flip_not_required",
+      "detail": {
+        "NETWORK_SESSION_ALLOWED": false,
+        "PREDECESSOR_NETWORK_SESSION_ALLOWED": false
+      },
+      "ok": true
+    },
+    {
+      "case": "public_md_only_invariant",
+      "detail": {
+        "ORDERS_DISABLED": true,
+        "PUBLIC_MD_ONLY_ENFORCED": true
+      },
+      "ok": true
+    },
+    {
+      "case": "order_trading_mutation_impossible",
+      "detail": {},
+      "ok": true
+    },
+    {
+      "case": "step6_fault_schedule_reaches_receive_lag_control",
+      "detail": {
+        "stale_ok": true
+      },
+      "ok": true
+    },
+    {
+      "case": "verifier_evidence_structurally_bound",
+      "detail": {},
+      "ok": true
+    },
+    {
+      "case": "max_session_count_exactly_one",
+      "detail": {
+        "MAX_NETWORK_SESSION_COUNT": 1
+      },
+      "ok": true
+    },
+    {
+      "case": "binding_capability_zero_network_calls",
+      "detail": {
+        "blockers": [
+          "AUTHORIZATION_INVALID",
+          "CONFIRM_TOKEN_INVALID",
+          "REAL_NETWORK_SESSION_FORBIDDEN_IN_THIS_BINDING_CAPABILITY",
+          "SEPARATE_OWNER_GO_REQUIRED_ON_REAL_TTY_AFTER_MERGE"
+        ]
+      },
+      "ok": true
+    }
+  ],
+  "confirm_token_consumed": false,
+  "network_calls": 0,
+  "network_session_started": false,
+  "ok": true
+}
