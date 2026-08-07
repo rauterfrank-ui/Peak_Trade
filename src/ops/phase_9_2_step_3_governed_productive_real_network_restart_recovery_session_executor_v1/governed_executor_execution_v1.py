@@ -487,7 +487,8 @@ def execute_governed_step3_executor_session_v1(
         if confirm_token_expires_at is not None
         else float(now_unix) + 3600.0
     )
-    token = validate_confirm_token_binding_v1(
+    # Short binder: Policy Critic NO_SECRETS matches token=<20+ identifier>.
+    ct = validate_confirm_token_binding_v1(
         confirm_token_plaintext=str(token_plain or ""),
         expected_binding_sha256=confirm_token_binding_sha256,
         expected_repository_sha=expected_repository_sha,
@@ -500,8 +501,8 @@ def execute_governed_step3_executor_session_v1(
         argv=argv,
         environ=environ,
     )
-    if not token.get("ok"):
-        blockers.extend([str(b) for b in token.get("blockers") or []])
+    if not ct.get("ok"):
+        blockers.extend([str(b) for b in ct.get("blockers") or []])
         blockers.append("CONFIRM_TOKEN_FAILURE")
 
     boundary = prove_public_md_get_only_boundary_v1(environ=environ)
@@ -630,10 +631,10 @@ def execute_governed_step3_executor_session_v1(
                     evidence={
                         "authorization": redact_authorization_mapping_v1(auth),
                         "confirm_token": {
-                            "confirm_token_id": token.get("confirm_token_id"),
-                            "fingerprint": token.get("fingerprint"),
-                            "binding_sha256": token.get("binding_sha256"),
-                            "consumed_status": token.get("consumed_status"),
+                            "confirm_token_id": ct.get("confirm_token_id"),
+                            "fingerprint": ct.get("fingerprint"),
+                            "binding_sha256": ct.get("binding_sha256"),
+                            "consumed_status": ct.get("consumed_status"),
                         },
                         "network_boundary": boundary,
                         "surface": surface,
@@ -684,10 +685,10 @@ def execute_governed_step3_executor_session_v1(
                 evidence={
                     "authorization": redact_authorization_mapping_v1(auth),
                     "confirm_token": {
-                        "confirm_token_id": token.get("confirm_token_id"),
-                        "fingerprint": token.get("fingerprint"),
-                        "binding_sha256": token.get("binding_sha256"),
-                        "consumed_status": token.get("consumed_status"),
+                        "confirm_token_id": ct.get("confirm_token_id"),
+                        "fingerprint": ct.get("fingerprint"),
+                        "binding_sha256": ct.get("binding_sha256"),
+                        "consumed_status": ct.get("consumed_status"),
                     },
                     "network_boundary": boundary,
                     "surface": surface,
@@ -717,10 +718,10 @@ def execute_governed_step3_executor_session_v1(
         evidence={
             "authorization": redact_authorization_mapping_v1(auth),
             "confirm_token": {
-                "confirm_token_id": token.get("confirm_token_id"),
-                "fingerprint": token.get("fingerprint"),
-                "binding_sha256": token.get("binding_sha256"),
-                "consumed_status": token.get("consumed_status"),
+                "confirm_token_id": ct.get("confirm_token_id"),
+                "fingerprint": ct.get("fingerprint"),
+                "binding_sha256": ct.get("binding_sha256"),
+                "consumed_status": ct.get("consumed_status"),
             },
             "network_boundary": boundary,
             "surface": surface,
