@@ -2121,20 +2121,25 @@ using public market data and internal simulated execution only.
     `PHASE_9_2_STEP_6_GOVERNED_ADVERSE_STALE_DATA_SESSION_EXECUTION_BINDING_V1`,
     productive real-network session executor **binding** under
     `PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTOR_BINDING_V1`,
-    and productive Real-Network **execution path** under
-    `PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_IMPLEMENTATION_V1`
+    productive Real-Network **execution path** under
+    `PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_IMPLEMENTATION_V1`,
+    and governed productive **session execution** implementation under
+    `PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTION_IMPLEMENTATION_V1`
     (`STEP6_BINDING_IMPLEMENTED=true`,
     `STEP6_EXECUTION_PACKAGE_BOUND=true`,
     `GOVERNED_STALE_CONTROL_PRODUCTIVELY_BOUND=true`,
     `STEP6_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTOR_BOUND=true`,
     `STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_PRESENT=true`,
+    `STEP6_GOVERNED_PRODUCTIVE_SESSION_EXECUTION_CAPABILITY_PRESENT=true`,
+    `STEP6_SESSION_OWNER_PRESENT=true`,
     `STEP6_BINDING_ONLY_EXECUTOR_PRESERVED=true`,
+    `STEP6_PRODUCTIVE_PATH_IMPLEMENTATION_PRESERVED=true`,
     `READY_FOR_SEPARATE_GOVERNED_SESSION_EXECUTION=true`,
     `READY_FOR_SEPARATE_OWNER_GO_REAL_TTY_SESSION=true`,
     `NETWORK_SESSION_STARTED=false`,
     `SESSION_EXECUTED=false`). Binding-PASS &#47; Preflight-PASS &#47;
-    Path-Implementation-PASS is **not** ladder closeout. A separate
-    Owner-GO real-local-TTY attempt on
+    Path-Implementation-PASS &#47; Session-Execution-Implementation-PASS is
+    **not** ladder closeout. A separate Owner-GO real-local-TTY attempt on
     `main@642186ee6eb1741edaca926c40141e3ea67f0a4b` for
     `PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTION_V1`
     terminated `FAIL_CLOSED` &#47; `HARD_STOP_BINDING_FORBIDS_REAL_NETWORK_SESSION`
@@ -2147,11 +2152,14 @@ using public market data and internal simulated execution only.
     `NETWORK_SESSION_COUNT=0`, `VERIFIER_RESULT=NOT_RUN`,
     `EVIDENCE_SEALED=false`. Documented under
     `PHASE_9_2_STEP_6_FAIL_CLOSED_SESSION_DOCUMENTATION_AND_REPOSITORY_RUNBOOK_RECONCILIATION_V1`.
-    The Binding-only vs productive executor contrast is now explicit:
-    only `PRODUCTIVE_REAL_NETWORK_EXECUTOR` can authorize
-    `network_session_may_start` under ephemeral Owner-GO &#47;
-    `NETWORK_SESSION_GO` for a **later** separate Real-TTY session.
-    Ladder step remains OPEN until a productive session verifier PASS;
+    Layer contrast is now explicit:
+    Binding-only always forbids;
+    Path-implementation authorizes structural path may_start only and never
+    starts;
+    Session-execution owns session may_start and makes a later Owner-GO
+    Real-TTY session reachable without weakening Binding&#47;Path forbid
+    constants. Ladder step remains OPEN until a productive session
+    verifier PASS;
 7.  repeated multi-session continuity campaign --- open.
 
 ``` text
@@ -2167,12 +2175,15 @@ GOVERNED_STALE_CONTROL_PRODUCTIVELY_BOUND=true
 STEP6_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTOR_BOUND=true
 STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_PRESENT=true
 STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_ABSENT=false
+STEP6_GOVERNED_PRODUCTIVE_SESSION_EXECUTION_CAPABILITY_PRESENT=true
+STEP6_SESSION_OWNER_PRESENT=true
 STEP6_BINDING_ONLY_EXECUTOR_PRESERVED=true
+STEP6_PRODUCTIVE_PATH_IMPLEMENTATION_PRESERVED=true
 STEP6_OWNER_GO_REAL_TTY_ATTEMPT_ON_642186EE=FAIL_CLOSED
 STEP6_GOVERNED_SESSION_CLOSED=false
 SESSION_EXECUTED=false
 NETWORK_SESSION_STARTED=false
-BINDING_OR_PREFLIGHT_OR_PATH_PASS_IS_NOT_LADDER_CLOSEOUT=true
+BINDING_OR_PREFLIGHT_OR_PATH_OR_SESSION_IMPL_PASS_IS_NOT_LADDER_CLOSEOUT=true
 ```
 
 Related proven predecessors that do not close this ladder:
@@ -2230,8 +2241,14 @@ Interpretation (historical at `642186ee`; path later implemented):
     under
     `PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_IMPLEMENTATION_V1`
     without starting a network session and without weakening Binding-only
-    forbid constants. Path-PASS is still not ladder closeout; a later
-    separate Owner-GO Real-TTY session remains required.
+    forbid constants. Path-PASS is still not ladder closeout.
+-   Governed productive session-execution implementation was subsequently
+    added under
+    `PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTION_IMPLEMENTATION_V1`
+    (Step-5 pattern), consuming the productive path as a dependency edge
+    while preserving Binding-only and Path-implementation non-starting
+    roles. Session-Execution-Implementation-PASS is still not ladder
+    closeout; a later separate Owner-GO Real-TTY session remains required.
 ## Operational requirements
 
 -   no zero-interval request bursts;
@@ -3679,8 +3696,11 @@ PHASE_9_2_LADDER_NEXT_STEP=ADVERSE_STALE_DATA_SESSION
 PHASE_9_2_STEP_6_STATUS=OPEN
 PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_PRESENT=true
 PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_ABSENT=false
+STEP6_GOVERNED_PRODUCTIVE_SESSION_EXECUTION_CAPABILITY_PRESENT=true
+STEP6_SESSION_OWNER_PRESENT=true
 STEP6_BINDING_ONLY_EXECUTOR_PRESERVED=true
-STEP6_BINDING_OR_PREFLIGHT_OR_PATH_PASS_IS_NOT_LADDER_CLOSEOUT=true
+STEP6_PRODUCTIVE_PATH_IMPLEMENTATION_PRESERVED=true
+STEP6_BINDING_OR_PREFLIGHT_OR_PATH_OR_SESSION_IMPL_PASS_IS_NOT_LADDER_CLOSEOUT=true
 SEPARATE_OWNER_GO_REQUIRED_FOR_STEP6_REAL_TTY_SESSION=true
 ```
 
@@ -3697,6 +3717,7 @@ SEPARATE_OWNER_GO_REQUIRED_FOR_PUBLIC_MD_NETWORK_SESSION=true
 THIS_DOCUMENTATION_RECONCILIATION_DOES_NOT_AUTHORIZE_PHASE_9_2_NETWORK_SESSION=true
 DO_NOT_TREAT_STEP6_BINDING_EXECUTE_PATH_AS_PRODUCTIVE_SESSION=true
 DO_NOT_TREAT_STEP6_PATH_IMPLEMENTATION_PASS_AS_LADDER_CLOSEOUT=true
+DO_NOT_TREAT_STEP6_SESSION_EXECUTION_IMPLEMENTATION_PASS_AS_LADDER_CLOSEOUT=true
 DO_NOT_REOPEN_CAPABILITY_6_1=true
 DO_NOT_FORCE_ENTRY_OR_FILL=true
 LIVE_TESTNET_ORDER_CREDENTIAL_PATH=false
