@@ -1,0 +1,43 @@
+{
+  "backoff_timeline": [],
+  "claims": {
+    "ADVERSE_CONDITION_OBSERVED": false,
+    "ADVERSE_STALE_DATA_LADDER_STEP_CLOSED": false,
+    "DUPLICATE_CONFIRMATION_ADVANCE": false,
+    "DUPLICATE_FILL": false,
+    "OBSERVED_SESSION": false,
+    "STALE_CONDITION_OBSERVED": false,
+    "STALE_CONFIRMATION_ADVANCE": false,
+    "ZERO_INTERVAL_RETRY_BURST": false
+  },
+  "config_digest": "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b",
+  "confirmation_advance_count": 0,
+  "confirmation_session_id": "phase_9_2_adverse_stale_data_confirmation_session_v1",
+  "credential_access_reachable": false,
+  "distinct_observation_count": 0,
+  "duplicate_confirmation_advance_count": 0,
+  "duplicate_observation_count": 0,
+  "ended_at": null,
+  "fabricated_observation_count": 0,
+  "fill_count": 0,
+  "manifest_digest": "4395be497af29a3b613c2f3220c223df10373ef7af01e817e105147c0dce7b9f",
+  "minimum_request_interval_seconds": 2.0,
+  "order_side_effect_occurred": false,
+  "private_endpoint_reachable": false,
+  "repository_sha": "fce077cabc9b67678ad0cb46de16c29da5a370f1",
+  "retry_count": 0,
+  "runtime_session_id": "",
+  "schema_version": "phase_9_2_adverse_stale_data_session_evidence.v1",
+  "session_id": "phase_9_2_public_md_adverse_stale_data_session_v1",
+  "stale_confirmation_advance_count": 0,
+  "stale_observation_count": 0,
+  "stale_state_transitions": [],
+  "started_at": null,
+  "verifier_result": {
+    "notes": [
+      "TEMPLATE_ONLY_WIRING_CAPABILITY"
+    ],
+    "observed_session": false,
+    "ok": false
+  }
+}

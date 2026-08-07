@@ -768,18 +768,21 @@ preflight evidence `phase_9_2_session_ladder_v1.json`.
 
 | Field | Value |
 | --- | --- |
-| CURRENT_STATUS | `OPEN` |
-| PRODUCTIVE_ENTRYPOINT | Must reuse `StalenessTrackerV1` / killstate; no dedicated Step-6 binding |
-| SESSION_SPEC | Ladder name only |
-| AUTHORIZATION_SCOPE | Separate Owner-GO |
+| CURRENT_STATUS | `OPEN` (binding ready; governed session not closed) |
+| PRODUCTIVE_ENTRYPOINT | `scripts&#47;ops&#47;run_phase_9_2_step_6_adverse_stale_data_session_continuation_v1.py` |
+| PRODUCTIVE_STEP6_EXECUTOR | `ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1.productive_executor_v1` |
+| SESSION_SPEC | `config&#47;ops&#47;phase_9_2_public_md_adverse_stale_data_session_contract_v1.json` |
+| AUTHORIZATION_SCOPE | Separate Owner-GO for later real session; binding itself `NETWORK_SESSION_ALLOWED=false` |
 | STATE_ROOTS | Canonical |
-| FAULT_OR_SESSION_MECHANISM | Governed stale/adverse injection — **CURRENT_GAP** as ladder session |
-| EVIDENCE_BUNDLE | Absent |
-| VERIFIER | Absent |
+| STALE_DATA_CLASSIFIER | `heartbeat_staleness_v1.StalenessTrackerV1` |
+| ADVERSE_DATA_CLASSIFIER | `killstate_runtime_v1.STALE_DATA` |
+| FAULT_OR_SESSION_MECHANISM | `governed_injected_stale_data_fault_v1` (`RECEIVE_LAG` / `DATA_HOLD` only; default disabled) |
+| EVIDENCE_BUNDLE | `docs&#47;evidence&#47;capability_phase_9_2_step_6_adverse_stale_data_session_continuation_v1&#47;SUMMARY.json` |
+| VERIFIER | `verifier_v1` (binding + later productive session contract) |
 | PREDECESSOR | Step 5 |
 | SUCCESSOR | Multi-session campaign |
-| OPEN_GAPS | `WIRING_GAP` / `EVIDENCE_GAP` |
-| CLOSURE_CRITERIA | Stale blocks Alpha without fabricated observations; verifier PASS |
+| OPEN_GAPS | `EVIDENCE_GAP` for governed real-network Step-6 session closure |
+| CLOSURE_CRITERIA | Stale blocks Alpha without fabricated observations; productive session verifier PASS |
 
 ### Step 7 — Multi-Session Continuity Campaign
 

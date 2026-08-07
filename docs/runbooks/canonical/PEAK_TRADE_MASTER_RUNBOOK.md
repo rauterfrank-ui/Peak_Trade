@@ -2114,7 +2114,13 @@ using public market data and internal simulated execution only.
     `STEP5_PRODUCTIVE_EVIDENCE_VERIFIED=true`,
     `STEP5_SESSION_LADDER_STEP_CLOSED=true`,
     `PHASE_9_2_STEP_5_STATUS=CLOSED_PASS`);
-6.  adverse/stale-data session --- next open ladder step;
+6.  adverse/stale-data session --- next open ladder step; productive binding
+    readiness established under
+    `PHASE_9_2_STEP_6_ADVERSE_STALE_DATA_SESSION_CONTINUATION_V1`
+    (`STEP6_BINDING_IMPLEMENTED=true`,
+    `READY_FOR_SEPARATE_GOVERNED_SESSION_EXECUTION=true`,
+    `NETWORK_SESSION_STARTED=false`); ladder step remains open until a
+    separately authorized governed session verifier PASS;
 7.  repeated multi-session continuity campaign --- open.
 
 ``` text
@@ -2124,6 +2130,8 @@ PHASE_9_2_STEP_4_STATUS=CLOSED_PASS
 PHASE_9_2_STEP_5_STATUS=CLOSED_PASS
 PHASE_9_2_STEP_6_STATUS=OPEN
 PHASE_9_2_STEP_7_STATUS=OPEN
+STEP6_BINDING_IMPLEMENTED=true
+STEP6_GOVERNED_SESSION_CLOSED=false
 ```
 
 Related proven predecessors that do not close this ladder:
