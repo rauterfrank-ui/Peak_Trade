@@ -7,7 +7,7 @@ import time
 from dataclasses import asdict, dataclass, field
 from decimal import Decimal
 from pathlib import Path
-from typing import Any, Callable, Mapping, Optional, Set
+from typing import Any, Callable, Literal, Mapping, Optional, Set
 
 from src.ops.integrated_paper_shadow_observation_session_v1.market_data_policy_v1 import (
     ObservationMarketTickV1,
@@ -259,6 +259,92 @@ class WallclockSessionRuntimeV1:
         if FAULT_ORIGIN_GOVERNED in str(message or ""):
             return FAULT_ORIGIN_GOVERNED
         return FAULT_ORIGIN_NATURAL
+
+    def _dispatch_reconnectable_transport_error_v1(
+        self,
+        *,
+        msg: str,
+        session_id: str,
+        now_mono: float,
+    ) -> Literal["continue", "abort"]:
+        """Single productive Session-Reconnect-Owner for transient transport failures.
+
+        Direct dispatch (no sibling-except reraise). Callers must not ``raise`` an
+        ``EeaPublicMdTransportError`` from inside ``except MarketDataBindingErrorV1``
+        expecting a sibling ``except EeaPublicMdTransportError`` to catch it —
+        Python does not re-enter sibling handlers for a newly raised exception.
+        """
+        if "ABORT_CREDENTIAL_OR_AUTH_SURFACE" in msg:
+            self._abort("ABORT_CREDENTIAL_OR_AUTH_SURFACE", msg)
+            return "abort"
+        if "HTTP_429_BUDGET_EXCEEDED" in msg or "RATE_LIMIT_SESSION_BUDGET_EXCEEDED" in msg:
+            self._abort("HTTP_429_BUDGET_EXCEEDED", msg)
+            return "abort"
+        err_cls, reconnectable = classify_transport_message_v1(msg)
+        fault_origin = self._fault_origin_for_message_v1(msg)
+        if "GOVERNED_INJECTED_TRANSPORT_FAULT" not in msg and "RATE_LIMIT" not in msg:
+            self.natural_transport_fault_count += 1
+        if not reconnectable:
+            self._abort(err_cls, msg)
+            return "abort"
+        # reconnect path — transient transport failures only
+        if self.state == WallclockSessionState.RUNNING:
+            self._transition(WallclockSessionState.RECONNECTING)
+        if self.reconnect_window_start is None:
+            self.reconnect_window_start = now_mono
+        self.reconnect_attempts += 1
+        self.writer.append_event(
+            "reconnect_events.jsonl",
+            {
+                "attempt": self.reconnect_attempts,
+                "error": msg,
+                "error_class": err_cls,
+                "reconnectable": True,
+                "fault_origin": fault_origin,
+                "mono_ts": now_mono,
+                "session_id": session_id,
+            },
+        )
+        self.writer.append_event(
+            "connectivity_events.jsonl",
+            {
+                "event": "transport_disconnect",
+                "fault_origin": fault_origin,
+                "error": msg,
+                "error_class": err_cls,
+                "mono_ts": now_mono,
+                "session_id": session_id,
+            },
+        )
+        if self.reconnect_attempts > self.config.max_reconnect_attempts:
+            self._abort("RECONNECT_BUDGET_EXCEEDED", msg)
+            return "abort"
+        if now_mono - self.reconnect_window_start > self.config.max_reconnect_window_seconds:
+            self._abort("RECONNECT_BUDGET_EXCEEDED", "window")
+            return "abort"
+        self.sleep(0.001)
+        if self.state == WallclockSessionState.RECONNECTING:
+            self._transition(WallclockSessionState.RUNNING)
+            self.reconnect_success_count += 1
+            self._post_reconnect_reconciliation_required = True
+            self.writer.append_event(
+                "connectivity_events.jsonl",
+                {
+                    "event": "transport_reconnect_success",
+                    "fault_origin": fault_origin,
+                    "attempt": self.reconnect_attempts,
+                    "session_id": session_id,
+                    "mono_ts": self.clock_mono(),
+                },
+            )
+        return "continue"
+
+    def _transport_message_for_reconnectable_mdb_v1(self, exc: MarketDataBindingErrorV1) -> str:
+        """Derive transport message for reconnect owner without sibling-except reraise."""
+        cause = exc.__cause__
+        if isinstance(cause, EeaPublicMdTransportError):
+            return str(cause)
+        return str(EeaPublicMdTransportError(str(exc)))
 
     def _run_post_reconnect_reconciliation_before_alpha_v1(
         self,
@@ -875,85 +961,31 @@ class WallclockSessionRuntimeV1:
                 except MarketDataBindingErrorV1 as exc:
                     # Deterministic schema/mapping defects never consume reconnect budget.
                     # Reconnectable TRANSPORT_FAILURE must reach the session reconnect
-                    # owner (canonical taxonomy) — do not abort the whole session.
+                    # owner via direct dispatch — never sibling-except reraise.
                     if bool(exc.reconnectable) and str(exc.error_class) == "TRANSPORT_FAILURE":
-                        cause = exc.__cause__
-                        if isinstance(cause, EeaPublicMdTransportError):
-                            raise cause from exc
-                        raise EeaPublicMdTransportError(str(exc)) from exc
+                        msg = self._transport_message_for_reconnectable_mdb_v1(exc)
+                        if (
+                            self._dispatch_reconnectable_transport_error_v1(
+                                msg=msg,
+                                session_id=session_id,
+                                now_mono=now_mono,
+                            )
+                            == "abort"
+                        ):
+                            break
+                        continue
                     self._abort(exc.error_class, str(exc))
                     break
                 except EeaPublicMdTransportError as exc:
-                    msg = str(exc)
-                    if "ABORT_CREDENTIAL_OR_AUTH_SURFACE" in msg:
-                        self._abort("ABORT_CREDENTIAL_OR_AUTH_SURFACE", msg)
-                        break
                     if (
-                        "HTTP_429_BUDGET_EXCEEDED" in msg
-                        or "RATE_LIMIT_SESSION_BUDGET_EXCEEDED" in msg
-                    ):
-                        self._abort("HTTP_429_BUDGET_EXCEEDED", msg)
-                        break
-                    err_cls, reconnectable = classify_transport_message_v1(msg)
-                    fault_origin = self._fault_origin_for_message_v1(msg)
-                    if "GOVERNED_INJECTED_TRANSPORT_FAULT" not in msg and "RATE_LIMIT" not in msg:
-                        self.natural_transport_fault_count += 1
-                    if not reconnectable:
-                        self._abort(err_cls, msg)
-                        break
-                    # reconnect path — transient transport failures only
-                    if self.state == WallclockSessionState.RUNNING:
-                        self._transition(WallclockSessionState.RECONNECTING)
-                    if self.reconnect_window_start is None:
-                        self.reconnect_window_start = now_mono
-                    self.reconnect_attempts += 1
-                    self.writer.append_event(
-                        "reconnect_events.jsonl",
-                        {
-                            "attempt": self.reconnect_attempts,
-                            "error": msg,
-                            "error_class": err_cls,
-                            "reconnectable": True,
-                            "fault_origin": fault_origin,
-                            "mono_ts": now_mono,
-                            "session_id": session_id,
-                        },
-                    )
-                    self.writer.append_event(
-                        "connectivity_events.jsonl",
-                        {
-                            "event": "transport_disconnect",
-                            "fault_origin": fault_origin,
-                            "error": msg,
-                            "error_class": err_cls,
-                            "mono_ts": now_mono,
-                            "session_id": session_id,
-                        },
-                    )
-                    if self.reconnect_attempts > self.config.max_reconnect_attempts:
-                        self._abort("RECONNECT_BUDGET_EXCEEDED", msg)
-                        break
-                    if (
-                        now_mono - self.reconnect_window_start
-                        > self.config.max_reconnect_window_seconds
-                    ):
-                        self._abort("RECONNECT_BUDGET_EXCEEDED", "window")
-                        break
-                    self.sleep(0.001)
-                    if self.state == WallclockSessionState.RECONNECTING:
-                        self._transition(WallclockSessionState.RUNNING)
-                        self.reconnect_success_count += 1
-                        self._post_reconnect_reconciliation_required = True
-                        self.writer.append_event(
-                            "connectivity_events.jsonl",
-                            {
-                                "event": "transport_reconnect_success",
-                                "fault_origin": fault_origin,
-                                "attempt": self.reconnect_attempts,
-                                "session_id": session_id,
-                                "mono_ts": self.clock_mono(),
-                            },
+                        self._dispatch_reconnectable_transport_error_v1(
+                            msg=str(exc),
+                            session_id=session_id,
+                            now_mono=now_mono,
                         )
+                        == "abort"
+                    ):
+                        break
                     continue
 
                 self.sleep(self.config.poll_interval_seconds)

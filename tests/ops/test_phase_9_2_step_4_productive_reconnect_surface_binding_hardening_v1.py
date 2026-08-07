@@ -99,14 +99,14 @@ def _disconnect_schedule(*, after_gets: int = 1) -> GovernedTransportFaultSchedu
     )
 
 
-def _route_reconnectable_mdb_like_session_v1(exc: MarketDataBindingErrorV1) -> None:
-    """Mirror productive session_runtime reconnect routing (unit surface)."""
-    if bool(exc.reconnectable) and str(exc.error_class) == "TRANSPORT_FAILURE":
-        cause = exc.__cause__
-        if isinstance(cause, EeaPublicMdTransportError):
-            raise cause from exc
-        raise EeaPublicMdTransportError(str(exc)) from exc
-    raise AssertionError(f"expected reconnectable TRANSPORT_FAILURE, got {exc.error_class}")
+def _transport_message_for_reconnectable_mdb_v1(exc: MarketDataBindingErrorV1) -> str:
+    """Mirror productive `_transport_message_for_reconnectable_mdb_v1` (no sibling reraise)."""
+    if not (bool(exc.reconnectable) and str(exc.error_class) == "TRANSPORT_FAILURE"):
+        raise AssertionError(f"expected reconnectable TRANSPORT_FAILURE, got {exc.error_class}")
+    cause = exc.__cause__
+    if isinstance(cause, EeaPublicMdTransportError):
+        return str(cause)
+    return str(EeaPublicMdTransportError(str(exc)))
 
 
 def test_session_reconnect_owned_marker_on_governed_disconnect() -> None:
@@ -177,10 +177,9 @@ def test_reconnectable_mdb_transport_cause_follows_reconnect_owner() -> None:
     wrapped = MarketDataBindingErrorV1("TRANSPORT_FAILURE", str(transport_err))
     wrapped.__cause__ = transport_err
     assert wrapped.reconnectable is True
-    with pytest.raises(EeaPublicMdTransportError) as exc:
-        _route_reconnectable_mdb_like_session_v1(wrapped)
-    assert FAULT_ORIGIN_GOVERNED in str(exc.value)
-    cls, reconnectable = classify_transport_message_v1(str(exc.value))
+    msg = _transport_message_for_reconnectable_mdb_v1(wrapped)
+    assert FAULT_ORIGIN_GOVERNED in msg
+    cls, reconnectable = classify_transport_message_v1(msg)
     assert cls == "TRANSPORT_FAILURE"
     assert reconnectable is True
 
@@ -219,9 +218,11 @@ def test_fetch_normalized_preserves_transport_cause_for_reconnect_routing() -> N
     assert exc.value.error_class == "TRANSPORT_FAILURE"
     assert exc.value.reconnectable is True
     assert isinstance(exc.value.__cause__, EeaPublicMdTransportError)
-    with pytest.raises(EeaPublicMdTransportError) as routed:
-        _route_reconnectable_mdb_like_session_v1(exc.value)
-    assert "CONNECTION_RESET" in str(routed.value)
+    msg = _transport_message_for_reconnectable_mdb_v1(exc.value)
+    assert "CONNECTION_RESET" in msg
+    cls, reconnectable = classify_transport_message_v1(msg)
+    assert cls == "TRANSPORT_FAILURE"
+    assert reconnectable is True
 
 
 def test_non_reconnectable_mdb_remains_fail_closed() -> None:
