@@ -1,0 +1,49 @@
+{
+  "LIVE_BOUNDED_NETWORK_EFFECT": "NONE",
+  "LIVE_BOUNDED_ORDER_LIFECYCLE_CONTINUITY_ACTIVATED": false,
+  "LIVE_BOUNDED_ORDER_LIFECYCLE_CONTINUITY_CONTRACT_ACTIVATED": false,
+  "LIVE_BOUNDED_ORDER_LIFECYCLE_CONTINUITY_CONTRACT_BOUND": true,
+  "LIVE_ORDER_EXECUTION_PERFORMED_IN_CAPABILITY_11_10": false,
+  "LIVE_ORDER_SUBMIT_PERFORMED_IN_CAPABILITY_11_10": false,
+  "OWNER": "ops.capability_11_10_live_bounded_single_future_continuity_v1",
+  "activation_blocked": true,
+  "amend_pending_blocked": true,
+  "credential_access_blocked": true,
+  "forbidden_lifecycle_states": [
+    "CANCEL_PENDING",
+    "AMEND_PENDING"
+  ],
+  "lifecycle_states": [
+    "INTENT_CREATED",
+    "ORDER_PLAN_CREATED",
+    "RISK_RESERVED",
+    "PRE_SUBMIT_VALIDATED",
+    "SUBMIT_PENDING",
+    "SUBMIT_ATTEMPTED",
+    "ACKNOWLEDGED",
+    "OPEN",
+    "PARTIALLY_FILLED",
+    "FILLED",
+    "CANCELLED",
+    "EXPIRED",
+    "TERMINAL_REJECTED",
+    "ACCOUNTED",
+    "RECONCILED",
+    "EVIDENCED"
+  ],
+  "live_submit_mode_blocked": true,
+  "multi_session_stage_blocked": true,
+  "network_session_blocked": true,
+  "non_fixture_blocked": true,
+  "ok": true,
+  "sample_bounded_digest": "fbe8765326589d30ef514811a50ddcdb95cdea3ab0fd58386dd7cf901618a2c4",
+  "sample_canonical_digest": "6d94d2abb2da3becca6144ab75a9c4bf13249b601326d5600f99253c537a2a34",
+  "stages_forbidden": [
+    "LIVE_BOUNDED_MULTI_SESSION",
+    "LIVE_AUTONOMOUS_SINGLE_FUTURE"
+  ],
+  "stages_in_scope": [
+    "LIVE_BOUNDED_SINGLE_FUTURE"
+  ],
+  "submit_blocked": true
+}

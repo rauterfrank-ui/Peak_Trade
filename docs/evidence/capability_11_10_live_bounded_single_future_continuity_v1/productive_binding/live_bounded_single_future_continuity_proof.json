@@ -1,0 +1,32 @@
+{
+  "AUTOMATIC_HALT_ALLOWED": true,
+  "AUTOMATIC_STAGE_DEMOTION_ALLOWED": true,
+  "BOUNDED_CONTINUITY_ROLLBACK_CONTRACT_REQUIRED": true,
+  "LIVE_BOUNDED_SINGLE_FUTURE_ACTIVATED": false,
+  "LIVE_BOUNDED_SINGLE_FUTURE_CONTINUITY_ACTIVATED": false,
+  "LIVE_BOUNDED_SINGLE_FUTURE_CONTINUITY_CONTRACT_ACTIVATED": false,
+  "LIVE_BOUNDED_SINGLE_FUTURE_CONTINUITY_CONTRACT_BOUND": true,
+  "MINIMUM_RATIFIED_NOTIONAL_ONLY": true,
+  "NO_AUTOMATIC_STAGE_PROMOTION": true,
+  "OWNER": "ops.capability_11_10_live_bounded_single_future_continuity_v1",
+  "OWNER_GO_REQUIRED_FOR_STAGE_PROMOTION": true,
+  "POSITION_COUNT_LIMIT": 1,
+  "SINGLE_FUTURE_ONLY": true,
+  "activation_blocked": true,
+  "automatic_promotion_blocked": true,
+  "cap_11_11_surface_blocked": true,
+  "multi_session_stage_blocked": true,
+  "non_fixture_blocked": true,
+  "ok": true,
+  "position_limit_blocked": true,
+  "sample_continuity_session_id": "bounded-continuity-fixture-v1",
+  "sample_max_notional": "1",
+  "sample_rollback_contract_id": "bounded-continuity-rollback-fixture-v1",
+  "stages_forbidden": [
+    "LIVE_BOUNDED_MULTI_SESSION",
+    "LIVE_AUTONOMOUS_SINGLE_FUTURE"
+  ],
+  "stages_in_scope": [
+    "LIVE_BOUNDED_SINGLE_FUTURE"
+  ]
+}
