@@ -1,0 +1,53 @@
+{
+  "CAPABILITY_11_8_STARTED": false,
+  "LIVE_SHADOW_RECONCILIATION_ACTIVATED": false,
+  "LIVE_SHADOW_RECONCILIATION_CONTRACT_ACTIVATED": false,
+  "LIVE_SHADOW_RECONCILIATION_CONTRACT_BOUND": true,
+  "LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_ACTIVATED": false,
+  "NO_AUTOMATIC_STAGE_PROMOTION": true,
+  "OWNER": "ops.capability_11_7_live_private_readonly_and_shadow_reconciliation_v1",
+  "RECONCILIATION_BEFORE_ALPHA": true,
+  "RECONCILIATION_CONTINUOUS": true,
+  "UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY": true,
+  "activation_blocked": true,
+  "adopt_policy_required_blocked": true,
+  "automatic_promotion_blocked": true,
+  "cap_11_8_surface_blocked": true,
+  "dry_run_stage_blocked": true,
+  "exchange_fetch_blocked": true,
+  "layers": [
+    "credential_and_account_identity",
+    "venue_instrument_and_contract_metadata",
+    "open_orders",
+    "recent_orders_and_trades",
+    "positions",
+    "balances_equity_and_available_margin",
+    "local_portfolio_and_accounting",
+    "risk_reservations",
+    "pending_commands",
+    "evidence_and_commit_cursors"
+  ],
+  "ok": true,
+  "outcomes": [
+    "MATCH",
+    "SAFE_REBUILD",
+    "SAFE_ADOPT_EXCHANGE_TRUTH",
+    "CANCEL_UNKNOWN_ORDERS",
+    "EXIT_ONLY",
+    "REDUCE_ONLY",
+    "CANCEL_ALL_AND_HALT",
+    "HARD_STOP_OWNER_REVIEW"
+  ],
+  "overwrite_blocked": true,
+  "stages_forbidden": [
+    "LIVE_DRY_RUN_ORDER_PLAN",
+    "LIVE_CANARY_MINIMUM_EXPOSURE",
+    "LIVE_BOUNDED_SINGLE_FUTURE",
+    "LIVE_BOUNDED_MULTI_SESSION",
+    "LIVE_AUTONOMOUS_SINGLE_FUTURE"
+  ],
+  "stages_in_scope": [
+    "LIVE_PRIVATE_READ_ONLY",
+    "LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION"
+  ]
+}
