@@ -2103,9 +2103,10 @@ using public market data and internal simulated execution only.
     (`PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RESTART_RECOVERY_REAL_NETWORK_WALLCLOCK_BINDING_V1`);
     `REAL_PUBLIC_MD_RESTART_SESSION_COMPLETED=false` until a later governed
     productive restart/recovery session verifier PASS;
-4.  rate-limit and reconnect session --- wallclock binding exists
-    (`PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RATE_LIMIT_RECONNECT_WALLCLOCK_BINDING_V1`);
-    ladder step remains open until a later governed real session verifier PASS;
+4.  rate-limit and reconnect session --- completed / PASS; governed productive
+    real-network session verified without ephemeral patches under evidence
+    `evidence/ops/phase_9_2_step_4_governed_productive_real_network_rate_limit_reconnect_session_execution_v1/session_20260807T043754Z`
+    (`PHASE_9_2_STEP_4_STATUS=CLOSED_PASS`);
 5.  prolonged natural-market session --- completed / PASS; productive session
     sealed and verified under
     `PHASE_9_2_STEP_5_PRODUCTIVE_SESSION_EVIDENCE_SEAL_AND_PRODUCTIVE_VERIFIER_V1`
@@ -2119,6 +2120,7 @@ using public market data and internal simulated execution only.
 ``` text
 NEXT_OPEN_PHASE_9_2_STEP=3_RESTART_RECOVERY_PRODUCTIVE_REAL_NETWORK_SESSION
 PHASE_9_2_STEP_3_STATUS=OPEN
+PHASE_9_2_STEP_4_STATUS=CLOSED_PASS
 PHASE_9_2_STEP_5_STATUS=CLOSED_PASS
 PHASE_9_2_STEP_6_STATUS=OPEN
 PHASE_9_2_STEP_7_STATUS=OPEN
