@@ -14,6 +14,7 @@ from src.ops.phase_9_2_step_6_governed_productive_real_network_session_execution
 )
 from src.ops.phase_9_2_step_6_governed_productive_real_network_session_execution_v1.governed_session_execution_v1 import (
     execute_governed_step6_session_offline_fail_closed_v1,
+    execute_governed_step6_session_v1,
     prove_step6_session_execution_implementation_v1,
 )
 from src.ops.phase_9_2_step_6_governed_productive_real_network_session_execution_v1.productive_path_consumer_v1 import (
@@ -278,13 +279,85 @@ def run_step6_session_execution_failure_injection_v1(
         getpass_fn=lambda _p: "x" * 32,
     )
     _case(
-        "full_go_may_start_but_implementation_does_not_start_network",
+        "offline_fail_closed_path_still_defers_network_start",
         bool(full.session_execution_may_start)
         and not full.network_session_started
         and "NETWORK_SESSION_START_DEFERRED_IN_IMPLEMENTATION_CAPABILITY" in full.blockers
         and bool((full.claims or {}).get("PRODUCTIVE_PATH_CONSUMED")),
         may_start=full.session_execution_may_start,
         started=full.network_session_started,
+    )
+
+    calls: list[dict] = []
+
+    def _fake_wallclock(**kwargs):  # noqa: ANN003
+        calls.append(dict(kwargs))
+        return {"ok": True, "NETWORK_SESSION_STARTED": False, "synthetic": True}
+
+    start_state: dict = {}
+    common = dict(
+        expected_repository_sha=expected_repository_sha,
+        expected_config_digest=expected_config_digest,
+        owner_go=True,
+        operator_authorization_explicit=True,
+        network_session_go=True,
+        authorization_valid=True,
+        confirm_token_valid=True,
+        enable_receive_lag=True,
+        allow_real_network_side_effects=True,
+        invoke_executor=True,
+        stdin_isatty=True,
+        getpass_fn=lambda _p: "x" * 32,
+        wallclock_runner=_fake_wallclock,
+        session_start_state=start_state,
+    )
+    first = execute_governed_step6_session_v1(**common)
+    _case(
+        "authorized_synthetic_gate_invokes_wallclock_exactly_once",
+        bool(first.ok)
+        and int((first.claims or {}).get("WALLCLOCK_INVOKED_COUNT") or 0) == 1
+        and len(calls) == 1
+        and "governed_stale_data_control" in dict(calls[0].get("runtime_overrides") or {})
+        and first.network_session_started is False,
+        wallclock_invoked=len(calls),
+        first_ok=first.ok,
+    )
+
+    second = execute_governed_step6_session_v1(**common)
+    _case(
+        "duplicate_start_blocked_exactly_once",
+        (not second.ok)
+        and "DUPLICATE_SESSION_START_FORBIDDEN" in second.blockers
+        and len(calls) == 1,
+        wallclock_invoked=len(calls),
+        blockers=second.blockers,
+    )
+
+    no_go_calls: list[dict] = []
+
+    def _fake2(**kwargs):  # noqa: ANN003
+        no_go_calls.append(dict(kwargs))
+        return {"ok": True}
+
+    no_owner = execute_governed_step6_session_v1(
+        expected_repository_sha=expected_repository_sha,
+        expected_config_digest=expected_config_digest,
+        owner_go=False,
+        operator_authorization_explicit=True,
+        network_session_go=True,
+        authorization_valid=True,
+        confirm_token_valid=True,
+        allow_real_network_side_effects=True,
+        invoke_executor=True,
+        stdin_isatty=True,
+        getpass_fn=lambda _p: "x" * 32,
+        wallclock_runner=_fake2,
+        session_start_state={},
+    )
+    _case(
+        "no_owner_go_zero_wallclock_calls",
+        len(no_go_calls) == 0 and no_owner.network_session_started is False,
+        calls=len(no_go_calls),
     )
 
     _case(
