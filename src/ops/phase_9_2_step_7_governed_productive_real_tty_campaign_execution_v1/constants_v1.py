@@ -54,6 +54,10 @@ PRODUCTIVE_ENTRYPOINT_PATH = (
 REAL_TTY_OPERATOR_ENTRYPOINT_PATH = (
     "scripts/ops/run_phase_9_2_step_7_real_tty_campaign_operator_entrypoint_v1.py"
 )
+DELEGATED_CURSOR_OPERATOR_ENTRYPOINT_PATH = (
+    "scripts/ops/run_phase_9_2_step_7_delegated_cursor_secure_confirm_"
+    "campaign_operator_entrypoint_v1.py"
+)
 PATH_ENTRYPOINT_PATH = "scripts/ops/run_phase_9_2_step_7_productive_campaign_execution_path_v1.py"
 BINDING_ENTRYPOINT_PATH = (
     "scripts/ops/run_phase_9_2_step_7_repeated_multi_session_continuity_campaign_binding_v1.py"
@@ -104,10 +108,26 @@ HIDDEN_PTY_CONFIRM_HANDOFF_OWNER = (
     "ops.phase_9_2_step_6_governed_productive_real_network_session_executor_v1."
     "hidden_pty_handoff_v1"
 )
+DELEGATED_CURSOR_SECURE_CONFIRM_BROKER_OWNER = (
+    "ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1."
+    "delegated_cursor_secure_confirm_broker_v1"
+)
 STEP5_NETWORK_SESSION_GO_PATTERN_OWNER = (
     "ops.phase_9_2_step_5_productive_real_network_session_activation_and_wiring_v1."
     "network_session_go_v1"
 )
+
+# Dual authorization channels for Step-7 campaign confirm.
+AUTH_CHANNEL_REAL_TTY_HUMAN_CONFIRM = "REAL_TTY_HUMAN_CONFIRM"
+AUTH_CHANNEL_DELEGATED_CURSOR_SECURE_CONFIRM = "DELEGATED_CURSOR_SECURE_CONFIRM"
+ALLOWED_AUTHORIZATION_CHANNELS = frozenset(
+    {
+        AUTH_CHANNEL_REAL_TTY_HUMAN_CONFIRM,
+        AUTH_CHANNEL_DELEGATED_CURSOR_SECURE_CONFIRM,
+    }
+)
+CONFIRM_TOKEN_ROLE_EPHEMERAL_EXECUTION_LATCH = "EPHEMERAL_EXECUTION_LATCH"
+DEFAULT_AUTHORIZATION_CHANNEL = AUTH_CHANNEL_REAL_TTY_HUMAN_CONFIRM
 
 MODE_PROVE_IMPLEMENTATION_ONLY = "PROVE_IMPLEMENTATION_ONLY"
 MODE_GOVERNED_MULTI_SESSION_CAMPAIGN = "GOVERNED_MULTI_SESSION_CAMPAIGN"
@@ -147,6 +167,9 @@ STEP7_PRODUCTIVE_CAMPAIGN_INVOKE_EDGE_PRESENT = True
 STEP7_PRODUCTIVE_CAMPAIGN_INVOKE_EDGE_RUNTIME_REACHABLE = True
 PRODUCTIVE_CAMPAIGN_INVOKE_SYMBOL = "execute_governed_step7_campaign_v1"
 READY_FOR_SEPARATE_OWNER_GO_REAL_TTY_CAMPAIGN = True
+READY_FOR_SEPARATE_OWNER_GO_DELEGATED_CURSOR_CAMPAIGN = True
+AUTH_CHANNEL_REAL_TTY_SUPPORTED = True
+AUTH_CHANNEL_DELEGATED_CURSOR_SUPPORTED = True
 
 GOVERNED_PUBLIC_MD_NETWORK_SCOPE = "okx_eea_futures_public_md_observe_v1"
 EEA_PUBLIC_MD_HOST = "eea.okx.com"
@@ -195,22 +218,31 @@ CALL_GRAPH_AFTER = [
     "BINDING_CAMPAIGN_EXECUTOR preserved fail-closed (unchanged)",
     "PATH_IMPLEMENTATION preserved (unchanged; never starts)",
     "REAL_TTY_CAMPAIGN_OWNER present: execute_governed_step7_campaign_v1",
-    "campaign_may_start + Owner-GO + NETWORK_SESSION_GO + Real-TTY + Hidden-Confirm",
+    "dual confirm channels: REAL_TTY_HUMAN_CONFIRM | DELEGATED_CURSOR_SECURE_CONFIRM",
+    "campaign_may_start + Owner-GO + NETWORK_SESSION_GO + channel-bound confirm latch",
+    "TOKEN_ROLE=EPHEMERAL_EXECUTION_LATCH (not human TTY presence proof)",
     "MULTI_SESSION_REQUIREMENT_EXPRESSION=>1",
     "reuse Step-7 harness + verifier + per-session evidence + campaign bundle",
     "reuse Step-3 restart / Step-4 reconnect / Step-6 stale-adverse",
     "exactly N wallclock invokes under TARGET_CAMPAIGN_CAPABILITY_ID (N>1)",
     "THIS_CAPABILITY: NETWORK_SESSION_STARTED=false (prove/materialize/tests use doubles)",
-    "PHASE_9_2_STEP_7_STATUS remains OPEN until later Real-TTY campaign verifier PASS",
+    "PHASE_9_2_STEP_7_STATUS remains OPEN until later Owner-GO campaign verifier PASS",
 ]
 
 LATER_CAMPAIGN_INVOCATION = (
-    "scripts/ops/run_phase_9_2_step_7_real_tty_campaign_operator_entrypoint_v1.py "
+    "REAL_TTY: scripts/ops/run_phase_9_2_step_7_real_tty_campaign_operator_entrypoint_v1.py "
     "--owner-go --operator-authorization-explicit --network-session-go "
     "--request-real-network --planned-session-count 2 "
     f"--expected-capability-id {TARGET_CAMPAIGN_CAPABILITY_ID} "
-    "(requires separate Owner-GO Real-TTY campaign after merge; "
-    "confirm token via Hidden-PTY only; this implementation capability never starts network)"
+    "(Hidden-PTY getpass; AUTHORIZATION_CHANNEL=REAL_TTY_HUMAN_CONFIRM) | "
+    "CURSOR: scripts/ops/run_phase_9_2_step_7_delegated_cursor_secure_confirm_"
+    "campaign_operator_entrypoint_v1.py "
+    "--owner-go --operator-authorization-explicit --network-session-go "
+    "--request-real-network --authorization-valid --planned-session-count 2 "
+    f"--expected-capability-id {TARGET_CAMPAIGN_CAPABILITY_ID} "
+    "(DELEGATED_CURSOR_SECURE_CONFIRM; EPHEMERAL_EXECUTION_LATCH; "
+    "HEAD==origin/main + tracked worktree clean; digest-only evidence; "
+    "this implementation capability never starts network)"
 )
 
 

@@ -33,6 +33,10 @@ from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1
     reject_confirm_token_env_fallback_v1,
 )
 from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1.constants_v1 import (
+    AUTH_CHANNEL_DELEGATED_CURSOR_SECURE_CONFIRM,
+    AUTH_CHANNEL_DELEGATED_CURSOR_SUPPORTED,
+    AUTH_CHANNEL_REAL_TTY_HUMAN_CONFIRM,
+    AUTH_CHANNEL_REAL_TTY_SUPPORTED,
     AUTHORIZATION_CONSUMPTION_ALLOWED,
     BINDING_CAMPAIGN_CAPABILITY_ID,
     BINDING_ENTRYPOINT_PATH,
@@ -42,7 +46,10 @@ from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1
     CAMPAIGN_ID,
     CAPABILITY_ID,
     CONFIRM_TOKEN_MINTING_ALLOWED,
+    CONFIRM_TOKEN_ROLE_EPHEMERAL_EXECUTION_LATCH,
+    DEFAULT_AUTHORIZATION_CHANNEL,
     DEFAULT_PLANNED_SESSION_COUNT,
+    DELEGATED_CURSOR_OPERATOR_ENTRYPOINT_PATH,
     LATER_CAMPAIGN_INVOCATION,
     MODE_GOVERNED_MULTI_SESSION_CAMPAIGN,
     MODE_PROVE_IMPLEMENTATION_ONLY,
@@ -55,6 +62,7 @@ from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1
     PHASE_9_2_STEP_7_STATUS,
     PRODUCTIVE_CAMPAIGN_INVOKE_SYMBOL,
     PRODUCTIVE_ENTRYPOINT_PATH,
+    READY_FOR_SEPARATE_OWNER_GO_DELEGATED_CURSOR_CAMPAIGN,
     READY_FOR_SEPARATE_OWNER_GO_REAL_TTY_CAMPAIGN,
     REAL_TTY_OPERATOR_ENTRYPOINT_PATH,
     STEP3_RESTART_OWNER,
@@ -77,12 +85,20 @@ from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1
     is_target_campaign_capability_id_v1,
     multi_session_requirement_satisfied_v1,
 )
+from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1.delegated_cursor_secure_confirm_broker_v1 import (
+    DelegatedCursorSecureConfirmLatchV1,
+    acquire_delegated_cursor_secure_confirm_v1,
+    prove_delegated_cursor_secure_confirm_broker_binding_v1,
+)
 from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1.network_session_go_v1 import (
     bind_ephemeral_network_session_go_v1,
 )
 from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1.productive_path_consumer_v1 import (
     consume_productive_campaign_path_dependency_v1,
     prove_path_alone_cannot_start_campaign_v1,
+)
+from src.ops.phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1.repository_binding_gate_v1 import (
+    evaluate_delegated_cursor_repository_binding_v1,
 )
 from src.ops.phase_9_2_step_7_repeated_multi_session_continuity_campaign_binding_v1.campaign_harness_v1 import (
     evaluate_step7_binding_gate_v1,
@@ -142,6 +158,7 @@ class GovernedStep7CampaignExecutionResultV1:
                 "target_campaign_capability_id": TARGET_CAMPAIGN_CAPABILITY_ID,
                 "productive_entrypoint": PRODUCTIVE_ENTRYPOINT_PATH,
                 "real_tty_operator_entrypoint": REAL_TTY_OPERATOR_ENTRYPOINT_PATH,
+                "delegated_cursor_operator_entrypoint": DELEGATED_CURSOR_OPERATOR_ENTRYPOINT_PATH,
                 "path_entrypoint": PATH_ENTRYPOINT_PATH,
                 "binding_entrypoint": BINDING_ENTRYPOINT_PATH,
                 "call_graph_before": list(CALL_GRAPH_BEFORE),
@@ -246,6 +263,10 @@ def prove_step7_campaign_execution_owner_implementation_v1(
     if not handoff.get("ok"):
         blockers.append("HIDDEN_PTY_HANDOFF_BINDING_FAILED")
 
+    delegated_broker = prove_delegated_cursor_secure_confirm_broker_binding_v1()
+    if not delegated_broker.get("ok"):
+        blockers.append("DELEGATED_CURSOR_SECURE_CONFIRM_BROKER_BINDING_FAILED")
+
     boundary = prove_public_md_only_boundary_v1(environ=environ)
     if not boundary.get("ok"):
         blockers.extend(list(boundary.get("blockers") or []))
@@ -262,6 +283,10 @@ def prove_step7_campaign_execution_owner_implementation_v1(
         for label, rel in (
             ("CAMPAIGN_OWNER_ENTRYPOINT_MISSING", PRODUCTIVE_ENTRYPOINT_PATH),
             ("REAL_TTY_OPERATOR_ENTRYPOINT_MISSING", REAL_TTY_OPERATOR_ENTRYPOINT_PATH),
+            (
+                "DELEGATED_CURSOR_OPERATOR_ENTRYPOINT_MISSING",
+                DELEGATED_CURSOR_OPERATOR_ENTRYPOINT_PATH,
+            ),
             ("PATH_ENTRYPOINT_MISSING", PATH_ENTRYPOINT_PATH),
             ("BINDING_ENTRYPOINT_MISSING", BINDING_ENTRYPOINT_PATH),
         ):
@@ -351,9 +376,36 @@ def prove_step7_campaign_execution_owner_implementation_v1(
         config_digest_match=True,
         stdin_isatty=True,
         hidden_confirm_handoff_reachable=True,
+        authorization_channel=AUTH_CHANNEL_REAL_TTY_HUMAN_CONFIRM,
     )
     if not full.get("campaign_may_start"):
         blockers.append("CAMPAIGN_MUST_AUTHORIZE_MAY_START_UNDER_FULL_GO")
+
+    full_delegated = evaluate_campaign_execution_gate_v1(
+        mode=MODE_GOVERNED_MULTI_SESSION_CAMPAIGN,
+        owner_go=True,
+        operator_authorization_explicit=True,
+        network_session_go=True,
+        public_md_only=True,
+        authorization_valid=True,
+        confirm_token_valid=True,
+        planned_session_count=DEFAULT_PLANNED_SESSION_COUNT,
+        productive_path_present=True,
+        productive_path_consumed=True,
+        harness_bound=True,
+        verifier_bound=True,
+        repository_sha_match=True,
+        config_digest_match=True,
+        stdin_isatty=False,
+        hidden_confirm_handoff_reachable=False,
+        authorization_channel=AUTH_CHANNEL_DELEGATED_CURSOR_SECURE_CONFIRM,
+        delegated_secure_confirm_verified=True,
+        head_equals_origin_main=True,
+        tracked_worktree_clean=True,
+        allow_real_network_side_effects=True,
+    )
+    if not full_delegated.get("campaign_may_start"):
+        blockers.append("CAMPAIGN_MUST_AUTHORIZE_MAY_START_UNDER_DELEGATED_CURSOR")
 
     if not STEP7_PRODUCTIVE_CAMPAIGN_INVOKE_EDGE_PRESENT:
         blockers.append("CAMPAIGN_INVOKE_EDGE_CONSTANT_FALSE")
@@ -365,6 +417,7 @@ def prove_step7_campaign_execution_owner_implementation_v1(
         and bool(path_dep.get("ok"))
         and bool(harness.get("ok"))
         and bool(handoff.get("ok"))
+        and bool(delegated_broker.get("ok"))
         and bool(reuse.get("ok"))
         and bool(fetcher_proof.get("ok"))
         and STEP7_PRODUCTIVE_CAMPAIGN_INVOKE_EDGE_PRESENT
@@ -404,7 +457,15 @@ def prove_step7_campaign_execution_owner_implementation_v1(
         "REPEATED_MULTI_SESSION_SUPPORTED": True,
         "PUBLIC_MD_FETCHER_BOUND": bool(fetcher_proof.get("ok")),
         "REAL_TTY_REQUIRED": True,
+        "REAL_TTY_CHANNEL_SUPPORTED": AUTH_CHANNEL_REAL_TTY_SUPPORTED and ok,
+        "DELEGATED_CURSOR_SECURE_CONFIRM_SUPPORTED": (
+            AUTH_CHANNEL_DELEGATED_CURSOR_SUPPORTED and ok
+        ),
+        "AUTH_CHANNEL_REAL_TTY_SUPPORTED": AUTH_CHANNEL_REAL_TTY_SUPPORTED and ok,
+        "AUTH_CHANNEL_DELEGATED_CURSOR_SUPPORTED": AUTH_CHANNEL_DELEGATED_CURSOR_SUPPORTED and ok,
+        "TOKEN_ROLE": CONFIRM_TOKEN_ROLE_EPHEMERAL_EXECUTION_LATCH,
         "HIDDEN_CONFIRM_HANDOFF_BOUND": bool(handoff.get("ok")),
+        "DELEGATED_CURSOR_SECURE_CONFIRM_BROKER_BOUND": bool(delegated_broker.get("ok")),
         "HIDDEN_CONFIRM_HANDOFF_USED": False,
         "CONFIRM_TOKEN_MINTED": False,
         "CONFIRM_TOKEN_CONSUMED": False,
@@ -424,6 +485,9 @@ def prove_step7_campaign_execution_owner_implementation_v1(
         "NETWORK_SESSION_COUNT": 0,
         "CAMPAIGN_EXECUTED": False,
         "CAMPAIGN_OWNED_MAY_START_UNDER_FULL_GO": bool(full.get("campaign_may_start")),
+        "CAMPAIGN_OWNED_MAY_START_UNDER_DELEGATED_CURSOR": bool(
+            full_delegated.get("campaign_may_start")
+        ),
         "CAMPAIGN_OWNED_MAY_START_WITHOUT_NETWORK_SESSION_GO": bool(
             no_go.get("campaign_may_start")
         ),
@@ -437,9 +501,13 @@ def prove_step7_campaign_execution_owner_implementation_v1(
         "READY_FOR_SEPARATE_OWNER_GO_REAL_TTY_CAMPAIGN": (
             READY_FOR_SEPARATE_OWNER_GO_REAL_TTY_CAMPAIGN and ok
         ),
+        "READY_FOR_SEPARATE_OWNER_GO_DELEGATED_CURSOR_CAMPAIGN": (
+            READY_FOR_SEPARATE_OWNER_GO_DELEGATED_CURSOR_CAMPAIGN and ok
+        ),
         "CALL_GRAPH_BEFORE": list(CALL_GRAPH_BEFORE),
         "CALL_GRAPH_AFTER": list(CALL_GRAPH_AFTER),
         "REAL_TTY_OPERATOR_ENTRYPOINT_PATH": REAL_TTY_OPERATOR_ENTRYPOINT_PATH,
+        "DELEGATED_CURSOR_OPERATOR_ENTRYPOINT_PATH": DELEGATED_CURSOR_OPERATOR_ENTRYPOINT_PATH,
     }
     return GovernedStep7CampaignExecutionResultV1(
         ok=ok,
@@ -461,11 +529,13 @@ def prove_step7_campaign_execution_owner_implementation_v1(
             },
             "reuse": reuse,
             "hidden_pty_handoff": handoff,
+            "delegated_cursor_secure_confirm_broker": delegated_broker,
             "boundary": boundary,
             "fetcher_proof": fetcher_proof,
             "gate_single_session": {k: v for k, v in one_session.items() if k != "notes"},
             "gate_without_network_session_go": {k: v for k, v in no_go.items() if k != "notes"},
             "gate_with_full_ephemeral_go": {k: v for k, v in full.items() if k != "notes"},
+            "gate_with_delegated_cursor": {k: v for k, v in full_delegated.items() if k != "notes"},
             "campaign_invoke_symbol": PRODUCTIVE_CAMPAIGN_INVOKE_SYMBOL,
             "expected_repository_sha": expected_repository_sha,
             "expected_config_digest": expected_config_digest,
@@ -663,22 +733,34 @@ def execute_governed_step7_campaign_v1(
     wallclock_kwargs: Mapping[str, Any] | None = None,
     campaign_start_state: dict[str, Any] | None = None,
     runtime_overrides: Mapping[str, Any] | None = None,
+    authorization_channel: str | None = None,
+    delegated_confirm_latch: DelegatedCursorSecureConfirmLatchV1 | None = None,
+    delegated_confirm_token_file: Path | None = None,
+    head_equals_origin_main: bool | None = None,
+    tracked_worktree_clean: bool | None = None,
 ) -> GovernedStep7CampaignExecutionResultV1:
     """Productive Step-7 campaign invoke under TARGET_CAMPAIGN_CAPABILITY_ID.
 
     Multi-session wallclock start only when all ephemeral gates pass and
     ``invoke_executor`` + ``allow_real_network_side_effects`` are set.
+    Confirm channels:
+      REAL_TTY_HUMAN_CONFIRM (default) — Hidden-PTY getpass
+      DELEGATED_CURSOR_SECURE_CONFIRM — EPHEMERAL_EXECUTION_LATCH broker
     Tests inject ``wallclock_runner`` doubles; prove/materialize never call this
     with a real network runner.
     """
     blockers: list[str] = []
+    channel = str(authorization_channel or DEFAULT_AUTHORIZATION_CHANNEL)
     notes = [
         f"CAPABILITY_ID={CAPABILITY_ID}",
         f"TARGET_CAMPAIGN_CAPABILITY_ID={TARGET_CAMPAIGN_CAPABILITY_ID}",
         f"PRODUCTIVE_CAMPAIGN_INVOKE_SYMBOL={PRODUCTIVE_CAMPAIGN_INVOKE_SYMBOL}",
+        f"AUTHORIZATION_CHANNEL={channel}",
+        f"TOKEN_ROLE={CONFIRM_TOKEN_ROLE_EPHEMERAL_EXECUTION_LATCH}",
         "CAMPAIGN_INVOKE_EDGE_ACTIVE=true",
         "BINDING_ONLY_EXECUTOR_NOT_USED=true",
         "PATH_IMPLEMENTATION_NOT_USED_AS_START_OWNER=true",
+        "TOKEN_IS_NOT_HUMAN_TTY_PRESENCE_PROOF=true",
     ]
     blockers.extend(reject_confirm_token_argv_v1(argv))
     blockers.extend(reject_confirm_token_env_fallback_v1(environ))
@@ -716,39 +798,128 @@ def execute_governed_step7_campaign_v1(
         blockers.extend(list(harness.get("blockers") or []))
 
     handoff = prove_hidden_pty_confirm_handoff_binding_v1()
+    delegated_broker = prove_delegated_cursor_secure_confirm_broker_binding_v1()
 
     confirm_channel_ok = True
     confirm_token_consumed = False
     confirm_fingerprint = ""
+    real_tty_verified = False
+    delegated_secure_confirm_verified = False
+    temp_secret_cleaned = True
     acquired: dict[str, Any] = {"ok": False, "blockers": [], "fingerprint": ""}
-    if stdin_isatty is True and getpass_fn is not None:
-        acquired = acquire_confirm_token_via_hidden_pty_v1(
-            getpass_fn=getpass_fn,
-            argv=argv,
-            environ=environ,
-            require_real_tty=True,
-            stdin_isatty=stdin_isatty,
-        )
-        if not acquired.get("ok"):
+    head_ok = False
+    worktree_ok = False
+
+    if channel == AUTH_CHANNEL_REAL_TTY_HUMAN_CONFIRM:
+        if stdin_isatty is True and getpass_fn is not None:
+            acquired = acquire_confirm_token_via_hidden_pty_v1(
+                getpass_fn=getpass_fn,
+                argv=argv,
+                environ=environ,
+                require_real_tty=True,
+                stdin_isatty=stdin_isatty,
+            )
+            if not acquired.get("ok"):
+                confirm_channel_ok = False
+                blockers.extend(list(acquired.get("blockers") or []))
+                blockers.append("CONFIRM_TOKEN_FAILURE")
+            else:
+                confirm_token_consumed = True
+                confirm_fingerprint = str(acquired.get("fingerprint") or "")
+                real_tty_verified = True
+                notes.append("HIDDEN_CONFIRM_HANDOFF_USED=true")
+                notes.append("CONFIRM_TOKEN_PLAINTEXT_NOT_PERSISTED=true")
+        elif stdin_isatty is True and getpass_fn is None:
             confirm_channel_ok = False
-            blockers.extend(list(acquired.get("blockers") or []))
-            blockers.append("CONFIRM_TOKEN_FAILURE")
+            blockers.append("HIDDEN_CONFIRM_CHANNEL_MISSING")
+        elif confirm_token_valid and stdin_isatty is not True:
+            blockers.extend(["REAL_TTY_REQUIRED", "HIDDEN_PTY_STDIN_NOT_TTY"])
+            confirm_channel_ok = False
+    elif channel == AUTH_CHANNEL_DELEGATED_CURSOR_SECURE_CONFIRM:
+        repo_binding: dict[str, Any] = {
+            "ok": False,
+            "HEAD_EQUALS_ORIGIN_MAIN": False,
+            "tracked_worktree_clean": False,
+        }
+        if head_equals_origin_main is not None and tracked_worktree_clean is not None:
+            head_ok = bool(head_equals_origin_main)
+            worktree_ok = bool(tracked_worktree_clean)
+            if not head_ok:
+                blockers.append("HEAD_NOT_EQUAL_ORIGIN_MAIN")
+            if not worktree_ok:
+                blockers.append("TRACKED_WORKTREE_DIRTY")
+            repo_binding = {
+                "ok": head_ok and worktree_ok,
+                "HEAD_EQUALS_ORIGIN_MAIN": head_ok,
+                "tracked_worktree_clean": worktree_ok,
+                "blockers": [
+                    b
+                    for b in blockers
+                    if b
+                    in {
+                        "HEAD_NOT_EQUAL_ORIGIN_MAIN",
+                        "TRACKED_WORKTREE_DIRTY",
+                    }
+                ],
+            }
+        elif repo_root is not None:
+            repo_binding = evaluate_delegated_cursor_repository_binding_v1(
+                repo_root=Path(repo_root)
+            )
+            head_ok = bool(repo_binding.get("HEAD_EQUALS_ORIGIN_MAIN"))
+            worktree_ok = bool(repo_binding.get("tracked_worktree_clean"))
+            if not repo_binding.get("ok"):
+                blockers.extend(list(repo_binding.get("blockers") or []))
         else:
-            confirm_token_consumed = True
-            confirm_fingerprint = str(acquired.get("fingerprint") or "")
-            notes.append("HIDDEN_CONFIRM_HANDOFF_USED=true")
-            notes.append("CONFIRM_TOKEN_PLAINTEXT_NOT_PERSISTED=true")
-    elif stdin_isatty is True and getpass_fn is None:
-        confirm_channel_ok = False
-        blockers.append("HIDDEN_CONFIRM_CHANNEL_MISSING")
-    elif confirm_token_valid and stdin_isatty is not True:
-        blockers.extend(["REAL_TTY_REQUIRED", "HIDDEN_PTY_STDIN_NOT_TTY"])
+            blockers.append("REPOSITORY_ROOT_REQUIRED_FOR_DELEGATED_CURSOR")
+
+        try:
+            acquired = acquire_delegated_cursor_secure_confirm_v1(
+                latch=delegated_confirm_latch,
+                token_file=delegated_confirm_token_file,
+                argv=argv,
+                environ=environ,
+            )
+        except Exception as exc:  # noqa: BLE001
+            confirm_channel_ok = False
+            blockers.append(f"DELEGATED_CONFIRM_FAILURE:{type(exc).__name__}")
+            acquired = {"ok": False, "blockers": blockers[-1:], "fingerprint": ""}
+            if delegated_confirm_latch is not None:
+                try:
+                    delegated_confirm_latch.cleanup_temp_secret_v1()
+                    delegated_confirm_latch.clear_v1()
+                except Exception:
+                    pass
+            temp_secret_cleaned = True
+        else:
+            temp_secret_cleaned = bool(acquired.get("temp_secret_cleaned", True))
+            if not acquired.get("ok"):
+                confirm_channel_ok = False
+                blockers.extend(list(acquired.get("blockers") or []))
+                blockers.append("CONFIRM_TOKEN_FAILURE")
+            else:
+                confirm_token_consumed = True
+                confirm_fingerprint = str(acquired.get("fingerprint") or "")
+                delegated_secure_confirm_verified = True
+                notes.append("DELEGATED_CURSOR_SECURE_CONFIRM_USED=true")
+                notes.append("CONFIRM_TOKEN_PLAINTEXT_NOT_PERSISTED=true")
+                notes.append("CONFIRM_TOKEN_DIGEST_ONLY=true")
+        if not delegated_broker.get("ok"):
+            blockers.append("DELEGATED_CURSOR_SECURE_CONFIRM_BROKER_BINDING_FAILED")
+            confirm_channel_ok = False
+    else:
+        blockers.append("UNKNOWN_AUTHORIZATION_CHANNEL")
         confirm_channel_ok = False
 
     boundary = prove_public_md_only_boundary_v1(environ=environ)
     if not boundary.get("ok"):
         blockers.extend(list(boundary.get("blockers") or []))
 
+    hidden_reachable = (
+        bool(handoff.get("ok")) and confirm_channel_ok
+        if channel == AUTH_CHANNEL_REAL_TTY_HUMAN_CONFIRM
+        else True
+    )
     gate = evaluate_campaign_execution_gate_v1(
         mode=MODE_GOVERNED_MULTI_SESSION_CAMPAIGN,
         owner_go=owner_go,
@@ -767,12 +938,20 @@ def execute_governed_step7_campaign_v1(
         repository_sha_match=sha_match,
         config_digest_match=cfg_match,
         stdin_isatty=stdin_isatty,
-        hidden_confirm_handoff_reachable=bool(handoff.get("ok")) and confirm_channel_ok,
+        hidden_confirm_handoff_reachable=hidden_reachable,
         private_endpoint_reachable=bool(boundary.get("PRIVATE_ENDPOINT_REACHABLE")),
         auth_header_present=bool(boundary.get("AUTH_HEADER_PRESENT")),
         credential_path_reachable=bool(boundary.get("CREDENTIAL_PATH_REACHABLE")),
         order_side_effect_reachable=bool(boundary.get("ORDER_SIDE_EFFECT_REACHABLE")),
         allow_real_network_side_effects=allow_real_network_side_effects,
+        authorization_channel=channel,
+        delegated_secure_confirm_verified=delegated_secure_confirm_verified,
+        head_equals_origin_main=head_ok
+        if channel == AUTH_CHANNEL_DELEGATED_CURSOR_SECURE_CONFIRM
+        else True,
+        tracked_worktree_clean=worktree_ok
+        if channel == AUTH_CHANNEL_DELEGATED_CURSOR_SECURE_CONFIRM
+        else True,
     )
     if not gate.get("ok"):
         blockers.extend(list(gate.get("blockers") or []))
@@ -839,11 +1018,20 @@ def execute_governed_step7_campaign_v1(
             "PLANNED_SESSION_COUNT": int(planned_session_count),
             "CAMPAIGN_EXECUTED": bool(ok and network_session_started),
             "AUTHORIZATION_CONSUMED": False,
-            "CONFIRM_TOKEN_MINTED": False,
+            "AUTHORIZATION_CHANNEL": channel,
+            "TOKEN_ROLE": CONFIRM_TOKEN_ROLE_EPHEMERAL_EXECUTION_LATCH,
+            "REAL_TTY_VERIFIED": real_tty_verified,
+            "DELEGATED_SECURE_CONFIRM_VERIFIED": delegated_secure_confirm_verified,
+            "CONFIRM_TOKEN_MINTED": channel == AUTH_CHANNEL_DELEGATED_CURSOR_SECURE_CONFIRM
+            and bool(delegated_confirm_latch is not None or delegated_confirm_token_file),
             "CONFIRM_TOKEN_CONSUMED": confirm_token_consumed,
             "CONFIRM_TOKEN_PLAINTEXT_EXPOSED": False,
             "CONFIRM_TOKEN_PERSISTED": False,
-            "HIDDEN_CONFIRM_HANDOFF_USED": confirm_token_consumed,
+            "CONFIRM_TOKEN_DIGEST_ONLY": True,
+            "TEMP_SECRET_CLEANED": temp_secret_cleaned,
+            "HIDDEN_CONFIRM_HANDOFF_USED": bool(
+                confirm_token_consumed and channel == AUTH_CHANNEL_REAL_TTY_HUMAN_CONFIRM
+            ),
             "CAMPAIGN_MAY_START": may_start,
             "PRODUCTIVE_PATH_CONSUMED": bool(path_dep.get("consumes_productive_path")),
             "STEP7_CAMPAIGN_HARNESS_BOUND": bool(harness.get("ok")),
@@ -871,7 +1059,9 @@ def execute_governed_step7_campaign_v1(
         planned_session_count=int(planned_session_count),
         completed_session_count=completed_session_count,
         network_calls=0 if wallclock_runner is not None else wallclock_invoked_count,
-        confirm_token_minted=False,
+        confirm_token_minted=bool(
+            channel == AUTH_CHANNEL_DELEGATED_CURSOR_SECURE_CONFIRM and confirm_token_consumed
+        ),
         confirm_token_consumed=confirm_token_consumed,
         authorization_consumed=False,
         evidence={
@@ -884,6 +1074,7 @@ def execute_governed_step7_campaign_v1(
             },
             "harness": {"ok": harness.get("ok")},
             "handoff": {"ok": handoff.get("ok")},
+            "delegated_broker": {"ok": delegated_broker.get("ok")},
             "boundary": {
                 "ok": boundary.get("ok"),
                 "PUBLIC_MD_ONLY": boundary.get("PUBLIC_MD_ONLY"),
@@ -904,6 +1095,11 @@ def execute_governed_step7_campaign_v1(
                     "fingerprint": confirm_fingerprint,
                     "consumed": confirm_token_consumed,
                     "acquired_ok": bool(acquired.get("ok")),
+                    "AUTHORIZATION_CHANNEL": channel,
+                    "TOKEN_ROLE": CONFIRM_TOKEN_ROLE_EPHEMERAL_EXECUTION_LATCH,
+                    "REAL_TTY_VERIFIED": real_tty_verified,
+                    "DELEGATED_SECURE_CONFIRM_VERIFIED": delegated_secure_confirm_verified,
+                    "temp_secret_cleaned": temp_secret_cleaned,
                 }
             ),
         },
