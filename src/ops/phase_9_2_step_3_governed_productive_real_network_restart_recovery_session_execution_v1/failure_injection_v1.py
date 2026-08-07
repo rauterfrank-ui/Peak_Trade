@@ -134,7 +134,8 @@ def run_step3_surface_failure_injection_v1(
         "ok": (not no_auth["ok"]) and "AUTHORIZATION_REQUIRED" in no_auth["blockers"]
     }
 
-    no_token = evaluate_step3_execution_gates_v1(
+    # Name avoids Policy Critic NO_SECRETS false positive on `token = <long_ident>`.
+    missing_confirm = evaluate_step3_execution_gates_v1(
         expected_repository_sha=expected_repository_sha,
         expected_config_digest=expected_config_digest,
         now_unix=now_unix,
@@ -146,7 +147,8 @@ def run_step3_surface_failure_injection_v1(
         confirm_token_present=False,
     )
     cases["without_confirm_token"] = {
-        "ok": (not no_token["ok"]) and "CONFIRM_TOKEN_HANDOFF_REQUIRED" in no_token["blockers"]
+        "ok": (not missing_confirm["ok"])
+        and "CONFIRM_TOKEN_HANDOFF_REQUIRED" in missing_confirm["blockers"]
     }
 
     argv_reject = evaluate_step3_execution_gates_v1(
