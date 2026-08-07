@@ -650,10 +650,10 @@ DOCUMENTATION_RUNTIME_DRIFT=false
 program inception. It is not the current runtime truth. Current-truth
 claims in this section are reconciled against
 `CURRENT_FORENSIC_TRUTH_SHA`, bound to the Phase 9.2 Step-7 ladder-closeout
-`origin/main` SHA `642db05919634b899329679a811f1ad25a0fd818`. Later
+`origin&#47;main` SHA `642db05919634b899329679a811f1ad25a0fd818`. Later
 docs-only merges may advance HEAD without rewriting this program-truth
 binding. Every later implementation capability must still revalidate the
-actual `origin/main` SHA. Older Cap 6.1--7.2 and typed-volatility evidence
+actual `origin&#47;main` SHA. Older Cap 6.1--7.2 and typed-volatility evidence
 packages remain historical predecessor evidence for their merge SHAs and
 must not be silently rewritten.
 
@@ -3487,6 +3487,94 @@ Operational rule:
 This requirement exists because chat context is not guaranteed to persist
 across independent Cursor conversations. Therefore every new chat must
 explicitly establish the current canonical runbook before implementation.
+
+
+### 15.3 Minimum Local CI Dedup / Bound Test Evidence Reuse (Binding)
+
+The following operational rules are mandatory for local verification,
+evidence sealing, static verifiers and Pre-PR orchestration. They override
+ambiguous or redundant local re-execution guidance when GitHub Required
+Checks already provide the binding broad integration&#47;regression layer.
+
+Machine-readable owner:
+
+```text
+docs/ops/specs/GOVERNANCE_VERIFICATION_MINIMUM_LOCAL_CI_DEDUP_V1.json
+scripts/ops/verification_minimum_local_ci_dedup_v1.py
+```
+
+Canonical rules:
+
+```text
+TEST_EVIDENCE_REUSE_RULE=
+  one full local capability&#47;owner PASS + EXIT=0 for an exact unchanged stand
+  is sufficient local test proof for that identical stand&#47;command
+EVIDENCE_REEXECUTION_RULE=
+  evidence may seal&#47;reference a bound PASS; it must not re-start the same
+  expensive suite solely for sealing
+VERIFIER_REEXECUTION_RULE=
+  verifiers validate artifacts&#47;claims&#47;hashes&#47;bindings statically unless
+  additional runtime information is strictly required
+PRE_PR_REEXECUTION_RULE=
+  Pre-PR must not re-run an identical bound PASS; only Non-GitHub local
+  invariants and mandatory pre-push first-diagnosis checks remain
+GITHUB_REQUIRED_CHECKS_ROLE=
+  BINDING_BROAD_INTEGRATION_AND_REGRESSION_LAYER
+```
+
+Decision principle for every local check:
+
+```text
+A = already executed as a GitHub Required Check?
+B = local repetition adds mandatory pre-push information?
+IF A=true AND B=false: DO NOT EXECUTE LOCALLY
+IF identical stand already has full PASS + EXIT=0 for same command:
+  DO NOT RE-EXECUTE
+```
+
+Reuse is valid only when all hold:
+
+```text
+identical commit OR unambiguously bound worktree&#47;diff
+identical test selector&#47;command
+full run completed
+result=PASS
+EXIT=0
+```
+
+Local checks that remain mandatory (GitHub does not replace them):
+
+```text
+final diff freeze + FINAL_DIFF_SHA256
+canonical CI selector on final diff
+ruff format&#47;check on Python diff (pre-push first diagnosis)
+docs token policy + docs reference targets on Markdown diff
+one bound capability&#47;owner test PASS for the exact stand
+static evidence + MANIFEST verify
+Safety&#47;Activation&#47;Credential&#47;Order hard-stops
+```
+
+Redundant local re-executions that are forbidden when a bound PASS exists:
+
+```text
+capability suite re-run only to seal evidence
+capability suite re-run inside a static verifier
+Pre-PR re-run of the identical bound suite
+local full-suite mirror of GitHub required tests (3.11) without extra local value
+timing-proof re-run of an identical already-measured stand
+```
+
+Hard stops preserved:
+
+```text
+NO weakening of Safety&#47;Governance&#47;Activation&#47;Credential&#47;Order gates
+CAPABILITY_11_13_STARTED=false
+CORE_LOGIC_CHANGE=false unless separately authorized
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+This section is capability-generic. It must not create a Cap-11.12-only
+bypass. Cap 11.13 must not be started from this policy.
 
 
 # 16. Cursor Assignment Contract

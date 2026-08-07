@@ -194,6 +194,30 @@ def test_local_gate_not_pass_blocks() -> None:
     assert verify_pre_pr_validation_result(data)
 
 
+def test_local_test_evidence_reuse_valid_allows() -> None:
+    data = _valid_timing_not_required_data(
+        LOCAL_TEST_EVIDENCE_REUSE_STATUS="REUSED",
+        BOUND_LOCAL_TEST_STAND_SHA256="abc123",
+        BOUND_LOCAL_TEST_COMMAND="pytest -q tests/ci/test_verification_minimum_local_ci_dedup_v1.py",
+        BOUND_LOCAL_TEST_EXIT_CODE="0",
+        BOUND_LOCAL_TEST_RESULT="PASS",
+        BOUND_LOCAL_TEST_FULL_RUN="true",
+    )
+    assert verify_pre_pr_validation_result(data) == []
+
+
+def test_local_test_evidence_reuse_invalid_exit_blocks() -> None:
+    data = _valid_timing_not_required_data(
+        LOCAL_TEST_EVIDENCE_REUSE_STATUS="REUSED",
+        BOUND_LOCAL_TEST_STAND_SHA256="abc123",
+        BOUND_LOCAL_TEST_COMMAND="pytest -q tests/ci/test_verification_minimum_local_ci_dedup_v1.py",
+        BOUND_LOCAL_TEST_EXIT_CODE="2",
+        BOUND_LOCAL_TEST_RESULT="PASS",
+        BOUND_LOCAL_TEST_FULL_RUN="true",
+    )
+    assert verify_pre_pr_validation_result(data)
+
+
 def test_manifest_verify_rc_nonzero_blocks() -> None:
     data = _valid_pass_data(MANIFEST_VERIFY_RC="1")
     assert verify_pre_pr_validation_result(data)

@@ -4044,6 +4044,19 @@ ruff format --check .
 bash scripts/ops/check_no_black_enforcement.sh
 ```
 
+## Governance verification minimum local CI dedup v1
+
+**Scope:** `VERIFICATION_MINIMUM_LOCAL_CI_DEDUP_V1=true` · **Owners:** `docs&#47;ops&#47;specs&#47;GOVERNANCE_VERIFICATION_MINIMUM_LOCAL_CI_DEDUP_V1.json` + `scripts&#47;ops&#47;verification_minimum_local_ci_dedup_v1.py` · **Runbook:** Master Runbook §15.3
+
+Generic local verification orchestration: one bound capability&#47;owner `PASS`+`EXIT=0` for an exact stand is reusable for evidence seal, static verifier and Pre-PR; GitHub Required Checks remain the binding broad integration&#47;regression layer. Does **not** weaken Safety&#47;Activation&#47;Credential&#47;Order hard-stops. Cap 11.13 remains out of scope.
+
+```bash
+python3 scripts/ops/verification_minimum_local_ci_dedup_v1.py --print-policy
+python3 -m pytest -q tests/ci/test_verification_minimum_local_ci_dedup_v1.py
+```
+
+**Non-authorizing:** governance&#47;verification orchestration only; no runtime&#47;trading&#47;activation&#47;order scope.
+
 ## Canonical pre-PR diff-scoped Ruff + diff-check guard v0
 
 **Scope:** `PREFLIGHT_PRE_PR_RUFF_AND_DIFF_GUARD_V0=true` · **Owner:** `scripts/ops/preflight_pre_pr_ruff_and_diff_guard_v0.py`

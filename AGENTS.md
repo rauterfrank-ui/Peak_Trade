@@ -14,3 +14,4 @@ NO_PARALLEL_SEMANTIC_MODEL=true
 - Kein Live-, Testnet-, Order-, Credential- oder Real-Capital-Recht aus Dokumentation ableiten.
 - Git nur im echten lokalen Repository über das lokale Terminal; Cursor-Sandbox-Git ist verboten.
 - Untracked Evidence unverändert erhalten.
+- Lokale CI-Dedup&#47;Reuse-Orchestrierung (Master Runbook §15.3): `docs&#47;ops&#47;specs&#47;GOVERNANCE_VERIFICATION_MINIMUM_LOCAL_CI_DEDUP_V1.md` — kein redundantes Suite-Re-Run nur für Evidence&#47;Verifier&#47;Pre-PR bei identischem gebundenem PASS.

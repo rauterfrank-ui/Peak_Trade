@@ -20,6 +20,8 @@ Jeder PR mit geänderten `*.md` (reine Docs-PR **oder** docs+tests-PR) **muss** 
 | 3 | PR-scoped pytest (docs+tests) | betroffene Contract-/Boundary-Tests | je nach Diff |
 | 4 | Ruff (bei `.py`-Diff) | `ruff check` / `ruff format --check` auf berührte Dateien | `Lint Gate` |
 
+**Local CI dedup (Master Runbook §15.3):** Ein gebundener lokaler Capability&#47;Owner-`PASS`+`EXIT=0` für denselben Stand darf für Evidence&#47;statischen Verifier&#47;Pre-PR wiederverwendet werden; GitHub Required Checks bleiben die verbindliche breite Integrations&#47;Regressionsebene. Owner: `docs&#47;ops&#47;specs&#47;GOVERNANCE_VERIFICATION_MINIMUM_LOCAL_CI_DEDUP_V1.md`.
+
 Runbook: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_TOKEN_POLICY_GATE.md` · CI-Audit: `docs&#47;ops&#47;CI_AUDIT_KNOWN_ISSUES.md` (§ Docs Token Policy Guard standard check integration).
 
 ## Gate Catalog (Table)
