@@ -259,7 +259,7 @@ FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true_offline_no_order_cap72_scope_only
 SIMULATED_EXECUTION_ACTIVE=true_offline_no_order_cap72_scope_only
 PUBLIC_MD_RUNTIME_CAPABLE=true
 PUBLIC_MD_NETWORK_SESSION_OBSERVED_IN_CAP72_ACTIVATION=false
-PHASE_9_2_PUBLIC_MD_LONG_RUNNING_LADDER_CLOSED=false
+PHASE_9_2_PUBLIC_MD_LONG_RUNNING_LADDER_CLOSED=true
 REAUTHORIZATION_REQUIRED_BEFORE_NEW_PUBLIC_MD_NETWORK_SESSION=true
 ```
 
@@ -800,17 +800,19 @@ preflight evidence `phase_9_2_session_ladder_v1.json`.
 | STATE_ROOTS | Cross-session continuity of durable roots (explicit verifier check) |
 | FAULT_OR_SESSION_MECHANISM | Reuses Step-3 restart, Step-4 reconnect, Step-6 stale&#47;adverse (no parallels) |
 | MULTI_SESSION_REQUIREMENT | `>1` (no invented governance count) |
-| EVIDENCE_BUNDLE | Binding + path-implementation evidence present; campaign closure evidence absent |
-| VERIFIER | `campaign_verifier_v1` (binding + later campaign-bundle contract) |
+| EVIDENCE_BUNDLE | Binding + path-implementation + productive campaign closure evidence present |
+| VERIFIER | `campaign_verifier_v1` (binding + campaign-bundle contract; productive PASS sealed) |
 | PREDECESSOR | Step 6 |
 | SUCCESSOR | Phase 9.2 ladder complete → feeds natural lifecycle DoD |
-| OPEN_GAPS | `EVIDENCE_GAP` for governed multi-session campaign execution&#47;closure (path present; campaign not started) |
-| CLOSURE_CRITERIA | `PHASE_9_2_SESSION_LADDER_COMPLETE=true` only after all steps evidenced |
+| OPEN_GAPS | none for Step-7 campaign execution&#47;closure (`CLOSED_PASS`) |
+| CLOSURE_CRITERIA | `PHASE_9_2_SESSION_LADDER_COMPLETE=true` after all steps evidenced |
 
 ```text
-PHASE_9_2_SESSION_LADDER_COMPLETE=false
-ONE_HOUR_RESTART_RECONNECT_PROLONGED_ADVERSE_REPEATED_LADDER_FULLY_CLOSED=false
+PHASE_9_2_SESSION_LADDER_COMPLETE=true
+PHASE_9_2_STEP_7_STATUS=CLOSED_PASS
+ONE_HOUR_RESTART_RECONNECT_PROLONGED_ADVERSE_REPEATED_LADDER_FULLY_CLOSED=true
 SEPARATE_OWNER_GO_REQUIRED_FOR_PUBLIC_MD_NETWORK_SESSION=true
+STEP7_CAMPAIGN_EVIDENCE_DIR=evidence/ops/phase_9_2_step_7_repeated_multi_session_continuity_campaign_execution_v1/campaign_20260807T142727Z
 ```
 
 ------------------------------------------------------------------------

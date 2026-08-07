@@ -663,7 +663,7 @@ FULL_CANONICAL_STATEFUL_RUNTIME_CURRENTLY_ACTIVATED=true_offline_no_order_cap72_
 SIMULATED_EXECUTION_ACTIVE=true_offline_no_order_cap72_scope_only
 PUBLIC_MD_RUNTIME_CAPABLE=true
 PUBLIC_MD_NETWORK_SESSION_OBSERVED_IN_CAP72_ACTIVATION=false
-PHASE_9_2_PUBLIC_MD_LONG_RUNNING_LADDER_CLOSED=false
+PHASE_9_2_PUBLIC_MD_LONG_RUNNING_LADDER_CLOSED=true
 CURRENT_CAP52_AUTHORIZATION_VALID_FOR_NEW_RUN=NOT_PROVEN
 REAUTHORIZATION_REQUIRED_BEFORE_NEW_PUBLIC_MD_NETWORK_SESSION=true
 TESTNET_REACHABLE=false
@@ -680,10 +680,11 @@ Interpretation:
 -   `FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true` and
     `SIMULATED_EXECUTION_ACTIVE=true` apply only inside that offline
     no-order scope.
--   Offline activation must not be equated with Public-MD long-running
-    ladder completion or with Live/Testnet/order/credential
+-   Offline activation must not be equated with Live/Testnet/order/credential
     authorization.
--   Phase 9.2 remains the open Public-MD continuity critical path.
+-   Phase 9.2 Public-MD session ladder is now `CLOSED_PASS` under Step-7
+    multi-session continuity campaign evidence; ladder closeout does not
+    authorize Live/Testnet/orders/credentials.
 -   Live, Testnet, exchange orders and credentials remain false and
     unreachable under this program boundary.
 
@@ -812,12 +813,13 @@ DYNAMIC_SCOPE_STATE_PERSISTED=true
 MASTER_V2_REQUIRED_STATE_CONTINUITY_PROVEN=true_as_defined_by_Cap6_4
 DOUBLE_PLAY_REQUIRED_STATE_CONTINUITY_PROVEN=true_as_defined_by_Cap6_4
 RESTART_END_TO_END_PROVEN=true_for_deterministic_stateful_no_order_scope
-PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_PROVEN=false
+PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_PROVEN=true_for_phase_9_2_session_ladder
 PHASE_9_2_OWNS_PUBLIC_MD_NATURAL_LIFECYCLE=true
 ```
 
-Public-MD natural-market lifecycle evidence remains Phase 9.2 work and
-is not claimed by Cap 6.4/7.1/7.2 offline or deterministic scopes.
+Public-MD natural-market continuity evidence is closed by the Phase 9.2
+session ladder (Steps 1--7). Cap 6.4/7.1/7.2 offline or deterministic
+scopes do not substitute for that ladder.
 
 ## 5.6 Current evidence status
 
@@ -830,9 +832,10 @@ NONZERO_SIMULATED_ECONOMICS_EVIDENCE=true_for_deterministic_governed_path
 PUBLIC_MD_NATURAL_ENTRY_EXIT_EVIDENCE_PROVEN=false
 ```
 
-No overclaim for natural Public-MD market phases. Zero Entry/Fill on
-typed-volatility cold-start Public-MD observation does not reopen Cap
-7.1 deterministic lifecycle proof.
+Phase 9.2 ladder closeout proves Public-MD continuity sessions; it does
+not claim natural Entry/Exit fills. Zero Entry/Fill on typed-volatility
+cold-start Public-MD observation does not reopen Cap 7.1 deterministic
+lifecycle proof.
 
 ## 5.7 Current known defects and drifts
 
@@ -843,8 +846,8 @@ STATE_PERSISTENCE_DEFECTS_DETECTED=false_for_closed_Cap6_1_to_6_4_scope
 CONFIG_DRIFT_DETECTED=partial_residual_host_consumer_literals
 DOCUMENTATION_DRIFT_DETECTED=true_until_this_reconciliation_merges
 EVIDENCE_CLAIM_DEFECTS_DETECTED=false_for_corrected_capability_claims
-PUBLIC_MD_NATURAL_LIFECYCLE_EVIDENCE_GAP=true
-PHASE_9_2_LADDER_INCOMPLETE_BEYOND_SMOKE=true
+PUBLIC_MD_NATURAL_LIFECYCLE_EVIDENCE_GAP=false_for_phase_9_2_session_ladder_continuity
+PHASE_9_2_LADDER_INCOMPLETE_BEYOND_SMOKE=false
 WALLCLOCK_HARDENING_V2_CALL_GRAPH_OMITS_EXPLICIT_C1_C2_STAGES_VS_CAP72_HOST=true
 HARDENING_V2_LOCAL_DISTANCE_LITERALS_RESIDUAL_AFTER_CAP63=true
 LEGACY_PARALLEL_AUTHORITY_DETECTED=false
@@ -1285,8 +1288,8 @@ Additional current-truth notes retained with the register:
 ``` text
 REGIME_UNCLASSIFIED_FAIL_CLOSED=EXPECTED_MARKET_RULE_MISS_FAIL_CLOSED_NO_DEFECT
 REQUIRED_WINDOW_COMPLETE_DECOUPLED_FROM_FEATURES_OK=true
-PHASE_9_2_LADDER_INCOMPLETE_BEYOND_SMOKE=true
-PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_OPEN=true
+PHASE_9_2_LADDER_INCOMPLETE_BEYOND_SMOKE=false
+PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_OPEN=false_for_phase_9_2_session_ladder_continuity
 NO_GAP_ID_SILENTLY_DELETED=true
 ```
 
@@ -2070,21 +2073,22 @@ Owner ratification.
 ## Capability status --- current critical path
 
 ``` text
-CAPABILITY_STATUS=CURRENT_CRITICAL_PATH_PARTIALLY_COMPLETE
+CAPABILITY_STATUS=HISTORICAL_COMPLETED_EVIDENCE_PROVEN
 ACTUAL_NEXT_CAPABILITY=PHASE_9_2_LONG_RUNNING_STATEFUL_PUBLIC_MD_SIMULATION_EVIDENCE_CONTINUATION_V1
 PHASE_9_2_PUBLIC_MD_SMOKE_SESSION_PASS=true
 PHASE_9_2_ONE_HOUR_GOVERNED_SESSION_PASS_ON_CURRENT_TRUTH_SHA=true
-PHASE_9_2_LADDER_NEXT_STEP=ADVERSE_STALE_DATA_SESSION
+PHASE_9_2_LADDER_NEXT_STEP=NONE
 TYPED_VOLATILITY_COLD_START_PROVEN=true
 REQUIRED_WINDOW_COMPLETE_DECOUPLED_FROM_FEATURES_OK=true
 REGIME_UNCLASSIFIED_OBSERVED_AS_EXPECTED_FAIL_CLOSED=true
-ONE_HOUR_RESTART_RECONNECT_PROLONGED_ADVERSE_REPEATED_LADDER_FULLY_CLOSED=false
-PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_COMPLETE=false
-PHASE_9_2_SESSION_LADDER_COMPLETE=false
+ONE_HOUR_RESTART_RECONNECT_PROLONGED_ADVERSE_REPEATED_LADDER_FULLY_CLOSED=true
+PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_COMPLETE=true_for_phase_9_2_session_ladder_continuity
+PHASE_9_2_SESSION_LADDER_COMPLETE=true
+PHASE_9_2_STEP_7_STATUS=CLOSED_PASS
 REGIME_THRESHOLD_MUTATION_ALLOWED=false
 CORE_LOGIC_CHANGE_ALLOWED=false
 SEPARATE_OWNER_GO_REQUIRED_FOR_PUBLIC_MD_NETWORK_SESSION=true
-THIS_DOCUMENTATION_RECONCILIATION_DOES_NOT_AUTHORIZE_PHASE_9_2_NETWORK_SESSION=true
+THIS_DOCUMENTATION_RECONCILIATION_DOES_NOT_AUTHORIZE_LIVE_TESTNET_ORDERS_OR_CREDENTIALS=true
 ```
 
 ## Goal
@@ -2114,7 +2118,7 @@ using public market data and internal simulated execution only.
     `STEP5_PRODUCTIVE_EVIDENCE_VERIFIED=true`,
     `STEP5_SESSION_LADDER_STEP_CLOSED=true`,
     `PHASE_9_2_STEP_5_STATUS=CLOSED_PASS`);
-6.  adverse/stale-data session --- next open ladder step; productive binding
+6.  adverse/stale-data session --- completed / PASS; productive binding
     readiness established under
     `PHASE_9_2_STEP_6_ADVERSE_STALE_DATA_SESSION_CONTINUATION_V1`,
     execution-binding under
@@ -2178,32 +2182,35 @@ using public market data and internal simulated execution only.
     `NO_REPLACEMENT_ALLOWED`); `NETWORK_SESSION_STARTED=false`,
     `CONFIRM_TOKEN_MINTED=false`, `CONFIRM_TOKEN_CONSUMED=false`,
     `PRODUCTIVE_EXECUTOR_USED=false`, `VERIFIER_RESULT=NOT_RUN`,
-    `EVIDENCE_SEALED=false`. Current blocker is therefore **not** missing
-    path&#47;invoke implementation; it is Real-TTY &#47; Hidden-Confirm
-    unavailability in the agent shell. Ladder step remains OPEN until a
-    separately authorized productive Real-Network session in a real
-    macOS Terminal.app TTY is sealed and verifier PASS;
-    later Owner-GO productive session on
+    `EVIDENCE_SEALED=false`. That historical blocker was therefore **not**
+    missing path&#47;invoke implementation; it was Real-TTY &#47; Hidden-Confirm
+    unavailability in the agent shell. A later Owner-GO productive session on
     `main@3c334644a2d81ff7e6c2104d7e0917f3d6bb3c84` in real macOS
     Terminal.app TTY sealed `CLOSED_PASS` &#47; productive verifier PASS
-    (`PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTION_V1`);
-7.  repeated multi-session continuity campaign --- open (binding&#47;harness&#47;
-    verifier implemented and bound; productive campaign execution path
-    implemented under
-    `PHASE_9_2_STEP_7_PRODUCTIVE_CAMPAIGN_EXECUTION_PATH_IMPLEMENTATION_V1`;
-    Real-TTY campaign start&#47;execution owner + multi-session invoke edge
-    implemented under
-    `PHASE_9_2_STEP_7_PRODUCTIVE_REAL_TTY_CAMPAIGN_EXECUTION_OWNER_IMPLEMENTATION_V1`;
-    campaign not executed; ladder not complete). Binding-PASS, Path-PASS and
-    Owner-PASS are not campaign closeout.
+    (`PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTION_V1`,
+    `PHASE_9_2_STEP_6_STATUS=CLOSED_PASS`);
+7.  repeated multi-session continuity campaign --- completed / PASS; productive
+    campaign executed and verified under
+    `PHASE_9_2_STEP_7_REPEATED_MULTI_SESSION_CONTINUITY_CAMPAIGN_EXECUTION_V1`
+    via `DELEGATED_CURSOR_SECURE_CONFIRM` &#47; `EPHEMERAL_EXECUTION_LATCH`
+    with evidence
+    `evidence&#47;ops&#47;phase_9_2_step_7_repeated_multi_session_continuity_campaign_execution_v1&#47;campaign_20260807T142727Z`
+    (`PHASE_9_2_STEP_7_STATUS=CLOSED_PASS`,
+    `SESSION_COUNT_COMPLETED=2`,
+    `MULTI_SESSION_CONTINUITY_VERIFIED=true`,
+    `STEP7_VERIFIER_RESULT=PASS`,
+    `EVIDENCE_SEALED=true`,
+    `PHASE_9_2_SESSION_LADDER_COMPLETE=true`). Binding-PASS, Path-PASS and
+    Owner-PASS alone were not campaign closeout; this campaign verifier PASS
+    is the ladder closeout authority for Step 7.
 
 ``` text
-NEXT_OPEN_PHASE_9_2_STEP=7_MULTI_SESSION_CONTINUITY_CAMPAIGN
+NEXT_OPEN_PHASE_9_2_STEP=NONE
 PHASE_9_2_STEP_3_STATUS=CLOSED_PASS
 PHASE_9_2_STEP_4_STATUS=CLOSED_PASS
 PHASE_9_2_STEP_5_STATUS=CLOSED_PASS
 PHASE_9_2_STEP_6_STATUS=CLOSED_PASS
-PHASE_9_2_STEP_7_STATUS=OPEN
+PHASE_9_2_STEP_7_STATUS=CLOSED_PASS
 STEP6_BINDING_IMPLEMENTED=true
 STEP6_EXECUTION_PACKAGE_BOUND=true
 GOVERNED_STALE_CONTROL_PRODUCTIVELY_BOUND=true
@@ -2242,15 +2249,21 @@ MULTI_SESSION_REQUIREMENT_EXPRESSION=>1
 STEP3_RESTART_SEMANTICS_REUSED=true
 STEP4_RECONNECT_SEMANTICS_REUSED=true
 STEP6_STALE_ADVERSE_SEMANTICS_REUSED=true
-STEP7_STARTED=false
-CAMPAIGN_EXECUTED=false
-NETWORK_SESSION_STARTED=false
-PHASE_9_2_SESSION_LADDER_COMPLETE=false
+STEP7_STARTED=true
+CAMPAIGN_EXECUTED=true
+NETWORK_SESSION_STARTED=true
+SESSION_COUNT_COMPLETED=2
+MULTI_SESSION_CONTINUITY_VERIFIED=true
+STEP7_VERIFIER_RESULT=PASS
+STEP7_EVIDENCE_SEALED=true
+STEP7_CAMPAIGN_EVIDENCE_DIR=evidence/ops/phase_9_2_step_7_repeated_multi_session_continuity_campaign_execution_v1/campaign_20260807T142727Z
+PHASE_9_2_SESSION_LADDER_COMPLETE=true
 BINDING_OR_PREFLIGHT_OR_PATH_OR_SESSION_IMPL_OR_START_INVOKE_PASS_IS_NOT_LADDER_CLOSEOUT=true
 STEP7_BINDING_PASS_IS_NOT_CAMPAIGN_CLOSEOUT=true
 STEP7_PATH_PASS_IS_NOT_CAMPAIGN_CLOSEOUT=true
 STEP7_OWNER_PASS_IS_NOT_CAMPAIGN_CLOSEOUT=true
-NEXT_SAFE_STEP=SEPARATE_OWNER_GO_STEP7_REPEATED_MULTI_SESSION_CONTINUITY_CAMPAIGN_EXECUTION_VIA_REAL_TTY_OR_DELEGATED_CURSOR_SECURE_CONFIRM
+STEP7_CAMPAIGN_VERIFIER_PASS_IS_LADDER_CLOSEOUT_AUTHORITY=true
+NEXT_SAFE_STEP=OWNER_REVIEW_RESIDUAL_NO_ORDER_PROGRAM_DOD_AFTER_PHASE_9_2_LADDER_COMPLETE
 ```
 
 ### Step-7 Confirm &#47; Authorization Channels (governance)
@@ -3839,10 +3852,11 @@ EVIDENCE_VERIFIED=true_for_closed_capability_packages
 EVIDENCE_CLAIMS_MATCH_TELEMETRY=true_for_corrected_capability_claims
 FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true_offline_no_order_cap72_scope_only
 SIMULATED_EXECUTION_ACTIVE=true_offline_no_order_cap72_scope_only
-PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_COMPLETE=false
+PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_COMPLETE=true_for_phase_9_2_session_ladder_continuity
 PHASE_9_2_ONE_HOUR_GOVERNED_SESSION_PASS_ON_CURRENT_TRUTH_SHA=true
-PHASE_9_2_SESSION_LADDER_COMPLETE=false
-PHASE_9_2_LADDER_NEXT_STEP=ADVERSE_STALE_DATA_SESSION
+PHASE_9_2_SESSION_LADDER_COMPLETE=true
+PHASE_9_2_LADDER_NEXT_STEP=NONE
+PHASE_9_2_STEP_7_STATUS=CLOSED_PASS
 TYPED_VOLATILITY_PRODUCER_TO_CMC_BINDING=CLOSED_AND_COLD_START_PROVEN
 REQUIRED_WINDOW_COMPLETE_DECOUPLED_FROM_FEATURES_OK=true
 REGIME_UNCLASSIFIED_ALONE_IS_NOT_A_DEFECT=true
@@ -3864,15 +3878,18 @@ no-order closure standard.
 
 # 22. Immediate Next Capability
 
-The next operational step after Step-7 Real-TTY campaign execution owner
-implementation is a separately authorized Step-7 repeated multi-session
-continuity campaign execution (not authorized by binding, path, or owner
-implementation):
+Phase 9.2 Step-7 repeated multi-session continuity campaign execution is
+complete (`CLOSED_PASS`). The Phase 9.2 Public-MD session ladder is
+complete. Immediate Next is therefore no longer a Phase 9.2 ladder step.
+Residual no-order program DoD items and separately authorized Phase 10 /
+Phase 11 work require explicit Owner-GO and must not reopen the closed
+ladder:
 
 ``` text
-ACTUAL_NEXT_CAPABILITY=PHASE_9_2_STEP_7_REPEATED_MULTI_SESSION_CONTINUITY_CAMPAIGN_EXECUTION_V1
+LAST_COMPLETED_CAPABILITY=PHASE_9_2_STEP_7_REPEATED_MULTI_SESSION_CONTINUITY_CAMPAIGN_EXECUTION_V1
+ACTUAL_NEXT_CAPABILITY=OWNER_REVIEW_RESIDUAL_NO_ORDER_PROGRAM_DOD_AFTER_PHASE_9_2_LADDER_COMPLETE
 PHASE_9_2_STEP_6_STATUS=CLOSED_PASS
-PHASE_9_2_STEP_7_STATUS=OPEN
+PHASE_9_2_STEP_7_STATUS=CLOSED_PASS
 STEP7_BINDING_IMPLEMENTED=true
 STEP7_CAMPAIGN_HARNESS_BOUND=true
 STEP7_CAMPAIGN_VERIFIER_PRESENT=true
@@ -3888,12 +3905,18 @@ TOKEN_ROLE=EPHEMERAL_EXECUTION_LATCH
 STEP7_BINDING_PASS_IS_NOT_CAMPAIGN_CLOSEOUT=true
 STEP7_PATH_PASS_IS_NOT_CAMPAIGN_CLOSEOUT=true
 STEP7_OWNER_PASS_IS_NOT_CAMPAIGN_CLOSEOUT=true
-PHASE_9_2_SESSION_LADDER_COMPLETE=false
-NETWORK_SESSION_STARTED=false
-CAMPAIGN_EXECUTED=false
-SEPARATE_OWNER_GO_REQUIRED_FOR_STEP7_CAMPAIGN_EXECUTION=true
+STEP7_CAMPAIGN_VERIFIER_PASS_IS_LADDER_CLOSEOUT_AUTHORITY=true
+PHASE_9_2_SESSION_LADDER_COMPLETE=true
+NETWORK_SESSION_STARTED=true
+CAMPAIGN_EXECUTED=true
+SESSION_COUNT_COMPLETED=2
+MULTI_SESSION_CONTINUITY_VERIFIED=true
+STEP7_VERIFIER_RESULT=PASS
+STEP7_EVIDENCE_SEALED=true
+STEP7_CAMPAIGN_EVIDENCE_DIR=evidence/ops/phase_9_2_step_7_repeated_multi_session_continuity_campaign_execution_v1/campaign_20260807T142727Z
+NEXT_OPEN_PHASE_9_2_STEP=NONE
 DESKTOP_RUNBOOK_USED_AS_AUTHORITY=false
-NEXT_SAFE_STEP=SEPARATE_OWNER_GO_STEP7_CAMPAIGN_VIA_REAL_TTY_OR_DELEGATED_CURSOR_SECURE_CONFIRM
+NEXT_SAFE_STEP=OWNER_REVIEW_RESIDUAL_NO_ORDER_PROGRAM_DOD_AFTER_PHASE_9_2_LADDER_COMPLETE
 ```
 
 Mandatory dependencies / freezes:
@@ -3906,9 +3929,7 @@ REQUIRED_WINDOW_COMPLETE_DECOUPLED_FROM_FEATURES_OK=true
 REGIME_THRESHOLD_MUTATION_ALLOWED=false
 CORE_LOGIC_CHANGE_ALLOWED=false
 SEPARATE_OWNER_GO_REQUIRED_FOR_PUBLIC_MD_NETWORK_SESSION=true
-THIS_BINDING_DOES_NOT_AUTHORIZE_STEP7_CAMPAIGN_EXECUTION=true
-THIS_PATH_IMPLEMENTATION_DOES_NOT_AUTHORIZE_STEP7_CAMPAIGN_EXECUTION=true
-THIS_OWNER_IMPLEMENTATION_DOES_NOT_AUTHORIZE_STEP7_CAMPAIGN_EXECUTION=true
+DO_NOT_REOPEN_CLOSED_PHASE_9_2_SESSION_LADDER=true
 DO_NOT_TREAT_STEP7_BINDING_PASS_AS_CAMPAIGN_CLOSEOUT=true
 DO_NOT_TREAT_STEP7_PATH_PASS_AS_CAMPAIGN_CLOSEOUT=true
 DO_NOT_TREAT_STEP7_OWNER_PASS_AS_CAMPAIGN_CLOSEOUT=true
@@ -3930,7 +3951,7 @@ Historical completed finish-sequence record (not Immediate Next):
 6.5 = Exit-policy producer binding = HISTORICAL_COMPLETED
 7.1 = Deterministic simulated lifecycle evidence = HISTORICAL_COMPLETED
 7.2 = Single-future stateful offline no-order activation = HISTORICAL_COMPLETED
-9.2 = Long-running Public-MD simulation evidence ladder = CURRENT_CRITICAL_PATH
+9.2 = Long-running Public-MD simulation evidence ladder = HISTORICAL_COMPLETED
 ```
 
 Confirmation and Dynamic Scope remain separate historical capabilities.
@@ -3996,7 +4017,7 @@ Read-only Preflight 6.0 = HISTORICAL_COMPLETED
 → 6.5 Exit-policy producer binding = HISTORICAL_COMPLETED
 → 7.1 Simulated lifecycle evidence = HISTORICAL_COMPLETED
 → 7.2 Stateful offline no-order activation = HISTORICAL_COMPLETED
-→ 9.2 Long-running Public-MD simulation evidence continuation = CURRENT_CRITICAL_PATH
+→ 9.2 Long-running Public-MD simulation evidence continuation = HISTORICAL_COMPLETED
 ```
 
 The read-only Preflight 6.0 remains historical preparation for 6.1 and
