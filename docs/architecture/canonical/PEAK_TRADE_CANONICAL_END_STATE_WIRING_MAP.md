@@ -789,20 +789,22 @@ preflight evidence `phase_9_2_session_ladder_v1.json`.
 
 | Field | Value |
 | --- | --- |
-| CURRENT_STATUS | `OPEN` (binding/harness/verifier implemented; campaign not closed) |
-| PRODUCTIVE_ENTRYPOINT | `scripts&#47;ops&#47;run_phase_9_2_step_7_repeated_multi_session_continuity_campaign_binding_v1.py` |
+| CURRENT_STATUS | `OPEN` (binding/harness/verifier + productive path implemented; campaign not executed) |
+| BINDING_ENTRYPOINT | `scripts&#47;ops&#47;run_phase_9_2_step_7_repeated_multi_session_continuity_campaign_binding_v1.py` (always forbids Real-Network) |
+| PRODUCTIVE_ENTRYPOINT | `scripts&#47;ops&#47;run_phase_9_2_step_7_productive_campaign_execution_path_v1.py` |
+| PRODUCTIVE_PATH_PACKAGE | `ops.phase_9_2_step_7_productive_campaign_execution_path_v1` |
 | CAMPAIGN_HARNESS | `ops.phase_9_2_step_7_repeated_multi_session_continuity_campaign_binding_v1.campaign_harness_v1` |
 | CAMPAIGN_BUNDLE_OWNER | `ops.phase_9_2_step_7_repeated_multi_session_continuity_campaign_binding_v1.campaign_bundle_v1` |
 | SESSION_SPEC | `config&#47;ops&#47;phase_9_2_public_md_multi_session_continuity_campaign_contract_v1.json` (ladder name `MULTI_SESSION_CONTINUITY_CAMPAIGN`) |
-| AUTHORIZATION_SCOPE | Repeated governed sessions; separate GOs; binding itself `NETWORK_SESSION_ALLOWED=false` |
+| AUTHORIZATION_SCOPE | Repeated governed sessions; separate GOs; binding itself `NETWORK_SESSION_ALLOWED=false`; path may authorize structural `campaign_may_start` only under ephemeral GO |
 | STATE_ROOTS | Cross-session continuity of durable roots (explicit verifier check) |
 | FAULT_OR_SESSION_MECHANISM | Reuses Step-3 restart, Step-4 reconnect, Step-6 stale&#47;adverse (no parallels) |
 | MULTI_SESSION_REQUIREMENT | `>1` (no invented governance count) |
-| EVIDENCE_BUNDLE | Binding evidence present; campaign closure evidence absent |
+| EVIDENCE_BUNDLE | Binding + path-implementation evidence present; campaign closure evidence absent |
 | VERIFIER | `campaign_verifier_v1` (binding + later campaign-bundle contract) |
 | PREDECESSOR | Step 6 |
 | SUCCESSOR | Phase 9.2 ladder complete → feeds natural lifecycle DoD |
-| OPEN_GAPS | `EVIDENCE_GAP` for governed multi-session campaign execution&#47;closure |
+| OPEN_GAPS | `EVIDENCE_GAP` for governed multi-session campaign execution&#47;closure (path present; campaign not started) |
 | CLOSURE_CRITERIA | `PHASE_9_2_SESSION_LADDER_COMPLETE=true` only after all steps evidenced |
 
 ```text
