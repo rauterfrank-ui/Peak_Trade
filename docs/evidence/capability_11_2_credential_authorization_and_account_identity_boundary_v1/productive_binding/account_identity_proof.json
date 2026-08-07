@@ -1,0 +1,10 @@
+{
+  "ACCOUNT_SCOPE_EXPLICIT": true,
+  "account_identity_digest": "4c82a91b3974f6cdb69b8ab9b4de42d6f0af1430bd3da7716e60ba9f6d577538",
+  "match_ok": true,
+  "mismatch_fail_closed": true,
+  "ok": true,
+  "owner": "ops.capability_11_2_credential_authorization_and_account_identity_boundary_v1",
+  "uid_mismatch_blocked": true,
+  "unknown_fail_closed": true
+}

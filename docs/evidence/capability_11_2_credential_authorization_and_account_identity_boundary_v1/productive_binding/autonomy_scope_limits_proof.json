@@ -1,0 +1,14 @@
+{
+  "AUTONOMOUS_AUTHORIZATION_SCOPE_EXTENSION": false,
+  "AUTONOMOUS_CAPITAL_LIMIT_INCREASE": false,
+  "AUTONOMOUS_TESTNET_TO_LIVE_TRANSITION": false,
+  "AUTONOMOUS_VENUE_ENABLEMENT": false,
+  "AUTONOMOUS_VENUE_SESSION_RENEWAL_WITHIN_AUTH_PERMITTED": true,
+  "NETWORK_SESSION_STARTED": false,
+  "capital_increase_blocked": true,
+  "invalid_renewal_blocked": true,
+  "ok": true,
+  "scope_extension_blocked": true,
+  "testnet_to_live_blocked": true,
+  "venue_enablement_blocked": true
+}
