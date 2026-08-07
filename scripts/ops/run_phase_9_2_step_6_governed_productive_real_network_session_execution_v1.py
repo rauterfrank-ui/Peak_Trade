@@ -2,19 +2,20 @@
 """CLI for Phase 9.2 Step-6 governed productive Real-Network session execution.
 
 Commands:
-  preflight / prove-implementation — prove session-owner wiring (no session)
-  prove-failure-injection          — offline gate/fault matrix
+  preflight / prove-implementation — prove session-owner + start-invoke wiring (no session)
+  prove-failure-injection          — offline gate/fault matrix including start-invoke doubles
   materialize-evidence             — offline implementation evidence
-  execute-governed-session         — offline fail-closed in this capability
+  execute-governed-session         — offline fail-closed deferred path (non-starting)
 
-This implementation capability never starts a real Public-MD network session
-and never mints or consumes confirm tokens. Binding-only and Path-implementation
-packages remain unchanged and non-starting.
+Productive start-invoke symbol (library, not started by this CLI):
+  execute_governed_step6_session_v1 under TARGET_SESSION_CAPABILITY_ID
 
-Later separate Owner-GO Real-TTY session (after merge):
-  execute-governed-session --owner-go --operator-authorization-explicit \\
-    --network-session-go --request-real-network
-  (confirm token via Hidden-PTY only; never argv/env)
+This capability never starts a real Public-MD network session from CLI and never
+mints or consumes confirm tokens during prove/materialize. Binding-only and
+Path-implementation packages remain unchanged and non-starting.
+
+Later separate Owner-GO Real-TTY session (after merge) uses the library invoke
+edge with Real-TTY + Hidden-PTY confirm (never argv/env).
 """
 
 from __future__ import annotations

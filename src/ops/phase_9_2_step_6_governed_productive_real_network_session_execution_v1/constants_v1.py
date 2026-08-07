@@ -10,16 +10,22 @@ from __future__ import annotations
 
 from pathlib import Path
 
+# Current PR capability: closes only the productive start-invoke edge.
 CAPABILITY_ID = (
+    "PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_SESSION_START_INVOKE_EDGE_IMPLEMENTATION_V1"
+)
+# Predecessor session-owner package capability (preserved; non-starting prove layer).
+SESSION_EXECUTION_IMPLEMENTATION_CAPABILITY_ID = (
     "PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTION_IMPLEMENTATION_V1"
 )
 TARGET_SESSION_CAPABILITY_ID = (
     "PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTION_V1"
 )
-SCHEMA_VERSION = "phase_9_2_step_6_governed_productive_real_network_session_execution.v1"
+START_INVOKE_EDGE_CAPABILITY_ID = CAPABILITY_ID
+SCHEMA_VERSION = "phase_9_2_step_6_productive_real_network_session_start_invoke_edge.v1"
 PRODUCER_VERSION = SCHEMA_VERSION
 PACKAGE_MARKER = (
-    "PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTION_IMPLEMENTATION_V1=true"
+    "PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_SESSION_START_INVOKE_EDGE_IMPLEMENTATION_V1=true"
 )
 OWNER = "ops.phase_9_2_step_6_governed_productive_real_network_session_execution_v1"
 AUTHORITY_OWNER = OWNER
@@ -61,12 +67,12 @@ PATH_ENTRYPOINT_PATH = (
 BINDING_ENTRYPOINT_PATH = (
     "scripts/ops/run_phase_9_2_step_6_governed_productive_real_network_session_executor_v1.py"
 )
-EVIDENCE_DIRNAME = (
-    "capability_phase_9_2_step_6_governed_productive_real_network_session_execution_v1"
-)
 CAPABILITY_DOC_RELATIVE_PATH = (
-    "docs/ops/specs/CAPABILITY_PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_"
-    "SESSION_EXECUTION_IMPLEMENTATION_V1.md"
+    "docs/ops/specs/CAPABILITY_PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_"
+    "SESSION_START_INVOKE_EDGE_IMPLEMENTATION_V1.md"
+)
+EVIDENCE_DIRNAME = (
+    "capability_phase_9_2_step_6_productive_real_network_session_start_invoke_edge_v1"
 )
 
 MIN_WALLCLOCK_DURATION_SECONDS = 180
@@ -132,9 +138,14 @@ SESSION_EXECUTED = False
 STEP6_GOVERNED_PRODUCTIVE_SESSION_EXECUTION_CAPABILITY_PRESENT = True
 STEP6_SESSION_OWNER_PRESENT = True
 STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_PRESENT = True
+STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_ABSENT = False
+STEP6_PRODUCTIVE_REAL_NETWORK_START_INVOKE_EDGE_PRESENT = True
+STEP6_PRODUCTIVE_REAL_NETWORK_START_INVOKE_EDGE_RUNTIME_REACHABLE = True
 STEP6_BINDING_ONLY_EXECUTOR_PRESERVED = True
 STEP6_PRODUCTIVE_PATH_IMPLEMENTATION_PRESERVED = True
 STEP7_STARTED = False
+PRODUCTIVE_SESSION_INVOKE_SYMBOL = "execute_governed_step6_session_v1"
+READY_FOR_SEPARATE_OWNER_GO_REAL_TTY_SESSION = True
 
 GOVERNED_PUBLIC_MD_NETWORK_SCOPE = "okx_eea_futures_public_md_observe_v1"
 EEA_PUBLIC_MD_HOST = "eea.okx.com"
@@ -178,29 +189,28 @@ PRESENTATION_LAYER_CHANGED = False
 CALL_GRAPH_BEFORE = [
     "BINDING_EXECUTOR forever fail-closed",
     "PATH_IMPLEMENTATION structural may_start only (never starts)",
-    "TARGET SESSION_EXECUTION capability package absent",
-    "HARD_STOP: Owner-GO Real-TTY session not reachable",
+    "SESSION_EXECUTION package present (may_start; start deferred)",
+    "HARD_STOP: PRODUCTIVE_REAL_NETWORK_START_INVOKE_EDGE_ABSENT",
 ]
 
 CALL_GRAPH_AFTER = [
     "BINDING_EXECUTOR preserved fail-closed (unchanged)",
     "PATH_IMPLEMENTATION preserved (unchanged; never starts)",
-    "SESSION_EXECUTION package present (this capability)",
-    "consumes productive path prove/gate as dependency edge",
-    "session-owned may-start under ephemeral Owner-GO + NETWORK_SESSION_GO + Real-TTY",
-    "reuse governed stale-control + failure-injection + wallclock owner",
-    "Hidden-PTY confirm handoff reachable",
-    "Step-6 verifier + evidence writer wiring present",
-    "THIS_IMPLEMENTATION_CAPABILITY: NETWORK_SESSION_STARTED=false",
-    "PHASE_9_2_STEP_6_STATUS remains OPEN until later session verifier PASS",
+    "SESSION_EXECUTION package preserved",
+    "START_INVOKE_EDGE present: execute_governed_step6_session_v1",
+    "session_execution_may_start + Owner-GO + NETWORK_SESSION_GO + Real-TTY + Hidden-Confirm",
+    "exactly-one run_productive_wallclock_session_v1 under TARGET_SESSION_CAPABILITY_ID",
+    "governed_stale_data_control overrides + canonical Public-MD fetcher",
+    "evidence + productive verifier handoff wired",
+    "THIS_CAPABILITY: NETWORK_SESSION_STARTED=false (prove/materialize/tests use doubles)",
+    "PHASE_9_2_STEP_6_STATUS remains OPEN until later Owner-GO Real-TTY session verifier PASS",
 ]
 
 LATER_SESSION_INVOCATION = (
-    "scripts/ops/run_phase_9_2_step_6_governed_productive_real_network_session_execution_v1.py "
-    "execute-governed-session --owner-go --operator-authorization-explicit "
-    "--network-session-go --request-real-network "
-    "(requires separate Owner-GO Real-TTY session; confirm via Hidden-PTY only; "
-    "this implementation capability never starts network during prove/materialize)"
+    "execute_governed_step6_session_v1 under TARGET_SESSION_CAPABILITY_ID with "
+    "--owner-go --operator-authorization-explicit --network-session-go "
+    "--request-real-network + Real-TTY Hidden-PTY confirm "
+    "(separate Owner-GO Real-TTY session after merge; this capability never starts network)"
 )
 
 
