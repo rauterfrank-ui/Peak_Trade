@@ -1,0 +1,264 @@
+{
+  "authorization_consumed": false,
+  "capability_id": "PHASE_9_2_STEP_3_GOVERNED_PRODUCTIVE_REAL_NETWORK_RESTART_RECOVERY_SESSION_EXECUTOR_IMPLEMENTATION_V1",
+  "cases": {
+    "auth_header": {
+      "blockers": [
+        "AUTH_HEADER_FORBIDDEN"
+      ],
+      "ok": true
+    },
+    "confirmation_id_drift": {
+      "blockers": [
+        "CONFIRMATION_SESSION_ID_DRIFT"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "crash_after_pre_commit": {
+      "blockers": [
+        "CRASH_AFTER_PRE_STATE_COMMIT"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "crash_before_pre_commit": {
+      "blockers": [
+        "CRASH_BEFORE_PRE_STATE_COMMIT"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "crash_during_handoff": {
+      "blockers": [
+        "CRASH_DURING_RESTART_HANDOFF"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "double_recovery": {
+      "blockers": [
+        "RECOVERY_PROCESS_STARTED_TWICE"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "duplicate_confirmation": {
+      "blockers": [
+        "DUPLICATE_CONFIRMATION_ADVANCE"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "duplicate_fill": {
+      "blockers": [
+        "DUPLICATE_FILL"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "duplicate_intent": {
+      "blockers": [
+        "DUPLICATE_INTENT"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "evidence_write_error": {
+      "blockers": [
+        "EVIDENCE_WRITE_FAILURE_AFTER_STATE_COMMIT"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "expired_authorization": {
+      "blockers": [
+        "AUTHORIZATION_EXPIRED",
+        "AUTHORIZATION_FAILURE"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "instrument_drift": {
+      "blockers": [
+        "INSTRUMENT_IDENTITY_DRIFT"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "lost_scope": {
+      "blockers": [
+        "LOST_SCOPE_TRANSITION"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "missing_authorization": {
+      "blockers": [
+        "AUTHORIZATION_DIGEST_REQUIRED",
+        "AUTHORIZATION_FAILURE",
+        "AUTHORIZATION_REQUIRED"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "missing_token": {
+      "blockers": [
+        "CONFIRM_TOKEN_FAILURE",
+        "CONFIRM_TOKEN_MISSING"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "offline_campaign_no_network_claim": {
+      "blockers": [],
+      "network_session_started": false,
+      "ok": true
+    },
+    "post_method": {
+      "blockers": [
+        "HTTP_METHOD_FORBIDDEN",
+        "HTTP_GET_ONLY_REQUIRED"
+      ],
+      "ok": true
+    },
+    "private_endpoint": {
+      "blockers": [
+        "PRIVATE_ENDPOINT_FORBIDDEN"
+      ],
+      "ok": true
+    },
+    "reconciliation_missing": {
+      "blockers": [
+        "RECOVERY_WITHOUT_RECONCILIATION_FORBIDDEN"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "recovery_start_fail": {
+      "blockers": [
+        "RECOVERY_PROCESS_START_FAILED"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "request_real_network_fail_closed": {
+      "blockers": [
+        "NETWORK_SESSION_ALLOWED_FALSE",
+        "REAL_NETWORK_SESSION_FORBIDDEN_IN_THIS_CAPABILITY",
+        "SEPARATE_OWNER_GO_REQUIRED_FOR_STEP3_SESSION"
+      ],
+      "ok": true
+    },
+    "state_divergence": {
+      "blockers": [
+        "STATE_DIGEST_DIVERGENCE"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "without_network_go": {
+      "blockers": [
+        "EXECUTION_PERMIT_NOT_AUTHORIZED_WITHOUT_EPHEMERAL_NETWORK_SESSION_GO",
+        "NETWORK_SESSION_ALLOWED_FALSE",
+        "NETWORK_SESSION_GO_REQUIRED"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "without_operator": {
+      "blockers": [
+        "OPERATOR_AUTHORIZATION_REQUIRED"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "without_owner_go": {
+      "blockers": [
+        "OWNER_GO_REQUIRED"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "writer_conflict": {
+      "blockers": [
+        "ABORT_DUPLICATE_SESSION"
+      ],
+      "ok": true
+    },
+    "wrong_binding_digest": {
+      "blockers": [
+        "BINDING_CONFIG_DIGEST_MISMATCH"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "wrong_capability": {
+      "blockers": [
+        "AUTHORIZATION_CAPABILITY_SCOPE_MISMATCH",
+        "AUTHORIZATION_FAILURE"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "wrong_contract_digest": {
+      "blockers": [
+        "SESSION_CONTRACT_DIGEST_MISMATCH"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "wrong_sha": {
+      "blockers": [
+        "AUTHORIZATION_FAILURE",
+        "AUTHORIZATION_SHA_MISMATCH"
+      ],
+      "network_session_started": false,
+      "ok": true
+    },
+    "wrong_token_digest": {
+      "blockers": [
+        "CONFIRM_TOKEN_DIGEST_MISMATCH",
+        "CONFIRM_TOKEN_FAILURE"
+      ],
+      "network_session_started": false,
+      "ok": true
+    }
+  },
+  "confirm_token_consumed": false,
+  "network_session_started": false,
+  "ok": true,
+  "required_cases": [
+    "request_real_network_fail_closed",
+    "without_owner_go",
+    "without_operator",
+    "without_network_go",
+    "missing_authorization",
+    "wrong_sha",
+    "wrong_contract_digest",
+    "wrong_binding_digest",
+    "wrong_capability",
+    "expired_authorization",
+    "wrong_token_digest",
+    "missing_token",
+    "crash_before_pre_commit",
+    "crash_after_pre_commit",
+    "crash_during_handoff",
+    "recovery_start_fail",
+    "double_recovery",
+    "reconciliation_missing",
+    "state_divergence",
+    "confirmation_id_drift",
+    "instrument_drift",
+    "duplicate_confirmation",
+    "duplicate_intent",
+    "duplicate_fill",
+    "lost_scope",
+    "evidence_write_error",
+    "writer_conflict",
+    "private_endpoint",
+    "auth_header",
+    "post_method",
+    "offline_campaign_no_network_claim"
+  ]
+}
