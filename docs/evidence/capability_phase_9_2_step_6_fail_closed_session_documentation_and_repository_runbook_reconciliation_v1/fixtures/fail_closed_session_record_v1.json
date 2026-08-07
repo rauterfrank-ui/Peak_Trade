@@ -1,0 +1,60 @@
+{
+  "attempted_capability_id": "PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTION_V1",
+  "authoritative_base_sha": "642186ee6eb1741edaca926c40141e3ea67f0a4b",
+  "binding_capability_id": "PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTOR_BINDING_V1",
+  "capability_id": "PHASE_9_2_STEP_6_FAIL_CLOSED_SESSION_DOCUMENTATION_AND_REPOSITORY_RUNBOOK_RECONCILIATION_V1",
+  "capability_spec_path": "docs/ops/specs/CAPABILITY_PHASE_9_2_STEP_6_FAIL_CLOSED_SESSION_DOCUMENTATION_AND_REPOSITORY_RUNBOOK_RECONCILIATION_V1.md",
+  "claims": {
+    "BINDING_OR_PREFLIGHT_PASS_IS_NOT_LADDER_CLOSEOUT": true,
+    "CONFIRM_TOKEN_CONSUMED": false,
+    "CONFIRM_TOKEN_MINTED": false,
+    "CORE_LOGIC_CHANGE": false,
+    "EVIDENCE_SEALED": false,
+    "FAILURE_INJECTION_USED": false,
+    "GOVERNED_STALE_CONTROL_USED": false,
+    "HIDDEN_CONFIRM_HANDOFF_USED": false,
+    "NETWORK_SESSION_COUNT": 0,
+    "NETWORK_SESSION_GO": true,
+    "OPERATOR_AUTHORIZATION_EXPLICIT": true,
+    "ORDERS_DISABLED": true,
+    "OWNER_GO": true,
+    "PHASE_9_2_STEP_6_STATUS": "OPEN",
+    "PRODUCTIVE_EXECUTION_PATH_STILL_ABSENT": true,
+    "PUBLIC_MD_ONLY_ENFORCED": true,
+    "REAL_TTY_CONFIRMED": true,
+    "RUNTIME_CODE_CHANGED": false,
+    "SESSION_COMPLETED": false,
+    "SESSION_STARTED": false,
+    "STEP7_STARTED": false,
+    "TRADING_LOGIC_CHANGED": false,
+    "VERIFIER_RESULT": "NOT_RUN",
+    "WALLCLOCK_OWNER_REUSED": false
+  },
+  "document_effect": "DOCUMENTATION_AND_EVIDENCE_RECONCILIATION_ONLY",
+  "forbidden_solutions": [
+    "ephemeral_runtime_patches",
+    "monkeypatches",
+    "second_session_against_binding_only_execute_path"
+  ],
+  "hard_stop_reasons": [
+    "REAL_NETWORK_SESSION_FORBIDDEN_IN_THIS_BINDING_CAPABILITY",
+    "REAL_NETWORK_SIDE_EFFECTS_FORBIDDEN_IN_BINDING_CAPABILITY",
+    "PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED=false"
+  ],
+  "remaining_productive_gap": [
+    "separate_owner_go_capable_productive_real_network_execution_path_step5_pattern",
+    "productive_real_network_execution_authorization",
+    "canonical_auth_confirm_issuance",
+    "hidden_pty_confirm_handoff",
+    "reuse_existing_wallclock_owner",
+    "governed_stale_control",
+    "failure_injection",
+    "productive_verifier_evidence_path"
+  ],
+  "runbook_path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+  "runtime_authorization_effect": "NONE",
+  "schema_version": "phase_9_2_step_6_fail_closed_session_documentation_and_repository_runbook_reconciliation.v1",
+  "status": "FAIL_CLOSED",
+  "verdict": "HARD_STOP_BINDING_FORBIDS_REAL_NETWORK_SESSION",
+  "verified_at": "2026-08-07T07:57:46Z"
+}
