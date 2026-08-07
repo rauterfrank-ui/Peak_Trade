@@ -1,0 +1,28 @@
+{
+  "AUTHORIZATION_CONSUMED": false,
+  "CONFIRM_TOKEN_CONSUMED": false,
+  "CONFIRM_TOKEN_MINTED": false,
+  "NETWORK_SESSION_STARTED": false,
+  "PHASE_9_2_SESSION_LADDER_COMPLETE": false,
+  "PHASE_9_2_STEP_7_STATUS": "OPEN",
+  "blockers": [
+    "MULTI_SESSION_REQUIREMENT_NOT_MET:count=1:need>1"
+  ],
+  "domain": "STEP7_CAMPAIGN_BUNDLE",
+  "multi_session_requirement_expression": ">1",
+  "multi_session_requirement_satisfied": false,
+  "ok": false,
+  "owner": "ops.phase_9_2_step_7_repeated_multi_session_continuity_campaign_binding_v1.campaign_verifier_v1",
+  "per_session_verdicts": [
+    {
+      "CLAIMS_MATCH_TELEMETRY": true,
+      "blockers": [],
+      "domain": "STEP7_PER_SESSION_EVIDENCE",
+      "ok": true,
+      "session_id": "phase_9_2_public_md_multi_session_continuity_session_v1_001",
+      "verified": true
+    }
+  ],
+  "session_count": 1,
+  "verified": false
+}
