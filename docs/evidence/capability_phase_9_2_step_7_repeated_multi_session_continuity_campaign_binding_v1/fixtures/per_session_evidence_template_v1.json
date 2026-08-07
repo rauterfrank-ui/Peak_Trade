@@ -1,0 +1,65 @@
+{
+  "authorization_digest": "",
+  "authorization_id": "",
+  "claims": {
+    "AUTHORIZATION_REUSED": false,
+    "BOUNDED_RECONNECT_PROVED": false,
+    "CLAIMS_MATCH_TELEMETRY": false,
+    "CONFIRM_TOKEN_REUSED": false,
+    "DUPLICATE_CONFIRMATION_ADVANCE": false,
+    "DUPLICATE_FILL": false,
+    "EXCHANGE_CREDENTIAL_PATH_REACHED": false,
+    "OBSERVED_SESSION": false,
+    "ORDER_SIDE_EFFECT_OCCURRED": false,
+    "PER_SESSION_AUTHORIZATION_USED": false,
+    "PRIVATE_ENDPOINT_REACHED": false,
+    "RESTART_RECOVERY_PROVED": false,
+    "STALE_ADVERSE_PROVED": false
+  },
+  "config_digest": "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b",
+  "confirm_token_fingerprint": "",
+  "confirmation_advance_count": 0,
+  "credential_access_reachable": false,
+  "duplicate_confirmation_advance_count": 0,
+  "duplicate_fill_count": 0,
+  "evidence_digest": "2d6460abd6fb053b33de8d6392c2d8077b772d339a14f40e0b11e22ba595d0eb",
+  "fill_count": 0,
+  "order_side_effect_occurred": false,
+  "owner": "ops.phase_9_2_step_7_repeated_multi_session_continuity_campaign_binding_v1.per_session_evidence_contract_v1",
+  "private_endpoint_reachable": false,
+  "reconnect_result": {
+    "ok": false,
+    "reused_owner": "ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1",
+    "status": "MISSING"
+  },
+  "repository_sha": "3c334644a2d81ff7e6c2104d7e0917f3d6bb3c84",
+  "restart_recovery_result": {
+    "ok": false,
+    "reused_owner": "ops.phase_9_2_step_3_governed_productive_real_network_restart_recovery_session_execution_v1",
+    "status": "MISSING"
+  },
+  "schema_version": "phase_9_2_multi_session_continuity_session_evidence.v1",
+  "session_id": "phase_9_2_public_md_multi_session_continuity_session_v1_001",
+  "session_id_prefix": "phase_9_2_public_md_multi_session_continuity_session_v1",
+  "session_ordinal": 1,
+  "session_result": {
+    "observed_session": false,
+    "ok": false,
+    "status": "TEMPLATE_ONLY"
+  },
+  "stale_adverse_result": {
+    "ok": false,
+    "reused_owner": "ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1.governed_injected_stale_data_fault_v1",
+    "status": "MISSING"
+  },
+  "state_root_after": "",
+  "state_root_before": "",
+  "telemetry": {},
+  "verifier_result": {
+    "blockers": [
+      "TEMPLATE_ONLY_BINDING_CAPABILITY"
+    ],
+    "ok": false,
+    "status": "TEMPLATE_ONLY"
+  }
+}
