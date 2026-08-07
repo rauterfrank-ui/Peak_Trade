@@ -92,7 +92,7 @@ evaluate_step6_binding_gate_v1
 | Pacing &#47; retry &#47; backoff | smoke&#47;Step-4 `public_md_rate_limit_policy_v1` budgets |
 | Wallclock runner | `run_productive_wallclock_session_v1` |
 | Verifier | `verifier_v1` (binding + later productive session contract) |
-| Evidence root | `docs&#47;evidence&#47;capability_phase_9_2_step_6_adverse_stale_data_session_continuation_v1` |
+| Evidence root | `docs&#47;evidence&#47;capability_phase_9_2_step_6_adverse_stale_data_session_continuation_v1&#47;SUMMARY.json` |
 
 `PARALLEL_PRODUCTIVE_AUTHORITY_DETECTED=false`
 
