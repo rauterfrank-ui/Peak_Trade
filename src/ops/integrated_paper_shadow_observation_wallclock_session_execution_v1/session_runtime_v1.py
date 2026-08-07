@@ -350,6 +350,13 @@ class WallclockSessionRuntimeV1:
                 if ev.get("kind") == "HTTP_429":
                     last_retry_raw = ev.get("retry_after_raw")
                     last_retry_parsed = ev.get("retry_after_parsed_seconds")
+        # Retry-After scheduled sleep is the rate-limit backoff path; keep
+        # backoff evidence when last_backoff_* was never mirrored onto session.
+        last_backoff_source = self.last_backoff_source
+        last_backoff_seconds = self.last_backoff_seconds
+        if last_backoff_source is None and last_retry_parsed is not None:
+            last_backoff_source = "retry_after"
+            last_backoff_seconds = float(last_retry_parsed)
         doc = build_transport_telemetry_document_v1(
             session_id=session_id,
             transport_http_429_count=http_429,
@@ -366,8 +373,8 @@ class WallclockSessionRuntimeV1:
             natural_transport_fault_count=int(self.natural_transport_fault_count),
             last_retry_after_raw=last_retry_raw,
             last_retry_after_parsed_seconds=last_retry_parsed,
-            last_backoff_source=self.last_backoff_source,
-            last_backoff_seconds=self.last_backoff_seconds,
+            last_backoff_source=last_backoff_source,
+            last_backoff_seconds=last_backoff_seconds,
         )
         if wrapper_tel is not None and any(
             str(e.get("fault_origin")) == FAULT_ORIGIN_GOVERNED for e in wrapper_tel.events
@@ -867,6 +874,13 @@ class WallclockSessionRuntimeV1:
                     break
                 except MarketDataBindingErrorV1 as exc:
                     # Deterministic schema/mapping defects never consume reconnect budget.
+                    # Reconnectable TRANSPORT_FAILURE must reach the session reconnect
+                    # owner (canonical taxonomy) — do not abort the whole session.
+                    if bool(exc.reconnectable) and str(exc.error_class) == "TRANSPORT_FAILURE":
+                        cause = exc.__cause__
+                        if isinstance(cause, EeaPublicMdTransportError):
+                            raise cause from exc
+                        raise EeaPublicMdTransportError(str(exc)) from exc
                     self._abort(exc.error_class, str(exc))
                     break
                 except EeaPublicMdTransportError as exc:

@@ -23,7 +23,15 @@ from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.
 
 
 class GovernedInjectedTransportDisconnectError(RuntimeError):
-    """Reconnectable transport disconnect injected on the fetcher edge."""
+    """Reconnectable transport disconnect injected on the fetcher edge.
+
+    ``session_reconnect_owned=True`` marks this fault for the session reconnect
+    owner. ``EeaPublicMdTransportV1`` must surface it immediately as
+    ``EeaPublicMdTransportError`` and must not absorb it via transport retries
+    (retrying would consume the one-shot injection and hide the disconnect).
+    """
+
+    session_reconnect_owned: bool = True
 
 
 SCHEMA_VERSION = "governed_injected_transport_fault_schedule.v1"

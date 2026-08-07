@@ -452,6 +452,30 @@ class EeaPublicMdTransportV1:
                 raise
             except Exception as exc:  # noqa: BLE001
                 finished = float(self.monotonic_clock())
+                # Session-owned reconnectable disconnects must reach the session
+                # reconnect owner. Transport retries would consume one-shot
+                # governed injections and hide the disconnect surface.
+                if bool(getattr(exc, "session_reconnect_owned", False)):
+                    error_code = f"FETCH_FAILED:{exc}"
+                    if self.attempt_gate is not None:
+                        self.attempt_gate.after_physical_attempt(
+                            url=url,
+                            path=path,
+                            attempt_index=attempt,
+                            status=status,
+                            headers=resp_headers,
+                            error_code=error_code,
+                            terminal=True,
+                            backoff_source="",
+                            scheduled_backoff_seconds=0.0,
+                            retry_after_raw=None,
+                            retry_after_parsed_seconds=None,
+                            started_monotonic=started,
+                            finished_monotonic=finished,
+                            budget_before=budget_before,
+                            budget_after=budget_after,
+                        )
+                    raise EeaPublicMdTransportError(error_code) from exc
                 last_err = exc
                 if attempt >= max_attempts - 1:
                     if self.attempt_gate is not None:
