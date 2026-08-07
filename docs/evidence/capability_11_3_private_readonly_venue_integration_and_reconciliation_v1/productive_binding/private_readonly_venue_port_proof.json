@@ -1,0 +1,29 @@
+{
+  "OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+  "PRIVATE_READONLY_FETCH_PERFORMED_IN_CAPABILITY_11_3": false,
+  "PRIVATE_READONLY_GET_ONLY": true,
+  "PRIVATE_READONLY_NETWORK_REACHABLE": false,
+  "PRIVATE_READONLY_ORDER_MUTATION_FORBIDDEN": true,
+  "PRIVATE_READONLY_PORT_CONSTRUCTIBLE": false,
+  "PRIVATE_READONLY_PORT_DECLARED": true,
+  "PRIVATE_READONLY_VENUE_INTEGRATION_ACTIVATED": false,
+  "allowed_get_endpoints": [
+    "accounts",
+    "open_positions",
+    "open_orders"
+  ],
+  "construction_blocked": true,
+  "fetch_blocked": true,
+  "forbidden_mutation_actions": [
+    "submit_order",
+    "cancel_order",
+    "amend_order",
+    "withdraw",
+    "transfer",
+    "sendorder",
+    "batchorder"
+  ],
+  "mutation_blocked": true,
+  "ok": true,
+  "unknown_endpoint_blocked": true
+}

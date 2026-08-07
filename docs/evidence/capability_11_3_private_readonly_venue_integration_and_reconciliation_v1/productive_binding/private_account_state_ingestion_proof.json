@@ -1,0 +1,16 @@
+{
+  "FIXTURE_ONLY_SOURCE_REQUIRED": true,
+  "OWNER": "ops.capability_11_3_private_readonly_venue_integration_and_reconciliation_v1",
+  "PRIVATE_ACCOUNT_NETWORK_INGESTION_PERFORMED": false,
+  "PRIVATE_ACCOUNT_STATE_SCHEMA_BOUND": true,
+  "allowed_snapshot_kinds": [
+    "accounts",
+    "open_positions",
+    "open_orders",
+    "balances_equity_margin"
+  ],
+  "network_ingestion_blocked": true,
+  "non_fixture_blocked": true,
+  "ok": true,
+  "unknown_snapshot_kind_blocked": true
+}
