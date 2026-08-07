@@ -1,0 +1,30 @@
+{
+  "AUTOMATIC_HALT_ALLOWED": true,
+  "AUTOMATIC_STAGE_DEMOTION_ALLOWED": true,
+  "CANARY_ROLLBACK_CONTRACT_REQUIRED": true,
+  "LIVE_CANARY_MINIMUM_EXPOSURE_ACTIVATED": false,
+  "LIVE_CANARY_MINIMUM_EXPOSURE_CONTRACT_ACTIVATED": false,
+  "LIVE_CANARY_MINIMUM_EXPOSURE_CONTRACT_BOUND": true,
+  "MINIMUM_RATIFIED_NOTIONAL_ONLY": true,
+  "NO_AUTOMATIC_STAGE_PROMOTION": true,
+  "OWNER": "ops.capability_11_9_live_canary_order_execution_v1",
+  "OWNER_GO_REQUIRED_FOR_STAGE_PROMOTION": true,
+  "POSITION_COUNT_LIMIT": 1,
+  "activation_blocked": true,
+  "automatic_promotion_blocked": true,
+  "bounded_stage_blocked": true,
+  "cap_11_10_surface_blocked": true,
+  "non_fixture_blocked": true,
+  "ok": true,
+  "position_limit_blocked": true,
+  "sample_max_notional": "1",
+  "sample_rollback_contract_id": "canary-rollback-fixture-v1",
+  "stages_forbidden": [
+    "LIVE_BOUNDED_SINGLE_FUTURE",
+    "LIVE_BOUNDED_MULTI_SESSION",
+    "LIVE_AUTONOMOUS_SINGLE_FUTURE"
+  ],
+  "stages_in_scope": [
+    "LIVE_CANARY_MINIMUM_EXPOSURE"
+  ]
+}
