@@ -2167,8 +2167,22 @@ using public market data and internal simulated execution only.
     `execute_governed_step6_session_v1` → exactly-one
     `run_productive_wallclock_session_v1` under
     `TARGET_SESSION_CAPABILITY_ID` without weakening Binding&#47;Path forbid
-    constants. Ladder step remains OPEN until a productive Real-TTY session
-    verifier PASS;
+    constants. A later Owner-GO productive session attempt on
+    `main@6ae1a2aa31bb8d51587feead7c929bc2339147d6` (after start-invoke
+    merge PR `#5781`) terminated `FAIL_CLOSED` &#47;
+    `HARD_STOP_REAL_TTY_AND_HIDDEN_CONFIRM_UNAVAILABLE` because the Cursor
+    agent shell had no controlling TTY
+    (`REAL_TTY_ABSENT_IN_CURSOR_AGENT_SHELL`,
+    `&#47;dev&#47;tty` Device not configured,
+    `HIDDEN_CONFIRM_HANDOFF_TECHNICALLY_UNEXECUTABLE`,
+    `NO_REPLACEMENT_ALLOWED`); `NETWORK_SESSION_STARTED=false`,
+    `CONFIRM_TOKEN_MINTED=false`, `CONFIRM_TOKEN_CONSUMED=false`,
+    `PRODUCTIVE_EXECUTOR_USED=false`, `VERIFIER_RESULT=NOT_RUN`,
+    `EVIDENCE_SEALED=false`. Current blocker is therefore **not** missing
+    path&#47;invoke implementation; it is Real-TTY &#47; Hidden-Confirm
+    unavailability in the agent shell. Ladder step remains OPEN until a
+    separately authorized productive Real-Network session in a real
+    macOS Terminal.app TTY is sealed and verifier PASS;
 7.  repeated multi-session continuity campaign --- open.
 
 ``` text
@@ -2191,10 +2205,15 @@ STEP6_SESSION_OWNER_PRESENT=true
 STEP6_BINDING_ONLY_EXECUTOR_PRESERVED=true
 STEP6_PRODUCTIVE_PATH_IMPLEMENTATION_PRESERVED=true
 STEP6_OWNER_GO_REAL_TTY_ATTEMPT_ON_642186EE=FAIL_CLOSED
+STEP6_OWNER_GO_REAL_TTY_ATTEMPT_ON_6AE1A2AA=FAIL_CLOSED
+LATEST_STEP6_PRODUCTIVE_SESSION_ATTEMPT_STATUS=FAIL_CLOSED
+LATEST_STEP6_PRODUCTIVE_SESSION_ATTEMPT_VERDICT=HARD_STOP_REAL_TTY_AND_HIDDEN_CONFIRM_UNAVAILABLE
+CURRENT_STEP6_BLOCKER=REAL_TTY_ABSENT_IN_CURSOR_AGENT_SHELL_AND_HIDDEN_CONFIRM_UNEXECUTABLE
 STEP6_GOVERNED_SESSION_CLOSED=false
 SESSION_EXECUTED=false
 NETWORK_SESSION_STARTED=false
 BINDING_OR_PREFLIGHT_OR_PATH_OR_SESSION_IMPL_OR_START_INVOKE_PASS_IS_NOT_LADDER_CLOSEOUT=true
+NEXT_SAFE_STEP=SEPARATE_OWNER_GO_IN_REAL_MACOS_TERMINAL_APP_TTY_STEP6_PRODUCTIVE_SESSION_EXECUTION
 ```
 
 Related proven predecessors that do not close this ladder:
@@ -2260,6 +2279,82 @@ Interpretation (historical at `642186ee`; path later implemented):
     while preserving Binding-only and Path-implementation non-starting
     roles. Session-Execution-Implementation-PASS is still not ladder
     closeout; a later separate Owner-GO Real-TTY session remains required.
+-   Start-invoke edge was subsequently implemented under
+    `PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_SESSION_START_INVOKE_EDGE_IMPLEMENTATION_V1`
+    and merged as PR `#5781` on
+    `main@6ae1a2aa31bb8d51587feead7c929bc2339147d6`.
+    Start-Invoke-Edge-PASS is still not ladder closeout.
+
+### Step-6 Real-TTY HARD_STOP Owner-GO session attempt --- current truth record
+
+``` text
+CAPABILITY_ID=PHASE_9_2_STEP_6_REAL_TTY_HARD_STOP_REPOSITORY_RUNBOOK_CURRENT_TRUTH_RECONCILIATION_V1
+DOCUMENT_EFFECT=DOCUMENTATION_CURRENT_TRUTH_RECONCILIATION_ONLY
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+ATTEMPTED_CAPABILITY_ID=PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTION_V1
+ATTEMPT_REPOSITORY_SHA=6ae1a2aa31bb8d51587feead7c929bc2339147d6
+STATUS=FAIL_CLOSED
+VERDICT=HARD_STOP_REAL_TTY_AND_HIDDEN_CONFIRM_UNAVAILABLE
+OWNER_GO=true
+OPERATOR_AUTHORIZATION_EXPLICIT=true
+NETWORK_SESSION_GO=true
+STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_PRESENT=true
+STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_ABSENT=false
+STEP6_PRODUCTIVE_REAL_NETWORK_START_INVOKE_EDGE_PRESENT=true
+STEP6_PRODUCTIVE_SESSION_START_INVOKE_EDGE_PRESENT=true
+REAL_TTY_CONFIRMED=false
+PRODUCTIVE_EXECUTOR_USED=false
+HISTORICAL_BINDING_ONLY_EXECUTOR_USED=false
+PUBLIC_MD_ONLY_ENFORCED=true
+ORDERS_DISABLED=true
+PRIVATE_ENDPOINT_REACHABLE=false
+EXCHANGE_CREDENTIAL_PATH_REACHABLE=false
+NETWORK_SESSION_STARTED=false
+NETWORK_SESSION_COUNT=0
+SESSION_STARTED=false
+SESSION_COMPLETED=false
+GOVERNED_STALE_CONTROL_USED=false
+FAILURE_INJECTION_EXECUTED=false
+FAILURE_INJECTION_RESULT=NOT_RUN
+CONFIRM_TOKEN_CANONICAL_PATH_USED=false
+CONFIRM_TOKEN_MINTED=false
+CONFIRM_TOKEN_CONSUMED=false
+CONFIRM_TOKEN_PLAINTEXT_EXPOSED=false
+CONFIRM_TOKEN_PERSISTED=false
+CONFIRM_TOKEN_SHELL_HISTORY=false
+EVIDENCE_SEALED=false
+EVIDENCE_VERIFIED=false
+VERIFIER_RESULT=NOT_RUN
+CLAIMS_MATCH_EVIDENCE=false
+CORE_LOGIC_CHANGED=false
+TRADING_LOGIC_CHANGED=false
+CONFIG_CHANGED=false
+EXCHANGE_CREDENTIAL_PATH_CHANGED=false
+LIVE_PATH_CHANGED=false
+TESTNET_PATH_CHANGED=false
+HARD_STOP_REASON=
+  REAL_TTY_ABSENT_IN_CURSOR_AGENT_SHELL:&#47;dev&#47;tty_Device_not_configured
+  HIDDEN_CONFIRM_HANDOFF_TECHNICALLY_UNEXECUTABLE
+  NO_REPLACEMENT_ALLOWED
+PHASE_9_2_STEP_6_STATUS=OPEN
+PHASE_9_2_STEP_7_STATUS=OPEN
+STEP7_STARTED=false
+DESKTOP_RUNBOOK_USED_AS_AUTHORITY=false
+NEXT_SAFE_STEP=SEPARATE_OWNER_GO_IN_REAL_MACOS_TERMINAL_APP_TTY_STEP6_PRODUCTIVE_SESSION_EXECUTION
+```
+
+Interpretation (current at `6ae1a2aa`):
+
+-   Path-PRESENT and Start-Invoke-Edge-PRESENT are current repository truth.
+-   The current blocker is exclusively Real-TTY absence in the Cursor agent
+    shell plus technically unexecutable Hidden-Confirm handoff.
+-   Binding-PASS, Path-PASS, Session-Execution-Implementation-PASS and
+    Start-Invoke-Edge-PASS remain **not** Step-6 ladder closeout.
+-   No network session, confirm mint&#47;consume, evidence seal or verifier
+    PASS occurred in this attempt.
+-   Step 6 stays OPEN until a separately authorized productive Real-Network
+    session in a real macOS Terminal.app TTY is sealed and verifier PASS.
+-   Step 7 stays OPEN and must not be started from this reconciliation.
 ## Operational requirements
 
 -   no zero-interval request bursts;
@@ -3280,6 +3375,7 @@ RUNBOOK_BOOTSTRAP_REQUIRED=true
 RUNBOOK_READ_COMPLETE=true
 RUNBOOK_SEMANTIC_MAP_ESTABLISHED=true
 RUNBOOK_USED_AS_SINGLE_IMPLEMENTATION_AUTHORITY=true
+DESKTOP_RUNBOOK_USED_AS_AUTHORITY=false
 NO_PARALLEL_SEMANTIC_MODEL=true
 ```
 
@@ -3291,6 +3387,9 @@ Operational rule:
   mutation.
 - All later capability implementations, reviews, merges and analyses shall
   use the runbook as the primary semantic reference.
+- Desktop copies of this runbook are convenience mirrors only and must never
+  be treated as semantic or operational authority
+  (`DESKTOP_RUNBOOK_USED_AS_AUTHORITY=false`).
 - If the runbook is unavailable in a new chat, Cursor shall request it before
   continuing with implementation work.
 - No implementation may silently continue using assumptions from previous
@@ -3697,8 +3796,9 @@ no-order closure standard.
 
 # 22. Immediate Next Capability
 
-The next implementation step after this documentation truth
-reconciliation is:
+The next operational step after this documentation current-truth
+reconciliation is a separately authorized productive Step-6 Real-Network
+session in a real macOS Terminal.app TTY (not a Cursor agent shell):
 
 ``` text
 ACTUAL_NEXT_CAPABILITY=PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTION_V1
@@ -3709,16 +3809,23 @@ PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_PRESENT=true
 PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_ABSENT=false
 STEP6_PRODUCTIVE_REAL_NETWORK_START_INVOKE_EDGE_PRESENT=true
 STEP6_PRODUCTIVE_REAL_NETWORK_START_INVOKE_EDGE_RUNTIME_REACHABLE=true
+STEP6_PRODUCTIVE_SESSION_START_INVOKE_EDGE_PRESENT=true
 STEP6_GOVERNED_PRODUCTIVE_SESSION_EXECUTION_CAPABILITY_PRESENT=true
 STEP6_SESSION_OWNER_PRESENT=true
 STEP6_BINDING_ONLY_EXECUTOR_PRESERVED=true
 STEP6_PRODUCTIVE_PATH_IMPLEMENTATION_PRESERVED=true
 STEP6_BINDING_OR_PREFLIGHT_OR_PATH_OR_SESSION_IMPL_OR_START_INVOKE_PASS_IS_NOT_LADDER_CLOSEOUT=true
 SEPARATE_OWNER_GO_REQUIRED_FOR_STEP6_REAL_TTY_SESSION=true
+LATEST_STEP6_PRODUCTIVE_SESSION_ATTEMPT_STATUS=FAIL_CLOSED
+LATEST_STEP6_PRODUCTIVE_SESSION_ATTEMPT_VERDICT=HARD_STOP_REAL_TTY_AND_HIDDEN_CONFIRM_UNAVAILABLE
+LATEST_STEP6_PRODUCTIVE_SESSION_ATTEMPT_SHA=6ae1a2aa31bb8d51587feead7c929bc2339147d6
+CURRENT_STEP6_BLOCKER=REAL_TTY_ABSENT_IN_CURSOR_AGENT_SHELL_AND_HIDDEN_CONFIRM_UNEXECUTABLE
 NETWORK_SESSION_STARTED=false
 SESSION_EXECUTED=false
 PHASE_9_2_STEP_7_STATUS=OPEN
 READY_FOR_SEPARATE_OWNER_GO_REAL_TTY_SESSION=true
+DESKTOP_RUNBOOK_USED_AS_AUTHORITY=false
+NEXT_SAFE_STEP=SEPARATE_OWNER_GO_IN_REAL_MACOS_TERMINAL_APP_TTY_STEP6_PRODUCTIVE_SESSION_EXECUTION
 ```
 
 Mandatory dependencies / freezes:
@@ -3736,9 +3843,11 @@ DO_NOT_TREAT_STEP6_BINDING_EXECUTE_PATH_AS_PRODUCTIVE_SESSION=true
 DO_NOT_TREAT_STEP6_PATH_IMPLEMENTATION_PASS_AS_LADDER_CLOSEOUT=true
 DO_NOT_TREAT_STEP6_SESSION_EXECUTION_IMPLEMENTATION_PASS_AS_LADDER_CLOSEOUT=true
 DO_NOT_TREAT_STEP6_START_INVOKE_EDGE_PASS_AS_LADDER_CLOSEOUT=true
+DO_NOT_TREAT_CURSOR_AGENT_SHELL_AS_REAL_TTY_SESSION_HOST=true
 DO_NOT_REOPEN_CAPABILITY_6_1=true
 DO_NOT_FORCE_ENTRY_OR_FILL=true
 LIVE_TESTNET_ORDER_CREDENTIAL_PATH=false
+DESKTOP_RUNBOOK_USED_AS_AUTHORITY=false
 ```
 Historical completed finish-sequence record (not Immediate Next):
 
