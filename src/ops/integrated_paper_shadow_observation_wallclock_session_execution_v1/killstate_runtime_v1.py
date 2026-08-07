@@ -37,6 +37,9 @@ KILLSTATE_TRIGGERS: tuple[str, ...] = (
     "ABORT_DUPLICATE_SESSION",
     "RECONNECT_BUDGET_EXCEEDED",
     "HTTP_429_BUDGET_EXCEEDED",
+    # Non-reconnectable / terminal transport aborts retain canonical class
+    # (must not remap to INVARIANT_VIOLATION).
+    "TRANSPORT_FAILURE",
     "OPERATOR_ABORT",
     "REVOKED",
 )
