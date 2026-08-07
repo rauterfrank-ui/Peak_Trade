@@ -1,0 +1,52 @@
+{
+  "authorization_consumed": false,
+  "blockers": [],
+  "call_graph_after": [
+    "evaluate_step6_binding_gate_v1",
+    "load_and_validate_session_contract_v1",
+    "prove_public_md_network_boundary_v1",
+    "prove_governed_adverse_stale_fault_path_offline_v1",
+    "bind_StalenessTrackerV1_and_killstate_STALE_DATA",
+    "bind_GovernedInjectedStaleDataControlV1_default_disabled",
+    "bind_CANONICAL_WALLCLOCK_RUNNER_symbol",
+    "materialize_session_evidence_schema_template"
+  ],
+  "claims": {
+    "ADVERSE_DATA_CLASSIFIER_BOUND": true,
+    "ADVERSE_STALE_DATA_LADDER_STEP_CLOSED": false,
+    "AUTHORIZATION_CONSUMED": false,
+    "CONFIRM_TOKEN_CONSUMED": false,
+    "DEFAULT_FAULT_INJECTION_DISABLED": true,
+    "EXCHANGE_CREDENTIAL_PATH_REACHED": false,
+    "FAILURE_INJECTION_BOUND": true,
+    "NETWORK_SESSION_STARTED": false,
+    "ORDER_SIDE_EFFECT_OCCURRED": false,
+    "PHASE_9_2_STEP_6_STATUS": "OPEN",
+    "PRIVATE_ENDPOINT_REACHED": false,
+    "PRODUCTIVE_CALLER_ADDED": true,
+    "READY_FOR_SEPARATE_GOVERNED_SESSION_EXECUTION": true,
+    "RUNTIME_REACHABLE": true,
+    "STALE_DATA_CLASSIFIER_BOUND": true,
+    "STEP6_BINDING_IMPLEMENTED": true
+  },
+  "confirm_token_consumed": false,
+  "fault_session_started": false,
+  "network_session_started": false,
+  "notes": [
+    "SESSION_CONTRACT_OK:phase_9_2_public_md_adverse_stale_data_session_v1",
+    "BINDING_ONLY_NO_NETWORK_SESSION",
+    "REUSES_CANONICAL_STALENESS_AND_KILLSTATE",
+    "REUSES_STEP4_FAULT_PATTERN_AND_STEP5_EVIDENCE_PATTERN"
+  ],
+  "ok": true,
+  "surfaces": {
+    "ADVERSE_DATA_CLASSIFIER": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.killstate_runtime_v1.STALE_DATA",
+    "CAPABILITY_ID": "PHASE_9_2_STEP_6_ADVERSE_STALE_DATA_SESSION_CONTINUATION_V1",
+    "FAILURE_INJECTION_SURFACE": "ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1.governed_injected_stale_data_fault_v1",
+    "PRODUCTIVE_ENTRYPOINT": "scripts/ops/run_phase_9_2_step_6_adverse_stale_data_session_continuation_v1.py",
+    "PRODUCTIVE_STEP6_EXECUTOR": "ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1.productive_executor_v1",
+    "STALE_DATA_CLASSIFIER": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1.StalenessTrackerV1",
+    "TARGET_SESSION_ID": "phase_9_2_public_md_adverse_stale_data_session_v1",
+    "VERIFIER_PATH": "ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1.verifier_v1"
+  }
+}

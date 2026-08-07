@@ -1,0 +1,76 @@
+{
+  "cases": {
+    "bounded_retry_backoff_no_zero_interval": {
+      "backoff_initial_seconds": 1.0,
+      "minimum_interval_seconds": 2.0,
+      "ok": true,
+      "owner": "research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.public_md_rate_limit_policy_v1",
+      "zero_rejected": true
+    },
+    "duplicate_no_confirmation_advance": {
+      "DUPLICATE_CONFIRMATION_ADVANCE": false,
+      "confirmation_advance_count": 2,
+      "distinct_observation_count": 2,
+      "duplicate_observation_count": 1,
+      "ok": true
+    },
+    "no_decision_fill_injection": {
+      "DIRECT_FILL_INJECTION_ALLOWED": false,
+      "FORCED_INTENT_ALLOWED": false,
+      "ok": true
+    },
+    "no_fabricated_observation": {
+      "direct_fill_injection_count": 0,
+      "fabricated_observation_count": 0,
+      "forced_intent_count": 0,
+      "ok": true,
+      "owner": "ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1.governed_injected_stale_data_fault_v1",
+      "receive_ts": 994.0
+    },
+    "stale_killstate_path": {
+      "last": {
+        "ADVERSE_CONDITION_OBSERVED": true,
+        "STALE_CONDITION_OBSERVED": true,
+        "STALE_CONFIRMATION_ADVANCE": false,
+        "adverse_classifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.killstate_runtime_v1.STALE_DATA",
+        "classifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1.StalenessTrackerV1",
+        "confirmation_advance_delta": 0,
+        "kill": "STALE_DATA",
+        "status": "kill"
+      },
+      "ok": true,
+      "owner": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.killstate_runtime_v1.STALE_DATA"
+    },
+    "stale_no_confirmation_advance": {
+      "classified": {
+        "ADVERSE_CONDITION_OBSERVED": false,
+        "STALE_CONDITION_OBSERVED": true,
+        "STALE_CONFIRMATION_ADVANCE": false,
+        "adverse_classifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.killstate_runtime_v1.STALE_DATA",
+        "classifier": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1.StalenessTrackerV1",
+        "confirmation_advance_delta": 0,
+        "kill": null,
+        "status": "warn"
+      },
+      "ok": true,
+      "owner": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1.StalenessTrackerV1"
+    }
+  },
+  "claims": {
+    "ADVERSE_KILLSTATE_BOUND": true,
+    "BOUNDED_BACKOFF_OBSERVED": true,
+    "BOUNDED_RETRY_OBSERVED": true,
+    "DIRECT_DECISION_INJECTION_ABSENT": true,
+    "DIRECT_FILL_INJECTION_ABSENT": true,
+    "DUPLICATE_CONFIRMATION_ADVANCE": false,
+    "GOVERNED_ADVERSE_STALE_FAULT_PATH_BOUND": true,
+    "NO_FABRICATED_OBSERVATION": true,
+    "STALE_CONFIRMATION_ADVANCE": false,
+    "STALE_DATA_CLASSIFIER_REUSED": true,
+    "ZERO_INTERVAL_RETRY_BURST": false
+  },
+  "deterministic_injection_only": true,
+  "fault_session_started": false,
+  "network_session_started": false,
+  "ok": true
+}

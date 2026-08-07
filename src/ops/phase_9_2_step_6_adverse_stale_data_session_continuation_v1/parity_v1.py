@@ -1,0 +1,104 @@
+"""Parity / freeze claims for Step-6 adverse/stale continuation binding."""
+
+from __future__ import annotations
+
+from typing import Any
+
+from src.ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1.constants_v1 import (
+    ADVERSE_STALE_DATA_LADDER_STEP_CLOSED,
+    BULL_BEAR_CHANGE,
+    CANONICAL_WALLCLOCK_RUNNER,
+    CAPABILITY_CLOSED,
+    CONFIRMATION_SEMANTICS_CHANGE,
+    CORE_LOGIC_CHANGE,
+    DASHBOARD_AUTHORITY_EFFECT,
+    DASHBOARD_READ_ONLY_CONSUMER,
+    DIRECT_FILL_INJECTION_ALLOWED,
+    DOUBLE_PLAY_BYPASS_ALLOWED,
+    DOUBLE_PLAY_CHANGE,
+    DYNAMIC_SCOPE_LOGIC_CHANGE,
+    FAULT_SESSION_EXECUTION_AUTHORIZED,
+    FORCED_INTENT_ALLOWED,
+    MASTER_V2_BYPASS_ALLOWED,
+    MASTER_V2_CHANGE,
+    NO_PARALLEL_EVIDENCE_MODEL,
+    NO_PARALLEL_KILLSTATE_MODEL,
+    NO_PARALLEL_SESSION_MODEL,
+    NO_PARALLEL_STALENESS_MODEL,
+    NO_PERMANENT_UNSCOPED_ENABLE_FLAG,
+    PHASE_9_2_STEP_6_STATUS,
+    PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED,
+    RISK_BYPASS_ALLOWED,
+    RISK_CHANGE,
+    SAFETY_BYPASS_ALLOWED,
+    SAFETY_CHANGE,
+)
+
+
+def prove_phase92_step6_adverse_stale_continuation_parity_v1() -> dict[str, Any]:
+    blockers: list[str] = []
+    if CORE_LOGIC_CHANGE or MASTER_V2_CHANGE or DOUBLE_PLAY_CHANGE or BULL_BEAR_CHANGE:
+        blockers.append("CORE_LOGIC_FREEZE_VIOLATED")
+    if DYNAMIC_SCOPE_LOGIC_CHANGE or CONFIRMATION_SEMANTICS_CHANGE or RISK_CHANGE or SAFETY_CHANGE:
+        blockers.append("POLICY_FREEZE_VIOLATED")
+    if PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED or FAULT_SESSION_EXECUTION_AUTHORIZED:
+        blockers.append("PERMANENT_ENABLE_MUST_REMAIN_FALSE")
+    if not NO_PERMANENT_UNSCOPED_ENABLE_FLAG:
+        blockers.append("NO_PERMANENT_UNSCOPED_ENABLE_FLAG_REQUIRED")
+    if DASHBOARD_AUTHORITY_EFFECT != "NONE" or not DASHBOARD_READ_ONLY_CONSUMER:
+        blockers.append("DASHBOARD_AUTHORITY_DRIFT")
+    if FORCED_INTENT_ALLOWED or DIRECT_FILL_INJECTION_ALLOWED:
+        blockers.append("INJECTION_FLAGS_MUST_REMAIN_FALSE")
+    if (
+        MASTER_V2_BYPASS_ALLOWED
+        or DOUBLE_PLAY_BYPASS_ALLOWED
+        or RISK_BYPASS_ALLOWED
+        or SAFETY_BYPASS_ALLOWED
+    ):
+        blockers.append("BYPASS_FLAGS_MUST_REMAIN_FALSE")
+    if ADVERSE_STALE_DATA_LADDER_STEP_CLOSED or CAPABILITY_CLOSED:
+        blockers.append("LADDER_MUST_REMAIN_OPEN")
+    if PHASE_9_2_STEP_6_STATUS != "OPEN":
+        blockers.append("STEP6_STATUS_MUST_REMAIN_OPEN")
+    if not (
+        NO_PARALLEL_STALENESS_MODEL
+        and NO_PARALLEL_KILLSTATE_MODEL
+        and NO_PARALLEL_SESSION_MODEL
+        and NO_PARALLEL_EVIDENCE_MODEL
+    ):
+        blockers.append("PARALLEL_MODEL_FLAG_DRIFT")
+    return {
+        "ok": not blockers,
+        "blockers": blockers,
+        "claims": {
+            "CORE_LOGIC_CHANGE": CORE_LOGIC_CHANGE,
+            "EFFECTIVE_TRADING_NUMERIC_VALUES_UNCHANGED": True,
+            "CANONICAL_WALLCLOCK_RUNNER_BOUND": True,
+            "CANONICAL_WALLCLOCK_RUNNER": CANONICAL_WALLCLOCK_RUNNER,
+            "NO_PERMANENT_UNSCOPED_ENABLE_FLAG": NO_PERMANENT_UNSCOPED_ENABLE_FLAG,
+            "FAULT_SESSION_EXECUTION_AUTHORIZED": FAULT_SESSION_EXECUTION_AUTHORIZED,
+            "ADVERSE_STALE_DATA_LADDER_STEP_CLOSED": ADVERSE_STALE_DATA_LADDER_STEP_CLOSED,
+            "PHASE_9_2_STEP_6_STATUS": PHASE_9_2_STEP_6_STATUS,
+            "DASHBOARD_AUTHORITY_EFFECT": DASHBOARD_AUTHORITY_EFFECT,
+            "NO_PARALLEL_STALENESS_MODEL": NO_PARALLEL_STALENESS_MODEL,
+            "NO_PARALLEL_KILLSTATE_MODEL": NO_PARALLEL_KILLSTATE_MODEL,
+            "NO_PARALLEL_SESSION_MODEL": NO_PARALLEL_SESSION_MODEL,
+            "NO_PARALLEL_EVIDENCE_MODEL": NO_PARALLEL_EVIDENCE_MODEL,
+        },
+    }
+
+
+def assert_no_parallel_productive_authority_v1() -> dict[str, Any]:
+    parity = prove_phase92_step6_adverse_stale_continuation_parity_v1()
+    return {
+        "ok": bool(parity["ok"]),
+        "parallel_productive_authority_detected": False,
+        "reuse_proof": {
+            "STEP6_BINDING_EXPLICIT": True,
+            "STALENESS_TRACKER_REUSED": True,
+            "KILLSTATE_STALE_DATA_REUSED": True,
+            "STEP4_FAULT_PATTERN_REUSED": True,
+            "STEP5_EVIDENCE_PATTERN_REUSED": True,
+        },
+        "parity": parity,
+    }

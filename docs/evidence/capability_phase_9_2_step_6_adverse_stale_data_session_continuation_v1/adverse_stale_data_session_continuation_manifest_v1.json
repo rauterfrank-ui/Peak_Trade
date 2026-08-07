@@ -1,0 +1,109 @@
+{
+  "authority": {
+    "ok": true,
+    "parallel_productive_authority_detected": false,
+    "parity": {
+      "blockers": [],
+      "claims": {
+        "ADVERSE_STALE_DATA_LADDER_STEP_CLOSED": false,
+        "CANONICAL_WALLCLOCK_RUNNER": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+        "CANONICAL_WALLCLOCK_RUNNER_BOUND": true,
+        "CORE_LOGIC_CHANGE": false,
+        "DASHBOARD_AUTHORITY_EFFECT": "NONE",
+        "EFFECTIVE_TRADING_NUMERIC_VALUES_UNCHANGED": true,
+        "FAULT_SESSION_EXECUTION_AUTHORIZED": false,
+        "NO_PARALLEL_EVIDENCE_MODEL": true,
+        "NO_PARALLEL_KILLSTATE_MODEL": true,
+        "NO_PARALLEL_SESSION_MODEL": true,
+        "NO_PARALLEL_STALENESS_MODEL": true,
+        "NO_PERMANENT_UNSCOPED_ENABLE_FLAG": true,
+        "PHASE_9_2_STEP_6_STATUS": "OPEN"
+      },
+      "ok": true
+    },
+    "reuse_proof": {
+      "KILLSTATE_STALE_DATA_REUSED": true,
+      "STALENESS_TRACKER_REUSED": true,
+      "STEP4_FAULT_PATTERN_REUSED": true,
+      "STEP5_EVIDENCE_PATTERN_REUSED": true,
+      "STEP6_BINDING_EXPLICIT": true
+    }
+  },
+  "boundary_ok": true,
+  "capability_id": "PHASE_9_2_STEP_6_ADVERSE_STALE_DATA_SESSION_CONTINUATION_V1",
+  "claims": {
+    "ADVERSE_DATA_CLASSIFIER": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.killstate_runtime_v1.STALE_DATA",
+    "ADVERSE_DATA_CLASSIFIER_BOUND": true,
+    "ADVERSE_STALE_DATA_LADDER_STEP_CLOSED": false,
+    "AUTHORIZATION_CONSUMED": false,
+    "CALL_GRAPH_AFTER": [
+      "evaluate_step6_binding_gate_v1",
+      "load_and_validate_session_contract_v1",
+      "prove_public_md_network_boundary_v1",
+      "prove_governed_adverse_stale_fault_path_offline_v1",
+      "bind_StalenessTrackerV1_and_killstate_STALE_DATA",
+      "bind_GovernedInjectedStaleDataControlV1_default_disabled",
+      "bind_CANONICAL_WALLCLOCK_RUNNER_symbol",
+      "materialize_session_evidence_schema_template"
+    ],
+    "CLAIMS_MATCH_IMPLEMENTATION": true,
+    "CONFIRM_TOKEN_CONSUMED": false,
+    "CORE_LOGIC_CHANGE": false,
+    "DEFAULT_FAULT_INJECTION_DISABLED": true,
+    "EFFECTIVE_TRADING_NUMERIC_VALUES_UNCHANGED": true,
+    "EXACT_PRODUCTIVE_CALLER": [
+      "scripts/ops/run_phase_9_2_step_6_adverse_stale_data_session_continuation_v1.py",
+      "ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1.productive_executor_v1.run_step6_productive_executor_wiring_v1",
+      "ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1.governed_injected_stale_data_fault_v1",
+      "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1.StalenessTrackerV1",
+      "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.killstate_runtime_v1.STALE_DATA",
+      "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+      "ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1.verifier_v1"
+    ],
+    "EXCHANGE_CREDENTIAL_PATH_REACHED": false,
+    "FAILURE_INJECTION_BOUND": true,
+    "FAILURE_INJECTION_SURFACE": "ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1.governed_injected_stale_data_fault_v1",
+    "NEGATIVE_SESSION_VERIFIER_REJECTS": true,
+    "NETWORK_SESSION_STARTED": false,
+    "ORDER_SIDE_EFFECT_OCCURRED": false,
+    "PHASE_9_2_STEP_6_STATUS": "OPEN",
+    "POSITIVE_SESSION_VERIFIER_OK": true,
+    "PRIVATE_ENDPOINT_REACHED": false,
+    "PRODUCTIVE_CALLER_ADDED": true,
+    "PRODUCTIVE_ENTRYPOINT": "scripts/ops/run_phase_9_2_step_6_adverse_stale_data_session_continuation_v1.py",
+    "PRODUCTIVE_STEP6_EXECUTOR": "ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1.productive_executor_v1",
+    "READY_FOR_SEPARATE_GOVERNED_SESSION_EXECUTION": true,
+    "RUNTIME_REACHABLE": true,
+    "STALE_DATA_CLASSIFIER": "ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.heartbeat_staleness_v1.StalenessTrackerV1",
+    "STALE_DATA_CLASSIFIER_BOUND": true,
+    "STEP6_BINDING_IMPLEMENTED": true,
+    "VERIFIER_PATH": "ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1.verifier_v1"
+  },
+  "config_digest": "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b",
+  "executor_ok": true,
+  "fault_path_ok": true,
+  "owner": "ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1",
+  "parity": {
+    "blockers": [],
+    "claims": {
+      "ADVERSE_STALE_DATA_LADDER_STEP_CLOSED": false,
+      "CANONICAL_WALLCLOCK_RUNNER": "src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_run_entrypoint_v1.run_productive_wallclock_session_v1",
+      "CANONICAL_WALLCLOCK_RUNNER_BOUND": true,
+      "CORE_LOGIC_CHANGE": false,
+      "DASHBOARD_AUTHORITY_EFFECT": "NONE",
+      "EFFECTIVE_TRADING_NUMERIC_VALUES_UNCHANGED": true,
+      "FAULT_SESSION_EXECUTION_AUTHORIZED": false,
+      "NO_PARALLEL_EVIDENCE_MODEL": true,
+      "NO_PARALLEL_KILLSTATE_MODEL": true,
+      "NO_PARALLEL_SESSION_MODEL": true,
+      "NO_PARALLEL_STALENESS_MODEL": true,
+      "NO_PERMANENT_UNSCOPED_ENABLE_FLAG": true,
+      "PHASE_9_2_STEP_6_STATUS": "OPEN"
+    },
+    "ok": true
+  },
+  "producer_version": "phase_9_2_step_6_adverse_stale_data_session_continuation.v1",
+  "repository_sha": "fce077cabc9b67678ad0cb46de16c29da5a370f1",
+  "schema_version": "phase_9_2_step_6_adverse_stale_data_session_continuation.v1",
+  "target_session_id": "phase_9_2_public_md_adverse_stale_data_session_v1"
+}
