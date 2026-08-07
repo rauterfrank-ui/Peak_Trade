@@ -1,0 +1,26 @@
+[
+  {
+    "classification": "EVIDENCE_ONLY_STATE",
+    "field": "live_dry_run_order_plan",
+    "mutable_by_adapter": "false",
+    "owner": "ops.capability_11_8_live_dry_run_order_plan_parity_v1"
+  },
+  {
+    "classification": "EVIDENCE_ONLY_STATE",
+    "field": "live_order_plan_parity",
+    "mutable_by_adapter": "false",
+    "owner": "ops.capability_11_8_live_dry_run_order_plan_parity_v1"
+  },
+  {
+    "classification": "EVIDENCE_ONLY_STATE",
+    "field": "live_order_plan_evidence_ladder",
+    "mutable_by_adapter": "false",
+    "owner": "ops.capability_11_8_live_dry_run_order_plan_parity_v1"
+  },
+  {
+    "classification": "FORBIDDEN_TO_PERSIST",
+    "field": "plaintext_credentials",
+    "mutable_by_adapter": "false",
+    "owner": "none"
+  }
+]
