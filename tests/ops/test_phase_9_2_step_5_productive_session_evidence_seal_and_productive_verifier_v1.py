@@ -76,10 +76,10 @@ def test_domain_constants() -> None:
     assert OFFLINE_VERIFIER_EXPECTED_FALSE_FOR_PRODUCTIVE_SESSION is True
     assert PRODUCTIVE_SESSION_INVALIDATED_BY_OFFLINE_VERIFIER is False
     assert PHASE_9_2_STEP_5_STATUS == "CLOSED_PASS"
-    assert PHASE_9_2_STEP_3_STATUS == "OPEN"
+    assert PHASE_9_2_STEP_3_STATUS == "CLOSED_PASS"
     assert PHASE_9_2_STEP_4_STATUS == "CLOSED_PASS"
     assert PHASE_9_2_STEP_6_STATUS == "OPEN"
-    assert NEXT_OPEN_PHASE_9_2_STEP == "3_RESTART_RECOVERY_PRODUCTIVE_REAL_NETWORK_SESSION"
+    assert NEXT_OPEN_PHASE_9_2_STEP == "6_ADVERSE_STALE_DATA_SESSION"
     assert SESSION_CONTRACT_SECONDS_EXPECTED == 7200
     assert CAPABILITY_ID.endswith("PRODUCTIVE_VERIFIER_V1")
 
@@ -141,11 +141,10 @@ def test_seal_idempotent_and_does_not_rewrite_raw(tmp_path: Path) -> None:
     after = {p.relative_to(session): p.read_bytes() for p in session.rglob("*") if p.is_file()}
     assert before == after
     assert seal1["claims"]["RAW_SESSION_EVIDENCE_CHANGED"] is False
-    assert seal1["claims"]["NEXT_OPEN_PHASE_9_2_STEP"] == (
-        "3_RESTART_RECOVERY_PRODUCTIVE_REAL_NETWORK_SESSION"
-    )
+    assert seal1["claims"]["NEXT_OPEN_PHASE_9_2_STEP"] == ("6_ADVERSE_STALE_DATA_SESSION")
     assert seal1["claims"]["PHASE_9_2_STEP_4_STATUS"] == "CLOSED_PASS"
-    assert seal1["claims"]["PHASE_9_2_STEP_3_STATUS"] == "OPEN"
+    assert seal1["claims"]["PHASE_9_2_STEP_3_STATUS"] == "CLOSED_PASS"
+    assert seal1["claims"]["REAL_PUBLIC_MD_RESTART_SESSION_COMPLETED"] is True
 
 
 def test_negative_short_runtime(tmp_path: Path) -> None:

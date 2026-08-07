@@ -2074,7 +2074,7 @@ CAPABILITY_STATUS=CURRENT_CRITICAL_PATH_PARTIALLY_COMPLETE
 ACTUAL_NEXT_CAPABILITY=PHASE_9_2_LONG_RUNNING_STATEFUL_PUBLIC_MD_SIMULATION_EVIDENCE_CONTINUATION_V1
 PHASE_9_2_PUBLIC_MD_SMOKE_SESSION_PASS=true
 PHASE_9_2_ONE_HOUR_GOVERNED_SESSION_PASS_ON_CURRENT_TRUTH_SHA=true
-PHASE_9_2_LADDER_NEXT_STEP=RESTART_RECOVERY_SESSION
+PHASE_9_2_LADDER_NEXT_STEP=ADVERSE_STALE_DATA_SESSION
 TYPED_VOLATILITY_COLD_START_PROVEN=true
 REQUIRED_WINDOW_COMPLETE_DECOUPLED_FROM_FEATURES_OK=true
 REGIME_UNCLASSIFIED_OBSERVED_AS_EXPECTED_FAIL_CLOSED=true
@@ -2098,11 +2098,11 @@ using public market data and internal simulated execution only.
 2.  one-hour governed session --- completed / PASS on current
     truth SHA `b0e882b9714a615f633fb09b8ee4f9a19f54d470`
     (`phase_9_2_public_md_one_hour_governed_session_noproxy_b0e882b9714a`);
-3.  restart/recovery session --- next open ladder step; harness/contracts
-    and real Public-MD wallclock binding exist
-    (`PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RESTART_RECOVERY_REAL_NETWORK_WALLCLOCK_BINDING_V1`);
-    `REAL_PUBLIC_MD_RESTART_SESSION_COMPLETED=false` until a later governed
-    productive restart/recovery session verifier PASS;
+3.  restart/recovery session --- completed / PASS; governed productive
+    real-network restart/recovery session verified under evidence
+    `evidence&#47;ops&#47;phase_9_2_step_3_governed_productive_real_network_restart_recovery_session_execution_v1&#47;session_20260807T050527Z`
+    (`PHASE_9_2_STEP_3_STATUS=CLOSED_PASS`,
+    `REAL_PUBLIC_MD_RESTART_SESSION_COMPLETED=true`);
 4.  rate-limit and reconnect session --- completed / PASS; governed productive
     real-network session verified without ephemeral patches under evidence
     `evidence&#47;ops&#47;phase_9_2_step_4_governed_productive_real_network_rate_limit_reconnect_session_execution_v1&#47;session_20260807T043754Z`
@@ -2114,12 +2114,12 @@ using public market data and internal simulated execution only.
     `STEP5_PRODUCTIVE_EVIDENCE_VERIFIED=true`,
     `STEP5_SESSION_LADDER_STEP_CLOSED=true`,
     `PHASE_9_2_STEP_5_STATUS=CLOSED_PASS`);
-6.  adverse/stale-data session --- open (not next);
+6.  adverse/stale-data session --- next open ladder step;
 7.  repeated multi-session continuity campaign --- open.
 
 ``` text
-NEXT_OPEN_PHASE_9_2_STEP=3_RESTART_RECOVERY_PRODUCTIVE_REAL_NETWORK_SESSION
-PHASE_9_2_STEP_3_STATUS=OPEN
+NEXT_OPEN_PHASE_9_2_STEP=6_ADVERSE_STALE_DATA_SESSION
+PHASE_9_2_STEP_3_STATUS=CLOSED_PASS
 PHASE_9_2_STEP_4_STATUS=CLOSED_PASS
 PHASE_9_2_STEP_5_STATUS=CLOSED_PASS
 PHASE_9_2_STEP_6_STATUS=OPEN
@@ -3548,7 +3548,7 @@ SIMULATED_EXECUTION_ACTIVE=true_offline_no_order_cap72_scope_only
 PUBLIC_MD_NATURAL_MARKET_LIFECYCLE_EVIDENCE_COMPLETE=false
 PHASE_9_2_ONE_HOUR_GOVERNED_SESSION_PASS_ON_CURRENT_TRUTH_SHA=true
 PHASE_9_2_SESSION_LADDER_COMPLETE=false
-PHASE_9_2_LADDER_NEXT_STEP=RESTART_RECOVERY_SESSION
+PHASE_9_2_LADDER_NEXT_STEP=ADVERSE_STALE_DATA_SESSION
 TYPED_VOLATILITY_PRODUCER_TO_CMC_BINDING=CLOSED_AND_COLD_START_PROVEN
 REQUIRED_WINDOW_COMPLETE_DECOUPLED_FROM_FEATURES_OK=true
 REGIME_UNCLASSIFIED_ALONE_IS_NOT_A_DEFECT=true
@@ -3576,7 +3576,7 @@ reconciliation is:
 ``` text
 ACTUAL_NEXT_CAPABILITY=PHASE_9_2_LONG_RUNNING_STATEFUL_PUBLIC_MD_SIMULATION_EVIDENCE_CONTINUATION_V1
 PHASE_9_2_ONE_HOUR_GOVERNED_SESSION_PASS_ON_CURRENT_TRUTH_SHA=true
-PHASE_9_2_LADDER_NEXT_STEP=RESTART_RECOVERY_SESSION
+PHASE_9_2_LADDER_NEXT_STEP=ADVERSE_STALE_DATA_SESSION
 ```
 
 Mandatory dependencies / freezes:
