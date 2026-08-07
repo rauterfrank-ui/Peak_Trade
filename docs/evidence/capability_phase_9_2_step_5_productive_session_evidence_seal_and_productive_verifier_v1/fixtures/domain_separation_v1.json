@@ -1,0 +1,8 @@
+{
+  "offline_verifier_domain": "IMPLEMENTATION_PROOF",
+  "offline_verifier_expected_false_for_productive_session": true,
+  "offline_verifier_semantics_changed": false,
+  "productive_session_invalidated_by_offline_verifier": false,
+  "productive_verifier_domain": "AUTHORIZED_PRODUCTIVE_SESSION",
+  "raw_session_evidence_changed": false
+}

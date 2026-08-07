@@ -2098,16 +2098,31 @@ using public market data and internal simulated execution only.
 2.  one-hour governed session --- completed / PASS on current
     truth SHA `b0e882b9714a615f633fb09b8ee4f9a19f54d470`
     (`phase_9_2_public_md_one_hour_governed_session_noproxy_b0e882b9714a`);
-3.  restart/recovery session --- next ladder step; harness/contracts
+3.  restart/recovery session --- next open ladder step; harness/contracts
     and real Public-MD wallclock binding exist
     (`PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RESTART_RECOVERY_REAL_NETWORK_WALLCLOCK_BINDING_V1`);
-    full ladder not closed until a later governed real session verifier PASS;
+    `REAL_PUBLIC_MD_RESTART_SESSION_COMPLETED=false` until a later governed
+    productive restart/recovery session verifier PASS;
 4.  rate-limit and reconnect session --- wallclock binding exists
     (`PHASE_9_2_PRODUCTIVE_PUBLIC_MD_RATE_LIMIT_RECONNECT_WALLCLOCK_BINDING_V1`);
     ladder step remains open until a later governed real session verifier PASS;
-5.  prolonged natural-market session --- open;
-6.  adverse/stale-data session --- open;
+5.  prolonged natural-market session --- completed / PASS; productive session
+    sealed and verified under
+    `PHASE_9_2_STEP_5_PRODUCTIVE_SESSION_EVIDENCE_SEAL_AND_PRODUCTIVE_VERIFIER_V1`
+    (`STEP5_PRODUCTIVE_SESSION_PASS=true`,
+    `STEP5_PRODUCTIVE_EVIDENCE_VERIFIED=true`,
+    `STEP5_SESSION_LADDER_STEP_CLOSED=true`,
+    `PHASE_9_2_STEP_5_STATUS=CLOSED_PASS`);
+6.  adverse/stale-data session --- open (not next);
 7.  repeated multi-session continuity campaign --- open.
+
+``` text
+NEXT_OPEN_PHASE_9_2_STEP=3_RESTART_RECOVERY_PRODUCTIVE_REAL_NETWORK_SESSION
+PHASE_9_2_STEP_3_STATUS=OPEN
+PHASE_9_2_STEP_5_STATUS=CLOSED_PASS
+PHASE_9_2_STEP_6_STATUS=OPEN
+PHASE_9_2_STEP_7_STATUS=OPEN
+```
 
 Related proven predecessors that do not close this ladder:
 

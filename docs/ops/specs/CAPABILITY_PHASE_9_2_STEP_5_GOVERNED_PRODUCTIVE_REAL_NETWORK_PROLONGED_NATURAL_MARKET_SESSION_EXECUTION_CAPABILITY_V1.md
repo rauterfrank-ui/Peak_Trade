@@ -24,6 +24,11 @@ NETWORK_SESSION_STARTED=false
 PROLONGED_NATURAL_MARKET_LADDER_STEP_CLOSED=false
 ```
 
+Productive session closure is owned by the separate seal/verifier capability
+`PHASE_9_2_STEP_5_PRODUCTIVE_SESSION_EVIDENCE_SEAL_AND_PRODUCTIVE_VERIFIER_V1`
+(`PHASE_9_2_STEP_5_STATUS=CLOSED_PASS`). This implementation package retains
+offline no-network / no-consume evidence semantics.
+
 ## Target state
 
 Separate package / config / CLI / tests / evidence that implements:
@@ -168,6 +173,8 @@ CONFIRM_TOKEN_CONSUMED=false
 SESSION_LADDER_STEP_CLOSED=false
 CAPABILITY_CLOSED=false
 READY_FOR_SEPARATE_GOVERNED_SESSION_EXECUTION=true
+OFFLINE_VERIFIER_DOMAIN=IMPLEMENTATION_PROOF
+PRODUCTIVE_SESSION_CLOSURE_OWNER=PHASE_9_2_STEP_5_PRODUCTIVE_SESSION_EVIDENCE_SEAL_AND_PRODUCTIVE_VERIFIER_V1
 ```
 
 ## Rollback
