@@ -222,10 +222,17 @@ def run_productive_wallclock_session_v1(
                 blockers=["TRANSPORT_OR_REAL_NETWORK_REQUIRED"],
                 notes=notes,
             )
+        overrides = dict(runtime_overrides or {})
+        governed_fault_schedule = overrides.get("governed_fault_schedule")
         transport, _telemetry = build_real_eea_public_md_transport_v1(
             environ=environ if environ is not None else os.environ,
             sleep=sleep or time.sleep,
+            governed_fault_schedule=governed_fault_schedule,
         )
+        if governed_fault_schedule is not None and bool(
+            getattr(governed_fault_schedule, "enabled", False)
+        ):
+            notes.append("GOVERNED_INJECTED_TRANSPORT_FAULT_WRAPPER_BOUND")
         notes.append("REAL_PUBLIC_MD_TRANSPORT_BOUND")
     else:
         notes.append("INJECTED_TRANSPORT_BOUND")
