@@ -1,0 +1,14 @@
+{
+  "OWNER": "ops.capability_11_4_testnet_execution_adapter_and_lifecycle_closure_v1",
+  "TESTNET_EXECUTION_ADAPTER_ACTIVATED": false,
+  "TESTNET_EXECUTION_ADAPTER_CONSTRUCTIBLE": false,
+  "TESTNET_EXECUTION_ADAPTER_DECLARED": true,
+  "TESTNET_EXECUTION_REACHABLE": false,
+  "TESTNET_NETWORK_SESSION_STARTED_IN_CAPABILITY_11_4": false,
+  "TESTNET_ORDER_SUBMIT_PERFORMED_IN_CAPABILITY_11_4": false,
+  "construction_blocked": true,
+  "ok": true,
+  "predecessor_construction_blocked": true,
+  "session_start_blocked": true,
+  "submit_blocked": true
+}

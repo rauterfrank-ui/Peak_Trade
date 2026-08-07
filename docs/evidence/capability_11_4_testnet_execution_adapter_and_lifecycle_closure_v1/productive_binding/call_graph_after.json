@@ -1,0 +1,20 @@
+{
+  "activation": "not_activated",
+  "network_session": "forbidden",
+  "order_serialization_dry_run": "bound_fixture_only_not_activated",
+  "path": [
+    "Canonical Stateful Trading Core (unchanged)",
+    "Canonical Intent / Lifecycle Contracts (Cap 11.1 retained)",
+    "Credential / Authorization / Account-Identity Boundary (Cap 11.2 retained)",
+    "Private Read-Only Venue Integration Contracts (Cap 11.3 retained)",
+    "Testnet Execution Adapter and Lifecycle Closure Contracts (Cap 11.4)",
+    "TestnetExecutionAdapterDeclarationV1 (declared / unreachable)",
+    "OrderSerializationDryRunRecordV1 (fixture-only; network submit forbidden)",
+    "TestnetLifecyclePathRecordV1 (fixture lifecycle closure; no exchange submit)",
+    "VenueAdapterAntiCorruptionV1 (native order serialization responsibility)",
+    "Mode-Specific Execution Boundary (Simulated sole reachable)",
+    "Accounting / Portfolio / Reconciliation / Evidence"
+  ],
+  "testnet_execution_adapter": "declared_unreachable_in_capability_11_4",
+  "testnet_lifecycle_closure": "bound_fixture_only_not_activated"
+}

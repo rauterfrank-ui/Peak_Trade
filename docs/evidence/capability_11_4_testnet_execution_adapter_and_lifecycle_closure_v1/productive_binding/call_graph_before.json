@@ -1,0 +1,14 @@
+{
+  "network_session": "forbidden",
+  "order_serialization_dry_run": "absent_as_phase11_capability",
+  "path": [
+    "Canonical Stateful Trading Core",
+    "Canonical Intent / Lifecycle Contracts (Cap 11.1)",
+    "Credential / Authorization / Account-Identity Boundary (Cap 11.2)",
+    "Private Read-Only Venue Integration Contracts (Cap 11.3)",
+    "Mode-Specific Execution Boundary (Simulated sole reachable)",
+    "Accounting / Portfolio / Reconciliation / Evidence"
+  ],
+  "testnet_execution_adapter": "declared_unreachable_in_capability_11_1",
+  "testnet_lifecycle_closure": "absent_as_phase11_capability"
+}
