@@ -41,12 +41,12 @@
   "config_digest": "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b",
   "confirm_token_consumed": false,
   "failure_injection_ok": true,
-  "manifest_digest": "e3579fc76dc7c50c56fb17046979f2614b60469cee505e0a4dce005979ca88d4",
+  "manifest_digest": "f2311f880ec62becf47c07a1b1c35818500b7a2f6df2dcfd4bdb29620f4025e0",
   "network_session_started": false,
   "owner": "ops.phase_9_2_step_6_governed_adverse_stale_data_session_execution_v1",
   "producer_version": "phase_9_2_step_6_governed_adverse_stale_data_session_execution.v1",
   "proof_ok": true,
-  "repository_sha": "886085fc33ea29a97fee186d8e2ccb6f91b86f4b",
+  "repository_sha": "a1c88b6b4b9690ddb7ef58c9edbb70ce93aa25f5",
   "schema_version": "phase_9_2_step_6_governed_adverse_stale_data_session_execution.v1",
   "target_session_id": "phase_9_2_public_md_adverse_stale_data_session_v1"
 }

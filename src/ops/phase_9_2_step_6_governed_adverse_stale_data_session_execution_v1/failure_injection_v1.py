@@ -120,13 +120,13 @@ def run_step6_execution_binding_failure_injection_v1(
 
     import hashlib
 
-    bad_token = execute_governed_step6_session_offline_fail_closed_v1(
+    invalid_confirm_result = execute_governed_step6_session_offline_fail_closed_v1(
         expected_repository_sha=expected_repository_sha,
         expected_config_digest=expected_config_digest,
         authorization_id="auth_1",
         authorization_digest="d" * 64,
         confirm_token_binding_sha256=hashlib.sha256(b"expected").hexdigest(),
-        getpass_fn=lambda _p: "wrong-token",
+        getpass_fn=lambda _p: "wrong-confirm-value",
         owner_go=True,
         operator_authorization_explicit=True,
         network_session_allowed=True,
@@ -134,10 +134,10 @@ def run_step6_execution_binding_failure_injection_v1(
     )
     _add(
         "invalid_confirm_hard_stop",
-        (not bad_token.ok)
-        and bad_token.confirm_token_consumed is False
-        and any("CONFIRM_TOKEN" in b for b in bad_token.blockers),
-        {"blockers": bad_token.blockers},
+        (not invalid_confirm_result.ok)
+        and invalid_confirm_result.confirm_token_consumed is False
+        and any("CONFIRM_TOKEN" in b for b in invalid_confirm_result.blockers),
+        {"blockers": invalid_confirm_result.blockers},
     )
 
     req = request_real_network_offline_fail_closed_v1(
