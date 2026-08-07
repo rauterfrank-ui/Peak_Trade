@@ -1,0 +1,16 @@
+{
+  "activation": "not_activated",
+  "authorization_consumption": "forbidden",
+  "credential_load": "gated_and_forbidden_in_capability_11_2",
+  "path": [
+    "Canonical Stateful Trading Core (unchanged)",
+    "Canonical Intent / Lifecycle Contracts (Cap 11.1 retained)",
+    "Credential / Authorization / Account-Identity Boundary (Cap 11.2)",
+    "CredentialReferenceMetadataV1 (reference only)",
+    "AuthorizationBindingV1 (validate-only, non-consuming)",
+    "AccountIdentityRecordV1",
+    "CredentialLoadGateV1 (prerequisites ordered; load forbidden in 11.2)",
+    "Mode-Specific Execution Boundary (Simulated sole reachable)",
+    "Accounting / Portfolio / Reconciliation / Evidence"
+  ]
+}
