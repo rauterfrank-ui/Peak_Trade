@@ -203,6 +203,20 @@ Readiness ist nicht Authorization; Authorization ist nicht Execution.
 
 ---
 
+## 8.1 Local verification minimum / CI dedup (navigation only)
+
+| Dokument | Rolle |
+|----------|-------|
+| [`docs/ops/specs/GOVERNANCE_VERIFICATION_MINIMUM_LOCAL_CI_DEDUP_V1.md`](../ops/specs/GOVERNANCE_VERIFICATION_MINIMUM_LOCAL_CI_DEDUP_V1.md) | Governance verification minimum &#47; local CI dedup (navigation pointer; Semantik im Master Runbook §15.3 + JSON-Owner) |
+| [`docs/ops/specs/GOVERNANCE_VERIFICATION_MINIMUM_LOCAL_CI_DEDUP_V1.json`](../ops/specs/GOVERNANCE_VERIFICATION_MINIMUM_LOCAL_CI_DEDUP_V1.json) | Machine-readable policy owner |
+
+```text
+THIS_SECTION_DEFINES_NO_SEMANTICS=true
+CANONICAL_SEMANTICS=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#15.3
+```
+
+---
+
 ## 9. Wichtigste Runbooks
 
 | Dokument | Rolle |

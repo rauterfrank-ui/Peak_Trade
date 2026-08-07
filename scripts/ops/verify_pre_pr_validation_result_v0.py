@@ -19,6 +19,13 @@ from pathlib import Path
 CANONICAL_RESULT_PATH = Path(".cursor/PRE_PR_VALIDATION_RESULT.env")
 PRE_PR_RESULT_REL_PATH = ".cursor/PRE_PR_VALIDATION_RESULT.env"
 
+_OPS_DIR = Path(__file__).resolve().parent
+if str(_OPS_DIR) not in sys.path:
+    sys.path.insert(0, str(_OPS_DIR))
+from verification_minimum_local_ci_dedup_v1 import (  # noqa: E402
+    validate_pre_pr_reuse_fields,
+)
+
 ALLOWED_VERDICTS = frozenset(
     {
         "PRE_PR_VALIDATION_PASS",
@@ -248,6 +255,9 @@ def verify_pre_pr_validation_result(
             errors.append(
                 f"TIMING_WALLCLOCK_SECONDS={wallclock} reached hard stop; cannot claim timing not required"
             )
+
+    # Optional minimum-local-CI dedup reuse surface (absent = legacy envelope OK).
+    errors.extend(validate_pre_pr_reuse_fields(data))
 
     if check_binding:
         for key in REQUIRED_BINDING_FIELDS:
