@@ -1,0 +1,13 @@
+{
+  "live_port": "absent",
+  "path": [
+    "Canonical Stateful Trading Core",
+    "Canonical Intent (CanonicalOrderIntentV1)",
+    "SimulatedExecutionPortV1",
+    "Canonical Futures Accounting",
+    "Canonical Portfolio / Risk State",
+    "Canonical Reconciliation",
+    "Canonical Evidence"
+  ],
+  "testnet_port": "absent"
+}

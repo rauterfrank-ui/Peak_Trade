@@ -1,0 +1,21 @@
+{
+  "ACTIVATION_STATE": "not_activated",
+  "CORE_LOGIC_CHANGE": false,
+  "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+  "EXCHANGE_ORDER_SUBMIT_REACHABLE": false,
+  "LIVE_AUTHORIZED": false,
+  "LIVE_EXECUTION_REACHABLE": false,
+  "NETWORK_SESSION_STARTED": false,
+  "REAL_CAPITAL_MOVEMENT_REACHABLE": false,
+  "REAL_EXECUTION_ADAPTER_CONSTRUCTED": false,
+  "SIMULATED_EXECUTION_PORT_SOLE_REACHABLE": true,
+  "TESTNET_AUTHORIZED": false,
+  "TESTNET_EXECUTION_REACHABLE": false,
+  "forbidden_call_hits": [],
+  "live_construction_blocked": true,
+  "no_polymorphic_switch_ok": true,
+  "ok": true,
+  "real_adapter_construction_blocked": true,
+  "separation_proof_ok": true,
+  "testnet_construction_blocked": true
+}

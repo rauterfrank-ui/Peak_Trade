@@ -1,0 +1,18 @@
+{
+  "activation": "not_activated",
+  "live_port": "declared_unreachable",
+  "path": [
+    "Canonical Stateful Trading Core",
+    "Canonical Intent Contract (CanonicalOrderIntentV1 unchanged)",
+    "Mode-Specific Execution Boundary",
+    "SimulatedExecutionPortV1 (sole reachable)",
+    "TestnetExecutionPort (declared/unreachable)",
+    "LiveExecutionPort (declared/unreachable)",
+    "Canonical Execution Event Contract",
+    "Canonical Futures Accounting",
+    "Canonical Portfolio / Risk State",
+    "Canonical Reconciliation",
+    "Canonical Evidence"
+  ],
+  "testnet_port": "declared_unreachable"
+}

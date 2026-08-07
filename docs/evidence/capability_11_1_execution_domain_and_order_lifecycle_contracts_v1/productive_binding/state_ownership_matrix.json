@@ -1,0 +1,104 @@
+[
+  {
+    "classification": "DURABLE_CONTROL_STATE",
+    "field": "runtime_mode_and_activation_epoch",
+    "mutable_by_adapter": "false",
+    "owner": "phase_11_control_plane_future"
+  },
+  {
+    "classification": "DURABLE_CONTROL_STATE",
+    "field": "authorization_id_scope_expiry",
+    "mutable_by_adapter": "false",
+    "owner": "authorization_contract_future"
+  },
+  {
+    "classification": "DURABLE_CONTROL_STATE",
+    "field": "credential_reference_metadata",
+    "mutable_by_adapter": "false",
+    "owner": "credential_boundary_future_cap_11_2"
+  },
+  {
+    "classification": "FORBIDDEN_TO_PERSIST",
+    "field": "plaintext_credentials",
+    "mutable_by_adapter": "false",
+    "owner": "none"
+  },
+  {
+    "classification": "DURABLE_EXECUTION_STATE",
+    "field": "canonical_intent_id_and_decision_digest",
+    "mutable_by_adapter": "false",
+    "owner": "src.governance.canonical_order_intent_v1"
+  },
+  {
+    "classification": "DURABLE_EXECUTION_STATE",
+    "field": "order_plan_id",
+    "mutable_by_adapter": "false",
+    "owner": "ops.capability_11_1_execution_domain_and_order_lifecycle_contracts_v1"
+  },
+  {
+    "classification": "DURABLE_EXECUTION_STATE",
+    "field": "client_order_id",
+    "mutable_by_adapter": "false",
+    "owner": "ops.capability_11_1_execution_domain_and_order_lifecycle_contracts_v1"
+  },
+  {
+    "classification": "DURABLE_EXECUTION_STATE",
+    "field": "venue_order_id",
+    "mutable_by_adapter": "normalize_only",
+    "owner": "execution_port_normalization_only"
+  },
+  {
+    "classification": "DURABLE_EXECUTION_STATE",
+    "field": "order_lifecycle_state",
+    "mutable_by_adapter": "false",
+    "owner": "ops.capability_11_1_execution_domain_and_order_lifecycle_contracts_v1.order_lifecycle_state_machine_v1"
+  },
+  {
+    "classification": "DURABLE_EXECUTION_STATE",
+    "field": "pending_submit_cancel_amend_commands",
+    "mutable_by_adapter": "false",
+    "owner": "ops.capability_11_1_execution_domain_and_order_lifecycle_contracts_v1"
+  },
+  {
+    "classification": "DURABLE_EXECUTION_STATE",
+    "field": "acks_rejects_partial_fills_fills",
+    "mutable_by_adapter": "normalize_only",
+    "owner": "canonical_execution_event_schema_v1"
+  },
+  {
+    "classification": "DURABLE_ECONOMIC_STATE",
+    "field": "open_positions_and_exchange_reported_positions",
+    "mutable_by_adapter": "false",
+    "owner": "canonical_portfolio_authority"
+  },
+  {
+    "classification": "DURABLE_ECONOMIC_STATE",
+    "field": "local_accounting_and_exchange_balances",
+    "mutable_by_adapter": "false",
+    "owner": "canonical_futures_accounting"
+  },
+  {
+    "classification": "DURABLE_CONTROL_STATE",
+    "field": "risk_reservations_and_exposure_locks",
+    "mutable_by_adapter": "false",
+    "owner": "canonical_risk_authority"
+  },
+  {
+    "classification": "DURABLE_CONTROL_STATE",
+    "field": "reconciliation_checkpoints",
+    "mutable_by_adapter": "false",
+    "owner": "canonical_reconciliation_authority"
+  },
+  {
+    "classification": "EVIDENCE_ONLY_STATE",
+    "field": "evidence_cursor_and_audit_chain",
+    "mutable_by_adapter": "false",
+    "owner": "canonical_evidence"
+  },
+  {
+    "classification": "EPHEMERAL_CONNECTION_STATE",
+    "field": "venue_session_and_connectivity_state",
+    "mutable_by_adapter": "transport_only",
+    "owner": "execution_host_future"
+  }
+]
