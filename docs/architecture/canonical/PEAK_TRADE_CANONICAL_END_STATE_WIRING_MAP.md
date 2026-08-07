@@ -73,7 +73,7 @@ current runtime).
 | Primary semantic authority | `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | Navigation index | `docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md` |
 | Runbook forensic baseline (historical) | `a8653d520ba3563dddb41aa175445d14725ac9b9` |
-| Runbook `CURRENT_FORENSIC_TRUTH_SHA` field | `beacc35d754fd8ab0a37190b882f71b8fb78cb38` (**DOCUMENTATION_DRIFT** vs this map’s `origin/main`) |
+| Runbook `CURRENT_FORENSIC_TRUTH_SHA` field | `642db05919634b899329679a811f1ad25a0fd818` (bound to Phase 9.2 Step-7 ladder-closeout `origin/main`; `DOCUMENTATION_RUNTIME_DRIFT=false`) |
 | Order boundary | No Live / Testnet / paper-exchange orders; no credentials; no real capital |
 | Selection mode | `SINGLE_SELECTED_FUTURE`; `MULTI_FUTURE_RUNTIME_AUTHORIZED=false` |
 
@@ -315,7 +315,7 @@ no-order host must remain physically separate.
 | W3 | Step 4 rate-limit/reconnect session | Components exist; no productive session binding / governed fault path | Bound + outcome-observed + verified | `WIRING_GAP` | Yes for Step 4 |
 | W4 | Step 3 restart/recovery real session | Binding implemented (PR #5750); `RESTART_RECOVERY_LADDER_STEP_CLOSED=false` | Governed real session verifier PASS | `EVIDENCE_GAP` | Yes — before ladder advance |
 | W5 | hardening_v2 distance literals | Residual host-consumer literals after Cap 6.3 | Owned typed config consumers | `CONFIG_DRIFT` (partial residual) | Review-only; no threshold mutation authorized |
-| W6 | Runbook `CURRENT_FORENSIC_TRUTH_SHA` vs `origin/main` | Runbook field older than forensic SHA | Reconciled current-truth SHA | `DOCUMENTATION_DRIFT` | Docs freshness |
+| W6 | Runbook `CURRENT_FORENSIC_TRUTH_SHA` vs `origin/main` | Bound to Step-7 ladder-closeout SHA `642db059…`; `DOCUMENTATION_RUNTIME_DRIFT=false` | Reconciled current-truth SHA | `DOCUMENTATION_DRIFT` closed by Residual-1 docs closeout | Docs freshness closed |
 | W7 | Numeric vol max-age | Non-enforcing | Separate Phase 10 decision | `INTENTIONAL_SAFETY_BARRIER` / intentional current phase | No |
 | W8 | Multi-future runtime | Unauthorized | Future program only | `INTENTIONAL_SAFETY_BARRIER` | Multi-future only |
 | W9 | Strategy registry breadth | Non-authoritative / deferred | Tiered closure after single-future | `DEFERRED_REQUIRED_CAPABILITY` | Strategy breadth |
@@ -915,8 +915,9 @@ directly consumable without parallel authority adapters.
    harness. Classification: `WIRING_GAP`.
 4. Execute Step 4 governed real session → Steps 5–7 in ladder order.
 5. Close Public-MD natural lifecycle evidence (`EVIDENCE_GAP`).
-6. Reconcile Master Runbook current-truth SHA field (`DOCUMENTATION_DRIFT`)
-   under a docs-only capability when Owner-authorized.
+6. Master Runbook current-truth SHA field reconciled
+   (`DOCUMENTATION_RUNTIME_DRIFT=false` under
+   `NO_ORDER_PROGRAM_DOD_RESIDUAL_1_FORENSIC_CURRENT_TRUTH_DOCS_CLOSEOUT_V1`).
 7. Keep Live/Testnet/credentials/`MULTI_FUTURE` fail-closed
    (`INTENTIONAL_SAFETY_BARRIER`).
 
