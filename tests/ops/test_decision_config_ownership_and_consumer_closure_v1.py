@@ -83,8 +83,11 @@ def test_constants_and_call_graph_bound() -> None:
     assert CORE_LOGIC_CHANGE is False
     assert CALL_GRAPH_CONFIG_BIND_STEP in CALL_GRAPH_AFTER
     assert CALL_GRAPH_CONFIG_BIND_STEP not in CALL_GRAPH_BEFORE
-    assert CALL_GRAPH_V1 == REQUIRED_CALL_GRAPH
+    # Cap 7.2 may extend CALL_GRAPH_V1 beyond the Cap-6.3 verifier REQUIRED subset;
+    # Cap-6.3 bind step must remain in both, and REQUIRED must stay a subset of V1.
     assert CALL_GRAPH_CONFIG_BIND_STEP in CALL_GRAPH_V1
+    assert CALL_GRAPH_CONFIG_BIND_STEP in REQUIRED_CALL_GRAPH
+    assert all(node in CALL_GRAPH_V1 for node in REQUIRED_CALL_GRAPH)
     assert CANONICAL_CONFIRMATION_EPOCHS == EXPECTED_CONFIRMATION_EPOCHS == 2
     assert CANONICAL_UP_DISTANCE == EXPECTED_UP_DISTANCE == 200.0
     assert CANONICAL_ADVERSE_EXIT_DISTANCE == EXPECTED_ADVERSE_EXIT_DISTANCE == 80.0
@@ -266,3 +269,44 @@ def test_full_capability_evidence(tmp_path: Path) -> None:
     assert payload["claims"]["CONFIG_DIGEST_MISMATCH_FAIL_CLOSED"] is True
     assert payload["claims"]["NO_LIVE_ORDER_PATH"] is True
     assert payload["effective_values_before"] == payload["effective_values_after"]
+
+
+def test_hardening_v2_residual_host_consumer_bound_to_cap63_owner() -> None:
+    """Residual-2: hardening_v2 consumes Cap-6.3 owner; local Cap-6.3 literals removed."""
+    import re
+
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (
+        CALL_GRAPH_V2,
+        HardenedBridgeSessionStateV2,
+        run_hardened_bridge_cycles_from_mids_v2,
+    )
+
+    host = Path(
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/"
+        "hardening_cycle_bridge_v2.py"
+    )
+    src = host.read_text(encoding="utf-8")
+    assert not re.search(r"confirmation_epochs\s*=\s*2\b", src)
+    assert not re.search(r"up_distance\s*=\s*200(?:\.0)?\b", src)
+    assert not re.search(r"adverse_exit_distance\s*=\s*80(?:\.0)?\b", src)
+    assert not re.search(r"reversal_distance\s*=\s*120(?:\.0)?\b", src)
+    assert CALL_GRAPH_CONFIG_BIND_STEP in CALL_GRAPH_V2
+
+    state, cycles = run_hardened_bridge_cycles_from_mids_v2(
+        [3500.0],
+        session_id="cap63-residual2-hardening-v2",
+    )
+    assert isinstance(state, HardenedBridgeSessionStateV2)
+    assert state.decision_config_binding.initialized is True
+    assert state.decision_config_binding.confirmation_epochs == EXPECTED_CONFIRMATION_EPOCHS == 2
+    assert state.decision_config_binding.up_distance == EXPECTED_UP_DISTANCE == 200.0
+    assert (
+        state.decision_config_binding.adverse_exit_distance
+        == EXPECTED_ADVERSE_EXIT_DISTANCE
+        == 80.0
+    )
+    assert state.decision_config_binding.reversal_distance == EXPECTED_REVERSAL_DISTANCE == 120.0
+    assert cycles[0]["decision_config_binding"]["confirmation_epochs"] == 2
+    assert cycles[0]["decision_config_binding"]["up_distance"] == 200.0
+    assert cycles[0]["decision_config_binding"]["adverse_exit_distance"] == 80.0
+    assert cycles[0]["decision_config_binding"]["reversal_distance"] == 120.0
