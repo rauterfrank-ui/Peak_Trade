@@ -774,8 +774,8 @@ The following are no longer to be treated as missing greenfield work:
                                       restart-proven.
 
   Cap 6.3 confirmed config keys       Migrated without numeric change;
-                                      residual hardening_v2 host-consumer
-                                      literals remain documented.
+                                      hardening_v2 host-consumer Cap-6.3
+                                      literals bound to typed owner.
 
   Cap 6.4 decision-path restart       Deterministic stateful no-order
                                       restart proven.
@@ -847,13 +847,13 @@ lifecycle proof.
 CORE_LOGIC_DEFECT_DETECTED=false
 WIRING_DEFECTS_DETECTED=false_for_closed_Cap6_1_to_6_5_scope
 STATE_PERSISTENCE_DEFECTS_DETECTED=false_for_closed_Cap6_1_to_6_4_scope
-CONFIG_DRIFT_DETECTED=partial_residual_host_consumer_literals
+CONFIG_DRIFT_DETECTED=false_for_in_scope_runtime_values
 DOCUMENTATION_DRIFT_DETECTED=false
 EVIDENCE_CLAIM_DEFECTS_DETECTED=false_for_corrected_capability_claims
 PUBLIC_MD_NATURAL_LIFECYCLE_EVIDENCE_GAP=false_for_phase_9_2_session_ladder_continuity
 PHASE_9_2_LADDER_INCOMPLETE_BEYOND_SMOKE=false
 WALLCLOCK_HARDENING_V2_CALL_GRAPH_OMITS_EXPLICIT_C1_C2_STAGES_VS_CAP72_HOST=true
-HARDENING_V2_LOCAL_DISTANCE_LITERALS_RESIDUAL_AFTER_CAP63=true
+HARDENING_V2_LOCAL_DISTANCE_LITERALS_RESIDUAL_AFTER_CAP63=false
 LEGACY_PARALLEL_AUTHORITY_DETECTED=false
 REGIME_UNCLASSIFIED_FAIL_CLOSED_IS_DEFECT=false
 ```
@@ -1126,16 +1126,18 @@ decision-config ownership surface without changing numeric values.
 ### Residual host-consumer review item after Cap 6.3
 
 ``` text
-HARDENING_V2_LOCAL_DISTANCE_LITERALS_RESIDUAL_AFTER_CAP63=true
-RESIDUAL_CLASSIFICATION=HOST_CONSUMER_DOCUMENTATION_RESIDUAL
+HARDENING_V2_LOCAL_DISTANCE_LITERALS_RESIDUAL_AFTER_CAP63=false
+RESIDUAL_CLASSIFICATION=CLOSED_BY_NO_ORDER_PROGRAM_DOD_RESIDUAL_2_HARDENING_V2_CANONICAL_DECISION_CONFIG_BINDING_V1
 THRESHOLD_OR_DISTANCE_MUTATION_AUTHORIZED=false
+EFFECTIVE_NUMERIC_VALUES_UNCHANGED=true
+CONFIG_RUNTIME_DRIFT=false_for_in_scope_runtime_values
 ```
 
-The wallclock hardening_v2 bridge still embeds local distance /
-confirmation literals at the same numeric values. This residual must be
-documented and may later be reviewed under a separate Owner-GO. It does
-not authorize any threshold, distance or core-logic change in this
-truth-reconciliation.
+The wallclock hardening_v2 bridge consumes the Cap-6.3 typed decision-config
+owner via `host_binding_v1` / `decision_cfg` (same effective values
+`2` / `200.0` / `80.0` / `120.0`). Local Cap-6.3 distance / confirmation
+literals are removed. Threshold, distance and core-logic mutation remain
+unauthorized.
 
 ### Config ownership review required
 
@@ -1239,10 +1241,11 @@ INTENTIONAL_* = intentional non-blocking current phase
   incomplete                was `RESTART_GAP`                                 no-order decision-path restart      
                                                                                proven.                            
 
-  `G07` Bridge parameters   `PARTIALLY_CLOSED`                          MEDIUM Cap 6.3 closed confirmed keys       Residual host
-  hardcoded                 was `CONFIG_DRIFT`                                without numeric change. Residual:   consumer review
-                                                                               hardening_v2 local distance        
-                                                                               literals at unchanged values.      
+  `G07` Bridge parameters   `CLOSED`                                       n/a Cap 6.3 confirmed keys + Residual-2 Historical only
+  hardcoded                 was `CONFIG_DRIFT` /                              hardening_v2 Cap-6.3 binding;       
+                            `PARTIALLY_CLOSED`                                effective values unchanged;         
+                                                                               `CONFIG_RUNTIME_DRIFT=false_for_`   
+                                                                               `in_scope_runtime_values`.         
                                                                                No threshold mutation authorized.  
 
   `G08` Exit-policy         `CLOSED`                                       n/a Cap 6.5 exit-policy producers       Historical only
@@ -1573,10 +1576,11 @@ CORE_LOGIC_CHANGE=false
 ## Capability status
 
 ``` text
-CAPABILITY_STATUS=COMPLETED_FOR_CONFIRMED_KEYS_WITH_RESIDUAL_HOST_CONSUMER_REVIEW_ITEM
+CAPABILITY_STATUS=COMPLETED_FOR_CONFIRMED_KEYS_AND_HARDENING_V2_HOST_CONSUMER_BINDING
 CONFIRMED_KEYS_MIGRATED=confirmation_epochs,up_distance,adverse_exit_distance,reversal_distance
 EFFECTIVE_NUMERIC_VALUES_UNCHANGED=true
-HARDENING_V2_LOCAL_DISTANCE_LITERALS_RESIDUAL_AFTER_CAP63=true
+HARDENING_V2_LOCAL_DISTANCE_LITERALS_RESIDUAL_AFTER_CAP63=false
+CONFIG_RUNTIME_DRIFT=false_for_in_scope_runtime_values
 THRESHOLD_OR_DISTANCE_MUTATION_AUTHORIZED=false
 ```
 
@@ -2078,7 +2082,7 @@ Owner ratification.
 
 ``` text
 CAPABILITY_STATUS=HISTORICAL_COMPLETED_EVIDENCE_PROVEN
-ACTUAL_NEXT_CAPABILITY=NO_ORDER_PROGRAM_DOD_RESIDUAL_2_CONFIG_RUNTIME_DRIFT_HOST_CONSUMER_REVIEW_V1
+ACTUAL_NEXT_CAPABILITY=NONE_IN_SCOPE_NO_ORDER_PROGRAM_DOD_CLOSED_SEPARATE_OWNER_GO_REQUIRED_FOR_PHASE_10_11
 PHASE_9_2_PUBLIC_MD_SMOKE_SESSION_PASS=true
 PHASE_9_2_ONE_HOUR_GOVERNED_SESSION_PASS_ON_CURRENT_TRUTH_SHA=true
 PHASE_9_2_LADDER_NEXT_STEP=NONE
@@ -2267,7 +2271,7 @@ STEP7_BINDING_PASS_IS_NOT_CAMPAIGN_CLOSEOUT=true
 STEP7_PATH_PASS_IS_NOT_CAMPAIGN_CLOSEOUT=true
 STEP7_OWNER_PASS_IS_NOT_CAMPAIGN_CLOSEOUT=true
 STEP7_CAMPAIGN_VERIFIER_PASS_IS_LADDER_CLOSEOUT_AUTHORITY=true
-NEXT_SAFE_STEP=OWNER_GO_NO_ORDER_PROGRAM_DOD_RESIDUAL_2_CONFIG_RUNTIME_DRIFT_HOST_CONSUMER_REVIEW_V1
+NEXT_SAFE_STEP=SEPARATE_OWNER_GO_REQUIRED_FOR_PHASE_10_OR_PHASE_11_ONLY
 ```
 
 ### Step-7 Confirm &#47; Authorization Channels (governance)
@@ -3827,7 +3831,7 @@ Evidence-reconciled current status against
 
 ``` text
 DOCUMENTATION_RUNTIME_DRIFT=false
-CONFIG_RUNTIME_DRIFT=partial_residual_host_consumer_literals
+CONFIG_RUNTIME_DRIFT=false_for_in_scope_runtime_values
 DASHBOARD_AUTHORITY=false
 UNIVERSE_TRADING_AUTHORITY_EXPLICIT=true
 SINGLE_SELECTED_FUTURE_RUNTIME_CLOSED=true
@@ -3864,6 +3868,7 @@ PHASE_9_2_STEP_7_STATUS=CLOSED_PASS
 TYPED_VOLATILITY_PRODUCER_TO_CMC_BINDING=CLOSED_AND_COLD_START_PROVEN
 REQUIRED_WINDOW_COMPLETE_DECOUPLED_FROM_FEATURES_OK=true
 REGIME_UNCLASSIFIED_ALONE_IS_NOT_A_DEFECT=true
+HARDENING_V2_LOCAL_DISTANCE_LITERALS_RESIDUAL_AFTER_CAP63=false
 VOL_MAX_AGE_ENFORCEMENT=false
 MULTI_FUTURE_RUNTIME_AUTHORIZED=false
 LIVE_ORDERS=false
@@ -3884,18 +3889,19 @@ no-order closure standard.
 
 Phase 9.2 Step-7 repeated multi-session continuity campaign execution is
 complete (`CLOSED_PASS`). The Phase 9.2 Public-MD session ladder is
-complete. Residual-1 forensic/current-truth documentation closeout binds
-`CURRENT_FORENSIC_TRUTH_SHA` to that ladder-closeout SHA and sets
-`DOCUMENTATION_RUNTIME_DRIFT=false`. Immediate Next is residual Cap-6.3 /
-G07 host-consumer config review only. Separately authorized Phase 10 /
-Phase 11 work require explicit Owner-GO and must not reopen the closed
-ladder. This docs closeout does not clear `CONFIG_RUNTIME_DRIFT` and does
-not authorize threshold, core-logic, order, credential or network-session
-changes:
+complete. Residual-1 forensic/current-truth documentation closeout and
+Residual-2 hardening_v2 Cap-6.3 decision-config binding closeout are
+complete. `DOCUMENTATION_RUNTIME_DRIFT=false` and
+`CONFIG_RUNTIME_DRIFT=false_for_in_scope_runtime_values`. The in-scope
+no-order program Definition of Done is closed for confirmed runtime
+values. Separately authorized Phase 10 / Phase 11 work require explicit
+Owner-GO and must not reopen the closed ladder. This residual closeout
+does not authorize threshold, core-logic, order, credential or
+network-session changes:
 
 ``` text
-LAST_COMPLETED_CAPABILITY=NO_ORDER_PROGRAM_DOD_RESIDUAL_1_FORENSIC_CURRENT_TRUTH_DOCS_CLOSEOUT_V1
-ACTUAL_NEXT_CAPABILITY=NO_ORDER_PROGRAM_DOD_RESIDUAL_2_CONFIG_RUNTIME_DRIFT_HOST_CONSUMER_REVIEW_V1
+LAST_COMPLETED_CAPABILITY=NO_ORDER_PROGRAM_DOD_RESIDUAL_2_HARDENING_V2_CANONICAL_DECISION_CONFIG_BINDING_V1
+ACTUAL_NEXT_CAPABILITY=NONE_IN_SCOPE_NO_ORDER_PROGRAM_DOD_CLOSED_SEPARATE_OWNER_GO_REQUIRED_FOR_PHASE_10_11
 PHASE_9_2_STEP_6_STATUS=CLOSED_PASS
 PHASE_9_2_STEP_7_STATUS=CLOSED_PASS
 STEP7_BINDING_IMPLEMENTED=true
@@ -3917,7 +3923,9 @@ STEP7_CAMPAIGN_VERIFIER_PASS_IS_LADDER_CLOSEOUT_AUTHORITY=true
 PHASE_9_2_SESSION_LADDER_COMPLETE=true
 DOCUMENTATION_RUNTIME_DRIFT=false
 CURRENT_FORENSIC_TRUTH_SHA=642db05919634b899329679a811f1ad25a0fd818
-CONFIG_RUNTIME_DRIFT=partial_residual_host_consumer_literals
+CONFIG_RUNTIME_DRIFT=false_for_in_scope_runtime_values
+HARDENING_V2_LOCAL_DISTANCE_LITERALS_RESIDUAL_AFTER_CAP63=false
+NO_ORDER_PROGRAM_DOD_STATUS=CLOSED_FOR_IN_SCOPE_NO_ORDER_PROGRAM
 NETWORK_SESSION_STARTED=false
 CAMPAIGN_EXECUTED=true
 SESSION_COUNT_COMPLETED=2
@@ -3927,7 +3935,7 @@ STEP7_EVIDENCE_SEALED=true
 STEP7_CAMPAIGN_EVIDENCE_DIR=evidence/ops/phase_9_2_step_7_repeated_multi_session_continuity_campaign_execution_v1/campaign_20260807T142727Z
 NEXT_OPEN_PHASE_9_2_STEP=NONE
 DESKTOP_RUNBOOK_USED_AS_AUTHORITY=false
-NEXT_SAFE_STEP=OWNER_GO_NO_ORDER_PROGRAM_DOD_RESIDUAL_2_CONFIG_RUNTIME_DRIFT_HOST_CONSUMER_REVIEW_V1
+NEXT_SAFE_STEP=SEPARATE_OWNER_GO_REQUIRED_FOR_PHASE_10_OR_PHASE_11_ONLY
 ```
 
 Mandatory dependencies / freezes:
@@ -3957,7 +3965,7 @@ Historical completed finish-sequence record (not Immediate Next):
 ``` text
 6.1 = C1/C2/C3 productive binding + stable confirmation persistence = HISTORICAL_COMPLETED
 6.2 = Dynamic Scope persistence = HISTORICAL_COMPLETED
-6.3 = Decision config ownership for confirmed keys = COMPLETED_WITH_RESIDUAL_HOST_CONSUMER_REVIEW_ITEM
+6.3 = Decision config ownership for confirmed keys = COMPLETED_FOR_CONFIRMED_KEYS_AND_HARDENING_V2_HOST_CONSUMER_BINDING
 6.4 = Full decision-path atomic restart closure = HISTORICAL_COMPLETED
 6.5 = Exit-policy producer binding = HISTORICAL_COMPLETED
 7.1 = Deterministic simulated lifecycle evidence = HISTORICAL_COMPLETED
@@ -4023,7 +4031,7 @@ current critical path, is:
 Read-only Preflight 6.0 = HISTORICAL_COMPLETED
 → 6.1 Confirmation/C1 binding = HISTORICAL_COMPLETED
 → 6.2 Dynamic Scope persistence = HISTORICAL_COMPLETED
-→ 6.3 Config ownership = COMPLETED_FOR_CONFIRMED_KEYS_WITH_RESIDUAL
+→ 6.3 Config ownership = COMPLETED_FOR_CONFIRMED_KEYS_AND_HARDENING_V2_HOST_CONSUMER_BINDING
 → 6.4 Atomic restart closure = HISTORICAL_COMPLETED
 → 6.5 Exit-policy producer binding = HISTORICAL_COMPLETED
 → 7.1 Simulated lifecycle evidence = HISTORICAL_COMPLETED

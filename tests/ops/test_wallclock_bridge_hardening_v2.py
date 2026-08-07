@@ -567,3 +567,100 @@ def test_required_window_incomplete_still_emitted_when_warmup_incomplete() -> No
     assert cycles[0]["required_window_complete"] is False
     assert cycles[0]["mid_prices_len"] == 1
     assert state.cycle_index == 1
+
+
+def test_hardening_v2_binds_cap63_canonical_decision_config_no_local_literals() -> None:
+    """G07 residual closeout: Cap-6.3 values from typed owner; no local Cap-6.3 literals."""
+    import re
+
+    from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
+        CANONICAL_ADVERSE_EXIT_DISTANCE,
+        CANONICAL_CONFIRMATION_EPOCHS,
+        CANONICAL_REVERSAL_DISTANCE,
+        CANONICAL_UP_DISTANCE,
+    )
+    from src.ops.decision_config_ownership_and_consumer_closure_v1.constants_v1 import (
+        CALL_GRAPH_CONFIG_BIND_STEP,
+        EXPECTED_ADVERSE_EXIT_DISTANCE,
+        EXPECTED_CONFIRMATION_EPOCHS,
+        EXPECTED_REVERSAL_DISTANCE,
+        EXPECTED_UP_DISTANCE,
+    )
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (
+        CALL_GRAPH_V2,
+        _default_policies,
+    )
+
+    host_path = (
+        REPO_ROOT
+        / "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2"
+        / "hardening_cycle_bridge_v2.py"
+    )
+    src = host_path.read_text(encoding="utf-8")
+    # Residual Cap-6.3 literals must not remain as local kwargs/assignments.
+    assert not re.search(r"confirmation_epochs\s*=\s*2\b", src)
+    assert not re.search(r"up_distance\s*=\s*200(?:\.0)?\b", src)
+    assert not re.search(r"adverse_exit_distance\s*=\s*80(?:\.0)?\b", src)
+    assert not re.search(r"reversal_distance\s*=\s*120(?:\.0)?\b", src)
+    assert "ensure_host_decision_config_binding_v1" in src
+    assert "require_bound_decision_config_v1" in src
+    assert "CANONICAL_CONFIRMATION_EPOCHS" in src
+    assert CALL_GRAPH_CONFIG_BIND_STEP in CALL_GRAPH_V2
+
+    assert CANONICAL_CONFIRMATION_EPOCHS == EXPECTED_CONFIRMATION_EPOCHS == 2
+    assert CANONICAL_UP_DISTANCE == EXPECTED_UP_DISTANCE == 200.0
+    assert CANONICAL_ADVERSE_EXIT_DISTANCE == EXPECTED_ADVERSE_EXIT_DISTANCE == 80.0
+    assert CANONICAL_REVERSAL_DISTANCE == EXPECTED_REVERSAL_DISTANCE == 120.0
+
+    policies = _default_policies()
+    assert int(policies.directional.confirmation_epochs) == 2
+
+    state, cycles = run_hardened_bridge_cycles_from_mids_v2(
+        [3500.0, 3510.0],
+        session_id="cap63-hardening-v2-bind",
+    )
+    assert state.decision_config_binding.initialized is True
+    assert state.decision_config_binding.confirmation_epochs == 2
+    assert state.decision_config_binding.up_distance == 200.0
+    assert state.decision_config_binding.adverse_exit_distance == 80.0
+    assert state.decision_config_binding.reversal_distance == 120.0
+    assert cycles
+    cfg = cycles[-1]["decision_config_binding"]
+    assert cfg["confirmation_epochs"] == 2
+    assert cfg["up_distance"] == 200.0
+    assert cfg["adverse_exit_distance"] == 80.0
+    assert cfg["reversal_distance"] == 120.0
+    assert CALL_GRAPH_CONFIG_BIND_STEP in cycles[-1]["call_graph"]
+
+
+def test_hardening_v2_decision_config_drift_guard_fail_closed(tmp_path: Path) -> None:
+    from src.ops.decision_config_ownership_and_consumer_closure_v1.config_loader_v1 import (
+        DecisionConfigError,
+    )
+    from src.ops.decision_config_ownership_and_consumer_closure_v1.host_binding_v1 import (
+        ensure_host_decision_config_binding_v1,
+    )
+    from src.ops.decision_config_ownership_and_consumer_closure_v1.reason_codes_v1 import (
+        DecisionConfigFailureCodeV1,
+    )
+
+    drifted = tmp_path / "drifted.toml"
+    drifted.write_text(
+        "[canonical_decision_runtime_config_v1]\n"
+        'config_version = "v1"\n'
+        'schema_version = "canonical_decision_runtime_config.v1"\n'
+        "confirmation_epochs = 2\n"
+        "up_distance = 201.0\n"
+        "adverse_exit_distance = 80.0\n"
+        "reversal_distance = 120.0\n",
+        encoding="utf-8",
+    )
+    state = HardenedBridgeSessionStateV2()
+    with pytest.raises(DecisionConfigError) as exc:
+        ensure_host_decision_config_binding_v1(
+            state.decision_config_binding,
+            repository_sha="OFFLINE_HARDENING_V2_ANALYTICAL",
+            config_path=drifted,
+            persist=False,
+        )
+    assert exc.value.code is DecisionConfigFailureCodeV1.CONFIG_EFFECTIVE_VALUE_DRIFT

@@ -11,6 +11,17 @@ from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
 from src.ops.bounded_futures_testnet_venue_binding_v0 import PRODUCTION_INSTRUMENT_ID
+from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
+    CANONICAL_CONFIRMATION_EPOCHS,
+)
+from src.ops.decision_config_ownership_and_consumer_closure_v1.constants_v1 import (
+    CALL_GRAPH_CONFIG_BIND_STEP,
+)
+from src.ops.decision_config_ownership_and_consumer_closure_v1.host_binding_v1 import (
+    HostDecisionConfigBindingV1,
+    ensure_host_decision_config_binding_v1,
+    require_bound_decision_config_v1,
+)
 from src.ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_model_v1 import (
     PortfolioEconomicsModelParamsV1,
     SimulatedFillV1,
@@ -174,6 +185,7 @@ def derive_required_window_complete_v2(*, warmup_complete: bool, features_ok: bo
 
 CALL_GRAPH_V2: tuple[str, ...] = (
     "okx_public_market_data",
+    CALL_GRAPH_CONFIG_BIND_STEP,
     "feature_pipeline",
     "regime_pipeline",
     "canonical_volatility_productive_runtime_cmc_typed_binding",
@@ -188,6 +200,8 @@ CALL_GRAPH_V2: tuple[str, ...] = (
     "evidence",
     "full_economic_reconstruction_verifier",
 )
+
+_HARDENING_V2_DECISION_CONFIG_REPOSITORY_SHA = "OFFLINE_HARDENING_V2_ANALYTICAL"
 
 _DEFAULT_VOL_TYPED_BINDING_VENUE = "okx_europe"
 _DEFAULT_VOL_TYPED_BINDING_VENUE_INSTRUMENT_ID = PRODUCTION_INSTRUMENT_ID
@@ -257,7 +271,7 @@ def _default_policies() -> IntegratedOfflineReplayPoliciesV1:
             observe_signal_threshold=0.001,
             candidate_signal_threshold=0.005,
             confirmation_signal_threshold=0.01,
-            confirmation_epochs=2,
+            confirmation_epochs=int(CANONICAL_CONFIRMATION_EPOCHS),
             validity_epochs=3,
             policy_version=DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
         ),
@@ -381,6 +395,12 @@ class HardenedBridgeSessionStateV2:
     max_age_research_evidence_ledger_path: Path | None = None
     # Optional productive research-evidence accumulation (diagnostic only).
     productive_evidence_accumulation_state: ProductiveEvidenceAccumulationStateV1 | None = None
+    # Cap 6.3 / G07: typed canonical decision-runtime config binding (no local Cap-6.3 literals).
+    decision_config_binding: HostDecisionConfigBindingV1 = field(
+        default_factory=HostDecisionConfigBindingV1
+    )
+    decision_config_state_root: str | None = None
+    decision_config_repository_sha: str = _HARDENING_V2_DECISION_CONFIG_REPOSITORY_SHA
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -482,6 +502,23 @@ def run_hardened_bridge_cycle_v2(
     state.cycle_index += 1
     state.append_mid(mid_price)
     cycle_id = make_scoped_id("cycle", session_id, state.cycle_index)
+
+    # Capability 6.3 / G07 residual closeout: bind Cap-6.3 typed decision config before alpha.
+    ensure_host_decision_config_binding_v1(
+        state.decision_config_binding,
+        repository_sha=str(
+            state.decision_config_repository_sha or _HARDENING_V2_DECISION_CONFIG_REPOSITORY_SHA
+        ),
+        state_root=(
+            Path(state.decision_config_state_root) if state.decision_config_state_root else None
+        ),
+        persist=bool(state.decision_config_state_root),
+    )
+    if state.decision_config_binding.alpha_blocked:
+        raise RuntimeError(
+            "DECISION_CONFIG_ALPHA_BLOCKED:" + state.decision_config_binding.alpha_block_reason
+        )
+    decision_cfg = require_bound_decision_config_v1(state.decision_config_binding)
 
     basis = price_basis or build_explicit_mid_price_basis_v2(
         mid_price=float(mid_price),
@@ -644,10 +681,10 @@ def run_hardened_bridge_cycle_v2(
             remaining_epochs=0,
             policy_version=SCOPE_EVENT_GENERATOR_POLICY_VERSION,
         ),
-        up_distance=200.0,
-        adverse_exit_distance=80.0,
-        reversal_distance=120.0,
-        confirmation_epochs=2,
+        up_distance=float(decision_cfg.up_distance),
+        adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
+        reversal_distance=float(decision_cfg.reversal_distance),
+        confirmation_epochs=int(decision_cfg.confirmation_epochs),
         current_price=mark,
         price_path=price_path,
         directional_confirmation_state=DirectionalConfirmationStateV1(
@@ -865,6 +902,17 @@ def run_hardened_bridge_cycle_v2(
         "reason_codes": list(replay.evidence.reason_codes),
         "blockers": list(features.blockers),
         "call_graph": list(CALL_GRAPH_V2),
+        "decision_config_binding": {
+            "initialized": bool(state.decision_config_binding.initialized),
+            "config_version": str(decision_cfg.config_version),
+            "schema_version": str(decision_cfg.schema_version),
+            "config_digest": str(decision_cfg.config_digest()),
+            "confirmation_epochs": int(decision_cfg.confirmation_epochs),
+            "up_distance": float(decision_cfg.up_distance),
+            "adverse_exit_distance": float(decision_cfg.adverse_exit_distance),
+            "reversal_distance": float(decision_cfg.reversal_distance),
+            "owner": str(decision_cfg.owner),
+        },
         "orders_authorized": ORDERS_AUTHORIZED,
         "testnet_authorized": TESTNET_AUTHORIZED,
         "live_authorized": LIVE_AUTHORIZED,

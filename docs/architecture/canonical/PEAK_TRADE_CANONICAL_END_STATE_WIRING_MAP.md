@@ -314,7 +314,7 @@ no-order host must remain physically separate.
 | W2 | Public-MD natural Entry/Exit lifecycle | Deterministic Cap 7.1 proven; natural Public-MD open | Natural lifecycle evidenced | `EVIDENCE_GAP` | Yes for Phase 9.2 DoD |
 | W3 | Step 4 rate-limit/reconnect session | Components exist; no productive session binding / governed fault path | Bound + outcome-observed + verified | `WIRING_GAP` | Yes for Step 4 |
 | W4 | Step 3 restart/recovery real session | Binding implemented (PR #5750); `RESTART_RECOVERY_LADDER_STEP_CLOSED=false` | Governed real session verifier PASS | `EVIDENCE_GAP` | Yes — before ladder advance |
-| W5 | hardening_v2 distance literals | Residual host-consumer literals after Cap 6.3 | Owned typed config consumers | `CONFIG_DRIFT` (partial residual) | Review-only; no threshold mutation authorized |
+| W5 | hardening_v2 distance literals | Closed by Residual-2 Cap-6.3 binding | Owned typed config consumers | `CONFIG_DRIFT=false_for_in_scope` | Binding-only; effective values unchanged |
 | W6 | Runbook `CURRENT_FORENSIC_TRUTH_SHA` vs `origin/main` | Bound to Step-7 ladder-closeout SHA `642db059…`; `DOCUMENTATION_RUNTIME_DRIFT=false` | Reconciled current-truth SHA | `DOCUMENTATION_DRIFT` closed by Residual-1 docs closeout | Docs freshness closed |
 | W7 | Numeric vol max-age | Non-enforcing | Separate Phase 10 decision | `INTENTIONAL_SAFETY_BARRIER` / intentional current phase | No |
 | W8 | Multi-future runtime | Unauthorized | Future program only | `INTENTIONAL_SAFETY_BARRIER` | Multi-future only |
@@ -398,7 +398,7 @@ conflicts hard-stop before Alpha advances.
 | --- | --- | --- | --- |
 | Cap 7.2 activation | `config/runtime/single_future_stateful_no_order_runtime_activation_v1.json` | Cap 7.2 package | `CONFIG_EXISTS` `CONFIG_CONSUMED` |
 | Cap 6.3 confirmed keys (`confirmation_epochs`, distances) | Typed decision-config ownership (Cap 6.3) | Confirmation / scope path | `CONFIG_CONSUMED`; numerics unchanged |
-| hardening_v2 local distance literals | Host residual | hardening_v2 bridge | `CONFIG_DRIFT` residual; review-only |
+| hardening_v2 local distance literals | Closed | hardening_v2 Cap-6.3 binding | `CONFIG_DRIFT=false_for_in_scope`; values unchanged |
 | Phase 9.2 smoke session | `config/ops/phase_9_2_public_md_smoke_session_contract_v1.json` | Phase 9.2 preflight | `CONFIG_EXISTS` `CONFIG_CONSUMED` |
 | Phase 9.2 restart session | `config/ops/phase_9_2_restart_recovery_session_contract_v1.json` | Restart harness | `CONFIG_EXISTS` |
 | Phase 9.2 Step 3 wallclock binding | `config/ops/phase_9_2_productive_public_md_restart_recovery_real_network_wallclock_binding_v1.json` | Binding package | `CONFIG_EXISTS` `CONFIG_CONSUMED`; `network_session_allowed_by_capability_config=false` |
@@ -882,7 +882,7 @@ those modes.
 Cap 6.0 Preflight (historical)
 → Cap 6.1 Confirmation/C1
 → Cap 6.2 Dynamic Scope
-→ Cap 6.3 Config ownership (residual review item)
+→ Cap 6.3 Config ownership (confirmed keys + hardening_v2 host binding)
 → Cap 6.4 Atomic restart
 → Cap 6.5 Exit-policy producers
 → Cap 7.1 Deterministic simulated lifecycle evidence
