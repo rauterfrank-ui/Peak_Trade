@@ -1,0 +1,19 @@
+{
+  "ORDER_SERIALIZATION_DRY_RUN_CONTRACT_BOUND": true,
+  "ORDER_SERIALIZATION_NETWORK_EFFECT": "NONE",
+  "OWNER": "ops.capability_11_4_testnet_execution_adapter_and_lifecycle_closure_v1",
+  "TESTNET_ORDER_SUBMIT_PERFORMED_IN_CAPABILITY_11_4": false,
+  "live_mode_blocked": true,
+  "non_fixture_blocked": true,
+  "ok": true,
+  "required_fields": [
+    "client_order_id",
+    "instrument_id",
+    "side",
+    "order_type",
+    "quantity",
+    "execution_mode"
+  ],
+  "sample_digest": "247bfa49a4cc400aa3298c6d8177894eddb42c9cb3c3b14abe5e43183e6241d0",
+  "submit_blocked": true
+}
