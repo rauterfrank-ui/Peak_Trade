@@ -768,17 +768,18 @@ preflight evidence `phase_9_2_session_ladder_v1.json`.
 
 | Field | Value |
 | --- | --- |
-| CURRENT_STATUS | `OPEN` (binding ready; governed session not closed) |
-| PRODUCTIVE_ENTRYPOINT | `scripts&#47;ops&#47;run_phase_9_2_step_6_adverse_stale_data_session_continuation_v1.py` |
-| PRODUCTIVE_STEP6_EXECUTOR | `ops.phase_9_2_step_6_adverse_stale_data_session_continuation_v1.productive_executor_v1` |
+| CURRENT_STATUS | `OPEN` (continuation + execution binding ready; governed session not closed) |
+| PRODUCTIVE_ENTRYPOINT | `scripts&#47;ops&#47;run_phase_9_2_step_6_governed_adverse_stale_data_session_execution_v1.py` |
+| CONTINUATION_ENTRYPOINT | `scripts&#47;ops&#47;run_phase_9_2_step_6_adverse_stale_data_session_continuation_v1.py` |
+| PRODUCTIVE_STEP6_EXECUTOR | `ops.phase_9_2_step_6_governed_adverse_stale_data_session_execution_v1.governed_session_execution_v1` |
 | SESSION_SPEC | `config&#47;ops&#47;phase_9_2_public_md_adverse_stale_data_session_contract_v1.json` |
-| AUTHORIZATION_SCOPE | Separate Owner-GO for later real session; binding itself `NETWORK_SESSION_ALLOWED=false` |
+| AUTHORIZATION_SCOPE | Separate Owner-GO + real TTY for later real session; binding itself `NETWORK_SESSION_ALLOWED=false` |
 | STATE_ROOTS | Canonical |
 | STALE_DATA_CLASSIFIER | `heartbeat_staleness_v1.StalenessTrackerV1` |
 | ADVERSE_DATA_CLASSIFIER | `killstate_runtime_v1.STALE_DATA` |
-| FAULT_OR_SESSION_MECHANISM | `governed_injected_stale_data_fault_v1` (`RECEIVE_LAG` / `DATA_HOLD` only; default disabled) |
-| EVIDENCE_BUNDLE | `docs&#47;evidence&#47;capability_phase_9_2_step_6_adverse_stale_data_session_continuation_v1&#47;SUMMARY.json` |
-| VERIFIER | `verifier_v1` (binding + later productive session contract) |
+| FAULT_OR_SESSION_MECHANISM | `governed_injected_stale_data_fault_v1` via `runtime_overrides[governed_stale_data_control]` (`RECEIVE_LAG` / `DATA_HOLD` only; default disabled); Step-4 transport fault remains separate |
+| EVIDENCE_BUNDLE | `docs&#47;evidence&#47;capability_phase_9_2_step_6_governed_adverse_stale_data_session_execution_v1&#47;SUMMARY.json` |
+| VERIFIER | `verifier_v1` (execution binding + later productive session contract) |
 | PREDECESSOR | Step 5 |
 | SUCCESSOR | Multi-session campaign |
 | OPEN_GAPS | `EVIDENCE_GAP` for governed real-network Step-6 session closure |
@@ -945,7 +946,7 @@ directly consumable without parallel authority adapters.
 
 1. Re-read Master Runbook completely before any mutations that claim current
    runtime truth.
-2. Bind every refresh to exact `git rev-parse origin/main`.
+2. Bind every refresh to exact `git rev-parse origin&#47;main`.
 3. Re-run forensic enumeration of entrypoints, callers, state roots, config
    consumers, persistence owners, evidence producers and verifiers.
 4. Recompute this document’s raw-byte `DOCUMENT_SHA256`.

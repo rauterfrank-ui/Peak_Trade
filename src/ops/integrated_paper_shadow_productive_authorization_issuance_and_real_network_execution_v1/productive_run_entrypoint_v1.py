@@ -233,6 +233,11 @@ def run_productive_wallclock_session_v1(
             getattr(governed_fault_schedule, "enabled", False)
         ):
             notes.append("GOVERNED_INJECTED_TRANSPORT_FAULT_WRAPPER_BOUND")
+        # Step-6 stale-data control is bound via runtime_overrides into
+        # WallclockSessionRuntimeV1 receive classification — separate from
+        # Step-4 transport-fault wrapper above.
+        if overrides.get("governed_stale_data_control") is not None:
+            notes.append("GOVERNED_STALE_DATA_CONTROL_RUNTIME_OVERRIDE_PRESENT")
         notes.append("REAL_PUBLIC_MD_TRANSPORT_BOUND")
     else:
         notes.append("INJECTED_TRANSPORT_BOUND")
