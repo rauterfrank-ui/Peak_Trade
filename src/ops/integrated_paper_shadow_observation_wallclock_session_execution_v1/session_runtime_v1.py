@@ -201,6 +201,21 @@ class WallclockSessionRuntimeV1:
         self.session_id: str = ""
         self._session_side_effects_allowed = False
         self._o7_live_ohlcv_bridge = None
+        self.reconnect_success_count = 0
+        self.post_reconnect_continuation_count = 0
+        self.post_reconnect_reconciliation_count = 0
+        self.stale_gate_activation_count = 0
+        self._post_reconnect_reconciliation_required = False
+        self._expected_repository_sha = ""
+        self.natural_transport_fault_count = 0
+        self.last_retry_after_raw: str | None = None
+        self.last_retry_after_parsed_seconds: float | None = None
+        self.last_backoff_source: str | None = None
+        self.last_backoff_seconds: float | None = None
+        self._confirmation_advance_count_at_reconnect = 0
+        self._fill_count_at_reconnect = 0
+        self.duplicate_confirmation_advance_detected = False
+        self.duplicate_fill_detected = False
 
     def _maybe_init_o7_live_ohlcv_bridge_v1(
         self,
@@ -234,6 +249,131 @@ class WallclockSessionRuntimeV1:
     def _transition(self, to_state: WallclockSessionState) -> None:
         assert_transition_allowed(from_state=self.state, to_state=to_state)
         self.state = to_state
+
+    def _fault_origin_for_message_v1(self, message: str) -> str:
+        from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.governed_injected_transport_fault_v1 import (  # noqa: E501
+            FAULT_ORIGIN_GOVERNED,
+            FAULT_ORIGIN_NATURAL,
+        )
+
+        if FAULT_ORIGIN_GOVERNED in str(message or ""):
+            return FAULT_ORIGIN_GOVERNED
+        return FAULT_ORIGIN_NATURAL
+
+    def _run_post_reconnect_reconciliation_before_alpha_v1(
+        self,
+        *,
+        session_id: str,
+        now_wall: float,
+    ) -> bool:
+        """Reuse Cap-1.1 productive reconciliation owner after reconnect; fail-closed."""
+        from decimal import Decimal
+
+        from src.ops.productive_reconciliation_runtime_binding_v1 import (
+            PortfolioTruthSnapshotV1,
+            PositionTruthV1,
+            run_productive_reconciliation_startup_gate_v1,
+        )
+
+        # Snapshot observed portfolio from hardened bridge state (flat-safe).
+        positions: list[PositionTruthV1] = []
+        try:
+            snap = self.bridge_state.portfolio.snapshot()
+            pos = snap.get("position") if isinstance(snap, dict) else None
+            if isinstance(pos, dict) and pos.get("instrument_id"):
+                positions.append(
+                    PositionTruthV1.from_signed(
+                        instrument_id=str(pos.get("instrument_id")),
+                        signed_quantity=Decimal(str(pos.get("signed_quantity") or "0")),
+                        source_id="post_reconnect_observed",
+                        mark_price=(
+                            None
+                            if pos.get("mark_price") is None
+                            else Decimal(str(pos.get("mark_price")))
+                        ),
+                        event_time_unix=now_wall,
+                        wall_time_unix=now_wall,
+                    )
+                )
+        except Exception:  # noqa: BLE001
+            positions = []
+
+        observed = PortfolioTruthSnapshotV1(
+            positions=tuple(positions),
+            cash=None,
+            source_id="post_reconnect_observed",
+            event_time_unix=now_wall,
+            wall_time_unix=now_wall,
+            missing=False,
+        )
+        recon_root = self.evidence_root / "post_reconnect_reconciliation"
+        gate = run_productive_reconciliation_startup_gate_v1(
+            state_root=recon_root,
+            observed=observed,
+            session_id=session_id,
+            repository_sha=str(self._expected_repository_sha or "UNKNOWN"),
+            now_unix=now_wall,
+        )
+        self.post_reconnect_reconciliation_count += 1
+        self.writer.append_event(
+            "runtime_events.jsonl",
+            {
+                "event": "post_reconnect_reconciliation_before_alpha",
+                "session_id": session_id,
+                "ok": bool(gate.ok),
+                "alpha_enabled": bool(gate.alpha_enabled),
+                "classification": str(getattr(gate.classification, "value", gate.classification)),
+                "reconciliation_before_alpha": True,
+            },
+        )
+        if not bool(gate.ok) or not bool(gate.alpha_enabled):
+            self.blockers.append("POST_RECONNECT_RECONCILIATION_FAILED")
+            return False
+        return True
+
+    def _seal_transport_telemetry_v1(self, *, session_id: str) -> None:
+        from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.governed_injected_transport_fault_v1 import (  # noqa: E501
+            FAULT_ORIGIN_GOVERNED,
+            build_transport_telemetry_document_v1,
+            extract_wrapper_telemetry_v1,
+        )
+
+        if (self.evidence_root / "transport_telemetry.json").exists():
+            return
+        wrapper_tel = extract_wrapper_telemetry_v1(getattr(self.transport, "fetcher", None))
+        http_429 = int(getattr(self.transport, "http_429_count", 0) or 0)
+        # Prefer last Retry-After / backoff from wrapper injection events.
+        last_retry_raw = self.last_retry_after_raw
+        last_retry_parsed = self.last_retry_after_parsed_seconds
+        if wrapper_tel is not None:
+            for ev in wrapper_tel.events:
+                if ev.get("kind") == "HTTP_429":
+                    last_retry_raw = ev.get("retry_after_raw")
+                    last_retry_parsed = ev.get("retry_after_parsed_seconds")
+        doc = build_transport_telemetry_document_v1(
+            session_id=session_id,
+            transport_http_429_count=http_429,
+            transport_events=list(getattr(self.transport, "events", []) or []),
+            wrapper_telemetry=wrapper_tel,
+            reconnect_attempt_count=int(self.reconnect_attempts),
+            reconnect_success_count=int(self.reconnect_success_count),
+            post_reconnect_continuation_count=int(self.post_reconnect_continuation_count),
+            post_reconnect_reconciliation_count=int(self.post_reconnect_reconciliation_count),
+            stale_gate_activation_count=int(self.stale_gate_activation_count),
+            # Authoritative transport counter is the typed rate-limit source here;
+            # Step-4 verifier also re-runs compute_rate_limit_event_count_v1 on evidence.
+            rate_limit_event_count=http_429,
+            natural_transport_fault_count=int(self.natural_transport_fault_count),
+            last_retry_after_raw=last_retry_raw,
+            last_retry_after_parsed_seconds=last_retry_parsed,
+            last_backoff_source=self.last_backoff_source,
+            last_backoff_seconds=self.last_backoff_seconds,
+        )
+        if wrapper_tel is not None and any(
+            str(e.get("fault_origin")) == FAULT_ORIGIN_GOVERNED for e in wrapper_tel.events
+        ):
+            doc["GOVERNED_INJECTED_TRANSPORT_FAULT_USED"] = True
+        self.writer.write_immutable_json("transport_telemetry.json", doc)
 
     def _abort(self, trigger: str, detail: str = "") -> None:
         self.killstate.raise_killstate(
@@ -304,6 +444,8 @@ class WallclockSessionRuntimeV1:
         artifact: Any = None,
     ) -> WallclockSessionResultV1:
         session_id = go.session_id
+        self.session_id = session_id
+        self._expected_repository_sha = str(expected_repository_sha)
         # Fail-closed: V1 artifact objects are never accepted for productive start.
         if artifact is not None:
             self.state = WallclockSessionState.INVALID
@@ -602,7 +744,9 @@ class WallclockSessionRuntimeV1:
                     )
                     if status == "warn":
                         self.writer.append_event("stale_events.jsonl", staleness.events[-1])
+                        self.stale_gate_activation_count += 1
                     if kill:
+                        self.stale_gate_activation_count += 1
                         self._abort(kill)
                         break
                     if last_tick is not None:
@@ -621,6 +765,19 @@ class WallclockSessionRuntimeV1:
                         )
                         break
                     if self.config.decision_economics_bridge_enabled:
+                        if self._post_reconnect_reconciliation_required:
+                            recon_ok = self._run_post_reconnect_reconciliation_before_alpha_v1(
+                                session_id=session_id,
+                                now_wall=now_wall,
+                            )
+                            if not recon_ok:
+                                self._abort(
+                                    "POST_RECONNECT_RECONCILIATION_FAILED",
+                                    "reconciliation_before_alpha",
+                                )
+                                break
+                            self._post_reconnect_reconciliation_required = False
+                            self.post_reconnect_continuation_count += 1
                         outcome_bridge = run_hardened_wallclock_bridge_observation_cycle_v2(
                             bridge_state=self.bridge_state,
                             ticks=[tick],
@@ -717,10 +874,16 @@ class WallclockSessionRuntimeV1:
                     if "ABORT_CREDENTIAL_OR_AUTH_SURFACE" in msg:
                         self._abort("ABORT_CREDENTIAL_OR_AUTH_SURFACE", msg)
                         break
-                    if "HTTP_429_BUDGET_EXCEEDED" in msg:
+                    if (
+                        "HTTP_429_BUDGET_EXCEEDED" in msg
+                        or "RATE_LIMIT_SESSION_BUDGET_EXCEEDED" in msg
+                    ):
                         self._abort("HTTP_429_BUDGET_EXCEEDED", msg)
                         break
                     err_cls, reconnectable = classify_transport_message_v1(msg)
+                    fault_origin = self._fault_origin_for_message_v1(msg)
+                    if "GOVERNED_INJECTED_TRANSPORT_FAULT" not in msg and "RATE_LIMIT" not in msg:
+                        self.natural_transport_fault_count += 1
                     if not reconnectable:
                         self._abort(err_cls, msg)
                         break
@@ -737,7 +900,20 @@ class WallclockSessionRuntimeV1:
                             "error": msg,
                             "error_class": err_cls,
                             "reconnectable": True,
+                            "fault_origin": fault_origin,
                             "mono_ts": now_mono,
+                            "session_id": session_id,
+                        },
+                    )
+                    self.writer.append_event(
+                        "connectivity_events.jsonl",
+                        {
+                            "event": "transport_disconnect",
+                            "fault_origin": fault_origin,
+                            "error": msg,
+                            "error_class": err_cls,
+                            "mono_ts": now_mono,
+                            "session_id": session_id,
                         },
                     )
                     if self.reconnect_attempts > self.config.max_reconnect_attempts:
@@ -752,6 +928,18 @@ class WallclockSessionRuntimeV1:
                     self.sleep(0.001)
                     if self.state == WallclockSessionState.RECONNECTING:
                         self._transition(WallclockSessionState.RUNNING)
+                        self.reconnect_success_count += 1
+                        self._post_reconnect_reconciliation_required = True
+                        self.writer.append_event(
+                            "connectivity_events.jsonl",
+                            {
+                                "event": "transport_reconnect_success",
+                                "fault_origin": fault_origin,
+                                "attempt": self.reconnect_attempts,
+                                "session_id": session_id,
+                                "mono_ts": self.clock_mono(),
+                            },
+                        )
                     continue
 
                 self.sleep(self.config.poll_interval_seconds)
@@ -990,6 +1178,8 @@ class WallclockSessionRuntimeV1:
                         "blockers": list(self.blockers),
                     },
                 )
+            if self.network_opened or self.consumed:
+                self._seal_transport_telemetry_v1(session_id=session_id)
         except WallclockEvidenceError as exc:
             incomplete = True
             verdict = TerminalVerdict.ABORT

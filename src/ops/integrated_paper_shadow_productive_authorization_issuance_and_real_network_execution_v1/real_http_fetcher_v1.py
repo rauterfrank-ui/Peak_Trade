@@ -219,12 +219,38 @@ def build_real_eea_public_md_transport_v1(
     max_retries: int = 2,
     session_http_429_budget: int = 20,
     resolve_private_check: bool = True,
+    governed_fault_schedule: Any = None,
 ) -> tuple[EeaPublicMdTransportV1, RealHttpFetcherTelemetryV1]:
+    """Build productive EEA Public-MD transport.
+
+    Optional ``governed_fault_schedule`` inserts
+    ``GovernedInjectedTransportFaultWrapperV1`` strictly between the real
+    fetcher and ``EeaPublicMdTransportV1``. Default (None / disabled) preserves
+    the historical real-fetcher path unchanged.
+    """
+    from src.ops.phase_9_2_productive_public_md_rate_limit_reconnect_wallclock_binding_v1.governed_injected_transport_fault_v1 import (  # noqa: E501
+        wrap_fetcher_with_governed_fault_control_v1,
+    )
+
     fetcher, telemetry = make_real_eea_public_md_fetcher_v1(
         environ=environ,
         sleep=sleep,
         resolve_private_check=resolve_private_check,
     )
+    fetcher = wrap_fetcher_with_governed_fault_control_v1(
+        real_fetcher=fetcher,
+        schedule=governed_fault_schedule,
+    )
+    rate_limit_policy = None
+    if governed_fault_schedule is not None and bool(
+        getattr(governed_fault_schedule, "enabled", False)
+    ):
+        # Reuse canonical pacing policy so Retry-After is honored on injected 429.
+        from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.public_md_rate_limit_policy_v1 import (  # noqa: E501
+            default_public_md_request_pacing_policy_v1,
+        )
+
+        rate_limit_policy = default_public_md_request_pacing_policy_v1()
     transport = EeaPublicMdTransportV1(
         fetcher=fetcher,
         timeout_seconds=DEFAULT_CONNECT_TIMEOUT_SECONDS + DEFAULT_READ_TIMEOUT_SECONDS,
@@ -232,5 +258,6 @@ def build_real_eea_public_md_transport_v1(
         session_http_429_budget=session_http_429_budget,
         sleep=sleep,
         environ=environ,
+        rate_limit_policy=rate_limit_policy,
     )
     return transport, telemetry
