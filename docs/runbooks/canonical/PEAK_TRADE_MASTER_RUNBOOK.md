@@ -2105,7 +2105,7 @@ using public market data and internal simulated execution only.
     productive restart/recovery session verifier PASS;
 4.  rate-limit and reconnect session --- completed / PASS; governed productive
     real-network session verified without ephemeral patches under evidence
-    `evidence/ops/phase_9_2_step_4_governed_productive_real_network_rate_limit_reconnect_session_execution_v1/session_20260807T043754Z`
+    `evidence&#47;ops&#47;phase_9_2_step_4_governed_productive_real_network_rate_limit_reconnect_session_execution_v1&#47;session_20260807T043754Z`
     (`PHASE_9_2_STEP_4_STATUS=CLOSED_PASS`);
 5.  prolonged natural-market session --- completed / PASS; productive session
     sealed and verified under
