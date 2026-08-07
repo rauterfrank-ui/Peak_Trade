@@ -1,0 +1,18 @@
+{
+  "live_dry_run_order_plan": "absent_as_phase11_capability",
+  "live_order_plan_evidence_ladder": "absent_as_phase11_capability",
+  "live_order_plan_parity": "absent_as_phase11_capability",
+  "path": [
+    "Canonical Stateful Trading Core",
+    "Canonical Intent / Lifecycle Contracts (Cap 11.1)",
+    "Credential / Authorization / Account-Identity Boundary (Cap 11.2)",
+    "Private Read-Only Venue Integration Contracts (Cap 11.3)",
+    "Testnet Execution Adapter and Lifecycle Closure Contracts (Cap 11.4)",
+    "Testnet Restart / Recovery / Kill-Switch Closure Contracts (Cap 11.5)",
+    "Long-Running Autonomous Testnet Evidence Contracts (Cap 11.6)",
+    "Live Private Read-Only and Shadow Reconciliation Contracts (Cap 11.7)",
+    "Mode-Specific Execution Boundary (Simulated sole reachable)",
+    "Accounting / Portfolio / Reconciliation / Evidence"
+  ],
+  "private_network_session": "forbidden"
+}

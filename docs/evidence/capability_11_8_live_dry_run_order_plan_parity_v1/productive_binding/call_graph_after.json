@@ -1,0 +1,24 @@
+{
+  "activation": "not_activated",
+  "capability_11_9": "forbidden",
+  "live_dry_run_order_plan": "bound_fixture_only_not_activated",
+  "live_order_plan_evidence_ladder": "bound_fixture_only_not_observed",
+  "live_order_plan_parity": "bound_fixture_only_not_activated",
+  "path": [
+    "Canonical Stateful Trading Core (unchanged)",
+    "Canonical Intent / Lifecycle Contracts (Cap 11.1 retained)",
+    "Credential / Authorization / Account-Identity Boundary (Cap 11.2 retained)",
+    "Private Read-Only Venue Integration Contracts (Cap 11.3 retained)",
+    "Testnet Execution Adapter and Lifecycle Closure Contracts (Cap 11.4 retained)",
+    "Testnet Restart / Recovery / Kill-Switch Closure Contracts (Cap 11.5 retained)",
+    "Long-Running Autonomous Testnet Evidence Contracts (Cap 11.6 retained)",
+    "Live Private Read-Only and Shadow Reconciliation Contracts (Cap 11.7 retained)",
+    "Live Dry-Run Order-Plan Parity Contracts (Cap 11.8)",
+    "LiveDryRunOrderPlanRecordV1 (fixture-only; pre-submit; submit forbidden)",
+    "LiveOrderPlanParityRecordV1 (fixture-only; activation forbidden)",
+    "LiveOrderPlanEvidenceLadderFieldRecordV1 (fixture-only; observed overclaim forbidden)",
+    "Mode-Specific Execution Boundary (Simulated sole reachable)",
+    "Accounting / Portfolio / Reconciliation / Evidence"
+  ],
+  "private_network_session": "forbidden"
+}
