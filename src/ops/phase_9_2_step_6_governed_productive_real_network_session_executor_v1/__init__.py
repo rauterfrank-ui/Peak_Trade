@@ -1,0 +1,13 @@
+"""PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTOR_BINDING_V1."""
+
+from src.ops.phase_9_2_step_6_governed_productive_real_network_session_executor_v1.constants_v1 import (
+    CAPABILITY_ID,
+    PACKAGE_MARKER,
+    STEP6_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTOR_BOUND,
+)
+
+__all__ = [
+    "CAPABILITY_ID",
+    "PACKAGE_MARKER",
+    "STEP6_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTOR_BOUND",
+]
