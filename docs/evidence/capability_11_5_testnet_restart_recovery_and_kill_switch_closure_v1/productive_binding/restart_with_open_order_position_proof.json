@@ -1,0 +1,20 @@
+{
+  "OWNER": "ops.capability_11_5_testnet_restart_recovery_and_kill_switch_closure_v1",
+  "RESTART_WITH_OPEN_ORDER_POSITION_CONTRACT_ACTIVATED": false,
+  "RESTART_WITH_OPEN_ORDER_POSITION_CONTRACT_BOUND": true,
+  "TESTNET_ORDER_SUBMIT_PERFORMED_IN_CAPABILITY_11_5": false,
+  "TESTNET_RESTART_PROVEN": false,
+  "illegal_from_open_blocked": true,
+  "network_session_activation_blocked": true,
+  "ok": true,
+  "paths_closed": {
+    "restart_with_open_order": "EVIDENCED",
+    "restart_with_open_position": "EVIDENCED"
+  },
+  "pre_restart_states": {
+    "restart_with_open_order": "OPEN",
+    "restart_with_open_position": "OPEN"
+  },
+  "silent_reinitialization_blocked": true,
+  "unknown_path_blocked": true
+}

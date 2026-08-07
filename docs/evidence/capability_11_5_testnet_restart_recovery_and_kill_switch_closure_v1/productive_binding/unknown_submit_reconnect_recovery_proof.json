@@ -1,0 +1,47 @@
+{
+  "OWNER": "ops.capability_11_5_testnet_restart_recovery_and_kill_switch_closure_v1",
+  "TESTNET_ORDER_SUBMIT_PERFORMED_IN_CAPABILITY_11_5": false,
+  "TESTNET_UNKNOWN_SUBMIT_RECOVERY_PROVEN": false,
+  "UNKNOWN_SUBMIT_RECONNECT_RECOVERY_CONTRACT_ACTIVATED": false,
+  "UNKNOWN_SUBMIT_RECONNECT_RECOVERY_CONTRACT_BOUND": true,
+  "blind_retry_refuse_blocked": true,
+  "ok": true,
+  "path_histories": {
+    "reconnect_after_unknown_submit": [
+      "INTENT_CREATED",
+      "ORDER_PLAN_CREATED",
+      "RISK_RESERVED",
+      "PRE_SUBMIT_VALIDATED",
+      "SUBMIT_PENDING",
+      "SUBMIT_ATTEMPTED",
+      "UNKNOWN",
+      "ACKNOWLEDGED",
+      "OPEN",
+      "FILLED",
+      "ACCOUNTED",
+      "RECONCILED",
+      "EVIDENCED"
+    ],
+    "unknown_submit_query_before_retry": [
+      "INTENT_CREATED",
+      "ORDER_PLAN_CREATED",
+      "RISK_RESERVED",
+      "PRE_SUBMIT_VALIDATED",
+      "SUBMIT_PENDING",
+      "SUBMIT_ATTEMPTED",
+      "UNKNOWN",
+      "ACKNOWLEDGED",
+      "OPEN",
+      "FILLED",
+      "ACCOUNTED",
+      "RECONCILED",
+      "EVIDENCED"
+    ]
+  },
+  "paths_closed": {
+    "reconnect_after_unknown_submit": "EVIDENCED",
+    "unknown_submit_query_before_retry": "EVIDENCED"
+  },
+  "reconnect_activation_blocked": true,
+  "unknown_path_blocked": true
+}

@@ -1,0 +1,16 @@
+{
+  "autonomous_recovery_degradation": "absent_as_phase11_capability",
+  "kill_switch_and_emergency_control": "absent_as_phase11_capability",
+  "network_session": "forbidden",
+  "path": [
+    "Canonical Stateful Trading Core",
+    "Canonical Intent / Lifecycle Contracts (Cap 11.1)",
+    "Credential / Authorization / Account-Identity Boundary (Cap 11.2)",
+    "Private Read-Only Venue Integration Contracts (Cap 11.3)",
+    "Testnet Execution Adapter and Lifecycle Closure Contracts (Cap 11.4)",
+    "Mode-Specific Execution Boundary (Simulated sole reachable)",
+    "Accounting / Portfolio / Reconciliation / Evidence"
+  ],
+  "restart_with_open_order_position": "absent_as_phase11_capability",
+  "unknown_submit_reconnect_recovery": "absent_as_phase11_capability"
+}
