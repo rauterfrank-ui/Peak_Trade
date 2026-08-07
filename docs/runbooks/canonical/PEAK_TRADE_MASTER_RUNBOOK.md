@@ -2119,21 +2119,27 @@ using public market data and internal simulated execution only.
     `PHASE_9_2_STEP_6_ADVERSE_STALE_DATA_SESSION_CONTINUATION_V1`,
     execution-binding under
     `PHASE_9_2_STEP_6_GOVERNED_ADVERSE_STALE_DATA_SESSION_EXECUTION_BINDING_V1`,
-    and productive real-network session executor **binding** under
-    `PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTOR_BINDING_V1`
+    productive real-network session executor **binding** under
+    `PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTOR_BINDING_V1`,
+    and productive Real-Network **execution path** under
+    `PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_IMPLEMENTATION_V1`
     (`STEP6_BINDING_IMPLEMENTED=true`,
     `STEP6_EXECUTION_PACKAGE_BOUND=true`,
     `GOVERNED_STALE_CONTROL_PRODUCTIVELY_BOUND=true`,
     `STEP6_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTOR_BOUND=true`,
+    `STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_PRESENT=true`,
+    `STEP6_BINDING_ONLY_EXECUTOR_PRESERVED=true`,
     `READY_FOR_SEPARATE_GOVERNED_SESSION_EXECUTION=true`,
     `READY_FOR_SEPARATE_OWNER_GO_REAL_TTY_SESSION=true`,
     `NETWORK_SESSION_STARTED=false`,
-    `SESSION_EXECUTED=false`). Binding-PASS &#47; Preflight-PASS is
-    **not** ladder closeout. A separate Owner-GO real-local-TTY attempt on
+    `SESSION_EXECUTED=false`). Binding-PASS &#47; Preflight-PASS &#47;
+    Path-Implementation-PASS is **not** ladder closeout. A separate
+    Owner-GO real-local-TTY attempt on
     `main@642186ee6eb1741edaca926c40141e3ea67f0a4b` for
     `PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTION_V1`
     terminated `FAIL_CLOSED` &#47; `HARD_STOP_BINDING_FORBIDS_REAL_NETWORK_SESSION`
-    because the bound `execute-governed-session` path remains Binding-only
+    because the bound Binding-only `execute-governed-session` path remains
+    permanently fail-closed
     (`REAL_NETWORK_SESSION_FORBIDDEN_IN_THIS_BINDING_CAPABILITY`,
     `REAL_NETWORK_SIDE_EFFECTS_FORBIDDEN_IN_BINDING_CAPABILITY`,
     `PRODUCTIVE_NETWORK_SESSION_EXECUTION_AUTHORIZED=false`);
@@ -2141,8 +2147,10 @@ using public market data and internal simulated execution only.
     `NETWORK_SESSION_COUNT=0`, `VERIFIER_RESULT=NOT_RUN`,
     `EVIDENCE_SEALED=false`. Documented under
     `PHASE_9_2_STEP_6_FAIL_CLOSED_SESSION_DOCUMENTATION_AND_REPOSITORY_RUNBOOK_RECONCILIATION_V1`.
-    Remaining productive gap: a **separate** Owner-GO-capable productive
-    Real-Network execution path (Step-5 pattern), not ephemeral patches.
+    The Binding-only vs productive executor contrast is now explicit:
+    only `PRODUCTIVE_REAL_NETWORK_EXECUTOR` can authorize
+    `network_session_may_start` under ephemeral Owner-GO &#47;
+    `NETWORK_SESSION_GO` for a **later** separate Real-TTY session.
     Ladder step remains OPEN until a productive session verifier PASS;
 7.  repeated multi-session continuity campaign --- open.
 
@@ -2157,12 +2165,14 @@ STEP6_BINDING_IMPLEMENTED=true
 STEP6_EXECUTION_PACKAGE_BOUND=true
 GOVERNED_STALE_CONTROL_PRODUCTIVELY_BOUND=true
 STEP6_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTOR_BOUND=true
-STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_ABSENT=true
+STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_PRESENT=true
+STEP6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_ABSENT=false
+STEP6_BINDING_ONLY_EXECUTOR_PRESERVED=true
 STEP6_OWNER_GO_REAL_TTY_ATTEMPT_ON_642186EE=FAIL_CLOSED
 STEP6_GOVERNED_SESSION_CLOSED=false
 SESSION_EXECUTED=false
 NETWORK_SESSION_STARTED=false
-BINDING_OR_PREFLIGHT_PASS_IS_NOT_LADDER_CLOSEOUT=true
+BINDING_OR_PREFLIGHT_OR_PATH_PASS_IS_NOT_LADDER_CLOSEOUT=true
 ```
 
 Related proven predecessors that do not close this ladder:
@@ -2209,17 +2219,19 @@ PHASE_9_2_STEP_7_STATUS=OPEN
 STEP7_STARTED=false
 ```
 
-Interpretation:
+Interpretation (historical at `642186ee`; path later implemented):
 
 -   Binding package and Preflight-PASS remain historical truth for wiring.
 -   Binding-PASS is not productive session PASS and does not close Step 6.
 -   The Owner-GO real-TTY attempt correctly fail-closed on Binding-only
     constants; no network side effects, no confirm mint&#47;consume, no
     productive evidence seal.
--   Next productive work is a separate Step-5-pattern Real-Network
-    execution capability under a later Owner-GO — not a second attempt
-    against the Binding-only `execute-governed-session` path and not an
-    ephemeral monkeypatch.
+-   Productive Real-Network execution path was subsequently implemented
+    under
+    `PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_IMPLEMENTATION_V1`
+    without starting a network session and without weakening Binding-only
+    forbid constants. Path-PASS is still not ladder closeout; a later
+    separate Owner-GO Real-TTY session remains required.
 ## Operational requirements
 
 -   no zero-interval request bursts;
@@ -3661,12 +3673,15 @@ The next implementation step after this documentation truth
 reconciliation is:
 
 ``` text
-ACTUAL_NEXT_CAPABILITY=PHASE_9_2_LONG_RUNNING_STATEFUL_PUBLIC_MD_SIMULATION_EVIDENCE_CONTINUATION_V1
+ACTUAL_NEXT_CAPABILITY=PHASE_9_2_STEP_6_GOVERNED_PRODUCTIVE_REAL_NETWORK_SESSION_EXECUTION_V1
 PHASE_9_2_ONE_HOUR_GOVERNED_SESSION_PASS_ON_CURRENT_TRUTH_SHA=true
 PHASE_9_2_LADDER_NEXT_STEP=ADVERSE_STALE_DATA_SESSION
 PHASE_9_2_STEP_6_STATUS=OPEN
-PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_ABSENT=true
-STEP6_BINDING_OR_PREFLIGHT_PASS_IS_NOT_LADDER_CLOSEOUT=true
+PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_PRESENT=true
+PHASE_9_2_STEP_6_PRODUCTIVE_REAL_NETWORK_EXECUTION_PATH_ABSENT=false
+STEP6_BINDING_ONLY_EXECUTOR_PRESERVED=true
+STEP6_BINDING_OR_PREFLIGHT_OR_PATH_PASS_IS_NOT_LADDER_CLOSEOUT=true
+SEPARATE_OWNER_GO_REQUIRED_FOR_STEP6_REAL_TTY_SESSION=true
 ```
 
 Mandatory dependencies / freezes:
@@ -3681,6 +3696,7 @@ CORE_LOGIC_CHANGE_ALLOWED=false
 SEPARATE_OWNER_GO_REQUIRED_FOR_PUBLIC_MD_NETWORK_SESSION=true
 THIS_DOCUMENTATION_RECONCILIATION_DOES_NOT_AUTHORIZE_PHASE_9_2_NETWORK_SESSION=true
 DO_NOT_TREAT_STEP6_BINDING_EXECUTE_PATH_AS_PRODUCTIVE_SESSION=true
+DO_NOT_TREAT_STEP6_PATH_IMPLEMENTATION_PASS_AS_LADDER_CLOSEOUT=true
 DO_NOT_REOPEN_CAPABILITY_6_1=true
 DO_NOT_FORCE_ENTRY_OR_FILL=true
 LIVE_TESTNET_ORDER_CREDENTIAL_PATH=false
