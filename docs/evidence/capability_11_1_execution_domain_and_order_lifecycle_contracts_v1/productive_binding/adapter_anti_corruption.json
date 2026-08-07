@@ -1,0 +1,32 @@
+{
+  "CORE_LOGIC_CHANGE": false,
+  "NO_EXECUTION_ADAPTER_DECISION_AUTHORITY": true,
+  "allowed_responsibilities": [
+    "authentication_transport",
+    "venue_native_instrument_translation",
+    "request_signing",
+    "endpoint_and_rate_limit_handling",
+    "native_order_serialization",
+    "venue_event_normalization",
+    "exchange_clock_synchronization",
+    "idempotent_lookup_by_canonical_identifiers"
+  ],
+  "forbidden_authorities": {
+    "accounting": false,
+    "alpha": false,
+    "authorization": false,
+    "decision": false,
+    "double_play": false,
+    "master_v2": false,
+    "portfolio": false,
+    "reconciliation": false,
+    "risk": false,
+    "safety": false
+  },
+  "may_alter_desired_economic_exposure": false,
+  "may_alter_direction": false,
+  "may_alter_risk_result": false,
+  "may_alter_safety_result": false,
+  "may_alter_strategy_reason": false,
+  "ok": true
+}
