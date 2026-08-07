@@ -28,6 +28,7 @@ from src.ops.phase_9_2_step_5_productive_session_evidence_seal_and_productive_ve
     OFFLINE_VERIFIER_DOMAIN,
     OFFLINE_VERIFIER_EXPECTED_FALSE_FOR_PRODUCTIVE_SESSION,
     PHASE_9_2_STEP_3_STATUS,
+    PHASE_9_2_STEP_4_STATUS,
     PHASE_9_2_STEP_5_STATUS,
     PHASE_9_2_STEP_6_STATUS,
     PRODUCTIVE_SESSION_INVALIDATED_BY_OFFLINE_VERIFIER,
@@ -76,6 +77,7 @@ def test_domain_constants() -> None:
     assert PRODUCTIVE_SESSION_INVALIDATED_BY_OFFLINE_VERIFIER is False
     assert PHASE_9_2_STEP_5_STATUS == "CLOSED_PASS"
     assert PHASE_9_2_STEP_3_STATUS == "OPEN"
+    assert PHASE_9_2_STEP_4_STATUS == "CLOSED_PASS"
     assert PHASE_9_2_STEP_6_STATUS == "OPEN"
     assert NEXT_OPEN_PHASE_9_2_STEP == "3_RESTART_RECOVERY_PRODUCTIVE_REAL_NETWORK_SESSION"
     assert SESSION_CONTRACT_SECONDS_EXPECTED == 7200
@@ -142,6 +144,8 @@ def test_seal_idempotent_and_does_not_rewrite_raw(tmp_path: Path) -> None:
     assert seal1["claims"]["NEXT_OPEN_PHASE_9_2_STEP"] == (
         "3_RESTART_RECOVERY_PRODUCTIVE_REAL_NETWORK_SESSION"
     )
+    assert seal1["claims"]["PHASE_9_2_STEP_4_STATUS"] == "CLOSED_PASS"
+    assert seal1["claims"]["PHASE_9_2_STEP_3_STATUS"] == "OPEN"
 
 
 def test_negative_short_runtime(tmp_path: Path) -> None:

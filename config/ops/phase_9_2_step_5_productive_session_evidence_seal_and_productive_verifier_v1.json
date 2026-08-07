@@ -23,7 +23,7 @@
   "dashboard_authority_effect": "NONE",
   "dashboard_read_only_consumer": true,
   "phase_9_2_step_3_status": "OPEN",
-  "phase_9_2_step_4_status": "OPEN",
+  "phase_9_2_step_4_status": "CLOSED_PASS",
   "phase_9_2_step_5_status": "CLOSED_PASS",
   "phase_9_2_step_6_status": "OPEN",
   "phase_9_2_step_7_status": "OPEN",
