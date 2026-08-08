@@ -1,0 +1,13 @@
+{
+  "cap_11_5_adapter": "contracts_only_not_activated",
+  "network_submit": "forbidden",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_Section_11_12_4_EntryPartialFillCancelExitLifecycles",
+    "Cap11_5_UnknownSubmitReconnect_FixtureOnly",
+    "SimulatedExecutionPort"
+  ],
+  "section_11_12_5": "forbidden_until_section_11_12_4_closed",
+  "section_11_12_6": "not_started",
+  "unknown_submit_and_reconnect_recovery": "cap_11_5_fixture_contract_only"
+}
