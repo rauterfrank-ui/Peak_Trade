@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_CAPABILITY_11_SECTION_11_12_8_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_V1
-status: active
-scope: Phase 11 §11.12.8 productive Testnet campaign RUN — implementation only; no campaign start; no network/orders; no §11.13
+status: deprecated_non_extendable_wrapper_residual
+scope: Phase 11 §11.12.8 productive Testnet campaign RUN — historical wrapper residual; superseded by TERMINAL consumer; do not extend
 capability: CAPABILITY_11_SECTION_11_12_8_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-08-08
