@@ -1,0 +1,14 @@
+{
+  "cap_11_13": "not_started",
+  "kill_switch_contract": "bound_not_activated",
+  "long_running_campaign_evidence": "cap_11_6_fixture_contract_only",
+  "network_submit": "forbidden",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_Section_11_12_7_KillSwitchAndEmergencyControlProof",
+    "Cap11_6_LongRunningCampaignEvidence_FixtureOnly",
+    "SimulatedExecutionPort"
+  ],
+  "section_11_12_8": "forbidden_until_section_11_12_7_closed",
+  "testnet_campaign": "not_started"
+}

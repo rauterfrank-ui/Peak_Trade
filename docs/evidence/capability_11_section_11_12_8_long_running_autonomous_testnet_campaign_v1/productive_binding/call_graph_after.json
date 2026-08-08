@@ -1,0 +1,32 @@
+{
+  "activation": "not_activated",
+  "campaign_activated": false,
+  "cap_11_13": "not_started",
+  "cap_11_6_long_running_campaign_evidence_contract": "reused_fixture_only",
+  "kill_switch_binding_status": "BOUND",
+  "kill_switch_contract": "not_activated",
+  "network_effect": "NONE",
+  "network_writes": "unauthorized",
+  "next_consumer": "SEPARATE_OWNER_GO_REQUIRED_FOR_PRODUCTIVE_TESTNET_CAMPAIGN_OR_CAPABILITY_11_13",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_Section_11_12_7_KillSwitchAndEmergencyControlProof",
+    "Cap11_Section_11_12_8_LongRunningAutonomousTestnetCampaignEvidence",
+    "SimulatedExecutionPort"
+  ],
+  "order_effect": "NONE",
+  "order_send": "disabled",
+  "path_class": "LONG_RUNNING_AUTONOMOUS_TESTNET_CAMPAIGN_EVIDENCE",
+  "paths_bound": [
+    "long_running_autonomous_campaign_continuity",
+    "long_running_autonomous_campaign_degradation_evidence",
+    "long_running_autonomous_campaign_evidence_cursor"
+  ],
+  "runtime_clear": "forbidden",
+  "scope_escalation": "forbidden",
+  "section_11_12_8": "productive_long_running_campaign_evidence_bound",
+  "side_effect_bypass": "forbidden",
+  "testnet_campaign_completed": false,
+  "testnet_campaign_started": false,
+  "testnet_evidence_verified": false
+}
