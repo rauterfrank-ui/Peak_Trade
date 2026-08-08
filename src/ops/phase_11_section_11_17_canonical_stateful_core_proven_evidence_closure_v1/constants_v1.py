@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 CAPABILITY_ID = "PHASE_11_SECTION_11_17_CANONICAL_STATEFUL_CORE_PROVEN_EVIDENCE_CLOSURE_V1"
-PACKAGE_MARKER = (
-    "PHASE_11_SECTION_11_17_CANONICAL_STATEFUL_CORE_PROVEN_EVIDENCE_CLOSURE_V1=true"
-)
+PACKAGE_MARKER = "PHASE_11_SECTION_11_17_CANONICAL_STATEFUL_CORE_PROVEN_EVIDENCE_CLOSURE_V1=true"
 OWNER = "ops.phase_11_section_11_17_canonical_stateful_core_proven_evidence_closure_v1"
 AUTHORITY_OWNER = OWNER
 SCHEMA_VERSION = "phase_11_section_11_17_canonical_stateful_core_proven_evidence_closure.v1"
@@ -21,9 +19,7 @@ SOURCE_HISTORICAL_REPOSITORY_SHA = "1d447fcecc4886a690cd9e83da11c2c38995e43f"
 SOURCE_EVIDENCE_DIGEST = "b131c2958c70d587a9a893e21899c1ff8f1143603a6f154d324bdc70287812f7"
 SOURCE_CONFIG_DIGEST = "778d619cac4bf842da66c397cc0266a13a75ee1d93f7970ed9eda6fbaec6cb6b"
 
-EVIDENCE_DIRNAME = (
-    "phase_11_section_11_17_canonical_stateful_core_proven_evidence_closure_v1"
-)
+EVIDENCE_DIRNAME = "phase_11_section_11_17_canonical_stateful_core_proven_evidence_closure_v1"
 MANIFEST_FILENAME = "MANIFEST.sha256"
 SUMMARY_FILENAME = "SUMMARY.json"
 CLAIMS_FILENAME = "claims.json"

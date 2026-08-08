@@ -51,9 +51,7 @@ def main() -> int:
     productive.mkdir(parents=True, exist_ok=True)
 
     skip_pytest = os.environ.get("PEAK_TRADE_SKIP_PYTEST", "").strip() == "1"
-    test_node = (
-        "tests/ops/test_phase_11_section_11_17_canonical_stateful_core_proven_evidence_closure_v1.py"
-    )
+    test_node = "tests/ops/test_phase_11_section_11_17_canonical_stateful_core_proven_evidence_closure_v1.py"
     if skip_pytest:
         test_results = {
             "command": ["python", "-m", "pytest", "-q", test_node],

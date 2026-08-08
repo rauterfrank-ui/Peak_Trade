@@ -108,9 +108,7 @@ def build_autonomy_closure_standard_field_record_v1(
     if field_name not in AUTONOMY_CLOSURE_STANDARD_FIELDS:
         raise AutonomyClosureStandardFieldError(f"UNKNOWN_AUTONOMY_CLOSURE_FIELD:{field_name}")
     source = (
-        _CANONICAL_CORE_SOURCE
-        if field_name in _SECTION_11_17_BOUND_TRUE_FIELDS
-        else "FIXTURE_ONLY"
+        _CANONICAL_CORE_SOURCE if field_name in _SECTION_11_17_BOUND_TRUE_FIELDS else "FIXTURE_ONLY"
     )
     return AutonomyClosureStandardFieldRecordV1(
         field_name=field_name,
