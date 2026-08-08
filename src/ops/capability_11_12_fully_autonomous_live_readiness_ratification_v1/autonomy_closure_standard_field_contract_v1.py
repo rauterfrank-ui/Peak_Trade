@@ -36,9 +36,17 @@ from src.ops.capability_11_12_fully_autonomous_live_readiness_ratification_v1.co
 from src.ops.phase_11_section_11_17_canonical_stateful_core_proven_evidence_closure_v1.binding_v1 import (
     bind_canonical_stateful_core_proven_from_cap72_v1,
 )
+from src.ops.phase_11_section_11_17_simulated_lifecycle_proven_evidence_closure_v1.binding_v1 import (
+    bind_simulated_lifecycle_proven_from_cap71_v1,
+)
 
-# Bound from Cap 7.2 via §11.17 package; remaining evidence residuals stay unset.
-_SECTION_11_17_BOUND_TRUE_FIELDS: frozenset[str] = frozenset({"CANONICAL_STATEFUL_CORE_PROVEN"})
+# Bound from Cap 7.2 / Cap 7.1 via §11.17 packages; later evidence residuals stay unset.
+_SECTION_11_17_BOUND_TRUE_FIELDS: frozenset[str] = frozenset(
+    {
+        "CANONICAL_STATEFUL_CORE_PROVEN",
+        "SIMULATED_LIFECYCLE_PROVEN",
+    }
+)
 _SECTION_11_17_POLICY_TRUE_FIELDS: frozenset[str] = frozenset(
     {
         "OWNER_INTERVENTION_REQUIRED_FOR_SCOPE_OR_LIMIT_CHANGE",
@@ -46,6 +54,11 @@ _SECTION_11_17_POLICY_TRUE_FIELDS: frozenset[str] = frozenset(
     }
 )
 _CANONICAL_CORE_SOURCE = "EXISTING_EVIDENCE_BINDING_CAP72_SECTION_11_17"
+_SIMULATED_LIFECYCLE_SOURCE = "EXISTING_EVIDENCE_BINDING_CAP71_SECTION_11_17"
+_SECTION_11_17_FIELD_SOURCES: dict[str, str] = {
+    "CANONICAL_STATEFUL_CORE_PROVEN": _CANONICAL_CORE_SOURCE,
+    "SIMULATED_LIFECYCLE_PROVEN": _SIMULATED_LIFECYCLE_SOURCE,
+}
 
 
 class AutonomyClosureStandardFieldError(RuntimeError):
@@ -107,9 +120,7 @@ def build_autonomy_closure_standard_field_record_v1(
 ) -> AutonomyClosureStandardFieldRecordV1:
     if field_name not in AUTONOMY_CLOSURE_STANDARD_FIELDS:
         raise AutonomyClosureStandardFieldError(f"UNKNOWN_AUTONOMY_CLOSURE_FIELD:{field_name}")
-    source = (
-        _CANONICAL_CORE_SOURCE if field_name in _SECTION_11_17_BOUND_TRUE_FIELDS else "FIXTURE_ONLY"
-    )
+    source = _SECTION_11_17_FIELD_SOURCES.get(field_name, "FIXTURE_ONLY")
     return AutonomyClosureStandardFieldRecordV1(
         field_name=field_name,
         contract_bound=True,
@@ -162,8 +173,9 @@ def prove_autonomy_closure_standard_field_contract_v1() -> dict[str, Any]:
     all_unclaimed = all(
         r.contract_bound is True and r.proven_claimed is False for r in records.values()
     )
-    # Cap 11.12 consumes only CANONICAL_STATEFUL_CORE_PROVEN from §11.17/Cap-7.2 binding.
-    # Remaining evidence-proven residuals stay false; policy fields do not unlock READY.
+    # Cap 11.12 consumes CANONICAL_STATEFUL_CORE_PROVEN and SIMULATED_LIFECYCLE_PROVEN
+    # from §11.17 Cap-7.2 / Cap-7.1 bindings. Later evidence residuals stay false;
+    # policy fields do not unlock READY.
     evidence_residuals_unset = all(
         records[name].current_value is False
         for name in AUTONOMY_CLOSURE_REQUIRED_TRUE_FIELDS
@@ -174,6 +186,11 @@ def prove_autonomy_closure_standard_field_contract_v1() -> dict[str, Any]:
         and records["CANONICAL_STATEFUL_CORE_PROVEN"].source == _CANONICAL_CORE_SOURCE
         and CANONICAL_STATEFUL_CORE_PROVEN is True
     )
+    simulated_lifecycle_bound = (
+        records["SIMULATED_LIFECYCLE_PROVEN"].current_value is True
+        and records["SIMULATED_LIFECYCLE_PROVEN"].source == _SIMULATED_LIFECYCLE_SOURCE
+        and SIMULATED_LIFECYCLE_PROVEN is True
+    )
     core_binding = bind_canonical_stateful_core_proven_from_cap72_v1()
     core_binding_ok = (
         core_binding.get("ok") is True
@@ -183,11 +200,23 @@ def prove_autonomy_closure_standard_field_contract_v1() -> dict[str, Any]:
         and core_binding.get("SIMULATED_LIFECYCLE_PROVEN") is False
         and core_binding.get("FIXTURE_ONLY") is False
     )
+    simulated_binding = bind_simulated_lifecycle_proven_from_cap71_v1()
+    simulated_binding_ok = (
+        simulated_binding.get("ok") is True
+        and simulated_binding.get("SIMULATED_LIFECYCLE_PROVEN") is True
+        and simulated_binding.get("CANONICAL_STATEFUL_CORE_PROVEN") is True
+        and simulated_binding.get("TESTNET_LIFECYCLE_PROVEN") is False
+        and simulated_binding.get("FULLY_AUTONOMOUS_LIVE_TRADING_READY") is False
+        and simulated_binding.get("FULLY_AUTONOMOUS_LIVE_TRADING_ACTIVE") is False
+        and simulated_binding.get("FIXTURE_ONLY") is False
+    )
     prerequisite_not_met = all(
         [
             evidence_residuals_unset,
             canonical_core_bound,
+            simulated_lifecycle_bound,
             core_binding_ok,
+            simulated_binding_ok,
             records["OWNER_INTERVENTION_REQUIRED_FOR_ROUTINE_OPERATION"].current_value is True,
             records["OWNER_INTERVENTION_REQUIRED_FOR_SCOPE_OR_LIMIT_CHANGE"].current_value is True,
             records["CORE_LOGIC_PARITY_ACROSS_MODES"].current_value is True,
@@ -205,7 +234,7 @@ def prove_autonomy_closure_standard_field_contract_v1() -> dict[str, Any]:
             AUTONOMY_CLOSURE_STANDARD_FIELD_CONTRACT_BOUND is True,
             AUTONOMY_CLOSURE_STANDARD_FIELD_CONTRACT_ACTIVATED is False,
             CANONICAL_STATEFUL_CORE_PROVEN is True,
-            SIMULATED_LIFECYCLE_PROVEN is False,
+            SIMULATED_LIFECYCLE_PROVEN is True,
             TESTNET_LIFECYCLE_PROVEN is False,
             LIVE_PRIVATE_READ_ONLY_PROVEN is False,
             LIVE_ORDER_LIFECYCLE_PROVEN is False,
@@ -230,7 +259,7 @@ def prove_autonomy_closure_standard_field_contract_v1() -> dict[str, Any]:
         "AUTONOMY_CLOSURE_STANDARD_FIELD_CONTRACT_BOUND": True,
         "AUTONOMY_CLOSURE_STANDARD_FIELD_CONTRACT_ACTIVATED": False,
         "CANONICAL_STATEFUL_CORE_PROVEN": True,
-        "SIMULATED_LIFECYCLE_PROVEN": False,
+        "SIMULATED_LIFECYCLE_PROVEN": True,
         "TESTNET_LIFECYCLE_PROVEN": False,
         "LIVE_PRIVATE_READ_ONLY_PROVEN": False,
         "LIVE_ORDER_LIFECYCLE_PROVEN": False,
@@ -256,5 +285,6 @@ def prove_autonomy_closure_standard_field_contract_v1() -> dict[str, Any]:
         "activation_blocked": activation_blocked,
         "prerequisites_not_met_for_ready": prerequisite_not_met,
         "SECTION_11_17_CANONICAL_STATEFUL_CORE_CONSUMED": True,
+        "SECTION_11_17_SIMULATED_LIFECYCLE_CONSUMED": True,
         "OWNER": OWNER,
     }

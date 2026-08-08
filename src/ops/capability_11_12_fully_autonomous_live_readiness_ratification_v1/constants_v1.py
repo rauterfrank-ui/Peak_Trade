@@ -5,6 +5,9 @@ from __future__ import annotations
 from src.ops.phase_11_section_11_17_canonical_stateful_core_proven_evidence_closure_v1.constants_v1 import (
     CANONICAL_STATEFUL_CORE_PROVEN as CANONICAL_STATEFUL_CORE_PROVEN,
 )
+from src.ops.phase_11_section_11_17_simulated_lifecycle_proven_evidence_closure_v1.constants_v1 import (
+    SIMULATED_LIFECYCLE_PROVEN as SIMULATED_LIFECYCLE_PROVEN,
+)
 
 CAPABILITY_ID = "CAPABILITY_11_12_FULLY_AUTONOMOUS_LIVE_READINESS_RATIFICATION_V1"
 PACKAGE_MARKER = "CAPABILITY_11_12_FULLY_AUTONOMOUS_LIVE_READINESS_RATIFICATION_V1=true"
@@ -197,10 +200,10 @@ LIVE_ACTIVATION_CAPABILITY_PASS = False
 CAPABILITY_11_13_STARTED = False
 CAPABILITY_11_13_SEPARATE_OWNER_AUTHORIZED_LIVE_ACTIVATION_STARTED = False
 
-# §11.17 Autonomy closure standard fields — Cap 11.12 consumes ONLY
-# CANONICAL_STATEFUL_CORE_PROVEN (imported above from Cap-7.2 static binding).
-# All other §11.17 evidence-proven fields remain false; READY/ACTIVE remain false.
-SIMULATED_LIFECYCLE_PROVEN = False
+# §11.17 Autonomy closure standard fields — Cap 11.12 consumes
+# CANONICAL_STATEFUL_CORE_PROVEN (Cap-7.2) and SIMULATED_LIFECYCLE_PROVEN (Cap-7.1)
+# via §11.17 static evidence bindings. Later §11.17 evidence-proven fields remain
+# false; READY/ACTIVE remain false.
 TESTNET_LIFECYCLE_PROVEN = False
 LIVE_PRIVATE_READ_ONLY_PROVEN = False
 LIVE_ORDER_LIFECYCLE_PROVEN = False

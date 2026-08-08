@@ -71,15 +71,22 @@ def test_autonomy_closure_standard_field_contract_fail_closed() -> None:
     assert proof["ok"] is True
     assert proof["CANONICAL_STATEFUL_CORE_PROVEN"] is True
     assert proof["SECTION_11_17_CANONICAL_STATEFUL_CORE_CONSUMED"] is True
+    assert proof["SECTION_11_17_SIMULATED_LIFECYCLE_CONSUMED"] is True
     assert proof["FULLY_AUTONOMOUS_LIVE_TRADING_READY"] is False
     assert proof["LIVE_ORDER_LIFECYCLE_PROVEN"] is False
-    assert proof["SIMULATED_LIFECYCLE_PROVEN"] is False
+    assert proof["SIMULATED_LIFECYCLE_PROVEN"] is True
+    assert proof["TESTNET_LIFECYCLE_PROVEN"] is False
     assert proof["OWNER_INTERVENTION_REQUIRED_FOR_ROUTINE_OPERATION"] is True
     core_record = build_autonomy_closure_standard_field_record_v1(
         field_name="CANONICAL_STATEFUL_CORE_PROVEN"
     )
     assert core_record.current_value is True
     assert core_record.source == "EXISTING_EVIDENCE_BINDING_CAP72_SECTION_11_17"
+    simulated_record = build_autonomy_closure_standard_field_record_v1(
+        field_name="SIMULATED_LIFECYCLE_PROVEN"
+    )
+    assert simulated_record.current_value is True
+    assert simulated_record.source == "EXISTING_EVIDENCE_BINDING_CAP71_SECTION_11_17"
 
 
 def test_fully_autonomous_live_readiness_ratification_fail_closed() -> None:
@@ -225,7 +232,8 @@ def test_capability_verifier_pass() -> None:
     assert claims["FULLY_AUTONOMOUS_LIVE_TRADING_READY"] is False
     assert claims["FULLY_AUTONOMOUS_LIVE_TRADING_ACTIVE"] is False
     assert claims["CANONICAL_STATEFUL_CORE_PROVEN"] is True
-    assert claims["SIMULATED_LIFECYCLE_PROVEN"] is False
+    assert claims["SIMULATED_LIFECYCLE_PROVEN"] is True
+    assert claims["TESTNET_LIFECYCLE_PROVEN"] is False
     assert claims["CAPABILITY_11_12_STARTED"] is True
     assert claims["CAPABILITY_11_12_FULLY_AUTONOMOUS_LIVE_READINESS_STARTED"] is True
     assert claims["CAPABILITY_11_13_STARTED"] is False
