@@ -1,0 +1,13 @@
+{
+  "cap_11_4_adapter": "contracts_only_not_activated",
+  "entry_partial_fill_cancel_exit_lifecycles": "cap_11_4_fixture_contract_only",
+  "network_submit": "forbidden",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_Section_11_12_3_SingleControlledOrderLifecycle",
+    "Cap11_4_EntryPartialFillCancelExit_FixtureOnly",
+    "SimulatedExecutionPort"
+  ],
+  "section_11_12_4": "forbidden_until_section_11_12_3_closed",
+  "section_11_12_5": "not_started"
+}
