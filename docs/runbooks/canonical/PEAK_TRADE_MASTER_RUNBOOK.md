@@ -1368,6 +1368,146 @@ LIVE_TESTNET_ORDER_BOUNDARY_PRESERVED
 
 Fields may be `N&#47;A` only with an explicit reason.
 
+## 11.1 End-to-End Executability Gate for productive execution capabilities
+(Binding)
+
+``` text
+END_TO_END_EXECUTABILITY_GATE=true
+COMPLETE_BLOCKER_DISCOVERY_REQUIRED=true
+BLOCKER_BY_BLOCKER_PR_PATTERN_FORBIDDEN=true
+MERGE_REQUIRES_END_TO_END_DRY_ACTIVATION_PROOF=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+This gate is mandatory for every capability whose intended terminal outcome
+includes productive Shadow, Testnet or Live execution. It does not itself
+authorize Shadow, Testnet, Live, credentials, network sessions, orders or
+capital movement.
+
+### 11.1.1 Pre-implementation static audit (mandatory)
+
+Before any implementation PR is created for such a capability, Cursor must
+perform a complete static end-to-end reachability&#47;executability audit of
+the intended path:
+
+``` text
+OWNER_GO
+→ authorization consumer
+→ activation capability
+→ authorization state transition
+→ durable enabled&#47;armed state
+→ hidden confirmation channel
+→ confirm-token digest binding
+→ SecretRef credential binding
+→ config&#47;account&#47;venue&#47;instrument binding
+→ risk gate
+→ KillSwitch
+→ emergency control
+→ execution consumer
+→ network&#47;session boundary
+→ terminal intended execution effect
+→ evidence generation
+→ evidence seal
+→ closeout
+```
+
+For every required component classify status as exactly one of:
+
+``` text
+PRESENT_AND_EXECUTABLE
+PRESENT_BUT_NON_EXECUTABLE
+DEPRECATED_NON_EXTENDABLE
+MISSING
+```
+
+### 11.1.2 Complete-blocker discovery rule
+
+The audit must identify the **complete** statically discoverable blocker
+set required to reach the requested terminal outcome.
+
+Forbidden:
+
+``` text
+STOP_AFTER_EARLIEST_UNRESOLVED_DEPENDENCY_ONLY=true
+RECOMMEND_ONE_KNOWN_BLOCKER_PR_SEQUENCE_WHEN_ADDITIONAL_BLOCKERS_ALREADY_DISCOVERABLE=true
+TREAT_INTERMEDIATE_SURFACE_AS_EXECUTABLE_TERMINAL_OUTCOME=true
+```
+
+Required:
+
+``` text
+COMPLETE_BLOCKER_SET_REPORTED=true
+COHERENT_PATH_PACKAGED_TOGETHER=true_unless_SEPARATION_REASON_DOCUMENTED
+```
+
+If multiple missing or non-executable components belong to one coherent
+authorization&#47;execution path, they MUST be planned as **one** bounded
+capability package unless a specific safety, privilege-separation or
+architectural reason requires separation.
+
+Any required separation must explicitly document:
+
+``` text
+SEPARATION_REASON
+DEPENDENCY_GRAPH
+TERMINAL_OUTCOME_AFTER_EACH_PACKAGE
+WHY_THE_INTERMEDIATE_PACKAGE_IS_NOT_MISTAKEN_FOR_EXECUTABILITY
+```
+
+### 11.1.3 Implementation merge gate (productive execution)
+
+A productive-execution implementation PR MUST NOT be recommended for
+`OWNER_MERGE_GO` unless a no-side-effect
+`END_TO_END_DRY_ACTIVATION_PROOF` demonstrates that the complete intended
+authorization path is reachable through the final execution boundary.
+
+The dry proof must demonstrate with synthetic&#47;non-secret&#47;test fixtures
+where appropriate that:
+
+``` text
+scoped OWNER_GO can be accepted&#47;consumed
+authorization can transition from false to authorized
+enabled=true can be reached
+armed=true can be reached
+hidden-confirm contract is reachable
+confirm-token digest binding is reachable
+SecretRef credential contract is reachable
+config&#47;account&#47;venue&#47;instrument bindings are reachable
+risk gate is productively callable&#47;reachable
+KillSwitch is productively callable&#47;reachable
+emergency control is productively callable&#47;reachable
+execution consumer can become authorized
+final campaign-run&#47;execution boundary is reachable
+required evidence&#47;seal path is reachable
+```
+
+The dry proof MUST NOT:
+
+``` text
+load real credentials
+expose credential plaintext
+expose confirm-token plaintext
+start a real network session
+create exchange orders
+move real capital
+start the productive campaign
+start Cap 11.13 &#47; §11.13
+```
+
+### 11.1.4 Fail-closed reporting
+
+If the complete intended execution path cannot be proven reachable,
+Cursor must return the full blocker set and the required architecture
+package **before** recommending implementation or merge.
+
+``` text
+IF END_TO_END_PATH_REACHABLE=false:
+  RECOMMEND_IMPLEMENTATION=false
+  RECOMMEND_OWNER_MERGE_GO=false
+  RETURN_COMPLETE_BLOCKER_SET=true
+  RETURN_REQUIRED_PACKAGE_PLAN=true
+```
+
 ------------------------------------------------------------------------
 
 # 12. Canonical Finish Sequence
@@ -3004,6 +3144,12 @@ ERROR_TAXONOMY_EXPLICIT=true
 Testnet is a mandatory execution-side-effect proving ground, but it must
 not be treated as proof of Live economics or operational equivalence.
 
+Any productive Testnet campaign-run activation&#47;start path is subject to
+section 11.1 `END_TO_END_EXECUTABILITY_GATE` before implementation PRs and
+before `OWNER_MERGE_GO` recommendation. Intermediate surfaces
+(implementation-only consumers, structural may_arm, deprecated wrappers)
+must not be mistaken for `ACTUAL_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_START`.
+
 Mandatory Testnet sequence:
 
 ``` text
@@ -3656,6 +3802,13 @@ closure step.
 
 No cosmetic micro-slices without runtime-closure value.
 
+For productive Shadow&#47;Testnet&#47;Live execution capabilities, section 11.1
+`END_TO_END_EXECUTABILITY_GATE` is mandatory before implementation PR
+creation. Blocker-by-blocker PR sequences are forbidden when additional
+blockers on the same coherent path are already statically discoverable.
+An implementation PR that leaves the intended terminal execution boundary
+unreachable must not be described as executable closeout.
+
 ## 17.2 PR description
 
 Mandatory sections:
@@ -3682,6 +3835,13 @@ Mandatory sections:
 ## 17.3 Merge
 
 Ruleset mutation requires separate explicit Owner-Merge-GO.
+
+For productive-execution implementation PRs, `OWNER_MERGE_GO` must not be
+recommended unless section 11.1
+`END_TO_END_DRY_ACTIVATION_PROOF` is present and PASS for the exact PR
+head, with no real credential load, confirm-token plaintext exposure,
+network session, exchange order, capital movement, productive campaign
+start or Cap 11.13 &#47; §11.13 start.
 
 Canonical merge transaction:
 
