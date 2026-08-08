@@ -3169,22 +3169,26 @@ network&#47;order effects).
 ### 11.12.8 Post-unlock Owner-EXECUTE authority (binding)
 
 After
-`CAPABILITY_11_SECTION_11_12_8_REAL_PRODUCTIVE_TESTNET_EXECUTE_PATH_UNLOCK_V1`
+`CAPABILITY_11_SECTION_11_12_8_BOUNDED_LONG_RUNNING_AUTONOMOUS_PRODUCTIVE_TESTNET_CAMPAIGN_V1`
 is merged to `origin/main`, the following is the canonical next step:
 
 ``` text
-CANONICAL_NEXT_STEP_AFTER_UNLOCK_MERGE=SEPARATE_OWNER_GO_EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
-REQUEST_MATCHES_CANONICAL_NEXT_STEP=true_for_EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
+CANONICAL_NEXT_STEP_AFTER_BOUNDED_LONG_RUNNING_PATH_MERGE=SEPARATE_OWNER_GO_EXECUTE_BOUNDED_LONG_RUNNING_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
+REQUEST_MATCHES_CANONICAL_NEXT_STEP=true_for_EXECUTE_BOUNDED_LONG_RUNNING_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
 AUTHORIZATION_REQUIRED=PRESENT_OWNER_GO_EXECUTE
 NO_ADDITIONAL_IMPLEMENTATION_GO_REQUIRED_BEFORE_EXECUTE=true
 NO_ADDITIONAL_GOVERNANCE_UNLOCK_PR_REQUIRED_BEFORE_EXECUTE=true
 NO_ADDITIONAL_CAPABILITY_PR_REQUIRED_BEFORE_EXECUTE=true
+LONG_RUNNING_CAMPAIGN_PATH_PRESENT=true
+ONE_SHOT_PRODUCTIVE_SUBMIT_IS_NOT_SECTION_11_12_8_CAMPAIGN_COMPLETION=true
 ```
 
-`EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW` is an explicitly permitted
-Owner-authorized Testnet **runtime** action on the unlocked path. It is
-not an implementation GO and must not be refused as
-`IMPLEMENTATION_ONLY`.
+`EXECUTE_BOUNDED_LONG_RUNNING_PRODUCTIVE_TESTNET_CAMPAIGN_NOW` is an
+explicitly permitted Owner-authorized Testnet **runtime** action on the
+unlocked bounded long-running productive path. It is not an implementation
+GO and must not be refused as `IMPLEMENTATION_ONLY`. Legacy token
+`EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW` remains an accepted alias for the
+same bounded long-running execute authority.
 
 ``` text
 MODE_PRODUCTIVE_REAL_PERMITTED_FOR_TESTNET_ONLY=true
@@ -3215,14 +3219,36 @@ BOUND_REAL_TESTNET_HTTP_CLIENT
 LIVE_PATH_HARD_BLOCK
 ```
 
+#### 11.12.8.1 Bounded long-running campaign contract (binding)
+
+Owner-ratified numeric bounds for the productive long-running Testnet
+campaign (monotonic wall-clock; first bound reached wins):
+
+``` text
+SECTION_11_12_8_CAMPAIGN_DURATION_BOUND_SECONDS=3600
+SECTION_11_12_8_CAMPAIGN_MAX_CYCLES=120
+SECTION_11_12_8_CYCLE_CADENCE_SECONDS=60
+SECTION_11_12_8_BOUND_PRIORITY=FIRST_REACHED_WINS
+SECTION_11_12_8_DURATION_MEASUREMENT=MONOTONIC_ELAPSED_SINCE_RUNNING
+CYCLE_COMPLETE_IS_NOT_CAMPAIGN_COMPLETED=true
+FIRST_SIDE_EFFECT_IS_NOT_CAMPAIGN_COMPLETED=true
+WIRE_SENT_IS_NOT_EXCHANGE_ACK=true
+CAMPAIGN_BOUNDED_COMPLETION_IS_NOT_SECTION_11_12_8_CLOSED=true
+```
+
+Graceful completion requires reaching the duration bound and&#47;or the cycle
+bound under `FIRST_REACHED_WINS`, then evidence seal. Abort remains
+fail-closed and does not close §11.12.8. Live remains hard-blocked. Cap &#47;
+§11.13 remains unstarted.
+
 Section 2.1 `NO_TESTNET_ORDERS` describes the **no-order program** finish
 boundary. It does not forbid a separately Owner-authorized §11.12 Testnet
-progression once the unlock package is merged and
-`EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW` is presented. Persisted defaults
-remain fail-closed (`TESTNET_AUTHORIZED` persisted default false);
-ephemeral runtime authorization may become true only under that scoped
-Owner-GO. Live remains structurally hard-blocked. Cap &#47; §11.13 remains
-unstarted and unauthorized by this section.
+progression once the bounded long-running package is merged and
+`EXECUTE_BOUNDED_LONG_RUNNING_PRODUCTIVE_TESTNET_CAMPAIGN_NOW` is presented.
+Persisted defaults remain fail-closed (`TESTNET_AUTHORIZED` persisted
+default false); ephemeral runtime authorization may become true only under
+that scoped Owner-GO. Live remains structurally hard-blocked. Cap &#47; §11.13
+remains unstarted and unauthorized by this section.
 
 Mandatory Testnet sequence:
 

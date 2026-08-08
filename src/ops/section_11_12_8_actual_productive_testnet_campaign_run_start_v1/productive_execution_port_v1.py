@@ -13,6 +13,10 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     CONTRACT_VERSION,
     OWNER,
 )
+from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.okx_response_mapper_v1 import (
+    build_venue_native_order_body_v1,
+    parse_okx_order_response_v1,
+)
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.testnet_transport_v1 import (
     StubbedTestnetTransportV1,
     TestnetTransportPortV1,
@@ -60,30 +64,69 @@ class ProductiveTestnetExecutionPortV1:
             raise ActualStartPortError(f"ORDER_TYPE_FORBIDDEN:{order_type}")
         if self.transport is None:
             raise ActualStartPortError("TRANSPORT_NOT_BOUND")
+
+        venue_body = build_venue_native_order_body_v1(
+            client_order_id=client_order_id,
+            instrument=instrument,
+            order_type=order_type,
+            side=side,
+            quantity=quantity,
+        )
         result = self.transport.request(
             method="POST",
             endpoint="/api/v5/trade/order",
-            body={
-                "client_order_id": client_order_id,
-                "instrument": instrument,
-                "order_type": order_type,
-                "side": side,
-                "quantity": quantity,
-            },
+            body=venue_body,
         )
         stubbed_result = bool(result.get("stubbed"))
         wire_sent = bool(result.get("wire_sent"))
         boundary_reached = bool(result.get("network_send_boundary_reached"))
+
+        if stubbed_result:
+            parsed = {
+                "transport_ok": True,
+                "http_status": 200,
+                "wire_sent": False,
+                "body_parsed": True,
+                "exchange_code": "0",
+                "s_code": "0",
+                "s_msg": "stubbed",
+                "client_order_id": client_order_id,
+                "exchange_order_id": None,
+                "exchange_accepted": False,
+                "exchange_rejected": False,
+                "order_acknowledged": False,
+                "fill_observed": False,
+                "partial_fill_observed": False,
+                "classification": "STUBBED_NO_ACK",
+            }
+        else:
+            mapped = parse_okx_order_response_v1(transport_result=result, wire_sent=wire_sent)
+            parsed = mapped.to_dict()
+
         attempt = {
             "client_order_id": client_order_id,
             "instrument": instrument,
             "order_type": order_type,
             "side": side,
             "quantity": quantity,
+            "venue_native_body": venue_body,
             "stubbed": stubbed_result,
-            "submitted": wire_sent and not stubbed_result,
+            # submitted means order attempt reached transport; NOT exchange ACK
+            "submitted": (wire_sent or stubbed_result) and not stubbed_result,
+            "order_attempt": True,
             "wire_sent": wire_sent,
             "network_send_boundary_reached": boundary_reached or stubbed_result or wire_sent,
+            "transport_response": bool(
+                result.get("http_status") is not None or stubbed_result or wire_sent
+            ),
+            "order_acknowledged": bool(parsed.get("order_acknowledged")),
+            "exchange_accepted": bool(parsed.get("exchange_accepted")),
+            "exchange_rejected": bool(parsed.get("exchange_rejected")),
+            "exchange_order_id": parsed.get("exchange_order_id"),
+            "fill_observed": bool(parsed.get("fill_observed")),
+            "partial_fill_observed": bool(parsed.get("partial_fill_observed")),
+            "response_classification": parsed.get("classification"),
+            "parsed_response": parsed,
             "network_effect": (
                 "STUBBED"
                 if stubbed_result

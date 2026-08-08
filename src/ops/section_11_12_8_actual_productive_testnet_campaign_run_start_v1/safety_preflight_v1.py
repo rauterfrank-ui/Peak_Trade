@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import time
 from dataclasses import dataclass
 from typing import Any
 
@@ -40,6 +41,12 @@ def evaluate_safety_preflight_v1(
     kill_switch: KillSwitch | None = None,
     force_killed: bool = False,
     max_position: float = float(CANONICAL_POSITION_COUNT_LIMIT),
+    market_data_age_seconds: float = 1.0,
+    current_position: float = 0.0,
+    order_size: float = 1.0,
+    order_notional_usd: float = 10.0,
+    session_pnl_usd: float = 0.0,
+    now_epoch: float | None = None,
 ) -> SafetyPreflightV1:
     if kill_switch is None:
         quiet = logging.getLogger("actual_start.kill_switch.fixture")
@@ -76,12 +83,12 @@ def evaluate_safety_preflight_v1(
         max_data_age_seconds=30,
     )
     ctx = RiskContext(
-        now_epoch=1,
-        market_data_age_seconds=1,
-        session_pnl_usd=0.0,
-        current_position=0.0,
-        order_size=1.0,
-        order_notional_usd=10.0,
+        now_epoch=float(now_epoch if now_epoch is not None else 1),
+        market_data_age_seconds=float(market_data_age_seconds),
+        session_pnl_usd=float(session_pnl_usd),
+        current_position=float(current_position),
+        order_size=float(order_size),
+        order_notional_usd=float(order_notional_usd),
     )
     decision = evaluate_risk(limits, ctx)
     if not decision.allow:
@@ -91,4 +98,27 @@ def evaluate_safety_preflight_v1(
         kill_switch_operational=True,
         emergency_control_operational=True,
         kill_switch_state=ks.state.name,
+    )
+
+
+def evaluate_cycle_safety_v1(
+    *,
+    kill_switch: KillSwitch | None = None,
+    force_killed: bool = False,
+    market_data_age_seconds: float = 1.0,
+    current_position: float = 0.0,
+    order_size: float = 1.0,
+    order_notional_usd: float = 10.0,
+    session_pnl_usd: float = 0.0,
+) -> SafetyPreflightV1:
+    """Per-cycle risk / kill-switch / emergency re-evaluation before side effects."""
+    return evaluate_safety_preflight_v1(
+        kill_switch=kill_switch,
+        force_killed=force_killed,
+        market_data_age_seconds=market_data_age_seconds,
+        current_position=current_position,
+        order_size=order_size,
+        order_notional_usd=order_notional_usd,
+        session_pnl_usd=session_pnl_usd,
+        now_epoch=time.time(),
     )

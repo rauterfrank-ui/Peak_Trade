@@ -65,8 +65,14 @@ class StubbedTestnetTransportV1:
             "ok": True,
             "http_status": 200,
             "stubbed": True,
+            "wire_sent": False,
+            "network_send_boundary_reached": True,
             "account_identity": "acct-uid-testnet-demo",
             "next_effect": self.next_effect_pending,
+            "response_body": {
+                "code": "0",
+                "data": [{"sCode": "0", "sMsg": "stubbed", "clOrdId": (body or {}).get("clOrdId")}],
+            },
         }
 
 

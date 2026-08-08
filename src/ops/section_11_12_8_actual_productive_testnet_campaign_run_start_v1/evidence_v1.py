@@ -49,20 +49,75 @@ def write_productive_execution_evidence_v1(
     *,
     payload: Mapping[str, Any],
     filename: str = "productive_execution_evidence_v1.json",
+    stubbed_acceptance: bool | None = None,
+    network_effect: str | None = None,
+    order_effect: str | None = None,
+    live_order_effect: str = "NONE",
+    productive_testnet_campaign_started: bool | None = None,
 ) -> Path:
     assert_no_plaintext_in_payload_v1(payload)
     evidence_dir.mkdir(parents=True, exist_ok=True)
     path = evidence_dir / filename
+
+    mode = str(payload.get("mode") or "")
+    lifecycle = payload.get("lifecycle") if isinstance(payload.get("lifecycle"), dict) else {}
+    inferred_stubbed = stubbed_acceptance
+    if inferred_stubbed is None:
+        inferred_stubbed = mode != "PRODUCTIVE_REAL_NETWORK"
+    inferred_network = network_effect
+    if inferred_network is None:
+        inferred_network = str(
+            payload.get("NETWORK_EFFECT")
+            or ("TESTNET" if payload.get("allow_wire_send") else "NONE")
+        )
+    inferred_order = order_effect
+    if inferred_order is None:
+        inferred_order = str(
+            payload.get("ORDER_EFFECT") or ("TESTNET" if payload.get("allow_wire_send") else "NONE")
+        )
+    inferred_started = productive_testnet_campaign_started
+    if inferred_started is None:
+        inferred_started = bool(lifecycle.get("started")) and not inferred_stubbed
+
     body = {
         "CAPABILITY_ID": CAPABILITY_ID,
         "OWNER": OWNER,
-        # Package-era claim: no REAL productive campaign started in this GO.
-        "PRODUCTIVE_TESTNET_CAMPAIGN_STARTED": False,
-        "NETWORK_EFFECT": "NONE",
-        "ORDER_EFFECT": "NONE",
-        "LIVE_ORDER_EFFECT": "NONE",
+        "PRODUCTIVE_TESTNET_CAMPAIGN_STARTED": bool(inferred_started),
+        "NETWORK_EFFECT": inferred_network,
+        "ORDER_EFFECT": inferred_order,
+        "LIVE_ORDER_EFFECT": live_order_effect,
         "SECTION_11_13_STARTED": False,
-        "STUBBED_ACCEPTANCE": True,
+        "STUBBED_ACCEPTANCE": bool(inferred_stubbed),
+        "LONG_RUNNING_CAMPAIGN": True,
+        "execution_class": (
+            "PRODUCTIVE_REAL_TESTNET_CAMPAIGN"
+            if not inferred_stubbed
+            else "STUBBED_ACCEPTANCE_CAMPAIGN"
+        ),
+        "campaign_id": lifecycle.get("campaign_id"),
+        "execution_start_utc": lifecycle.get("execution_start_utc"),
+        "execution_end_utc": lifecycle.get("execution_end_utc"),
+        "execution_duration_seconds": lifecycle.get("execution_duration_seconds"),
+        "duration_bound_seconds": lifecycle.get("duration_bound_seconds"),
+        "cycle_bound": lifecycle.get("cycle_bound"),
+        "cycles_started": lifecycle.get("cycles_started"),
+        "cycles_completed": lifecycle.get("cycles_completed"),
+        "network_request_count": lifecycle.get("network_request_count"),
+        "order_attempt_count": lifecycle.get("order_attempt_count"),
+        "testnet_order_sent_count": lifecycle.get("testnet_order_sent_count"),
+        "transport_response_count": lifecycle.get("transport_response_count"),
+        "exchange_ack_count": lifecycle.get("exchange_ack_count"),
+        "exchange_reject_count": lifecycle.get("exchange_reject_count"),
+        "fill_count": lifecycle.get("fill_count"),
+        "partial_fill_count": lifecycle.get("partial_fill_count"),
+        "client_order_ids": lifecycle.get("client_order_ids"),
+        "exchange_order_ids": lifecycle.get("exchange_order_ids"),
+        "bound_reached_reason": lifecycle.get("bound_reached_reason"),
+        "campaign_terminal_status": (
+            "ABORTED"
+            if lifecycle.get("aborted")
+            else ("COMPLETED" if lifecycle.get("completed") else "UNKNOWN")
+        ),
         "payload": dict(payload),
     }
     assert_no_plaintext_in_payload_v1(body)

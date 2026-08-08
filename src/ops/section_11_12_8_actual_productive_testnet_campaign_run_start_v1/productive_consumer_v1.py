@@ -30,10 +30,13 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     SCOPED_OWNER_GO_TOKEN,
     SECTION_11_13_STARTED,
     STATE_ABORTED,
+    STATE_ABORTING,
     STATE_ARMED,
     STATE_AUTHORIZED,
+    STATE_BOUND_REACHED,
     STATE_CAMPAIGN_RUNNING,
     STATE_COMPLETED,
+    STATE_COMPLETING,
     STATE_CONFIRM_LATCHED,
     STATE_CREDENTIAL_BOUND,
     STATE_ENABLED,
@@ -311,20 +314,53 @@ def execute_productive_section_11_12_8_campaign_run_v1(
         network_session_started=True,
         stubbed=True,
         abort=abort,
+        inject_kill_switch=force_kill_switch,
+        offline_proof_bounds=True,
     )
     state = transition_actual_start_state_v1(
         state_dir=state_dir,
         current=state,
         next_stage=STATE_CAMPAIGN_RUNNING,
         campaign_started=True,
+        campaign_id=lifecycle.campaign_id,
+        duration_bound_seconds=lifecycle.duration_bound_seconds,
     )
-    terminal = STATE_ABORTED if (lifecycle.aborted or abort) else STATE_COMPLETED
-    state = transition_actual_start_state_v1(
-        state_dir=state_dir,
-        current=state,
-        next_stage=terminal,
-        completion_reason="STUBBED_ACCEPTANCE_" + terminal,
-    )
+    if lifecycle.aborted or abort:
+        state = transition_actual_start_state_v1(
+            state_dir=state_dir,
+            current=state,
+            next_stage=STATE_ABORTING,
+            completion_reason="STUBBED_ACCEPTANCE_ABORTING",
+            bound_reached_reason=lifecycle.bound_reached_reason or "ABORT",
+            cycles_completed=lifecycle.cycles_completed,
+        )
+        state = transition_actual_start_state_v1(
+            state_dir=state_dir,
+            current=state,
+            next_stage=STATE_ABORTED,
+            completion_reason="STUBBED_ACCEPTANCE_ABORTED",
+        )
+    else:
+        if not lifecycle.bound_reached_reason or not lifecycle.completed:
+            raise ActualStartConsumerError("LONG_RUNNING_BOUND_NOT_REACHED")
+        state = transition_actual_start_state_v1(
+            state_dir=state_dir,
+            current=state,
+            next_stage=STATE_BOUND_REACHED,
+            bound_reached_reason=lifecycle.bound_reached_reason,
+            cycles_completed=lifecycle.cycles_completed,
+        )
+        state = transition_actual_start_state_v1(
+            state_dir=state_dir,
+            current=state,
+            next_stage=STATE_COMPLETING,
+        )
+        state = transition_actual_start_state_v1(
+            state_dir=state_dir,
+            current=state,
+            next_stage=STATE_COMPLETED,
+            completion_reason="STUBBED_ACCEPTANCE_COMPLETED",
+        )
 
     evidence_payload = {
         "owner_go": owner_go.to_dict(),
@@ -339,7 +375,14 @@ def execute_productive_section_11_12_8_campaign_run_v1(
         "lifecycle": lifecycle.to_dict(),
         "next_operation_after_boundary": NEXT_OPERATION_AFTER_STUBBED_BOUNDARY,
     }
-    evidence_path = write_productive_execution_evidence_v1(evidence_dir, payload=evidence_payload)
+    evidence_path = write_productive_execution_evidence_v1(
+        evidence_dir,
+        payload=evidence_payload,
+        stubbed_acceptance=True,
+        network_effect="NONE",
+        order_effect="NONE",
+        productive_testnet_campaign_started=False,
+    )
     seal = seal_evidence_dir_v1(evidence_dir)
     if verify_evidence_seal_v1(evidence_dir) != 0:
         raise ActualStartConsumerError("EVIDENCE_SEAL_VERIFY_FAILED")
@@ -358,8 +401,9 @@ def execute_productive_section_11_12_8_campaign_run_v1(
         [
             owner_go.productive_campaign_authorized,
             state.stage == STATE_SEALED,
-            lifecycle.first_permitted_effect_invoked,
-            lifecycle.first_permitted_effect_stubbed,
+            lifecycle.started,
+            (lifecycle.completed or lifecycle.aborted),
+            (lifecycle.cycles_completed >= 1 or lifecycle.aborted),
             session.boundary_reached,
             session.next_operation == NEXT_OPERATION_AFTER_STUBBED_BOUNDARY,
             seal.sealed,
@@ -564,25 +608,59 @@ def _execute_productive_real_network_v1(
     port = construct_productive_testnet_execution_port_v1(
         authorized=True, transport=transport, stubbed=False
     )
+    # Offline/acceptance uses short cycle bound; wire-send Owner execute uses SSOT bounds.
     lifecycle = run_campaign_lifecycle_v1(
         port=port,
         network_session_started=True,
         stubbed=False,
         abort=abort,
+        inject_kill_switch=force_kill_switch,
+        offline_proof_bounds=not allow_wire_send,
     )
     state = transition_actual_start_state_v1(
         state_dir=state_dir,
         current=state,
         next_stage=STATE_CAMPAIGN_RUNNING,
         campaign_started=True,
+        campaign_id=lifecycle.campaign_id,
+        duration_bound_seconds=lifecycle.duration_bound_seconds,
     )
-    terminal = STATE_ABORTED if (lifecycle.aborted or abort) else STATE_COMPLETED
-    state = transition_actual_start_state_v1(
-        state_dir=state_dir,
-        current=state,
-        next_stage=terminal,
-        completion_reason=("REAL_WIRE_" if allow_wire_send else "REAL_BOUNDARY_") + terminal,
-    )
+    if lifecycle.aborted or abort:
+        state = transition_actual_start_state_v1(
+            state_dir=state_dir,
+            current=state,
+            next_stage=STATE_ABORTING,
+            completion_reason=("REAL_WIRE_" if allow_wire_send else "REAL_BOUNDARY_") + "ABORTING",
+            bound_reached_reason=lifecycle.bound_reached_reason or "ABORT",
+            cycles_completed=lifecycle.cycles_completed,
+        )
+        state = transition_actual_start_state_v1(
+            state_dir=state_dir,
+            current=state,
+            next_stage=STATE_ABORTED,
+            completion_reason=("REAL_WIRE_" if allow_wire_send else "REAL_BOUNDARY_") + "ABORTED",
+        )
+    else:
+        if not lifecycle.bound_reached_reason or not lifecycle.completed:
+            raise ActualStartConsumerError("LONG_RUNNING_BOUND_NOT_REACHED")
+        state = transition_actual_start_state_v1(
+            state_dir=state_dir,
+            current=state,
+            next_stage=STATE_BOUND_REACHED,
+            bound_reached_reason=lifecycle.bound_reached_reason,
+            cycles_completed=lifecycle.cycles_completed,
+        )
+        state = transition_actual_start_state_v1(
+            state_dir=state_dir,
+            current=state,
+            next_stage=STATE_COMPLETING,
+        )
+        state = transition_actual_start_state_v1(
+            state_dir=state_dir,
+            current=state,
+            next_stage=STATE_COMPLETED,
+            completion_reason=("REAL_WIRE_" if allow_wire_send else "REAL_BOUNDARY_") + "COMPLETED",
+        )
 
     evidence_payload = {
         "mode": MODE_PRODUCTIVE_REAL,
@@ -599,9 +677,18 @@ def _execute_productive_real_network_v1(
         "lifecycle": lifecycle.to_dict(),
         "allow_wire_send": allow_wire_send,
         "NETWORK_SEND_BOUNDARY_REACHED": True,
+        "NETWORK_EFFECT": network_effect,
+        "ORDER_EFFECT": order_effect,
         "next_operation_after_boundary": NEXT_OPERATION_AFTER_STUBBED_BOUNDARY,
     }
-    evidence_path = write_productive_execution_evidence_v1(evidence_dir, payload=evidence_payload)
+    evidence_path = write_productive_execution_evidence_v1(
+        evidence_dir,
+        payload=evidence_payload,
+        stubbed_acceptance=False,
+        network_effect=network_effect,
+        order_effect=order_effect,
+        productive_testnet_campaign_started=False,
+    )
     seal = seal_evidence_dir_v1(evidence_dir)
     if verify_evidence_seal_v1(evidence_dir) != 0:
         raise ActualStartConsumerError("EVIDENCE_SEAL_VERIFY_FAILED")
@@ -615,6 +702,9 @@ def _execute_productive_real_network_v1(
         stubbed_acceptance=False,
         real_productive_evidence=bool(allow_wire_send),
         boundary_path_proof_only=not allow_wire_send,
+        evidence=None,
+        evidence_seal_ok=True,
+        long_running_bound_reached=bool(lifecycle.bound_reached_reason) and lifecycle.completed,
     )
     release_ephemeral_material_v1(credential)
 
@@ -622,8 +712,8 @@ def _execute_productive_real_network_v1(
         [
             owner_go.productive_campaign_authorized,
             state.stage == STATE_SEALED,
-            lifecycle.first_permitted_effect_invoked,
-            lifecycle.first_permitted_effect_stubbed is False,
+            lifecycle.started,
+            (lifecycle.completed or lifecycle.aborted),
             session.boundary_reached,
             session.stubbed is False,
             seal.sealed,
@@ -631,6 +721,14 @@ def _execute_productive_real_network_v1(
             transport.bound_client_kind == bound_client_kind,
             PRODUCTIVE_TESTNET_CAMPAIGN_STARTED is False,
             closeout.section_11_13_started is False,
+            (
+                lifecycle.aborted
+                or abort
+                or (
+                    lifecycle.first_permitted_effect_invoked
+                    and lifecycle.first_permitted_effect_stubbed is False
+                )
+            ),
         ]
     )
     return ProductiveRunResultV1(

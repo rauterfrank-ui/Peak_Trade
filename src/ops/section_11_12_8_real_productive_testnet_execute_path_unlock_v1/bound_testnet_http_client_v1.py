@@ -146,6 +146,7 @@ class BoundOkxTestnetHttpClientV1:
                 "network_send_boundary_reached": True,
                 "network_effect": "NONE",
                 "http_status": None,
+                "response_body": None,
                 "account_identity": "acct-uid-testnet-demo",
                 "client_kind": self.client_kind,
             }
@@ -166,6 +167,13 @@ class BoundOkxTestnetHttpClientV1:
         except Exception as exc:  # noqa: BLE001 — fail-closed network errors
             raise BoundTestnetHttpClientError(f"WIRE_SEND_FAILED:{type(exc).__name__}") from exc
 
+        response_body: dict[str, Any] | None
+        try:
+            loaded = json.loads(raw.decode("utf-8") if raw else "{}")
+            response_body = loaded if isinstance(loaded, dict) else {"_non_object": True}
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            response_body = {"_raw_unparsed": True, "body_bytes": len(raw)}
+
         return {
             "ok": 200 <= status < 300,
             "stubbed": False,
@@ -174,6 +182,7 @@ class BoundOkxTestnetHttpClientV1:
             "network_effect": "TESTNET",
             "http_status": status,
             "body_bytes": len(raw),
+            "response_body": response_body,
             "client_kind": self.client_kind,
         }
 
