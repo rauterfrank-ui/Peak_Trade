@@ -1,0 +1,11 @@
+{
+  "CAPABILITY_11_13_STARTED": false,
+  "CORE_LOGIC_CHANGE": false,
+  "CREDENTIAL_ACCESS": false,
+  "EXECUTION_STARTED": false,
+  "FIXTURE_ONLY": false,
+  "NETWORK_SESSION_STARTED": false,
+  "ORDER_SUBMIT_REACHABLE": false,
+  "REPROOF_EXECUTED": false,
+  "TRADING_LOGIC_CHANGE": false
+}
