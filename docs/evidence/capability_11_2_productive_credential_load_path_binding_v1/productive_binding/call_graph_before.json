@@ -1,0 +1,9 @@
+{
+  "cap_11_3": "contracts_only_not_started",
+  "credential_load": "forbidden_in_cap_11_2_boundary",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_2_CredentialAuthorizationBoundary",
+    "SimulatedExecutionPort"
+  ]
+}
