@@ -1,0 +1,21 @@
+{
+  "activation": "not_activated",
+  "authorization_consumption": "forbidden",
+  "credential_load": "forbidden",
+  "get_allowlist": [
+    "accounts",
+    "open_positions",
+    "open_orders"
+  ],
+  "network_scope": "PRIVATE_READONLY_GET_ONLY",
+  "network_session": "forbidden",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_2_ProductiveCredentialLoadPathBinding",
+    "Cap11_3_ProductivePrivateReadonlyPathBinding",
+    "OwnerAuthArtifactTestnetCredentialScopePrivateNetwork",
+    "SimulatedExecutionPort"
+  ],
+  "order_send": "disabled",
+  "owner_auth_artifact": "issued_fail_closed_unconsumed"
+}
