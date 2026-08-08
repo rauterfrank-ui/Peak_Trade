@@ -25,7 +25,7 @@ This is a **transport/gateway HTTP 403** with a **non-JSON** body sentinel (`_ra
 | --- | --- |
 | Host/base | `https://eea.okx.com` |
 | Live hosts blocked | true |
-| Endpoint (inferred allowlist + venue-native order) | `POST /api/v5/trade/order` |
+| Endpoint (inferred allowlist + venue-native order) | `POST &#47;api&#47;v5&#47;trade&#47;order` |
 | Instrument | `BTC-USDT-SWAP` |
 | Wire sent | true |
 | HTTP status | 403 |
