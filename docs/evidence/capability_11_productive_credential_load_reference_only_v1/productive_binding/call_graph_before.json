@@ -1,0 +1,11 @@
+{
+  "cap_11_4": "contracts_only_not_started",
+  "credential_load": "forbidden_after_owner_auth_artifact",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_2_ProductiveCredentialLoadPathBinding",
+    "Cap11_3_ProductivePrivateReadonlyPathBinding",
+    "OwnerAuthArtifactTestnetCredentialScopePrivateNetwork",
+    "SimulatedExecutionPort"
+  ]
+}

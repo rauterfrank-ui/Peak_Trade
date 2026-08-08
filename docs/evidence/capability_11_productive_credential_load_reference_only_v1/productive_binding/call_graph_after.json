@@ -1,0 +1,15 @@
+{
+  "activation": "not_activated",
+  "authorization_consumption": "forbidden",
+  "credential_load": "reference_only_bound_fail_closed_never_materialized",
+  "network_session": "forbidden",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_2_ProductiveCredentialLoadPathBinding",
+    "Cap11_3_ProductivePrivateReadonlyPathBinding",
+    "OwnerAuthArtifactTestnetCredentialScopePrivateNetwork",
+    "Cap11_ProductiveCredentialLoadReferenceOnly",
+    "SimulatedExecutionPort"
+  ],
+  "order_send": "disabled"
+}
