@@ -3150,6 +3150,11 @@ before `OWNER_MERGE_GO` recommendation. Intermediate surfaces
 (implementation-only consumers, structural may_arm, deprecated wrappers)
 must not be mistaken for `ACTUAL_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_START`.
 
+The canonical productive start consumer&#47;executor for §11.12.8 is
+`CAPABILITY_11_SECTION_11_12_8_ACTUAL_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_START_V1`.
+The Activation-and-Executable-Handoff package remains dry-activation proof
+only and must not be treated as the productive start edge.
+
 Mandatory Testnet sequence:
 
 ``` text
