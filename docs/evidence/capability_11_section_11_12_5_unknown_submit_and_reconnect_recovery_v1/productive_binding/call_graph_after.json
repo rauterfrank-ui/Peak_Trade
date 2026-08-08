@@ -1,0 +1,24 @@
+{
+  "activation": "not_activated",
+  "blind_retry": "forbidden",
+  "cap_11_5_adapter": "not_activated",
+  "cap_11_5_unknown_submit_reconnect_contract": "reused_fixture_only",
+  "exchange_query_before_retry": "required",
+  "network_effect": "NONE",
+  "network_writes": "unauthorized",
+  "next_consumer": "CAPABILITY_11_SECTION_11_12_6_RESTART_WITH_OPEN_ORDER_AND_OPEN_POSITION_V1",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_Section_11_12_4_EntryPartialFillCancelExitLifecycles",
+    "Cap11_Section_11_12_5_UnknownSubmitAndReconnectRecovery",
+    "SimulatedExecutionPort"
+  ],
+  "order_send": "disabled",
+  "path_class": "UNKNOWN_SUBMIT_AND_RECONNECT_RECOVERY",
+  "paths_bound": [
+    "unknown_submit_query_before_retry",
+    "reconnect_after_unknown_submit"
+  ],
+  "section_11_12_5": "productive_unknown_submit_and_reconnect_recovery_bound",
+  "section_11_12_6": "not_started"
+}
