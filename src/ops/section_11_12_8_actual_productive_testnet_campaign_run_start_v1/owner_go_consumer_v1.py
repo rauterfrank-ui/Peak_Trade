@@ -6,10 +6,10 @@ from dataclasses import dataclass
 from typing import Any
 
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.constants_v1 import (
+    ACCEPTED_OWNER_GO_AUTHORIZATIONS,
+    ACCEPTED_OWNER_GO_SCOPES,
     CAPABILITY_ID,
     LIVE_AUTHORIZED,
-    SCOPED_OWNER_GO_AUTHORIZATION,
-    SCOPED_OWNER_GO_SCOPE,
     SCOPED_OWNER_GO_TOKEN,
 )
 
@@ -67,9 +67,9 @@ def consume_actual_start_owner_go_v1(
         raise ActualStartOwnerGoError("OWNER_GO_CONSUMPTION_ID_REQUIRED")
     if token != SCOPED_OWNER_GO_TOKEN:
         raise ActualStartOwnerGoError(f"SCOPED_OWNER_GO_TOKEN_MISMATCH:{token}")
-    if scope != SCOPED_OWNER_GO_SCOPE:
+    if scope not in ACCEPTED_OWNER_GO_SCOPES:
         raise ActualStartOwnerGoError(f"SCOPED_OWNER_GO_SCOPE_MISMATCH:{scope}")
-    if authorization != SCOPED_OWNER_GO_AUTHORIZATION:
+    if authorization not in ACCEPTED_OWNER_GO_AUTHORIZATIONS:
         raise ActualStartOwnerGoError(f"SCOPED_OWNER_GO_AUTHORIZATION_MISMATCH:{authorization}")
     if cid in _CONSUMED_IDS:
         raise ActualStartOwnerGoError(f"OWNER_GO_REPLAY_FORBIDDEN:{cid}")

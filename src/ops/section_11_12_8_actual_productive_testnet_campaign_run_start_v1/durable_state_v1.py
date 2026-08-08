@@ -13,12 +13,17 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     DURABLE_STATE_SCHEMA,
     OWNER,
     STATE_ABORTED,
+    STATE_ABORTING,
     STATE_ARMED,
     STATE_AUTHORIZED,
+    STATE_BOUND_REACHED,
     STATE_CAMPAIGN_RUNNING,
     STATE_COMPLETED,
+    STATE_COMPLETING,
     STATE_CONFIRM_LATCHED,
     STATE_CREDENTIAL_BOUND,
+    STATE_CYCLE_COMPLETE,
+    STATE_CYCLE_RUNNING,
     STATE_ENABLED,
     STATE_GO_CONSUMED,
     STATE_IDLE,
@@ -43,7 +48,15 @@ _FORWARD: dict[str, frozenset[str]] = {
     STATE_CREDENTIAL_BOUND: frozenset({STATE_PREFLIGHT_PASS}),
     STATE_PREFLIGHT_PASS: frozenset({STATE_NETWORK_SESSION_STARTED}),
     STATE_NETWORK_SESSION_STARTED: frozenset({STATE_CAMPAIGN_RUNNING}),
-    STATE_CAMPAIGN_RUNNING: frozenset({STATE_COMPLETED, STATE_ABORTED}),
+    STATE_CAMPAIGN_RUNNING: frozenset(
+        {STATE_CYCLE_RUNNING, STATE_BOUND_REACHED, STATE_ABORTING, STATE_ABORTED}
+    ),
+    STATE_CYCLE_RUNNING: frozenset({STATE_CYCLE_COMPLETE, STATE_ABORTING}),
+    # CYCLE_COMPLETE must NOT go directly to COMPLETED (one-shot regression).
+    STATE_CYCLE_COMPLETE: frozenset({STATE_CAMPAIGN_RUNNING, STATE_BOUND_REACHED, STATE_ABORTING}),
+    STATE_BOUND_REACHED: frozenset({STATE_COMPLETING, STATE_ABORTING}),
+    STATE_COMPLETING: frozenset({STATE_COMPLETED}),
+    STATE_ABORTING: frozenset({STATE_ABORTED}),
     STATE_COMPLETED: frozenset({STATE_SEALED}),
     STATE_ABORTED: frozenset({STATE_SEALED}),
     STATE_SEALED: frozenset(),
@@ -74,6 +87,10 @@ class ActualStartDurableStateV1:
     section_11_13_started: bool
     stubbed_boundary: bool
     completion_reason: str
+    campaign_id: str = ""
+    cycles_completed: int = 0
+    bound_reached_reason: str = ""
+    duration_bound_seconds: int = 0
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -103,6 +120,10 @@ def default_actual_start_durable_state_v1() -> ActualStartDurableStateV1:
         section_11_13_started=False,
         stubbed_boundary=False,
         completion_reason="",
+        campaign_id="",
+        cycles_completed=0,
+        bound_reached_reason="",
+        duration_bound_seconds=0,
     )
 
 
@@ -128,14 +149,24 @@ def validate_actual_start_durable_state_v1(payload: dict[str, Any]) -> list[str]
     if started and not (runtime_auth and owner_go):
         blockers.append("CAMPAIGN_STARTED_REQUIRES_RUNTIME_TESTNET_AUTH_AND_OWNER_GO")
     stage = str(payload.get("stage") or "")
-    if stage == STATE_CAMPAIGN_RUNNING and not started:
+    if (
+        stage
+        in {
+            STATE_CAMPAIGN_RUNNING,
+            STATE_CYCLE_RUNNING,
+            STATE_CYCLE_COMPLETE,
+            STATE_BOUND_REACHED,
+            STATE_COMPLETING,
+        }
+        and not started
+    ):
         blockers.append("CAMPAIGN_RUNNING_REQUIRES_CAMPAIGN_STARTED")
     if stage in {STATE_COMPLETED, STATE_ABORTED, STATE_SEALED} and not started:
-        # Allow abort before start only via IDLE->... failure paths; terminal
-        # completed/aborted/sealed after running requires started.
         if stage != STATE_ABORTED or bool(payload.get("network_session_started")):
             if stage in {STATE_COMPLETED, STATE_SEALED}:
                 blockers.append("TERMINAL_STAGE_REQUIRES_CAMPAIGN_STARTED")
+    if stage == STATE_COMPLETED and not str(payload.get("bound_reached_reason") or ""):
+        blockers.append("COMPLETED_REQUIRES_BOUND_REACHED_REASON")
     return blockers
 
 
@@ -178,6 +209,11 @@ def transition_actual_start_state_v1(
     if next_stage not in allowed:
         raise ActualStartDurableStateError(
             f"ILLEGAL_STATE_TRANSITION:{current.stage}->{next_stage}"
+        )
+    # Explicit one-shot regression guard.
+    if current.stage == STATE_CYCLE_COMPLETE and next_stage == STATE_COMPLETED:
+        raise ActualStartDurableStateError(
+            "FORBIDDEN_CYCLE_COMPLETE_TO_COMPLETED_ONE_SHOT_REGRESSION"
         )
     payload = current.to_dict()
     payload.update(updates)
