@@ -1,0 +1,6 @@
+{
+  "capability": "CAPABILITY_11_SECTION_11_12_8_ACTUAL_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_START_V1",
+  "consumption_probe": "verify-adf83a65",
+  "next": "SEPARATE_OWNER_GO_REQUIRED_FOR_EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW",
+  "productive_start": "present_stubbed_acceptance_wired"
+}
