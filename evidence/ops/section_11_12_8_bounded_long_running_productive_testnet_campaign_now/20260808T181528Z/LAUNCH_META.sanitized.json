@@ -1,0 +1,12 @@
+{
+  "ALLOW_WIRE_SEND": true,
+  "CONFIRM_DIGEST_FP12": "38c727934560",
+  "CONFIRM_DIGEST_LEN": 64,
+  "ENTRYPOINT": "scripts/ops/run_section_11_12_8_real_productive_testnet_execute_operator_entrypoint_v1.py",
+  "LAUNCHED_AT_UTC": "2026-08-08T18:15:28Z",
+  "ORIGIN_MAIN_SHA": "43f9517b4ea2c501490fe4aacb424741d2311c71",
+  "SSOT_DURATION_BOUND_SECONDS": 3600,
+  "VAULT_DIR": "/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/pt_11_12_8_vault_ljuekd3r",
+  "VAULT_FILE": "/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/pt_11_12_8_vault_ljuekd3r/secretref_vault_v1.json",
+  "WORK_DIR": "/Users/frnkhrz/Peak_Trade/evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z"
+}

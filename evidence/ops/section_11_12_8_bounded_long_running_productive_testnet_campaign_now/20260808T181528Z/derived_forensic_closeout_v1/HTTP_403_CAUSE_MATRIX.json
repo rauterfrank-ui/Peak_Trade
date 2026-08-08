@@ -1,0 +1,204 @@
+{
+  "CAUSES": [
+    {
+      "CATEGORY": "TRANSPORT_HTTP_FORBIDDEN",
+      "CAUSE_ID": "C403_TRANSPORT_GATEWAY_OR_WAF_DENIAL_NON_JSON_BODY",
+      "CONFIDENCE": "HIGH",
+      "EVIDENCE_AGAINST": [
+        "No persisted response headers to confirm WAF/CDN fingerprint",
+        "body_bytes numeric value not retained in sealed effect payload"
+      ],
+      "EVIDENCE_FOR": [
+        "http_status=403",
+        "transport_ok=false",
+        "response_body non-JSON (_raw_unparsed sentinel / raw_keys include _raw_unparsed)",
+        "exchange_code=null and s_code=null",
+        "classification=EXCHANGE_RESPONSE_INCONCLUSIVE (no OKX semantic reject fields)",
+        "rest_base=https://eea.okx.com (testnet/demo host allowlist)"
+      ],
+      "FIX_REQUIRES_CODE_CHANGE": false,
+      "FIX_REQUIRES_CONFIG_OR_CREDENTIAL_CHANGE": true,
+      "NOTES": "HTTP 403 without OKX code/sCode is transport/gateway class, not exchange order reject.",
+      "PROVEN": false,
+      "REQUIRES_EXTERNAL_ACCOUNT_CHECK": true
+    },
+    {
+      "CATEGORY": "EXTERNAL_CREDENTIAL_PERMISSION",
+      "CAUSE_ID": "C403_READONLY_OR_INSUFFICIENT_API_KEY_PERMISSION",
+      "CONFIDENCE": "MEDIUM",
+      "EVIDENCE_AGAINST": [
+        "Sealed evidence does not record API-key permission scope",
+        "OKX often returns HTTP 200 + code/sCode for permission rejects; empty/non-JSON 403 also fits WAF/IP"
+      ],
+      "EVIDENCE_FOR": [
+        "Operator credential source directory filenames include Readonly API labeling (read-only local path inspection; values not read for this report beyond prior approved staging)",
+        "Trade endpoint /api/v5/trade/order was invoked",
+        "HTTP 403 is consistent with insufficient trade permission on some venues/gateways"
+      ],
+      "FIX_REQUIRES_CODE_CHANGE": false,
+      "FIX_REQUIRES_CONFIG_OR_CREDENTIAL_CHANGE": true,
+      "PROVEN": false,
+      "REQUIRES_EXTERNAL_ACCOUNT_CHECK": true
+    },
+    {
+      "CATEGORY": "REQUEST_CONSTRUCTION",
+      "CAUSE_ID": "C403_MISSING_OR_WRONG_SIMULATED_TRADING_HEADER",
+      "CONFIDENCE": "LOW",
+      "EVIDENCE_AGAINST": [
+        "bound_testnet_http_client_v1.py always sets SIMULATION_HEADER_NAME/VALUE when building auth headers",
+        "Offline unit path proves header presence in code",
+        "Header values are not persisted in sealed evidence, so absence cannot be proven from run artifacts"
+      ],
+      "EVIDENCE_FOR": [
+        "Demo trading on eea.okx.com requires x-simulated-trading:1 per OKX docs and repo constants"
+      ],
+      "FIX_REQUIRES_CODE_CHANGE": false,
+      "FIX_REQUIRES_CONFIG_OR_CREDENTIAL_CHANGE": false,
+      "PROVEN": false,
+      "REQUIRES_EXTERNAL_ACCOUNT_CHECK": false
+    },
+    {
+      "CATEGORY": "AUTH_SIGNING",
+      "CAUSE_ID": "C403_SIGNATURE_OR_TIMESTAMP_FAILURE",
+      "CONFIDENCE": "LOW",
+      "EVIDENCE_AGAINST": [
+        "sign_okx_request_v1 uses standard OKX prehash timestamp+METHOD+path+body",
+        "timestamp=str(time.time()) is accepted OKX format",
+        "No OKX msg/code body available to confirm sign error",
+        "Typical OKX auth errors are JSON-bodied"
+      ],
+      "EVIDENCE_FOR": [
+        "Auth failures can surface as HTTP errors on some edge paths"
+      ],
+      "FIX_REQUIRES_CODE_CHANGE": false,
+      "FIX_REQUIRES_CONFIG_OR_CREDENTIAL_CHANGE": false,
+      "PROVEN": false,
+      "REQUIRES_EXTERNAL_ACCOUNT_CHECK": false
+    },
+    {
+      "CATEGORY": "ROUTING_SAFETY",
+      "CAUSE_ID": "C403_LIVE_HOST_MISROUTE",
+      "CONFIDENCE": "HIGH",
+      "EVIDENCE_AGAINST": [
+        "binding.rest_base=https://eea.okx.com",
+        "www.okx.com absent from evidence",
+        "live_hosts_blocked=true",
+        "LIVE_ORDER_EFFECT=NONE"
+      ],
+      "EVIDENCE_FOR": [],
+      "FIX_REQUIRES_CODE_CHANGE": false,
+      "FIX_REQUIRES_CONFIG_OR_CREDENTIAL_CHANGE": false,
+      "NOTES": "Live misroute is refuted by sealed binding evidence.",
+      "PROVEN": true,
+      "PROVEN_AS": "REFUTED",
+      "REQUIRES_EXTERNAL_ACCOUNT_CHECK": false
+    },
+    {
+      "CATEGORY": "RESPONSE_SEMANTICS",
+      "CAUSE_ID": "C403_PARSER_FALSE_REJECT_OR_FALSE_ACK",
+      "CONFIDENCE": "HIGH",
+      "EVIDENCE_AGAINST": [
+        "ORDER_ACK_COUNT=0",
+        "ORDER_REJECT_COUNT=0",
+        "exchange_order_id=null",
+        "fill_count=0",
+        "Mapper requires code==0 and sCode==0 and ordId for ACK; requires non-zero exchange/sCode for REJECT",
+        "HTTP 403 alone correctly does not flip REJECT"
+      ],
+      "EVIDENCE_FOR": [],
+      "FIX_REQUIRES_CODE_CHANGE": false,
+      "FIX_REQUIRES_CONFIG_OR_CREDENTIAL_CHANGE": false,
+      "NOTES": "ORDER_REJECT_COUNT=0 is correct. Separate forensic note: _raw_unparsed sentinel was classified INCONCLUSIVE instead of TRANSPORT_RESPONSE_UNPARSED (classification precision issue, not ACK fabrication).",
+      "PROVEN": true,
+      "PROVEN_AS": "REFUTED_AS_FALSE_ACK_OR_FALSE_REJECT",
+      "REQUIRES_EXTERNAL_ACCOUNT_CHECK": false
+    },
+    {
+      "CATEGORY": "FORENSIC_CLASSIFICATION_PRECISION",
+      "CAUSE_ID": "C403_MAPPER_TREATS_RAW_UNPARSED_SENTINEL_AS_BODY_PARSED",
+      "CONFIDENCE": "HIGH",
+      "EVIDENCE_AGAINST": [
+        "Does not change ACK/REJECT/FILL counts",
+        "Does not cause the HTTP 403 itself"
+      ],
+      "EVIDENCE_FOR": [
+        "parsed_response.body_parsed=true while raw_keys=[_raw_unparsed, body_bytes]",
+        "classification=EXCHANGE_RESPONSE_INCONCLUSIVE instead of TRANSPORT_RESPONSE_UNPARSED",
+        "Reproduced offline against current mapper"
+      ],
+      "FIX_REQUIRES_CODE_CHANGE": true,
+      "FIX_REQUIRES_CONFIG_OR_CREDENTIAL_CHANGE": false,
+      "NOTES": "Bounded parser/forensic fix only; not trading-logic mutation; not sufficient alone to close \u00a711.12.8.",
+      "PROVEN": true,
+      "PROVEN_AS": "IMPLEMENTATION_DEVIATION_CLASSIFICATION_ONLY",
+      "REQUIRES_EXTERNAL_ACCOUNT_CHECK": false
+    }
+  ],
+  "CODE_CHANGE_REQUIRED_FOR_403_ROOT": false,
+  "CODE_CHANGE_REQUIRED_FOR_CLASSIFICATION_PRECISION": true,
+  "EXCHANGE_ORDER_ID_COUNT": 0,
+  "EXTERNAL_ACCOUNT_CHECK_REQUIRED": true,
+  "FIELD_PRESENCE": {
+    "ENDPOINT_PATH": {
+      "inferred_from_venue_native_and_allowlist": "/api/v5/trade/order",
+      "present": true
+    },
+    "HOST_BASE_URL": {
+      "present": true,
+      "value": "https://eea.okx.com"
+    },
+    "HTTP_METHOD": {
+      "inferred": "POST",
+      "present": true
+    },
+    "HTTP_RESPONSE_HEADERS": {
+      "note": "NOT_PERSISTED_IN_SEALED_EVIDENCE",
+      "present": false
+    },
+    "HTTP_RESPONSE_STATUS": {
+      "present": true,
+      "value": 403
+    },
+    "REQUEST_TIMESTAMP": {
+      "note": "OK-ACCESS-TIMESTAMP_NOT_PERSISTED_IN_EVIDENCE",
+      "present": false
+    },
+    "RESPONSE_BODY_OR_EXCHANGE_CODE": {
+      "body_parsed_flag": true,
+      "classification": "EXCHANGE_RESPONSE_INCONCLUSIVE",
+      "exchange_code": null,
+      "note": "Body was non-JSON; client stored _raw_unparsed sentinel; exchange code absent",
+      "present": true,
+      "raw_keys": [
+        "_raw_unparsed",
+        "body_bytes"
+      ],
+      "s_code": null
+    },
+    "RUNTIME_DECISIONS": {
+      "bound_reached_reason": "DURATION_BOUND",
+      "durable_stage": "SEALED",
+      "present": true
+    },
+    "SIGNED_REQUEST_METADATA": {
+      "note": "AUTH_HEADERS_PRESENT_IN_CODE_PATH_BUT_VALUES_AND_SIGN_PREHASH_NOT_PERSISTED",
+      "present": false
+    },
+    "SIMULATION_HEADER_IN_EVIDENCE": {
+      "code_path_includes_x_simulated_trading": true,
+      "present": false
+    }
+  },
+  "HTTP_403_CLASSIFICATION": "TRANSPORT_OR_GATEWAY_HTTP_403_NON_JSON_BODY_NOT_EXCHANGE_SEMANTIC_REJECT",
+  "HTTP_STATUS_CONFIRMED": 403,
+  "NEXT_CANONICAL_STEP": "OWNER_GO_RESOLVE_EXTERNAL_OKX_TESTNET_ACCOUNT_OR_CREDENTIAL_BLOCKER_AND_RETRY_TARGETED_PROOF",
+  "NEXT_STEP_RATIONALE": "Highest-confidence blocker is external transport/account/credential class HTTP 403 without exchange semantic body. Repo signing/testnet binding structurally present. Targeted proof after operator resolves OKX Demo trade-capable credentials/IP/account binding.",
+  "ORDER_ACK_COUNT": 0,
+  "ORDER_FILL_COUNT": 0,
+  "ORDER_REJECT_COUNT": 0,
+  "ORIGIN_MAIN_SHA": "43f9517b4ea2c501490fe4aacb424741d2311c71",
+  "RUN_ID": "20260808T181528Z",
+  "TOP_CAUSE_CONFIDENCE": "HIGH",
+  "TOP_CAUSE_ID": "C403_TRANSPORT_GATEWAY_OR_WAF_DENIAL_NON_JSON_BODY",
+  "WIRE_SENT_CONFIRMED": true
+}
