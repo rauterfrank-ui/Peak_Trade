@@ -62,9 +62,9 @@ SECTION_11_12_8_REQUIREMENT_SATISFIED=false
 Untracked local evidence observed (must remain untouched by implementers of
 this package unless a later Owner-GO explicitly binds it):
 
-- `evidence/ops/section_11_12_8_execute_productive_testnet_campaign_now_abort_v1/`
-- `evidence/ops/section_11_12_8_execute_productive_testnet_campaign_now/`
-- `evidence/ops/section_11_12_8_bounded_long_running_campaign_hard_stop_v1/`
+- `evidence&#47;ops&#47;section_11_12_8_execute_productive_testnet_campaign_now_abort_v1&#47;`
+- `evidence&#47;ops&#47;section_11_12_8_execute_productive_testnet_campaign_now&#47;`
+- `evidence&#47;ops&#47;section_11_12_8_bounded_long_running_campaign_hard_stop_v1&#47;`
 
 Hard-stop forensic (local, untracked) already recorded:
 
@@ -96,7 +96,7 @@ PRODUCTIVE_LIFECYCLE_IS_SINGLE_SUBMIT_THEN_COMPLETE
 
 ### 1.2 Confirmed baseline facts
 
-1. `HEAD == origin/main == 35519be2684b65491fbe53b09f82e91370e7cc89`
+1. `HEAD == origin&#47;main == 35519be2684b65491fbe53b09f82e91370e7cc89`
 2. Tracked worktree clean; only untracked ops evidence present
 3. §11.12.8 open (`SECTION_11_12_8_CANONICALLY_CLOSED=false`)
 4. §11.13 not started (`SECTION_11_13_STARTED=false` constants + closeout)
@@ -157,13 +157,13 @@ OWNER_GO EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
 | --- | --- | --- | --- | --- | --- |
 | OWNER_GO | Master Runbook §11.12.8 + entrypoint argv | `EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW` | PRODUCTIVE auth token | Permits execute; does not define duration | Add SSOT numeric duration (+ optional cycle) bound |
 | Command/consumer entry | `scripts/ops/run_section_11_12_8_real_productive_testnet_execute_operator_entrypoint_v1.py` | `main` | PRODUCTIVE | No campaign-duration CLI/config | Wire long-running executor; bind duration from SSOT |
-| Unlock orchestrator | `.../unlock_orchestrator_v1.py` | `execute_unlocked_productive_path_v1` | PRODUCTIVE | Still one-shot | Dispatch long-running lifecycle; keep unlock reuse |
-| Authorization | `.../owner_go_consumer_v1.py` | `consume_actual_start_owner_go_v1` | PRODUCTIVE | One-time GO consume OK | Preserve; campaign must not re-consume GO per cycle |
-| Enabled/Armed | `.../productive_consumer_v1.py` + `durable_state_v1.py` | `STATE_ENABLED` / `STATE_ARMED` | PRODUCTIVE | Ephemeral once | Persist across cycles; re-check each cycle |
-| Hidden confirm | `.../hidden_confirm_v1.py` | `latch_and_consume_confirm_digest_v1` | PRODUCTIVE | Consumed once at start | Lifetime = campaign start only; replay blocked |
-| SecretRef load | `.../secretref_credential_v1.py` + `vault_resolver_v1.py` | `resolve_and_load_secretref_ephemeral_v1` | PRODUCTIVE | Loaded once | Lifetime = campaign; release only at terminal |
-| Account binding | `.../account_endpoint_binding_v1.py` | `bind_and_verify_testnet_account_v1` | PRODUCTIVE (identity stub-tolerant) | Once | Keep; re-verify on restart recovery path |
-| Risk gates | `.../safety_preflight_v1.py` | `evaluate_safety_preflight_v1` | PRODUCTIVE but FIXED fixture ctx | Once before session | **Re-evaluate each cycle** with real market age / position |
+| Unlock orchestrator | `...&#47;unlock_orchestrator_v1.py` | `execute_unlocked_productive_path_v1` | PRODUCTIVE | Still one-shot | Dispatch long-running lifecycle; keep unlock reuse |
+| Authorization | `...&#47;owner_go_consumer_v1.py` | `consume_actual_start_owner_go_v1` | PRODUCTIVE | One-time GO consume OK | Preserve; campaign must not re-consume GO per cycle |
+| Enabled/Armed | `...&#47;productive_consumer_v1.py` + `durable_state_v1.py` | `STATE_ENABLED` / `STATE_ARMED` | PRODUCTIVE | Ephemeral once | Persist across cycles; re-check each cycle |
+| Hidden confirm | `...&#47;hidden_confirm_v1.py` | `latch_and_consume_confirm_digest_v1` | PRODUCTIVE | Consumed once at start | Lifetime = campaign start only; replay blocked |
+| SecretRef load | `...&#47;secretref_credential_v1.py` + `vault_resolver_v1.py` | `resolve_and_load_secretref_ephemeral_v1` | PRODUCTIVE | Loaded once | Lifetime = campaign; release only at terminal |
+| Account binding | `...&#47;account_endpoint_binding_v1.py` | `bind_and_verify_testnet_account_v1` | PRODUCTIVE (identity stub-tolerant) | Once | Keep; re-verify on restart recovery path |
+| Risk gates | `...&#47;safety_preflight_v1.py` | `evaluate_safety_preflight_v1` | PRODUCTIVE but FIXED fixture ctx | Once before session | **Re-evaluate each cycle** with real market age / position |
 | Kill switch | `src/risk_layer/kill_switch/core.py` via safety | `KillSwitch.check_and_block` | PRODUCTIVE reuse | Once | Check before every side effect / each cycle |
 | Emergency controls | constants + safety | `CANONICAL_EMERGENCY_COMMANDS` | PRODUCTIVE presence check | Once | Wire abort reactions into cycle loop |
 | Executor dispatch | `campaign_executor_v1.py` | `run_campaign_lifecycle_v1` | PRODUCTIVE **ONE_SHOT** | **Prevents** | Replace with multi-cycle wallclock loop |
@@ -584,7 +584,7 @@ ANY → LIVE_*                        # FORBIDDEN
 | testnet_account_binding | YES | keep |
 | live_authorized=false | YES | keep |
 | live_order_effect=NONE | YES | keep |
-| campaign_terminal_status | partial (`completed/aborted`) | expand |
+| campaign_terminal_status | partial (`completed&#47;aborted`) | expand |
 | abort_reason | partial | expand |
 | closeout fields | YES structure / always false | bind evidence |
 | TESTNET_*_PROVEN fields | constants false | derive from evidence |
@@ -1064,9 +1064,9 @@ OWNER_GO EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
 
 Expected runtime artifacts:
 
-- `durable_state/actual_start_durable_state_v1.json` (or successor schema) with RUNNING→…→SEALED
-- `execution_evidence/productive_execution_evidence_v1.json` with duration/cycle counters
-- `execution_evidence/MANIFEST.sha256`
+- `durable_state&#47;actual_start_durable_state_v1.json` (or successor schema) with RUNNING→…→SEALED
+- `execution_evidence&#47;productive_execution_evidence_v1.json` with duration/cycle counters
+- `execution_evidence&#47;MANIFEST.sha256`
 - operator stdout status block with truthful NETWORK/ORDER effects TESTNET-only
 - closeout object with each TESTNET_*_PROVEN derived
 
