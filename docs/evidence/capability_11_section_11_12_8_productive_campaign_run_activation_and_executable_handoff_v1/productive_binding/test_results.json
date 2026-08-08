@@ -1,0 +1,13 @@
+{
+  "command": [
+    "python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/ops/test_section_11_12_8_productive_campaign_run_activation_and_executable_handoff_v1.py"
+  ],
+  "passed": true,
+  "returncode": 0,
+  "stderr": "",
+  "stdout": "============================= test session starts ==============================\nplatform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0\nrootdir: /Users/frnkhrz/Peak_Trade\nconfigfile: pytest.ini\nplugins: anyio-4.12.0, cov-7.0.0\ncollected 7 items\n\ntests/ops/test_section_11_12_8_productive_campaign_run_activation_and_executable_handoff_v1.py . [ 14%]\n......                                                                   [100%]\n\n============================== 7 passed in 2.03s ===============================\n"
+}
