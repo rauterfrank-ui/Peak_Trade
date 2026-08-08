@@ -1,0 +1,19 @@
+{
+  "campaign_started": false,
+  "cap_11_13": "not_started",
+  "execution_predecessor": "preserved",
+  "live_order_effect": "NONE",
+  "network_effect": "NONE",
+  "next_consumer": "SEPARATE_OWNER_GO_REQUIRED_FOR_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_ACTIVATION",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_Section_11_12_8_ProductiveTestnetCampaignPath",
+    "Cap11_Section_11_12_8_ProductiveTestnetCampaignExecution",
+    "Cap11_Section_11_12_8_ProductiveTestnetCampaignRun",
+    "SimulatedExecutionPort"
+  ],
+  "order_effect": "NONE",
+  "path_class": "PRODUCTIVE_TESTNET_CAMPAIGN_RUN",
+  "productive_testnet_campaign_run": "present",
+  "productive_testnet_campaign_run_activation": "forbidden_until_separate_owner_go"
+}
