@@ -3266,14 +3266,22 @@ TESTNET_STAR_PROVEN=false
 LIVE_ORDER_EFFECT=NONE
 SECTION_11_13_STARTED=false
 CANONICAL_NEXT_STEP_AFTER_HTTP_403_FORENSIC=OWNER_GO_RESOLVE_EXTERNAL_OKX_TESTNET_ACCOUNT_OR_CREDENTIAL_BLOCKER_AND_RETRY_TARGETED_PROOF
-OPEN_BLOCKER=EXTERNAL_OKX_TESTNET_ACCOUNT_OR_CREDENTIAL_OR_GATEWAY_HTTP_403
+OPEN_BLOCKER=PRODUCTIVE_BOUND_CLIENT_TRANSPORT_UA_AND_ISO_MS_TIMESTAMP_REQUIRED_BEFORE_TARGETED_PROOF_RETRY
+PREDECESSOR_ORDERLESS_GET_PROOF_EVIDENCE=evidence&#47;ops&#47;section_11_12_8_autonomous_okx_eea_demo_credential_ip_resolve_v1&#47;20260808T203507Z&#47;
+PREDECESSOR_ORDERLESS_GET_PROOF_IS_NOT_TARGETED_TRADE_PROOF=true
+BOUND_OKX_TESTNET_HTTP_CLIENT_TRANSPORT_REQUIREMENTS=browser_compatible_User-Agent + OK-ACCESS-TIMESTAMP ISO8601_MS_Z + x-simulated-trading:1
 ```
 
 Campaign duration completion and sealed evidence processing do **not** close
 §11.12.8 while `TESTNET_*_PROVEN` remain false. HTTP 403 without OKX
 `code`&#47;`sCode` is transport&#47;gateway class, not exchange-semantic reject.
 No ACK&#47;Reject&#47;Fill&#47;Exchange-Order-ID may be fabricated from transport success
-alone. Live remains hard-blocked. Cap &#47; §11.13 remains unstarted.
+alone. Authenticated orderless private GET success under Demo &#43;
+`x-simulated-trading:1` is predecessor credential&#47;transport evidence only and
+must not be claimed as the targeted trade proof. The productive bound client
+must send a browser-compatible `User-Agent` and OKX-compatible millisecond
+ISO `OK-ACCESS-TIMESTAMP` before any Owner-authorized targeted proof retry.
+Live remains hard-blocked. Cap &#47; §11.13 remains unstarted.
 
 Section 2.1 `NO_TESTNET_ORDERS` describes the **no-order program** finish
 boundary. It does not forbid a separately Owner-authorized §11.12 Testnet

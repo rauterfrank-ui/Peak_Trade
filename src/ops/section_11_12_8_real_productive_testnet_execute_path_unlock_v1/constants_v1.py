@@ -59,6 +59,17 @@ LIVE_HARD_BLOCK_PRESERVED = True
 BOUND_CLIENT_KIND = "BOUND_REAL_TESTNET_HTTP_CLIENT"
 VAULT_BACKEND_KIND = "PRODUCTIVE_SECRETREF_VAULT_RESOLVER"
 
+# Cloudflare / OKX EEA gateway rejects Python-urllib default UA (error 1010).
+# Browser-compatible UA is transport-only; it does not alter signing or auth semantics.
+BOUND_OKX_TESTNET_HTTP_USER_AGENT = (
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/127.0.0.0 Safari/537.36"
+)
+# OKX private REST accepts ISO-8601 UTC with millisecond precision (…SSS Z).
+# Bare str(time.time()) can yield excess fractional digits → OKX 50112.
+BOUND_OKX_ACCESS_TIMESTAMP_FORMAT = "ISO8601_MS_Z"
+
 REQUIRED_RUNTIME_CHAIN: tuple[str, ...] = (
     "OWNER_GO_EXECUTE",
     "ACTIVATION_ENABLED_ARMED",
