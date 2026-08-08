@@ -1,0 +1,20 @@
+{
+  "activation": "not_activated",
+  "authorization_consumption": "scoped_consumed_for_private_readonly_account_identity",
+  "cap_11_4": "not_started",
+  "credential_consumption": "scoped_consumed_material_digest_only",
+  "endpoint": "accounts",
+  "http_method": "GET",
+  "network_writes": "unauthorized",
+  "next_consumer": "CAPABILITY_11_SECTION_11_12_2_ORDER_SERIALIZATION_DRY_RUN_V1",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_ProductivePrivateReadonlyFetchReferenceOnly",
+    "Cap11_Section_11_12_1_ProductivePrivateReadonlyApiAndAccountIdentity",
+    "SimulatedExecutionPort"
+  ],
+  "order_send": "disabled",
+  "path_class": "PRIVATE_READONLY_ACCOUNT_IDENTITY",
+  "private_readonly_network_session": "started_get_only",
+  "section_11_12_1": "productive_account_identity_get_bound"
+}

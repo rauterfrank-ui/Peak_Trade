@@ -1,0 +1,12 @@
+{
+  "authorization_consumption": "forbidden_in_predecessor",
+  "cap_11_4": "contracts_only_not_started",
+  "credential_consumption": "forbidden_in_predecessor",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_ProductivePrivateReadonlyFetchReferenceOnly",
+    "SimulatedExecutionPort"
+  ],
+  "private_readonly_network_session": "forbidden_in_predecessor",
+  "section_11_12_1": "forbidden_after_fetch_reference_only"
+}
