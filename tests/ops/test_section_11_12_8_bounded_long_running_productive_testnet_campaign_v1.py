@@ -265,6 +265,22 @@ def test_okx_accept_reject_and_wire_not_ack() -> None:
     assert wire_only.order_acknowledged is False
     assert wire_only.classification == "TRANSPORT_RESPONSE_UNPARSED"
 
+    # HTTP 403 with non-JSON sentinel must not count as body_parsed / REJECT / ACK.
+    http_403_raw = parse_okx_order_response_v1(
+        transport_result={
+            "ok": False,
+            "http_status": 403,
+            "response_body": {"_raw_unparsed": True, "body_bytes": 0},
+        },
+        wire_sent=True,
+    )
+    assert http_403_raw.wire_sent is True
+    assert http_403_raw.body_parsed is False
+    assert http_403_raw.order_acknowledged is False
+    assert http_403_raw.exchange_rejected is False
+    assert http_403_raw.classification == "TRANSPORT_RESPONSE_UNPARSED"
+    assert "_raw_unparsed" in http_403_raw.raw_keys
+
     accepted = parse_okx_order_response_v1(
         transport_result={
             "ok": True,

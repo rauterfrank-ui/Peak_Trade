@@ -1,0 +1,78 @@
+{
+  "DOCUMENT_CLASS": "PRIMARY_EVIDENCE_IMMUTABLE_MANIFEST",
+  "FILES": [
+    {
+      "bytes": 21,
+      "mode": "0o644",
+      "path": "EXECUTION_STARTED.marker",
+      "sha256": "9c37a548abb0ebf9759647aa3299e2365aa552916a66703f496bc5c3ca0b4ce1"
+    },
+    {
+      "bytes": 710,
+      "mode": "0o644",
+      "path": "LAUNCH_META.sanitized.json",
+      "sha256": "dd29f68719915596f6d7920cd5fd64f7705d39bddd304688afb4bba2ce879ea0"
+    },
+    {
+      "bytes": 1824,
+      "mode": "0o644",
+      "path": "SANITIZED_FINAL_REPORT.json",
+      "sha256": "70ac7906def3d8dc7dbeb0cd457af26db99e2695c7638053806f317e6330e3b8"
+    },
+    {
+      "bytes": 1006,
+      "mode": "0o644",
+      "path": "durable_state/actual_start_durable_state_v1.json",
+      "sha256": "8f4254399fa70fcfd74ac0435007fe4652348323926bfa4919cd754d0e48eb7a"
+    },
+    {
+      "bytes": 6,
+      "mode": "0o644",
+      "path": "entrypoint.pid",
+      "sha256": "352737bde354c39d6bcef93d1495d40d7b04437a4dba85147822b6f10f9841fa"
+    },
+    {
+      "bytes": 0,
+      "mode": "0o644",
+      "path": "entrypoint_stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 783,
+      "mode": "0o644",
+      "path": "entrypoint_stdout.log",
+      "sha256": "2b500a8dba292ca2e96b05b0eb1d373d876bd92bedf8593c420ff5f4c9f65942"
+    },
+    {
+      "bytes": 813,
+      "mode": "0o644",
+      "path": "entrypoint_stdout.sanitized.json",
+      "sha256": "bb3d2d6c56f1482a92162a6a430e01d3af7a3ac2aa9b2b6b4cc08f5b805206a7"
+    },
+    {
+      "bytes": 104,
+      "mode": "0o644",
+      "path": "execution_evidence/MANIFEST.sha256",
+      "sha256": "c3ed0f8629d92e8726d888caede5c73f380e116831206b29bcb5d774759112b6"
+    },
+    {
+      "bytes": 64456,
+      "mode": "0o644",
+      "path": "execution_evidence/productive_execution_evidence_v1.json",
+      "sha256": "0b682b53254b921183b96cbd727d769e4d06ae3e8b7158bedeb119e9707b0140"
+    }
+  ],
+  "FILE_COUNT": 10,
+  "GENERATED_AT_UTC": "2026-08-08T19:39:50Z",
+  "ORIGIN_MAIN_SHA": "43f9517b4ea2c501490fe4aacb424741d2311c71",
+  "PRIMARY_IMMUTABLE_POLICY": "DO_NOT_OVERWRITE_OR_SEMANTICALLY_CLEANSE_PRIMARY",
+  "PRIMARY_ROOT": "evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z",
+  "RUN_ID": "20260808T181528Z",
+  "SECRET_PLAINTEXT_LEAK_SCAN": {
+    "VERDICT": "PASS_NO_CREDENTIAL_PLAINTEXT_IN_PRIMARY",
+    "api_key_value_fields": 0,
+    "api_secret_value_fields": 0,
+    "ok_access_header_values": 0,
+    "passphrase_value_fields": 0
+  }
+}

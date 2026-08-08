@@ -3241,6 +3241,40 @@ bound under `FIRST_REACHED_WINS`, then evidence seal. Abort remains
 fail-closed and does not close §11.12.8. Live remains hard-blocked. Cap &#47;
 §11.13 remains unstarted.
 
+#### 11.12.8.2 Completed bounded campaign run forensic status (binding)
+
+Owner-executed bounded long-running productive Testnet campaign run
+(processed; primary evidence immutable; no §11.12.8 closure):
+
+``` text
+SECTION_11_12_8_BOUNDED_CAMPAIGN_RUN_ID=20260808T181528Z
+SECTION_11_12_8_BOUNDED_CAMPAIGN_ORIGIN_MAIN_SHA=43f9517b4ea2c501490fe4aacb424741d2311c71
+SECTION_11_12_8_BOUNDED_CAMPAIGN_EVIDENCE_ROOT=evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z/
+SECTION_11_12_8_BOUNDED_CAMPAIGN_DERIVED_FORENSIC_ROOT=evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z/derived_forensic_closeout_v1/
+SECTION_11_12_8_BOUNDED_CAMPAIGN_STATUS=COMPLETED_DURATION_BOUND
+SECTION_11_12_8_BOUNDED_CAMPAIGN_DURATION_SECONDS=3600.494202666
+SECTION_11_12_8_BOUNDED_CAMPAIGN_CYCLES=60
+SECTION_11_12_8_BOUNDED_CAMPAIGN_WIRE_SENT=true
+SECTION_11_12_8_BOUNDED_CAMPAIGN_HTTP_STATUS=403
+SECTION_11_12_8_BOUNDED_CAMPAIGN_HTTP_403_CLASSIFICATION=TRANSPORT_OR_GATEWAY_HTTP_403_NON_JSON_BODY_NOT_EXCHANGE_SEMANTIC_REJECT
+SECTION_11_12_8_BOUNDED_CAMPAIGN_ORDER_ACK_COUNT=0
+SECTION_11_12_8_BOUNDED_CAMPAIGN_ORDER_REJECT_COUNT=0
+SECTION_11_12_8_BOUNDED_CAMPAIGN_ORDER_FILL_COUNT=0
+SECTION_11_12_8_BOUNDED_CAMPAIGN_EXCHANGE_ORDER_ID_COUNT=0
+SECTION_11_12_8_CLOSED=false
+TESTNET_STAR_PROVEN=false
+LIVE_ORDER_EFFECT=NONE
+SECTION_11_13_STARTED=false
+CANONICAL_NEXT_STEP_AFTER_HTTP_403_FORENSIC=OWNER_GO_RESOLVE_EXTERNAL_OKX_TESTNET_ACCOUNT_OR_CREDENTIAL_BLOCKER_AND_RETRY_TARGETED_PROOF
+OPEN_BLOCKER=EXTERNAL_OKX_TESTNET_ACCOUNT_OR_CREDENTIAL_OR_GATEWAY_HTTP_403
+```
+
+Campaign duration completion and sealed evidence processing do **not** close
+§11.12.8 while `TESTNET_*_PROVEN` remain false. HTTP 403 without OKX
+`code`&#47;`sCode` is transport&#47;gateway class, not exchange-semantic reject.
+No ACK&#47;Reject&#47;Fill&#47;Exchange-Order-ID may be fabricated from transport success
+alone. Live remains hard-blocked. Cap &#47; §11.13 remains unstarted.
+
 Section 2.1 `NO_TESTNET_ORDERS` describes the **no-order program** finish
 boundary. It does not forbid a separately Owner-authorized §11.12 Testnet
 progression once the bounded long-running package is merged and

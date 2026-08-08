@@ -82,7 +82,10 @@ def parse_okx_order_response_v1(
     raw_body = transport_result.get("response_body")
     body_obj: dict[str, Any] | None = None
     body_parsed = False
-    if isinstance(raw_body, dict):
+    # HTTP client may store a non-JSON wire body as a sentinel dict. That must
+    # NOT count as a parsed OKX exchange body (forensic classification precision).
+    raw_unparsed_sentinel = isinstance(raw_body, dict) and bool(raw_body.get("_raw_unparsed"))
+    if isinstance(raw_body, dict) and not raw_unparsed_sentinel:
         body_obj = raw_body
         body_parsed = True
     elif isinstance(raw_body, (bytes, bytearray, str)):
@@ -97,8 +100,13 @@ def parse_okx_order_response_v1(
         except (json.JSONDecodeError, UnicodeDecodeError) as exc:
             raise OkxResponseMapperError(f"INVALID_OKX_RESPONSE_JSON:{type(exc).__name__}") from exc
 
-    if wire_sent and not body_parsed:
-        # Wire without parseable body cannot be ACK.
+    if wire_sent and (not body_parsed or raw_unparsed_sentinel):
+        # Wire without parseable OKX JSON body cannot be ACK or exchange REJECT.
+        raw_keys: tuple[str, ...]
+        if raw_unparsed_sentinel and isinstance(raw_body, dict):
+            raw_keys = tuple(sorted(str(k) for k in raw_body.keys()))
+        else:
+            raw_keys = tuple(sorted(str(k) for k in transport_result.keys()))
         return OkxOrderResponseV1(
             transport_ok=transport_ok,
             http_status=status_i,
@@ -115,7 +123,7 @@ def parse_okx_order_response_v1(
             fill_observed=False,
             partial_fill_observed=False,
             classification="TRANSPORT_RESPONSE_UNPARSED",
-            raw_keys=tuple(sorted(str(k) for k in transport_result.keys())),
+            raw_keys=raw_keys,
         )
 
     if not wire_sent:
