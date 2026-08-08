@@ -80,14 +80,14 @@ def test_verifier_pass_preserves_later_section_11_17_residuals() -> None:
     assert claims["FIXTURE_ONLY"] is False
 
 
-def test_cap_11_12_still_has_simulated_lifecycle_unconsumed_until_separate_update() -> None:
+def test_cap_11_12_consumes_simulated_lifecycle_proven() -> None:
     from src.ops.capability_11_12_fully_autonomous_live_readiness_ratification_v1 import (
         constants_v1 as cap1112,
     )
 
-    # Cap 11.12 consumer update is out of scope for this binding package.
     assert cap1112.CANONICAL_STATEFUL_CORE_PROVEN is True
-    assert cap1112.SIMULATED_LIFECYCLE_PROVEN is False
+    assert cap1112.SIMULATED_LIFECYCLE_PROVEN is True
+    assert cap1112.TESTNET_LIFECYCLE_PROVEN is False
     assert cap1112.FULLY_AUTONOMOUS_LIVE_TRADING_READY is False
     assert cap1112.FULLY_AUTONOMOUS_LIVE_TRADING_ACTIVE is False
     assert cap1112.CAPABILITY_11_13_STARTED is False

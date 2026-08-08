@@ -46,7 +46,7 @@ LIVE_ORDER_EXECUTION_PERFORMED_IN_CAPABILITY_11_12=false
 AUTHORIZATION_CONSUMPTION_ALLOWED=false
 CREDENTIAL_LOAD_PERFORMED_IN_CAPABILITY_11_12=false
 CANONICAL_STATEFUL_CORE_PROVEN=true
-SIMULATED_LIFECYCLE_PROVEN=false
+SIMULATED_LIFECYCLE_PROVEN=true
 CAPABILITY_11_12_STARTED=true
 CAPABILITY_11_12_FULLY_AUTONOMOUS_LIVE_READINESS_STARTED=true
 CAPABILITY_11_13_STARTED=false
@@ -63,6 +63,8 @@ DASHBOARD_AUTHORITY_EFFECT=NONE
 - Cap 11.1–11.11 dependency retention proofs
 - Ownership matrix for Cap 11.12 readiness &#47; closure fields
 - Negative reachability &#47; anti-activation proofs
+- Consumption of §11.17 `CANONICAL_STATEFUL_CORE_PROVEN` and
+  `SIMULATED_LIFECYCLE_PROVEN` via Cap-7.2 &#47; Cap-7.1 static evidence bindings
 
 ## Out of scope
 
@@ -76,7 +78,8 @@ DASHBOARD_AUTHORITY_EFFECT=NONE
 - Live &#47; Testnet &#47; paper order submission
 - Authorization consumption or activation
 - Trading &#47; strategy &#47; risk &#47; safety core mutation
-- Claiming §11.17 &#47; §11.14 Live evidence proven fields as satisfied
+- Claiming later §11.17 &#47; §11.14 Live evidence proven fields as satisfied
+- Implementing `TESTNET_LIFECYCLE_PROVEN`
 
 ## Productive owners
 
@@ -105,8 +108,9 @@ Canonical Stateful Trading Core (unchanged)
 → Cap 11.1–11.11 contracts retained
 → Cap 11.12 Fully Autonomous Live Readiness Ratification Contracts
    ├─ AutonomyClosureStandardFieldRecordV1
-   │    CANONICAL_STATEFUL_CORE_PROVEN=true via Cap-7.2 §11.17 static binding only
-   │    all other §11.17 evidence-proven fields remain false
+   │    CANONICAL_STATEFUL_CORE_PROVEN=true via Cap-7.2 §11.17 static binding
+   │    SIMULATED_LIFECYCLE_PROVEN=true via Cap-7.1 §11.17 static binding
+   │    all later §11.17 evidence-proven fields remain false
    └─ FullyAutonomousLiveReadinessRatificationRecordV1 (fixture-only; READY overclaim forbidden)
 → SimulatedExecutionPort (sole reachable)
 → Accounting &#47; Portfolio &#47; Reconciliation &#47; Evidence
@@ -126,7 +130,7 @@ FULLY_AUTONOMOUS_LIVE_TRADING_READY=false
 FULLY_AUTONOMOUS_LIVE_TRADING_ACTIVE=false
 REAL_CAPITAL_MOVEMENT_REACHABLE=false
 CANONICAL_STATEFUL_CORE_PROVEN=true
-SIMULATED_LIFECYCLE_PROVEN=false
+SIMULATED_LIFECYCLE_PROVEN=true
 TESTNET_LIFECYCLE_PROVEN=false
 LIVE_PRIVATE_READ_ONLY_PROVEN=false
 CAPABILITY_11_1_DEPENDENCY_SATISFIED=true

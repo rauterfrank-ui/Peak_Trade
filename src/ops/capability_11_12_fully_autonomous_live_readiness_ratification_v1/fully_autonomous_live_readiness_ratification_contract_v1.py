@@ -30,6 +30,7 @@ from src.ops.capability_11_12_fully_autonomous_live_readiness_ratification_v1.co
     LIVE_AUTHORIZATION_VALID,
     OWNER,
     OWNER_LIVE_GO,
+    SIMULATED_LIFECYCLE_PROVEN,
 )
 
 
@@ -58,7 +59,7 @@ class FullyAutonomousLiveReadinessRatificationRecordV1:
 def _default_field_snapshot() -> dict[str, bool]:
     return {
         "CANONICAL_STATEFUL_CORE_PROVEN": CANONICAL_STATEFUL_CORE_PROVEN,
-        "SIMULATED_LIFECYCLE_PROVEN": False,
+        "SIMULATED_LIFECYCLE_PROVEN": SIMULATED_LIFECYCLE_PROVEN,
         "TESTNET_LIFECYCLE_PROVEN": False,
         "LIVE_PRIVATE_READ_ONLY_PROVEN": False,
         "LIVE_ORDER_LIFECYCLE_PROVEN": False,
