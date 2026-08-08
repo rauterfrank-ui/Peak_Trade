@@ -1,0 +1,11 @@
+{
+  "cap_11_13": "not_started",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_Section_11_12_8_FixtureResidual",
+    "Cap11_Section_11_12_8_WrapperResiduals_NonExtendable",
+    "Section_11_12_8_TerminalProductiveConsumer",
+    "TestnetExecutionPort_Productive_Under_Terminal"
+  ],
+  "section_11_12_8_run_consumer": "absent"
+}
