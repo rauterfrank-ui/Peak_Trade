@@ -85,6 +85,16 @@ def run_campaign_lifecycle_v1(
     record.first_permitted_effect_stubbed = bool(effect.get("stubbed"))
     if stubbed and not record.first_permitted_effect_stubbed:
         raise ActualStartExecutorError("EXPECTED_STUBBED_FIRST_EFFECT")
+    if not stubbed:
+        if record.first_permitted_effect_stubbed:
+            raise ActualStartExecutorError("EXPECTED_NON_STUBBED_FIRST_EFFECT")
+        boundary_ok = bool(
+            effect.get("network_send_boundary_reached")
+            or effect.get("wire_sent")
+            or effect.get("submitted")
+        )
+        if not boundary_ok:
+            raise ActualStartExecutorError("REAL_PATH_SEND_BOUNDARY_NOT_REACHED")
     record.events.append({"event": "first_permitted_testnet_effect", "effect": effect})
 
     record.heartbeat_count += 1

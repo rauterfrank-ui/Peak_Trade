@@ -60,8 +60,9 @@ LIVE_AUTHORIZED=false
 ## Next step after merge
 
 ```text
-NEXT_CONSUMER_CAPABILITY_ID=SEPARATE_OWNER_GO_REQUIRED_FOR_EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
+NEXT_CONSUMER_CAPABILITY_ID=CAPABILITY_11_SECTION_11_12_8_REAL_PRODUCTIVE_TESTNET_EXECUTE_PATH_UNLOCK_V1
 ```
 
-A separate Owner-GO is required before any **real** productive Testnet campaign
-run (non-stubbed network side effects).
+After unlock merge, the fresh canonical next step becomes
+`SEPARATE_OWNER_GO_EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW` (no further
+implementation&#47;governance-unlock PR required before that Owner EXECUTE).

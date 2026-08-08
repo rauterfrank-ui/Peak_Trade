@@ -71,15 +71,24 @@ class ProductiveTestnetExecutionPortV1:
                 "quantity": quantity,
             },
         )
+        stubbed_result = bool(result.get("stubbed"))
+        wire_sent = bool(result.get("wire_sent"))
+        boundary_reached = bool(result.get("network_send_boundary_reached"))
         attempt = {
             "client_order_id": client_order_id,
             "instrument": instrument,
             "order_type": order_type,
             "side": side,
             "quantity": quantity,
-            "stubbed": bool(result.get("stubbed")),
-            "submitted": not bool(result.get("stubbed")),
-            "network_effect": "STUBBED" if result.get("stubbed") else "TESTNET",
+            "stubbed": stubbed_result,
+            "submitted": wire_sent and not stubbed_result,
+            "wire_sent": wire_sent,
+            "network_send_boundary_reached": boundary_reached or stubbed_result or wire_sent,
+            "network_effect": (
+                "STUBBED"
+                if stubbed_result
+                else ("TESTNET" if wire_sent else str(result.get("network_effect") or "NONE"))
+            ),
             "live_order_effect": "NONE",
         }
         self.submit_attempts.append(attempt)
