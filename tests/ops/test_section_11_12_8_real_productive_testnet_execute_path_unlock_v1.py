@@ -32,9 +32,13 @@ from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.acce
 )
 from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.bound_testnet_http_client_v1 import (
     BoundTestnetHttpClientError,
+    assert_okx_access_timestamp_iso_ms_v1,
     construct_bound_okx_testnet_http_client_v1,
+    format_okx_access_timestamp_iso_ms_v1,
 )
 from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.constants_v1 import (
+    BOUND_OKX_ACCESS_TIMESTAMP_FORMAT,
+    BOUND_OKX_TESTNET_HTTP_USER_AGENT,
     CAPABILITY_ID,
     FORBIDDEN_TRACE_TOKENS,
     PATH_IMPLEMENTATION_ONLY_REFUSAL_REMOVED,
@@ -130,6 +134,102 @@ def test_live_host_hard_block_on_client(tmp_path: Path) -> None:
             body={},
             headers={},
         )
+
+
+def test_okx_access_timestamp_iso_ms_format() -> None:
+    from datetime import datetime, timezone
+
+    fixed = datetime(2026, 8, 8, 20, 35, 7, 123456, tzinfo=timezone.utc)
+    ts = format_okx_access_timestamp_iso_ms_v1(now=fixed)
+    assert ts == "2026-08-08T20:35:07.123Z"
+    assert assert_okx_access_timestamp_iso_ms_v1(ts) == ts
+    with pytest.raises(BoundTestnetHttpClientError, match="OKX_ACCESS_TIMESTAMP_FORMAT_INVALID"):
+        assert_okx_access_timestamp_iso_ms_v1("1754682907.1234567")
+
+
+def test_bound_client_sets_browser_ua_and_iso_ms_timestamp_metadata() -> None:
+    backend = build_acceptance_fixture_vault_backend_v1()
+    handle = resolve_and_load_secretref_ephemeral_v1(
+        allow_real_vault=True,
+        vault_backend=backend,
+    )
+    client = construct_bound_okx_testnet_http_client_v1(credential_handle=handle)
+    result = client.request(
+        method="GET",
+        url="https://eea.okx.com/api/v5/account/balance",
+        body={},
+        headers={},
+    )
+    assert result["wire_sent"] is False
+    assert result["network_effect"] == "NONE"
+    prepared = client.prepared_requests[-1]
+    assert prepared["user_agent_present"] is True
+    assert prepared["okx_access_timestamp_format"] == BOUND_OKX_ACCESS_TIMESTAMP_FORMAT
+    assert prepared["simulation_header"]["x-simulated-trading"] == "1"
+    assert "Chrome/127" in BOUND_OKX_TESTNET_HTTP_USER_AGENT
+    assert "Python-urllib" not in BOUND_OKX_TESTNET_HTTP_USER_AGENT
+
+
+def test_bound_client_wire_headers_include_ua_sim_and_iso_timestamp(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    backend = build_acceptance_fixture_vault_backend_v1()
+    handle = resolve_and_load_secretref_ephemeral_v1(
+        allow_real_vault=True,
+        vault_backend=backend,
+    )
+    client = construct_bound_okx_testnet_http_client_v1(
+        credential_handle=handle,
+        wire_send_enabled=True,
+    )
+    captured: dict[str, object] = {}
+
+    class _Resp:
+        status = 200
+
+        def read(self) -> bytes:
+            return b'{"code":"0","data":[],"msg":""}'
+
+        def getcode(self) -> int:
+            return 200
+
+        def __enter__(self) -> "_Resp":
+            return self
+
+        def __exit__(self, *args: object) -> None:
+            return None
+
+    def _fake_urlopen(req: object, timeout: float = 0.0) -> _Resp:  # noqa: ARG001
+        headers = getattr(req, "headers", {})
+        # urllib lowercases header keys in some versions; normalize.
+        norm = {str(k).lower(): str(v) for k, v in dict(headers).items()}
+        captured["headers"] = norm
+        captured["timeout"] = timeout
+        return _Resp()
+
+    monkeypatch.setattr(
+        "src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.bound_testnet_http_client_v1.request.urlopen",
+        _fake_urlopen,
+    )
+    out = client.request(
+        method="GET",
+        url="https://eea.okx.com/api/v5/account/config",
+        body={},
+        headers={},
+    )
+    assert out["wire_sent"] is True
+    assert out["network_effect"] == "TESTNET"
+    headers = captured["headers"]
+    assert isinstance(headers, dict)
+    assert headers.get("user-agent") == BOUND_OKX_TESTNET_HTTP_USER_AGENT
+    assert headers.get("x-simulated-trading") == "1"
+    ts = headers.get("ok-access-timestamp")
+    assert isinstance(ts, str)
+    assert_okx_access_timestamp_iso_ms_v1(ts)
+    # Auth material present as headers but never asserted as plaintext values in evidence.
+    assert "ok-access-key" in headers
+    assert "ok-access-sign" in headers
+    assert "ok-access-passphrase" in headers
 
 
 def test_historical_refuse_helper_still_exists_but_not_on_real_path() -> None:

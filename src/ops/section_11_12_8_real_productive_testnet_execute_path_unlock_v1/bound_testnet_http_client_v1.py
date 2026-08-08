@@ -6,8 +6,9 @@ import base64
 import hashlib
 import hmac
 import json
-import time
+import re
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from typing import Any
 from urllib import error, request
 from urllib.parse import urlparse
@@ -28,7 +29,11 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.sec
 )
 from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.constants_v1 import (
     BOUND_CLIENT_KIND,
+    BOUND_OKX_ACCESS_TIMESTAMP_FORMAT,
+    BOUND_OKX_TESTNET_HTTP_USER_AGENT,
 )
+
+_OKX_ISO_MS_Z_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$")
 
 
 class BoundTestnetHttpClientError(RuntimeError):
@@ -77,6 +82,23 @@ def sign_okx_request_v1(
     return base64.b64encode(digest).decode("ascii")
 
 
+def format_okx_access_timestamp_iso_ms_v1(*, now: datetime | None = None) -> str:
+    """Return OKX-compatible OK-ACCESS-TIMESTAMP (UTC ISO-8601 with milliseconds)."""
+    dt = datetime.now(timezone.utc) if now is None else now
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    else:
+        dt = dt.astimezone(timezone.utc)
+    ms = dt.microsecond // 1000
+    return dt.strftime("%Y-%m-%dT%H:%M:%S.") + f"{ms:03d}Z"
+
+
+def assert_okx_access_timestamp_iso_ms_v1(timestamp: str) -> str:
+    if not _OKX_ISO_MS_Z_RE.fullmatch(str(timestamp or "")):
+        raise BoundTestnetHttpClientError("OKX_ACCESS_TIMESTAMP_FORMAT_INVALID")
+    return timestamp
+
+
 @dataclass
 class BoundOkxTestnetHttpClientV1:
     """Real Testnet HTTP client. Wire send is gated; pre-merge keeps it disabled."""
@@ -105,7 +127,7 @@ class BoundOkxTestnetHttpClientV1:
         material = borrow_ephemeral_material_for_session_auth_v1(self.credential_handle)
         creds = _parse_okx_material(material)
         del material
-        timestamp = str(time.time())
+        timestamp = assert_okx_access_timestamp_iso_ms_v1(format_okx_access_timestamp_iso_ms_v1())
         sign = sign_okx_request_v1(
             secret=creds["api_secret"],
             timestamp=timestamp,
@@ -119,6 +141,7 @@ class BoundOkxTestnetHttpClientV1:
             "OK-ACCESS-TIMESTAMP": timestamp,
             "OK-ACCESS-PASSPHRASE": creds["passphrase"],
             "Content-Type": "application/json",
+            "User-Agent": BOUND_OKX_TESTNET_HTTP_USER_AGENT,
             SIMULATION_HEADER_NAME: SIMULATION_HEADER_VALUE,
         }
         # Drop secrets from local names ASAP.
@@ -133,6 +156,8 @@ class BoundOkxTestnetHttpClientV1:
             "rest_base": self.rest_base,
             "simulation_header": {SIMULATION_HEADER_NAME: SIMULATION_HEADER_VALUE},
             "auth_headers_present": True,
+            "user_agent_present": True,
+            "okx_access_timestamp_format": BOUND_OKX_ACCESS_TIMESTAMP_FORMAT,
             "client_kind": self.client_kind,
             "wire_send_enabled": self.wire_send_enabled,
         }
