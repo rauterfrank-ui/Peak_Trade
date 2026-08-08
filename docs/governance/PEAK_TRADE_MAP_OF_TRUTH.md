@@ -187,7 +187,6 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.2 | SSOT forensic status &#47; next-step binding |
 | [`evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z/`](../../evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z/) | Primary sealed run evidence (immutable) |
 | [`…&#47;20260808T181528Z&#47;derived_forensic_closeout_v1&#47;`](../../evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z/derived_forensic_closeout_v1/) | Derived HTTP-403 forensic closeout (non-SSOT) |
-| [`…&#47;section_11_12_8_autonomous_okx_eea_demo_credential_ip_resolve_v1&#47;20260808T203507Z&#47;`](../../evidence/ops/section_11_12_8_autonomous_okx_eea_demo_credential_ip_resolve_v1/20260808T203507Z/) | Predecessor orderless Demo GET proof (not targeted trade proof) |
 
 ```text
 THIS_SECTION_DEFINES_NO_SEMANTICS=true
@@ -196,6 +195,7 @@ SECTION_11_13_STARTED=false
 LIVE_AUTHORIZED=false
 NEXT_CANONICAL_STEP_POINTER=OWNER_GO_RESOLVE_EXTERNAL_OKX_TESTNET_ACCOUNT_OR_CREDENTIAL_BLOCKER_AND_RETRY_TARGETED_PROOF
 PREDECESSOR_GET_PROOF_IS_NOT_TARGETED_TRADE_PROOF=true
+PREDECESSOR_ORDERLESS_GET_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_autonomous_okx_eea_demo_credential_ip_resolve_v1&#47;20260808T203507Z&#47;
 ```
 
 ---
