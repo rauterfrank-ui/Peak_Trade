@@ -1,0 +1,133 @@
+"""Verifier for Cap 11 productive private-readonly fetch reference-only."""
+
+from __future__ import annotations
+
+from typing import Any
+
+from src.ops.capability_11_productive_private_readonly_fetch_reference_only_v1.constants_v1 import (
+    ACTIVATION_STATE,
+    AUTHORIZATION_CONSUMPTION_ALLOWED,
+    AUTHORIZATION_CONSUMED,
+    CAPABILITY_11_4_STARTED,
+    CAPABILITY_11_13_STARTED,
+    CAPABILITY_ID,
+    CORE_LOGIC_CHANGE,
+    CREDENTIAL_CONSUMED,
+    CREDENTIAL_LOAD_PERFORMED,
+    CREDENTIAL_PLAINTEXT_LOADED,
+    EXCHANGE_CREDENTIAL_ACCESS_REACHABLE,
+    EXCHANGE_ORDER_SUBMIT_REACHABLE,
+    LEAST_PRIVILEGE,
+    LIVE_AUTHORIZED,
+    LIVE_EXECUTION_REACHABLE,
+    MUTATING_EXCHANGE_CALLS,
+    NETWORK_SESSION_STARTED,
+    NEXT_CONSUMER_CAPABILITY_ID,
+    ORDER_PATH_STARTED,
+    ORDER_SEND_DISABLED,
+    ORDERS_AUTHORIZED,
+    PREDECESSOR_CAPABILITY_ID,
+    PRIVATE_READONLY_FETCH_PERFORMED,
+    PRIVATE_READONLY_GET_ALLOWLIST,
+    PRIVATE_READONLY_NETWORK_REACHABLE,
+    REAL_EXECUTION_ADAPTER_CONSTRUCTED,
+    REFERENCE_ONLY,
+    REFERENCE_ONLY_FETCH_ADMISSIBLE_DEFAULT,
+    TESTNET_AUTHORIZED,
+    TESTNET_EXECUTION_REACHABLE,
+    WITHDRAWAL_PERMISSION,
+)
+from src.ops.capability_11_productive_private_readonly_fetch_reference_only_v1.reference_only_fetch_v1 import (
+    prove_productive_private_readonly_fetch_reference_only_v1,
+)
+
+CALL_GRAPH_BEFORE: dict[str, Any] = {
+    "nodes": [
+        "CanonicalStatefulTradingCore",
+        "Cap11_2_ProductiveCredentialLoadPathBinding",
+        "Cap11_3_ProductivePrivateReadonlyPathBinding",
+        "OwnerAuthArtifactTestnetCredentialScopePrivateNetwork",
+        "Cap11_ProductiveCredentialLoadReferenceOnly",
+        "SimulatedExecutionPort",
+    ],
+    "private_readonly_fetch": "forbidden_after_credential_load_reference_only",
+    "cap_11_4": "contracts_only_not_started",
+}
+
+CALL_GRAPH_AFTER: dict[str, Any] = {
+    "nodes": [
+        "CanonicalStatefulTradingCore",
+        "Cap11_2_ProductiveCredentialLoadPathBinding",
+        "Cap11_3_ProductivePrivateReadonlyPathBinding",
+        "OwnerAuthArtifactTestnetCredentialScopePrivateNetwork",
+        "Cap11_ProductiveCredentialLoadReferenceOnly",
+        "Cap11_ProductivePrivateReadonlyFetchReferenceOnly",
+        "SimulatedExecutionPort",
+    ],
+    "private_readonly_fetch": "reference_only_bound_fail_closed_never_performed",
+    "get_allowlist": list(PRIVATE_READONLY_GET_ALLOWLIST),
+    "authorization_consumption": "forbidden",
+    "network_session": "forbidden",
+    "order_send": "disabled",
+    "activation": "not_activated",
+}
+
+
+def verify_capability_11_productive_private_readonly_fetch_reference_only_v1() -> dict[str, Any]:
+    proof = prove_productive_private_readonly_fetch_reference_only_v1()
+    ok = bool(proof.get("ok"))
+    claims = {
+        "CAPABILITY_ID": CAPABILITY_ID,
+        "PREDECESSOR_CAPABILITY_ID": PREDECESSOR_CAPABILITY_ID,
+        "NEXT_CONSUMER_CAPABILITY_ID": NEXT_CONSUMER_CAPABILITY_ID,
+        "CORE_LOGIC_CHANGE": CORE_LOGIC_CHANGE,
+        "ACTIVATION_STATE": ACTIVATION_STATE,
+        "REFERENCE_ONLY": REFERENCE_ONLY,
+        "REFERENCE_ONLY_FETCH_ADMISSIBLE_DEFAULT": REFERENCE_ONLY_FETCH_ADMISSIBLE_DEFAULT,
+        "ORDER_SEND_DISABLED": ORDER_SEND_DISABLED,
+        "ORDERS_AUTHORIZED": ORDERS_AUTHORIZED,
+        "ORDER_PATH_STARTED": ORDER_PATH_STARTED,
+        "MUTATING_EXCHANGE_CALLS": MUTATING_EXCHANGE_CALLS,
+        "AUTHORIZATION_CONSUMPTION_ALLOWED": AUTHORIZATION_CONSUMPTION_ALLOWED,
+        "AUTHORIZATION_CONSUMED": AUTHORIZATION_CONSUMED,
+        "CREDENTIAL_CONSUMED": CREDENTIAL_CONSUMED,
+        "NETWORK_SESSION_STARTED": NETWORK_SESSION_STARTED,
+        "PRIVATE_READONLY_FETCH_PERFORMED": PRIVATE_READONLY_FETCH_PERFORMED,
+        "PRIVATE_READONLY_NETWORK_REACHABLE": PRIVATE_READONLY_NETWORK_REACHABLE,
+        "CREDENTIAL_LOAD_PERFORMED": CREDENTIAL_LOAD_PERFORMED,
+        "CREDENTIAL_PLAINTEXT_LOADED": CREDENTIAL_PLAINTEXT_LOADED,
+        "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": EXCHANGE_CREDENTIAL_ACCESS_REACHABLE,
+        "CAPABILITY_11_4_STARTED": CAPABILITY_11_4_STARTED,
+        "CAPABILITY_11_13_STARTED": CAPABILITY_11_13_STARTED,
+        "TESTNET_AUTHORIZED": TESTNET_AUTHORIZED,
+        "LIVE_AUTHORIZED": LIVE_AUTHORIZED,
+        "TESTNET_EXECUTION_REACHABLE": TESTNET_EXECUTION_REACHABLE,
+        "LIVE_EXECUTION_REACHABLE": LIVE_EXECUTION_REACHABLE,
+        "REAL_EXECUTION_ADAPTER_CONSTRUCTED": REAL_EXECUTION_ADAPTER_CONSTRUCTED,
+        "EXCHANGE_ORDER_SUBMIT_REACHABLE": EXCHANGE_ORDER_SUBMIT_REACHABLE,
+        "LEAST_PRIVILEGE": LEAST_PRIVILEGE,
+        "WITHDRAWAL_PERMISSION": WITHDRAWAL_PERMISSION,
+        "REFERENCE_ONLY_PROOF_OK": proof.get("ok"),
+        "COMPLETE_REFERENCE_ONLY_FETCH_ADMISSIBLE": proof.get(
+            "complete_reference_only_fetch_admissible"
+        ),
+        "INTENDED_FETCH_PLAN_BOUND": proof.get("intended_fetch_plan_bound"),
+        "COMPLETE_FETCH_STILL_FORBIDDEN": proof.get("complete_fetch_still_forbidden"),
+        "PLAINTEXT_REJECTED": proof.get("plaintext_rejected"),
+        "WITHDRAWAL_REJECTED": proof.get("withdrawal_rejected"),
+        "ORDER_SEND_HARD_REJECT": proof.get("order_send_hard_reject"),
+        "ORDERS_AUTHORIZED_HARD_REJECT": proof.get("orders_authorized_hard_reject"),
+        "CONSUMED_HARD_REJECT": proof.get("consumed_hard_reject"),
+        "CREDENTIAL_CONSUMED_HARD_REJECT": proof.get("credential_consumed_hard_reject"),
+        "BAD_ALLOWLIST_BLOCKED": proof.get("bad_allowlist_blocked"),
+        "MUTATION_ENDPOINT_BLOCKED": proof.get("mutation_endpoint_blocked"),
+    }
+    return {
+        "ok": ok,
+        "VERIFIER_RESULT": "PASS" if ok else "FAIL",
+        "CAPABILITY_ID": CAPABILITY_ID,
+        "claims": claims,
+        "proofs": {"reference_only_fetch": proof},
+        "call_graph_before": CALL_GRAPH_BEFORE,
+        "call_graph_after": CALL_GRAPH_AFTER,
+    }
