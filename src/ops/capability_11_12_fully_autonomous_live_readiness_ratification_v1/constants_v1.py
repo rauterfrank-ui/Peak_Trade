@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+from src.ops.phase_11_section_11_17_canonical_stateful_core_proven_evidence_closure_v1.constants_v1 import (
+    CANONICAL_STATEFUL_CORE_PROVEN as CANONICAL_STATEFUL_CORE_PROVEN,
+)
+
 CAPABILITY_ID = "CAPABILITY_11_12_FULLY_AUTONOMOUS_LIVE_READINESS_RATIFICATION_V1"
 PACKAGE_MARKER = "CAPABILITY_11_12_FULLY_AUTONOMOUS_LIVE_READINESS_RATIFICATION_V1=true"
 OWNER = "ops.capability_11_12_fully_autonomous_live_readiness_ratification_v1"
@@ -184,7 +188,7 @@ CAPABILITY_11_12_STARTED = True
 CAPABILITY_11_12_FULLY_AUTONOMOUS_LIVE_READINESS_STARTED = True
 
 # Cap 11.12 does NOT claim readiness or activation (§11.17 / §11.18 / §11.19 Cap 11.13).
-# Predecessor Cap 11.1–11.11 remain contracts-only; §11.17 proven fields stay false.
+# Predecessor Cap 11.1–11.11 remain contracts-only; remaining §11.17 proven fields stay false.
 FULLY_AUTONOMOUS_LIVE_TRADING_READY = False
 FULLY_AUTONOMOUS_LIVE_TRADING_ACTIVE = False
 LIVE_AUTHORIZATION_VALID = False
@@ -193,8 +197,9 @@ LIVE_ACTIVATION_CAPABILITY_PASS = False
 CAPABILITY_11_13_STARTED = False
 CAPABILITY_11_13_SEPARATE_OWNER_AUTHORIZED_LIVE_ACTIVATION_STARTED = False
 
-# §11.17 Autonomy closure standard fields — contract-bound; not proven in Cap 11.12.
-CANONICAL_STATEFUL_CORE_PROVEN = False
+# §11.17 Autonomy closure standard fields — Cap 11.12 consumes ONLY
+# CANONICAL_STATEFUL_CORE_PROVEN (imported above from Cap-7.2 static binding).
+# All other §11.17 evidence-proven fields remain false; READY/ACTIVE remain false.
 SIMULATED_LIFECYCLE_PROVEN = False
 TESTNET_LIFECYCLE_PROVEN = False
 LIVE_PRIVATE_READ_ONLY_PROVEN = False

@@ -45,6 +45,8 @@ LIVE_ORDER_SUBMIT_PERFORMED_IN_CAPABILITY_11_12=false
 LIVE_ORDER_EXECUTION_PERFORMED_IN_CAPABILITY_11_12=false
 AUTHORIZATION_CONSUMPTION_ALLOWED=false
 CREDENTIAL_LOAD_PERFORMED_IN_CAPABILITY_11_12=false
+CANONICAL_STATEFUL_CORE_PROVEN=true
+SIMULATED_LIFECYCLE_PROVEN=false
 CAPABILITY_11_12_STARTED=true
 CAPABILITY_11_12_FULLY_AUTONOMOUS_LIVE_READINESS_STARTED=true
 CAPABILITY_11_13_STARTED=false
@@ -102,7 +104,9 @@ Canonical Stateful Trading Core
 Canonical Stateful Trading Core (unchanged)
 → Cap 11.1–11.11 contracts retained
 → Cap 11.12 Fully Autonomous Live Readiness Ratification Contracts
-   ├─ AutonomyClosureStandardFieldRecordV1 (fixture-only; not proven)
+   ├─ AutonomyClosureStandardFieldRecordV1
+   │    CANONICAL_STATEFUL_CORE_PROVEN=true via Cap-7.2 §11.17 static binding only
+   │    all other §11.17 evidence-proven fields remain false
    └─ FullyAutonomousLiveReadinessRatificationRecordV1 (fixture-only; READY overclaim forbidden)
 → SimulatedExecutionPort (sole reachable)
 → Accounting &#47; Portfolio &#47; Reconciliation &#47; Evidence
@@ -121,6 +125,10 @@ PRIVATE_NETWORK_SESSION_STARTED=false
 FULLY_AUTONOMOUS_LIVE_TRADING_READY=false
 FULLY_AUTONOMOUS_LIVE_TRADING_ACTIVE=false
 REAL_CAPITAL_MOVEMENT_REACHABLE=false
+CANONICAL_STATEFUL_CORE_PROVEN=true
+SIMULATED_LIFECYCLE_PROVEN=false
+TESTNET_LIFECYCLE_PROVEN=false
+LIVE_PRIVATE_READ_ONLY_PROVEN=false
 CAPABILITY_11_1_DEPENDENCY_SATISFIED=true
 CAPABILITY_11_2_DEPENDENCY_SATISFIED=true
 CAPABILITY_11_3_DEPENDENCY_SATISFIED=true
