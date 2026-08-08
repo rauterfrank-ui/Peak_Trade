@@ -1,0 +1,21 @@
+{
+  "CAPABILITY_ID": "CAPABILITY_11_2_PRODUCTIVE_CREDENTIAL_LOAD_PATH_BINDING_V1",
+  "CREDENTIAL_LOAD_ALLOWED_DEFAULT": false,
+  "LEAST_PRIVILEGE": true,
+  "OWNER": "ops.capability_11_2_productive_credential_load_path_binding_v1",
+  "WITHDRAWAL_PERMISSION": false,
+  "cap_11_3_construction_blocked": true,
+  "complete_binding_credential_load_allowed": true,
+  "complete_path_load_still_forbidden": true,
+  "credential_load_performed": false,
+  "default_binding_credential_load_allowed": false,
+  "incomplete_load_blocked": true,
+  "network_session_blocked": true,
+  "non_testnet_blocked": true,
+  "ok": true,
+  "plaintext_rejected": true,
+  "predecessor_cap_11_2_gate_blocks_load": true,
+  "provider_access_blocked": true,
+  "sha_mismatch_blocked": true,
+  "withdrawal_rejected": true
+}
