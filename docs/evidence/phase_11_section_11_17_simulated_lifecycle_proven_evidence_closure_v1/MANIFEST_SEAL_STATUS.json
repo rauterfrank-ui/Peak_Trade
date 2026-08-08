@@ -1,0 +1,18 @@
+{
+  "CANONICAL_STATEFUL_CORE_PROVEN": true,
+  "CAPABILITY_11_13_STARTED": false,
+  "FULLY_AUTONOMOUS_LIVE_TRADING_ACTIVE": false,
+  "FULLY_AUTONOMOUS_LIVE_TRADING_READY": false,
+  "LIVE_PRIVATE_READ_ONLY_PROVEN": false,
+  "MANIFEST_SEAL_STATUS": "VALID",
+  "MANIFEST_SEAL_VALID": true,
+  "SIMULATED_LIFECYCLE_PROVEN": true,
+  "TESTNET_LIFECYCLE_PROVEN": false,
+  "claims_SIMULATED_LIFECYCLE_PROVEN": true,
+  "pre_status_file_manifest_verify_rc": 0,
+  "sealed_at": "2026-08-08T08:57:52Z",
+  "summary_ok": true,
+  "summary_verifier_result": "PASS",
+  "verification_method": "shasum -a 256 -c MANIFEST.sha256",
+  "verification_result": "PASS"
+}
