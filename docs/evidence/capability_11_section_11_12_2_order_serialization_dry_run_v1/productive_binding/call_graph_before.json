@@ -1,0 +1,13 @@
+{
+  "cap_11_4_adapter": "contracts_only_not_activated",
+  "network_submit": "forbidden",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_Section_11_12_1_ProductivePrivateReadonlyApiAndAccountIdentity",
+    "Cap11_4_OrderSerializationDryRunContract_FixtureOnly",
+    "SimulatedExecutionPort"
+  ],
+  "order_serialization_dry_run": "cap_11_4_fixture_contract_only",
+  "section_11_12_2": "forbidden_until_section_11_12_1_closed",
+  "section_11_12_3": "not_started"
+}
