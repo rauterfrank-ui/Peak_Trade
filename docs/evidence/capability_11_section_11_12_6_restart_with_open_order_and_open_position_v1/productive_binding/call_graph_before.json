@@ -1,0 +1,13 @@
+{
+  "cap_11_5_adapter": "contracts_only_not_activated",
+  "network_submit": "forbidden",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_Section_11_12_5_UnknownSubmitAndReconnectRecovery",
+    "Cap11_5_RestartWithOpenOrderPosition_FixtureOnly",
+    "SimulatedExecutionPort"
+  ],
+  "restart_with_open_order_and_open_position": "cap_11_5_fixture_contract_only",
+  "section_11_12_6": "forbidden_until_section_11_12_5_closed",
+  "section_11_12_7": "not_started"
+}
