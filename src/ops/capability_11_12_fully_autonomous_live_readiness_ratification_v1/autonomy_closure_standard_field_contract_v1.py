@@ -33,6 +33,19 @@ from src.ops.capability_11_12_fully_autonomous_live_readiness_ratification_v1.co
     SIMULATED_LIFECYCLE_PROVEN,
     TESTNET_LIFECYCLE_PROVEN,
 )
+from src.ops.phase_11_section_11_17_canonical_stateful_core_proven_evidence_closure_v1.binding_v1 import (
+    bind_canonical_stateful_core_proven_from_cap72_v1,
+)
+
+# Bound from Cap 7.2 via §11.17 package; remaining evidence residuals stay unset.
+_SECTION_11_17_BOUND_TRUE_FIELDS: frozenset[str] = frozenset({"CANONICAL_STATEFUL_CORE_PROVEN"})
+_SECTION_11_17_POLICY_TRUE_FIELDS: frozenset[str] = frozenset(
+    {
+        "OWNER_INTERVENTION_REQUIRED_FOR_SCOPE_OR_LIMIT_CHANGE",
+        "CORE_LOGIC_PARITY_ACROSS_MODES",
+    }
+)
+_CANONICAL_CORE_SOURCE = "EXISTING_EVIDENCE_BINDING_CAP72_SECTION_11_17"
 
 
 class AutonomyClosureStandardFieldError(RuntimeError):
@@ -94,12 +107,18 @@ def build_autonomy_closure_standard_field_record_v1(
 ) -> AutonomyClosureStandardFieldRecordV1:
     if field_name not in AUTONOMY_CLOSURE_STANDARD_FIELDS:
         raise AutonomyClosureStandardFieldError(f"UNKNOWN_AUTONOMY_CLOSURE_FIELD:{field_name}")
+    source = (
+        _CANONICAL_CORE_SOURCE
+        if field_name in _SECTION_11_17_BOUND_TRUE_FIELDS
+        else "FIXTURE_ONLY"
+    )
     return AutonomyClosureStandardFieldRecordV1(
         field_name=field_name,
         contract_bound=True,
         proven_claimed=False,
         expected_for_ready=_expected_for_ready(field_name),
         current_value=bool(_CURRENT_FIELD_VALUES[field_name]),
+        source=source,
     )
 
 
@@ -145,21 +164,32 @@ def prove_autonomy_closure_standard_field_contract_v1() -> dict[str, Any]:
     all_unclaimed = all(
         r.contract_bound is True and r.proven_claimed is False for r in records.values()
     )
-    # Contracts-only lineage: evidence proven fields remain false; policy fields that
-    # are already True (parity / scope-change intervention) do not unlock READY while
-    # routine intervention is still required and proven fields are unset.
-    evidence_proven_unset = all(
+    # Cap 11.12 consumes only CANONICAL_STATEFUL_CORE_PROVEN from §11.17/Cap-7.2 binding.
+    # Remaining evidence-proven residuals stay false; policy fields do not unlock READY.
+    evidence_residuals_unset = all(
         records[name].current_value is False
         for name in AUTONOMY_CLOSURE_REQUIRED_TRUE_FIELDS
-        if name
-        not in {
-            "OWNER_INTERVENTION_REQUIRED_FOR_SCOPE_OR_LIMIT_CHANGE",
-            "CORE_LOGIC_PARITY_ACROSS_MODES",
-        }
+        if name not in (_SECTION_11_17_BOUND_TRUE_FIELDS | _SECTION_11_17_POLICY_TRUE_FIELDS)
+    )
+    canonical_core_bound = (
+        records["CANONICAL_STATEFUL_CORE_PROVEN"].current_value is True
+        and records["CANONICAL_STATEFUL_CORE_PROVEN"].source == _CANONICAL_CORE_SOURCE
+        and CANONICAL_STATEFUL_CORE_PROVEN is True
+    )
+    core_binding = bind_canonical_stateful_core_proven_from_cap72_v1()
+    core_binding_ok = (
+        core_binding.get("ok") is True
+        and core_binding.get("CANONICAL_STATEFUL_CORE_PROVEN") is True
+        and core_binding.get("FULLY_AUTONOMOUS_LIVE_TRADING_READY") is False
+        and core_binding.get("FULLY_AUTONOMOUS_LIVE_TRADING_ACTIVE") is False
+        and core_binding.get("SIMULATED_LIFECYCLE_PROVEN") is False
+        and core_binding.get("FIXTURE_ONLY") is False
     )
     prerequisite_not_met = all(
         [
-            evidence_proven_unset,
+            evidence_residuals_unset,
+            canonical_core_bound,
+            core_binding_ok,
             records["OWNER_INTERVENTION_REQUIRED_FOR_ROUTINE_OPERATION"].current_value is True,
             records["OWNER_INTERVENTION_REQUIRED_FOR_SCOPE_OR_LIMIT_CHANGE"].current_value is True,
             records["CORE_LOGIC_PARITY_ACROSS_MODES"].current_value is True,
@@ -176,7 +206,7 @@ def prove_autonomy_closure_standard_field_contract_v1() -> dict[str, Any]:
             prerequisite_not_met,
             AUTONOMY_CLOSURE_STANDARD_FIELD_CONTRACT_BOUND is True,
             AUTONOMY_CLOSURE_STANDARD_FIELD_CONTRACT_ACTIVATED is False,
-            CANONICAL_STATEFUL_CORE_PROVEN is False,
+            CANONICAL_STATEFUL_CORE_PROVEN is True,
             SIMULATED_LIFECYCLE_PROVEN is False,
             TESTNET_LIFECYCLE_PROVEN is False,
             LIVE_PRIVATE_READ_ONLY_PROVEN is False,
@@ -201,7 +231,7 @@ def prove_autonomy_closure_standard_field_contract_v1() -> dict[str, Any]:
         "ok": ok,
         "AUTONOMY_CLOSURE_STANDARD_FIELD_CONTRACT_BOUND": True,
         "AUTONOMY_CLOSURE_STANDARD_FIELD_CONTRACT_ACTIVATED": False,
-        "CANONICAL_STATEFUL_CORE_PROVEN": False,
+        "CANONICAL_STATEFUL_CORE_PROVEN": True,
         "SIMULATED_LIFECYCLE_PROVEN": False,
         "TESTNET_LIFECYCLE_PROVEN": False,
         "LIVE_PRIVATE_READ_ONLY_PROVEN": False,
@@ -227,5 +257,6 @@ def prove_autonomy_closure_standard_field_contract_v1() -> dict[str, Any]:
         "proven_overclaim_blocked": proven_overclaim_blocked,
         "activation_blocked": activation_blocked,
         "prerequisites_not_met_for_ready": prerequisite_not_met,
+        "SECTION_11_17_CANONICAL_STATEFUL_CORE_CONSUMED": True,
         "OWNER": OWNER,
     }

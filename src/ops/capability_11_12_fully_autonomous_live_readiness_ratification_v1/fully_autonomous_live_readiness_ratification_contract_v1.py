@@ -13,6 +13,7 @@ from typing import Any, Mapping
 from src.ops.capability_11_12_fully_autonomous_live_readiness_ratification_v1.constants_v1 import (
     AUTONOMY_CLOSURE_REQUIRED_FALSE_FIELDS,
     AUTONOMY_CLOSURE_REQUIRED_TRUE_FIELDS,
+    CANONICAL_STATEFUL_CORE_PROVEN,
     CAPABILITY_11_12_FULLY_AUTONOMOUS_LIVE_READINESS_STARTED,
     CAPABILITY_11_12_STARTED,
     CAPABILITY_11_13_SEPARATE_OWNER_AUTHORIZED_LIVE_ACTIVATION_STARTED,
@@ -56,7 +57,7 @@ class FullyAutonomousLiveReadinessRatificationRecordV1:
 
 def _default_field_snapshot() -> dict[str, bool]:
     return {
-        "CANONICAL_STATEFUL_CORE_PROVEN": False,
+        "CANONICAL_STATEFUL_CORE_PROVEN": CANONICAL_STATEFUL_CORE_PROVEN,
         "SIMULATED_LIFECYCLE_PROVEN": False,
         "TESTNET_LIFECYCLE_PROVEN": False,
         "LIVE_PRIVATE_READ_ONLY_PROVEN": False,
