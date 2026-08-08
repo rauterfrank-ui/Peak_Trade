@@ -1,0 +1,18 @@
+{
+  "activation": "not_activated",
+  "get_allowlist": [
+    "accounts",
+    "open_positions",
+    "open_orders"
+  ],
+  "mutation": "forbidden",
+  "network_session": "forbidden",
+  "nodes": [
+    "CanonicalStatefulTradingCore",
+    "Cap11_2_ProductiveCredentialLoadPathBinding",
+    "Cap11_3_PrivateReadonlyContracts",
+    "Cap11_3_ProductivePrivateReadonlyPathBinding",
+    "SimulatedExecutionPort"
+  ],
+  "private_readonly_fetch": "path_bound_fail_closed_never_executed"
+}

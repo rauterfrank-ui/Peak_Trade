@@ -1,0 +1,41 @@
+{
+  "CAPABILITY_ID": "CAPABILITY_11_3_PRODUCTIVE_PRIVATE_READONLY_PATH_BINDING_V1",
+  "LEAST_PRIVILEGE": true,
+  "OWNER": "ops.capability_11_3_productive_private_readonly_path_binding_v1",
+  "PRIVATE_READONLY_PATH_ALLOWED_DEFAULT": false,
+  "WITHDRAWAL_PERMISSION": false,
+  "allowed_get_endpoints": [
+    "accounts",
+    "open_positions",
+    "open_orders"
+  ],
+  "bad_allowlist_blocked": true,
+  "cap_11_13_blocked": true,
+  "cap_11_3_port_declared": true,
+  "cap_11_4_blocked": true,
+  "complete_binding_private_readonly_path_allowed": true,
+  "complete_path_fetch_still_forbidden": true,
+  "default_binding_private_readonly_path_allowed": false,
+  "forbidden_mutation_actions": [
+    "submit_order",
+    "cancel_order",
+    "amend_order",
+    "withdraw",
+    "transfer",
+    "sendorder",
+    "batchorder"
+  ],
+  "incomplete_fetch_blocked": true,
+  "mutation_blocked": true,
+  "mutation_request_blocked": true,
+  "network_session_blocked": true,
+  "non_testnet_blocked": true,
+  "ok": true,
+  "plaintext_rejected": true,
+  "predecessor_cap_11_2_path_bound": true,
+  "private_readonly_fetch_performed": false,
+  "provider_access_blocked": true,
+  "sha_mismatch_blocked": true,
+  "unknown_endpoint_blocked": true,
+  "withdrawal_rejected": true
+}

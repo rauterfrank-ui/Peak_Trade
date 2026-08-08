@@ -1,0 +1,112 @@
+{
+  "CAPABILITY_ID": "CAPABILITY_11_3_PRODUCTIVE_PRIVATE_READONLY_PATH_BINDING_V1",
+  "VERIFIER_RESULT": "PASS",
+  "call_graph_after": {
+    "activation": "not_activated",
+    "get_allowlist": [
+      "accounts",
+      "open_positions",
+      "open_orders"
+    ],
+    "mutation": "forbidden",
+    "network_session": "forbidden",
+    "nodes": [
+      "CanonicalStatefulTradingCore",
+      "Cap11_2_ProductiveCredentialLoadPathBinding",
+      "Cap11_3_PrivateReadonlyContracts",
+      "Cap11_3_ProductivePrivateReadonlyPathBinding",
+      "SimulatedExecutionPort"
+    ],
+    "private_readonly_fetch": "path_bound_fail_closed_never_executed"
+  },
+  "call_graph_before": {
+    "cap_11_4": "contracts_only_not_started",
+    "nodes": [
+      "CanonicalStatefulTradingCore",
+      "Cap11_2_ProductiveCredentialLoadPathBinding",
+      "Cap11_3_PrivateReadonlyContracts",
+      "SimulatedExecutionPort"
+    ],
+    "private_readonly_fetch": "forbidden_contracts_only"
+  },
+  "claims": {
+    "ACTIVATION_STATE": "not_activated",
+    "AUTHORIZATION_CONSUMPTION_ALLOWED": false,
+    "BAD_ALLOWLIST_BLOCKED": true,
+    "CAPABILITY_11_13_STARTED": false,
+    "CAPABILITY_11_4_STARTED": false,
+    "CAPABILITY_ID": "CAPABILITY_11_3_PRODUCTIVE_PRIVATE_READONLY_PATH_BINDING_V1",
+    "COMPLETE_PATH_FETCH_STILL_FORBIDDEN": true,
+    "CONTRACT_CAPABILITY_ID": "CAPABILITY_11_3_PRIVATE_READONLY_VENUE_INTEGRATION_AND_RECONCILIATION_V1",
+    "CORE_LOGIC_CHANGE": false,
+    "CREDENTIAL_LOAD_PERFORMED": false,
+    "CREDENTIAL_PLAINTEXT_LOADED": false,
+    "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE": false,
+    "EXCHANGE_ORDER_SUBMIT_REACHABLE": false,
+    "LEAST_PRIVILEGE": true,
+    "LIVE_AUTHORIZED": false,
+    "LIVE_EXECUTION_REACHABLE": false,
+    "MUTATION_BLOCKED": true,
+    "NETWORK_SESSION_STARTED": false,
+    "NEXT_CONSUMER_CAPABILITY_ID": "CAPABILITY_11_4_TESTNET_EXECUTION_ADAPTER_AND_LIFECYCLE_CLOSURE_V1",
+    "PATH_BINDING_PROOF_OK": true,
+    "PLAINTEXT_REJECTED": true,
+    "PREDECESSOR_CAPABILITY_ID": "CAPABILITY_11_2_PRODUCTIVE_CREDENTIAL_LOAD_PATH_BINDING_V1",
+    "PRIVATE_READONLY_FETCH_PERFORMED": false,
+    "PRIVATE_READONLY_GET_ONLY": true,
+    "PRIVATE_READONLY_NETWORK_REACHABLE": false,
+    "PRIVATE_READONLY_ORDER_MUTATION_FORBIDDEN": true,
+    "PRIVATE_READONLY_PATH_ALLOWED_DEFAULT": false,
+    "PRIVATE_READONLY_VENUE_INTEGRATION_ACTIVATED": false,
+    "REAL_EXECUTION_ADAPTER_CONSTRUCTED": false,
+    "TESTNET_AUTHORIZED": false,
+    "TESTNET_EXECUTION_REACHABLE": false,
+    "UNKNOWN_ENDPOINT_BLOCKED": true,
+    "WITHDRAWAL_PERMISSION": false,
+    "WITHDRAWAL_REJECTED": true
+  },
+  "ok": true,
+  "proofs": {
+    "path_binding": {
+      "CAPABILITY_ID": "CAPABILITY_11_3_PRODUCTIVE_PRIVATE_READONLY_PATH_BINDING_V1",
+      "LEAST_PRIVILEGE": true,
+      "OWNER": "ops.capability_11_3_productive_private_readonly_path_binding_v1",
+      "PRIVATE_READONLY_PATH_ALLOWED_DEFAULT": false,
+      "WITHDRAWAL_PERMISSION": false,
+      "allowed_get_endpoints": [
+        "accounts",
+        "open_positions",
+        "open_orders"
+      ],
+      "bad_allowlist_blocked": true,
+      "cap_11_13_blocked": true,
+      "cap_11_3_port_declared": true,
+      "cap_11_4_blocked": true,
+      "complete_binding_private_readonly_path_allowed": true,
+      "complete_path_fetch_still_forbidden": true,
+      "default_binding_private_readonly_path_allowed": false,
+      "forbidden_mutation_actions": [
+        "submit_order",
+        "cancel_order",
+        "amend_order",
+        "withdraw",
+        "transfer",
+        "sendorder",
+        "batchorder"
+      ],
+      "incomplete_fetch_blocked": true,
+      "mutation_blocked": true,
+      "mutation_request_blocked": true,
+      "network_session_blocked": true,
+      "non_testnet_blocked": true,
+      "ok": true,
+      "plaintext_rejected": true,
+      "predecessor_cap_11_2_path_bound": true,
+      "private_readonly_fetch_performed": false,
+      "provider_access_blocked": true,
+      "sha_mismatch_blocked": true,
+      "unknown_endpoint_blocked": true,
+      "withdrawal_rejected": true
+    }
+  }
+}
