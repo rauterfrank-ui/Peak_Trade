@@ -1,0 +1,306 @@
+{
+  "AUTHORIZATION_REQUIRED": "PRESENT_OWNER_GO_EXECUTE",
+  "CANONICAL_NEXT_STEP_AFTER_MERGE": "SEPARATE_OWNER_GO_EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW",
+  "CAPABILITY_ID": "CAPABILITY_11_SECTION_11_12_8_REAL_PRODUCTIVE_TESTNET_EXECUTE_PATH_UNLOCK_V1",
+  "GOVERNANCE_ACCEPTANCE": "PASS",
+  "LIVE_AUTHORIZED": false,
+  "LIVE_ORDER_EFFECT": "NONE",
+  "MODE_PRODUCTIVE_REAL_ACCEPTED": true,
+  "NETWORK_EFFECT": "NONE",
+  "NETWORK_SEND_BOUNDARY_REACHED": true,
+  "ORDER_EFFECT": "NONE",
+  "PRE_MERGE_ACCEPTANCE_GATE": "PASS",
+  "PRE_MERGE_ORDER_EFFECT": false,
+  "PRE_MERGE_REAL_NETWORK_EFFECT": false,
+  "PRODUCTIVE_TESTNET_CAMPAIGN_STARTED": false,
+  "REAL_SECRETREF_RESOLVER_REACHED": true,
+  "REAL_TESTNET_HTTP_CLIENT_BOUND": true,
+  "REQUEST_MATCHES_CANONICAL_NEXT_STEP": true,
+  "SECTION_11_13_STARTED": false,
+  "forensic": {
+    "CAPABILITY_ID": "CAPABILITY_11_SECTION_11_12_8_REAL_PRODUCTIVE_TESTNET_EXECUTE_PATH_UNLOCK_V1",
+    "chain_classifications": {
+      "ACTIVATION_ENABLED_ARMED": "PRESENT_AND_EXECUTABLE",
+      "BOUND_REAL_TESTNET_HTTP_CLIENT": "PRESENT_AND_EXECUTABLE",
+      "CAMPAIGN_RUNNING": "PRESENT_AND_EXECUTABLE",
+      "COMPLETED_OR_ABORTED": "PRESENT_AND_EXECUTABLE",
+      "EMERGENCY_CONTROL": "PRESENT_AND_EXECUTABLE",
+      "ENDPOINT_ALLOWLIST": "PRESENT_AND_EXECUTABLE",
+      "EPHEMERAL_SECRET_LOAD": "PRESENT_AND_EXECUTABLE",
+      "EVIDENCE_SEAL": "PRESENT_AND_EXECUTABLE",
+      "EXECUTION_EVIDENCE": "PRESENT_AND_EXECUTABLE",
+      "FIRST_PERMITTED_TESTNET_SIDE_EFFECT": "PRESENT_AND_EXECUTABLE",
+      "HIDDEN_CONFIRM_SINGLE_USE": "PRESENT_AND_EXECUTABLE",
+      "KILL_SWITCH": "PRESENT_AND_EXECUTABLE",
+      "NETWORK_SESSION_ENTRY": "PRESENT_AND_EXECUTABLE",
+      "OWNER_GO_EXECUTE": "PRESENT_AND_EXECUTABLE",
+      "PRODUCTIVE_REAL_CONSUMER": "PRESENT_AND_EXECUTABLE",
+      "PRODUCTIVE_REAL_EXECUTOR": "PRESENT_AND_EXECUTABLE",
+      "PRODUCTIVE_SECRETREF_RESOLVER": "PRESENT_AND_EXECUTABLE",
+      "RISK_GATE": "PRESENT_AND_EXECUTABLE",
+      "TESTNET_ACCOUNT_BINDING": "PRESENT_AND_EXECUTABLE",
+      "TESTNET_AUTHORIZED": "PRESENT_AND_EXECUTABLE"
+    },
+    "closed_blockers": [
+      {
+        "file": "productive_consumer_v1.py",
+        "status": "HISTORICAL_HELPER_ONLY_NOT_ON_REAL_PATH",
+        "token": "REAL_PRODUCTIVE_CAMPAIGN_FORBIDDEN_IN_IMPLEMENTATION_GO"
+      },
+      {
+        "file": "secretref_credential_v1.py",
+        "status": "REMOVED",
+        "token": "REAL_VAULT_NOT_INVOKED_IN_IMPLEMENTATION_GO"
+      },
+      {
+        "file": "testnet_transport_v1.py",
+        "status": "FAIL_CLOSED_GUARD_WITH_BOUND_BUILDER",
+        "token": "HTTP_CLIENT_NOT_BOUND"
+      },
+      {
+        "file": "constants_v1.py",
+        "status": "HISTORICAL_PACKAGE_CONSTANT_NOT_ON_UNLOCK_TRACE",
+        "token": "IMPLEMENTATION_ONLY"
+      }
+    ],
+    "forbidden_trace_tokens": [
+      "IMPLEMENTATION_ONLY",
+      "STUBBED_ACCEPTANCE",
+      "REAL_PRODUCTIVE_CAMPAIGN_FORBIDDEN_IN_IMPLEMENTATION_GO",
+      "HTTP_CLIENT_NOT_BOUND",
+      "NO_REAL_EXECUTE_ENTRYPOINT",
+      "REAL_VAULT_NOT_INVOKED_IN_IMPLEMENTATION_GO",
+      "DEAD_EDGE",
+      "PLACEHOLDER_EXECUTOR",
+      "WIRE_SEND_FORBIDDEN_IN_UNLOCK_IMPLEMENTATION_GO"
+    ],
+    "ok": true,
+    "required_chain": [
+      "OWNER_GO_EXECUTE",
+      "ACTIVATION_ENABLED_ARMED",
+      "TESTNET_AUTHORIZED",
+      "PRODUCTIVE_SECRETREF_RESOLVER",
+      "EPHEMERAL_SECRET_LOAD",
+      "RISK_GATE",
+      "KILL_SWITCH",
+      "EMERGENCY_CONTROL",
+      "HIDDEN_CONFIRM_SINGLE_USE",
+      "PRODUCTIVE_REAL_CONSUMER",
+      "PRODUCTIVE_REAL_EXECUTOR",
+      "TESTNET_ACCOUNT_BINDING",
+      "ENDPOINT_ALLOWLIST",
+      "BOUND_REAL_TESTNET_HTTP_CLIENT",
+      "NETWORK_SESSION_ENTRY",
+      "FIRST_PERMITTED_TESTNET_SIDE_EFFECT",
+      "CAMPAIGN_RUNNING",
+      "EXECUTION_EVIDENCE",
+      "EVIDENCE_SEAL",
+      "COMPLETED_OR_ABORTED"
+    ],
+    "residual_blockers": [],
+    "unlocked": true
+  },
+  "governance": {
+    "GOVERNANCE_ACCEPTANCE": "PASS",
+    "claims": {
+      "AUTHORIZATION_REQUIRED": "PRESENT_OWNER_GO_EXECUTE",
+      "AUTHORIZED_RUNTIME_PATH_IMPLEMENTATION_ONLY": false,
+      "AUTHORIZED_RUNTIME_PATH_PRODUCTIVE_REAL_TESTNET_EXECUTION_FORBIDDEN": false,
+      "CANONICAL_NEXT_STEP_AFTER_MERGE": "SEPARATE_OWNER_GO_EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW",
+      "CAPABILITY_ID": "CAPABILITY_11_SECTION_11_12_8_REAL_PRODUCTIVE_TESTNET_EXECUTE_PATH_UNLOCK_V1",
+      "HIDDEN_CONFIRM_SINGLE_USE_IS_RUNTIME_PRECONDITION_ONLY": true,
+      "LIVE_HARD_BLOCK_PRESERVED": true,
+      "MODE_PRODUCTIVE_REAL_PERMITTED_FOR_TESTNET_ONLY": true,
+      "MODE_PRODUCTIVE_REAL_REQUIRES_ALL_EXISTING_GATES_PASS": true,
+      "NO_ADDITIONAL_CAPABILITY_PR_REQUIRED_BEFORE_EXECUTE": true,
+      "NO_ADDITIONAL_GOVERNANCE_UNLOCK_PR_REQUIRED_BEFORE_EXECUTE": true,
+      "NO_ADDITIONAL_IMPLEMENTATION_GO_REQUIRED_BEFORE_EXECUTE": true,
+      "REQUEST_MATCHES_CANONICAL_NEXT_STEP": true,
+      "SECRETREF_AND_HIDDEN_CONFIRM_ARE_NOT_FUTURE_GOVERNANCE_DEPENDENCIES": true,
+      "SECRETREF_MATERIAL_IS_RUNTIME_PRECONDITION_ONLY": true,
+      "SECTION_11_13_STARTED": false
+    },
+    "master_runbook_path": "/Users/frnkhrz/Peak_Trade/docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "ok": true,
+    "residual_blockers": []
+  },
+  "ok": true,
+  "residual_forbidden": [],
+  "result": {
+    "CAPABILITY_ID": "CAPABILITY_11_SECTION_11_12_8_REAL_PRODUCTIVE_TESTNET_EXECUTE_PATH_UNLOCK_V1",
+    "LIVE_ORDER_EFFECT": "NONE",
+    "NETWORK_EFFECT": "NONE",
+    "ORDER_EFFECT": "NONE",
+    "PRODUCTIVE_TESTNET_CAMPAIGN_STARTED": false,
+    "SECTION_11_13_STARTED": false,
+    "client_bound": true,
+    "mode": "PRODUCTIVE_REAL_NETWORK",
+    "network_send_boundary_reached": true,
+    "ok": true,
+    "run": {
+      "LIVE_ORDER_EFFECT": "NONE",
+      "NETWORK_EFFECT": "NONE",
+      "ORDER_EFFECT": "NONE",
+      "PRODUCTIVE_CONSUMER_ROLE": "ACTUAL_PRODUCTIVE_SECTION_11_12_8_CAMPAIGN_RUN_CONSUMER",
+      "PRODUCTIVE_TESTNET_CAMPAIGN_STARTED": false,
+      "SECTION_11_13_STARTED": false,
+      "closeout": {
+        "SECTION_11_12_8_CLOSED": false,
+        "SECTION_11_13_STARTED": false,
+        "TESTNET_AUTONOMOUS_RECOVERY_PROVEN": false,
+        "TESTNET_DUPLICATE_ORDER_PREVENTION_PROVEN": false,
+        "TESTNET_EVIDENCE_VERIFIED": false,
+        "TESTNET_KILL_SWITCH_PROVEN": false,
+        "TESTNET_ORDER_LIFECYCLE_PROVEN": false,
+        "TESTNET_RECONCILIATION_PROVEN": false,
+        "TESTNET_RESTART_PROVEN": false,
+        "TESTNET_UNKNOWN_SUBMIT_RECOVERY_PROVEN": false,
+        "closeout_machinery_present": true,
+        "real_productive_evidence": false,
+        "stubbed_acceptance": false
+      },
+      "durable_state": {
+        "authorization_state": "AUTHORIZED",
+        "campaign_armed": true,
+        "campaign_enabled": true,
+        "campaign_started": true,
+        "capability_id": "CAPABILITY_11_SECTION_11_12_8_ACTUAL_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_START_V1",
+        "completion_reason": "REAL_BOUNDARY_COMPLETED",
+        "confirm_latched": true,
+        "credential_bound": true,
+        "live_authorized": false,
+        "live_order_effect": "NONE",
+        "network_effect": "NONE",
+        "network_session_started": true,
+        "order_effect": "NONE",
+        "owner": "ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1",
+        "owner_go_consumed": true,
+        "preflight_pass": true,
+        "schema": "section_11_12_8_actual_start_durable_state.v1",
+        "section_11_13_started": false,
+        "stage": "SEALED",
+        "stubbed_boundary": false,
+        "testnet_authorized_persisted": false,
+        "testnet_authorized_runtime": true
+      },
+      "evidence_path": "/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/pt_unlock_gen_ieqo2fc2/verify/g-d0bb868f/run-ca06979a/execution_evidence/productive_execution_evidence_v1.json",
+      "evidence_seal_ok": true,
+      "lifecycle": {
+        "PRODUCTIVE_EXECUTOR_ROLE": "ACTUAL_PRODUCTIVE_SECTION_11_12_8_CAMPAIGN_RUN_EXECUTOR",
+        "aborted": false,
+        "completed": true,
+        "continuity_ok": true,
+        "emergency_reaction": "",
+        "events": [
+          {
+            "event": "start"
+          },
+          {
+            "effect": {
+              "client_order_id": "coid-actual-start-1",
+              "instrument": "BTC-USDT-SWAP",
+              "live_order_effect": "NONE",
+              "network_effect": "NONE",
+              "network_send_boundary_reached": true,
+              "order_type": "LIMIT",
+              "quantity": "1",
+              "side": "buy",
+              "stubbed": false,
+              "submitted": false,
+              "wire_sent": false
+            },
+            "event": "first_permitted_testnet_effect"
+          },
+          {
+            "event": "heartbeat"
+          },
+          {
+            "event": "continuity_ok"
+          },
+          {
+            "event": "restart_handled_within_bounds"
+          },
+          {
+            "event": "complete"
+          }
+        ],
+        "first_permitted_effect_invoked": true,
+        "first_permitted_effect_stubbed": false,
+        "heartbeat_count": 1,
+        "kill_switch_reaction": "",
+        "next_operation_after_boundary": "FIRST_PERMITTED_TESTNET_SIDE_EFFECT",
+        "restart_handled": true,
+        "risk_breach_reaction": "",
+        "running": false,
+        "started": true
+      },
+      "mode": "PRODUCTIVE_REAL_NETWORK",
+      "next_operation_after_boundary": "FIRST_PERMITTED_TESTNET_SIDE_EFFECT",
+      "ok": true
+    },
+    "runtime_trace": {
+      "CAPABILITY_ID": "CAPABILITY_11_SECTION_11_12_8_REAL_PRODUCTIVE_TESTNET_EXECUTE_PATH_UNLOCK_V1",
+      "durable_stage": "SEALED",
+      "evidence_path": "/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/pt_unlock_gen_ieqo2fc2/verify/g-d0bb868f/run-ca06979a/execution_evidence/productive_execution_evidence_v1.json",
+      "evidence_seal_ok": true,
+      "first_permitted_effect_invoked": true,
+      "first_permitted_effect_stubbed": false,
+      "mode": "PRODUCTIVE_REAL_NETWORK",
+      "stages": [
+        "OWNER_GO_EXECUTE",
+        "ACTIVATION_ENABLED_ARMED",
+        "TESTNET_AUTHORIZED",
+        "PRODUCTIVE_SECRETREF_RESOLVER",
+        "EPHEMERAL_SECRET_LOAD",
+        "RISK_GATE",
+        "KILL_SWITCH",
+        "EMERGENCY_CONTROL",
+        "HIDDEN_CONFIRM_SINGLE_USE",
+        "PRODUCTIVE_REAL_CONSUMER",
+        "PRODUCTIVE_REAL_EXECUTOR",
+        "TESTNET_ACCOUNT_BINDING",
+        "ENDPOINT_ALLOWLIST",
+        "BOUND_REAL_TESTNET_HTTP_CLIENT",
+        "NETWORK_SESSION_ENTRY",
+        "FIRST_PERMITTED_TESTNET_SIDE_EFFECT",
+        "CAMPAIGN_RUNNING",
+        "EXECUTION_EVIDENCE",
+        "EVIDENCE_SEAL",
+        "COMPLETED_OR_ABORTED"
+      ]
+    },
+    "vault": {
+      "backend_kind": "PRODUCTIVE_SECRETREF_VAULT_RESOLVER",
+      "plaintext_exposed": false,
+      "plaintext_persisted": false
+    }
+  },
+  "runtime_audit": {
+    "CAPABILITY_ID": "CAPABILITY_11_SECTION_11_12_8_REAL_PRODUCTIVE_TESTNET_EXECUTE_PATH_UNLOCK_V1",
+    "ok": true,
+    "read_only": true,
+    "stages": [
+      "OWNER_GO_EXECUTE",
+      "ACTIVATION_ENABLED_ARMED",
+      "TESTNET_AUTHORIZED",
+      "PRODUCTIVE_SECRETREF_RESOLVER",
+      "EPHEMERAL_SECRET_LOAD",
+      "RISK_GATE",
+      "KILL_SWITCH",
+      "EMERGENCY_CONTROL",
+      "HIDDEN_CONFIRM_SINGLE_USE",
+      "PRODUCTIVE_REAL_CONSUMER",
+      "PRODUCTIVE_REAL_EXECUTOR",
+      "TESTNET_ACCOUNT_BINDING",
+      "ENDPOINT_ALLOWLIST",
+      "BOUND_REAL_TESTNET_HTTP_CLIENT",
+      "NETWORK_SESSION_ENTRY",
+      "FIRST_PERMITTED_TESTNET_SIDE_EFFECT",
+      "CAMPAIGN_RUNNING",
+      "EXECUTION_EVIDENCE",
+      "EVIDENCE_SEAL",
+      "COMPLETED_OR_ABORTED"
+    ],
+    "violations": []
+  }
+}

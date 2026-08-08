@@ -62,16 +62,36 @@ def evaluate_section_11_12_8_closeout_v1(
     *,
     stubbed_acceptance: bool,
     real_productive_evidence: bool = False,
+    boundary_path_proof_only: bool = False,
 ) -> Section11128CloseoutV1:
     """Closeout evaluator.
 
     Stubbed/dry paths MUST NOT flip TESTNET_*_PROVEN. Real productive evidence
-    is required to close §11.12.8.
+    is required to close §11.12.8. Boundary-path unlock proofs certify
+    executability without claiming productive campaign evidence.
     """
     if SECTION_11_13_STARTED:
         raise ActualStartCloseoutError("SECTION_11_13_MUST_REMAIN_FALSE")
     if stubbed_acceptance and real_productive_evidence:
         raise ActualStartCloseoutError("STUBBED_AND_REAL_MUTUALLY_EXCLUSIVE")
+    if boundary_path_proof_only:
+        if stubbed_acceptance or real_productive_evidence:
+            raise ActualStartCloseoutError("BOUNDARY_PROOF_EXCLUSIVE")
+        return Section11128CloseoutV1(
+            closeout_machinery_present=True,
+            stubbed_acceptance=False,
+            real_productive_evidence=False,
+            testnet_order_lifecycle_proven=False,
+            testnet_reconciliation_proven=False,
+            testnet_restart_proven=False,
+            testnet_unknown_submit_recovery_proven=False,
+            testnet_duplicate_order_prevention_proven=False,
+            testnet_kill_switch_proven=False,
+            testnet_autonomous_recovery_proven=False,
+            testnet_evidence_verified=False,
+            section_11_13_started=False,
+            section_11_12_8_closed=False,
+        )
     if stubbed_acceptance:
         return Section11128CloseoutV1(
             closeout_machinery_present=True,

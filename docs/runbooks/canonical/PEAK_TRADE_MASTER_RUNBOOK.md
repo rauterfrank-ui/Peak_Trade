@@ -2684,6 +2684,12 @@ REAL_CAPITAL_MOVEMENT_AUTHORIZED=false
 OWNER_GO_REQUIRED_FOR_EACH_ACTIVATION=true
 ```
 
+Persisted&#47;default `TESTNET_AUTHORIZED=false` remains the fail-closed
+baseline. It does not forbid a later scoped Owner-GO for
+`EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW` after §11.12.8 unlock merge from
+setting **ephemeral runtime** Testnet authorization under the gates in
+§11.12.8. Live remains unauthorized here.
+
 Nothing in Phases 6.x--10 or in this Phase 11 definition may implicitly
 make a real execution path reachable.
 
@@ -3154,6 +3160,69 @@ The canonical productive start consumer&#47;executor for §11.12.8 is
 `CAPABILITY_11_SECTION_11_12_8_ACTUAL_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_START_V1`.
 The Activation-and-Executable-Handoff package remains dry-activation proof
 only and must not be treated as the productive start edge.
+The real execute-path unlock package is
+`CAPABILITY_11_SECTION_11_12_8_REAL_PRODUCTIVE_TESTNET_EXECUTE_PATH_UNLOCK_V1`
+(binds SecretRef vault resolution, real Testnet HTTP client, and the real
+operator EXECUTE entrypoint; pre-merge proves the send boundary without
+network&#47;order effects).
+
+### 11.12.8 Post-unlock Owner-EXECUTE authority (binding)
+
+After
+`CAPABILITY_11_SECTION_11_12_8_REAL_PRODUCTIVE_TESTNET_EXECUTE_PATH_UNLOCK_V1`
+is merged to `origin/main`, the following is the canonical next step:
+
+``` text
+CANONICAL_NEXT_STEP_AFTER_UNLOCK_MERGE=SEPARATE_OWNER_GO_EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
+REQUEST_MATCHES_CANONICAL_NEXT_STEP=true_for_EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
+AUTHORIZATION_REQUIRED=PRESENT_OWNER_GO_EXECUTE
+NO_ADDITIONAL_IMPLEMENTATION_GO_REQUIRED_BEFORE_EXECUTE=true
+NO_ADDITIONAL_GOVERNANCE_UNLOCK_PR_REQUIRED_BEFORE_EXECUTE=true
+NO_ADDITIONAL_CAPABILITY_PR_REQUIRED_BEFORE_EXECUTE=true
+```
+
+`EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW` is an explicitly permitted
+Owner-authorized Testnet **runtime** action on the unlocked path. It is
+not an implementation GO and must not be refused as
+`IMPLEMENTATION_ONLY`.
+
+``` text
+MODE_PRODUCTIVE_REAL_PERMITTED_FOR_TESTNET_ONLY=true
+MODE_PRODUCTIVE_REAL_REQUIRES_ALL_EXISTING_GATES_PASS=true
+AUTHORIZED_RUNTIME_PATH_IMPLEMENTATION_ONLY=false
+AUTHORIZED_RUNTIME_PATH_PRODUCTIVE_REAL_TESTNET_EXECUTION_FORBIDDEN=false
+SECRETREF_MATERIAL_IS_RUNTIME_PRECONDITION_ONLY=true
+HIDDEN_CONFIRM_SINGLE_USE_IS_RUNTIME_PRECONDITION_ONLY=true
+SECRETREF_AND_HIDDEN_CONFIRM_ARE_NOT_FUTURE_GOVERNANCE_DEPENDENCIES=true
+LIVE_HARD_BLOCK_PRESERVED=true
+SECTION_11_13_STARTED=false
+CAPABILITY_11_13_STARTED=false
+```
+
+Required runtime gates for `MODE_PRODUCTIVE_REAL` (all must pass):
+
+``` text
+ENABLED_AND_ARMED
+TESTNET_AUTHORIZED_RUNTIME_EPHEMERAL
+SECRETREF_ONLY_EPHEMERAL_LOAD
+RISK_GATE_PASS
+KILL_SWITCH_PASS
+EMERGENCY_CONTROL_PASS
+HIDDEN_CONFIRM_SINGLE_USE
+ACCOUNT_BINDING_PASS
+ENDPOINT_ALLOWLIST_PASS
+BOUND_REAL_TESTNET_HTTP_CLIENT
+LIVE_PATH_HARD_BLOCK
+```
+
+Section 2.1 `NO_TESTNET_ORDERS` describes the **no-order program** finish
+boundary. It does not forbid a separately Owner-authorized §11.12 Testnet
+progression once the unlock package is merged and
+`EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW` is presented. Persisted defaults
+remain fail-closed (`TESTNET_AUTHORIZED` persisted default false);
+ephemeral runtime authorization may become true only under that scoped
+Owner-GO. Live remains structurally hard-blocked. Cap &#47; §11.13 remains
+unstarted and unauthorized by this section.
 
 Mandatory Testnet sequence:
 
@@ -3748,6 +3817,12 @@ AUTHORIZATION_CONSUMPTION_ALLOWED=<true|false>
 RULESET_MUTATION_ALLOWED=false
 NOTION_MUTATION_ALLOWED=<true|false>
 ```
+
+Default assignment template values above are fail-closed. A scoped
+§11.12.8 `EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW` Owner-GO may set
+`TESTNET_ALLOWED=true` and related Testnet runtime fields for that
+assignment only, while `LIVE_TRADING_ALLOWED` must remain false and
+§11.13 must remain unstarted.
 
 Mandatory output:
 

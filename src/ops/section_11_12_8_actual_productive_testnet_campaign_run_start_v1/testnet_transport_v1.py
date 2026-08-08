@@ -72,11 +72,12 @@ class StubbedTestnetTransportV1:
 
 @dataclass
 class ProductiveTestnetTransportV1:
-    """Real transport surface — refuses unless allow_real_network=True."""
+    """Real transport surface — refuses unless allow_real_network=True and client bound."""
 
     rest_base: str = TESTNET_PRIVATE_REST_BASE
     allow_real_network: bool = False
     http_client: Callable[..., dict[str, Any]] | None = None
+    bound_client_kind: str = ""
 
     def request(
         self,
@@ -93,12 +94,15 @@ class ProductiveTestnetTransportV1:
             raise ActualStartTransportError("REAL_NETWORK_FORBIDDEN_WITHOUT_EXPLICIT_ALLOW")
         if self.http_client is None:
             raise ActualStartTransportError("HTTP_CLIENT_NOT_BOUND")
-        return self.http_client(
+        result = self.http_client(
             method=method,
             url=f"{self.rest_base}{endpoint}",
             body=body or {},
             headers={SIMULATION_HEADER_NAME: SIMULATION_HEADER_VALUE},
         )
+        if not isinstance(result, dict):
+            raise ActualStartTransportError("HTTP_CLIENT_RESULT_NOT_OBJECT")
+        return result
 
 
 def build_stubbed_testnet_transport_v1() -> StubbedTestnetTransportV1:
@@ -106,3 +110,26 @@ def build_stubbed_testnet_transport_v1() -> StubbedTestnetTransportV1:
     if anti.get("ok") is not True:
         raise ActualStartTransportError("CAP_11_4_ANTI_CORRUPTION_REQUIRED")
     return StubbedTestnetTransportV1()
+
+
+def build_productive_testnet_transport_v1(
+    *,
+    http_client: Callable[..., dict[str, Any]],
+    allow_real_network: bool = True,
+    rest_base: str = TESTNET_PRIVATE_REST_BASE,
+    bound_client_kind: str = "BOUND_REAL_TESTNET_HTTP_CLIENT",
+) -> ProductiveTestnetTransportV1:
+    """Bind the real Testnet HTTP client to the productive transport boundary."""
+    anti = prove_venue_adapter_anti_corruption_v1()
+    if anti.get("ok") is not True:
+        raise ActualStartTransportError("CAP_11_4_ANTI_CORRUPTION_REQUIRED")
+    if http_client is None:
+        raise ActualStartTransportError("HTTP_CLIENT_NOT_BOUND")
+    if not allow_real_network:
+        raise ActualStartTransportError("REAL_NETWORK_FORBIDDEN_WITHOUT_EXPLICIT_ALLOW")
+    return ProductiveTestnetTransportV1(
+        rest_base=rest_base,
+        allow_real_network=True,
+        http_client=http_client,
+        bound_client_kind=bound_client_kind,
+    )

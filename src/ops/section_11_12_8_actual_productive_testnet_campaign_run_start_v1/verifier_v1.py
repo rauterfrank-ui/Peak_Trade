@@ -87,7 +87,7 @@ def verify_section_11_12_8_actual_productive_testnet_campaign_run_start_v1(
         "call_graph_after": {
             "productive_start": "present_stubbed_acceptance_wired",
             "capability": CAPABILITY_ID,
-            "next": "SEPARATE_OWNER_GO_REQUIRED_FOR_EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW",
+            "next": "CAPABILITY_11_SECTION_11_12_8_REAL_PRODUCTIVE_TESTNET_EXECUTE_PATH_UNLOCK_V1",
             "consumption_probe": f"verify-{uuid4().hex[:8]}",
         },
     }
