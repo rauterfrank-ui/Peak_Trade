@@ -232,6 +232,78 @@ def test_bound_client_wire_headers_include_ua_sim_and_iso_timestamp(
     assert "ok-access-passphrase" in headers
 
 
+def test_bound_client_post_signed_body_equals_wire_body(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import hashlib
+    import io
+    import json
+    from urllib import error as urlerror
+
+    from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.okx_response_mapper_v1 import (
+        build_venue_native_order_body_v1,
+    )
+
+    backend = build_acceptance_fixture_vault_backend_v1()
+    handle = resolve_and_load_secretref_ephemeral_v1(
+        allow_real_vault=True,
+        vault_backend=backend,
+    )
+    client = construct_bound_okx_testnet_http_client_v1(
+        credential_handle=handle,
+        wire_send_enabled=True,
+    )
+    venue_body = build_venue_native_order_body_v1(
+        client_order_id="coid-diag-1",
+        instrument="BTC-USDT-SWAP",
+        order_type="LIMIT",
+        side="buy",
+        quantity="1",
+    )
+    expected_text = json.dumps(venue_body, separators=(",", ":"))
+    expected_sha = hashlib.sha256(expected_text.encode("utf-8")).hexdigest()
+    captured: dict[str, object] = {}
+
+    def _fake_urlopen_http_error(req: object, timeout: float = 0.0) -> object:  # noqa: ARG001
+        data = getattr(req, "data", None)
+        captured["data"] = data
+        headers = getattr(req, "headers", {})
+        captured["headers"] = {str(k).lower(): str(v) for k, v in dict(headers).items()}
+        raise urlerror.HTTPError(
+            url="https://eea.okx.com/api/v5/trade/order",
+            code=401,
+            msg="Unauthorized",
+            hdrs=None,  # type: ignore[arg-type]
+            fp=io.BytesIO(b'{"code":"50124","msg":"fixture-msg-only"}'),
+        )
+
+    monkeypatch.setattr(
+        "src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.bound_testnet_http_client_v1.request.urlopen",
+        _fake_urlopen_http_error,
+    )
+    out = client.request(
+        method="POST",
+        url="https://eea.okx.com/api/v5/trade/order",
+        body=venue_body,
+        headers={},
+    )
+    assert out["wire_sent"] is True
+    assert out["http_status"] == 401
+    assert out["response_body"] == {"code": "50124", "msg": "fixture-msg-only"}
+    assert captured["data"] == expected_text.encode("utf-8")
+    prepared = client.prepared_requests[-1]
+    assert prepared["method"] == "POST"
+    assert prepared["path"] == "/api/v5/trade/order"
+    assert prepared["signed_body_equals_wire_body"] is True
+    assert prepared["signed_body_sha256"] == expected_sha
+    assert prepared["wire_body_sha256"] == expected_sha
+    assert prepared["content_type"] == "application/json"
+    headers = captured["headers"]
+    assert isinstance(headers, dict)
+    assert headers.get("content-type") == "application/json"
+    assert headers.get("x-simulated-trading") == "1"
+
+
 def test_historical_refuse_helper_still_exists_but_not_on_real_path() -> None:
     with pytest.raises(ActualStartConsumerError, match="FORBIDDEN_IN_IMPLEMENTATION"):
         refuse_real_productive_campaign_in_implementation_go_v1()

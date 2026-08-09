@@ -123,7 +123,10 @@ class BoundOkxTestnetHttpClientV1:
         if method_u not in {"GET", "POST"}:
             raise BoundTestnetHttpClientError(f"METHOD_FORBIDDEN:{method}")
         body_obj = body or {}
+        # Single serialization used for BOTH OKX prehash body and wire bytes.
         body_text = "" if method_u == "GET" else json.dumps(body_obj, separators=(",", ":"))
+        wire_body_bytes = body_text.encode("utf-8") if body_text else b""
+        signed_body_sha256 = hashlib.sha256(wire_body_bytes).hexdigest()
         material = borrow_ephemeral_material_for_session_auth_v1(self.credential_handle)
         creds = _parse_okx_material(material)
         del material
@@ -160,6 +163,11 @@ class BoundOkxTestnetHttpClientV1:
             "okx_access_timestamp_format": BOUND_OKX_ACCESS_TIMESTAMP_FORMAT,
             "client_kind": self.client_kind,
             "wire_send_enabled": self.wire_send_enabled,
+            "content_type": "application/json",
+            "signed_body_sha256": signed_body_sha256,
+            "wire_body_sha256": signed_body_sha256,
+            "signed_body_equals_wire_body": True,
+            "body_byte_len": len(wire_body_bytes),
         }
         self.prepared_requests.append(prepared)
 
@@ -174,11 +182,12 @@ class BoundOkxTestnetHttpClientV1:
                 "response_body": None,
                 "account_identity": "acct-uid-testnet-demo",
                 "client_kind": self.client_kind,
+                "signed_body_equals_wire_body": True,
             }
 
         req = request.Request(
             url,
-            data=body_text.encode("utf-8") if body_text else None,
+            data=wire_body_bytes if wire_body_bytes else None,
             method=method_u,
             headers=merged,
         )

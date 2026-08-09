@@ -18,6 +18,7 @@ class OkxOrderResponseV1:
     wire_sent: bool
     body_parsed: bool
     exchange_code: str | None
+    msg: str | None
     s_code: str | None
     s_msg: str | None
     client_order_id: str | None
@@ -37,6 +38,7 @@ class OkxOrderResponseV1:
             "wire_sent": self.wire_sent,
             "body_parsed": self.body_parsed,
             "exchange_code": self.exchange_code,
+            "msg": self.msg,
             "s_code": self.s_code,
             "s_msg": self.s_msg,
             "client_order_id": self.client_order_id,
@@ -113,6 +115,7 @@ def parse_okx_order_response_v1(
             wire_sent=True,
             body_parsed=False,
             exchange_code=None,
+            msg=None,
             s_code=None,
             s_msg=None,
             client_order_id=None,
@@ -133,6 +136,7 @@ def parse_okx_order_response_v1(
             wire_sent=False,
             body_parsed=body_parsed,
             exchange_code=None,
+            msg=None,
             s_code=None,
             s_msg=None,
             client_order_id=None,
@@ -148,6 +152,9 @@ def parse_okx_order_response_v1(
 
     assert body_obj is not None
     exchange_code = str(body_obj.get("code")) if body_obj.get("code") is not None else None
+    # Top-level OKX msg must be retained for forensic reject diagnosis (e.g. 50124).
+    top_msg = body_obj.get("msg")
+    msg = str(top_msg) if top_msg is not None and str(top_msg) != "" else None
     data = body_obj.get("data")
     item: dict[str, Any] = {}
     if isinstance(data, list) and data and isinstance(data[0], dict):
@@ -184,6 +191,7 @@ def parse_okx_order_response_v1(
         wire_sent=True,
         body_parsed=True,
         exchange_code=exchange_code,
+        msg=msg,
         s_code=s_code,
         s_msg=s_msg,
         client_order_id=cl_ord,
