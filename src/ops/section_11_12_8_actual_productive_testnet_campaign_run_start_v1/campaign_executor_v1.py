@@ -9,6 +9,7 @@ from typing import Any, Callable
 from uuid import uuid4
 
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.constants_v1 import (
+    CANONICAL_LIMIT_PX_FOR_VENUE_NATIVE_BODY_V1,
     NEXT_OPERATION_AFTER_STUBBED_BOUNDARY,
     OFFLINE_PROOF_CADENCE_SECONDS,
     OFFLINE_PROOF_MAX_CYCLES,
@@ -180,6 +181,7 @@ def run_campaign_lifecycle_v1(
     monotonic_fn: Callable[[], float] = time.monotonic,
     sleep_fn: Callable[[float], None] = time.sleep,
     campaign_id: str | None = None,
+    limit_px: str = CANONICAL_LIMIT_PX_FOR_VENUE_NATIVE_BODY_V1,
 ) -> CampaignLifecycleRecordV1:
     """Bounded long-running campaign loop.
 
@@ -292,6 +294,9 @@ def run_campaign_lifecycle_v1(
             do_submit = cycle_index == 0
 
         if do_submit:
+            px_text = str(limit_px).strip()
+            if not px_text:
+                raise ActualStartExecutorError("LIMIT_ORDER_PX_REQUIRED_BEFORE_WIRE")
             client_order_id = f"coid-{record.campaign_id[:8]}-{cycle_index}"
             effect = port.submit_order_v1(
                 client_order_id=client_order_id,
@@ -299,6 +304,7 @@ def run_campaign_lifecycle_v1(
                 order_type="LIMIT",
                 side="buy",
                 quantity="1",
+                px=px_text,
             )
             order_attempted = True
             record.order_attempt_count += 1

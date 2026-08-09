@@ -344,13 +344,33 @@ def test_okx_accept_reject_and_wire_not_ack() -> None:
         order_type="LIMIT",
         side="buy",
         quantity="1",
+        px="10000",
     )
     assert body["clOrdId"] == "c1"
     assert body["instId"] == "BTC-USDT-SWAP"
     assert "client_order_id" not in body
-    # Forensic: productive LIMIT body currently omits Conditional OKX px.
-    assert "px" not in body
+    # OKX Conditional px MUST be present for LIMIT before any Order-POST.
+    assert body["px"] == "10000"
     assert body["ordType"] == "limit"
+
+    with pytest.raises(OkxResponseMapperError, match="LIMIT_ORDER_PX_REQUIRED_BEFORE_WIRE"):
+        build_venue_native_order_body_v1(
+            client_order_id="c1",
+            instrument="BTC-USDT-SWAP",
+            order_type="LIMIT",
+            side="buy",
+            quantity="1",
+            px=None,
+        )
+    with pytest.raises(OkxResponseMapperError, match="LIMIT_ORDER_PX_REQUIRED_BEFORE_WIRE"):
+        build_venue_native_order_body_v1(
+            client_order_id="c1",
+            instrument="BTC-USDT-SWAP",
+            order_type="limit",
+            side="buy",
+            quantity="1",
+            px="   ",
+        )
 
 
 def test_fill_only_when_evidenced() -> None:
@@ -518,6 +538,7 @@ def test_exchange_order_id_persisted_on_port_attempt() -> None:
         order_type="LIMIT",
         side="buy",
         quantity="1",
+        px="10000",
     )
     assert effect["wire_sent"] is True
     assert effect["order_acknowledged"] is True

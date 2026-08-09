@@ -53,6 +53,7 @@ class ProductiveTestnetExecutionPortV1:
         order_type: str,
         side: str,
         quantity: str,
+        px: str,
     ) -> dict[str, Any]:
         if not self.authorized:
             raise ActualStartPortError("SUBMIT_FORBIDDEN_WITHOUT_AUTHORIZATION")
@@ -71,6 +72,7 @@ class ProductiveTestnetExecutionPortV1:
             order_type=order_type,
             side=side,
             quantity=quantity,
+            px=px,
         )
         result = self.transport.request(
             method="POST",
@@ -109,6 +111,7 @@ class ProductiveTestnetExecutionPortV1:
             "order_type": order_type,
             "side": side,
             "quantity": quantity,
+            "px": px,
             "venue_native_body": venue_body,
             "stubbed": stubbed_result,
             # submitted means order attempt reached transport; NOT exchange ACK

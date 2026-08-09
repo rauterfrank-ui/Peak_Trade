@@ -96,6 +96,9 @@ CANONICAL_RUNTIME_MODE = "TESTNET"
 CANONICAL_VENUE = "OKX"
 CANONICAL_INSTRUMENT_SCOPE: tuple[str, ...] = ("BTC-USDT-SWAP",)
 CANONICAL_ALLOWED_ORDER_TYPES: tuple[str, ...] = ("LIMIT",)
+# Far-below reference px for BTC-USDT-SWAP LIMIT serialization on the §11.12.8
+# proof path only. Satisfies OKX Conditional px; not a trading signal / MD quote.
+CANONICAL_LIMIT_PX_FOR_VENUE_NATIVE_BODY_V1 = "10000"
 CANONICAL_POSITION_COUNT_LIMIT = 1
 CANONICAL_EMERGENCY_COMMANDS: tuple[str, ...] = CAP_11_5_EMERGENCY_COMMANDS
 CANONICAL_SECRET_REFERENCE = "secretref://vault/peak-trade/testnet-demo"
