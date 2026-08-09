@@ -338,6 +338,7 @@ def test_productive_port_and_transport() -> None:
         order_type="LIMIT",
         side="buy",
         quantity="1",
+        px="10000",
     )
     assert effect["stubbed"] is True
     assert effect["live_order_effect"] == "NONE"

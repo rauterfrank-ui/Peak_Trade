@@ -53,6 +53,22 @@ class OkxOrderResponseV1:
         }
 
 
+# OKX Place Order: Conditional px required for these ordType values.
+_OKX_ORD_TYPES_REQUIRING_PX: frozenset[str] = frozenset(
+    {
+        "limit",
+        "post_only",
+        "fok",
+        "ioc",
+        "optimal_limit_ioc",
+        "mmp",
+        "mmp_and_post_only",
+        "op_fok",
+        "op_ioc",
+    }
+)
+
+
 def build_venue_native_order_body_v1(
     *,
     client_order_id: str,
@@ -61,16 +77,28 @@ def build_venue_native_order_body_v1(
     side: str,
     quantity: str,
     td_mode: str = "cross",
+    px: str | None = None,
 ) -> dict[str, Any]:
-    """Cap 11.4 venue-native field mapping (productive; dry_run omitted)."""
-    return {
+    """Cap 11.4 venue-native field mapping (productive; dry_run omitted).
+
+    For LIMIT-class ordType, OKX Conditional ``px`` MUST be present in the
+    final request body. Missing/blank px fails closed before wire.
+    """
+    ord_type = order_type.lower()
+    body: dict[str, Any] = {
         "clOrdId": client_order_id,
         "instId": instrument,
         "side": side.lower(),
-        "ordType": order_type.lower(),
+        "ordType": ord_type,
         "sz": quantity,
         "tdMode": td_mode,
     }
+    if ord_type in _OKX_ORD_TYPES_REQUIRING_PX:
+        px_text = "" if px is None else str(px).strip()
+        if not px_text:
+            raise OkxResponseMapperError("LIMIT_ORDER_PX_REQUIRED_BEFORE_WIRE")
+        body["px"] = px_text
+    return body
 
 
 def parse_okx_order_response_v1(

@@ -259,6 +259,7 @@ def test_bound_client_post_signed_body_equals_wire_body(
         order_type="LIMIT",
         side="buy",
         quantity="1",
+        px="10000",
     )
     expected_text = json.dumps(venue_body, separators=(",", ":"))
     expected_sha = hashlib.sha256(expected_text.encode("utf-8")).hexdigest()
