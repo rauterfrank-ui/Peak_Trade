@@ -317,6 +317,21 @@ def test_okx_accept_reject_and_wire_not_ack() -> None:
     assert rejected.exchange_rejected is True
     assert rejected.order_acknowledged is False
 
+    # Top-level exchange msg must persist for auth-class rejects (predecessor 50124 gap).
+    auth_reject = parse_okx_order_response_v1(
+        transport_result={
+            "ok": False,
+            "http_status": 401,
+            "response_body": {"code": "50124", "msg": "captured-exchange-msg"},
+        },
+        wire_sent=True,
+    )
+    assert auth_reject.exchange_rejected is True
+    assert auth_reject.exchange_code == "50124"
+    assert auth_reject.msg == "captured-exchange-msg"
+    assert auth_reject.order_acknowledged is False
+    assert "msg" in auth_reject.raw_keys
+
     with pytest.raises(OkxResponseMapperError, match="INVALID_OKX_RESPONSE_JSON"):
         parse_okx_order_response_v1(
             transport_result={"ok": True, "http_status": 200, "response_body": b"{not-json"},
@@ -333,6 +348,9 @@ def test_okx_accept_reject_and_wire_not_ack() -> None:
     assert body["clOrdId"] == "c1"
     assert body["instId"] == "BTC-USDT-SWAP"
     assert "client_order_id" not in body
+    # Forensic: productive LIMIT body currently omits Conditional OKX px.
+    assert "px" not in body
+    assert body["ordType"] == "limit"
 
 
 def test_fill_only_when_evidenced() -> None:
