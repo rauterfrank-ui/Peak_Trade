@@ -17,6 +17,7 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     SWAP_WRITE_AUTHORIZATION,
 )
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.okx_response_mapper_v1 import (
+    build_venue_native_cancel_body_v1,
     build_venue_native_order_body_v1,
     parse_okx_order_response_v1,
 )
@@ -165,11 +166,31 @@ class ProductiveTestnetExecutionPortV1:
         self.submit_attempts.append(attempt)
         return attempt
 
-    def cancel_order_v1(self, *, order_id: str) -> dict[str, Any]:
+    def cancel_order_v1(
+        self,
+        *,
+        order_id: str,
+        instrument: str | None = None,
+    ) -> dict[str, Any]:
         if not self.authorized:
             raise ActualStartPortError("CANCEL_FORBIDDEN_WITHOUT_AUTHORIZATION")
         if self.transport is None:
             raise ActualStartPortError("TRANSPORT_NOT_BOUND")
+        inst = (
+            str(instrument).strip()
+            if instrument is not None and str(instrument).strip()
+            else (self.instrument_scope[0] if self.instrument_scope else "")
+        )
+        if not inst:
+            raise ActualStartPortError("CANCEL_INSTID_REQUIRED")
+        if SWAP_RUNTIME_FALLBACK is not False or SWAP_WRITE_AUTHORIZATION is not False:
+            raise ActualStartPortError("SWAP_FALLBACK_OR_WRITE_AUTHORIZATION_FORBIDDEN")
+        if inst == DEPRECATED_INSTRUMENT_BTC_USDT_SWAP:
+            raise ActualStartPortError(
+                "BTC_USDT_SWAP_PATH_CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY"
+            )
+        if inst not in self.instrument_scope:
+            raise ActualStartPortError(f"INSTRUMENT_OUT_OF_SCOPE:{inst}")
         if self.mutation_wire_intended:
             assert_order_send_forbidden_v1(
                 endpoint="/api/v5/trade/cancel-order",
@@ -178,7 +199,7 @@ class ProductiveTestnetExecutionPortV1:
             )
             if not self.ephemeral_campaign_write_gate_pass:
                 raise ActualStartPortError("MUTATION_REQUIRES_EPHEMERAL_WRITE_GATE_PASS")
-        body = {"ordId": order_id}
+        body = build_venue_native_cancel_body_v1(order_id=order_id, instrument=inst)
         result = self.transport.request(
             method="POST",
             endpoint="/api/v5/trade/cancel-order",
@@ -192,6 +213,8 @@ class ProductiveTestnetExecutionPortV1:
                 "order_acknowledged": True,
                 "wire_sent": False,
                 "order_id": order_id,
+                "inst_id": inst,
+                "venue_native_body": dict(body),
             }
         mapped = parse_okx_order_response_v1(
             transport_result=result, wire_sent=bool(result.get("wire_sent"))
@@ -203,6 +226,8 @@ class ProductiveTestnetExecutionPortV1:
             "exchange_rejected": mapped.exchange_rejected,
             "wire_sent": mapped.wire_sent,
             "order_id": order_id,
+            "inst_id": inst,
+            "venue_native_body": dict(body),
             "classification": mapped.classification,
         }
 
