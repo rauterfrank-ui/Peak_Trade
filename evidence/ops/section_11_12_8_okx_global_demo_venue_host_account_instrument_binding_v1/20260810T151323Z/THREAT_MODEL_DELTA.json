@@ -1,0 +1,54 @@
+{
+  "COMPENSATING_CONTROLS": [
+    {
+      "control": "MANDATORY_DEMO_MARKER_HEADER",
+      "fail_closed_on_absence": true,
+      "header": "x-simulated-trading:1"
+    },
+    {
+      "control": "MANDATORY_DEMO_CREDENTIAL_CLASS",
+      "credential_class": "OKX_DEMO_TRADING_API_KEY_ONLY",
+      "live_and_eea_classes_hard_blocked": true
+    },
+    {
+      "control": "EXACT_INSTRUMENT_SCOPE",
+      "generic_substitution_forbidden": true,
+      "instrument": "BTC-USDT-SWAP"
+    },
+    {
+      "control": "SECRETREF_ONLY_CREDENTIAL_PATH",
+      "plaintext_forbidden": true
+    },
+    {
+      "control": "ORDER_POST_HARD_BLOCK_IN_BINDING_PACKAGE",
+      "order_post_authorized": false
+    },
+    {
+      "control": "NO_SILENT_HOST_VENUE_INSTRUMENT_FALLBACK",
+      "fail_closed_on_ambiguity": true
+    }
+  ],
+  "CYBERSECURITY_RUNBOOK_BINDINGS": [
+    "\u00a74.3",
+    "\u00a719",
+    "\u00a720",
+    "\u00a721"
+  ],
+  "DOCUMENT_CLASS": "THREAT_MODEL_DELTA_V1",
+  "LIVE_AUTHORIZED_EFFECT": "NONE_REMAINS_FALSE",
+  "NEW_THREATS": [
+    "HOST_ENDPOINT_SUBSTITUTION_VIA_MISSING_DEMO_HEADER",
+    "CREDENTIAL_CROSS_USE_LIVE_OR_EEA_KEYS_ON_SHARED_HOST",
+    "INSTRUMENT_SUBSTITUTION_AWAY_FROM_BTC_USDT_SWAP",
+    "SILENT_FALLBACK_TO_OKX_EEA_OR_LIVE",
+    "AUTHORITY_ESCALATION_FROM_BINDING_PACKAGE_TO_ORDER_POST"
+  ],
+  "PRE_LIVE_CYBERSECURITY_GATE_EFFECT": "NONE_REMAINS_NOT_PASSED",
+  "REST_HOST": "openapi.okx.com",
+  "SECTION_11_13_EFFECT": "NONE_REMAINS_UNSTARTED",
+  "SHARED_HOST_WITH_LIVE": true,
+  "THREAT_MODEL_DELTA_ID": "THREAT_MODEL_DELTA_OKX_GLOBAL_DEMO_SHARED_HOST_HEADER_CREDENTIAL_ISOLATION_V1",
+  "TRIGGER": "NEW_VENUE_SCOPE_OKX_GLOBAL_DEMO_FOR_SECTION_11_12_8",
+  "VENUE": "okx_global",
+  "ok": true
+}
