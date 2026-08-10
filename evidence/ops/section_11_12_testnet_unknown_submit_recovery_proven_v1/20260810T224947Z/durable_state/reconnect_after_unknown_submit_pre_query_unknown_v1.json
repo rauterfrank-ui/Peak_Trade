@@ -1,0 +1,9 @@
+{
+  "UNKNOWN_INJECTION_METHOD": "DISCARD_POST_RESPONSE_AUTHORITY_LOST_RESPONSE_SIMULATION",
+  "client_order_id": "ptokxedemo53b7a1e253b7a1e200",
+  "exchange_query_completed": false,
+  "local_state": "UNKNOWN",
+  "path_name": "reconnect_after_unknown_submit",
+  "untrusted_ord_id_hint_present": true,
+  "wire_ack_observed_but_discarded": true
+}

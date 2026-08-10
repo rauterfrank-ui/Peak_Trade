@@ -1,0 +1,8 @@
+{
+  "balance_http_ok": true,
+  "config_http_ok": true,
+  "nonzero_position_count": 0,
+  "pending_order_count": 0,
+  "preflight_flat_ok": true,
+  "preflight_flat_required": true
+}

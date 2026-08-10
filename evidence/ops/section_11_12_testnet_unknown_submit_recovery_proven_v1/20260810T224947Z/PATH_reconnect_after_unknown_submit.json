@@ -1,0 +1,59 @@
+{
+  "blind_retry_blocked": true,
+  "blind_retry_post_reconnect": {
+    "blind_retry_blocked": true,
+    "local_state_remains": "UNKNOWN",
+    "re_submit_performed": false,
+    "transition_error_code": "UNKNOWN_REQUIRES_EXCHANGE_QUERY_BEFORE_RETRY"
+  },
+  "blind_retry_pre_query": {
+    "blind_retry_blocked": true,
+    "local_state_remains": "UNKNOWN",
+    "re_submit_performed": false,
+    "transition_error_code": "UNKNOWN_REQUIRES_EXCHANGE_QUERY_BEFORE_RETRY"
+  },
+  "cancel_ack": true,
+  "client_order_id": "ptokxedemo53b7a1e253b7a1e200",
+  "exchange_query_completed": true,
+  "final_flat": true,
+  "history_events": [
+    "CLIENT_SESSION_OPEN",
+    "SUBMIT_ATTEMPTED",
+    "UNKNOWN_VIA_DISCARD_POST_RESPONSE_AUTHORITY",
+    "BLIND_RETRY_BLOCKED",
+    "SESSION_DROPPED",
+    "SESSION_RECONNECTED",
+    "BLIND_RETRY_BLOCKED_AFTER_RECONNECT",
+    "EXCHANGE_QUERY_COMPLETED",
+    "ACKNOWLEDGED_AFTER_QUERY",
+    "OPEN",
+    "CANCELLED",
+    "ACCOUNTED",
+    "RECONCILED",
+    "EVIDENCED",
+    "FINAL_FLAT"
+  ],
+  "local_history": [
+    "INTENT_CREATED",
+    "ORDER_PLAN_CREATED",
+    "RISK_RESERVED",
+    "PRE_SUBMIT_VALIDATED",
+    "SUBMIT_PENDING",
+    "SUBMIT_ATTEMPTED",
+    "UNKNOWN",
+    "ACKNOWLEDGED",
+    "OPEN",
+    "CANCEL_PENDING",
+    "CANCELLED",
+    "ACCOUNTED",
+    "RECONCILED",
+    "EVIDENCED"
+  ],
+  "local_terminal_state": "EVIDENCED",
+  "matched_order_state_at_query": "live",
+  "ord_id": "3821842824733528064",
+  "path_name": "reconnect_after_unknown_submit",
+  "re_submit_performed": false,
+  "reconnect": true,
+  "wire_ack_discarded_as_unknown": true
+}

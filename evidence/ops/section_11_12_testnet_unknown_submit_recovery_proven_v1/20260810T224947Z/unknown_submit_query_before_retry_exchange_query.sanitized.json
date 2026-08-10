@@ -1,0 +1,20 @@
+{
+  "matched_order": {
+    "accFillSz": "0",
+    "avgPx": "",
+    "cTime": "1786402190789",
+    "cancelSource": "",
+    "clOrdId": "ptokxedemo5fb2c1dc5fb2c1dc00",
+    "instId": "BTC-USD_UM_XPERP-310328",
+    "ordId": "3821842784870862848",
+    "ordType": "limit",
+    "px": "10000",
+    "side": "buy",
+    "state": "live",
+    "sz": "0.0001",
+    "uTime": "1786402190789"
+  },
+  "path_name": "unknown_submit_query_before_retry",
+  "query_http_ok": true,
+  "reconnect": false
+}
