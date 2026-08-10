@@ -1,0 +1,12 @@
+{
+  "client_bound": true,
+  "durable_stage": "SEALED",
+  "evidence_path": "/Users/frnkhrz/Peak_Trade/evidence/ops/section_11_12_testnet_order_lifecycle_proven_v1/20260810T215942Z/execution_evidence/productive_execution_evidence_v1.json",
+  "evidence_seal_ok": true,
+  "live_order_effect": "NONE",
+  "network_effect": "TESTNET",
+  "network_send_boundary_reached": true,
+  "ok": true,
+  "order_effect": "TESTNET",
+  "section_11_13_started": false
+}

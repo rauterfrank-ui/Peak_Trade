@@ -1,0 +1,390 @@
+{
+  "CAPABILITY_ID": "CAPABILITY_11_SECTION_11_12_8_ACTUAL_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_START_V1",
+  "LIVE_ORDER_EFFECT": "NONE",
+  "LONG_RUNNING_CAMPAIGN": true,
+  "NETWORK_EFFECT": "TESTNET",
+  "ORDER_EFFECT": "TESTNET",
+  "OWNER": "ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1",
+  "PRODUCTIVE_TESTNET_CAMPAIGN_STARTED": false,
+  "SECTION_11_13_STARTED": false,
+  "STUBBED_ACCEPTANCE": false,
+  "bound_reached_reason": "CYCLE_BOUND",
+  "campaign_id": "campaign-f8c86384586f419bb5f21ab97bd50351",
+  "campaign_terminal_status": "COMPLETED",
+  "client_order_ids": [
+    "ptokxedemoee070908ee07090800"
+  ],
+  "cycle_bound": 1,
+  "cycles_completed": 1,
+  "cycles_started": 1,
+  "duration_bound_seconds": 3600,
+  "exchange_ack_count": 1,
+  "exchange_order_ids": [
+    "3821741949407072256"
+  ],
+  "exchange_reject_count": 0,
+  "execution_class": "PRODUCTIVE_REAL_TESTNET_CAMPAIGN",
+  "execution_duration_seconds": 0.2904862920000002,
+  "execution_end_utc": "2026-08-10T21:59:45Z",
+  "execution_start_utc": "2026-08-10T21:59:45Z",
+  "fill_count": 0,
+  "network_request_count": 1,
+  "order_attempt_count": 1,
+  "partial_fill_count": 0,
+  "payload": {
+    "CANONICAL_ORDER_SZ": "0.0001",
+    "CANONICAL_VENUE": "OKX_EEA_DEMO",
+    "NETWORK_EFFECT": "TESTNET",
+    "NETWORK_SEND_BOUNDARY_REACHED": true,
+    "ORDER_EFFECT": "TESTNET",
+    "allow_wire_send": true,
+    "binding": {
+      "account_identity": "acct-uid-testnet-demo",
+      "account_verified": true,
+      "endpoint_allowlist": [
+        "/api/v5/account/balance",
+        "/api/v5/account/config",
+        "/api/v5/account/instruments",
+        "/api/v5/account/positions",
+        "/api/v5/trade/order",
+        "/api/v5/trade/cancel-order",
+        "/api/v5/trade/orders-pending"
+      ],
+      "live_hosts_blocked": true,
+      "rest_base": "https://eea.okx.com",
+      "runtime_mode": "TESTNET",
+      "venue": "OKX_EEA_DEMO"
+    },
+    "boundary_inspect": {
+      "boundary_reached": true,
+      "network_session_go": false,
+      "network_session_started": false,
+      "next_operation": "FIRST_PERMITTED_TESTNET_SIDE_EFFECT",
+      "session_id": "session-actual-start",
+      "stubbed": false
+    },
+    "confirm": {
+      "authorization_channel": "REAL_TTY_HUMAN_CONFIRM",
+      "confirm_token_digest": "44f2fe082ba1ee45b436f956fa90b44652499375df3fecf021704304bdc53b91",
+      "consumed": true,
+      "latched": true,
+      "minted": false,
+      "plaintext_exposed": false
+    },
+    "credential": {
+      "bound": true,
+      "handle_id": "ef7462fea8214e0f86ebf6f6f5235349",
+      "material_digest": "dd553b7fade97c7a9a68418f1b99deab8fa7b6503a9e36805cecd635f253f640",
+      "plaintext_exposed": false,
+      "plaintext_persisted": false,
+      "runtime_mode": "TESTNET",
+      "secret_reference": "secretref://vault/peak-trade/testnet-demo",
+      "vault_resolved": true
+    },
+    "ephemeral_campaign_private_write_gate": {
+      "binding_package_order_post_authorized": false,
+      "ephemeral_campaign_write_gate_pass": true,
+      "instrument_scope_exact": "BTC-USD_UM_XPERP-310328",
+      "live_authorized": false,
+      "owner_go_scope": "EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN",
+      "package_default_order_post_authorized": false,
+      "pass_gate": true,
+      "reason": "EPHEMERAL_XPERP_CAMPAIGN_PRIVATE_WRITE_GATE_PASS",
+      "rest_base": "https://eea.okx.com",
+      "venue": "OKX_EEA_DEMO"
+    },
+    "final_exchange_reconcile_cleanup": {
+      "FINAL_OPEN_ORDER_COUNT": 0,
+      "FINAL_OPEN_POSITION_COUNT": 0,
+      "cancel_ack_count": 1,
+      "cancel_attempt_count": 1,
+      "events": [
+        {
+          "event": "pending_orders_read",
+          "ok": true
+        },
+        {
+          "event": "cancel_attempt",
+          "order_id": "3821741949407072256"
+        },
+        {
+          "event": "positions_read",
+          "ok": true
+        }
+      ],
+      "ok": true,
+      "pending_orders_read": true,
+      "positions_read": true,
+      "reason": "FINAL_EXCHANGE_RECONCILE_CLEANUP_PASS",
+      "unresolved": false
+    },
+    "lifecycle": {
+      "LONG_RUNNING_CAMPAIGN": true,
+      "PRODUCTIVE_EXECUTOR_ROLE": "ACTUAL_PRODUCTIVE_SECTION_11_12_8_CAMPAIGN_RUN_EXECUTOR",
+      "aborted": false,
+      "bound_priority": "FIRST_REACHED_WINS",
+      "bound_reached_reason": "CYCLE_BOUND",
+      "cadence_seconds": 0.0,
+      "campaign_id": "campaign-f8c86384586f419bb5f21ab97bd50351",
+      "client_order_ids": [
+        "ptokxedemoee070908ee07090800"
+      ],
+      "completed": true,
+      "continuity_ok": true,
+      "cycle_bound": 1,
+      "cycle_records": [
+        {
+          "cycle_completed_at_utc": "2026-08-10T21:59:45Z",
+          "cycle_index": 0,
+          "cycle_started_at_utc": "2026-08-10T21:59:45Z",
+          "elapsed_seconds": 0.29046937500000025,
+          "exchange_rejected": false,
+          "order_acknowledged": true,
+          "order_attempted": true,
+          "wire_sent": true
+        }
+      ],
+      "cycles_completed": 1,
+      "cycles_started": 1,
+      "duration_bound_seconds": 3600,
+      "emergency_control_checks": [
+        {
+          "cycle_index": 0,
+          "emergency_control_operational": true
+        }
+      ],
+      "emergency_reaction": "",
+      "events": [
+        {
+          "campaign_id": "campaign-f8c86384586f419bb5f21ab97bd50351",
+          "event": "start"
+        },
+        {
+          "cycle_index": 0,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 0,
+          "effect": {
+            "client_order_id": "ptokxedemoee070908ee07090800",
+            "ephemeral_campaign_write_gate_pass": true,
+            "exchange_accepted": true,
+            "exchange_order_id": "3821741949407072256",
+            "exchange_rejected": false,
+            "fill_observed": false,
+            "instrument": "BTC-USD_UM_XPERP-310328",
+            "live_order_effect": "NONE",
+            "network_effect": "TESTNET",
+            "network_send_boundary_reached": true,
+            "order_acknowledged": true,
+            "order_attempt": true,
+            "order_type": "LIMIT",
+            "parsed_response": {
+              "body_parsed": true,
+              "classification": "EXCHANGE_ACCEPTED_ACK",
+              "client_order_id": "ptokxedemoee070908ee07090800",
+              "exchange_accepted": true,
+              "exchange_code": "0",
+              "exchange_order_id": "3821741949407072256",
+              "exchange_rejected": false,
+              "fill_observed": false,
+              "http_status": 200,
+              "msg": null,
+              "order_acknowledged": true,
+              "partial_fill_observed": false,
+              "raw_keys": [
+                "code",
+                "data",
+                "inTime",
+                "msg",
+                "outTime"
+              ],
+              "s_code": "0",
+              "s_msg": "Order placed",
+              "transport_ok": true,
+              "wire_sent": true
+            },
+            "partial_fill_observed": false,
+            "px": "10000",
+            "quantity": "0.0001",
+            "response_classification": "EXCHANGE_ACCEPTED_ACK",
+            "side": "buy",
+            "stubbed": false,
+            "submitted": true,
+            "transport_response": true,
+            "venue_native_body": {
+              "clOrdId": "ptokxedemoee070908ee07090800",
+              "instId": "BTC-USD_UM_XPERP-310328",
+              "ordType": "limit",
+              "px": "10000",
+              "side": "buy",
+              "sz": "0.0001",
+              "tdMode": "cross"
+            },
+            "wire_sent": true
+          },
+          "event": "order_attempt"
+        },
+        {
+          "effect": {
+            "client_order_id": "ptokxedemoee070908ee07090800",
+            "ephemeral_campaign_write_gate_pass": true,
+            "exchange_accepted": true,
+            "exchange_order_id": "3821741949407072256",
+            "exchange_rejected": false,
+            "fill_observed": false,
+            "instrument": "BTC-USD_UM_XPERP-310328",
+            "live_order_effect": "NONE",
+            "network_effect": "TESTNET",
+            "network_send_boundary_reached": true,
+            "order_acknowledged": true,
+            "order_attempt": true,
+            "order_type": "LIMIT",
+            "parsed_response": {
+              "body_parsed": true,
+              "classification": "EXCHANGE_ACCEPTED_ACK",
+              "client_order_id": "ptokxedemoee070908ee07090800",
+              "exchange_accepted": true,
+              "exchange_code": "0",
+              "exchange_order_id": "3821741949407072256",
+              "exchange_rejected": false,
+              "fill_observed": false,
+              "http_status": 200,
+              "msg": null,
+              "order_acknowledged": true,
+              "partial_fill_observed": false,
+              "raw_keys": [
+                "code",
+                "data",
+                "inTime",
+                "msg",
+                "outTime"
+              ],
+              "s_code": "0",
+              "s_msg": "Order placed",
+              "transport_ok": true,
+              "wire_sent": true
+            },
+            "partial_fill_observed": false,
+            "px": "10000",
+            "quantity": "0.0001",
+            "response_classification": "EXCHANGE_ACCEPTED_ACK",
+            "side": "buy",
+            "stubbed": false,
+            "submitted": true,
+            "transport_response": true,
+            "venue_native_body": {
+              "clOrdId": "ptokxedemoee070908ee07090800",
+              "instId": "BTC-USD_UM_XPERP-310328",
+              "ordType": "limit",
+              "px": "10000",
+              "side": "buy",
+              "sz": "0.0001",
+              "tdMode": "cross"
+            },
+            "wire_sent": true
+          },
+          "event": "first_permitted_testnet_effect"
+        },
+        {
+          "cycle_index": 0,
+          "event": "cycle_complete"
+        },
+        {
+          "event": "bound_reached",
+          "reason": "CYCLE_BOUND"
+        },
+        {
+          "bound_reached_reason": "CYCLE_BOUND",
+          "cycles_completed": 1,
+          "event": "complete"
+        }
+      ],
+      "exchange_ack_count": 1,
+      "exchange_order_ids": [
+        "3821741949407072256"
+      ],
+      "exchange_reject_count": 0,
+      "execution_duration_seconds": 0.2904862920000002,
+      "execution_end_utc": "2026-08-10T21:59:45Z",
+      "execution_start_utc": "2026-08-10T21:59:45Z",
+      "fill_count": 0,
+      "first_permitted_effect_invoked": true,
+      "first_permitted_effect_stubbed": false,
+      "heartbeat_count": 1,
+      "kill_switch_checks": [
+        {
+          "cycle_index": 0,
+          "kill_switch_state": "ACTIVE"
+        }
+      ],
+      "kill_switch_reaction": "",
+      "network_request_count": 1,
+      "next_operation_after_boundary": "FIRST_PERMITTED_TESTNET_SIDE_EFFECT",
+      "order_attempt_count": 1,
+      "partial_fill_count": 0,
+      "restart_handled": true,
+      "risk_breach_reaction": "",
+      "risk_gate_results": [
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        }
+      ],
+      "running": false,
+      "started": true,
+      "testnet_order_sent_count": 1,
+      "transport_response_count": 1,
+      "unknown_submit_hard_stop": false
+    },
+    "mode": "PRODUCTIVE_REAL_NETWORK",
+    "next_operation_after_boundary": "FIRST_PERMITTED_TESTNET_SIDE_EFFECT",
+    "owner_go": {
+      "consumed": true,
+      "consumption_id": "unlock-22d9fe638b96406f80256c8ce2b0019f",
+      "live_authorized": false,
+      "one_time_consume": true,
+      "owner_go_authorization": "EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN",
+      "owner_go_scope": "EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN",
+      "owner_go_token": "CAPABILITY_11_SECTION_11_12_8_ACTUAL_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_START_V1",
+      "productive_campaign_authorized": true,
+      "reason": "CONSUMED_FOR_ACTUAL_PRODUCTIVE_START:CAPABILITY_11_SECTION_11_12_8_ACTUAL_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_START_V1"
+    },
+    "port": {
+      "EXECUTION_MODE": "TESTNET",
+      "OWNER": "ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1",
+      "PORT_KIND": "TESTNET_EXECUTION_PORT_V1_ACTUAL_START_PRODUCTIVE",
+      "authorized": true,
+      "ephemeral_campaign_write_gate_pass": true,
+      "mutation_wire_intended": true,
+      "stubbed": false,
+      "submit_attempt_count": 1,
+      "venue": "OKX_EEA_DEMO"
+    },
+    "safety": {
+      "emergency_control_operational": true,
+      "kill_switch_operational": true,
+      "kill_switch_state": "ACTIVE",
+      "risk_gate_allows": true
+    },
+    "session": {
+      "boundary_reached": true,
+      "network_session_go": true,
+      "network_session_started": true,
+      "next_operation": "FIRST_PERMITTED_TESTNET_SIDE_EFFECT",
+      "session_id": "session-actual-start",
+      "stubbed": false
+    },
+    "testnet_auth": {
+      "live_authorized": false,
+      "runtime_mode": "TESTNET",
+      "testnet_authorized_persisted": false,
+      "testnet_authorized_runtime": true
+    },
+    "transport_bound_client_kind": "BOUND_REAL_TESTNET_HTTP_CLIENT"
+  },
+  "testnet_order_sent_count": 1,
+  "transport_response_count": 1
+}
