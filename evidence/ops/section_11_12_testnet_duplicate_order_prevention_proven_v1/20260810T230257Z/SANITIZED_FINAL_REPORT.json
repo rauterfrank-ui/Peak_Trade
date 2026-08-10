@@ -1,0 +1,163 @@
+{
+  "ACCEPTANCE_CRITERIA_RESULTS": {
+    "CONFLICTING_PAYLOAD_BLOCKED_NO_WIRE_OK": true,
+    "DEMO_AUTH_OK": true,
+    "DUPLICATE_ORDER_COUNT_ZERO_OK": true,
+    "DUPLICATE_WIRE_SUBMIT_ZERO_OK": true,
+    "EXCHANGE_SINGLE_ORDER_OK": true,
+    "FINAL_FLAT_OK": true,
+    "LIVE_STILL_FALSE": true,
+    "ORDER_ACK_EQUALS_ONE_OK": true,
+    "PRED_LIFE_OK": true,
+    "PRED_RECON_OK": true,
+    "PRED_RESTART_OK": true,
+    "PRED_UNKNOWN_OK": true,
+    "PRIMARY_ACK_OK": true,
+    "SAME_PAYLOAD_REPLAY_NO_WIRE_OK": true,
+    "SECTION_11_13_STILL_FALSE": true,
+    "TESTNET_ISOLATION_OK": true
+  },
+  "AUTHORIZATION_STATUS": "OWNER_GO_AND_EXECUTE_TOKEN_CONSUMED",
+  "BRANCH": "main",
+  "CANCEL_ACK_COUNT": 1,
+  "CANCEL_ATTEMPT_COUNT": 1,
+  "CANONICAL_ENVIRONMENT_BINDING": "DEMO",
+  "CANONICAL_INSTRUMENT_BINDING": "BTC-USD_UM_XPERP-310328",
+  "CANONICAL_VENUE_BINDING": "OKX_EEA_DEMO",
+  "CAP_11_12_TESTNET_PROGRAM_CLOSED": false,
+  "CLIENT_ORDER_ID": "ptokxedemo156e7c52156e7c5200",
+  "DOCUMENT_CLASS": "MACHINE_READABLE_TESTNET_DUPLICATE_ORDER_PREVENTION_PROVEN_PROOF_V1",
+  "DUPLICATE_ORDER_COUNT": 0,
+  "DUPLICATE_PREVENTION_VERIFIED": true,
+  "DUPLICATE_SUBMIT_ATTEMPT_COUNT": 2,
+  "DUPLICATE_WIRE_SUBMIT_COUNT": 0,
+  "EPHEMERAL_SIGN_PATH_QUERY_PATCH": true,
+  "EXCHANGE_ORDER_COUNT_AFTER_DUPLICATE_ATTEMPTS": 1,
+  "EXCHANGE_QUERY_COUNT": 9,
+  "EXECUTE_TOKEN": "EXECUTE_ONE_BOUNDED_PRODUCTIVE_DEMO_XPERP_DUPLICATE_CLIENT_ORDER_ID_PREVENTION_THEN_SEAL_EVIDENCE_AND_HARD_STOP",
+  "FINAL_OPEN_ORDER_COUNT": 0,
+  "FINAL_OPEN_POSITION_COUNT": 0,
+  "HARD_STOP_AFTER_THIS_PROOF": true,
+  "HISTORY_EVENTS": [
+    "CLIENT_SESSION_OPEN",
+    "PREFLIGHT_AUTH_OK",
+    "REGISTRY_FIRST_CLAIM_ADMITTED",
+    "SUBMIT_ATTEMPTED",
+    "ACKNOWLEDGED",
+    "OPEN",
+    "SAME_PAYLOAD_IDEMPOTENT_REPLAY_BLOCKED_NO_WIRE",
+    "CONFLICTING_PAYLOAD_DUPLICATE_BLOCKED_NO_WIRE",
+    "EXCHANGE_SINGLE_ORDER_CONFIRMED",
+    "CANCELLED",
+    "ACCOUNTED",
+    "RECONCILED",
+    "EVIDENCED"
+  ],
+  "LIVE_AUTHORIZED": false,
+  "LONG_RUNNING_TESTNET_PROVEN": false,
+  "MANIFEST_VERIFY_RC": 0,
+  "MUTATION_ACTIONS": [
+    {
+      "ack": true,
+      "action": "POST_/api/v5/trade/order",
+      "clOrdId": "ptokxedemo156e7c52156e7c5200",
+      "ordId": "3821869277537767424",
+      "px": "10000",
+      "sCode": "0",
+      "side": "buy",
+      "tag": "primary_submit_wire"
+    },
+    {
+      "ack": true,
+      "action": "POST_/api/v5/trade/cancel-order",
+      "ordId": "3821869277537767424",
+      "tag": "cancel_after_duplicate_prevention"
+    }
+  ],
+  "NEWLY_CLOSED_TESTNET_PROVEN_FIELDS": [
+    "TESTNET_DUPLICATE_ORDER_PREVENTION_PROVEN"
+  ],
+  "NEXT_CANONICAL_RESIDUAL_PROOF": "TESTNET_KILL_SWITCH_PROVEN",
+  "NEXT_OWNER_STEP": "OWNER_GO_PRODUCTIVE_TESTNET_KILL_SWITCH_PROVEN_REQUIRED",
+  "OPEN_TESTNET_PROVEN_FIELDS": [
+    "TESTNET_KILL_SWITCH_PROVEN",
+    "TESTNET_AUTONOMOUS_RECOVERY_PROVEN",
+    "TESTNET_EVIDENCE_VERIFIED"
+  ],
+  "ORDER_ACK_COUNT": 1,
+  "ORDER_ATTEMPT_COUNT": 1,
+  "ORDER_EFFECT": "TESTNET",
+  "ORIGIN_MAIN_SHA": "191e39984202cb3eb78dab453b8a69af8cd57afc",
+  "OWNER_GO": "OWNER_GO_PRODUCTIVE_TESTNET_DUPLICATE_ORDER_PREVENTION_PROVEN_REQUIRED",
+  "PATH_RESULTS": {
+    "conflicting_payload_duplicate_blocked": {
+      "conflict_blocked": true,
+      "error": "DUPLICATE_ORDER_CONFLICTING_PAYLOAD",
+      "wire_performed": false
+    },
+    "primary_submit": {
+      "ack": true,
+      "client_order_id": "ptokxedemo156e7c52156e7c5200",
+      "ordId": "3821869277537767424"
+    },
+    "same_payload_idempotent_replay_prevention": {
+      "duplicate_order_prevented": true,
+      "idempotent_replay": true,
+      "wire_performed": false
+    }
+  },
+  "PREVENTION_EVENTS": [
+    {
+      "client_order_id": "ptokxedemo156e7c52156e7c5200",
+      "event": "FIRST_CLAIM",
+      "idempotent_replay": false,
+      "result": {
+        "admitted": true,
+        "client_order_id": "ptokxedemo156e7c52156e7c5200",
+        "duplicate_order_prevented": true,
+        "idempotent_replay": false
+      },
+      "wire_authorized": true
+    },
+    {
+      "client_order_id": "ptokxedemo156e7c52156e7c5200",
+      "duplicate_order_prevented": true,
+      "event": "SAME_PAYLOAD_IDEMPOTENT_REPLAY",
+      "idempotent_replay": true,
+      "result": {
+        "admitted": true,
+        "client_order_id": "ptokxedemo156e7c52156e7c5200",
+        "duplicate_order_prevented": true,
+        "idempotent_replay": true
+      },
+      "wire_authorized": false,
+      "wire_performed": false
+    },
+    {
+      "client_order_id": "ptokxedemo156e7c52156e7c5200",
+      "conflict_blocked": true,
+      "error": "DUPLICATE_ORDER_CONFLICTING_PAYLOAD",
+      "event": "CONFLICTING_PAYLOAD_DUPLICATE_BLOCKED",
+      "wire_authorized": false,
+      "wire_performed": false
+    }
+  ],
+  "PRE_LIVE_CYBERSECURITY_GATE": "NOT_PASSED",
+  "PROOF_EXECUTED": true,
+  "PROOF_METHOD": "BOUNDED_PRODUCTIVE_OKX_EEA_DEMO_XPERP_DUPLICATE_CLIENT_ORDER_ID_PREVENTION",
+  "PROOF_RESULT": "PRODUCTIVE_TESTNET_DUPLICATE_ORDER_PREVENTION_PROVEN_PASS",
+  "PROOF_RUN_ID": "20260810T230257Z",
+  "REUSE_CONTRACT": "Cap11.1_SubmissionIdempotencyRegistryV1",
+  "SECTION_11_12_9_GATE_PASS": false,
+  "SECTION_11_13_STARTED": false,
+  "TERMINAL_EVIDENCED_OK": true,
+  "TESTNET_AUTONOMOUS_RECOVERY_PROVEN": false,
+  "TESTNET_DUPLICATE_ORDER_PREVENTION_PROVEN": true,
+  "TESTNET_EVIDENCE_VERIFIED": false,
+  "TESTNET_ISOLATION_VERIFIED": true,
+  "TESTNET_KILL_SWITCH_PROVEN": false,
+  "TESTNET_ORDER_LIFECYCLE_PROVEN": true,
+  "TESTNET_RECONCILIATION_PROVEN": true,
+  "TESTNET_RESTART_PROVEN": true,
+  "TESTNET_UNKNOWN_SUBMIT_RECOVERY_PROVEN": true
+}

@@ -1,0 +1,8 @@
+{
+  "client_order_id": "ptokxedemo156e7c52156e7c5200",
+  "conflict_blocked": true,
+  "error": "DUPLICATE_ORDER_CONFLICTING_PAYLOAD",
+  "event": "CONFLICTING_PAYLOAD_DUPLICATE_BLOCKED",
+  "wire_authorized": false,
+  "wire_performed": false
+}

@@ -1,0 +1,38 @@
+{
+  "ALLOWED_PATHS": [
+    "same_payload_idempotent_replay_prevention",
+    "conflicting_payload_duplicate_blocked"
+  ],
+  "BRANCH": "main",
+  "CANONICAL_INSTRUMENT": "BTC-USD_UM_XPERP-310328",
+  "CANONICAL_ORDER_SZ": "0.0001",
+  "CANONICAL_VENUE": "OKX_EEA_DEMO",
+  "CREDENTIAL_FINGERPRINTS_SHA256_12": {
+    "api_key": "b2ba753a9026",
+    "api_secret": "051c888bfb69",
+    "passphrase": "126850d9e99c"
+  },
+  "ENDPOINT_ALLOWLIST": [
+    "/api/v5/account/balance",
+    "/api/v5/account/config",
+    "/api/v5/account/instruments",
+    "/api/v5/account/positions",
+    "/api/v5/trade/order",
+    "/api/v5/trade/cancel-order",
+    "/api/v5/trade/orders-pending"
+  ],
+  "EPHEMERAL_PATCH_SITE": "bound_testnet_http_client_v1._assert_testnet_url",
+  "EPHEMERAL_SIGN_PATH_QUERY_PATCH": true,
+  "EXECUTE_TOKEN": "EXECUTE_ONE_BOUNDED_PRODUCTIVE_DEMO_XPERP_DUPLICATE_CLIENT_ORDER_ID_PREVENTION_THEN_SEAL_EVIDENCE_AND_HARD_STOP",
+  "LAUNCHED_AT_UTC": "2026-08-10T23:02:58Z",
+  "ORIGIN_MAIN_SHA": "191e39984202cb3eb78dab453b8a69af8cd57afc",
+  "OWNER_GO": "OWNER_GO_PRODUCTIVE_TESTNET_DUPLICATE_ORDER_PREVENTION_PROVEN_REQUIRED",
+  "PRED_LIFECYCLE_EVIDENCE": "evidence/ops/section_11_12_testnet_order_lifecycle_proven_v1/20260810T215942Z/",
+  "PRED_RECONCILIATION_EVIDENCE": "evidence/ops/section_11_12_testnet_reconciliation_proven_v1/20260810T221902Z/",
+  "PRED_RESTART_EVIDENCE": "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/",
+  "PRED_UNKNOWN_SUBMIT_EVIDENCE": "evidence/ops/section_11_12_testnet_unknown_submit_recovery_proven_v1/20260810T224947Z/",
+  "PROOF_FIELD_TARGET": "TESTNET_DUPLICATE_ORDER_PREVENTION_PROVEN",
+  "PROOF_METHOD": "BOUNDED_PRODUCTIVE_OKX_EEA_DEMO_XPERP_DUPLICATE_CLIENT_ORDER_ID_PREVENTION",
+  "RESTING_BUY_PX": "10000",
+  "REUSE_CONTRACT": "Cap11.1_SubmissionIdempotencyRegistryV1"
+}
