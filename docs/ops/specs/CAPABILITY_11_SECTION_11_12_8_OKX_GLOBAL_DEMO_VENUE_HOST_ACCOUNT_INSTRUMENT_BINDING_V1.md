@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_CAPABILITY_11_SECTION_11_12_8_OKX_GLOBAL_DEMO_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1
-status: active
-scope: Phase 11 §11.12.8 prepare OKX Global Demo venue/host/account/instrument binding package; NO_ORDER; no credential load; no preflight; no Live; no §11.13
+status: superseded_not_activated
+scope: HISTORICAL §11.12.8 OKX Global Demo binding package (NO_ORDER; never activated). Active continuation authority moved to OKX EEA Demo XPerp §11.12.8.5.
 capability: CAPABILITY_11_SECTION_11_12_8_OKX_GLOBAL_DEMO_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-08-10
@@ -81,9 +81,11 @@ BINDING_PACKAGE != SECTION_11_13_START
 ## Next step after merge
 
 ```text
-CANONICAL_NEXT_STEP_AFTER_MERGE=OWNER_GO_EXECUTE_BOUNDED_NO_ORDER_PREFLIGHT_ON_OKX_GLOBAL_DEMO_BTC_USDT_SWAP
+CANONICAL_NEXT_STEP_AFTER_MERGE_ROLE=HISTORICAL_POINTER_SUPERSEDED_BY_SECTION_11_12_8_5
+HISTORICAL_NEXT_STEP_POINTER=OWNER_GO_EXECUTE_BOUNDED_NO_ORDER_PREFLIGHT_ON_OKX_GLOBAL_DEMO_BTC_USDT_SWAP
+ACTIVE_CANONICAL_NEXT_STEP=OWNER_GO_EXECUTE_BOUNDED_SECTION_11_12_8_CONTINUATION_ON_OKX_EEA_DEMO_XPERP_NO_ORDER
 ```
 
-Owner must create OKX Global Demo Trading API keys out-of-band and bind them to
-the SecretRef before that preflight GO. This package does not load credentials
-and must not place orders.
+This Global Demo package was prepared but **not activated**. Active §11.12.8
+derivatives continuation is bound to OKX EEA Demo XPerp (§11.12.8.5). Do not
+treat this package as the current active binding.

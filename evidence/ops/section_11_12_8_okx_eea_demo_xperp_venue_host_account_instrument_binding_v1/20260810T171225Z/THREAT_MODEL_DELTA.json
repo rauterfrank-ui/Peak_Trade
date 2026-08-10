@@ -1,0 +1,60 @@
+{
+  "COMPENSATING_CONTROLS": [
+    {
+      "control": "MANDATORY_DEMO_MARKER_HEADER",
+      "fail_closed_on_absence": true,
+      "header": "x-simulated-trading:1"
+    },
+    {
+      "control": "MANDATORY_EEA_DEMO_CREDENTIAL_CLASS",
+      "credential_class": "OKX_EEA_DEMO_TRADING_API_KEY_ONLY",
+      "live_and_global_classes_hard_blocked": true
+    },
+    {
+      "control": "EXACT_XPERP_INSTRUMENT_SCOPE",
+      "generic_substitution_forbidden": true,
+      "instrument": "BTC-USD_UM_XPERP-310328",
+      "instrument_type": "FUTURES",
+      "legacy_btc_usdt_swap_forbidden_as_active": true,
+      "rule_type": "xperp"
+    },
+    {
+      "control": "SECRETREF_ONLY_CREDENTIAL_PATH",
+      "plaintext_forbidden": true
+    },
+    {
+      "control": "ORDER_POST_HARD_BLOCK_IN_BINDING_PACKAGE",
+      "order_post_authorized": false
+    },
+    {
+      "control": "NO_SILENT_HOST_VENUE_INSTRUMENT_FALLBACK",
+      "fail_closed_on_ambiguity": true
+    }
+  ],
+  "CYBERSECURITY_RUNBOOK_BINDINGS": [
+    "\u00a74.3",
+    "\u00a719",
+    "\u00a720",
+    "\u00a721"
+  ],
+  "DOCUMENT_CLASS": "THREAT_MODEL_DELTA_V1",
+  "INSTRUMENT_SCOPE_EXACT": "BTC-USD_UM_XPERP-310328",
+  "INSTRUMENT_TYPE": "FUTURES",
+  "LIVE_AUTHORIZED_EFFECT": "NONE_REMAINS_FALSE",
+  "NEW_THREATS": [
+    "HOST_ENDPOINT_SUBSTITUTION_TO_OKX_GLOBAL_OR_LIVE",
+    "CREDENTIAL_CROSS_USE_LIVE_OR_GLOBAL_KEYS_ON_EEA_HOST",
+    "LEGACY_BTC_USDT_SWAP_REINTRODUCTION_AS_ACTIVE_EEA_INSTRUMENT",
+    "SILENT_FALLBACK_TO_OKX_GLOBAL_DEMO_BINDING",
+    "AUTHORITY_ESCALATION_FROM_BINDING_PACKAGE_TO_ORDER_POST"
+  ],
+  "PRE_LIVE_CYBERSECURITY_GATE_EFFECT": "NONE_REMAINS_NOT_PASSED",
+  "REST_HOST": "eea.okx.com",
+  "RULE_TYPE": "xperp",
+  "SECTION_11_13_EFFECT": "NONE_REMAINS_UNSTARTED",
+  "SHARED_HOST_WITH_LIVE": false,
+  "THREAT_MODEL_DELTA_ID": "THREAT_MODEL_DELTA_OKX_EEA_DEMO_XPERP_HOST_HEADER_CREDENTIAL_INSTRUMENT_ISOLATION_V1",
+  "TRIGGER": "CANONICAL_REBINDING_OKX_EEA_DEMO_XPERP_FOR_SECTION_11_12_8",
+  "VENUE": "OKX_EEA_DEMO",
+  "ok": true
+}

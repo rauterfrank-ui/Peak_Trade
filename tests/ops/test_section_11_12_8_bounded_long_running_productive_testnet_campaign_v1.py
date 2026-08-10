@@ -340,14 +340,14 @@ def test_okx_accept_reject_and_wire_not_ack() -> None:
 
     body = build_venue_native_order_body_v1(
         client_order_id="c1",
-        instrument="BTC-USDT-SWAP",
+        instrument="BTC-USD_UM_XPERP-310328",
         order_type="LIMIT",
         side="buy",
         quantity="1",
         px="10000",
     )
     assert body["clOrdId"] == "c1"
-    assert body["instId"] == "BTC-USDT-SWAP"
+    assert body["instId"] == "BTC-USD_UM_XPERP-310328"
     assert "client_order_id" not in body
     # OKX Conditional px MUST be present for LIMIT before any Order-POST.
     assert body["px"] == "10000"
@@ -356,7 +356,7 @@ def test_okx_accept_reject_and_wire_not_ack() -> None:
     with pytest.raises(OkxResponseMapperError, match="LIMIT_ORDER_PX_REQUIRED_BEFORE_WIRE"):
         build_venue_native_order_body_v1(
             client_order_id="c1",
-            instrument="BTC-USDT-SWAP",
+            instrument="BTC-USD_UM_XPERP-310328",
             order_type="LIMIT",
             side="buy",
             quantity="1",
@@ -365,7 +365,7 @@ def test_okx_accept_reject_and_wire_not_ack() -> None:
     with pytest.raises(OkxResponseMapperError, match="LIMIT_ORDER_PX_REQUIRED_BEFORE_WIRE"):
         build_venue_native_order_body_v1(
             client_order_id="c1",
-            instrument="BTC-USDT-SWAP",
+            instrument="BTC-USD_UM_XPERP-310328",
             order_type="limit",
             side="buy",
             quantity="1",
@@ -534,7 +534,7 @@ def test_exchange_order_id_persisted_on_port_attempt() -> None:
     )
     effect = port.submit_order_v1(
         client_order_id="c-ack",
-        instrument="BTC-USDT-SWAP",
+        instrument="BTC-USD_UM_XPERP-310328",
         order_type="LIMIT",
         side="buy",
         quantity="1",

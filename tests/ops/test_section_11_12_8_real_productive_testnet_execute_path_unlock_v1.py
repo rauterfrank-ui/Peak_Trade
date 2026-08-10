@@ -255,7 +255,7 @@ def test_bound_client_post_signed_body_equals_wire_body(
     )
     venue_body = build_venue_native_order_body_v1(
         client_order_id="coid-diag-1",
-        instrument="BTC-USDT-SWAP",
+        instrument="BTC-USD_UM_XPERP-310328",
         order_type="LIMIT",
         side="buy",
         quantity="1",

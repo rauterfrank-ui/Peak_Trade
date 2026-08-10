@@ -217,7 +217,7 @@ def prove_testnet_execution_port_productive_binding_v1() -> dict[str, Any]:
     try:
         port.submit_order_v1(
             client_order_id="coid-demo",
-            instrument="BTC-USDT-SWAP",
+            instrument="BTC-USD_UM_XPERP-310328",
             order_type="LIMIT",
             side="buy",
             quantity="1",
@@ -230,7 +230,7 @@ def prove_testnet_execution_port_productive_binding_v1() -> dict[str, Any]:
         bad = TestnetExecutionPortProductiveV1(EXECUTION_MODE="LIVE")
         bad.submit_order_v1(
             client_order_id="coid-live",
-            instrument="BTC-USDT-SWAP",
+            instrument="BTC-USD_UM_XPERP-310328",
             order_type="LIMIT",
             side="buy",
             quantity="1",

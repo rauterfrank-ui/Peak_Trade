@@ -94,9 +94,11 @@ TESTNET_AUTHORIZED_PERSISTED_DEFAULT = False
 
 CANONICAL_RUNTIME_MODE = "TESTNET"
 CANONICAL_VENUE = "OKX"
-CANONICAL_INSTRUMENT_SCOPE: tuple[str, ...] = ("BTC-USDT-SWAP",)
+CANONICAL_INSTRUMENT_SCOPE: tuple[str, ...] = ("BTC-USD_UM_XPERP-310328",)
+CANONICAL_INSTRUMENT_TYPE = "FUTURES"
+CANONICAL_RULE_TYPE = "xperp"
 CANONICAL_ALLOWED_ORDER_TYPES: tuple[str, ...] = ("LIMIT",)
-# Far-below reference px for BTC-USDT-SWAP LIMIT serialization on the §11.12.8
+# Far-below reference px for EEA Demo XPerp LIMIT serialization on the §11.12.8
 # proof path only. Satisfies OKX Conditional px; not a trading signal / MD quote.
 CANONICAL_LIMIT_PX_FOR_VENUE_NATIVE_BODY_V1 = "10000"
 CANONICAL_POSITION_COUNT_LIMIT = 1
