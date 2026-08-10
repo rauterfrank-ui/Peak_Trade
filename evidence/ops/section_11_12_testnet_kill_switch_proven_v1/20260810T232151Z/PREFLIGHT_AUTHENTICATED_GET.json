@@ -1,0 +1,8 @@
+{
+  "code": "0",
+  "endpoint": "/api/v5/account/balance",
+  "http_status": 200,
+  "kill_switch_state": "ACTIVE",
+  "ok": true,
+  "wire_sent": true
+}

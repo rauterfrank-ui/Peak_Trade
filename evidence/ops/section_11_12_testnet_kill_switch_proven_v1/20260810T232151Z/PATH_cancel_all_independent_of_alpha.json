@@ -1,0 +1,13 @@
+{
+  "ack": true,
+  "alpha_dependent": false,
+  "code": "0",
+  "emergency_command": "CANCEL_ALL",
+  "http_status": 200,
+  "kill_switch_state": "KILLED",
+  "msg": "",
+  "ordId": "3821907347557453824",
+  "sCode": "0",
+  "sMsg": "",
+  "tag": "cancel_all_after_kill"
+}

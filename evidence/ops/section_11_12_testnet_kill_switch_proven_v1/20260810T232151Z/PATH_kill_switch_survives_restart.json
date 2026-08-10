@@ -1,0 +1,7 @@
+{
+  "gate_blocks_after_restart": true,
+  "loaded_state": "KILLED",
+  "persisted": true,
+  "restored_state": "KILLED",
+  "survives_restart": true
+}

@@ -1,0 +1,31 @@
+{
+  "client_order_id": "ptokxedemof47b3d89f47b3d8900",
+  "kill_switch_state": "ACTIVE",
+  "ordId": "3821907347557453824",
+  "pending": {
+    "accFillSz": "0",
+    "avgPx": "",
+    "cTime": "1786404114907",
+    "cancelSource": "",
+    "clOrdId": "ptokxedemof47b3d89f47b3d8900",
+    "instId": "BTC-USD_UM_XPERP-310328",
+    "ordId": "3821907347557453824",
+    "ordType": "limit",
+    "px": "10000",
+    "side": "buy",
+    "state": "live",
+    "sz": "0.0001",
+    "uTime": "1786404114907"
+  },
+  "wire": {
+    "ack": true,
+    "clOrdId": "ptokxedemof47b3d89f47b3d8900",
+    "ordId": "3821907347557453824",
+    "px": "10000",
+    "sCode": "0",
+    "side": "buy",
+    "sz": "0.0001",
+    "tag": "primary_submit_while_active",
+    "wire_sent": true
+  }
+}

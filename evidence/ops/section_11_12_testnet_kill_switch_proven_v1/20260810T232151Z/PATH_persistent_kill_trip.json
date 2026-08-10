@@ -1,0 +1,22 @@
+{
+  "command": "PERSISTENT_KILL",
+  "persisted_file": "evidence/ops/section_11_12_testnet_kill_switch_proven_v1/20260810T232151Z/durable_state/kill_switch_state_v1.json",
+  "persisted_payload": {
+    "killed_at": "2026-08-10T23:21:55.193569",
+    "recovery_started_at": null,
+    "saved_at": "2026-08-10T23:21:55.193700",
+    "state": "KILLED",
+    "trigger_reason": "SECTION_11_12_9_17_BOUNDED_PRODUCTIVE_DEMO_XPERP_KILL_SWITCH_PROOF",
+    "version": "1.0"
+  },
+  "state": "KILLED",
+  "status": {
+    "event_count": 1,
+    "is_active": false,
+    "is_killed": true,
+    "killed_at": "2026-08-10T23:21:55.193569",
+    "recovery_started_at": null,
+    "state": "KILLED"
+  },
+  "triggered": true
+}

@@ -1,0 +1,12 @@
+{
+  "ack": false,
+  "blocked_by_kill_switch": true,
+  "clOrdId": "ptokxedemof47b3d89f47b3d8901",
+  "error": "Trading blocked: Kill Switch is KILLED",
+  "kill_switch_state": "KILLED",
+  "px": "10000",
+  "side": "buy",
+  "sz": "0.0001",
+  "tag": "block_new_entry_after_kill",
+  "wire_performed": false
+}

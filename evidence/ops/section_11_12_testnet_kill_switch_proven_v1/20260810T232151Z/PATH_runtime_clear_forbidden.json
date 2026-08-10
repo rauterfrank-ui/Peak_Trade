@@ -1,0 +1,9 @@
+{
+  "gate_still_blocks": true,
+  "owner_authority_required_to_clear": true,
+  "recovery_without_owner_approval": false,
+  "risk_increase_blocked": true,
+  "runtime_clear_blocked": true,
+  "runtime_clear_error": "KILL_SWITCH_RUNTIME_CLEAR_FORBIDDEN_IN_CAPABILITY_11_5:runtime_autonomy",
+  "state_after": "KILLED"
+}

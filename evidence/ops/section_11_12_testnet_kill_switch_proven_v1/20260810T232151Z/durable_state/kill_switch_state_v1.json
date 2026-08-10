@@ -1,0 +1,8 @@
+{
+  "state": "KILLED",
+  "saved_at": "2026-08-10T23:21:55.193700",
+  "killed_at": "2026-08-10T23:21:55.193569",
+  "trigger_reason": "SECTION_11_12_9_17_BOUNDED_PRODUCTIVE_DEMO_XPERP_KILL_SWITCH_PROOF",
+  "recovery_started_at": null,
+  "version": "1.0"
+}
