@@ -1,0 +1,37 @@
+{
+  "CANONICAL_CONTRACT_LOCUS": "src/ops/okx_europe_adapter_lifecycle_contract_v0.py CLIENT_ORDER_ID_ALLOWED_PATTERN",
+  "CLASSIFICATION": "C_IMPLEMENTATION_OR_GOVERNANCE_DEFECT",
+  "CLASSIFICATION_EXACT": "C_IMPLEMENTATION_OR_GOVERNANCE_DEFECT",
+  "CLORDID_ALLOWED_PATTERN": "^[A-Za-z0-9]+$",
+  "CLORDID_CONTRACT_MATCH": false,
+  "CLORDID_MAX_LENGTH": 32,
+  "CLORDID_SENT": "coid-campaign-0",
+  "DOCUMENT_CLASS": "EXCHANGE_REJECT_CLASSIFICATION_V1",
+  "EXCHANGE_CODE": "1",
+  "EXCHANGE_MSG": "All operations failed",
+  "GENERATED_AT_UTC": "2026-08-10T19:28:43Z",
+  "HTTP_STATUS": 200,
+  "IMPLEMENTATION_LOCUS": "src/ops/section_11_12_8_actual_productive_testnet_campaign_run_start_v1/campaign_executor_v1.py client_order_id = f\"coid-{record.campaign_id[:8]}-{cycle_index}\"",
+  "NOT_A": [
+    "A_EXPECTED_BOUNDED_CAMPAIGN_BEHAVIOR_COMPATIBLE_WITH_CLOSEOUT",
+    "B_EXTERNAL_VENUE_CAPABILITY_OR_CONFIGURATION_BLOCKER"
+  ],
+  "ORIGIN_MAIN_SHA": "a04d6effa689d9a2d68ee7904a23b9aa1f7b2435",
+  "RESPONSE_CLASSIFICATION": "EXCHANGE_REJECTED",
+  "ROOT_CAUSE": "Campaign executor generated non-OKX-compliant clOrdId with hyphens (coid-campaign-0); exchange returned HTTP 200 / code=1 / sCode=51000 / sMsg=Parameter clOrdId error. Existing Peak_Trade OKX client-order-id contract requires ^[A-Za-z0-9]+$ max 32.",
+  "ROOT_CAUSE_ID": "C_CLORDID_HYPHEN_FORMAT_VIOLATION_SCODE_51000",
+  "RUN_ID": "20260810T181703Z",
+  "S_CODE": "51000",
+  "S_MSG": "Parameter clOrdId error",
+  "VENUE_NATIVE_BODY": {
+    "clOrdId": "coid-campaign-0",
+    "instId": "BTC-USD_UM_XPERP-310328",
+    "ordType": "limit",
+    "px": "10000",
+    "side": "buy",
+    "sz": "0.0001",
+    "tdMode": "cross"
+  },
+  "WHY_NOT_A": "Semantic exchange reject proves transport+auth+instrument path reachable; campaign PASS does not equal lifecycle proof or section close.",
+  "WHY_NOT_B": "Reject is parameter validation on clOrdId, not XPerp market/capability denial (contrast historical 50124 SWAP path)."
+}

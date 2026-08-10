@@ -1,0 +1,171 @@
+{
+  "CAMPAIGN_EXECUTION_PASS": true,
+  "CRITERIA": [
+    {
+      "criterion": "BOUNDED_DURATION_REACHED",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "actual=3600.677587791; bound_reached=DURATION_BOUND",
+      "reference": "MR \u00a711.12.8.1 SECTION_11_12_8_CAMPAIGN_DURATION_BOUND_SECONDS=3600",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "FIRST_REACHED_WINS_DURATION_BEFORE_CYCLE",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "cycles_completed=60/120; bound=DURATION_BOUND",
+      "reference": "MR \u00a711.12.8.1",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "MODE_PRODUCTIVE_REAL_GATES_CHAIN",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/durable_state/actual_start_durable_state_v1.json",
+      "observed": "owner_go_consumed+confirm_latched+credential_bound+preflight+write_gate_pass+network_session",
+      "reference": "MR \u00a711.12.8 REQUIRED_RUNTIME_GATES",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "VENUE_HOST_ENV_INSTRUMENT_BINDING_EXACT",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "venue=OKX_EEA_DEMO; rest=https://eea.okx.com; inst=BTC-USD_UM_XPERP-310328; sz=0.0001",
+      "reference": "MR \u00a711.12.8.5/\u00a711.12.8.6",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "XPERP_ONLY_NO_SWAP_FALLBACK",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "instrument=BTC-USD_UM_XPERP-310328; swap_markers_absent=true",
+      "reference": "MR \u00a711.12.8.6",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "EPHEMERAL_PRIVATE_WRITE_GATE_PASS",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "EPHEMERAL_XPERP_CAMPAIGN_PRIVATE_WRITE_GATE_PASS",
+      "reference": "MR \u00a711.12.8.6",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "UNKNOWN_SUBMIT_FAIL_CLOSED_PRESERVED",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "unknown_submit_hard_stop=False; classification=EXCHANGE_REJECTED",
+      "reference": "MR \u00a711.12.8.6 UNKNOWN_SUBMIT_FAIL_CLOSED",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "FINAL_EXCHANGE_RECONCILE_CLEANUP",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "ok=True; open_orders=0; open_positions=0",
+      "reference": "MR \u00a711.12.8.6",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "EVIDENCE_SEAL_AND_MANIFEST",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "manifest_match=true; sha256=5162e3a0557fc3c087b37441e54fa88301be6432b338459406f110bf5d5e0ab4",
+      "reference": "campaign seal contract",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "LIVE_HARD_BLOCK_PRESERVED",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/durable_state/actual_start_durable_state_v1.json",
+      "observed": "live_authorized=False; LIVE_ORDER_EFFECT=NONE",
+      "reference": "MR LIVE_AUTHORIZED=false",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "SECTION_11_13_UNSTARTED",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/durable_state/actual_start_durable_state_v1.json",
+      "observed": "section_11_13_started=False",
+      "reference": "MR \u00a711.12.8/\u00a711.13",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "CAMPAIGN_BOUNDED_COMPLETION",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/entrypoint_stdout.jsonl",
+      "observed": "terminal=COMPLETED; durable_stage=SEALED; entrypoint=PASS",
+      "reference": "MR \u00a711.12.8.1",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "TESTNET_ORDER_LIFECYCLE_PROVEN",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "ack=0; reject=1; fill=0; exchange_order_ids=[]",
+      "reference": "MR \u00a711.12 Testnet closure ladder",
+      "verdict": "FAIL"
+    },
+    {
+      "criterion": "TESTNET_RECONCILIATION_PROVEN",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "final reconcile PASS for open orders/positions=0, but not full lifecycle reconciliation proof",
+      "reference": "MR \u00a711.12 Testnet closure ladder",
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "TESTNET_RESTART_PROVEN",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "restart_handled_flag=True; no productive restart proof event",
+      "reference": "MR \u00a711.12 Testnet closure ladder",
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "TESTNET_UNKNOWN_SUBMIT_RECOVERY_PROVEN",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "no unknown-submit event occurred; recovery path not exercised productively",
+      "reference": "MR \u00a711.12",
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "TESTNET_DUPLICATE_ORDER_PREVENTION_PROVEN",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "not exercised in this campaign (single submit cycle 0 only)",
+      "reference": "MR \u00a711.12",
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "TESTNET_KILL_SWITCH_PROVEN",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "kill_switch_reaction=''; no kill reaction event",
+      "reference": "MR \u00a711.12",
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "TESTNET_AUTONOMOUS_RECOVERY_PROVEN",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "not productively proven by this campaign",
+      "reference": "MR \u00a711.12",
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "TESTNET_EVIDENCE_VERIFIED",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "campaign evidence sealed; star-proven fields remain false",
+      "reference": "MR \u00a711.12",
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "SECTION_11_12_8_CANONICALLY_CLOSED",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "TESTNET_*_PROVEN remain false after exchange clOrdId reject",
+      "reference": "MR CAMPAIGN_BOUNDED_COMPLETION_IS_NOT_SECTION_11_12_8_CLOSED",
+      "verdict": "FAIL"
+    },
+    {
+      "criterion": "OKX_CLORDID_CONTRACT_COMPLIANCE",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json",
+      "observed": "clOrdId=coid-campaign-0; pattern_match=False; sCode=51000; sMsg=Parameter clOrdId error",
+      "reference": "src/ops/okx_europe_adapter_lifecycle_contract_v0.py CLIENT_ORDER_ID_ALLOWED_PATTERN=^[A-Za-z0-9]+$",
+      "verdict": "FAIL"
+    }
+  ],
+  "DOCUMENT_CLASS": "SECTION_11_12_8_ACCEPTANCE_MATRIX_V1",
+  "GENERATED_AT_UTC": "2026-08-10T19:28:43Z",
+  "ORDER_LIFECYCLE_PROOF_PASS": false,
+  "ORIGIN_MAIN_SHA": "a04d6effa689d9a2d68ee7904a23b9aa1f7b2435",
+  "RUN_ID": "20260810T181703Z",
+  "SECTION_11_12_8_CLOSEOUT_RECOMMENDATION": "KEEP_SECTION_11_12_8_OPEN_ORDER_LIFECYCLE_NOT_PROVEN_CLORDID_PARAMETER_REJECT",
+  "SUMMARY": {
+    "FAIL": 3,
+    "NOT_APPLICABLE": 0,
+    "NOT_PROVEN": 7,
+    "PASS": 12
+  }
+}

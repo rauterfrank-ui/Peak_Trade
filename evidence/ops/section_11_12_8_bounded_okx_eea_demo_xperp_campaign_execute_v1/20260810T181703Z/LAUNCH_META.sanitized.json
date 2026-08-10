@@ -1,0 +1,33 @@
+{
+  "ALLOW_WIRE_SEND": true,
+  "CONFIRM_DIGEST_FP12": "73709bce9083",
+  "CONFIRM_DIGEST_LEN": 64,
+  "CREDENTIAL_FP12": {
+    "api_key": "b2ba753a9026",
+    "api_secret": "051c888bfb69",
+    "passphrase": "126850d9e99c"
+  },
+  "CREDENTIAL_SOURCE_PATH": "/Users/frnkhrz/Documents/local_secrets/okx_europe_eea_demo_trading_v5.env",
+  "ENTRYPOINT": "scripts/ops/run_section_11_12_8_real_productive_testnet_execute_operator_entrypoint_v1.py",
+  "ENVIRONMENT": "DEMO",
+  "HOST": "https://eea.okx.com",
+  "INSTID": "BTC-USD_UM_XPERP-310328",
+  "LAUNCHED_AT_UTC": "2026-08-10T18:17:03Z",
+  "LIVE_AUTHORIZED": false,
+  "ORDER_SZ": "0.0001",
+  "ORIGIN_MAIN_SHA": "a04d6effa689d9a2d68ee7904a23b9aa1f7b2435",
+  "OWNER_GO": "OWNER_GO_EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN_WITH_HIDDEN_CONFIRM_AND_SECRETREF_VAULT_RUNTIME",
+  "PRE_LIVE_CYBERSECURITY_GATE": "NOT_PASSED",
+  "SCOPED_OWNER_GO_SCOPE": "EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN",
+  "SECRET_REFERENCE": "secretref://vault/peak-trade/testnet-demo",
+  "SSOT_CYCLE_CADENCE_SECONDS": 60,
+  "SSOT_DURATION_BOUND_SECONDS": 3600,
+  "SSOT_MAX_CYCLES": 120,
+  "SWAP_RUNTIME_FALLBACK": false,
+  "SWAP_WRITE_AUTHORIZATION": false,
+  "VAULT_DIR": "/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/pt_11_12_8_xperp_vault_czo8kkjf",
+  "VAULT_FILE": "/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/pt_11_12_8_xperp_vault_czo8kkjf/secretref_vault_v1.json",
+  "VENUE": "OKX_EEA_DEMO",
+  "WORK_DIR": "/Users/frnkhrz/Peak_Trade/evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z",
+  "XPERP_ONLY_ACTIVE_WRITE_SCOPE": true
+}
