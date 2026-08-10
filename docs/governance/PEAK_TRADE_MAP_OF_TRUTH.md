@@ -188,7 +188,7 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.3 | SSOT OKX EEA Demo path EXTERNAL_CAPABILITY_UNAVAILABLE closeout &#47; next-step binding |
 | [`evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z/`](../../evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z/) | Primary sealed run evidence (immutable) |
 | [`…&#47;20260808T181528Z&#47;derived_forensic_closeout_v1&#47;`](../../evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z/derived_forensic_closeout_v1/) | Derived HTTP-403 forensic closeout (non-SSOT) |
-| [`evidence/ops/section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1/20260810T143709Z/`](../../evidence/ops/section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1/20260810T143709Z/) | OKX EEA Demo path closeout &#47; no-order alternate evaluation (non-activating) |
+| [`evidence&#47;ops&#47;section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1&#47;20260810T143709Z&#47;`](../../evidence/ops/section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1/20260810T143709Z/) | OKX EEA Demo path closeout &#47; no-order alternate evaluation (non-activating) |
 
 ```text
 THIS_SECTION_DEFINES_NO_SEMANTICS=true
