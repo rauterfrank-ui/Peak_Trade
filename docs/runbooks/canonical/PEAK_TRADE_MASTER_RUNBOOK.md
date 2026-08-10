@@ -3875,13 +3875,16 @@ ORDER_LIFECYCLE_PROOF_PASS=false
 SECTION_11_12_8_CLOSED=false
 SECTION_11_12_8_CLOSEOUT_RECOMMENDED=true
 SECTION_11_12_8_STATUS=OPEN_OKX_EEA_DEMO_XPERP_CLEAN_CLOSEOUT_PROVEN_AWAITING_OWNER_MERGE_THEN_CLOSEOUT_GO
+SECTION_11_12_8_STATUS_AT_CLEAN_CLOSEOUT_ROLE=SUPERSEDED_POINTER_SEE_SECTION_11_12_8_10
 TESTNET_STAR_PROVEN=false
 TESTNET_ORDER_LIFECYCLE_PROVEN=false
 LIVE_AUTHORIZED=false
 PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
 SECTION_11_13_STARTED=false
-CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_8_9
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY_AT_CLEAN_CLOSEOUT=SECTION_11_12_8_9
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_8_10
 CANONICAL_NEXT_STEP=OWNER_MERGE_GO_PR_5842_THEN_OWNER_GO_SECTION_11_12_8_CLOSEOUT_PACKAGE
+CANONICAL_NEXT_STEP_ROLE=SUPERSEDED_POINTER_SEE_SECTION_11_12_8_10
 ```
 
 Mandatory distinctions:
@@ -3898,7 +3901,74 @@ Observed facts: cancel body now includes
 `{instId=BTC-USD_UM_XPERP-310328, ordId=...}`; canonical seal path reached
 `FINAL_EXCHANGE_RECONCILE_CLEANUP_PASS` with zero open orders&#47;positions and
 no out-of-band cleanup. Fill not required for this remediation proof.
-Live remains hard-blocked. Cap &#47; §11.13 remains unstarted.
+Live remains hard-blocked. Cap &#47; §11.13 remains unstarted. Active closeout
+authority moved to §11.12.8.10 after PR #5842 merge and Owner closeout-package
+GO.
+
+#### 11.12.8.10 OKX EEA Demo XPerp §11.12.8 Owner closeout package (binding; section closed)
+
+Owner-GO `OWNER_GO_SECTION_11_12_8_CLOSEOUT_PACKAGE` closes **§11.12.8** from
+observed sealed facts after PR #5841 &#47; #5842 merge: bounded 1h XPerp campaign
+completed, alphanumeric clOrdId ACK proven, cancel-`instId` clean closeout
+proven with zero open orders&#47;positions. This package does **not** close the
+Cap 11.12 Testnet STAR program, does **not** set any `TESTNET_*_PROVEN` field
+true, does **not** set `PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** start
+Cap &#47; §11.13, does **not** authorize Live, and does **not** post new orders.
+
+``` text
+SECTION_11_12_8_CLOSEOUT_PACKAGE_RUN_ID=20260810T201332Z
+SECTION_11_12_8_CLOSEOUT_PACKAGE_ORIGIN_MAIN_SHA=1f7d6aa1d39856f298b2c846182a79710757fb31
+SECTION_11_12_8_CLOSEOUT_PACKAGE_EVIDENCE_ROOT=evidence/ops/section_11_12_8_closeout_package_v1/20260810T201332Z/
+SECTION_11_12_8_BOUNDED_1H_CAMPAIGN_EVIDENCE_ROOT=evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/
+SECTION_11_12_8_BOUNDED_XPERP_ACK_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1/20260810T194806Z/
+SECTION_11_12_8_BOUNDED_XPERP_CLEAN_CLOSEOUT_EVIDENCE_ROOT=evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_clean_closeout_after_cancel_instid_fix_v1/20260810T200151Z/
+CLORDID_HYPHEN_DEFECT_CLOSED=true
+CANCEL_INSTID_DEFECT_CLOSED=true
+ORDER_ACK_PROVEN=true
+CLEAN_CLOSEOUT_PROOF_PASS=true
+ORDER_LIFECYCLE_PROOF_PASS=true
+ORDER_LIFECYCLE_PROOF_SCOPE=ACK_CANCEL_RECONCILE_CLEAN_CLOSEOUT_NO_FILL_REQUIRED_FOR_SECTION_11_12_8_OWNER_CLOSEOUT
+SECTION_11_12_8_CLOSED=true
+SECTION_11_12_8_CLOSEOUT_RECOMMENDED=false
+SECTION_11_12_8_STATUS=CLOSED_OKX_EEA_DEMO_XPERP_BOUNDED_CAMPAIGN_AND_CLEAN_CLOSEOUT_PROVEN
+CAP_11_12_TESTNET_PROGRAM_CLOSED=false
+TESTNET_STAR_PROVEN=false
+TESTNET_ORDER_LIFECYCLE_PROVEN=false
+TESTNET_RECONCILIATION_PROVEN=false
+TESTNET_RESTART_PROVEN=false
+TESTNET_UNKNOWN_SUBMIT_RECOVERY_PROVEN=false
+TESTNET_DUPLICATE_ORDER_PREVENTION_PROVEN=false
+TESTNET_KILL_SWITCH_PROVEN=false
+TESTNET_AUTONOMOUS_RECOVERY_PROVEN=false
+TESTNET_EVIDENCE_VERIFIED=false
+LONG_RUNNING_TESTNET_PROVEN=false
+LIVE_AUTHORIZED=false
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+SECTION_11_13_STARTED=false
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_8_10
+CANONICAL_NEXT_STEP=OWNER_GO_SECTION_11_12_9_PRE_LIVE_CYBERSECURITY_ACCEPTANCE_GATE_EVIDENCE_BOUND_EVALUATION
+```
+
+Mandatory distinctions:
+
+``` text
+SECTION_11_12_8_CLOSED != CAP_11_12_TESTNET_PROGRAM_CLOSED
+SECTION_11_12_8_CLOSED != TESTNET_STAR_PROVEN
+SECTION_11_12_8_CLOSED != TESTNET_ORDER_LIFECYCLE_PROVEN
+SECTION_11_12_8_CLOSED != LONG_RUNNING_TESTNET_PROVEN
+SECTION_11_12_8_CLOSED != PRE_LIVE_CYBERSECURITY_GATE_PASS
+SECTION_11_12_8_CLOSED != SECTION_11_13_STARTED
+SECTION_11_12_8_CLOSED != LIVE_AUTHORIZED
+ORDER_LIFECYCLE_PROOF_PASS != TESTNET_ORDER_LIFECYCLE_PROVEN
+```
+
+Observed facts: Owner-authorized section close binds the sealed 1h campaign,
+ACK proof, and clean closeout evidence roots above; fill count remains 0 and
+is not claimed as Cap 11.12.4 productive fill proof. Cap 11.12 Testnet STAR
+ladder remains open. Live remains hard-blocked. Cap &#47; §11.13 remains
+unstarted. Active continuation authority moves to §11.12.9 under a separate
+Owner-GO (evidence-bound; gate remains `NOT_PASSED` until minimum PASS
+conditions are proven).
 
 #### 11.12.9 Pre-Live Cybersecurity Acceptance Gate (binding; mandatory)
 

@@ -1,0 +1,13 @@
+{
+  "ACK_EVIDENCE": "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1/20260810T194806Z/",
+  "ACK_MANIFEST": "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1/20260810T194806Z/MANIFEST.sha256",
+  "ACK_MANIFEST_VERIFY_RC": 0,
+  "CAMPAIGN_EVIDENCE": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/",
+  "CAMPAIGN_FORENSIC": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/derived_forensic_closeout_v1/",
+  "CAMPAIGN_MANIFEST": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/MANIFEST.sha256",
+  "CAMPAIGN_MANIFEST_VERIFY_RC": 0,
+  "CLEAN_CLOSEOUT_EVIDENCE": "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_clean_closeout_after_cancel_instid_fix_v1/20260810T200151Z/",
+  "CLEAN_MANIFEST": "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_clean_closeout_after_cancel_instid_fix_v1/20260810T200151Z/MANIFEST.sha256",
+  "CLEAN_MANIFEST_VERIFY_RC": 0,
+  "ORIGIN_MAIN_SHA": "1f7d6aa1d39856f298b2c846182a79710757fb31"
+}
