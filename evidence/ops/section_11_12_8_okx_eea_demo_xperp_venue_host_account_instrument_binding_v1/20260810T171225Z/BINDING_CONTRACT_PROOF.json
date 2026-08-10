@@ -1,0 +1,101 @@
+{
+  "binding": {
+    "account_identity": "acct-uid-testnet-demo",
+    "credential_class": "OKX_EEA_DEMO_TRADING_API_KEY_ONLY",
+    "demo_marker_header_name": "x-simulated-trading",
+    "demo_marker_header_value": "1",
+    "environment": "DEMO",
+    "instrument_scope_exact": "BTC-USD_UM_XPERP-310328",
+    "instrument_type": "FUTURES",
+    "network_session_authorized": false,
+    "order_post_authorized": false,
+    "plaintext_exposed": false,
+    "rest_base": "https://eea.okx.com",
+    "rest_host": "eea.okx.com",
+    "rule_type": "xperp",
+    "runtime_mode": "TESTNET",
+    "secret_reference": "secretref://vault/peak-trade/testnet-demo",
+    "venue": "OKX_EEA_DEMO",
+    "venue_activated": false
+  },
+  "fail_closed_matrix": {
+    "all_ok": true,
+    "cases": [
+      {
+        "case": "missing_demo_header",
+        "error": "DEMO_MARKER_HEADER_MISSING",
+        "ok": true
+      },
+      {
+        "case": "wrong_demo_header_value",
+        "error": "DEMO_MARKER_HEADER_VALUE_MISMATCH",
+        "ok": true
+      },
+      {
+        "case": "live_credential_class",
+        "error": "LIVE_CREDENTIAL_CLASS_HARD_BLOCK",
+        "ok": true
+      },
+      {
+        "case": "global_credential_class",
+        "error": "GLOBAL_CREDENTIAL_CLASS_HARD_BLOCK",
+        "ok": true
+      },
+      {
+        "case": "legacy_btc_usdt_swap_active",
+        "error": "LEGACY_BTC_USDT_SWAP_ACTIVE_BINDING_FORBIDDEN",
+        "ok": true
+      },
+      {
+        "case": "instrument_substitution",
+        "error": "GENERIC_OR_ALTERNATE_SYMBOL_SUBSTITUTION_FORBIDDEN",
+        "ok": true
+      },
+      {
+        "case": "instrument_mismatch",
+        "error": "EXACT_INSTRUMENT_SCOPE_REQUIRED",
+        "ok": true
+      },
+      {
+        "case": "instrument_type_mismatch",
+        "error": "INSTRUMENT_TYPE_MISMATCH",
+        "ok": true
+      },
+      {
+        "case": "rule_type_mismatch",
+        "error": "RULE_TYPE_MISMATCH",
+        "ok": true
+      },
+      {
+        "case": "environment_mismatch",
+        "error": "ENVIRONMENT_MISMATCH_FAIL_CLOSED",
+        "ok": true
+      },
+      {
+        "case": "live_mode",
+        "error": "LIVE_MODE_OR_ACCOUNT_HARD_BLOCK",
+        "ok": true
+      },
+      {
+        "case": "global_host_fallback",
+        "error": "SILENT_HOST_FALLBACK_FORBIDDEN:openapi.okx.com",
+        "ok": true
+      },
+      {
+        "case": "venue_fallback_global",
+        "error": "SILENT_VENUE_FALLBACK_FORBIDDEN",
+        "ok": true
+      },
+      {
+        "case": "order_post_authorized",
+        "error": "ORDER_POST_HARD_BLOCK_IN_BINDING_PACKAGE",
+        "ok": true
+      },
+      {
+        "case": "order_mutation_endpoint",
+        "ok": true
+      }
+    ]
+  },
+  "threat_model_delta_id": "THREAT_MODEL_DELTA_OKX_EEA_DEMO_XPERP_HOST_HEADER_CREDENTIAL_INSTRUMENT_ISOLATION_V1"
+}

@@ -334,7 +334,7 @@ def test_productive_port_and_transport() -> None:
     )
     effect = port.submit_order_v1(
         client_order_id="c1",
-        instrument="BTC-USDT-SWAP",
+        instrument="BTC-USD_UM_XPERP-310328",
         order_type="LIMIT",
         side="buy",
         quantity="1",

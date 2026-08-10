@@ -146,7 +146,7 @@ def test_port_construction_requires_authorized_terminal() -> None:
     ):
         port.submit_order_v1(
             client_order_id="coid-1",
-            instrument="BTC-USDT-SWAP",
+            instrument="BTC-USD_UM_XPERP-310328",
             order_type="LIMIT",
             side="buy",
             quantity="1",

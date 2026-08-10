@@ -300,7 +300,7 @@ def run_campaign_lifecycle_v1(
             client_order_id = f"coid-{record.campaign_id[:8]}-{cycle_index}"
             effect = port.submit_order_v1(
                 client_order_id=client_order_id,
-                instrument="BTC-USDT-SWAP",
+                instrument="BTC-USD_UM_XPERP-310328",
                 order_type="LIMIT",
                 side="buy",
                 quantity="1",
