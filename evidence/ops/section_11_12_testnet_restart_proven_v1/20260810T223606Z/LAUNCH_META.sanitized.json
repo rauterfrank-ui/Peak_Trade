@@ -1,0 +1,38 @@
+{
+  "BRANCH": "main",
+  "CANONICAL_INSTRUMENT": "BTC-USD_UM_XPERP-310328",
+  "CANONICAL_ORDER_SZ": "0.0001",
+  "CANONICAL_VENUE": "OKX_EEA_DEMO",
+  "CREDENTIAL_FP12": {
+    "api_key": "b2ba753a9026",
+    "api_secret": "051c888bfb69",
+    "passphrase": "126850d9e99c"
+  },
+  "ENDPOINT_ALLOWLIST": [
+    "/api/v5/account/balance",
+    "/api/v5/account/config",
+    "/api/v5/account/instruments",
+    "/api/v5/account/positions",
+    "/api/v5/trade/order",
+    "/api/v5/trade/cancel-order",
+    "/api/v5/trade/orders-pending"
+  ],
+  "EPHEMERAL_PATCH_SITE": "bound_testnet_http_client_v1._assert_testnet_url",
+  "EPHEMERAL_SIGN_PATH_QUERY_PATCH": true,
+  "EXECUTE_TOKEN": "EXECUTE_ONE_BOUNDED_PRODUCTIVE_DEMO_XPERP_RESTART_WITH_OPEN_ORDER_AND_OPEN_POSITION_THEN_SEAL_EVIDENCE_AND_HARD_STOP",
+  "FILL_STRATEGY": "ADAPTIVE_WITHIN_OKX_PRICE_BAND_51006",
+  "LAUNCHED_AT_UTC": "2026-08-10T22:36:07Z",
+  "LIVE_AUTHORIZED": false,
+  "ORIGIN_MAIN_SHA": "dfb999751bd2ed9313317819c72c838349bfdfeb",
+  "OWNER_GO": "OWNER_GO_PRODUCTIVE_TESTNET_RESTART_PROVEN_REQUIRED",
+  "PRED_FAILED_PRICE_BAND_ATTEMPT": "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223428Z/",
+  "PRED_LIFECYCLE_EVIDENCE": "evidence/ops/section_11_12_testnet_order_lifecycle_proven_v1/20260810T215942Z/",
+  "PRED_RECONCILIATION_EVIDENCE": "evidence/ops/section_11_12_testnet_reconciliation_proven_v1/20260810T221902Z/",
+  "PRED_RESIDUAL_EVIDENCE": "evidence/ops/section_11_12_9_11_open_testnet_proven_fields_reporting_reconcile_residual_proof_v1/20260810T213441Z/",
+  "PRED_SECTION_11_12_6_FIXTURE_RESIDUAL": "evidence/ops/section_11_12_6_cap_11_12_testnet_progression_residual_proof_v1/20260810T212326Z/",
+  "PROOF_FIELD_TARGET": "TESTNET_RESTART_PROVEN",
+  "PROOF_METHOD": "BOUNDED_PRODUCTIVE_OKX_EEA_DEMO_XPERP_RESTART_WITH_OPEN_ORDER_AND_OPEN_POSITION",
+  "RESTING_BUY_PX": "10000",
+  "SECTION_11_13_STARTED": false,
+  "WORK_DIR": "/Users/frnkhrz/Peak_Trade/evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z"
+}

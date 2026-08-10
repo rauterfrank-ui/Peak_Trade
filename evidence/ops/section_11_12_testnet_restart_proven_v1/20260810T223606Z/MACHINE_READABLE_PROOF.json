@@ -1,0 +1,132 @@
+{
+  "ACCEPTANCE_CRITERIA_RESULTS": {
+    "DEMO_AUTH_OK": true,
+    "FINAL_FLAT_OK": true,
+    "LIVE_STILL_FALSE": true,
+    "NO_RESUBMIT_OK": true,
+    "NO_SILENT_REINIT_OK": true,
+    "OPEN_ORDER_PATH_OK": true,
+    "OPEN_POSITION_PATH_OK": true,
+    "PRED_LIFE_OK": true,
+    "PRED_RECON_OK": true,
+    "RECONCILE_BEFORE_ALPHA_OK": true,
+    "SECTION_11_13_STILL_FALSE": true,
+    "TESTNET_ISOLATION_OK": true
+  },
+  "AUTHORIZATION_STATUS": "OWNER_GO_AND_EXECUTE_TOKEN_CONSUMED",
+  "BRANCH": "main",
+  "CANCEL_ACK_COUNT": 1,
+  "CANCEL_ATTEMPT_COUNT": 1,
+  "CANONICAL_ENVIRONMENT_BINDING": "DEMO",
+  "CANONICAL_INSTRUMENT_BINDING": "BTC-USD_UM_XPERP-310328",
+  "CANONICAL_VENUE_BINDING": "OKX_EEA_DEMO",
+  "CAP_11_12_TESTNET_PROGRAM_CLOSED": false,
+  "DOCUMENT_CLASS": "MACHINE_READABLE_TESTNET_RESTART_PROVEN_PROOF_V1",
+  "EPHEMERAL_SIGN_PATH_QUERY_PATCH": true,
+  "EXECUTE_TOKEN": "EXECUTE_ONE_BOUNDED_PRODUCTIVE_DEMO_XPERP_RESTART_WITH_OPEN_ORDER_AND_OPEN_POSITION_THEN_SEAL_EVIDENCE_AND_HARD_STOP",
+  "FILL_COUNT": 1,
+  "FINAL_OPEN_ORDER_COUNT": 0,
+  "FINAL_OPEN_POSITION_COUNT": 0,
+  "HARD_STOP_AFTER_THIS_PROOF": true,
+  "LIVE_AUTHORIZED": false,
+  "LONG_RUNNING_TESTNET_PROVEN": false,
+  "MANIFEST_VERIFY_RC": 0,
+  "MUTATION_ACTIONS": [
+    {
+      "ack": true,
+      "action": "POST_/api/v5/trade/order",
+      "clOrdId": "ptokxedemo99e0168d99e0168d00",
+      "ordId": "3821815208228032512",
+      "px": "10000",
+      "sCode": "0",
+      "side": "buy",
+      "tag": "open_order_place"
+    },
+    {
+      "ack": true,
+      "action": "POST_/api/v5/trade/cancel-order",
+      "ordId": "3821815208228032512",
+      "tag": "open_order_cancel_after_restart"
+    },
+    {
+      "ack": true,
+      "action": "POST_/api/v5/trade/order",
+      "clOrdId": "ptokxedemo47cb2e6747cb2e6700",
+      "ordId": "3821815267384496128",
+      "px": "67000",
+      "sCode": "0",
+      "side": "buy",
+      "tag": "open_position_buy_probe_67000"
+    },
+    {
+      "ack": true,
+      "action": "POST_/api/v5/trade/order",
+      "clOrdId": "ptokxedemo0f4c95350f4c953500",
+      "ordId": "3821815324024377344",
+      "px": "61000",
+      "sCode": "0",
+      "side": "sell",
+      "tag": "open_position_sell_probe_61000"
+    }
+  ],
+  "NEWLY_CLOSED_TESTNET_PROVEN_FIELDS": [
+    "TESTNET_RESTART_PROVEN"
+  ],
+  "NEXT_CANONICAL_RESIDUAL_PROOF": "TESTNET_UNKNOWN_SUBMIT_RECOVERY_PROVEN",
+  "NEXT_OWNER_STEP": "OWNER_GO_PRODUCTIVE_TESTNET_UNKNOWN_SUBMIT_RECOVERY_PROVEN_REQUIRED",
+  "OPEN_TESTNET_PROVEN_FIELDS": [
+    "TESTNET_UNKNOWN_SUBMIT_RECOVERY_PROVEN",
+    "TESTNET_DUPLICATE_ORDER_PREVENTION_PROVEN",
+    "TESTNET_KILL_SWITCH_PROVEN",
+    "TESTNET_AUTONOMOUS_RECOVERY_PROVEN",
+    "TESTNET_EVIDENCE_VERIFIED"
+  ],
+  "ORDER_ACK_COUNT": 3,
+  "ORDER_ATTEMPT_COUNT": 3,
+  "ORDER_EFFECT": "TESTNET",
+  "ORIGIN_MAIN_SHA": "dfb999751bd2ed9313317819c72c838349bfdfeb",
+  "OWNER_GO": "OWNER_GO_PRODUCTIVE_TESTNET_RESTART_PROVEN_REQUIRED",
+  "PATH_RESULTS": {
+    "restart_with_open_order": {
+      "post_restart_identity_ok": true,
+      "post_restart_state": "OPEN",
+      "pre_restart_state": "OPEN",
+      "re_submit_performed": false,
+      "reconciliation_before_alpha": true,
+      "silent_reinitialization_performed": false,
+      "terminal_via": "CANCELLED"
+    },
+    "restart_with_open_position": {
+      "post_restart_identity_ok": true,
+      "post_restart_state": "OPEN_POSITION",
+      "pre_restart_state": "OPEN_POSITION",
+      "re_submit_performed": false,
+      "reconciliation_before_alpha": true,
+      "silent_reinitialization_performed": false,
+      "terminal_via": "FILLED_THEN_CLOSED"
+    }
+  },
+  "PRED_FAILED_PRICE_BAND_ATTEMPT": "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223428Z/",
+  "PRED_LIFECYCLE_EVIDENCE": "evidence/ops/section_11_12_testnet_order_lifecycle_proven_v1/20260810T215942Z/",
+  "PRED_RECONCILIATION_EVIDENCE": "evidence/ops/section_11_12_testnet_reconciliation_proven_v1/20260810T221902Z/",
+  "PRED_RESIDUAL_EVIDENCE": "evidence/ops/section_11_12_9_11_open_testnet_proven_fields_reporting_reconcile_residual_proof_v1/20260810T213441Z/",
+  "PRE_LIVE_CYBERSECURITY_GATE": "NOT_PASSED",
+  "PRICE_BAND": {
+    "max_buy": null,
+    "min_sell": null
+  },
+  "PRIMARY_EVIDENCE_ROOT": "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/",
+  "PROOF_EXECUTED": true,
+  "PROOF_METHOD": "BOUNDED_PRODUCTIVE_OKX_EEA_DEMO_XPERP_RESTART_WITH_OPEN_ORDER_AND_OPEN_POSITION",
+  "PROOF_RESULT": "PRODUCTIVE_TESTNET_RESTART_PROVEN_PASS",
+  "RE_SUBMIT_ATTEMPT_COUNT": 0,
+  "SECTION_11_12_9_GATE_PASS": false,
+  "SECTION_11_13_STARTED": false,
+  "STATUS": "PASS",
+  "TESTNET_ISOLATION_VERIFIED": true,
+  "TESTNET_ORDER_LIFECYCLE_PROVEN": true,
+  "TESTNET_RECONCILIATION_PROVEN": true,
+  "TESTNET_RESTART_PROVEN": true,
+  "VERDICT": "PRODUCTIVE_TESTNET_RESTART_PROVEN_PASS",
+  "WORK_DIR": "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/"
+}

@@ -1,0 +1,25 @@
+{
+  "campaign_id": "campaign-restart-oo-2a45c0ace042bebe",
+  "clOrdId": "ptokxedemo99e0168d99e0168d00",
+  "local_open_order_count": 1,
+  "local_open_position_count": 0,
+  "ordId": "3821815208228032512",
+  "order_sanitized": {
+    "accFillSz": "0",
+    "avgPx": "",
+    "cTime": "1786401368941",
+    "cancelSource": "",
+    "clOrdId": "ptokxedemo99e0168d99e0168d00",
+    "instId": "BTC-USD_UM_XPERP-310328",
+    "ordId": "3821815208228032512",
+    "ordType": "limit",
+    "px": "10000",
+    "side": "buy",
+    "state": "live",
+    "sz": "0.0001",
+    "uTime": "1786401368941"
+  },
+  "path_name": "restart_with_open_order",
+  "pre_restart_state": "OPEN",
+  "re_submit_forbidden": true
+}
