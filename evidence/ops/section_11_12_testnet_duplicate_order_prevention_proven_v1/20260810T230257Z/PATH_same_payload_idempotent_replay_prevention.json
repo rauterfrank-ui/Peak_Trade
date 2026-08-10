@@ -1,0 +1,14 @@
+{
+  "client_order_id": "ptokxedemo156e7c52156e7c5200",
+  "duplicate_order_prevented": true,
+  "event": "SAME_PAYLOAD_IDEMPOTENT_REPLAY",
+  "idempotent_replay": true,
+  "result": {
+    "admitted": true,
+    "client_order_id": "ptokxedemo156e7c52156e7c5200",
+    "duplicate_order_prevented": true,
+    "idempotent_replay": true
+  },
+  "wire_authorized": false,
+  "wire_performed": false
+}
