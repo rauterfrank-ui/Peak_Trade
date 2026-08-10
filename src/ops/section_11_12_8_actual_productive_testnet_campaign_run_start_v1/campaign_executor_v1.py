@@ -8,6 +8,9 @@ from datetime import datetime, timezone
 from typing import Any, Callable
 from uuid import uuid4
 
+from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.clordid_serialization_v1 import (
+    serialize_section_11_12_8_campaign_clordid_v1,
+)
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.constants_v1 import (
     CANONICAL_LIMIT_PX_FOR_VENUE_NATIVE_BODY_V1,
     CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
@@ -308,7 +311,10 @@ def run_campaign_lifecycle_v1(
             sz_text = str(order_sz).strip()
             if not sz_text:
                 raise ActualStartExecutorError("ORDER_SZ_REQUIRED_BEFORE_WIRE")
-            client_order_id = f"coid-{record.campaign_id[:8]}-{cycle_index}"
+            client_order_id = serialize_section_11_12_8_campaign_clordid_v1(
+                campaign_id=record.campaign_id,
+                cycle_index=cycle_index,
+            )
             try:
                 effect = port.submit_order_v1(
                     client_order_id=client_order_id,
