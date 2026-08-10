@@ -1,0 +1,26 @@
+{
+  "AGENT_ACTIONS_FORBIDDEN": [
+    "login",
+    "2fa",
+    "captcha",
+    "credential_entry",
+    "demo_key_creation_automation",
+    "order_post",
+    "commit_post_login_overview_screenshot",
+    "commit_account_id_or_email_or_balance_ui"
+  ],
+  "DOCUMENT_CLASS": "OWNER_INTERVENTION_REQUIRED_V1",
+  "NOTE": "Browser hard-stopped at login mask. No credentials entered, read, stored, or automated. Geo may present Europe branding; Owner must ensure a Global (non-EEA) Demo Trading account/key path for this binding. After Owner login, no order attempt without separate OWNER_GO_EXECUTE_BOUNDED_NO_ORDER_PREFLIGHT_ON_OKX_GLOBAL_DEMO_BTC_USDT_SWAP.",
+  "OBSERVED_AFTER_SNAPSHOT": {
+    "agent_action": "HARD_STOP_NO_ACCOUNT_INTERACTION_NO_DEMO_KEY_AUTOMATION_NO_ORDER",
+    "classification": "POSSIBLE_PREEXISTING_BROWSER_SESSION_OR_REDIRECT",
+    "owner_must_confirm_global_demo_account_and_create_demo_trading_api_keys_out_of_band": true,
+    "page_url_at_screenshot": "https://my.okx.com/de/account/users"
+  },
+  "OWNER_INTERVENTION_REASON": "OKX_GLOBAL_LOGIN_REQUIRED",
+  "OWNER_INTERVENTION_REQUIRED": true,
+  "PAGE_TITLE": "OKX Login| Anmelden| | OKX Europe",
+  "PAGE_URL": "https://www.okx.com/de/account/login",
+  "PII_SANITIZATION": true,
+  "SCREENSHOT_STATUS": "EXCLUDED_FROM_COMMIT_DUE_TO_PII_IN_POST_LOGIN_OVERVIEW_CAPTURE"
+}

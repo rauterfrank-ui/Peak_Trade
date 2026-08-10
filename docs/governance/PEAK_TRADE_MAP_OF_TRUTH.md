@@ -185,21 +185,27 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | Pfad | Rolle |
 |------|-------|
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.2 | SSOT forensic campaign-run status |
-| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.3 | SSOT OKX EEA Demo path EXTERNAL_CAPABILITY_UNAVAILABLE closeout &#47; next-step binding |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.3 | SSOT OKX EEA Demo path EXTERNAL_CAPABILITY_UNAVAILABLE closeout |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.4 | SSOT OKX Global Demo binding package (NO_ORDER; not activated) |
+| [`docs/ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_GLOBAL_DEMO_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md`](../ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_GLOBAL_DEMO_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md) | Capability spec for Global Demo binding |
 | [`evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z/`](../../evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z/) | Primary sealed run evidence (immutable) |
 | [`…&#47;20260808T181528Z&#47;derived_forensic_closeout_v1&#47;`](../../evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z/derived_forensic_closeout_v1/) | Derived HTTP-403 forensic closeout (non-SSOT) |
 | [`evidence&#47;ops&#47;section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1&#47;20260810T143709Z&#47;`](../../evidence/ops/section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1/20260810T143709Z/) | OKX EEA Demo path closeout &#47; no-order alternate evaluation (non-activating) |
+| [`evidence&#47;ops&#47;section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1&#47;20260810T151323Z&#47;`](../../evidence/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/20260810T151323Z/) | OKX Global Demo binding package evidence (NO_ORDER) |
 
 ```text
 THIS_SECTION_DEFINES_NO_SEMANTICS=true
 SECTION_11_12_8_CLOSED=false
 SECTION_11_13_STARTED=false
 LIVE_AUTHORIZED=false
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
 OKX_EEA_DEMO_PRODUCTIVE_ORDER_PATH_STATUS=CLOSED_EXTERNAL_CAPABILITY_UNAVAILABLE
-NEXT_CANONICAL_STEP_POINTER=OWNER_GO_SELECT_ALTERNATE_DERIVATIVES_TESTNET_VENUE_SCOPE_FOR_SECTION_11_12_8_CONTINUATION
+OKX_GLOBAL_DEMO_BINDING_PACKAGE_STATUS=PREPARED_NO_ORDER_NOT_ACTIVATED
+NEXT_CANONICAL_STEP_POINTER=OWNER_GO_EXECUTE_BOUNDED_NO_ORDER_PREFLIGHT_ON_OKX_GLOBAL_DEMO_BTC_USDT_SWAP
 PREDECESSOR_GET_PROOF_IS_NOT_TARGETED_TRADE_PROOF=true
 PREDECESSOR_ORDERLESS_GET_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_autonomous_okx_eea_demo_credential_ip_resolve_v1&#47;20260808T203507Z&#47;
 ALTERNATE_EVALUATION_IS_NOT_VENUE_ACTIVATION=true
+BINDING_PACKAGE_IS_NOT_VENUE_ACTIVATION=true
 ```
 
 ---

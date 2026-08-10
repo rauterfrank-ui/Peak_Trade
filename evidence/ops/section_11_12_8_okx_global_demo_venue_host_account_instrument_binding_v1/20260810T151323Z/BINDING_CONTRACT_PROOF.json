@@ -1,0 +1,85 @@
+{
+  "binding": {
+    "account_identity": "acct-uid-okx-global-demo",
+    "credential_class": "OKX_DEMO_TRADING_API_KEY_ONLY",
+    "demo_marker_header_name": "x-simulated-trading",
+    "demo_marker_header_value": "1",
+    "environment": "DEMO",
+    "instrument_scope_exact": "BTC-USDT-SWAP",
+    "instrument_type": "SWAP",
+    "network_session_authorized": false,
+    "order_post_authorized": false,
+    "plaintext_exposed": false,
+    "rest_base": "https://openapi.okx.com",
+    "rest_host": "openapi.okx.com",
+    "runtime_mode": "TESTNET",
+    "secret_reference": "secretref://vault/peak-trade/okx-global-demo-trading",
+    "venue": "okx_global",
+    "venue_activated": false
+  },
+  "fail_closed_matrix": {
+    "all_ok": true,
+    "cases": [
+      {
+        "case": "missing_demo_header",
+        "error": "DEMO_MARKER_HEADER_MISSING",
+        "ok": true
+      },
+      {
+        "case": "wrong_demo_header_value",
+        "error": "DEMO_MARKER_HEADER_VALUE_MISMATCH",
+        "ok": true
+      },
+      {
+        "case": "live_credential_class",
+        "error": "LIVE_CREDENTIAL_CLASS_HARD_BLOCK",
+        "ok": true
+      },
+      {
+        "case": "eea_credential_class",
+        "error": "EEA_CREDENTIAL_CLASS_HARD_BLOCK",
+        "ok": true
+      },
+      {
+        "case": "instrument_substitution",
+        "error": "GENERIC_OR_ALTERNATE_SYMBOL_SUBSTITUTION_FORBIDDEN",
+        "ok": true
+      },
+      {
+        "case": "instrument_mismatch",
+        "error": "EXACT_INSTRUMENT_SCOPE_REQUIRED",
+        "ok": true
+      },
+      {
+        "case": "environment_mismatch",
+        "error": "ENVIRONMENT_MISMATCH_FAIL_CLOSED",
+        "ok": true
+      },
+      {
+        "case": "live_mode",
+        "error": "LIVE_MODE_OR_ACCOUNT_HARD_BLOCK",
+        "ok": true
+      },
+      {
+        "case": "eea_host_fallback",
+        "error": "SILENT_HOST_FALLBACK_FORBIDDEN:eea.okx.com",
+        "ok": true
+      },
+      {
+        "case": "venue_fallback",
+        "error": "SILENT_VENUE_FALLBACK_FORBIDDEN",
+        "ok": true
+      },
+      {
+        "case": "order_post_authorized",
+        "error": "ORDER_POST_HARD_BLOCK_IN_BINDING_PACKAGE",
+        "ok": true
+      },
+      {
+        "case": "order_mutation_endpoint",
+        "ok": true
+      }
+    ]
+  },
+  "threat_model_delta_id": "THREAT_MODEL_DELTA_OKX_GLOBAL_DEMO_SHARED_HOST_HEADER_CREDENTIAL_ISOLATION_V1"
+}
