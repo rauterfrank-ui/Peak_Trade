@@ -1,0 +1,18 @@
+{
+  "ack": true,
+  "blocked_by_operating_state": false,
+  "clOrdId": "ptokxedemob3468689b346868900",
+  "code": "0",
+  "http_status": 200,
+  "msg": "",
+  "operating_state": "ACTIVE",
+  "ordId": "3821941999118716928",
+  "px": "10000",
+  "sCode": "0",
+  "sMsg": "Order placed",
+  "side": "buy",
+  "sz": "0.0001",
+  "tag": "primary_submit_while_active",
+  "wire_performed": true,
+  "wire_sent": true
+}

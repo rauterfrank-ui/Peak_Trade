@@ -1,0 +1,16 @@
+{
+  "cancel": {
+    "ack": true,
+    "code": "0",
+    "http_status": 200,
+    "msg": "",
+    "operating_state": "ACTIVE",
+    "ordId": "3821941999118716928",
+    "sCode": "0",
+    "sMsg": "",
+    "tag": "cancel_to_flat_after_recovery"
+  },
+  "final_flat": true,
+  "final_pending": [],
+  "final_positions": []
+}

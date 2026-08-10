@@ -1,0 +1,11 @@
+{
+  "ack": false,
+  "blocked_by_operating_state": true,
+  "clOrdId": "ptokxedemob3468689b346868901",
+  "operating_state": "DEGRADED_NO_NEW_ENTRY",
+  "px": "10000",
+  "side": "buy",
+  "sz": "0.0001",
+  "tag": "block_new_entry_while_degraded",
+  "wire_performed": false
+}

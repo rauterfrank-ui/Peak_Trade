@@ -1,0 +1,20 @@
+{
+  "authority_source": "canonical_recovery_policy",
+  "operating_state": "ACTIVE",
+  "operating_states_bound": [
+    "OFF",
+    "PREFLIGHT",
+    "RECONCILING",
+    "READY",
+    "ACTIVE",
+    "DEGRADED_NO_NEW_ENTRY",
+    "EXIT_ONLY",
+    "REDUCE_ONLY",
+    "CANCEL_ALL",
+    "RECOVERING",
+    "HALTED",
+    "OWNER_LOCKED"
+  ],
+  "persisted_timestamp": "2026-08-10T23:39:08Z",
+  "reason_code": "AUTONOMOUS_RECOVERY_COMPLETED"
+}

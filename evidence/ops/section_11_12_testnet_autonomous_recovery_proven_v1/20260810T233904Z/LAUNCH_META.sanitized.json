@@ -1,0 +1,78 @@
+{
+  "ALLOWED_PATHS": [
+    "boot_to_active",
+    "primary_submit_while_active",
+    "degrade_classified_transient_session_interrupt",
+    "block_new_entry_while_degraded",
+    "refuse_recovery_incomplete_gates",
+    "refuse_forbidden_conditions",
+    "autonomous_recovery_under_permitted_gates",
+    "post_recovery_reconciliation",
+    "cancel_to_flat"
+  ],
+  "BRANCH": "main",
+  "CANONICAL_INSTRUMENT": "BTC-USD_UM_XPERP-310328",
+  "CANONICAL_ORDER_SZ": "0.0001",
+  "CANONICAL_VENUE": "OKX_EEA_DEMO",
+  "CREDENTIAL_FINGERPRINTS_SHA256_12": {
+    "api_key": "b2ba753a9026",
+    "api_secret": "051c888bfb69",
+    "passphrase": "126850d9e99c"
+  },
+  "ENDPOINT_ALLOWLIST": [
+    "/api/v5/account/balance",
+    "/api/v5/account/positions",
+    "/api/v5/trade/order",
+    "/api/v5/trade/cancel-order",
+    "/api/v5/trade/orders-pending"
+  ],
+  "EPHEMERAL_PATCH_SITE": "bound_testnet_http_client_v1._assert_testnet_url",
+  "EPHEMERAL_SIGN_PATH_QUERY_PATCH": true,
+  "EXECUTE_TOKEN": "EXECUTE_ONE_BOUNDED_PRODUCTIVE_DEMO_XPERP_AUTONOMOUS_RECOVERY_AND_DEGRADATION_THEN_SEAL_EVIDENCE_AND_HARD_STOP",
+  "LAUNCHED_AT_UTC": "2026-08-10T23:39:06Z",
+  "OPERATING_STATES_BOUND": [
+    "OFF",
+    "PREFLIGHT",
+    "RECONCILING",
+    "READY",
+    "ACTIVE",
+    "DEGRADED_NO_NEW_ENTRY",
+    "EXIT_ONLY",
+    "REDUCE_ONLY",
+    "CANCEL_ALL",
+    "RECOVERING",
+    "HALTED",
+    "OWNER_LOCKED"
+  ],
+  "ORIGIN_MAIN_SHA": "d811113bb2211ce64cd6e0b487d9b4b4ad74cefe",
+  "OWNER_GO": "OWNER_GO_PRODUCTIVE_TESTNET_AUTONOMOUS_RECOVERY_PROVEN_REQUIRED",
+  "PRED_DUPLICATE_ORDER_PREVENTION_EVIDENCE": "evidence/ops/section_11_12_testnet_duplicate_order_prevention_proven_v1/20260810T230257Z/",
+  "PRED_KILL_SWITCH_EVIDENCE": "evidence/ops/section_11_12_testnet_kill_switch_proven_v1/20260810T232151Z/",
+  "PRED_LIFECYCLE_EVIDENCE": "evidence/ops/section_11_12_testnet_order_lifecycle_proven_v1/20260810T215942Z/",
+  "PRED_RECONCILIATION_EVIDENCE": "evidence/ops/section_11_12_testnet_reconciliation_proven_v1/20260810T221902Z/",
+  "PRED_RESTART_EVIDENCE": "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/",
+  "PRED_UNKNOWN_SUBMIT_EVIDENCE": "evidence/ops/section_11_12_testnet_unknown_submit_recovery_proven_v1/20260810T224947Z/",
+  "PROOF_FIELD_TARGET": "TESTNET_AUTONOMOUS_RECOVERY_PROVEN",
+  "PROOF_METHOD": "BOUNDED_PRODUCTIVE_OKX_EEA_DEMO_XPERP_AUTONOMOUS_RECOVERY_AND_DEGRADATION",
+  "RECOVERY_FORBIDDEN_CONDITIONS": [
+    "credential_scope_mismatch",
+    "repository_or_config_integrity_mismatch",
+    "unknown_account_identity",
+    "unexplained_position_divergence",
+    "kill_switch_activation",
+    "repeated_duplicate_order_evidence",
+    "risk_limit_breach_requiring_limit_change",
+    "evidence_chain_corruption_affecting_economic_truth",
+    "unauthorized_mode_or_venue_transition"
+  ],
+  "RECOVERY_PERMITTED_GATES": [
+    "ROOT_CAUSE_CLASSIFIED",
+    "RECOVERY_POLICY_PRE_RATIFIED",
+    "RETRY_BUDGET_AVAILABLE",
+    "AUTHORIZATION_STILL_VALID",
+    "NO_UNRESOLVED_ECONOMIC_AMBIGUITY",
+    "POST_RECOVERY_RECONCILIATION_PASS"
+  ],
+  "RESTING_BUY_PX": "10000",
+  "REUSE_CONTRACT": "Cap11.5_OperatingStateTransition+ForbiddenConditionRefusal+\u00a711.8_RecoveryGates+\u00a711.12.8_DemoXPerpPath"
+}

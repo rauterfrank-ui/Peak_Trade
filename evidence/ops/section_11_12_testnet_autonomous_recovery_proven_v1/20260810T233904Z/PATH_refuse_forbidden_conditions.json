@@ -1,0 +1,14 @@
+{
+  "all_blocked": true,
+  "forbidden_condition_blocked": {
+    "credential_scope_mismatch": true,
+    "evidence_chain_corruption_affecting_economic_truth": true,
+    "kill_switch_activation": true,
+    "repeated_duplicate_order_evidence": true,
+    "repository_or_config_integrity_mismatch": true,
+    "risk_limit_breach_requiring_limit_change": true,
+    "unauthorized_mode_or_venue_transition": true,
+    "unexplained_position_divergence": true,
+    "unknown_account_identity": true
+  }
+}

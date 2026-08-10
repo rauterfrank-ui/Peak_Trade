@@ -1,0 +1,350 @@
+{
+  "ACCEPTANCE_CRITERIA_RESULTS": {
+    "AUTONOMOUS_RECOVERY_OK": true,
+    "BLOCK_NEW_ENTRY_WHILE_DEGRADED_OK": true,
+    "DEGRADE_CLASSIFIED_OK": true,
+    "DEMO_AUTH_OK": true,
+    "FINAL_FLAT_OK": true,
+    "FORBIDDEN_CONDITIONS_REFUSED_OK": true,
+    "INCOMPLETE_GATES_REFUSED_OK": true,
+    "LIVE_STILL_FALSE": true,
+    "POST_RECOVERY_RECON_OK": true,
+    "PRED_DUP_OK": true,
+    "PRED_KS_OK": true,
+    "PRED_LIFE_OK": true,
+    "PRED_RECON_OK": true,
+    "PRED_RESTART_OK": true,
+    "PRED_UNKNOWN_OK": true,
+    "PRIMARY_ACK_OK": true,
+    "SECTION_11_13_STILL_FALSE": true,
+    "TESTNET_ISOLATION_OK": true
+  },
+  "AUTHORIZATION_STATUS": "OWNER_GO_AND_EXECUTE_TOKEN_CONSUMED",
+  "AUTHORIZATION_STILL_VALID": true,
+  "AUTONOMOUS_RECOVERY_COMPLETED": true,
+  "BLOCKED_CLIENT_ORDER_ID": "ptokxedemob3468689b346868901",
+  "BLOCKED_NEW_ENTRY_ATTEMPT_COUNT": 1,
+  "BLOCKED_NEW_ENTRY_WIRE_COUNT": 0,
+  "BRANCH": "main",
+  "CANCEL_ACK_COUNT": 1,
+  "CANCEL_ATTEMPT_COUNT": 1,
+  "CANONICAL_ENVIRONMENT_BINDING": "DEMO",
+  "CANONICAL_INSTRUMENT_BINDING": "BTC-USD_UM_XPERP-310328",
+  "CANONICAL_VENUE_BINDING": "OKX_EEA_DEMO",
+  "CAP_11_12_TESTNET_PROGRAM_CLOSED": false,
+  "CLIENT_ORDER_ID": "ptokxedemob3468689b346868900",
+  "DOCUMENT_CLASS": "MACHINE_READABLE_TESTNET_AUTONOMOUS_RECOVERY_PROVEN_PROOF_V1",
+  "EPHEMERAL_SIGN_PATH_QUERY_PATCH": true,
+  "EXCHANGE_QUERY_COUNT": 10,
+  "EXECUTE_TOKEN": "EXECUTE_ONE_BOUNDED_PRODUCTIVE_DEMO_XPERP_AUTONOMOUS_RECOVERY_AND_DEGRADATION_THEN_SEAL_EVIDENCE_AND_HARD_STOP",
+  "FINAL_OPEN_ORDER_COUNT": 0,
+  "FINAL_OPEN_POSITION_COUNT": 0,
+  "FINAL_OPERATING_STATE": "ACTIVE",
+  "FORBIDDEN_CONDITION_BLOCKED": {
+    "credential_scope_mismatch": true,
+    "evidence_chain_corruption_affecting_economic_truth": true,
+    "kill_switch_activation": true,
+    "repeated_duplicate_order_evidence": true,
+    "repository_or_config_integrity_mismatch": true,
+    "risk_limit_breach_requiring_limit_change": true,
+    "unauthorized_mode_or_venue_transition": true,
+    "unexplained_position_divergence": true,
+    "unknown_account_identity": true
+  },
+  "HARD_STOP_AFTER_THIS_PROOF": true,
+  "HISTORY_EVENTS": [
+    "CLIENT_SESSION_OPEN",
+    "PREFLIGHT_AUTH_OK",
+    "OP_STATE_OFF_TO_PREFLIGHT",
+    "OP_STATE_PREFLIGHT_TO_RECONCILING",
+    "OP_STATE_RECONCILING_TO_READY",
+    "OP_STATE_READY_TO_ACTIVE",
+    "SUBMIT_ATTEMPTED_WHILE_ACTIVE",
+    "ACKNOWLEDGED",
+    "OPEN",
+    "TRANSIENT_PRIVATE_SESSION_INTERRUPT_CLASSIFIED",
+    "OP_STATE_ACTIVE_TO_DEGRADED_NO_NEW_ENTRY",
+    "BLOCK_NEW_ENTRY_WHILE_DEGRADED_NO_WIRE",
+    "INCOMPLETE_GATES_RECOVERY_REFUSED",
+    "FORBIDDEN_CONDITIONS_REFUSED",
+    "OP_STATE_DEGRADED_NO_NEW_ENTRY_TO_RECOVERING",
+    "AUTONOMOUS_RECOVERY_STARTED",
+    "POST_RECOVERY_RECONCILIATION_PASS",
+    "OP_STATE_RECOVERING_TO_ACTIVE",
+    "AUTONOMOUS_RECOVERY_COMPLETED",
+    "CANCELLED",
+    "FINAL_FLAT",
+    "EVIDENCED"
+  ],
+  "KILL_SWITCH_CLEARED_BY_AUTONOMOUS_RECOVERY": false,
+  "LIVE_AUTHORIZED": false,
+  "LONG_RUNNING_TESTNET_PROVEN": false,
+  "MANIFEST_VERIFY_RC": 0,
+  "MUTATION_ACTIONS": [
+    {
+      "ack": true,
+      "action": "POST_/api/v5/trade/order",
+      "clOrdId": "ptokxedemob3468689b346868900",
+      "ordId": "3821941999118716928",
+      "px": "10000",
+      "sCode": "0",
+      "side": "buy",
+      "tag": "primary_submit_while_active"
+    },
+    {
+      "action": "BLOCKED_NEW_ENTRY_NO_WIRE",
+      "blocked_by_operating_state": true,
+      "clOrdId": "ptokxedemob3468689b346868901",
+      "operating_state": "DEGRADED_NO_NEW_ENTRY",
+      "tag": "block_new_entry_while_degraded",
+      "wire_performed": false
+    },
+    {
+      "ack": true,
+      "action": "POST_/api/v5/trade/cancel-order",
+      "ordId": "3821941999118716928",
+      "tag": "cancel_to_flat_after_recovery"
+    }
+  ],
+  "NEWLY_CLOSED_TESTNET_PROVEN_FIELDS": [
+    "TESTNET_AUTONOMOUS_RECOVERY_PROVEN"
+  ],
+  "NEXT_CANONICAL_RESIDUAL_PROOF": "TESTNET_EVIDENCE_VERIFIED",
+  "NEXT_OWNER_STEP": "OWNER_GO_PRODUCTIVE_TESTNET_EVIDENCE_VERIFIED_REQUIRED",
+  "NO_UNRESOLVED_ECONOMIC_AMBIGUITY": true,
+  "OPEN_RESIDUAL": {
+    "OPEN_RESIDUAL_DOES_NOT_AUTHORIZE_NETWORK_OR_ORDERS": true,
+    "OPEN_RESIDUAL_DOES_NOT_BLOCK_TESTNET_AUTONOMOUS_RECOVERY_PROVEN": true,
+    "OPEN_RESIDUAL_FIX_AUTHORIZED": false,
+    "OPEN_RESIDUAL_ID": "LATENT_OKX_BOUND_CLIENT_SIGN_REQUEST_PATH_OMITS_QUERY_STRING",
+    "OPEN_RESIDUAL_NEXT_ACTION": "SEPARATE_OWNER_GO_REQUIRED_FOR_BOUND_CLIENT_QUERY_SIGN_FIX",
+    "OPEN_RESIDUAL_PERMANENT_FIX_IN_THIS_BINDING": false,
+    "OPEN_RESIDUAL_PROOF_WORKAROUND": "EPHEMERAL_SIGN_PATH_QUERY_PATCH_IN_SECTION_11_12_9_18_PROOF_ONLY",
+    "OPEN_RESIDUAL_SURFACE": "src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py",
+    "OPEN_RESIDUAL_SYMPTOM": "OKX_50113_INVALID_SIGN_ON_ALLOWLISTED_GET_WITH_QUERY_STRING"
+  },
+  "OPEN_TESTNET_PROVEN_FIELDS": [
+    "TESTNET_EVIDENCE_VERIFIED"
+  ],
+  "OPERATING_STATES_BOUND": [
+    "OFF",
+    "PREFLIGHT",
+    "RECONCILING",
+    "READY",
+    "ACTIVE",
+    "DEGRADED_NO_NEW_ENTRY",
+    "EXIT_ONLY",
+    "REDUCE_ONLY",
+    "CANCEL_ALL",
+    "RECOVERING",
+    "HALTED",
+    "OWNER_LOCKED"
+  ],
+  "OPERATING_TRANSITIONS": [
+    {
+      "authority_source": "owner_go_execute",
+      "contract_source_field": "FIXTURE_ONLY",
+      "from_state": "OFF",
+      "network_effect_contract_field": "NONE",
+      "persisted_timestamp": "2026-08-10T23:39:06Z",
+      "productive_evidence_source": "PRODUCTIVE_TESTNET_DEMO_XPERP",
+      "reason_code": "PROOF_BOOT",
+      "to_state": "PREFLIGHT"
+    },
+    {
+      "authority_source": "canonical_safety_policy",
+      "contract_source_field": "FIXTURE_ONLY",
+      "from_state": "PREFLIGHT",
+      "network_effect_contract_field": "NONE",
+      "persisted_timestamp": "2026-08-10T23:39:06Z",
+      "productive_evidence_source": "PRODUCTIVE_TESTNET_DEMO_XPERP",
+      "reason_code": "PREFLIGHT_AUTH_OK",
+      "to_state": "RECONCILING"
+    },
+    {
+      "authority_source": "canonical_safety_policy",
+      "contract_source_field": "FIXTURE_ONLY",
+      "from_state": "RECONCILING",
+      "network_effect_contract_field": "NONE",
+      "persisted_timestamp": "2026-08-10T23:39:06Z",
+      "productive_evidence_source": "PRODUCTIVE_TESTNET_DEMO_XPERP",
+      "reason_code": "ACCOUNT_IDENTITY_OK",
+      "to_state": "READY"
+    },
+    {
+      "authority_source": "canonical_safety_policy",
+      "contract_source_field": "FIXTURE_ONLY",
+      "from_state": "READY",
+      "network_effect_contract_field": "NONE",
+      "persisted_timestamp": "2026-08-10T23:39:06Z",
+      "productive_evidence_source": "PRODUCTIVE_TESTNET_DEMO_XPERP",
+      "reason_code": "PROOF_SESSION_ACTIVE",
+      "to_state": "ACTIVE"
+    },
+    {
+      "authority_source": "canonical_safety_policy",
+      "contract_source_field": "FIXTURE_ONLY",
+      "from_state": "ACTIVE",
+      "network_effect_contract_field": "NONE",
+      "persisted_timestamp": "2026-08-10T23:39:07Z",
+      "productive_evidence_source": "PRODUCTIVE_TESTNET_DEMO_XPERP",
+      "reason_code": "TRANSIENT_PRIVATE_SESSION_INTERRUPT",
+      "to_state": "DEGRADED_NO_NEW_ENTRY"
+    },
+    {
+      "authority_source": "canonical_recovery_policy",
+      "contract_source_field": "FIXTURE_ONLY",
+      "from_state": "DEGRADED_NO_NEW_ENTRY",
+      "network_effect_contract_field": "NONE",
+      "persisted_timestamp": "2026-08-10T23:39:08Z",
+      "productive_evidence_source": "PRODUCTIVE_TESTNET_DEMO_XPERP",
+      "reason_code": "AUTONOMOUS_RECOVERY_STARTED",
+      "to_state": "RECOVERING"
+    },
+    {
+      "authority_source": "canonical_recovery_policy",
+      "contract_source_field": "FIXTURE_ONLY",
+      "from_state": "RECOVERING",
+      "network_effect_contract_field": "NONE",
+      "persisted_timestamp": "2026-08-10T23:39:08Z",
+      "productive_evidence_source": "PRODUCTIVE_TESTNET_DEMO_XPERP",
+      "reason_code": "AUTONOMOUS_RECOVERY_COMPLETED",
+      "to_state": "ACTIVE"
+    }
+  ],
+  "ORDER_ACK_COUNT": 1,
+  "ORDER_ATTEMPT_COUNT": 1,
+  "ORDER_EFFECT": "TESTNET",
+  "ORIGIN_MAIN_SHA": "d811113bb2211ce64cd6e0b487d9b4b4ad74cefe",
+  "OWNER_GO": "OWNER_GO_PRODUCTIVE_TESTNET_AUTONOMOUS_RECOVERY_PROVEN_REQUIRED",
+  "OWNER_INTERVENTION_REQUIRED_FOR_RECOVERY": false,
+  "POST_RECOVERY_RECONCILIATION_PASS": true,
+  "PRED_DUPLICATE_ORDER_PREVENTION_EVIDENCE": "evidence/ops/section_11_12_testnet_duplicate_order_prevention_proven_v1/20260810T230257Z/",
+  "PRED_KILL_SWITCH_EVIDENCE": "evidence/ops/section_11_12_testnet_kill_switch_proven_v1/20260810T232151Z/",
+  "PRED_LIFECYCLE_EVIDENCE": "evidence/ops/section_11_12_testnet_order_lifecycle_proven_v1/20260810T215942Z/",
+  "PRED_RECONCILIATION_EVIDENCE": "evidence/ops/section_11_12_testnet_reconciliation_proven_v1/20260810T221902Z/",
+  "PRED_RESTART_EVIDENCE": "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/",
+  "PRED_UNKNOWN_SUBMIT_EVIDENCE": "evidence/ops/section_11_12_testnet_unknown_submit_recovery_proven_v1/20260810T224947Z/",
+  "PRE_LIVE_CYBERSECURITY_GATE": "NOT_PASSED",
+  "PRIMARY_EVIDENCE_ROOT": "evidence/ops/section_11_12_testnet_autonomous_recovery_proven_v1/20260810T233904Z/",
+  "PRIMARY_ORD_ID": "3821941999118716928",
+  "PROOF_EXECUTED": true,
+  "PROOF_METHOD": "BOUNDED_PRODUCTIVE_OKX_EEA_DEMO_XPERP_AUTONOMOUS_RECOVERY_AND_DEGRADATION",
+  "PROOF_RESULT": "PRODUCTIVE_TESTNET_AUTONOMOUS_RECOVERY_PROVEN_PASS",
+  "RECOVERY_EVENTS": [
+    {
+      "allowed": false,
+      "error": "AUTONOMOUS_RECOVERY_GATE_NOT_SATISFIED",
+      "gates": {
+        "AUTHORIZATION_STILL_VALID": true,
+        "NO_UNRESOLVED_ECONOMIC_AMBIGUITY": true,
+        "POST_RECOVERY_RECONCILIATION_PASS": true,
+        "RECOVERY_POLICY_PRE_RATIFIED": true,
+        "RETRY_BUDGET_AVAILABLE": true,
+        "ROOT_CAUSE_CLASSIFIED": false
+      },
+      "missing_gates": [
+        "ROOT_CAUSE_CLASSIFIED"
+      ],
+      "tag": "refuse_recovery_incomplete_gates"
+    },
+    {
+      "blocked": true,
+      "condition": "credential_scope_mismatch",
+      "error": "AUTONOMOUS_RECOVERY_FORBIDDEN_REQUIRES_OWNER_LOCKED_OR_HALTED:credential_scope_mismatch",
+      "requires_owner_locked_or_halted": true,
+      "tag": "refuse_forbidden_condition"
+    },
+    {
+      "blocked": true,
+      "condition": "repository_or_config_integrity_mismatch",
+      "error": "AUTONOMOUS_RECOVERY_FORBIDDEN_REQUIRES_OWNER_LOCKED_OR_HALTED:repository_or_config_integrity_mismatch",
+      "requires_owner_locked_or_halted": true,
+      "tag": "refuse_forbidden_condition"
+    },
+    {
+      "blocked": true,
+      "condition": "unknown_account_identity",
+      "error": "AUTONOMOUS_RECOVERY_FORBIDDEN_REQUIRES_OWNER_LOCKED_OR_HALTED:unknown_account_identity",
+      "requires_owner_locked_or_halted": true,
+      "tag": "refuse_forbidden_condition"
+    },
+    {
+      "blocked": true,
+      "condition": "unexplained_position_divergence",
+      "error": "AUTONOMOUS_RECOVERY_FORBIDDEN_REQUIRES_OWNER_LOCKED_OR_HALTED:unexplained_position_divergence",
+      "requires_owner_locked_or_halted": true,
+      "tag": "refuse_forbidden_condition"
+    },
+    {
+      "blocked": true,
+      "condition": "kill_switch_activation",
+      "error": "AUTONOMOUS_RECOVERY_FORBIDDEN_REQUIRES_OWNER_LOCKED_OR_HALTED:kill_switch_activation",
+      "requires_owner_locked_or_halted": true,
+      "tag": "refuse_forbidden_condition"
+    },
+    {
+      "blocked": true,
+      "condition": "repeated_duplicate_order_evidence",
+      "error": "AUTONOMOUS_RECOVERY_FORBIDDEN_REQUIRES_OWNER_LOCKED_OR_HALTED:repeated_duplicate_order_evidence",
+      "requires_owner_locked_or_halted": true,
+      "tag": "refuse_forbidden_condition"
+    },
+    {
+      "blocked": true,
+      "condition": "risk_limit_breach_requiring_limit_change",
+      "error": "AUTONOMOUS_RECOVERY_FORBIDDEN_REQUIRES_OWNER_LOCKED_OR_HALTED:risk_limit_breach_requiring_limit_change",
+      "requires_owner_locked_or_halted": true,
+      "tag": "refuse_forbidden_condition"
+    },
+    {
+      "blocked": true,
+      "condition": "evidence_chain_corruption_affecting_economic_truth",
+      "error": "AUTONOMOUS_RECOVERY_FORBIDDEN_REQUIRES_OWNER_LOCKED_OR_HALTED:evidence_chain_corruption_affecting_economic_truth",
+      "requires_owner_locked_or_halted": true,
+      "tag": "refuse_forbidden_condition"
+    },
+    {
+      "blocked": true,
+      "condition": "unauthorized_mode_or_venue_transition",
+      "error": "AUTONOMOUS_RECOVERY_FORBIDDEN_REQUIRES_OWNER_LOCKED_OR_HALTED:unauthorized_mode_or_venue_transition",
+      "requires_owner_locked_or_halted": true,
+      "tag": "refuse_forbidden_condition"
+    }
+  ],
+  "RECOVERY_FORBIDDEN_CONDITIONS": [
+    "credential_scope_mismatch",
+    "repository_or_config_integrity_mismatch",
+    "unknown_account_identity",
+    "unexplained_position_divergence",
+    "kill_switch_activation",
+    "repeated_duplicate_order_evidence",
+    "risk_limit_breach_requiring_limit_change",
+    "evidence_chain_corruption_affecting_economic_truth",
+    "unauthorized_mode_or_venue_transition"
+  ],
+  "RECOVERY_PERMITTED_GATES": [
+    "ROOT_CAUSE_CLASSIFIED",
+    "RECOVERY_POLICY_PRE_RATIFIED",
+    "RETRY_BUDGET_AVAILABLE",
+    "AUTHORIZATION_STILL_VALID",
+    "NO_UNRESOLVED_ECONOMIC_AMBIGUITY",
+    "POST_RECOVERY_RECONCILIATION_PASS"
+  ],
+  "RECOVERY_POLICY_PRE_RATIFIED": true,
+  "RETRY_BUDGET_AVAILABLE": true,
+  "ROOT_CAUSE_CLASSIFIED": true,
+  "SECTION_11_12_9_GATE_PASS": false,
+  "SECTION_11_13_STARTED": false,
+  "STATUS": "PASS",
+  "TESTNET_AUTONOMOUS_RECOVERY_PROVEN": true,
+  "TESTNET_DUPLICATE_ORDER_PREVENTION_PROVEN": true,
+  "TESTNET_ISOLATION_VERIFIED": true,
+  "TESTNET_KILL_SWITCH_PROVEN": true,
+  "TESTNET_ORDER_LIFECYCLE_PROVEN": true,
+  "TESTNET_RECONCILIATION_PROVEN": true,
+  "TESTNET_RESTART_PROVEN": true,
+  "TESTNET_UNKNOWN_SUBMIT_RECOVERY_PROVEN": true,
+  "VERDICT": "PRODUCTIVE_TESTNET_AUTONOMOUS_RECOVERY_PROVEN_PASS",
+  "WORK_DIR": "evidence/ops/section_11_12_testnet_autonomous_recovery_proven_v1/20260810T233904Z/"
+}
