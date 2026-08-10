@@ -1,0 +1,40 @@
+{
+  "CREDENTIAL_FP12": {
+    "api_key": "b2ba753a9026",
+    "api_secret": "051c888bfb69",
+    "passphrase": "126850d9e99c"
+  },
+  "DEMO_AUTHENTICATED": true,
+  "DEMO_HOST_OK": true,
+  "DOCUMENT_CLASS": "BOUNDED_PRODUCTIVE_TESTNET_RESTART_PREFLIGHT_V1",
+  "GENERATED_AT_UTC": "2026-08-10T22:36:08Z",
+  "GET_RESULTS": [
+    {
+      "code": "0",
+      "http_status": 200,
+      "msg": "",
+      "path": "/api/v5/account/balance"
+    },
+    {
+      "code": "0",
+      "http_status": 200,
+      "msg": "",
+      "path": "/api/v5/account/config"
+    },
+    {
+      "code": "0",
+      "count": 0,
+      "http_status": 200,
+      "path": "/api/v5/trade/orders-pending"
+    },
+    {
+      "code": "0",
+      "http_status": 200,
+      "nonzero": 0,
+      "path": "/api/v5/account/positions"
+    }
+  ],
+  "PRE_EXISTING_OPEN_ORDER_COUNT": 0,
+  "PRE_EXISTING_OPEN_POSITION_COUNT": 0,
+  "TESTNET_ISOLATION_VERIFIED": true
+}

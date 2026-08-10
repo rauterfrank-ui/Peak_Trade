@@ -1,0 +1,22 @@
+{
+  "PLACE_RESULT": {
+    "ack": true,
+    "clOrdId": "ptokxedemo47cb2e6747cb2e6700",
+    "code": "0",
+    "http_status": 200,
+    "msg": "",
+    "ordId": "3821815267384496128",
+    "px": "67000",
+    "sCode": "0",
+    "sMsg": "Order placed",
+    "side": "buy",
+    "sz": "0.0001",
+    "tag": "open_position_buy_probe_67000",
+    "wire_sent": true
+  },
+  "PRICE_BAND": {
+    "max_buy": null,
+    "min_sell": null,
+    "probe": null
+  }
+}

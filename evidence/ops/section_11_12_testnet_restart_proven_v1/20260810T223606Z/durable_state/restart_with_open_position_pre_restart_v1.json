@@ -1,0 +1,42 @@
+{
+  "campaign_id": "embedded_in_clordid",
+  "clOrdId": "ptokxedemo47cb2e6747cb2e6700",
+  "local_open_order_count": 0,
+  "local_open_position_count": 1,
+  "ordId": "3821815267384496128",
+  "order_hist_sanitized": [
+    {
+      "accFillSz": "0.0001",
+      "avgPx": "63939.5",
+      "cTime": "1786401370704",
+      "cancelSource": "",
+      "clOrdId": "ptokxedemo47cb2e6747cb2e6700",
+      "instId": "BTC-USD_UM_XPERP-310328",
+      "ordId": "3821815267384496128",
+      "ordType": "limit",
+      "px": "67000",
+      "side": "buy",
+      "state": "filled",
+      "sz": "0.0001",
+      "uTime": "1786401370704"
+    }
+  ],
+  "path_name": "restart_with_open_position",
+  "positions_sanitized": [
+    {
+      "availPos": "",
+      "avgPx": "63939.5",
+      "instId": "BTC-USD_UM_XPERP-310328",
+      "mgnMode": "cross",
+      "pos": "0.0001",
+      "posSide": "net",
+      "uTime": "1786401370704"
+    }
+  ],
+  "pre_restart_state": "OPEN_POSITION",
+  "price_band": {
+    "max_buy": null,
+    "min_sell": null
+  },
+  "re_submit_forbidden": true
+}

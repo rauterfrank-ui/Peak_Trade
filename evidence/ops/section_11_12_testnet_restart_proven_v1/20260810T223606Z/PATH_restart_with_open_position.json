@@ -1,0 +1,99 @@
+{
+  "close_place": {
+    "ack": true,
+    "clOrdId": "ptokxedemo0f4c95350f4c953500",
+    "code": "0",
+    "http_status": 200,
+    "msg": "",
+    "ordId": "3821815324024377344",
+    "px": "61000",
+    "sCode": "0",
+    "sMsg": "Order placed",
+    "side": "sell",
+    "sz": "0.0001",
+    "tag": "open_position_sell_probe_61000",
+    "wire_sent": true
+  },
+  "final_open_order_count": 0,
+  "final_open_position_count": 0,
+  "flat_after_close": true,
+  "place": {
+    "ack": true,
+    "clOrdId": "ptokxedemo47cb2e6747cb2e6700",
+    "code": "0",
+    "http_status": 200,
+    "msg": "",
+    "ordId": "3821815267384496128",
+    "px": "67000",
+    "sCode": "0",
+    "sMsg": "Order placed",
+    "side": "buy",
+    "sz": "0.0001",
+    "tag": "open_position_buy_probe_67000",
+    "wire_sent": true
+  },
+  "post_restart_identity_ok": true,
+  "post_restart_positions_sanitized": [
+    {
+      "availPos": "",
+      "avgPx": "63939.5",
+      "instId": "BTC-USD_UM_XPERP-310328",
+      "mgnMode": "cross",
+      "pos": "0.0001",
+      "posSide": "net",
+      "uTime": "1786401370704"
+    }
+  ],
+  "post_restart_state": "OPEN_POSITION",
+  "pre_restart_durable": {
+    "campaign_id": "embedded_in_clordid",
+    "clOrdId": "ptokxedemo47cb2e6747cb2e6700",
+    "local_open_order_count": 0,
+    "local_open_position_count": 1,
+    "ordId": "3821815267384496128",
+    "order_hist_sanitized": [
+      {
+        "accFillSz": "0.0001",
+        "avgPx": "63939.5",
+        "cTime": "1786401370704",
+        "cancelSource": "",
+        "clOrdId": "ptokxedemo47cb2e6747cb2e6700",
+        "instId": "BTC-USD_UM_XPERP-310328",
+        "ordId": "3821815267384496128",
+        "ordType": "limit",
+        "px": "67000",
+        "side": "buy",
+        "state": "filled",
+        "sz": "0.0001",
+        "uTime": "1786401370704"
+      }
+    ],
+    "path_name": "restart_with_open_position",
+    "positions_sanitized": [
+      {
+        "availPos": "",
+        "avgPx": "63939.5",
+        "instId": "BTC-USD_UM_XPERP-310328",
+        "mgnMode": "cross",
+        "pos": "0.0001",
+        "posSide": "net",
+        "uTime": "1786401370704"
+      }
+    ],
+    "pre_restart_state": "OPEN_POSITION",
+    "price_band": {
+      "max_buy": null,
+      "min_sell": null
+    },
+    "re_submit_forbidden": true
+  },
+  "pre_restart_state": "OPEN_POSITION",
+  "price_band": {
+    "max_buy": null,
+    "min_sell": null
+  },
+  "re_submit_performed": false,
+  "reconciliation_before_alpha": true,
+  "silent_reinitialization_performed": false,
+  "terminal_via": "FILLED_THEN_CLOSED"
+}

@@ -1,0 +1,18 @@
+{
+  "PLACE": {
+    "ack": false,
+    "clOrdId": "ptokxedemo4fee9e124fee9e1200",
+    "code": "1",
+    "http_status": 200,
+    "msg": "All operations failed",
+    "ordId": null,
+    "px": "250000",
+    "sCode": "51006",
+    "sMsg": "Order price is not within the price limit (max buy price: 67,123.2, min sell price: 60,735)",
+    "side": "buy",
+    "sz": "0.0001",
+    "tag": "open_position_aggressive_buy",
+    "wire_sent": true
+  },
+  "STATUS": "HARD_STOP"
+}
