@@ -1,0 +1,116 @@
+{
+  "CRITERIA": [
+    {
+      "criterion": "ORIGIN_MAIN_BINDS_CLORDID_AND_CANCEL_INSTID_FIXES",
+      "observed": "PR5841+PR5842 merged on origin/main",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "BOUNDED_1H_XPERP_CAMPAIGN_COMPLETED",
+      "evidence_pointer": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/",
+      "observed": "DURATION_BOUND; cycles=60; CAMPAIGN_EXECUTION_PASS",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "CLORDID_HYPHEN_DEFECT_CLOSED",
+      "evidence_pointer": "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1/20260810T194806Z/",
+      "observed": "ptokxedemoce59371ace59371a00",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "ORDER_ACK_PROVEN",
+      "evidence_pointer": "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1/20260810T194806Z/",
+      "observed": "ORDER_ACK_COUNT>=1 after alphanumeric clOrdId",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "CANCEL_INSTID_DEFECT_CLOSED",
+      "evidence_pointer": "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_clean_closeout_after_cancel_instid_fix_v1/20260810T200151Z/",
+      "observed": "cancel body includes instId+ordId",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "CLEAN_CLOSEOUT_PROOF_PASS",
+      "evidence_pointer": "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_clean_closeout_after_cancel_instid_fix_v1/20260810T200151Z/",
+      "observed": {
+        "BRANCH": "fix/section-11-12-8-okx-cancel-instid-clean-closeout",
+        "CANCEL_ACK_COUNT": 1,
+        "CANCEL_ATTEMPT_COUNT": 1,
+        "CANONICAL_PATH_SEAL_PASS": true,
+        "CLORDID_ALPHANUMERIC_OK": true,
+        "CLORDID_SENT": "ptokxedemo75060db475060db400",
+        "ENTRYPOINT_OK": true,
+        "EXCHANGE_ORDER_IDS": [
+          "3821504702728507392"
+        ],
+        "EXECUTION_ERROR": null,
+        "FILL_COUNT": 0,
+        "FINAL_EXCHANGE_RECONCILIATION": "PASS",
+        "FINAL_OPEN_ORDER_COUNT": 0,
+        "FINAL_OPEN_POSITION_COUNT": 0,
+        "FIX_COMMIT_SHA": "fa1a15776a0cfd6400e1bfaf37eeb84c687061f7",
+        "LIVE_AUTHORIZED": false,
+        "NOT_ONE_HOUR_CAMPAIGN": true,
+        "ORDER_ACK_COUNT": 1,
+        "ORDER_ATTEMPT_COUNT": 1,
+        "ORDER_REJECT_COUNT": 0,
+        "ORIGIN_MAIN_SHA": "2d01ebb6031c27d477b1f4a670d65eabf10f1301",
+        "OWNER_GO": "OWNER_GO_FIX_SECTION_11_12_8_OKX_CANCEL_ORDER_INSTID_SERIALIZATION_AND_RUN_MINIMUM_BOUNDED_CLEAN_CLOSEOUT_PROOF",
+        "POST_VERIFY_OPEN_ORDER_COUNT": 0,
+        "POST_VERIFY_OPEN_POSITION_COUNT": 0,
+        "PRED_ACK_EVIDENCE": "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1/20260810T194806Z/",
+        "PRE_LIVE_CYBERSECURITY_GATE": "NOT_PASSED",
+        "PR_NUMBER": 5842,
+        "RECONCILE_OK": true,
+        "RECONCILE_REASON": "FINAL_EXCHANGE_RECONCILE_CLEANUP_PASS",
+        "SECTION_11_13_STARTED": false,
+        "STATUS": "PASS",
+        "VERDICT": "BOUNDED_XPERP_CLEAN_CLOSEOUT_PASS",
+        "WORK_DIR": "/Users/frnkhrz/Peak_Trade/evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_clean_closeout_after_cancel_instid_fix_v1/20260810T200151Z"
+      },
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "FINAL_OPEN_ORDERS_POSITIONS_ZERO",
+      "observed": {
+        "orders": 0,
+        "positions": 0
+      },
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "LIVE_HARD_BLOCK_PRESERVED",
+      "observed": "LIVE_AUTHORIZED=false",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "SECTION_11_13_UNSTARTED",
+      "observed": "SECTION_11_13_STARTED=false",
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "TESTNET_ORDER_LIFECYCLE_PROVEN",
+      "observed": "ACK+cancel clean path proven; fill=0; Cap 11.12 program STAR fields remain false",
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "TESTNET_STAR_PROGRAM_CLOSED",
+      "observed": "Cap 11.12 Testnet closure ladder remains open",
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "SECTION_11_12_8_OWNER_AUTHORIZED_SECTION_CLOSE",
+      "observed": "Owner-GO closeout package after CLOSEOUT_RECOMMENDED + merged fixes + clean closeout",
+      "verdict": "PASS"
+    }
+  ],
+  "DOCUMENT_CLASS": "SECTION_11_12_8_CLOSEOUT_ACCEPTANCE_MATRIX_V1",
+  "GENERATED_AT_UTC": "2026-08-10T20:13:32Z",
+  "ORIGIN_MAIN_SHA": "1f7d6aa1d39856f298b2c846182a79710757fb31",
+  "OWNER_GO": "OWNER_GO_SECTION_11_12_8_CLOSEOUT_PACKAGE",
+  "SUMMARY": {
+    "FAIL": 0,
+    "NOT_PROVEN": 2,
+    "PASS": 10
+  }
+}
