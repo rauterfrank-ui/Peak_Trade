@@ -1,0 +1,16 @@
+{
+  "allowed": false,
+  "error": "AUTONOMOUS_RECOVERY_GATE_NOT_SATISFIED",
+  "gates": {
+    "AUTHORIZATION_STILL_VALID": true,
+    "NO_UNRESOLVED_ECONOMIC_AMBIGUITY": true,
+    "POST_RECOVERY_RECONCILIATION_PASS": true,
+    "RECOVERY_POLICY_PRE_RATIFIED": true,
+    "RETRY_BUDGET_AVAILABLE": true,
+    "ROOT_CAUSE_CLASSIFIED": false
+  },
+  "missing_gates": [
+    "ROOT_CAUSE_CLASSIFIED"
+  ],
+  "tag": "refuse_recovery_incomplete_gates"
+}

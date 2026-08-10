@@ -1,0 +1,19 @@
+{
+  "forbidden_condition": false,
+  "from_to": {
+    "authority_source": "canonical_safety_policy",
+    "contract_source_field": "FIXTURE_ONLY",
+    "from_state": "ACTIVE",
+    "network_effect_contract_field": "NONE",
+    "persisted_timestamp": "2026-08-10T23:39:07Z",
+    "productive_evidence_source": "PRODUCTIVE_TESTNET_DEMO_XPERP",
+    "reason_code": "TRANSIENT_PRIVATE_SESSION_INTERRUPT",
+    "to_state": "DEGRADED_NO_NEW_ENTRY"
+  },
+  "open_order_retained_locally": {
+    "clOrdId": "ptokxedemob3468689b346868900",
+    "ordId": "3821941999118716928"
+  },
+  "root_cause_class": "TRANSIENT_PRIVATE_SESSION_INTERRUPT",
+  "root_cause_classified": true
+}
