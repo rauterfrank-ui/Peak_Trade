@@ -3,7 +3,7 @@
   "authority_classification": "DERIVED_DOMAIN_AUTHORITY_ONLY",
   "bypass_of_pre_live_gate_forbidden": true,
   "canonical_document_path": "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md",
-  "canonical_document_sha256": "2189a5dee27c6ce042b8e235952ebc7fd787d7b20292d85d5d2edc7f0e732638",
+  "canonical_document_sha256": "b8d170ecd9a60b59ed59939a7e51ccb2c228d82ee9d2ca6e6b0bc382f2e87697",
   "canonical_security_invariants_owner": "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#23",
   "canonical_security_invariants_preserved_required_in_capability_closure": true,
   "core_logic_changed": false,

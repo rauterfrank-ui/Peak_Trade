@@ -3514,7 +3514,7 @@ FULLY_AUTONOMOUS_LIVE_TRADING_READY=true
 FULLY_AUTONOMOUS_LIVE_TRADING_ACTIVE=true
 ```
 
-Minimum PASS conditions (evidence-bound; silent skip forbidden; `N/A`
+Minimum PASS conditions (evidence-bound; silent skip forbidden; `N&#47;A`
 only when explicitly justified and evidence-bound) are owned by
 Cybersecurity Runbook V2.1 §18 and include at least:
 

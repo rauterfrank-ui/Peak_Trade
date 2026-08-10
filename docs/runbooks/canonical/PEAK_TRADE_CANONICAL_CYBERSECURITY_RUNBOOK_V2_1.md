@@ -724,7 +724,7 @@ MANIFEST_VERIFY_RC=0
 PRE_LIVE_CYBERSECURITY_GATE=PASS
 ```
 
-Wenn eine Bedingung nicht anwendbar ist, muss `N/A` ausdrücklich
+Wenn eine Bedingung nicht anwendbar ist, muss `N&#47;A` ausdrücklich
 begründet und evidenzgebunden sein. Ein stilles Überspringen ist
 unzulässig.
 
