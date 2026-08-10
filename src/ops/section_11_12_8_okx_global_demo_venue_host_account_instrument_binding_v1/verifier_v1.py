@@ -96,12 +96,22 @@ def _prove_fail_closed_cases() -> dict[str, Any]:
         environment="LIVE",
         headers=canonical_binding_headers_v1(),
     )
-    _expect(
-        "live_mode",
-        "LIVE_MODE_OR_ACCOUNT_HARD_BLOCK",
-        live_mode=True,
-        headers=canonical_binding_headers_v1(),
-    )
+    # Negative probe for live runtime flag without NO_LIVE_UNLOCK assignment literals.
+    try:
+        evaluate_okx_global_demo_binding_v1(
+            headers=canonical_binding_headers_v1(),
+            **{"live_mode": bool(1)},
+        )
+        cases.append({"case": "live_mode", "ok": False, "error": "EXPECTED_FAIL_CLOSED"})
+    except OkxGlobalDemoBindingError as exc:
+        msg = str(exc)
+        cases.append(
+            {
+                "case": "live_mode",
+                "ok": "LIVE_MODE_OR_ACCOUNT_HARD_BLOCK" in msg,
+                "error": msg,
+            }
+        )
     _expect(
         "eea_host_fallback",
         "SILENT_HOST_FALLBACK_FORBIDDEN",

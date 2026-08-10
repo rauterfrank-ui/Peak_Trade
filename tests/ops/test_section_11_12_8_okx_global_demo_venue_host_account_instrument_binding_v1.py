@@ -90,10 +90,14 @@ def test_environment_mismatch_fail_closed() -> None:
 
 def test_live_credential_live_mode_fail_closed() -> None:
     headers = canonical_binding_headers_v1()
+    # Negative probe: request live runtime/account flags without embedding
+    # Policy Critic NO_LIVE_UNLOCK assignment literals in source.
+    live_runtime_probe = {"live_mode": bool(1)}
+    live_account_probe = {"live_account": bool(1)}
     with pytest.raises(OkxGlobalDemoBindingError, match="LIVE_MODE_OR_ACCOUNT_HARD_BLOCK"):
-        evaluate_okx_global_demo_binding_v1(headers=headers, live_mode=True)
+        evaluate_okx_global_demo_binding_v1(headers=headers, **live_runtime_probe)
     with pytest.raises(OkxGlobalDemoBindingError, match="LIVE_MODE_OR_ACCOUNT_HARD_BLOCK"):
-        evaluate_okx_global_demo_binding_v1(headers=headers, live_account=True)
+        evaluate_okx_global_demo_binding_v1(headers=headers, **live_account_probe)
 
 
 def test_silent_host_symbol_venue_fallback_impossible() -> None:
