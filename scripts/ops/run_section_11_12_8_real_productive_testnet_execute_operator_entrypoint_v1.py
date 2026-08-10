@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 """Real §11.12.8 productive Testnet EXECUTE operator entrypoint.
 
-Consumes EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW through the unlocked real path.
+Accepts canonical Owner-GO scope:
+  EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN
+and legacy aliases (same XPerp/EEA Demo scope only):
+  EXECUTE_BOUNDED_LONG_RUNNING_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
+  EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
+
 Pre-merge acceptance: wire send forbidden.
 Post-merge Owner EXECUTE: wire send permitted when --allow-wire-send and vault file
-are provided (SecretRef + hidden confirm remain runtime preconditions).
-Does NOT start §11.13. Does NOT enable Live.
+are provided (SecretRef + hidden confirm + ephemeral write gate remain runtime
+preconditions). This entrypoint does NOT auto-execute a campaign in the
+implementation PR. Does NOT start §11.13. Does NOT enable Live.
 """
 
 from __future__ import annotations
@@ -24,8 +30,13 @@ for _path in (str(_REPO_ROOT), str(_SRC_ROOT)):
         sys.path.insert(0, _path)
 
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.constants_v1 import (  # noqa: E402
+    ACCEPTED_OWNER_GO_SCOPES,
+    CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
+    CANONICAL_VENUE,
     SCOPED_OWNER_GO_AUTHORIZATION,
     SCOPED_OWNER_GO_SCOPE,
+    SCOPED_OWNER_GO_SCOPE_LEGACY_ALIAS,
+    SCOPED_OWNER_GO_SCOPE_LEGACY_LONG_RUNNING,
     SCOPED_OWNER_GO_TOKEN,
 )
 from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.acceptance_gate_v1 import (  # noqa: E402
@@ -47,7 +58,11 @@ from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.vaul
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Unlocked real productive Testnet execute-path operator entrypoint"
+        description=(
+            "Unlocked real productive Testnet execute-path operator entrypoint "
+            f"(canonical GO={SCOPED_OWNER_GO_SCOPE}; venue={CANONICAL_VENUE}; "
+            f"sz={CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1})"
+        )
     )
     parser.add_argument(
         "--pre-merge-acceptance",
@@ -63,8 +78,10 @@ def main(argv: list[str] | None = None) -> int:
         "--allow-wire-send",
         action="store_true",
         help=(
-            "Permit real Testnet HTTP wire send under EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW "
-            "(post-merge Owner runtime GO; Live remains hard-blocked)."
+            "Permit real Testnet HTTP wire send under the XPerp campaign Owner-GO "
+            f"({SCOPED_OWNER_GO_SCOPE}) or legacy aliases "
+            f"({SCOPED_OWNER_GO_SCOPE_LEGACY_LONG_RUNNING}|{SCOPED_OWNER_GO_SCOPE_LEGACY_ALIAS}); "
+            "Live remains hard-blocked."
         ),
     )
     parser.add_argument(
@@ -113,6 +130,9 @@ def main(argv: list[str] | None = None) -> int:
                     "SCOPED_OWNER_GO_SCOPE": SCOPED_OWNER_GO_SCOPE,
                     "SCOPED_OWNER_GO_AUTHORIZATION": SCOPED_OWNER_GO_AUTHORIZATION,
                     "SCOPED_OWNER_GO_TOKEN": SCOPED_OWNER_GO_TOKEN,
+                    "ACCEPTED_OWNER_GO_SCOPES": list(ACCEPTED_OWNER_GO_SCOPES),
+                    "CANONICAL_VENUE": CANONICAL_VENUE,
+                    "CANONICAL_ORDER_SZ": CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
                 },
                 sort_keys=True,
             )
@@ -179,6 +199,10 @@ def main(argv: list[str] | None = None) -> int:
                 "SECTION_11_13_STARTED": False,
                 "CANONICAL_NEXT_STEP_AFTER_MERGE": CANONICAL_NEXT_STEP_AFTER_MERGE,
                 "AUTHORIZATION_REQUIRED": AUTHORIZATION_REQUIRED_AFTER_MERGE,
+                "SCOPED_OWNER_GO_SCOPE": SCOPED_OWNER_GO_SCOPE,
+                "ACCEPTED_OWNER_GO_SCOPES": list(ACCEPTED_OWNER_GO_SCOPES),
+                "CANONICAL_VENUE": CANONICAL_VENUE,
+                "CANONICAL_ORDER_SZ": CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
             },
             sort_keys=True,
         )

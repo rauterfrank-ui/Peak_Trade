@@ -19,7 +19,10 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.clo
 )
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.constants_v1 import (
     CANONICAL_ACCOUNT_IDENTITY,
+    CANONICAL_INSTRUMENT_SCOPE,
+    CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
     CANONICAL_SECRET_REFERENCE,
+    CANONICAL_VENUE,
     MODE_PRODUCTIVE_REAL,
     MODE_STUBBED_ACCEPTANCE,
     NEXT_OPERATION_AFTER_STUBBED_BOUNDARY,
@@ -29,6 +32,8 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     SCOPED_OWNER_GO_SCOPE,
     SCOPED_OWNER_GO_TOKEN,
     SECTION_11_13_STARTED,
+    SIMULATION_HEADER_NAME,
+    SIMULATION_HEADER_VALUE,
     STATE_ABORTED,
     STATE_ABORTING,
     STATE_ARMED,
@@ -44,6 +49,13 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     STATE_NETWORK_SESSION_STARTED,
     STATE_PREFLIGHT_PASS,
     STATE_SEALED,
+    TESTNET_PRIVATE_REST_BASE,
+)
+from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.final_exchange_reconcile_cleanup_v1 import (
+    ActualStartFinalReconcileError,
+    assert_seal_allowed_after_final_reconcile_v1,
+    exchange_payload_from_transport_result_v1,
+    run_final_exchange_reconcile_cleanup_v1,
 )
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.durable_state_v1 import (
     ActualStartDurableStateV1,
@@ -83,10 +95,64 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.tes
     build_productive_testnet_transport_v1,
     build_stubbed_testnet_transport_v1,
 )
+from src.ops.section_11_12_8_okx_eea_demo_xperp_campaign_private_write_gate_v1.gate_v1 import (
+    evaluate_ephemeral_campaign_private_write_gate_v1,
+)
 
 
 class ActualStartConsumerError(RuntimeError):
     """Fail-closed productive consumer violation."""
+
+
+def _empty_exchange_fixture_v1(_endpoint: str) -> dict[str, Any]:
+    return {"data": []}
+
+
+def _run_final_reconcile_for_seal_v1(
+    *,
+    ephemeral_campaign_write_gate_pass: bool,
+    transport: Any | None,
+    port: Any | None,
+    campaign_client_order_ids: list[str] | tuple[str, ...] | None,
+    allow_empty_without_wire: bool,
+) -> dict[str, Any]:
+    """Bound final reconcile/cleanup required before successful seal."""
+    if transport is None:
+        reconcile = run_final_exchange_reconcile_cleanup_v1(
+            ephemeral_campaign_write_gate_pass=False,
+            get_pending_orders=_empty_exchange_fixture_v1,
+            get_positions=_empty_exchange_fixture_v1,
+            cancel_order=None,
+            campaign_client_order_ids=campaign_client_order_ids,
+            require_zero_open=True,
+        )
+        assert_seal_allowed_after_final_reconcile_v1(reconcile=reconcile)
+        return reconcile.to_dict()
+
+    def _get(endpoint: str) -> dict[str, Any]:
+        raw = transport.request(method="GET", endpoint=endpoint, body=None)
+        return exchange_payload_from_transport_result_v1(
+            raw, allow_empty_without_wire=allow_empty_without_wire
+        )
+
+    cancel_fn = None
+    if ephemeral_campaign_write_gate_pass and port is not None:
+
+        def _cancel(order_id: str) -> dict[str, Any]:
+            return port.cancel_order_v1(order_id=order_id)
+
+        cancel_fn = _cancel
+
+    reconcile = run_final_exchange_reconcile_cleanup_v1(
+        ephemeral_campaign_write_gate_pass=bool(ephemeral_campaign_write_gate_pass),
+        get_pending_orders=_get,
+        get_positions=_get,
+        cancel_order=cancel_fn,
+        campaign_client_order_ids=campaign_client_order_ids,
+        require_zero_open=True,
+    )
+    assert_seal_allowed_after_final_reconcile_v1(reconcile=reconcile)
+    return reconcile.to_dict()
 
 
 @dataclass(frozen=True)
@@ -307,7 +373,11 @@ def execute_productive_section_11_12_8_campaign_run_v1(
 
     transport = build_stubbed_testnet_transport_v1()
     port = construct_productive_testnet_execution_port_v1(
-        authorized=True, transport=transport, stubbed=True
+        authorized=True,
+        transport=transport,
+        stubbed=True,
+        ephemeral_campaign_write_gate_pass=False,
+        mutation_wire_intended=False,
     )
     lifecycle = run_campaign_lifecycle_v1(
         port=port,
@@ -316,6 +386,7 @@ def execute_productive_section_11_12_8_campaign_run_v1(
         abort=abort,
         inject_kill_switch=force_kill_switch,
         offline_proof_bounds=True,
+        order_sz=CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
     )
     state = transition_actual_start_state_v1(
         state_dir=state_dir,
@@ -362,6 +433,17 @@ def execute_productive_section_11_12_8_campaign_run_v1(
             completion_reason="STUBBED_ACCEPTANCE_COMPLETED",
         )
 
+    try:
+        final_reconcile = _run_final_reconcile_for_seal_v1(
+            ephemeral_campaign_write_gate_pass=False,
+            transport=None,
+            port=None,
+            campaign_client_order_ids=lifecycle.client_order_ids,
+            allow_empty_without_wire=True,
+        )
+    except ActualStartFinalReconcileError as exc:
+        raise ActualStartConsumerError(f"FINAL_RECONCILE_FAILED:{exc}") from exc
+
     evidence_payload = {
         "owner_go": owner_go.to_dict(),
         "testnet_auth": testnet_auth.to_dict(),
@@ -373,6 +455,9 @@ def execute_productive_section_11_12_8_campaign_run_v1(
         "session": session.to_dict(),
         "port": port.to_dict(),
         "lifecycle": lifecycle.to_dict(),
+        "final_exchange_reconcile_cleanup": final_reconcile,
+        "CANONICAL_VENUE": CANONICAL_VENUE,
+        "CANONICAL_ORDER_SZ": CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
         "next_operation_after_boundary": NEXT_OPERATION_AFTER_STUBBED_BOUNDARY,
     }
     evidence_path = write_productive_execution_evidence_v1(
@@ -605,8 +690,40 @@ def _execute_productive_real_network_v1(
         allow_real_network=True,
         bound_client_kind=bound_client_kind,
     )
+
+    write_gate_record = None
+    ephemeral_write_pass = False
+    if allow_wire_send:
+        write_gate_record = evaluate_ephemeral_campaign_private_write_gate_v1(
+            owner_go_consumed=owner_go.consumed,
+            owner_go_scope=owner_go.owner_go_scope,
+            owner_go_authorization=owner_go.owner_go_authorization,
+            confirm_latched=True,
+            testnet_authorized_runtime=testnet_auth.testnet_authorized_runtime,
+            campaign_enabled=True,
+            campaign_armed=True,
+            risk_gate_pass=True,
+            kill_switch_pass=True,
+            emergency_control_pass=True,
+            account_binding_pass=binding.account_verified,
+            endpoint_allowlist_pass=True,
+            bound_client_pass=True,
+            secretref_ephemeral_loaded=True,
+            venue=CANONICAL_VENUE,
+            rest_base=TESTNET_PRIVATE_REST_BASE,
+            instrument_scope_exact=CANONICAL_INSTRUMENT_SCOPE[0],
+            headers={SIMULATION_HEADER_NAME: SIMULATION_HEADER_VALUE},
+            live_authorized=False,
+            live_mode=False,
+        )
+        ephemeral_write_pass = bool(write_gate_record.ephemeral_campaign_write_gate_pass)
+
     port = construct_productive_testnet_execution_port_v1(
-        authorized=True, transport=transport, stubbed=False
+        authorized=True,
+        transport=transport,
+        stubbed=False,
+        ephemeral_campaign_write_gate_pass=ephemeral_write_pass,
+        mutation_wire_intended=bool(allow_wire_send),
     )
     # Offline/acceptance uses short cycle bound; wire-send Owner execute uses SSOT bounds.
     lifecycle = run_campaign_lifecycle_v1(
@@ -616,6 +733,7 @@ def _execute_productive_real_network_v1(
         abort=abort,
         inject_kill_switch=force_kill_switch,
         offline_proof_bounds=not allow_wire_send,
+        order_sz=CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
     )
     state = transition_actual_start_state_v1(
         state_dir=state_dir,
@@ -662,6 +780,17 @@ def _execute_productive_real_network_v1(
             completion_reason=("REAL_WIRE_" if allow_wire_send else "REAL_BOUNDARY_") + "COMPLETED",
         )
 
+    try:
+        final_reconcile = _run_final_reconcile_for_seal_v1(
+            ephemeral_campaign_write_gate_pass=ephemeral_write_pass,
+            transport=transport,
+            port=port,
+            campaign_client_order_ids=lifecycle.client_order_ids,
+            allow_empty_without_wire=not allow_wire_send,
+        )
+    except ActualStartFinalReconcileError as exc:
+        raise ActualStartConsumerError(f"FINAL_RECONCILE_FAILED:{exc}") from exc
+
     evidence_payload = {
         "mode": MODE_PRODUCTIVE_REAL,
         "owner_go": owner_go.to_dict(),
@@ -675,7 +804,13 @@ def _execute_productive_real_network_v1(
         "port": port.to_dict(),
         "transport_bound_client_kind": transport.bound_client_kind,
         "lifecycle": lifecycle.to_dict(),
+        "ephemeral_campaign_private_write_gate": (
+            write_gate_record.to_dict() if write_gate_record is not None else None
+        ),
+        "final_exchange_reconcile_cleanup": final_reconcile,
         "allow_wire_send": allow_wire_send,
+        "CANONICAL_VENUE": CANONICAL_VENUE,
+        "CANONICAL_ORDER_SZ": CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
         "NETWORK_SEND_BOUNDARY_REACHED": True,
         "NETWORK_EFFECT": network_effect,
         "ORDER_EFFECT": order_effect,

@@ -11,7 +11,10 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     CANONICAL_RUNTIME_MODE,
     CANONICAL_VENUE,
     CONTRACT_VERSION,
+    DEPRECATED_INSTRUMENT_BTC_USDT_SWAP,
     OWNER,
+    SWAP_RUNTIME_FALLBACK,
+    SWAP_WRITE_AUTHORIZATION,
 )
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.okx_response_mapper_v1 import (
     build_venue_native_order_body_v1,
@@ -20,6 +23,9 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.okx
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.testnet_transport_v1 import (
     StubbedTestnetTransportV1,
     TestnetTransportPortV1,
+)
+from src.ops.section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1.binding_contract_v1 import (
+    assert_order_send_forbidden_v1,
 )
 
 
@@ -42,6 +48,8 @@ class ProductiveTestnetExecutionPortV1:
     allowed_order_types: tuple[str, ...] = CANONICAL_ALLOWED_ORDER_TYPES
     authorized: bool = False
     stubbed: bool = True
+    ephemeral_campaign_write_gate_pass: bool = False
+    mutation_wire_intended: bool = False
     transport: TestnetTransportPortV1 | None = None
     submit_attempts: list[dict[str, Any]] = field(default_factory=list)
 
@@ -59,12 +67,28 @@ class ProductiveTestnetExecutionPortV1:
             raise ActualStartPortError("SUBMIT_FORBIDDEN_WITHOUT_AUTHORIZATION")
         if self.EXECUTION_MODE != "TESTNET":
             raise ActualStartPortError("LIVE_OR_NON_TESTNET_SUBMIT_FORBIDDEN")
+        if SWAP_RUNTIME_FALLBACK is not False or SWAP_WRITE_AUTHORIZATION is not False:
+            raise ActualStartPortError("SWAP_FALLBACK_OR_WRITE_AUTHORIZATION_FORBIDDEN")
+        if instrument == DEPRECATED_INSTRUMENT_BTC_USDT_SWAP:
+            raise ActualStartPortError(
+                "BTC_USDT_SWAP_PATH_CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY"
+            )
         if instrument not in self.instrument_scope:
             raise ActualStartPortError(f"INSTRUMENT_OUT_OF_SCOPE:{instrument}")
         if order_type not in self.allowed_order_types:
             raise ActualStartPortError(f"ORDER_TYPE_FORBIDDEN:{order_type}")
         if self.transport is None:
             raise ActualStartPortError("TRANSPORT_NOT_BOUND")
+        # Binding mutation hard-block for intended real wire mutations unless
+        # ephemeral write gate passed. Stubbed / boundary-only paths do not mutate.
+        if self.mutation_wire_intended:
+            assert_order_send_forbidden_v1(
+                endpoint="/api/v5/trade/order",
+                order_post=True,
+                ephemeral_campaign_write_gate_pass=bool(self.ephemeral_campaign_write_gate_pass),
+            )
+            if not self.ephemeral_campaign_write_gate_pass:
+                raise ActualStartPortError("MUTATION_REQUIRES_EPHEMERAL_WRITE_GATE_PASS")
 
         venue_body = build_venue_native_order_body_v1(
             client_order_id=client_order_id,
@@ -130,6 +154,7 @@ class ProductiveTestnetExecutionPortV1:
             "partial_fill_observed": bool(parsed.get("partial_fill_observed")),
             "response_classification": parsed.get("classification"),
             "parsed_response": parsed,
+            "ephemeral_campaign_write_gate_pass": bool(self.ephemeral_campaign_write_gate_pass),
             "network_effect": (
                 "STUBBED"
                 if stubbed_result
@@ -140,6 +165,47 @@ class ProductiveTestnetExecutionPortV1:
         self.submit_attempts.append(attempt)
         return attempt
 
+    def cancel_order_v1(self, *, order_id: str) -> dict[str, Any]:
+        if not self.authorized:
+            raise ActualStartPortError("CANCEL_FORBIDDEN_WITHOUT_AUTHORIZATION")
+        if self.transport is None:
+            raise ActualStartPortError("TRANSPORT_NOT_BOUND")
+        if self.mutation_wire_intended:
+            assert_order_send_forbidden_v1(
+                endpoint="/api/v5/trade/cancel-order",
+                order_post=True,
+                ephemeral_campaign_write_gate_pass=bool(self.ephemeral_campaign_write_gate_pass),
+            )
+            if not self.ephemeral_campaign_write_gate_pass:
+                raise ActualStartPortError("MUTATION_REQUIRES_EPHEMERAL_WRITE_GATE_PASS")
+        body = {"ordId": order_id}
+        result = self.transport.request(
+            method="POST",
+            endpoint="/api/v5/trade/cancel-order",
+            body=body,
+        )
+        stubbed_result = bool(result.get("stubbed"))
+        if stubbed_result:
+            return {
+                "ok": True,
+                "stubbed": True,
+                "order_acknowledged": True,
+                "wire_sent": False,
+                "order_id": order_id,
+            }
+        mapped = parse_okx_order_response_v1(
+            transport_result=result, wire_sent=bool(result.get("wire_sent"))
+        )
+        return {
+            "ok": bool(mapped.order_acknowledged or mapped.exchange_accepted),
+            "stubbed": False,
+            "order_acknowledged": mapped.order_acknowledged,
+            "exchange_rejected": mapped.exchange_rejected,
+            "wire_sent": mapped.wire_sent,
+            "order_id": order_id,
+            "classification": mapped.classification,
+        }
+
     def to_dict(self) -> dict[str, Any]:
         return {
             "PORT_KIND": self.PORT_KIND,
@@ -147,6 +213,8 @@ class ProductiveTestnetExecutionPortV1:
             "authorized": self.authorized,
             "stubbed": self.stubbed,
             "venue": self.venue,
+            "ephemeral_campaign_write_gate_pass": self.ephemeral_campaign_write_gate_pass,
+            "mutation_wire_intended": self.mutation_wire_intended,
             "submit_attempt_count": len(self.submit_attempts),
             "OWNER": self.OWNER,
         }
@@ -157,6 +225,8 @@ def construct_productive_testnet_execution_port_v1(
     authorized: bool,
     transport: TestnetTransportPortV1 | None = None,
     stubbed: bool = True,
+    ephemeral_campaign_write_gate_pass: bool = False,
+    mutation_wire_intended: bool = False,
 ) -> ProductiveTestnetExecutionPortV1:
     if not authorized:
         raise ActualStartPortError("PORT_CONSTRUCTION_REQUIRES_AUTHORIZATION")
@@ -171,4 +241,6 @@ def construct_productive_testnet_execution_port_v1(
         authorized=True,
         stubbed=stubbed,
         transport=bound_transport,
+        ephemeral_campaign_write_gate_pass=bool(ephemeral_campaign_write_gate_pass),
+        mutation_wire_intended=bool(mutation_wire_intended),
     )

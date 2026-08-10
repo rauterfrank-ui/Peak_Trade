@@ -36,7 +36,11 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.clo
     evaluate_section_11_12_8_closeout_v1,
 )
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.constants_v1 import (
+    ACCEPTED_OWNER_GO_SCOPES,
     BLOCKER_IDS,
+    CANONICAL_INSTRUMENT_SCOPE,
+    CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
+    CANONICAL_VENUE,
     CAPABILITY_ID,
     LIVE_AUTHORIZED,
     LIVE_FORBIDDEN_HOSTS,
@@ -44,6 +48,8 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     PRODUCTIVE_TESTNET_CAMPAIGN_STARTED,
     SCOPED_OWNER_GO_AUTHORIZATION,
     SCOPED_OWNER_GO_SCOPE,
+    SCOPED_OWNER_GO_SCOPE_LEGACY_ALIAS,
+    SCOPED_OWNER_GO_SCOPE_LEGACY_LONG_RUNNING,
     SCOPED_OWNER_GO_TOKEN,
     SECTION_11_13_STARTED,
     STATE_ARMED,
@@ -52,6 +58,11 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     STATE_GO_CONSUMED,
     STATE_IDLE,
     TESTNET_PRIVATE_ENDPOINTS,
+)
+from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.final_exchange_reconcile_cleanup_v1 import (
+    ActualStartFinalReconcileError,
+    assert_seal_allowed_after_final_reconcile_v1,
+    run_final_exchange_reconcile_cleanup_v1,
 )
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.durable_state_v1 import (
     ActualStartDurableStateError,
@@ -107,6 +118,10 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.tes
     ProductiveTestnetTransportV1,
     build_stubbed_testnet_transport_v1,
 )
+from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.unknown_submit_fail_closed_v1 import (
+    ActualStartUnknownSubmitError,
+    enforce_unknown_submit_fail_closed_v1,
+)
 from src.ops.section_11_12_8_productive_campaign_run_activation_and_executable_handoff_v1.activation_executor_v1 import (
     Section11128ActivationExecutorError,
     refuse_productive_campaign_start_v1,
@@ -134,6 +149,28 @@ def test_capability_identity() -> None:
     assert LIVE_AUTHORIZED is False
     assert PRODUCTIVE_TESTNET_CAMPAIGN_STARTED is False
     assert SECTION_11_13_STARTED is False
+    assert CANONICAL_VENUE == "OKX_EEA_DEMO"
+    assert CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1 == "0.0001"
+    assert CANONICAL_INSTRUMENT_SCOPE == ("BTC-USD_UM_XPERP-310328",)
+    assert "BTC-USDT-SWAP" not in CANONICAL_INSTRUMENT_SCOPE
+    from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.constants_v1 import (
+        ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH,
+        BTC_USDT_SWAP_PATH_STATUS,
+        SWAP_RUNTIME_FALLBACK,
+        SWAP_WRITE_AUTHORIZATION,
+        XPERP_ONLY_ACTIVE_WRITE_SCOPE,
+    )
+
+    assert BTC_USDT_SWAP_PATH_STATUS == "CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY"
+    assert ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH == "OKX_EEA_DEMO_XPERP"
+    assert SWAP_RUNTIME_FALLBACK is False
+    assert SWAP_WRITE_AUTHORIZATION is False
+    assert XPERP_ONLY_ACTIVE_WRITE_SCOPE is True
+    assert SCOPED_OWNER_GO_SCOPE == ("EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN")
+    assert SCOPED_OWNER_GO_SCOPE_LEGACY_LONG_RUNNING in ACCEPTED_OWNER_GO_SCOPES
+    assert SCOPED_OWNER_GO_SCOPE_LEGACY_ALIAS in ACCEPTED_OWNER_GO_SCOPES
+    assert "/api/v5/account/positions" in TESTNET_PRIVATE_ENDPOINTS
+    assert "/api/v5/account/instruments" in TESTNET_PRIVATE_ENDPOINTS
     assert set(BLOCKER_IDS) == {f"B{i:02d}" for i in range(1, 25)}
 
 
@@ -148,6 +185,20 @@ def test_owner_go_accept_and_rejects() -> None:
     assert ok.one_time_consume is True
     assert ok.productive_campaign_authorized is True
     assert ok.live_authorized is False
+    legacy = consume_actual_start_owner_go_v1(
+        owner_go_token=SCOPED_OWNER_GO_TOKEN,
+        owner_go_scope=SCOPED_OWNER_GO_SCOPE_LEGACY_LONG_RUNNING,
+        owner_go_authorization=SCOPED_OWNER_GO_SCOPE_LEGACY_LONG_RUNNING,
+        consumption_id="cid-legacy",
+    )
+    assert legacy.consumed is True
+    alias = consume_actual_start_owner_go_v1(
+        owner_go_token=SCOPED_OWNER_GO_TOKEN,
+        owner_go_scope=SCOPED_OWNER_GO_SCOPE_LEGACY_ALIAS,
+        owner_go_authorization=SCOPED_OWNER_GO_SCOPE_LEGACY_ALIAS,
+        consumption_id="cid-alias",
+    )
+    assert alias.consumed is True
     with pytest.raises(ActualStartOwnerGoError, match="TOKEN_MISMATCH"):
         consume_actual_start_owner_go_v1(
             owner_go_token="WRONG",
@@ -175,6 +226,29 @@ def test_owner_go_accept_and_rejects() -> None:
             owner_go_scope=SCOPED_OWNER_GO_SCOPE,
             owner_go_authorization=SCOPED_OWNER_GO_AUTHORIZATION,
             consumption_id="cid-1",
+        )
+    with pytest.raises(ActualStartOwnerGoError, match="SWAP_OWNER_GO_SCOPE_NOT_CONSUMABLE"):
+        consume_actual_start_owner_go_v1(
+            owner_go_token=SCOPED_OWNER_GO_TOKEN,
+            owner_go_scope="EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_BTC_USDT_SWAP",
+            owner_go_authorization="EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_BTC_USDT_SWAP",
+            consumption_id="cid-swap",
+        )
+
+
+def test_swap_instrument_submit_fail_closed() -> None:
+    transport = build_stubbed_testnet_transport_v1()
+    port = construct_productive_testnet_execution_port_v1(
+        authorized=True, transport=transport, stubbed=True
+    )
+    with pytest.raises(ActualStartPortError, match="CLOSED_DEPRECATED"):
+        port.submit_order_v1(
+            client_order_id="c-swap",
+            instrument="BTC-USDT-SWAP",
+            order_type="LIMIT",
+            side="buy",
+            quantity="1",
+            px="10000",
         )
 
 
@@ -337,7 +411,7 @@ def test_productive_port_and_transport() -> None:
         instrument="BTC-USD_UM_XPERP-310328",
         order_type="LIMIT",
         side="buy",
-        quantity="1",
+        quantity=CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
         px="10000",
     )
     assert effect["stubbed"] is True
@@ -449,3 +523,60 @@ def test_live_mode_rejects_in_consumer(tmp_path: Path) -> None:
             consumption_id="live-rej",
             runtime_mode="LIVE",
         )
+
+
+def test_unknown_submit_fail_closed_no_blind_resubmit() -> None:
+    with pytest.raises(ActualStartUnknownSubmitError, match="UNKNOWN_OR_UNPROVEN"):
+        enforce_unknown_submit_fail_closed_v1(
+            effect={
+                "wire_sent": True,
+                "stubbed": False,
+                "order_acknowledged": False,
+                "exchange_accepted": False,
+                "exchange_rejected": False,
+                "response_classification": "UNKNOWN_SUBMIT",
+            },
+            client_order_id="coid-unknown",
+        )
+
+
+def test_final_reconcile_cleanup_and_seal_invariant() -> None:
+    ok = run_final_exchange_reconcile_cleanup_v1(
+        ephemeral_campaign_write_gate_pass=False,
+        get_pending_orders=lambda _e: {"data": []},
+        get_positions=lambda _e: {"data": []},
+        cancel_order=None,
+        require_zero_open=True,
+    )
+    assert ok.ok is True
+    assert ok.final_open_order_count == 0
+    assert ok.final_open_position_count == 0
+    assert_seal_allowed_after_final_reconcile_v1(reconcile=ok)
+
+    with pytest.raises(ActualStartFinalReconcileError, match="WITHOUT_CANCEL_AUTHORITY"):
+        run_final_exchange_reconcile_cleanup_v1(
+            ephemeral_campaign_write_gate_pass=False,
+            get_pending_orders=lambda _e: {"data": [{"ordId": "o1"}]},
+            get_positions=lambda _e: {"data": []},
+            cancel_order=None,
+            require_zero_open=True,
+        )
+    with pytest.raises(ActualStartFinalReconcileError, match="FINAL_RECONCILE_REQUIRED"):
+        assert_seal_allowed_after_final_reconcile_v1(reconcile=None)
+
+
+def test_stubbed_campaign_binds_final_reconcile(tmp_path: Path) -> None:
+    import json
+
+    result = execute_productive_section_11_12_8_campaign_run_v1(
+        work_dir=tmp_path / "recon",
+        confirm_token_digest=_DIGEST,
+        expected_confirm_token_digest=_DIGEST,
+        consumption_id="recon-complete",
+    )
+    assert result.ok is True
+    payload = json.loads(Path(result.evidence_path).read_text(encoding="utf-8"))
+    recon = payload.get("payload", {}).get("final_exchange_reconcile_cleanup") or {}
+    assert recon.get("FINAL_OPEN_ORDER_COUNT") == 0
+    assert recon.get("FINAL_OPEN_POSITION_COUNT") == 0
+    assert recon.get("ok") is True

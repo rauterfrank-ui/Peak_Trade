@@ -182,15 +182,27 @@ def _assert_host(rest_base_or_host: str) -> str:
 
 
 def assert_order_send_forbidden_v1(
-    *, endpoint: str | None = None, order_post: bool = False
+    *,
+    endpoint: str | None = None,
+    order_post: bool = False,
+    ephemeral_campaign_write_gate_pass: bool = False,
 ) -> None:
-    if order_post or ORDER_POST_AUTHORIZED:
+    """Hard-block mutation unless ephemeral campaign write gate explicitly passed.
+
+    Binding package default ORDER_POST_AUTHORIZED remains false. A concrete
+    mutation attempt is allowed only when ephemeral_campaign_write_gate_pass=True.
+    """
+    if ORDER_POST_AUTHORIZED:
         raise OkxEeaDemoXperpBindingError("ORDER_POST_HARD_BLOCK_IN_BINDING_PACKAGE")
     if endpoint is None:
+        if order_post and not ephemeral_campaign_write_gate_pass:
+            raise OkxEeaDemoXperpBindingError("ORDER_POST_HARD_BLOCK_IN_BINDING_PACKAGE")
         return
     path = str(endpoint).strip()
     if path in ORDER_MUTATION_ENDPOINTS_HARD_BLOCKED:
-        raise OkxEeaDemoXperpBindingError(f"ORDER_MUTATION_ENDPOINT_HARD_BLOCK:{path}")
+        if not ephemeral_campaign_write_gate_pass:
+            raise OkxEeaDemoXperpBindingError(f"ORDER_MUTATION_ENDPOINT_HARD_BLOCK:{path}")
+        return
     if path and path not in PRIVATE_ENDPOINT_ALLOWLIST_NO_ORDER:
         raise OkxEeaDemoXperpBindingError(f"ENDPOINT_NOT_IN_NO_ORDER_ALLOWLIST:{path}")
 

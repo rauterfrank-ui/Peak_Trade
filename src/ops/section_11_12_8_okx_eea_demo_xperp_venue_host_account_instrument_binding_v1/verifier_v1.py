@@ -15,7 +15,9 @@ from src.ops.section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_bi
     evaluate_okx_eea_demo_xperp_binding_v1,
 )
 from src.ops.section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1.constants_v1 import (
+    ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH,
     BINDING_PROOF_FILENAME,
+    BTC_USDT_SWAP_PATH_STATUS,
     CANONICAL_NEXT_STEP_AFTER_MERGE,
     CAPABILITY_ID,
     CLAIMS_FILENAME,
@@ -35,9 +37,13 @@ from src.ops.section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_bi
     PRE_LIVE_CYBERSECURITY_GATE,
     PRIVATE_WRITE_COUNT,
     RULE_TYPE,
+    SECTION_11_12_8_STATUS,
     SECTION_11_13_STARTED,
     SUMMARY_FILENAME,
+    SWAP_RUNTIME_FALLBACK,
+    SWAP_WRITE_AUTHORIZATION,
     THREAT_MODEL_DELTA_FILENAME,
+    XPERP_ONLY_ACTIVE_WRITE_SCOPE,
     XPERP_PRIVATE_CAPABILITY_PROOF_BOUND,
 )
 from src.ops.section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1.threat_model_delta_v1 import (
@@ -162,6 +168,37 @@ def _prove_fail_closed_cases() -> dict[str, Any]:
         order_endpoint_ok = "ORDER_MUTATION_ENDPOINT_HARD_BLOCK" in str(exc)
     cases.append({"case": "order_mutation_endpoint", "ok": order_endpoint_ok})
 
+    ephemeral_pass_ok = True
+    try:
+        assert_order_send_forbidden_v1(
+            endpoint="/api/v5/trade/order",
+            order_post=True,
+            ephemeral_campaign_write_gate_pass=True,
+        )
+    except OkxEeaDemoXperpBindingError as exc:
+        ephemeral_pass_ok = False
+        cases.append(
+            {
+                "case": "ephemeral_write_gate_pass_allows_mutation_assert",
+                "ok": False,
+                "error": str(exc),
+            }
+        )
+    if ephemeral_pass_ok:
+        cases.append(
+            {
+                "case": "ephemeral_write_gate_pass_allows_mutation_assert",
+                "ok": True,
+            }
+        )
+    package_default_still_false = ORDER_POST_AUTHORIZED is False
+    cases.append(
+        {
+            "case": "package_default_order_post_remains_false",
+            "ok": package_default_still_false,
+        }
+    )
+
     return {
         "all_ok": all(bool(c.get("ok")) for c in cases),
         "cases": cases,
@@ -211,7 +248,15 @@ def verify_okx_eea_demo_xperp_binding_package_v1(*, work_dir: Path) -> dict[str,
         "PREDECESSOR_PRIVATE_RO_PROOF_EVIDENCE": PREDECESSOR_PRIVATE_RO_PROOF_EVIDENCE,
         "LIVE_HARD_BLOCK_PROVEN": True,
         "ORDER_SEND_FORBIDDEN_PROVEN": True,
+        "SECTION_11_12_8_STATUS": SECTION_11_12_8_STATUS,
         "CANONICAL_NEXT_STEP_AFTER_MERGE": CANONICAL_NEXT_STEP_AFTER_MERGE,
+        "BTC_USDT_SWAP_PATH_STATUS": BTC_USDT_SWAP_PATH_STATUS,
+        "ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH": (
+            ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH
+        ),
+        "SWAP_RUNTIME_FALLBACK": SWAP_RUNTIME_FALLBACK,
+        "SWAP_WRITE_AUTHORIZATION": SWAP_WRITE_AUTHORIZATION,
+        "XPERP_ONLY_ACTIVE_WRITE_SCOPE": XPERP_ONLY_ACTIVE_WRITE_SCOPE,
         "FAIL_CLOSED_MATRIX_OK": fail_closed["all_ok"],
         "THREAT_MODEL_DELTA_OK": bool(threat.get("ok")),
     }
@@ -235,7 +280,19 @@ def verify_okx_eea_demo_xperp_binding_package_v1(*, work_dir: Path) -> dict[str,
         "SECTION_11_13_STARTED": SECTION_11_13_STARTED,
         "PRE_LIVE_CYBERSECURITY_GATE": PRE_LIVE_CYBERSECURITY_GATE,
         "NEXT_CANONICAL_STEP": CANONICAL_NEXT_STEP_AFTER_MERGE,
-        "ok": bool(fail_closed["all_ok"] and threat.get("ok")),
+        "BTC_USDT_SWAP_PATH_STATUS": BTC_USDT_SWAP_PATH_STATUS,
+        "ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH": (
+            ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH
+        ),
+        "ok": bool(
+            fail_closed["all_ok"]
+            and threat.get("ok")
+            and BTC_USDT_SWAP_PATH_STATUS == "CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY"
+            and ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH == "OKX_EEA_DEMO_XPERP"
+            and SWAP_RUNTIME_FALLBACK is False
+            and SWAP_WRITE_AUTHORIZATION is False
+            and XPERP_ONLY_ACTIVE_WRITE_SCOPE is True
+        ),
     }
 
     (work_dir / CLAIMS_FILENAME).write_text(
