@@ -1,0 +1,194 @@
+{
+  "ACCEPTANCE_CRITERIA_RESULTS": {
+    "BLOCK_NEW_ENTRY_NO_WIRE_OK": true,
+    "CANCEL_ALL_ACK_OK": true,
+    "DEMO_AUTH_OK": true,
+    "HALT_AFTER_CANCEL_FLAT_OK": true,
+    "LIVE_STILL_FALSE": true,
+    "PERSISTENT_KILL_OK": true,
+    "PRED_DUP_OK": true,
+    "PRED_LIFE_OK": true,
+    "PRED_RECON_OK": true,
+    "PRED_RESTART_OK": true,
+    "PRED_UNKNOWN_OK": true,
+    "PRIMARY_ACK_OK": true,
+    "RUNTIME_CLEAR_FORBIDDEN_OK": true,
+    "SECTION_11_13_STILL_FALSE": true,
+    "STILL_KILLED_AFTER_HALT_OK": true,
+    "SURVIVES_RESTART_OK": true,
+    "TESTNET_ISOLATION_OK": true
+  },
+  "AUTHORIZATION_STATUS": "OWNER_GO_AND_EXECUTE_TOKEN_CONSUMED",
+  "BLOCKED_CLIENT_ORDER_ID": "ptokxedemof47b3d89f47b3d8901",
+  "BLOCKED_NEW_ENTRY_ATTEMPT_COUNT": 1,
+  "BLOCKED_NEW_ENTRY_WIRE_COUNT": 0,
+  "BRANCH": "main",
+  "CANCEL_ACK_COUNT": 1,
+  "CANCEL_ALL_PATH_INDEPENDENT_OF_ALPHA": true,
+  "CANCEL_ATTEMPT_COUNT": 1,
+  "CANONICAL_ENVIRONMENT_BINDING": "DEMO",
+  "CANONICAL_INSTRUMENT_BINDING": "BTC-USD_UM_XPERP-310328",
+  "CANONICAL_VENUE_BINDING": "OKX_EEA_DEMO",
+  "CAP_11_12_TESTNET_PROGRAM_CLOSED": false,
+  "CLIENT_ORDER_ID": "ptokxedemof47b3d89f47b3d8900",
+  "DOCUMENT_CLASS": "MACHINE_READABLE_TESTNET_KILL_SWITCH_PROVEN_PROOF_V1",
+  "EMERGENCY_COMMANDS_BOUND": [
+    "BLOCK_NEW_ENTRY",
+    "EXIT_ONLY",
+    "REDUCE_ONLY",
+    "CANCEL_ALL",
+    "HALT_AFTER_CANCEL",
+    "PERSISTENT_KILL"
+  ],
+  "EMERGENCY_COMMANDS_EXERCISED": [
+    "PERSISTENT_KILL",
+    "BLOCK_NEW_ENTRY",
+    "CANCEL_ALL",
+    "HALT_AFTER_CANCEL"
+  ],
+  "EMERGENCY_EVENTS": [
+    {
+      "alpha_dependent": false,
+      "cleared_by_runtime": false,
+      "command": "PERSISTENT_KILL",
+      "persisted": true,
+      "state": "KILLED",
+      "survives_restart_intent": true
+    },
+    {
+      "blocked": true,
+      "client_order_id": "ptokxedemof47b3d89f47b3d8901",
+      "command": "BLOCK_NEW_ENTRY",
+      "wire_performed": false
+    },
+    {
+      "ack": true,
+      "alpha_dependent": false,
+      "command": "CANCEL_ALL",
+      "ordId": "3821907347557453824"
+    },
+    {
+      "command": "HALT_AFTER_CANCEL",
+      "final_flat": true,
+      "new_entry_still_blocked": true,
+      "state": "KILLED"
+    }
+  ],
+  "EPHEMERAL_SIGN_PATH_QUERY_PATCH": true,
+  "EXCHANGE_QUERY_COUNT": 7,
+  "EXECUTE_TOKEN": "EXECUTE_ONE_BOUNDED_PRODUCTIVE_DEMO_XPERP_KILL_SWITCH_AND_EMERGENCY_CONTROL_THEN_SEAL_EVIDENCE_AND_HARD_STOP",
+  "EXIT_OR_REDUCE_POLICY_INDEPENDENT_OF_ALPHA": true,
+  "FINAL_OPEN_ORDER_COUNT": 0,
+  "FINAL_OPEN_POSITION_COUNT": 0,
+  "HARD_STOP_AFTER_THIS_PROOF": true,
+  "HISTORY_EVENTS": [
+    "CLIENT_SESSION_OPEN",
+    "PREFLIGHT_AUTH_OK",
+    "SUBMIT_ATTEMPTED_WHILE_ACTIVE",
+    "ACKNOWLEDGED",
+    "OPEN",
+    "PERSISTENT_KILL_TRIPPED",
+    "BLOCK_NEW_ENTRY_NO_WIRE",
+    "RUNTIME_CLEAR_FORBIDDEN",
+    "KILL_SWITCH_SURVIVES_RESTART",
+    "CANCEL_ALL_INDEPENDENT_OF_ALPHA",
+    "HALT_AFTER_CANCEL",
+    "EVIDENCED"
+  ],
+  "KILL_SWITCH_CANNOT_BE_CLEARED_BY_RUNTIME": true,
+  "KILL_SWITCH_CHECKED_BEFORE_EVERY_SIDE_EFFECT": true,
+  "KILL_SWITCH_FAIL_CLOSED": true,
+  "KILL_SWITCH_PERSISTED": true,
+  "KILL_SWITCH_SURVIVES_RESTART": true,
+  "LIVE_AUTHORIZED": false,
+  "LONG_RUNNING_TESTNET_PROVEN": false,
+  "MANIFEST_VERIFY_RC": 0,
+  "MUTATION_ACTIONS": [
+    {
+      "ack": true,
+      "action": "POST_/api/v5/trade/order",
+      "clOrdId": "ptokxedemof47b3d89f47b3d8900",
+      "ordId": "3821907347557453824",
+      "px": "10000",
+      "sCode": "0",
+      "side": "buy",
+      "tag": "primary_submit_while_active"
+    },
+    {
+      "action": "BLOCKED_NEW_ENTRY_NO_WIRE",
+      "blocked_by_kill_switch": true,
+      "clOrdId": "ptokxedemof47b3d89f47b3d8901",
+      "tag": "block_new_entry_after_kill",
+      "wire_performed": false
+    },
+    {
+      "ack": true,
+      "action": "POST_/api/v5/trade/cancel-order",
+      "emergency_command": "CANCEL_ALL",
+      "ordId": "3821907347557453824",
+      "tag": "cancel_all_after_kill"
+    }
+  ],
+  "NEWLY_CLOSED_TESTNET_PROVEN_FIELDS": [
+    "TESTNET_KILL_SWITCH_PROVEN"
+  ],
+  "NEXT_CANONICAL_RESIDUAL_PROOF": "TESTNET_AUTONOMOUS_RECOVERY_PROVEN",
+  "NEXT_OWNER_STEP": "OWNER_GO_PRODUCTIVE_TESTNET_AUTONOMOUS_RECOVERY_PROVEN_REQUIRED",
+  "OPEN_TESTNET_PROVEN_FIELDS": [
+    "TESTNET_AUTONOMOUS_RECOVERY_PROVEN",
+    "TESTNET_EVIDENCE_VERIFIED"
+  ],
+  "ORDER_ACK_COUNT": 1,
+  "ORDER_ATTEMPT_COUNT": 1,
+  "ORDER_EFFECT": "TESTNET",
+  "ORIGIN_MAIN_SHA": "6149608daa8f4e4ca125c9233d12f26545455c85",
+  "OWNER_AUTHORITY_REQUIRED_TO_CLEAR": true,
+  "OWNER_GO": "OWNER_GO_PRODUCTIVE_TESTNET_KILL_SWITCH_PROVEN_REQUIRED",
+  "PATH_RESULTS": {
+    "block_new_entry_after_kill": {
+      "blocked": true,
+      "wire_performed": false
+    },
+    "cancel_all_independent_of_alpha": {
+      "ack": true,
+      "alpha_dependent": false
+    },
+    "halt_after_cancel": {
+      "final_flat": true,
+      "still_killed": true
+    },
+    "kill_switch_survives_restart": {
+      "survives_restart": true
+    },
+    "persistent_kill_trip": {
+      "persisted": true,
+      "state": "KILLED"
+    },
+    "primary_submit_while_active": {
+      "ack": true,
+      "client_order_id": "ptokxedemof47b3d89f47b3d8900",
+      "ordId": "3821907347557453824"
+    },
+    "runtime_clear_forbidden": {
+      "blocked": true
+    }
+  },
+  "PRE_LIVE_CYBERSECURITY_GATE": "NOT_PASSED",
+  "PROOF_EXECUTED": true,
+  "PROOF_METHOD": "BOUNDED_PRODUCTIVE_OKX_EEA_DEMO_XPERP_KILL_SWITCH_AND_EMERGENCY_CONTROL",
+  "PROOF_RESULT": "PRODUCTIVE_TESTNET_KILL_SWITCH_PROVEN_PASS",
+  "PROOF_RUN_ID": "20260810T232151Z",
+  "REUSE_CONTRACT": "Cap11.5_KillSwitch+ExecutionGate+StatePersistence+Cap11.5_EmergencyCommands",
+  "SECTION_11_12_9_GATE_PASS": false,
+  "SECTION_11_13_STARTED": false,
+  "TERMINAL_EVIDENCED_OK": true,
+  "TESTNET_AUTONOMOUS_RECOVERY_PROVEN": false,
+  "TESTNET_DUPLICATE_ORDER_PREVENTION_PROVEN": true,
+  "TESTNET_EVIDENCE_VERIFIED": false,
+  "TESTNET_ISOLATION_VERIFIED": true,
+  "TESTNET_KILL_SWITCH_PROVEN": true,
+  "TESTNET_ORDER_LIFECYCLE_PROVEN": true,
+  "TESTNET_RECONCILIATION_PROVEN": true,
+  "TESTNET_RESTART_PROVEN": true,
+  "TESTNET_UNKNOWN_SUBMIT_RECOVERY_PROVEN": true
+}

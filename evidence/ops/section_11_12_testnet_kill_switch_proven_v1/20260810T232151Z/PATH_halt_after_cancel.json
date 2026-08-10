@@ -1,0 +1,8 @@
+{
+  "command": "HALT_AFTER_CANCEL",
+  "final_flat": true,
+  "final_open_order_count": 0,
+  "final_open_position_count": 0,
+  "kill_switch_state": "KILLED",
+  "new_entry_still_blocked": true
+}
