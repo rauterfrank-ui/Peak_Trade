@@ -1,0 +1,162 @@
+{
+  "ACCOUNT_MODE_SANITIZED": {
+    "acctLv": "2",
+    "posMode": "net_mode",
+    "uid_present": true
+  },
+  "BALANCE_SANITIZED": {
+    "adjEq_present": true,
+    "details_count": 7,
+    "isoEq_present": true,
+    "totalEq_present": true
+  },
+  "CREDENTIAL_FP12": {
+    "api_key": "b2ba753a9026",
+    "api_secret": "051c888bfb69",
+    "passphrase": "126850d9e99c"
+  },
+  "DEMO_AUTHENTICATED": true,
+  "DEMO_HOST_OK": true,
+  "DOCUMENT_CLASS": "BOUNDED_PRODUCTIVE_TESTNET_RECONCILIATION_EXCHANGE_SNAPSHOT_V1",
+  "EPHEMERAL_SIGN_PATH_QUERY_PATCH": true,
+  "EXECUTE_TOKEN": "EXECUTE_ONE_BOUNDED_PRODUCTIVE_DEMO_XPERP_ACCOUNT_ORDER_RECONCILIATION_SNAPSHOT_VS_LOCAL_THEN_SEAL_EVIDENCE_AND_HARD_STOP",
+  "FILLS_ENDPOINT_QUERIED": false,
+  "GENERATED_AT_UTC": "2026-08-10T22:19:06Z",
+  "GET_RESULTS": [
+    {
+      "http_status": 200,
+      "ok": true,
+      "path": "/api/v5/account/balance",
+      "response_sanitized": {
+        "code": "0",
+        "msg": ""
+      }
+    },
+    {
+      "http_status": 200,
+      "ok": true,
+      "path": "/api/v5/account/config",
+      "response_sanitized": {
+        "code": "0",
+        "msg": ""
+      }
+    },
+    {
+      "http_status": 200,
+      "ok": true,
+      "path": "/api/v5/account/instruments",
+      "response_sanitized": {
+        "code": "0",
+        "inst_match": true,
+        "msg": "",
+        "row_count": 1
+      }
+    },
+    {
+      "http_status": 200,
+      "ok": true,
+      "path": "/api/v5/trade/orders-pending",
+      "response_sanitized": {
+        "code": "0",
+        "count": 0,
+        "msg": ""
+      }
+    },
+    {
+      "http_status": 200,
+      "ok": true,
+      "path": "/api/v5/account/positions",
+      "response_sanitized": {
+        "code": "0",
+        "msg": "",
+        "nonzero_count": 0
+      }
+    },
+    {
+      "http_status": 200,
+      "ok": true,
+      "path": "/api/v5/trade/order?ordId",
+      "response_sanitized": {
+        "accFillSz": [
+          "0"
+        ],
+        "code": "0",
+        "msg": "",
+        "row_count": 1,
+        "states": [
+          "canceled"
+        ]
+      }
+    },
+    {
+      "http_status": 200,
+      "ok": true,
+      "path": "/api/v5/trade/order?clOrdId",
+      "response_sanitized": {
+        "accFillSz": [
+          "0"
+        ],
+        "code": "0",
+        "msg": "",
+        "row_count": 1,
+        "states": [
+          "canceled"
+        ]
+      }
+    }
+  ],
+  "HIST_BY_CLORDID": {
+    "code": "0",
+    "http_status": 200,
+    "msg": "",
+    "ok": true,
+    "rows": [
+      {
+        "accFillSz": "0",
+        "avgPx": "",
+        "cTime": "1786399185658",
+        "cancelSource": "1",
+        "clOrdId": "ptokxedemoee070908ee07090800",
+        "instId": "BTC-USD_UM_XPERP-310328",
+        "ordId": "3821741949407072256",
+        "ordType": "limit",
+        "px": "10000",
+        "side": "buy",
+        "state": "canceled",
+        "sz": "0.0001",
+        "uTime": "1786399186108"
+      }
+    ]
+  },
+  "HIST_BY_ORDID": {
+    "code": "0",
+    "http_status": 200,
+    "msg": "",
+    "ok": true,
+    "rows": [
+      {
+        "accFillSz": "0",
+        "avgPx": "",
+        "cTime": "1786399185658",
+        "cancelSource": "1",
+        "clOrdId": "ptokxedemoee070908ee07090800",
+        "instId": "BTC-USD_UM_XPERP-310328",
+        "ordId": "3821741949407072256",
+        "ordType": "limit",
+        "px": "10000",
+        "side": "buy",
+        "state": "canceled",
+        "sz": "0.0001",
+        "uTime": "1786399186108"
+      }
+    ]
+  },
+  "INSTRUMENT_MATCH": true,
+  "OPEN_ORDERS_SANITIZED": [],
+  "OPEN_ORDER_COUNT": 0,
+  "OPEN_POSITIONS_NONZERO_SANITIZED": [],
+  "OPEN_POSITION_NONZERO_COUNT": 0,
+  "ORIGIN_MAIN_SHA": "408fd4329e7d37f8d3426e2995ae8c9c459937a7",
+  "OWNER_GO": "OWNER_GO_PRODUCTIVE_TESTNET_RECONCILIATION_PROVEN_REQUIRED",
+  "TESTNET_ISOLATION_VERIFIED": true
+}
