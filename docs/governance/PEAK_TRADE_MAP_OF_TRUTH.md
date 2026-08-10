@@ -192,9 +192,10 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.7 | SSOT OKX EEA Demo XPerp bounded campaign forensic closeout package (no section close; superseded next-step by §11.12.8.8) |
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.8 | SSOT OKX EEA Demo XPerp clOrdId alphanumeric fix + bounded ACK proof (no section close; superseded next-step by §11.12.8.9) |
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.9 | SSOT OKX EEA Demo XPerp cancel-instId fix + bounded clean closeout proof (closeout recommended; superseded next-step by §11.12.8.10) |
-| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.10 | SSOT OKX EEA Demo XPerp §11.12.8 Owner closeout package (`SECTION_11_12_8_CLOSED=true`; Cap 11.12 STAR program not closed) |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.10 | SSOT OKX EEA Demo XPerp §11.12.8 Owner closeout package (`SECTION_11_12_8_CLOSED=true`; Cap 11.12 Testnet progression program not closed) |
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.9 | SSOT Pre-Live Cybersecurity Acceptance Gate contract (mandatory; gate `NOT_PASSED`) |
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.9.1 | SSOT evidence-bound Pre-Live gate evaluation (`SECTION_11_12_9_EVALUATION_COMPLETED=true`; gate remains `NOT_PASSED`) |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.9.2 | SSOT Cap 11.12 STAR nomenclature retirement &#47; Testnet progression program rebinding (docs-only) |
 | [`docs/ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md`](../ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md) | Capability spec for active EEA Demo XPerp binding |
 | [`docs/ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN_PRIVATE_WRITE_GATE_V1.md`](../ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN_PRIVATE_WRITE_GATE_V1.md) | Capability spec for ephemeral XPerp campaign private-write gate |
 | [`docs/ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_GLOBAL_DEMO_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md`](../ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_GLOBAL_DEMO_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md) | Historical Global Demo binding capability (not active) |
@@ -247,15 +248,17 @@ SECTION_11_12_8_CLOSEOUT_RECOMMENDED=false
 ORDER_LIFECYCLE_PROOF_PASS=true
 CAP_11_12_TESTNET_PROGRAM_CLOSED=false
 TESTNET_STAR_PROVEN=false
+TESTNET_STAR_PROVEN_ROLE=DEPRECATED_LEGACY_NOMENCLATURE_ALIAS_NOT_A_CAPABILITY_STATUS
 TESTNET_ORDER_LIFECYCLE_PROVEN=false
 LONG_RUNNING_TESTNET_PROVEN=false
-NEXT_CANONICAL_STEP_POINTER=OWNER_GO_CONTINUE_CAP_11_12_TESTNET_STAR_LADDER_RESIDUAL_PROOFS_AFTER_SECTION_11_12_9_GATE_EVALUATION_BLOCKED
+NEXT_CANONICAL_STEP_POINTER=OWNER_GO_CONTINUE_CAP_11_12_TESTNET_PROGRESSION_PROGRAM_RESIDUAL_PROOFS
 XPERP_BOUNDED_CAMPAIGN_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1&#47;20260810T181703Z&#47;
 XPERP_BOUNDED_CAMPAIGN_FORENSIC_POINTER=evidence&#47;ops&#47;section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1&#47;20260810T181703Z&#47;derived_forensic_closeout_v1&#47;
 XPERP_BOUNDED_ACK_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1&#47;20260810T194806Z&#47;
 XPERP_BOUNDED_CLEAN_CLOSEOUT_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_retry_bounded_okx_eea_demo_xperp_clean_closeout_after_cancel_instid_fix_v1&#47;20260810T200151Z&#47;
 XPERP_SECTION_11_12_8_CLOSEOUT_PACKAGE_POINTER=evidence&#47;ops&#47;section_11_12_8_closeout_package_v1&#47;20260810T201332Z&#47;
 SECTION_11_12_9_EVALUATION_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_pre_live_cybersecurity_acceptance_gate_evidence_bound_evaluation_v1&#47;20260810T202800Z&#47;
+SECTION_11_12_9_2_NOMENCLATURE_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_2_cap_11_12_testnet_program_nomenclature_reconcile_v1&#47;20260810T205051Z&#47;
 PREDECESSOR_GET_PROOF_IS_NOT_TARGETED_TRADE_PROOF=true
 PREDECESSOR_ORDERLESS_GET_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_autonomous_okx_eea_demo_credential_ip_resolve_v1&#47;20260808T203507Z&#47;
 XPERP_PRIVATE_RO_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_retry_okx_eea_private_ro_xperp_verify_no_order_v1&#47;20260810T165847Z&#47;
