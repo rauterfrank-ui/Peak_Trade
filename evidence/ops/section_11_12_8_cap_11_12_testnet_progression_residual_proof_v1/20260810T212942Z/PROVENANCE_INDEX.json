@@ -1,0 +1,22 @@
+{
+  "DOCUMENT_CLASS": "SECTION_11_12_8_CAP_11_12_TESTNET_PROGRESSION_RESIDUAL_PROOF_PROVENANCE_V1",
+  "FIXTURE_EVIDENCE_ROOT": "docs/evidence/capability_11_section_11_12_8_long_running_autonomous_testnet_campaign_v1/",
+  "HISTORICAL_EVIDENCE_MUTATED": false,
+  "MUTATION_SCOPE": "docs_and_derived_residual_evidence_only",
+  "NETWORK_EFFECT": "NONE",
+  "ORDER_EFFECT": "NONE",
+  "ORIGIN_MAIN_SHA": "ed78a3e9c7eca45fad402ffdb8c105acae8d960b",
+  "OWNER_GO": "OWNER_GO_CONTINUE_CAP_11_12_TESTNET_PROGRESSION_PROGRAM_RESIDUAL_PROOFS",
+  "PREDECESSOR_RESIDUAL_CHAIN_VERIFIED": [
+    "evidence/ops/section_11_12_1_cap_11_12_testnet_progression_residual_proof_v1/20260810T211204Z",
+    "evidence/ops/section_11_12_2_cap_11_12_testnet_progression_residual_proof_v1/20260810T211449Z",
+    "evidence/ops/section_11_12_3_cap_11_12_testnet_progression_residual_proof_v1/20260810T211709Z",
+    "evidence/ops/section_11_12_4_cap_11_12_testnet_progression_residual_proof_v1/20260810T211915Z",
+    "evidence/ops/section_11_12_5_cap_11_12_testnet_progression_residual_proof_v1/20260810T212119Z",
+    "evidence/ops/section_11_12_6_cap_11_12_testnet_progression_residual_proof_v1/20260810T212326Z",
+    "evidence/ops/section_11_12_7_cap_11_12_testnet_progression_residual_proof_v1/20260810T212535Z"
+  ],
+  "PREDECESSOR_RESIDUAL_EVIDENCE_ROOT": "evidence/ops/section_11_12_7_cap_11_12_testnet_progression_residual_proof_v1/20260810T212535Z/",
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "RUN_ID": "20260810T212942Z"
+}

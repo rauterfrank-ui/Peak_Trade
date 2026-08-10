@@ -1,0 +1,40 @@
+{
+  "CAP_11_12_TESTNET_PROGRAM_CLOSED": false,
+  "DOCUMENT_CLASS": "SECTION_11_12_8_RESIDUAL_PRIMARY_EVIDENCE_VERIFICATION_V1",
+  "MANIFEST_DETAILS": [
+    {
+      "actual": "5d50317c48e71735314ee3ebc2b3c7e0c6eaa4874f7818881ca0de2bc49e2502",
+      "expected": "5d50317c48e71735314ee3ebc2b3c7e0c6eaa4874f7818881ca0de2bc49e2502",
+      "file": "FIXTURE_VERIFIER_STDOUT.json",
+      "status": "OK"
+    },
+    {
+      "actual": "7f9131309c4168d9d1147d1d196c94c9de1b85cffcefbfb7315385bd5626a6ea",
+      "expected": "7f9131309c4168d9d1147d1d196c94c9de1b85cffcefbfb7315385bd5626a6ea",
+      "file": "MACHINE_READABLE_RESIDUAL_PROOF.json",
+      "status": "OK"
+    },
+    {
+      "actual": "96f710a47c2d40ba385521587d5abd7e26664096c5df57ebf904a7a71e41e6d3",
+      "expected": "96f710a47c2d40ba385521587d5abd7e26664096c5df57ebf904a7a71e41e6d3",
+      "file": "PROVENANCE_INDEX.json",
+      "status": "OK"
+    },
+    {
+      "actual": "2891493ecdf80fb52a98fb625a598f50a4906228d2ad858d47c60dfacfe5aeb6",
+      "expected": "2891493ecdf80fb52a98fb625a598f50a4906228d2ad858d47c60dfacfe5aeb6",
+      "file": "RESIDUAL_PROOF_REPORT.md",
+      "status": "OK"
+    }
+  ],
+  "MANIFEST_VERIFY_RC": 0,
+  "NEWLY_CLOSED_TESTNET_PROVEN_FIELDS": [],
+  "ORDER_EFFECT": "NONE",
+  "PRIMARY_EVIDENCE_ROOT": "evidence/ops/section_11_12_8_cap_11_12_testnet_progression_residual_proof_v1/20260810T212942Z/",
+  "REAL_VENUE_NETWORK_EXECUTED": false,
+  "SECTION_11_12_8_RESIDUAL_BOUND": true,
+  "SECTION_11_12_8_RESIDUAL_PROOF_PASS": true,
+  "STATUS": "PASS",
+  "TESTNET_EVIDENCE_VERIFIED": false,
+  "VERDICT": "SECTION_11_12_8_RESIDUAL_PROOF_BOUND_FROM_SEALED_FIXTURE_CAPABILITY_EVIDENCE"
+}

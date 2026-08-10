@@ -1,0 +1,13 @@
+{
+  "DOCUMENT_CLASS": "SECTION_11_12_5_CAP_11_12_TESTNET_PROGRESSION_RESIDUAL_PROOF_PROVENANCE_V1",
+  "FIXTURE_EVIDENCE_ROOT": "docs/evidence/capability_11_section_11_12_5_unknown_submit_and_reconnect_recovery_v1/",
+  "HISTORICAL_EVIDENCE_MUTATED": false,
+  "MUTATION_SCOPE": "docs_and_derived_residual_evidence_only",
+  "NETWORK_EFFECT": "NONE",
+  "ORDER_EFFECT": "NONE",
+  "ORIGIN_MAIN_SHA": "ed78a3e9c7eca45fad402ffdb8c105acae8d960b",
+  "OWNER_GO": "OWNER_GO_CONTINUE_CAP_11_12_TESTNET_PROGRESSION_PROGRAM_RESIDUAL_PROOFS",
+  "PREDECESSOR_RESIDUAL_EVIDENCE_ROOT": "evidence/ops/section_11_12_4_cap_11_12_testnet_progression_residual_proof_v1/20260810T211915Z/",
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "RUN_ID": "20260810T212119Z"
+}
