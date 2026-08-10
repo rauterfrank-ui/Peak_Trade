@@ -10,6 +10,10 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.cam
     ActualStartExecutorError,
     run_campaign_lifecycle_v1,
 )
+from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.clordid_serialization_v1 import (
+    CampaignClOrdIdSerializationError,
+    serialize_section_11_12_8_campaign_clordid_v1,
+)
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.closeout_v1 import (
     evaluate_section_11_12_8_closeout_v1,
 )
@@ -546,3 +550,111 @@ def test_exchange_order_id_persisted_on_port_attempt() -> None:
     assert effect["wire_sent"] is not effect["order_acknowledged"] or True
     # Explicit: wire_sent does not imply ack without parse — here both true after parse.
     assert effect["parsed_response"]["classification"] == "EXCHANGE_ACCEPTED_ACK"
+
+
+def test_campaign_clordid_is_strictly_alphanumeric_okx_contract() -> None:
+    import re
+
+    from src.ops.okx_europe_adapter_lifecycle_contract_v0 import (
+        CLIENT_ORDER_ID_ALLOWED_PATTERN,
+        CLIENT_ORDER_ID_MAX_LENGTH,
+    )
+
+    # Historical rejected value from sealed XPerp campaign evidence.
+    assert "-" in "coid-campaign-0"
+    assert not CLIENT_ORDER_ID_ALLOWED_PATTERN.fullmatch("coid-campaign-0")
+
+    coid = serialize_section_11_12_8_campaign_clordid_v1(
+        campaign_id="campaign-deadbeef",
+        cycle_index=0,
+    )
+    assert CLIENT_ORDER_ID_ALLOWED_PATTERN.fullmatch(coid)
+    assert len(coid) <= CLIENT_ORDER_ID_MAX_LENGTH
+    assert re.search(r"[^A-Za-z0-9]", coid) is None
+    for forbidden in ("-", "_", " ", ".", "/", ":", "@", "#"):
+        assert forbidden not in coid
+
+
+def test_campaign_clordid_deterministic_and_unique_within_run() -> None:
+    campaign_id = "campaign-abc123def456"
+    a0 = serialize_section_11_12_8_campaign_clordid_v1(campaign_id=campaign_id, cycle_index=0)
+    a0_again = serialize_section_11_12_8_campaign_clordid_v1(campaign_id=campaign_id, cycle_index=0)
+    a1 = serialize_section_11_12_8_campaign_clordid_v1(campaign_id=campaign_id, cycle_index=1)
+    other = serialize_section_11_12_8_campaign_clordid_v1(
+        campaign_id="campaign-otherxyz", cycle_index=0
+    )
+    assert a0 == a0_again
+    assert a0 != a1
+    assert a0 != other
+    ids = [
+        serialize_section_11_12_8_campaign_clordid_v1(campaign_id=campaign_id, cycle_index=i)
+        for i in range(16)
+    ]
+    assert len(ids) == len(set(ids))
+
+
+def test_campaign_executor_emits_alphanumeric_clordid_and_preserves_order_fields() -> None:
+    import re
+
+    from src.ops.okx_europe_adapter_lifecycle_contract_v0 import (
+        CLIENT_ORDER_ID_ALLOWED_PATTERN,
+    )
+
+    captured: list[dict] = []
+
+    class _CaptureTransport:
+        def request(self, *, method: str, endpoint: str, body: dict | None = None) -> dict:
+            captured.append(dict(body or {}))
+            return {
+                "ok": True,
+                "stubbed": True,
+                "wire_sent": False,
+                "network_send_boundary_reached": True,
+                "http_status": 200,
+                "response_body": {
+                    "code": "0",
+                    "data": [
+                        {"sCode": "0", "sMsg": "stubbed", "clOrdId": (body or {}).get("clOrdId")}
+                    ],
+                },
+            }
+
+    port = construct_productive_testnet_execution_port_v1(
+        authorized=True, transport=_CaptureTransport(), stubbed=True
+    )
+    clock = _FakeClock()
+    record = run_campaign_lifecycle_v1(
+        port=port,
+        network_session_started=True,
+        stubbed=True,
+        campaign_id="campaign-clordidfix01",
+        duration_bound_seconds=3600,
+        max_cycles=2,
+        cadence_seconds=0,
+        monotonic_fn=clock.monotonic,
+        sleep_fn=clock.sleep,
+        submit_on_cycle=lambda i: i == 0,
+    )
+    assert record.order_attempt_count == 1
+    assert len(record.client_order_ids) == 1
+    coid = record.client_order_ids[0]
+    assert CLIENT_ORDER_ID_ALLOWED_PATTERN.fullmatch(coid)
+    assert re.search(r"[^A-Za-z0-9]", coid) is None
+    assert "-" not in coid
+    assert coid != "coid-campaign-0"
+    assert len(captured) == 1
+    body = captured[0]
+    # Unrelated venue-native order fields remain intact.
+    assert body["clOrdId"] == coid
+    assert body["instId"] == "BTC-USD_UM_XPERP-310328"
+    assert body["side"] == "buy"
+    assert body["ordType"] == "limit"
+    assert body["sz"] == "0.0001"
+    assert body["tdMode"] == "cross"
+    assert body["px"] == "10000"
+    assert "client_order_id" not in body
+
+
+def test_campaign_clordid_rejects_empty_campaign_id() -> None:
+    with pytest.raises(CampaignClOrdIdSerializationError, match="CAMPAIGN_ID_REQUIRED"):
+        serialize_section_11_12_8_campaign_clordid_v1(campaign_id="  ", cycle_index=0)

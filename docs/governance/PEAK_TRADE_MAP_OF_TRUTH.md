@@ -189,7 +189,8 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.4 | SSOT historical OKX Global Demo binding package (NO_ORDER; not activated; superseded by §11.12.8.5) |
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.5 | SSOT active OKX EEA Demo XPerp binding package (NO_ORDER package default; write path in §11.12.8.6) |
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.6 | SSOT OKX EEA Demo XPerp ephemeral campaign private-write path (armable; no auto-execute) |
-| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.7 | SSOT OKX EEA Demo XPerp bounded campaign forensic closeout package (no section close) |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.7 | SSOT OKX EEA Demo XPerp bounded campaign forensic closeout package (no section close; superseded next-step by §11.12.8.8) |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.8 | SSOT OKX EEA Demo XPerp clOrdId alphanumeric fix + bounded ACK proof (no section close) |
 | [`docs/ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md`](../ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md) | Capability spec for active EEA Demo XPerp binding |
 | [`docs/ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN_PRIVATE_WRITE_GATE_V1.md`](../ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN_PRIVATE_WRITE_GATE_V1.md) | Capability spec for ephemeral XPerp campaign private-write gate |
 | [`docs/ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_GLOBAL_DEMO_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md`](../ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_GLOBAL_DEMO_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md) | Historical Global Demo binding capability (not active) |
@@ -197,6 +198,7 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`…&#47;20260808T181528Z&#47;derived_forensic_closeout_v1&#47;`](../../evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z/derived_forensic_closeout_v1/) | Derived HTTP-403 forensic closeout (non-SSOT) |
 | [`evidence&#47;ops&#47;section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1&#47;20260810T181703Z&#47;`](../../evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/) | Primary sealed OKX EEA Demo XPerp bounded campaign evidence (immutable) |
 | [`…&#47;20260810T181703Z&#47;derived_forensic_closeout_v1&#47;`](../../evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/derived_forensic_closeout_v1/) | Derived XPerp campaign forensic closeout (clOrdId 51000; non-SSOT) |
+| [`evidence&#47;ops&#47;section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1&#47;20260810T194806Z&#47;`](../../evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1/20260810T194806Z/) | Bounded XPerp ACK proof after alphanumeric clOrdId fix (immutable evidence; non-SSOT) |
 | [`evidence&#47;ops&#47;section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1&#47;20260810T143709Z&#47;`](../../evidence/ops/section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1/20260810T143709Z/) | OKX EEA Demo path closeout &#47; no-order alternate evaluation (non-activating) |
 | [`evidence&#47;ops&#47;section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1&#47;20260810T151323Z&#47;`](../../evidence/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/20260810T151323Z/) | Historical OKX Global Demo binding package evidence (NO_ORDER; not active) |
 | [`evidence&#47;ops&#47;section_11_12_8_retry_okx_eea_private_ro_xperp_verify_no_order_v1&#47;20260810T165847Z&#47;`](../../evidence/ops/section_11_12_8_retry_okx_eea_private_ro_xperp_verify_no_order_v1/20260810T165847Z/) | Bound private READ-only XPerp capability proof (NO_ORDER) |
@@ -211,7 +213,7 @@ PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
 OKX_EEA_DEMO_PRODUCTIVE_ORDER_PATH_STATUS=CLOSED_EXTERNAL_CAPABILITY_UNAVAILABLE
 OKX_GLOBAL_DEMO_BINDING_PACKAGE_STATUS=PREPARED_NO_ORDER_NOT_ACTIVATED_SUPERSEDED_BY_SECTION_11_12_8_5
 OKX_EEA_DEMO_XPERP_BINDING_PACKAGE_STATUS=PREPARED_NO_ORDER_ACTIVE_BINDING
-SECTION_11_12_8_STATUS=OPEN_OKX_EEA_DEMO_XPERP_CAMPAIGN_COMPLETED_AWAITING_CLORDID_FIX_AND_ACK_PROOF
+SECTION_11_12_8_STATUS=OPEN_OKX_EEA_DEMO_XPERP_CLORDID_FIXED_ACK_PROVEN_AWAITING_OWNER_MERGE_AND_CLOSEOUT
 CANONICAL_ACTIVE_VENUE_BINDING=OKX_EEA_DEMO
 CANONICAL_ACTIVE_HOST_BINDING=https://eea.okx.com
 CANONICAL_ACTIVE_INSTRUMENT=BTC-USD_UM_XPERP-310328
@@ -227,10 +229,13 @@ SWAP_RUNTIME_FALLBACK=false
 SWAP_WRITE_AUTHORIZATION=false
 XPERP_ONLY_ACTIVE_WRITE_SCOPE=true
 CAMPAIGN_EXECUTION_PASS=true
+CLORDID_HYPHEN_DEFECT_CLOSED=true
+ORDER_ACK_PROVEN=true
 ORDER_LIFECYCLE_PROOF_PASS=false
-NEXT_CANONICAL_STEP_POINTER=OWNER_GO_FIX_SECTION_11_12_8_OKX_CLORDID_SERIALIZATION_TO_ALPHANUMERIC_CONTRACT_AND_RETRY_BOUNDED_XPERP_ACK_PROOF
+NEXT_CANONICAL_STEP_POINTER=OWNER_MERGE_GO_PR_5841_THEN_SEPARATE_OWNER_GO_FOR_CANCEL_INSTID_OR_SECTION_11_12_8_CLOSEOUT
 XPERP_BOUNDED_CAMPAIGN_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1&#47;20260810T181703Z&#47;
 XPERP_BOUNDED_CAMPAIGN_FORENSIC_POINTER=evidence&#47;ops&#47;section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1&#47;20260810T181703Z&#47;derived_forensic_closeout_v1&#47;
+XPERP_BOUNDED_ACK_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1&#47;20260810T194806Z&#47;
 PREDECESSOR_GET_PROOF_IS_NOT_TARGETED_TRADE_PROOF=true
 PREDECESSOR_ORDERLESS_GET_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_autonomous_okx_eea_demo_credential_ip_resolve_v1&#47;20260808T203507Z&#47;
 XPERP_PRIVATE_RO_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_retry_okx_eea_private_ro_xperp_verify_no_order_v1&#47;20260810T165847Z&#47;
