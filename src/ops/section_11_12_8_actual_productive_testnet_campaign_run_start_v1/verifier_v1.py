@@ -16,6 +16,9 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.cal
     build_static_productive_call_chain_proof_v1,
 )
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.constants_v1 import (
+    ACCEPTED_OWNER_GO_SCOPES,
+    CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
+    CANONICAL_VENUE,
     CAPABILITY_ID,
     CORE_LOGIC_CHANGE,
     IMPLEMENTATION_ONLY,
@@ -29,8 +32,19 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     PRODUCTIVE_TESTNET_CAMPAIGN_STARTED,
     SCOPED_OWNER_GO_AUTHORIZATION,
     SCOPED_OWNER_GO_SCOPE,
+    SCOPED_OWNER_GO_SCOPE_LEGACY_ALIAS,
+    SCOPED_OWNER_GO_SCOPE_LEGACY_LONG_RUNNING,
     SCOPED_OWNER_GO_TOKEN,
     SECTION_11_13_STARTED,
+)
+from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.final_exchange_reconcile_cleanup_v1 import (
+    ActualStartFinalReconcileError,
+    assert_seal_allowed_after_final_reconcile_v1,
+    run_final_exchange_reconcile_cleanup_v1,
+)
+from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.unknown_submit_fail_closed_v1 import (
+    ActualStartUnknownSubmitError,
+    enforce_unknown_submit_fail_closed_v1,
 )
 
 
@@ -41,6 +55,39 @@ def verify_section_11_12_8_actual_productive_testnet_campaign_run_start_v1(
     gate = run_pre_merge_acceptance_gate_v1(work_dir=work_dir / "gate")
     chain = build_static_productive_call_chain_proof_v1()
     matrix = build_b01_b24_closure_matrix_v1()
+    unknown_ok = False
+    try:
+        enforce_unknown_submit_fail_closed_v1(
+            effect={
+                "wire_sent": True,
+                "stubbed": False,
+                "order_acknowledged": False,
+                "exchange_accepted": False,
+                "exchange_rejected": False,
+                "response_classification": "UNKNOWN_SUBMIT",
+            },
+            client_order_id="verifier-coid",
+        )
+    except ActualStartUnknownSubmitError:
+        unknown_ok = True
+
+    reconcile_ok = False
+    seal_blocked_ok = False
+    try:
+        run_final_exchange_reconcile_cleanup_v1(
+            ephemeral_campaign_write_gate_pass=False,
+            get_pending_orders=lambda _e: {"data": [{"ordId": "open-1"}]},
+            get_positions=lambda _e: {"data": []},
+            cancel_order=None,
+            require_zero_open=True,
+        )
+    except ActualStartFinalReconcileError:
+        reconcile_ok = True
+    try:
+        assert_seal_allowed_after_final_reconcile_v1(reconcile=None)
+    except ActualStartFinalReconcileError:
+        seal_blocked_ok = True
+
     claims = {
         "CAPABILITY_ID": CAPABILITY_ID,
         "OWNER": OWNER,
@@ -51,6 +98,16 @@ def verify_section_11_12_8_actual_productive_testnet_campaign_run_start_v1(
         "SCOPED_OWNER_GO_TOKEN": SCOPED_OWNER_GO_TOKEN,
         "SCOPED_OWNER_GO_SCOPE": SCOPED_OWNER_GO_SCOPE,
         "SCOPED_OWNER_GO_AUTHORIZATION": SCOPED_OWNER_GO_AUTHORIZATION,
+        "ACCEPTED_OWNER_GO_SCOPES": list(ACCEPTED_OWNER_GO_SCOPES),
+        "LEGACY_OWNER_GO_ALIASES": [
+            SCOPED_OWNER_GO_SCOPE_LEGACY_LONG_RUNNING,
+            SCOPED_OWNER_GO_SCOPE_LEGACY_ALIAS,
+        ],
+        "CANONICAL_VENUE": CANONICAL_VENUE,
+        "CANONICAL_ORDER_SZ": CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
+        "UNKNOWN_SUBMIT_FAIL_CLOSED": unknown_ok,
+        "FINAL_RECONCILE_REQUIRED_FOR_SEAL": seal_blocked_ok,
+        "OPEN_ORDERS_WITHOUT_CANCEL_FAIL_CLOSED": reconcile_ok,
         "PRODUCTIVE_TESTNET_CAMPAIGN_STARTED": PRODUCTIVE_TESTNET_CAMPAIGN_STARTED,
         "NETWORK_EFFECT": NETWORK_EFFECT,
         "ORDER_EFFECT": ORDER_EFFECT,
@@ -72,6 +129,12 @@ def verify_section_11_12_8_actual_productive_testnet_campaign_run_start_v1(
             NETWORK_EFFECT == "NONE",
             ORDER_EFFECT == "NONE",
             LIVE_ORDER_EFFECT == "NONE",
+            CANONICAL_VENUE == "OKX_EEA_DEMO",
+            CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1 == "0.0001",
+            SCOPED_OWNER_GO_SCOPE == "EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN",
+            unknown_ok,
+            reconcile_ok,
+            seal_blocked_ok,
         ]
     )
     return {

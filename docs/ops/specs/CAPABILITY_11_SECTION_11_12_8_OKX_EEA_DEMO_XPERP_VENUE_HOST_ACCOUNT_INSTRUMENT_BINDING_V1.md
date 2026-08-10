@@ -36,6 +36,7 @@ TESTNET_AUTHORIZED=false
 LIVE_AUTHORIZED=false
 SECTION_11_13_STARTED=false
 PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+SECTION_11_12_8_STATUS=OPEN_OKX_EEA_DEMO_XPERP_CAMPAIGN_WRITE_PATH_READY_AWAITING_OWNER_EXECUTE
 CORE_LOGIC_CHANGE=false
 ```
 
@@ -59,6 +60,10 @@ OKX Global Demo and `BTC-USDT-SWAP` packages&#47;evidence remain **historical**
 forensics only. Their existence must not be rewritten and must not become the
 active §11.12.8 binding again without a new scoped Owner-GO.
 
+`FURTHER_OKX_EEA_DEMO_ORDER_POSTS_AUTHORIZED=false` from §11.12.8.3 remains
+binding for the closed BTC-USDT-SWAP path and must not be read as a permanent
+ban of the separately gated XPerp ephemeral campaign write path (§11.12.8.6).
+
 Bound private READ-only proof pointer (immutable; not rewritten by this package):
 
 `evidence&#47;ops&#47;section_11_12_8_retry_okx_eea_private_ro_xperp_verify_no_order_v1&#47;20260810T165847Z&#47;`
@@ -72,6 +77,7 @@ BINDING_PACKAGE != PRODUCTIVE_PREFLIGHT
 BINDING_PACKAGE != ORDER_AUTHORIZATION
 BINDING_PACKAGE != PRE_LIVE_CYBERSECURITY_GATE_PASS
 BINDING_PACKAGE != SECTION_11_13_START
+PACKAGE_DEFAULT_ORDER_POST_AUTHORIZED_REMAINS_FALSE=true
 ```
 
 ## Productive owners
@@ -84,7 +90,9 @@ BINDING_PACKAGE != SECTION_11_13_START
 ## Next step after merge
 
 ```text
-CANONICAL_NEXT_STEP_AFTER_MERGE=OWNER_GO_EXECUTE_BOUNDED_SECTION_11_12_8_CONTINUATION_ON_OKX_EEA_DEMO_XPERP_NO_ORDER
+CANONICAL_NEXT_STEP_AFTER_MERGE=OWNER_GO_EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN_WITH_HIDDEN_CONFIRM_AND_SECRETREF_VAULT_RUNTIME
 ```
 
-This package does not load credentials and must not place orders.
+Mutation endpoints remain hard-blocked unless
+`ephemeral_campaign_write_gate_pass=true` under §11.12.8.6. This package does
+not load credentials and must not place orders by itself.

@@ -120,6 +120,12 @@ def test_no_order_send_by_this_package() -> None:
     with pytest.raises(OkxEeaDemoXperpBindingError, match="ORDER_MUTATION_ENDPOINT_HARD_BLOCK"):
         assert_order_send_forbidden_v1(endpoint="/api/v5/trade/order")
     assert_order_send_forbidden_v1(endpoint="/api/v5/account/instruments")
+    assert_order_send_forbidden_v1(
+        endpoint="/api/v5/trade/order",
+        order_post=True,
+        ephemeral_campaign_write_gate_pass=True,
+    )
+    assert ORDER_POST_AUTHORIZED is False
 
 
 def test_governance_defaults_and_active_campaign_instrument_rebinding() -> None:
@@ -130,9 +136,12 @@ def test_governance_defaults_and_active_campaign_instrument_rebinding() -> None:
     assert OKX_GLOBAL_DEMO_ACTIVE_BINDING is False
     assert XPERP_PRIVATE_CAPABILITY_PROOF_BOUND is True
     assert CANONICAL_NEXT_STEP_AFTER_MERGE == (
-        "OWNER_GO_EXECUTE_BOUNDED_SECTION_11_12_8_CONTINUATION_ON_OKX_EEA_DEMO_XPERP_NO_ORDER"
+        "OWNER_GO_EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN"
+        "_WITH_HIDDEN_CONFIRM_AND_SECRETREF_VAULT_RUNTIME"
     )
     assert campaign_constants.CANONICAL_INSTRUMENT_SCOPE == (INSTRUMENT_SCOPE_EXACT,)
+    assert campaign_constants.CANONICAL_VENUE == VENUE
+    assert campaign_constants.CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1 == "0.0001"
     assert terminal_constants.CANONICAL_INSTRUMENT_SCOPE == (INSTRUMENT_SCOPE_EXACT,)
     assert consumer_constants.CANONICAL_INSTRUMENT_SCOPE == (INSTRUMENT_SCOPE_EXACT,)
     assert activation_constants.CANONICAL_INSTRUMENT_SCOPE == (INSTRUMENT_SCOPE_EXACT,)

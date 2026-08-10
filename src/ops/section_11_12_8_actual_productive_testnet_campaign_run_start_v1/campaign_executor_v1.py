@@ -10,6 +10,7 @@ from uuid import uuid4
 
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.constants_v1 import (
     CANONICAL_LIMIT_PX_FOR_VENUE_NATIVE_BODY_V1,
+    CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
     NEXT_OPERATION_AFTER_STUBBED_BOUNDARY,
     OFFLINE_PROOF_CADENCE_SECONDS,
     OFFLINE_PROOF_MAX_CYCLES,
@@ -26,6 +27,10 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.saf
     ActualStartSafetyError,
     evaluate_cycle_safety_v1,
     evaluate_safety_preflight_v1,
+)
+from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.unknown_submit_fail_closed_v1 import (
+    ActualStartUnknownSubmitError,
+    enforce_unknown_submit_fail_closed_v1,
 )
 
 
@@ -67,6 +72,7 @@ class CampaignLifecycleRecordV1:
     exchange_reject_count: int = 0
     fill_count: int = 0
     partial_fill_count: int = 0
+    unknown_submit_hard_stop: bool = False
     client_order_ids: list[str] = field(default_factory=list)
     exchange_order_ids: list[str] = field(default_factory=list)
     cycle_records: list[dict[str, Any]] = field(default_factory=list)
@@ -111,6 +117,7 @@ class CampaignLifecycleRecordV1:
             "exchange_reject_count": self.exchange_reject_count,
             "fill_count": self.fill_count,
             "partial_fill_count": self.partial_fill_count,
+            "unknown_submit_hard_stop": self.unknown_submit_hard_stop,
             "client_order_ids": list(self.client_order_ids),
             "exchange_order_ids": list(self.exchange_order_ids),
             "cycle_records": list(self.cycle_records),
@@ -182,6 +189,7 @@ def run_campaign_lifecycle_v1(
     sleep_fn: Callable[[float], None] = time.sleep,
     campaign_id: str | None = None,
     limit_px: str = CANONICAL_LIMIT_PX_FOR_VENUE_NATIVE_BODY_V1,
+    order_sz: str = CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
 ) -> CampaignLifecycleRecordV1:
     """Bounded long-running campaign loop.
 
@@ -297,15 +305,32 @@ def run_campaign_lifecycle_v1(
             px_text = str(limit_px).strip()
             if not px_text:
                 raise ActualStartExecutorError("LIMIT_ORDER_PX_REQUIRED_BEFORE_WIRE")
+            sz_text = str(order_sz).strip()
+            if not sz_text:
+                raise ActualStartExecutorError("ORDER_SZ_REQUIRED_BEFORE_WIRE")
             client_order_id = f"coid-{record.campaign_id[:8]}-{cycle_index}"
-            effect = port.submit_order_v1(
-                client_order_id=client_order_id,
-                instrument="BTC-USD_UM_XPERP-310328",
-                order_type="LIMIT",
-                side="buy",
-                quantity="1",
-                px=px_text,
-            )
+            try:
+                effect = port.submit_order_v1(
+                    client_order_id=client_order_id,
+                    instrument="BTC-USD_UM_XPERP-310328",
+                    order_type="LIMIT",
+                    side="buy",
+                    quantity=sz_text,
+                    px=px_text,
+                )
+            except ActualStartUnknownSubmitError as exc:
+                record.unknown_submit_hard_stop = True
+                record.aborted = True
+                record.running = False
+                record.bound_reached_reason = f"UNKNOWN_SUBMIT_HARD_STOP:{exc}"
+                record.events.append(
+                    {
+                        "event": "unknown_submit_hard_stop",
+                        "cycle_index": cycle_index,
+                        "reason": str(exc),
+                    }
+                )
+                break
             order_attempted = True
             record.order_attempt_count += 1
             record.network_request_count += 1
@@ -324,6 +349,25 @@ def run_campaign_lifecycle_v1(
                 )
                 if not boundary_ok:
                     raise ActualStartExecutorError("REAL_PATH_SEND_BOUNDARY_NOT_REACHED")
+
+            try:
+                enforce_unknown_submit_fail_closed_v1(
+                    effect=effect, client_order_id=client_order_id
+                )
+            except ActualStartUnknownSubmitError as exc:
+                record.unknown_submit_hard_stop = True
+                record.aborted = True
+                record.running = False
+                record.bound_reached_reason = f"UNKNOWN_SUBMIT_HARD_STOP:{exc}"
+                record.events.append(
+                    {
+                        "event": "unknown_submit_hard_stop",
+                        "cycle_index": cycle_index,
+                        "reason": str(exc),
+                        "effect": effect,
+                    }
+                )
+                break
 
             if effect.get("wire_sent"):
                 record.testnet_order_sent_count += 1

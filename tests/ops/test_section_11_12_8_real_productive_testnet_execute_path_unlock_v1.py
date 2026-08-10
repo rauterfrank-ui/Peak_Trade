@@ -7,6 +7,9 @@ from pathlib import Path
 import pytest
 
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.constants_v1 import (
+    ACCEPTED_OWNER_GO_SCOPES,
+    CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
+    CANONICAL_VENUE,
     MODE_PRODUCTIVE_REAL,
     MODE_STUBBED_ACCEPTANCE,
     SCOPED_OWNER_GO_AUTHORIZATION,
@@ -258,7 +261,7 @@ def test_bound_client_post_signed_body_equals_wire_body(
         instrument="BTC-USD_UM_XPERP-310328",
         order_type="LIMIT",
         side="buy",
-        quantity="1",
+        quantity="0.0001",
         px="10000",
     )
     expected_text = json.dumps(venue_body, separators=(",", ":"))
@@ -351,6 +354,10 @@ def test_governance_acceptance_canonical_next_step() -> None:
     assert REQUEST_MATCHES_CANONICAL_NEXT_STEP_FOR_EXECUTE_GO is True
     assert AUTHORIZATION_REQUIRED_AFTER_MERGE == "PRESENT_OWNER_GO_EXECUTE"
     assert NO_ADDITIONAL_IMPLEMENTATION_GO_REQUIRED_BEFORE_EXECUTE is True
+    assert SCOPED_OWNER_GO_SCOPE == ("EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN")
+    assert CANONICAL_VENUE == "OKX_EEA_DEMO"
+    assert CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1 == "0.0001"
+    assert "EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW" in ACCEPTED_OWNER_GO_SCOPES
     assert "WIRE_SEND_FORBIDDEN_IN_UNLOCK_IMPLEMENTATION_GO" not in Path(
         "scripts/ops/run_section_11_12_8_real_productive_testnet_execute_operator_entrypoint_v1.py"
     ).read_text(encoding="utf-8")
