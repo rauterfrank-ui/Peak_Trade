@@ -1,0 +1,2270 @@
+{
+  "CAPABILITY_ID": "CAPABILITY_11_SECTION_11_12_8_ACTUAL_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_START_V1",
+  "LIVE_ORDER_EFFECT": "NONE",
+  "LONG_RUNNING_CAMPAIGN": true,
+  "NETWORK_EFFECT": "TESTNET",
+  "ORDER_EFFECT": "TESTNET",
+  "OWNER": "ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1",
+  "PRODUCTIVE_TESTNET_CAMPAIGN_STARTED": false,
+  "SECTION_11_13_STARTED": false,
+  "STUBBED_ACCEPTANCE": false,
+  "bound_reached_reason": "DURATION_BOUND",
+  "campaign_id": "campaign-7e1e0d913cb349d88782b520a80689e5",
+  "campaign_terminal_status": "COMPLETED",
+  "client_order_ids": [
+    "coid-campaign-0"
+  ],
+  "cycle_bound": 120,
+  "cycles_completed": 60,
+  "cycles_started": 60,
+  "duration_bound_seconds": 3600,
+  "exchange_ack_count": 0,
+  "exchange_order_ids": [],
+  "exchange_reject_count": 1,
+  "execution_class": "PRODUCTIVE_REAL_TESTNET_CAMPAIGN",
+  "execution_duration_seconds": 3600.677587791,
+  "execution_end_utc": "2026-08-10T19:17:05Z",
+  "execution_start_utc": "2026-08-10T18:17:05Z",
+  "fill_count": 0,
+  "network_request_count": 1,
+  "order_attempt_count": 1,
+  "partial_fill_count": 0,
+  "payload": {
+    "CANONICAL_ORDER_SZ": "0.0001",
+    "CANONICAL_VENUE": "OKX_EEA_DEMO",
+    "NETWORK_EFFECT": "TESTNET",
+    "NETWORK_SEND_BOUNDARY_REACHED": true,
+    "ORDER_EFFECT": "TESTNET",
+    "allow_wire_send": true,
+    "binding": {
+      "account_identity": "acct-uid-testnet-demo",
+      "account_verified": true,
+      "endpoint_allowlist": [
+        "/api/v5/account/balance",
+        "/api/v5/account/config",
+        "/api/v5/account/instruments",
+        "/api/v5/account/positions",
+        "/api/v5/trade/order",
+        "/api/v5/trade/cancel-order",
+        "/api/v5/trade/orders-pending"
+      ],
+      "live_hosts_blocked": true,
+      "rest_base": "https://eea.okx.com",
+      "runtime_mode": "TESTNET",
+      "venue": "OKX_EEA_DEMO"
+    },
+    "boundary_inspect": {
+      "boundary_reached": true,
+      "network_session_go": false,
+      "network_session_started": false,
+      "next_operation": "FIRST_PERMITTED_TESTNET_SIDE_EFFECT",
+      "session_id": "session-actual-start",
+      "stubbed": false
+    },
+    "confirm": {
+      "authorization_channel": "REAL_TTY_HUMAN_CONFIRM",
+      "confirm_token_digest": "91c3f7faf7d6657bc4b012febd118d683c7b65fadc1c5436752235a3ec11207c",
+      "consumed": true,
+      "latched": true,
+      "minted": false,
+      "plaintext_exposed": false
+    },
+    "credential": {
+      "bound": true,
+      "handle_id": "1015444dcf004e8fb3527e6d9a14d9f0",
+      "material_digest": "dd553b7fade97c7a9a68418f1b99deab8fa7b6503a9e36805cecd635f253f640",
+      "plaintext_exposed": false,
+      "plaintext_persisted": false,
+      "runtime_mode": "TESTNET",
+      "secret_reference": "secretref://vault/peak-trade/testnet-demo",
+      "vault_resolved": true
+    },
+    "ephemeral_campaign_private_write_gate": {
+      "binding_package_order_post_authorized": false,
+      "ephemeral_campaign_write_gate_pass": true,
+      "instrument_scope_exact": "BTC-USD_UM_XPERP-310328",
+      "live_authorized": false,
+      "owner_go_scope": "EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN",
+      "package_default_order_post_authorized": false,
+      "pass_gate": true,
+      "reason": "EPHEMERAL_XPERP_CAMPAIGN_PRIVATE_WRITE_GATE_PASS",
+      "rest_base": "https://eea.okx.com",
+      "venue": "OKX_EEA_DEMO"
+    },
+    "final_exchange_reconcile_cleanup": {
+      "FINAL_OPEN_ORDER_COUNT": 0,
+      "FINAL_OPEN_POSITION_COUNT": 0,
+      "cancel_ack_count": 0,
+      "cancel_attempt_count": 0,
+      "events": [
+        {
+          "event": "pending_orders_read",
+          "ok": true
+        },
+        {
+          "event": "positions_read",
+          "ok": true
+        }
+      ],
+      "ok": true,
+      "pending_orders_read": true,
+      "positions_read": true,
+      "reason": "FINAL_EXCHANGE_RECONCILE_CLEANUP_PASS",
+      "unresolved": false
+    },
+    "lifecycle": {
+      "LONG_RUNNING_CAMPAIGN": true,
+      "PRODUCTIVE_EXECUTOR_ROLE": "ACTUAL_PRODUCTIVE_SECTION_11_12_8_CAMPAIGN_RUN_EXECUTOR",
+      "aborted": false,
+      "bound_priority": "FIRST_REACHED_WINS",
+      "bound_reached_reason": "DURATION_BOUND",
+      "cadence_seconds": 60.0,
+      "campaign_id": "campaign-7e1e0d913cb349d88782b520a80689e5",
+      "client_order_ids": [
+        "coid-campaign-0"
+      ],
+      "completed": true,
+      "continuity_ok": true,
+      "cycle_bound": 120,
+      "cycle_records": [
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:17:05Z",
+          "cycle_index": 0,
+          "cycle_started_at_utc": "2026-08-10T18:17:05Z",
+          "elapsed_seconds": 0.29083683299999996,
+          "exchange_rejected": true,
+          "order_acknowledged": false,
+          "order_attempted": true,
+          "wire_sent": true
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:18:05Z",
+          "cycle_index": 1,
+          "cycle_started_at_utc": "2026-08-10T18:18:05Z",
+          "elapsed_seconds": 60.296036166,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:19:05Z",
+          "cycle_index": 2,
+          "cycle_started_at_utc": "2026-08-10T18:19:05Z",
+          "elapsed_seconds": 120.301575791,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:20:05Z",
+          "cycle_index": 3,
+          "cycle_started_at_utc": "2026-08-10T18:20:05Z",
+          "elapsed_seconds": 180.31256075,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:21:05Z",
+          "cycle_index": 4,
+          "cycle_started_at_utc": "2026-08-10T18:21:05Z",
+          "elapsed_seconds": 240.31794399999998,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:22:05Z",
+          "cycle_index": 5,
+          "cycle_started_at_utc": "2026-08-10T18:22:05Z",
+          "elapsed_seconds": 300.324113791,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:23:05Z",
+          "cycle_index": 6,
+          "cycle_started_at_utc": "2026-08-10T18:23:05Z",
+          "elapsed_seconds": 360.33485508300004,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:24:05Z",
+          "cycle_index": 7,
+          "cycle_started_at_utc": "2026-08-10T18:24:05Z",
+          "elapsed_seconds": 420.344976416,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:25:05Z",
+          "cycle_index": 8,
+          "cycle_started_at_utc": "2026-08-10T18:25:05Z",
+          "elapsed_seconds": 480.349887791,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:26:05Z",
+          "cycle_index": 9,
+          "cycle_started_at_utc": "2026-08-10T18:26:05Z",
+          "elapsed_seconds": 540.356652416,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:27:05Z",
+          "cycle_index": 10,
+          "cycle_started_at_utc": "2026-08-10T18:27:05Z",
+          "elapsed_seconds": 600.358312416,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:28:05Z",
+          "cycle_index": 11,
+          "cycle_started_at_utc": "2026-08-10T18:28:05Z",
+          "elapsed_seconds": 660.368352125,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:29:05Z",
+          "cycle_index": 12,
+          "cycle_started_at_utc": "2026-08-10T18:29:05Z",
+          "elapsed_seconds": 720.377159291,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:30:05Z",
+          "cycle_index": 13,
+          "cycle_started_at_utc": "2026-08-10T18:30:05Z",
+          "elapsed_seconds": 780.383291666,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:31:05Z",
+          "cycle_index": 14,
+          "cycle_started_at_utc": "2026-08-10T18:31:05Z",
+          "elapsed_seconds": 840.3896190830001,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:32:05Z",
+          "cycle_index": 15,
+          "cycle_started_at_utc": "2026-08-10T18:32:05Z",
+          "elapsed_seconds": 900.395985916,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:33:05Z",
+          "cycle_index": 16,
+          "cycle_started_at_utc": "2026-08-10T18:33:05Z",
+          "elapsed_seconds": 960.405567416,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:34:05Z",
+          "cycle_index": 17,
+          "cycle_started_at_utc": "2026-08-10T18:34:05Z",
+          "elapsed_seconds": 1020.4132268330001,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:35:05Z",
+          "cycle_index": 18,
+          "cycle_started_at_utc": "2026-08-10T18:35:05Z",
+          "elapsed_seconds": 1080.420097166,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:36:05Z",
+          "cycle_index": 19,
+          "cycle_started_at_utc": "2026-08-10T18:36:05Z",
+          "elapsed_seconds": 1140.4251864159999,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:37:05Z",
+          "cycle_index": 20,
+          "cycle_started_at_utc": "2026-08-10T18:37:05Z",
+          "elapsed_seconds": 1200.432989916,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:38:05Z",
+          "cycle_index": 21,
+          "cycle_started_at_utc": "2026-08-10T18:38:05Z",
+          "elapsed_seconds": 1260.4435691249998,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:39:05Z",
+          "cycle_index": 22,
+          "cycle_started_at_utc": "2026-08-10T18:39:05Z",
+          "elapsed_seconds": 1320.4540049579998,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:40:05Z",
+          "cycle_index": 23,
+          "cycle_started_at_utc": "2026-08-10T18:40:05Z",
+          "elapsed_seconds": 1380.4624018329998,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:41:05Z",
+          "cycle_index": 24,
+          "cycle_started_at_utc": "2026-08-10T18:41:05Z",
+          "elapsed_seconds": 1440.4698652499999,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:42:05Z",
+          "cycle_index": 25,
+          "cycle_started_at_utc": "2026-08-10T18:42:05Z",
+          "elapsed_seconds": 1500.4778127079999,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:43:05Z",
+          "cycle_index": 26,
+          "cycle_started_at_utc": "2026-08-10T18:43:05Z",
+          "elapsed_seconds": 1560.488198541,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:44:05Z",
+          "cycle_index": 27,
+          "cycle_started_at_utc": "2026-08-10T18:44:05Z",
+          "elapsed_seconds": 1620.491347125,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:45:05Z",
+          "cycle_index": 28,
+          "cycle_started_at_utc": "2026-08-10T18:45:05Z",
+          "elapsed_seconds": 1680.4995670409999,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:46:05Z",
+          "cycle_index": 29,
+          "cycle_started_at_utc": "2026-08-10T18:46:05Z",
+          "elapsed_seconds": 1740.5099008329998,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:47:05Z",
+          "cycle_index": 30,
+          "cycle_started_at_utc": "2026-08-10T18:47:05Z",
+          "elapsed_seconds": 1800.516006166,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:48:05Z",
+          "cycle_index": 31,
+          "cycle_started_at_utc": "2026-08-10T18:48:05Z",
+          "elapsed_seconds": 1860.5265324999998,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:49:05Z",
+          "cycle_index": 32,
+          "cycle_started_at_utc": "2026-08-10T18:49:05Z",
+          "elapsed_seconds": 1920.527675458,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:50:05Z",
+          "cycle_index": 33,
+          "cycle_started_at_utc": "2026-08-10T18:50:05Z",
+          "elapsed_seconds": 1980.532020708,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:51:05Z",
+          "cycle_index": 34,
+          "cycle_started_at_utc": "2026-08-10T18:51:05Z",
+          "elapsed_seconds": 2040.542395125,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:52:05Z",
+          "cycle_index": 35,
+          "cycle_started_at_utc": "2026-08-10T18:52:05Z",
+          "elapsed_seconds": 2100.54636975,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:53:05Z",
+          "cycle_index": 36,
+          "cycle_started_at_utc": "2026-08-10T18:53:05Z",
+          "elapsed_seconds": 2160.555155875,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:54:05Z",
+          "cycle_index": 37,
+          "cycle_started_at_utc": "2026-08-10T18:54:05Z",
+          "elapsed_seconds": 2220.55716875,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:55:05Z",
+          "cycle_index": 38,
+          "cycle_started_at_utc": "2026-08-10T18:55:05Z",
+          "elapsed_seconds": 2280.5583214579997,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:56:05Z",
+          "cycle_index": 39,
+          "cycle_started_at_utc": "2026-08-10T18:56:05Z",
+          "elapsed_seconds": 2340.5637106659997,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:57:05Z",
+          "cycle_index": 40,
+          "cycle_started_at_utc": "2026-08-10T18:57:05Z",
+          "elapsed_seconds": 2400.565729125,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:58:05Z",
+          "cycle_index": 41,
+          "cycle_started_at_utc": "2026-08-10T18:58:05Z",
+          "elapsed_seconds": 2460.566898208,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T18:59:05Z",
+          "cycle_index": 42,
+          "cycle_started_at_utc": "2026-08-10T18:59:05Z",
+          "elapsed_seconds": 2520.576945083,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:00:05Z",
+          "cycle_index": 43,
+          "cycle_started_at_utc": "2026-08-10T19:00:05Z",
+          "elapsed_seconds": 2580.5832649999998,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:01:05Z",
+          "cycle_index": 44,
+          "cycle_started_at_utc": "2026-08-10T19:01:05Z",
+          "elapsed_seconds": 2640.588481958,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:02:05Z",
+          "cycle_index": 45,
+          "cycle_started_at_utc": "2026-08-10T19:02:05Z",
+          "elapsed_seconds": 2700.5915380409997,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:03:05Z",
+          "cycle_index": 46,
+          "cycle_started_at_utc": "2026-08-10T19:03:05Z",
+          "elapsed_seconds": 2760.599595416,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:04:05Z",
+          "cycle_index": 47,
+          "cycle_started_at_utc": "2026-08-10T19:04:05Z",
+          "elapsed_seconds": 2820.604236333,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:05:05Z",
+          "cycle_index": 48,
+          "cycle_started_at_utc": "2026-08-10T19:05:05Z",
+          "elapsed_seconds": 2880.605426666,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:06:05Z",
+          "cycle_index": 49,
+          "cycle_started_at_utc": "2026-08-10T19:06:05Z",
+          "elapsed_seconds": 2940.607000208,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:07:05Z",
+          "cycle_index": 50,
+          "cycle_started_at_utc": "2026-08-10T19:07:05Z",
+          "elapsed_seconds": 3000.617288333,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:08:05Z",
+          "cycle_index": 51,
+          "cycle_started_at_utc": "2026-08-10T19:08:05Z",
+          "elapsed_seconds": 3060.62330225,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:09:05Z",
+          "cycle_index": 52,
+          "cycle_started_at_utc": "2026-08-10T19:09:05Z",
+          "elapsed_seconds": 3120.633501791,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:10:05Z",
+          "cycle_index": 53,
+          "cycle_started_at_utc": "2026-08-10T19:10:05Z",
+          "elapsed_seconds": 3180.642113333,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:11:05Z",
+          "cycle_index": 54,
+          "cycle_started_at_utc": "2026-08-10T19:11:05Z",
+          "elapsed_seconds": 3240.6467670829998,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:12:05Z",
+          "cycle_index": 55,
+          "cycle_started_at_utc": "2026-08-10T19:12:05Z",
+          "elapsed_seconds": 3300.652516958,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:13:05Z",
+          "cycle_index": 56,
+          "cycle_started_at_utc": "2026-08-10T19:13:05Z",
+          "elapsed_seconds": 3360.657973458,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:14:05Z",
+          "cycle_index": 57,
+          "cycle_started_at_utc": "2026-08-10T19:14:05Z",
+          "elapsed_seconds": 3420.663484375,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:15:05Z",
+          "cycle_index": 58,
+          "cycle_started_at_utc": "2026-08-10T19:15:05Z",
+          "elapsed_seconds": 3480.666801,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        },
+        {
+          "cycle_completed_at_utc": "2026-08-10T19:16:05Z",
+          "cycle_index": 59,
+          "cycle_started_at_utc": "2026-08-10T19:16:05Z",
+          "elapsed_seconds": 3540.672341208,
+          "exchange_rejected": false,
+          "order_acknowledged": false,
+          "order_attempted": false,
+          "wire_sent": false
+        }
+      ],
+      "cycles_completed": 60,
+      "cycles_started": 60,
+      "duration_bound_seconds": 3600,
+      "emergency_control_checks": [
+        {
+          "cycle_index": 0,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 1,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 2,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 3,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 4,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 5,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 6,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 7,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 8,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 9,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 10,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 11,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 12,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 13,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 14,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 15,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 16,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 17,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 18,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 19,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 20,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 21,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 22,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 23,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 24,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 25,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 26,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 27,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 28,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 29,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 30,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 31,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 32,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 33,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 34,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 35,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 36,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 37,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 38,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 39,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 40,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 41,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 42,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 43,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 44,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 45,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 46,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 47,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 48,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 49,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 50,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 51,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 52,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 53,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 54,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 55,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 56,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 57,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 58,
+          "emergency_control_operational": true
+        },
+        {
+          "cycle_index": 59,
+          "emergency_control_operational": true
+        }
+      ],
+      "emergency_reaction": "",
+      "events": [
+        {
+          "campaign_id": "campaign-7e1e0d913cb349d88782b520a80689e5",
+          "event": "start"
+        },
+        {
+          "cycle_index": 0,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 0,
+          "effect": {
+            "client_order_id": "coid-campaign-0",
+            "ephemeral_campaign_write_gate_pass": true,
+            "exchange_accepted": false,
+            "exchange_order_id": null,
+            "exchange_rejected": true,
+            "fill_observed": false,
+            "instrument": "BTC-USD_UM_XPERP-310328",
+            "live_order_effect": "NONE",
+            "network_effect": "TESTNET",
+            "network_send_boundary_reached": true,
+            "order_acknowledged": false,
+            "order_attempt": true,
+            "order_type": "LIMIT",
+            "parsed_response": {
+              "body_parsed": true,
+              "classification": "EXCHANGE_REJECTED",
+              "client_order_id": "coid-campaign-0",
+              "exchange_accepted": false,
+              "exchange_code": "1",
+              "exchange_order_id": null,
+              "exchange_rejected": true,
+              "fill_observed": false,
+              "http_status": 200,
+              "msg": "All operations failed",
+              "order_acknowledged": false,
+              "partial_fill_observed": false,
+              "raw_keys": [
+                "code",
+                "data",
+                "inTime",
+                "msg",
+                "outTime"
+              ],
+              "s_code": "51000",
+              "s_msg": "Parameter clOrdId error",
+              "transport_ok": true,
+              "wire_sent": true
+            },
+            "partial_fill_observed": false,
+            "px": "10000",
+            "quantity": "0.0001",
+            "response_classification": "EXCHANGE_REJECTED",
+            "side": "buy",
+            "stubbed": false,
+            "submitted": true,
+            "transport_response": true,
+            "venue_native_body": {
+              "clOrdId": "coid-campaign-0",
+              "instId": "BTC-USD_UM_XPERP-310328",
+              "ordType": "limit",
+              "px": "10000",
+              "side": "buy",
+              "sz": "0.0001",
+              "tdMode": "cross"
+            },
+            "wire_sent": true
+          },
+          "event": "order_attempt"
+        },
+        {
+          "effect": {
+            "client_order_id": "coid-campaign-0",
+            "ephemeral_campaign_write_gate_pass": true,
+            "exchange_accepted": false,
+            "exchange_order_id": null,
+            "exchange_rejected": true,
+            "fill_observed": false,
+            "instrument": "BTC-USD_UM_XPERP-310328",
+            "live_order_effect": "NONE",
+            "network_effect": "TESTNET",
+            "network_send_boundary_reached": true,
+            "order_acknowledged": false,
+            "order_attempt": true,
+            "order_type": "LIMIT",
+            "parsed_response": {
+              "body_parsed": true,
+              "classification": "EXCHANGE_REJECTED",
+              "client_order_id": "coid-campaign-0",
+              "exchange_accepted": false,
+              "exchange_code": "1",
+              "exchange_order_id": null,
+              "exchange_rejected": true,
+              "fill_observed": false,
+              "http_status": 200,
+              "msg": "All operations failed",
+              "order_acknowledged": false,
+              "partial_fill_observed": false,
+              "raw_keys": [
+                "code",
+                "data",
+                "inTime",
+                "msg",
+                "outTime"
+              ],
+              "s_code": "51000",
+              "s_msg": "Parameter clOrdId error",
+              "transport_ok": true,
+              "wire_sent": true
+            },
+            "partial_fill_observed": false,
+            "px": "10000",
+            "quantity": "0.0001",
+            "response_classification": "EXCHANGE_REJECTED",
+            "side": "buy",
+            "stubbed": false,
+            "submitted": true,
+            "transport_response": true,
+            "venue_native_body": {
+              "clOrdId": "coid-campaign-0",
+              "instId": "BTC-USD_UM_XPERP-310328",
+              "ordType": "limit",
+              "px": "10000",
+              "side": "buy",
+              "sz": "0.0001",
+              "tdMode": "cross"
+            },
+            "wire_sent": true
+          },
+          "event": "first_permitted_testnet_effect"
+        },
+        {
+          "cycle_index": 0,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 1,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 1,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 2,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 2,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 3,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 3,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 4,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 4,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 5,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 5,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 6,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 6,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 7,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 7,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 8,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 8,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 9,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 9,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 10,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 10,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 11,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 11,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 12,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 12,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 13,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 13,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 14,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 14,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 15,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 15,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 16,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 16,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 17,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 17,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 18,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 18,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 19,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 19,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 20,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 20,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 21,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 21,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 22,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 22,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 23,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 23,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 24,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 24,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 25,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 25,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 26,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 26,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 27,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 27,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 28,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 28,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 29,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 29,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 30,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 30,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 31,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 31,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 32,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 32,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 33,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 33,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 34,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 34,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 35,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 35,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 36,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 36,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 37,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 37,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 38,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 38,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 39,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 39,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 40,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 40,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 41,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 41,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 42,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 42,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 43,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 43,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 44,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 44,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 45,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 45,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 46,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 46,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 47,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 47,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 48,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 48,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 49,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 49,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 50,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 50,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 51,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 51,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 52,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 52,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 53,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 53,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 54,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 54,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 55,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 55,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 56,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 56,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 57,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 57,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 58,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 58,
+          "event": "cycle_complete"
+        },
+        {
+          "cycle_index": 59,
+          "event": "cycle_running"
+        },
+        {
+          "cycle_index": 59,
+          "event": "cycle_complete"
+        },
+        {
+          "event": "bound_reached",
+          "reason": "DURATION_BOUND"
+        },
+        {
+          "bound_reached_reason": "DURATION_BOUND",
+          "cycles_completed": 60,
+          "event": "complete"
+        }
+      ],
+      "exchange_ack_count": 0,
+      "exchange_order_ids": [],
+      "exchange_reject_count": 1,
+      "execution_duration_seconds": 3600.677587791,
+      "execution_end_utc": "2026-08-10T19:17:05Z",
+      "execution_start_utc": "2026-08-10T18:17:05Z",
+      "fill_count": 0,
+      "first_permitted_effect_invoked": true,
+      "first_permitted_effect_stubbed": false,
+      "heartbeat_count": 60,
+      "kill_switch_checks": [
+        {
+          "cycle_index": 0,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 1,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 2,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 3,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 4,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 5,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 6,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 7,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 8,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 9,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 10,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 11,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 12,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 13,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 14,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 15,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 16,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 17,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 18,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 19,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 20,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 21,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 22,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 23,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 24,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 25,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 26,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 27,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 28,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 29,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 30,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 31,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 32,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 33,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 34,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 35,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 36,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 37,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 38,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 39,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 40,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 41,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 42,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 43,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 44,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 45,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 46,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 47,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 48,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 49,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 50,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 51,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 52,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 53,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 54,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 55,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 56,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 57,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 58,
+          "kill_switch_state": "ACTIVE"
+        },
+        {
+          "cycle_index": 59,
+          "kill_switch_state": "ACTIVE"
+        }
+      ],
+      "kill_switch_reaction": "",
+      "network_request_count": 1,
+      "next_operation_after_boundary": "FIRST_PERMITTED_TESTNET_SIDE_EFFECT",
+      "order_attempt_count": 1,
+      "partial_fill_count": 0,
+      "restart_handled": true,
+      "risk_breach_reaction": "",
+      "risk_gate_results": [
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        },
+        {
+          "emergency_control_operational": true,
+          "kill_switch_operational": true,
+          "kill_switch_state": "ACTIVE",
+          "risk_gate_allows": true
+        }
+      ],
+      "running": false,
+      "started": true,
+      "testnet_order_sent_count": 1,
+      "transport_response_count": 1,
+      "unknown_submit_hard_stop": false
+    },
+    "mode": "PRODUCTIVE_REAL_NETWORK",
+    "next_operation_after_boundary": "FIRST_PERMITTED_TESTNET_SIDE_EFFECT",
+    "owner_go": {
+      "consumed": true,
+      "consumption_id": "unlock-81fe761364b34f57b133a5ea096c2904",
+      "live_authorized": false,
+      "one_time_consume": true,
+      "owner_go_authorization": "EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN",
+      "owner_go_scope": "EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN",
+      "owner_go_token": "CAPABILITY_11_SECTION_11_12_8_ACTUAL_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_START_V1",
+      "productive_campaign_authorized": true,
+      "reason": "CONSUMED_FOR_ACTUAL_PRODUCTIVE_START:CAPABILITY_11_SECTION_11_12_8_ACTUAL_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_START_V1"
+    },
+    "port": {
+      "EXECUTION_MODE": "TESTNET",
+      "OWNER": "ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1",
+      "PORT_KIND": "TESTNET_EXECUTION_PORT_V1_ACTUAL_START_PRODUCTIVE",
+      "authorized": true,
+      "ephemeral_campaign_write_gate_pass": true,
+      "mutation_wire_intended": true,
+      "stubbed": false,
+      "submit_attempt_count": 1,
+      "venue": "OKX_EEA_DEMO"
+    },
+    "safety": {
+      "emergency_control_operational": true,
+      "kill_switch_operational": true,
+      "kill_switch_state": "ACTIVE",
+      "risk_gate_allows": true
+    },
+    "session": {
+      "boundary_reached": true,
+      "network_session_go": true,
+      "network_session_started": true,
+      "next_operation": "FIRST_PERMITTED_TESTNET_SIDE_EFFECT",
+      "session_id": "session-actual-start",
+      "stubbed": false
+    },
+    "testnet_auth": {
+      "live_authorized": false,
+      "runtime_mode": "TESTNET",
+      "testnet_authorized_persisted": false,
+      "testnet_authorized_runtime": true
+    },
+    "transport_bound_client_kind": "BOUND_REAL_TESTNET_HTTP_CLIENT"
+  },
+  "testnet_order_sent_count": 1,
+  "transport_response_count": 1
+}

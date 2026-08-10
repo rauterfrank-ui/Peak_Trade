@@ -1,0 +1,16 @@
+{
+  "DOCUMENT_CLASS": "NOTION_MIRROR_ATTESTATION_V1",
+  "GENERATED_AT_UTC": "2026-08-10T19:33:55Z",
+  "LIVE_AUTHORIZED": false,
+  "NOTION_IS_CONSUMER_ONLY": true,
+  "NOTION_PAGE_ID": "3b85d37f-addf-81dd-9bbf-dca8536a644a",
+  "NOTION_PAGE_URL": "https://app.notion.com/p/3b85d37faddf81dd9bbfdca8536a644a",
+  "ORIGIN_MAIN_SHA": "a04d6effa689d9a2d68ee7904a23b9aa1f7b2435",
+  "PRE_LIVE_CYBERSECURITY_GATE": "NOT_PASSED",
+  "PR_URL": "https://github.com/rauterfrank-ui/Peak_Trade/pull/5840",
+  "RUN_ID": "20260810T181703Z",
+  "SECTION_11_12_8_CLOSED": false,
+  "SECTION_11_13_STARTED": false,
+  "SSOT_REMAINS_MASTER_RUNBOOK": true,
+  "STATUS": "REFRESHED"
+}

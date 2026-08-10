@@ -1,0 +1,44 @@
+{
+  "ARTIFACT_INVENTORY": {
+    "derived": [
+      "PRIMARY_EVIDENCE_MANIFEST.json",
+      "PRIMARY_EVIDENCE_SHA256SUMS.txt",
+      "ACCEPTANCE_MATRIX.json",
+      "EXCHANGE_REJECT_CLASSIFICATION.json",
+      "FORENSIC_EVALUATION_REPORT.md",
+      "MACHINE_READABLE_CLOSEOUT.json",
+      "REDACTION_AND_SECRET_HANDLING_ATTESTATION.md",
+      "PROVENANCE_INDEX.json",
+      "NOTION_MIRROR_ATTESTATION.json"
+    ],
+    "primary": [
+      "EXECUTION_STARTED.marker",
+      "LAUNCH_META.sanitized.json",
+      "SANITIZED_FINAL_REPORT.json",
+      "durable_state/actual_start_durable_state_v1.json",
+      "entrypoint.pid",
+      "entrypoint_stdout.jsonl",
+      "entrypoint_stdout.sanitized.json",
+      "execution_evidence/MANIFEST.sha256",
+      "execution_evidence/productive_execution_evidence_v1.json"
+    ]
+  },
+  "CLOSEOUT_RECOMMENDATION": "KEEP_SECTION_11_12_8_OPEN_ORDER_LIFECYCLE_NOT_PROVEN_CLORDID_PARAMETER_REJECT",
+  "DERIVED_ROOT": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/derived_forensic_closeout_v1",
+  "DOCUMENT_CLASS": "DURABLE_EVIDENCE_PROVENANCE_INDEX_V1",
+  "ENVIRONMENT": "DEMO",
+  "EXCHANGE_REJECT_CLASSIFICATION": "C_IMPLEMENTATION_OR_GOVERNANCE_DEFECT",
+  "GENERATED_AT_UTC": "2026-08-10T19:29:02Z",
+  "HOST": "https://eea.okx.com",
+  "INSTRUMENT": "BTC-USD_UM_XPERP-310328",
+  "ORDER_SZ": "0.0001",
+  "ORIGIN_MAIN_SHA": "a04d6effa689d9a2d68ee7904a23b9aa1f7b2435",
+  "PRIMARY_FILE_COUNT": 9,
+  "PRIMARY_ROOT": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z",
+  "PRIMARY_SHA256SUMS_PATH": "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/derived_forensic_closeout_v1/PRIMARY_EVIDENCE_SHA256SUMS.txt",
+  "RUN_ID": "20260810T181703Z",
+  "SEALED_EVIDENCE_SHA256": "5162e3a0557fc3c087b37441e54fa88301be6432b338459406f110bf5d5e0ab4",
+  "SOURCE_CAMPAIGN": "OWNER_GO_EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN_WITH_HIDDEN_CONFIRM_AND_SECRETREF_VAULT_RUNTIME",
+  "TERMINAL_VERDICT": "BOUNDED_1H_XPERP_CAMPAIGN_PROCESSED_CLORDID_51000_CLASSIFIED_SECTION_11_12_8_REMAINS_OPEN",
+  "VENUE": "OKX_EEA_DEMO"
+}
