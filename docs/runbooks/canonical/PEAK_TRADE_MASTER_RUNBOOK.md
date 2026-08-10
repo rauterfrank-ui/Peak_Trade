@@ -3945,8 +3945,10 @@ LONG_RUNNING_TESTNET_PROVEN=false
 LIVE_AUTHORIZED=false
 PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
 SECTION_11_13_STARTED=false
-CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_8_10
-CANONICAL_NEXT_STEP=OWNER_GO_SECTION_11_12_9_PRE_LIVE_CYBERSECURITY_ACCEPTANCE_GATE_EVIDENCE_BOUND_EVALUATION
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY_AT_SECTION_CLOSE=SECTION_11_12_8_10
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_1
+CANONICAL_NEXT_STEP_AT_SECTION_CLOSE=OWNER_GO_SECTION_11_12_9_PRE_LIVE_CYBERSECURITY_ACCEPTANCE_GATE_EVIDENCE_BOUND_EVALUATION
+CANONICAL_NEXT_STEP_AT_SECTION_CLOSE_ROLE=SUPERSEDED_POINTER_SEE_SECTION_11_12_9_1
 ```
 
 Mandatory distinctions:
@@ -3966,9 +3968,9 @@ Observed facts: Owner-authorized section close binds the sealed 1h campaign,
 ACK proof, and clean closeout evidence roots above; fill count remains 0 and
 is not claimed as Cap 11.12.4 productive fill proof. Cap 11.12 Testnet STAR
 ladder remains open. Live remains hard-blocked. Cap &#47; §11.13 remains
-unstarted. Active continuation authority moves to §11.12.9 under a separate
+unstarted. Active continuation authority moved to §11.12.9 under a separate
 Owner-GO (evidence-bound; gate remains `NOT_PASSED` until minimum PASS
-conditions are proven).
+conditions are proven); see §11.12.9.1 for the sealed evaluation.
 
 #### 11.12.9 Pre-Live Cybersecurity Acceptance Gate (binding; mandatory)
 
@@ -4072,6 +4074,74 @@ program and does **not** set `PRE_LIVE_CYBERSECURITY_GATE=PASS`. Cap &#47;
 §11.13 remains unstarted and unauthorized until the gate later PASSes
 under a separate evidence-bound capability and a later Owner Live path
 remains separately required.
+
+##### 11.12.9.1 Evidence-bound Pre-Live Cybersecurity Acceptance Gate evaluation (binding; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_SECTION_11_12_9_PRE_LIVE_CYBERSECURITY_ACCEPTANCE_GATE_EVIDENCE_BOUND_EVALUATION`
+executes the **evidence-bound evaluation** of the mandatory Pre-Live
+Cybersecurity Acceptance Gate against Cybersecurity Runbook V2.1 §18
+minimum PASS conditions and current `origin/main` evidence. This
+evaluation does **not** set `PRE_LIVE_CYBERSECURITY_GATE=PASS`, does
+**not** set `ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not**
+start Cap &#47; §11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47;
+credentials, does **not** execute the penetration program, and does
+**not** mutate runtime &#47; trading &#47; execution code.
+
+Sealed evaluation evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_pre_live_cybersecurity_acceptance_gate_evidence_bound_evaluation_v1&#47;20260810T202800Z&#47;`
+
+``` text
+SECTION_11_12_9_EVALUATION_RUN_ID=20260810T202800Z
+SECTION_11_12_9_EVALUATION_ORIGIN_MAIN_SHA=86a224e317e10fbf149c83077ecef94d9bc5bb93
+SECTION_11_12_9_EVALUATION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_pre_live_cybersecurity_acceptance_gate_evidence_bound_evaluation_v1/20260810T202800Z/
+SECTION_11_12_9_EVALUATION_COMPLETED=true
+SECTION_11_12_9_EVALUATION_STATUS=PASS
+SECTION_11_12_9_EVALUATION_VERDICT=PRE_LIVE_CYBERSECURITY_GATE_NOT_PASSED_BLOCKED_CAP_11_12_STAR_AND_SECURITY_ACCEPTANCE_PREREQUISITES_UNMET
+SECTION_11_12_9_GATE_PASS=false
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+CAP_11_12_TESTNET_PROGRAM_CLOSED=false
+TESTNET_STAR_PROVEN=false
+TESTNET_ORDER_LIFECYCLE_PROVEN=false
+LONG_RUNNING_TESTNET_PROVEN=false
+SECTION_11_12_8_CLOSED=true
+LIVE_AUTHORIZED=false
+SECTION_11_13_STARTED=false
+NO_RUNTIME_CHANGE_BY_THIS_EVALUATION=true
+NO_ORDER_BY_THIS_EVALUATION=true
+BYPASS_OF_PRE_LIVE_GATE_FORBIDDEN=true
+MANIFEST_VERIFY_RC=0
+EARLIEST_UNRESOLVED_DEPENDENCY=CAP_11_12_TESTNET_STAR_LADDER_RESIDUAL_PROOFS
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_1
+CANONICAL_NEXT_STEP=OWNER_GO_CONTINUE_CAP_11_12_TESTNET_STAR_LADDER_RESIDUAL_PROOFS_AFTER_SECTION_11_12_9_GATE_EVALUATION_BLOCKED
+```
+
+Mandatory distinctions:
+
+``` text
+SECTION_11_12_9_EVALUATION_COMPLETED != PRE_LIVE_CYBERSECURITY_GATE_PASS
+SECTION_11_12_9_EVALUATION_STATUS_PASS != GATE_PASS
+SECTION_11_12_8_CLOSED != TESTNET_LIFECYCLE_PROVEN
+SECTION_11_12_8_CLOSED != LONG_RUNNING_TESTNET_PROVEN
+CYBERSECURITY_RUNBOOK_RATIFICATION != PRE_LIVE_CYBERSECURITY_GATE_PASS
+POST_CAPABILITY_7_2_REVIEW != PRE_LIVE_CYBERSECURITY_GATE_PASS
+PRE_LIVE_CYBERSECURITY_GATE_PASS != LIVE_AUTHORIZED
+PRE_LIVE_CYBERSECURITY_GATE_PASS != SECTION_11_13_STARTED
+```
+
+Observed facts: §18.2 minimum PASS conditions are **not** evidence-bound
+proven. Cap 11.12 Testnet STAR ladder remains open (`TESTNET_*_PROVEN`
+false; `LONG_RUNNING_TESTNET_PROVEN=false`). Pre-Live security acceptance
+packages (penetration program, SBOM, dependency audit, findings register,
+isolation &#47; arming proofs, etc.) are absent or insufficient for gate PASS.
+Historical Cap-7.2 cybersecurity review and Cybersecurity Runbook V2.1
+ratification remain complementary &#47; derived-domain inputs only. Gate
+remains `NOT_PASSED`. Live remains hard-blocked. Cap &#47; §11.13 remains
+unstarted. Active continuation authority moves to Cap 11.12 Testnet STAR
+residual proofs under a separate Owner-GO.
 
 Section 2.1 `NO_TESTNET_ORDERS` describes the **no-order program** finish
 boundary. It does not forbid a separately Owner-authorized §11.12 Testnet

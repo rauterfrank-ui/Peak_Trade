@@ -823,22 +823,18 @@ generische Symbolsubstitution aktiviert werden.
 
 # 21. Current Phase-11 Integration Note
 
-Zum Zeitpunkt der V2.1-Ratifikation befindet sich Peak_Trade in Phase 11 /
-§11.12.8. Master-binding: §11.12.8.3 (OKX EEA Demo path
-`CLOSED_EXTERNAL_CAPABILITY_UNAVAILABLE`) und §11.12.9 (Pre-Live
-Cybersecurity Acceptance Gate contract).
-
-Der zuvor verwendete OKX-EEA-Demo-Pfad wurde aufgrund externer
-Capability-Einschränkungen als ungeeignet für den erforderlichen
-produktiven Derivatives-Testnet-Proof bewertet. Diese Feststellung
-selbst erzeugt keine Autorisierung für einen alternativen Venue.
-
-Für die Fortsetzung gilt:
+Derived-domain phase note only (Master Runbook remains sole SSOT). Current
+Master-binding after §11.12.8 Owner closeout and §11.12.9.1 evidence-bound
+gate evaluation:
 
 ``` text
-SECTION_11_12_8 = OPEN
-OKX_EEA_DEMO_PRODUCTIVE_ORDER_PATH_STATUS = CLOSED_EXTERNAL_CAPABILITY_UNAVAILABLE
-TESTNET_*_PROVEN = false
+SECTION_11_12_8_CLOSED=true
+SECTION_11_12_8_STATUS=CLOSED_OKX_EEA_DEMO_XPERP_BOUNDED_CAMPAIGN_AND_CLEAN_CLOSEOUT_PROVEN
+CAP_11_12_TESTNET_PROGRAM_CLOSED=false
+TESTNET_*_PROVEN=false
+LONG_RUNNING_TESTNET_PROVEN=false
+SECTION_11_12_9_EVALUATION_COMPLETED=true
+SECTION_11_12_9_GATE_PASS=false
 SECTION_11_13_STARTED=false
 LIVE_AUTHORIZED=false
 PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
@@ -846,21 +842,24 @@ PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
 ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
 FUTURE_IMPLEMENTATION_BOUND_TO_CANONICAL_SECURITY_INVARIANTS=true
 BYPASS_OF_PRE_LIVE_GATE_FORBIDDEN=true
-CANONICAL_TRADING_NEXT_STEP = OWNER_GO_SELECT_ALTERNATE_DERIVATIVES_TESTNET_VENUE_SCOPE_FOR_SECTION_11_12_8_CONTINUATION
+CANONICAL_NEXT_STEP=OWNER_GO_CONTINUE_CAP_11_12_TESTNET_STAR_LADDER_RESIDUAL_PROOFS_AFTER_SECTION_11_12_9_GATE_EVALUATION_BLOCKED
+SECTION_11_12_9_EVALUATION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_pre_live_cybersecurity_acceptance_gate_evidence_bound_evaluation_v1/20260810T202800Z/
 ```
 
-Der nächste Venue darf erst nach separater kanonischer Scope-Auswahl und
-den jeweils erforderlichen Owner-Autorisierungen implementiert bzw.
-aktiviert werden.
+Historical ratification-era note retained for forensics: V2.1 was first
+reconciled while §11.12.8 was still open and an alternate-venue Owner scope
+was active. That historical next-step pointer is **superseded** by Master
+§11.12.8.10 &#47; §11.12.9.1. The BTC-USDT-SWAP productive-order path closeout
+(`CLOSED_EXTERNAL_CAPABILITY_UNAVAILABLE`) remains historical; active Demo
+derivatives campaign path for the closed §11.12.8 section was OKX EEA Demo
+XPerp.
 
-Dieses Cybersecurity Runbook V2.1 ist als Security-Design-Baseline
-**vor** Alternate-Venue-Implementierung reconciliert und durch Owner
-Addendum als **mandatory** Pre-Live Gate sowie als bindende
-Invarianten-Quelle für künftige Implementierung kanonisiert. Der
-vollständige Penetration-/Acceptance-Proof
-(`PRE_LIVE_CYBERSECURITY_GATE=PASS`) erfolgt **nach** dem vollständigen
-Testnet-Lifecycle und **vor** §11.13 / Live-Readiness und ist mit
-dieser Docs-Ratifikation **nicht** PASS.
+Dieses Cybersecurity Runbook V2.1 bleibt Security-Design-Baseline und
+**mandatory** Pre-Live Gate &#47; Invarianten-Quelle. Der vollständige
+Penetration-/Acceptance-Proof (`PRE_LIVE_CYBERSECURITY_GATE=PASS`) bleibt
+**nach** vollständigem Cap-11.12-Testnet-Lifecycle und **vor** §11.13 &#47;
+Live-Readiness; die §11.12.9.1 Evaluation bestätigt `NOT_PASSED` und setzt
+kein Gate-PASS.
 
 ------------------------------------------------------------------------
 

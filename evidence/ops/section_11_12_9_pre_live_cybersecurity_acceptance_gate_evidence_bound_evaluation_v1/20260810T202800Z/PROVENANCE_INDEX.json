@@ -1,0 +1,22 @@
+{
+  "AUTHORITIES": [
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#11.12.9",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#4.8",
+    "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18",
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
+  ],
+  "DOCUMENT_CLASS": "SECTION_11_12_9_EVALUATION_PROVENANCE_INDEX_V1",
+  "IMMUTABLE_PREDECESSOR_POINTERS": [
+    "evidence/ops/section_11_12_8_closeout_package_v1/20260810T201332Z",
+    "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z",
+    "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1/20260810T194806Z",
+    "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_clean_closeout_after_cancel_instid_fix_v1/20260810T200151Z",
+    "docs/evidence/post_capability_7_2_cybersecurity_review_v1",
+    "evidence/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/20260810T171225Z/THREAT_MODEL_DELTA.json"
+  ],
+  "MUTATION_SCOPE": "docs_and_derived_evaluation_evidence_only",
+  "ORIGIN_MAIN_SHA": "86a224e317e10fbf149c83077ecef94d9bc5bb93",
+  "OWNER_GO": "OWNER_GO_SECTION_11_12_9_PRE_LIVE_CYBERSECURITY_ACCEPTANCE_GATE_EVIDENCE_BOUND_EVALUATION",
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "RUN_ID": "20260810T202800Z"
+}
