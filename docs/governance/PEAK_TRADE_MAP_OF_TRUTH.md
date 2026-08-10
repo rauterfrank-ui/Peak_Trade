@@ -193,6 +193,8 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.8 | SSOT OKX EEA Demo XPerp clOrdId alphanumeric fix + bounded ACK proof (no section close; superseded next-step by §11.12.8.9) |
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.9 | SSOT OKX EEA Demo XPerp cancel-instId fix + bounded clean closeout proof (closeout recommended; superseded next-step by §11.12.8.10) |
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.8.10 | SSOT OKX EEA Demo XPerp §11.12.8 Owner closeout package (`SECTION_11_12_8_CLOSED=true`; Cap 11.12 STAR program not closed) |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.9 | SSOT Pre-Live Cybersecurity Acceptance Gate contract (mandatory; gate `NOT_PASSED`) |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.12.9.1 | SSOT evidence-bound Pre-Live gate evaluation (`SECTION_11_12_9_EVALUATION_COMPLETED=true`; gate remains `NOT_PASSED`) |
 | [`docs/ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md`](../ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md) | Capability spec for active EEA Demo XPerp binding |
 | [`docs/ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN_PRIVATE_WRITE_GATE_V1.md`](../ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN_PRIVATE_WRITE_GATE_V1.md) | Capability spec for ephemeral XPerp campaign private-write gate |
 | [`docs/ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_GLOBAL_DEMO_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md`](../ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_GLOBAL_DEMO_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md) | Historical Global Demo binding capability (not active) |
@@ -203,6 +205,7 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`evidence&#47;ops&#47;section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1&#47;20260810T194806Z&#47;`](../../evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1/20260810T194806Z/) | Bounded XPerp ACK proof after alphanumeric clOrdId fix (immutable evidence; non-SSOT) |
 | [`evidence&#47;ops&#47;section_11_12_8_retry_bounded_okx_eea_demo_xperp_clean_closeout_after_cancel_instid_fix_v1&#47;20260810T200151Z&#47;`](../../evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_clean_closeout_after_cancel_instid_fix_v1/20260810T200151Z/) | Bounded XPerp clean closeout after cancel-instId fix (immutable evidence; non-SSOT) |
 | [`evidence&#47;ops&#47;section_11_12_8_closeout_package_v1&#47;20260810T201332Z&#47;`](../../evidence/ops/section_11_12_8_closeout_package_v1/20260810T201332Z/) | Owner §11.12.8 closeout package (derived; non-SSOT; section closed) |
+| [`evidence&#47;ops&#47;section_11_12_9_pre_live_cybersecurity_acceptance_gate_evidence_bound_evaluation_v1&#47;20260810T202800Z&#47;`](../../evidence/ops/section_11_12_9_pre_live_cybersecurity_acceptance_gate_evidence_bound_evaluation_v1/20260810T202800Z/) | Owner §11.12.9.1 Pre-Live Cybersecurity Acceptance Gate evidence-bound evaluation (derived; non-SSOT; gate remains `NOT_PASSED`) |
 | [`evidence&#47;ops&#47;section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1&#47;20260810T143709Z&#47;`](../../evidence/ops/section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1/20260810T143709Z/) | OKX EEA Demo path closeout &#47; no-order alternate evaluation (non-activating) |
 | [`evidence&#47;ops&#47;section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1&#47;20260810T151323Z&#47;`](../../evidence/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/20260810T151323Z/) | Historical OKX Global Demo binding package evidence (NO_ORDER; not active) |
 | [`evidence&#47;ops&#47;section_11_12_8_retry_okx_eea_private_ro_xperp_verify_no_order_v1&#47;20260810T165847Z&#47;`](../../evidence/ops/section_11_12_8_retry_okx_eea_private_ro_xperp_verify_no_order_v1/20260810T165847Z/) | Bound private READ-only XPerp capability proof (NO_ORDER) |
@@ -214,6 +217,9 @@ SECTION_11_12_8_CLOSED=true
 SECTION_11_13_STARTED=false
 LIVE_AUTHORIZED=false
 PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+SECTION_11_12_9_EVALUATION_COMPLETED=true
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
 OKX_EEA_DEMO_PRODUCTIVE_ORDER_PATH_STATUS=CLOSED_EXTERNAL_CAPABILITY_UNAVAILABLE
 OKX_GLOBAL_DEMO_BINDING_PACKAGE_STATUS=PREPARED_NO_ORDER_NOT_ACTIVATED_SUPERSEDED_BY_SECTION_11_12_8_5
 OKX_EEA_DEMO_XPERP_BINDING_PACKAGE_STATUS=PREPARED_NO_ORDER_ACTIVE_BINDING
@@ -243,12 +249,13 @@ CAP_11_12_TESTNET_PROGRAM_CLOSED=false
 TESTNET_STAR_PROVEN=false
 TESTNET_ORDER_LIFECYCLE_PROVEN=false
 LONG_RUNNING_TESTNET_PROVEN=false
-NEXT_CANONICAL_STEP_POINTER=OWNER_GO_SECTION_11_12_9_PRE_LIVE_CYBERSECURITY_ACCEPTANCE_GATE_EVIDENCE_BOUND_EVALUATION
+NEXT_CANONICAL_STEP_POINTER=OWNER_GO_CONTINUE_CAP_11_12_TESTNET_STAR_LADDER_RESIDUAL_PROOFS_AFTER_SECTION_11_12_9_GATE_EVALUATION_BLOCKED
 XPERP_BOUNDED_CAMPAIGN_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1&#47;20260810T181703Z&#47;
 XPERP_BOUNDED_CAMPAIGN_FORENSIC_POINTER=evidence&#47;ops&#47;section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1&#47;20260810T181703Z&#47;derived_forensic_closeout_v1&#47;
 XPERP_BOUNDED_ACK_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1&#47;20260810T194806Z&#47;
 XPERP_BOUNDED_CLEAN_CLOSEOUT_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_retry_bounded_okx_eea_demo_xperp_clean_closeout_after_cancel_instid_fix_v1&#47;20260810T200151Z&#47;
 XPERP_SECTION_11_12_8_CLOSEOUT_PACKAGE_POINTER=evidence&#47;ops&#47;section_11_12_8_closeout_package_v1&#47;20260810T201332Z&#47;
+SECTION_11_12_9_EVALUATION_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_pre_live_cybersecurity_acceptance_gate_evidence_bound_evaluation_v1&#47;20260810T202800Z&#47;
 PREDECESSOR_GET_PROOF_IS_NOT_TARGETED_TRADE_PROOF=true
 PREDECESSOR_ORDERLESS_GET_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_autonomous_okx_eea_demo_credential_ip_resolve_v1&#47;20260808T203507Z&#47;
 XPERP_PRIVATE_RO_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_retry_okx_eea_private_ro_xperp_verify_no_order_v1&#47;20260810T165847Z&#47;
@@ -259,6 +266,7 @@ CAMPAIGN_EXECUTION_PASS_IS_NOT_SECTION_CLOSE=true
 HISTORICAL_GLOBAL_OR_SWAP_EVIDENCE_IS_NOT_ACTIVE_BINDING=true
 NO_PARALLEL_ACTIVE_SWAP_NAVIGATION=true
 FURTHER_OKX_EEA_DEMO_ORDER_POSTS_AUTHORIZED_SWAP_PATH_ONLY=true
+SECTION_11_12_9_EVALUATION_COMPLETED_IS_NOT_GATE_PASS=true
 ```
 
 ---

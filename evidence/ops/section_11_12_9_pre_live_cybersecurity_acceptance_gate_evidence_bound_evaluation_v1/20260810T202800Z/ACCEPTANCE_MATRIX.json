@@ -1,0 +1,369 @@
+{
+  "CRITERIA": [
+    {
+      "criterion": "TESTNET_LIFECYCLE_PROVEN",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_8_closeout_package_v1/20260810T201332Z",
+        "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1/20260810T194806Z",
+        "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_clean_closeout_after_cancel_instid_fix_v1/20260810T200151Z"
+      ],
+      "observed": {
+        "CAP_11_12_TESTNET_PROGRAM_CLOSED": false,
+        "FILL_COUNT": 0,
+        "SECTION_11_12_8_ORDER_LIFECYCLE_PROOF_PASS": true,
+        "SECTION_11_12_8_ORDER_LIFECYCLE_PROOF_SCOPE": "ACK_CANCEL_RECONCILE_CLEAN_CLOSEOUT_NO_FILL_REQUIRED_FOR_SECTION_11_12_8_OWNER_CLOSEOUT",
+        "TESTNET_ORDER_LIFECYCLE_PROVEN": false,
+        "TESTNET_STAR_PROVEN": false
+      },
+      "rationale": "Cap 11.12 STAR lifecycle claims remain false; \u00a711.12.8 ACK+cancel closeout is not Cap TESTNET_ORDER_LIFECYCLE_PROVEN / TESTNET_LIFECYCLE_PROVEN.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "LONG_RUNNING_TESTNET_PROVEN",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z",
+        "evidence/ops/section_11_12_8_closeout_package_v1/20260810T201332Z"
+      ],
+      "observed": {
+        "LONG_RUNNING_TESTNET_PROVEN": false,
+        "SECTION_11_12_8_BOUNDED_1H_CAMPAIGN_COMPLETED": true,
+        "SECTION_11_12_8_CLOSED": true
+      },
+      "rationale": "Bounded \u00a711.12.8 1h campaign sealed and section closed, but Master binds LONG_RUNNING_TESTNET_PROVEN=false; campaign alone does not promote Cap STAR long-running claim.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "CYBERSECURITY_ARCHITECTURE_REVIEW",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1_RATIFICATION.json",
+        "docs/evidence/post_capability_7_2_cybersecurity_review_v1"
+      ],
+      "observed": {
+        "CYBERSECURITY_RUNBOOK_V2_1_RATIFIED_AS_DERIVED_DOMAIN_AUTHORITY": true,
+        "POST_CAPABILITY_7_2_REVIEW_IS_PRE_LIVE_GATE_PASS": false,
+        "POST_CAPABILITY_7_2_REVIEW_PRESENT": true
+      },
+      "rationale": "V2.1 ratification and Cap-7.2 review exist, but neither is an evidence-bound Pre-Live Acceptance architecture review PASS under \u00a718.2.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "THREAT_MODEL_CURRENT",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/20260810T171225Z/THREAT_MODEL_DELTA.json",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_THREAT_MODEL_ACCEPTANCE_PACKAGE_PRESENT": false,
+        "XPERP_THREAT_MODEL_DELTA_PRESENT": true
+      },
+      "rationale": "Venue-scoped threat-model deltas exist for \u00a711.12.8 bindings; no current Pre-Live acceptance threat-model package is bound as THREAT_MODEL_CURRENT=true.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "SECRETS_REVIEW",
+      "evidence_pointers": [
+        "docs/ops/specs/SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1.md",
+        "docs/ops/specs/SECRET_HYGIENE_AND_REDACTION_UNIFICATION_V1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_SECRETS_REVIEW_PACKAGE_PRESENT": false,
+        "SECRET_SCANNING_GOVERNANCE_SPEC_PRESENT": true
+      },
+      "rationale": "Repo secret-scanning governance exists; no evidence-bound Pre-Live SECRETS_REVIEW=PASS package is present.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "DEPENDENCY_AUDIT",
+      "evidence_pointers": [],
+      "observed": {
+        "PRE_LIVE_DEPENDENCY_AUDIT_PACKAGE_PRESENT": false
+      },
+      "rationale": "No current Pre-Live dependency-audit evidence package bound for \u00a718.2 PASS.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "SBOM_PRESENT",
+      "evidence_pointers": [],
+      "observed": {
+        "PRE_LIVE_SBOM_ARTIFACT_BOUND": false
+      },
+      "rationale": "No Pre-Live SBOM artifact is bound as SBOM_PRESENT=true for gate PASS.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "STATIC_SECURITY_ANALYSIS",
+      "evidence_pointers": [],
+      "observed": {
+        "PRE_LIVE_STATIC_SECURITY_ANALYSIS_PACKAGE_PRESENT": false
+      },
+      "rationale": "No evidence-bound Pre-Live static security analysis PASS package is present.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "SECURITY_REGRESSION",
+      "evidence_pointers": [],
+      "observed": {
+        "PRE_LIVE_SECURITY_REGRESSION_PACKAGE_PRESENT": false
+      },
+      "rationale": "No evidence-bound Pre-Live security regression PASS package is present.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "PENETRATION_PROGRAM",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#11.12.9"
+      ],
+      "observed": {
+        "MASTER_STATES_RATIFICATION_DOES_NOT_EXECUTE_PENTEST": true,
+        "PENETRATION_PROGRAM_EXECUTED": false
+      },
+      "rationale": "Master \u00a711.12.9 explicitly states docs ratification does not execute the penetration program; no Pre-Live pentest PASS evidence exists.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "CREDENTIAL_LEAKAGE_TEST",
+      "evidence_pointers": [
+        "docs/evidence/post_capability_7_2_cybersecurity_review_v1/network_credential_negative_proof_recompute_v1.json"
+      ],
+      "observed": {
+        "POST_CAPABILITY_7_2_NETWORK_CREDENTIAL_NEGATIVE_PROOF_PRESENT": true,
+        "PRE_LIVE_CREDENTIAL_LEAKAGE_TEST_PASS_PACKAGE_PRESENT": false
+      },
+      "rationale": "Historical Cap-7.2 negative credential proof is not Pre-Live CREDENTIAL_LEAKAGE_TEST=PASS.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "AUTHORITY_REPLAY_TEST",
+      "evidence_pointers": [],
+      "observed": {
+        "PRE_LIVE_AUTHORITY_REPLAY_TEST_PASS_PACKAGE_PRESENT": false
+      },
+      "rationale": "No evidence-bound Pre-Live authority-replay test PASS package is present.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "RECOVERY_SECURITY_TEST",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_8_closeout_package_v1/20260810T201332Z"
+      ],
+      "observed": {
+        "PRE_LIVE_RECOVERY_SECURITY_TEST_PASS_PACKAGE_PRESENT": false,
+        "TESTNET_AUTONOMOUS_RECOVERY_PROVEN": false,
+        "TESTNET_RESTART_PROVEN": false,
+        "TESTNET_UNKNOWN_SUBMIT_RECOVERY_PROVEN": false
+      },
+      "rationale": "Cap STAR recovery claims remain false; no Pre-Live recovery-security PASS package is bound.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "CRITICAL_FINDINGS_OPEN",
+      "evidence_pointers": [],
+      "observed": {
+        "CRITICAL_FINDINGS_OPEN_COUNT_UNKNOWN_WITHOUT_PRE_LIVE_REGISTER": true,
+        "PRE_LIVE_FINDINGS_REGISTER_BOUND": false
+      },
+      "rationale": "Without a Pre-Live findings register bound to this evaluation, CRITICAL_FINDINGS_OPEN=0 cannot be claimed.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "HIGH_FINDINGS_OPEN",
+      "evidence_pointers": [],
+      "observed": {
+        "HIGH_FINDINGS_OPEN_COUNT_UNKNOWN_WITHOUT_PRE_LIVE_REGISTER": true,
+        "PRE_LIVE_FINDINGS_REGISTER_BOUND": false
+      },
+      "rationale": "Without a Pre-Live findings register bound to this evaluation, HIGH_FINDINGS_OPEN=0 cannot be claimed.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "LIVE_TESTNET_ISOLATION_PROVEN",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md",
+        "evidence/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/20260810T171225Z/THREAT_MODEL_DELTA.json"
+      ],
+      "observed": {
+        "CYBERSECURITY_V2_1_ISOLATION_CONTRACT_DEFINED": true,
+        "PRE_LIVE_LIVE_TESTNET_ISOLATION_PROOF_PACKAGE_PRESENT": false,
+        "XPERP_BINDING_THREAT_MODEL_DELTA_PRESENT": true
+      },
+      "rationale": "Isolation contract and venue deltas exist; Pre-Live LIVE_TESTNET_ISOLATION_PROVEN is not evidence-bound.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "LIVE_DEFAULT_BLOCK_PROVEN",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#4.8.1",
+        "evidence/ops/section_11_12_8_closeout_package_v1/20260810T201332Z"
+      ],
+      "observed": {
+        "CANONICAL_INVARIANT_LIVE_DEFAULT_ENABLED_FALSE": true,
+        "MASTER_LIVE_AUTHORIZED_FALSE": true,
+        "PRE_LIVE_LIVE_DEFAULT_BLOCK_PROOF_PACKAGE_PRESENT": false
+      },
+      "rationale": "Governance defaults assert Live blocked; this evaluation does not bind a dedicated Pre-Live LIVE_DEFAULT_BLOCK_PROVEN package as gate PASS evidence.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "LIVE_ARMING_FAIL_CLOSED_PROVEN",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#4.8.1"
+      ],
+      "observed": {
+        "CANONICAL_INVARIANT_LIVE_DEFAULT_ARMED_FALSE": true,
+        "PRE_LIVE_LIVE_ARMING_FAIL_CLOSED_PROOF_PACKAGE_PRESENT": false
+      },
+      "rationale": "Invariant declared; no evidence-bound Pre-Live arming fail-closed proof package is present for gate PASS.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "AUDIT_EVIDENCE_VERIFIED",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_8_closeout_package_v1/20260810T201332Z",
+        "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1/20260810T194806Z",
+        "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_clean_closeout_after_cancel_instid_fix_v1/20260810T200151Z",
+        "docs/evidence/post_capability_7_2_cybersecurity_review_v1"
+      ],
+      "observed": {
+        "ACK_MANIFEST_VERIFY_RC": 0,
+        "CLEAN_MANIFEST_VERIFY_RC": 0,
+        "POST_72_MANIFEST_VERIFY_RC": 0,
+        "PRE_LIVE_GATE_AUDIT_BUNDLE_COMPLETE": false,
+        "SECTION_11_12_8_CLOSEOUT_MANIFEST_VERIFY_RC": 0
+      },
+      "rationale": "Predecessor manifests verify (where present), but a complete Pre-Live gate audit evidence bundle is not verified as AUDIT_EVIDENCE_VERIFIED=true.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PROVEN"
+    },
+    {
+      "criterion": "MANIFEST_VERIFY_RC",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_8_closeout_package_v1/20260810T201332Z"
+      ],
+      "observed": {
+        "PREDECESSOR_CLOSEOUT_MANIFEST_VERIFY_RC": 0,
+        "THIS_EVALUATION_MANIFEST_WILL_BE_VERIFIED_AFTER_SEAL": true
+      },
+      "rationale": "This criterion for gate PASS requires the Pre-Live acceptance evidence seal; evaluation package will self-verify after MANIFEST write. Predecessor closeout RC recorded.",
+      "required_for_gate_pass": true,
+      "verdict": "DEFERRED_TO_THIS_PACKAGE_SEAL"
+    },
+    {
+      "criterion": "PRE_LIVE_CYBERSECURITY_GATE",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_8_closeout_package_v1/20260810T201332Z",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_CYBERSECURITY_GATE": "NOT_PASSED"
+      },
+      "rationale": "Hard-blocked: Cap 11.12 STAR prerequisites unmet and Pre-Live security acceptance packages absent; gate remains NOT_PASSED.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PASSED"
+    },
+    {
+      "criterion": "HARD_STOP_OPEN_CRITICAL_OR_HIGH_FINDINGS",
+      "evidence_pointers": [],
+      "observed": {
+        "PRE_LIVE_FINDINGS_REGISTER_BOUND": false
+      },
+      "rationale": "Cannot assert zero Critical/High without Pre-Live findings register; fail-closed blocks gate PASS.",
+      "required_for_gate_pass": false,
+      "verdict": "BLOCKING_UNKNOWN"
+    },
+    {
+      "criterion": "SECTION_11_13_STARTED",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_8_closeout_package_v1/20260810T201332Z"
+      ],
+      "observed": {
+        "SECTION_11_13_STARTED": false
+      },
+      "rationale": "\u00a711.13 remains unstarted; evaluation must not start it.",
+      "required_for_gate_pass": false,
+      "verdict": "PASS_PRESERVED_FALSE"
+    },
+    {
+      "criterion": "LIVE_AUTHORIZED",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_8_closeout_package_v1/20260810T201332Z"
+      ],
+      "observed": {
+        "LIVE_AUTHORIZED": false
+      },
+      "rationale": "Live remains unauthorized; evaluation must not authorize Live.",
+      "required_for_gate_pass": false,
+      "verdict": "PASS_PRESERVED_FALSE"
+    },
+    {
+      "criterion": "NO_RUNTIME_CHANGE_NO_ORDER_BY_THIS_EVALUATION",
+      "evidence_pointers": [],
+      "observed": {
+        "NO_CREDENTIAL_ACCESS": true,
+        "NO_ORDER": true,
+        "NO_RUNTIME_CHANGE": true,
+        "NO_TESTNET_SESSION_START": true
+      },
+      "rationale": "This Owner-GO is docs/evidence evaluation only.",
+      "required_for_gate_pass": false,
+      "verdict": "PASS"
+    }
+  ],
+  "DOCUMENT_CLASS": "SECTION_11_12_9_PRE_LIVE_CYBERSECURITY_ACCEPTANCE_GATE_EVALUATION_MATRIX_V1",
+  "ELIGIBLE_FOR_LIVE_READINESS_EVALUATION": false,
+  "GATE_PASS_BLOCKERS": [
+    "TESTNET_LIFECYCLE_PROVEN",
+    "LONG_RUNNING_TESTNET_PROVEN",
+    "CYBERSECURITY_ARCHITECTURE_REVIEW",
+    "THREAT_MODEL_CURRENT",
+    "SECRETS_REVIEW",
+    "DEPENDENCY_AUDIT",
+    "SBOM_PRESENT",
+    "STATIC_SECURITY_ANALYSIS",
+    "SECURITY_REGRESSION",
+    "PENETRATION_PROGRAM",
+    "CREDENTIAL_LEAKAGE_TEST",
+    "AUTHORITY_REPLAY_TEST",
+    "RECOVERY_SECURITY_TEST",
+    "CRITICAL_FINDINGS_OPEN",
+    "HIGH_FINDINGS_OPEN",
+    "LIVE_TESTNET_ISOLATION_PROVEN",
+    "LIVE_DEFAULT_BLOCK_PROVEN",
+    "LIVE_ARMING_FAIL_CLOSED_PROVEN",
+    "AUDIT_EVIDENCE_VERIFIED",
+    "MANIFEST_VERIFY_RC",
+    "PRE_LIVE_CYBERSECURITY_GATE"
+  ],
+  "GENERATED_AT_UTC": "2026-08-10T20:28:00Z",
+  "ORIGIN_MAIN_SHA": "86a224e317e10fbf149c83077ecef94d9bc5bb93",
+  "OWNER_GO": "OWNER_GO_SECTION_11_12_9_PRE_LIVE_CYBERSECURITY_ACCEPTANCE_GATE_EVIDENCE_BOUND_EVALUATION",
+  "PRE_LIVE_CYBERSECURITY_GATE": "NOT_PASSED",
+  "RUN_ID": "20260810T202800Z",
+  "SUMMARY": {
+    "BLOCKING_UNKNOWN": 1,
+    "DEFERRED_TO_THIS_PACKAGE_SEAL": 1,
+    "NOT_PASSED": 1,
+    "NOT_PROVEN": 19,
+    "PASS": 1,
+    "PASS_PRESERVED_FALSE": 2
+  }
+}
