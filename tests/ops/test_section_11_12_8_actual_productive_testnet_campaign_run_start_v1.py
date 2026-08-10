@@ -38,6 +38,7 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.clo
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.constants_v1 import (
     ACCEPTED_OWNER_GO_SCOPES,
     BLOCKER_IDS,
+    CANONICAL_INSTRUMENT_SCOPE,
     CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
     CANONICAL_VENUE,
     CAPABILITY_ID,
@@ -150,6 +151,21 @@ def test_capability_identity() -> None:
     assert SECTION_11_13_STARTED is False
     assert CANONICAL_VENUE == "OKX_EEA_DEMO"
     assert CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1 == "0.0001"
+    assert CANONICAL_INSTRUMENT_SCOPE == ("BTC-USD_UM_XPERP-310328",)
+    assert "BTC-USDT-SWAP" not in CANONICAL_INSTRUMENT_SCOPE
+    from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.constants_v1 import (
+        ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH,
+        BTC_USDT_SWAP_PATH_STATUS,
+        SWAP_RUNTIME_FALLBACK,
+        SWAP_WRITE_AUTHORIZATION,
+        XPERP_ONLY_ACTIVE_WRITE_SCOPE,
+    )
+
+    assert BTC_USDT_SWAP_PATH_STATUS == "CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY"
+    assert ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH == "OKX_EEA_DEMO_XPERP"
+    assert SWAP_RUNTIME_FALLBACK is False
+    assert SWAP_WRITE_AUTHORIZATION is False
+    assert XPERP_ONLY_ACTIVE_WRITE_SCOPE is True
     assert SCOPED_OWNER_GO_SCOPE == ("EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN")
     assert SCOPED_OWNER_GO_SCOPE_LEGACY_LONG_RUNNING in ACCEPTED_OWNER_GO_SCOPES
     assert SCOPED_OWNER_GO_SCOPE_LEGACY_ALIAS in ACCEPTED_OWNER_GO_SCOPES
@@ -210,6 +226,29 @@ def test_owner_go_accept_and_rejects() -> None:
             owner_go_scope=SCOPED_OWNER_GO_SCOPE,
             owner_go_authorization=SCOPED_OWNER_GO_AUTHORIZATION,
             consumption_id="cid-1",
+        )
+    with pytest.raises(ActualStartOwnerGoError, match="SWAP_OWNER_GO_SCOPE_NOT_CONSUMABLE"):
+        consume_actual_start_owner_go_v1(
+            owner_go_token=SCOPED_OWNER_GO_TOKEN,
+            owner_go_scope="EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_BTC_USDT_SWAP",
+            owner_go_authorization="EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_BTC_USDT_SWAP",
+            consumption_id="cid-swap",
+        )
+
+
+def test_swap_instrument_submit_fail_closed() -> None:
+    transport = build_stubbed_testnet_transport_v1()
+    port = construct_productive_testnet_execution_port_v1(
+        authorized=True, transport=transport, stubbed=True
+    )
+    with pytest.raises(ActualStartPortError, match="CLOSED_DEPRECATED"):
+        port.submit_order_v1(
+            client_order_id="c-swap",
+            instrument="BTC-USDT-SWAP",
+            order_type="LIMIT",
+            side="buy",
+            quantity="1",
+            px="10000",
         )
 
 

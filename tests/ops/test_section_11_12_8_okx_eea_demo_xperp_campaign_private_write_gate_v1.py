@@ -89,7 +89,8 @@ def test_canonical_go_pass_and_legacy_aliases() -> None:
         ({"owner_go_scope": "WRONG", "owner_go_authorization": "WRONG"}, "OWNER_GO_SCOPE"),
         ({"venue": "okx_global"}, "VENUE_MISMATCH"),
         ({"rest_base": "https://openapi.okx.com"}, "HOST_NOT_OKX_EEA_DEMO"),
-        ({"instrument_scope_exact": "BTC-USDT-SWAP"}, "INSTRUMENT_SCOPE_MISMATCH"),
+        ({"instrument_scope_exact": "BTC-USDT-SWAP"}, "CLOSED_DEPRECATED"),
+        ({"instrument_scope_exact": "ETH-USDT-SWAP"}, "INSTRUMENT_SCOPE_MISMATCH"),
         ({"confirm_latched": False}, "HIDDEN_CONFIRM_NOT_LATCHED"),
         ({"secretref_ephemeral_loaded": False}, "SECRETREF_EPHEMERAL_NOT_LOADED"),
         ({"live_authorized": True}, "LIVE_PATH_HARD_BLOCK"),
@@ -102,6 +103,44 @@ def test_canonical_go_pass_and_legacy_aliases() -> None:
 def test_fail_closed_matrix(overrides: dict[str, object], match: str) -> None:
     with pytest.raises(OkxEeaDemoXperpCampaignPrivateWriteGateError, match=match):
         evaluate_ephemeral_campaign_private_write_gate_v1(**_full_kwargs(**overrides))
+
+
+def test_btc_usdt_swap_path_closed_deprecated_not_reactivatable() -> None:
+    from src.ops.section_11_12_8_okx_eea_demo_xperp_campaign_private_write_gate_v1.constants_v1 import (
+        ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH,
+        BTC_USDT_SWAP_PATH_STATUS,
+        SWAP_RUNTIME_FALLBACK,
+        SWAP_WRITE_AUTHORIZATION,
+        XPERP_ONLY_ACTIVE_WRITE_SCOPE,
+    )
+    from src.ops.section_11_12_8_okx_eea_demo_xperp_campaign_private_write_gate_v1.gate_v1 import (
+        assert_deprecated_btc_usdt_swap_path_forbidden_v1,
+    )
+
+    assert BTC_USDT_SWAP_PATH_STATUS == "CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY"
+    assert ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH == "OKX_EEA_DEMO_XPERP"
+    assert SWAP_RUNTIME_FALLBACK is False
+    assert SWAP_WRITE_AUTHORIZATION is False
+    assert XPERP_ONLY_ACTIVE_WRITE_SCOPE is True
+    with pytest.raises(
+        OkxEeaDemoXperpCampaignPrivateWriteGateError,
+        match="CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY",
+    ):
+        assert_deprecated_btc_usdt_swap_path_forbidden_v1(instrument="BTC-USDT-SWAP")
+    with pytest.raises(
+        OkxEeaDemoXperpCampaignPrivateWriteGateError,
+        match="SWAP_OWNER_GO_SCOPE_NOT_CONSUMABLE",
+    ):
+        assert_deprecated_btc_usdt_swap_path_forbidden_v1(
+            owner_go_scope="EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_BTC_USDT_SWAP"
+        )
+    with pytest.raises(
+        OkxEeaDemoXperpCampaignPrivateWriteGateError,
+        match="CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY",
+    ):
+        evaluate_ephemeral_campaign_private_write_gate_v1(
+            **_full_kwargs(instrument_scope_exact="BTC-USDT-SWAP")
+        )
 
 
 def test_mutation_requires_ephemeral_pass_and_binding_default_untouched() -> None:

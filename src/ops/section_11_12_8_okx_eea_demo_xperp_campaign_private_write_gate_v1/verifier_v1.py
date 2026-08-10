@@ -8,6 +8,8 @@ from pathlib import Path
 from typing import Any
 
 from src.ops.section_11_12_8_okx_eea_demo_xperp_campaign_private_write_gate_v1.constants_v1 import (
+    ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH,
+    BTC_USDT_SWAP_PATH_STATUS,
     CANONICAL_NEXT_STEP_AFTER_MERGE,
     CANONICAL_ORDER_SZ,
     CAPABILITY_ID,
@@ -23,10 +25,14 @@ from src.ops.section_11_12_8_okx_eea_demo_xperp_campaign_private_write_gate_v1.c
     SECTION_11_12_8_STATUS,
     SECTION_11_13_STARTED,
     SUMMARY_FILENAME,
+    SWAP_RUNTIME_FALLBACK,
+    SWAP_WRITE_AUTHORIZATION,
     VENUE,
+    XPERP_ONLY_ACTIVE_WRITE_SCOPE,
 )
 from src.ops.section_11_12_8_okx_eea_demo_xperp_campaign_private_write_gate_v1.gate_v1 import (
     OkxEeaDemoXperpCampaignPrivateWriteGateError,
+    assert_deprecated_btc_usdt_swap_path_forbidden_v1,
     assert_mutation_allowed_under_ephemeral_gate_v1,
     evaluate_ephemeral_campaign_private_write_gate_v1,
 )
@@ -87,6 +93,11 @@ def _fail_closed_matrix() -> list[dict[str, Any]]:
     _expect(
         "wrong_instrument",
         "INSTRUMENT_SCOPE_MISMATCH",
+        instrument_scope_exact="ETH-USDT-SWAP",
+    )
+    _expect(
+        "deprecated_swap_instrument",
+        "BTC_USDT_SWAP_PATH_CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY",
         instrument_scope_exact="BTC-USDT-SWAP",
     )
     _expect(
@@ -100,6 +111,17 @@ def _fail_closed_matrix() -> list[dict[str, Any]]:
         "PACKAGE_DEFAULT_ORDER_POST_MUST_REMAIN_FALSE",
         package_default_order_post_authorized=True,
     )
+    try:
+        assert_deprecated_btc_usdt_swap_path_forbidden_v1(instrument="BTC-USDT-SWAP")
+        cases.append({"case": "swap_instrument_forbidden", "ok": False, "error": "EXPECTED_FAIL"})
+    except OkxEeaDemoXperpCampaignPrivateWriteGateError as exc:
+        cases.append(
+            {
+                "case": "swap_instrument_forbidden",
+                "ok": "CLOSED_DEPRECATED" in str(exc),
+                "error": str(exc),
+            }
+        )
     return cases
 
 
@@ -154,19 +176,32 @@ def verify_okx_eea_demo_xperp_campaign_private_write_gate_v1(*, work_dir: Path) 
         "NETWORK_EFFECT": "NONE",
         "ORDER_EFFECT": "NONE",
         "ORDER_ATTEMPT_COUNT": 0,
+        "BTC_USDT_SWAP_PATH_STATUS": BTC_USDT_SWAP_PATH_STATUS,
+        "ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH": (
+            ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH
+        ),
+        "SWAP_RUNTIME_FALLBACK": SWAP_RUNTIME_FALLBACK,
+        "SWAP_WRITE_AUTHORIZATION": SWAP_WRITE_AUTHORIZATION,
+        "XPERP_ONLY_ACTIVE_WRITE_SCOPE": XPERP_ONLY_ACTIVE_WRITE_SCOPE,
     }
     summary = {
         "ok": bool(gate.pass_gate)
         and mutation_blocked_without_gate
         and all(c["ok"] for c in fail_cases)
         and PACKAGE_DEFAULT_ORDER_POST_AUTHORIZED is False
-        and BINDING_ORDER_POST_AUTHORIZED is False,
+        and BINDING_ORDER_POST_AUTHORIZED is False
+        and BTC_USDT_SWAP_PATH_STATUS == "CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY"
+        and ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH == "OKX_EEA_DEMO_XPERP"
+        and SWAP_RUNTIME_FALLBACK is False
+        and SWAP_WRITE_AUTHORIZATION is False
+        and XPERP_ONLY_ACTIVE_WRITE_SCOPE is True,
         "ephemeral_campaign_write_gate_pass": gate.ephemeral_campaign_write_gate_pass,
         "mutation_blocked_without_gate": mutation_blocked_without_gate,
         "fail_closed_cases": fail_cases,
         "ORDER_EFFECT": "NONE",
         "LIVE_AUTHORIZED": False,
         "SECTION_11_13_STARTED": False,
+        "BTC_USDT_SWAP_PATH_STATUS": BTC_USDT_SWAP_PATH_STATUS,
     }
     _write_json(work_dir / CLAIMS_FILENAME, claims)
     _write_json(work_dir / SUMMARY_FILENAME, summary)

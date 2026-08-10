@@ -139,6 +139,19 @@ def test_governance_defaults_and_active_campaign_instrument_rebinding() -> None:
         "OWNER_GO_EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN"
         "_WITH_HIDDEN_CONFIRM_AND_SECRETREF_VAULT_RUNTIME"
     )
+    from src.ops.section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1.constants_v1 import (
+        ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH,
+        BTC_USDT_SWAP_PATH_STATUS,
+        SWAP_RUNTIME_FALLBACK,
+        SWAP_WRITE_AUTHORIZATION,
+        XPERP_ONLY_ACTIVE_WRITE_SCOPE,
+    )
+
+    assert BTC_USDT_SWAP_PATH_STATUS == "CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY"
+    assert ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH == "OKX_EEA_DEMO_XPERP"
+    assert SWAP_RUNTIME_FALLBACK is False
+    assert SWAP_WRITE_AUTHORIZATION is False
+    assert XPERP_ONLY_ACTIVE_WRITE_SCOPE is True
     assert campaign_constants.CANONICAL_INSTRUMENT_SCOPE == (INSTRUMENT_SCOPE_EXACT,)
     assert campaign_constants.CANONICAL_VENUE == VENUE
     assert campaign_constants.CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1 == "0.0001"

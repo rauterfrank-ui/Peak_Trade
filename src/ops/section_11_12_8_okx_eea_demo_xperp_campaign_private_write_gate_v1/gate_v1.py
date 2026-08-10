@@ -11,7 +11,9 @@ from src.ops.section_11_12_8_okx_eea_demo_xperp_campaign_private_write_gate_v1.c
     ACCEPTED_OWNER_GO_SCOPES,
     DEMO_MARKER_HEADER_NAME,
     DEMO_MARKER_HEADER_VALUE,
+    DEPRECATED_INSTRUMENT_BTC_USDT_SWAP,
     ENVIRONMENT,
+    FORBIDDEN_SWAP_OWNER_GO_MARKERS,
     INSTRUMENT_SCOPE_EXACT,
     INSTRUMENT_TYPE,
     LIVE_AUTHORIZED,
@@ -22,7 +24,10 @@ from src.ops.section_11_12_8_okx_eea_demo_xperp_campaign_private_write_gate_v1.c
     RULE_TYPE,
     RUNTIME_MODE,
     SECTION_11_13_STARTED,
+    SWAP_RUNTIME_FALLBACK,
+    SWAP_WRITE_AUTHORIZATION,
     VENUE,
+    XPERP_ONLY_ACTIVE_WRITE_SCOPE,
 )
 from src.ops.section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1.constants_v1 import (
     ORDER_POST_AUTHORIZED as BINDING_PACKAGE_ORDER_POST_AUTHORIZED,
@@ -59,6 +64,39 @@ class EphemeralCampaignPrivateWriteGateRecordV1:
             "live_authorized": self.live_authorized,
             "reason": self.reason,
         }
+
+
+def assert_deprecated_btc_usdt_swap_path_forbidden_v1(
+    *,
+    instrument: str | None = None,
+    owner_go_scope: str | None = None,
+    owner_go_authorization: str | None = None,
+) -> None:
+    """Fail closed if historical SWAP path is offered as active runtime/auth."""
+    if SWAP_RUNTIME_FALLBACK is not False:
+        raise OkxEeaDemoXperpCampaignPrivateWriteGateError(
+            "SWAP_RUNTIME_FALLBACK_MUST_REMAIN_FALSE"
+        )
+    if SWAP_WRITE_AUTHORIZATION is not False:
+        raise OkxEeaDemoXperpCampaignPrivateWriteGateError(
+            "SWAP_WRITE_AUTHORIZATION_MUST_REMAIN_FALSE"
+        )
+    if XPERP_ONLY_ACTIVE_WRITE_SCOPE is not True:
+        raise OkxEeaDemoXperpCampaignPrivateWriteGateError("XPERP_ONLY_ACTIVE_WRITE_SCOPE_REQUIRED")
+    inst = str(instrument or "").strip()
+    if inst == DEPRECATED_INSTRUMENT_BTC_USDT_SWAP:
+        raise OkxEeaDemoXperpCampaignPrivateWriteGateError(
+            "BTC_USDT_SWAP_PATH_CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY"
+        )
+    for value in (owner_go_scope, owner_go_authorization):
+        text = str(value or "").strip().upper()
+        if not text:
+            continue
+        for marker in FORBIDDEN_SWAP_OWNER_GO_MARKERS:
+            if marker.upper() in text:
+                raise OkxEeaDemoXperpCampaignPrivateWriteGateError(
+                    f"SWAP_OWNER_GO_SCOPE_NOT_CONSUMABLE:{marker}"
+                )
 
 
 def _assert_host(rest_base: str) -> str:
@@ -106,6 +144,11 @@ def evaluate_ephemeral_campaign_private_write_gate_v1(
     section_11_13_started: bool = SECTION_11_13_STARTED,
 ) -> EphemeralCampaignPrivateWriteGateRecordV1:
     """Default-deny ephemeral write gate. Raises on any unmet precondition."""
+    assert_deprecated_btc_usdt_swap_path_forbidden_v1(
+        instrument=instrument_scope_exact,
+        owner_go_scope=owner_go_scope,
+        owner_go_authorization=owner_go_authorization,
+    )
     if LIVE_AUTHORIZED is not False:
         raise OkxEeaDemoXperpCampaignPrivateWriteGateError("LIVE_AUTHORIZED_CONSTANT_DRIFT")
     if live_authorized or live_mode:

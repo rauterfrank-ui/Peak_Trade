@@ -61,8 +61,11 @@ forensics only. Their existence must not be rewritten and must not become the
 active §11.12.8 binding again without a new scoped Owner-GO.
 
 `FURTHER_OKX_EEA_DEMO_ORDER_POSTS_AUTHORIZED=false` from §11.12.8.3 remains
-binding for the closed BTC-USDT-SWAP path and must not be read as a permanent
-ban of the separately gated XPerp ephemeral campaign write path (§11.12.8.6).
+binding for the closed BTC-USDT-SWAP path (`CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY`)
+and must not be read as a permanent ban of the separately gated XPerp ephemeral
+campaign write path (§11.12.8.6). BTC-USDT-SWAP is not an active runtime,
+authorization, venue, or instrument fallback and must not consume Owner-GO
+scopes for write&#47;execute.
 
 Bound private READ-only proof pointer (immutable; not rewritten by this package):
 

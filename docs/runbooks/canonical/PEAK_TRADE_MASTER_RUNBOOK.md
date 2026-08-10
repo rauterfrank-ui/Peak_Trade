@@ -3411,10 +3411,20 @@ capability unavailability. This is **not** §11.12.8 proof closure and does
 
 ``` text
 OKX_EEA_DEMO_PRODUCTIVE_ORDER_PATH_STATUS=CLOSED_EXTERNAL_CAPABILITY_UNAVAILABLE
+BTC_USDT_SWAP_PATH_STATUS=CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY
+BTC_USDT_SWAP_PATH_CLASS=CLOSED|DEPRECATED|HISTORICAL_EVIDENCE_ONLY
+BTC_USDT_SWAP_ACTIVE_SECTION_11_12_8_RUNTIME_PATH=false
+BTC_USDT_SWAP_AUTHORIZATION_FALLBACK=false
+BTC_USDT_SWAP_VENUE_OR_INSTRUMENT_FALLBACK=false
+BTC_USDT_SWAP_OWNER_GO_SCOPE_CONSUMABLE=false
+BTC_USDT_SWAP_FUTURE_ORDER_POST_DERIVABLE_FROM_THIS_PATH=false
+SWAP_RUNTIME_FALLBACK=false
+SWAP_WRITE_AUTHORIZATION=false
 OKX_EEA_DEMO_PATH_CLOSEOUT_EVIDENCE=evidence&#47;ops&#47;section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1&#47;20260810T143709Z&#47;
 OKX_EEA_DEMO_PATH_CLOSEOUT_ORIGIN_MAIN_SHA=b6d2faa96bae40c7bfb36633b6ecb0a565514a87
 SECTION_11_12_8_CLOSED=false
-SECTION_11_12_8_STATUS=OPEN_OKX_EEA_DEMO_PATH_CLOSED_AWAITING_ALTERNATE_VENUE_OWNER_SCOPE
+SECTION_11_12_8_STATUS_AT_SWAP_CLOSEOUT=OPEN_OKX_EEA_DEMO_PATH_CLOSED_AWAITING_ALTERNATE_VENUE_OWNER_SCOPE
+SECTION_11_12_8_STATUS_AT_SWAP_CLOSEOUT_ROLE=HISTORICAL_POINTER_SUPERSEDED_BY_SECTION_11_12_8_5_AND_11_12_8_6
 TESTNET_STAR_PROVEN=false
 LIVE_AUTHORIZED=false
 SECTION_11_13_STARTED=false
@@ -3425,12 +3435,23 @@ CANONICAL_NEXT_STEP_AFTER_OKX_EEA_DEMO_PATH_CLOSEOUT=OWNER_GO_SELECT_ALTERNATE_D
 CANONICAL_NEXT_STEP_AFTER_OKX_EEA_DEMO_PATH_CLOSEOUT_ROLE=HISTORICAL_POINTER_SUPERSEDED_BY_SECTION_11_12_8_4
 ```
 
-`FURTHER_OKX_EEA_DEMO_ORDER_POSTS_AUTHORIZED=false` remains **binding for the
-already closed BTC-USDT-SWAP productive-order path** closed here. It must
-**not** be read as a permanent prohibition of the separately bound OKX EEA
-Demo XPerp campaign private-write path under §11.12.8.5 &#47; §11.12.8.6.
-That XPerp path keeps package default `ORDER_POST_AUTHORIZED=false` and
-requires its own ephemeral write-gate + scoped Owner-EXECUTE chain.
+The historical BTC-USDT-SWAP productive-order path is **CLOSED**,
+**DEPRECATED**, and **HISTORICAL_EVIDENCE_ONLY**. Sealed forensic diagnosis
+and evidence remain retained and verifiable. Operative meaning:
+
+- it is **not** an active §11.12.8 runtime path;
+- it is **not** an authorization fallback;
+- it is **not** a venue&#47;instrument fallback;
+- it must **not** consume any Owner-GO scope for campaign write&#47;execute;
+- it must **not** be used to derive any future Order-POST authorization.
+
+`FURTHER_OKX_EEA_DEMO_ORDER_POSTS_AUTHORIZED=false` remains **binding for this
+closed BTC-USDT-SWAP path**. It must **not** be read as a permanent
+prohibition of the separately bound OKX EEA Demo XPerp campaign private-write
+path under §11.12.8.5 &#47; §11.12.8.6. That XPerp path keeps package default
+`ORDER_POST_AUTHORIZED=false` and requires its own ephemeral write-gate +
+scoped Owner-EXECUTE chain. The **only** active §11.12.8 derivatives campaign
+path is OKX EEA Demo XPerp (`BTC-USD_UM_XPERP-310328` on `https://eea.okx.com`).
 
 Forensic basis retained (non-exhaustive; see sealed closeout evidence):
 
@@ -3448,11 +3469,16 @@ Mandatory distinctions:
 
 ``` text
 PATH_CLOSED_EXTERNAL_UNAVAILABLE != SECTION_11_12_8_PROVEN_CLOSED
+BTC_USDT_SWAP_CLOSED_DEPRECATED != SECTION_11_12_8_PROVEN_CLOSED
+HISTORICAL_EVIDENCE_ONLY != ACTIVE_RUNTIME_PATH
+HISTORICAL_EVIDENCE_ONLY != AUTHORIZATION_FALLBACK
 ALTERNATE_EVALUATION != VENUE_ACTIVATION
 ALTERNATE_EVALUATION != TESTNET_AUTHORIZED
 ALTERNATE_EVALUATION != INSTRUMENT_BINDING_CHANGE
 NO_ORDER_EVALUATION_MAY_NOT_PLACE_ORDERS=true
 NO_SILENT_VENUE_SWITCH=true
+NO_SWAP_RUNTIME_FALLBACK=true
+NO_SWAP_WRITE_AUTHORIZATION=true
 ```
 
 The sealed no-order evaluation ranks holding&#47;next options only. Any later
@@ -3650,7 +3676,23 @@ CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_8_6
 CANONICAL_NEXT_STEP=OWNER_GO_EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN_WITH_HIDDEN_CONFIRM_AND_SECRETREF_VAULT_RUNTIME
 CAMPAIGN_AUTO_STARTED_BY_THIS_SECTION=false
 NO_OKX_GLOBAL_OR_BTC_USDT_SWAP_FALLBACK=true
+BTC_USDT_SWAP_PATH_STATUS=CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY
+ACTIVE_SECTION_11_12_8_DERIVATIVES_CAMPAIGN_PATH=OKX_EEA_DEMO_XPERP
+SWAP_RUNTIME_FALLBACK=false
+SWAP_WRITE_AUTHORIZATION=false
+XPERP_ONLY_ACTIVE_WRITE_SCOPE=true
 ```
+
+The only active §11.12.8 derivatives campaign path under this section is:
+
+- Venue `OKX_EEA_DEMO`
+- Host `https://eea.okx.com`
+- Environment `DEMO`
+- Instrument `BTC-USD_UM_XPERP-310328`
+
+`BTC-USDT-SWAP` remains CLOSED &#47; DEPRECATED &#47; HISTORICAL_EVIDENCE_ONLY and
+must fail closed if offered as runtime, authorization, venue, or instrument
+fallback.
 
 Mandatory distinctions:
 
@@ -3663,6 +3705,7 @@ LEGACY_GO_ALIAS != SCOPE_EXPANSION
 UNKNOWN_SUBMIT != BLIND_RESUBMIT
 UNRESOLVED_FINAL_RECONCILE != SUCCESSFUL_SEAL
 SECTION_11_12_8_STATUS_OPEN != SECTION_11_12_8_CLOSED
+BTC_USDT_SWAP_HISTORICAL != ACTIVE_XPERP_CAMPAIGN_PATH
 ```
 
 Live remains hard-blocked. Cap &#47; §11.13 remains unstarted.

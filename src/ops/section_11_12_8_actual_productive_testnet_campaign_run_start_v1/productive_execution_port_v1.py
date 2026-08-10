@@ -11,7 +11,10 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     CANONICAL_RUNTIME_MODE,
     CANONICAL_VENUE,
     CONTRACT_VERSION,
+    DEPRECATED_INSTRUMENT_BTC_USDT_SWAP,
     OWNER,
+    SWAP_RUNTIME_FALLBACK,
+    SWAP_WRITE_AUTHORIZATION,
 )
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.okx_response_mapper_v1 import (
     build_venue_native_order_body_v1,
@@ -64,6 +67,12 @@ class ProductiveTestnetExecutionPortV1:
             raise ActualStartPortError("SUBMIT_FORBIDDEN_WITHOUT_AUTHORIZATION")
         if self.EXECUTION_MODE != "TESTNET":
             raise ActualStartPortError("LIVE_OR_NON_TESTNET_SUBMIT_FORBIDDEN")
+        if SWAP_RUNTIME_FALLBACK is not False or SWAP_WRITE_AUTHORIZATION is not False:
+            raise ActualStartPortError("SWAP_FALLBACK_OR_WRITE_AUTHORIZATION_FORBIDDEN")
+        if instrument == DEPRECATED_INSTRUMENT_BTC_USDT_SWAP:
+            raise ActualStartPortError(
+                "BTC_USDT_SWAP_PATH_CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY"
+            )
         if instrument not in self.instrument_scope:
             raise ActualStartPortError(f"INSTRUMENT_OUT_OF_SCOPE:{instrument}")
         if order_type not in self.allowed_order_types:

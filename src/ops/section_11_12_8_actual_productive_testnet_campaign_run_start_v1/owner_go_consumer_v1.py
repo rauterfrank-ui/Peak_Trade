@@ -9,8 +9,12 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     ACCEPTED_OWNER_GO_AUTHORIZATIONS,
     ACCEPTED_OWNER_GO_SCOPES,
     CAPABILITY_ID,
+    FORBIDDEN_SWAP_OWNER_GO_MARKERS,
     LIVE_AUTHORIZED,
     SCOPED_OWNER_GO_TOKEN,
+)
+from src.ops.section_11_12_8_okx_eea_demo_xperp_campaign_private_write_gate_v1.gate_v1 import (
+    assert_deprecated_btc_usdt_swap_path_forbidden_v1,
 )
 
 
@@ -67,6 +71,16 @@ def consume_actual_start_owner_go_v1(
         raise ActualStartOwnerGoError("OWNER_GO_CONSUMPTION_ID_REQUIRED")
     if token != SCOPED_OWNER_GO_TOKEN:
         raise ActualStartOwnerGoError(f"SCOPED_OWNER_GO_TOKEN_MISMATCH:{token}")
+    try:
+        assert_deprecated_btc_usdt_swap_path_forbidden_v1(
+            owner_go_scope=scope,
+            owner_go_authorization=authorization,
+        )
+    except Exception as exc:  # noqa: BLE001 — convert to Owner-GO fail-closed
+        raise ActualStartOwnerGoError(str(exc)) from exc
+    for marker in FORBIDDEN_SWAP_OWNER_GO_MARKERS:
+        if marker.upper() in scope.upper() or marker.upper() in authorization.upper():
+            raise ActualStartOwnerGoError(f"SWAP_OWNER_GO_SCOPE_NOT_CONSUMABLE:{marker}")
     if scope not in ACCEPTED_OWNER_GO_SCOPES:
         raise ActualStartOwnerGoError(f"SCOPED_OWNER_GO_SCOPE_MISMATCH:{scope}")
     if authorization not in ACCEPTED_OWNER_GO_AUTHORIZATIONS:
