@@ -1,0 +1,21 @@
+{
+  "DOCUMENT_CLASS": "PROVENANCE_INDEX_TESTNET_EVIDENCE_VERIFIED_V1",
+  "NETWORK_EFFECT": "NONE",
+  "ORIGIN_MAIN_SHA": "86573348217804d4912d116da5a4e44bd1b9bbf9",
+  "REUSED_EVIDENCE_ROOTS": [
+    "evidence/ops/section_11_12_testnet_order_lifecycle_proven_v1/20260810T215942Z/",
+    "evidence/ops/section_11_12_testnet_reconciliation_proven_v1/20260810T221902Z/",
+    "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/",
+    "evidence/ops/section_11_12_testnet_unknown_submit_recovery_proven_v1/20260810T224947Z/",
+    "evidence/ops/section_11_12_testnet_duplicate_order_prevention_proven_v1/20260810T230257Z/",
+    "evidence/ops/section_11_12_testnet_kill_switch_proven_v1/20260810T232151Z/",
+    "evidence/ops/section_11_12_testnet_autonomous_recovery_proven_v1/20260810T233904Z/"
+  ],
+  "RUN_ID": "20260810T235545Z",
+  "SSOT_OWNERS": [
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+  ],
+  "VERIFIER_METHOD": "shasum -a 256 -c MANIFEST.sha256 per sealed root + MACHINE_READABLE_PROOF consistency + SSOT pointer cross-check"
+}
