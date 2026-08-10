@@ -45,7 +45,7 @@ CORE_LOGIC_CHANGE=false
 | Demo marker | `x-simulated-trading: 1` (mandatory) |
 | Instrument | `BTC-USDT-SWAP` (exact; no substitution) |
 | Credential class | `OKX_DEMO_TRADING_API_KEY_ONLY` via SecretRef only |
-| SecretRef | `secretref://vault/peak-trade/okx-global-demo-trading` |
+| SecretRef | `secretref:&#47;&#47;vault&#47;peak-trade&#47;okx-global-demo-trading` |
 
 ## Shared-host compensating controls
 
