@@ -1,0 +1,76 @@
+{
+  "ALL_LAYERS_MATCH": true,
+  "DOCUMENT_CLASS": "BOUNDED_PRODUCTIVE_TESTNET_RECONCILIATION_LAYER_EVAL_V1",
+  "FILLS_MATCH_LOCAL": true,
+  "GENERATED_AT_UTC": "2026-08-10T22:19:06Z",
+  "HIST_FALLBACK_USED": false,
+  "HIST_GETS_OK": true,
+  "HIST_IDENTITY_OK": true,
+  "HIST_ROWS_SANITIZED": [
+    {
+      "accFillSz": "0",
+      "avgPx": "",
+      "cTime": "1786399185658",
+      "cancelSource": "1",
+      "clOrdId": "ptokxedemoee070908ee07090800",
+      "instId": "BTC-USD_UM_XPERP-310328",
+      "ordId": "3821741949407072256",
+      "ordType": "limit",
+      "px": "10000",
+      "side": "buy",
+      "state": "canceled",
+      "sz": "0.0001",
+      "uTime": "1786399186108"
+    }
+  ],
+  "HIST_TERMINAL_OK": true,
+  "LAYERS": {
+    "balances_equity_and_available_margin": {
+      "divergence_detected": false,
+      "outcome": "MATCH"
+    },
+    "credential_and_account_identity": {
+      "divergence_detected": false,
+      "outcome": "MATCH"
+    },
+    "evidence_and_commit_cursors": {
+      "divergence_detected": false,
+      "outcome": "MATCH"
+    },
+    "local_portfolio_and_accounting": {
+      "divergence_detected": false,
+      "outcome": "MATCH"
+    },
+    "open_orders": {
+      "divergence_detected": false,
+      "outcome": "MATCH"
+    },
+    "pending_commands": {
+      "divergence_detected": false,
+      "outcome": "MATCH"
+    },
+    "positions": {
+      "divergence_detected": false,
+      "outcome": "MATCH"
+    },
+    "recent_orders_and_trades": {
+      "divergence_detected": false,
+      "fill_consistency_source": "trade_order_accFillSz_vs_local_FILL_COUNT",
+      "fills_endpoint_queried": false,
+      "hist_fallback_used": false,
+      "hist_gets_ok": true,
+      "outcome": "MATCH"
+    },
+    "risk_reservations": {
+      "divergence_detected": false,
+      "outcome": "MATCH"
+    },
+    "venue_instrument_and_contract_metadata": {
+      "divergence_detected": false,
+      "outcome": "MATCH"
+    }
+  },
+  "MISSING_LAYERS": [],
+  "OPEN_ORDERS_MATCH": true,
+  "OPEN_POSITIONS_MATCH": true
+}
