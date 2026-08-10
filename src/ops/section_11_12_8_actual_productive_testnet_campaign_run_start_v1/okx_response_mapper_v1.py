@@ -101,6 +101,25 @@ def build_venue_native_order_body_v1(
     return body
 
 
+def build_venue_native_cancel_body_v1(
+    *,
+    order_id: str,
+    instrument: str,
+) -> dict[str, Any]:
+    """OKX cancel-order venue-native body for §11.12.8 Demo XPerp path.
+
+    OKX requires ``instId`` together with ``ordId`` (or ``clOrdId``). Historical
+    residual defect omitted ``instId`` and left live Demo orders after ACK.
+    """
+    oid = str(order_id or "").strip()
+    inst = str(instrument or "").strip()
+    if not oid:
+        raise OkxResponseMapperError("CANCEL_ORDER_ID_REQUIRED_BEFORE_WIRE")
+    if not inst:
+        raise OkxResponseMapperError("CANCEL_INSTID_REQUIRED_BEFORE_WIRE")
+    return {"instId": inst, "ordId": oid}
+
+
 def parse_okx_order_response_v1(
     *,
     transport_result: dict[str, Any],

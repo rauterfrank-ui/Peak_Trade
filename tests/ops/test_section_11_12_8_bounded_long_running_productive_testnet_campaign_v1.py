@@ -45,6 +45,7 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.hid
 )
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.okx_response_mapper_v1 import (
     OkxResponseMapperError,
+    build_venue_native_cancel_body_v1,
     build_venue_native_order_body_v1,
     parse_okx_order_response_v1,
 )
@@ -658,3 +659,101 @@ def test_campaign_executor_emits_alphanumeric_clordid_and_preserves_order_fields
 def test_campaign_clordid_rejects_empty_campaign_id() -> None:
     with pytest.raises(CampaignClOrdIdSerializationError, match="CAMPAIGN_ID_REQUIRED"):
         serialize_section_11_12_8_campaign_clordid_v1(campaign_id="  ", cycle_index=0)
+
+
+def test_venue_native_cancel_body_requires_instid_and_ordid() -> None:
+    body = build_venue_native_cancel_body_v1(
+        order_id="3821476998444617728",
+        instrument="BTC-USD_UM_XPERP-310328",
+    )
+    assert body == {
+        "instId": "BTC-USD_UM_XPERP-310328",
+        "ordId": "3821476998444617728",
+    }
+    assert set(body.keys()) == {"instId", "ordId"}
+    with pytest.raises(OkxResponseMapperError, match="CANCEL_INSTID_REQUIRED"):
+        build_venue_native_cancel_body_v1(order_id="1", instrument="  ")
+    with pytest.raises(OkxResponseMapperError, match="CANCEL_ORDER_ID_REQUIRED"):
+        build_venue_native_cancel_body_v1(order_id="", instrument="BTC-USD_UM_XPERP-310328")
+
+
+def test_cancel_order_v1_includes_canonical_xperp_instid_and_preserves_ordid() -> None:
+    from src.ops.okx_europe_adapter_lifecycle_contract_v0 import (
+        CLIENT_ORDER_ID_ALLOWED_PATTERN,
+    )
+    from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.clordid_serialization_v1 import (
+        serialize_section_11_12_8_campaign_clordid_v1,
+    )
+    from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.constants_v1 import (
+        CANONICAL_INSTRUMENT_SCOPE,
+    )
+
+    captured: list[dict] = []
+
+    class _CaptureTransport:
+        def request(self, *, method: str, endpoint: str, body: dict | None = None) -> dict:
+            captured.append({"method": method, "endpoint": endpoint, "body": dict(body or {})})
+            return {
+                "ok": True,
+                "stubbed": False,
+                "wire_sent": True,
+                "network_send_boundary_reached": True,
+                "http_status": 200,
+                "response_body": {
+                    "code": "0",
+                    "data": [
+                        {
+                            "sCode": "0",
+                            "sMsg": "",
+                            "ordId": (body or {}).get("ordId"),
+                            "clOrdId": "",
+                        }
+                    ],
+                },
+            }
+
+    port = construct_productive_testnet_execution_port_v1(
+        authorized=True,
+        transport=_CaptureTransport(),
+        stubbed=False,
+        ephemeral_campaign_write_gate_pass=True,
+        mutation_wire_intended=True,
+    )
+    effect = port.cancel_order_v1(order_id="3821476998444617728")
+    assert effect["ok"] is True
+    assert effect["order_acknowledged"] is True
+    assert effect["order_id"] == "3821476998444617728"
+    assert effect["inst_id"] == CANONICAL_INSTRUMENT_SCOPE[0]
+    assert effect["venue_native_body"]["instId"] == "BTC-USD_UM_XPERP-310328"
+    assert effect["venue_native_body"]["ordId"] == "3821476998444617728"
+    assert len(captured) == 1
+    assert captured[0]["method"] == "POST"
+    assert captured[0]["endpoint"] == "/api/v5/trade/cancel-order"
+    assert captured[0]["body"] == {
+        "instId": "BTC-USD_UM_XPERP-310328",
+        "ordId": "3821476998444617728",
+    }
+    # No unrelated fields introduced on cancel body.
+    assert set(captured[0]["body"].keys()) == {"instId", "ordId"}
+    # clOrdId alphanumeric contract remains intact (regression guard).
+    coid = serialize_section_11_12_8_campaign_clordid_v1(
+        campaign_id="campaign-cancel-regression", cycle_index=0
+    )
+    assert CLIENT_ORDER_ID_ALLOWED_PATTERN.fullmatch(coid)
+    assert "-" not in coid
+
+
+def test_cancel_order_v1_rejects_deprecated_swap_instrument() -> None:
+    from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.productive_execution_port_v1 import (
+        ActualStartPortError,
+    )
+
+    class _NoopTransport:
+        def request(self, *, method: str, endpoint: str, body: dict | None = None) -> dict:
+            return {"ok": True, "stubbed": True, "wire_sent": False}
+
+    port = construct_productive_testnet_execution_port_v1(
+        authorized=True, transport=_NoopTransport(), stubbed=True
+    )
+    with pytest.raises(ActualStartPortError, match="BTC_USDT_SWAP_PATH_CLOSED"):
+        port.cancel_order_v1(order_id="1", instrument="BTC-USDT-SWAP")
