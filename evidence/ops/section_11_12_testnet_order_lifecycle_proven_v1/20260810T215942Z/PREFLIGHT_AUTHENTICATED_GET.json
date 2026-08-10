@@ -1,0 +1,66 @@
+{
+  "ACCEPTANCE_CRITERIA": {
+    "FILL_REQUIRED": false,
+    "FINAL_EXCHANGE_RECONCILIATION": "PASS",
+    "FINAL_OPEN_ORDER_COUNT": 0,
+    "FINAL_OPEN_POSITION_COUNT": 0,
+    "LIVE_AUTHORIZED": false,
+    "ORDER_ACK_COUNT_MIN": 1,
+    "ORDER_ATTEMPT_COUNT_MIN": 1,
+    "SCOPE": "single_controlled_order_lifecycle_productive_demo_xperp",
+    "TERMINAL_VIA_CANCEL_OR_FILL": true,
+    "TESTNET_ISOLATION_VERIFIED": true
+  },
+  "ACCOUNT_MODE_SANITIZED": {
+    "acctLv": "2",
+    "posMode": "net_mode",
+    "uid_present": true
+  },
+  "BRANCH": "main",
+  "CANCEL_BODY_CONTRACT_SAMPLE": {
+    "instId": "BTC-USD_UM_XPERP-310328",
+    "ordId": "probe"
+  },
+  "CANONICAL_INSTRUMENT": "BTC-USD_UM_XPERP-310328",
+  "CANONICAL_LIMIT_PX": "10000",
+  "CANONICAL_ORDER_SZ": "0.0001",
+  "CANONICAL_VENUE": "OKX_EEA_DEMO",
+  "CREDENTIAL_FP12": {
+    "api_key": "b2ba753a9026",
+    "api_secret": "051c888bfb69",
+    "passphrase": "126850d9e99c"
+  },
+  "DEMO_AUTHENTICATED": true,
+  "DEMO_HOST_OK": true,
+  "DOCUMENT_CLASS": "BOUNDED_PRODUCTIVE_TESTNET_ORDER_LIFECYCLE_PREFLIGHT_V1",
+  "EXECUTE_TOKEN": "EXECUTE_ONE_BOUNDED_PRODUCTIVE_DEMO_XPERP_ORDER_LIFECYCLE_MAX_CYCLES_1_THEN_SEAL_EVIDENCE_AND_HARD_STOP",
+  "GENERATED_AT_UTC": "2026-08-10T21:59:45Z",
+  "GET_RESULTS": [
+    {
+      "http_status": 200,
+      "ok": true,
+      "path": "/api/v5/account/balance",
+      "response_sanitized": {
+        "code": "0",
+        "msg": ""
+      }
+    },
+    {
+      "http_status": 200,
+      "ok": true,
+      "path": "/api/v5/account/config",
+      "response_sanitized": {
+        "code": "0",
+        "msg": ""
+      }
+    }
+  ],
+  "ORIGIN_MAIN_SHA": "a424a7c7acf27b8d81ca4a7d4cb4ab2a7596d68c",
+  "OWNER_GO": "OWNER_GO_PRODUCTIVE_TESTNET_ORDER_LIFECYCLE_PROVEN_REQUIRED",
+  "PRED_CLEAN_CLOSEOUT_EVIDENCE": "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_clean_closeout_after_cancel_instid_fix_v1/20260810T200151Z/",
+  "PRED_RESIDUAL_EVIDENCE": "evidence/ops/section_11_12_9_11_open_testnet_proven_fields_reporting_reconcile_residual_proof_v1/20260810T213441Z/",
+  "PRE_EXISTING_OPEN_ORDER_COUNT": 0,
+  "PRE_EXISTING_OPEN_POSITION_COUNT": 0,
+  "SAMPLE_CLORDID_ALPHANUMERIC": "ptokxedemobaec0884baec088400",
+  "TESTNET_ISOLATION_VERIFIED": true
+}
