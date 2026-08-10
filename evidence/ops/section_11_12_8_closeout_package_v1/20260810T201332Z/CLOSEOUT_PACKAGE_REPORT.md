@@ -19,8 +19,8 @@ NO_NEW_ORDERS_BY_THIS_PACKAGE=true
 ## Observed binding basis
 
 - Bounded 1h XPerp campaign completed: `evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/`
-- clOrdId alphanumeric ACK proof: `evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1/20260810T194806Z/` (MANIFEST_VERIFY_RC=0)
-- cancel-instId clean closeout: `evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_clean_closeout_after_cancel_instid_fix_v1/20260810T200151Z/` (MANIFEST_VERIFY_RC=0)
+- clOrdId alphanumeric ACK proof: `evidence&#47;ops&#47;section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1&#47;20260810T194806Z&#47;` (MANIFEST_VERIFY_RC=0)
+- cancel-instId clean closeout: `evidence&#47;ops&#47;section_11_12_8_retry_bounded_okx_eea_demo_xperp_clean_closeout_after_cancel_instid_fix_v1&#47;20260810T200151Z&#47;` (MANIFEST_VERIFY_RC=0)
 - Fixes merged on origin/main via PR #5841 and PR #5842
 
 ## Explicit non-claims
