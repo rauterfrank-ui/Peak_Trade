@@ -1,0 +1,938 @@
+# Peak_Trade Canonical Cybersecurity Runbook — V2.1 (Phase-Aware / Pre-Live Security Gate)
+
+**DOCUMENT_CLASS:** `CANONICAL_CYBERSECURITY_RUNBOOK`\
+**STATUS:** `OWNER_RATIFIED_DERIVED_DOMAIN_AUTHORITY`\
+**DOCUMENT_VERSION:** `V2.1`\
+**AUTHORITY_CLASSIFICATION:** `DERIVED_DOMAIN_AUTHORITY_ONLY`\
+**AUTHORITY_EFFECT:** `SECURITY_AND_OPERATIONAL_GUIDANCE_NON_RUNTIME_AUTHORIZING`\
+**RUNTIME_AUTHORIZATION_EFFECT:** `NONE`\
+**MASTER_RUNBOOK_PATH:** `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`\
+**MASTER_RUNBOOK_IS_ONLY_SSOT:** `true`\
+**CYBERSECURITY_RUNBOOK_IS_SSOT:** `false`\
+**MASTER_RUNBOOK_PRECEDENCE:** `ABSOLUTE`\
+**CANONICAL_REPOSITORY_PATH:** `docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md`\
+**RATIFICATION_MANIFEST_PATH:** `docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1_RATIFICATION.json`\
+**SUPERSEDES:** Informal / proposed Cybersecurity Runbook V2.0 Extended (not a second SSOT)\
+**CORE_TRADING_LOGIC_CHANGE_ALLOWED:** `false`\
+**LIVE_TRADING_AUTHORIZED:** `false`\
+**TESTNET_AUTHORIZED:** `false`\
+**PAPER_EXCHANGE_ORDERS_AUTHORIZED:** `false`\
+**EXCHANGE_CREDENTIAL_USE_AUTHORIZED:** `false`\
+**REAL_CAPITAL_MOVEMENT_AUTHORIZED:** `false`\
+**ORDERS_AUTHORIZED:** `false`\
+**SECTION_11_13_STARTED:** `false`\
+**PRE_LIVE_CYBERSECURITY_GATE:** `NOT_PASSED`\
+**PRE_LIVE_CYBERSECURITY_GATE_CONTRACT:** `MANDATORY`\
+**FUTURE_IMPLEMENTATION_BOUND_TO_CANONICAL_SECURITY_INVARIANTS:** `true`\
+**BYPASS_OF_PRE_LIVE_GATE_FORBIDDEN:** `true`\
+**OWNER_GO:** `OWNER_GO_RECONCILE_CYBERSECURITY_RUNBOOK_V2_1_WITH_CANONICAL_MASTER_RUNBOOK_AND_DEFINE_PRE_LIVE_SECURITY_ACCEPTANCE_GATE_NO_RUNTIME_CHANGE_NO_ORDER`\
+**OWNER_ADDENDUM:** `OWNER_ADDENDUM_GOVERNANCE_MANIFEST_CYBERSECURITY_V2_1_AS_MANDATORY_PRE_LIVE_GATE_AND_BIND_ALL_FUTURE_IMPLEMENTATION_TO_CANONICAL_SECURITY_INVARIANTS_NO_RUNTIME_CHANGE_NO_ORDER`
+
+Dieses Dokument erteilt weder Testnet- noch Live-Order-Autorität. Bei
+jedem Konflikt mit dem Master Runbook gewinnt das Master Runbook ohne
+Ausnahme. Das Pre-Live Gate ist **mandatory** vor Cap / §11.13; künftige
+Implementierung ist an §23 / Master §4.8.1 gebunden.
+
+------------------------------------------------------------------------
+
+# 1. Purpose
+
+Dieses Runbook definiert die verbindliche Cybersecurity-Architektur,
+Review-Methodik, Härtungsstrategie und das Pre-Live-Security-Gate für
+Peak_Trade.
+
+Es ergänzt das Peak_Trade Master Runbook. Das Master Runbook bleibt die
+übergeordnete und einzige SSOT für Phase, Capability, Execution- und
+Owner-Autorisierung. Dieses Security Runbook ist ausschließlich
+`DERIVED_DOMAIN_AUTHORITY_ONLY` und darf keine Runtime-Autorität
+erzeugen, erweitern oder implizit ableiten.
+
+Das Runbook schützt Peak_Trade insbesondere gegen:
+
+-   Fehlkonfigurationen
+-   Softwarefehler
+-   Supply-Chain-Risiken
+-   Credential-/Secret-Kompromittierung
+-   Authority Escalation
+-   Replay und Reuse von Autorisierungen
+-   Venue-/Endpoint-/Instrument-Verwechslung
+-   versehentliche Live-Aktivierung
+-   manipulierte oder inkonsistente Persistenz
+-   Angriffe auf CI/CD, Runtime, Evidence und Operator-Schnittstellen
+
+Die zentrale V2.1-Änderung ist ein **phase-aware Security Model**:
+Sicherheitsregeln werden nicht mehr global als „Public MD only / GET
+only / keine Credentials" formuliert, sondern je Execution Domain.
+Dadurch kann ein ausdrücklich autorisierter Testnet-Pfad sicher geprüft
+werden, ohne daraus Live-Autorität abzuleiten.
+
+------------------------------------------------------------------------
+
+# 2. Security Principles
+
+Verbindliche Prinzipien:
+
+-   Security by Design
+-   Least Privilege
+-   Fail Closed
+-   Defense in Depth
+-   Explicit Trust Boundaries
+-   Immutable Audit Trail
+-   Deterministic Recovery
+-   Zero Trust zwischen Subsystemen
+-   Explicit Authority over Ambient Authority
+-   Environment Separation
+-   Credential Separation
+-   Testnet Success Does Not Imply Live Permission
+-   Evidence Before Claim
+-   Default-Deny für Execution Capability
+-   Keine implizite Scope-Erweiterung
+
+Sicherheitskritische Zustände müssen explizit, nachvollziehbar,
+reproduzierbar und fail-closed sein.
+
+------------------------------------------------------------------------
+
+# 3. Phase-Aware Security Architecture
+
+## 3.1 Trust Zones
+
+1.  Operator
+2.  Repository / CI
+3.  Runtime Core
+4.  Research / Simulation
+5.  Shadow Execution
+6.  Testnet / Demo Execution
+7.  Persistence & Evidence
+8.  Public Market Data
+9.  Private Authenticated API
+10. Live Execution Domain
+11. Dashboard / Consumer Surfaces
+
+## 3.2 Kritische Trust Boundaries
+
+-   Operator → Repository / CI
+-   Repository / CI → Runtime Core
+-   Public APIs → Runtime
+-   Runtime → Research / Simulation
+-   Runtime → Shadow
+-   Runtime → Testnet Execution
+-   Testnet Execution → Live Execution
+-   Runtime → Persistence
+-   Persistence → Dashboard
+-   Dashboard → **niemals autorisierend zurück in Runtime**
+-   Secret Store → Runtime
+-   Runtime → Private Authenticated API
+-   Runtime Configuration → Venue / Host / Instrument Binding
+
+## 3.3 Domain Separation
+
+### Research Domain
+
+-   Credentials: verboten
+-   Private API: verboten
+-   Order Authority: verboten
+-   Live Execution: unerreichbar
+
+### Shadow Domain
+
+-   Order Authority: verboten
+-   Live Execution: unerreichbar
+-   Shadow darf keine Exchange-Side-Effects erzeugen.
+
+### Testnet / Demo Domain
+
+Zulässig ausschließlich bei expliziter kanonischer Autorisierung:
+
+-   scoped Credentials
+-   authenticated private API
+-   kontrollierter Order-Pfad
+-   Order-/Cancel-/Position-Lifecycle
+-   Recovery- und Kill-Switch-Proofs
+
+Verboten:
+
+-   Live Credentials
+-   Live Endpoint
+-   implizite Live-Autorität
+-   automatische Promotion nach Live
+-   Scope-Erweiterung auf nicht autorisierte Instrumente oder Venues
+
+### Live Domain
+
+-   logisch und operativ vom Testnet getrennt
+-   Default: `enabled=false`
+-   Default: `armed=false`
+-   keine Live-Order ohne separate, explizite kanonische Owner-Autorität
+-   Least-Privilege Live Credentials
+-   explizite Venue-, Host-, Account- und Instrument-Bindung
+-   fail-closed bei Ambiguität oder Drift
+
+## 3.4 Nicht verhandelbare Invarianten
+
+``` text
+TESTNET_AUTHORITY != LIVE_AUTHORITY
+TESTNET_CREDENTIAL != LIVE_CREDENTIAL
+TESTNET_SUCCESS != LIVE_PERMISSION
+TESTNET_ENDPOINT != LIVE_ENDPOINT
+SHADOW_AUTHORITY != TESTNET_AUTHORITY
+DASHBOARD_AUTHORITY = NONE
+LIVE_DEFAULT_BLOCK = TRUE
+```
+
+Eine Testnet-Freigabe darf technisch und organisatorisch nicht als
+Live-Freigabe interpretierbar sein.
+
+------------------------------------------------------------------------
+
+# 4. Threat Model
+
+## 4.1 Zu betrachtende Angreifer und Fehlerklassen
+
+-   Externer Internet-Angreifer
+-   Supply-Chain-Angreifer
+-   gestohlene Zugangsdaten
+-   Insider
+-   Schadcode in Dependencies
+-   kompromittierte CI/CD-Komponente
+-   Fehlkonfiguration
+-   versehentliche Aktivierung
+-   kompromittierter oder manipulierter Venue-Response
+-   Replay-Angriff
+-   Authority Escalation
+-   Host-/Endpoint-Substitution
+-   Instrument-Substitution
+-   Credential Cross-Use zwischen Testnet und Live
+-   manipulierte Persistenz oder Evidence
+-   stale oder inkonsistenter Recovery-State
+
+## 4.2 Schutzziele
+
+-   Integrität
+-   Verfügbarkeit
+-   Vertraulichkeit
+-   Nachvollziehbarkeit
+-   Reproduzierbarkeit
+-   Autorisierungsintegrität
+-   Environment Isolation
+-   deterministische Recovery
+-   beweisbare Live-Nichterreichbarkeit bis zum separaten Live-GO
+
+## 4.3 Threat-Model-Update-Pflicht
+
+Das Threat Model ist mindestens zu aktualisieren bei:
+
+-   neuer Venue
+-   neuem authenticated API Surface
+-   neuem Credential-Typ
+-   neuem Execution Adapter
+-   Änderung an Order-/Cancel-/Position-Lifecycle
+-   Änderung an Recovery oder Persistence
+-   Änderung an CI/CD oder Deployment
+-   Änderung an Live-Gates
+-   neuem externen Dependency-/Supply-Chain-Risiko
+
+------------------------------------------------------------------------
+
+# 5. Secure Development Lifecycle
+
+Jede größere Capability durchläuft:
+
+1.  Architekturreview
+2.  Threat Model
+3.  Secure Coding
+4.  Peer Review
+5.  Security Review
+6.  Regression
+7.  Evidence
+8.  Release Gate
+
+Security Findings dürfen nicht durch Dokumentation allein geschlossen
+werden, wenn ein technischer Proof möglich und angemessen ist.
+
+Für Execution-relevante Änderungen gilt zusätzlich:
+
+-   Scope muss vor Implementierung eindeutig sein.
+-   Venue/Host/Account/Instrument müssen explizit gebunden sein.
+-   Trading-Logik darf durch Security-Härtung nicht stillschweigend
+    verändert werden.
+-   Neue Execution Capability benötigt eigene Autorisierung.
+-   Keine Aktivierung allein durch Merge.
+
+------------------------------------------------------------------------
+
+# 6. Secure Coding Standard
+
+Für Python und angrenzende Runtime-Komponenten:
+
+-   keine Shell Injection
+-   kein `eval`/`exec` auf untrusted Input
+-   sichere `subprocess`-Nutzung
+-   Input Validation
+-   sichere Dateizugriffe
+-   keine Path Traversal
+-   defensive Exception-Behandlung
+-   fail-closed Parsing sicherheitskritischer Responses
+-   keine stillen Fallbacks bei Venue-/Host-/Instrument-Ambiguität
+-   explizite Timeouts
+-   bounded Retries
+-   keine unbeschränkten Ressourcenpfade
+-   keine Secrets in Exceptions oder Tracebacks
+-   sichere temporäre Dateien und Dateirechte
+-   deterministische Serialisierung sicherheitskritischer Requests
+-   Signatur-/Wire-Body-Konsistenz, soweit das Venue-Protokoll dies
+    erfordert
+
+------------------------------------------------------------------------
+
+# 7. Secrets & Credential Management
+
+## 7.1 Verboten
+
+-   API Keys im Repository
+-   Secrets in Logs
+-   Secrets in Evidence
+-   Secrets in CLI-Argumenten
+-   Secrets in Prozesslisten
+-   Secrets in ungeschützten temporären Dateien
+-   persistierte Confirm-/Auth-Tokens im Klartext
+-   Wiederverwendung von Live Credentials für Testnet
+-   Wiederverwendung von Testnet Credentials für Live
+
+## 7.2 Erlaubt
+
+-   Secret Store
+-   In-Memory-Verarbeitung
+-   Redaction
+-   Least Privilege
+-   kurzlebige Secret References
+-   explizit gescopte Credentials
+-   sichere lokale/OS-gebundene Secret-Speicherung
+
+## 7.3 Credential Isolation
+
+Credential-Material muss mindestens nach Environment getrennt sein:
+
+``` text
+RESEARCH: NONE
+SHADOW: NONE oder ausdrücklich nicht-orderfähige Credentials
+TESTNET: TESTNET_ONLY
+LIVE: LIVE_ONLY
+```
+
+Cross-Environment-Credential-Use muss technisch abgelehnt werden, soweit
+verifizierbar.
+
+------------------------------------------------------------------------
+
+# 8. Supply Chain Security
+
+Pflichtbestandteile:
+
+-   Dependency Pinning
+-   Lockfiles
+-   CVE Review
+-   SBOM
+-   reproduzierbare Builds soweit praktikabel
+-   signierte Releases bevorzugen
+-   Dependency-Diff bei sicherheitskritischen Änderungen
+-   Prüfung direkter und transitive Dependencies
+-   minimierte Build-/CI-Berechtigungen
+-   keine unkontrollierte dynamische Code-Nachladung in Execution-Pfaden
+
+Vor Pre-Live-PASS müssen offene Findings bewertet und High/Critical
+Findings geschlossen sein.
+
+------------------------------------------------------------------------
+
+# 9. Repository & CI Security
+
+-   Branch Protection
+-   Required Reviews
+-   Secret Scanning
+-   Dependency/Dependabot-Scanning
+-   minimale Token-Rechte
+-   Actions mit Least Privilege
+-   keine unnötigen Write-Rechte
+-   Schutz vor untrusted PR Code mit Secrets
+-   SHA-/Commit-Bindung für Release- und Evidence-Claims
+-   reproduzierbarer Zusammenhang zwischen geprüftem Commit und
+    ausgeführtem Artefakt
+
+Temporäre administrative Overrides müssen:
+
+1.  begründet,
+2.  zeitlich begrenzt,
+3.  auditiert und
+4.  anschließend vollständig zurückgesetzt
+
+werden.
+
+------------------------------------------------------------------------
+
+# 10. Runtime Hardening
+
+-   Fail Closed
+-   deterministische Recovery
+-   Input Validation
+-   Request Limits
+-   Rate Limits
+-   Timeout Handling
+-   Resource Limits
+-   bounded Retries
+-   idempotente bzw. replay-resistente Authority-Mechanismen
+-   explizite Kill-Switch- und Emergency-Control-Pfade
+-   keine automatische Environment-Promotion
+-   keine automatische Instrument-Scope-Erweiterung
+-   keine automatische Venue-Fallback-Execution
+-   stale Authority muss nach Restart ungültig oder explizit
+    rekonstruierbar sein
+-   unsicherer/unklarer State blockiert Execution
+
+------------------------------------------------------------------------
+
+# 11. Logging, Audit & Evidence
+
+Pflicht:
+
+-   strukturierte Logs
+-   Secret Redaction
+-   Audit Trail
+-   Evidence unveränderlich bzw. manipulationsnachweisbar
+-   SHA-Bindung
+-   Run-/Session-Identität
+-   Environment-Kennzeichnung
+-   Venue-/Host-/Instrument-Bindung
+-   Authority-/Gate-Entscheidungen nachvollziehbar
+-   Order-Side-Effects eindeutig von Planung/Serialization unterscheiden
+-   `WIRE_SENT`, `ACK`, `REJECT`, `FILL`, `CANCEL` semantisch getrennt
+    erfassen
+
+Evidence darf keine Secrets oder wiederverwendbaren
+Authentisierungsdaten enthalten.
+
+Claims müssen exakt der Evidence entsprechen.
+
+------------------------------------------------------------------------
+
+# 12. Phase-Aware Security Review Checklist
+
+## 12.1 Architektur
+
+-   Trust Boundaries intakt
+-   Dashboard bleibt Consumer-only
+-   Environment Separation intakt
+-   Testnet kann Live nicht implizit autorisieren
+-   Live bleibt bis zum separaten Live-GO unerreichbar
+-   Venue-/Host-/Instrument-Binding explizit
+-   keine unautorisierte Scope-Erweiterung
+
+## 12.2 Netzwerk
+
+### Research / Shadow
+
+-   Public MD only, soweit Capability nichts anderes ausdrücklich
+    autorisiert
+-   keine orderfähige Private API
+-   keine Live Endpoints
+
+### Testnet
+
+Nur bei kanonischer Testnet-Autorisierung:
+
+-   Private API zulässig
+-   Auth Header zulässig
+-   Order-/Cancel-/Position-Requests zulässig
+-   ausschließlich autorisierter Testnet/Demo Host
+-   ausschließlich autorisierter Account
+-   ausschließlich autorisierter Instrument Scope
+-   Live Endpoint blockiert
+
+### Live
+
+Vor separater Live-Autorisierung:
+
+-   Live Order POST blockiert
+-   Live Credentials nicht für Testnet verfügbar
+-   `enabled=false`
+-   `armed=false`
+-   kein stiller Fallback auf Live
+
+## 12.3 Runtime
+
+-   Execution Authority explizit
+-   Confirm-/Authority-Replay blockiert
+-   Kill Switch fail-closed
+-   Emergency Control fail-closed
+-   Restart darf Authority nicht unzulässig konservieren
+-   stale State blockiert
+-   Request Serialization deterministisch
+-   Signatur und Wire Body konsistent
+-   Environment-Binding vor Side Effect geprüft
+
+## 12.4 Code
+
+-   Dependency Review
+-   Static Analysis
+-   Security Regression
+-   relevante Unit-/Integrationstests
+-   keine neue Shell-/Path-/Injection-Surface ohne Review
+-   keine Handelslogikänderung als verdeckter Security-Fix
+
+## 12.5 Persistence
+
+-   keine Secrets
+-   keine wiederverwendbaren Tokens
+-   Journaling konsistent
+-   Restart-/Recovery-State deterministisch
+-   Evidence und Runtime-State sauber getrennt
+-   Manipulation/Drift erkennbar
+
+------------------------------------------------------------------------
+
+# 13. Penetration & Adversarial Security Test Program
+
+Mindestens zu prüfen:
+
+-   Credential Leakage
+-   Dependency Tampering
+-   API Abuse
+-   Replay
+-   Injection
+-   Path Traversal
+-   Rate Limit
+-   Corrupt State Recovery
+-   malformed Venue Responses
+-   Credential Cross-Use Testnet ↔ Live
+-   Testnet → Live Endpoint Confusion
+-   Venue Host Substitution
+-   Instrument Substitution
+-   Confirm-/Authority-Token Replay
+-   Authority Escalation
+-   `enabled`/`armed` Bypass
+-   Kill-Switch Bypass
+-   Emergency-Control Bypass
+-   Restart mit stale Authority
+-   unsigned/unbound Config
+-   Evidence Tampering
+-   Log Secret Leakage
+-   Dashboard → Runtime Influence
+-   CI Token Privilege Escalation
+-   Dependency Compromise Simulation
+
+Tests müssen sicherheitsgerecht durchgeführt werden. Destruktive oder
+Live-Side-Effect-Tests sind ohne separate explizite Autorisierung
+verboten.
+
+------------------------------------------------------------------------
+
+# 14. Incident Response
+
+1.  Detection
+2.  Containment
+3.  Forensics
+4.  Recovery
+5.  Root Cause
+6.  Hardening
+7.  Evidence
+8.  Lessons Learned
+
+Zusätzlich für Execution Incidents:
+
+-   sofortige Environment-Klassifikation
+-   Credential-Scope prüfen
+-   Kill Switch / Emergency Control bewerten
+-   mögliche Order-Side-Effects forensisch bestimmen
+-   Exchange-/Venue-State gegen lokale Persistenz reconciliieren
+-   kompromittierte Credentials rotieren
+-   keine Wiederaktivierung vor dokumentiertem Recovery-Gate
+
+------------------------------------------------------------------------
+
+# 15. Severity Model
+
+Severity bewertet **unauthorisierte oder unsichere Capability**, nicht
+die bloße Existenz einer legitimen Testnet-Funktion.
+
+## Critical
+
+Beispiele:
+
+-   unautorisierte reale Order erreichbar
+-   Live-Gate/Auth-Bypass
+-   Credential Leak mit orderfähigem Secret
+-   Secret Leak mit unmittelbarer Execution-Relevanz
+-   Testnet-Autorität kann Live auslösen
+-   Live Endpoint/Credential Cross-Use ohne unabhängige Sperre
+-   Kill-Switch/Emergency-Control kann sicherheitskritisch umgangen
+    werden
+
+## High
+
+Beispiele:
+
+-   unautorisierte Private API
+-   unsichere Dependency mit realistischer Execution-/Secret-Auswirkung
+-   persistierte wiederverwendbare Tokens/Secrets
+-   Authority Replay
+-   Environment-/Host-/Instrument-Binding umgehbar
+-   Security-relevante Recovery-Inkonsistenz
+-   CI/CD-Rechte ermöglichen unkontrollierte Execution-Manipulation
+
+## Medium
+
+Beispiele:
+
+-   fehlende oder unvollständige Redaction ohne direkt verwertbares
+    Secret
+-   unvollständige Security Tests
+-   schwache Auditierbarkeit
+-   fehlende Defense-in-Depth-Kontrolle bei vorhandener Primärsperre
+
+## Low
+
+Beispiele:
+
+-   Dokumentationsdrift ohne Runtime-Auswirkung
+-   nicht sicherheitskritische Evidence-/Benennungsinkonsistenz
+
+------------------------------------------------------------------------
+
+# 16. Definition of Done
+
+Eine Security Review ist nur PASS, wenn:
+
+-   keine offenen Critical Findings
+-   keine offenen High Findings
+-   Sicherheitsinvarianten erfüllt
+-   Tests erfolgreich
+-   Evidence konsistent
+-   Architekturgrenzen unverletzt
+-   Claims entsprechen Evidence
+-   Environment Separation nachgewiesen
+-   Credential Separation nachgewiesen
+-   Authority Separation nachgewiesen
+-   Live Default Block nachgewiesen
+
+Die frühere globale „No-Order Boundary" wird in V2.1 präzisiert:
+
+``` text
+LIVE_NO_ORDER_BOUNDARY_INTACT = TRUE
+```
+
+darf gleichzeitig mit
+
+``` text
+AUTHORIZED_TESTNET_ORDER_PATH = TRUE
+```
+
+bestehen, sofern der Testnet-Pfad ausdrücklich autorisiert, isoliert und
+evidenzgebunden ist.
+
+------------------------------------------------------------------------
+
+# 17. Continuous Improvement
+
+Nach jeder größeren Capability:
+
+-   Security Review
+-   Dependency Audit
+-   Threat Model Update
+-   Dokumentationsabgleich
+-   Regression
+-   Lessons Learned
+
+Zusätzlich nach:
+
+-   Venue-Wechsel
+-   neuem Execution Adapter
+-   neuem Credential-Modell
+-   neuem Private-API-Pfad
+-   Änderungen an Recovery/Persistence
+-   Änderungen an Live-Gates
+
+------------------------------------------------------------------------
+
+# 18. Pre-Live Cybersecurity Acceptance Gate
+
+## 18.1 Position im Canonical Flow
+
+Das Security Acceptance Gate liegt **nach vollständigem produktivem
+Testnet-/Demo-Proof und vor jeder Live-Freigabe**.
+
+Zielbild:
+
+``` text
+Research / Simulation
+        ↓
+Shadow
+        ↓
+Testnet / Demo Capability
+        ↓
+vollständiger Testnet Lifecycle Proof
+        ↓
+PRE-LIVE CYBERSECURITY ACCEPTANCE GATE
+        ↓
+Live-Readiness / §11.13
+        ↓
+separate ausdrückliche Owner-Live-Autorisierung
+```
+
+Das PASS des Security Gates bedeutet ausschließlich:
+
+``` text
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION = TRUE
+```
+
+Es bedeutet **nicht**:
+
+``` text
+LIVE_ENABLED = TRUE
+LIVE_ARMED = TRUE
+LIVE_ORDER_AUTHORIZED = TRUE
+```
+
+## 18.2 Mindestbedingungen
+
+Vor PASS müssen mindestens folgende Claims evidenzbasiert erfüllt sein:
+
+``` text
+TESTNET_LIFECYCLE_PROVEN=true
+LONG_RUNNING_TESTNET_PROVEN=true
+
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+SECRETS_REVIEW=PASS
+DEPENDENCY_AUDIT=PASS
+SBOM_PRESENT=true
+STATIC_SECURITY_ANALYSIS=PASS
+SECURITY_REGRESSION=PASS
+PENETRATION_PROGRAM=PASS
+CREDENTIAL_LEAKAGE_TEST=PASS
+AUTHORITY_REPLAY_TEST=PASS
+RECOVERY_SECURITY_TEST=PASS
+
+CRITICAL_FINDINGS_OPEN=0
+HIGH_FINDINGS_OPEN=0
+
+LIVE_TESTNET_ISOLATION_PROVEN=true
+LIVE_DEFAULT_BLOCK_PROVEN=true
+LIVE_ARMING_FAIL_CLOSED_PROVEN=true
+AUDIT_EVIDENCE_VERIFIED=true
+MANIFEST_VERIFY_RC=0
+
+PRE_LIVE_CYBERSECURITY_GATE=PASS
+```
+
+Wenn eine Bedingung nicht anwendbar ist, muss `N&#47;A` ausdrücklich
+begründet und evidenzgebunden sein. Ein stilles Überspringen ist
+unzulässig.
+
+## 18.3 Hard Stop
+
+Das Gate ist `FAIL` oder `BLOCKED`, wenn mindestens eines gilt:
+
+-   offene Critical Findings
+-   offene High Findings
+-   Live/Testnet-Isolation nicht bewiesen
+-   Live Default Block nicht bewiesen
+-   Credential Separation nicht bewiesen
+-   Authority Replay möglich
+-   Kill Switch / Emergency Control nicht belastbar
+-   Evidence inkonsistent oder nicht verifizierbar
+-   Claims gehen über Evidence hinaus
+-   Venue-/Host-/Instrument-Binding ist mehrdeutig
+-   Security Review basiert auf nicht kanonischem oder driftendem Code
+
+------------------------------------------------------------------------
+
+# 19. Live/Testnet Isolation Contract
+
+Vor Live-Readiness muss mindestens folgende Separation bewiesen werden:
+
+## 19.1 Credentials
+
+-   Testnet und Live verwenden getrennte Credential-Sets.
+-   Credential-Typ und Environment müssen validierbar sein, soweit
+    Venue/API dies ermöglicht.
+-   Cross-Use muss fail-closed sein oder durch unabhängige Controls
+    blockiert werden.
+
+## 19.2 Configuration
+
+-   Environment ist explizit.
+-   Host/Endpoint ist explizit.
+-   Account ist explizit.
+-   Instrument Scope ist explizit.
+-   kein automatischer Live-Fallback
+-   keine automatische Scope-Erweiterung
+
+## 19.3 Authority
+
+-   Testnet-GO ist nicht Live-GO.
+-   Merge ist nicht Activation.
+-   Security-Gate-PASS ist nicht Live-GO.
+-   Restart erzeugt keine neue Authority.
+-   Confirm-/Arm-State ist replay-resistent und nachvollziehbar.
+
+## 19.4 Runtime State
+
+-   Testnet-State darf nicht als Live-State übernommen werden, sofern
+    nicht ausdrücklich als sicherer, nicht-autorisierender Input
+    definiert.
+-   offene Orders/Positionen werden environment-spezifisch reconciliert.
+-   stale oder nicht eindeutig klassifizierbarer State blockiert
+    Execution.
+
+## 19.5 Evidence
+
+Evidence muss Environment, Venue, Host, Account-Referenz ohne Secret,
+Instrument Scope, Commit SHA und Authority-Kontext eindeutig binden.
+
+------------------------------------------------------------------------
+
+# 20. Alternate Venue / Adapter Security Requirements
+
+Ein Wechsel des Testnet-/Demo-Venues ist eine Security-relevante
+Capability-Änderung.
+
+Vor Aktivierung eines neuen Venue-Adapters müssen mindestens geprüft
+werden:
+
+-   offizieller Testnet-/Demo-Status
+-   unterstützte Derivatives-Instrumente
+-   exakte Instrument-ID / Symbol-Semantik
+-   Host-/Endpoint-Trennung zu Live
+-   Credential-Trennung zu Live
+-   API Permission Model
+-   Order-/Cancel-/Position-Semantik
+-   ACK/Reject/Fill-Semantik
+-   Rate Limits
+-   Timestamp-/Nonce-/Replay-Schutz
+-   Signaturverfahren
+-   Error Model
+-   Unknown-Submit-Verhalten
+-   Recovery-/Reconciliation-Möglichkeiten
+-   Kill-Switch-/Emergency-Control-Kompatibilität
+-   Dependency-/SDK-Risiko
+
+Ein neuer Venue-Adapter darf nicht durch stillen Fallback oder
+generische Symbolsubstitution aktiviert werden.
+
+------------------------------------------------------------------------
+
+# 21. Current Phase-11 Integration Note
+
+Zum Zeitpunkt der V2.1-Ratifikation befindet sich Peak_Trade in Phase 11 /
+§11.12.8. Master-binding: §11.12.8.3 (OKX EEA Demo path
+`CLOSED_EXTERNAL_CAPABILITY_UNAVAILABLE`) und §11.12.9 (Pre-Live
+Cybersecurity Acceptance Gate contract).
+
+Der zuvor verwendete OKX-EEA-Demo-Pfad wurde aufgrund externer
+Capability-Einschränkungen als ungeeignet für den erforderlichen
+produktiven Derivatives-Testnet-Proof bewertet. Diese Feststellung
+selbst erzeugt keine Autorisierung für einen alternativen Venue.
+
+Für die Fortsetzung gilt:
+
+``` text
+SECTION_11_12_8 = OPEN
+OKX_EEA_DEMO_PRODUCTIVE_ORDER_PATH_STATUS = CLOSED_EXTERNAL_CAPABILITY_UNAVAILABLE
+TESTNET_*_PROVEN = false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+FUTURE_IMPLEMENTATION_BOUND_TO_CANONICAL_SECURITY_INVARIANTS=true
+BYPASS_OF_PRE_LIVE_GATE_FORBIDDEN=true
+CANONICAL_TRADING_NEXT_STEP = OWNER_GO_SELECT_ALTERNATE_DERIVATIVES_TESTNET_VENUE_SCOPE_FOR_SECTION_11_12_8_CONTINUATION
+```
+
+Der nächste Venue darf erst nach separater kanonischer Scope-Auswahl und
+den jeweils erforderlichen Owner-Autorisierungen implementiert bzw.
+aktiviert werden.
+
+Dieses Cybersecurity Runbook V2.1 ist als Security-Design-Baseline
+**vor** Alternate-Venue-Implementierung reconciliert und durch Owner
+Addendum als **mandatory** Pre-Live Gate sowie als bindende
+Invarianten-Quelle für künftige Implementierung kanonisiert. Der
+vollständige Penetration-/Acceptance-Proof
+(`PRE_LIVE_CYBERSECURITY_GATE=PASS`) erfolgt **nach** dem vollständigen
+Testnet-Lifecycle und **vor** §11.13 / Live-Readiness und ist mit
+dieser Docs-Ratifikation **nicht** PASS.
+
+------------------------------------------------------------------------
+
+# 22. Canonical Adoption / Migration from V2.0
+
+Für die Übernahme von V2.0 nach V2.1 (docs-only Ratifikation):
+
+1.  V2.0 nicht rückwirkend als fehlerhaft klassifizieren.
+2.  Frühere Regeln wie `Public MD only`, `GET only`,
+    `keine Credentials`, `kein submit_order()` als **frühere
+    Domain-/Capability-Invarianten** interpretieren (phase-aware
+    präzisiert, nicht global gelöscht).
+3.  V2.1 phase-aware Invarianten und Pre-Live Gate im Master Runbook
+    §4.8 / §11.12.9 referenzieren.
+4.  Map of Truth / `SECURITY_NOTES.md` Navigation aktualisieren
+    (keine zweite Cyber-SSOT; Baseline-Pointer bleiben ergänzend).
+5.  Keine Runtime- oder Trading-Logic-Änderung allein durch
+    Dokumentratifikation.
+6.  Separate PR-/Owner-GOs für technische Hardening-Maßnahmen verwenden.
+7.  Pre-Live Security Acceptance Gate als zwingende Abhängigkeit vor
+    Live-Readiness / §11.13 kanonisch binden.
+8.  Ratification-Manifest verifizieren; Merge-SHA nach Commit binden.
+9.  `PRE_LIVE_CYBERSECURITY_GATE=PASS` erfordert spätere evidenzgebundene
+    Execution — **nicht** durch diese Docs-Ratifikation.
+
+------------------------------------------------------------------------
+
+# 23. Final Security Invariants
+
+Diese Invarianten dürfen durch spätere Capability-Erweiterungen nicht
+stillschweigend aufgehoben werden. Master Runbook §4.8.1 bindet
+**alle künftige Implementierung** an diese Invarianten. Ausnahme nur
+durch separates, explizites Owner-GO mit Master-Runbook-Supersession.
+
+``` text
+DASHBOARD_AUTHORITY=NONE
+TESTNET_AUTHORITY_DOES_NOT_IMPLY_LIVE=true
+TESTNET_CREDENTIALS_NOT_VALID_FOR_LIVE_BY_POLICY=true
+LIVE_CREDENTIALS_NOT_USED_FOR_TESTNET=true
+LIVE_DEFAULT_ENABLED=false
+LIVE_DEFAULT_ARMED=false
+LIVE_ORDER_REQUIRES_SEPARATE_EXPLICIT_OWNER_AUTHORITY=true
+MERGE_DOES_NOT_ACTIVATE_EXECUTION=true
+SECURITY_GATE_PASS_DOES_NOT_ACTIVATE_LIVE=true
+AMBIGUOUS_ENVIRONMENT_FAILS_CLOSED=true
+AMBIGUOUS_VENUE_FAILS_CLOSED=true
+AMBIGUOUS_INSTRUMENT_FAILS_CLOSED=true
+SECRET_IN_REPO=false
+SECRET_IN_LOGS=false
+SECRET_IN_EVIDENCE=false
+CLAIMS_MUST_MATCH_EVIDENCE=true
+CRITICAL_FINDINGS_OPEN_FOR_PRELIVE_PASS=0
+HIGH_FINDINGS_OPEN_FOR_PRELIVE_PASS=0
+FUTURE_IMPLEMENTATION_BOUND_TO_CANONICAL_SECURITY_INVARIANTS=true
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+BYPASS_OF_PRE_LIVE_GATE_FORBIDDEN=true
+```
+
+------------------------------------------------------------------------
+
+# 24. Canonical Security Outcome
+
+Peak_Trade darf erst zur Live-Readiness übergehen, wenn:
+
+1.  der vorgesehene Testnet-/Demo-Execution-Pfad vollständig bewiesen
+    ist,
+2.  das Pre-Live Cybersecurity Acceptance Gate PASS ist,
+3.  keine Critical oder High Findings offen sind,
+4.  Testnet/Live-Isolation technisch und evidenzbasiert bewiesen ist,
+5.  Live weiterhin default-blocked ist,
+6.  eine nachfolgende Live-Aktivierung weiterhin eine **separate
+    ausdrückliche Owner-Entscheidung** benötigt.
+
+**Security Readiness ist eine notwendige Bedingung für Live-Readiness,
+aber niemals selbst Live-Autorisierung.**

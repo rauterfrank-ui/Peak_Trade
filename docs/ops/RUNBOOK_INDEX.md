@@ -40,6 +40,13 @@
 | **Canonical Runtime Operations runbook V2.4** | [../runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4.md](../runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4.md) | Domain-specific operational reference for local runtime execution, process supervision, dashboard lifecycle and OHLCV transport; `AUTHORITY_CLASSIFICATION=DERIVED_DOMAIN_AUTHORITY_ONLY`; `RUNTIME_OPERATIONS_RUNBOOK_IS_SSOT=false`; Master Runbook remains the only SSOT with absolute precedence; **no** runtime, trading, testnet, live, order or credential authorization effect |
 | **Ratification manifest** | [../runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4_RATIFICATION.json](../runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4_RATIFICATION.json) | Local docs-only ratification binding (pre-commit); digest authority for the V2.4 canonical document bytes |
 
+## Canonical Cybersecurity Runbook V2.1 (derived domain authority only; non-SSOT)
+
+| Artefakt | Pfad | Rolle |
+|----------|------|-------|
+| **Canonical Cybersecurity runbook V2.1** | [../runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md](../runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md) | Phase-aware security architecture + **mandatory** Pre-Live Security Acceptance Gate; `AUTHORITY_CLASSIFICATION=DERIVED_DOMAIN_AUTHORITY_ONLY`; `CYBERSECURITY_RUNBOOK_IS_SSOT=false`; Master §4.8 / §4.8.1 / §11.12.9; `PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY`; `PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED`; `FUTURE_IMPLEMENTATION_BOUND_TO_CANONICAL_SECURITY_INVARIANTS=true`; **no** runtime, trading, testnet, live, order or credential authorization effect |
+| **Governance / ratification manifest** | [../runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1_RATIFICATION.json](../runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1_RATIFICATION.json) | Local docs-only governance manifest (pre-commit); digest authority for the V2.1 canonical document bytes; records mandatory Pre-Live gate + future-implementation invariant binding |
+
 ---
 
 ## Runbooks

@@ -627,6 +627,114 @@ binds exclusively through named canonical Producer and Read Model
 paths. Visual completeness is never a justification to weaken fail-closed
 `NOT_BOUND`, Fallback or Placeholder truth.
 
+## 4.8 Canonical Cybersecurity derived domain authority
+
+``` text
+CAPABILITY_ID=OWNER_GO_RECONCILE_CYBERSECURITY_RUNBOOK_V2_1_WITH_CANONICAL_MASTER_RUNBOOK_AND_DEFINE_PRE_LIVE_SECURITY_ACCEPTANCE_GATE_NO_RUNTIME_CHANGE_NO_ORDER
+OWNER_ADDENDUM_ID=OWNER_ADDENDUM_GOVERNANCE_MANIFEST_CYBERSECURITY_V2_1_AS_MANDATORY_PRE_LIVE_GATE_AND_BIND_ALL_FUTURE_IMPLEMENTATION_TO_CANONICAL_SECURITY_INVARIANTS_NO_RUNTIME_CHANGE_NO_ORDER
+DOCUMENT_EFFECT=DERIVED_DOMAIN_AUTHORITY_BINDING_ONLY
+AUTHORITY_CLASSIFICATION=DERIVED_DOMAIN_AUTHORITY_ONLY
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CYBERSECURITY_RUNBOOK_IS_SSOT=false
+MASTER_RUNBOOK_PRECEDENCE=ABSOLUTE
+CORE_LOGIC_CHANGE=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+ORDERS_AUTHORIZED=false
+SECTION_11_13_STARTED=false
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+FUTURE_IMPLEMENTATION_BOUND_TO_CANONICAL_SECURITY_INVARIANTS=true
+```
+
+The Canonical Cybersecurity Runbook V2.1 is the derived-domain security
+architecture, review, hardening and **mandatory** Pre-Live Security
+Acceptance Gate reference:
+
+`docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md`
+
+Governance &#47; ratification manifest:
+
+`docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1_RATIFICATION.json`
+
+Mandatory distinctions:
+
+``` text
+CYBERSECURITY_RUNBOOK_RATIFICATION != LIVE_AUTHORIZATION
+CYBERSECURITY_RUNBOOK_RATIFICATION != TESTNET_AUTHORIZATION
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT_MANDATORY != PRE_LIVE_CYBERSECURITY_GATE_PASS
+PRE_LIVE_CYBERSECURITY_GATE_PASS != LIVE_ENABLED
+PRE_LIVE_CYBERSECURITY_GATE_PASS != LIVE_ARMED
+PRE_LIVE_CYBERSECURITY_GATE_PASS != LIVE_ORDER_AUTHORIZED
+TESTNET_AUTHORITY != LIVE_AUTHORITY
+TESTNET_SUCCESS != LIVE_PERMISSION
+DASHBOARD_AUTHORITY = NONE
+```
+
+### 4.8.1 Future implementation binding to canonical security invariants
+
+Owner addendum
+`OWNER_ADDENDUM_GOVERNANCE_MANIFEST_CYBERSECURITY_V2_1_AS_MANDATORY_PRE_LIVE_GATE_AND_BIND_ALL_FUTURE_IMPLEMENTATION_TO_CANONICAL_SECURITY_INVARIANTS_NO_RUNTIME_CHANGE_NO_ORDER`
+binds **all future** Peak_Trade implementation, capability work, venue &#47;
+adapter work, credential &#47; auth work, execution-path work, recovery &#47;
+persistence work, and CI &#47; supply-chain security-relevant work to the
+canonical security invariants owned by Cybersecurity Runbook V2.1 §23
+and restated below. This binding is governance-only and does **not**
+authorize runtime, Testnet, Live, orders or credentials.
+
+``` text
+CANONICAL_SECURITY_INVARIANTS_OWNER=docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#23
+CANONICAL_SECURITY_INVARIANTS_MASTER_BINDING=SECTION_4_8_1
+FUTURE_IMPLEMENTATION_MAY_NOT_SILENTLY_WEAKEN_SECURITY_INVARIANTS=true
+PRE_LIVE_CYBERSECURITY_GATE_IS_MANDATORY_BEFORE_SECTION_11_13=true
+BYPASS_OF_PRE_LIVE_GATE_FORBIDDEN=true
+SECURITY_INVARIANT_EXCEPTION_REQUIRES_SEPARATE_EXPLICIT_OWNER_GO=true
+```
+
+Canonical security invariants (normative; must remain true unless a
+later explicit Owner-GO records a scoped supersession in this Master
+Runbook):
+
+``` text
+DASHBOARD_AUTHORITY=NONE
+TESTNET_AUTHORITY_DOES_NOT_IMPLY_LIVE=true
+TESTNET_CREDENTIALS_NOT_VALID_FOR_LIVE_BY_POLICY=true
+LIVE_CREDENTIALS_NOT_USED_FOR_TESTNET=true
+LIVE_DEFAULT_ENABLED=false
+LIVE_DEFAULT_ARMED=false
+LIVE_ORDER_REQUIRES_SEPARATE_EXPLICIT_OWNER_AUTHORITY=true
+MERGE_DOES_NOT_ACTIVATE_EXECUTION=true
+SECURITY_GATE_PASS_DOES_NOT_ACTIVATE_LIVE=true
+AMBIGUOUS_ENVIRONMENT_FAILS_CLOSED=true
+AMBIGUOUS_VENUE_FAILS_CLOSED=true
+AMBIGUOUS_INSTRUMENT_FAILS_CLOSED=true
+SECRET_IN_REPO=false
+SECRET_IN_LOGS=false
+SECRET_IN_EVIDENCE=false
+CLAIMS_MUST_MATCH_EVIDENCE=true
+CRITICAL_FINDINGS_OPEN_FOR_PRELIVE_PASS=0
+HIGH_FINDINGS_OPEN_FOR_PRELIVE_PASS=0
+```
+
+Every future capability specification that touches execution domains,
+authenticated APIs, credentials, venue &#47; host &#47; instrument binding,
+authority &#47; arming, kill-switch &#47; emergency control, recovery &#47;
+persistence, evidence claims, or Live &#47; Testnet gates must:
+
+1. declare preservation of the invariants above;
+2. treat `PRE_LIVE_CYBERSECURITY_GATE=PASS` as mandatory before Cap &#47;
+   §11.13 / Live-readiness evaluation;
+3. fail closed on ambiguity or invariant conflict;
+4. not treat merge, Testnet success, or Security-Gate PASS as Live
+   authorization.
+
+Historical / complementary cybersecurity baseline pointers remain in
+`SECURITY_NOTES.md` and related CI/ops owners. They do not form a second
+security SSOT. On any conflict with this Master Runbook, the Master
+Runbook prevails without exception. Binding of the mandatory Pre-Live
+gate in the Phase-11 sequence is §11.12.9.
+
 ------------------------------------------------------------------------
 
 # 5. Current Forensic Runtime Truth
@@ -1364,7 +1472,15 @@ CLAIMS_MATCH_EVIDENCE
 DOCS_ACCURATE
 ACTIVATION_EXPLICIT
 LIVE_TESTNET_ORDER_BOUNDARY_PRESERVED
+CANONICAL_SECURITY_INVARIANTS_PRESERVED
 ```
+
+`CANONICAL_SECURITY_INVARIANTS_PRESERVED` is mandatory for every future
+capability that touches execution, authenticated APIs, credentials,
+venue &#47; host &#47; instrument binding, authority &#47; arming, kill-switch &#47;
+emergency control, recovery &#47; persistence, evidence claims, or Live &#47;
+Testnet gates (§4.8.1). Cap &#47; §11.13 &#47; Live-readiness evaluation remains
+blocked while `PRE_LIVE_CYBERSECURITY_GATE != PASS` (§11.12.9).
 
 Fields may be `N&#47;A` only with an explicit reason.
 
@@ -3266,7 +3382,9 @@ TESTNET_STAR_PROVEN=false
 LIVE_ORDER_EFFECT=NONE
 SECTION_11_13_STARTED=false
 CANONICAL_NEXT_STEP_AFTER_HTTP_403_FORENSIC=OWNER_GO_RESOLVE_EXTERNAL_OKX_TESTNET_ACCOUNT_OR_CREDENTIAL_BLOCKER_AND_RETRY_TARGETED_PROOF
-OPEN_BLOCKER=PRODUCTIVE_BOUND_CLIENT_TRANSPORT_UA_AND_ISO_MS_TIMESTAMP_REQUIRED_BEFORE_TARGETED_PROOF_RETRY
+CANONICAL_NEXT_STEP_AFTER_HTTP_403_FORENSIC_ROLE=HISTORICAL_POST_403_POINTER_SUPERSEDED_BY_SECTION_11_12_8_3
+OPEN_BLOCKER_AT_HTTP_403_FORENSIC=PRODUCTIVE_BOUND_CLIENT_TRANSPORT_UA_AND_ISO_MS_TIMESTAMP_REQUIRED_BEFORE_TARGETED_PROOF_RETRY
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_8_3
 PREDECESSOR_ORDERLESS_GET_PROOF_EVIDENCE=evidence&#47;ops&#47;section_11_12_8_autonomous_okx_eea_demo_credential_ip_resolve_v1&#47;20260808T203507Z&#47;
 PREDECESSOR_ORDERLESS_GET_PROOF_IS_NOT_TARGETED_TRADE_PROOF=true
 BOUND_OKX_TESTNET_HTTP_CLIENT_TRANSPORT_REQUIREMENTS=browser_compatible_User-Agent + OK-ACCESS-TIMESTAMP ISO8601_MS_Z + x-simulated-trading:1
@@ -3282,6 +3400,159 @@ must not be claimed as the targeted trade proof. The productive bound client
 must send a browser-compatible `User-Agent` and OKX-compatible millisecond
 ISO `OK-ACCESS-TIMESTAMP` before any Owner-authorized targeted proof retry.
 Live remains hard-blocked. Cap &#47; §11.13 remains unstarted.
+
+#### 11.12.8.3 OKX EEA Demo path EXTERNAL_CAPABILITY_UNAVAILABLE closeout (binding)
+
+Owner-GO
+`OWNER_GO_CLOSE_OKX_EEA_DEMO_PATH_AS_EXTERNAL_CAPABILITY_UNAVAILABLE_AND_EVALUATE_ALTERNATE_DERIVATIVES_TESTNET_NO_ORDER`
+closes the **OKX EEA Demo V5 productive order path** as an external venue
+capability unavailability. This is **not** §11.12.8 proof closure and does
+**not** set any `TESTNET_*_PROVEN` field true.
+
+``` text
+OKX_EEA_DEMO_PRODUCTIVE_ORDER_PATH_STATUS=CLOSED_EXTERNAL_CAPABILITY_UNAVAILABLE
+OKX_EEA_DEMO_PATH_CLOSEOUT_EVIDENCE=evidence&#47;ops&#47;section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1&#47;20260810T143709Z&#47;
+OKX_EEA_DEMO_PATH_CLOSEOUT_ORIGIN_MAIN_SHA=b6d2faa96bae40c7bfb36633b6ecb0a565514a87
+SECTION_11_12_8_CLOSED=false
+SECTION_11_12_8_STATUS=OPEN_OKX_EEA_DEMO_PATH_CLOSED_AWAITING_ALTERNATE_VENUE_OWNER_SCOPE
+TESTNET_STAR_PROVEN=false
+LIVE_AUTHORIZED=false
+SECTION_11_13_STARTED=false
+FURTHER_OKX_EEA_DEMO_ORDER_POSTS_AUTHORIZED=false
+ALTERNATE_DERIVATIVES_TESTNET_EVALUATION_STATUS=SEALED_NO_ORDER_NO_VENUE_ACTIVATED
+ALTERNATE_EVALUATION_EVIDENCE=evidence&#47;ops&#47;section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1&#47;20260810T143709Z&#47;ALTERNATE_DERIVATIVES_TESTNET_NO_ORDER_EVALUATION.json
+CANONICAL_NEXT_STEP_AFTER_OKX_EEA_DEMO_PATH_CLOSEOUT=OWNER_GO_SELECT_ALTERNATE_DERIVATIVES_TESTNET_VENUE_SCOPE_FOR_SECTION_11_12_8_CONTINUATION
+```
+
+Forensic basis retained (non-exhaustive; see sealed closeout evidence):
+
+- reproducible Demo Order-POST reject `HTTP 401` &#47; exchange `code=50124`
+  on `BTC-USDT-SWAP`;
+- OKX human agent statement that EEA Demo cannot trade USDT-settled
+  `BTC-USDT-SWAP`;
+- OKX human agent statement that `BTC-USD-SWAP` is unavailable in demo under
+  local compliance;
+- Demo V5 Markets UI missing Futures&#47;SWAP&#47;X-Perp enablement on the bound key;
+- Crypto-Asset=Alle and derivatives account unlock did not clear `50124`;
+- Owner decision to stop further productive-order pursuit on this path.
+
+Mandatory distinctions:
+
+``` text
+PATH_CLOSED_EXTERNAL_UNAVAILABLE != SECTION_11_12_8_PROVEN_CLOSED
+ALTERNATE_EVALUATION != VENUE_ACTIVATION
+ALTERNATE_EVALUATION != TESTNET_AUTHORIZED
+ALTERNATE_EVALUATION != INSTRUMENT_BINDING_CHANGE
+NO_ORDER_EVALUATION_MAY_NOT_PLACE_ORDERS=true
+NO_SILENT_VENUE_SWITCH=true
+```
+
+The sealed no-order evaluation ranks holding&#47;next options only. Any later
+venue, account, instrument or adapter continuation requires a **separate**
+scoped Owner-GO. Live remains hard-blocked. Cap &#47; §11.13 remains unstarted.
+
+#### 11.12.9 Pre-Live Cybersecurity Acceptance Gate (binding; mandatory)
+
+Owner-GO
+`OWNER_GO_RECONCILE_CYBERSECURITY_RUNBOOK_V2_1_WITH_CANONICAL_MASTER_RUNBOOK_AND_DEFINE_PRE_LIVE_SECURITY_ACCEPTANCE_GATE_NO_RUNTIME_CHANGE_NO_ORDER`
+plus Owner addendum
+`OWNER_ADDENDUM_GOVERNANCE_MANIFEST_CYBERSECURITY_V2_1_AS_MANDATORY_PRE_LIVE_GATE_AND_BIND_ALL_FUTURE_IMPLEMENTATION_TO_CANONICAL_SECURITY_INVARIANTS_NO_RUNTIME_CHANGE_NO_ORDER`
+ratify the phase-aware Cybersecurity Runbook V2.1 as derived-domain
+authority (§4.8) and establish the Pre-Live Cybersecurity Acceptance
+Gate as a **mandatory** dependency **after** complete productive
+Testnet &#47; Demo lifecycle proof and **before** Cap &#47; §11.13
+Live-readiness evaluation or Live activation. Bypass is forbidden.
+Future implementation remains bound to §4.8.1 canonical security
+invariants.
+
+Canonical security domain document:
+
+`docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md`
+
+``` text
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+TESTNET_STAR_PROVEN=false
+CYBERSECURITY_RUNBOOK_V2_1_AUTHORITY=DERIVED_DOMAIN_AUTHORITY_ONLY
+CYBERSECURITY_RUNBOOK_IS_SSOT=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+FUTURE_IMPLEMENTATION_BOUND_TO_CANONICAL_SECURITY_INVARIANTS=true
+BYPASS_OF_PRE_LIVE_GATE_FORBIDDEN=true
+NO_RUNTIME_CHANGE_BY_THIS_SECTION=true
+NO_ORDER_BY_THIS_SECTION=true
+```
+
+Position in the canonical flow:
+
+``` text
+Research / Simulation
+→ Shadow
+→ Testnet / Demo Capability
+→ complete Testnet lifecycle proof (incl. §11.12.1–§11.12.8 claims)
+→ PRE-LIVE CYBERSECURITY ACCEPTANCE GATE (MANDATORY)
+→ Live-readiness / §11.13
+→ separate explicit Owner Live authorization
+```
+
+Gate PASS means only:
+
+``` text
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true
+```
+
+Gate PASS must **not** be interpreted as:
+
+``` text
+LIVE_ENABLED=true
+LIVE_ARMED=true
+LIVE_ORDER_AUTHORIZED=true
+SECTION_11_13_STARTED=true
+FULLY_AUTONOMOUS_LIVE_TRADING_READY=true
+FULLY_AUTONOMOUS_LIVE_TRADING_ACTIVE=true
+```
+
+Minimum PASS conditions (evidence-bound; silent skip forbidden; `N&#47;A`
+only when explicitly justified and evidence-bound) are owned by
+Cybersecurity Runbook V2.1 §18 and include at least:
+
+``` text
+TESTNET_LIFECYCLE_PROVEN=true
+LONG_RUNNING_TESTNET_PROVEN=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+SECRETS_REVIEW=PASS
+DEPENDENCY_AUDIT=PASS
+SBOM_PRESENT=true
+STATIC_SECURITY_ANALYSIS=PASS
+SECURITY_REGRESSION=PASS
+PENETRATION_PROGRAM=PASS
+CREDENTIAL_LEAKAGE_TEST=PASS
+AUTHORITY_REPLAY_TEST=PASS
+RECOVERY_SECURITY_TEST=PASS
+CRITICAL_FINDINGS_OPEN=0
+HIGH_FINDINGS_OPEN=0
+LIVE_TESTNET_ISOLATION_PROVEN=true
+LIVE_DEFAULT_BLOCK_PROVEN=true
+LIVE_ARMING_FAIL_CLOSED_PROVEN=true
+AUDIT_EVIDENCE_VERIFIED=true
+MANIFEST_VERIFY_RC=0
+PRE_LIVE_CYBERSECURITY_GATE=PASS
+```
+
+Hard stop / FAIL / BLOCKED when any Critical or High finding remains
+open; Live/Testnet isolation, Live default block, credential separation,
+authority-replay resistance, kill-switch &#47; emergency-control integrity,
+evidence integrity, venue/host/instrument binding uniqueness, or
+canonical code binding is not proven.
+
+This docs ratification &#47; addendum does **not** execute the penetration
+program and does **not** set `PRE_LIVE_CYBERSECURITY_GATE=PASS`. Cap &#47;
+§11.13 remains unstarted and unauthorized until the gate later PASSes
+under a separate evidence-bound capability and a later Owner Live path
+remains separately required.
 
 Section 2.1 `NO_TESTNET_ORDERS` describes the **no-order program** finish
 boundary. It does not forbid a separately Owner-authorized §11.12 Testnet
@@ -3319,6 +3590,10 @@ TESTNET_EVIDENCE_VERIFIED=true
 ```
 
 ## 11.13 Live shadow and canary progression
+
+Cap &#47; §11.13 must not start while
+`PRE_LIVE_CYBERSECURITY_GATE != PASS` (§11.12.9). Gate PASS only yields
+`ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true` and is never Live activation.
 
 Live activation must progress through bounded stages without bypassing
 the canonical core:
@@ -3462,6 +3737,8 @@ explicit Live canary contract authorizes the exact scenario.
 Peak_Trade may claim `FULLY_AUTONOMOUS_LIVE_TRADING_READY=true` only when:
 
 ``` text
+PRE_LIVE_CYBERSECURITY_GATE=PASS
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true
 CANONICAL_STATEFUL_CORE_PROVEN=true
 SIMULATED_LIFECYCLE_PROVEN=true
 TESTNET_LIFECYCLE_PROVEN=true
@@ -3481,6 +3758,9 @@ OWNER_INTERVENTION_REQUIRED_FOR_ROUTINE_OPERATION=false
 OWNER_INTERVENTION_REQUIRED_FOR_SCOPE_OR_LIMIT_CHANGE=true
 CORE_LOGIC_PARITY_ACROSS_MODES=true
 ```
+
+`PRE_LIVE_CYBERSECURITY_GATE=PASS` is necessary but never sufficient for
+Live readiness or Live activation (§11.12.9 / §4.8).
 
 This readiness claim still does not activate Live. Activation requires a
 separate state transition:
