@@ -1,0 +1,201 @@
+{
+  "LIVE_AUTHORIZED": false,
+  "ORDER_EFFECT": "NONE",
+  "ORDER_PLAN_RESULT": "BLOCKED_NO_EXECUTE",
+  "auth_headers_presence": [
+    {
+      "OK-ACCESS-KEY_PRESENT": true,
+      "OK-ACCESS-PASSPHRASE_PRESENT": true,
+      "OK-ACCESS-SIGN_PRESENT": true,
+      "OK-ACCESS-TIMESTAMP_PRESENT": true,
+      "SIMULATION_HEADER_PRESENT": false,
+      "method_allowlist": [
+        "GET"
+      ]
+    },
+    {
+      "OK-ACCESS-KEY_PRESENT": true,
+      "OK-ACCESS-PASSPHRASE_PRESENT": true,
+      "OK-ACCESS-SIGN_PRESENT": true,
+      "OK-ACCESS-TIMESTAMP_PRESENT": true,
+      "SIMULATION_HEADER_PRESENT": false,
+      "method_allowlist": [
+        "GET"
+      ]
+    },
+    {
+      "OK-ACCESS-KEY_PRESENT": true,
+      "OK-ACCESS-PASSPHRASE_PRESENT": true,
+      "OK-ACCESS-SIGN_PRESENT": true,
+      "OK-ACCESS-TIMESTAMP_PRESENT": true,
+      "SIMULATION_HEADER_PRESENT": false,
+      "method_allowlist": [
+        "GET"
+      ]
+    },
+    {
+      "OK-ACCESS-KEY_PRESENT": true,
+      "OK-ACCESS-PASSPHRASE_PRESENT": true,
+      "OK-ACCESS-SIGN_PRESENT": true,
+      "OK-ACCESS-TIMESTAMP_PRESENT": true,
+      "SIMULATION_HEADER_PRESENT": false,
+      "method_allowlist": [
+        "GET"
+      ]
+    },
+    {
+      "OK-ACCESS-KEY_PRESENT": true,
+      "OK-ACCESS-PASSPHRASE_PRESENT": true,
+      "OK-ACCESS-SIGN_PRESENT": true,
+      "OK-ACCESS-TIMESTAMP_PRESENT": true,
+      "SIMULATION_HEADER_PRESENT": false,
+      "method_allowlist": [
+        "GET"
+      ]
+    }
+  ],
+  "counters": {
+    "AMEND_REQUEST_COUNT": 0,
+    "CANCEL_REQUEST_COUNT": 0,
+    "GET_REQUEST_COUNT": 5,
+    "ORDER_REQUEST_COUNT": 0,
+    "REQUEST_COUNT": 5,
+    "TRANSFER_REQUEST_COUNT": 0,
+    "WITHDRAW_REQUEST_COUNT": 0,
+    "WRITE_REQUEST_COUNT": 0,
+    "endpoints_used": [
+      "/api/v5/account/config",
+      "/api/v5/account/balance",
+      "/api/v5/account/positions",
+      "/api/v5/trade/orders-pending",
+      "/api/v5/market/ticker?instId=BTC-USDT-SWAP"
+    ],
+    "http_result_classes": [
+      "HTTP_200_OK",
+      "HTTP_200_OK",
+      "HTTP_200_OK",
+      "HTTP_200_OK",
+      "HTTP_200_OK"
+    ],
+    "methods_used": [
+      "GET",
+      "GET",
+      "GET",
+      "GET",
+      "GET"
+    ]
+  },
+  "mutation_boundary": {
+    "ACCOUNT_MUTATION_EFFECT": "NONE",
+    "ACCOUNT_MUTATION_PERFORMED": false,
+    "BLOCKS_NEW_ENTRY": true,
+    "DRY_RUN_MARKER": true,
+    "EXECUTION_BLOCK_REASONS": [
+      "LIVE_RECONCILIATION_PROVEN=false",
+      "BLOCKS_NEW_ENTRY=true",
+      "DRY_RUN_SUBMIT_FORBIDDEN=true"
+    ],
+    "LIVE_AUTHORIZED": false,
+    "LIVE_ORDER_AUTHORIZED": false,
+    "LIVE_RECONCILIATION_PROVEN": false,
+    "NO_DEMO_SIMULATION": true,
+    "ORDER_EFFECT": "NONE",
+    "ORDER_SUBMIT_PERFORMED": false,
+    "SUBMIT_REACHABLE": false
+  },
+  "order_plan_digest": "78d6c90dd904376adf6d329a08003f9807be4ba00ffb3259d843310217f2ac0a",
+  "permission_attestation": {
+    "READ": true,
+    "TRADE": false,
+    "WITHDRAW": false
+  },
+  "reconciliation": {
+    "ACCOUNT_MUTATION_EFFECT": "NONE",
+    "ALL_LAYERS_MATCH": false,
+    "AUTOMATIC_STAGE_PROMOTION": false,
+    "BLOCKS_NEW_ENTRY": true,
+    "DOCUMENT_CLASS": "BOUNDED_LIVE_SHADOW_EXCHANGE_RECONCILIATION_LAYER_EVAL_V1",
+    "EXCHANGE_TRUTH_ADOPTION_REQUIRES_EXPLICIT_POLICY": true,
+    "NO_ACCOUNT_MUTATION_FROM_SHADOW_RECONCILIATION": true,
+    "NO_AUTOMATIC_STAGE_PROMOTION": true,
+    "NO_LIVE_ORDER_FROM_SHADOW_RECONCILIATION": true,
+    "ORDER_EFFECT": "NONE",
+    "RECONCILIATION_BEFORE_ALPHA": true,
+    "RECONCILIATION_CONTINUOUS": true,
+    "SILENT_LOCAL_HISTORY_OVERWRITE_FORBIDDEN": true,
+    "UNRESOLVED_ECONOMIC_DIVERGENCE": true,
+    "UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY": true,
+    "layers": [
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "credential_and_account_identity",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": true,
+        "divergence_detected": true,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "venue_instrument_and_contract_metadata",
+        "outcome": "HARD_STOP_OWNER_REVIEW"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "open_orders",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "recent_orders_and_trades",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "positions",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": true,
+        "divergence_detected": true,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "balances_equity_and_available_margin",
+        "outcome": "HARD_STOP_OWNER_REVIEW"
+      },
+      {
+        "blocks_new_entry": true,
+        "divergence_detected": true,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "local_portfolio_and_accounting",
+        "outcome": "HARD_STOP_OWNER_REVIEW"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "risk_reservations",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "pending_commands",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "evidence_and_commit_cursors",
+        "outcome": "MATCH"
+      }
+    ]
+  }
+}

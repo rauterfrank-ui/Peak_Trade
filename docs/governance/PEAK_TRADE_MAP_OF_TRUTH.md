@@ -274,9 +274,13 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`evidence&#47;ops&#47;section_11_13_2_live_private_read_only_proven_v1&#47;20260811T170310Z&#47;`](../../evidence/ops/section_11_13_2_live_private_read_only_proven_v1/20260811T170310Z/) | Owner §11.13.2 productive LIVE private read-only proof (derived; non-SSOT; GET-only; writes&#47;orders=0; `MANIFEST_VERIFY_RC=0`; Live unauthorized) |
 | [`docs/ops/specs/SECTION_11_13_2_LIVE_PRIVATE_READ_ONLY_V1.md`](../ops/specs/SECTION_11_13_2_LIVE_PRIVATE_READ_ONLY_V1.md) | Derived §11.13.2 package spec (non-SSOT) |
 | [`docs/ops/specs/SECTION_11_13_2_OWNER_EXECUTE_INPUT_CONTRACT_V1.md`](../ops/specs/SECTION_11_13_2_OWNER_EXECUTE_INPUT_CONTRACT_V1.md) | Owner execute-time input checklist (non-SSOT; no invented values) |
-| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.3 | SSOT LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION proven (`LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_EXECUTED=true`; `LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=true`; `LIVE_RECONCILIATION_PROVEN=false`; `LIVE_AUTHORIZED=false`; Cap 11.7 contracts-only; Dry-Run not started) |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.3 | SSOT LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION proven (`LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_EXECUTED=true`; `LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=true`; `LIVE_RECONCILIATION_PROVEN=false`; `LIVE_AUTHORIZED=false`; Cap 11.7 contracts-only; historical next pointer superseded by §11.13.4) |
 | [`evidence&#47;ops&#47;section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1&#47;20260811T211828Z&#47;`](../../evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/20260811T211828Z/) | Owner §11.13.3 productive LIVE shadow exchange-reconciliation proof (derived; non-SSOT; GET-only; writes&#47;orders=0; `MANIFEST_VERIFY_RC=0`; layer divergences reported; Live unauthorized) |
 | [`docs/ops/specs/SECTION_11_13_3_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_V1.md`](../ops/specs/SECTION_11_13_3_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_V1.md) | Derived §11.13.3 package spec (non-SSOT) |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.4 | SSOT LIVE_DRY_RUN_ORDER_PLAN proven (`LIVE_DRY_RUN_ORDER_PLAN_EXECUTED=true`; `LIVE_DRY_RUN_ORDER_PLAN_PROVEN=true`; `ORDER_PLAN_RESULT=BLOCKED_NO_EXECUTE`; `LIVE_RECONCILIATION_PROVEN=false`; `BLOCKS_NEW_ENTRY=true`; `LIVE_AUTHORIZED=false`; Cap 11.8 fixture-only; Canary not started) |
+| [`evidence&#47;ops&#47;section_11_13_4_live_dry_run_order_plan_proven_v1&#47;20260811T230805Z&#47;`](../../evidence/ops/section_11_13_4_live_dry_run_order_plan_proven_v1/20260811T230805Z/) | Owner §11.13.4 productive LIVE dry-run order-plan proof (derived; non-SSOT; GET-only; writes&#47;orders=0; `MANIFEST_VERIFY_RC=0`; plan blocked by unresolved divergence; Live unauthorized) |
+| [`docs/ops/specs/SECTION_11_13_4_LIVE_DRY_RUN_ORDER_PLAN_V1.md`](../ops/specs/SECTION_11_13_4_LIVE_DRY_RUN_ORDER_PLAN_V1.md) | Derived §11.13.4 package spec (non-SSOT) |
+| [`docs/ops/specs/SECTION_11_13_4_OWNER_EXECUTE_INPUT_CONTRACT_V1.md`](../ops/specs/SECTION_11_13_4_OWNER_EXECUTE_INPUT_CONTRACT_V1.md) | Owner execute-time input checklist (non-SSOT; no invented values) |
 | [`docs/ops/specs/SECTION_11_13_3_OWNER_EXECUTE_INPUT_CONTRACT_V1.md`](../ops/specs/SECTION_11_13_3_OWNER_EXECUTE_INPUT_CONTRACT_V1.md) | Owner execute-time input checklist (non-SSOT; no invented values) |
 | [`evidence&#47;ops&#47;section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1&#47;20260810T143709Z&#47;`](../../evidence/ops/section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1/20260810T143709Z/) | OKX EEA Demo path closeout &#47; no-order alternate evaluation (non-activating) |
 | [`evidence&#47;ops&#47;section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1&#47;20260810T151323Z&#47;`](../../evidence/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/20260810T151323Z/) | Historical OKX Global Demo binding package evidence (NO_ORDER; not active) |
@@ -518,15 +522,23 @@ SECTION_11_13_3_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING_BOUND=true
 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=true
 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_EXECUTED=true
 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_AUTHORIZED=true
+LIVE_DRY_RUN_ORDER_PLAN_PROVEN=true
+LIVE_DRY_RUN_ORDER_PLAN_EXECUTED=true
+LIVE_DRY_RUN_ORDER_PLAN_AUTHORIZED=true
+ORDER_PLAN_RESULT=BLOCKED_NO_EXECUTE
 LIVE_RECONCILIATION_PROVEN=false
+BLOCKS_NEW_ENTRY=true
+UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY=true
 LIVE_AUTHORIZED=false
-EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_DRY_RUN_ORDER_PLAN
-EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_LIVE_DRY_RUN_ORDER_PLAN
-NEXT_CANONICAL_STEP_POINTER=OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_DRY_RUN_ORDER_PLAN
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_CANARY_MINIMUM_EXPOSURE
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_LIVE_CANARY_MINIMUM_EXPOSURE
+NEXT_CANONICAL_STEP_POINTER=OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_CANARY_MINIMUM_EXPOSURE
 SECTION_11_13_2_PACKAGE_POINTER=src&#47;ops&#47;section_11_13_2_live_private_read_only_v1&#47;
 SECTION_11_13_2_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_2_live_private_read_only_proven_v1&#47;20260811T170310Z&#47;
 SECTION_11_13_3_PACKAGE_POINTER=src&#47;ops&#47;section_11_13_3_live_shadow_with_exchange_reconciliation_v1&#47;
 SECTION_11_13_3_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1&#47;20260811T211828Z&#47;
+SECTION_11_13_4_PACKAGE_POINTER=src&#47;ops&#47;section_11_13_4_live_dry_run_order_plan_v1&#47;
+SECTION_11_13_4_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_4_live_dry_run_order_plan_proven_v1&#47;20260811T230805Z&#47;
 SECTION_11_13_1_LIVE_READINESS_EVAL_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_live_readiness_evaluation_v1&#47;20260811T134610Z&#47;
 SECTION_11_12_9_44_PRE_LIVE_GATE_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_44_pre_live_cybersecurity_gate_pass_v1&#47;20260811T133046Z&#47;
 ZAP_DAST_EXECUTED=false
@@ -719,8 +731,15 @@ SECTION_11_13_3_PREPARATION_IS_NOT_LIVE_DRY_RUN_ORDER_PLAN=true
 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN_IS_NOT_LIVE_AUTHORIZED=true
 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN_IS_NOT_LIVE_RECONCILIATION_PROVEN=true
 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN_IS_NOT_LIVE_DRY_RUN_ORDER_PLAN=true
+LIVE_DRY_RUN_ORDER_PLAN_PROVEN_IS_NOT_LIVE_AUTHORIZED=true
+LIVE_DRY_RUN_ORDER_PLAN_PROVEN_IS_NOT_LIVE_RECONCILIATION_PROVEN=true
+LIVE_DRY_RUN_ORDER_PLAN_PROVEN_IS_NOT_LIVE_CANARY_MINIMUM_EXPOSURE=true
+LIVE_DRY_RUN_ORDER_PLAN_PROVEN_IS_NOT_ORDER_SUBMIT=true
+BLOCKED_NO_EXECUTE_IS_EXPECTED_SAFETY_RESULT_UNDER_UNRESOLVED_DIVERGENCE=true
 CAPABILITY_11_7_CONTRACTS_ONLY_IS_NOT_SECTION_11_13_3_NETWORK_UNLOCK=true
 OWNER_GO_PREPARATION_IS_NOT_OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION=true
+OWNER_GO_LIVE_DRY_RUN_ORDER_PLAN_IS_CONSUMED=true
+OWNER_GO_LIVE_DRY_RUN_ORDER_PLAN_IS_NOT_LIVE_CANARY=true
 MERGE_IS_NOT_EXECUTE=true
 
 RECOVERY_BIND_29_40_IS_NOT_SECTION_11_13_STARTED=true
@@ -861,7 +880,7 @@ CANONICAL_SEMANTICS=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#15.3
 |----------|-------|
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) | Canonical Master Runbook (aktuelle semantische Autorität) |
 | [`docs/runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4.md`](../runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4.md) | Canonical Runtime Operations V2.4 (`AUTHORITY_CLASSIFICATION=DERIVED_DOMAIN_AUTHORITY_ONLY`; `RUNTIME_OPERATIONS_RUNBOOK_IS_SSOT=false`; Master Runbook bleibt einzige SSOT mit absoluter Precedence; Manifest [`…_V2_4_RATIFICATION.json`](../runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4_RATIFICATION.json); **kein** Runtime-/Trading-/Testnet-/Live-/Order-/Credential-Authorization-Effekt) |
-| [`docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md`](../runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md) | Canonical Cybersecurity Runbook V2.1 phase-aware / **mandatory** Pre-Live Security Gate (`AUTHORITY_CLASSIFICATION=DERIVED_DOMAIN_AUTHORITY_ONLY`; `CYBERSECURITY_RUNBOOK_IS_SSOT=false`; Master §4.8 / §4.8.1 / §11.12.9; Manifest [`…_V2_1_RATIFICATION.json`](../runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1_RATIFICATION.json); `PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY`; `PRE_LIVE_CYBERSECURITY_GATE=PASS`; `ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`; `LIVE_PRIVATE_READ_ONLY_PROVEN=true`; `LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=true`; `LIVE_AUTHORIZED=false`; `FUTURE_IMPLEMENTATION_BOUND_TO_CANONICAL_SECURITY_INVARIANTS=true`; **kein** Runtime-/Trading-/Testnet-/Live-/Order-/Credential-Authorization-Effekt; Dry-Run order plan unstarted) |
+| [`docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md`](../runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md) | Canonical Cybersecurity Runbook V2.1 phase-aware / **mandatory** Pre-Live Security Gate (`AUTHORITY_CLASSIFICATION=DERIVED_DOMAIN_AUTHORITY_ONLY`; `CYBERSECURITY_RUNBOOK_IS_SSOT=false`; Master §4.8 / §4.8.1 / §11.12.9; Manifest [`…_V2_1_RATIFICATION.json`](../runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1_RATIFICATION.json); `PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY`; `PRE_LIVE_CYBERSECURITY_GATE=PASS`; `ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`; `LIVE_PRIVATE_READ_ONLY_PROVEN=true`; `LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=true`; `LIVE_DRY_RUN_ORDER_PLAN_PROVEN=true`; `LIVE_AUTHORIZED=false`; `FUTURE_IMPLEMENTATION_BOUND_TO_CANONICAL_SECURITY_INVARIANTS=true`; **kein** Runtime-/Trading-/Testnet-/Live-/Order-/Credential-Authorization-Effekt; Canary unstarted) |
 | [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md) | Historische Vollautonomie-Vorgängerreferenz (SUPERSEDED) |
 | [`docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md`](../ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) | Market Dashboard Landscape V2 (canonical read-only consumer planning SSOT; non-authorizing; Documentation Anchor = documentary index only; `OPERATOR_PRODUCT_GATE=true`; `INTRABAR_CAPABILITY=PASS`; `REGIME_BULL_BEAR_SWITCH_BINDING=COMPLETE`; `NEXT_CANONICAL_ACTION=STOP_IDLE`; `WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE_STOP_IDLE`) |
 | [`docs/ops/runbooks/README.md`](../ops/runbooks/README.md) | Operative Runbooks |

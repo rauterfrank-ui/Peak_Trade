@@ -992,13 +992,18 @@ LIVE_PRIVATE_READ_ONLY_EXECUTED=true
 LIVE_PRIVATE_READ_ONLY_PROVEN=true
 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_EXECUTED=true
 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=true
+LIVE_DRY_RUN_ORDER_PLAN_EXECUTED=true
+LIVE_DRY_RUN_ORDER_PLAN_PROVEN=true
+ORDER_PLAN_RESULT=BLOCKED_NO_EXECUTE
 LIVE_RECONCILIATION_PROVEN=false
+BLOCKS_NEW_ENTRY=true
 LIVE_AUTHORIZED=false
-EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_LIVE_DRY_RUN_ORDER_PLAN
-CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_DRY_RUN_ORDER_PLAN
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_LIVE_CANARY_MINIMUM_EXPOSURE
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_CANARY_MINIMUM_EXPOSURE
 SECTION_11_13_1_LIVE_READINESS_EVAL_EVIDENCE_ROOT=evidence/ops/section_11_13_live_readiness_evaluation_v1/20260811T134610Z/
 SECTION_11_13_2_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_13_2_live_private_read_only_proven_v1/20260811T170310Z/
 SECTION_11_13_3_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/20260811T211828Z/
+SECTION_11_13_4_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_13_4_live_dry_run_order_plan_proven_v1/20260811T230805Z/
 ZAP_DAST_EXECUTED=false
 DOCS_NO_LIVE_ENABLE_PREEXISTING_OPEN=true
 SECTION_11_12_9_EVALUATION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_pre_live_cybersecurity_acceptance_gate_evidence_bound_evaluation_v1/20260810T202800Z/
@@ -1226,12 +1231,18 @@ productive LIVE shadow exchange-reconciliation proof bindet §11.13.3
 `LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_EXECUTED=true` und
 `LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=true` (GET-only OKX EEA;
 writes&#47;orders=0; `MANIFEST_VERIFY_RC=0`; `LIVE_RECONCILIATION_PROVEN=false`
-wegen report-only layer divergences; `LIVE_AUTHORIZED=false`). Früheste
-Restabhängigkeit ist `LIVE_DRY_RUN_ORDER_PLAN`. Live-Dry-Run&#47;Canary-Progression
-bleibt unstarted; Live bleibt hard-blocked.
-`SECTION_11_13_LIVE_ACTIVATION_AUTHORIZED=false`; Dry-Run order plan erfordert
-separates Owner-GO. Cap 11.7 bleibt contracts-only. Recovery-Bind bleibt nicht
-Live-Arming-Autorisierung und nicht Live-Autorisierung.
+wegen report-only layer divergences; `LIVE_AUTHORIZED=false`). Nach
+Owner-executed §11.13.4 productive LIVE dry-run order-plan proof bindet
+§11.13.4 `LIVE_DRY_RUN_ORDER_PLAN_EXECUTED=true` und
+`LIVE_DRY_RUN_ORDER_PLAN_PROVEN=true` (GET-only OKX EEA; writes&#47;orders=0;
+`MANIFEST_VERIFY_RC=0`; `ORDER_PLAN_RESULT=BLOCKED_NO_EXECUTE`;
+`BLOCKS_NEW_ENTRY=true`; `LIVE_RECONCILIATION_PROVEN=false`;
+`LIVE_AUTHORIZED=false`). Früheste Restabhängigkeit ist
+`LIVE_CANARY_MINIMUM_EXPOSURE`. Live-Canary-Progression bleibt unstarted;
+Live bleibt hard-blocked. `SECTION_11_13_LIVE_ACTIVATION_AUTHORIZED=false`;
+Canary erfordert separates Owner-GO. Cap 11.8 bleibt fixture-only.
+Recovery-Bind bleibt nicht Live-Arming-Autorisierung und nicht
+Live-Autorisierung.
 
 ------------------------------------------------------------------------
 
