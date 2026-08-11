@@ -1,0 +1,154 @@
+{
+  "CRITERIA": [
+    {
+      "actual": "PASS",
+      "criterion": "PRE_LIVE_CYBERSECURITY_GATE",
+      "evidence_basis": "Master \u00a74.8 / \u00a711.12.9.44 + evidence/ops/section_11_12_9_44_pre_live_cybersecurity_gate_pass_v1/20260811T133046Z/",
+      "expected": "PASS",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "criterion": "ELIGIBLE_FOR_LIVE_READINESS_EVALUATION",
+      "evidence_basis": "Master \u00a711.12.9.44 / Map of Truth",
+      "expected": true,
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "criterion": "CANONICAL_STATEFUL_CORE_PROVEN",
+      "evidence_basis": "Cap 7.2 / Master \u00a711.17 static binding; Cap 11.12 ratification claims retain true",
+      "expected": true,
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "criterion": "SIMULATED_LIFECYCLE_PROVEN",
+      "evidence_basis": "Cap 7.1 / Master \u00a711.17 static binding; Cap 11.12 ratification claims retain true",
+      "expected": true,
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "criterion": "TESTNET_LIFECYCLE_PROVEN",
+      "evidence_basis": "Master \u00a711.12.9.19+ / Map of Truth TESTNET_LIFECYCLE_PROVEN=true (Cap 11.12 program closed)",
+      "expected": true,
+      "status": "PASS"
+    },
+    {
+      "actual": false,
+      "criterion": "LIVE_PRIVATE_READ_ONLY_PROVEN",
+      "evidence_basis": "No productive Live private read-only proof bound; Cap 11.7 contracts retained NOT_ACTIVATED; historical Cap 11.12 claims false",
+      "expected": true,
+      "status": "FAIL"
+    },
+    {
+      "actual": false,
+      "criterion": "LIVE_ORDER_LIFECYCLE_PROVEN",
+      "evidence_basis": "No productive Live order lifecycle proof bound",
+      "expected": true,
+      "status": "FAIL"
+    },
+    {
+      "actual": false,
+      "criterion": "LIVE_RECONCILIATION_PROVEN",
+      "evidence_basis": "No productive Live reconciliation proof bound",
+      "expected": true,
+      "status": "FAIL"
+    },
+    {
+      "actual": false,
+      "criterion": "LIVE_RESTART_PROVEN",
+      "evidence_basis": "No productive Live restart proof bound",
+      "expected": true,
+      "status": "FAIL"
+    },
+    {
+      "actual": false,
+      "criterion": "LIVE_UNKNOWN_SUBMIT_RECOVERY_PROVEN",
+      "evidence_basis": "No productive Live unknown-submit recovery proof bound",
+      "expected": true,
+      "status": "FAIL"
+    },
+    {
+      "actual": false,
+      "criterion": "LIVE_DUPLICATE_ORDER_PREVENTION_PROVEN",
+      "evidence_basis": "No productive Live duplicate-order prevention proof bound",
+      "expected": true,
+      "status": "FAIL"
+    },
+    {
+      "actual": false,
+      "criterion": "LIVE_PARTIAL_FILL_RECOVERY_PROVEN",
+      "evidence_basis": "No productive Live partial-fill recovery proof bound",
+      "expected": true,
+      "status": "FAIL"
+    },
+    {
+      "actual": false,
+      "criterion": "LIVE_KILL_SWITCH_PROVEN",
+      "evidence_basis": "No productive Live kill-switch proof bound",
+      "expected": true,
+      "status": "FAIL"
+    },
+    {
+      "actual": false,
+      "criterion": "LIVE_AUTONOMOUS_DEGRADATION_PROVEN",
+      "evidence_basis": "No productive Live autonomous degradation proof bound",
+      "expected": true,
+      "status": "FAIL"
+    },
+    {
+      "actual": false,
+      "criterion": "LIVE_AUTONOMOUS_RECOVERY_PROVEN",
+      "evidence_basis": "No productive Live autonomous recovery proof bound",
+      "expected": true,
+      "status": "FAIL"
+    },
+    {
+      "actual": false,
+      "criterion": "LIVE_ACCOUNTING_RECONSTRUCTION_PROVEN",
+      "evidence_basis": "No productive Live accounting reconstruction proof bound",
+      "expected": true,
+      "status": "FAIL"
+    },
+    {
+      "actual": false,
+      "criterion": "LIVE_EVIDENCE_VERIFIED",
+      "evidence_basis": "No productive Live evidence chain verified",
+      "expected": true,
+      "status": "FAIL"
+    },
+    {
+      "actual": true,
+      "criterion": "OWNER_INTERVENTION_REQUIRED_FOR_ROUTINE_OPERATION",
+      "evidence_basis": "Still true (routine Owner intervention required); Cap 11.12 claims retain true",
+      "expected": false,
+      "status": "FAIL"
+    },
+    {
+      "actual": true,
+      "criterion": "OWNER_INTERVENTION_REQUIRED_FOR_SCOPE_OR_LIMIT_CHANGE",
+      "evidence_basis": "Retained true as required by \u00a711.17",
+      "expected": true,
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "criterion": "CORE_LOGIC_PARITY_ACROSS_MODES",
+      "evidence_basis": "Cap 11.12 ratification claims retain true",
+      "expected": true,
+      "status": "PASS"
+    }
+  ],
+  "CRITERIA_FAIL": 13,
+  "CRITERIA_PASS": 7,
+  "CRITERIA_TOTAL": 20,
+  "DOCUMENT_CLASS": "ACCEPTANCE_MATRIX_SECTION_11_13_LIVE_READINESS_EVALUATION_V1",
+  "FULLY_AUTONOMOUS_LIVE_TRADING_READY": false,
+  "ORIGIN_MAIN_SHA": "20d315f97f053b8e872d2e304e7633db65784823",
+  "OWNER_GO": "OWNER_GO_SECTION_11_13_LIVE_READINESS_EVALUATION",
+  "PACKAGE": "SECTION_11_13_LIVE_READINESS_EVALUATION",
+  "PACKAGE_VERDICT": "NOT_READY",
+  "RUN_ID": "20260811T134610Z"
+}
