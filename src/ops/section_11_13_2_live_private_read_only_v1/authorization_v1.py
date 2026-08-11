@@ -20,7 +20,7 @@ from src.ops.section_11_13_2_live_private_read_only_v1.constants_v1 import (
     LIVE_ENABLED,
     LIVE_ORDER_AUTHORIZED,
     LIVE_PRIVATE_READ_ONLY_AUTHORIZED_DEFAULT,
-    OWNER_GO_EXECUTE_TOKEN,
+    OWNER_GO_EXECUTE,
 )
 
 
@@ -35,7 +35,7 @@ _SHA_RE = re.compile(r"^[0-9a-f]{7,64}$")
 class LivePrivateRoAuthorizationBindingV1:
     live_private_read_only_authorized: bool
     authorization_scope: str
-    owner_go_token: str
+    owner_go: str
     bound_origin_main_sha: str
     bound_config_digest: str
     live_authorized: bool = False
@@ -48,7 +48,7 @@ class LivePrivateRoAuthorizationBindingV1:
         return {
             "LIVE_PRIVATE_READ_ONLY_AUTHORIZED": self.live_private_read_only_authorized,
             "authorization_scope": self.authorization_scope,
-            "owner_go_token": self.owner_go_token,
+            "owner_go": self.owner_go,
             "bound_origin_main_sha": self.bound_origin_main_sha,
             "bound_config_digest": self.bound_config_digest,
             "LIVE_AUTHORIZED": self.live_authorized,
@@ -69,7 +69,7 @@ def _canonical_dumps(payload: Mapping[str, Any]) -> str:
 
 def validate_live_private_read_only_authorization_v1(
     *,
-    owner_go_token: str | None,
+    owner_go: str | None,
     authorization_scope: str | None,
     bound_origin_main_sha: str | None,
     expected_origin_main_sha: str | None,
@@ -86,10 +86,10 @@ def validate_live_private_read_only_authorization_v1(
     if not authorized_flag:
         raise LivePrivateRoAuthorizationError("LIVE_PRIVATE_READ_ONLY_AUTHORIZED_FALSE")
 
-    token = str(owner_go_token or "").strip()
+    token = str(owner_go or "").strip()
     if not token:
         raise LivePrivateRoAuthorizationError("OWNER_GO_MISSING")
-    if token != OWNER_GO_EXECUTE_TOKEN:
+    if token != OWNER_GO_EXECUTE:
         raise LivePrivateRoAuthorizationError(f"OWNER_GO_MISMATCH:{token}")
 
     scope = str(authorization_scope or "").strip()
@@ -125,7 +125,7 @@ def validate_live_private_read_only_authorization_v1(
     return LivePrivateRoAuthorizationBindingV1(
         live_private_read_only_authorized=True,
         authorization_scope=AUTHORIZATION_SCOPE,
-        owner_go_token=OWNER_GO_EXECUTE_TOKEN,
+        owner_go=OWNER_GO_EXECUTE,
         bound_origin_main_sha=sha,
         bound_config_digest=cfg,
         live_authorized=False,

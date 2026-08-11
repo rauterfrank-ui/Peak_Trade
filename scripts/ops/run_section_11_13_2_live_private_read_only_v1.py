@@ -13,7 +13,7 @@ from src.ops.section_11_13_2_live_private_read_only_v1.config_v1 import (
     load_live_private_ro_config_from_json_file_v1,
 )
 from src.ops.section_11_13_2_live_private_read_only_v1.constants_v1 import (
-    OWNER_GO_EXECUTE_TOKEN,
+    OWNER_GO_EXECUTE,
     PACKAGE_MARKER,
 )
 from src.ops.section_11_13_2_live_private_read_only_v1.owner_input_contract_v1 import (
@@ -65,7 +65,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--owner-go",
         type=str,
         default="",
-        help=f"Optional Owner-GO token (execute token is {OWNER_GO_EXECUTE_TOKEN}).",
+        help=f"Optional Owner-GO token (execute token is {OWNER_GO_EXECUTE}).",
     )
     parser.add_argument(
         "--authorized",
@@ -99,7 +99,7 @@ def main(argv: list[str] | None = None) -> int:
             mode="preflight",
             config_payload=config_obj.to_dict(),
             origin_main_sha=args.origin_main_sha,
-            owner_go_token=args.owner_go or None,
+            owner_go=args.owner_go or None,
             live_private_read_only_authorized=bool(args.authorized) or None,
             evidence_run_root=args.evidence_root or None,
         )

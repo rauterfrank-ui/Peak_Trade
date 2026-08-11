@@ -36,7 +36,7 @@ from src.ops.section_11_13_2_live_private_read_only_v1.constants_v1 import (
     LIVE_ENABLED,
     LIVE_ORDER_AUTHORIZED,
     LIVE_PRIVATE_READ_ONLY_PROVEN,
-    OWNER_GO_EXECUTE_TOKEN,
+    OWNER_GO_EXECUTE,
     REQUIRED_ACCOUNT_IDENTITY_ENDPOINTS,
     REQUIRED_CREDENTIAL_CLASS,
     TRANSPORT_CLASS_GOVERNED_FIXTURE,
@@ -134,7 +134,7 @@ def run_section_11_13_2_live_private_read_only_v1(
     mode: str,
     config_payload: Mapping[str, Any],
     origin_main_sha: str,
-    owner_go_token: str | None = None,
+    owner_go: str | None = None,
     authorization_scope: str | None = None,
     live_private_read_only_authorized: bool | None = None,
     transport: LivePrivateRoTransportV1 | None = None,
@@ -159,7 +159,7 @@ def run_section_11_13_2_live_private_read_only_v1(
         raise LivePrivateRoRunnerError("DEFAULT_AUTH_MUST_BE_FALSE")
 
     # 1) SSOT / selector validation (package-local).
-    if CANONICAL_NEXT_STEP_AFTER_PREPARATION_MERGE != OWNER_GO_EXECUTE_TOKEN:
+    if CANONICAL_NEXT_STEP_AFTER_PREPARATION_MERGE != OWNER_GO_EXECUTE:
         # After preparation merge the execute token is the next GO; keep aligned.
         pass
 
@@ -215,7 +215,7 @@ def run_section_11_13_2_live_private_read_only_v1(
     if mode_s == "execute":
         try:
             auth = validate_live_private_read_only_authorization_v1(
-                owner_go_token=owner_go_token,
+                owner_go=owner_go,
                 authorization_scope=authorization_scope or AUTHORIZATION_SCOPE,
                 bound_origin_main_sha=origin_main_sha,
                 expected_origin_main_sha=origin_main_sha,
@@ -234,7 +234,7 @@ def run_section_11_13_2_live_private_read_only_v1(
             # refuse credential material borrow / wire send below.
             try:
                 auth = validate_live_private_read_only_authorization_v1(
-                    owner_go_token=owner_go_token,
+                    owner_go=owner_go,
                     authorization_scope=authorization_scope or AUTHORIZATION_SCOPE,
                     bound_origin_main_sha=origin_main_sha,
                     expected_origin_main_sha=origin_main_sha,
@@ -326,7 +326,7 @@ def run_execute_with_injected_transport_for_tests_v1(
     origin_main_sha: str,
     transport: LivePrivateRoTransportV1,
     evidence_run_root: Path | str,
-    owner_go_token: str = OWNER_GO_EXECUTE_TOKEN,
+    owner_go: str = OWNER_GO_EXECUTE,
     authorization_scope: str = AUTHORIZATION_SCOPE,
     live_private_read_only_authorized: bool = True,
 ) -> LivePrivateRoRunnerResultV1:
@@ -352,7 +352,7 @@ def run_execute_with_injected_transport_for_tests_v1(
         owner_declared_host_allowlist=config.owner_declared_host_allowlist or (config.rest_host,),
     )
     auth = validate_live_private_read_only_authorization_v1(
-        owner_go_token=owner_go_token,
+        owner_go=owner_go,
         authorization_scope=authorization_scope,
         bound_origin_main_sha=origin_main_sha,
         expected_origin_main_sha=origin_main_sha,

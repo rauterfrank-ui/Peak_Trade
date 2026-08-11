@@ -37,7 +37,7 @@ from src.ops.section_11_13_2_live_private_read_only_v1.constants_v1 import (
     LIVE_ORDER_AUTHORIZED,
     LIVE_PRIVATE_READ_ONLY_AUTHORIZED_DEFAULT,
     LIVE_PRIVATE_READ_ONLY_PROVEN,
-    OWNER_GO_EXECUTE_TOKEN,
+    OWNER_GO_EXECUTE,
     PACKAGE_MARKER,
     REQUIRED_CREDENTIAL_CLASS,
 )
@@ -119,7 +119,7 @@ def test_missing_go() -> None:
     cfg = load_live_private_ro_config_v1(_valid_config())
     with pytest.raises(LivePrivateRoAuthorizationError, match="OWNER_GO_MISSING"):
         validate_live_private_read_only_authorization_v1(
-            owner_go_token="",
+            owner_go="",
             authorization_scope=AUTHORIZATION_SCOPE,
             bound_origin_main_sha=ORIGIN_SHA,
             expected_origin_main_sha=ORIGIN_SHA,
@@ -133,7 +133,7 @@ def test_wrong_go() -> None:
     cfg = load_live_private_ro_config_v1(_valid_config())
     with pytest.raises(LivePrivateRoAuthorizationError, match="OWNER_GO_MISMATCH"):
         validate_live_private_read_only_authorization_v1(
-            owner_go_token="OWNER_GO_LIVE_SHADOW",
+            owner_go="OWNER_GO_LIVE_SHADOW",
             authorization_scope=AUTHORIZATION_SCOPE,
             bound_origin_main_sha=ORIGIN_SHA,
             expected_origin_main_sha=ORIGIN_SHA,
@@ -147,7 +147,7 @@ def test_go_scope_mismatch() -> None:
     cfg = load_live_private_ro_config_v1(_valid_config())
     with pytest.raises(LivePrivateRoAuthorizationError, match="AUTHORIZATION_SCOPE_MISMATCH"):
         validate_live_private_read_only_authorization_v1(
-            owner_go_token=OWNER_GO_EXECUTE_TOKEN,
+            owner_go=OWNER_GO_EXECUTE,
             authorization_scope="LIVE_AUTHORIZED",
             bound_origin_main_sha=ORIGIN_SHA,
             expected_origin_main_sha=ORIGIN_SHA,
@@ -161,7 +161,7 @@ def test_sha_config_mismatch() -> None:
     cfg = load_live_private_ro_config_v1(_valid_config())
     with pytest.raises(LivePrivateRoAuthorizationError, match="ORIGIN_MAIN_SHA_MISMATCH"):
         validate_live_private_read_only_authorization_v1(
-            owner_go_token=OWNER_GO_EXECUTE_TOKEN,
+            owner_go=OWNER_GO_EXECUTE,
             authorization_scope=AUTHORIZATION_SCOPE,
             bound_origin_main_sha=ORIGIN_SHA,
             expected_origin_main_sha="deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
@@ -171,7 +171,7 @@ def test_sha_config_mismatch() -> None:
         )
     with pytest.raises(LivePrivateRoAuthorizationError, match="CONFIG_DIGEST_MISMATCH"):
         validate_live_private_read_only_authorization_v1(
-            owner_go_token=OWNER_GO_EXECUTE_TOKEN,
+            owner_go=OWNER_GO_EXECUTE,
             authorization_scope=AUTHORIZATION_SCOPE,
             bound_origin_main_sha=ORIGIN_SHA,
             expected_origin_main_sha=ORIGIN_SHA,
@@ -527,7 +527,7 @@ def test_cap_11_7_remains_contracts_only() -> None:
 
 
 def test_selector_governance_next_step_behavior() -> None:
-    assert CANONICAL_NEXT_STEP_AFTER_PREPARATION_MERGE == OWNER_GO_EXECUTE_TOKEN
+    assert CANONICAL_NEXT_STEP_AFTER_PREPARATION_MERGE == OWNER_GO_EXECUTE
     assert "LIVE_SHADOW" in CANONICAL_NEXT_STEP_AFTER_PROVEN
 
 
@@ -539,7 +539,7 @@ def test_preflight_zero_network_and_no_credential_before_auth(tmp_path: Path) ->
             config_payload=_valid_config(),
             origin_main_sha=ORIGIN_SHA,
             live_private_read_only_authorized=False,
-            owner_go_token=OWNER_GO_EXECUTE_TOKEN,
+            owner_go=OWNER_GO_EXECUTE,
         )
     result = run_section_11_13_2_live_private_read_only_v1(
         mode="preflight",
@@ -588,7 +588,7 @@ def test_auth_false_blocks_execute() -> None:
             config_payload=_valid_config(),
             origin_main_sha=ORIGIN_SHA,
             live_private_read_only_authorized=False,
-            owner_go_token=OWNER_GO_EXECUTE_TOKEN,
+            owner_go=OWNER_GO_EXECUTE,
             transport=RecordingFakeTransportV1(),
         )
 

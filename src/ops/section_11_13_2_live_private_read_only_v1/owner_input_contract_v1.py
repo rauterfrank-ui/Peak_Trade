@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from src.ops.section_11_13_2_live_private_read_only_v1.constants_v1 import (
-    OWNER_GO_EXECUTE_TOKEN,
+    OWNER_GO_EXECUTE,
     REQUIRED_CREDENTIAL_CLASS,
     SECRETREF_CONVENTION_EXAMPLE,
 )
@@ -38,7 +38,7 @@ def build_owner_execute_input_contract_v1() -> dict[str, Any]:
         "LIVE_AUTHORIZED": False,
         "required_credential_class": REQUIRED_CREDENTIAL_CLASS,
         "secretref_convention_example": SECRETREF_CONVENTION_EXAMPLE,
-        "separate_execute_go_token": OWNER_GO_EXECUTE_TOKEN,
+        "separate_execute_go": OWNER_GO_EXECUTE,
         "fields": [
             {
                 "id": "live_venue_entity",
@@ -103,7 +103,7 @@ def build_owner_execute_input_contract_v1() -> dict[str, Any]:
             {
                 "id": "separate_execute_go",
                 "required": True,
-                "value": OWNER_GO_EXECUTE_TOKEN,
+                "value": OWNER_GO_EXECUTE,
                 "notes": "Later separate Owner-GO; not authorized by preparation PR.",
             },
         ],

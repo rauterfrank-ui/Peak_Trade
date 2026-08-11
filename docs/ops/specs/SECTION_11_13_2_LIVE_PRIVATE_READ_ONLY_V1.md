@@ -45,7 +45,7 @@ material, does **not** place orders, and does **not** activate Live.
 
 ## Evidence root
 
-`evidence/ops/section_11_13_2_live_private_read_only_proven_v1/<RUN_ID>/`
+`evidence&#47;ops&#47;section_11_13_2_live_private_read_only_proven_v1&#47;<RUN_ID>&#47;`
 
 ## Next steps
 
