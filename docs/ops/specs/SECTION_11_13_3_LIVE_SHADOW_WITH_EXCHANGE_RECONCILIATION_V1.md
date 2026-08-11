@@ -66,6 +66,6 @@ activate Live (`LIVE_AUTHORIZED=false`). Merge ≠ execute.
 
 1. Merge this productive execute unlock PR.
 2. Owner confirms reused §11.13.2 binding + local §11.13.3 SecretRef vault key
-   `secretref://vault/peak-trade/live-shadow-recon/okx` (material local-only).
+   `secretref:&#47;&#47;vault&#47;peak-trade&#47;live-shadow-recon&#47;okx` (material local-only).
 3. Separate `OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` for productive execute.
 4. After proven: `OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_DRY_RUN_ORDER_PLAN`.

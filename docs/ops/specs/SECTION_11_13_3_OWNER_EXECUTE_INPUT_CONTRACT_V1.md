@@ -25,7 +25,7 @@ values in Git).
 | Field | Required | Value | Notes |
 |-------|----------|-------|-------|
 | live venue/entity | yes | `OKX` / `OKX Europe Limited` | Reused from §11.13.2 proven binding |
-| region | yes | `EEA/DE` | Reused from §11.13.2 proven binding |
+| region | yes | `EEA&#47;DE` | Reused from §11.13.2 proven binding |
 | canonical production REST host | yes | `eea.okx.com` | Reused from §11.13.2 proven binding |
 | account/subaccount binding | yes | `856964404452495999` | Reused from §11.13.2 proven binding |
 | optional instrument scope | no | `null` | Account-level RO only |
