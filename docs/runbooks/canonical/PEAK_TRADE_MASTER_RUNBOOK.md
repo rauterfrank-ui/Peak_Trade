@@ -8783,6 +8783,136 @@ progression. Starting Live private read-only &#47; shadow &#47; canary requires 
 **separate** Owner-GO and is **not** authorized here
 (`LIVE_PRIVATE_READ_ONLY_AUTHORIZED=false`).
 
+### 11.13.2 LIVE_PRIVATE_READ_ONLY (preparation surface; NOT proven; NOT executed)
+
+Owner-GO
+`OWNER_GO_AUTHOR_SINGLE_PREPARATION_PR_SECTION_11_13_2_LIVE_PRIVATE_READ_ONLY_SURFACE`
+authors the **repo-side preparation surface** required so that a later,
+separately authorized productive step `OWNER_GO_LIVE_PRIVATE_READ_ONLY` can
+run fail-closed. This subsection defines the stage-scoped contract for
+`LIVE_PRIVATE_READ_ONLY` and binds the preparation package. It does **not**
+execute a productive Live private read, does **not** load Vault material,
+does **not** open a venue network session, does **not** authorize orders,
+Shadow, Canary or Live activation, and does **not** set
+`LIVE_PRIVATE_READ_ONLY_PROVEN=true`.
+
+``` text
+PURPOSE=PRODUCTIVE_PRIVATE_API_READ_ONLY_PROOF_PREPARATION_SURFACE
+STAGE_SCOPED_AUTHORIZATION=LIVE_PRIVATE_READ_ONLY_AUTHORIZED
+STAGE_GO_IS_NOT_LIVE_ACTIVATION=true
+LIVE_AUTHORIZED=false
+FULLY_AUTONOMOUS_LIVE_TRADING_READY=false
+NO_SHADOW=true
+NO_DRY_RUN=true
+NO_CANARY=true
+NO_ORDER=true
+NO_WITHDRAW=true
+NO_TRANSFER=true
+CAPABILITY_11_7_REMAINS_CONTRACTS_ONLY=true
+PROVEN_REQUIRES_REAL_LIVE_TRANSPORT_NEVER_FIXTURE_DEMO_TESTNET=true
+SECTION_11_13_2_PREPARATION_SURFACE_READY=true
+LIVE_PRIVATE_READ_ONLY_AUTHORIZED=false
+LIVE_PRIVATE_READ_ONLY_PROVEN=false
+LIVE_PRIVATE_READ_ONLY_EXECUTED=false
+ENABLE_LIVE_TRADING=false
+```
+
+Preconditions (for later execute; not satisfied by preparation alone):
+
+``` text
+PRE_LIVE_CYBERSECURITY_GATE=PASS
+SECTION_11_13_LIVE_READINESS_EVALUATION_COMPLETED=true
+FULLY_AUTONOMOUS_LIVE_TRADING_READY=false
+LIVE_AUTHORIZED=false
+OWNER_GO_LIVE_PRIVATE_READ_ONLY=true
+LIVE_PRIVATE_READ_ONLY_AUTHORIZED=true
+OWNER_SUPPLIED_LIVE_VENUE_HOST_ACCOUNT_SECRETREF_PRESENT=true
+PERMISSION_ATTESTATION_READ_TRUE_TRADE_FALSE_WITHDRAW_FALSE=true
+NO_DEMO_SIMULATION_MARKER=true
+```
+
+Success criteria (later productive execute only):
+
+``` text
+ENVIRONMENT=LIVE
+AUTHENTICATED_PRIVATE_READ_SUCCESS=true
+WRITE_REQUEST_COUNT=0
+ORDER_REQUEST_COUNT=0
+CANCEL_REQUEST_COUNT=0
+AMEND_REQUEST_COUNT=0
+WITHDRAW_REQUEST_COUNT=0
+TRANSFER_REQUEST_COUNT=0
+METHOD_ALLOWLIST=GET
+CROSS_BINDING_CHECKS_PASS=true
+REDACTION_CHECK_PASS=true
+MANIFEST_VERIFY_RC=0
+LIVE_PRIVATE_READ_ONLY_PROVEN=true
+LIVE_AUTHORIZED=false
+FULLY_AUTONOMOUS_LIVE_TRADING_READY=false
+```
+
+Failure criteria (any one fails closed; never proven):
+
+``` text
+MISSING_OR_WRONG_OWNER_GO
+SCOPE_OR_SHA_OR_CONFIG_MISMATCH
+DEMO_OR_TESTNET_ENVIRONMENT_OR_CREDENTIAL_CLASS
+DEMO_SIMULATION_HEADER_PRESENT
+NON_GET_METHOD
+MUTATION_ENDPOINT
+HOST_MISMATCH
+HTTP_401_OR_403
+MALFORMED_OR_TIMEOUT_RESPONSE
+FIXTURE_OR_DEMO_OR_TESTNET_TRANSPORT
+```
+
+Evidence contract root:
+
+`evidence&#47;ops&#47;section_11_13_2_live_private_read_only_proven_v1&#47;<RUN_ID>&#47;`
+
+Package owners:
+
+``` text
+CODE_OWNER=src/ops/section_11_13_2_live_private_read_only_v1/
+CONFIG_EXAMPLE=config/ops/section_11_13_2_live_private_read_only_v1.example.json
+RUNNER=scripts/ops/run_section_11_13_2_live_private_read_only_v1.py
+VERIFIER=scripts/ops/verify_section_11_13_2_live_private_read_only_proven_v1.py
+OWNER_INPUT_CONTRACT=docs/ops/specs/SECTION_11_13_2_OWNER_EXECUTE_INPUT_CONTRACT_V1.md
+SPEC=docs/ops/specs/SECTION_11_13_2_LIVE_PRIVATE_READ_ONLY_V1.md
+```
+
+Mandatory distinctions:
+
+``` text
+SECTION_11_13_2_PREPARATION != LIVE_PRIVATE_READ_ONLY_PROVEN
+SECTION_11_13_2_PREPARATION != LIVE_AUTHORIZED
+LIVE_PRIVATE_READ_ONLY_AUTHORIZED != LIVE_AUTHORIZED
+LIVE_PRIVATE_READ_ONLY_AUTHORIZED != LIVE_SHADOW_AUTHORIZATION
+LIVE_PRIVATE_READ_ONLY_AUTHORIZED != LIVE_CANARY_AUTHORIZATION
+CAPABILITY_11_7_CONTRACTS_ONLY != SECTION_11_13_2_NETWORK_UNLOCK
+FIXTURE_PASS != LIVE_PRIVATE_READ_ONLY_PROVEN
+OWNER_GO_PREPARATION != OWNER_GO_LIVE_PRIVATE_READ_ONLY
+```
+
+Canonical next pointer after this preparation merges (still unproven):
+
+``` text
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_2
+CANONICAL_NEXT_STEP=OWNER_GO_LIVE_PRIVATE_READ_ONLY
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_PRIVATE_READ_ONLY_PROVEN
+```
+
+After a later successful productive proof (not claimed here), the next
+stage pointer is:
+
+``` text
+CANONICAL_NEXT_STEP_AFTER_PROVEN=OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION
+```
+
+Hard stop after preparation. No automatic execute. No merge-time Live
+network. Cap &#47; Capability 11.7 remains contracts-only and must not be
+repurposed as a network unlock.
+
 ## 11.14 Live order and economic evidence ladder
 
 Live proof claims must use a stricter ladder:
