@@ -8356,6 +8356,120 @@ package requires a **separate** Owner-GO and is **not** authorized here
 (`MANIFEST_VERIFY_RC_AUTHORIZED=false`).
 
 
+##### 11.12.9.43 Pre-Live Manifest Verify RC package (binding; PASS; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_MANIFEST_VERIFY_RC`
+(authorized scope `PRE_LIVE_SECURITY_PACKAGE_MANIFEST_VERIFY_RC`;
+`MANIFEST_VERIFY_RC_AUTHORIZED=true` for this package only)
+executes the **earliest** remaining Pre-Live security acceptance package
+after §11.12.9.42: a non-invasive, evidence-bound Manifest Verify RC gate-
+criterion binding against Cybersecurity Runbook V2.1 §11 &#47; §18.2 on
+then-current `origin&#47;main`. Reuse-before-new applies (independent
+`MANIFEST.sha256` verification of sealed Pre-Live security-package evidence
+roots including §11.12.9.42, helper + `shasum -a 256 -c` cross-check, no
+materialized secrets, Live-block preservation, SSOT pointer coherence).
+Distinct from already-bound `AUDIT_EVIDENCE_VERIFIED` and from remaining
+§18.2 criterion `PRE_LIVE_CYBERSECURITY_GATE` (remains OPEN &#47; `NOT_PASSED`).
+This binds exactly one newly closed §18.2 criterion:
+
+``` text
+MANIFEST_VERIFY_RC=0
+```
+
+from the sealed evidence root below (20&#47;20 chain roots OK; aggregate RC=0;
+CRITICAL=0 &#47; HIGH=0). This does **not** set
+`PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** set
+`ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not** start Cap &#47;
+§11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47; credentials, does
+**not** mutate runtime &#47; trading &#47; execution code, and does **not** open a
+venue network session.
+
+Sealed manifest-verify-rc evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_43_pre_live_manifest_verify_rc_v1&#47;20260811T131157Z&#47;`
+
+``` text
+SECTION_11_12_9_43_MANIFEST_VERIFY_RC_RUN_ID=20260811T131157Z
+SECTION_11_12_9_43_MANIFEST_VERIFY_RC_ORIGIN_MAIN_SHA=f54dba86e94adbcb272e7298477c8be878662831
+SECTION_11_12_9_43_MANIFEST_VERIFY_RC_EVIDENCE_ROOT=evidence/ops/section_11_12_9_43_pre_live_manifest_verify_rc_v1/20260811T131157Z/
+PROOF_METHOD=NON_INVASIVE_INDEPENDENT_MANIFEST_VERIFY_RC_GATE_CRITERION_BINDING_OF_SEALED_PRE_LIVE_SECURITY_PACKAGE_EVIDENCE
+PROOF_EXECUTED=true
+PROOF_RESULT=MANIFEST_VERIFY_RC_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+NO_TRADING_LOGIC_CHANGE=true
+MANIFEST_VERIFY_RC=0
+MANIFEST_VERIFY_RC_AUTHORIZED=true
+MANIFEST_VERIFY_RC_GATE_CRITERION_BOUND=true
+AGGREGATE_MANIFEST_VERIFY_RC=0
+CHAIN_OK=20/20
+AUDIT_EVIDENCE_VERIFIED=true
+AUDIT_EVIDENCE_VERIFIED_AUTHORIZED=true
+LIVE_ARMING_FAIL_CLOSED_PROVEN=true
+LIVE_DEFAULT_BLOCK_PROVEN=true
+LIVE_TESTNET_ISOLATION_PROVEN=true
+HIGH_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN=0
+MEDIUM_FINDINGS_OPEN=2
+LOW_FINDINGS_OPEN=1
+RECOVERY_SECURITY_TEST=PASS
+AUTHORITY_REPLAY_TEST=PASS
+CREDENTIAL_LEAKAGE_TEST=PASS
+PENETRATION_PROGRAM=PASS
+SECURITY_REGRESSION=PASS
+STATIC_SECURITY_ANALYSIS=PASS
+SBOM_PRESENT=true
+DEPENDENCY_AUDIT=PASS
+SECRETS_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=MANIFEST_VERIFY_RC
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=20
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=1
+EARLIEST_UNRESOLVED_DEPENDENCY=PRE_LIVE_CYBERSECURITY_GATE
+EARLIEST_UNRESOLVED_SECTION_POINTER=PRE_LIVE_CYBERSECURITY_GATE
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_43
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_PRE_LIVE_CYBERSECURITY_GATE
+HARD_STOP_AFTER_THIS_PACKAGE=true
+```
+
+Mandatory distinctions:
+
+``` text
+MANIFEST_VERIFY_RC != PRE_LIVE_CYBERSECURITY_GATE_PASS
+MANIFEST_VERIFY_RC != LIVE_AUTHORIZED
+MANIFEST_VERIFY_RC != SECTION_11_13_STARTED
+MANIFEST_VERIFY_RC != AUDIT_EVIDENCE_VERIFIED
+MANIFEST_VERIFY_RC != TESTNET_EVIDENCE_VERIFIED
+OWNER_GO_MANIFEST_VERIFY_RC != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: Manifest Verify RC newly bound PASS for §18.2 from the
+sealed non-invasive chain verification; prior security packages remain
+bound; earliest remaining unmet §18.2 criterion is
+`PRE_LIVE_CYBERSECURITY_GATE`; remaining Pre-Live security acceptance
+packages remain absent or OPEN. Gate remains `NOT_PASSED`. Live remains
+hard-blocked. Cap &#47; §11.13 remains unstarted. Hard stop after this package.
+No automatic progression. Creating or executing the next Pre-Live security
+acceptance package requires a **separate** Owner-GO and is **not**
+authorized here (`PRE_LIVE_CYBERSECURITY_GATE_AUTHORIZED=false`).
+
+
+
 
 Canonical residual sequence pointer (section sequence historically bound;
 productive proven-field chain closed):

@@ -1,0 +1,33 @@
+{
+  "CHAIN_ROOTS": [
+    "evidence/ops/section_11_12_testnet_evidence_verified_v1/20260810T235545Z/",
+    "evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/execution_evidence/",
+    "evidence/ops/section_11_12_9_22_pre_live_cybersecurity_gate_post_long_running_reevaluation_v1/20260811T020006Z/",
+    "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/",
+    "evidence/ops/section_11_12_9_24_pre_live_threat_model_current_v1/20260811T023114Z/",
+    "evidence/ops/section_11_12_9_25_pre_live_credential_hygiene_review_v1/20260811T025933Z/",
+    "evidence/ops/section_11_12_9_27_dependency_audit_rb01_rb02_remediation_and_rerun_v1/20260811T035809Z/",
+    "evidence/ops/section_11_12_9_29_pre_live_sbom_present_v1/20260811T042745Z/",
+    "evidence/ops/section_11_12_9_31_static_security_analysis_high_remediation_and_rerun_v1/20260811T043722Z/",
+    "evidence/ops/section_11_12_9_32_pre_live_security_regression_v1/20260811T044255Z/",
+    "evidence/ops/section_11_12_9_33_pre_live_penetration_program_v1/20260811T044900Z/",
+    "evidence/ops/section_11_12_9_34_pre_live_credential_leakage_test_v1/20260811T045537Z/",
+    "evidence/ops/section_11_12_9_35_pre_live_authority_replay_test_v1/20260811T050403Z/",
+    "evidence/ops/section_11_12_9_36_pre_live_recovery_security_test_v1/20260811T050823Z/",
+    "evidence/ops/section_11_12_9_37_pre_live_critical_findings_open_v1/20260811T052152Z/",
+    "evidence/ops/section_11_12_9_38_pre_live_high_findings_open_v1/20260811T052547Z/",
+    "evidence/ops/section_11_12_9_39_pre_live_live_testnet_isolation_proven_v1/20260811T052914Z/",
+    "evidence/ops/section_11_12_9_40_pre_live_live_default_block_proven_v1/20260811T053222Z/",
+    "evidence/ops/section_11_12_9_41_pre_live_live_arming_fail_closed_proven_v1/20260811T060013Z/",
+    "evidence/ops/section_11_12_9_42_pre_live_audit_evidence_verified_v1/20260811T125657Z/"
+  ],
+  "DOCUMENT_CLASS": "PROVENANCE_INDEX_SECTION_11_12_9_43_V1",
+  "HELPERS": [
+    "scripts/ops/primary_evidence_retention_v0.py::verify_manifest_sha256",
+    "shasum -a 256 -c"
+  ],
+  "ORIGIN_MAIN_SHA": "f54dba86e94adbcb272e7298477c8be878662831",
+  "OWNER_GO": "OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_MANIFEST_VERIFY_RC",
+  "PRIOR_AUDIT_EVIDENCE": "evidence/ops/section_11_12_9_42_pre_live_audit_evidence_verified_v1/20260811T125657Z/",
+  "RUN_ID": "20260811T131157Z"
+}

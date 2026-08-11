@@ -1,0 +1,10 @@
+{
+  "GENERATED_AT_UTC": "2026-08-11T13:14:40Z",
+  "GIT_STATUS_PORCELAIN": "(clean)",
+  "ORIGIN_MAIN_SHA": "f54dba86e94adbcb272e7298477c8be878662831",
+  "PYTHON": "/Users/frnkhrz/.pyenv/versions/3.11.14/bin/python",
+  "RUN_ID": "20260811T131157Z",
+  "SECRET_SCAN_MODE": "MATERIALIZED_SECRET_PATTERNS_PLUS_SECRET_VALUE_EXPOSED_TRUE",
+  "SHASUM_CROSSCHECK": true,
+  "VERIFY_HELPER": "scripts.ops.primary_evidence_retention_v0.verify_manifest_sha256"
+}

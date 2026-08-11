@@ -1,0 +1,51 @@
+{
+  "BINDS_MANIFEST_VERIFY_RC_GATE_CRITERION": true,
+  "BINDS_PRE_LIVE_CYBERSECURITY_GATE_PASS": false,
+  "DOCUMENT_CLASS": "MANIFEST_VERIFY_RC_REQUIREMENTS_MATRIX_SECTION_11_12_9_43_V1",
+  "ORIGIN_MAIN_SHA": "f54dba86e94adbcb272e7298477c8be878662831",
+  "PACKAGE_VERDICT": "PASS",
+  "REQUIREMENTS": [
+    {
+      "id": "MVR-01",
+      "section": "\u00a711 Evidence integrity SHA-binding",
+      "status": "PASS",
+      "surface": "Independent MANIFEST.sha256 verify RC=0 for sealed Pre-Live chain including \u00a711.12.9.42"
+    },
+    {
+      "id": "MVR-02",
+      "section": "\u00a718.2 MANIFEST_VERIFY_RC criterion",
+      "status": "PASS",
+      "surface": "Bind MANIFEST_VERIFY_RC=0 as \u00a718.2 gate criterion (distinct from AUDIT_EVIDENCE_VERIFIED)"
+    },
+    {
+      "id": "MVR-03",
+      "section": "\u00a711 No secrets in evidence",
+      "status": "PASS",
+      "surface": "Materialized-secret pattern scan + secret_value_exposed!=true"
+    },
+    {
+      "id": "MVR-04",
+      "section": "\u00a718.2 / \u00a723 Live still blocked",
+      "status": "PASS",
+      "surface": "LIVE_AUTHORIZED=false and PRE_LIVE gate NOT_PASSED preserved"
+    },
+    {
+      "id": "MVR-05",
+      "section": "SSOT pointer coherence",
+      "status": "PASS",
+      "surface": "Map/Master bind AUDIT proven and MANIFEST next before this package"
+    },
+    {
+      "binds_live_authorized": false,
+      "binds_pre_live_cybersecurity_gate_pass": false,
+      "binds_section_11_13_started": false,
+      "id": "MVR-06",
+      "section": "Non-claims",
+      "status": "PASS",
+      "surface": "Does not bind PRE_LIVE_CYBERSECURITY_GATE=PASS / Live / \u00a711.13"
+    }
+  ],
+  "REQUIREMENTS_PASS": 6,
+  "REQUIREMENTS_TOTAL": 6,
+  "RUN_ID": "20260811T131157Z"
+}
