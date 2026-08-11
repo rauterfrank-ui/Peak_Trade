@@ -1,0 +1,155 @@
+{
+  "BLOCKS_NEW_ENTRY": true,
+  "LIVE_AUTHORIZED": false,
+  "LIVE_RECONCILIATION_PROVEN": false,
+  "account_scope": "856964404452495999",
+  "available_equity": "0",
+  "available_margin": null,
+  "canonical_order_plan_digest": "78d6c90dd904376adf6d329a08003f9807be4ba00ffb3259d843310217f2ac0a",
+  "client_order_id": "pt-coid-ldr-caa65d4d1832",
+  "dry_run_marker": true,
+  "dry_run_serialization_digest": "53925dfdb06ac14c0c1989e18a7bc7bff41776202bf715ae5588808967188746",
+  "entity": "OKX Europe Limited",
+  "execution_block_reasons": [
+    "LIVE_RECONCILIATION_PROVEN=false",
+    "BLOCKS_NEW_ENTRY=true",
+    "DRY_RUN_SUBMIT_FORBIDDEN=true",
+    "UNRESOLVED_ECONOMIC_DIVERGENCE=true"
+  ],
+  "execution_eligibility": "BLOCKED_NO_EXECUTE",
+  "execution_mode": "LIVE_DRY_RUN",
+  "fee_bps_assumption": "2.0",
+  "instrument_id": "BTC-USDT-SWAP",
+  "intent_id": "intent-live-dryrun-caa65d4d1832",
+  "lifecycle_state": "PRE_SUBMIT_VALIDATED",
+  "limit_price": "63515.1",
+  "network_effect": "LIVE_DRY_RUN_ORDER_PLAN",
+  "notional": "63515.10",
+  "order_effect": "NONE",
+  "order_plan_id": "plan-live-dryrun-caa65d4d1832",
+  "order_type": "LIMIT",
+  "owner": "ops.section_11_13_4_live_dry_run_order_plan_v1",
+  "portfolio_exposure": {
+    "open_positions_count": 0,
+    "positions": []
+  },
+  "pre_trade_risk_gates": {
+    "BLOCKS_NEW_ENTRY": true,
+    "DRY_RUN_MARKER": true,
+    "LIVE_AUTHORIZED": false,
+    "LIVE_ORDER_AUTHORIZED": false,
+    "LIVE_RECONCILIATION_PROVEN": false,
+    "MIN_NOTIONAL_USDT_ASSUMPTION": "5.0",
+    "RESULT": "NO_EXECUTE",
+    "SUBMIT_FORBIDDEN": true,
+    "UNRESOLVED_ECONOMIC_DIVERGENCE": true
+  },
+  "pricing_basis": "OKX_PUBLIC_TICKER_last",
+  "quantity": "1",
+  "reconciliation_state": {
+    "ALL_LAYERS_MATCH": false,
+    "BLOCKS_NEW_ENTRY": true,
+    "LIVE_RECONCILIATION_PROVEN": false,
+    "UNRESOLVED_ECONOMIC_DIVERGENCE": true,
+    "UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY": true,
+    "layers": [
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "credential_and_account_identity",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": true,
+        "divergence_detected": true,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "venue_instrument_and_contract_metadata",
+        "outcome": "HARD_STOP_OWNER_REVIEW"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "open_orders",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "recent_orders_and_trades",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "positions",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": true,
+        "divergence_detected": true,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "balances_equity_and_available_margin",
+        "outcome": "HARD_STOP_OWNER_REVIEW"
+      },
+      {
+        "blocks_new_entry": true,
+        "divergence_detected": true,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "local_portfolio_and_accounting",
+        "outcome": "HARD_STOP_OWNER_REVIEW"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "risk_reservations",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "pending_commands",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "evidence_and_commit_cursors",
+        "outcome": "MATCH"
+      }
+    ]
+  },
+  "reference_price": "63546.9",
+  "region": "EEA/DE",
+  "rest_host": "eea.okx.com",
+  "side": "BUY",
+  "slippage_bps_assumption": "5.0",
+  "stage": "LIVE_DRY_RUN_ORDER_PLAN",
+  "stop_risk_parameters": {
+    "max_loss_budget": null,
+    "note": "Stop/risk parameters not Owner-ratified for dry-run plan; left null.",
+    "stop_loss": null,
+    "take_profit": null
+  },
+  "submit": false,
+  "submitted": false,
+  "td_mode": "cross",
+  "venue": "OKX",
+  "venue_native_dry_run_payload": {
+    "clOrdId": "pt-coid-ldr-caa65d4d1832",
+    "dry_run": true,
+    "instId": "BTC-USDT-SWAP",
+    "ordType": "limit",
+    "px": "63515.1",
+    "side": "buy",
+    "submit": false,
+    "sz": "1",
+    "tdMode": "cross"
+  }
+}

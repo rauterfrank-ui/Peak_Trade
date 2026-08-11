@@ -1,0 +1,41 @@
+{
+  "environment": "LIVE",
+  "venue": "",
+  "entity": "",
+  "region": "",
+  "rest_host": "",
+  "rest_base": "",
+  "account_scope": "",
+  "instrument_id": "BTC-USDT-SWAP",
+  "side": "BUY",
+  "order_type": "LIMIT",
+  "quantity": "1",
+  "td_mode": "cross",
+  "fee_bps_assumption": "2.0",
+  "slippage_bps_assumption": "5.0",
+  "min_notional_usdt_assumption": "5.0",
+  "secretref_uri": "",
+  "credential_class": "LIVE_DRY_RUN_ORDER_PLAN_READ_ONLY_API_KEY",
+  "method_allowlist": [
+    "GET"
+  ],
+  "endpoint_allowlist": [
+    "/api/v5/account/balance",
+    "/api/v5/account/config",
+    "/api/v5/account/positions",
+    "/api/v5/trade/orders-pending",
+    "/api/v5/market/ticker"
+  ],
+  "max_request_count": 5,
+  "timeout_seconds": 10.0,
+  "max_retries": 2,
+  "evidence_root": "evidence/ops/section_11_13_4_live_dry_run_order_plan_proven_v1",
+  "evidence_version": "section_11_13_4_live_dry_run_order_plan_proven_v1",
+  "expected_live_marker": "LIVE",
+  "expected_demo_marker_absent": true,
+  "owner_declared_host_allowlist": [],
+  "config_version": "section_11_13_4_live_dry_run_order_plan_config.v1",
+  "schema_version": "section_11_13_4_live_dry_run_order_plan.v1",
+  "predecessor_shadow_evidence_root": "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/20260811T211828Z/",
+  "notes": "Owner fills productive fields at execute time. Reuse \u00a711.13.3 proven binding with secretref://vault/peak-trade/live-dry-run-order-plan/okx."
+}

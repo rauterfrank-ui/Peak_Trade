@@ -72,7 +72,9 @@ Sealed productive proven root:
 1. SSOT binds `LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_EXECUTED=true` /
    `LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=true` with
    `LIVE_AUTHORIZED=false` and `LIVE_RECONCILIATION_PROVEN=false`.
-2. Next canonical step (not started; separate Owner-GO required):
-   `OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_DRY_RUN_ORDER_PLAN`.
-3. No automatic Dry-Run / Canary / order authorization.
+2. Historical next pointer at §11.13.3 closeout
+   (`OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_DRY_RUN_ORDER_PLAN`) is superseded by
+   §11.13.4 proven binding.
+3. Current earliest unresolved dependency after §11.13.4:
+   `LIVE_CANARY_MINIMUM_EXPOSURE` (separate Owner-GO required; not started).
 4. Owner-GO `OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` is consumed.
