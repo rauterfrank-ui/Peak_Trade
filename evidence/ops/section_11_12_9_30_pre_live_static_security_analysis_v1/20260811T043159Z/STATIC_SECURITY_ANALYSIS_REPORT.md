@@ -32,19 +32,19 @@ Executed via `uvx bandit` (tooling ephemeral; no lockfile mutation). Semgrep rem
 
 ### HIGH findings (blocking for package PASS)
 
-- `B202` HIGH/HIGH: `src/backtest/p36/tarball_v1.py:67` — tarfile.extractall used without any validation. Please check and discard dangerous members.
-- `B324` HIGH/HIGH: `src/experiments/armstrong_elkaroui_combi_experiment.py:529` — Use of weak MD5 hash for security. Consider usedforsecurity=False
-- `B324` HIGH/HIGH: `src/experiments/base.py:348` — Use of weak MD5 hash for security. Consider usedforsecurity=False
-- `B324` HIGH/HIGH: `src/experiments/experiment_identity_manifest_v1.py:234` — Use of weak MD5 hash for security. Consider usedforsecurity=False
-- `B602` HIGH/HIGH: `src/ops/test_health_runner.py:477` — subprocess call with shell=True identified, security issue.
+- `B202` HIGH/HIGH: `src&#47;backtest&#47;p36&#47;tarball_v1.py:67` — tarfile.extractall used without any validation. Please check and discard dangerous members.
+- `B324` HIGH/HIGH: `src&#47;experiments&#47;armstrong_elkaroui_combi_experiment.py:529` — Use of weak MD5 hash for security. Consider usedforsecurity=False
+- `B324` HIGH/HIGH: `src&#47;experiments&#47;base.py:348` — Use of weak MD5 hash for security. Consider usedforsecurity=False
+- `B324` HIGH/HIGH: `src&#47;experiments&#47;experiment_identity_manifest_v1.py:234` — Use of weak MD5 hash for security. Consider usedforsecurity=False
+- `B602` HIGH/HIGH: `src&#47;ops&#47;test_health_runner.py:477` — subprocess call with shell=True identified, security issue.
 
 ### Suggested remediation (not authorized / not executed)
 
-- `B202` @ `src/backtest/p36/tarball_v1.py:67`: Validate tar members before extractall (or use safe extract helpers); reject path traversal / absolute paths.
-- `B324` @ `src/experiments/armstrong_elkaroui_combi_experiment.py:529`: If MD5 is non-cryptographic (checksum/id), set usedforsecurity=False; otherwise use SHA-256+.
-- `B324` @ `src/experiments/base.py:348`: If MD5 is non-cryptographic (checksum/id), set usedforsecurity=False; otherwise use SHA-256+.
-- `B324` @ `src/experiments/experiment_identity_manifest_v1.py:234`: If MD5 is non-cryptographic (checksum/id), set usedforsecurity=False; otherwise use SHA-256+.
-- `B602` @ `src/ops/test_health_runner.py:477`: Replace shell=True with argv list subprocess and explicit executable path.
+- `B202` @ `src&#47;backtest&#47;p36&#47;tarball_v1.py:67`: Validate tar members before extractall (or use safe extract helpers); reject path traversal / absolute paths.
+- `B324` @ `src&#47;experiments&#47;armstrong_elkaroui_combi_experiment.py:529`: If MD5 is non-cryptographic (checksum/id), set usedforsecurity=False; otherwise use SHA-256+.
+- `B324` @ `src&#47;experiments&#47;base.py:348`: If MD5 is non-cryptographic (checksum/id), set usedforsecurity=False; otherwise use SHA-256+.
+- `B324` @ `src&#47;experiments&#47;experiment_identity_manifest_v1.py:234`: If MD5 is non-cryptographic (checksum/id), set usedforsecurity=False; otherwise use SHA-256+.
+- `B602` @ `src&#47;ops&#47;test_health_runner.py:477`: Replace shell=True with argv list subprocess and explicit executable path.
 
 ## Explicit non-claims
 
