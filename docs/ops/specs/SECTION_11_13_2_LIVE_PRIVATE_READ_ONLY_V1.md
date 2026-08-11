@@ -6,8 +6,9 @@ DOCUMENT_ROLE=NON_SSOT
 SSOT=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md §11.13.2
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 LIVE_AUTHORIZED=false
-LIVE_PRIVATE_READ_ONLY_PROVEN=false
-LIVE_PRIVATE_READ_ONLY_AUTHORIZED=false
+LIVE_PRIVATE_READ_ONLY_PROVEN=true
+LIVE_PRIVATE_READ_ONLY_EXECUTED=true
+LIVE_PRIVATE_READ_ONLY_AUTHORIZED=true
 SECTION_11_13_2_PRODUCTIVE_EXECUTE_PATH_READY=true
 CAPABILITY_11_7_REMAINS_CONTRACTS_ONLY=true
 MERGE_IS_NOT_EXECUTE=true
@@ -15,13 +16,11 @@ MERGE_IS_NOT_EXECUTE=true
 
 ## Purpose
 
-Repo-side productive execute-path unlock so a separately Owner-authorized
-`OWNER_GO_LIVE_PRIVATE_READ_ONLY` productive private API read-only proof can
-run fail-closed after merge against the post-merge `origin/main` SHA.
-
-This package does **not** execute Live network calls at merge time, does
-**not** place orders, and does **not** activate Live. Cap 11.7 remains
-contracts-only.
+Repo-side productive execute-path and sealed productive LIVE private
+read-only proof binding. Owner-GO `OWNER_GO_LIVE_PRIVATE_READ_ONLY`
+executed the GET-only proof against post-unlock `origin&#47;main` SHA
+`d10a44a51d2c3314f80bdc546423c9fd32e0eb5b`. Cap 11.7 remains
+contracts-only. `LIVE_AUTHORIZED=false`. Live Shadow is **not** started.
 
 ## Package layout
 
@@ -60,9 +59,14 @@ contracts-only.
 
 `evidence&#47;ops&#47;section_11_13_2_live_private_read_only_proven_v1&#47;<RUN_ID>&#47;`
 
+Sealed productive proven root:
+
+`evidence&#47;ops&#47;section_11_13_2_live_private_read_only_proven_v1&#47;20260811T170310Z&#47;`
+
 ## Next steps
 
-1. Merge this productive-execute-unlock PR (`LIVE_PRIVATE_READ_ONLY_PROVEN` remains false).
-2. Owner re-issues `OWNER_GO_LIVE_PRIVATE_READ_ONLY` bound to post-merge `origin/main` SHA.
-3. Separate post-merge productive execute with local vault file.
-4. After proven: `OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION`.
+1. SSOT binds `LIVE_PRIVATE_READ_ONLY_EXECUTED=true` /
+   `LIVE_PRIVATE_READ_ONLY_PROVEN=true` with `LIVE_AUTHORIZED=false`.
+2. Next canonical step (not started; separate Owner-GO required):
+   `OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION`.
+3. No automatic Live Shadow / Canary / order authorization.

@@ -6,15 +6,16 @@ DOCUMENT_ROLE=NON_SSOT
 NO_INVENTED_VALUES=true
 PREPARATION_PR_DOES_NOT_EXECUTE=true
 PRODUCTIVE_EXECUTE_UNLOCK_PR_DOES_NOT_EXECUTE=true
-LIVE_PRIVATE_READ_ONLY_PROVEN=false
+LIVE_PRIVATE_READ_ONLY_PROVEN=true
+LIVE_PRIVATE_READ_ONLY_EXECUTED=true
 LIVE_AUTHORIZED=false
 SEPARATE_EXECUTE_GO=OWNER_GO_LIVE_PRIVATE_READ_ONLY
 AUTHORING_GO=OWNER_GO_SECTION_11_13_2_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING
 ```
 
-After the productive-execute-unlock PR merges, the Owner must supply the
-following before any productive Live private read-only execute. **Do not invent
-values.** Re-bind Owner-GO to the post-merge `origin/main` SHA.
+Historical checklist for the sealed productive execute against post-unlock
+`origin&#47;main` SHA `d10a44a51d2c3314f80bdc546423c9fd32e0eb5b`. This document
+does **not** authorize Live Shadow or further Live stages.
 
 ## Required Owner inputs
 

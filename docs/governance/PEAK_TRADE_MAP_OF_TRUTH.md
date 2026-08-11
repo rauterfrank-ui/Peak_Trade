@@ -269,8 +269,9 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`evidence&#47;ops&#47;section_11_12_9_43_pre_live_manifest_verify_rc_v1&#47;20260811T131157Z&#47;`](../../evidence/ops/section_11_12_9_43_pre_live_manifest_verify_rc_v1/20260811T131157Z/) | Owner §11.12.9.43 Pre-Live Manifest Verify RC (derived; non-SSOT; `MANIFEST_VERIFY_RC=0` gate criterion bound; gate remains `NOT_PASSED`) |
 | [`evidence&#47;ops&#47;section_11_12_9_44_pre_live_cybersecurity_gate_pass_v1&#47;20260811T133046Z&#47;`](../../evidence/ops/section_11_12_9_44_pre_live_cybersecurity_gate_pass_v1/20260811T133046Z/) | Owner §11.12.9.44 Pre-Live Cybersecurity Gate PASS (derived; non-SSOT; `PRE_LIVE_CYBERSECURITY_GATE=PASS`; `ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`; §11.13 unstarted; Live unauthorized) |
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.1 | SSOT Live Readiness Evaluation (`SECTION_11_13_LIVE_READINESS_EVALUATION_COMPLETED=true`; `FULLY_AUTONOMOUS_LIVE_TRADING_READY=false`; Live unauthorized) |
-| [`evidence&#47;ops&#47;section_11_13_live_readiness_evaluation_v1&#47;20260811T134610Z&#47;`](../../evidence/ops/section_11_13_live_readiness_evaluation_v1/20260811T134610Z/) | Owner §11.13.1 Live Readiness Evaluation (derived; non-SSOT; `FULLY_AUTONOMOUS_LIVE_TRADING_READY=false`; earliest open `LIVE_PRIVATE_READ_ONLY_PROVEN`; Live unauthorized) |
-| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.2 | SSOT LIVE_PRIVATE_READ_ONLY productive execute path ready (`SECTION_11_13_2_PRODUCTIVE_EXECUTE_PATH_READY=true`; `LIVE_PRIVATE_READ_ONLY_PROVEN=false`; Live unauthorized; merge≠execute) |
+| [`evidence&#47;ops&#47;section_11_13_live_readiness_evaluation_v1&#47;20260811T134610Z&#47;`](../../evidence/ops/section_11_13_live_readiness_evaluation_v1/20260811T134610Z/) | Owner §11.13.1 Live Readiness Evaluation (derived; non-SSOT; `FULLY_AUTONOMOUS_LIVE_TRADING_READY=false`; Live unauthorized; historical earliest-open pointer superseded by §11.13.2 proven) |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.2 | SSOT LIVE_PRIVATE_READ_ONLY proven (`LIVE_PRIVATE_READ_ONLY_EXECUTED=true`; `LIVE_PRIVATE_READ_ONLY_PROVEN=true`; `LIVE_AUTHORIZED=false`; Cap 11.7 contracts-only; Live Shadow not started) |
+| [`evidence&#47;ops&#47;section_11_13_2_live_private_read_only_proven_v1&#47;20260811T170310Z&#47;`](../../evidence/ops/section_11_13_2_live_private_read_only_proven_v1/20260811T170310Z/) | Owner §11.13.2 productive LIVE private read-only proof (derived; non-SSOT; GET-only; writes&#47;orders=0; `MANIFEST_VERIFY_RC=0`; Live unauthorized) |
 | [`docs/ops/specs/SECTION_11_13_2_LIVE_PRIVATE_READ_ONLY_V1.md`](../ops/specs/SECTION_11_13_2_LIVE_PRIVATE_READ_ONLY_V1.md) | Derived §11.13.2 package spec (non-SSOT) |
 | [`docs/ops/specs/SECTION_11_13_2_OWNER_EXECUTE_INPUT_CONTRACT_V1.md`](../ops/specs/SECTION_11_13_2_OWNER_EXECUTE_INPUT_CONTRACT_V1.md) | Owner execute-time input checklist (non-SSOT; no invented values) |
 | [`evidence&#47;ops&#47;section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1&#47;20260810T143709Z&#47;`](../../evidence/ops/section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1/20260810T143709Z/) | OKX EEA Demo path closeout &#47; no-order alternate evaluation (non-activating) |
@@ -501,16 +502,18 @@ SECTION_11_13_LIVE_SHADOW_CANARY_PROGRESSION_STARTED=false
 SECTION_11_13_LIVE_ACTIVATION_AUTHORIZED=false
 FULLY_AUTONOMOUS_LIVE_TRADING_READY=false
 FULLY_AUTONOMOUS_LIVE_TRADING_ACTIVE=false
-LIVE_PRIVATE_READ_ONLY_PROVEN=false
-LIVE_PRIVATE_READ_ONLY_AUTHORIZED=false
+LIVE_PRIVATE_READ_ONLY_PROVEN=true
+LIVE_PRIVATE_READ_ONLY_EXECUTED=true
+LIVE_PRIVATE_READ_ONLY_AUTHORIZED=true
 SECTION_11_13_2_PREPARATION_SURFACE_READY=true
 SECTION_11_13_2_PRODUCTIVE_EXECUTE_PATH_READY=true
 SECTION_11_13_2_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING_BOUND=true
 LIVE_AUTHORIZED=false
-EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_PRIVATE_READ_ONLY_PROVEN
-EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_2_LIVE_PRIVATE_READ_ONLY
-NEXT_CANONICAL_STEP_POINTER=OWNER_GO_LIVE_PRIVATE_READ_ONLY
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION
+NEXT_CANONICAL_STEP_POINTER=OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION
 SECTION_11_13_2_PACKAGE_POINTER=src&#47;ops&#47;section_11_13_2_live_private_read_only_v1&#47;
+SECTION_11_13_2_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_2_live_private_read_only_proven_v1&#47;20260811T170310Z&#47;
 SECTION_11_13_1_LIVE_READINESS_EVAL_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_live_readiness_evaluation_v1&#47;20260811T134610Z&#47;
 SECTION_11_12_9_44_PRE_LIVE_GATE_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_44_pre_live_cybersecurity_gate_pass_v1&#47;20260811T133046Z&#47;
 ZAP_DAST_EXECUTED=false
@@ -687,11 +690,14 @@ SECTION_11_13_LIVE_READINESS_EVALUATION_COMPLETED_IS_NOT_LIVE_PRIVATE_READ_ONLY_
 SECTION_11_13_2_PREPARATION_IS_NOT_LIVE_PRIVATE_READ_ONLY_PROVEN=true
 SECTION_11_13_2_PRODUCTIVE_EXECUTE_PATH_READY_IS_NOT_LIVE_PRIVATE_READ_ONLY_PROVEN=true
 SECTION_11_13_2_PREPARATION_IS_NOT_LIVE_AUTHORIZED=true
+LIVE_PRIVATE_READ_ONLY_PROVEN_IS_NOT_LIVE_AUTHORIZED=true
+LIVE_PRIVATE_READ_ONLY_PROVEN_IS_NOT_LIVE_SHADOW_AUTHORIZATION=true
 LIVE_PRIVATE_READ_ONLY_AUTHORIZED_IS_NOT_LIVE_AUTHORIZED=true
 CAPABILITY_11_7_CONTRACTS_ONLY_IS_NOT_SECTION_11_13_2_NETWORK_UNLOCK=true
 FIXTURE_PASS_IS_NOT_LIVE_PRIVATE_READ_ONLY_PROVEN=true
 OWNER_GO_PREPARATION_IS_NOT_OWNER_GO_LIVE_PRIVATE_READ_ONLY=true
 OWNER_GO_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING_IS_NOT_OWNER_GO_LIVE_PRIVATE_READ_ONLY=true
+LIVE_PRIVATE_READ_ONLY_PROVEN_IS_NOT_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION=true
 MERGE_IS_NOT_EXECUTE=true
 
 RECOVERY_BIND_29_40_IS_NOT_SECTION_11_13_STARTED=true
@@ -832,7 +838,7 @@ CANONICAL_SEMANTICS=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#15.3
 |----------|-------|
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) | Canonical Master Runbook (aktuelle semantische Autorität) |
 | [`docs/runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4.md`](../runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4.md) | Canonical Runtime Operations V2.4 (`AUTHORITY_CLASSIFICATION=DERIVED_DOMAIN_AUTHORITY_ONLY`; `RUNTIME_OPERATIONS_RUNBOOK_IS_SSOT=false`; Master Runbook bleibt einzige SSOT mit absoluter Precedence; Manifest [`…_V2_4_RATIFICATION.json`](../runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4_RATIFICATION.json); **kein** Runtime-/Trading-/Testnet-/Live-/Order-/Credential-Authorization-Effekt) |
-| [`docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md`](../runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md) | Canonical Cybersecurity Runbook V2.1 phase-aware / **mandatory** Pre-Live Security Gate (`AUTHORITY_CLASSIFICATION=DERIVED_DOMAIN_AUTHORITY_ONLY`; `CYBERSECURITY_RUNBOOK_IS_SSOT=false`; Master §4.8 / §4.8.1 / §11.12.9; Manifest [`…_V2_1_RATIFICATION.json`](../runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1_RATIFICATION.json); `PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY`; `PRE_LIVE_CYBERSECURITY_GATE=PASS`; `ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`; `FUTURE_IMPLEMENTATION_BOUND_TO_CANONICAL_SECURITY_INVARIANTS=true`; **kein** Runtime-/Trading-/Testnet-/Live-/Order-/Credential-Authorization-Effekt; §11.13 unstarted) |
+| [`docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md`](../runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md) | Canonical Cybersecurity Runbook V2.1 phase-aware / **mandatory** Pre-Live Security Gate (`AUTHORITY_CLASSIFICATION=DERIVED_DOMAIN_AUTHORITY_ONLY`; `CYBERSECURITY_RUNBOOK_IS_SSOT=false`; Master §4.8 / §4.8.1 / §11.12.9; Manifest [`…_V2_1_RATIFICATION.json`](../runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1_RATIFICATION.json); `PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY`; `PRE_LIVE_CYBERSECURITY_GATE=PASS`; `ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`; `LIVE_PRIVATE_READ_ONLY_PROVEN=true`; `LIVE_AUTHORIZED=false`; `FUTURE_IMPLEMENTATION_BOUND_TO_CANONICAL_SECURITY_INVARIANTS=true`; **kein** Runtime-/Trading-/Testnet-/Live-/Order-/Credential-Authorization-Effekt; Live Shadow unstarted) |
 | [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md) | Historische Vollautonomie-Vorgängerreferenz (SUPERSEDED) |
 | [`docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md`](../ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) | Market Dashboard Landscape V2 (canonical read-only consumer planning SSOT; non-authorizing; Documentation Anchor = documentary index only; `OPERATOR_PRODUCT_GATE=true`; `INTRABAR_CAPABILITY=PASS`; `REGIME_BULL_BEAR_SWITCH_BINDING=COMPLETE`; `NEXT_CANONICAL_ACTION=STOP_IDLE`; `WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE_STOP_IDLE`) |
 | [`docs/ops/runbooks/README.md`](../ops/runbooks/README.md) | Operative Runbooks |
