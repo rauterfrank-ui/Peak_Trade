@@ -1,0 +1,89 @@
+{
+  "ACCOUNT_MUTATION_EFFECT": "NONE",
+  "ALL_LAYERS_MATCH": false,
+  "AUTOMATIC_STAGE_PROMOTION": false,
+  "BLOCKS_NEW_ENTRY": true,
+  "DOCUMENT_CLASS": "BOUNDED_LIVE_SHADOW_EXCHANGE_RECONCILIATION_LAYER_EVAL_V1",
+  "EXCHANGE_TRUTH_ADOPTION_REQUIRES_EXPLICIT_POLICY": true,
+  "NO_ACCOUNT_MUTATION_FROM_SHADOW_RECONCILIATION": true,
+  "NO_AUTOMATIC_STAGE_PROMOTION": true,
+  "NO_LIVE_ORDER_FROM_SHADOW_RECONCILIATION": true,
+  "ORDER_EFFECT": "NONE",
+  "RECONCILIATION_BEFORE_ALPHA": true,
+  "RECONCILIATION_CONTINUOUS": true,
+  "SILENT_LOCAL_HISTORY_OVERWRITE_FORBIDDEN": true,
+  "UNRESOLVED_ECONOMIC_DIVERGENCE": true,
+  "UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY": true,
+  "layers": [
+    {
+      "blocks_new_entry": false,
+      "divergence_detected": false,
+      "exchange_truth_adoption_policy_id": null,
+      "layer": "credential_and_account_identity",
+      "outcome": "MATCH"
+    },
+    {
+      "blocks_new_entry": true,
+      "divergence_detected": true,
+      "exchange_truth_adoption_policy_id": null,
+      "layer": "venue_instrument_and_contract_metadata",
+      "outcome": "HARD_STOP_OWNER_REVIEW"
+    },
+    {
+      "blocks_new_entry": false,
+      "divergence_detected": false,
+      "exchange_truth_adoption_policy_id": null,
+      "layer": "open_orders",
+      "outcome": "MATCH"
+    },
+    {
+      "blocks_new_entry": false,
+      "divergence_detected": false,
+      "exchange_truth_adoption_policy_id": null,
+      "layer": "recent_orders_and_trades",
+      "outcome": "MATCH"
+    },
+    {
+      "blocks_new_entry": false,
+      "divergence_detected": false,
+      "exchange_truth_adoption_policy_id": null,
+      "layer": "positions",
+      "outcome": "MATCH"
+    },
+    {
+      "blocks_new_entry": true,
+      "divergence_detected": true,
+      "exchange_truth_adoption_policy_id": null,
+      "layer": "balances_equity_and_available_margin",
+      "outcome": "HARD_STOP_OWNER_REVIEW"
+    },
+    {
+      "blocks_new_entry": true,
+      "divergence_detected": true,
+      "exchange_truth_adoption_policy_id": null,
+      "layer": "local_portfolio_and_accounting",
+      "outcome": "HARD_STOP_OWNER_REVIEW"
+    },
+    {
+      "blocks_new_entry": false,
+      "divergence_detected": false,
+      "exchange_truth_adoption_policy_id": null,
+      "layer": "risk_reservations",
+      "outcome": "MATCH"
+    },
+    {
+      "blocks_new_entry": false,
+      "divergence_detected": false,
+      "exchange_truth_adoption_policy_id": null,
+      "layer": "pending_commands",
+      "outcome": "MATCH"
+    },
+    {
+      "blocks_new_entry": false,
+      "divergence_detected": false,
+      "exchange_truth_adoption_policy_id": null,
+      "layer": "evidence_and_commit_cursors",
+      "outcome": "MATCH"
+    }
+  ]
+}
