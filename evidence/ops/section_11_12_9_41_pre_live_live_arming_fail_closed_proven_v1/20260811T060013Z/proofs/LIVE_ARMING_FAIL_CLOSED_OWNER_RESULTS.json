@@ -1,0 +1,23 @@
+{
+  "CANONICAL_CONFIG_PROBE_PASS": true,
+  "DOCUMENT_CLASS": "LIVE_ARMING_FAIL_CLOSED_OWNER_RESULTS_SECTION_11_12_9_41_V1",
+  "FOCUSED_PYTEST_PASSED": 173,
+  "FOCUSED_PYTEST_RC": 0,
+  "ORIGIN_MAIN_SHA": "a2649749e3fa029a1f32bfd279384374e5f433b9",
+  "OWNERS": [
+    "tests/ops/test_live_gates_verification.py",
+    "tests/test_environment_and_safety.py",
+    "tests/live/test_confirm_token.py",
+    "tests/governance/test_live_mode_gate.py",
+    "tests/test_live_gates.py",
+    "tests/execution/live/test_safety_rails.py",
+    "tests/p48/test_ai_activation_gate_v1.py",
+    "tests/live/test_feature_activation_gate.py",
+    "tests/ops/test_environment_safety_verification.py",
+    "tests/governance/test_wp0c_enforce_gate.py",
+    "tests/p49/test_ai_model_hard_gate_v1.py",
+    "config/governance/ai_activation_gate_v1.json"
+  ],
+  "PACKAGE_VERDICT": "PASS",
+  "RUN_ID": "20260811T060013Z"
+}

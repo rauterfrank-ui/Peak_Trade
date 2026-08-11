@@ -954,10 +954,14 @@ MEDIUM_FINDINGS_OPEN=2
 LOW_FINDINGS_OPEN=1
 OPEN_TESTNET_PROVEN_FIELDS=
 EARLIEST_OPEN_TESTNET_PROVEN_FIELD=
-EARLIEST_UNRESOLVED_SECTION_POINTER=LIVE_ARMING_FAIL_CLOSED_PROVEN
-CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_LIVE_ARMING_FAIL_CLOSED_PROVEN
-LIVE_ARMING_FAIL_CLOSED_AUTHORIZED=false
-LIVE_ARMING_FAIL_CLOSED_PROVEN=false
+SECTION_11_12_9_41_LIVE_ARMING_FAIL_CLOSED_EXECUTED=true
+SECTION_11_12_9_41_LIVE_ARMING_FAIL_CLOSED_PASS=true
+LIVE_ARMING_FAIL_CLOSED_AUTHORIZED=true
+LIVE_ARMING_FAIL_CLOSED_PROVEN=true
+AUDIT_EVIDENCE_VERIFIED=false
+AUDIT_EVIDENCE_VERIFIED_AUTHORIZED=false
+EARLIEST_UNRESOLVED_SECTION_POINTER=AUDIT_EVIDENCE_VERIFIED
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_AUDIT_EVIDENCE_VERIFIED
 ZAP_DAST_EXECUTED=false
 DOCS_NO_LIVE_ENABLE_PREEXISTING_OPEN=true
 SECTION_11_12_9_EVALUATION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_pre_live_cybersecurity_acceptance_gate_evidence_bound_evaluation_v1/20260810T202800Z/
@@ -983,6 +987,7 @@ SECTION_11_12_9_38_HIGH_FINDINGS_OPEN_EVIDENCE_ROOT=evidence/ops/section_11_12_9
 SECTION_11_12_9_39_LIVE_TESTNET_ISOLATION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_39_pre_live_live_testnet_isolation_proven_v1/20260811T052914Z/
 SECTION_11_12_9_40_LIVE_DEFAULT_BLOCK_EVIDENCE_ROOT=evidence/ops/section_11_12_9_40_pre_live_live_default_block_proven_v1/20260811T053222Z/
 SECTION_11_12_9_40R_RECOVERY_BIND_EVIDENCE_ROOT=evidence/ops/section_11_12_9_recover_bind_pre_live_packages_29_through_40_v1/20260811T054023Z/
+SECTION_11_12_9_41_LIVE_ARMING_FAIL_CLOSED_EVIDENCE_ROOT=evidence/ops/section_11_12_9_41_pre_live_live_arming_fail_closed_proven_v1/20260811T060013Z/
 SECTION_11_12_9_21_LONG_RUNNING_CAMPAIGN_EVIDENCE_ROOT=evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/
 SECTION_11_12_9_11_RESIDUAL_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_12_9_11_open_testnet_proven_fields_reporting_reconcile_residual_proof_v1/20260810T213441Z/
 SECTION_11_12_9_12_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_12_testnet_order_lifecycle_proven_v1/20260810T215942Z/
@@ -1143,7 +1148,15 @@ bindet §11.12.9.40R die bereits ausgeführten Packages §11.12.9.29–.40
 `NOT_PASSED` mit frühester Restabhängigkeit
 `LIVE_ARMING_FAIL_CLOSED_PROVEN`; kein Gate-PASS.
 `LIVE_ARMING_FAIL_CLOSED_AUTHORIZED=false`; Live-Arming-Fail-Closed-
-Package erfordert weiterhin separates Owner-GO. Recovery-Bind ist nicht
+Package erforderte separates Owner-GO. Nach Owner-executed Live Arming
+Fail-Closed Package bindet §11.12.9.41 `LIVE_ARMING_FAIL_CLOSED_PROVEN=true`
+(fokussierte ArmedGate &#47; incomplete enabled&#47;armed &#47; confirm-token-when-armed &#47;
+LiveModeGate &#47; AI `live_unlock.armed=false` &#47; bypass-resistance Owner;
+173 pytest passed; kanonischer Config-Probe PASS; CRITICAL=0 &#47; HIGH=0)
+und bestätigt erneut `NOT_PASSED` mit frühester Restabhängigkeit
+`AUDIT_EVIDENCE_VERIFIED`; kein Gate-PASS.
+`AUDIT_EVIDENCE_VERIFIED_AUTHORIZED=false`; Audit-Evidence-Verified-
+Package erfordert separates Owner-GO. Recovery-Bind bleibt nicht
 Live-Arming-Autorisierung und nicht Gate-PASS.
 
 ------------------------------------------------------------------------
