@@ -270,7 +270,7 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`evidence&#47;ops&#47;section_11_12_9_44_pre_live_cybersecurity_gate_pass_v1&#47;20260811T133046Z&#47;`](../../evidence/ops/section_11_12_9_44_pre_live_cybersecurity_gate_pass_v1/20260811T133046Z/) | Owner §11.12.9.44 Pre-Live Cybersecurity Gate PASS (derived; non-SSOT; `PRE_LIVE_CYBERSECURITY_GATE=PASS`; `ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`; §11.13 unstarted; Live unauthorized) |
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.1 | SSOT Live Readiness Evaluation (`SECTION_11_13_LIVE_READINESS_EVALUATION_COMPLETED=true`; `FULLY_AUTONOMOUS_LIVE_TRADING_READY=false`; Live unauthorized) |
 | [`evidence&#47;ops&#47;section_11_13_live_readiness_evaluation_v1&#47;20260811T134610Z&#47;`](../../evidence/ops/section_11_13_live_readiness_evaluation_v1/20260811T134610Z/) | Owner §11.13.1 Live Readiness Evaluation (derived; non-SSOT; `FULLY_AUTONOMOUS_LIVE_TRADING_READY=false`; earliest open `LIVE_PRIVATE_READ_ONLY_PROVEN`; Live unauthorized) |
-| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.2 | SSOT LIVE_PRIVATE_READ_ONLY preparation surface (`SECTION_11_13_2_PREPARATION_SURFACE_READY=true`; `LIVE_PRIVATE_READ_ONLY_PROVEN=false`; Live unauthorized) |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.2 | SSOT LIVE_PRIVATE_READ_ONLY productive execute path ready (`SECTION_11_13_2_PRODUCTIVE_EXECUTE_PATH_READY=true`; `LIVE_PRIVATE_READ_ONLY_PROVEN=false`; Live unauthorized; merge≠execute) |
 | [`docs/ops/specs/SECTION_11_13_2_LIVE_PRIVATE_READ_ONLY_V1.md`](../ops/specs/SECTION_11_13_2_LIVE_PRIVATE_READ_ONLY_V1.md) | Derived §11.13.2 package spec (non-SSOT) |
 | [`docs/ops/specs/SECTION_11_13_2_OWNER_EXECUTE_INPUT_CONTRACT_V1.md`](../ops/specs/SECTION_11_13_2_OWNER_EXECUTE_INPUT_CONTRACT_V1.md) | Owner execute-time input checklist (non-SSOT; no invented values) |
 | [`evidence&#47;ops&#47;section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1&#47;20260810T143709Z&#47;`](../../evidence/ops/section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1/20260810T143709Z/) | OKX EEA Demo path closeout &#47; no-order alternate evaluation (non-activating) |
@@ -504,6 +504,8 @@ FULLY_AUTONOMOUS_LIVE_TRADING_ACTIVE=false
 LIVE_PRIVATE_READ_ONLY_PROVEN=false
 LIVE_PRIVATE_READ_ONLY_AUTHORIZED=false
 SECTION_11_13_2_PREPARATION_SURFACE_READY=true
+SECTION_11_13_2_PRODUCTIVE_EXECUTE_PATH_READY=true
+SECTION_11_13_2_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING_BOUND=true
 LIVE_AUTHORIZED=false
 EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_PRIVATE_READ_ONLY_PROVEN
 EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_2_LIVE_PRIVATE_READ_ONLY
@@ -683,11 +685,14 @@ FULLY_AUTONOMOUS_LIVE_TRADING_READY_FALSE_IS_NOT_LIVE_STAGE_BYPASS=true
 SECTION_11_13_LIVE_READINESS_EVALUATION_COMPLETED_IS_NOT_FULLY_AUTONOMOUS_LIVE_TRADING_READY=true
 SECTION_11_13_LIVE_READINESS_EVALUATION_COMPLETED_IS_NOT_LIVE_PRIVATE_READ_ONLY_PROVEN=true
 SECTION_11_13_2_PREPARATION_IS_NOT_LIVE_PRIVATE_READ_ONLY_PROVEN=true
+SECTION_11_13_2_PRODUCTIVE_EXECUTE_PATH_READY_IS_NOT_LIVE_PRIVATE_READ_ONLY_PROVEN=true
 SECTION_11_13_2_PREPARATION_IS_NOT_LIVE_AUTHORIZED=true
 LIVE_PRIVATE_READ_ONLY_AUTHORIZED_IS_NOT_LIVE_AUTHORIZED=true
 CAPABILITY_11_7_CONTRACTS_ONLY_IS_NOT_SECTION_11_13_2_NETWORK_UNLOCK=true
 FIXTURE_PASS_IS_NOT_LIVE_PRIVATE_READ_ONLY_PROVEN=true
 OWNER_GO_PREPARATION_IS_NOT_OWNER_GO_LIVE_PRIVATE_READ_ONLY=true
+OWNER_GO_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING_IS_NOT_OWNER_GO_LIVE_PRIVATE_READ_ONLY=true
+MERGE_IS_NOT_EXECUTE=true
 
 RECOVERY_BIND_29_40_IS_NOT_SECTION_11_13_STARTED=true
 XPERP_BOUNDED_CAMPAIGN_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1&#47;20260810T181703Z&#47;

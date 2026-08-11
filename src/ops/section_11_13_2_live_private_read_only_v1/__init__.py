@@ -1,4 +1,4 @@
-"""§11.13.2 LIVE_PRIVATE_READ_ONLY preparation surface package."""
+"""§11.13.2 LIVE_PRIVATE_READ_ONLY package (productive execute path ready; not proven)."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ from src.ops.section_11_13_2_live_private_read_only_v1.constants_v1 import (
     OWNER,
     PACKAGE_MARKER,
     PREPARATION_SURFACE_READY,
+    PRODUCTIVE_EXECUTE_PATH_READY,
 )
 
 __all__ = [
@@ -22,4 +23,5 @@ __all__ = [
     "OWNER",
     "PACKAGE_MARKER",
     "PREPARATION_SURFACE_READY",
+    "PRODUCTIVE_EXECUTE_PATH_READY",
 ]
