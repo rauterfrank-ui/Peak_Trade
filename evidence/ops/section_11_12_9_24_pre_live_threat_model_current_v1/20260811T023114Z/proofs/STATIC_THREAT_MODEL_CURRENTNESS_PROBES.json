@@ -1,0 +1,88 @@
+{
+  "ALL_STATIC_PROBES_PASS": true,
+  "DOCUMENT_CLASS": "STATIC_THREAT_MODEL_CURRENTNESS_PROBES_SECTION_11_12_9_24_V1",
+  "FINDINGS": [],
+  "GENERATED_AT_UTC": "2026-08-11T02:35:39Z",
+  "ORIGIN_MAIN_SHA": "4431f810752bb1c42d94d24a2dcc24127a98fdcb",
+  "PROBES": [
+    {
+      "id": "CURRENTNESS_ORIGIN_MAIN_SHA_MATCH",
+      "observed": {
+        "BOUND_SHA": "4431f810752bb1c42d94d24a2dcc24127a98fdcb"
+      },
+      "pass": true
+    },
+    {
+      "id": "CURRENTNESS_EARLIEST_DEPENDENCY_IS_THREAT_MODEL_CURRENT",
+      "pass": true
+    },
+    {
+      "id": "CURRENTNESS_ARCHITECTURE_REVIEW_PASS_BOUND",
+      "pass": true
+    },
+    {
+      "id": "CURRENTNESS_GATE_REMAINS_NOT_PASSED",
+      "pass": true
+    },
+    {
+      "id": "CURRENTNESS_ACTIVE_VENUE_BINDING_OKX_EEA_DEMO_XPERP",
+      "observed": {
+        "HOST": "https://eea.okx.com",
+        "INSTRUMENT": "BTC-USD_UM_XPERP-310328",
+        "RULE_TYPE": "xperp",
+        "VENUE": "OKX_EEA_DEMO"
+      },
+      "pass": true
+    },
+    {
+      "id": "CURRENTNESS_LIVE_AND_11_13_HARD_FALSE",
+      "pass": true
+    },
+    {
+      "id": "CURRENTNESS_LONG_RUNNING_AND_LIFECYCLE_PROVEN",
+      "pass": true
+    },
+    {
+      "id": "CURRENTNESS_VENUE_THREAT_DELTAS_PRESENT_BUT_NOT_ACCEPTANCE_PACKAGE",
+      "note": "Venue-scoped deltas reused as inputs; they alone do not satisfy THREAT_MODEL_CURRENT.",
+      "pass": true
+    },
+    {
+      "id": "CONTROL_LIVE_MODE_GATE_PRESENT",
+      "pass": true
+    },
+    {
+      "id": "CONTROL_LIVE_SAFETY_RAILS_PRESENT",
+      "pass": true
+    },
+    {
+      "id": "CONTROL_AI_ACTIVATION_DEFAULT_BLOCK",
+      "observed": {
+        "has_armed": true
+      },
+      "pass": true
+    },
+    {
+      "id": "CONTROL_CI_REQUIRED_CONTEXTS_PRESENT",
+      "observed": {
+        "top_keys": [
+          "schema_version",
+          "required_contexts",
+          "ignored_contexts",
+          "notes"
+        ]
+      },
+      "pass": true
+    },
+    {
+      "id": "CONTROL_EEA_XPERP_BINDING_PACKAGE_PRESENT",
+      "pass": true
+    },
+    {
+      "id": "CONTROL_CAMPAIGN_CONSTANTS_MODULE_PRESENT",
+      "pass": true
+    }
+  ],
+  "RUN_ID": "20260811T023114Z",
+  "SECRETS_IN_OUTPUT": false
+}

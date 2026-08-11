@@ -1,0 +1,502 @@
+{
+  "CANONICAL_OWNER": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#11.12.9.24",
+  "CRITICAL_FINDINGS_IN_THIS_PACKAGE": 0,
+  "CYBERSECURITY_OWNER": "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#4",
+  "DOCUMENT_CLASS": "THREAT_CATALOG_SECTION_11_12_9_24_V1",
+  "GENERATED_AT_UTC": "2026-08-11T02:35:39Z",
+  "HIGH_FINDINGS_IN_THIS_PACKAGE": 0,
+  "ORIGIN_MAIN_SHA": "4431f810752bb1c42d94d24a2dcc24127a98fdcb",
+  "REUSED_VENUE_DELTAS": [
+    "evidence/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/20260810T171225Z/THREAT_MODEL_DELTA.json",
+    "evidence/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/20260810T151323Z/THREAT_MODEL_DELTA.json"
+  ],
+  "RUN_ID": "20260811T023114Z",
+  "SECRETS_IN_OUTPUT": false,
+  "THREATS": [
+    {
+      "ACTOR": "External attacker; compromised credential holder",
+      "ASSET": "Operator identity; GitHub identity; durable authorization artifacts",
+      "ATTACK_OR_FAILURE_PATH": "Forged operator identity or stolen GitHub token used to push/merge activation changes or authorize execution",
+      "EVIDENCE": [
+        "config/ci/required_status_checks.json",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#4.8",
+        "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/"
+      ],
+      "EXISTING_CONTROL": "Branch ruleset require-last-push-approval; required CI status checks; durable authorization lifecycle; scoped Owner-GO tokens",
+      "IMPACT": "HIGH",
+      "LIKELIHOOD": "LOW",
+      "REQUIRED_MITIGATION": "Preserve ruleset + required checks; no ambient authority; separate Owner-GO per security package",
+      "RESIDUAL_RISK": "GitHub org/account compromise outside repo controls; human Owner-GO misuse",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Operator \u2194 Control Plane; CI/CD \u2194 Repository",
+      "category": "SPOOFING",
+      "threat_id": "TM-01",
+      "title": "Spoofing / authentication failure on operator or CI identity"
+    },
+    {
+      "ACTOR": "Insider; malware; accidental misconfig",
+      "ASSET": "Venue/host/instrument bindings; gate configs; persistence",
+      "ATTACK_OR_FAILURE_PATH": "Silent rewrite of venue host/instrument or enabled/armed flags to escalate to Live",
+      "EVIDENCE": [
+        "src/governance/live_mode_gate.py",
+        "src/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/",
+        "evidence/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/20260810T171225Z/THREAT_MODEL_DELTA.json",
+        "config/governance/ai_activation_gate_v1.json"
+      ],
+      "EXISTING_CONTROL": "Explicit binding packages; fail-closed ambiguity; LiveModeGate; AI activation defaults disabled; no silent host/instrument fallback",
+      "IMPACT": "CRITICAL",
+      "LIKELIHOOD": "MEDIUM",
+      "REQUIRED_MITIGATION": "Continue fail-closed binding verification before side effects; configuration-drift detection in later packages",
+      "RESIDUAL_RISK": "Local filesystem tampering on operator host outside repo; config drift between docs and runtime",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Control Plane \u2194 Execution Plane; Persistence boundary",
+      "category": "TAMPERING",
+      "threat_id": "TM-02",
+      "title": "Tampering with configuration, bindings, or runtime state"
+    },
+    {
+      "ACTOR": "Malicious operator; compromised CI",
+      "ASSET": "Evidence roots; manifests; authorization records; PR/merge history",
+      "ATTACK_OR_FAILURE_PATH": "Mutate or omit evidence after the fact; claim PASS without sealed MANIFEST",
+      "EVIDENCE": [
+        "scripts/ops/primary_evidence_retention_v0.py",
+        "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/MANIFEST.sha256",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#11"
+      ],
+      "EXISTING_CONTROL": "Sealed evidence roots with MANIFEST.sha256; claims must match evidence; Git history; provenance indexes",
+      "IMPACT": "HIGH",
+      "LIKELIHOOD": "LOW",
+      "REQUIRED_MITIGATION": "Separate AUDIT_EVIDENCE_VERIFIED package; never rewrite sealed roots",
+      "RESIDUAL_RISK": "AUDIT_EVIDENCE_VERIFIED \u00a718.2 package still OPEN",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Evidence/Audit Boundary; CI/CD Boundary",
+      "category": "REPUDIATION",
+      "threat_id": "TM-03",
+      "title": "Repudiation / weak auditability of security-critical actions"
+    },
+    {
+      "ACTOR": "External attacker; accidental operator paste; CI log reader",
+      "ASSET": "API keys; confirm tokens; SecretRefs; account identifiers",
+      "ATTACK_OR_FAILURE_PATH": "Plaintext credentials written to evidence, git, logs, Notion mirror, or process args",
+      "EVIDENCE": [
+        "src/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/",
+        "tests/ops/test_capability_11_2_productive_credential_load_path_binding_v1.py",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#7",
+        "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/proofs/STATIC_ARCHITECTURE_PROBES.json"
+      ],
+      "EXISTING_CONTROL": "SecretRef-only credential path on reviewed bindings; redaction hygiene; Notion mirror forbids secrets",
+      "IMPACT": "CRITICAL",
+      "LIKELIHOOD": "MEDIUM",
+      "REQUIRED_MITIGATION": "Execute SECRETS_REVIEW then CREDENTIAL_LEAKAGE_TEST under separate Owner-GOs",
+      "RESIDUAL_RISK": "Full SECRETS_REVIEW and CREDENTIAL_LEAKAGE_TEST packages still OPEN",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Runtime \u2194 Logs/Evidence; Repository \u2194 Notion Mirror",
+      "category": "INFORMATION_DISCLOSURE",
+      "threat_id": "TM-04",
+      "title": "Information disclosure / secret leakage via logs, evidence, Notion, or git"
+    },
+    {
+      "ACTOR": "External attacker; venue rate limits; resource exhaustion",
+      "ASSET": "Campaign runtime; CI; kill-switch reachability; venue API",
+      "ATTACK_OR_FAILURE_PATH": "Exhaust CI minutes, hang campaign loops, or block kill-switch path during incident",
+      "EVIDENCE": [
+        ".github/workflows/ci.yml",
+        "evidence/ops/section_11_12_testnet_kill_switch_proven_v1/20260810T232151Z/",
+        "src/ops/section_11_12_8_productive_long_running_autonomous_testnet_campaign_terminal_v1/"
+      ],
+      "EXISTING_CONTROL": "Bounded campaigns; timeouts; CI job timeout-minutes:17; kill-switch proven on Testnet package",
+      "IMPACT": "MEDIUM",
+      "LIKELIHOOD": "MEDIUM",
+      "REQUIRED_MITIGATION": "Keep bounded retries/timeouts; preserve kill-switch fail-closed semantics",
+      "RESIDUAL_RISK": "Venue-side outages; operator host availability outside repo",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Venue Boundary; CI/CD Boundary; Runtime Boundary",
+      "category": "DENIAL_OF_SERVICE",
+      "threat_id": "TM-05",
+      "title": "Denial of service / availability degradation of control or execution plane"
+    },
+    {
+      "ACTOR": "Insider; buggy client; compromised dashboard",
+      "ASSET": "enabled/armed/confirm-token/dry-run gates; Live order path",
+      "ATTACK_OR_FAILURE_PATH": "Bypass confirm-token digest, set armed=true without Owner-GO, or treat dashboard as authority",
+      "EVIDENCE": [
+        "src/governance/policy_critic/rules.py",
+        "tests/p48/test_ai_activation_gate_v1.py",
+        "tests/governance/test_live_mode_gate.py",
+        "tests/webui/test_market_landscape_safety_authority_presentation_autobind_v1.py",
+        "tests/execution/live/test_safety_rails.py"
+      ],
+      "EXISTING_CONTROL": "Multi-gate AI activation; policy critic confirm-token bypass rule; dashboard presentation-only; Live default blocked",
+      "IMPACT": "CRITICAL",
+      "LIKELIHOOD": "LOW",
+      "REQUIRED_MITIGATION": "Separate authority-replay and live-arming proof packages",
+      "RESIDUAL_RISK": "AUTHORITY_REPLAY_TEST and LIVE_ARMING_FAIL_CLOSED_PROVEN packages still OPEN",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Control Plane \u2194 Execution Plane; Dashboard Consumer Boundary",
+      "category": "ELEVATION_OF_PRIVILEGE",
+      "threat_id": "TM-06",
+      "title": "Elevation of privilege / authorization bypass across gates"
+    },
+    {
+      "ACTOR": "External attacker; insider; supply-chain stealer",
+      "ASSET": "OKX EEA Demo credentials; future Live credentials",
+      "ATTACK_OR_FAILURE_PATH": "Reuse Live keys on Demo host or Demo keys on Live; missing x-simulated-trading header",
+      "EVIDENCE": [
+        "evidence/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/20260810T171225Z/THREAT_MODEL_DELTA.json",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#19.1",
+        "tests/ops/test_capability_11_2_productive_credential_load_path_binding_v1.py"
+      ],
+      "EXISTING_CONTROL": "EEA Demo credential class hard-block for Live/Global; mandatory demo marker header; SecretRef path; order-post blocked in binding package by default",
+      "IMPACT": "CRITICAL",
+      "LIKELIHOOD": "MEDIUM",
+      "REQUIRED_MITIGATION": "Separate isolation + secrets packages; never reuse credential sets across env",
+      "RESIDUAL_RISK": "LIVE_TESTNET_ISOLATION_PROVEN and SECRETS_REVIEW still OPEN",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Credential Store \u2194 Runtime; Venue Boundary",
+      "category": "CREDENTIAL_COMPROMISE",
+      "threat_id": "TM-07",
+      "title": "Credential compromise and cross-environment credential reuse"
+    },
+    {
+      "ACTOR": "Supply-chain attacker; compromised Action",
+      "ASSET": "GitHub Actions workflows; required checks; merge path",
+      "ATTACK_OR_FAILURE_PATH": "Malicious workflow change weakens required checks or injects secrets exfiltration",
+      "EVIDENCE": [
+        "config/ci/required_status_checks.json",
+        ".github/workflows/ci.yml",
+        "scripts/ops/ci_test_selection_v1.py"
+      ],
+      "EXISTING_CONTROL": "Pinned Actions historically; explicit permissions; required_status_checks contract; branch ruleset; FOCUSED/FULL selector fail-closed",
+      "IMPACT": "HIGH",
+      "LIKELIHOOD": "LOW",
+      "REQUIRED_MITIGATION": "Execute DEPENDENCY_AUDIT + SBOM under separate Owner-GOs",
+      "RESIDUAL_RISK": "DEPENDENCY_AUDIT and SBOM_PRESENT packages still OPEN",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "CI/CD / GitHub Boundary",
+      "category": "SUPPLY_CHAIN_CICD",
+      "threat_id": "TM-08",
+      "title": "CI/CD and supply-chain compromise"
+    },
+    {
+      "ACTOR": "Supply-chain attacker",
+      "ASSET": "Python dependencies; GitHub Actions",
+      "ATTACK_OR_FAILURE_PATH": "Compromised package or Action gains code execution in CI or local runtime",
+      "EVIDENCE": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2",
+        "config/ci/required_status_checks.json"
+      ],
+      "EXISTING_CONTROL": "CI isolation; peer review; fail-closed CI selector for mixed diffs; historical Actions SHA pinning capability",
+      "IMPACT": "HIGH",
+      "LIKELIHOOD": "MEDIUM",
+      "REQUIRED_MITIGATION": "Separate DEPENDENCY_AUDIT, SBOM_PRESENT, STATIC_SECURITY_ANALYSIS packages",
+      "RESIDUAL_RISK": "No claim that DEPENDENCY_AUDIT/SBOM/STATIC_SECURITY_ANALYSIS are PASS yet",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "CI/CD Boundary; Runtime Boundary",
+      "category": "DEPENDENCY_COMPROMISE",
+      "threat_id": "TM-09",
+      "title": "Dependency / Action compromise introducing malicious code"
+    },
+    {
+      "ACTOR": "Operator (malicious or accidental)",
+      "ASSET": "Owner-GO surface; confirm tokens; campaign activation",
+      "ATTACK_OR_FAILURE_PATH": "Mis-issued Owner-GO or accidental live unlock; conflating Testnet success with Live permission",
+      "EVIDENCE": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#11.12.9",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#2",
+        "tests/ops/test_capability_11_section_11_12_8_productive_testnet_campaign_run_activation_v1.py"
+      ],
+      "EXISTING_CONTROL": "Scoped Owner-GO tokens; Master Runbook distinctions; PRE_LIVE gate mandatory; LIVE_AUTHORIZED default false",
+      "IMPACT": "CRITICAL",
+      "LIKELIHOOD": "MEDIUM",
+      "REQUIRED_MITIGATION": "Hard stop after each package; never derive next authorization from this Owner-GO",
+      "RESIDUAL_RISK": "Human process failure; social engineering of Owner",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Operator \u2194 Control Plane",
+      "category": "OPERATOR_ABUSE_ACCIDENT",
+      "threat_id": "TM-10",
+      "title": "Malicious or accidental operator action activating Live"
+    },
+    {
+      "ACTOR": "Compromised client; buggy integration",
+      "ASSET": "Activation gates; dry-run vs write paths",
+      "ATTACK_OR_FAILURE_PATH": "Replay confirm token; set enabled without armed checks; treat dry-run path as write authority",
+      "EVIDENCE": [
+        "src/governance/policy_critic/rules.py",
+        "tests/p48/test_ai_activation_gate_v1.py",
+        "docs/ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN_PRIVATE_WRITE_GATE_V1.md",
+        "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/ARCHITECTURE_REQUIREMENTS_MATRIX.json"
+      ],
+      "EXISTING_CONTROL": "Confirm-token digest checks; multi-condition activation; policy critic rules; campaign private-write gate specs",
+      "IMPACT": "CRITICAL",
+      "LIKELIHOOD": "LOW",
+      "REQUIRED_MITIGATION": "AUTHORITY_REPLAY_TEST under separate Owner-GO",
+      "RESIDUAL_RISK": "AUTHORITY_REPLAY_TEST still OPEN as dedicated \u00a718.2 package",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Control Plane \u2194 Execution Plane",
+      "category": "GATE_BYPASS",
+      "threat_id": "TM-11",
+      "title": "Confirm-token / enabled / armed / dry-run gate bypass"
+    },
+    {
+      "ACTOR": "Operator; misconfigured automation",
+      "ASSET": "Execution environment enums; authority tokens",
+      "ATTACK_OR_FAILURE_PATH": "Testnet GO interpreted as Live; shadow path reaches private write",
+      "EVIDENCE": [
+        "src/governance/live_mode_gate.py",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#3",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#19",
+        "tests/governance/test_live_mode_gate.py"
+      ],
+      "EXISTING_CONTROL": "Phase-aware architecture; explicit ExecutionEnvironment; Live default block; Testnet authority != Live authority",
+      "IMPACT": "CRITICAL",
+      "LIKELIHOOD": "MEDIUM",
+      "REQUIRED_MITIGATION": "Dedicated isolation proof package before Live readiness",
+      "RESIDUAL_RISK": "LIVE_TESTNET_ISOLATION_PROVEN package still OPEN",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Control Plane \u2194 Execution Plane",
+      "category": "ENVIRONMENT_CONFUSION",
+      "threat_id": "TM-12",
+      "title": "Environment confusion: research/shadow/testnet/live"
+    },
+    {
+      "ACTOR": "Operator; adapter bug; stale binding",
+      "ASSET": "OKX EEA Demo XPerp binding; host eea.okx.com; instrument BTC-USD_UM_XPERP-310328",
+      "ATTACK_OR_FAILURE_PATH": "Silent fallback to Global Demo or BTC-USDT-SWAP; host substitution to live OKX",
+      "EVIDENCE": [
+        "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+        "evidence/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/20260810T171225Z/THREAT_MODEL_DELTA.json",
+        "docs/ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md"
+      ],
+      "EXISTING_CONTROL": "Canonical active binding pinned; threat-model deltas for host/header/credential/instrument isolation; fail-closed on ambiguity",
+      "IMPACT": "CRITICAL",
+      "LIKELIHOOD": "MEDIUM",
+      "REQUIRED_MITIGATION": "Keep Map/Master/Cyber pointers synchronized; Notion remains non-SSOT consumer",
+      "RESIDUAL_RISK": "Stale operator mental model vs Map of Truth if mirror diverges",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Exchange/Venue Boundary",
+      "category": "VENUE_BINDING_CONFUSION",
+      "threat_id": "TM-13",
+      "title": "Venue/account/environment binding confusion"
+    },
+    {
+      "ACTOR": "Compromised component; accidental code path",
+      "ASSET": "Order POST surface; campaign write gate",
+      "ATTACK_OR_FAILURE_PATH": "Non-authorized code path posts orders; escalate from RO to write without Owner-GO",
+      "EVIDENCE": [
+        "tests/execution/live/test_safety_rails.py",
+        "tests/ops/test_capability_11_section_11_12_8_productive_testnet_campaign_run_activation_v1.py",
+        "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
+      ],
+      "EXISTING_CONTROL": "Package default ORDER_POST unauthorized; campaign activation gated; safety rails; Cap 11.12 proofs bounded",
+      "IMPACT": "CRITICAL",
+      "LIKELIHOOD": "LOW",
+      "REQUIRED_MITIGATION": "Any new execution adapter requires separate Owner-GO + threat-model update (\u00a74.3)",
+      "RESIDUAL_RISK": "Future adapters must not silently expand write surface",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Execution Plane \u2194 Venue",
+      "category": "EXECUTION_SURFACE_ESCALATION",
+      "threat_id": "TM-14",
+      "title": "Order-routing or execution-surface escalation"
+    },
+    {
+      "ACTOR": "Network attacker; buggy cache; venue anomaly",
+      "ASSET": "Order ACK/state; reconciliation inputs",
+      "ATTACK_OR_FAILURE_PATH": "Accept stale ACK; forge response; replay prior order state leading to wrong recovery",
+      "EVIDENCE": [
+        "evidence/ops/section_11_12_testnet_reconciliation_proven_v1/20260810T221902Z/",
+        "evidence/ops/section_11_12_testnet_unknown_submit_recovery_proven_v1/20260810T224947Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#6"
+      ],
+      "EXISTING_CONTROL": "Deterministic serialization; fail-closed parsing; Testnet reconciliation/unknown-submit recovery proven packages",
+      "IMPACT": "HIGH",
+      "LIKELIHOOD": "MEDIUM",
+      "REQUIRED_MITIGATION": "Do not extrapolate Testnet response integrity to Live without separate Live proofs",
+      "RESIDUAL_RISK": "Live-path response integrity not proven (Live unauthorized)",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Exchange/Venue Boundary",
+      "category": "VENUE_RESPONSE_INTEGRITY",
+      "threat_id": "TM-15",
+      "title": "Stale/forged/replayed exchange responses"
+    },
+    {
+      "ACTOR": "Network partition; venue timeout; restart mid-submit",
+      "ASSET": "Order lifecycle integrity; position truth",
+      "ATTACK_OR_FAILURE_PATH": "Unknown submit leaves ghost orders; reconciliation mismatch silently ignored",
+      "EVIDENCE": [
+        "evidence/ops/section_11_12_testnet_unknown_submit_recovery_proven_v1/20260810T224947Z/",
+        "evidence/ops/section_11_12_testnet_reconciliation_proven_v1/20260810T221902Z/",
+        "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
+      ],
+      "EXISTING_CONTROL": "TESTNET_UNKNOWN_SUBMIT_RECOVERY_PROVEN and TESTNET_RECONCILIATION_PROVEN sealed",
+      "IMPACT": "HIGH",
+      "LIKELIHOOD": "MEDIUM",
+      "REQUIRED_MITIGATION": "RECOVERY_SECURITY_TEST under separate Owner-GO",
+      "RESIDUAL_RISK": "Recovery security adversarial package (RECOVERY_SECURITY_TEST) still OPEN",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Runtime \u2194 Venue; Persistence",
+      "category": "UNKNOWN_SUBMIT_RECONCILIATION",
+      "threat_id": "TM-16",
+      "title": "Unknown-submit / reconciliation failure modes"
+    },
+    {
+      "ACTOR": "Crash; disk corruption; malicious edit",
+      "ASSET": "Persisted runtime state; authority after restart",
+      "ATTACK_OR_FAILURE_PATH": "Restart restores armed authority or inconsistent open orders/positions",
+      "EVIDENCE": [
+        "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/",
+        "evidence/ops/section_11_12_testnet_autonomous_recovery_proven_v1/20260810T233904Z/",
+        "tests/ops/test_capability_11_5_testnet_restart_recovery_and_kill_switch_closure_v1.py"
+      ],
+      "EXISTING_CONTROL": "TESTNET_RESTART_PROVEN; TESTNET_AUTONOMOUS_RECOVERY_PROVEN; restart must not mint new authority",
+      "IMPACT": "HIGH",
+      "LIKELIHOOD": "MEDIUM",
+      "REQUIRED_MITIGATION": "RECOVERY_SECURITY_TEST package",
+      "RESIDUAL_RISK": "RECOVERY_SECURITY_TEST still OPEN for adversarial Pre-Live acceptance",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Persistence Boundary; Runtime Boundary",
+      "category": "RESTART_RECOVERY_CORRUPTION",
+      "threat_id": "TM-17",
+      "title": "Restart/recovery state corruption"
+    },
+    {
+      "ACTOR": "Operator error; software defect; UI confusion",
+      "ASSET": "Emergency stop; kill-switch state",
+      "ATTACK_OR_FAILURE_PATH": "Kill-switch appears set but does not halt writes; dashboard treated as authority",
+      "EVIDENCE": [
+        "evidence/ops/section_11_12_testnet_kill_switch_proven_v1/20260810T232151Z/",
+        "tests/ops/test_capability_11_5_testnet_restart_recovery_and_kill_switch_closure_v1.py",
+        "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/proofs/STATIC_ARCHITECTURE_PROBES.json"
+      ],
+      "EXISTING_CONTROL": "TESTNET_KILL_SWITCH_PROVEN; dashboard KS presentation-only; fail-closed emergency control design",
+      "IMPACT": "CRITICAL",
+      "LIKELIHOOD": "LOW",
+      "REQUIRED_MITIGATION": "Do not claim Live kill-switch from Testnet proof alone",
+      "RESIDUAL_RISK": "Live kill-switch not proven (Live unauthorized)",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Operator \u2194 Runtime; Dashboard Consumer Boundary",
+      "category": "KILL_SWITCH_FAILURE",
+      "threat_id": "TM-18",
+      "title": "Kill-switch failure"
+    },
+    {
+      "ACTOR": "Malicious operator; compromised workstation",
+      "ASSET": "MANIFEST.sha256; sealed evidence claims",
+      "ATTACK_OR_FAILURE_PATH": "Rewrite evidence after claim; forge MANIFEST; point SSOT to unverified root",
+      "EVIDENCE": [
+        "scripts/ops/primary_evidence_retention_v0.py",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#11"
+      ],
+      "EXISTING_CONTROL": "Canonical verifier shasum -c MANIFEST.sha256; provenance indexes; immutable historical roots convention",
+      "IMPACT": "HIGH",
+      "LIKELIHOOD": "LOW",
+      "REQUIRED_MITIGATION": "AUDIT_EVIDENCE_VERIFIED package; verify RC on every acceptance package",
+      "RESIDUAL_RISK": "AUDIT_EVIDENCE_VERIFIED still OPEN",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Evidence/Audit Boundary",
+      "category": "EVIDENCE_TAMPERING",
+      "threat_id": "TM-19",
+      "title": "Evidence/manifest tampering"
+    },
+    {
+      "ACTOR": "Docs-only update without code; stale chat as SSOT",
+      "ASSET": "Master Runbook; Map of Truth; Cyber Runbook; runtime constants",
+      "ATTACK_OR_FAILURE_PATH": "Operators act on stale Notion/chat while repo truth differs",
+      "EVIDENCE": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+        "AGENTS.md",
+        "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/"
+      ],
+      "EXISTING_CONTROL": "Master SSOT precedence; Map navigation-only; chat lowest authority; architecture review bound current gates",
+      "IMPACT": "HIGH",
+      "LIKELIHOOD": "MEDIUM",
+      "REQUIRED_MITIGATION": "Update Notion only after repo truth; never let Notion supersede SSOT",
+      "RESIDUAL_RISK": "Notion mirror currently lagged behind origin/main (observed pre-package)",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Governance docs \u2194 Runtime",
+      "category": "CONFIGURATION_DRIFT",
+      "threat_id": "TM-20",
+      "title": "Configuration drift between SSOT docs and runtime"
+    },
+    {
+      "ACTOR": "Accidental operator; verbose logging",
+      "ASSET": "Secret material in CLI/env/logs/evidence",
+      "ATTACK_OR_FAILURE_PATH": "Exception traces print credentials; evidence includes Authorization headers",
+      "EVIDENCE": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#7",
+        "docs/evidence/post_capability_7_2_cybersecurity_review_v1/",
+        "tests/ops/test_capability_11_2_productive_credential_load_path_binding_v1.py"
+      ],
+      "EXISTING_CONTROL": "Cyber \u00a77 forbids secrets in logs/evidence; SecretRef structural checks; Cap 7.2 historical secret-scan hit-count 0 on reviewed surface",
+      "IMPACT": "CRITICAL",
+      "LIKELIHOOD": "MEDIUM",
+      "REQUIRED_MITIGATION": "CREDENTIAL_LEAKAGE_TEST + SECRETS_REVIEW packages",
+      "RESIDUAL_RISK": "CREDENTIAL_LEAKAGE_TEST still OPEN",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Runtime \u2194 Observability",
+      "category": "SECRET_EXPOSURE_SURFACES",
+      "threat_id": "TM-21",
+      "title": "Secret exposure through logs/evidence/config"
+    },
+    {
+      "ACTOR": "Stale mirror sync; mistaken Notion authority",
+      "ASSET": "Operator situational awareness",
+      "ATTACK_OR_FAILURE_PATH": "Operator treats Notion tip as authorizing Live/Testnet or as current dependency pointer",
+      "EVIDENCE": [
+        "AGENTS.md",
+        "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+        "Notion page Cybersecurity Visibility Chain (consumer mirror)"
+      ],
+      "EXISTING_CONTROL": "Explicit NOTION_SSOT=false; documentary-only authority; Master remains SSOT; mirror updates after repo truth",
+      "IMPACT": "MEDIUM",
+      "LIKELIHOOD": "HIGH",
+      "REQUIRED_MITIGATION": "Sync mirror to verified repo state; never claim THREAT_MODEL_CURRENT=true in Notion before origin/main bind",
+      "RESIDUAL_RISK": "Mirror lag observed at package start (PR#5856 tip while origin/main already at #5858)",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Notion Consumer/Mirror Boundary",
+      "category": "NOTION_MIRROR_DIVERGENCE",
+      "threat_id": "TM-22",
+      "title": "Notion mirror divergence from repository SSOT"
+    },
+    {
+      "ACTOR": "Retry storm; serialization defect",
+      "ASSET": "Order uniqueness; clOrdId contract",
+      "ATTACK_OR_FAILURE_PATH": "Retries create duplicate live risk; alphanumeric clOrdId defects",
+      "EVIDENCE": [
+        "evidence/ops/section_11_12_testnet_duplicate_order_prevention_proven_v1/20260810T230257Z/",
+        "evidence/ops/section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1/20260810T194806Z/"
+      ],
+      "EXISTING_CONTROL": "TESTNET_DUPLICATE_ORDER_PREVENTION_PROVEN; clOrdId fix evidence bound in \u00a711.12.8",
+      "IMPACT": "HIGH",
+      "LIKELIHOOD": "LOW",
+      "REQUIRED_MITIGATION": "Keep Testnet proof distinct from Live; no Live extrapolation",
+      "RESIDUAL_RISK": "Live duplicate prevention not proven",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Execution Plane \u2194 Venue",
+      "category": "DUPLICATE_ORDER",
+      "threat_id": "TM-23",
+      "title": "Duplicate order / idempotency failure"
+    },
+    {
+      "ACTOR": "Operator pressure; docs misread",
+      "ASSET": "PRE_LIVE_CYBERSECURITY_GATE; Cap/\u00a711.13 entry",
+      "ATTACK_OR_FAILURE_PATH": "Treat architecture review or threat model alone as gate PASS; start \u00a711.13",
+      "EVIDENCE": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#4.8.1",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18",
+        "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
+      ],
+      "EXISTING_CONTROL": "BYPASS_OF_PRE_LIVE_GATE_FORBIDDEN; gate remains NOT_PASSED until all \u00a718.2 minima; SECTION_11_13_STARTED=false",
+      "IMPACT": "CRITICAL",
+      "LIKELIHOOD": "MEDIUM",
+      "REQUIRED_MITIGATION": "Hard stop; next package requires separate Owner-GO (SECRETS_REVIEW)",
+      "RESIDUAL_RISK": "Many \u00a718.2 criteria still OPEN after this package",
+      "STATUS": "ACCEPTED_WITH_CONTROLS",
+      "TRUST_BOUNDARY": "Governance Boundary",
+      "category": "PRE_LIVE_GATE_BYPASS",
+      "threat_id": "TM-24",
+      "title": "Pre-Live cybersecurity gate bypass into \u00a711.13 / Live readiness"
+    }
+  ],
+  "THREAT_COUNT": 24
+}
