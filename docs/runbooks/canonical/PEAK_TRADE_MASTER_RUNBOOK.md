@@ -6256,12 +6256,111 @@ OWNER_GO_THREAT_MODEL != NEXT_SECURITY_PACKAGE_AUTHORIZATION
 Observed facts: `THREAT_MODEL_CURRENT` newly bound true for §18.2 from the
 sealed threat-model package; `CYBERSECURITY_ARCHITECTURE_REVIEW`,
 `LONG_RUNNING_TESTNET_PROVEN`, and `TESTNET_LIFECYCLE_PROVEN` remain bound;
-earliest remaining unmet §18.2 criterion is `SECRETS_REVIEW`; remaining
-Pre-Live security acceptance packages remain absent or OPEN. Gate remains
-`NOT_PASSED`. Live remains hard-blocked. Cap &#47; §11.13 remains unstarted.
-Hard stop after this package. No automatic progression. Creating or
-executing the next Pre-Live security acceptance package requires a
-**separate** Owner-GO and is **not** authorized here.
+earliest remaining unmet §18.2 criterion at §11.12.9.24 close was
+`SECRETS_REVIEW`; remaining Pre-Live security acceptance packages remained
+absent or OPEN at that close. Gate remained `NOT_PASSED`. Live remained
+hard-blocked. Cap &#47; §11.13 remained unstarted. Hard stop after that
+package. No automatic progression. Creating or executing the next Pre-Live
+security acceptance package required a **separate** Owner-GO and was **not**
+authorized under §11.12.9.24. Post-secrets-review package binding continues
+under §11.12.9.25.
+
+##### 11.12.9.25 Pre-Live Secrets Review package (binding; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_SECRETS_REVIEW`
+executes the **earliest** remaining Pre-Live security acceptance package
+after §11.12.9.24: a productive, evidence-bound Secrets Review against
+Cybersecurity Runbook V2.1 §7 &#47; §18.2 on then-current `origin&#47;main`.
+Reuse-before-new applies (canonical tracked credential hygiene gate,
+secret-hygiene redaction owner, SecretRef binding contracts, and Cap-11.2
+credential load-path tests are inputs, not substitutes). This binds
+exactly one newly closed §18.2 criterion:
+
+``` text
+SECRETS_REVIEW=PASS
+```
+
+derived solely from the sealed secrets-review evidence root below
+(tracked + bounded-history scanners findings=0; focused secret contract
+tests exit 0; package requirements matrix 17&#47;17 PASS; GitHub secret
+scanning + push protection ENFORCED; Critical&#47;High findings in this
+package = 0; no true-positive secret leak; no secret values materialized
+in evidence). This does **not** set `PRE_LIVE_CYBERSECURITY_GATE=PASS`,
+does **not** set `ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not**
+start Cap &#47; §11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47;
+credentials, does **not** execute subsequent Pre-Live packages
+(`DEPENDENCY_AUDIT`, SBOM, static analysis, regression, penetration,
+credential-leakage, authority-replay, recovery-security, findings
+register, isolation &#47; arming proofs, audit bundle), does **not** rotate
+or revoke production secrets, and does **not** mutate runtime &#47; trading &#47;
+execution code or open a venue network session.
+
+Sealed secrets-review evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_25_pre_live_credential_hygiene_review_v1&#47;20260811T025933Z&#47;`
+
+``` text
+SECTION_11_12_9_25_SECRETS_REVIEW_RUN_ID=20260811T025933Z
+SECTION_11_12_9_25_SECRETS_REVIEW_ORIGIN_MAIN_SHA=936a00b55e26060df7e5659c5875ae044057de29
+SECTION_11_12_9_25_SECRETS_REVIEW_EVIDENCE_ROOT=evidence/ops/section_11_12_9_25_pre_live_credential_hygiene_review_v1/20260811T025933Z/
+PROOF_METHOD=PRODUCTIVE_BOUNDED_SECRETS_REVIEW_SCANNERS_PLUS_FOCUSED_CONTRACT_TESTS_ON_ORIGIN_MAIN
+PROOF_EXECUTED=true
+PROOF_RESULT=SECRETS_REVIEW_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+SECRET_LEAK_DETECTED=false
+ROTATION_REQUIRED=false
+SECRETS_REVIEW=PASS
+SECRETS_REVIEW_PROVEN=true
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+CYBERSECURITY_ARCHITECTURE_REVIEW_PROVEN=true
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=SECRETS_REVIEW
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=5
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=16
+EARLIEST_UNRESOLVED_DEPENDENCY=DEPENDENCY_AUDIT
+EARLIEST_UNRESOLVED_SECTION_POINTER=DEPENDENCY_AUDIT
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_25
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_DEPENDENCY_AUDIT
+HARD_STOP_AFTER_THIS_PACKAGE=true
+```
+
+Mandatory distinctions:
+
+``` text
+SECRETS_REVIEW != PRE_LIVE_CYBERSECURITY_GATE_PASS
+SECRETS_REVIEW != LIVE_AUTHORIZED
+SECRETS_REVIEW != SECTION_11_13_STARTED
+SECRETS_REVIEW != CREDENTIAL_LEAKAGE_TEST
+SECRETS_REVIEW != DEPENDENCY_AUDIT
+OWNER_GO_SECRETS_REVIEW != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: `SECRETS_REVIEW` newly bound PASS for §18.2 from the
+sealed secrets-review package; `THREAT_MODEL_CURRENT`,
+`CYBERSECURITY_ARCHITECTURE_REVIEW`, `LONG_RUNNING_TESTNET_PROVEN`, and
+`TESTNET_LIFECYCLE_PROVEN` remain bound; earliest remaining unmet §18.2
+criterion is `DEPENDENCY_AUDIT`; remaining Pre-Live security acceptance
+packages remain absent or OPEN. Gate remains `NOT_PASSED`. Live remains
+hard-blocked. Cap &#47; §11.13 remains unstarted. Hard stop after this
+package. No automatic progression. Creating or executing the next
+Pre-Live security acceptance package requires a **separate** Owner-GO and
+is **not** authorized here.
 
 Canonical residual sequence pointer (section sequence historically bound;
 productive proven-field chain closed):

@@ -1,0 +1,14 @@
+{
+  "DOCUMENT_CLASS": "GITHUB_SECRET_SCANNING_CONTROLS_SNAPSHOT_SECTION_11_12_9_25_V1",
+  "GENERATED_AT_UTC": "2026-08-11T03:00:11Z",
+  "ORIGIN_MAIN_SHA": "936a00b55e26060df7e5659c5875ae044057de29",
+  "canonical_governance_spec": "docs/ops/specs/SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1.md",
+  "classification": {
+    "push_protection": "ENFORCED",
+    "secret_scanning": "ENFORCED"
+  },
+  "repository": "rauterfrank-ui/Peak_Trade",
+  "secret_scanning_push_protection_status": "enabled",
+  "secret_scanning_status": "enabled",
+  "secret_value_exposed": false
+}

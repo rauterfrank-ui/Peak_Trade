@@ -1,0 +1,91 @@
+{
+  "ALL_PASS": true,
+  "DOCUMENT_CLASS": "STATIC_SECRETS_REVIEW_PROBES_SECTION_11_12_9_25_V1",
+  "GENERATED_AT_UTC": "2026-08-11T03:00:11Z",
+  "ORIGIN_MAIN_SHA": "936a00b55e26060df7e5659c5875ae044057de29",
+  "PASS_COUNT": 16,
+  "PROBES": [
+    {
+      "evidence": "proofs/TRACKED_CREDENTIAL_HYGIENE_SCAN.json",
+      "id": "SR_PROBE_TRACKED_SCAN_EXIT_0",
+      "result": "PASS"
+    },
+    {
+      "evidence": "proofs/BOUNDED_HISTORY_CREDENTIAL_HYGIENE_SCAN.json",
+      "id": "SR_PROBE_HISTORY_BOUNDED_EXIT_0",
+      "result": "PASS"
+    },
+    {
+      "evidence": "proofs/FOCUSED_SR_CONTRACT_TESTS.txt",
+      "id": "SR_PROBE_FOCUSED_CONTRACT_TESTS_63_PASS",
+      "result": "PASS"
+    },
+    {
+      "evidence": "proofs/GITHUB_HOSTED_SCANNING_CONTROLS_SNAPSHOT.json",
+      "id": "SR_PROBE_GITHUB_SECRET_SCANNING_ENABLED",
+      "result": "PASS"
+    },
+    {
+      "evidence": "proofs/GITHUB_HOSTED_SCANNING_CONTROLS_SNAPSHOT.json",
+      "id": "SR_PROBE_GITHUB_PUSH_PROTECTION_ENABLED",
+      "result": "PASS"
+    },
+    {
+      "evidence": "src/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/binding_contract_v1.py",
+      "id": "SR_PROBE_SECRETREF_STRUCTURAL_BINDING",
+      "result": "PASS"
+    },
+    {
+      "evidence": "src/ops/.../binding_contract_v1.py LIVE_CREDENTIAL_CLASS_MARKERS",
+      "id": "SR_PROBE_LIVE_CREDENTIAL_CLASS_REJECTED_ON_DEMO_BINDING",
+      "result": "PASS"
+    },
+    {
+      "evidence": "proofs/SECRETS_INVENTORY_METADATA.json",
+      "id": "SR_PROBE_NO_LIVE_ENV_IN_AGENT_SHELL",
+      "result": "PASS"
+    },
+    {
+      "evidence": ".gitignore .env *.pem .bounded_pilot.env",
+      "id": "SR_PROBE_GITIGNORE_ENV_AND_PEM",
+      "result": "PASS"
+    },
+    {
+      "evidence": "docs/ops/specs/tracked_credential_like_allowlist_v1.json",
+      "id": "SR_PROBE_ALLOWLIST_NO_EXPIRED_ENTRIES",
+      "result": "PASS"
+    },
+    {
+      "evidence": "scripts/security/secret_hygiene_redaction_v1.py",
+      "id": "SR_PROBE_CANONICAL_REDACTION_OWNER_PRESENT",
+      "result": "PASS"
+    },
+    {
+      "evidence": "docs/ops/specs/SECRET_SCANNING_AND_PUSH_PROTECTION_GOVERNANCE_V1.md#Incident response",
+      "id": "SR_PROBE_INCIDENT_RESPONSE_DOCUMENTED",
+      "result": "PASS"
+    },
+    {
+      "evidence": "docs/LIVE_OPERATIONAL_RUNBOOKS.md + SECRET_SCANNING governance incident steps",
+      "id": "SR_PROBE_ROTATION_PROCESS_DOCUMENTED",
+      "result": "PASS"
+    },
+    {
+      "evidence": "proofs/SECRETS_INVENTORY_METADATA.json ci_secret_names_referenced",
+      "id": "SR_PROBE_CI_SECRETS_MINIMAL_NAMED_SET",
+      "result": "PASS"
+    },
+    {
+      "evidence": "proofs/HEURISTIC_FALSE_POSITIVE_CLASSIFICATION.json",
+      "id": "SR_PROBE_NO_TRUE_POSITIVE_LEAK",
+      "result": "PASS"
+    },
+    {
+      "evidence": "Notion Cybersecurity Visibility Chain fetch 2026-08-11 \u2014 status fields only",
+      "id": "SR_PROBE_NOTION_MIRROR_NO_SECRET_VALUES",
+      "result": "PASS"
+    }
+  ],
+  "TOTAL": 16,
+  "secret_value_exposed": false
+}

@@ -1,0 +1,41 @@
+{
+  "DOCUMENT_CLASS": "HEURISTIC_ASSIGNMENT_CLASSIFICATION_SECTION_11_12_9_25_V1",
+  "GENERATED_AT_UTC": "2026-08-11T03:00:11Z",
+  "ORIGIN_MAIN_SHA": "936a00b55e26060df7e5659c5875ae044057de29",
+  "canonical_scanner_findings": 0,
+  "classification_summary": {
+    "FALSE_POSITIVE_SYNTHETIC_OR_DOCS": 27,
+    "NOTE": "One hygiene-test synthetic sk- pattern intentionally present; redacted in evidence context; allowlisted/fixture class; not a real provider credential.",
+    "TRUE_POSITIVE_REAL_SECRET": 0
+  },
+  "heuristic_hits": 28,
+  "representative_false_positives": [
+    {
+      "line": 256,
+      "path": "src/ops/.../public_md_capture_v1.py",
+      "reason": "URL substring guard 'apikey=' \u2014 not a credential assignment"
+    },
+    {
+      "line": 417,
+      "path": "docs/runbooks/LIVE_MODE_TRANSITION_RUNBOOK.md",
+      "reason": "Documentation placeholder '[from secure vault]'"
+    },
+    {
+      "line": 493,
+      "path": "src/docs/Peak_Trade_setup_notes.md",
+      "reason": "German documentation placeholders dein_key/dein_secret"
+    },
+    {
+      "line": 29,
+      "path": "tests/ci/test_credential_hygiene_redaction_unification_v1.py",
+      "reason": "Synthetic fixture for redaction tests (comment: Unmistakably fake)"
+    },
+    {
+      "line": 115,
+      "path": "tests/ops/test_bounded_futures_private_readonly_http_wiring_v0.py",
+      "reason": "Test fixture demo-key"
+    }
+  ],
+  "secret_value_exposed": false,
+  "true_positives": []
+}

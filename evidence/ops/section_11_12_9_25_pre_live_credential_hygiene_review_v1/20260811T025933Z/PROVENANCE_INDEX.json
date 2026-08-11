@@ -1,0 +1,30 @@
+{
+  "ARTIFACTS": [
+    "ACCEPTANCE_MATRIX.json",
+    "MACHINE_READABLE_EVALUATION.json",
+    "PROVENANCE_INDEX.json",
+    "SANITIZED_FINAL_REPORT.json",
+    "SECRETS_INVENTORY.json",
+    "SECRETS_REVIEW_REPORT.md",
+    "SECRETS_REVIEW_REQUIREMENTS_MATRIX.json",
+    "proofs/BOUNDED_HISTORY_CREDENTIAL_HYGIENE_SCAN.json",
+    "proofs/FOCUSED_SR_CONTRACT_TESTS.txt",
+    "proofs/GITHUB_HOSTED_SCANNING_CONTROLS_SNAPSHOT.json",
+    "proofs/HEURISTIC_FALSE_POSITIVE_CLASSIFICATION.json",
+    "proofs/SECRETS_INVENTORY_METADATA.json",
+    "proofs/STATIC_SR_REVIEW_PROBES.json",
+    "proofs/TRACKED_CREDENTIAL_HYGIENE_SCAN.json"
+  ],
+  "DOCUMENT_CLASS": "PROVENANCE_INDEX_SECTION_11_12_9_25_V1",
+  "GENERATED_AT_UTC": "2026-08-11T03:01:42Z",
+  "ORIGIN_MAIN_SHA": "936a00b55e26060df7e5659c5875ae044057de29",
+  "OWNER_GO": "OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_SECRETS_REVIEW",
+  "RUN_ID": "20260811T025933Z",
+  "TOOLS": [
+    "scripts/ci/check_tracked_credential_hygiene_policy_v1.py",
+    "scripts/security/secret_hygiene_redaction_v1.py",
+    "pytest focused secrets contracts",
+    "gh api security_and_analysis snapshot"
+  ],
+  "secret_value_exposed": false
+}
