@@ -25,7 +25,7 @@ values.** Re-bind Owner-GO to the post-merge `origin/main` SHA.
 | canonical production REST host | yes | _unset_ | Exact host; not hard-coded in package |
 | account/subaccount binding | yes | _unset_ | Account identity binding (crosschecked vs `/account/config` uid) |
 | optional instrument scope | no | _unset_ | Omit for account-level RO only |
-| Live-RO SecretRef URI | yes | _unset_ | Convention: `secretref://vault/peak-trade/live-private-ro/<venue>` |
+| Live-RO SecretRef URI | yes | _unset_ | Convention: `secretref:&#47;&#47;vault&#47;peak-trade&#47;live-private-ro&#47;<venue>` |
 | Vault material file | yes | _local only_ | `--vault-file` JSON map; never commit to Git |
 | Permission attestation READ | yes | `true` | Must be attested by Owner |
 | Permission attestation TRADE | yes | `false` | Must remain false |

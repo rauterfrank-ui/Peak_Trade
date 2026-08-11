@@ -28,8 +28,8 @@ contracts-only.
 | Surface | Path |
 |---------|------|
 | Code | `src/ops/section_11_13_2_live_private_read_only_v1/` |
-| LIVE ephemeral credentials | `.../live_credential_ephemeral_v1.py` |
-| LIVE RO signer | `.../okx_live_ro_signer_v1.py` |
+| LIVE ephemeral credentials | `...&#47;live_credential_ephemeral_v1.py` |
+| LIVE RO signer | `...&#47;okx_live_ro_signer_v1.py` |
 | Vault backend reuse | `FileSecretRefVaultBackendV1` (§11.12.8 vault_resolver) |
 | Config example | `config/ops/section_11_13_2_live_private_read_only_v1.example.json` |
 | Runner | `scripts/ops/run_section_11_13_2_live_private_read_only_v1.py` |
