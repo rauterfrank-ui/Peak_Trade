@@ -8954,6 +8954,86 @@ Hard stop after this proof. No automatic Live Shadow start. Cap &#47;
 Capability 11.7 remains contracts-only and must not be repurposed as a
 network unlock.
 
+### 11.13.3 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION (preparation surface; NOT proven; NOT executed)
+
+Owner-GO
+`OWNER_GO_AUTHOR_SINGLE_PREPARATION_PR_SECTION_11_13_3_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_SURFACE`
+authors the **repo-side preparation surface** required so that a later,
+separately authorized productive step
+`OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` can run fail-closed.
+This subsection defines the stage-scoped contract for
+`LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` and binds the preparation package.
+It does **not** execute a productive Live shadow reconciliation, does **not**
+open a venue network session at merge time, does **not** load vault material,
+does **not** place Live orders, does **not** start Canary / Dry-Run order plan,
+does **not** set `LIVE_AUTHORIZED=true`, and does **not** unlock Cap &#47;
+Capability 11.7 beyond contracts-only.
+
+``` text
+SECTION_11_13_3_PREPARATION_SURFACE_READY=true
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_AUTHORIZED=false
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_EXECUTED=false
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=false
+LIVE_RECONCILIATION_PROVEN=false
+SECTION_11_13_LIVE_SHADOW_CANARY_PROGRESSION_STARTED=false
+LIVE_AUTHORIZED=false
+FULLY_AUTONOMOUS_LIVE_TRADING_READY=false
+CAPABILITY_11_7_REMAINS_CONTRACTS_ONLY=true
+NO_LIVE_ORDER=true
+NO_ACCOUNT_MUTATION=true
+NO_DRY_RUN=true
+NO_CANARY=true
+MERGE_IS_NOT_EXECUTE=true
+PREDECESSOR_LIVE_PRIVATE_READ_ONLY_PROVEN_REQUIRED=true
+```
+
+Stage purpose: GET-only Live private exchange snapshot plus local shadow
+expected-state reconciliation across the §11.5 layers, with fail-closed
+divergence handling (`MATCH` / policy-gated `SAFE_ADOPT_EXCHANGE_TRUTH` /
+`HARD_STOP_OWNER_REVIEW`). Exchange truth adoption requires an explicit
+policy id. Silent local decision-history overwrite is forbidden. This stage
+never submits Live orders and never mutates account state.
+
+Package owners:
+
+``` text
+CODE_OWNER=src/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1/
+CONFIG_EXAMPLE=config/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1.example.json
+RUNNER=scripts/ops/run_section_11_13_3_live_shadow_with_exchange_reconciliation_v1.py
+VERIFIER=scripts/ops/verify_section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1.py
+OWNER_INPUT_CONTRACT=docs/ops/specs/SECTION_11_13_3_OWNER_EXECUTE_INPUT_CONTRACT_V1.md
+SPEC=docs/ops/specs/SECTION_11_13_3_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_V1.md
+```
+
+Evidence contract root (productive proven later only):
+
+`evidence&#47;ops&#47;section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1&#47;<RUN_ID>&#47;`
+
+Mandatory distinctions:
+
+``` text
+SECTION_11_13_3_PREPARATION != LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN
+SECTION_11_13_3_PREPARATION != LIVE_AUTHORIZED
+OWNER_GO_PREPARATION != OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION
+CAPABILITY_11_7_CONTRACTS_ONLY != SECTION_11_13_3_NETWORK_UNLOCK
+FIXTURE_PASS != LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN
+LIVE_PRIVATE_READ_ONLY_PROVEN != LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN
+MERGE != EXECUTE
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN != LIVE_DRY_RUN_ORDER_PLAN
+```
+
+Canonical next pointer after this preparation binding (not executed here):
+
+``` text
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_3
+CANONICAL_NEXT_STEP=OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN
+```
+
+After a later successful productive proven binding, the next Owner-GO pointer
+becomes `OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_DRY_RUN_ORDER_PLAN`. Hard stop
+after this preparation package. No automatic productive execute.
+
 ## 11.14 Live order and economic evidence ladder
 
 Live proof claims must use a stricter ladder:
