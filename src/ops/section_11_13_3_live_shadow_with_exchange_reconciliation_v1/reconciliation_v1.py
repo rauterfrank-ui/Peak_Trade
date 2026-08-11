@@ -221,3 +221,98 @@ def build_matched_local_and_exchange_fixture_v1() -> tuple[dict[str, Any], dict[
         for layer in RECONCILIATION_LAYERS
     }
     return dict(state), dict(state)
+
+
+def _layer_digest(seed: str) -> str:
+    import hashlib
+
+    return hashlib.sha256(seed.encode("utf-8")).hexdigest()[:16]
+
+
+def _data_is_empty(payload: Mapping[str, Any] | None) -> bool:
+    if not payload:
+        return True
+    data = payload.get("data")
+    if data is None:
+        return True
+    if isinstance(data, list):
+        return len(data) == 0 or all(
+            (not item)
+            or (
+                isinstance(item, Mapping)
+                and all(str(item.get(k, "") or "").strip() in {"", "0", "0.0"} for k in item)
+            )
+            for item in data
+        )
+    if isinstance(data, Mapping):
+        return len(data) == 0
+    return False
+
+
+def build_local_expected_flat_shadow_state_v1(
+    *,
+    account_scope: str,
+) -> dict[str, Any]:
+    """Local expected state for GET-only shadow proof with no local trading book."""
+    identity_digest = _layer_digest(f"local-identity:{account_scope}")
+    flat = {"status": "flat_or_empty", "digest": _layer_digest("local-flat")}
+    state: dict[str, Any] = {layer: dict(flat) for layer in RECONCILIATION_LAYERS}
+    state["credential_and_account_identity"] = {
+        "status": "bound",
+        "digest": identity_digest,
+        "account_scope_redacted": True,
+    }
+    return state
+
+
+def build_exchange_snapshot_from_endpoint_payloads_v1(
+    *,
+    payloads_by_endpoint: Mapping[str, Mapping[str, Any]],
+    account_identity: str,
+) -> dict[str, Any]:
+    """Sanitized exchange snapshot from private GET payloads (no auto-correct)."""
+    identity_digest = _layer_digest(f"local-identity:{account_identity}")
+    bal = payloads_by_endpoint.get("/api/v5/account/balance")
+    pos = payloads_by_endpoint.get("/api/v5/account/positions")
+    orders = payloads_by_endpoint.get("/api/v5/trade/orders-pending")
+    cfg = payloads_by_endpoint.get("/api/v5/account/config")
+
+    flat = {"status": "flat_or_empty", "digest": _layer_digest("local-flat")}
+    snapshot: dict[str, Any] = {layer: dict(flat) for layer in RECONCILIATION_LAYERS}
+    snapshot["credential_and_account_identity"] = {
+        "status": "bound",
+        "digest": identity_digest,
+        "account_scope_redacted": True,
+    }
+    if cfg is not None:
+        snapshot["venue_instrument_and_contract_metadata"] = {
+            "status": "observed",
+            "digest": _layer_digest(f"cfg:{sorted(cfg.keys())}"),
+        }
+    if orders is not None and not _data_is_empty(orders):
+        snapshot["open_orders"] = {
+            "status": "observed_nonempty",
+            "digest": _layer_digest(f"orders:{orders.get('code')}"),
+        }
+        snapshot["pending_commands"] = dict(snapshot["open_orders"])
+    if pos is not None and not _data_is_empty(pos):
+        snapshot["positions"] = {
+            "status": "observed_nonempty",
+            "digest": _layer_digest(f"pos:{pos.get('code')}"),
+        }
+    if bal is not None:
+        snapshot["balances_equity_and_available_margin"] = {
+            "status": "observed",
+            "digest": _layer_digest(f"bal:{bal.get('code')}"),
+        }
+        snapshot["local_portfolio_and_accounting"] = dict(
+            snapshot["balances_equity_and_available_margin"]
+        )
+    return snapshot
+
+
+def refuse_automatic_local_correction_v1(*, claimed_action: str) -> None:
+    """Mismatches are reported only; never auto-corrected into local history."""
+    raise LiveShadowReconReconciliationError(
+        f"AUTOMATIC_LOCAL_CORRECTION_FORBIDDEN:{claimed_action}"
+    )

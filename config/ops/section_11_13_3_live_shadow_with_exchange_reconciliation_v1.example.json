@@ -9,7 +9,9 @@
   "instrument_scope": null,
   "secretref_uri": "",
   "credential_class": "LIVE_SHADOW_RECONCILIATION_READ_ONLY_API_KEY",
-  "method_allowlist": ["GET"],
+  "method_allowlist": [
+    "GET"
+  ],
   "endpoint_allowlist": [
     "/api/v5/account/balance",
     "/api/v5/account/config",
@@ -26,5 +28,5 @@
   "owner_declared_host_allowlist": [],
   "config_version": "section_11_13_3_live_shadow_with_exchange_reconciliation_config.v1",
   "schema_version": "section_11_13_3_live_shadow_with_exchange_reconciliation.v1",
-  "notes": "Owner fills productive fields at execute time. Empty fields fail closed before network."
+  "notes": "Owner fills productive fields at execute time. Empty fields fail closed before network. Reuse \u00a711.13.2 proven binding (OKX / OKX Europe Limited / EEA/DE / eea.okx.com / account_scope 856964404452495999) with secretref://vault/peak-trade/live-shadow-recon/okx. Unlock authoring does not load vault material."
 }

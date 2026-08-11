@@ -9,19 +9,22 @@ LIVE_AUTHORIZED=false
 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=false
 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_AUTHORIZED=false
 SECTION_11_13_3_PREPARATION_SURFACE_READY=true
+SECTION_11_13_3_PRODUCTIVE_EXECUTE_PATH_READY=true
+SECTION_11_13_3_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING_BOUND=true
 CAPABILITY_11_7_REMAINS_CONTRACTS_ONLY=true
 MERGE_IS_NOT_EXECUTE=true
 ```
 
 ## Purpose
 
-Repo-side preparation surface so a later separately Owner-authorized
-`OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` productive Live shadow
-exchange-reconciliation proof can run fail-closed.
+Repo-side preparation + productive execute-path unlock so a later separately
+Owner-authorized `OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` productive
+Live shadow exchange-reconciliation proof can run fail-closed.
 
-This package does **not** execute Live network calls, does **not** load vault
-material, does **not** place Live orders, does **not** start Canary / Dry-Run
-order plan, and does **not** activate Live (`LIVE_AUTHORIZED=false`).
+This unlock authoring package does **not** execute Live network calls, does
+**not** load vault material during authoring/CI, does **not** place Live
+orders, does **not** start Canary / Dry-Run order plan, and does **not**
+activate Live (`LIVE_AUTHORIZED=false`). Merge ≠ execute.
 
 ## Package layout
 
@@ -29,6 +32,8 @@ order plan, and does **not** activate Live (`LIVE_AUTHORIZED=false`).
 |---------|------|
 | Code | `src/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1/` |
 | Reconciliation | `...&#47;reconciliation_v1.py` (§11.5 layers) |
+| Ephemeral vault borrow | `...&#47;live_credential_ephemeral_v1.py` |
+| OKX LIVE RO signer | `...&#47;okx_live_ro_signer_v1.py` |
 | Config example | `config/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1.example.json` |
 | Runner | `scripts/ops/run_section_11_13_3_live_shadow_with_exchange_reconciliation_v1.py` |
 | Verifier | `scripts/ops/verify_section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1.py` |
@@ -59,7 +64,8 @@ order plan, and does **not** activate Live (`LIVE_AUTHORIZED=false`).
 
 ## Next steps
 
-1. Merge this preparation PR.
-2. Owner supplies execute-time inputs (see Owner Input Contract).
+1. Merge this productive execute unlock PR.
+2. Owner confirms reused §11.13.2 binding + local §11.13.3 SecretRef vault key
+   `secretref:&#47;&#47;vault&#47;peak-trade&#47;live-shadow-recon&#47;okx` (material local-only).
 3. Separate `OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` for productive execute.
 4. After proven: `OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_DRY_RUN_ORDER_PLAN`.

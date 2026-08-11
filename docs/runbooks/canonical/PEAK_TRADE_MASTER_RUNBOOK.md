@@ -8954,23 +8954,32 @@ Hard stop after this proof. No automatic Live Shadow start. Cap &#47;
 Capability 11.7 remains contracts-only and must not be repurposed as a
 network unlock.
 
-### 11.13.3 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION (preparation surface; NOT proven; NOT executed)
+### 11.13.3 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION (productive execute path ready; NOT proven; NOT executed)
 
 Owner-GO
 `OWNER_GO_AUTHOR_SINGLE_PREPARATION_PR_SECTION_11_13_3_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_SURFACE`
-authors the **repo-side preparation surface** required so that a later,
-separately authorized productive step
-`OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` can run fail-closed.
-This subsection defines the stage-scoped contract for
-`LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` and binds the preparation package.
-It does **not** execute a productive Live shadow reconciliation, does **not**
-open a venue network session at merge time, does **not** load vault material,
-does **not** place Live orders, does **not** start Canary / Dry-Run order plan,
-does **not** set `LIVE_AUTHORIZED=true`, and does **not** unlock Cap &#47;
-Capability 11.7 beyond contracts-only.
+authored the **repo-side preparation surface**. Owner-GO
+`OWNER_GO_SECTION_11_13_3_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING` authorizes the
+**productive execute-path unlock** package only: CLI `--execute`, LIVE
+ephemeral SecretRef borrow&#47;release via reused `FileSecretRefVaultBackendV1`,
+LIVE OKX GET-only signer wiring, `UrllibLiveTransportV1` behind execute
+authorization, account-scope crosscheck, OKX `code=="0"` assertion,
+permission attestation, §11.5 layer reconciliation evaluation (report-only;
+no automatic local correction), verifier&#47;tests, and docs sync.
+
+This authoring GO does **not** execute a productive Live shadow reconciliation,
+does **not** open a venue network session at merge time, does **not** load
+vault material during authoring, does **not** place Live orders, does **not**
+start Canary &#47; Dry-Run order plan, does **not** set `LIVE_AUTHORIZED=true`,
+and does **not** unlock Cap &#47; Capability 11.7 beyond contracts-only.
+Merge ≠ execute. A later separate `OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION`
+is required for productive proof.
 
 ``` text
 SECTION_11_13_3_PREPARATION_SURFACE_READY=true
+SECTION_11_13_3_PRODUCTIVE_EXECUTE_PATH_READY=true
+SECTION_11_13_3_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING_BOUND=true
+OWNER_GO_SECTION_11_13_3_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING=bound_for_authoring_only
 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_AUTHORIZED=false
 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_EXECUTED=false
 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=false
@@ -8985,7 +8994,13 @@ NO_DRY_RUN=true
 NO_CANARY=true
 MERGE_IS_NOT_EXECUTE=true
 PREDECESSOR_LIVE_PRIVATE_READ_ONLY_PROVEN_REQUIRED=true
-```
+REUSED_SECTION_11_13_2_BINDING_SOURCE=evidence&#47;ops&#47;section_11_13_2_live_private_read_only_proven_v1&#47;20260811T170310Z&#47;
+REUSED_SECTION_11_13_2_BINDING_VENUE=OKX
+REUSED_SECTION_11_13_2_BINDING_ENTITY=OKX Europe Limited
+REUSED_SECTION_11_13_2_BINDING_REGION=EEA&#47;DE
+REUSED_SECTION_11_13_2_BINDING_REST_HOST=eea.okx.com
+REUSED_SECTION_11_13_2_BINDING_ACCOUNT_SCOPE=856964404452495999
+REUSED_SECTION_11_13_2_SHADOW_SECRETREF_URI=secretref:&#47;&#47;vault&#47;peak-trade&#47;live-shadow-recon&#47;okx
 
 Stage purpose: GET-only Live private exchange snapshot plus local shadow
 expected-state reconciliation across the §11.5 layers, with fail-closed
@@ -9003,6 +9018,9 @@ RUNNER=scripts/ops/run_section_11_13_3_live_shadow_with_exchange_reconciliation_
 VERIFIER=scripts/ops/verify_section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1.py
 OWNER_INPUT_CONTRACT=docs/ops/specs/SECTION_11_13_3_OWNER_EXECUTE_INPUT_CONTRACT_V1.md
 SPEC=docs/ops/specs/SECTION_11_13_3_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_V1.md
+LIVE_EPHEMERAL=src/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1/live_credential_ephemeral_v1.py
+LIVE_RO_SIGNER=src/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1/okx_live_ro_signer_v1.py
+VAULT_BACKEND_REUSE=src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/vault_resolver_v1.py::FileSecretRefVaultBackendV1
 ```
 
 Evidence contract root (productive proven later only):
@@ -9013,6 +9031,8 @@ Mandatory distinctions:
 
 ``` text
 SECTION_11_13_3_PREPARATION != LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN
+SECTION_11_13_3_PRODUCTIVE_EXECUTE_PATH_READY != LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN
+SECTION_11_13_3_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING != OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION
 SECTION_11_13_3_PREPARATION != LIVE_AUTHORIZED
 OWNER_GO_PREPARATION != OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION
 CAPABILITY_11_7_CONTRACTS_ONLY != SECTION_11_13_3_NETWORK_UNLOCK
@@ -9022,7 +9042,7 @@ MERGE != EXECUTE
 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN != LIVE_DRY_RUN_ORDER_PLAN
 ```
 
-Canonical next pointer after this preparation binding (not executed here):
+Canonical next pointer after this unlock authoring binding (not executed here):
 
 ``` text
 CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_3
@@ -9032,7 +9052,7 @@ EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN
 
 After a later successful productive proven binding, the next Owner-GO pointer
 becomes `OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_DRY_RUN_ORDER_PLAN`. Hard stop
-after this preparation package. No automatic productive execute.
+after this unlock authoring package. No automatic productive execute.
 
 ## 11.14 Live order and economic evidence ladder
 

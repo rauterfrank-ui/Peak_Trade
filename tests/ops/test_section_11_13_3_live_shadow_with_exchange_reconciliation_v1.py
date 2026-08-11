@@ -39,6 +39,8 @@ from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.constan
     LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN,
     OWNER_GO_EXECUTE,
     PACKAGE_MARKER,
+    PRODUCTIVE_EXECUTE_PATH_READY,
+    PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING_BOUND,
     REQUIRED_CREDENTIAL_CLASS,
 )
 from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.evidence_v1 import (
@@ -47,15 +49,25 @@ from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.evidenc
 from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.http_client_v1 import (
     LiveShadowReconHttpClientV1,
     LiveShadowReconHttpError,
+    ProductiveProofFakeTransportV1,
     RecordingFakeTransportV1,
 )
 from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.owner_input_contract_v1 import (
     build_owner_execute_input_contract_v1,
 )
+from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.reconciliation_v1 import (
+    LiveShadowReconReconciliationError,
+    evaluate_live_shadow_exchange_reconciliation_v1,
+    refuse_automatic_local_correction_v1,
+    refuse_automatic_stage_promotion_v1,
+    refuse_live_order_side_effect_v1,
+    refuse_silent_local_history_overwrite_v1,
+)
 from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.response_assertions_v1 import (
     LiveShadowReconAssertionError,
     assert_authenticated_private_read_success_v1,
     redact_account_identity_v1,
+    validate_permission_attestation_v1,
 )
 from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.runner_v1 import (
     LiveShadowReconRunnerError,
@@ -482,6 +494,9 @@ def test_build_claims_productive_true_only_when_all_invariants() -> None:
         fixture_or_demo_or_testnet=False,
         productive_live_transport=True,
         mode="execute",
+        permission_attestation={"READ": True, "TRADE": False, "WITHDRAW": False},
+        account_scope_match=True,
+        okx_code_success=True,
     )
     assert claims["LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN"] is True
     fixture_claims = build_claims_v1(
@@ -585,10 +600,22 @@ def test_demo_secretref_rejected_for_live() -> None:
 def test_owner_input_contract_has_no_invented_values() -> None:
     contract = build_owner_execute_input_contract_v1()
     assert contract["LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN"] is False
-    for field in contract["fields"]:
-        if field["id"] in {"permission_attestation", "separate_execute_go"}:
-            continue
-        assert field["value"] is None
+    assert contract["REUSED_FROM_SECTION_11_13_2_PROVEN_BINDING"] is True
+    assert contract["unlock_authoring_does_not_execute"] is True
+    by_id = {field["id"]: field for field in contract["fields"]}
+    assert by_id["canonical_production_rest_host"]["value"] == "eea.okx.com"
+    assert by_id["live_ro_secretref_uri"]["value"] == (
+        "secretref://vault/peak-trade/live-shadow-recon/okx"
+    )
+    assert by_id["permission_attestation"]["value"] == {
+        "READ": True,
+        "TRADE": False,
+        "WITHDRAW": False,
+    }
+    assert by_id["confirm_no_demo_simulation_marker"]["value"] is True
+    assert by_id["separate_execute_go"]["value"] == OWNER_GO_EXECUTE
+    # optional instrument remains unset (account-level RO)
+    assert by_id["optional_instrument_scope"]["value"] is None
 
 
 def test_auth_false_blocks_execute() -> None:
@@ -676,3 +703,141 @@ def test_orders_pending_get_not_mutation_blocked() -> None:
     assert resp.status_code == 200
     assert client.counters.order_request_count == 0
     assert client.counters.write_request_count == 0
+
+
+def test_productive_execute_path_ready_flags() -> None:
+    assert PRODUCTIVE_EXECUTE_PATH_READY is True
+    assert PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING_BOUND is True
+    assert LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN is False
+    assert LIVE_AUTHORIZED is False
+
+
+def _write_shadow_vault(tmp_path: Path, *, secretref: str) -> Path:
+    vault = tmp_path / "vault.json"
+    material = json.dumps(
+        {
+            "api_key": "fixture-live-shadow-key-not-real",
+            "api_secret": "fixture-live-shadow-secret-not-real",
+            "passphrase": "fixture-pass",
+        },
+        separators=(",", ":"),
+    )
+    vault.write_text(json.dumps({secretref: material}), encoding="utf-8")
+    return vault
+
+
+def test_execute_without_owner_go_blocks() -> None:
+    with pytest.raises(LiveShadowReconRunnerError, match="AUTHORIZED_FALSE|OWNER_GO"):
+        run_section_11_13_3_live_shadow_with_exchange_reconciliation_v1(
+            mode="execute",
+            config_payload=_valid_config(),
+            origin_main_sha=ORIGIN_SHA,
+            live_shadow_with_exchange_reconciliation_authorized=True,
+            owner_go=None,
+            vault_file="/tmp/does-not-matter.json",
+            permission_attestation={"READ": True, "TRADE": False, "WITHDRAW": False},
+            transport=RecordingFakeTransportV1(),
+        )
+
+
+def test_execute_missing_secretref_blocks() -> None:
+    with pytest.raises(LiveShadowReconRunnerError, match="SECRETREF|FIELD|MISSING"):
+        cfg = _valid_config()
+        cfg["secretref_uri"] = ""
+        run_section_11_13_3_live_shadow_with_exchange_reconciliation_v1(
+            mode="execute",
+            config_payload=cfg,
+            origin_main_sha=ORIGIN_SHA,
+            live_shadow_with_exchange_reconciliation_authorized=True,
+            owner_go=OWNER_GO_EXECUTE,
+            vault_file="/tmp/does-not-matter.json",
+            permission_attestation={"READ": True, "TRADE": False, "WITHDRAW": False},
+            transport=RecordingFakeTransportV1(),
+        )
+
+
+def test_live_private_ro_secretref_rejected_for_shadow() -> None:
+    with pytest.raises(LiveShadowReconSecretRefError, match="SHADOW_PATH|CROSS_PACKAGE"):
+        build_live_shadow_recon_secretref_metadata_v1(
+            secretref_uri="secretref://vault/peak-trade/live-private-ro/okx",
+            credential_class=REQUIRED_CREDENTIAL_CLASS,
+        )
+
+
+def test_demo_testnet_secretref_blocks() -> None:
+    with pytest.raises(LiveShadowReconSecretRefError):
+        build_live_shadow_recon_secretref_metadata_v1(
+            secretref_uri="secretref://vault/peak-trade/live-shadow-recon/demo/okx",
+            credential_class=REQUIRED_CREDENTIAL_CLASS,
+        )
+
+
+def test_permission_trade_true_blocks() -> None:
+    with pytest.raises(LiveShadowReconAssertionError, match="TRADE_MUST_BE_FALSE"):
+        validate_permission_attestation_v1({"READ": True, "TRADE": True, "WITHDRAW": False})
+
+
+def test_permission_withdraw_true_blocks() -> None:
+    with pytest.raises(LiveShadowReconAssertionError, match="WITHDRAW_MUST_BE_FALSE"):
+        validate_permission_attestation_v1({"READ": True, "TRADE": False, "WITHDRAW": True})
+
+
+def test_automatic_local_correction_forbidden() -> None:
+    with pytest.raises(LiveShadowReconReconciliationError, match="AUTOMATIC_LOCAL_CORRECTION"):
+        refuse_automatic_local_correction_v1(claimed_action="overwrite_local_positions")
+
+
+def test_productive_execute_with_vault_injected_transport_no_network_leak(
+    tmp_path: Path,
+) -> None:
+    cfg = _valid_config(account_scope="acct-owner-binding")
+    vault = _write_shadow_vault(tmp_path, secretref=str(cfg["secretref_uri"]))
+    body = b'{"code":"0","data":[{"uid":"acct-owner-binding"}]}'
+    transport = ProductiveProofFakeTransportV1(
+        body=body,
+        bodies_by_endpoint={
+            "/api/v5/account/config": body,
+            "/api/v5/account/balance": b'{"code":"0","data":[]}',
+            "/api/v5/account/positions": b'{"code":"0","data":[]}',
+            "/api/v5/trade/orders-pending": b'{"code":"0","data":[]}',
+        },
+    )
+    result = run_section_11_13_3_live_shadow_with_exchange_reconciliation_v1(
+        mode="execute",
+        config_payload=cfg,
+        origin_main_sha=ORIGIN_SHA,
+        owner_go=OWNER_GO_EXECUTE,
+        live_shadow_with_exchange_reconciliation_authorized=True,
+        transport=transport,
+        evidence_run_root=tmp_path / "exec",
+        vault_file=vault,
+        permission_attestation={"READ": True, "TRADE": False, "WITHDRAW": False},
+    )
+    assert result.ok is True
+    assert result.LIVE_AUTHORIZED is False
+    assert result.ORDER_EFFECT == "NONE"
+    assert result.NETWORK_EFFECT == "INJECTED_TRANSPORT_ONLY"
+    assert result.CREDENTIAL_ACCESS == "EPHEMERAL_BORROW_RELEASED"
+    assert result.LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN is True
+    claims = json.loads((tmp_path / "exec" / "claims.json").read_text(encoding="utf-8"))
+    text = json.dumps(claims) + (tmp_path / "exec" / "SUMMARY.json").read_text(encoding="utf-8")
+    assert "fixture-live-shadow-secret-not-real" not in text
+    assert "api_secret" not in text.lower() or "<REDACTED>" in text or '"api_secret"' not in text
+    assert claims["ORDER_REQUEST_COUNT"] == 0
+    assert claims["WRITE_REQUEST_COUNT"] == 0
+    assert claims["ACCOUNT_MUTATION_EFFECT"] == "NONE"
+    assert claims["permission_attestation"]["TRADE"] is False
+    assert claims["permission_attestation"]["WITHDRAW"] is False
+
+
+def test_preflight_still_zero_network_after_unlock(tmp_path: Path) -> None:
+    result = run_section_11_13_3_live_shadow_with_exchange_reconciliation_v1(
+        mode="preflight",
+        config_payload=_valid_config(),
+        origin_main_sha=ORIGIN_SHA,
+        evidence_run_root=tmp_path / "preflight",
+    )
+    assert result.NETWORK_EFFECT == "NONE"
+    assert result.CREDENTIAL_ACCESS == "NONE"
+    assert result.details["credential_material_loaded"] is False
+    assert result.details["PRODUCTIVE_EXECUTE_PATH_READY"] is True
