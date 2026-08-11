@@ -1,0 +1,33 @@
+{
+  "DOCUMENT_CLASS": "EXTERNAL_BLOCKERS_FGR_V1",
+  "BLOCKERS": [
+    {
+      "id": "EXT-FGR-001",
+      "category": "GITHUB_ORG_SECURITY_SETTINGS",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "description": "Dependabot alerts/security updates disabled at GitHub org/repo settings; requires Owner/admin action outside code PR."
+    },
+    {
+      "id": "EXT-FGR-002",
+      "category": "VENUE_REGIONAL_CAPABILITY",
+      "severity": "HIGH",
+      "blocking": false,
+      "description": "OKX EEA regional/account capability constraints historically blocked BTC-USDT-SWAP productive path; Cap 11.12 closed via XPerp. Live venue capability remains external dependency (not a DEPENDENCY_AUDIT CVE)."
+    },
+    {
+      "id": "EXT-FGR-003",
+      "category": "OPERATOR_NOTION_MIRROR",
+      "severity": "LOW",
+      "blocking": false,
+      "description": "Threat model recorded Notion mirror divergence risk vs repository SSOT; external operational dependency."
+    },
+    {
+      "id": "EXT-FGR-004",
+      "category": "CI_GITHUB_AVAILABILITY",
+      "severity": "LOW",
+      "blocking": false,
+      "description": "Required GitHub Actions availability is an external SPOF for merge gates and audits."
+    }
+  ]
+}

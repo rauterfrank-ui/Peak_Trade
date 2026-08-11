@@ -1,0 +1,894 @@
+{
+  "DOCUMENT_CLASS": "REMEDIATION_REGISTER_FGR_V1",
+  "ENTRIES": [
+    {
+      "canonical_id": "DA-F-01-CLICK-HGMW",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "click==8.3.1 vulnerable (GHSA-47fr-3ffg-hgmw/CVE-2026-7246): Pallets Click, versions 8.3.2 and below, contain a command injection vulnerability in the click.edit() function, allowing attackers to pass arbitrary OS commands from an unprivileged account.",
+      "affected_surface": "RUNTIME_OR_CLI_TRANSITIVE",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "CLI helper; click.edit() injection requires attacker-controlled editor path usage.",
+      "closure_condition": "Evidence-bound install of click>=8.3.3 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade click to >=8.3.3 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "code",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "After HIGH closure or same lock refresh if compatible",
+      "safely_groupable_with": [
+        "requests",
+        "idna",
+        "click",
+        "filelock"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-02-FILELOCK-MVRW",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "filelock==3.20.1 vulnerable (GHSA-qmgc-5h2g-mvrw/CVE-2026-22701): filelock Time-of-Check-Time-of-Use (TOCTOU) Symlink Vulnerability in SoftFileLock",
+      "affected_surface": "RUNTIME_TRANSITIVE",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Local TOCTOU SoftFileLock; needs local filesystem adversary.",
+      "closure_condition": "Evidence-bound install of filelock>=3.20.3 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade filelock to >=3.20.3 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "code",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "After HIGH closure or same lock refresh if compatible",
+      "safely_groupable_with": [
+        "requests",
+        "idna",
+        "click",
+        "filelock"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-03-IDNA-8RJX",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "idna==3.11 vulnerable (GHSA-65pc-fj4g-8rjx/CVE-2026-45409): Internationalized Domain Names in Applications (IDNA): Specially crafted inputs to idna.encode() can bypass CVE-2024-3651 fix",
+      "affected_surface": "RUNTIME_TRANSITIVE",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "DoS via special labels; network-facing IDNA processing.",
+      "closure_condition": "Evidence-bound install of idna>=3.15 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade idna to >=3.15 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "code",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "After HIGH closure or same lock refresh if compatible",
+      "safely_groupable_with": [
+        "requests",
+        "idna",
+        "click",
+        "filelock"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-04-MSGPACK-8964",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "msgpack==1.1.2 vulnerable (GHSA-6v7p-g79w-8964/CVE-2026-57585): MessagePack for Python: Out-of-bounds read / crash on Unpacker reuse after a caught error",
+      "affected_surface": "RUNTIME_OR_OPTIONAL_TRANSITIVE",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "DoS via crafted msgpack; HIGH severity upstream.",
+      "closure_condition": "Evidence-bound install of msgpack>=1.2.1 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade msgpack to >=1.2.1 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "code",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "Batch with other HIGH runtime upgrades before optional/web and tooling",
+      "safely_groupable_with": [
+        "urllib3",
+        "pyarrow",
+        "msgpack"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-05-PIP-7689",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "pip==25.3 vulnerable (GHSA-wf93-45jw-7689/CVE-2026-8643):  pip: Path traversal in console_scripts/gui_scripts\u00a0entry point names allows installing scripts outside of target directory",
+      "affected_surface": "TOOLING_BUILD",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Installer tooling; not application runtime import path.",
+      "closure_condition": "Evidence-bound install of pip>=26.1.2 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade pip to >=26.1.2 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "infrastructure",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "After HIGH closure or same lock refresh if compatible",
+      "safely_groupable_with": [
+        "pip",
+        "virtualenv",
+        "pytest",
+        "pygments"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-06-PIP-W6JP",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "LOW",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "pip==25.3 vulnerable (GHSA-6vgw-5pg2-w6jp/CVE-2026-1703): pip Path Traversal vulnerability",
+      "affected_surface": "TOOLING_BUILD",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Installer tooling; not application runtime import path.",
+      "closure_condition": "Evidence-bound install of pip>=26.0 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade pip to >=26.0 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "infrastructure",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "After HIGH closure or same lock refresh if compatible",
+      "safely_groupable_with": [
+        "pip",
+        "virtualenv",
+        "pytest",
+        "pygments"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-07-PIP-455V",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "pip==25.3 vulnerable (GHSA-58qw-9mgm-455v/CVE-2026-3219): pip has an interpretation conflict due to handling both concatenated tar and ZIP files as ZIP files",
+      "affected_surface": "TOOLING_BUILD",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Installer tooling; not application runtime import path.",
+      "closure_condition": "Evidence-bound install of pip>=26.1 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade pip to >=26.1 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "infrastructure",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "After HIGH closure or same lock refresh if compatible",
+      "safely_groupable_with": [
+        "pip",
+        "virtualenv",
+        "pytest",
+        "pygments"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-08-PIP-MGF9",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "pip==25.3 vulnerable (GHSA-jp4c-xjxw-mgf9/CVE-2026-6357): pip Vulnerable to Inclusion of Functionality from Untrusted Control Sphere",
+      "affected_surface": "TOOLING_BUILD",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Installer tooling; not application runtime import path.",
+      "closure_condition": "Evidence-bound install of pip>=26.1 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade pip to >=26.1 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "infrastructure",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "After HIGH closure or same lock refresh if compatible",
+      "safely_groupable_with": [
+        "pip",
+        "virtualenv",
+        "pytest",
+        "pygments"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-09-PYARROW-JWGG",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "pyarrow==22.0.0 vulnerable (GHSA-rgxp-2hwp-jwgg/CVE-2026-25087): Apache Arrow: Potential use-after-free when reading IPC file with pre-buffering",
+      "affected_surface": "RUNTIME_DIRECT",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Runtime direct dep; HIGH; crafted IPC/data paths.",
+      "closure_condition": "Evidence-bound install of pyarrow>=23.0.1 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade pyarrow to >=23.0.1 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "code",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "Batch with other HIGH runtime upgrades before optional/web and tooling",
+      "safely_groupable_with": [
+        "urllib3",
+        "pyarrow",
+        "msgpack"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-10-PYGMENTS-4PMQ",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "LOW",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "pygments==2.19.2 vulnerable (GHSA-5239-wwwm-4pmq/CVE-2026-4539): Pygments has Regular Expression Denial of Service (ReDoS) due to Inefficient Regex for GUID Matching",
+      "affected_surface": "DEV_OR_DOCS_TRANSITIVE",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Typically syntax highlighting transitive; low exploitability in Peak_Trade execution path.",
+      "closure_condition": "Evidence-bound install of pygments>=2.20.0 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade pygments to >=2.20.0 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "code",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "After HIGH closure or same lock refresh if compatible",
+      "safely_groupable_with": [
+        "pip",
+        "virtualenv",
+        "pytest",
+        "pygments"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-11-PYTEST-G56G",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "pytest==9.0.2 vulnerable (GHSA-6w46-j5rx-g56g/CVE-2025-71176): pytest has vulnerable tmpdir handling",
+      "affected_surface": "TEST_ONLY",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Test-only; not loaded in productive trading runtime path.",
+      "closure_condition": "Evidence-bound install of pytest>=9.0.3 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade pytest to >=9.0.3 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "code",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "After HIGH closure or same lock refresh if compatible",
+      "safely_groupable_with": [
+        "pip",
+        "virtualenv",
+        "pytest",
+        "pygments"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-12-REQUESTS-R6X2",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "requests==2.32.5 vulnerable (GHSA-gc5v-m9x4-r6x2/CVE-2026-25645): Requests has Insecure Temp File Reuse in its extract_zipped_paths() utility function",
+      "affected_surface": "RUNTIME_DIRECT_OR_TRANSITIVE",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Local/UI interaction class per advisory (MODERATE).",
+      "closure_condition": "Evidence-bound install of requests>=2.33.0 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade requests to >=2.33.0 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "code",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "After HIGH closure or same lock refresh if compatible",
+      "safely_groupable_with": [
+        "requests",
+        "idna",
+        "click",
+        "filelock"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-13-STARLETTE-P5MR",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "starlette==0.50.0 vulnerable (GHSA-86qp-5c8j-p5mr/CVE-2026-48710): Starlette has missing Host header validation that poisons request.url.path, bypassing path-based security checks",
+      "affected_surface": "OPTIONAL_WEB_EXTRA",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Optional web/FastAPI stack; HIGH vulns present if web surface enabled.",
+      "closure_condition": "Evidence-bound install of starlette>=1.0.1 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade starlette to >=1.0.1 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "code",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "After HIGH closure or same lock refresh if compatible",
+      "safely_groupable_with": [
+        "starlette"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-14-STARLETTE-5VV3",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "LOW",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "starlette==0.50.0 vulnerable (GHSA-jp82-jpqv-5vv3/CVE-2026-54282): Starlette: Unvalidated request path concatenated into authority poisons request.url.hostname",
+      "affected_surface": "OPTIONAL_WEB_EXTRA",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Optional web/FastAPI stack; HIGH vulns present if web surface enabled.",
+      "closure_condition": "Evidence-bound install of starlette>=1.3.0 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade starlette to >=1.3.0 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "code",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "After HIGH closure or same lock refresh if compatible",
+      "safely_groupable_with": [
+        "starlette"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-15-STARLETTE-5JFQ",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "starlette==0.50.0 vulnerable (GHSA-82w8-qh3p-5jfq/CVE-2026-54283): Starlette: request.form() limits silently ignored for application/x-www-form-urlencoded enable DoS",
+      "affected_surface": "OPTIONAL_WEB_EXTRA",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Optional web/FastAPI stack; HIGH vulns present if web surface enabled.",
+      "closure_condition": "Evidence-bound install of starlette>=1.3.1 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade starlette to >=1.3.1 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "code",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "After or with HIGH runtime; may group starlette HIGH together",
+      "safely_groupable_with": [
+        "starlette"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-16-STARLETTE-XC5R",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "starlette==0.50.0 vulnerable (GHSA-wqp7-x3pw-xc5r/CVE-2026-48818): Starlette: SSRF and NTLM credential theft via UNC paths in StaticFiles on Windows",
+      "affected_surface": "OPTIONAL_WEB_EXTRA",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Optional web/FastAPI stack; HIGH vulns present if web surface enabled.",
+      "closure_condition": "Evidence-bound install of starlette>=1.1.0 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade starlette to >=1.1.0 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "code",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "After or with HIGH runtime; may group starlette HIGH together",
+      "safely_groupable_with": [
+        "starlette"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-17-STARLETTE-X49C",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "starlette==0.50.0 vulnerable (GHSA-x746-7m8f-x49c/CVE-2026-48817): Starlette: Arbitrary HTTP method dispatched to `HTTPEndpoint` attributes via `getattr`",
+      "affected_surface": "OPTIONAL_WEB_EXTRA",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Optional web/FastAPI stack; HIGH vulns present if web surface enabled.",
+      "closure_condition": "Evidence-bound install of starlette>=1.1.0 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade starlette to >=1.1.0 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "code",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "After HIGH closure or same lock refresh if compatible",
+      "safely_groupable_with": [
+        "starlette"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-18-URLLIB3-J63J",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "urllib3==2.6.3 vulnerable (GHSA-mf9v-mfxr-j63j/CVE-2026-44432): urllib3: Decompression-bomb safeguards bypassed in parts of the streaming API",
+      "affected_surface": "RUNTIME_DIRECT",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Runtime direct constrained dep; HIGH streaming/header issues with fix in 2.7.0.",
+      "closure_condition": "Evidence-bound install of urllib3>=2.7.0 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade urllib3 to >=2.7.0 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "code",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "Batch with other HIGH runtime upgrades before optional/web and tooling",
+      "safely_groupable_with": [
+        "urllib3",
+        "pyarrow",
+        "msgpack"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-19-URLLIB3-XXVC",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "urllib3==2.6.3 vulnerable (GHSA-qccp-gfcp-xxvc/CVE-2026-44431): urllib3: Sensitive headers forwarded across origins in proxied low-level redirects",
+      "affected_surface": "RUNTIME_DIRECT",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Runtime direct constrained dep; HIGH streaming/header issues with fix in 2.7.0.",
+      "closure_condition": "Evidence-bound install of urllib3>=2.7.0 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade urllib3 to >=2.7.0 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "code",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "Batch with other HIGH runtime upgrades before optional/web and tooling",
+      "safely_groupable_with": [
+        "urllib3",
+        "pyarrow",
+        "msgpack"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-F-20-VIRTUALENV-6986",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "exact_defect": "virtualenv==20.35.4 vulnerable (GHSA-597g-3phw-6986/CVE-2026-22702): virtualenv Has TOCTOU Vulnerabilities in Directory Creation",
+      "affected_surface": "TOOLING_BUILD",
+      "root_cause": "Pinned/resolved dependency version predates available security fix; OWNER_GO_DEPENDENCY_AUDIT forbade auto-upgrade.",
+      "security_operational_consequence": "Dev/tooling; local multi-user TOCTOU context.",
+      "closure_condition": "Evidence-bound install of virtualenv>=20.36.1 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_remediation": "Upgrade virtualenv to >=20.36.1 via uv lock refresh; constrain pyproject if needed; no trading-logic change.",
+      "tests_required": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "negative_failure_path_tests": [
+        "Fail-closed if lock resolves below fix version",
+        "Audit gate fails if HIGH GHSA remains"
+      ],
+      "evidence_required": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "governance_docs_updates": "Master Runbook / Map of Truth only after remediation Owner-GO + re-audit bind",
+      "action_class": "infrastructure",
+      "prerequisites": [
+        "OWNER_GO for dependency remediation",
+        "clean origin/main sync"
+      ],
+      "ordering_constraints": "After HIGH closure or same lock refresh if compatible",
+      "safely_groupable_with": [
+        "pip",
+        "virtualenv",
+        "pytest",
+        "pygments"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Full DEPENDENCY_AUDIT package re-run after HIGH closure; light revalidation of SECRETS/THREAT/ARCH if only lockfiles change",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-PC-01-GITHUB_DEPENDABOT_ALERTS",
+      "category": "PROCESS_CONTROL",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/PROCESS_CONTROL_FINDINGS",
+      "exact_defect": "Monitoring control gap; does not by itself create a CVE. Not treated as HIGH/CRITICAL vulnerability finding.",
+      "affected_surface": "REPO_CI_CONTROL",
+      "root_cause": "OPEN; secret scanning enabled; Dependabot alerts/security updates disabled; no .github/dependabot.yml",
+      "security_operational_consequence": "Continuous dependency alert monitoring disabled; relies on explicit Owner-GO audits / CI pip-audit.",
+      "closure_condition": "Evidence that control github_dependabot_alerts is remediated or explicitly N/A with Owner justification",
+      "required_remediation": "OPEN; secret scanning enabled; Dependabot alerts/security updates disabled; no .github/dependabot.yml",
+      "tests_required": [
+        "Static contract proving control state"
+      ],
+      "negative_failure_path_tests": [
+        "Fail if control regresses without documentation"
+      ],
+      "evidence_required": "Sealed process-control closeout under remediation GO",
+      "governance_docs_updates": "Cybersecurity runbook / Master as needed",
+      "action_class": "infrastructure",
+      "prerequisites": [
+        "Separate Owner-GO"
+      ],
+      "ordering_constraints": "After or parallel to HIGH CVE remediation; not a substitute for HIGH closure",
+      "safely_groupable_with": [
+        "process-controls"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Include in next DEPENDENCY_AUDIT re-run probes",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-PC-02-REQUIREMENTS.TXT_HASH_PINNING",
+      "category": "PROCESS_CONTROL",
+      "severity": "LOW",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/PROCESS_CONTROL_FINDINGS",
+      "exact_defect": "PARTIALLY_MITIGATED_BY_UV_LOCK; hash-pinned requirements not present",
+      "affected_surface": "SUPPLY_CHAIN_CONTROL",
+      "root_cause": "PARTIALLY_MITIGATED_BY_UV_LOCK; hash-pinned requirements not present",
+      "security_operational_consequence": "Integrity primarily via uv.lock for uv-based installs; pip -r requirements.txt lacks hashes.",
+      "closure_condition": "Evidence that control requirements.txt_hash_pinning is remediated or explicitly N/A with Owner justification",
+      "required_remediation": "PARTIALLY_MITIGATED_BY_UV_LOCK; hash-pinned requirements not present",
+      "tests_required": [
+        "Static contract proving control state"
+      ],
+      "negative_failure_path_tests": [
+        "Fail if control regresses without documentation"
+      ],
+      "evidence_required": "Sealed process-control closeout under remediation GO",
+      "governance_docs_updates": "Cybersecurity runbook / Master as needed",
+      "action_class": "config",
+      "prerequisites": [
+        "Separate Owner-GO"
+      ],
+      "ordering_constraints": "After or parallel to HIGH CVE remediation; not a substitute for HIGH closure",
+      "safely_groupable_with": [
+        "process-controls"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Include in next DEPENDENCY_AUDIT re-run probes",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-PC-03-DOCKER_BASE_IMAGES",
+      "category": "PROCESS_CONTROL",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/PROCESS_CONTROL_FINDINGS",
+      "exact_defect": "OPEN_TAG_ONLY_NO_DIGEST",
+      "affected_surface": "OPS_CONTAINER",
+      "root_cause": "OPEN_TAG_ONLY_NO_DIGEST",
+      "security_operational_consequence": "Optional/ops Docker images; floating tags can move; not primary Cap-11 execution path.",
+      "closure_condition": "Evidence that control docker_base_images is remediated or explicitly N/A with Owner justification",
+      "required_remediation": "OPEN_TAG_ONLY_NO_DIGEST",
+      "tests_required": [
+        "Static contract proving control state"
+      ],
+      "negative_failure_path_tests": [
+        "Fail if control regresses without documentation"
+      ],
+      "evidence_required": "Sealed process-control closeout under remediation GO",
+      "governance_docs_updates": "Cybersecurity runbook / Master as needed",
+      "action_class": "infrastructure",
+      "prerequisites": [
+        "Separate Owner-GO"
+      ],
+      "ordering_constraints": "After or parallel to HIGH CVE remediation; not a substitute for HIGH closure",
+      "safely_groupable_with": [
+        "process-controls"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Include in next DEPENDENCY_AUDIT re-run probes",
+      "current_status": "OPEN"
+    },
+    {
+      "canonical_id": "DA-PC-04-GHA_ACTIONS_PINNING",
+      "category": "PROCESS_CONTROL",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/PROCESS_CONTROL_FINDINGS",
+      "exact_defect": "PARTIAL_MOSTLY_SHA_PINNED_WITH_FLOATING_TAG_RESIDUAL",
+      "affected_surface": "CI_SUPPLY_CHAIN",
+      "root_cause": "PARTIAL_MOSTLY_SHA_PINNED_WITH_FLOATING_TAG_RESIDUAL",
+      "security_operational_consequence": "Most workflows SHA-pinned; residual floating tags increase supply-chain mutability risk for those workflows.",
+      "closure_condition": "Evidence that control gha_actions_pinning is remediated or explicitly N/A with Owner justification",
+      "required_remediation": "PARTIAL_MOSTLY_SHA_PINNED_WITH_FLOATING_TAG_RESIDUAL",
+      "tests_required": [
+        "Static contract proving control state"
+      ],
+      "negative_failure_path_tests": [
+        "Fail if control regresses without documentation"
+      ],
+      "evidence_required": "Sealed process-control closeout under remediation GO",
+      "governance_docs_updates": "Cybersecurity runbook / Master as needed",
+      "action_class": "infrastructure",
+      "prerequisites": [
+        "Separate Owner-GO"
+      ],
+      "ordering_constraints": "After or parallel to HIGH CVE remediation; not a substitute for HIGH closure",
+      "safely_groupable_with": [
+        "process-controls"
+      ],
+      "separate_owner_go_required": true,
+      "rerun_revalidation_requirement": "Include in next DEPENDENCY_AUDIT re-run probes",
+      "current_status": "OPEN"
+    }
+  ]
+}

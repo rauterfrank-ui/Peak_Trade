@@ -1,0 +1,66 @@
+{
+  "DOCUMENT_CLASS": "TRACEABILITY_GAPS_FGR_V1",
+  "GAPS": [
+    {
+      "id": "TG-FGR-001",
+      "type": "TRACEABILITY_GAP",
+      "severity": "HIGH",
+      "blocking": true,
+      "description": "Blocking CVE findings lack remediation\u2192test\u2192evidence reverse links (no upgrade implemented; no negative lock tests bound).",
+      "missing_link": "implementation/control \u2192 tests \u2192 evidence",
+      "related_ids": [
+        "GHSA-6v7p-g79w-8964",
+        "GHSA-rgxp-2hwp-jwgg",
+        "GHSA-82w8-qh3p-5jfq",
+        "GHSA-wqp7-x3pw-xc5r",
+        "GHSA-mf9v-mfxr-j63j",
+        "GHSA-qccp-gfcp-xxvc"
+      ]
+    },
+    {
+      "id": "TG-FGR-002",
+      "type": "TRACEABILITY_GAP",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "description": "LONG_RUNNING campaign root 20260811T005425Z has no package-level MANIFEST.sha256; nested execution_evidence/MANIFEST.sha256 verifies RC=0. Canonical field is bound in Master, but package-root seal discipline is incomplete.",
+      "missing_link": "evidence sealing at package root",
+      "related_ids": [
+        "LONG_RUNNING_TESTNET_PROVEN"
+      ]
+    },
+    {
+      "id": "TG-FGR-003",
+      "type": "TRACEABILITY_GAP",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "description": "CRITICAL_FINDINGS_OPEN and MANIFEST_VERIFY_RC criteria mix package-local observations with gate-level AUDIT_EVIDENCE_VERIFIED requirements without a single bidirectional matrix owner.",
+      "missing_link": "criterion \u2192 single evidence owner \u2192 gate aggregator",
+      "related_ids": [
+        "CRITICAL_FINDINGS_OPEN",
+        "MANIFEST_VERIFY_RC",
+        "AUDIT_EVIDENCE_VERIFIED"
+      ]
+    },
+    {
+      "id": "TG-FGR-004",
+      "type": "TRACEABILITY_GAP",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "description": "Eleven MISSING \u00a718.2 packages have requirement\u2192criterion links in Cybersecurity Runbook but no implementation/control/test/evidence chain yet.",
+      "missing_link": "criterion \u2192 implementation \u2192 tests \u2192 evidence",
+      "related_ids": [
+        "SBOM_PRESENT",
+        "STATIC_SECURITY_ANALYSIS",
+        "SECURITY_REGRESSION",
+        "PENETRATION_PROGRAM",
+        "CREDENTIAL_LEAKAGE_TEST",
+        "AUTHORITY_REPLAY_TEST",
+        "RECOVERY_SECURITY_TEST",
+        "LIVE_TESTNET_ISOLATION_PROVEN",
+        "LIVE_DEFAULT_BLOCK_PROVEN",
+        "LIVE_ARMING_FAIL_CLOSED_PROVEN",
+        "AUDIT_EVIDENCE_VERIFIED"
+      ]
+    }
+  ]
+}
