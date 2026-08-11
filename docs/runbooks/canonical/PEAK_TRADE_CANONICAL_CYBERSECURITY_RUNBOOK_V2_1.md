@@ -890,11 +890,76 @@ SECTION_11_12_9_28_DEPENDENCY_AUDIT_REMEDIATION_EXECUTED=true
 SECTION_11_12_9_28_DEPENDENCY_AUDIT_RERUN_PASS=true
 PR_5863_STATE=MERGED
 PR_5863_MERGE_COMMIT_SHA=b1ebe0f93d88ab22bb147c48fb27e1863b829e5e
-SBOM_AUTHORIZED=false
+SECTION_11_12_9_29_SBOM_PRESENT_EXECUTED=true
+SECTION_11_12_9_29_SBOM_PRESENT_PASS=true
+SBOM_AUTHORIZED=true
+SBOM_PRESENT=true
+SBOM_PRESENT_PROVEN=true
+SECTION_11_12_9_30_STATIC_SECURITY_ANALYSIS_EXECUTED=true
+SECTION_11_12_9_30_STATIC_SECURITY_ANALYSIS_PASS=false
+STATIC_SECURITY_ANALYSIS=PASS
+STATIC_SECURITY_ANALYSIS_PROVEN=true
+STATIC_SECURITY_ANALYSIS_AUTHORIZED=true
+SECTION_11_12_9_31_STATIC_SECURITY_ANALYSIS_REMEDIATION_EXECUTED=true
+SECTION_11_12_9_31_STATIC_SECURITY_ANALYSIS_RERUN_PASS=true
+HIGH_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN=0
+SECTION_11_12_9_32_SECURITY_REGRESSION_EXECUTED=true
+SECTION_11_12_9_32_SECURITY_REGRESSION_PASS=true
+SECURITY_REGRESSION=PASS
+SECURITY_REGRESSION_PROVEN=true
+SECURITY_REGRESSION_AUTHORIZED=true
+SECTION_11_12_9_33_PENETRATION_PROGRAM_EXECUTED=true
+SECTION_11_12_9_33_PENETRATION_PROGRAM_PASS=true
+PENETRATION_PROGRAM=PASS
+PENETRATION_PROGRAM_PROVEN=true
+PENETRATION_PROGRAM_AUTHORIZED=true
+HIGH_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN=0
+SECTION_11_12_9_34_CREDENTIAL_LEAKAGE_TEST_EXECUTED=true
+SECTION_11_12_9_34_CREDENTIAL_LEAKAGE_TEST_PASS=true
+CREDENTIAL_LEAKAGE_TEST=PASS
+CREDENTIAL_LEAKAGE_TEST_PROVEN=true
+CREDENTIAL_LEAKAGE_TEST_AUTHORIZED=true
+SECTION_11_12_9_35_AUTHORITY_REPLAY_TEST_EXECUTED=true
+SECTION_11_12_9_35_AUTHORITY_REPLAY_TEST_PASS=true
+AUTHORITY_REPLAY_TEST=PASS
+AUTHORITY_REPLAY_TEST_PROVEN=true
+AUTHORITY_REPLAY_TEST_AUTHORIZED=true
+SECTION_11_12_9_36_RECOVERY_SECURITY_TEST_EXECUTED=true
+SECTION_11_12_9_36_RECOVERY_SECURITY_TEST_PASS=true
+RECOVERY_SECURITY_TEST=PASS
+RECOVERY_SECURITY_TEST_PROVEN=true
+RECOVERY_SECURITY_TEST_AUTHORIZED=true
+SECTION_11_12_9_37_CRITICAL_FINDINGS_OPEN_EXECUTED=true
+SECTION_11_12_9_37_CRITICAL_FINDINGS_OPEN_PASS=true
+CRITICAL_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN_PROVEN=true
+CRITICAL_FINDINGS_OPEN_AUTHORIZED=true
+GOVERNED_PRE_LIVE_FINDINGS_REGISTER_PRESENT=true
+SECTION_11_12_9_38_HIGH_FINDINGS_OPEN_EXECUTED=true
+SECTION_11_12_9_38_HIGH_FINDINGS_OPEN_PASS=true
+HIGH_FINDINGS_OPEN=0
+HIGH_FINDINGS_OPEN_PROVEN=true
+HIGH_FINDINGS_OPEN_AUTHORIZED=true
+SECTION_11_12_9_39_LIVE_TESTNET_ISOLATION_EXECUTED=true
+SECTION_11_12_9_39_LIVE_TESTNET_ISOLATION_PASS=true
+LIVE_TESTNET_ISOLATION_PROVEN=true
+LIVE_TESTNET_ISOLATION_AUTHORIZED=true
+SECTION_11_12_9_40_LIVE_DEFAULT_BLOCK_EXECUTED=true
+SECTION_11_12_9_40_LIVE_DEFAULT_BLOCK_PASS=true
+LIVE_DEFAULT_BLOCK_PROVEN=true
+LIVE_DEFAULT_BLOCK_AUTHORIZED=true
+MEDIUM_FINDINGS_OPEN=2
+LOW_FINDINGS_OPEN=1
 OPEN_TESTNET_PROVEN_FIELDS=
 EARLIEST_OPEN_TESTNET_PROVEN_FIELD=
-EARLIEST_UNRESOLVED_SECTION_POINTER=SBOM_PRESENT
-CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_SBOM_PRESENT
+EARLIEST_UNRESOLVED_SECTION_POINTER=LIVE_ARMING_FAIL_CLOSED_PROVEN
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_LIVE_ARMING_FAIL_CLOSED_PROVEN
+LIVE_ARMING_FAIL_CLOSED_AUTHORIZED=false
+LIVE_ARMING_FAIL_CLOSED_PROVEN=false
+ZAP_DAST_EXECUTED=false
+DOCS_NO_LIVE_ENABLE_PREEXISTING_OPEN=true
 SECTION_11_12_9_EVALUATION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_pre_live_cybersecurity_acceptance_gate_evidence_bound_evaluation_v1/20260810T202800Z/
 SECTION_11_12_9_20_REEVAL_EVIDENCE_ROOT=evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/
 SECTION_11_12_9_22_REEVAL_EVIDENCE_ROOT=evidence/ops/section_11_12_9_22_pre_live_cybersecurity_gate_post_long_running_reevaluation_v1/20260811T020006Z/
@@ -905,6 +970,19 @@ SECTION_11_12_9_26_DEPENDENCY_AUDIT_EVIDENCE_ROOT=evidence/ops/section_11_12_9_2
 SECTION_11_12_9_27_FORENSIC_REVIEW_EVIDENCE_ROOT=evidence/ops/section_11_12_9_26_post_dependency_audit_forensic_gap_and_remediation_review_v1/20260811T033939Z/
 SECTION_11_12_9_28_DEPENDENCY_AUDIT_REMEDIATION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_27_dependency_audit_rb01_rb02_remediation_and_rerun_v1/20260811T035809Z/
 PR_5863_SQUASH_MERGE_CLOSEOUT_ROOT=evidence/ops/section_11_12_9_28_pr_5863_squash_merge_closeout_v1/20260811T041913Z/
+SECTION_11_12_9_29_SBOM_PRESENT_EVIDENCE_ROOT=evidence/ops/section_11_12_9_29_pre_live_sbom_present_v1/20260811T042745Z/
+SECTION_11_12_9_30_STATIC_SECURITY_ANALYSIS_EVIDENCE_ROOT=evidence/ops/section_11_12_9_30_pre_live_static_security_analysis_v1/20260811T043159Z/
+SECTION_11_12_9_31_STATIC_SECURITY_ANALYSIS_REMEDIATION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_31_static_security_analysis_high_remediation_and_rerun_v1/20260811T043722Z/
+SECTION_11_12_9_32_SECURITY_REGRESSION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_32_pre_live_security_regression_v1/20260811T044255Z/
+SECTION_11_12_9_33_PENETRATION_PROGRAM_EVIDENCE_ROOT=evidence/ops/section_11_12_9_33_pre_live_penetration_program_v1/20260811T044900Z/
+SECTION_11_12_9_34_CREDENTIAL_LEAKAGE_TEST_EVIDENCE_ROOT=evidence/ops/section_11_12_9_34_pre_live_credential_leakage_test_v1/20260811T045537Z/
+SECTION_11_12_9_35_AUTHORITY_REPLAY_TEST_EVIDENCE_ROOT=evidence/ops/section_11_12_9_35_pre_live_authority_replay_test_v1/20260811T050403Z/
+SECTION_11_12_9_36_RECOVERY_SECURITY_TEST_EVIDENCE_ROOT=evidence/ops/section_11_12_9_36_pre_live_recovery_security_test_v1/20260811T050823Z/
+SECTION_11_12_9_37_CRITICAL_FINDINGS_OPEN_EVIDENCE_ROOT=evidence/ops/section_11_12_9_37_pre_live_critical_findings_open_v1/20260811T052152Z/
+SECTION_11_12_9_38_HIGH_FINDINGS_OPEN_EVIDENCE_ROOT=evidence/ops/section_11_12_9_38_pre_live_high_findings_open_v1/20260811T052547Z/
+SECTION_11_12_9_39_LIVE_TESTNET_ISOLATION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_39_pre_live_live_testnet_isolation_proven_v1/20260811T052914Z/
+SECTION_11_12_9_40_LIVE_DEFAULT_BLOCK_EVIDENCE_ROOT=evidence/ops/section_11_12_9_40_pre_live_live_default_block_proven_v1/20260811T053222Z/
+SECTION_11_12_9_40R_RECOVERY_BIND_EVIDENCE_ROOT=evidence/ops/section_11_12_9_recover_bind_pre_live_packages_29_through_40_v1/20260811T054023Z/
 SECTION_11_12_9_21_LONG_RUNNING_CAMPAIGN_EVIDENCE_ROOT=evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/
 SECTION_11_12_9_11_RESIDUAL_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_12_9_11_open_testnet_proven_fields_reporting_reconcile_residual_proof_v1/20260810T213441Z/
 SECTION_11_12_9_12_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_12_testnet_order_lifecycle_proven_v1/20260810T215942Z/
@@ -959,8 +1037,114 @@ RB-01&#47;RB-02-Remediation und vergleichbarem DEPENDENCY_AUDIT-Rerun bindet
 blocking HIGH-GHSAs geschlossen; HIGH&#47;CRITICAL=0 im lean vergleichbaren Scope)
 und bestätigt erneut `NOT_PASSED` mit frühester Restabhängigkeit `SBOM_PRESENT`;
 kein Gate-PASS. PR `#5863` ist squash-merged (`PR_5863_STATE=MERGED`;
-merge `b1ebe0f93d88ab22bb147c48fb27e1863b829e5e`); `SBOM_AUTHORIZED=false`;
-SBOM erfordert separates Owner-GO.
+merge `b1ebe0f93d88ab22bb147c48fb27e1863b829e5e`); historisch
+`SBOM_AUTHORIZED=false` bis separates Owner-GO. Nach Owner-executed
+SBOM_PRESENT-Package bindet §11.12.9.29 `SBOM_PRESENT=true` &#47;
+`SBOM_PRESENT_PROVEN=true` (CycloneDX 1.5 via kanonischem
+`uv export --format cyclonedx1.5`; 67 Components; `MANIFEST_VERIFY_RC=0`)
+und bestätigt erneut `NOT_PASSED` mit frühester Restabhängigkeit
+`STATIC_SECURITY_ANALYSIS`; kein Gate-PASS.
+`STATIC_SECURITY_ANALYSIS_AUTHORIZED=false`; Static Security Analysis
+erforderte separates Owner-GO. Nach Owner-executed Bandit-SAST-Package
+bindet §11.12.9.30 `STATIC_SECURITY_ANALYSIS=FAIL` &#47;
+`STATIC_SECURITY_ANALYSIS_PROVEN=false` (`HIGH_FINDINGS_OPEN=5`;
+CRITICAL=0; keine Auto-Remediation) und bestätigt erneut `NOT_PASSED`
+mit frühester Restabhängigkeit weiterhin `STATIC_SECURITY_ANALYSIS`;
+kein Gate-PASS. Remediation &#47; Rerun nach HIGH-Closure erforderte
+separates Owner-GO (`SECURITY_REGRESSION_AUTHORIZED=false`). Nach
+Owner-executed HIGH-Remediation und vergleichbarem Bandit-Rerun bindet
+§11.12.9.31 `STATIC_SECURITY_ANALYSIS=PASS` &#47;
+`STATIC_SECURITY_ANALYSIS_PROVEN=true` (`HIGH_FINDINGS_OPEN=0`;
+CRITICAL=0; MEDIUM&#47;LOW nicht blocking für die HIGH-Regel) und bestätigt
+erneut `NOT_PASSED` mit frühester Restabhängigkeit
+`SECURITY_REGRESSION`; kein Gate-PASS.
+`SECURITY_REGRESSION_AUTHORIZED=false`; Security Regression erforderte
+separates Owner-GO. Nach Owner-executed Security-Regression-Package
+bindet §11.12.9.32 `SECURITY_REGRESSION=PASS` &#47;
+`SECURITY_REGRESSION_PROVEN=true` (fokussierte kanonische
+Fail-closed&#47;Live-default&#47;Credential&#47;Kill-switch Owner; 106 pytest
+passed; Hygiene PASS; SAST-HIGH-Remediation-Surface weiterhin HIGH=0;
+Docs-no-live-enable Full-Tree-Probe vorbestehend offen, non-blocking)
+und bestätigt erneut `NOT_PASSED` mit frühester Restabhängigkeit
+`PENETRATION_PROGRAM`; kein Gate-PASS.
+`PENETRATION_PROGRAM_AUTHORIZED=false`; Penetration Program erforderte
+separates Owner-GO. Nach Owner-executed bounded local Penetration &#47;
+Adversarial Security Test Program bindet §11.12.9.33
+`PENETRATION_PROGRAM=PASS` &#47; `PENETRATION_PROGRAM_PROVEN=true`
+(§13-mapped adversarial owners; security-property suite 273 passed &#47;
+1 skipped; `HIGH_FINDINGS_OPEN=0` &#47; `CRITICAL_FINDINGS_OPEN=0`;
+adversarial bypass proven = 0; ZAP&#47;DAST nicht ausgeführt; zwei LOW
+Inventory-Characterization-Drifts non-blocking) und bestätigt erneut
+`NOT_PASSED` mit frühester Restabhängigkeit `CREDENTIAL_LEAKAGE_TEST`;
+kein Gate-PASS. `CREDENTIAL_LEAKAGE_TEST_AUTHORIZED=false`; Credential
+Leakage Test erforderte separates Owner-GO. `AUTHORITY_REPLAY_TEST` und
+`RECOVERY_SECURITY_TEST` bleiben OPEN und werden durch dieses Package
+nicht gebunden. Nach Owner-executed Credential Leakage Test bindet
+§11.12.9.34 `CREDENTIAL_LEAKAGE_TEST=PASS` &#47;
+`CREDENTIAL_LEAKAGE_TEST_PROVEN=true` (fokussierte Redaction&#47;Hygiene&#47;
+Cross-Use Owner; 176 pytest passed; Hygiene findings=0; adversarial
+structured&#47;headers&#47;assignment HIGH=0 &#47; CRITICAL=0; zwei MEDIUM Residuals
+unter RR-SH-002 non-blocking) und bestätigt erneut `NOT_PASSED` mit
+frühester Restabhängigkeit `AUTHORITY_REPLAY_TEST`; kein Gate-PASS.
+`AUTHORITY_REPLAY_TEST_AUTHORIZED=false`; Authority Replay Test erforderte
+separates Owner-GO. `RECOVERY_SECURITY_TEST` bleibt OPEN. Nach
+Owner-executed Authority Replay Test bindet §11.12.9.35
+`AUTHORITY_REPLAY_TEST=PASS` &#47; `AUTHORITY_REPLAY_TEST_PROVEN=true`
+(fokussierte Confirm-&#47;Authority-Replay &#47; enabled-armed &#47; Live-Gate Owner;
+245 pytest passed, 3 skipped; CRITICAL=0 &#47; HIGH=0; zwei vorbestehende
+MEDIUM Residuals unter RR-SH-002 non-blocking) und bestätigt erneut
+`NOT_PASSED` mit frühester Restabhängigkeit `RECOVERY_SECURITY_TEST`;
+kein Gate-PASS. `RECOVERY_SECURITY_TEST_AUTHORIZED=false`; Recovery
+Security Test erforderte separates Owner-GO. Nach Owner-executed Recovery
+Security Test bindet §11.12.9.36 `RECOVERY_SECURITY_TEST=PASS` &#47;
+`RECOVERY_SECURITY_TEST_PROVEN=true` (fokussierte Restart&#47;Corrupt-Checkpoint&#47;
+Unknown-Submit&#47;Kill-Switch&#47;Staleness&#47;Authority-Lease Owner; 430 pytest
+passed, 1 skipped; Inventory-Probe rc=1 mit 1 LOW Call-Graph-Drift
+`RST-INV-001` non-blocking; CRITICAL=0 &#47; HIGH=0) und bestätigt erneut
+`NOT_PASSED` mit frühester Restabhängigkeit `CRITICAL_FINDINGS_OPEN`;
+kein Gate-PASS. `CRITICAL_FINDINGS_OPEN_AUTHORIZED=false`; Critical-
+Findings&#47;Findings-Register-Package erforderte separates Owner-GO. Nach
+Owner-executed Critical Findings Open Package bindet §11.12.9.37
+`CRITICAL_FINDINGS_OPEN=0` &#47; `CRITICAL_FINDINGS_OPEN_PROVEN=true` &#47;
+`GOVERNED_PRE_LIVE_FINDINGS_REGISTER_PRESENT=true` (Aggregation der
+gesiegelten Findings-Register §11.12.9.27–.36; Aggregate CRITICAL=0;
+Bandit-Probe remediated Surfaces auf origin&#47;main ohne native CRITICAL)
+und bestätigt erneut `NOT_PASSED` mit frühester Restabhängigkeit
+`HIGH_FINDINGS_OPEN`; kein Gate-PASS.
+`HIGH_FINDINGS_OPEN_AUTHORIZED=false`; High-Findings-Package erforderte
+separates Owner-GO. Nach Owner-executed High Findings Open Package bindet
+§11.12.9.38 `HIGH_FINDINGS_OPEN=0` &#47; `HIGH_FINDINGS_OPEN_PROVEN=true`
+(Aggregation der gesiegelten Findings-Register §11.12.9.27–.37 inkl.
+§11.12.9.31 HIGH-Closure; Aggregate HIGH=0 &#47; CRITICAL=0; Bandit HIGH=0
+auf remediated Surfaces von origin&#47;main) und bestätigt erneut
+`NOT_PASSED` mit frühester Restabhängigkeit
+`LIVE_TESTNET_ISOLATION_PROVEN`; kein Gate-PASS.
+`LIVE_TESTNET_ISOLATION_AUTHORIZED=false`; Live&#47;Testnet-Isolation-Package
+erforderte separates Owner-GO. Nach Owner-executed Live&#47;Testnet Isolation
+Package bindet §11.12.9.39 `LIVE_TESTNET_ISOLATION_PROVEN=true`
+(fokussierte Credential-Cross-Use &#47; LiveModeGate &#47; Venue-Host-Account-
+Instrument &#47; Authority-Boundary Owner; 308 pytest passed; CRITICAL=0 &#47;
+HIGH=0) und bestätigt erneut `NOT_PASSED` mit frühester Restabhängigkeit
+`LIVE_DEFAULT_BLOCK_PROVEN`; kein Gate-PASS.
+`LIVE_DEFAULT_BLOCK_AUTHORIZED=false`; Live-Default-Block-Package
+erforderte separates Owner-GO. Nach Owner-executed Live Default Block
+Package bindet §11.12.9.40 `LIVE_DEFAULT_BLOCK_PROVEN=true`
+(fokussierte LIVE_ENABLED_FORBIDDEN_DEFAULT &#47; AI-Activation-Defaults
+`enabled=false`&#47;`armed=false` &#47; LiveModeGate &#47; live-gates &#47;
+confirm-token Owner; 165 pytest passed; kanonischer Config-Probe PASS;
+CRITICAL=0 &#47; HIGH=0) und bestätigt erneut `NOT_PASSED` mit frühester
+Restabhängigkeit `LIVE_ARMING_FAIL_CLOSED_PROVEN`; kein Gate-PASS.
+`LIVE_ARMING_FAIL_CLOSED_AUTHORIZED=false`; Live-Arming-Fail-Closed-
+Package erfordert separates Owner-GO. Nach Owner-GO
+`OWNER_GO_RECOVER_AND_CANONICALLY_BIND_PRE_LIVE_SECURITY_PACKAGES_29_THROUGH_40`
+bindet §11.12.9.40R die bereits ausgeführten Packages §11.12.9.29–.40
+(docs+Evidence) kanonisch für Repository-Bind &#47; PR-Recovery
+(`ALL_PACKAGE_MANIFEST_VERIFY_RC_ZERO=true`) und bestätigt erneut
+`NOT_PASSED` mit frühester Restabhängigkeit
+`LIVE_ARMING_FAIL_CLOSED_PROVEN`; kein Gate-PASS.
+`LIVE_ARMING_FAIL_CLOSED_AUTHORIZED=false`; Live-Arming-Fail-Closed-
+Package erfordert weiterhin separates Owner-GO. Recovery-Bind ist nicht
+Live-Arming-Autorisierung und nicht Gate-PASS.
 
 ------------------------------------------------------------------------
 

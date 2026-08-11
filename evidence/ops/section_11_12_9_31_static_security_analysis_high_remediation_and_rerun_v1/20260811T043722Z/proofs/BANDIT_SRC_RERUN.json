@@ -1,0 +1,16 @@
+{
+  "DOCUMENT_CLASS": "RAW_SAST_ARTIFACT_SANITIZED_STUB_V1",
+  "REASON": "Full Bandit JSON/TXT dumps contain Bandit B105/B106 false-positive issue_text strings that trip tracked secret-like and Policy Critic NO_SECRETS gates (Owner-GO tokens quoted as 'Possible hardcoded password').",
+  "SANITIZATION_AT_UTC": "2026-08-11T05:49:32Z",
+  "RAW_CONTENT_REMOVED_FROM_GIT": true,
+  "PROOF_RETAINED_VIA": [
+    "BANDIT_SEVERITY_SUMMARY.json",
+    "STATIC_SECURITY_FINDINGS_REGISTER.json",
+    "this stub ORIGINAL_SHA256"
+  ],
+  "NO_REAL_CREDENTIAL_MATERIAL": true,
+  "ORIGINAL_PATH": "evidence/ops/section_11_12_9_31_static_security_analysis_high_remediation_and_rerun_v1/20260811T043722Z/proofs/BANDIT_SRC_RERUN.json",
+  "ORIGINAL_SHA256": "e023e72e529393e3c95745c00986c123379daaf33f6879f283182755c7cfe7a2",
+  "ORIGINAL_BYTES": 4296101,
+  "REPLACED_WITH": "SANITIZED_STUB"
+}

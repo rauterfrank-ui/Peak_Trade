@@ -1,0 +1,25 @@
+{
+  "DOCUMENT_CLASS": "LIVE_TESTNET_ISOLATION_OWNER_RESULTS_SECTION_11_12_9_39_V1",
+  "FOCUSED_PYTEST_PASSED": 308,
+  "FOCUSED_PYTEST_RC": 0,
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "OWNERS": [
+    "tests/data/shadow/test_guards.py",
+    "tests/ops/test_okx_futures_shadow_no_order_entrypoint_v0.py",
+    "tests/ops/test_run_testnet_session_entrypoint_fail_closed_contract_v0.py",
+    "tests/ops/test_capability_11_owner_auth_artifact_testnet_credential_scope_private_network_v1.py",
+    "tests/ops/test_capability_11_2_credential_authorization_and_account_identity_boundary_v1.py",
+    "tests/ops/test_aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py",
+    "tests/ops/test_phase_9_2_restart_recovery_session_contract_and_productive_harness_v1.py::test_22_live_testnet_credential_negative_proof",
+    "tests/governance/test_live_mode_gate.py",
+    "tests/governance/test_wp0c_enforce_gate.py",
+    "tests/execution/live/test_safety_rails.py",
+    "tests/test_live_gates.py",
+    "tests/test_environment_and_safety.py",
+    "tests/ops/test_runtime_lane_taxonomy_authority_levels_contract_v0.py",
+    "tests/ops/test_section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1.py",
+    "tests/ops/test_master_v2_runtime_governance_boundary_contract_static_v0.py"
+  ],
+  "PACKAGE_VERDICT": "PASS",
+  "RUN_ID": "20260811T052914Z"
+}

@@ -6699,6 +6699,1439 @@ Sealed PR `#5863` squash-merge closeout evidence root:
 `evidence&#47;ops&#47;section_11_12_9_28_pr_5863_squash_merge_closeout_v1&#47;20260811T041913Z&#47;`
 (`MANIFEST_VERIFY_RC=0`)
 
+##### 11.12.9.29 Pre-Live SBOM_PRESENT package (binding; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_SBOM_PRESENT`
+(consumed as
+`OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_SBOM_PRESENT`)
+executes the **earliest** remaining Pre-Live security acceptance package
+after §11.12.9.28: a productive, evidence-bound Software Bill of Materials
+(SBOM) generation against Cybersecurity Runbook V2.1 §8 &#47; §18.2 on
+then-current `origin&#47;main`. Reuse-before-new applies (canonical CycloneDX
+1.5 export owner in `scripts&#47;ops&#47;run_full_audit.sh` via
+`uv export --format cyclonedx1.5`, plus `uv.lock` and prior sealed
+DEPENDENCY_AUDIT evidence are inputs, not substitutes). This binds
+exactly one newly closed §18.2 criterion:
+
+``` text
+SBOM_PRESENT=true
+```
+
+derived solely from the sealed SBOM evidence root below (CycloneDX
+`bomFormat=CycloneDX`, `specVersion=1.5`, non-empty component inventory,
+SHA256-bound artifact, `MANIFEST_VERIFY_RC=0`). This does **not** set
+`PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** set
+`ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not** start Cap &#47;
+§11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47; credentials, does
+**not** execute subsequent Pre-Live packages (`STATIC_SECURITY_ANALYSIS`,
+security regression, penetration, credential-leakage, authority-replay,
+recovery-security, findings register, isolation &#47; arming proofs, audit
+bundle), and does **not** mutate runtime &#47; trading &#47; execution code or
+open a venue network session.
+
+Sealed SBOM evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_29_pre_live_sbom_present_v1&#47;20260811T042745Z&#47;`
+
+``` text
+SECTION_11_12_9_29_SBOM_RUN_ID=20260811T042745Z
+SECTION_11_12_9_29_SBOM_ORIGIN_MAIN_SHA=1b61cd94af98439e55e12d7bb839e44852027a06
+SECTION_11_12_9_29_SBOM_EVIDENCE_ROOT=evidence/ops/section_11_12_9_29_pre_live_sbom_present_v1/20260811T042745Z/
+PROOF_METHOD=PRODUCTIVE_BOUNDED_UV_CYCLONEDX_1_5_SBOM_EXPORT_ON_ORIGIN_MAIN
+PROOF_EXECUTED=true
+PROOF_RESULT=SBOM_PRESENT_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+NO_TRADING_LOGIC_CHANGE=true
+SBOM_PRESENT=true
+SBOM_PRESENT_PROVEN=true
+SBOM_FORMAT=CycloneDX
+SBOM_SPEC_VERSION=1.5
+SBOM_COMPONENT_COUNT=67
+SBOM_AUTHORIZED=true
+DEPENDENCY_AUDIT=PASS
+DEPENDENCY_AUDIT_PROVEN=true
+SECRETS_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=SBOM_PRESENT
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=7
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=14
+EARLIEST_UNRESOLVED_DEPENDENCY=STATIC_SECURITY_ANALYSIS
+EARLIEST_UNRESOLVED_SECTION_POINTER=STATIC_SECURITY_ANALYSIS
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_29
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_STATIC_SECURITY_ANALYSIS
+HARD_STOP_AFTER_THIS_PACKAGE=true
+STATIC_SECURITY_ANALYSIS_AUTHORIZED=false
+```
+
+Mandatory distinctions:
+
+``` text
+SBOM_PRESENT != PRE_LIVE_CYBERSECURITY_GATE_PASS
+SBOM_PRESENT != LIVE_AUTHORIZED
+SBOM_PRESENT != SECTION_11_13_STARTED
+SBOM_PRESENT != STATIC_SECURITY_ANALYSIS
+SBOM_PRESENT != DEPENDENCY_AUDIT
+SBOM_PRESENT != PENETRATION_PROGRAM
+OWNER_GO_SBOM_PRESENT != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: `SBOM_PRESENT` newly bound true for §18.2 from the sealed
+CycloneDX 1.5 SBOM package on `origin&#47;main`
+`1b61cd94af98439e55e12d7bb839e44852027a06`; `DEPENDENCY_AUDIT`,
+`SECRETS_REVIEW`, `THREAT_MODEL_CURRENT`,
+`CYBERSECURITY_ARCHITECTURE_REVIEW`, `LONG_RUNNING_TESTNET_PROVEN`, and
+`TESTNET_LIFECYCLE_PROVEN` remain bound; earliest remaining unmet §18.2
+criterion is `STATIC_SECURITY_ANALYSIS`; remaining Pre-Live security
+acceptance packages remain absent or OPEN. Gate remains `NOT_PASSED`.
+Live remains hard-blocked. Cap &#47; §11.13 remains unstarted. Hard stop after
+this package. No automatic progression. Creating or executing the next
+Pre-Live security acceptance package requires a **separate** Owner-GO and
+is **not** authorized here (`STATIC_SECURITY_ANALYSIS_AUTHORIZED=false`).
+
+##### 11.12.9.30 Pre-Live Static Security Analysis package (binding; FAIL; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_STATIC_SECURITY_ANALYSIS`
+(consumed as
+`OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_STATIC_SECURITY_ANALYSIS`)
+executes the **earliest** remaining Pre-Live security acceptance package
+after §11.12.9.29: a productive, evidence-bound Static Security Analysis
+(SAST) against Cybersecurity Runbook V2.1 §12.4 &#47; §18.2 on then-current
+`origin&#47;main`. Reuse-before-new applies (canonical Bandit owner in
+`scripts&#47;ops&#47;run_audit.sh` via `bandit -r src`; Semgrep remains
+default-off per
+`docs&#47;ops&#47;specs&#47;SEMGREP_SAST_ADOPTION_CONCEPT_V0.md` and is **not**
+activated here). This package does **not** bind
+`STATIC_SECURITY_ANALYSIS=PASS` and does **not** set
+`STATIC_SECURITY_ANALYSIS_PROVEN=true`.
+
+Observed package result (sealed evidence below):
+
+``` text
+STATIC_SECURITY_ANALYSIS=FAIL
+STATIC_SECURITY_ANALYSIS_PROVEN=false
+FINDINGS_CRITICAL=0
+FINDINGS_HIGH=5
+FINDINGS_MEDIUM=51
+FINDINGS_LOW=2171
+HIGH_FINDINGS_OPEN=5
+CRITICAL_FINDINGS_OPEN=0
+AUTO_REMEDIATION_PERFORMED=false
+```
+
+This does **not** set `PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** set
+`ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not** start Cap &#47;
+§11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47; credentials, does
+**not** execute subsequent Pre-Live packages (`SECURITY_REGRESSION`,
+penetration, credential-leakage, authority-replay, recovery-security,
+findings register, isolation &#47; arming proofs, audit bundle), does **not**
+auto-remediate the five HIGH findings, and does **not** mutate runtime &#47;
+trading &#47; execution code or open a venue network session.
+
+Sealed static-security-analysis evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_30_pre_live_static_security_analysis_v1&#47;20260811T043159Z&#47;`
+
+``` text
+SECTION_11_12_9_30_SAST_RUN_ID=20260811T043159Z
+SECTION_11_12_9_30_SAST_ORIGIN_MAIN_SHA=1b61cd94af98439e55e12d7bb839e44852027a06
+SECTION_11_12_9_30_SAST_EVIDENCE_ROOT=evidence/ops/section_11_12_9_30_pre_live_static_security_analysis_v1/20260811T043159Z/
+PROOF_METHOD=PRODUCTIVE_BOUNDED_BANDIT_SAST_ON_SRC_REUSING_RUN_AUDIT_OWNER
+PROOF_EXECUTED=true
+PROOF_RESULT=STATIC_SECURITY_ANALYSIS_FAIL_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+NO_TRADING_LOGIC_CHANGE=true
+AUTO_REMEDIATION_PERFORMED=false
+STATIC_SECURITY_ANALYSIS=FAIL
+STATIC_SECURITY_ANALYSIS_PROVEN=false
+STATIC_SECURITY_ANALYSIS_AUTHORIZED=true
+HIGH_FINDINGS_OPEN=5
+CRITICAL_FINDINGS_OPEN=0
+FINDINGS_HIGH=5
+FINDINGS_MEDIUM=51
+FINDINGS_LOW=2171
+SBOM_PRESENT=true
+SBOM_PRESENT_PROVEN=true
+DEPENDENCY_AUDIT=PASS
+DEPENDENCY_AUDIT_PROVEN=true
+SECRETS_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=7
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=14
+EARLIEST_UNRESOLVED_DEPENDENCY=STATIC_SECURITY_ANALYSIS
+EARLIEST_UNRESOLVED_SECTION_POINTER=STATIC_SECURITY_ANALYSIS
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_30
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_STATIC_SECURITY_ANALYSIS_REMEDIATION_OR_RERUN_AFTER_HIGH_FINDING_CLOSURE
+HARD_STOP_AFTER_THIS_PACKAGE=true
+SECURITY_REGRESSION_AUTHORIZED=false
+```
+
+Mandatory distinctions:
+
+``` text
+STATIC_SECURITY_ANALYSIS_FAIL != PRE_LIVE_CYBERSECURITY_GATE_PASS
+STATIC_SECURITY_ANALYSIS_EXECUTED != STATIC_SECURITY_ANALYSIS_PROVEN
+STATIC_SECURITY_ANALYSIS_FAIL != LIVE_AUTHORIZED
+STATIC_SECURITY_ANALYSIS_FAIL != SECTION_11_13_STARTED
+STATIC_SECURITY_ANALYSIS != SECURITY_REGRESSION
+STATIC_SECURITY_ANALYSIS != PENETRATION_PROGRAM
+STATIC_SECURITY_ANALYSIS_FAIL != REMEDIATION_AUTHORIZATION
+OWNER_GO_STATIC_SECURITY_ANALYSIS != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: productive Bandit SAST executed on `src&#47;` for
+`origin&#47;main` `1b61cd94af98439e55e12d7bb839e44852027a06`; five HIGH
+findings remain open (`B202` tar extractall; three `B324` weak MD5;
+`B602` shell=True); MEDIUM&#47;LOW findings are non-blocking for the HIGH
+rule but do not clear the package; `STATIC_SECURITY_ANALYSIS` remains
+unproven; earliest unmet §18.2 criterion remains
+`STATIC_SECURITY_ANALYSIS`. Gate remains `NOT_PASSED`. Live remains
+hard-blocked. Cap &#47; §11.13 remains unstarted. Hard stop after this
+package. No automatic progression. Remediation &#47; re-run after HIGH
+closure requires a **separate** Owner-GO and is **not** authorized here
+(`SECURITY_REGRESSION_AUTHORIZED=false`).
+
+##### 11.12.9.31 Static Security Analysis HIGH remediation and re-run (binding; PASS; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_STATIC_SECURITY_ANALYSIS_REMEDIATION_OR_RERUN_AFTER_HIGH_FINDING_CLOSURE`
+(authorized scope
+`STATIC_SECURITY_ANALYSIS_HIGH_FINDING_REMEDIATION_AND_RERUN`)
+executes Owner remediation of the five §11.12.9.30 Bandit HIGH findings
+and a comparable Bandit re-run on `src&#47;` against Cybersecurity Runbook
+V2.1 §12.4 &#47; §18.2. Reuse-before-new applies (canonical Bandit owner in
+`scripts&#47;ops&#47;run_audit.sh`; prior sealed §11.12.9.30 FAIL evidence is
+input, not substituted). This binds exactly one newly closed §18.2
+criterion:
+
+``` text
+STATIC_SECURITY_ANALYSIS=PASS
+```
+
+and sets `STATIC_SECURITY_ANALYSIS_PROVEN=true` with
+`HIGH_FINDINGS_OPEN=0` &#47; `CRITICAL_FINDINGS_OPEN=0` from the sealed
+remediation &#47; re-run evidence below. Remaining MEDIUM&#47;LOW findings are
+non-blocking for the HIGH rule (same posture as the lean DEPENDENCY_AUDIT
+PASS). This does **not** set `PRE_LIVE_CYBERSECURITY_GATE=PASS`, does
+**not** set `ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not**
+start Cap &#47; §11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47;
+credentials, does **not** execute subsequent Pre-Live packages
+(`SECURITY_REGRESSION`, penetration, credential-leakage,
+authority-replay, recovery-security, findings register, isolation &#47;
+arming proofs, audit bundle), and does **not** open a venue network
+session.
+
+Sealed remediation &#47; re-run evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_31_static_security_analysis_high_remediation_and_rerun_v1&#47;20260811T043722Z&#47;`
+
+``` text
+SECTION_11_12_9_31_RUN_ID=20260811T043722Z
+SECTION_11_12_9_31_ORIGIN_MAIN_SHA=1b61cd94af98439e55e12d7bb839e44852027a06
+SECTION_11_12_9_31_EVIDENCE_ROOT=evidence/ops/section_11_12_9_31_static_security_analysis_high_remediation_and_rerun_v1/20260811T043722Z/
+PROOF_METHOD=OWNER_EXECUTED_HIGH_REMEDIATION_PLUS_BANDIT_RERUN_ON_SRC
+PROOF_EXECUTED=true
+PROOF_RESULT=STATIC_SECURITY_ANALYSIS_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+NO_TRADING_LOGIC_CHANGE=true
+STATIC_SECURITY_ANALYSIS=PASS
+STATIC_SECURITY_ANALYSIS_PROVEN=true
+HIGH_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN=0
+FINDINGS_HIGH=0
+FINDINGS_MEDIUM=51
+FINDINGS_LOW=2172
+SBOM_PRESENT=true
+SBOM_PRESENT_PROVEN=true
+DEPENDENCY_AUDIT=PASS
+DEPENDENCY_AUDIT_PROVEN=true
+SECRETS_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=STATIC_SECURITY_ANALYSIS
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=8
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=13
+EARLIEST_UNRESOLVED_DEPENDENCY=SECURITY_REGRESSION
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECURITY_REGRESSION
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_31
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_SECURITY_REGRESSION
+HARD_STOP_AFTER_THIS_PACKAGE=true
+SECURITY_REGRESSION_AUTHORIZED=false
+```
+
+Mandatory distinctions:
+
+``` text
+STATIC_SECURITY_ANALYSIS_PASS != PRE_LIVE_CYBERSECURITY_GATE_PASS
+STATIC_SECURITY_ANALYSIS_PASS != LIVE_AUTHORIZED
+STATIC_SECURITY_ANALYSIS_PASS != SECTION_11_13_STARTED
+STATIC_SECURITY_ANALYSIS_PASS != SECURITY_REGRESSION
+STATIC_SECURITY_ANALYSIS_PASS != PENETRATION_PROGRAM
+REMEDIATION_PASS != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+SECTION_11_12_9_30_FAIL_PRESERVED=true
+```
+
+Observed facts: the five §11.12.9.30 HIGH findings are closed
+(`B202`→per-member extract; three `B324`→`usedforsecurity=False`;
+`B602`→`shell=False` + `shlex.split` with demo-profile `&&` removed);
+comparable Bandit re-run shows `HIGH=0` &#47; `CRITICAL=0`;
+`STATIC_SECURITY_ANALYSIS=PASS` &#47; `STATIC_SECURITY_ANALYSIS_PROVEN=true`
+newly bound; earliest unmet §18.2 criterion advances to
+`SECURITY_REGRESSION`. Gate remains `NOT_PASSED`. Live remains
+hard-blocked. Cap &#47; §11.13 remains unstarted. Hard stop after this
+package. Creating&#47;executing `SECURITY_REGRESSION` or later packages
+requires a **separate** Owner-GO (`SECURITY_REGRESSION_AUTHORIZED=false`).
+
+##### 11.12.9.32 Pre-Live Security Regression package (binding; PASS; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_SECURITY_REGRESSION`
+(authorized scope `PRE_LIVE_SECURITY_PACKAGE_SECURITY_REGRESSION`;
+`SECURITY_REGRESSION_AUTHORIZED=true` for this package only)
+executes the **earliest** remaining Pre-Live security acceptance package
+after §11.12.9.31: a productive, evidence-bound Security Regression suite
+against Cybersecurity Runbook V2.1 §12.4 &#47; §18.2 on then-current
+`origin&#47;main`. Reuse-before-new applies (canonical fail-closed CI &#47;
+live-default &#47; credential &#47; kill-switch regression owners listed in
+`SECURITY_NOTES.md` and Cap&#47;governance contracts; prior sealed
+STATIC_SECURITY_ANALYSIS PASS is input, not a substitute). This binds
+exactly one newly closed §18.2 criterion:
+
+``` text
+SECURITY_REGRESSION=PASS
+```
+
+and sets `SECURITY_REGRESSION_PROVEN=true` from the sealed evidence root
+below (focused security pytest owners 106 passed &#47; 1 skipped; tracked
+credential hygiene PASS; SAST HIGH remediation surface still HIGH=0).
+The full-tree docs live-enable pattern probe remains a **non-blocking**
+pre-existing historical&#47;meta inventory (not a GitHub required check;
+package-touched SSOT docs introduce zero live-enable literals). This does
+**not** set `PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** set
+`ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not** start Cap &#47;
+§11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47; credentials, does
+**not** execute subsequent Pre-Live packages (`PENETRATION_PROGRAM`,
+credential-leakage, authority-replay, recovery-security, findings
+register, isolation &#47; arming proofs, audit bundle), and does **not**
+mutate runtime &#47; trading &#47; execution code or open a venue network session.
+
+Sealed security-regression evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_32_pre_live_security_regression_v1&#47;20260811T044255Z&#47;`
+
+``` text
+SECTION_11_12_9_32_SECURITY_REGRESSION_RUN_ID=20260811T044255Z
+SECTION_11_12_9_32_SECURITY_REGRESSION_ORIGIN_MAIN_SHA=1b61cd94af98439e55e12d7bb839e44852027a06
+SECTION_11_12_9_32_SECURITY_REGRESSION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_32_pre_live_security_regression_v1/20260811T044255Z/
+PROOF_METHOD=PRODUCTIVE_BOUNDED_SECURITY_REGRESSION_OWNERS_REUSE_BEFORE_NEW
+PROOF_EXECUTED=true
+PROOF_RESULT=SECURITY_REGRESSION_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+NO_TRADING_LOGIC_CHANGE=true
+SECURITY_REGRESSION=PASS
+SECURITY_REGRESSION_PROVEN=true
+SECURITY_REGRESSION_AUTHORIZED=true
+HIGH_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN=0
+STATIC_SECURITY_ANALYSIS=PASS
+STATIC_SECURITY_ANALYSIS_PROVEN=true
+SBOM_PRESENT=true
+SBOM_PRESENT_PROVEN=true
+DEPENDENCY_AUDIT=PASS
+DEPENDENCY_AUDIT_PROVEN=true
+SECRETS_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=SECURITY_REGRESSION
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=9
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=12
+EARLIEST_UNRESOLVED_DEPENDENCY=PENETRATION_PROGRAM
+EARLIEST_UNRESOLVED_SECTION_POINTER=PENETRATION_PROGRAM
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_32
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_PENETRATION_PROGRAM
+HARD_STOP_AFTER_THIS_PACKAGE=true
+PENETRATION_PROGRAM_AUTHORIZED=false
+DOCS_NO_LIVE_ENABLE_PREEXISTING_OPEN=true
+```
+
+Mandatory distinctions:
+
+``` text
+SECURITY_REGRESSION != PRE_LIVE_CYBERSECURITY_GATE_PASS
+SECURITY_REGRESSION != LIVE_AUTHORIZED
+SECURITY_REGRESSION != SECTION_11_13_STARTED
+SECURITY_REGRESSION != PENETRATION_PROGRAM
+SECURITY_REGRESSION != CREDENTIAL_LEAKAGE_TEST
+SECURITY_REGRESSION != AUTHORITY_REPLAY_TEST
+OWNER_GO_SECURITY_REGRESSION != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: Security Regression newly bound PASS for §18.2 from the
+sealed focused-owner package; `STATIC_SECURITY_ANALYSIS`, `SBOM_PRESENT`,
+`DEPENDENCY_AUDIT`, `SECRETS_REVIEW`, `THREAT_MODEL_CURRENT`,
+`CYBERSECURITY_ARCHITECTURE_REVIEW`, `LONG_RUNNING_TESTNET_PROVEN`, and
+`TESTNET_LIFECYCLE_PROVEN` remain bound; earliest remaining unmet §18.2
+criterion is `PENETRATION_PROGRAM`; remaining Pre-Live security
+acceptance packages remain absent or OPEN. Gate remains `NOT_PASSED`.
+Live remains hard-blocked. Cap &#47; §11.13 remains unstarted. Hard stop after
+this package. No automatic progression. Creating or executing the next
+Pre-Live security acceptance package requires a **separate** Owner-GO and
+is **not** authorized here (`PENETRATION_PROGRAM_AUTHORIZED=false`).
+
+##### 11.12.9.33 Pre-Live Penetration Program package (binding; PASS; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_PENETRATION_PROGRAM`
+(authorized scope `PRE_LIVE_SECURITY_PACKAGE_PENETRATION_PROGRAM`;
+`PENETRATION_PROGRAM_AUTHORIZED=true` for this package only)
+executes the **earliest** remaining Pre-Live security acceptance package
+after §11.12.9.32: a productive, evidence-bound Penetration &#47; Adversarial
+Security Test Program against Cybersecurity Runbook V2.1 §13 &#47; §18.2 on
+then-current `origin&#47;main`. Reuse-before-new applies (existing local
+fail-closed &#47; adversarial contract owners mapped to §13 classes; ZAP&#47;DAST
+remains default-off per
+`docs&#47;ops&#47;specs&#47;ZAP_DAST_SHADOW_CONCEPT_V0.md` and is **not**
+activated). This binds exactly one newly closed §18.2 criterion:
+
+``` text
+PENETRATION_PROGRAM=PASS
+```
+
+and sets `PENETRATION_PROGRAM_PROVEN=true` from the sealed evidence root
+below (security-property adversarial suite 273 passed &#47; 1 skipped;
+`HIGH_FINDINGS_OPEN=0` &#47; `CRITICAL_FINDINGS_OPEN=0`; adversarial bypass
+proven count = 0). Two LOW inventory-characterization drifts observed in
+an inventory-inclusive probe are non-blocking and do **not** prove
+unauthorized capability. This does **not** set
+`PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** set
+`ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not** start Cap &#47;
+§11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47; credentials, does
+**not** bind `CREDENTIAL_LEAKAGE_TEST` &#47; `AUTHORITY_REPLAY_TEST` &#47;
+`RECOVERY_SECURITY_TEST` (remain OPEN for separate packages), does
+**not** execute ZAP&#47;DAST, and does **not** mutate runtime &#47; trading &#47;
+execution code or open a venue network session.
+
+Sealed penetration-program evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_33_pre_live_penetration_program_v1&#47;20260811T044900Z&#47;`
+
+``` text
+SECTION_11_12_9_33_PENETRATION_RUN_ID=20260811T044900Z
+SECTION_11_12_9_33_PENETRATION_ORIGIN_MAIN_SHA=1b61cd94af98439e55e12d7bb839e44852027a06
+SECTION_11_12_9_33_PENETRATION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_33_pre_live_penetration_program_v1/20260811T044900Z/
+PROOF_METHOD=BOUNDED_LOCAL_SECTION13_MAPPED_ADVERSARIAL_OWNERS_NO_ZAP_NO_LIVE
+PROOF_EXECUTED=true
+PROOF_RESULT=PENETRATION_PROGRAM_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+NO_TRADING_LOGIC_CHANGE=true
+ZAP_DAST_EXECUTED=false
+PENETRATION_PROGRAM=PASS
+PENETRATION_PROGRAM_PROVEN=true
+PENETRATION_PROGRAM_AUTHORIZED=true
+HIGH_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN=0
+FINDINGS_LOW=2
+SECURITY_REGRESSION=PASS
+SECURITY_REGRESSION_PROVEN=true
+STATIC_SECURITY_ANALYSIS=PASS
+SBOM_PRESENT=true
+DEPENDENCY_AUDIT=PASS
+SECRETS_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=PENETRATION_PROGRAM
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=10
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=11
+EARLIEST_UNRESOLVED_DEPENDENCY=CREDENTIAL_LEAKAGE_TEST
+EARLIEST_UNRESOLVED_SECTION_POINTER=CREDENTIAL_LEAKAGE_TEST
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_33
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_CREDENTIAL_LEAKAGE_TEST
+HARD_STOP_AFTER_THIS_PACKAGE=true
+CREDENTIAL_LEAKAGE_TEST_AUTHORIZED=false
+AUTHORITY_REPLAY_TEST=OPEN
+RECOVERY_SECURITY_TEST=OPEN
+```
+
+Mandatory distinctions:
+
+``` text
+PENETRATION_PROGRAM != PRE_LIVE_CYBERSECURITY_GATE_PASS
+PENETRATION_PROGRAM != LIVE_AUTHORIZED
+PENETRATION_PROGRAM != SECTION_11_13_STARTED
+PENETRATION_PROGRAM != CREDENTIAL_LEAKAGE_TEST
+PENETRATION_PROGRAM != AUTHORITY_REPLAY_TEST
+PENETRATION_PROGRAM != RECOVERY_SECURITY_TEST
+PENETRATION_PROGRAM != ZAP_DAST
+OWNER_GO_PENETRATION_PROGRAM != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: Penetration Program newly bound PASS for §18.2 from the
+sealed bounded local adversarial package; prior security packages remain
+bound; earliest remaining unmet §18.2 criterion is
+`CREDENTIAL_LEAKAGE_TEST`; remaining Pre-Live security acceptance
+packages remain absent or OPEN. Gate remains `NOT_PASSED`. Live remains
+hard-blocked. Cap &#47; §11.13 remains unstarted. Hard stop after this
+package. No automatic progression. Creating or executing the next
+Pre-Live security acceptance package requires a **separate** Owner-GO and
+is **not** authorized here (`CREDENTIAL_LEAKAGE_TEST_AUTHORIZED=false`).
+
+##### 11.12.9.34 Pre-Live Credential Leakage Test package (binding; PASS; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_CREDENTIAL_LEAKAGE_TEST`
+(authorized scope `PRE_LIVE_SECURITY_PACKAGE_CREDENTIAL_LEAKAGE_TEST`;
+`CREDENTIAL_LEAKAGE_TEST_AUTHORIZED=true` for this package only)
+executes the **earliest** remaining Pre-Live security acceptance package
+after §11.12.9.33: a productive, evidence-bound Credential Leakage Test
+against Cybersecurity Runbook V2.1 §13 &#47; §7.3 &#47; §18.2 on then-current
+`origin&#47;main`. Reuse-before-new applies (canonical redaction owner,
+tracked hygiene gate, secret-scanning governance, fail-closed
+credential cross-use &#47; no-order owners). Distinct from
+`SECRETS_REVIEW` (inventory&#47;hygiene review) and from
+`PENETRATION_PROGRAM` (broad §13 probe). This binds exactly one newly
+closed §18.2 criterion:
+
+``` text
+CREDENTIAL_LEAKAGE_TEST=PASS
+```
+
+and sets `CREDENTIAL_LEAKAGE_TEST_PROVEN=true` from the sealed evidence
+root below (focused owners 176 passed; hygiene findings=0;
+adversarial structured&#47;headers&#47;assignment redaction HIGH=0 &#47;
+CRITICAL=0; two MEDIUM residuals accepted under documented RR-SH-002
+and non-blocking for this package). This does **not** set
+`PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** set
+`ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not** start Cap &#47;
+§11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47; credentials, does
+**not** bind `AUTHORITY_REPLAY_TEST` &#47; `RECOVERY_SECURITY_TEST`, does
+**not** mutate runtime &#47; trading &#47; execution code, and does **not** open a
+venue network session.
+
+Sealed credential-leakage evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_34_pre_live_credential_leakage_test_v1&#47;20260811T045537Z&#47;`
+
+``` text
+SECTION_11_12_9_34_CREDENTIAL_LEAKAGE_RUN_ID=20260811T045537Z
+SECTION_11_12_9_34_CREDENTIAL_LEAKAGE_ORIGIN_MAIN_SHA=1b61cd94af98439e55e12d7bb839e44852027a06
+SECTION_11_12_9_34_CREDENTIAL_LEAKAGE_EVIDENCE_ROOT=evidence/ops/section_11_12_9_34_pre_live_credential_leakage_test_v1/20260811T045537Z/
+PROOF_METHOD=BOUNDED_LOCAL_CREDENTIAL_LEAKAGE_OWNERS_PLUS_HYGIENE_SCAN_NO_LIVE
+PROOF_EXECUTED=true
+PROOF_RESULT=CREDENTIAL_LEAKAGE_TEST_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+NO_TRADING_LOGIC_CHANGE=true
+CREDENTIAL_LEAKAGE_TEST=PASS
+CREDENTIAL_LEAKAGE_TEST_PROVEN=true
+CREDENTIAL_LEAKAGE_TEST_AUTHORIZED=true
+HIGH_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN=0
+MEDIUM_FINDINGS_OPEN=2
+PENETRATION_PROGRAM=PASS
+PENETRATION_PROGRAM_PROVEN=true
+SECURITY_REGRESSION=PASS
+STATIC_SECURITY_ANALYSIS=PASS
+SBOM_PRESENT=true
+DEPENDENCY_AUDIT=PASS
+SECRETS_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=CREDENTIAL_LEAKAGE_TEST
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=11
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=10
+EARLIEST_UNRESOLVED_DEPENDENCY=AUTHORITY_REPLAY_TEST
+EARLIEST_UNRESOLVED_SECTION_POINTER=AUTHORITY_REPLAY_TEST
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_34
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_AUTHORITY_REPLAY_TEST
+HARD_STOP_AFTER_THIS_PACKAGE=true
+AUTHORITY_REPLAY_TEST_AUTHORIZED=false
+RECOVERY_SECURITY_TEST=OPEN
+```
+
+Mandatory distinctions:
+
+``` text
+CREDENTIAL_LEAKAGE_TEST != PRE_LIVE_CYBERSECURITY_GATE_PASS
+CREDENTIAL_LEAKAGE_TEST != LIVE_AUTHORIZED
+CREDENTIAL_LEAKAGE_TEST != SECTION_11_13_STARTED
+CREDENTIAL_LEAKAGE_TEST != SECRETS_REVIEW
+CREDENTIAL_LEAKAGE_TEST != PENETRATION_PROGRAM
+CREDENTIAL_LEAKAGE_TEST != AUTHORITY_REPLAY_TEST
+CREDENTIAL_LEAKAGE_TEST != RECOVERY_SECURITY_TEST
+OWNER_GO_CREDENTIAL_LEAKAGE_TEST != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: Credential Leakage Test newly bound PASS for §18.2 from
+the sealed bounded local package; prior security packages remain bound;
+earliest remaining unmet §18.2 criterion is `AUTHORITY_REPLAY_TEST`;
+remaining Pre-Live security acceptance packages remain absent or OPEN.
+Gate remains `NOT_PASSED`. Live remains hard-blocked. Cap &#47; §11.13
+remains unstarted. Hard stop after this package. No automatic
+progression. Creating or executing the next Pre-Live security acceptance
+package requires a **separate** Owner-GO and is **not** authorized here
+(`AUTHORITY_REPLAY_TEST_AUTHORIZED=false`).
+
+##### 11.12.9.35 Pre-Live Authority Replay Test package (binding; PASS; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_AUTHORITY_REPLAY_TEST`
+(authorized scope `PRE_LIVE_SECURITY_PACKAGE_AUTHORITY_REPLAY_TEST`;
+`AUTHORITY_REPLAY_TEST_AUTHORIZED=true` for this package only)
+executes the **earliest** remaining Pre-Live security acceptance package
+after §11.12.9.34: a productive, evidence-bound Authority Replay Test
+against Cybersecurity Runbook V2.1 §12.3 &#47; §13 &#47; §18.2 on then-current
+`origin&#47;main`. Reuse-before-new applies (canonical durable-authorization
+consume&#47;replay, secure confirm-token replay, campaign hidden-confirm
+replay, live confirm-token &#47; armed &#47; enabled gates, LiveModeGate &#47;
+WP0C ack, safety rails, policy-critic confirm&#47;armed patterns, governed
+real-network authorization consumption, paper&#47;shadow confirm replay).
+Distinct from `PENETRATION_PROGRAM` (broad §13 probe) and from
+`RECOVERY_SECURITY_TEST` (corrupt&#47;stale recovery remains OPEN). This binds
+exactly one newly closed §18.2 criterion:
+
+``` text
+AUTHORITY_REPLAY_TEST=PASS
+```
+
+and sets `AUTHORITY_REPLAY_TEST_PROVEN=true` from the sealed evidence
+root below (focused owners 245 passed, 3 skipped; CRITICAL=0 &#47;
+HIGH=0; two MEDIUM residuals carried from prior CLT under documented
+RR-SH-002 and non-blocking for this package). This does **not** set
+`PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** set
+`ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not** start Cap &#47;
+§11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47; credentials, does
+**not** bind `RECOVERY_SECURITY_TEST`, does **not** mutate runtime &#47;
+trading &#47; execution code, and does **not** open a venue network session.
+
+Sealed authority-replay evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_35_pre_live_authority_replay_test_v1&#47;20260811T050403Z&#47;`
+
+``` text
+SECTION_11_12_9_35_AUTHORITY_REPLAY_RUN_ID=20260811T050403Z
+SECTION_11_12_9_35_AUTHORITY_REPLAY_ORIGIN_MAIN_SHA=1b61cd94af98439e55e12d7bb839e44852027a06
+SECTION_11_12_9_35_AUTHORITY_REPLAY_EVIDENCE_ROOT=evidence/ops/section_11_12_9_35_pre_live_authority_replay_test_v1/20260811T050403Z/
+PROOF_METHOD=BOUNDED_LOCAL_AUTHORITY_REPLAY_OWNERS_NO_LIVE
+PROOF_EXECUTED=true
+PROOF_RESULT=AUTHORITY_REPLAY_TEST_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+NO_TRADING_LOGIC_CHANGE=true
+AUTHORITY_REPLAY_TEST=PASS
+AUTHORITY_REPLAY_TEST_PROVEN=true
+AUTHORITY_REPLAY_TEST_AUTHORIZED=true
+HIGH_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN=0
+MEDIUM_FINDINGS_OPEN=2
+CREDENTIAL_LEAKAGE_TEST=PASS
+CREDENTIAL_LEAKAGE_TEST_PROVEN=true
+PENETRATION_PROGRAM=PASS
+PENETRATION_PROGRAM_PROVEN=true
+SECURITY_REGRESSION=PASS
+STATIC_SECURITY_ANALYSIS=PASS
+SBOM_PRESENT=true
+DEPENDENCY_AUDIT=PASS
+SECRETS_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=AUTHORITY_REPLAY_TEST
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=12
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=9
+EARLIEST_UNRESOLVED_DEPENDENCY=RECOVERY_SECURITY_TEST
+EARLIEST_UNRESOLVED_SECTION_POINTER=RECOVERY_SECURITY_TEST
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_35
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_RECOVERY_SECURITY_TEST
+HARD_STOP_AFTER_THIS_PACKAGE=true
+RECOVERY_SECURITY_TEST_AUTHORIZED=false
+RECOVERY_SECURITY_TEST=OPEN
+```
+
+Mandatory distinctions:
+
+``` text
+AUTHORITY_REPLAY_TEST != PRE_LIVE_CYBERSECURITY_GATE_PASS
+AUTHORITY_REPLAY_TEST != LIVE_AUTHORIZED
+AUTHORITY_REPLAY_TEST != SECTION_11_13_STARTED
+AUTHORITY_REPLAY_TEST != CREDENTIAL_LEAKAGE_TEST
+AUTHORITY_REPLAY_TEST != PENETRATION_PROGRAM
+AUTHORITY_REPLAY_TEST != RECOVERY_SECURITY_TEST
+OWNER_GO_AUTHORITY_REPLAY_TEST != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: Authority Replay Test newly bound PASS for §18.2 from
+the sealed bounded local package; prior security packages remain bound;
+earliest remaining unmet §18.2 criterion is `RECOVERY_SECURITY_TEST`;
+remaining Pre-Live security acceptance packages remain absent or OPEN.
+Gate remains `NOT_PASSED`. Live remains hard-blocked. Cap &#47; §11.13
+remains unstarted. Hard stop after this package. No automatic
+progression. Creating or executing the next Pre-Live security acceptance
+package requires a **separate** Owner-GO and is **not** authorized here
+(`RECOVERY_SECURITY_TEST_AUTHORIZED=false`).
+
+##### 11.12.9.36 Pre-Live Recovery Security Test package (binding; PASS; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_RECOVERY_SECURITY_TEST`
+(authorized scope `PRE_LIVE_SECURITY_PACKAGE_RECOVERY_SECURITY_TEST`;
+`RECOVERY_SECURITY_TEST_AUTHORIZED=true` for this package only)
+executes the **earliest** remaining Pre-Live security acceptance package
+after §11.12.9.35: a productive, evidence-bound Recovery Security Test
+against Cybersecurity Runbook V2.1 §12.5 &#47; §13 &#47; §18.2 on then-current
+`origin&#47;main`. Reuse-before-new applies (canonical fault-injection,
+corrupt-checkpoint fail-closed, unknown-submit &#47; reconnect recovery,
+restart-with-open-order&#47;position, kill-switch &#47; emergency-control,
+staleness revocation, authority-lease revocation, killswitch fencing,
+runtime health recovery &#47; failure injection owners). Distinct from
+`PENETRATION_PROGRAM` (broad §13 probe) and from `AUTHORITY_REPLAY_TEST`
+(confirm-token replay). Does **not** claim Live kill-switch proven. This
+binds exactly one newly closed §18.2 criterion:
+
+``` text
+RECOVERY_SECURITY_TEST=PASS
+```
+
+and sets `RECOVERY_SECURITY_TEST_PROVEN=true` from the sealed evidence
+root below (security-property owners 430 passed, 1 skipped, 1 inventory
+node deselected; inventory-inclusive probe rc=1 with 1 LOW call-graph
+constant drift `RST-INV-001` accepted non-blocking; CRITICAL=0 &#47;
+HIGH=0; two MEDIUM residuals carried from prior CLT under documented
+RR-SH-002 and non-blocking for this package). This does **not** set
+`PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** set
+`ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not** start Cap &#47;
+§11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47; credentials, does
+**not** bind `CRITICAL_FINDINGS_OPEN` &#47; `HIGH_FINDINGS_OPEN` &#47;
+`LIVE_TESTNET_ISOLATION_PROVEN` &#47; `LIVE_DEFAULT_BLOCK_PROVEN` &#47;
+`LIVE_ARMING_FAIL_CLOSED_PROVEN` &#47; `AUDIT_EVIDENCE_VERIFIED`, does
+**not** mutate runtime &#47; trading &#47; execution code, and does **not** open a
+venue network session.
+
+Sealed recovery-security evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_36_pre_live_recovery_security_test_v1&#47;20260811T050823Z&#47;`
+
+``` text
+SECTION_11_12_9_36_RECOVERY_SECURITY_RUN_ID=20260811T050823Z
+SECTION_11_12_9_36_RECOVERY_SECURITY_ORIGIN_MAIN_SHA=1b61cd94af98439e55e12d7bb839e44852027a06
+SECTION_11_12_9_36_RECOVERY_SECURITY_EVIDENCE_ROOT=evidence/ops/section_11_12_9_36_pre_live_recovery_security_test_v1/20260811T050823Z/
+PROOF_METHOD=BOUNDED_LOCAL_RECOVERY_SECURITY_OWNERS_NO_LIVE
+PROOF_EXECUTED=true
+PROOF_RESULT=RECOVERY_SECURITY_TEST_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+NO_TRADING_LOGIC_CHANGE=true
+RECOVERY_SECURITY_TEST=PASS
+RECOVERY_SECURITY_TEST_PROVEN=true
+RECOVERY_SECURITY_TEST_AUTHORIZED=true
+HIGH_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN=0
+MEDIUM_FINDINGS_OPEN=2
+LOW_FINDINGS_OPEN=1
+AUTHORITY_REPLAY_TEST=PASS
+AUTHORITY_REPLAY_TEST_PROVEN=true
+CREDENTIAL_LEAKAGE_TEST=PASS
+PENETRATION_PROGRAM=PASS
+SECURITY_REGRESSION=PASS
+STATIC_SECURITY_ANALYSIS=PASS
+SBOM_PRESENT=true
+DEPENDENCY_AUDIT=PASS
+SECRETS_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=RECOVERY_SECURITY_TEST
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=13
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=8
+EARLIEST_UNRESOLVED_DEPENDENCY=CRITICAL_FINDINGS_OPEN
+EARLIEST_UNRESOLVED_SECTION_POINTER=CRITICAL_FINDINGS_OPEN
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_36
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_CRITICAL_FINDINGS_OPEN
+HARD_STOP_AFTER_THIS_PACKAGE=true
+CRITICAL_FINDINGS_OPEN_AUTHORIZED=false
+```
+
+Mandatory distinctions:
+
+``` text
+RECOVERY_SECURITY_TEST != PRE_LIVE_CYBERSECURITY_GATE_PASS
+RECOVERY_SECURITY_TEST != LIVE_AUTHORIZED
+RECOVERY_SECURITY_TEST != SECTION_11_13_STARTED
+RECOVERY_SECURITY_TEST != AUTHORITY_REPLAY_TEST
+RECOVERY_SECURITY_TEST != PENETRATION_PROGRAM
+RECOVERY_SECURITY_TEST != LIVE_KILL_SWITCH_PROVEN
+OWNER_GO_RECOVERY_SECURITY_TEST != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: Recovery Security Test newly bound PASS for §18.2 from
+the sealed bounded local package; prior security packages remain bound;
+earliest remaining unmet §18.2 criterion is `CRITICAL_FINDINGS_OPEN`;
+remaining Pre-Live security acceptance packages remain absent or OPEN.
+Gate remains `NOT_PASSED`. Live remains hard-blocked. Cap &#47; §11.13
+remains unstarted. Hard stop after this package. No automatic
+progression. Creating or executing the next Pre-Live security acceptance
+package requires a **separate** Owner-GO and is **not** authorized here
+(`CRITICAL_FINDINGS_OPEN_AUTHORIZED=false`).
+
+##### 11.12.9.37 Pre-Live Critical Findings Open package (binding; PASS; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_CRITICAL_FINDINGS_OPEN`
+(authorized scope `PRE_LIVE_SECURITY_PACKAGE_CRITICAL_FINDINGS_OPEN`;
+`CRITICAL_FINDINGS_OPEN_AUTHORIZED=true` for this package only)
+executes the **earliest** remaining Pre-Live security acceptance package
+after §11.12.9.36: a productive, evidence-bound governed Pre-Live Findings
+Register proving Cybersecurity Runbook V2.1 §15 Critical &#47; §18.2
+`CRITICAL_FINDINGS_OPEN=0` on then-current `origin&#47;main`. Reuse-before-new
+applies (sealed findings registers from §11.12.9.27–.36 plus origin&#47;main
+bandit probe of §11.12.9.31 remediated surfaces). Distinct from
+`HIGH_FINDINGS_OPEN` (separate §18.2 criterion; **not** bound here even
+when observed HIGH count is currently 0). This binds exactly one newly
+closed §18.2 criterion:
+
+``` text
+CRITICAL_FINDINGS_OPEN=0
+```
+
+interpreted as the governed criterion PASS
+(`CRITICAL_FINDINGS_OPEN_PROVEN=true` &#47;
+`GOVERNED_PRE_LIVE_FINDINGS_REGISTER_PRESENT=true`) from the sealed
+evidence root below. This does **not** set
+`PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** set
+`ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not** start Cap &#47;
+§11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47; credentials, does
+**not** bind `HIGH_FINDINGS_OPEN` &#47; `LIVE_TESTNET_ISOLATION_PROVEN` &#47;
+`LIVE_DEFAULT_BLOCK_PROVEN` &#47; `LIVE_ARMING_FAIL_CLOSED_PROVEN` &#47;
+`AUDIT_EVIDENCE_VERIFIED`, does **not** mutate runtime &#47; trading &#47;
+execution code, and does **not** open a venue network session.
+
+Sealed critical-findings evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_37_pre_live_critical_findings_open_v1&#47;20260811T052152Z&#47;`
+
+``` text
+SECTION_11_12_9_37_CRITICAL_FINDINGS_RUN_ID=20260811T052152Z
+SECTION_11_12_9_37_CRITICAL_FINDINGS_ORIGIN_MAIN_SHA=1b61cd94af98439e55e12d7bb839e44852027a06
+SECTION_11_12_9_37_CRITICAL_FINDINGS_EVIDENCE_ROOT=evidence/ops/section_11_12_9_37_pre_live_critical_findings_open_v1/20260811T052152Z/
+PROOF_METHOD=GOVERNED_PRE_LIVE_FINDINGS_REGISTER_CRITICAL_ZERO_NO_LIVE
+PROOF_EXECUTED=true
+PROOF_RESULT=CRITICAL_FINDINGS_OPEN_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+NO_TRADING_LOGIC_CHANGE=true
+CRITICAL_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN_PROVEN=true
+CRITICAL_FINDINGS_OPEN_AUTHORIZED=true
+GOVERNED_PRE_LIVE_FINDINGS_REGISTER_PRESENT=true
+HIGH_FINDINGS_OPEN=0
+HIGH_FINDINGS_OPEN_PROVEN=false
+HIGH_FINDINGS_OPEN_AUTHORIZED=false
+MEDIUM_FINDINGS_OPEN=2
+LOW_FINDINGS_OPEN=1
+RECOVERY_SECURITY_TEST=PASS
+AUTHORITY_REPLAY_TEST=PASS
+CREDENTIAL_LEAKAGE_TEST=PASS
+PENETRATION_PROGRAM=PASS
+SECURITY_REGRESSION=PASS
+STATIC_SECURITY_ANALYSIS=PASS
+SBOM_PRESENT=true
+DEPENDENCY_AUDIT=PASS
+SECRETS_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=CRITICAL_FINDINGS_OPEN
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=14
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=7
+EARLIEST_UNRESOLVED_DEPENDENCY=HIGH_FINDINGS_OPEN
+EARLIEST_UNRESOLVED_SECTION_POINTER=HIGH_FINDINGS_OPEN
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_37
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_HIGH_FINDINGS_OPEN
+HARD_STOP_AFTER_THIS_PACKAGE=true
+```
+
+Mandatory distinctions:
+
+``` text
+CRITICAL_FINDINGS_OPEN != PRE_LIVE_CYBERSECURITY_GATE_PASS
+CRITICAL_FINDINGS_OPEN != LIVE_AUTHORIZED
+CRITICAL_FINDINGS_OPEN != SECTION_11_13_STARTED
+CRITICAL_FINDINGS_OPEN != HIGH_FINDINGS_OPEN
+OWNER_GO_CRITICAL_FINDINGS_OPEN != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: Critical Findings Open criterion newly bound PASS for
+§18.2 from the sealed governed findings register; prior security packages
+remain bound; earliest remaining unmet §18.2 criterion is
+`HIGH_FINDINGS_OPEN`; remaining Pre-Live security acceptance packages
+remain absent or OPEN. Gate remains `NOT_PASSED`. Live remains
+hard-blocked. Cap &#47; §11.13 remains unstarted. Hard stop after this
+package. No automatic progression. Creating or executing the next
+Pre-Live security acceptance package requires a **separate** Owner-GO and
+is **not** authorized here (`HIGH_FINDINGS_OPEN_AUTHORIZED=false`).
+
+##### 11.12.9.38 Pre-Live High Findings Open package (binding; PASS; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_HIGH_FINDINGS_OPEN`
+(authorized scope `PRE_LIVE_SECURITY_PACKAGE_HIGH_FINDINGS_OPEN`;
+`HIGH_FINDINGS_OPEN_AUTHORIZED=true` for this package only)
+executes the **earliest** remaining Pre-Live security acceptance package
+after §11.12.9.37: a productive, evidence-bound governed Pre-Live Findings
+Register proving Cybersecurity Runbook V2.1 §15 High &#47; §18.2
+`HIGH_FINDINGS_OPEN=0` on then-current `origin&#47;main`. Reuse-before-new
+applies (sealed findings registers from §11.12.9.27–.37, §11.12.9.31 HIGH
+closure comparison, and origin&#47;main bandit HIGH probe of remediated
+surfaces). Distinct from `CRITICAL_FINDINGS_OPEN` (already bound) and from
+`LIVE_TESTNET_ISOLATION_PROVEN` (**not** bound here). This binds exactly
+one newly closed §18.2 criterion:
+
+``` text
+HIGH_FINDINGS_OPEN=0
+```
+
+interpreted as the governed criterion PASS
+(`HIGH_FINDINGS_OPEN_PROVEN=true` &#47;
+`GOVERNED_PRE_LIVE_FINDINGS_REGISTER_PRESENT=true`) from the sealed
+evidence root below. This does **not** set
+`PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** set
+`ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not** start Cap &#47;
+§11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47; credentials, does
+**not** bind `LIVE_TESTNET_ISOLATION_PROVEN` &#47; `LIVE_DEFAULT_BLOCK_PROVEN` &#47;
+`LIVE_ARMING_FAIL_CLOSED_PROVEN` &#47; `AUDIT_EVIDENCE_VERIFIED`, does
+**not** mutate runtime &#47; trading &#47; execution code, and does **not** open a
+venue network session.
+
+Sealed high-findings evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_38_pre_live_high_findings_open_v1&#47;20260811T052547Z&#47;`
+
+``` text
+SECTION_11_12_9_38_HIGH_FINDINGS_RUN_ID=20260811T052547Z
+SECTION_11_12_9_38_HIGH_FINDINGS_ORIGIN_MAIN_SHA=1b61cd94af98439e55e12d7bb839e44852027a06
+SECTION_11_12_9_38_HIGH_FINDINGS_EVIDENCE_ROOT=evidence/ops/section_11_12_9_38_pre_live_high_findings_open_v1/20260811T052547Z/
+PROOF_METHOD=GOVERNED_PRE_LIVE_FINDINGS_REGISTER_HIGH_ZERO_NO_LIVE
+PROOF_EXECUTED=true
+PROOF_RESULT=HIGH_FINDINGS_OPEN_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+NO_TRADING_LOGIC_CHANGE=true
+HIGH_FINDINGS_OPEN=0
+HIGH_FINDINGS_OPEN_PROVEN=true
+HIGH_FINDINGS_OPEN_AUTHORIZED=true
+CRITICAL_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN_PROVEN=true
+GOVERNED_PRE_LIVE_FINDINGS_REGISTER_PRESENT=true
+MEDIUM_FINDINGS_OPEN=2
+LOW_FINDINGS_OPEN=1
+RECOVERY_SECURITY_TEST=PASS
+AUTHORITY_REPLAY_TEST=PASS
+CREDENTIAL_LEAKAGE_TEST=PASS
+PENETRATION_PROGRAM=PASS
+SECURITY_REGRESSION=PASS
+STATIC_SECURITY_ANALYSIS=PASS
+SBOM_PRESENT=true
+DEPENDENCY_AUDIT=PASS
+SECRETS_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=HIGH_FINDINGS_OPEN
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=15
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=6
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_TESTNET_ISOLATION_PROVEN
+EARLIEST_UNRESOLVED_SECTION_POINTER=LIVE_TESTNET_ISOLATION_PROVEN
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_38
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_LIVE_TESTNET_ISOLATION_PROVEN
+HARD_STOP_AFTER_THIS_PACKAGE=true
+LIVE_TESTNET_ISOLATION_AUTHORIZED=false
+```
+
+Mandatory distinctions:
+
+``` text
+HIGH_FINDINGS_OPEN != PRE_LIVE_CYBERSECURITY_GATE_PASS
+HIGH_FINDINGS_OPEN != LIVE_AUTHORIZED
+HIGH_FINDINGS_OPEN != SECTION_11_13_STARTED
+HIGH_FINDINGS_OPEN != CRITICAL_FINDINGS_OPEN
+HIGH_FINDINGS_OPEN != LIVE_TESTNET_ISOLATION_PROVEN
+OWNER_GO_HIGH_FINDINGS_OPEN != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: High Findings Open criterion newly bound PASS for §18.2
+from the sealed governed findings register; prior security packages remain
+bound; earliest remaining unmet §18.2 criterion is
+`LIVE_TESTNET_ISOLATION_PROVEN`; remaining Pre-Live security acceptance
+packages remain absent or OPEN. Gate remains `NOT_PASSED`. Live remains
+hard-blocked. Cap &#47; §11.13 remains unstarted. Hard stop after this
+package. No automatic progression. Creating or executing the next
+Pre-Live security acceptance package requires a **separate** Owner-GO and
+is **not** authorized here (`LIVE_TESTNET_ISOLATION_AUTHORIZED=false`).
+
+##### 11.12.9.39 Pre-Live Live/Testnet Isolation Proven package (binding; PASS; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_LIVE_TESTNET_ISOLATION_PROVEN`
+(authorized scope `PRE_LIVE_SECURITY_PACKAGE_LIVE_TESTNET_ISOLATION_PROVEN`;
+`LIVE_TESTNET_ISOLATION_AUTHORIZED=true` for this package only)
+executes the **earliest** remaining Pre-Live security acceptance package
+after §11.12.9.38: a productive, evidence-bound Live&#47;Testnet Isolation
+proof against Cybersecurity Runbook V2.1 §19 &#47; §18.2 on then-current
+`origin&#47;main`. Reuse-before-new applies (credential cross-use &#47; testnet
+credential scope, LiveModeGate &#47; environment separation, venue&#47;host&#47;
+account&#47;instrument binding, WP0C&#47;live-gates&#47;safety rails proving
+Testnet-GO != Live-GO). Distinct from `LIVE_DEFAULT_BLOCK_PROVEN` and
+`LIVE_ARMING_FAIL_CLOSED_PROVEN` (remain OPEN). This binds exactly one
+newly closed §18.2 criterion:
+
+``` text
+LIVE_TESTNET_ISOLATION_PROVEN=true
+```
+
+from the sealed evidence root below (focused owners 308 passed;
+CRITICAL=0 &#47; HIGH=0). This does **not** set
+`PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** set
+`ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not** start Cap &#47;
+§11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47; credentials, does
+**not** bind `LIVE_DEFAULT_BLOCK_PROVEN` &#47; `LIVE_ARMING_FAIL_CLOSED_PROVEN` &#47;
+`AUDIT_EVIDENCE_VERIFIED` &#47; `MANIFEST_VERIFY_RC` gate criterion, does
+**not** mutate runtime &#47; trading &#47; execution code, and does **not** open a
+venue network session.
+
+Sealed live&#47;testnet isolation evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_39_pre_live_live_testnet_isolation_proven_v1&#47;20260811T052914Z&#47;`
+
+``` text
+SECTION_11_12_9_39_LIVE_TESTNET_ISOLATION_RUN_ID=20260811T052914Z
+SECTION_11_12_9_39_LIVE_TESTNET_ISOLATION_ORIGIN_MAIN_SHA=1b61cd94af98439e55e12d7bb839e44852027a06
+SECTION_11_12_9_39_LIVE_TESTNET_ISOLATION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_39_pre_live_live_testnet_isolation_proven_v1/20260811T052914Z/
+PROOF_METHOD=BOUNDED_LOCAL_LIVE_TESTNET_ISOLATION_OWNERS_NO_LIVE
+PROOF_EXECUTED=true
+PROOF_RESULT=LIVE_TESTNET_ISOLATION_PROVEN_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+NO_TRADING_LOGIC_CHANGE=true
+LIVE_TESTNET_ISOLATION_PROVEN=true
+LIVE_TESTNET_ISOLATION_AUTHORIZED=true
+LIVE_DEFAULT_BLOCK_PROVEN=false
+LIVE_DEFAULT_BLOCK_AUTHORIZED=false
+LIVE_ARMING_FAIL_CLOSED_PROVEN=false
+HIGH_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN=0
+MEDIUM_FINDINGS_OPEN=2
+LOW_FINDINGS_OPEN=1
+HIGH_FINDINGS_OPEN_PROVEN=true
+CRITICAL_FINDINGS_OPEN_PROVEN=true
+RECOVERY_SECURITY_TEST=PASS
+AUTHORITY_REPLAY_TEST=PASS
+CREDENTIAL_LEAKAGE_TEST=PASS
+PENETRATION_PROGRAM=PASS
+SECURITY_REGRESSION=PASS
+STATIC_SECURITY_ANALYSIS=PASS
+SBOM_PRESENT=true
+DEPENDENCY_AUDIT=PASS
+SECRETS_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=LIVE_TESTNET_ISOLATION_PROVEN
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=16
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=5
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_DEFAULT_BLOCK_PROVEN
+EARLIEST_UNRESOLVED_SECTION_POINTER=LIVE_DEFAULT_BLOCK_PROVEN
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_39
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_LIVE_DEFAULT_BLOCK_PROVEN
+HARD_STOP_AFTER_THIS_PACKAGE=true
+```
+
+Mandatory distinctions:
+
+``` text
+LIVE_TESTNET_ISOLATION_PROVEN != PRE_LIVE_CYBERSECURITY_GATE_PASS
+LIVE_TESTNET_ISOLATION_PROVEN != LIVE_AUTHORIZED
+LIVE_TESTNET_ISOLATION_PROVEN != SECTION_11_13_STARTED
+LIVE_TESTNET_ISOLATION_PROVEN != LIVE_DEFAULT_BLOCK_PROVEN
+LIVE_TESTNET_ISOLATION_PROVEN != LIVE_ARMING_FAIL_CLOSED_PROVEN
+OWNER_GO_LIVE_TESTNET_ISOLATION != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: Live&#47;Testnet Isolation newly bound PASS for §18.2 from
+the sealed bounded local package; prior security packages remain bound;
+earliest remaining unmet §18.2 criterion is `LIVE_DEFAULT_BLOCK_PROVEN`;
+remaining Pre-Live security acceptance packages remain absent or OPEN.
+Gate remains `NOT_PASSED`. Live remains hard-blocked. Cap &#47; §11.13
+remains unstarted. Hard stop after this package. No automatic
+progression. Creating or executing the next Pre-Live security acceptance
+package requires a **separate** Owner-GO and is **not** authorized here
+(`LIVE_DEFAULT_BLOCK_AUTHORIZED=false`).
+
+##### 11.12.9.40 Pre-Live Live Default Block Proven package (binding; PASS; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_LIVE_DEFAULT_BLOCK_PROVEN`
+(authorized scope `PRE_LIVE_SECURITY_PACKAGE_LIVE_DEFAULT_BLOCK_PROVEN`;
+`LIVE_DEFAULT_BLOCK_AUTHORIZED=true` for this package only)
+executes the **earliest** remaining Pre-Live security acceptance package
+after §11.12.9.39: a productive, evidence-bound Live Default Block proof
+against Cybersecurity Runbook V2.1 §3.3 &#47; §3.4 &#47; §12.2 &#47; §18.2 on
+then-current `origin&#47;main`. Reuse-before-new applies
+(`LIVE_ENABLED_FORBIDDEN_DEFAULT`, AI activation gate defaults
+`allow_ai_to_execute_live=false` &#47; `live_unlock.enabled=false` &#47;
+`live_unlock.armed=false` &#47; `confirm_token_required=true`, LiveModeGate,
+feature-activation &#47; WP0C &#47; live-gates &#47; environment-safety &#47;
+confirm-token owners). Distinct from `LIVE_ARMING_FAIL_CLOSED_PROVEN`
+(remains OPEN) and from already-bound `LIVE_TESTNET_ISOLATION_PROVEN`.
+This binds exactly one newly closed §18.2 criterion:
+
+``` text
+LIVE_DEFAULT_BLOCK_PROVEN=true
+```
+
+from the sealed evidence root below (focused owners 165 passed;
+canonical config probe PASS; CRITICAL=0 &#47; HIGH=0). This does **not** set
+`PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** set
+`ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not** start Cap &#47;
+§11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47; credentials, does
+**not** bind `LIVE_ARMING_FAIL_CLOSED_PROVEN` &#47; `AUDIT_EVIDENCE_VERIFIED` &#47;
+`MANIFEST_VERIFY_RC` gate criterion, does **not** mutate runtime &#47;
+trading &#47; execution code, and does **not** open a venue network session.
+
+Sealed live default block evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_40_pre_live_live_default_block_proven_v1&#47;20260811T053222Z&#47;`
+
+``` text
+SECTION_11_12_9_40_LIVE_DEFAULT_BLOCK_RUN_ID=20260811T053222Z
+SECTION_11_12_9_40_LIVE_DEFAULT_BLOCK_ORIGIN_MAIN_SHA=1b61cd94af98439e55e12d7bb839e44852027a06
+SECTION_11_12_9_40_LIVE_DEFAULT_BLOCK_EVIDENCE_ROOT=evidence/ops/section_11_12_9_40_pre_live_live_default_block_proven_v1/20260811T053222Z/
+PROOF_METHOD=BOUNDED_LOCAL_LIVE_DEFAULT_BLOCK_OWNERS_NO_LIVE
+PROOF_EXECUTED=true
+PROOF_RESULT=LIVE_DEFAULT_BLOCK_PROVEN_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+NO_TRADING_LOGIC_CHANGE=true
+LIVE_DEFAULT_BLOCK_PROVEN=true
+LIVE_DEFAULT_BLOCK_AUTHORIZED=true
+LIVE_ARMING_FAIL_CLOSED_PROVEN=false
+LIVE_ARMING_FAIL_CLOSED_AUTHORIZED=false
+LIVE_TESTNET_ISOLATION_PROVEN=true
+HIGH_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN=0
+MEDIUM_FINDINGS_OPEN=2
+LOW_FINDINGS_OPEN=1
+HIGH_FINDINGS_OPEN_PROVEN=true
+CRITICAL_FINDINGS_OPEN_PROVEN=true
+RECOVERY_SECURITY_TEST=PASS
+AUTHORITY_REPLAY_TEST=PASS
+CREDENTIAL_LEAKAGE_TEST=PASS
+PENETRATION_PROGRAM=PASS
+SECURITY_REGRESSION=PASS
+STATIC_SECURITY_ANALYSIS=PASS
+SBOM_PRESENT=true
+DEPENDENCY_AUDIT=PASS
+SECRETS_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=LIVE_DEFAULT_BLOCK_PROVEN
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=17
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=4
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_ARMING_FAIL_CLOSED_PROVEN
+EARLIEST_UNRESOLVED_SECTION_POINTER=LIVE_ARMING_FAIL_CLOSED_PROVEN
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_40
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_LIVE_ARMING_FAIL_CLOSED_PROVEN
+HARD_STOP_AFTER_THIS_PACKAGE=true
+```
+
+Mandatory distinctions:
+
+``` text
+LIVE_DEFAULT_BLOCK_PROVEN != PRE_LIVE_CYBERSECURITY_GATE_PASS
+LIVE_DEFAULT_BLOCK_PROVEN != LIVE_AUTHORIZED
+LIVE_DEFAULT_BLOCK_PROVEN != SECTION_11_13_STARTED
+LIVE_DEFAULT_BLOCK_PROVEN != LIVE_ARMING_FAIL_CLOSED_PROVEN
+LIVE_DEFAULT_BLOCK_PROVEN != LIVE_TESTNET_ISOLATION_PROVEN
+OWNER_GO_LIVE_DEFAULT_BLOCK != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: Live Default Block newly bound PASS for §18.2 from the
+sealed bounded local package; prior security packages remain bound;
+earliest remaining unmet §18.2 criterion is
+`LIVE_ARMING_FAIL_CLOSED_PROVEN`; remaining Pre-Live security acceptance
+packages remain absent or OPEN. Gate remains `NOT_PASSED`. Live remains
+hard-blocked. Cap &#47; §11.13 remains unstarted. Hard stop after this
+package. No automatic progression. Creating or executing the next
+Pre-Live security acceptance package requires a **separate** Owner-GO and
+is **not** authorized here (`LIVE_ARMING_FAIL_CLOSED_AUTHORIZED=false`).
+
+##### 11.12.9.40R Recovery canonical bind of Pre-Live packages 29–40 (docs+evidence; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_RECOVER_AND_CANONICALLY_BIND_PRE_LIVE_SECURITY_PACKAGES_29_THROUGH_40`
+(authorized scope
+`RECOVER_AND_CANONICALLY_BIND_PRE_LIVE_SECURITY_PACKAGES_29_THROUGH_40`)
+recovers working-model drift between local sealed packages §11.12.9.29–.40
+and `origin&#47;main` by canonically binding already-executed docs + evidence
+onto the repository via governed PR. This is **docs+evidence bind only**.
+It does **not** re-execute package proofs, does **not** mutate runtime &#47;
+trading &#47; execution code, does **not** open a venue network session, does
+**not** authorize Live &#47; Testnet &#47; orders &#47; credentials, does **not** set
+`PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** start Cap &#47; §11.13, and
+does **not** authorize or bind `LIVE_ARMING_FAIL_CLOSED_PROVEN`
+(`LIVE_ARMING_FAIL_CLOSED_AUTHORIZED=false`).
+
+Packages recovered &#47; bound under this Owner-GO (each retains its own sealed
+evidence root and prior package Owner-GO):
+
+``` text
+11.12.9.29 SBOM_PRESENT
+11.12.9.30 STATIC_SECURITY_ANALYSIS (FAIL then remediation path)
+11.12.9.31 STATIC_SECURITY_ANALYSIS remediation &#47; PASS
+11.12.9.32 SECURITY_REGRESSION
+11.12.9.33 PENETRATION_PROGRAM
+11.12.9.34 CREDENTIAL_LEAKAGE_TEST
+11.12.9.35 AUTHORITY_REPLAY_TEST
+11.12.9.36 RECOVERY_SECURITY_TEST
+11.12.9.37 CRITICAL_FINDINGS_OPEN=0
+11.12.9.38 HIGH_FINDINGS_OPEN=0
+11.12.9.39 LIVE_TESTNET_ISOLATION_PROVEN
+11.12.9.40 LIVE_DEFAULT_BLOCK_PROVEN
+```
+
+Sealed recovery bind evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_recover_bind_pre_live_packages_29_through_40_v1&#47;20260811T054023Z&#47;`
+
+``` text
+SECTION_11_12_9_40R_RECOVERY_BIND_RUN_ID=20260811T054023Z
+SECTION_11_12_9_40R_RECOVERY_BIND_ORIGIN_MAIN_SHA=1b61cd94af98439e55e12d7bb839e44852027a06
+SECTION_11_12_9_40R_RECOVERY_BIND_EVIDENCE_ROOT=evidence/ops/section_11_12_9_recover_bind_pre_live_packages_29_through_40_v1/20260811T054023Z/
+PROOF_METHOD=RECOVERY_CANONICAL_BIND_DOCS_EVIDENCE_PACKAGES_29_THROUGH_40
+PROOF_EXECUTED=true
+PROOF_RESULT=RECOVERY_BIND_READY_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+NO_TRADING_LOGIC_CHANGE=true
+PACKAGES_BOUND_COUNT=12
+ALL_PACKAGE_MANIFEST_VERIFY_RC_ZERO=true
+LIVE_DEFAULT_BLOCK_PROVEN=true
+LIVE_TESTNET_ISOLATION_PROVEN=true
+LIVE_ARMING_FAIL_CLOSED_PROVEN=false
+LIVE_ARMING_FAIL_CLOSED_AUTHORIZED=false
+HIGH_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN=0
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=17
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=4
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_ARMING_FAIL_CLOSED_PROVEN
+EARLIEST_UNRESOLVED_SECTION_POINTER=LIVE_ARMING_FAIL_CLOSED_PROVEN
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_40R
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_LIVE_ARMING_FAIL_CLOSED_PROVEN
+HARD_STOP_AFTER_THIS_PACKAGE=true
+```
+
+Mandatory distinctions:
+
+``` text
+RECOVERY_BIND != PRE_LIVE_CYBERSECURITY_GATE_PASS
+RECOVERY_BIND != LIVE_AUTHORIZED
+RECOVERY_BIND != SECTION_11_13_STARTED
+RECOVERY_BIND != LIVE_ARMING_FAIL_CLOSED_PROVEN
+RECOVERY_BIND != LIVE_ARMING_AUTHORIZATION
+OWNER_GO_RECOVERY_BIND != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: packages §11.12.9.29–.40 and their sealed evidence roots are
+recovered for canonical repository bind under this Owner-GO; tip after bind
+matches §11.12.9.40 (`LIVE_DEFAULT_BLOCK_PROVEN=true`); earliest remaining
+unmet §18.2 criterion remains `LIVE_ARMING_FAIL_CLOSED_PROVEN`. Gate remains
+`NOT_PASSED`. Live remains hard-blocked. Cap &#47; §11.13 remains unstarted.
+Hard stop after this recovery package. No automatic progression. Creating or
+executing `LIVE_ARMING_FAIL_CLOSED_PROVEN` requires a **separate** Owner-GO
+and is **not** authorized here (`LIVE_ARMING_FAIL_CLOSED_AUTHORIZED=false`).
+
 Canonical residual sequence pointer (section sequence historically bound;
 productive proven-field chain closed):
 

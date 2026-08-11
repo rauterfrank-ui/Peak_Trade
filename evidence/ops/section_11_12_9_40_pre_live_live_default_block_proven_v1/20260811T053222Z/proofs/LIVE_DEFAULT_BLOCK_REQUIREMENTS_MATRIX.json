@@ -1,0 +1,86 @@
+{
+  "BINDS_LIVE_ARMING_FAIL_CLOSED_PROVEN": false,
+  "BINDS_LIVE_TESTNET_ISOLATION_PROVEN": false,
+  "CRITICAL_FINDINGS_OPEN": 0,
+  "DOCUMENT_CLASS": "LIVE_DEFAULT_BLOCK_REQUIREMENTS_MATRIX_SECTION_11_12_9_40_V1",
+  "HIGH_FINDINGS_OPEN": 0,
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "OWNERS": [
+    "tests/execution/live/test_safety_rails.py",
+    "tests/p48/test_ai_activation_gate_v1.py",
+    "tests/p49/test_ai_model_hard_gate_v1.py",
+    "tests/live/test_feature_activation_gate.py",
+    "tests/governance/test_live_mode_gate.py",
+    "tests/governance/test_wp0c_enforce_gate.py",
+    "tests/test_live_gates.py",
+    "tests/test_environment_and_safety.py",
+    "tests/ops/test_live_gates_verification.py",
+    "tests/live/test_confirm_token.py",
+    "config/governance/ai_activation_gate_v1.json"
+  ],
+  "PACKAGE_VERDICT": "PASS",
+  "REQUIREMENTS": [
+    {
+      "id": "LDB-01",
+      "owners": [
+        "tests/execution/live/test_safety_rails.py"
+      ],
+      "section": "\u00a73.4 / \u00a712.2 LIVE_DEFAULT_BLOCK",
+      "status": "PASS",
+      "surface": "LIVE_ENABLED_FORBIDDEN_DEFAULT + assert_live_stays_disabled"
+    },
+    {
+      "id": "LDB-02",
+      "owners": [
+        "tests/p48/test_ai_activation_gate_v1.py",
+        "config/governance/ai_activation_gate_v1.json"
+      ],
+      "section": "\u00a73.3 Live Domain defaults enabled/armed false",
+      "status": "PASS",
+      "surface": "AI activation gate defaults + canonical config probe"
+    },
+    {
+      "id": "LDB-03",
+      "owners": [
+        "tests/p49/test_ai_model_hard_gate_v1.py",
+        "tests/live/test_feature_activation_gate.py"
+      ],
+      "section": "\u00a712.2 Live unlock multi-condition",
+      "status": "PASS",
+      "surface": "AI model hard gate + feature activation gate"
+    },
+    {
+      "id": "LDB-04",
+      "owners": [
+        "tests/governance/test_live_mode_gate.py",
+        "tests/governance/test_wp0c_enforce_gate.py",
+        "tests/test_live_gates.py",
+        "tests/test_environment_and_safety.py"
+      ],
+      "section": "\u00a712.2 LiveModeGate / live gates default block",
+      "status": "PASS",
+      "surface": "LiveModeGate + live gates + environment safety armed defaults"
+    },
+    {
+      "id": "LDB-05",
+      "owners": [
+        "tests/ops/test_live_gates_verification.py",
+        "tests/live/test_confirm_token.py"
+      ],
+      "section": "\u00a712.2 Confirm-token required when armed",
+      "status": "PASS",
+      "surface": "Confirm token + live gates verification owners"
+    },
+    {
+      "binds_live_arming_fail_closed": false,
+      "id": "LDB-06",
+      "owners": [],
+      "section": "Non-claims",
+      "status": "PASS",
+      "surface": "Does not bind LIVE_ARMING_FAIL_CLOSED_PROVEN / gate PASS / Live"
+    }
+  ],
+  "REQUIREMENTS_PASS": 6,
+  "REQUIREMENTS_TOTAL": 6,
+  "RUN_ID": "20260811T053222Z"
+}

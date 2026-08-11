@@ -1,0 +1,5 @@
+[main]	INFO	profile include tests: None
+[main]	INFO	profile exclude tests: None
+[main]	INFO	cli include tests: None
+[main]	INFO	cli exclude tests: None
+[json]	INFO	JSON output written to file: evidence/ops/section_11_12_9_31_static_security_analysis_high_remediation_and_rerun_v1/20260811T043722Z/proofs/BANDIT_SRC_RERUN.json

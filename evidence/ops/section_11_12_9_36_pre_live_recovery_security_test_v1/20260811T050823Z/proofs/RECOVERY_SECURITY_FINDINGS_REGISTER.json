@@ -1,0 +1,21 @@
+{
+  "CRITICAL_FINDINGS_OPEN": 0,
+  "DOCUMENT_CLASS": "RECOVERY_SECURITY_FINDINGS_REGISTER_SECTION_11_12_9_36_V1",
+  "FINDINGS": [
+    {
+      "blocking": false,
+      "detail": "test_constants_and_call_graph_bound asserts CALL_GRAPH_V1 == REQUIRED_CALL_GRAPH; tuples diverge at index 0 (repository_config_integrity_check vs persisted_single_selected_future). No kill-switch/corrupt-checkpoint/stale-authority bypass demonstrated. Remaining Cap-6.4 restart/failure-injection tests PASS.",
+      "id": "RST-INV-001",
+      "severity": "LOW",
+      "status": "OPEN_ACCEPTED",
+      "title": "Cap-6.4 call-graph inventory constant drift"
+    }
+  ],
+  "HIGH_FINDINGS_OPEN": 0,
+  "LOW_FINDINGS_OPEN": 1,
+  "MEDIUM_FINDINGS_NOTE": "Pre-existing CLT MEDIUM residuals under RR-SH-002 carried forward; non-blocking",
+  "MEDIUM_FINDINGS_OPEN": 2,
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "PACKAGE_VERDICT": "PASS",
+  "RUN_ID": "20260811T050823Z"
+}

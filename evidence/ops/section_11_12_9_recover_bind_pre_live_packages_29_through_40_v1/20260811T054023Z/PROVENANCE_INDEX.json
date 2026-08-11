@@ -1,0 +1,26 @@
+{
+  "DOCUMENT_CLASS": "PROVENANCE_INDEX_SECTION_11_12_9_RECOVER_BIND_29_40_V1",
+  "OWNER_GO": "OWNER_GO_RECOVER_AND_CANONICALLY_BIND_PRE_LIVE_SECURITY_PACKAGES_29_THROUGH_40",
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "RUN_ID": "20260811T054023Z",
+  "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_recover_bind_pre_live_packages_29_through_40_v1/20260811T054023Z/",
+  "BOUND_PACKAGE_EVIDENCE_ROOTS": [
+    "evidence/ops/section_11_12_9_29_pre_live_sbom_present_v1/20260811T042745Z/",
+    "evidence/ops/section_11_12_9_30_pre_live_static_security_analysis_v1/20260811T043159Z/",
+    "evidence/ops/section_11_12_9_31_static_security_analysis_high_remediation_and_rerun_v1/20260811T043722Z/",
+    "evidence/ops/section_11_12_9_32_pre_live_security_regression_v1/20260811T044255Z/",
+    "evidence/ops/section_11_12_9_33_pre_live_penetration_program_v1/20260811T044900Z/",
+    "evidence/ops/section_11_12_9_34_pre_live_credential_leakage_test_v1/20260811T045537Z/",
+    "evidence/ops/section_11_12_9_35_pre_live_authority_replay_test_v1/20260811T050403Z/",
+    "evidence/ops/section_11_12_9_36_pre_live_recovery_security_test_v1/20260811T050823Z/",
+    "evidence/ops/section_11_12_9_37_pre_live_critical_findings_open_v1/20260811T052152Z/",
+    "evidence/ops/section_11_12_9_38_pre_live_high_findings_open_v1/20260811T052547Z/",
+    "evidence/ops/section_11_12_9_39_pre_live_live_testnet_isolation_proven_v1/20260811T052914Z/",
+    "evidence/ops/section_11_12_9_40_pre_live_live_default_block_proven_v1/20260811T053222Z/"
+  ],
+  "DOCS_SURFACES": [
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+  ]
+}

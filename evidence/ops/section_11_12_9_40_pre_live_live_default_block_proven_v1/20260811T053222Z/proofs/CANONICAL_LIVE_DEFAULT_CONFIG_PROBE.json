@@ -1,0 +1,9 @@
+{
+  "DOCUMENT_CLASS": "CANONICAL_LIVE_DEFAULT_CONFIG_PROBE_SECTION_11_12_9_40_V1",
+  "LIVE_DEFAULT_BLOCK_OBSERVED": true,
+  "PATH": "config/governance/ai_activation_gate_v1.json",
+  "allow_ai_to_execute_live": false,
+  "live_unlock.armed": false,
+  "live_unlock.confirm_token_required": true,
+  "live_unlock.enabled": false
+}

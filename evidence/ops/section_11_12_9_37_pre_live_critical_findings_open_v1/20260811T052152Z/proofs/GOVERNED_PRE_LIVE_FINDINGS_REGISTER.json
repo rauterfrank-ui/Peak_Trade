@@ -1,0 +1,210 @@
+{
+  "BINDS_HIGH_FINDINGS_OPEN": false,
+  "BINDS_PRE_LIVE_CYBERSECURITY_GATE": false,
+  "CRITICAL_FINDINGS_OPEN": 0,
+  "DOCUMENT_CLASS": "GOVERNED_PRE_LIVE_FINDINGS_REGISTER_SECTION_11_12_9_37_V1",
+  "GOVERNED_PRE_LIVE_FINDINGS_REGISTER_PRESENT": true,
+  "HIGH_FINDINGS_OBSERVED_NOT_BOUND": 0,
+  "LOW_FINDINGS_OPEN_OR_RETAINED_NONBLOCKING": 7,
+  "MEDIUM_FINDINGS_OPEN_OR_RETAINED_NONBLOCKING": 14,
+  "OPEN_NONCRITICAL_FINDING_POINTERS": [
+    {
+      "blocking": false,
+      "id": null,
+      "severity": "MEDIUM",
+      "source": "11.12.9.27",
+      "title": null
+    },
+    {
+      "blocking": false,
+      "id": null,
+      "severity": "MEDIUM",
+      "source": "11.12.9.27",
+      "title": null
+    },
+    {
+      "blocking": false,
+      "id": null,
+      "severity": "MEDIUM",
+      "source": "11.12.9.27",
+      "title": null
+    },
+    {
+      "blocking": false,
+      "id": null,
+      "severity": "LOW",
+      "source": "11.12.9.27",
+      "title": null
+    },
+    {
+      "blocking": false,
+      "id": null,
+      "severity": "MEDIUM",
+      "source": "11.12.9.27",
+      "title": null
+    },
+    {
+      "blocking": false,
+      "id": null,
+      "severity": "MEDIUM",
+      "source": "11.12.9.27",
+      "title": null
+    },
+    {
+      "blocking": false,
+      "id": null,
+      "severity": "LOW",
+      "source": "11.12.9.27",
+      "title": null
+    },
+    {
+      "blocking": false,
+      "id": null,
+      "severity": "MEDIUM",
+      "source": "11.12.9.27",
+      "title": null
+    },
+    {
+      "blocking": false,
+      "id": null,
+      "severity": "MEDIUM",
+      "source": "11.12.9.27",
+      "title": null
+    },
+    {
+      "blocking": false,
+      "id": null,
+      "severity": "MEDIUM",
+      "source": "11.12.9.27",
+      "title": null
+    },
+    {
+      "blocking": false,
+      "id": "PEN-INV-001",
+      "severity": "LOW",
+      "source": "11.12.9.33",
+      "title": "Expected historical parity-gap assessment surface id string; observed newer FULL_CANONICAL_BACKTEST_BOUNDARY_CHAIN_REASSESSMENT_V0. Not a kill-switch bypass."
+    },
+    {
+      "blocking": false,
+      "id": "PEN-INV-002",
+      "severity": "LOW",
+      "source": "11.12.9.33",
+      "title": "Frozen webui file-set inventory missing new market_dashboard_landscape_shell_router_v2.py. Documentary visibility contract drift, not header/auth bypass."
+    },
+    {
+      "blocking": false,
+      "id": "CLT-MED-01",
+      "severity": "MEDIUM",
+      "source": "11.12.9.34",
+      "title": "Logging filter incomplete for Python dict repr payloads"
+    },
+    {
+      "blocking": false,
+      "id": "CLT-MED-02",
+      "severity": "MEDIUM",
+      "source": "11.12.9.34",
+      "title": "sk-proj-* OpenAI-like key shape not matched by sk-[A-Za-z0-9]+ detector"
+    },
+    {
+      "blocking": false,
+      "id": "CLT-LOW-01",
+      "severity": "LOW",
+      "source": "11.12.9.34",
+      "title": "Local gitignored audit report false positive in no_secret_prints walker"
+    },
+    {
+      "blocking": false,
+      "id": "CLT-LOW-02",
+      "severity": "LOW",
+      "source": "11.12.9.34",
+      "title": "gap4 shadow execute rc!=0 out of credential-leakage scope"
+    },
+    {
+      "blocking": false,
+      "id": "RST-INV-001",
+      "severity": "LOW",
+      "source": "11.12.9.36",
+      "title": "Cap-6.4 call-graph inventory constant drift"
+    }
+  ],
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "PACKAGE_SCOPE": "CRITICAL_FINDINGS_OPEN",
+  "PACKAGE_VERDICT": "PASS",
+  "RUN_ID": "20260811T052152Z",
+  "SEVERITY_MODEL": "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#15",
+  "SOURCE_REGISTERS": [
+    {
+      "CRITICAL_FINDINGS_OPEN": 0,
+      "HIGH_FINDINGS_OBSERVED": 0,
+      "LOW_OPEN_OR_RETAINED": 2,
+      "MEDIUM_OPEN_OR_RETAINED": 8,
+      "criterion_bound": "DEPENDENCY_AUDIT",
+      "note": "DEPENDENCY_NONBLOCKING_MEDIUM_LOW_RETAINED",
+      "register_path": "evidence/ops/section_11_12_9_27_dependency_audit_rb01_rb02_remediation_and_rerun_v1/20260811T035809Z/proofs/DEPENDENCY_FINDINGS_REGISTER.json",
+      "register_sha256": "56ff05b8fc7885d6653430c81b5e73b5221ab793c330e129b25184ad9ead6d1e",
+      "section": "11.12.9.27"
+    },
+    {
+      "CRITICAL_FINDINGS_OPEN": 0,
+      "HIGH_FINDINGS_OBSERVED": 0,
+      "LOW_OPEN_OR_RETAINED": 0,
+      "MEDIUM_OPEN_OR_RETAINED": 0,
+      "criterion_bound": "STATIC_SECURITY_ANALYSIS",
+      "note": "STATIC_SCANNER_INVENTORY_MEDIUM_LOW_NOT_TREATED_AS_OPEN_GATE_RESIDUALS",
+      "register_path": "evidence/ops/section_11_12_9_31_static_security_analysis_high_remediation_and_rerun_v1/20260811T043722Z/proofs/STATIC_SECURITY_FINDINGS_REGISTER.json",
+      "register_sha256": "0fde2a1e9aa14b10692b74581e0a3151e5b8ac3bbf0106278a8681931b4e6f98",
+      "section": "11.12.9.31"
+    },
+    {
+      "CRITICAL_FINDINGS_OPEN": 0,
+      "HIGH_FINDINGS_OBSERVED": 0,
+      "LOW_OPEN_OR_RETAINED": 0,
+      "MEDIUM_OPEN_OR_RETAINED": 0,
+      "criterion_bound": "SECURITY_REGRESSION",
+      "register_path": "evidence/ops/section_11_12_9_32_pre_live_security_regression_v1/20260811T044255Z/MACHINE_READABLE_EVALUATION.json",
+      "register_sha256": "e73aebf7b3374228cc63ca917abc85b073c4169dc5b6fc02fdec95a10ce5fd79",
+      "section": "11.12.9.32"
+    },
+    {
+      "CRITICAL_FINDINGS_OPEN": 0,
+      "HIGH_FINDINGS_OBSERVED": 0,
+      "LOW_OPEN_OR_RETAINED": 2,
+      "MEDIUM_OPEN_OR_RETAINED": 0,
+      "criterion_bound": "PENETRATION_PROGRAM",
+      "register_path": "evidence/ops/section_11_12_9_33_pre_live_penetration_program_v1/20260811T044900Z/proofs/PENETRATION_FINDINGS_REGISTER.json",
+      "register_sha256": "a4ed560173129741a10cce44a4e5dee714957021eb5304a5e82bfdedaeea9f08",
+      "section": "11.12.9.33"
+    },
+    {
+      "CRITICAL_FINDINGS_OPEN": 0,
+      "HIGH_FINDINGS_OBSERVED": 0,
+      "LOW_OPEN_OR_RETAINED": 2,
+      "MEDIUM_OPEN_OR_RETAINED": 2,
+      "criterion_bound": "CREDENTIAL_LEAKAGE_TEST",
+      "register_path": "evidence/ops/section_11_12_9_34_pre_live_credential_leakage_test_v1/20260811T045537Z/proofs/CREDENTIAL_LEAKAGE_FINDINGS_REGISTER.json",
+      "register_sha256": "38b3c4bc7dccb2d5f895b5405169352c3d824e5243284f0d8fdf475fa38c651f",
+      "section": "11.12.9.34"
+    },
+    {
+      "CRITICAL_FINDINGS_OPEN": 0,
+      "HIGH_FINDINGS_OBSERVED": 0,
+      "LOW_OPEN_OR_RETAINED": 0,
+      "MEDIUM_OPEN_OR_RETAINED": 2,
+      "criterion_bound": "AUTHORITY_REPLAY_TEST",
+      "register_path": "evidence/ops/section_11_12_9_35_pre_live_authority_replay_test_v1/20260811T050403Z/proofs/AUTHORITY_REPLAY_FINDINGS_REGISTER.json",
+      "register_sha256": "49c9948f6201e1b6d1112101abb3d12435358b80c989905b5bb45c697fc38595",
+      "section": "11.12.9.35"
+    },
+    {
+      "CRITICAL_FINDINGS_OPEN": 0,
+      "HIGH_FINDINGS_OBSERVED": 0,
+      "LOW_OPEN_OR_RETAINED": 1,
+      "MEDIUM_OPEN_OR_RETAINED": 2,
+      "criterion_bound": "RECOVERY_SECURITY_TEST",
+      "register_path": "evidence/ops/section_11_12_9_36_pre_live_recovery_security_test_v1/20260811T050823Z/proofs/RECOVERY_SECURITY_FINDINGS_REGISTER.json",
+      "register_sha256": "4bbf045411a6d3da504816c1f6fdcf4057c95f06f47b230e312d558f941fe106",
+      "section": "11.12.9.36"
+    }
+  ]
+}

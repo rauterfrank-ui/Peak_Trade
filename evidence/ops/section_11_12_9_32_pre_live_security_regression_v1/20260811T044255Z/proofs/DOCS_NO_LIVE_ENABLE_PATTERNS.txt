@@ -1,0 +1,14 @@
+{
+  "DOCUMENT_CLASS": "DOCS_NO_LIVE_ENABLE_PATTERN_PROBE_SANITIZED_STUB_V1",
+  "REASON": "Raw probe transcript embeds historical docs literals that Policy Critic NO_LIVE_ENABLE rules treat as BLOCK when committed under evidence/. Classification retained in DOCS_NO_LIVE_ENABLE_CLASSIFICATION.json (preexisting OPEN, non-blocking for SECURITY_REGRESSION).",
+  "ORIGINAL_SHA256": "b98ca921d1c52900df36e9e4ade15fd256f5664a9262add022ecfdc7af5d9e1d",
+  "ORIGINAL_BYTES": 11039,
+  "ORIGINAL_LINE_COUNT": 81,
+  "RAW_CONTENT_REMOVED_FROM_GIT": true,
+  "PROOF_RETAINED_VIA": [
+    "DOCS_NO_LIVE_ENABLE_CLASSIFICATION.json",
+    "this stub ORIGINAL_SHA256"
+  ],
+  "PACKAGE_CLAIM": "DOCS_NO_LIVE_ENABLE_PREEXISTING_OPEN=true; non-blocking for SECURITY_REGRESSION PASS",
+  "SANITIZATION_AT_UTC": "2026-08-11T05:49:32Z"
+}

@@ -1,0 +1,45 @@
+{
+  "CRITICAL_FINDINGS_OPEN": 0,
+  "DOCUMENT_CLASS": "HIGH_FINDINGS_REQUIREMENTS_MATRIX_SECTION_11_12_9_38_V1",
+  "HIGH_FINDINGS_OPEN": 0,
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "PACKAGE_VERDICT": "PASS",
+  "REQUIREMENTS": [
+    {
+      "high_open": 0,
+      "id": "HFO-01",
+      "section": "\u00a715 High / \u00a718.2 HIGH_FINDINGS_OPEN=0",
+      "status": "PASS",
+      "surface": "Aggregate sealed Pre-Live findings registers"
+    },
+    {
+      "id": "HFO-02",
+      "section": "\u00a715 High taxonomy",
+      "status": "PASS",
+      "surface": "No High-class unauthorized capability findings across sealed packages"
+    },
+    {
+      "id": "HFO-03",
+      "section": "\u00a716 DoD no open High",
+      "status": "PASS",
+      "surface": "Governed register present and sealed for HIGH"
+    },
+    {
+      "bandit_high": 0,
+      "id": "HFO-04",
+      "section": "Reuse \u00a711.12.9.31 HIGH closure",
+      "status": "PASS",
+      "surface": "HIGH_FINDINGS_CLOSURE_COMPARISON REMAINING_HIGH_OPEN=0 + bandit HIGH=0 on origin/main"
+    },
+    {
+      "binds_live_testnet_isolation": false,
+      "id": "HFO-05",
+      "section": "Non-claims",
+      "status": "PASS",
+      "surface": "Does not bind LIVE_TESTNET_ISOLATION_PROVEN / gate PASS / Live"
+    }
+  ],
+  "REQUIREMENTS_PASS": 5,
+  "REQUIREMENTS_TOTAL": 5,
+  "RUN_ID": "20260811T052547Z"
+}

@@ -1,0 +1,180 @@
+{
+  "errors": [],
+  "generated_at": "2026-08-11T04:44:35Z",
+  "metrics": {
+    "./src/backtest/p36/tarball_v1.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 62,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "./src/experiments/armstrong_elkaroui_combi_experiment.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 649,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "./src/experiments/base.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 913,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "./src/experiments/experiment_identity_manifest_v1.py": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 495,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "./src/ops/test_health_runner.py": {
+      "CONFIDENCE.HIGH": 2,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 2,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 4,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 1595,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "_totals": {
+      "CONFIDENCE.HIGH": 2,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 2,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 4,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 3714,
+      "nosec": 0,
+      "skipped_tests": 0
+    }
+  },
+  "results": [
+    {
+      "code": "24 import shlex\n25 import subprocess\n26 import sys\n",
+      "col_offset": 0,
+      "end_col_offset": 17,
+      "filename": "./src/ops/test_health_runner.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Consider possible security implications associated with the subprocess module.",
+      "line_number": 25,
+      "line_range": [
+        25
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "test_id": "B404",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "481             argv,\n482             shell=False,\n483             capture_output=True,\n484             text=True,\n485             timeout=600,  # 10 Minuten Timeout\n486         )\n487         return_code = result.returncode\n488         stdout = result.stdout\n489         stderr = result.stderr\n",
+      "col_offset": 17,
+      "end_col_offset": 9,
+      "filename": "./src/ops/test_health_runner.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 482,
+      "line_range": [
+        480,
+        481,
+        482,
+        483,
+        484,
+        485,
+        486
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "1339         status_icon = {\n1340             \"PASS\": \"\u2705\",\n1341             \"FAIL\": \"\u274c\",\n1342             \"SKIPPED\": \"\u23ed\ufe0f\",\n1343         }.get(check.status, \"\u2753\")\n1344 \n1345         md_lines.append(\n",
+      "col_offset": 12,
+      "end_col_offset": 18,
+      "filename": "./src/ops/test_health_runner.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 259,
+        "link": "https://cwe.mitre.org/data/definitions/259.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Possible hardcoded password: '\u2705'",
+      "line_number": 1340,
+      "line_range": [
+        1339,
+        1340,
+        1341,
+        1342,
+        1343
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b105_hardcoded_password_string.html",
+      "test_id": "B105",
+      "test_name": "hardcoded_password_string"
+    },
+    {
+      "code": "1625         status_icon = {\n1626             \"PASS\": \"\u2705\",\n1627             \"FAIL\": \"\u274c\",\n1628             \"SKIPPED\": \"\u23ed\ufe0f\",\n1629         }.get(check.status, \"\u2753\")\n1630 \n1631         html += f\"\"\"\n",
+      "col_offset": 12,
+      "end_col_offset": 18,
+      "filename": "./src/ops/test_health_runner.py",
+      "issue_confidence": "MEDIUM",
+      "issue_cwe": {
+        "id": 259,
+        "link": "https://cwe.mitre.org/data/definitions/259.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Possible hardcoded password: '\u2705'",
+      "line_number": 1626,
+      "line_range": [
+        1625,
+        1626,
+        1627,
+        1628,
+        1629
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b105_hardcoded_password_string.html",
+      "test_id": "B105",
+      "test_name": "hardcoded_password_string"
+    }
+  ]
+}

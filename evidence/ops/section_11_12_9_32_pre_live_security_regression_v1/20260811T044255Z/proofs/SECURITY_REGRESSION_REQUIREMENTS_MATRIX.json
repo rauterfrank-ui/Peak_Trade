@@ -1,0 +1,102 @@
+{
+  "CRITICAL_FINDINGS_OPEN": 0,
+  "DOCUMENT_CLASS": "SECURITY_REGRESSION_REQUIREMENTS_MATRIX_SECTION_11_12_9_32_V1",
+  "FOCUSED_BANDIT_HIGH": 0,
+  "FOCUSED_PYTEST_PASSED": 106,
+  "FOCUSED_PYTEST_SKIPPED": 1,
+  "HIGH_FINDINGS_OPEN": 0,
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "PACKAGE_VERDICT": "PASS",
+  "REQUIREMENTS": [
+    {
+      "blocking": true,
+      "id": "SR-01",
+      "owner": "tests/ci/test_cybersecurity_baseline_action_ref_and_permissions_visibility_contract_v0.py",
+      "status": "PASS",
+      "surface": "CI supply-chain action-ref + permissions visibility"
+    },
+    {
+      "blocking": true,
+      "id": "SR-02",
+      "owner": "tests/ci/test_workflow_write_permissions_visibility_contract_v0.py",
+      "status": "PASS",
+      "surface": "Workflow write-permissions allowlist visibility"
+    },
+    {
+      "blocking": true,
+      "id": "SR-03",
+      "owner": "tests/ci/test_credential_hygiene_redaction_unification_v1.py",
+      "status": "PASS",
+      "surface": "Credential hygiene redaction unification"
+    },
+    {
+      "blocking": true,
+      "id": "SR-04",
+      "owner": "tests/ci/test_secret_scanning_push_protection_governance_v1.py",
+      "status": "PASS",
+      "surface": "Secret scanning + push protection governance"
+    },
+    {
+      "blocking": true,
+      "id": "SR-05",
+      "owner": "tests/execution/live/test_safety_rails.py",
+      "status": "PASS",
+      "surface": "Live safety rails default block"
+    },
+    {
+      "blocking": true,
+      "id": "SR-06",
+      "owner": "tests/governance/test_live_mode_gate.py",
+      "status": "PASS",
+      "surface": "LiveModeGate fail-closed defaults"
+    },
+    {
+      "blocking": true,
+      "id": "SR-07",
+      "owner": "tests/data/shadow/test_guards.py",
+      "status": "PASS",
+      "surface": "Shadow runtime guards block live_enabled"
+    },
+    {
+      "blocking": true,
+      "id": "SR-08",
+      "owner": "tests/ops/test_run_testnet_session_entrypoint_fail_closed_contract_v0.py",
+      "status": "PASS",
+      "surface": "Testnet session entrypoint fail-closed contract"
+    },
+    {
+      "blocking": true,
+      "id": "SR-09",
+      "owner": "tests/integration/test_kill_switch_e2_safety_guard.py",
+      "status": "PASS",
+      "surface": "Kill-switch E2 safety guard"
+    },
+    {
+      "blocking": true,
+      "id": "SR-10",
+      "owner": "scripts/ci/check_tracked_credential_hygiene_policy_v1.py",
+      "status": "PASS",
+      "surface": "Tracked credential hygiene policy gate"
+    },
+    {
+      "blocking": true,
+      "id": "SR-11",
+      "owner": "focused pytest + bandit on remediated files",
+      "status": "PASS",
+      "surface": "SAST HIGH remediation surface regression"
+    },
+    {
+      "blocking": false,
+      "id": "SR-12",
+      "note": "Not CI-required; pre-existing historical/meta docs; package SSOT docs clean",
+      "owner": "scripts/ci/check_docs_no_live_enable_patterns.sh",
+      "status": "FAIL_PREEXISTING_NON_BLOCKING",
+      "surface": "Docs no-live-enable full-tree probe"
+    }
+  ],
+  "REQUIREMENTS_BLOCKING_PASS": 11,
+  "REQUIREMENTS_BLOCKING_TOTAL": 11,
+  "REQUIREMENTS_PASS": 11,
+  "REQUIREMENTS_TOTAL": 12,
+  "RUN_ID": "20260811T044255Z"
+}

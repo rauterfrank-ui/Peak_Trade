@@ -1,0 +1,41 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 248 items
+
+tests/ops/test_canonical_durable_authorization_lifecycle_and_revocation_v1.py . [  0%]
+..ss.....................s                                               [ 10%]
+tests/ops/test_phase_9_2_step_7_delegated_cursor_secure_confirm_v1.py .. [ 11%]
+.........                                                                [ 15%]
+tests/ops/test_section_11_12_8_bounded_long_running_productive_testnet_campaign_v1.py . [ 15%]
+                                                                         [ 15%]
+tests/live/test_confirm_token.py ...                                     [ 16%]
+tests/p48/test_ai_activation_gate_v1.py ...                              [ 18%]
+tests/governance/test_wp0c_enforce_gate.py .............                 [ 23%]
+tests/governance/test_live_mode_gate.py .........................        [ 33%]
+tests/execution/live/test_safety_rails.py ............                   [ 38%]
+tests/test_live_gates.py ...........................                     [ 49%]
+tests/test_environment_and_safety.py ................................... [ 63%]
+......................                                                   [ 72%]
+tests/live/test_feature_activation_gate.py ....                          [ 73%]
+tests/governance/policy_critic/test_rules.py ........................    [ 83%]
+tests/ops/test_phase_9_2_step_4_governed_real_network_execution_binding_v1.py . [ 83%]
+.............                                                            [ 89%]
+tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py . [ 89%]
+............                                                             [ 94%]
+tests/ops/test_paper_shadow_observation_operator_go_session_preregistration_v1.py . [ 94%]
+.............                                                            [100%]
+
+=============================== warnings summary ===============================
+src/live/safety.py:95
+  /Users/frnkhrz/Peak_Trade/src/live/safety.py:95: PytestCollectionWarning: cannot collect test class 'TestnetDryRunOnlyError' because it has a __init__ constructor (from: tests/test_environment_and_safety.py)
+    class TestnetDryRunOnlyError(SafetyBlockedError):
+
+src/orders/exchange.py:86
+  /Users/frnkhrz/Peak_Trade/src/orders/exchange.py:86: PytestCollectionWarning: cannot collect test class 'TestnetOrderExecutor' because it has a __init__ constructor (from: tests/test_environment_and_safety.py)
+    class TestnetOrderExecutor:
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================= 245 passed, 3 skipped, 2 warnings in 11.66s ==================

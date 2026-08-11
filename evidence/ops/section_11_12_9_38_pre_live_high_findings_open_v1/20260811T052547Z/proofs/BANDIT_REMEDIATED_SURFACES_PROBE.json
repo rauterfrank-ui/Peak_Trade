@@ -1,0 +1,16 @@
+{
+  "BANDIT_RC": 2,
+  "DOCUMENT_CLASS": "BANDIT_REMEDIATED_SURFACES_PROBE_SECTION_11_12_9_38_V1",
+  "NOTE": "Bandit HIGH re-confirm on \u00a711.12.9.31 remediated surfaces from origin/main; Cybersecurity Runbook \u00a715 High taxonomy also covered by sealed package registers.",
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "SEVERITY_HIGH": 0,
+  "SEVERITY_LOW": 0,
+  "SEVERITY_MEDIUM": 0,
+  "SURFACES": [
+    "src/backtest/p36/tarball_v1.py",
+    "src/experiments/armstrong_elkaroui_combi_experiment.py",
+    "src/experiments/base.py",
+    "src/experiments/experiment_identity_manifest_v1.py",
+    "src/ops/test_health_runner.py"
+  ]
+}

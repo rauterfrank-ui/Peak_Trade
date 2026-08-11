@@ -1,0 +1,11 @@
+[main]	INFO	profile include tests: None
+[main]	INFO	profile exclude tests: None
+[main]	INFO	cli include tests: None
+[main]	INFO	cli exclude tests: None
+[json]	INFO	JSON output written to file: evidence/ops/section_11_12_9_30_pre_live_static_security_analysis_v1/20260811T043159Z/proofs/BANDIT_SRC.json
+[main]	INFO	profile include tests: None
+[main]	INFO	profile exclude tests: None
+[main]	INFO	cli include tests: None
+[main]	INFO	cli exclude tests: None
+[main]	INFO	running on Python 3.11.14
+[text]	INFO	Text output written to file: evidence/ops/section_11_12_9_30_pre_live_static_security_analysis_v1/20260811T043159Z/proofs/BANDIT_SRC.txt
