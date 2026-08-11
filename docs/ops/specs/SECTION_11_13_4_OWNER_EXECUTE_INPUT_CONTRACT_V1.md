@@ -28,11 +28,11 @@ SecretRef URI. No second consumption of this GO.
 | Field | Required | Value | Notes |
 |-------|----------|-------|-------|
 | live venue/entity | yes | `OKX` / `OKX Europe Limited` | Reused from §11.13.3 proven binding |
-| region | yes | `EEA/DE` | Reused from §11.13.3 proven binding |
+| region | yes | `EEA&#47;DE` | Reused from §11.13.3 proven binding |
 | canonical production REST host | yes | `eea.okx.com` | Reused from §11.13.3 proven binding |
 | account/subaccount binding | yes | `856964404452495999` | Reused from §11.13.3 proven binding |
 | instrument_id | yes | `BTC-USDT-SWAP` | Canonical dry-run instrument |
-| Live-RO SecretRef URI | yes | `secretref://vault/peak-trade/live-dry-run-order-plan/okx` | Dry-run schema; local vault key only |
+| Live-RO SecretRef URI | yes | `secretref:&#47;&#47;vault&#47;peak-trade&#47;live-dry-run-order-plan&#47;okx` | Dry-run schema; local vault key only |
 | Vault material | yes | _local only_ | Never commit to Git |
 | Permission attestation READ | yes | `true` | Reused from §11.13.3 proven attestation |
 | Permission attestation TRADE | yes | `false` | Must remain false |

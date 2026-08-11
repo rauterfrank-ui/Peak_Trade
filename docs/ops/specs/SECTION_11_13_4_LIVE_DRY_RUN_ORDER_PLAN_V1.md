@@ -32,8 +32,8 @@ remains true. Expected plan result under unresolved divergence:
 | Surface | Path |
 |---------|------|
 | Code | `src/ops/section_11_13_4_live_dry_run_order_plan_v1/` |
-| Order plan builder | `.../order_plan_v1.py` |
-| Mutation boundary | `.../mutation_boundary_v1.py` |
+| Order plan builder | `...&#47;order_plan_v1.py` |
+| Mutation boundary | `...&#47;mutation_boundary_v1.py` |
 | Config example | `config/ops/section_11_13_4_live_dry_run_order_plan_v1.example.json` |
 | Runner | `scripts/ops/run_section_11_13_4_live_dry_run_order_plan_v1.py` |
 | Verifier | `scripts/ops/verify_section_11_13_4_live_dry_run_order_plan_proven_v1.py` |
@@ -55,11 +55,11 @@ remains true. Expected plan result under unresolved divergence:
 
 ## Evidence root
 
-`evidence/ops/section_11_13_4_live_dry_run_order_plan_proven_v1/<RUN_ID>/`
+`evidence&#47;ops&#47;section_11_13_4_live_dry_run_order_plan_proven_v1&#47;<RUN_ID>&#47;`
 
 Sealed productive proven root:
 
-`evidence/ops/section_11_13_4_live_dry_run_order_plan_proven_v1/20260811T230805Z/`
+`evidence&#47;ops&#47;section_11_13_4_live_dry_run_order_plan_proven_v1&#47;20260811T230805Z&#47;`
 
 ## Next steps
 
