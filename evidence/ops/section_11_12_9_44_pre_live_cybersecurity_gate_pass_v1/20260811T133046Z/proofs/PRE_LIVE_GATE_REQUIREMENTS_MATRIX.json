@@ -1,0 +1,58 @@
+{
+  "BINDS_ELIGIBLE_FOR_LIVE_READINESS_EVALUATION": true,
+  "BINDS_LIVE_AUTHORIZED": false,
+  "BINDS_PRE_LIVE_CYBERSECURITY_GATE_PASS": true,
+  "BINDS_SECTION_11_13_STARTED": false,
+  "DOCUMENT_CLASS": "PRE_LIVE_GATE_REQUIREMENTS_MATRIX_SECTION_11_12_9_44_V1",
+  "ORIGIN_MAIN_SHA": "e7a72f126ec8d72ea97c0c3dba755ba2341b956c",
+  "PACKAGE_VERDICT": "PASS",
+  "REQUIREMENTS": [
+    {
+      "id": "PLG-01",
+      "section": "\u00a718.2 prior 20 criteria",
+      "status": "PASS",
+      "surface": "All 20 predecessor \u00a718.2 criteria remain PASS on origin/main via \u00a743 bind + chain verify"
+    },
+    {
+      "id": "PLG-02",
+      "section": "\u00a711 / \u00a718.2 MANIFEST_VERIFY_RC",
+      "status": "PASS",
+      "surface": "Independent verify of 21 sealed roots including \u00a743; aggregate RC=0"
+    },
+    {
+      "id": "PLG-03",
+      "section": "\u00a718.2 / \u00a718.3 Critical/High",
+      "status": "PASS",
+      "surface": "CRITICAL_FINDINGS_OPEN=0 HIGH_FINDINGS_OPEN=0"
+    },
+    {
+      "id": "PLG-04",
+      "section": "\u00a718.2 PRE_LIVE_CYBERSECURITY_GATE",
+      "status": "PASS",
+      "surface": "Bind PRE_LIVE_CYBERSECURITY_GATE=PASS as final \u00a718.2 criterion"
+    },
+    {
+      "id": "PLG-05",
+      "section": "\u00a718.1 eligibility only",
+      "status": "PASS",
+      "surface": "ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true only; Live remains unauthorized"
+    },
+    {
+      "id": "PLG-06",
+      "section": "\u00a723 / Master non-claims",
+      "status": "PASS",
+      "surface": "SECTION_11_13_STARTED=false LIVE_AUTHORIZED=false no orders/credentials/network"
+    },
+    {
+      "binds_live_authorized": false,
+      "binds_section_11_13_started": false,
+      "id": "PLG-07",
+      "section": "Hard stop",
+      "status": "PASS",
+      "surface": "No automatic \u00a711.13 start; separate Owner-GO required"
+    }
+  ],
+  "REQUIREMENTS_PASS": 7,
+  "REQUIREMENTS_TOTAL": 7,
+  "RUN_ID": "20260811T133046Z"
+}
