@@ -1,0 +1,11 @@
+# PR #5863 Squash-Merge Closeout
+
+- PR_STATE=MERGED
+- MERGE_METHOD=SQUASH
+- OWNER_MERGE_GO_CONSUMED=OWNER_MERGE_GO_PR_5863_SQUASH
+- MERGE_COMMIT_SHA=b1ebe0f93d88ab22bb147c48fb27e1863b829e5e
+- ORIGIN_MAIN_AFTER=b1ebe0f93d88ab22bb147c48fb27e1863b829e5e
+- SECTION=11.12.9.28 DEPENDENCY_AUDIT=PASS bound on main
+- Forensic §11.12.9.27 preserved
+- Gate remains NOT_PASSED; Live unauthorized; Cap/§11.13 unstarted
+- SBOM_AUTHORIZED=false; next separate Owner-GO required for SBOM_PRESENT

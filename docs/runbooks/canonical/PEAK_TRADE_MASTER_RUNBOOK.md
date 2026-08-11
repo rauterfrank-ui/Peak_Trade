@@ -6656,6 +6656,10 @@ SECTION_11_13_STARTED=false
 LIVE_AUTHORIZED=false
 PR_5862_STATE=MERGED
 PR_5862_MERGE_COMMIT_SHA=6530fc9e652e9c0c3c6c77bee0cac120bdafc5d8
+PR_5863_STATE=MERGED
+PR_5863_MERGE_COMMIT_SHA=b1ebe0f93d88ab22bb147c48fb27e1863b829e5e
+PR_5863_SQUASH_MERGE_CLOSEOUT_ROOT=evidence/ops/section_11_12_9_28_pr_5863_squash_merge_closeout_v1/20260811T041913Z/
+SBOM_AUTHORIZED=false
 MANIFEST_VERIFY_RC=0
 CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_28
 CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_SBOM_PRESENT
@@ -6672,6 +6676,8 @@ DEPENDENCY_AUDIT_PASS != SECTION_11_13_STARTED
 RB01_RB02_REMEDIATION != NEXT_SECURITY_PACKAGE_AUTHORIZATION
 SECTION_11_12_9_27_FORENSIC_REVIEW_PRESERVED=true
 PR_5862_STATE=MERGED
+PR_5863_STATE=MERGED
+SBOM_AUTHORIZED=false
 ```
 
 Observed facts: the six §11.12.9.26 blocking HIGH GHSAs are closed on the
@@ -6680,10 +6686,18 @@ comparable lean audit environment; `DEPENDENCY_AUDIT=PASS` &#47;
 findings are non-blocking for the HIGH rule; earliest unmet §18.2
 criterion advances to `SBOM_PRESENT`. Gate remains `NOT_PASSED`. Live
 remains hard-blocked. Cap &#47; §11.13 remains unstarted. Hard stop after this
-package. Creating&#47;executing SBOM or later packages requires a **separate**
-Owner-GO. Optional extras&#47;tracking install surfaces are out of the
-comparable lean audit scope and are not claimed PASS under
-`--all-extras`.
+package. PR `#5863` squash-merged this remediation binding to
+`origin&#47;main` at `b1ebe0f93d88ab22bb147c48fb27e1863b829e5e` under
+`OWNER_MERGE_GO_PR_5863_SQUASH`; post-merge closeout evidence is sealed
+below. Creating&#47;executing SBOM or later packages requires a **separate**
+Owner-GO (`SBOM_AUTHORIZED=false`). Optional extras&#47;tracking install
+surfaces are out of the comparable lean audit scope and are not claimed
+PASS under `--all-extras`.
+
+Sealed PR `#5863` squash-merge closeout evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_28_pr_5863_squash_merge_closeout_v1&#47;20260811T041913Z&#47;`
+(`MANIFEST_VERIFY_RC=0`)
 
 Canonical residual sequence pointer (section sequence historically bound;
 productive proven-field chain closed):

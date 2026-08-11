@@ -245,6 +245,7 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`evidence&#47;ops&#47;section_11_12_9_26_post_dependency_audit_forensic_gap_and_remediation_review_v1&#47;20260811T033939Z&#47;`](../../evidence/ops/section_11_12_9_26_post_dependency_audit_forensic_gap_and_remediation_review_v1/20260811T033939Z/) | Owner §11.12.9.27 post-Dependency-Audit forensic gap &#47; remediation review (derived; non-SSOT; review-only; PR `#5862` `MERGED`; gate remains `NOT_PASSED`) |
 | [`evidence&#47;ops&#47;section_11_12_9_27_dependency_audit_rb01_rb02_remediation_and_rerun_v1&#47;20260811T035809Z&#47;`](../../evidence/ops/section_11_12_9_27_dependency_audit_rb01_rb02_remediation_and_rerun_v1/20260811T035809Z/) | Owner §11.12.9.28 RB-01&#47;RB-02 remediation + DEPENDENCY_AUDIT re-run (derived; non-SSOT; historical evidence path name retained; `DEPENDENCY_AUDIT=PASS`; gate remains `NOT_PASSED`) |
 | [`evidence&#47;ops&#47;section_11_12_9_27_pr_5862_squash_merge_closeout_v1&#47;20260811T040810Z&#47;`](../../evidence/ops/section_11_12_9_27_pr_5862_squash_merge_closeout_v1/20260811T040810Z/) | PR `#5862` squash-merge closeout (derived; non-SSOT; `PR_STATE=MERGED`; merge `6530fc9e652e9c0c3c6c77bee0cac120bdafc5d8`) |
+| [`evidence&#47;ops&#47;section_11_12_9_28_pr_5863_squash_merge_closeout_v1&#47;20260811T041913Z&#47;`](../../evidence/ops/section_11_12_9_28_pr_5863_squash_merge_closeout_v1/20260811T041913Z/) | PR `#5863` squash-merge closeout (derived; non-SSOT; `PR_STATE=MERGED`; merge `b1ebe0f93d88ab22bb147c48fb27e1863b829e5e`; `SBOM_AUTHORIZED=false`) |
 | [`evidence&#47;ops&#47;section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1&#47;20260810T143709Z&#47;`](../../evidence/ops/section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1/20260810T143709Z/) | OKX EEA Demo path closeout &#47; no-order alternate evaluation (non-activating) |
 | [`evidence&#47;ops&#47;section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1&#47;20260810T151323Z&#47;`](../../evidence/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/20260810T151323Z/) | Historical OKX Global Demo binding package evidence (NO_ORDER; not active) |
 | [`evidence&#47;ops&#47;section_11_12_8_retry_okx_eea_private_ro_xperp_verify_no_order_v1&#47;20260810T165847Z&#47;`](../../evidence/ops/section_11_12_8_retry_okx_eea_private_ro_xperp_verify_no_order_v1/20260810T165847Z/) | Bound private READ-only XPerp capability proof (NO_ORDER) |
@@ -348,6 +349,9 @@ PR_5862_MERGE_COMMIT_SHA=6530fc9e652e9c0c3c6c77bee0cac120bdafc5d8
 SECTION_11_12_9_28_DEPENDENCY_AUDIT_REMEDIATION_EXECUTED=true
 SECTION_11_12_9_28_DEPENDENCY_AUDIT_RERUN_PASS=true
 SECTION_11_12_9_28_DEPENDENCY_AUDIT_RERUN_BOUND=true
+PR_5863_STATE=MERGED
+PR_5863_MERGE_COMMIT_SHA=b1ebe0f93d88ab22bb147c48fb27e1863b829e5e
+SBOM_AUTHORIZED=false
 CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
 THREAT_MODEL_CURRENT=true
 SECRETS_REVIEW=PASS
@@ -379,6 +383,7 @@ SECTION_11_12_9_26_DEPENDENCY_AUDIT_EVIDENCE_POINTER=evidence&#47;ops&#47;sectio
 SECTION_11_12_9_27_FORENSIC_REVIEW_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_26_post_dependency_audit_forensic_gap_and_remediation_review_v1&#47;20260811T033939Z&#47;
 SECTION_11_12_9_28_DEPENDENCY_AUDIT_REMEDIATION_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_27_dependency_audit_rb01_rb02_remediation_and_rerun_v1&#47;20260811T035809Z&#47;
 PR_5862_SQUASH_MERGE_CLOSEOUT_POINTER=evidence&#47;ops&#47;section_11_12_9_27_pr_5862_squash_merge_closeout_v1&#47;20260811T040810Z&#47;
+PR_5863_SQUASH_MERGE_CLOSEOUT_POINTER=evidence&#47;ops&#47;section_11_12_9_28_pr_5863_squash_merge_closeout_v1&#47;20260811T041913Z&#47;
 SECTION_11_12_9_21_PREP_IS_NOT_LONG_RUNNING_TESTNET_PROVEN=true
 SECTION_11_12_9_21_PREP_IS_NOT_EXECUTE_AUTHORIZATION=true
 SECTION_11_12_9_21_PREP_IS_NOT_SECTION_11_12_8_REOPEN=true
