@@ -1,0 +1,325 @@
+{
+  "DOCUMENT_CLASS": "BIDIRECTIONAL_TRACEABILITY_MATRIX_FGR_V1",
+  "FORWARD": [
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / TESTNET_LIFECYCLE_PROVEN",
+      "acceptance_criterion": "TESTNET_LIFECYCLE_PROVEN",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "PROVEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / LONG_RUNNING_TESTNET_PROVEN",
+      "acceptance_criterion": "LONG_RUNNING_TESTNET_PROVEN",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "PROVEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / CYBERSECURITY_ARCHITECTURE_REVIEW",
+      "acceptance_criterion": "CYBERSECURITY_ARCHITECTURE_REVIEW",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "PROVEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / THREAT_MODEL_CURRENT",
+      "acceptance_criterion": "THREAT_MODEL_CURRENT",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "evidence/ops/section_11_12_9_24_pre_live_threat_model_current_v1/20260811T023114Z/"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "PROVEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / SECRETS_REVIEW",
+      "acceptance_criterion": "SECRETS_REVIEW",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "evidence/ops/section_11_12_9_25_pre_live_credential_hygiene_review_v1/20260811T025933Z/"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "PROVEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / DEPENDENCY_AUDIT",
+      "acceptance_criterion": "DEPENDENCY_AUDIT",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "BLOCKED"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / SBOM_PRESENT",
+      "acceptance_criterion": "SBOM_PRESENT",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / STATIC_SECURITY_ANALYSIS",
+      "acceptance_criterion": "STATIC_SECURITY_ANALYSIS",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / SECURITY_REGRESSION",
+      "acceptance_criterion": "SECURITY_REGRESSION",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / PENETRATION_PROGRAM",
+      "acceptance_criterion": "PENETRATION_PROGRAM",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / CREDENTIAL_LEAKAGE_TEST",
+      "acceptance_criterion": "CREDENTIAL_LEAKAGE_TEST",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / AUTHORITY_REPLAY_TEST",
+      "acceptance_criterion": "AUTHORITY_REPLAY_TEST",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / RECOVERY_SECURITY_TEST",
+      "acceptance_criterion": "RECOVERY_SECURITY_TEST",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / CRITICAL_FINDINGS_OPEN",
+      "acceptance_criterion": "CRITICAL_FINDINGS_OPEN",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/proofs/DEPENDENCY_FINDINGS_REGISTER.json"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / HIGH_FINDINGS_OPEN",
+      "acceptance_criterion": "HIGH_FINDINGS_OPEN",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/proofs/DEPENDENCY_FINDINGS_REGISTER.json"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "BLOCKED"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / LIVE_TESTNET_ISOLATION_PROVEN",
+      "acceptance_criterion": "LIVE_TESTNET_ISOLATION_PROVEN",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / LIVE_DEFAULT_BLOCK_PROVEN",
+      "acceptance_criterion": "LIVE_DEFAULT_BLOCK_PROVEN",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / LIVE_ARMING_FAIL_CLOSED_PROVEN",
+      "acceptance_criterion": "LIVE_ARMING_FAIL_CLOSED_PROVEN",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / AUDIT_EVIDENCE_VERIFIED",
+      "acceptance_criterion": "AUDIT_EVIDENCE_VERIFIED",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / MANIFEST_VERIFY_RC",
+      "acceptance_criterion": "MANIFEST_VERIFY_RC",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/MANIFEST.sha256"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "Cybersecurity \u00a718.2 / PRE_LIVE_CYBERSECURITY_GATE",
+      "acceptance_criterion": "PRE_LIVE_CYBERSECURITY_GATE",
+      "implementation_control": "SEE_PACKAGE_OR_MISSING",
+      "tests": "SEE_PACKAGE_OR_MISSING",
+      "evidence": [
+        "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/"
+      ],
+      "canonical_documentation": "PEAK_TRADE_MASTER_RUNBOOK.md \u00a711.12.9 / Cybersecurity V2.1 \u00a718.2",
+      "status": "BLOCKED"
+    },
+    {
+      "requirement_or_threat": "CVE/GHSA-6v7p-g79w-8964",
+      "acceptance_criterion": "HIGH_FINDINGS_OPEN=0 / DEPENDENCY_AUDIT=PASS",
+      "implementation_control": "MISSING_UPGRADE",
+      "tests": "MISSING",
+      "evidence": [
+        "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/"
+      ],
+      "canonical_documentation": "Master \u00a711.12.9.26",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "CVE/GHSA-rgxp-2hwp-jwgg",
+      "acceptance_criterion": "HIGH_FINDINGS_OPEN=0 / DEPENDENCY_AUDIT=PASS",
+      "implementation_control": "MISSING_UPGRADE",
+      "tests": "MISSING",
+      "evidence": [
+        "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/"
+      ],
+      "canonical_documentation": "Master \u00a711.12.9.26",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "CVE/GHSA-82w8-qh3p-5jfq",
+      "acceptance_criterion": "HIGH_FINDINGS_OPEN=0 / DEPENDENCY_AUDIT=PASS",
+      "implementation_control": "MISSING_UPGRADE",
+      "tests": "MISSING",
+      "evidence": [
+        "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/"
+      ],
+      "canonical_documentation": "Master \u00a711.12.9.26",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "CVE/GHSA-wqp7-x3pw-xc5r",
+      "acceptance_criterion": "HIGH_FINDINGS_OPEN=0 / DEPENDENCY_AUDIT=PASS",
+      "implementation_control": "MISSING_UPGRADE",
+      "tests": "MISSING",
+      "evidence": [
+        "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/"
+      ],
+      "canonical_documentation": "Master \u00a711.12.9.26",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "CVE/GHSA-mf9v-mfxr-j63j",
+      "acceptance_criterion": "HIGH_FINDINGS_OPEN=0 / DEPENDENCY_AUDIT=PASS",
+      "implementation_control": "MISSING_UPGRADE",
+      "tests": "MISSING",
+      "evidence": [
+        "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/"
+      ],
+      "canonical_documentation": "Master \u00a711.12.9.26",
+      "status": "OPEN"
+    },
+    {
+      "requirement_or_threat": "CVE/GHSA-qccp-gfcp-xxvc",
+      "acceptance_criterion": "HIGH_FINDINGS_OPEN=0 / DEPENDENCY_AUDIT=PASS",
+      "implementation_control": "MISSING_UPGRADE",
+      "tests": "MISSING",
+      "evidence": [
+        "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/"
+      ],
+      "canonical_documentation": "Master \u00a711.12.9.26",
+      "status": "OPEN"
+    }
+  ],
+  "REVERSE": [
+    {
+      "implementation_control": "uv.lock+requirements+pip-audit",
+      "documented_requirement": "Cybersecurity \u00a78 / DEPENDENCY_AUDIT",
+      "test": "pip-audit productive scan",
+      "evidence": "section_11_12_9_26",
+      "status": "PRESENT_BUT_FAIL"
+    },
+    {
+      "implementation_control": "KillSwitch modules",
+      "documented_requirement": "KILL_SWITCH / LIVE_ARMING criteria",
+      "test": "offline replay adapters exist",
+      "evidence": "architecture/threat packages cite; LIVE proof packages MISSING",
+      "status": "TRACE_PARTIAL"
+    },
+    {
+      "implementation_control": "optional web extras (fastapi/starlette)",
+      "documented_requirement": "No dedicated reachability criterion",
+      "test": "MISSING",
+      "evidence": "GAP-FGR-002",
+      "status": "TRACEABILITY_GAP"
+    }
+  ]
+}

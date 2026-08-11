@@ -1,0 +1,323 @@
+{
+  "DOCUMENT_CLASS": "REMEDIATION_DAG_AND_BATCHES_FGR_V1",
+  "DAG": {
+    "nodes": [
+      "RB-01",
+      "RB-02",
+      "RB-03",
+      "RB-04",
+      "RB-05",
+      "RB-06",
+      "RB-07",
+      "HARD_STOP_NO_REMEDIATION_IN_THIS_GO"
+    ],
+    "edges": [
+      [
+        "RB-01",
+        "RB-02"
+      ],
+      [
+        "RB-01",
+        "RB-03"
+      ],
+      [
+        "RB-02",
+        "RB-03"
+      ],
+      [
+        "RB-03",
+        "RB-04"
+      ],
+      [
+        "RB-01",
+        "RB-05"
+      ],
+      [
+        "RB-02",
+        "RB-06"
+      ],
+      [
+        "RB-01",
+        "RB-06"
+      ],
+      [
+        "RB-04",
+        "RB-06"
+      ],
+      [
+        "RB-05",
+        "RB-06"
+      ],
+      [
+        "RB-06",
+        "RB-07"
+      ]
+    ],
+    "notes": "RB-01 and RB-02 may be safely grouped under one Owner remediation GO if lock refresh is atomic. RB-05 may proceed in parallel but does not close HIGH CVE blockers. This forensic GO executes no batch."
+  },
+  "BATCHES": [
+    {
+      "batch_id": "RB-01",
+      "title": "HIGH runtime direct dependency upgrades",
+      "included_ids": [
+        "DA-F-04-MSGPACK-8964",
+        "DA-F-09-PYARROW-JWGG",
+        "DA-F-18-URLLIB3-J63J",
+        "DA-F-19-URLLIB3-XXVC"
+      ],
+      "rationale": "Earliest material HIGH CVEs on RUNTIME_DIRECT / runtime-or-optional transitive paths with fixes available; required before DEPENDENCY_AUDIT can PASS.",
+      "implementation_scope": "uv.lock/requirements.txt/pyproject constraints for urllib3>=2.7.0, pyarrow>=23.0.1, msgpack>=1.2.1",
+      "expected_files": [
+        "pyproject.toml",
+        "uv.lock",
+        "requirements.txt"
+      ],
+      "forbidden_scope": [
+        "src/execution trading logic",
+        "live/testnet activation",
+        "credential mutation",
+        "\u00a711.13"
+      ],
+      "prerequisites": [
+        "OWNER_GO_DEPENDENCY_AUDIT_REMEDIATION (or equivalent)",
+        "clean sync to origin/main"
+      ],
+      "local_tests": [
+        "ruff",
+        "focused import/smoke",
+        "selector FOCUSED/FULL as dictated by diff"
+      ],
+      "security_negative_tests": [
+        "pip-audit proves three GHSAs absent",
+        "lock fails closed below fix versions"
+      ],
+      "evidence_package_required": "Partial remediation evidence OR fold into post-remediation DEPENDENCY_AUDIT re-run",
+      "post_remediation_audit_rerun_required": true,
+      "separate_owner_go_required": true,
+      "completion_condition": "Installed versions >= fixes for urllib3/pyarrow/msgpack HIGH GHSAs on canonical interpreter"
+    },
+    {
+      "batch_id": "RB-02",
+      "title": "HIGH optional web (starlette) upgrade or unreachable-by-default proof",
+      "included_ids": [
+        "DA-F-15-STARLETTE-5JFQ",
+        "DA-F-16-STARLETTE-XC5R",
+        "GAP-FGR-002"
+      ],
+      "rationale": "starlette HIGH findings + reachability gap; may group with RB-01 in one lock refresh if Owner authorizes.",
+      "implementation_scope": "Upgrade starlette>=1.3.1 and/or ensure optional web extras not installed on Cap-11 default path",
+      "expected_files": [
+        "pyproject.toml",
+        "uv.lock",
+        "requirements.txt",
+        "optional web entrypoint tests"
+      ],
+      "forbidden_scope": [
+        "Enabling web UI for Live",
+        "trading logic changes"
+      ],
+      "prerequisites": [
+        "OWNER_GO",
+        "RB-01 preferred first or same GO if grouped"
+      ],
+      "local_tests": [
+        "optional-extra import matrix",
+        "ASGI not started by default Cap-11 entrypoints"
+      ],
+      "security_negative_tests": [
+        "pip-audit starlette HIGH GHSAs absent OR package not installed in default env"
+      ],
+      "evidence_package_required": "Reachability proof + vuln closeout",
+      "post_remediation_audit_rerun_required": true,
+      "separate_owner_go_required": true,
+      "completion_condition": "No installed starlette HIGH GHSA on audited env OR proven unreachable default surface"
+    },
+    {
+      "batch_id": "RB-03",
+      "title": "MEDIUM application/transitive dependency upgrades",
+      "included_ids": [
+        "DA-F-01-CLICK-HGMW",
+        "DA-F-02-FILELOCK-MVRW",
+        "DA-F-03-IDNA-8RJX",
+        "DA-F-12-REQUESTS-R6X2",
+        "DA-F-13-STARLETTE-P5MR",
+        "DA-F-14-STARLETTE-5VV3",
+        "DA-F-17-STARLETTE-X49C"
+      ],
+      "rationale": "Non-blocking but should close before claiming durable DEPENDENCY_AUDIT_PROVEN hygiene.",
+      "implementation_scope": "Upgrade click/filelock/idna/requests/starlette mediums as compatible",
+      "expected_files": [
+        "uv.lock",
+        "requirements.txt",
+        "pyproject.toml"
+      ],
+      "forbidden_scope": [
+        "Live activation"
+      ],
+      "prerequisites": [
+        "RB-01/RB-02 preferred"
+      ],
+      "local_tests": [
+        "FOCUSED suite"
+      ],
+      "security_negative_tests": [
+        "pip-audit clean for targeted GHSAs"
+      ],
+      "evidence_package_required": "Include in DEPENDENCY_AUDIT re-run",
+      "post_remediation_audit_rerun_required": true,
+      "separate_owner_go_required": true,
+      "completion_condition": "Targeted MEDIUM GHSAs remediated or Owner-accepted residual with severity rationale"
+    },
+    {
+      "batch_id": "RB-04",
+      "title": "Tooling/test dependency upgrades",
+      "included_ids": [
+        "DA-F-05-PIP-7689",
+        "DA-F-06-PIP-W6JP",
+        "DA-F-07-PIP-455V",
+        "DA-F-08-PIP-MGF9",
+        "DA-F-10-PYGMENTS-4PMQ",
+        "DA-F-11-PYTEST-G56G",
+        "DA-F-20-VIRTUALENV-6986"
+      ],
+      "rationale": "Tooling/test-only vulns; lower exploitability on trading runtime path.",
+      "implementation_scope": "Upgrade pip/pytest/pygments/virtualenv in lock/tooling env",
+      "expected_files": [
+        "uv.lock",
+        "requirements.txt"
+      ],
+      "forbidden_scope": [
+        "Runtime trading changes"
+      ],
+      "prerequisites": [
+        "Can group with RB-03"
+      ],
+      "local_tests": [
+        "pytest collection smoke"
+      ],
+      "security_negative_tests": [
+        "pip-audit targeted clean"
+      ],
+      "evidence_package_required": "Include in DEPENDENCY_AUDIT re-run",
+      "post_remediation_audit_rerun_required": true,
+      "separate_owner_go_required": true,
+      "completion_condition": "Tooling GHSAs closed or accepted residual"
+    },
+    {
+      "batch_id": "RB-05",
+      "title": "Process/supply-chain control hardening",
+      "included_ids": [
+        "DA-PC-01-GITHUB_DEPENDABOT_ALERTS",
+        "DA-PC-02-REQUIREMENTS.TXT_HASH_PINNING",
+        "DA-PC-03-DOCKER_BASE_IMAGES",
+        "DA-PC-04-GHA_ACTIONS_PINNING",
+        "GAP-FGR-004",
+        "GAP-FGR-005"
+      ],
+      "rationale": "Non-CVE process gaps: Dependabot, GHA floating tags, Docker digests, hash pins, CI fail-closed, interpreter binding.",
+      "implementation_scope": "Repo/workflow/config + possibly GitHub settings (external)",
+      "expected_files": [
+        ".github/workflows/**",
+        "docker/**",
+        "requirements export policy",
+        "CI contracts"
+      ],
+      "forbidden_scope": [
+        "Weakening required checks",
+        "credential prints"
+      ],
+      "prerequisites": [
+        "Owner/admin for Dependabot enablement (EXT-FGR-001)"
+      ],
+      "local_tests": [
+        "GHA pinning contract tests",
+        "workflow syntax"
+      ],
+      "security_negative_tests": [
+        "Fail if floating tags reintroduced on critical workflows"
+      ],
+      "evidence_package_required": "Process-control evidence package",
+      "post_remediation_audit_rerun_required": true,
+      "separate_owner_go_required": true,
+      "completion_condition": "Process findings closed or N/A justified"
+    },
+    {
+      "batch_id": "RB-06",
+      "title": "DEPENDENCY_AUDIT re-run and PROVEN bind",
+      "included_ids": [
+        "DEPENDENCY_AUDIT",
+        "HIGH_FINDINGS_OPEN",
+        "DA-04",
+        "DA-06"
+      ],
+      "rationale": "Only after HIGH findings closed; re-execute productive audit on then-current origin/main.",
+      "implementation_scope": "Evidence + governance bind only (audit execution)",
+      "expected_files": [
+        "evidence/ops/section_11_12_9_26_* or successor",
+        "Master Runbook",
+        "Map of Truth"
+      ],
+      "forbidden_scope": [
+        "Claiming gate PASS",
+        "\u00a711.13"
+      ],
+      "prerequisites": [
+        "RB-01 and RB-02 complete",
+        "HIGH_FINDINGS_OPEN=0"
+      ],
+      "local_tests": [
+        "Manifest verify",
+        "pip-audit RC expectations"
+      ],
+      "security_negative_tests": [
+        "Package FAIL if any HIGH remains"
+      ],
+      "evidence_package_required": "New sealed DEPENDENCY_AUDIT package",
+      "post_remediation_audit_rerun_required": false,
+      "separate_owner_go_required": true,
+      "completion_condition": "DEPENDENCY_AUDIT=PASS and DEPENDENCY_AUDIT_PROVEN=true bound; gate may still be NOT_PASSED"
+    },
+    {
+      "batch_id": "RB-07",
+      "title": "Next \u00a718.2 packages after DEPENDENCY_AUDIT PASS",
+      "included_ids": [
+        "SBOM_PRESENT",
+        "STATIC_SECURITY_ANALYSIS",
+        "SECURITY_REGRESSION",
+        "PENETRATION_PROGRAM",
+        "CREDENTIAL_LEAKAGE_TEST",
+        "AUTHORITY_REPLAY_TEST",
+        "RECOVERY_SECURITY_TEST",
+        "LIVE_TESTNET_ISOLATION_PROVEN",
+        "LIVE_DEFAULT_BLOCK_PROVEN",
+        "LIVE_ARMING_FAIL_CLOSED_PROVEN",
+        "AUDIT_EVIDENCE_VERIFIED",
+        "GAP-FGR-001",
+        "GAP-FGR-003"
+      ],
+      "rationale": "Canonical earliest unmet after dependency PASS is SBOM_PRESENT then remaining packages; gaps may fold into these packages.",
+      "implementation_scope": "Separate Owner-GOs per package; no automatic progression",
+      "expected_files": [
+        "per-package evidence + docs binds"
+      ],
+      "forbidden_scope": [
+        "LIVE_AUTHORIZED",
+        "\u00a711.13 start without gate PASS"
+      ],
+      "prerequisites": [
+        "RB-06 PASS"
+      ],
+      "local_tests": [
+        "Package-specific"
+      ],
+      "security_negative_tests": [
+        "Package-specific adversarial"
+      ],
+      "evidence_package_required": "Each package sealed",
+      "post_remediation_audit_rerun_required": false,
+      "separate_owner_go_required": true,
+      "completion_condition": "All mandatory \u00a718.2 criteria PASS before PRE_LIVE_CYBERSECURITY_GATE can be evaluated for PASS"
+    }
+  ],
+  "EXECUTION_AUTHORIZED": false
+}

@@ -1,0 +1,119 @@
+{
+  "DOCUMENT_CLASS": "INSTALLED_VERSIONS_REVALIDATION_FGR_V1",
+  "BOUND_SHA": "04aac4b99ae1cce173b0f669e0712fbdee729342",
+  "PYTHON_VERSION": "3.11.14",
+  "INSTALLED": {
+    "urllib3": "2.6.1",
+    "pyarrow": "20.0.0",
+    "msgpack": "1.1.2",
+    "starlette": "0.49.3",
+    "click": "8.1.8",
+    "filelock": "3.19.1",
+    "idna": "3.11",
+    "pip": "26.0.1",
+    "pygments": "2.19.2",
+    "pytest": "8.4.2",
+    "requests": "2.32.5",
+    "virtualenv": null
+  },
+  "BLOCKING_REVALIDATION": [
+    {
+      "dependency": "msgpack",
+      "ghsa": "GHSA-6v7p-g79w-8964",
+      "cve": "CVE-2026-57585",
+      "vuln_id": "PYSEC-2026-3625",
+      "audit_version": "1.1.2",
+      "current_installed_version": "1.1.2",
+      "still_vulnerable_version_present": true,
+      "fix_versions": [
+        "1.2.1"
+      ],
+      "severity": "HIGH",
+      "blocking": true,
+      "current_status": "OPEN",
+      "pr_5861_closed": false
+    },
+    {
+      "dependency": "pyarrow",
+      "ghsa": "GHSA-rgxp-2hwp-jwgg",
+      "cve": "CVE-2026-25087",
+      "vuln_id": "PYSEC-2026-113",
+      "audit_version": "22.0.0",
+      "current_installed_version": "20.0.0",
+      "still_vulnerable_version_present": false,
+      "fix_versions": [
+        "23.0.1"
+      ],
+      "severity": "HIGH",
+      "blocking": true,
+      "current_status": "UNKNOWN_VERSION_DRIFT",
+      "pr_5861_closed": false
+    },
+    {
+      "dependency": "starlette",
+      "ghsa": "GHSA-82w8-qh3p-5jfq",
+      "cve": "CVE-2026-54283",
+      "vuln_id": "PYSEC-2026-249",
+      "audit_version": "0.50.0",
+      "current_installed_version": "0.49.3",
+      "still_vulnerable_version_present": false,
+      "fix_versions": [
+        "1.3.1"
+      ],
+      "severity": "HIGH",
+      "blocking": true,
+      "current_status": "UNKNOWN_VERSION_DRIFT",
+      "pr_5861_closed": false
+    },
+    {
+      "dependency": "starlette",
+      "ghsa": "GHSA-wqp7-x3pw-xc5r",
+      "cve": "CVE-2026-48818",
+      "vuln_id": "PYSEC-2026-2281",
+      "audit_version": "0.50.0",
+      "current_installed_version": "0.49.3",
+      "still_vulnerable_version_present": false,
+      "fix_versions": [
+        "1.1.0"
+      ],
+      "severity": "HIGH",
+      "blocking": true,
+      "current_status": "UNKNOWN_VERSION_DRIFT",
+      "pr_5861_closed": false
+    },
+    {
+      "dependency": "urllib3",
+      "ghsa": "GHSA-mf9v-mfxr-j63j",
+      "cve": "CVE-2026-44432",
+      "vuln_id": "PYSEC-2026-142",
+      "audit_version": "2.6.3",
+      "current_installed_version": "2.6.1",
+      "still_vulnerable_version_present": false,
+      "fix_versions": [
+        "2.7.0"
+      ],
+      "severity": "HIGH",
+      "blocking": true,
+      "current_status": "UNKNOWN_VERSION_DRIFT",
+      "pr_5861_closed": false
+    },
+    {
+      "dependency": "urllib3",
+      "ghsa": "GHSA-qccp-gfcp-xxvc",
+      "cve": "CVE-2026-44431",
+      "vuln_id": "PYSEC-2026-141",
+      "audit_version": "2.6.3",
+      "current_installed_version": "2.6.1",
+      "still_vulnerable_version_present": false,
+      "fix_versions": [
+        "2.7.0"
+      ],
+      "severity": "HIGH",
+      "blocking": true,
+      "current_status": "UNKNOWN_VERSION_DRIFT",
+      "pr_5861_closed": false
+    }
+  ],
+  "PR_5861_FINDINGS_ACTUALLY_CLOSED": 0,
+  "PR_5861_EFFECT": "DOCS_EVIDENCE_BIND_ONLY_DEPENDENCY_AUDIT_FAIL"
+}

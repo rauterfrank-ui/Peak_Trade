@@ -1,0 +1,50 @@
+{
+  "DOCUMENT_CLASS": "PROOF_CURRENTNESS_MATRIX_FGR_V1",
+  "CURRENT_ORIGIN_MAIN_SHA": "04aac4b99ae1cce173b0f669e0712fbdee729342",
+  "PACKAGES": [
+    {
+      "package": "TESTNET_LIFECYCLE_PROVEN",
+      "evidence": "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+      "bound_sha": "767cbc3d470fa83613ce8ba6222e6561d46b0ac8",
+      "class": "CURRENT",
+      "note": "Field remains Master-bound; later long-running path added ops scripts then docs-only chain; not invalidated."
+    },
+    {
+      "package": "LONG_RUNNING_TESTNET_PROVEN",
+      "evidence": "evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/",
+      "bound_sha": "d8df567526a70509f54514646ace681467c72454",
+      "class": "CURRENT",
+      "note": "Nested execution_evidence MANIFEST_VERIFY_RC=0; root MANIFEST absent (TG-FGR-002). Intervening to HEAD docs/evidence-only after reeval."
+    },
+    {
+      "package": "CYBERSECURITY_ARCHITECTURE_REVIEW",
+      "evidence": "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/",
+      "bound_sha": "19283f755d2cbcf3b340a431ca0a5ed1ca37c536",
+      "class": "CURRENT",
+      "note": "Intervening commits to HEAD are docs/evidence-only (0 sensitive paths)."
+    },
+    {
+      "package": "THREAT_MODEL_CURRENT",
+      "evidence": "evidence/ops/section_11_12_9_24_pre_live_threat_model_current_v1/20260811T023114Z/",
+      "bound_sha": "4431f810752bb1c42d94d24a2dcc24127a98fdcb",
+      "class": "CURRENT",
+      "note": "Intervening commits docs/evidence-only."
+    },
+    {
+      "package": "SECRETS_REVIEW",
+      "evidence": "evidence/ops/section_11_12_9_25_pre_live_credential_hygiene_review_v1/20260811T025933Z/",
+      "bound_sha": "936a00b55e26060df7e5659c5875ae044057de29",
+      "class": "CURRENT",
+      "note": "Intervening commits docs/evidence-only. Revalidation required after any future credential/surface mutation."
+    },
+    {
+      "package": "DEPENDENCY_AUDIT",
+      "evidence": "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/",
+      "bound_sha": "95d043048d8538f934fcba469a728bd25da4f7de",
+      "class": "CURRENT",
+      "note": "FAIL state still accurate: installed vulnerable versions unchanged on HEAD; PR#5861 only bound FAIL docs/evidence."
+    }
+  ],
+  "STALE_PROOFS_REQUIRING_REVALIDATION": [],
+  "INVALIDATED_PROOFS": []
+}

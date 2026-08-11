@@ -1,0 +1,83 @@
+{
+  "DOCUMENT_CLASS": "COVERAGE_MATRIX_FGR_V1",
+  "DOMAINS": [
+    {
+      "domain": "APPLICATION_DEPENDENCIES",
+      "mapped_owner": "DEPENDENCY_AUDIT + DA findings",
+      "status": "PARTIAL_OPEN",
+      "note": "Covered by FAIL audit; HIGH open"
+    },
+    {
+      "domain": "SUPPLY_CHAIN",
+      "mapped_owner": "DA-09..14 + process findings + GAP-FGR-004",
+      "status": "PARTIAL_OPEN",
+      "note": "Probed; Dependabot/GHA/Docker residuals open"
+    },
+    {
+      "domain": "SECRETS_CREDENTIALS",
+      "mapped_owner": "SECRETS_REVIEW PASS; CREDENTIAL_LEAKAGE_TEST OPEN",
+      "status": "PARTIAL",
+      "note": "Review proven; leakage test package missing"
+    },
+    {
+      "domain": "EXCHANGE_NETWORK",
+      "mapped_owner": "Threat model + OPEN isolation packages + GAP-FGR-001",
+      "status": "PARTIAL_OPEN",
+      "note": "Time-sync gap discovered"
+    },
+    {
+      "domain": "TRADING_SAFETY",
+      "mapped_owner": "LIVE_* criteria OPEN; architecture review PASS",
+      "status": "PARTIAL_OPEN",
+      "note": "Criteria exist; packages missing"
+    },
+    {
+      "domain": "STATE_DATA_INTEGRITY",
+      "mapped_owner": "Threat RESTART_RECOVERY; RECOVERY_SECURITY_TEST OPEN",
+      "status": "PARTIAL_OPEN",
+      "note": "Mapped to existing OPEN criterion"
+    },
+    {
+      "domain": "INPUT_CONFIG_SECURITY",
+      "mapped_owner": "STATIC_SECURITY_ANALYSIS OPEN",
+      "status": "PARTIAL_OPEN",
+      "note": "Criterion exists; package missing"
+    },
+    {
+      "domain": "OBSERVABILITY_FORENSICS",
+      "mapped_owner": "AUDIT_EVIDENCE_VERIFIED OPEN; evidence manifests",
+      "status": "PARTIAL_OPEN",
+      "note": "Sealing discipline uneven (TG-FGR-002)"
+    },
+    {
+      "domain": "CICD_GOVERNANCE",
+      "mapped_owner": "Required checks present; vuln CI not fail-closed",
+      "status": "PARTIAL_OPEN",
+      "note": "GAP-FGR-004"
+    },
+    {
+      "domain": "HOST_RUNTIME",
+      "mapped_owner": "GAP-FGR-003",
+      "status": "GAP_DISCOVERED",
+      "note": "No dedicated \u00a718.2 criterion"
+    },
+    {
+      "domain": "TEST_COVERAGE",
+      "mapped_owner": "SECURITY_REGRESSION / PENETRATION OPEN",
+      "status": "PARTIAL_OPEN",
+      "note": "Criteria exist"
+    },
+    {
+      "domain": "GOVERNANCE_DOCS",
+      "mapped_owner": "Master/Map/Cybersecurity current for \u00a711.12.9.26",
+      "status": "PASS_FOR_AUDIT_BIND",
+      "note": "Forensic bind pending this package"
+    },
+    {
+      "domain": "EXTERNAL_SYSTEMIC",
+      "mapped_owner": "EXT-FGR-*",
+      "status": "OPEN",
+      "note": "Venue/GitHub/Notion/CI external deps"
+    }
+  ]
+}

@@ -1,0 +1,904 @@
+{
+  "DOCUMENT_CLASS": "CONSOLIDATED_GAP_REGISTER_FGR_V1",
+  "ENTRIES": [
+    {
+      "id": "DA-F-01-CLICK-HGMW",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "code",
+      "dependencies": "After HIGH closure or same lock refresh if compatible",
+      "closure_condition": "Evidence-bound install of click>=8.3.3 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-02-FILELOCK-MVRW",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "code",
+      "dependencies": "After HIGH closure or same lock refresh if compatible",
+      "closure_condition": "Evidence-bound install of filelock>=3.20.3 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-03-IDNA-8RJX",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "code",
+      "dependencies": "After HIGH closure or same lock refresh if compatible",
+      "closure_condition": "Evidence-bound install of idna>=3.15 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-04-MSGPACK-8964",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "code",
+      "dependencies": "Batch with other HIGH runtime upgrades before optional/web and tooling",
+      "closure_condition": "Evidence-bound install of msgpack>=1.2.1 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-05-PIP-7689",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "infrastructure",
+      "dependencies": "After HIGH closure or same lock refresh if compatible",
+      "closure_condition": "Evidence-bound install of pip>=26.1.2 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-06-PIP-W6JP",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "LOW",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "infrastructure",
+      "dependencies": "After HIGH closure or same lock refresh if compatible",
+      "closure_condition": "Evidence-bound install of pip>=26.0 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-07-PIP-455V",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "infrastructure",
+      "dependencies": "After HIGH closure or same lock refresh if compatible",
+      "closure_condition": "Evidence-bound install of pip>=26.1 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-08-PIP-MGF9",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "infrastructure",
+      "dependencies": "After HIGH closure or same lock refresh if compatible",
+      "closure_condition": "Evidence-bound install of pip>=26.1 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-09-PYARROW-JWGG",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "code",
+      "dependencies": "Batch with other HIGH runtime upgrades before optional/web and tooling",
+      "closure_condition": "Evidence-bound install of pyarrow>=23.0.1 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-10-PYGMENTS-4PMQ",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "LOW",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "code",
+      "dependencies": "After HIGH closure or same lock refresh if compatible",
+      "closure_condition": "Evidence-bound install of pygments>=2.20.0 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-11-PYTEST-G56G",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "code",
+      "dependencies": "After HIGH closure or same lock refresh if compatible",
+      "closure_condition": "Evidence-bound install of pytest>=9.0.3 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-12-REQUESTS-R6X2",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "code",
+      "dependencies": "After HIGH closure or same lock refresh if compatible",
+      "closure_condition": "Evidence-bound install of requests>=2.33.0 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-13-STARLETTE-P5MR",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "code",
+      "dependencies": "After HIGH closure or same lock refresh if compatible",
+      "closure_condition": "Evidence-bound install of starlette>=1.0.1 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-14-STARLETTE-5VV3",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "LOW",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "code",
+      "dependencies": "After HIGH closure or same lock refresh if compatible",
+      "closure_condition": "Evidence-bound install of starlette>=1.3.0 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-15-STARLETTE-5JFQ",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "code",
+      "dependencies": "After or with HIGH runtime; may group starlette HIGH together",
+      "closure_condition": "Evidence-bound install of starlette>=1.3.1 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-16-STARLETTE-XC5R",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "code",
+      "dependencies": "After or with HIGH runtime; may group starlette HIGH together",
+      "closure_condition": "Evidence-bound install of starlette>=1.1.0 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-17-STARLETTE-X49C",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "code",
+      "dependencies": "After HIGH closure or same lock refresh if compatible",
+      "closure_condition": "Evidence-bound install of starlette>=1.1.0 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-18-URLLIB3-J63J",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "code",
+      "dependencies": "Batch with other HIGH runtime upgrades before optional/web and tooling",
+      "closure_condition": "Evidence-bound install of urllib3>=2.7.0 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-19-URLLIB3-XXVC",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "code",
+      "dependencies": "Batch with other HIGH runtime upgrades before optional/web and tooling",
+      "closure_condition": "Evidence-bound install of urllib3>=2.7.0 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-F-20-VIRTUALENV-6986",
+      "category": "DEPENDENCY_VULNERABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/DEPENDENCY_FINDINGS_REGISTER",
+      "owner_action_class": "infrastructure",
+      "dependencies": "After HIGH closure or same lock refresh if compatible",
+      "closure_condition": "Evidence-bound install of virtualenv>=20.36.1 (or later safe fix) on canonical Python runtime + pip-audit/OSV clean for this GHSA + DEPENDENCY_AUDIT re-run PASS contribution for this finding.",
+      "required_tests": [
+        "Focused import/smoke for upgraded package",
+        "Existing FOCUSED CI selector suite for touched lock/requirements",
+        "pip-audit / OSV re-scan proving GHSA absent"
+      ],
+      "required_evidence": "New DEPENDENCY_AUDIT re-run package with MANIFEST_VERIFY_RC=0 binding upgraded versions",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-PC-01-GITHUB_DEPENDABOT_ALERTS",
+      "category": "PROCESS_CONTROL",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/PROCESS_CONTROL_FINDINGS",
+      "owner_action_class": "infrastructure",
+      "dependencies": "After or parallel to HIGH CVE remediation; not a substitute for HIGH closure",
+      "closure_condition": "Evidence that control github_dependabot_alerts is remediated or explicitly N/A with Owner justification",
+      "required_tests": [
+        "Static contract proving control state"
+      ],
+      "required_evidence": "Sealed process-control closeout under remediation GO",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-PC-02-REQUIREMENTS.TXT_HASH_PINNING",
+      "category": "PROCESS_CONTROL",
+      "severity": "LOW",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/PROCESS_CONTROL_FINDINGS",
+      "owner_action_class": "config",
+      "dependencies": "After or parallel to HIGH CVE remediation; not a substitute for HIGH closure",
+      "closure_condition": "Evidence that control requirements.txt_hash_pinning is remediated or explicitly N/A with Owner justification",
+      "required_tests": [
+        "Static contract proving control state"
+      ],
+      "required_evidence": "Sealed process-control closeout under remediation GO",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-PC-03-DOCKER_BASE_IMAGES",
+      "category": "PROCESS_CONTROL",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/PROCESS_CONTROL_FINDINGS",
+      "owner_action_class": "infrastructure",
+      "dependencies": "After or parallel to HIGH CVE remediation; not a substitute for HIGH closure",
+      "closure_condition": "Evidence that control docker_base_images is remediated or explicitly N/A with Owner justification",
+      "required_tests": [
+        "Static contract proving control state"
+      ],
+      "required_evidence": "Sealed process-control closeout under remediation GO",
+      "status": "OPEN"
+    },
+    {
+      "id": "DA-PC-04-GHA_ACTIONS_PINNING",
+      "category": "PROCESS_CONTROL",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/PROCESS_CONTROL_FINDINGS",
+      "owner_action_class": "infrastructure",
+      "dependencies": "After or parallel to HIGH CVE remediation; not a substitute for HIGH closure",
+      "closure_condition": "Evidence that control gha_actions_pinning is remediated or explicitly N/A with Owner justification",
+      "required_tests": [
+        "Static contract proving control state"
+      ],
+      "required_evidence": "Sealed process-control closeout under remediation GO",
+      "status": "OPEN"
+    },
+    {
+      "id": "GAP-FGR-001",
+      "category": "EXCHANGE_NETWORK_TIME",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "FORENSIC_INDEPENDENT_COMPLETENESS_REVIEW",
+      "owner_action_class": "code/docs/infrastructure",
+      "dependencies": "See remediation batches RB-02/RB-05/RB-07",
+      "closure_condition": "Documented skew bounds + negative tests for rejected/expired timestamps + evidence seal",
+      "required_tests": [
+        "Focused unit/contract tests + sealed package under separate Owner-GO (may fold into STATIC_SECURITY_ANALYSIS or PENETRATION_PROGRAM)"
+      ],
+      "required_evidence": "Focused unit/contract tests + sealed package under separate Owner-GO (may fold into STATIC_SECURITY_ANALYSIS or PENETRATION_PROGRAM)",
+      "status": "GAP_DISCOVERED"
+    },
+    {
+      "id": "GAP-FGR-002",
+      "category": "OPTIONAL_WEB_SURFACE_REACHABILITY",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "FORENSIC_INDEPENDENT_COMPLETENESS_REVIEW",
+      "owner_action_class": "code/docs/infrastructure",
+      "dependencies": "See remediation batches RB-02/RB-05/RB-07",
+      "closure_condition": "Either remove/unreachable optional web stack from default install OR upgrade starlette to fix versions and prove Cap-11 default path does not serve ASGI",
+      "required_tests": [
+        "Install graph evidence + negative test that default Cap-11 entrypoints do not import/serve vulnerable web stack OR patched versions + re-audit"
+      ],
+      "required_evidence": "Install graph evidence + negative test that default Cap-11 entrypoints do not import/serve vulnerable web stack OR patched versions + re-audit",
+      "status": "GAP_DISCOVERED"
+    },
+    {
+      "id": "GAP-FGR-003",
+      "category": "HOST_RUNTIME_TRUST",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "FORENSIC_INDEPENDENT_COMPLETENESS_REVIEW",
+      "owner_action_class": "code/docs/infrastructure",
+      "dependencies": "See remediation batches RB-02/RB-05/RB-07",
+      "closure_condition": "Reviewed permissions/ownership assumptions + fail-closed behavior on untrusted state paths with evidence",
+      "required_tests": [
+        "Architecture/host review package or extension of RECOVERY_SECURITY_TEST/LIVE_ARMING packages"
+      ],
+      "required_evidence": "Architecture/host review package or extension of RECOVERY_SECURITY_TEST/LIVE_ARMING packages",
+      "status": "GAP_DISCOVERED"
+    },
+    {
+      "id": "GAP-FGR-004",
+      "category": "CI_VULN_GATE_FAIL_CLOSED",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "FORENSIC_INDEPENDENT_COMPLETENESS_REVIEW",
+      "owner_action_class": "code/docs/infrastructure",
+      "dependencies": "See remediation batches RB-02/RB-05/RB-07",
+      "closure_condition": "Required-check or equivalent sealed compensating control preventing HIGH CVE merges without Owner exception",
+      "required_tests": [
+        "CI contract test + required context binding evidence"
+      ],
+      "required_evidence": "CI contract test + required context binding evidence",
+      "status": "GAP_DISCOVERED"
+    },
+    {
+      "id": "GAP-FGR-005",
+      "category": "LOCKFILE_MULTI_VERSION_AMBIGUITY",
+      "severity": "LOW",
+      "blocking": false,
+      "source": "FORENSIC_INDEPENDENT_COMPLETENESS_REVIEW",
+      "owner_action_class": "docs",
+      "dependencies": "See remediation batches RB-02/RB-05/RB-07",
+      "closure_condition": "Every DEPENDENCY_AUDIT package records interpreter version + resolved install set hash",
+      "required_tests": [
+        "Already partially present in \u00a711.12.9.26 tooling proofs; elevate to mandatory criterion text"
+      ],
+      "required_evidence": "Already partially present in \u00a711.12.9.26 tooling proofs; elevate to mandatory criterion text",
+      "status": "GAP_DISCOVERED"
+    },
+    {
+      "id": "TG-FGR-001",
+      "category": "TRACEABILITY",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "FORENSIC_TRACEABILITY",
+      "owner_action_class": "docs/evidence",
+      "dependencies": [
+        "GHSA-6v7p-g79w-8964",
+        "GHSA-rgxp-2hwp-jwgg",
+        "GHSA-82w8-qh3p-5jfq",
+        "GHSA-wqp7-x3pw-xc5r",
+        "GHSA-mf9v-mfxr-j63j",
+        "GHSA-qccp-gfcp-xxvc"
+      ],
+      "closure_condition": "Establish missing bidirectional links with sealed evidence",
+      "required_tests": [
+        "Traceability matrix verify"
+      ],
+      "required_evidence": "Updated matrices in successor packages",
+      "status": "TRACEABILITY_GAP"
+    },
+    {
+      "id": "TG-FGR-002",
+      "category": "TRACEABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "FORENSIC_TRACEABILITY",
+      "owner_action_class": "docs/evidence",
+      "dependencies": [
+        "LONG_RUNNING_TESTNET_PROVEN"
+      ],
+      "closure_condition": "Establish missing bidirectional links with sealed evidence",
+      "required_tests": [
+        "Traceability matrix verify"
+      ],
+      "required_evidence": "Updated matrices in successor packages",
+      "status": "TRACEABILITY_GAP"
+    },
+    {
+      "id": "TG-FGR-003",
+      "category": "TRACEABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "FORENSIC_TRACEABILITY",
+      "owner_action_class": "docs/evidence",
+      "dependencies": [
+        "CRITICAL_FINDINGS_OPEN",
+        "MANIFEST_VERIFY_RC",
+        "AUDIT_EVIDENCE_VERIFIED"
+      ],
+      "closure_condition": "Establish missing bidirectional links with sealed evidence",
+      "required_tests": [
+        "Traceability matrix verify"
+      ],
+      "required_evidence": "Updated matrices in successor packages",
+      "status": "TRACEABILITY_GAP"
+    },
+    {
+      "id": "TG-FGR-004",
+      "category": "TRACEABILITY",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "FORENSIC_TRACEABILITY",
+      "owner_action_class": "docs/evidence",
+      "dependencies": [
+        "SBOM_PRESENT",
+        "STATIC_SECURITY_ANALYSIS",
+        "SECURITY_REGRESSION",
+        "PENETRATION_PROGRAM",
+        "CREDENTIAL_LEAKAGE_TEST",
+        "AUTHORITY_REPLAY_TEST",
+        "RECOVERY_SECURITY_TEST",
+        "LIVE_TESTNET_ISOLATION_PROVEN",
+        "LIVE_DEFAULT_BLOCK_PROVEN",
+        "LIVE_ARMING_FAIL_CLOSED_PROVEN",
+        "AUDIT_EVIDENCE_VERIFIED"
+      ],
+      "closure_condition": "Establish missing bidirectional links with sealed evidence",
+      "required_tests": [
+        "Traceability matrix verify"
+      ],
+      "required_evidence": "Updated matrices in successor packages",
+      "status": "TRACEABILITY_GAP"
+    },
+    {
+      "id": "EXT-FGR-001",
+      "category": "GITHUB_ORG_SECURITY_SETTINGS",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "FORENSIC_EXTERNAL",
+      "owner_action_class": "external",
+      "dependencies": [],
+      "closure_condition": "Dependabot alerts/security updates disabled at GitHub org/repo settings; requires Owner/admin action outside code PR.",
+      "required_tests": [
+        "N/A or settings snapshot"
+      ],
+      "required_evidence": "Owner attestation / settings snapshot sanitized",
+      "status": "EXTERNAL_BLOCKER"
+    },
+    {
+      "id": "EXT-FGR-002",
+      "category": "VENUE_REGIONAL_CAPABILITY",
+      "severity": "HIGH",
+      "blocking": false,
+      "source": "FORENSIC_EXTERNAL",
+      "owner_action_class": "external",
+      "dependencies": [],
+      "closure_condition": "OKX EEA regional/account capability constraints historically blocked BTC-USDT-SWAP productive path; Cap 11.12 closed via XPerp. Live venue capability remains external dependency (not a DEPENDENCY_AUDIT CVE).",
+      "required_tests": [
+        "N/A or settings snapshot"
+      ],
+      "required_evidence": "Owner attestation / settings snapshot sanitized",
+      "status": "EXTERNAL_BLOCKER"
+    },
+    {
+      "id": "EXT-FGR-003",
+      "category": "OPERATOR_NOTION_MIRROR",
+      "severity": "LOW",
+      "blocking": false,
+      "source": "FORENSIC_EXTERNAL",
+      "owner_action_class": "external",
+      "dependencies": [],
+      "closure_condition": "Threat model recorded Notion mirror divergence risk vs repository SSOT; external operational dependency.",
+      "required_tests": [
+        "N/A or settings snapshot"
+      ],
+      "required_evidence": "Owner attestation / settings snapshot sanitized",
+      "status": "EXTERNAL_BLOCKER"
+    },
+    {
+      "id": "EXT-FGR-004",
+      "category": "CI_GITHUB_AVAILABILITY",
+      "severity": "LOW",
+      "blocking": false,
+      "source": "FORENSIC_EXTERNAL",
+      "owner_action_class": "external",
+      "dependencies": [],
+      "closure_condition": "Required GitHub Actions availability is an external SPOF for merge gates and audits.",
+      "required_tests": [
+        "N/A or settings snapshot"
+      ],
+      "required_evidence": "Owner attestation / settings snapshot sanitized",
+      "status": "EXTERNAL_BLOCKER"
+    },
+    {
+      "id": "AC-DEPENDENCY_AUDIT",
+      "category": "ACCEPTANCE_CRITERION",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "SECTION_11_12_9_26/ACCEPTANCE_MATRIX",
+      "owner_action_class": "docs/evidence/code",
+      "dependencies": "Canonical \u00a718.2 order",
+      "closure_condition": "DEPENDENCY_AUDIT evidence-bound PASS (or justified N/A)",
+      "required_tests": [
+        "Package-specific"
+      ],
+      "required_evidence": [
+        "Sealed package"
+      ],
+      "status": "BLOCKED"
+    },
+    {
+      "id": "AC-HIGH_FINDINGS_OPEN",
+      "category": "ACCEPTANCE_CRITERION",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "SECTION_11_12_9_26/ACCEPTANCE_MATRIX",
+      "owner_action_class": "docs/evidence/code",
+      "dependencies": "Canonical \u00a718.2 order",
+      "closure_condition": "HIGH_FINDINGS_OPEN evidence-bound PASS (or justified N/A)",
+      "required_tests": [
+        "Package-specific"
+      ],
+      "required_evidence": [
+        "Sealed package"
+      ],
+      "status": "BLOCKED"
+    },
+    {
+      "id": "AC-SBOM_PRESENT",
+      "category": "ACCEPTANCE_CRITERION",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/ACCEPTANCE_MATRIX",
+      "owner_action_class": "docs/evidence/code",
+      "dependencies": "Canonical \u00a718.2 order",
+      "closure_condition": "SBOM_PRESENT evidence-bound PASS (or justified N/A)",
+      "required_tests": [
+        "Package-specific"
+      ],
+      "required_evidence": [
+        "Sealed package"
+      ],
+      "status": "OPEN"
+    },
+    {
+      "id": "AC-STATIC_SECURITY_ANALYSIS",
+      "category": "ACCEPTANCE_CRITERION",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/ACCEPTANCE_MATRIX",
+      "owner_action_class": "docs/evidence/code",
+      "dependencies": "Canonical \u00a718.2 order",
+      "closure_condition": "STATIC_SECURITY_ANALYSIS evidence-bound PASS (or justified N/A)",
+      "required_tests": [
+        "Package-specific"
+      ],
+      "required_evidence": [
+        "Sealed package"
+      ],
+      "status": "OPEN"
+    },
+    {
+      "id": "AC-SECURITY_REGRESSION",
+      "category": "ACCEPTANCE_CRITERION",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/ACCEPTANCE_MATRIX",
+      "owner_action_class": "docs/evidence/code",
+      "dependencies": "Canonical \u00a718.2 order",
+      "closure_condition": "SECURITY_REGRESSION evidence-bound PASS (or justified N/A)",
+      "required_tests": [
+        "Package-specific"
+      ],
+      "required_evidence": [
+        "Sealed package"
+      ],
+      "status": "OPEN"
+    },
+    {
+      "id": "AC-PENETRATION_PROGRAM",
+      "category": "ACCEPTANCE_CRITERION",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/ACCEPTANCE_MATRIX",
+      "owner_action_class": "docs/evidence/code",
+      "dependencies": "Canonical \u00a718.2 order",
+      "closure_condition": "PENETRATION_PROGRAM evidence-bound PASS (or justified N/A)",
+      "required_tests": [
+        "Package-specific"
+      ],
+      "required_evidence": [
+        "Sealed package"
+      ],
+      "status": "OPEN"
+    },
+    {
+      "id": "AC-CREDENTIAL_LEAKAGE_TEST",
+      "category": "ACCEPTANCE_CRITERION",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/ACCEPTANCE_MATRIX",
+      "owner_action_class": "docs/evidence/code",
+      "dependencies": "Canonical \u00a718.2 order",
+      "closure_condition": "CREDENTIAL_LEAKAGE_TEST evidence-bound PASS (or justified N/A)",
+      "required_tests": [
+        "Package-specific"
+      ],
+      "required_evidence": [
+        "Sealed package"
+      ],
+      "status": "OPEN"
+    },
+    {
+      "id": "AC-AUTHORITY_REPLAY_TEST",
+      "category": "ACCEPTANCE_CRITERION",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/ACCEPTANCE_MATRIX",
+      "owner_action_class": "docs/evidence/code",
+      "dependencies": "Canonical \u00a718.2 order",
+      "closure_condition": "AUTHORITY_REPLAY_TEST evidence-bound PASS (or justified N/A)",
+      "required_tests": [
+        "Package-specific"
+      ],
+      "required_evidence": [
+        "Sealed package"
+      ],
+      "status": "OPEN"
+    },
+    {
+      "id": "AC-RECOVERY_SECURITY_TEST",
+      "category": "ACCEPTANCE_CRITERION",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/ACCEPTANCE_MATRIX",
+      "owner_action_class": "docs/evidence/code",
+      "dependencies": "Canonical \u00a718.2 order",
+      "closure_condition": "RECOVERY_SECURITY_TEST evidence-bound PASS (or justified N/A)",
+      "required_tests": [
+        "Package-specific"
+      ],
+      "required_evidence": [
+        "Sealed package"
+      ],
+      "status": "OPEN"
+    },
+    {
+      "id": "AC-CRITICAL_FINDINGS_OPEN",
+      "category": "ACCEPTANCE_CRITERION",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/ACCEPTANCE_MATRIX",
+      "owner_action_class": "docs/evidence/code",
+      "dependencies": "Canonical \u00a718.2 order",
+      "closure_condition": "CRITICAL_FINDINGS_OPEN evidence-bound PASS (or justified N/A)",
+      "required_tests": [
+        "Package-specific"
+      ],
+      "required_evidence": [
+        "Sealed package"
+      ],
+      "status": "OPEN"
+    },
+    {
+      "id": "AC-LIVE_TESTNET_ISOLATION_PROVEN",
+      "category": "ACCEPTANCE_CRITERION",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/ACCEPTANCE_MATRIX",
+      "owner_action_class": "docs/evidence/code",
+      "dependencies": "Canonical \u00a718.2 order",
+      "closure_condition": "LIVE_TESTNET_ISOLATION_PROVEN evidence-bound PASS (or justified N/A)",
+      "required_tests": [
+        "Package-specific"
+      ],
+      "required_evidence": [
+        "Sealed package"
+      ],
+      "status": "OPEN"
+    },
+    {
+      "id": "AC-LIVE_DEFAULT_BLOCK_PROVEN",
+      "category": "ACCEPTANCE_CRITERION",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/ACCEPTANCE_MATRIX",
+      "owner_action_class": "docs/evidence/code",
+      "dependencies": "Canonical \u00a718.2 order",
+      "closure_condition": "LIVE_DEFAULT_BLOCK_PROVEN evidence-bound PASS (or justified N/A)",
+      "required_tests": [
+        "Package-specific"
+      ],
+      "required_evidence": [
+        "Sealed package"
+      ],
+      "status": "OPEN"
+    },
+    {
+      "id": "AC-LIVE_ARMING_FAIL_CLOSED_PROVEN",
+      "category": "ACCEPTANCE_CRITERION",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/ACCEPTANCE_MATRIX",
+      "owner_action_class": "docs/evidence/code",
+      "dependencies": "Canonical \u00a718.2 order",
+      "closure_condition": "LIVE_ARMING_FAIL_CLOSED_PROVEN evidence-bound PASS (or justified N/A)",
+      "required_tests": [
+        "Package-specific"
+      ],
+      "required_evidence": [
+        "Sealed package"
+      ],
+      "status": "OPEN"
+    },
+    {
+      "id": "AC-AUDIT_EVIDENCE_VERIFIED",
+      "category": "ACCEPTANCE_CRITERION",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/ACCEPTANCE_MATRIX",
+      "owner_action_class": "docs/evidence/code",
+      "dependencies": "Canonical \u00a718.2 order",
+      "closure_condition": "AUDIT_EVIDENCE_VERIFIED evidence-bound PASS (or justified N/A)",
+      "required_tests": [
+        "Package-specific"
+      ],
+      "required_evidence": [
+        "Sealed package"
+      ],
+      "status": "OPEN"
+    },
+    {
+      "id": "AC-MANIFEST_VERIFY_RC",
+      "category": "ACCEPTANCE_CRITERION",
+      "severity": "MEDIUM",
+      "blocking": false,
+      "source": "SECTION_11_12_9_26/ACCEPTANCE_MATRIX",
+      "owner_action_class": "docs/evidence/code",
+      "dependencies": "Canonical \u00a718.2 order",
+      "closure_condition": "MANIFEST_VERIFY_RC evidence-bound PASS (or justified N/A)",
+      "required_tests": [
+        "Package-specific"
+      ],
+      "required_evidence": [
+        "Sealed package"
+      ],
+      "status": "OPEN"
+    },
+    {
+      "id": "AC-PRE_LIVE_CYBERSECURITY_GATE",
+      "category": "ACCEPTANCE_CRITERION",
+      "severity": "HIGH",
+      "blocking": true,
+      "source": "SECTION_11_12_9_26/ACCEPTANCE_MATRIX",
+      "owner_action_class": "docs/evidence/code",
+      "dependencies": "Canonical \u00a718.2 order",
+      "closure_condition": "PRE_LIVE_CYBERSECURITY_GATE evidence-bound PASS (or justified N/A)",
+      "required_tests": [
+        "Package-specific"
+      ],
+      "required_evidence": [
+        "Sealed package"
+      ],
+      "status": "BLOCKED"
+    }
+  ],
+  "COUNTS": {
+    "TOTAL": 53,
+    "BLOCKING": 11,
+    "GAP_DISCOVERED": 5,
+    "TRACEABILITY_GAPS": 4,
+    "EXTERNAL_BLOCKERS": 4
+  }
+}

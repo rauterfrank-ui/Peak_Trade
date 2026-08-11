@@ -1,0 +1,222 @@
+{
+  "DOCUMENT_CLASS": "CRITERIA_RECONCILIATION_FGR_V1",
+  "ORIGINAL_TOTAL": 21,
+  "CURRENT_COUNTS": {
+    "PROVEN": 5,
+    "OPEN": 13,
+    "BLOCKED": 3,
+    "NOT_APPLICABLE": 0
+  },
+  "CRITERIA": [
+    {
+      "criterion": "TESTNET_LIFECYCLE_PROVEN",
+      "original_verdict": "PASS",
+      "current_classification": "PROVEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/"
+      ],
+      "rationale_current": "Still evidence-bound PASS; intervening commits since package SHA are docs/evidence-only for this criterion chain."
+    },
+    {
+      "criterion": "LONG_RUNNING_TESTNET_PROVEN",
+      "original_verdict": "PASS",
+      "current_classification": "PROVEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/"
+      ],
+      "rationale_current": "Still evidence-bound PASS; intervening commits since package SHA are docs/evidence-only for this criterion chain."
+    },
+    {
+      "criterion": "CYBERSECURITY_ARCHITECTURE_REVIEW",
+      "original_verdict": "PASS",
+      "current_classification": "PROVEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/"
+      ],
+      "rationale_current": "Still evidence-bound PASS; intervening commits since package SHA are docs/evidence-only for this criterion chain."
+    },
+    {
+      "criterion": "THREAT_MODEL_CURRENT",
+      "original_verdict": "PASS",
+      "current_classification": "PROVEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_24_pre_live_threat_model_current_v1/20260811T023114Z/"
+      ],
+      "rationale_current": "Still evidence-bound PASS; intervening commits since package SHA are docs/evidence-only for this criterion chain."
+    },
+    {
+      "criterion": "SECRETS_REVIEW",
+      "original_verdict": "PASS",
+      "current_classification": "PROVEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_25_pre_live_credential_hygiene_review_v1/20260811T025933Z/"
+      ],
+      "rationale_current": "Still evidence-bound PASS; intervening commits since package SHA are docs/evidence-only for this criterion chain."
+    },
+    {
+      "criterion": "DEPENDENCY_AUDIT",
+      "original_verdict": "FAIL",
+      "current_classification": "BLOCKED",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/"
+      ],
+      "rationale_current": "Open HIGH vulns with fixes available still present on current origin/main installed env; PR#5861 did not remediate."
+    },
+    {
+      "criterion": "SBOM_PRESENT",
+      "original_verdict": "MISSING",
+      "current_classification": "OPEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "rationale_current": "Separate Pre-Live acceptance package still absent or incomplete on current origin/main."
+    },
+    {
+      "criterion": "STATIC_SECURITY_ANALYSIS",
+      "original_verdict": "MISSING",
+      "current_classification": "OPEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "rationale_current": "Separate Pre-Live acceptance package still absent or incomplete on current origin/main."
+    },
+    {
+      "criterion": "SECURITY_REGRESSION",
+      "original_verdict": "MISSING",
+      "current_classification": "OPEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "rationale_current": "Separate Pre-Live acceptance package still absent or incomplete on current origin/main."
+    },
+    {
+      "criterion": "PENETRATION_PROGRAM",
+      "original_verdict": "MISSING",
+      "current_classification": "OPEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "rationale_current": "Separate Pre-Live acceptance package still absent or incomplete on current origin/main."
+    },
+    {
+      "criterion": "CREDENTIAL_LEAKAGE_TEST",
+      "original_verdict": "MISSING",
+      "current_classification": "OPEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "rationale_current": "Separate Pre-Live acceptance package still absent or incomplete on current origin/main."
+    },
+    {
+      "criterion": "AUTHORITY_REPLAY_TEST",
+      "original_verdict": "MISSING",
+      "current_classification": "OPEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "rationale_current": "Separate Pre-Live acceptance package still absent or incomplete on current origin/main."
+    },
+    {
+      "criterion": "RECOVERY_SECURITY_TEST",
+      "original_verdict": "MISSING",
+      "current_classification": "OPEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "rationale_current": "Separate Pre-Live acceptance package still absent or incomplete on current origin/main."
+    },
+    {
+      "criterion": "CRITICAL_FINDINGS_OPEN",
+      "original_verdict": "OPEN",
+      "current_classification": "OPEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/proofs/DEPENDENCY_FINDINGS_REGISTER.json"
+      ],
+      "rationale_current": "Separate Pre-Live acceptance package still absent or incomplete on current origin/main."
+    },
+    {
+      "criterion": "HIGH_FINDINGS_OPEN",
+      "original_verdict": "FAIL",
+      "current_classification": "BLOCKED",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/proofs/DEPENDENCY_FINDINGS_REGISTER.json"
+      ],
+      "rationale_current": "Open HIGH vulns with fixes available still present on current origin/main installed env; PR#5861 did not remediate."
+    },
+    {
+      "criterion": "LIVE_TESTNET_ISOLATION_PROVEN",
+      "original_verdict": "MISSING",
+      "current_classification": "OPEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "rationale_current": "Separate Pre-Live acceptance package still absent or incomplete on current origin/main."
+    },
+    {
+      "criterion": "LIVE_DEFAULT_BLOCK_PROVEN",
+      "original_verdict": "MISSING",
+      "current_classification": "OPEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "rationale_current": "Separate Pre-Live acceptance package still absent or incomplete on current origin/main."
+    },
+    {
+      "criterion": "LIVE_ARMING_FAIL_CLOSED_PROVEN",
+      "original_verdict": "MISSING",
+      "current_classification": "OPEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "rationale_current": "Separate Pre-Live acceptance package still absent or incomplete on current origin/main."
+    },
+    {
+      "criterion": "AUDIT_EVIDENCE_VERIFIED",
+      "original_verdict": "MISSING",
+      "current_classification": "OPEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "rationale_current": "Separate Pre-Live acceptance package still absent or incomplete on current origin/main."
+    },
+    {
+      "criterion": "MANIFEST_VERIFY_RC",
+      "original_verdict": "OPEN",
+      "current_classification": "OPEN",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/MANIFEST.sha256"
+      ],
+      "rationale_current": "Separate Pre-Live acceptance package still absent or incomplete on current origin/main."
+    },
+    {
+      "criterion": "PRE_LIVE_CYBERSECURITY_GATE",
+      "original_verdict": "NOT_PASSED",
+      "current_classification": "BLOCKED",
+      "required_for_gate_pass": true,
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/"
+      ],
+      "rationale_current": "Gate remains NOT_PASSED by contract while mandatory unmet criteria remain."
+    }
+  ]
+}
