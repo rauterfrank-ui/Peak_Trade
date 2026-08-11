@@ -1,0 +1,278 @@
+{
+  "FINDINGS": [
+    {
+      "component": "github_dependabot_alerts",
+      "installed_resolved_version": null,
+      "affected_range": "n/a",
+      "severity": "MEDIUM",
+      "exploitability_relevance_for_peak_trade": "Continuous dependency alert monitoring disabled; relies on explicit Owner-GO audits / CI pip-audit.",
+      "runtime_research_test_only_scope": "REPO_CI_CONTROL",
+      "mitigation_status": "OPEN; secret scanning enabled; Dependabot alerts/security updates disabled; no .github/dependabot.yml",
+      "status": "OPEN",
+      "blocking": false,
+      "note": "Monitoring control gap; does not by itself create a CVE. Not treated as HIGH/CRITICAL vulnerability finding."
+    },
+    {
+      "component": "requirements.txt_hash_pinning",
+      "installed_resolved_version": null,
+      "affected_range": "requirements.txt exported with --no-hashes",
+      "severity": "LOW",
+      "exploitability_relevance_for_peak_trade": "Integrity primarily via uv.lock for uv-based installs; pip -r requirements.txt lacks hashes.",
+      "runtime_research_test_only_scope": "SUPPLY_CHAIN_CONTROL",
+      "mitigation_status": "PARTIALLY_MITIGATED_BY_UV_LOCK; hash-pinned requirements not present",
+      "status": "OPEN",
+      "blocking": false
+    },
+    {
+      "component": "docker_base_images",
+      "installed_resolved_version": "python:3.11-slim (tag)",
+      "affected_range": "tracked docker/*/Dockerfile FROM without digest",
+      "severity": "MEDIUM",
+      "exploitability_relevance_for_peak_trade": "Optional/ops Docker images; floating tags can move; not primary Cap-11 execution path.",
+      "runtime_research_test_only_scope": "OPS_CONTAINER",
+      "mitigation_status": "OPEN_TAG_ONLY_NO_DIGEST",
+      "status": "OPEN",
+      "blocking": false,
+      "images": [
+        {
+          "digest_pinned": false,
+          "file": "docker/l3/Dockerfile",
+          "image": "python:3.11-slim",
+          "line": 2,
+          "tag": "3.11-slim"
+        },
+        {
+          "digest_pinned": false,
+          "file": "docker/mlflow/Dockerfile",
+          "image": "python:3.11-slim",
+          "line": 1,
+          "tag": "3.11-slim"
+        },
+        {
+          "digest_pinned": false,
+          "file": "docker/obs/Dockerfile",
+          "image": "python:3.11-slim",
+          "line": 4,
+          "tag": "3.11-slim"
+        }
+      ]
+    },
+    {
+      "component": "gha_actions_pinning",
+      "installed_resolved_version": null,
+      "affected_range": "not_sha_pinned=29/260",
+      "severity": "MEDIUM",
+      "exploitability_relevance_for_peak_trade": "Most workflows SHA-pinned; residual floating tags increase supply-chain mutability risk for those workflows.",
+      "runtime_research_test_only_scope": "CI_SUPPLY_CHAIN",
+      "mitigation_status": "PARTIAL_MOSTLY_SHA_PINNED_WITH_FLOATING_TAG_RESIDUAL",
+      "status": "OPEN",
+      "blocking": false,
+      "not_sha_pinned": [
+        {
+          "file": ".github/workflows/ai-model-cards-validate.yml",
+          "line": 13,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/ai-model-cards-validate.yml",
+          "line": 14,
+          "uses": "actions/setup-python@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/ci_recon_audit_gate_smoke.yml",
+          "line": 32,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/ci_recon_audit_gate_smoke.yml",
+          "line": 34,
+          "uses": "actions/setup-python@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/deps_sync_guard.yml",
+          "line": 22,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/deps_sync_guard.yml",
+          "line": 24,
+          "uses": "actions/setup-python@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/docs_diff_guard_policy_gate.yml",
+          "line": 17,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/docs_diff_guard_policy_gate.yml",
+          "line": 21,
+          "uses": "actions/setup-python@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/events_schema_smoke.yml",
+          "line": 14,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/events_schema_smoke.yml",
+          "line": 15,
+          "uses": "actions/setup-python@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/lint.yml",
+          "line": 36,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/master_v2_dry_smoke.yml",
+          "line": 33,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/mcp_smoke_preflight.yml",
+          "line": 28,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/mcp_smoke_preflight.yml",
+          "line": 30,
+          "uses": "actions/setup-python@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/mcp_smoke_preflight.yml",
+          "line": 34,
+          "uses": "actions/setup-node@v6",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/paper_session_telemetry_summary.yml",
+          "line": 37,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/prbc-stability-gate.yml",
+          "line": 23,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/prbd-live-readiness-scorecard.yml",
+          "line": 23,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/prbe-shadow-testnet-scorecard.yml",
+          "line": 23,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/prbg-execution-evidence.yml",
+          "line": 30,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/prbi-live-pilot-scorecard.yml",
+          "line": 23,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/prbj-testnet-exec-events.yml",
+          "line": 35,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/prbj-testnet-exec-events.yml",
+          "line": 37,
+          "uses": "actions/setup-python@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/prcc-aws-export-smoke.yml",
+          "line": 18,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/prcd-aws-export-write-smoke.yml",
+          "line": 23,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/prj-scheduled-shadow-paper-features-smoke.yml",
+          "line": 49,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/prk-prj-status-report.yml",
+          "line": 35,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/pro-prk-nightly-selfcheck.yml",
+          "line": 17,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        },
+        {
+          "file": ".github/workflows/pru-required-checks-drift-detector.yml",
+          "line": 20,
+          "uses": "actions/checkout@v5",
+          "class": "TAG_FLOATING_OR_MAJOR",
+          "sha_pinned": false
+        }
+      ]
+    }
+  ],
+  "TOTAL": 4
+}

@@ -1,0 +1,1 @@
+gh: Vulnerability alerts are disabled. (HTTP 404)

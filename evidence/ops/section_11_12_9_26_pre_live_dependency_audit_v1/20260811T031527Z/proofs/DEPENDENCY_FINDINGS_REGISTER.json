@@ -1,0 +1,509 @@
+{
+  "BLOCKING_FINDINGS": [
+    {
+      "affected_range": "installed 1.1.2; fix_versions=['1.2.1']",
+      "blocking": true,
+      "cve": "CVE-2026-57585",
+      "dependency": "msgpack",
+      "description_summary": "MessagePack for Python: Out-of-bounds read / crash on Unpacker reuse after a caught error",
+      "exploitability_relevance_for_peak_trade": "DoS via crafted msgpack; HIGH severity upstream.",
+      "fix_versions": [
+        "1.2.1"
+      ],
+      "ghsa": "GHSA-6v7p-g79w-8964",
+      "installed_resolved_version": "1.1.2",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "RUNTIME_OR_OPTIONAL_TRANSITIVE",
+      "severity": "HIGH",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-3625"
+    },
+    {
+      "affected_range": "installed 22.0.0; fix_versions=['23.0.1']",
+      "blocking": true,
+      "cve": "CVE-2026-25087",
+      "dependency": "pyarrow",
+      "description_summary": "Apache Arrow: Potential use-after-free when reading IPC file with pre-buffering",
+      "exploitability_relevance_for_peak_trade": "Runtime direct dep; HIGH; crafted IPC/data paths.",
+      "fix_versions": [
+        "23.0.1"
+      ],
+      "ghsa": "GHSA-rgxp-2hwp-jwgg",
+      "installed_resolved_version": "22.0.0",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "RUNTIME_DIRECT",
+      "severity": "HIGH",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-113"
+    },
+    {
+      "affected_range": "installed 0.50.0; fix_versions=['1.3.1']",
+      "blocking": true,
+      "cve": "CVE-2026-54283",
+      "dependency": "starlette",
+      "description_summary": "Starlette: request.form() limits silently ignored for application/x-www-form-urlencoded enable DoS",
+      "exploitability_relevance_for_peak_trade": "Optional web/FastAPI stack; HIGH vulns present if web surface enabled.",
+      "fix_versions": [
+        "1.3.1"
+      ],
+      "ghsa": "GHSA-82w8-qh3p-5jfq",
+      "installed_resolved_version": "0.50.0",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "OPTIONAL_WEB_EXTRA",
+      "severity": "HIGH",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-249"
+    },
+    {
+      "affected_range": "installed 0.50.0; fix_versions=['1.1.0']",
+      "blocking": true,
+      "cve": "CVE-2026-48818",
+      "dependency": "starlette",
+      "description_summary": "Starlette: SSRF and NTLM credential theft via UNC paths in StaticFiles on Windows",
+      "exploitability_relevance_for_peak_trade": "Optional web/FastAPI stack; HIGH vulns present if web surface enabled.",
+      "fix_versions": [
+        "1.1.0"
+      ],
+      "ghsa": "GHSA-wqp7-x3pw-xc5r",
+      "installed_resolved_version": "0.50.0",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "OPTIONAL_WEB_EXTRA",
+      "severity": "HIGH",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-2281"
+    },
+    {
+      "affected_range": "installed 2.6.3; fix_versions=['2.7.0']",
+      "blocking": true,
+      "cve": "CVE-2026-44432",
+      "dependency": "urllib3",
+      "description_summary": "urllib3: Decompression-bomb safeguards bypassed in parts of the streaming API",
+      "exploitability_relevance_for_peak_trade": "Runtime direct constrained dep; HIGH streaming/header issues with fix in 2.7.0.",
+      "fix_versions": [
+        "2.7.0"
+      ],
+      "ghsa": "GHSA-mf9v-mfxr-j63j",
+      "installed_resolved_version": "2.6.3",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "RUNTIME_DIRECT",
+      "severity": "HIGH",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-142"
+    },
+    {
+      "affected_range": "installed 2.6.3; fix_versions=['2.7.0']",
+      "blocking": true,
+      "cve": "CVE-2026-44431",
+      "dependency": "urllib3",
+      "description_summary": "urllib3: Sensitive headers forwarded across origins in proxied low-level redirects",
+      "exploitability_relevance_for_peak_trade": "Runtime direct constrained dep; HIGH streaming/header issues with fix in 2.7.0.",
+      "fix_versions": [
+        "2.7.0"
+      ],
+      "ghsa": "GHSA-qccp-gfcp-xxvc",
+      "installed_resolved_version": "2.6.3",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "RUNTIME_DIRECT",
+      "severity": "HIGH",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-141"
+    }
+  ],
+  "BLOCKING_FINDINGS_COUNT": 6,
+  "FINDINGS": [
+    {
+      "affected_range": "installed 8.3.1; fix_versions=['8.3.3']",
+      "blocking": false,
+      "cve": "CVE-2026-7246",
+      "dependency": "click",
+      "description_summary": "Pallets Click, versions 8.3.2 and below, contain a command injection vulnerability in the click.edit() function, allowing attackers to pass arbitrary OS commands from an unprivileged account.",
+      "exploitability_relevance_for_peak_trade": "CLI helper; click.edit() injection requires attacker-controlled editor path usage.",
+      "fix_versions": [
+        "8.3.3"
+      ],
+      "ghsa": "GHSA-47fr-3ffg-hgmw",
+      "installed_resolved_version": "8.3.1",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "RUNTIME_OR_CLI_TRANSITIVE",
+      "severity": "MEDIUM",
+      "severity_source": "HEURISTIC_FROM_ADVISORY_DESCRIPTION_COMMAND_INJECTION",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-2132"
+    },
+    {
+      "affected_range": "installed 3.20.1; fix_versions=['3.20.3']",
+      "blocking": false,
+      "cve": "CVE-2026-22701",
+      "dependency": "filelock",
+      "description_summary": "filelock Time-of-Check-Time-of-Use (TOCTOU) Symlink Vulnerability in SoftFileLock",
+      "exploitability_relevance_for_peak_trade": "Local TOCTOU SoftFileLock; needs local filesystem adversary.",
+      "fix_versions": [
+        "3.20.3"
+      ],
+      "ghsa": "GHSA-qmgc-5h2g-mvrw",
+      "installed_resolved_version": "3.20.1",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "RUNTIME_TRANSITIVE",
+      "severity": "MEDIUM",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-1374"
+    },
+    {
+      "affected_range": "installed 3.11; fix_versions=['3.15']",
+      "blocking": false,
+      "cve": "CVE-2026-45409",
+      "dependency": "idna",
+      "description_summary": "Internationalized Domain Names in Applications (IDNA): Specially crafted inputs to idna.encode() can bypass CVE-2024-3651 fix",
+      "exploitability_relevance_for_peak_trade": "DoS via special labels; network-facing IDNA processing.",
+      "fix_versions": [
+        "3.15"
+      ],
+      "ghsa": "GHSA-65pc-fj4g-8rjx",
+      "installed_resolved_version": "3.11",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "RUNTIME_TRANSITIVE",
+      "severity": "MEDIUM",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-215"
+    },
+    {
+      "affected_range": "installed 1.1.2; fix_versions=['1.2.1']",
+      "blocking": true,
+      "cve": "CVE-2026-57585",
+      "dependency": "msgpack",
+      "description_summary": "MessagePack for Python: Out-of-bounds read / crash on Unpacker reuse after a caught error",
+      "exploitability_relevance_for_peak_trade": "DoS via crafted msgpack; HIGH severity upstream.",
+      "fix_versions": [
+        "1.2.1"
+      ],
+      "ghsa": "GHSA-6v7p-g79w-8964",
+      "installed_resolved_version": "1.1.2",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "RUNTIME_OR_OPTIONAL_TRANSITIVE",
+      "severity": "HIGH",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-3625"
+    },
+    {
+      "affected_range": "installed 25.3; fix_versions=['26.1.2']",
+      "blocking": false,
+      "cve": "CVE-2026-8643",
+      "dependency": "pip",
+      "description_summary": " pip: Path traversal in console_scripts/gui_scripts\u00a0entry point names allows installing scripts outside of target directory",
+      "exploitability_relevance_for_peak_trade": "Installer tooling; not application runtime import path.",
+      "fix_versions": [
+        "26.1.2"
+      ],
+      "ghsa": "GHSA-wf93-45jw-7689",
+      "installed_resolved_version": "25.3",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "TOOLING_BUILD",
+      "severity": "MEDIUM",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-196"
+    },
+    {
+      "affected_range": "installed 25.3; fix_versions=['26.0']",
+      "blocking": false,
+      "cve": "CVE-2026-1703",
+      "dependency": "pip",
+      "description_summary": "pip Path Traversal vulnerability",
+      "exploitability_relevance_for_peak_trade": "Installer tooling; not application runtime import path.",
+      "fix_versions": [
+        "26.0"
+      ],
+      "ghsa": "GHSA-6vgw-5pg2-w6jp",
+      "installed_resolved_version": "25.3",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "TOOLING_BUILD",
+      "severity": "LOW",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-1796"
+    },
+    {
+      "affected_range": "installed 25.3; fix_versions=['26.1']",
+      "blocking": false,
+      "cve": "CVE-2026-3219",
+      "dependency": "pip",
+      "description_summary": "pip has an interpretation conflict due to handling both concatenated tar and ZIP files as ZIP files",
+      "exploitability_relevance_for_peak_trade": "Installer tooling; not application runtime import path.",
+      "fix_versions": [
+        "26.1"
+      ],
+      "ghsa": "GHSA-58qw-9mgm-455v",
+      "installed_resolved_version": "25.3",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "TOOLING_BUILD",
+      "severity": "MEDIUM",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-2875"
+    },
+    {
+      "affected_range": "installed 25.3; fix_versions=['26.1']",
+      "blocking": false,
+      "cve": "CVE-2026-6357",
+      "dependency": "pip",
+      "description_summary": "pip Vulnerable to Inclusion of Functionality from Untrusted Control Sphere",
+      "exploitability_relevance_for_peak_trade": "Installer tooling; not application runtime import path.",
+      "fix_versions": [
+        "26.1"
+      ],
+      "ghsa": "GHSA-jp4c-xjxw-mgf9",
+      "installed_resolved_version": "25.3",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "TOOLING_BUILD",
+      "severity": "MEDIUM",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-2876"
+    },
+    {
+      "affected_range": "installed 22.0.0; fix_versions=['23.0.1']",
+      "blocking": true,
+      "cve": "CVE-2026-25087",
+      "dependency": "pyarrow",
+      "description_summary": "Apache Arrow: Potential use-after-free when reading IPC file with pre-buffering",
+      "exploitability_relevance_for_peak_trade": "Runtime direct dep; HIGH; crafted IPC/data paths.",
+      "fix_versions": [
+        "23.0.1"
+      ],
+      "ghsa": "GHSA-rgxp-2hwp-jwgg",
+      "installed_resolved_version": "22.0.0",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "RUNTIME_DIRECT",
+      "severity": "HIGH",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-113"
+    },
+    {
+      "affected_range": "installed 2.19.2; fix_versions=['2.20.0']",
+      "blocking": false,
+      "cve": "CVE-2026-4539",
+      "dependency": "pygments",
+      "description_summary": "Pygments has Regular Expression Denial of Service (ReDoS) due to Inefficient Regex for GUID Matching",
+      "exploitability_relevance_for_peak_trade": "Typically syntax highlighting transitive; low exploitability in Peak_Trade execution path.",
+      "fix_versions": [
+        "2.20.0"
+      ],
+      "ghsa": "GHSA-5239-wwwm-4pmq",
+      "installed_resolved_version": "2.19.2",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "DEV_OR_DOCS_TRANSITIVE",
+      "severity": "LOW",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-2987"
+    },
+    {
+      "affected_range": "installed 9.0.2; fix_versions=['9.0.3']",
+      "blocking": false,
+      "cve": "CVE-2025-71176",
+      "dependency": "pytest",
+      "description_summary": "pytest has vulnerable tmpdir handling",
+      "exploitability_relevance_for_peak_trade": "Test-only; not loaded in productive trading runtime path.",
+      "fix_versions": [
+        "9.0.3"
+      ],
+      "ghsa": "GHSA-6w46-j5rx-g56g",
+      "installed_resolved_version": "9.0.2",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "TEST_ONLY",
+      "severity": "MEDIUM",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-1845"
+    },
+    {
+      "affected_range": "installed 2.32.5; fix_versions=['2.33.0']",
+      "blocking": false,
+      "cve": "CVE-2026-25645",
+      "dependency": "requests",
+      "description_summary": "Requests has Insecure Temp File Reuse in its extract_zipped_paths() utility function",
+      "exploitability_relevance_for_peak_trade": "Local/UI interaction class per advisory (MODERATE).",
+      "fix_versions": [
+        "2.33.0"
+      ],
+      "ghsa": "GHSA-gc5v-m9x4-r6x2",
+      "installed_resolved_version": "2.32.5",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "RUNTIME_DIRECT_OR_TRANSITIVE",
+      "severity": "MEDIUM",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-2275"
+    },
+    {
+      "affected_range": "installed 0.50.0; fix_versions=['1.0.1']",
+      "blocking": false,
+      "cve": "CVE-2026-48710",
+      "dependency": "starlette",
+      "description_summary": "Starlette has missing Host header validation that poisons request.url.path, bypassing path-based security checks",
+      "exploitability_relevance_for_peak_trade": "Optional web/FastAPI stack; HIGH vulns present if web surface enabled.",
+      "fix_versions": [
+        "1.0.1"
+      ],
+      "ghsa": "GHSA-86qp-5c8j-p5mr",
+      "installed_resolved_version": "0.50.0",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "OPTIONAL_WEB_EXTRA",
+      "severity": "MEDIUM",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-161"
+    },
+    {
+      "affected_range": "installed 0.50.0; fix_versions=['1.3.0']",
+      "blocking": false,
+      "cve": "CVE-2026-54282",
+      "dependency": "starlette",
+      "description_summary": "Starlette: Unvalidated request path concatenated into authority poisons request.url.hostname",
+      "exploitability_relevance_for_peak_trade": "Optional web/FastAPI stack; HIGH vulns present if web surface enabled.",
+      "fix_versions": [
+        "1.3.0"
+      ],
+      "ghsa": "GHSA-jp82-jpqv-5vv3",
+      "installed_resolved_version": "0.50.0",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "OPTIONAL_WEB_EXTRA",
+      "severity": "LOW",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-248"
+    },
+    {
+      "affected_range": "installed 0.50.0; fix_versions=['1.3.1']",
+      "blocking": true,
+      "cve": "CVE-2026-54283",
+      "dependency": "starlette",
+      "description_summary": "Starlette: request.form() limits silently ignored for application/x-www-form-urlencoded enable DoS",
+      "exploitability_relevance_for_peak_trade": "Optional web/FastAPI stack; HIGH vulns present if web surface enabled.",
+      "fix_versions": [
+        "1.3.1"
+      ],
+      "ghsa": "GHSA-82w8-qh3p-5jfq",
+      "installed_resolved_version": "0.50.0",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "OPTIONAL_WEB_EXTRA",
+      "severity": "HIGH",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-249"
+    },
+    {
+      "affected_range": "installed 0.50.0; fix_versions=['1.1.0']",
+      "blocking": true,
+      "cve": "CVE-2026-48818",
+      "dependency": "starlette",
+      "description_summary": "Starlette: SSRF and NTLM credential theft via UNC paths in StaticFiles on Windows",
+      "exploitability_relevance_for_peak_trade": "Optional web/FastAPI stack; HIGH vulns present if web surface enabled.",
+      "fix_versions": [
+        "1.1.0"
+      ],
+      "ghsa": "GHSA-wqp7-x3pw-xc5r",
+      "installed_resolved_version": "0.50.0",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "OPTIONAL_WEB_EXTRA",
+      "severity": "HIGH",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-2281"
+    },
+    {
+      "affected_range": "installed 0.50.0; fix_versions=['1.1.0']",
+      "blocking": false,
+      "cve": "CVE-2026-48817",
+      "dependency": "starlette",
+      "description_summary": "Starlette: Arbitrary HTTP method dispatched to `HTTPEndpoint` attributes via `getattr`",
+      "exploitability_relevance_for_peak_trade": "Optional web/FastAPI stack; HIGH vulns present if web surface enabled.",
+      "fix_versions": [
+        "1.1.0"
+      ],
+      "ghsa": "GHSA-x746-7m8f-x49c",
+      "installed_resolved_version": "0.50.0",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "OPTIONAL_WEB_EXTRA",
+      "severity": "MEDIUM",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-2280"
+    },
+    {
+      "affected_range": "installed 2.6.3; fix_versions=['2.7.0']",
+      "blocking": true,
+      "cve": "CVE-2026-44432",
+      "dependency": "urllib3",
+      "description_summary": "urllib3: Decompression-bomb safeguards bypassed in parts of the streaming API",
+      "exploitability_relevance_for_peak_trade": "Runtime direct constrained dep; HIGH streaming/header issues with fix in 2.7.0.",
+      "fix_versions": [
+        "2.7.0"
+      ],
+      "ghsa": "GHSA-mf9v-mfxr-j63j",
+      "installed_resolved_version": "2.6.3",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "RUNTIME_DIRECT",
+      "severity": "HIGH",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-142"
+    },
+    {
+      "affected_range": "installed 2.6.3; fix_versions=['2.7.0']",
+      "blocking": true,
+      "cve": "CVE-2026-44431",
+      "dependency": "urllib3",
+      "description_summary": "urllib3: Sensitive headers forwarded across origins in proxied low-level redirects",
+      "exploitability_relevance_for_peak_trade": "Runtime direct constrained dep; HIGH streaming/header issues with fix in 2.7.0.",
+      "fix_versions": [
+        "2.7.0"
+      ],
+      "ghsa": "GHSA-qccp-gfcp-xxvc",
+      "installed_resolved_version": "2.6.3",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "RUNTIME_DIRECT",
+      "severity": "HIGH",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-141"
+    },
+    {
+      "affected_range": "installed 20.35.4; fix_versions=['20.36.1']",
+      "blocking": false,
+      "cve": "CVE-2026-22702",
+      "dependency": "virtualenv",
+      "description_summary": "virtualenv Has TOCTOU Vulnerabilities in Directory Creation",
+      "exploitability_relevance_for_peak_trade": "Dev/tooling; local multi-user TOCTOU context.",
+      "fix_versions": [
+        "20.36.1"
+      ],
+      "ghsa": "GHSA-597g-3phw-6986",
+      "installed_resolved_version": "20.35.4",
+      "mitigation_status": "No upgrade applied in this Owner-GO (audit-only; auto-update forbidden). Fix versions available but not applied.",
+      "runtime_research_test_only_scope": "TOOLING_BUILD",
+      "severity": "MEDIUM",
+      "severity_source": "OSV_database_specific_or_normalized",
+      "status": "OPEN_UNREMEDIATED",
+      "vuln_id": "PYSEC-2026-2009"
+    }
+  ],
+  "FINDINGS_CRITICAL": 0,
+  "FINDINGS_HIGH": 6,
+  "FINDINGS_LOW": 3,
+  "FINDINGS_MEDIUM": 11,
+  "FINDINGS_TOTAL": 20,
+  "FINDINGS_UNKNOWN": 0,
+  "PACKAGE_PASS_PREVENTED": true,
+  "PASS_RULE": "DEPENDENCY_AUDIT package PASS requires CRITICAL_FINDINGS_OPEN=0 and HIGH_FINDINGS_OPEN=0 after evidence-bound assessment/closure (Cybersecurity Runbook \u00a78 / \u00a718.3). Auto-upgrade not authorized under OWNER_GO_DEPENDENCY_AUDIT."
+}
