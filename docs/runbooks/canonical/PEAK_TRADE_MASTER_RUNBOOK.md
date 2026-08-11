@@ -8783,21 +8783,26 @@ progression. Starting Live private read-only &#47; shadow &#47; canary requires 
 **separate** Owner-GO and is **not** authorized here
 (`LIVE_PRIVATE_READ_ONLY_AUTHORIZED=false`).
 
-### 11.13.2 LIVE_PRIVATE_READ_ONLY (preparation surface; NOT proven; NOT executed)
+### 11.13.2 LIVE_PRIVATE_READ_ONLY (productive execute path ready; NOT proven; NOT executed)
 
 Owner-GO
 `OWNER_GO_AUTHOR_SINGLE_PREPARATION_PR_SECTION_11_13_2_LIVE_PRIVATE_READ_ONLY_SURFACE`
-authors the **repo-side preparation surface** required so that a later,
-separately authorized productive step `OWNER_GO_LIVE_PRIVATE_READ_ONLY` can
-run fail-closed. This subsection defines the stage-scoped contract for
-`LIVE_PRIVATE_READ_ONLY` and binds the preparation package. It does **not**
-execute a productive Live private read, does **not** load Vault material,
-does **not** open a venue network session, does **not** authorize orders,
-Shadow, Canary or Live activation, and does **not** set
-`LIVE_PRIVATE_READ_ONLY_PROVEN=true`.
+authored the **repo-side preparation surface**. Owner-GO
+`OWNER_GO_SECTION_11_13_2_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING` authorizes the
+**productive execute-path unlock** package only: CLI `--execute`, LIVE
+ephemeral SecretRef borrow/release via reused `FileSecretRefVaultBackendV1`,
+LIVE OKX GET-only signer wiring (pure signing/timestamp primitives; **not**
+`BoundOkxTestnetHttpClientV1`), `UrllibLiveTransportV1` behind execute
+authorization, account-scope crosscheck, OKX `code=="0"` assertion,
+permission attestation in evidence, verifier/tests, and docs sync.
+
+This authoring GO does **not** execute a productive Live private read, does
+**not** open a venue network session at merge time, does **not** authorize
+orders, Shadow, Canary or Live activation, and does **not** set
+`LIVE_PRIVATE_READ_ONLY_PROVEN=true`. Merge ≠ Execute.
 
 ``` text
-PURPOSE=PRODUCTIVE_PRIVATE_API_READ_ONLY_PROOF_PREPARATION_SURFACE
+PURPOSE=PRODUCTIVE_PRIVATE_API_READ_ONLY_PROOF_EXECUTE_PATH_READY
 STAGE_SCOPED_AUTHORIZATION=LIVE_PRIVATE_READ_ONLY_AUTHORIZED
 STAGE_GO_IS_NOT_LIVE_ACTIVATION=true
 LIVE_AUTHORIZED=false
@@ -8811,13 +8816,17 @@ NO_TRANSFER=true
 CAPABILITY_11_7_REMAINS_CONTRACTS_ONLY=true
 PROVEN_REQUIRES_REAL_LIVE_TRANSPORT_NEVER_FIXTURE_DEMO_TESTNET=true
 SECTION_11_13_2_PREPARATION_SURFACE_READY=true
+SECTION_11_13_2_PRODUCTIVE_EXECUTE_PATH_READY=true
+SECTION_11_13_2_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING_BOUND=true
+OWNER_GO_SECTION_11_13_2_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING=bound_for_authoring_only
 LIVE_PRIVATE_READ_ONLY_AUTHORIZED=false
 LIVE_PRIVATE_READ_ONLY_PROVEN=false
 LIVE_PRIVATE_READ_ONLY_EXECUTED=false
 ENABLE_LIVE_TRADING=false
+MERGE_IS_NOT_EXECUTE=true
 ```
 
-Preconditions (for later execute; not satisfied by preparation alone):
+Preconditions (for later post-merge execute; not satisfied by unlock merge alone):
 
 ``` text
 PRE_LIVE_CYBERSECURITY_GATE=PASS
@@ -8829,6 +8838,8 @@ LIVE_PRIVATE_READ_ONLY_AUTHORIZED=true
 OWNER_SUPPLIED_LIVE_VENUE_HOST_ACCOUNT_SECRETREF_PRESENT=true
 PERMISSION_ATTESTATION_READ_TRUE_TRADE_FALSE_WITHDRAW_FALSE=true
 NO_DEMO_SIMULATION_MARKER=true
+SECTION_11_13_2_PRODUCTIVE_EXECUTE_PATH_READY=true
+POST_MERGE_ORIGIN_MAIN_SHA_REBIND_REQUIRED=true
 ```
 
 Success criteria (later productive execute only):
@@ -8836,6 +8847,10 @@ Success criteria (later productive execute only):
 ``` text
 ENVIRONMENT=LIVE
 AUTHENTICATED_PRIVATE_READ_SUCCESS=true
+REQUIRED_ENDPOINTS_HIT=/api/v5/account/config+/api/v5/account/balance
+OKX_CODE_SUCCESS=true
+ACCOUNT_SCOPE_MATCH=true
+PERMISSION_ATTESTATION_PASS=true
 WRITE_REQUEST_COUNT=0
 ORDER_REQUEST_COUNT=0
 CANCEL_REQUEST_COUNT=0
@@ -8861,9 +8876,12 @@ DEMO_SIMULATION_HEADER_PRESENT
 NON_GET_METHOD
 MUTATION_ENDPOINT
 HOST_MISMATCH
+ACCOUNT_SCOPE_MISMATCH
+OKX_CODE_NOT_SUCCESS
 HTTP_401_OR_403
 MALFORMED_OR_TIMEOUT_RESPONSE
 FIXTURE_OR_DEMO_OR_TESTNET_TRANSPORT
+PERMISSION_ATTESTATION_INVALID
 ```
 
 Evidence contract root:
@@ -8879,12 +8897,17 @@ RUNNER=scripts/ops/run_section_11_13_2_live_private_read_only_v1.py
 VERIFIER=scripts/ops/verify_section_11_13_2_live_private_read_only_proven_v1.py
 OWNER_INPUT_CONTRACT=docs/ops/specs/SECTION_11_13_2_OWNER_EXECUTE_INPUT_CONTRACT_V1.md
 SPEC=docs/ops/specs/SECTION_11_13_2_LIVE_PRIVATE_READ_ONLY_V1.md
+LIVE_EPHEMERAL=src/ops/section_11_13_2_live_private_read_only_v1/live_credential_ephemeral_v1.py
+LIVE_RO_SIGNER=src/ops/section_11_13_2_live_private_read_only_v1/okx_live_ro_signer_v1.py
+VAULT_BACKEND_REUSE=src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/vault_resolver_v1.py::FileSecretRefVaultBackendV1
 ```
 
 Mandatory distinctions:
 
 ``` text
 SECTION_11_13_2_PREPARATION != LIVE_PRIVATE_READ_ONLY_PROVEN
+SECTION_11_13_2_PRODUCTIVE_EXECUTE_PATH_READY != LIVE_PRIVATE_READ_ONLY_PROVEN
+SECTION_11_13_2_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING != OWNER_GO_LIVE_PRIVATE_READ_ONLY
 SECTION_11_13_2_PREPARATION != LIVE_AUTHORIZED
 LIVE_PRIVATE_READ_ONLY_AUTHORIZED != LIVE_AUTHORIZED
 LIVE_PRIVATE_READ_ONLY_AUTHORIZED != LIVE_SHADOW_AUTHORIZATION
@@ -8892,14 +8915,16 @@ LIVE_PRIVATE_READ_ONLY_AUTHORIZED != LIVE_CANARY_AUTHORIZATION
 CAPABILITY_11_7_CONTRACTS_ONLY != SECTION_11_13_2_NETWORK_UNLOCK
 FIXTURE_PASS != LIVE_PRIVATE_READ_ONLY_PROVEN
 OWNER_GO_PREPARATION != OWNER_GO_LIVE_PRIVATE_READ_ONLY
+MERGE != EXECUTE
 ```
 
-Canonical next pointer after this preparation merges (still unproven):
+Canonical next pointer after this productive-execute-unlock merges (still unproven):
 
 ``` text
 CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_2
 CANONICAL_NEXT_STEP=OWNER_GO_LIVE_PRIVATE_READ_ONLY
 EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_PRIVATE_READ_ONLY_PROVEN
+POST_MERGE_EXECUTE_REQUIRES_REISSUED_GO_AGAINST_NEW_ORIGIN_MAIN_SHA=true
 ```
 
 After a later successful productive proof (not claimed here), the next
@@ -8909,7 +8934,7 @@ stage pointer is:
 CANONICAL_NEXT_STEP_AFTER_PROVEN=OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION
 ```
 
-Hard stop after preparation. No automatic execute. No merge-time Live
+Hard stop after unlock merge. No automatic execute. No merge-time Live
 network. Cap &#47; Capability 11.7 remains contracts-only and must not be
 repurposed as a network unlock.
 

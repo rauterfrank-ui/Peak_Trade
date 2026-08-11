@@ -26,5 +26,5 @@
   "owner_declared_host_allowlist": [],
   "config_version": "section_11_13_2_live_private_read_only_config.v1",
   "schema_version": "section_11_13_2_live_private_read_only.v1",
-  "notes": "Owner fills productive fields at execute time. Empty fields fail closed before network."
+  "notes": "Owner fills productive fields at execute time. Empty fields fail closed before network. Execute requires --vault-file and permission attestation; merge does not prove LIVE_PRIVATE_READ_ONLY."
 }

@@ -8,7 +8,11 @@ import json
 import sys
 from pathlib import Path
 
-from src.ops.section_11_13_2_live_private_read_only_v1.verifier_v1 import (
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from src.ops.section_11_13_2_live_private_read_only_v1.verifier_v1 import (  # noqa: E402
     LivePrivateRoVerifierError,
     verify_live_private_read_only_evidence_v1,
     verify_or_raise_v1,

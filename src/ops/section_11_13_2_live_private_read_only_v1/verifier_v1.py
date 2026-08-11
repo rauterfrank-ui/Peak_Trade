@@ -90,6 +90,30 @@ def verify_live_private_read_only_evidence_v1(
             raise LivePrivateRoVerifierError("PROVEN_REQUIRES_CROSS_BINDING_PASS")
         if claims.get("redaction_check_PASS") is not True:
             raise LivePrivateRoVerifierError("PROVEN_REQUIRES_REDACTION_PASS")
+        if claims.get("permission_attestation_PASS") is not True:
+            raise LivePrivateRoVerifierError("PROVEN_REQUIRES_PERMISSION_ATTESTATION_PASS")
+        attestation = claims.get("permission_attestation") or {}
+        if not isinstance(attestation, dict):
+            raise LivePrivateRoVerifierError("PROVEN_REQUIRES_PERMISSION_ATTESTATION_OBJECT")
+        if attestation.get("READ") is not True:
+            raise LivePrivateRoVerifierError("PROVEN_REQUIRES_READ_TRUE")
+        if attestation.get("TRADE") is not False:
+            raise LivePrivateRoVerifierError("PROVEN_REQUIRES_TRADE_FALSE")
+        if attestation.get("WITHDRAW") is not False:
+            raise LivePrivateRoVerifierError("PROVEN_REQUIRES_WITHDRAW_FALSE")
+        if claims.get("account_scope_match") is not True:
+            raise LivePrivateRoVerifierError("PROVEN_REQUIRES_ACCOUNT_SCOPE_MATCH")
+        if claims.get("okx_code_success") is not True:
+            raise LivePrivateRoVerifierError("PROVEN_REQUIRES_OKX_CODE_SUCCESS")
+        endpoints = claims.get("endpoints_used") or []
+        if not isinstance(endpoints, list):
+            raise LivePrivateRoVerifierError("PROVEN_REQUIRES_ENDPOINTS_LIST")
+        required = {"/api/v5/account/config", "/api/v5/account/balance"}
+        if not required.issubset(set(endpoints)):
+            raise LivePrivateRoVerifierError("PROVEN_REQUIRES_IDENTITY_ENDPOINTS")
+        methods = claims.get("methods_used") or []
+        if not methods or any(str(m).upper() != "GET" for m in methods):
+            raise LivePrivateRoVerifierError("PROVEN_REQUIRES_GET_ONLY")
     else:
         if not allow_preparation_non_proven and mode == "execute":
             raise LivePrivateRoVerifierError("EXECUTE_WITHOUT_PROVEN_REJECTED")

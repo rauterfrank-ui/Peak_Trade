@@ -254,9 +254,11 @@ class RecordingFakeTransportV1:
     body: bytes = b'{"code":"0","data":[{"uid":"acct-live-redacted"}]}'
     transport_class: str = TRANSPORT_CLASS_LIVE_PRODUCTIVE_HTTP
     venue_live_contact: bool = True
+    allows_productive_proven: bool = False
     calls: list[LivePrivateRoHttpRequestV1] = field(default_factory=list)
     raise_timeout: bool = False
     raise_malformed_once: bool = False
+    bodies_by_endpoint: dict[str, bytes] = field(default_factory=dict)
 
     def send(self, request: LivePrivateRoHttpRequestV1) -> LivePrivateRoHttpResponseV1:
         self.calls.append(request)
@@ -264,13 +266,24 @@ class RecordingFakeTransportV1:
             raise TimeoutError("fake-timeout")
         if request.method != "GET":
             raise LivePrivateRoHttpError("FAKE_TRANSPORT_GET_ONLY")
+        body = self.bodies_by_endpoint.get(request.endpoint, self.body)
+        if self.raise_malformed_once:
+            self.raise_malformed_once = False
+            body = b"not-json"
         return LivePrivateRoHttpResponseV1(
             status_code=self.status_code,
-            body_bytes=self.body,
+            body_bytes=body,
             elapsed_seconds=0.01,
             endpoint=request.endpoint,
             method=request.method,
         )
+
+
+@dataclass
+class ProductiveProofFakeTransportV1(RecordingFakeTransportV1):
+    """Unit-only transport that may exercise productive proven claims (no network)."""
+
+    allows_productive_proven: bool = True
 
 
 @dataclass
@@ -279,6 +292,7 @@ class UrllibLiveTransportV1:
 
     transport_class: str = TRANSPORT_CLASS_LIVE_PRODUCTIVE_HTTP
     venue_live_contact: bool = True
+    allows_productive_proven: bool = True
 
     def send(self, request: LivePrivateRoHttpRequestV1) -> LivePrivateRoHttpResponseV1:
         if request.method != "GET":

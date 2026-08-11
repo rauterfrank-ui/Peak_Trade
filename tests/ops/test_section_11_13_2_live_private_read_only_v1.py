@@ -87,7 +87,12 @@ def _valid_config(**overrides: object) -> dict:
         "secretref_uri": "secretref://vault/peak-trade/live-private-ro/owner-venue",
         "credential_class": REQUIRED_CREDENTIAL_CLASS,
         "method_allowlist": ["GET"],
-        "endpoint_allowlist": ["/api/v5/account/balance"],
+        "endpoint_allowlist": [
+            "/api/v5/account/config",
+            "/api/v5/account/balance",
+            "/api/v5/account/positions",
+            "/api/v5/trade/orders-pending",
+        ],
         "max_request_count": 4,
         "timeout_seconds": 10.0,
         "max_retries": 2,
@@ -454,10 +459,10 @@ def test_build_claims_productive_true_only_when_all_invariants() -> None:
         secretref_log_safe_id="secretref-digest:abcd",
         secretref_credential_class=REQUIRED_CREDENTIAL_CLASS,
         authorization_scope=AUTHORIZATION_SCOPE,
-        methods_used=["GET"],
-        endpoints_used=["/api/v5/account/balance"],
-        request_count=1,
-        http_result_classes=["HTTP_200_OK"],
+        methods_used=["GET", "GET"],
+        endpoints_used=["/api/v5/account/config", "/api/v5/account/balance"],
+        request_count=2,
+        http_result_classes=["HTTP_200_OK", "HTTP_200_OK"],
         authenticated_read_success=True,
         write_request_count=0,
         order_request_count=0,
@@ -473,6 +478,9 @@ def test_build_claims_productive_true_only_when_all_invariants() -> None:
         fixture_or_demo_or_testnet=False,
         productive_live_transport=True,
         mode="execute",
+        permission_attestation={"READ": True, "TRADE": False, "WITHDRAW": False},
+        account_scope_match=True,
+        okx_code_success=True,
     )
     assert claims["LIVE_PRIVATE_READ_ONLY_PROVEN"] is True
     fixture_claims = build_claims_v1(
@@ -506,6 +514,9 @@ def test_build_claims_productive_true_only_when_all_invariants() -> None:
         fixture_or_demo_or_testnet=True,
         productive_live_transport=True,
         mode="fixture",
+        permission_attestation={"READ": True, "TRADE": False, "WITHDRAW": False},
+        account_scope_match=True,
+        okx_code_success=True,
     )
     assert fixture_claims["LIVE_PRIVATE_READ_ONLY_PROVEN"] is False
 
@@ -603,3 +614,268 @@ def test_forbidden_host_marker() -> None:
             rest_host="demo-futures.kraken.com",
             account_scope="a",
         )
+
+
+def _write_vault(tmp_path: Path, *, secretref: str, uid: str = "acct-owner-binding") -> Path:
+    vault = tmp_path / "vault.json"
+    material = json.dumps(
+        {
+            "api_key": "fixture-live-ro-key-not-real",
+            "api_secret": "fixture-live-ro-secret-not-real-xx",
+            "passphrase": "fixture-pass",
+        },
+        separators=(",", ":"),
+    )
+    vault.write_text(json.dumps({secretref: material}), encoding="utf-8")
+    return vault
+
+
+def test_okx_code_not_zero_fails() -> None:
+    binding = build_live_private_ro_venue_binding_v1(
+        environment="LIVE",
+        venue="v",
+        entity="e",
+        region="r",
+        rest_host="www.example-live-host.invalid",
+        account_scope="acct-owner-binding",
+    )
+    client = LivePrivateRoHttpClientV1(
+        binding=binding,
+        transport=RecordingFakeTransportV1(body=b'{"code":"50001","data":[]}'),
+    )
+    response = client.get(endpoint="/api/v5/account/balance")
+    with pytest.raises(LivePrivateRoAssertionError, match="OKX_CODE_NOT_SUCCESS"):
+        assert_authenticated_private_read_success_v1(
+            response=response,
+            transport_class="LIVE_PRODUCTIVE_HTTP",
+            venue_live_contact=True,
+        )
+
+
+def test_account_scope_mismatch_fails() -> None:
+    binding = build_live_private_ro_venue_binding_v1(
+        environment="LIVE",
+        venue="v",
+        entity="e",
+        region="r",
+        rest_host="www.example-live-host.invalid",
+        account_scope="acct-owner-binding",
+    )
+    client = LivePrivateRoHttpClientV1(
+        binding=binding,
+        transport=RecordingFakeTransportV1(body=b'{"code":"0","data":[{"uid":"other-uid"}]}'),
+    )
+    response = client.get(endpoint="/api/v5/account/config")
+    with pytest.raises(LivePrivateRoAssertionError, match="ACCOUNT_SCOPE_MISMATCH"):
+        assert_authenticated_private_read_success_v1(
+            response=response,
+            transport_class="LIVE_PRODUCTIVE_HTTP",
+            venue_live_contact=True,
+            expected_account_scope="acct-owner-binding",
+            require_account_identity=True,
+        )
+
+
+def test_permission_attestation_validation() -> None:
+    from src.ops.section_11_13_2_live_private_read_only_v1.response_assertions_v1 import (
+        validate_permission_attestation_v1,
+    )
+
+    assert validate_permission_attestation_v1(
+        {"READ": True, "TRADE": False, "WITHDRAW": False}
+    ) == {"READ": True, "TRADE": False, "WITHDRAW": False}
+    with pytest.raises(LivePrivateRoAssertionError, match="TRADE_MUST_BE_FALSE"):
+        validate_permission_attestation_v1({"READ": True, "TRADE": True, "WITHDRAW": False})
+
+
+def test_live_ephemeral_vault_borrow_release(tmp_path: Path) -> None:
+    from src.ops.section_11_13_2_live_private_read_only_v1.live_credential_ephemeral_v1 import (
+        borrow_live_ephemeral_material_for_session_auth_v1,
+        build_file_secretref_vault_backend_v1,
+        release_live_ephemeral_material_v1,
+        resolve_and_load_live_secretref_ephemeral_v1,
+    )
+
+    secretref = "secretref://vault/peak-trade/live-private-ro/owner-venue"
+    vault = _write_vault(tmp_path, secretref=secretref)
+    backend = build_file_secretref_vault_backend_v1(vault_file=vault)
+    handle = resolve_and_load_live_secretref_ephemeral_v1(
+        secret_reference=secretref,
+        vault_backend=backend,
+    )
+    material = borrow_live_ephemeral_material_for_session_auth_v1(handle)
+    assert "api_key" in material
+    release_live_ephemeral_material_v1(handle)
+    with pytest.raises(Exception, match="EPHEMERAL_MATERIAL_GONE"):
+        borrow_live_ephemeral_material_for_session_auth_v1(handle)
+
+
+def test_live_ephemeral_rejects_testnet_runtime(tmp_path: Path) -> None:
+    from src.ops.section_11_13_2_live_private_read_only_v1.live_credential_ephemeral_v1 import (
+        LivePrivateRoCredentialError,
+        build_file_secretref_vault_backend_v1,
+        resolve_and_load_live_secretref_ephemeral_v1,
+    )
+
+    secretref = "secretref://vault/peak-trade/live-private-ro/owner-venue"
+    vault = _write_vault(tmp_path, secretref=secretref)
+    backend = build_file_secretref_vault_backend_v1(vault_file=vault)
+    with pytest.raises(LivePrivateRoCredentialError, match="SECRETREF_SCOPE_MUST_BE_LIVE"):
+        resolve_and_load_live_secretref_ephemeral_v1(
+            secret_reference=secretref,
+            vault_backend=backend,
+            runtime_mode="TESTNET",
+        )
+
+
+def test_okx_live_ro_signer_get_only_and_no_simulation(tmp_path: Path) -> None:
+    from src.ops.section_11_13_2_live_private_read_only_v1.live_credential_ephemeral_v1 import (
+        build_file_secretref_vault_backend_v1,
+        release_live_ephemeral_material_v1,
+        resolve_and_load_live_secretref_ephemeral_v1,
+    )
+    from src.ops.section_11_13_2_live_private_read_only_v1.okx_live_ro_signer_v1 import (
+        LivePrivateRoSignerError,
+        auth_headers_presence_doc_v1,
+        build_okx_live_ro_get_auth_headers_v1,
+    )
+
+    secretref = "secretref://vault/peak-trade/live-private-ro/owner-venue"
+    vault = _write_vault(tmp_path, secretref=secretref)
+    handle = resolve_and_load_live_secretref_ephemeral_v1(
+        secret_reference=secretref,
+        vault_backend=build_file_secretref_vault_backend_v1(vault_file=vault),
+    )
+    headers = build_okx_live_ro_get_auth_headers_v1(
+        handle=handle,
+        url="https://www.example-live-host.invalid/api/v5/account/config",
+    )
+    presence = auth_headers_presence_doc_v1(headers)
+    assert presence["OK-ACCESS-SIGN_PRESENT"] is True
+    assert presence["SIMULATION_HEADER_PRESENT"] is False
+    with pytest.raises(LivePrivateRoSignerError, match="SIGNER_METHOD_FORBIDDEN"):
+        build_okx_live_ro_get_auth_headers_v1(
+            handle=handle,
+            url="https://www.example-live-host.invalid/api/v5/account/config",
+            method="POST",
+        )
+    with pytest.raises(LivePrivateRoSignerError, match="DEMO_SIMULATION_HEADER"):
+        build_okx_live_ro_get_auth_headers_v1(
+            handle=handle,
+            url="https://www.example-live-host.invalid/api/v5/account/config",
+            extra_headers={"x-simulated-trading": "1"},
+        )
+    release_live_ephemeral_material_v1(handle)
+
+
+def test_productive_execute_injected_transport_can_prove(tmp_path: Path) -> None:
+    from src.ops.section_11_13_2_live_private_read_only_v1.http_client_v1 import (
+        ProductiveProofFakeTransportV1,
+    )
+
+    secretref = "secretref://vault/peak-trade/live-private-ro/owner-venue"
+    vault = _write_vault(tmp_path, secretref=secretref)
+    uid = "acct-owner-binding"
+    transport = ProductiveProofFakeTransportV1(
+        bodies_by_endpoint={
+            "/api/v5/account/config": json.dumps({"code": "0", "data": [{"uid": uid}]}).encode(),
+            "/api/v5/account/balance": json.dumps(
+                {"code": "0", "data": [{"details": []}]}
+            ).encode(),
+        }
+    )
+    result = run_execute_with_injected_transport_for_tests_v1(
+        config_payload=_valid_config(secretref_uri=secretref, account_scope=uid),
+        origin_main_sha=ORIGIN_SHA,
+        transport=transport,
+        evidence_run_root=tmp_path / "prod",
+        vault_file=vault,
+        permission_attestation={"READ": True, "TRADE": False, "WITHDRAW": False},
+    )
+    assert result.NETWORK_EFFECT == "INJECTED_TRANSPORT_ONLY"
+    assert result.LIVE_PRIVATE_READ_ONLY_PROVEN is True
+    verified = verify_live_private_read_only_evidence_v1(tmp_path / "prod")
+    assert verified["LIVE_PRIVATE_READ_ONLY_PROVEN"] is True
+    assert verified["LIVE_AUTHORIZED"] is False
+
+
+def test_productive_execute_recording_transport_cannot_prove(tmp_path: Path) -> None:
+    secretref = "secretref://vault/peak-trade/live-private-ro/owner-venue"
+    vault = _write_vault(tmp_path, secretref=secretref)
+    uid = "acct-owner-binding"
+    transport = RecordingFakeTransportV1(
+        bodies_by_endpoint={
+            "/api/v5/account/config": json.dumps({"code": "0", "data": [{"uid": uid}]}).encode(),
+            "/api/v5/account/balance": json.dumps(
+                {"code": "0", "data": [{"details": []}]}
+            ).encode(),
+        }
+    )
+    result = run_execute_with_injected_transport_for_tests_v1(
+        config_payload=_valid_config(secretref_uri=secretref, account_scope=uid),
+        origin_main_sha=ORIGIN_SHA,
+        transport=transport,
+        evidence_run_root=tmp_path / "notproven",
+        vault_file=vault,
+    )
+    assert result.LIVE_PRIVATE_READ_ONLY_PROVEN is False
+
+
+def test_execute_requires_vault_file() -> None:
+    with pytest.raises(LivePrivateRoRunnerError, match="EXECUTE_REQUIRES_VAULT_FILE"):
+        run_section_11_13_2_live_private_read_only_v1(
+            mode="execute",
+            config_payload=_valid_config(),
+            origin_main_sha=ORIGIN_SHA,
+            owner_go=OWNER_GO_EXECUTE,
+            live_private_read_only_authorized=True,
+            permission_attestation={"READ": True, "TRADE": False, "WITHDRAW": False},
+            transport=RecordingFakeTransportV1(),
+            evidence_run_root="/tmp/unused",
+        )
+
+
+def test_execute_rejects_trade_permission_attestation(tmp_path: Path) -> None:
+    secretref = "secretref://vault/peak-trade/live-private-ro/owner-venue"
+    vault = _write_vault(tmp_path, secretref=secretref)
+    with pytest.raises(LivePrivateRoRunnerError, match="TRADE_MUST_BE_FALSE"):
+        run_section_11_13_2_live_private_read_only_v1(
+            mode="execute",
+            config_payload=_valid_config(secretref_uri=secretref),
+            origin_main_sha=ORIGIN_SHA,
+            owner_go=OWNER_GO_EXECUTE,
+            live_private_read_only_authorized=True,
+            permission_attestation={"READ": True, "TRADE": True, "WITHDRAW": False},
+            transport=RecordingFakeTransportV1(),
+            vault_file=vault,
+            evidence_run_root=tmp_path / "badperm",
+        )
+
+
+def test_put_patch_delete_hard_block() -> None:
+    binding = build_live_private_ro_venue_binding_v1(
+        environment="LIVE",
+        venue="v",
+        entity="e",
+        region="r",
+        rest_host="www.example-live-host.invalid",
+        account_scope="a",
+    )
+    client = LivePrivateRoHttpClientV1(binding=binding, transport=RecordingFakeTransportV1())
+    for method in ("PUT", "PATCH", "DELETE"):
+        with pytest.raises(LivePrivateRoHttpError, match="HTTP_METHOD_HARD_BLOCK"):
+            client.request(method=method, endpoint="/api/v5/account/balance")
+
+
+def test_product_execute_path_ready_constant() -> None:
+    from src.ops.section_11_13_2_live_private_read_only_v1.constants_v1 import (
+        OWNER_GO_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING,
+        PRODUCTIVE_EXECUTE_PATH_READY,
+    )
+
+    assert PRODUCTIVE_EXECUTE_PATH_READY is True
+    assert (
+        OWNER_GO_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING
+        == "OWNER_GO_SECTION_11_13_2_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING"
+    )
+    assert LIVE_PRIVATE_READ_ONLY_PROVEN is False
