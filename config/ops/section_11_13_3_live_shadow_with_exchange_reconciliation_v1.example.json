@@ -1,0 +1,30 @@
+{
+  "environment": "LIVE",
+  "venue": "",
+  "entity": "",
+  "region": "",
+  "rest_host": "",
+  "rest_base": "",
+  "account_scope": "",
+  "instrument_scope": null,
+  "secretref_uri": "",
+  "credential_class": "LIVE_SHADOW_RECONCILIATION_READ_ONLY_API_KEY",
+  "method_allowlist": ["GET"],
+  "endpoint_allowlist": [
+    "/api/v5/account/balance",
+    "/api/v5/account/config",
+    "/api/v5/account/positions",
+    "/api/v5/trade/orders-pending"
+  ],
+  "max_request_count": 4,
+  "timeout_seconds": 10.0,
+  "max_retries": 2,
+  "evidence_root": "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1",
+  "evidence_version": "section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1",
+  "expected_live_marker": "LIVE",
+  "expected_demo_marker_absent": true,
+  "owner_declared_host_allowlist": [],
+  "config_version": "section_11_13_3_live_shadow_with_exchange_reconciliation_config.v1",
+  "schema_version": "section_11_13_3_live_shadow_with_exchange_reconciliation.v1",
+  "notes": "Owner fills productive fields at execute time. Empty fields fail closed before network."
+}
