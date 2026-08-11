@@ -871,12 +871,16 @@ TESTNET_KILL_SWITCH_PROVEN=true
 TESTNET_AUTONOMOUS_RECOVERY_PROVEN=true
 TESTNET_LIFECYCLE_PROVEN=true
 SECTION_11_12_9_20_REEVAL_PASS=true
+LONG_RUNNING_TESTNET_PROVEN=true
+SECTION_11_12_9_22_REEVAL_PASS=true
 OPEN_TESTNET_PROVEN_FIELDS=
 EARLIEST_OPEN_TESTNET_PROVEN_FIELD=
-EARLIEST_UNRESOLVED_SECTION_POINTER=LONG_RUNNING_TESTNET_PROVEN
-CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_LONG_RUNNING_TESTNET_PROVEN_OR_NEXT_PRE_LIVE_SECURITY_PACKAGE_AFTER_LONG_RUNNING
+EARLIEST_UNRESOLVED_SECTION_POINTER=CYBERSECURITY_ARCHITECTURE_REVIEW
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_CYBERSECURITY_ARCHITECTURE_REVIEW
 SECTION_11_12_9_EVALUATION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_pre_live_cybersecurity_acceptance_gate_evidence_bound_evaluation_v1/20260810T202800Z/
 SECTION_11_12_9_20_REEVAL_EVIDENCE_ROOT=evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/
+SECTION_11_12_9_22_REEVAL_EVIDENCE_ROOT=evidence/ops/section_11_12_9_22_pre_live_cybersecurity_gate_post_long_running_reevaluation_v1/20260811T020006Z/
+SECTION_11_12_9_21_LONG_RUNNING_CAMPAIGN_EVIDENCE_ROOT=evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/
 SECTION_11_12_9_11_RESIDUAL_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_12_9_11_open_testnet_proven_fields_reporting_reconcile_residual_proof_v1/20260810T213441Z/
 SECTION_11_12_9_12_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_12_testnet_order_lifecycle_proven_v1/20260810T215942Z/
 SECTION_11_12_9_13_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_12_testnet_reconciliation_proven_v1/20260810T221902Z/
@@ -903,8 +907,10 @@ Penetration-/Acceptance-Proof (`PRE_LIVE_CYBERSECURITY_GATE=PASS`) bleibt
 Live-Readiness; die §11.12.9.1 Evaluation bestätigte historisch
 `NOT_PASSED` bei offenem Cap-Programm. Nach Cap-Programm-Close bindet
 §11.12.9.20 `TESTNET_LIFECYCLE_PROVEN=true` und bestätigt erneut
-`NOT_PASSED` mit frühester Restabhängigkeit `LONG_RUNNING_TESTNET_PROVEN`;
-kein Gate-PASS.
+`NOT_PASSED`. Nach Owner-executed LONG_RUNNING-Campaign bindet
+§11.12.9.22 `LONG_RUNNING_TESTNET_PROVEN=true` und bestätigt erneut
+`NOT_PASSED` mit frühester Restabhängigkeit
+`CYBERSECURITY_ARCHITECTURE_REVIEW`; kein Gate-PASS.
 
 ------------------------------------------------------------------------
 

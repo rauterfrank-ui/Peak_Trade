@@ -1,0 +1,16 @@
+{
+  "ARTIFACTS": [
+    "ACCEPTANCE_MATRIX.json",
+    "MACHINE_READABLE_EVALUATION.json",
+    "SANITIZED_FINAL_REPORT.json",
+    "EVALUATION_REPORT.md",
+    "PROVENANCE_INDEX.json",
+    "MANIFEST.sha256"
+  ],
+  "DOCUMENT_CLASS": "PROVENANCE_INDEX_SECTION_11_12_9_22_V1",
+  "ORIGIN_MAIN_SHA": "d8df567526a70509f54514646ace681467c72454",
+  "PREDECESSOR_REEVAL": "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+  "PRIMARY_LONG_RUNNING_CAMPAIGN_ROOT": "evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/",
+  "PRIMARY_LONG_RUNNING_EXECUTION_EVIDENCE": "evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/execution_evidence/",
+  "RUN_ID": "20260811T020006Z"
+}

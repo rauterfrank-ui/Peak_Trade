@@ -5994,7 +5994,96 @@ verifier&#47;evaluator ships with default `LONG_RUNNING_TESTNET_PROVEN=false`
 and refuses historical promotion &#47; transport-only HTTP-403 evidence.
 Live remains hard-blocked. Cap &#47; §11.13 remains unstarted. Gate remains
 `NOT_PASSED`. Productive campaign start still requires the separate Owner
-execute GO after merge.
+execute GO after merge. Post-execute Pre-Live gate continuation after
+`LONG_RUNNING_TESTNET_PROVEN=true` is bound under §11.12.9.22.
+
+##### 11.12.9.22 Pre-Live Cybersecurity Gate post-LONG_RUNNING re-evaluation (binding; gate remains NOT_PASSED)
+
+Owner-GO `OWNER_GO_PRE_LIVE_CYBERSECURITY_GATE` executes the **earliest**
+locally safe Pre-Live Cybersecurity Acceptance Gate continuation after the
+Owner-executed bounded long-running productive Testnet campaign sealed under
+§11.12.9.21 execute authority: a non-invasive, evidence-bound re-evaluation
+of Cybersecurity Runbook V2.1 §18 minimum PASS conditions against current
+`origin&#47;main` plus the sealed campaign root. Reuse-before-new applies.
+This binds exactly one newly closed §18.2 criterion:
+
+``` text
+LONG_RUNNING_TESTNET_PROVEN=true
+```
+
+derived solely from the sealed campaign evidence
+`evidence&#47;ops&#47;section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now&#47;20260811T005425Z&#47;`
+with offline evaluator PASS minima
+(`BOUND_REACHED` &#47; `MANIFEST_VERIFY_RC=0` &#47; `ORDER_ACK_COUNT>=1` &#47;
+`CLEAN_CANCEL_OR_RECONCILE_SAME_RUN` &#47; `FINAL_FLAT` &#47; `NO_LIVE_EFFECT` &#47;
+historical&#47;HTTP-403 promotion refused). This does **not** set
+`PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** set
+`ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not** start Cap &#47;
+§11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47; credentials,
+does **not** execute the penetration program, does **not** create Pre-Live
+security acceptance packages (architecture review, threat model, secrets,
+dependency audit, SBOM, static analysis, regression, penetration,
+credential-leakage, authority-replay, recovery-security, findings register,
+isolation &#47; arming proofs, audit bundle), and does **not** mutate runtime &#47;
+trading &#47; execution code or open a venue network session.
+
+Sealed re-evaluation evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_22_pre_live_cybersecurity_gate_post_long_running_reevaluation_v1&#47;20260811T020006Z&#47;`
+
+``` text
+SECTION_11_12_9_22_REEVAL_RUN_ID=20260811T020006Z
+SECTION_11_12_9_22_REEVAL_ORIGIN_MAIN_SHA=d8df567526a70509f54514646ace681467c72454
+SECTION_11_12_9_22_REEVAL_EVIDENCE_ROOT=evidence/ops/section_11_12_9_22_pre_live_cybersecurity_gate_post_long_running_reevaluation_v1/20260811T020006Z/
+PROOF_METHOD=NON_INVASIVE_POST_LONG_RUNNING_PRE_LIVE_GATE_REEVALUATION_REUSING_SEALED_CAMPAIGN_AND_CAP_11_12_CHAIN
+PROOF_EXECUTED=true
+PROOF_RESULT=PRE_LIVE_CYBERSECURITY_GATE_REEVALUATION_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=LONG_RUNNING_TESTNET_PROVEN
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=2
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=18
+EARLIEST_UNRESOLVED_DEPENDENCY=CYBERSECURITY_ARCHITECTURE_REVIEW
+EARLIEST_UNRESOLVED_SECTION_POINTER=CYBERSECURITY_ARCHITECTURE_REVIEW
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_22
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_CYBERSECURITY_ARCHITECTURE_REVIEW
+HARD_STOP_AFTER_THIS_REEVALUATION=true
+```
+
+Mandatory distinctions:
+
+``` text
+REEVALUATION_PASS != PRE_LIVE_CYBERSECURITY_GATE_PASS
+LONG_RUNNING_TESTNET_PROVEN != PRE_LIVE_CYBERSECURITY_GATE_PASS
+TESTNET_PROOF_PASS != PRE_LIVE_SECURITY_PACKAGE_PASS
+OWNER_GO_PRE_LIVE_REEVAL != SECURITY_PACKAGE_IMPLEMENTATION_GO
+PRE_LIVE_CYBERSECURITY_GATE_PASS != LIVE_AUTHORIZED
+PRE_LIVE_CYBERSECURITY_GATE_PASS != SECTION_11_13_STARTED
+```
+
+Observed facts: `LONG_RUNNING_TESTNET_PROVEN` newly bound for §18.2 from the
+sealed productive campaign; `TESTNET_LIFECYCLE_PROVEN` remains bound from
+§11.12.9.20; earliest remaining unmet §18.2 criterion is
+`CYBERSECURITY_ARCHITECTURE_REVIEW`; remaining Pre-Live security acceptance
+packages remain absent. Gate remains `NOT_PASSED`. Live remains
+hard-blocked. Cap &#47; §11.13 remains unstarted. Hard stop after this
+re-evaluation. No automatic progression. Creating or executing the next
+Pre-Live security acceptance package requires a **separate** Owner-GO and
+is **not** authorized here.
 
 Canonical residual sequence pointer (section sequence historically bound;
 productive proven-field chain closed):

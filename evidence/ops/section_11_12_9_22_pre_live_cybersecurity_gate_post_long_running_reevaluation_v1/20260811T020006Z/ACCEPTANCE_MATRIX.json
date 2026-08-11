@@ -1,0 +1,306 @@
+{
+  "CANONICAL_OWNER": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#11.12.9.22",
+  "CRITERIA": [
+    {
+      "criterion": "TESTNET_LIFECYCLE_PROVEN",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "evidence/ops/section_11_12_testnet_evidence_verified_v1/20260810T235545Z/"
+      ],
+      "observed": {
+        "CAP_11_12_TESTNET_PROGRAM_CLOSED": true,
+        "PREDECESSOR_SECTION_11_12_9_20_MANIFEST_VERIFY_RC": 0,
+        "TESTNET_LIFECYCLE_PROVEN": true
+      },
+      "rationale": "Reuse \u00a711.12.9.20 binding: Cap 11.12 program closed with all eight Master closure fields true.",
+      "required_for_gate_pass": true,
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "LONG_RUNNING_TESTNET_PROVEN",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/",
+        "evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/execution_evidence/"
+      ],
+      "observed": {
+        "BOUND_REACHED_REASON": "DURATION_BOUND",
+        "CAMPAIGN_DURATION_SECONDS": 3600.6054767919995,
+        "CAMPAIGN_MANIFEST_VERIFY_RC": 0,
+        "CANCEL_COUNT": 1,
+        "EVALUATOR_REFUSE_REASONS": [],
+        "FINAL_OPEN_ORDER_COUNT": 0,
+        "FINAL_OPEN_POSITION_COUNT": 0,
+        "LONG_RUNNING_TESTNET_PROVEN": true,
+        "ORDER_ACK_COUNT": 1,
+        "ORIGIN_MAIN_SHA_AT_EXECUTE": "d8df567526a70509f54514646ace681467c72454"
+      },
+      "rationale": "Owner-executed bounded long-running productive Testnet campaign sealed at evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/; offline evaluator PASS minima all met; historical HTTP-403 and \u00a711.12.8 bounded campaign roots refused for promotion.",
+      "required_for_gate_pass": true,
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "CYBERSECURITY_ARCHITECTURE_REVIEW",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "THREAT_MODEL_CURRENT",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "SECRETS_REVIEW",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "DEPENDENCY_AUDIT",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "SBOM_PRESENT",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "STATIC_SECURITY_ANALYSIS",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "SECURITY_REGRESSION",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "PENETRATION_PROGRAM",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "CREDENTIAL_LEAKAGE_TEST",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "AUTHORITY_REPLAY_TEST",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "RECOVERY_SECURITY_TEST",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "CRITICAL_FINDINGS_OPEN",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "HIGH_FINDINGS_OPEN",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "LIVE_TESTNET_ISOLATION_PROVEN",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "LIVE_DEFAULT_BLOCK_PROVEN",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "LIVE_ARMING_FAIL_CLOSED_PROVEN",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "AUDIT_EVIDENCE_VERIFIED",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "No Pre-Live Acceptance security package bound on origin/main for this criterion; historical Cap-7.2 / V2.1 ratification / Cap-11.12 proofs are complementary and do not satisfy Pre-Live \u00a718.2 package PASS. Fail-closed: NOT_PROVEN / MISSING.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "MANIFEST_VERIFY_RC",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_22_pre_live_cybersecurity_gate_post_long_running_reevaluation_v1/20260811T020006Z/"
+      ],
+      "observed": {
+        "PREDECESSOR_MANIFEST_VERIFY_RC_AGGREGATE": 0,
+        "THIS_REEVALUATION_MANIFEST_WILL_BE_VERIFIED_AFTER_SEAL": true
+      },
+      "rationale": "Gate PASS requires Pre-Live acceptance seal integrity; this package self-verifies after MANIFEST write. Predecessor aggregate RC=0.",
+      "required_for_gate_pass": true,
+      "verdict": "DEFERRED_TO_THIS_PACKAGE_SEAL"
+    },
+    {
+      "criterion": "PRE_LIVE_CYBERSECURITY_GATE",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_22_pre_live_cybersecurity_gate_post_long_running_reevaluation_v1/20260811T020006Z/"
+      ],
+      "observed": {
+        "ELIGIBLE_FOR_LIVE_READINESS_EVALUATION": false,
+        "PRE_LIVE_CYBERSECURITY_GATE": "NOT_PASSED",
+        "SECTION_11_12_9_GATE_PASS": false
+      },
+      "rationale": "LONG_RUNNING_TESTNET_PROVEN newly bound PASS; remaining Pre-Live security acceptance packages unmet. Gate stays NOT_PASSED. No interpretation toward PASS.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PASSED"
+    }
+  ],
+  "DOCUMENT_CLASS": "ACCEPTANCE_MATRIX_SECTION_11_12_9_22_PRE_LIVE_CYBERSECURITY_GATE_POST_LONG_RUNNING_REEVALUATION_V1",
+  "EARLIEST_REMAINING_UNMET_SECTION_18_2_CRITERION": "CYBERSECURITY_ARCHITECTURE_REVIEW",
+  "NEWLY_BOUND_SECTION_18_2_CRITERIA": [
+    "LONG_RUNNING_TESTNET_PROVEN"
+  ],
+  "ORIGIN_MAIN_SHA": "d8df567526a70509f54514646ace681467c72454",
+  "OWNER_GO": "OWNER_GO_PRE_LIVE_CYBERSECURITY_GATE",
+  "PREVIOUSLY_BOUND_SECTION_18_2_CRITERIA": [
+    "TESTNET_LIFECYCLE_PROVEN"
+  ],
+  "PRE_LIVE_CYBERSECURITY_GATE": "NOT_PASSED",
+  "RUN_ID": "20260811T020006Z",
+  "SECTION_11_12_9_GATE_PASS": false,
+  "SECURITY_ACCEPTANCE_CRITERIA_OPEN": 18,
+  "SECURITY_ACCEPTANCE_CRITERIA_PASS": 2,
+  "SECURITY_ACCEPTANCE_CRITERIA_TOTAL": 21
+}
