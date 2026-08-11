@@ -15,7 +15,7 @@
 ## Scope
 
 Non-invasive, evidence-bound Live Readiness Evaluation against Master
-Runbook §11.17 on current `origin/main=20d315f97f053b8e872d2e304e7633db65784823` after
+Runbook §11.17 on current `origin&#47;main=20d315f97f053b8e872d2e304e7633db65784823` after
 `PRE_LIVE_CYBERSECURITY_GATE=PASS` (§11.12.9.44). Reuse-before-new:
 predecessor gate package manifest independently verified (`MANIFEST_VERIFY_RC=0`).
 Binds evaluation completion and readiness verdict only.
