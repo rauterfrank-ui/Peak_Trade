@@ -1,0 +1,50 @@
+{
+  "digest_pinned_count": 0,
+  "dockerfile_count": 3,
+  "from_directives": [
+    {
+      "digest_pinned": false,
+      "file": "docker/l3/Dockerfile",
+      "image": "python:3.11-slim",
+      "line": 2,
+      "tag": "3.11-slim"
+    },
+    {
+      "digest_pinned": false,
+      "file": "docker/mlflow/Dockerfile",
+      "image": "python:3.11-slim",
+      "line": 1,
+      "tag": "3.11-slim"
+    },
+    {
+      "digest_pinned": false,
+      "file": "docker/obs/Dockerfile",
+      "image": "python:3.11-slim",
+      "line": 4,
+      "tag": "3.11-slim"
+    }
+  ],
+  "tag_only_or_latest": [
+    {
+      "digest_pinned": false,
+      "file": "docker/l3/Dockerfile",
+      "image": "python:3.11-slim",
+      "line": 2,
+      "tag": "3.11-slim"
+    },
+    {
+      "digest_pinned": false,
+      "file": "docker/mlflow/Dockerfile",
+      "image": "python:3.11-slim",
+      "line": 1,
+      "tag": "3.11-slim"
+    },
+    {
+      "digest_pinned": false,
+      "file": "docker/obs/Dockerfile",
+      "image": "python:3.11-slim",
+      "line": 4,
+      "tag": "3.11-slim"
+    }
+  ]
+}

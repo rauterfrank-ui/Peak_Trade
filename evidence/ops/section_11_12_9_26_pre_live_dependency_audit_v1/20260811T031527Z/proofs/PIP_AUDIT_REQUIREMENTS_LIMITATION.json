@@ -1,0 +1,9 @@
+{
+  "method": "uv run pip-audit -r requirements.txt",
+  "result": "TOOL_FAILURE",
+  "rc": 1,
+  "reason": "pip-audit temporary venv ensurepip SIGABRT on this host",
+  "fallback_method": "uv run pip-audit (environment / uv.lock resolved install)",
+  "fallback_result": "COMPLETED_WITH_VULNERABILITIES",
+  "ci_parallel": "audit.yml uses pip-audit on installed requirements environment"
+}

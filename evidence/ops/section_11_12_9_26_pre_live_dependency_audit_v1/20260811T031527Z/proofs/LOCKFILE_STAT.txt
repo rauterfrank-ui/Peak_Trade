@@ -1,0 +1,2 @@
+-rw-r--r--@ 1 frnkhrz  staff    17107 Jul 16 21:09 requirements.txt
+-rw-r--r--@ 1 frnkhrz  staff  1623476 Jul 16 21:09 uv.lock

@@ -1,0 +1,2 @@
+gh: Dependabot alerts are disabled for this repository. (HTTP 403)
+gh: This API operation needs the "admin:repo_hook" scope. To request it, run:  gh auth refresh -h github.com -s admin:repo_hook

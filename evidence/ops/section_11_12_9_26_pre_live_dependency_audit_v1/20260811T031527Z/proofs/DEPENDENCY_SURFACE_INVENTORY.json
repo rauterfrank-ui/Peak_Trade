@@ -1,0 +1,270 @@
+{
+  "canonical_python_manifests": [
+    "pyproject.toml",
+    "requirements.txt",
+    "uv.lock"
+  ],
+  "constraints_file_present": false,
+  "dependabot_config_present": false,
+  "dockerfile_count": 3,
+  "dockerfile_paths": [
+    ".worktrees/csrhr_v1_offline_strategy_implementation_v0/docker/l3/Dockerfile",
+    ".worktrees/csrhr_v1_offline_strategy_implementation_v0/docker/mlflow/Dockerfile",
+    ".worktrees/csrhr_v1_offline_strategy_implementation_v0/docker/obs/Dockerfile",
+    ".worktrees/csrhr_v1_terminal_retirement_closeout_v0/docker/l3/Dockerfile",
+    ".worktrees/csrhr_v1_terminal_retirement_closeout_v0/docker/mlflow/Dockerfile",
+    ".worktrees/csrhr_v1_terminal_retirement_closeout_v0/docker/obs/Dockerfile",
+    ".worktrees/market-dashboard-v2-final-closeout-hygiene/docker/l3/Dockerfile",
+    ".worktrees/market-dashboard-v2-final-closeout-hygiene/docker/mlflow/Dockerfile",
+    ".worktrees/market-dashboard-v2-final-closeout-hygiene/docker/obs/Dockerfile",
+    ".worktrees/market_dashboard_authentic_intrabar_v0/docker/l3/Dockerfile",
+    ".worktrees/market_dashboard_authentic_intrabar_v0/docker/mlflow/Dockerfile",
+    ".worktrees/market_dashboard_authentic_intrabar_v0/docker/obs/Dockerfile",
+    ".worktrees/market_dashboard_risk_exec_binding_v0/docker/l3/Dockerfile",
+    ".worktrees/market_dashboard_risk_exec_binding_v0/docker/mlflow/Dockerfile",
+    ".worktrees/market_dashboard_risk_exec_binding_v0/docker/obs/Dockerfile",
+    ".worktrees/market_dashboard_runbook_post_5548_reconcile_v0/docker/l3/Dockerfile",
+    ".worktrees/market_dashboard_runbook_post_5548_reconcile_v0/docker/mlflow/Dockerfile",
+    ".worktrees/okx-futures-shadow-no-order-entrypoint-v0/docker/l3/Dockerfile",
+    ".worktrees/okx-futures-shadow-no-order-entrypoint-v0/docker/mlflow/Dockerfile",
+    ".worktrees/okx-futures-shadow-no-order-entrypoint-v0/docker/obs/Dockerfile",
+    ".worktrees/okx-shadow-prep-canonical-operator-cmd-closeout-v0/docker/l3/Dockerfile",
+    ".worktrees/okx-shadow-prep-canonical-operator-cmd-closeout-v0/docker/mlflow/Dockerfile",
+    ".worktrees/okx-shadow-prep-canonical-operator-cmd-closeout-v0/docker/obs/Dockerfile",
+    ".worktrees/pr5555_exact_head_review_6f7c6bc66/docker/l3/Dockerfile",
+    ".worktrees/pr5555_exact_head_review_6f7c6bc66/docker/mlflow/Dockerfile",
+    ".worktrees/pr5555_exact_head_review_6f7c6bc66/docker/obs/Dockerfile",
+    ".worktrees/pr5555_post_merge_verify_c96a61d25/docker/l3/Dockerfile",
+    ".worktrees/pr5555_post_merge_verify_c96a61d25/docker/mlflow/Dockerfile",
+    ".worktrees/pr5555_post_merge_verify_c96a61d25/docker/obs/Dockerfile",
+    ".worktrees/pr5558_exact_head_review_readonly/docker/l3/Dockerfile"
+  ],
+  "github_dependabot_alerts_status": "disabled",
+  "node_package_json_count": 0,
+  "node_package_json_paths": [
+    ".venv/lib/python3.11/site-packages/playwright/driver/package/package.json"
+  ],
+  "pipfile_lock_present": false,
+  "poetry_lock_present": false,
+  "pyproject_ranged_dependency_literals_count": 39,
+  "pyproject_ranged_dependency_literals_sample": [
+    [
+      "setuptools",
+      ">=",
+      "61.0"
+    ],
+    [
+      "wheel",
+      ">=",
+      "0.38.1"
+    ],
+    [
+      "numpy",
+      ">=",
+      "1.24.0"
+    ],
+    [
+      "pandas",
+      ">=",
+      "2.0.0"
+    ],
+    [
+      "pydantic",
+      ">=",
+      "2.0.0"
+    ],
+    [
+      "prometheus-client",
+      ">=",
+      "0.19.0"
+    ],
+    [
+      "toml",
+      ">=",
+      "0.10.2"
+    ],
+    [
+      "pyarrow",
+      ">=",
+      "12.0.0"
+    ],
+    [
+      "urllib3",
+      ">=",
+      "2.6.3,<3"
+    ],
+    [
+      "ccxt",
+      ">=",
+      "4"
+    ],
+    [
+      "optuna",
+      ">=",
+      "3.0,<4"
+    ],
+    [
+      "pytest",
+      ">=",
+      "7.4.0"
+    ],
+    [
+      "pytest-cov",
+      ">=",
+      "4.1.0"
+    ],
+    [
+      "ruff",
+      ">=",
+      "0.1.0"
+    ],
+    [
+      "black",
+      ">=",
+      "23.0.0"
+    ],
+    [
+      "pyright",
+      ">=",
+      "1.1.380"
+    ],
+    [
+      "mypy",
+      ">=",
+      "1.10"
+    ],
+    [
+      "fastapi",
+      ">=",
+      "0.104.0"
+    ],
+    [
+      "uvicorn",
+      ">=",
+      "0.24.0"
+    ],
+    [
+      "jinja2",
+      ">=",
+      "3.1.0"
+    ],
+    [
+      "httpx",
+      ">=",
+      "0.25.0"
+    ],
+    [
+      "prometheus-client",
+      ">=",
+      "0.19.0"
+    ],
+    [
+      "playwright",
+      ">=",
+      "1.40.0"
+    ],
+    [
+      "matplotlib",
+      ">=",
+      "3.8.0"
+    ],
+    [
+      "opentelemetry-api",
+      ">=",
+      "1.24.0"
+    ],
+    [
+      "opentelemetry-sdk",
+      ">=",
+      "1.24.0"
+    ],
+    [
+      "opentelemetry-exporter-otlp",
+      ">=",
+      "1.24.0"
+    ],
+    [
+      "chromadb",
+      ">=",
+      "0.4.0"
+    ],
+    [
+      "prometheus-client",
+      ">=",
+      "0.19.0"
+    ],
+    [
+      "mlflow",
+      ">=",
+      "3.0,<4"
+    ],
+    [
+      "fastapi",
+      ">=",
+      "0.124.4"
+    ],
+    [
+      "httpx",
+      ">=",
+      "0.28.1"
+    ],
+    [
+      "jinja2",
+      ">=",
+      "3.1.6"
+    ],
+    [
+      "pip-audit",
+      ">=",
+      "2.9.0"
+    ],
+    [
+      "pre-commit",
+      ">=",
+      "4.3.0"
+    ],
+    [
+      "prometheus-client",
+      ">=",
+      "0.23.1"
+    ],
+    [
+      "pytest",
+      ">=",
+      "8.4.2"
+    ],
+    [
+      "pytest-cov",
+      ">=",
+      "7.0.0"
+    ],
+    [
+      "ruff",
+      ">=",
+      "0.14.0"
+    ]
+  ],
+  "requirements_autogenerated_from_uv_export_locked": true,
+  "requirements_git_url_path_editable": [],
+  "requirements_git_url_path_editable_count": 0,
+  "requirements_hash_line_count": 0,
+  "requirements_hash_pinning_present": false,
+  "requirements_local_editable_self": [
+    "-e ."
+  ],
+  "requirements_pinned_exact_count": 229,
+  "requirements_ranged_or_minimum_count": 0,
+  "requirements_ranged_sample": [],
+  "requirements_txt_entries": 230,
+  "requirements_unpinned_count": 0,
+  "requirements_unpinned_sample": [],
+  "tracked_dockerfiles": [
+    "docker/l3/Dockerfile",
+    "docker/mlflow/Dockerfile",
+    "docker/obs/Dockerfile"
+  ],
+  "tracked_node_manifests": [],
+  "uv_lock_present": true,
+  "uv_lock_provides_reproducible_resolution": true,
+  "uv_lock_size_bytes": 1623476
+}

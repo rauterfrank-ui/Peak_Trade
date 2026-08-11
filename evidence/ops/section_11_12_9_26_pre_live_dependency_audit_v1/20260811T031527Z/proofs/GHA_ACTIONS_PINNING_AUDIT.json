@@ -1,0 +1,216 @@
+{
+  "class_counts": {
+    "SHA_PINNED": 231,
+    "TAG_FLOATING_OR_MAJOR": 29
+  },
+  "not_sha_pinned": [
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/ai-model-cards-validate.yml",
+      "line": 13,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/ai-model-cards-validate.yml",
+      "line": 14,
+      "sha_pinned": false,
+      "uses": "actions/setup-python@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/ci_recon_audit_gate_smoke.yml",
+      "line": 32,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/ci_recon_audit_gate_smoke.yml",
+      "line": 34,
+      "sha_pinned": false,
+      "uses": "actions/setup-python@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/deps_sync_guard.yml",
+      "line": 22,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/deps_sync_guard.yml",
+      "line": 24,
+      "sha_pinned": false,
+      "uses": "actions/setup-python@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/docs_diff_guard_policy_gate.yml",
+      "line": 17,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/docs_diff_guard_policy_gate.yml",
+      "line": 21,
+      "sha_pinned": false,
+      "uses": "actions/setup-python@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/events_schema_smoke.yml",
+      "line": 14,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/events_schema_smoke.yml",
+      "line": 15,
+      "sha_pinned": false,
+      "uses": "actions/setup-python@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/lint.yml",
+      "line": 36,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/master_v2_dry_smoke.yml",
+      "line": 33,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/mcp_smoke_preflight.yml",
+      "line": 28,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/mcp_smoke_preflight.yml",
+      "line": 30,
+      "sha_pinned": false,
+      "uses": "actions/setup-python@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/mcp_smoke_preflight.yml",
+      "line": 34,
+      "sha_pinned": false,
+      "uses": "actions/setup-node@v6"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/paper_session_telemetry_summary.yml",
+      "line": 37,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/prbc-stability-gate.yml",
+      "line": 23,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/prbd-live-readiness-scorecard.yml",
+      "line": 23,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/prbe-shadow-testnet-scorecard.yml",
+      "line": 23,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/prbg-execution-evidence.yml",
+      "line": 30,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/prbi-live-pilot-scorecard.yml",
+      "line": 23,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/prbj-testnet-exec-events.yml",
+      "line": 35,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/prbj-testnet-exec-events.yml",
+      "line": 37,
+      "sha_pinned": false,
+      "uses": "actions/setup-python@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/prcc-aws-export-smoke.yml",
+      "line": 18,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/prcd-aws-export-write-smoke.yml",
+      "line": 23,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/prj-scheduled-shadow-paper-features-smoke.yml",
+      "line": 49,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/prk-prj-status-report.yml",
+      "line": 35,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/pro-prk-nightly-selfcheck.yml",
+      "line": 17,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    },
+    {
+      "class": "TAG_FLOATING_OR_MAJOR",
+      "file": ".github/workflows/pru-required-checks-drift-detector.yml",
+      "line": 20,
+      "sha_pinned": false,
+      "uses": "actions/checkout@v5"
+    }
+  ],
+  "sha_pinned_ratio": 0.8885,
+  "third_party_not_sha_pinned": 29,
+  "third_party_sha_pinned": 231,
+  "uses_total": 260,
+  "workflow_file_count": 73
+}

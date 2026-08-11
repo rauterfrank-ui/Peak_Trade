@@ -1,0 +1,30 @@
+
+Traceback (most recent call last):
+  File "/Users/frnkhrz/Peak_Trade/.venv/bin/pip-audit", line 10, in <module>
+    sys.exit(audit())
+             ^^^^^^^
+  File "/Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/pip_audit/_cli.py", line 554, in audit
+    for spec, vulns in auditor.audit(source):
+  File "/Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/pip_audit/_audit.py", line 68, in audit
+    for dep, vulns in self._service.query_all(specs):
+  File "/Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/pip_audit/_service/interface.py", line 179, in query_all
+    for spec in specs:
+  File "/Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/pip_audit/_dependency_source/requirement.py", line 134, in collect
+    yield from self._collect_from_files(collect_files)
+  File "/Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/pip_audit/_dependency_source/requirement.py", line 180, in _collect_from_files
+    ve.create(ve_dir)
+  File "/Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/pip_audit/_virtual_env.py", line 80, in create
+    return super().create(env_dir)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/frnkhrz/.local/share/uv/python/cpython-3.11.14-macos-aarch64-none/lib/python3.11/venv/__init__.py", line 77, in create
+    self._setup_pip(context)
+  File "/Users/frnkhrz/.local/share/uv/python/cpython-3.11.14-macos-aarch64-none/lib/python3.11/venv/__init__.py", line 359, in _setup_pip
+    self._call_new_python(context, '-m', 'ensurepip', '--upgrade',
+  File "/Users/frnkhrz/.local/share/uv/python/cpython-3.11.14-macos-aarch64-none/lib/python3.11/venv/__init__.py", line 355, in _call_new_python
+    subprocess.check_output(args, **kwargs)
+  File "/Users/frnkhrz/.local/share/uv/python/cpython-3.11.14-macos-aarch64-none/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/frnkhrz/.local/share/uv/python/cpython-3.11.14-macos-aarch64-none/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/tmpuvr3ezt6/bin/python3.11', '-m', 'ensurepip', '--upgrade', '--default-pip']' died with <Signals.SIGABRT: 6>.

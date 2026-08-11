@@ -6362,6 +6362,113 @@ package. No automatic progression. Creating or executing the next
 Pre-Live security acceptance package requires a **separate** Owner-GO and
 is **not** authorized here.
 
+##### 11.12.9.26 Pre-Live Dependency Audit package (binding; FAIL; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_DEPENDENCY_AUDIT`
+executes the **earliest** remaining Pre-Live security acceptance package
+after §11.12.9.25: a productive, evidence-bound Dependency Audit against
+Cybersecurity Runbook V2.1 §8 &#47; §18.2 on then-current `origin&#47;main`.
+Reuse-before-new applies (`uv.lock` &#47; `requirements.txt` uv-export lock
+path, `.github&#47;workflows&#47;audit.yml` pip-audit owner,
+`scripts&#47;ops&#47;run_full_audit.sh`, and prior sealed Pre-Live packages are
+inputs, not substitutes). This package does **not** bind
+`DEPENDENCY_AUDIT=PASS` and does **not** set
+`DEPENDENCY_AUDIT_PROVEN=true`.
+
+Observed package result (sealed evidence below):
+
+``` text
+DEPENDENCY_AUDIT=FAIL
+DEPENDENCY_AUDIT_PROVEN=false
+DEPENDENCY_FINDINGS_TOTAL=20
+DEPENDENCY_FINDINGS_CRITICAL=0
+DEPENDENCY_FINDINGS_HIGH=6
+DEPENDENCY_FINDINGS_MEDIUM=11
+DEPENDENCY_FINDINGS_LOW=3
+BLOCKING_DEPENDENCY_FINDINGS=6
+PRIMARY_BLOCKER=OPEN_HIGH_VULNERABILITIES_WITH_AVAILABLE_FIXES
+```
+
+Blocking HIGH findings (fix versions available; no auto-upgrade under this
+GO): `urllib3==2.6.3` (fix `>=2.7.0`), `pyarrow==22.0.0` (fix
+`>=23.0.1`), `msgpack==1.1.2` (fix `>=1.2.1`), `starlette==0.50.0`
+(fixes in `1.1.0` &#47; `1.3.1`). Process&#47;control residuals (Dependabot
+disabled, residual floating GHA tags, Docker tag-only base images,
+requirements `--no-hashes`) are recorded as non-blocking for the HIGH
+rule. No trading-logic mutation. No SBOM package execution. No Cap &#47;
+§11.13 start. No Live &#47; Testnet &#47; order &#47; credential authorization.
+
+Sealed dependency-audit evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_26_pre_live_dependency_audit_v1&#47;20260811T031527Z&#47;`
+
+``` text
+SECTION_11_12_9_26_DEPENDENCY_AUDIT_RUN_ID=20260811T031527Z
+SECTION_11_12_9_26_DEPENDENCY_AUDIT_ORIGIN_MAIN_SHA=95d043048d8538f934fcba469a728bd25da4f7de
+SECTION_11_12_9_26_DEPENDENCY_AUDIT_EVIDENCE_ROOT=evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/
+PROOF_METHOD=PRODUCTIVE_BOUNDED_PIP_AUDIT_PLUS_STATIC_SUPPLY_CHAIN_PROBES_ON_ORIGIN_MAIN
+PROOF_EXECUTED=true
+PROOF_RESULT=DEPENDENCY_AUDIT_FAIL_OPEN_HIGH_VULNS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+NO_AUTOMATIC_DEPENDENCY_UPGRADE=true
+NO_TRADING_LOGIC_CHANGE=true
+DEPENDENCY_AUDIT=FAIL
+DEPENDENCY_AUDIT_PROVEN=false
+SECRETS_REVIEW=PASS
+SECRETS_REVIEW_PROVEN=true
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=5
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=14
+SECURITY_ACCEPTANCE_CRITERIA_BLOCKED=2
+EARLIEST_UNRESOLVED_DEPENDENCY=DEPENDENCY_AUDIT
+EARLIEST_UNRESOLVED_SECTION_POINTER=DEPENDENCY_AUDIT
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_26
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_DEPENDENCY_AUDIT_REMEDIATION_OR_RERUN_AFTER_HIGH_FINDING_CLOSURE
+HARD_STOP_AFTER_THIS_PACKAGE=true
+```
+
+Mandatory distinctions:
+
+``` text
+DEPENDENCY_AUDIT_FAIL != DEPENDENCY_AUDIT_PROVEN
+DEPENDENCY_AUDIT != PRE_LIVE_CYBERSECURITY_GATE_PASS
+DEPENDENCY_AUDIT != SBOM_PRESENT
+DEPENDENCY_AUDIT != LIVE_AUTHORIZED
+DEPENDENCY_AUDIT != SECTION_11_13_STARTED
+OWNER_GO_DEPENDENCY_AUDIT != REMEDIATION_OR_UPGRADE_AUTHORIZATION
+OWNER_GO_DEPENDENCY_AUDIT != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: Dependency Audit was executed and sealed as `FAIL`
+because open HIGH vulnerabilities with available fixes remain; no §18.2
+criterion newly bound PASS; `SECRETS_REVIEW`, `THREAT_MODEL_CURRENT`,
+`CYBERSECURITY_ARCHITECTURE_REVIEW`, `LONG_RUNNING_TESTNET_PROVEN`, and
+`TESTNET_LIFECYCLE_PROVEN` remain bound; earliest remaining unmet §18.2
+criterion remains `DEPENDENCY_AUDIT`; `HIGH_FINDINGS_OPEN` is evidenced
+non-zero from this package. Gate remains `NOT_PASSED`. Live remains
+hard-blocked. Cap &#47; §11.13 remains unstarted. Hard stop after this
+package. No automatic progression. Remediation upgrades and&#47;or a
+DEPENDENCY_AUDIT re-run require a **separate** Owner-GO and are **not**
+authorized here.
+
 Canonical residual sequence pointer (section sequence historically bound;
 productive proven-field chain closed):
 
