@@ -1,0 +1,50 @@
+{
+  "BINDS_MANIFEST_VERIFY_RC_GATE_CRITERION": false,
+  "BINDS_PRE_LIVE_CYBERSECURITY_GATE_PASS": false,
+  "DOCUMENT_CLASS": "AUDIT_EVIDENCE_REQUIREMENTS_MATRIX_SECTION_11_12_9_42_V1",
+  "ORIGIN_MAIN_SHA": "61e9ca5609b863d29b9f7e0f8388ef9d9b26189c",
+  "PACKAGE_VERDICT": "PASS",
+  "REQUIREMENTS": [
+    {
+      "id": "AEV-01",
+      "section": "\u00a711 Claims match evidence",
+      "status": "PASS",
+      "surface": "Sealed Pre-Live package claim fields match evaluation docs"
+    },
+    {
+      "id": "AEV-02",
+      "section": "\u00a711 Evidence integrity SHA-binding",
+      "status": "PASS",
+      "surface": "MANIFEST.sha256 verify RC=0 for all chain roots"
+    },
+    {
+      "id": "AEV-03",
+      "section": "\u00a711 No secrets in evidence",
+      "status": "PASS",
+      "surface": "Secret pattern scan + secret_value_exposed!=true"
+    },
+    {
+      "id": "AEV-04",
+      "section": "\u00a718.2 / \u00a723 Live still blocked",
+      "status": "PASS",
+      "surface": "LIVE_AUTHORIZED=false and PRE_LIVE gate NOT_PASSED across claim docs"
+    },
+    {
+      "id": "AEV-05",
+      "section": "SSOT pointer coherence",
+      "status": "PASS",
+      "surface": "Map/Master bind LIVE_ARMING proven and AUDIT next"
+    },
+    {
+      "binds_manifest_verify_rc_gate_criterion": false,
+      "binds_pre_live_cybersecurity_gate_pass": false,
+      "id": "AEV-06",
+      "section": "Non-claims",
+      "status": "PASS",
+      "surface": "Does not bind MANIFEST_VERIFY_RC gate criterion / PRE_LIVE gate PASS / Live / \u00a711.13"
+    }
+  ],
+  "REQUIREMENTS_PASS": 6,
+  "REQUIREMENTS_TOTAL": 6,
+  "RUN_ID": "20260811T125657Z"
+}
