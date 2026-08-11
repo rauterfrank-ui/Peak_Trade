@@ -881,14 +881,17 @@ SECTION_11_12_9_25_SECRETS_REVIEW_PASS=true
 SECRETS_REVIEW=PASS
 SECTION_11_12_9_26_DEPENDENCY_AUDIT_EXECUTED=true
 SECTION_11_12_9_26_DEPENDENCY_AUDIT_PASS=false
-DEPENDENCY_AUDIT=FAIL
-DEPENDENCY_AUDIT_PROVEN=false
+DEPENDENCY_AUDIT=PASS
+DEPENDENCY_AUDIT_PROVEN=true
 SECTION_11_12_9_27_FORENSIC_REVIEW_EXECUTED=true
 FULL_SECURITY_COVERAGE_REVIEW_PROVEN=false
+PR_5862_STATE=MERGED
+SECTION_11_12_9_28_DEPENDENCY_AUDIT_REMEDIATION_EXECUTED=true
+SECTION_11_12_9_28_DEPENDENCY_AUDIT_RERUN_PASS=true
 OPEN_TESTNET_PROVEN_FIELDS=
 EARLIEST_OPEN_TESTNET_PROVEN_FIELD=
-EARLIEST_UNRESOLVED_SECTION_POINTER=DEPENDENCY_AUDIT
-CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_DEPENDENCY_AUDIT_REMEDIATION_BATCH_RB01_RB02_THEN_RERUN
+EARLIEST_UNRESOLVED_SECTION_POINTER=SBOM_PRESENT
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_SBOM_PRESENT
 SECTION_11_12_9_EVALUATION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_pre_live_cybersecurity_acceptance_gate_evidence_bound_evaluation_v1/20260810T202800Z/
 SECTION_11_12_9_20_REEVAL_EVIDENCE_ROOT=evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/
 SECTION_11_12_9_22_REEVAL_EVIDENCE_ROOT=evidence/ops/section_11_12_9_22_pre_live_cybersecurity_gate_post_long_running_reevaluation_v1/20260811T020006Z/
@@ -897,6 +900,7 @@ SECTION_11_12_9_24_THREAT_MODEL_EVIDENCE_ROOT=evidence/ops/section_11_12_9_24_pr
 SECTION_11_12_9_25_SECRETS_REVIEW_EVIDENCE_ROOT=evidence/ops/section_11_12_9_25_pre_live_credential_hygiene_review_v1/20260811T025933Z/
 SECTION_11_12_9_26_DEPENDENCY_AUDIT_EVIDENCE_ROOT=evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/
 SECTION_11_12_9_27_FORENSIC_REVIEW_EVIDENCE_ROOT=evidence/ops/section_11_12_9_26_post_dependency_audit_forensic_gap_and_remediation_review_v1/20260811T033939Z/
+SECTION_11_12_9_28_DEPENDENCY_AUDIT_REMEDIATION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_27_dependency_audit_rb01_rb02_remediation_and_rerun_v1/20260811T035809Z/
 SECTION_11_12_9_21_LONG_RUNNING_CAMPAIGN_EVIDENCE_ROOT=evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/
 SECTION_11_12_9_11_RESIDUAL_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_12_9_11_open_testnet_proven_fields_reporting_reconcile_residual_proof_v1/20260810T213441Z/
 SECTION_11_12_9_12_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_12_testnet_order_lifecycle_proven_v1/20260810T215942Z/
@@ -942,10 +946,15 @@ Fixes; keine Auto-Upgrades) und bestätigt erneut `NOT_PASSED` mit
 frühester Restabhängigkeit weiterhin `DEPENDENCY_AUDIT`; kein Gate-PASS.
 Nach Owner-executed forensic gap &#47; remediation review bindet
 §11.12.9.27 die Review-Ergebnisse (`FULL_SECURITY_COVERAGE_REVIEW_PROVEN=false`;
-PR `#5861` schloss 0 Findings; 6 HIGH blocker offen; Remediation-Batches nur
-vorgeschlagen) und bestätigt erneut `NOT_PASSED` mit frühester
-Restabhängigkeit weiterhin `DEPENDENCY_AUDIT`; kein Gate-PASS; keine
-Remediation-Autorisierung.
+PR `#5861` schloss 0 Findings; 6 HIGH blocker damals offen; Remediation-Batches nur
+vorgeschlagen; PR `#5862` inzwischen `MERGED`) und bestätigt erneut `NOT_PASSED`
+mit damals frühester Restabhängigkeit weiterhin `DEPENDENCY_AUDIT`; kein Gate-PASS;
+keine Remediation-Autorisierung in diesem Package. Nach Owner-executed
+RB-01&#47;RB-02-Remediation und vergleichbarem DEPENDENCY_AUDIT-Rerun bindet
+§11.12.9.28 `DEPENDENCY_AUDIT=PASS` &#47; `DEPENDENCY_AUDIT_PROVEN=true` (die sechs
+blocking HIGH-GHSAs geschlossen; HIGH&#47;CRITICAL=0 im lean vergleichbaren Scope)
+und bestätigt erneut `NOT_PASSED` mit frühester Restabhängigkeit `SBOM_PRESENT`;
+kein Gate-PASS.
 
 ------------------------------------------------------------------------
 

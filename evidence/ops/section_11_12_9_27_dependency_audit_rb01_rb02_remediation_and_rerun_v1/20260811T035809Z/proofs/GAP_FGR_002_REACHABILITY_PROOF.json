@@ -1,0 +1,22 @@
+{
+  "DOCUMENT_CLASS": "GAP_FGR_002_REACHABILITY_PROOF_V1",
+  "STARLETTE_VERSION": "1.6.0",
+  "STARLETTE_FIXED_GE_1_3_1": true,
+  "CAP11_MODULES": [
+    {
+      "module": "ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.bound_testnet_http_client_v1",
+      "status": "OK"
+    },
+    {
+      "module": "ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.governance_acceptance_v1",
+      "status": "OK"
+    },
+    {
+      "module": "ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.immutable_baseline_preflight_v1",
+      "status": "OK"
+    }
+  ],
+  "WEB_MODULES_LOADED_VIA_CAP11_IMPORTS": [],
+  "CAP11_DEFAULT_PATH_DOES_NOT_IMPORT_ASGI_STACK": true,
+  "GAP_FGR_002_CLOSED": true
+}

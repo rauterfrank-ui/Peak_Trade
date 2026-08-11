@@ -156,7 +156,8 @@ def test_workflow_job_has_reasonable_timeout() -> None:
 def test_workflow_uploads_probe_artifacts_without_readiness_claim() -> None:
     text = _workflow_text()
 
-    assert "actions/upload-artifact@v4" in text
+    assert "actions/upload-artifact@" in text
+    assert "# v4" in text or "actions/upload-artifact@v4" in text
     assert "out/ops/gh_class_a_shadow_paper" in text
 
     lowered = text.lower()

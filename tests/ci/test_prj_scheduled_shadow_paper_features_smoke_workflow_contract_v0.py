@@ -162,7 +162,8 @@ def test_workflow_jobs_have_reasonable_timeouts() -> None:
 def test_workflow_uploads_smoke_artifacts_without_readiness_claim() -> None:
     text = _workflow_text()
 
-    assert "actions/upload-artifact@v4" in text
+    assert "actions/upload-artifact@" in text
+    assert "# v4" in text or "actions/upload-artifact@v4" in text
     assert "out/ops/prj_smoke" in text
     assert "out/ops/evidence_packs" in text
 

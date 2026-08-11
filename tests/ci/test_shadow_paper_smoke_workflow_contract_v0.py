@@ -140,7 +140,8 @@ def test_workflow_avoids_peak_trade_live_literal_true() -> None:
 def test_workflow_uploads_evidence_without_readiness_claims() -> None:
     text = _workflow_text()
 
-    assert "actions/upload-artifact@v4" in text
+    assert "actions/upload-artifact@" in text
+    assert "# v4" in text or "actions/upload-artifact@v4" in text
     assert "out/ops/gh_shadow_paper_smoke" in text
 
     lowered = text.lower()

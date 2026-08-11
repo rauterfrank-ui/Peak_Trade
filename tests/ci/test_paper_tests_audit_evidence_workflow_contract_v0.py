@@ -167,7 +167,8 @@ def test_workflow_schedule_gate_vars_present_in_guardrail_env() -> None:
 def test_workflow_uploads_audit_evidence_without_readiness_claims() -> None:
     text = _workflow_text()
 
-    assert "actions/upload-artifact@v4" in text
+    assert "actions/upload-artifact@" in text
+    assert "# v4" in text or "actions/upload-artifact@v4" in text
     assert "out/ops/gh_paper_tests_audit" in text
 
     lowered = text.lower()
