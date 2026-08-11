@@ -114,7 +114,18 @@ def build_claims_v1(
     fixture_or_demo_or_testnet: bool,
     productive_live_transport: bool,
     mode: str,
+    permission_attestation: Mapping[str, Any] | None = None,
+    account_scope_match: bool = False,
+    executed_code_sha: str | None = None,
+    okx_code_success: bool = False,
+    all_layers_match: bool | None = None,
 ) -> dict[str, Any]:
+    attestation = dict(permission_attestation or {})
+    attestation_ok = (
+        attestation.get("READ") is True
+        and attestation.get("TRADE") is False
+        and attestation.get("WITHDRAW") is False
+    )
     # Fixture/preparation/unit paths must never emit a true productive proven claim.
     proven = bool(
         productive_live_transport
@@ -132,6 +143,9 @@ def build_claims_v1(
         and redaction_check_pass
         and environment == "LIVE"
         and mode == "execute"
+        and attestation_ok
+        and account_scope_match
+        and okx_code_success
     )
     if mode in {"preflight", "fixture", "unit"}:
         proven = False
@@ -139,6 +153,7 @@ def build_claims_v1(
     return {
         "evidence_contract_version": EVIDENCE_CONTRACT_VERSION,
         "origin_main_sha": origin_main_sha,
+        "executed_code_sha": executed_code_sha or origin_main_sha,
         "config_digest": config_digest,
         "ENVIRONMENT": environment,
         "venue": venue,
@@ -146,14 +161,22 @@ def build_claims_v1(
         "region": region,
         "rest_host": rest_host,
         "account_identity_redacted": account_identity_redacted,
+        "account_scope_match": bool(account_scope_match),
         "secretref_log_safe_id": secretref_log_safe_id,
         "secretref_credential_class": secretref_credential_class,
         "authorization_scope": authorization_scope,
+        "permission_attestation": {
+            "READ": attestation.get("READ"),
+            "TRADE": attestation.get("TRADE"),
+            "WITHDRAW": attestation.get("WITHDRAW"),
+        },
+        "permission_attestation_PASS": attestation_ok,
         "methods_used": methods_used,
         "endpoints_used": endpoints_used,
         "REQUEST_COUNT": request_count,
         "http_result_classes": http_result_classes,
         "authenticated_read_success": authenticated_read_success,
+        "okx_code_success": bool(okx_code_success),
         "WRITE_REQUEST_COUNT": write_request_count,
         "ORDER_REQUEST_COUNT": order_request_count,
         "CANCEL_REQUEST_COUNT": cancel_request_count,
@@ -171,10 +194,14 @@ def build_claims_v1(
         "mode": mode,
         "LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN": proven,
         "LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN_DEFAULT": LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN,
+        "LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_EXECUTED": bool(
+            mode == "execute" and productive_live_transport
+        ),
         "LIVE_RECONCILIATION_PROVEN": False,
         "SECTION_11_13_LIVE_SHADOW_CANARY_PROGRESSION_STARTED": False,
         "ORDER_EFFECT": "NONE",
         "ACCOUNT_MUTATION_EFFECT": "NONE",
+        "ALL_LAYERS_MATCH": all_layers_match,
     }
 
 

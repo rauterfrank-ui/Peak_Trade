@@ -10,8 +10,10 @@ from typing import Any
 from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.constants_v1 import (
     FORBIDDEN_CREDENTIAL_CLASS_MARKERS,
     REQUIRED_CREDENTIAL_CLASS,
+    SECRETREF_FORBIDDEN_CROSS_PACKAGE_MARKERS,
     SECRETREF_FORBIDDEN_PATH_MARKERS,
     SECRETREF_LIVE_PATH_MARKER,
+    SECRETREF_SHADOW_PATH_MARKER,
     SECRETREF_URI_PREFIX,
 )
 
@@ -60,6 +62,11 @@ def validate_live_shadow_recon_secretref_uri_v1(secretref_uri: str) -> str:
     lowered = ref.lower()
     if SECRETREF_LIVE_PATH_MARKER not in lowered:
         raise LiveShadowReconSecretRefError("SECRETREF_LIVE_PATH_MARKER_REQUIRED")
+    if SECRETREF_SHADOW_PATH_MARKER not in lowered:
+        raise LiveShadowReconSecretRefError("SECRETREF_SHADOW_PATH_MARKER_REQUIRED")
+    for marker in SECRETREF_FORBIDDEN_CROSS_PACKAGE_MARKERS:
+        if marker in lowered:
+            raise LiveShadowReconSecretRefError(f"SECRETREF_CROSS_PACKAGE_FORBIDDEN:{marker}")
     for marker in SECRETREF_FORBIDDEN_PATH_MARKERS:
         if marker in lowered:
             raise LiveShadowReconSecretRefError(f"SECRETREF_FORBIDDEN_PATH:{marker}")

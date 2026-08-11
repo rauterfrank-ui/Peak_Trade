@@ -1,4 +1,4 @@
-"""§11.13.3 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION preparation surface package."""
+"""§11.13.3 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION package (prep + productive execute path)."""
 
 from __future__ import annotations
 
@@ -11,6 +11,8 @@ from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.constan
     OWNER,
     PACKAGE_MARKER,
     PREPARATION_SURFACE_READY,
+    PRODUCTIVE_EXECUTE_PATH_READY,
+    PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING_BOUND,
 )
 
 __all__ = [
@@ -22,4 +24,6 @@ __all__ = [
     "OWNER",
     "PACKAGE_MARKER",
     "PREPARATION_SURFACE_READY",
+    "PRODUCTIVE_EXECUTE_PATH_READY",
+    "PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING_BOUND",
 ]
