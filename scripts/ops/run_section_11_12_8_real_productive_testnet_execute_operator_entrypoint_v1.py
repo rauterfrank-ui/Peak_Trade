@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
-"""Real §11.12.8 productive Testnet EXECUTE operator entrypoint.
+"""Real productive Testnet EXECUTE operator entrypoint (LONG_RUNNING claim path).
 
-Accepts canonical Owner-GO scope:
-  EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN
-and legacy aliases (same XPerp/EEA Demo scope only):
+Canonical Owner-GO scope:
   EXECUTE_BOUNDED_LONG_RUNNING_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
+Legacy aliases (same OKX EEA Demo XPerp surface; does not reopen §11.12.8):
+  EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN
   EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
 
 Pre-merge acceptance: wire send forbidden.
 Post-merge Owner EXECUTE: wire send permitted when --allow-wire-send and vault file
 are provided (SecretRef + hidden confirm + ephemeral write gate remain runtime
-preconditions). This entrypoint does NOT auto-execute a campaign in the
-implementation PR. Does NOT start §11.13. Does NOT enable Live.
+preconditions). Immutable baseline preflight is mandatory for wire-send execute.
+This entrypoint does NOT auto-execute a campaign in the implementation PR.
+Does NOT start §11.13. Does NOT enable Live.
 """
 
 from __future__ import annotations
@@ -36,7 +37,7 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     SCOPED_OWNER_GO_AUTHORIZATION,
     SCOPED_OWNER_GO_SCOPE,
     SCOPED_OWNER_GO_SCOPE_LEGACY_ALIAS,
-    SCOPED_OWNER_GO_SCOPE_LEGACY_LONG_RUNNING,
+    SCOPED_OWNER_GO_SCOPE_LEGACY_XPERP,
     SCOPED_OWNER_GO_TOKEN,
 )
 from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.acceptance_gate_v1 import (  # noqa: E402
@@ -47,6 +48,10 @@ from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.cons
     CANONICAL_NEXT_STEP_AFTER_MERGE,
     CAPABILITY_ID,
     SECTION_11_13_STARTED,
+)
+from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.immutable_baseline_preflight_v1 import (  # noqa: E402
+    ImmutableBaselinePreflightError,
+    assert_immutable_baseline_preflight_v1,
 )
 from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.unlock_orchestrator_v1 import (  # noqa: E402
     execute_unlocked_productive_path_v1,
@@ -78,10 +83,10 @@ def main(argv: list[str] | None = None) -> int:
         "--allow-wire-send",
         action="store_true",
         help=(
-            "Permit real Testnet HTTP wire send under the XPerp campaign Owner-GO "
+            "Permit real Testnet HTTP wire send under the LONG_RUNNING Owner-GO "
             f"({SCOPED_OWNER_GO_SCOPE}) or legacy aliases "
-            f"({SCOPED_OWNER_GO_SCOPE_LEGACY_LONG_RUNNING}|{SCOPED_OWNER_GO_SCOPE_LEGACY_ALIAS}); "
-            "Live remains hard-blocked."
+            f"({SCOPED_OWNER_GO_SCOPE_LEGACY_XPERP}|{SCOPED_OWNER_GO_SCOPE_LEGACY_ALIAS}); "
+            "Live remains hard-blocked. Requires immutable baseline preflight."
         ),
     )
     parser.add_argument(
@@ -93,6 +98,14 @@ def main(argv: list[str] | None = None) -> int:
         "--work-dir",
         default="",
         help="Optional work directory for durable state/evidence.",
+    )
+    parser.add_argument(
+        "--expected-origin-main-sha",
+        default="",
+        help=(
+            "Optional exact origin/main SHA required for wire-send execute "
+            "(immutable merged baseline)."
+        ),
     )
     args = parser.parse_args(argv)
 
@@ -153,6 +166,29 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 2
 
+    baseline_payload: dict | None = None
+    if args.allow_wire_send:
+        expected = str(args.expected_origin_main_sha or "").strip() or None
+        try:
+            baseline = assert_immutable_baseline_preflight_v1(
+                repo_root=_REPO_ROOT,
+                expected_origin_main_sha=expected,
+            )
+            baseline_payload = baseline.to_dict()
+        except ImmutableBaselinePreflightError as exc:
+            print(
+                json.dumps(
+                    {
+                        "STATUS": "FAIL",
+                        "REASON": str(exc),
+                        "CAPABILITY_ID": CAPABILITY_ID,
+                        "IMMUTABLE_BASELINE_PREFLIGHT": "FAIL",
+                    },
+                    sort_keys=True,
+                )
+            )
+            return 2
+
     vault_backend = None
     if args.allow_wire_send:
         vault_path = Path(str(args.vault_file or "").strip())
@@ -203,6 +239,7 @@ def main(argv: list[str] | None = None) -> int:
                 "ACCEPTED_OWNER_GO_SCOPES": list(ACCEPTED_OWNER_GO_SCOPES),
                 "CANONICAL_VENUE": CANONICAL_VENUE,
                 "CANONICAL_ORDER_SZ": CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1,
+                "IMMUTABLE_BASELINE_PREFLIGHT": baseline_payload,
             },
             sort_keys=True,
         )
