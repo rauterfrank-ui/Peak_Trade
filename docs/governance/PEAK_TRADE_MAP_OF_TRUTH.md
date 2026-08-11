@@ -232,6 +232,8 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`docs&#47;evidence&#47;capability_11_long_running_testnet_proven_prep_eval_v1&#47;`](../../docs/evidence/capability_11_long_running_testnet_proven_prep_eval_v1/) | §11.12.9.21 LONG_RUNNING_TESTNET_PROVEN prep/eval package evidence (`PROVEN=false`; no campaign execute) |
 | [`evidence&#47;ops&#47;section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now&#47;20260811T005425Z&#47;`](../../evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/) | Owner-executed bounded long-running productive Testnet campaign (sealed; `LONG_RUNNING_TESTNET_PROVEN` source) |
 | [`evidence&#47;ops&#47;section_11_12_9_22_pre_live_cybersecurity_gate_post_long_running_reevaluation_v1&#47;20260811T020006Z&#47;`](../../evidence/ops/section_11_12_9_22_pre_live_cybersecurity_gate_post_long_running_reevaluation_v1/20260811T020006Z/) | Owner §11.12.9.22 Pre-Live gate post-LONG_RUNNING re-evaluation (derived; non-SSOT; gate remains `NOT_PASSED`) |
+| [`evidence&#47;ops&#47;section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1&#47;20260811T021353Z&#47;`](../../evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/) | Owner §11.12.9.23 Pre-Live Cybersecurity Architecture Review (derived; non-SSOT; `CYBERSECURITY_ARCHITECTURE_REVIEW=PASS`; gate remains `NOT_PASSED`) |
+| [`evidence&#47;ops&#47;section_11_12_9_24_pre_live_threat_model_current_v1&#47;20260811T023114Z&#47;`](../../evidence/ops/section_11_12_9_24_pre_live_threat_model_current_v1/20260811T023114Z/) | Owner §11.12.9.24 Pre-Live Threat Model Current package (derived; non-SSOT; `THREAT_MODEL_CURRENT=true`; gate remains `NOT_PASSED`) |
 | [`evidence&#47;ops&#47;section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1&#47;20260810T143709Z&#47;`](../../evidence/ops/section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1/20260810T143709Z/) | OKX EEA Demo path closeout &#47; no-order alternate evaluation (non-activating) |
 | [`evidence&#47;ops&#47;section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1&#47;20260810T151323Z&#47;`](../../evidence/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/20260810T151323Z/) | Historical OKX Global Demo binding package evidence (NO_ORDER; not active) |
 | [`evidence&#47;ops&#47;section_11_12_8_retry_okx_eea_private_ro_xperp_verify_no_order_v1&#47;20260810T165847Z&#47;`](../../evidence/ops/section_11_12_8_retry_okx_eea_private_ro_xperp_verify_no_order_v1/20260810T165847Z/) | Bound private READ-only XPerp capability proof (NO_ORDER) |
@@ -320,7 +322,10 @@ SECTION_11_12_9_22_REEVAL_PASS=true
 SECTION_11_12_9_22_REEVAL_BOUND=true
 SECTION_11_12_9_23_ARCHITECTURE_REVIEW_PASS=true
 SECTION_11_12_9_23_ARCHITECTURE_REVIEW_BOUND=true
+SECTION_11_12_9_24_THREAT_MODEL_PASS=true
+SECTION_11_12_9_24_THREAT_MODEL_BOUND=true
 CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
 PREVIOUS_REPORTING_INCONSISTENCY_RECONCILED=true
 OPEN_LIST_MEMBERSHIP_IMPLIES_PROVEN=false
 TESTNET_EVIDENCE_VERIFIED=true
@@ -330,9 +335,9 @@ OPEN_TESTNET_PROVEN_FIELDS=
 EARLIEST_OPEN_TESTNET_PROVEN_FIELD=
 LONG_RUNNING_TESTNET_PROVEN_PREP_PATH_READY=true
 SECTION_11_12_9_21_PREP_BOUND=true
-EARLIEST_UNRESOLVED_DEPENDENCY=THREAT_MODEL_CURRENT
-EARLIEST_UNRESOLVED_SECTION_POINTER=THREAT_MODEL_CURRENT
-NEXT_CANONICAL_STEP_POINTER=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_THREAT_MODEL_CURRENT
+EARLIEST_UNRESOLVED_DEPENDENCY=SECRETS_REVIEW
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECRETS_REVIEW
+NEXT_CANONICAL_STEP_POINTER=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_SECRETS_REVIEW
 CANONICAL_EXECUTE_OWNER_GO_SCOPE=EXECUTE_BOUNDED_LONG_RUNNING_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
 SECTION_11_12_8_REOPENED=false
 PERMANENT_BOUND_CLIENT_QUERY_SIGN_FIX=true
@@ -341,6 +346,7 @@ SECTION_11_12_9_21_PREP_EVIDENCE_POINTER=docs&#47;evidence&#47;capability_11_lon
 SECTION_11_12_9_21_LONG_RUNNING_CAMPAIGN_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now&#47;20260811T005425Z&#47;
 SECTION_11_12_9_22_REEVAL_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_22_pre_live_cybersecurity_gate_post_long_running_reevaluation_v1&#47;20260811T020006Z&#47;
 SECTION_11_12_9_23_ARCHITECTURE_REVIEW_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1&#47;20260811T021353Z&#47;
+SECTION_11_12_9_24_THREAT_MODEL_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_24_pre_live_threat_model_current_v1&#47;20260811T023114Z&#47;
 SECTION_11_12_9_21_PREP_IS_NOT_LONG_RUNNING_TESTNET_PROVEN=true
 SECTION_11_12_9_21_PREP_IS_NOT_EXECUTE_AUTHORIZATION=true
 SECTION_11_12_9_21_PREP_IS_NOT_SECTION_11_12_8_REOPEN=true
@@ -349,6 +355,10 @@ LONG_RUNNING_TESTNET_PROVEN_IS_NOT_PRE_LIVE_CYBERSECURITY_GATE_PASS=true
 SECTION_11_12_9_23_ARCHITECTURE_REVIEW_PASS_IS_NOT_PRE_LIVE_CYBERSECURITY_GATE_PASS=true
 CYBERSECURITY_ARCHITECTURE_REVIEW_PASS_IS_NOT_THREAT_MODEL_CURRENT=true
 CYBERSECURITY_ARCHITECTURE_REVIEW_PASS_IS_NOT_PRE_LIVE_CYBERSECURITY_GATE_PASS=true
+SECTION_11_12_9_24_THREAT_MODEL_PASS_IS_NOT_PRE_LIVE_CYBERSECURITY_GATE_PASS=true
+THREAT_MODEL_CURRENT_IS_NOT_PRE_LIVE_CYBERSECURITY_GATE_PASS=true
+THREAT_MODEL_CURRENT_IS_NOT_SECRETS_REVIEW=true
+VENUE_THREAT_MODEL_DELTA_IS_NOT_THREAT_MODEL_CURRENT=true
 XPERP_BOUNDED_CAMPAIGN_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1&#47;20260810T181703Z&#47;
 XPERP_BOUNDED_CAMPAIGN_FORENSIC_POINTER=evidence&#47;ops&#47;section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1&#47;20260810T181703Z&#47;derived_forensic_closeout_v1&#47;
 XPERP_BOUNDED_ACK_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_retry_bounded_okx_eea_demo_xperp_ack_proof_after_clordid_fix_v1&#47;20260810T194806Z&#47;

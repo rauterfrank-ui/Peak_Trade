@@ -875,14 +875,17 @@ LONG_RUNNING_TESTNET_PROVEN=true
 SECTION_11_12_9_22_REEVAL_PASS=true
 SECTION_11_12_9_23_ARCHITECTURE_REVIEW_PASS=true
 CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+SECTION_11_12_9_24_THREAT_MODEL_PASS=true
+THREAT_MODEL_CURRENT=true
 OPEN_TESTNET_PROVEN_FIELDS=
 EARLIEST_OPEN_TESTNET_PROVEN_FIELD=
-EARLIEST_UNRESOLVED_SECTION_POINTER=THREAT_MODEL_CURRENT
-CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_THREAT_MODEL_CURRENT
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECRETS_REVIEW
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_SECRETS_REVIEW
 SECTION_11_12_9_EVALUATION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_pre_live_cybersecurity_acceptance_gate_evidence_bound_evaluation_v1/20260810T202800Z/
 SECTION_11_12_9_20_REEVAL_EVIDENCE_ROOT=evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/
 SECTION_11_12_9_22_REEVAL_EVIDENCE_ROOT=evidence/ops/section_11_12_9_22_pre_live_cybersecurity_gate_post_long_running_reevaluation_v1/20260811T020006Z/
 SECTION_11_12_9_23_ARCHITECTURE_REVIEW_EVIDENCE_ROOT=evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/
+SECTION_11_12_9_24_THREAT_MODEL_EVIDENCE_ROOT=evidence/ops/section_11_12_9_24_pre_live_threat_model_current_v1/20260811T023114Z/
 SECTION_11_12_9_21_LONG_RUNNING_CAMPAIGN_EVIDENCE_ROOT=evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/
 SECTION_11_12_9_11_RESIDUAL_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_12_9_11_open_testnet_proven_fields_reporting_reconcile_residual_proof_v1/20260810T213441Z/
 SECTION_11_12_9_12_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_12_testnet_order_lifecycle_proven_v1/20260810T215942Z/
@@ -915,8 +918,10 @@ Live-Readiness; die §11.12.9.1 Evaluation bestätigte historisch
 `NOT_PASSED` mit damals frühester Restabhängigkeit
 `CYBERSECURITY_ARCHITECTURE_REVIEW`. Nach Owner-executed Architecture
 Review bindet §11.12.9.23 `CYBERSECURITY_ARCHITECTURE_REVIEW=PASS` und
-bestätigt erneut `NOT_PASSED` mit frühester Restabhängigkeit
-`THREAT_MODEL_CURRENT`; kein Gate-PASS.
+bestätigt erneut `NOT_PASSED` mit damals frühester Restabhängigkeit
+`THREAT_MODEL_CURRENT`; kein Gate-PASS. Nach Owner-executed Threat Model
+Current bindet §11.12.9.24 `THREAT_MODEL_CURRENT=true` und bestätigt erneut
+`NOT_PASSED` mit frühester Restabhängigkeit `SECRETS_REVIEW`; kein Gate-PASS.
 
 ------------------------------------------------------------------------
 

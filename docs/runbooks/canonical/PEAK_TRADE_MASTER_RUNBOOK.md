@@ -6165,12 +6165,103 @@ OWNER_GO_ARCHITECTURE_REVIEW != NEXT_SECURITY_PACKAGE_AUTHORIZATION
 Observed facts: `CYBERSECURITY_ARCHITECTURE_REVIEW` newly bound PASS for
 §18.2 from the sealed architecture-review package; `LONG_RUNNING_TESTNET_PROVEN`
 and `TESTNET_LIFECYCLE_PROVEN` remain bound; earliest remaining unmet §18.2
-criterion is `THREAT_MODEL_CURRENT`; remaining Pre-Live security acceptance
-packages remain absent or OPEN. Gate remains `NOT_PASSED`. Live remains
-hard-blocked. Cap &#47; §11.13 remains unstarted. Hard stop after this package.
-No automatic progression. Creating or executing the next Pre-Live security
-acceptance package requires a **separate** Owner-GO and is **not**
-authorized here.
+criterion at §11.12.9.23 close was `THREAT_MODEL_CURRENT`; remaining Pre-Live
+security acceptance packages remained absent or OPEN at that close. Gate
+remained `NOT_PASSED`. Live remained hard-blocked. Cap &#47; §11.13 remained
+unstarted. Hard stop after that package. No automatic progression. Creating
+or executing the next Pre-Live security acceptance package required a
+**separate** Owner-GO and was **not** authorized under §11.12.9.23.
+Post-threat-model package binding continues under §11.12.9.24.
+
+##### 11.12.9.24 Pre-Live Threat Model Current package (binding; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_THREAT_MODEL_CURRENT`
+executes the **earliest** remaining Pre-Live security acceptance package
+after §11.12.9.23: a productive, evidence-bound Threat Model Current package
+against Cybersecurity Runbook V2.1 §4 &#47; §18.2 on then-current `origin&#47;main`.
+Reuse-before-new applies (venue-scoped `THREAT_MODEL_DELTA` artifacts and
+§11.12.9.23 architecture review are inputs, not substitutes). This binds
+exactly one newly closed §18.2 criterion:
+
+``` text
+THREAT_MODEL_CURRENT=true
+```
+
+derived solely from the sealed threat-model evidence root below
+(focused control tests exit 0; static currentness&#47;control probes ALL_PASS;
+required topic coverage PASS; currentness checks 10&#47;10 PASS; Critical&#47;High
+findings in this package = 0). This does **not** set
+`PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** set
+`ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not** start Cap &#47;
+§11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47; credentials, does
+**not** execute subsequent Pre-Live packages (`SECRETS_REVIEW`, dependency
+audit, SBOM, static analysis, regression, penetration, credential-leakage,
+authority-replay, recovery-security, findings register, isolation &#47; arming
+proofs, audit bundle), and does **not** mutate runtime &#47; trading &#47;
+execution code or open a venue network session.
+
+Sealed threat-model evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_24_pre_live_threat_model_current_v1&#47;20260811T023114Z&#47;`
+
+``` text
+SECTION_11_12_9_24_THREAT_MODEL_RUN_ID=20260811T023114Z
+SECTION_11_12_9_24_THREAT_MODEL_ORIGIN_MAIN_SHA=4431f810752bb1c42d94d24a2dcc24127a98fdcb
+SECTION_11_12_9_24_THREAT_MODEL_EVIDENCE_ROOT=evidence/ops/section_11_12_9_24_pre_live_threat_model_current_v1/20260811T023114Z/
+PROOF_METHOD=PRODUCTIVE_BOUNDED_THREAT_MODEL_CURRENTNESS_PROBES_PLUS_FOCUSED_CONTROL_TESTS_ON_ORIGIN_MAIN
+PROOF_EXECUTED=true
+PROOF_RESULT=THREAT_MODEL_CURRENT_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+CYBERSECURITY_ARCHITECTURE_REVIEW_PROVEN=true
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=THREAT_MODEL_CURRENT
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=4
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=17
+EARLIEST_UNRESOLVED_DEPENDENCY=SECRETS_REVIEW
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECRETS_REVIEW
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_24
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_SECRETS_REVIEW
+HARD_STOP_AFTER_THIS_PACKAGE=true
+```
+
+Mandatory distinctions:
+
+``` text
+THREAT_MODEL_CURRENT != PRE_LIVE_CYBERSECURITY_GATE_PASS
+THREAT_MODEL_CURRENT != LIVE_AUTHORIZED
+THREAT_MODEL_CURRENT != SECTION_11_13_STARTED
+THREAT_MODEL_CURRENT != SECRETS_REVIEW
+VENUE_THREAT_MODEL_DELTA != THREAT_MODEL_CURRENT
+ARCHITECTURE_REVIEW_PASS != THREAT_MODEL_CURRENT
+OWNER_GO_THREAT_MODEL != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: `THREAT_MODEL_CURRENT` newly bound true for §18.2 from the
+sealed threat-model package; `CYBERSECURITY_ARCHITECTURE_REVIEW`,
+`LONG_RUNNING_TESTNET_PROVEN`, and `TESTNET_LIFECYCLE_PROVEN` remain bound;
+earliest remaining unmet §18.2 criterion is `SECRETS_REVIEW`; remaining
+Pre-Live security acceptance packages remain absent or OPEN. Gate remains
+`NOT_PASSED`. Live remains hard-blocked. Cap &#47; §11.13 remains unstarted.
+Hard stop after this package. No automatic progression. Creating or
+executing the next Pre-Live security acceptance package requires a
+**separate** Owner-GO and is **not** authorized here.
 
 Canonical residual sequence pointer (section sequence historically bound;
 productive proven-field chain closed):
