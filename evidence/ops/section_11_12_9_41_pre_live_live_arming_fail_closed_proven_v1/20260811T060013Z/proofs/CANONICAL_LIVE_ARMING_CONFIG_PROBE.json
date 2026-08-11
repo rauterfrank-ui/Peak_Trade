@@ -1,0 +1,11 @@
+{
+  "DOCUMENT_CLASS": "CANONICAL_LIVE_ARMING_CONFIG_PROBE_SECTION_11_12_9_41_V1",
+  "ORIGIN_MAIN_SHA": "a2649749e3fa029a1f32bfd279384374e5f433b9",
+  "PASS": true,
+  "PATH": "config/governance/ai_activation_gate_v1.json",
+  "RUN_ID": "20260811T060013Z",
+  "allow_ai_to_execute_live": false,
+  "live_unlock.armed": false,
+  "live_unlock.confirm_token_required": true,
+  "live_unlock.enabled": false
+}

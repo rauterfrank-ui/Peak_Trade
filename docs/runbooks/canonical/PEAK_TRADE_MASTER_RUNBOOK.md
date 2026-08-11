@@ -8132,6 +8132,118 @@ Hard stop after this recovery package. No automatic progression. Creating or
 executing `LIVE_ARMING_FAIL_CLOSED_PROVEN` requires a **separate** Owner-GO
 and is **not** authorized here (`LIVE_ARMING_FAIL_CLOSED_AUTHORIZED=false`).
 
+##### 11.12.9.41 Pre-Live Live Arming Fail-Closed Proven package (binding; PASS; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_LIVE_ARMING_FAIL_CLOSED_PROVEN`
+(authorized scope `PRE_LIVE_SECURITY_PACKAGE_LIVE_ARMING_FAIL_CLOSED_PROVEN`;
+`LIVE_ARMING_FAIL_CLOSED_AUTHORIZED=true` for this package only)
+executes the **earliest** remaining Pre-Live security acceptance package
+after §11.12.9.40 &#47; §11.12.9.40R: a productive, evidence-bound Live Arming
+Fail-Closed proof against Cybersecurity Runbook V2.1 §3.3 &#47; §12.2 &#47; §12.3 &#47;
+§13 &#47; §18.2 on then-current `origin&#47;main`. Reuse-before-new applies
+(ArmedGate &#47; incomplete enabled&#47;armed combinations, confirm-token-when-armed,
+LiveModeGate &#47; environment safety, AI activation `live_unlock.armed=false`,
+WP0C &#47; safety-rail &#47; enabled-armed bypass resistance). Distinct from
+already-bound `LIVE_DEFAULT_BLOCK_PROVEN` and from `AUDIT_EVIDENCE_VERIFIED`
+(remains OPEN). This binds exactly one newly closed §18.2 criterion:
+
+``` text
+LIVE_ARMING_FAIL_CLOSED_PROVEN=true
+```
+
+from the sealed evidence root below (focused owners 173 passed;
+canonical config probe PASS; CRITICAL=0 &#47; HIGH=0). This does **not** set
+`PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** set
+`ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`, does **not** start Cap &#47;
+§11.13, does **not** authorize Live &#47; Testnet &#47; orders &#47; credentials, does
+**not** bind `AUDIT_EVIDENCE_VERIFIED` &#47; `MANIFEST_VERIFY_RC` gate criterion,
+does **not** mutate runtime &#47; trading &#47; execution code, and does **not** open
+a venue network session.
+
+Sealed live arming fail-closed evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_41_pre_live_live_arming_fail_closed_proven_v1&#47;20260811T060013Z&#47;`
+
+``` text
+SECTION_11_12_9_41_LIVE_ARMING_FAIL_CLOSED_RUN_ID=20260811T060013Z
+SECTION_11_12_9_41_LIVE_ARMING_FAIL_CLOSED_ORIGIN_MAIN_SHA=a2649749e3fa029a1f32bfd279384374e5f433b9
+SECTION_11_12_9_41_LIVE_ARMING_FAIL_CLOSED_EVIDENCE_ROOT=evidence/ops/section_11_12_9_41_pre_live_live_arming_fail_closed_proven_v1/20260811T060013Z/
+PROOF_METHOD=BOUNDED_LOCAL_LIVE_ARMING_FAIL_CLOSED_OWNERS_NO_LIVE
+PROOF_EXECUTED=true
+PROOF_RESULT=LIVE_ARMING_FAIL_CLOSED_PROVEN_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+NO_TRADING_LOGIC_CHANGE=true
+LIVE_ARMING_FAIL_CLOSED_PROVEN=true
+LIVE_ARMING_FAIL_CLOSED_AUTHORIZED=true
+LIVE_DEFAULT_BLOCK_PROVEN=true
+LIVE_TESTNET_ISOLATION_PROVEN=true
+AUDIT_EVIDENCE_VERIFIED=false
+AUDIT_EVIDENCE_VERIFIED_AUTHORIZED=false
+HIGH_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN=0
+MEDIUM_FINDINGS_OPEN=2
+LOW_FINDINGS_OPEN=1
+HIGH_FINDINGS_OPEN_PROVEN=true
+CRITICAL_FINDINGS_OPEN_PROVEN=true
+RECOVERY_SECURITY_TEST=PASS
+AUTHORITY_REPLAY_TEST=PASS
+CREDENTIAL_LEAKAGE_TEST=PASS
+PENETRATION_PROGRAM=PASS
+SECURITY_REGRESSION=PASS
+STATIC_SECURITY_ANALYSIS=PASS
+SBOM_PRESENT=true
+DEPENDENCY_AUDIT=PASS
+SECRETS_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=LIVE_ARMING_FAIL_CLOSED_PROVEN
+SECURITY_ACCEPTANCE_CRITERIA_TOTAL=21
+SECURITY_ACCEPTANCE_CRITERIA_PASS=18
+SECURITY_ACCEPTANCE_CRITERIA_OPEN=3
+EARLIEST_UNRESOLVED_DEPENDENCY=AUDIT_EVIDENCE_VERIFIED
+EARLIEST_UNRESOLVED_SECTION_POINTER=AUDIT_EVIDENCE_VERIFIED
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_41
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_AUDIT_EVIDENCE_VERIFIED
+HARD_STOP_AFTER_THIS_PACKAGE=true
+```
+
+Mandatory distinctions:
+
+``` text
+LIVE_ARMING_FAIL_CLOSED_PROVEN != PRE_LIVE_CYBERSECURITY_GATE_PASS
+LIVE_ARMING_FAIL_CLOSED_PROVEN != LIVE_AUTHORIZED
+LIVE_ARMING_FAIL_CLOSED_PROVEN != SECTION_11_13_STARTED
+LIVE_ARMING_FAIL_CLOSED_PROVEN != LIVE_DEFAULT_BLOCK_PROVEN
+LIVE_ARMING_FAIL_CLOSED_PROVEN != AUDIT_EVIDENCE_VERIFIED
+OWNER_GO_LIVE_ARMING_FAIL_CLOSED != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+```
+
+Observed facts: Live Arming Fail-Closed newly bound PASS for §18.2 from the
+sealed bounded local package; prior security packages remain bound;
+earliest remaining unmet §18.2 criterion is `AUDIT_EVIDENCE_VERIFIED`;
+remaining Pre-Live security acceptance packages remain absent or OPEN.
+Gate remains `NOT_PASSED`. Live remains hard-blocked. Cap &#47; §11.13
+remains unstarted. Hard stop after this package. No automatic
+progression. Creating or executing the next Pre-Live security acceptance
+package requires a **separate** Owner-GO and is **not** authorized here
+(`AUDIT_EVIDENCE_VERIFIED_AUTHORIZED=false`).
+
+
 Canonical residual sequence pointer (section sequence historically bound;
 productive proven-field chain closed):
 

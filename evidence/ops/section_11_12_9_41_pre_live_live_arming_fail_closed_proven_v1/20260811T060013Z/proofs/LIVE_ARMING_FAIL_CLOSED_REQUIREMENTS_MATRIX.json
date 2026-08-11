@@ -1,0 +1,92 @@
+{
+  "BINDS_AUDIT_EVIDENCE_VERIFIED": false,
+  "BINDS_LIVE_DEFAULT_BLOCK_PROVEN": false,
+  "CRITICAL_FINDINGS_OPEN": 0,
+  "DOCUMENT_CLASS": "LIVE_ARMING_FAIL_CLOSED_REQUIREMENTS_MATRIX_SECTION_11_12_9_41_V1",
+  "HIGH_FINDINGS_OPEN": 0,
+  "ORIGIN_MAIN_SHA": "a2649749e3fa029a1f32bfd279384374e5f433b9",
+  "OWNERS": [
+    "tests/ops/test_live_gates_verification.py",
+    "tests/test_environment_and_safety.py",
+    "tests/live/test_confirm_token.py",
+    "tests/governance/test_live_mode_gate.py",
+    "tests/test_live_gates.py",
+    "tests/execution/live/test_safety_rails.py",
+    "tests/p48/test_ai_activation_gate_v1.py",
+    "tests/live/test_feature_activation_gate.py",
+    "tests/ops/test_environment_safety_verification.py",
+    "tests/governance/test_wp0c_enforce_gate.py",
+    "tests/p49/test_ai_model_hard_gate_v1.py",
+    "config/governance/ai_activation_gate_v1.json"
+  ],
+  "PACKAGE_VERDICT": "PASS",
+  "REQUIREMENTS": [
+    {
+      "id": "LAFC-01",
+      "owners": [
+        "tests/ops/test_live_gates_verification.py",
+        "tests/test_live_gates.py"
+      ],
+      "section": "\u00a73.3 / \u00a712.2 incomplete arming (enabled XOR armed)",
+      "status": "PASS",
+      "surface": "ArmedGate.require_armed + live_mode_armed gate blocks incomplete combinations"
+    },
+    {
+      "id": "LAFC-02",
+      "owners": [
+        "tests/live/test_confirm_token.py",
+        "tests/test_environment_and_safety.py",
+        "tests/ops/test_live_gates_verification.py"
+      ],
+      "section": "\u00a712.2 / \u00a712.3 armed without confirm token fail-closed",
+      "status": "PASS",
+      "surface": "Confirm-token required when armed; invalid/missing token blocks live execution"
+    },
+    {
+      "id": "LAFC-03",
+      "owners": [
+        "tests/governance/test_live_mode_gate.py",
+        "tests/test_environment_and_safety.py",
+        "tests/ops/test_environment_safety_verification.py"
+      ],
+      "section": "\u00a712.2 LiveModeGate / environment safety arming fail-closed",
+      "status": "PASS",
+      "surface": "live_mode_armed=false blocks real orders; LiveModeGate hard-block preserved"
+    },
+    {
+      "id": "LAFC-04",
+      "owners": [
+        "tests/p48/test_ai_activation_gate_v1.py",
+        "tests/live/test_feature_activation_gate.py",
+        "tests/governance/test_wp0c_enforce_gate.py",
+        "tests/execution/live/test_safety_rails.py",
+        "tests/p49/test_ai_model_hard_gate_v1.py"
+      ],
+      "section": "\u00a713 enabled/armed bypass resistance",
+      "status": "PASS",
+      "surface": "AI activation / feature activation / WP0C / safety rails resist enabled-armed bypass"
+    },
+    {
+      "id": "LAFC-05",
+      "owners": [
+        "config/governance/ai_activation_gate_v1.json"
+      ],
+      "section": "\u00a73.3 canonical live_unlock.armed default false + confirm_token_required",
+      "status": "PASS",
+      "surface": "Canonical AI activation gate config probe"
+    },
+    {
+      "binds_audit_evidence_verified": false,
+      "binds_live_authorized": false,
+      "binds_pre_live_cybersecurity_gate_pass": false,
+      "id": "LAFC-06",
+      "owners": [],
+      "section": "Non-claims",
+      "status": "PASS",
+      "surface": "Does not bind AUDIT_EVIDENCE_VERIFIED / gate PASS / Live / \u00a711.13"
+    }
+  ],
+  "REQUIREMENTS_PASS": 6,
+  "REQUIREMENTS_TOTAL": 6,
+  "RUN_ID": "20260811T060013Z"
+}

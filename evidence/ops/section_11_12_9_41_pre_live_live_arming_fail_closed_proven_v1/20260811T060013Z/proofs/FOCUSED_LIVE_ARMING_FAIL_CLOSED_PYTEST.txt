@@ -1,0 +1,31 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /private/tmp/peak_trade_lafcp
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 173 items
+
+tests/ops/test_live_gates_verification.py .................              [  9%]
+tests/test_environment_and_safety.py ................................... [ 30%]
+......................                                                   [ 42%]
+tests/live/test_confirm_token.py ...                                     [ 44%]
+tests/governance/test_live_mode_gate.py .........................        [ 58%]
+tests/test_live_gates.py ...........................                     [ 74%]
+tests/execution/live/test_safety_rails.py ............                   [ 81%]
+tests/p48/test_ai_activation_gate_v1.py ...                              [ 83%]
+tests/live/test_feature_activation_gate.py ....                          [ 85%]
+tests/ops/test_environment_safety_verification.py ........               [ 90%]
+tests/governance/test_wp0c_enforce_gate.py .............                 [ 97%]
+tests/p49/test_ai_model_hard_gate_v1.py ....                             [100%]
+
+=============================== warnings summary ===============================
+src/live/safety.py:95
+  /private/tmp/peak_trade_lafcp/src/live/safety.py:95: PytestCollectionWarning: cannot collect test class 'TestnetDryRunOnlyError' because it has a __init__ constructor (from: tests/test_environment_and_safety.py)
+    class TestnetDryRunOnlyError(SafetyBlockedError):
+
+src/orders/exchange.py:86
+  /private/tmp/peak_trade_lafcp/src/orders/exchange.py:86: PytestCollectionWarning: cannot collect test class 'TestnetOrderExecutor' because it has a __init__ constructor (from: tests/test_environment_and_safety.py)
+    class TestnetOrderExecutor:
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 173 passed, 2 warnings in 3.31s ========================
