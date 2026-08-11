@@ -1,0 +1,54 @@
+{
+  "ALL_STATIC_PROBES_PASS": true,
+  "FINDINGS": [],
+  "GENERATED_AT_UTC": "2026-08-11T02:16:39Z",
+  "ORIGIN_MAIN_SHA": "19283f755d2cbcf3b340a431ca0a5ed1ca37c536",
+  "PROBES": [
+    {
+      "id": "STATIC_LIVE_ENABLED_FORBIDDEN_DEFAULT",
+      "observed": {
+        "LIVE_ENABLED_FORBIDDEN_DEFAULT": false
+      },
+      "pass": true
+    },
+    {
+      "config_path": "config/governance/ai_activation_gate_v1.json",
+      "detail": "AIGateError",
+      "id": "STATIC_AI_ACTIVATION_GATE_DEFAULT_BLOCK",
+      "pass": true
+    },
+    {
+      "id": "STATIC_LIVE_MODE_GATE_BLOCKED_DEFAULT",
+      "pass": true
+    },
+    {
+      "accepted_form": "secretref://...",
+      "id": "STATIC_SECRETREF_STRUCTURAL",
+      "pass": true
+    },
+    {
+      "id": "STATIC_CAP_CONSTANTS_LIVE_FALSE",
+      "observed": {
+        "LIVE_AUTHORIZED": false,
+        "TESTNET_AUTHORIZED": false
+      },
+      "pass": true
+    },
+    {
+      "count": 11,
+      "id": "STATIC_CI_REQUIRED_CONTEXTS",
+      "pass": true
+    },
+    {
+      "id": "STATIC_POLICY_CRITIC_CONFIRM_TOKEN_BYPASS_RULE",
+      "pass": true
+    },
+    {
+      "id": "STATIC_DASHBOARD_KS_READ_PRESENTATION_ONLY",
+      "note": "ops_cockpit reads data/kill_switch/state.json for presentation only; market landscape forbids live KS path as authority; no write-back authorization surface identified in this architecture-review scope",
+      "pass": true
+    }
+  ],
+  "RUN_ID": "20260811T021353Z",
+  "SECRETS_IN_OUTPUT": false
+}

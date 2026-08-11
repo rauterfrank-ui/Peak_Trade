@@ -1,0 +1,303 @@
+{
+  "CRITICAL_FINDINGS_OPEN": 0,
+  "DOCUMENT_CLASS": "ARCHITECTURE_REQUIREMENTS_MATRIX_SECTION_11_12_9_23_V1",
+  "HIGH_FINDINGS_OPEN": 0,
+  "ORIGIN_MAIN_SHA": "19283f755d2cbcf3b340a431ca0a5ed1ca37c536",
+  "PACKAGE_VERDICT": "PASS",
+  "REQUIREMENTS": [
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a73.1/\u00a73.2 Trust Zones & Boundaries",
+      "evidence": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#3",
+        "proofs/STATIC_ARCHITECTURE_PROBES.json",
+        "src/governance/live_mode_gate.py",
+        "src/governance/ai_activation_gate_v1.py"
+      ],
+      "gap": null,
+      "proof_test": "tests/governance/test_live_mode_gate.py + static probes",
+      "remediation": null,
+      "requirement_id": "AR-01",
+      "severity": "INFO",
+      "status": "PASS",
+      "surface": "Trust Boundaries and System/Deployment Architecture",
+      "technical_assessment": "Trust zones and critical boundaries are explicitly modeled; LiveModeGate defaults BLOCKED; AI live unlock defaults enabled/armed false; Cap constants LIVE_AUTHORIZED=false.",
+      "verdict": "PASS"
+    },
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a77 / Cap-11.2 binding",
+      "evidence": [
+        "src/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/binding_contract_v1.py",
+        "tests/ops/test_capability_11_2_productive_credential_load_path_binding_v1.py",
+        "proofs/STATIC_ARCHITECTURE_PROBES.json#STATIC_SECRETREF_STRUCTURAL"
+      ],
+      "gap": "Full secrets lifecycle inventory/rotation review deferred to SECRETS_REVIEW package.",
+      "proof_test": "STATIC_SECRETREF_STRUCTURAL + Cap-11.2 path binding tests",
+      "remediation": "Execute separate OWNER_GO for SECRETS_REVIEW after threat-model package sequence.",
+      "requirement_id": "AR-02",
+      "severity": "LOW",
+      "status": "PASS",
+      "surface": "Credentials/Secrets lifecycle and SecretRef resolution",
+      "technical_assessment": "Architecture requires secretref:// forms; plaintext rejected structurally on reviewed binding surface; credential load path contracts proven by Cap-11.2 tests. Full SECRETS_REVIEW package remains a separate \u00a718.2 criterion.",
+      "verdict": "PASS"
+    },
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a72 Least Privilege / \u00a73.4",
+      "evidence": [
+        "src/ops/canonical_durable_authorization_lifecycle_and_revocation_v1/",
+        "tests/ops/test_capability_11_section_11_12_8_productive_testnet_campaign_run_activation_v1.py",
+        "config/governance/ai_activation_gate_v1.json"
+      ],
+      "gap": null,
+      "proof_test": "campaign activation + AI gate tests",
+      "remediation": null,
+      "requirement_id": "AR-03",
+      "severity": "INFO",
+      "status": "PASS",
+      "surface": "AuthN/AuthZ and Least Privilege",
+      "technical_assessment": "Durable authorization artifacts default live/testnet false; campaign activation requires confirm-token digests and armed flags; AI live execution multi-gated.",
+      "verdict": "PASS"
+    },
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a73.3 Domain Separation / \u00a719",
+      "evidence": [
+        "src/governance/live_mode_gate.py#ExecutionEnvironment",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#3.3",
+        "proofs/STATIC_ARCHITECTURE_PROBES.json"
+      ],
+      "gap": "Productive cross-env isolation adversarial package not claimed here.",
+      "proof_test": "live_mode_gate tests + static probes",
+      "remediation": "Later \u00a718.2 LIVE_TESTNET_ISOLATION_PROVEN package.",
+      "requirement_id": "AR-04",
+      "severity": "INFO",
+      "status": "PASS",
+      "surface": "Live/Testnet/Shadow/Research Environment Separation",
+      "technical_assessment": "Environments are explicit enums; Live defaults blocked; Testnet authority is not Live authority in constants and gates. Dedicated LIVE_TESTNET_ISOLATION_PROVEN remains separate \u00a718.2 package.",
+      "verdict": "PASS"
+    },
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a712.2/\u00a712.3 enabled/armed/confirm/dry-run",
+      "evidence": [
+        "config/governance/ai_activation_gate_v1.json",
+        "src/governance/ai_activation_gate_v1.py",
+        "src/governance/policy_critic/rules.py",
+        "tests/p48/test_ai_activation_gate_v1.py"
+      ],
+      "gap": null,
+      "proof_test": "AI gate tests + STATIC_AI_ACTIVATION_GATE_DEFAULT_BLOCK",
+      "remediation": null,
+      "requirement_id": "AR-05",
+      "severity": "INFO",
+      "status": "PASS",
+      "surface": "enabled/armed/confirm-token/dry-run Gates",
+      "technical_assessment": "Canonical AI gate config: allow_ai_to_execute_live=false, enabled=false, armed=false, confirm_token_required=true; policy critic flags confirm_token bypass patterns.",
+      "verdict": "PASS"
+    },
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a712.1/\u00a712.3 Order/Execution Safety",
+      "evidence": [
+        "src/execution/live/safety.py",
+        "tests/execution/live/test_safety_rails.py",
+        "tests/ops/test_capability_11_5_testnet_restart_recovery_and_kill_switch_closure_v1.py"
+      ],
+      "gap": null,
+      "proof_test": "safety rails + Cap-11.5 kill switch tests",
+      "remediation": null,
+      "requirement_id": "AR-06",
+      "severity": "INFO",
+      "status": "PASS",
+      "surface": "Order-/Execution-Safety Boundaries",
+      "technical_assessment": "LIVE_ENABLED_FORBIDDEN_DEFAULT=false with assert_live_stays_disabled; kill-switch/emergency contracts refuse unauthorized clear/side-effect bypass on Cap-11.5 surface.",
+      "verdict": "PASS"
+    },
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a712.2 Network / Cap-11.12 venue binding",
+      "evidence": [
+        "src/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#11.12.8"
+      ],
+      "gap": null,
+      "proof_test": "binding contracts + campaign activation tests",
+      "remediation": null,
+      "requirement_id": "AR-07",
+      "severity": "INFO",
+      "status": "PASS",
+      "surface": "Network/Exchange/API Trust Boundaries",
+      "technical_assessment": "Venue/host/account/instrument binding is explicit for productive Testnet path; Live endpoints remain unauthorized under current defaults.",
+      "verdict": "PASS"
+    },
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a76 / \u00a712.4",
+      "evidence": [
+        "src/execution/live/safety.py",
+        "tests/execution/live/test_safety_rails.py",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#6"
+      ],
+      "gap": "Adversarial malformed venue response program deferred.",
+      "proof_test": "test_safety_rails.py",
+      "remediation": "PENETRATION_PROGRAM package.",
+      "requirement_id": "AR-08",
+      "severity": "LOW",
+      "status": "PASS",
+      "surface": "Input Validation and untrusted exchange/API data",
+      "technical_assessment": "Safety rails enforce non-negative qty/balance and duplicate-fill idempotency on reviewed live safety surface. Broader malformed-venue adversarial coverage belongs to PENETRATION_PROGRAM.",
+      "verdict": "PASS"
+    },
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a712.5 Persistence",
+      "evidence": [
+        "tests/ops/test_capability_11_5_testnet_restart_recovery_and_kill_switch_closure_v1.py",
+        "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/",
+        "evidence/ops/section_11_12_testnet_reconciliation_proven_v1/20260810T221902Z/"
+      ],
+      "gap": "Pre-Live recovery-security package still required for \u00a718.2.",
+      "proof_test": "Cap-11.5 contract tests",
+      "remediation": "RECOVERY_SECURITY_TEST package.",
+      "requirement_id": "AR-09",
+      "severity": "INFO",
+      "status": "PASS",
+      "surface": "state persistence / restart / reconciliation trust assumptions",
+      "technical_assessment": "Restart/recovery/kill-switch architecture contracts exist and Cap-11.12 Testnet restart/reconciliation proofs are bound historically; this architecture review re-validated Cap-11.5 contracts on current SHA. Dedicated RECOVERY_SECURITY_TEST remains separate \u00a718.2.",
+      "verdict": "PASS"
+    },
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a711 Evidence / audit",
+      "evidence": [
+        "proofs/FOCUSED_ARCHITECTURE_CONTRACT_TESTS.log",
+        "proofs/STATIC_ARCHITECTURE_PROBES.json",
+        "evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/execution_evidence/"
+      ],
+      "gap": null,
+      "proof_test": "sanitized static probes + sealed campaign reuse (no secret material accessed)",
+      "remediation": null,
+      "requirement_id": "AR-10",
+      "severity": "INFO",
+      "status": "PASS",
+      "surface": "logging, audit trail and sensitive-data redaction",
+      "technical_assessment": "Evidence packaging uses sanitized artifacts and Manifest seals; this package emits no secrets. Full AUDIT_EVIDENCE_VERIFIED package remains separate.",
+      "verdict": "PASS"
+    },
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a712.4 / \u00a718.2 DEPENDENCY_AUDIT/SBOM",
+      "evidence": [
+        "config/ci/required_status_checks.json",
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#12.4"
+      ],
+      "gap": "No Pre-Live SBOM/dependency audit package sealed yet.",
+      "proof_test": "architecture inventory only",
+      "remediation": "Separate DEPENDENCY_AUDIT and SBOM_PRESENT packages (not this Owner-GO).",
+      "requirement_id": "AR-11",
+      "severity": "MEDIUM",
+      "status": "PASS",
+      "surface": "dependency/supply-chain exposure",
+      "technical_assessment": "Architecture identifies CI required contexts and dependency-review obligation; no claim that DEPENDENCY_AUDIT or SBOM_PRESENT are satisfied. Exposure acknowledged as residual for next packages.",
+      "verdict": "PASS"
+    },
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a73.2 Repository/CI trust boundary",
+      "evidence": [
+        "config/ci/required_status_checks.json",
+        "proofs/STATIC_ARCHITECTURE_PROBES.json#STATIC_CI_REQUIRED_CONTEXTS",
+        ".github/workflows/ci.yml"
+      ],
+      "gap": null,
+      "proof_test": "STATIC_CI_REQUIRED_CONTEXTS",
+      "remediation": null,
+      "requirement_id": "AR-12",
+      "severity": "INFO",
+      "status": "PASS",
+      "surface": "CI/CD and repository trust boundaries",
+      "technical_assessment": "Eleven required contexts bound; docs/policy/audit/tests gates present. Merge of this package still requires GitHub required checks (not claimed here).",
+      "verdict": "PASS"
+    },
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a72 Explicit Authority / Master governance",
+      "evidence": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "src/ops/canonical_durable_authorization_lifecycle_and_revocation_v1/",
+        "tests/ops/test_capability_11_section_11_12_8_productive_testnet_campaign_run_activation_v1.py"
+      ],
+      "gap": null,
+      "proof_test": "activation contracts",
+      "remediation": null,
+      "requirement_id": "AR-13",
+      "severity": "INFO",
+      "status": "PASS",
+      "surface": "operator/admin privileges",
+      "technical_assessment": "Operator GO / confirm-token / durable auth artifacts required for execution capability; ambient authority rejected by design.",
+      "verdict": "PASS"
+    },
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a712.3 failure modes / kill switch",
+      "evidence": [
+        "tests/ops/test_capability_11_5_testnet_restart_recovery_and_kill_switch_closure_v1.py",
+        "src/risk_layer/kill_switch/core.py",
+        "evidence/ops/section_11_12_testnet_kill_switch_proven_v1/20260810T232151Z/"
+      ],
+      "gap": null,
+      "proof_test": "Cap-11.5 kill switch tests",
+      "remediation": null,
+      "requirement_id": "AR-14",
+      "severity": "INFO",
+      "status": "PASS",
+      "surface": "failure modes, fail-closed semantics, kill switch",
+      "technical_assessment": "Fail-closed kill-switch/emergency contracts proven on Cap-11.5 surface; Live remains default-blocked independent of Testnet kill-switch proofs.",
+      "verdict": "PASS"
+    },
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a712.1 Attack surface of productive execution paths",
+      "evidence": [
+        "proofs/FOCUSED_ARCHITECTURE_CONTRACT_TESTS.log",
+        "src/execution/live/safety.py",
+        "src/governance/ai_activation_gate_v1.py",
+        "src/governance/live_mode_gate.py"
+      ],
+      "gap": "No Live trading path exercised (forbidden).",
+      "proof_test": "focused architecture contract tests (77 passed)",
+      "remediation": null,
+      "requirement_id": "AR-15",
+      "severity": "INFO",
+      "status": "PASS",
+      "surface": "attack surface of productive Execution paths",
+      "technical_assessment": "Primary attack surface for Live remains multi-gated (enabled/armed/confirm/AI allow/LiveModeGate/LIVE_ENABLED_FORBIDDEN_DEFAULT). Productive Testnet path is separately Owner-scoped and currently not being activated by this package.",
+      "verdict": "PASS"
+    },
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a74 Threat assumptions (architecture view only)",
+      "evidence": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#4",
+        "ARCHITECTURE_REVIEW_REPORT.md"
+      ],
+      "gap": "Threat model currency package not executed.",
+      "proof_test": "documented residual risk register in this package",
+      "remediation": "Next Owner-GO: THREAT_MODEL_CURRENT.",
+      "requirement_id": "AR-16",
+      "severity": "MEDIUM",
+      "status": "PASS",
+      "surface": "relevant threat assumptions and residual risks",
+      "technical_assessment": "Architecture review records residual risks that must be covered by later packages (THREAT_MODEL_CURRENT, DEPENDENCY_AUDIT, SBOM, STATIC_SECURITY_ANALYSIS, PENETRATION_PROGRAM, etc.). Does NOT claim THREAT_MODEL_CURRENT=true.",
+      "verdict": "PASS"
+    },
+    {
+      "canonical_source": "Cybersecurity Runbook V2.1 \u00a712.1 Dashboard consumer-only",
+      "evidence": [
+        "tests/webui/test_market_landscape_safety_authority_presentation_autobind_v1.py",
+        "src/webui/ops_cockpit.py",
+        "src/webui/market_dashboard_landscape_v2/owner_registry.py"
+      ],
+      "gap": "Residual: ops_cockpit presentation shares filesystem KS state read; ensure future UI changes remain non-authorizing (policy).",
+      "proof_test": "webui market landscape safety authority tests",
+      "remediation": "Keep UI consumer-only; covered by existing webui authority presentation tests.",
+      "requirement_id": "AR-17",
+      "severity": "LOW",
+      "status": "PASS",
+      "surface": "Dashboard / Consumer Surfaces non-authorizing",
+      "technical_assessment": "Market landscape presentation forbids live kill_switch state as authority; ops_cockpit reads KS/config for presentation and documents read-only/GET-only. No dashboard\u2192runtime authorization write-back identified in reviewed surfaces.",
+      "verdict": "PASS"
+    }
+  ],
+  "REQUIREMENTS_BLOCKED": 0,
+  "REQUIREMENTS_OPEN": 0,
+  "REQUIREMENTS_PASS": 17,
+  "REQUIREMENTS_TOTAL": 17,
+  "RUN_ID": "20260811T021353Z"
+}

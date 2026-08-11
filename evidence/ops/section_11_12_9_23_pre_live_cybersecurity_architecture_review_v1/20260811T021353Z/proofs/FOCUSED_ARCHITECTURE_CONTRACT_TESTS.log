@@ -1,0 +1,24 @@
+ORIGIN_MAIN_SHA=19283f755d2cbcf3b340a431ca0a5ed1ca37c536
+PROOF_STARTED_UTC=2026-08-11T02:13:53Z
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 77 items
+
+tests/execution/live/test_safety_rails.py ............                   [ 15%]
+tests/p48/test_ai_activation_gate_v1.py ...                              [ 19%]
+tests/governance/test_live_mode_gate.py .........................        [ 51%]
+tests/ops/test_capability_11_5_testnet_restart_recovery_and_kill_switch_closure_v1.py . [ 53%]
+......                                                                   [ 61%]
+tests/webui/test_market_landscape_safety_authority_presentation_autobind_v1.py . [ 62%]
+................                                                         [ 83%]
+tests/ops/test_capability_11_2_productive_credential_load_path_binding_v1.py . [ 84%]
+.......                                                                  [ 93%]
+tests/ops/test_capability_11_section_11_12_8_productive_testnet_campaign_run_activation_v1.py . [ 94%]
+....                                                                     [100%]
+
+======================== 77 passed in 62.57s (0:01:02) =========================
+PROOF_ENDED_UTC=2026-08-11T02:14:56Z
+PYTEST_EXIT_CODE=0
