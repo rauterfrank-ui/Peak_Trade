@@ -1,0 +1,18 @@
+{
+  "LIVE_ARMED": false,
+  "LIVE_AUTHORIZED": false,
+  "LIVE_ENABLED": false,
+  "LIVE_ORDER_AUTHORIZED": false,
+  "LIVE_PRIVATE_READ_ONLY_AUTHORIZED": true,
+  "authorization_scope": "LIVE_PRIVATE_READ_ONLY",
+  "authorization_validated": true,
+  "bound_config_digest": "b572542978b25d83a9218e664abb44c370a6238cc7242c1765b6248f7f635ca9",
+  "bound_origin_main_sha": "d10a44a51d2c3314f80bdc546423c9fd32e0eb5b",
+  "owner_go": "OWNER_GO_LIVE_PRIVATE_READ_ONLY",
+  "permission_attestation": {
+    "READ": true,
+    "TRADE": false,
+    "WITHDRAW": false
+  },
+  "reusable_for_later_live_stages": false
+}
