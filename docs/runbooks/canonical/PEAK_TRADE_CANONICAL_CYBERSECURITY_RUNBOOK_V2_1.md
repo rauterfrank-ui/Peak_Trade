@@ -888,6 +888,9 @@ FULL_SECURITY_COVERAGE_REVIEW_PROVEN=false
 PR_5862_STATE=MERGED
 SECTION_11_12_9_28_DEPENDENCY_AUDIT_REMEDIATION_EXECUTED=true
 SECTION_11_12_9_28_DEPENDENCY_AUDIT_RERUN_PASS=true
+PR_5863_STATE=MERGED
+PR_5863_MERGE_COMMIT_SHA=b1ebe0f93d88ab22bb147c48fb27e1863b829e5e
+SBOM_AUTHORIZED=false
 OPEN_TESTNET_PROVEN_FIELDS=
 EARLIEST_OPEN_TESTNET_PROVEN_FIELD=
 EARLIEST_UNRESOLVED_SECTION_POINTER=SBOM_PRESENT
@@ -901,6 +904,7 @@ SECTION_11_12_9_25_SECRETS_REVIEW_EVIDENCE_ROOT=evidence/ops/section_11_12_9_25_
 SECTION_11_12_9_26_DEPENDENCY_AUDIT_EVIDENCE_ROOT=evidence/ops/section_11_12_9_26_pre_live_dependency_audit_v1/20260811T031527Z/
 SECTION_11_12_9_27_FORENSIC_REVIEW_EVIDENCE_ROOT=evidence/ops/section_11_12_9_26_post_dependency_audit_forensic_gap_and_remediation_review_v1/20260811T033939Z/
 SECTION_11_12_9_28_DEPENDENCY_AUDIT_REMEDIATION_EVIDENCE_ROOT=evidence/ops/section_11_12_9_27_dependency_audit_rb01_rb02_remediation_and_rerun_v1/20260811T035809Z/
+PR_5863_SQUASH_MERGE_CLOSEOUT_ROOT=evidence/ops/section_11_12_9_28_pr_5863_squash_merge_closeout_v1/20260811T041913Z/
 SECTION_11_12_9_21_LONG_RUNNING_CAMPAIGN_EVIDENCE_ROOT=evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/
 SECTION_11_12_9_11_RESIDUAL_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_12_9_11_open_testnet_proven_fields_reporting_reconcile_residual_proof_v1/20260810T213441Z/
 SECTION_11_12_9_12_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_12_testnet_order_lifecycle_proven_v1/20260810T215942Z/
@@ -954,7 +958,9 @@ RB-01&#47;RB-02-Remediation und vergleichbarem DEPENDENCY_AUDIT-Rerun bindet
 §11.12.9.28 `DEPENDENCY_AUDIT=PASS` &#47; `DEPENDENCY_AUDIT_PROVEN=true` (die sechs
 blocking HIGH-GHSAs geschlossen; HIGH&#47;CRITICAL=0 im lean vergleichbaren Scope)
 und bestätigt erneut `NOT_PASSED` mit frühester Restabhängigkeit `SBOM_PRESENT`;
-kein Gate-PASS.
+kein Gate-PASS. PR `#5863` ist squash-merged (`PR_5863_STATE=MERGED`;
+merge `b1ebe0f93d88ab22bb147c48fb27e1863b829e5e`); `SBOM_AUTHORIZED=false`;
+SBOM erfordert separates Owner-GO.
 
 ------------------------------------------------------------------------
 
