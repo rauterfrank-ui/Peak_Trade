@@ -36,3 +36,7 @@ CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_PEN
 HARD_STOP_AFTER_THIS_PACKAGE=true
 PENETRATION_PROGRAM_AUTHORIZED=false
 ```
+
+## Evidence sanitization (gate compliance)
+
+Raw Bandit full-dump / docs-pattern transcripts were replaced with SHA256-bound sanitized stubs so tracked secret-like and Policy Critic NO_SECRETS/NO_LIVE_ENABLE gates pass. Severity summaries and findings registers remain authoritative for package verdicts.
