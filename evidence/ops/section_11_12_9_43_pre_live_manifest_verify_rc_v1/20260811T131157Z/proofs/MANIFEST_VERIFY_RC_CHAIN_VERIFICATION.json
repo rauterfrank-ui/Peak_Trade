@@ -1,0 +1,311 @@
+{
+  "AGGREGATE_MANIFEST_VERIFY_RC": 0,
+  "CHAIN_COUNT": 20,
+  "CHAIN_OK_COUNT": 20,
+  "CHAIN_VERIFICATION": [
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "TESTNET_LIFECYCLE_PROVEN",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_testnet_evidence_verified_v1/20260810T235545Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_19",
+      "TRACKED_FILE_COUNT": 4
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "LONG_RUNNING_TESTNET_PROVEN_SUPPORT",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/execution_evidence/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_21_EXEC_EVIDENCE",
+      "TRACKED_FILE_COUNT": 1
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "LONG_RUNNING_TESTNET_PROVEN",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_22_pre_live_cybersecurity_gate_post_long_running_reevaluation_v1/20260811T020006Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_22",
+      "TRACKED_FILE_COUNT": 5
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "CYBERSECURITY_ARCHITECTURE_REVIEW",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_23",
+      "TRACKED_FILE_COUNT": 8
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "THREAT_MODEL_CURRENT",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_24_pre_live_threat_model_current_v1/20260811T023114Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_24",
+      "TRACKED_FILE_COUNT": 10
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "SECRETS_REVIEW",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_25_pre_live_credential_hygiene_review_v1/20260811T025933Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_25",
+      "TRACKED_FILE_COUNT": 14
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "DEPENDENCY_AUDIT",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_27_dependency_audit_rb01_rb02_remediation_and_rerun_v1/20260811T035809Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_28",
+      "TRACKED_FILE_COUNT": 13
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "SBOM_PRESENT",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_29_pre_live_sbom_present_v1/20260811T042745Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_29",
+      "TRACKED_FILE_COUNT": 11
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "STATIC_SECURITY_ANALYSIS",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_31_static_security_analysis_high_remediation_and_rerun_v1/20260811T043722Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_31",
+      "TRACKED_FILE_COUNT": 15
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "SECURITY_REGRESSION",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_32_pre_live_security_regression_v1/20260811T044255Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_32",
+      "TRACKED_FILE_COUNT": 22
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "PENETRATION_PROGRAM",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_33_pre_live_penetration_program_v1/20260811T044900Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_33",
+      "TRACKED_FILE_COUNT": 15
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "CREDENTIAL_LEAKAGE_TEST",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_34_pre_live_credential_leakage_test_v1/20260811T045537Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_34",
+      "TRACKED_FILE_COUNT": 17
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "AUTHORITY_REPLAY_TEST",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_35_pre_live_authority_replay_test_v1/20260811T050403Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_35",
+      "TRACKED_FILE_COUNT": 11
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "RECOVERY_SECURITY_TEST",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_36_pre_live_recovery_security_test_v1/20260811T050823Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_36",
+      "TRACKED_FILE_COUNT": 15
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "CRITICAL_FINDINGS_OPEN",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_37_pre_live_critical_findings_open_v1/20260811T052152Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_37",
+      "TRACKED_FILE_COUNT": 12
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "HIGH_FINDINGS_OPEN",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_38_pre_live_high_findings_open_v1/20260811T052547Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_38",
+      "TRACKED_FILE_COUNT": 12
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "LIVE_TESTNET_ISOLATION_PROVEN",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_39_pre_live_live_testnet_isolation_proven_v1/20260811T052914Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_39",
+      "TRACKED_FILE_COUNT": 11
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "LIVE_DEFAULT_BLOCK_PROVEN",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_40_pre_live_live_default_block_proven_v1/20260811T053222Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_40",
+      "TRACKED_FILE_COUNT": 13
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "LIVE_ARMING_FAIL_CLOSED_PROVEN",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_41_pre_live_live_arming_fail_closed_proven_v1/20260811T060013Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_41",
+      "TRACKED_FILE_COUNT": 12
+    },
+    {
+      "CHECKS": {
+        "MANIFEST_OK": true,
+        "SECRET_SCAN_CLEAN": true
+      },
+      "CRITERION": "AUDIT_EVIDENCE_VERIFIED",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_42_pre_live_audit_evidence_verified_v1/20260811T125657Z/",
+      "EXISTS": true,
+      "MANIFEST_MSG": "OK",
+      "MANIFEST_VERIFY_RC": 0,
+      "OK": true,
+      "SECRET_HITS": 0,
+      "SECTION": "SECTION_11_12_9_42",
+      "TRACKED_FILE_COUNT": 10
+    }
+  ],
+  "DOCUMENT_CLASS": "MANIFEST_VERIFY_RC_CHAIN_VERIFICATION_SECTION_11_12_9_43_V1",
+  "INCLUDES_SECTION_11_12_9_42_AUDIT_EVIDENCE": true,
+  "ORIGIN_MAIN_SHA": "f54dba86e94adbcb272e7298477c8be878662831",
+  "RUN_ID": "20260811T131157Z"
+}

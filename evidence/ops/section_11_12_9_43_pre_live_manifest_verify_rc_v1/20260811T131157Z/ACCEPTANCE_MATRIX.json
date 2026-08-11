@@ -1,0 +1,46 @@
+{
+  "CRITERIA": [
+    {
+      "actual": 0,
+      "criterion": "MANIFEST_VERIFY_RC",
+      "expected": 0,
+      "status": "PASS"
+    },
+    {
+      "actual": "20/20",
+      "criterion": "CHAIN_OK",
+      "expected": "20/20",
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "criterion": "CRITICAL_FINDINGS_OPEN",
+      "expected": 0,
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "criterion": "HIGH_FINDINGS_OPEN",
+      "expected": 0,
+      "status": "PASS"
+    },
+    {
+      "actual": "NOT_PASSED",
+      "criterion": "PRE_LIVE_CYBERSECURITY_GATE",
+      "expected": "NOT_PASSED",
+      "status": "PASS"
+    },
+    {
+      "actual": false,
+      "criterion": "LIVE_AUTHORIZED",
+      "expected": false,
+      "status": "PASS"
+    }
+  ],
+  "DOCUMENT_CLASS": "ACCEPTANCE_MATRIX_SECTION_11_12_9_43_V1",
+  "ORIGIN_MAIN_SHA": "f54dba86e94adbcb272e7298477c8be878662831",
+  "OWNER_GO": "OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_MANIFEST_VERIFY_RC",
+  "PACKAGE": "MANIFEST_VERIFY_RC",
+  "PACKAGE_VERDICT": "PASS",
+  "RUN_ID": "20260811T131157Z"
+}
