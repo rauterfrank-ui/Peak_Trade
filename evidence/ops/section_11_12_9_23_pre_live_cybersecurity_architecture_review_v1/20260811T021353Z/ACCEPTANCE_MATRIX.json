@@ -1,0 +1,280 @@
+{
+  "CANONICAL_OWNER": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#11.12.9.23",
+  "CRITERIA": [
+    {
+      "criterion": "TESTNET_LIFECYCLE_PROVEN",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/"
+      ],
+      "rationale": "Reuse \u00a711.12.9.20/\u00a711.12.9.22 binding.",
+      "required_for_gate_pass": true,
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "LONG_RUNNING_TESTNET_PROVEN",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/"
+      ],
+      "rationale": "Reuse \u00a711.12.9.22 binding.",
+      "required_for_gate_pass": true,
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "CYBERSECURITY_ARCHITECTURE_REVIEW",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/"
+      ],
+      "observed": {
+        "ARCHITECTURE_REQUIREMENTS_BLOCKED": 0,
+        "ARCHITECTURE_REQUIREMENTS_OPEN": 0,
+        "ARCHITECTURE_REQUIREMENTS_PASS": 17,
+        "ARCHITECTURE_REQUIREMENTS_TOTAL": 17,
+        "CRITICAL_FINDINGS_IN_THIS_PACKAGE": 0,
+        "FOCUSED_CONTRACT_TESTS_EXIT": 0,
+        "FOCUSED_CONTRACT_TESTS_PASSED": 77,
+        "HIGH_FINDINGS_IN_THIS_PACKAGE": 0,
+        "STATIC_PROBES_ALL_PASS": true
+      },
+      "rationale": "Owner-GO architecture review executed against origin/main; \u00a712.1/\u00a73 surfaces assessed with productive proofs; package verdict PASS. Does not satisfy remaining \u00a718.2 packages.",
+      "required_for_gate_pass": true,
+      "verdict": "PASS"
+    },
+    {
+      "criterion": "THREAT_MODEL_CURRENT",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "Separate Pre-Live security acceptance package not executed under this Owner-GO.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "SECRETS_REVIEW",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "Separate Pre-Live security acceptance package not executed under this Owner-GO.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "DEPENDENCY_AUDIT",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "Separate Pre-Live security acceptance package not executed under this Owner-GO.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "SBOM_PRESENT",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "Separate Pre-Live security acceptance package not executed under this Owner-GO.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "STATIC_SECURITY_ANALYSIS",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "Separate Pre-Live security acceptance package not executed under this Owner-GO.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "SECURITY_REGRESSION",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "Separate Pre-Live security acceptance package not executed under this Owner-GO.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "PENETRATION_PROGRAM",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "Separate Pre-Live security acceptance package not executed under this Owner-GO.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "CREDENTIAL_LEAKAGE_TEST",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "Separate Pre-Live security acceptance package not executed under this Owner-GO.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "AUTHORITY_REPLAY_TEST",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "Separate Pre-Live security acceptance package not executed under this Owner-GO.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "RECOVERY_SECURITY_TEST",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "Separate Pre-Live security acceptance package not executed under this Owner-GO.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "CRITICAL_FINDINGS_OPEN",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/ARCHITECTURE_REQUIREMENTS_MATRIX.json"
+      ],
+      "observed": {
+        "GOVERNED_PRE_LIVE_FINDINGS_REGISTER_PRESENT": false,
+        "THIS_PACKAGE_FINDINGS_CRITICAL": 0,
+        "THIS_PACKAGE_FINDINGS_HIGH": 0
+      },
+      "rationale": "Architecture package itself opened 0 Critical/High findings, but a governed Pre-Live findings register package is not yet sealed; fail-closed OPEN for \u00a718.2 gate accounting.",
+      "required_for_gate_pass": true,
+      "verdict": "OPEN"
+    },
+    {
+      "criterion": "HIGH_FINDINGS_OPEN",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/ARCHITECTURE_REQUIREMENTS_MATRIX.json"
+      ],
+      "observed": {
+        "GOVERNED_PRE_LIVE_FINDINGS_REGISTER_PRESENT": false,
+        "THIS_PACKAGE_FINDINGS_CRITICAL": 0,
+        "THIS_PACKAGE_FINDINGS_HIGH": 0
+      },
+      "rationale": "Architecture package itself opened 0 Critical/High findings, but a governed Pre-Live findings register package is not yet sealed; fail-closed OPEN for \u00a718.2 gate accounting.",
+      "required_for_gate_pass": true,
+      "verdict": "OPEN"
+    },
+    {
+      "criterion": "LIVE_TESTNET_ISOLATION_PROVEN",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "Separate Pre-Live security acceptance package not executed under this Owner-GO.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "LIVE_DEFAULT_BLOCK_PROVEN",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "Separate Pre-Live security acceptance package not executed under this Owner-GO.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "LIVE_ARMING_FAIL_CLOSED_PROVEN",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "Separate Pre-Live security acceptance package not executed under this Owner-GO.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "AUDIT_EVIDENCE_VERIFIED",
+      "evidence_pointers": [
+        "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md#18.2"
+      ],
+      "observed": {
+        "PRE_LIVE_ACCEPTANCE_PACKAGE_PRESENT": false
+      },
+      "rationale": "Separate Pre-Live security acceptance package not executed under this Owner-GO.",
+      "required_for_gate_pass": true,
+      "verdict": "MISSING"
+    },
+    {
+      "criterion": "MANIFEST_VERIFY_RC",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/"
+      ],
+      "rationale": "Self-verified after MANIFEST write.",
+      "required_for_gate_pass": true,
+      "verdict": "DEFERRED_TO_THIS_PACKAGE_SEAL"
+    },
+    {
+      "criterion": "PRE_LIVE_CYBERSECURITY_GATE",
+      "evidence_pointers": [
+        "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/"
+      ],
+      "observed": {
+        "ELIGIBLE_FOR_LIVE_READINESS_EVALUATION": false,
+        "PRE_LIVE_CYBERSECURITY_GATE": "NOT_PASSED"
+      },
+      "rationale": "Architecture review newly bound PASS; remaining \u00a718.2 packages unmet. Gate stays NOT_PASSED.",
+      "required_for_gate_pass": true,
+      "verdict": "NOT_PASSED"
+    }
+  ],
+  "DOCUMENT_CLASS": "ACCEPTANCE_MATRIX_SECTION_11_12_9_23_CYBERSECURITY_ARCHITECTURE_REVIEW_V1",
+  "EARLIEST_REMAINING_UNMET_SECTION_18_2_CRITERION": "THREAT_MODEL_CURRENT",
+  "NEWLY_BOUND_SECTION_18_2_CRITERIA": [
+    "CYBERSECURITY_ARCHITECTURE_REVIEW"
+  ],
+  "ORIGIN_MAIN_SHA": "19283f755d2cbcf3b340a431ca0a5ed1ca37c536",
+  "OWNER_GO": "OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_CYBERSECURITY_ARCHITECTURE_REVIEW",
+  "PREVIOUSLY_BOUND_SECTION_18_2_CRITERIA": [
+    "TESTNET_LIFECYCLE_PROVEN",
+    "LONG_RUNNING_TESTNET_PROVEN"
+  ],
+  "PRE_LIVE_CYBERSECURITY_GATE": "NOT_PASSED",
+  "RUN_ID": "20260811T021353Z",
+  "SECTION_11_12_9_GATE_PASS": false,
+  "SECURITY_ACCEPTANCE_CRITERIA_BLOCKED": 0,
+  "SECURITY_ACCEPTANCE_CRITERIA_NOT_PASSED": 1,
+  "SECURITY_ACCEPTANCE_CRITERIA_OPEN": 18,
+  "SECURITY_ACCEPTANCE_CRITERIA_PASS": 3,
+  "SECURITY_ACCEPTANCE_CRITERIA_TOTAL": 21
+}
