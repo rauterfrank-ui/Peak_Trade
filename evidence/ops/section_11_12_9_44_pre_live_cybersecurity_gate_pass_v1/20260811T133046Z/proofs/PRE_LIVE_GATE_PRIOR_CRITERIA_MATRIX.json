@@ -1,0 +1,110 @@
+{
+  "CRITERIA": [
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "AUDIT_EVIDENCE_VERIFIED",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "AUTHORITY_REPLAY_TEST",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "CREDENTIAL_LEAKAGE_TEST",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "CRITICAL_FINDINGS_OPEN",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "CYBERSECURITY_ARCHITECTURE_REVIEW",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "DEPENDENCY_AUDIT",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "HIGH_FINDINGS_OPEN",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "LIVE_ARMING_FAIL_CLOSED_PROVEN",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "LIVE_DEFAULT_BLOCK_PROVEN",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "LIVE_TESTNET_ISOLATION_PROVEN",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "LONG_RUNNING_TESTNET_PROVEN",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "MANIFEST_VERIFY_RC",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "PENETRATION_PROGRAM",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "RECOVERY_SECURITY_TEST",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "SBOM_PRESENT",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "SECRETS_REVIEW",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "SECURITY_REGRESSION",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "STATIC_SECURITY_ANALYSIS",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "TESTNET_LIFECYCLE_PROVEN",
+      "status": "PASS"
+    },
+    {
+      "actual_bound_via": "\u00a711.12.9.43 evaluation + independent chain verify",
+      "criterion": "THREAT_MODEL_CURRENT",
+      "status": "PASS"
+    }
+  ],
+  "DOCUMENT_CLASS": "PRE_LIVE_GATE_PRIOR_CRITERIA_MATRIX_SECTION_11_12_9_44_V1",
+  "ORIGIN_MAIN_SHA": "e7a72f126ec8d72ea97c0c3dba755ba2341b956c",
+  "PRIOR_PASS_COUNT": 20,
+  "PRIOR_TOTAL": 20,
+  "RUN_ID": "20260811T133046Z",
+  "SOURCE_EVALUATION": "evidence/ops/section_11_12_9_43_pre_live_manifest_verify_rc_v1/20260811T131157Z/MACHINE_READABLE_EVALUATION.json"
+}

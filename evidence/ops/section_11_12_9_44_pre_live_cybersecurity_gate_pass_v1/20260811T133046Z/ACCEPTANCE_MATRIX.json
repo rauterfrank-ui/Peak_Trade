@@ -1,0 +1,71 @@
+{
+  "CRITERIA": [
+    {
+      "actual": 21,
+      "criterion": "SECURITY_ACCEPTANCE_CRITERIA_PASS",
+      "expected": 21,
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "criterion": "SECURITY_ACCEPTANCE_CRITERIA_OPEN",
+      "expected": 0,
+      "status": "PASS"
+    },
+    {
+      "actual": "PASS",
+      "criterion": "PRE_LIVE_CYBERSECURITY_GATE",
+      "expected": "PASS",
+      "status": "PASS"
+    },
+    {
+      "actual": true,
+      "criterion": "ELIGIBLE_FOR_LIVE_READINESS_EVALUATION",
+      "expected": true,
+      "status": "PASS"
+    },
+    {
+      "actual": false,
+      "criterion": "SECTION_11_13_STARTED",
+      "expected": false,
+      "status": "PASS"
+    },
+    {
+      "actual": false,
+      "criterion": "LIVE_AUTHORIZED",
+      "expected": false,
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "criterion": "CRITICAL_FINDINGS_OPEN",
+      "expected": 0,
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "criterion": "HIGH_FINDINGS_OPEN",
+      "expected": 0,
+      "status": "PASS"
+    },
+    {
+      "actual": 0,
+      "criterion": "MANIFEST_VERIFY_RC",
+      "expected": 0,
+      "status": "PASS"
+    },
+    {
+      "actual": "21/21",
+      "criterion": "CHAIN_OK",
+      "expected": "21/21",
+      "status": "PASS"
+    }
+  ],
+  "DOCUMENT_CLASS": "ACCEPTANCE_MATRIX_SECTION_11_12_9_44_V1",
+  "ORIGIN_MAIN_SHA": "e7a72f126ec8d72ea97c0c3dba755ba2341b956c",
+  "OWNER_GO": "OWNER_GO_PRE_LIVE_SECURITY_PACKAGE_PRE_LIVE_CYBERSECURITY_GATE",
+  "PACKAGE": "PRE_LIVE_CYBERSECURITY_GATE",
+  "PACKAGE_VERDICT": "PASS",
+  "PRE_LIVE_CYBERSECURITY_GATE": "PASS",
+  "RUN_ID": "20260811T133046Z"
+}

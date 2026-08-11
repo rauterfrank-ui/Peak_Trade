@@ -267,6 +267,7 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`evidence&#47;ops&#47;section_11_12_9_41_pre_live_live_arming_fail_closed_proven_v1&#47;20260811T060013Z&#47;`](../../evidence/ops/section_11_12_9_41_pre_live_live_arming_fail_closed_proven_v1/20260811T060013Z/) | Owner §11.12.9.41 Pre-Live Live Arming Fail-Closed Proven (derived; non-SSOT; `LIVE_ARMING_FAIL_CLOSED_PROVEN=true`; gate remains `NOT_PASSED`) |
 | [`evidence&#47;ops&#47;section_11_12_9_42_pre_live_audit_evidence_verified_v1&#47;20260811T125657Z&#47;`](../../evidence/ops/section_11_12_9_42_pre_live_audit_evidence_verified_v1/20260811T125657Z/) | Owner §11.12.9.42 Pre-Live Audit Evidence Verified (derived; non-SSOT; `AUDIT_EVIDENCE_VERIFIED=true`; gate remains `NOT_PASSED`) |
 | [`evidence&#47;ops&#47;section_11_12_9_43_pre_live_manifest_verify_rc_v1&#47;20260811T131157Z&#47;`](../../evidence/ops/section_11_12_9_43_pre_live_manifest_verify_rc_v1/20260811T131157Z/) | Owner §11.12.9.43 Pre-Live Manifest Verify RC (derived; non-SSOT; `MANIFEST_VERIFY_RC=0` gate criterion bound; gate remains `NOT_PASSED`) |
+| [`evidence&#47;ops&#47;section_11_12_9_44_pre_live_cybersecurity_gate_pass_v1&#47;20260811T133046Z&#47;`](../../evidence/ops/section_11_12_9_44_pre_live_cybersecurity_gate_pass_v1/20260811T133046Z/) | Owner §11.12.9.44 Pre-Live Cybersecurity Gate PASS (derived; non-SSOT; `PRE_LIVE_CYBERSECURITY_GATE=PASS`; `ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`; §11.13 unstarted; Live unauthorized) |
 | [`evidence&#47;ops&#47;section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1&#47;20260810T143709Z&#47;`](../../evidence/ops/section_11_12_8_close_okx_eea_demo_path_external_capability_unavailable_and_evaluate_alternate_derivatives_testnet_no_order_v1/20260810T143709Z/) | OKX EEA Demo path closeout &#47; no-order alternate evaluation (non-activating) |
 | [`evidence&#47;ops&#47;section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1&#47;20260810T151323Z&#47;`](../../evidence/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/20260810T151323Z/) | Historical OKX Global Demo binding package evidence (NO_ORDER; not active) |
 | [`evidence&#47;ops&#47;section_11_12_8_retry_okx_eea_private_ro_xperp_verify_no_order_v1&#47;20260810T165847Z&#47;`](../../evidence/ops/section_11_12_8_retry_okx_eea_private_ro_xperp_verify_no_order_v1/20260810T165847Z/) | Bound private READ-only XPerp capability proof (NO_ORDER) |
@@ -277,10 +278,10 @@ THIS_SECTION_DEFINES_NO_SEMANTICS=true
 SECTION_11_12_8_CLOSED=true
 SECTION_11_13_STARTED=false
 LIVE_AUTHORIZED=false
-PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+PRE_LIVE_CYBERSECURITY_GATE=PASS
 SECTION_11_12_9_EVALUATION_COMPLETED=true
-SECTION_11_12_9_GATE_PASS=false
-ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+SECTION_11_12_9_GATE_PASS=true
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true
 OKX_EEA_DEMO_PRODUCTIVE_ORDER_PATH_STATUS=CLOSED_EXTERNAL_CAPABILITY_UNAVAILABLE
 OKX_GLOBAL_DEMO_BINDING_PACKAGE_STATUS=PREPARED_NO_ORDER_NOT_ACTIVATED_SUPERSEDED_BY_SECTION_11_12_8_5
 OKX_EEA_DEMO_XPERP_BINDING_PACKAGE_STATUS=PREPARED_NO_ORDER_ACTIVE_BINDING
@@ -476,9 +477,16 @@ SECTION_11_12_9_43_MANIFEST_VERIFY_RC_BOUND=true
 MANIFEST_VERIFY_RC=0
 MANIFEST_VERIFY_RC_AUTHORIZED=true
 MANIFEST_VERIFY_RC_GATE_CRITERION_BOUND=true
-EARLIEST_UNRESOLVED_DEPENDENCY=PRE_LIVE_CYBERSECURITY_GATE
-EARLIEST_UNRESOLVED_SECTION_POINTER=PRE_LIVE_CYBERSECURITY_GATE
-NEXT_CANONICAL_STEP_POINTER=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_PRE_LIVE_CYBERSECURITY_GATE
+SECTION_11_12_9_44_PRE_LIVE_GATE_EXECUTED=true
+SECTION_11_12_9_44_PRE_LIVE_GATE_PASS=true
+SECTION_11_12_9_44_PRE_LIVE_GATE_BOUND=true
+PRE_LIVE_CYBERSECURITY_GATE_AUTHORIZED=true
+PRE_LIVE_CYBERSECURITY_GATE=PASS
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true
+SECTION_11_13_AUTHORIZED=false
+EARLIEST_UNRESOLVED_DEPENDENCY=SECTION_11_13_LIVE_READINESS_EVALUATION
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_LIVE_READINESS_EVALUATION
+NEXT_CANONICAL_STEP_POINTER=OWNER_GO_REQUIRED_SEPARATE_FOR_SECTION_11_13_LIVE_READINESS_EVALUATION
 ZAP_DAST_EXECUTED=false
 DOCS_NO_LIVE_ENABLE_PREEXISTING_OPEN=true
 CANONICAL_EXECUTE_OWNER_GO_SCOPE=EXECUTE_BOUNDED_LONG_RUNNING_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
@@ -512,6 +520,7 @@ SECTION_11_12_9_40R_RECOVERY_BIND_EVIDENCE_POINTER=evidence&#47;ops&#47;section_
 SECTION_11_12_9_41_LIVE_ARMING_FAIL_CLOSED_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_41_pre_live_live_arming_fail_closed_proven_v1&#47;20260811T060013Z&#47;
 SECTION_11_12_9_42_AUDIT_EVIDENCE_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_42_pre_live_audit_evidence_verified_v1&#47;20260811T125657Z&#47;
 SECTION_11_12_9_43_MANIFEST_VERIFY_RC_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_43_pre_live_manifest_verify_rc_v1&#47;20260811T131157Z&#47;
+SECTION_11_12_9_44_PRE_LIVE_GATE_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_44_pre_live_cybersecurity_gate_pass_v1&#47;20260811T133046Z&#47;
 SECTION_11_12_9_21_PREP_IS_NOT_LONG_RUNNING_TESTNET_PROVEN=true
 SECTION_11_12_9_21_PREP_IS_NOT_EXECUTE_AUTHORIZATION=true
 SECTION_11_12_9_21_PREP_IS_NOT_SECTION_11_12_8_REOPEN=true
@@ -635,6 +644,14 @@ MANIFEST_VERIFY_RC_GATE_CRITERION_IS_NOT_LIVE_AUTHORIZED=true
 MANIFEST_VERIFY_RC_GATE_CRITERION_IS_NOT_SECTION_11_13_STARTED=true
 MANIFEST_VERIFY_RC_GATE_CRITERION_IS_NOT_AUDIT_EVIDENCE_VERIFIED=true
 MANIFEST_VERIFY_RC_GATE_CRITERION_IS_NOT_TESTNET_EVIDENCE_VERIFIED=true
+SECTION_11_12_9_44_PRE_LIVE_GATE_PASS_IS_NOT_LIVE_AUTHORIZED=true
+PRE_LIVE_CYBERSECURITY_GATE_PASS_IS_NOT_LIVE_AUTHORIZED=true
+PRE_LIVE_CYBERSECURITY_GATE_PASS_IS_NOT_SECTION_11_13_STARTED=true
+PRE_LIVE_CYBERSECURITY_GATE_PASS_IS_NOT_LIVE_ENABLED=true
+PRE_LIVE_CYBERSECURITY_GATE_PASS_IS_NOT_LIVE_ARMED=true
+PRE_LIVE_CYBERSECURITY_GATE_PASS_IS_NOT_LIVE_ORDER_AUTHORIZED=true
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION_IS_NOT_LIVE_AUTHORIZED=true
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION_IS_NOT_SECTION_11_13_STARTED=true
 RECOVERY_BIND_29_40_IS_NOT_SECTION_11_13_STARTED=true
 XPERP_BOUNDED_CAMPAIGN_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1&#47;20260810T181703Z&#47;
 XPERP_BOUNDED_CAMPAIGN_FORENSIC_POINTER=evidence&#47;ops&#47;section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1&#47;20260810T181703Z&#47;derived_forensic_closeout_v1&#47;
@@ -773,7 +790,7 @@ CANONICAL_SEMANTICS=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#15.3
 |----------|-------|
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) | Canonical Master Runbook (aktuelle semantische Autorität) |
 | [`docs/runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4.md`](../runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4.md) | Canonical Runtime Operations V2.4 (`AUTHORITY_CLASSIFICATION=DERIVED_DOMAIN_AUTHORITY_ONLY`; `RUNTIME_OPERATIONS_RUNBOOK_IS_SSOT=false`; Master Runbook bleibt einzige SSOT mit absoluter Precedence; Manifest [`…_V2_4_RATIFICATION.json`](../runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4_RATIFICATION.json); **kein** Runtime-/Trading-/Testnet-/Live-/Order-/Credential-Authorization-Effekt) |
-| [`docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md`](../runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md) | Canonical Cybersecurity Runbook V2.1 phase-aware / **mandatory** Pre-Live Security Gate (`AUTHORITY_CLASSIFICATION=DERIVED_DOMAIN_AUTHORITY_ONLY`; `CYBERSECURITY_RUNBOOK_IS_SSOT=false`; Master §4.8 / §4.8.1 / §11.12.9; Manifest [`…_V2_1_RATIFICATION.json`](../runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1_RATIFICATION.json); `PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY`; `PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED`; `FUTURE_IMPLEMENTATION_BOUND_TO_CANONICAL_SECURITY_INVARIANTS=true`; **kein** Runtime-/Trading-/Testnet-/Live-/Order-/Credential-Authorization-Effekt) |
+| [`docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md`](../runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md) | Canonical Cybersecurity Runbook V2.1 phase-aware / **mandatory** Pre-Live Security Gate (`AUTHORITY_CLASSIFICATION=DERIVED_DOMAIN_AUTHORITY_ONLY`; `CYBERSECURITY_RUNBOOK_IS_SSOT=false`; Master §4.8 / §4.8.1 / §11.12.9; Manifest [`…_V2_1_RATIFICATION.json`](../runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1_RATIFICATION.json); `PRE_LIVE_CYBERSECURITY_GATE_CONTRACT=MANDATORY`; `PRE_LIVE_CYBERSECURITY_GATE=PASS`; `ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=true`; `FUTURE_IMPLEMENTATION_BOUND_TO_CANONICAL_SECURITY_INVARIANTS=true`; **kein** Runtime-/Trading-/Testnet-/Live-/Order-/Credential-Authorization-Effekt; §11.13 unstarted) |
 | [`Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md`](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md) | Historische Vollautonomie-Vorgängerreferenz (SUPERSEDED) |
 | [`docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md`](../ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) | Market Dashboard Landscape V2 (canonical read-only consumer planning SSOT; non-authorizing; Documentation Anchor = documentary index only; `OPERATOR_PRODUCT_GATE=true`; `INTRABAR_CAPABILITY=PASS`; `REGIME_BULL_BEAR_SWITCH_BINDING=COMPLETE`; `NEXT_CANONICAL_ACTION=STOP_IDLE`; `WORKSTREAM_STATE=FINAL_CLOSEOUT_COMPLETE_STOP_IDLE`) |
 | [`docs/ops/runbooks/README.md`](../ops/runbooks/README.md) | Operative Runbooks |

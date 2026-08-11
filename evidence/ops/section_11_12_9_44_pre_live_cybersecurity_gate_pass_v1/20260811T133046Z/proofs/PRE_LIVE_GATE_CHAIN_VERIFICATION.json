@@ -1,0 +1,159 @@
+{
+  "AGGREGATE_MANIFEST_VERIFY_RC": 0,
+  "CHAIN_COUNT": 21,
+  "CHAIN_OK": "21/21",
+  "CHAIN_OK_COUNT": 21,
+  "DOCUMENT_CLASS": "PRE_LIVE_GATE_CHAIN_VERIFICATION_SECTION_11_12_9_44_V1",
+  "INCLUDES_SECTION_43": true,
+  "ORIGIN_MAIN_SHA": "e7a72f126ec8d72ea97c0c3dba755ba2341b956c",
+  "ROOTS": [
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_testnet_evidence_verified_v1/20260810T235545Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_21_execute_bounded_long_running_productive_testnet_campaign_now/20260811T005425Z/execution_evidence/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_22_pre_live_cybersecurity_gate_post_long_running_reevaluation_v1/20260811T020006Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_23_pre_live_cybersecurity_architecture_review_v1/20260811T021353Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_24_pre_live_threat_model_current_v1/20260811T023114Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_25_pre_live_credential_hygiene_review_v1/20260811T025933Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_27_dependency_audit_rb01_rb02_remediation_and_rerun_v1/20260811T035809Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_29_pre_live_sbom_present_v1/20260811T042745Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_31_static_security_analysis_high_remediation_and_rerun_v1/20260811T043722Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_32_pre_live_security_regression_v1/20260811T044255Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_33_pre_live_penetration_program_v1/20260811T044900Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_34_pre_live_credential_leakage_test_v1/20260811T045537Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_35_pre_live_authority_replay_test_v1/20260811T050403Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_36_pre_live_recovery_security_test_v1/20260811T050823Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_37_pre_live_critical_findings_open_v1/20260811T052152Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_38_pre_live_high_findings_open_v1/20260811T052547Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_39_pre_live_live_testnet_isolation_proven_v1/20260811T052914Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_40_pre_live_live_default_block_proven_v1/20260811T053222Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_41_pre_live_live_arming_fail_closed_proven_v1/20260811T060013Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_42_pre_live_audit_evidence_verified_v1/20260811T125657Z/",
+      "shasum_rc": 0
+    },
+    {
+      "helper_msg": "",
+      "helper_ok": true,
+      "ok": true,
+      "root": "evidence/ops/section_11_12_9_43_pre_live_manifest_verify_rc_v1/20260811T131157Z/",
+      "shasum_rc": 0
+    }
+  ],
+  "RUN_ID": "20260811T133046Z"
+}

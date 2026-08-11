@@ -1,0 +1,10 @@
+{
+  "CRITICAL_FINDINGS_OPEN": 0,
+  "DOCUMENT_CLASS": "PRE_LIVE_GATE_FINDINGS_REGISTER_SECTION_11_12_9_44_V1",
+  "HIGH_FINDINGS_OPEN": 0,
+  "LOW_FINDINGS_OPEN": 1,
+  "MEDIUM_FINDINGS_OPEN": 2,
+  "NOTES": "Medium/Low findings remain open and do not block \u00a718.2 gate PASS (Critical/High must be 0).",
+  "ORIGIN_MAIN_SHA": "e7a72f126ec8d72ea97c0c3dba755ba2341b956c",
+  "RUN_ID": "20260811T133046Z"
+}
