@@ -5739,8 +5739,12 @@ ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
 SECTION_11_13_STARTED=false
 EARLIEST_OPEN_TESTNET_PROVEN_FIELD=
 NEXT_CANONICAL_RESIDUAL_PROOF=
-CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_19
-CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_CYBERSECURITY_GATE_OR_LONG_RUNNING_TESTNET_PROVEN
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY_AT_SECTION_11_12_9_19=SECTION_11_12_9_19
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY_AT_SECTION_11_12_9_19_ROLE=SUPERSEDED_POINTER_SEE_SECTION_11_12_9_20
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_20
+CANONICAL_NEXT_STEP_AT_SECTION_11_12_9_19=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_CYBERSECURITY_GATE_OR_LONG_RUNNING_TESTNET_PROVEN
+CANONICAL_NEXT_STEP_AT_SECTION_11_12_9_19_ROLE=SUPERSEDED_POINTER_SEE_SECTION_11_12_9_20
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_LONG_RUNNING_TESTNET_PROVEN_OR_NEXT_PRE_LIVE_SECURITY_PACKAGE_AFTER_LONG_RUNNING
 HARD_STOP_AFTER_THIS_PROOF=true
 ```
 
@@ -5762,10 +5766,11 @@ Observed facts: all seven sealed productive Cap 11.12 proven-field evidence
 roots verify with `MANIFEST_VERIFY_RC=0`; each `MACHINE_READABLE_PROOF`
 claims PASS for its newly closed field; SSOT Map&#47;Master pointers match;
 independent verification evidence sealed with `MANIFEST_VERIFY_RC=0`; no new
-order or venue write. Only `TESTNET_EVIDENCE_VERIFIED` is newly closed.
-`CAP_11_12_TESTNET_PROGRAM_CLOSED` derives true solely from Master Testnet
-closure requires (all eight fields true). Hard stop after this proof. No
-automatic progression to Pre-Live Cybersecurity Gate or §11.13.
+order or venue write. Only `TESTNET_EVIDENCE_VERIFIED` is newly closed at
+§11.12.9.19. `CAP_11_12_TESTNET_PROGRAM_CLOSED` derives true solely from
+Master Testnet closure requires (all eight fields true). Hard stop after
+this proof. Post-close Pre-Live gate re-evaluation continues under
+§11.12.9.20 (no automatic progression; separate Owner-GO required).
 
 Open residual recorded (carried forward; does **not** reopen or block
 `TESTNET_EVIDENCE_VERIFIED` &#47; program close):
@@ -5803,6 +5808,94 @@ Adjacent non-closure but still-open Cap 11.12 claim (not a
 ``` text
 LONG_RUNNING_TESTNET_PROVEN=false
 ```
+
+##### 11.12.9.20 Pre-Live Cybersecurity Gate post Cap 11.12 close re-evaluation (binding; gate remains NOT_PASSED)
+
+Owner-GO `OWNER_GO_PRE_LIVE_CYBERSECURITY_GATE` executes the **earliest**
+locally safe Pre-Live Cybersecurity Acceptance Gate continuation after
+§11.12.9.19 Cap 11.12 program close: a non-invasive, evidence-bound
+re-evaluation of Cybersecurity Runbook V2.1 §18 minimum PASS conditions
+against current `origin&#47;main`. Reuse-before-new applies to the sealed
+Cap-11.12 productive proven-field chain (§11.12.9.12–§11.12.9.19) and the
+immutable historical §11.12.9.1 evaluation. This binds exactly one newly
+closed §18.2 criterion:
+
+``` text
+TESTNET_LIFECYCLE_PROVEN=true
+```
+
+derived solely from `CAP_11_12_TESTNET_PROGRAM_CLOSED=true` plus all eight
+Master Testnet closure fields true under sealed evidence
+(`MANIFEST_VERIFY_RC=0`). This does **not** set
+`PRE_LIVE_CYBERSECURITY_GATE=PASS`, does **not** flip
+`LONG_RUNNING_TESTNET_PROVEN`, does **not** start Cap &#47; §11.13, does
+**not** authorize Live &#47; Testnet &#47; orders &#47; credentials, does
+**not** execute the penetration program, and does **not** mutate runtime &#47;
+trading &#47; execution code or open a venue network session.
+
+Sealed re-evaluation evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1&#47;20260811T001530Z&#47;`
+
+``` text
+SECTION_11_12_9_20_REEVAL_RUN_ID=20260811T001530Z
+SECTION_11_12_9_20_REEVAL_ORIGIN_MAIN_SHA=767cbc3d470fa83613ce8ba6222e6561d46b0ac8
+SECTION_11_12_9_20_REEVAL_EVIDENCE_ROOT=evidence/ops/section_11_12_9_20_pre_live_cybersecurity_gate_post_cap_11_12_close_reevaluation_v1/20260811T001530Z/
+PROOF_METHOD=NON_INVASIVE_POST_CAP_11_12_CLOSE_PRE_LIVE_GATE_REEVALUATION_REUSING_SEALED_CAP_11_12_CHAIN
+PROOF_EXECUTED=true
+PROOF_RESULT=PRE_LIVE_CYBERSECURITY_GATE_REEVALUATION_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NEW_TESTNET_ORDER_CREATED=false
+NETWORK_WRITE_PERFORMED=false
+CREDENTIAL_MATERIAL_ACCESSED=false
+REAL_VENUE_NETWORK_EXECUTED=false
+HISTORICAL_EVIDENCE_MUTATED=false
+PREDECESSOR_MANIFEST_VERIFY_RC_AGGREGATE=0
+MANIFEST_VERIFY_RC=0
+CAP_11_12_TESTNET_PROGRAM_CLOSED=true
+TESTNET_LIFECYCLE_PROVEN=true
+NEWLY_BOUND_SECTION_18_2_CRITERIA=TESTNET_LIFECYCLE_PROVEN
+LONG_RUNNING_TESTNET_PROVEN=false
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+SECTION_11_12_9_GATE_PASS=false
+ELIGIBLE_FOR_LIVE_READINESS_EVALUATION=false
+LIVE_AUTHORIZED=false
+SECTION_11_13_STARTED=false
+SECTION_11_12_9_1_EVALUATION_SUPERSEDED_AS_CURRENT_ACCEPTANCE_MATRIX=true
+SECTION_11_12_9_1_HISTORICAL_EVIDENCE_IMMUTABLE=true
+EARLIEST_UNRESOLVED_DEPENDENCY=LONG_RUNNING_TESTNET_PROVEN
+EARLIEST_UNRESOLVED_SECTION_POINTER=LONG_RUNNING_TESTNET_PROVEN
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_20
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_LONG_RUNNING_TESTNET_PROVEN_OR_NEXT_PRE_LIVE_SECURITY_PACKAGE_AFTER_LONG_RUNNING
+HARD_STOP_AFTER_THIS_REEVALUATION=true
+```
+
+Mandatory distinctions:
+
+``` text
+SECTION_11_12_9_20_REEVALUATION_PASS != PRE_LIVE_CYBERSECURITY_GATE_PASS
+TESTNET_LIFECYCLE_PROVEN != LONG_RUNNING_TESTNET_PROVEN
+TESTNET_LIFECYCLE_PROVEN != PRE_LIVE_CYBERSECURITY_GATE_PASS
+CAP_11_12_TESTNET_PROGRAM_CLOSED != PRE_LIVE_CYBERSECURITY_GATE_PASS
+OWNER_GO_PRE_LIVE_CYBERSECURITY_GATE != LONG_RUNNING_EXECUTE_AUTHORIZATION
+PRE_LIVE_CYBERSECURITY_GATE_PASS != LIVE_AUTHORIZED
+PRE_LIVE_CYBERSECURITY_GATE_PASS != SECTION_11_13_STARTED
+```
+
+Observed facts: Cap 11.12 program closed with all eight productive proven
+fields true; predecessor sealed roots verify with
+`MANIFEST_VERIFY_RC=0`; `TESTNET_LIFECYCLE_PROVEN` newly bound for §18.2;
+`LONG_RUNNING_TESTNET_PROVEN` remains false and is the earliest remaining
+unmet §18.2 criterion; Pre-Live security acceptance packages
+(architecture review, threat model, secrets, dependency audit, SBOM,
+static analysis, regression, penetration, credential-leakage,
+authority-replay, recovery-security, findings register, isolation &#47;
+arming proofs, audit bundle) remain absent or insufficient for gate PASS.
+Gate remains `NOT_PASSED`. Live remains hard-blocked. Cap &#47; §11.13
+remains unstarted. Hard stop after this re-evaluation. No automatic
+progression. Productive LONG_RUNNING campaign &#47; network &#47; credential &#47;
+order effect requires a **separate** Owner-GO and is **not** authorized
+here.
 
 Canonical residual sequence pointer (section sequence historically bound;
 productive proven-field chain closed):
