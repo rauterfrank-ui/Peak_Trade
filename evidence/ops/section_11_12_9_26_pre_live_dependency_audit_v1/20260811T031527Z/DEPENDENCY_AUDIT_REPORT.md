@@ -44,7 +44,7 @@ Reused existing owners: `uv.lock` + `requirements.txt` (uv export --locked), `.g
 
 ## Process / control findings (non-blocking for HIGH rule)
 
-See `proofs/PROCESS_CONTROL_FINDINGS.json` (Dependabot disabled, requirements hash absence, Docker tag-only bases, residual floating GHA tags).
+See `proofs&#47;PROCESS_CONTROL_FINDINGS.json` (Dependabot disabled, requirements hash absence, Docker tag-only bases, residual floating GHA tags).
 
 ## Explicit non-claims
 
