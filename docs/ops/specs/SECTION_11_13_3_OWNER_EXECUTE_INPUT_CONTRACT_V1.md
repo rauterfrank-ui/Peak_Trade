@@ -6,19 +6,22 @@ DOCUMENT_ROLE=NON_SSOT
 NO_INVENTED_VALUES=true
 PREPARATION_PR_DOES_NOT_EXECUTE=true
 UNLOCK_AUTHORING_DOES_NOT_EXECUTE=true
-LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=false
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=true
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_EXECUTED=true
 LIVE_AUTHORIZED=false
 SEPARATE_EXECUTE_GO=OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION
+OWNER_GO_STATUS=CONSUMED
 REUSED_FROM_SECTION_11_13_2_PROVEN_BINDING=true
 REUSED_BINDING_SOURCE=evidence&#47;ops&#47;section_11_13_2_live_private_read_only_proven_v1&#47;20260811T170310Z&#47;
+SEALED_PROOF_ROOT=evidence&#47;ops&#47;section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1&#47;20260811T211828Z&#47;
 ```
 
-After the productive execute unlock PR merges, the Owner must confirm the
-following before any productive Live shadow with exchange reconciliation
-execute. Values below are **reused from the already PROVEN §11.13.2 binding**
+Productive execute completed under Owner-GO
+`OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` (one-shot; consumed).
+Values below were **reused from the already PROVEN §11.13.2 binding**
 (Owner-authorized reuse; not invented). Vault material remains local-only and
-must be keyed under the §11.13.3 SecretRef URI (do not mutate §11.13.2 vault
-values in Git).
+must stay keyed under the §11.13.3 SecretRef URI (do not mutate §11.13.2 vault
+values in Git). No second consumption of this GO.
 
 ## Required Owner inputs
 
@@ -36,17 +39,18 @@ values in Git).
 | Permission attestation WITHDRAW | yes | `false` | Must remain false |
 | IP allowlist status / expected source IP | yes | see §11.13.2 local owner_bindings | Reused metadata; no secret values |
 | Confirm no demo/simulation marker | yes | `true` | Reused from §11.13.2 proven binding |
-| Separate execute GO | yes | `OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` | Not authorized by unlock authoring |
+| Separate execute GO | yes | `OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` | Consumed by sealed productive execute |
 
 ## Hard stops
 
-- No productive Live request in preparation
+- No second productive Live execute under the consumed GO
 - No credential/vault material in Git
 - No Live orders / Canary / Dry-Run order plan / Live activation
 - Local shadow expected-state + exchange GET snapshot reconciliation only
 - `LIVE_AUTHORIZED` remains false
 - Cap 11.7 remains contracts-only
 - Predecessor `LIVE_PRIVATE_READ_ONLY_PROVEN` must already be bound on origin/main
+- `LIVE_RECONCILIATION_PROVEN` remains false until all §11.5 layers match or Owner adopts exchange truth under an explicit policy id
 
 Machine-readable generator:
 

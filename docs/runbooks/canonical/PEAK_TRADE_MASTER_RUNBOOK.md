@@ -8954,46 +8954,141 @@ Hard stop after this proof. No automatic Live Shadow start. Cap &#47;
 Capability 11.7 remains contracts-only and must not be repurposed as a
 network unlock.
 
-### 11.13.3 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION (productive execute path ready; NOT proven; NOT executed)
+### 11.13.3 LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION (PROVEN; EXECUTED; LIVE_AUTHORIZED=false)
 
 Owner-GO
 `OWNER_GO_AUTHOR_SINGLE_PREPARATION_PR_SECTION_11_13_3_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_SURFACE`
 authored the **repo-side preparation surface**. Owner-GO
-`OWNER_GO_SECTION_11_13_3_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING` authorizes the
-**productive execute-path unlock** package only: CLI `--execute`, LIVE
+`OWNER_GO_SECTION_11_13_3_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING` authorized the
+**productive execute-path unlock** package only (CLI `--execute`, LIVE
 ephemeral SecretRef borrow&#47;release via reused `FileSecretRefVaultBackendV1`,
 LIVE OKX GET-only signer wiring, `UrllibLiveTransportV1` behind execute
 authorization, account-scope crosscheck, OKX `code=="0"` assertion,
 permission attestation, §11.5 layer reconciliation evaluation (report-only;
-no automatic local correction), verifier&#47;tests, and docs sync.
+no automatic local correction), verifier&#47;tests, docs sync). Unlock merge ≠
+execute and did **not** set `LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=true`.
 
-This authoring GO does **not** execute a productive Live shadow reconciliation,
-does **not** open a venue network session at merge time, does **not** load
-vault material during authoring, does **not** place Live orders, does **not**
-start Canary &#47; Dry-Run order plan, does **not** set `LIVE_AUTHORIZED=true`,
-and does **not** unlock Cap &#47; Capability 11.7 beyond contracts-only.
-Merge ≠ execute. A later separate `OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION`
-is required for productive proof.
+Owner-GO `OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` (stage-scoped;
+one-shot; `reusable_for_later_live_stages=false`; now **CONSUMED**) then
+executed the productive LIVE shadow with exchange reconciliation against
+post-unlock `origin&#47;main` SHA
+`c9c70233db9787f54b164026501ff3aaad286c38`. This SSOT closeout binds exactly:
 
 ``` text
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_EXECUTED=true
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=true
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_AUTHORIZED=true
+OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION=CONSUMED
+LIVE_AUTHORIZED=false
+FULLY_AUTONOMOUS_LIVE_TRADING_READY=false
 SECTION_11_13_3_PREPARATION_SURFACE_READY=true
 SECTION_11_13_3_PRODUCTIVE_EXECUTE_PATH_READY=true
 SECTION_11_13_3_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING_BOUND=true
-OWNER_GO_SECTION_11_13_3_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING=bound_for_authoring_only
-LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_AUTHORIZED=false
-LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_EXECUTED=false
-LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=false
-LIVE_RECONCILIATION_PROVEN=false
-SECTION_11_13_LIVE_SHADOW_CANARY_PROGRESSION_STARTED=false
-LIVE_AUTHORIZED=false
-FULLY_AUTONOMOUS_LIVE_TRADING_READY=false
 CAPABILITY_11_7_REMAINS_CONTRACTS_ONLY=true
+LIVE_RECONCILIATION_PROVEN=false
+ALL_LAYERS_MATCH=false
+UNRESOLVED_ECONOMIC_DIVERGENCE=true
+BLOCKS_NEW_ENTRY=true
 NO_LIVE_ORDER=true
 NO_ACCOUNT_MUTATION=true
 NO_DRY_RUN=true
 NO_CANARY=true
+ENABLE_LIVE_TRADING=false
+STAGE_GO_IS_NOT_LIVE_ACTIVATION=true
+```
+
+This does **not** authorize Live Dry-Run order plan &#47; Canary &#47; orders &#47;
+account mutation, does **not** set `LIVE_ENABLED` &#47; `LIVE_ARMED` &#47;
+`LIVE_ORDER_AUTHORIZED`, does **not** unlock Cap &#47; Capability 11.7 beyond
+contracts-only, and does **not** set `LIVE_AUTHORIZED=true`.
+`LIVE_RECONCILIATION_PROVEN` remains false because three §11.5 layers
+reported `HARD_STOP_OWNER_REVIEW` (report-only; no automatic local
+correction; no exchange-truth adoption without explicit policy id).
+
+Sealed productive LIVE shadow exchange-reconciliation proof evidence root:
+
+`evidence&#47;ops&#47;section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1&#47;20260811T211828Z&#47;`
+
+``` text
+SECTION_11_13_3_PROOF_RUN_ID=20260811T211828Z
+SECTION_11_13_3_PROOF_ORIGIN_MAIN_SHA=c9c70233db9787f54b164026501ff3aaad286c38
+SECTION_11_13_3_PROOF_EVIDENCE_ROOT=evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/20260811T211828Z/
+PROOF_METHOD=PRODUCTIVE_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_GET_ONLY_OKX_EEA
+PROOF_EXECUTED=true
+PROOF_RESULT=LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN_PASS
+ENVIRONMENT=LIVE
+VENUE=OKX
+REST_HOST=eea.okx.com
+REGION=EEA/DE
+ENTITY=OKX Europe Limited
+ACCOUNT_SCOPE=856964404452495999
+MODE=execute
+TRANSPORT_CLASS=LIVE_PRODUCTIVE_HTTP
+REQUIRED_ENDPOINTS_HIT=/api/v5/account/config+/api/v5/account/balance+/api/v5/account/positions+/api/v5/trade/orders-pending
+METHODS_USED=GET,GET,GET,GET
+HTTP_RESULT_CLASSES=HTTP_200_OK,HTTP_200_OK,HTTP_200_OK,HTTP_200_OK
+OKX_CODE_SUCCESS=true
+ACCOUNT_SCOPE_MATCH=true
+PERMISSION_ATTESTATION_READ=true
+PERMISSION_ATTESTATION_TRADE=false
+PERMISSION_ATTESTATION_WITHDRAW=false
+WRITE_REQUEST_COUNT=0
+ORDER_REQUEST_COUNT=0
+CANCEL_REQUEST_COUNT=0
+AMEND_REQUEST_COUNT=0
+WITHDRAW_REQUEST_COUNT=0
+TRANSFER_REQUEST_COUNT=0
+DEMO_SIMULATION_MARKER_ABSENT=true
+FIXTURE_OR_DEMO_OR_TESTNET=false
+REDACTION_CHECK_PASS=true
+MANIFEST_VERIFY_RC=0
+ALL_LAYERS_MATCH=false
+UNRESOLVED_ECONOMIC_DIVERGENCE=true
+BLOCKS_NEW_ENTRY=true
+LAYER_HARD_STOP_OWNER_REVIEW=venue_instrument_and_contract_metadata+balances_equity_and_available_margin+local_portfolio_and_accounting
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_EXECUTED=true
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=true
+LIVE_RECONCILIATION_PROVEN=false
+LIVE_AUTHORIZED=false
+FULLY_AUTONOMOUS_LIVE_TRADING_READY=false
+ORDER_EFFECT=NONE
+ACCOUNT_MUTATION_EFFECT=NONE
+NETWORK_EFFECT=LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION
+SECRET_VALUE_ACCESS=EPHEMERAL_BORROW_RELEASED
+SECTION_11_13_LIVE_SHADOW_CANARY_PROGRESSION_STARTED=false
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_DRY_RUN_ORDER_PLAN
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_LIVE_DRY_RUN_ORDER_PLAN
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_3
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_DRY_RUN_ORDER_PLAN
+HARD_STOP_AFTER_THIS_PROOF=true
+```
+
+Unlock-time historical pointers (superseded by this proven binding):
+
+``` text
+SECTION_11_13_3_UNLOCK_STATE_ROLE=SUPERSEDED_BY_PRODUCTIVE_PROVEN_BINDING
+CANONICAL_NEXT_STEP_AT_UNLOCK=OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION
+EARLIEST_UNRESOLVED_DEPENDENCY_AT_UNLOCK=LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN_AT_UNLOCK=false
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_EXECUTED_AT_UNLOCK=false
 MERGE_IS_NOT_EXECUTE=true
-PREDECESSOR_LIVE_PRIVATE_READ_ONLY_PROVEN_REQUIRED=true
+```
+
+Preconditions satisfied by the sealed productive execute:
+
+``` text
+PRE_LIVE_CYBERSECURITY_GATE=PASS
+SECTION_11_13_LIVE_READINESS_EVALUATION_COMPLETED=true
+LIVE_PRIVATE_READ_ONLY_PROVEN=true
+FULLY_AUTONOMOUS_LIVE_TRADING_READY=false
+LIVE_AUTHORIZED=false
+OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION=true
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_AUTHORIZED=true
+OWNER_SUPPLIED_LIVE_VENUE_HOST_ACCOUNT_SECRETREF_PRESENT=true
+PERMISSION_ATTESTATION_READ_TRUE_TRADE_FALSE_WITHDRAW_FALSE=true
+NO_DEMO_SIMULATION_MARKER=true
+SECTION_11_13_3_PRODUCTIVE_EXECUTE_PATH_READY=true
+POST_MERGE_ORIGIN_MAIN_SHA_REBIND_REQUIRED=true
 REUSED_SECTION_11_13_2_BINDING_SOURCE=evidence&#47;ops&#47;section_11_13_2_live_private_read_only_proven_v1&#47;20260811T170310Z&#47;
 REUSED_SECTION_11_13_2_BINDING_VENUE=OKX
 REUSED_SECTION_11_13_2_BINDING_ENTITY=OKX Europe Limited
@@ -9001,13 +9096,11 @@ REUSED_SECTION_11_13_2_BINDING_REGION=EEA&#47;DE
 REUSED_SECTION_11_13_2_BINDING_REST_HOST=eea.okx.com
 REUSED_SECTION_11_13_2_BINDING_ACCOUNT_SCOPE=856964404452495999
 REUSED_SECTION_11_13_2_SHADOW_SECRETREF_URI=secretref:&#47;&#47;vault&#47;peak-trade&#47;live-shadow-recon&#47;okx
+```
 
-Stage purpose: GET-only Live private exchange snapshot plus local shadow
-expected-state reconciliation across the §11.5 layers, with fail-closed
-divergence handling (`MATCH` / policy-gated `SAFE_ADOPT_EXCHANGE_TRUTH` /
-`HARD_STOP_OWNER_REVIEW`). Exchange truth adoption requires an explicit
-policy id. Silent local decision-history overwrite is forbidden. This stage
-never submits Live orders and never mutates account state.
+Evidence contract root:
+
+`evidence&#47;ops&#47;section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1&#47;<RUN_ID>&#47;`
 
 Package owners:
 
@@ -9023,10 +9116,6 @@ LIVE_RO_SIGNER=src/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_
 VAULT_BACKEND_REUSE=src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/vault_resolver_v1.py::FileSecretRefVaultBackendV1
 ```
 
-Evidence contract root (productive proven later only):
-
-`evidence&#47;ops&#47;section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1&#47;<RUN_ID>&#47;`
-
 Mandatory distinctions:
 
 ``` text
@@ -9034,25 +9123,29 @@ SECTION_11_13_3_PREPARATION != LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN
 SECTION_11_13_3_PRODUCTIVE_EXECUTE_PATH_READY != LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN
 SECTION_11_13_3_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING != OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION
 SECTION_11_13_3_PREPARATION != LIVE_AUTHORIZED
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN != LIVE_AUTHORIZED
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN != LIVE_RECONCILIATION_PROVEN
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN != LIVE_DRY_RUN_ORDER_PLAN
 OWNER_GO_PREPARATION != OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION
 CAPABILITY_11_7_CONTRACTS_ONLY != SECTION_11_13_3_NETWORK_UNLOCK
 FIXTURE_PASS != LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN
 LIVE_PRIVATE_READ_ONLY_PROVEN != LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN
 MERGE != EXECUTE
-LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN != LIVE_DRY_RUN_ORDER_PLAN
 ```
 
-Canonical next pointer after this unlock authoring binding (not executed here):
+Canonical next pointer after this proven binding (not started; no Owner-GO
+implied here):
 
 ``` text
 CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_3
-CANONICAL_NEXT_STEP=OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION
-EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_DRY_RUN_ORDER_PLAN
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_DRY_RUN_ORDER_PLAN
 ```
 
-After a later successful productive proven binding, the next Owner-GO pointer
-becomes `OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_DRY_RUN_ORDER_PLAN`. Hard stop
-after this unlock authoring package. No automatic productive execute.
+Hard stop after this proof. No automatic Dry-Run &#47; Canary start. Cap &#47;
+Capability 11.7 remains contracts-only. Owner-GO
+`OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` is consumed and must not
+be reused.
 
 ## 11.14 Live order and economic evidence ladder
 

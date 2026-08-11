@@ -6,8 +6,10 @@ DOCUMENT_ROLE=NON_SSOT
 SSOT=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md §11.13.3
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 LIVE_AUTHORIZED=false
-LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=false
-LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_AUTHORIZED=false
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=true
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_EXECUTED=true
+LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_AUTHORIZED=true
+LIVE_RECONCILIATION_PROVEN=false
 SECTION_11_13_3_PREPARATION_SURFACE_READY=true
 SECTION_11_13_3_PRODUCTIVE_EXECUTE_PATH_READY=true
 SECTION_11_13_3_PRODUCTIVE_EXECUTE_UNLOCK_AUTHORING_BOUND=true
@@ -17,14 +19,13 @@ MERGE_IS_NOT_EXECUTE=true
 
 ## Purpose
 
-Repo-side preparation + productive execute-path unlock so a later separately
-Owner-authorized `OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` productive
-Live shadow exchange-reconciliation proof can run fail-closed.
-
-This unlock authoring package does **not** execute Live network calls, does
-**not** load vault material during authoring/CI, does **not** place Live
-orders, does **not** start Canary / Dry-Run order plan, and does **not**
-activate Live (`LIVE_AUTHORIZED=false`). Merge ≠ execute.
+Repo-side productive execute-path and sealed productive LIVE shadow with
+exchange reconciliation proof binding. Owner-GO
+`OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` (one-shot; now consumed)
+executed the GET-only proof against post-unlock `origin&#47;main` SHA
+`c9c70233db9787f54b164026501ff3aaad286c38`. Cap 11.7 remains contracts-only.
+`LIVE_AUTHORIZED=false`. Live Dry-Run order plan is **not** started.
+`LIVE_RECONCILIATION_PROVEN` remains false (layer divergences reported only).
 
 ## Package layout
 
@@ -52,7 +53,7 @@ activate Live (`LIVE_AUTHORIZED=false`). Merge ≠ execute.
 - Demo/simulation headers forbidden
 - Demo/Testnet credential classes rejected for Live
 - Live SecretRef rejected for Demo/Testnet
-- Predecessor `LIVE_PRIVATE_READ_ONLY_PROVEN` required for later productive execute
+- Predecessor `LIVE_PRIVATE_READ_ONLY_PROVEN` required for productive execute
 - Cap 11.7 remains contracts-only
 - `LIVE_AUTHORIZED=false` unchanged
 - Fixture/unit evidence cannot set `LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=true`
@@ -62,10 +63,16 @@ activate Live (`LIVE_AUTHORIZED=false`). Merge ≠ execute.
 
 `evidence&#47;ops&#47;section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1&#47;<RUN_ID>&#47;`
 
+Sealed productive proven root:
+
+`evidence&#47;ops&#47;section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1&#47;20260811T211828Z&#47;`
+
 ## Next steps
 
-1. Merge this productive execute unlock PR.
-2. Owner confirms reused §11.13.2 binding + local §11.13.3 SecretRef vault key
-   `secretref:&#47;&#47;vault&#47;peak-trade&#47;live-shadow-recon&#47;okx` (material local-only).
-3. Separate `OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` for productive execute.
-4. After proven: `OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_DRY_RUN_ORDER_PLAN`.
+1. SSOT binds `LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_EXECUTED=true` /
+   `LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_PROVEN=true` with
+   `LIVE_AUTHORIZED=false` and `LIVE_RECONCILIATION_PROVEN=false`.
+2. Next canonical step (not started; separate Owner-GO required):
+   `OWNER_GO_REQUIRED_SEPARATE_FOR_LIVE_DRY_RUN_ORDER_PLAN`.
+3. No automatic Dry-Run / Canary / order authorization.
+4. Owner-GO `OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION` is consumed.
