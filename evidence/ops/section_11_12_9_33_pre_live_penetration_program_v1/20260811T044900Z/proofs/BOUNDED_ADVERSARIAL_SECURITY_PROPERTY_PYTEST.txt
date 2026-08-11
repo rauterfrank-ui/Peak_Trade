@@ -1,0 +1,45 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 273 items / 1 skipped
+
+tests/ci/test_credential_hygiene_redaction_unification_v1.py ........... [  4%]
+.......                                                                  [  6%]
+tests/ci/test_secret_scanning_push_protection_governance_v1.py ......... [  9%]
+...                                                                      [ 10%]
+tests/ci/test_cybersecurity_baseline_action_ref_and_permissions_visibility_contract_v0.py . [ 11%]
+.....                                                                    [ 13%]
+tests/ci/test_workflow_write_permissions_visibility_contract_v0.py ..... [ 15%]
+...                                                                      [ 16%]
+tests/execution/live/test_safety_rails.py ............                   [ 20%]
+tests/governance/test_live_mode_gate.py .........................        [ 29%]
+tests/governance/test_wp0c_enforce_gate.py .............                 [ 34%]
+tests/data/shadow/test_guards.py ..........                              [ 38%]
+tests/ops/test_run_testnet_session_entrypoint_fail_closed_contract_v0.py . [ 38%]
+..............                                                           [ 43%]
+tests/ops/test_okx_futures_shadow_no_order_entrypoint_v0.py ...........  [ 47%]
+tests/execution/test_fault_injection_contract.py ................        [ 53%]
+tests/governance/test_scenario_scope_event_injection_fail_closed_guard_v1.py . [ 53%]
+.....                                                                    [ 55%]
+tests/p36/test_tarball_v1.py ....                                        [ 57%]
+tests/test_rate_limiter.py .......................                       [ 65%]
+tests/test_environment_and_safety.py ................................... [ 78%]
+......................                                                   [ 86%]
+tests/test_live_gates.py ...........................                     [ 96%]
+tests/replay_pack/test_hash_validation.py .                              [ 96%]
+tests/ops/test_dashboard_cockpit_observer_surface_inventory_v0.py ...... [ 98%]
+...                                                                      [100%]
+
+=============================== warnings summary ===============================
+src/live/safety.py:95
+  /Users/frnkhrz/Peak_Trade/src/live/safety.py:95: PytestCollectionWarning: cannot collect test class 'TestnetDryRunOnlyError' because it has a __init__ constructor (from: tests/test_environment_and_safety.py)
+    class TestnetDryRunOnlyError(SafetyBlockedError):
+
+src/orders/exchange.py:86
+  /Users/frnkhrz/Peak_Trade/src/orders/exchange.py:86: PytestCollectionWarning: cannot collect test class 'TestnetOrderExecutor' because it has a __init__ constructor (from: tests/test_environment_and_safety.py)
+    class TestnetOrderExecutor:
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================= 273 passed, 1 skipped, 2 warnings in 39.25s ==================

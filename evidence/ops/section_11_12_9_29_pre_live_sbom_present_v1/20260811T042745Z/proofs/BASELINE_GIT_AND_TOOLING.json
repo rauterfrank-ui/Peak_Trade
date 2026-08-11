@@ -1,0 +1,14 @@
+{
+  "CANONICAL_SBOM_OWNER_SCRIPT": "scripts/ops/run_full_audit.sh",
+  "DOCUMENT_CLASS": "BASELINE_GIT_AND_TOOLING_SECTION_11_12_9_29_V1",
+  "GENERATED_AT_UTC": "2026-08-11T04:28:22Z",
+  "HEAD_EQUALS_ORIGIN_MAIN": true,
+  "HEAD_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "REUSE_BEFORE_NEW": true,
+  "RUN_ID": "20260811T042745Z",
+  "SBOM_EXPORT_COMMAND": "uv export --format cyclonedx1.5 --output-file <evidence>/proofs/sbom.cyclonedx1.5.json",
+  "UV_LOCK_BYTES": 1190834,
+  "UV_LOCK_SHA256": "ffac743c0c698de30ff5898b9cc85345ffb0ef897cf678fb68a1312b97b87e7a",
+  "UV_VERSION": "uv 0.9.18 (0cee76417 2025-12-16)"
+}

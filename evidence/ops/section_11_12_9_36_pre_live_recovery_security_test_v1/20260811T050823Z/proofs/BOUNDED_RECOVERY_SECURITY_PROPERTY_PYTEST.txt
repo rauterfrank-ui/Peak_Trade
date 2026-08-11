@@ -1,0 +1,110 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 431 items / 1 deselected / 1 skipped / 430 selected
+
+tests/execution/test_fault_injection_contract.py ................        [  3%]
+tests/governance/test_scenario_scope_event_injection_fail_closed_guard_v1.py . [  3%]
+.....                                                                    [  5%]
+tests/ops/test_capability_11_5_testnet_restart_recovery_and_kill_switch_closure_v1.py . [  5%]
+......                                                                   [  6%]
+tests/ops/test_phase_9_2_restart_recovery_session_contract_and_productive_harness_v1.py . [  6%]
+............................                                             [ 13%]
+tests/ops/test_capability_11_section_11_12_5_unknown_submit_and_reconnect_recovery_v1.py . [ 13%]
+.....                                                                    [ 14%]
+tests/ops/test_capability_11_section_11_12_6_restart_with_open_order_and_open_position_v1.py . [ 15%]
+.....                                                                    [ 16%]
+tests/ops/test_capability_11_section_11_12_7_kill_switch_and_emergency_control_proof_v1.py . [ 16%]
+.....                                                                    [ 17%]
+tests/ops/test_full_decision_path_atomic_restart_closure_v1.py ......    [ 19%]
+tests/ops/test_runtime_health_recovery_and_failure_injection_closure_v1.py . [ 19%]
+...........                                                              [ 21%]
+tests/ops/test_bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0.py . [ 22%]
+...............................................                          [ 33%]
+tests/ops/test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py . [ 33%]
+........................................................................ [ 50%]
+                                                                         [ 50%]
+tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py . [ 50%]
+........................                                                 [ 55%]
+tests/ops/test_order_capability_safety_cancel_under_killswitch_contract_v1.py . [ 56%]
+....................                                                     [ 60%]
+tests/risk_layer/kill_switch/test_recovery.py ......................     [ 65%]
+tests/risk_layer/kill_switch/test_state_machine.py ..................... [ 70%]
+...                                                                      [ 71%]
+tests/risk_layer/kill_switch/test_triggers.py ......................     [ 76%]
+tests/risk_layer/kill_switch/test_persistence.py ......................  [ 81%]
+tests/meta/test_killswitch_writer_fencing_and_independent_read_paths_v1.py . [ 81%]
+..............................................                           [ 92%]
+tests/meta/test_authority_lease_and_revocation_v1.py ................... [ 96%]
+............                                                             [ 99%]
+tests/replay_pack/test_hash_validation.py .                              [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; tests.meta.killswitch_writer_fencing_and_independent_read_paths_v1_fixtures
+    self.import_plugin(import_spec)
+
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; tests.meta.comparison_ssot_v1_fixtures
+    self.import_plugin(import_spec)
+
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; tests.meta.comparison_completion_research_validity_binding_v1_fixtures
+    self.import_plugin(import_spec)
+
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; tests.meta.comparison_completion_promotion_input_binding_v1_fixtures
+    self.import_plugin(import_spec)
+
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; tests.meta.comparison_promotion_candidate_identity_binding_v1_fixtures
+    self.import_plugin(import_spec)
+
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; tests.meta.comparison_promotion_candidate_eligibility_evidence_v1_fixtures
+    self.import_plugin(import_spec)
+
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; tests.meta.comparison_promotion_candidate_model_parameter_identity_binding_v1_fixtures
+    self.import_plugin(import_spec)
+
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; tests.meta.comparison_config_patch_manifest_cross_domain_lineage_binding_v1_fixtures
+    self.import_plugin(import_spec)
+
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; tests.meta.comparison_promotion_candidate_input_v1_fixtures
+    self.import_plugin(import_spec)
+
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; tests.meta.comparison_eligibility_promotion_policy_input_binding_v1_fixtures
+    self.import_plugin(import_spec)
+
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; tests.meta.comparison_promotion_policy_input_evidence_v1_fixtures
+    self.import_plugin(import_spec)
+
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; tests.meta.comparison_promotion_policy_decision_v1_fixtures
+    self.import_plugin(import_spec)
+
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; tests.meta.ai_promotion_assessment_v1_fixtures
+    self.import_plugin(import_spec)
+
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; tests.meta.versioned_strategy_model_parameter_artifact_v1_fixtures
+    self.import_plugin(import_spec)
+
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; tests.meta.handoff_trust_policy_v1_fixtures
+    self.import_plugin(import_spec)
+
+.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852
+  /Users/frnkhrz/Peak_Trade/.venv/lib/python3.11/site-packages/_pytest/config/__init__.py:852: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; tests.meta.authority_lease_and_revocation_v1_fixtures
+    self.import_plugin(import_spec)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+==== 430 passed, 1 skipped, 1 deselected, 16 warnings in 270.00s (0:04:29) =====

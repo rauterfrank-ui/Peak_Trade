@@ -1,0 +1,83 @@
+{
+  "ALIGNED_RESIDUAL_RISK": "RR-SH-002",
+  "CRITICAL_FINDINGS_OPEN": 0,
+  "FAIL_COUNT": 2,
+  "FINDINGS_MEDIUM_IDS": [
+    "LOGGING_FILTER_DICT_REPR",
+    "REDACT_STRING_SK_PROJ"
+  ],
+  "HIGH_FINDINGS_OPEN": 0,
+  "MEDIUM_FINDINGS_OPEN": 2,
+  "PACKAGE_BLOCKING": false,
+  "PASS": true,
+  "PASS_COUNT": 7,
+  "PROBE_ID": "CLT_ADVERSARIAL_REDACTION_SYNTHETIC_CLASSIFIED",
+  "REAL_CREDENTIAL_USED": false,
+  "RESULTS": [
+    {
+      "id": "STRUCTURED_redact_structured",
+      "leak_count": 0,
+      "pass": true,
+      "secret_values_echoed": false,
+      "severity_if_fail": "HIGH"
+    },
+    {
+      "id": "STRUCTURED_redact_for_evidence_export",
+      "leak_count": 0,
+      "pass": true,
+      "secret_values_echoed": false,
+      "severity_if_fail": "HIGH"
+    },
+    {
+      "id": "STRUCTURED_redact_for_diagnostics",
+      "leak_count": 0,
+      "pass": true,
+      "secret_values_echoed": false,
+      "severity_if_fail": "HIGH"
+    },
+    {
+      "id": "STRUCTURED_redact_for_webui_payload",
+      "leak_count": 0,
+      "pass": true,
+      "secret_values_echoed": false,
+      "severity_if_fail": "HIGH"
+    },
+    {
+      "id": "LOGGING_ASSIGNMENT_STRING",
+      "leak_count": 0,
+      "pass": true,
+      "secret_values_echoed": false,
+      "severity_if_fail": "HIGH"
+    },
+    {
+      "id": "LOGGING_FILTER_UNITTEST_SHAPE",
+      "leak_count": 0,
+      "pass": true,
+      "secret_values_echoed": false,
+      "severity_if_fail": "HIGH"
+    },
+    {
+      "id": "LOGGING_FILTER_DICT_REPR",
+      "leak_count": 1,
+      "pass": false,
+      "secret_values_echoed": false,
+      "severity_if_fail": "MEDIUM"
+    },
+    {
+      "id": "REDACT_STRING_SK_PROJ",
+      "leak_count": 1,
+      "pass": false,
+      "secret_values_echoed": false,
+      "severity_if_fail": "MEDIUM"
+    },
+    {
+      "id": "HEADERS",
+      "leak_count": 0,
+      "pass": true,
+      "secret_values_echoed": false,
+      "severity_if_fail": "HIGH"
+    }
+  ],
+  "SYNTHETIC_ONLY": true,
+  "secret_value_exposed": false
+}

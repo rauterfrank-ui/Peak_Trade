@@ -1,0 +1,18 @@
+{
+  "BANDIT_RC": 2,
+  "CRITICAL_FINDINGS_FROM_BANDIT": 0,
+  "DOCUMENT_CLASS": "BANDIT_REMEDIATED_SURFACES_PROBE_SECTION_11_12_9_37_V1",
+  "NOTE": "Bandit has no CRITICAL severity class; CRITICAL gate uses Cybersecurity Runbook \u00a715 Critical taxonomy via governed registers. This probe re-confirms remediated surfaces on origin/main.",
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "SEVERITY_CRITICAL_NATIVE": 0,
+  "SEVERITY_HIGH": 0,
+  "SEVERITY_LOW": 0,
+  "SEVERITY_MEDIUM": 0,
+  "SURFACES": [
+    "src/backtest/p36/tarball_v1.py",
+    "src/experiments/armstrong_elkaroui_combi_experiment.py",
+    "src/experiments/base.py",
+    "src/experiments/experiment_identity_manifest_v1.py",
+    "src/ops/test_health_runner.py"
+  ]
+}

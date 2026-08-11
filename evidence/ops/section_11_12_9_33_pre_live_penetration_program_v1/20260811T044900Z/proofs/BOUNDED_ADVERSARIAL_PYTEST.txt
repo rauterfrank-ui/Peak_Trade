@@ -1,0 +1,65 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 294 items / 1 skipped
+
+tests/ci/test_credential_hygiene_redaction_unification_v1.py ........... [  3%]
+.......                                                                  [  6%]
+tests/ci/test_secret_scanning_push_protection_governance_v1.py ......... [  9%]
+...                                                                      [ 10%]
+tests/ci/test_cybersecurity_baseline_action_ref_and_permissions_visibility_contract_v0.py . [ 10%]
+.....                                                                    [ 12%]
+tests/ci/test_workflow_write_permissions_visibility_contract_v0.py ..... [ 13%]
+...                                                                      [ 14%]
+tests/execution/live/test_safety_rails.py ............                   [ 19%]
+tests/governance/test_live_mode_gate.py .........................        [ 27%]
+tests/governance/test_wp0c_enforce_gate.py .............                 [ 31%]
+tests/data/shadow/test_guards.py ..........                              [ 35%]
+tests/ops/test_run_testnet_session_entrypoint_fail_closed_contract_v0.py . [ 35%]
+..............                                                           [ 40%]
+tests/ops/test_okx_futures_shadow_no_order_entrypoint_v0.py ...........  [ 44%]
+tests/test_backtest_killswitch_boundary_wiring_v0.py .........F....      [ 48%]
+tests/execution/test_fault_injection_contract.py ................        [ 54%]
+tests/governance/test_scenario_scope_event_injection_fail_closed_guard_v1.py . [ 54%]
+.....                                                                    [ 56%]
+tests/p36/test_tarball_v1.py ....                                        [ 57%]
+tests/test_rate_limiter.py .......................                       [ 65%]
+tests/test_environment_and_safety.py ................................... [ 77%]
+......................                                                   [ 85%]
+tests/test_live_gates.py ...........................                     [ 94%]
+tests/replay_pack/test_hash_validation.py .                              [ 94%]
+tests/webui/test_webui_api_security_headers_visibility_contract_v0.py .. [ 95%]
+F....                                                                    [ 96%]
+tests/ops/test_dashboard_cockpit_observer_surface_inventory_v0.py ...... [ 98%]
+...                                                                      [100%]
+
+=================================== FAILURES ===================================
+E   AssertionError: assert 'FULL_CANONIC...ASSESSMENT_V0' == 'INTEGRATED_V...ITY_REWIRE_V0'
+      
+      - INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_4_WAY_PARITY_REWIRE_V0
+      + FULL_CANONICAL_BACKTEST_BOUNDARY_CHAIN_REASSESSMENT_V0
+------------------------------ Captured log call -------------------------------
+WARNING  src.core.config_registry:config_registry.py:159 ConfigRegistry: [strategy.*] blocks not listed in strategies.available: ['breakout_basic', 'vol_regime_basic', 'breakout', 'vol_regime_filter', 'rsi_reversion_v1', 'breakout_v1', 'composite', 'portfolio_phase40_example', 'rsi_reversion_btc_conservative', 'rsi_reversion_btc_moderate', 'rsi_reversion_btc_aggressive', 'rsi_reversion_eth_conservative', 'rsi_reversion_eth_moderate', 'rsi_reversion_eth_aggressive', 'ma_trend_btc_conservative', 'ma_trend_btc_moderate', 'ma_trend_btc_aggressive', 'trend_following_eth_conservative', 'trend_following_eth_moderate', 'trend_following_eth_aggressive', 'armstrong_cycle', 'el_karoui_vol_model']
+/Users/frnkhrz/Peak_Trade/tests/test_backtest_killswitch_boundary_wiring_v0.py:261: AssertionError: assert 'FULL_CANONIC...ASSESSMENT_V0' == 'INTEGRATED_V...ITY_REWIRE_V0'
+E   AssertionError: assert frozenset({'s...ter.py', ...}) == frozenset({'s...ter.py', ...})
+      
+      Extra items in the left set:
+      'src/webui/market_dashboard_landscape_shell_router_v2.py'
+      Use -v to get more diff
+/Users/frnkhrz/Peak_Trade/tests/webui/test_webui_api_security_headers_visibility_contract_v0.py:140: AssertionError: assert frozenset({'s...ter.py', ...}) == frozenset({'s...ter.py', ...})
+=============================== warnings summary ===============================
+src/live/safety.py:95
+  /Users/frnkhrz/Peak_Trade/src/live/safety.py:95: PytestCollectionWarning: cannot collect test class 'TestnetDryRunOnlyError' because it has a __init__ constructor (from: tests/test_environment_and_safety.py)
+    class TestnetDryRunOnlyError(SafetyBlockedError):
+
+src/orders/exchange.py:86
+  /Users/frnkhrz/Peak_Trade/src/orders/exchange.py:86: PytestCollectionWarning: cannot collect test class 'TestnetOrderExecutor' because it has a __init__ constructor (from: tests/test_environment_and_safety.py)
+    class TestnetOrderExecutor:
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_backtest_killswitch_boundary_wiring_v0.py::test_parity_gap_assessment_surface_k_backtest_boundary_wiring_pass_v0
+FAILED tests/webui/test_webui_api_security_headers_visibility_contract_v0.py::test_webui_api_security_headers_visibility_contract_classifies_current_sets
+============ 2 failed, 292 passed, 1 skipped, 2 warnings in 42.00s =============

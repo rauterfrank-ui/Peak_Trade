@@ -1,0 +1,30 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/frnkhrz/Peak_Trade
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collected 165 items
+
+tests/execution/live/test_safety_rails.py ............                   [  7%]
+tests/p48/test_ai_activation_gate_v1.py ...                              [  9%]
+tests/p49/test_ai_model_hard_gate_v1.py ....                             [ 11%]
+tests/live/test_feature_activation_gate.py ....                          [ 13%]
+tests/governance/test_live_mode_gate.py .........................        [ 29%]
+tests/governance/test_wp0c_enforce_gate.py .............                 [ 36%]
+tests/test_live_gates.py ...........................                     [ 53%]
+tests/test_environment_and_safety.py ................................... [ 74%]
+......................                                                   [ 87%]
+tests/ops/test_live_gates_verification.py .................              [ 98%]
+tests/live/test_confirm_token.py ...                                     [100%]
+
+=============================== warnings summary ===============================
+src/live/safety.py:95
+  /Users/frnkhrz/Peak_Trade/src/live/safety.py:95: PytestCollectionWarning: cannot collect test class 'TestnetDryRunOnlyError' because it has a __init__ constructor (from: tests/test_environment_and_safety.py)
+    class TestnetDryRunOnlyError(SafetyBlockedError):
+
+src/orders/exchange.py:86
+  /Users/frnkhrz/Peak_Trade/src/orders/exchange.py:86: PytestCollectionWarning: cannot collect test class 'TestnetOrderExecutor' because it has a __init__ constructor (from: tests/test_environment_and_safety.py)
+    class TestnetOrderExecutor:
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 165 passed, 2 warnings in 0.64s ========================

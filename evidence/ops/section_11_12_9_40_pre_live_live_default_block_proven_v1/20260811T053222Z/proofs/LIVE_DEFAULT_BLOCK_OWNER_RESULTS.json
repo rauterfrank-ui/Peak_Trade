@@ -1,0 +1,22 @@
+{
+  "CANONICAL_CONFIG_PROBE_PASS": true,
+  "DOCUMENT_CLASS": "LIVE_DEFAULT_BLOCK_OWNER_RESULTS_SECTION_11_12_9_40_V1",
+  "FOCUSED_PYTEST_PASSED": 165,
+  "FOCUSED_PYTEST_RC": 0,
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "OWNERS": [
+    "tests/execution/live/test_safety_rails.py",
+    "tests/p48/test_ai_activation_gate_v1.py",
+    "tests/p49/test_ai_model_hard_gate_v1.py",
+    "tests/live/test_feature_activation_gate.py",
+    "tests/governance/test_live_mode_gate.py",
+    "tests/governance/test_wp0c_enforce_gate.py",
+    "tests/test_live_gates.py",
+    "tests/test_environment_and_safety.py",
+    "tests/ops/test_live_gates_verification.py",
+    "tests/live/test_confirm_token.py",
+    "config/governance/ai_activation_gate_v1.json"
+  ],
+  "PACKAGE_VERDICT": "PASS",
+  "RUN_ID": "20260811T053222Z"
+}

@@ -1,0 +1,12 @@
+{
+  "DOCUMENT_CLASS": "FOCUSED_TEST_TRANSCRIPT_SECTION_11_12_9_31_V1",
+  "FOCUSED_BANDIT_HIGH": 0,
+  "PYTEST_RESULT": "9 passed",
+  "RUFF_CHECK": "PASS",
+  "RUFF_FORMAT": "PASS",
+  "commands": [
+    "uv run ruff format --check <remediated py files>",
+    "uv run ruff check <remediated py files>",
+    "uv run pytest -q tests/p36/test_tarball_v1.py tests/ops/test_test_health_runner.py::TestRunSingleCheck tests/experiments/test_experiment_identity_manifest_v1.py::test_compute_legacy_experiment_id_md5_12_matches_get_experiment_id"
+  ]
+}

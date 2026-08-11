@@ -1,0 +1,68 @@
+{
+  "AUTO_REMEDIATION_PERFORMED": false,
+  "DOCUMENT_CLASS": "STATIC_SECURITY_FINDINGS_REGISTER_SECTION_11_12_9_31_V1",
+  "FINDINGS_CRITICAL": 0,
+  "FINDINGS_HIGH": 0,
+  "FINDINGS_LOW": 2172,
+  "FINDINGS_MEDIUM": 51,
+  "FINDINGS_TOTAL": 2223,
+  "HIGH_FINDINGS": [],
+  "HIGH_FINDINGS_CLOSED_FROM_PRIOR": [
+    {
+      "confidence": "HIGH",
+      "filename": "src/backtest/p36/tarball_v1.py",
+      "issue_text": "tarfile.extractall used without any validation. Please check and discard dangerous members.",
+      "line_number": 67,
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b202_tarfile_unsafe_members.html",
+      "severity": "HIGH",
+      "test_id": "B202",
+      "test_name": "tarfile_unsafe_members"
+    },
+    {
+      "confidence": "HIGH",
+      "filename": "src/experiments/armstrong_elkaroui_combi_experiment.py",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 529,
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html",
+      "severity": "HIGH",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "confidence": "HIGH",
+      "filename": "src/experiments/base.py",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 348,
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html",
+      "severity": "HIGH",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "confidence": "HIGH",
+      "filename": "src/experiments/experiment_identity_manifest_v1.py",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 234,
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html",
+      "severity": "HIGH",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "confidence": "HIGH",
+      "filename": "src/ops/test_health_runner.py",
+      "issue_text": "subprocess call with shell=True identified, security issue.",
+      "line_number": 477,
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b602_subprocess_popen_with_shell_equals_true.html",
+      "severity": "HIGH",
+      "test_id": "B602",
+      "test_name": "subprocess_popen_with_shell_equals_true"
+    }
+  ],
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "OWNER_EXECUTED_REMEDIATION": true,
+  "RUN_ID": "20260811T043722Z",
+  "TOOL": "bandit",
+  "TOOL_COMMAND": "uvx bandit -r src -f json",
+  "secret_value_exposed": false
+}

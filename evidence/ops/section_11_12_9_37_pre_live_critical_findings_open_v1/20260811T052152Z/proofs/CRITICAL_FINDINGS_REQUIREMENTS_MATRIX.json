@@ -1,0 +1,46 @@
+{
+  "CRITICAL_FINDINGS_OPEN": 0,
+  "DOCUMENT_CLASS": "CRITICAL_FINDINGS_REQUIREMENTS_MATRIX_SECTION_11_12_9_37_V1",
+  "HIGH_FINDINGS_OPEN_NOT_BOUND": 0,
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "PACKAGE_VERDICT": "PASS",
+  "REQUIREMENTS": [
+    {
+      "critical_open": 0,
+      "id": "CFO-01",
+      "section": "\u00a715 Critical / \u00a718.2 CRITICAL_FINDINGS_OPEN=0",
+      "status": "PASS",
+      "surface": "Aggregate sealed Pre-Live findings registers"
+    },
+    {
+      "id": "CFO-02",
+      "section": "\u00a715 Critical taxonomy",
+      "status": "PASS",
+      "surface": "No Critical-class unauthorized capability findings across sealed packages"
+    },
+    {
+      "id": "CFO-03",
+      "section": "\u00a716 DoD no open Critical",
+      "status": "PASS",
+      "surface": "Governed register present and sealed"
+    },
+    {
+      "bandit_critical": 0,
+      "bandit_high": 0,
+      "id": "CFO-04",
+      "section": "Reuse remediated static surfaces",
+      "status": "PASS",
+      "surface": "origin/main bandit probe on \u00a711.12.9.31 remediated files"
+    },
+    {
+      "binds_high_findings_open": false,
+      "id": "CFO-05",
+      "section": "Non-claims",
+      "status": "PASS",
+      "surface": "Does not bind HIGH_FINDINGS_OPEN / gate PASS / Live"
+    }
+  ],
+  "REQUIREMENTS_PASS": 5,
+  "REQUIREMENTS_TOTAL": 5,
+  "RUN_ID": "20260811T052152Z"
+}

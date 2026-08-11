@@ -1,0 +1,26 @@
+{
+  "AGGREGATE_CRITICAL_OPEN": 0,
+  "AGGREGATE_HIGH_OPEN": 0,
+  "BANDIT_REMEDIATED_HIGH": 0,
+  "CHECKS": [
+    {
+      "id": "AGGREGATE_HIGH_EQ_0",
+      "result": true
+    },
+    {
+      "id": "AGGREGATE_CRITICAL_EQ_0",
+      "result": true
+    },
+    {
+      "id": "REGISTER_SOURCES_PRESENT",
+      "result": true
+    },
+    {
+      "id": "BANDIT_REMEDIATED_HIGH_EQ_0",
+      "result": true
+    }
+  ],
+  "DOCUMENT_CLASS": "HIGH_FINDINGS_VERIFICATION_SECTION_11_12_9_38_V1",
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "VERDICT": "PASS"
+}

@@ -1,0 +1,81 @@
+🔍 Scanning docs/ for dangerous live-enable patterns...
+Directory: /Users/frnkhrz/Peak_Trade/docs
+
+Checking pattern: enable_live_trading\s*=\s*true
+/Users/frnkhrz/Peak_Trade/docs/PHASE_73_LIVE_DRY_RUN_DRILLS.md:67:- `mode="live"`, `enable_live_trading=True`, aber `live_mode_armed=False`
+/Users/frnkhrz/Peak_Trade/docs/ops/PR_481_MERGE_LOG.md:21:- Manual policy-scan expectation: no `enable_live_trading = true` / `live_mode_armed=True` patterns in hardened docs.
+/Users/frnkhrz/Peak_Trade/docs/execution/WP0C_COMPLETION_REPORT.md:128:- No `enable_live_trading=true` examples
+/Users/frnkhrz/Peak_Trade/docs/execution/WP0C_COMPLETION_REPORT.md:352:- ❌ No `enable_live_trading=true` examples
+/Users/frnkhrz/Peak_Trade/docs/ops/PR_483_MERGE_LOG.md:26:   - Rationale: Eliminate policy-violating patterns (`enable_live_trading=true`, `live_mode_armed=True`)
+/Users/frnkhrz/Peak_Trade/docs/ops/evidence/packs/PR-10/EV-2026-02-PR10-001.json:23:  "notes": "Gate is enforced before urllib.request.urlopen() in PagerDuty provider. Default allow_network=false remains safe. When allow_network=true, config must satisfy enable_live_trading=true, live_mode_armed=true and confirm_token==LIVE_CONFIRM_TOKEN (if require_confirm_token=true)."
+/Users/frnkhrz/Peak_Trade/docs/ops/specs/OPS_SUITE_OPERATOR_STATE_REAL_SIGNAL_REVIEW.md:159:- **Policy critic:** Config may contain `enable_live_trading=true` or `live_mode_armed=true` in test fixtures. Ops Cockpit **displays** these values; it does not change execution. Displaying actual config state is correct for operator visibility.
+/Users/frnkhrz/Peak_Trade/docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md:27:| **Live Trading Flag** | `enable_live_trading = true` | `enable_live_trading = false` (default)<br>`enable_live_trading = <BLOCKED>` (governance gate) |
+/Users/frnkhrz/Peak_Trade/docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md:54:enable_live_trading = true  # ⚠️ VIOLATION
+/Users/frnkhrz/Peak_Trade/docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md:65:   - ❌ BAD: `enable_live_trading=true`
+/Users/frnkhrz/Peak_Trade/docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md:163:This rule scans for `enable_live_trading=true` patterns.
+/Users/frnkhrz/Peak_Trade/docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md:186:- No "enable_live_trading=true" examples in code or docs
+/Users/frnkhrz/Peak_Trade/docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md:255:- [ ] No literal `enable_live_trading=true` patterns
+[0;31m❌ VIOLATION: Found dangerous pattern 'enable_live_trading\s*=\s*true' in docs/[0m
+Checking pattern: enable_live_trading=true
+/Users/frnkhrz/Peak_Trade/docs/PHASE_73_LIVE_DRY_RUN_DRILLS.md:67:- `mode="live"`, `enable_live_trading=True`, aber `live_mode_armed=False`
+/Users/frnkhrz/Peak_Trade/docs/execution/WP0C_COMPLETION_REPORT.md:128:- No `enable_live_trading=true` examples
+/Users/frnkhrz/Peak_Trade/docs/execution/WP0C_COMPLETION_REPORT.md:352:- ❌ No `enable_live_trading=true` examples
+/Users/frnkhrz/Peak_Trade/docs/ops/PR_483_MERGE_LOG.md:26:   - Rationale: Eliminate policy-violating patterns (`enable_live_trading=true`, `live_mode_armed=True`)
+/Users/frnkhrz/Peak_Trade/docs/ops/evidence/packs/PR-10/EV-2026-02-PR10-001.json:23:  "notes": "Gate is enforced before urllib.request.urlopen() in PagerDuty provider. Default allow_network=false remains safe. When allow_network=true, config must satisfy enable_live_trading=true, live_mode_armed=true and confirm_token==LIVE_CONFIRM_TOKEN (if require_confirm_token=true)."
+/Users/frnkhrz/Peak_Trade/docs/ops/specs/OPS_SUITE_OPERATOR_STATE_REAL_SIGNAL_REVIEW.md:159:- **Policy critic:** Config may contain `enable_live_trading=true` or `live_mode_armed=true` in test fixtures. Ops Cockpit **displays** these values; it does not change execution. Displaying actual config state is correct for operator visibility.
+/Users/frnkhrz/Peak_Trade/docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md:65:   - ❌ BAD: `enable_live_trading=true`
+/Users/frnkhrz/Peak_Trade/docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md:163:This rule scans for `enable_live_trading=true` patterns.
+/Users/frnkhrz/Peak_Trade/docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md:186:- No "enable_live_trading=true" examples in code or docs
+/Users/frnkhrz/Peak_Trade/docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md:255:- [ ] No literal `enable_live_trading=true` patterns
+[0;31m❌ VIOLATION: Found dangerous pattern 'enable_live_trading=true' in docs/[0m
+Checking pattern: live_mode_armed\s*=\s*true
+/Users/frnkhrz/Peak_Trade/docs/ops/PR_483_MERGE_LOG.md:26:   - Rationale: Eliminate policy-violating patterns (`enable_live_trading=true`, `live_mode_armed=True`)
+/Users/frnkhrz/Peak_Trade/docs/ops/PR_481_MERGE_LOG.md:21:- Manual policy-scan expectation: no `enable_live_trading = true` / `live_mode_armed=True` patterns in hardened docs.
+/Users/frnkhrz/Peak_Trade/docs/ops/evidence/packs/PR-10/EV-2026-02-PR10-001.json:23:  "notes": "Gate is enforced before urllib.request.urlopen() in PagerDuty provider. Default allow_network=false remains safe. When allow_network=true, config must satisfy enable_live_trading=true, live_mode_armed=true and confirm_token==LIVE_CONFIRM_TOKEN (if require_confirm_token=true)."
+/Users/frnkhrz/Peak_Trade/docs/ops/evidence/PR_1834_EXECUTION_REVIEW.md:11:- bounded-pilot execution path now sets `live_mode_armed=True`
+/Users/frnkhrz/Peak_Trade/docs/ops/evidence/PR_1834_EXECUTION_REVIEW.md:18:- `live_mode_armed=True` only for bounded-pilot EnvironmentConfig
+/Users/frnkhrz/Peak_Trade/docs/ops/specs/OPS_SUITE_OPERATOR_STATE_REAL_SIGNAL_REVIEW.md:159:- **Policy critic:** Config may contain `enable_live_trading=true` or `live_mode_armed=true` in test fixtures. Ops Cockpit **displays** these values; it does not change execution. Displaying actual config state is correct for operator visibility.
+/Users/frnkhrz/Peak_Trade/docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md:28:| **Armed State** | `live_mode_armed = True`<br>`armed = true` | `live_mode_armed = false` (default)<br>`armed = <REQUIRES_APPROVAL>` |
+/Users/frnkhrz/Peak_Trade/docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md:55:live_mode_armed = True  # ⚠️ VIOLATION
+[0;31m❌ VIOLATION: Found dangerous pattern 'live_mode_armed\s*=\s*true' in docs/[0m
+Checking pattern: live_mode_armed=true
+/Users/frnkhrz/Peak_Trade/docs/ops/PR_481_MERGE_LOG.md:21:- Manual policy-scan expectation: no `enable_live_trading = true` / `live_mode_armed=True` patterns in hardened docs.
+/Users/frnkhrz/Peak_Trade/docs/ops/PR_483_MERGE_LOG.md:26:   - Rationale: Eliminate policy-violating patterns (`enable_live_trading=true`, `live_mode_armed=True`)
+/Users/frnkhrz/Peak_Trade/docs/ops/evidence/PR_1834_EXECUTION_REVIEW.md:11:- bounded-pilot execution path now sets `live_mode_armed=True`
+/Users/frnkhrz/Peak_Trade/docs/ops/evidence/PR_1834_EXECUTION_REVIEW.md:18:- `live_mode_armed=True` only for bounded-pilot EnvironmentConfig
+/Users/frnkhrz/Peak_Trade/docs/ops/evidence/packs/PR-10/EV-2026-02-PR10-001.json:23:  "notes": "Gate is enforced before urllib.request.urlopen() in PagerDuty provider. Default allow_network=false remains safe. When allow_network=true, config must satisfy enable_live_trading=true, live_mode_armed=true and confirm_token==LIVE_CONFIRM_TOKEN (if require_confirm_token=true)."
+/Users/frnkhrz/Peak_Trade/docs/ops/specs/OPS_SUITE_OPERATOR_STATE_REAL_SIGNAL_REVIEW.md:159:- **Policy critic:** Config may contain `enable_live_trading=true` or `live_mode_armed=true` in test fixtures. Ops Cockpit **displays** these values; it does not change execution. Displaying actual config state is correct for operator visibility.
+[0;31m❌ VIOLATION: Found dangerous pattern 'live_mode_armed=true' in docs/[0m
+Checking pattern: execution_mode\s*=\s*['"]LIVE['"]
+Checking pattern: LIVE_MODE\s*=\s*true
+/Users/frnkhrz/Peak_Trade/docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md:70:   - ❌ BAD: `LIVE_MODE=true`
+/Users/frnkhrz/Peak_Trade/docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md:75:   - ❌ BAD: `live_mode = true`
+/Users/frnkhrz/Peak_Trade/docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md:187:- No "live_mode=true" examples
+/Users/frnkhrz/Peak_Trade/docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md:256:- [ ] No literal `LIVE_MODE=true` patterns
+[0;31m❌ VIOLATION: Found dangerous pattern 'LIVE_MODE\s*=\s*true' in docs/[0m
+Checking pattern: live_dry_run_mode\s*=\s*false
+/Users/frnkhrz/Peak_Trade/docs/PHASE_71_LIVE_EXECUTION_DESIGN_AND_GATING.md:268:4. ✅ `live_dry_run_mode = False` (muss explizit auf False gesetzt werden)
+/Users/frnkhrz/Peak_Trade/docs/runbooks/LIVE_MODE_TRANSITION_RUNBOOK.md:67:live_dry_run_mode = false               # Gate 3: FALSE (enables real orders)
+/Users/frnkhrz/Peak_Trade/docs/runbooks/LIVE_MODE_TRANSITION_RUNBOOK.md:169:# live_dry_run_mode = false
+/Users/frnkhrz/Peak_Trade/docs/runbooks/LIVE_MODE_TRANSITION_RUNBOOK.md:181:Gate 3: live_dry_run_mode = false ✅
+/Users/frnkhrz/Peak_Trade/docs/SAFETY_POLICY_TESTNET_AND_LIVE.md:327:4. `live_dry_run_mode = False` (muss explizit auf False gesetzt werden)
+/Users/frnkhrz/Peak_Trade/docs/audit/evidence/snapshots/architecture_overview_20251230.md:196:  3. `live_dry_run_mode=False` (Technical gate - currently always True)
+/Users/frnkhrz/Peak_Trade/docs/ops/evidence/PR_1835_EXECUTION_REVIEW.md:11:- bounded-pilot execution path now sets `live_dry_run_mode=False`
+/Users/frnkhrz/Peak_Trade/docs/ops/evidence/PR_1835_EXECUTION_REVIEW.md:18:- `live_dry_run_mode=False` only for bounded-pilot EnvironmentConfig
+/Users/frnkhrz/Peak_Trade/docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md:32:| Runner | `LiveSessionRunner` / Konfiguration für `bounded_pilot` in `src/execution/live_session.py` (u. a. `bounded_pilot_mode`, `live_dry_run_mode=False` im Pilot-Kontext). |
+[0;31m❌ VIOLATION: Found dangerous pattern 'live_dry_run_mode\s*=\s*false' in docs/[0m
+Checking pattern: live_dry_run_mode=false
+/Users/frnkhrz/Peak_Trade/docs/audit/evidence/snapshots/architecture_overview_20251230.md:196:  3. `live_dry_run_mode=False` (Technical gate - currently always True)
+/Users/frnkhrz/Peak_Trade/docs/ops/evidence/PR_1835_EXECUTION_REVIEW.md:11:- bounded-pilot execution path now sets `live_dry_run_mode=False`
+/Users/frnkhrz/Peak_Trade/docs/ops/evidence/PR_1835_EXECUTION_REVIEW.md:18:- `live_dry_run_mode=False` only for bounded-pilot EnvironmentConfig
+/Users/frnkhrz/Peak_Trade/docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md:32:| Runner | `LiveSessionRunner` / Konfiguration für `bounded_pilot` in `src/execution/live_session.py` (u. a. `bounded_pilot_mode`, `live_dry_run_mode=False` im Pilot-Kontext). |
+[0;31m❌ VIOLATION: Found dangerous pattern 'live_dry_run_mode=false' in docs/[0m
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[0;31m❌ FAIL: 7 violation(s) detected[0m
+
+Please review the flagged patterns and replace them with safe alternatives:
+  - Use placeholders: enable_live_trading={true|false}
+  - Use descriptions: "live trading flag (not shown for safety)"
+  - See: docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md
+

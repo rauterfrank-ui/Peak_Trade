@@ -1,0 +1,52 @@
+{
+  "CRITICAL_FINDINGS_TARGET": 0,
+  "DOCUMENT_CLASS": "RB_HIGH_REMEDIATION_CHANGE_SUMMARY_SECTION_11_12_9_31_V1",
+  "GENERATED_AT_UTC": "2026-08-11T04:38:41Z",
+  "GIT_STATUS_PORCELAIN": " M config/test_health_profiles.toml\n M src/backtest/p36/tarball_v1.py\n M src/experiments/armstrong_elkaroui_combi_experiment.py\n M src/experiments/base.py\n M src/experiments/experiment_identity_manifest_v1.py\n M src/ops/test_health_runner.py\n",
+  "HEAD_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "HIGH_FINDINGS_TARGET": 5,
+  "NO_TRADING_LOGIC_CHANGE": true,
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "PRIOR_FAIL_EVIDENCE": "evidence/ops/section_11_12_9_30_pre_live_static_security_analysis_v1/20260811T043159Z/",
+  "REMEDIATIONS": [
+    {
+      "file": "src/backtest/p36/tarball_v1.py",
+      "fix": "replace extractall with per-member extract after validation",
+      "id": "H1",
+      "test_id": "B202"
+    },
+    {
+      "file": "src/experiments/armstrong_elkaroui_combi_experiment.py",
+      "fix": "md5(..., usedforsecurity=False) non-crypto run id",
+      "id": "H2",
+      "test_id": "B324"
+    },
+    {
+      "file": "src/experiments/base.py",
+      "fix": "md5(..., usedforsecurity=False) experiment id",
+      "id": "H3",
+      "test_id": "B324"
+    },
+    {
+      "file": "src/experiments/experiment_identity_manifest_v1.py",
+      "fix": "md5(..., usedforsecurity=False) legacy id",
+      "id": "H4",
+      "test_id": "B324"
+    },
+    {
+      "file": "src/ops/test_health_runner.py",
+      "fix": "shell=False + shlex.split; demo profile remove shell &&",
+      "id": "H5",
+      "test_id": "B602"
+    }
+  ],
+  "RUN_ID": "20260811T043722Z",
+  "TOUCHED_FILES": [
+    "src/backtest/p36/tarball_v1.py",
+    "src/experiments/armstrong_elkaroui_combi_experiment.py",
+    "src/experiments/base.py",
+    "src/experiments/experiment_identity_manifest_v1.py",
+    "src/ops/test_health_runner.py",
+    "config/test_health_profiles.toml"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "BLOCKING_FOR_SECURITY_REGRESSION_PACKAGE": false,
+  "CI_REQUIRED_CHECK": false,
+  "DOCUMENT_CLASS": "DOCS_NO_LIVE_ENABLE_CLASSIFICATION_SECTION_11_12_9_32_V1",
+  "JUSTIFICATION": "Script is not a GitHub required CI check; failures are pre-existing historical/meta docs (incl. intentional BAD examples in POLICY_SAFE_DOCUMENTATION_GUIDE). Package-touched SSOT docs have zero live-enable literals. Runtime live-default fail-closed is proven by focused pytest owners.",
+  "OVERLAP_WITH_PACKAGE_DOC_DIFF": [],
+  "PACKAGE_DOCS_SCOPED_HITS": [],
+  "PACKAGE_DOC_DIFF": [
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+  ],
+  "PACKAGE_INTRODUCES_NEW_VIOLATION": false,
+  "PREEXISTING_ON_ORIGIN_MAIN": true,
+  "SCRIPT": "scripts/ci/check_docs_no_live_enable_patterns.sh",
+  "SCRIPT_RC": 1,
+  "VIOLATION_FILES": [
+    "docs/PHASE_71_LIVE_EXECUTION_DESIGN_AND_GATING.md",
+    "docs/PHASE_73_LIVE_DRY_RUN_DRILLS.md",
+    "docs/SAFETY_POLICY_TESTNET_AND_LIVE.md",
+    "docs/audit/evidence/snapshots/architecture_overview_20251230.md",
+    "docs/execution/WP0C_COMPLETION_REPORT.md",
+    "docs/ops/POLICY_SAFE_DOCUMENTATION_GUIDE.md",
+    "docs/ops/PR_481_MERGE_LOG.md",
+    "docs/ops/PR_483_MERGE_LOG.md",
+    "docs/ops/evidence/PR_1834_EXECUTION_REVIEW.md",
+    "docs/ops/evidence/PR_1835_EXECUTION_REVIEW.md",
+    "docs/ops/evidence/packs/PR-10/EV-2026-02-PR10-001.json",
+    "docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md",
+    "docs/ops/specs/OPS_SUITE_OPERATOR_STATE_REAL_SIGNAL_REVIEW.md",
+    "docs/runbooks/LIVE_MODE_TRANSITION_RUNBOOK.md"
+  ],
+  "VIOLATION_PATTERN_GROUPS": 7
+}

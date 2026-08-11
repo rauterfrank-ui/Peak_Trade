@@ -1,0 +1,20 @@
+{
+  "ARTIFACTS": [
+    "ACCEPTANCE_MATRIX.json",
+    "MACHINE_READABLE_EVALUATION.json",
+    "SANITIZED_FINAL_REPORT.json",
+    "STATIC_SECURITY_ANALYSIS_REPORT.md",
+    "proofs/BASELINE_GIT_AND_TOOLING.json",
+    "proofs/BANDIT_SEVERITY_SUMMARY.json",
+    "proofs/BANDIT_SRC.json",
+    "proofs/BANDIT_SRC.json.rc.txt",
+    "proofs/BANDIT_SRC.stderr.txt",
+    "proofs/BANDIT_SRC.stdout.txt",
+    "proofs/BANDIT_SRC.txt",
+    "proofs/BANDIT_SRC.txt.rc.txt",
+    "proofs/STATIC_SECURITY_FINDINGS_REGISTER.json"
+  ],
+  "BOUND_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "DOCUMENT_CLASS": "PROVENANCE_INDEX_SECTION_11_12_9_30_V1",
+  "RUN_ID": "20260811T043159Z"
+}

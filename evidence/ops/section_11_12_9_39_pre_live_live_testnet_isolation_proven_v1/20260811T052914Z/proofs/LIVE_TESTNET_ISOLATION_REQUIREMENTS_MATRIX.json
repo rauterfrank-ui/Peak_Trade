@@ -1,0 +1,110 @@
+{
+  "BINDS_LIVE_ARMING_FAIL_CLOSED_PROVEN": false,
+  "BINDS_LIVE_DEFAULT_BLOCK_PROVEN": false,
+  "CRITICAL_FINDINGS_OPEN": 0,
+  "DOCUMENT_CLASS": "LIVE_TESTNET_ISOLATION_REQUIREMENTS_MATRIX_SECTION_11_12_9_39_V1",
+  "HIGH_FINDINGS_OPEN": 0,
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "OWNERS": [
+    "tests/data/shadow/test_guards.py",
+    "tests/ops/test_okx_futures_shadow_no_order_entrypoint_v0.py",
+    "tests/ops/test_run_testnet_session_entrypoint_fail_closed_contract_v0.py",
+    "tests/ops/test_capability_11_owner_auth_artifact_testnet_credential_scope_private_network_v1.py",
+    "tests/ops/test_capability_11_2_credential_authorization_and_account_identity_boundary_v1.py",
+    "tests/ops/test_aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py",
+    "tests/ops/test_phase_9_2_restart_recovery_session_contract_and_productive_harness_v1.py::test_22_live_testnet_credential_negative_proof",
+    "tests/governance/test_live_mode_gate.py",
+    "tests/governance/test_wp0c_enforce_gate.py",
+    "tests/execution/live/test_safety_rails.py",
+    "tests/test_live_gates.py",
+    "tests/test_environment_and_safety.py",
+    "tests/ops/test_runtime_lane_taxonomy_authority_levels_contract_v0.py",
+    "tests/ops/test_section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1.py",
+    "tests/ops/test_master_v2_runtime_governance_boundary_contract_static_v0.py"
+  ],
+  "PACKAGE_VERDICT": "PASS",
+  "REQUIREMENTS": [
+    {
+      "id": "LTI-01",
+      "owners": [
+        "tests/data/shadow/test_guards.py",
+        "tests/ops/test_okx_futures_shadow_no_order_entrypoint_v0.py",
+        "tests/ops/test_run_testnet_session_entrypoint_fail_closed_contract_v0.py"
+      ],
+      "section": "\u00a719.1 Credentials",
+      "status": "PASS",
+      "surface": "Credential cross-use / shadow no-order / testnet session fail-closed"
+    },
+    {
+      "id": "LTI-02",
+      "owners": [
+        "tests/ops/test_capability_11_owner_auth_artifact_testnet_credential_scope_private_network_v1.py",
+        "tests/ops/test_capability_11_2_credential_authorization_and_account_identity_boundary_v1.py"
+      ],
+      "section": "\u00a719.1 Credentials",
+      "status": "PASS",
+      "surface": "Testnet credential scope + Cap-11.2 credential/account identity boundary"
+    },
+    {
+      "id": "LTI-03",
+      "owners": [
+        "tests/ops/test_aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py",
+        "tests/ops/test_phase_9_2_restart_recovery_session_contract_and_productive_harness_v1.py::test_22_live_testnet_credential_negative_proof"
+      ],
+      "section": "\u00a719.1 Credentials",
+      "status": "PASS",
+      "surface": "Credential scopes separated + live/testnet credential negative proof"
+    },
+    {
+      "id": "LTI-04",
+      "owners": [
+        "tests/governance/test_live_mode_gate.py",
+        "tests/test_environment_and_safety.py",
+        "tests/ops/test_runtime_lane_taxonomy_authority_levels_contract_v0.py"
+      ],
+      "section": "\u00a719.2 Configuration",
+      "status": "PASS",
+      "surface": "LiveModeGate + environment/safety + runtime lane taxonomy"
+    },
+    {
+      "id": "LTI-05",
+      "owners": [
+        "tests/ops/test_section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1.py"
+      ],
+      "section": "\u00a719.2 Configuration / Host-Endpoint-Account-Instrument",
+      "status": "PASS",
+      "surface": "OKX EEA Demo XPerp venue/host/account/instrument binding"
+    },
+    {
+      "id": "LTI-06",
+      "owners": [
+        "tests/governance/test_wp0c_enforce_gate.py",
+        "tests/execution/live/test_safety_rails.py",
+        "tests/test_live_gates.py"
+      ],
+      "section": "\u00a719.3 Authority",
+      "status": "PASS",
+      "surface": "WP0C ack env separation + live gates + safety rails (Testnet-GO != Live-GO)"
+    },
+    {
+      "id": "LTI-07",
+      "owners": [
+        "tests/ops/test_master_v2_runtime_governance_boundary_contract_static_v0.py"
+      ],
+      "section": "\u00a719.3 / \u00a719.4 Authority & runtime governance boundary",
+      "status": "PASS",
+      "surface": "Master V2 runtime governance boundary static contract"
+    },
+    {
+      "binds_live_default_block": false,
+      "id": "LTI-08",
+      "owners": [],
+      "section": "Non-claims",
+      "status": "PASS",
+      "surface": "Does not bind LIVE_DEFAULT_BLOCK_PROVEN / LIVE_ARMING / gate PASS"
+    }
+  ],
+  "REQUIREMENTS_PASS": 8,
+  "REQUIREMENTS_TOTAL": 8,
+  "RUN_ID": "20260811T052914Z"
+}

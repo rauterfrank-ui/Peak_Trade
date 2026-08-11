@@ -1,0 +1,25 @@
+{
+  "CANONICAL_REGRESSION_OWNERS": [
+    "tests/ci/test_cybersecurity_baseline_action_ref_and_permissions_visibility_contract_v0.py",
+    "tests/ci/test_workflow_write_permissions_visibility_contract_v0.py",
+    "tests/ci/test_credential_hygiene_redaction_unification_v1.py",
+    "tests/ci/test_secret_scanning_push_protection_governance_v1.py",
+    "tests/execution/live/test_safety_rails.py",
+    "tests/governance/test_live_mode_gate.py",
+    "tests/data/shadow/test_guards.py",
+    "tests/ops/test_run_testnet_session_entrypoint_fail_closed_contract_v0.py",
+    "tests/integration/test_kill_switch_e2_safety_guard.py",
+    "scripts/ci/check_docs_no_live_enable_patterns.sh",
+    "scripts/ci/check_tracked_credential_hygiene_policy_v1.py"
+  ],
+  "DISTINCTION_NOT_AUTHORITY_REPLAY_TEST": true,
+  "DISTINCTION_NOT_CREDENTIAL_LEAKAGE_TEST": true,
+  "DISTINCTION_NOT_PENETRATION_PROGRAM": true,
+  "DOCUMENT_CLASS": "BASELINE_GIT_AND_TOOLING_SECTION_11_12_9_32_V1",
+  "GENERATED_AT_UTC": "2026-08-11T04:43:47Z",
+  "HEAD_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "PRIOR_SAST_PASS_EVIDENCE": "evidence/ops/section_11_12_9_31_static_security_analysis_high_remediation_and_rerun_v1/20260811T043722Z/",
+  "REUSE_BEFORE_NEW": true,
+  "RUN_ID": "20260811T044255Z"
+}

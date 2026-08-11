@@ -1,0 +1,175 @@
+{
+  "AUTO_REMEDIATION_PERFORMED": false,
+  "CANONICAL_OWNER": "scripts/ops/run_audit.sh",
+  "DOCUMENT_CLASS": "STATIC_SECURITY_FINDINGS_REGISTER_SECTION_11_12_9_30_V1",
+  "FINDINGS_CRITICAL": 0,
+  "FINDINGS_HIGH": 5,
+  "FINDINGS_LOW": 2171,
+  "FINDINGS_MEDIUM": 51,
+  "FINDINGS_TOTAL": 2227,
+  "HIGH_FINDINGS": [
+    {
+      "confidence": "HIGH",
+      "filename": "src/backtest/p36/tarball_v1.py",
+      "issue_text": "tarfile.extractall used without any validation. Please check and discard dangerous members.",
+      "line_number": 67,
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b202_tarfile_unsafe_members.html",
+      "severity": "HIGH",
+      "test_id": "B202",
+      "test_name": "tarfile_unsafe_members"
+    },
+    {
+      "confidence": "HIGH",
+      "filename": "src/experiments/armstrong_elkaroui_combi_experiment.py",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 529,
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html",
+      "severity": "HIGH",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "confidence": "HIGH",
+      "filename": "src/experiments/base.py",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 348,
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html",
+      "severity": "HIGH",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "confidence": "HIGH",
+      "filename": "src/experiments/experiment_identity_manifest_v1.py",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 234,
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html",
+      "severity": "HIGH",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "confidence": "HIGH",
+      "filename": "src/ops/test_health_runner.py",
+      "issue_text": "subprocess call with shell=True identified, security issue.",
+      "line_number": 477,
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b602_subprocess_popen_with_shell_equals_true.html",
+      "severity": "HIGH",
+      "test_id": "B602",
+      "test_name": "subprocess_popen_with_shell_equals_true"
+    }
+  ],
+  "MEDIUM_FINDINGS_COUNT_ONLY": 51,
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "REMEDIATION_HINTS_HIGH_ONLY": [
+    {
+      "auto_fixed": false,
+      "filename": "src/backtest/p36/tarball_v1.py",
+      "line_number": 67,
+      "suggested_remediation": "Validate tar members before extractall (or use safe extract helpers); reject path traversal / absolute paths.",
+      "test_id": "B202"
+    },
+    {
+      "auto_fixed": false,
+      "filename": "src/experiments/armstrong_elkaroui_combi_experiment.py",
+      "line_number": 529,
+      "suggested_remediation": "If MD5 is non-cryptographic (checksum/id), set usedforsecurity=False; otherwise use SHA-256+.",
+      "test_id": "B324"
+    },
+    {
+      "auto_fixed": false,
+      "filename": "src/experiments/base.py",
+      "line_number": 348,
+      "suggested_remediation": "If MD5 is non-cryptographic (checksum/id), set usedforsecurity=False; otherwise use SHA-256+.",
+      "test_id": "B324"
+    },
+    {
+      "auto_fixed": false,
+      "filename": "src/experiments/experiment_identity_manifest_v1.py",
+      "line_number": 234,
+      "suggested_remediation": "If MD5 is non-cryptographic (checksum/id), set usedforsecurity=False; otherwise use SHA-256+.",
+      "test_id": "B324"
+    },
+    {
+      "auto_fixed": false,
+      "filename": "src/ops/test_health_runner.py",
+      "line_number": 477,
+      "suggested_remediation": "Replace shell=True with argv list subprocess and explicit executable path.",
+      "test_id": "B602"
+    }
+  ],
+  "RUN_ID": "20260811T043159Z",
+  "TOOL": "bandit",
+  "TOOL_COMMAND": "uvx bandit -r src -f json",
+  "TOP_TEST_IDS": [
+    [
+      "B105",
+      1095
+    ],
+    [
+      "B101",
+      563
+    ],
+    [
+      "B603",
+      128
+    ],
+    [
+      "B607",
+      114
+    ],
+    [
+      "B110",
+      102
+    ],
+    [
+      "B404",
+      91
+    ],
+    [
+      "B106",
+      50
+    ],
+    [
+      "B108",
+      24
+    ],
+    [
+      "B310",
+      21
+    ],
+    [
+      "B112",
+      15
+    ],
+    [
+      "B311",
+      12
+    ],
+    [
+      "B608",
+      5
+    ],
+    [
+      "B324",
+      3
+    ],
+    [
+      "B202",
+      1
+    ],
+    [
+      "B107",
+      1
+    ],
+    [
+      "B104",
+      1
+    ],
+    [
+      "B602",
+      1
+    ]
+  ],
+  "secret_value_exposed": false
+}

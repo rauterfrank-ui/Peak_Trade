@@ -1,0 +1,62 @@
+{
+  "CLOSED_COUNT": 5,
+  "DOCUMENT_CLASS": "HIGH_FINDINGS_CLOSURE_COMPARISON_SECTION_11_12_9_31_V1",
+  "PRIOR_CRITICAL": 0,
+  "PRIOR_HIGH": 5,
+  "PRIOR_HIGH_FINDINGS": [
+    {
+      "confidence": "HIGH",
+      "filename": "src/backtest/p36/tarball_v1.py",
+      "issue_text": "tarfile.extractall used without any validation. Please check and discard dangerous members.",
+      "line_number": 67,
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b202_tarfile_unsafe_members.html",
+      "severity": "HIGH",
+      "test_id": "B202",
+      "test_name": "tarfile_unsafe_members"
+    },
+    {
+      "confidence": "HIGH",
+      "filename": "src/experiments/armstrong_elkaroui_combi_experiment.py",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 529,
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html",
+      "severity": "HIGH",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "confidence": "HIGH",
+      "filename": "src/experiments/base.py",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 348,
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html",
+      "severity": "HIGH",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "confidence": "HIGH",
+      "filename": "src/experiments/experiment_identity_manifest_v1.py",
+      "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+      "line_number": 234,
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b324_hashlib.html",
+      "severity": "HIGH",
+      "test_id": "B324",
+      "test_name": "hashlib"
+    },
+    {
+      "confidence": "HIGH",
+      "filename": "src/ops/test_health_runner.py",
+      "issue_text": "subprocess call with shell=True identified, security issue.",
+      "line_number": 477,
+      "more_info": "https://bandit.readthedocs.io/en/1.9.4/plugins/b602_subprocess_popen_with_shell_equals_true.html",
+      "severity": "HIGH",
+      "test_id": "B602",
+      "test_name": "subprocess_popen_with_shell_equals_true"
+    }
+  ],
+  "REMAINING_HIGH_OPEN": 0,
+  "RERUN_CRITICAL": 0,
+  "RERUN_HIGH": 0,
+  "TARGET_MET": true
+}

@@ -1,0 +1,17 @@
+{
+  "ARTIFACTS": [
+    "ACCEPTANCE_MATRIX.json",
+    "MACHINE_READABLE_EVALUATION.json",
+    "SANITIZED_FINAL_REPORT.json",
+    "SBOM_PRESENT_REPORT.md",
+    "proofs/BASELINE_GIT_AND_TOOLING.json",
+    "proofs/SBOM_EXPORT_COMMAND_TRANSCRIPT.json",
+    "proofs/SBOM_STRUCTURAL_VALIDATION.json",
+    "proofs/sbom.cyclonedx1.5.json",
+    "proofs/uv_export_requirements_locked.txt",
+    "proofs/uv_export_requirements_locked.stderr.txt"
+  ],
+  "BOUND_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "DOCUMENT_CLASS": "PROVENANCE_INDEX_SECTION_11_12_9_29_V1",
+  "RUN_ID": "20260811T042745Z"
+}

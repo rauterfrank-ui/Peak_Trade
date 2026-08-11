@@ -1,0 +1,13 @@
+{
+  "BOUND_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "DOCUMENT_CLASS": "SBOM_EXPORT_COMMAND_TRANSCRIPT_SECTION_11_12_9_29_V1",
+  "RUN_ID": "20260811T042745Z",
+  "commands": [
+    {
+      "cmd": "uv export --format cyclonedx1.5 --output-file proofs/sbom.cyclonedx1.5.json",
+      "output_bytes": 20650,
+      "output_sha256": "5707f7636d756f64dd2bdc2812094ac7c2b3af114902c1bb2b9b8ab088f0c8c8",
+      "rc": 0
+    }
+  ]
+}

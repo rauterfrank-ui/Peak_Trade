@@ -1,0 +1,26 @@
+{
+  "BANDIT_JSON_RC": 1,
+  "CRITICAL_FINDINGS_OPEN": 0,
+  "DOCUMENT_CLASS": "BANDIT_SEVERITY_SUMMARY_SECTION_11_12_9_31_V1",
+  "HIGH_FINDINGS_OPEN": 0,
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "RUN_ID": "20260811T043722Z",
+  "metrics_totals": {
+    "CONFIDENCE.HIGH": 1047,
+    "CONFIDENCE.LOW": 3,
+    "CONFIDENCE.MEDIUM": 1173,
+    "CONFIDENCE.UNDEFINED": 0,
+    "SEVERITY.HIGH": 0,
+    "SEVERITY.LOW": 2172,
+    "SEVERITY.MEDIUM": 51,
+    "SEVERITY.UNDEFINED": 0,
+    "loc": 774948,
+    "nosec": 0,
+    "skipped_tests": 0
+  },
+  "result_count": 2223,
+  "severity_counts": {
+    "LOW": 2172,
+    "MEDIUM": 51
+  }
+}

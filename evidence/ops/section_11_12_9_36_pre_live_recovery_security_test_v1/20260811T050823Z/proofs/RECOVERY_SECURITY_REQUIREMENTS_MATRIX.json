@@ -1,0 +1,156 @@
+{
+  "BINDS_AUTHORITY_REPLAY_TEST": false,
+  "BINDS_LIVE_KILL_SWITCH_PROVEN": false,
+  "BINDS_PENETRATION_PROGRAM": false,
+  "CRITICAL_FINDINGS_OPEN": 0,
+  "DOCUMENT_CLASS": "RECOVERY_SECURITY_REQUIREMENTS_MATRIX_SECTION_11_12_9_36_V1",
+  "HIGH_FINDINGS_OPEN": 0,
+  "INVENTORY_INCLUSIVE_PYTEST_RC": 1,
+  "LOW_FINDINGS_OPEN": 1,
+  "MEDIUM_FINDINGS_OPEN": 2,
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "OWNERS": [
+    "tests/execution/test_fault_injection_contract.py",
+    "tests/governance/test_scenario_scope_event_injection_fail_closed_guard_v1.py",
+    "tests/ops/test_capability_11_5_testnet_restart_recovery_and_kill_switch_closure_v1.py",
+    "tests/ops/test_phase_9_2_restart_recovery_session_contract_and_productive_harness_v1.py",
+    "tests/ops/test_capability_11_section_11_12_5_unknown_submit_and_reconnect_recovery_v1.py",
+    "tests/ops/test_capability_11_section_11_12_6_restart_with_open_order_and_open_position_v1.py",
+    "tests/ops/test_capability_11_section_11_12_7_kill_switch_and_emergency_control_proof_v1.py",
+    "tests/ops/test_full_decision_path_atomic_restart_closure_v1.py",
+    "tests/ops/test_runtime_health_recovery_and_failure_injection_closure_v1.py",
+    "tests/ops/test_bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0.py",
+    "tests/ops/test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
+    "tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py",
+    "tests/ops/test_order_capability_safety_cancel_under_killswitch_contract_v1.py",
+    "tests/integration/test_kill_switch_e2_safety_guard.py",
+    "tests/risk_layer/kill_switch/test_recovery.py",
+    "tests/risk_layer/kill_switch/test_state_machine.py",
+    "tests/risk_layer/kill_switch/test_triggers.py",
+    "tests/risk_layer/kill_switch/test_persistence.py",
+    "tests/meta/test_killswitch_writer_fencing_and_independent_read_paths_v1.py",
+    "tests/meta/test_authority_lease_and_revocation_v1.py",
+    "tests/replay_pack/test_hash_validation.py"
+  ],
+  "PACKAGE_VERDICT": "PASS",
+  "REQUIREMENTS": [
+    {
+      "id": "RST-01",
+      "owners": [
+        "tests/execution/test_fault_injection_contract.py",
+        "tests/governance/test_scenario_scope_event_injection_fail_closed_guard_v1.py"
+      ],
+      "section": "\u00a713 Corrupt State Recovery / Fault Injection",
+      "status": "PASS",
+      "surface": "Fault injection + scenario-scope injection fail-closed"
+    },
+    {
+      "id": "RST-02",
+      "owners": [
+        "tests/ops/test_capability_11_5_testnet_restart_recovery_and_kill_switch_closure_v1.py"
+      ],
+      "section": "\u00a713 Restart mit stale Authority / Cap-11.5 restart+kill",
+      "status": "PASS",
+      "surface": "Cap-11.5 restart/unknown-submit/kill-switch/autonomous recovery contracts"
+    },
+    {
+      "id": "RST-03",
+      "owners": [
+        "tests/ops/test_phase_9_2_restart_recovery_session_contract_and_productive_harness_v1.py"
+      ],
+      "section": "\u00a712.5 / \u00a713 Restart Recovery harness",
+      "status": "PASS",
+      "surface": "Phase-9.2 restart recovery incl. corrupt checkpoint fail-closed"
+    },
+    {
+      "id": "RST-04",
+      "owners": [
+        "tests/ops/test_capability_11_section_11_12_5_unknown_submit_and_reconnect_recovery_v1.py"
+      ],
+      "section": "\u00a713 Unknown-submit / reconnect recovery",
+      "status": "PASS",
+      "surface": "Section 11.12.5 unknown-submit and reconnect recovery owners"
+    },
+    {
+      "id": "RST-05",
+      "owners": [
+        "tests/ops/test_capability_11_section_11_12_6_restart_with_open_order_and_open_position_v1.py"
+      ],
+      "section": "\u00a713 Restart with open order/position",
+      "status": "PASS",
+      "surface": "Section 11.12.6 restart with open order and open position owners"
+    },
+    {
+      "id": "RST-06",
+      "owners": [
+        "tests/ops/test_capability_11_section_11_12_7_kill_switch_and_emergency_control_proof_v1.py",
+        "tests/integration/test_kill_switch_e2_safety_guard.py",
+        "tests/risk_layer/kill_switch/test_recovery.py",
+        "tests/risk_layer/kill_switch/test_state_machine.py",
+        "tests/risk_layer/kill_switch/test_triggers.py",
+        "tests/risk_layer/kill_switch/test_persistence.py"
+      ],
+      "section": "\u00a713 Kill-Switch / Emergency-Control Bypass",
+      "status": "PASS",
+      "surface": "Section 11.12.7 + integration e2 safety guard + risk_layer kill-switch"
+    },
+    {
+      "id": "RST-07",
+      "owners": [
+        "tests/ops/test_full_decision_path_atomic_restart_closure_v1.py"
+      ],
+      "section": "\u00a713 Restart / Failure Injection atomic path",
+      "status": "PASS",
+      "surface": "Full decision-path atomic restart closure (security properties; inventory node deselected)"
+    },
+    {
+      "id": "RST-08",
+      "owners": [
+        "tests/ops/test_runtime_health_recovery_and_failure_injection_closure_v1.py"
+      ],
+      "section": "\u00a713 Runtime health recovery / failure injection",
+      "status": "PASS",
+      "surface": "Runtime health recovery and failure injection closure"
+    },
+    {
+      "id": "RST-09",
+      "owners": [
+        "tests/ops/test_bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0.py",
+        "tests/ops/test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
+        "tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py",
+        "tests/ops/test_order_capability_safety_cancel_under_killswitch_contract_v1.py"
+      ],
+      "section": "\u00a713 Staleness revocation / killswitch binding",
+      "status": "PASS",
+      "surface": "Handoff staleness revocation + killswitch lifecycle/abort/cancel under killswitch"
+    },
+    {
+      "id": "RST-10",
+      "owners": [
+        "tests/meta/test_killswitch_writer_fencing_and_independent_read_paths_v1.py",
+        "tests/meta/test_authority_lease_and_revocation_v1.py",
+        "tests/replay_pack/test_hash_validation.py"
+      ],
+      "section": "\u00a713 Authority lease revocation / evidence integrity",
+      "status": "PASS",
+      "surface": "Killswitch writer fencing + authority lease/revocation + replay-pack hash validation"
+    },
+    {
+      "blocking": false,
+      "id": "RST-INV-001",
+      "owners": [
+        "tests/ops/test_full_decision_path_atomic_restart_closure_v1.py::test_constants_and_call_graph_bound"
+      ],
+      "section": "Inventory call-graph constant drift (non-security-property)",
+      "severity": "LOW",
+      "status": "OPEN_ACCEPTED_LOW",
+      "surface": "CALL_GRAPH_V1 != REQUIRED_CALL_GRAPH in Cap-6.4 constants test"
+    }
+  ],
+  "REQUIREMENTS_OPEN_ACCEPTED_LOW": 1,
+  "REQUIREMENTS_PASS": 10,
+  "REQUIREMENTS_TOTAL": 11,
+  "RUN_ID": "20260811T050823Z",
+  "SECURITY_PROPERTY_PYTEST_PASSED": 430,
+  "SECURITY_PROPERTY_PYTEST_RC": 0
+}

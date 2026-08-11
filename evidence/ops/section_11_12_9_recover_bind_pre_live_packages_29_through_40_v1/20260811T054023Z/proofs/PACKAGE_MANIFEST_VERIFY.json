@@ -1,0 +1,65 @@
+{
+  "ALL_MANIFEST_VERIFY_RC_ZERO": true,
+  "results": [
+    {
+      "SECTION": "11.12.9.29",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_29_pre_live_sbom_present_v1/20260811T042745Z/",
+      "MANIFEST_VERIFY_RC": 0
+    },
+    {
+      "SECTION": "11.12.9.30",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_30_pre_live_static_security_analysis_v1/20260811T043159Z/",
+      "MANIFEST_VERIFY_RC": 0
+    },
+    {
+      "SECTION": "11.12.9.31",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_31_static_security_analysis_high_remediation_and_rerun_v1/20260811T043722Z/",
+      "MANIFEST_VERIFY_RC": 0
+    },
+    {
+      "SECTION": "11.12.9.32",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_32_pre_live_security_regression_v1/20260811T044255Z/",
+      "MANIFEST_VERIFY_RC": 0
+    },
+    {
+      "SECTION": "11.12.9.33",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_33_pre_live_penetration_program_v1/20260811T044900Z/",
+      "MANIFEST_VERIFY_RC": 0
+    },
+    {
+      "SECTION": "11.12.9.34",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_34_pre_live_credential_leakage_test_v1/20260811T045537Z/",
+      "MANIFEST_VERIFY_RC": 0
+    },
+    {
+      "SECTION": "11.12.9.35",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_35_pre_live_authority_replay_test_v1/20260811T050403Z/",
+      "MANIFEST_VERIFY_RC": 0
+    },
+    {
+      "SECTION": "11.12.9.36",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_36_pre_live_recovery_security_test_v1/20260811T050823Z/",
+      "MANIFEST_VERIFY_RC": 0
+    },
+    {
+      "SECTION": "11.12.9.37",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_37_pre_live_critical_findings_open_v1/20260811T052152Z/",
+      "MANIFEST_VERIFY_RC": 0
+    },
+    {
+      "SECTION": "11.12.9.38",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_38_pre_live_high_findings_open_v1/20260811T052547Z/",
+      "MANIFEST_VERIFY_RC": 0
+    },
+    {
+      "SECTION": "11.12.9.39",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_39_pre_live_live_testnet_isolation_proven_v1/20260811T052914Z/",
+      "MANIFEST_VERIFY_RC": 0
+    },
+    {
+      "SECTION": "11.12.9.40",
+      "EVIDENCE_ROOT": "evidence/ops/section_11_12_9_40_pre_live_live_default_block_proven_v1/20260811T053222Z/",
+      "MANIFEST_VERIFY_RC": 0
+    }
+  ]
+}

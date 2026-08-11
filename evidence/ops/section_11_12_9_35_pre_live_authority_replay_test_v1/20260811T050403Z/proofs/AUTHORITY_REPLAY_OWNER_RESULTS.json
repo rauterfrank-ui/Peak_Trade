@@ -1,0 +1,26 @@
+{
+  "DOCUMENT_CLASS": "AUTHORITY_REPLAY_OWNER_RESULTS_SECTION_11_12_9_35_V1",
+  "FOCUSED_PYTEST_PASSED": 245,
+  "FOCUSED_PYTEST_RC": 0,
+  "FOCUSED_PYTEST_SKIPPED": 3,
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "OWNERS": [
+    "tests/ops/test_canonical_durable_authorization_lifecycle_and_revocation_v1.py",
+    "tests/ops/test_phase_9_2_step_7_delegated_cursor_secure_confirm_v1.py",
+    "tests/ops/test_section_11_12_8_bounded_long_running_productive_testnet_campaign_v1.py::test_confirm_replay_fail_closed",
+    "tests/live/test_confirm_token.py",
+    "tests/p48/test_ai_activation_gate_v1.py",
+    "tests/governance/test_wp0c_enforce_gate.py",
+    "tests/governance/test_live_mode_gate.py",
+    "tests/execution/live/test_safety_rails.py",
+    "tests/test_live_gates.py",
+    "tests/test_environment_and_safety.py",
+    "tests/live/test_feature_activation_gate.py",
+    "tests/governance/policy_critic/test_rules.py",
+    "tests/ops/test_phase_9_2_step_4_governed_real_network_execution_binding_v1.py",
+    "tests/ops/test_integrated_paper_shadow_observation_wallclock_session_execution_v1.py",
+    "tests/ops/test_paper_shadow_observation_operator_go_session_preregistration_v1.py"
+  ],
+  "PACKAGE_VERDICT": "PASS",
+  "RUN_ID": "20260811T050403Z"
+}

@@ -1,0 +1,30 @@
+{
+  "ARTIFACTS": [
+    "ACCEPTANCE_MATRIX.json",
+    "CREDENTIAL_LEAKAGE_TEST_REPORT.md",
+    "MACHINE_READABLE_EVALUATION.json",
+    "SANITIZED_FINAL_REPORT.json",
+    "proofs/ADVERSARIAL_REDACTION_PROBE.json",
+    "proofs/ADVERSARIAL_REDACTION_PROBE.rc.txt",
+    "proofs/BASELINE_GIT_AND_TOOLING.json",
+    "proofs/CREDENTIAL_LEAKAGE_FINDINGS_REGISTER.json",
+    "proofs/CREDENTIAL_LEAKAGE_OWNER_RESULTS.json",
+    "proofs/CREDENTIAL_LEAKAGE_REQUIREMENTS_MATRIX.json",
+    "proofs/EXCLUDED_AND_NONBLOCKING_PROBES.json",
+    "proofs/FOCUSED_CREDENTIAL_LEAKAGE_PYTEST.rc.txt",
+    "proofs/FOCUSED_CREDENTIAL_LEAKAGE_PYTEST.txt",
+    "proofs/TRACKED_CREDENTIAL_HYGIENE_SCAN.json",
+    "proofs/TRACKED_CREDENTIAL_HYGIENE_SCAN.rc.txt",
+    "proofs/TRACKED_CREDENTIAL_HYGIENE_SCAN.stderr.txt"
+  ],
+  "DOCUMENT_CLASS": "PROVENANCE_INDEX_SECTION_11_12_9_34_V1",
+  "GENERATED_AT_UTC": "2026-08-11T05:00:32Z",
+  "METHODS": [
+    "focused credential-leakage pytest owners",
+    "tracked credential hygiene policy scan",
+    "adversarial synthetic redaction classification probe"
+  ],
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "RUN_ID": "20260811T045537Z",
+  "secret_value_exposed": false
+}

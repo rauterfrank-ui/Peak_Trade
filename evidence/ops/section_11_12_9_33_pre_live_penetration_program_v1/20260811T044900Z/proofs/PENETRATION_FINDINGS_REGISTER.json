@@ -1,0 +1,34 @@
+{
+  "ADVERSARIAL_BYPASS_PROVEN_COUNT": 0,
+  "CRITICAL_FINDINGS_OPEN": 0,
+  "DOCUMENT_CLASS": "PENETRATION_FINDINGS_REGISTER_SECTION_11_12_9_33_V1",
+  "FINDINGS": [
+    {
+      "adversarial_bypass_proven": false,
+      "blocking_for_penetration_program": false,
+      "class": "INVENTORY_CHARACTERIZATION_DRIFT",
+      "id": "PEN-INV-001",
+      "remediation_hint": "Refresh characterization expectation in separate test-owner maintenance; out of adversarial bypass scope.",
+      "severity": "LOW",
+      "summary": "Expected historical parity-gap assessment surface id string; observed newer FULL_CANONICAL_BACKTEST_BOUNDARY_CHAIN_REASSESSMENT_V0. Not a kill-switch bypass.",
+      "test": "tests/test_backtest_killswitch_boundary_wiring_v0.py::test_parity_gap_assessment_surface_k_backtest_boundary_wiring_pass_v0",
+      "unauthorized_capability_proven": false
+    },
+    {
+      "adversarial_bypass_proven": false,
+      "blocking_for_penetration_program": false,
+      "class": "INVENTORY_CHARACTERIZATION_DRIFT",
+      "id": "PEN-INV-002",
+      "remediation_hint": "Update visibility contract allowlist/inventory in separate docs/test maintenance.",
+      "severity": "LOW",
+      "summary": "Frozen webui file-set inventory missing new market_dashboard_landscape_shell_router_v2.py. Documentary visibility contract drift, not header/auth bypass.",
+      "test": "tests/webui/test_webui_api_security_headers_visibility_contract_v0.py::test_webui_api_security_headers_visibility_contract_classifies_current_sets",
+      "unauthorized_capability_proven": false
+    }
+  ],
+  "FINDINGS_CRITICAL": 0,
+  "FINDINGS_HIGH": 0,
+  "FINDINGS_LOW": 2,
+  "FINDINGS_MEDIUM": 0,
+  "HIGH_FINDINGS_OPEN": 0
+}

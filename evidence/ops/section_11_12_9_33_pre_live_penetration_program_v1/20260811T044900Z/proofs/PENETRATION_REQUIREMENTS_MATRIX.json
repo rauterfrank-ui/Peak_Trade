@@ -1,0 +1,134 @@
+{
+  "CRITICAL_FINDINGS_OPEN": 0,
+  "DOCUMENT_CLASS": "PENETRATION_REQUIREMENTS_MATRIX_SECTION_11_12_9_33_V1",
+  "HIGH_FINDINGS_OPEN": 0,
+  "INVENTORY_DRIFT_FINDINGS_LOW": 2,
+  "INVENTORY_INCLUSIVE_PYTEST_RC": 1,
+  "ORIGIN_MAIN_SHA": "1b61cd94af98439e55e12d7bb839e44852027a06",
+  "PACKAGE_VERDICT": "PASS",
+  "REQUIREMENTS": [
+    {
+      "binds_credential_leakage_test": false,
+      "id": "PEN-01",
+      "owners": [
+        "tests/ci/test_credential_hygiene_redaction_unification_v1.py",
+        "tests/ci/test_secret_scanning_push_protection_governance_v1.py"
+      ],
+      "section13": "Credential Leakage (probe; dedicated package remains OPEN)",
+      "status": "PASS"
+    },
+    {
+      "id": "PEN-02",
+      "owners": [
+        "tests/ci/test_cybersecurity_baseline_action_ref_and_permissions_visibility_contract_v0.py",
+        "tests/ci/test_workflow_write_permissions_visibility_contract_v0.py"
+      ],
+      "section13": "Dependency Tampering / CI Token Privilege Escalation",
+      "status": "PASS"
+    },
+    {
+      "id": "PEN-03",
+      "owners": [
+        "tests/test_rate_limiter.py"
+      ],
+      "section13": "API Abuse / Rate Limit",
+      "status": "PASS"
+    },
+    {
+      "id": "PEN-04",
+      "owners": [
+        "tests/execution/test_fault_injection_contract.py",
+        "tests/governance/test_scenario_scope_event_injection_fail_closed_guard_v1.py"
+      ],
+      "section13": "Injection / Fault Injection",
+      "status": "PASS"
+    },
+    {
+      "id": "PEN-05",
+      "owners": [
+        "tests/p36/test_tarball_v1.py"
+      ],
+      "section13": "Path Traversal",
+      "status": "PASS"
+    },
+    {
+      "binds_authority_replay_test": false,
+      "id": "PEN-06",
+      "owners": [
+        "tests/governance/test_wp0c_enforce_gate.py",
+        "tests/execution/live/test_safety_rails.py",
+        "tests/governance/test_live_mode_gate.py",
+        "tests/test_live_gates.py",
+        "tests/test_environment_and_safety.py"
+      ],
+      "section13": "Replay / Confirm-Authority / enabled-armed Bypass (probe; AUTHORITY_REPLAY_TEST remains OPEN)",
+      "status": "PASS"
+    },
+    {
+      "id": "PEN-07",
+      "owners": [
+        "tests/data/shadow/test_guards.py",
+        "tests/ops/test_okx_futures_shadow_no_order_entrypoint_v0.py",
+        "tests/ops/test_run_testnet_session_entrypoint_fail_closed_contract_v0.py"
+      ],
+      "section13": "Credential Cross-Use / Testnet-Live Endpoint Confusion / Live default block",
+      "status": "PASS"
+    },
+    {
+      "id": "PEN-08",
+      "owners": [
+        "tests/integration/test_kill_switch_e2_safety_guard.py"
+      ],
+      "section13": "Kill-Switch / Emergency-Control Bypass",
+      "status": "PASS"
+    },
+    {
+      "id": "PEN-09",
+      "owners": [
+        "tests/replay_pack/test_hash_validation.py"
+      ],
+      "section13": "Evidence Tampering",
+      "status": "PASS"
+    },
+    {
+      "id": "PEN-10",
+      "owners": [
+        "tests/ops/test_dashboard_cockpit_observer_surface_inventory_v0.py"
+      ],
+      "section13": "Dashboard \u2192 Runtime Influence",
+      "status": "PASS"
+    },
+    {
+      "binds_recovery_security_test": false,
+      "id": "PEN-11",
+      "owners": [
+        "tests/execution/test_fault_injection_contract.py"
+      ],
+      "section13": "Corrupt State Recovery (probe; RECOVERY_SECURITY_TEST remains OPEN)",
+      "status": "PASS"
+    },
+    {
+      "blocking": false,
+      "id": "PEN-12",
+      "justification": "ZAP/DAST remains default-off concept; not authorized/activated by this package; local adversarial owners used instead.",
+      "owners": [
+        "docs/ops/specs/ZAP_DAST_SHADOW_CONCEPT_V0.md"
+      ],
+      "section13": "ZAP/DAST dynamic scan",
+      "status": "N/A_DEFAULT_OFF_NOT_ACTIVATED"
+    }
+  ],
+  "REQUIREMENTS_NA_JUSTIFIED": 1,
+  "REQUIREMENTS_PASS": 11,
+  "REQUIREMENTS_TOTAL": 12,
+  "RUN_ID": "20260811T044900Z",
+  "SECURITY_PROPERTY_PYTEST_PASSED": 273,
+  "SECURITY_PROPERTY_PYTEST_RC": 0,
+  "SECURITY_PROPERTY_PYTEST_SKIPPED": 1,
+  "SEPARATE_PACKAGES_REMAIN_OPEN": [
+    "CREDENTIAL_LEAKAGE_TEST",
+    "AUTHORITY_REPLAY_TEST",
+    "RECOVERY_SECURITY_TEST"
+  ],
+  "ZAP_DAST_EXECUTED": false
+}
