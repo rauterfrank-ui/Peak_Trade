@@ -1,0 +1,77 @@
+{
+  "document_class": "HISTORICAL_ARCHIVE_ONLY",
+  "runtime_authorization_effect": "NONE",
+  "import_date": "2026-08-11",
+  "owner_go": "OWNER_GO_IMPORT_LOCAL_PRIVATE_ZIPS_TO_PEAK_TRADE",
+  "localized_source_dir_resolved": "/Users/frnkhrz/Documents/Dokumente Privat",
+  "requested_source_dir": "~/Documents/Privat/",
+  "canonical_ssot_overwrite": false,
+  "sources": [
+    {
+      "id": "SOURCE_1",
+      "original_filename": "peak_trade_ai_autonomy_audit_docs.zip",
+      "absolute_path": "/Users/frnkhrz/Documents/Dokumente Privat/peak_trade_ai_autonomy_audit_docs.zip",
+      "size_bytes": 6158,
+      "sha256": "c41e43eb628bc193c30254f6855da7b8164d04e6c3cc5419a565ab05245645b8",
+      "classification": "PEAK_TRADE_AI_AUTONOMY_AUDIT_DOCS_HISTORICAL",
+      "decision": "HISTORICAL_ARCHIVE_ONLY",
+      "git_committed_content": true,
+      "target_paths": [
+        "docs/ops/_archive/private_zip_import_20260811/historical_ai_autonomy_audit_docs/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md.archived",
+        "docs/ops/_archive/private_zip_import_20260811/historical_ai_autonomy_audit_docs/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE.md.archived"
+      ],
+      "external_original_zip_copy": "/Users/frnkhrz/Documents/Peak_Trade_Archive/private_zip_import_20260811_peak_trade_ai_autonomy_audit/original_zip_copy/peak_trade_ai_autonomy_audit_docs.zip",
+      "active_canonical_owners": [
+        "docs/governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md",
+        "docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE.md",
+        "docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md"
+      ],
+      "members": [
+        {
+          "zip_path": "docs/governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md",
+          "sha256": "e4bb4303ec8bc0c3d4bfa13a9523e7bfe0102092bed2f98e395ec14f6a638d62",
+          "size_bytes": 8641,
+          "archived_as": "docs/ops/_archive/private_zip_import_20260811/historical_ai_autonomy_audit_docs/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md.archived"
+        },
+        {
+          "zip_path": "docs/governance/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE.md",
+          "sha256": "1f81dff5957f2dc56e44c5b28ecc4d6442326f2d82a11d1301a2c860b0b437d1",
+          "size_bytes": 3567,
+          "archived_as": "docs/ops/_archive/private_zip_import_20260811/historical_ai_autonomy_audit_docs/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE.md.archived"
+        }
+      ]
+    },
+    {
+      "id": "SOURCE_2",
+      "original_filename": "83940723_20251006_05533c0e0a08 2.zip",
+      "absolute_path": "/Users/frnkhrz/Documents/Dokumente Privat/83940723_20251006_05533c0e0a08 2.zip",
+      "size_bytes": 2332682,
+      "sha256": "10d8cc1e9a1096fbef2ecfe3a2c1d045d345decf464ee2355cb92298f14ed256",
+      "classification": "NON_PEAK_TRADE_PERSONAL_LEGAL_ESIGN_CONTRACT_PACK",
+      "decision": "EXTERNAL_ARCHIVE_ONLY_NO_GIT_PDF_BYTES",
+      "git_committed_content": false,
+      "sensitive_reason": "Personal/legal eSign contract PDFs (AGB/Vertragsunterlagen); no Peak_Trade relevance",
+      "external_archive_root": "/Users/frnkhrz/Documents/Peak_Trade_Archive/private_zip_import_20260811_non_peak_trade_personal_legal",
+      "target_paths": [
+        "docs/ops/_archive/private_zip_import_20260811/IMPORT_PROVENANCE.json",
+        "docs/ops/_archive/private_zip_import_20260811/README.md"
+      ],
+      "members": [
+        {
+          "zip_path": "AGB eSign.pdf",
+          "sha256": "8f5f63492c6b600c5fed3cde81731137ea2609fd2fbbb9b459781079442bd4ac",
+          "size_bytes": 335900,
+          "git_committed": false,
+          "external_path": "/Users/frnkhrz/Documents/Peak_Trade_Archive/private_zip_import_20260811_non_peak_trade_personal_legal/extracted/AGB eSign.pdf"
+        },
+        {
+          "zip_path": "Vertragsunterlagen.pdf",
+          "sha256": "b5cf939eeb8bf51215c7e6e3af953749cdcd67a335f290ce510a42e489ce2658",
+          "size_bytes": 1996506,
+          "git_committed": false,
+          "external_path": "/Users/frnkhrz/Documents/Peak_Trade_Archive/private_zip_import_20260811_non_peak_trade_personal_legal/extracted/Vertragsunterlagen.pdf"
+        }
+      ]
+    }
+  ]
+}

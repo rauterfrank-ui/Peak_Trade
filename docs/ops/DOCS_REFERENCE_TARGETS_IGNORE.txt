@@ -31,6 +31,7 @@ docs/analysis/**
 
 # Ops archive copies (historical snapshots)
 docs/ops/archives/**
+docs/ops/_archive/**
 
 # Time-boxed exploratory spikes (may reference removed or superseded paths)
 docs/ops/spikes/**
