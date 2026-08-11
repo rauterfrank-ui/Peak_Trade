@@ -168,7 +168,8 @@ def test_workflow_runs_paper_session_runner_for_audit_evidence() -> None:
 def test_workflow_uploads_session_audit_evidence_without_readiness_claims() -> None:
     text = _workflow_text()
 
-    assert "actions/upload-artifact@v4" in text
+    assert "actions/upload-artifact@" in text
+    assert "# v4" in text or "actions/upload-artifact@v4" in text
     assert "out/ops/gh_paper_session_audit" in text
 
     lowered = text.lower()

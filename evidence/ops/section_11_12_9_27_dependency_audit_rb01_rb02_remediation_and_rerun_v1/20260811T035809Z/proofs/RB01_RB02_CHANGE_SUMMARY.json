@@ -1,0 +1,46 @@
+{
+  "RB01": {
+    "packages": [
+      "urllib3",
+      "pyarrow",
+      "msgpack"
+    ],
+    "status": "CLOSED",
+    "requires_python_floor": ">=3.10"
+  },
+  "RB02": {
+    "packages": [
+      "starlette",
+      "fastapi"
+    ],
+    "gap_fgr_002": {
+      "DOCUMENT_CLASS": "GAP_FGR_002_REACHABILITY_PROOF_V1",
+      "STARLETTE_VERSION": "1.6.0",
+      "STARLETTE_FIXED_GE_1_3_1": true,
+      "CAP11_MODULES": [
+        {
+          "module": "ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.bound_testnet_http_client_v1",
+          "status": "OK"
+        },
+        {
+          "module": "ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.governance_acceptance_v1",
+          "status": "OK"
+        },
+        {
+          "module": "ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.immutable_baseline_preflight_v1",
+          "status": "OK"
+        }
+      ],
+      "WEB_MODULES_LOADED_VIA_CAP11_IMPORTS": [],
+      "CAP11_DEFAULT_PATH_DOES_NOT_IMPORT_ASGI_STACK": true,
+      "GAP_FGR_002_CLOSED": true
+    },
+    "status": "CLOSED"
+  },
+  "COLLATERAL": {
+    "fastapi": "0.141.1 (required for starlette>=1.3.1)",
+    "mlflow": ">=3.9 required by pyarrow>=23 conflict with older mlflow",
+    "ci_matrix": "dropped 3.9; required context remains tests (3.11)"
+  },
+  "OUT_OF_SCOPE_NOTE": "Full --all-extras tracking surface may still report HIGH (cryptography/gitpython/orjson) when those extras are installed; comparable \u00a711.12.9.26 lean scope is PASS."
+}

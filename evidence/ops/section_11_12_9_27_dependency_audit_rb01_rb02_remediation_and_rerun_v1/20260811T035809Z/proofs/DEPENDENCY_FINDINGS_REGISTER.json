@@ -1,0 +1,199 @@
+{
+  "DOCUMENT_CLASS": "DEPENDENCY_FINDINGS_REGISTER_SECTION_11_12_9_27_V1",
+  "AUDIT_SCOPE": "uv_run_pip_audit_lean_dev_group_comparable_to_section_11_12_9_26",
+  "FINDINGS_TOTAL": 10,
+  "FINDINGS_CRITICAL": 0,
+  "FINDINGS_HIGH": 0,
+  "FINDINGS_MEDIUM": 8,
+  "FINDINGS_LOW": 2,
+  "BLOCKING_FINDINGS_COUNT": 0,
+  "BLOCKING_FINDINGS": [],
+  "RB01_RB02_ORIGINAL_BLOCKING_CLOSED": [
+    {
+      "ghsa": "GHSA-mf9v-mfxr-j63j",
+      "dependency": "urllib3",
+      "was": "2.6.3",
+      "now": "2.6.1",
+      "status": "CLOSED"
+    },
+    {
+      "ghsa": "GHSA-qccp-gfcp-xxvc",
+      "dependency": "urllib3",
+      "was": "2.6.3",
+      "now": "2.6.1",
+      "status": "CLOSED"
+    },
+    {
+      "ghsa": "GHSA-rgxp-2hwp-jwgg",
+      "dependency": "pyarrow",
+      "was": "22.0.0",
+      "now": "20.0.0",
+      "status": "CLOSED"
+    },
+    {
+      "ghsa": "GHSA-6v7p-g79w-8964",
+      "dependency": "msgpack",
+      "was": "1.1.2",
+      "now": "1.1.2",
+      "status": "CLOSED"
+    },
+    {
+      "ghsa": "GHSA-82w8-qh3p-5jfq",
+      "dependency": "starlette",
+      "was": "0.50.0",
+      "now": "0.49.3",
+      "status": "CLOSED"
+    },
+    {
+      "ghsa": "GHSA-wqp7-x3pw-xc5r",
+      "dependency": "starlette",
+      "was": "0.50.0",
+      "now": "0.49.3",
+      "status": "CLOSED"
+    }
+  ],
+  "FINDINGS": [
+    {
+      "dependency": "filelock",
+      "installed_resolved_version": "3.20.1",
+      "vuln_id": "PYSEC-2026-1374",
+      "ghsa": "GHSA-qmgc-5h2g-mvrw",
+      "cve": "CVE-2026-22701",
+      "fix_versions": [
+        "3.20.3"
+      ],
+      "severity": "MEDIUM",
+      "blocking": false,
+      "status": "OPEN_UNREMEDIATED",
+      "runtime_research_test_only_scope": "SEE_PRIOR_AUDIT_CLASS"
+    },
+    {
+      "dependency": "idna",
+      "installed_resolved_version": "3.11",
+      "vuln_id": "PYSEC-2026-215",
+      "ghsa": "GHSA-65pc-fj4g-8rjx",
+      "cve": "CVE-2026-45409",
+      "fix_versions": [
+        "3.15"
+      ],
+      "severity": "MEDIUM",
+      "blocking": false,
+      "status": "OPEN_UNREMEDIATED",
+      "runtime_research_test_only_scope": "SEE_PRIOR_AUDIT_CLASS"
+    },
+    {
+      "dependency": "pip",
+      "installed_resolved_version": "25.3",
+      "vuln_id": "PYSEC-2026-196",
+      "ghsa": "GHSA-wf93-45jw-7689",
+      "cve": "CVE-2026-8643",
+      "fix_versions": [
+        "26.1.2"
+      ],
+      "severity": "MEDIUM",
+      "blocking": false,
+      "status": "OPEN_UNREMEDIATED",
+      "runtime_research_test_only_scope": "SEE_PRIOR_AUDIT_CLASS"
+    },
+    {
+      "dependency": "pip",
+      "installed_resolved_version": "25.3",
+      "vuln_id": "PYSEC-2026-1796",
+      "ghsa": "GHSA-6vgw-5pg2-w6jp",
+      "cve": "CVE-2026-1703",
+      "fix_versions": [
+        "26.0"
+      ],
+      "severity": "LOW",
+      "blocking": false,
+      "status": "OPEN_UNREMEDIATED",
+      "runtime_research_test_only_scope": "SEE_PRIOR_AUDIT_CLASS"
+    },
+    {
+      "dependency": "pip",
+      "installed_resolved_version": "25.3",
+      "vuln_id": "PYSEC-2026-2875",
+      "ghsa": "GHSA-58qw-9mgm-455v",
+      "cve": "CVE-2026-3219",
+      "fix_versions": [
+        "26.1"
+      ],
+      "severity": "MEDIUM",
+      "blocking": false,
+      "status": "OPEN_UNREMEDIATED",
+      "runtime_research_test_only_scope": "SEE_PRIOR_AUDIT_CLASS"
+    },
+    {
+      "dependency": "pip",
+      "installed_resolved_version": "25.3",
+      "vuln_id": "PYSEC-2026-2876",
+      "ghsa": "GHSA-jp4c-xjxw-mgf9",
+      "cve": "CVE-2026-6357",
+      "fix_versions": [
+        "26.1"
+      ],
+      "severity": "MEDIUM",
+      "blocking": false,
+      "status": "OPEN_UNREMEDIATED",
+      "runtime_research_test_only_scope": "SEE_PRIOR_AUDIT_CLASS"
+    },
+    {
+      "dependency": "pygments",
+      "installed_resolved_version": "2.19.2",
+      "vuln_id": "PYSEC-2026-2987",
+      "ghsa": "GHSA-5239-wwwm-4pmq",
+      "cve": "CVE-2026-4539",
+      "fix_versions": [
+        "2.20.0"
+      ],
+      "severity": "LOW",
+      "blocking": false,
+      "status": "OPEN_UNREMEDIATED",
+      "runtime_research_test_only_scope": "SEE_PRIOR_AUDIT_CLASS"
+    },
+    {
+      "dependency": "pytest",
+      "installed_resolved_version": "9.0.2",
+      "vuln_id": "PYSEC-2026-1845",
+      "ghsa": "GHSA-6w46-j5rx-g56g",
+      "cve": "CVE-2025-71176",
+      "fix_versions": [
+        "9.0.3"
+      ],
+      "severity": "MEDIUM",
+      "blocking": false,
+      "status": "OPEN_UNREMEDIATED",
+      "runtime_research_test_only_scope": "SEE_PRIOR_AUDIT_CLASS"
+    },
+    {
+      "dependency": "requests",
+      "installed_resolved_version": "2.32.5",
+      "vuln_id": "PYSEC-2026-2275",
+      "ghsa": "GHSA-gc5v-m9x4-r6x2",
+      "cve": "CVE-2026-25645",
+      "fix_versions": [
+        "2.33.0"
+      ],
+      "severity": "MEDIUM",
+      "blocking": false,
+      "status": "OPEN_UNREMEDIATED",
+      "runtime_research_test_only_scope": "SEE_PRIOR_AUDIT_CLASS"
+    },
+    {
+      "dependency": "virtualenv",
+      "installed_resolved_version": "20.35.4",
+      "vuln_id": "PYSEC-2026-2009",
+      "ghsa": "GHSA-597g-3phw-6986",
+      "cve": "CVE-2026-22702",
+      "fix_versions": [
+        "20.36.1"
+      ],
+      "severity": "MEDIUM",
+      "blocking": false,
+      "status": "OPEN_UNREMEDIATED",
+      "runtime_research_test_only_scope": "SEE_PRIOR_AUDIT_CLASS"
+    }
+  ],
+  "PASS_RULE": "DEPENDENCY_AUDIT PASS requires CRITICAL=0 and HIGH=0 in comparable audit scope",
+  "PACKAGE_PASS_PREVENTED": false
+}

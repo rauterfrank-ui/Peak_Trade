@@ -444,7 +444,7 @@ def test_required_check_names_unchanged() -> None:
     assert "name: tests (${{ matrix.python-version }})" in text
     assert "name: strategy-smoke" in text
     assert "name: Fast-Lane" in text
-    assert "python-version: ['3.9', '3.10', '3.11']" in text
+    assert "python-version: ['3.10', '3.11']" in text
 
 
 def test_code_changed_output_uses_narrowed_code_bucket_not_raw_filter_alias() -> None:

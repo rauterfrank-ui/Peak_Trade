@@ -6559,6 +6559,8 @@ MANIFEST_VERIFY_RC=0
 CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_27
 CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_DEPENDENCY_AUDIT_REMEDIATION_BATCH_RB01_RB02_THEN_RERUN
 HARD_STOP_AFTER_THIS_PACKAGE=true
+PR_5862_STATE=MERGED
+PR_5862_MERGE_COMMIT_SHA=6530fc9e652e9c0c3c6c77bee0cac120bdafc5d8
 ```
 
 Mandatory distinctions:
@@ -6572,7 +6574,7 @@ OWNER_GO_POST_DEPENDENCY_AUDIT_FORENSIC_GAP_AND_REMEDIATION_REVIEW != DEPENDENCY
 ```
 
 Observed facts: PR `#5861` closed **zero** dependency findings; all 6 HIGH
-blocking vulns remain installed on current `origin&#47;main` (`urllib3`,
+blocking vulns remain installed on then-current `origin&#47;main` (`urllib3`,
 `pyarrow`, `msgpack`, `starlette`). Independent review discovered 5
 coverage gaps (1 blocking: optional web&#47;starlette reachability) and 4
 traceability gaps. Prior mandatory security packages remain
@@ -6580,7 +6582,108 @@ proof-current (`CURRENT`; 0 invalidated). Earliest unresolved security
 dependency remains `DEPENDENCY_AUDIT`. Gate remains `NOT_PASSED`. Live
 remains hard-blocked. Cap &#47; §11.13 remains unstarted. Hard stop after this
 package. Proposed remediation batches `RB-01`…`RB-07` are **not**
-authorized here.
+authorized here. PR `#5862` squash-merged this forensic binding to
+`origin&#47;main` at `6530fc9e652e9c0c3c6c77bee0cac120bdafc5d8`.
+
+##### 11.12.9.28 Dependency Audit RB-01&#47;RB-02 remediation and re-run (binding; PASS; gate remains NOT_PASSED)
+
+Owner-GO
+`OWNER_GO_REQUIRED_SEPARATE_FOR_DEPENDENCY_AUDIT_REMEDIATION_BATCH_RB01_RB02_THEN_RERUN`
+(`AUTHORIZED_SCOPE=RB01_RB02_DEPENDENCY_AUDIT_RERUN_ONLY`) executes
+RB-01 then RB-02 then a comparable DEPENDENCY_AUDIT re-run on a branch
+from then-current `origin&#47;main`. After PR `#5862` squash-merge,
+`PR_5862_STATE=MERGED` (forensic §11.12.9.27 remains bound on main and is
+**not** duplicated here). This section is numbered **§11.12.9.28** so the
+merged forensic §11.12.9.27 is preserved. Sealed remediation evidence root
+retains its historical path name
+`section_11_12_9_27_dependency_audit_rb01_rb02_remediation_and_rerun_v1`
+(immutable sealed evidence; section pointer is §11.12.9.28).
+
+Remediation observed:
+
+``` text
+RB01_STATUS=CLOSED
+RB02_STATUS=CLOSED
+GAP_FGR_002_STATUS=CLOSED
+INSTALLED_urllib3=2.7.0
+INSTALLED_pyarrow=25.0.1
+INSTALLED_msgpack=1.2.1
+INSTALLED_starlette=1.6.0
+REQUIRES_PYTHON=>=3.10
+CI_MATRIX_PYTHON=3.10,3.11
+ORIGINAL_BLOCKING_HIGH_GHSA_CLOSED=6
+```
+
+Comparable lean re-run (`uv sync --group dev` + `uv run pip-audit`, same
+class of environment as §11.12.9.26):
+
+``` text
+DEPENDENCY_AUDIT=PASS
+DEPENDENCY_AUDIT_PROVEN=true
+FINDINGS_CRITICAL=0
+FINDINGS_HIGH=0
+FINDINGS_MEDIUM=8
+FINDINGS_LOW=2
+HIGH_FINDINGS_OPEN=0
+CRITICAL_FINDINGS_OPEN=0
+```
+
+Sealed evidence root:
+
+`evidence&#47;ops&#47;section_11_12_9_27_dependency_audit_rb01_rb02_remediation_and_rerun_v1&#47;20260811T035809Z&#47;`
+
+``` text
+SECTION_11_12_9_28_RUN_ID=20260811T035809Z
+SECTION_11_12_9_28_BASE_ORIGIN_MAIN_SHA_AT_EXECUTION=04aac4b99ae1cce173b0f669e0712fbdee729342
+SECTION_11_12_9_28_REBASE_ORIGIN_MAIN_SHA=6530fc9e652e9c0c3c6c77bee0cac120bdafc5d8
+SECTION_11_12_9_28_EVIDENCE_ROOT=evidence/ops/section_11_12_9_27_dependency_audit_rb01_rb02_remediation_and_rerun_v1/20260811T035809Z/
+PROOF_METHOD=RB01_RB02_UV_LOCK_REMEDIATION_PLUS_LEAN_PIP_AUDIT_RERUN
+PROOF_EXECUTED=true
+PROOF_RESULT=DEPENDENCY_AUDIT_PASS_GATE_REMAINS_NOT_PASSED
+ORDER_EFFECT=NONE
+NO_TRADING_LOGIC_CHANGE=true
+DEPENDENCY_AUDIT=PASS
+DEPENDENCY_AUDIT_PROVEN=true
+SECRETS_REVIEW=PASS
+THREAT_MODEL_CURRENT=true
+CYBERSECURITY_ARCHITECTURE_REVIEW=PASS
+LONG_RUNNING_TESTNET_PROVEN=true
+TESTNET_LIFECYCLE_PROVEN=true
+EARLIEST_UNRESOLVED_DEPENDENCY=SBOM_PRESENT
+EARLIEST_UNRESOLVED_SECTION_POINTER=SBOM_PRESENT
+PRE_LIVE_CYBERSECURITY_GATE=NOT_PASSED
+SECTION_11_13_STARTED=false
+LIVE_AUTHORIZED=false
+PR_5862_STATE=MERGED
+PR_5862_MERGE_COMMIT_SHA=6530fc9e652e9c0c3c6c77bee0cac120bdafc5d8
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_12_9_28
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_PRE_LIVE_SECURITY_PACKAGE_SBOM_PRESENT
+HARD_STOP_AFTER_THIS_PACKAGE=true
+```
+
+Mandatory distinctions:
+
+``` text
+DEPENDENCY_AUDIT_PASS != PRE_LIVE_CYBERSECURITY_GATE_PASS
+DEPENDENCY_AUDIT_PROVEN != SBOM_PRESENT
+DEPENDENCY_AUDIT_PASS != LIVE_AUTHORIZED
+DEPENDENCY_AUDIT_PASS != SECTION_11_13_STARTED
+RB01_RB02_REMEDIATION != NEXT_SECURITY_PACKAGE_AUTHORIZATION
+SECTION_11_12_9_27_FORENSIC_REVIEW_PRESERVED=true
+PR_5862_STATE=MERGED
+```
+
+Observed facts: the six §11.12.9.26 blocking HIGH GHSAs are closed on the
+comparable lean audit environment; `DEPENDENCY_AUDIT=PASS` &#47;
+`DEPENDENCY_AUDIT_PROVEN=true` are newly bound; remaining MEDIUM&#47;LOW
+findings are non-blocking for the HIGH rule; earliest unmet §18.2
+criterion advances to `SBOM_PRESENT`. Gate remains `NOT_PASSED`. Live
+remains hard-blocked. Cap &#47; §11.13 remains unstarted. Hard stop after this
+package. Creating&#47;executing SBOM or later packages requires a **separate**
+Owner-GO. Optional extras&#47;tracking install surfaces are out of the
+comparable lean audit scope and are not claimed PASS under
+`--all-extras`.
 
 Canonical residual sequence pointer (section sequence historically bound;
 productive proven-field chain closed):

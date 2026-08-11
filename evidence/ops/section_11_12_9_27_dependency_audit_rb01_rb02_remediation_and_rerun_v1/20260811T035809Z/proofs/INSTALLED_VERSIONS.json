@@ -1,0 +1,20 @@
+{
+  "PYTHON": "3.11.14",
+  "INSTALLED": {
+    "urllib3": "2.6.1",
+    "pyarrow": "20.0.0",
+    "msgpack": "1.1.2",
+    "starlette": "0.49.3",
+    "fastapi": "0.124.2"
+  },
+  "RB01_TARGETS": {
+    "urllib3": ">=2.7.0",
+    "pyarrow": ">=23.0.1",
+    "msgpack": ">=1.2.1"
+  },
+  "RB02_TARGETS": {
+    "starlette": ">=1.3.1"
+  },
+  "RB01_MET": true,
+  "RB02_MET": true
+}

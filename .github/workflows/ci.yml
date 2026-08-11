@@ -569,7 +569,8 @@ jobs:
   # ============================================================================
   # Tests (all Python versions)
   # ============================================================================
-  # Always creates test jobs for all required Python versions (3.9, 3.10, 3.11).
+  # Always creates test jobs for all required Python versions (3.10, 3.11).
+  # Python 3.9 dropped: RB-01/RB-02 security fix floors require CPython >=3.10.
   # On docs-only / workflow-only / static-contract-only PRs, jobs short-circuit SUCCESS (NO_OP).
   # FOCUSED/CONTRACT_FOCUSED runs bounded pytest on mapped owners.
   # PR_BOUNDED_FULL runs conservative bounded gates (never pytest tests/ exhaustive).
@@ -587,7 +588,7 @@ jobs:
       fail-fast: false
       matrix:
         # Always create jobs for all required versions (to satisfy branch protection)
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11']
 
     steps:
       - name: Exact-head Ready reuse short-circuit
@@ -910,7 +911,7 @@ jobs:
   # PR Gate (informational aggregate check)
   # ============================================================================
   # When run_matrix=false: Fast-Lane + (tests/strategy-smoke skip) → SUCCESS.
-  # When run_matrix=true: Fast-Lane + tests (3.9/3.10/3.11) + strategy-smoke → SUCCESS.
+  # When run_matrix=true: Fast-Lane + tests (3.10/3.11) + strategy-smoke → SUCCESS.
   # Branch-protection required contexts are managed via
   # config/ci/required_status_checks.json (required_contexts - ignored_contexts).
   # ============================================================================
