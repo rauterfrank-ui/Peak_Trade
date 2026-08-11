@@ -33,7 +33,6 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     SCOPED_OWNER_GO_AUTHORIZATION,
     SCOPED_OWNER_GO_SCOPE,
     SCOPED_OWNER_GO_SCOPE_LEGACY_ALIAS,
-    SCOPED_OWNER_GO_SCOPE_LEGACY_LONG_RUNNING,
     SCOPED_OWNER_GO_TOKEN,
     SECTION_11_13_STARTED,
 )
@@ -100,7 +99,6 @@ def verify_section_11_12_8_actual_productive_testnet_campaign_run_start_v1(
         "SCOPED_OWNER_GO_AUTHORIZATION": SCOPED_OWNER_GO_AUTHORIZATION,
         "ACCEPTED_OWNER_GO_SCOPES": list(ACCEPTED_OWNER_GO_SCOPES),
         "LEGACY_OWNER_GO_ALIASES": [
-            SCOPED_OWNER_GO_SCOPE_LEGACY_LONG_RUNNING,
             SCOPED_OWNER_GO_SCOPE_LEGACY_ALIAS,
         ],
         "CANONICAL_VENUE": CANONICAL_VENUE,
@@ -131,7 +129,7 @@ def verify_section_11_12_8_actual_productive_testnet_campaign_run_start_v1(
             LIVE_ORDER_EFFECT == "NONE",
             CANONICAL_VENUE == "OKX_EEA_DEMO",
             CANONICAL_ORDER_SZ_FOR_VENUE_NATIVE_BODY_V1 == "0.0001",
-            SCOPED_OWNER_GO_SCOPE == "EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN",
+            SCOPED_OWNER_GO_SCOPE == "EXECUTE_BOUNDED_LONG_RUNNING_PRODUCTIVE_TESTNET_CAMPAIGN_NOW",
             unknown_ok,
             reconcile_ok,
             seal_blocked_ok,

@@ -56,6 +56,12 @@ def _parse_okx_material(material: str) -> dict[str, str]:
 
 
 def _assert_testnet_url(url: str) -> tuple[str, str]:
+    """Return (host, sign_request_path).
+
+    OKX private REST signing requires ``requestPath`` to include the query
+    string when present (``path?query``). Endpoint allowlisting still uses
+    the path-only component.
+    """
     parsed = urlparse(url)
     host = (parsed.hostname or "").lower()
     if host in LIVE_FORBIDDEN_HOSTS or any(
@@ -66,7 +72,9 @@ def _assert_testnet_url(url: str) -> tuple[str, str]:
         raise BoundTestnetHttpClientError(f"HOST_NOT_IN_TESTNET_ALLOWLIST:{host}")
     path = parsed.path or ""
     assert_endpoint_allowlisted_v1(endpoint=path, rest_base=f"{parsed.scheme}://{host}")
-    return host, path
+    query = parsed.query or ""
+    sign_request_path = f"{path}?{query}" if query else path
+    return host, sign_request_path
 
 
 def sign_okx_request_v1(
@@ -118,7 +126,7 @@ class BoundOkxTestnetHttpClientV1:
         body: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
     ) -> dict[str, Any]:
-        host, path = _assert_testnet_url(url)
+        host, sign_request_path = _assert_testnet_url(url)
         method_u = str(method or "").upper()
         if method_u not in {"GET", "POST"}:
             raise BoundTestnetHttpClientError(f"METHOD_FORBIDDEN:{method}")
@@ -135,7 +143,7 @@ class BoundOkxTestnetHttpClientV1:
             secret=creds["api_secret"],
             timestamp=timestamp,
             method=method_u,
-            request_path=path,
+            request_path=sign_request_path,
             body=body_text,
         )
         auth_headers = {
@@ -151,11 +159,15 @@ class BoundOkxTestnetHttpClientV1:
         del creds
         merged = dict(headers or {})
         merged.update(auth_headers)
+        path_only = sign_request_path.split("?", 1)[0]
         prepared = {
             "method": method_u,
             "url": url,
             "host": host,
-            "path": path,
+            "path": path_only,
+            "sign_request_path": sign_request_path,
+            "sign_request_path_includes_query": ("?" in sign_request_path),
+            "permanent_query_sign_fix": True,
             "rest_base": self.rest_base,
             "simulation_header": {SIMULATION_HEADER_NAME: SIMULATION_HEADER_VALUE},
             "auth_headers_present": True,
