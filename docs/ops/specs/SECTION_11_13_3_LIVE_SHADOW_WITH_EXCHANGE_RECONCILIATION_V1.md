@@ -28,7 +28,7 @@ order plan, and does **not** activate Live (`LIVE_AUTHORIZED=false`).
 | Surface | Path |
 |---------|------|
 | Code | `src/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1/` |
-| Reconciliation | `.../reconciliation_v1.py` (§11.5 layers) |
+| Reconciliation | `...&#47;reconciliation_v1.py` (§11.5 layers) |
 | Config example | `config/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1.example.json` |
 | Runner | `scripts/ops/run_section_11_13_3_live_shadow_with_exchange_reconciliation_v1.py` |
 | Verifier | `scripts/ops/verify_section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1.py` |
