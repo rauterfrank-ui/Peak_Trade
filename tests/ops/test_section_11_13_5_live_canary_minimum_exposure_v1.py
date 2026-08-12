@@ -317,3 +317,27 @@ def test_live_canary_cybersecurity_gate_not_passed_under_current_blockers() -> N
     assert result["NEW_CANARY_OWNER_GO_GRANTED"] is False
     assert "TRADE_ATTESTATION_FALSE" in result["BLOCKERS"]
     assert result["TRADE_ATTESTATION_DISTINCTION"] == "TRADE_PERMISSION_CONFIRMED_FALSE"
+
+
+def test_post_merge_pre_canary_readiness_fail_closed(tmp_path: Path) -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_canary_owner_dependency_resolution_v1 import (
+        evaluate_pre_canary_readiness_terminal_v1,
+    )
+
+    repo = Path(__file__).resolve().parents[2]
+    terminal = evaluate_pre_canary_readiness_terminal_v1(
+        repo_root=repo,
+        merge_commit_sha="b3dadd86d6821882c8184bd1f6f8e207cbc4af43",
+    )
+    assert terminal["TERMINAL_STATE"] == "FAIL_CLOSED_PRE_CANARY_BLOCKED"
+    assert terminal["TRADE_ATTESTATION"] is False
+    assert terminal["WITHDRAW_ATTESTATION"] is False
+    assert terminal["EXCHANGE_TRUTH_ADOPTION_STATUS"] == "OWNER_POLICIES_REQUIRED_NOT_ADOPTED"
+    assert terminal["LIVE_CANARY_CYBERSECURITY_GATE"] == "NOT_PASSED"
+    assert terminal["BLOCKS_NEW_ENTRY"] is True
+    assert terminal["LIVE_RECONCILIATION_PROVEN"] is False
+    assert terminal["LIVE_AUTHORIZED"] is False
+    assert terminal["NEW_CANARY_OWNER_GO_GRANTED"] is False
+    assert terminal["PRIOR_CANARY_OWNER_GO_REUSED"] is False
+    assert terminal["EARLIEST_UNRESOLVED_DEPENDENCY"] == ("OWNER_TRADE_ATTESTATION_FOR_LIVE_CANARY")
+    _ = tmp_path  # reserved for future sealed-path fixtures
