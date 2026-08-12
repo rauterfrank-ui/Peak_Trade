@@ -1,0 +1,25 @@
+{
+  "DOCUMENT_CLASS": "SECTION_11_13_5_C_OWNER_PERMISSION_ATTESTATION_V1",
+  "SECRET_VALUES_INCLUDED": false,
+  "owner_permission_attestation": {
+    "READ": true,
+    "TRADE": true,
+    "WITHDRAW": false,
+    "account_scope": "856964404452495999",
+    "credential_class": "LIVE_CANARY_MINIMUM_EXPOSURE_TRADE_API_KEY",
+    "entity": "OKX Europe Limited",
+    "okx_restrictions_after_reset": "24h_no_withdrawals_and_no_p2p_sell",
+    "passkey_reset_executed": true,
+    "passkey_target": "Google Password Manager #1",
+    "region": "EEA/DE",
+    "rest_host": "eea.okx.com",
+    "secretref_uri": "secretref://vault/peak-trade/live-canary-minimum-exposure/okx",
+    "ui_key_name": "PeakTrade-Live-Canary-MinExp",
+    "ui_permissions_observed": {
+      "Abheben": false,
+      "Handel": true,
+      "Lesen": true
+    },
+    "venue": "OKX"
+  }
+}
