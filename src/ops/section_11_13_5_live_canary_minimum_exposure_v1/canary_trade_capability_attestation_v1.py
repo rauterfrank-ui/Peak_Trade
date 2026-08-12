@@ -13,12 +13,10 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
-    BLOCKS_NEW_ENTRY,
     DEFAULT_INSTRUMENT_ID,
     LIVE_AUTHORIZED,
     LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED,
     LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN,
-    LIVE_RECONCILIATION_PROVEN,
     PRIOR_DRY_RUN_PERMISSION_ATTESTATION,
     REQUIRED_CREDENTIAL_CLASS,
     REQUIRED_PERMISSION_ATTESTATION_FOR_SUBMIT,
@@ -318,6 +316,10 @@ def evaluate_live_canary_canary_trade_capability_attestation_v1(
             "TRADE": True if trade_attestation else False,
             "WITHDRAW": True if withdraw_attestation else False,
         },
+        # §11.13.5.C does not clear economic/recon standing.
+        live_reconciliation_proven=False,
+        blocks_new_entry=True,
+        unresolved_economic_divergence_blocks_new_entry=True,
     )
 
     earliest = (
@@ -370,8 +372,9 @@ def evaluate_live_canary_canary_trade_capability_attestation_v1(
         "SECRET_VALUE_ACCESS": "NONE",
         "LIVE_CANARY_CYBERSECURITY_GATE": gate["LIVE_CANARY_CYBERSECURITY_GATE"],
         "LIVE_CANARY_CYBERSECURITY_GATE_EVAL": gate,
-        "BLOCKS_NEW_ENTRY": BLOCKS_NEW_ENTRY,
-        "LIVE_RECONCILIATION_PROVEN": LIVE_RECONCILIATION_PROVEN,
+        # §11.13.5.C standing: economic divergence / recon not cleared by trade-key GO.
+        "BLOCKS_NEW_ENTRY": True,
+        "LIVE_RECONCILIATION_PROVEN": False,
         "LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED": LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED,
         "LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN": LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN,
         "LIVE_AUTHORIZED": LIVE_AUTHORIZED,

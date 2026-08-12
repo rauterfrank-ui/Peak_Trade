@@ -48,9 +48,23 @@ def evaluate_live_canary_cybersecurity_gate_v1(
     default_block_fail_closed_proven: bool | None = None,
     one_shot_owner_go_separation_proven: bool | None = None,
     canary_success_generalizes_to_general_live: bool = False,
+    live_reconciliation_proven: bool | None = None,
+    blocks_new_entry: bool | None = None,
+    unresolved_economic_divergence_blocks_new_entry: bool | None = None,
 ) -> dict[str, Any]:
     perm = dict(permission_attestation or PRIOR_DRY_RUN_PERMISSION_ATTESTATION)
     blockers: list[str] = []
+    recon_proven = (
+        LIVE_RECONCILIATION_PROVEN
+        if live_reconciliation_proven is None
+        else bool(live_reconciliation_proven)
+    )
+    blocks_entry = BLOCKS_NEW_ENTRY if blocks_new_entry is None else bool(blocks_new_entry)
+    unresolved_blocks = (
+        UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY
+        if unresolved_economic_divergence_blocks_new_entry is None
+        else bool(unresolved_economic_divergence_blocks_new_entry)
+    )
 
     if pre_live_cybersecurity_gate != "PASS":
         blockers.append("PRE_LIVE_CYBERSECURITY_GATE_NOT_PASS")
@@ -68,9 +82,9 @@ def evaluate_live_canary_cybersecurity_gate_v1(
         blockers.append("FIXTURE_OR_CAP11_9_ACTIVATION_CLAIM")
     if not CAPABILITY_11_9_REMAINS_FIXTURE_ONLY:
         blockers.append("CAP11_9_FIXTURE_ONLY_DRIFT")
-    if not LIVE_RECONCILIATION_PROVEN:
+    if not recon_proven:
         blockers.append("LIVE_RECONCILIATION_PROVEN_FALSE")
-    if BLOCKS_NEW_ENTRY or UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY:
+    if blocks_entry or unresolved_blocks:
         blockers.append("BLOCKS_NEW_ENTRY_OR_UNRESOLVED_DIVERGENCE")
     if (
         LIVE_AUTHORIZED

@@ -180,10 +180,13 @@ ORDER_EFFECT = "NONE"
 NETWORK_EFFECT_DEFAULT = "NONE"
 CREDENTIAL_ACCESS_DEFAULT = "NONE"
 
-# Standing SSOT facts preserved by this authoring surface (not cleared here).
-LIVE_RECONCILIATION_PROVEN = False
-BLOCKS_NEW_ENTRY = True
-UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY = True
+# Standing SSOT facts (updated only when a governed Owner-GO proves them).
+# §11.13.5.E proves LIVE_RECONCILIATION_PROVEN after exchange economic-baseline
+# adoption + productive private-read match; BLOCKS_NEW_ENTRY clears with that proof.
+# OKX temp-security clearance remains a separate canary cybersecurity blocker.
+LIVE_RECONCILIATION_PROVEN = True
+BLOCKS_NEW_ENTRY = False
+UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY = False
 
 REQUIRED_PERMISSION_ATTESTATION_FOR_SUBMIT = {
     "READ": True,
