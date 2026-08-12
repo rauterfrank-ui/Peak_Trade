@@ -1,0 +1,101 @@
+{
+  "ACCOUNT_MUTATION_EFFECT": "NONE",
+  "ANY_LAYER_CLASSIFIED_AS_REAL_ECONOMIC_DIVERGENCE_D": false,
+  "BLOCKS_NEW_ENTRY_CLEARED": false,
+  "DOCUMENT_CLASS": "SECTION_11_13_5_FORENSIC_LAYER_CLASSIFICATION_V1",
+  "LIVE_RECONCILIATION_PROVEN_CLEARED": false,
+  "ORDER_EFFECT": "NONE",
+  "OWNER_ADOPTION_POLICIES_REQUIRED": [
+    "POLICY_ADOPT_EXCHANGE_BALANCE_BASELINE_V1",
+    "POLICY_ADOPT_EXCHANGE_LOCAL_PORTFOLIO_BASELINE_V1",
+    "POLICY_ADOPT_EXCHANGE_VENUE_METADATA_BASELINE_V1"
+  ],
+  "PRIMARY_CLASSIFICATION_CODES": [
+    "A_STALE_OR_LOCAL_DATA_MISMATCH",
+    "C_EXPECTED_BENIGN_OPERATIONAL_DIFFERENCE"
+  ],
+  "PRODUCTIVE_NETWORK_AUTHORIZATION": "MISSING_SEPARATE_LIVE_RO_GO_FOR_FORENSIC_REFRESH",
+  "PRODUCTIVE_NETWORK_USED": false,
+  "SECRET_VALUE_ACCESS": "NONE",
+  "SOURCE_DRY_RUN_EVIDENCE": "evidence/ops/section_11_13_4_live_dry_run_order_plan_proven_v1/20260811T230805Z/",
+  "SOURCE_SHADOW_EVIDENCE": "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/20260811T211828Z/",
+  "UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY": true,
+  "contract_ok": true,
+  "layers": [
+    {
+      "account_mode": "LIVE_PRE_TRADING_SHADOW_BASELINE",
+      "classification_codes": [
+        "B_SEMANTIC_OR_UNIT_MISMATCH",
+        "C_EXPECTED_BENIGN_OPERATIONAL_DIFFERENCE"
+      ],
+      "classification_primary": "C_EXPECTED_BENIGN_OPERATIONAL_DIFFERENCE",
+      "clears_blocks_new_entry_automatically": false,
+      "contract_multiplier": null,
+      "currency": null,
+      "exchange_digest": "f6d05c187291e03e",
+      "exchange_status": "observed",
+      "freshness_source": "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/20260811T211828Z/",
+      "instrument_identity": "BTC-USDT-SWAP",
+      "layer": "venue_instrument_and_contract_metadata",
+      "local_digest": "7ee5ead901fd4376",
+      "local_status": "flat_or_empty",
+      "normalization_path": "digest_compare(local_expected_state.layers[layer], exchange_snapshot.layers[layer]) via section_11_13_3 reconciliation_v1 without adoption policy",
+      "prior_outcome": "HARD_STOP_OWNER_REVIEW",
+      "productive_network_refresh_required": false,
+      "rationale": "Local shadow expected state carries no instrument/metadata catalog (flat_or_empty by design for pre-trading GET-only shadow). Exchange snapshot observes account/config metadata. Open positions and open orders layers MATCH; this is not a position/PnL economic conflict.",
+      "requires_owner_adoption_policy": true,
+      "resolution_policy_id": "POLICY_ADOPT_EXCHANGE_VENUE_METADATA_BASELINE_V1",
+      "units": "metadata_digest"
+    },
+    {
+      "account_mode": "LIVE_PRE_TRADING_SHADOW_BASELINE",
+      "classification_codes": [
+        "A_STALE_OR_LOCAL_DATA_MISMATCH"
+      ],
+      "classification_primary": "A_STALE_OR_LOCAL_DATA_MISMATCH",
+      "clears_blocks_new_entry_automatically": false,
+      "contract_multiplier": null,
+      "currency": "USDT_OR_ACCOUNT_EQ_AS_OBSERVED",
+      "exchange_digest": "0acd1d0d4a559c4b",
+      "exchange_status": "observed",
+      "freshness_source": "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/20260811T211828Z/",
+      "instrument_identity": "BTC-USDT-SWAP",
+      "layer": "balances_equity_and_available_margin",
+      "local_digest": "7ee5ead901fd4376",
+      "local_status": "flat_or_empty",
+      "normalization_path": "digest_compare(local_expected_state.layers[layer], exchange_snapshot.layers[layer]) via section_11_13_3 reconciliation_v1 without adoption policy",
+      "prior_outcome": "HARD_STOP_OWNER_REVIEW",
+      "productive_network_refresh_required": false,
+      "rationale": "Local LIVE portfolio ledger was never seeded (flat_or_empty). Exchange observes funded balances/equity. Positions layer MATCH (flat). Divergence is local baseline absence vs exchange cash, not conflicting open positions. Still blocks new entry until Owner adopts exchange balance baseline via explicit policy.",
+      "requires_owner_adoption_policy": true,
+      "resolution_policy_id": "POLICY_ADOPT_EXCHANGE_BALANCE_BASELINE_V1",
+      "units": "equity_digest"
+    },
+    {
+      "account_mode": "LIVE_PRE_TRADING_SHADOW_BASELINE",
+      "classification_codes": [
+        "A_STALE_OR_LOCAL_DATA_MISMATCH",
+        "E_IMPLEMENTATION_DEFECT"
+      ],
+      "classification_primary": "A_STALE_OR_LOCAL_DATA_MISMATCH",
+      "clears_blocks_new_entry_automatically": false,
+      "contract_multiplier": null,
+      "currency": "USDT_OR_ACCOUNT_EQ_AS_OBSERVED",
+      "exchange_digest": "0acd1d0d4a559c4b",
+      "exchange_status": "observed",
+      "freshness_source": "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/20260811T211828Z/",
+      "instrument_identity": "BTC-USDT-SWAP",
+      "layer": "local_portfolio_and_accounting",
+      "local_digest": "7ee5ead901fd4376",
+      "local_status": "flat_or_empty",
+      "normalization_path": "digest_compare(local_expected_state.layers[layer], exchange_snapshot.layers[layer]) via section_11_13_3 reconciliation_v1 without adoption policy",
+      "prior_outcome": "HARD_STOP_OWNER_REVIEW",
+      "productive_network_refresh_required": false,
+      "rationale": "Exchange snapshot builder mirrors balances_equity digest into local_portfolio_and_accounting when balances are observed, while local expected remains flat. Primary issue is local LIVE accounting baseline absence (A). Secondary note (E): layer aliasing amplifies the same balance observation as a second HARD_STOP without an independent portfolio book comparison.",
+      "requires_owner_adoption_policy": true,
+      "resolution_policy_id": "POLICY_ADOPT_EXCHANGE_LOCAL_PORTFOLIO_BASELINE_V1",
+      "units": "portfolio_digest_aliased_from_balances"
+    }
+  ],
+  "ok": true
+}
