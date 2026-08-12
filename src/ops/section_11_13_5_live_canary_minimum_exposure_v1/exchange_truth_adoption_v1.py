@@ -191,6 +191,10 @@ def evaluate_exchange_truth_adoption_v1(
         default_block_fail_closed_proven=True,
         one_shot_owner_go_separation_proven=True,
         canary_success_generalizes_to_general_live=False,
+        # §11.13.5.D never clears economic/recon standing; pin historical blockers.
+        live_reconciliation_proven=False,
+        blocks_new_entry=True,
+        unresolved_economic_divergence_blocks_new_entry=True,
     )
 
     if adoption_ok:

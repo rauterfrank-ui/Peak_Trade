@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -605,3 +606,169 @@ def test_live_canary_cybersecurity_gate_requires_exchange_truth_when_supplied() 
     assert result["LIVE_CANARY_CYBERSECURITY_GATE"] == "NOT_PASSED"
     assert "EXCHANGE_TRUTH_ADOPTION_NOT_ADOPTED" in result["BLOCKERS"]
     assert "OKX_TEMP_SECURITY_RESTRICTION_CLEARANCE_EVIDENCE_ABSENT" in result["BLOCKERS"]
+
+
+def test_economic_baseline_rejects_wrong_owner_go(tmp_path: Path) -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.economic_baseline_and_okx_clearance_v1 import (
+        EconomicBaselineAndOkxClearanceError,
+        evaluate_economic_baseline_and_okx_clearance_v1,
+    )
+
+    with pytest.raises(EconomicBaselineAndOkxClearanceError, match="OWNER_GO_MISBOUND"):
+        evaluate_economic_baseline_and_okx_clearance_v1(
+            repo_root=tmp_path,
+            origin_main_sha="abc",
+            owner_go="OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE",
+            reconciliation_eval={"ALL_LAYERS_MATCH": True},
+            exchange_snapshot={},
+            local_expected_state_adopted={},
+            okx_clearance={},
+        )
+
+
+def test_economic_baseline_recon_proven_clearance_absent_blocks_cyber_gate() -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+        REUSED_BINDING_ACCOUNT_SCOPE,
+        REUSED_BINDING_ENTITY,
+        REUSED_BINDING_REGION,
+        REUSED_BINDING_REST_HOST,
+        REUSED_BINDING_VENUE,
+        REQUIRED_CREDENTIAL_CLASS,
+    )
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.economic_baseline_and_okx_clearance_v1 import (
+        CLEARANCE_ABSENT_OR_UNPROVEN,
+        TERMINAL_RECON_PROVEN_CLEARANCE_UNPROVEN,
+        evaluate_economic_baseline_and_okx_clearance_v1,
+        evaluate_okx_temp_security_clearance_v1,
+    )
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.exchange_truth_adoption_v1 import (
+        REQUIRED_SECRETREF_URI,
+        STATUS_ADOPTED_PROVEN,
+    )
+
+    repo = Path(__file__).resolve().parents[2]
+    sealed = (
+        repo
+        / "evidence/ops/section_11_13_5_economic_baseline_and_okx_clearance_v1/20260812T153425Z"
+    )
+    exchange = json.loads(
+        (sealed / "EXCHANGE_SNAPSHOT.sanitized.json").read_text(encoding="utf-8")
+    )["layers"]
+    local = json.loads(
+        (sealed / "LOCAL_EXPECTED_STATE_ADOPTED.sanitized.json").read_text(encoding="utf-8")
+    )["layers"]
+    recon = json.loads((sealed / "RECONCILIATION_AFTER_ADOPTION.json").read_text(encoding="utf-8"))
+    clearance = evaluate_okx_temp_security_clearance_v1(
+        restriction_still_active=True,
+        clearance_evidence_present_proven=False,
+        evidence_source="TEST_SOURCE",
+        observed_at_utc="2026-08-12T15:34:25Z",
+        restriction_expires_at_local="2026-08-13T15:48:50+02:00",
+    )
+    att = {
+        "READ_ATTESTATION": True,
+        "TRADE_ATTESTATION": True,
+        "WITHDRAW_ATTESTATION": False,
+        "KEY_BINDING_STATUS": "PROVEN",
+        "SECRETREF_STATUS": "RESOLVED",
+        "SECRETREF_URI_CONTRACT": REQUIRED_SECRETREF_URI,
+        "VENUE": REUSED_BINDING_VENUE,
+        "LEGAL_ENTITY": REUSED_BINDING_ENTITY,
+        "REGION": REUSED_BINDING_REGION,
+        "REST_HOST": REUSED_BINDING_REST_HOST,
+        "ACCOUNT_SCOPE": REUSED_BINDING_ACCOUNT_SCOPE,
+        "KEY_CLASS": REQUIRED_CREDENTIAL_CLASS,
+        "PRIOR_DRY_RUN_KEY_REUSED": False,
+    }
+    result = evaluate_economic_baseline_and_okx_clearance_v1(
+        repo_root=repo,
+        origin_main_sha="74a32e2db1a383dd6ebe0f7ce8f2edd11a915074",
+        reconciliation_eval=recon,
+        exchange_snapshot=exchange,
+        local_expected_state_adopted=local,
+        okx_clearance=clearance,
+        productive_private_read_summary={"GET_REQUEST_COUNT": 4, "WRITE_REQUEST_COUNT": 0},
+        trade_key_attestation=att,
+    )
+    assert result["EXCHANGE_TRUTH_ADOPTION_STATUS"] == STATUS_ADOPTED_PROVEN
+    assert result["LIVE_RECONCILIATION_PROVEN"] is True
+    assert result["BLOCKS_NEW_ENTRY"] is False
+    assert result["ECONOMIC_DIVERGENCE_STATUS"] == "RESOLVED_NO_UNRESOLVED_DIVERGENCE"
+    assert result["OKX_TEMP_SECURITY_CLEARANCE_EVIDENCE"] == CLEARANCE_ABSENT_OR_UNPROVEN
+    assert result["LIVE_CANARY_CYBERSECURITY_GATE"] == "NOT_PASSED"
+    assert result["TERMINAL_STATE"] == TERMINAL_RECON_PROVEN_CLEARANCE_UNPROVEN
+    assert result["LIVE_AUTHORIZED"] is False
+    assert result["LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED"] is False
+    assert result["ORDER_EFFECT"] == "NONE"
+    assert "OKX_TEMP_SECURITY_RESTRICTION_CLEARANCE_EVIDENCE_ABSENT" in result["GATE_BLOCKERS"]
+    assert result["CANONICAL_NEXT_STEP"] != "OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE"
+
+
+def test_sealed_economic_baseline_evidence_verifier_pass() -> None:
+    from scripts.ops.verify_section_11_13_5_economic_baseline_and_okx_clearance_v1 import (
+        verify_section_11_13_5_economic_baseline_and_okx_clearance_evidence_v1,
+    )
+
+    repo = Path(__file__).resolve().parents[2]
+    root = (
+        repo
+        / "evidence/ops/section_11_13_5_economic_baseline_and_okx_clearance_v1/20260812T153425Z"
+    )
+    result = verify_section_11_13_5_economic_baseline_and_okx_clearance_evidence_v1(root)
+    assert result["ok"] is True
+    assert result["MANIFEST_VERIFY_RC"] == 0
+    assert result["LIVE_RECONCILIATION_PROVEN"] is True
+    assert result["BLOCKS_NEW_ENTRY"] is False
+    assert result["OKX_TEMP_SECURITY_CLEARANCE_EVIDENCE"] == "ABSENT_OR_UNPROVEN"
+    assert result["LIVE_CANARY_CYBERSECURITY_GATE"] == "NOT_PASSED"
+
+
+def test_cybersecurity_gate_passes_only_with_full_prerequisites() -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.cybersecurity_canary_gate_v1 import (
+        evaluate_live_canary_cybersecurity_gate_v1,
+    )
+
+    blocked = evaluate_live_canary_cybersecurity_gate_v1(
+        productive_surface_merged_to_origin_main=True,
+        trade_attestation=True,
+        withdraw_attestation=False,
+        read_attestation=True,
+        permission_attestation={"READ": True, "TRADE": True, "WITHDRAW": False},
+        exchange_truth_adoption_status="ADOPTED_PROVEN",
+        canary_key_binding_status="PROVEN",
+        secretref_status="RESOLVED",
+        okx_temp_security_restriction="24h_no_withdrawals_and_no_p2p_sell",
+        okx_temp_security_clearance_evidence_present=False,
+        canary_credential_isolation_proven=True,
+        live_testnet_isolation_proven=True,
+        default_block_fail_closed_proven=True,
+        one_shot_owner_go_separation_proven=True,
+        live_reconciliation_proven=True,
+        blocks_new_entry=False,
+        unresolved_economic_divergence_blocks_new_entry=False,
+    )
+    assert blocked["LIVE_CANARY_CYBERSECURITY_GATE"] == "NOT_PASSED"
+    assert "OKX_TEMP_SECURITY_RESTRICTION_CLEARANCE_EVIDENCE_ABSENT" in blocked["BLOCKERS"]
+
+    passed = evaluate_live_canary_cybersecurity_gate_v1(
+        productive_surface_merged_to_origin_main=True,
+        trade_attestation=True,
+        withdraw_attestation=False,
+        read_attestation=True,
+        permission_attestation={"READ": True, "TRADE": True, "WITHDRAW": False},
+        exchange_truth_adoption_status="ADOPTED_PROVEN",
+        canary_key_binding_status="PROVEN",
+        secretref_status="RESOLVED",
+        okx_temp_security_restriction=None,
+        okx_temp_security_clearance_evidence_present=True,
+        canary_credential_isolation_proven=True,
+        live_testnet_isolation_proven=True,
+        default_block_fail_closed_proven=True,
+        one_shot_owner_go_separation_proven=True,
+        live_reconciliation_proven=True,
+        blocks_new_entry=False,
+        unresolved_economic_divergence_blocks_new_entry=False,
+    )
+    assert passed["LIVE_CANARY_CYBERSECURITY_GATE"] == "PASS"
+    assert passed["LIVE_AUTHORIZED"] is False
+    assert passed["NEW_CANARY_OWNER_GO_GRANTED"] is False

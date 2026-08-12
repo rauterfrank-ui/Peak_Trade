@@ -23,7 +23,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     REUSED_BINDING_REST_HOST,
     REUSED_BINDING_VENUE,
     SECRETREF_CONVENTION_EXAMPLE,
-    UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.cybersecurity_canary_gate_v1 import (
     evaluate_live_canary_cybersecurity_gate_v1,
@@ -150,9 +149,12 @@ def resolve_exchange_truth_adoption_dependency_v1(
         ),
     }
     all_adopted = all(adopted[p] for p in required) if required else False
-    # This GO does not authorize adoption. Preserve economic block.
+    # This resolution helper does not itself authorize productive proof. When
+    # policies are not adopted, economic blocks remain hard-true regardless of
+    # later package standing constants.
     blocks_new_entry = True if not all_adopted else BLOCKS_NEW_ENTRY
     live_recon_proven = False if not all_adopted else LIVE_RECONCILIATION_PROVEN
+    unresolved_blocks = True if not all_adopted else False
     return {
         "DOCUMENT_CLASS": "SECTION_11_13_5_B_EXCHANGE_TRUTH_ADOPTION_RESOLUTION_V1",
         "EXCHANGE_TRUTH_ADOPTION_STATUS": (
@@ -198,9 +200,7 @@ def resolve_exchange_truth_adoption_dependency_v1(
         "OWNER_ADOPTION_AUTHORIZED_BY_THIS_GO": False,
         "LIVE_RECONCILIATION_PROVEN": live_recon_proven,
         "BLOCKS_NEW_ENTRY": blocks_new_entry,
-        "UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY": (
-            UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY if not all_adopted else False
-        ),
+        "UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY": unresolved_blocks,
         "AUTOMATIC_BLOCKS_NEW_ENTRY_CLEAR_FORBIDDEN": True,
         "NETWORK_EFFECT": "NONE",
         "ORDER_EFFECT": "NONE",
