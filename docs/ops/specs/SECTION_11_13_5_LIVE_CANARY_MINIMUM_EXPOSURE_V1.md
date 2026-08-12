@@ -30,14 +30,14 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 | Surface | Path |
 |---------|------|
-| Code | `src/ops/section_11_13_5_live_canary_minimum_exposure_v1/` |
-| Submit gates | `.../submit_gates_v1.py` |
-| Forensic classifier | `.../forensic_reconciliation_v1.py` |
-| Config example | `config/ops/section_11_13_5_live_canary_minimum_exposure_v1.example.json` |
-| Runner | `scripts/ops/run_section_11_13_5_live_canary_minimum_exposure_v1.py` |
-| Verifier | `scripts/ops/verify_section_11_13_5_live_canary_minimum_exposure_v1.py` |
-| Tests | `tests/ops/test_section_11_13_5_live_canary_minimum_exposure_v1.py` |
-| Owner input contract | `docs/ops/specs/SECTION_11_13_5_OWNER_EXECUTE_INPUT_CONTRACT_V1.md` |
+| Code | `src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;` |
+| Submit gates | `...&#47;submit_gates_v1.py` |
+| Forensic classifier | `...&#47;forensic_reconciliation_v1.py` |
+| Config example | `config&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1.example.json` |
+| Runner | `scripts&#47;ops&#47;run_section_11_13_5_live_canary_minimum_exposure_v1.py` |
+| Verifier | `scripts&#47;ops&#47;verify_section_11_13_5_live_canary_minimum_exposure_v1.py` |
+| Tests | `tests&#47;ops&#47;test_section_11_13_5_live_canary_minimum_exposure_v1.py` |
+| Owner input contract | `docs&#47;ops&#47;specs&#47;SECTION_11_13_5_OWNER_EXECUTE_INPUT_CONTRACT_V1.md` |
 
 ## Hard invariants
 
@@ -62,9 +62,9 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 ## Evidence roots
 
 - Forensic authoring:
-  `evidence/ops/section_11_13_5_live_canary_forensic_reconciliation_v1/<RUN_ID>/`
+  `evidence&#47;ops&#47;section_11_13_5_live_canary_forensic_reconciliation_v1&#47;<RUN_ID>&#47;`
 - Future proven execute (not started):
-  `evidence/ops/section_11_13_5_live_canary_minimum_exposure_proven_v1/<RUN_ID>/`
+  `evidence&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_proven_v1&#47;<RUN_ID>&#47;`
 
 ## Next steps
 

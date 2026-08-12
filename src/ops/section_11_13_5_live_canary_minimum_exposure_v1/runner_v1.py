@@ -15,6 +15,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.config_v1 import (
     example_incomplete_config_dict_v1,
     load_live_canary_config_v1,
 )
+from src.core.environment import LIVE_CONFIRM_TOKEN
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     AUTHORIZATION_SCOPE,
     BLOCKS_NEW_ENTRY,
@@ -242,7 +243,7 @@ def assert_execute_refuses_authoring_go_v1() -> None:
             permission_attestation={"READ": True, "TRADE": True, "WITHDRAW": False},
             live_enabled=True,
             live_armed=True,
-            confirm_token="I_KNOW_WHAT_I_AM_DOING",
+            confirm_token=LIVE_CONFIRM_TOKEN,
         )
     except LiveCanaryRunnerError as exc:
         text = str(exc)

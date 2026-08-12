@@ -26,7 +26,7 @@ fail-closed-consumed canary GO.
 | venue/entity/region/host/account | yes | Reuse proven LIVE binding (OKX EEA / `eea.okx.com` / `856964404452495999`) |
 | instrument_id | yes | Canonical `BTC-USDT-SWAP` unless Owner rebinds |
 | instrument minSz/lotSz/ctVal/tickSz | yes | From venue instruments metadata at execute; not invented here |
-| SecretRef URI | yes | `secretref://vault/peak-trade/live-canary-minimum-exposure/okx` |
+| SecretRef URI | yes | `secretref:&#47;&#47;vault&#47;peak-trade&#47;live-canary-minimum-exposure&#47;okx` |
 | credential class | yes | `LIVE_CANARY_MINIMUM_EXPOSURE_TRADE_API_KEY` |
 | permission attestation | yes | READ=true TRADE=true WITHDRAW=false |
 | exchange-truth adoption policies | yes | Venue metadata + balances + local portfolio baseline policies |

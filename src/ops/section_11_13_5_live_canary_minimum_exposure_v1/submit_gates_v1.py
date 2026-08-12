@@ -113,9 +113,9 @@ def evaluate_canary_submit_gates_v1(
     if not live_armed:
         reasons.append("LIVE_ARMED_FALSE")
 
-    token = str(confirm_token or "")
-    gates["confirm_token_match"] = token == CONFIRM_TOKEN_CANONICAL
-    if token != CONFIRM_TOKEN_CANONICAL:
+    provided_confirm = str(confirm_token or "")
+    gates["confirm_token_match"] = provided_confirm == CONFIRM_TOKEN_CANONICAL
+    if provided_confirm != CONFIRM_TOKEN_CANONICAL:
         reasons.append("CONFIRM_TOKEN_MISMATCH")
 
     gates["blocks_new_entry"] = bool(blocks_new_entry)

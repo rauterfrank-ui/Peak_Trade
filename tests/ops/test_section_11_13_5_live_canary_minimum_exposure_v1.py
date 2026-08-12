@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 
+from src.core.environment import LIVE_CONFIRM_TOKEN
 from src.ops.capability_11_9_live_canary_order_execution_v1 import constants_v1 as cap_11_9
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.authorization_v1 import (
     LiveCanaryAuthorizationError,
@@ -66,7 +67,7 @@ def _gate_kwargs(**overrides: object) -> dict:
         "live_canary_authorized": True,
         "live_enabled": True,
         "live_armed": True,
-        "confirm_token": "I_KNOW_WHAT_I_AM_DOING",
+        "confirm_token": LIVE_CONFIRM_TOKEN,
         "blocks_new_entry": False,
         "unresolved_economic_divergence": False,
         "live_reconciliation_proven": True,
