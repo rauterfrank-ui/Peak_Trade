@@ -38,6 +38,16 @@ def evaluate_live_canary_cybersecurity_gate_v1(
     secret_plaintext_in_repo_or_evidence: bool = False,
     fixture_authority_claimed_as_live: bool = False,
     permission_attestation: Mapping[str, Any] | None = None,
+    exchange_truth_adoption_status: str | None = None,
+    canary_key_binding_status: str | None = None,
+    secretref_status: str | None = None,
+    okx_temp_security_restriction: str | None = None,
+    okx_temp_security_clearance_evidence_present: bool | None = None,
+    canary_credential_isolation_proven: bool | None = None,
+    live_testnet_isolation_proven: bool | None = None,
+    default_block_fail_closed_proven: bool | None = None,
+    one_shot_owner_go_separation_proven: bool | None = None,
+    canary_success_generalizes_to_general_live: bool = False,
 ) -> dict[str, Any]:
     perm = dict(permission_attestation or PRIOR_DRY_RUN_PERMISSION_ATTESTATION)
     blockers: list[str] = []
@@ -58,9 +68,6 @@ def evaluate_live_canary_cybersecurity_gate_v1(
         blockers.append("FIXTURE_OR_CAP11_9_ACTIVATION_CLAIM")
     if not CAPABILITY_11_9_REMAINS_FIXTURE_ONLY:
         blockers.append("CAP11_9_FIXTURE_ONLY_DRIFT")
-    if LIVE_RECONCILIATION_PROVEN:
-        # Standing package constant is false; if someone flips it without proof, still gate.
-        pass
     if not LIVE_RECONCILIATION_PROVEN:
         blockers.append("LIVE_RECONCILIATION_PROVEN_FALSE")
     if BLOCKS_NEW_ENTRY or UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY:
@@ -71,6 +78,33 @@ def evaluate_live_canary_cybersecurity_gate_v1(
         or LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN
     ):
         blockers.append("UNEXPECTED_LIVE_OR_CANARY_EXECUTED_CLAIM")
+
+    # Optional post-§11.13.5.C / §11.13.5.D canary-context checks (None = legacy skip).
+    if exchange_truth_adoption_status is not None:
+        if exchange_truth_adoption_status != "ADOPTED_PROVEN":
+            blockers.append("EXCHANGE_TRUTH_ADOPTION_NOT_ADOPTED")
+    if canary_key_binding_status is not None:
+        if canary_key_binding_status != "PROVEN":
+            blockers.append("CANARY_KEY_BINDING_NOT_PROVEN")
+    if secretref_status is not None:
+        if secretref_status != "RESOLVED":
+            blockers.append("CANARY_SECRETREF_NOT_RESOLVED")
+    if okx_temp_security_restriction is not None:
+        if okx_temp_security_restriction == "24h_no_withdrawals_and_no_p2p_sell":
+            if okx_temp_security_clearance_evidence_present is not True:
+                blockers.append("OKX_TEMP_SECURITY_RESTRICTION_CLEARANCE_EVIDENCE_ABSENT")
+        elif okx_temp_security_restriction:
+            blockers.append("OKX_TEMP_SECURITY_RESTRICTION_UNKNOWN_OR_MISBOUND")
+    if canary_credential_isolation_proven is False:
+        blockers.append("CANARY_CREDENTIAL_ISOLATION_NOT_PROVEN")
+    if live_testnet_isolation_proven is False:
+        blockers.append("LIVE_TESTNET_ISOLATION_NOT_PROVEN")
+    if default_block_fail_closed_proven is False:
+        blockers.append("DEFAULT_BLOCK_FAIL_CLOSED_NOT_PROVEN")
+    if one_shot_owner_go_separation_proven is False:
+        blockers.append("ONE_SHOT_OWNER_GO_SEPARATION_NOT_PROVEN")
+    if canary_success_generalizes_to_general_live:
+        blockers.append("CANARY_SUCCESS_MUST_NOT_GENERALIZE_TO_GENERAL_LIVE")
 
     trade_distinction = (
         "TRADE_PERMISSION_CONFIRMED_FALSE"
@@ -83,6 +117,12 @@ def evaluate_live_canary_cybersecurity_gate_v1(
     )
 
     gate_pass = len(blockers) == 0
+    network_status = "BOUND_FROM_SEALED_PRIOR_PROOF_PENDING_CANARY_SECRETREF"
+    if secretref_status == "RESOLVED" and canary_key_binding_status == "PROVEN":
+        network_status = "BOUND_CANARY_SECRETREF_AND_KEY_PROVEN"
+    if exchange_truth_adoption_status == "ADOPTED_PROVEN":
+        network_status = "EXCHANGE_TRUTH_ADOPTED_PROVEN_FOR_CANARY_PATH"
+
     return {
         "DOCUMENT_CLASS": "SECTION_11_13_LIVE_CANARY_CYBERSECURITY_GATE_EVAL_V1",
         "CYBERSECURITY_RUNBOOK_VERSION": "V2_1",
@@ -105,15 +145,31 @@ def evaluate_live_canary_cybersecurity_gate_v1(
                 "CANARY_REQUIRES_SEPARATE_TRADE_CAPABLE_API_KEY_AND_ATTESTATION"
             )
         ),
+        "EXCHANGE_TRUTH_ADOPTION_STATUS": exchange_truth_adoption_status,
+        "CANARY_KEY_BINDING_STATUS": canary_key_binding_status,
+        "CANARY_SECRETREF_STATUS": secretref_status,
+        "OKX_TEMP_SECURITY_RESTRICTION": okx_temp_security_restriction,
+        "OKX_TEMP_SECURITY_CLEARANCE_EVIDENCE_PRESENT": (
+            okx_temp_security_clearance_evidence_present
+        ),
+        "CANARY_CREDENTIAL_ISOLATION_PROVEN": canary_credential_isolation_proven,
+        "LIVE_TESTNET_ISOLATION_PROVEN": live_testnet_isolation_proven,
+        "DEFAULT_BLOCK_FAIL_CLOSED_PROVEN": default_block_fail_closed_proven,
+        "ONE_SHOT_OWNER_GO_SEPARATION_PROVEN": one_shot_owner_go_separation_proven,
+        "CANARY_SUCCESS_GENERALIZES_TO_GENERAL_LIVE": canary_success_generalizes_to_general_live,
         "NETWORK_BINDING_SECURITY": {
             "venue": REUSED_BINDING_VENUE,
             "rest_host": REUSED_BINDING_REST_HOST,
             "demo_testnet_fallback_forbidden": True,
-            "status": "BOUND_FROM_SEALED_PRIOR_PROOF_PENDING_CANARY_SECRETREF",
+            "status": network_status,
         },
         "ACCOUNT_BINDING_SECURITY": {
             "account_scope": REUSED_BINDING_ACCOUNT_SCOPE,
-            "status": "BOUND_FROM_SEALED_PRIOR_PROOF",
+            "status": (
+                "EXCHANGE_TRUTH_ADOPTED_PROVEN"
+                if exchange_truth_adoption_status == "ADOPTED_PROVEN"
+                else "BOUND_FROM_SEALED_PRIOR_PROOF"
+            ),
         },
         "INSTRUMENT_BINDING_SECURITY": {
             "instrument_id": "BTC-USDT-SWAP",

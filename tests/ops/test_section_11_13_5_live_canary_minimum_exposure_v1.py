@@ -341,3 +341,267 @@ def test_post_merge_pre_canary_readiness_fail_closed(tmp_path: Path) -> None:
     assert terminal["PRIOR_CANARY_OWNER_GO_REUSED"] is False
     assert terminal["EARLIEST_UNRESOLVED_DEPENDENCY"] == ("OWNER_TRADE_ATTESTATION_FOR_LIVE_CANARY")
     _ = tmp_path  # reserved for future sealed-path fixtures
+
+
+def test_canary_trade_capability_attestation_fail_closed_when_canary_secretref_missing(
+    tmp_path: Path,
+) -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.canary_trade_capability_attestation_v1 import (
+        OWNER_GO_TRADE_KEY_ATTESTATION,
+        TERMINAL_FAIL_CLOSED,
+        evaluate_live_canary_canary_trade_capability_attestation_v1,
+    )
+
+    ops_local = tmp_path / ".ops_local"
+    ops_local.mkdir()
+    result = evaluate_live_canary_canary_trade_capability_attestation_v1(
+        ops_local_root=ops_local,
+        origin_main_sha="abc1234",
+        owner_go=OWNER_GO_TRADE_KEY_ATTESTATION,
+    )
+    assert result["TERMINAL_STATE"] == TERMINAL_FAIL_CLOSED
+    assert result["TRADE_ATTESTATION"] is False
+    assert result["WITHDRAW_ATTESTATION"] is False
+    assert result["SECRETREF_STATUS"] == "MISSING_FAIL_CLOSED"
+    assert result["CANARY_TRADE_KEY_BINDING"] == "NOT_PROVEN_FAIL_CLOSED"
+    assert result["PRIOR_DRY_RUN_KEY_REUSED"] is False
+    assert result["LIVE_AUTHORIZED"] is False
+    assert result["LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED"] is False
+    assert result["BLOCKS_NEW_ENTRY"] is True
+    assert result["LIVE_RECONCILIATION_PROVEN"] is False
+    assert result["ORDER_EFFECT"] == "NONE"
+    assert result["SECRET_VALUE_ACCESS"] == "NONE"
+    assert result["LIVE_CANARY_CYBERSECURITY_GATE"] == "NOT_PASSED"
+    assert "CANARY_SECRETREF_URI_ABSENT" in result["BLOCKERS"]
+    assert result["CANONICAL_NEXT_STEP"].startswith("OWNER_ACTIONS_CREATE_OR_SELECT_")
+
+
+def test_canary_trade_capability_attestation_rejects_wrong_owner_go(tmp_path: Path) -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.canary_trade_capability_attestation_v1 import (
+        LiveCanaryTradeKeyAttestationError,
+        evaluate_live_canary_canary_trade_capability_attestation_v1,
+    )
+
+    ops_local = tmp_path / ".ops_local"
+    ops_local.mkdir()
+    with pytest.raises(LiveCanaryTradeKeyAttestationError, match="OWNER_GO_MISBOUND"):
+        evaluate_live_canary_canary_trade_capability_attestation_v1(
+            ops_local_root=ops_local,
+            origin_main_sha="abc1234",
+            owner_go="OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE",
+        )
+
+
+def test_canary_trade_capability_attestation_proven_with_dedicated_secretref(
+    tmp_path: Path,
+) -> None:
+    import json
+
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.canary_trade_capability_attestation_v1 import (
+        OWNER_GO_TRADE_KEY_ATTESTATION,
+        REQUIRED_SECRETREF_URI,
+        TERMINAL_PROVEN,
+        evaluate_live_canary_canary_trade_capability_attestation_v1,
+    )
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+        REUSED_BINDING_ACCOUNT_SCOPE,
+        REUSED_BINDING_ENTITY,
+        REUSED_BINDING_REGION,
+        REUSED_BINDING_REST_HOST,
+        REUSED_BINDING_VENUE,
+        REQUIRED_CREDENTIAL_CLASS,
+    )
+
+    ops_local = tmp_path / ".ops_local"
+    vault = (
+        ops_local
+        / "section_11_13_5_live_canary_minimum_exposure"
+        / "secrets"
+        / "secretref_vault.json"
+    )
+    vault.parent.mkdir(parents=True)
+    vault.write_text(
+        json.dumps(
+            {
+                REQUIRED_SECRETREF_URI: {
+                    "api_key": "A" * 36,
+                    "api_secret": "B" * 32,
+                    "passphrase": "C" * 14,
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    # Distinct prior dry-run material must not equal canary material.
+    dry = ops_local / "section_11_13_4_live_dry_run_order_plan" / "secrets" / "secretref_vault.json"
+    dry.parent.mkdir(parents=True)
+    dry.write_text(
+        json.dumps(
+            {
+                "secretref://vault/peak-trade/live-dry-run-order-plan/okx": {
+                    "api_key": "D" * 36,
+                    "api_secret": "E" * 32,
+                    "passphrase": "F" * 14,
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    owner_perm = {
+        "READ": True,
+        "TRADE": True,
+        "WITHDRAW": False,
+        "credential_class": REQUIRED_CREDENTIAL_CLASS,
+        "secretref_uri": REQUIRED_SECRETREF_URI,
+        "venue": REUSED_BINDING_VENUE,
+        "entity": REUSED_BINDING_ENTITY,
+        "region": REUSED_BINDING_REGION,
+        "rest_host": REUSED_BINDING_REST_HOST,
+        "account_scope": REUSED_BINDING_ACCOUNT_SCOPE,
+    }
+    result = evaluate_live_canary_canary_trade_capability_attestation_v1(
+        ops_local_root=ops_local,
+        origin_main_sha="abc1234",
+        owner_go=OWNER_GO_TRADE_KEY_ATTESTATION,
+        owner_permission_attestation=owner_perm,
+    )
+    assert result["TERMINAL_STATE"] == TERMINAL_PROVEN
+    assert result["TRADE_ATTESTATION"] is True
+    assert result["WITHDRAW_ATTESTATION"] is False
+    assert result["READ_ATTESTATION"] is True
+    assert result["SECRETREF_STATUS"] == "RESOLVED"
+    assert result["CANARY_TRADE_KEY_BINDING"] == "PROVEN"
+    assert result["PRIOR_DRY_RUN_KEY_REUSED"] is False
+    assert result["LIVE_AUTHORIZED"] is False
+    assert result["LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED"] is False
+    assert result["BLOCKS_NEW_ENTRY"] is True
+    assert result["LIVE_CANARY_CYBERSECURITY_GATE"] == "NOT_PASSED"
+    assert result["EARLIEST_UNRESOLVED_DEPENDENCY"] == "OWNER_GO_EXCHANGE_TRUTH_ADOPTION"
+    assert "SEALED_PRIOR_DRY_RUN_KEY_TRADE_FALSE_NOT_REUSABLE" not in result["BLOCKERS"]
+
+
+def test_exchange_truth_adoption_rejects_wrong_owner_go(tmp_path: Path) -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.exchange_truth_adoption_v1 import (
+        LiveCanaryExchangeTruthAdoptionError,
+        evaluate_exchange_truth_adoption_v1,
+    )
+
+    with pytest.raises(LiveCanaryExchangeTruthAdoptionError, match="OWNER_GO_MISBOUND"):
+        evaluate_exchange_truth_adoption_v1(
+            repo_root=tmp_path,
+            origin_main_sha="abc1234",
+            owner_go="OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE",
+            trade_key_attestation={},
+        )
+
+
+def test_exchange_truth_adoption_fail_closed_without_trade_attestation(tmp_path: Path) -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.exchange_truth_adoption_v1 import (
+        STATUS_NOT_ADOPTED,
+        TERMINAL_FAIL_CLOSED,
+        evaluate_exchange_truth_adoption_v1,
+    )
+
+    # Minimal repo layout so forensic sealed evidence can resolve from real repo.
+    repo = Path(__file__).resolve().parents[2]
+    result = evaluate_exchange_truth_adoption_v1(
+        repo_root=repo,
+        origin_main_sha="abc1234",
+        trade_key_attestation={},
+    )
+    assert result["TERMINAL_STATE"] == TERMINAL_FAIL_CLOSED
+    assert result["EXCHANGE_TRUTH_ADOPTION_STATUS"] == STATUS_NOT_ADOPTED
+    assert result["BLOCKS_NEW_ENTRY"] is True
+    assert result["LIVE_AUTHORIZED"] is False
+    assert result["LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED"] is False
+    assert result["LIVE_CANARY_CYBERSECURITY_GATE"] == "NOT_PASSED"
+    assert "TRADE_KEY_ATTESTATION_INPUT_ABSENT" in result["BLOCKERS"]
+    _ = tmp_path
+
+
+def test_exchange_truth_adoption_adopted_proven_keeps_cyber_gate_blocked() -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+        REUSED_BINDING_ACCOUNT_SCOPE,
+        REUSED_BINDING_ENTITY,
+        REUSED_BINDING_REGION,
+        REUSED_BINDING_REST_HOST,
+        REUSED_BINDING_VENUE,
+        REQUIRED_CREDENTIAL_CLASS,
+    )
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.exchange_truth_adoption_v1 import (
+        REQUIRED_SECRETREF_URI,
+        STATUS_ADOPTED_PROVEN,
+        TERMINAL_ADOPTED_CYBER_NOT_PASSED,
+        evaluate_exchange_truth_adoption_v1,
+    )
+
+    repo = Path(__file__).resolve().parents[2]
+    att = {
+        "READ_ATTESTATION": True,
+        "TRADE_ATTESTATION": True,
+        "WITHDRAW_ATTESTATION": False,
+        "KEY_BINDING_STATUS": "PROVEN",
+        "CANARY_TRADE_KEY_BINDING": "PROVEN",
+        "SECRETREF_STATUS": "RESOLVED",
+        "SECRETREF_URI_CONTRACT": REQUIRED_SECRETREF_URI,
+        "VENUE": REUSED_BINDING_VENUE,
+        "LEGAL_ENTITY": REUSED_BINDING_ENTITY,
+        "REGION": REUSED_BINDING_REGION,
+        "REST_HOST": REUSED_BINDING_REST_HOST,
+        "ACCOUNT_SCOPE": REUSED_BINDING_ACCOUNT_SCOPE,
+        "KEY_CLASS": REQUIRED_CREDENTIAL_CLASS,
+        "PRIOR_DRY_RUN_KEY_REUSED": False,
+        "OKX_RESTRICTIONS_AFTER_RESET": "24h_no_withdrawals_and_no_p2p_sell",
+    }
+    result = evaluate_exchange_truth_adoption_v1(
+        repo_root=repo,
+        origin_main_sha="20f2eb51d933f67b7ff0d57d7aef94b767e68f99",
+        trade_key_attestation=att,
+        okx_temp_security_clearance_evidence_present=False,
+    )
+    assert result["EXCHANGE_TRUTH_ADOPTION_STATUS"] == STATUS_ADOPTED_PROVEN
+    assert result["TERMINAL_STATE"] == TERMINAL_ADOPTED_CYBER_NOT_PASSED
+    assert result["LIVE_CANARY_CYBERSECURITY_GATE"] == "NOT_PASSED"
+    assert result["BLOCKS_NEW_ENTRY"] is True
+    assert result["LIVE_RECONCILIATION_PROVEN"] is False
+    assert result["LIVE_AUTHORIZED"] is False
+    assert result["LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED"] is False
+    assert result["LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN"] is False
+    assert result["ECONOMIC_BASELINE_ADOPTION_STATUS"] == "OWNER_POLICIES_REQUIRED_NOT_ADOPTED"
+    assert result["ECONOMIC_DIVERGENCE_STATUS"] == "UNRESOLVED_BLOCKS_NEW_ENTRY"
+    assert result["OWNER_ECONOMIC_BASELINE_POLICIES_ADOPTED_BY_THIS_GO"] is False
+    assert result["OKX_TEMP_SECURITY_RESTRICTION"] == "24h_no_withdrawals_and_no_p2p_sell"
+    assert result["OKX_TEMP_SECURITY_RESTRICTION_BYPASS_FORBIDDEN"] is True
+    assert "LIVE_RECONCILIATION_PROVEN_FALSE" in result["GATE_BLOCKERS"]
+    assert "BLOCKS_NEW_ENTRY_OR_UNRESOLVED_DIVERGENCE" in result["GATE_BLOCKERS"]
+    assert "OKX_TEMP_SECURITY_RESTRICTION_CLEARANCE_EVIDENCE_ABSENT" in result["GATE_BLOCKERS"]
+    assert result["EARLIEST_UNRESOLVED_DEPENDENCY"] == "LIVE_RECONCILIATION_PROVEN_FALSE"
+    assert result["CANONICAL_NEXT_STEP"] != "OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE"
+    assert result["EXCHANGE_TRUTH_ADOPTION_IS_NOT_CANARY_AUTHORIZATION"] is True
+    assert result["EXCHANGE_TRUTH_ADOPTION_IS_NOT_GENERAL_LIVE_AUTHORIZATION"] is True
+
+
+def test_live_canary_cybersecurity_gate_requires_exchange_truth_when_supplied() -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.cybersecurity_canary_gate_v1 import (
+        evaluate_live_canary_cybersecurity_gate_v1,
+    )
+
+    result = evaluate_live_canary_cybersecurity_gate_v1(
+        productive_surface_merged_to_origin_main=True,
+        trade_attestation=True,
+        withdraw_attestation=False,
+        read_attestation=True,
+        permission_attestation={"READ": True, "TRADE": True, "WITHDRAW": False},
+        exchange_truth_adoption_status="OWNER_POLICIES_REQUIRED_NOT_ADOPTED",
+        canary_key_binding_status="PROVEN",
+        secretref_status="RESOLVED",
+        okx_temp_security_restriction="24h_no_withdrawals_and_no_p2p_sell",
+        okx_temp_security_clearance_evidence_present=False,
+        canary_credential_isolation_proven=True,
+        live_testnet_isolation_proven=True,
+        default_block_fail_closed_proven=True,
+        one_shot_owner_go_separation_proven=True,
+    )
+    assert result["LIVE_CANARY_CYBERSECURITY_GATE"] == "NOT_PASSED"
+    assert "EXCHANGE_TRUTH_ADOPTION_NOT_ADOPTED" in result["BLOCKERS"]
+    assert "OKX_TEMP_SECURITY_RESTRICTION_CLEARANCE_EVIDENCE_ABSENT" in result["BLOCKERS"]
