@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import re
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
+from src.experiments.cross_lane_identity_join_v1 import CrossLaneIdentityJoinV1
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (
     assert_no_plaintext_token_fields,
 )
@@ -24,6 +26,9 @@ from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.con
     REQUIRED_MODE,
     SESSION_EXECUTION_SCOPE_PAPER_SHADOW_OBSERVATION_WALLCLOCK_V1,
     VENUE_OKX,
+)
+from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.i17_paper_shadow_named_lane_identity_join_v1 import (
+    join_i17_named_lane_identity_v1,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.preregistration_contract_v1 import (
     SessionPreregistrationContractV1,
@@ -154,6 +159,12 @@ class OperatorGoValidationResultV1:
             "paper_shadow_observation_authorized": False,
             "session_executed": False,
         }
+
+
+@dataclass(frozen=True)
+class OperatorGoNamedLaneIdentityJoinResultV1:
+    contract: OperatorGoContractV1
+    join: CrossLaneIdentityJoinV1
 
 
 def _req(raw: Mapping[str, Any], name: str) -> Any:
@@ -420,3 +431,31 @@ def validate_operator_go_path_v1(
         now_unix=now_unix,
         expected_repository_sha=expected_repository_sha,
     )
+
+
+def parse_operator_go_contract_with_identity_join_v1(
+    raw: Mapping[str, Any],
+    *,
+    experiment_identity_id: str,
+    run_id: Optional[str] = None,
+    legacy_alias_md5_12: Optional[str] = None,
+    content_sha256: Optional[str] = None,
+    historical_provenance: Optional[Mapping[str, Any]] = None,
+) -> OperatorGoNamedLaneIdentityJoinResultV1:
+    """Parse a live I17 Operator-GO and fail-closed join Package-N IDENTITY."""
+    if not isinstance(raw, Mapping):
+        raise OperatorGoContractError("OPERATOR_GO_NOT_OBJECT")
+    snapshot = copy.deepcopy(dict(raw))
+    contract = parse_operator_go_contract_v1(raw)
+    join = join_i17_named_lane_identity_v1(
+        contract.to_dict(),
+        experiment_identity_id=experiment_identity_id,
+        surface="operator_go",
+        run_id=run_id,
+        legacy_alias_md5_12=legacy_alias_md5_12,
+        content_sha256=content_sha256,
+        historical_provenance=historical_provenance,
+    )
+    if dict(raw) != snapshot:
+        raise OperatorGoContractError("GO_INPUT_MUTATED")
+    return OperatorGoNamedLaneIdentityJoinResultV1(contract=contract, join=join)

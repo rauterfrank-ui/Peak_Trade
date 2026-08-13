@@ -37,11 +37,12 @@ Usage:
 
 from __future__ import annotations
 
+import copy
 import json
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Union
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Union
 
 import pandas as pd
 
@@ -51,6 +52,10 @@ from src.core.experiments import (
     VALID_RUN_TYPES,
     get_experiment_by_id,
     load_experiments_df,
+)
+from src.experiments.cross_lane_identity_join_v1 import CrossLaneIdentityJoinV1
+from src.analytics.i65_explorer_named_lane_identity_join_v1 import (
+    join_i65_named_lane_identity_v1,
 )
 
 
@@ -807,3 +812,58 @@ def quick_sweep_summary(
         SweepOverview oder None
     """
     return ExperimentExplorer().summarize_sweep(sweep_name, metric=metric, top_n=top_n)
+
+
+@dataclass(frozen=True)
+class ExperimentSummaryNamedLaneIdentityJoinResultV1:
+    contract: ExperimentSummary
+    join: CrossLaneIdentityJoinV1
+
+
+@dataclass(frozen=True)
+class ExperimentRowNamedLaneIdentityJoinResultV1:
+    contract: Dict[str, Any]
+    join: CrossLaneIdentityJoinV1
+
+
+def parse_experiment_summary_with_identity_join_v1(
+    raw: Mapping[str, Any],
+    **sidecars: Any,
+) -> ExperimentSummaryNamedLaneIdentityJoinResultV1:
+    """Parse a live I65 summary and fail-closed join Package-N IDENTITY sidecar."""
+    snapshot = copy.deepcopy(dict(raw)) if isinstance(raw, Mapping) else None
+    join = join_i65_named_lane_identity_v1(raw, surface="summary", **sidecars)
+    if not isinstance(raw, Mapping) or snapshot is None:
+        raise ValueError("malformed plane data rejected: I65 summary is not an object")
+    contract = ExperimentSummary(
+        experiment_id=str(raw["experiment_id"]),
+        run_type=str(raw["run_type"]),
+        run_name=str(raw["run_name"]),
+        strategy_name=raw.get("strategy_name"),
+        sweep_name=raw.get("sweep_name"),
+        scan_name=raw.get("scan_name"),
+        portfolio_name=raw.get("portfolio_name"),
+        symbol=raw.get("symbol"),
+        tags=list(raw.get("tags") or []),
+        created_at=raw.get("created_at"),
+        metrics=dict(raw.get("metrics") or {}),
+        params=dict(raw.get("params") or {}),
+    )
+    if dict(raw) != snapshot:
+        raise ValueError("I65 summary input was mutated")
+    return ExperimentSummaryNamedLaneIdentityJoinResultV1(contract=contract, join=join)
+
+
+def parse_experiment_row_with_identity_join_v1(
+    raw: Mapping[str, Any],
+    **sidecars: Any,
+) -> ExperimentRowNamedLaneIdentityJoinResultV1:
+    """Parse a live I65 registry row and fail-closed join Package-N IDENTITY sidecar."""
+    snapshot = copy.deepcopy(dict(raw)) if isinstance(raw, Mapping) else None
+    join = join_i65_named_lane_identity_v1(raw, surface="row", **sidecars)
+    if not isinstance(raw, Mapping) or snapshot is None:
+        raise ValueError("malformed plane data rejected: I65 row is not an object")
+    contract = copy.deepcopy(dict(raw))
+    if dict(raw) != snapshot:
+        raise ValueError("I65 row input was mutated")
+    return ExperimentRowNamedLaneIdentityJoinResultV1(contract=contract, join=join)

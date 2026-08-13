@@ -946,6 +946,20 @@ CANONICAL_SEMANTICS=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#15.3
 
 ---
 
+## 8.2 EG-I82-JOIN closeout (navigation only)
+
+| Pfad | Rolle |
+|------|-------|
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §5.8 | SSOT-Zeiger auf EG-I82-JOIN-Closeout (navigation only; Semantik ausschließlich im Master Runbook) |
+
+```text
+THIS_SECTION_DEFINES_NO_SEMANTICS=true
+THIS_DOCUMENT_POINTS_ONLY_TO_CANONICAL_OWNERS=true
+CANONICAL_SEMANTICS=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#5.8
+```
+
+---
+
 ## 9. Wichtigste Runbooks
 
 | Dokument | Rolle |
