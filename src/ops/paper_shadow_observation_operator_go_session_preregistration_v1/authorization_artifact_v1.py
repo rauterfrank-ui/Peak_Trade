@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import copy
 import json
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
+from src.experiments.cross_lane_identity_join_v1 import CrossLaneIdentityJoinV1
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (
     assert_no_plaintext_token_fields,
     verify_confirm_token_v1,
@@ -18,6 +20,9 @@ from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.con
     CAPABILITY_ID,
     NETWORK_SCOPE_OKX_EEA_FUTURES_PUBLIC_MD_OBSERVE_V1,
     SESSION_EXECUTION_SCOPE_PAPER_SHADOW_OBSERVATION_WALLCLOCK_V1,
+)
+from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.i17_paper_shadow_named_lane_identity_join_v1 import (
+    join_i17_named_lane_identity_v1,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.operator_go_contract_v1 import (
     OperatorGoContractV1,
@@ -129,6 +134,12 @@ class AuthorizationBuildResultV1:
             "artifact": None if self.artifact is None else self.artifact.to_dict(),
             "session_executed": False,
         }
+
+
+@dataclass(frozen=True)
+class AuthorizationArtifactNamedLaneIdentityJoinResultV1:
+    artifact: AuthorizationArtifactV1
+    join: CrossLaneIdentityJoinV1
 
 
 def build_authorization_artifact_v1(
@@ -367,3 +378,31 @@ def validate_authorization_artifact_v1(
         artifact=artifact,
         notes=notes,
     )
+
+
+def parse_authorization_artifact_with_identity_join_v1(
+    raw: Mapping[str, Any],
+    *,
+    experiment_identity_id: str,
+    run_id: Optional[str] = None,
+    legacy_alias_md5_12: Optional[str] = None,
+    content_sha256: Optional[str] = None,
+    historical_provenance: Optional[Mapping[str, Any]] = None,
+) -> AuthorizationArtifactNamedLaneIdentityJoinResultV1:
+    """Parse a live I17 authorization artifact and fail-closed join Package-N IDENTITY."""
+    if not isinstance(raw, Mapping):
+        raise AuthorizationArtifactError("AUTHORIZATION_ARTIFACT_NOT_OBJECT")
+    snapshot = copy.deepcopy(dict(raw))
+    artifact = parse_authorization_artifact_v1(raw)
+    join = join_i17_named_lane_identity_v1(
+        artifact.to_dict(),
+        experiment_identity_id=experiment_identity_id,
+        surface="authorization_artifact",
+        run_id=run_id,
+        legacy_alias_md5_12=legacy_alias_md5_12,
+        content_sha256=content_sha256,
+        historical_provenance=historical_provenance,
+    )
+    if dict(raw) != snapshot:
+        raise AuthorizationArtifactError("AUTH_INPUT_MUTATED")
+    return AuthorizationArtifactNamedLaneIdentityJoinResultV1(artifact=artifact, join=join)

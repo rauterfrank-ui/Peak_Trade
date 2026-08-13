@@ -968,6 +968,63 @@ LEGACY_PARALLEL_AUTHORITY_DETECTED=false
 REGIME_UNCLASSIFIED_FAIL_CLOSED_IS_DEFECT=false
 ```
 
+## 5.8 EG-I82-JOIN Package-N live-owner identity-join closeout
+
+Forensic identity-join closeout only. This subsection records that
+experiment-identity join across six registered live owners is
+`CLOSED_PROVEN`. It does not authorize runtime, trading, orders,
+network sessions, Cap 7.2 expansion, Testnet, Live, credentials,
+migration, backfill, or any successor phase.
+
+``` text
+EG_I82_JOIN_STATUS=CLOSED_PROVEN
+EG_I82_JOIN_CLOSURE_PROVEN=true
+END_TO_END_JOIN_GRAPH_PROVEN=true
+REAL_LIVE_OWNER_COUNT=6
+EXPECTED_LANE_COUNT=7
+EXPECTED_EDGE_COUNT=42
+EDGES_PROVEN=42
+CANONICAL_JOIN_KEY=package_n_sha256
+PACKAGE_N_SHA256_ONLY_JOIN_KEY=true
+STATIC_FLAG_AGGREGATION_ONLY=false
+FULL_GRAPH_TRAVERSAL_PROVEN=true
+NEGATIVE_MATRIX_FAIL_CLOSED=true
+HISTORICAL_READABILITY_PRESERVED=true
+TRADING_LOGIC_MUTATION=false
+RUNTIME_MUTATION=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+NETWORK_EFFECT=NONE
+ORDER_EFFECT=NONE
+MIGRATION_EXECUTED=false
+BACKFILL_EXECUTED=false
+CAP7_2_SCOPE_EXPANDED=false
+SRC_EXECUTION_IMPORT_ADDED=false
+SUCCESSOR_PHASE_AUTHORIZED=false
+```
+
+Required graph: six real live owners (I16 lineage producer, I17
+paper-shadow preregistration, I52 Level-Up v0 models, I56 evidence
+capsule, I61 live-session eval, I65 explorer) times seven named lanes
+(IDENTITY, ALIAS, RUN, CAMPAIGN, SESSION, EVIDENCE, CONTENT_HASH) =
+42&#47;42. Package-N SHA256 is the only authoritative join key.
+`experiment_id`, `run_id` and other legacy or operational IDs never
+replace IDENTITY. End-to-end proof traverses the registered live-owner
+parse&#47;join contracts; it is not a static `PROVEN=true` flag
+aggregation. The fail-closed negative matrix remains required
+(missing edge, wrong join key, identity conflict, RUN&#47;ALIAS as
+IDENTITY, synthetic identity, implicit absence, cross-lane&#47;plane,
+extra&#47;duplicate edge). Historical I52 `extra="forbid"`, I61 Fill&#47;
+`compute_metrics`, and I65 `_row_to_summary` readability are preserved.
+
+Proof&#47;attestation surfaces (non-activating):
+
+-   `src&#47;experiments&#47;eg_i82_end_to_end_live_owner_graph_attestation_v1.py`
+-   `tests&#47;experiments&#47;test_eg_i82_end_to_end_live_owner_graph_attestation_v1.py`
+-   `src&#47;experiments&#47;eg_i82_join_verifier_v1.py`
+
+This closeout does not start a follow-on remediation unit and does not
+change Cap 11&#47;§11.13 authorization.
+
 ------------------------------------------------------------------------
 
 # 6. Canonical State Ownership and Persistence Model

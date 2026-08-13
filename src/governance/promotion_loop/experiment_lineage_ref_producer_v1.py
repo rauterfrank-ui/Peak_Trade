@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
+from src.experiments.cross_lane_identity_join_v1 import CrossLaneIdentityJoinV1
 from src.experiments.experiment_identity_manifest_v1 import (
     ARTIFACT_FILENAME,
     ExperimentIdentityManifestError,
@@ -18,6 +19,10 @@ from src.governance.promotion_loop.candidate_lineage_manifest_v1 import (
     LineageRelation,
     lineage_ref_from_mapping,
     lineage_ref_to_mapping,
+)
+from src.governance.promotion_loop.i16_lineage_remaining_planes_live_join_v1 import (
+    I16LineageRemainingPlanesLiveJoinError,
+    join_i16_lineage_remaining_planes_v1,
 )
 from src.meta.learning_loop.contract_safety_v1 import deterministic_json_dumps
 
@@ -34,6 +39,7 @@ class ExperimentLineageRefProducerResult:
     manifest_dir: Path
     manifest_path: Path
     ref: LineageRef
+    join: CrossLaneIdentityJoinV1
 
 
 def _resolve_existing_directory(manifest_dir: Path) -> Path:
@@ -109,12 +115,38 @@ def _load_validated_manifest(manifest_dir: Path) -> tuple[dict[str, Any], Path]:
     return raw, manifest_path
 
 
-def build_experiment_lineage_ref_from_manifest(
+def _attach_i16_remaining_planes_join(
+    manifest: Mapping[str, Any],
+    ref: LineageRef,
+    *,
+    artifact_path: str,
+    run_id: str | None,
+    campaign_id: str | None,
+    session_id: str | None,
+) -> CrossLaneIdentityJoinV1:
+    try:
+        return join_i16_lineage_remaining_planes_v1(
+            manifest,
+            ref=ref,
+            artifact_path=artifact_path,
+            run_id=run_id,
+            campaign_id=campaign_id,
+            session_id=session_id,
+        )
+    except I16LineageRemainingPlanesLiveJoinError as exc:
+        raise ExperimentLineageRefProducerError(
+            f"I16 remaining-plane join rejected: {exc}"
+        ) from exc
+
+
+def _build_experiment_lineage_ref_and_join(
     manifest: Mapping[str, Any],
     *,
-    artifact_path: str = ARTIFACT_FILENAME,
-) -> LineageRef:
-    """Build a validated EXPERIMENT LineageRef from an already validated Package N manifest."""
+    artifact_path: str,
+    run_id: str | None,
+    campaign_id: str | None,
+    session_id: str | None,
+) -> tuple[LineageRef, CrossLaneIdentityJoinV1]:
     _validate_artifact_relative_path(artifact_path)
 
     experiment_identity_id = manifest.get("experiment_identity_id")
@@ -128,7 +160,7 @@ def build_experiment_lineage_ref_from_manifest(
     if not isinstance(content_sha256, str) or not content_sha256.strip():
         raise ExperimentLineageRefProducerError("integrity.content_sha256 missing or invalid")
 
-    return LineageRef(
+    ref = LineageRef(
         ref_type=LineageRefType.EXPERIMENT,
         ref_id=experiment_identity_id,
         relation=LineageRelation.SOURCES,
@@ -137,20 +169,58 @@ def build_experiment_lineage_ref_from_manifest(
         digest=content_sha256,
         artifact_path=artifact_path,
     )
+    join = _attach_i16_remaining_planes_join(
+        manifest,
+        ref,
+        artifact_path=artifact_path,
+        run_id=run_id,
+        campaign_id=campaign_id,
+        session_id=session_id,
+    )
+    return ref, join
+
+
+def build_experiment_lineage_ref_from_manifest(
+    manifest: Mapping[str, Any],
+    *,
+    artifact_path: str = ARTIFACT_FILENAME,
+    run_id: str | None = None,
+    campaign_id: str | None = None,
+    session_id: str | None = None,
+) -> LineageRef:
+    """Build a validated EXPERIMENT LineageRef from an already validated Package N manifest."""
+    ref, _join = _build_experiment_lineage_ref_and_join(
+        manifest,
+        artifact_path=artifact_path,
+        run_id=run_id,
+        campaign_id=campaign_id,
+        session_id=session_id,
+    )
+    return ref
 
 
 def produce_experiment_lineage_ref_v1(
     *,
     manifest_dir: Path | str,
+    run_id: str | None = None,
+    campaign_id: str | None = None,
+    session_id: str | None = None,
 ) -> ExperimentLineageRefProducerResult:
     """Extract a reference-only EXPERIMENT LineageRef from an explicit manifest directory."""
     resolved_manifest_dir = _resolve_existing_directory(Path(manifest_dir))
     manifest, manifest_path = _load_validated_manifest(resolved_manifest_dir)
-    ref = build_experiment_lineage_ref_from_manifest(manifest)
+    ref, join = _build_experiment_lineage_ref_and_join(
+        manifest,
+        artifact_path=ARTIFACT_FILENAME,
+        run_id=run_id,
+        campaign_id=campaign_id,
+        session_id=session_id,
+    )
     return ExperimentLineageRefProducerResult(
         manifest_dir=resolved_manifest_dir,
         manifest_path=manifest_path,
         ref=ref,
+        join=join,
     )
 
 
@@ -224,9 +294,17 @@ def produce_experiment_lineage_ref_v1_to_path(
     manifest_dir: Path | str,
     output_path: Path | str,
     fail_closed_if_exists: bool = True,
+    run_id: str | None = None,
+    campaign_id: str | None = None,
+    session_id: str | None = None,
 ) -> ExperimentLineageRefProducerResult:
     """End-to-end offline producer: explicit manifest_dir -> validated EXPERIMENT LineageRef JSON."""
-    result = produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
+    result = produce_experiment_lineage_ref_v1(
+        manifest_dir=manifest_dir,
+        run_id=run_id,
+        campaign_id=campaign_id,
+        session_id=session_id,
+    )
     write_experiment_lineage_ref_v1_atomic(
         result.ref,
         output_path,

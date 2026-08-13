@@ -7,10 +7,17 @@ slice metadata and pointers to under-repo evidence directories (typically ``out/
 
 from __future__ import annotations
 
+import copy
+from dataclasses import dataclass
 import re
-from typing import Any, Literal, Optional
+from typing import Any, Literal, Mapping, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+
+from src.experiments.cross_lane_identity_join_v1 import CrossLaneIdentityJoinV1
+from src.levelup.i52_levelup_named_lane_identity_join_v1 import (
+    join_i52_named_lane_identity_v1,
+)
 
 _SCHEMA = "levelup/manifest/v0"
 _EVIDENCE_PREFIX = "out/ops/"
@@ -81,6 +88,81 @@ class LevelUpManifestV0(BaseModel):
                 raise ValueError(f"duplicate slice_id in manifest: {sl.slice_id!r}")
             seen.add(sl.slice_id)
         return self
+
+
+@dataclass(frozen=True)
+class LevelUpManifestNamedLaneIdentityJoinResultV0:
+    contract: LevelUpManifestV0
+    join: CrossLaneIdentityJoinV1
+
+
+@dataclass(frozen=True)
+class SliceContractNamedLaneIdentityJoinResultV0:
+    contract: SliceContractV0
+    join: CrossLaneIdentityJoinV1
+
+
+@dataclass(frozen=True)
+class EvidenceBundleNamedLaneIdentityJoinResultV0:
+    contract: EvidenceBundleRefV0
+    join: CrossLaneIdentityJoinV1
+
+
+def parse_levelup_manifest_with_identity_join_v1(
+    raw: Mapping[str, Any],
+    **sidecars: Any,
+) -> LevelUpManifestNamedLaneIdentityJoinResultV0:
+    """Parse a live I52 manifest and fail-closed join Package-N IDENTITY sidecar."""
+    if not isinstance(raw, Mapping):
+        raise ValueError("malformed plane data rejected: I52 manifest is not an object")
+    snapshot = copy.deepcopy(dict(raw))
+    contract = LevelUpManifestV0.model_validate(raw)
+    join = join_i52_named_lane_identity_v1(
+        contract.model_dump(mode="python"),
+        surface="manifest",
+        **sidecars,
+    )
+    if dict(raw) != snapshot:
+        raise ValueError("I52 manifest input was mutated")
+    return LevelUpManifestNamedLaneIdentityJoinResultV0(contract=contract, join=join)
+
+
+def parse_slice_contract_with_identity_join_v1(
+    raw: Mapping[str, Any],
+    **sidecars: Any,
+) -> SliceContractNamedLaneIdentityJoinResultV0:
+    """Parse a live I52 slice and fail-closed join Package-N IDENTITY sidecar."""
+    if not isinstance(raw, Mapping):
+        raise ValueError("malformed plane data rejected: I52 slice is not an object")
+    snapshot = copy.deepcopy(dict(raw))
+    contract = SliceContractV0.model_validate(raw)
+    join = join_i52_named_lane_identity_v1(
+        contract.model_dump(mode="python"),
+        surface="slice",
+        **sidecars,
+    )
+    if dict(raw) != snapshot:
+        raise ValueError("I52 slice input was mutated")
+    return SliceContractNamedLaneIdentityJoinResultV0(contract=contract, join=join)
+
+
+def parse_evidence_bundle_with_identity_join_v1(
+    raw: Mapping[str, Any],
+    **sidecars: Any,
+) -> EvidenceBundleNamedLaneIdentityJoinResultV0:
+    """Parse a live I52 evidence bundle and fail-closed join Package-N IDENTITY sidecar."""
+    if not isinstance(raw, Mapping):
+        raise ValueError("malformed plane data rejected: I52 evidence_bundle is not an object")
+    snapshot = copy.deepcopy(dict(raw))
+    contract = EvidenceBundleRefV0.model_validate(raw)
+    join = join_i52_named_lane_identity_v1(
+        contract.model_dump(mode="python"),
+        surface="evidence_bundle",
+        **sidecars,
+    )
+    if dict(raw) != snapshot:
+        raise ValueError("I52 evidence_bundle input was mutated")
+    return EvidenceBundleNamedLaneIdentityJoinResultV0(contract=contract, join=join)
 
 
 def levelup_manifest_v0_json_schema() -> dict[str, Any]:

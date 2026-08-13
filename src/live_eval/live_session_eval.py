@@ -1,9 +1,15 @@
 """Core evaluation logic for live session fills."""
 
+import copy
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Any
+from typing import Any, Dict, List, Mapping
 from collections import defaultdict
+
+from src.experiments.cross_lane_identity_join_v1 import CrossLaneIdentityJoinV1
+from src.live_eval.i61_live_eval_named_lane_identity_join_v1 import (
+    join_i61_named_lane_identity_v1,
+)
 
 
 @dataclass
@@ -160,3 +166,45 @@ def compute_metrics(fills: List[Fill], strict: bool = False) -> Dict[str, Any]:
         "realized_pnl_total": realized_pnl_total,
         "realized_pnl_per_symbol": realized_pnl_per_symbol,
     }
+
+
+@dataclass(frozen=True)
+class LiveSessionMetricsNamedLaneIdentityJoinResultV1:
+    contract: Dict[str, Any]
+    join: CrossLaneIdentityJoinV1
+
+
+@dataclass(frozen=True)
+class LiveSessionDirNamedLaneIdentityJoinResultV1:
+    contract: Dict[str, Any]
+    join: CrossLaneIdentityJoinV1
+
+
+def parse_live_session_metrics_with_identity_join_v1(
+    raw: Mapping[str, Any],
+    **sidecars: Any,
+) -> LiveSessionMetricsNamedLaneIdentityJoinResultV1:
+    """Parse live I61 metrics and fail-closed join Package-N IDENTITY sidecar."""
+    snapshot = copy.deepcopy(dict(raw)) if isinstance(raw, Mapping) else None
+    join = join_i61_named_lane_identity_v1(raw, surface="metrics", **sidecars)
+    if not isinstance(raw, Mapping) or snapshot is None:
+        raise ValueError("malformed plane data rejected: I61 metrics is not an object")
+    contract = copy.deepcopy(dict(raw))
+    if dict(raw) != snapshot:
+        raise ValueError("I61 metrics input was mutated")
+    return LiveSessionMetricsNamedLaneIdentityJoinResultV1(contract=contract, join=join)
+
+
+def parse_live_session_dir_with_identity_join_v1(
+    raw: Mapping[str, Any],
+    **sidecars: Any,
+) -> LiveSessionDirNamedLaneIdentityJoinResultV1:
+    """Parse a live I61 session-dir hint and fail-closed join Package-N IDENTITY sidecar."""
+    snapshot = copy.deepcopy(dict(raw)) if isinstance(raw, Mapping) else None
+    join = join_i61_named_lane_identity_v1(raw, surface="session", **sidecars)
+    if not isinstance(raw, Mapping) or snapshot is None:
+        raise ValueError("malformed plane data rejected: I61 session is not an object")
+    contract = {"session_dir": str(raw["session_dir"])}
+    if dict(raw) != snapshot:
+        raise ValueError("I61 session input was mutated")
+    return LiveSessionDirNamedLaneIdentityJoinResultV1(contract=contract, join=join)
