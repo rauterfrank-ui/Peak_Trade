@@ -1,7 +1,7 @@
 # LevelUp v0 — Canonical Ops/Spec Surface (additive)
 
 **status:** active  
-**last_updated:** 2026-04-17  
+**last_updated:** 2026-08-13  
 **purpose:** Kanonische **Auffindbarkeit** und **Claim-Grenzen** für die kleine LevelUp-v0-Schicht (Manifest-/IO-/CLI-Grundlage). Keine neue Governance-, Risk- oder Safety-Autorität.
 
 **docs_token:** `DOCS_TOKEN_LEVELUP_V0_CANONICAL_SURFACE`
@@ -39,7 +39,10 @@ Ausrichtung an den verbindlichen Vokabular-/Authority-/Provenance-Regeln: [`CANO
 | Pfad | Rolle |
 |------|--------|
 | `src/levelup/__init__.py` | Öffentliche Re-Exports der v0-API. |
-| `src/levelup/v0_models.py` | Pydantic-Modelle, Schema-String `levelup&#47;manifest&#47;v0`. |
+| `src/levelup/v0_models.py` | Pydantic-Modelle, Schema-String `levelup&#47;manifest&#47;v0`. Additive EG-I82 parse sidecar `parse_levelup_manifest_with_identity_join_v1` (Package-N SHA256 IDENTITY; `extra="forbid"` unverändert). |
+| `src/levelup/i52_levelup_join_attachment_v1.py` | Dormant I52 join-attachment helper (non-activating). |
+| `src/levelup/i52_levelup_live_contract_join_v1.py` | Dormant I52 live-contract join registration (non-activating). |
+| `src/levelup/i52_levelup_named_lane_identity_join_v1.py` | Named-lane I52 IDENTITY join (Package-N SHA256 sidecar; no v0 schema mutation). |
 | `src/levelup/v0_io.py` | JSON einlesen/ausgeben (Path). |
 | `src/levelup/cli.py` | CLI-Einstieg (`validate`, `dump-empty`, `format`, `canonical-check`, `export-json-schema`, `describe-slice`, `list-slices`, `check-evidence`, `check-evidence-coverage`, `check-evidence-readiness`, `check-evidence-bundle`, `check-evidence-integrity`, `check-evidence-attestation`, `check-evidence-attestation-contract`, `check-evidence-attestation-consistency`, `check-evidence-attestation-readiness`, `check-evidence-attestation-uniqueness`, `check-evidence-attestation-integrity`, `check-evidence-readiness-overall`). |
 | `schemas/levelup/levelup_manifest_v0.schema.json` | Repo-committed JSON Schema für `LevelUpManifestV0` (gleiche Quelle wie `export-json-schema` / `levelup_manifest_v0_json_schema()` in `v0_models.py`). |
@@ -67,6 +70,7 @@ Ausrichtung an den verbindlichen Vokabular-/Authority-/Provenance-Regeln: [`CANO
 Alles Folgende bezieht sich auf den **Ist**-Stand der genannten Dateien:
 
 - **Schema:** `LevelUpManifestV0.schema_version` ist fix `levelup&#47;manifest&#47;v0` (`src/levelup/v0_models.py`).
+- **EG-I82 identity join (additive sidecar, non-activating):** `parse_levelup_manifest_with_identity_join_v1` hängt Package-N SHA256 IDENTITY als Sidecar an; `LevelUpManifestV0`-Felder, JSON-Schema und `extra="forbid"` bleiben unverändert. Historische Manifeste bleiben lesbar. Keine Live-/Order-/Runtime-Aktivierung. Nachweis: `tests/levelup/test_i52_levelup_named_lane_identity_join_v1.py`, Master Runbook §5.8.
 - **Committed JSON Schema (reviewbar):** `schemas/levelup/levelup_manifest_v0.schema.json` materialisiert das Pydantic-JSON-Schema für `LevelUpManifestV0`. Synchronisation: `uv run python scripts/ops/sync_levelup_manifest_json_schema.py` (nutzt dieselbe Erzeugung wie `export-json-schema` über `levelup_manifest_v0_json_schema()`). Drift-Tests: `test_committed_levelup_manifest_json_schema_matches_model` und Abgleich in `test_cli_export_json_schema_success` in `tests/levelup/test_v0_manifest.py`.
 - **Manifest-Titel:** `LevelUpManifestV0.title` wird an den Enden getrimmt; nur nicht-leer nach dem Trim ist gültig (Leer- bzw. Nur-Whitespace-Titel werden abgewiesen). Positiv-/Negativfälle: `test_manifest_root_title_strips_surrounding_whitespace`, `test_manifest_root_title_rejects_empty_after_strip` in `tests/levelup/test_v0_manifest.py`.
 - **Slice-IDs:** `slice_id`-Werte müssen innerhalb eines Manifests **eindeutig** sein (`test_manifest_rejects_duplicate_slice_id` in `tests/levelup/test_v0_manifest.py`).
