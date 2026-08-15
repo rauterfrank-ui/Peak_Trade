@@ -1,0 +1,75 @@
+{
+  "activated": false,
+  "authority_effect": "NONE",
+  "canary_execute": false,
+  "capability_id": "CANONICAL_REGIME_META_GATED_SELECTION_V1",
+  "contract_id": "canonical_regime_meta_gated_selection",
+  "contract_owner": "regime.canonical_regime_meta_gated_selection_v1",
+  "contract_version": "canonical_regime_meta_gated_selection/v1",
+  "core_logic_change": false,
+  "done_criterion": "META_IS_GATED_INPUT_NOT_BYPASS;LLM_REMAINS_NON_TRADING",
+  "g14_non_authoritative_until_promotion": true,
+  "gate_owner": "regime.canonical_regime_meta_gated_selection_v1.gate_v1",
+  "live_authorized": false,
+  "mapping_version": "canonical_regime_meta_gated_selection_mapping/v1",
+  "max_age_allowed_uses": [
+    "OBSERVATION_OF_DATA_AGE_STALENESS",
+    "DIAGNOSTIC_TELEMETRY",
+    "LOGGING_AUDIT",
+    "EVIDENCE_COLLECTION",
+    "WARNINGS_HEALTH_SIGNALS",
+    "RESEARCH_FORENSIC_USE"
+  ],
+  "max_age_can_block_canary": false,
+  "max_age_can_block_trading": false,
+  "max_age_can_change_execution": false,
+  "max_age_can_change_promotion": false,
+  "max_age_can_change_risk_decisions": false,
+  "max_age_can_change_selection": false,
+  "max_age_enforcement_enabled": false,
+  "max_age_productive_gate": false,
+  "max_age_role": "WATCHDOG_ONLY",
+  "network_effect": false,
+  "order_effect": false,
+  "package_marker": "CANONICAL_REGIME_META_GATED_SELECTION_V1=true",
+  "productive_caller_exists": false,
+  "promotion_authority": false,
+  "r2_catalog_selection_owner": "strategies.canonical_strategy_registry_suitability_selection_v1.selection_v1",
+  "r2_identity_owner": "src.strategies.registry.resolve_strategy_id",
+  "r2_registry_owner": "src.strategies.registry",
+  "raw_llm_trading_authority": "PERMANENT_NON_AUTHORITY",
+  "regime_candidate_mapping": {
+    "breakout": [
+      "momentum_1h",
+      "trend_following",
+      "breakout"
+    ],
+    "ranging": [
+      "rsi_reversion",
+      "mean_reversion",
+      "bollinger_bands"
+    ],
+    "trending": [
+      "ma_crossover",
+      "trend_following",
+      "macd"
+    ]
+  },
+  "regime_label_owner": "src.regime.base.RegimeLabel",
+  "regime_research_switch_role": "RESEARCH_FEEDER_NON_AUTHORITY",
+  "remediation_id": "R3_REGIME_META_GATED_SELECTION",
+  "runtime_authority_impact": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "runtime_effect": false,
+  "silent_threshold_mutation": false,
+  "source_gap_ids": [
+    "I40",
+    "I83",
+    "UQ2"
+  ],
+  "suitability_selection_owner": "trading.master_v2.suitability_binding_v1.select_strategy_deterministic",
+  "testnet_authorized": false,
+  "trading_grant": false,
+  "volatility_numeric_max_age_effect": "WATCHDOG_ONLY",
+  "volatility_numeric_max_age_enforcing": false
+}
