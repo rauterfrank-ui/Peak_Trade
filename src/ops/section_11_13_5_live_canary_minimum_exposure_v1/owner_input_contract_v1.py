@@ -36,7 +36,9 @@ def build_owner_execute_input_contract_v1() -> dict[str, Any]:
         "BLOCKS_NEW_ENTRY": False,
         "AUTHORING_GO": OWNER_GO_AUTHORING,
         "SEPARATE_EXECUTE_GO": OWNER_GO_EXECUTE,
-        "OWNER_GO_EXECUTE_STATUS": "GRANTED_UNCONSUMED",
+        "OWNER_GO_EXECUTE_STATUS": "CONSUMED",
+        "RETRY_SAFE_NOW": False,
+        "POST_401_ROOT_CAUSE": "UNPROVEN_FAIL_CLOSED",
         "CANARY_SUBMIT_TRANSPORT_IMPLEMENTED": True,
         "SUBMIT_UNLOCKED": False,
         "REUSED_BINDING_SOURCES": {

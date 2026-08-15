@@ -83,11 +83,16 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-1. External remaining blocker: authenticated OKX GET returns `50110`
-   (API-key IP whitelist). Owner action at OKX is required; this package
-   does not mutate API keys.
-2. Separate `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains `GRANTED_UNCONSUMED`.
-3. Execute still requires all session gates (`--authorized --live-enabled
-   --live-armed --confirm-token --allow-productive-wire-send --vault-file` plus
-   `LIVE_CANARY_CYBERSECURITY_GATE=PASS`).
-4. No automatic canary start from this plumbing-remediation surface.
+Current SSOT: Master Runbook §11.13.5.I. Historical H-era next steps
+below are superseded.
+
+1. `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` is `CONSUMED` after the first
+   canary POST returned HTTP 401 with no venue order.
+2. `POST_401_ROOT_CAUSE=UNPROVEN_FAIL_CLOSED`. Do not treat analog GET
+   `50113` as the proven incident body.
+3. `AUTH_50110_CLEARED=true`. IP-whitelist is no longer the current
+   blocker.
+4. Next canonical step is Owner merge of the bounded POST-401
+   remediation PR. No retry and no new execute GO from this spec.
+5. `LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED=false`. `CANARY_PROVEN=false`.
+   `RETRY_SAFE_NOW=false`.

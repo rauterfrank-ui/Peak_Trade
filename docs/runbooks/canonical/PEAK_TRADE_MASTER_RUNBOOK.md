@@ -10283,9 +10283,121 @@ EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
 
 Hard stop. No Canary execute in this GO. Cap &#47; Capability 11.9 remains
 fixture-only. Plumbing-remediation GO is consumed and must not be reused
-for execute. `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains
-`GRANTED_UNCONSUMED` and must not be consumed until the external OKX
-API-key IP-whitelist blocker is cleared by the Owner.
+for execute. Historical next pointer superseded by §11.13.5.I below.
+
+### 11.13.5.I POST-HTTP-401 bounded transport remediation + SSOT persistence (BOUND; NOT RETRY; NOT PROVEN)
+
+Owner-GO `SECTION_11_13_5_POST_HTTP_401_BOUNDED_REMEDIATION_PREPARATION`
+(one-shot; now **CONSUMED**) authorized the smallest canary-scoped
+transport&#47;evidence hardening after the first productive canary POST
+returned HTTP 401 with no venue order, plus SSOT persistence of that
+already-occurred operational state. This does **not** authorize a
+Canary retry, a second POST `&#47;api&#47;v5&#47;trade&#47;order`, cancel, flatten,
+consumption of a new execute GO, general Live authorization, general
+submit unlock, G13, R6 S5, Multi-Future, N&gt;1, funding, S6, or any
+productive OKX mutation.
+
+Incident facts persisted here (not re-executed):
+
+``` text
+CANARY_FIRST_SUBMIT_ATTEMPTED=true
+CANARY_FIRST_SUBMIT_HTTP_STATUS=401
+CANARY_FIRST_SUBMIT_ACKNOWLEDGED=false
+EXCHANGE_FINAL_ORDER_STATE=ABSENT
+EXCHANGE_FINAL_POSITION_STATE=FLAT
+OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE_STATUS=CONSUMED
+LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED=false
+LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN=false
+CANARY_PROVEN=false
+POST_401_ROOT_CAUSE=UNPROVEN_FAIL_CLOSED
+ROOT_CAUSE_RECLASSIFIED=false
+RETRY_SAFE_NOW=false
+AUTH_50110_CLEARED=true
+```
+
+`POST_401_ROOT_CAUSE=UNPROVEN_FAIL_CLOSED` remains the truth. This
+binding does **not** prove the HTTP 401 was OKX `50113`. A later
+GET-only tamper probe observed `50113 Invalid Sign` as analog evidence
+only and must not be substituted for the unpersisted incident body.
+
+Bounded source remediation on this GO (local&#47;fake&#47;localhost tests only;
+no productive trading POST):
+
+- HTTP error evidence: persist HTTP status, OKX JSON `code`&#47;`msg` when
+  parseable, Content-Type, and an allowlisted diagnostic header set
+  (request&#47;trace&#47;CF-Ray-like). Secrets, API keys, signatures,
+  passphrases, and unbounded header dumps are forbidden. Malformed
+  non-JSON bodies fail closed without being classified as success.
+- Mutating canary POST must not transparently follow
+  301&#47;302&#47;303&#47;307&#47;308. Redirect is fail-closed: no method
+  downgrade, no second request, no resubmit. Redirect metadata may be
+  recorded secret-safe. urllib POST-redirect-to-GET remains an
+  unproven POST-specific risk factor, not the proven incident cause.
+- Canary POST records `SIGNED_BODY_EQUALS_WIRE_BODY` as secret-safe
+  hash&#47;length&#47;boolean evidence.
+- OK-ACCESS header case is **not** changed. GET and POST are
+  canonicalized identically by urllib; valid GETs already succeed with
+  that representation.
+
+``` text
+OWNER_GO_SECTION_11_13_5_POST_HTTP_401_BOUNDED_REMEDIATION_PREPARATION=CONSUMED
+CURRENT_ORIGIN_MAIN_SHA=3cc998bf3855e249038f524d5bf01f897a0c5597
+CANARY_SUBMIT_TRANSPORT_IMPLEMENTED=true
+CANARY_SUBMIT_TRANSPORT_SCOPE=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE_ONLY
+HTTP_ERROR_EVIDENCE_REMEDIATION=PREPARED
+POST_REDIRECT_FAIL_CLOSED=PREPARED
+SIGNED_BODY_WIRE_BODY_EVIDENCE=PREPARED
+HEADER_CASE_CHANGE_STATUS=UNCHANGED_OUT_OF_SCOPE
+CANARY_SUBMIT_TRANSPORT_ACTIVATED=false
+GENERAL_LIVE_SUBMIT_UNLOCKED=false
+SUBMIT_UNLOCKED=false
+ACTIVATED=false
+LIVE_AUTHORIZED=false
+LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED=false
+LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN=false
+OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE_STATUS=CONSUMED
+ORDER_COUNT_SUBMITTED_THIS_STEP=0
+NETWORK_EFFECT=NONE_NO_PRODUCTIVE_TRADING_POST
+ORDER_EFFECT=NONE
+ACCOUNT_MUTATION_EFFECT=NONE
+SECRET_VALUE_ACCESS=NONE
+LIVE_CANARY_CYBERSECURITY_GATE=PASS
+R6_S5_AUTHORIZATION_GRANT=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+G13_UNLOCK=false
+N_GREATER_THAN_ONE=false
+MAX_POSITIONS_EFFECTIVE=1
+S6_STARTED=false
+TERMINAL_STATE=CANARY_FIRST_SUBMIT_HTTP_401_NO_VENUE_ORDER_POST_401_ROOT_CAUSE_UNPROVEN_FAIL_CLOSED_BOUNDED_TRANSPORT_REMEDIATION_PREPARED_NOT_RETRY_NOT_PROVEN
+```
+
+Mandatory distinctions:
+
+``` text
+BOUNDED_TRANSPORT_REMEDIATION_PREPARED != CANARY_RETRY
+BOUNDED_TRANSPORT_REMEDIATION_PREPARED != LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED
+BOUNDED_TRANSPORT_REMEDIATION_PREPARED != CANARY_PROVEN
+HTTP_401 != PROVEN_OKX_50113
+GET_TAMPER_PROBE_50113 != INCIDENT_BODY
+OWNER_GO_SECTION_11_13_5_POST_HTTP_401_BOUNDED_REMEDIATION_PREPARATION != NEW_EXECUTE_GO
+CONSUMED != RETRY_SAFE_NOW
+AUTH_50110_CLEARED != CANARY_PROVEN
+```
+
+``` text
+CODE_OWNER=src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+CANONICAL_NEXT_STEP=OWNER_MERGE_GO_FOR_BOUNDED_POST_401_REMEDIATION_PR
+EARLIEST_UNRESOLVED_DEPENDENCY=OWNER_MERGE_GO_FOR_BOUNDED_POST_401_REMEDIATION_PR
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
+```
+
+Hard stop. No Canary retry in this GO. Cap &#47; Capability 11.9 remains
+fixture-only. Remediation-preparation GO is consumed and must not be
+reused for execute. `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains
+`CONSUMED`. A later execute requires a **new** Owner-GO after this
+remediation is merged and the POST-401 root cause is still treated as
+unproven.
 
 ## 11.14 Live order and economic evidence ladder
 

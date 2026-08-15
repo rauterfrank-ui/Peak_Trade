@@ -11,13 +11,16 @@ LIVE_RECONCILIATION_PROVEN=false
 BLOCKS_NEW_ENTRY=true
 AUTHORING_GO=OWNER_GO_SECTION_11_13_LIVE_CANARY_PRODUCTIVE_SURFACE_AUTHORING
 SEPARATE_EXECUTE_GO=OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE
-OWNER_GO_EXECUTE_STATUS=GRANTED_UNCONSUMED
+OWNER_GO_EXECUTE_STATUS=CONSUMED
+RETRY_SAFE_NOW=false
+POST_401_ROOT_CAUSE=UNPROVEN_FAIL_CLOSED
 ```
 
-Authoring GO prepares the surface only. Future execute requires a **new**
-one-shot `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` after merge and after
-prerequisite blockers are proven resolved. Do not reuse the previously
-fail-closed-consumed canary GO.
+Authoring GO prepares the surface only. The prior one-shot
+`OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` is **CONSUMED** after the first
+canary POST HTTP 401. A later execute requires a **new** one-shot Owner-GO
+after merge and must not reuse the consumed execute GO. Do not treat analog
+GET `50113` as the proven incident body.
 
 ## Required Owner inputs (future execute)
 

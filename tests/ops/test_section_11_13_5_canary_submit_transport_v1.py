@@ -292,6 +292,8 @@ def test_happy_path_fake_exactly_one_post() -> None:
     assert result["OWNER_GO_CONSUMED"] is False
     assert result["plan"]["quantity"] == "0.01"
     assert result["plan"]["max_notional"] == result["plan"]["min_executable_notional"]
+    assert result["SIGNED_BODY_EQUALS_WIRE_BODY"] is True
+    assert result["ok"] is True
     posts = [c for c in transport.calls if c.method == "POST"]
     assert len(posts) == 1
     assert posts[0].endpoint == "/api/v5/trade/order"
@@ -595,3 +597,181 @@ def test_entry_permit_still_mandatory_for_post() -> None:
     with pytest.raises(LiveCanaryHttpError, match="UNGATED_POST"):
         client.post(endpoint="/api/v5/trade/order")
     assert all(call.method != "POST" for call in transport.calls)
+
+
+def test_http_401_json_code_msg_captured_secret_safe() -> None:
+    transport = _fake_transport()
+    transport.post_status_code = 401
+    transport.post_body = b'{"code":"50113","msg":"Invalid Sign"}'
+    transport.post_headers = {
+        "Content-Type": "application/json",
+        "CF-RAY": "testray123",
+        "OK-ACCESS-KEY": "must-not-leak",
+        "Set-Cookie": "session=secret",
+    }
+    result = run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
+    assert result["ok"] is False
+    assert result["http_status"] == 401
+    evidence = result["http_error_evidence"]
+    assert evidence["okx_code"] == "50113"
+    assert evidence["okx_msg"] == "Invalid Sign"
+    assert evidence["json_parse_ok"] is True
+    assert evidence["SECRET_VALUES_INCLUDED"] is False
+    headers = evidence["response_headers_safe"]
+    assert headers.get("CF-RAY") == "testray123" or headers.get("cf-ray") == "testray123"
+    dumped = json.dumps(result)
+    assert "must-not-leak" not in dumped
+    assert "session=secret" not in dumped
+    assert result["POST_401_ROOT_CAUSE"] == "UNPROVEN_FAIL_CLOSED"
+    assert result["RETRY_SAFE_NOW"] is False
+    assert result["LIVE_AUTHORIZED"] is False
+    posts = [c for c in transport.calls if c.method == "POST"]
+    assert len(posts) == 1
+
+
+def test_http_error_malformed_body_fail_closed_not_success() -> None:
+    transport = _fake_transport()
+    transport.post_status_code = 401
+    transport.post_body = b"<html>not-json"
+    transport.post_headers = {"Content-Type": "text/html"}
+    result = run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
+    assert result["ok"] is False
+    assert result["http_status"] == 401
+    evidence = result["http_error_evidence"]
+    assert evidence["json_parse_ok"] is False
+    assert evidence["parse_error"] == "MALFORMED_NON_JSON_RESPONSE"
+    assert evidence["okx_code"] is None
+    assert result["CANARY_EXECUTED"] is False
+    assert result["LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED"] is False
+
+
+@pytest.mark.parametrize("status", [301, 302, 303, 307, 308])
+def test_fake_post_redirect_does_not_resubmit(status: int) -> None:
+    transport = _fake_transport()
+    transport.post_status_code = status
+    transport.post_body = b"redirect"
+    transport.post_redirect_location = "https://eea.okx.com/api/v5/trade/order"
+    transport.post_headers = {"Location": "https://user:pass@eea.okx.com/api/v5/trade/order?x=1"}
+    result = run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
+    assert result["ok"] is False
+    assert result["CANARY_RESULT"] == "ENTRY_SUBMIT_POST_REDIRECT_FAIL_CLOSED"
+    assert result["UNKNOWN_SUBMIT"] is False
+    assert result["BLIND_RETRY"] is False
+    assert result["ORDER_COUNT_SUBMITTED"] == 1
+    evidence = result["http_error_evidence"]
+    assert evidence["redirect_followed"] is False
+    assert evidence["redirect_status"] == status
+    loc = str(evidence["redirect_location"] or "")
+    assert "user:pass" not in loc
+    assert "?" not in loc
+    posts = [c for c in transport.calls if c.method == "POST"]
+    assert len(posts) == 1
+
+
+@pytest.mark.parametrize("status", [301, 302, 303, 307, 308])
+def test_urllib_post_redirect_fail_closed_no_second_request(status: int) -> None:
+    import threading
+    import time
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
+        LiveCanaryHttpRequestV1,
+        UrllibLiveCanaryTransportV1,
+    )
+
+    hits: list[dict[str, str]] = []
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_POST(self) -> None:
+            hits.append({"method": "POST", "path": self.path})
+            length = int(self.headers.get("Content-Length") or 0)
+            if length:
+                self.rfile.read(length)
+            self.send_response(status)
+            self.send_header(
+                "Location",
+                f"http://127.0.0.1:{self.server.server_address[1]}/second",
+            )
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"redirect")
+
+        def do_GET(self) -> None:
+            hits.append({"method": "GET", "path": self.path})
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"followed")
+
+        def log_message(self, format: str, *args: object) -> None:
+            return
+
+    httpd = HTTPServer(("127.0.0.1", 0), Handler)
+    thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+    thread.start()
+    port = httpd.server_address[1]
+    body = '{"instId":"BTC-USDT-SWAP"}'
+    try:
+        transport = UrllibLiveCanaryTransportV1(wire_send_enabled=True)
+        response = transport.send(
+            LiveCanaryHttpRequestV1(
+                method="POST",
+                url=f"http://127.0.0.1:{port}/api/v5/trade/order",
+                host="127.0.0.1",
+                endpoint="/api/v5/trade/order",
+                headers={"Content-Type": "application/json"},
+                timeout_seconds=2.0,
+                body_text=body,
+            )
+        )
+        time.sleep(0.05)
+    finally:
+        httpd.shutdown()
+        httpd.server_close()
+        thread.join(timeout=2)
+    assert len(hits) == 1
+    assert hits[0] == {"method": "POST", "path": "/api/v5/trade/order"}
+    assert response.redirect_followed is False
+    assert response.redirect_status == status
+    assert response.method == "POST"
+    assert response.status_code == status
+    assert transport.http_exchange_count == 1
+    assert response.wire_body_sha256
+    import hashlib
+
+    assert response.wire_body_sha256 == hashlib.sha256(body.encode("utf-8")).hexdigest()
+
+
+def test_signed_body_equals_wire_body_evidence_contract() -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
+        signed_wire_body_evidence_v1,
+    )
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
+        serialize_signed_post_body_v1,
+    )
+
+    payload = {
+        "instId": "BTC-USDT-SWAP",
+        "tdMode": "cross",
+        "side": "buy",
+        "ordType": "limit",
+        "sz": "0.01",
+        "px": "63102",
+        "clOrdId": "ptokxeprodae2d2fa0ae2d2fa000",
+    }
+    body = serialize_signed_post_body_v1(payload)
+    match = signed_wire_body_evidence_v1(
+        signed_body_text=body, wire_body_bytes=body.encode("utf-8")
+    )
+    mismatch = signed_wire_body_evidence_v1(signed_body_text=body, wire_body_bytes=b"{}")
+    assert match["SIGNED_BODY_EQUALS_WIRE_BODY"] is True
+    assert mismatch["SIGNED_BODY_EQUALS_WIRE_BODY"] is False
+    transport = _fake_transport()
+    result = run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
+    assert result["SIGNED_BODY_EQUALS_WIRE_BODY"] is True
+    posts = [c for c in transport.calls if c.method == "POST"]
+    assert len(posts) == 1
+    import hashlib
+
+    wire_sha = hashlib.sha256(posts[0].body_text.encode("utf-8")).hexdigest()[:12]
+    assert result["signed_wire_body_evidence"]["wire_body_sha256_12"] == wire_sha
