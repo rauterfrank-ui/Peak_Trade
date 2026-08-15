@@ -22,6 +22,11 @@ instrument_allowlist = ["ETH-USD_UM_XPERP-310404"]
 btc_forbidden = true
 spot_forbidden = true
 
+# I17 duration policy: 7200s is canonical qualification; 21600s remains the
+# supported extended-soak ceiling and does not block the next phase.
+canonical_productive_duration_seconds = 7200
+extended_soak_duration_seconds = 21600
+extended_soak_blocks_next_phase = false
 max_session_duration_seconds = 21600
 confirm_token_ttl_seconds = 3600
 connect_timeout_seconds = 5.0

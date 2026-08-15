@@ -155,6 +155,10 @@ def _fake_ticker_fetcher(
 
 
 def _issue_bundle(tmp_path: Path, *, duration: int = 120):
+    from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (
+        ALLOWED_PRODUCTIVE_DURATIONS,
+    )
+
     out = tmp_path / "issuance"
     token_path = tmp_path / "token.txt"
     # mint via preregister path
@@ -206,7 +210,7 @@ def _issue_bundle(tmp_path: Path, *, duration: int = 120):
         expires_at=end,
         session_id=sid,
         now_unix=NOW,
-        allow_noncanonical_duration=True,
+        allow_noncanonical_duration=duration not in ALLOWED_PRODUCTIVE_DURATIONS,
     )
     assert prereg_res.ok, prereg_res.blockers
     prereg = parse_preregistration_contract_v1(
@@ -583,3 +587,157 @@ def test_wallclock_cli_no_longer_hard_blocks_with_enabled_message() -> None:
     text = WALLCLOCK_CLI.read_text(encoding="utf-8")
     assert "REAL_NETWORK_CLI_PATH_NOT_ENABLED_IN_THIS_PR" not in text
     assert "run_productive_wallclock_session_from_paths_v1" in text
+
+
+def test_canonical_7200_is_productive_qualification_without_test_flag(
+    tmp_path: Path,
+) -> None:
+    from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (
+        DURATION_CLASS_CANONICAL_QUALIFICATION,
+        I17_CANONICAL_DURATION_SECONDS,
+        I17_EXTENDED_SOAK_BLOCKS_NEXT_PHASE,
+        classify_productive_planned_duration_v1,
+        duration_next_phase_blockers_v1,
+    )
+
+    assert I17_CANONICAL_DURATION_SECONDS == 7200
+    assert classify_productive_planned_duration_v1(7200) == (DURATION_CLASS_CANONICAL_QUALIFICATION)
+    prereg, go, artifact, _token, _ = _issue_bundle(tmp_path, duration=7200)
+    assert prereg.planned_duration_seconds == 7200
+    assert prereg.no_orders is True
+    manifest = json.loads(
+        (tmp_path / "issuance" / "issuance_manifest_preregistration.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert manifest["duration_class"] == DURATION_CLASS_CANONICAL_QUALIFICATION
+    assert manifest["extended_soak_blocks_next_phase"] is False
+    assert manifest["orders_authorized"] is False
+    assert manifest["live_authorized"] is False
+    assert manifest["testnet_authorized"] is False
+    assert go.orders_authorized is False
+    assert artifact.live_authorized is False
+    blockers = duration_next_phase_blockers_v1(
+        canonical_qualification_proven=True,
+        extended_soak_proven=False,
+    )
+    assert blockers == ()
+    assert I17_EXTENDED_SOAK_BLOCKS_NEXT_PHASE is False
+
+
+def test_extended_soak_21600_supported_and_non_blocking(tmp_path: Path) -> None:
+    from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (
+        DURATION_CLASS_EXTENDED_SOAK,
+        I17_EXTENDED_SOAK_DURATION_SECONDS,
+        classify_productive_planned_duration_v1,
+        duration_next_phase_blockers_v1,
+    )
+
+    assert I17_EXTENDED_SOAK_DURATION_SECONDS == 21600
+    assert classify_productive_planned_duration_v1(21600) == DURATION_CLASS_EXTENDED_SOAK
+    prereg, go, artifact, _token, _ = _issue_bundle(tmp_path, duration=21600)
+    assert prereg.planned_duration_seconds == 21600
+    manifest = json.loads(
+        (tmp_path / "issuance" / "issuance_manifest_preregistration.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert manifest["duration_class"] == DURATION_CLASS_EXTENDED_SOAK
+    assert manifest["extended_soak_blocks_next_phase"] is False
+    assert go.orders_authorized is False
+    assert artifact.live_authorized is False
+    assert (
+        duration_next_phase_blockers_v1(
+            canonical_qualification_proven=True, extended_soak_proven=False
+        )
+        == ()
+    )
+    assert duration_next_phase_blockers_v1(
+        canonical_qualification_proven=False, extended_soak_proven=True
+    ) == ("I17_CANONICAL_7200S_QUALIFICATION_ABSENT",)
+
+
+def test_noncanonical_duration_still_requires_test_only_flag_and_grants_no_authority(
+    tmp_path: Path,
+) -> None:
+    from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (
+        PRODUCTIVE_DURATION_BLOCKER,
+        classify_productive_planned_duration_v1,
+        productive_duration_requires_test_only_flag_v1,
+    )
+
+    assert productive_duration_requires_test_only_flag_v1(1800) is True
+    assert classify_productive_planned_duration_v1(1800) == "NONCANONICAL_TEST_ONLY"
+    rejected = issue_productive_preregistration_v1(
+        output_dir=tmp_path / "rejected",
+        expected_repository_sha=REPO_SHA,
+        confirm_token="GO_PSO_SESSION_PREREG_V1_" + ("a" * 32),
+        operator_identity="operator_test",
+        approval_identity="approver_test",
+        evidence_root=str(tmp_path / "evidence_rejected"),
+        planned_duration_seconds=1800,
+        earliest_start=NOW,
+        expires_at=NOW + 1800,
+        session_id="pso_wallclock_prod_noncanonical_1800",
+        now_unix=NOW,
+        allow_noncanonical_duration=False,
+    )
+    assert rejected.ok is False
+    assert PRODUCTIVE_DURATION_BLOCKER in rejected.blockers
+    prereg, go, artifact, _token, _ = _issue_bundle(tmp_path, duration=1800)
+    assert prereg.planned_duration_seconds == 1800
+    assert prereg.no_orders is True
+    assert go.live_authorized is False
+    assert go.testnet_authorized is False
+    assert artifact.orders_authorized is False
+    assert artifact.live_authorized is False
+
+
+def test_qualitative_wallclock_acceptance_not_removed() -> None:
+    from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.wallclock_evidence_v1 import (
+        REQUIRED_IMMUTABLE,
+    )
+    from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (
+        I17_CANONICAL_QUALITATIVE_ACCEPTANCE_REQUIREMENTS,
+    )
+
+    for name in (
+        "terminal_verdict.json",
+        "integrity_manifest.json",
+        "evidence_manifest.sha256",
+        "no_order_attestation.json",
+        "shutdown_reason.json",
+    ):
+        assert name in REQUIRED_IMMUTABLE
+    assert "BUNDLE_VERIFIER_PASS" in I17_CANONICAL_QUALITATIVE_ACCEPTANCE_REQUIREMENTS
+    assert "ORDER_EFFECT_NONE" in I17_CANONICAL_QUALITATIVE_ACCEPTANCE_REQUIREMENTS
+    verifier_src = (
+        REPO_ROOT
+        / "src/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1"
+        / "bundle_verifier_v1.py"
+    ).read_text(encoding="utf-8")
+    assert "REQUIRED_MISSING:terminal_verdict.json" in verifier_src or (
+        "terminal_verdict.json" in verifier_src and "REQUIRED_MISSING" in verifier_src
+    )
+    assert "ORDERS_SUBMITTED_CLAIM_FORBIDDEN" in verifier_src
+
+
+def test_historical_abort_session_not_reclassified_by_duration_contract() -> None:
+    abort_root = (
+        REPO_ROOT
+        / "evidence/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1"
+        / "20260814T131252Z"
+    )
+    machine = (
+        abort_root
+        / "derived_forensic_external_abort_closeout_v1"
+        / ("MACHINE_READABLE_CLOSEOUT.json")
+    )
+    if not machine.is_file():
+        return
+    payload = json.loads(machine.read_text(encoding="utf-8"))
+    assert payload["SESSION_ID"] == "pso_wallclock_prod_3faa0a7558c6c7851b16459dc1bd7be5"
+    assert payload["EG_I17_SHADOW_STATUS"] == "OPEN_BLOCKED_WITH_EXACT_REASON"
+    assert payload["PRODUCTIVE_SHADOW_EVIDENCE_PROVEN"] is False
+    assert payload["RUN_COMPLETED"] is False
+    assert not (abort_root / "evidence" / "terminal_verdict.json").is_file()

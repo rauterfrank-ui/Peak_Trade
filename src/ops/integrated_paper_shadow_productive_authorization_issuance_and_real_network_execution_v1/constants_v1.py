@@ -34,7 +34,46 @@ NETWORK_SCOPE = "okx_eea_futures_public_md_observe_v1"
 SESSION_EXECUTION_SCOPE = "paper_shadow_observation_wallclock_v1"
 REQUIRED_MODE = "observation"
 
-DEFAULT_MAX_SESSION_DURATION_SECONDS = 21600
+# I17 productive duration policy (Owner-GO 2026-08-14).
+# Canonical qualification is 2h. 6h remains supported as extended soak and
+# does not block the next phase after a successful canonical 2h I17 closeout.
+# The 6h ceiling stays so soak sessions can still be planned. Test-only
+# --allow-noncanonical-duration never grants order/live/canary authority.
+I17_CANONICAL_DURATION_SECONDS = 7200
+I17_EXTENDED_SOAK_DURATION_SECONDS = 21600
+I17_EXTENDED_SOAK_BLOCKS_NEXT_PHASE = False
+CANONICAL_PRODUCTIVE_DURATION_SECONDS = I17_CANONICAL_DURATION_SECONDS
+EXTENDED_SOAK_DURATION_SECONDS = I17_EXTENDED_SOAK_DURATION_SECONDS
+EXTENDED_SOAK_BLOCKS_NEXT_PHASE = I17_EXTENDED_SOAK_BLOCKS_NEXT_PHASE
+DEFAULT_PLANNED_DURATION_SECONDS = I17_CANONICAL_DURATION_SECONDS
+DEFAULT_MAX_SESSION_DURATION_SECONDS = I17_EXTENDED_SOAK_DURATION_SECONDS
+DURATION_CLASS_CANONICAL_QUALIFICATION = "CANONICAL_QUALIFICATION"
+DURATION_CLASS_EXTENDED_SOAK = "EXTENDED_SOAK_NON_BLOCKING"
+DURATION_CLASS_NONCANONICAL = "NONCANONICAL_TEST_ONLY"
+ALLOWED_PRODUCTIVE_DURATIONS: frozenset[int] = frozenset(
+    {
+        I17_CANONICAL_DURATION_SECONDS,
+        I17_EXTENDED_SOAK_DURATION_SECONDS,
+    }
+)
+PRODUCTIVE_DURATION_BLOCKER = "PRODUCTIVE_DURATION_MUST_BE_CANONICAL_7200_OR_EXTENDED_SOAK_21600"
+I17_CANONICAL_QUALITATIVE_ACCEPTANCE_REQUIREMENTS: tuple[str, ...] = (
+    "PLANNED_RUNTIME_EQUALS_CANONICAL_7200",
+    "NATURAL_TERMINAL_CLOSEOUT",
+    "TERMINAL_VERDICT_PRESENT",
+    "INTEGRITY_AND_EVIDENCE_SEAL",
+    "BUNDLE_VERIFIER_PASS",
+    "CONTIGUOUS_MARKET_DATA_SEQUENCES",
+    "CONTIGUOUS_HEARTBEATS",
+    "CONTIGUOUS_DECISION_CYCLES",
+    "NO_UNEXPLAINED_FATAL_TRACEBACK_KILLSTATE",
+    "NO_UNALLOWED_STALENESS",
+    "RECONNECT_TRANSPORT_PER_EXISTING_CONTRACT",
+    "ORDER_EFFECT_NONE",
+    "NO_CANARY_ORDER_SUBMIT_EFFECT",
+    "NO_SAFETY_AUTHORITY_ESCALATION",
+)
+
 DEFAULT_CONFIRM_TOKEN_TTL_SECONDS = 3600
 MIN_CONFIRM_TOKEN_TTL_SECONDS = 60
 MAX_CONFIRM_TOKEN_TTL_SECONDS = 86400
@@ -112,3 +151,35 @@ CAPABILITY_SOURCE_RELPATHS: tuple[str, ...] = (
     "src/ops/integrated_paper_shadow_productive_authorization_issuance_"
     "and_real_network_execution_v1/issuance_evidence_v1.py",
 )
+
+
+def classify_productive_planned_duration_v1(duration_seconds: int) -> str:
+    duration = int(duration_seconds)
+    if duration == I17_CANONICAL_DURATION_SECONDS:
+        return DURATION_CLASS_CANONICAL_QUALIFICATION
+    if duration == I17_EXTENDED_SOAK_DURATION_SECONDS:
+        return DURATION_CLASS_EXTENDED_SOAK
+    return DURATION_CLASS_NONCANONICAL
+
+
+def productive_duration_requires_test_only_flag_v1(duration_seconds: int) -> bool:
+    return classify_productive_planned_duration_v1(duration_seconds) == (
+        DURATION_CLASS_NONCANONICAL
+    )
+
+
+def duration_next_phase_blockers_v1(
+    *,
+    canonical_qualification_proven: bool,
+    extended_soak_proven: bool = False,
+) -> tuple[str, ...]:
+    """Duration-only next-phase blockers. Soak absence never blocks while
+    I17_EXTENDED_SOAK_BLOCKS_NEXT_PHASE is false. Qualitative evidence remains
+    owned by the wallclock bundle verifier.
+    """
+    blockers: list[str] = []
+    if not canonical_qualification_proven:
+        blockers.append("I17_CANONICAL_7200S_QUALIFICATION_ABSENT")
+    if I17_EXTENDED_SOAK_BLOCKS_NEXT_PHASE and not extended_soak_proven:
+        blockers.append("I17_EXTENDED_SOAK_21600S_ABSENT")
+    return tuple(blockers)
