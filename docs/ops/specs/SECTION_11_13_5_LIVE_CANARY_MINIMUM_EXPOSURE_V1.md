@@ -58,6 +58,12 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
   under this authoring GO)
 - §11.13.5.G prepares a canary-scoped POST transport; standing
   `SUBMIT_UNLOCKED=false` and `LIVE_AUTHORIZED=false` remain
+- Canonical CLI `--vault-file` is required for execute (same §11.13.2/3/4 pattern)
+- Vault values are JSON strings (canonical §11.13.2/3/4) or nested credential
+  objects; both canonicalize to JSON text. Shared `FileSecretRefVaultBackendV1`
+  is unchanged
+- Public and private GETs send the package User-Agent
+  `PeakTrade-Section-11-13-5-LiveCanary&#47;1`
 - Instrument minSz&#47;lotSz&#47;tickSz&#47;ctVal are derived from venue GET at execute;
   no invented numeric policy
 
@@ -77,8 +83,11 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-1. Separate `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains `GRANTED_UNCONSUMED`.
-2. Execute still requires all session gates (`--authorized --live-enabled
-   --live-armed --confirm-token --allow-productive-wire-send` plus
+1. External remaining blocker: authenticated OKX GET returns `50110`
+   (API-key IP whitelist). Owner action at OKX is required; this package
+   does not mutate API keys.
+2. Separate `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains `GRANTED_UNCONSUMED`.
+3. Execute still requires all session gates (`--authorized --live-enabled
+   --live-armed --confirm-token --allow-productive-wire-send --vault-file` plus
    `LIVE_CANARY_CYBERSECURITY_GATE=PASS`).
-3. No automatic canary start from this transport-preparation surface.
+4. No automatic canary start from this plumbing-remediation surface.

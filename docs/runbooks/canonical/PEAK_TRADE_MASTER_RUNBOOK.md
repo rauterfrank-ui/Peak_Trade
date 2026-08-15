@@ -10187,8 +10187,105 @@ EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
 
 Hard stop. No Canary execute in this GO. Cap &#47; Capability 11.9 remains
 fixture-only. Transport preparation GO is consumed and must not be reused
-for execute. `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains
+for execute. Historical next pointer superseded by §11.13.5.H plumbing
+remediation below. `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains
 `GRANTED_UNCONSUMED`.
+
+### 11.13.5.H LIVE canary execution-plumbing remediation (BOUND; PLUMBING_PREPARED; NOT EXECUTE)
+
+Owner-GO `SECTION_11_13_5_CANARY_EXECUTION_PLUMBING_REMEDIATION_PREPARATION`
+(one-shot; now **CONSUMED**) authorized bounded source&#47;test&#47;docs
+preparation so the canonical §11.13.5 runner can later perform PRE-EXECUTION
+and the already-granted exactly-one-submit flow **without ad-hoc adapters**.
+This does **not** authorize Canary execute, POST `&#47;api&#47;v5&#47;trade&#47;order`,
+consumption of `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE`, general Live
+authorization, general submit unlock, G13 unlock, R6 S5, Multi-Future, N&gt;1,
+funding, withdrawal&#47;P2P, API-key mutation, or S6.
+
+Remediation A–C is source-proven on this bound:
+
+- Canary-scoped vault loader accepts the canonical §11.13.2&#47;3&#47;4 JSON-string
+  representation **and** nested JSON objects, serializing the latter to the
+  same JSON text. Shared `FileSecretRefVaultBackendV1` is unchanged.
+- Canonical CLI&#47;runner binds `--vault-file` the same way as §11.13.2&#47;3&#47;4.
+  Absence of backend&#47;file remains fail-closed. No secret values in argv,
+  logs, tests, or git.
+- Canonical public GET transport sends repository User-Agent
+  `PeakTrade-Section-11-13-5-LiveCanary&#47;1`. TLS&#47;auth&#47;signature checks
+  are not loosened. Observed HTTP 403&#47;1010 is not special-cased.
+
+Remediation D is classified, not faked:
+
+``` text
+AUTH_GET_50110_CLASSIFICATION=EXTERNAL_OKX_API_KEY_IP_WHITELIST
+AUTH_GET_SOURCE_WIRING_DEFECT=false
+AUTH_GET_STATUS=FAIL_CLOSED_EXTERNAL
+PRE_SUBMIT_EXCHANGE_STATE_STATUS=WIRING_PREPARED_PRODUCTIVE_READ_UNPROVEN
+```
+
+Authenticated GET `&#47;api&#47;v5&#47;account&#47;config`, `&#47;api&#47;v5&#47;account&#47;positions`,
+and `&#47;api&#47;v5&#47;trade&#47;orders-pending` still return OKX `code=50110`
+(`Your IP … is not included in your API key's … IP whitelist`) after the
+canonical loader&#47;CLI&#47;User-Agent corrections. That is an Owner action at
+OKX (IP allowlist &#47; key environment). This GO does **not** mutate API keys,
+permissions, or exchange state.
+
+Public GET instruments&#47;ticker via the canonical client is proven
+(`code=0`) with the package User-Agent. NETWORK_POST_COUNT remains 0.
+
+``` text
+OWNER_GO_SECTION_11_13_5_CANARY_EXECUTION_PLUMBING_REMEDIATION_PREPARATION=CONSUMED
+CURRENT_ORIGIN_MAIN_SHA=83a549ab071eca6e359193aa109937f3df7d8c9c
+CANARY_SUBMIT_TRANSPORT_IMPLEMENTED=true
+CANARY_SUBMIT_TRANSPORT_SCOPE=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE_ONLY
+CANARY_EXECUTION_PLUMBING_REMEDIATION_PREPARED=true
+CANARY_SUBMIT_TRANSPORT_ACTIVATED=false
+GENERAL_LIVE_SUBMIT_UNLOCKED=false
+SUBMIT_UNLOCKED=false
+ACTIVATED=false
+LIVE_AUTHORIZED=false
+LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED=false
+LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN=false
+OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE_STATUS=GRANTED_UNCONSUMED
+ORDER_COUNT_SUBMITTED=0
+NETWORK_EFFECT=GET_ONLY_PREPARATION_PROBE
+ORDER_EFFECT=NONE
+ACCOUNT_MUTATION_EFFECT=NONE
+SECRET_VALUE_ACCESS=NONE
+LIVE_CANARY_CYBERSECURITY_GATE=PASS
+R6_S5_AUTHORIZATION_GRANT=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+G13_UNLOCK=false
+N_GREATER_THAN_ONE=false
+MAX_POSITIONS_EFFECTIVE=1
+S6_STARTED=false
+TERMINAL_STATE=ECONOMIC_BASELINE_ADOPTED_LIVE_RECONCILIATION_PROVEN_OKX_TEMP_SECURITY_CLEARANCE_PRESENT_PROVEN_LIVE_CANARY_CYBERSECURITY_GATE_PASS_CANARY_SUBMIT_TRANSPORT_PREPARED_CANARY_EXECUTION_PLUMBING_REMEDIATED_AUTH_GET_50110_EXTERNAL_IP_WHITELIST_CANARY_NOT_EXECUTED
+```
+
+Mandatory distinctions:
+
+``` text
+CANARY_EXECUTION_PLUMBING_REMEDIATED != CANARY_EXECUTE
+CANARY_EXECUTION_PLUMBING_REMEDIATED != AUTH_GET_PROVEN
+CANARY_EXECUTION_PLUMBING_REMEDIATED != PRE_SUBMIT_EXCHANGE_STATE_PROVEN
+CANARY_EXECUTION_PLUMBING_REMEDIATED != SUBMIT_UNLOCKED
+OWNER_GO_SECTION_11_13_5_CANARY_EXECUTION_PLUMBING_REMEDIATION_PREPARATION != OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE
+GRANTED_UNCONSUMED != CONSUMED
+```
+
+``` text
+CODE_OWNER=src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+CANONICAL_NEXT_STEP=OWNER_OKX_API_KEY_IP_ALLOWLIST_THEN_OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE
+EARLIEST_UNRESOLVED_DEPENDENCY=OKX_API_KEY_IP_WHITELIST_OWNER_ACTION
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
+```
+
+Hard stop. No Canary execute in this GO. Cap &#47; Capability 11.9 remains
+fixture-only. Plumbing-remediation GO is consumed and must not be reused
+for execute. `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains
+`GRANTED_UNCONSUMED` and must not be consumed until the external OKX
+API-key IP-whitelist blocker is cleared by the Owner.
 
 ## 11.14 Live order and economic evidence ladder
 

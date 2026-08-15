@@ -21,6 +21,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.governance_state_matrix_v1 import (
     MERGE_GO_TOKENS_FORBIDDEN_FOR_SUBMIT,
+    NON_EXECUTE_GO_TOKENS_FORBIDDEN_FOR_SUBMIT,
     PRIOR_OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE_BINDING,
     refuse_prior_consumed_canary_go_reuse_v1,
 )
@@ -85,6 +86,8 @@ def evaluate_canary_submit_gates_v1(
         reasons.append("AUTHORING_GO_CANNOT_AUTHORIZE_SUBMIT")
     elif any(marker in go.upper() for marker in MERGE_GO_TOKENS_FORBIDDEN_FOR_SUBMIT):
         reasons.append("MERGE_GO_CANNOT_AUTHORIZE_SUBMIT")
+    elif any(marker in go for marker in NON_EXECUTE_GO_TOKENS_FORBIDDEN_FOR_SUBMIT):
+        reasons.append("REEVALUATION_OR_PREPARATION_GO_CANNOT_AUTHORIZE_SUBMIT")
     elif go == PRIOR_OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE_BINDING or go.endswith(
         "@0f21b53e001e94085941c774a43a27562a1743fe"
     ):

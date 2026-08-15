@@ -9,9 +9,6 @@ from pathlib import Path
 from typing import Any, Mapping, Protocol
 from uuid import uuid4
 
-from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.vault_resolver_v1 import (
-    FileSecretRefVaultBackendV1,
-)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     REQUIRED_CREDENTIAL_CLASS,
     REQUIRED_ENVIRONMENT,
@@ -58,11 +55,56 @@ class LiveCanaryEphemeralCredentialHandleV1:
 _MATERIAL: dict[str, str] = {}
 
 
-def build_file_secretref_vault_backend_v1(*, vault_file: Path | str) -> FileSecretRefVaultBackendV1:
+def canonicalize_live_canary_vault_material_v1(raw: object) -> str:
+    """Return canonical JSON-string credential material.
+
+    Reuses the §11.13.2/3/4 representation (JSON text with api_key/api_secret/
+    passphrase). Nested JSON objects are serialized to that same string form.
+    Shared FileSecretRefVaultBackendV1 is not mutated.
+    """
+    if isinstance(raw, dict):
+        material = json.dumps(raw, separators=(",", ":"), ensure_ascii=True)
+    elif isinstance(raw, str):
+        material = raw
+    else:
+        raise LiveCanaryCredentialError("VAULT_MATERIAL_TYPE_FORBIDDEN")
+    if not str(material).strip():
+        raise LiveCanaryCredentialError("VAULT_MATERIAL_EMPTY")
+    if material.startswith("plaintext:") or "\nAuthorization:" in material:
+        raise LiveCanaryCredentialError("VAULT_MATERIAL_SHAPE_FORBIDDEN")
+    return material
+
+
+@dataclass(frozen=True)
+class LiveCanaryFileSecretRefVaultBackendV1:
+    """Canary-scoped file vault. JSON-string or nested-object values only."""
+
+    vault_file: Path
+
+    def resolve_secretref_material_v1(self, *, secret_reference: str) -> str:
+        ref = str(secret_reference or "").strip()
+        if not ref.startswith("secretref:"):
+            raise LiveCanaryCredentialError("SECRET_REFERENCE_ONLY_REQUIRED")
+        if not self.vault_file.is_file():
+            raise LiveCanaryCredentialError("VAULT_FILE_MISSING")
+        try:
+            payload = json.loads(self.vault_file.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            raise LiveCanaryCredentialError("VAULT_FILE_NOT_JSON") from exc
+        if not isinstance(payload, dict):
+            raise LiveCanaryCredentialError("VAULT_FILE_NOT_OBJECT")
+        if ref not in payload:
+            raise LiveCanaryCredentialError(f"SECRETREF_NOT_FOUND:{ref}")
+        return canonicalize_live_canary_vault_material_v1(payload[ref])
+
+
+def build_file_secretref_vault_backend_v1(
+    *, vault_file: Path | str
+) -> LiveCanaryFileSecretRefVaultBackendV1:
     path = Path(vault_file)
     if not path.is_file():
         raise LiveCanaryCredentialError("VAULT_FILE_MISSING")
-    return FileSecretRefVaultBackendV1(vault_file=path)
+    return LiveCanaryFileSecretRefVaultBackendV1(vault_file=path)
 
 
 def parse_okx_live_canary_material_v1(material: str) -> dict[str, str]:
@@ -98,6 +140,8 @@ def resolve_and_load_live_canary_secretref_ephemeral_v1(
         raise LiveCanaryCredentialError("REAL_VAULT_BACKEND_REQUIRED")
     try:
         material = str(vault_backend.resolve_secretref_material_v1(secret_reference=ref))
+    except LiveCanaryCredentialError:
+        raise
     except Exception as exc:  # noqa: BLE001 — normalize vault backend errors
         raise LiveCanaryCredentialError(f"VAULT_RESOLVE_FAILED:{type(exc).__name__}") from exc
     if material.startswith("plaintext:") or "\nAuthorization:" in material:

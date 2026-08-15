@@ -69,6 +69,11 @@ def build_owner_execute_input_contract_v1() -> dict[str, Any]:
                 "notes": "Trade-capable key; never commit vault material.",
             },
             {
+                "field": "vault_file",
+                "value_hint": "--vault-file path to local SecretRef JSON map (execute only)",
+                "notes": "Same §11.13.2/3/4 CLI pattern. Values may be JSON strings or nested objects; no secrets in git/argv/logs.",
+            },
+            {
                 "field": "credential_class",
                 "value_hint": REQUIRED_CREDENTIAL_CLASS,
                 "notes": "Distinct from dry-run RO class.",
@@ -102,5 +107,6 @@ def build_owner_execute_input_contract_v1() -> dict[str, Any]:
             "Fixture/demo/testnet cannot satisfy productive LIVE binding",
             "No secret values in Git or logs",
             "Cap 11.9 remains fixture-only",
+            "--vault-file required for execute; absence fails closed",
         ],
     }
