@@ -45,6 +45,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.forensic_reconcilia
     classify_from_sealed_evidence_roots_v1,
     prove_forensic_classification_contract_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
+    LiveCanaryCredentialError,
+    build_file_secretref_vault_backend_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.lifecycle_v1 import (
     build_lifecycle_and_closeout_contract_v1,
 )
@@ -100,6 +104,7 @@ def run_section_11_13_5_live_canary_minimum_exposure_v1(
     transport: Any = None,
     allow_productive_wire_send: bool = False,
     vault_backend: Any = None,
+    vault_file: str | None = None,
     live_canary_cybersecurity_gate: str = "PASS",
 ) -> LiveCanaryRunnerResultV1:
     mode_norm = str(mode or "").strip().lower()
@@ -164,6 +169,14 @@ def run_section_11_13_5_live_canary_minimum_exposure_v1(
     if mode_norm == "execute":
         if str(owner_go or "") == OWNER_GO_AUTHORING:
             raise LiveCanaryRunnerError("AUTHORING_GO_CANNOT_EXECUTE_CANARY")
+        backend = vault_backend
+        if backend is None:
+            if not str(vault_file or "").strip():
+                raise LiveCanaryRunnerError("EXECUTE_REQUIRES_VAULT_FILE")
+            try:
+                backend = build_file_secretref_vault_backend_v1(vault_file=vault_file)
+            except LiveCanaryCredentialError as exc:
+                raise LiveCanaryRunnerError(str(exc)) from exc
         try:
             execute_payload = run_canary_submit_transport_v1(
                 cfg=cfg,
@@ -179,7 +192,7 @@ def run_section_11_13_5_live_canary_minimum_exposure_v1(
                 transport=transport,
                 allow_productive_wire_send=allow_productive_wire_send,
                 live_canary_cybersecurity_gate=live_canary_cybersecurity_gate,
-                vault_backend=vault_backend,
+                vault_backend=backend,
             )
         except (LiveCanarySubmitTransportError, Exception) as exc:  # noqa: BLE001
             raise LiveCanaryRunnerError(str(exc)) from exc

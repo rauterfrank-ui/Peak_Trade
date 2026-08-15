@@ -27,6 +27,7 @@ fail-closed-consumed canary GO.
 | instrument_id | yes | Canonical `BTC-USDT-SWAP` unless Owner rebinds |
 | instrument minSz/lotSz/ctVal/tickSz | yes | From venue instruments metadata at execute; not invented here |
 | SecretRef URI | yes | `secretref:&#47;&#47;vault&#47;peak-trade&#47;live-canary-minimum-exposure&#47;okx` |
+| `--vault-file` | yes | Local SecretRef JSON map; same §11.13.2/3/4 CLI pattern; no secrets in git |
 | credential class | yes | `LIVE_CANARY_MINIMUM_EXPOSURE_TRADE_API_KEY` |
 | permission attestation | yes | READ=true TRADE=true WITHDRAW=false |
 | exchange-truth adoption policies | yes | Venue metadata + balances + local portfolio baseline policies |
@@ -44,6 +45,7 @@ fail-closed-consumed canary GO.
 - TRADE attestation false blocks submit
 - Fixture/demo/testnet cannot satisfy productive LIVE binding
 - No credential/vault material in Git
+- `--vault-file` required for execute; absence fails closed
 - Cap 11.9 remains fixture-only
 
 Machine-readable generator:

@@ -44,7 +44,8 @@ def build_parser() -> argparse.ArgumentParser:
             "§11.13.5 LIVE_CANARY_MINIMUM_EXPOSURE runner. Default --preflight performs "
             "zero network and seals no orders. --forensic classifies sealed HARD_STOP "
             "layers. --execute remains fail-closed until all gates pass under "
-            f"{OWNER_GO_EXECUTE} (authoring GO cannot submit)."
+            f"{OWNER_GO_EXECUTE}. Execute requires --vault-file, --authorized, "
+            "session gates, and permission attestation. Authoring GO cannot submit."
         )
     )
     mode = parser.add_mutually_exclusive_group()
@@ -72,6 +73,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--permission-trade", type=str, default="")
     parser.add_argument("--permission-withdraw", type=str, default="")
     parser.add_argument(
+        "--vault-file",
+        type=str,
+        default="",
+        help="JSON SecretRef vault file for ephemeral credential resolve (execute only).",
+    )
+    parser.add_argument(
         "--allow-productive-wire-send",
         action="store_true",
         help="Required together with --execute to construct the productive urllib transport.",
@@ -97,6 +104,8 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.execute:
         mode = "execute"
+        if not args.vault_file:
+            parser.error("--vault-file required for --execute")
     elif args.forensic:
         mode = "forensic"
     else:
@@ -135,6 +144,7 @@ def main(argv: list[str] | None = None) -> int:
             owner_go_consumed=bool(args.owner_go_consumed),
             seal_forensic_evidence=bool(args.seal_forensic_evidence),
             allow_productive_wire_send=bool(args.allow_productive_wire_send),
+            vault_file=args.vault_file or None,
             live_canary_cybersecurity_gate=str(args.live_canary_cybersecurity_gate or ""),
         )
     except LiveCanaryRunnerError as exc:

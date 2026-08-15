@@ -24,6 +24,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     REUSED_BINDING_REST_HOST,
     RETRY_BACKOFF_SECONDS,
     TRANSPORT_CLASS_LIVE_PRODUCTIVE_HTTP,
+    USER_AGENT_CANARY,
 )
 
 
@@ -187,6 +188,8 @@ class LiveCanaryHttpClientV1:
         else:
             raise LiveCanaryHttpError(f"HTTP_METHOD_HARD_BLOCK_BEFORE_WIRE:{m or '<empty>'}")
         hdrs = {str(k): str(v) for k, v in dict(headers or {}).items()}
+        if not any(str(k).strip().lower() == "user-agent" for k in hdrs):
+            hdrs["User-Agent"] = USER_AGENT_CANARY
         assert_no_demo_simulation_headers_v1(hdrs)
         url = f"{self.rest_base.rstrip('/')}{ep}"
         host = _assert_host(url)

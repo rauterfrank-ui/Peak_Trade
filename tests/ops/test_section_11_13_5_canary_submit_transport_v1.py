@@ -398,3 +398,200 @@ def test_preparation_evidence_verifier_pass() -> None:
     assert result["MANIFEST_VERIFY_RC"] == 0
     assert result["CANARY_EXECUTED"] is False
     assert result["ORDER_COUNT_SUBMITTED"] == 0
+
+
+def _fixture_creds() -> dict[str, str]:
+    return {"api_key": "A" * 36, "api_secret": "B" * 32, "passphrase": "C" * 14}
+
+
+def test_canonical_vault_loads_json_string_and_nested_object(tmp_path: Path) -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
+        LiveCanaryCredentialError,
+        build_file_secretref_vault_backend_v1,
+        release_live_canary_ephemeral_material_v1,
+        resolve_and_load_live_canary_secretref_ephemeral_v1,
+    )
+
+    creds = _fixture_creds()
+    string_vault = tmp_path / "string.json"
+    string_vault.write_text(
+        json.dumps({REQUIRED_SECRETREF_URI: json.dumps(creds, separators=(",", ":"))}),
+        encoding="utf-8",
+    )
+    nested_vault = tmp_path / "nested.json"
+    nested_vault.write_text(json.dumps({REQUIRED_SECRETREF_URI: creds}), encoding="utf-8")
+    for path in (string_vault, nested_vault):
+        backend = build_file_secretref_vault_backend_v1(vault_file=path)
+        handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+            secret_reference=REQUIRED_SECRETREF_URI,
+            vault_backend=backend,
+        )
+        assert handle.vault_resolved is True
+        assert handle.bound is True
+        release_live_canary_ephemeral_material_v1(handle)
+    malformed = tmp_path / "malformed.json"
+    malformed.write_text(json.dumps({REQUIRED_SECRETREF_URI: "not-json"}), encoding="utf-8")
+    backend = build_file_secretref_vault_backend_v1(vault_file=malformed)
+    with pytest.raises(LiveCanaryCredentialError, match="CREDENTIAL_MATERIAL_NOT_JSON"):
+        resolve_and_load_live_canary_secretref_ephemeral_v1(
+            secret_reference=REQUIRED_SECRETREF_URI,
+            vault_backend=backend,
+        )
+
+
+def test_malformed_and_wrong_type_vault_fail_closed_without_leaking_secret(
+    tmp_path: Path,
+) -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
+        LiveCanaryCredentialError,
+        build_file_secretref_vault_backend_v1,
+        resolve_and_load_live_canary_secretref_ephemeral_v1,
+    )
+
+    secret = "SUPERSECRETVALUE99"
+    vault = tmp_path / "bad.json"
+    vault.write_text(json.dumps({REQUIRED_SECRETREF_URI: f"not-json-{secret}"}), encoding="utf-8")
+    backend = build_file_secretref_vault_backend_v1(vault_file=vault)
+    with pytest.raises(LiveCanaryCredentialError, match="CREDENTIAL_MATERIAL_NOT_JSON") as exc:
+        resolve_and_load_live_canary_secretref_ephemeral_v1(
+            secret_reference=REQUIRED_SECRETREF_URI,
+            vault_backend=backend,
+        )
+    assert secret not in str(exc.value)
+    typed = tmp_path / "list.json"
+    typed.write_text(json.dumps({REQUIRED_SECRETREF_URI: [1, 2]}), encoding="utf-8")
+    backend = build_file_secretref_vault_backend_v1(vault_file=typed)
+    with pytest.raises(LiveCanaryCredentialError, match="VAULT_MATERIAL_TYPE_FORBIDDEN"):
+        resolve_and_load_live_canary_secretref_ephemeral_v1(
+            secret_reference=REQUIRED_SECRETREF_URI,
+            vault_backend=backend,
+        )
+
+
+def test_runner_vault_file_reaches_canonical_loader(tmp_path: Path) -> None:
+    vault = tmp_path / "vault.json"
+    vault.write_text(json.dumps({REQUIRED_SECRETREF_URI: _fixture_creds()}), encoding="utf-8")
+    transport = _fake_transport()
+    result = run_section_11_13_5_live_canary_minimum_exposure_v1(
+        mode="execute",
+        config_payload=_execute_cfg(),
+        origin_main_sha=ORIGIN_SHA,
+        owner_go=OWNER_GO_EXECUTE,
+        live_canary_authorized=True,
+        live_enabled=True,
+        live_armed=True,
+        confirm_token=LIVE_CONFIRM_TOKEN,
+        permission_attestation={"READ": True, "TRADE": True, "WITHDRAW": False},
+        transport=transport,
+        vault_file=str(vault),
+        live_canary_cybersecurity_gate="PASS",
+    )
+    assert result.payload["ORDER_COUNT_SUBMITTED"] == 1
+    assert result.payload["LIVE_AUTHORIZED"] is False
+    posts = [c for c in transport.calls if c.method == "POST"]
+    assert len(posts) == 1
+
+
+def test_cli_execute_requires_vault_file() -> None:
+    from scripts.ops.run_section_11_13_5_live_canary_minimum_exposure_v1 import main
+
+    with pytest.raises(SystemExit):
+        main(["--execute", "--origin-main-sha", ORIGIN_SHA])
+
+
+def test_missing_vault_backend_fails_closed_before_post() -> None:
+    transport = _fake_transport()
+    with pytest.raises(LiveCanarySubmitTransportError, match="VAULT_BACKEND_OR_HANDLE_REQUIRED"):
+        run_canary_submit_transport_v1(**_transport_kwargs(transport=transport, vault_backend=None))
+    assert all(call.method != "POST" for call in transport.calls)
+
+
+def test_runner_execute_without_vault_file_fails_closed() -> None:
+    with pytest.raises(LiveCanaryRunnerError, match="EXECUTE_REQUIRES_VAULT_FILE"):
+        run_section_11_13_5_live_canary_minimum_exposure_v1(
+            mode="execute",
+            config_payload=_execute_cfg(),
+            origin_main_sha=ORIGIN_SHA,
+            owner_go=OWNER_GO_EXECUTE,
+            live_canary_authorized=True,
+            live_enabled=True,
+            live_armed=True,
+            confirm_token=LIVE_CONFIRM_TOKEN,
+            permission_attestation={"READ": True, "TRADE": True, "WITHDRAW": False},
+            transport=_fake_transport(),
+            live_canary_cybersecurity_gate="PASS",
+        )
+
+
+def test_public_get_sends_repository_user_agent() -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+        USER_AGENT_CANARY,
+    )
+
+    transport = RecordingFakeCanaryTransportV1()
+    client = LiveCanaryHttpClientV1(
+        rest_base="https://eea.okx.com",
+        rest_host="eea.okx.com",
+        transport=transport,
+    )
+    client.get(endpoint="/api/v5/public/instruments")
+    assert transport.calls[0].headers["User-Agent"] == USER_AGENT_CANARY
+
+
+def test_signed_private_gets_keep_okx_auth_headers_and_user_agent() -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+        USER_AGENT_CANARY,
+    )
+
+    transport = _fake_transport()
+    run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
+    gets = [c for c in transport.calls if c.method == "GET"]
+    posts = [c for c in transport.calls if c.method == "POST"]
+    assert gets
+    assert len(posts) == 1
+    for call in gets:
+        assert call.headers.get("User-Agent") == USER_AGENT_CANARY
+    private = [
+        c for c in gets if "/account/" in c.endpoint or "/trade/orders-pending" in c.endpoint
+    ]
+    assert private
+    for call in private:
+        keys = {str(k).upper() for k in call.headers}
+        assert "OK-ACCESS-KEY" in keys
+        assert "OK-ACCESS-SIGN" in keys
+        assert "OK-ACCESS-TIMESTAMP" in keys
+        assert "OK-ACCESS-PASSPHRASE" in keys
+    for call in posts:
+        keys = {str(k).upper() for k in call.headers}
+        assert "OK-ACCESS-SIGN" in keys
+
+
+def test_preparation_and_reevaluation_go_rejected_by_submit_transport() -> None:
+    for go in (
+        "SECTION_11_13_5_CANARY_EXECUTION_REEVALUATION_FROM_NEW_ORIGIN_MAIN",
+        "SECTION_11_13_5_CANARY_EXECUTION_PLUMBING_REMEDIATION_PREPARATION",
+    ):
+        kwargs = _transport_kwargs(owner_go=go)
+        with pytest.raises(
+            (LiveCanarySubmitTransportError, Exception),
+            match="REEVALUATION_OR_PREPARATION_GO|OWNER_GO_MISMATCH",
+        ):
+            run_canary_submit_transport_v1(**kwargs)
+        assert all(call.method != "POST" for call in kwargs["transport"].calls)
+
+
+def test_entry_permit_still_mandatory_for_post() -> None:
+    transport = RecordingFakeCanaryTransportV1()
+    client = LiveCanaryHttpClientV1(
+        rest_base="https://eea.okx.com",
+        rest_host="eea.okx.com",
+        transport=transport,
+    )
+    with pytest.raises(TypeError):
+        client.post_entry_order(  # type: ignore[misc]
+            body_text="{}",
+            headers={"Content-Type": "application/json"},
+        )
+    with pytest.raises(LiveCanaryHttpError, match="UNGATED_POST"):
+        client.post(endpoint="/api/v5/trade/order")
+    assert all(call.method != "POST" for call in transport.calls)

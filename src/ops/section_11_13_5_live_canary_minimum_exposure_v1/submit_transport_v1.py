@@ -28,6 +28,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     REUSED_BINDING_REST_HOST,
     SUBMIT_UNLOCKED,
     UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY,
+    USER_AGENT_CANARY,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
     CanaryEntrySubmitPermitV1,
@@ -128,7 +129,7 @@ def _signed_get(
     endpoint: str,
 ) -> dict[str, Any]:
     path = endpoint.split("?", 1)[0]
-    headers = None
+    headers = {"User-Agent": USER_AGENT_CANARY}
     if path in GET_ENDPOINTS_PRIVATE:
         if handle is None:
             raise LiveCanarySubmitTransportError("PRIVATE_GET_REQUIRES_CREDENTIAL_HANDLE")
