@@ -1,6 +1,14 @@
 # Peak_Trade – Evidence Index (v0.15)
 
 
+<a id="ev-20260814-eg-i17-shadow-canonical-7200s-qualification-closeout"></a>
+- 2026-08-14 — EG-I17-SHADOW canonical 7200s qualification closeout
+  - Source: [Closeout package](../../evidence/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/20260814T170331Z/derived_forensic_canonical_7200s_qualification_closeout_v1/) · Session evidence: [20260814T170331Z](../../evidence/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/20260814T170331Z/) · Contract: [productive issuance + real network](runbooks/INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1.md) · Documentation Anchor: `docs/ops/EVIDENCE_INDEX.md#ev-20260814-eg-i17-shadow-canonical-7200s-qualification-closeout`
+  - Session: `pso_wallclock_prod_71ebbd4fb8a057504c944bfb8de83fe3` · Origin SHA: `9f09d6d18484e35e788f5e4eaada2c598926b77f` · Verifier: `WALLCLOCK_OBSERVATION_EVIDENCE_VERIFIED`
+  - Claim: `CLOSED_PROVEN_PASS` for canonical 7200s I17 Paper-Shadow qualification — natural `TIMED_OUT` wallclock end (`elapsed_ms=7202714`, `EXIT_CODE=0`); runtime `terminal_verdict=PASS`; integrity/evidence seal; 3152 contiguous MD/decision cycles; 1052 heartbeats; `ORDER_EFFECT=NONE`.
+  - Classification: `EG_I17_SHADOW_STATUS=CLOSED_PROVEN`; `PRODUCTIVE_SHADOW_EVIDENCE_PROVEN=true`; `ECONOMIC_VALIDITY_PASS=false`; `PROMOTION_PASS=false` (not I17 fail). Historical abort `pso_wallclock_prod_3faa0a7558c6c7851b16459dc1bd7be5` remains `OPEN_BLOCKED_WITH_EXACT_REASON`. Failed start `pso_wallclock_prod_4e992d5a604f5f94324ac433a1d9d445` is not qualification.
+  - Non-claims: not Economic/Strategy/Promotion PASS; not Live/Testnet/Canary/orders; not successor-phase authorization; 3152 HOLD / quantity=0 are not trades.
+
 <a id="ev-20260730-canonical-wallclock-authorization-consumption-authority-and-mandatory-bindings-v1"></a>
 - 2026-07-30 — Canonical Wallclock Authorization Consumption Authority and Mandatory Bindings v1
   - Source: [Capability contract](runbooks/CANONICAL_WALLCLOCK_AUTHORIZATION_CONSUMPTION_AUTHORITY_AND_MANDATORY_BINDINGS_V1.md) · Owner: `ops.canonical_wallclock_authorization_consumption_authority_and_mandatory_bindings_v1`

@@ -29,7 +29,9 @@ for _p in (_REPO_ROOT, _REPO_ROOT / "src"):
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (  # noqa: E402,E501
     CAPABILITY_ID,
     CONFIRM_TOKEN_ENV,
-    DEFAULT_MAX_SESSION_DURATION_SECONDS,
+    DEFAULT_PLANNED_DURATION_SECONDS,
+    I17_CANONICAL_DURATION_SECONDS,
+    I17_EXTENDED_SOAK_DURATION_SECONDS,
     REAL_NETWORK_ENV,
 )
 from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.productive_authorization_verifier_v1 import (  # noqa: E402,E501
@@ -97,7 +99,12 @@ def build_parser() -> argparse.ArgumentParser:
     pr.add_argument(
         "--planned-duration-seconds",
         type=int,
-        default=DEFAULT_MAX_SESSION_DURATION_SECONDS,
+        default=DEFAULT_PLANNED_DURATION_SECONDS,
+        help=(
+            f"Canonical I17 qualification is {I17_CANONICAL_DURATION_SECONDS}s. "
+            f"{I17_EXTENDED_SOAK_DURATION_SECONDS}s is extended soak "
+            "(non-blocking). Other values require --allow-noncanonical-duration."
+        ),
     )
     pr.add_argument("--earliest-start-unix", type=float, default=None)
     pr.add_argument("--expires-at-unix", type=float, default=None)
@@ -112,7 +119,12 @@ def build_parser() -> argparse.ArgumentParser:
     pr.add_argument(
         "--allow-noncanonical-duration",
         action="store_true",
-        help="Test-only: allow planned duration other than 21600.",
+        help=(
+            f"Test-only: allow planned duration other than canonical "
+            f"{I17_CANONICAL_DURATION_SECONDS} or extended-soak "
+            f"{I17_EXTENDED_SOAK_DURATION_SECONDS}. Grants no order/live/canary "
+            "authority."
+        ),
     )
     pr.add_argument("--json", action="store_true")
 

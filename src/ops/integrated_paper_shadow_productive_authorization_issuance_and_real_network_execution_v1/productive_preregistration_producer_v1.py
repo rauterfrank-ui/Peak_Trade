@@ -14,12 +14,18 @@ from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_
     CANONICAL_HOST,
     CANONICAL_INSTRUMENT_ID,
     DEFAULT_MAX_SESSION_DURATION_SECONDS,
+    DEFAULT_PLANNED_DURATION_SECONDS,
+    DURATION_CLASS_NONCANONICAL,
     HOST_ALLOWLIST,
+    I17_CANONICAL_DURATION_SECONDS,
+    I17_EXTENDED_SOAK_BLOCKS_NEXT_PHASE,
+    I17_EXTENDED_SOAK_DURATION_SECONDS,
     ISSUANCE_MANIFEST_SCHEMA,
     MARKET_TYPE_FUTURES,
     NETWORK_SCOPE,
     PRODUCER_FAMILY,
     PRODUCTIVE_CODE_IDENTITY,
+    PRODUCTIVE_DURATION_BLOCKER,
     REQUIRED_MODE,
     SCHEMA_VERSION,
     SESSION_EXECUTION_SCOPE,
@@ -28,6 +34,8 @@ from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_
     VENUE_OKX,
     WALLCLOCK_CODE_IDENTITY,
     WALLCLOCK_CONFIG_IDENTITY,
+    classify_productive_planned_duration_v1,
+    productive_duration_requires_test_only_flag_v1,
 )
 from src.ops.paper_shadow_observation_operator_go_session_preregistration_v1.confirm_token_v1 import (
     assert_no_plaintext_token_fields,
@@ -112,10 +120,6 @@ def build_productive_preregistration_dict_v1(
     config_identity: str = WALLCLOCK_CONFIG_IDENTITY,
     code_identity: str = WALLCLOCK_CODE_IDENTITY,
 ) -> dict[str, Any]:
-    if planned_duration_seconds != DEFAULT_MAX_SESSION_DURATION_SECONDS:
-        # Productive policy allows exactly 21600; tests may call with shorter via
-        # allow_noncanonical_duration on the producer entrypoint.
-        pass
     provisional = {
         "contract_version": "v1",
         "schema_version": PREREGISTRATION_SCHEMA_VERSION,
@@ -207,7 +211,7 @@ def issue_productive_preregistration_v1(
     operator_identity: str,
     approval_identity: str,
     evidence_root: str,
-    planned_duration_seconds: int = DEFAULT_MAX_SESSION_DURATION_SECONDS,
+    planned_duration_seconds: int = DEFAULT_PLANNED_DURATION_SECONDS,
     earliest_start: Optional[float] = None,
     expires_at: Optional[float] = None,
     session_id: Optional[str] = None,
@@ -227,10 +231,20 @@ def issue_productive_preregistration_v1(
     start = float(earliest_start) if earliest_start is not None else now
     # End = start + duration; expires_at must cover session window + small auth skew.
     duration = int(planned_duration_seconds)
-    if not allow_noncanonical_duration and duration != DEFAULT_MAX_SESSION_DURATION_SECONDS:
-        blockers.append("PRODUCTIVE_DURATION_MUST_BE_21600")
+    duration_class = classify_productive_planned_duration_v1(duration)
+    if not allow_noncanonical_duration and productive_duration_requires_test_only_flag_v1(duration):
+        blockers.append(PRODUCTIVE_DURATION_BLOCKER)
     if duration <= 0 or duration > DEFAULT_MAX_SESSION_DURATION_SECONDS:
         blockers.append("PLANNED_DURATION_OUT_OF_BOUNDS")
+    if allow_noncanonical_duration and duration_class == DURATION_CLASS_NONCANONICAL:
+        notes.append("TEST_ONLY_NONCANONICAL_DURATION=true")
+        notes.append("TEST_ONLY_FLAG_GRANTS_NO_ORDER_LIVE_CANARY_AUTHORITY")
+    notes.append(f"DURATION_CLASS={duration_class}")
+    notes.append(f"I17_CANONICAL_DURATION_SECONDS={I17_CANONICAL_DURATION_SECONDS}")
+    notes.append(f"I17_EXTENDED_SOAK_DURATION_SECONDS={I17_EXTENDED_SOAK_DURATION_SECONDS}")
+    notes.append(
+        f"I17_EXTENDED_SOAK_BLOCKS_NEXT_PHASE={str(I17_EXTENDED_SOAK_BLOCKS_NEXT_PHASE).lower()}"
+    )
     end = float(expires_at) if expires_at is not None else start + float(duration)
     if abs((end - start) - float(duration)) > 1e-6 and expires_at is None:
         end = start + float(duration)
@@ -289,6 +303,10 @@ def issue_productive_preregistration_v1(
         "network_scope": NETWORK_SCOPE,
         "session_execution_scope": SESSION_EXECUTION_SCOPE,
         "planned_duration_seconds": duration,
+        "duration_class": duration_class,
+        "i17_canonical_duration_seconds": I17_CANONICAL_DURATION_SECONDS,
+        "i17_extended_soak_duration_seconds": I17_EXTENDED_SOAK_DURATION_SECONDS,
+        "extended_soak_blocks_next_phase": I17_EXTENDED_SOAK_BLOCKS_NEXT_PHASE,
         "earliest_start": start,
         "expires_at": end,
         "monotonic_duration_seconds": duration,
