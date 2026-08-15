@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any, Mapping, Protocol
 from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+from urllib.parse import urlsplit, urlunsplit
+from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener, urlopen
 
 from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.binding_v1 import (
     normalize_rest_host,
@@ -32,6 +34,205 @@ class LiveCanaryHttpError(RuntimeError):
     """Fail-closed canary HTTP violation."""
 
 
+class CanaryPostRedirectBlockedError(Exception):
+    """Raised when a mutating canary POST receives an HTTP redirect. Do not follow."""
+
+    def __init__(
+        self,
+        *,
+        status_code: int,
+        location: str,
+        body: bytes,
+        headers: Mapping[str, str],
+    ) -> None:
+        super().__init__(f"POST_REDIRECT_FAIL_CLOSED:{status_code}")
+        self.status_code = int(status_code)
+        self.location = str(location or "")
+        self.body = body or b""
+        self.headers = {str(k): str(v) for k, v in dict(headers).items()}
+
+
+CANARY_SAFE_RESPONSE_HEADER_ALLOWLIST_V1 = frozenset(
+    {
+        "content-type",
+        "content-length",
+        "date",
+        "server",
+        "cf-ray",
+        "cf-cache-status",
+        "x-request-id",
+        "ok-request-id",
+        "x-okx-request-id",
+        "location",
+        "retry-after",
+        "x-content-type-options",
+    }
+)
+_FORBIDDEN_HEADER_NAME_MARKERS = (
+    "authorization",
+    "ok-access",
+    "cookie",
+    "set-cookie",
+    "api-key",
+    "passphrase",
+    "secret",
+    "sign",
+)
+_OKX_MSG_MAX_LEN = 200
+_OKX_CODE_MAX_LEN = 64
+_CONTENT_TYPE_MAX_LEN = 128
+_LOCATION_MAX_LEN = 512
+
+
+def sanitize_redirect_location_v1(raw: str | None) -> str:
+    """Keep scheme/host/path only. Drop userinfo, query, and fragment."""
+    text = str(raw or "").strip()
+    if not text:
+        return ""
+    if len(text) > _LOCATION_MAX_LEN:
+        text = text[:_LOCATION_MAX_LEN]
+    parts = urlsplit(text)
+    host = parts.hostname or ""
+    if not host and not parts.path:
+        return ""
+    netloc = host
+    if parts.port:
+        netloc = f"{host}:{parts.port}"
+    return urlunsplit((parts.scheme, netloc, parts.path, "", ""))
+
+
+def _headers_to_mapping(headers: Any) -> dict[str, str]:
+    if headers is None:
+        return {}
+    if hasattr(headers, "items"):
+        return {str(k): str(v) for k, v in headers.items()}
+    return {}
+
+
+def safe_response_headers_v1(headers: Mapping[str, str] | None) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for key, value in dict(headers or {}).items():
+        key_s = str(key)
+        key_l = key_s.strip().lower()
+        if key_l not in CANARY_SAFE_RESPONSE_HEADER_ALLOWLIST_V1:
+            continue
+        if any(marker in key_l for marker in _FORBIDDEN_HEADER_NAME_MARKERS):
+            continue
+        rendered = str(value)
+        if key_l == "location":
+            rendered = sanitize_redirect_location_v1(rendered)
+        out[key_s] = rendered[:256]
+    return out
+
+
+def signed_wire_body_evidence_v1(
+    *,
+    signed_body_text: str,
+    wire_body_bytes: bytes,
+) -> dict[str, Any]:
+    signed = str(signed_body_text or "").encode("utf-8")
+    wire = wire_body_bytes or b""
+    return {
+        "SIGNED_BODY_EQUALS_WIRE_BODY": signed == wire,
+        "signed_body_sha256_12": hashlib.sha256(signed).hexdigest()[:12],
+        "wire_body_sha256_12": hashlib.sha256(wire).hexdigest()[:12],
+        "signed_body_byte_len": len(signed),
+        "wire_body_byte_len": len(wire),
+        "SECRET_VALUES_INCLUDED": False,
+    }
+
+
+def extract_canary_http_response_evidence_v1(
+    *,
+    status_code: int,
+    body_bytes: bytes,
+    headers: Mapping[str, str] | None = None,
+    redirect_followed: bool = False,
+    redirect_status: int | None = None,
+    redirect_location: str | None = None,
+) -> dict[str, Any]:
+    """Secret-safe HTTP error/response evidence. Never treats parse failure as success."""
+    raw = body_bytes or b""
+    headers_safe = safe_response_headers_v1(headers)
+    content_type = ""
+    for key, value in headers_safe.items():
+        if str(key).lower() == "content-type":
+            content_type = str(value)
+            break
+    json_parse_ok = False
+    okx_code: str | None = None
+    okx_msg: str | None = None
+    parse_error: str | None = None
+    try:
+        payload = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        parse_error = "MALFORMED_NON_JSON_RESPONSE"
+        payload = None
+    if payload is not None and not isinstance(payload, dict):
+        parse_error = "RESPONSE_NOT_JSON_OBJECT"
+        payload = None
+    if isinstance(payload, dict):
+        json_parse_ok = True
+        if payload.get("code") is not None:
+            okx_code = str(payload.get("code"))[:_OKX_CODE_MAX_LEN]
+        if payload.get("msg") is not None:
+            okx_msg = str(payload.get("msg"))[:_OKX_MSG_MAX_LEN]
+    location = sanitize_redirect_location_v1(
+        redirect_location or headers_safe.get("Location") or headers_safe.get("location")
+    )
+    return {
+        "http_status": int(status_code),
+        "okx_code": okx_code,
+        "okx_msg": okx_msg,
+        "content_type": content_type[:_CONTENT_TYPE_MAX_LEN] if content_type else None,
+        "response_headers_safe": headers_safe,
+        "json_parse_ok": json_parse_ok,
+        "parse_error": parse_error,
+        "body_byte_len": len(raw),
+        "body_sha256_12": hashlib.sha256(raw).hexdigest()[:12] if raw else "",
+        "redirect_followed": bool(redirect_followed),
+        "redirect_status": int(redirect_status) if redirect_status is not None else None,
+        "redirect_location": location or None,
+        "SECRET_VALUES_INCLUDED": False,
+    }
+
+
+class CanaryPostRedirectFailClosedHandler(HTTPRedirectHandler):
+    """Fail-closed: mutating POST must not follow 301/302/303/307/308."""
+
+    def http_error_301(self, req: Request, fp: Any, code: int, msg: str, headers: Any) -> Any:
+        return self._block_post_or_follow(req, fp, code, msg, headers)
+
+    def http_error_302(self, req: Request, fp: Any, code: int, msg: str, headers: Any) -> Any:
+        return self._block_post_or_follow(req, fp, code, msg, headers)
+
+    def http_error_303(self, req: Request, fp: Any, code: int, msg: str, headers: Any) -> Any:
+        return self._block_post_or_follow(req, fp, code, msg, headers)
+
+    def http_error_307(self, req: Request, fp: Any, code: int, msg: str, headers: Any) -> Any:
+        return self._block_post_or_follow(req, fp, code, msg, headers)
+
+    def http_error_308(self, req: Request, fp: Any, code: int, msg: str, headers: Any) -> Any:
+        return self._block_post_or_follow(req, fp, code, msg, headers)
+
+    def _block_post_or_follow(
+        self, req: Request, fp: Any, code: int, msg: str, headers: Any
+    ) -> Any:
+        method = str(req.get_method() or "").upper()
+        if method == "POST":
+            location = ""
+            if headers is not None:
+                location = str(headers.get("location") or headers.get("Location") or "")
+            body = fp.read() if fp is not None and hasattr(fp, "read") else b""
+            raise CanaryPostRedirectBlockedError(
+                status_code=int(code),
+                location=sanitize_redirect_location_v1(location),
+                body=body if isinstance(body, (bytes, bytearray)) else b"",
+                headers=_headers_to_mapping(headers),
+            )
+        return HTTPRedirectHandler.http_error_302(self, req, fp, code, msg, headers)
+
+
 @dataclass(frozen=True)
 class LiveCanaryHttpRequestV1:
     method: str
@@ -51,6 +252,12 @@ class LiveCanaryHttpResponseV1:
     endpoint: str
     method: str
     send_attempted: bool = True
+    wire_body_sha256: str = ""
+    wire_body_byte_len: int = 0
+    redirect_followed: bool = False
+    redirect_status: int | None = None
+    redirect_location: str | None = None
+    response_headers_safe: Mapping[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -123,6 +330,8 @@ def classify_http_result_v1(status_code: int) -> str:
         return "HTTP_401_UNAUTHORIZED"
     if status_code == 403:
         return "HTTP_403_FORBIDDEN"
+    if 300 <= status_code < 400:
+        return f"HTTP_{status_code}_REDIRECT"
     if 400 <= status_code < 500:
         return f"HTTP_{status_code}_CLIENT_ERROR"
     if status_code >= 500:
@@ -231,9 +440,8 @@ class LiveCanaryHttpClientV1:
                 self.counters.http_result_classes.append(
                     classify_http_result_v1(response.status_code)
                 )
-                return LiveCanaryHttpResponseV1(
-                    status_code=response.status_code,
-                    body_bytes=response.body_bytes,
+                return replace(
+                    response,
                     elapsed_seconds=elapsed,
                     endpoint=endpoint,
                     method="GET",
@@ -298,9 +506,10 @@ class LiveCanaryHttpClientV1:
         self._entry_submitted = True
         if response.method != "POST":
             raise LiveCanaryHttpError("TRANSPORT_RETURNED_NON_POST")
-        return LiveCanaryHttpResponseV1(
-            status_code=response.status_code,
-            body_bytes=response.body_bytes,
+        if response.redirect_followed:
+            raise LiveCanaryHttpError("POST_REDIRECT_FOLLOWED_FORBIDDEN")
+        return replace(
+            response,
             elapsed_seconds=elapsed,
             endpoint=ENDPOINT_SUBMIT,
             method="POST",
@@ -333,9 +542,10 @@ class LiveCanaryHttpClientV1:
         self.counters.methods_used.append("POST")
         self.counters.endpoints_used.append(ENDPOINT_CANCEL)
         self.counters.http_result_classes.append(classify_http_result_v1(response.status_code))
-        return LiveCanaryHttpResponseV1(
-            status_code=response.status_code,
-            body_bytes=response.body_bytes,
+        if response.redirect_followed:
+            raise LiveCanaryHttpError("POST_REDIRECT_FOLLOWED_FORBIDDEN")
+        return replace(
+            response,
             elapsed_seconds=elapsed,
             endpoint=ENDPOINT_CANCEL,
             method="POST",
@@ -359,6 +569,10 @@ class RecordingFakeCanaryTransportV1:
     raise_timeout_on_post: bool = False
     bodies_by_endpoint: dict[str, bytes] = field(default_factory=dict)
     post_body: bytes = b'{"code":"0","data":[{"sCode":"0","ordId":"fake-ord","clOrdId":"x"}]}'
+    post_status_code: int | None = None
+    post_headers: dict[str, str] = field(default_factory=dict)
+    post_redirect_status: int | None = None
+    post_redirect_location: str | None = None
 
     def send(self, request: LiveCanaryHttpRequestV1) -> LiveCanaryHttpResponseV1:
         self.calls.append(request)
@@ -367,19 +581,36 @@ class RecordingFakeCanaryTransportV1:
         if request.method == "POST" and self.raise_timeout_on_post:
             raise TimeoutError("fake-post-timeout")
         path = _endpoint_path_only(request.endpoint)
+        wire = request.body_text.encode("utf-8") if request.body_text else b""
         if request.method == "POST":
             body = self.post_body
+            status = int(self.post_status_code or self.status_code)
+            headers = dict(self.post_headers)
+            redirect_status = self.post_redirect_status
+            redirect_location = self.post_redirect_location
+            if 300 <= status < 400 and redirect_status is None:
+                redirect_status = status
         else:
             body = self.bodies_by_endpoint.get(
                 path, self.bodies_by_endpoint.get(request.endpoint, self.body)
             )
+            status = self.status_code
+            headers = {}
+            redirect_status = None
+            redirect_location = None
         return LiveCanaryHttpResponseV1(
-            status_code=self.status_code,
+            status_code=status,
             body_bytes=body,
             elapsed_seconds=0.01,
             endpoint=request.endpoint,
             method=request.method,
             send_attempted=True,
+            wire_body_sha256=hashlib.sha256(wire).hexdigest(),
+            wire_body_byte_len=len(wire),
+            redirect_followed=False,
+            redirect_status=redirect_status,
+            redirect_location=sanitize_redirect_location_v1(redirect_location),
+            response_headers_safe=safe_response_headers_v1(headers),
         )
 
 
@@ -390,21 +621,46 @@ class UrllibLiveCanaryTransportV1:
     transport_class: str = TRANSPORT_CLASS_LIVE_PRODUCTIVE_HTTP
     venue_live_contact: bool = True
     wire_send_enabled: bool = False
+    http_exchange_count: int = 0
 
     def send(self, request: LiveCanaryHttpRequestV1) -> LiveCanaryHttpResponseV1:
         if not self.wire_send_enabled:
             raise LiveCanaryHttpError("PRODUCTIVE_WIRE_SEND_DISABLED")
-        data = request.body_text.encode("utf-8") if request.body_text else None
+        wire_bytes = request.body_text.encode("utf-8") if request.body_text else b""
+        data = wire_bytes if wire_bytes else None
         req = Request(request.url, data=data, method=request.method, headers=dict(request.headers))
         started = time.monotonic()
+        redirect_followed = False
+        redirect_status: int | None = None
+        redirect_location: str | None = None
+        header_src: Any = None
         try:
-            with urlopen(req, timeout=request.timeout_seconds) as resp:  # noqa: S310
-                body = resp.read()
-                status = int(getattr(resp, "status", 200))
+            self.http_exchange_count += 1
+            if str(request.method).upper() == "POST":
+                opener = build_opener(ProxyHandler({}), CanaryPostRedirectFailClosedHandler())
+                try:
+                    with opener.open(req, timeout=request.timeout_seconds) as resp:  # noqa: S310
+                        body = resp.read()
+                        status = int(getattr(resp, "status", 200))
+                        header_src = getattr(resp, "headers", None)
+                except CanaryPostRedirectBlockedError as blocked:
+                    body = blocked.body
+                    status = int(blocked.status_code)
+                    header_src = blocked.headers
+                    redirect_followed = False
+                    redirect_status = status
+                    redirect_location = blocked.location
+            else:
+                with urlopen(req, timeout=request.timeout_seconds) as resp:  # noqa: S310
+                    body = resp.read()
+                    status = int(getattr(resp, "status", 200))
+                    header_src = getattr(resp, "headers", None)
         except HTTPError as exc:
             body = exc.read() if hasattr(exc, "read") else b""
             status = int(exc.code)
+            header_src = getattr(exc, "headers", None)
         elapsed = time.monotonic() - started
+        headers_safe = safe_response_headers_v1(_headers_to_mapping(header_src))
         return LiveCanaryHttpResponseV1(
             status_code=status,
             body_bytes=body,
@@ -412,6 +668,12 @@ class UrllibLiveCanaryTransportV1:
             endpoint=request.endpoint,
             method=request.method,
             send_attempted=True,
+            wire_body_sha256=hashlib.sha256(wire_bytes).hexdigest(),
+            wire_body_byte_len=len(wire_bytes),
+            redirect_followed=redirect_followed,
+            redirect_status=redirect_status,
+            redirect_location=sanitize_redirect_location_v1(redirect_location),
+            response_headers_safe=headers_safe,
         )
 
 

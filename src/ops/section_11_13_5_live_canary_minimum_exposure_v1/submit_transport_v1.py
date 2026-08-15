@@ -34,9 +34,12 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     CanaryEntrySubmitPermitV1,
     LiveCanaryHttpClientV1,
     LiveCanaryHttpError,
+    LiveCanaryHttpResponseV1,
     LiveCanaryTransportV1,
     UrllibLiveCanaryTransportV1,
+    extract_canary_http_response_evidence_v1,
     parse_json_object_v1,
+    signed_wire_body_evidence_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
     LiveCanaryEphemeralCredentialHandleV1,
@@ -120,6 +123,62 @@ def _pre_sizing_gates(
         require_notional_bounds=False,
     )
     refuse_submit_unless_gates_pass_v1(gate)
+
+
+def _entry_submit_returned_payload_v1(
+    *,
+    response: LiveCanaryHttpResponseV1,
+    plan: Any,
+    submit_gate: Any,
+    client: LiveCanaryHttpClientV1,
+    signed_wire: Mapping[str, Any],
+    http_evidence: Mapping[str, Any],
+) -> dict[str, Any]:
+    status = int(http_evidence.get("http_status") or response.status_code)
+    redirectish = bool(http_evidence.get("redirect_status")) or (300 <= status < 400)
+    parsed_ok = bool(http_evidence.get("json_parse_ok"))
+    code = str(http_evidence.get("okx_code") or "")
+    ok = (
+        parsed_ok
+        and code == "0"
+        and status == 200
+        and not redirectish
+        and not response.redirect_followed
+    )
+    if response.redirect_followed:
+        canary_result = "ENTRY_SUBMIT_POST_REDIRECT_FOLLOWED_FORBIDDEN"
+    elif redirectish:
+        canary_result = "ENTRY_SUBMIT_POST_REDIRECT_FAIL_CLOSED"
+    else:
+        canary_result = "ENTRY_SUBMIT_TRANSPORT_RETURNED"
+    payload = {
+        "ok": ok,
+        "mode": "execute",
+        "CANARY_RESULT": canary_result,
+        "CANARY_EXECUTED": False,
+        "LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED": False,
+        "LIVE_AUTHORIZED": False,
+        "SESSION_ENTRY_SUBMITTED": True,
+        "ORDER_COUNT_SUBMITTED": int(client.counters.entry_submit_count),
+        "DUPLICATE_SUBMIT": False,
+        "UNKNOWN_SUBMIT": False,
+        "BLIND_RETRY": False,
+        "plan": plan.to_dict(),
+        "submit_gate": submit_gate.to_dict(),
+        "counters": client.counters.to_dict(),
+        "http_status": status,
+        "http_error_evidence": dict(http_evidence),
+        "signed_wire_body_evidence": dict(signed_wire),
+        "SIGNED_BODY_EQUALS_WIRE_BODY": bool(signed_wire.get("SIGNED_BODY_EQUALS_WIRE_BODY")),
+        "OWNER_GO_CONSUMED": False,
+        "GENERAL_LIVE_SUBMIT_UNLOCKED": False,
+        "SUBMIT_UNLOCKED": False,
+        "CANARY_SUBMIT_TRANSPORT_SCOPE": CANARY_SUBMIT_TRANSPORT_SCOPE,
+        "RETRY_SAFE_NOW": False,
+    }
+    if status == 401:
+        payload["POST_401_ROOT_CAUSE"] = "UNPROVEN_FAIL_CLOSED"
+    return payload
 
 
 def _signed_get(
@@ -322,27 +381,34 @@ def run_canary_submit_transport_v1(
                 }
             raise LiveCanarySubmitTransportError(str(exc)) from exc
         headers.clear()
-        parsed = parse_json_object_v1(response.body_bytes)
-        return {
-            "ok": str(parsed.get("code") or "") == "0",
-            "mode": "execute",
-            "CANARY_RESULT": "ENTRY_SUBMIT_TRANSPORT_RETURNED",
-            "CANARY_EXECUTED": False,
-            "LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED": False,
-            "LIVE_AUTHORIZED": False,
-            "SESSION_ENTRY_SUBMITTED": True,
-            "ORDER_COUNT_SUBMITTED": int(client.counters.entry_submit_count),
-            "DUPLICATE_SUBMIT": False,
-            "UNKNOWN_SUBMIT": False,
-            "plan": plan.to_dict(),
-            "submit_gate": submit_gate.to_dict(),
-            "counters": client.counters.to_dict(),
-            "http_status": response.status_code,
-            "OWNER_GO_CONSUMED": False,
-            "GENERAL_LIVE_SUBMIT_UNLOCKED": False,
-            "SUBMIT_UNLOCKED": False,
-            "CANARY_SUBMIT_TRANSPORT_SCOPE": CANARY_SUBMIT_TRANSPORT_SCOPE,
-        }
+        signed_wire = signed_wire_body_evidence_v1(
+            signed_body_text=body_text,
+            wire_body_bytes=body_text.encode("utf-8"),
+        )
+        if response.wire_body_sha256:
+            signed_wire["wire_body_sha256_12"] = response.wire_body_sha256[:12]
+            signed_wire["wire_body_byte_len"] = int(response.wire_body_byte_len)
+            signed_wire["SIGNED_BODY_EQUALS_WIRE_BODY"] = signed_wire[
+                "signed_body_sha256_12"
+            ] == response.wire_body_sha256[:12] and signed_wire["signed_body_byte_len"] == int(
+                response.wire_body_byte_len
+            )
+        http_evidence = extract_canary_http_response_evidence_v1(
+            status_code=response.status_code,
+            body_bytes=response.body_bytes,
+            headers=response.response_headers_safe,
+            redirect_followed=response.redirect_followed,
+            redirect_status=response.redirect_status,
+            redirect_location=response.redirect_location,
+        )
+        return _entry_submit_returned_payload_v1(
+            response=response,
+            plan=plan,
+            submit_gate=submit_gate,
+            client=client,
+            signed_wire=signed_wire,
+            http_evidence=http_evidence,
+        )
     finally:
         if created_handle and handle is not None:
             release_live_canary_ephemeral_material_v1(handle)
