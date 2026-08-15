@@ -71,6 +71,17 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--permission-read", type=str, default="")
     parser.add_argument("--permission-trade", type=str, default="")
     parser.add_argument("--permission-withdraw", type=str, default="")
+    parser.add_argument(
+        "--allow-productive-wire-send",
+        action="store_true",
+        help="Required together with --execute to construct the productive urllib transport.",
+    )
+    parser.add_argument(
+        "--live-canary-cybersecurity-gate",
+        type=str,
+        default="",
+        help="Must be PASS for execute. Empty fails closed.",
+    )
     return parser
 
 
@@ -123,6 +134,8 @@ def main(argv: list[str] | None = None) -> int:
             confirm_token=args.confirm_token or None,
             owner_go_consumed=bool(args.owner_go_consumed),
             seal_forensic_evidence=bool(args.seal_forensic_evidence),
+            allow_productive_wire_send=bool(args.allow_productive_wire_send),
+            live_canary_cybersecurity_gate=str(args.live_canary_cybersecurity_gate or ""),
         )
     except LiveCanaryRunnerError as exc:
         print(

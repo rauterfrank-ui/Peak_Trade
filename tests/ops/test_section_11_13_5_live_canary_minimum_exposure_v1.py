@@ -22,12 +22,17 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.config_v1 import (
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     AUTHORIZATION_SCOPE,
+    CANARY_SUBMIT_TRANSPORT_IMPLEMENTED,
+    CANARY_SUBMIT_TRANSPORT_SCOPE,
+    GENERAL_LIVE_SUBMIT_UNLOCKED,
     LIVE_AUTHORIZED,
     LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN,
     OWNER_GO_AUTHORING,
     OWNER_GO_EXECUTE,
     PACKAGE_MARKER,
     PRODUCTIVE_EXECUTE_PATH_READY,
+    REQUIRED_SECRETREF_URI,
+    SUBMIT_UNLOCKED,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.exposure_v1 import (
     LiveCanaryExposureError,
@@ -80,6 +85,9 @@ def _gate_kwargs(**overrides: object) -> dict:
         "order_count": 1,
         "position_count": 0,
         "exposure_above_minimum_bound": False,
+        "live_canary_cybersecurity_gate": "PASS",
+        "rest_host": "eea.okx.com",
+        "secretref_uri": REQUIRED_SECRETREF_URI,
     }
     base.update(overrides)
     return base
@@ -92,6 +100,10 @@ def test_package_defaults_and_cap_11_9_remain_fixture_only() -> None:
     assert default_authorization_is_false_v1() is True
     assert PRODUCTIVE_EXECUTE_PATH_READY is True
     assert cap_11_9.LIVE_CANARY_MINIMUM_EXPOSURE_ACTIVATED is False
+    assert CANARY_SUBMIT_TRANSPORT_IMPLEMENTED is True
+    assert CANARY_SUBMIT_TRANSPORT_SCOPE == "SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE_ONLY"
+    assert GENERAL_LIVE_SUBMIT_UNLOCKED is False
+    assert SUBMIT_UNLOCKED is False
 
 
 def test_forensic_classification_from_sealed_evidence() -> None:
@@ -132,6 +144,14 @@ def test_submit_gates_refuse_each_required_blocker() -> None:
         ({"environment": "TESTNET"}, "ENVIRONMENT_NOT_LIVE"),
         ({"live_canary_authorized": False}, "AUTHORIZED_FALSE"),
         ({"owner_go": "GO_MERGE_SECTION_11_13_5"}, "MERGE_GO"),
+        ({"live_canary_cybersecurity_gate": "NOT_PASSED"}, "CYBERSECURITY_GATE"),
+        ({"rest_host": "www.okx.com"}, "REST_HOST_NOT_PRODUCTION_EEA"),
+        (
+            {"secretref_uri": "secretref://vault/peak-trade/live-shadow-recon/okx"},
+            "SECRETREF_URI_BINDING_MISMATCH",
+        ),
+        ({"open_order_count": 1}, "OPEN_ORDER_PRESENT"),
+        ({"open_position_count": 1}, "OPEN_POSITION_PRESENT"),
         (
             {
                 "owner_go": (
