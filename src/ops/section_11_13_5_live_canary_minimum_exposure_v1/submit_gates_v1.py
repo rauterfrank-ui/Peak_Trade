@@ -16,6 +16,8 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     POSITION_COUNT_LIMIT,
     REQUIRED_ENVIRONMENT,
     REQUIRED_PERMISSION_ATTESTATION_FOR_SUBMIT,
+    REQUIRED_SECRETREF_URI,
+    REUSED_BINDING_REST_HOST,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.governance_state_matrix_v1 import (
     MERGE_GO_TOKENS_FORBIDDEN_FOR_SUBMIT,
@@ -64,6 +66,13 @@ def evaluate_canary_submit_gates_v1(
     order_count: int,
     position_count: int,
     exposure_above_minimum_bound: bool,
+    live_canary_cybersecurity_gate: str | None = None,
+    rest_host: str | None = None,
+    secretref_uri: str | None = None,
+    open_order_count: int = 0,
+    open_position_count: int = 0,
+    require_notional_bounds: bool = True,
+    recovery_state_clear: bool = True,
 ) -> CanarySubmitGateEvaluationV1:
     reasons: list[str] = []
     gates: dict[str, Any] = {}
@@ -162,12 +171,39 @@ def evaluate_canary_submit_gates_v1(
     gates["max_notional"] = max_notional
     gates["min_executable_notional"] = min_executable_notional
     gates["exposure_above_minimum_bound"] = bool(exposure_above_minimum_bound)
-    if not max_notional or not min_executable_notional:
-        reasons.append("NOTIONAL_BOUNDS_UNRESOLVED")
-    elif str(max_notional) != str(min_executable_notional):
-        reasons.append("MAX_NOTIONAL_MUST_EQUAL_MIN_EXECUTABLE_NOTIONAL")
+    gates["require_notional_bounds"] = bool(require_notional_bounds)
+    if require_notional_bounds:
+        if not max_notional or not min_executable_notional:
+            reasons.append("NOTIONAL_BOUNDS_UNRESOLVED")
+        elif str(max_notional) != str(min_executable_notional):
+            reasons.append("MAX_NOTIONAL_MUST_EQUAL_MIN_EXECUTABLE_NOTIONAL")
     if exposure_above_minimum_bound:
         reasons.append("EXPOSURE_ABOVE_CANONICAL_MINIMUM_BOUND")
+
+    cyber = str(live_canary_cybersecurity_gate or "").strip().upper()
+    gates["live_canary_cybersecurity_gate"] = cyber or None
+    if cyber != "PASS":
+        reasons.append("LIVE_CANARY_CYBERSECURITY_GATE_NOT_PASS")
+
+    host = str(rest_host or "").strip().lower()
+    gates["rest_host"] = host or None
+    if host and host != REUSED_BINDING_REST_HOST:
+        reasons.append("REST_HOST_NOT_PRODUCTION_EEA")
+
+    ref = str(secretref_uri or "").strip()
+    gates["secretref_uri_present"] = bool(ref)
+    if ref and ref != REQUIRED_SECRETREF_URI:
+        reasons.append("SECRETREF_URI_BINDING_MISMATCH")
+
+    gates["open_order_count"] = int(open_order_count)
+    gates["open_position_count"] = int(open_position_count)
+    gates["recovery_state_clear"] = bool(recovery_state_clear)
+    if int(open_order_count) > 0:
+        reasons.append("OPEN_ORDER_PRESENT")
+    if int(open_position_count) > 0:
+        reasons.append("OPEN_POSITION_PRESENT")
+    if not recovery_state_clear:
+        reasons.append("RECOVERY_STATE_UNRESOLVED")
 
     submit_allowed = len(reasons) == 0
     return CanarySubmitGateEvaluationV1(

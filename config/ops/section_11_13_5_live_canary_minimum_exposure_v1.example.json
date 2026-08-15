@@ -40,5 +40,5 @@
   "config_version": "section_11_13_5_live_canary_minimum_exposure_config.v1",
   "schema_version": "section_11_13_5_live_canary_minimum_exposure.v1",
   "predecessor_dry_run_evidence_root": "evidence/ops/section_11_13_4_live_dry_run_order_plan_proven_v1/20260811T230805Z/",
-  "notes": "Owner fills productive fields at future execute time. Instrument metadata from venue. SecretRef must use /live-canary-minimum-exposure/. Authoring does not authorize execute."
+  "notes": "Owner fills productive fields at future execute time. Instrument metadata from venue GET at execute. SecretRef must use /live-canary-minimum-exposure/. Transport-prep does not authorize execute."
 }

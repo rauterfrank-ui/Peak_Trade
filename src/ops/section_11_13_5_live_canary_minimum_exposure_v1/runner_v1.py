@@ -19,8 +19,11 @@ from src.core.environment import LIVE_CONFIRM_TOKEN
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     AUTHORIZATION_SCOPE,
     BLOCKS_NEW_ENTRY,
+    CANARY_SUBMIT_TRANSPORT_IMPLEMENTED,
+    CANARY_SUBMIT_TRANSPORT_SCOPE,
     CAPABILITY_11_9_LIVE_CANARY_ACTIVATED,
     CAPABILITY_11_9_REMAINS_FIXTURE_ONLY,
+    GENERAL_LIVE_SUBMIT_UNLOCKED,
     LIVE_AUTHORIZED,
     LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED,
     LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN,
@@ -30,6 +33,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     PACKAGE_MARKER,
     PREPARATION_SURFACE_READY,
     PRODUCTIVE_EXECUTE_PATH_READY,
+    SUBMIT_UNLOCKED,
     TRANSPORT_CLASS_FORENSIC_SEALED_ONLY,
     TRANSPORT_CLASS_PREFLIGHT_NO_NETWORK,
     UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY,
@@ -46,7 +50,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.lifecycle_v1 import
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.submit_gates_v1 import (
     evaluate_canary_submit_gates_v1,
-    refuse_submit_unless_gates_pass_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.submit_transport_v1 import (
+    LiveCanarySubmitTransportError,
+    run_canary_submit_transport_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.trade_permission_forensic_v1 import (
     build_trade_permission_forensic_v1,
@@ -90,6 +97,10 @@ def run_section_11_13_5_live_canary_minimum_exposure_v1(
     confirm_token: str | None = None,
     owner_go_consumed: bool = False,
     seal_forensic_evidence: bool = False,
+    transport: Any = None,
+    allow_productive_wire_send: bool = False,
+    vault_backend: Any = None,
+    live_canary_cybersecurity_gate: str = "PASS",
 ) -> LiveCanaryRunnerResultV1:
     mode_norm = str(mode or "").strip().lower()
     if mode_norm not in {"preflight", "forensic", "execute"}:
@@ -101,6 +112,12 @@ def run_section_11_13_5_live_canary_minimum_exposure_v1(
         raise LiveCanaryRunnerError("PACKAGE_PROVEN_EXECUTED_FLAGS_MUST_REMAIN_FALSE")
     if LIVE_AUTHORIZED:
         raise LiveCanaryRunnerError("LIVE_AUTHORIZED_MUST_REMAIN_FALSE")
+    if GENERAL_LIVE_SUBMIT_UNLOCKED or SUBMIT_UNLOCKED:
+        raise LiveCanaryRunnerError("GENERAL_LIVE_SUBMIT_UNLOCK_FORBIDDEN")
+    if not CANARY_SUBMIT_TRANSPORT_IMPLEMENTED:
+        raise LiveCanaryRunnerError("CANARY_SUBMIT_TRANSPORT_NOT_IMPLEMENTED")
+    if CANARY_SUBMIT_TRANSPORT_SCOPE != "SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE_ONLY":
+        raise LiveCanaryRunnerError("CANARY_SUBMIT_TRANSPORT_SCOPE_DRIFT")
     if not PREPARATION_SURFACE_READY or not PRODUCTIVE_EXECUTE_PATH_READY:
         raise LiveCanaryRunnerError("PREPARATION_OR_EXECUTE_PATH_NOT_READY")
     if not default_authorization_is_false_v1():
@@ -145,16 +162,38 @@ def run_section_11_13_5_live_canary_minimum_exposure_v1(
     )
 
     if mode_norm == "execute":
-        # Execute path is authored and fail-closed: authoring GO / standing blockers refuse.
         if str(owner_go or "") == OWNER_GO_AUTHORING:
             raise LiveCanaryRunnerError("AUTHORING_GO_CANNOT_EXECUTE_CANARY")
         try:
-            refuse_submit_unless_gates_pass_v1(gate)
-        except Exception as exc:  # noqa: BLE001 - translate to runner error
+            execute_payload = run_canary_submit_transport_v1(
+                cfg=cfg,
+                origin_main_sha=origin_main_sha,
+                owner_go=owner_go,
+                live_canary_authorized=bool(live_canary_authorized),
+                live_enabled=live_enabled,
+                live_armed=live_armed,
+                confirm_token=confirm_token,
+                owner_go_consumed=owner_go_consumed,
+                permission_attestation=permission_attestation
+                or trade["PRIOR_PERMISSION_ATTESTATION"],
+                transport=transport,
+                allow_productive_wire_send=allow_productive_wire_send,
+                live_canary_cybersecurity_gate=live_canary_cybersecurity_gate,
+                vault_backend=vault_backend,
+            )
+        except (LiveCanarySubmitTransportError, Exception) as exc:  # noqa: BLE001
             raise LiveCanaryRunnerError(str(exc)) from exc
-        # If somehow all gates passed, still refuse automatic submit in this authoring package
-        # until a future productive transport unlock binds explicitly under execute GO.
-        raise LiveCanaryRunnerError("CANARY_SUBMIT_TRANSPORT_NOT_UNLOCKED_IN_AUTHORING_SURFACE")
+        execute_payload["forensic"] = forensic
+        execute_payload["trade_permission_forensic"] = trade
+        execute_payload["lifecycle_contract"] = lifecycle
+        execute_payload["LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN"] = False
+        execute_payload["LIVE_AUTHORIZED"] = False
+        execute_payload["OWNER_GO_CONSUMED"] = False
+        return LiveCanaryRunnerResultV1(
+            ok=bool(execute_payload.get("ok")),
+            mode=mode_norm,
+            payload=execute_payload,
+        )
 
     claims = {
         "mode": mode_norm,

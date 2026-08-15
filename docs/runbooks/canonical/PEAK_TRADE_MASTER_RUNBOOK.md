@@ -10109,6 +10109,86 @@ This persist GO is consumed and must not be reused for execute.
 `LIVE_CANARY_CYBERSECURITY_GATE=PASS` is **not** Live authorization and
 is **not** Canary execute. `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` is
 **not** granted here and requires a **separate** Owner-GO.
+Historical next pointer superseded by §11.13.5.G canary submit-transport
+preparation below.
+
+### 11.13.5.G LIVE canary submit-transport preparation (BOUND; TRANSPORT_PREPARED; NOT EXECUTE)
+
+Owner-GO `OWNER_GO_CANARY_SUBMIT_TRANSPORT_PREPARATION` (one-shot; now
+**CONSUMED**) authorized preparation&#47;persistence of the narrowly scoped
+productive §11.13.5 Canary submit transport only. This does **not**
+authorize Canary execute, order submit, consumption of
+`OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE`, general Live authorization,
+general submit unlock, G13 unlock, R6 S5, Multi-Future, N&gt;1, funding,
+withdrawal&#47;P2P, or S6.
+
+The bound implementation reuses reviewed OKX signing&#47;timestamp primitives
+and SecretRef vault backend composition. It does **not** reuse
+`BoundOkxTestnetHttpClientV1` and does **not** add POST to §11.13.3&#47;§11.13.4
+GET-only clients. POST `&#47;api&#47;v5&#47;trade&#47;order` remains unreachable unless
+all canonical Canary execute gates pass. Standing package flags remain
+fail-closed.
+
+``` text
+OWNER_GO_CANARY_SUBMIT_TRANSPORT_PREPARATION=CONSUMED
+CURRENT_ORIGIN_MAIN_SHA=825ea05e4794579d1f26b368abb28b6d3837d097
+CANARY_SUBMIT_TRANSPORT_IMPLEMENTED=true
+CANARY_SUBMIT_TRANSPORT_SCOPE=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE_ONLY
+CANARY_SUBMIT_TRANSPORT_ACTIVATED=false
+GENERAL_LIVE_SUBMIT_UNLOCKED=false
+SUBMIT_UNLOCKED=false
+ACTIVATED=false
+LIVE_AUTHORIZED=false
+LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED=false
+LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN=false
+OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE_STATUS=GRANTED_UNCONSUMED
+NEW_CANARY_OWNER_GO_GRANTED=true
+ORDER_COUNT_SUBMITTED=0
+NETWORK_EFFECT=NONE
+ORDER_EFFECT=NONE
+ACCOUNT_MUTATION_EFFECT=NONE
+SECRET_VALUE_ACCESS=NONE
+LIVE_CANARY_CYBERSECURITY_GATE=PASS
+R6_S5_AUTHORIZATION_GRANT=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+G13_UNLOCK=false
+N_GREATER_THAN_ONE=false
+MAX_POSITIONS_EFFECTIVE=1
+S6_STARTED=false
+TERMINAL_STATE=ECONOMIC_BASELINE_ADOPTED_LIVE_RECONCILIATION_PROVEN_OKX_TEMP_SECURITY_CLEARANCE_PRESENT_PROVEN_LIVE_CANARY_CYBERSECURITY_GATE_PASS_CANARY_SUBMIT_TRANSPORT_PREPARED_CANARY_NOT_EXECUTED
+```
+
+Mandatory distinctions:
+
+``` text
+CANARY_SUBMIT_TRANSPORT_IMPLEMENTED != CANARY_EXECUTE
+CANARY_SUBMIT_TRANSPORT_IMPLEMENTED != SUBMIT_UNLOCKED
+CANARY_SUBMIT_TRANSPORT_IMPLEMENTED != GENERAL_LIVE_SUBMIT_UNLOCK
+CANARY_SUBMIT_TRANSPORT_IMPLEMENTED != LIVE_AUTHORIZED
+OWNER_GO_CANARY_SUBMIT_TRANSPORT_PREPARATION != OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE
+GRANTED_UNCONSUMED != CONSUMED
+GRANTED_UNCONSUMED != CANARY_EXECUTED
+```
+
+Sealed preparation evidence root:
+
+`evidence&#47;ops&#47;section_11_13_5_canary_submit_transport_preparation_v1&#47;20260815T204500Z&#47;`
+
+``` text
+SECTION_11_13_5_G_RUN_ID=20260815T204500Z
+VERIFIER=scripts&#47;ops&#47;verify_section_11_13_5_canary_submit_transport_preparation_v1.py
+CODE_OWNER=src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;
+MANIFEST_VERIFY_RC=0
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+CANONICAL_NEXT_STEP=OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_CANARY_MINIMUM_EXPOSURE_NOT_EXECUTED
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
+```
+
+Hard stop. No Canary execute in this GO. Cap &#47; Capability 11.9 remains
+fixture-only. Transport preparation GO is consumed and must not be reused
+for execute. `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains
+`GRANTED_UNCONSUMED`.
 
 ## 11.14 Live order and economic evidence ladder
 

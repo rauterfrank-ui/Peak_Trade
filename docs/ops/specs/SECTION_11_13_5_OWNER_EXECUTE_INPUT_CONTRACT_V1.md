@@ -11,7 +11,7 @@ LIVE_RECONCILIATION_PROVEN=false
 BLOCKS_NEW_ENTRY=true
 AUTHORING_GO=OWNER_GO_SECTION_11_13_LIVE_CANARY_PRODUCTIVE_SURFACE_AUTHORING
 SEPARATE_EXECUTE_GO=OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE
-OWNER_GO_EXECUTE_STATUS=NOT_ISSUED_FOR_THIS_SURFACE
+OWNER_GO_EXECUTE_STATUS=GRANTED_UNCONSUMED
 ```
 
 Authoring GO prepares the surface only. Future execute requires a **new**
@@ -31,7 +31,9 @@ fail-closed-consumed canary GO.
 | permission attestation | yes | READ=true TRADE=true WITHDRAW=false |
 | exchange-truth adoption policies | yes | Venue metadata + balances + local portfolio baseline policies |
 | enabled/armed/confirm-token | yes | Session gates; confirm token `I_KNOW_WHAT_I_AM_DOING` |
-| separate execute GO | yes | `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` (new; one-shot) |
+| `--allow-productive-wire-send` | yes | Required for urllib construction; absent fails closed |
+| live-canary-cybersecurity-gate | yes | Must be `PASS` |
+| separate execute GO | yes | `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` (granted unconsumed; one-shot) |
 
 ## Hard stops
 

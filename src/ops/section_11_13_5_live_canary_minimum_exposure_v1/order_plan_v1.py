@@ -1,0 +1,207 @@
+"""Venue-derived minimum-exposure order plan for §11.13.5. No invented numeric policy."""
+
+from __future__ import annotations
+
+import hashlib
+from dataclasses import dataclass
+from decimal import Decimal, ROUND_DOWN, InvalidOperation
+from typing import Any, Mapping
+
+from src.ops.okx_europe_adapter_lifecycle_contract_v0 import (
+    CLIENT_ORDER_ID_ALLOWED_PATTERN,
+    CLIENT_ORDER_ID_MAX_LENGTH,
+    build_client_order_id,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+    DEFAULT_INSTRUMENT_ID,
+    DEFAULT_ORDER_TYPE,
+    DEFAULT_SIDE,
+    DEFAULT_TD_MODE,
+    REUSED_BINDING_ACCOUNT_SCOPE,
+    REUSED_BINDING_VENUE,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.exposure_v1 import (
+    LiveCanaryExposureError,
+    build_canary_exposure_binding_v1,
+)
+
+
+class LiveCanaryOrderPlanError(RuntimeError):
+    """Fail-closed canary order-plan violation."""
+
+
+def _dec(raw: Any, *, field: str) -> Decimal:
+    try:
+        value = Decimal(str(raw))
+    except (InvalidOperation, TypeError, ValueError) as exc:
+        raise LiveCanaryOrderPlanError(f"INVALID_DECIMAL:{field}") from exc
+    if value <= 0:
+        raise LiveCanaryOrderPlanError(f"NON_POSITIVE:{field}")
+    return value
+
+
+def extract_instrument_constraints_v1(
+    *,
+    instruments_payload: Mapping[str, Any],
+    instrument_id: str = DEFAULT_INSTRUMENT_ID,
+) -> dict[str, str]:
+    if str(instruments_payload.get("code") or "") != "0":
+        raise LiveCanaryOrderPlanError("INSTRUMENTS_PAYLOAD_NOT_OK")
+    data = instruments_payload.get("data")
+    if not isinstance(data, list) or not data:
+        raise LiveCanaryOrderPlanError("INSTRUMENTS_DATA_MISSING")
+    row = None
+    for item in data:
+        if isinstance(item, Mapping) and str(item.get("instId") or "") == instrument_id:
+            row = item
+            break
+    if row is None:
+        raise LiveCanaryOrderPlanError(f"INSTRUMENT_NOT_FOUND:{instrument_id}")
+    required = ("minSz", "lotSz", "tickSz", "ctVal")
+    out: dict[str, str] = {}
+    for key in required:
+        val = str(row.get(key) or "").strip()
+        if not val:
+            raise LiveCanaryOrderPlanError(f"INSTRUMENT_FIELD_MISSING:{key}")
+        out[key] = val
+    ct_ccy = str(row.get("ctValCcy") or "").strip()
+    if ct_ccy:
+        out["ctValCcy"] = ct_ccy
+    return out
+
+
+def extract_reference_price_v1(*, ticker_payload: Mapping[str, Any]) -> str:
+    if str(ticker_payload.get("code") or "") != "0":
+        raise LiveCanaryOrderPlanError("TICKER_PAYLOAD_NOT_OK")
+    data = ticker_payload.get("data")
+    if not isinstance(data, list) or not data or not isinstance(data[0], Mapping):
+        raise LiveCanaryOrderPlanError("TICKER_DATA_MISSING")
+    last = str(data[0].get("last") or data[0].get("askPx") or "").strip()
+    if not last:
+        raise LiveCanaryOrderPlanError("TICKER_LAST_MISSING")
+    return last
+
+
+def quantize_limit_price_v1(*, reference_price: str, tick_sz: str) -> str:
+    px = _dec(reference_price, field="reference_price")
+    tick = _dec(tick_sz, field="tick_sz")
+    steps = (px / tick).to_integral_value(rounding=ROUND_DOWN)
+    if steps <= 0:
+        raise LiveCanaryOrderPlanError("LIMIT_PRICE_NON_POSITIVE_AFTER_TICK")
+    return format(steps * tick, "f")
+
+
+def serialize_canary_clordid_v1(*, owner_go: str, origin_main_sha: str) -> str:
+    material = hashlib.sha256(f"{owner_go}:{origin_main_sha}".encode("utf-8")).hexdigest()
+    coid = build_client_order_id(
+        run_id=material,
+        session_id=material,
+        intent_id=material,
+        environment="LIVE",
+        instrument_id=DEFAULT_INSTRUMENT_ID,
+        sequence=0,
+    )
+    if not coid or len(coid) > CLIENT_ORDER_ID_MAX_LENGTH:
+        raise LiveCanaryOrderPlanError("CLORDID_LENGTH_VIOLATION")
+    if not CLIENT_ORDER_ID_ALLOWED_PATTERN.fullmatch(coid):
+        raise LiveCanaryOrderPlanError("CLORDID_ALPHANUMERIC_VIOLATION")
+    return coid
+
+
+@dataclass(frozen=True)
+class CanaryOrderPlanV1:
+    instrument_id: str
+    side: str
+    order_type: str
+    td_mode: str
+    quantity: str
+    limit_price: str
+    min_sz: str
+    lot_sz: str
+    tick_sz: str
+    ct_val: str
+    ct_val_ccy: str | None
+    min_executable_notional: str
+    max_notional: str
+    clordid: str
+    venue_native_payload: dict[str, Any]
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "instrument_id": self.instrument_id,
+            "side": self.side,
+            "order_type": self.order_type,
+            "td_mode": self.td_mode,
+            "quantity": self.quantity,
+            "limit_price": self.limit_price,
+            "min_sz": self.min_sz,
+            "lot_sz": self.lot_sz,
+            "tick_sz": self.tick_sz,
+            "ct_val": self.ct_val,
+            "ct_val_ccy": self.ct_val_ccy,
+            "min_executable_notional": self.min_executable_notional,
+            "max_notional": self.max_notional,
+            "clordid": self.clordid,
+            "venue_native_payload": dict(self.venue_native_payload),
+        }
+
+
+def build_minimum_valid_canary_order_plan_v1(
+    *,
+    instruments_payload: Mapping[str, Any],
+    ticker_payload: Mapping[str, Any],
+    owner_go: str,
+    origin_main_sha: str,
+    instrument_id: str = DEFAULT_INSTRUMENT_ID,
+    side: str = DEFAULT_SIDE,
+    td_mode: str = DEFAULT_TD_MODE,
+) -> CanaryOrderPlanV1:
+    constraints = extract_instrument_constraints_v1(
+        instruments_payload=instruments_payload,
+        instrument_id=instrument_id,
+    )
+    reference = extract_reference_price_v1(ticker_payload=ticker_payload)
+    limit_px = quantize_limit_price_v1(reference_price=reference, tick_sz=constraints["tickSz"])
+    try:
+        exposure = build_canary_exposure_binding_v1(
+            venue=REUSED_BINDING_VENUE,
+            account_scope=REUSED_BINDING_ACCOUNT_SCOPE,
+            instrument_id=instrument_id,
+            side=side,
+            order_type=DEFAULT_ORDER_TYPE,
+            td_mode=td_mode,
+            instrument_min_sz=constraints["minSz"],
+            instrument_lot_sz=constraints["lotSz"],
+            instrument_ct_val=constraints["ctVal"],
+            instrument_tick_sz=constraints["tickSz"],
+            reference_price=limit_px,
+        )
+    except LiveCanaryExposureError as exc:
+        raise LiveCanaryOrderPlanError(f"UNSAFE_QUANTITY:{exc}") from exc
+    clordid = serialize_canary_clordid_v1(owner_go=owner_go, origin_main_sha=origin_main_sha)
+    payload = {
+        "instId": instrument_id,
+        "tdMode": td_mode,
+        "side": str(side).lower(),
+        "ordType": "limit",
+        "sz": exposure.quantity,
+        "px": limit_px,
+        "clOrdId": clordid,
+    }
+    return CanaryOrderPlanV1(
+        instrument_id=instrument_id,
+        side=str(side).upper(),
+        order_type="LIMIT",
+        td_mode=td_mode,
+        quantity=exposure.quantity,
+        limit_price=limit_px,
+        min_sz=constraints["minSz"],
+        lot_sz=constraints["lotSz"],
+        tick_sz=constraints["tickSz"],
+        ct_val=constraints["ctVal"],
+        ct_val_ccy=constraints.get("ctValCcy"),
+        min_executable_notional=exposure.min_executable_notional,
+        max_notional=exposure.max_notional,
+        clordid=clordid,
+        venue_native_payload=payload,
+    )

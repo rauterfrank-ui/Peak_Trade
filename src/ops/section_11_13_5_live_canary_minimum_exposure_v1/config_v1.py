@@ -20,6 +20,11 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     POSITION_COUNT_LIMIT,
     REQUIRED_CREDENTIAL_CLASS,
     REQUIRED_ENVIRONMENT,
+    REUSED_BINDING_ACCOUNT_SCOPE,
+    REUSED_BINDING_ENTITY,
+    REUSED_BINDING_REGION,
+    REUSED_BINDING_REST_HOST,
+    REUSED_BINDING_VENUE,
     REUSED_SECTION_11_13_4_BINDING_SOURCE,
     SCHEMA_VERSION,
     SECRETREF_CANARY_PATH_MARKER,
@@ -91,7 +96,9 @@ def example_incomplete_config_dict_v1() -> dict[str, Any]:
         "notes": (
             "Owner fills productive fields at future execute time. Instrument minSz/lotSz/"
             "ctVal/tickSz must come from venue instrument metadata. SecretRef must use "
-            "/live-canary-minimum-exposure/ path. Authoring does not authorize execute."
+            "/live-canary-minimum-exposure/ path. Instrument minSz/lotSz/ctVal/tickSz "
+            "are derived from venue GET at execute and must not be invented. "
+            "Authoring/transport-prep does not authorize execute."
         ),
     }
 
@@ -153,10 +160,6 @@ def require_execute_time_fields_v1(payload: Mapping[str, Any]) -> None:
         "rest_base",
         "account_scope",
         "instrument_id",
-        "instrument_min_sz",
-        "instrument_lot_sz",
-        "instrument_ct_val",
-        "instrument_tick_sz",
         "secretref_uri",
         "credential_class",
     )
@@ -172,6 +175,18 @@ def require_execute_time_fields_v1(payload: Mapping[str, Any]) -> None:
     allowlist = payload.get("owner_declared_host_allowlist") or []
     if str(payload["rest_host"]) not in allowlist:
         raise LiveCanaryConfigError("REST_HOST_NOT_IN_OWNER_ALLOWLIST")
+    if str(payload.get("venue") or "") != REUSED_BINDING_VENUE:
+        raise LiveCanaryConfigError("VENUE_BINDING_MISMATCH")
+    if str(payload.get("entity") or "") != REUSED_BINDING_ENTITY:
+        raise LiveCanaryConfigError("ENTITY_BINDING_MISMATCH")
+    if str(payload.get("region") or "") != REUSED_BINDING_REGION:
+        raise LiveCanaryConfigError("REGION_BINDING_MISMATCH")
+    if str(payload.get("rest_host") or "") != REUSED_BINDING_REST_HOST:
+        raise LiveCanaryConfigError("REST_HOST_BINDING_MISMATCH")
+    if str(payload.get("account_scope") or "") != REUSED_BINDING_ACCOUNT_SCOPE:
+        raise LiveCanaryConfigError("ACCOUNT_SCOPE_BINDING_MISMATCH")
+    if str(payload.get("instrument_id") or "") != DEFAULT_INSTRUMENT_ID:
+        raise LiveCanaryConfigError("INSTRUMENT_BINDING_MISMATCH")
 
 
 def load_live_canary_config_from_json_file_v1(path: str | Path) -> LiveCanaryConfigV1:

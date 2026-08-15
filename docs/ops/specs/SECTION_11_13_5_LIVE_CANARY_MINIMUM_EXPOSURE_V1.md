@@ -8,8 +8,12 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 LIVE_AUTHORIZED=false
 LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN=false
 LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED=false
-LIVE_RECONCILIATION_PROVEN=false
-BLOCKS_NEW_ENTRY=true
+CANARY_SUBMIT_TRANSPORT_IMPLEMENTED=true
+CANARY_SUBMIT_TRANSPORT_ACTIVATED=false
+SUBMIT_UNLOCKED=false
+GENERAL_LIVE_SUBMIT_UNLOCKED=false
+LIVE_RECONCILIATION_PROVEN=true
+BLOCKS_NEW_ENTRY=false
 UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY=true
 PRODUCTIVE_CANARY_SURFACE_READY=true
 CAPABILITY_11_9_REMAINS_FIXTURE_ONLY=true
@@ -37,6 +41,7 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 | Runner | `scripts&#47;ops&#47;run_section_11_13_5_live_canary_minimum_exposure_v1.py` |
 | Verifier | `scripts&#47;ops&#47;verify_section_11_13_5_live_canary_minimum_exposure_v1.py` |
 | Tests | `tests&#47;ops&#47;test_section_11_13_5_live_canary_minimum_exposure_v1.py` |
+| Submit-transport tests | `tests&#47;ops&#47;test_section_11_13_5_canary_submit_transport_v1.py` |
 | Owner input contract | `docs&#47;ops&#47;specs&#47;SECTION_11_13_5_OWNER_EXECUTE_INPUT_CONTRACT_V1.md` |
 
 ## Hard invariants
@@ -51,6 +56,10 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 - No secret-value persistence/logging
 - Forensic classification uses sealed §11.13.3 snapshots (no productive network
   under this authoring GO)
+- §11.13.5.G prepares a canary-scoped POST transport; standing
+  `SUBMIT_UNLOCKED=false` and `LIVE_AUTHORIZED=false` remain
+- Instrument minSz&#47;lotSz&#47;tickSz&#47;ctVal are derived from venue GET at execute;
+  no invented numeric policy
 
 ## Forensic status (sealed)
 
@@ -68,8 +77,8 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-1. Owner UI: create Trade-capable LIVE API key; attest TRADE=true WITHDRAW=false.
-2. Owner-ratify exchange-truth adoption policies for the three classified layers.
-3. After merge to origin/main and blockers cleared: separate
-   `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` (new issuance; prior consume remains).
-4. No automatic canary start from this authoring.
+1. Separate `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains `GRANTED_UNCONSUMED`.
+2. Execute still requires all session gates (`--authorized --live-enabled
+   --live-armed --confirm-token --allow-productive-wire-send` plus
+   `LIVE_CANARY_CYBERSECURITY_GATE=PASS`).
+3. No automatic canary start from this transport-preparation surface.

@@ -175,10 +175,17 @@ LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN = False
 LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED = False
 PREPARATION_SURFACE_READY = True
 PRODUCTIVE_EXECUTE_PATH_READY = True
+CANARY_SUBMIT_TRANSPORT_IMPLEMENTED = True
+CANARY_SUBMIT_TRANSPORT_SCOPE = "SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE_ONLY"
+CANARY_SUBMIT_TRANSPORT_ACTIVATED = False
+GENERAL_LIVE_SUBMIT_UNLOCKED = False
+SUBMIT_UNLOCKED = False
 CORE_LOGIC_CHANGE = False
 ORDER_EFFECT = "NONE"
 NETWORK_EFFECT_DEFAULT = "NONE"
 CREDENTIAL_ACCESS_DEFAULT = "NONE"
+USER_AGENT_CANARY = "PeakTrade-Section-11-13-5-LiveCanary/1"
+REQUIRED_SECRETREF_URI = "secretref://vault/peak-trade/live-canary-minimum-exposure/okx"
 
 # Standing SSOT facts (updated only when a governed Owner-GO proves them).
 # §11.13.5.E proves LIVE_RECONCILIATION_PROVEN after exchange economic-baseline
@@ -206,7 +213,26 @@ MINIMUM_RATIFIED_NOTIONAL_ONLY = True
 CAP_11_9_FIXTURE_MAX_NOTIONAL_SAMPLE = "1"
 CONFIRM_TOKEN_CANONICAL = "I_KNOW_WHAT_I_AM_DOING"
 CLORDID_PREFIX = "pt-canary-"
+CLORDID_WIRE_ALPHANUMERIC_PREFIX = "ptcanary"
 IDEMPOTENCY_POLICY = "ONE_SHOT_CLORDID_PER_OWNER_GO_BINDING"
+ENDPOINT_ORDERS_HISTORY = "/api/v5/trade/orders-history"
+ENDPOINT_ORDER_GET = "/api/v5/trade/order"
+GET_ENDPOINTS_PUBLIC: tuple[str, ...] = (
+    "/api/v5/public/instruments",
+    "/api/v5/market/ticker",
+)
+GET_ENDPOINTS_PRIVATE: tuple[str, ...] = (
+    "/api/v5/account/balance",
+    "/api/v5/account/config",
+    "/api/v5/account/positions",
+    "/api/v5/trade/orders-pending",
+    "/api/v5/trade/orders-history",
+    "/api/v5/trade/order",
+)
+POST_ENDPOINTS_GATED: tuple[str, ...] = (
+    "/api/v5/trade/order",
+    "/api/v5/trade/cancel-order",
+)
 
 REUSED_SECTION_11_13_4_BINDING_SOURCE = (
     "evidence/ops/section_11_13_4_live_dry_run_order_plan_proven_v1/20260811T230805Z/"
