@@ -1,0 +1,10 @@
+{
+  "CANARY_EXECUTED": false,
+  "DIRTY_SECTION_11_13_5_F_REUSED": false,
+  "GATE_REEVALUATED": false,
+  "LIVE_AUTHORIZED": false,
+  "ORDERS_SUBMITTED": false,
+  "SEALED_SECTION_11_13_5_E_MUTATED": false,
+  "SECTION_11_13_5_E1_BOUND": true,
+  "SSOT_MUTATED": true
+}
