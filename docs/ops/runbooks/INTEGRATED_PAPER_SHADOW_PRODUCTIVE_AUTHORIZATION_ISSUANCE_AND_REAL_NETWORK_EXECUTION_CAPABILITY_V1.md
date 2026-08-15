@@ -106,9 +106,9 @@ qualification failures (wallclock verifier forbids those side-effects;
 they remain owned by the economic-validity pipeline).
 
 Durable closeout:
-`evidence/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/20260814T170331Z/derived_forensic_canonical_7200s_qualification_closeout_v1/`.
+`evidence&#47;ops&#47;integrated_paper_shadow_observation_wallclock_session_execution_v1&#47;20260814T170331Z&#47;derived_forensic_canonical_7200s_qualification_closeout_v1&#47;`.
 Documentation Anchor:
-`docs/ops/EVIDENCE_INDEX.md#ev-20260814-eg-i17-shadow-canonical-7200s-qualification-closeout`.
+`docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260814-eg-i17-shadow-canonical-7200s-qualification-closeout`.
 
 This closeout does not authorize Live, Testnet, Canary, orders, promotion,
 economic-validity PASS, or any successor phase. The historical abort
