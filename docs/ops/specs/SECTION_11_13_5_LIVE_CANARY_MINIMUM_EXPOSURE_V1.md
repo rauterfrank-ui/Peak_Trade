@@ -83,9 +83,10 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.X. Historical W-era next steps
-below are superseded for the current delivery-algebra fail-closed
-persist. Historical V-era next steps remain historical for the fresh
+Current SSOT: Master Runbook §11.13.5.Y. Historical X-era next steps
+below are superseded for the current delivery-fee algebra-body persist.
+Historical W-era next steps remain historical for the delivery-algebra
+fail-closed persist. Historical V-era next steps remain historical for the fresh
 trade-fee GET persist.
 Historical U-era next steps remain historical for the query-grammar
 persist. Historical T-era next steps remain historical for the
@@ -228,8 +229,18 @@ oneshot.
     instance. `RULE_DELIVERY` remains unproven. This is **not** a
     GET-GO, **not** a funding-GO, and **not** a Canary-execute-GO.
     `FUNDING_AMOUNT_PROVEN=false`.
-22. Next canonical step is
-    `OWNER_GO_REQUIRED_TO_SUPPLY_INSTRUMENT_RELEVANT_XPERP_DELIVERY_FEE_ALGEBRA_BODY`.
+22. `OWNER_GO_TO_SUPPLY_INSTRUMENT_RELEVANT_XPERP_DELIVERY_FEE_ALGEBRA_BODY`
+    was granted `ALGEBRA_BODY_SUPPLY_ONLY` and is consumed. A complete
+    expiration-delivery-fee algebra is **not** proven.
+    `TAKER_VS_DELIVERY_FIELD_RESOLUTION=CONFLICT`.
+    `DELIVERY_RATE_OPERAND_STATUS=UNPROVEN`.
+    `POSITION_VALUE_ALGEBRA_STATUS=UNPROVEN`. Proven sub-algebra covers
+    delivery-price determination, liquidation-reserve expiry&#47;perp
+    fee as a distinct MMR object, and API `delivery` field existence.
+    W-pack `delivery=0.0003` remains evidence-only. No GET. No numeric
+    delivery-fee instantiation. `FUNDING_AMOUNT_PROVEN=false`.
+23. Next canonical step is
+    `OWNER_GO_REQUIRED_TO_RESOLVE_XPERP_EXPIRATION_DELIVERY_RATE_OPERAND_CONFLICT`.
     That GO is **not** granted. Later formula-body ratification,
     funding, and execute remain separate. This spec does not authorize
     execute, funding, GET, or general Live unlock.
