@@ -303,7 +303,8 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.S | SSOT bounded operational funding GET evidence (`AUTHORIZED_SCOPE=GET_ONLY_EVIDENCE`; fresh markPx `62986.2`; `FRESH_THEORETICAL_IM_FLOOR_USDC=2.09954` floor-only; `max-avail-size` `availBuy=0` `availSell=0`; `totalEq=0`; `FORMULA_BODY_STATUS=ABSENT`; `FUNDING_AMOUNT_PROVEN=false`; I44&#47;G16 `INSUFFICIENT_EVIDENCE`; `LIVE_AUTHORIZED=false`; no money movement; not execute; historical next pointer superseded by §11.13.5.T; PR `#5913` squash-merged `d96f8ec50`) |
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.T | SSOT operational formula instantiation fail-closed (`AUTHORIZED_SCOPE=FORMULA_INSTANTIATION_ONLY`; `FORMULA_BODY_SUPPLIED_IN_GO=false`; `INSTANTIATION_EFFECT=NONE`; `FULL_FORMULA_INSTANTIATION=false`; `FORMULA_BODY_STATUS=ABSENT`; `NUMERIC_COEFFICIENTS_ADDED=false`; fresh IM floor `2.09954` USDC not operational amount; I44&#47;G16 `INSUFFICIENT_EVIDENCE`; `LIVE_AUTHORIZED=false`; no money movement; not execute; historical next pointer superseded by §11.13.5.U; PR `#5914` squash-merged `3e1dd5c2b`) |
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.U | SSOT operational reserve policy-form ratification (`AUTHORIZED_SCOPE=POLICY_RATIFICATION_ONLY`; `RULE_FEE=FEE-WC-MAX-ABS-RT`; `RULE_DELIVERY=DLV-INCLUDE-ALWAYS`; `RULE_SLIPPAGE=SLP-TOB-FLOOR-TICK`; `RULE_MM_LIQ=MM-MMR-ADDEND`; `RULE_FX=FX-VENUE-CONVERT`; `RULE_OUTPUT_UNIT=FX-STATE-ALL-FINAL-FUNDS-IN-USDC`; `RULE_ROUNDING=RND-CEIL-VENUE-CCY-PRECISION-AFTER-COMPOSITION`; `FORMULA_BODY_STATUS=ABSENT`; `B08_EXACT_FORMULA_BODY_STATUS=NOT_RATIFIED`; `NUMERIC_COEFFICIENTS_ADDED=false`; `FUNDING_AMOUNT_PROVEN=false`; I44&#47;G16 `INSUFFICIENT_EVIDENCE`; `LIVE_AUTHORIZED=false`; no GET; no money movement; not execute; historical next pointer superseded by §11.13.5.V; PR `#5915` squash-merged `ddaa4e555`) |
-| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.V | SSOT XPerp trade-fee query grammar + taker&#47;maker field mapping (`AUTHORIZED_SCOPE=POLICY_RATIFICATION_ONLY`; `QUERY_GRAMMAR_RATIFIED=true`; `RATIFIED_QUERY=GET &#47;api&#47;v5&#47;account&#47;trade-fee?instType=FUTURES&instFamily=BTC-USD_UM_XPERP`; `TAKER_RATE=takerUSDC` when generic taker&#47;maker empty; `HISTORICAL_VALUES_NOT_CURRENT=true`; `NO_GET_EXECUTED_THIS_STEP=true`; `RULE_FEE` numeric instance unproven until fresh GET; `RULE_DELIVERY` remains unproven; `B08_EXACT_FORMULA_BODY_STATUS=NOT_RATIFIED`; `FUNDING_AMOUNT_PROVEN=false`; `LIVE_AUTHORIZED=false`; no GET; no money movement; not execute) |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.V | SSOT XPerp trade-fee query grammar + taker&#47;maker field mapping (`AUTHORIZED_SCOPE=POLICY_RATIFICATION_ONLY`; `QUERY_GRAMMAR_RATIFIED=true`; `RATIFIED_QUERY=GET &#47;api&#47;v5&#47;account&#47;trade-fee?instType=FUTURES&instFamily=BTC-USD_UM_XPERP`; `TAKER_RATE=takerUSDC` when generic taker&#47;maker empty; `HISTORICAL_VALUES_NOT_CURRENT=true`; `NO_GET_EXECUTED_THIS_STEP=true`; `RULE_FEE` numeric instance unproven until fresh GET; `RULE_DELIVERY` remains unproven; `B08_EXACT_FORMULA_BODY_STATUS=NOT_RATIFIED`; `FUNDING_AMOUNT_PROVEN=false`; `LIVE_AUTHORIZED=false`; no GET; no money movement; not execute; historical next pointer superseded by §11.13.5.W; PR `#5916` squash-merged `0ff8f7307`) |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.W | SSOT fresh XPerp trade-fee GET evidence persist (`AUTHORIZED_SCOPE=GET_EVIDENCE_PERSIST_ONLY`; `GET_COUNT=1`; `HTTP_STATUS=200`; `OKX_CODE=0`; `TAKER_RATE=-0.0005`; `MAKER_RATE=-0.0002`; `FEE_RATE_WC=0.0005`; `FEE_RATE_RT=0.0010`; `RULE_FEE_NUMERIC_INSTANCE_STATUS=FRESH_GET_RATES_PROVEN`; `RULE_DELIVERY` remains unproven; `B08_EXACT_FORMULA_BODY_STATUS=NOT_RATIFIED`; `FUNDING_AMOUNT_PROVEN=false`; `LIVE_AUTHORIZED=false`; no GET this persist; no money movement; not execute) |
 | [`evidence&#47;ops&#47;section_11_13_5_live_canary_forensic_reconciliation_v1&#47;20260812T120000Z&#47;`](../../evidence/ops/section_11_13_5_live_canary_forensic_reconciliation_v1/20260812T120000Z/) | Owner §11.13.5 sealed forensic classification + authoring evidence (derived; non-SSOT; no productive network; writes&#47;orders=0; `MANIFEST_VERIFY_RC=0`; Live unauthorized) |
 | [`evidence&#47;ops&#47;section_11_13_5_b_pr_5879_squash_merge_and_pre_canary_readiness_v1&#47;20260812T123500Z&#47;`](../../evidence/ops/section_11_13_5_b_pr_5879_squash_merge_and_pre_canary_readiness_v1/20260812T123500Z/) | Owner §11.13.5.B PR `#5879` squash-merge closeout + pre-Canary dependency resolution (derived; non-SSOT; no execute; `MANIFEST_VERIFY_RC=0`) |
 | [`evidence&#47;ops&#47;section_11_13_5_live_canary_trade_capability_attestation_v1&#47;20260812T135723Z&#47;`](../../evidence/ops/section_11_13_5_live_canary_trade_capability_attestation_v1/20260812T135723Z/) | Owner §11.13.5.C trade-key attestation proven evidence (derived; non-SSOT; no secret values; no orders; `MANIFEST_VERIFY_RC=0`) |
@@ -314,6 +315,7 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`evidence&#47;ops&#47;section_11_13_5_okx_50124_oneshot_post_classification_v1&#47;20260816T002530Z&#47;`](../../evidence/ops/section_11_13_5_okx_50124_oneshot_post_classification_v1/20260816T002530Z/) | Owner §11.13.5.J one-shot POST 401&#47;50124 classification evidence (derived; non-SSOT; `account&#47;instruments` separate diagnostic HTTP 200 empty SWAP, `NOT_ON_SUBMIT_PATH`, `CAUSAL_RELATION_UNPROVEN`; no trading POST in this pack; `ROOT_CAUSE_PROVEN=false`) |
 | [`evidence&#47;ops&#47;section_11_13_5_post_k_cross_imr_leverage_get_bind_v1&#47;20260816T033800Z&#47;`](../../evidence/ops/section_11_13_5_post_k_cross_imr_leverage_get_bind_v1/20260816T033800Z/) | Owner §11.13.5.L post-K GET bind evidence (derived; non-SSOT; GET-only; `SET_ACCOUNT_LEVERAGE=3`; snapshot theoretical IM floor; not operational funding min; no orders; `MANIFEST_VERIFY_RC=0`) |
 | [`evidence&#47;ops&#47;section_11_13_5_operational_funding_get_evidence_v1&#47;20260816T060349Z&#47;`](../../evidence/ops/section_11_13_5_operational_funding_get_evidence_v1/20260816T060349Z/) | Owner §11.13.5.S operational funding GET evidence (derived; non-SSOT; GET-only; fresh markPx; max-avail-size `availBuy=0`; not operational funding amount; no orders; `MANIFEST_VERIFY_RC=0`) |
+| [`evidence&#47;ops&#47;section_11_13_5_v_fresh_xperp_trade_fee_get_evidence_v1&#47;20260816T075803Z&#47;`](../../evidence/ops/section_11_13_5_v_fresh_xperp_trade_fee_get_evidence_v1/20260816T075803Z/) | Owner §11.13.5.W fresh XPerp trade-fee GET evidence (derived; non-SSOT; GET-only; ratified query; `TAKER_RATE=-0.0005`; `FEE_RATE_RT=0.0010`; not funding amount; no orders; `MANIFEST_VERIFY_RC=0`) |
 | [`docs/ops/specs/SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE_V1.md`](../ops/specs/SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE_V1.md) | Derived §11.13.5 package spec (non-SSOT) |
 | [`docs/ops/specs/SECTION_11_13_5_OWNER_EXECUTE_INPUT_CONTRACT_V1.md`](../ops/specs/SECTION_11_13_5_OWNER_EXECUTE_INPUT_CONTRACT_V1.md) | Owner execute-time input checklist for future canary (non-SSOT; no invented values) |
 | [`docs/ops/specs/SECTION_11_13_3_OWNER_EXECUTE_INPUT_CONTRACT_V1.md`](../ops/specs/SECTION_11_13_3_OWNER_EXECUTE_INPUT_CONTRACT_V1.md) | Owner execute-time input checklist (non-SSOT; no invented values) |
@@ -587,6 +589,7 @@ SECTION_11_13_5_S_OPERATIONAL_FUNDING_GET_EVIDENCE_BOUND=true
 SECTION_11_13_5_T_OPERATIONAL_FORMULA_INSTANTIATION_BOUND=true
 SECTION_11_13_5_U_OPERATIONAL_RESERVE_POLICY_FORM_RATIFICATION_BOUND=true
 SECTION_11_13_5_V_XPERP_TRADE_FEE_QUERY_GRAMMAR_AND_FIELD_MAPPING_BOUND=true
+SECTION_11_13_5_W_FRESH_XPERP_TRADE_FEE_GET_EVIDENCE_BOUND=true
 PRODUCTIVE_CANARY_SURFACE_MERGED_TO_ORIGIN_MAIN=true
 PR_5879_MERGE_COMMIT_SHA=b3dadd86d6821882c8184bd1f6f8e207cbc4af43
 PR_5902_SQUASH_MERGE_SHA=4adb0af23181cd9a8c032bbb57d3b189413a4226
@@ -600,6 +603,7 @@ PR_5911_SQUASH_MERGE_SHA=e0b3438ef10e35e2b25461b8868f1db2324fa0a6
 PR_5912_SQUASH_MERGE_SHA=b4dc3f1a57f463e7a354bfe4c5709bc3a230a36f
 PR_5913_SQUASH_MERGE_SHA=d96f8ec50637f06b327dd882aa619464b87d9f91
 PR_5914_SQUASH_MERGE_SHA=3e1dd5c2bbaed30241cfcd3f47c795d6b412ce7a
+PR_5916_SQUASH_MERGE_SHA=0ff8f7307cdbb7c5e1fceb0b9ea9727fc3813c25
 OWNER_MERGE_GO_FOR_BOUNDED_POST_401_REMEDIATION_PR_STATUS=DONE_MERGED
 OWNER_MERGE_GO_FOR_POST_K_PERSISTENCE_REMEDIATION_PR_STATUS=CONSUMED_CLOSED
 LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED=false
@@ -669,12 +673,14 @@ OWNER_GO_TO_RATIFY_OPERATIONAL_RESERVE_POLICY_FORMS_STATUS=CONSUMED_POLICY_FORMS
 OWNER_GO_REQUIRED_FOR_BOUNDED_GET_ONLY_EVIDENCE_TO_INSTANTIATE_RATIFIED_RESERVE_POLICY_FORMS_STATUS=CONSUMED_GET_ONLY_PARTIAL_INSTANTIATION_TRADE_FEE_50016_FAIL_CLOSED
 OWNER_GO_FOR_READ_ONLY_FORENSIC_ANALYSIS_OF_UNRESOLVED_RESERVE_POLICY_INPUTS_STATUS=CONSUMED_READ_ONLY_FORENSIC_NO_GET
 OWNER_GO_TO_RATIFY_INSTRUMENT_RELEVANT_XPERP_TRADE_FEE_QUERY_GRAMMAR_AND_TAKER_MAKER_FIELD_MAPPING_STATUS=CONSUMED_POLICY_RATIFICATION_ONLY
-OWNER_GO_REQUIRED_FOR_BOUNDED_GET_ONLY_FRESH_XPERP_TRADE_FEE_EVIDENCE_USING_RATIFIED_QUERY_GRAMMAR_STATUS=NOT_GRANTED
+OWNER_GO_REQUIRED_FOR_BOUNDED_GET_ONLY_FRESH_XPERP_TRADE_FEE_EVIDENCE_USING_RATIFIED_QUERY_GRAMMAR_STATUS=CONSUMED_GET_ONLY_FRESH_TRADE_FEE_EVIDENCE
+OWNER_GO_TO_PERSIST_FRESH_XPERP_TRADE_FEE_GET_EVIDENCE_STATUS=CONSUMED
+OWNER_GO_REQUIRED_TO_RATIFY_INSTRUMENT_RELEVANT_XPERP_DELIVERY_FEE_ALGEBRA_STATUS=NOT_GRANTED
 NEW_CANARY_OWNER_GO_GRANTED=false
 LIVE_AUTHORIZED=false
 EARLIEST_UNRESOLVED_DEPENDENCY=CANARY_OPERATIONAL_MINIMUM_UNPROVEN_THEN_SEPARATE_NEW_EXECUTE_GO
 EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
-NEXT_CANONICAL_STEP_POINTER=OWNER_GO_REQUIRED_FOR_BOUNDED_GET_ONLY_FRESH_XPERP_TRADE_FEE_EVIDENCE_USING_RATIFIED_QUERY_GRAMMAR
+NEXT_CANONICAL_STEP_POINTER=OWNER_GO_REQUIRED_TO_RATIFY_INSTRUMENT_RELEVANT_XPERP_DELIVERY_FEE_ALGEBRA
 SECTION_11_13_2_PACKAGE_POINTER=src&#47;ops&#47;section_11_13_2_live_private_read_only_v1&#47;
 SECTION_11_13_2_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_2_live_private_read_only_proven_v1&#47;20260811T170310Z&#47;
 SECTION_11_13_3_PACKAGE_POINTER=src&#47;ops&#47;section_11_13_3_live_shadow_with_exchange_reconciliation_v1&#47;
@@ -694,6 +700,7 @@ SECTION_11_13_5_G_CANARY_SUBMIT_TRANSPORT_PREPARATION_EVIDENCE_POINTER=evidence&
 SECTION_11_13_5_J_OKX_50124_ONESHOT_POST_CLASSIFICATION_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_5_okx_50124_oneshot_post_classification_v1&#47;20260816T002530Z&#47;
 SECTION_11_13_5_L_POST_K_GET_BIND_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_5_post_k_cross_imr_leverage_get_bind_v1&#47;20260816T033800Z&#47;
 SECTION_11_13_5_S_OPERATIONAL_FUNDING_GET_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_5_operational_funding_get_evidence_v1&#47;20260816T060349Z&#47;
+SECTION_11_13_5_W_FRESH_XPERP_TRADE_FEE_GET_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_5_v_fresh_xperp_trade_fee_get_evidence_v1&#47;20260816T075803Z&#47;
 SECTION_11_13_1_LIVE_READINESS_EVAL_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_live_readiness_evaluation_v1&#47;20260811T134610Z&#47;
 SECTION_11_12_9_44_PRE_LIVE_GATE_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_44_pre_live_cybersecurity_gate_pass_v1&#47;20260811T133046Z&#47;
 ZAP_DAST_EXECUTED=false
