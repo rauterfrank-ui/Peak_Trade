@@ -92,14 +92,15 @@ All GAP items are `CLOSED_CANONICALLY_PERSISTED` by squash-merge
 **retained** on HEAD for audit. It is **not** deleted: the original
 delete-after-closeout-on-`origin&#47;main` rule is not satisfied at
 closeout authoring time, and historical pointer chains still name this
-path. Canonical authority remains SSOT §11.13.5.T. The S-era pointer
-`OWNER_GO_REQUIRED_FOR_OPERATIONAL_FORMULA_INSTANTIATION` is consumed
-as instantiation-only with no numeric body; numeric reserve terms
-remain not granted. Fresh theoretical IM is not an operational funding
+path. Canonical authority remains SSOT §11.13.5.U. The T-era pointer
+`OWNER_GO_REQUIRED_TO_SUPPLY_NUMERIC_OPERATIONAL_RESERVE_TERMS` is
+**not granted** and is superseded as semantically over-coarse by
+Owner-ratified policy forms. Raw numeric reserve terms remain
+unauthorized. Fresh theoretical IM is not an operational funding
 amount.
 
 ```text
-CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_TO_SUPPLY_NUMERIC_OPERATIONAL_RESERVE_TERMS
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_FOR_BOUNDED_GET_ONLY_EVIDENCE_TO_INSTANTIATE_RATIFIED_RESERVE_POLICY_FORMS
 EARLIEST_UNRESOLVED_DEPENDENCY=CANARY_OPERATIONAL_MINIMUM_UNPROVEN_THEN_SEPARATE_NEW_EXECUTE_GO
 PERSISTENCE_REMEDIATION_PR_MERGED=true
 TRACKER_RETIREMENT_ALLOWED=true
