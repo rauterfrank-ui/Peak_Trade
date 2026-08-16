@@ -298,7 +298,8 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.N | SSOT `OWNER_GO_FOR_NEW_FUNDING` evaluation fail-closed (`FUNDING_AMOUNT_PROVEN=false`; `RECOMMENDED_BOUNDED_CANARY_FUNDING_AMOUNT_PROVEN=false`; snapshot IM floor is not operational amount; I44&#47;G16 `INSUFFICIENT_EVIDENCE`; `LIVE_AUTHORIZED=false`; no money movement; not execute; historical next pointer superseded by §11.13.5.O; PR `#5908` squash-merged `2c55d81dd`) |
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.O | SSOT operational funding-amount evidence fail-closed (`AUTHORIZED_SCOPE=EVIDENCE_ONLY`; `FUNDING_AMOUNT_PROVEN=false`; no GET refresh; no max-avail-size; I44&#47;G16 `INSUFFICIENT_EVIDENCE`; `LIVE_AUTHORIZED=false`; no money movement; not execute; historical next pointer superseded by §11.13.5.P; PR `#5909` squash-merged `8c36b48bd`) |
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.P | SSOT operational funding-formula ratification fail-closed (`AUTHORIZED_SCOPE=RATIFICATION_ONLY`; `FORMULA_BODY_SUPPLIED_IN_GO=false`; `OWNER_RATIFIED_OPERATIONAL_FORMULA_PRESENT=false`; `FUNDING_AMOUNT_PROVEN=false`; I44&#47;G16 `INSUFFICIENT_EVIDENCE`; `LIVE_AUTHORIZED=false`; no money movement; not execute; historical next pointer superseded by §11.13.5.Q; PR `#5910` squash-merged `736e7e21e`) |
-| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.Q | SSOT operational funding-policy decision template (`AUTHORIZED_SCOPE=POLICY_SPEC_ONLY`; template unfilled; `FORMULA_BODY_STATUS=ABSENT`; `FUNDING_AMOUNT_PROVEN=false`; nine §11.13.5.N blockers remain open; GET evidence GO not granted; I44&#47;G16 `INSUFFICIENT_EVIDENCE`; `LIVE_AUTHORIZED=false`; no money movement; not execute) |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.Q | SSOT operational funding-policy decision template (`AUTHORIZED_SCOPE=POLICY_SPEC_ONLY`; template unfilled; `FORMULA_BODY_STATUS=ABSENT`; `FUNDING_AMOUNT_PROVEN=false`; nine §11.13.5.N blockers remain open; GET evidence GO not granted; I44&#47;G16 `INSUFFICIENT_EVIDENCE`; `LIVE_AUTHORIZED=false`; no money movement; not execute; historical next pointer superseded by §11.13.5.R; PR `#5911` squash-merged `e0b3438ef`) |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.R | SSOT Owner operational funding-policy decisions (`AUTHORIZED_SCOPE=POLICY_GRAMMAR_FILL_ONLY`; `OWNER_POLICY_DECISIONS_STATUS=PERSISTED_POLICY_GRAMMAR_NOT_FORMULA_RATIFICATION`; `FORMULA_BODY_STATUS=ABSENT`; `NUMERIC_COEFFICIENTS_ADDED=false`; `FUNDING_AMOUNT_PROVEN=false`; nine §11.13.5.N blockers remain open; GET evidence GO not granted; I44&#47;G16 `INSUFFICIENT_EVIDENCE`; `LIVE_AUTHORIZED=false`; no money movement; not execute) |
 | [`evidence&#47;ops&#47;section_11_13_5_live_canary_forensic_reconciliation_v1&#47;20260812T120000Z&#47;`](../../evidence/ops/section_11_13_5_live_canary_forensic_reconciliation_v1/20260812T120000Z/) | Owner §11.13.5 sealed forensic classification + authoring evidence (derived; non-SSOT; no productive network; writes&#47;orders=0; `MANIFEST_VERIFY_RC=0`; Live unauthorized) |
 | [`evidence&#47;ops&#47;section_11_13_5_b_pr_5879_squash_merge_and_pre_canary_readiness_v1&#47;20260812T123500Z&#47;`](../../evidence/ops/section_11_13_5_b_pr_5879_squash_merge_and_pre_canary_readiness_v1/20260812T123500Z/) | Owner §11.13.5.B PR `#5879` squash-merge closeout + pre-Canary dependency resolution (derived; non-SSOT; no execute; `MANIFEST_VERIFY_RC=0`) |
 | [`evidence&#47;ops&#47;section_11_13_5_live_canary_trade_capability_attestation_v1&#47;20260812T135723Z&#47;`](../../evidence/ops/section_11_13_5_live_canary_trade_capability_attestation_v1/20260812T135723Z/) | Owner §11.13.5.C trade-key attestation proven evidence (derived; non-SSOT; no secret values; no orders; `MANIFEST_VERIFY_RC=0`) |
@@ -576,6 +577,7 @@ SECTION_11_13_5_N_FUNDING_AMOUNT_EVALUATION_BOUND=true
 SECTION_11_13_5_O_OPERATIONAL_FUNDING_EVIDENCE_BOUND=true
 SECTION_11_13_5_P_OPERATIONAL_FORMULA_RATIFICATION_BOUND=true
 SECTION_11_13_5_Q_OPERATIONAL_FUNDING_POLICY_SPEC_BOUND=true
+SECTION_11_13_5_R_OPERATIONAL_FUNDING_POLICY_DECISIONS_BOUND=true
 PRODUCTIVE_CANARY_SURFACE_MERGED_TO_ORIGIN_MAIN=true
 PR_5879_MERGE_COMMIT_SHA=b3dadd86d6821882c8184bd1f6f8e207cbc4af43
 PR_5902_SQUASH_MERGE_SHA=4adb0af23181cd9a8c032bbb57d3b189413a4226
@@ -585,6 +587,7 @@ PR_5907_SQUASH_MERGE_SHA=27ceae9115de0ae8db196ce8417730f328c5e251
 PR_5908_SQUASH_MERGE_SHA=2c55d81dd25f7bab41a63c89ad05d8635b3eda6f
 PR_5909_SQUASH_MERGE_SHA=8c36b48bd4410459f6cbe4aaaa94a2ce3ca8a6e8
 PR_5910_SQUASH_MERGE_SHA=736e7e21e215ce23bdade697c67393b5685bbde4
+PR_5911_SQUASH_MERGE_SHA=e0b3438ef10e35e2b25461b8868f1db2324fa0a6
 OWNER_MERGE_GO_FOR_BOUNDED_POST_401_REMEDIATION_PR_STATUS=DONE_MERGED
 OWNER_MERGE_GO_FOR_POST_K_PERSISTENCE_REMEDIATION_PR_STATUS=CONSUMED_CLOSED
 LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED=false
@@ -646,12 +649,13 @@ OWNER_GO_FOR_NEW_FUNDING_STATUS=CONSUMED_EVALUATION_ONLY_AMOUNT_UNPROVEN
 OWNER_GO_REQUIRED_FOR_OPERATIONAL_CANARY_FUNDING_AMOUNT_EVIDENCE_STATUS=CONSUMED_EVIDENCE_ONLY_AMOUNT_UNPROVEN
 OWNER_GO_REQUIRED_TO_RATIFY_OPERATIONAL_FUNDING_FORMULA_STATUS=CONSUMED_RATIFICATION_ONLY_FORMULA_ABSENT
 OWNER_GO_BUILD_OPERATIONAL_FUNDING_POLICY_SPEC_ONLY_STATUS=CONSUMED_POLICY_SPEC_ONLY_TEMPLATE_UNFILLED
+OWNER_FILL_OPERATIONAL_FUNDING_POLICY_DECISIONS_STATUS=CONSUMED_POLICY_GRAMMAR_PERSISTED_NOT_FORMULA_RATIFICATION
 OWNER_GO_REQUIRED_FOR_BOUNDED_OPERATIONAL_FUNDING_GET_EVIDENCE_STATUS=NOT_GRANTED
 NEW_CANARY_OWNER_GO_GRANTED=false
 LIVE_AUTHORIZED=false
 EARLIEST_UNRESOLVED_DEPENDENCY=CANARY_OPERATIONAL_MINIMUM_UNPROVEN_THEN_SEPARATE_NEW_EXECUTE_GO
 EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
-NEXT_CANONICAL_STEP_POINTER=OWNER_FILL_OPERATIONAL_FUNDING_POLICY_DECISIONS_THEN_SEPARATE_BOUNDED_GET_EVIDENCE_GO
+NEXT_CANONICAL_STEP_POINTER=OWNER_GO_REQUIRED_FOR_BOUNDED_OPERATIONAL_FUNDING_GET_EVIDENCE
 SECTION_11_13_2_PACKAGE_POINTER=src&#47;ops&#47;section_11_13_2_live_private_read_only_v1&#47;
 SECTION_11_13_2_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_2_live_private_read_only_proven_v1&#47;20260811T170310Z&#47;
 SECTION_11_13_3_PACKAGE_POINTER=src&#47;ops&#47;section_11_13_3_live_shadow_with_exchange_reconciliation_v1&#47;
