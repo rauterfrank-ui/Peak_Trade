@@ -11094,16 +11094,142 @@ Live vs Demo identity remains strictly separated. Map of Truth
 ``` text
 CODE_OWNER=src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;
 CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
-CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_TO_RATIFY_OPERATIONAL_FUNDING_FORMULA
-EARLIEST_UNRESOLVED_DEPENDENCY=CANARY_OPERATIONAL_MINIMUM_UNPROVEN_THEN_SEPARATE_NEW_EXECUTE_GO
+CANONICAL_NEXT_STEP=SUPERSEDED_BY_SECTION_11_13_5_P
+EARLIEST_UNRESOLVED_DEPENDENCY=SUPERSEDED_BY_SECTION_11_13_5_P
 EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
 ```
 
 Hard stop. This evidence GO is consumed and must not be reused for
 money movement, GET refresh, or execute.
 `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains `CONSUMED`. Cap &#47;
+Capability 11.9 remains fixture-only. The O-era next pointer
+`OWNER_GO_REQUIRED_TO_RATIFY_OPERATIONAL_FUNDING_FORMULA` is
+**consumed** as ratification-only with **no Owner-supplied formula
+body** and is superseded by §11.13.5.P below. No funding executed. No
+execute.
+
+### 11.13.5.P Operational funding-formula ratification (BOUND; FAIL-CLOSED; RATIFICATION-ONLY; FORMULA ABSENT; NOT FUNDED; NOT EXECUTE)
+
+Owner-GO `OWNER_GO_REQUIRED_TO_RATIFY_OPERATIONAL_FUNDING_FORMULA`
+(one-shot; now **CONSUMED**) authorized **ratification-only** work
+against the still-unratified operational canary funding formula. Bound
+scope:
+
+``` text
+AUTHORIZED_SCOPE=RATIFICATION_ONLY
+FUNDING_EXECUTION_AUTHORIZED=false
+EXTERNAL_MONEY_MOVEMENT_AUTHORIZED=false
+TRADING_POST_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+GENERAL_LIVE_UNLOCKED=false
+NETWORK_SESSION_AUTHORIZED=false
+CREDENTIAL_ACCESS_AUTHORIZED=false
+GET_ONLY_REFRESH_AUTHORIZED=false
+FORMULA_BODY_SUPPLIED_IN_GO=false
+```
+
+This does **not** authorize deposit, transfer, withdrawal, convert,
+buy&#47;sell, Trading-POST, Canary execute, orders, positions,
+set-leverage mutation, API-key &#47; account mutation, a productive
+OKX GET refresh, max-avail-size GET, inventing or rounding a funding
+amount, inventing fee&#47;slippage&#47;MM&#47;haircut parameters,
+promoting snapshot IM to an operational formula, I44 &#47; G16 upgrade,
+general Live unlock, Multi-Future, Double Play &#47; Master V2 changes,
+or merge without a separate `OWNER_MERGE_GO`.
+
+The granted GO contained **no** operational formula body distinct from
+snapshot IM `markPx * ctVal * qty &#47; SET_ACCOUNT_LEVERAGE`.
+Ratification therefore has **no effect**. Snapshot theoretical IM
+`2.101456666666666666666666667` USDC remains a floor only and is
+**not** ratified as the operational formula.
+
+``` text
+CURRENT_PHASE=SECTION_11_13_5_P_OPERATIONAL_FORMULA_RATIFICATION_FAIL_CLOSED
+OWNER_GO=OWNER_GO_REQUIRED_TO_RATIFY_OPERATIONAL_FUNDING_FORMULA
+OWNER_GO_STATUS=CONSUMED
+OWNER_GO_SCOPE=RATIFICATION_ONLY
+RATIFICATION_EFFECT=NONE
+BASELINE_ORIGIN_MAIN_SHA=8c36b48bd4410459f6cbe4aaaa94a2ce3ca8a6e8
+PR_5909_STATUS=SQUASH_MERGED
+PR_5909_MERGE_SHA=8c36b48bd4410459f6cbe4aaaa94a2ce3ca8a6e8
+CANARY_INSTRUMENT=BTC-USD_UM_XPERP-310404
+SETTLEMENT_ACCOUNT_TRUTH=USDC
+SET_ACCOUNT_LEVERAGE=3
+SNAPSHOT_THEORETICAL_IM_FORMULA=markPx * ctVal * qty / SET_ACCOUNT_LEVERAGE
+SNAPSHOT_THEORETICAL_INITIAL_MARGIN_USDC=2.101456666666666666666666667
+SNAPSHOT_IM_FORMULA_RATIFIED_AS_OPERATIONAL=false
+OWNER_SUPPLIED_OPERATIONAL_FORMULA_BODY=NONE
+OWNER_RATIFIED_OPERATIONAL_FORMULA_PRESENT=false
+MINIMUM_THEORETICAL_INITIAL_MARGIN_PROVEN=true
+SNAPSHOT_THEORETICAL_FUNDING_FLOOR_PROVEN=true
+CANARY_OPERATIONAL_MINIMUM_PROVEN=false
+RECOMMENDED_BOUNDED_CANARY_FUNDING_AMOUNT_PROVEN=false
+FUNDING_AMOUNT_PROVEN=false
+PROVEN_FUNDING_AMOUNT=NONE
+PROVEN_FUNDING_AMOUNT_UNIT=NONE
+SNAPSHOT_FLOOR_IS_NOT_OPERATIONAL_FUNDING_AMOUNT=true
+NEW_VENUE_GET_COLLECTED=false
+MAX_AVAIL_SIZE_GET_COLLECTED=false
+MARKPX_REFRESH_COLLECTED=false
+I44_FUTURES_FUNDING_ECONOMICS_STATUS=INSUFFICIENT_EVIDENCE
+G16_FUNDING_PROOF_STATUS=INSUFFICIENT_EVIDENCE
+FUNDING_EXECUTED=false
+EXTERNAL_MONEY_MOVEMENT=false
+CANARY_EXECUTED=false
+TRADING_POSTS=0
+ACCOUNT_MUTATION=false
+CREDENTIAL_MUTATION=false
+TRADING_LOGIC_CHANGED=false
+MASTER_V2_CHANGED=false
+DOUBLE_PLAY_CHANGED=false
+RUNTIME_AUTHORITY_EXPANDED=false
+LIVE_AUTHORIZED=false
+GENERAL_LIVE_UNLOCKED=false
+NEW_EXECUTE_GO_REQUIRED=true
+FUNDING_GO_AND_EXECUTE_GO_COLLAPSED=false
+EXECUTE_AUTHORIZED_BY_THIS_RATIFICATION_GO=false
+ORDER_EFFECT=NONE
+ACCOUNT_MUTATION_EFFECT=NONE
+FUNDING_EFFECT=NONE
+SECRET_VALUE_ACCESS=NONE
+```
+
+Still missing (unchanged; none closable under `RATIFICATION_ONLY`
+without an Owner-supplied formula body, network, or credentials):
+
+1. Owner-supplied operational formula body distinct from snapshot IM.
+   This consumed ratification GO did **not** supply one.
+2. Positive fee-reserve policy.
+3. Proven slippage &#47; spread buffer policy.
+4. Proven maintenance-margin &#47; liquidation buffer. Public `imr=0.02`
+   remains a tier limit.
+5. Venue-native max-avail-size &#47; min-available-equity GET for one
+   contract. Requires a **separate** scoped GET-only GO plus
+   credentials; not authorized here.
+6. Fresh productive markPx GET refresh. Requires a **separate** scoped
+   GET-only GO; not authorized here.
+7. I44 &#47; Master G16 remains `INSUFFICIENT_EVIDENCE`.
+8. Public USD versus account USDC haircut policy.
+9. `totalEq=0` still does not prove deposit size.
+
+Live vs Demo identity remains strictly separated. Map of Truth
+`CANONICAL_ACTIVE_INSTRUMENT=BTC-USD_UM_XPERP-310328` remains the
+§11.12.8 Demo campaign binding and is **not** retargeted.
+
+``` text
+CODE_OWNER=src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_TO_SUPPLY_OPERATIONAL_FUNDING_FORMULA
+EARLIEST_UNRESOLVED_DEPENDENCY=CANARY_OPERATIONAL_MINIMUM_UNPROVEN_THEN_SEPARATE_NEW_EXECUTE_GO
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
+```
+
+Hard stop. This ratification GO is consumed and must not be reused for
+money movement, GET refresh, execute, or as a substitute formula body.
+`OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains `CONSUMED`. Cap &#47;
 Capability 11.9 remains fixture-only. No funding. No execute. No merge
-of this evidence persist without a separate `OWNER_MERGE_GO`.
+of this ratification persist without a separate `OWNER_MERGE_GO`.
 
 ## 11.14 Live order and economic evidence ladder
 

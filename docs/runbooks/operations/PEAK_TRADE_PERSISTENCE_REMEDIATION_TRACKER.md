@@ -92,13 +92,13 @@ All GAP items are `CLOSED_CANONICALLY_PERSISTED` by squash-merge
 **retained** on HEAD for audit. It is **not** deleted: the original
 delete-after-closeout-on-`origin&#47;main` rule is not satisfied at
 closeout authoring time, and historical pointer chains still name this
-path. Canonical authority remains SSOT §11.13.5.O. The N-era pointer
-`OWNER_GO_REQUIRED_FOR_OPERATIONAL_CANARY_FUNDING_AMOUNT_EVIDENCE` is
-consumed as evidence-only. Snapshot theoretical IM is not an operational
-funding amount.
+path. Canonical authority remains SSOT §11.13.5.P. The O-era pointer
+`OWNER_GO_REQUIRED_TO_RATIFY_OPERATIONAL_FUNDING_FORMULA` is consumed as
+ratification-only with no Owner-supplied formula body. Snapshot
+theoretical IM is not an operational funding amount.
 
 ```text
-CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_TO_RATIFY_OPERATIONAL_FUNDING_FORMULA
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_TO_SUPPLY_OPERATIONAL_FUNDING_FORMULA
 EARLIEST_UNRESOLVED_DEPENDENCY=CANARY_OPERATIONAL_MINIMUM_UNPROVEN_THEN_SEPARATE_NEW_EXECUTE_GO
 PERSISTENCE_REMEDIATION_PR_MERGED=true
 TRACKER_RETIREMENT_ALLOWED=true
