@@ -11714,17 +11714,201 @@ Live vs Demo identity remains strictly separated. Map of Truth
 ``` text
 CODE_OWNER=src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;
 CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
-CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_FOR_BOUNDED_OPERATIONAL_FUNDING_GET_EVIDENCE
-EARLIEST_UNRESOLVED_DEPENDENCY=CANARY_OPERATIONAL_MINIMUM_UNPROVEN_THEN_SEPARATE_NEW_EXECUTE_GO
+CANONICAL_NEXT_STEP=SUPERSEDED_BY_SECTION_11_13_5_S
+EARLIEST_UNRESOLVED_DEPENDENCY=SUPERSEDED_BY_SECTION_11_13_5_S
 EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
 ```
 
 Hard stop. This policy-grammar fill is consumed and must not be reused
 for money movement, GET refresh, execute, formula ratification, or as a
-substitute formula body. `OWNER_GO_REQUIRED_FOR_BOUNDED_OPERATIONAL_FUNDING_GET_EVIDENCE`
+substitute formula body. The R-era next pointer
+`OWNER_GO_REQUIRED_FOR_BOUNDED_OPERATIONAL_FUNDING_GET_EVIDENCE` is
+**consumed** as GET-only evidence by §11.13.5.S below. Formula
+instantiation, funding, and execute remain **not granted**.
+`OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains `CONSUMED`. Cap &#47;
+Capability 11.9 remains fixture-only. No funding. No execute.
+
+### 11.13.5.S Bounded operational funding GET evidence (BOUND; GET-ONLY; FRESH EVIDENCE COLLECTED; FORMULA ABSENT; NOT FUNDED; NOT EXECUTE)
+
+Owner-GO `OWNER_GO_FOR_BOUNDED_OPERATIONAL_FUNDING_GET_EVIDENCE`
+(one-shot; now **CONSUMED**) authorized **GET-only** fresh productive
+evidence for the operational canary funding grammar. Bound scope:
+
+``` text
+AUTHORIZED_SCOPE=GET_ONLY_EVIDENCE
+FUNDING_EXECUTION_AUTHORIZED=false
+EXTERNAL_MONEY_MOVEMENT_AUTHORIZED=false
+TRADING_POST_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+GENERAL_LIVE_UNLOCKED=false
+NETWORK_SESSION_AUTHORIZED=true_GET_ONLY
+CREDENTIAL_ACCESS_AUTHORIZED=true_GET_ONLY_EPHEMERAL
+GET_ONLY_REFRESH_AUTHORIZED=true
+MAX_AVAIL_SIZE_GET_AUTHORIZED=true
+FORMULA_BODY_SUPPLIED_IN_GO=false
+NUMERIC_COEFFICIENTS_AUTHORIZED=false
+FORMULA_RATIFICATION_AUTHORIZED=false
+FORMULA_INSTANTIATION_AUTHORIZED=false
+```
+
+This does **not** authorize deposit, transfer, withdrawal, convert,
+buy&#47;sell, Trading-POST, Canary execute, orders, positions,
+set-leverage mutation, API-key &#47; account mutation, inventing or
+rounding a funding amount, inventing fee&#47;slippage&#47;MM&#47;haircut
+numeric coefficients, promoting fresh theoretical IM to an operational
+formula, formula instantiation, formula ratification, I44 &#47; G16
+upgrade, general Live unlock, Multi-Future, Double Play &#47; Master V2
+changes, or merge without a separate `OWNER_MERGE_GO`.
+
+Fresh GET pack (derived; non-SSOT):
+
+`evidence&#47;ops&#47;section_11_13_5_operational_funding_get_evidence_v1&#47;20260816T060349Z&#47;`
+
+The sealed historical pack `20260816T033800Z` remains snapshot &#47;
+forensic and is **not** execute-fresh.
+
+``` text
+CURRENT_PHASE=SECTION_11_13_5_S_OPERATIONAL_FUNDING_GET_EVIDENCE
+OWNER_GO=OWNER_GO_FOR_BOUNDED_OPERATIONAL_FUNDING_GET_EVIDENCE
+OWNER_GO_STATUS=CONSUMED
+OWNER_GO_SCOPE=GET_ONLY_EVIDENCE
+BASELINE_ORIGIN_MAIN_SHA=b4dc3f1a57f463e7a354bfe4c5709bc3a230a36f
+PR_5912_STATUS=SQUASH_MERGED
+PR_5912_MERGE_SHA=b4dc3f1a57f463e7a354bfe4c5709bc3a230a36f
+GET_EXECUTED=true
+GET_REQUEST_COUNT=14
+POST_COUNT=0
+HOST=eea.okx.com
+CANARY_INSTRUMENT=BTC-USD_UM_XPERP-310404
+SETTLEMENT_ACCOUNT_TRUTH=USDC
+PUBLIC_SETTLE_CCY=USD
+ACCOUNT_SETTLE_CCY=USDC
+SET_ACCOUNT_LEVERAGE=3
+CTVAL=0.0001
+MIN_SZ=1
+LOT_SZ=1
+TICK_SZ=0.1
+PRICE_REFERENCE_TYPE=markPx
+PRICE_REFERENCE=62986.2
+MINIMUM_NOTIONAL_ESTIMATE=6.29862
+FRESH_THEORETICAL_IM_FORMULA=markPx * ctVal * qty / SET_ACCOUNT_LEVERAGE
+FRESH_THEORETICAL_IM_FLOOR_USDC=2.09954
+FRESH_THEORETICAL_IM_ROLE=IM_FRESH_FLOOR_ONLY_NOT_OPERATIONAL_FUNDING_AMOUNT
+SNAPSHOT_THEORETICAL_INITIAL_MARGIN_USDC=2.101456666666666666666666667
+SNAPSHOT_IM_ROLE=SNAPSHOT_THEORETICAL_IM_FLOOR
+OWNER_SUPPLIED_OPERATIONAL_FORMULA_BODY=NONE
+OWNER_RATIFIED_OPERATIONAL_FORMULA_PRESENT=false
+FORMULA_BODY_STATUS=ABSENT
+NUMERIC_COEFFICIENTS_ADDED=false
+OWNER_POLICY_DECISIONS_STATUS=PERSISTED_POLICY_GRAMMAR_NOT_FORMULA_RATIFICATION
+NEW_VENUE_GET_COLLECTED=true
+MAX_AVAIL_SIZE_GET_COLLECTED=true
+MARKPX_REFRESH_COLLECTED=true
+MAX_AVAIL_BUY=0
+MAX_AVAIL_SELL=0
+QTY_ONE_VENUE_ADMISSIBLE=false
+VENUE_MIN_EQUITY_FIELD=ABSENT
+VENUE_MIN_AVAIL_EQ_FORMULA_ROLE=ADMISSIBILITY_CONSTRAINT_AND_POSSIBLE_FLOOR
+FEE_TAKER_USDC=-0.0005
+FEE_MAKER_USDC=-0.0002
+FEE_GET_CLASSIFICATION=OKX_REBATE_CONVENTION_NOT_POSITIVE_RESERVE_POLICY
+PUBLIC_TIER_IMR=0.02
+PUBLIC_TIER_CLASSIFICATION=TIER_LIMIT_NOT_ACCOUNT_EFFECTIVE_IMR
+TICKER_BID_ASK_ROLE=COLLECTED_NOT_OPERATIVE_POLICY
+TOTAL_EQ=0
+POSITION_SIZE=0
+ORDERS_PENDING=0
+MINIMUM_THEORETICAL_INITIAL_MARGIN_PROVEN=true
+CANARY_OPERATIONAL_MINIMUM_PROVEN=false
+RECOMMENDED_BOUNDED_CANARY_FUNDING_AMOUNT_PROVEN=false
+FUNDING_AMOUNT_PROVEN=false
+PROVEN_FUNDING_AMOUNT=NONE
+I44_FUTURES_FUNDING_ECONOMICS_STATUS=INSUFFICIENT_EVIDENCE
+G16_FUNDING_PROOF_STATUS=INSUFFICIENT_EVIDENCE
+FUNDING_RATE_RESERVE_POLICY=UNRESOLVED_AND_NOT_USABLE
+FUNDING_EXECUTED=false
+EXTERNAL_MONEY_MOVEMENT=false
+CANARY_EXECUTED=false
+TRADING_POSTS=0
+ACCOUNT_MUTATION=false
+CREDENTIAL_MUTATION=false
+TRADING_LOGIC_CHANGED=false
+MASTER_V2_CHANGED=false
+DOUBLE_PLAY_CHANGED=false
+RUNTIME_AUTHORITY_EXPANDED=false
+LIVE_AUTHORIZED=false
+GENERAL_LIVE_UNLOCKED=false
+NEW_EXECUTE_GO_REQUIRED=true
+FUNDING_GO_AND_EXECUTE_GO_COLLAPSED=false
+FORMULA_INSTANTIATION_AUTHORIZED_BY_THIS_GET_GO=false
+EXECUTE_AUTHORIZED_BY_THIS_GET_GO=false
+ORDER_EFFECT=NONE
+ACCOUNT_MUTATION_EFFECT=NONE
+FUNDING_EFFECT=NONE
+SECRET_VALUE_ACCESS=EPHEMERAL_GET_ONLY_NOT_PERSISTED
+```
+
+Fresh theoretical IM `2.09954` USDC is **not** an operational funding
+amount. It must not be rounded, padded, or promoted to
+`FUNDING_AMOUNT_PROVEN`. Venue `max-avail-size` for qty=1 returned
+`availBuy=0` &#47; `availSell=0` against `totalEq=0`. No venue-native
+minimum-equity field was present. Signed rebate-convention fee fields
+remain **not** a positive reserve. Public `imr=0.02` remains a tier
+limit. I44 &#47; Master G16 remain `INSUFFICIENT_EVIDENCE` and were
+**not** collected as a canary capital reserve.
+
+Still missing (evidence collected does **not** close these as proven
+operational funding facts):
+
+1. Owner-supplied operational formula body distinct from theoretical IM.
+   Conservative-cover composition grammar remains uninstantiated. This
+   GET GO does **not** authorize formula instantiation.
+2. Positive fee-reserve remains uninstantiated. Fresh GET
+   `takerUSDC=-0.0005` &#47; `makerUSDC=-0.0002` remains OKX rebate
+   convention, not a positive reserve. No `FEE_BUFFER_BPS`.
+3. Proven slippage &#47; spread buffer remains uninstantiated. Fresh
+   bid&#47;ask were collected and remain `COLLECTED_NOT_OPERATIVE_POLICY`.
+   No numeric bps or multipliers.
+4. Proven maintenance-margin &#47; liquidation buffer remains
+   uninstantiated. Public `imr=0.02` remains a tier limit. No
+   liquidation-distance coefficient.
+5. Venue-native max-avail-size GET is now **collected**. Qty=1 is
+   **not** venue-admissible at `availBuy=0` &#47; `availSell=0`. No
+   explicit min-equity field. Role remains
+   `ADMISSIBILITY_CONSTRAINT_AND_POSSIBLE_FLOOR`, not an additive
+   funding amount.
+6. Fresh productive markPx GET is now **collected**
+   (`markPx=62986.2`). Historical pack `20260816T033800Z` remains
+   snapshot &#47; forensic. Fresh theoretical IM is still not an
+   operational funding amount.
+7. I44 &#47; Master G16 remains `INSUFFICIENT_EVIDENCE`.
+   `FUNDING_RATE_RESERVE=UNRESOLVED_AND_NOT_USABLE`. This step does not
+   close I44 &#47; G16.
+8. Public USD versus account USDC haircut &#47; conversion term remains
+   uninstantiated. Units stay strictly distinct.
+9. `totalEq=0` still does not prove deposit size. Rounding remains
+   forbidden until after full formula instantiation. No padded USDC
+   amount is invented.
+
+Live vs Demo identity remains strictly separated. Map of Truth
+`CANONICAL_ACTIVE_INSTRUMENT=BTC-USD_UM_XPERP-310328` remains the
+§11.12.8 Demo campaign binding and is **not** retargeted.
+
+``` text
+CODE_OWNER=src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_FOR_OPERATIONAL_FORMULA_INSTANTIATION
+EARLIEST_UNRESOLVED_DEPENDENCY=CANARY_OPERATIONAL_MINIMUM_UNPROVEN_THEN_SEPARATE_NEW_EXECUTE_GO
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
+```
+
+Hard stop. This GET-evidence GO is consumed and must not be reused for
+money movement, another GET, execute, formula instantiation, or formula
+ratification. `OWNER_GO_REQUIRED_FOR_OPERATIONAL_FORMULA_INSTANTIATION`
 is **not** granted. `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains
 `CONSUMED`. Cap &#47; Capability 11.9 remains fixture-only. No funding.
-No execute. No merge of this policy-grammar persist without a separate
+No execute. No merge of this GET-evidence persist without a separate
 `OWNER_MERGE_GO`.
 
 ## 11.14 Live order and economic evidence ladder

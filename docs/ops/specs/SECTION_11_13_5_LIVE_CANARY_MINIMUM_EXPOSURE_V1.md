@@ -83,16 +83,17 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.R. Historical Q-era next steps
-below are superseded for the current policy-grammar fill persist.
-Historical P-era next steps remain historical for the ratification-only
-formula fail-closed persist. Historical O-era next steps remain
-historical for the evidence-only funding-amount fail-closed persist.
-Historical N-era next steps remain historical for the funding-amount
-evaluation. Historical M-era next steps remain historical for the
-persistence closeout. Historical L-era next steps remain historical for
-the GET bind. Historical J-era next steps remain historical for the
-rejected SWAP oneshot.
+Current SSOT: Master Runbook §11.13.5.S. Historical R-era next steps
+below are superseded for the current GET-only funding-evidence persist.
+Historical Q-era next steps remain historical for the policy-grammar
+fill persist. Historical P-era next steps remain historical for the
+ratification-only formula fail-closed persist. Historical O-era next
+steps remain historical for the evidence-only funding-amount fail-closed
+persist. Historical N-era next steps remain historical for the
+funding-amount evaluation. Historical M-era next steps remain historical
+for the persistence closeout. Historical L-era next steps remain
+historical for the GET bind. Historical J-era next steps remain
+historical for the rejected SWAP oneshot.
 
 1. Historical first canary POST HTTP 401 remains
    `UNPROVEN_FAIL_CLOSED` (no proven incident body). Do not rewrite it
@@ -154,8 +155,16 @@ rejected SWAP oneshot.
     open. This is **not** formula ratification, **not** a GET-GO,
     **not** a funding-GO, and **not** a Canary-execute-GO.
     `FUNDING_AMOUNT_PROVEN=false`.
-13. Next canonical step is
-    `OWNER_GO_REQUIRED_FOR_BOUNDED_OPERATIONAL_FUNDING_GET_EVIDENCE`.
-    That GO is **not** granted. Later formula instantiation, formula
-    ratification, funding, and execute remain separate. This spec does
-    not authorize execute, funding, GET refresh, or general Live unlock.
+13. `OWNER_GO_FOR_BOUNDED_OPERATIONAL_FUNDING_GET_EVIDENCE` collected
+    fresh GET-only evidence. `markPx=62986.2`. Fresh theoretical IM
+    floor is `2.09954` USDC and is **not** an operational funding
+    amount. `max-avail-size` returned `availBuy=0` &#47; `availSell=0`.
+    `totalEq=0`. `FORMULA_BODY_STATUS=ABSENT`.
+    `FUNDING_AMOUNT_PROVEN=false`. This is **not** formula
+    instantiation, **not** formula ratification, **not** a funding-GO,
+    and **not** a Canary-execute-GO.
+14. Next canonical step is
+    `OWNER_GO_REQUIRED_FOR_OPERATIONAL_FORMULA_INSTANTIATION`.
+    That GO is **not** granted. Later formula ratification, funding, and
+    execute remain separate. This spec does not authorize execute,
+    funding, another GET, or general Live unlock.
