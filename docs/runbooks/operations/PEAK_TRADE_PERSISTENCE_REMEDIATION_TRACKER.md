@@ -92,17 +92,17 @@ All GAP items are `CLOSED_CANONICALLY_PERSISTED` by squash-merge
 **retained** on HEAD for audit. It is **not** deleted: the original
 delete-after-closeout-on-`origin&#47;main` rule is not satisfied at
 closeout authoring time, and historical pointer chains still name this
-path. Canonical authority remains SSOT §11.13.5.Z. The Y-era pointer
-`OWNER_GO_REQUIRED_TO_RESOLVE_XPERP_EXPIRATION_DELIVERY_RATE_OPERAND_CONFLICT`
-is consumed as rate-operand-resolution-only with
-`DELIVERY_RATE_OPERAND_STATUS=UNPROVEN` and
-`TAKER_VS_DELIVERY_FIELD_RESOLUTION=DISTINCT_FIELDS_XPERP_EXPIRATION_OPERAND_UNPROVEN`
-and is superseded. Observed `delivery=0.0003` is not an operative
-instance. Raw numeric reserve terms remain unauthorized as a funding
-amount. Fresh theoretical IM is not an operational funding amount.
+path. Canonical authority remains SSOT §11.13.5.Z1. The Z-era pointer
+`OWNER_GO_REQUIRED_TO_SUPPLY_OR_POINT_TO_A_NORMATIVE_XPERP_EEA_EXPIRATION_DELIVERY_FEE_RULE_THAT_BINDS_PRODUCT_TO_RATE_OPERAND`
+was not granted and is superseded: a distinct normal-expiry XPerp fee
+is `UNPROVEN` to exist, so a rate-operand question is not well-posed.
+Observed `delivery=0.0003` is not an operative instance. Silence is
+not a proven zero. Raw numeric reserve terms remain unauthorized as a
+funding amount. Fresh theoretical IM is not an operational funding
+amount.
 
 ```text
-CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_TO_SUPPLY_OR_POINT_TO_A_NORMATIVE_XPERP_EEA_EXPIRATION_DELIVERY_FEE_RULE_THAT_BINDS_PRODUCT_TO_RATE_OPERAND
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_TO_SUPPLY_OR_POINT_TO_A_CURRENT_NORMATIVE_OKX_EEA_OEM_XPERP_NORMAL_EXPIRY_FEE_APPLICABILITY_STATEMENT
 EARLIEST_UNRESOLVED_DEPENDENCY=CANARY_OPERATIONAL_MINIMUM_UNPROVEN_THEN_SEPARATE_NEW_EXECUTE_GO
 PERSISTENCE_REMEDIATION_PR_MERGED=true
 TRACKER_RETIREMENT_ALLOWED=true
