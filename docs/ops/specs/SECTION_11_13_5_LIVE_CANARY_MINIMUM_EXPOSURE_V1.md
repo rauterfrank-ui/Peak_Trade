@@ -83,12 +83,14 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.Z. Historical Y-era next steps
-below are superseded for the current delivery-rate-operand fail-closed
-persist. Historical X-era next steps remain historical for the
-delivery-fee algebra-body persist. Historical W-era next steps remain
-historical for the delivery-algebra fail-closed persist. Historical
-V-era next steps remain historical for the fresh trade-fee GET persist.
+Current SSOT: Master Runbook §11.13.5.Z1. Historical Z-era next steps
+below are superseded for the current normal-expiry fee-existence
+premise persist. Historical Y-era next steps remain historical for the
+delivery-rate-operand fail-closed persist. Historical X-era next steps
+remain historical for the delivery-fee algebra-body persist. Historical
+W-era next steps remain historical for the delivery-algebra fail-closed
+persist. Historical V-era next steps remain historical for the fresh
+trade-fee GET persist.
 Historical U-era next steps remain historical for the query-grammar
 persist. Historical T-era next steps remain historical for the
 policy-form ratification persist.
@@ -252,8 +254,18 @@ oneshot.
     supply the missing product-fee rule. No GET this step.
     `POSITION_VALUE_ALGEBRA_STATUS=UNPROVEN`.
     `FUNDING_AMOUNT_PROVEN=false`.
-24. Next canonical step is
-    `OWNER_GO_REQUIRED_TO_SUPPLY_OR_POINT_TO_A_NORMATIVE_XPERP_EEA_EXPIRATION_DELIVERY_FEE_RULE_THAT_BINDS_PRODUCT_TO_RATE_OPERAND`.
+24. `OWNER_GO_TO_REVIEW_AND_CORRECT_IF_PROVEN_THE_SECTION_11_13_5_Z_PREMISE_OF_A_DISTINCT_EEA_XPERP_EXPIRY_DELIVERY_FEE`
+    was granted `PREMISE_REVIEW_ONLY` and is consumed.
+    `DISTINCT_XPERP_EXPIRY_DELIVERY_FEE_EXISTENCE_STATUS=UNPROVEN`.
+    `RATE_OPERAND_QUESTION_CURRENTLY_WELL_POSED=false`. Scheduled
+    expiry and cash settlement are proven. A distinct normal-expiry
+    fee is neither proven to apply nor proven not to apply. Silence is
+    not zero. API `delivery=0.0003` remains non-operative. FAQ `0.01%`
+    remains non-operative. No GET this step.
+    `POSITION_VALUE_ALGEBRA_STATUS=UNPROVEN`.
+    `FUNDING_AMOUNT_PROVEN=false`.
+25. Next canonical step is
+    `OWNER_GO_REQUIRED_TO_SUPPLY_OR_POINT_TO_A_CURRENT_NORMATIVE_OKX_EEA_OEM_XPERP_NORMAL_EXPIRY_FEE_APPLICABILITY_STATEMENT`.
     That GO is **not** granted. Later formula-body ratification,
     funding, and execute remain separate. This spec does not authorize
     execute, funding, GET, or general Live unlock.
