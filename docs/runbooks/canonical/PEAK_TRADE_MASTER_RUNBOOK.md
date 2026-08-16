@@ -11220,16 +11220,198 @@ Live vs Demo identity remains strictly separated. Map of Truth
 ``` text
 CODE_OWNER=src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;
 CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
-CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_TO_SUPPLY_OPERATIONAL_FUNDING_FORMULA
-EARLIEST_UNRESOLVED_DEPENDENCY=CANARY_OPERATIONAL_MINIMUM_UNPROVEN_THEN_SEPARATE_NEW_EXECUTE_GO
+CANONICAL_NEXT_STEP=SUPERSEDED_BY_SECTION_11_13_5_Q
+EARLIEST_UNRESOLVED_DEPENDENCY=SUPERSEDED_BY_SECTION_11_13_5_Q
 EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
 ```
 
 Hard stop. This ratification GO is consumed and must not be reused for
 money movement, GET refresh, execute, or as a substitute formula body.
 `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains `CONSUMED`. Cap &#47;
-Capability 11.9 remains fixture-only. No funding. No execute. No merge
-of this ratification persist without a separate `OWNER_MERGE_GO`.
+Capability 11.9 remains fixture-only. The P-era next pointer
+`OWNER_GO_REQUIRED_TO_SUPPLY_OPERATIONAL_FUNDING_FORMULA` is **not**
+granted and **not** consumed here; it is superseded as immediate next
+by §11.13.5.Q below and remains a later formula-supply step. No funding
+executed. No execute.
+
+### 11.13.5.Q Operational funding-policy decision template (BOUND; POLICY-SPEC-ONLY; TEMPLATE UNFILLED; FORMULA ABSENT; NOT FUNDED; NOT EXECUTE)
+
+Owner-GO `OWNER_GO_BUILD_OPERATIONAL_FUNDING_POLICY_SPEC_ONLY`
+(one-shot; now **CONSUMED**) authorized **policy-spec persistence
+only**: the Owner operational-funding decision grammar &#47; blank
+template for §11.13.5.N&#47;O&#47;P, plus the fail-closed authority
+sequence. Bound scope:
+
+``` text
+AUTHORIZED_SCOPE=POLICY_SPEC_ONLY
+FUNDING_EXECUTION_AUTHORIZED=false
+EXTERNAL_MONEY_MOVEMENT_AUTHORIZED=false
+TRADING_POST_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+GENERAL_LIVE_UNLOCKED=false
+NETWORK_SESSION_AUTHORIZED=false
+CREDENTIAL_ACCESS_AUTHORIZED=false
+GET_ONLY_REFRESH_AUTHORIZED=false
+FORMULA_BODY_SUPPLIED_IN_GO=false
+NUMERIC_COEFFICIENTS_AUTHORIZED=false
+```
+
+This does **not** authorize deposit, transfer, withdrawal, convert,
+buy&#47;sell, Trading-POST, Canary execute, orders, positions,
+set-leverage mutation, API-key &#47; account mutation, a productive
+OKX GET refresh, max-avail-size GET, inventing or rounding a funding
+amount, inventing fee&#47;slippage&#47;MM&#47;haircut parameters,
+promoting snapshot IM to an operational formula, filling this template
+with numbers, treating a filled template as formula ratification,
+I44 &#47; G16 upgrade, general Live unlock, Multi-Future, Double Play &#47;
+Master V2 changes, or merge without a separate `OWNER_MERGE_GO`.
+
+This template is **not** an operational funding formula. Filling it is
+**not** formula ratification. It is **not** a GET-GO, **not** a
+funding-GO, and **not** a Canary-execute-GO.
+`OWNER_GO_REQUIRED_FOR_BOUNDED_OPERATIONAL_FUNDING_GET_EVIDENCE` is
+documented below and is **not** granted here.
+
+``` text
+CURRENT_PHASE=SECTION_11_13_5_Q_OPERATIONAL_FUNDING_POLICY_SPEC
+OWNER_GO=OWNER_GO_BUILD_OPERATIONAL_FUNDING_POLICY_SPEC_ONLY
+OWNER_GO_STATUS=CONSUMED
+OWNER_GO_SCOPE=POLICY_SPEC_ONLY
+POLICY_SPEC_STATUS=TEMPLATE_PERSISTED_UNFILLED
+FORMULA_BODY_STATUS=ABSENT
+BASELINE_ORIGIN_MAIN_SHA=736e7e21e215ce23bdade697c67393b5685bbde4
+PR_5910_STATUS=SQUASH_MERGED
+PR_5910_MERGE_SHA=736e7e21e215ce23bdade697c67393b5685bbde4
+CANARY_INSTRUMENT=BTC-USD_UM_XPERP-310404
+SETTLEMENT_ACCOUNT_TRUTH=USDC
+SET_ACCOUNT_LEVERAGE=3
+SNAPSHOT_THEORETICAL_IM_FORMULA=markPx * ctVal * qty / SET_ACCOUNT_LEVERAGE
+SNAPSHOT_THEORETICAL_INITIAL_MARGIN_USDC=2.101456666666666666666666667
+SNAPSHOT_IM_ROLE=FLOOR_ONLY_NOT_OPERATIONAL_FORMULA
+SNAPSHOT_IM_FORMULA_RATIFIED_AS_OPERATIONAL=false
+OWNER_SUPPLIED_OPERATIONAL_FORMULA_BODY=NONE
+OWNER_RATIFIED_OPERATIONAL_FORMULA_PRESENT=false
+F_OWNER_OPERATOR=UNRESOLVED
+MINIMUM_THEORETICAL_INITIAL_MARGIN_PROVEN=true
+SNAPSHOT_THEORETICAL_FUNDING_FLOOR_PROVEN=true
+CANARY_OPERATIONAL_MINIMUM_PROVEN=false
+RECOMMENDED_BOUNDED_CANARY_FUNDING_AMOUNT_PROVEN=false
+FUNDING_AMOUNT_PROVEN=false
+PROVEN_FUNDING_AMOUNT=NONE
+PROVEN_FUNDING_AMOUNT_UNIT=NONE
+SNAPSHOT_FLOOR_IS_NOT_OPERATIONAL_FUNDING_AMOUNT=true
+NEW_VENUE_GET_COLLECTED=false
+MAX_AVAIL_SIZE_GET_COLLECTED=false
+MARKPX_REFRESH_COLLECTED=false
+I44_FUTURES_FUNDING_ECONOMICS_STATUS=INSUFFICIENT_EVIDENCE
+G16_FUNDING_PROOF_STATUS=INSUFFICIENT_EVIDENCE
+FUNDING_EXECUTED=false
+EXTERNAL_MONEY_MOVEMENT=false
+CANARY_EXECUTED=false
+TRADING_POSTS=0
+ACCOUNT_MUTATION=false
+CREDENTIAL_MUTATION=false
+TRADING_LOGIC_CHANGED=false
+MASTER_V2_CHANGED=false
+DOUBLE_PLAY_CHANGED=false
+RUNTIME_AUTHORITY_EXPANDED=false
+LIVE_AUTHORIZED=false
+GENERAL_LIVE_UNLOCKED=false
+NEW_EXECUTE_GO_REQUIRED=true
+FUNDING_GO_AND_EXECUTE_GO_COLLAPSED=false
+GET_EVIDENCE_GO_GRANTED_BY_THIS_POLICY_SPEC=false
+EXECUTE_AUTHORIZED_BY_THIS_POLICY_SPEC_GO=false
+ORDER_EFFECT=NONE
+ACCOUNT_MUTATION_EFFECT=NONE
+FUNDING_EFFECT=NONE
+SECRET_VALUE_ACCESS=NONE
+```
+
+Owner decision template (blank; `UNRESOLVED` &#47;
+`OWNER_DECISION_REQUIRED`; no numeric coefficients):
+
+``` text
+OWNER_OPERATIONAL_FUNDING_POLICY_DECISIONS
+F_OWNER_COMPOSITION=UNRESOLVED_OWNER_DECISION_REQUIRED
+FEE_RESERVE_POLICY=UNRESOLVED_OWNER_DECISION_REQUIRED
+SLIPPAGE_RESERVE_POLICY=UNRESOLVED_OWNER_DECISION_REQUIRED
+MM_LIQ_BUFFER_POLICY=UNRESOLVED_OWNER_DECISION_REQUIRED
+VENUE_MIN_AVAIL_EQ_FORMULA_ROLE=UNRESOLVED_OWNER_DECISION_REQUIRED
+FUNDING_RATE_RESERVE_POLICY=UNRESOLVED_OWNER_DECISION_REQUIRED
+USD_USDC_HAIRCUT_POLICY=UNRESOLVED_OWNER_DECISION_REQUIRED
+OPERATIONAL_ROUNDING_POLICY=UNRESOLVED_OWNER_DECISION_REQUIRED
+MARKPX_AND_METADATA_FRESHNESS_BINDING_POLICY=UNRESOLVED_OWNER_DECISION_REQUIRED
+```
+
+Forbidden in this template and in any later fill of it under this
+section:
+
+``` text
+NO_FEE_BUFFER_BPS
+NO_SLIPPAGE_BPS
+NO_HAIRCUT_BPS
+NO_PADDED_USDC_AMOUNT
+NO_USD_EQUALS_USDC_ASSUMPTION
+NO_I44_G16_AS_CANARY_CAPITAL_RESERVE
+NO_SNAPSHOT_IM_PROMOTION
+NO_NUMERIC_COEFFICIENT_INVENTION
+```
+
+Fail-closed authority sequence (do not collapse):
+
+``` text
+1_POLICY_SPEC_OWNER_DECISION_GRAMMAR
+2_SEPARATE_OWNER_GO_REQUIRED_FOR_BOUNDED_OPERATIONAL_FUNDING_GET_EVIDENCE
+3_FRESH_GET_ONLY_EVIDENCE
+4_FORMULA_INSTANTIATION
+5_SEPARATE_OWNER_RATIFICATION_OF_EXACT_FORMULA_BODY
+6_SEPARATE_FUNDING_AUTHORIZATION
+7_SEPARATE_CANARY_EXECUTE_AUTHORIZATION
+```
+
+Step 2 token `OWNER_GO_REQUIRED_FOR_BOUNDED_OPERATIONAL_FUNDING_GET_EVIDENCE`
+is **proposed only** and **not granted**. Fresh productive GET evidence
+remains a later authority step. Snapshot IM
+`2.101456666666666666666666667` USDC remains
+`FLOOR_ONLY_NOT_OPERATIONAL_FORMULA` and must not be rounded, padded, or
+promoted. I44 &#47; Master G16 remain `INSUFFICIENT_EVIDENCE` and must
+not be used as a canary capital reserve.
+
+Still missing (unchanged; none closed by this policy-spec persist):
+
+1. Owner-supplied operational formula body distinct from snapshot IM.
+2. Positive fee-reserve policy.
+3. Proven slippage &#47; spread buffer policy.
+4. Proven maintenance-margin &#47; liquidation buffer. Public `imr=0.02`
+   remains a tier limit.
+5. Venue-native max-avail-size &#47; min-available-equity GET for one
+   contract. Requires a **separate** scoped GET-only GO plus
+   credentials; not authorized here.
+6. Fresh productive markPx GET refresh. Requires a **separate** scoped
+   GET-only GO; not authorized here.
+7. I44 &#47; Master G16 remains `INSUFFICIENT_EVIDENCE`.
+8. Public USD versus account USDC haircut policy.
+9. `totalEq=0` still does not prove deposit size.
+
+Live vs Demo identity remains strictly separated. Map of Truth
+`CANONICAL_ACTIVE_INSTRUMENT=BTC-USD_UM_XPERP-310328` remains the
+§11.12.8 Demo campaign binding and is **not** retargeted.
+
+``` text
+CODE_OWNER=src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+CANONICAL_NEXT_STEP=OWNER_FILL_OPERATIONAL_FUNDING_POLICY_DECISIONS_THEN_SEPARATE_BOUNDED_GET_EVIDENCE_GO
+EARLIEST_UNRESOLVED_DEPENDENCY=CANARY_OPERATIONAL_MINIMUM_UNPROVEN_THEN_SEPARATE_NEW_EXECUTE_GO
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
+```
+
+Hard stop. This policy-spec GO is consumed and must not be reused for
+money movement, GET refresh, execute, formula ratification, or as a
+substitute formula body. `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE`
+remains `CONSUMED`. Cap &#47; Capability 11.9 remains fixture-only. No
+funding. No execute. No merge of this policy-spec persist without a
+separate `OWNER_MERGE_GO`.
 
 ## 11.14 Live order and economic evidence ladder
 
