@@ -1,0 +1,10 @@
+{
+  "env_alone_insufficient": true,
+  "fixture_rejected": true,
+  "ok": true,
+  "scopes": {
+    "network_scope": "okx_eea_futures_public_md_observe_v1",
+    "session_execution_scope": "paper_shadow_observation_wallclock_v1"
+  },
+  "use_real_network": true
+}

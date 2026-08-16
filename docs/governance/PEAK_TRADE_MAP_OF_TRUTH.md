@@ -1118,6 +1118,20 @@ CANONICAL_SEMANTICS=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#5.8
 
 ---
 
+## 8.3 Historical Package-N consumer E2E closeout (navigation only)
+
+| Pfad | Rolle |
+|------|-------|
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §5.9 | SSOT-Zeiger auf historisches no-order Package-N consumer E2E closeout (navigation only; Semantik ausschließlich im Master Runbook; bound SHA `9f09d6d18484e35e788f5e4eaada2c598926b77f`; not current `origin&#47;main`) |
+
+```text
+THIS_SECTION_DEFINES_NO_SEMANTICS=true
+THIS_DOCUMENT_POINTS_ONLY_TO_CANONICAL_OWNERS=true
+CANONICAL_SEMANTICS=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#5.9
+```
+
+---
+
 ## 9. Wichtigste Runbooks
 
 | Dokument | Rolle |

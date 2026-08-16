@@ -1025,6 +1025,71 @@ Proof&#47;attestation surfaces (non-activating):
 This closeout does not start a follow-on remediation unit and does not
 change Cap 11&#47;§11.13 authorization.
 
+## 5.9 Historical Package-N consumer E2E closeout (no-order; SHA-bound)
+
+Owner-reviewed forensic closeout of one authorized no-order Package-N
+consumer E2E. This subsection records
+`COMPLETE_CURRENT_SYSTEM_E2E_PROVEN=true` for that bounded historical
+chain only. The closeout is bound to historical `origin&#47;main` SHA
+`9f09d6d18484e35e788f5e4eaada2c598926b77f` and is **not** current
+`origin&#47;main` truth. It does not authorize runtime, trading, orders,
+network sessions, Cap 7.2 expansion, Testnet, Live, credentials,
+migration, backfill, or any successor phase. It does not replace §5.8
+identity-join doctrine. It does not change Cap 11&#47;§11.13
+authorization or the current §11.13.5.Z2 next pointer.
+
+Generation versus review (historical truth preserved; sealed artifacts
+are not rewritten):
+
+-   U-E2E-R4 executed exactly one CLI run (`EXIT=0`, no retry). The
+    sealed generator artifact records
+    `COMPLETE_CURRENT_SYSTEM_E2E_PROVEN=false` at generation time.
+-   U-E2E-R5 was the later Owner evidence-review closeout (`PASS`) that
+    established `COMPLETE_CURRENT_SYSTEM_E2E_PROVEN=true`.
+-   U-E2E-R6 binds that reviewed closeout into this SSOT as a historical
+    closeout, not as current-HEAD forensic truth.
+
+``` text
+COMPLETE_CURRENT_SYSTEM_E2E_PROVEN=true
+CURRENT_SYSTEM_E2E_RUN_EXECUTED=true
+HISTORICAL_CLOSEOUT_ORIGIN_MAIN_SHA=9f09d6d18484e35e788f5e4eaada2c598926b77f
+HISTORICAL_CLOSEOUT_IS_NOT_CURRENT_ORIGIN_MAIN=true
+RUN_ID=20260813T182509Z_canonical_current_sha_no_order_package_n_e2e_v1
+EVIDENCE_ROOT=out&#47;ops&#47;canonical_current_sha_no_order_package_n_e2e_v1&#47;20260813T182509Z_canonical_current_sha_no_order_package_n_e2e_v1
+PACKAGE_N_SHA256=e860a5326ac1a58fe35b723f1c32b1aa1541cfd5367bb94ac00eaf3e46971ff3
+PACKAGE_N_SHA256_ONLY_JOIN_KEY=true
+REAL_LIVE_OWNER_COUNT=6
+EXPECTED_EDGE_COUNT=42
+EDGES_PROVEN=42
+CAP71_MANIFEST_SHA256=271d4c9ddc9219a611299675669ff263a0a197778090e937bd0d3b86f4286cc3
+CAP72_MANIFEST_SHA256=b8800aacccb92915d967ff3a4c7613bf009e74e91c078d4553a6874bc6acd6ef
+SEALED_GENERATOR_COMPLETE_CURRENT_SYSTEM_E2E_PROVEN=false
+OWNER_REVIEW_CLOSEOUT_COMPLETE_CURRENT_SYSTEM_E2E_PROVEN=true
+SEALED_EVIDENCE_REWRITTEN=false
+TRADING_LOGIC_MUTATION=false
+RUNTIME_MUTATION=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+NETWORK_EFFECT=NONE
+ORDER_EFFECT=NONE
+MIGRATION_EXECUTED=false
+BACKFILL_EXECUTED=false
+CAP7_2_SCOPE_EXPANDED=false
+SRC_EXECUTION_IMPORT_ADDED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+SUCCESSOR_PHASE_AUTHORIZED=false
+```
+
+Join-graph counts above restate the §5.8 identity-join already proven
+on that historical SHA; they are not a second join closeout. Sealed
+generator evidence remains gitignored working output (not a second
+SSOT):
+
+`out&#47;ops&#47;canonical_current_sha_no_order_package_n_e2e_v1&#47;20260813T182509Z_canonical_current_sha_no_order_package_n_e2e_v1&#47;`
+
+This closeout does not start a follow-on remediation unit and does not
+change Cap 11&#47;§11.13 authorization.
+
 ------------------------------------------------------------------------
 
 # 6. Canonical State Ownership and Persistence Model
