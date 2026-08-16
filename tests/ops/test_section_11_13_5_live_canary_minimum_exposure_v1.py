@@ -24,7 +24,11 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     AUTHORIZATION_SCOPE,
     CANARY_SUBMIT_TRANSPORT_IMPLEMENTED,
     CANARY_SUBMIT_TRANSPORT_SCOPE,
+    DEFAULT_INST_TYPE,
+    DEFAULT_INSTRUMENT_ID,
+    DEFAULT_RULE_TYPE,
     GENERAL_LIVE_SUBMIT_UNLOCKED,
+    SETTLEMENT_ACCOUNT_TRUTH,
     LIVE_AUTHORIZED,
     LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN,
     OWNER_GO_AUTHORING,
@@ -104,6 +108,10 @@ def test_package_defaults_and_cap_11_9_remain_fixture_only() -> None:
     assert CANARY_SUBMIT_TRANSPORT_SCOPE == "SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE_ONLY"
     assert GENERAL_LIVE_SUBMIT_UNLOCKED is False
     assert SUBMIT_UNLOCKED is False
+    assert DEFAULT_INSTRUMENT_ID == "BTC-USD_UM_XPERP-310404"
+    assert DEFAULT_INST_TYPE == "FUTURES"
+    assert DEFAULT_RULE_TYPE == "xperp"
+    assert SETTLEMENT_ACCOUNT_TRUTH == "USDC"
 
 
 def test_forensic_classification_from_sealed_evidence() -> None:
@@ -214,15 +222,35 @@ def test_exposure_requires_min_sz_only() -> None:
     binding = build_canary_exposure_binding_v1(
         venue="OKX",
         account_scope="acct",
-        instrument_min_sz="0.01",
-        instrument_lot_sz="0.01",
-        instrument_ct_val="0.01",
+        instrument_min_sz="1",
+        instrument_lot_sz="1",
+        instrument_ct_val="0.0001",
         instrument_tick_sz="0.1",
-        reference_price="100000",
+        reference_price="63028",
     )
-    assert binding.quantity == "0.01"
+    assert binding.quantity == "1"
     assert binding.max_notional == binding.min_executable_notional
     with pytest.raises(LiveCanaryExposureError, match="MINIMUM_EXPOSURE"):
+        build_canary_exposure_binding_v1(
+            venue="OKX",
+            account_scope="acct",
+            instrument_min_sz="1",
+            instrument_lot_sz="1",
+            instrument_ct_val="0.0001",
+            instrument_tick_sz="0.1",
+            quantity="2",
+            reference_price="63028",
+        )
+    assert (
+        exposure_above_minimum_bound_v1(
+            quantity="2",
+            instrument_min_sz="1",
+            max_notional="20",
+            min_executable_notional="10",
+        )
+        is True
+    )
+    with pytest.raises(LiveCanaryExposureError, match="INTEGER_CONTRACT_REQUIRED"):
         build_canary_exposure_binding_v1(
             venue="OKX",
             account_scope="acct",
@@ -230,18 +258,30 @@ def test_exposure_requires_min_sz_only() -> None:
             instrument_lot_sz="0.01",
             instrument_ct_val="0.01",
             instrument_tick_sz="0.1",
-            quantity="0.02",
-            reference_price="100000",
+            reference_price="63028",
         )
-    assert (
-        exposure_above_minimum_bound_v1(
-            quantity="0.02",
-            instrument_min_sz="0.01",
-            max_notional="20",
-            min_executable_notional="10",
-        )
-        is True
+
+
+def test_execute_fields_reject_swap_and_demo_instrument_ids() -> None:
+    cfg = example_incomplete_config_dict_v1()
+    cfg.update(
+        {
+            "venue": "OKX",
+            "entity": "OKX Europe Limited",
+            "region": "EEA/DE",
+            "rest_host": "eea.okx.com",
+            "rest_base": "https://eea.okx.com",
+            "account_scope": "856964404452495999",
+            "secretref_uri": REQUIRED_SECRETREF_URI,
+            "owner_declared_host_allowlist": ["eea.okx.com"],
+            "instrument_id": "BTC-USDT-SWAP",
+        }
     )
+    with pytest.raises(LiveCanaryConfigError, match="INSTRUMENT_BINDING_MISMATCH"):
+        require_execute_time_fields_v1(cfg)
+    cfg["instrument_id"] = "BTC-USD_UM_XPERP-310328"
+    with pytest.raises(LiveCanaryConfigError, match="INSTRUMENT_BINDING_MISMATCH"):
+        require_execute_time_fields_v1(cfg)
 
 
 def test_secretref_and_demo_binding_rejected_for_execute_fields() -> None:
@@ -254,9 +294,9 @@ def test_secretref_and_demo_binding_rejected_for_execute_fields() -> None:
             "rest_host": "eea.okx.com",
             "rest_base": "https://eea.okx.com",
             "account_scope": "856964404452495999",
-            "instrument_min_sz": "0.01",
-            "instrument_lot_sz": "0.01",
-            "instrument_ct_val": "0.01",
+            "instrument_min_sz": "1",
+            "instrument_lot_sz": "1",
+            "instrument_ct_val": "0.0001",
             "instrument_tick_sz": "0.1",
             "secretref_uri": "secretref://vault/peak-trade/live-dry-run-order-plan/okx",
             "owner_declared_host_allowlist": ["eea.okx.com"],
@@ -792,3 +832,8 @@ def test_cybersecurity_gate_passes_only_with_full_prerequisites() -> None:
     assert passed["LIVE_CANARY_CYBERSECURITY_GATE"] == "PASS"
     assert passed["LIVE_AUTHORIZED"] is False
     assert passed["NEW_CANARY_OWNER_GO_GRANTED"] is False
+    binding = passed["INSTRUMENT_BINDING_SECURITY"]
+    assert binding["instrument_id"] == "BTC-USD_UM_XPERP-310404"
+    assert binding["inst_type"] == "FUTURES"
+    assert binding["prior_swap_instrument_pass_not_inherited"] is True
+    assert binding["demo_310328_alias_forbidden"] is True

@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+    DEFAULT_INSTRUMENT_ID,
     FORENSIC_CLASSIFICATION_CODES,
     HARD_STOP_OWNER_REVIEW_LAYERS,
     POLICY_ADOPT_EXCHANGE_BALANCE_BASELINE_V1,
@@ -95,7 +96,7 @@ def classify_hard_stop_layers_from_sealed_snapshots_v1(
     *,
     local_expected_state: Mapping[str, Any],
     exchange_snapshot: Mapping[str, Any],
-    instrument_id: str = "BTC-USDT-SWAP",
+    instrument_id: str = DEFAULT_INSTRUMENT_ID,
     freshness_source: str = REUSED_SECTION_11_13_3_BINDING_SOURCE,
 ) -> tuple[LayerForensicRecordV1, ...]:
     """Deterministic forensic classification; does not mutate SSOT gates."""
@@ -146,7 +147,7 @@ def classify_hard_stop_layers_from_sealed_snapshots_v1(
                 )
                 policy = POLICY_ADOPT_EXCHANGE_BALANCE_BASELINE_V1
                 units = "equity_digest"
-                currency = "USDT_OR_ACCOUNT_EQ_AS_OBSERVED"
+                currency = "USDC_ACCOUNT_TRUTH_OR_ACCOUNT_EQ_AS_OBSERVED"
                 multiplier = None
             else:
                 codes = ("D_REAL_UNRESOLVED_ECONOMIC_DIVERGENCE",)
@@ -154,7 +155,7 @@ def classify_hard_stop_layers_from_sealed_snapshots_v1(
                 rationale = "Unexpected balance-layer shape; treat as unresolved economic."
                 policy = POLICY_ADOPT_EXCHANGE_BALANCE_BASELINE_V1
                 units = "equity_digest"
-                currency = "USDT_OR_ACCOUNT_EQ_AS_OBSERVED"
+                currency = "USDC_ACCOUNT_TRUTH_OR_ACCOUNT_EQ_AS_OBSERVED"
                 multiplier = None
         elif layer == "local_portfolio_and_accounting":
             if local_status == "flat_or_empty" and exchange_status == "observed":
@@ -173,7 +174,7 @@ def classify_hard_stop_layers_from_sealed_snapshots_v1(
                 )
                 policy = POLICY_ADOPT_EXCHANGE_LOCAL_PORTFOLIO_BASELINE_V1
                 units = "portfolio_digest_aliased_from_balances"
-                currency = "USDT_OR_ACCOUNT_EQ_AS_OBSERVED"
+                currency = "USDC_ACCOUNT_TRUTH_OR_ACCOUNT_EQ_AS_OBSERVED"
                 multiplier = None
             else:
                 codes = ("D_REAL_UNRESOLVED_ECONOMIC_DIVERGENCE",)
@@ -181,7 +182,7 @@ def classify_hard_stop_layers_from_sealed_snapshots_v1(
                 rationale = "Unexpected local-portfolio shape; Owner review required."
                 policy = POLICY_ADOPT_EXCHANGE_LOCAL_PORTFOLIO_BASELINE_V1
                 units = "portfolio_digest"
-                currency = "USDT_OR_ACCOUNT_EQ_AS_OBSERVED"
+                currency = "USDC_ACCOUNT_TRUTH_OR_ACCOUNT_EQ_AS_OBSERVED"
                 multiplier = None
         else:
             raise LiveCanaryForensicError(f"UNSUPPORTED_FORENSIC_LAYER:{layer}")

@@ -18,11 +18,15 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.okx
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     DEFAULT_INSTRUMENT_ID,
+    DEFAULT_INST_TYPE,
     DEFAULT_ORDER_TYPE,
+    DEFAULT_RULE_TYPE,
     DEFAULT_SIDE,
     DEFAULT_TD_MODE,
+    LiveCanaryInstrumentBindingError,
     REUSED_BINDING_ACCOUNT_SCOPE,
     REUSED_BINDING_VENUE,
+    assert_live_canary_instrument_binding_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.exposure_v1 import (
     LiveCanaryExposureError,
@@ -49,6 +53,10 @@ def extract_instrument_constraints_v1(
     instruments_payload: Mapping[str, Any],
     instrument_id: str = DEFAULT_INSTRUMENT_ID,
 ) -> dict[str, str]:
+    try:
+        assert_live_canary_instrument_binding_v1(instrument_id=instrument_id)
+    except LiveCanaryInstrumentBindingError as exc:
+        raise LiveCanaryOrderPlanError(str(exc)) from exc
     if str(instruments_payload.get("code") or "") != "0":
         raise LiveCanaryOrderPlanError("INSTRUMENTS_PAYLOAD_NOT_OK")
     data = instruments_payload.get("data")
@@ -61,6 +69,20 @@ def extract_instrument_constraints_v1(
             break
     if row is None:
         raise LiveCanaryOrderPlanError(f"INSTRUMENT_NOT_FOUND:{instrument_id}")
+    row_type = str(row.get("instType") or "").strip().upper()
+    try:
+        assert_live_canary_instrument_binding_v1(
+            instrument_id=instrument_id,
+            inst_type=row_type or DEFAULT_INST_TYPE,
+            rule_type=str(row.get("ruleType") or "") or None,
+        )
+    except LiveCanaryInstrumentBindingError as exc:
+        raise LiveCanaryOrderPlanError(str(exc)) from exc
+    if row_type and row_type != DEFAULT_INST_TYPE:
+        raise LiveCanaryOrderPlanError(f"INST_TYPE_BINDING_MISMATCH:{row_type}")
+    rule = str(row.get("ruleType") or "").strip()
+    if rule and rule != DEFAULT_RULE_TYPE:
+        raise LiveCanaryOrderPlanError(f"RULE_TYPE_BINDING_MISMATCH:{rule}")
     required = ("minSz", "lotSz", "tickSz", "ctVal")
     out: dict[str, str] = {}
     for key in required:
@@ -68,9 +90,16 @@ def extract_instrument_constraints_v1(
         if not val:
             raise LiveCanaryOrderPlanError(f"INSTRUMENT_FIELD_MISSING:{key}")
         out[key] = val
+    for key in ("minSz", "lotSz"):
+        parsed = _dec(out[key], field=key)
+        if parsed != parsed.to_integral_value():
+            raise LiveCanaryOrderPlanError(f"INTEGER_CONTRACT_REQUIRED:{key}")
     ct_ccy = str(row.get("ctValCcy") or "").strip()
     if ct_ccy:
         out["ctValCcy"] = ct_ccy
+    out["instType"] = row_type or DEFAULT_INST_TYPE
+    if rule:
+        out["ruleType"] = rule
     return out
 
 

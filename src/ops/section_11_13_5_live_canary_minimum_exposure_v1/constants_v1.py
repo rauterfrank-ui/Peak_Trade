@@ -202,10 +202,68 @@ REQUIRED_PERMISSION_ATTESTATION_FOR_SUBMIT = {
 }
 PRIOR_DRY_RUN_PERMISSION_ATTESTATION = {"READ": True, "TRADE": False, "WITHDRAW": False}
 
-DEFAULT_INSTRUMENT_ID = "BTC-USDT-SWAP"
+# Live EEA canary instrument binding (preparation only; not execute).
+# BTC-USDT-SWAP remains historically rejected for this EEA canary path.
+# BTC-USD_UM_XPERP-310328 remains Demo/historical and must not alias here.
+DEFAULT_INSTRUMENT_ID = "BTC-USD_UM_XPERP-310404"
+CANARY_INSTRUMENT = DEFAULT_INSTRUMENT_ID
+DEFAULT_INST_TYPE = "FUTURES"
+CANARY_INST_TYPE = DEFAULT_INST_TYPE
+DEFAULT_RULE_TYPE = "xperp"
+PRODUCT_RULE_TYPE = DEFAULT_RULE_TYPE
+SETTLEMENT_ACCOUNT_TRUTH = "USDC"
+HISTORICAL_REJECTED_SWAP_INSTRUMENT_ID = "BTC-USDT-SWAP"
+DEMO_XPERP_INSTRUMENT_ID = "BTC-USD_UM_XPERP-310328"
+REJECTED_CANARY_INSTRUMENT_IDS: frozenset[str] = frozenset(
+    {
+        HISTORICAL_REJECTED_SWAP_INSTRUMENT_ID,
+        DEMO_XPERP_INSTRUMENT_ID,
+    }
+)
+REJECTED_CANARY_INST_TYPES: frozenset[str] = frozenset({"SWAP"})
 DEFAULT_SIDE = "BUY"
 DEFAULT_ORDER_TYPE = "LIMIT"
 DEFAULT_TD_MODE = "cross"
+
+
+class LiveCanaryInstrumentBindingError(RuntimeError):
+    """Fail-closed live canary instrument/type binding violation."""
+
+
+def public_instruments_query_path_v1(
+    *,
+    instrument_id: str = DEFAULT_INSTRUMENT_ID,
+    inst_type: str = DEFAULT_INST_TYPE,
+) -> str:
+    assert_live_canary_instrument_binding_v1(instrument_id=instrument_id, inst_type=inst_type)
+    return f"/api/v5/public/instruments?instType={inst_type}&instId={instrument_id}"
+
+
+def assert_live_canary_instrument_binding_v1(
+    *,
+    instrument_id: str,
+    inst_type: str | None = None,
+    rule_type: str | None = None,
+) -> None:
+    iid = str(instrument_id or "").strip()
+    if not iid:
+        raise LiveCanaryInstrumentBindingError("INSTRUMENT_ID_REQUIRED")
+    if iid in REJECTED_CANARY_INSTRUMENT_IDS:
+        raise LiveCanaryInstrumentBindingError(f"REJECTED_CANARY_INSTRUMENT:{iid}")
+    if iid != DEFAULT_INSTRUMENT_ID:
+        raise LiveCanaryInstrumentBindingError(f"INSTRUMENT_BINDING_MISMATCH:{iid}")
+    if inst_type is not None:
+        itype = str(inst_type or "").strip().upper()
+        if itype in REJECTED_CANARY_INST_TYPES:
+            raise LiveCanaryInstrumentBindingError(f"REJECTED_CANARY_INST_TYPE:{itype}")
+        if itype != DEFAULT_INST_TYPE:
+            raise LiveCanaryInstrumentBindingError(f"INST_TYPE_BINDING_MISMATCH:{itype}")
+    if rule_type is not None and str(rule_type or "").strip():
+        rtype = str(rule_type).strip()
+        if rtype != DEFAULT_RULE_TYPE:
+            raise LiveCanaryInstrumentBindingError(f"RULE_TYPE_BINDING_MISMATCH:{rtype}")
+
+
 POSITION_COUNT_LIMIT = 1
 ORDER_COUNT_LIMIT = 1
 MINIMUM_RATIFIED_NOTIONAL_ONLY = True

@@ -55,16 +55,20 @@ INSTRUMENTS = {
     "code": "0",
     "data": [
         {
-            "instId": "BTC-USDT-SWAP",
-            "minSz": "0.01",
-            "lotSz": "0.01",
+            "instId": "BTC-USD_UM_XPERP-310404",
+            "instType": "FUTURES",
+            "ruleType": "xperp",
+            "minSz": "1",
+            "lotSz": "1",
             "tickSz": "0.1",
-            "ctVal": "0.01",
+            "ctVal": "0.0001",
             "ctValCcy": "BTC",
+            "settleCcy": "USDC",
+            "state": "live",
         }
     ],
 }
-TICKER = {"code": "0", "data": [{"instId": "BTC-USDT-SWAP", "last": "65000.1"}]}
+TICKER = {"code": "0", "data": [{"instId": "BTC-USD_UM_XPERP-310404", "last": "63028.1"}]}
 EMPTY = {"code": "0", "data": []}
 FIXTURE_MATERIAL = json.dumps(
     {"api_key": "A" * 36, "api_secret": "B" * 32, "passphrase": "C" * 14},
@@ -160,11 +164,13 @@ def test_order_plan_rejects_quantity_above_min_sz() -> None:
         "code": "0",
         "data": [
             {
-                "instId": "BTC-USDT-SWAP",
-                "minSz": "0.01",
-                "lotSz": "0.02",
+                "instId": "BTC-USD_UM_XPERP-310404",
+                "instType": "FUTURES",
+                "ruleType": "xperp",
+                "minSz": "1",
+                "lotSz": "2",
                 "tickSz": "0.1",
-                "ctVal": "0.01",
+                "ctVal": "0.0001",
             }
         ],
     }
@@ -200,10 +206,10 @@ def test_order_plan_reuses_proven_venue_native_body_builder(
     assert plan.venue_native_payload is sentinel
     assert len(calls) == 1
     assert calls[0]["client_order_id"] == plan.clordid
-    assert calls[0]["instrument"] == "BTC-USDT-SWAP"
+    assert calls[0]["instrument"] == "BTC-USD_UM_XPERP-310404"
     assert calls[0]["order_type"] == "LIMIT"
     assert calls[0]["side"] == "BUY"
-    assert calls[0]["quantity"] == plan.quantity == "0.01"
+    assert calls[0]["quantity"] == plan.quantity == "1"
     assert calls[0]["td_mode"] == "cross"
     assert calls[0]["px"] == plan.limit_price
     source = inspect.getsource(build_minimum_valid_canary_order_plan_v1)
@@ -238,13 +244,13 @@ def test_order_plan_body_equals_proven_builder_contract() -> None:
         "px",
         "clOrdId",
     }
-    assert plan.venue_native_payload["instId"] == "BTC-USDT-SWAP"
+    assert plan.venue_native_payload["instId"] == "BTC-USD_UM_XPERP-310404"
     assert plan.venue_native_payload["tdMode"] == "cross"
     assert plan.venue_native_payload["side"] == "buy"
     assert plan.venue_native_payload["ordType"] == "limit"
-    assert plan.venue_native_payload["sz"] == "0.01"
-    assert plan.quantity == "0.01"
-    assert plan.venue_native_payload["px"] == plan.limit_price == "65000.1"
+    assert plan.venue_native_payload["sz"] == "1"
+    assert plan.quantity == "1"
+    assert plan.venue_native_payload["px"] == plan.limit_price == "63028.1"
     assert plan.venue_native_payload["clOrdId"] == plan.clordid
     assert "posSide" not in plan.venue_native_payload
     assert "posMode" not in plan.venue_native_payload
@@ -378,7 +384,7 @@ def test_missing_secretref_and_wrong_host_rejected_before_post() -> None:
 def test_open_position_blocks_before_post() -> None:
     transport = _fake_transport()
     transport.bodies_by_endpoint["/api/v5/account/positions"] = json.dumps(
-        {"code": "0", "data": [{"instId": "BTC-USDT-SWAP", "pos": "1"}]}
+        {"code": "0", "data": [{"instId": "BTC-USD_UM_XPERP-310404", "pos": "1"}]}
     ).encode()
     kwargs = _transport_kwargs(transport=transport)
     with pytest.raises(LiveCanarySubmitTransportError, match="OPEN_POSITION"):
@@ -394,7 +400,7 @@ def test_happy_path_fake_exactly_one_post() -> None:
     assert result["LIVE_AUTHORIZED"] is False
     assert result["LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED"] is False
     assert result["OWNER_GO_CONSUMED"] is False
-    assert result["plan"]["quantity"] == "0.01"
+    assert result["plan"]["quantity"] == "1"
     assert result["plan"]["max_notional"] == result["plan"]["min_executable_notional"]
     assert result["SIGNED_BODY_EQUALS_WIRE_BODY"] is True
     assert result["ok"] is True
@@ -402,6 +408,13 @@ def test_happy_path_fake_exactly_one_post() -> None:
     assert len(posts) == 1
     assert posts[0].endpoint == "/api/v5/trade/order"
     assert "withdraw" not in posts[0].endpoint.lower()
+    instrument_gets = [
+        c.endpoint for c in transport.calls if "public/instruments" in str(c.endpoint)
+    ]
+    assert instrument_gets
+    assert all("instType=FUTURES" in ep for ep in instrument_gets)
+    assert all("instType=SWAP" not in ep for ep in instrument_gets)
+    assert all("BTC-USD_UM_XPERP-310404" in ep for ep in instrument_gets)
     second = run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
     # New client each call; same fake records a second POST only if we reuse client.
     assert second["ORDER_COUNT_SUBMITTED"] == 1
@@ -854,7 +867,7 @@ def test_urllib_post_redirect_fail_closed_no_second_request(status: int) -> None
     thread = threading.Thread(target=httpd.serve_forever, daemon=True)
     thread.start()
     port = httpd.server_address[1]
-    body = '{"instId":"BTC-USDT-SWAP"}'
+    body = '{"instId":"BTC-USD_UM_XPERP-310404"}'
     try:
         transport = UrllibLiveCanaryTransportV1(wire_send_enabled=True)
         response = transport.send(
@@ -895,11 +908,11 @@ def test_signed_body_equals_wire_body_evidence_contract() -> None:
     )
 
     payload = {
-        "instId": "BTC-USDT-SWAP",
+        "instId": "BTC-USD_UM_XPERP-310404",
         "tdMode": "cross",
         "side": "buy",
         "ordType": "limit",
-        "sz": "0.01",
+        "sz": "1",
         "px": "63102",
         "clOrdId": "ptokxeprodae2d2fa0ae2d2fa000",
     }
@@ -919,3 +932,105 @@ def test_signed_body_equals_wire_body_evidence_contract() -> None:
 
     wire_sha = hashlib.sha256(posts[0].body_text.encode("utf-8")).hexdigest()[:12]
     assert result["signed_wire_body_evidence"]["wire_body_sha256_12"] == wire_sha
+
+
+def test_order_plan_rejects_swap_and_demo_instrument_fallback() -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+        DEMO_XPERP_INSTRUMENT_ID,
+        HISTORICAL_REJECTED_SWAP_INSTRUMENT_ID,
+        LiveCanaryInstrumentBindingError,
+        assert_live_canary_instrument_binding_v1,
+    )
+
+    with pytest.raises(LiveCanaryInstrumentBindingError, match="REJECTED_CANARY_INSTRUMENT"):
+        assert_live_canary_instrument_binding_v1(
+            instrument_id=HISTORICAL_REJECTED_SWAP_INSTRUMENT_ID
+        )
+    with pytest.raises(LiveCanaryInstrumentBindingError, match="REJECTED_CANARY_INSTRUMENT"):
+        assert_live_canary_instrument_binding_v1(instrument_id=DEMO_XPERP_INSTRUMENT_ID)
+    with pytest.raises(LiveCanaryInstrumentBindingError, match="REJECTED_CANARY_INST_TYPE"):
+        assert_live_canary_instrument_binding_v1(
+            instrument_id="BTC-USD_UM_XPERP-310404", inst_type="SWAP"
+        )
+    swap_payload = {
+        "code": "0",
+        "data": [
+            {
+                "instId": "BTC-USD_UM_XPERP-310404",
+                "instType": "SWAP",
+                "ruleType": "xperp",
+                "minSz": "1",
+                "lotSz": "1",
+                "tickSz": "0.1",
+                "ctVal": "0.0001",
+            }
+        ],
+    }
+    with pytest.raises(LiveCanaryOrderPlanError, match="REJECTED_CANARY_INST_TYPE"):
+        build_minimum_valid_canary_order_plan_v1(
+            instruments_payload=swap_payload,
+            ticker_payload=TICKER,
+            owner_go=OWNER_GO_EXECUTE,
+            origin_main_sha=ORIGIN_SHA,
+        )
+    with pytest.raises(LiveCanaryOrderPlanError, match="REJECTED_CANARY_INSTRUMENT"):
+        build_minimum_valid_canary_order_plan_v1(
+            instruments_payload={
+                "code": "0",
+                "data": [
+                    {
+                        "instId": "BTC-USDT-SWAP",
+                        "instType": "FUTURES",
+                        "ruleType": "xperp",
+                        "minSz": "1",
+                        "lotSz": "1",
+                        "tickSz": "0.1",
+                        "ctVal": "0.0001",
+                    }
+                ],
+            },
+            ticker_payload=TICKER,
+            owner_go=OWNER_GO_EXECUTE,
+            origin_main_sha=ORIGIN_SHA,
+            instrument_id="BTC-USDT-SWAP",
+        )
+    fractional = {
+        "code": "0",
+        "data": [
+            {
+                "instId": "BTC-USD_UM_XPERP-310404",
+                "instType": "FUTURES",
+                "ruleType": "xperp",
+                "minSz": "0.01",
+                "lotSz": "0.01",
+                "tickSz": "0.1",
+                "ctVal": "0.01",
+            }
+        ],
+    }
+    with pytest.raises(LiveCanaryOrderPlanError, match="INTEGER_CONTRACT_REQUIRED"):
+        build_minimum_valid_canary_order_plan_v1(
+            instruments_payload=fractional,
+            ticker_payload=TICKER,
+            owner_go=OWNER_GO_EXECUTE,
+            origin_main_sha=ORIGIN_SHA,
+        )
+
+
+def test_xperp_economic_baseline_contract_does_not_inherit_swap_or_demo() -> None:
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.xperp_310404_economic_baseline_contract_v1 import (
+        live_eea_xperp_310404_economic_baseline_contract_v1,
+    )
+
+    contract = live_eea_xperp_310404_economic_baseline_contract_v1()
+    assert contract["CANARY_INSTRUMENT"] == "BTC-USD_UM_XPERP-310404"
+    assert contract["CANARY_INST_TYPE"] == "FUTURES"
+    assert contract["PRODUCT_RULE_TYPE"] == "xperp"
+    assert contract["SETTLEMENT_ACCOUNT_TRUTH"] == "USDC"
+    assert contract["INHERITED_FROM_BTC_USDT_SWAP"] is False
+    assert contract["INHERITED_FROM_DEMO_310328"] is False
+    assert contract["minSz"] == "1"
+    assert contract["lotSz"] == "1"
+    assert contract["EXECUTED"] is False
+    assert contract["LIVE_AUTHORIZED"] is False
+    assert "instType=SWAP" not in str(contract["public_instruments_query"])

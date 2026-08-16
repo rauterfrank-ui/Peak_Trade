@@ -83,8 +83,8 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.J. Historical I-era next steps
-below are superseded.
+Current SSOT: Master Runbook §11.13.5.K. Historical J-era next steps
+below are superseded for the current EEA canary instrument binding.
 
 1. Historical first canary POST HTTP 401 remains
    `UNPROVEN_FAIL_CLOSED` (no proven incident body). Do not rewrite it
@@ -102,7 +102,13 @@ below are superseded.
    Classification is not `RETRY_SAFE_NOW`. The historical Owner-GO
    token name containing `MARKET_PERMISSION` is identity only, not a
    proven root cause.
-5. Next canonical step is Owner merge of this classification
-   preparation PR, then a **separate** new execute GO if granted.
-   The I-era `OWNER_MERGE_GO_FOR_BOUNDED_POST_401_REMEDIATION_PR` is
-   already done (PR `#5902` &#47; `4adb0af23`).
+5. Current canary instrument binding (preparation only):
+   `BTC-USD_UM_XPERP-310404` &#47; `FUTURES` &#47; `xperp` &#47; USDC.
+   `BTC-USDT-SWAP` is rejected for this EEA path. Demo
+   `BTC-USD_UM_XPERP-310328` remains Demo&#47;historical only. No ID
+   aliasing. Request-body owner remains
+   `build_venue_native_order_body_v1`.
+6. Next canonical step is Owner merge of this rebind-preparation PR,
+   then a **separate** funding GO and a **separate** new execute GO if
+   granted. This spec does not authorize execute, funding, or general
+   Live unlock.

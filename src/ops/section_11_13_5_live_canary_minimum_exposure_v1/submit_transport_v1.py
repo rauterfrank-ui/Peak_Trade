@@ -13,6 +13,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     BLOCKS_NEW_ENTRY,
     CANARY_SUBMIT_TRANSPORT_IMPLEMENTED,
     CANARY_SUBMIT_TRANSPORT_SCOPE,
+    DEFAULT_INST_TYPE,
     DEFAULT_INSTRUMENT_ID,
     ENDPOINT_ORDERS_HISTORY,
     ENDPOINT_SUBMIT,
@@ -29,6 +30,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     SUBMIT_UNLOCKED,
     UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY,
     USER_AGENT_CANARY,
+    LiveCanaryInstrumentBindingError,
+    assert_live_canary_instrument_binding_v1,
+    public_instruments_query_path_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
     CanaryEntrySubmitPermitV1,
@@ -270,8 +274,17 @@ def run_canary_submit_transport_v1(
             )
             created_handle = True
 
-        inst_ep = f"/api/v5/public/instruments?instType=SWAP&instId={DEFAULT_INSTRUMENT_ID}"
-        tick_ep = f"/api/v5/market/ticker?instId={DEFAULT_INSTRUMENT_ID}"
+        instrument_id = str(cfg.payload.get("instrument_id") or DEFAULT_INSTRUMENT_ID)
+        try:
+            assert_live_canary_instrument_binding_v1(
+                instrument_id=instrument_id, inst_type=DEFAULT_INST_TYPE
+            )
+        except LiveCanaryInstrumentBindingError as exc:
+            raise LiveCanarySubmitTransportError(f"INSTRUMENT_BINDING_FAIL_CLOSED:{exc}") from exc
+        inst_ep = public_instruments_query_path_v1(
+            instrument_id=instrument_id, inst_type=DEFAULT_INST_TYPE
+        )
+        tick_ep = f"/api/v5/market/ticker?instId={instrument_id}"
         instruments = _signed_get(client=client, handle=handle, endpoint=inst_ep)
         ticker = _signed_get(client=client, handle=handle, endpoint=tick_ep)
         try:
@@ -280,7 +293,7 @@ def run_canary_submit_transport_v1(
                 ticker_payload=ticker,
                 owner_go=str(owner_go),
                 origin_main_sha=origin_main_sha,
-                instrument_id=str(cfg.payload.get("instrument_id") or DEFAULT_INSTRUMENT_ID),
+                instrument_id=instrument_id,
                 side=str(cfg.payload.get("side") or "BUY"),
                 td_mode=str(cfg.payload.get("td_mode") or "cross"),
             )
