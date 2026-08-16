@@ -92,15 +92,16 @@ All GAP items are `CLOSED_CANONICALLY_PERSISTED` by squash-merge
 **retained** on HEAD for audit. It is **not** deleted: the original
 delete-after-closeout-on-`origin&#47;main` rule is not satisfied at
 closeout authoring time, and historical pointer chains still name this
-path. Canonical authority remains SSOT §11.13.5.X. The W-era pointer
-`OWNER_GO_REQUIRED_TO_RATIFY_INSTRUMENT_RELEVANT_XPERP_DELIVERY_FEE_ALGEBRA`
-is consumed as algebra-ratification-only with **no algebra body** and
-superseded. Observed `delivery=0.0003` is not an operative instance.
-Raw numeric reserve terms remain unauthorized as a funding amount.
-Fresh theoretical IM is not an operational funding amount.
+path. Canonical authority remains SSOT §11.13.5.Y. The X-era pointer
+`OWNER_GO_REQUIRED_TO_SUPPLY_INSTRUMENT_RELEVANT_XPERP_DELIVERY_FEE_ALGEBRA_BODY`
+is consumed as algebra-body supply with a **partial sub-algebra** and
+`TAKER_VS_DELIVERY_FIELD_RESOLUTION=CONFLICT` and is superseded.
+Observed `delivery=0.0003` is not an operative instance. Raw numeric
+reserve terms remain unauthorized as a funding amount. Fresh
+theoretical IM is not an operational funding amount.
 
 ```text
-CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_TO_SUPPLY_INSTRUMENT_RELEVANT_XPERP_DELIVERY_FEE_ALGEBRA_BODY
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_TO_RESOLVE_XPERP_EXPIRATION_DELIVERY_RATE_OPERAND_CONFLICT
 EARLIEST_UNRESOLVED_DEPENDENCY=CANARY_OPERATIONAL_MINIMUM_UNPROVEN_THEN_SEPARATE_NEW_EXECUTE_GO
 PERSISTENCE_REMEDIATION_PR_MERGED=true
 TRACKER_RETIREMENT_ALLOWED=true
