@@ -83,9 +83,10 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.Z1. Historical Z-era next steps
-below are superseded for the current normal-expiry fee-existence
-premise persist. Historical Y-era next steps remain historical for the
+Current SSOT: Master Runbook §11.13.5.Z2. Historical Z1-era next steps
+below are superseded for the current EDGE_I EVENT_B closeout persist.
+Historical Z-era next steps remain historical for the normal-expiry
+fee-existence premise persist. Historical Y-era next steps remain historical for the
 delivery-rate-operand fail-closed persist. Historical X-era next steps
 remain historical for the delivery-fee algebra-body persist. Historical
 W-era next steps remain historical for the delivery-algebra fail-closed
@@ -264,7 +265,16 @@ oneshot.
     remains non-operative. No GET this step.
     `POSITION_VALUE_ALGEBRA_STATUS=UNPROVEN`.
     `FUNDING_AMOUNT_PROVEN=false`.
-25. Next canonical step is
+25. Next canonical step after Z1 was
+    `OWNER_GO_REQUIRED_TO_SUPPLY_OR_POINT_TO_A_CURRENT_NORMATIVE_OKX_EEA_OEM_XPERP_NORMAL_EXPIRY_FEE_APPLICABILITY_STATEMENT`.
+    Subsequent read-only EDGE_I GOs are consumed as §11.13.5.Z2.
+26. `OWNER_GO_FOR_CANONICAL_EDGE_I_CLOSEOUT` was granted docs-only and
+    is consumed. `EDGE_I_STATUS=UNPROVEN`. `APPLICABILITY_VERDICT=C`.
+    `TARGET_FAMILY_SCOPE_PROVEN=true`.
+    `TRADE_FEE_DELIVERY_FIELD_EVENT_B_APPLICABILITY=UNPROVEN`.
+    Observed `delivery=0.0003` is `NON_OPERATIVE`. Search surfaces
+    exhausted. `DELIVERY_RATE_OPERATIVE_VALUE=NONE`.
+27. Next canonical step remains
     `OWNER_GO_REQUIRED_TO_SUPPLY_OR_POINT_TO_A_CURRENT_NORMATIVE_OKX_EEA_OEM_XPERP_NORMAL_EXPIRY_FEE_APPLICABILITY_STATEMENT`.
     That GO is **not** granted. Later formula-body ratification,
     funding, and execute remain separate. This spec does not authorize
