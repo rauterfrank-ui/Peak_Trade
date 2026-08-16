@@ -1033,4 +1033,19 @@ def test_xperp_economic_baseline_contract_does_not_inherit_swap_or_demo() -> Non
     assert contract["lotSz"] == "1"
     assert contract["EXECUTED"] is False
     assert contract["LIVE_AUTHORIZED"] is False
+    assert contract["set_account_leverage"] == "3"
+    assert contract["set_account_leverage_mgn_mode"] == "cross"
+    assert contract["set_account_leverage_pos_side"] == "net"
+    assert contract["snapshot_mark_px"] == "63043.7"
+    assert contract["snapshot_theoretical_initial_margin_usdc"] == ("2.101456666666666666666666667")
+    assert contract["minimum_theoretical_initial_margin_proven"] is True
+    assert contract["snapshot_theoretical_funding_floor_proven"] is True
+    assert contract["canary_operational_minimum_proven"] is False
+    assert contract["recommended_bounded_canary_funding_amount_proven"] is False
+    assert contract["funding_amount_proven"] is False
+    assert contract["tdMode_compatibility"] == ("cross_get_proven_leverage_setting_no_live_post")
+    assert contract["tdMode_live_post_proven"] is False
     assert "instType=SWAP" not in str(contract["public_instruments_query"])
+    assert contract["rejected_swap_instrument"] == "BTC-USDT-SWAP"
+    assert contract["rejected_demo_instrument"] == "BTC-USD_UM_XPERP-310328"
+    assert contract["CANARY_INSTRUMENT"] != contract["rejected_demo_instrument"]

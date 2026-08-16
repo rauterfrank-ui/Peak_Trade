@@ -83,8 +83,9 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.K. Historical J-era next steps
-below are superseded for the current EEA canary instrument binding.
+Current SSOT: Master Runbook §11.13.5.L. Historical K-era next steps
+below are superseded for the current post-K GET bind. Historical J-era
+next steps remain historical for the rejected SWAP oneshot.
 
 1. Historical first canary POST HTTP 401 remains
    `UNPROVEN_FAIL_CLOSED` (no proven incident body). Do not rewrite it
@@ -108,7 +109,13 @@ below are superseded for the current EEA canary instrument binding.
    `BTC-USD_UM_XPERP-310328` remains Demo&#47;historical only. No ID
    aliasing. Request-body owner remains
    `build_venue_native_order_body_v1`.
-6. Next canonical step is Owner merge of this rebind-preparation PR,
+6. Post-K GET bind (persistence only): `SET_ACCOUNT_LEVERAGE=3` via
+   `GET &#47;api&#47;v5&#47;account&#47;leverage-info`. Snapshot theoretical IM
+   floor is `2.101456666666666666666666667` USDC at `markPx=63043.7`.
+   This is **not** an operational funding minimum.
+   `CANARY_OPERATIONAL_MINIMUM_PROVEN=false`.
+   `RECOMMENDED_BOUNDED_CANARY_FUNDING_AMOUNT_PROVEN=false`.
+7. Next canonical step is Owner merge of this persistence-remediation PR,
    then a **separate** funding GO and a **separate** new execute GO if
    granted. This spec does not authorize execute, funding, or general
    Live unlock.

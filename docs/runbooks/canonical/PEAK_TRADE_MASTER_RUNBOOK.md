@@ -10613,15 +10613,131 @@ preparation.
 ``` text
 CODE_OWNER=src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;
 CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
-CANONICAL_NEXT_STEP=OWNER_MERGE_GO_FOR_EEA_XPERP_310404_REBIND_PREPARATION_PR
-EARLIEST_UNRESOLVED_DEPENDENCY=OWNER_MERGE_GO_THEN_SEPARATE_NEW_FUNDING_GO_THEN_SEPARATE_NEW_EXECUTE_GO
+CANONICAL_NEXT_STEP=SUPERSEDED_BY_SECTION_11_13_5_L
+EARLIEST_UNRESOLVED_DEPENDENCY=SUPERSEDED_BY_SECTION_11_13_5_L
 EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
 ```
 
 Hard stop. This preparation does not consume or grant a new execute GO.
 `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains `CONSUMED`. Cap &#47;
-Capability 11.9 remains fixture-only. No merge without separate
-`OWNER_MERGE_GO`. No funding. No execute.
+Capability 11.9 remains fixture-only. The K-era next pointer
+`OWNER_MERGE_GO_FOR_EEA_XPERP_310404_REBIND_PREPARATION_PR` is
+**consumed** by squash-merge PR `#5905` at
+`2caad4a2e68b89c788bb5a5b654a4f32fdba38c5` and is superseded by
+§11.13.5.L below. No funding. No execute.
+
+### 11.13.5.L Post-K GET bind: set leverage 3 + snapshot theoretical IM floor (BOUND; NOT EXECUTE; NOT FUNDED)
+
+Owner scope
+`BOUNDED_PERSISTENCE_REMEDIATION_PREPARATION_TRACKER_AND_POST_K_CANONICAL_BIND_NO_FUNDING_NO_EXECUTE`
+authorized **bounded repository persistence** of GET-only post-K facts
+for the already merged EEA XPerp-310404 canary preparation. This does
+**not** authorize Trading-POST, orders, positions, retries, funding &#47;
+transfer &#47; deposit, API-key &#47; permission &#47; account mutation,
+set-leverage mutation, general Live unlock, Multi-Future, Double Play &#47;
+Master V2 &#47; strategy &#47; selection &#47; risk &#47; portfolio changes,
+a new funding &#47; sizing &#47; reserve policy, or merge without a
+separate `OWNER_MERGE_GO`.
+
+PR `#5905` (`§11.13.5.K`) is merged at baseline
+`2caad4a2e68b89c788bb5a5b654a4f32fdba38c5`. The K-era merge GO is
+consumed. Remaining product chain after this persistence PR is a
+**separate** funding GO, then a **separate** execute GO. Those GOs must
+never be collapsed.
+
+``` text
+CURRENT_PHASE=SECTION_11_13_5_POST_K_GET_BIND_PERSISTENCE
+BASELINE_ORIGIN_MAIN_SHA=2caad4a2e68b89c788bb5a5b654a4f32fdba38c5
+PR_5905_STATUS=MERGED
+PR_5905_MERGE_SHA=2caad4a2e68b89c788bb5a5b654a4f32fdba38c5
+CANARY_INSTRUMENT=BTC-USD_UM_XPERP-310404
+CANARY_INST_TYPE=FUTURES
+PRODUCT_RULE_TYPE=xperp
+SETTLEMENT_ACCOUNT_TRUTH=USDC
+REQUEST_BODY_OWNER=build_venue_native_order_body_v1
+PROOF_METHOD=GET_ONLY
+TRADING_POSTS=0
+SET_ACCOUNT_LEVERAGE=3
+SET_ACCOUNT_LEVERAGE_MGN_MODE=cross
+SET_ACCOUNT_LEVERAGE_POS_SIDE=net
+SET_ACCOUNT_LEVERAGE_PROOF=GET_/api/v5/account/leverage-info
+PUBLIC_INSTRUMENTS_LEVER=50
+PUBLIC_INSTRUMENTS_LEVER_CLASSIFICATION=MAX_ALLOWED_LEVERAGE_OR_INSTRUMENT_LIMIT_NOT_SET_ACCOUNT_LEVERAGE
+ACCOUNT_INSTRUMENTS_LEVER=10
+ACCOUNT_INSTRUMENTS_LEVER_CLASSIFICATION=UNKNOWN_NOT_AUTOMATICALLY_SET_ACCOUNT_LEVERAGE
+ACCOUNT_INSTRUMENTS_NOT_ON_SUBMIT_PATH=true
+PRICE_REFERENCE_TYPE=markPx
+PRICE_REFERENCE=63043.7
+CTVAL=0.0001
+MINIMUM_CONTRACT_SIZE=1
+MINIMUM_NOTIONAL_ESTIMATE=6.30437
+SNAPSHOT_THEORETICAL_INITIAL_MARGIN_USDC=2.101456666666666666666666667
+SNAPSHOT_THEORETICAL_IM_FORMULA=markPx * ctVal * qty / SET_ACCOUNT_LEVERAGE
+MINIMUM_THEORETICAL_INITIAL_MARGIN_PROVEN=true
+SNAPSHOT_THEORETICAL_FUNDING_FLOOR_PROVEN=true
+CANARY_OPERATIONAL_MINIMUM_PROVEN=false
+RECOMMENDED_BOUNDED_CANARY_FUNDING_AMOUNT_PROVEN=false
+FUNDING_AMOUNT_PROVEN=false
+TDMODE_GET_SETTING_PROVEN=true
+TDMODE_LIVE_POST_PROVEN=false
+TOTAL_EQ=0
+POS_MODE=net_mode
+DEMO_XPERP_310328_SEPARATED=true
+LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED=false
+LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN=false
+CANARY_PROVEN=false
+GENERAL_LIVE_SUBMIT_UNLOCKED=false
+LIVE_AUTHORIZED=false
+TRADING_LOGIC_CHANGED=false
+DOUBLE_PLAY_CHANGED=false
+MASTER_V2_CHANGED=false
+STRATEGY_LOGIC_CHANGED=false
+SELECTION_CHANGED=false
+RISK_LOGIC_CHANGED=false
+PORTFOLIO_LOGIC_CHANGED=false
+MULTI_FUTURE_CHANGED=false
+ORDER_EFFECT=NONE
+ACCOUNT_MUTATION_EFFECT=NONE
+FUNDING_EFFECT=NONE
+CREDENTIAL_MUTATION=false
+NEW_EXECUTE_GO_REQUIRED=true
+NEW_FUNDING_GO_REQUIRED=true
+FUNDING_GO_AND_EXECUTE_GO_COLLAPSED=false
+I44_FUTURES_FUNDING_ECONOMICS_STATUS=INSUFFICIENT_EVIDENCE
+CANARY_CAPITAL_FUNDING_EXECUTED=false
+```
+
+Snapshot theoretical initial margin is **not** an operational funding
+minimum and **not** a recommended bounded canary funding amount. Public
+`lever=50` and account&#47;instruments `lever=10` are **not** the set
+account leverage. GET-proven `tdMode=cross` leverage **setting** does
+**not** prove a live XPerp POST.
+
+Derived non-SSOT evidence root:
+
+`evidence&#47;ops&#47;section_11_13_5_post_k_cross_imr_leverage_get_bind_v1&#47;20260816T033800Z&#47;`
+
+Non-authoritative tracker (delete from HEAD after all items close and
+this closeout is on `origin&#47;main`):
+
+`docs&#47;runbooks&#47;operations&#47;PEAK_TRADE_PERSISTENCE_REMEDIATION_TRACKER.md`
+
+Live vs Demo identity remains strictly separated. Map of Truth
+`CANONICAL_ACTIVE_INSTRUMENT=BTC-USD_UM_XPERP-310328` remains the
+§11.12.8 Demo campaign binding and is **not** retargeted.
+
+``` text
+CODE_OWNER=src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+CANONICAL_NEXT_STEP=OWNER_MERGE_GO_FOR_POST_K_PERSISTENCE_REMEDIATION_PR
+EARLIEST_UNRESOLVED_DEPENDENCY=OWNER_MERGE_GO_THEN_SEPARATE_NEW_FUNDING_GO_THEN_SEPARATE_NEW_EXECUTE_GO
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
+```
+
+Hard stop. This persistence GO does not consume or grant a new execute
+GO and does not grant a funding GO. `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE`
+remains `CONSUMED`. Cap &#47; Capability 11.9 remains fixture-only. No
+merge without separate `OWNER_MERGE_GO`. No funding. No execute.
 
 ## 11.14 Live order and economic evidence ladder
 
