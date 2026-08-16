@@ -83,12 +83,13 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.O. Historical N-era next steps
-below are superseded for the current evidence-only funding-amount
-fail-closed persist. Historical M-era next steps remain historical for
-the persistence closeout. Historical L-era next steps remain historical
-for the GET bind. Historical J-era next steps remain historical for the
-rejected SWAP oneshot.
+Current SSOT: Master Runbook §11.13.5.P. Historical O-era next steps
+below are superseded for the current ratification-only formula
+fail-closed persist. Historical N-era next steps remain historical for
+the funding-amount evaluation. Historical M-era next steps remain
+historical for the persistence closeout. Historical L-era next steps
+remain historical for the GET bind. Historical J-era next steps remain
+historical for the rejected SWAP oneshot.
 
 1. Historical first canary POST HTTP 401 remains
    `UNPROVEN_FAIL_CLOSED` (no proven incident body). Do not rewrite it
@@ -132,7 +133,11 @@ rejected SWAP oneshot.
 9. `OWNER_GO_REQUIRED_FOR_OPERATIONAL_CANARY_FUNDING_AMOUNT_EVIDENCE`
    was granted `EVIDENCE_ONLY` and is consumed. No GET refresh and no
    max-avail-size were authorized. `FUNDING_AMOUNT_PROVEN=false`.
-10. Next canonical step is
-    `OWNER_GO_REQUIRED_TO_RATIFY_OPERATIONAL_FUNDING_FORMULA`, then a
+10. `OWNER_GO_REQUIRED_TO_RATIFY_OPERATIONAL_FUNDING_FORMULA` was
+    granted `RATIFICATION_ONLY` and is consumed. No formula body was
+    supplied. `OWNER_RATIFIED_OPERATIONAL_FORMULA_PRESENT=false`.
+    `FUNDING_AMOUNT_PROVEN=false`.
+11. Next canonical step is
+    `OWNER_GO_REQUIRED_TO_SUPPLY_OPERATIONAL_FUNDING_FORMULA`, then a
     **separate** new execute GO if granted. This spec does not
     authorize execute, funding, GET refresh, or general Live unlock.
