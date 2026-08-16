@@ -24,10 +24,13 @@ Authoring GO prepares the surface only. The prior one-shot
 `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` is **CONSUMED**. Historical first
 POST HTTP 401 remains `UNPROVEN_FAIL_CLOSED`. A later one-shot trading
 POST HTTP 401 with parseable OKX `50124` is a separate observed POST
-classification and must not be rewritten onto the historical incident
-or onto instrument GETs (those were HTTP 200). A later execute requires
-a **new** one-shot Owner-GO after merge. Do not treat analog GET
-`50113` as the proven historical incident body.
+classification (`OKX_50124_OBSERVED_ONESHOT_TRADING_POST`) and must not
+be rewritten onto the historical incident, onto instrument GETs (those
+were HTTP 200), or onto `account&#47;instruments` (not on the submit
+path; empty SWAP list `CAUSAL_RELATION_UNPROVEN`). A later execute
+requires a **new** one-shot Owner-GO after merge. Do not treat analog
+GET `50113` as the proven historical incident body. Historical `50110`
+IP-whitelist is cleared and is not the oneshot `50124`.
 
 ## Required Owner inputs (future execute)
 

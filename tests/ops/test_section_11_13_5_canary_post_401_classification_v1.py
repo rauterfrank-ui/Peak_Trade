@@ -24,7 +24,7 @@ EVIDENCE_ROOT = (
     Path(__file__).resolve().parents[2]
     / "evidence"
     / "ops"
-    / "section_11_13_5_okx_50124_market_permission_classification_v1"
+    / "section_11_13_5_okx_50124_oneshot_post_classification_v1"
     / "20260816T002530Z"
 )
 
@@ -141,6 +141,17 @@ def test_50124_evidence_pack_keeps_shots_distinct_and_zero_writes() -> None:
     assert result["INSTRUMENT_GET_HTTP_STATUS"] == 200
     assert result["INSTRUMENT_GET_401_COUNT"] == 0
     assert result["AUTHENTICATED_GET_STATUS"] == "200_OKX_CODE_0"
+    assert result["ACCOUNT_INSTRUMENTS_NOT_ON_SUBMIT_PATH"] is True
+    assert result["ACCOUNT_INSTRUMENTS_CAUSAL_RELATION_TO_50124"] == "UNPROVEN"
+    assert result["ACCOUNT_INSTRUMENTS_SWAP_EMPTY_LIST_EFFECT_ON_SUBMIT"] == (
+        "NONE_NOT_ON_SUBMIT_PATH"
+    )
+    assert result["ROOT_CAUSE_CANDIDATES"] == "NONE_PROVEN"
+    assert result["50124_SUBTYPE"] == "UNKNOWN_NOT_PROVEN"
+    assert (
+        result["HISTORICAL_OWNER_GO_TOKEN_NAME_IS_NOT_PROVEN_MARKET_PERMISSION_ROOT_CAUSE"] is True
+    )
+    assert "DIAGNOSTIC_CANDIDATES_NOT_PROVEN" not in result
     assert "50124_PERMISSION_ROOT_CAUSE" not in result
     assert result["HISTORICAL_FIRST_401_ROOT_CAUSE"] != result["LATEST_50124_CLASSIFICATION"]
     assert result["RETRY_SAFE_NOW"] is False
