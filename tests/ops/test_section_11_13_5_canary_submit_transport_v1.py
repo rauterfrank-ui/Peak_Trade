@@ -2,12 +2,17 @@
 
 from __future__ import annotations
 
+import inspect
 import json
 from pathlib import Path
+from typing import Any
 
 import pytest
 
 from src.core.environment import LIVE_CONFIRM_TOKEN
+from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.okx_response_mapper_v1 import (
+    build_venue_native_order_body_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.config_v1 import (
     example_incomplete_config_dict_v1,
     load_live_canary_config_v1,
@@ -170,6 +175,104 @@ def test_order_plan_rejects_quantity_above_min_sz() -> None:
             owner_go=OWNER_GO_EXECUTE,
             origin_main_sha=ORIGIN_SHA,
         )
+
+
+def test_order_plan_reuses_proven_venue_native_body_builder(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    sentinel = {"sentinel": True}
+    calls: list[dict[str, Any]] = []
+
+    def _fake_builder(**kwargs: Any) -> dict[str, Any]:
+        calls.append(kwargs)
+        return sentinel
+
+    monkeypatch.setattr(
+        "src.ops.section_11_13_5_live_canary_minimum_exposure_v1.order_plan_v1.build_venue_native_order_body_v1",
+        _fake_builder,
+    )
+    plan = build_minimum_valid_canary_order_plan_v1(
+        instruments_payload=INSTRUMENTS,
+        ticker_payload=TICKER,
+        owner_go=OWNER_GO_EXECUTE,
+        origin_main_sha=ORIGIN_SHA,
+    )
+    assert plan.venue_native_payload is sentinel
+    assert len(calls) == 1
+    assert calls[0]["client_order_id"] == plan.clordid
+    assert calls[0]["instrument"] == "BTC-USDT-SWAP"
+    assert calls[0]["order_type"] == "LIMIT"
+    assert calls[0]["side"] == "BUY"
+    assert calls[0]["quantity"] == plan.quantity == "0.01"
+    assert calls[0]["td_mode"] == "cross"
+    assert calls[0]["px"] == plan.limit_price
+    source = inspect.getsource(build_minimum_valid_canary_order_plan_v1)
+    assert "build_venue_native_order_body_v1(" in source
+    assert '"instId"' not in source
+    assert '"clOrdId"' not in source
+
+
+def test_order_plan_body_equals_proven_builder_contract() -> None:
+    plan = build_minimum_valid_canary_order_plan_v1(
+        instruments_payload=INSTRUMENTS,
+        ticker_payload=TICKER,
+        owner_go=OWNER_GO_EXECUTE,
+        origin_main_sha=ORIGIN_SHA,
+    )
+    expected = build_venue_native_order_body_v1(
+        client_order_id=plan.clordid,
+        instrument=plan.instrument_id,
+        order_type=plan.order_type,
+        side=plan.side,
+        quantity=plan.quantity,
+        td_mode=plan.td_mode,
+        px=plan.limit_price,
+    )
+    assert plan.venue_native_payload == expected
+    assert set(plan.venue_native_payload) == {
+        "instId",
+        "tdMode",
+        "side",
+        "ordType",
+        "sz",
+        "px",
+        "clOrdId",
+    }
+    assert plan.venue_native_payload["instId"] == "BTC-USDT-SWAP"
+    assert plan.venue_native_payload["tdMode"] == "cross"
+    assert plan.venue_native_payload["side"] == "buy"
+    assert plan.venue_native_payload["ordType"] == "limit"
+    assert plan.venue_native_payload["sz"] == "0.01"
+    assert plan.quantity == "0.01"
+    assert plan.venue_native_payload["px"] == plan.limit_price == "65000.1"
+    assert plan.venue_native_payload["clOrdId"] == plan.clordid
+    assert "posSide" not in plan.venue_native_payload
+    assert "posMode" not in plan.venue_native_payload
+    assert "reduceOnly" not in plan.venue_native_payload
+    assert "x-simulated-trading" not in plan.venue_native_payload
+
+
+def test_canary_submit_post_omits_pos_side_and_simulated_trading_header() -> None:
+    transport = _fake_transport()
+    result = run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
+    assert result["SIGNED_BODY_EQUALS_WIRE_BODY"] is True
+    posts = [c for c in transport.calls if c.method == "POST"]
+    assert len(posts) == 1
+    body = json.loads(posts[0].body_text)
+    assert "posSide" not in body
+    assert "posMode" not in body
+    header_keys = {str(k).lower() for k in posts[0].headers}
+    assert "x-simulated-trading" not in header_keys
+    expected = build_venue_native_order_body_v1(
+        client_order_id=body["clOrdId"],
+        instrument=body["instId"],
+        order_type=body["ordType"],
+        side=body["side"],
+        quantity=body["sz"],
+        td_mode=body["tdMode"],
+        px=body["px"],
+    )
+    assert body == expected
 
 
 def test_http_client_rejects_wrong_host_and_demo_and_ungated_post() -> None:
