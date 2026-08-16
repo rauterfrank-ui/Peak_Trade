@@ -83,17 +83,18 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.S. Historical R-era next steps
-below are superseded for the current GET-only funding-evidence persist.
-Historical Q-era next steps remain historical for the policy-grammar
-fill persist. Historical P-era next steps remain historical for the
-ratification-only formula fail-closed persist. Historical O-era next
-steps remain historical for the evidence-only funding-amount fail-closed
-persist. Historical N-era next steps remain historical for the
-funding-amount evaluation. Historical M-era next steps remain historical
-for the persistence closeout. Historical L-era next steps remain
-historical for the GET bind. Historical J-era next steps remain
-historical for the rejected SWAP oneshot.
+Current SSOT: Master Runbook §11.13.5.T. Historical S-era next steps
+below are superseded for the current instantiation-only fail-closed
+persist. Historical R-era next steps remain historical for the GET-only
+funding-evidence persist. Historical Q-era next steps remain historical
+for the policy-grammar fill persist. Historical P-era next steps remain
+historical for the ratification-only formula fail-closed persist.
+Historical O-era next steps remain historical for the evidence-only
+funding-amount fail-closed persist. Historical N-era next steps remain
+historical for the funding-amount evaluation. Historical M-era next
+steps remain historical for the persistence closeout. Historical L-era
+next steps remain historical for the GET bind. Historical J-era next
+steps remain historical for the rejected SWAP oneshot.
 
 1. Historical first canary POST HTTP 401 remains
    `UNPROVEN_FAIL_CLOSED` (no proven incident body). Do not rewrite it
@@ -163,8 +164,16 @@ historical for the rejected SWAP oneshot.
     `FUNDING_AMOUNT_PROVEN=false`. This is **not** formula
     instantiation, **not** formula ratification, **not** a funding-GO,
     and **not** a Canary-execute-GO.
-14. Next canonical step is
-    `OWNER_GO_REQUIRED_FOR_OPERATIONAL_FORMULA_INSTANTIATION`.
+14. `OWNER_GO_REQUIRED_FOR_OPERATIONAL_FORMULA_INSTANTIATION` was
+    granted `FORMULA_INSTANTIATION_ONLY` and is consumed. No formula
+    body and no numeric reserve terms were supplied. Instantiation
+    effect is `NONE`. Fresh theoretical IM `2.09954` USDC remains a
+    floor only. `FULL_FORMULA_INSTANTIATION=false`.
+    `FORMULA_BODY_STATUS=ABSENT`. `FUNDING_AMOUNT_PROVEN=false`. This
+    is **not** formula ratification, **not** a funding-GO, and **not**
+    a Canary-execute-GO.
+15. Next canonical step is
+    `OWNER_GO_REQUIRED_TO_SUPPLY_NUMERIC_OPERATIONAL_RESERVE_TERMS`.
     That GO is **not** granted. Later formula ratification, funding, and
     execute remain separate. This spec does not authorize execute,
     funding, another GET, or general Live unlock.
