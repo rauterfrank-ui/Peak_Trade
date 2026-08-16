@@ -75,12 +75,20 @@ def build_owner_execute_input_contract_v1() -> dict[str, Any]:
             {
                 "field": "instrument_id",
                 "value_hint": DEFAULT_INSTRUMENT_ID,
-                "notes": "Canonical canary instrument unless Owner rebinds.",
+                "notes": (
+                    "Canonical live EEA X-Perp BTC-USD_UM_XPERP-310404 / FUTURES. "
+                    "BTC-USDT-SWAP and Demo BTC-USD_UM_XPERP-310328 are rejected."
+                ),
+            },
+            {
+                "field": "inst_type",
+                "value_hint": "FUTURES",
+                "notes": "Must be FUTURES. SWAP is fail-closed for this canary path.",
             },
             {
                 "field": "instrument_min_sz/lot_sz/ct_val/tick_sz",
                 "value_hint": "FROM_VENUE_PUBLIC_INSTRUMENTS_AT_EXECUTE",
-                "notes": "Must be derived from venue metadata; not invented in authoring.",
+                "notes": "Must be derived from venue metadata at execute; XPERP minSz/lotSz=1.",
             },
             {
                 "field": "secretref_uri",

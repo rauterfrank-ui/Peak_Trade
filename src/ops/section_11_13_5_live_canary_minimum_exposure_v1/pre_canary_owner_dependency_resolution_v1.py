@@ -174,7 +174,9 @@ def resolve_exchange_truth_adoption_dependency_v1(
                 "adopted": adopted[POLICY_ADOPT_EXCHANGE_VENUE_METADATA_BASELINE_V1],
                 "effect_if_adopted": (
                     "Accept sealed exchange venue/instrument metadata digest as "
-                    "LIVE canary baseline for BTC-USDT-SWAP; does not alone clear "
+                    "Accept sealed exchange venue/instrument metadata digest only after "
+                    "a fresh GET-only XPERP-310404 rebuild; do not inherit BTC-USDT-SWAP "
+                    "or Demo-310328. Does not alone clear "
                     "BLOCKS_NEW_ENTRY."
                 ),
             },

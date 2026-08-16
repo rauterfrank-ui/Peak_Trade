@@ -79,7 +79,7 @@ def derive_min_executable_notional_v1(
     reference_price: str,
     instrument_ct_val: str,
 ) -> str:
-    """Notional ≈ qty * ctVal * price (OKX SWAP contract semantics)."""
+    """Notional ≈ qty * ctVal * price (OKX contract units; XPERP integer sz)."""
     qty = _dec(quantity, field="quantity")
     px = _dec(reference_price, field="reference_price")
     ct = _dec(instrument_ct_val, field="instrument_ct_val")
@@ -108,6 +108,10 @@ def build_canary_exposure_binding_v1(
         raise LiveCanaryExposureError("SIDE_INVALID")
     min_sz = _dec(instrument_min_sz, field="instrument_min_sz")
     lot = _dec(instrument_lot_sz, field="instrument_lot_sz")
+    if min_sz != min_sz.to_integral_value():
+        raise LiveCanaryExposureError("INTEGER_CONTRACT_REQUIRED:instrument_min_sz")
+    if lot != lot.to_integral_value():
+        raise LiveCanaryExposureError("INTEGER_CONTRACT_REQUIRED:instrument_lot_sz")
     qty_raw = instrument_min_sz if quantity is None else quantity
     qty = _dec(qty_raw, field="quantity")
     if qty < min_sz:

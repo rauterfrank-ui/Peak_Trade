@@ -6,7 +6,10 @@
   "rest_host": "",
   "rest_base": "",
   "account_scope": "",
-  "instrument_id": "BTC-USDT-SWAP",
+  "instrument_id": "BTC-USD_UM_XPERP-310404",
+  "inst_type": "FUTURES",
+  "rule_type": "xperp",
+  "settlement_account_truth": "USDC",
   "side": "BUY",
   "order_type": "LIMIT",
   "td_mode": "cross",
@@ -40,5 +43,5 @@
   "config_version": "section_11_13_5_live_canary_minimum_exposure_config.v1",
   "schema_version": "section_11_13_5_live_canary_minimum_exposure.v1",
   "predecessor_dry_run_evidence_root": "evidence/ops/section_11_13_4_live_dry_run_order_plan_proven_v1/20260811T230805Z/",
-  "notes": "Owner fills productive fields at future execute time. Instrument metadata from venue GET at execute. SecretRef must use /live-canary-minimum-exposure/. Transport-prep does not authorize execute."
+  "notes": "Owner fills productive fields at future execute time. Canonical instrument is BTC-USD_UM_XPERP-310404 / FUTURES / xperp / USDC. Do not fall back to BTC-USDT-SWAP or Demo 310328. minSz/lotSz are integer contracts (1/1). Instrument metadata from venue GET at execute. SecretRef must use /live-canary-minimum-exposure/. Transport-prep does not authorize execute or funding."
 }

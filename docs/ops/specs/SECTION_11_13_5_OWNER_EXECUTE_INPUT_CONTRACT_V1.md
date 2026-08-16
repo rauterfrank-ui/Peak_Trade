@@ -27,18 +27,23 @@ POST HTTP 401 with parseable OKX `50124` is a separate observed POST
 classification (`OKX_50124_OBSERVED_ONESHOT_TRADING_POST`) and must not
 be rewritten onto the historical incident, onto instrument GETs (those
 were HTTP 200), or onto `account&#47;instruments` (not on the submit
-path; empty SWAP list `CAUSAL_RELATION_UNPROVEN`). A later execute
-requires a **new** one-shot Owner-GO after merge. Do not treat analog
+path; empty SWAP list `CAUSAL_RELATION_UNPROVEN`). A later execute requires a **new** one-shot Owner-GO after merge **and**
+a **separate** funding GO. Do not treat analog
 GET `50113` as the proven historical incident body. Historical `50110`
-IP-whitelist is cleared and is not the oneshot `50124`.
+IP-whitelist is cleared and is not the oneshot `50124`. The current
+EEA canary instrument is `BTC-USD_UM_XPERP-310404` &#47; `FUTURES` &#47;
+`xperp` &#47; USDC account truth. `BTC-USDT-SWAP` is rejected for this
+path. Demo `BTC-USD_UM_XPERP-310328` remains Demo&#47;historical only.
 
 ## Required Owner inputs (future execute)
 
 | Field | Required | Notes |
 |-------|----------|-------|
 | venue/entity/region/host/account | yes | Reuse proven LIVE binding (OKX EEA / `eea.okx.com` / `856964404452495999`) |
-| instrument_id | yes | Canonical `BTC-USDT-SWAP` unless Owner rebinds |
-| instrument minSz/lotSz/ctVal/tickSz | yes | From venue instruments metadata at execute; not invented here |
+| instrument_id | yes | Canonical live EEA `BTC-USD_UM_XPERP-310404`. `BTC-USDT-SWAP` and Demo `BTC-USD_UM_XPERP-310328` are rejected. No aliasing. |
+| inst_type | yes | `FUTURES` (`ruleType=xperp`). `SWAP` is fail-closed for this canary path. |
+| settlement truth | yes | Account&#47;UI truth `USDC`. Do not inherit SWAP USDT baseline. |
+| instrument minSz/lotSz/ctVal/tickSz | yes | Fresh GET-only XPERP-310404 metadata at execute; integer contracts `minSz=1` &#47; `lotSz=1`; not invented; not inherited from SWAP or Demo 310328 |
 | SecretRef URI | yes | `secretref:&#47;&#47;vault&#47;peak-trade&#47;live-canary-minimum-exposure&#47;okx` |
 | `--vault-file` | yes | Local SecretRef JSON map; same §11.13.2/3/4 CLI pattern; no secrets in git |
 | credential class | yes | `LIVE_CANARY_MINIMUM_EXPOSURE_TRADE_API_KEY` |
