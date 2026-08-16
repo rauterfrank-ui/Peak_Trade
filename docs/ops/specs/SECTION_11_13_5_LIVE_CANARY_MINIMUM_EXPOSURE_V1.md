@@ -83,9 +83,10 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.M. Historical L-era next steps
-below are superseded for the current post-merge persistence closeout.
-Historical K-era next steps remain historical for the GET bind.
+Current SSOT: Master Runbook §11.13.5.N. Historical M-era next steps
+below are superseded for the current fail-closed funding-amount
+evaluation. Historical L-era next steps remain historical for the GET
+bind. Historical K-era next steps remain historical for the GET bind.
 Historical J-era next steps remain historical for the rejected SWAP
 oneshot.
 
@@ -122,7 +123,13 @@ oneshot.
    `OWNER_MERGE_GO_FOR_POST_K_PERSISTENCE_REMEDIATION_PR` is
    `CONSUMED_CLOSED`. The non-authoritative tracker is
    `RETIRED_CLOSED_NONAUTHORITATIVE` and retained.
-8. Next canonical step is a **separate**
-   `OWNER_GO_REQUIRED_SEPARATE_FOR_NEW_FUNDING`, then a **separate**
-   new execute GO if granted. This spec does not authorize execute,
-   funding, or general Live unlock.
+8. `OWNER_GO_FOR_NEW_FUNDING` evaluated persisted GET-only facts and
+   remains evaluation-only. Snapshot theoretical IM
+   `2.101456666666666666666666667` USDC is **not** an operational
+   funding amount. `FUNDING_AMOUNT_PROVEN=false`.
+   `RECOMMENDED_BOUNDED_CANARY_FUNDING_AMOUNT_PROVEN=false`.
+   `CANARY_OPERATIONAL_MINIMUM_PROVEN=false`.
+9. Next canonical step is
+   `OWNER_GO_REQUIRED_FOR_OPERATIONAL_CANARY_FUNDING_AMOUNT_EVIDENCE`,
+   then a **separate** new execute GO if granted. This spec does not
+   authorize execute, funding, or general Live unlock.

@@ -10847,16 +10847,147 @@ Live vs Demo identity remains strictly separated. Map of Truth
 ``` text
 CODE_OWNER=src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;
 CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
-CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_NEW_FUNDING
-EARLIEST_UNRESOLVED_DEPENDENCY=SEPARATE_NEW_FUNDING_GO_THEN_SEPARATE_NEW_EXECUTE_GO
+CANONICAL_NEXT_STEP=SUPERSEDED_BY_SECTION_11_13_5_N
+EARLIEST_UNRESOLVED_DEPENDENCY=SUPERSEDED_BY_SECTION_11_13_5_N
 EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
 ```
 
 Hard stop. This closeout GO does not consume or grant a funding GO and
 does not grant a new execute GO. `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE`
-remains `CONSUMED`. Cap &#47; Capability 11.9 remains fixture-only. No
-merge of this closeout without a separate `OWNER_MERGE_GO`. No funding.
-No execute.
+remains `CONSUMED`. Cap &#47; Capability 11.9 remains fixture-only. The
+M-era next pointer `OWNER_GO_REQUIRED_SEPARATE_FOR_NEW_FUNDING` is
+**consumed** as evaluation-only by Owner-GO
+`OWNER_GO_FOR_NEW_FUNDING` and is superseded by §11.13.5.N below. No
+funding executed. No execute.
+
+### 11.13.5.N OWNER_GO_FOR_NEW_FUNDING evaluation: operational amount unproven (BOUND; FAIL-CLOSED; NOT FUNDED; NOT EXECUTE)
+
+Owner-GO `OWNER_GO_FOR_NEW_FUNDING` (one-shot; now **CONSUMED**)
+authorized **read-only reconstruction** of persisted post-K GET bind
+facts to determine whether a bounded operational canary funding amount
+is proven. This does **not** authorize deposit, transfer, withdrawal,
+convert, buy&#47;sell, Trading-POST, Canary execute, orders, positions,
+set-leverage mutation, API-key &#47; account mutation, rounding the
+snapshot theoretical IM floor into an operational amount, I44 &#47; G16
+upgrade, general Live unlock, Multi-Future, Double Play &#47; Master V2
+changes, or merge of this evaluation without a separate
+`OWNER_MERGE_GO`.
+
+Reconstructed GET-only facts from sealed pack
+`evidence&#47;ops&#47;section_11_13_5_post_k_cross_imr_leverage_get_bind_v1&#47;20260816T033800Z&#47;`
+remain snapshot-bound. They prove a **theoretical initial-margin floor**,
+not an operational funding amount.
+
+``` text
+CURRENT_PHASE=SECTION_11_13_5_N_FUNDING_AMOUNT_EVALUATION_FAIL_CLOSED
+OWNER_GO=OWNER_GO_FOR_NEW_FUNDING
+OWNER_GO_STATUS=CONSUMED
+OWNER_GO_SCOPE=FUNDING_EVIDENCE_AND_PREPARATION_EVALUATION_ONLY
+BASELINE_ORIGIN_MAIN_SHA=27ceae9115de0ae8db196ce8417730f328c5e251
+PR_5907_STATUS=SQUASH_MERGED
+PR_5907_MERGE_SHA=27ceae9115de0ae8db196ce8417730f328c5e251
+CANARY_INSTRUMENT=BTC-USD_UM_XPERP-310404
+CANARY_INST_TYPE=FUTURES
+PRODUCT_RULE_TYPE=xperp
+SETTLEMENT_ACCOUNT_TRUTH=USDC
+INSTRUMENT_BINDING_STATUS=CANONICALLY_PERSISTED_GET_ONLY
+CROSS_LEVERAGE_GET_PROOF=SET_ACCOUNT_LEVERAGE=3_mgnMode=cross_posSide=net
+PROOF_METHOD=GET_ONLY
+QUANTITY_ASSUMPTION=1
+CTVAL=0.0001
+PRICE_REFERENCE_TYPE=markPx
+PRICE_REFERENCE=63043.7
+SNAPSHOT_THEORETICAL_IM_FORMULA=markPx * ctVal * qty / SET_ACCOUNT_LEVERAGE
+SNAPSHOT_THEORETICAL_INITIAL_MARGIN_USDC=2.101456666666666666666666667
+MINIMUM_NOTIONAL_ESTIMATE=6.30437
+MINIMUM_THEORETICAL_INITIAL_MARGIN_PROVEN=true
+SNAPSHOT_THEORETICAL_FUNDING_FLOOR_PROVEN=true
+CANARY_OPERATIONAL_MINIMUM_PROVEN=false
+RECOMMENDED_BOUNDED_CANARY_FUNDING_AMOUNT_PROVEN=false
+FUNDING_AMOUNT_PROVEN=false
+PROVEN_FUNDING_AMOUNT=NONE
+PROVEN_FUNDING_AMOUNT_UNIT=NONE
+SNAPSHOT_FLOOR_IS_NOT_OPERATIONAL_FUNDING_AMOUNT=true
+FEE_GET_TAKER_USDC=-0.0005
+FEE_GET_MAKER_USDC=-0.0002
+FEE_GET_CLASSIFICATION=OKX_REBATE_CONVENTION_NOT_POSITIVE_RESERVE_POLICY
+POSITION_TIER_IMR=0.02
+POSITION_TIER_IMR_CLASSIFICATION=TIER_LIMIT_NOT_ACCOUNT_EFFECTIVE_IMR
+SLIPPAGE_BUFFER_PROVEN=false
+MARGIN_BUFFER_POLICY_PROVEN=false
+VENUE_MIN_AVAILABLE_EQUITY_FOR_ONE_CONTRACT_PROVEN=false
+REQUIRED_MARGIN_EQUITY_ESTIMATE_STATUS=UNPROVEN_TOTAL_EQ_ZERO_AT_POST_K_GET_BIND
+TOTAL_EQ=0
+I44_FUTURES_FUNDING_ECONOMICS_STATUS=INSUFFICIENT_EVIDENCE
+G16_FUNDING_PROOF_STATUS=INSUFFICIENT_EVIDENCE
+PRODUCTIVE_GET_REFRESH_REQUIRED_BEFORE_EXECUTE=true
+FUNDING_EXECUTED=false
+EXTERNAL_MONEY_MOVEMENT=false
+CANARY_EXECUTED=false
+TRADING_POSTS=0
+ACCOUNT_MUTATION=false
+CREDENTIAL_MUTATION=false
+TRADING_LOGIC_CHANGED=false
+MASTER_V2_CHANGED=false
+DOUBLE_PLAY_CHANGED=false
+RUNTIME_AUTHORITY_EXPANDED=false
+LIVE_AUTHORIZED=false
+GENERAL_LIVE_UNLOCKED=false
+GENERAL_LIVE_SUBMIT_UNLOCKED=false
+TDMODE_LIVE_POST_PROVEN=false
+NEW_EXECUTE_GO_REQUIRED=true
+FUNDING_GO_AND_EXECUTE_GO_COLLAPSED=false
+EXECUTE_AUTHORIZED_BY_THIS_EVALUATION=false
+ORDER_EFFECT=NONE
+ACCOUNT_MUTATION_EFFECT=NONE
+FUNDING_EFFECT=NONE
+SECRET_VALUE_ACCESS=NONE
+```
+
+The snapshot theoretical IM floor must **not** be rounded, padded, or
+promoted to `FUNDING_AMOUNT_PROVEN` or
+`RECOMMENDED_BOUNDED_CANARY_FUNDING_AMOUNT_PROVEN`. Missing evidence
+that blocks those fields:
+
+1. Owner-ratified operational formula distinct from
+   `markPx * ctVal * qty &#47; SET_ACCOUNT_LEVERAGE`.
+2. Positive fee-reserve policy. Sealed `takerUSDC=-0.0005` &#47;
+   `makerUSDC=-0.0002` is OKX rebate convention and is **not** a
+   positive reserve.
+3. Proven slippage &#47; spread buffer policy. Snapshot bid&#47;ask exist
+   and are **not** a sizing policy.
+4. Proven maintenance-margin &#47; liquidation buffer beyond theoretical
+   IM. Public `imr=0.02` is a tier limit, **not** account-effective IMR.
+5. Venue-native minimum available equity &#47; max-avail-size proof for
+   one contract (absent from the sealed GET pack).
+6. Fresh productive GET refresh. The sealed `markPx=63043.7` is
+   snapshot-bound; the economic-baseline contract requires a refresh
+   before execute.
+7. I44 &#47; Master G16 funding-rate &#47; payment accounting remains
+   `INSUFFICIENT_EVIDENCE` and must not be used as a canary capital
+   reserve.
+8. Public `settleCcy=USD` versus account `settleCcy=USDC` conversion
+   or haircut policy is absent.
+9. `totalEq=0` proves the account is unfunded; it does **not** prove
+   how much USDC to deposit.
+
+Live vs Demo identity remains strictly separated. Map of Truth
+`CANONICAL_ACTIVE_INSTRUMENT=BTC-USD_UM_XPERP-310328` remains the
+§11.12.8 Demo campaign binding and is **not** retargeted.
+
+``` text
+CODE_OWNER=src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_FOR_OPERATIONAL_CANARY_FUNDING_AMOUNT_EVIDENCE
+EARLIEST_UNRESOLVED_DEPENDENCY=CANARY_OPERATIONAL_MINIMUM_UNPROVEN_THEN_SEPARATE_NEW_EXECUTE_GO
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
+```
+
+Hard stop. `OWNER_GO_FOR_NEW_FUNDING` is consumed as evaluation-only
+and must not be reused for money movement or execute.
+`OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains `CONSUMED`. Cap &#47;
+Capability 11.9 remains fixture-only. No funding. No execute. No merge
+of this evaluation without a separate `OWNER_MERGE_GO`.
 
 ## 11.14 Live order and economic evidence ladder
 
