@@ -1,0 +1,112 @@
+{
+  "CANARY_INSTRUMENT": "BTC-USD_UM_XPERP-310404",
+  "CANARY_INST_TYPE": "FUTURES",
+  "DOCUMENT_CLASS": "SECTION_11_13_5_POST_K_CROSS_IMR_LEVERAGE_GET_BIND_V1",
+  "DOCUMENT_ROLE": "DERIVED_NON_SSOT_SANITIZED_GET_SNAPSHOT",
+  "EXPECTED_UID": "856964404452495999",
+  "GET_REQUEST_COUNT": 12,
+  "HOST": "eea.okx.com",
+  "METHOD": "GET",
+  "POST_COUNT": 0,
+  "PRODUCT_RULE_TYPE": "xperp",
+  "SECRET_VALUES_INCLUDED": false,
+  "SETTLEMENT_ACCOUNT_TRUTH": "USDC",
+  "TDMODE_TARGET": "cross",
+  "account_balance": {
+    "details_empty": true,
+    "http_status": 200,
+    "okx_code": "0",
+    "path": "/api/v5/account/balance",
+    "totalEq": "0"
+  },
+  "account_config": {
+    "acctLv": "2",
+    "http_status": 200,
+    "okx_code": "0",
+    "path": "/api/v5/account/config",
+    "perm": "read_only,trade",
+    "perm_classification": "GENERIC_NOT_INSTRUMENT_POST_PROOF",
+    "posMode": "net_mode",
+    "uid": "856964404452495999"
+  },
+  "account_instruments_diagnostic": {
+    "NOT_ON_SUBMIT_PATH": true,
+    "http_status": 200,
+    "lever": "10",
+    "lever_classification": "UNKNOWN_NOT_AUTOMATICALLY_SET_ACCOUNT_LEVERAGE",
+    "okx_code": "0",
+    "path": "/api/v5/account/instruments?instType=FUTURES&instId=BTC-USD_UM_XPERP-310404",
+    "settleCcy": "USDC"
+  },
+  "account_leverage_info": {
+    "classification": "SET_ACCOUNT_LEVERAGE",
+    "http_status": 200,
+    "instId": "BTC-USD_UM_XPERP-310404",
+    "lever": "3",
+    "mgnMode": "cross",
+    "okx_code": "0",
+    "path": "/api/v5/account/leverage-info?instId=BTC-USD_UM_XPERP-310404&mgnMode=cross",
+    "posSide": "net"
+  },
+  "account_trade_fee": {
+    "fee_sign_note": "OKX_REBATE_CONVENTION_NOT_POSITIVE_RESERVE_POLICY",
+    "http_status": 200,
+    "makerUSDC": "-0.0002",
+    "okx_code": "0",
+    "path": "/api/v5/account/trade-fee?instType=FUTURES&instFamily=BTC-USD_UM_XPERP",
+    "takerUSDC": "-0.0005"
+  },
+  "mark_price": {
+    "http_status": 200,
+    "markPx": "63043.7",
+    "okx_code": "0",
+    "path": "/api/v5/public/mark-price?instType=FUTURES&instId=BTC-USD_UM_XPERP-310404",
+    "ts": "1786850320208"
+  },
+  "orders_pending": {
+    "count": 0,
+    "http_status": 200,
+    "okx_code": "0"
+  },
+  "positions": {
+    "http_status": 200,
+    "okx_code": "0",
+    "position_size": "0",
+    "row_count": 0
+  },
+  "public_instruments": {
+    "ctVal": "0.0001",
+    "ctValCcy": "BTC",
+    "http_status": 200,
+    "instId": "BTC-USD_UM_XPERP-310404",
+    "instType": "FUTURES",
+    "lever": "50",
+    "lever_classification": "MAX_ALLOWED_LEVERAGE_OR_INSTRUMENT_LIMIT_NOT_SET_ACCOUNT_LEVERAGE",
+    "lotSz": "1",
+    "minSz": "1",
+    "okx_code": "0",
+    "path": "/api/v5/public/instruments?instType=FUTURES&instId=BTC-USD_UM_XPERP-310404",
+    "ruleType": "xperp",
+    "settleCcy": "USD",
+    "state": "live",
+    "tickSz": "0.1"
+  },
+  "public_position_tiers_qty_one": {
+    "classification": "TIER_LIMIT_NOT_ACCOUNT_EFFECTIVE_IMR",
+    "http_status": 200,
+    "imr": "0.02",
+    "maxLever": "50",
+    "mmr": "0.01",
+    "okx_code": "0",
+    "path": "/api/v5/public/position-tiers?instType=FUTURES&tdMode=cross&instFamily=BTC-USD_UM_XPERP&instId=BTC-USD_UM_XPERP-310404",
+    "tier": "1"
+  },
+  "ticker": {
+    "askPx": "63043.5",
+    "bidPx": "63043.4",
+    "http_status": 200,
+    "last": "63048.8",
+    "okx_code": "0",
+    "path": "/api/v5/market/ticker?instId=BTC-USD_UM_XPERP-310404"
+  }
+}

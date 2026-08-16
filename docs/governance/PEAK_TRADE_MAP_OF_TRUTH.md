@@ -292,7 +292,8 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.H | SSOT Live-Canary execution-plumbing remediation (`OWNER_GO=SECTION_11_13_5_CANARY_EXECUTION_PLUMBING_REMEDIATION_PREPARATION`; `CANARY_EXECUTION_PLUMBING_REMEDIATION_PREPARED=true`; historical `AUTH_GET_50110` at H time; historical next pointer superseded by §11.13.5.I) |
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.I | SSOT POST-HTTP-401 bounded transport remediation + incident persistence (`OWNER_GO=SECTION_11_13_5_POST_HTTP_401_BOUNDED_REMEDIATION_PREPARATION`; PR `#5902` squash-merged `4adb0af23`; `OWNER_MERGE_GO_FOR_BOUNDED_POST_401_REMEDIATION_PR_STATUS=DONE_MERGED`; `CANARY_FIRST_SUBMIT_HTTP_STATUS=401`; `POST_401_ROOT_CAUSE=UNPROVEN_FAIL_CLOSED`; `AUTH_50110_CLEARED=true`; no retry; historical next pointer superseded by §11.13.5.J) |
 | [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.J | SSOT one-shot trading-POST HTTP 401 &#47; OKX 50124 observed classification (`OWNER_GO` historical token contains `MARKET_PERMISSION` but `ROOT_CAUSE_PROVEN=false`; `LATEST_50124_CLASSIFICATION=OKX_50124_OBSERVED_ONESHOT_TRADING_POST`; `HTTP_50124_INSTRUMENT_SPECIFIC_PROVEN=false`; historical first 401 remains `UNPROVEN_FAIL_CLOSED`; `account&#47;instruments` not on submit path; no retry; historical next pointer superseded by §11.13.5.K) |
-| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.K | SSOT EEA XPerp 310404 canary rebind preparation (`CURRENT_PHASE=SECTION_11_13_5_EEA_XPERP_310404_REBIND_PREPARATION`; `NEW_CANARY_INSTRUMENT=BTC-USD_UM_XPERP-310404`; `NEW_CANARY_INST_TYPE=FUTURES`; `NEW_CANARY_RULE_TYPE=xperp`; `NEW_CANARY_SETTLEMENT_TRUTH=USDC`; `BTC_USDT_SWAP_STATUS=REJECTED_FOR_CURRENT_EEA_CANARY_PATH`; `DEMO_XPERP_310328_SEPARATED=true`; `REQUEST_BODY_OWNER=build_venue_native_order_body_v1`; `LIVE_AUTHORIZED=false`; not execute; not funded; not proven) |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.K | SSOT EEA XPerp 310404 canary rebind preparation (`CURRENT_PHASE=SECTION_11_13_5_EEA_XPERP_310404_REBIND_PREPARATION`; `NEW_CANARY_INSTRUMENT=BTC-USD_UM_XPERP-310404`; `NEW_CANARY_INST_TYPE=FUTURES`; `NEW_CANARY_RULE_TYPE=xperp`; `NEW_CANARY_SETTLEMENT_TRUTH=USDC`; `BTC_USDT_SWAP_STATUS=REJECTED_FOR_CURRENT_EEA_CANARY_PATH`; `DEMO_XPERP_310328_SEPARATED=true`; `REQUEST_BODY_OWNER=build_venue_native_order_body_v1`; `LIVE_AUTHORIZED=false`; not execute; not funded; not proven; historical next pointer superseded by §11.13.5.L; PR `#5905` merged `2caad4a2e`) |
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §11.13.5.L | SSOT post-K GET bind (`SET_ACCOUNT_LEVERAGE=3`; snapshot theoretical IM floor `2.101456666666666666666666667` USDC at `markPx=63043.7`; `CANARY_OPERATIONAL_MINIMUM_PROVEN=false`; `TDMODE_GET_SETTING_PROVEN=true`; `TDMODE_LIVE_POST_PROVEN=false`; `LIVE_AUTHORIZED=false`; not funded; not execute) |
 | [`evidence&#47;ops&#47;section_11_13_5_live_canary_forensic_reconciliation_v1&#47;20260812T120000Z&#47;`](../../evidence/ops/section_11_13_5_live_canary_forensic_reconciliation_v1/20260812T120000Z/) | Owner §11.13.5 sealed forensic classification + authoring evidence (derived; non-SSOT; no productive network; writes&#47;orders=0; `MANIFEST_VERIFY_RC=0`; Live unauthorized) |
 | [`evidence&#47;ops&#47;section_11_13_5_b_pr_5879_squash_merge_and_pre_canary_readiness_v1&#47;20260812T123500Z&#47;`](../../evidence/ops/section_11_13_5_b_pr_5879_squash_merge_and_pre_canary_readiness_v1/20260812T123500Z/) | Owner §11.13.5.B PR `#5879` squash-merge closeout + pre-Canary dependency resolution (derived; non-SSOT; no execute; `MANIFEST_VERIFY_RC=0`) |
 | [`evidence&#47;ops&#47;section_11_13_5_live_canary_trade_capability_attestation_v1&#47;20260812T135723Z&#47;`](../../evidence/ops/section_11_13_5_live_canary_trade_capability_attestation_v1/20260812T135723Z/) | Owner §11.13.5.C trade-key attestation proven evidence (derived; non-SSOT; no secret values; no orders; `MANIFEST_VERIFY_RC=0`) |
@@ -301,6 +302,7 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`evidence&#47;ops&#47;section_11_13_5_okx_temp_security_clearance_evidence_collection_v1&#47;20260815T190010Z&#47;`](../../evidence/ops/section_11_13_5_okx_temp_security_clearance_evidence_collection_v1/20260815T190010Z/) | Owner §11.13.5.E1 fresh OKX temp-security clearance evidence (derived; non-SSOT; productive withdrawal-UI observation; `CLEARANCE_EVIDENCE=PASS`; no withdrawals&#47;P2P sell&#47;orders; `MANIFEST_VERIFY_RC=0`) |
 | [`evidence&#47;ops&#47;section_11_13_5_live_canary_cybersecurity_gate_reevaluation_v1&#47;20260815T193911Z&#47;`](../../evidence/ops/section_11_13_5_live_canary_cybersecurity_gate_reevaluation_v1/20260815T193911Z/) | Owner §11.13.5.F forensic Live-Canary cybersecurity-gate reevaluation PASS (derived; non-SSOT; `21&#47;21` proven; no orders&#47;withdrawals&#47;P2P sell; `MANIFEST_VERIFY_RC=0`) |
 | [`evidence&#47;ops&#47;section_11_13_5_okx_50124_oneshot_post_classification_v1&#47;20260816T002530Z&#47;`](../../evidence/ops/section_11_13_5_okx_50124_oneshot_post_classification_v1/20260816T002530Z/) | Owner §11.13.5.J one-shot POST 401&#47;50124 classification evidence (derived; non-SSOT; `account&#47;instruments` separate diagnostic HTTP 200 empty SWAP, `NOT_ON_SUBMIT_PATH`, `CAUSAL_RELATION_UNPROVEN`; no trading POST in this pack; `ROOT_CAUSE_PROVEN=false`) |
+| [`evidence&#47;ops&#47;section_11_13_5_post_k_cross_imr_leverage_get_bind_v1&#47;20260816T033800Z&#47;`](../../evidence/ops/section_11_13_5_post_k_cross_imr_leverage_get_bind_v1/20260816T033800Z/) | Owner §11.13.5.L post-K GET bind evidence (derived; non-SSOT; GET-only; `SET_ACCOUNT_LEVERAGE=3`; snapshot theoretical IM floor; not operational funding min; no orders; `MANIFEST_VERIFY_RC=0`) |
 | [`docs/ops/specs/SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE_V1.md`](../ops/specs/SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE_V1.md) | Derived §11.13.5 package spec (non-SSOT) |
 | [`docs/ops/specs/SECTION_11_13_5_OWNER_EXECUTE_INPUT_CONTRACT_V1.md`](../ops/specs/SECTION_11_13_5_OWNER_EXECUTE_INPUT_CONTRACT_V1.md) | Owner execute-time input checklist for future canary (non-SSOT; no invented values) |
 | [`docs/ops/specs/SECTION_11_13_3_OWNER_EXECUTE_INPUT_CONTRACT_V1.md`](../ops/specs/SECTION_11_13_3_OWNER_EXECUTE_INPUT_CONTRACT_V1.md) | Owner execute-time input checklist (non-SSOT; no invented values) |
@@ -562,9 +564,12 @@ SECTION_11_13_5_G_CANARY_SUBMIT_TRANSPORT_PREPARATION_BOUND=true
 SECTION_11_13_5_H_CANARY_EXECUTION_PLUMBING_REMEDIATION_BOUND=true
 SECTION_11_13_5_I_POST_HTTP_401_BOUNDED_REMEDIATION_BOUND=true
 SECTION_11_13_5_J_OKX_50124_ONESHOT_POST_CLASSIFICATION_BOUND=true
+SECTION_11_13_5_K_EEA_XPERP_310404_REBIND_PREPARATION_BOUND=true
+SECTION_11_13_5_L_POST_K_GET_BIND_BOUND=true
 PRODUCTIVE_CANARY_SURFACE_MERGED_TO_ORIGIN_MAIN=true
 PR_5879_MERGE_COMMIT_SHA=b3dadd86d6821882c8184bd1f6f8e207cbc4af43
 PR_5902_SQUASH_MERGE_SHA=4adb0af23181cd9a8c032bbb57d3b189413a4226
+PR_5905_SQUASH_MERGE_SHA=2caad4a2e68b89c788bb5a5b654a4f32fdba38c5
 OWNER_MERGE_GO_FOR_BOUNDED_POST_401_REMEDIATION_PR_STATUS=DONE_MERGED
 LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED=false
 LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN=false
@@ -620,11 +625,12 @@ OWNER_GO_CANARY_SUBMIT_TRANSPORT_PREPARATION_STATUS=CONSUMED
 OWNER_GO_SECTION_11_13_5_CANARY_EXECUTION_PLUMBING_REMEDIATION_PREPARATION_STATUS=CONSUMED
 OWNER_GO_SECTION_11_13_5_POST_HTTP_401_BOUNDED_REMEDIATION_PREPARATION_STATUS=CONSUMED
 OWNER_GO_SECTION_11_13_5_OKX_50124_MARKET_PERMISSION_REMEDIATION_AND_CLASSIFICATION_PREPARATION_STATUS=CONSUMED
+OWNER_GO_SECTION_11_13_5_EEA_XPERP_310404_REBIND_PREPARATION_STATUS=CONSUMED_MERGED
 NEW_CANARY_OWNER_GO_GRANTED=false
 LIVE_AUTHORIZED=false
-EARLIEST_UNRESOLVED_DEPENDENCY=OWNER_MERGE_GO_FOR_50124_CLASSIFICATION_PREPARATION_PR_THEN_SEPARATE_NEW_EXECUTE_GO
+EARLIEST_UNRESOLVED_DEPENDENCY=OWNER_MERGE_GO_THEN_SEPARATE_NEW_FUNDING_GO_THEN_SEPARATE_NEW_EXECUTE_GO
 EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
-NEXT_CANONICAL_STEP_POINTER=OWNER_MERGE_GO_FOR_50124_CLASSIFICATION_PREPARATION_PR
+NEXT_CANONICAL_STEP_POINTER=OWNER_MERGE_GO_FOR_POST_K_PERSISTENCE_REMEDIATION_PR
 SECTION_11_13_2_PACKAGE_POINTER=src&#47;ops&#47;section_11_13_2_live_private_read_only_v1&#47;
 SECTION_11_13_2_PROOF_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_2_live_private_read_only_proven_v1&#47;20260811T170310Z&#47;
 SECTION_11_13_3_PACKAGE_POINTER=src&#47;ops&#47;section_11_13_3_live_shadow_with_exchange_reconciliation_v1&#47;
@@ -642,6 +648,7 @@ SECTION_11_13_5_E1_FRESH_OKX_TEMP_SECURITY_CLEARANCE_EVIDENCE_POINTER=evidence&#
 SECTION_11_13_5_F_LIVE_CANARY_CYBERSECURITY_GATE_REEVALUATION_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_5_live_canary_cybersecurity_gate_reevaluation_v1&#47;20260815T193911Z&#47;
 SECTION_11_13_5_G_CANARY_SUBMIT_TRANSPORT_PREPARATION_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_5_canary_submit_transport_preparation_v1&#47;20260815T204500Z&#47;
 SECTION_11_13_5_J_OKX_50124_ONESHOT_POST_CLASSIFICATION_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_5_okx_50124_oneshot_post_classification_v1&#47;20260816T002530Z&#47;
+SECTION_11_13_5_L_POST_K_GET_BIND_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_5_post_k_cross_imr_leverage_get_bind_v1&#47;20260816T033800Z&#47;
 SECTION_11_13_1_LIVE_READINESS_EVAL_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_13_live_readiness_evaluation_v1&#47;20260811T134610Z&#47;
 SECTION_11_12_9_44_PRE_LIVE_GATE_EVIDENCE_POINTER=evidence&#47;ops&#47;section_11_12_9_44_pre_live_cybersecurity_gate_pass_v1&#47;20260811T133046Z&#47;
 ZAP_DAST_EXECUTED=false
