@@ -14,6 +14,8 @@ GENERAL_LIVE_UNLOCKED=false
 FUNDING_EXECUTED=false
 CANARY_EXECUTED=false
 TRADING_POSTS=0
+PERSISTENCE_REMEDIATION_PR_MERGED=false
+TRACKER_RETIREMENT_ALLOWED=false
 ```
 
 This tracker has **no** semantic authority. Canonical truth remains
@@ -46,11 +48,11 @@ FUNDING_GO_AND_EXECUTE_GO_COLLAPSED=false
 
 | ID | Domain | Proven fact to persist | Status on this branch | Canonical target |
 |---|---|---|---|---|
-| GAP-01 | LEVERAGE_POLICY | GET `SET_ACCOUNT_LEVERAGE=3` for `BTC-USD_UM_XPERP-310404` `mgnMode=cross` `posSide=net` | `CLOSED_IN_BRANCH_PENDING_OWNER_MERGE_GO` | Master §11.13.5.L + derived GET pack |
-| GAP-02 | CANARY_CAPITAL_FUNDING | Snapshot theoretical IM `2.101456666666666666666666667` USDC at `markPx=63043.7` | `CLOSED_IN_BRANCH_PENDING_OWNER_MERGE_GO` | same pack as **snapshot floor only** |
-| GAP-03 | CROSS_MARGIN_BINDINGS | GET-proven cross leverage **setting**; live POST remains unproven | `CLOSED_IN_BRANCH_PENDING_OWNER_MERGE_GO` | economic-baseline contract + §L |
-| GAP-04 | GOVERNANCE | PR `#5905` merge consumed at `2caad4a2e68b89c788bb5a5b654a4f32fdba38c5`; remaining product chain is separate funding GO then separate execute GO | `CLOSED_IN_BRANCH_PENDING_OWNER_MERGE_GO` | §K historical pointer superseded by §L |
-| GAP-05 | CANARY_INSTRUMENT_BINDING | Sealed post-K GET identity refresh (live, USDC account settle, `minSz=1`, `totalEq=0`, orders=0) | `CLOSED_IN_BRANCH_PENDING_OWNER_MERGE_GO` | `evidence&#47;ops&#47;section_11_13_5_post_k_cross_imr_leverage_get_bind_v1&#47;20260816T033800Z&#47;` |
+| GAP-01 | LEVERAGE_POLICY | GET `SET_ACCOUNT_LEVERAGE=3` for `BTC-USD_UM_XPERP-310404` `mgnMode=cross` `posSide=net` | `PREPARED_FOR_CANONICAL_PERSISTENCE` | Master §11.13.5.L + derived GET pack |
+| GAP-02 | CANARY_CAPITAL_FUNDING | Snapshot theoretical IM `2.101456666666666666666666667` USDC at `markPx=63043.7` | `PREPARED_FOR_CANONICAL_PERSISTENCE` | same pack as **snapshot floor only** |
+| GAP-03 | CROSS_MARGIN_BINDINGS | GET-proven cross leverage **setting**; live POST remains unproven | `PREPARED_FOR_CANONICAL_PERSISTENCE` | economic-baseline contract + §L |
+| GAP-04 | GOVERNANCE | PR `#5905` merge consumed at `2caad4a2e68b89c788bb5a5b654a4f32fdba38c5`; remaining product chain is separate funding GO then separate execute GO | `PREPARED_FOR_CANONICAL_PERSISTENCE` | §K historical pointer superseded by §L |
+| GAP-05 | CANARY_INSTRUMENT_BINDING | Sealed post-K GET identity refresh (live, USDC account settle, `minSz=1`, `totalEq=0`, orders=0) | `PREPARED_FOR_CANONICAL_PERSISTENCE` | `evidence&#47;ops&#47;section_11_13_5_post_k_cross_imr_leverage_get_bind_v1&#47;20260816T033800Z&#47;` |
 
 No tracker item exists for an operational canary funding minimum: that
 quantity is **unproven**, not an undocumented proven fact.
@@ -77,6 +79,8 @@ then this file remains tracked, non-authoritative hygiene.
 ```text
 CANONICAL_NEXT_STEP=OWNER_MERGE_GO_FOR_POST_K_PERSISTENCE_REMEDIATION_PR
 EARLIEST_UNRESOLVED_DEPENDENCY=OWNER_MERGE_GO_THEN_SEPARATE_NEW_FUNDING_GO_THEN_SEPARATE_NEW_EXECUTE_GO
+PERSISTENCE_REMEDIATION_PR_MERGED=false
+TRACKER_RETIREMENT_ALLOWED=false
 HARD_STOP_BEFORE_MERGE=true
 HARD_STOP_BEFORE_FUNDING=true
 HARD_STOP_BEFORE_EXECUTE=true
