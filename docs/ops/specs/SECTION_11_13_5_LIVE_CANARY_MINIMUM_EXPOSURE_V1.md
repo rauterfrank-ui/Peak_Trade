@@ -83,8 +83,10 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.W. Historical V-era next steps
-below are superseded for the current fresh trade-fee GET persist.
+Current SSOT: Master Runbook §11.13.5.X. Historical W-era next steps
+below are superseded for the current delivery-algebra fail-closed
+persist. Historical V-era next steps remain historical for the fresh
+trade-fee GET persist.
 Historical U-era next steps remain historical for the query-grammar
 persist. Historical T-era next steps remain historical for the
 policy-form ratification persist.
@@ -219,8 +221,15 @@ oneshot.
     `evidence&#47;ops&#47;section_11_13_5_v_fresh_xperp_trade_fee_get_evidence_v1&#47;20260816T075803Z&#47;`.
     `RULE_FEE_NUMERIC_INSTANCE_STATUS=FRESH_GET_RATES_PROVEN`.
     `FUNDING_AMOUNT_PROVEN=false`. No GET this persist.
-21. Next canonical step is
-    `OWNER_GO_REQUIRED_TO_RATIFY_INSTRUMENT_RELEVANT_XPERP_DELIVERY_FEE_ALGEBRA`.
+21. `OWNER_GO_TO_RATIFY_INSTRUMENT_RELEVANT_XPERP_DELIVERY_FEE_ALGEBRA`
+    was granted `ALGEBRA_RATIFICATION_ONLY` and is consumed. No algebra
+    body was supplied. `DELIVERY_ALGEBRA_RATIFIED=false`. Observed
+    `delivery=0.0003` remains evidence-only and is **not** an operative
+    instance. `RULE_DELIVERY` remains unproven. This is **not** a
+    GET-GO, **not** a funding-GO, and **not** a Canary-execute-GO.
+    `FUNDING_AMOUNT_PROVEN=false`.
+22. Next canonical step is
+    `OWNER_GO_REQUIRED_TO_SUPPLY_INSTRUMENT_RELEVANT_XPERP_DELIVERY_FEE_ALGEBRA_BODY`.
     That GO is **not** granted. Later formula-body ratification,
     funding, and execute remain separate. This spec does not authorize
     execute, funding, GET, or general Live unlock.
