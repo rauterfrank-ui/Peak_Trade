@@ -573,6 +573,7 @@ def test_preparation_and_reevaluation_go_rejected_by_submit_transport() -> None:
     for go in (
         "SECTION_11_13_5_CANARY_EXECUTION_REEVALUATION_FROM_NEW_ORIGIN_MAIN",
         "SECTION_11_13_5_CANARY_EXECUTION_PLUMBING_REMEDIATION_PREPARATION",
+        "SECTION_11_13_5_OKX_50124_MARKET_PERMISSION_REMEDIATION_AND_CLASSIFICATION_PREPARATION",
     ):
         kwargs = _transport_kwargs(owner_go=go)
         with pytest.raises(
@@ -623,14 +624,37 @@ def test_http_401_json_code_msg_captured_secret_safe() -> None:
     dumped = json.dumps(result)
     assert "must-not-leak" not in dumped
     assert "session=secret" not in dumped
-    assert result["POST_401_ROOT_CAUSE"] == "UNPROVEN_FAIL_CLOSED"
+    assert result["POST_401_ROOT_CAUSE"] == "OKX_50113_INVALID_SIGN"
+    assert result["HISTORICAL_FIRST_401_ROOT_CAUSE"] == "UNPROVEN_FAIL_CLOSED"
     assert result["RETRY_SAFE_NOW"] is False
     assert result["LIVE_AUTHORIZED"] is False
     posts = [c for c in transport.calls if c.method == "POST"]
     assert len(posts) == 1
 
 
-def test_http_error_malformed_body_fail_closed_not_success() -> None:
+def test_http_401_50124_classifies_exact_and_does_not_retry() -> None:
+    transport = _fake_transport()
+    transport.post_status_code = 401
+    transport.post_body = (
+        b'{"code":"50124","msg":"This API Key does not have trading permission for the market"}'
+    )
+    result = run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
+    assert result["ok"] is False
+    assert result["http_status"] == 401
+    assert result["http_error_evidence"]["okx_code"] == "50124"
+    assert result["POST_401_ROOT_CAUSE"] == "OKX_50124_OBSERVED_ONESHOT_TRADING_POST"
+    assert result["HTTP_401_REQUEST_CLASS"] == "ONESHOT_TRADING_POST_/api/v5/trade/order"
+    assert result["HTTP_50124_INSTRUMENT_SPECIFIC_PROVEN"] is False
+    assert result["ROOT_CAUSE_PROVEN"] is False
+    assert result["HISTORICAL_FIRST_401_ROOT_CAUSE"] == "UNPROVEN_FAIL_CLOSED"
+    assert result["RETRY_SAFE_NOW"] is False
+    assert result["CANARY_RETRY_AUTHORIZED"] is False
+    assert result["GENERAL_LIVE_SUBMIT_UNLOCKED"] is False
+    assert result["LIVE_AUTHORIZED"] is False
+    assert len([c for c in transport.calls if c.method == "POST"]) == 1
+
+
+def test_http_401_malformed_body_is_unproven_not_50124() -> None:
     transport = _fake_transport()
     transport.post_status_code = 401
     transport.post_body = b"<html>not-json"
@@ -644,6 +668,10 @@ def test_http_error_malformed_body_fail_closed_not_success() -> None:
     assert evidence["okx_code"] is None
     assert result["CANARY_EXECUTED"] is False
     assert result["LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED"] is False
+    assert result["POST_401_ROOT_CAUSE"] == "UNPROVEN_FAIL_CLOSED"
+    assert result["HISTORICAL_FIRST_401_ROOT_CAUSE"] == "UNPROVEN_FAIL_CLOSED"
+    assert result["RETRY_SAFE_NOW"] is False
+    assert len([c for c in transport.calls if c.method == "POST"]) == 1
 
 
 @pytest.mark.parametrize("status", [301, 302, 303, 307, 308])

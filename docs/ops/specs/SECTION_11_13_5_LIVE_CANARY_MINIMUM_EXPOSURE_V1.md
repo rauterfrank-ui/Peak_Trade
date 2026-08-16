@@ -83,16 +83,19 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.I. Historical H-era next steps
+Current SSOT: Master Runbook §11.13.5.J. Historical I-era next steps
 below are superseded.
 
-1. `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` is `CONSUMED` after the first
-   canary POST returned HTTP 401 with no venue order.
-2. `POST_401_ROOT_CAUSE=UNPROVEN_FAIL_CLOSED`. Do not treat analog GET
-   `50113` as the proven incident body.
-3. `AUTH_50110_CLEARED=true`. IP-whitelist is no longer the current
-   blocker.
-4. Next canonical step is Owner merge of the bounded POST-401
-   remediation PR. No retry and no new execute GO from this spec.
-5. `LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED=false`. `CANARY_PROVEN=false`.
-   `RETRY_SAFE_NOW=false`.
+1. Historical first canary POST HTTP 401 remains
+   `UNPROVEN_FAIL_CLOSED` (no proven incident body). Do not rewrite it
+   to `50124`.
+2. Later one-shot trading POST HTTP 401 with parseable OKX `50124` is
+   classified `OKX_50124_OBSERVED_ONESHOT_TRADING_POST`. Request class
+   is `ONESHOT_TRADING_POST_&#47;api&#47;v5&#47;trade&#47;order`.
+3. Instrument&#47;market GETs were HTTP 200 &#47; OKX `code=0`.
+   `HTTP_50124_INSTRUMENT_SPECIFIC_PROVEN=false`. An empty SWAP list is
+   a 200-payload diagnostic candidate, not an HTTP-401 fact.
+4. `ROOT_CAUSE_PROVEN=false`. Classification is not `RETRY_SAFE_NOW`.
+5. Next canonical step is Owner merge of this classification
+   preparation PR, then Owner review of unproven diagnostic candidates,
+   then a **separate** new execute GO if granted.

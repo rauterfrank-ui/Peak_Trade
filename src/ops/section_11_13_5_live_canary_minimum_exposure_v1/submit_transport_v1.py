@@ -41,6 +41,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     parse_json_object_v1,
     signed_wire_body_evidence_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.incident_classification_v1 import (
+    attach_canary_post_401_classification_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
     LiveCanaryEphemeralCredentialHandleV1,
     LiveCanaryVaultBackendPortV1,
@@ -176,9 +179,11 @@ def _entry_submit_returned_payload_v1(
         "CANARY_SUBMIT_TRANSPORT_SCOPE": CANARY_SUBMIT_TRANSPORT_SCOPE,
         "RETRY_SAFE_NOW": False,
     }
-    if status == 401:
-        payload["POST_401_ROOT_CAUSE"] = "UNPROVEN_FAIL_CLOSED"
-    return payload
+    return attach_canary_post_401_classification_v1(
+        payload,
+        http_evidence=http_evidence,
+        http_status=status,
+    )
 
 
 def _signed_get(

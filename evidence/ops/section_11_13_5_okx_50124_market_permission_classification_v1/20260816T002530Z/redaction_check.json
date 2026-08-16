@@ -1,0 +1,7 @@
+{
+  "REDACTION_CHECK_PASS": true,
+  "SECRET_VALUE_PERSISTED": false,
+  "API_KEY_PERSISTED": false,
+  "PASSPHRASE_PERSISTED": false,
+  "SIGNATURE_PERSISTED": false
+}
