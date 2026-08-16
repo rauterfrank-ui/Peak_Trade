@@ -83,13 +83,14 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.P. Historical O-era next steps
-below are superseded for the current ratification-only formula
-fail-closed persist. Historical N-era next steps remain historical for
-the funding-amount evaluation. Historical M-era next steps remain
-historical for the persistence closeout. Historical L-era next steps
-remain historical for the GET bind. Historical J-era next steps remain
-historical for the rejected SWAP oneshot.
+Current SSOT: Master Runbook §11.13.5.Q. Historical P-era next steps
+below are superseded for the current policy-spec-only template persist.
+Historical O-era next steps remain historical for the evidence-only
+funding-amount fail-closed persist. Historical N-era next steps remain
+historical for the funding-amount evaluation. Historical M-era next
+steps remain historical for the persistence closeout. Historical L-era
+next steps remain historical for the GET bind. Historical J-era next
+steps remain historical for the rejected SWAP oneshot.
 
 1. Historical first canary POST HTTP 401 remains
    `UNPROVEN_FAIL_CLOSED` (no proven incident body). Do not rewrite it
@@ -137,7 +138,15 @@ historical for the rejected SWAP oneshot.
     granted `RATIFICATION_ONLY` and is consumed. No formula body was
     supplied. `OWNER_RATIFIED_OPERATIONAL_FORMULA_PRESENT=false`.
     `FUNDING_AMOUNT_PROVEN=false`.
-11. Next canonical step is
-    `OWNER_GO_REQUIRED_TO_SUPPLY_OPERATIONAL_FUNDING_FORMULA`, then a
-    **separate** new execute GO if granted. This spec does not
+11. `OWNER_GO_BUILD_OPERATIONAL_FUNDING_POLICY_SPEC_ONLY` persisted the
+    Owner decision template as `POLICY_SPEC_ONLY`. All nine policy
+    fields remain `UNRESOLVED_OWNER_DECISION_REQUIRED`. This is **not**
+    a formula body, **not** formula ratification, **not** a GET-GO,
+    **not** a funding-GO, and **not** a Canary-execute-GO.
+    `FUNDING_AMOUNT_PROVEN=false`.
+12. Next canonical step is
+    `OWNER_FILL_OPERATIONAL_FUNDING_POLICY_DECISIONS_THEN_SEPARATE_BOUNDED_GET_EVIDENCE_GO`.
+    `OWNER_GO_REQUIRED_FOR_BOUNDED_OPERATIONAL_FUNDING_GET_EVIDENCE` is
+    **not** granted. Later formula instantiation, formula ratification,
+    funding, and execute remain separate. This spec does not
     authorize execute, funding, GET refresh, or general Live unlock.
