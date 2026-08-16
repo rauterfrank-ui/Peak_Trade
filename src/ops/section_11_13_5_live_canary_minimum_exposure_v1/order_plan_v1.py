@@ -12,6 +12,10 @@ from src.ops.okx_europe_adapter_lifecycle_contract_v0 import (
     CLIENT_ORDER_ID_MAX_LENGTH,
     build_client_order_id,
 )
+from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.okx_response_mapper_v1 import (
+    OkxResponseMapperError,
+    build_venue_native_order_body_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     DEFAULT_INSTRUMENT_ID,
     DEFAULT_ORDER_TYPE,
@@ -179,15 +183,18 @@ def build_minimum_valid_canary_order_plan_v1(
     except LiveCanaryExposureError as exc:
         raise LiveCanaryOrderPlanError(f"UNSAFE_QUANTITY:{exc}") from exc
     clordid = serialize_canary_clordid_v1(owner_go=owner_go, origin_main_sha=origin_main_sha)
-    payload = {
-        "instId": instrument_id,
-        "tdMode": td_mode,
-        "side": str(side).lower(),
-        "ordType": "limit",
-        "sz": exposure.quantity,
-        "px": limit_px,
-        "clOrdId": clordid,
-    }
+    try:
+        payload = build_venue_native_order_body_v1(
+            client_order_id=clordid,
+            instrument=instrument_id,
+            order_type=DEFAULT_ORDER_TYPE,
+            side=side,
+            quantity=exposure.quantity,
+            td_mode=td_mode,
+            px=limit_px,
+        )
+    except OkxResponseMapperError as exc:
+        raise LiveCanaryOrderPlanError(f"VENUE_NATIVE_BODY:{exc}") from exc
     return CanaryOrderPlanV1(
         instrument_id=instrument_id,
         side=str(side).upper(),
