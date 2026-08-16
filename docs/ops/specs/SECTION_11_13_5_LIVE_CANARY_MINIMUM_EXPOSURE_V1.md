@@ -83,9 +83,11 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.L. Historical K-era next steps
-below are superseded for the current post-K GET bind. Historical J-era
-next steps remain historical for the rejected SWAP oneshot.
+Current SSOT: Master Runbook §11.13.5.M. Historical L-era next steps
+below are superseded for the current post-merge persistence closeout.
+Historical K-era next steps remain historical for the GET bind.
+Historical J-era next steps remain historical for the rejected SWAP
+oneshot.
 
 1. Historical first canary POST HTTP 401 remains
    `UNPROVEN_FAIL_CLOSED` (no proven incident body). Do not rewrite it
@@ -115,7 +117,12 @@ next steps remain historical for the rejected SWAP oneshot.
    This is **not** an operational funding minimum.
    `CANARY_OPERATIONAL_MINIMUM_PROVEN=false`.
    `RECOMMENDED_BOUNDED_CANARY_FUNDING_AMOUNT_PROVEN=false`.
-7. Next canonical step is Owner merge of this persistence-remediation PR,
-   then a **separate** funding GO and a **separate** new execute GO if
-   granted. This spec does not authorize execute, funding, or general
-   Live unlock.
+7. PR `#5906` squash-merged the post-K GET bind onto
+   `origin&#47;main` at `bc59e1e331588ab7e727c6909baa69e8a00d93da`.
+   `OWNER_MERGE_GO_FOR_POST_K_PERSISTENCE_REMEDIATION_PR` is
+   `CONSUMED_CLOSED`. The non-authoritative tracker is
+   `RETIRED_CLOSED_NONAUTHORITATIVE` and retained.
+8. Next canonical step is a **separate**
+   `OWNER_GO_REQUIRED_SEPARATE_FOR_NEW_FUNDING`, then a **separate**
+   new execute GO if granted. This spec does not authorize execute,
+   funding, or general Live unlock.

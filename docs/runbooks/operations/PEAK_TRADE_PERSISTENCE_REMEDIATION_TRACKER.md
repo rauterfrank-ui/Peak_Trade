@@ -3,24 +3,37 @@
 ```text
 AUTHORITY=NONE
 DOCUMENT_ROLE=TRACKED_NONAUTHORITATIVE_REMEDIATION_TRACKER
-LIFECYCLE=DELETE_FROM_HEAD_AFTER_ALL_ITEMS_CLOSED_AND_CANONICAL_CLOSEOUT_PERSISTED
+LIFECYCLE=RETIRED_CLOSED_NONAUTHORITATIVE_RETAINED_FOR_AUDIT
 SSOT=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
 MAP_OF_TRUTH_ROLE=NAVIGATION_ONLY
-BASELINE_ORIGIN_MAIN_SHA=2caad4a2e68b89c788bb5a5b654a4f32fdba38c5
+BASELINE_ORIGIN_MAIN_SHA=bc59e1e331588ab7e727c6909baa69e8a00d93da
 CREATED_FOR=SECTION_11_13_5_POST_K_PERSISTENCE_REMEDIATION
-OWNER_GO=BOUNDED_PERSISTENCE_REMEDIATION_PREPARATION_TRACKER_AND_POST_K_CANONICAL_BIND_NO_FUNDING_NO_EXECUTE
+OWNER_GO=OWNER_GO_FOR_PERSISTENCE_CLOSEOUT_AND_TRACKER_RETIREMENT_PREPARATION_NO_FUNDING_NO_EXECUTE
 LIVE_AUTHORIZED=false
 GENERAL_LIVE_UNLOCKED=false
 FUNDING_EXECUTED=false
 CANARY_EXECUTED=false
 TRADING_POSTS=0
-PERSISTENCE_REMEDIATION_PR_MERGED=false
-TRACKER_RETIREMENT_ALLOWED=false
+PERSISTENCE_REMEDIATION_PR_MERGED=true
+PERSISTENCE_REMEDIATION_STATUS=MERGED_CLOSED
+TRACKER_RETIREMENT_ALLOWED=true
+TRACKER_DELETED_FROM_HEAD=false
+TRACKER_RETIREMENT_DECISION=RETAIN_RETIRED_CLOSED_NONAUTHORITATIVE
 ```
 
 This tracker has **no** semantic authority. Canonical truth remains
-[`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../canonical/PEAK_TRADE_MASTER_RUNBOOK.md).
-Temporary &#47; forensic &#47; chat artefacts remain `AUTHORITY=NONE`.
+[`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../canonical/PEAK_TRADE_MASTER_RUNBOOK.md)
+§11.13.5.M. Temporary &#47; forensic &#47; chat artefacts remain
+`AUTHORITY=NONE`.
+
+PR `#5906` squash-merged the post-K GET bind onto `origin&#47;main` at
+`bc59e1e331588ab7e727c6909baa69e8a00d93da` (parent
+`2caad4a2e68b89c788bb5a5b654a4f32fdba38c5`; frozen feature-head
+`cb0779ab77cd1784edba848436891af0a6ccada8`; frozen diff
+`73f3845fcc9816df8aa8d017e8a9baf82807a629be1f83800d99b2cda44ac0bc`).
+The L-era pointer `OWNER_MERGE_GO_FOR_POST_K_PERSISTENCE_REMEDIATION_PR`
+is `CONSUMED_CLOSED`. This closeout does **not** authorize funding or
+execute.
 
 ## Semantic split (never merge)
 
@@ -42,17 +55,19 @@ FUNDING_AMOUNT_PROVEN=false
 NEW_FUNDING_GO_REQUIRED=true
 NEW_EXECUTE_GO_REQUIRED=true
 FUNDING_GO_AND_EXECUTE_GO_COLLAPSED=false
+FUNDING_AUTHORIZED_BY_THIS_CLOSEOUT=false
+EXECUTE_AUTHORIZED_BY_THIS_CLOSEOUT=false
 ```
 
 ## Items
 
-| ID | Domain | Proven fact to persist | Status on this branch | Canonical target |
+| ID | Domain | Proven fact persisted | Status | Canonical target |
 |---|---|---|---|---|
-| GAP-01 | LEVERAGE_POLICY | GET `SET_ACCOUNT_LEVERAGE=3` for `BTC-USD_UM_XPERP-310404` `mgnMode=cross` `posSide=net` | `PREPARED_FOR_CANONICAL_PERSISTENCE` | Master §11.13.5.L + derived GET pack |
-| GAP-02 | CANARY_CAPITAL_FUNDING | Snapshot theoretical IM `2.101456666666666666666666667` USDC at `markPx=63043.7` | `PREPARED_FOR_CANONICAL_PERSISTENCE` | same pack as **snapshot floor only** |
-| GAP-03 | CROSS_MARGIN_BINDINGS | GET-proven cross leverage **setting**; live POST remains unproven | `PREPARED_FOR_CANONICAL_PERSISTENCE` | economic-baseline contract + §L |
-| GAP-04 | GOVERNANCE | PR `#5905` merge consumed at `2caad4a2e68b89c788bb5a5b654a4f32fdba38c5`; remaining product chain is separate funding GO then separate execute GO | `PREPARED_FOR_CANONICAL_PERSISTENCE` | §K historical pointer superseded by §L |
-| GAP-05 | CANARY_INSTRUMENT_BINDING | Sealed post-K GET identity refresh (live, USDC account settle, `minSz=1`, `totalEq=0`, orders=0) | `PREPARED_FOR_CANONICAL_PERSISTENCE` | `evidence&#47;ops&#47;section_11_13_5_post_k_cross_imr_leverage_get_bind_v1&#47;20260816T033800Z&#47;` |
+| GAP-01 | LEVERAGE_POLICY | GET `SET_ACCOUNT_LEVERAGE=3` for `BTC-USD_UM_XPERP-310404` `mgnMode=cross` `posSide=net` | `CLOSED_CANONICALLY_PERSISTED` | Master §11.13.5.L + derived GET pack |
+| GAP-02 | CANARY_CAPITAL_FUNDING | Snapshot theoretical IM `2.101456666666666666666666667` USDC at `markPx=63043.7` | `CLOSED_CANONICALLY_PERSISTED` | same pack as **snapshot floor only** |
+| GAP-03 | CROSS_MARGIN_BINDINGS | GET-proven cross leverage **setting**; live POST remains unproven | `CLOSED_CANONICALLY_PERSISTED` | economic-baseline contract + §L |
+| GAP-04 | GOVERNANCE | PR `#5905` merge consumed at `2caad4a2e68b89c788bb5a5b654a4f32fdba38c5`; remaining product chain is separate funding GO then separate execute GO | `CLOSED_CANONICALLY_PERSISTED` | §K historical pointer superseded by §L; L merge GO consumed by `#5906` |
+| GAP-05 | CANARY_INSTRUMENT_BINDING | Sealed post-K GET identity refresh (live, USDC account settle, `minSz=1`, `totalEq=0`, orders=0) | `CLOSED_CANONICALLY_PERSISTED` | `evidence&#47;ops&#47;section_11_13_5_post_k_cross_imr_leverage_get_bind_v1&#47;20260816T033800Z&#47;` |
 
 No tracker item exists for an operational canary funding minimum: that
 quantity is **unproven**, not an undocumented proven fact.
@@ -70,18 +85,22 @@ quantity is **unproven**, not an undocumented proven fact.
 - Demo Map binding `CANONICAL_ACTIVE_INSTRUMENT=BTC-USD_UM_XPERP-310328`
   is **not** retargeted.
 
-## Closeout rule
+## Retirement
 
-Delete this tracker from HEAD only after every item is closed **and**
-the canonical §11.13.5.L closeout is persisted on `origin&#47;main`. Until
-then this file remains tracked, non-authoritative hygiene.
+All GAP items are `CLOSED_CANONICALLY_PERSISTED` by squash-merge
+`#5906`. This file is `RETIRED_CLOSED_NONAUTHORITATIVE` and is
+**retained** on HEAD for audit. It is **not** deleted: the original
+delete-after-closeout-on-`origin&#47;main` rule is not satisfied at
+closeout authoring time, and historical pointer chains still name this
+path. Canonical authority remains SSOT §11.13.5.M.
 
 ```text
-CANONICAL_NEXT_STEP=OWNER_MERGE_GO_FOR_POST_K_PERSISTENCE_REMEDIATION_PR
-EARLIEST_UNRESOLVED_DEPENDENCY=OWNER_MERGE_GO_THEN_SEPARATE_NEW_FUNDING_GO_THEN_SEPARATE_NEW_EXECUTE_GO
-PERSISTENCE_REMEDIATION_PR_MERGED=false
-TRACKER_RETIREMENT_ALLOWED=false
-HARD_STOP_BEFORE_MERGE=true
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_NEW_FUNDING
+EARLIEST_UNRESOLVED_DEPENDENCY=SEPARATE_NEW_FUNDING_GO_THEN_SEPARATE_NEW_EXECUTE_GO
+PERSISTENCE_REMEDIATION_PR_MERGED=true
+TRACKER_RETIREMENT_ALLOWED=true
+TRACKER_DELETED_FROM_HEAD=false
+HARD_STOP_BEFORE_MERGE=CONSUMED_PR_5906_SQUASH_MERGED
 HARD_STOP_BEFORE_FUNDING=true
 HARD_STOP_BEFORE_EXECUTE=true
 ```

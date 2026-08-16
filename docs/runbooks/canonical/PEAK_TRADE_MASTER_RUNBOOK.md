@@ -10717,8 +10717,8 @@ Derived non-SSOT evidence root:
 
 `evidence&#47;ops&#47;section_11_13_5_post_k_cross_imr_leverage_get_bind_v1&#47;20260816T033800Z&#47;`
 
-Non-authoritative tracker (delete from HEAD after all items close and
-this closeout is on `origin&#47;main`):
+Non-authoritative tracker (`AUTHORITY=NONE`; historical hygiene;
+retirement documented in §11.13.5.M; **not** deleted from HEAD):
 
 `docs&#47;runbooks&#47;operations&#47;PEAK_TRADE_PERSISTENCE_REMEDIATION_TRACKER.md`
 
@@ -10729,15 +10729,134 @@ Live vs Demo identity remains strictly separated. Map of Truth
 ``` text
 CODE_OWNER=src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;
 CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
-CANONICAL_NEXT_STEP=OWNER_MERGE_GO_FOR_POST_K_PERSISTENCE_REMEDIATION_PR
-EARLIEST_UNRESOLVED_DEPENDENCY=OWNER_MERGE_GO_THEN_SEPARATE_NEW_FUNDING_GO_THEN_SEPARATE_NEW_EXECUTE_GO
+CANONICAL_NEXT_STEP=SUPERSEDED_BY_SECTION_11_13_5_M
+EARLIEST_UNRESOLVED_DEPENDENCY=SUPERSEDED_BY_SECTION_11_13_5_M
 EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
 ```
 
 Hard stop. This persistence GO does not consume or grant a new execute
 GO and does not grant a funding GO. `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE`
+remains `CONSUMED`. Cap &#47; Capability 11.9 remains fixture-only. The
+L-era next pointer
+`OWNER_MERGE_GO_FOR_POST_K_PERSISTENCE_REMEDIATION_PR` is **consumed**
+by squash-merge PR `#5906` at
+`bc59e1e331588ab7e727c6909baa69e8a00d93da` and is superseded by
+§11.13.5.M below. No funding. No execute.
+
+### 11.13.5.M PR #5906 squash-merge persistence closeout + tracker retirement preparation (BOUND; MERGED; NOT FUNDED; NOT EXECUTE)
+
+Owner-GO
+`OWNER_GO_FOR_PERSISTENCE_CLOSEOUT_AND_TRACKER_RETIREMENT_PREPARATION_NO_FUNDING_NO_EXECUTE`
+authorized **bounded repository closeout** of the already squash-merged
+post-K persistence PR `#5906` and conservative tracker retirement
+preparation only. This does **not** authorize funding &#47; transfer &#47;
+deposit, Trading-POST, Canary execute, orders, positions, retries,
+API-key &#47; permission &#47; account mutation, set-leverage mutation,
+general Live unlock, Multi-Future, Double Play &#47; Master V2 &#47;
+strategy &#47; selection &#47; risk &#47; portfolio changes, a new
+funding &#47; sizing &#47; reserve policy, I44 &#47; G16 upgrade, or
+merge of this closeout without a separate `OWNER_MERGE_GO`.
+
+PR `#5906` is squash-merged onto `origin&#47;main`. The L-era merge GO
+is consumed. Remaining product chain is a **separate** funding GO, then
+a **separate** execute GO. Those GOs must never be collapsed. This
+closeout does **not** grant either GO.
+
+``` text
+CURRENT_PHASE=SECTION_11_13_5_PR_5906_PERSISTENCE_CLOSEOUT
+OWNER_GO=OWNER_GO_FOR_PERSISTENCE_CLOSEOUT_AND_TRACKER_RETIREMENT_PREPARATION_NO_FUNDING_NO_EXECUTE
+OWNER_GO_STATUS=CONSUMED
+BASELINE_ORIGIN_MAIN_SHA=bc59e1e331588ab7e727c6909baa69e8a00d93da
+PR_5906_STATUS=SQUASH_MERGED
+PR_5906_MERGE_SHA=bc59e1e331588ab7e727c6909baa69e8a00d93da
+PR_5906_HEAD_SHA=cb0779ab77cd1784edba848436891af0a6ccada8
+PR_5906_FINAL_DIFF_SHA256=73f3845fcc9816df8aa8d017e8a9baf82807a629be1f83800d99b2cda44ac0bc
+PR_5906_MERGE_PARENT=2caad4a2e68b89c788bb5a5b654a4f32fdba38c5
+PR_5906_FILE_COUNT=13
+OWNER_MERGE_GO_FOR_POST_K_PERSISTENCE_REMEDIATION_PR_STATUS=CONSUMED_CLOSED
+PERSISTENCE_REMEDIATION_PR_MERGED=true
+PERSISTENCE_REMEDIATION_STATUS=MERGED_CLOSED
+GAP_01_STATUS=CLOSED_CANONICALLY_PERSISTED
+GAP_02_STATUS=CLOSED_CANONICALLY_PERSISTED
+GAP_03_STATUS=CLOSED_CANONICALLY_PERSISTED
+GAP_04_STATUS=CLOSED_CANONICALLY_PERSISTED
+GAP_05_STATUS=CLOSED_CANONICALLY_PERSISTED
+TRACKER_PATH=docs&#47;runbooks&#47;operations&#47;PEAK_TRADE_PERSISTENCE_REMEDIATION_TRACKER.md
+TRACKER_AUTHORITY=NONE
+TRACKER_RETIREMENT_DECISION=RETAIN_RETIRED_CLOSED_NONAUTHORITATIVE
+TRACKER_DELETED_FROM_HEAD=false
+TRACKER_RETENTION_REASON=AUDIT_CHAIN_AND_CLOSEOUT_NOT_YET_ON_ORIGIN_MAIN_AT_AUTHORING
+SET_ACCOUNT_LEVERAGE=3
+SET_ACCOUNT_LEVERAGE_CANONICALLY_PERSISTED=true
+SNAPSHOT_THEORETICAL_IM_CANONICALLY_PERSISTED=true
+CROSS_GET_SETTING_CANONICALLY_PERSISTED=true
+POST_K_IDENTITY_EVIDENCE_CANONICALLY_PERSISTED=true
+MINIMUM_THEORETICAL_INITIAL_MARGIN_PROVEN=true
+SNAPSHOT_THEORETICAL_FUNDING_FLOOR_PROVEN=true
+CANARY_OPERATIONAL_MINIMUM_PROVEN=false
+RECOMMENDED_BOUNDED_CANARY_FUNDING_AMOUNT_PROVEN=false
+FUNDING_AMOUNT_PROVEN=false
+I44_FUTURES_FUNDING_ECONOMICS_STATUS=INSUFFICIENT_EVIDENCE
+G16_FUNDING_PROOF_STATUS=INSUFFICIENT_EVIDENCE
+TDMODE_GET_SETTING_PROVEN=true
+TDMODE_LIVE_POST_PROVEN=false
+FUNDING_EXECUTED=false
+CANARY_EXECUTED=false
+TRADING_POSTS=0
+ACCOUNT_MUTATION=false
+CREDENTIAL_MUTATION=false
+TRADING_LOGIC_CHANGED=false
+MASTER_V2_CHANGED=false
+DOUBLE_PLAY_CHANGED=false
+RUNTIME_AUTHORITY_EXPANDED=false
+LIVE_AUTHORIZED=false
+GENERAL_LIVE_UNLOCKED=false
+GENERAL_LIVE_SUBMIT_UNLOCKED=false
+LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED=false
+LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN=false
+CANARY_PROVEN=false
+NEW_EXECUTE_GO_REQUIRED=true
+NEW_FUNDING_GO_REQUIRED=true
+FUNDING_GO_AND_EXECUTE_GO_COLLAPSED=false
+FUNDING_AUTHORIZED_BY_THIS_CLOSEOUT=false
+EXECUTE_AUTHORIZED_BY_THIS_CLOSEOUT=false
+ORDER_EFFECT=NONE
+ACCOUNT_MUTATION_EFFECT=NONE
+FUNDING_EFFECT=NONE
+SECRET_VALUE_ACCESS=NONE
+```
+
+Tracker retirement is **preparation only**. The tracker keeps
+`AUTHORITY=NONE`. Items GAP-01..GAP-05 are
+`CLOSED_CANONICALLY_PERSISTED` by squash-merge `#5906`. The tracker is
+**not** deleted from HEAD: its own delete-after-closeout-on-origin-main
+rule is not yet satisfied at authoring time, and historical
+auditability requires the file to remain as
+`RETIRED_CLOSED_NONAUTHORITATIVE`. Canonical pointers remain SSOT
+§11.13.5.M plus the sealed GET pack. I44 &#47; Master G16 remain
+`INSUFFICIENT_EVIDENCE` &#47; claims only.
+
+Sealed post-K GET bind evidence (unchanged historical pack):
+
+`evidence&#47;ops&#47;section_11_13_5_post_k_cross_imr_leverage_get_bind_v1&#47;20260816T033800Z&#47;`
+
+Live vs Demo identity remains strictly separated. Map of Truth
+`CANONICAL_ACTIVE_INSTRUMENT=BTC-USD_UM_XPERP-310328` remains the
+§11.12.8 Demo campaign binding and is **not** retargeted.
+
+``` text
+CODE_OWNER=src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_NEW_FUNDING
+EARLIEST_UNRESOLVED_DEPENDENCY=SEPARATE_NEW_FUNDING_GO_THEN_SEPARATE_NEW_EXECUTE_GO
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
+```
+
+Hard stop. This closeout GO does not consume or grant a funding GO and
+does not grant a new execute GO. `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE`
 remains `CONSUMED`. Cap &#47; Capability 11.9 remains fixture-only. No
-merge without separate `OWNER_MERGE_GO`. No funding. No execute.
+merge of this closeout without a separate `OWNER_MERGE_GO`. No funding.
+No execute.
 
 ## 11.14 Live order and economic evidence ladder
 
