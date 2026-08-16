@@ -83,10 +83,11 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.V. Historical U-era next steps
-below are superseded for the current trade-fee query-grammar persist.
-Historical T-era next steps remain historical for the policy-form
-ratification persist.
+Current SSOT: Master Runbook §11.13.5.W. Historical V-era next steps
+below are superseded for the current fresh trade-fee GET persist.
+Historical U-era next steps remain historical for the query-grammar
+persist. Historical T-era next steps remain historical for the
+policy-form ratification persist.
 Historical S-era next steps remain historical for the instantiation-only
 fail-closed persist. Historical R-era next steps remain historical for
 the GET-only funding-evidence persist. Historical Q-era next steps remain
@@ -204,8 +205,22 @@ oneshot.
     current. `NO_GET_EXECUTED_THIS_STEP=true`. `RULE_DELIVERY` remains
     unproven. `B08_EXACT_FORMULA_BODY_STATUS=NOT_RATIFIED`.
     `FUNDING_AMOUNT_PROVEN=false`.
-19. Next canonical step is
-    `OWNER_GO_REQUIRED_FOR_BOUNDED_GET_ONLY_FRESH_XPERP_TRADE_FEE_EVIDENCE_USING_RATIFIED_QUERY_GRAMMAR`.
+19. `OWNER_GO_FOR_BOUNDED_GET_ONLY_FRESH_XPERP_TRADE_FEE_EVIDENCE_USING_RATIFIED_QUERY_GRAMMAR`
+    was granted GET-only and is consumed. Exactly one GET
+    `GET &#47;api&#47;v5&#47;account&#47;trade-fee?instType=FUTURES&instFamily=BTC-USD_UM_XPERP`
+    returned HTTP 200 &#47; OKX `0`. `TAKER_RATE=-0.0005`.
+    `MAKER_RATE=-0.0002`. `FEE_RATE_WC=0.0005`. `FEE_RATE_RT=0.0010`.
+    Nested `feeGroup` was **not** used as mapping. `RULE_DELIVERY`
+    remains unproven. This is **not** a funding-GO and **not** a
+    Canary-execute-GO.
+20. `OWNER_GO_TO_PERSIST_FRESH_XPERP_TRADE_FEE_GET_EVIDENCE` was granted
+    persist-only and is consumed. Fresh GET evidence is bound as
+    derived non-SSOT pack
+    `evidence&#47;ops&#47;section_11_13_5_v_fresh_xperp_trade_fee_get_evidence_v1&#47;20260816T075803Z&#47;`.
+    `RULE_FEE_NUMERIC_INSTANCE_STATUS=FRESH_GET_RATES_PROVEN`.
+    `FUNDING_AMOUNT_PROVEN=false`. No GET this persist.
+21. Next canonical step is
+    `OWNER_GO_REQUIRED_TO_RATIFY_INSTRUMENT_RELEVANT_XPERP_DELIVERY_FEE_ALGEBRA`.
     That GO is **not** granted. Later formula-body ratification,
     funding, and execute remain separate. This spec does not authorize
     execute, funding, GET, or general Live unlock.
