@@ -83,11 +83,12 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.Y. Historical X-era next steps
-below are superseded for the current delivery-fee algebra-body persist.
-Historical W-era next steps remain historical for the delivery-algebra
-fail-closed persist. Historical V-era next steps remain historical for the fresh
-trade-fee GET persist.
+Current SSOT: Master Runbook §11.13.5.Z. Historical Y-era next steps
+below are superseded for the current delivery-rate-operand fail-closed
+persist. Historical X-era next steps remain historical for the
+delivery-fee algebra-body persist. Historical W-era next steps remain
+historical for the delivery-algebra fail-closed persist. Historical
+V-era next steps remain historical for the fresh trade-fee GET persist.
 Historical U-era next steps remain historical for the query-grammar
 persist. Historical T-era next steps remain historical for the
 policy-form ratification persist.
@@ -239,8 +240,20 @@ oneshot.
     fee as a distinct MMR object, and API `delivery` field existence.
     W-pack `delivery=0.0003` remains evidence-only. No GET. No numeric
     delivery-fee instantiation. `FUNDING_AMOUNT_PROVEN=false`.
-23. Next canonical step is
-    `OWNER_GO_REQUIRED_TO_RESOLVE_XPERP_EXPIRATION_DELIVERY_RATE_OPERAND_CONFLICT`.
+23. `OWNER_GO_TO_RESOLVE_XPERP_EXPIRATION_DELIVERY_RATE_OPERAND_CONFLICT`
+    was granted `RATE_OPERAND_RESOLUTION_ONLY` and is consumed. No
+    operand is selected. `DELIVERY_RATE_OPERAND_STATUS=UNPROVEN`.
+    `TAKER_VS_DELIVERY_FIELD_RESOLUTION=DISTINCT_FIELDS_XPERP_EXPIRATION_OPERAND_UNPROVEN`.
+    `taker` is not proven as the XPerp expiration rate. API `delivery`
+    has label `Delivery fee rate` without XPerp applicability.
+    EEA XPerp fee overview omits a delivery fee and is **not** proven
+    absence. FAQ `0.01%` is not identified with W-pack
+    `delivery=0.0003`. Repeating the ratified trade-fee GET cannot
+    supply the missing product-fee rule. No GET this step.
+    `POSITION_VALUE_ALGEBRA_STATUS=UNPROVEN`.
+    `FUNDING_AMOUNT_PROVEN=false`.
+24. Next canonical step is
+    `OWNER_GO_REQUIRED_TO_SUPPLY_OR_POINT_TO_A_NORMATIVE_XPERP_EEA_EXPIRATION_DELIVERY_FEE_RULE_THAT_BINDS_PRODUCT_TO_RATE_OPERAND`.
     That GO is **not** granted. Later formula-body ratification,
     funding, and execute remain separate. This spec does not authorize
     execute, funding, GET, or general Live unlock.
