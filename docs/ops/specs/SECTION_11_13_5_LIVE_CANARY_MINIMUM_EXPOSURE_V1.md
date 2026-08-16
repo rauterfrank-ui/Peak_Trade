@@ -83,8 +83,10 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.U. Historical T-era next steps
-below are superseded for the current policy-form ratification persist.
+Current SSOT: Master Runbook §11.13.5.V. Historical U-era next steps
+below are superseded for the current trade-fee query-grammar persist.
+Historical T-era next steps remain historical for the policy-form
+ratification persist.
 Historical S-era next steps remain historical for the instantiation-only
 fail-closed persist. Historical R-era next steps remain historical for
 the GET-only funding-evidence persist. Historical Q-era next steps remain
@@ -187,8 +189,23 @@ oneshot.
     a B08 exact formula body, **not** numeric instantiation, **not** a
     GET-GO, **not** a funding-GO, and **not** a Canary-execute-GO.
     `FORMULA_BODY_STATUS=ABSENT`. `FUNDING_AMOUNT_PROVEN=false`.
-17. Next canonical step is
-    `OWNER_GO_REQUIRED_FOR_BOUNDED_GET_ONLY_EVIDENCE_TO_INSTANTIATE_RATIFIED_RESERVE_POLICY_FORMS`.
+17. `OWNER_GO_REQUIRED_FOR_BOUNDED_GET_ONLY_EVIDENCE_TO_INSTANTIATE_RATIFIED_RESERVE_POLICY_FORMS`
+    was granted GET-only and is consumed. Trade-fee queries with
+    `instId` and with `ruleType=xperp` returned OKX `50016` parameter
+    mismatch only. No retry. No alternate grammar. Numeric `RULE_FEE`
+    remains unproven. This is **not** a funding-GO and **not** a
+    Canary-execute-GO.
+18. `OWNER_GO_TO_RATIFY_INSTRUMENT_RELEVANT_XPERP_TRADE_FEE_QUERY_GRAMMAR_AND_TAKER_MAKER_FIELD_MAPPING`
+    was granted `POLICY_RATIFICATION_ONLY` and is consumed. Ratified
+    query is `GET &#47;api&#47;v5&#47;account&#47;trade-fee?instType=FUTURES&instFamily=BTC-USD_UM_XPERP`
+    with no `instId` and no request `ruleType`. When generic
+    `taker`&#47;`maker` are empty, `TAKER_RATE=takerUSDC` and
+    `MAKER_RATE=makerUSDC`. Historical numeric rates are **not**
+    current. `NO_GET_EXECUTED_THIS_STEP=true`. `RULE_DELIVERY` remains
+    unproven. `B08_EXACT_FORMULA_BODY_STATUS=NOT_RATIFIED`.
+    `FUNDING_AMOUNT_PROVEN=false`.
+19. Next canonical step is
+    `OWNER_GO_REQUIRED_FOR_BOUNDED_GET_ONLY_FRESH_XPERP_TRADE_FEE_EVIDENCE_USING_RATIFIED_QUERY_GRAMMAR`.
     That GO is **not** granted. Later formula-body ratification,
     funding, and execute remain separate. This spec does not authorize
     execute, funding, GET, or general Live unlock.
