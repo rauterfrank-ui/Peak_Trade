@@ -107,41 +107,42 @@ def test_load_config_with_live_overrides_paper_no_apply(tmp_path: Path) -> None:
     assert eff.get("portfolio.leverage") == base.get("portfolio.leverage") == 1.0
 
 
-def test_load_config_with_live_overrides_live_apply(tmp_path: Path) -> None:
+def test_load_config_with_live_overrides_live_does_not_apply(tmp_path: Path) -> None:
     cfg_path = _write(tmp_path / "cfg.toml", _base_config_toml(mode="live"))
     ov_path = _write(tmp_path / "auto.toml", _overrides_toml())
 
+    base = load_config(cfg_path)
     eff = load_config_with_live_overrides(cfg_path, auto_overrides_path=ov_path)
-    assert eff.get("portfolio.leverage") == 1.75
-    assert eff.get("strategy.trigger_delay") == 8.0
-    assert eff.get("macro.regime_weight") == 0.35
-    assert eff.get("nested.deep.more.value") == 2
+    assert eff.get("portfolio.leverage") == base.get("portfolio.leverage") == 1.0
+    assert eff.get("strategy.trigger_delay") == base.get("strategy.trigger_delay") == 10.0
+    assert eff.get("macro.regime_weight") == base.get("macro.regime_weight") == 0.25
+    assert eff.get("nested.deep.more.value") == base.get("nested.deep.more.value") == 1
 
 
-def test_load_config_with_live_overrides_testnet_apply(tmp_path: Path) -> None:
+def test_load_config_with_live_overrides_testnet_does_not_apply(tmp_path: Path) -> None:
     cfg_path = _write(tmp_path / "cfg.toml", _base_config_toml(mode="testnet"))
     ov_path = _write(tmp_path / "auto.toml", _overrides_toml())
 
     eff = load_config_with_live_overrides(cfg_path, auto_overrides_path=ov_path)
-    assert eff.get("portfolio.leverage") == 1.75
+    assert eff.get("portfolio.leverage") == 1.0
 
 
-def test_load_config_with_live_overrides_force_apply(tmp_path: Path) -> None:
+def test_load_config_with_live_overrides_force_apply_does_not_apply(tmp_path: Path) -> None:
     cfg_path = _write(tmp_path / "cfg.toml", _base_config_toml(mode="paper"))
     ov_path = _write(tmp_path / "auto.toml", _overrides_toml())
 
     eff = load_config_with_live_overrides(
         cfg_path, auto_overrides_path=ov_path, force_apply_overrides=True
     )
-    assert eff.get("portfolio.leverage") == 1.75
+    assert eff.get("portfolio.leverage") == 1.0
 
 
-def test_load_config_with_live_overrides_nested_paths(tmp_path: Path) -> None:
+def test_load_config_with_live_overrides_nested_paths_do_not_apply(tmp_path: Path) -> None:
     cfg_path = _write(tmp_path / "cfg.toml", _base_config_toml(mode="live"))
     ov_path = _write(tmp_path / "auto.toml", _overrides_toml())
 
     eff = load_config_with_live_overrides(cfg_path, auto_overrides_path=ov_path)
-    assert eff.get("nested.deep.more.value") == 2
+    assert eff.get("nested.deep.more.value") == 1
 
 
 def test_load_config_with_live_overrides_unknown_path_ignored(tmp_path: Path) -> None:

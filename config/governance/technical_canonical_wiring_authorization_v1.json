@@ -958,7 +958,9 @@
     "src/governance/promotion_loop/i16_lineage_remaining_planes_live_join_v1.py",
     "src/governance/promotion_loop/i16_remaining_planes_join_attachment_v1.py",
     "tests/governance/promotion_loop/test_i16_lineage_remaining_planes_live_join_v1.py",
-    "tests/governance/promotion_loop/test_i16_remaining_planes_join_attachment_v1.py"
+    "tests/governance/promotion_loop/test_i16_remaining_planes_join_attachment_v1.py",
+    "src/governance/promotion_loop/engine.py",
+    "tests/governance/promotion_loop/test_apply_proposals_to_live_overrides_fail_closed_v1.py"
   ],
   "allowed_surface_classes": [
     "TECHNICAL_CANONICAL_REPLAY_INPUT_BUILDER_WIRING",
@@ -1020,7 +1022,8 @@
     "TECHNICAL_CANONICAL_VOLATILITY_HOT_PATH_CONTRACT_CLOSURE_WIRING",
     "TECHNICAL_CAPABILITY_7_1_SIMULATED_ENTRY_REDUCE_EXIT_ACTIONABILITY_WIRING",
     "TECHNICAL_PRODUCTIVE_TYPED_VOLATILITY_PRODUCER_AND_CMC_HOT_PATH_BINDING_WIRING",
-    "TECHNICAL_EG_I82_PACKAGE_N_LIVE_OWNER_JOIN_WIRING"
+    "TECHNICAL_EG_I82_PACKAGE_N_LIVE_OWNER_JOIN_WIRING",
+    "TECHNICAL_PHASE_0B_LEGACY_LEARNING_AUTHORITY_FIREWALL_FAIL_CLOSED_WIRING"
   ],
   "authorization_token": "TECHNICAL_CANONICAL_WIRING_AUTHORIZATION_V1",
   "authorized_path_prefixes": [],
@@ -1072,6 +1075,7 @@
     "Includes Double Play sole authority fail-closed quarantine: Ops SwitchGate projection-only, scenario tick.scope_event TEST_ONLY guarded, backtest position feedback observation-only (no SideState overwrite); CHOP bound as scope policy; UNKNOWN remains NOT_BOUND; no runtime/order/live activation; TEST_ONLY injection harness test paths explicitly allowlisted.",
     "Includes CHOP scope-event policy binding v1: ScopeEvent.CHOP_DETECTED bound as RuntimeScopeState scope policy only; Composition consumer projection; UNKNOWN remains NOT_BOUND_FAIL_CLOSED; no Direction/Switch/SideState mutation by CHOP; no runtime/order/live activation.",
     "Includes EG-I82 Package-N live-owner identity-join sidecar for I16 remaining-plane files only (exact-file allowlist); no promotion authority, runtime, orders, credentials, scheduler, migration, or backfill. Other promotion_loop paths remain unauthorized.",
+    "Includes Phase 0B fail-closed legacy learning config-authority firewall exact-file allowlist for the promotion_loop engine writer sink and its fail-closed contract test only. Semantics-neutral non-authority wiring: learning cannot write live config, increase risk or leverage, enable, arm, fund, submit orders, create or use confirm tokens, authorize canary, or promote to live. Does not grant promotion runtime, order, credential, scheduler, or live authority. Other promotion_loop paths remain unauthorized.",
     "Includes testnet/scenario injection fail-closed default + required typed tick provenance: allow_test_scope_event_injection defaults False; explicit bool opt-in + OfflineScenarioTickProvenanceV1 required; no Direction/Side/Switch authority; chop_guard default-minimal transition_allowed aligned to CHOP scope-policy application; no runtime/order/live activation.",
     "Includes adverse-exit/downscope dual-dimension transport: generator prefers DOWNSCOPE/UPSCOPE over ADVERSE_EXIT for ScopeEvent; adverse remains in matched_conditions for Exit PolicySignal; ADVERSE_EXIT maps fail-closed unless downscope fact present; transition_state remains sole SideState owner; no runtime/order/live activation.",
     "Includes longer chronological PIT public-history acquisition scaffold, bounded OKX history-depth probe, and sealed production-lifecycle long-panel binding/acquisition (research-only, dry-run/no-credentials defaults, external archive root required for writes); no economic optimization; no strategy/risk/execution/Master-V2/Double-Play mutation. Owner surface: LONGER_CHRONOLOGICAL_PIT_PUBLIC_HISTORY_ACQUISITION_SCAFFOLD_AND_DEPTH_PROBE_V1. Review basis: acquisition/probe/seal workstream; remains in force until superseded by a later acquisition operator GO.",
@@ -1159,6 +1163,7 @@
     "CAPABILITY_7_1_SIMULATED_ENTRY_REDUCE_EXIT_ACTIONABILITY_EVIDENCE_V1 exact-file allowlist for intent-pipeline bridge decision_outcome propagation into capital-risk sizing input (binding completeness only; CORE_SEMANTICS/RISK_SIZING_SEMANTICS unchanged).",
     "PRODUCTIVE_TYPED_VOLATILITY_PRODUCER_AND_CMC_HOT_PATH_BINDING_V1 exact-file allowlist for PT1M mark observation finalizer under master_v2 (wiring/observation finalization only; no core trading logic mutation; no numeric max-age enforcement).",
     "CAPABILITY_REGIME_BULL_BEAR_SWITCH_EVIDENCE_READMODEL_V1: authorize exact-file EVIDENCE_ONLY / NON_RESTART_AUTHORITY capture carrier + post-transition capture binding in integrated offline replay + focused tests. No Master-V2/Double-Play restart persistence domain; CanonicalDynamicScopeStateV1.side_state remains sole SideState restart owner; CORE_SEMANTICS_CHANGED=false; no live/testnet/orders.",
-    "EG_I82_PACKAGE_N_LIVE_OWNER_JOIN_CLOSEOUT: authorize exact-file I16 lineage remaining-plane identity-join sidecar + focused tests under Package-N SHA256-only join. No promotion authority, runtime activation, orders, credentials, scheduler, migration, or backfill. Other promotion_loop paths remain unauthorized."
+    "EG_I82_PACKAGE_N_LIVE_OWNER_JOIN_CLOSEOUT: authorize exact-file I16 lineage remaining-plane identity-join sidecar + focused tests under Package-N SHA256-only join. No promotion authority, runtime activation, orders, credentials, scheduler, migration, or backfill. Other promotion_loop paths remain unauthorized.",
+    "PHASE_0B_LEGACY_LEARNING_AUTHORITY_FIREWALL_FAIL_CLOSED: authorize exact-file fail-closed non-authority wiring of the promotion_loop live-override writer sink and its negative contract test only. No promotion runtime authority, order authority, scheduler authority, credential authority, or live authority. Learning remains non-self-authorizing."
   ]
 }

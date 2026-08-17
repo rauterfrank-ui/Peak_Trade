@@ -366,45 +366,10 @@ def load_config_with_live_overrides(
     force_apply_overrides: bool = False,
 ) -> PeakConfig:
     """
-    Load base config and optionally apply live auto-overrides from TOML.
+    Load base config. Legacy live-overlay merge is permanently fail-closed.
 
-    This is an opt-in layer on top of `load_config()`. It never changes
-    execution behaviour; it only merges config values for live-like envs.
-
-    Args:
-        path: Base config path (defaults to resolve_config_path()).
-        auto_overrides_path: Override TOML path (defaults to AUTO_LIVE_OVERRIDES_PATH).
-        force_apply_overrides: If True, apply overrides even in non-live envs (tests only).
+    Signature retained for call-site compatibility. ``auto_overrides_path``
+    and ``force_apply_overrides`` have no effect in any environment.
     """
-    cfg = load_config(path)
-
-    if not (force_apply_overrides or _is_live_like_environment(cfg)):
-        return cfg
-
-    overrides_path = auto_overrides_path or AUTO_LIVE_OVERRIDES_PATH
-    overrides = _load_live_auto_overrides(overrides_path)
-    if not overrides:
-        return cfg
-
-    # Safety: ignore overrides that target non-existent config paths
-    sentinel = object()
-    applicable: Dict[str, Any] = {}
-    ignored = 0
-    for k, v in overrides.items():
-        if cfg.get(k, sentinel) is sentinel:
-            ignored += 1
-            continue
-        applicable[k] = v
-
-    if not applicable:
-        if ignored:
-            print(
-                f"[peak_config] WARNING: Ignored {ignored} live override(s) targeting unknown paths."
-            )
-        return cfg
-
-    print(f"[peak_config] Applying {len(applicable)} live auto-override(s) from {overrides_path}")
-    for k, v in applicable.items():
-        print(f"[peak_config]   {k} = {v}")
-
-    return cfg.with_overrides(applicable)
+    del auto_overrides_path, force_apply_overrides
+    return load_config(path)
