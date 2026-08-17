@@ -1,9 +1,10 @@
-"""I82 emitter-cutover preparation — additive identity-plane contract.
+"""I82 emitter-cutover identity-plane contract.
 
-Preparation only. Does not rewrite ExperimentConfig.get_experiment_id,
-does not change MD5-12 emitters, does not change run-id generation, does
-not backfill, and does not authorize runtime, trading, orders, Testnet,
-Live, or evidence equivalence. EG-I82-JOIN remains CLOSED_PROVEN.
+MU6 producer/emitter cutover: ExperimentConfig.get_experiment_id emits
+the prepared Package-N SHA256 identity. compute_legacy_experiment_id_md5_12
+remains the MD5-12 compatibility alias. No backfill, no legacy
+deprecation, no run-id algorithm rewrite, no runtime/trading/Testnet/Live
+authority. EG-I82-JOIN remains CLOSED_PROVEN.
 """
 
 from __future__ import annotations
@@ -33,15 +34,19 @@ IDENTITY_SCHEMA_VERSION = "i82_identity_sidecar_compat.v1"
 ALIAS_AUTHORITY = "compatibility_only"
 LEGACY_SCHEME_MD5_12 = "md5_12"
 RUNTIME_AUTHORITY_IMPACT = "NONE"
-EMITTER_CUTOVER_EXECUTED = False
+EMITTER_CUTOVER_EXECUTED = True
 LEGACY_MD5_REMOVED = False
 BACKFILL_EXECUTED = False
 I82_FULL_MIGRATION_PROVEN = False
 EG_I82_JOIN_STATUS = "CLOSED_PROVEN"
-MG_I82_EMITTER_CUTOVER_STATUS = "PREPARATION_COMPLETE"
+MG_I82_EMITTER_CUTOVER_STATUS = "EMITTER_CUTOVER_COMPLETE"
 PACKAGE_N_IDENTITY_SCHEMA_VERSION_REF = PACKAGE_N_IDENTITY_SCHEMA_VERSION
+CUTOVER_OWNER_GO = "OWNER_GO_I82_EMITTER_CUTOVER"
 
-GET_EXPERIMENT_ID_SOURCE_SHA256 = "edb8ca5bbea8b4d02fbd47720dafadce8f3bc97cd19267006edaef039bf7d4cb"
+GET_EXPERIMENT_ID_SOURCE_SHA256 = "a779b9690ba41f9248290c301862a291cf52dddd5892601a89ecb1a2467bdfab"
+GET_EXPERIMENT_ID_PRE_CUTOVER_SOURCE_SHA256 = (
+    "edb8ca5bbea8b4d02fbd47720dafadce8f3bc97cd19267006edaef039bf7d4cb"
+)
 PRESERVATION_FIXTURE_LEGACY_MD5_12 = "9b586cf2f92a"
 PRESERVATION_FIXTURE_CANONICAL_SHA256 = (
     "ef57df63bd82c65dc83258060424653d41180bd0d90c2ebd7f167531449ed36e"
@@ -73,12 +78,12 @@ IMPLEMENTED_IN_THIS_GO: frozenset[str] = frozenset(
         "MU1_CANONICAL_LEGACY_FIELD_SCHEMA",
         "MU2_SIDECAR_ALIAS_MATERIALIZATION",
         "MU3_DUAL_READ_COMPATIBILITY",
+        "MU6_PRODUCER_EMITTER_CUTOVER",
     }
 )
 
 FORBIDDEN_IN_THIS_GO: frozenset[str] = frozenset(
     {
-        "MU6_PRODUCER_EMITTER_CUTOVER",
         "MU7_LEGACY_DEPRECATION",
     }
 )
@@ -239,17 +244,23 @@ def assert_identity_planes_distinct_v1(
 
 
 def assert_emitter_unmutated_v1() -> None:
-    """Preservation assertion: productive MD5-12 emitter source is unchanged."""
+    """Cutover assertion: productive emitter source matches frozen SHA256 digest."""
     from src.experiments.base import ExperimentConfig
 
     source = inspect.getsource(ExperimentConfig.get_experiment_id)
     digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
     if digest != GET_EXPERIMENT_ID_SOURCE_SHA256:
         _reject("ExperimentConfig.get_experiment_id source digest drifted (emitter mutated)")
+    if digest == GET_EXPERIMENT_ID_PRE_CUTOVER_SOURCE_SHA256:
+        _reject("ExperimentConfig.get_experiment_id still has pre-cutover MD5-12 source")
+    if "hashlib.md5" in source:
+        _reject("productive emitter must not compute MD5-12")
+    if "compute_experiment_identity_id" not in source:
+        _reject("productive emitter must call compute_experiment_identity_id")
 
 
 def assert_preservation_fixture_v1() -> None:
-    """Golden current-behavior assertion for the existing MD5-12 emitter."""
+    """Golden cutover assertion: SHA256 emitter plus retained MD5-12 alias."""
     from src.experiments.base import ExperimentConfig, ParamSweep
 
     assert_emitter_unmutated_v1()
@@ -269,18 +280,24 @@ def assert_preservation_fixture_v1() -> None:
     )
     emitted = config.get_experiment_id()
     mirrored = compute_legacy_experiment_id_md5_12(config)
-    if emitted != PRESERVATION_FIXTURE_LEGACY_MD5_12:
-        _reject("existing MD5-12 emitter output drifted")
-    if mirrored != emitted:
-        _reject("legacy helper drifted from get_experiment_id")
     canonical = compute_experiment_identity_id(build_identity_config(config))
+    if emitted != PRESERVATION_FIXTURE_CANONICAL_SHA256:
+        _reject("productive SHA256 emitter output drifted")
     if canonical != PRESERVATION_FIXTURE_CANONICAL_SHA256:
         _reject("canonical SHA256 identity helper drifted")
-    if canonical == emitted:
+    if emitted != canonical:
+        _reject("get_experiment_id must equal compute_experiment_identity_id")
+    if mirrored != PRESERVATION_FIXTURE_LEGACY_MD5_12:
+        _reject("legacy MD5-12 alias helper drifted")
+    if mirrored == emitted:
         _reject("canonical SHA256 must not equal legacy MD5-12")
+    if not is_package_n_sha256_canonical_id(emitted):
+        _reject("productive emitter must emit a Package-N SHA256 identity")
+    if is_package_n_sha256_canonical_id(mirrored):
+        _reject("legacy MD5-12 alias must not be a Package-N SHA256 identity")
     assert_identity_planes_distinct_v1(
-        canonical_identity_id=canonical,
-        legacy_experiment_id=emitted,
+        canonical_identity_id=emitted,
+        legacy_experiment_id=mirrored,
     )
 
 
@@ -318,9 +335,13 @@ def load_i82_cutover_inventory_v1(repo_root: Path | None = None) -> dict[str, An
     if status.get("EG_I82_JOIN") != EG_I82_JOIN_STATUS:
         _reject("inventory must preserve EG-I82-JOIN=CLOSED_PROVEN")
     if status.get("MG_I82_EMITTER_CUTOVER") != MG_I82_EMITTER_CUTOVER_STATUS:
-        _reject("inventory MG-I82-EMITTER-CUTOVER must be PREPARATION_COMPLETE")
-    if status.get("EMITTER_CUTOVER_EXECUTED") is not False:
-        _reject("inventory must not claim emitter cutover executed")
+        _reject("inventory MG-I82-EMITTER-CUTOVER must be EMITTER_CUTOVER_COMPLETE")
+    if status.get("EMITTER_CUTOVER_EXECUTED") is not True:
+        _reject("inventory must claim emitter cutover executed")
+    if status.get("LEGACY_MD5_REMOVED") is not False:
+        _reject("inventory must not claim legacy MD5-12 removed")
+    if status.get("BACKFILL_EXECUTED") is not False:
+        _reject("inventory must not claim backfill executed")
     if status.get("I82_FULL_MIGRATION_PROVEN") is not False:
         _reject("inventory must not claim full I82 migration proven")
     if status.get("RUNTIME_AUTHORITY_CHANGED") is not False:
@@ -337,9 +358,9 @@ def load_i82_cutover_inventory_v1(repo_root: Path | None = None) -> dict[str, An
         unit_id = item.get("id")
         implemented = item.get("implemented_in_this_go")
         if unit_id in FORBIDDEN_IN_THIS_GO and implemented is not False:
-            _reject(f"{unit_id} must remain unimplemented in this preparation GO")
+            _reject(f"{unit_id} must remain unimplemented in this cutover GO")
         if unit_id in IMPLEMENTED_IN_THIS_GO and implemented is not True:
-            _reject(f"{unit_id} must be marked implemented as additive preparation")
+            _reject(f"{unit_id} must be marked implemented for this cutover GO")
     paths = payload["paths"]
     if not isinstance(paths, list) or not paths:
         _reject("inventory paths must be a non-empty list")
@@ -363,9 +384,21 @@ def load_i82_cutover_inventory_v1(repo_root: Path | None = None) -> dict[str, An
         for field in required_path_fields:
             if field not in entry:
                 _reject(f"inventory path missing {field}")
-        if entry["safe_migration_unit"] == "MU6_PRODUCER_EMITTER_CUTOVER":
+        if entry.get("symbol") == "ExperimentConfig.get_experiment_id":
+            if entry.get("implemented_in_this_go") is not True:
+                _reject("get_experiment_id MU6 cutover must be implemented")
+            if entry.get("current_value_format") != "sha256_hex_64":
+                _reject("get_experiment_id must emit sha256_hex_64")
+            if entry.get("canonical_or_legacy") != "CANONICAL":
+                _reject("get_experiment_id must be the canonical emitter")
+        if entry.get("symbol") == "compute_legacy_experiment_id_md5_12":
             if entry.get("implemented_in_this_go") is True:
-                _reject("MU6 emitter cutover must not be implemented in this GO")
+                _reject("legacy MD5-12 helper must remain the alias plane")
+            if entry.get("current_value_format") != "md5_hex_12":
+                _reject("legacy helper must remain md5_hex_12")
+        if "armstrong_elkaroui_combi_experiment.py" in str(entry.get("file")):
+            if entry.get("implemented_in_this_go") is True:
+                _reject("armstrong run_id emitter must not be rewritten")
     forbidden = payload.get("forbidden_in_this_go", [])
     if not isinstance(forbidden, list):
         _reject("inventory forbidden_in_this_go must be a list")
@@ -400,9 +433,11 @@ __all__ = [
     "BACKFILL_EXECUTED",
     "CONTRACT_ID",
     "CONTRACT_VERSION",
+    "CUTOVER_OWNER_GO",
     "EG_I82_JOIN_STATUS",
     "EMITTER_CUTOVER_EXECUTED",
     "FORBIDDEN_IN_THIS_GO",
+    "GET_EXPERIMENT_ID_PRE_CUTOVER_SOURCE_SHA256",
     "GET_EXPERIMENT_ID_SOURCE_SHA256",
     "I82EmitterCutoverPreparationError",
     "I82IdentitySidecarV1",

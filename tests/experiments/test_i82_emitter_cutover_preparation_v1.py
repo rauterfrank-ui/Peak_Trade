@@ -1,7 +1,7 @@
-"""I82 emitter-cutover preparation — fail-closed identity-plane tests.
+"""I82 emitter-cutover identity-plane tests.
 
 Offline only. No exchange, credentials, orders, or runtime authority.
-Does not mutate existing emitters.
+Records MU6 producer/emitter cutover while retaining MD5-12 as alias.
 """
 
 from __future__ import annotations
@@ -73,27 +73,33 @@ def _sample_config() -> ExperimentConfig:
     )
 
 
-def test_status_flags_remain_preparation_only() -> None:
+def test_status_flags_record_emitter_cutover() -> None:
     assert EG_I82_JOIN_STATUS == "CLOSED_PROVEN"
-    assert MG_I82_EMITTER_CUTOVER_STATUS == "PREPARATION_COMPLETE"
-    assert EMITTER_CUTOVER_EXECUTED is False
+    assert MG_I82_EMITTER_CUTOVER_STATUS == "EMITTER_CUTOVER_COMPLETE"
+    assert EMITTER_CUTOVER_EXECUTED is True
     assert LEGACY_MD5_REMOVED is False
     assert I82_FULL_MIGRATION_PROVEN is False
     assert RUNTIME_AUTHORITY_IMPACT == "NONE"
-    assert "MU6_PRODUCER_EMITTER_CUTOVER" in FORBIDDEN_IN_THIS_GO
+    assert "MU6_PRODUCER_EMITTER_CUTOVER" in IMPLEMENTED_IN_THIS_GO
+    assert "MU6_PRODUCER_EMITTER_CUTOVER" not in FORBIDDEN_IN_THIS_GO
+    assert "MU7_LEGACY_DEPRECATION" in FORBIDDEN_IN_THIS_GO
     assert "MU1_CANONICAL_LEGACY_FIELD_SCHEMA" in IMPLEMENTED_IN_THIS_GO
 
 
 def test_sha256_canonical_and_md5_12_legacy_are_distinct_planes() -> None:
     config = _sample_config()
     canonical = compute_experiment_identity_id(build_identity_config(config))
-    legacy = config.get_experiment_id()
+    emitted = config.get_experiment_id()
+    legacy = compute_legacy_experiment_id_md5_12(config)
     assert canonical == PRESERVATION_FIXTURE_CANONICAL_SHA256
+    assert emitted == PRESERVATION_FIXTURE_CANONICAL_SHA256
     assert legacy == PRESERVATION_FIXTURE_LEGACY_MD5_12
     assert canonical != legacy
+    assert emitted != legacy
     assert len(canonical) == 64
     assert len(legacy) == 12
     assert is_package_n_sha256_canonical_id(canonical)
+    assert is_package_n_sha256_canonical_id(emitted)
     assert not is_package_n_sha256_canonical_id(legacy)
     assert_identity_planes_distinct_v1(
         canonical_identity_id=canonical,
@@ -174,16 +180,18 @@ def test_sidecar_from_package_n_manifest_does_not_mutate_manifest() -> None:
     assert sidecar.canonical_identity_id != sidecar.legacy_experiment_id
 
 
-def test_existing_emitter_behavior_preserved() -> None:
+def test_existing_emitter_behavior_cutover_to_sha256() -> None:
     assert_preservation_fixture_v1()
     assert_emitter_unmutated_v1()
     config = _sample_config()
     first = config.get_experiment_id()
     second = config.get_experiment_id()
-    assert first == second == PRESERVATION_FIXTURE_LEGACY_MD5_12
-    assert compute_legacy_experiment_id_md5_12(config) == first
+    assert first == second == PRESERVATION_FIXTURE_CANONICAL_SHA256
+    assert compute_legacy_experiment_id_md5_12(config) == PRESERVATION_FIXTURE_LEGACY_MD5_12
+    assert compute_legacy_experiment_id_md5_12(config) != first
     source = EMITTER_PATH.read_text(encoding="utf-8")
-    assert "return hashlib.md5(config_str.encode()).hexdigest()[:12]" in source
+    assert "return hashlib.md5(config_str.encode()).hexdigest()[:12]" not in source
+    assert "compute_experiment_identity_id(build_identity_config(self))" in source
 
 
 def test_contract_module_does_not_rewrite_emitter() -> None:
@@ -200,8 +208,9 @@ def test_contract_module_does_not_rewrite_emitter() -> None:
             assigned.add(node.target.attr)
     assert "get_experiment_id" not in assigned
     text = CONTRACT_PATH.read_text(encoding="utf-8")
-    assert "hashlib.md5" not in text
     assert "def get_experiment_id" not in text
+    assert "return hashlib.md5(config_str.encode()).hexdigest()[:12]" not in text
+    assert 'if "hashlib.md5" in source:' in text
 
 
 def test_inventory_complete_and_files_exist() -> None:
@@ -239,10 +248,12 @@ def test_inventory_complete_and_files_exist() -> None:
     ]
     assert producers
     assert canonical_producers
-    assert payload["bound_origin_main_sha"] == "9ba02c96a346c08beb24a09dfad2932534c8789e"
+    assert payload["bound_origin_main_sha"] == "1389c0f181380af6813709c3e7f274a6ddc4a12a"
     assert payload["status"]["EG_I82_JOIN"] == "CLOSED_PROVEN"
-    assert payload["status"]["MG_I82_EMITTER_CUTOVER"] == "PREPARATION_COMPLETE"
-    assert payload["status"]["EMITTER_CUTOVER_EXECUTED"] is False
+    assert payload["status"]["MG_I82_EMITTER_CUTOVER"] == "EMITTER_CUTOVER_COMPLETE"
+    assert payload["status"]["EMITTER_CUTOVER_EXECUTED"] is True
+    assert payload["status"]["LEGACY_MD5_REMOVED"] is False
+    assert payload["status"]["BACKFILL_EXECUTED"] is False
     assert payload["status"]["I82_FULL_MIGRATION_PROVEN"] is False
 
 
@@ -280,4 +291,7 @@ def test_no_network_credential_or_order_surface_in_contract() -> None:
         == hashlib.sha256(
             __import__("inspect").getsource(ExperimentConfig.get_experiment_id).encode("utf-8")
         ).hexdigest()
+    )
+    assert GET_EXPERIMENT_ID_SOURCE_SHA256 != (
+        "edb8ca5bbea8b4d02fbd47720dafadce8f3bc97cd19267006edaef039bf7d4cb"
     )

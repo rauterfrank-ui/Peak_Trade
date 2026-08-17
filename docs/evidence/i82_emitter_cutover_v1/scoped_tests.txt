@@ -1,0 +1,36 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0 -- /Library/Developer/CommandLineTools/usr/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/frnkhrz/Peak_Trade/.worktrees/i82-emitter-cutover
+configfile: pytest.ini
+plugins: anyio-4.12.0, cov-7.0.0
+collecting ... collected 24 items
+
+tests/experiments/test_i82_emitter_cutover_v1.py::test_cutover_status_flags PASSED [  4%]
+tests/experiments/test_i82_emitter_cutover_v1.py::test_forensic_md5_12_to_sha256_identifier_only PASSED [  8%]
+tests/experiments/test_i82_emitter_cutover_v1.py::test_productive_emitter_is_deterministic_sha256 PASSED [ 12%]
+tests/experiments/test_i82_emitter_cutover_v1.py::test_name_change_changes_identity_and_keeps_sha256_width PASSED [ 16%]
+tests/experiments/test_i82_emitter_cutover_v1.py::test_consumers_do_not_assume_md5_12_from_emitter PASSED [ 20%]
+tests/experiments/test_i82_emitter_cutover_v1.py::test_run_id_follows_emitter_without_independent_hash_rewrite PASSED [ 25%]
+tests/experiments/test_i82_emitter_cutover_v1.py::test_armstrong_run_id_emitter_not_rewritten PASSED [ 29%]
+tests/experiments/test_i82_emitter_cutover_v1.py::test_negative_invalid_legacy_inputs_still_fail_closed PASSED [ 33%]
+tests/experiments/test_i82_emitter_cutover_v1.py::test_historical_preparation_evidence_not_mutated PASSED [ 37%]
+tests/experiments/test_i82_emitter_cutover_v1.py::test_z2_live_and_fee_semantics_unchanged PASSED [ 41%]
+tests/experiments/test_i82_emitter_cutover_v1.py::test_cutover_fixture_contract PASSED [ 45%]
+tests/experiments/test_i82_emitter_cutover_preparation_v1.py::test_status_flags_record_emitter_cutover PASSED [ 50%]
+tests/experiments/test_i82_emitter_cutover_preparation_v1.py::test_sha256_canonical_and_md5_12_legacy_are_distinct_planes PASSED [ 54%]
+tests/experiments/test_i82_emitter_cutover_preparation_v1.py::test_legacy_alias_alone_does_not_satisfy_canonical_join PASSED [ 58%]
+tests/experiments/test_i82_emitter_cutover_preparation_v1.py::test_missing_canonical_is_not_replaced_by_md5 PASSED [ 62%]
+tests/experiments/test_i82_emitter_cutover_preparation_v1.py::test_explicit_alias_resolution_requires_declared_compatibility PASSED [ 66%]
+tests/experiments/test_i82_emitter_cutover_preparation_v1.py::test_legacy_none_is_allowed_and_does_not_promote PASSED [ 70%]
+tests/experiments/test_i82_emitter_cutover_preparation_v1.py::test_canonical_must_not_equal_legacy PASSED [ 75%]
+tests/experiments/test_i82_emitter_cutover_preparation_v1.py::test_sidecar_from_package_n_manifest_does_not_mutate_manifest PASSED [ 79%]
+tests/experiments/test_i82_emitter_cutover_preparation_v1.py::test_existing_emitter_behavior_cutover_to_sha256 PASSED [ 83%]
+tests/experiments/test_i82_emitter_cutover_preparation_v1.py::test_contract_module_does_not_rewrite_emitter PASSED [ 87%]
+tests/experiments/test_i82_emitter_cutover_preparation_v1.py::test_inventory_complete_and_files_exist PASSED [ 91%]
+tests/experiments/test_i82_emitter_cutover_preparation_v1.py::test_existing_package_n_join_invariant_md5_is_not_canonical PASSED [ 95%]
+tests/experiments/test_i82_emitter_cutover_preparation_v1.py::test_no_network_credential_or_order_surface_in_contract PASSED [100%]
+
+============================== 24 passed in 0.39s ==============================
+
+EXIT:0

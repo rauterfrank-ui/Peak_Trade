@@ -175,7 +175,10 @@ def test_path_normalization_in_base_params() -> None:
 def test_legacy_md5_alias_parity() -> None:
     config = _sample_config()
     manifest = build_manifest(config)
-    assert manifest["legacy_aliases"]["legacy_experiment_id_md5_12"] == config.get_experiment_id()
+    legacy = compute_legacy_experiment_id_md5_12(config)
+    assert manifest["legacy_aliases"]["legacy_experiment_id_md5_12"] == legacy
+    assert config.get_experiment_id() == manifest["experiment_identity_id"]
+    assert config.get_experiment_id() != legacy
 
 
 def test_forbidden_run_fields_rejected() -> None:
@@ -389,6 +392,11 @@ def test_manifest_forbidden_keys_at_build_time() -> None:
     assert "metrics" in _FORBIDDEN_MANIFEST_KEYS
 
 
-def test_compute_legacy_experiment_id_md5_12_matches_get_experiment_id() -> None:
+def test_compute_legacy_experiment_id_md5_12_is_alias_not_emitter() -> None:
     config = _sample_config()
-    assert compute_legacy_experiment_id_md5_12(config) == config.get_experiment_id()
+    legacy = compute_legacy_experiment_id_md5_12(config)
+    emitted = config.get_experiment_id()
+    assert legacy != emitted
+    assert len(legacy) == 12
+    assert len(emitted) == 64
+    assert emitted == build_manifest(config)["experiment_identity_id"]

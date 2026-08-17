@@ -197,7 +197,7 @@ class TestExperimentConfig:
         id2 = config.get_experiment_id()
 
         assert id1 == id2
-        assert len(id1) == 12  # MD5 hash truncated
+        assert len(id1) == 64  # Package-N SHA256 identity
 
     def test_to_dict(self):
         """to_dict() gibt alle Felder zurück."""

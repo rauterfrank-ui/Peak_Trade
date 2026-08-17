@@ -1,6 +1,13 @@
 # Peak_Trade – Evidence Index (v0.15)
 
 
+<a id="ev-20260817-mg-i82-emitter-cutover-mu6"></a>
+- 2026-08-17 — MG-I82-EMITTER-CUTOVER MU6 producer &#47; emitter cutover (SHA256)
+  - Source: [Inventory](specs/I82_EMITTER_CUTOVER_PREPARATION_INVENTORY_V1.json) · Contract: [`src&#47;ops&#47;i82_emitter_cutover_preparation_contract_v1.py`](../../src/ops/i82_emitter_cutover_preparation_contract_v1.py) · Emitter: [`src&#47;experiments&#47;base.py`](../../src/experiments/base.py) · Attestation: [`docs&#47;evidence&#47;i82_emitter_cutover_v1&#47;`](../evidence/i82_emitter_cutover_v1/) · Documentation Anchor: `docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260817-mg-i82-emitter-cutover-mu6`
+  - Origin SHA: `1389c0f181380af6813709c3e7f274a6ddc4a12a` · SSOT: Master Runbook §5.11
+  - Claim: `MG_I82_EMITTER_CUTOVER=EMITTER_CUTOVER_COMPLETE` for productive `get_experiment_id` SHA256 cutover onto the prepared Package-N identity path. `EG_I82_JOIN=CLOSED_PROVEN` unchanged. `EMITTER_CUTOVER_EXECUTED=true`. MD5-12 retained as alias. `I82_FULL_MIGRATION_PROVEN=false`.
+  - Non-claims: not MD5 removal; not backfill; not MU7 deprecation; not armstrong run-id rewrite; not runtime authority; not Live &#47; Testnet &#47; Canary &#47; orders; not Z2 &#47; EDGE_I readjudication; not full I82 migration.
+
 <a id="ev-20260817-mg-i82-emitter-cutover-preparation"></a>
 - 2026-08-17 — MG-I82-EMITTER-CUTOVER preparation (docs &#47; contract &#47; sidecar; not executed)
   - Source: [Inventory](specs/I82_EMITTER_CUTOVER_PREPARATION_INVENTORY_V1.json) · Contract: [`src&#47;ops&#47;i82_emitter_cutover_preparation_contract_v1.py`](../../src/ops/i82_emitter_cutover_preparation_contract_v1.py) · Attestation: [`docs&#47;evidence&#47;i82_emitter_cutover_preparation_v1&#47;`](../evidence/i82_emitter_cutover_preparation_v1/) · Documentation Anchor: `docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260817-mg-i82-emitter-cutover-preparation`
