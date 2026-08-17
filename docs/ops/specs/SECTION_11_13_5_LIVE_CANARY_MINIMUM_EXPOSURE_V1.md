@@ -83,7 +83,9 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.Z2. Historical Z1-era next steps
+Current SSOT: Master Runbook §11.13.5.Z2. Parallel contract persist:
+§11.13.5.Z2A unknown-none delivery term in operational reserve
+composition; Z2 next pointer unchanged. Historical Z1-era next steps
 below are superseded for the current EDGE_I EVENT_B closeout persist.
 Historical Z-era next steps remain historical for the normal-expiry
 fee-existence premise persist. Historical Y-era next steps remain historical for the
@@ -276,6 +278,20 @@ oneshot.
     exhausted. `DELIVERY_RATE_OPERATIVE_VALUE=NONE`.
 27. Next canonical step remains
     `OWNER_GO_REQUIRED_TO_SUPPLY_OR_POINT_TO_A_CURRENT_NORMATIVE_OKX_EEA_OEM_XPERP_NORMAL_EXPIRY_FEE_APPLICABILITY_STATEMENT`.
-    That GO is **not** granted. Later formula-body ratification,
+    That GO is **not** granted.
+28. `OWNER_GO_FOR_FAIL_CLOSED_UNKNOWN_NONE_DELIVERY_TERM_IN_OPERATIONAL_RESERVE_COMPOSITION_DOCS_ONLY`
+    was granted docs-only as a **parallel** persist and is consumed as
+    §11.13.5.Z2A. It does **not** replace the Z2 next pointer and does
+    **not** re-adjudicate EDGE_I. `EDGE_I_STATUS=UNPROVEN`.
+    `APPLICABILITY_VERDICT=C`. `FINAL_VERDICT=C`.
+    `APPLIES_PROVEN=false`. `DOES_NOT_APPLY_PROVEN=false`.
+    `DELIVERY_RATE_OPERATIVE_VALUE=NONE`.
+    `OPERATIVE_EXPIRY_FEE_RATE=NONE`.
+    `DELIVERY_FEE_TERM_NUMERIC_STATUS=UNINSTANTIATED`.
+    `FULL_OPERATIONAL_RESERVE_COMPOSITION_STATUS=BLOCKED`.
+    `SILENT_ZERO_FORBIDDEN=true`. `SILENT_NA_FORBIDDEN=true`.
+    `DLV_INCLUDE_ALWAYS_IS_NOT_APPLICABILITY_PROOF=true`. `NONE` means
+    unknown &#47; uninstantiated, not `0`. Later outcomes A and B must
+    consume the same contract. Later formula-body ratification,
     funding, and execute remain separate. This spec does not authorize
     execute, funding, GET, or general Live unlock.
