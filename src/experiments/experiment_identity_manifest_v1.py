@@ -1,4 +1,12 @@
-"""Offline Package N — Experiment Identity Manifest Producer v1."""
+"""Offline Package N — Experiment Identity Manifest Producer v1.
+
+Package N identity is an incomplete historical projection. Phase 1 COMPLETE
+Canonical Experiment Identity lives in
+``src.experiments.canonical_experiment_identity_v1`` and does not reinterpret
+existing Package N ``experiment_identity_id`` hashes.
+
+EXPERIMENT_IDENTITY_HAS_RUNTIME_AUTHORITY=false
+"""
 
 from __future__ import annotations
 
@@ -34,6 +42,7 @@ IDENTITY_DOMAIN = "peak_trade.experiment_identity.v1"
 ARTIFACT_FILENAME = "experiment_identity_manifest_v1.json"
 STAGING_DIRNAME_PREFIX = ".experiment_identity_staging_"
 RUNTIME_AUTHORITY_IMPACT = "NONE"
+PACKAGE_N_IDENTITY_COMPLETENESS = "INCOMPLETE_PACKAGE_N_PROJECTION_NOT_PHASE_1_COMPLETE"
 
 _REQUIRED_IDENTITY_FIELDS = (
     "name",
@@ -566,6 +575,7 @@ __all__ = [
     "ExperimentIdentityManifestError",
     "IDENTITY_DOMAIN",
     "IDENTITY_SCHEMA_VERSION",
+    "PACKAGE_N_IDENTITY_COMPLETENESS",
     "RUNTIME_AUTHORITY_IMPACT",
     "active_input_matrix_classifications",
     "build_identity_config",
