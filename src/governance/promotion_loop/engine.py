@@ -9,8 +9,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Iterable, List, Optional
 
-import toml
-
 from src.meta.learning_loop.models import ConfigPatch, PatchStatus
 
 from .models import (
@@ -19,7 +17,7 @@ from .models import (
     PromotionDecision,
     PromotionProposal,
 )
-from .policy import AutoApplyBounds, AutoApplyPolicy
+from .policy import AutoApplyPolicy
 from .safety import (
     SafetyConfig,
     apply_safety_filters,
@@ -257,73 +255,13 @@ def apply_proposals_to_live_overrides(
     live_override_path: Path,
 ) -> Optional[Path]:
     """
-    Optional step: apply accepted promotion proposals to a live override TOML file,
-    respecting the given AutoApplyPolicy.
+    Legacy live-override writer. Permanently fail-closed.
 
-    - Wenn policy.mode != "bounded_auto": macht nichts, return None.
-    - Nur numerische Patches.
-    - Nur Patches mit passenden Bounds (leverage/trigger/macro).
+    Signature retained for call-site compatibility. Never creates, reads,
+    or mutates override files. Always returns None.
     """
-    if not policy.is_bounded_auto():
-        return None
-
-    updates = {}
-
-    for proposal in proposals:
-        for decision in proposal.decisions:
-            if decision.status is not DecisionStatus.ACCEPTED_FOR_PROPOSAL:
-                continue
-
-            patch = decision.candidate.patch
-            if not isinstance(patch.new_value, (int, float)):
-                continue
-
-            bounds: Optional[AutoApplyBounds] = None
-            for tag in decision.candidate.tags:
-                if tag == "leverage":
-                    bounds = policy.leverage_bounds
-                    break
-                if tag == "macro":
-                    bounds = policy.macro_weight_bounds
-                    break
-                if tag == "trigger":
-                    bounds = policy.trigger_delay_bounds
-                    break
-
-            if bounds is None:
-                continue
-
-            old_val = patch.old_value
-            new_val = float(patch.new_value)
-
-            if new_val < bounds.min_value or new_val > bounds.max_value:
-                continue
-
-            if isinstance(old_val, (int, float)):
-                delta = abs(new_val - float(old_val))
-                if delta > bounds.max_step:
-                    continue
-
-            updates[patch.target] = new_val
-
-    if not updates:
-        return None
-
-    live_override_path.parent.mkdir(parents=True, exist_ok=True)
-    data = {}
-    if live_override_path.exists():
-        try:
-            data = toml.loads(live_override_path.read_text(encoding="utf-8"))
-        except Exception:
-            data = {}
-
-    auto_table = data.get("auto_applied", {})
-    for target, new_value in updates.items():
-        auto_table[target] = new_value
-    data["auto_applied"] = auto_table
-
-    live_override_path.write_text(toml.dumps(data), encoding="utf-8")
-    return live_override_path
+    del proposals, policy, live_override_path
+    return None
 
 
 def _to_json(obj: object) -> str:

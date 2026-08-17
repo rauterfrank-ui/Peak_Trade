@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.core.peak_config import load_config_with_live_overrides
+from src.core.peak_config import load_config, load_config_with_live_overrides
 
 
 def _write(path: Path, content: str) -> Path:
@@ -35,7 +35,7 @@ enabled = false
 """.lstrip()
 
 
-def test_end_to_end_live_applies_multiple_overrides(tmp_path: Path) -> None:
+def test_end_to_end_live_does_not_apply_overrides(tmp_path: Path) -> None:
     cfg_path = _write(tmp_path / "cfg.toml", _cfg("live"))
     ov_path = _write(
         tmp_path / "auto.toml",
@@ -47,10 +47,11 @@ def test_end_to_end_live_applies_multiple_overrides(tmp_path: Path) -> None:
 """.lstrip(),
     )
 
+    base = load_config(cfg_path)
     eff = load_config_with_live_overrides(cfg_path, auto_overrides_path=ov_path)
-    assert eff.get("portfolio.leverage") == 1.5
-    assert eff.get("strategy.trigger_delay") == 7.0
-    assert eff.get("macro.regime_weight") == 0.25
+    assert eff.get("portfolio.leverage") == base.get("portfolio.leverage") == 1.0
+    assert eff.get("strategy.trigger_delay") == base.get("strategy.trigger_delay") == 10.0
+    assert eff.get("macro.regime_weight") == base.get("macro.regime_weight") == 0.10
 
 
 def test_paper_does_not_apply_overrides(tmp_path: Path) -> None:
@@ -67,7 +68,7 @@ def test_paper_does_not_apply_overrides(tmp_path: Path) -> None:
     assert eff.get("portfolio.leverage") == 1.0
 
 
-def test_incremental_overrides_only_touch_listed_keys(tmp_path: Path) -> None:
+def test_incremental_overrides_do_not_apply(tmp_path: Path) -> None:
     cfg_path = _write(tmp_path / "cfg.toml", _cfg("testnet"))
     ov_path = _write(
         tmp_path / "auto.toml",
@@ -78,13 +79,12 @@ def test_incremental_overrides_only_touch_listed_keys(tmp_path: Path) -> None:
     )
 
     eff = load_config_with_live_overrides(cfg_path, auto_overrides_path=ov_path)
-    assert eff.get("portfolio.leverage") == 1.25
-    # Unmentioned keys stay unchanged
+    assert eff.get("portfolio.leverage") == 1.0
     assert eff.get("strategy.trigger_delay") == 10.0
     assert eff.get("macro.regime_weight") == 0.10
 
 
-def test_mixed_data_types_apply_if_path_exists(tmp_path: Path) -> None:
+def test_mixed_data_types_do_not_apply(tmp_path: Path) -> None:
     cfg_path = _write(tmp_path / "cfg.toml", _cfg("live"))
     ov_path = _write(
         tmp_path / "auto.toml",
@@ -95,10 +95,10 @@ def test_mixed_data_types_apply_if_path_exists(tmp_path: Path) -> None:
     )
 
     eff = load_config_with_live_overrides(cfg_path, auto_overrides_path=ov_path)
-    assert eff.get("flags.enabled") is True
+    assert eff.get("flags.enabled") is False
 
 
-def test_deeply_nested_path_override(tmp_path: Path) -> None:
+def test_deeply_nested_path_does_not_override(tmp_path: Path) -> None:
     cfg_path = _write(tmp_path / "cfg.toml", _cfg("live"))
     ov_path = _write(
         tmp_path / "auto.toml",
@@ -109,7 +109,7 @@ def test_deeply_nested_path_override(tmp_path: Path) -> None:
     )
 
     eff = load_config_with_live_overrides(cfg_path, auto_overrides_path=ov_path)
-    assert eff.get("deep.a.b.c.value") == 2
+    assert eff.get("deep.a.b.c.value") == 1
 
 
 def test_invalid_toml_graceful_fallback(tmp_path: Path) -> None:
