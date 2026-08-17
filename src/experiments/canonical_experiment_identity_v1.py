@@ -37,6 +37,20 @@ PARENT_KIND_ROOT: Final[str] = "ROOT"
 PARENT_KIND_PARENT_BOUND: Final[str] = "PARENT_BOUND"
 EXPERIMENT_IDENTITY_HAS_RUNTIME_AUTHORITY: Final[bool] = False
 RUNTIME_AUTHORITY_IMPACT: Final[str] = "NONE"
+SELF_LEARNING_MUST_LEARN_FROM_CANONICAL_TRADING_DECISION_PATH: Final[bool] = True
+LEARNING_MAY_RESEARCH_CORE_LOGIC_CHANGES: Final[bool] = True
+LEARNING_MAY_AUTONOMOUSLY_REPLACE_CORE_LOGIC: Final[bool] = False
+CANONICAL_TRADING_DECISION_CORE_BOUND: Final[bool] = True
+
+_TRADING_DECISION_CORE_COMPONENTS: Final[tuple[str, ...]] = (
+    "market_context_contract",
+    "bull_bear_logic",
+    "state_switch_logic",
+    "survival_logic",
+    "suitability_logic",
+    "double_play_logic",
+    "entry_position_exit_logic",
+)
 
 _GIT_SHA1_RE = re.compile(r"^[0-9a-f]{40}$")
 _SECRET_KEY_TOKEN_RE = re.compile(
@@ -73,6 +87,7 @@ _CRITICAL_DIGEST_FIELDS = (
     "risk_policy_digest",
     "portfolio_digest",
     "split_policy_digest",
+    *(f"{component}_digest" for component in _TRADING_DECISION_CORE_COMPONENTS),
 )
 _DIGEST_DOMAINS: Final[Mapping[str, str]] = MappingProxyType(
     {
@@ -87,6 +102,14 @@ _DIGEST_DOMAINS: Final[Mapping[str, str]] = MappingProxyType(
         "risk_policy": f"{IDENTITY_DOMAIN}.risk_policy",
         "portfolio": f"{IDENTITY_DOMAIN}.portfolio",
         "split_policy": f"{IDENTITY_DOMAIN}.split_policy",
+        "market_context_contract": f"{IDENTITY_DOMAIN}.market_context_contract",
+        "bull_bear_logic": f"{IDENTITY_DOMAIN}.bull_bear_logic",
+        "state_switch_logic": f"{IDENTITY_DOMAIN}.state_switch_logic",
+        "survival_logic": f"{IDENTITY_DOMAIN}.survival_logic",
+        "suitability_logic": f"{IDENTITY_DOMAIN}.suitability_logic",
+        "double_play_logic": f"{IDENTITY_DOMAIN}.double_play_logic",
+        "entry_position_exit_logic": f"{IDENTITY_DOMAIN}.entry_position_exit_logic",
+        "trading_decision_core": f"{IDENTITY_DOMAIN}.trading_decision_core",
         "environment": f"{IDENTITY_DOMAIN}.environment",
         "identity": f"{IDENTITY_DOMAIN}.identity",
         "dirty_paths": f"{IDENTITY_DOMAIN}.dirty_paths",
@@ -121,6 +144,13 @@ class CanonicalExperimentIdentityRequestV1:
     risk_policy_digest: str
     portfolio_digest: str
     split_policy_digest: str
+    market_context_contract_digest: str
+    bull_bear_logic_digest: str
+    state_switch_logic_digest: str
+    survival_logic_digest: str
+    suitability_logic_digest: str
+    double_play_logic_digest: str
+    entry_position_exit_logic_digest: str
     seed: int
     environment: Mapping[str, Any]
     parent_lineage_ref: str | None = None
@@ -144,6 +174,25 @@ def domain_separated_digest(component: str, payload: Mapping[str, Any]) -> str:
         "schema_version": SCHEMA_VERSION,
     }
     return compute_content_sha256(envelope)
+
+
+def compute_trading_decision_core_binding_v1(
+    source_digests: Mapping[str, str],
+) -> dict[str, str]:
+    """Bind canonical trading-decision-core components without mutating trading logic."""
+    if not isinstance(source_digests, Mapping):
+        raise CanonicalExperimentIdentityError(
+            "trading decision core source_digests must be a mapping"
+        )
+    bound: dict[str, str] = {}
+    for component in _TRADING_DECISION_CORE_COMPONENTS:
+        field_name = f"{component}_digest"
+        bound[field_name] = domain_separated_digest(
+            component,
+            {"source_digest": _require_sha256_digest(field_name, source_digests.get(field_name))},
+        )
+    bound["trading_decision_core_digest"] = domain_separated_digest("trading_decision_core", bound)
+    return bound
 
 
 def canonicalize_value(value: Any, *, path: str = "$") -> Any:
@@ -432,6 +481,12 @@ def build_canonical_experiment_identity_v1(
     split_policy_digest = domain_separated_digest(
         "split_policy", {"source_digest": bound_digests["split_policy_digest"]}
     )
+    trading_core = compute_trading_decision_core_binding_v1(
+        {
+            f"{component}_digest": bound_digests[f"{component}_digest"]
+            for component in _TRADING_DECISION_CORE_COMPONENTS
+        }
+    )
     environment_digest = domain_separated_digest("environment", environment)
 
     identity_body = {
@@ -458,6 +513,22 @@ def build_canonical_experiment_identity_v1(
         "strategy_identity": strategy_identity,
         "strategy_identity_digest": strategy_identity_digest,
         "strategy_params_digest": strategy_params_digest,
+        "bull_bear_logic_digest": trading_core["bull_bear_logic_digest"],
+        "canonical_trading_decision_core_bound": CANONICAL_TRADING_DECISION_CORE_BOUND,
+        "double_play_logic_digest": trading_core["double_play_logic_digest"],
+        "entry_position_exit_logic_digest": trading_core["entry_position_exit_logic_digest"],
+        "learning_may_autonomously_replace_core_logic": (
+            LEARNING_MAY_AUTONOMOUSLY_REPLACE_CORE_LOGIC
+        ),
+        "learning_may_research_core_logic_changes": LEARNING_MAY_RESEARCH_CORE_LOGIC_CHANGES,
+        "market_context_contract_digest": trading_core["market_context_contract_digest"],
+        "self_learning_must_learn_from_canonical_trading_decision_path": (
+            SELF_LEARNING_MUST_LEARN_FROM_CANONICAL_TRADING_DECISION_PATH
+        ),
+        "state_switch_logic_digest": trading_core["state_switch_logic_digest"],
+        "suitability_logic_digest": trading_core["suitability_logic_digest"],
+        "survival_logic_digest": trading_core["survival_logic_digest"],
+        "trading_decision_core_digest": trading_core["trading_decision_core_digest"],
         "working_tree_status": WORKING_TREE_CLEAN,
     }
     identity_digest = domain_separated_digest("identity", identity_body)
@@ -512,6 +583,26 @@ def validate_canonical_experiment_identity_v1(record: Mapping[str, Any]) -> None
     else:
         raise CanonicalExperimentIdentityError("parent_lineage.kind is invalid")
 
+    if record.get("canonical_trading_decision_core_bound") is not True:
+        raise CanonicalExperimentIdentityError("canonical_trading_decision_core_bound must be true")
+    if record.get("learning_may_autonomously_replace_core_logic") is not False:
+        raise CanonicalExperimentIdentityError(
+            "learning_may_autonomously_replace_core_logic must be false"
+        )
+    if record.get("self_learning_must_learn_from_canonical_trading_decision_path") is not True:
+        raise CanonicalExperimentIdentityError(
+            "self_learning_must_learn_from_canonical_trading_decision_path must be true"
+        )
+    core_payload = {
+        f"{component}_digest": record.get(f"{component}_digest")
+        for component in _TRADING_DECISION_CORE_COMPONENTS
+    }
+    for field_name, value in core_payload.items():
+        _require_sha256_digest(field_name, value)
+    expected_core_digest = domain_separated_digest("trading_decision_core", core_payload)
+    if record.get("trading_decision_core_digest") != expected_core_digest:
+        raise CanonicalExperimentIdentityError("trading_decision_core_digest mismatch")
+
     identity_body = {
         key: record[key] for key in record if key not in {"identity_digest", "integrity"}
     }
@@ -527,6 +618,7 @@ def validate_canonical_experiment_identity_v1(record: Mapping[str, Any]) -> None
 
 
 __all__ = [
+    "CANONICAL_TRADING_DECISION_CORE_BOUND",
     "COMPLETENESS_COMPLETE",
     "CanonicalCodeProvenanceV1",
     "CanonicalExperimentIdentityError",
@@ -534,15 +626,19 @@ __all__ = [
     "DIGEST_ALGORITHM",
     "EXPERIMENT_IDENTITY_HAS_RUNTIME_AUTHORITY",
     "IDENTITY_DOMAIN",
+    "LEARNING_MAY_AUTONOMOUSLY_REPLACE_CORE_LOGIC",
+    "LEARNING_MAY_RESEARCH_CORE_LOGIC_CHANGES",
     "PARENT_KIND_PARENT_BOUND",
     "PARENT_KIND_ROOT",
     "RUNTIME_AUTHORITY_IMPACT",
     "SCHEMA_VERSION",
+    "SELF_LEARNING_MUST_LEARN_FROM_CANONICAL_TRADING_DECISION_PATH",
     "WORKING_TREE_CLEAN",
     "WORKING_TREE_DIRTY",
     "build_canonical_experiment_identity_v1",
     "canonicalize_mapping",
     "canonicalize_value",
+    "compute_trading_decision_core_binding_v1",
     "digest_domain_name",
     "domain_separated_digest",
     "inspect_code_provenance_v1",

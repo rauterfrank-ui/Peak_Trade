@@ -13,9 +13,11 @@ from typing import Any, Mapping
 import pytest
 
 from src.experiments.canonical_experiment_identity_v1 import (
+    CANONICAL_TRADING_DECISION_CORE_BOUND,
     COMPLETENESS_COMPLETE,
     EXPERIMENT_IDENTITY_HAS_RUNTIME_AUTHORITY,
     IDENTITY_DOMAIN,
+    LEARNING_MAY_AUTONOMOUSLY_REPLACE_CORE_LOGIC,
     PARENT_KIND_PARENT_BOUND,
     PARENT_KIND_ROOT,
     SCHEMA_VERSION,
@@ -26,6 +28,7 @@ from src.experiments.canonical_experiment_identity_v1 import (
     CanonicalExperimentIdentityRequestV1,
     build_canonical_experiment_identity_v1,
     canonicalize_mapping,
+    compute_trading_decision_core_binding_v1,
     inspect_code_provenance_v1,
     validate_canonical_experiment_identity_v1,
 )
@@ -58,6 +61,13 @@ def _request(**overrides: Any) -> CanonicalExperimentIdentityRequestV1:
         "risk_policy_digest": _digest("risk"),
         "portfolio_digest": _digest("portfolio"),
         "split_policy_digest": _digest("split"),
+        "market_context_contract_digest": _digest("market-context"),
+        "bull_bear_logic_digest": _digest("bull-bear"),
+        "state_switch_logic_digest": _digest("state-switch"),
+        "survival_logic_digest": _digest("survival"),
+        "suitability_logic_digest": _digest("suitability"),
+        "double_play_logic_digest": _digest("double-play"),
+        "entry_position_exit_logic_digest": _digest("entry-position-exit"),
         "seed": 7,
         "environment": {
             "python_version": "3.11.15",
@@ -92,6 +102,13 @@ def test_mutation_sensitivity_each_critical_field_changes_identity() -> None:
         {"risk_policy_digest": _digest("risk-b")},
         {"portfolio_digest": _digest("portfolio-b")},
         {"split_policy_digest": _digest("split-b")},
+        {"market_context_contract_digest": _digest("market-context-b")},
+        {"bull_bear_logic_digest": _digest("bull-bear-b")},
+        {"state_switch_logic_digest": _digest("state-switch-b")},
+        {"survival_logic_digest": _digest("survival-b")},
+        {"suitability_logic_digest": _digest("suitability-b")},
+        {"double_play_logic_digest": _digest("double-play-b")},
+        {"entry_position_exit_logic_digest": _digest("entry-position-exit-b")},
         {"seed": 8},
         {"environment": {"python_version": "3.10.14", "python_implementation": "CPython"}},
         {"parent_lineage_ref": _digest("parent")},
@@ -125,11 +142,75 @@ def test_missing_critical_inputs_fail_closed(monkeypatch: pytest.MonkeyPatch) ->
         {"funding_model_digest": "implicit"},
         {"risk_policy_digest": "default"},
         {"split_policy_digest": "none"},
+        {"bull_bear_logic_digest": "UNKNOWN"},
+        {"survival_logic_digest": "UNAVAILABLE"},
+        {"entry_position_exit_logic_digest": ""},
         {"seed": None},
     ]
     for mutation in missing_cases:
         with pytest.raises(CanonicalExperimentIdentityError, match="fail-closed|explicit int"):
             build_canonical_experiment_identity_v1(_request(**mutation))
+
+
+def test_identical_trading_core_yields_identical_core_digest() -> None:
+    first = build_canonical_experiment_identity_v1(_request())
+    second = build_canonical_experiment_identity_v1(_request())
+    assert first["trading_decision_core_digest"] == second["trading_decision_core_digest"]
+    assert first["canonical_trading_decision_core_bound"] is True
+    assert CANONICAL_TRADING_DECISION_CORE_BOUND is True
+    assert LEARNING_MAY_AUTONOMOUSLY_REPLACE_CORE_LOGIC is False
+
+
+@pytest.mark.parametrize(
+    ("field_name", "label"),
+    [
+        ("bull_bear_logic_digest", "bull-bear-changed"),
+        ("state_switch_logic_digest", "state-switch-changed"),
+        ("survival_logic_digest", "survival-changed"),
+        ("suitability_logic_digest", "suitability-changed"),
+        ("double_play_logic_digest", "double-play-changed"),
+        ("entry_position_exit_logic_digest", "entry-position-exit-changed"),
+        ("market_context_contract_digest", "market-context-changed"),
+    ],
+)
+def test_core_component_change_shifts_core_and_experiment_identity(
+    field_name: str, label: str
+) -> None:
+    baseline = build_canonical_experiment_identity_v1(_request())
+    mutated = build_canonical_experiment_identity_v1(_request(**{field_name: _digest(label)}))
+    assert mutated[field_name] != baseline[field_name]
+    assert mutated["trading_decision_core_digest"] != baseline["trading_decision_core_digest"]
+    assert mutated["identity_digest"] != baseline["identity_digest"]
+    unchanged = [
+        "bull_bear_logic_digest",
+        "state_switch_logic_digest",
+        "survival_logic_digest",
+        "suitability_logic_digest",
+        "double_play_logic_digest",
+        "entry_position_exit_logic_digest",
+        "market_context_contract_digest",
+    ]
+    for name in unchanged:
+        if name != field_name:
+            assert mutated[name] == baseline[name]
+
+
+def test_trading_core_binding_order_stable() -> None:
+    source = {
+        "entry_position_exit_logic_digest": _digest("entry-position-exit"),
+        "double_play_logic_digest": _digest("double-play"),
+        "suitability_logic_digest": _digest("suitability"),
+        "survival_logic_digest": _digest("survival"),
+        "state_switch_logic_digest": _digest("state-switch"),
+        "bull_bear_logic_digest": _digest("bull-bear"),
+        "market_context_contract_digest": _digest("market-context"),
+    }
+    left = compute_trading_decision_core_binding_v1(source)
+    right = compute_trading_decision_core_binding_v1(
+        {key: source[key] for key in reversed(list(source))}
+    )
+    assert left == right
+    assert left["trading_decision_core_digest"] == right["trading_decision_core_digest"]
 
 
 def test_cost_model_decomposition_single_component_changes_identity() -> None:
@@ -245,6 +326,8 @@ def test_authority_boundary_regression_no_write_or_live_paths() -> None:
         "src.execution",
         "scripts.run_learning_apply_cycle",
         "src.live",
+        "src.trading",
+        "src.trading.master_v2",
     }
     assert forbidden_imports.isdisjoint(imported)
     forbidden_tokens = (
@@ -263,6 +346,9 @@ def test_authority_boundary_regression_no_write_or_live_paths() -> None:
     record = build_canonical_experiment_identity_v1(_request())
     assert record["experiment_identity_has_runtime_authority"] is False
     assert record["runtime_authority_impact"] == "NONE"
+    assert record["learning_may_autonomously_replace_core_logic"] is False
+    assert record["canonical_trading_decision_core_bound"] is True
+    assert record["self_learning_must_learn_from_canonical_trading_decision_path"] is True
     assert "write_live_config" not in inspect.getsource(build_canonical_experiment_identity_v1)
 
 

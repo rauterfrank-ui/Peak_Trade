@@ -34,8 +34,16 @@ A `COMPLETE` identity requires explicit bindings for:
 - `split_policy_digest`
 - `seed` as an explicit int
 - reproducibility environment (`python_version`, `python_implementation`)
+- canonical trading decision core:
+  - `market_context_contract_digest`
+  - `bull_bear_logic_digest`
+  - `state_switch_logic_digest`
+  - `survival_logic_digest`
+  - `suitability_logic_digest`
+  - `double_play_logic_digest`
+  - `entry_position_exit_logic_digest`
 
-`cost_model_digest` is derived from the three cost component digests. No silent fee, slippage, funding, dataset, risk, split, or seed defaults.
+`cost_model_digest` is derived from the three cost component digests. `trading_decision_core_digest` is derived from the seven core-logic component digests. No silent fee, slippage, funding, dataset, risk, split, seed, or core-logic defaults.
 
 If a required research input is not yet canonically representable, callers must not invent a value. Missing or `UNKNOWN`/`UNAVAILABLE` inputs fail closed and never yield `COMPLETE`.
 
@@ -63,4 +71,13 @@ Known credential field names (`api_key`, `token`, `password`, `confirm_token`, a
 EXPERIMENT_IDENTITY_HAS_RUNTIME_AUTHORITY=false
 ```
 
-Identity is research metadata and evidence only. It does not write `config&#47;live_overrides`, enable, arm, fund, submit orders, mint or use confirm tokens, authorize canary, or promote to live.
+Identity is research metadata and evidence only. It does not write live-override runtime configuration, enable, arm, fund, submit orders, mint or use confirm tokens, authorize canary, or promote to live.
+
+Binding the canonical trading decision core does not grant Learning the right to mutate or replace productive trading logic.
+
+```text
+LEARNING_MAY_RESEARCH_CORE_LOGIC_CHANGES=true
+LEARNING_MAY_AUTONOMOUSLY_REPLACE_CORE_LOGIC=false
+SELF_LEARNING_MUST_LEARN_FROM_CANONICAL_TRADING_DECISION_PATH=true
+CANONICAL_TRADING_DECISION_CORE_BOUND=true
+```
