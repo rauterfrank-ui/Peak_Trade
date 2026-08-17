@@ -1150,6 +1150,23 @@ CANONICAL_SEMANTICS=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#5.10
 
 ---
 
+## 8.5 MG-I82-EMITTER-CUTOVER MU6 producer cutover (navigation only)
+
+| Pfad | Rolle |
+|------|-------|
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §5.11 | SSOT-Zeiger auf MG-I82-EMITTER-CUTOVER MU6 (navigation only; Semantik ausschließlich im Master Runbook; `EMITTER_CUTOVER_COMPLETE`; SHA256 producer; MD5-12 alias retained; §5.8 not reopened; Z2 pointer unchanged) |
+| [`docs/ops/specs/I82_EMITTER_CUTOVER_PREPARATION_INVENTORY_V1.json`](../ops/specs/I82_EMITTER_CUTOVER_PREPARATION_INVENTORY_V1.json) | Machine-readable identity-plane inventory (navigation only; no independent semantics) |
+| [`src/ops/i82_emitter_cutover_preparation_contract_v1.py`](../../src/ops/i82_emitter_cutover_preparation_contract_v1.py) | Identity-plane contract owner after MU6 cutover |
+| [`src/experiments/base.py`](../../src/experiments/base.py) | Productive `get_experiment_id` SHA256 emitter |
+
+```text
+THIS_SECTION_DEFINES_NO_SEMANTICS=true
+THIS_DOCUMENT_POINTS_ONLY_TO_CANONICAL_OWNERS=true
+CANONICAL_SEMANTICS=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#5.11
+```
+
+---
+
 ## 9. Wichtigste Runbooks
 
 | Dokument | Rolle |

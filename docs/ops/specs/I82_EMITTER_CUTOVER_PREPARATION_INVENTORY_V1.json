@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "contract_id": "i82_emitter_cutover_preparation_contract_v1",
-  "bound_origin_main_sha": "9ba02c96a346c08beb24a09dfad2932534c8789e",
+  "bound_origin_main_sha": "1389c0f181380af6813709c3e7f274a6ddc4a12a",
   "identity_planes": [
     "CANONICAL_SHA256_IDENTITY",
     "LEGACY_MD5_12_ALIAS",
@@ -19,8 +19,8 @@
   ],
   "status": {
     "EG_I82_JOIN": "CLOSED_PROVEN",
-    "MG_I82_EMITTER_CUTOVER": "PREPARATION_COMPLETE",
-    "EMITTER_CUTOVER_EXECUTED": false,
+    "MG_I82_EMITTER_CUTOVER": "EMITTER_CUTOVER_COMPLETE",
+    "EMITTER_CUTOVER_EXECUTED": true,
     "LEGACY_MD5_REMOVED": false,
     "BACKFILL_EXECUTED": false,
     "RUNTIME_AUTHORITY_CHANGED": false,
@@ -78,9 +78,9 @@
     },
     {
       "id": "MU6_PRODUCER_EMITTER_CUTOVER",
-      "implemented_in_this_go": false,
-      "kind": "FUTURE_MIGRATION_UNIT",
-      "notes": "Forbidden in this GO. Includes get_experiment_id SHA256 rewrite and other MD5 emitters."
+      "implemented_in_this_go": true,
+      "kind": "EMITTER_CUTOVER",
+      "notes": "get_experiment_id now emits Package-N SHA256 via compute_experiment_identity_id. MD5-12 remains compute_legacy_experiment_id_md5_12 alias only. No backfill, no armstrong/run-id algorithm rewrite, no MU7 deprecation."
     },
     {
       "id": "MU7_LEGACY_DEPRECATION",
@@ -93,7 +93,6 @@
     "canonical_identity_id=legacy_experiment_id",
     "promote_md5_to_sha256",
     "md5_as_canonical",
-    "get_experiment_id_sha256_rewrite",
     "run_id_emitter_rewrite",
     "backfill",
     "registry_migration",
@@ -134,46 +133,46 @@
       "file": "src/experiments/base.py",
       "symbol": "ExperimentConfig.get_experiment_id",
       "role": "EXPERIMENT_ID",
-      "current_value_format": "md5_hex_12",
+      "current_value_format": "sha256_hex_64",
       "producer_or_consumer": "PRODUCER",
-      "canonical_or_legacy": "LEGACY",
+      "canonical_or_legacy": "CANONICAL",
       "persisted_or_ephemeral": "PERSISTED",
-      "join_semantics": "historical_experiment_id_not_package_n_identity",
-      "collision_or_substitution_risk": "HIGH_if_silently_treated_as_canonical",
-      "cutover_dependency": "MU6_PRODUCER_EMITTER_CUTOVER",
-      "compat_requirement": "must_not_rewrite_in_this_go",
+      "join_semantics": "productive_experiment_id_equals_package_n_sha256",
+      "collision_or_substitution_risk": "LOW_when_sha256_validated",
+      "cutover_dependency": "NONE_CUTOVER_EXECUTED",
+      "compat_requirement": "emit_canonical_sha256_keep_md5_as_alias",
       "safe_migration_unit": "MU6_PRODUCER_EMITTER_CUTOVER",
-      "implemented_in_this_go": false
+      "implemented_in_this_go": true
     },
     {
       "file": "src/experiments/base.py",
       "symbol": "SweepResultRow.experiment_id",
       "role": "PERSISTED_FIELDS",
-      "current_value_format": "md5_hex_12",
+      "current_value_format": "sha256_hex_64",
       "producer_or_consumer": "STORAGE",
-      "canonical_or_legacy": "LEGACY",
+      "canonical_or_legacy": "CANONICAL",
       "persisted_or_ephemeral": "PERSISTED",
-      "join_semantics": "row_experiment_id_from_emitter",
-      "collision_or_substitution_risk": "HIGH_if_joined_as_package_n",
-      "cutover_dependency": "MU6_PRODUCER_EMITTER_CUTOVER",
-      "compat_requirement": "dual_read_via_sidecar_only",
+      "join_semantics": "row_experiment_id_from_sha256_emitter",
+      "collision_or_substitution_risk": "LOW_when_sha256_validated",
+      "cutover_dependency": "NONE_CUTOVER_EXECUTED",
+      "compat_requirement": "stores_emitter_output_no_independent_hash",
       "safe_migration_unit": "MU6_PRODUCER_EMITTER_CUTOVER",
-      "implemented_in_this_go": false
+      "implemented_in_this_go": true
     },
     {
       "file": "src/experiments/base.py",
       "symbol": "ExperimentRunner.run",
       "role": "RUN_ID",
-      "current_value_format": "md5_hex_12_underscore_index",
+      "current_value_format": "sha256_hex_64_underscore_index",
       "producer_or_consumer": "PRODUCER",
-      "canonical_or_legacy": "LEGACY",
+      "canonical_or_legacy": "CANONICAL",
       "persisted_or_ephemeral": "PERSISTED",
-      "join_semantics": "run_id_derived_from_legacy_experiment_id",
+      "join_semantics": "run_id_derived_from_sha256_experiment_id",
       "collision_or_substitution_risk": "HIGH_if_used_as_identity",
-      "cutover_dependency": "MU6_PRODUCER_EMITTER_CUTOVER",
-      "compat_requirement": "run_id_must_not_replace_identity",
+      "cutover_dependency": "NONE_CUTOVER_EXECUTED",
+      "compat_requirement": "run_id_algorithm_unchanged_prefix_follows_emitter",
       "safe_migration_unit": "MU6_PRODUCER_EMITTER_CUTOVER",
-      "implemented_in_this_go": false
+      "implemented_in_this_go": true
     },
     {
       "file": "src/experiments/armstrong_elkaroui_combi_experiment.py",

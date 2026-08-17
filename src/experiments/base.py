@@ -22,7 +22,6 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from itertools import product
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
-import hashlib
 import json
 import logging
 import time
@@ -329,23 +328,13 @@ class ExperimentConfig:
         return combinations
 
     def get_experiment_id(self) -> str:
-        """
-        Generiert eine eindeutige ID für dieses Experiment.
-
-        Returns:
-            Hex-String basierend auf Config-Hash
-        """
-        config_str = json.dumps(
-            {
-                "name": self.name,
-                "strategy": self.strategy_name,
-                "sweeps": [s.to_dict() for s in self.param_sweeps],
-                "symbols": self.symbols,
-                "timeframe": self.timeframe,
-            },
-            sort_keys=True,
+        """Return the canonical Package-N SHA256 experiment identity."""
+        from src.experiments.experiment_identity_manifest_v1 import (
+            build_identity_config,
+            compute_experiment_identity_id,
         )
-        return hashlib.md5(config_str.encode()).hexdigest()[:12]
+
+        return compute_experiment_identity_id(build_identity_config(self))
 
     def to_dict(self) -> Dict[str, Any]:
         """Konvertiert zu Dictionary."""

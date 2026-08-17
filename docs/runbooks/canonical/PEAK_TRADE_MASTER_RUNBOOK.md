@@ -1172,6 +1172,110 @@ separate Owner GO: producer &#47; emitter cutover, backfill, remaining
 consumer migration, and legacy decommissioning.
 
 This persist does not change Cap 11 &#47; §11.13 authorization.
+Later MU6 producer &#47; emitter cutover is recorded in §5.11. This
+subsection remains the preparation closeout and is not rewritten.
+
+## 5.11 MG-I82-EMITTER-CUTOVER MU6 producer &#47; emitter cutover (SHA256)
+
+Owner-GO `OWNER_GO_I82_EMITTER_CUTOVER` authorized the bounded MU6
+producer &#47; emitter cutover of
+`ExperimentConfig.get_experiment_id` from MD5-12 onto the already
+prepared Package-N SHA256 identity path. This subsection does **not**
+reopen §5.8. EG-I82-JOIN remains `CLOSED_PROVEN`. §5.10 remains the
+preparation closeout. This persist is parallel to §11.13.5.Z2 and does
+**not** replace the Z2 next pointer, re-adjudicate EDGE_I, authorize
+runtime, trading, orders, Testnet, Live, credentials, backfill, MU7
+legacy deprecation, armstrong run-id rewrite, or full I82 migration.
+
+``` text
+EG_I82_JOIN=CLOSED_PROVEN
+MG_I82_EMITTER_CUTOVER=EMITTER_CUTOVER_COMPLETE
+EMITTER_CUTOVER_EXECUTED=true
+LEGACY_MD5_REMOVED=false
+BACKFILL_EXECUTED=false
+RUNTIME_AUTHORITY_CHANGED=false
+I82_FULL_MIGRATION_PROVEN=false
+CANONICAL_IDENTITY=SHA256_PACKAGE_N_IDENTITY
+LEGACY_IDENTITY=MD5_12_COMPATIBILITY_ALIAS_ONLY
+PRODUCTIVE_EMITTER=ExperimentConfig.get_experiment_id
+OLD_EMITTER_ALGORITHM=MD5-12
+NEW_EMITTER_ALGORITHM=SHA256
+PARALLEL_TO_SECTION_11_13_5_Z2=true
+Z2_CANONICAL_POINTER_REPLACED=false
+EDGE_I_READJUDICATED=false
+EDGE_I_STATUS=UNPROVEN
+FINAL_VERDICT=C
+OPERATIVE_EXPIRY_FEE_RATE=NONE
+Z2_ACTION=WAIT_FOR_NEW_NORMATIVE_EVIDENCE
+SUPPORT_EVIDENCE_STATUS=PENDING
+LIVE_AUTHORIZED=false
+CANARY_EXECUTED=false
+TESTNET_AUTHORIZED=false
+SUCCESSOR_PHASE_AUTHORIZED=false
+```
+
+Plane-join contract (unchanged from §5.10; binding):
+
+``` text
+CANONICAL_IDENTITY := SHA256 Package-N identity
+LEGACY_IDENTITY := MD5-12 compatibility alias only
+LEGACY_IDENTITY MUST NOT become canonical authority
+LEGACY_IDENTITY MUST NOT silently replace SHA256 identity
+LEGACY_IDENTITY MUST NOT satisfy a canonical Package-N join by name alone
+LEGACY_IDENTITY MUST NOT authorize runtime, promotion, trading, or evidence equivalence
+CANONICAL_IDENTITY MUST remain independently verifiable
+CANONICAL_IDENTITY MUST be preserved across future cutover units
+CANONICAL_IDENTITY MUST fail closed where required but unavailable
+CANONICAL_IDENTITY MAY permit explicit legacy alias lookup only where compatibility is intentionally declared
+legacy_experiment_id=NONE is allowed
+canonical_identity_id=legacy_experiment_id is forbidden
+```
+
+Productive emitter cutover (MU6 only):
+
+-   `ExperimentConfig.get_experiment_id` now returns
+    `compute_experiment_identity_id(build_identity_config(self))`
+-   `compute_legacy_experiment_id_md5_12` remains the MD5-12
+    compatibility alias and is not removed
+-   `ExperimentRunner.run_id` keeps `{experiment_id}_{index}` and
+    therefore follows the SHA256 prefix without an independent hash
+    rewrite
+-   armstrong `timestamp_plus_md5_hex_8` run-id is unchanged
+-   no historical artifact backfill
+-   no dual-write &#47; fallback emitter
+
+Preservation fixture (fixed representative input):
+
+``` text
+OLD_MD5_12_OUTPUT=9b586cf2f92a
+NEW_SHA256_OUTPUT=ef57df63bd82c65dc83258060424653d41180bd0d90c2ebd7f167531449ed36e
+```
+
+Additive &#47; cutover surfaces:
+
+-   `src&#47;experiments&#47;base.py`
+-   `src&#47;ops&#47;i82_emitter_cutover_preparation_contract_v1.py`
+-   `docs&#47;ops&#47;specs&#47;I82_EMITTER_CUTOVER_PREPARATION_INVENTORY_V1.json`
+-   `tests&#47;experiments&#47;test_i82_emitter_cutover_preparation_v1.py`
+-   `tests&#47;experiments&#47;test_i82_emitter_cutover_v1.py`
+
+Migration units after this GO:
+
+``` text
+MU1_CANONICAL_LEGACY_FIELD_SCHEMA=IMPLEMENTED_ADDITIVE_PREPARATION
+MU2_SIDECAR_ALIAS_MATERIALIZATION=IMPLEMENTED_ADDITIVE_PREPARATION
+MU3_DUAL_READ_COMPATIBILITY=IMPLEMENTED_ADDITIVE_PREPARATION
+MU4_EXPLORER_REPORTING_ADAPTATION=FUTURE_MIGRATION_UNIT
+MU5_REGISTRY_EVIDENCE_CONSUMER_ADAPTATION=FUTURE_MIGRATION_UNIT
+MU6_PRODUCER_EMITTER_CUTOVER=IMPLEMENTED
+MU7_LEGACY_DEPRECATION=FUTURE_MIGRATION_UNIT_FORBIDDEN_IN_THIS_GO
+```
+
+MG-I82 is **not** fully CLOSED. Residual work still requires a
+separate Owner GO: backfill, remaining consumer migration, and legacy
+decommissioning.
+
+This persist does not change Cap 11 &#47; §11.13 authorization.
 
 ------------------------------------------------------------------------
 
