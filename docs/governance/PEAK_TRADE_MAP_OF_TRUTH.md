@@ -1134,6 +1134,22 @@ CANONICAL_SEMANTICS=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#5.9
 
 ---
 
+## 8.4 MG-I82-EMITTER-CUTOVER preparation (navigation only)
+
+| Pfad | Rolle |
+|------|-------|
+| [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) §5.10 | SSOT-Zeiger auf MG-I82-EMITTER-CUTOVER-Preparation (navigation only; Semantik ausschließlich im Master Runbook; `PREPARATION_COMPLETE`; emitter cutover not executed; §5.8 not reopened; Z2 pointer unchanged) |
+| [`docs/ops/specs/I82_EMITTER_CUTOVER_PREPARATION_INVENTORY_V1.json`](../ops/specs/I82_EMITTER_CUTOVER_PREPARATION_INVENTORY_V1.json) | Machine-readable identity-plane inventory (navigation only; no independent semantics) |
+| [`src/ops/i82_emitter_cutover_preparation_contract_v1.py`](../../src/ops/i82_emitter_cutover_preparation_contract_v1.py) | Additive sidecar &#47; compatibility contract owner (not an emitter) |
+
+```text
+THIS_SECTION_DEFINES_NO_SEMANTICS=true
+THIS_DOCUMENT_POINTS_ONLY_TO_CANONICAL_OWNERS=true
+CANONICAL_SEMANTICS=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#5.10
+```
+
+---
+
 ## 9. Wichtigste Runbooks
 
 | Dokument | Rolle |
