@@ -1,6 +1,13 @@
 # Peak_Trade – Evidence Index (v0.15)
 
 
+<a id="ev-20260817-mg-i82-emitter-cutover-preparation"></a>
+- 2026-08-17 — MG-I82-EMITTER-CUTOVER preparation (docs &#47; contract &#47; sidecar; not executed)
+  - Source: [Inventory](specs/I82_EMITTER_CUTOVER_PREPARATION_INVENTORY_V1.json) · Contract: [`src&#47;ops&#47;i82_emitter_cutover_preparation_contract_v1.py`](../../src/ops/i82_emitter_cutover_preparation_contract_v1.py) · Attestation: [`docs&#47;evidence&#47;i82_emitter_cutover_preparation_v1&#47;`](../evidence/i82_emitter_cutover_preparation_v1/) · Documentation Anchor: `docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260817-mg-i82-emitter-cutover-preparation`
+  - Origin SHA: `9ba02c96a346c08beb24a09dfad2932534c8789e` · SSOT: Master Runbook §5.10
+  - Claim: `MG_I82_EMITTER_CUTOVER=PREPARATION_COMPLETE` for additive identity-plane inventory, sidecar compatibility contract, and fail-closed tests. `EG_I82_JOIN=CLOSED_PROVEN` unchanged. `EMITTER_CUTOVER_EXECUTED=false`. `I82_FULL_MIGRATION_PROVEN=false`.
+  - Non-claims: not producer &#47; emitter cutover; not MD5 removal; not backfill; not runtime authority; not Live &#47; Testnet &#47; Canary &#47; orders; not Z2 &#47; EDGE_I readjudication; not full I82 migration.
+
 <a id="ev-20260814-eg-i17-shadow-canonical-7200s-qualification-closeout"></a>
 - 2026-08-14 — EG-I17-SHADOW canonical 7200s qualification closeout
   - Source: [Closeout package](../../evidence/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/20260814T170331Z/derived_forensic_canonical_7200s_qualification_closeout_v1/) · Session evidence: [20260814T170331Z](../../evidence/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/20260814T170331Z/) · Contract: [productive issuance + real network](runbooks/INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1.md) · Documentation Anchor: `docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260814-eg-i17-shadow-canonical-7200s-qualification-closeout`

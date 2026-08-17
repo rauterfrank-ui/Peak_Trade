@@ -1090,6 +1090,89 @@ SSOT):
 This closeout does not start a follow-on remediation unit and does not
 change Cap 11&#47;§11.13 authorization.
 
+## 5.10 MG-I82-EMITTER-CUTOVER preparation (docs &#47; contract &#47; sidecar; NOT executed)
+
+Owner-GO
+`OWNER_GO_I82_EMITTER_CUTOVER_PREPARATION_DOCS_CONTRACT_SIDECAR_COMPAT_NO_EMITTER_MUTATION_NO_RUNTIME_AUTHORITY`
+authorized **preparation only** of a later I82 emitter cutover. This
+subsection does **not** reopen §5.8. EG-I82-JOIN remains
+`CLOSED_PROVEN`. This persist is parallel to §11.13.5.Z2 and does
+**not** replace the Z2 next pointer, re-adjudicate EDGE_I, authorize
+runtime, trading, orders, Testnet, Live, credentials, backfill,
+producer rewrite, or full I82 migration.
+
+``` text
+EG_I82_JOIN=CLOSED_PROVEN
+MG_I82_EMITTER_CUTOVER=PREPARATION_COMPLETE
+EMITTER_CUTOVER_EXECUTED=false
+LEGACY_MD5_REMOVED=false
+BACKFILL_EXECUTED=false
+RUNTIME_AUTHORITY_CHANGED=false
+I82_FULL_MIGRATION_PROVEN=false
+CANONICAL_IDENTITY=SHA256_PACKAGE_N_IDENTITY
+LEGACY_IDENTITY=MD5_12_COMPATIBILITY_ALIAS_ONLY
+PARALLEL_TO_SECTION_11_13_5_Z2=true
+Z2_CANONICAL_POINTER_REPLACED=false
+EDGE_I_READJUDICATED=false
+EDGE_I_STATUS=UNPROVEN
+FINAL_VERDICT=C
+OPERATIVE_EXPIRY_FEE_RATE=NONE
+Z2_ACTION=WAIT_FOR_NEW_NORMATIVE_EVIDENCE
+SUPPORT_EVIDENCE_STATUS=PENDING
+LIVE_AUTHORIZED=false
+CANARY_EXECUTED=false
+TESTNET_AUTHORIZED=false
+SUCCESSOR_PHASE_AUTHORIZED=false
+```
+
+Plane-join contract (binding for later cutover units; not a runtime
+authorization):
+
+``` text
+CANONICAL_IDENTITY := SHA256 Package-N identity
+LEGACY_IDENTITY := MD5-12 compatibility alias only
+LEGACY_IDENTITY MUST NOT become canonical authority
+LEGACY_IDENTITY MUST NOT silently replace SHA256 identity
+LEGACY_IDENTITY MUST NOT satisfy a canonical Package-N join by name alone
+LEGACY_IDENTITY MUST NOT authorize runtime, promotion, trading, or evidence equivalence
+CANONICAL_IDENTITY MUST remain independently verifiable
+CANONICAL_IDENTITY MUST be preserved across future cutover units
+CANONICAL_IDENTITY MUST fail closed where required but unavailable
+CANONICAL_IDENTITY MAY permit explicit legacy alias lookup only where compatibility is intentionally declared
+legacy_experiment_id=NONE is allowed
+canonical_identity_id=legacy_experiment_id is forbidden
+```
+
+`compute_experiment_identity_id` remains the canonical SHA256 identity
+plane. `ExperimentConfig.get_experiment_id` and
+`compute_legacy_experiment_id_md5_12` remain the MD5-12 compatibility
+alias plane. This GO does **not** change those emitters.
+
+Additive preparation surfaces (non-activating; not an emitter):
+
+-   `src&#47;ops&#47;i82_emitter_cutover_preparation_contract_v1.py`
+-   `docs&#47;ops&#47;specs&#47;I82_EMITTER_CUTOVER_PREPARATION_INVENTORY_V1.json`
+-   `tests&#47;experiments&#47;test_i82_emitter_cutover_preparation_v1.py`
+
+Isolated later migration units (MU6 &#47; MU7 remain forbidden until a
+separate Owner GO):
+
+``` text
+MU1_CANONICAL_LEGACY_FIELD_SCHEMA=IMPLEMENTED_ADDITIVE_PREPARATION
+MU2_SIDECAR_ALIAS_MATERIALIZATION=IMPLEMENTED_ADDITIVE_PREPARATION
+MU3_DUAL_READ_COMPATIBILITY=IMPLEMENTED_ADDITIVE_PREPARATION
+MU4_EXPLORER_REPORTING_ADAPTATION=FUTURE_MIGRATION_UNIT
+MU5_REGISTRY_EVIDENCE_CONSUMER_ADAPTATION=FUTURE_MIGRATION_UNIT
+MU6_PRODUCER_EMITTER_CUTOVER=FUTURE_MIGRATION_UNIT_FORBIDDEN_IN_THIS_GO
+MU7_LEGACY_DEPRECATION=FUTURE_MIGRATION_UNIT_FORBIDDEN_IN_THIS_GO
+```
+
+MG-I82 is **not** fully CLOSED. Residual work still requires a
+separate Owner GO: producer &#47; emitter cutover, backfill, remaining
+consumer migration, and legacy decommissioning.
+
+This persist does not change Cap 11 &#47; §11.13 authorization.
+
 ------------------------------------------------------------------------
 
 # 6. Canonical State Ownership and Persistence Model
