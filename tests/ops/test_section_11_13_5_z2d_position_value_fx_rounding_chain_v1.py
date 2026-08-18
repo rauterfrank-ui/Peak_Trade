@@ -86,8 +86,8 @@ def _read(path: Path) -> str:
 def _z2d_section(text: str) -> str:
     start = text.find(Z2D_HEADING)
     assert start >= 0, "missing §11.13.5.Z2D heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2D"
+    end = text.find("### 11.13.5.Z2E", start)
+    assert end > start, "missing §11.13.5.Z2E boundary after Z2D"
     return text[start:end]
 
 
@@ -314,16 +314,15 @@ def test_z2d_docs_bind_internal_policy_without_rewriting_exchange_truth() -> Non
         assert assignment not in section, f"forbidden assignment present: {assignment!r}"
 
 
-def test_map_of_truth_and_spec_follow_z2d_current_pointer() -> None:
+def test_map_of_truth_and_spec_record_z2d_as_consumed_historical() -> None:
     mot = _read(MAP_OF_TRUTH)
     spec = _read(CANARY_SPEC)
     assert "§11.13.5.Z2D" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
     assert f"{Z2D_OWNER_GO}_STATUS=CONSUMED_CONTRACT_ONLY_NOT_EXECUTE" in mot
+    assert f"{NEXT_POINTER}_STATUS=CONSUMED_CONTRACT_ONLY_NOT_EXECUTE" in mot
     assert "POSITION_VALUE_ALGEBRA_STATUS=UNPROVEN" in mot
     assert "RULE_FX_STATUS=UNPROVEN" in mot
     assert "RULE_ROUNDING_STATUS=UNPROVEN" in mot
-    assert "Current SSOT: Master Runbook §11.13.5.Z2D." in spec
     assert Z2D_OWNER_GO in spec
     assert NEXT_POINTER in spec
-    assert "Current SSOT: Master Runbook §11.13.5.Z2C." not in spec
+    assert "Current SSOT: Master Runbook §11.13.5.Z2D." not in spec
