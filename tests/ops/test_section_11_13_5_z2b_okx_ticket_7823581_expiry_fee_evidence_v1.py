@@ -33,8 +33,8 @@ def _read(path: Path) -> str:
 def _z2b_section(text: str) -> str:
     start = text.find(Z2B_HEADING)
     assert start >= 0, "missing §11.13.5.Z2B heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2B"
+    end = text.find("### 11.13.5.Z2C", start)
+    assert end > start, "missing §11.13.5.Z2C boundary after Z2B"
     return text[start:end]
 
 
@@ -118,17 +118,16 @@ def test_z2b_consumes_applicability_pointer_and_points_to_monetary_base() -> Non
     assert "LIVE_AUTHORIZED=false" in section
 
 
-def test_map_of_truth_and_spec_follow_z2b_current_pointer() -> None:
+def test_map_of_truth_and_spec_record_z2b_as_consumed_historical() -> None:
     mot = _read(MAP_OF_TRUTH)
     spec = _read(CANARY_SPEC)
     assert "§11.13.5.Z2B" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
     assert "OWNER_GO_BIND_OKX_TICKET_7823581_STATUS=CONSUMED_DOCS_ONLY_RATE_NON_OPERATIVE" in mot
     assert (
-        "OWNER_GO_REQUIRED_TO_SUPPLY_OR_POINT_TO_A_CURRENT_NORMATIVE_OKX_EEA_OEM_XPERP_NORMAL_EXPIRY_FEE_MONETARY_BASE_STATUS=NOT_GRANTED"
+        "OWNER_GO_REQUIRED_TO_SUPPLY_OR_POINT_TO_A_CURRENT_NORMATIVE_OKX_EEA_OEM_XPERP_NORMAL_EXPIRY_FEE_MONETARY_BASE_STATUS=SUPERSEDED_NOT_CRITICAL_PATH_FOR_MINIMUM_EXPOSURE_CANARY"
         in mot
     )
     assert "OPERATIVE_EXPIRY_FEE_RATE=NONE" in mot
-    assert "Current SSOT: Master Runbook §11.13.5.Z2B." in spec
     assert "OWNER_GO_BIND_OKX_TICKET_7823581" in spec
     assert NEXT_POINTER in spec
+    assert "Current SSOT: Master Runbook §11.13.5.Z2B." not in spec
