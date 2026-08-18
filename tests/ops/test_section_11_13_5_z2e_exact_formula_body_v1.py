@@ -89,8 +89,8 @@ def _read(path: Path) -> str:
 def _z2e_section(text: str) -> str:
     start = text.find(Z2E_HEADING)
     assert start >= 0, "missing §11.13.5.Z2E heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2E"
+    end = text.find("### 11.13.5.Z2F", start)
+    assert end > start, "missing §11.13.5.Z2F boundary after Z2E"
     return text[start:end]
 
 
@@ -324,15 +324,14 @@ def test_z2e_docs_bind_internal_formula_body_without_rewriting_exchange_truth() 
         assert assignment not in section, f"forbidden assignment present: {assignment!r}"
 
 
-def test_map_of_truth_and_spec_follow_z2e_current_pointer() -> None:
+def test_map_of_truth_and_spec_record_z2e_as_consumed_historical() -> None:
     mot = _read(MAP_OF_TRUTH)
     spec = _read(CANARY_SPEC)
     assert "§11.13.5.Z2E" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
     assert f"{Z2E_OWNER_GO}_STATUS=CONSUMED_CONTRACT_ONLY_NOT_EXECUTE" in mot
+    assert f"{NEXT_POINTER}_STATUS=CONSUMED_CONTRACT_ONLY_NOT_EXECUTE" in mot
     assert "B08_EXACT_FORMULA_BODY_STATUS=RATIFIED_INTERNAL_CONSERVATIVE_QTY1_NOT_COVER_USDC" in mot
     assert "COVER_USDC_STATUS=UNINSTANTIATED" in mot
-    assert "Current SSOT: Master Runbook §11.13.5.Z2E." in spec
     assert Z2E_OWNER_GO in spec
     assert NEXT_POINTER in spec
-    assert "Current SSOT: Master Runbook §11.13.5.Z2D." not in spec
+    assert "Current SSOT: Master Runbook §11.13.5.Z2E." not in spec

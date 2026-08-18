@@ -83,17 +83,19 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.Z2E. Historical Z2D remains
+Current SSOT: Master Runbook §11.13.5.Z2F. Historical Z2E remains
+binding for the internal conservative qty=1 B08 formula body.
+Historical Z2D remains
 binding for the qty=1 Position-Value &#47; FX &#47; Rounding
 classification. Historical Z2C remains
 binding for the qty=1 internal conservative expiry-fee bound.
 Historical Z2B remains
 binding for applicability and the proven non-operative 0.01% rate.
-Monetary base remains unproven and is not critical path for the qty=1
-minimum-exposure canary after the internal conservative bound.
-Position Value, FX, and Rounding remain UNPROVEN Exchange Truth;
-the qty=1 internal envelope reuses §11.13.5.U and is not OKX
-PositionValue. `COVER_USDC` remains uninstantiated.
+qty=1 and ctVal `0.0001 BTC` are proven instrument&#47;canary-scope
+bindings. Current markPx remains uninstantiated. Monetary base, FX,
+and Rounding remain UNPROVEN Exchange Truth.
+`COVER_USDC` remains uninstantiated. No numeric funding amount is
+produced.
 Historical Z2&#47;Z2A
 persists remain binding as snapshots. Ticket `7823581` bound the
 published 0.01% normal-expiry settlement fee as **non-operative**;
@@ -373,7 +375,28 @@ oneshot.
     applicability and non-operative. `MONETARY_BASE=UNPROVEN`.
     `EXACT_OKX_FEE_FORMULA=UNPROVEN`. `COVER_USDC_STATUS=UNINSTANTIATED`.
     `NUMERIC_FUNDING_AMOUNT=NONE`. `EXCHANGE_TRUTH_CHANGED=false`.
-    `QTY_LIMIT=1`. `SCALING_AUTHORIZED=false`. Next canonical step is
+    `QTY_LIMIT=1`. `SCALING_AUTHORIZED=false`. Historical next canonical
+    step was
     `OWNER_GO_REQUIRED_TO_BIND_UNINSTANTIATED_FORMULA_TERM_INSTANCES_AND_FX_ROUNDING_BEFORE_FUNDING`.
+    That GO is consumed as §11.13.5.Z2F. This spec does not authorize
+    execute, funding, GET, or general Live unlock.
+33. `OWNER_GO_REQUIRED_TO_BIND_UNINSTANTIATED_FORMULA_TERM_INSTANCES_AND_FX_ROUNDING_BEFORE_FUNDING`
+    was granted contract-only and is consumed as §11.13.5.Z2F. Z2B
+    applicability, Z2C internal expiry bound, Z2D Position-Value &#47;
+    FX &#47; Rounding classification, and Z2E internal B08 algebra remain
+    binding. `QTY_TERM_STATUS=PROVEN`. `CTVAL_TERM_STATUS=PROVEN`
+    (`0.0001 BTC` instrument metadata only).
+    `MARKPX_TERM_STATUS=UNINSTANTIATED`. `MONETARY_BASE_STATUS=UNPROVEN`.
+    `FX_STATUS=UNPROVEN`. `ROUNDING_STATUS=UNPROVEN`.
+    `CONSERVATIVE_RATE_0_0003_STATUS=INTERNAL_CONSERVATIVE_POLICY_NOT_EXCHANGE_TRUTH`.
+    `NORMAL_EXPIRY_RATE_0_0001_STATUS=PROVEN_APPLICABILITY_NON_OPERATIVE`.
+    `EXACT_OKX_FEE_FORMULA_STATUS=UNPROVEN`.
+    `POSITION_VALUE_ALGEBRA_STATUS=UNPROVEN`.
+    `B08_INTERNAL_ALGEBRA_STATUS=RATIFIED_INTERNAL_CONSERVATIVE_QTY1_NOT_COVER_USDC`.
+    `COVER_USDC_STATUS=UNINSTANTIATED`.
+    `NUMERIC_FUNDING_AMOUNT_PRODUCED=false`.
+    `EXCHANGE_TRUTH_CHANGED=false`. `QTY_LIMIT=1`.
+    `SCALING_AUTHORIZED=false`. Next canonical step is
+    `OWNER_GO_REQUIRED_FOR_PRODUCTIVE_EVIDENCE_TO_INSTANTIATE_REMAINING_UNPROVEN_COVER_USDC_TERMS_BEFORE_FUNDING`.
     That GO is **not** granted. This spec does not authorize execute,
     funding, GET, or general Live unlock.
