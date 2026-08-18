@@ -30,6 +30,7 @@ from src.experiments.canonical_automated_offline_research_loop_v1 import (
     canonical_record_payload_v1,
     run_canonical_automated_offline_research_loop_v1,
     validate_canonical_automated_offline_research_loop_v1,
+    _bind_experiment_memory,
 )
 from src.experiments.canonical_comparison_ssot_v1 import ComparisonCandidateV1
 from src.experiments.canonical_experiment_identity_v1 import (
@@ -38,7 +39,14 @@ from src.experiments.canonical_experiment_identity_v1 import (
     build_canonical_experiment_identity_v1,
 )
 from src.experiments.canonical_experiment_memory_store_v1 import CanonicalExperimentMemoryStoreV1
-from src.experiments.canonical_experiment_memory_v1 import derive_experiment_id_v1
+from src.experiments.canonical_experiment_memory_v1 import (
+    ExperimentRecordConflictError,
+    derive_experiment_id_v1,
+)
+from src.experiments.canonical_identity_bound_offline_observation_binding_v1 import (
+    OBSERVATION_OWNER_OFFLINE_EXPERIMENT_OBSERVATIONS_V1,
+    STATUS_BOUND,
+)
 from src.experiments.canonical_failure_memory_store_v1 import CanonicalFailureMemoryStoreV1
 from src.experiments.canonical_reality_gap_store_persist_v1 import CanonicalRealityGapStoreV1
 from src.experiments.canonical_reality_gap_store_v1 import (
@@ -288,6 +296,19 @@ def test_complete_loop_reuses_phase_owners_and_is_deterministic() -> None:
     assert first["robustness_evidence"]["aggregate_status"] == "PASS"
     assert first["reality_gap_record"]["overall_disposition"] == "WITHIN_THRESHOLD"
     assert first["failure_records"] == []
+    binding = first["observation_binding"]
+    assert binding["status"] == STATUS_BOUND
+    assert binding["observation_owner"] == OBSERVATION_OWNER_OFFLINE_EXPERIMENT_OBSERVATIONS_V1
+    assert binding["identity_digest"] == selected_identity["identity_digest"]
+    assert binding["experiment_id"] == first["selected_experiment_id"]
+    assert binding["identity_reinterpreted"] is False
+    assert binding["promotion_apply_allowed"] is False
+    assert binding["bounded_auto_allowed"] is False
+    assert binding["runtime_authority_effect"] is False
+    assert (
+        first["experiment_record"]["experiment_identity"]["identity_digest"]
+        == selected_identity["identity_digest"]
+    )
     validate_canonical_automated_offline_research_loop_v1(first)
     assert canonical_record_payload_v1(first) == canonical_record_payload_v1(second)
     assert deterministic_json_dumps(canonical_record_payload_v1(first)) == deterministic_json_dumps(
@@ -419,6 +440,8 @@ def test_no_runtime_live_config_promotion_or_authority_paths() -> None:
         "src.meta.learning_loop.autonomous_non_live_orchestration_plan_v1",
     }
     assert forbidden_imports.isdisjoint(imported)
+    assert "src.experiments.canonical_identity_bound_offline_observation_binding_v1" in imported
+    assert "bind_canonical_identity_bound_offline_observation_v1" in source
     for token in (
         "config/live_overrides",
         "config/auto/",
@@ -457,3 +480,89 @@ def test_no_runtime_live_config_promotion_or_authority_paths() -> None:
     assert "apply_proposals_to_live_overrides" not in inspect.getsource(
         run_canonical_automated_offline_research_loop_v1
     )
+
+
+def _bind_direct(**overrides: Any) -> tuple[Mapping[str, Any], Mapping[str, Any]]:
+    identity = overrides.pop("identity", _identity())
+    selected = overrides.pop("selected", _hypothesis())
+    request = overrides.pop("request", _request())
+    if identity is None:
+        experiment_id = overrides.pop("experiment_id", _digest("missing-experiment"))
+    else:
+        experiment_id = overrides.pop(
+            "experiment_id", derive_experiment_id_v1(str(identity["identity_digest"]))
+        )
+    fingerprint = overrides.pop("fingerprint", _digest("hypothesis"))
+    return _bind_experiment_memory(
+        request=request,
+        identity=identity,
+        experiment_id=experiment_id,
+        fingerprint=fingerprint,
+        selected=selected,
+        created_at=_CREATED_AT,
+        **overrides,
+    )
+
+
+def test_offline_execution_consumes_identity_binding_for_complete_observation() -> None:
+    identity = _identity()
+    record, binding = _bind_direct(identity=identity)
+    assert binding["status"] == STATUS_BOUND
+    assert record["experiment_id"] == derive_experiment_id_v1(str(identity["identity_digest"]))
+    assert record["experiment_identity"]["identity_digest"] == identity["identity_digest"]
+    assert binding["identity_digest"] == identity["identity_digest"]
+    assert binding["identity_reinterpreted"] is False
+
+
+def test_incomplete_identity_is_rejected_by_consumed_binding() -> None:
+    identity = dict(_identity())
+    identity["completeness"] = "INCOMPLETE"
+    with pytest.raises(
+        AutomatedOfflineResearchLoopValidationError, match="REJECTED_INCOMPLETE_IDENTITY"
+    ):
+        _bind_direct(identity=identity)
+
+
+def test_missing_identity_is_rejected_by_consumed_binding() -> None:
+    with pytest.raises(
+        AutomatedOfflineResearchLoopValidationError, match="REJECTED_MISSING_DIMENSION"
+    ):
+        _bind_direct(identity=None)
+
+
+def test_malformed_observation_is_rejected_by_consumed_binding() -> None:
+    with pytest.raises(
+        AutomatedOfflineResearchLoopValidationError,
+        match="offline experiment observation binding failed",
+    ):
+        _bind_direct(request=_request(experiment_observations=_observations(artifacts="bad")))
+
+
+def test_identity_digest_is_passed_through_unchanged() -> None:
+    identity = _identity()
+    record, binding = _bind_direct(identity=identity)
+    assert record["experiment_identity"]["identity_digest"] == identity["identity_digest"]
+    assert binding["identity_digest"] == identity["identity_digest"]
+    assert binding["experiment_id"] == record["experiment_id"]
+    loop = run_canonical_automated_offline_research_loop_v1(_request())
+    assert loop["observation_binding"]["identity_digest"] == identity["identity_digest"]
+    assert loop["selected_experiment_id"] == record["experiment_id"]
+
+
+def test_phase2_divergent_duplicate_persist_remains_fail_closed(tmp_path: Path) -> None:
+    store = CanonicalExperimentMemoryStoreV1(tmp_path / "experiments")
+    first = run_canonical_automated_offline_research_loop_v1(
+        _request(experiment_memory_store=store)
+    )
+    assert store.exists(str(first["selected_experiment_id"])) is True
+    with pytest.raises(ExperimentRecordConflictError, match="divergent"):
+        run_canonical_automated_offline_research_loop_v1(
+            _request(
+                experiment_memory_store=store,
+                experiment_observations=_observations(
+                    metrics={"sharpe": 0.01, "max_drawdown": -0.9}
+                ),
+            )
+        )
+    stored = store.get(str(first["selected_experiment_id"]))
+    assert stored["metrics"]["sharpe"] == 1.25

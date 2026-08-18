@@ -33,10 +33,15 @@ from src.experiments.canonical_experiment_identity_v1 import (
     validate_canonical_experiment_identity_v1,
 )
 from src.experiments.canonical_experiment_memory_store_v1 import CanonicalExperimentMemoryStoreV1
-from src.experiments.canonical_experiment_memory_v1 import (
-    CanonicalExperimentMemoryRecordRequestV1,
-    build_canonical_experiment_memory_record_v1,
-    derive_experiment_id_v1,
+from src.experiments.canonical_experiment_memory_v1 import derive_experiment_id_v1
+from src.experiments.canonical_identity_bound_offline_observation_binding_v1 import (
+    BINDING_DOMAIN as OBSERVATION_BINDING_DOMAIN,
+    CanonicalIdentityBoundOfflineObservationBindingError,
+    CanonicalIdentityBoundOfflineObservationBindingRequestV1,
+    OBSERVATION_OWNER_OFFLINE_EXPERIMENT_OBSERVATIONS_V1,
+    SCHEMA_VERSION as OBSERVATION_BINDING_SCHEMA_VERSION,
+    STATUS_BOUND,
+    bind_canonical_identity_bound_offline_observation_v1,
 )
 from src.experiments.canonical_failure_memory_store_v1 import CanonicalFailureMemoryStoreV1
 from src.experiments.canonical_failure_memory_v1 import (
@@ -247,7 +252,7 @@ def run_canonical_automated_offline_research_loop_v1(
             "duplicate hypothesis requires explicit retest_reason"
         )
 
-    experiment_record = _bind_experiment_memory(
+    experiment_record, observation_binding = _bind_experiment_memory(
         request=request,
         identity=identity,
         experiment_id=experiment_id,
@@ -403,6 +408,7 @@ def run_canonical_automated_offline_research_loop_v1(
         "digest_algorithm": DIGEST_ALGORITHM,
         "duplicate_assessment": _plain_mapping(duplicate_assessment),
         "experiment_record": _plain_mapping(experiment_record),
+        "observation_binding": _observation_binding_evidence(observation_binding),
         "failure_records": [_plain_mapping(item) for item in failure_records],
         "hypothesis_preparation": {
             "experiment_id": experiment_id,
@@ -614,6 +620,11 @@ def validate_canonical_automated_offline_research_loop_v1(record: Mapping[str, A
         )
     identity = payload.get("experiment_record", {}).get("experiment_identity")
     _require_identity(identity)
+    _require_observation_binding(
+        payload.get("observation_binding"),
+        identity=identity,
+        experiment_id=str(payload.get("selected_experiment_id")),
+    )
     challenger_state = payload.get("challenger_report", {}).get("champion_state", {})
     if challenger_state.get("swapped") is True or challenger_state.get("mutated") is True:
         raise AutomatedOfflineResearchLoopValidationError("champion state mutation is forbidden")
@@ -659,36 +670,69 @@ def _prepare_identity(selected: ResearchHypothesisCandidateV1) -> Mapping[str, A
 def _bind_experiment_memory(
     *,
     request: CanonicalAutomatedOfflineResearchLoopRequestV1,
-    identity: Mapping[str, Any],
+    identity: Mapping[str, Any] | None,
     experiment_id: str,
     fingerprint: str,
     selected: ResearchHypothesisCandidateV1,
     created_at: str,
-) -> Mapping[str, Any]:
-    observations = request.experiment_observations
-    return build_canonical_experiment_memory_record_v1(
-        CanonicalExperimentMemoryRecordRequestV1(
-            experiment_identity=identity,
-            hypothesis_id=selected.hypothesis_id,
-            hypothesis_fingerprint=fingerprint,
-            parent_experiment=request.parent_experiment,
-            strategy_family=selected.strategy_family,
-            candidate_role=request.candidate_role,
-            dataset_ref=_bound_ref(str(identity["dataset_digest"])),
-            cost_model_ref=_bound_ref(str(identity["cost_model_digest"])),
-            risk_policy_ref=_bound_ref(str(identity["risk_policy_digest"])),
-            portfolio_ref=_bound_ref(str(identity["portfolio_digest"])),
-            metrics=observations.metrics,
-            robustness_results=observations.robustness_results,
-            regime_results=observations.regime_results,
-            comparison_status=COMPARISON_STATUS_NOT_COMPARED,
-            disposition=request.disposition,
-            rejection_reason=request.rejection_reason,
-            created_at=created_at,
-            artifacts=observations.artifacts,
-            experiment_id=experiment_id,
+) -> tuple[Mapping[str, Any], Mapping[str, Any]]:
+    try:
+        binding = bind_canonical_identity_bound_offline_observation_v1(
+            CanonicalIdentityBoundOfflineObservationBindingRequestV1(
+                phase1_identity=identity,
+                observation_owner=OBSERVATION_OWNER_OFFLINE_EXPERIMENT_OBSERVATIONS_V1,
+                observations=request.experiment_observations,
+                claimed_identity_digest=_optional_identity_field(identity, "identity_digest"),
+                claimed_experiment_id=experiment_id,
+                claimed_parent_lineage_ref=(
+                    None if identity is None else _parent_lineage_ref(identity)
+                ),
+                hypothesis_id=selected.hypothesis_id,
+                hypothesis_fingerprint=fingerprint,
+                strategy_family=selected.strategy_family,
+                created_at=created_at,
+                parent_experiment=request.parent_experiment,
+                candidate_role=request.candidate_role,
+                disposition=request.disposition,
+                rejection_reason=request.rejection_reason,
+                claimed_dataset_digest=_optional_identity_field(identity, "dataset_digest"),
+                claimed_cost_model_digest=_optional_identity_field(identity, "cost_model_digest"),
+                claimed_risk_policy_digest=_optional_identity_field(identity, "risk_policy_digest"),
+                claimed_portfolio_digest=_optional_identity_field(identity, "portfolio_digest"),
+                requested_apply=False,
+                requested_bounded_auto=False,
+                experiment_memory_store=None,
+            )
         )
-    )
+    except CanonicalIdentityBoundOfflineObservationBindingError as exc:
+        raise AutomatedOfflineResearchLoopValidationError(
+            f"offline experiment observation binding failed: {exc}"
+        ) from exc
+    if binding.get("status") != STATUS_BOUND:
+        raise AutomatedOfflineResearchLoopValidationError(
+            "offline experiment observation binding rejected: "
+            f"{binding.get('status')}: {binding.get('rejection_reason')}"
+        )
+    record = binding.get("experiment_record")
+    if not isinstance(record, Mapping):
+        raise AutomatedOfflineResearchLoopValidationError(
+            "offline experiment observation binding did not return a Phase-2 record"
+        )
+    bound_id = str(record.get("experiment_id") or "")
+    if bound_id != experiment_id:
+        raise AutomatedOfflineResearchLoopValidationError(
+            "bound experiment_id does not match the Phase-1 identity digest binding"
+        )
+    bound_identity = record.get("experiment_identity")
+    if not isinstance(bound_identity, Mapping):
+        raise AutomatedOfflineResearchLoopValidationError(
+            "bound experiment_record is missing experiment_identity"
+        )
+    source_digest = _optional_identity_field(identity, "identity_digest")
+    bound_digest = str(bound_identity.get("identity_digest") or "")
+    if source_digest is None or bound_digest != source_digest:
+        raise AutomatedOfflineResearchLoopValidationError("bound identity_digest was reinterpreted")
+    return record, binding
 
 
 def _run_robustness(
@@ -851,6 +895,70 @@ def _parent_lineage_ref(identity: Mapping[str, Any]) -> str | None:
         value = parent_lineage.get("parent_lineage_ref")
         return value if isinstance(value, str) else None
     return None
+
+
+def _optional_identity_field(identity: Mapping[str, Any] | None, field_name: str) -> str | None:
+    if not isinstance(identity, Mapping):
+        return None
+    value = identity.get(field_name)
+    return str(value) if isinstance(value, str) and value else None
+
+
+def _observation_binding_evidence(binding: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "binding_domain": binding.get("binding_domain"),
+        "bounded_auto_allowed": False,
+        "experiment_id": binding.get("experiment_id"),
+        "identity_digest": binding.get("identity_digest"),
+        "identity_reinterpreted": False,
+        "observation_owner": binding.get("observation_owner"),
+        "promotion_apply_allowed": False,
+        "runtime_authority_effect": False,
+        "schema_version": binding.get("schema_version"),
+        "status": binding.get("status"),
+    }
+
+
+def _require_observation_binding(
+    value: Any,
+    *,
+    identity: Mapping[str, Any],
+    experiment_id: str,
+) -> None:
+    if not isinstance(value, Mapping):
+        raise AutomatedOfflineResearchLoopValidationError("observation_binding is required")
+    if value.get("schema_version") != OBSERVATION_BINDING_SCHEMA_VERSION:
+        raise AutomatedOfflineResearchLoopValidationError(
+            "observation_binding schema_version mismatch"
+        )
+    if value.get("binding_domain") != OBSERVATION_BINDING_DOMAIN:
+        raise AutomatedOfflineResearchLoopValidationError("observation_binding domain mismatch")
+    if value.get("status") != STATUS_BOUND:
+        raise AutomatedOfflineResearchLoopValidationError(
+            "observation_binding status must be BOUND"
+        )
+    if value.get("observation_owner") != OBSERVATION_OWNER_OFFLINE_EXPERIMENT_OBSERVATIONS_V1:
+        raise AutomatedOfflineResearchLoopValidationError("observation_binding owner mismatch")
+    if value.get("identity_reinterpreted") is not False:
+        raise AutomatedOfflineResearchLoopValidationError("identity reinterpretation is forbidden")
+    if value.get("promotion_apply_allowed") is not False:
+        raise AutomatedOfflineResearchLoopValidationError("observation_binding cannot allow apply")
+    if value.get("bounded_auto_allowed") is not False:
+        raise AutomatedOfflineResearchLoopValidationError(
+            "observation_binding cannot allow bounded_auto"
+        )
+    if value.get("runtime_authority_effect") is not False:
+        raise AutomatedOfflineResearchLoopValidationError(
+            "observation_binding runtime_authority_effect must be false"
+        )
+    if str(value.get("experiment_id") or "") != experiment_id:
+        raise AutomatedOfflineResearchLoopValidationError(
+            "observation_binding experiment_id does not match selected_experiment_id"
+        )
+    if str(value.get("identity_digest") or "") != str(identity.get("identity_digest") or ""):
+        raise AutomatedOfflineResearchLoopValidationError(
+            "observation_binding identity_digest does not match Phase-1 identity"
+        )
 
 
 def _require_identity(value: Any) -> dict[str, Any]:
