@@ -24,11 +24,13 @@ Reuse, do not replace:
 ```text
 Phase 1  src.experiments.canonical_experiment_identity_v1     REUSE identity
 Phase 2  src.experiments.canonical_experiment_memory_v1       REUSE experiment_id and memory
+Phase 2  src.experiments.canonical_experiment_memory_store_v1 REUSE append-only persist
 Phase 3  src.experiments.canonical_failure_memory_v1          REUSE fingerprint, records, persist
 Phase 4  src.experiments.canonical_robustness_suite_v1        REUSE robustness evidence
 Phase 5  src.experiments.canonical_comparison_ssot_v1         REUSE comparability
 Phase 6  src.experiments.canonical_champion_challenger_v1     REUSE challenger report
 Phase 7  src.experiments.canonical_reality_gap_store_v1       REUSE gap report
+Binding  src.experiments.canonical_identity_bound_offline_observation_binding_v1  REUSE observation binding
 ```
 
 ```text
@@ -61,10 +63,16 @@ RESEARCH_METADATA_AGGREGATION
 Silent step omission is forbidden. Every step is represented in evidence.
 
 ```text
-OFFLINE_EXPERIMENT_EXECUTION = bind Phase-2 memory from caller-supplied observations
+OFFLINE_EXPERIMENT_EXECUTION = consume canonical identity-bound observation binding
+OFFLINE_EXPERIMENT_EXECUTION = bind Phase-2 memory from caller-supplied OfflineExperimentObservationsV1
+OFFLINE_EXPERIMENT_EXECUTION != invent identity
 OFFLINE_EXPERIMENT_EXECUTION != run productive trading engine
 OFFLINE_EXPERIMENT_EXECUTION != write config
 ```
+
+Phase 10 remains the offline-execution owner. Phase 1 remains the identity owner.
+Phase 2 remains the immutable-memory owner. The #5943 binding contract is the
+adapter consumed by `OFFLINE_EXPERIMENT_EXECUTION`; it is not a second runner.
 
 ## Hypothesis selection
 
@@ -82,7 +90,11 @@ Duplicate `hypothesis_fingerprint` values from Phase 3 Failure Memory are assess
 
 Caller-supplied finite observations are required. Missing values fail closed. Zero is never inferred for missing fee, slippage, funding, or robustness observations.
 
-`OFFLINE_EXPERIMENT_EXECUTION` binds a COMPLETE Phase-2 experiment-memory record. Historical experiment memory is not overwritten. Optional persist uses the Phase-2 append-only store.
+`OFFLINE_EXPERIMENT_EXECUTION` consumes `canonical_identity_bound_offline_observation_binding_v1`
+for caller-supplied `OfflineExperimentObservationsV1`. A Phase-1 `COMPLETE` identity is required.
+Identity digests are reused, not reinterpreted. Missing or incomplete identity, or a malformed
+observation shape, fails closed. Historical experiment memory is not overwritten. Optional persist
+uses the Phase-2 append-only store; divergent duplicate persist remains Phase-2 fail-closed.
 
 ## Comparability and challenger report
 
