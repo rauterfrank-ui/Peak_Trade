@@ -17010,7 +17010,7 @@ Owner-GO
 (one-shot; now **CONSUMED**) authorized the **smallest** remaining
 productive-evidence operation capable of instantiating a currently
 unbound COVER_USDC-relevant term after the Z2G markPx observation: a
-single public, unauthenticated, read-only OKX EEA `market/ticker` GET
+single public, unauthenticated, read-only OKX EEA `market&#47;ticker` GET
 for the canary instrument. This persist binds the returned `bidPx` and
 `askPx` only as a current observational spread with provenance. It does
 **not** instantiate `SLIPPAGE_RESERVE` numerically, does **not** treat
