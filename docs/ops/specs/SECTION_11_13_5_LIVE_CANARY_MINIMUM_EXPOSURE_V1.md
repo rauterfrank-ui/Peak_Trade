@@ -83,7 +83,11 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.Z2B. Historical Z2&#47;Z2A
+Current SSOT: Master Runbook §11.13.5.Z2C. Historical Z2B remains
+binding for applicability and the proven non-operative 0.01% rate.
+Monetary base remains unproven and is not critical path for the qty=1
+minimum-exposure canary after the internal conservative bound.
+Historical Z2&#47;Z2A
 persists remain binding as snapshots. Ticket `7823581` bound the
 published 0.01% normal-expiry settlement fee as **non-operative**;
 monetary base and API `delivery=0.0003` remain unproven. Historical
@@ -314,8 +318,27 @@ oneshot.
     `DELIVERY_RATE_OPERATIVE_VALUE=NONE`.
     `OPERATIVE_EXPIRY_FEE_RATE=NONE`.
     `DELIVERY_FEE_TERM_NUMERIC_STATUS=UNINSTANTIATED`.
-    `FULL_OPERATIONAL_RESERVE_COMPOSITION_STATUS=BLOCKED`. Next
-    canonical step is
+    `FULL_OPERATIONAL_RESERVE_COMPOSITION_STATUS=BLOCKED`. Historical
+    next canonical step was
     `OWNER_GO_REQUIRED_TO_SUPPLY_OR_POINT_TO_A_CURRENT_NORMATIVE_OKX_EEA_OEM_XPERP_NORMAL_EXPIRY_FEE_MONETARY_BASE`.
+    That GO is **not** granted and is superseded as critical path by
+    §11.13.5.Z2C. This spec does not authorize execute, funding, GET,
+    or general Live unlock.
+30. `OWNER_GO_BOUND_UNPROVEN_NORMAL_EXPIRY_FEE_ECONOMIC_RISK_WITH_INTERNAL_CONSERVATIVE_RESERVE`
+    was granted contract-only and is consumed as §11.13.5.Z2C. Z2B
+    applicability and the proven non-operative 0.01% rate remain
+    binding. `PROVEN_NORMAL_EXPIRY_RATE=0.0001`.
+    `PEAK_TRADE_EXPIRY_RESERVE_RATE=0.0003` is conservative internal
+    policy, not OKX fee truth.
+    `OEM_FEE_MONETARY_BASE_STATUS=UNPROVEN`.
+    `ACTUAL_EXPIRY_FEE_AMOUNT_STATUS=UNPROVEN`.
+    `OPERATIVE_EXPIRY_FEE_RATE=NONE`.
+    `ABSOLUTE_BOUND_USES_UNPROVEN_EXCHANGE_FORMULA=false`.
+    `QTY_LIMIT=1`. `SCALING_AUTHORIZED=false`.
+    `MULTI_FUTURE_AUTHORIZED=false`.
+    `POST_SETTLEMENT_RECONCILIATION_REQUIRED=true`.
+    `OBSERVED_FEE_MUST_NOT_REWRITE_NORMATIVE_TRUTH=true`. Next
+    canonical step is
+    `OWNER_GO_REQUIRED_TO_RESOLVE_REMAINING_UNPROVEN_POSITION_VALUE_FX_AND_ROUNDING_FOR_OPERATIONAL_RESERVE`.
     That GO is **not** granted. This spec does not authorize execute,
     funding, GET, or general Live unlock.
