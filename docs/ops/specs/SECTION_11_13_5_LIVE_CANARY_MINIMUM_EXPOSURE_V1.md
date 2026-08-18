@@ -83,9 +83,12 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.Z2. Parallel contract persist:
-§11.13.5.Z2A unknown-none delivery term in operational reserve
-composition; Z2 next pointer unchanged. Historical Z1-era next steps
+Current SSOT: Master Runbook §11.13.5.Z2B. Historical Z2&#47;Z2A
+persists remain binding as snapshots. Ticket `7823581` bound the
+published 0.01% normal-expiry settlement fee as **non-operative**;
+monetary base and API `delivery=0.0003` remain unproven. Historical
+Z2A-era next steps below are superseded for the current evidence
+persist. Historical Z1-era next steps
 below are superseded for the current EDGE_I EVENT_B closeout persist.
 Historical Z-era next steps remain historical for the normal-expiry
 fee-existence premise persist. Historical Y-era next steps remain historical for the
@@ -295,3 +298,24 @@ oneshot.
     consume the same contract. Later formula-body ratification,
     funding, and execute remain separate. This spec does not authorize
     execute, funding, GET, or general Live unlock.
+29. `OWNER_GO_BIND_OKX_TICKET_7823581` was granted docs-only and is
+    consumed as §11.13.5.Z2B. Ticket `7823581` (Johnny, 2026-08-18
+    06:56) is first-party OKX Europe support evidence.
+    `PRODUCT_SET_MEMBERSHIP=PROVEN`.
+    `TARGET_INSTRUMENT_APPLICABILITY_BTC_USD_UM_XPERP=PROVEN`.
+    `NORMAL_EXPIRY_FEE_RATE_PROVEN=true`.
+    `NORMAL_EXPIRY_FEE_RATE_DECIMAL=0.0001`.
+    `RATE_PROVEN_NON_OPERATIVE=true`.
+    `TIER_INDEPENDENT_FOR_EXPIRY_SETTLEMENT=PROVEN`.
+    `FORCED_LIQUIDATION_DISTINCT_FROM_NORMAL_EXPIRY=PROVEN`.
+    `MONETARY_BASE_STATUS=UNPROVEN`.
+    `API_DELIVERY_0_0003_STATUS=UNPROVEN`.
+    `OPERATIVE_FEE_COMPUTATION_PROVEN=false`.
+    `DELIVERY_RATE_OPERATIVE_VALUE=NONE`.
+    `OPERATIVE_EXPIRY_FEE_RATE=NONE`.
+    `DELIVERY_FEE_TERM_NUMERIC_STATUS=UNINSTANTIATED`.
+    `FULL_OPERATIONAL_RESERVE_COMPOSITION_STATUS=BLOCKED`. Next
+    canonical step is
+    `OWNER_GO_REQUIRED_TO_SUPPLY_OR_POINT_TO_A_CURRENT_NORMATIVE_OKX_EEA_OEM_XPERP_NORMAL_EXPIRY_FEE_MONETARY_BASE`.
+    That GO is **not** granted. This spec does not authorize execute,
+    funding, GET, or general Live unlock.

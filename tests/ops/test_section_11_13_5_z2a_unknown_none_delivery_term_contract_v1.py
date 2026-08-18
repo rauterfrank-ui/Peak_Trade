@@ -29,8 +29,8 @@ def _read(path: Path) -> str:
 def _z2a_section(text: str) -> str:
     start = text.find(Z2A_HEADING)
     assert start >= 0, "missing §11.13.5.Z2A heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2A"
+    end = text.find("### 11.13.5.Z2B", start)
+    assert end > start, "missing §11.13.5.Z2B boundary after Z2A"
     return text[start:end]
 
 
@@ -114,15 +114,14 @@ def test_z2a_does_not_readjudicate_edge_i_or_replace_z2_pointer() -> None:
         assert assignment not in section, f"forbidden assignment present: {assignment!r}"
 
 
-def test_map_of_truth_keeps_z2_next_pointer() -> None:
+def test_map_of_truth_records_z2a_as_parallel_consumed() -> None:
     text = _read(MAP_OF_TRUTH)
-    assert f"NEXT_CANONICAL_STEP_POINTER={Z2_NEXT_POINTER}" in text
+    assert "§11.13.5.Z2A" in text
     assert (
         "OWNER_GO_FOR_FAIL_CLOSED_UNKNOWN_NONE_DELIVERY_TERM_IN_OPERATIONAL_RESERVE_COMPOSITION_DOCS_ONLY_STATUS=CONSUMED_DOCS_ONLY_Z2_POINTER_UNCHANGED"
         in text
     )
-    assert "§11.13.5.Z2A" in text
     assert (
-        "OWNER_GO_REQUIRED_TO_SUPPLY_OR_POINT_TO_A_CURRENT_NORMATIVE_OKX_EEA_OEM_XPERP_NORMAL_EXPIRY_FEE_APPLICABILITY_STATEMENT_STATUS=NOT_GRANTED"
+        "OWNER_GO_REQUIRED_TO_SUPPLY_OR_POINT_TO_A_CURRENT_NORMATIVE_OKX_EEA_OEM_XPERP_NORMAL_EXPIRY_FEE_APPLICABILITY_STATEMENT_STATUS=CONSUMED_BOUND_BY_OWNER_GO_BIND_OKX_TICKET_7823581"
         in text
     )
