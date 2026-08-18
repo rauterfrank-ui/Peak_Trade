@@ -98,8 +98,8 @@ def _read(path: Path) -> str:
 def _z2f_section(text: str) -> str:
     start = text.find(Z2F_HEADING)
     assert start >= 0, "missing §11.13.5.Z2F heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2F"
+    end = text.find("### 11.13.5.Z2G", start)
+    assert end > start, "missing §11.13.5.Z2G boundary after Z2F"
     return text[start:end]
 
 
@@ -372,16 +372,15 @@ def test_z2f_docs_bind_term_instances_without_cover_usdc() -> None:
     assert HISTORICAL_S_PACK_MARKPX not in section
 
 
-def test_map_of_truth_and_spec_follow_z2f_current_pointer() -> None:
+def test_map_of_truth_and_spec_record_z2f_as_consumed_historical() -> None:
     mot = _read(MAP_OF_TRUTH)
     spec = _read(CANARY_SPEC)
     assert "§11.13.5.Z2F" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
     assert f"{Z2F_OWNER_GO}_STATUS=CONSUMED_CONTRACT_ONLY_NOT_EXECUTE" in mot
+    assert f"{NEXT_POINTER}_STATUS=CONSUMED_GET_ONLY_MARKPX_OBSERVED_NOT_COVER_USDC" in mot
     assert "COVER_USDC_STATUS=UNINSTANTIATED" in mot
     assert "FX_STATUS=UNPROVEN" in mot
     assert "ROUNDING_STATUS=UNPROVEN" in mot
-    assert "Current SSOT: Master Runbook §11.13.5.Z2F." in spec
     assert Z2F_OWNER_GO in spec
     assert NEXT_POINTER in spec
-    assert "Current SSOT: Master Runbook §11.13.5.Z2E." not in spec
+    assert "Current SSOT: Master Runbook §11.13.5.Z2F." not in spec

@@ -1,0 +1,10 @@
+{
+  "COVER_USDC_STATUS": "UNINSTANTIATED",
+  "GET_EXECUTED": true,
+  "MARKPX_CURRENT_VALUE": "64495.3",
+  "POST_COUNT": 0,
+  "RUN_ID": "20260818T200745Z",
+  "SECRET_VALUES_INCLUDED": false,
+  "evidence_root": "/Users/frnkhrz/Peak_Trade/evidence/ops/section_11_13_5_z2g_current_markpx_public_get_v1/20260818T200745Z",
+  "ok": true
+}
