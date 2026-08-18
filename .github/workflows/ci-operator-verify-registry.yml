@@ -45,4 +45,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          scripts/ops/verify_from_registry.sh docs/ops/registry/LATEST_PHASE_M_SMOKE.pointer --download
+          set -euo pipefail
+          # pull_request: proven historical artifact expiry is lifecycle hygiene,
+          # not a product/verification regression. workflow_dispatch stays strict.
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            scripts/ops/verify_from_registry.sh docs/ops/registry/LATEST_PHASE_M_SMOKE.pointer --download --allow-expired
+          else
+            scripts/ops/verify_from_registry.sh docs/ops/registry/LATEST_PHASE_M_SMOKE.pointer --download
+          fi

@@ -2,10 +2,11 @@
 set -euo pipefail
 
 # Operator UX:
-#   scripts/ops/verify_from_registry.sh <pointer> [--download] [--pack]
+#   scripts/ops/verify_from_registry.sh <pointer> [--download] [--allow-expired] [--pack]
 #
 # Examples:
 #   scripts/ops/verify_from_registry.sh docs/ops/registry/LATEST_PHASE_M_SMOKE.pointer --download
+#   scripts/ops/verify_from_registry.sh docs/ops/registry/LATEST_PHASE_M_SMOKE.pointer --download --allow-expired
 #   scripts/ops/verify_from_registry.sh docs/ops/registry/LATEST_PHASE_M_SMOKE.pointer --download --pack
 #
 # Safety rails:
@@ -27,10 +28,12 @@ fi
 
 DOWNLOAD="NO"
 PACK="NO"
+ALLOW_EXPIRED="NO"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --download) DOWNLOAD="YES" ;;
+    --allow-expired) ALLOW_EXPIRED="YES" ;;
     --pack) PACK="YES" ;;
     *) echo "ERR: unknown arg: $1" >&2; exit 2 ;;
   esac
@@ -56,6 +59,9 @@ fi
 ARGS=("${PTR}" --out-base "${OUT_BASE}")
 if [[ "${DOWNLOAD}" == "YES" ]]; then
   ARGS+=(--download)
+fi
+if [[ "${ALLOW_EXPIRED}" == "YES" ]]; then
+  ARGS+=(--allow-expired)
 fi
 if [[ -n "${PACK_OUT}" ]]; then
   ARGS+=(--pack-out "${PACK_OUT}")
