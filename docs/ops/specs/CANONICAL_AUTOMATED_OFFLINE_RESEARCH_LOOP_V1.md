@@ -93,8 +93,10 @@ Caller-supplied finite observations are required. Missing values fail closed. Ze
 `OFFLINE_EXPERIMENT_EXECUTION` consumes `canonical_identity_bound_offline_observation_binding_v1`
 for caller-supplied `OfflineExperimentObservationsV1`. A Phase-1 `COMPLETE` identity is required.
 Identity digests are reused, not reinterpreted. Missing or incomplete identity, or a malformed
-observation shape, fails closed. Historical experiment memory is not overwritten. Optional persist
-uses the Phase-2 append-only store; divergent duplicate persist remains Phase-2 fail-closed.
+observation shape, fails closed. Historical experiment memory is not overwritten. Optional
+Phase-2 persist is delegated to the consumed `#5943` binding adapter; Phase 10 does not keep a
+parallel experiment-record append path. Divergent duplicate persist remains Phase-2
+`ExperimentRecordConflictError` fail-closed. Identical replay remains Phase-2 idempotent.
 
 ## Comparability and challenger report
 

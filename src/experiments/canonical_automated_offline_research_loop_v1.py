@@ -33,7 +33,10 @@ from src.experiments.canonical_experiment_identity_v1 import (
     validate_canonical_experiment_identity_v1,
 )
 from src.experiments.canonical_experiment_memory_store_v1 import CanonicalExperimentMemoryStoreV1
-from src.experiments.canonical_experiment_memory_v1 import derive_experiment_id_v1
+from src.experiments.canonical_experiment_memory_v1 import (
+    ExperimentRecordConflictError,
+    derive_experiment_id_v1,
+)
 from src.experiments.canonical_identity_bound_offline_observation_binding_v1 import (
     BINDING_DOMAIN as OBSERVATION_BINDING_DOMAIN,
     CanonicalIdentityBoundOfflineObservationBindingError,
@@ -41,6 +44,7 @@ from src.experiments.canonical_identity_bound_offline_observation_binding_v1 imp
     OBSERVATION_OWNER_OFFLINE_EXPERIMENT_OBSERVATIONS_V1,
     SCHEMA_VERSION as OBSERVATION_BINDING_SCHEMA_VERSION,
     STATUS_BOUND,
+    STATUS_REJECTED_DIVERGENT_DUPLICATE,
     bind_canonical_identity_bound_offline_observation_v1,
 )
 from src.experiments.canonical_failure_memory_store_v1 import CanonicalFailureMemoryStoreV1
@@ -260,9 +264,7 @@ def run_canonical_automated_offline_research_loop_v1(
         selected=selected,
         created_at=created_at,
     )
-    experiment_persisted = _optional_append(
-        request.experiment_memory_store, experiment_record, "experiment_id"
-    )
+    experiment_persisted = _binding_persist_id(observation_binding)
     robustness_evidence = _run_robustness(
         request=request,
         identity=identity,
@@ -701,13 +703,20 @@ def _bind_experiment_memory(
                 claimed_portfolio_digest=_optional_identity_field(identity, "portfolio_digest"),
                 requested_apply=False,
                 requested_bounded_auto=False,
-                experiment_memory_store=None,
+                experiment_memory_store=request.experiment_memory_store,
             )
         )
     except CanonicalIdentityBoundOfflineObservationBindingError as exc:
         raise AutomatedOfflineResearchLoopValidationError(
             f"offline experiment observation binding failed: {exc}"
         ) from exc
+    if binding.get("status") == STATUS_REJECTED_DIVERGENT_DUPLICATE:
+        raise ExperimentRecordConflictError(
+            str(
+                binding.get("rejection_reason")
+                or "divergent canonical content for existing experiment_id is forbidden"
+            )
+        )
     if binding.get("status") != STATUS_BOUND:
         raise AutomatedOfflineResearchLoopValidationError(
             "offline experiment observation binding rejected: "
@@ -904,6 +913,14 @@ def _optional_identity_field(identity: Mapping[str, Any] | None, field_name: str
     return str(value) if isinstance(value, str) and value else None
 
 
+def _binding_persist_id(binding: Mapping[str, Any]) -> str | None:
+    persist = binding.get("persist")
+    if not isinstance(persist, Mapping):
+        return None
+    value = persist.get("experiment_record_id")
+    return str(value) if isinstance(value, str) and value else None
+
+
 def _observation_binding_evidence(binding: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "binding_domain": binding.get("binding_domain"),
@@ -912,6 +929,7 @@ def _observation_binding_evidence(binding: Mapping[str, Any]) -> dict[str, Any]:
         "identity_digest": binding.get("identity_digest"),
         "identity_reinterpreted": False,
         "observation_owner": binding.get("observation_owner"),
+        "persist": {"experiment_record_id": _binding_persist_id(binding)},
         "promotion_apply_allowed": False,
         "runtime_authority_effect": False,
         "schema_version": binding.get("schema_version"),
@@ -959,6 +977,17 @@ def _require_observation_binding(
         raise AutomatedOfflineResearchLoopValidationError(
             "observation_binding identity_digest does not match Phase-1 identity"
         )
+    persist = value.get("persist")
+    if persist is not None:
+        if not isinstance(persist, Mapping):
+            raise AutomatedOfflineResearchLoopValidationError(
+                "observation_binding persist must be a mapping"
+            )
+        persisted_id = persist.get("experiment_record_id")
+        if persisted_id is not None and str(persisted_id) != experiment_id:
+            raise AutomatedOfflineResearchLoopValidationError(
+                "observation_binding persist experiment_record_id does not match selected_experiment_id"
+            )
 
 
 def _require_identity(value: Any) -> dict[str, Any]:
