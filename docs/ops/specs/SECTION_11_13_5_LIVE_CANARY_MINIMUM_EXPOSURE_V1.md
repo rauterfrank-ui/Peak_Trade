@@ -83,7 +83,8 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.Z2G. Historical Z2F remains
+Current SSOT: Master Runbook §11.13.5.Z2H. Historical Z2G remains
+binding for the observational current markPx. Historical Z2F remains
 binding for fail-closed term-instance adjudication. Historical Z2E remains
 binding for the internal conservative qty=1 B08 formula body.
 Historical Z2D remains
@@ -95,7 +96,9 @@ binding for applicability and the proven non-operative 0.01% rate.
 qty=1 and ctVal `0.0001 BTC` are proven instrument&#47;canary-scope
 bindings. Current markPx `64495.3` is
 `OBSERVED_NOT_NORMATIVELY_BOUND` from a public mark-price GET. It is
-not an OKX expiry-fee operand. Monetary base, FX,
+not an OKX expiry-fee operand. Current ticker `bidPx=64529.9` and
+`askPx=64530` are `OBSERVED_NOT_NORMATIVELY_BOUND` from a public
+ticker GET. They are not a numeric `SLIPPAGE_RESERVE`. Monetary base, FX,
 and Rounding remain UNPROVEN Exchange Truth.
 `COVER_USDC` remains uninstantiated. No numeric funding amount is
 produced.
@@ -419,7 +422,30 @@ oneshot.
     `COVER_USDC_STATUS=UNINSTANTIATED`.
     `NUMERIC_FUNDING_AMOUNT_PRODUCED=false`.
     `EXCHANGE_TRUTH_CHANGED=false`. `QTY_LIMIT=1`.
-    `SCALING_AUTHORIZED=false`. Next canonical step is
+    `SCALING_AUTHORIZED=false`. Historical next canonical step was
     `OWNER_GO_REQUIRED_FOR_PRODUCTIVE_EVIDENCE_TO_RESOLVE_REMAINING_UNPROVEN_COVER_USDC_TERMS_AFTER_CURRENT_MARKPX_BEFORE_FUNDING`.
+    That GO is consumed as §11.13.5.Z2H. This spec does not authorize
+    execute, funding, additional GET, or general Live unlock.
+35. `OWNER_GO_REQUIRED_FOR_PRODUCTIVE_EVIDENCE_TO_RESOLVE_REMAINING_UNPROVEN_COVER_USDC_TERMS_AFTER_CURRENT_MARKPX_BEFORE_FUNDING`
+    was granted GET-only for the current public ticker bid&#47;ask
+    instance and is consumed as §11.13.5.Z2H. Z2B applicability, Z2C
+    internal expiry bound, Z2D Position-Value &#47; FX &#47; Rounding
+    classification, Z2E internal B08 algebra, Z2F term-instance
+    adjudication, and Z2G observational markPx remain binding.
+    `AUTHORIZED_SCOPE=CURRENT_TICKER_BID_ASK_PUBLIC_GET_EVIDENCE_ONLY`.
+    `BID_ASK_TERM_STATUS=OBSERVED_NOT_NORMATIVELY_BOUND`.
+    Current `bidPx=64529.9` and `askPx=64530` are not a numeric
+    `SLIPPAGE_RESERVE`. `SLIPPAGE_RESERVE_NUMERIC_STATUS=UNINSTANTIATED`.
+    `MARKPX_TERM_STATUS=OBSERVED_NOT_NORMATIVELY_BOUND`.
+    `MARKPX_OKX_DELIVERY_FEE_OPERAND_STATUS=UNPROVEN`.
+    `MONETARY_BASE_STATUS=UNPROVEN`. `FX_STATUS=UNPROVEN`.
+    `ROUNDING_STATUS=UNPROVEN`.
+    `EXACT_OKX_FEE_FORMULA_STATUS=UNPROVEN`.
+    `POSITION_VALUE_ALGEBRA_STATUS=UNPROVEN`.
+    `COVER_USDC_STATUS=UNINSTANTIATED`.
+    `NUMERIC_FUNDING_AMOUNT_PRODUCED=false`.
+    `EXCHANGE_TRUTH_CHANGED=false`. `QTY_LIMIT=1`.
+    `SCALING_AUTHORIZED=false`. Next canonical step is
+    `OWNER_GO_REQUIRED_FOR_PRODUCTIVE_EVIDENCE_TO_RESOLVE_REMAINING_UNPROVEN_COVER_USDC_TERMS_AFTER_CURRENT_TICKER_BID_ASK_BEFORE_FUNDING`.
     That GO is **not** granted. This spec does not authorize execute,
     funding, additional GET, or general Live unlock.

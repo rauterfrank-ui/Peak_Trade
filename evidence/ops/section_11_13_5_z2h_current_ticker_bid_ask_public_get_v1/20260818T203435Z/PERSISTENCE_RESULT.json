@@ -1,0 +1,11 @@
+{
+  "ASK_PX_CURRENT_VALUE": "64530",
+  "BID_PX_CURRENT_VALUE": "64529.9",
+  "COVER_USDC_STATUS": "UNINSTANTIATED",
+  "GET_EXECUTED": true,
+  "POST_COUNT": 0,
+  "RUN_ID": "20260818T203435Z",
+  "SECRET_VALUES_INCLUDED": false,
+  "evidence_root": "evidence/ops/section_11_13_5_z2h_current_ticker_bid_ask_public_get_v1/20260818T203435Z",
+  "ok": true
+}
