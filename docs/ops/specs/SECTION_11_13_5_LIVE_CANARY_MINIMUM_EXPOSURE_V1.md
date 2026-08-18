@@ -83,10 +83,15 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.Z2C. Historical Z2B remains
+Current SSOT: Master Runbook §11.13.5.Z2D. Historical Z2C remains
+binding for the qty=1 internal conservative expiry-fee bound.
+Historical Z2B remains
 binding for applicability and the proven non-operative 0.01% rate.
 Monetary base remains unproven and is not critical path for the qty=1
 minimum-exposure canary after the internal conservative bound.
+Position Value, FX, and Rounding remain UNPROVEN Exchange Truth;
+the qty=1 internal envelope reuses §11.13.5.U and is not OKX
+PositionValue. `COVER_USDC` remains uninstantiated.
 Historical Z2&#47;Z2A
 persists remain binding as snapshots. Ticket `7823581` bound the
 published 0.01% normal-expiry settlement fee as **non-operative**;
@@ -337,8 +342,21 @@ oneshot.
     `QTY_LIMIT=1`. `SCALING_AUTHORIZED=false`.
     `MULTI_FUTURE_AUTHORIZED=false`.
     `POST_SETTLEMENT_RECONCILIATION_REQUIRED=true`.
-    `OBSERVED_FEE_MUST_NOT_REWRITE_NORMATIVE_TRUTH=true`. Next
-    canonical step is
+    `OBSERVED_FEE_MUST_NOT_REWRITE_NORMATIVE_TRUTH=true`. Historical
+    next canonical step was
     `OWNER_GO_REQUIRED_TO_RESOLVE_REMAINING_UNPROVEN_POSITION_VALUE_FX_AND_ROUNDING_FOR_OPERATIONAL_RESERVE`.
+    That GO is consumed as §11.13.5.Z2D. This spec does not authorize
+    execute, funding, GET, or general Live unlock.
+31. `OWNER_GO_REQUIRED_TO_RESOLVE_REMAINING_UNPROVEN_POSITION_VALUE_FX_AND_ROUNDING_FOR_OPERATIONAL_RESERVE`
+    was granted contract-only and is consumed as §11.13.5.Z2D. Z2B
+    applicability and Z2C internal expiry bound remain binding.
+    `POSITION_VALUE_ALGEBRA_STATUS=UNPROVEN`.
+    `PEAK_TRADE_INTERNAL_POSITION_VALUE_IS_OKX_POSITION_VALUE=false`.
+    `RULE_FX_STATUS=UNPROVEN`. `USD_USDC_CONVERSION_APPLIED=false`.
+    `RULE_ROUNDING_STATUS=UNPROVEN`. `ROUNDING_APPLIED=false`.
+    `COVER_USDC_STATUS=UNINSTANTIATED`.
+    `EXCHANGE_TRUTH_CHANGED=false`. `QTY_LIMIT=1`.
+    `SCALING_AUTHORIZED=false`. Next canonical step is
+    `OWNER_GO_REQUIRED_TO_RATIFY_EXACT_FORMULA_BODY`.
     That GO is **not** granted. This spec does not authorize execute,
     funding, GET, or general Live unlock.

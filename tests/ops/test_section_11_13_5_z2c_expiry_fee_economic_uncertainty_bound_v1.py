@@ -76,8 +76,8 @@ def _read(path: Path) -> str:
 def _z2c_section(text: str) -> str:
     start = text.find(Z2C_HEADING)
     assert start >= 0, "missing §11.13.5.Z2C heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2C"
+    end = text.find("### 11.13.5.Z2D", start)
+    assert end > start, "missing §11.13.5.Z2D boundary after Z2C"
     return text[start:end]
 
 
@@ -311,17 +311,17 @@ def test_z2c_docs_bind_internal_policy_without_rewriting_exchange_truth() -> Non
         assert assignment not in section, f"forbidden assignment present: {assignment!r}"
 
 
-def test_map_of_truth_and_spec_follow_z2c_current_pointer() -> None:
+def test_map_of_truth_and_spec_record_z2c_as_consumed_historical() -> None:
     mot = _read(MAP_OF_TRUTH)
     spec = _read(CANARY_SPEC)
     assert "§11.13.5.Z2C" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
     assert f"{Z2C_OWNER_GO}_STATUS=CONSUMED_CONTRACT_ONLY_NOT_EXECUTE" in mot
     assert (
         "OWNER_GO_REQUIRED_TO_SUPPLY_OR_POINT_TO_A_CURRENT_NORMATIVE_OKX_EEA_OEM_XPERP_NORMAL_EXPIRY_FEE_MONETARY_BASE_STATUS=SUPERSEDED_NOT_CRITICAL_PATH_FOR_MINIMUM_EXPOSURE_CANARY"
         in mot
     )
+    assert f"{NEXT_POINTER}_STATUS=CONSUMED_CONTRACT_ONLY_NOT_EXECUTE" in mot
     assert "OPERATIVE_EXPIRY_FEE_RATE=NONE" in mot
-    assert "Current SSOT: Master Runbook §11.13.5.Z2C." in spec
     assert Z2C_OWNER_GO in spec
     assert NEXT_POINTER in spec
+    assert "Current SSOT: Master Runbook §11.13.5.Z2C." not in spec
