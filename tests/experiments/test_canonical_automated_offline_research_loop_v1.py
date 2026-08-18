@@ -392,6 +392,7 @@ def test_optional_persist_uses_canonical_append_only_stores(tmp_path: Path) -> N
     experiment_id = str(record["selected_experiment_id"])
     assert experiment_store.exists(experiment_id) is True
     assert record["persist"]["experiment_record_id"] == experiment_id
+    assert record["observation_binding"]["persist"]["experiment_record_id"] == experiment_id
     assert (
         record["persist"]["reality_gap_record_id"]
         == record["reality_gap_record"]["reality_gap_record_id"]
@@ -399,6 +400,16 @@ def test_optional_persist_uses_canonical_append_only_stores(tmp_path: Path) -> N
     assert record["persist"]["failure_record_ids"]
     for failure_record_id in record["persist"]["failure_record_ids"]:
         assert failure_store.exists(failure_record_id) is True
+
+
+def test_optional_phase2_persist_is_disabled_without_store(tmp_path: Path) -> None:
+    unused = CanonicalExperimentMemoryStoreV1(tmp_path / "unused")
+    record = run_canonical_automated_offline_research_loop_v1(_request())
+    experiment_id = str(record["selected_experiment_id"])
+    assert record["persist"]["experiment_record_id"] is None
+    assert record["observation_binding"]["persist"]["experiment_record_id"] is None
+    assert unused.store_root.exists() is False
+    assert unused.exists(experiment_id) is False
 
 
 def test_reuses_phase_4_tokens() -> None:
@@ -566,3 +577,96 @@ def test_phase2_divergent_duplicate_persist_remains_fail_closed(tmp_path: Path) 
         )
     stored = store.get(str(first["selected_experiment_id"]))
     assert stored["metrics"]["sharpe"] == 1.25
+
+
+def test_phase2_identical_duplicate_persist_remains_idempotent(tmp_path: Path) -> None:
+    store = CanonicalExperimentMemoryStoreV1(tmp_path / "experiments")
+    first = run_canonical_automated_offline_research_loop_v1(
+        _request(experiment_memory_store=store)
+    )
+    second = run_canonical_automated_offline_research_loop_v1(
+        _request(experiment_memory_store=store)
+    )
+    experiment_id = str(first["selected_experiment_id"])
+    assert second["selected_experiment_id"] == experiment_id
+    assert second["persist"]["experiment_record_id"] == experiment_id
+    assert second["observation_binding"]["status"] == STATUS_BOUND
+    assert len(store.list_metadata()) == 1
+    stored = store.get(experiment_id)
+    assert stored["metrics"]["sharpe"] == 1.25
+
+
+def test_incomplete_identity_does_not_persist(tmp_path: Path) -> None:
+    store = CanonicalExperimentMemoryStoreV1(tmp_path / "experiments")
+    identity = dict(_identity())
+    identity["completeness"] = "INCOMPLETE"
+    with pytest.raises(
+        AutomatedOfflineResearchLoopValidationError, match="REJECTED_INCOMPLETE_IDENTITY"
+    ):
+        _bind_direct(identity=identity, request=_request(experiment_memory_store=store))
+    assert store.list_metadata() == []
+
+
+def test_missing_identity_does_not_persist(tmp_path: Path) -> None:
+    store = CanonicalExperimentMemoryStoreV1(tmp_path / "experiments")
+    with pytest.raises(
+        AutomatedOfflineResearchLoopValidationError, match="REJECTED_MISSING_DIMENSION"
+    ):
+        _bind_direct(identity=None, request=_request(experiment_memory_store=store))
+    assert store.list_metadata() == []
+
+
+def test_malformed_observation_does_not_persist(tmp_path: Path) -> None:
+    store = CanonicalExperimentMemoryStoreV1(tmp_path / "experiments")
+    with pytest.raises(
+        AutomatedOfflineResearchLoopValidationError,
+        match="offline experiment observation binding failed",
+    ):
+        _bind_direct(
+            request=_request(
+                experiment_memory_store=store,
+                experiment_observations=_observations(artifacts="bad"),
+            )
+        )
+    assert store.list_metadata() == []
+
+
+def test_phase10_delegates_optional_persist_to_consumed_binding() -> None:
+    bind_source = inspect.getsource(_bind_experiment_memory)
+    run_source = inspect.getsource(run_canonical_automated_offline_research_loop_v1)
+    assert "experiment_memory_store=request.experiment_memory_store" in bind_source
+    assert "experiment_memory_store=None" not in bind_source
+    assert "_binding_persist_id(observation_binding)" in run_source
+    assert "request.experiment_memory_store, experiment_record" not in run_source
+    source = MODULE_PATH.read_text(encoding="utf-8")
+    tree = ast.parse(source)
+    bind_fn = next(
+        node
+        for node in tree.body
+        if isinstance(node, ast.FunctionDef) and node.name == "_bind_experiment_memory"
+    )
+    run_fn = next(
+        node
+        for node in tree.body
+        if isinstance(node, ast.FunctionDef)
+        and node.name == "run_canonical_automated_offline_research_loop_v1"
+    )
+    bind_calls = [
+        node
+        for node in ast.walk(bind_fn)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "bind_canonical_identity_bound_offline_observation_v1"
+    ]
+    assert len(bind_calls) == 1
+    run_optional_appends = [
+        node
+        for node in ast.walk(run_fn)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "_optional_append"
+    ]
+    assert len(run_optional_appends) == 1
+    first_arg = run_optional_appends[0].args[0]
+    assert isinstance(first_arg, ast.Attribute)
+    assert first_arg.attr == "reality_gap_store"
