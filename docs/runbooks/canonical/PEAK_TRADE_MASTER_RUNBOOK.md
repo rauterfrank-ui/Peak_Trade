@@ -1413,6 +1413,198 @@ funding authorization, not an order-submit authorization, not an apply
 re-enable, and not an execution-gate change. Existing safety gates are
 unchanged.
 
+## 4.11 Live-overrides apply fail-closed binding (FND-005)
+
+``` text
+FND_005_ID=FND-005
+FND_005_SHORT_TITLE=LIVE_OVERRIDES_HAVE_NO_INDEPENDENT_RUNTIME_OR_EXECUTION_AUTHORITY
+FND_005_STATUS=RESOLVED_DOCS_ONLY
+FND_005_RESOLUTION=DOCS_ONLY_FAIL_CLOSED_NON_AUTHORITY_BINDING
+OWNER_GO_CONSUMED_FOR_THIS_SECTION=OWNER_GO_FND_005
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+PRODUCTIVE_CODE_CHANGED=false
+APPLY_REENABLED=false
+AUTHORITY_EXPANDED=false
+LIVE_OVERRIDE_APPLY_ACTIVE=false
+LOAD_CONFIG_WITH_LIVE_OVERRIDES_MERGES=false
+APPLY_PROPOSALS_TO_LIVE_OVERRIDES_WRITES=false
+FORCE_APPLY_OVERRIDES_HAS_EFFECT=false
+LIVE_OVERRIDE_HAS_RUNTIME_AUTHORITY=false
+LIVE_OVERRIDE_HAS_LIVE_AUTHORITY=false
+LIVE_OVERRIDE_HAS_ORDER_AUTHORITY=false
+LIVE_OVERRIDE_HAS_AUTHORIZATION_AUTHORITY=false
+LIVE_OVERRIDE_CAN_UNLOCK_LIVE=false
+LIVE_OVERRIDE_CAN_SET_ENABLED=false
+LIVE_OVERRIDE_CAN_SET_ARMED=false
+LIVE_OVERRIDE_CAN_SUBMIT_ORDER=false
+LIVE_OVERRIDE_CAN_INCREASE_RISK_OR_EXPOSURE=false
+LIVE_OVERRIDE_CAN_BYPASS_FAIL_CLOSED_GATES=false
+SELF_LEARNING_EQUALS_SELF_AUTHORIZING=false
+COVER_USDC=UNINSTANTIATED
+NUMERIC_FUNDING_AMOUNT=NONE
+LIVE_AUTHORIZED=false
+FUNDING_AUTHORIZED=false
+ORDER_SUBMIT_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+GENERAL_LIVE_UNLOCKED=false
+FND_004_INCLUDED=false
+FND_010_INCLUDED=false
+FND_011_INCLUDED=false
+FND_012_INCLUDED=false
+FND_016_INCLUDED=false
+```
+
+This subsection binds existing live-override fail-closed behavior on
+current `origin&#47;main`. It does **not** change code, loaders, trading
+logic, risk limits, or safety gates. It does **not** authorize Live,
+Testnet, funding, orders, Canary execute, apply, re-enable, or unlock.
+Historical comments and `docs&#47;LIVE_OVERRIDES_CONFIG_INTEGRATION.md`
+described Promotion-Loop apply into runtime config. That description is
+**SUPERSEDED**. Canonical owner for this finding is this subsection.
+
+### 4.11.1 Proven surfaces and behavior
+
+Existing components:
+
+``` text
+CODE_OWNER=src/core/peak_config.py
+WRITER_OWNER=src/governance/promotion_loop/engine.py
+PATH_COMPAT_FILE=config/live_overrides/auto.toml
+HISTORICAL_NON_SSOT_DOC=docs/LIVE_OVERRIDES_CONFIG_INTEGRATION.md
+```
+
+Proven behavior:
+
+- `load_config_with_live_overrides()` returns `load_config(path)` only.
+  `auto_overrides_path` and `force_apply_overrides` are discarded and
+  have no effect in any environment.
+- `apply_proposals_to_live_overrides()` always returns `None` and never
+  creates, reads, or mutates override files, including accepted
+  `bounded_auto` leverage proposals.
+- `LiveSessionRunner.from_config` loads `load_config` or
+  `load_config_with_bounded_live`; it does **not** import or call
+  `load_config_with_live_overrides`.
+- `load_config_with_bounded_live()` merges `bounded_live.toml` only.
+  That path is not `config&#47;live_overrides&#47;auto.toml`.
+- Leftover `_load_live_auto_overrides` may still parse a TOML dict.
+  The overlay loader and live-session path do not merge that dict into
+  runtime config. `scripts&#47;demo_live_overrides.py` diffs keys only.
+- Leftover `_is_live_like_environment` is unused by the overlay loader.
+- The empty `[auto_applied]` table is path-compatibility only.
+
+Contract evidence on current `origin&#47;main`:
+`tests&#47;test_legacy_learning_overlay_loader_non_authority_v1.py`,
+`tests&#47;test_live_overrides_integration.py`
+(`*_does_not_apply` / `force_apply_does_not_apply`),
+`tests&#47;governance&#47;promotion_loop&#47;test_apply_proposals_to_live_overrides_fail_closed_v1.py`.
+
+Authority gates that remain after config load are unchanged: §2.2
+negative controls; `EnvironmentConfig` defaults
+`enable_live_trading=false` and `live_mode_armed=false`;
+`SafetyGuard` Gates 1--2; `LiveSessionRunner` live-mode hard block;
+bounded-pilot process-env handoff; §4.9 submit-path inventory
+`CAN_SUBMIT_ORDER_TODAY=false`. Overlay files cannot satisfy or skip
+those gates because they never mutate the loaded PeakConfig.
+
+### 4.11.2 Mandatory non-equivalence
+
+The following concepts are distinct and must not be equated:
+
+``` text
+COMMENT_CLAIM_APPLY != RUNTIME_APPLY
+LIVE_OVERRIDES_AUTO_TOML != LIVE_CONFIG_AUTHORITY
+LIVE_OVERRIDES_AUTO_TOML != LIVE_UNLOCK
+LIVE_OVERRIDES_AUTO_TOML != ENABLED
+LIVE_OVERRIDES_AUTO_TOML != ARMED
+LIVE_OVERRIDES_AUTO_TOML != ORDER_SUBMIT
+LIVE_OVERRIDES_AUTO_TOML != RISK_LIMIT_INCREASE
+LOAD_CONFIG_WITH_LIVE_OVERRIDES == LOAD_CONFIG
+APPLY_PROPOSALS_TO_LIVE_OVERRIDES == NONE
+FORCE_APPLY_OVERRIDES != APPLY_AUTHORIZATION
+PROMOTION_LOOP_PROPOSAL_ARTIFACTS != LIVE_OVERLAY_WRITE
+LEFTOVER_OVERRIDE_PARSER != RUNTIME_MERGE
+BOUNDED_LIVE_TOML != LIVE_OVERRIDE_AUTO_TOML
+SELF_LEARNING != SELF_AUTHORIZING
+CODE_EXISTS != RUNTIME_AUTHORITY
+```
+
+An overlay key such as `flags.enabled`, `environment.enable_live_trading`,
+`environment.live_mode_armed`, or `portfolio.leverage` is **not**
+runtime, Live, order, or risk authority. Current contracts prove those
+keys do not mutate base config, including under `force_apply_overrides=True`.
+
+### 4.11.3 Standing fail-closed binding
+
+Until a later Owner-GO explicitly names a different surface and
+consumes a one-shot execute or apply scope for that surface only, all
+of the following remain false:
+
+``` text
+LIVE_OVERRIDE_HAS_RUNTIME_AUTHORITY=false
+LIVE_OVERRIDE_APPLY_ACTIVE=false
+LIVE_OVERRIDE_CAN_UNLOCK_LIVE=false
+LIVE_OVERRIDE_CAN_SET_ENABLED=false
+LIVE_OVERRIDE_CAN_SET_ARMED=false
+LIVE_OVERRIDE_CAN_SUBMIT_ORDER=false
+LIVE_OVERRIDE_CAN_INCREASE_RISK_OR_EXPOSURE=false
+LIVE_OVERRIDE_CAN_BYPASS_FAIL_CLOSED_GATES=false
+APPLY_REENABLED=false
+SELF_LEARNING_SELF_AUTHORIZING=false
+LIVE_AUTHORIZED=false
+FUNDING_AUTHORIZED=false
+ORDER_SUBMIT_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+```
+
+This subsection is not a Live unlock, not a Testnet unlock, not a
+funding authorization, not an order-submit authorization, not an apply
+re-enable, not an `enabled` &#47; `armed` set, not a risk-limit increase,
+and not an execution-gate change. Existing safety gates are unchanged.
+
+Named surfaces:
+
+``` text
+SURFACE_ID=LO-01-AUTO-TOML-HEADER
+FILE=config/live_overrides/auto.toml
+ROLE=SUPERSEDED_FAIL_CLOSED_HEADER
+APPLIED_AT_RUNTIME=false
+
+SURFACE_ID=LO-02-LEGACY-OVERLAY-LOADER
+FILE=src/core/peak_config.py
+SYMBOL=load_config_with_live_overrides
+ROLE=PERMANENTLY_FAIL_CLOSED_BASE_CONFIG_ONLY
+MERGES_OVERLAY=false
+
+SURFACE_ID=LO-03-LEGACY-OVERLAY-WRITER
+FILE=src/governance/promotion_loop/engine.py
+SYMBOL=apply_proposals_to_live_overrides
+ROLE=PERMANENTLY_FAIL_CLOSED_NON_WRITER
+WRITES_OVERRIDE_FILE=false
+
+SURFACE_ID=LO-04-HISTORICAL-INTEGRATION-DOC
+FILE=docs/LIVE_OVERRIDES_CONFIG_INTEGRATION.md
+ROLE=HISTORICAL_SUPERSEDED_NON_SSOT
+AUTHORITY=NONE
+
+SURFACE_ID=LO-05-LEFTOVER-OVERRIDE-PARSER
+FILE=src/core/peak_config.py
+SYMBOL=_load_live_auto_overrides
+ROLE=LEFTOVER_NON_MERGING_READER
+HAS_RUNTIME_AUTHORITY=false
+
+SURFACE_ID=LO-06-LIVE-SESSION-CONFIG-LOAD
+FILE=src/execution/live_session.py
+SYMBOL=LiveSessionRunner.from_config
+ROLE=DOES_NOT_CONSUME_LIVE_OVERRIDES
+LOADS_OVERLAY_LOADER=false
+```
+
+`docs&#47;LIVE_OVERRIDES_CONFIG_INTEGRATION.md` remains in-tree as a
+historical non-SSOT document. It must not be read as current apply
+semantics. Canonical owner for this finding is this subsection.
+
 
 ------------------------------------------------------------------------
 
