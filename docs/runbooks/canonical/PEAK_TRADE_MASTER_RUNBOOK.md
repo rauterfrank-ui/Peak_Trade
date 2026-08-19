@@ -1641,6 +1641,117 @@ SILENT_CONFIRMATION_REINITIALIZATION=false
 SILENT_DYNAMIC_SCOPE_REINITIALIZATION=false
 ```
 
+## 9.4 PEAK_TRADE_CONFIG_PATH source-selector precedence (FND-014)
+
+``` text
+FND_014_ID=FND-014
+FND_014_SHORT_TITLE=PEAK_TRADE_CONFIG_PATH_CONFIG_SOURCE_SELECTOR_PRECEDENCE
+FND_014_STATUS=RESOLVED_DOCS_ONLY_LOCAL
+FND_014_RESOLUTION=DOCS_ONLY_EXISTING_LOADER_PRECEDENCE_BINDING
+OWNER_GO_CONSUMED_FOR_THIS_SUBSECTION=OWNER_GO_FOR_FND_014_DOCS_ONLY_PEAK_TRADE_CONFIG_PATH_PRECEDENCE_FAIL_CLOSED_BINDING_ONLY
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+PRODUCTIVE_CODE_CHANGED=false
+CONFIG_LOADER_CHANGED=false
+CONFIG_AUTHORITY_CHANGED=false
+APPLY_REENABLED=false
+AUTHORITY_EXPANDED=false
+PEAK_TRADE_CONFIG_PATH_CLASSIFICATION=CONFIG_SOURCE_SELECTOR_ONLY
+PEAK_TRADE_CONFIG_PATH_HAS_RUNTIME_AUTHORITY=false
+PEAK_TRADE_CONFIG_PATH_HAS_LIVE_AUTHORITY=false
+PEAK_TRADE_CONFIG_PATH_HAS_FUNDING_AUTHORITY=false
+PEAK_TRADE_CONFIG_PATH_HAS_ORDER_AUTHORITY=false
+PEAK_TRADE_CONFIG_PATH_HAS_PROMOTION_AUTHORITY=false
+PEAK_TRADE_CONFIG_PATH_HAS_APPLY_AUTHORITY=false
+PEAK_TRADE_CONFIG_PATH_CAN_INCREASE_RISK_BY_ITSELF=false
+COVER_USDC=UNINSTANTIATED
+LIVE_AUTHORIZED=false
+FUNDING_AUTHORIZED=false
+ORDER_SUBMIT_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+```
+
+This subsection documents existing loader behavior only. It does not
+create a new configuration authority, does not change any loader, and
+does not authorize Live, Testnet, funding, orders, Canary, apply,
+promotion, or risk increase. `docs&#47;PHASE_36_TEST_SUITE_AND_CONFIG_HYGIENE.md`
+describes the same precedence historically; that document is not SSOT.
+Canonical owner for this finding is this subsection.
+
+### 9.4.1 Proven source-selector precedence
+
+Existing `resolve_config_path()` behavior in
+`src&#47;core&#47;config_pydantic.py` and `src&#47;core&#47;peak_config.py`,
+and explicit-path construction plus env selection in
+`src&#47;core&#47;config_registry.py`, resolve the configuration file as:
+
+``` text
+CONFIG_PATH_PRECEDENCE=
+1. explicit caller-supplied path
+2. PEAK_TRADE_CONFIG_PATH
+3. config/config.toml
+```
+
+A. Explicit path. A caller-supplied path is selected first and is not
+overridden by `PEAK_TRADE_CONFIG_PATH`.
+
+B. Environment override. `PEAK_TRADE_CONFIG_PATH` may replace only the
+default file used as the configuration source. It is a configuration
+source selector. It is not runtime authorization, live authorization,
+risk authorization, promotion authority, apply authority, funding
+authority, order authority, or Canary-execute authority.
+
+C. Default. When no explicit path is supplied and no effective
+`PEAK_TRADE_CONFIG_PATH` value is set, the default remains
+`config&#47;config.toml` relative to the project root.
+
+``` text
+PEAK_TRADE_CONFIG_PATH selects which configuration file is loaded.
+It does not grant authority to execute actions forbidden by the loaded
+configuration or by higher-order runtime / safety gates.
+```
+
+An environment-selected file may supply only values that subsequent
+loaders and gates already accept. The selector itself has no authority
+above those gates.
+
+### 9.4.2 Unset, empty, invalid, and combined selectors
+
+Documented from current code, not as new validation:
+
+- Unset `PEAK_TRADE_CONFIG_PATH`: `resolve_config_path()` returns
+  `config&#47;config.toml`.
+- Empty `PEAK_TRADE_CONFIG_PATH` (`""`): treated as unset because the
+  loader uses a truthy check (`if env_path:`); the default path is used.
+- Non-existent selected path: load fails closed. `load_settings_from_file()`
+  and `load_config()` raise `FileNotFoundError`. `ConfigRegistry`
+  raises `ConfigError` when the selected file does not exist. There is
+  no silent fallback to `config&#47;config.toml` for a missing selected
+  file.
+- Explicit path plus set env: the explicit path wins; the env value is
+  ignored for path resolution.
+
+This binding covers source-file selection only. It does not re-specify
+later content-level registry handling after a selected file has been
+opened.
+
+### 9.4.3 No behavior change
+
+``` text
+THIS_BINDING_DOCUMENTS_EXISTING_LOADER_BEHAVIOR_ONLY=true
+NO_LOADER_MUTATION=true
+NO_RUNTIME_MUTATION=true
+NO_AUTHORIZATION_MUTATION=true
+NO_RISK_MUTATION=true
+NO_EXECUTION_MUTATION=true
+NO_CONFIG_MUTATION_SEMANTICS_CHANGED=true
+```
+
+Existing regression coverage for the selector precedence remains
+`tests&#47;test_config_env.py` (`explicit` beats env; env beats default;
+default when env is unset). This subsection does not add or require a
+new contract test.
+
 ------------------------------------------------------------------------
 
 # 10. Known Gap Register
