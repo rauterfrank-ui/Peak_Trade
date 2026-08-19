@@ -20093,6 +20093,228 @@ Capability 11.9 remains fixture-only.
 `NUMERIC_FUNDING_AMOUNT_PRODUCED=false`. No funding. No execute. No
 GET. No merge of this persist without a separate `OWNER_MERGE_GO`.
 
+The historical next pointer below is **consumed** as §11.13.5.Z2M.
+
+### 11.13.5.Z2M One-shot authenticated trade-fee GET execution-path ratification (BOUND; PATH-RATIFICATION-ONLY; NOT GET; NOT COVER_USDC; NOT FUNDED; NOT EXECUTE)
+
+Owner-GO
+`OWNER_GO_TO_RATIFY_ONE_SHOT_SECTION_11_13_5_AUTHENTICATED_TRADE_FEE_GET_EXECUTION_PATH`
+(one-shot; now **CONSUMED**) authorized **path ratification only** of
+the later-authorizable authenticated read-only FEE_RESERVE_RATES GET
+using the already-sealed §11.13.5.V/Z2L request grammar. This persist
+does **not** execute that GET, does **not** freeze taker/maker rates,
+does **not** instantiate `FEE_RESERVE` or `COVER_USDC`, and does **not**
+widen the general canary HTTP allowlists. Bound scope:
+
+``` text
+AUTHORIZED_SCOPE=FEE_RESERVE_RATES_REBIND_GET_EXECUTION_PATH_RATIFICATION_ONLY
+GRAMMAR_ONLY=false
+PATH_RATIFICATION_ONLY=true
+THIS_GO_AUTHORIZES_HTTP_GET=false
+EVIDENCE_CALL_EXECUTED=false
+EVIDENCE_CALL_COUNT=0
+PRODUCTION_NETWORK_CALL_EXECUTED=false
+GET_REQUEST_COUNT=0
+POST_COUNT=0
+NO_PRIVATE_API_QUERY_THIS_STEP=true
+NO_CREDENTIAL_ACCESS=true
+NO_SUPPORT_CONTACT=true
+Z2L_FEE_RESERVE_RATES_REBIND_GRAMMAR_REMAINS_BINDING=true
+Z2K_CURRENT_PUBLIC_TIER_MMR_OBSERVATION_REMAINS_BINDING=true
+NO_OKX_FEE_FORMULA_INVENTION=true
+NO_HISTORICAL_W_PACK_AS_EXECUTE_FRESH=true
+NO_USD_EQUALS_USDC=true
+NO_COVER_USDC_INSTANTIATION=true
+NO_NUMERIC_FUNDING_AMOUNT=true
+NO_AUTHORITY_WIDENING=true
+NO_TRADING_LOGIC_MUTATION=true
+NO_RUNTIME_LOGIC_MUTATION=true
+GENERAL_CANARY_GET_ALLOWLIST_WIDENED=false
+FUNDING_EXECUTION_AUTHORIZED=false
+EXTERNAL_MONEY_MOVEMENT_AUTHORIZED=false
+CONVERSION_EXECUTION_AUTHORIZED=false
+TRADING_POST_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+GENERAL_LIVE_UNLOCKED=false
+FEE_RESERVE_RATES_ADJUDICATION=UNPROVEN
+COVER_USDC_STATUS=UNINSTANTIATED
+```
+
+This does **not** authorize deposit, transfer, withdrawal, convert,
+buy/sell, Trading-POST, Canary execute, orders, positions,
+set-leverage mutation, API-key / account mutation, a productive OKX
+GET, retry, an alternate trade-fee parameter combination, inventing
+fee values, treating historical W-pack rates as execute-fresh,
+producing a numeric `FEE_RESERVE`, producing `COVER_USDC`, producing a
+numeric funding amount, I44 / G16 upgrade, general Live unlock,
+Multi-Future, scaling, runtime trading-logic changes, widening
+`GET_ENDPOINTS_PRIVATE`, or merge without a separate `OWNER_MERGE_GO`.
+
+Why this persist exists. §11.13.5.Z2L sealed the FEE_RESERVE_RATES
+request grammar but left the authenticated execution path unproven:
+the general §11.13.5 `LiveCanaryHttpClientV1` allowlist still excludes
+`&#47;api&#47;v5&#47;account&#47;trade-fee`, no one-shot runner existed, and Z2L did
+not seal SecretRef for that later GET. This persist reuses existing
+§11.13.5 signer, SecretRef resolver, host binding, and urllib
+transport primitives to ratify a **dedicated** exact-grammar one-shot
+path. It does **not** add `account&#47;trade-fee` to
+`GET_ENDPOINTS_PRIVATE` or `POST_ENDPOINTS_GATED`.
+
+Z2B through Z2L findings remain **binding**. This step does **not**
+erase them. B08 remains internal algebra, **not** Exchange Truth.
+§11.13.5.V query grammar and taker/maker field mapping remain the only
+admissible request/response mapping.
+
+``` text
+CURRENT_PHASE=SECTION_11_13_5_Z2M_FEE_RESERVE_RATES_REBIND_GET_EXECUTION_PATH_RATIFICATION
+OWNER_GO=OWNER_GO_TO_RATIFY_ONE_SHOT_SECTION_11_13_5_AUTHENTICATED_TRADE_FEE_GET_EXECUTION_PATH
+OWNER_GO_STATUS=CONSUMED
+OWNER_GO_SCOPE=FEE_RESERVE_RATES_REBIND_GET_EXECUTION_PATH_RATIFICATION_ONLY
+BASELINE_ORIGIN_MAIN_SHA=eecf5f0d47a9b7654a9c1b0469539dbb7d6afeed
+TARGET_INSTRUMENT=BTC-USD_UM_XPERP
+CANARY_INSTRUMENT=BTC-USD_UM_XPERP-310404
+VENUE=OKX_PRODUCTION_EEA
+REQUEST_HOST=eea.okx.com
+REQUEST_METHOD=GET
+REQUEST_PATH=/api/v5/account/trade-fee
+REQUEST_QUERY=instType=FUTURES&instFamily=BTC-USD_UM_XPERP
+SOURCE_CLASS=AUTHENTICATED_READ_ONLY_OKX_ACCOUNT_TRADE_FEE_GET
+SECRETREF_URI=secretref://vault/peak-trade/live-canary-minimum-exposure/okx
+REQUIRED_CREDENTIAL_CLASS=LIVE_CANARY_MINIMUM_EXPOSURE_TRADE_API_KEY
+SECRETREF_RESOLVER=resolve_and_load_live_canary_secretref_ephemeral_v1
+SIGNER=build_okx_live_canary_auth_headers_v1
+TRANSPORT=UrllibLiveCanaryTransportV1
+RUNNER=scripts/ops/run_section_11_13_5_z2m_fee_reserve_rates_rebind_get_path_v1.py
+CODE_OWNER=src/ops/section_11_13_5_live_canary_minimum_exposure_v1/cover_usdc_fee_reserve_rates_rebind_get_path_v1.py
+ACCOUNT_BINDING_SCOPE=856964404452495999
+ONE_SHOT_REQUEST_LIMIT=1
+RETRY_COUNT_ALLOWED=0
+GET_EXECUTED=false
+GET_REQUEST_COUNT=0
+POST_COUNT=0
+SECRET_VALUE_ACCESS=NONE
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+TRADING_LOGIC_CHANGED=false
+RUNTIME_CHANGED=false
+CONFIG_CHANGED=false
+FUNDING_EXECUTED=false
+ORDER_EFFECT=NONE
+EXECUTE_OWNER_GO=OWNER_GO_FOR_EXACTLY_ONE_AUTHENTICATED_READ_ONLY_TRADE_FEE_REBIND_GET
+```
+
+Sealed later-GET execution path. A later Owner-GO may authorize exactly
+one GET of this request and no other. This persist itself executes
+**zero** network calls:
+
+``` text
+TERM=FEE_RESERVE_RATES
+REQUEST_GRAMMAR_SOURCE=SECTION_11_13_5_V
+FRESHNESS_RULE_SOURCE=SECTION_11_13_5_Z2L
+FIELD_MAPPING_SOURCE=SECTION_11_13_5_V
+TAKER_FIELD=takerUSDC
+MAKER_FIELD=makerUSDC
+ALTERNATE_TRADE_FEE_PARAMETER_COMBINATION_FORBIDDEN=true
+INSTID_PARAMETER_FORBIDDEN=true
+RULETYPE_REQUEST_PARAMETER_FORBIDDEN=true
+ADDITIONAL_QUERY_PARAMETER_FORBIDDEN=true
+HOST_SWITCH_FORBIDDEN=true
+RETRY_FORBIDDEN=true
+REDIRECT_TO_OTHER_HOST_FORBIDDEN=true
+GENERAL_CLIENT_ALLOWLIST_MUST_REMAIN_WITHOUT_TRADE_FEE=true
+SHADOW_RECON_SECRETREF_FORBIDDEN_FOR_THIS_PATH=true
+DRY_RUN_SECRETREF_FORBIDDEN_FOR_THIS_PATH=true
+PRIVATE_RO_SECRETREF_FORBIDDEN_FOR_THIS_PATH=true
+CLI_DEFAULT_IS_RATIFY_ONLY_NO_HTTP=true
+LATER_GET_STILL_REQUIRES_SEPARATE_NEW_OWNER_GO=true
+THIS_GO_AUTHORIZES_HTTP_GET=false
+NUMERIC_FEE_RESERVE_REMAINS_UNINSTANTIATED=true
+FEE_RESERVE_RATES_ADJUDICATION=UNPROVEN
+```
+
+Forbidden:
+
+``` text
+NO_GET_THIS_STEP
+NO_RETRY
+NO_ALTERNATE_TRADE_FEE_GRAMMAR
+NO_WILDCARD_ALLOWLIST
+NO_ACCOUNT_STAR_ALLOWLIST
+NO_POST
+NO_PUT
+NO_PATCH
+NO_DELETE
+NO_WEBSOCKET
+NO_FUNDING
+NO_TRANSFER
+NO_CONVERSION
+NO_ORDER
+NO_CANARY
+NO_CREDENTIAL_ROTATION
+NO_PERMISSION_EXPANSION
+NO_SECRET_LOGGING
+NO_HISTORICAL_W_PACK_AS_EXECUTE_FRESH
+NO_COVER_USDC_INSTANTIATION
+NO_TRADING_LOGIC_MUTATION
+NO_RUNTIME_LOGIC_MUTATION
+NO_EXECUTE
+```
+
+Fail-closed authority sequence (do not collapse; Z2 through Z2L remain
+binding; this persist ratifies the execution path only and leaves the
+later authenticated read-only rebind GET as the next critical path
+before funding):
+
+``` text
+18E_FEE_RESERVE_RATES_REBIND_GRAMMAR_SEALED_NOT_GET_NOT_COVER_USDC
+18F_SEPARATE_OWNER_GO_REQUIRED_FOR_BOUNDED_AUTHENTICATED_READ_ONLY_FEE_RESERVE_RATES_REBIND_GET_USING_SEALED_GRAMMAR_BEFORE_FUNDING
+18G_FEE_RESERVE_RATES_REBIND_GET_EXECUTION_PATH_RATIFIED_NOT_GET_NOT_COVER_USDC
+18H_SEPARATE_OWNER_GO_REQUIRED_FOR_EXACTLY_ONE_AUTHENTICATED_READ_ONLY_TRADE_FEE_REBIND_GET
+19_SEPARATE_FUNDING_AUTHORIZATION
+20_SEPARATE_CANARY_EXECUTE_AUTHORIZATION
+```
+
+Step
+`OWNER_GO_TO_RATIFY_ONE_SHOT_SECTION_11_13_5_AUTHENTICATED_TRADE_FEE_GET_EXECUTION_PATH`
+is **consumed** as path ratification. Historical W-pack taker/maker
+values remain historical observation only. `FEE_RESERVE` remains
+numerically uninstantiated. `COVER_USDC` remains uninstantiated.
+The later authenticated read-only rebind GET, remaining COVER_USDC-term
+evidence, funding, and execute remain separate and are **not** granted.
+
+``` text
+CODE_OWNER=src/ops/section_11_13_5_live_canary_minimum_exposure_v1/cover_usdc_fee_reserve_rates_rebind_get_path_v1.py
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_FOR_EXACTLY_ONE_AUTHENTICATED_READ_ONLY_TRADE_FEE_REBIND_GET
+EARLIEST_UNRESOLVED_DEPENDENCY=FEE_RESERVE_RATES_REBIND_GET_USING_SEALED_GRAMMAR_AND_SEALED_EXECUTION_PATH_NOT_EXECUTED
+NAMED_REMAINING_COVER_USDC_TERM=FINITE_PHYSICAL_USDC_COVER_AMOUNT_ABSENT
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
+FEE_RESERVE_RATES_GRAMMAR_STATUS=SEALED_NOT_GET_NOT_FROZEN
+FEE_RESERVE_RATES_EXECUTION_PATH_STATUS=RATIFIED_NOT_GET_NOT_FROZEN
+EVIDENCE_CALL_EXECUTED=false
+PATH_RATIFICATION_ONLY=true
+```
+
+Hard stop. This path-ratification GO is consumed and must not be reused
+for money movement, GET, execute, inventing an OKX fee formula,
+promoting API `delivery=0.0003`, assuming USD equals USDC, treating
+historical W-pack rates as execute-fresh, computing a numeric
+`FEE_RESERVE`, instantiating `COVER_USDC`, producing a numeric funding
+amount, contacting support, scaling, Multi-Future, or as a substitute
+funding authorization. The later authenticated read-only fee-rate
+rebind GET, remaining COVER_USDC-term evidence, funding, and execute
+remain separate.
+`OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains `CONSUMED`. Cap /
+Capability 11.9 remains fixture-only.
+`FEE_RESERVE_RATES_GRAMMAR_STATUS=SEALED_NOT_GET_NOT_FROZEN`.
+`FEE_RESERVE_RATES_EXECUTION_PATH_STATUS=RATIFIED_NOT_GET_NOT_FROZEN`.
+`FEE_RESERVE_RATES_ADJUDICATION=UNPROVEN`.
+`COVER_USDC_STATUS=UNINSTANTIATED`.
+`NUMERIC_FUNDING_AMOUNT_PRODUCED=false`. No funding. No execute. No
+GET. No merge of this persist without a separate `OWNER_MERGE_GO`.
+
 ## 11.14 Live order and economic evidence ladder
 
 Live proof claims must use a stricter ladder:
