@@ -1775,6 +1775,131 @@ re-enable, not a runtime-behavior change, and not an execution-gate
 change. Existing safety gates are unchanged. FND-012 and FND-016 are
 not bound here.
 
+## 4.13 Phase-17 LIVE-unimplemented header superseded (FND-015)
+
+``` text
+FND_015_ID=FND-015
+FND_015_SHORT_TITLE=PHASE_17_LIVE_UNIMPLEMENTED_HEADER_IS_SUPERSEDED_NOT_CURRENT_TRUTH
+FND_015_STATUS=RESOLVED_DOCS_ONLY
+FND_015_RESOLUTION=DOCS_ONLY_SUPERSEDED_HEADER_NON_AUTHORITY_BINDING
+OWNER_GO_CONSUMED_FOR_THIS_SECTION=OWNER_GO_FOR_FND_015_ISOLATED_DOCS_ONLY_BIND
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+PRODUCTIVE_CODE_CHANGED=false
+ENVIRONMENT_PY_CHANGED=false
+AUTHORITY_EXPANDED=false
+LIVE_PATH_EXISTS=true
+LIVE_PATH_EXISTENCE_IS_AUTHORITY=false
+CANARY_PATH_EXISTS=true
+CANARY_PATH_EXISTENCE_IS_AUTHORITY=false
+PHASE_17_LIVE_UNIMPLEMENTED_HEADER=SUPERSEDED
+LIVE_AUTHORIZED=false
+enable_live_trading=false
+live_mode_armed=false
+live_dry_run_mode=true
+COVER_USDC=UNINSTANTIATED
+FUNDING_AUTHORIZED=false
+ORDER_SUBMIT_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+FND_012_INCLUDED=false
+FND_016_INCLUDED=false
+```
+
+This subsection binds existing Live-path implementation truth versus a
+stale Phase-17 module header on current `origin&#47;main`. It does
+**not** change `src&#47;core&#47;environment.py` or any other production
+code, loaders, trading logic, risk limits, or safety gates. It does
+**not** authorize Live, Testnet, funding, orders, Canary execute,
+apply, re-enable, or unlock. FND-012 and FND-016 (confirm-token
+family) are explicitly **not** part of this subsection. Canonical
+owner for this finding is this subsection.
+
+### 4.13.1 Proven surfaces and superseded claim
+
+Stale header surface (not rewritten in this step):
+
+``` text
+CODE_OWNER=src/core/environment.py
+STALE_MODULE_CLAIM=LIVE_NICHT_IMPLEMENTIERT_IN_PHASE_17
+STALE_ENUM_CLAIM=LIVE_ECHTE_ORDERS_NICHT_IMPLEMENTIERT
+STALE_PREPARATION_CLAIM=TESTNET_LIVE_NUR_ALS_ARCHITEKTUR_VORBEREITET
+HEADER_REWRITE_IN_THIS_STEP=false
+```
+
+On current `origin&#47;main`, that Phase-17 wording remains in the
+module and `TradingEnvironment.LIVE` docstrings. It is **SUPERSEDED**
+as current-truth language. It must not be read as a claim that Live
+or Canary paths do not exist.
+
+Current implementation truth on the same file and related Live
+surfaces:
+
+``` text
+LIVE_ENUM_PRESENT=true
+ENVIRONMENT_CONFIG_LIVE_FIELDS_PRESENT=true
+enable_live_trading_DEFAULT=false
+live_mode_armed_DEFAULT=false
+live_dry_run_mode_DEFAULT=true
+SUBMIT_PATH_INVENTORY=SECTION_4_9
+LIVE_CANARY_MINIMUM_EXPOSURE_SURFACE=SECTION_11_13_5
+LIVE_AUTHORIZED=false
+```
+
+`EnvironmentConfig` defaults remain fail-closed. Live and Canary
+order-submit surfaces are inventoried in §4.9. Those surfaces exist
+technically. Existence is not Live authority, not order-submit
+authority, and not Canary-execute authority.
+
+Contract evidence for the fail-closed defaults (unchanged by this
+subsection):
+`tests&#47;test_environment_and_safety.py`,
+`tests&#47;ops&#47;test_environment_safety_verification.py`.
+
+### 4.13.2 Mandatory non-equivalence
+
+The following concepts are distinct and must not be equated:
+
+``` text
+PHASE_17_HEADER_CLAIM != CURRENT_IMPLEMENTATION_TRUTH
+STALE_LIVE_UNIMPLEMENTED != LIVE_PATH_ABSENT
+LIVE_PATH_EXISTS != LIVE_AUTHORIZED
+CANARY_PATH_EXISTS != CANARY_EXECUTE_AUTHORIZED
+CODE_EXISTS != RUNTIME_AUTHORITY
+enable_live_trading=false != LIVE_UNLOCK
+live_mode_armed=false != LIVE_UNLOCK
+live_dry_run_mode=true != ORDER_SUBMIT
+HEADER_SUPERSESSION != PRODUCTION_CODE_CHANGE
+HEADER_SUPERSESSION != CONFIRM_TOKEN_FAMILY_BINDING
+```
+
+A reader must not treat the Phase-17 header as proof that Live paths
+are absent. A reader must not treat this supersession as an unlock.
+
+### 4.13.3 Standing fail-closed binding
+
+Until a later Owner-GO explicitly names a different surface and
+consumes a one-shot execute or apply scope for that surface only, all
+of the following remain:
+
+``` text
+LIVE_AUTHORIZED=false
+enable_live_trading=false
+live_mode_armed=false
+live_dry_run_mode=true
+ORDER_SUBMIT_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+FUNDING_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+ENVIRONMENT_PY_CHANGED=false
+```
+
+This subsection is not a Live unlock, not a Testnet unlock, not a
+funding authorization, not an order-submit authorization, not a
+Canary-execute authorization, not a confirm-token-family binding
+(FND-016), not a fee-YAML SSOT binding (FND-012), not a rewrite of
+`src&#47;core&#47;environment.py`, not a runtime-behavior change, and
+not an execution-gate change. Existing safety gates are unchanged.
+
 
 ------------------------------------------------------------------------
 
