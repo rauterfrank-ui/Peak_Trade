@@ -104,15 +104,17 @@ def test_0003_is_not_okx_fee_truth_and_0001_is_non_operative() -> None:
     assert PEAK_TRADE_EXPIRY_RESERVE_RATE == Decimal("0.0003")
     assert PEAK_TRADE_EXPIRY_RESERVE_RATE_IS_OKX_FEE_TRUTH is False
     assert PROVEN_NORMAL_EXPIRY_RATE == Decimal("0.0001")
-    assert NORMAL_EXPIRY_RATE_ROLE == "PROVEN_APPLICABILITY_NON_OPERATIVE"
-    assert API_DELIVERY_0_0003_STATUS == "NON_OPERATIVE"
-    assert MONETARY_BASE_STATUS == "UNPROVEN"
+    assert NORMAL_EXPIRY_RATE_ROLE == "HISTORICAL_SUPERSEDED_NON_OPERATIVE"
+    assert API_DELIVERY_0_0003_STATUS == (
+        "VERIFIED_FIRST_PARTY_VALUE_OWNER_RATIFIED_OPERATIVE_ADJUDICATION"
+    )
+    assert MONETARY_BASE_STATUS == "BOUND_PEAK_TRADE_INTERNAL_NOTIONAL_ENVELOPE"
     assert EXACT_OKX_FEE_FORMULA_STATUS == "UNPROVEN"
     body = _body()
     assert body.conservative_reserve_rate == "0.0003"
     assert body.conservative_reserve_rate_is_okx_fee_truth is False
     assert body.proven_normal_expiry_rate == "0.0001"
-    assert body.normal_expiry_rate_role == "PROVEN_APPLICABILITY_NON_OPERATIVE"
+    assert body.normal_expiry_rate_role == "HISTORICAL_SUPERSEDED_NON_OPERATIVE"
     assert "okx" not in body.internal_notional_envelope_form.lower()
     with pytest.raises(
         ExactFormulaBodyError,
@@ -121,7 +123,7 @@ def test_0003_is_not_okx_fee_truth_and_0001_is_non_operative() -> None:
         _body(claim_0003_is_okx_fee_truth=True)
     with pytest.raises(
         ExactFormulaBodyError,
-        match="PROVEN_NORMAL_EXPIRY_RATE_IS_NON_OPERATIVE",
+        match="HISTORICAL_SUPPORT_RATE_0_0001_IS_NOT_OPERATIVE",
     ):
         _body(consume_0001_as_operative_fee_input=True)
 
