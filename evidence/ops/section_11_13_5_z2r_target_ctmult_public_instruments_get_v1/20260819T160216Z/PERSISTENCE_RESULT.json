@@ -1,0 +1,11 @@
+{
+  "COVER_USDC_STATUS": "UNINSTANTIATED",
+  "GET_EXECUTED": true,
+  "POST_COUNT": 0,
+  "RUN_ID": "20260819T160216Z",
+  "SECRET_VALUES_INCLUDED": false,
+  "TARGET_INSTID_310404_CTMULT": "1",
+  "TARGET_INSTID_310404_CTMULT_NUMERIC_PROVEN": true,
+  "evidence_root": "evidence/ops/section_11_13_5_z2r_target_ctmult_public_instruments_get_v1/20260819T160216Z",
+  "ok": true
+}
