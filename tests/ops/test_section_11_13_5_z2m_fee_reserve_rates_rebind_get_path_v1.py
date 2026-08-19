@@ -74,6 +74,7 @@ MASTER_RUNBOOK = REPO_ROOT / "docs" / "runbooks" / "canonical" / "PEAK_TRADE_MAS
 MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2M_HEADING = "### 11.13.5.Z2M One-shot authenticated trade-fee GET execution-path ratification"
+Z2N_HEADING = "### 11.13.5.Z2N Fresh authenticated fee-reserve rates rebind GET evidence persist"
 
 
 def _read(path: Path) -> str:
@@ -84,8 +85,10 @@ def _read(path: Path) -> str:
 def _z2m_section(text: str) -> str:
     start = text.find(Z2M_HEADING)
     assert start >= 0, "missing §11.13.5.Z2M heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2M"
+    end = text.find(Z2N_HEADING, start)
+    if end < 0:
+        end = text.find("## 11.14 Live order and economic evidence ladder", start)
+    assert end > start, "missing §11.13.5.Z2N or §11.14 boundary after Z2M"
     return text[start:end]
 
 
