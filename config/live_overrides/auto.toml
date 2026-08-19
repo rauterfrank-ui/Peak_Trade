@@ -1,17 +1,21 @@
-# Peak_Trade Live Overrides (Auto-applied)
-# =======================================
-# Diese Datei wird (optional) vom Promotion Loop im Modus "bounded_auto"
-# aktualisiert. Sie wird NUR in live-ähnlichen Umgebungen von
-# `load_config_with_live_overrides()` eingemischt (oder in Tests via --force).
+# Peak_Trade Live Overrides (SUPERSEDED / FAIL-CLOSED)
+# ====================================================
+# FND-005: this file is not applied to runtime config.
+# Canonical owner: Master Runbook §4.11.
+#
+# Historical comments claimed the Promotion Loop would update this file
+# in "bounded_auto" mode and that load_config_with_live_overrides() would
+# merge it in live-like environments. That claim is SUPERSEDED.
+#
+# Current runtime:
+# - load_config_with_live_overrides() returns base config only.
+# - apply_proposals_to_live_overrides() always returns None and never writes.
+# - force_apply_overrides has no effect.
+# - SELF_LEARNING != SELF_AUTHORIZING
 #
 # WICHTIG:
 # - Keine Secrets hier ablegen.
-# - Keys mit Punkten bitte in Anführungszeichen schreiben, damit TOML sie als
-#   String-Key und nicht als verschachtelte Tabellen interpretiert.
-#
-# Beispiel:
-# [auto_applied]
-# "portfolio.leverage" = 1.75
-# "strategy.trigger_delay" = 8.0
+# - Do not treat this file as live config authority.
+# - The empty [auto_applied] table is retained for path compatibility only.
 
 [auto_applied]
