@@ -10,6 +10,11 @@ permissions:
 jobs:
   operator-verify:
     runs-on: ubuntu-latest
+    # Observed successful Attempt 2 (run 32299845303) finished in ~5.5 minutes
+    # including slow apt (Azure mirror Ign + archive.ubuntu.com fallback).
+    # Bound the job well below the GitHub 360-minute default so a future
+    # apt/pip stall cannot remain in_progress indefinitely.
+    timeout-minutes: 15
     permissions:
       actions: read
       contents: read
@@ -23,13 +28,31 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install tooling
+      - name: Install Python tooling
         run: |
           python -V
-          pip -V
-          pip install -U pip
-          pip install ruff
-          sudo apt-get update -qq && sudo apt-get install -y ripgrep
+          python -m pip -V
+          python -m pip install -U pip
+          python -m pip install ruff==0.15.22
+
+      - name: Ensure ripgrep
+        # Attempt 2: apt-get update + install took ~5m10s after pip/ruff
+        # succeeded in ~5s. 10 minutes is ~2x that observed apt success path
+        # and still fail-closed versus the previous unbounded stall.
+        timeout-minutes: 10
+        run: |
+          set -euo pipefail
+          if command -v rg >/dev/null 2>&1; then
+            echo "rg already present; skipping apt"
+            command -v rg
+            rg --version
+            exit 0
+          fi
+          echo "rg not found; installing ripgrep via apt"
+          sudo apt-get update
+          sudo apt-get install -y ripgrep
+          command -v rg
+          rg --version
 
       - name: Ruff check (fast)
         run: |
