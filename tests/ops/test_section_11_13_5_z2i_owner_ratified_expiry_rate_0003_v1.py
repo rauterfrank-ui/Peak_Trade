@@ -108,8 +108,10 @@ def _read(path: Path) -> str:
 def _z2i_section(text: str) -> str:
     start = text.find(Z2I_HEADING)
     assert start >= 0, "missing §11.13.5.Z2I heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2I"
+    end = text.find("### 11.13.5.Z2J ", start)
+    if end < 0:
+        end = text.find("## 11.14 Live order and economic evidence ladder", start)
+    assert end > start, "missing §11.13.5.Z2J or §11.14 boundary after Z2I"
     return text[start:end]
 
 
