@@ -1,0 +1,64 @@
+{
+  "BODY_BYTE_LEN": 376,
+  "BODY_SHA256": "c700c5b9cef16e5a88b6d92ea81561c66f6de32d60b446b1c0e7ae99018dd8bc",
+  "BOUND_ORIGIN_MAIN_SHA": "eee96f6aa08ce3007d03f61206660b8db3a9711b",
+  "CANARY_INSTRUMENT": "BTC-USD_UM_XPERP-310404",
+  "CANARY_INST_FAMILY": "BTC-USD_UM_XPERP",
+  "CANARY_INST_TYPE": "FUTURES",
+  "COLLECTED_UTC": "2026-08-19T10:23:25.619850Z",
+  "DOCUMENT_CLASS": "SECTION_11_13_5_Z2M_FEE_RESERVE_RATES_REBIND_GET_EVIDENCE_V1",
+  "DOCUMENT_ROLE": "DERIVED_NON_SSOT_GET_ONLY_NOT_POLICY_PERSIST_NOT_FUNDING",
+  "FINISHED_UTC": "2026-08-19T10:23:25.927325Z",
+  "GET_COUNT": 1,
+  "HOST": "eea.okx.com",
+  "HTTP_METHOD": "GET",
+  "HTTP_STATUS": 200,
+  "INSTFAMILY_ECHOED_IN_RESPONSE": false,
+  "INSTRUMENT_BINDING": "REQUEST_QUERY_instType=FUTURES&instFamily=BTC-USD_UM_XPERP;RESPONSE_instType=FUTURES",
+  "LIVE_AUTHORIZED": false,
+  "MAPPING_CONFLICT": null,
+  "OKX_CODE": "0",
+  "OKX_MSG": "",
+  "OWNER_GO": "OWNER_GO_FOR_EXACTLY_ONE_AUTHENTICATED_READ_ONLY_TRADE_FEE_REBIND_GET",
+  "PARSE_ERROR": null,
+  "QUERY": "/api/v5/account/trade-fee?instType=FUTURES&instFamily=BTC-USD_UM_XPERP",
+  "RESPONSE_DATA_SANITIZED": {
+    "code": "0",
+    "data": [
+      {
+        "category": "1",
+        "delivery": "0.0003",
+        "exercise": "",
+        "feeGroup": [
+          {
+            "elpMaker": "-0.0002",
+            "groupId": "7",
+            "maker": "-0.0002",
+            "rpiMaker": "-0.0002",
+            "taker": "-0.0005"
+          }
+        ],
+        "fiat": [],
+        "instType": "FUTURES",
+        "level": "Lv1",
+        "maker": "",
+        "makerU": "",
+        "makerUSDC": "-0.0002",
+        "ruleType": "normal",
+        "settle": "",
+        "taker": "",
+        "takerU": "",
+        "takerUSDC": "-0.0005",
+        "ts": "1787135005979"
+      }
+    ],
+    "msg": ""
+  },
+  "RETRY_EXECUTED": false,
+  "RUN_ID": "20260819T102325Z",
+  "SECRET_VALUES_INCLUDED": false,
+  "SSOT_SECTION": "11.13.5.Z2M",
+  "TRANSPORT_ERROR": null,
+  "VENUE": "OKX_PRODUCTION_EEA",
+  "VENUE_DATE_HEADER": "Wed, 19 Aug 2026 10:23:25 GMT"
+}
