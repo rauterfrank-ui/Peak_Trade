@@ -1301,6 +1301,119 @@ execute GO. Do not treat an unnamed path as authorized.
 FND-016 is explicitly **not** part of this subsection and is not bound
 here.
 
+## 4.10 Top-N promotion non-authority (FND-004)
+
+``` text
+FND_004_ID=FND-004
+FND_004_SHORT_TITLE=TOPN_PROMOTION_PARALLEL_EXPORT_IS_NOT_RUNTIME_AUTHORITY
+FND_004_STATUS=RESOLVED_DOCS_ONLY
+FND_004_RESOLUTION=DOCS_ONLY_NON_AUTHORITY_BINDING
+OWNER_GO_CONSUMED_FOR_THIS_SECTION=FND_004_ONLY_CANONICAL_DOCS_BIND_TOPN_PROMOTION_NON_AUTHORIZING_NO_UNLOCK
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+PRODUCTIVE_CODE_CHANGED=false
+AUTHORITY_EXPANDED=false
+TOPN_PROMOTION_HAS_RUNTIME_AUTHORITY=false
+TOPN_PROMOTION_HAS_LIVE_AUTHORITY=false
+TOPN_PROMOTION_HAS_TESTNET_AUTHORITY=false
+TOPN_PROMOTION_HAS_FUNDING_AUTHORITY=false
+TOPN_PROMOTION_HAS_ORDER_AUTHORITY=false
+TOPN_PROMOTION_HAS_CANARY_AUTHORITY=false
+TOPN_PROMOTION_CAN_AUTO_APPLY=false
+TOPN_PROMOTION_CAN_REENABLE=false
+TOPN_PROMOTION_CAN_UNLOCK=false
+SELF_LEARNING_SELF_AUTHORIZING=false
+COVER_USDC=UNINSTANTIATED
+LIVE_AUTHORIZED=false
+FUNDING_AUTHORIZED=false
+ORDER_SUBMIT_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+FND_005_INCLUDED=false
+FND_010_INCLUDED=false
+FND_012_INCLUDED=false
+FND_016_INCLUDED=false
+```
+
+This subsection binds existing Top-N sweep-export behavior on current
+`origin&#47;main`. It does **not** change code, loaders, trading logic,
+risk limits, or safety gates. It does **not** authorize Live, Testnet,
+funding, orders, Canary execute, apply, re-enable, or unlock.
+`docs&#47;PHASE_42_TOPN_PROMOTION.md` describes the same tooling
+historically; that document is not SSOT. Canonical owner for this
+finding is this subsection.
+
+### 4.10.1 Proven surfaces and outputs
+
+Existing components:
+
+``` text
+CODE_OWNER=src/experiments/topn_promotion.py
+CLI_OWNER=scripts/promote_sweep_topn.py
+RESEARCH_CLI_WRAPPER=scripts/research_cli.py promote
+PRIMARY_OUTPUT=reports/sweeps/{sweep_name}_top_candidates.toml
+```
+
+Proven behavior: load sweep result rows, rank a metric, and export a
+research TOML candidate list. The operator CLI calls `export_top_n`
+only. Reload consumers on current `origin&#47;main` are offline research
+helpers (`load_top_n_configs_for_sweep` used by walk-forward, Monte
+Carlo, stress, and portfolio-robustness scripts). Those consumers do
+**not** load `config&#47;config.toml`, do **not** merge live overrides,
+and do **not** submit orders.
+
+`export_top_n_with_policy_check(..., auto_apply=True)` is an optional
+policy-critic consultation around the same TOML export. It does **not**
+write productive configuration, does **not** call
+`apply_proposals_to_live_overrides`, and is **not** invoked by the
+operator CLI.
+
+### 4.10.2 Mandatory non-equivalence
+
+The following concepts are distinct and must not be equated:
+
+``` text
+SWEEP_TOPN_EXPORT != RUNTIME_CONFIG
+SWEEP_TOPN_EXPORT != CHAMPION_CHALLENGER_SSOT
+SWEEP_TOPN_EXPORT != PROMOTION_LOOP_APPLY
+SWEEP_TOPN_EXPORT != LIVE_OVERRIDE
+SWEEP_TOPN_CANDIDATES != SINGLE_SELECTED_FUTURE
+SWEEP_TOPN_PROMOTION != SECTION_4_5_TOP_N_ACTIVE_SET
+RESEARCH_RANKING != EXECUTION_AUTHORITY
+SELF_LEARNING != SELF_AUTHORIZING
+CODE_EXISTS != RUNTIME_AUTHORITY
+TOML_EXPORT != AUTO_APPLY
+POLICY_CRITIC_CONSULTATION != APPLY
+```
+
+`src&#47;core&#47;peak_config.py` does not consume
+`*_top_candidates.toml`. A Top-N export must not be treated as
+activation of productive configuration.
+
+### 4.10.3 Standing fail-closed binding
+
+Until a later Owner-GO explicitly names a different surface and
+consumes a one-shot execute or apply scope for that surface only, all
+of the following remain false:
+
+``` text
+TOPN_PROMOTION_HAS_RUNTIME_AUTHORITY=false
+TOPN_PROMOTION_CAN_AUTO_APPLY=false
+TOPN_PROMOTION_CAN_REENABLE=false
+TOPN_PROMOTION_CAN_UNLOCK=false
+SELF_LEARNING_SELF_AUTHORIZING=false
+LIVE_AUTHORIZED=false
+FUNDING_AUTHORIZED=false
+ORDER_SUBMIT_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+```
+
+This subsection is not a Live unlock, not a Testnet unlock, not a
+funding authorization, not an order-submit authorization, not an apply
+re-enable, and not an execution-gate change. Existing safety gates are
+unchanged.
+
+
 ------------------------------------------------------------------------
 
 # 5. Current Forensic Runtime Truth
