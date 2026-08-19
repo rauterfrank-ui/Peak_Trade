@@ -333,8 +333,9 @@ def test_map_of_truth_and_spec_record_z2i_rate_without_replacing_z2h() -> None:
     assert "OPERATIVE_EXPIRY_SETTLEMENT_RATE=0.0003" in mot
     assert "§11.13.5.Z2I-HIST" in mot
     assert "PR_5960_SEMANTICS_STATUS=HISTORICAL_SUPERSEDED" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
-    assert "Current SSOT: Master Runbook §11.13.5.Z2H." in spec
+    assert f"{NEXT_POINTER}_STATUS=CONSUMED_GET_ONLY_PUBLIC_TIER_MMR_OBSERVED_NOT_COVER_USDC" in mot
+    assert "Current SSOT: Master Runbook §11.13.5.Z2K." in spec
+    assert "Current SSOT: Master Runbook §11.13.5.Z2H." not in spec
     assert "Current SSOT: Master Runbook §11.13.5.Z2I." not in spec
     assert Z2I_OWNER_GO in spec
     assert "VERIFIED_FIRST_PARTY_OKX_API_ARTIFACT" in spec

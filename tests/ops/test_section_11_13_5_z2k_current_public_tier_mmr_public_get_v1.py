@@ -1,12 +1,13 @@
-"""§11.13.5.Z2H current ticker bid/ask public GET evidence.
+"""§11.13.5.Z2K current public-tier MMR GET evidence.
 
 Code contract plus docs/governance invariants. Does not authorize Live,
 Testnet, orders, funding, scaling, or Multi-Future. Does not instantiate
-COVER_USDC or a numeric SLIPPAGE_RESERVE.
+COVER_USDC or a numeric MM_LIQ_BUFFER.
 """
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -19,24 +20,22 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     REUSED_BINDING_REST_HOST,
     TESTNET_AUTHORIZED,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.cover_usdc_current_ticker_bid_ask_productive_evidence_v1 import (
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.cover_usdc_current_public_tier_mmr_productive_evidence_v1 import (
     AUTHORIZED_SCOPE,
-    BID_ASK_TERM_STATUS,
+    CANARY_INST_FAMILY,
     COVER_USDC_STATUS,
-    CoverUsdcCurrentTickerBidAskEvidenceError,
-    HISTORICAL_L_PACK_ASK_PX,
-    HISTORICAL_L_PACK_BID_PX,
-    HISTORICAL_S_PACK_ASK_PX,
-    HISTORICAL_S_PACK_BID_PX,
+    CoverUsdcCurrentPublicTierMmrEvidenceError,
+    MM_LIQ_BUFFER_NUMERIC_STATUS,
+    MMR_TERM_STATUS,
     NEXT_CANONICAL_POINTER,
     OWNER_GO,
-    SLIPPAGE_RESERVE_NUMERIC_STATUS,
-    TICKER_QUERY_PATH,
-    adjudicate_current_ticker_bid_ask_public_get_v1,
-    classify_current_ticker_bid_ask_evidence_surface_v1,
-    collect_current_ticker_bid_ask_public_get_v1,
-    encode_fixture_ticker_payload_v1,
-    extract_current_bid_ask_from_public_ticker_payload_v1,
+    POSITION_TIERS_QUERY_PATH,
+    PUBLIC_MMR_CLASSIFICATION,
+    adjudicate_current_public_tier_mmr_public_get_v1,
+    classify_current_public_tier_mmr_evidence_surface_v1,
+    collect_current_public_tier_mmr_public_get_v1,
+    encode_fixture_position_tiers_payload_v1,
+    extract_qty_one_mmr_from_public_position_tiers_payload_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.governance_state_matrix_v1 import (
     NON_EXECUTE_GO_TOKENS_FORBIDDEN_FOR_SUBMIT,
@@ -54,21 +53,28 @@ MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 CANARY_SPEC = (
     REPO_ROOT / "docs" / "ops" / "specs" / "SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE_V1.md"
 )
+Z2K_HEADING = "### 11.13.5.Z2K Current public-tier MMR public GET evidence"
+OBSERVED_MMR = "0.01"
+OBSERVED_IMR = "0.02"
 
-Z2H_HEADING = "### 11.13.5.Z2H Current ticker bid/ask public GET evidence"
-CURRENT_BID = "64501.1"
-CURRENT_ASK = "64501.2"
-PROVIDER_TS = "1787085000001"
-RECEIVE_TS = "1787085001.25"
+CURRENT_MMR = "0.012"
+CURRENT_IMR = "0.02"
+CURRENT_TIER = "1"
+CURRENT_MIN_SZ = "0"
+CURRENT_MAX_SZ = "25000"
+RECEIVE_TS = "1787088001.25"
 
 _ADJ_KWARGS = {
-    "bid_px_current_value": CURRENT_BID,
-    "ask_px_current_value": CURRENT_ASK,
-    "provider_ts_ms": PROVIDER_TS,
+    "mmr_public_tier_qty_one_current_value": CURRENT_MMR,
+    "imr_public_tier_qty_one_observed": CURRENT_IMR,
+    "tier_current_value": CURRENT_TIER,
+    "min_sz_current_value": CURRENT_MIN_SZ,
+    "max_sz_current_value": CURRENT_MAX_SZ,
     "receive_ts_unix": RECEIVE_TS,
     "instrument_id": DEFAULT_INSTRUMENT_ID,
+    "inst_family": CANARY_INST_FAMILY,
     "host": REUSED_BINDING_REST_HOST,
-    "endpoint": TICKER_QUERY_PATH,
+    "endpoint": POSITION_TIERS_QUERY_PATH,
     "http_status": 200,
     "okx_code": "0",
     "get_request_count": 1,
@@ -77,80 +83,119 @@ _ADJ_KWARGS = {
 }
 
 
-def _read(path: Path) -> str:
-    assert path.is_file(), f"missing canonical path: {path}"
-    return path.read_text(encoding="utf-8")
-
-
-def _z2h_section(text: str) -> str:
-    start = text.find(Z2H_HEADING)
-    assert start >= 0, "missing §11.13.5.Z2H heading"
-    end = text.find("### 11.13.5.Z2I", start)
-    assert end > start, "missing §11.13.5.Z2I boundary after Z2H"
-    return text[start:end]
-
-
 def _adjudicate(**overrides: object):
     kwargs = dict(_ADJ_KWARGS)
     kwargs.update(overrides)
-    return adjudicate_current_ticker_bid_ask_public_get_v1(**kwargs)
+    return adjudicate_current_public_tier_mmr_public_get_v1(**kwargs)
 
 
-def test_classification_is_public_readonly_ticker_not_mark_price() -> None:
-    surface = classify_current_ticker_bid_ask_evidence_surface_v1()
+def test_classification_is_public_readonly_position_tiers_not_ticker() -> None:
+    surface = classify_current_public_tier_mmr_evidence_surface_v1()
     assert surface["METHOD"] == "GET"
     assert surface["AUTHENTICATION_REQUIREMENT"] == "NONE_PUBLIC"
     assert surface["READ_ONLY"] is True
-    assert surface["ENDPOINT"] == TICKER_QUERY_PATH
+    assert surface["ENDPOINT"] == POSITION_TIERS_QUERY_PATH
+    assert "position-tiers" in surface["ENDPOINT"]
+    assert "ticker" not in surface["ENDPOINT"]
     assert "mark-price" not in surface["ENDPOINT"]
-    assert "SLIPPAGE_BID_ASK_CURRENT_VALUE_OBSERVATIONAL" in surface["TERM_CAN_INSTANTIATE"]
+    assert "MMR_PUBLIC_TIER_QTY_ONE_CURRENT_VALUE_OBSERVATIONAL" in surface["TERM_CAN_INSTANTIATE"]
     assert "COVER_USDC" in surface["TERM_CANNOT_PROVE"]
-    assert "SLIPPAGE_RESERVE_NUMERIC" in surface["TERM_CANNOT_PROVE"]
+    assert "MM_LIQ_BUFFER_NUMERIC" in surface["TERM_CANNOT_PROVE"]
+    assert "ACCOUNT_EFFECTIVE_MMR" in surface["TERM_CANNOT_PROVE"]
 
 
-def test_extract_binds_bid_ask_and_ignores_ticker_last() -> None:
-    body = encode_fixture_ticker_payload_v1(
-        instrument_id=DEFAULT_INSTRUMENT_ID,
-        bid_px=CURRENT_BID,
-        ask_px=CURRENT_ASK,
-        ts_ms=PROVIDER_TS,
-        mark_px="99999.9",
+def test_extract_selects_unique_qty_one_tier() -> None:
+    body = encode_fixture_position_tiers_payload_v1(
+        inst_family=CANARY_INST_FAMILY,
+        qty_one_mmr=CURRENT_MMR,
+        extra_rows=[
+            {
+                "instId": "",
+                "instFamily": CANARY_INST_FAMILY,
+                "tier": "2",
+                "minSz": "25001",
+                "maxSz": "50000",
+                "imr": "0.025",
+                "mmr": "0.015",
+            }
+        ],
     )
-    import json
-
     payload = json.loads(body.decode("utf-8"))
-    payload["data"][0]["last"] = "99999.9"
-    bid, ask, ts = extract_current_bid_ask_from_public_ticker_payload_v1(
-        payload,
-        expected_instrument_id=DEFAULT_INSTRUMENT_ID,
+    mmr, imr, tier, min_sz, max_sz, family = (
+        extract_qty_one_mmr_from_public_position_tiers_payload_v1(
+            payload,
+            expected_inst_family=CANARY_INST_FAMILY,
+        )
     )
-    assert bid == CURRENT_BID
-    assert ask == CURRENT_ASK
-    assert ts == PROVIDER_TS
+    assert mmr == CURRENT_MMR
+    assert imr == CURRENT_IMR
+    assert tier == CURRENT_TIER
+    assert min_sz == CURRENT_MIN_SZ
+    assert max_sz == CURRENT_MAX_SZ
+    assert family == CANARY_INST_FAMILY
 
 
-def test_extract_rejects_missing_bid() -> None:
+def test_extract_rejects_missing_mmr() -> None:
     payload = {
         "code": "0",
-        "data": [{"instId": DEFAULT_INSTRUMENT_ID, "askPx": CURRENT_ASK, "ts": PROVIDER_TS}],
+        "data": [
+            {
+                "instFamily": CANARY_INST_FAMILY,
+                "tier": "1",
+                "minSz": "0",
+                "maxSz": "25000",
+                "imr": CURRENT_IMR,
+            }
+        ],
     }
-    with pytest.raises(CoverUsdcCurrentTickerBidAskEvidenceError, match="bidPx"):
-        extract_current_bid_ask_from_public_ticker_payload_v1(
+    with pytest.raises(CoverUsdcCurrentPublicTierMmrEvidenceError, match="mmr"):
+        extract_qty_one_mmr_from_public_position_tiers_payload_v1(
             payload,
-            expected_instrument_id=DEFAULT_INSTRUMENT_ID,
+            expected_inst_family=CANARY_INST_FAMILY,
+        )
+
+
+def test_extract_rejects_non_unique_qty_one_tier() -> None:
+    payload = {
+        "code": "0",
+        "data": [
+            {
+                "instFamily": CANARY_INST_FAMILY,
+                "tier": "1",
+                "minSz": "0",
+                "maxSz": "1",
+                "imr": "0.02",
+                "mmr": "0.01",
+            },
+            {
+                "instFamily": CANARY_INST_FAMILY,
+                "tier": "1b",
+                "minSz": "1",
+                "maxSz": "2",
+                "imr": "0.02",
+                "mmr": "0.011",
+            },
+        ],
+    }
+    with pytest.raises(CoverUsdcCurrentPublicTierMmrEvidenceError, match="QTY_ONE_TIER_NOT_UNIQUE"):
+        extract_qty_one_mmr_from_public_position_tiers_payload_v1(
+            payload,
+            expected_inst_family=CANARY_INST_FAMILY,
         )
 
 
 def test_adjudication_is_observational_and_leaves_cover_usdc_uninstantiated() -> None:
     bound = _adjudicate()
-    assert bound.bid_ask_term_status == BID_ASK_TERM_STATUS
-    assert bound.bid_px_current_value == CURRENT_BID
-    assert bound.ask_px_current_value == CURRENT_ASK
-    assert bound.slippage_reserve_numeric_status == SLIPPAGE_RESERVE_NUMERIC_STATUS
+    assert bound.mmr_term_status == MMR_TERM_STATUS
+    assert bound.mmr_public_tier_qty_one_current_value == CURRENT_MMR
+    assert bound.mm_liq_buffer_numeric_status == MM_LIQ_BUFFER_NUMERIC_STATUS
+    assert bound.public_mmr_classification == PUBLIC_MMR_CLASSIFICATION
+    assert bound.public_mmr_is_not_liquidation_price_evidence is True
     assert bound.cover_usdc_status == COVER_USDC_STATUS
     assert bound.numeric_funding_amount_produced is False
     assert bound.markpx_term_status == "OBSERVED_NOT_NORMATIVELY_BOUND"
-    assert bound.markpx_okx_delivery_fee_operand_status == "UNPROVEN"
+    assert bound.bid_ask_term_status == "OBSERVED_NOT_NORMATIVELY_BOUND"
+    assert bound.slippage_reserve_numeric_status == "UNINSTANTIATED"
     assert bound.monetary_base_status == "UNPROVEN"
     assert bound.fx_status == "UNPROVEN"
     assert bound.rounding_status == "UNPROVEN"
@@ -158,16 +203,21 @@ def test_adjudication_is_observational_and_leaves_cover_usdc_uninstantiated() ->
     assert bound.post_count == 0
     assert bound.live_authorized is False
     assert bound.next_canonical_pointer == NEXT_CANONICAL_POINTER
+    assert bound.provider_ts_ms == "NONE_NOT_IN_POSITION_TIERS_PAYLOAD"
 
 
 @pytest.mark.parametrize(
     "kwargs,needle",
     [
-        ({"substitute_historical_bid_ask": True}, "HISTORICAL_BID_ASK_IS_NOT_CURRENT"),
-        ({"substitute_ticker_markpx": True}, "TICKER_MARKPX_IS_NOT_MARK_PRICE_GET"),
+        ({"substitute_historical_mmr": True}, "HISTORICAL_MMR_IS_NOT_CURRENT"),
         (
-            {"instantiate_slippage_reserve_numeric": True},
-            "SLIPPAGE_RESERVE_NUMERIC_REMAINS_UNINSTANTIATED",
+            {"instantiate_mm_liq_buffer_numeric": True},
+            "MM_LIQ_BUFFER_NUMERIC_REMAINS_UNINSTANTIATED",
+        ),
+        ({"treat_as_account_effective_mmr": True}, "PUBLIC_MMR_IS_NOT_ACCOUNT_EFFECTIVE"),
+        (
+            {"treat_as_liquidation_price": True},
+            "PUBLIC_MMR_IS_NOT_LIQUIDATION_PRICE_EVIDENCE",
         ),
         ({"instantiate_cover_usdc": True}, "COVER_USDC_REMAINS_UNINSTANTIATED"),
         ({"invent_monetary_base": True}, "MONETARY_BASE_REMAINS_UNPROVEN"),
@@ -175,7 +225,8 @@ def test_adjudication_is_observational_and_leaves_cover_usdc_uninstantiated() ->
         ({"assume_usd_equals_usdc": True}, "USD_USDC_CONVERSION_UNPROVEN"),
         ({"apply_rounding": True}, "USDC_ROUNDING_PRECISION_UNPROVEN"),
         ({"produce_numeric_funding_amount": True}, "NUMERIC_FUNDING_AMOUNT_REMAINS_UNPROVEN"),
-        ({"collect_mmr": True}, "MMR_NOT_IN_THIS_GET_SCOPE"),
+        ({"collect_ticker": True}, "TICKER_NOT_IN_THIS_GET_SCOPE"),
+        ({"collect_mark_price": True}, "MARK_PRICE_NOT_IN_THIS_GET_SCOPE"),
         ({"live_authorized": True}, "LIVE_NOT_AUTHORIZED"),
         ({"testnet_authorized": True}, "TESTNET_NOT_AUTHORIZED"),
         ({"post_count": 1}, "POST_NOT_AUTHORIZED"),
@@ -183,19 +234,17 @@ def test_adjudication_is_observational_and_leaves_cover_usdc_uninstantiated() ->
     ],
 )
 def test_adjudication_fail_closed_guards(kwargs: dict, needle: str) -> None:
-    with pytest.raises(CoverUsdcCurrentTickerBidAskEvidenceError, match=needle):
+    with pytest.raises(CoverUsdcCurrentPublicTierMmrEvidenceError, match=needle):
         _adjudicate(**kwargs)
 
 
 def test_collect_uses_one_public_get_and_no_post() -> None:
-    body = encode_fixture_ticker_payload_v1(
-        instrument_id=DEFAULT_INSTRUMENT_ID,
-        bid_px=CURRENT_BID,
-        ask_px=CURRENT_ASK,
-        ts_ms=PROVIDER_TS,
+    body = encode_fixture_position_tiers_payload_v1(
+        inst_family=CANARY_INST_FAMILY,
+        qty_one_mmr=CURRENT_MMR,
     )
     transport = RecordingFakeCanaryTransportV1(body=body, venue_live_contact=True)
-    bound, snapshot, response = collect_current_ticker_bid_ask_public_get_v1(
+    bound, snapshot, response = collect_current_public_tier_mmr_public_get_v1(
         transport=transport,
         receive_ts_unix=RECEIVE_TS,
     )
@@ -203,18 +252,19 @@ def test_collect_uses_one_public_get_and_no_post() -> None:
     request = transport.calls[0]
     assert request.method == "GET"
     assert request.host == "eea.okx.com"
-    assert request.endpoint == TICKER_QUERY_PATH
+    assert request.endpoint == POSITION_TIERS_QUERY_PATH
     assert request.body_text == ""
-    assert bound.bid_px_current_value == CURRENT_BID
-    assert bound.ask_px_current_value == CURRENT_ASK
+    assert bound.mmr_public_tier_qty_one_current_value == CURRENT_MMR
     assert bound.get_request_count == 1
     assert bound.post_count == 0
     assert snapshot["POST_COUNT"] == 0
-    assert snapshot["NO_POSITION_TIERS_GET_THIS_STEP"] is True
+    assert snapshot["NO_TICKER_GET_THIS_STEP"] is True
+    assert snapshot["NO_MARK_PRICE_GET_THIS_STEP"] is True
+    assert snapshot["NO_PRIVATE_GET_THIS_STEP"] is True
     assert response.status_code == 200
 
 
-def test_z2h_go_does_not_authorize_live_order_or_funding() -> None:
+def test_z2k_go_does_not_authorize_live_order_or_funding() -> None:
     assert LIVE_AUTHORIZED is False
     assert TESTNET_AUTHORIZED is False
     assert OWNER_GO in NON_EXECUTE_GO_TOKENS_FORBIDDEN_FOR_SUBMIT
@@ -248,18 +298,40 @@ def test_z2h_go_does_not_authorize_live_order_or_funding() -> None:
     assert "REEVALUATION_OR_PREPARATION_GO_CANNOT_AUTHORIZE_SUBMIT" in evaluation.reasons
 
 
-def test_z2h_docs_bind_observational_bid_ask_without_cover_usdc() -> None:
-    section = _z2h_section(_read(MASTER_RUNBOOK))
+def _read(path: Path) -> str:
+    assert path.is_file(), f"missing canonical path: {path}"
+    return path.read_text(encoding="utf-8")
+
+
+def _z2k_section(text: str) -> str:
+    start = text.find(Z2K_HEADING)
+    assert start >= 0, "missing §11.13.5.Z2K heading"
+    end = text.find("## 11.14 Live order and economic evidence ladder", start)
+    assert end > start, "missing §11.14 boundary after Z2K"
+    return text[start:end]
+
+
+def test_z2k_docs_bind_observational_mmr_without_cover_usdc() -> None:
+    section = _z2k_section(_read(MASTER_RUNBOOK))
     required = (
-        "AUTHORIZED_SCOPE=CURRENT_TICKER_BID_ASK_PUBLIC_GET_EVIDENCE_ONLY",
+        "AUTHORIZED_SCOPE=CURRENT_PUBLIC_TIER_MMR_PUBLIC_GET_EVIDENCE_ONLY",
+        "MMR_TERM_STATUS=OBSERVED_NOT_NORMATIVELY_BOUND",
+        f"MMR_PUBLIC_TIER_QTY_ONE_CURRENT_VALUE={OBSERVED_MMR}",
+        "PUBLIC_MMR_CLASSIFICATION=PUBLIC_TIER_FACT_NOT_ACCOUNT_EFFECTIVE_MMR",
+        "PUBLIC_MMR_IS_NOT_LIQUIDATION_PRICE_EVIDENCE=true",
+        "MM_LIQ_BUFFER_NUMERIC_STATUS=UNINSTANTIATED",
+        "SLIPPAGE_RESERVE_NUMERIC_STATUS=UNINSTANTIATED",
         "BID_ASK_TERM_STATUS=OBSERVED_NOT_NORMATIVELY_BOUND",
         "BID_PX_CURRENT_VALUE=64529.9",
         "ASK_PX_CURRENT_VALUE=64530",
-        "SLIPPAGE_RESERVE_NUMERIC_STATUS=UNINSTANTIATED",
         "MARKPX_TERM_STATUS=OBSERVED_NOT_NORMATIVELY_BOUND",
         "MARKPX_CURRENT_VALUE=64495.3",
         "MARKPX_OKX_DELIVERY_FEE_OPERAND_STATUS=UNPROVEN",
-        "HISTORICAL_BID_ASK_IS_NOT_CURRENT=true",
+        "HISTORICAL_MMR_IS_NOT_CURRENT=true",
+        "HISTORICAL_L_OR_S_PACK_SUBSTITUTED=false",
+        "NO_PROVIDER_TS_INVENTED=true",
+        f"IMR_PUBLIC_TIER_QTY_ONE_OBSERVED={OBSERVED_IMR}",
+        "TIER_CURRENT_VALUE=1",
         "MONETARY_BASE_STATUS=UNPROVEN",
         "FX_STATUS=UNPROVEN",
         "ROUNDING_STATUS=UNPROVEN",
@@ -282,14 +354,14 @@ def test_z2h_docs_bind_observational_bid_ask_without_cover_usdc() -> None:
         f"CANONICAL_NEXT_STEP={NEXT_CANONICAL_POINTER}",
         "NO_USD_EQUALS_USDC",
         "NO_COVER_USDC_INSTANTIATION",
-        "NO_SLIPPAGE_RESERVE_NUMERIC",
+        "NO_MM_LIQ_BUFFER_NUMERIC",
         "NO_NUMERIC_FUNDING_AMOUNT",
         "NO_FUNDING",
         "NO_EXECUTE",
-        "/api/v5/market/ticker",
+        "/api/v5/public/position-tiers",
     )
     for marker in required:
-        assert marker in section, f"missing Z2H marker: {marker}"
+        assert marker in section, f"missing Z2K marker: {marker}"
     forbidden = (
         "\nLIVE_AUTHORIZED=true\n",
         "\nSCALING_AUTHORIZED=true\n",
@@ -301,36 +373,30 @@ def test_z2h_docs_bind_observational_bid_ask_without_cover_usdc() -> None:
         "\nMONETARY_BASE_STATUS=PROVEN\n",
         "\nNUMERIC_FUNDING_AMOUNT_PRODUCED=true\n",
         "\nUSD_EQUALS_USDC=true\n",
-        "SLIPPAGE_RESERVE_NUMERIC_STATUS=PROVEN",
-        "BID_ASK_TERM_STATUS=UNINSTANTIATED",
+        "MM_LIQ_BUFFER_NUMERIC_STATUS=PROVEN",
+        "MMR_TERM_STATUS=UNINSTANTIATED",
     )
     for assignment in forbidden:
         assert assignment not in section, f"forbidden assignment present: {assignment!r}"
-    assert HISTORICAL_L_PACK_BID_PX not in section
-    assert HISTORICAL_L_PACK_ASK_PX not in section
-    assert HISTORICAL_S_PACK_BID_PX not in section
-    assert HISTORICAL_S_PACK_ASK_PX not in section
 
 
-def test_map_of_truth_and_spec_record_z2h_as_consumed_historical() -> None:
+def test_map_of_truth_and_spec_follow_z2k_current_pointer() -> None:
     mot = _read(MAP_OF_TRUTH)
     spec = _read(CANARY_SPEC)
-    assert "§11.13.5.Z2H" in mot
-    assert f"{OWNER_GO}_STATUS=CONSUMED_GET_ONLY_TICKER_BID_ASK_OBSERVED_NOT_COVER_USDC" in mot
-    assert (
-        f"{NEXT_CANONICAL_POINTER}_STATUS=CONSUMED_GET_ONLY_PUBLIC_TIER_MMR_OBSERVED_NOT_COVER_USDC"
-        in mot
-    )
+    assert "§11.13.5.Z2K" in mot
+    assert f"{OWNER_GO}_STATUS=CONSUMED_GET_ONLY_PUBLIC_TIER_MMR_OBSERVED_NOT_COVER_USDC" in mot
+    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_CANONICAL_POINTER}" in mot
     assert "COVER_USDC_STATUS=UNINSTANTIATED" in mot
-    assert "BID_ASK_TERM_STATUS=OBSERVED_NOT_NORMATIVELY_BOUND" in mot
-    assert "SLIPPAGE_RESERVE_NUMERIC_STATUS=UNINSTANTIATED" in mot
+    assert "MMR_TERM_STATUS=OBSERVED_NOT_NORMATIVELY_BOUND" in mot
+    assert "MM_LIQ_BUFFER_NUMERIC_STATUS=UNINSTANTIATED" in mot
+    assert "Current SSOT: Master Runbook §11.13.5.Z2K." in spec
     assert "Current SSOT: Master Runbook §11.13.5.Z2H." not in spec
     assert OWNER_GO in spec
     assert NEXT_CANONICAL_POINTER in spec
-    assert "CURRENT_TICKER_BID_ASK_PUBLIC_GET_EVIDENCE_ONLY" in spec
+    assert "CURRENT_PUBLIC_TIER_MMR_PUBLIC_GET_EVIDENCE_ONLY" in spec
 
 
-def test_sealed_z2h_evidence_pack_verifies_without_cover_usdc() -> None:
+def test_sealed_z2k_evidence_pack_verifies_without_cover_usdc() -> None:
     from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import (
         verify_manifest_v1,
     )
@@ -339,14 +405,13 @@ def test_sealed_z2h_evidence_pack_verifies_without_cover_usdc() -> None:
         REPO_ROOT
         / "evidence"
         / "ops"
-        / "section_11_13_5_z2h_current_ticker_bid_ask_public_get_v1"
-        / "20260818T203435Z"
+        / "section_11_13_5_z2k_current_public_tier_mmr_public_get_v1"
+        / "20260819T085545Z"
     )
     verify = verify_manifest_v1(root)
     assert verify["MANIFEST_VERIFY_RC"] == 0
     summary = _read(root / "SUMMARY.json")
-    assert '"BID_PX_CURRENT_VALUE": "64529.9"' in summary
-    assert '"ASK_PX_CURRENT_VALUE": "64530"' in summary
+    assert f'"MMR_PUBLIC_TIER_QTY_ONE_CURRENT_VALUE": "{OBSERVED_MMR}"' in summary
     assert '"COVER_USDC_STATUS": "UNINSTANTIATED"' in summary
     assert '"POST_COUNT": 0' in summary
     assert '"LIVE_AUTHORIZED": false' in summary

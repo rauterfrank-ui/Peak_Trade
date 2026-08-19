@@ -141,12 +141,13 @@ def test_map_of_truth_and_spec_record_z2j_without_replacing_z2h_or_cover() -> No
     assert "MODEL_3_NUMERIC_COVER_CANONICALIZED=false" in mot
     assert "NAMED_REMAINING_COVER_USDC_TERM=FINITE_PHYSICAL_USDC_COVER_AMOUNT_ABSENT" in mot
     assert "COVER_USDC_STATUS=UNINSTANTIATED" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
     assert (
-        "EARLIEST_UNRESOLVED_DEPENDENCY=COVER_USDC_UNINSTANTIATED_REMAINING_UNPROVEN_TERMS_AFTER_CURRENT_TICKER_BID_ASK"
-        in mot
+        "OWNER_GO_REQUIRED_FOR_PRODUCTIVE_EVIDENCE_TO_RESOLVE_REMAINING_UNPROVEN_"
+        "COVER_USDC_TERMS_AFTER_CURRENT_TICKER_BID_ASK_BEFORE_FUNDING_STATUS="
+        "CONSUMED_GET_ONLY_PUBLIC_TIER_MMR_OBSERVED_NOT_COVER_USDC" in mot
     )
-    assert "Current SSOT: Master Runbook §11.13.5.Z2H." in spec
+    assert "Current SSOT: Master Runbook §11.13.5.Z2K." in spec
+    assert "Current SSOT: Master Runbook §11.13.5.Z2H." not in spec
     assert "Current SSOT: Master Runbook §11.13.5.Z2J." not in spec
     assert "§11.13.5.Z2J" in spec
     assert "`COVER_USDC` remains `UNINSTANTIATED`" in spec

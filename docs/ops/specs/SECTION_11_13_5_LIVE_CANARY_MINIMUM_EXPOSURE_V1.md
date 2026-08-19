@@ -83,7 +83,8 @@ execute, order submit, account mutation, Cap 11.9 activation, clearing of
 
 ## Next steps
 
-Current SSOT: Master Runbook §11.13.5.Z2H. Historical Z2G remains
+Current SSOT: Master Runbook §11.13.5.Z2K. Historical Z2H remains
+binding for the observational current ticker bid/ask. Historical Z2G remains
 binding for the observational current markPx. Historical Z2F remains
 binding for fail-closed term-instance adjudication. Historical Z2E remains
 binding for the internal conservative qty=1 B08 formula body.
@@ -113,7 +114,10 @@ bindings. Current markPx `64495.3` is
 `OBSERVED_NOT_NORMATIVELY_BOUND` from a public mark-price GET. It is
 not an OKX expiry-fee operand. Current ticker `bidPx=64529.9` and
 `askPx=64530` are `OBSERVED_NOT_NORMATIVELY_BOUND` from a public
-ticker GET. They are not a numeric `SLIPPAGE_RESERVE`. FX
+ticker GET. They are not a numeric `SLIPPAGE_RESERVE`. Current public-tier
+qty=1 `mmr=0.01` is `OBSERVED_NOT_NORMATIVELY_BOUND` from a public
+position-tiers GET. It is not account-effective MMR, not
+liquidation-price evidence, and not a numeric `MM_LIQ_BUFFER`. FX
 and Rounding remain UNPROVEN Exchange Truth.
 `COVER_USDC` remains uninstantiated. No numeric funding amount is
 produced.
@@ -122,8 +126,8 @@ settlement semantics only. Account-selected settlement is USDC. Venue
 FAQ language that IM&#47;MM&#47;fees&#47;PnL&#47;funding are handled in the
 selected settlement currency is recorded as proven semantics.
 `COVER_USDC` remains `UNINSTANTIATED`. Client-side FX is not proven
-mandatory. This persist does **not** replace Z2H as current SSOT and
-does **not** instantiate a numeric cover amount.
+mandatory. That persist does **not** instantiate a numeric cover amount.
+Current COVER_USDC evidence persist is §11.13.5.Z2K.
 The Peak_Trade qty=1 envelope `qty * ctVal * markPx` is the bound
 implementation formula used with rate `0.0003`. OEM OKX monetary-base
 identity remains unproven and must not reset the rate to `NONE`.
@@ -472,10 +476,10 @@ oneshot.
     `COVER_USDC_STATUS=UNINSTANTIATED`.
     `NUMERIC_FUNDING_AMOUNT_PRODUCED=false`.
     `EXCHANGE_TRUTH_CHANGED=false`. `QTY_LIMIT=1`.
-    `SCALING_AUTHORIZED=false`. Next canonical step is
+    `SCALING_AUTHORIZED=false`. Historical next canonical step was
     `OWNER_GO_REQUIRED_FOR_PRODUCTIVE_EVIDENCE_TO_RESOLVE_REMAINING_UNPROVEN_COVER_USDC_TERMS_AFTER_CURRENT_TICKER_BID_ASK_BEFORE_FUNDING`.
-    That GO is **not** granted. This spec does not authorize execute,
-    funding, additional GET, or general Live unlock.
+    That GO is consumed as §11.13.5.Z2K. This spec does not authorize
+    execute, funding, additional GET, or general Live unlock.
 36. Historical. `OWNER_GO_DOCS_ONLY` was granted docs-only and is
     consumed as §11.13.5.Z2I-HIST (PR `#5960`). That persist
     adjudicated `delivery="0.0003"` as a proven raw first-party OKX
@@ -509,3 +513,34 @@ oneshot.
     funding, and execute remain uninstantiated &#47; unauthorized.
     This spec does not authorize execute, funding, GET, or general
     Live unlock.
+38. `OWNER_GO_CANONICALIZATION_RESEARCH_ADJUDICATION_ONLY` was granted
+    docs-only and is consumed as §11.13.5.Z2J. Settlement semantics
+    for the bound EEA account are USDC. Venue-internal conversion is
+    documented as semantic first-party support only.
+    `VENUE_NUMERIC_CONVERSION_OPERATOR_PROVEN=false`.
+    `CLIENT_SIDE_FX_REQUIRED_PROVEN=false`.
+    `MODEL_3_NUMERIC_COVER_CANONICALIZED=false`.
+    `COVER_USDC_STATUS=UNINSTANTIATED`. Historical next canonical step
+    was
+    `OWNER_GO_REQUIRED_FOR_PRODUCTIVE_EVIDENCE_TO_RESOLVE_REMAINING_UNPROVEN_COVER_USDC_TERMS_AFTER_CURRENT_TICKER_BID_ASK_BEFORE_FUNDING`.
+    That GO is consumed as §11.13.5.Z2K. This spec does not authorize
+    execute, funding, GET, or general Live unlock.
+39. `OWNER_GO_REQUIRED_FOR_PRODUCTIVE_EVIDENCE_TO_RESOLVE_REMAINING_UNPROVEN_COVER_USDC_TERMS_AFTER_CURRENT_TICKER_BID_ASK_BEFORE_FUNDING`
+    was granted GET-only for the current public-tier MMR instance and is
+    consumed as §11.13.5.Z2K.
+    `AUTHORIZED_SCOPE=CURRENT_PUBLIC_TIER_MMR_PUBLIC_GET_EVIDENCE_ONLY`.
+    `MMR_TERM_STATUS=OBSERVED_NOT_NORMATIVELY_BOUND`.
+    Current qty=1 public-tier `mmr=0.01` is not account-effective MMR
+    and not a numeric `MM_LIQ_BUFFER`.
+    `MM_LIQ_BUFFER_NUMERIC_STATUS=UNINSTANTIATED`.
+    `MONETARY_BASE_STATUS=UNPROVEN`. `FX_STATUS=UNPROVEN`.
+    `ROUNDING_STATUS=UNPROVEN`.
+    `VENUE_NUMERIC_CONVERSION_OPERATOR_PROVEN=false`.
+    `PHYSICAL_USDC_COVER_AMOUNT_AVAILABLE=false`.
+    `COVER_USDC_STATUS=UNINSTANTIATED`.
+    `NUMERIC_FUNDING_AMOUNT_PRODUCED=false`.
+    `EXCHANGE_TRUTH_CHANGED=false`. `QTY_LIMIT=1`.
+    `SCALING_AUTHORIZED=false`. Next canonical step is
+    `OWNER_GO_REQUIRED_FOR_PRODUCTIVE_EVIDENCE_TO_RESOLVE_REMAINING_UNPROVEN_COVER_USDC_TERMS_AFTER_CURRENT_PUBLIC_TIER_MMR_BEFORE_FUNDING`.
+    That GO is **not** granted. This spec does not authorize execute,
+    funding, additional GET, or general Live unlock.
