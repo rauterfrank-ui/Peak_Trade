@@ -68,11 +68,13 @@ jobs:
           python-version: "3.11"
 
       - name: Install rclone
+        if: github.event_name == 'workflow_dispatch'
         run: |
           sudo apt-get update
           sudo apt-get install -y rclone
 
       - name: Materialize rclone config (read-only)
+        if: github.event_name == 'workflow_dispatch'
         env:
           PT_RCLONE_CONF_B64: ${{ secrets.PT_RCLONE_CONF_B64 }}
         run: |
