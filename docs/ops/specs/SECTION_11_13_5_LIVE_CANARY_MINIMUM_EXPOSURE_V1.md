@@ -117,6 +117,13 @@ ticker GET. They are not a numeric `SLIPPAGE_RESERVE`. FX
 and Rounding remain UNPROVEN Exchange Truth.
 `COVER_USDC` remains uninstantiated. No numeric funding amount is
 produced.
+Parallel persist §11.13.5.Z2J records first-party USD-margined X-Perp
+settlement semantics only. Account-selected settlement is USDC. Venue
+FAQ language that IM&#47;MM&#47;fees&#47;PnL&#47;funding are handled in the
+selected settlement currency is recorded as proven semantics.
+`COVER_USDC` remains `UNINSTANTIATED`. Client-side FX is not proven
+mandatory. This persist does **not** replace Z2H as current SSOT and
+does **not** instantiate a numeric cover amount.
 The Peak_Trade qty=1 envelope `qty * ctVal * markPx` is the bound
 implementation formula used with rate `0.0003`. OEM OKX monetary-base
 identity remains unproven and must not reset the rate to `NONE`.
