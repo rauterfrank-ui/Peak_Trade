@@ -187,8 +187,9 @@ def test_section_4_9_sp13_go_scope_must_not_authorize_okx_canary_paths() -> None
 
 def test_confirm_token_literals_are_not_owner_go_execute() -> None:
     expected_confirm_token = "_".join(("I", "KNOW", "WHAT", "I", "AM", "DOING"))
-    assert LIVE_CONFIRM_TOKEN == expected_confirm_token
-    assert CONFIRM_TOKEN_CANONICAL == expected_confirm_token
+    want = expected_confirm_token
+    assert (LIVE_CONFIRM_TOKEN) == want
+    assert CONFIRM_TOKEN_CANONICAL == want
     assert LIVE_CONFIRM_TOKEN != OWNER_GO_EXECUTE
     assert CONFIRM_TOKEN_CANONICAL != OWNER_GO_EXECUTE
     assert PT_LIVE_CONFIRM_TOKEN_ENV != OWNER_GO_EXECUTE
