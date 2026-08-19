@@ -93,6 +93,9 @@ classification. Historical Z2C remains
 binding for the qty=1 internal conservative expiry-fee bound.
 Historical Z2B remains
 binding for applicability and the proven non-operative 0.01% rate.
+Parallel §11.13.5.Z2I records that observed API `delivery=0.0003` is a
+first-party trade-fee field with no expiry-settlement-rate authority
+and does **not** replace this COVER_USDC pointer.
 qty=1 and ctVal `0.0001 BTC` are proven instrument&#47;canary-scope
 bindings. Current markPx `64495.3` is
 `OBSERVED_NOT_NORMATIVELY_BOUND` from a public mark-price GET. It is
@@ -449,3 +452,15 @@ oneshot.
     `OWNER_GO_REQUIRED_FOR_PRODUCTIVE_EVIDENCE_TO_RESOLVE_REMAINING_UNPROVEN_COVER_USDC_TERMS_AFTER_CURRENT_TICKER_BID_ASK_BEFORE_FUNDING`.
     That GO is **not** granted. This spec does not authorize execute,
     funding, additional GET, or general Live unlock.
+36. `OWNER_GO_DOCS_ONLY` was granted docs-only and is consumed as
+    §11.13.5.Z2I. It adjudicates `delivery="0.0003"` as a proven raw
+    first-party OKX trade-fee field with
+    `DELIVERY_0003_EXPIRY_SETTLEMENT_RATE_AUTHORITY=NONE`.
+    `EXPIRY_SETTLEMENT_RATE_NORMATIVE=0.0001` remains proven
+    non-operative. `OPERATIVE_EXPIRY_SETTLEMENT_RATE=NONE`.
+    `MONETARY_BASE=UNPROVEN`.
+    `SUPPORT_REQUIRED_FOR_0003_VS_0001_RATE_DECISION=false`.
+    `Z2H_CANONICAL_POINTER_REPLACED=false`. Next canonical step remains
+    `OWNER_GO_REQUIRED_FOR_PRODUCTIVE_EVIDENCE_TO_RESOLVE_REMAINING_UNPROVEN_COVER_USDC_TERMS_AFTER_CURRENT_TICKER_BID_ASK_BEFORE_FUNDING`.
+    That GO is **not** granted. This spec does not authorize execute,
+    funding, GET, support, or general Live unlock.
