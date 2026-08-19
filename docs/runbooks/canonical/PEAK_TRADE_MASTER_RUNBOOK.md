@@ -743,6 +743,564 @@ security SSOT. On any conflict with this Master Runbook, the Master
 Runbook prevails without exception. Binding of the mandatory Pre-Live
 gate in the Phase-11 sequence is §11.12.9.
 
+## 4.9 Canonical submit-path inventory and Owner-GO scope binding
+
+``` text
+FND_011_ID=FND-011
+FND_011_SHORT_TITLE=Multiple gated submit paths without a bound GO-scope inventory
+FND_011_STATUS=RESOLVED_DOCS_ONLY
+FND_011_RESOLUTION=DOCS_CONTRACT_INVENTORY_AND_GO_SCOPE_BINDING_ONLY
+OWNER_GO_CONSUMED_FOR_THIS_SECTION=FND-011_ONLY_CANONICAL_DOCS_ONLY_BIND_SECTION_4_9_SUBMIT_PATH_INVENTORY_AND_GO_SCOPE_ON_ORIGIN_MAIN_EXCLUDE_FND_016_NO_UNLOCK
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+PRODUCTIVE_CODE_CHANGED=false
+AUTHORITY_EXPANDED=false
+FND_016_INCLUDED=false
+FND_016_BINDING_NOT_PART_OF_THIS_SECTION=true
+COVER_USDC=UNINSTANTIATED
+NUMERIC_FUNDING_AMOUNT=NONE
+LIVE_AUTHORIZED=false
+FUNDING_AUTHORIZED=false
+ORDER_SUBMIT_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+GENERAL_LIVE_UNLOCKED=false
+CAN_SUBMIT_ORDER_TODAY_ANY_PATH=false
+```
+
+This subsection is the canonical Owner-GO scope inventory for Peak_Trade
+order-submit surfaces that exist on current `origin&#47;main`. It does
+**not** authorize Testnet, Live, Canary execute, funding, credentials,
+or any POST. It does **not** instantiate `COVER_USDC`. It does **not**
+bind FND-016 (confirm-token family versus Canary execute
+authorization). Path-specific execute contracts remain in §11.12.8 and
+§11.13.5; this subsection binds **which GO may later name which
+surface** and forbids GO-scope collapse.
+
+### 4.9.1 Binding definitions (non-equivalence)
+
+The following concepts are distinct and must not be equated:
+
+``` text
+CODE_EXISTS != RUNTIME_REACHABLE
+RUNTIME_REACHABLE != CONFIGURATION_ENABLED
+CONFIGURATION_ENABLED != OWNER_AUTHORIZED
+OWNER_AUTHORIZED != ONE_SHOT_EXECUTE_AUTHORIZED
+POST_TRANSPORT_EXISTS != PERMISSION_TO_CALL_IT
+LIVE_ENABLED != AUTHORITY
+LIVE_ARMED != AUTHORITY
+```
+
+`CURRENTLY_REACHABLE` in this inventory means: the named Python surface
+exists on current `origin&#47;main` and is constructible or callable as
+code. It does **not** mean configuration enablement, Owner
+authorization, or one-shot execute authorization.
+
+`CAN_SUBMIT_ORDER_TODAY` means: invoking that surface now, under
+standing fail-closed flags and without a new explicit Owner-GO, would
+send a productive exchange order. Standing value for every inventoried
+path:
+
+``` text
+CAN_SUBMIT_ORDER_TODAY=false
+```
+
+Execution-class vocabulary for this inventory:
+
+``` text
+A=PRODUCTIVE_TRANSPORT_CAPABLE_SUBMIT_ENTRY
+B=ORCHESTRATION_ENTRY_EVENTUALLY_REACHING_A
+C=DRY_RUN_OR_SIMULATION_ONLY
+D=FIXTURE_TEST_OR_MOCK
+E=HISTORICAL_DEPRECATED_OR_NONCANONICAL
+F=EVIDENCE_VERIFIER_OR_READ_ONLY
+```
+
+A function is **not** a productive submit path merely because its name
+contains `order`. Classification requires tracing whether the call can
+cause a mutating exchange order POST &#47; AddOrder.
+
+Missing, unnamed, or ambiguous path &#47; GO-scope binding is fail-closed.
+An execute GO may not treat an uninventoried surface as authorized.
+
+### 4.9.2 Canonical Owner-GO scope rule
+
+An Owner-GO authorizes only the explicitly named submit surface and
+action scope. Authorization for one submit path, environment, evidence
+acquisition, funding action, Testnet run, or Canary attempt MUST NOT be
+interpreted as authorization for another.
+
+Mandatory non-equivalence (current SSOT):
+
+``` text
+DOCS_OR_CONTRACT_GO != EXECUTION_GO
+EVIDENCE_GET_GO != POST_OR_ORDER_GO
+FUNDING_EVALUATION_GO != FUNDING_AUTHORIZATION
+FUNDING_AUTHORIZATION != ORDER_SUBMIT_AUTHORIZATION
+TESTNET_GO != LIVE_GO
+HISTORICAL_DEMO_XPERP_AUTHORITY != CANARY_AUTHORITY
+CANARY_PREPARATION_GO != CANARY_EXECUTE_GO
+CANARY_EXECUTE_GO_MUST_BE_ONESHOT_AND_SCOPE_BOUND=true
+LIVE_ENABLED_ALONE != AUTHORITY
+LIVE_ARMED_ALONE != AUTHORITY
+CONFIG_REACHABILITY != OWNER_AUTHORIZATION
+EXISTENCE_OF_POST_TRANSPORT != PERMISSION_TO_CALL_IT
+MERGE_GO != SUBMIT_GO
+AUTHORING_GO != EXECUTE_GO
+CONSUMED_GO != REUSABLE_GO
+SECTION_11_12_8_CLOSED != LICENSE_TO_REOPEN_WITHOUT_NEW_GO
+CAPABILITY_11_9_FIXTURE_ONLY != SECTION_11_13_5_CANARY_EXECUTE
+KRAKEN_BOUNDED_PILOT != OKX_EEA_CANARY
+PIPELINE_SUBMIT != CANARY_OR_TESTNET_SUBMIT
+ONE_SUBMIT_PATH_GO != ANY_OTHER_SUBMIT_PATH_GO
+```
+
+A GO that names SP-01 does not authorize SP-04, SP-07, SP-10, or any
+other inventoried ID. The converse is also true. Existing safety gates
+are unchanged by this documentation.
+
+### 4.9.3 Standing fail-closed binding
+
+Until a later Owner-GO explicitly names one inventoried surface and
+consumes a one-shot execute scope for that surface only, all of the
+following remain false:
+
+``` text
+COVER_USDC=UNINSTANTIATED
+NUMERIC_FUNDING_AMOUNT=NONE
+LIVE_AUTHORIZED=false
+FUNDING_AUTHORIZED=false
+ORDER_SUBMIT_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+GENERAL_LIVE_UNLOCKED=false
+SUBMIT_UNLOCKED=false
+GENERAL_LIVE_SUBMIT_UNLOCKED=false
+ENABLE_LIVE_TRADING=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+LIVE_ORDER_AUTHORIZED=false
+```
+
+This subsection is not a Live unlock, not a Testnet unlock, not a
+funding authorization, and not an order-submit authorization.
+
+### 4.9.4 Inventoried real submit surfaces
+
+Discovery bound to current `origin&#47;main` SHA
+`ac8aa95dab1dc2f92a44aaf8609163ad6739b064`. Local uncommitted
+§11.13.5.Z2I--Z2P material is non-SSOT and is not used as submit-path
+authority. Confirm-token family non-equivalence (FND-016) is not
+inventoried here.
+
+``` text
+SUBMIT_PATH_COUNT=15
+PRODUCTIVE_TRANSPORT_PATH_COUNT=4
+ORCHESTRATION_PATH_COUNT=10
+DRY_RUN_ONLY_PATH_COUNT=7
+TEST_FIXTURE_PATH_COUNT=6
+HISTORICAL_OR_NONCANONICAL_PATH_COUNT=4
+INVENTORIED_CLASS_C_OPERATOR_CLI_COUNT=1
+```
+
+The 15 records below are the inventoried class-A, class-B, and the one
+class-C operator CLI that must not be mistaken for a productive submit
+surface. Class C--F summaries follow in §4.9.5.
+
+#### SP-01 OKX EEA Live Canary POST trade-order
+
+``` text
+SUBMIT_PATH_ID=SP-01-OKX-CANARY-HTTP-POST-TRADE-ORDER
+ENTRY_POINT=LiveCanaryHttpClientV1.post_entry_order
+FILE=src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py
+SYMBOL_OR_FUNCTION=post_entry_order
+EXECUTION_CLASS=A
+DOWNSTREAM_TRANSPORT=UrllibLiveCanaryTransportV1.send -> POST /api/v5/trade/order
+ENVIRONMENT_SCOPE=CANARY
+CURRENTLY_REACHABLE=true
+CURRENT_REACHABILITY_REASON=CANARY_SUBMIT_TRANSPORT_IMPLEMENTED=true; client constructible; POST allowlisted only with ENTRY_SUBMIT permit
+CURRENT_FAIL_CLOSED_GATES=SUBMIT_UNLOCKED=false; GENERAL_LIVE_SUBMIT_UNLOCKED=false; LIVE_AUTHORIZED=false; LIVE_CANARY_MINIMUM_EXPOSURE_AUTHORIZED_DEFAULT=false; evaluate_canary_submit_gates_v1; one-shot entry; no blind retry
+CURRENT_CONFIRM_MECHANISM=evaluate_canary_submit_gates_v1 session-gate as implemented; this inventory does not bind confirm-token family semantics
+CURRENT_OWNER_GO_REQUIREMENT=OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE one-shot unused execute token; authoring/prep/merge/consumed GOs refused
+MINIMUM_FUTURE_OWNER_GO_SCOPE=OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE bound to this surface, this origin/main SHA, LIVE_CANARY_MINIMUM_EXPOSURE scope, one-shot, unused
+GO_SCOPE_MUST_NOT_AUTHORIZE=general Live; Testnet; funding; GET-only evidence; authoring; merge; Cap 11.9; Kraken; pipeline Live; second Canary POST; cancel-without-entry; COVER_USDC instantiation; any other SUBMIT_PATH_ID
+RELATED_RUNBOOK_SECTION=§11.13.5 / §11.13.5.G
+CAN_SUBMIT_ORDER_TODAY=false
+EVIDENCE=src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py post_entry_order; constants_v1.py SUBMIT_UNLOCKED=false OWNER_GO_EXECUTE
+```
+
+#### SP-02 OKX EEA Live Canary submit-transport orchestrator
+
+``` text
+SUBMIT_PATH_ID=SP-02-OKX-CANARY-SUBMIT-TRANSPORT
+ENTRY_POINT=run_canary_submit_transport_v1
+FILE=src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py
+SYMBOL_OR_FUNCTION=run_canary_submit_transport_v1
+EXECUTION_CLASS=B
+DOWNSTREAM_TRANSPORT=SP-01
+ENVIRONMENT_SCOPE=CANARY
+CURRENTLY_REACHABLE=true
+CURRENT_REACHABILITY_REASON=orchestrator implemented; standing safety refuses GENERAL_LIVE_SUBMIT_UNLOCKED or LIVE_AUTHORIZED=true
+CURRENT_FAIL_CLOSED_GATES=same as SP-01 plus standing-safety assertion; refuse_submit_unless_gates_pass_v1
+CURRENT_CONFIRM_MECHANISM=delegates to SP-01 gates
+CURRENT_OWNER_GO_REQUIREMENT=same one-shot Canary execute GO as SP-01; preparation GO OWNER_GO_CANARY_SUBMIT_TRANSPORT_PREPARATION cannot authorize submit
+MINIMUM_FUTURE_OWNER_GO_SCOPE=same as SP-01; must name this orchestrator plus SP-01
+GO_SCOPE_MUST_NOT_AUTHORIZE=same as SP-01; Canary preparation != Canary execute; any SUBMIT_PATH_ID other than SP-01/SP-02
+RELATED_RUNBOOK_SECTION=§11.13.5.G
+CAN_SUBMIT_ORDER_TODAY=false
+EVIDENCE=submit_transport_v1.py; submit_gates_v1.py; governance_state_matrix_v1.py NON_EXECUTE_GO_TOKENS_FORBIDDEN_FOR_SUBMIT
+```
+
+#### SP-03 OKX EEA Live Canary runner and CLI
+
+``` text
+SUBMIT_PATH_ID=SP-03-OKX-CANARY-RUNNER-AND-CLI
+ENTRY_POINT=run_section_11_13_5_live_canary_minimum_exposure_v1 / scripts/ops/run_section_11_13_5_live_canary_minimum_exposure_v1.py
+FILE=src/ops/section_11_13_5_live_canary_minimum_exposure_v1/runner_v1.py
+SYMBOL_OR_FUNCTION=run_section_11_13_5_live_canary_minimum_exposure_v1
+EXECUTION_CLASS=B
+DOWNSTREAM_TRANSPORT=SP-02 -> SP-01
+ENVIRONMENT_SCOPE=CANARY
+CURRENTLY_REACHABLE=true
+CURRENT_REACHABILITY_REASON=CLI and runner exist; default modes are preflight/forensic; execute remains fail-closed
+CURRENT_FAIL_CLOSED_GATES=runner refuses SUBMIT_UNLOCKED/GENERAL_LIVE_SUBMIT_UNLOCKED; Cap 11.9 fixture-only; SP-01 gates
+CURRENT_CONFIRM_MECHANISM=delegates session-gate inputs into SP-01/SP-02 gates; this inventory does not bind confirm-token family semantics
+CURRENT_OWNER_GO_REQUIREMENT=same as SP-01
+MINIMUM_FUTURE_OWNER_GO_SCOPE=same as SP-01; must name runner/CLI execute mode plus SP-01
+GO_SCOPE_MUST_NOT_AUTHORIZE=preflight; forensic GET; authoring; Testnet; general Live; any SUBMIT_PATH_ID other than SP-01/SP-02/SP-03
+RELATED_RUNBOOK_SECTION=§11.13.5
+CAN_SUBMIT_ORDER_TODAY=false
+EVIDENCE=runner_v1.py; scripts/ops/run_section_11_13_5_live_canary_minimum_exposure_v1.py
+```
+
+#### SP-04 OKX EEA Demo Testnet productive execution port
+
+``` text
+SUBMIT_PATH_ID=SP-04-OKX-TESTNET-PRODUCTIVE-PORT
+ENTRY_POINT=ProductiveTestnetExecutionPortV1.submit_order_v1
+FILE=src/ops/section_11_12_8_actual_productive_testnet_campaign_run_start_v1/productive_execution_port_v1.py
+SYMBOL_OR_FUNCTION=submit_order_v1
+EXECUTION_CLASS=A
+DOWNSTREAM_TRANSPORT=ProductiveTestnetTransportV1.request -> Bound OKX Testnet HTTP POST /api/v5/trade/order
+ENVIRONMENT_SCOPE=TESTNET
+CURRENTLY_REACHABLE=true
+CURRENT_REACHABILITY_REASON=port constructible; authorized=false by default; stubbed=true by default; live/non-testnet submit forbidden
+CURRENT_FAIL_CLOSED_GATES=authorized flag; EXECUTION_MODE=TESTNET; ephemeral_campaign_write_gate; SWAP write forbidden; BTC-USDT-SWAP deprecated; allow_real_network
+CURRENT_CONFIRM_MECHANISM=hidden confirm single-use (latch_and_consume_confirm_digest_v1) on the productive consumer
+CURRENT_OWNER_GO_REQUIREMENT=§11.12.8 is CLOSED; historical EXECUTE_BOUNDED_LONG_RUNNING_PRODUCTIVE_TESTNET_CAMPAIGN_NOW consumed/not standing; new one-shot GO required to reopen this surface
+MINIMUM_FUTURE_OWNER_GO_SCOPE=new explicit Owner-GO naming ProductiveTestnetExecutionPortV1.submit_order_v1 + MODE_PRODUCTIVE_REAL + OKX EEA Demo XPerp venue/account/instrument; TESTNET only
+GO_SCOPE_MUST_NOT_AUTHORIZE=Live; Canary; funding; Kraken; pipeline Live; historical Demo BTC-USDT-SWAP; Cap 11.13; any SUBMIT_PATH_ID other than SP-04
+RELATED_RUNBOOK_SECTION=§11.12.8 / §11.12.8.6
+CAN_SUBMIT_ORDER_TODAY=false
+EVIDENCE=productive_execution_port_v1.py; testnet_transport_v1.py; constants_v1.py TESTNET_AUTHORIZED_PERSISTED_DEFAULT=False
+```
+
+#### SP-05 OKX EEA Demo Testnet campaign orchestration
+
+``` text
+SUBMIT_PATH_ID=SP-05-OKX-TESTNET-CAMPAIGN-ORCHESTRATION
+ENTRY_POINT=run_campaign_lifecycle_v1 / execute_productive_section_11_12_8_campaign_run_v1
+FILE=src/ops/section_11_12_8_actual_productive_testnet_campaign_run_start_v1/campaign_executor_v1.py
+SYMBOL_OR_FUNCTION=run_campaign_lifecycle_v1
+EXECUTION_CLASS=B
+DOWNSTREAM_TRANSPORT=SP-04
+ENVIRONMENT_SCOPE=TESTNET
+CURRENTLY_REACHABLE=true
+CURRENT_REACHABILITY_REASON=campaign executor and productive consumer exist; MODE_PRODUCTIVE_REAL still requires Owner-EXECUTE plus runtime gates
+CURRENT_FAIL_CLOSED_GATES=ENABLED_AND_ARMED; TESTNET_AUTHORIZED_RUNTIME_EPHEMERAL; SECRETREF; HIDDEN_CONFIRM_SINGLE_USE; LIVE_PATH_HARD_BLOCK; account/endpoint allowlist
+CURRENT_CONFIRM_MECHANISM=hidden confirm single-use on productive consumer
+CURRENT_OWNER_GO_REQUIREMENT=same as SP-04; aliases EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW and EXECUTE_BOUNDED_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_CAMPAIGN are Testnet-only historical aliases for this surface, not Live/Canary
+MINIMUM_FUTURE_OWNER_GO_SCOPE=same as SP-04; must name this orchestration plus SP-04
+GO_SCOPE_MUST_NOT_AUTHORIZE=Live; Canary; funding; implementation-only handoff packages; Cap 11.13; any SUBMIT_PATH_ID other than SP-04/SP-05
+RELATED_RUNBOOK_SECTION=§11.12.8 Post-unlock Owner-EXECUTE authority
+CAN_SUBMIT_ORDER_TODAY=false
+EVIDENCE=campaign_executor_v1.py; productive_consumer_v1.py; src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/unlock_orchestrator_v1.py
+```
+
+#### SP-06 OKX EEA Demo Testnet operator EXECUTE CLI
+
+``` text
+SUBMIT_PATH_ID=SP-06-OKX-TESTNET-OPERATOR-EXECUTE-CLI
+ENTRY_POINT=scripts/ops/run_section_11_12_8_real_productive_testnet_execute_operator_entrypoint_v1.py
+FILE=scripts/ops/run_section_11_12_8_real_productive_testnet_execute_operator_entrypoint_v1.py
+SYMBOL_OR_FUNCTION=operator entrypoint main
+EXECUTION_CLASS=B
+DOWNSTREAM_TRANSPORT=SP-05 -> SP-04
+ENVIRONMENT_SCOPE=TESTNET
+CURRENTLY_REACHABLE=true
+CURRENT_REACHABILITY_REASON=operator CLI exists; pre-merge wire send forbidden; post-merge still requires --allow-wire-send + vault + hidden confirm + Owner-GO
+CURRENT_FAIL_CLOSED_GATES=same as SP-05; live hard-block; does not start §11.13
+CURRENT_CONFIRM_MECHANISM=hidden confirm single-use
+CURRENT_OWNER_GO_REQUIREMENT=same as SP-04
+MINIMUM_FUTURE_OWNER_GO_SCOPE=same as SP-04; must name this CLI plus SP-04
+GO_SCOPE_MUST_NOT_AUTHORIZE=Live; Canary; funding; other CLIs; any SUBMIT_PATH_ID other than SP-04/SP-05/SP-06
+RELATED_RUNBOOK_SECTION=§11.12.8
+CAN_SUBMIT_ORDER_TODAY=false
+EVIDENCE=scripts/ops/run_section_11_12_8_real_productive_testnet_execute_operator_entrypoint_v1.py
+```
+
+#### SP-07 ExecutionPipeline.submit_order
+
+``` text
+SUBMIT_PATH_ID=SP-07-PIPELINE-SUBMIT-ORDER
+ENTRY_POINT=ExecutionPipeline.submit_order
+FILE=src/execution/pipeline.py
+SYMBOL_OR_FUNCTION=submit_order
+EXECUTION_CLASS=B
+DOWNSTREAM_TRANSPORT=execute_with_safety -> bound executor (paper / testnet / trading client / live lock)
+ENVIRONMENT_SCOPE=GENERIC
+CURRENTLY_REACHABLE=true
+CURRENT_REACHABILITY_REASON=pipeline is the generic governance-aware submit entry; live env is governance-locked unless bounded_pilot
+CURRENT_FAIL_CLOSED_GATES=get_governance_status locked for live; policy_enforcer_v0 default NO_TRADE; SafetyGuard.ensure_may_place_order; enable_live_trading=false
+CURRENT_CONFIRM_MECHANISM=SafetyGuard / EnvironmentConfig when live or bounded_pilot; this inventory does not bind confirm-token family semantics
+CURRENT_OWNER_GO_REQUIREMENT=none standing; a future GO must name this pipeline plus the concrete downstream executor/venue; cannot inherit Canary or Testnet GOs
+MINIMUM_FUTURE_OWNER_GO_SCOPE=explicit Owner-GO naming ExecutionPipeline.submit_order AND the bound executor AND venue/environment; one-shot
+GO_SCOPE_MUST_NOT_AUTHORIZE=OKX Canary SP-01; OKX Testnet SP-04; funding; general Live unlock
+RELATED_RUNBOOK_SECTION=§2.3 / §4.1 / §11.4
+CAN_SUBMIT_ORDER_TODAY=false
+EVIDENCE=src/execution/pipeline.py submit_order; execute_with_safety live_mode_not_supported_in_phase_16a unless bounded_pilot
+```
+
+#### SP-08 ExecutionPipeline.execute_with_safety
+
+``` text
+SUBMIT_PATH_ID=SP-08-PIPELINE-EXECUTE-WITH-SAFETY
+ENTRY_POINT=ExecutionPipeline.execute_with_safety
+FILE=src/execution/pipeline.py
+SYMBOL_OR_FUNCTION=execute_with_safety
+EXECUTION_CLASS=B
+DOWNSTREAM_TRANSPORT=same as SP-07
+ENVIRONMENT_SCOPE=GENERIC
+CURRENTLY_REACHABLE=true
+CURRENT_REACHABILITY_REASON=internal executor dispatch after governance/safety/risk
+CURRENT_FAIL_CLOSED_GATES=same as SP-07
+CURRENT_CONFIRM_MECHANISM=same as SP-07
+CURRENT_OWNER_GO_REQUIREMENT=same as SP-07; cannot be authorized by a GO that names only submit_order without this dispatch, or vice versa, unless the GO explicitly names both
+MINIMUM_FUTURE_OWNER_GO_SCOPE=same as SP-07
+GO_SCOPE_MUST_NOT_AUTHORIZE=same as SP-07
+RELATED_RUNBOOK_SECTION=§2.3 / §11.4
+CAN_SUBMIT_ORDER_TODAY=false
+EVIDENCE=src/execution/pipeline.py execute_with_safety
+```
+
+#### SP-09 ExchangeOrderExecutor trading-client dispatch
+
+``` text
+SUBMIT_PATH_ID=SP-09-EXCHANGE-ORDER-EXECUTOR
+ENTRY_POINT=ExchangeOrderExecutor.execute_order / _execute_via_trading_client
+FILE=src/orders/exchange.py
+SYMBOL_OR_FUNCTION=execute_order
+EXECUTION_CLASS=B
+DOWNSTREAM_TRANSPORT=TradingExchangeClient.place_order (Kraken live/testnet if bound; otherwise dry-run / LiveNotImplementedError)
+ENVIRONMENT_SCOPE=GENERIC
+CURRENTLY_REACHABLE=true
+CURRENT_REACHABILITY_REASON=executor exists; live without client raises after SafetyGuard; testnet without client is dry-run
+CURRENT_FAIL_CLOSED_GATES=SafetyGuard.ensure_may_place_order; environment switch; LiveNotImplementedError without client
+CURRENT_CONFIRM_MECHANISM=SafetyGuard as implemented on this executor
+CURRENT_OWNER_GO_REQUIREMENT=none standing; future GO must name this executor plus the bound client
+MINIMUM_FUTURE_OWNER_GO_SCOPE=explicit Owner-GO naming ExchangeOrderExecutor AND the concrete TradingExchangeClient
+GO_SCOPE_MUST_NOT_AUTHORIZE=OKX Canary; OKX Testnet campaign; funding
+RELATED_RUNBOOK_SECTION=§2.3
+CAN_SUBMIT_ORDER_TODAY=false
+EVIDENCE=src/orders/exchange.py execute_order; _execute_via_trading_client
+```
+
+#### SP-10 Kraken Live AddOrder
+
+``` text
+SUBMIT_PATH_ID=SP-10-KRAKEN-LIVE-ADDORDER
+ENTRY_POINT=KrakenLiveClient.place_order
+FILE=src/exchange/kraken_live.py
+SYMBOL_OR_FUNCTION=place_order
+EXECUTION_CLASS=A
+DOWNSTREAM_TRANSPORT=Kraken REST POST /0/private/AddOrder
+ENVIRONMENT_SCOPE=LIVE
+CURRENTLY_REACHABLE=true
+CURRENT_REACHABILITY_REASON=client implements real AddOrder; not the canonical OKX EEA Canary path
+CURRENT_FAIL_CLOSED_GATES=SafetyGuard; enable_live_trading=false; LIVE_AUTHORIZED=false; pipeline governance lock; bounded_pilot confirm
+CURRENT_CONFIRM_MECHANISM=SafetyGuard / bounded_pilot session gates as implemented on the Kraken live client path
+CURRENT_OWNER_GO_REQUIREMENT=none standing; historical bounded-pilot authority does not authorize OKX Canary or Testnet
+MINIMUM_FUTURE_OWNER_GO_SCOPE=explicit Owner-GO naming KrakenLiveClient.place_order + bounded Live venue/account/instrument; one-shot; cannot reuse Canary or Testnet GOs
+GO_SCOPE_MUST_NOT_AUTHORIZE=OKX Canary SP-01; OKX Testnet SP-04; funding; general Live autonomy
+RELATED_RUNBOOK_SECTION=§2.3 / historical bounded-pilot contracts
+CAN_SUBMIT_ORDER_TODAY=false
+EVIDENCE=src/exchange/kraken_live.py place_order
+```
+
+#### SP-11 Kraken Testnet create_order
+
+``` text
+SUBMIT_PATH_ID=SP-11-KRAKEN-TESTNET-CREATE-ORDER
+ENTRY_POINT=KrakenTestnetClient.create_order
+FILE=src/exchange/kraken_testnet.py
+SYMBOL_OR_FUNCTION=create_order
+EXECUTION_CLASS=A
+DOWNSTREAM_TRANSPORT=Kraken Testnet REST create-order
+ENVIRONMENT_SCOPE=TESTNET
+CURRENTLY_REACHABLE=true
+CURRENT_REACHABILITY_REASON=client exists; not the canonical OKX EEA Demo XPerp §11.12.8 path
+CURRENT_FAIL_CLOSED_GATES=SafetyGuard testnet/dry-run; TESTNET_AUTHORIZED persisted false; TestnetExchangeOrderExecutor env check
+CURRENT_CONFIRM_MECHANISM=SafetyGuard / EnvironmentConfig; not §11.12.8 hidden confirm
+CURRENT_OWNER_GO_REQUIREMENT=none standing; §11.12.8 Testnet GOs do not authorize this Kraken client
+MINIMUM_FUTURE_OWNER_GO_SCOPE=explicit Owner-GO naming KrakenTestnetClient.create_order; TESTNET only; cannot reuse OKX Demo XPerp or Canary GOs
+GO_SCOPE_MUST_NOT_AUTHORIZE=OKX Canary; OKX Demo XPerp; Live; funding
+RELATED_RUNBOOK_SECTION=§11.12 (non-canonical relative to §11.12.8 OKX path)
+CAN_SUBMIT_ORDER_TODAY=false
+EVIDENCE=src/exchange/kraken_testnet.py create_order
+```
+
+#### SP-12 TestnetExchangeOrderExecutor
+
+``` text
+SUBMIT_PATH_ID=SP-12-TESTNET-ORDER-EXECUTOR
+ENTRY_POINT=TestnetExchangeOrderExecutor
+FILE=src/orders/testnet_executor.py
+SYMBOL_OR_FUNCTION=execute_order
+EXECUTION_CLASS=B
+DOWNSTREAM_TRANSPORT=SP-11
+ENVIRONMENT_SCOPE=TESTNET
+CURRENTLY_REACHABLE=true
+CURRENT_REACHABILITY_REASON=executor exists; environment must be TESTNET; testnet_dry_run blocks real sends
+CURRENT_FAIL_CLOSED_GATES=EnvironmentNotTestnetError; TestnetDryRunOnlyError; LiveRiskLimits; no live fallback
+CURRENT_CONFIRM_MECHANISM=SafetyGuard
+CURRENT_OWNER_GO_REQUIREMENT=same class as SP-11; does not inherit §11.12.8 OKX GOs
+MINIMUM_FUTURE_OWNER_GO_SCOPE=explicit Owner-GO naming TestnetExchangeOrderExecutor plus SP-11
+GO_SCOPE_MUST_NOT_AUTHORIZE=OKX Canary; OKX Demo XPerp; Live
+RELATED_RUNBOOK_SECTION=§11.12
+CAN_SUBMIT_ORDER_TODAY=false
+EVIDENCE=src/orders/testnet_executor.py class TestnetExchangeOrderExecutor
+```
+
+#### SP-13 LiveSessionRunner bounded-pilot bridge
+
+``` text
+SUBMIT_PATH_ID=SP-13-LIVE-SESSION-BOUNDED-PILOT
+ENTRY_POINT=LiveSessionRunner
+FILE=src/execution/live_session.py
+SYMBOL_OR_FUNCTION=LiveSessionRunner
+EXECUTION_CLASS=B
+DOWNSTREAM_TRANSPORT=SP-07 / SP-09 / SP-10 depending on mode
+ENVIRONMENT_SCOPE=GENERIC
+CURRENTLY_REACHABLE=true
+CURRENT_REACHABILITY_REASON=session runner exists; default modes shadow/testnet; live mode hard-blocked except bounded_pilot with explicit process-env handoff
+CURRENT_FAIL_CLOSED_GATES=live mode hard block; bounded_pilot requires PT_BOUNDED_PILOT_INVOKED_FROM_GATE=1 plus configured confirm env; pipeline governance
+CURRENT_CONFIRM_MECHANISM=bounded_pilot process-env handoff as implemented in require_bounded_pilot_handoff_env; this inventory does not bind confirm-token family semantics
+CURRENT_OWNER_GO_REQUIREMENT=none standing; historical bounded-pilot != Canary != §11.12.8
+MINIMUM_FUTURE_OWNER_GO_SCOPE=explicit Owner-GO naming LiveSessionRunner mode plus downstream executor; cannot reuse Canary or OKX Testnet GOs
+GO_SCOPE_MUST_NOT_AUTHORIZE=OKX Canary SP-01/SP-02/SP-03; OKX Demo XPerp; funding; general Live
+RELATED_RUNBOOK_SECTION=§2.3
+CAN_SUBMIT_ORDER_TODAY=false
+EVIDENCE=src/execution/live_session.py LiveSessionRunner; require_bounded_pilot_handoff_env
+```
+
+#### SP-14 Execution router place_order
+
+``` text
+SUBMIT_PATH_ID=SP-14-EXECUTION-ROUTER-PLACE-ORDER
+ENTRY_POINT=ExecutionRouterV1.place_order
+FILE=src/execution/router/router_v1.py
+SYMBOL_OR_FUNCTION=place_order
+EXECUTION_CLASS=B
+DOWNSTREAM_TRANSPORT=currently mock adapters only (okx_v1 / bybit_v1 / coinbase_v1 MOCKS ONLY); router modes limited to shadow/paper
+ENVIRONMENT_SCOPE=NONE
+CURRENTLY_REACHABLE=true
+CURRENT_REACHABILITY_REASON=router exists; bound adapters are mocks; no OKX Live/Testnet POST
+CURRENT_FAIL_CLOSED_GATES=mock-only adapter implementations; mode hard-guard shadow/paper; no credential/network in adapters
+CURRENT_CONFIRM_MECHANISM=NONE
+CURRENT_OWNER_GO_REQUIREMENT=none; a future real adapter would require its own GO naming that adapter plus this router
+MINIMUM_FUTURE_OWNER_GO_SCOPE=explicit Owner-GO naming router plus a then-real adapter; current mocks cannot be authorized as productive submit
+GO_SCOPE_MUST_NOT_AUTHORIZE=treating mock adapter success as Testnet/Live/Canary
+RELATED_RUNBOOK_SECTION=§4.1
+CAN_SUBMIT_ORDER_TODAY=false
+EVIDENCE=src/execution/router/router_v1.py; src/execution/adapters/providers/okx_v1.py MOCKS ONLY
+```
+
+#### SP-15 Networked onramp CLI
+
+``` text
+SUBMIT_PATH_ID=SP-15-NETWORKED-ONRAMP-CLI
+ENTRY_POINT=scripts via src/execution/networked/onramp_cli_v1.py
+FILE=src/execution/networked/onramp_cli_v1.py
+SYMBOL_OR_FUNCTION=main / run_networked_onramp_v1
+EXECUTION_CLASS=C
+DOWNSTREAM_TRANSPORT=NONE productive; dry_run=True hardcoded; live mode rejected by guard
+ENVIRONMENT_SCOPE=NONE
+CURRENTLY_REACHABLE=true
+CURRENT_REACHABILITY_REASON=CLI exists as networkless default-deny onramp; live rejected; dry_run forced true
+CURRENT_FAIL_CLOSED_GATES=TRANSPORT_ALLOW default NO; live rejected; dry_run=True
+CURRENT_CONFIRM_MECHANISM=NONE
+CURRENT_OWNER_GO_REQUIREMENT=not a productive submit surface; a future productive onramp would need a new GO and must not reuse Canary/Testnet GOs
+MINIMUM_FUTURE_OWNER_GO_SCOPE=NONE until a separate productive-network GO explicitly reclassifies this CLI
+GO_SCOPE_MUST_NOT_AUTHORIZE=Live; Testnet; Canary; treating TRANSPORT_ALLOW=YES as order authority
+RELATED_RUNBOOK_SECTION=§2.3
+CAN_SUBMIT_ORDER_TODAY=false
+EVIDENCE=src/execution/networked/onramp_cli_v1.py dry_run=True
+```
+
+### 4.9.5 Classified non-productive paths (not submit authority)
+
+Class C dry-run &#47; simulation-only (not Owner-GO submit surfaces):
+
+- `DryRunBroker.submit_orders` (`src&#47;live&#47;broker_base.py`)
+- `PaperBroker` / `src&#47;execution&#47;paper&#47;engine.py` `submit_order`
+- `DummyExchangeClient.place_order`
+- `StubbedTestnetTransportV1.request` (records; `wire_sent=false`)
+- `TestnetExecutionPortProductiveV1.submit_order_v1`
+  (`ORDER_SUBMIT_FORBIDDEN_IN_TERMINAL_IMPLEMENTATION_ONLY`)
+- `TestnetOrderExecutor` in `src&#47;orders&#47;exchange.py` (dry-run
+  simulation only; distinct from SP-12)
+- SP-15 networked onramp (`dry_run=True`)
+
+Class D fixture &#47; test &#47; mock:
+
+- `OKXExecutionAdapterV1` / Bybit / Coinbase v1 (`MOCKS ONLY`)
+- `FakeBroker.place_order`
+- `src&#47;execution&#47;adapters&#47;mock_v1.py`
+- Cap 11.1 / Cap 11.4 construction-forbidden ports
+- Cap 11.9 live-canary contracts (`LIVE_CANARY_ORDER_EXECUTION_FIXTURE_ONLY=true`)
+- `OrderStateMachine.create_order` / `submit_order` (in-memory state only)
+
+Class E historical &#47; deprecated &#47; non-canonical:
+
+- §11.12.8.3 OKX EEA Demo BTC-USDT-SWAP productive-order path
+  (`CLOSED_DEPRECATED_HISTORICAL_EVIDENCE_ONLY`)
+- §11.12.8.4 OKX Global Demo binding package (superseded by §11.12.8.5;
+  not activated)
+- Activation-and-Executable-Handoff package (dry-activation proof only;
+  not `ACTUAL_PRODUCTIVE_TESTNET_CAMPAIGN_RUN_START`)
+- Historical Demo X-Perp campaign authority (does not authorize Canary)
+
+Class F evidence &#47; verifier &#47; read-only:
+
+- GET `&#47;api&#47;v5&#47;trade&#47;order` and GET pending &#47; history (query, not submit)
+- Phase 9.2 Public-MD `network_boundary_v1` POST denylist of trade-order
+- §11.13.2 / §11.13.3 / §11.13.4 mutation hard-block before wire
+- `assert_order_send_forbidden_v1` verifiers
+- adapter-submission / research / meta-learning contracts that assert
+  `does_not_submit_order`
+
+Cancel &#47; amend POSTs (Canary `post_cancel_order`, Testnet cancel body)
+are mutating but are **not** new-order submit paths. A submit GO does
+**not** authorize cancel; a cancel GO does **not** authorize submit.
+
+### 4.9.6 Future Owner-GO minimum naming rule
+
+A future execute Owner-GO that intends productive order submit MUST:
+
+1. name exactly one `SUBMIT_PATH_ID` from this inventory (or a later
+   runbook amendment that adds a new ID before use);
+2. name the environment (`LIVE` | `TESTNET` | `CANARY`) and venue &#47;
+   account &#47; instrument;
+3. be one-shot and SHA-bound where the target contract already requires
+   that;
+4. leave every other inventoried path unauthorized.
+
+If a requested action would require a submit surface that is not in this
+inventory, stop and amend this subsection under a docs GO **before** any
+execute GO. Do not treat an unnamed path as authorized.
+
+FND-016 is explicitly **not** part of this subsection and is not bound
+here.
+
 ------------------------------------------------------------------------
 
 # 5. Current Forensic Runtime Truth
