@@ -83,8 +83,7 @@ Z2I_HEADING = (
     "verified first-party OKX `delivery`"
 )
 Z2I_HIST_HEADING = (
-    "### 11.13.5.Z2I-HIST Delivery 0.0003 versus expiry-settlement 0.0001 "
-    "provenance adjudication"
+    "### 11.13.5.Z2I-HIST Delivery 0.0003 versus expiry-settlement 0.0001 provenance adjudication"
 )
 Z2I_OWNER_GO = "OWNER_POLICY_OVERRIDE_GO"
 NEXT_POINTER = (
