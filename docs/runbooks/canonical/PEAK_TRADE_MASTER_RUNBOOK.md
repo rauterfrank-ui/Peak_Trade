@@ -1605,6 +1605,176 @@ LOADS_OVERLAY_LOADER=false
 historical non-SSOT document. It must not be read as current apply
 semantics. Canonical owner for this finding is this subsection.
 
+## 4.12 Canonical Experiment Identity non-equivalence (FND-010)
+
+``` text
+FND_010_ID=FND-010
+FND_010_SHORT_TITLE=LEGACY_SWEEP_RESEARCH_IDENTIFIERS_ARE_NOT_CANONICAL_EXPERIMENT_IDENTITY
+FND_010_STATUS=RESOLVED_DOCS_ONLY
+FND_010_RESOLUTION=DOCS_ONLY_NON_EQUIVALENCE_BINDING
+OWNER_GO_CONSUMED_FOR_THIS_SECTION=OWNER_GO_FND_010_DOCS_BIND
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+PRODUCTIVE_CODE_CHANGED=false
+AUTHORITY_EXPANDED=false
+EXPERIMENT_IDENTITY_HAS_RUNTIME_AUTHORITY=false
+LEGACY_SWEEP_IDENTIFIER_HAS_RUNTIME_AUTHORITY=false
+LEGACY_SWEEP_IDENTIFIER_HAS_LIVE_AUTHORITY=false
+LEGACY_SWEEP_IDENTIFIER_HAS_ORDER_AUTHORITY=false
+LEGACY_SWEEP_IDENTIFIER_HAS_LOADER_AUTHORITY=false
+LEGACY_SWEEP_IDENTIFIER_HAS_CONFIG_APPLY_AUTHORITY=false
+LEGACY_SWEEP_IDENTIFIER_HAS_AUTHORIZATION_AUTHORITY=false
+PROMOTION_APPLY_ALLOWED=false
+ADMISSION_AUTHORITY=RESEARCH_EVIDENCE_PARENT_ONLY
+PROMOTION_AUTHORITY=NONE
+TOPN_SWEEP_EXPORT_IS_RESEARCH_ARTIFACT=true
+COVER_USDC=UNINSTANTIATED
+LIVE_AUTHORIZED=false
+FUNDING_AUTHORIZED=false
+ORDER_SUBMIT_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+FND_004_INCLUDED=false
+FND_005_INCLUDED=false
+FND_012_INCLUDED=false
+FND_016_INCLUDED=false
+```
+
+This subsection binds existing Canonical Experiment Identity versus
+legacy Sweep / Research-Playground / Top-N identifier behavior on
+current `origin&#47;main`. It does **not** change code, loaders, trading
+logic, risk limits, or safety gates. It does **not** authorize Live,
+Testnet, funding, orders, Canary execute, apply, re-enable, or unlock.
+FND-012 and FND-016 are explicitly **not** part of this subsection.
+Canonical owner for this finding is this subsection.
+
+### 4.12.1 Proven surfaces and identity contract
+
+Existing Canonical Experiment Identity v1 components:
+
+``` text
+CODE_OWNER=src/experiments/canonical_experiment_identity_v1.py
+SPEC_OWNER=docs/ops/specs/CANONICAL_EXPERIMENT_IDENTITY_V1.md
+CONTRACT_TESTS=tests/experiments/test_canonical_experiment_identity_v1.py
+SCHEMA_VERSION=canonical_experiment_identity_v1
+COMPLETENESS=COMPLETE
+EXPERIMENT_IDENTITY_HAS_RUNTIME_AUTHORITY=false
+```
+
+Canonical Experiment Identity is the authoritative **complete**
+experiment identity on current `origin&#47;main`. A `COMPLETE` identity
+requires explicit bindings including:
+
+-   `git_sha` plus `working_tree_status=CLEAN`
+-   `dataset_digest`
+-   `seed` as an explicit int
+-   remaining required COMPLETE fields in the Phase-1 contract
+    (strategy identity/params, feature/cost/risk/portfolio/split
+    digests, reproducibility environment, canonical trading-decision
+    core)
+
+Missing, `UNKNOWN`, or `UNAVAILABLE` critical inputs fail closed and
+never yield `COMPLETE`.
+
+Existing I16 / Promotion-admission surface (research-evidence parent
+only; not authorizing):
+
+``` text
+I16_ADMISSION_OWNER=src/experiments/canonical_experiment_identity_to_package_n_i16_promotion_admission_v1.py
+I16_ADMISSION_SPEC=docs/ops/specs/CANONICAL_EXPERIMENT_IDENTITY_TO_PACKAGE_N_I16_PROMOTION_ADMISSION_V1.md
+ADMISSION_AUTHORITY=RESEARCH_EVIDENCE_PARENT_ONLY
+PROMOTION_AUTHORITY=NONE
+PROMOTION_APPLY_ALLOWED=false
+```
+
+Existing legacy Sweep / Research-Playground / Top-N identifier
+surfaces. None of these import or emit Canonical Experiment Identity
+v1:
+
+``` text
+LEGACY_SWEEP_ENGINE=src/sweeps/engine.py
+LEGACY_SWEEP_REGISTRY=src/core/experiments.py
+LEGACY_STRATEGY_SWEEPS=src/experiments/strategy_sweeps.py
+LEGACY_RESEARCH_PLAYGROUND=src/experiments/research_playground.py
+LEGACY_TOPN_PROMOTION=src/experiments/topn_promotion.py
+LEGACY_TOPN_CLI=scripts/promote_sweep_topn.py
+```
+
+Proven legacy identifiers include `sweep_id` (short UUID from
+`generate_sweep_id`), `sweep_name`, registry/runner `run_id`, Research
+Playground sweep `name`, and older Top-N / strategy-sweep labels.
+
+### 4.12.2 Mandatory non-equivalence
+
+The following concepts are distinct and must not be equated:
+
+``` text
+SWEEP_ID != CANONICAL_EXPERIMENT_IDENTITY
+RUN_ID != CANONICAL_EXPERIMENT_IDENTITY
+SWEEP_NAME != CANONICAL_EXPERIMENT_IDENTITY
+RESEARCH_PLAYGROUND_NAME != CANONICAL_EXPERIMENT_IDENTITY
+TOPN_SWEEP_LABEL != CANONICAL_EXPERIMENT_IDENTITY
+LEGACY_IDENTIFIER_PERSISTENCE != CANONICAL_EXPERIMENT_IDENTITY
+LEGACY_IDENTIFIER_EXPORT != CANONICAL_EXPERIMENT_IDENTITY
+LEGACY_IDENTIFIER_SORT != CANONICAL_EXPERIMENT_IDENTITY
+PACKAGE_N_EXPERIMENT_ID != PHASE1_COMPLETE_IDENTITY
+ADMITTED != PROMOTED
+I16_ASSESSMENT_CONSUMABLE != APPLY
+SWEEP_TOPN_EXPORT != RUNTIME_CONFIG
+CODE_EXISTS != RUNTIME_AUTHORITY
+```
+
+Canonical Experiment Identity v1 is the COMPLETE experiment-identity
+contract on current `origin&#47;main`. The mere existence, persistence,
+forwarding, sorting, export, or other use of a legacy identifier does
+**not** create Canonical Experiment Identity.
+
+`ExperimentConfig.get_experiment_id` remains the Package-N SHA256
+emitter recorded in §5.11. Package N remains an incomplete historical
+projection and is not Phase-1 COMPLETE identity.
+
+### 4.12.3 Standing fail-closed binding
+
+Until a later Owner-GO explicitly names a different surface and
+consumes a one-shot execute or apply scope for that surface only, all
+of the following remain false:
+
+``` text
+EXPERIMENT_IDENTITY_HAS_RUNTIME_AUTHORITY=false
+LEGACY_SWEEP_IDENTIFIER_HAS_RUNTIME_AUTHORITY=false
+LEGACY_SWEEP_IDENTIFIER_HAS_LIVE_AUTHORITY=false
+LEGACY_SWEEP_IDENTIFIER_HAS_ORDER_AUTHORITY=false
+LEGACY_SWEEP_IDENTIFIER_HAS_LOADER_AUTHORITY=false
+LEGACY_SWEEP_IDENTIFIER_HAS_CONFIG_APPLY_AUTHORITY=false
+PROMOTION_APPLY_ALLOWED=false
+LIVE_AUTHORIZED=false
+FUNDING_AUTHORIZED=false
+ORDER_SUBMIT_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+```
+
+Legacy Sweep / Top-N / Research identifiers have no runtime, Live,
+order, loader, config-apply, or authorization effect. Canonical
+Experiment Identity itself is research metadata and evidence only: it
+does not write live-override runtime configuration, enable, arm, fund,
+submit orders, mint or use confirm tokens, authorize Canary, or
+promote to Live.
+
+I16 / Promotion admission remains `RESEARCH_EVIDENCE_PARENT_ONLY`.
+`PROMOTION_APPLY_ALLOWED=false`. `ADMITTED` is not apply, not
+`bounded_auto`, not Live, and not promotion.
+
+Top-N / Sweep exports remain research artifacts and must not be read
+as productive config, runtime, or Live authority. Export non-authority
+for Top-N is already bound in §4.10; this subsection adds identity
+non-equivalence only.
+
+This subsection is not a Live unlock, not a Testnet unlock, not a
+funding authorization, not an order-submit authorization, not an apply
+re-enable, not a runtime-behavior change, and not an execution-gate
+change. Existing safety gates are unchanged. FND-012 and FND-016 are
+not bound here.
+
 
 ------------------------------------------------------------------------
 
