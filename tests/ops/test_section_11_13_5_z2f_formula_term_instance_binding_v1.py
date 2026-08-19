@@ -207,8 +207,8 @@ def test_monetary_base_fx_and_rounding_remain_unproven() -> None:
 
 
 def test_rates_and_cover_usdc_remain_separated_and_uninstantiated() -> None:
-    assert NORMAL_EXPIRY_RATE_0_0001_STATUS == "PROVEN_APPLICABILITY_NON_OPERATIVE"
-    assert CONSERVATIVE_RATE_0_0003_STATUS == "INTERNAL_CONSERVATIVE_POLICY_NOT_EXCHANGE_TRUTH"
+    assert NORMAL_EXPIRY_RATE_0_0001_STATUS == "HISTORICAL_SUPERSEDED"
+    assert CONSERVATIVE_RATE_0_0003_STATUS == "PEAK_TRADE_POLICY_REUSE_OF_SAME_NUMERIC_VALUE"
     assert CONSERVATIVE_RATE_KIND == KIND_INTERNAL_POLICY
     assert EXACT_OKX_FEE_FORMULA_STATUS == "UNPROVEN"
     assert OKX_POSITION_VALUE_ALGEBRA_STATUS == "UNPROVEN"
@@ -232,12 +232,12 @@ def test_rates_and_cover_usdc_remain_separated_and_uninstantiated() -> None:
         _bind(claim_0003_is_okx_fee_truth=True)
     with pytest.raises(
         FormulaTermInstanceBindingError,
-        match="CONSERVATIVE_RATE_0_0003_REMAINS_INTERNAL_POLICY",
+        match="CANONICAL_EXPIRY_RATE_CANNOT_RESET_TO_HISTORICAL_0001",
     ):
         _bind(reset_conservative_rate_to_0001=True)
     with pytest.raises(
         FormulaTermInstanceBindingError,
-        match="PROVEN_NORMAL_EXPIRY_RATE_IS_NON_OPERATIVE",
+        match="HISTORICAL_SUPPORT_RATE_0_0001_IS_NOT_OPERATIVE",
     ):
         _bind(consume_0001_as_operative_fee_input=True)
     with pytest.raises(

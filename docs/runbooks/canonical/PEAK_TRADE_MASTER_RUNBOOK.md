@@ -887,10 +887,11 @@ funding authorization, and not an order-submit authorization.
 ### 4.9.4 Inventoried real submit surfaces
 
 Discovery bound to current `origin&#47;main` SHA
-`ac8aa95dab1dc2f92a44aaf8609163ad6739b064`. Local uncommitted
-§11.13.5.Z2I--Z2P material is non-SSOT and is not used as submit-path
-authority. Confirm-token family non-equivalence (FND-016) is not
-inventoried here.
+`ac8aa95dab1dc2f92a44aaf8609163ad6739b064`. Canonical §11.13.5.Z2I is
+the owner-ratified expiry-rate persist and is **not** a submit-path
+authority. Other local uncommitted COVER_USDC numbering collisions
+are non-SSOT and are not used as submit-path authority. Confirm-token
+family non-equivalence (FND-016) is not inventoried here.
 
 ``` text
 SUBMIT_PATH_COUNT=15
@@ -1935,7 +1936,8 @@ canonical `origin&#47;main` SHA
 capability must still revalidate the actual `origin&#47;main` SHA. Older Cap
 6.1--7.2 and typed-volatility evidence packages remain historical
 predecessor evidence for their merge SHAs and must not be silently
-rewritten. Local uncommitted §11.13.5.Z2I--Z2P continuation is not
+rewritten. Canonical §11.13.5.Z2I expiry-rate adjudication is current.
+Other local uncommitted COVER_USDC numbering collisions are not
 canonical current state.
 
 ## 5.2 Current host and activation truth
@@ -16421,6 +16423,13 @@ does **not** make the fee computationally operative.
 
 ### 11.13.5.Z2B OKX ticket 7823581 normal-expiry fee applicability and non-operative rate (BOUND; RATE PROVEN NON-OPERATIVE; MONETARY BASE UNPROVEN; NOT FUNDED; NOT EXECUTE)
 
+Historical snapshot. Current operative expiry-settlement-rate authority
+is §11.13.5.Z2I.
+`SUPPORT_TICKET_7823581_STATUS=HISTORICAL_SUPERSEDED_FOR_RATE_ADJUDICATION`.
+`SUPPORT_RATE_0_0001_STATUS=HISTORICAL_SUPERSEDED`.
+`SUPPORT_RATE_0_0001_CAN_BLOCK_CURRENT_RATE=false`.
+This section is not rewritten.
+
 Owner-GO `OWNER_GO_BIND_OKX_TICKET_7823581` (one-shot; now **CONSUMED**)
 authorized **docs &#47; evidence persist only** of the first-party OKX
 Europe support statement in ticket `7823581` (Johnny, 2026-08-18
@@ -16696,6 +16705,15 @@ absolute economic-uncertainty bound for the qty=1 minimum-exposure
 canary only.
 
 ### 11.13.5.Z2C Bound unproven normal-expiry-fee economic risk with internal conservative reserve (BOUND; INTERNAL POLICY; MONETARY BASE UNPROVEN; NOT FUNDED; NOT EXECUTE)
+
+Historical snapshot. Current operative expiry-settlement-rate authority
+is §11.13.5.Z2I.
+`PEAK_TRADE_EXPIRY_RESERVE_RATE_HISTORICAL_SOURCE=CONSERVATIVE_INTERNAL_POLICY`.
+`PEAK_TRADE_EXPIRY_RESERVE_RATE=0.0003` remains the same numeric value
+and is now `PEAK_TRADE_POLICY_REUSE_OF_SAME_NUMERIC_VALUE` of the
+verified first-party OKX API field `delivery`. This section is not
+rewritten. `OPERATIVE_EXPIRY_FEE_RATE=NONE` below is the historical
+Z2C token.
 
 Owner-GO
 `OWNER_GO_BOUND_UNPROVEN_NORMAL_EXPIRY_FEE_ECONOMIC_RISK_WITH_INTERNAL_CONSERVATIVE_RESERVE`
@@ -18627,7 +18645,25 @@ Capability 11.9 remains fixture-only.
 `NUMERIC_FUNDING_AMOUNT_PRODUCED=false`. No funding. No execute. No
 merge of this persist without a separate `OWNER_MERGE_GO`.
 
-### 11.13.5.Z2I Delivery 0.0003 versus expiry-settlement 0.0001 provenance adjudication (BOUND; DOCS-ONLY; PARALLEL TO Z2H COVER_USDC PATH; NOT FUNDED; NOT EXECUTE)
+### 11.13.5.Z2I-HIST Delivery 0.0003 versus expiry-settlement 0.0001 provenance adjudication (HISTORICAL_SUPERSEDED; DOCS-ONLY; SUPERSEDED BY CURRENT §11.13.5.Z2I; NOT FUNDED; NOT EXECUTE)
+
+This persist is **HISTORICAL_SUPERSEDED**. Squash-merged PR `#5960`
+remains immutable provenance history. It is **not** the current
+operative or normative expiry-settlement-rate authority. Current Owner
+truth is §11.13.5.Z2I.
+
+``` text
+PERSIST_STATUS=HISTORICAL_SUPERSEDED
+PR_5960_SEMANTICS_STATUS=HISTORICAL_SUPERSEDED
+CURRENT_NORMATIVE_AUTHORITY=false
+CURRENT_OPERATIVE_AUTHORITY=false
+SUPERSEDED_BY=SECTION_11_13_5_Z2I_OWNER_RATIFIED_OPERATIVE_EXPIRY_SETTLEMENT_RATE
+SINGLE_CURRENT_RATE_TRUTH=false
+HISTORICAL_EXPIRY_SETTLEMENT_RATE_NORMATIVE_SNAPSHOT=0.0001
+HISTORICAL_EXPIRY_SETTLEMENT_RATE_PERCENT_NORMATIVE_SNAPSHOT=0.01%
+HISTORICAL_OPERATIVE_EXPIRY_SETTLEMENT_RATE_SNAPSHOT=NONE
+```
+
 
 Owner-GO `OWNER_GO_DOCS_ONLY` (one-shot; now **CONSUMED**) authorized
 **docs-only** persist of the completed provenance adjudication that
@@ -18849,6 +18885,217 @@ COVER_USDC-term evidence, funding, and execute remain separate.
 `SUPPORT_REQUIRED_FOR_0003_VS_0001_RATE_DECISION=false`.
 `API_DELIVERY_0003_BLOCKS_EXPIRY_RATE_0001=false`. No funding. No
 execute. No merge of this persist without a separate `OWNER_MERGE_GO`.
+
+### 11.13.5.Z2I Owner-ratified operative expiry-settlement rate from verified first-party OKX `delivery` (BOUND; RATE ADJUDICATION; NOT FUNDED; NOT EXECUTE)
+
+Owner-GO `OWNER_POLICY_OVERRIDE_GO` (one-shot; now **CONSUMED**)
+authorized a Peak_Trade **semantic &#47; operative adjudication** of the
+already verified first-party OKX EEA production API field
+`delivery="0.0003"`. PROVENANCE != ADJUDICATION. Bound scope:
+
+``` text
+AUTHORIZED_SCOPE=OWNER_RATIFIED_EXPIRY_SETTLEMENT_RATE_ADJUDICATION_FROM_VERIFIED_API_DELIVERY
+PARALLEL_TO_SECTION_11_13_5_Z2H=true
+Z2H_CANONICAL_POINTER_REPLACED=false
+NO_LIVE_ORDER=true
+NO_CANARY_SUBMIT=true
+NO_GET_THIS_STEP=true
+NO_SUPPORT_CONTACT=true
+NO_INVENTED_OKX_SUPPORT_SEMANTIC_CONFIRMATION=true
+FUNDING_EXECUTION_AUTHORIZED=false
+EXTERNAL_MONEY_MOVEMENT_AUTHORIZED=false
+TRADING_POST_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+GENERAL_LIVE_UNLOCKED=false
+MINIMUM_EXPOSURE_ONLY=true
+QTY_LIMIT=1
+SCALING_AUTHORIZED=false
+MULTI_FUTURE_AUTHORIZED=false
+FUNDING_AMOUNT_PROVEN=false
+FUNDING_EXECUTED=false
+COVER_USDC_STATUS=UNINSTANTIATED
+EXCHANGE_TRUTH_CHANGED=false
+```
+
+Verified first-party value chain (not Peak_Trade-generated, not
+Owner-generated):
+
+``` text
+DELIVERY_RATE_VALUE=0.0003
+DELIVERY_RATE_VALUE_PROVENANCE=VERIFIED_FIRST_PARTY_OKX_API_ARTIFACT
+DELIVERY_RATE_SOURCE=OKX_EEA_PRODUCTION_API
+DELIVERY_RATE_ENDPOINT=/api/v5/account/trade-fee
+DELIVERY_RATE_FIELD=delivery
+DELIVERY_RATE_ARTIFACT_VERIFIED=true
+DELIVERY_RATE_PEAK_TRADE_GENERATED=false
+DELIVERY_RATE_OWNER_GENERATED=false
+DELIVERY_RATE_QUERY=GET &#47;api&#47;v5&#47;account&#47;trade-fee?instType=FUTURES&instFamily=BTC-USD_UM_XPERP
+DELIVERY_RATE_SEALED_ARTIFACT=evidence/ops/section_11_13_5_v_fresh_xperp_trade_fee_get_evidence_v1/20260816T075803Z/
+```
+
+Owner adjudication of that verified value as Peak_Trade's single
+operative expiry-settlement rate:
+
+``` text
+EXPIRY_SETTLEMENT_RATE=0.0003
+EXPIRY_SETTLEMENT_RATE_PERCENT=0.03%
+EXPIRY_SETTLEMENT_RATE_VALUE_PROVENANCE=VERIFIED_FIRST_PARTY_OKX_API_ARTIFACT
+EXPIRY_SETTLEMENT_RATE_SOURCE_FIELD=delivery
+EXPIRY_SETTLEMENT_RATE_SOURCE_VALUE=0.0003
+EXPIRY_SETTLEMENT_RATE_ADJUDICATION=OWNER_RATIFIED_FROM_VERIFIED_FIRST_PARTY_OKX_DELIVERY_FIELD
+EXPIRY_SETTLEMENT_RATE_AUTHORITY=EXCHANGE_OBSERVED_OWNER_RATIFIED_OPERATIVE_TRUTH
+EXPIRY_SETTLEMENT_RATE_API_SOURCE=OKX_ACCOUNT_TRADE_FEE_DELIVERY
+EXPIRY_SETTLEMENT_RATE_API_FIELD=delivery
+EXPIRY_SETTLEMENT_RATE_API_VALUE=0.0003
+OPERATIVE_EXPIRY_SETTLEMENT_RATE=0.0003
+OPERATIVE_EXPIRY_SETTLEMENT_RATE_PERCENT=0.03%
+OPERATIVE_EXPIRY_FEE_RATE=0.0003
+DELIVERY_RATE_OPERATIVE_VALUE=0.0003
+CANONICAL_RATE_STATUS=OWNER_RATIFIED_OPERATIVE
+CANONICAL_RATE_SOURCE=OKX_TRADE_FEE_API_FIELD_DELIVERY
+CANONICAL_RATE_PROVENANCE=VERIFIED_FIRST_PARTY_OKX_API_ARTIFACT
+RATE_STATUS=RESOLVED
+RATE_ADJUDICATION_CLOSED=true
+EXPIRY_RATE_GATE=PASS
+EXPIRY_RATE_BLOCKER=false
+EXPIRY_RATE_SUPPORT_DEPENDENCY=false
+SUPPORT_REQUIRED_FOR_RATE_DECISION=false
+API_DELIVERY_0003_BLOCKS_OPERATION=false
+PROVEN_FIRST_PARTY_RATE_CONTRADICTION_BLOCKING=false
+API_DELIVERY_0_0003_STATUS=VERIFIED_FIRST_PARTY_VALUE_OWNER_RATIFIED_OPERATIVE_ADJUDICATION
+PEAK_TRADE_EXPIRY_RESERVE_RATE=0.0003
+PEAK_TRADE_EXPIRY_RESERVE_RATE_SOURCE=PEAK_TRADE_POLICY_REUSE_OF_SAME_NUMERIC_VALUE
+PEAK_TRADE_EXPIRY_RESERVE_RATE_HISTORICAL_SOURCE=CONSERVATIVE_INTERNAL_POLICY
+PEAK_TRADE_EXPIRY_RESERVE_RATE_IS_OKX_FEE_TRUTH=false
+ACTIVE_EXPIRY_RATE_VALUES=0.0003
+SINGLE_CURRENT_RATE_TRUTH=true
+PR_5960_SEMANTICS_STATUS=HISTORICAL_SUPERSEDED
+```
+
+Historical support line. Ticket `7823581` and the documented
+`0.0001` &#47; `0.01%` interpretation remain immutable historical
+evidence. They are **not** the current operative rate and **must not**
+block the verified API rate:
+
+``` text
+SUPPORT_TICKET_7823581_STATUS=HISTORICAL_SUPERSEDED_FOR_RATE_ADJUDICATION
+SUPPORT_RATE_0_0001_STATUS=HISTORICAL_SUPERSEDED
+SUPPORT_RATE_0_0001_CAN_BLOCK_CURRENT_RATE=false
+SUPPORT_DEPENDENCY_FOR_EXPIRY_RATE=false
+EXPIRY_RATE_REOPEN_REQUIRED=false
+NORMAL_EXPIRY_RATE_0_0001_STATUS=HISTORICAL_SUPERSEDED
+PROVEN_NORMAL_EXPIRY_RATE=0.0001
+```
+
+This persist does **not** claim that OKX later confirmed, by support
+ticket or OEM fee-rule text, that field `delivery` means exactly
+"expiry-settlement fee" beyond the verified API artifact itself.
+`PEAK_TRADE_EXPIRY_RESERVE_RATE_IS_OKX_FEE_TRUTH=false` remains: the
+later Peak_Trade reserve constant is policy reuse of the same numeric,
+not an invented OEM fee-truth claim.
+
+Monetary base. The qty=1 Peak_Trade envelope
+`qty * ctVal * markPx` is already the canonical implementation
+formula used by §11.13.5.U `FEE_RESERVE` and the Z2C bound. That
+envelope is bound as a Peak_Trade implementation input and is used
+with rate `0.0003`. It is **not** an OEM OKX monetary-base identity.
+The OEM-identity question must **not** reset the rate to `NONE`.
+
+``` text
+PEAK_TRADE_INTERNAL_NOTIONAL_ENVELOPE_FORM=qty * ctVal * markPx
+PEAK_TRADE_INTERNAL_NOTIONAL_ENVELOPE_ROLE=BOUND_PEAK_TRADE_INTERNAL_NOTIONAL_ENVELOPE_NOT_OEM_OKX_MONETARY_BASE
+OEM_FEE_MONETARY_BASE_STATUS=BOUND_PEAK_TRADE_INTERNAL_NOTIONAL_ENVELOPE
+OEM_OKX_MONETARY_BASE_IDENTITY_STATUS=UNPROVEN
+MONETARY_BASE_STATUS=BOUND_PEAK_TRADE_INTERNAL_NOTIONAL_ENVELOPE
+RATE_CANNOT_BE_RESET_TO_NONE_BY_MONETARY_BASE_QUESTION=true
+FX_STATUS=UNPROVEN
+ROUNDING_STATUS=UNPROVEN
+COVER_USDC_STATUS=UNINSTANTIATED
+NUMERIC_FUNDING_AMOUNT=NONE
+NUMERIC_FUNDING_AMOUNT_PRODUCED=false
+```
+
+This does **not** authorize deposit, transfer, withdrawal, convert,
+buy&#47;sell, Trading-POST, Canary execute, orders, positions,
+set-leverage mutation, API-key &#47; account mutation, additional GET,
+inventing an OEM OKX fee formula, inventing an OKX support semantic
+confirmation, assuming USD equals USDC, inventing USDC precision,
+instantiating `COVER_USDC`, producing a numeric funding amount, I44
+&#47; G16 upgrade, general Live unlock, Multi-Future, scaling, runtime
+trading-logic changes, or merge without a separate `OWNER_MERGE_GO`.
+
+Why this persist exists. Historical Z2B bound ticket `7823581`
+`0.0001` &#47; `0.01%` as a proven **non-operative** support rate.
+Historical Z2C bound a Peak_Trade-internal conservative reserve at the
+same numeric `0.0003` without making API `delivery` operative. The
+first-party API value `delivery="0.0003"` was already sealed in the
+W-pack. Owner now closes the rate conflict: one active Peak_Trade
+expiry &#47; delivery reserve rate, `0.0003`, from the verified API
+artifact, with Owner semantic adjudication. Support `0.0001` cannot
+block. No second competing operative rate. No fallback selection
+between `0.0001` and `0.0003`. Missing canonical rate fails closed.
+
+``` text
+OWNER_GO=OWNER_POLICY_OVERRIDE_GO
+OWNER_GO_STATUS=CONSUMED
+Z2B_HISTORICAL_APPLICABILITY_SNAPSHOT_REMAINS=true
+Z2C_HISTORICAL_INTERNAL_RESERVE_SNAPSHOT_REMAINS=true
+Z2H_COVER_USDC_CURRENT_POINTER_REMAINS=true
+NO_OKX_FEE_FORMULA_INVENTION=true
+NO_INVENTED_OKX_SUPPORT_SEMANTIC_CONFIRMATION=true
+NO_0_0001_PROMOTION_TO_OPERATIVE_COMPUTATION=true
+NO_ACTIVE_0001_OPERATIVE_RATE=true
+NO_FALLBACK_SELECTION_BETWEEN_0001_AND_0003=true
+NO_USD_EQUALS_USDC=true
+NO_USDC_PRECISION_INVENTION=true
+NO_COVER_USDC_INSTANTIATION=true
+NO_NUMERIC_FUNDING_AMOUNT=true
+NO_RESERVE_REDUCTION=true
+NO_AUTHORITY_WIDENING=true
+NO_FUNDING=true
+NO_EXECUTE=true
+```
+
+Closed chain after this persist:
+
+``` text
+11F_OKX_TICKET_7823581_NORMAL_EXPIRY_FEE_APPLICABILITY_AND_RATE_BOUND_NON_OPERATIVE
+11G_INTERNAL_CONSERVATIVE_EXPIRY_FEE_ECONOMIC_UNCERTAINTY_BOUND_FOR_QTY_1_MINIMUM_EXPOSURE_CANARY
+17A_CURRENT_TICKER_BID_ASK_PUBLIC_GET_CONSUMED_OBSERVED_NOT_NORMATIVELY_BOUND_COVER_USDC_REMAINS_UNINSTANTIATED
+18_SEPARATE_OWNER_GO_REQUIRED_FOR_PRODUCTIVE_EVIDENCE_TO_RESOLVE_REMAINING_UNPROVEN_COVER_USDC_TERMS_AFTER_CURRENT_TICKER_BID_ASK_BEFORE_FUNDING
+18B_OWNER_RATIFIED_OPERATIVE_EXPIRY_SETTLEMENT_RATE_FROM_VERIFIED_FIRST_PARTY_OKX_DELIVERY
+19_SEPARATE_FUNDING_AUTHORIZATION
+20_SEPARATE_CANARY_EXECUTE_AUTHORIZATION
+```
+
+Live vs Demo identity remains strictly separated. Map of Truth
+`CANONICAL_ACTIVE_INSTRUMENT=BTC-USD_UM_XPERP-310328` remains the
+§11.12.8 Demo campaign binding and is **not** retargeted.
+
+``` text
+CODE_OWNER=src&#47;ops&#47;section_11_13_5_live_canary_minimum_exposure_v1&#47;expiry_fee_economic_uncertainty_bound_v1.py
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_FOR_PRODUCTIVE_EVIDENCE_TO_RESOLVE_REMAINING_UNPROVEN_COVER_USDC_TERMS_AFTER_CURRENT_TICKER_BID_ASK_BEFORE_FUNDING
+EARLIEST_UNRESOLVED_DEPENDENCY=COVER_USDC_UNINSTANTIATED_REMAINING_UNPROVEN_TERMS_AFTER_CURRENT_TICKER_BID_ASK
+EARLIEST_UNRESOLVED_SECTION_POINTER=SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE
+```
+
+Hard stop. This rate-adjudication GO is consumed and must not be
+reused for money movement, GET, execute, contacting support, inventing
+an OEM OKX fee formula, inventing an OKX support semantic
+confirmation, assuming USD equals USDC, inventing USDC precision,
+instantiating `COVER_USDC`, producing a numeric funding amount,
+scaling, Multi-Future, or as a substitute funding authorization.
+Remaining COVER_USDC-term evidence, funding, and execute remain
+separate. `OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE` remains `CONSUMED`.
+Cap &#47; Capability 11.9 remains fixture-only.
+`EXPIRY_RATE_GATE=PASS`. `EXPIRY_RATE_BLOCKER=false`.
+`SUPPORT_REQUIRED_FOR_RATE_DECISION=false`.
+`COVER_USDC_STATUS=UNINSTANTIATED`.
+`NUMERIC_FUNDING_AMOUNT_PRODUCED=false`. No funding. No execute. No
+merge of this persist without a separate `OWNER_MERGE_GO`.
 
 ## 11.14 Live order and economic evidence ladder
 
@@ -19733,17 +19980,28 @@ Evidence-reconciled current status against canonical `origin&#47;main`
 `22d7d4231f3a90363c9a6a56d5d9a330e2d0cc0d`. The previous snapshot at
 `642db05919634b899329679a811f1ad25a0fd818` is retained in §21.2.1 as
 historical / superseded Phase 9.2 no-order-DoD closeout evidence. It is
-not the current canonical baseline. Local uncommitted §11.13.5.Z2I--Z2P
-continuation is not canonical current state.
+not the current canonical baseline. Canonical §11.13.5.Z2I expiry-rate
+adjudication is current. Other local uncommitted COVER_USDC numbering
+collisions are not canonical current state.
 
 ``` text
 CURRENT_FORENSIC_TRUTH_SHA=22d7d4231f3a90363c9a6a56d5d9a330e2d0cc0d
 PREVIOUS_FORENSIC_TRUTH_SHA=642db05919634b899329679a811f1ad25a0fd818
 PREVIOUS_FORENSIC_TRUTH_SHA_ROLE=HISTORICAL_SUPERSEDED_PHASE_9_2_NO_ORDER_DOD_CLOSEOUT_SNAPSHOT
 LAST_CANONICALLY_CLOSED_STEP=SECTION_11_13_5_Z2H
+LAST_CANONICALLY_CLOSED_EXPIRY_RATE_STEP=SECTION_11_13_5_Z2I
 CURRENT_CRITICAL_PATH=SECTION_11_13_5_CANARY_MINIMUM_EXPOSURE_ECONOMIC_EVIDENCE_CHAIN
 CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_FOR_PRODUCTIVE_EVIDENCE_TO_RESOLVE_REMAINING_UNPROVEN_COVER_USDC_TERMS_AFTER_CURRENT_TICKER_BID_ASK_BEFORE_FUNDING
-LOCAL_Z2I_Z2P_CANONICALIZED=false
+CANONICAL_Z2I_EXPIRY_RATE_ADJUDICATION=true
+OPERATIVE_EXPIRY_FEE_RATE=0.0003
+EXPIRY_SETTLEMENT_RATE=0.0003
+EXPIRY_SETTLEMENT_RATE_VALUE_PROVENANCE=VERIFIED_FIRST_PARTY_OKX_API_ARTIFACT
+EXPIRY_SETTLEMENT_RATE_ADJUDICATION=OWNER_RATIFIED_FROM_VERIFIED_FIRST_PARTY_OKX_DELIVERY_FIELD
+EXPIRY_RATE_GATE=PASS
+EXPIRY_RATE_BLOCKER=false
+SUPPORT_REQUIRED_FOR_RATE_DECISION=false
+SUPPORT_RATE_0_0001_STATUS=HISTORICAL_SUPERSEDED
+LOCAL_UNCOMMITTED_COVER_USDC_NUMBERING_COLLISION=NON_CANONICAL
 DOCUMENTATION_RUNTIME_DRIFT=false
 CONFIG_RUNTIME_DRIFT=false_for_in_scope_runtime_values
 DASHBOARD_AUTHORITY=false
@@ -19873,15 +20131,18 @@ no-order closure standard.
 Canonical current-state on `origin&#47;main` SHA
 `22d7d4231f3a90363c9a6a56d5d9a330e2d0cc0d`. This supersedes the
 historical Phase 9.2 / no-order-DoD Immediate Next block in §22.0.
-Local uncommitted §11.13.5.Z2I--Z2P continuation is **not** canonical
-current state and must not be treated as
-`LAST_CANONICALLY_CLOSED_STEP`. The no-order program Definition of Done
-remains closed and must not be reopened. This pointer does **not**
-authorize funding, order submit, Canary execute, Live, Testnet,
-credentials, or money movement:
+Canonical §11.13.5.Z2I is the owner-ratified expiry-rate persist.
+COVER_USDC current evidence pointer remains §11.13.5.Z2H.
+`Z2H_CANONICAL_POINTER_REPLACED=false`. Other local uncommitted
+COVER_USDC numbering collisions are **not** canonical current state
+and must not be treated as `LAST_CANONICALLY_CLOSED_STEP`. The no-order
+program Definition of Done remains closed and must not be reopened.
+This pointer does **not** authorize funding, order submit, Canary
+execute, Live, Testnet, credentials, or money movement:
 
 ``` text
 LAST_CANONICALLY_CLOSED_STEP=SECTION_11_13_5_Z2H
+LAST_CANONICALLY_CLOSED_EXPIRY_RATE_STEP=SECTION_11_13_5_Z2I
 CURRENT_CRITICAL_PATH=SECTION_11_13_5_CANARY_MINIMUM_EXPOSURE_ECONOMIC_EVIDENCE_CHAIN
 CURRENT_FORENSIC_TRUTH_SHA=22d7d4231f3a90363c9a6a56d5d9a330e2d0cc0d
 PREVIOUS_FORENSIC_TRUTH_SHA=642db05919634b899329679a811f1ad25a0fd818
@@ -19901,8 +20162,17 @@ NUMERIC_FUNDING_AMOUNT=NONE
 EXCHANGE_USD_USDC_OPERATOR_STATUS=UNPROVEN
 INTERNAL_CONSERVATIVE_POLICY_FEASIBILITY=NOT_PROVABLY_SAFE
 UNCERTAINTY_BOUND_STATUS=UNBOUNDED
-LOCAL_UNCOMMITTED_Z2I_Z2P_ROLE=NON_CANONICAL_NOT_CURRENT_STATE
-LOCAL_Z2I_Z2P_CANONICALIZED=false
+OPERATIVE_EXPIRY_FEE_RATE=0.0003
+EXPIRY_SETTLEMENT_RATE=0.0003
+EXPIRY_SETTLEMENT_RATE_VALUE_PROVENANCE=VERIFIED_FIRST_PARTY_OKX_API_ARTIFACT
+EXPIRY_SETTLEMENT_RATE_ADJUDICATION=OWNER_RATIFIED_FROM_VERIFIED_FIRST_PARTY_OKX_DELIVERY_FIELD
+EXPIRY_RATE_GATE=PASS
+EXPIRY_RATE_BLOCKER=false
+SUPPORT_REQUIRED_FOR_RATE_DECISION=false
+SUPPORT_RATE_0_0001_STATUS=HISTORICAL_SUPERSEDED
+CANONICAL_Z2I_EXPIRY_RATE_ADJUDICATION=true
+Z2H_CANONICAL_POINTER_REPLACED=false
+LOCAL_UNCOMMITTED_COVER_USDC_NUMBERING_COLLISION=NON_CANONICAL
 NO_ORDER_PROGRAM_DOD_STATUS=CLOSED_FOR_IN_SCOPE_NO_ORDER_PROGRAM
 PHASE_9_2_SESSION_LADDER_COMPLETE=true
 PHASE_9_2_IMMEDIATE_NEXT_ROLE=HISTORICAL_SUPERSEDED

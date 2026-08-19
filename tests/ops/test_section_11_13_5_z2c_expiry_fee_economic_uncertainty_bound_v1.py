@@ -91,18 +91,22 @@ def test_normative_rate_and_internal_reserve_remain_separated() -> None:
     assert PROVEN_NORMAL_EXPIRY_RATE == Decimal("0.0001")
     assert PEAK_TRADE_EXPIRY_RESERVE_RATE == Decimal("0.0003")
     assert PEAK_TRADE_EXPIRY_RESERVE_RATE_IS_OKX_FEE_TRUTH is False
-    assert OEM_FEE_MONETARY_BASE_STATUS == "UNPROVEN"
-    assert ACTUAL_EXPIRY_FEE_AMOUNT_STATUS == "UNPROVEN"
-    assert OPERATIVE_EXPIRY_FEE_RATE == "NONE"
+    assert OEM_FEE_MONETARY_BASE_STATUS == "BOUND_PEAK_TRADE_INTERNAL_NOTIONAL_ENVELOPE"
+    assert ACTUAL_EXPIRY_FEE_AMOUNT_STATUS == (
+        "COMPUTED_FROM_VERIFIED_API_RATE_AND_INTERNAL_ENVELOPE"
+    )
+    assert OPERATIVE_EXPIRY_FEE_RATE == "0.0003"
     assert ABSOLUTE_BOUND_USES_UNPROVEN_EXCHANGE_FORMULA is False
     assert SCALING_AUTHORIZED is False
     bound = _bound()
     assert bound.proven_normal_expiry_rate == "0.0001"
     assert bound.reserve_rate == "0.0003"
     assert bound.reserve_rate_is_okx_fee_truth is False
-    assert bound.oem_fee_monetary_base_status == "UNPROVEN"
-    assert bound.actual_expiry_fee_amount_status == "UNPROVEN"
-    assert bound.operative_expiry_fee_rate == "NONE"
+    assert bound.oem_fee_monetary_base_status == "BOUND_PEAK_TRADE_INTERNAL_NOTIONAL_ENVELOPE"
+    assert bound.actual_expiry_fee_amount_status == (
+        "COMPUTED_FROM_VERIFIED_API_RATE_AND_INTERNAL_ENVELOPE"
+    )
+    assert bound.operative_expiry_fee_rate == "0.0003"
     assert bound.uses_unproven_exchange_formula is False
     assert "okx" not in bound.derivation.lower()
 
@@ -184,9 +188,11 @@ def test_observed_fee_within_bound_does_not_rewrite_normative_truth() -> None:
     assert result.scaling_blocked is True
     assert result.observed_fee_rewrote_normative_truth is False
     assert result.proven_normal_expiry_rate == "0.0001"
-    assert result.oem_fee_monetary_base_status == "UNPROVEN"
-    assert result.actual_expiry_fee_amount_status == "UNPROVEN"
-    assert result.operative_expiry_fee_rate == "NONE"
+    assert result.oem_fee_monetary_base_status == "BOUND_PEAK_TRADE_INTERNAL_NOTIONAL_ENVELOPE"
+    assert result.actual_expiry_fee_amount_status == (
+        "COMPUTED_FROM_VERIFIED_API_RATE_AND_INTERNAL_ENVELOPE"
+    )
+    assert result.operative_expiry_fee_rate == "0.0003"
     assert result.live_authorized is False
     assert result.testnet_authorized is False
     assert result.order_effect == "NONE"
@@ -205,7 +211,7 @@ def test_observed_fee_above_bound_fails_closed_and_requires_review() -> None:
     assert result.further_canary_requires_review is True
     assert result.observed_fee_rewrote_normative_truth is False
     assert result.proven_normal_expiry_rate == "0.0001"
-    assert result.operative_expiry_fee_rate == "NONE"
+    assert result.operative_expiry_fee_rate == "0.0003"
 
 
 def test_observed_fee_unit_mismatch_fails_closed_because_fx_unproven() -> None:

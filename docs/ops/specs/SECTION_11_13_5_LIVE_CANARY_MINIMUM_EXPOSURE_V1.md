@@ -90,25 +90,42 @@ binding for the internal conservative qty=1 B08 formula body.
 Historical Z2D remains
 binding for the qty=1 Position-Value &#47; FX &#47; Rounding
 classification. Historical Z2C remains
-binding for the qty=1 internal conservative expiry-fee bound.
+binding as the qty=1 internal conservative expiry-fee snapshot.
 Historical Z2B remains
-binding for applicability and the proven non-operative 0.01% rate.
-Parallel §11.13.5.Z2I records that observed API `delivery=0.0003` is a
-first-party trade-fee field with no expiry-settlement-rate authority
-and does **not** replace this COVER_USDC pointer.
+binding as the historical ticket-`7823581` applicability snapshot.
+The ticket `0.01%` &#47; `0.0001` line is
+`SUPPORT_RATE_0_0001_STATUS=HISTORICAL_SUPERSEDED` and must not block
+the current rate. Historical PR `#5960` persist §11.13.5.Z2I-HIST
+(`0.0001` &#47; `OPERATIVE_NONE`) is
+`PR_5960_SEMANTICS_STATUS=HISTORICAL_SUPERSEDED` and is **not** current
+authority. Parallel persist §11.13.5.Z2I owner-ratifies the
+verified first-party OKX API field `delivery=0.0003` as the single
+operative expiry-settlement rate.
+`EXPIRY_SETTLEMENT_RATE=0.0003`.
+`EXPIRY_SETTLEMENT_RATE_PERCENT=0.03%`.
+`OPERATIVE_EXPIRY_SETTLEMENT_RATE=0.0003`.
+`SINGLE_CURRENT_RATE_TRUTH=true`.
+`Z2H_CANONICAL_POINTER_REPLACED=false`.
+`EXPIRY_RATE_GATE=PASS`. `EXPIRY_RATE_BLOCKER=false`.
+`SUPPORT_REQUIRED_FOR_RATE_DECISION=false`.
 qty=1 and ctVal `0.0001 BTC` are proven instrument&#47;canary-scope
 bindings. Current markPx `64495.3` is
 `OBSERVED_NOT_NORMATIVELY_BOUND` from a public mark-price GET. It is
 not an OKX expiry-fee operand. Current ticker `bidPx=64529.9` and
 `askPx=64530` are `OBSERVED_NOT_NORMATIVELY_BOUND` from a public
-ticker GET. They are not a numeric `SLIPPAGE_RESERVE`. Monetary base, FX,
+ticker GET. They are not a numeric `SLIPPAGE_RESERVE`. FX
 and Rounding remain UNPROVEN Exchange Truth.
 `COVER_USDC` remains uninstantiated. No numeric funding amount is
 produced.
+The Peak_Trade qty=1 envelope `qty * ctVal * markPx` is the bound
+implementation formula used with rate `0.0003`. OEM OKX monetary-base
+identity remains unproven and must not reset the rate to `NONE`.
 Historical Z2&#47;Z2A
-persists remain binding as snapshots. Ticket `7823581` bound the
-published 0.01% normal-expiry settlement fee as **non-operative**;
-monetary base and API `delivery=0.0003` remain unproven. Historical
+persists remain binding as snapshots. Ticket `7823581` historically
+bound the published 0.01% normal-expiry settlement fee as
+**non-operative**; that line is superseded for current operative use
+by §11.13.5.Z2I. API `delivery=0.0003` is a verified first-party OKX
+API artifact. Historical
 Z2A-era next steps below are superseded for the current evidence
 persist. Historical Z1-era next steps
 below are superseded for the current EDGE_I EVENT_B closeout persist.
@@ -452,15 +469,36 @@ oneshot.
     `OWNER_GO_REQUIRED_FOR_PRODUCTIVE_EVIDENCE_TO_RESOLVE_REMAINING_UNPROVEN_COVER_USDC_TERMS_AFTER_CURRENT_TICKER_BID_ASK_BEFORE_FUNDING`.
     That GO is **not** granted. This spec does not authorize execute,
     funding, additional GET, or general Live unlock.
-36. `OWNER_GO_DOCS_ONLY` was granted docs-only and is consumed as
-    §11.13.5.Z2I. It adjudicates `delivery="0.0003"` as a proven raw
-    first-party OKX trade-fee field with
-    `DELIVERY_0003_EXPIRY_SETTLEMENT_RATE_AUTHORITY=NONE`.
-    `EXPIRY_SETTLEMENT_RATE_NORMATIVE=0.0001` remains proven
-    non-operative. `OPERATIVE_EXPIRY_SETTLEMENT_RATE=NONE`.
-    `MONETARY_BASE=UNPROVEN`.
-    `SUPPORT_REQUIRED_FOR_0003_VS_0001_RATE_DECISION=false`.
-    `Z2H_CANONICAL_POINTER_REPLACED=false`. Next canonical step remains
-    `OWNER_GO_REQUIRED_FOR_PRODUCTIVE_EVIDENCE_TO_RESOLVE_REMAINING_UNPROVEN_COVER_USDC_TERMS_AFTER_CURRENT_TICKER_BID_ASK_BEFORE_FUNDING`.
-    That GO is **not** granted. This spec does not authorize execute,
+36. Historical. `OWNER_GO_DOCS_ONLY` was granted docs-only and is
+    consumed as §11.13.5.Z2I-HIST (PR `#5960`). That persist
+    adjudicated `delivery="0.0003"` as a proven raw first-party OKX
+    trade-fee field with
+    `DELIVERY_0003_EXPIRY_SETTLEMENT_RATE_AUTHORITY=NONE`,
+    `EXPIRY_SETTLEMENT_RATE_NORMATIVE=0.0001`, and
+    `OPERATIVE_EXPIRY_SETTLEMENT_RATE=NONE`. Those tokens remain
+    immutable historical snapshots only.
+    `PR_5960_SEMANTICS_STATUS=HISTORICAL_SUPERSEDED`.
+    `SUPPORT_RATE_0_0001_STATUS=HISTORICAL_SUPERSEDED`. They are **not**
+    current Owner truth. This spec does not authorize execute,
     funding, GET, support, or general Live unlock.
+37. `OWNER_POLICY_OVERRIDE_GO` was granted rate-adjudication only and
+    is consumed as §11.13.5.Z2I. PROVENANCE != ADJUDICATION. The
+    numeric `0.0003` is
+    `DELIVERY_RATE_VALUE_PROVENANCE=VERIFIED_FIRST_PARTY_OKX_API_ARTIFACT`
+    from `GET &#47;api&#47;v5&#47;account&#47;trade-fee` field `delivery`. It is not
+    Peak_Trade-generated and not Owner-generated. Owner ratifies the
+    semantic &#47; operative use of that verified field as
+    `EXPIRY_SETTLEMENT_RATE=0.0003` (`0.03%`).
+    `OPERATIVE_EXPIRY_SETTLEMENT_RATE=0.0003`.
+    `OPERATIVE_EXPIRY_FEE_RATE=0.0003`.
+    `SINGLE_CURRENT_RATE_TRUTH=true`.
+    `EXPIRY_RATE_GATE=PASS`. `EXPIRY_RATE_BLOCKER=false`.
+    `SUPPORT_REQUIRED_FOR_RATE_DECISION=false`.
+    Ticket `7823581` `0.0001` &#47; `0.01%` is
+    `SUPPORT_RATE_0_0001_STATUS=HISTORICAL_SUPERSEDED` and cannot block.
+    `PEAK_TRADE_EXPIRY_RESERVE_RATE=0.0003` is
+    `PEAK_TRADE_POLICY_REUSE_OF_SAME_NUMERIC_VALUE`.
+    `Z2H_CANONICAL_POINTER_REPLACED=false`. COVER_USDC, FX, rounding,
+    funding, and execute remain uninstantiated &#47; unauthorized.
+    This spec does not authorize execute, funding, GET, or general
+    Live unlock.
