@@ -17,6 +17,7 @@ MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2Y_HEADING = "### 11.13.5.Z2Y Filled-position-derived probe is not presently authorizable"
 Z2X_HEADING = "### 11.13.5.Z2X Unfilled-order state class does not produce independent account IM"
+Z2Z_HEADING = "### 11.13.5.Z2Z Evidence-model re-adjudication"
 NEXT_POINTER = (
     "OWNER_GO_REQUIRED_SEPARATE_FOR_UNRESOLVED_SAFETY_DEPENDENCIES_BEFORE_ANY_"
     "FILLED_POSITION_DERIVED_RUNTIME_PROPOSAL_FACE_VALUE_CONFLICT_UNRESOLVED_"
@@ -43,8 +44,8 @@ def _read(path: Path) -> str:
 def _z2y_section(text: str) -> str:
     start = text.find(Z2Y_HEADING)
     assert start >= 0, "missing §11.13.5.Z2Y heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2Y"
+    end = text.find(Z2Z_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2Z boundary after Z2Y"
     return text[start:end]
 
 
@@ -53,8 +54,9 @@ def test_z2y_heading_is_unique_and_follows_z2x() -> None:
     assert text.count(Z2Y_HEADING) == 1
     z2x = text.find(Z2X_HEADING)
     z2y = text.find(Z2Y_HEADING)
+    z2z = text.find(Z2Z_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2x < z2y < ladder
+    assert 0 <= z2x < z2y < z2z < ladder
 
 
 def test_z2y_docs_bind_adjudication_b_without_runtime_or_protocol() -> None:
@@ -177,6 +179,7 @@ def test_z2y_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert "§11.13.5.Z2Y |" in mot
     assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
     assert "historical next pointer superseded by §11.13.5.Z2Y" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2Z" in mot
     assert "ADJUDICATION=B" in mot
     assert "FUTURE_RUNTIME_PROTOCOL_DOCUMENTED=false" in mot
     assert f"NEXT_CANONICAL_STEP_POINTER={CONSUMED_Z2X_POINTER}\n" not in mot
