@@ -16,6 +16,7 @@ MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2Z_HEADING = "### 11.13.5.Z2Z Evidence-model re-adjudication"
 Z2Y_HEADING = "### 11.13.5.Z2Y Filled-position-derived probe is not presently authorizable"
+Z2AB_HEADING = "### 11.13.5.Z2AB Productive runtime proof is not pre-submit admissible"
 Z2AA_HEADING = "### 11.13.5.Z2AA Earliest Z2Y safety dependency is not statically provable"
 NEXT_POINTER = (
     "OWNER_GO_REQUIRED_SEPARATE_FOR_UNRESOLVED_SAFETY_DEPENDENCIES_BEFORE_ANY_"
@@ -47,8 +48,9 @@ def test_z2z_heading_is_unique_and_follows_z2y() -> None:
     z2y = text.find(Z2Y_HEADING)
     z2z = text.find(Z2Z_HEADING)
     z2aa = text.find(Z2AA_HEADING)
+    z2ab = text.find(Z2AB_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2y < z2z < z2aa < ladder
+    assert 0 <= z2y < z2z < z2aa < z2ab < ladder
 
 
 def test_z2z_docs_bind_first_party_evidence_model_without_closing_safety() -> None:
