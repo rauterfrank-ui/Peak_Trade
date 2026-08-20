@@ -75,6 +75,8 @@ test_runs/
 
 # Local AI / test artefacts
 .claude/
+# Playwright MCP local output (Cursor @playwright/mcp default outputDir)
+.playwright-mcp/
 test_results/
 
 # Live runs & sessions (generierte Session-Daten)
