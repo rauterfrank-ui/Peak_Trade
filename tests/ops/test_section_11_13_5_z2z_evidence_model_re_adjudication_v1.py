@@ -16,6 +16,7 @@ MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2Z_HEADING = "### 11.13.5.Z2Z Evidence-model re-adjudication"
 Z2Y_HEADING = "### 11.13.5.Z2Y Filled-position-derived probe is not presently authorizable"
+Z2AA_HEADING = "### 11.13.5.Z2AA Earliest Z2Y safety dependency is not statically provable"
 NEXT_POINTER = (
     "OWNER_GO_REQUIRED_SEPARATE_FOR_UNRESOLVED_SAFETY_DEPENDENCIES_BEFORE_ANY_"
     "FILLED_POSITION_DERIVED_RUNTIME_PROPOSAL_FACE_VALUE_CONFLICT_UNRESOLVED_"
@@ -35,8 +36,8 @@ def _read(path: Path) -> str:
 def _z2z_section(text: str) -> str:
     start = text.find(Z2Z_HEADING)
     assert start >= 0, "missing §11.13.5.Z2Z heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2Z"
+    end = text.find(Z2AA_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2AA boundary after Z2Z"
     return text[start:end]
 
 
@@ -45,8 +46,9 @@ def test_z2z_heading_is_unique_and_follows_z2y() -> None:
     assert text.count(Z2Z_HEADING) == 1
     z2y = text.find(Z2Y_HEADING)
     z2z = text.find(Z2Z_HEADING)
+    z2aa = text.find(Z2AA_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2y < z2z < ladder
+    assert 0 <= z2y < z2z < z2aa < ladder
 
 
 def test_z2z_docs_bind_first_party_evidence_model_without_closing_safety() -> None:
@@ -138,8 +140,9 @@ def test_z2z_docs_bind_first_party_evidence_model_without_closing_safety() -> No
 def test_z2z_map_of_truth_navigation_pointer_matches_runbook() -> None:
     mot = _read(MAP_OF_TRUTH)
     assert "§11.13.5.Z2Z |" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
+    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}\n" not in mot
     assert "historical next pointer superseded by §11.13.5.Z2Z" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AA" in mot
     assert "POSITION_NOTIONAL_ALGEBRA_STATUS=FIRST_PARTY_DOCUMENTED" in mot
     assert "VENUE_CLOSE_POSITION_MARKET_CAPABILITY=FIRST_PARTY_DOCUMENTED" in mot
     assert "OEM_SPEC_METADATA_CORRECTION_REQUIRED=false" in mot
