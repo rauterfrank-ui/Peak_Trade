@@ -16,6 +16,7 @@ MASTER_RUNBOOK = REPO_ROOT / "docs" / "runbooks" / "canonical" / "PEAK_TRADE_MAS
 MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2AC_HEADING = "### 11.13.5.Z2AC LF-06 venue semantics evidence persist"
+Z2AD_HEADING = "### 11.13.5.Z2AD LF-07 productive reachability adjudication persist"
 Z2AB_HEADING = "### 11.13.5.Z2AB Productive runtime proof is not pre-submit admissible"
 Z2AA_HEADING = "### 11.13.5.Z2AA Earliest Z2Y safety dependency is not statically provable"
 NEXT_POINTER = (
@@ -45,8 +46,8 @@ def _read(path: Path) -> str:
 def _z2ac_section(text: str) -> str:
     start = text.find(Z2AC_HEADING)
     assert start >= 0, "missing §11.13.5.Z2AC heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2AC"
+    end = text.find(Z2AD_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2AD boundary after Z2AC"
     return text[start:end]
 
 
@@ -56,8 +57,9 @@ def test_z2ac_heading_is_unique_and_follows_z2ab() -> None:
     z2aa = text.find(Z2AA_HEADING)
     z2ab = text.find(Z2AB_HEADING)
     z2ac = text.find(Z2AC_HEADING)
+    z2ad = text.find(Z2AD_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2aa < z2ab < z2ac < ladder
+    assert 0 <= z2aa < z2ab < z2ac < z2ad < ladder
 
 
 def test_z2ac_docs_bind_lf06_not_pass_without_runtime_or_lf07() -> None:
@@ -182,9 +184,10 @@ def test_z2ac_docs_bind_lf06_not_pass_without_runtime_or_lf07() -> None:
 def test_z2ac_map_of_truth_navigation_pointer_matches_runbook() -> None:
     mot = _read(MAP_OF_TRUTH)
     assert "§11.13.5.Z2AC |" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
+    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}\n" not in mot
     assert f"NEXT_CANONICAL_STEP_POINTER={CONSUMED_Z2AB_POINTER}\n" not in mot
     assert "historical next pointer superseded by §11.13.5.Z2AC" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AD" in mot
     assert "LF_06_OVERALL_ADJUDICATION=NOT_PASS" in mot
     assert "OVERSHOOT_PROTECTION_STATUS=UNPROVEN" in mot
     assert "ZERO_CROSS_FLIP_PROTECTION_STATUS=UNPROVEN" in mot
