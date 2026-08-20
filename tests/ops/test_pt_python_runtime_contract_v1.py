@@ -16,6 +16,7 @@ from scripts.runtime.pt_python_runtime_contract_v1 import (
     CANONICAL_INTERPRETER_REL,
     CONTRACT_VERSION,
     EXIT_INTERPRETER_MISMATCH,
+    EXIT_PROVISIONED_REFUSED,
     EXIT_UNSUPPORTED_PYTHON,
     EXIT_VENV_MISSING,
     MODE_PROVISIONED,
@@ -212,6 +213,89 @@ def test_direct_contract_module_on_path_python_fails_identity() -> None:
     if Path(sys.executable).parent.parent.resolve() == (REPO_ROOT / ".venv").resolve():
         pytest.skip("pytest already running under canonical interpreter")
     assert proc.returncode == EXIT_INTERPRETER_MISMATCH
+
+
+def test_launcher_provisioned_refused_without_ci_flag(tmp_path: Path) -> None:
+    repo = _seed_fake_repo(tmp_path)
+    poison = tmp_path / "poison" / "bin"
+    poison.mkdir(parents=True)
+    _write_executable(poison / "python", "#!/bin/sh\necho POISONED >&2\nexit 99\n")
+    _write_executable(poison / "python3", "#!/bin/sh\necho POISONED >&2\nexit 99\n")
+    proc = subprocess.run(
+        [str(repo / "scripts" / "pt"), "-c", "print('should-not-run')"],
+        cwd=repo,
+        capture_output=True,
+        text=True,
+        env={
+            "PATH": f"{poison}:/usr/bin:/bin",
+            "HOME": str(tmp_path / "home"),
+            "PT_RUNTIME_MODE": MODE_PROVISIONED,
+            "GITHUB_ACTIONS": "",
+            "PT_RUNTIME_PROVISIONED_OK": "",
+            "PT_SKIP_TRADING_PREFLIGHT": "1",
+        },
+        check=False,
+    )
+    assert proc.returncode == EXIT_PROVISIONED_REFUSED
+    assert "should-not-run" not in proc.stdout
+    assert "POISONED" not in proc.stderr
+
+
+def test_launcher_provisioned_uses_bound_interpreter(tmp_path: Path) -> None:
+    if sys.version_info < (3, 10):
+        pytest.skip("host interpreter below project floor")
+    repo = _seed_fake_repo(tmp_path)
+    poison = tmp_path / "poison" / "bin"
+    poison.mkdir(parents=True)
+    _write_executable(poison / "python", "#!/bin/sh\necho POISONED >&2\nexit 99\n")
+    _write_executable(poison / "python3", "#!/bin/sh\necho POISONED >&2\nexit 99\n")
+    proc = subprocess.run(
+        [str(repo / "scripts" / "pt"), "-c", "import sys; print(sys.executable)"],
+        cwd=repo,
+        capture_output=True,
+        text=True,
+        env={
+            "PATH": f"{poison}:/usr/bin:/bin",
+            "HOME": str(tmp_path / "home"),
+            "PT_RUNTIME_MODE": MODE_PROVISIONED,
+            "PT_RUNTIME_PROVISIONED_OK": "1",
+            "PT_PROVISIONED_PYTHON": sys.executable,
+            "PT_SKIP_TRADING_PREFLIGHT": "1",
+        },
+        check=False,
+    )
+    assert proc.returncode == 0, proc.stderr
+    assert "POISONED" not in proc.stderr
+    assert Path(proc.stdout.strip()).resolve() == Path(sys.executable).resolve()
+
+
+def test_launcher_provisioned_unbound_without_python_location(tmp_path: Path) -> None:
+    repo = _seed_fake_repo(tmp_path)
+    proc = subprocess.run(
+        [str(repo / "scripts" / "pt"), "-c", "print('should-not-run')"],
+        cwd=repo,
+        capture_output=True,
+        text=True,
+        env={
+            "PATH": "/usr/bin:/bin",
+            "HOME": str(tmp_path / "home"),
+            "PT_RUNTIME_MODE": MODE_PROVISIONED,
+            "PT_RUNTIME_PROVISIONED_OK": "1",
+            "PT_SKIP_TRADING_PREFLIGHT": "1",
+        },
+        check=False,
+    )
+    assert proc.returncode == EXIT_PROVISIONED_REFUSED
+    assert "should-not-run" not in proc.stdout
+    assert "unbound" in proc.stderr
+
+
+def test_lint_gate_binds_provisioned_runtime() -> None:
+    text = (REPO_ROOT / ".github" / "workflows" / "lint_gate.yml").read_text(encoding="utf-8")
+    assert "PT_RUNTIME_MODE: provisioned" in text
+    assert "PT_SKIP_TRADING_PREFLIGHT" in text
+    assert "PT_PROVISIONED_PYTHON" in text
+    assert "ai_matrix_consistency_gate.sh" in text
 
 
 def test_provisioned_mode_refused_without_ci_flag() -> None:

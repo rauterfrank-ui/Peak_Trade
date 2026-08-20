@@ -86,14 +86,33 @@ EOF
   exit 0
 fi
 
-if [ ! -f "$INTERPRETER" ]; then
-  die 3 "PT_RUNTIME_FAIL: canonical interpreter missing: $INTERPRETER
+# Documented CI exception: after setup-python, PT_RUNTIME_MODE=provisioned
+# plus GITHUB_ACTIONS=true (or PT_RUNTIME_PROVISIONED_OK=1) binds a pinned
+# interpreter via pythonLocation or PT_PROVISIONED_PYTHON. Local PATH
+# python/python3 remains prohibited.
+if [ "${PT_RUNTIME_MODE:-}" = "provisioned" ]; then
+  if [ "${GITHUB_ACTIONS:-}" != "true" ] && [ "${PT_RUNTIME_PROVISIONED_OK:-}" != "1" ]; then
+    die 8 "PT_RUNTIME_FAIL: provisioned mode refused (needs GITHUB_ACTIONS=true or PT_RUNTIME_PROVISIONED_OK=1)"
+  fi
+  INTERPRETER=""
+  if [ -n "${pythonLocation:-}" ] && [ -x "${pythonLocation}/bin/python" ]; then
+    INTERPRETER="${pythonLocation}/bin/python"
+  elif [ -n "${PT_PROVISIONED_PYTHON:-}" ] && [ -x "${PT_PROVISIONED_PYTHON}" ]; then
+    INTERPRETER="${PT_PROVISIONED_PYTHON}"
+  fi
+  if [ -z "$INTERPRETER" ] || [ ! -x "$INTERPRETER" ]; then
+    die 8 "PT_RUNTIME_FAIL: provisioned interpreter unbound (set pythonLocation or PT_PROVISIONED_PYTHON)"
+  fi
+else
+  INTERPRETER="$REPO_ROOT/.venv/bin/python"
+  if [ ! -f "$INTERPRETER" ]; then
+    die 3 "PT_RUNTIME_FAIL: canonical interpreter missing: $INTERPRETER
 Bootstrap with: uv sync --dev
 Do not use PATH python/python3."
-fi
-
-if [ ! -x "$INTERPRETER" ]; then
-  die 4 "PT_RUNTIME_FAIL: canonical interpreter not executable: $INTERPRETER"
+  fi
+  if [ ! -x "$INTERPRETER" ]; then
+    die 4 "PT_RUNTIME_FAIL: canonical interpreter not executable: $INTERPRETER"
+  fi
 fi
 
 # Version check uses the canonical interpreter only (never PATH python3).

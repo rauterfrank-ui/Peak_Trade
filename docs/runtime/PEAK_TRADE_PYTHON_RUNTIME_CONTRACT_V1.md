@@ -60,10 +60,10 @@ Root trampoline `pt` execs `scripts/pt`.
 
 ## Documented exceptions
 
-- **CI provisioned interpreter:** GitHub Actions may invoke `python` after
-  `setup-python` pins a version that satisfies `requires-python`. Set
-  `PT_RUNTIME_MODE=provisioned` only in CI or with
-  `PT_RUNTIME_PROVISIONED_OK=1`.
+- **CI provisioned interpreter:** GitHub Actions may bind a pinned interpreter
+  after `setup-python`. Set `PT_RUNTIME_MODE=provisioned` only in CI or with
+  `PT_RUNTIME_PROVISIONED_OK=1`. The launcher then uses `pythonLocation&#47;bin&#47;python`
+  or `PT_PROVISIONED_PYTHON`. Local PATH `python`/`python3` remains prohibited.
 - **Pytest `tests/conftest.py`:** inserts `src` and repo root for test
   collection only.
 - **Shebangs on non-operative scripts:** not a runtime API. Invoke through

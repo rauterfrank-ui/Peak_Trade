@@ -180,7 +180,7 @@ jobs:
           echo "applicable=false" >> $GITHUB_OUTPUT
 
       - name: Set up Python
-        if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: '3.11'
@@ -250,7 +250,16 @@ jobs:
 
       - name: Governance AI matrix consistency gate
         if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
+        env:
+          PT_RUNTIME_MODE: provisioned
+          PT_SKIP_TRADING_PREFLIGHT: "1"
         run: |
+          set -euo pipefail
+          if [ -z "${pythonLocation:-}" ] || [ ! -x "${pythonLocation}/bin/python" ]; then
+            echo "PT_RUNTIME_FAIL: setup-python pythonLocation unbound" >&2
+            exit 8
+          fi
+          export PT_PROVISIONED_PYTHON="${pythonLocation}/bin/python"
           bash scripts/governance/ai_matrix_consistency_gate.sh
 
       - name: Gate Success (Not Applicable)
