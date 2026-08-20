@@ -26,8 +26,8 @@ reports&#47;obs&#47;stage1&#47;
 bash scripts/obs/run_stage1_monitoring.sh
 
 # Option 2: Manuell
-python3 scripts/obs/stage1_daily_snapshot.py
-python3 scripts/obs/stage1_trend_report.py
+./scripts/pt  scripts/obs/stage1_daily_snapshot.py
+./scripts/pt  scripts/obs/stage1_trend_report.py
 ```
 
 ## Stage1 report index (deterministic)
@@ -37,14 +37,14 @@ After Stage1 runs, a deterministic index is generated:
 - Purpose: stable discovery for WebUI/ops; includes sha256 + size for artifacts.
 
 You can regenerate manually:
-`python3 scripts/obs/stage1_report_index.py --root reports/obs/stage1 --out reports/obs/stage1/index.json --run-date YYYY-MM-DD` <!-- pt:ref-target-ignore -->
+`./scripts/pt  scripts/obs/stage1_report_index.py --root reports/obs/stage1 --out reports/obs/stage1/index.json --run-date YYYY-MM-DD` <!-- pt:ref-target-ignore -->
 
 ## Stage1 validation (fail-fast)
 After index generation, Stage1 runners validate artifacts and write:
 - `reports&#47;obs&#47;stage1&#47;validation.json` (schema: `stage1_validation.v1`)
 
 Manual run:
-`python3 scripts/obs/validate_stage1_index.py --root reports/obs/stage1 --index reports/obs/stage1/index.json --out reports/obs/stage1/validation.json --require data.json --require report.md` <!-- pt:ref-target-ignore -->
+`./scripts/pt  scripts/obs/validate_stage1_index.py --root reports/obs/stage1 --index reports/obs/stage1/index.json --out reports/obs/stage1/validation.json --require data.json --require report.md` <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -95,10 +95,10 @@ Labeled legacy context: `docs/ops/reviews/grafana_prometheus_operator_entrypoint
 
 ```bash
 # Standard-Run (verwendet defaults)
-python3 scripts/obs/stage1_daily_snapshot.py
+./scripts/pt  scripts/obs/stage1_daily_snapshot.py
 
 # Mit custom Optionen
-python3 scripts/obs/stage1_daily_snapshot.py \
+./scripts/pt  scripts/obs/stage1_daily_snapshot.py \
   --repo ~/Peak_Trade \
   --out-dir reports&#47;obs&#47;stage1 \
   --max-files 10 \
@@ -140,13 +140,13 @@ Erstellt `reports&#47;obs&#47;stage1&#47;YYYY-MM-DD_snapshot.md` mit:
 
 ```bash
 # Letzte 14 Tage (default)
-python3 scripts/obs/stage1_trend_report.py
+./scripts/pt  scripts/obs/stage1_trend_report.py
 
 # Letzte 7 Tage
-python3 scripts/obs/stage1_trend_report.py --days 7
+./scripts/pt  scripts/obs/stage1_trend_report.py --days 7
 
 # Custom Snapshot-Directory
-python3 scripts/obs/stage1_trend_report.py --dir reports&#47;obs&#47;stage1
+./scripts/pt  scripts/obs/stage1_trend_report.py --dir reports&#47;obs&#47;stage1
 ```
 
 ### Optionen
@@ -243,18 +243,18 @@ Siehe `.github&#47;workflows&#47;stage1_monitoring.yml` (falls vorhanden). <!-- 
 
 ```bash
 # 1) Daily Snapshot (soll 0 neue Alerts zeigen)
-python3 scripts/obs/stage1_daily_snapshot.py
+./scripts/pt  scripts/obs/stage1_daily_snapshot.py
 echo "Exit code: $?"  # Soll 0 sein
 
 # 2) Trend Report (soll ✅ signal zeigen)
-python3 scripts/obs/stage1_trend_report.py
+./scripts/pt  scripts/obs/stage1_trend_report.py
 ```
 
 ### Fail-on-new-alerts Test
 
 ```bash
 # Soll Exit Code 2 zurückgeben wenn neue Alerts detektiert werden
-python3 scripts/obs/stage1_daily_snapshot.py --fail-on-new-alerts
+./scripts/pt  scripts/obs/stage1_daily_snapshot.py --fail-on-new-alerts
 if [ $? -eq 2 ]; then
   echo "⚠️ Neue Alerts detektiert!"
 fi
