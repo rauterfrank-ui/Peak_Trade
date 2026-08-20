@@ -16,6 +16,7 @@ MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2X_HEADING = "### 11.13.5.Z2X Unfilled-order state class does not produce independent account IM"
 Z2W_HEADING = "### 11.13.5.Z2W Evidence boundary reached bind"
+Z2Y_HEADING = "### 11.13.5.Z2Y Filled-position-derived probe is not presently authorizable"
 NEXT_POINTER = (
     "OWNER_GO_REQUIRED_SEPARATE_FOR_POSITION_DERIVED_IM_NOTIONALUSD_OR_UPL_"
     "UNFILLED_ORDER_DOES_NOT_PRODUCE_INDEPENDENT_ACCOUNT_RUNTIME_DISCRIMINATOR_"
@@ -35,8 +36,8 @@ def _read(path: Path) -> str:
 def _z2x_section(text: str) -> str:
     start = text.find(Z2X_HEADING)
     assert start >= 0, "missing §11.13.5.Z2X heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2X"
+    end = text.find(Z2Y_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2Y boundary after Z2X"
     return text[start:end]
 
 
@@ -45,8 +46,9 @@ def test_z2x_heading_is_unique_and_follows_z2w() -> None:
     assert text.count(Z2X_HEADING) == 1
     z2w = text.find(Z2W_HEADING)
     z2x = text.find(Z2X_HEADING)
+    z2y = text.find(Z2Y_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2w < z2x < ladder
+    assert 0 <= z2w < z2x < z2y < ladder
 
 
 def test_z2x_docs_bind_adjudication_b_without_submit_or_rule_c() -> None:
@@ -130,9 +132,10 @@ def test_z2x_docs_bind_adjudication_b_without_submit_or_rule_c() -> None:
 def test_z2x_map_of_truth_navigation_pointer_matches_runbook() -> None:
     mot = _read(MAP_OF_TRUTH)
     assert "§11.13.5.Z2X |" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
     assert "historical next pointer superseded by §11.13.5.Z2X" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2Y" in mot
     assert "ADJUDICATION=B" in mot
+    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}\n" not in mot
     assert (
         "NEXT_CANONICAL_STEP_POINTER=OWNER_GO_REQUIRED_SEPARATE_FOR_NEW_RUNTIME_STATE_CLASS_"
         "ORDER_DERIVED_OR_POSITION_DERIVED_IM_NOTIONALUSD_OR_UPL_EVIDENCE_BOUNDARY_REACHED_"
