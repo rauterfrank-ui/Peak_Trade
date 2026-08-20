@@ -1,10 +1,10 @@
-"""§11.13.5.Z2AD LF-07 productive reachability adjudication persist.
+"""§11.13.5.Z2AE LF-08 LIVE_FLATTEN_PROVABILITY re-adjudication persist.
 
 Docs/governance invariants only. Persists the already-completed
-read-only LF-07 adjudication as B (not admissible). Does not start
-LF-08, does not make flatten runtime-reachable, does not neutralize
-unproven venue semantics, and does not submit orders, call OKX, fund,
-open a position, or unlock Canary.
+read-only LF-08 adjudication as B (UNPROVEN). Does not start LF-09,
+does not treat implemented+offline-tested as productive proof, does
+not claim new admissible evidence, and does not submit orders, call
+OKX, fund, open a position, or unlock Canary.
 """
 
 from __future__ import annotations
@@ -21,6 +21,15 @@ Z2AC_HEADING = "### 11.13.5.Z2AC LF-06 venue semantics evidence persist"
 Z2AB_HEADING = "### 11.13.5.Z2AB Productive runtime proof is not pre-submit admissible"
 Z2AA_HEADING = "### 11.13.5.Z2AA Earliest Z2Y safety dependency is not statically provable"
 NEXT_POINTER = (
+    "OWNER_GO_REQUIRED_SEPARATE_FOR_ANY_LF09_OR_FLATTEN_CONTINUATION_NOT_"
+    "AUTHORIZED_BY_THIS_PERSIST_LF08_B_LIVE_FLATTEN_UNPROVEN_IMPLEMENTED_"
+    "PLUS_OFFLINE_TESTED_IS_NOT_PRODUCTIVE_PROOF_PRODUCTIVE_REACHABILITY_"
+    "NOT_ADMISSIBLE_NO_NEW_ADMISSIBLE_EVIDENCE_OVERSHOOT_FLIP_RACE_UNPROVEN_"
+    "FAIL_CLOSED_IS_NON_PROOF_GATE_4_GATE_6_FAIL_GATE_8_UNINSTANTIABLE_NO_"
+    "RUNTIME_NO_WIRING_NO_ORDER_NO_ALLOWLIST_CANARY_NOT_AUTHORIZED_SUPPORT_"
+    "CONTACT_NOT_AUTHORIZED"
+)
+CONSUMED_Z2AD_POINTER = (
     "OWNER_GO_REQUIRED_SEPARATE_BECAUSE_PRODUCTIVE_REACHABILITY_NOT_ADMISSIBLE_"
     "LF07_B_FLATTEN_LIMIT_PRICE_UNBOUND_NO_FLATTEN_TRANSPORT_EXISTING_EXECUTE_"
     "PATH_CANNOT_REACH_FLATTEN_OPEN_POSITION_PRESENT_BLOCKS_ORDER_COUNT_LIMIT_"
@@ -29,14 +38,8 @@ NEXT_POINTER = (
     "NOT_AUTHORIZED_NO_RUNTIME_NO_WIRING_NO_ORDER_NO_ALLOWLIST_CANARY_NOT_"
     "AUTHORIZED_SUPPORT_CONTACT_NOT_AUTHORIZED"
 )
-CONSUMED_Z2AC_POINTER = (
-    "OWNER_GO_REQUIRED_SEPARATE_TO_ADJUDICATE_ANY_LF07_OR_FLATTEN_CONTINUATION_"
-    "NOT_AUTHORIZED_BY_THIS_PERSIST_LF06_NOT_PASS_OVERSHOOT_FLIP_RACE_UNPROVEN_"
-    "WIRE_TYPE_PRODUCTIVE_UNPROVEN_NO_RUNTIME_NO_ORDER_NO_ALLOWLIST_LIVE_"
-    "FLATTEN_UNPROVEN_CANARY_NOT_AUTHORIZED_SUPPORT_CONTACT_NOT_AUTHORIZED"
-)
-OWNER_GO = "LF_07_SSOT_PERSIST_ONLY"
-BASELINE_SHA = "d2478cfe39f87dbc49122a34a51df3398988eb13"
+OWNER_GO = "LF_08_SSOT_PERSIST_ONLY"
+BASELINE_SHA = "006397a13e809ae12729b2da4d4c8ecfdd41e535"
 
 
 def _read(path: Path) -> str:
@@ -44,17 +47,17 @@ def _read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def _z2ad_section(text: str) -> str:
-    start = text.find(Z2AD_HEADING)
-    assert start >= 0, "missing §11.13.5.Z2AD heading"
-    end = text.find(Z2AE_HEADING, start)
-    assert end > start, "missing §11.13.5.Z2AE boundary after Z2AD"
+def _z2ae_section(text: str) -> str:
+    start = text.find(Z2AE_HEADING)
+    assert start >= 0, "missing §11.13.5.Z2AE heading"
+    end = text.find("## 11.14 Live order and economic evidence ladder", start)
+    assert end > start, "missing §11.14 boundary after Z2AE"
     return text[start:end]
 
 
-def test_z2ad_heading_is_unique_and_follows_z2ac() -> None:
+def test_z2ae_heading_is_unique_and_follows_z2ad() -> None:
     text = _read(MASTER_RUNBOOK)
-    assert text.count(Z2AD_HEADING) == 1
+    assert text.count(Z2AE_HEADING) == 1
     z2aa = text.find(Z2AA_HEADING)
     z2ab = text.find(Z2AB_HEADING)
     z2ac = text.find(Z2AC_HEADING)
@@ -64,66 +67,62 @@ def test_z2ad_heading_is_unique_and_follows_z2ac() -> None:
     assert 0 <= z2aa < z2ab < z2ac < z2ad < z2ae < ladder
 
 
-def test_z2ad_docs_bind_lf07_b_without_runtime_or_lf08() -> None:
-    section = _z2ad_section(_read(MASTER_RUNBOOK))
+def test_z2ae_docs_bind_lf08_b_without_runtime_or_lf09() -> None:
+    section = _z2ae_section(_read(MASTER_RUNBOOK))
     required = (
-        "AUTHORIZED_SCOPE=LF_07_SSOT_PERSIST_ONLY",
+        "AUTHORIZED_SCOPE=LF_08_SSOT_PERSIST_ONLY",
         f"OWNER_GO={OWNER_GO}",
         "OWNER_GO_STATUS=CONSUMED",
         f"BASELINE_ORIGIN_MAIN_SHA={BASELINE_SHA}",
-        "LAST_CANONICALLY_CLOSED_STEP_BEFORE_WRITE=LF_06",
-        "LF_06_STATUS=NOT_PASS",
-        "LF_07_READ_ONLY_ADJUDICATION=B",
-        "LF_07_PRODUCTIVE_REACHABILITY_ADJUDICATION=B",
+        "LAST_CANONICALLY_CLOSED_STEP_BEFORE_WRITE=LF_07",
+        "LAST_CANONICALLY_CLOSED_STEP=LF_08",
         "LF_07_ADJUDICATION=B",
-        "LF_07_ADJUDICATION_CLASS=PRODUCTIVE_REACHABILITY_NOT_ADMISSIBLE",
+        "LF_08_READ_ONLY_ADJUDICATION=B",
+        "LF_08_LIVE_FLATTEN_PROVABILITY_ADJUDICATION=B",
+        "LF_08_ADJUDICATION=B",
+        "LF_08_ADJUDICATION_CLASS=LIVE_FLATTEN_PROVABILITY_UNPROVEN",
         "PRODUCTIVE_REACHABILITY_ADMISSIBLE=false",
+        "PRODUCTIVE_RUNTIME_PROOF_AVAILABLE=false",
+        "NEW_ADMISSIBLE_EVIDENCE_SINCE_LF_07=false",
+        "DOCS_PERSIST_IS_NOT_ADMISSIBLE_PRODUCTIVE_EVIDENCE=true",
+        "IMPLEMENTED_PLUS_OFFLINE_TESTED_IS_NOT_PRODUCTIVE_PROOF=true",
+        "LF_06_OVERALL_ADJUDICATION=NOT_PASS",
         "LF_01_STATUS=OFFLINE_IMPLEMENTED",
         "LF_02_STATUS=OFFLINE_TESTED",
         "LF_03_STATUS=PERMIT_ORCHESTRATION_IMPLEMENTED_SUBMIT_UNREACHABLE",
         "LF_04_STATUS=FAILURE_MATRIX_TESTED_ACTION_UNAUTHORIZED",
         "LF_05_STATUS=PARTIAL_FAIL_CLOSED_NO_OPERATIONAL_PRICE",
+        "MECHANISM_IMPLEMENTED=PARTIAL_OFFLINE_ONLY",
+        "OFFLINE_TEST_COVERAGE_SUFFICIENT_FOR_OFFLINE_CONTRACT=true",
+        "LIMIT_PRICE_CONTRACT_STATUS=PARTIAL_FAIL_CLOSED_NO_OPERATIONAL_PRICE",
+        "VENUE_SEMANTICS_FULLY_PROVEN=false",
         "FLATTEN_MECHANISM_IMPLEMENTED=PARTIAL_OFFLINE_ONLY",
         "FLATTEN_OFFLINE_TESTED=true",
         "FLATTEN_RUNTIME_WIRING_PRESENT=false",
         "FLATTEN_RUNTIME_REACHABLE_TODAY=false",
         "EXISTING_EXECUTE_PATH_CAN_REACH_FLATTEN=false",
-        "REDUCE_ONLY_DOCUMENTED_STATUS=PARTIALLY_PROVEN_REQUEST_BOOLEAN_RESPONSE_STRING_PRODUCTIVE_UNPROVEN",
         "FAIL_CLOSED_NEUTRALIZES_UNPROVEN_VENUE_SEMANTICS=false",
         "FAIL_CLOSED_TODAY_IS_NON_REACHABILITY_NOT_VENUE_SAFETY_PROOF=true",
+        "OFFLINE_TEST_IS_NOT_PRODUCTIVE_VENUE_PROOF=true",
         "CLOSE_POSITION_IF_ANY_IS_NOT_FLATTEN_AND_NOT_ACTIVATED=true",
         "MARKET_CLOSE_IS_NOT_AN_ALLOWED_SUBSTITUTE=true",
-        "BLOCKER_1_FLATTEN_LIMIT_PRICE_POLICY_UNBOUND=true",
-        "BLOCKER_1_NO_PX_NO_LIMIT_FLATTEN_POST=true",
-        "BLOCKER_2_NO_PRODUCTIVE_POST_FLATTEN_ORDER=true",
-        "BLOCKER_2_PERMIT_SUBMIT_REACHABLE_MUST_REMAIN_FALSE=true",
-        "BLOCKER_3_EXISTING_EXECUTE_PATH_IS_ENTRY_ONLY=true",
-        "BLOCKER_3_OPEN_POSITION_PRESENT_BLOCKS_SUBMIT=true",
-        "BLOCKER_3_ORDER_COUNT_LIMIT=1",
-        "BLOCKER_4_OVERSHOOT_PROTECTION_STATUS=UNPROVEN",
-        "BLOCKER_4_ZERO_CROSS_FLIP_PROTECTION_STATUS=UNPROVEN",
-        "BLOCKER_4_RACE_SHRINK_BEHAVIOR_STATUS=UNPROVEN",
-        "BLOCKER_5_FAIL_CLOSED_DOES_NOT_NEUTRALIZE_VENUE_GAPS=true",
-        "BLOCKER_6_GATE_4_FLATTEN_CAPABILITY_REMAINS=FAIL",
-        "BLOCKER_6_GATE_6_PRICE_BOUND_FOR_FLATTEN_REMAINS=FAIL",
-        "BLOCKER_6_GATE_8_WORST_CASE_LOSS_BOUND=UNINSTANTIABLE",
         "OVERSHOOT_PROTECTION_STATUS=UNPROVEN",
         "ZERO_CROSS_FLIP_PROTECTION_STATUS=UNPROVEN",
         "RACE_SHRINK_BEHAVIOR_STATUS=UNPROVEN",
-        "FLATTEN_PRICE_POLICY_OPERATIONALLY_USABLE=false",
-        "RUNTIME_REACHABLE=false",
-        "LIFECYCLE_FLATTEN_RUNTIME_REACHABLE=false",
-        "LIVE_FLATTEN_PROVABILITY=UNPROVEN_HARD_STOP",
         "GATE_4_FLATTEN_CAPABILITY_REMAINS=FAIL",
         "GATE_6_PRICE_BOUND_FOR_FLATTEN_REMAINS=FAIL",
         "GATE_8_WORST_CASE_LOSS_BOUND=UNINSTANTIABLE",
+        "FLATTEN_PRICE_POLICY_OPERATIONALLY_USABLE=false",
+        "RUNTIME_REACHABLE=false",
+        "LIFECYCLE_FLATTEN_RUNTIME_REACHABLE=false",
+        "LIVE_FLATTEN_PROVABILITY=UNPROVEN",
+        "LIVE_FLATTEN_PROVABILITY_REMAINS=UNPROVEN_HARD_STOP",
         "FLATTEN_SUBMIT_REACHABLE=false",
         "CLOSE_POSITION_ENDPOINT_ALLOWLISTED=false",
-        "PRODUCTIVE_REACHABILITY_REQUIRED_MISSING_EVIDENCE=FLATTEN_LIMIT_PRICE_POLICY;PRODUCTIVE_REDUCEONLY_WIRE_ACCEPTANCE;OVERSHOOT_ZERO_CROSS_FLIP_RACE_VENUE_BEHAVIOR;POST_FLATTEN_FLAT_CONFIRM;FILL_DETERMINISM;FINITE_LOSS_BOUND",
-        "LF_08_AUTHORIZED=false",
-        "LF_08_STARTED=false",
-        "NO_LF08_ANALYSIS=true",
-        "NO_LF08_IMPLEMENTATION=true",
+        "LF_09_AUTHORIZED=false",
+        "LF_09_STARTED=false",
+        "NO_LF09_ANALYSIS=true",
+        "NO_LF09_IMPLEMENTATION=true",
         "NO_RUNTIME_CODE_CHANGE=true",
         "NO_FLATTEN_TRANSPORT_BINDING=true",
         "NO_PRICE_POLICY_CHANGE=true",
@@ -134,6 +133,7 @@ def test_z2ad_docs_bind_lf07_b_without_runtime_or_lf08() -> None:
         "RUNTIME_ACTIVATION_EXECUTED=false",
         "CANARY_EXECUTE_EXECUTED=false",
         "NETWORK_MUTATION=none",
+        "NETWORK_TRADING_MUTATION=none",
         "Z2AB_PRODUCTIVE_RUNTIME_PROOF_ADMISSIBILITY_REMAINS=C",
         "Z2Y_AUTHORIZABILITY_ADJUDICATION_REMAINS=B",
         "PRODUCTIVE_RUNTIME_PROOF_ADMISSIBLE=false",
@@ -152,17 +152,17 @@ def test_z2ad_docs_bind_lf07_b_without_runtime_or_lf08() -> None:
         "SUPPORT_CONTACT_AUTHORIZED=false",
         "ALLOWLIST_EXPANSION_AUTHORIZED=false",
         "NO_CAPABILITY_ADVANCEMENT=true",
-        "NEXT_OWNER_AUTHORIZATION_REQUIRED=SEPARATE_OWNER_GO_REQUIRED_LF08_NOT_AUTHORIZED_BY_THIS_PERSIST",
+        "NEXT_OWNER_AUTHORIZATION_REQUIRED=SEPARATE_OWNER_GO_REQUIRED_LF09_NOT_AUTHORIZED_BY_THIS_PERSIST",
         "HARD_STOP_AFTER_THIS_TASK=true",
         f"CANONICAL_NEXT_STEP={NEXT_POINTER}",
     )
     for marker in required:
-        assert marker in section, f"missing Z2AD marker: {marker}"
+        assert marker in section, f"missing Z2AE marker: {marker}"
     forbidden = (
         "\nLIVE_AUTHORIZED=true\n",
         "\nTESTNET_AUTHORIZED=true\n",
-        "\nLF_08_AUTHORIZED=true\n",
-        "\nLF_08_STARTED=true\n",
+        "\nLF_09_AUTHORIZED=true\n",
+        "\nLF_09_STARTED=true\n",
         "\nRUNTIME_REACHABLE=true\n",
         "\nLIFECYCLE_FLATTEN_RUNTIME_REACHABLE=true\n",
         "\nFLATTEN_RUNTIME_REACHABLE_TODAY=true\n",
@@ -170,8 +170,15 @@ def test_z2ad_docs_bind_lf07_b_without_runtime_or_lf08() -> None:
         "\nFAIL_CLOSED_NEUTRALIZES_UNPROVEN_VENUE_SEMANTICS=true\n",
         "\nFLATTEN_PRICE_POLICY_OPERATIONALLY_USABLE=true\n",
         "\nPRODUCTIVE_REACHABILITY_ADMISSIBLE=true\n",
+        "\nPRODUCTIVE_RUNTIME_PROOF_AVAILABLE=true\n",
+        "\nNEW_ADMISSIBLE_EVIDENCE_SINCE_LF_07=true\n",
+        "\nDOCS_PERSIST_IS_NOT_ADMISSIBLE_PRODUCTIVE_EVIDENCE=false\n",
+        "\nIMPLEMENTED_PLUS_OFFLINE_TESTED_IS_NOT_PRODUCTIVE_PROOF=false\n",
+        "\nVENUE_SEMANTICS_FULLY_PROVEN=true\n",
+        "\nLF_08_ADJUDICATION=A\n",
+        "\nLF_08_ADJUDICATION=C\n",
         "\nLF_07_ADJUDICATION=A\n",
-        "\nLF_07_ADJUDICATION=C\n",
+        "\nLF_06_OVERALL_ADJUDICATION=PASS\n",
         "\nLF_06_STATUS=PASS\n",
         "\nLIVE_FLATTEN_PROVABILITY=PROVEN\n",
         "\nOVERSHOOT_PROTECTION_STATUS=PROVEN\n",
@@ -201,25 +208,32 @@ def test_z2ad_docs_bind_lf07_b_without_runtime_or_lf08() -> None:
         "\nCANARY_EXECUTE_EXECUTED=true\n",
     )
     for marker in forbidden:
-        assert marker not in section, f"forbidden Z2AD marker present: {marker!r}"
+        assert marker not in section, f"forbidden Z2AE marker present: {marker!r}"
 
 
-def test_z2ad_map_of_truth_navigation_pointer_matches_runbook() -> None:
+def test_z2ae_map_of_truth_navigation_pointer_matches_runbook() -> None:
     mot = _read(MAP_OF_TRUTH)
-    assert "§11.13.5.Z2AD |" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}\n" not in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={CONSUMED_Z2AC_POINTER}\n" not in mot
-    assert "historical next pointer superseded by §11.13.5.Z2AD" in mot
+    assert "THIS_DOCUMENT_DEFINES_NO_SEMANTICS=true" in mot
+    assert "THIS_DOCUMENT_IS_NOT_A_SECOND_SSOT=true" in mot
+    assert "§11.13.5.Z2AE |" in mot
+    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
+    assert f"NEXT_CANONICAL_STEP_POINTER={CONSUMED_Z2AD_POINTER}\n" not in mot
     assert "historical next pointer superseded by §11.13.5.Z2AE" in mot
-    assert "LF_07_ADJUDICATION=B" in mot
+    assert "LF_08_ADJUDICATION=B" in mot
+    assert "LIVE_FLATTEN_PROVABILITY=UNPROVEN" in mot
     assert "PRODUCTIVE_REACHABILITY_ADMISSIBLE=false" in mot
-    assert "FLATTEN_RUNTIME_REACHABLE_TODAY=false" in mot
-    assert "EXISTING_EXECUTE_PATH_CAN_REACH_FLATTEN=false" in mot
+    assert "PRODUCTIVE_RUNTIME_PROOF_AVAILABLE=false" in mot
+    assert "NEW_ADMISSIBLE_EVIDENCE_SINCE_LF_07=false" in mot
+    assert "LF_06_OVERALL_ADJUDICATION=NOT_PASS" in mot
     assert "FAIL_CLOSED_NEUTRALIZES_UNPROVEN_VENUE_SEMANTICS=false" in mot
     assert "OVERSHOOT_PROTECTION_STATUS=UNPROVEN" in mot
     assert "ZERO_CROSS_FLIP_PROTECTION_STATUS=UNPROVEN" in mot
     assert "RACE_SHRINK_BEHAVIOR_STATUS=UNPROVEN" in mot
-    assert "LF_08_AUTHORIZED=false" in mot
-    assert "LF_08_STARTED=false" in mot
-    assert "LIVE_FLATTEN_PROVABILITY=UNPROVEN_HARD_STOP" in mot
+    assert "LAST_CANONICALLY_CLOSED_STEP=LF_08" in mot
+    assert "LF_09_AUTHORIZED=false" in mot
+    assert "LF_09_STARTED=false" in mot
     assert "LIVE_AUTHORIZED=false" in mot
+    assert (
+        "LF08_NOT_AUTHORIZED"
+        not in mot.split("NEXT_CANONICAL_STEP_POINTER=", 1)[1].split("\n", 1)[0]
+    )
