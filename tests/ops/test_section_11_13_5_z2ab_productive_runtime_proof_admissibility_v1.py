@@ -17,6 +17,7 @@ MASTER_RUNBOOK = REPO_ROOT / "docs" / "runbooks" / "canonical" / "PEAK_TRADE_MAS
 MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2AB_HEADING = "### 11.13.5.Z2AB Productive runtime proof is not pre-submit admissible"
+Z2AC_HEADING = "### 11.13.5.Z2AC LF-06 venue semantics evidence persist"
 Z2AA_HEADING = "### 11.13.5.Z2AA Earliest Z2Y safety dependency is not statically provable"
 Z2Z_HEADING = "### 11.13.5.Z2Z Evidence-model re-adjudication"
 Z2Y_HEADING = "### 11.13.5.Z2Y Filled-position-derived probe is not presently authorizable"
@@ -48,8 +49,8 @@ def _read(path: Path) -> str:
 def _z2ab_section(text: str) -> str:
     start = text.find(Z2AB_HEADING)
     assert start >= 0, "missing §11.13.5.Z2AB heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2AB"
+    end = text.find(Z2AC_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2AC boundary after Z2AB"
     return text[start:end]
 
 
@@ -60,8 +61,9 @@ def test_z2ab_heading_is_unique_and_follows_z2aa() -> None:
     z2z = text.find(Z2Z_HEADING)
     z2aa = text.find(Z2AA_HEADING)
     z2ab = text.find(Z2AB_HEADING)
+    z2ac = text.find(Z2AC_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2y < z2z < z2aa < z2ab < ladder
+    assert 0 <= z2y < z2z < z2aa < z2ab < z2ac < ladder
 
 
 def test_z2ab_docs_bind_adjudication_c_without_runtime_or_admissible_proof() -> None:
@@ -209,9 +211,10 @@ def test_z2ab_docs_bind_adjudication_c_without_runtime_or_admissible_proof() -> 
 def test_z2ab_map_of_truth_navigation_pointer_matches_runbook() -> None:
     mot = _read(MAP_OF_TRUTH)
     assert "§11.13.5.Z2AB |" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
+    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}\n" not in mot
     assert f"NEXT_CANONICAL_STEP_POINTER={CONSUMED_Z2AA_POINTER}\n" not in mot
     assert "historical next pointer superseded by §11.13.5.Z2AB" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AC" in mot
     assert "PRODUCTIVE_RUNTIME_PROOF_ADMISSIBLE=false" in mot
     assert "GATE_4_FLATTEN_CAPABILITY=FAIL" in mot
     assert "GATE_8_WORST_CASE_LOSS_BOUND=FAIL" in mot
