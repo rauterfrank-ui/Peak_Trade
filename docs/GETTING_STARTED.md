@@ -21,7 +21,7 @@ Dieses Dokument führt dich Schritt für Schritt durch deine erste Stunde mit Pe
 ## 1. Voraussetzungen
 
 - **Python floor:** `requires-python = ">=3.10"` in `pyproject.toml`. Recommended local: repository `.venv` via `uv sync --dev` (CPython 3.11.x).
-- Do **not** use PATH `python`/`python3` to run Peak_Trade. Use `./scripts/pt`.
+- Do **not** use PATH `python`/`python3` to run Peak_Trade. Use `scripts/pt`.
 - Vertrag: [`PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md`](runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md)
 - `git` (für Repository-Klonen)
 - `uv` (für Bootstrap)

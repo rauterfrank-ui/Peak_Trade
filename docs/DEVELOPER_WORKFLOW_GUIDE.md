@@ -1,6 +1,6 @@
 # Peak_Trade Developer Workflow Guide
 
-Python floor: `requires-python = ">=3.10"`. Run Peak_Trade Python only via `./scripts/pt` (see `docs/runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md`). PATH `python`/`python3` is not a supported runtime.
+Python floor: `requires-python = ">=3.10"`. Run Peak_Trade Python only via `scripts/pt` (see `docs/runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md`). PATH `python`/`python3` is not a supported runtime.
 
 > **Purpose:** Streamlined workflows and automation tools for productive development
 >
@@ -271,7 +271,7 @@ Keyboard shortcuts:
 1. **External Tools Configuration:**
    - Settings → Tools → External Tools
    - Add tool: "Workflow Health"
-   - Program: `./scripts/pt`
+   - Program: `scripts/pt`
    - Arguments: `scripts&#47;dev_workflow.py health`
    - Working directory: `$ProjectFileDir$`
 

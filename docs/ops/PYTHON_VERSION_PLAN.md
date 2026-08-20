@@ -10,7 +10,7 @@ PYTHON_39_SUPPORTED=false
 
 This planning note is **historical**. It must not be read as current runtime
 guidance. The project floor is `requires-python = ">=3.10"`. Python 3.9 is not a
-supported Peak_Trade runtime. Use `./scripts/pt`, not PATH `python3`.
+supported Peak_Trade runtime. Use `scripts/pt`, not PATH `python3`.
 
 **Status:** SUPERSEDED (kept for history)
 **Historical snapshot in this note:** Python 3.9.6 as then-current local CLT

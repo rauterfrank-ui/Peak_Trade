@@ -29,7 +29,7 @@ uv sync --dev
 ./scripts/pt runtime-check
 ```
 
-Do not use PATH `python3 -m venv` or `source .venv/bin/activate` as the supported runtime.
+Do not use PATH `python3 -m venv` or `source .venv&#47;bin&#47;activate` as the supported runtime.
 Activation is not required. The launcher selects `.venv/bin/python`.
 
 ---

@@ -47,14 +47,14 @@ not create a venv, install packages, or source `.venv/bin/activate`.
 make runtime-check
 ```
 
-Root trampoline `./pt` execs `scripts/pt`.
+Root trampoline `pt` execs `scripts/pt`.
 
 ## Prohibited on current operative local surfaces
 
 - bare `python`
 - bare `python3`
-- `#!/usr/bin/env python3` as a supported way to start Peak_Trade
-- `source .venv/bin/activate` as the correctness mechanism
+- `#!&#47;usr&#47;bin&#47;env python3` as a supported way to start Peak_Trade
+- `source .venv&#47;bin&#47;activate` as the correctness mechanism
 - arbitrary `PYTHONPATH` / `sys.path` mutation as the runtime solution
 - direct `src/` execution for package code
 
@@ -74,6 +74,6 @@ Root trampoline `./pt` execs `scripts/pt`.
 
 ## Agents
 
-Never infer the interpreter from the terminal. If `scripts/pt runtime-check`
+Never infer the interpreter from the terminal. If `scripts/pt` `runtime-check`
 fails: HARD STOP. Do not improvise `PYTHONPATH`, PATH `python3`, or package
 installs.
