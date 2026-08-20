@@ -18,6 +18,7 @@ MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2AA_HEADING = "### 11.13.5.Z2AA Earliest Z2Y safety dependency is not statically provable"
 Z2AB_HEADING = "### 11.13.5.Z2AB Productive runtime proof is not pre-submit admissible"
+Z2AC_HEADING = "### 11.13.5.Z2AC LF-06 venue semantics evidence persist"
 Z2Z_HEADING = "### 11.13.5.Z2Z Evidence-model re-adjudication"
 Z2Y_HEADING = "### 11.13.5.Z2Y Filled-position-derived probe is not presently authorizable"
 NEXT_POINTER = (
@@ -58,8 +59,9 @@ def test_z2aa_heading_is_unique_and_follows_z2z() -> None:
     z2z = text.find(Z2Z_HEADING)
     z2aa = text.find(Z2AA_HEADING)
     z2ab = text.find(Z2AB_HEADING)
+    z2ac = text.find(Z2AC_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2y < z2z < z2aa < z2ab < ladder
+    assert 0 <= z2y < z2z < z2aa < z2ab < z2ac < ladder
 
 
 def test_z2aa_docs_bind_adjudication_c_without_runtime_or_proven_flatten() -> None:
