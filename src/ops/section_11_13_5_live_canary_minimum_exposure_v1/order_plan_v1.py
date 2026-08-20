@@ -32,6 +32,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.exposure_v1 import 
     LiveCanaryExposureError,
     build_canary_exposure_binding_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_submit_state_v1 import (
+    LiveCanaryPositionObservationError,
+    observe_target_position_flatten_candidate_v1,
+)
 
 
 class LiveCanaryOrderPlanError(RuntimeError):
@@ -141,6 +145,23 @@ def serialize_canary_clordid_v1(*, owner_go: str, origin_main_sha: str) -> str:
     return coid
 
 
+def serialize_canary_flatten_clordid_v1(*, owner_go: str, origin_main_sha: str) -> str:
+    material = hashlib.sha256(f"{owner_go}:{origin_main_sha}:FLATTEN".encode("utf-8")).hexdigest()
+    coid = build_client_order_id(
+        run_id=material,
+        session_id=material,
+        intent_id=material,
+        environment="LIVE",
+        instrument_id=DEFAULT_INSTRUMENT_ID,
+        sequence=1,
+    )
+    if not coid or len(coid) > CLIENT_ORDER_ID_MAX_LENGTH:
+        raise LiveCanaryOrderPlanError("FLATTEN_CLORDID_LENGTH_VIOLATION")
+    if not CLIENT_ORDER_ID_ALLOWED_PATTERN.fullmatch(coid):
+        raise LiveCanaryOrderPlanError("FLATTEN_CLORDID_ALPHANUMERIC_VIOLATION")
+    return coid
+
+
 @dataclass(frozen=True)
 class CanaryOrderPlanV1:
     instrument_id: str
@@ -240,4 +261,101 @@ def build_minimum_valid_canary_order_plan_v1(
         max_notional=exposure.max_notional,
         clordid=clordid,
         venue_native_payload=payload,
+    )
+
+
+FLATTEN_LIMIT_PRICE_GATE_STATUS = "FAIL_CLOSED_UNTIL_SEPARATE_OWNER_GO"
+
+
+def _format_flatten_qty(value: Decimal) -> str:
+    if value <= 0:
+        raise LiveCanaryOrderPlanError("ZERO_POSITION_NO_FLATTEN_ORDER")
+    integral = value.to_integral_value()
+    if value == integral:
+        return format(integral, "f")
+    return format(value, "f")
+
+
+@dataclass(frozen=True)
+class CanaryFlattenOrderPlanV1:
+    """Offline flatten plan. Not runtime-reachable and not price-authorized."""
+
+    instrument_id: str
+    side: str
+    order_type: str
+    td_mode: str
+    quantity: str
+    reduce_only: bool
+    clordid: str
+    limit_price: None
+    price_gate_status: str
+    venue_native_payload: None
+    submitted_entry_sz_used: bool
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "instrument_id": self.instrument_id,
+            "side": self.side,
+            "order_type": self.order_type,
+            "td_mode": self.td_mode,
+            "quantity": self.quantity,
+            "reduce_only": self.reduce_only,
+            "clordid": self.clordid,
+            "limit_price": self.limit_price,
+            "price_gate_status": self.price_gate_status,
+            "venue_native_payload": self.venue_native_payload,
+            "submitted_entry_sz_used": self.submitted_entry_sz_used,
+        }
+
+
+def build_minimum_valid_canary_flatten_order_plan_v1(
+    *,
+    positions_payload: Mapping[str, Any],
+    owner_go: str,
+    origin_main_sha: str,
+    instrument_id: str = DEFAULT_INSTRUMENT_ID,
+    td_mode: str = DEFAULT_TD_MODE,
+    submitted_entry_sz: str | None = None,
+) -> CanaryFlattenOrderPlanV1:
+    """Build an Entry-separated flatten plan from observed position only.
+
+    ``submitted_entry_sz`` is accepted only so tests can prove it is ignored.
+    No LIMIT price is bound. No venue-native payload is produced.
+    """
+    del submitted_entry_sz
+    try:
+        observed = observe_target_position_flatten_candidate_v1(
+            positions_payload=positions_payload,
+            instrument_id=instrument_id,
+        )
+    except LiveCanaryPositionObservationError as exc:
+        raise LiveCanaryOrderPlanError(f"FLATTEN_OBSERVATION:{exc}") from exc
+    clordid = serialize_canary_flatten_clordid_v1(
+        owner_go=owner_go,
+        origin_main_sha=origin_main_sha,
+    )
+    return CanaryFlattenOrderPlanV1(
+        instrument_id=observed.instrument_id,
+        side=observed.candidate_flatten_side,
+        order_type="LIMIT",
+        td_mode=td_mode,
+        quantity=_format_flatten_qty(observed.candidate_flatten_qty),
+        reduce_only=True,
+        clordid=clordid,
+        limit_price=None,
+        price_gate_status=FLATTEN_LIMIT_PRICE_GATE_STATUS,
+        venue_native_payload=None,
+        submitted_entry_sz_used=False,
+    )
+
+
+def serialize_canary_flatten_venue_native_payload_v1(
+    plan: CanaryFlattenOrderPlanV1,
+    *,
+    px: str | None = None,
+) -> dict[str, Any]:
+    """Refuse a wire-ready flatten LIMIT body until a separate price-policy GO."""
+    del plan, px
+    raise LiveCanaryOrderPlanError(
+        "FLATTEN_LIMIT_PRICE_POLICY_UNBOUND:" + FLATTEN_LIMIT_PRICE_GATE_STATUS
     )

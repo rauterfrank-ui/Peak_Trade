@@ -53,6 +53,9 @@ class OkxOrderResponseV1:
         }
 
 
+# Offline JSON presence only. Venue acceptance of boolean vs string is UNPROVEN.
+REDUCE_ONLY_WIRE_TYPE_STATUS = "UNPROVEN"
+
 # OKX Place Order: Conditional px required for these ordType values.
 _OKX_ORD_TYPES_REQUIRING_PX: frozenset[str] = frozenset(
     {
@@ -78,12 +81,20 @@ def build_venue_native_order_body_v1(
     quantity: str,
     td_mode: str = "cross",
     px: str | None = None,
+    reduce_only: bool = False,
 ) -> dict[str, Any]:
     """Cap 11.4 venue-native field mapping (productive; dry_run omitted).
 
     For LIMIT-class ordType, OKX Conditional ``px`` MUST be present in the
     final request body. Missing/blank px fails closed before wire.
+
+    ``reduceOnly`` is opt-in and omitted unless ``reduce_only is True``.
+    Entry/Testnet callers must keep the default so ordinary payloads omit
+    the field. Emitting the key does not prove venue acceptance; wire type
+    remains ``REDUCE_ONLY_WIRE_TYPE_STATUS``.
     """
+    if not isinstance(reduce_only, bool):
+        raise OkxResponseMapperError("REDUCE_ONLY_FLAG_INVALID")
     ord_type = order_type.lower()
     body: dict[str, Any] = {
         "clOrdId": client_order_id,
@@ -98,6 +109,9 @@ def build_venue_native_order_body_v1(
         if not px_text:
             raise OkxResponseMapperError("LIMIT_ORDER_PX_REQUIRED_BEFORE_WIRE")
         body["px"] = px_text
+    if reduce_only is True:
+        # Local JSON boolean. Venue string-vs-boolean wire type is UNPROVEN.
+        body["reduceOnly"] = True
     return body
 
 
