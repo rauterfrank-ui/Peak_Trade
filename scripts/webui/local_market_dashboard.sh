@@ -115,15 +115,7 @@ resolve_python() {
     printf '%s' "${PEAK_TRADE_WEBUI_PYTHON}"
     return 0
   fi
-  if [[ -x "${REPO_ROOT}/.venv/bin/python3" ]]; then
-    printf '%s' "${REPO_ROOT}/.venv/bin/python3"
-    return 0
-  fi
-  if [[ -x "${REPO_ROOT}/.venv/bin/python" ]]; then
-    printf '%s' "${REPO_ROOT}/.venv/bin/python"
-    return 0
-  fi
-  die "missing repo venv python at ${REPO_ROOT}/.venv/bin/python3"
+  printf '%s' "${REPO_ROOT}/scripts/pt"
 }
 
 gui_domain() {

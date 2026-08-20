@@ -1,0 +1,28 @@
+---
+description: Peak_Trade deterministic Python runtime contract for Cursor and agents
+alwaysApply: true
+---
+
+# Peak_Trade Python Runtime Contract
+
+Canonical launcher: `scripts/pt`
+Canonical interpreter: `.venv/bin/python`
+Version floor: `pyproject.toml` `requires-python = ">=3.10"`
+Docs: `docs/runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md`
+
+## Hard rules
+
+- Never execute Peak_Trade Python using PATH `python` or PATH `python3`.
+- Never infer the interpreter from terminal state, pyenv, or IDE selection.
+- Never rely on prior `source .venv/bin/activate`.
+- Never use `PYTHONPATH` or `sys.path` mutation as a runtime workaround.
+- Never silently switch interpreter, create a venv, or install/upgrade packages.
+- Use `./scripts/pt ...` (or `make` targets that delegate to it).
+- If runtime validation fails: HARD STOP and report the contract diagnostic.
+- Direct `python3 src/...py` is unsupported for package code.
+
+```text
+./scripts/pt runtime-check
+./scripts/pt -m pytest -q
+./scripts/pt -c "import trading"
+```

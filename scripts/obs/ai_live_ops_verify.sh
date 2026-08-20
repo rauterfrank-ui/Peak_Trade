@@ -25,19 +25,13 @@ STAMP_UTC="$(date -u +%Y%m%dT%H%M%SZ)"
 OUT="${VERIFY_OUT_DIR:-${OUT_DIR:-.local_tmp/ai_live_ops_verify_${STAMP_UTC}}}"
 mkdir -p "$OUT"
 
-# Deterministic Python environment contract:
-# - If $PY_CMD is set, use it.
-# - Else prefer uv-managed env (common in repo ops scripts).
-# - Else fall back to system python3.
 resolve_py_cmd() {
+  # Canonical Peak_Trade runtime. Never PATH python3 / uv run python.
   if [[ -n "${PY_CMD:-}" ]]; then
     return 0
   fi
-  if command -v uv >/dev/null 2>&1; then
-    PY_CMD="uv run python"
-  else
-    PY_CMD="python3"
-  fi
+  REPO_ROOT="$(git rev-parse --show-toplevel)"
+  PY_CMD="${REPO_ROOT}/scripts/pt"
 }
 
 resolve_py_cmd

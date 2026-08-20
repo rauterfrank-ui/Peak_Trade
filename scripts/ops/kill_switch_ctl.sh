@@ -22,18 +22,10 @@ NC='\033[0m' # No Color
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
-# Python module path
-KILL_SWITCH_CLI="python -m src.risk_layer.kill_switch.cli"
+PT="$PROJECT_ROOT/scripts/pt"
 
 # Change to project root
 cd "$PROJECT_ROOT"
-
-# Activate venv if exists
-if [ -d "venv" ]; then
-    source venv/bin/activate
-elif [ -d ".venv" ]; then
-    source .venv/bin/activate
-fi
 
 # Functions
 show_help() {
@@ -71,7 +63,7 @@ EOF
 
 cmd_status() {
     echo -e "${GREEN}Checking Kill Switch status...${NC}\n"
-    $KILL_SWITCH_CLI status
+    "$PT" -m src.risk_layer.kill_switch.cli status
 }
 
 cmd_trigger() {
@@ -89,7 +81,7 @@ cmd_trigger() {
 
     echo ""
     echo -e "${RED}Triggering Kill Switch...${NC}"
-    $KILL_SWITCH_CLI trigger --reason "$reason" --confirm
+    "$PT" -m src.risk_layer.kill_switch.cli trigger --reason "$reason" --confirm
 
     echo ""
     echo -e "${YELLOW}Trading is now BLOCKED.${NC}"
@@ -117,7 +109,7 @@ cmd_recover() {
 
     echo ""
     echo -e "${YELLOW}Requesting recovery...${NC}"
-    $KILL_SWITCH_CLI recover \
+    "$PT" -m src.risk_layer.kill_switch.cli recover \
         --code "$KILL_SWITCH_APPROVAL_CODE" \
         --reason "$reason" \
         --approved-by "$OPERATOR"
@@ -137,15 +129,15 @@ cmd_audit() {
     echo -e "${GREEN}Kill Switch Audit Trail${NC}\n"
 
     if [ -n "$since" ]; then
-        $KILL_SWITCH_CLI audit --since "$since"
+        "$PT" -m src.risk_layer.kill_switch.cli audit --since "$since"
     else
-        $KILL_SWITCH_CLI audit --limit 20
+        "$PT" -m src.risk_layer.kill_switch.cli audit --limit 20
     fi
 }
 
 cmd_health() {
     echo -e "${GREEN}System Health Check${NC}\n"
-    $KILL_SWITCH_CLI health
+    "$PT" -m src.risk_layer.kill_switch.cli health
 }
 
 # Main

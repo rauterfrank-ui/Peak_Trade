@@ -6,9 +6,10 @@ Anleitung zum Einrichten der Entwicklungsumgebung.
 
 ## Voraussetzungen
 
-- **Python 3.11+**
+- **Python floor:** `requires-python = ">=3.10"` (`pyproject.toml`). Recommended local interpreter: repository `.venv` (CPython 3.11.x) via `uv sync --dev`.
 - **Git**
 - Optional: VS Code, PyCharm oder andere IDE
+- Canonical runtime: [`PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md`](runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md)
 
 ---
 
@@ -21,16 +22,15 @@ cd Peak_Trade
 
 ---
 
-## 2. Virtual Environment erstellen
+## 2. Environment bootstrap
 
 ```bash
-# Python venv erstellen
-python3 -m venv .venv
-
-# Aktivieren
-source .venv/bin/activate      # Linux/macOS
-.venv\Scripts\activate         # Windows
+uv sync --dev
+./scripts/pt runtime-check
 ```
+
+Do not use PATH `python3 -m venv` or `source .venv&#47;bin&#47;activate` as the supported runtime.
+Activation is not required. The launcher selects `.venv&#47;bin&#47;python`.
 
 ---
 
@@ -88,13 +88,13 @@ starting_cash_default = 10000.0
 
 ```bash
 # Imports testen
-python3 -c "from src.core.peak_config import load_config; print('OK')"
+./scripts/pt -c "from src.core.peak_config import load_config; print('OK')"
 
 # Backtest mit Dummy-Daten
-python3 scripts/run_backtest.py --bars 100 -v
+./scripts/pt scripts/run_backtest.py --bars 100 -v
 
 # Tests ausführen
-python3 -m pytest tests/ -v
+./scripts/pt -m pytest tests/ -v
 ```
 
 ---
@@ -152,42 +152,42 @@ Peak_Trade/
 
 ```bash
 # Standard (Dummy-Daten)
-python3 scripts/run_backtest.py
+./scripts/pt scripts/run_backtest.py
 
 # Mit CSV-Daten
-python3 scripts/run_backtest.py --data-file data/btc_eur_1h.csv
+./scripts/pt scripts/run_backtest.py --data-file data/btc_eur_1h.csv
 
 # Mit anderer Strategie
-python3 scripts/run_backtest.py --strategy rsi_reversion
+./scripts/pt scripts/run_backtest.py --strategy rsi_reversion
 
 # Verbose-Modus
-python3 scripts/run_backtest.py -v
+./scripts/pt scripts/run_backtest.py -v
 ```
 
 ### Forward-Signale & Paper-Trading
 
 ```bash
 # 1. Signale generieren
-python3 scripts/generate_forward_signals.py --strategy ma_crossover
+./scripts/pt scripts/generate_forward_signals.py --strategy ma_crossover
 
 # 2. Order-Preview
-python3 scripts/preview_live_orders.py --signals reports/forward/*_signals.csv
+./scripts/pt scripts/preview_live_orders.py --signals reports/forward/*_signals.csv
 
 # 3. Paper-Trade
-python3 scripts/paper_trade_from_orders.py --orders reports/live/*_orders.csv
+./scripts/pt scripts/paper_trade_from_orders.py --orders reports/live/*_orders.csv
 ```
 
 ### Tests ausführen
 
 ```bash
 # Alle Tests
-python3 -m pytest tests/
+./scripts/pt -m pytest tests/
 
 # Mit Coverage
-python3 -m pytest tests/ --cov=src --cov-report=html
+./scripts/pt -m pytest tests/ --cov=src --cov-report=html
 
 # Einzelne Test-Datei
-python3 -m pytest tests/test_strategies.py -v
+./scripts/pt -m pytest tests/test_strategies.py -v
 ```
 
 ---
@@ -228,7 +228,7 @@ export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 
 # Oder direkt aus Projekt-Root ausführen
 cd Peak_Trade
-python3 scripts/run_backtest.py
+./scripts/pt scripts/run_backtest.py
 ```
 
 ### "Config not found"
@@ -238,7 +238,7 @@ python3 scripts/run_backtest.py
 ls config/config.toml
 
 # Alternativ explizit angeben
-python3 scripts/run_backtest.py --config config/config.toml
+./scripts/pt scripts/run_backtest.py --config config/config.toml
 ```
 
 ### "ccxt not found"
@@ -281,22 +281,22 @@ secret = ""                # Für Balance/Orders (optional)
 
 ```bash
 # Exchange-Status anzeigen
-python3 scripts/inspect_exchange.py --mode status
+./scripts/pt scripts/inspect_exchange.py --mode status
 
 # Ticker abrufen
-python3 scripts/inspect_exchange.py --mode ticker --symbol BTC/EUR
+./scripts/pt scripts/inspect_exchange.py --mode ticker --symbol BTC/EUR
 
 # OHLCV-Daten (Candlesticks)
-python3 scripts/inspect_exchange.py --mode ohlcv --symbol BTC/EUR --timeframe 1h --limit 20
+./scripts/pt scripts/inspect_exchange.py --mode ohlcv --symbol BTC/EUR --timeframe 1h --limit 20
 
 # Verfügbare Märkte auflisten
-python3 scripts/inspect_exchange.py --mode markets --limit 50
+./scripts/pt scripts/inspect_exchange.py --mode markets --limit 50
 
 # Balance anzeigen (erfordert API-Key)
-python3 scripts/inspect_exchange.py --mode balance
+./scripts/pt scripts/inspect_exchange.py --mode balance
 
 # Offene Orders anzeigen (erfordert API-Key)
-python3 scripts/inspect_exchange.py --mode orders
+./scripts/pt scripts/inspect_exchange.py --mode orders
 ```
 
 ### Programmatische Nutzung
@@ -323,7 +323,7 @@ Exchange-Integration-Tests sind standardmäßig deaktiviert (keine Netzwerk-Requ
 Zum Aktivieren:
 
 ```bash
-PEAK_TRADE_EXCHANGE_TESTS=1 python3 -m pytest tests/test_exchange_smoke.py -v
+PEAK_TRADE_EXCHANGE_TESTS=1 ./scripts/pt -m pytest tests/test_exchange_smoke.py -v
 ```
 
 ---

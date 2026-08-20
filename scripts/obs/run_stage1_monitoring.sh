@@ -34,7 +34,7 @@ echo
 # 1) Daily Snapshot
 # -----------------------------
 echo "=== 1) Generating Daily Snapshot ==="
-python3 scripts/obs/stage1_daily_snapshot.py
+"$REPO_ROOT/scripts/pt" scripts/obs/stage1_daily_snapshot.py
 EXIT_CODE=$?
 
 if [ $EXIT_CODE -eq 0 ]; then
@@ -48,7 +48,7 @@ fi
 
 echo
 echo "=== 2) Generating Trend Report (last 14 days) ==="
-python3 scripts/obs/stage1_trend_report.py --days 14
+"$REPO_ROOT/scripts/pt" scripts/obs/stage1_trend_report.py --days 14
 
 echo
 echo "============================================================"
@@ -64,12 +64,12 @@ echo "  - Review reports for anomalies"
 echo "  - Check 'New alerts (24h)' in snapshot"
 echo "  - If trend stable for 1-2 weeks → proceed to Stage 2 (Webhook)"
 
-python3 scripts/obs/stage1_report_index.py \
+"$REPO_ROOT/scripts/pt" scripts/obs/stage1_report_index.py \
   --root "${REPORT_ROOT}" \
   --out "${REPORT_ROOT}/index.json" \
   --run-date "${RUN_DATE}"
 
-python3 scripts/obs/validate_stage1_index.py \
+"$REPO_ROOT/scripts/pt" scripts/obs/validate_stage1_index.py \
   --root "${REPORT_ROOT}" \
   --index "${REPORT_ROOT}/index.json" \
   --out "${REPORT_ROOT}/validation.json" \

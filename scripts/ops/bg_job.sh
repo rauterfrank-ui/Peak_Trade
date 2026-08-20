@@ -62,13 +62,9 @@ case "${subcmd}" in
     exitfile="${LOG_DIR}/${label}_${ts}.exit"
     metafile="${LOG_DIR}/${label}_${ts}.meta"
 
-    # Determine venv activate (optional)
+    # Activation is not a correctness mechanism. Peak_Trade Python jobs
+    # must invoke ${REPO_DIR}/scripts/pt (never PATH python/python3).
     venv_activate=""
-    if [[ -f "${REPO_DIR}/venv/bin/activate" ]]; then
-      venv_activate="${REPO_DIR}/venv/bin/activate"
-    elif [[ -f "${REPO_DIR}/.venv/bin/activate" ]]; then
-      venv_activate="${REPO_DIR}/.venv/bin/activate"
-    fi
 
     # Choose shell for "login command" behavior where needed
     shell_bin="bash"

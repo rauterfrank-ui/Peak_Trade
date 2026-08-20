@@ -307,6 +307,8 @@ jobs:
             echo "docs_or_static_contract_only=false" >> "$GITHUB_OUTPUT"
           fi
 
+      # CI_PROVISIONED_INTERPRETER: `python` after setup-python is the
+      # documented runtime-contract exception. Local PATH python3 remains prohibited.
       - name: Set up Python 3.11
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:

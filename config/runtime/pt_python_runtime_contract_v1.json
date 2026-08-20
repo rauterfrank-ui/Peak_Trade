@@ -1,0 +1,19 @@
+{
+  "contract_id": "pt_python_runtime_contract_v1",
+  "contract_version": "v1",
+  "canonical_launcher": "scripts/pt",
+  "canonical_interpreter_relpath": ".venv/bin/python",
+  "requires_python": ">=3.10",
+  "requires_python_major": 3,
+  "requires_python_minor": 10,
+  "path_python_fallback_allowed": false,
+  "venv_activation_required": false,
+  "pyenv_dependency": false,
+  "pythonpath_dependency": false,
+  "cwd_dependency": false,
+  "silently_create_venv": false,
+  "silently_install_dependencies": false,
+  "provisioned_mode_env": "PT_RUNTIME_MODE",
+  "provisioned_mode_value": "provisioned",
+  "github_actions_env": "GITHUB_ACTIONS"
+}

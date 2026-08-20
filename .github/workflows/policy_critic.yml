@@ -202,7 +202,7 @@ jobs:
         if: steps.mode.outputs.format_only_ok != 'true'
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
-          python-version: '3.9'
+          python-version: '3.11'
 
       - name: Install dependencies
         if: steps.mode.outputs.format_only_ok != 'true'

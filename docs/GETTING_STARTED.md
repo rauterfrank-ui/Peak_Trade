@@ -20,9 +20,11 @@ Dieses Dokument führt dich Schritt für Schritt durch deine erste Stunde mit Pe
 
 ## 1. Voraussetzungen
 
-- **Python 3.11+** (prüfen mit `python3 --version`; falls `python` verfügbar ist, geht auch `python --version`)
+- **Python floor:** `requires-python = ">=3.10"` in `pyproject.toml`. Recommended local: repository `.venv` via `uv sync --dev` (CPython 3.11.x).
+- Do **not** use PATH `python`/`python3` to run Peak_Trade. Use `scripts/pt`.
+- Vertrag: [`PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md`](runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md)
 - `git` (für Repository-Klonen)
-- `virtualenv` oder `venv` (meist bereits in Python enthalten)
+- `uv` (für Bootstrap)
 - Optional: API-Keys für Testnet-Exchange (falls du später Testnet nutzen willst – für den Quickstart nicht nötig)
 
 ---
@@ -36,23 +38,19 @@ git clone <REPO_URL> peak_trade
 cd peak_trade
 ```
 
-### 2.2 Virtual Environment erstellen & aktivieren
+### 2.2 Bootstrap (repository environment)
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+uv sync --dev
+./scripts/pt runtime-check
 ```
 
-### 2.3 Dependencies installieren
-
-```bash
-pip install -r requirements.txt
-```
+Activation is not required. Do not use PATH python/python3.
 
 ### 2.4 (Optional) Test-Suite prüfen
 
 ```bash
-python3 -m pytest -q
+./scripts/pt -m pytest -q
 ```
 
 Dieser Schritt ist optional, aber hilfreich, um sicherzustellen, dass die Test-Suite grundsätzlich grün ist.
@@ -71,7 +69,7 @@ Peak_Trade kommt mit vordefinierten Portfolio-Presets in `config/portfolio_recip
 ### 3.2 Ersten Research-Run starten
 
 ```bash
-python3 scripts/research_cli.py portfolio \
+./scripts/pt scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset rsi_reversion_conservative \
   --format both
@@ -103,7 +101,7 @@ Die Reports enthalten typischerweise:
 Für detailliertere Robustness-Analysen:
 
 ```bash
-python3 scripts/run_portfolio_robustness.py \
+./scripts/pt scripts/run_portfolio_robustness.py \
   --config config/config.toml \
   --portfolio-preset rsi_reversion_conservative \
   --format both
@@ -120,7 +118,7 @@ Dies führt zusätzlich Monte-Carlo-Simulationen und Stress-Tests durch.
 ### 4.1 Health-Check
 
 ```bash
-python3 scripts/live_ops.py health --config config/config.toml
+./scripts/pt scripts/live_ops.py health --config config/config.toml
 ```
 
 **Was prüft `health`?**
@@ -145,7 +143,7 @@ Overall Status: OK
 ### 4.2 Portfolio-Snapshot
 
 ```bash
-python3 scripts/live_ops.py portfolio --config config/config.toml --json
+./scripts/pt scripts/live_ops.py portfolio --config config/config.toml --json
 ```
 
 **Was zeigt `portfolio`?**
@@ -181,7 +179,7 @@ python3 scripts/live_ops.py portfolio --config config/config.toml --json
 ### 5.1 Ersten Daily-Report erstellen
 
 ```bash
-python3 scripts/generate_live_status_report.py \
+./scripts/pt scripts/generate_live_status_report.py \
   --config config/config.toml \
   --output-dir reports/live_status \
   --format markdown \

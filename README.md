@@ -9,20 +9,25 @@ Peak_Trade ist ein modulares, research-getriebenes Trading-Framework mit konsequ
 ### 🚀 Quick Start: Ersten Backtest in 5 Minuten
 
 ```bash
-# 1. Dependencies installieren (einmalig)
-pip install -e .
+# 1. Bootstrap (einmalig, legt .venv an)
+uv sync --dev
 
-# 2. Ersten Backtest laufen lassen
-python3 scripts/run_strategy_from_config.py --strategy ma_crossover --symbol BTC/USDT
+# 2. Canonical runtime check
+./scripts/pt runtime-check
 
-# 3. Tests ausführen
-python3 -m pytest -m smoke -q  # Schnelle Smoke-Tests (~1 Sekunde)
-python3 -m pytest -q           # Full Suite (~70 Sekunden)
+# 3. Ersten Backtest laufen lassen
+./scripts/pt scripts/run_strategy_from_config.py --strategy ma_crossover --symbol BTC/USDT
 
-# 4. Optionale Web-UI Dependencies (für Dashboard/API Tests)
-uv sync --extra web  # oder: pip install -e ".[web]"
-python3 -m pytest -m web        # Web-UI Tests ausführen
+# 4. Tests ausführen
+./scripts/pt -m pytest -m smoke -q
+./scripts/pt -m pytest -q
+
+# 5. Optionale Web-UI Dependencies
+uv sync --extra web
+./scripts/pt -m pytest -m web
 ```
+
+Nie PATH `python`/`python3` verwenden. Vertrag: [`docs/runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md`](docs/runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md). Python-Floor: `requires-python = ">=3.10"`.
 
 **Hinweis:** Web-UI Tests werden automatisch übersprungen, wenn FastAPI nicht installiert ist. Core-Tests laufen ohne Web-Stack.
 
@@ -93,10 +98,10 @@ Peak_Trade ist so gebaut, dass AI-Tools wie Cursor, Claude und ChatGPT beim Entw
 - 🛠️ **Developer Workflow Script**
   Automatisierung häufiger Entwicklungsaufgaben:
   ```bash
-  python3 scripts/dev_workflow.py --help
-  python3 scripts/dev_workflow.py setup    # Environment setup
-  python3 scripts/dev_workflow.py test     # Run tests
-  python3 scripts/dev_workflow.py health   # Health check
+  ./scripts/pt scripts/dev_workflow.py --help
+  ./scripts/pt scripts/dev_workflow.py setup    # Environment setup
+  ./scripts/pt scripts/dev_workflow.py test     # Run tests
+  ./scripts/pt scripts/dev_workflow.py health   # Health check
   ```
 
 ---
@@ -158,7 +163,7 @@ Peak_Trade ist **strikt modular** aufgebaut. Jede Komponente ist austauschbar un
       raise ConfigError("Load failed", hint="Check syntax", cause=original_error)
       ```
     - **Documentation:** [Error Handling Guide](docs/ERROR_HANDLING_GUIDE.md)
-    - **Audit Tool:** `python scripts/audit/check_error_taxonomy_adoption.py`
+    - **Audit Tool:** `./scripts/pt scripts/audit/check_error_taxonomy_adoption.py`
 
 - 🔄 **Resilience & Stability**
   - Circuit Breaker Pattern für alle kritischen Module
@@ -217,15 +222,14 @@ Peak_Trade ist in mehrere Layer strukturiert:
 ### 1. Umgebung vorbereiten
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+uv sync --dev
+./scripts/pt runtime-check
 ```
 
 ### 2. Ersten Research-Run starten (Portfolio-Preset)
 
 ```bash
-python scripts/research_cli.py portfolio \
+./scripts/pt scripts/research_cli.py portfolio \
   --config config/config.toml \
   --portfolio-preset rsi_reversion_conservative \
   --format both
@@ -234,14 +238,14 @@ python scripts/research_cli.py portfolio \
 ### 3. Live-/Testnet Health & Portfolio prüfen (ohne echte Orders)
 
 ```bash
-python scripts/live_ops.py health --config config/config.toml
-python scripts/live_ops.py portfolio --config config/config.toml --json
+./scripts/pt scripts/live_ops.py health --config config/config.toml
+./scripts/pt scripts/live_ops.py portfolio --config config/config.toml --json
 ```
 
 ### 4. Daily Live-Status-Report generieren (Markdown)
 
 ```bash
-python scripts/generate_live_status_report.py \
+./scripts/pt scripts/generate_live_status_report.py \
   --config config/config.toml \
   --output-dir reports/live_status \
   --format markdown \
@@ -252,10 +256,10 @@ python scripts/generate_live_status_report.py \
 
 ```bash
 # Einmalige Ausführung mit automatischer Entscheidung
-python scripts/run_autonomous_workflow.py --once --dry-run
+./scripts/pt scripts/run_autonomous_workflow.py --once --dry-run
 
 # Mit Scheduler: Täglich automatisch
-python scripts/run_scheduler.py \
+./scripts/pt scripts/run_scheduler.py \
   --config config/scheduler/jobs.toml \
   --include-tags autonomous
 ```
@@ -274,10 +278,10 @@ In **10–15 Minuten** den kompletten Live-Track praktisch erleben – ohne echt
 RELOAD=1 ./scripts/ops/run_webui.sh
 
 # 2. Shadow-Session (10 Steps)
-python scripts/run_execution_session.py --strategy ma_crossover --steps 10
+./scripts/pt scripts/run_execution_session.py --strategy ma_crossover --steps 10
 
 # 3. Registry prüfen
-python scripts/report_live_sessions.py --summary-only --stdout
+./scripts/pt scripts/report_live_sessions.py --summary-only --stdout
 
 # 4. Dashboard öffnen: http://127.0.0.1:8000/
 ```
@@ -319,16 +323,16 @@ RELOAD=1 ./scripts/ops/run_live_webui.sh
 
 **Alternativen (nicht alle starten dieselbe App):**
 
-- `python3 scripts/live_web_server.py` → `src.live.web.app` (Live-Dashboard mit `/api/v0/*`, `/runs/*`, `/dashboard`)
+- `./scripts/pt scripts/live_web_server.py` → `src.live.web.app` (Live-Dashboard mit `/api/v0/*`, `/runs/*`, `/dashboard`)
 - `bash scripts/ops/run_live_webui.sh` → `src.live.web.app` (Wrapper für das Live-Dashboard)
 - `bash scripts/ops/run_webui.sh` → `src.webui.app` (Operator-WebUI mit `/api/live_sessions`, `/api/execution/*`, `/ops`, `/r_and_d`)
-- `python3 scripts/serve_live_dashboard.py` → `src.live.web.app` (alternativer Live-Dashboard-Entrypoint)
+- `./scripts/pt scripts/serve_live_dashboard.py` → `src.live.web.app` (alternativer Live-Dashboard-Entrypoint)
 
 | Entrypoint | Port | Hinweis |
 |------------|------|---------|
 | `run_live_webui.sh` | 8010 | Shell-Wrapper mit `uv` (oben) |
-| `python3 scripts/live_web_server.py` | 8000 | Empfohlen in Runbooks, CLI-Argumente |
-| `python -m scripts.serve_live_dashboard` | 8000 | Config aus `config/config.toml` |
+| `./scripts/pt scripts/live_web_server.py` | 8000 | Empfohlen in Runbooks, CLI-Argumente |
+| `./scripts/pt -m scripts.serve_live_dashboard` | 8000 | Config aus `config/config.toml` |
 
 ### HTTP-Routen — Operator-WebUI, Ops-Hub & live.web (Local Defaults)
 

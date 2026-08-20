@@ -1,5 +1,9 @@
 .PHONY: clean clean-all audit audit-tools gc report-smoke report-smoke-open ops-validate-pr-reports drift-report
 
+REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+PT := $(REPO_ROOT)/scripts/pt
+
+
 # ============================================================================
 # Cleanup Targets
 # ============================================================================
@@ -105,7 +109,7 @@ mlflow-reset:
 
 mlflow-smoke:
 	@echo "Using MLFLOW_TRACKING_URI=http://localhost:$${MLFLOW_PORT:-5001}"
-	@MLFLOW_TRACKING_URI="http://localhost:$${MLFLOW_PORT:-5001}" python3 -c 'import mlflow; mlflow.set_experiment("peak_trade_local_docker"); r = mlflow.start_run(run_name="make_mlflow_smoke"); mlflow.log_param("ui_port", 5001); mlflow.log_metric("ok", 1.0); mlflow.end_run(); print("✅ logged run to", mlflow.get_tracking_uri())'
+	@MLFLOW_TRACKING_URI="http://localhost:$${MLFLOW_PORT:-5001}" $(PT) -c 'import mlflow; mlflow.set_experiment("peak_trade_local_docker"); r = mlflow.start_run(run_name="make_mlflow_smoke"); mlflow.log_param("ui_port", 5001); mlflow.log_metric("ok", 1.0); mlflow.end_run(); print("✅ logged run to", mlflow.get_tracking_uri())'
 
 # ============================================================================
 # Merge-Log PR Workflow
@@ -160,7 +164,7 @@ ops-validate-pr-reports:
 
 # Non-blocking global docs/reference drift visibility report
 drift-report:
-	python3 scripts/ops/reference_drift_report_v1.py
+	$(PT) scripts/ops/reference_drift_report_v1.py
 
 # ============================================================================
 # Governance Gate (AI matrix vs registry)
@@ -171,88 +175,97 @@ governance-gate:
 	@bash scripts/governance/ai_matrix_consistency_gate.sh
 
 governance-validate:
-	@python3 src/governance/validate_ai_matrix_vs_registry.py --level P2
+	@$(PT) src/governance/validate_ai_matrix_vs_registry.py --level P2
 
 test:
-	@python3 -m pytest -q
+	@$(PT) -m pytest -q
 
 lint:
-	@python3 -m ruff check .
+	@$(PT) -m ruff check .
 
 l3-docker:
 	@bash scripts/docker/run_l3_no_net.sh
-	@OUT_DIR=out/l3 CACHE_DIR=$${CACHE_DIR:-.cache/l3} IMAGE=$${IMAGE:-peaktrade-l3:latest} python3 scripts/ops/augment_run_manifest.py
+	@OUT_DIR=out/l3 CACHE_DIR=$${CACHE_DIR:-.cache/l3} IMAGE=$${IMAGE:-peaktrade-l3:latest} $(PT) scripts/ops/augment_run_manifest.py
 
 
 research-new-listings-smoke:
-	@python3 -m src.research.new_listings --help
-	@python3 -m src.research.new_listings run --help
+	@$(PT) -m src.research.new_listings --help
+	@$(PT) -m src.research.new_listings run --help
 
 research-new-listings-run-smoke:
-	@python3 -m src.research.new_listings run --help
+	@$(PT) -m src.research.new_listings run --help
 
 ai-policy-audit-smoke:
-	@PYTHONPATH=. python3 src/ops/p50/ai_model_policy_cli_v1.py --help
+	@$(PT) src/ops/p50/ai_model_policy_cli_v1.py --help
 
 ai-switch-layer-smoke:
-	@python3 scripts/ai/switch_layer_smoke.py
+	@$(PT) scripts/ai/switch_layer_smoke.py
 
 wave2-ai-entrypoints-smoke:
-	@PYTHONPATH=. python3 src/ops/p50/ai_model_policy_cli_v1.py --help
-	@python3 scripts/ai/switch_layer_smoke.py
+	@$(PT) src/ops/p50/ai_model_policy_cli_v1.py --help
+	@$(PT) scripts/ai/switch_layer_smoke.py
 
 ai-policy-audit-deterministic-smoke:
-	@PYTHONPATH=. python3 scripts/ai/policy_audit_smoke.py
+	@$(PT) scripts/ai/policy_audit_smoke.py
 
 ai-switch-layer-deterministic-smoke:
-	@PYTHONPATH=. python3 scripts/ai/switch_layer_smoke.py
+	@$(PT) scripts/ai/switch_layer_smoke.py
 
 wave2-ai-deterministic-smoke:
-	@PYTHONPATH=. python3 scripts/ai/policy_audit_smoke.py
-	@PYTHONPATH=. python3 scripts/ai/switch_layer_smoke.py
+	@$(PT) scripts/ai/policy_audit_smoke.py
+	@$(PT) scripts/ai/switch_layer_smoke.py
 
 
 wave3-model-registry-loader-smoke:
-	PYTHONPATH=. python3 scripts/wave3/model_registry_loader_smoke.py
+	$(PT) scripts/wave3/model_registry_loader_smoke.py
 
 wave3-metrics-server-smoke:
-	PYTHONPATH=. python3 scripts/wave3/metrics_server_smoke.py
+	$(PT) scripts/wave3/metrics_server_smoke.py
 
 wave3-api-manager-smoke:
-	PYTHONPATH=. python3 scripts/wave3/api_manager_smoke.py
+	$(PT) scripts/wave3/api_manager_smoke.py
 
 wave3-orch-obs-service-smoke:
-	PYTHONPATH=. python3 scripts/wave3/model_registry_loader_smoke.py
-	PYTHONPATH=. python3 scripts/wave3/metrics_server_smoke.py
-	PYTHONPATH=. python3 scripts/wave3/api_manager_smoke.py
+	$(PT) scripts/wave3/model_registry_loader_smoke.py
+	$(PT) scripts/wave3/metrics_server_smoke.py
+	$(PT) scripts/wave3/api_manager_smoke.py
 
 
 wave3-deterministic-smokes:
-	PYTHONPATH=. python3 scripts/wave3/model_registry_loader_smoke.py
-	PYTHONPATH=. python3 scripts/wave3/metrics_server_smoke.py
-	PYTHONPATH=. python3 scripts/wave3/api_manager_smoke.py
+	$(PT) scripts/wave3/model_registry_loader_smoke.py
+	$(PT) scripts/wave3/metrics_server_smoke.py
+	$(PT) scripts/wave3/api_manager_smoke.py
 
 
 wave4-aggregate-smoke-summary:
-	PYTHONPATH=. python3 scripts/ai/policy_audit_smoke.py
-	PYTHONPATH=. python3 scripts/ai/switch_layer_smoke.py
-	PYTHONPATH=. python3 scripts/wave3/model_registry_loader_smoke.py
-	PYTHONPATH=. python3 scripts/wave3/metrics_server_smoke.py
-	PYTHONPATH=. python3 scripts/wave3/api_manager_smoke.py
-	PYTHONPATH=. python3 scripts/wave5/new_listings_to_ai_bridge.py
-	PYTHONPATH=. python3 scripts/wave4/aggregate_smoke_contracts.py
+	$(PT) scripts/ai/policy_audit_smoke.py
+	$(PT) scripts/ai/switch_layer_smoke.py
+	$(PT) scripts/wave3/model_registry_loader_smoke.py
+	$(PT) scripts/wave3/metrics_server_smoke.py
+	$(PT) scripts/wave3/api_manager_smoke.py
+	$(PT) scripts/wave5/new_listings_to_ai_bridge.py
+	$(PT) scripts/wave4/aggregate_smoke_contracts.py
 
 
 wave5-new-listings-ai-bridge:
-	PYTHONPATH=. python3 scripts/wave5/new_listings_to_ai_bridge.py
+	$(PT) scripts/wave5/new_listings_to_ai_bridge.py
 
 
 wave6-evidence-registry-hook:
 	$(MAKE) wave4-aggregate-smoke-summary
-	PYTHONPATH=. python3 scripts/wave6/write_evidence_registry_hook.py
+	$(PT) scripts/wave6/write_evidence_registry_hook.py
 
 workflow-officer-audit:
-	python3 src/ops/workflow_officer.py --mode audit --profile docs_only_pr
+	$(PT) src/ops/workflow_officer.py --mode audit --profile docs_only_pr
 
 workflow-officer-preflight:
-	python3 src/ops/workflow_officer.py --mode preflight --profile ops_local_env
+	$(PT) src/ops/workflow_officer.py --mode preflight --profile ops_local_env
+
+
+# ============================================================================
+# Deterministic Python runtime contract
+# ============================================================================
+
+.PHONY: runtime-check
+runtime-check:
+	$(PT) runtime-check

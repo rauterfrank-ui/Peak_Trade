@@ -1,0 +1,142 @@
+#!/bin/sh
+# Peak_Trade canonical Python launcher (POSIX).
+# Resolves REPO_ROOT from this script location and execs
+# REPO_ROOT/.venv/bin/python. Never uses PATH python/python3.
+# Does not create a venv, install packages, or activate a venv.
+set -eu
+
+CONTRACT_VERSION="v1"
+REQUIRES_PYTHON_MAJOR=3
+REQUIRES_PYTHON_MINOR=10
+
+die() {
+  code="$1"
+  shift
+  printf '%s\n' "$*" >&2
+  exit "$code"
+}
+
+# Builtins only for path resolution so an empty PATH cannot select another
+# Python. Optional symlink follow uses absolute /usr/bin/readlink if present.
+resolve_self() {
+  target=$0
+  max=32
+  while [ "$max" -gt 0 ]; do
+    max=$((max - 1))
+    case "$target" in
+      /*) abs=$target ;;
+      */*)
+        _dir=${target%/*}
+        _base=${target##*/}
+        abs="$(CDPATH= cd -- "$_dir" && pwd)/$_base"
+        ;;
+      *) abs="$(pwd)/$target" ;;
+    esac
+    if [ -L "$abs" ]; then
+      _link=
+      if [ -x /usr/bin/readlink ]; then
+        _link=$(/usr/bin/readlink "$abs")
+      elif [ -x /bin/readlink ]; then
+        _link=$(/bin/readlink "$abs")
+      else
+        die 7 "PT_RUNTIME_FAIL: cannot resolve launcher symlink without readlink"
+      fi
+      case "$_link" in
+        /*) target=$_link ;;
+        *) target="${abs%/*}/$_link" ;;
+      esac
+    else
+      printf '%s\n' "$abs"
+      return 0
+    fi
+  done
+  die 7 "PT_RUNTIME_FAIL: cannot resolve launcher path"
+}
+
+SELF=$(resolve_self)
+SCRIPTS_DIR=$(CDPATH= cd -- "${SELF%/*}" && pwd)
+REPO_ROOT=$(CDPATH= cd -- "$SCRIPTS_DIR/.." && pwd)
+INTERPRETER="$REPO_ROOT/.venv/bin/python"
+CONTRACT_PY="$REPO_ROOT/scripts/runtime/pt_python_runtime_contract_v1.py"
+
+if [ ! -f "$REPO_ROOT/pyproject.toml" ]; then
+  die 7 "PT_RUNTIME_FAIL: repository root unresolved at $REPO_ROOT"
+fi
+
+cmd=${1:-}
+
+if [ "$cmd" = "bootstrap-help" ]; then
+  cat <<EOF
+Peak_Trade Python runtime contract ${CONTRACT_VERSION}
+
+BOOTSTRAP (operator-invoked, not runtime):
+  uv sync --dev
+
+RUNTIME (no activation, no PATH python3):
+  ./scripts/pt runtime-check
+  ./scripts/pt fingerprint
+  ./scripts/pt -m pytest -q
+  ./scripts/pt -c "import trading"
+
+Canonical interpreter:
+  ${INTERPRETER}
+
+Do not use python, python3, venv activation, or PYTHONPATH as the runtime.
+EOF
+  exit 0
+fi
+
+# Documented CI exception: after setup-python, PT_RUNTIME_MODE=provisioned
+# plus GITHUB_ACTIONS=true (or PT_RUNTIME_PROVISIONED_OK=1) binds a pinned
+# interpreter via pythonLocation or PT_PROVISIONED_PYTHON. Local PATH
+# python/python3 remains prohibited.
+if [ "${PT_RUNTIME_MODE:-}" = "provisioned" ]; then
+  if [ "${GITHUB_ACTIONS:-}" != "true" ] && [ "${PT_RUNTIME_PROVISIONED_OK:-}" != "1" ]; then
+    die 8 "PT_RUNTIME_FAIL: provisioned mode refused (needs GITHUB_ACTIONS=true or PT_RUNTIME_PROVISIONED_OK=1)"
+  fi
+  INTERPRETER=""
+  if [ -n "${pythonLocation:-}" ] && [ -x "${pythonLocation}/bin/python" ]; then
+    INTERPRETER="${pythonLocation}/bin/python"
+  elif [ -n "${PT_PROVISIONED_PYTHON:-}" ] && [ -x "${PT_PROVISIONED_PYTHON}" ]; then
+    INTERPRETER="${PT_PROVISIONED_PYTHON}"
+  fi
+  if [ -z "$INTERPRETER" ] || [ ! -x "$INTERPRETER" ]; then
+    die 8 "PT_RUNTIME_FAIL: provisioned interpreter unbound (set pythonLocation or PT_PROVISIONED_PYTHON)"
+  fi
+else
+  INTERPRETER="$REPO_ROOT/.venv/bin/python"
+  if [ ! -f "$INTERPRETER" ]; then
+    die 3 "PT_RUNTIME_FAIL: canonical interpreter missing: $INTERPRETER
+Bootstrap with: uv sync --dev
+Do not use PATH python/python3."
+  fi
+  if [ ! -x "$INTERPRETER" ]; then
+    die 4 "PT_RUNTIME_FAIL: canonical interpreter not executable: $INTERPRETER"
+  fi
+fi
+
+# Version check uses the canonical interpreter only (never PATH python3).
+if ! "$INTERPRETER" -c "import sys; raise SystemExit(0 if sys.version_info >= (${REQUIRES_PYTHON_MAJOR}, ${REQUIRES_PYTHON_MINOR}) else 2)"; then
+  die 2 "PT_RUNTIME_FAIL: canonical interpreter is older than Python ${REQUIRES_PYTHON_MAJOR}.${REQUIRES_PYTHON_MINOR}"
+fi
+
+# Deterministic cwd: repository root unless caller exports PT_KEEP_CWD=1.
+if [ "${PT_KEEP_CWD:-0}" != "1" ]; then
+  cd "$REPO_ROOT"
+fi
+
+if [ "$cmd" = "runtime-check" ] || [ "$cmd" = "fingerprint" ]; then
+  exec "$INTERPRETER" "$CONTRACT_PY" "$cmd"
+fi
+
+# Preflight import trading before application argv, unless skipped for
+# bootstrap-adjacent tooling that must not import application packages.
+if [ "${PT_SKIP_TRADING_PREFLIGHT:-0}" != "1" ]; then
+  if ! "$INTERPRETER" -c "import importlib.util, sys; spec = importlib.util.find_spec('trading');
+raise SystemExit(0 if spec is not None else 6)"; then
+    die 6 "PT_RUNTIME_FAIL: import trading failed under $INTERPRETER
+Do not set PYTHONPATH. Bootstrap with: uv sync --dev"
+  fi
+fi
+
+exec "$INTERPRETER" "$@"

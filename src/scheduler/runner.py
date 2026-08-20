@@ -15,6 +15,14 @@ from typing import Any, Callable, List, Optional, cast
 
 from .models import JobDefinition, JobSchedule, JobResult
 
+_BARE_PYTHON_COMMANDS = frozenset({"python", "python3", "python.exe", "python3.exe"})
+
+
+def _is_bare_python_command(command: str) -> bool:
+    """True when a job command is a PATH python alias, not an explicit interpreter."""
+    name = Path(command).name.lower()
+    return name in _BARE_PYTHON_COMMANDS
+
 
 def compute_next_run_at(
     schedule: JobSchedule,
@@ -201,8 +209,9 @@ def run_job(
     now_fn = datetime.utcnow if utcnow is None else utcnow
     started_at = now_fn()
 
-    # Kommando bauen
-    if job.command == "python":
+    # Kommando bauen. Bare python/python3 bind to this process interpreter
+    # (canonical when the scheduler was launched via scripts/pt).
+    if _is_bare_python_command(job.command):
         cmd = [sys.executable] + build_command_args(job)
     else:
         cmd = [job.command] + build_command_args(job)

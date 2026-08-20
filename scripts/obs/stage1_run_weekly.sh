@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd "$HOME/Peak_Trade"
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)"
+cd "$ROOT"
 
-if [ -f ".venv/bin/activate" ]; then
-  source ".venv/bin/activate"
-  PY="python"
-else
-  PY="python3"
-fi
+PY="$ROOT/scripts/pt"
 
 RUN_DATE="${RUN_DATE:-$(date -u +%F)}"
 # Align with Stage1 default reports root (get_reports_root()).

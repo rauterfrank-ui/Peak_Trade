@@ -1,0 +1,5 @@
+#!/bin/sh
+# Root trampoline. Canonical launcher is scripts/pt.
+set -eu
+ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+exec "$ROOT/scripts/pt" "$@"

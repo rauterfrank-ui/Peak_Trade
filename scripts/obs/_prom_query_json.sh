@@ -82,12 +82,8 @@ while [ "$i" -le "$RETRIES" ]; do
   echo "PROM_QUERY_RETRY attempt=$i http_code=$http_code content_type=${ctype:-NONE} body_bytes=${bytes:-0}" >&2
   echo "--- hdr (first 20) ---" >&2; sed -n "1,20p" "$tmp_hdr" >&2 || true
   echo "--- body (first 200 bytes) ---" >&2
-  python3 - << PY >&2
-from pathlib import Path
-p=Path("$tmp_body")
-b=p.read_bytes() if p.exists() else b""
-print(b[:200].decode("utf-8","replace"))
-PY
+  head -c 200 "$tmp_body" >&2 || true
+  echo >&2
   sleep "$i"
   i=$((i+1))
 done

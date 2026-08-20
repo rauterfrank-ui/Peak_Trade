@@ -16,6 +16,8 @@ Dieses Dokument beschreibt, **wie AI-Tools sinnvoll mit Peak_Trade eingesetzt we
 - **Effizienz** zu steigern (AI als Co-Pilot, nicht als Autopilot)
 
 Für technische Details zu Projekt-Struktur, Modulen und Commands siehe [`CLAUDE_GUIDE.md`](CLAUDE_GUIDE.md).
+Python-Runtime: nur `scripts/pt`. Nie PATH `python`/`python3`. Vertrag:
+[`PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md`](../runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md).
 
 ---
 
@@ -191,7 +193,7 @@ Berücksichtige DEV_GUIDE_ADD_EXCHANGE.md und Safety-Anforderungen."
 - **Explizite Constraints setzen:** „Keine Breaking Changes an der API", „Tests müssen grün bleiben"
 - **Nach Erklärungen fragen:** „Erkläre mir, warum du diesen Ansatz gewählt hast"
 - **Iterativ arbeiten:** Kleine Schritte, Review, nächster Schritt
-- **Tests zuerst prüfen lassen:** „Führe erst `python3 -m pytest tests&#47;test_X.py -v` aus, dann implementiere"
+- **Tests zuerst prüfen lassen:** „Führe erst `./scripts/pt -m pytest tests/test_X.py -v` aus, dann implementiere"
 
 ### Don't
 
@@ -304,7 +306,7 @@ Anforderungen:
 ## 9. Checkliste vor dem Commit (AI-generierter Code)
 
 - [ ] Code gelesen und verstanden?
-- [ ] Tests laufen grün (`python3 -m pytest tests&#47; -v`)?
+- [ ] Tests laufen grün (`./scripts/pt -m pytest tests/ -v`)?
 - [ ] Keine Secrets/Keys im Code?
 - [ ] Keine Safety-Bypasses?
 - [ ] Keine Breaking Changes ohne Absprache?
