@@ -1,0 +1,233 @@
+{
+  "DOCUMENT_CLASS": "SECTION_11_13_5_Z2V_NEGATIVE_ACCOUNT_RUNTIME_PROBE_GET_SNAPSHOT_V1",
+  "DOCUMENT_ROLE": "DERIVED_NON_SSOT",
+  "GET_REQUEST_COUNT": 6,
+  "HOST": "eea.okx.com",
+  "METHOD": "GET",
+  "POST_COUNT": 0,
+  "SECRET_VALUES_INCLUDED": false,
+  "TARGET_INSTRUMENT": "BTC-USD_UM_XPERP-310404",
+  "hierarchy_a": [
+    {
+      "content_type": "application/json",
+      "data_len": 0,
+      "header_presence": {
+        "OK-ACCESS-KEY_PRESENT": true,
+        "OK-ACCESS-PASSPHRASE_PRESENT": true,
+        "OK-ACCESS-SIGN_PRESENT": true,
+        "OK-ACCESS-TIMESTAMP_PRESENT": true,
+        "SIMULATION_HEADER_PRESENT": false
+      },
+      "host": "eea.okx.com",
+      "http_status": 200,
+      "method": "GET",
+      "okx_code": "0",
+      "okx_msg": "",
+      "path": "/api/v5/account/positions?instType=FUTURES&instId=BTC-USD_UM_XPERP-310404",
+      "raw_payload_sanitized": {
+        "code": "0",
+        "data": [],
+        "msg": ""
+      },
+      "target_row_count": 0,
+      "target_rows_relevant": [],
+      "timestamp_utc": "2026-08-20T12:51:56.550780Z"
+    },
+    {
+      "content_type": "application/json",
+      "data_len": 1,
+      "header_presence": {
+        "OK-ACCESS-KEY_PRESENT": true,
+        "OK-ACCESS-PASSPHRASE_PRESENT": true,
+        "OK-ACCESS-SIGN_PRESENT": true,
+        "OK-ACCESS-TIMESTAMP_PRESENT": true,
+        "SIMULATION_HEADER_PRESENT": false
+      },
+      "host": "eea.okx.com",
+      "http_status": 200,
+      "method": "GET",
+      "okx_code": "0",
+      "okx_msg": "",
+      "path": "/api/v5/account/account-position-risk?instType=FUTURES",
+      "raw_payload_sanitized": {
+        "code": "0",
+        "data": [
+          {
+            "adjEq": "",
+            "balData": [],
+            "posData": [],
+            "ts": "1787230316983"
+          }
+        ],
+        "msg": ""
+      },
+      "target_row_count": 0,
+      "target_rows_relevant": [],
+      "timestamp_utc": "2026-08-20T12:51:56.846452Z"
+    }
+  ],
+  "hierarchy_b": [
+    {
+      "data_len": 0,
+      "host": "eea.okx.com",
+      "http_status": 200,
+      "method": "GET",
+      "okx_code": "0",
+      "okx_msg": "",
+      "path": "/api/v5/account/positions-history?instType=FUTURES&instId=BTC-USD_UM_XPERP-310404",
+      "raw_payload_sanitized": {
+        "code": "0",
+        "data": [],
+        "msg": ""
+      },
+      "rows_relevant": [],
+      "target_row_count": 0,
+      "target_rows_relevant": [],
+      "timestamp_utc": "2026-08-20T12:53:34.066316Z"
+    },
+    {
+      "data_len": 1,
+      "host": "eea.okx.com",
+      "http_status": 200,
+      "method": "GET",
+      "okx_code": "0",
+      "okx_msg": "",
+      "path": "/api/v5/account/balance",
+      "raw_payload_sanitized": {
+        "code": "0",
+        "data": [
+          {
+            "adjEq": "",
+            "availEq": "",
+            "borrowFroz": "",
+            "delta": "",
+            "deltaLever": "",
+            "deltaNeutralStatus": "",
+            "details": [],
+            "imr": "",
+            "isoEq": "0",
+            "mgnRatio": "",
+            "mmr": "",
+            "notionalUsd": "",
+            "notionalUsdForBorrow": "",
+            "notionalUsdForFutures": "",
+            "notionalUsdForOption": "",
+            "notionalUsdForSwap": "",
+            "ordFroz": "",
+            "totalEq": "0",
+            "uTime": "1787230414421",
+            "upl": ""
+          }
+        ],
+        "msg": ""
+      },
+      "rows_relevant": [
+        {
+          "adjEq": "",
+          "deltaLever": "",
+          "details": [],
+          "imr": "",
+          "isoEq": "0",
+          "mgnRatio": "",
+          "mmr": "",
+          "notionalUsd": "",
+          "notionalUsdForBorrow": "",
+          "notionalUsdForFutures": "",
+          "notionalUsdForOption": "",
+          "notionalUsdForSwap": "",
+          "ordFroz": "",
+          "totalEq": "0",
+          "uTime": "1787230414421",
+          "upl": ""
+        }
+      ],
+      "target_row_count": 0,
+      "target_rows_relevant": [],
+      "timestamp_utc": "2026-08-20T12:53:34.271388Z"
+    },
+    {
+      "data_len": 1,
+      "host": "eea.okx.com",
+      "http_status": 200,
+      "method": "GET",
+      "okx_code": "0",
+      "okx_msg": "",
+      "path": "/api/v5/account/adjust-leverage-info?instType=FUTURES&mgnMode=cross&lever=3&instId=BTC-USD_UM_XPERP-310404&ccy=USDC",
+      "raw_payload_sanitized": {
+        "code": "0",
+        "data": [
+          {
+            "estAvailQuoteTrans": "",
+            "estAvailTrans": "0",
+            "estLiqPx": "",
+            "estMaxAmt": "0",
+            "estMgn": "0",
+            "estQuoteMaxAmt": "",
+            "estQuoteMgn": "",
+            "existOrd": false,
+            "maxLever": "10",
+            "minLever": "0.01"
+          }
+        ],
+        "msg": ""
+      },
+      "rows_relevant": [
+        {
+          "estAvailQuoteTrans": "",
+          "estAvailTrans": "0",
+          "estLiqPx": "",
+          "estMaxAmt": "0",
+          "estMgn": "0",
+          "estQuoteMaxAmt": "",
+          "estQuoteMgn": "",
+          "existOrd": false,
+          "maxLever": "10",
+          "minLever": "0.01"
+        }
+      ],
+      "target_row_count": 0,
+      "target_rows_relevant": [],
+      "timestamp_utc": "2026-08-20T12:53:34.397677Z"
+    },
+    {
+      "data_len": 1,
+      "host": "eea.okx.com",
+      "http_status": 200,
+      "method": "GET",
+      "okx_code": "0",
+      "okx_msg": "",
+      "path": "/api/v5/account/max-size?instId=BTC-USD_UM_XPERP-310404&tdMode=cross&leverage=3",
+      "raw_payload_sanitized": {
+        "code": "0",
+        "data": [
+          {
+            "ccy": "",
+            "instId": "BTC-USD_UM_XPERP-310404",
+            "maxBuy": "0",
+            "maxSell": "0",
+            "tradeQuoteCcy": ""
+          }
+        ],
+        "msg": ""
+      },
+      "rows_relevant": [
+        {
+          "ccy": "",
+          "instId": "BTC-USD_UM_XPERP-310404",
+          "maxBuy": "0",
+          "maxSell": "0"
+        }
+      ],
+      "target_row_count": 1,
+      "target_rows_relevant": [
+        {
+          "ccy": "",
+          "instId": "BTC-USD_UM_XPERP-310404",
+          "maxBuy": "0",
+          "maxSell": "0"
+        }
+      ],
+      "timestamp_utc": "2026-08-20T12:53:34.592600Z"
+    }
+  ]
+}
