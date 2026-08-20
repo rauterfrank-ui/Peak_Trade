@@ -20,6 +20,7 @@ Z2W_HEADING = "### 11.13.5.Z2W Evidence boundary reached bind"
 Z2V_HEADING = (
     "### 11.13.5.Z2V Independent account-runtime IM &#47; notionalUsd &#47; UPL probe bind"
 )
+Z2X_HEADING = "### 11.13.5.Z2X Unfilled-order state class does not produce independent account IM"
 NEXT_POINTER = (
     "OWNER_GO_REQUIRED_SEPARATE_FOR_NEW_RUNTIME_STATE_CLASS_ORDER_DERIVED_OR_"
     "POSITION_DERIVED_IM_NOTIONALUSD_OR_UPL_EVIDENCE_BOUNDARY_REACHED_NO_"
@@ -58,8 +59,8 @@ def _read(path: Path) -> str:
 def _z2w_section(text: str) -> str:
     start = text.find(Z2W_HEADING)
     assert start >= 0, "missing §11.13.5.Z2W heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2W"
+    end = text.find(Z2X_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2X boundary after Z2W"
     return text[start:end]
 
 
@@ -68,8 +69,9 @@ def test_z2w_heading_is_unique_and_follows_z2v() -> None:
     assert text.count(Z2W_HEADING) == 1
     z2v = text.find(Z2V_HEADING)
     z2w = text.find(Z2W_HEADING)
+    z2x = text.find(Z2X_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2v < z2w < ladder
+    assert 0 <= z2v < z2w < z2x < ladder
 
 
 def test_z2w_docs_bind_evidence_boundary_without_proving_rule_c() -> None:
@@ -161,8 +163,9 @@ def test_z2w_docs_bind_evidence_boundary_without_proving_rule_c() -> None:
 def test_z2w_map_of_truth_navigation_pointer_matches_runbook() -> None:
     mot = _read(MAP_OF_TRUTH)
     assert "§11.13.5.Z2W |" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
     assert "historical next pointer superseded by §11.13.5.Z2W" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2X" in mot
+    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}\n" not in mot
     assert (
         "NEXT_CANONICAL_STEP_POINTER=OWNER_GO_REQUIRED_SEPARATE_FOR_ANY_NEW_RUNTIME_STATE_"
         "SUCH_AS_POSITION_OR_ORDER_DERIVED_IM_NOTIONALUSD_OR_UPL_REPEAT_ZERO_EQUITY_NO_"
