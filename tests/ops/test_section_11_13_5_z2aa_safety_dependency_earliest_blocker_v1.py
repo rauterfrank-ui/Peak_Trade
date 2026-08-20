@@ -17,6 +17,7 @@ MASTER_RUNBOOK = REPO_ROOT / "docs" / "runbooks" / "canonical" / "PEAK_TRADE_MAS
 MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2AA_HEADING = "### 11.13.5.Z2AA Earliest Z2Y safety dependency is not statically provable"
+Z2AB_HEADING = "### 11.13.5.Z2AB Productive runtime proof is not pre-submit admissible"
 Z2Z_HEADING = "### 11.13.5.Z2Z Evidence-model re-adjudication"
 Z2Y_HEADING = "### 11.13.5.Z2Y Filled-position-derived probe is not presently authorizable"
 NEXT_POINTER = (
@@ -45,8 +46,8 @@ def _read(path: Path) -> str:
 def _z2aa_section(text: str) -> str:
     start = text.find(Z2AA_HEADING)
     assert start >= 0, "missing §11.13.5.Z2AA heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2AA"
+    end = text.find(Z2AB_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2AB boundary after Z2AA"
     return text[start:end]
 
 
@@ -56,8 +57,9 @@ def test_z2aa_heading_is_unique_and_follows_z2z() -> None:
     z2y = text.find(Z2Y_HEADING)
     z2z = text.find(Z2Z_HEADING)
     z2aa = text.find(Z2AA_HEADING)
+    z2ab = text.find(Z2AB_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2y < z2z < z2aa < ladder
+    assert 0 <= z2y < z2z < z2aa < z2ab < ladder
 
 
 def test_z2aa_docs_bind_adjudication_c_without_runtime_or_proven_flatten() -> None:
@@ -174,9 +176,10 @@ def test_z2aa_docs_bind_adjudication_c_without_runtime_or_proven_flatten() -> No
 def test_z2aa_map_of_truth_navigation_pointer_matches_runbook() -> None:
     mot = _read(MAP_OF_TRUTH)
     assert "§11.13.5.Z2AA |" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
+    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}\n" not in mot
     assert f"NEXT_CANONICAL_STEP_POINTER={CONSUMED_Z2Z_POINTER}\n" not in mot
     assert "historical next pointer superseded by §11.13.5.Z2AA" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AB" in mot
     assert "SAFETY_DEPENDENCY_STEP_ADJUDICATION=C" in mot
     assert "Z2Y_AUTHORIZABILITY_ADJUDICATION_REMAINS=B" in mot
     assert "EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_FLATTEN_PROVABILITY" in mot
