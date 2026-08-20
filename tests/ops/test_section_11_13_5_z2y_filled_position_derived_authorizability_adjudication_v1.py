@@ -177,9 +177,10 @@ def test_z2y_docs_bind_adjudication_b_without_runtime_or_protocol() -> None:
 def test_z2y_map_of_truth_navigation_pointer_matches_runbook() -> None:
     mot = _read(MAP_OF_TRUTH)
     assert "§11.13.5.Z2Y |" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
+    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}\n" not in mot
     assert "historical next pointer superseded by §11.13.5.Z2Y" in mot
     assert "historical next pointer superseded by §11.13.5.Z2Z" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AA" in mot
     assert "ADJUDICATION=B" in mot
     assert "FUTURE_RUNTIME_PROTOCOL_DOCUMENTED=false" in mot
     assert f"NEXT_CANONICAL_STEP_POINTER={CONSUMED_Z2X_POINTER}\n" not in mot
