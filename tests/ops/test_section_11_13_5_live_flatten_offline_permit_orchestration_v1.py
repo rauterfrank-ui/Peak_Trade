@@ -313,6 +313,7 @@ def test_lf03_offline_path_invokes_no_transport() -> None:
     transport_src = inspect.getsource(run_canary_submit_transport_v1)
     assert "issue_canary_flatten_submit_permit_v1" not in transport_src
     assert "evaluate_canary_flatten_orchestration_contract_v1" not in transport_src
+    assert "evaluate_canary_flatten_lifecycle_failure_matrix_v1" not in transport_src
     http_src = inspect.getsource(http_client_v1)
     assert "post_flatten_order" not in http_src
     assert "CanaryFlattenSubmitPermitV1" not in http_src
