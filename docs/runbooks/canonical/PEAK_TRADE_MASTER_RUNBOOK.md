@@ -25331,7 +25331,7 @@ live flatten, orders, or Canary.
 Owner-GO `OWNER_GO=LF_06_SSOT_PERSIST_ONLY` (one-shot; now **CONSUMED**)
 authorized a **docs-only persist** of the already-completed read-only
 LF-06 venue-semantics adjudication after LF-05 (PR `#5989`,
-`origin/main=05d2f2edb430eaa765fbdd12620bd2cb31f83e21`). It does **not**
+`origin&#47;main=05d2f2edb430eaa765fbdd12620bd2cb31f83e21`). It does **not**
 re-adjudicate venue truth, does **not** start LF-07, and does **not**
 authorize orders, positions, funding, Canary, allowlist expansion,
 support contact, market close, flatten transport, price policy, or a
@@ -25386,7 +25386,7 @@ TESTNET_AUTHORIZED=false
 ```
 
 LF-01 through LF-05 remain the already-merged offline flatten contracts
-on `origin/main`. They are **not** productive venue proof and are **not**
+on `origin&#47;main`. They are **not** productive venue proof and are **not**
 runtime-reachable. This persist does **not** change those modules.
 
 Evidence classes used by the already-completed LF-06 read-only
