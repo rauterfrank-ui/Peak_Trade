@@ -30,6 +30,7 @@ Z2V_HEADING = (
     "### 11.13.5.Z2V Independent account-runtime IM &#47; notionalUsd &#47; UPL probe bind"
 )
 Z2U_HEADING = "### 11.13.5.Z2U Operative algebra triangulation bind"
+Z2W_HEADING = "### 11.13.5.Z2W Evidence boundary reached bind"
 NEXT_POINTER = (
     "OWNER_GO_REQUIRED_SEPARATE_FOR_ANY_NEW_RUNTIME_STATE_SUCH_AS_POSITION_OR_ORDER_"
     "DERIVED_IM_NOTIONALUSD_OR_UPL_REPEAT_ZERO_EQUITY_NO_POSITION_GET_HAS_NO_"
@@ -48,8 +49,8 @@ def _read(path: Path) -> str:
 def _z2v_section(text: str) -> str:
     start = text.find(Z2V_HEADING)
     assert start >= 0, "missing §11.13.5.Z2V heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2V"
+    end = text.find(Z2W_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2W boundary after Z2V"
     return text[start:end]
 
 
@@ -58,8 +59,9 @@ def test_z2v_heading_is_unique_and_follows_z2u() -> None:
     assert text.count(Z2V_HEADING) == 1
     z2u = text.find(Z2U_HEADING)
     z2v = text.find(Z2V_HEADING)
+    z2w = text.find(Z2W_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2u < z2v < ladder
+    assert 0 <= z2u < z2v < z2w < ladder
 
 
 def test_z2v_docs_bind_negative_probe_without_proving_contract_value() -> None:
@@ -126,8 +128,9 @@ def test_z2v_docs_bind_negative_probe_without_proving_contract_value() -> None:
 def test_z2v_map_of_truth_navigation_pointer_matches_runbook() -> None:
     mot = _read(MAP_OF_TRUTH)
     assert "§11.13.5.Z2V |" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
     assert "historical next pointer superseded by §11.13.5.Z2V" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2W" in mot
+    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}\n" not in mot
     assert (
         "NEXT_CANONICAL_STEP_POINTER=OWNER_GO_REQUIRED_FOR_INDEPENDENT_OKX_ACCOUNT_RUNTIME_"
         "IM_NOTIONALUSD_OR_UPL_ON_BTC_USD_UM_XPERP_310404_AND_OEM_METADATA_FACE_VALUE_"
