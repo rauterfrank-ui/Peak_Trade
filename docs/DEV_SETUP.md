@@ -30,7 +30,7 @@ uv sync --dev
 ```
 
 Do not use PATH `python3 -m venv` or `source .venv&#47;bin&#47;activate` as the supported runtime.
-Activation is not required. The launcher selects `.venv/bin/python`.
+Activation is not required. The launcher selects `.venv&#47;bin&#47;python`.
 
 ---
 

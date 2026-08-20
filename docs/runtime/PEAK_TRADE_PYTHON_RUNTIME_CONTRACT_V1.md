@@ -35,7 +35,7 @@ uv sync --dev
 ```
 
 Runtime must only validate and use the provisioned environment. Runtime must
-not create a venv, install packages, or source `.venv/bin/activate`.
+not create a venv, install packages, or source `.venv&#47;bin&#47;activate`.
 
 ## Canonical commands
 
@@ -69,7 +69,7 @@ Root trampoline `pt` execs `scripts/pt`.
 - **Shebangs on non-operative scripts:** not a runtime API. Invoke through
   `scripts/pt`.
 - **A small set of existing offline-eval wrappers** resolve
-  `.venv/bin/python` directly and fail closed if it is missing. New surfaces
+  `.venv&#47;bin&#47;python` directly and fail closed if it is missing. New surfaces
   must use `scripts/pt`.
 
 ## Agents
