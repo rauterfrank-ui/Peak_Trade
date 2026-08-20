@@ -16,18 +16,12 @@ PROM_URL="${PROM_URL:-http://127.0.0.1:9092}"
 JOB_NAME="${JOB_NAME:-ai_live}"
 
 resolve_py_cmd() {
-  # Deterministic Python environment contract:
-  # - If $PY_CMD is set, use it.
-  # - Else prefer uv-managed env (ensures prometheus_client available for exporter).
-  # - Else fall back to system python3.
+  # Canonical Peak_Trade runtime. Never PATH python3 / uv run python.
   if [[ -n "${PY_CMD:-}" ]]; then
     return 0
   fi
-  if command -v uv >/dev/null 2>&1; then
-    PY_CMD="uv run python"
-  else
-    PY_CMD="python3"
-  fi
+  REPO_ROOT="$(git rev-parse --show-toplevel)"
+  PY_CMD="${REPO_ROOT}/scripts/pt"
 }
 
 resolve_py_cmd

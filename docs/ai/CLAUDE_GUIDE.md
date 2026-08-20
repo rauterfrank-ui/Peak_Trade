@@ -12,40 +12,34 @@
 
 ## 1. Projekt-Übersicht
 
-**Peak_Trade** ist ein modulares Kryptowährungs-Trading- und Backtesting-Framework in Python 3.9+. Es bietet Strategie-Entwicklung, Backtesting mit realistischen Marktbedingungen, Risk-Management und Live-/Paper-Trading-Funktionalität.
+**Peak_Trade** ist ein modulares Kryptowährungs-Trading- und Backtesting-Framework.
+Python-Floor: `requires-python = ">=3.10"` (`pyproject.toml`). Unterstützte lokale
+Ausführung nur über `scripts/pt`. Vertrag:
+[`PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md`](../runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md).
+Python 3.9 ist kein unterstützter Projekt-Runtime.
 
 ---
 
 ## 2. Quick Commands
 
 ```bash
-# Setup
-source .venv/bin/activate
-pip install -e ".[dev]"
+# Bootstrap (operator-invoked)
+uv sync --dev
 
-# Testing
-python3 -m pytest tests/ -v                              # All tests
-python3 -m pytest tests/test_backtest_smoke.py -v        # Specific file
-python3 -m pytest tests/ --cov=src --cov-report=html     # With coverage
-
-# Linting & Formatting
-ruff check src/ tests/
-black src/ tests/
+# Never execute Peak_Trade Python using PATH python/python3.
+./scripts/pt runtime-check
+./scripts/pt -m pytest tests/ -v
+./scripts/pt -m pytest tests/test_backtest_smoke.py -v
+./scripts/pt -m ruff check src tests
 
 # Run Backtest
-python3 scripts/run_backtest.py
-python3 scripts/run_backtest.py --strategy rsi_reversion
-python3 scripts/run_backtest.py --config custom_config.toml
+./scripts/pt scripts/run_backtest.py
+./scripts/pt scripts/run_backtest.py --strategy rsi_reversion
 
 # Sweeps & Analytics
-python3 scripts/sweep_parameters.py --strategy ma_crossover
-python3 scripts/list_experiments.py --sort-by sharpe
-python3 scripts/generate_leaderboards.py
-
-# Forward/Paper Trading
-python3 scripts/generate_forward_signals.py --strategy ma_crossover
-python3 scripts/check_live_risk_limits.py
-python3 scripts/paper_trade_from_orders.py
+./scripts/pt scripts/sweep_parameters.py --strategy ma_crossover
+./scripts/pt scripts/list_experiments.py --sort-by sharpe
+./scripts/pt scripts/generate_leaderboards.py
 ```
 
 ---
@@ -201,7 +195,7 @@ block_on_violation = true
 
 ## 11. Code-Style
 
-- **Python**: 3.9+, type hints, dataclasses
+- **Python**: 3.10+, type hints, dataclasses
 - **Line length**: 100 characters
 - **Formatter**: Black
 - **Linter**: Ruff

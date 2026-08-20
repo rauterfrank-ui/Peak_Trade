@@ -65,7 +65,7 @@ finalize_evidence() {
   } >"$OUT/META.txt"
 
   # Latest evidence dirs (no pipes)
-  python3 - "$OUT" <<'PY'
+  ./scripts/pt - "$OUT" <<'PY'
 from __future__ import annotations
 
 import glob
@@ -125,7 +125,7 @@ EOF
   fi
 
   # Manifest (sha256) for wrapper OUT (no pipes)
-  python3 - "$OUT" <<'PY'
+  ./scripts/pt - "$OUT" <<'PY'
 from __future__ import annotations
 
 import hashlib
@@ -158,7 +158,7 @@ print(f"wrote: {manifest}")
 PY
 
   # Key material scan (head-only heuristic; no pipes)
-  python3 - "$OUT" <<'PY'
+  ./scripts/pt - "$OUT" <<'PY'
 from __future__ import annotations
 
 import os
@@ -255,7 +255,7 @@ if [[ "$exporter_ok" = "1" ]]; then
   activity_rc=$?
   set -e
   echo "$activity_rc" >"$OUT/activity_rc.txt"
-  python3 - "$OUT/activity_demo.stdout" "$OUT/ACTIVITY_DEMO_EVIDENCE_DIR.txt" <<'PY'
+  ./scripts/pt - "$OUT/activity_demo.stdout" "$OUT/ACTIVITY_DEMO_EVIDENCE_DIR.txt" <<'PY'
 from __future__ import annotations
 
 import sys
@@ -284,7 +284,7 @@ bash scripts/obs/ai_live_ops_verify.sh >"$OUT/ai_live_ops_verify.stdout" 2>"$OUT
 verify_rc=$?
 set -e
 echo "$verify_rc" >"$OUT/verify_rc.txt"
-python3 - "$OUT/ai_live_ops_verify.stdout" "$OUT/VERIFY_EVIDENCE_DIR.txt" <<'PY'
+./scripts/pt - "$OUT/ai_live_ops_verify.stdout" "$OUT/VERIFY_EVIDENCE_DIR.txt" <<'PY'
 from __future__ import annotations
 
 import sys

@@ -29,11 +29,13 @@ AILIVE_COMPOSE="${AILIVE_COMPOSE:-}"
 echo "== docker compose ls =="
 docker compose ls || true
 
-RESOLVE_JSON="$(python3 scripts/obs/resolve_obse_ailive_compose.py)"
-OBSE_PROJECT="$(printf '%s' "$RESOLVE_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("OBSE_PROJECT",""))')"
-AILIVE_PROJECT="$(printf '%s' "$RESOLVE_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("AILIVE_PROJECT",""))')"
-OBSE_COMPOSE_ARGS="$(printf '%s' "$RESOLVE_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("OBSE_COMPOSE_ARGS",""))')"
-AILIVE_COMPOSE_ARGS="$(printf '%s' "$RESOLVE_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("AILIVE_COMPOSE_ARGS",""))')"
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+PT="${ROOT}/scripts/pt"
+RESOLVE_JSON="$("$PT" scripts/obs/resolve_obse_ailive_compose.py)"
+OBSE_PROJECT="$(printf '%s' "$RESOLVE_JSON" | "$PT" -c 'import json,sys; print(json.load(sys.stdin).get("OBSE_PROJECT",""))')"
+AILIVE_PROJECT="$(printf '%s' "$RESOLVE_JSON" | "$PT" -c 'import json,sys; print(json.load(sys.stdin).get("AILIVE_PROJECT",""))')"
+OBSE_COMPOSE_ARGS="$(printf '%s' "$RESOLVE_JSON" | "$PT" -c 'import json,sys; print(json.load(sys.stdin).get("OBSE_COMPOSE_ARGS",""))')"
+AILIVE_COMPOSE_ARGS="$(printf '%s' "$RESOLVE_JSON" | "$PT" -c 'import json,sys; print(json.load(sys.stdin).get("AILIVE_COMPOSE_ARGS",""))')"
 
 echo ""
 echo "== resolved config =="

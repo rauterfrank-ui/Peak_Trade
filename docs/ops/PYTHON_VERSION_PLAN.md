@@ -1,9 +1,21 @@
 # Python Version Upgrade Plan
 
-**Status:** Planning (not yet implemented)
-**Current Version:** Python 3.9.6
-**Target Version:** Python 3.11 or 3.12
-**Priority:** Medium-High (3.9 EOL: October 2025)
+```text
+DOCUMENT_STATUS=HISTORICAL_SUPERSEDED
+SUPERSEDED_BY=docs/runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md
+CURRENT_PROJECT_FLOOR=requires-python >=3.10 (pyproject.toml)
+CURRENT_SUPPORTED_LOCAL_RUNTIME=.venv/bin/python via scripts/pt
+PYTHON_39_SUPPORTED=false
+```
+
+This planning note is **historical**. It must not be read as current runtime
+guidance. The project floor is `requires-python = ">=3.10"`. Python 3.9 is not a
+supported Peak_Trade runtime. Use `./scripts/pt`, not PATH `python3`.
+
+**Status:** SUPERSEDED (kept for history)
+**Historical snapshot in this note:** Python 3.9.6 as then-current local CLT
+**Current target:** repository `.venv` CPython 3.11.x
+
 
 ---
 

@@ -1,0 +1,233 @@
+{
+  "contract_id": "pt_python_operative_surfaces_v1",
+  "notes": "Classification of CURRENT operative invocation owners. Historical/evidence paths are excluded from the grep gate.",
+  "surfaces": [
+    {
+      "path": "scripts/pt",
+      "class": "OPERATIVE_CANONICAL",
+      "role": "canonical_launcher"
+    },
+    {
+      "path": "pt",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "root_trampoline_to_scripts_pt"
+    },
+    {
+      "path": "scripts/runtime/pt_python_runtime_contract_v1.py",
+      "class": "OPERATIVE_CANONICAL",
+      "role": "runtime_contract_library"
+    },
+    {
+      "path": "Makefile",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "make_orchestration_delegates_to_scripts_pt"
+    },
+    {
+      "path": "scripts/governance/ai_matrix_consistency_gate.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "governance_gate"
+    },
+    {
+      "path": "scripts/webui/local_market_dashboard.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "webui_launcher"
+    },
+    {
+      "path": "scripts/obs/stage1_run_daily.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "scheduled_obs"
+    },
+    {
+      "path": "scripts/obs/stage1_run_weekly.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "scheduled_obs"
+    },
+    {
+      "path": "scripts/ops/kill_switch_ctl.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "kill_switch_operator_wrapper"
+    },
+    {
+      "path": "scripts/ops/invoke_armstrong_cycle_v1_bound_offline_economic_baseline_evaluation_v0.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "offline_eval_explicit_venv"
+    },
+    {
+      "path": "scripts/ops/invoke_ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "offline_eval_explicit_venv"
+    },
+    {
+      "path": "scripts/ops/offline_evaluation_runner_invocation_contract_v0.py",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "offline_eval_interpreter_resolution"
+    },
+    {
+      "path": "README.md",
+      "class": "OPERATIVE_CANONICAL",
+      "role": "operator_quickstart"
+    },
+    {
+      "path": "docs/GETTING_STARTED.md",
+      "class": "OPERATIVE_CANONICAL",
+      "role": "operator_setup"
+    },
+    {
+      "path": "docs/DEV_SETUP.md",
+      "class": "OPERATIVE_CANONICAL",
+      "role": "developer_setup"
+    },
+    {
+      "path": "docs/DEVELOPER_WORKFLOW_GUIDE.md",
+      "class": "OPERATIVE_CANONICAL",
+      "role": "developer_workflow"
+    },
+    {
+      "path": "docs/ai/CLAUDE_GUIDE.md",
+      "class": "OPERATIVE_CANONICAL",
+      "role": "agent_command_guide_non_ssot"
+    },
+    {
+      "path": "docs/ai/PEAK_TRADE_AI_HELPER_GUIDE.md",
+      "class": "OPERATIVE_CANONICAL",
+      "role": "agent_working_agreement_non_ssot"
+    },
+    {
+      "path": "AGENTS.md",
+      "class": "OPERATIVE_CANONICAL",
+      "role": "agent_entrypoint"
+    },
+    {
+      "path": ".cursor/rules/peak-trade-python-runtime.mdc",
+      "class": "OPERATIVE_CANONICAL",
+      "role": "cursor_runtime_rule"
+    },
+    {
+      "path": "docs/runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md",
+      "class": "OPERATIVE_CANONICAL",
+      "role": "canonical_runtime_doc"
+    },
+    {
+      "path": "docs/ops/PYTHON_VERSION_PLAN.md",
+      "class": "HISTORICAL",
+      "role": "superseded_python_upgrade_plan"
+    },
+    {
+      "path": "docs/dev/UV_QUICKSTART.md",
+      "class": "BOOTSTRAP_ONLY",
+      "role": "bootstrap_uv_sync"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "class": "CI_PINNED",
+      "role": "required_ci"
+    },
+    {
+      "path": "tests/conftest.py",
+      "class": "TEST_ONLY",
+      "role": "pytest_sys_path_bootstrap"
+    },
+    {
+      "path": "docs/SCHEDULER_DAEMON.md",
+      "class": "OPERATIVE_CANONICAL",
+      "role": "scheduler_operator_docs"
+    },
+    {
+      "path": "src/scheduler/runner.py",
+      "class": "OPERATIVE_CANONICAL",
+      "role": "scheduler_binds_bare_python_to_process_interpreter"
+    },
+    {
+      "path": "scripts/ops/bg_job.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "background_job_helper"
+    },
+    {
+      "path": "scripts/obs/run_stage1_monitoring.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "scheduled_obs"
+    },
+    {
+      "path": "scripts/obs/smoke.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "obs_smoke"
+    },
+    {
+      "path": "scripts/obs/ai_live_verify.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "obs_ai_live"
+    },
+    {
+      "path": "scripts/obs/ai_live_smoke_test.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "obs_ai_live"
+    },
+    {
+      "path": "scripts/obs/ai_live_ops_verify.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "obs_ai_live"
+    },
+    {
+      "path": "scripts/obs/ai_live_activity_demo.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "obs_ai_live"
+    },
+    {
+      "path": "scripts/obs/ai_live_restart.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "obs_ai_live"
+    },
+    {
+      "path": "scripts/obs/ai_live_local_verify.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "obs_ai_live"
+    },
+    {
+      "path": "scripts/obs/prom_9094_9095_restart.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "obs_prometheus_helper"
+    },
+    {
+      "path": "scripts/obs/prom_9094_9095_up_and_verify.sh",
+      "class": "OPERATIVE_WRAPPER",
+      "role": "obs_prometheus_helper"
+    }
+  ],
+  "documented_exceptions": [
+    {
+      "id": "CI_PROVISIONED_INTERPRETER",
+      "summary": "GitHub Actions may invoke python after setup-python pins the version. Local PATH python3 remains prohibited.",
+      "mode": "provisioned"
+    },
+    {
+      "id": "PYTEST_CONFTEST_SYS_PATH",
+      "summary": "tests/conftest.py inserts src and repo root for pytest collection only. Not an operational runtime solution.",
+      "mode": "test_only"
+    },
+    {
+      "id": "SHEBANG_NOT_RUNTIME_API",
+      "summary": "#!/usr/bin/env python3 on non-operative scripts is not a supported way to start Peak_Trade. Invoke through scripts/pt.",
+      "mode": "unsupported_direct_execution"
+    },
+    {
+      "id": "OFFLINE_EVAL_EXPLICIT_VENV_PYTHON",
+      "summary": "Existing armstrong/ehlers invoke wrappers resolve REPO_ROOT/.venv/bin/python directly and fail closed if missing. New surfaces must use scripts/pt.",
+      "mode": "explicit_canonical_interpreter"
+    },
+    {
+      "id": "SCHEDULER_JOB_COMMAND_PYTHON",
+      "summary": "config/scheduler/jobs.toml uses command=python as a token. src/scheduler/runner.py remaps python/python3 to sys.executable of the scheduler process. Launch the scheduler via scripts/pt.",
+      "mode": "scheduler_token"
+    },
+    {
+      "id": "PAPER_SHADOW_UV_RUN_EXECUTE_CONTRACTS",
+      "summary": "Existing paper-shadow execute-entrypoint drift-guard contracts invoke uv run python, which binds the project environment via uv.lock. Not PATH python3. New surfaces must use scripts/pt.",
+      "mode": "uv_run_project_env"
+    },
+    {
+      "id": "WEBUI_PYTHON_OVERRIDE",
+      "summary": "PEAK_TRADE_WEBUI_PYTHON may override the dashboard interpreter when the operator supplies an executable path. Default is scripts/pt.",
+      "mode": "explicit_operator_override"
+    }
+  ]
+}

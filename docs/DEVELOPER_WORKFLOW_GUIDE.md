@@ -1,5 +1,7 @@
 # Peak_Trade Developer Workflow Guide
 
+Python floor: `requires-python = ">=3.10"`. Run Peak_Trade Python only via `./scripts/pt` (see `docs/runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md`). PATH `python`/`python3` is not a supported runtime.
+
 > **Purpose:** Streamlined workflows and automation tools for productive development
 >
 > **Target Audience:** All developers working on Peak_Trade
@@ -24,13 +26,13 @@ git clone <repo-url>
 cd Peak_Trade
 
 # 2. Automated setup
-python3 scripts/dev_workflow.py setup
+./scripts/pt scripts/dev_workflow.py setup
 
 # 3. Health check
-python3 scripts/dev_workflow.py health
+./scripts/pt scripts/dev_workflow.py health
 
 # 4. Run tests to verify setup
-python3 scripts/dev_workflow.py test --module test_basics
+./scripts/pt scripts/dev_workflow.py test --module test_basics
 
 # 5. Read essential docs
 # - README.md
@@ -42,16 +44,16 @@ python3 scripts/dev_workflow.py test --module test_basics
 
 ```bash
 # Morning routine
-python3 scripts/dev_workflow.py health        # Quick system check
+./scripts/pt scripts/dev_workflow.py health        # Quick system check
 git pull origin main                          # Get latest changes
 
 # During development
-python3 scripts/dev_workflow.py test --module <module>  # Test your changes
-python3 scripts/dev_workflow.py lint                    # Check code style
+./scripts/pt scripts/dev_workflow.py test --module <module>  # Test your changes
+./scripts/pt scripts/dev_workflow.py lint                    # Check code style
 
 # Before committing
-python3 scripts/dev_workflow.py test                    # Full test suite
-python3 scripts/dev_workflow.py docs-validate           # Check docs
+./scripts/pt scripts/dev_workflow.py test                    # Full test suite
+./scripts/pt scripts/dev_workflow.py docs-validate           # Check docs
 git add .
 git commit -m "Your change description"
 git push
@@ -65,14 +67,14 @@ git checkout -b feature/your-feature-name
 
 # 2. Make changes incrementally
 # ... edit files ...
-python3 scripts/dev_workflow.py test --module <module> -v
+./scripts/pt scripts/dev_workflow.py test --module <module> -v
 
 # 3. Run linters
-python3 scripts/dev_workflow.py lint
+./scripts/pt scripts/dev_workflow.py lint
 
 # 4. Validate changes
-python3 scripts/dev_workflow.py health
-python3 scripts/dev_workflow.py docs-validate
+./scripts/pt scripts/dev_workflow.py health
+./scripts/pt scripts/dev_workflow.py docs-validate
 
 # 5. Commit and push
 git add .
@@ -93,7 +95,7 @@ The `scripts/dev_workflow.py` script automates common development tasks.
 
 #### Setup Environment
 ```bash
-python3 scripts/dev_workflow.py setup
+./scripts/pt scripts/dev_workflow.py setup
 ```
 - Creates virtual environment
 - Installs dependencies
@@ -102,28 +104,28 @@ python3 scripts/dev_workflow.py setup
 #### Run Tests
 ```bash
 # All tests
-python3 scripts/dev_workflow.py test
+./scripts/pt scripts/dev_workflow.py test
 
 # Specific module
-python3 scripts/dev_workflow.py test --module performance
+./scripts/pt scripts/dev_workflow.py test --module performance
 
 # With coverage
-python3 scripts/dev_workflow.py test --coverage
+./scripts/pt scripts/dev_workflow.py test --coverage
 
 # Verbose output
-python3 scripts/dev_workflow.py test -v
+./scripts/pt scripts/dev_workflow.py test -v
 ```
 
 #### Run Linters
 ```bash
-python3 scripts/dev_workflow.py lint
+./scripts/pt scripts/dev_workflow.py lint
 ```
 - Runs ruff for linting
 - Runs black for formatting checks
 
 #### Performance Check
 ```bash
-python3 scripts/dev_workflow.py perf-check
+./scripts/pt scripts/dev_workflow.py perf-check
 ```
 - Benchmarks key operations
 - Reports performance metrics
@@ -131,7 +133,7 @@ python3 scripts/dev_workflow.py perf-check
 
 #### Validate Documentation
 ```bash
-python3 scripts/dev_workflow.py docs-validate
+./scripts/pt scripts/dev_workflow.py docs-validate
 ```
 - Checks for broken links
 - Finds TODO/FIXME markers
@@ -139,7 +141,7 @@ python3 scripts/dev_workflow.py docs-validate
 
 #### Health Check
 ```bash
-python3 scripts/dev_workflow.py health
+./scripts/pt scripts/dev_workflow.py health
 ```
 - Verifies environment setup
 - Checks directory structure
@@ -147,7 +149,7 @@ python3 scripts/dev_workflow.py health
 
 #### Create Strategy Scaffold
 ```bash
-python3 scripts/dev_workflow.py create-strategy "My New Strategy"
+./scripts/pt scripts/dev_workflow.py create-strategy "My New Strategy"
 ```
 - Generates strategy boilerplate
 - Creates test file template
@@ -161,17 +163,17 @@ python3 scripts/dev_workflow.py create-strategy "My New Strategy"
 
 ```bash
 # 1. Create test first
-python3 scripts/dev_workflow.py create-strategy "momentum"
+./scripts/pt scripts/dev_workflow.py create-strategy "momentum"
 # Edit tests/strategies/test_momentum.py
 
 # 2. Run test (should fail)
-python3 scripts/dev_workflow.py test --module strategies/test_momentum -v
+./scripts/pt scripts/dev_workflow.py test --module strategies/test_momentum -v
 
 # 3. Implement strategy
 # Edit src/strategies/momentum.py
 
 # 4. Run test (should pass)
-python3 scripts/dev_workflow.py test --module strategies/test_momentum -v
+./scripts/pt scripts/dev_workflow.py test --module strategies/test_momentum -v
 
 # 5. Refine and repeat
 ```
@@ -180,13 +182,13 @@ python3 scripts/dev_workflow.py test --module strategies/test_momentum -v
 
 ```bash
 # 1. Baseline performance
-python3 scripts/dev_workflow.py perf-check
+./scripts/pt scripts/dev_workflow.py perf-check
 
 # 2. Make changes
 # ... edit files ...
 
 # 3. Check performance impact
-python3 scripts/dev_workflow.py perf-check
+./scripts/pt scripts/dev_workflow.py perf-check
 
 # 4. Compare metrics
 # If performance degraded, optimize before committing
@@ -199,13 +201,13 @@ python3 scripts/dev_workflow.py perf-check
 # Edit docs/YOUR_FEATURE.md
 
 # 2. Validate documentation
-python3 scripts/dev_workflow.py docs-validate
+./scripts/pt scripts/dev_workflow.py docs-validate
 
 # 3. Implement based on docs
 # ... edit files ...
 
 # 4. Ensure docs stay updated
-python3 scripts/dev_workflow.py docs-validate
+./scripts/pt scripts/dev_workflow.py docs-validate
 ```
 
 ### Pattern 4: Incremental Integration
@@ -215,7 +217,7 @@ python3 scripts/dev_workflow.py docs-validate
 # Edit single file
 
 # 2. Test immediately
-python3 scripts/dev_workflow.py test --module <specific_test>
+./scripts/pt scripts/dev_workflow.py test --module <specific_test>
 
 # 3. Commit if passes
 git add <file>
@@ -239,7 +241,7 @@ Create `.vscode&#47;tasks.json`:
         {
             "label": "Run Tests",
             "type": "shell",
-            "command": "python3 scripts/dev_workflow.py test",
+            "command": "./scripts/pt scripts/dev_workflow.py test",
             "group": {
                 "kind": "test",
                 "isDefault": true
@@ -248,13 +250,13 @@ Create `.vscode&#47;tasks.json`:
         {
             "label": "Run Linters",
             "type": "shell",
-            "command": "python3 scripts/dev_workflow.py lint",
+            "command": "./scripts/pt scripts/dev_workflow.py lint",
             "group": "build"
         },
         {
             "label": "Health Check",
             "type": "shell",
-            "command": "python3 scripts/dev_workflow.py health"
+            "command": "./scripts/pt scripts/dev_workflow.py health"
         }
     ]
 }
@@ -269,7 +271,7 @@ Keyboard shortcuts:
 1. **External Tools Configuration:**
    - Settings → Tools → External Tools
    - Add tool: "Workflow Health"
-   - Program: `python3`
+   - Program: `./scripts/pt`
    - Arguments: `scripts&#47;dev_workflow.py health`
    - Working directory: `$ProjectFileDir$`
 
@@ -318,10 +320,10 @@ test(portfolio): add edge case tests
 
 1. **Before Creating PR:**
    ```bash
-   python3 scripts/dev_workflow.py test --coverage
-   python3 scripts/dev_workflow.py lint
-   python3 scripts/dev_workflow.py docs-validate
-   python3 scripts/dev_workflow.py health
+   ./scripts/pt scripts/dev_workflow.py test --coverage
+   ./scripts/pt scripts/dev_workflow.py lint
+   ./scripts/pt scripts/dev_workflow.py docs-validate
+   ./scripts/pt scripts/dev_workflow.py health
    ```
 
 2. **PR Description Template:**
@@ -367,38 +369,38 @@ Full Suite        → Comprehensive, all tests
 
 ```bash
 # During development (fast feedback)
-python3 scripts/dev_workflow.py test --module <your_module>
+./scripts/pt scripts/dev_workflow.py test --module <your_module>
 
 # Before commit (medium confidence)
-python3 scripts/dev_workflow.py test --module <affected_modules>
+./scripts/pt scripts/dev_workflow.py test --module <affected_modules>
 
 # Before PR (high confidence)
-python3 scripts/dev_workflow.py test --coverage
+./scripts/pt scripts/dev_workflow.py test --coverage
 
 # CI/CD (full validation)
-python3 -m pytest tests/ -v --cov=src --cov-report=html
+./scripts/pt -m pytest tests/ -v --cov=src --cov-report=html
 ```
 
 ### Test-Specific Workflows
 
 ```bash
 # Run specific test class
-python3 -m pytest tests/test_performance.py::TestPerformanceMonitor -v
+./scripts/pt -m pytest tests/test_performance.py::TestPerformanceMonitor -v
 
 # Run specific test method
-python3 -m pytest tests/test_performance.py::TestPerformanceMonitor::test_init -v
+./scripts/pt -m pytest tests/test_performance.py::TestPerformanceMonitor::test_init -v
 
 # Run tests matching pattern
-python3 -m pytest tests/ -k "performance" -v
+./scripts/pt -m pytest tests/ -k "performance" -v
 
 # Run with detailed output
-python3 -m pytest tests/ -vv -s
+./scripts/pt -m pytest tests/ -vv -s
 
 # Run failed tests only
-python3 -m pytest tests/ --lf
+./scripts/pt -m pytest tests/ --lf
 
 # Run tests in parallel (if pytest-xdist installed)
-python3 -m pytest tests/ -n auto
+./scripts/pt -m pytest tests/ -n auto
 ```
 
 ---
@@ -409,7 +411,7 @@ python3 -m pytest tests/ -n auto
 
 1. **Reproduce the Issue:**
    ```bash
-   python3 scripts/dev_workflow.py test --module <failing_test> -v
+   ./scripts/pt scripts/dev_workflow.py test --module <failing_test> -v
    ```
 
 2. **Add Debug Output:**
@@ -421,10 +423,10 @@ python3 -m pytest tests/ -n auto
 3. **Use Debugger:**
    ```bash
    # Run with debugger
-   python3 -m pdb scripts/<script_name>.py
+   ./scripts/pt -m pdb scripts/<script_name>.py
 
    # Or in test
-   python3 -m pytest tests/test_module.py --pdb
+   ./scripts/pt -m pytest tests/test_module.py --pdb
    ```
 
 4. **Performance Profiling:**
@@ -446,7 +448,7 @@ python3 -m pytest tests/ -n auto
 
 1. **Measure Baseline:**
    ```bash
-   python3 scripts/dev_workflow.py perf-check
+   ./scripts/pt scripts/dev_workflow.py perf-check
    ```
 
 2. **Profile Code:**
@@ -478,7 +480,7 @@ python3 -m pytest tests/ -n auto
 
 5. **Verify Improvement:**
    ```bash
-   python3 scripts/dev_workflow.py perf-check
+   ./scripts/pt scripts/dev_workflow.py perf-check
    # Compare with baseline
    ```
 
@@ -496,14 +498,14 @@ Create `.git&#47;hooks&#47;pre-commit`:
 echo "Running pre-commit checks..."
 
 # Run tests
-python3 scripts/dev_workflow.py test
+./scripts/pt scripts/dev_workflow.py test
 if [ $? -ne 0 ]; then
     echo "Tests failed. Commit aborted."
     exit 1
 fi
 
 # Run linters
-python3 scripts/dev_workflow.py lint
+./scripts/pt scripts/dev_workflow.py lint
 if [ $? -ne 0 ]; then
     echo "Linting failed. Commit aborted."
     exit 1
@@ -524,10 +526,10 @@ Add to `.gitconfig`:
 
 ```ini
 [alias]
-    pt-test = !python3 scripts/dev_workflow.py test
-    pt-lint = !python3 scripts/dev_workflow.py lint
-    pt-health = !python3 scripts/dev_workflow.py health
-    pt-perf = !python3 scripts/dev_workflow.py perf-check
+    pt-test = !./scripts/pt scripts/dev_workflow.py test
+    pt-lint = !./scripts/pt scripts/dev_workflow.py lint
+    pt-health = !./scripts/pt scripts/dev_workflow.py health
+    pt-perf = !./scripts/pt scripts/dev_workflow.py perf-check
 ```
 
 Usage:
@@ -563,11 +565,11 @@ Success/Failure
 
 ```bash
 # Simulate CI pipeline locally
-python3 scripts/dev_workflow.py setup
-python3 scripts/dev_workflow.py lint
-python3 scripts/dev_workflow.py test --coverage
-python3 scripts/dev_workflow.py perf-check
-python3 scripts/dev_workflow.py docs-validate
+./scripts/pt scripts/dev_workflow.py setup
+./scripts/pt scripts/dev_workflow.py lint
+./scripts/pt scripts/dev_workflow.py test --coverage
+./scripts/pt scripts/dev_workflow.py perf-check
+./scripts/pt scripts/dev_workflow.py docs-validate
 ```
 
 ---
@@ -581,14 +583,14 @@ python3 scripts/dev_workflow.py docs-validate
 git diff --stat
 
 # Test coverage
-python3 scripts/dev_workflow.py test --coverage
+./scripts/pt scripts/dev_workflow.py test --coverage
 
 # Performance improvements
-python3 scripts/dev_workflow.py perf-check
+./scripts/pt scripts/dev_workflow.py perf-check
 # Compare with previous baseline
 
 # Documentation completeness
-python3 scripts/dev_workflow.py docs-validate
+./scripts/pt scripts/dev_workflow.py docs-validate
 ```
 
 ---
@@ -606,16 +608,16 @@ pip install -e ".[dev]" --upgrade
 rm -rf .pytest_cache
 
 # Run tests again
-python3 scripts/dev_workflow.py test
+./scripts/pt scripts/dev_workflow.py test
 ```
 
 #### Performance Regression
 ```bash
 # Profile the slow operation
-python3 -m cProfile -o profile.stats scripts/<script>.py
+./scripts/pt -m cProfile -o profile.stats scripts/<script>.py
 
 # Analyze profile
-python3 -m pstats profile.stats
+./scripts/pt -m pstats profile.stats
 > sort cumulative
 > stats 20
 ```
@@ -629,7 +631,7 @@ pip list | grep peak_trade
 pip install -e .
 
 # Check Python path
-python3 -c "import sys; print('\n'.join(sys.path))"
+./scripts/pt -c "import sys; print('\n'.join(sys.path))"
 ```
 
 ---

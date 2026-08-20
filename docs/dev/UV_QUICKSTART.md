@@ -28,9 +28,8 @@ uv sync
 # Mit Dev-/Tooling‑Gruppe (dependency groups / dev extras wie in pyproject.toml)
 uv sync --dev
 
-# Aktivieren
-source .venv/bin/activate   # Linux/macOS
-# .venv\Scripts\activate    # Windows
+# Runtime: do not rely on activation. Use ./scripts/pt
+./scripts/pt runtime-check
 ```
 
 So bleiben Peak Trade und die englischen **Development Tooling**‑Doku konsistent (**`tooling.md`**: `uv sync`, `uv sync --dev`, `uv add`, `uv add --dev`).
@@ -59,13 +58,13 @@ Bevorzuge **immer** Kombination **`uv sync`** plus bei Bedarf **`uv sync --dev`*
 source .venv/bin/activate  # Linux/macOS
 
 # Tests ausführen
-python3 -m pytest tests/ -v
+./scripts/pt -m pytest tests/ -v
 
 # Einzelnen Test
-python3 -m pytest tests/test_basics.py -v
+./scripts/pt -m pytest tests/test_basics.py -v
 
 # Mit Coverage
-python3 -m pytest tests/ --cov=src --cov-report=term-missing
+./scripts/pt -m pytest tests/ --cov=src --cov-report=term-missing
 
 # Linting
 ruff check src tests scripts

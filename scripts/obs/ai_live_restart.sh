@@ -18,20 +18,12 @@ LOG_PATH="$RUNTIME_DIR/ai_live_restart.log"
 PID_PATH="$RUNTIME_DIR/ai_live_restart.pid"
 
 resolve_py_cmd() {
+  # Canonical Peak_Trade runtime. Never PATH python3 / uv run python.
   if [[ -n "${PY_CMD:-}" ]]; then
     return 0
   fi
-  # Deterministic: prefer repo-local obs venv (no uv, no global pip).
-  REPO_ROOT="$(pwd)"
-  if [[ -x "$REPO_ROOT/.venv_obs/bin/python" ]]; then
-    PY_CMD="$REPO_ROOT/.venv_obs/bin/python"
-    return 0
-  fi
-  if command -v uv >/dev/null 2>&1; then
-    PY_CMD="uv run python"
-  else
-    PY_CMD="python3"
-  fi
+  REPO_ROOT="$(git rev-parse --show-toplevel)"
+  PY_CMD="${REPO_ROOT}/scripts/pt"
 }
 resolve_py_cmd
 read -r -a PY_ARR <<<"${PY_CMD}"
