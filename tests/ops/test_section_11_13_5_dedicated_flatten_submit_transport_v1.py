@@ -16,6 +16,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     POST_ENDPOINTS_GATED,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_limit_price_contract_v1 import (
+    FRESHNESS_THRESHOLD_MS,
     FlattenPriceInputV1,
     evaluate_canary_flatten_limit_price_contract_v1,
 )
@@ -72,7 +73,7 @@ def _price_permit(*, side: str = "SELL", pos: str = "1") -> Any:
             quote_timestamp_ms=QUOTE_TS,
             evaluation_timestamp_ms=EVAL_TS,
             tick_sz="0.1",
-            freshness_threshold_ms="5000",
+            freshness_threshold_ms=str(FRESHNESS_THRESHOLD_MS),
         )
     )
     assert decision.permit is not None

@@ -27747,6 +27747,143 @@ instantiation, USD=USDC, order, funding, Canary, or support contact.
 `LIVE_AUTHORIZED=false`. No execute. No merge of this persist without a
 separate `OWNER_MERGE_GO`.
 
+The historical Z2AM next pointer
+`OWNER_GO_REQUIRED_SEPARATE_FOR_ANY_NEXT_OPERATIONAL_OR_ADJUDICATION_STEP_NOT_AUTHORIZED_BY_THIS_PERSIST_Z2AM_FRESHNESS_BINDING_OWNER_RATIFICATION_REQUIRED_NO_CANONICAL_FRESHNESS_DEFAULT_EXTRA_DEVIATION_BOUND_NOT_PROVEN_REQUIRED_LIVE_FLATTEN_UNPROVEN_NO_NUMERIC_INVENTION_NO_LIVE_WIRE_NO_ORDER_COUNT_LIMIT_RAISE_TO_2_NO_RUNTIME_READ_NO_PRODUCTIVE_FLATTEN_NO_GET_NO_ORDER_NO_ALLOWLIST_CANARY_NOT_AUTHORIZED_SUPPORT_CONTACT_NOT_AUTHORIZED`
+is **consumed** only as the offline Owner freshness-policy ratification
+below (§11.13.5.Z2AN). That successor binds a single canonical flatten
+`FRESHNESS_THRESHOLD_MS` as a new explicit Owner ratification. It does
+**not** treat the `5000` ms test fixture, the `5.0` s public-MD &#47;
+markPx staleness default, or the `120` s testnet staleness default as
+historical authority. It does **not** prove live flatten, does **not**
+enable live wire, and does **not** authorize GET, POST, order, funding,
+Canary, or support contact.
+
+### 11.13.5.Z2AN Flatten FRESHNESS_THRESHOLD_MS Owner-policy ratification (BOUND; OFFLINE CONTRACT; LIVE FLATTEN UNPROVEN; NO SUBMIT; NOT EXECUTE)
+
+Owner-GO
+`OWNER_GO=GRANTED_FOR_POST_Z2AM_FRESHNESS_THRESHOLD_OWNER_POLICY_RATIFICATION_OFFLINE_ONLY`
+(one-shot; now **CONSUMED**) authorized the offline Owner-policy
+ratification of a single canonical flatten `FRESHNESS_THRESHOLD_MS`
+after `origin&#47;main=43582d515877669bb2d64a091700b6d15fcfffa4`.
+This step does **not** prove `LIVE_FLATTEN_PROVABILITY`, does **not**
+enable live wire, does **not** raise `ORDER_COUNT_LIMIT` to 2, and does
+**not** authorize runtime read, GET, POST, order, position, flatten,
+funding, Canary, or support contact. Bound scope:
+
+``` text
+AUTHORIZED_SCOPE=POST_Z2AM_FRESHNESS_THRESHOLD_OWNER_POLICY_RATIFICATION_OFFLINE_ONLY
+CURRENT_PHASE=SECTION_11_13_5_Z2AN_FRESHNESS_THRESHOLD_OWNER_POLICY_RATIFICATION
+OWNER_GO=GRANTED_FOR_POST_Z2AM_FRESHNESS_THRESHOLD_OWNER_POLICY_RATIFICATION_OFFLINE_ONLY
+OWNER_GO_STATUS=CONSUMED
+BASELINE_ORIGIN_MAIN_SHA=43582d515877669bb2d64a091700b6d15fcfffa4
+LAST_CANONICALLY_CLOSED_STEP=LF_12
+OWNER_POLICY_ADJUDICATION=RATIFIED
+FRESHNESS_THRESHOLD_MS=5000
+FRESHNESS_THRESHOLD_RATIFIED=true
+FRESHNESS_BINDING=OWNER_RATIFIED
+FRESHNESS_POLICY_CLASS=NEW_EXPLICIT_OWNER_RATIFICATION_NOT_FIXTURE_PROMOTION
+FRESHNESS_THRESHOLD_CANONICAL_DEFAULT=5000
+TEST_FIXTURE_5000_PROMOTED_TO_POLICY=false
+MD_DEFAULT_5S_PROMOTED_TO_POLICY=false
+TESTNET_DEFAULT_120S_PROMOTED_TO_POLICY=false
+FIXTURE_VALUES_TREATED_AS_AUTHORITY=false
+FLATTEN_PRICE_POLICY_IMPLEMENTED=true
+FLATTEN_PRICE_POLICY_FULLY_BOUND=true
+FLATTEN_PRICE_RULE=SELL_USES_BID_ROUND_DOWN_BUY_USES_ASK_ROUND_UP
+FINITE_EXTRA_DEVIATION_BOUND=NOT_OWNER_RATIFIED_REJECTED
+EXTRA_DEVIATION_BOUND=NOT_PROVEN_REQUIRED
+EXTRA_DEVIATION_BOUND_RATIFIED=false
+DEDICATED_FLATTEN_TRANSPORT_IMPLEMENTED=true
+DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false
+REDUCE_ONLY_FLATTEN_INTENT_IMPLEMENTED=true
+STATIC_FLATTEN_PREREQUISITES_STATUS=PASS_OFFLINE
+LIVE_FLATTEN_PROVABILITY=UNPROVEN
+LIVE_FLATTEN_PROVABILITY_REMAINS=UNPROVEN_HARD_STOP
+NEW_PROVEN_CLOSURE=NONE
+CLAIMS_NEWLY_PROVEN_THIS_STEP=NONE
+NO_NEW_PROVEN_CLAIM=true
+PRODUCTIVE_FLATTEN_EXECUTED=false
+MARKET_PATH_AVAILABLE=false
+CLOSE_POSITION_ENDPOINT_ALLOWLISTED=false
+ORDER_COUNT_LIMIT=1
+ORDER_COUNT_LIMIT_RAISED=false
+POSITION_COUNT_LIMIT=1
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+GET_EXECUTED_THIS_STEP=false
+GET_AUTHORIZED_THIS_STEP=false
+OKX_API_CALL_PERFORMED=false
+AUTHENTICATED_REQUEST_PERFORMED=false
+POST_EXECUTED=false
+ORDER_SUBMITTED=false
+NETWORK_REQUEST_EXECUTED=false
+RUNTIME_TOUCHED=false
+NO_PRODUCTIVE_WIRE=true
+NO_RUNTIME_TOUCH=true
+NO_USD_EQUALS_USDC=true
+NO_SETTLEMENT_PNL_INFERENCE=true
+DOCS_PERSIST_IS_NOT_ADMISSIBLE_PRODUCTIVE_EVIDENCE=true
+```
+
+Policy basis. The productive quote-locked LIMIT flatten path is
+REST ticker acquisition (`GET &#47;api&#47;v5&#47;market&#47;ticker`
+bidPx&#47;askPx&#47;ts) → local price permit → later submit. Age is
+`evaluation_timestamp_ms - quote_timestamp_ms`. Exceeding the threshold
+fails closed as `STALE_QUOTE`. There is no MARKET fallback and no extra
+deviation guard, so freshness is the only temporal bound on the locked
+px. SELL locks current bid rounded down to tick; BUY locks current ask
+rounded up to tick.
+
+`120` s is the testnet-observation &#47; dashboard &#47; captured_at
+reference-mark class and is too loose for quote-lock. Sub-second bounds
+belong to a websocket book path that this REST ticker contract does not
+use. A contemporaneous REST ticker plus modest clock skew must still be
+able to flatten an open 1-lot position, because fail-closed-without-MARKET
+otherwise leaves the position open. Historical Z2H ticker evidence showed
+provider ts versus receive ts contemporaneous at millisecond scale
+(`PROVIDER_TS_MS=1787085275669`, `RECEIVE_TS_UNIX=1787085275.577`); that
+one observation is **not** a statistical envelope and is **not** the
+chosen number.
+
+`FRESHNESS_THRESHOLD_MS=5000` is therefore a **new explicit Owner
+ratification** of a conservative REST-ticker quote-lock envelope: tight
+enough to reject a non-contemporaneous bid&#47;ask lock, wide enough for
+clock skew plus REST last-mile, and not taken from the `5000` ms test
+fixture or from the `5.0` s public-MD &#47; markPx session defaults as
+authority. After this bind, callers may omit the threshold (canonical
+policy applies) or must supply exactly `5000`; any other supplied value
+is `FRESHNESS_THRESHOLD_NOT_CANONICAL`. Comparison remains
+`age_ms > FRESHNESS_THRESHOLD_MS` (equal age still issues).
+
+``` text
+FRESHNESS_POLICY_BASIS=REST_TICKER_THEN_LOCAL_PERMIT_THEN_SUBMIT_FAIL_CLOSED_NO_MARKET_NO_EXTRA_DEVIATION_QUOTE_LOCK_TICK_ROUNDING
+FLATTEN_PRICE_INPUTS=CURRENT_BID_ASK_TICK_SIDE_SIGNED_POS_QUOTE_TS_EVAL_TS_CANONICAL_FRESHNESS_THRESHOLD_MS
+QUOTE_AGE_RULE=EVAL_TS_MINUS_QUOTE_TS_FAIL_CLOSED_IF_GREATER_THAN_5000
+NON_CANONICAL_SUPPLIED_THRESHOLD=REJECTED
+OMITTED_THRESHOLD=APPLIES_CANONICAL_5000
+HTTP_TIMEOUT_SECONDS=10_TRANSPORT_FAIL_NOT_QUOTE_AGE_BUDGET
+```
+
+``` text
+CODE_OWNER=docs&#47;runbooks&#47;canonical&#47;PEAK_TRADE_MASTER_RUNBOOK.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_ANY_NEXT_OPERATIONAL_OR_ADJUDICATION_STEP_NOT_AUTHORIZED_BY_THIS_RATIFICATION_Z2AN_FRESHNESS_THRESHOLD_MS_5000_OWNER_RATIFIED_EXTRA_DEVIATION_BOUND_NOT_PROVEN_REQUIRED_LIVE_FLATTEN_UNPROVEN_NO_LIVE_WIRE_NO_ORDER_COUNT_LIMIT_RAISE_TO_2_NO_RUNTIME_READ_NO_PRODUCTIVE_FLATTEN_NO_GET_NO_ORDER_NO_ALLOWLIST_CANARY_NOT_AUTHORIZED_SUPPORT_CONTACT_NOT_AUTHORIZED
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_FLATTEN_PROVABILITY
+NEXT_OWNER_AUTHORIZATION_REQUIRED=SEPARATE_OWNER_GO_REQUIRED_FOR_RUNTIME_READ_OR_PRODUCTIVE_LIVE_FLATTEN_PROOF
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+Hard stop. This freshness-ratification GO is consumed. Do **not** reuse
+it for live wire, a productive flatten, `ORDER_COUNT_LIMIT=2`, GET,
+Cover instantiation, USD=USDC, order, funding, Canary, or support
+contact. `FRESHNESS_THRESHOLD_MS=5000`.
+`FRESHNESS_THRESHOLD_RATIFIED=true`.
+`LIVE_FLATTEN_PROVABILITY=UNPROVEN`.
+`LAST_CANONICALLY_CLOSED_STEP=LF_12`.
+`LIVE_AUTHORIZED=false`. No execute. No merge of this ratification
+without a separate `OWNER_MERGE_GO`.
+
 ## 11.14 Live order and economic evidence ladder
 
 Live proof claims must use a stricter ladder:

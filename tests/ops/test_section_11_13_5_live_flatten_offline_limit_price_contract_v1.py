@@ -28,6 +28,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_limit_price
     FLATTEN_PRICE_POLICY_FULLY_BOUND,
     FLATTEN_PRICE_POLICY_IMPLEMENTED,
     FLATTEN_PRICE_POLICY_OPERATIONALLY_USABLE,
+    FRESHNESS_THRESHOLD_MS,
     LF_05_IMPLEMENTATION_STATUS,
     LIFECYCLE_FLATTEN_RUNTIME_REACHABLE,
     LIVE_FLATTEN_PROVABILITY_STATUS,
@@ -66,7 +67,7 @@ ORIGIN_SHA = "c6e4400c33fa3b4eb31dff202c936a61272486ed"
 TARGET = DEFAULT_INSTRUMENT_ID
 QUOTE_TS = "1787145055768"
 EVAL_TS = "1787145056000"
-CALLER_FRESHNESS_MS = "5000"
+CALLER_FRESHNESS_MS = str(FRESHNESS_THRESHOLD_MS)
 
 
 def _complete(**overrides: Any) -> FlattenPriceInputV1:
@@ -119,7 +120,7 @@ def _assert_issued(
     assert decision.live_flatten_provability == "UNPROVEN"
     assert FLATTEN_PRICE_POLICY_IMPLEMENTED is True
     assert FLATTEN_PRICE_POLICY_OPERATIONALLY_USABLE is True
-    assert FLATTEN_PRICE_POLICY_FULLY_BOUND is False
+    assert FLATTEN_PRICE_POLICY_FULLY_BOUND is True
 
 
 REJECT_MATRIX: list[tuple[str, FlattenPriceInputV1, str]] = [
@@ -147,14 +148,14 @@ REJECT_MATRIX: list[tuple[str, FlattenPriceInputV1, str]] = [
         "INCONSISTENT_POSITION",
     ),
     (
-        "FRESHNESS_THRESHOLD_REQUIRED",
-        _complete(freshness_threshold_ms=None),
-        "FRESHNESS_THRESHOLD_REQUIRED",
-    ),
-    (
         "FRESHNESS_THRESHOLD_INVALID",
         _complete(freshness_threshold_ms="nope"),
         "FRESHNESS_THRESHOLD_INVALID",
+    ),
+    (
+        "FRESHNESS_THRESHOLD_NOT_CANONICAL",
+        _complete(freshness_threshold_ms="120000"),
+        "FRESHNESS_THRESHOLD_NOT_CANONICAL",
     ),
     ("STALE_QUOTE", _complete(quote_timestamp_ms="1000"), "STALE_QUOTE"),
     (
@@ -211,14 +212,46 @@ def test_non_finite_bid_rejected() -> None:
     _assert_rejected(decision, "NON_FINITE_QUOTE")
 
 
-def test_missing_freshness_threshold_rejected_without_invented_default() -> None:
-    src = inspect.getsource(evaluate_canary_flatten_limit_price_contract_v1)
-    assert "5000" not in src
+def test_omitted_freshness_threshold_applies_owner_ratified_canonical() -> None:
     decision = evaluate_canary_flatten_limit_price_contract_v1(
         _complete(freshness_threshold_ms=None)
     )
-    _assert_rejected(decision, "FRESHNESS_THRESHOLD_REQUIRED")
-    assert "FRESHNESS_THRESHOLD_MS" in OWNER_BINDING_STILL_REQUIRED
+    _assert_issued(decision, side="SELL", quote_side="BID", px="64805.6")
+    assert FRESHNESS_THRESHOLD_MS == 5000
+    assert "FRESHNESS_THRESHOLD_MS" not in OWNER_BINDING_STILL_REQUIRED
+    assert "NO_OWNER_RATIFIED_EXTRA_DEVIATION_BOUND" in OWNER_BINDING_STILL_REQUIRED
+
+
+def test_non_canonical_freshness_threshold_rejected() -> None:
+    decision = evaluate_canary_flatten_limit_price_contract_v1(
+        _complete(freshness_threshold_ms="5001")
+    )
+    _assert_rejected(decision, "FRESHNESS_THRESHOLD_NOT_CANONICAL")
+
+
+def test_quote_age_equal_to_canonical_threshold_issues_permit() -> None:
+    eval_ms = int(EVAL_TS)
+    quote_ms = eval_ms - FRESHNESS_THRESHOLD_MS
+    decision = evaluate_canary_flatten_limit_price_contract_v1(
+        _complete(
+            quote_timestamp_ms=str(quote_ms),
+            evaluation_timestamp_ms=str(eval_ms),
+            freshness_threshold_ms=str(FRESHNESS_THRESHOLD_MS),
+        )
+    )
+    _assert_issued(decision, side="SELL", quote_side="BID", px="64805.6")
+
+
+def test_quote_age_just_over_canonical_threshold_is_stale() -> None:
+    eval_ms = int(EVAL_TS)
+    quote_ms = eval_ms - (FRESHNESS_THRESHOLD_MS + 1)
+    decision = evaluate_canary_flatten_limit_price_contract_v1(
+        _complete(
+            quote_timestamp_ms=str(quote_ms),
+            evaluation_timestamp_ms=str(eval_ms),
+        )
+    )
+    _assert_rejected(decision, "STALE_QUOTE")
 
 
 def test_observed_long_maps_to_sell_with_price_permit() -> None:
@@ -296,7 +329,8 @@ def test_entry_semantics_and_policy_surfaces_unchanged() -> None:
     assert lifecycle["order_type_semantics"] == "LIMIT_ONLY_NO_MARKET"
     assert LF_05_IMPLEMENTATION_STATUS == "QUOTE_LOCKED_LIMIT_POLICY_V1"
     assert SIDE_AWARE_QUOTE_SELECTION_STATUS == "IMPLEMENTED_BID_FOR_SELL_ASK_FOR_BUY"
-    assert QUOTE_FRESHNESS_STATUS == "CALLER_THRESHOLD_REQUIRED_NO_CANONICAL_DEFAULT"
+    assert QUOTE_FRESHNESS_STATUS == "OWNER_RATIFIED_FRESHNESS_THRESHOLD_MS"
+    assert FRESHNESS_THRESHOLD_MS == 5000
     assert FINITE_PRICE_BOUND_STATUS == "QUOTE_LOCKED_NO_EXTRA_DEVIATION"
     assert TICK_NORMALIZATION_STATUS == "IMPLEMENTED_SELL_ROUND_DOWN_BUY_ROUND_UP"
     assert LIFECYCLE_FLATTEN_RUNTIME_REACHABLE is False

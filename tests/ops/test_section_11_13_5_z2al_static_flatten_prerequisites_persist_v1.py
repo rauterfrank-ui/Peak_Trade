@@ -125,7 +125,7 @@ def test_z2al_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert snapshot_pointer_lines[-1] != f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}"
     current_pointer = snapshot_pointer_lines[-1].split("=", 1)[1]
     assert "Z2AL_STATIC_FLATTEN_PREREQUISITES" not in current_pointer
-    assert "Z2AM_FRESHNESS_BINDING_OWNER_RATIFICATION_REQUIRED" in current_pointer
-    assert "NO_CANONICAL_FRESHNESS_DEFAULT" in current_pointer
+    assert "Z2AN_FRESHNESS_THRESHOLD_MS_5000_OWNER_RATIFIED" in current_pointer
+    assert "NO_CANONICAL_FRESHNESS_DEFAULT" not in current_pointer
     assert "NO_LIVE_WIRE" in current_pointer
     assert "NO_ORDER_COUNT_LIMIT_RAISE_TO_2" in current_pointer
