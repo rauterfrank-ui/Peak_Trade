@@ -17,6 +17,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 MASTER_RUNBOOK = REPO_ROOT / "docs" / "runbooks" / "canonical" / "PEAK_TRADE_MASTER_RUNBOOK.md"
 MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
+Z2AH_HEADING = "### 11.13.5.Z2AH API execution denomination PROVEN persist"
 Z2AG_HEADING = "### 11.13.5.Z2AG Scoped API ctVal sizing authority split persist"
 Z2AF_HEADING = "### 11.13.5.Z2AF LF-09 blocker-DAG re-adjudication persist"
 Z2AE_HEADING = "### 11.13.5.Z2AE LF-08 LIVE_FLATTEN_PROVABILITY re-adjudication persist"
@@ -52,8 +53,8 @@ def _read(path: Path) -> str:
 def _z2ag_section(text: str) -> str:
     start = text.find(Z2AG_HEADING)
     assert start >= 0, "missing §11.13.5.Z2AG heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2AG"
+    end = text.find(Z2AH_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2AH boundary after Z2AG"
     return text[start:end]
 
 
@@ -63,8 +64,9 @@ def test_z2ag_heading_is_unique_and_follows_z2af() -> None:
     z2ae = text.find(Z2AE_HEADING)
     z2af = text.find(Z2AF_HEADING)
     z2ag = text.find(Z2AG_HEADING)
+    z2ah = text.find(Z2AH_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2ae < z2af < z2ag < ladder
+    assert 0 <= z2ae < z2af < z2ag < z2ah < ladder
 
 
 def test_z2ag_docs_bind_scoped_ctval_split_without_oem_defeat_or_cover() -> None:
@@ -221,9 +223,10 @@ def test_z2ag_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert "THIS_DOCUMENT_DEFINES_NO_SEMANTICS=true" in mot
     assert "THIS_DOCUMENT_IS_NOT_A_SECOND_SSOT=true" in mot
     assert "§11.13.5.Z2AG |" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
+    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}\n" not in mot
     assert f"NEXT_CANONICAL_STEP_POINTER={CONSUMED_Z2AF_POINTER}\n" not in mot
     assert "historical next pointer superseded by §11.13.5.Z2AG" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AH" in mot
     assert "DOCUMENTARY_FACE_VALUE_CONFLICT=CONFLICTED" in mot
     assert "OEM_SPEC_WRONG=false" in mot
     assert "GLOBAL_API_WINS=false" in mot
@@ -242,5 +245,9 @@ def test_z2ag_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert "TARGET_CTVAL=0.0001" in mot
     assert (
         "LF09_COMPLETE_DAG_UNCHANGED"
+        not in mot.split("NEXT_CANONICAL_STEP_POINTER=", 1)[1].split("\n", 1)[0]
+    )
+    assert (
+        "Z2AG_SCOPED_API_CTVAL_SIZING_SPLIT"
         not in mot.split("NEXT_CANONICAL_STEP_POINTER=", 1)[1].split("\n", 1)[0]
     )
