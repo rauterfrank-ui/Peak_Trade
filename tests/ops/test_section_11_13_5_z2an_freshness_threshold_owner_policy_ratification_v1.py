@@ -140,6 +140,7 @@ def test_z2an_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert "THIS_DOCUMENT_DEFINES_NO_SEMANTICS=true" in mot
     assert "§11.13.5.Z2AN |" in mot
     assert "historical next pointer superseded by §11.13.5.Z2AN" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AO" in mot
     assert "FRESHNESS_THRESHOLD_MS=5000" in mot
     assert "FRESHNESS_THRESHOLD_RATIFIED=true" in mot
     assert "FRESHNESS_BINDING=OWNER_RATIFIED" in mot
@@ -150,11 +151,12 @@ def test_z2an_map_of_truth_navigation_pointer_matches_runbook() -> None:
     snapshot_pointer_lines = [
         ln for ln in mot.splitlines() if ln.startswith("NEXT_CANONICAL_STEP_POINTER=")
     ]
-    assert snapshot_pointer_lines[-1] == f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}"
+    assert snapshot_pointer_lines[-1] != f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}"
     current_pointer = snapshot_pointer_lines[-1].split("=", 1)[1]
     assert "Z2AM_FRESHNESS_BINDING_OWNER_RATIFICATION_REQUIRED" not in current_pointer
     assert "NO_CANONICAL_FRESHNESS_DEFAULT" not in current_pointer
-    assert "Z2AN_FRESHNESS_THRESHOLD_MS_5000_OWNER_RATIFIED" in current_pointer
+    assert "Z2AN_FRESHNESS_THRESHOLD_MS_5000_OWNER_RATIFIED" not in current_pointer
+    assert "Z2AO_EXTRA_DEVIATION_BOUND_NOT_REQUIRED" in current_pointer
     assert "NO_LIVE_WIRE" in current_pointer
     assert "NO_ORDER_COUNT_LIMIT_RAISE_TO_2" in current_pointer
     assert "NO_PRODUCTIVE_FLATTEN" in current_pointer
