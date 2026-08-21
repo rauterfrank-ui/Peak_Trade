@@ -290,6 +290,7 @@ def test_z2ai_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert f"NEXT_CANONICAL_STEP_POINTER={CONSUMED_Z2AH_POINTER}\n" not in mot
     assert "historical next pointer superseded by §11.13.5.Z2AI" in mot
     assert "historical next pointer superseded by §11.13.5.Z2AJ" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AK" in mot
     assert "LF10_ADJUDICATION=COMPLETE_READ_ONLY_NO_NEW_PROVEN_CLOSURE" in mot
     assert "CLAIMS_PROVEN_THIS_STEP=NONE" in mot
     assert "NEW_EVIDENCE_FOUND=false" in mot
@@ -320,6 +321,8 @@ def test_z2ai_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert current_pointer != NEXT_POINTER
     assert "LF10_COMPLETE_NO_NEW_PROVEN_CLOSURE" not in current_pointer
     assert "Z2AH_API_EXECUTION_DENOMINATION_PROVEN" not in current_pointer
-    assert "NO_LF11" in current_pointer
-    assert "NO_COVER_CALC" in current_pointer
-    assert "NO_OEM_CLARIFICATION" in current_pointer
+    assert "Z2AJ_PUBLIC_CONVERSION_CANDIDATE" not in current_pointer
+    assert "NO_FLATTEN_PRICE_POLICY" in current_pointer
+    assert "NO_DEDICATED_FLATTEN_TRANSPORT" in current_pointer
+    assert "NO_ORDER_COUNT_LIMIT_RAISE_TO_2" in current_pointer
+    assert "NO_PRODUCTIVE_FLATTEN" in current_pointer

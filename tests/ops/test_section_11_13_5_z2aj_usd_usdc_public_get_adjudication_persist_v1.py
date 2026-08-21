@@ -18,6 +18,7 @@ MASTER_RUNBOOK = REPO_ROOT / "docs" / "runbooks" / "canonical" / "PEAK_TRADE_MAS
 MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2AJ_HEADING = "### 11.13.5.Z2AJ USD/USDC public conversion-candidate GET adjudication persist"
+Z2AK_HEADING = "### 11.13.5.Z2AK LF-11 and LF-12 read-only adjudication persist"
 Z2AI_HEADING = "### 11.13.5.Z2AI LF-10 read-only adjudication persist"
 Z2AH_HEADING = "### 11.13.5.Z2AH API execution denomination PROVEN persist"
 Z2AG_HEADING = "### 11.13.5.Z2AG Scoped API ctVal sizing authority split persist"
@@ -57,8 +58,8 @@ def _read(path: Path) -> str:
 def _z2aj_section(text: str) -> str:
     start = text.find(Z2AJ_HEADING)
     assert start >= 0, "missing §11.13.5.Z2AJ heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2AJ"
+    end = text.find(Z2AK_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2AK boundary after Z2AJ"
     return text[start:end]
 
 
@@ -70,8 +71,9 @@ def test_z2aj_heading_is_unique_and_follows_z2ai() -> None:
     z2ah = text.find(Z2AH_HEADING)
     z2ai = text.find(Z2AI_HEADING)
     z2aj = text.find(Z2AJ_HEADING)
+    z2ak = text.find(Z2AK_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2af < z2ag < z2ah < z2ai < z2aj < ladder
+    assert 0 <= z2af < z2ag < z2ah < z2ai < z2aj < z2ak < ladder
 
 
 def test_z2aj_docs_bind_c_unproven_without_operator_or_cover() -> None:
@@ -262,9 +264,10 @@ def test_z2aj_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert "THIS_DOCUMENT_DEFINES_NO_SEMANTICS=true" in mot
     assert "THIS_DOCUMENT_IS_NOT_A_SECOND_SSOT=true" in mot
     assert "§11.13.5.Z2AJ |" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
+    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}\n" not in mot
     assert f"NEXT_CANONICAL_STEP_POINTER={CONSUMED_Z2AI_POINTER}\n" not in mot
     assert "historical next pointer superseded by §11.13.5.Z2AJ" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AK" in mot
     assert "ADJUDICATION_RESULT=C_UNPROVEN" in mot
     assert "CLAIMS_NEWLY_PROVEN_THIS_STEP=NONE" in mot
     assert "PUBLIC_CONVERSION_CANDIDATE_SURFACES_ADJUDICATED=true" in mot
@@ -286,11 +289,12 @@ def test_z2aj_map_of_truth_navigation_pointer_matches_runbook() -> None:
         ln for ln in mot.splitlines() if ln.startswith("NEXT_CANONICAL_STEP_POINTER=")
     ]
     assert snapshot_pointer_lines, "missing snapshot NEXT_CANONICAL_STEP_POINTER"
-    assert snapshot_pointer_lines[-1] == f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}"
+    assert snapshot_pointer_lines[-1] != f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}"
     current_pointer = snapshot_pointer_lines[-1].split("=", 1)[1]
     assert "LF10_COMPLETE_NO_NEW_PROVEN_CLOSURE" not in current_pointer
     assert "Z2AH_API_EXECUTION_DENOMINATION_PROVEN" not in current_pointer
-    assert "NO_LF11" in current_pointer
-    assert "NO_COVER_CALC" in current_pointer
-    assert "NO_REPEAT_PUBLIC_USDC_USD_INDEX_OR_SPOT_GET" in current_pointer
-    assert "NO_OEM_CLARIFICATION" in current_pointer
+    assert "Z2AJ_PUBLIC_CONVERSION_CANDIDATE" not in current_pointer
+    assert "NO_FLATTEN_PRICE_POLICY" in current_pointer
+    assert "NO_DEDICATED_FLATTEN_TRANSPORT" in current_pointer
+    assert "NO_ORDER_COUNT_LIMIT_RAISE_TO_2" in current_pointer
+    assert "NO_PRODUCTIVE_FLATTEN" in current_pointer
