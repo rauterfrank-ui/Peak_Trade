@@ -131,7 +131,7 @@ def test_z2an_code_constant_matches_ssot() -> None:
     assert "FRESHNESS_THRESHOLD_MS_CALLER_SUPPLIED_NO_CANONICAL_DEFAULT" not in (
         OWNER_BINDING_STILL_REQUIRED
     )
-    assert "NO_OWNER_RATIFIED_EXTRA_DEVIATION_BOUND" in OWNER_BINDING_STILL_REQUIRED
+    assert "NO_OWNER_RATIFIED_EXTRA_DEVIATION_BOUND" not in OWNER_BINDING_STILL_REQUIRED
     assert "LIVE_WIRE_AND_PRODUCTIVE_FLATTEN_SEPARATE_OWNER_GO" in OWNER_BINDING_STILL_REQUIRED
 
 
@@ -156,7 +156,7 @@ def test_z2an_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert "Z2AM_FRESHNESS_BINDING_OWNER_RATIFICATION_REQUIRED" not in current_pointer
     assert "NO_CANONICAL_FRESHNESS_DEFAULT" not in current_pointer
     assert "Z2AN_FRESHNESS_THRESHOLD_MS_5000_OWNER_RATIFIED" not in current_pointer
-    assert "Z2AO_EXTRA_DEVIATION_BOUND_NOT_REQUIRED" in current_pointer
+    assert "Z2AP_OFFLINE_POST_ACTION_PROOF_CONTRACT_BOUND" in current_pointer
     assert "NO_LIVE_WIRE" in current_pointer
     assert "NO_ORDER_COUNT_LIMIT_RAISE_TO_2" in current_pointer
     assert "NO_PRODUCTIVE_FLATTEN" in current_pointer

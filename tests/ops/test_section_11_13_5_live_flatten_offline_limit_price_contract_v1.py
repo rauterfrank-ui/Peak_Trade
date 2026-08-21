@@ -219,7 +219,8 @@ def test_omitted_freshness_threshold_applies_owner_ratified_canonical() -> None:
     _assert_issued(decision, side="SELL", quote_side="BID", px="64805.6")
     assert FRESHNESS_THRESHOLD_MS == 5000
     assert "FRESHNESS_THRESHOLD_MS" not in OWNER_BINDING_STILL_REQUIRED
-    assert "NO_OWNER_RATIFIED_EXTRA_DEVIATION_BOUND" in OWNER_BINDING_STILL_REQUIRED
+    assert "NO_OWNER_RATIFIED_EXTRA_DEVIATION_BOUND" not in OWNER_BINDING_STILL_REQUIRED
+    assert "LIVE_WIRE_AND_PRODUCTIVE_FLATTEN_SEPARATE_OWNER_GO" in OWNER_BINDING_STILL_REQUIRED
 
 
 def test_non_canonical_freshness_threshold_rejected() -> None:
