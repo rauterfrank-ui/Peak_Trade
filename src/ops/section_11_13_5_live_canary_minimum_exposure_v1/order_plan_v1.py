@@ -353,9 +353,40 @@ def serialize_canary_flatten_venue_native_payload_v1(
     plan: CanaryFlattenOrderPlanV1,
     *,
     px: str | None = None,
+    price_permit: Any | None = None,
 ) -> dict[str, Any]:
-    """Refuse a wire-ready flatten LIMIT body until a separate price-policy GO."""
-    del plan, px
-    raise LiveCanaryOrderPlanError(
-        "FLATTEN_LIMIT_PRICE_POLICY_UNBOUND:" + FLATTEN_LIMIT_PRICE_GATE_STATUS
-    )
+    """Build a reduce-only LIMIT flatten body only when a price permit is bound.
+
+    A naked ``px`` without ``price_permit`` remains unbound. This serializer
+    never POSTs and never emits MARKET.
+    """
+    if price_permit is None:
+        del px
+        raise LiveCanaryOrderPlanError(
+            "FLATTEN_LIMIT_PRICE_POLICY_UNBOUND:" + FLATTEN_LIMIT_PRICE_GATE_STATUS
+        )
+    permit_side = str(getattr(price_permit, "flatten_side", "") or "").strip().upper()
+    permit_px = str(getattr(price_permit, "limit_price", "") or "").strip()
+    if permit_side != str(plan.side).upper():
+        raise LiveCanaryOrderPlanError("FLATTEN_PRICE_PERMIT_SIDE_MISMATCH")
+    if not permit_px:
+        raise LiveCanaryOrderPlanError("FLATTEN_PRICE_PERMIT_PX_MISSING")
+    if px is not None and str(px).strip() != permit_px:
+        raise LiveCanaryOrderPlanError("FLATTEN_NAKED_PX_CONFLICTS_WITH_PERMIT")
+    if str(plan.order_type).upper() != "LIMIT":
+        raise LiveCanaryOrderPlanError("FLATTEN_MARKET_FALLBACK_FORBIDDEN")
+    if plan.reduce_only is not True:
+        raise LiveCanaryOrderPlanError("FLATTEN_PLAN_REDUCE_ONLY_REQUIRED")
+    try:
+        return build_venue_native_order_body_v1(
+            client_order_id=plan.clordid,
+            instrument=plan.instrument_id,
+            order_type="LIMIT",
+            side=plan.side,
+            quantity=plan.quantity,
+            td_mode=plan.td_mode,
+            px=permit_px,
+            reduce_only=True,
+        )
+    except OkxResponseMapperError as exc:
+        raise LiveCanaryOrderPlanError(f"FLATTEN_VENUE_NATIVE_BODY:{exc}") from exc
