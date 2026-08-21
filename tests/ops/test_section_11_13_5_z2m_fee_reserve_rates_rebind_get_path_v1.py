@@ -24,6 +24,8 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     TESTNET_AUTHORIZED,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.cover_usdc_fee_reserve_rates_rebind_get_path_v1 import (
+    ALLOWED_INST_FAMILIES,
+    ALLOWED_QUERIES,
     AUTHORIZED_SCOPE,
     COVER_USDC_STATUS,
     EXECUTE_OWNER_GO,
@@ -38,12 +40,18 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.cover_usdc_fee_rese
     SEALED_METHOD,
     SEALED_PATH,
     SEALED_QUERY,
+    SUI_EXECUTE_OWNER_GO,
+    SUI_INST_FAMILY,
+    SUI_SEALED_ENDPOINT,
+    SUI_SEALED_QUERY,
     CoverUsdcFeeReserveRatesRebindGetPathError,
     assert_sealed_trade_fee_request_grammar_v1,
     build_sealed_trade_fee_get_request_v1,
     classify_fee_reserve_rates_rebind_get_path_v1,
     collect_fee_reserve_rates_rebind_get_v1,
+    extract_trade_fee_get_fields_v1,
     ratify_fee_reserve_rates_rebind_get_path_v1,
+    resolve_trade_fee_get_family_binding_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.governance_state_matrix_v1 import (
     NON_EXECUTE_GO_TOKENS_FORBIDDEN_FOR_SUBMIT,
@@ -67,6 +75,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.submit_gates_v1 imp
 )
 from scripts.ops.run_section_11_13_5_z2m_fee_reserve_rates_rebind_get_path_v1 import (
     main as ratify_cli_main,
+)
+from scripts.ops.run_section_11_13_5_sui_usd_um_xperp_trade_fee_rebind_get_v1 import (
+    main as sui_fee_cli_main,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -115,6 +126,11 @@ def test_classification_is_authenticated_readonly_exact_grammar() -> None:
     assert classification["METHOD"] == "GET"
     assert classification["PATH"] == "/api/v5/account/trade-fee"
     assert classification["QUERY"] == "instType=FUTURES&instFamily=BTC-USD_UM_XPERP"
+    assert classification["ALLOWED_INST_FAMILIES"] == [
+        "BTC-USD_UM_XPERP",
+        "SUI-USD_UM_XPERP",
+    ]
+    assert classification["SUI_QUERY"] == "instType=FUTURES&instFamily=SUI-USD_UM_XPERP"
     assert classification["ENDPOINT"] == SEALED_ENDPOINT
     assert classification["READ_ONLY"] is True
     assert classification["SECRETREF_URI"] == REQUIRED_SECRETREF_URI
@@ -309,6 +325,7 @@ def test_ratify_go_does_not_authorize_live_order_or_funding() -> None:
     assert TESTNET_AUTHORIZED is False
     assert OWNER_GO in NON_EXECUTE_GO_TOKENS_FORBIDDEN_FOR_SUBMIT
     assert EXECUTE_OWNER_GO in NON_EXECUTE_GO_TOKENS_FORBIDDEN_FOR_SUBMIT
+    assert SUI_EXECUTE_OWNER_GO in NON_EXECUTE_GO_TOKENS_FORBIDDEN_FOR_SUBMIT
     assert NEXT_CANONICAL_POINTER in NON_EXECUTE_GO_TOKENS_FORBIDDEN_FOR_SUBMIT
     evaluation = evaluate_canary_submit_gates_v1(
         owner_go=OWNER_GO,
@@ -409,3 +426,202 @@ def test_z2m_docs_bind_path_without_get_or_cover_usdc() -> None:
         "FEE_RESERVE_RATES_REBIND_GET_USING_SEALED_GRAMMAR_AND_SEALED_EXECUTION_PATH_NOT_EXECUTED"
         in mot
     )
+
+
+def test_sui_family_is_explicitly_allowlisted_and_unrelated_families_blocked() -> None:
+    assert ALLOWED_INST_FAMILIES == ("BTC-USD_UM_XPERP", "SUI-USD_UM_XPERP")
+    assert ALLOWED_QUERIES == (SEALED_QUERY, SUI_SEALED_QUERY)
+    assert_sealed_trade_fee_request_grammar_v1(
+        method=SEALED_METHOD,
+        host=SEALED_HOST,
+        path=SEALED_PATH,
+        query=SEALED_QUERY,
+    )
+    assert_sealed_trade_fee_request_grammar_v1(
+        method=SEALED_METHOD,
+        host=SEALED_HOST,
+        path=SEALED_PATH,
+        query=SUI_SEALED_QUERY,
+    )
+    sui_request = build_sealed_trade_fee_get_request_v1(query=SUI_SEALED_QUERY)
+    assert sui_request.method == "GET"
+    assert sui_request.endpoint == SUI_SEALED_ENDPOINT
+    assert sui_request.body_text == ""
+    with pytest.raises(CoverUsdcFeeReserveRatesRebindGetPathError, match="QUERY_NOT_ALLOWLISTED"):
+        assert_sealed_trade_fee_request_grammar_v1(
+            method="GET",
+            host=SEALED_HOST,
+            path=SEALED_PATH,
+            query="instType=FUTURES&instFamily=ETH-USD_UM_XPERP",
+        )
+    with pytest.raises(CoverUsdcFeeReserveRatesRebindGetPathError, match="QUERY_NOT_ALLOWLISTED"):
+        assert_sealed_trade_fee_request_grammar_v1(
+            method="GET",
+            host=SEALED_HOST,
+            path=SEALED_PATH,
+            query="instType=FUTURES&instFamily=SUI-USD_UM_XPERP*",
+        )
+    with pytest.raises(CoverUsdcFeeReserveRatesRebindGetPathError, match="QUERY_NOT_ALLOWLISTED"):
+        assert_sealed_trade_fee_request_grammar_v1(
+            method="GET",
+            host=SEALED_HOST,
+            path=SEALED_PATH,
+            query="instType=FUTURES&instFamily=SUI-USD_UM_XPERP&instId=SUI-USD_UM_XPERP-310404",
+        )
+    family, query = resolve_trade_fee_get_family_binding_v1(owner_go=EXECUTE_OWNER_GO)
+    assert family == SEALED_INST_FAMILY
+    assert query == SEALED_QUERY
+    sui_family, sui_query = resolve_trade_fee_get_family_binding_v1(owner_go=SUI_EXECUTE_OWNER_GO)
+    assert sui_family == SUI_INST_FAMILY
+    assert sui_query == SUI_SEALED_QUERY
+    with pytest.raises(
+        CoverUsdcFeeReserveRatesRebindGetPathError,
+        match="FAMILY_OWNER_GO_BINDING_MISMATCH",
+    ):
+        resolve_trade_fee_get_family_binding_v1(
+            owner_go=EXECUTE_OWNER_GO,
+            inst_family=SUI_INST_FAMILY,
+        )
+    with pytest.raises(
+        CoverUsdcFeeReserveRatesRebindGetPathError,
+        match="FAMILY_OWNER_GO_BINDING_MISMATCH",
+    ):
+        resolve_trade_fee_get_family_binding_v1(
+            owner_go=SUI_EXECUTE_OWNER_GO,
+            inst_family=SEALED_INST_FAMILY,
+        )
+
+
+def test_sui_collect_one_shot_does_not_use_btc_query_or_authorize_submit(
+    tmp_path: Path,
+) -> None:
+    handle = _handle(tmp_path)
+    try:
+        body = json.dumps(
+            {
+                "code": "0",
+                "msg": "",
+                "data": [
+                    {
+                        "instType": SEALED_INST_TYPE,
+                        "taker": "",
+                        "maker": "",
+                        "takerUSDC": "-0.0005",
+                        "makerUSDC": "-0.0002",
+                        "delivery": "0.0003",
+                        "ruleType": "normal",
+                    }
+                ],
+            }
+        ).encode("utf-8")
+        transport = RecordingFakeCanaryTransportV1(body=body, venue_live_contact=True)
+        snapshot, response = collect_fee_reserve_rates_rebind_get_v1(
+            transport=transport,
+            handle=handle,
+            owner_go=SUI_EXECUTE_OWNER_GO,
+            execute_trade_fee_get=True,
+            inst_family=SUI_INST_FAMILY,
+        )
+        assert len(transport.calls) == 1
+        assert transport.calls[0].method == "GET"
+        assert transport.calls[0].endpoint == SUI_SEALED_ENDPOINT
+        assert transport.calls[0].body_text == ""
+        assert response.status_code == 200
+        assert snapshot["QUERY"] == SUI_SEALED_QUERY
+        assert snapshot["REQUEST_INST_FAMILY"] == SUI_INST_FAMILY
+        assert snapshot["CANARY_INSTRUMENT"] == "BTC-USD_UM_XPERP-310404"
+        assert snapshot["POST_COUNT"] == 0
+        fields = extract_trade_fee_get_fields_v1(
+            payload=snapshot["payload"],
+            request_inst_family=SUI_INST_FAMILY,
+        )
+        assert fields["TAKER_USDC"] == "-0.0005"
+        assert fields["MAKER_USDC"] == "-0.0002"
+        assert fields["DELIVERY"] == "0.0003"
+        with pytest.raises(
+            CoverUsdcFeeReserveRatesRebindGetPathError,
+            match="EXECUTE_OWNER_GO_MISMATCH",
+        ):
+            collect_fee_reserve_rates_rebind_get_v1(
+                transport=transport,
+                handle=handle,
+                owner_go=OWNER_GO,
+                execute_trade_fee_get=True,
+                inst_family=SUI_INST_FAMILY,
+            )
+    finally:
+        release_live_canary_ephemeral_material_v1(handle)
+    evaluation = evaluate_canary_submit_gates_v1(
+        owner_go=SUI_EXECUTE_OWNER_GO,
+        owner_go_consumed=False,
+        authorization_scope=AUTHORIZATION_SCOPE,
+        bound_origin_main_sha="abc",
+        expected_origin_main_sha="abc",
+        live_canary_authorized=True,
+        live_enabled=True,
+        live_armed=True,
+        confirm_token=LIVE_CONFIRM_TOKEN,
+        blocks_new_entry=False,
+        unresolved_economic_divergence=False,
+        live_reconciliation_proven=True,
+        permission_attestation={"READ": True, "TRADE": True, "WITHDRAW": False},
+        environment="LIVE",
+        fixture_or_demo_or_testnet=False,
+        max_notional="6.30437",
+        min_executable_notional="6.30437",
+        order_count=0,
+        position_count=0,
+        exposure_above_minimum_bound=False,
+        live_canary_cybersecurity_gate="PASS",
+        rest_host="eea.okx.com",
+        secretref_uri="secretref://vault/peak-trade/live-canary-minimum-exposure/okx",
+    )
+    assert evaluation.submit_allowed is False
+    assert "REEVALUATION_OR_PREPARATION_GO_CANNOT_AUTHORIZE_SUBMIT" in evaluation.reasons
+
+
+def test_sui_fee_cli_does_not_execute_without_exact_go_and_forbids_persist() -> None:
+    rc_mismatch = sui_fee_cli_main(
+        [
+            "--owner-go",
+            OWNER_GO,
+            "--bound-origin-main-sha",
+            "abc",
+            "--execute-trade-fee-get",
+            "--vault-file",
+            "unused.json",
+        ]
+    )
+    assert rc_mismatch == 2
+    rc_persist = sui_fee_cli_main(
+        [
+            "--owner-go",
+            SUI_EXECUTE_OWNER_GO,
+            "--bound-origin-main-sha",
+            "abc",
+            "--execute-trade-fee-get",
+            "--vault-file",
+            "unused.json",
+            "--persist",
+        ]
+    )
+    assert rc_persist == 2
+    rc_flag = sui_fee_cli_main(
+        [
+            "--owner-go",
+            SUI_EXECUTE_OWNER_GO,
+            "--bound-origin-main-sha",
+            "abc",
+        ]
+    )
+    assert rc_flag == 2
+    rc_vault = sui_fee_cli_main(
+        [
+            "--owner-go",
+            SUI_EXECUTE_OWNER_GO,
+            "--bound-origin-main-sha",
+            "abc",
+            "--execute-trade-fee-get",
+        ]
+    )
+    assert rc_vault == 2

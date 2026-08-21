@@ -60,6 +60,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.secretref_v1 import
 
 OWNER_GO = "OWNER_GO_TO_RATIFY_ONE_SHOT_SECTION_11_13_5_AUTHENTICATED_TRADE_FEE_GET_EXECUTION_PATH"
 EXECUTE_OWNER_GO = "OWNER_GO_FOR_EXACTLY_ONE_AUTHENTICATED_READ_ONLY_TRADE_FEE_REBIND_GET"
+SUI_EXECUTE_OWNER_GO = (
+    "GRANTED_FOR_MINIMAL_READ_ONLY_TRADE_FEE_REBIND_TO_SUI_USD_UM_XPERP"
+    "_AND_EXACTLY_ONE_AUTHENTICATED_FEE_GET"
+)
 AUTHORIZED_SCOPE = "FEE_RESERVE_RATES_REBIND_GET_EXECUTION_PATH_RATIFICATION_ONLY"
 NEXT_CANONICAL_POINTER = (
     "OWNER_GO_REQUIRED_FOR_EXACTLY_ONE_AUTHENTICATED_READ_ONLY_TRADE_FEE_REBIND_GET"
@@ -69,13 +73,30 @@ SEALED_METHOD = "GET"
 SEALED_PATH = "/api/v5/account/trade-fee"
 SEALED_INST_TYPE = DEFAULT_INST_TYPE
 SEALED_INST_FAMILY = "BTC-USD_UM_XPERP"
+SUI_INST_FAMILY = "SUI-USD_UM_XPERP"
+ALLOWED_INST_FAMILIES: tuple[str, ...] = (
+    SEALED_INST_FAMILY,
+    SUI_INST_FAMILY,
+)
 SEALED_QUERY = f"instType={SEALED_INST_TYPE}&instFamily={SEALED_INST_FAMILY}"
+SUI_SEALED_QUERY = f"instType={SEALED_INST_TYPE}&instFamily={SUI_INST_FAMILY}"
+ALLOWED_QUERIES: tuple[str, ...] = (SEALED_QUERY, SUI_SEALED_QUERY)
 SEALED_QUERY_PAIRS: tuple[tuple[str, str], ...] = (
     ("instType", SEALED_INST_TYPE),
     ("instFamily", SEALED_INST_FAMILY),
 )
+SUI_SEALED_QUERY_PAIRS: tuple[tuple[str, str], ...] = (
+    ("instType", SEALED_INST_TYPE),
+    ("instFamily", SUI_INST_FAMILY),
+)
 SEALED_ENDPOINT = f"{SEALED_PATH}?{SEALED_QUERY}"
+SUI_SEALED_ENDPOINT = f"{SEALED_PATH}?{SUI_SEALED_QUERY}"
 SEALED_URL = f"https://{SEALED_HOST}{SEALED_ENDPOINT}"
+SUI_SEALED_URL = f"https://{SEALED_HOST}{SUI_SEALED_ENDPOINT}"
+EXECUTE_OWNER_GO_FAMILY_BINDING: dict[str, str] = {
+    EXECUTE_OWNER_GO: SEALED_INST_FAMILY,
+    SUI_EXECUTE_OWNER_GO: SUI_INST_FAMILY,
+}
 SOURCE_CLASS = "AUTHENTICATED_READ_ONLY_OKX_ACCOUNT_TRADE_FEE_GET"
 SECRETREF_URI = REQUIRED_SECRETREF_URI
 CREDENTIAL_CLASS = REQUIRED_CREDENTIAL_CLASS
@@ -103,6 +124,10 @@ def classify_fee_reserve_rates_rebind_get_path_v1() -> dict[str, Any]:
         "URL": SEALED_URL,
         "INST_TYPE": SEALED_INST_TYPE,
         "INST_FAMILY": SEALED_INST_FAMILY,
+        "ALLOWED_INST_FAMILIES": list(ALLOWED_INST_FAMILIES),
+        "ALLOWED_QUERIES": list(ALLOWED_QUERIES),
+        "SUI_INST_FAMILY": SUI_INST_FAMILY,
+        "SUI_QUERY": SUI_SEALED_QUERY,
         "CANARY_INSTRUMENT": DEFAULT_INSTRUMENT_ID,
         "ACCOUNT_BINDING_SCOPE": ACCOUNT_BINDING_SCOPE,
         "AUTHENTICATION_REQUIREMENT": SOURCE_CLASS,
@@ -123,6 +148,10 @@ def classify_fee_reserve_rates_rebind_get_path_v1() -> dict[str, Any]:
         "THIS_GO_AUTHORIZES_HTTP_GET": False,
         "LATER_GET_REQUIRES_SEPARATE_OWNER_GO": True,
         "EXECUTE_OWNER_GO": EXECUTE_OWNER_GO,
+        "SUI_EXECUTE_OWNER_GO": SUI_EXECUTE_OWNER_GO,
+        "SUI_RUNNER": (
+            "scripts/ops/run_section_11_13_5_sui_usd_um_xperp_trade_fee_rebind_get_v1.py"
+        ),
         "FEE_RESERVE_RATES_ADJUDICATION": FEE_RESERVE_RATES_ADJUDICATION,
         "COVER_USDC_STATUS": COVER_USDC_STATUS,
         "LIVE_AUTHORIZED": LIVE_AUTHORIZED,
@@ -205,7 +234,7 @@ def assert_sealed_trade_fee_request_grammar_v1(
                 f"MUTATION_ENDPOINT_HARD_BLOCK:{path_n}"
             )
     query_n = str(query or "")
-    if query_n != SEALED_QUERY:
+    if query_n not in ALLOWED_QUERIES:
         raise CoverUsdcFeeReserveRatesRebindGetPathError(
             f"QUERY_NOT_ALLOWLISTED:{query_n or '<empty>'}"
         )
@@ -213,13 +242,22 @@ def assert_sealed_trade_fee_request_grammar_v1(
         pairs = tuple(parse_qsl(query_n, keep_blank_values=True, strict_parsing=True))
     except ValueError as exc:
         raise CoverUsdcFeeReserveRatesRebindGetPathError("QUERY_PARSE_FAILED") from exc
-    if pairs != SEALED_QUERY_PAIRS:
+    if pairs not in (SEALED_QUERY_PAIRS, SUI_SEALED_QUERY_PAIRS):
         raise CoverUsdcFeeReserveRatesRebindGetPathError("QUERY_PAIRS_NOT_ALLOWLISTED")
     keys = [item[0] for item in pairs]
+    values = {item[0]: item[1] for item in pairs}
     if "instType" not in keys:
         raise CoverUsdcFeeReserveRatesRebindGetPathError("INSTTYPE_REQUIRED")
     if "instFamily" not in keys:
         raise CoverUsdcFeeReserveRatesRebindGetPathError("INSTFAMILY_REQUIRED")
+    if values.get("instType") != SEALED_INST_TYPE:
+        raise CoverUsdcFeeReserveRatesRebindGetPathError(
+            f"INSTTYPE_NOT_ALLOWLISTED:{values.get('instType') or '<empty>'}"
+        )
+    if values.get("instFamily") not in ALLOWED_INST_FAMILIES:
+        raise CoverUsdcFeeReserveRatesRebindGetPathError(
+            f"INSTFAMILY_NOT_ALLOWLISTED:{values.get('instFamily') or '<empty>'}"
+        )
     if "instId" in keys:
         raise CoverUsdcFeeReserveRatesRebindGetPathError("INSTID_PARAMETER_FORBIDDEN")
     if "ruleType" in keys:
@@ -261,7 +299,7 @@ def build_sealed_trade_fee_get_request_v1(
         )
     if parsed.path != SEALED_PATH:
         raise CoverUsdcFeeReserveRatesRebindGetPathError("URL_PATH_NOT_ALLOWLISTED")
-    if parsed.query != SEALED_QUERY:
+    if parsed.query not in ALLOWED_QUERIES:
         raise CoverUsdcFeeReserveRatesRebindGetPathError("URL_QUERY_NOT_ALLOWLISTED")
     if parsed.fragment or parsed.username or parsed.password or parsed.port:
         raise CoverUsdcFeeReserveRatesRebindGetPathError("URL_EXTRA_COMPONENTS_FORBIDDEN")
@@ -291,6 +329,32 @@ def _assert_general_canary_allowlists_unwidened() -> None:
         )
 
 
+def resolve_trade_fee_get_family_binding_v1(
+    *,
+    owner_go: str,
+    inst_family: str | None = None,
+) -> tuple[str, str]:
+    """Bind execute-GO to exactly one explicit instFamily. No wildcards."""
+    go = str(owner_go or "").strip()
+    bound_family = EXECUTE_OWNER_GO_FAMILY_BINDING.get(go)
+    if bound_family is None:
+        raise CoverUsdcFeeReserveRatesRebindGetPathError(f"EXECUTE_OWNER_GO_MISMATCH:{go}")
+    requested = str(inst_family or "").strip()
+    family = requested or bound_family
+    if family != bound_family:
+        raise CoverUsdcFeeReserveRatesRebindGetPathError(
+            f"FAMILY_OWNER_GO_BINDING_MISMATCH:{family}:{bound_family}"
+        )
+    if family not in ALLOWED_INST_FAMILIES:
+        raise CoverUsdcFeeReserveRatesRebindGetPathError(
+            f"INSTFAMILY_NOT_ALLOWLISTED:{family or '<empty>'}"
+        )
+    query = f"instType={SEALED_INST_TYPE}&instFamily={family}"
+    if query not in ALLOWED_QUERIES:
+        raise CoverUsdcFeeReserveRatesRebindGetPathError(f"QUERY_NOT_ALLOWLISTED:{query}")
+    return family, query
+
+
 def collect_fee_reserve_rates_rebind_get_v1(
     *,
     transport: LiveCanaryTransportV1,
@@ -301,12 +365,16 @@ def collect_fee_reserve_rates_rebind_get_v1(
     credential_class: str = CREDENTIAL_CLASS,
     rest_host: str = SEALED_HOST,
     timeout_seconds: float = 10.0,
+    inst_family: str | None = None,
 ) -> tuple[dict[str, Any], LiveCanaryHttpResponseV1]:
     """Later-GO one-shot GET. This ratification GO must not call it on the wire."""
     if not execute_trade_fee_get:
         raise CoverUsdcFeeReserveRatesRebindGetPathError("EXECUTE_FLAG_REQUIRED")
-    if owner_go != EXECUTE_OWNER_GO:
-        raise CoverUsdcFeeReserveRatesRebindGetPathError(f"EXECUTE_OWNER_GO_MISMATCH:{owner_go}")
+    family, query = resolve_trade_fee_get_family_binding_v1(
+        owner_go=owner_go,
+        inst_family=inst_family,
+    )
+    endpoint = f"{SEALED_PATH}?{query}"
     _assert_general_canary_allowlists_unwidened()
     ref = validate_live_canary_secretref_uri_v1(secretref_uri)
     klass = validate_live_canary_credential_class_v1(credential_class)
@@ -314,6 +382,7 @@ def collect_fee_reserve_rates_rebind_get_v1(
         raise CoverUsdcFeeReserveRatesRebindGetPathError(f"HOST_MISMATCH:{rest_host}")
     unsigned = build_sealed_trade_fee_get_request_v1(
         host=rest_host,
+        query=query,
         timeout_seconds=timeout_seconds,
     )
     headers = build_okx_live_canary_auth_headers_v1(
@@ -325,6 +394,7 @@ def collect_fee_reserve_rates_rebind_get_v1(
     auth_presence = auth_headers_presence_doc_v1(headers)
     request = build_sealed_trade_fee_get_request_v1(
         host=rest_host,
+        query=query,
         headers=headers,
         timeout_seconds=timeout_seconds,
     )
@@ -357,7 +427,7 @@ def collect_fee_reserve_rates_rebind_get_v1(
     snapshot = {
         "DOCUMENT_CLASS": "SECTION_11_13_5_Z2M_FEE_RESERVE_RATES_REBIND_GET_PATH_V1",
         "DOCUMENT_ROLE": "ONE_SHOT_AUTHENTICATED_TRADE_FEE_GET_EVIDENCE_NON_SSOT",
-        "OWNER_GO": EXECUTE_OWNER_GO,
+        "OWNER_GO": owner_go,
         "OWNER_GO_SCOPE": "FEE_RESERVE_RATES_REBIND_GET_ONLY",
         "SECRETREF_URI": ref,
         "CREDENTIAL_CLASS": klass,
@@ -366,8 +436,9 @@ def collect_fee_reserve_rates_rebind_get_v1(
         "METHOD": SEALED_METHOD,
         "HOST": rest_host,
         "PATH": SEALED_PATH,
-        "QUERY": SEALED_QUERY,
-        "ENDPOINT": SEALED_ENDPOINT,
+        "QUERY": query,
+        "ENDPOINT": endpoint,
+        "REQUEST_INST_FAMILY": family,
         "GET_REQUEST_COUNT": 1,
         "POST_COUNT": 0,
         "RETRY_COUNT": 0,
@@ -385,3 +456,62 @@ def collect_fee_reserve_rates_rebind_get_v1(
     }
     assert_no_plaintext_in_payload_v1(snapshot)
     return snapshot, response
+
+
+def extract_trade_fee_get_fields_v1(
+    *,
+    payload: Mapping[str, Any],
+    request_inst_family: str,
+) -> dict[str, Any]:
+    """Read venue fee fields only. Does not transfer BTC rates. No numeric invention."""
+    family = str(request_inst_family or "").strip()
+    if family not in ALLOWED_INST_FAMILIES:
+        raise CoverUsdcFeeReserveRatesRebindGetPathError(
+            f"INSTFAMILY_NOT_ALLOWLISTED:{family or '<empty>'}"
+        )
+    if not isinstance(payload, Mapping):
+        raise CoverUsdcFeeReserveRatesRebindGetPathError("PAYLOAD_NOT_OBJECT")
+    code = str(payload.get("code", "")).strip()
+    msg = str(payload.get("msg", ""))
+    data = payload.get("data")
+    if not isinstance(data, list) or not data:
+        raise CoverUsdcFeeReserveRatesRebindGetPathError("TRADE_FEE_DATA_MISSING")
+    if len(data) != 1:
+        raise CoverUsdcFeeReserveRatesRebindGetPathError("TRADE_FEE_DATA_NOT_SINGLE_ROW")
+    row = data[0]
+    if not isinstance(row, Mapping):
+        raise CoverUsdcFeeReserveRatesRebindGetPathError("TRADE_FEE_ROW_NOT_OBJECT")
+    echoed_family = str(row.get("instFamily") or "").strip()
+    echoed_inst_id = str(row.get("instId") or "").strip()
+    echoed_type = str(row.get("instType") or "").strip()
+    if echoed_family and echoed_family != family:
+        raise CoverUsdcFeeReserveRatesRebindGetPathError(
+            f"RESPONSE_INSTFAMILY_MISMATCH:{echoed_family}"
+        )
+    if echoed_type and echoed_type != SEALED_INST_TYPE:
+        raise CoverUsdcFeeReserveRatesRebindGetPathError(
+            f"RESPONSE_INSTTYPE_MISMATCH:{echoed_type}"
+        )
+    if echoed_inst_id and not echoed_inst_id.startswith(f"{family}-"):
+        raise CoverUsdcFeeReserveRatesRebindGetPathError(
+            f"RESPONSE_INSTID_NOT_IN_REQUEST_FAMILY:{echoed_inst_id}"
+        )
+    return {
+        "OKX_CODE": code,
+        "OKX_MSG": msg,
+        "INST_TYPE": echoed_type,
+        "INST_FAMILY_ECHO": echoed_family,
+        "INST_ID_ECHO": echoed_inst_id,
+        "RULE_TYPE": str(row.get("ruleType") or ""),
+        "LEVEL": str(row.get("level") or ""),
+        "MAKER": str(row.get("maker") or ""),
+        "TAKER": str(row.get("taker") or ""),
+        "MAKER_USDC": str(row.get("makerUSDC") or ""),
+        "TAKER_USDC": str(row.get("takerUSDC") or ""),
+        "MAKER_U": str(row.get("makerU") or ""),
+        "TAKER_U": str(row.get("takerU") or ""),
+        "DELIVERY": str(row.get("delivery") or ""),
+        "EXERCISE": str(row.get("exercise") or ""),
+        "CATEGORY": str(row.get("category") or ""),
+        "REQUEST_INST_FAMILY": family,
+    }
