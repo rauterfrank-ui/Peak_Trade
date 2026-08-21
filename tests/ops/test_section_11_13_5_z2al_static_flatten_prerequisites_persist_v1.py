@@ -112,6 +112,7 @@ def test_z2al_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert "THIS_DOCUMENT_DEFINES_NO_SEMANTICS=true" in mot
     assert "§11.13.5.Z2AL |" in mot
     assert "historical next pointer superseded by §11.13.5.Z2AL" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AM" in mot
     assert "FLATTEN_PRICE_POLICY_IMPLEMENTED=true" in mot
     assert "DEDICATED_FLATTEN_TRANSPORT_IMPLEMENTED=true" in mot
     assert "STATIC_FLATTEN_PREREQUISITES_STATUS=PASS_OFFLINE" in mot
@@ -121,4 +122,10 @@ def test_z2al_map_of_truth_navigation_pointer_matches_runbook() -> None:
     snapshot_pointer_lines = [
         ln for ln in mot.splitlines() if ln.startswith("NEXT_CANONICAL_STEP_POINTER=")
     ]
-    assert snapshot_pointer_lines[-1] == f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}"
+    assert snapshot_pointer_lines[-1] != f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}"
+    current_pointer = snapshot_pointer_lines[-1].split("=", 1)[1]
+    assert "Z2AL_STATIC_FLATTEN_PREREQUISITES" not in current_pointer
+    assert "Z2AM_FRESHNESS_BINDING_OWNER_RATIFICATION_REQUIRED" in current_pointer
+    assert "NO_CANONICAL_FRESHNESS_DEFAULT" in current_pointer
+    assert "NO_LIVE_WIRE" in current_pointer
+    assert "NO_ORDER_COUNT_LIMIT_RAISE_TO_2" in current_pointer

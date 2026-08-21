@@ -392,5 +392,5 @@ def test_global_invariants_unchanged() -> None:
 
 def test_serialize_without_permit_still_unbound() -> None:
     _permit, plan, _price, _payload = _flatten_bundle(pos="1")
-    with pytest.raises(Exception, match="FLATTEN_LIMIT_PRICE_POLICY_UNBOUND"):
+    with pytest.raises(Exception, match="FLATTEN_NAKED_PX_FAIL_CLOSED"):
         serialize_canary_flatten_venue_native_payload_v1(plan, px="64805.6")

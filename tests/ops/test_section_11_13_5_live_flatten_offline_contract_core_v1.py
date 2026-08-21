@@ -303,7 +303,7 @@ def test_flatten_plan_price_gate_fails_closed_and_is_not_wire_ready() -> None:
     assert plan.venue_native_payload is None
     assert plan.limit_price is None
     assert plan.price_gate_status == FLATTEN_LIMIT_PRICE_GATE_STATUS
-    with pytest.raises(LiveCanaryOrderPlanError, match="FLATTEN_LIMIT_PRICE_POLICY_UNBOUND"):
+    with pytest.raises(LiveCanaryOrderPlanError, match="FLATTEN_NAKED_PX_FAIL_CLOSED"):
         serialize_canary_flatten_venue_native_payload_v1(plan, px="63028.1")
 
 
