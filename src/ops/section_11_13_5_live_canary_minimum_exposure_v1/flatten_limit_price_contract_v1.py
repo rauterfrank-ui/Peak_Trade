@@ -1,9 +1,9 @@
 """Offline flatten LIMIT price policy.
 
 Quote-locked, side-aware, fail-closed. Issues a LIMIT px from caller-supplied
-current bid/ask plus an explicit freshness threshold. Never POSTs, never
-invents MARKET, never uses a hardcoded freshness/deviation default, and does
-not prove live flatten.
+current bid/ask plus the Owner-ratified freshness threshold. Never POSTs,
+never invents MARKET, never adds an extra deviation guard, and does not
+prove live flatten.
 """
 
 from __future__ import annotations
@@ -24,10 +24,11 @@ class LiveCanaryFlattenLimitPriceError(RuntimeError):
 
 LF_05_IMPLEMENTATION_STATUS = "QUOTE_LOCKED_LIMIT_POLICY_V1"
 FLATTEN_PRICE_POLICY_IMPLEMENTED = True
-FLATTEN_PRICE_POLICY_FULLY_BOUND = False
+FLATTEN_PRICE_POLICY_FULLY_BOUND = True
 FLATTEN_PRICE_POLICY_OPERATIONALLY_USABLE = True
 SIDE_AWARE_QUOTE_SELECTION_STATUS = "IMPLEMENTED_BID_FOR_SELL_ASK_FOR_BUY"
-QUOTE_FRESHNESS_STATUS = "CALLER_THRESHOLD_REQUIRED_NO_CANONICAL_DEFAULT"
+FRESHNESS_THRESHOLD_MS = 5000
+QUOTE_FRESHNESS_STATUS = "OWNER_RATIFIED_FRESHNESS_THRESHOLD_MS"
 FINITE_PRICE_BOUND_STATUS = "QUOTE_LOCKED_NO_EXTRA_DEVIATION"
 TICK_NORMALIZATION_STATUS = "IMPLEMENTED_SELL_ROUND_DOWN_BUY_ROUND_UP"
 FLATTEN_LIMIT_PRICE_GATE_BOUND = "QUOTE_LOCKED_LIMIT_ISSUED"
@@ -37,8 +38,7 @@ NETWORK_EFFECT_NONE = "none"
 ORDER_EFFECT_NONE = "none"
 ACCOUNT_MUTATION_EFFECT_NONE = "none"
 OWNER_BINDING_STILL_REQUIRED = (
-    "FRESHNESS_THRESHOLD_MS_CALLER_SUPPLIED_NO_CANONICAL_DEFAULT;"
-    "NO_OWNER_RATIFIED_EXTRA_DEVIATION_BOUND"
+    "NO_OWNER_RATIFIED_EXTRA_DEVIATION_BOUND;LIVE_WIRE_AND_PRODUCTIVE_FLATTEN_SEPARATE_OWNER_GO"
 )
 
 _ALLOWED_SIDES = frozenset({"BUY", "SELL"})
@@ -46,7 +46,11 @@ _ALLOWED_SIDES = frozenset({"BUY", "SELL"})
 
 @dataclass(frozen=True)
 class FlattenPriceInputV1:
-    """Caller-supplied observed values. No network fetch. No hidden defaults."""
+    """Caller-supplied observed values. No network fetch.
+
+    Freshness uses the Owner-ratified canonical threshold when omitted;
+    a supplied value must equal that canonical threshold.
+    """
 
     flatten_side: str | None = None
     observed_signed_pos: str | None = None
@@ -290,11 +294,15 @@ def evaluate_canary_flatten_limit_price_contract_v1(
         return _rejected(reasons=("FINITE_BOUND_NOT_OWNER_RATIFIED",), flatten_side=side)
 
     if _blank(price_input.freshness_threshold_ms):
-        return _rejected(reasons=("FRESHNESS_THRESHOLD_REQUIRED",), flatten_side=side)
-    threshold = _parse_timestamp_ms(str(price_input.freshness_threshold_ms))
-    if threshold == "MALFORMED":
-        return _rejected(reasons=("FRESHNESS_THRESHOLD_INVALID",), flatten_side=side)
-    assert isinstance(threshold, int)
+        threshold = FRESHNESS_THRESHOLD_MS
+    else:
+        parsed_threshold = _parse_timestamp_ms(str(price_input.freshness_threshold_ms))
+        if parsed_threshold == "MALFORMED":
+            return _rejected(reasons=("FRESHNESS_THRESHOLD_INVALID",), flatten_side=side)
+        assert isinstance(parsed_threshold, int)
+        if parsed_threshold != FRESHNESS_THRESHOLD_MS:
+            return _rejected(reasons=("FRESHNESS_THRESHOLD_NOT_CANONICAL",), flatten_side=side)
+        threshold = parsed_threshold
     age_ms = eval_ts - quote_ts
     if age_ms > threshold:
         return _rejected(reasons=("STALE_QUOTE",), flatten_side=side)
