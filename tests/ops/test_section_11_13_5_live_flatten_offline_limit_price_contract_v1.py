@@ -256,7 +256,7 @@ def test_naked_px_without_permit_still_unbound() -> None:
         origin_main_sha=ORIGIN_SHA,
     )
     assert verdict.flatten_plan is not None
-    with pytest.raises(LiveCanaryOrderPlanError, match="FLATTEN_LIMIT_PRICE_POLICY_UNBOUND"):
+    with pytest.raises(LiveCanaryOrderPlanError, match="FLATTEN_NAKED_PX_FAIL_CLOSED"):
         serialize_canary_flatten_venue_native_payload_v1(verdict.flatten_plan, px="64805.6")
 
 
@@ -321,4 +321,6 @@ def test_lf05_offline_path_is_not_wired_into_entry_transport_or_runner() -> None
     ):
         assert banned not in transport_src
         assert banned not in runner_src
-    assert FLATTEN_LIMIT_PRICE_GATE_STATUS == "FAIL_CLOSED_UNTIL_SEPARATE_OWNER_GO"
+    assert FLATTEN_LIMIT_PRICE_GATE_STATUS == "NAKED_PX_FAIL_CLOSED_PRICE_PERMIT_REQUIRED"
+    assert FLATTEN_LIMIT_PRICE_GATE_STATUS != "FAIL_CLOSED_UNTIL_SEPARATE_OWNER_GO"
+    assert FLATTEN_LIMIT_PRICE_GATE_BOUND == "QUOTE_LOCKED_LIMIT_ISSUED"

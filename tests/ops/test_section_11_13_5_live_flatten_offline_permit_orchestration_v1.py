@@ -235,9 +235,7 @@ def test_missing_price_policy_blocks_submit_and_serialization() -> None:
     assert verdict.permit.submit_reachable is False
     assert verdict.permit.price_gate_status == FLATTEN_LIMIT_PRICE_GATE_STATUS
     assert FLATTEN_SUBMIT_UNREACHABLE_REASON in verdict.blocking_reasons
-    with pytest.raises(
-        LiveCanaryFlattenOrchestrationError, match="FLATTEN_LIMIT_PRICE_POLICY_UNBOUND"
-    ):
+    with pytest.raises(LiveCanaryFlattenOrchestrationError, match="FLATTEN_NAKED_PX_FAIL_CLOSED"):
         refuse_canary_flatten_submit_transport_v1(verdict.permit, px="63028.1")
     with pytest.raises(
         LiveCanaryFlattenOrchestrationError, match="FLATTEN_SUBMIT_REACHABLE_FORBIDDEN"

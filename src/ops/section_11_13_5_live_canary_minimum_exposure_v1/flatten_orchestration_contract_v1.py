@@ -22,6 +22,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.lifecycle_v1 import
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.order_plan_v1 import (
     FLATTEN_LIMIT_PRICE_GATE_STATUS,
+    FLATTEN_NAKED_PX_FAIL_CLOSED_REASON,
     CanaryFlattenOrderPlanV1,
     LiveCanaryOrderPlanError,
     build_minimum_valid_canary_flatten_order_plan_v1,
@@ -35,9 +36,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_submit_state_v1
 )
 
 FLATTEN_PERMIT_KIND = "FLATTEN_SUBMIT"
-FLATTEN_SUBMIT_UNREACHABLE_REASON = (
-    "FLATTEN_LIMIT_PRICE_POLICY_UNBOUND:" + FLATTEN_LIMIT_PRICE_GATE_STATUS
-)
+FLATTEN_SUBMIT_UNREACHABLE_REASON = FLATTEN_NAKED_PX_FAIL_CLOSED_REASON
 LIFECYCLE_FLATTEN_RUNTIME_REACHABLE = False
 LIVE_FLATTEN_PROVABILITY_STATUS = "UNPROVEN"
 NETWORK_EFFECT_NONE = "none"
@@ -349,7 +348,7 @@ def evaluate_canary_flatten_orchestration_contract_v1(
         market_fallback_used=False,
         submitted_entry_qty_used_as_authority=False,
         blocking_reasons=(FLATTEN_SUBMIT_UNREACHABLE_REASON,),
-        contract_state="FLATTEN_PERMIT_ISSUED_SUBMIT_BLOCKED_PRICE_POLICY",
+        contract_state="FLATTEN_PERMIT_ISSUED_NAKED_PX_FAIL_CLOSED",
     )
 
 

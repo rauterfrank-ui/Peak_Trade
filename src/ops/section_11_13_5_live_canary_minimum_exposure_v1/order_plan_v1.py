@@ -264,7 +264,14 @@ def build_minimum_valid_canary_order_plan_v1(
     )
 
 
-FLATTEN_LIMIT_PRICE_GATE_STATUS = "FAIL_CLOSED_UNTIL_SEPARATE_OWNER_GO"
+# Quote-lock LIMIT policy is implemented (Z2AL). This status is only the
+# naked qty-plan / no-FlattenPricePermitV1 fail-closed gate. It is not a
+# claim that price policy awaits a separate Owner GO. Live wire remains
+# disabled. Freshness canonical default remains unbound.
+FLATTEN_LIMIT_PRICE_GATE_STATUS = "NAKED_PX_FAIL_CLOSED_PRICE_PERMIT_REQUIRED"
+FLATTEN_NAKED_PX_FAIL_CLOSED_REASON = (
+    "FLATTEN_NAKED_PX_FAIL_CLOSED:" + FLATTEN_LIMIT_PRICE_GATE_STATUS
+)
 
 
 def _format_flatten_qty(value: Decimal) -> str:
@@ -362,9 +369,7 @@ def serialize_canary_flatten_venue_native_payload_v1(
     """
     if price_permit is None:
         del px
-        raise LiveCanaryOrderPlanError(
-            "FLATTEN_LIMIT_PRICE_POLICY_UNBOUND:" + FLATTEN_LIMIT_PRICE_GATE_STATUS
-        )
+        raise LiveCanaryOrderPlanError(FLATTEN_NAKED_PX_FAIL_CLOSED_REASON)
     permit_side = str(getattr(price_permit, "flatten_side", "") or "").strip().upper()
     permit_px = str(getattr(price_permit, "limit_price", "") or "").strip()
     if permit_side != str(plan.side).upper():
