@@ -19,6 +19,7 @@ MASTER_RUNBOOK = REPO_ROOT / "docs" / "runbooks" / "canonical" / "PEAK_TRADE_MAS
 MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2AI_HEADING = "### 11.13.5.Z2AI LF-10 read-only adjudication persist"
+Z2AJ_HEADING = "### 11.13.5.Z2AJ USD/USDC public conversion-candidate GET adjudication persist"
 Z2AH_HEADING = "### 11.13.5.Z2AH API execution denomination PROVEN persist"
 Z2AG_HEADING = "### 11.13.5.Z2AG Scoped API ctVal sizing authority split persist"
 Z2AF_HEADING = "### 11.13.5.Z2AF LF-09 blocker-DAG re-adjudication persist"
@@ -55,8 +56,8 @@ def _read(path: Path) -> str:
 def _z2ai_section(text: str) -> str:
     start = text.find(Z2AI_HEADING)
     assert start >= 0, "missing §11.13.5.Z2AI heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2AI"
+    end = text.find(Z2AJ_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2AJ boundary after Z2AI"
     return text[start:end]
 
 
@@ -67,8 +68,9 @@ def test_z2ai_heading_is_unique_and_follows_z2ah() -> None:
     z2ag = text.find(Z2AG_HEADING)
     z2ah = text.find(Z2AH_HEADING)
     z2ai = text.find(Z2AI_HEADING)
+    z2aj = text.find(Z2AJ_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2af < z2ag < z2ah < z2ai < ladder
+    assert 0 <= z2af < z2ag < z2ah < z2ai < z2aj < ladder
 
 
 def test_z2ai_docs_bind_lf10_complete_without_new_proven_or_runtime() -> None:
@@ -284,9 +286,10 @@ def test_z2ai_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert "THIS_DOCUMENT_DEFINES_NO_SEMANTICS=true" in mot
     assert "THIS_DOCUMENT_IS_NOT_A_SECOND_SSOT=true" in mot
     assert "§11.13.5.Z2AI |" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
+    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}\n" not in mot
     assert f"NEXT_CANONICAL_STEP_POINTER={CONSUMED_Z2AH_POINTER}\n" not in mot
     assert "historical next pointer superseded by §11.13.5.Z2AI" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AJ" in mot
     assert "LF10_ADJUDICATION=COMPLETE_READ_ONLY_NO_NEW_PROVEN_CLOSURE" in mot
     assert "CLAIMS_PROVEN_THIS_STEP=NONE" in mot
     assert "NEW_EVIDENCE_FOUND=false" in mot
@@ -313,10 +316,10 @@ def test_z2ai_map_of_truth_navigation_pointer_matches_runbook() -> None:
         ln for ln in mot.splitlines() if ln.startswith("NEXT_CANONICAL_STEP_POINTER=")
     ]
     assert snapshot_pointer_lines, "missing snapshot NEXT_CANONICAL_STEP_POINTER"
-    assert snapshot_pointer_lines[-1] == f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}"
     current_pointer = snapshot_pointer_lines[-1].split("=", 1)[1]
+    assert current_pointer != NEXT_POINTER
+    assert "LF10_COMPLETE_NO_NEW_PROVEN_CLOSURE" not in current_pointer
     assert "Z2AH_API_EXECUTION_DENOMINATION_PROVEN" not in current_pointer
     assert "NO_LF11" in current_pointer
     assert "NO_COVER_CALC" in current_pointer
-    assert "NO_PRODUCTIVE_GET" in current_pointer
     assert "NO_OEM_CLARIFICATION" in current_pointer

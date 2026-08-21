@@ -250,6 +250,7 @@ def test_z2af_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert "historical next pointer superseded by §11.13.5.Z2AG" in mot
     assert "historical next pointer superseded by §11.13.5.Z2AH" in mot
     assert "historical next pointer superseded by §11.13.5.Z2AI" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AJ" in mot
     assert "LF_09_READ_ONLY_ADJUDICATION=COMPLETE" in mot
     assert "BLOCKER_DAG_CHANGED=false" in mot
     assert "LF_08_DID_NOT_CLOSE_LIVE_FLATTEN_PROVABILITY=true" in mot

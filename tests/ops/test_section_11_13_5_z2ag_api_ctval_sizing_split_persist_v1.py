@@ -230,6 +230,7 @@ def test_z2ag_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert "historical next pointer superseded by §11.13.5.Z2AG" in mot
     assert "historical next pointer superseded by §11.13.5.Z2AH" in mot
     assert "historical next pointer superseded by §11.13.5.Z2AI" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AJ" in mot
     assert "DOCUMENTARY_FACE_VALUE_CONFLICT=CONFLICTED" in mot
     assert "OEM_SPEC_WRONG=false" in mot
     assert "GLOBAL_API_WINS=false" in mot
