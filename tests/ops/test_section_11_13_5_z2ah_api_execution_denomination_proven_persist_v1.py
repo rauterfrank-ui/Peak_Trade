@@ -239,6 +239,7 @@ def test_z2ah_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert f"NEXT_CANONICAL_STEP_POINTER={CONSUMED_Z2AG_POINTER}\n" not in mot
     assert "historical next pointer superseded by §11.13.5.Z2AH" in mot
     assert "historical next pointer superseded by §11.13.5.Z2AI" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AJ" in mot
     assert "API_EXECUTION_DENOMINATION_STATUS=PROVEN" in mot
     assert "API_EXECUTION_CTVAL=0.0001_BTC" in mot
     assert "API_EXECUTION_CTMULT=1" in mot
