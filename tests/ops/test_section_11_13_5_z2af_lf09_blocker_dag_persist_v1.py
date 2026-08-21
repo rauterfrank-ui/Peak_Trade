@@ -16,6 +16,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 MASTER_RUNBOOK = REPO_ROOT / "docs" / "runbooks" / "canonical" / "PEAK_TRADE_MASTER_RUNBOOK.md"
 MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
+Z2AG_HEADING = "### 11.13.5.Z2AG Scoped API ctVal sizing authority split persist"
 Z2AF_HEADING = "### 11.13.5.Z2AF LF-09 blocker-DAG re-adjudication persist"
 Z2AE_HEADING = "### 11.13.5.Z2AE LF-08 LIVE_FLATTEN_PROVABILITY re-adjudication persist"
 Z2AD_HEADING = "### 11.13.5.Z2AD LF-07 productive reachability adjudication persist"
@@ -50,8 +51,8 @@ def _read(path: Path) -> str:
 def _z2af_section(text: str) -> str:
     start = text.find(Z2AF_HEADING)
     assert start >= 0, "missing §11.13.5.Z2AF heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2AF"
+    end = text.find(Z2AG_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2AG boundary after Z2AF"
     return text[start:end]
 
 
@@ -64,8 +65,9 @@ def test_z2af_heading_is_unique_and_follows_z2ae() -> None:
     z2ad = text.find(Z2AD_HEADING)
     z2ae = text.find(Z2AE_HEADING)
     z2af = text.find(Z2AF_HEADING)
+    z2ag = text.find(Z2AG_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2aa < z2ab < z2ac < z2ad < z2ae < z2af < ladder
+    assert 0 <= z2aa < z2ab < z2ac < z2ad < z2ae < z2af < z2ag < ladder
 
 
 def test_z2af_docs_bind_lf09_complete_without_runtime_or_lf10() -> None:
@@ -238,9 +240,10 @@ def test_z2af_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert "THIS_DOCUMENT_DEFINES_NO_SEMANTICS=true" in mot
     assert "THIS_DOCUMENT_IS_NOT_A_SECOND_SSOT=true" in mot
     assert "§11.13.5.Z2AF |" in mot
-    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}" in mot
+    assert f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}\n" not in mot
     assert f"NEXT_CANONICAL_STEP_POINTER={CONSUMED_Z2AE_POINTER}\n" not in mot
     assert "historical next pointer superseded by §11.13.5.Z2AF" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AG" in mot
     assert "LF_09_READ_ONLY_ADJUDICATION=COMPLETE" in mot
     assert "BLOCKER_DAG_CHANGED=false" in mot
     assert "LF_08_DID_NOT_CLOSE_LIVE_FLATTEN_PROVABILITY=true" in mot
