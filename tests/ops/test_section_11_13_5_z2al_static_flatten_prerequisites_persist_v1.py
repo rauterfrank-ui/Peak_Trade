@@ -15,6 +15,7 @@ MASTER_RUNBOOK = REPO_ROOT / "docs" / "runbooks" / "canonical" / "PEAK_TRADE_MAS
 MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2AL_HEADING = "### 11.13.5.Z2AL Static flatten price policy and dedicated flatten transport"
+Z2AM_HEADING = "### 11.13.5.Z2AM Post-Z2AL read-only Owner-binding adjudication persist"
 Z2AK_HEADING = "### 11.13.5.Z2AK LF-11 and LF-12 read-only adjudication persist"
 NEXT_POINTER = (
     "OWNER_GO_REQUIRED_SEPARATE_FOR_ANY_NEXT_OPERATIONAL_OR_ADJUDICATION_"
@@ -36,8 +37,8 @@ def _read(path: Path) -> str:
 def _z2al_section(text: str) -> str:
     start = text.find(Z2AL_HEADING)
     assert start >= 0, "missing §11.13.5.Z2AL heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2AL"
+    end = text.find(Z2AM_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2AM boundary after Z2AL"
     return text[start:end]
 
 
@@ -46,8 +47,9 @@ def test_z2al_heading_is_unique_and_follows_z2ak() -> None:
     assert text.count(Z2AL_HEADING) == 1
     z2ak = text.find(Z2AK_HEADING)
     z2al = text.find(Z2AL_HEADING)
+    z2am = text.find(Z2AM_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2ak < z2al < ladder
+    assert 0 <= z2ak < z2al < z2am < ladder
 
 
 def test_z2al_docs_bind_static_prerequisites_without_live_flatten_proven() -> None:
@@ -112,6 +114,7 @@ def test_z2al_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert "THIS_DOCUMENT_DEFINES_NO_SEMANTICS=true" in mot
     assert "§11.13.5.Z2AL |" in mot
     assert "historical next pointer superseded by §11.13.5.Z2AL" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AM" in mot
     assert "FLATTEN_PRICE_POLICY_IMPLEMENTED=true" in mot
     assert "DEDICATED_FLATTEN_TRANSPORT_IMPLEMENTED=true" in mot
     assert "STATIC_FLATTEN_PREREQUISITES_STATUS=PASS_OFFLINE" in mot
@@ -121,4 +124,11 @@ def test_z2al_map_of_truth_navigation_pointer_matches_runbook() -> None:
     snapshot_pointer_lines = [
         ln for ln in mot.splitlines() if ln.startswith("NEXT_CANONICAL_STEP_POINTER=")
     ]
-    assert snapshot_pointer_lines[-1] == f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}"
+    assert snapshot_pointer_lines, "missing snapshot NEXT_CANONICAL_STEP_POINTER"
+    assert snapshot_pointer_lines[-1] != f"NEXT_CANONICAL_STEP_POINTER={NEXT_POINTER}"
+    current_pointer = snapshot_pointer_lines[-1].split("=", 1)[1]
+    assert "Z2AM_FRESHNESS_BINDING" in current_pointer
+    assert "NO_NUMERIC_INVENTION" in current_pointer
+    assert "NO_LIVE_WIRE" in current_pointer
+    assert "NO_ORDER_COUNT_LIMIT_RAISE_TO_2" in current_pointer
+    assert "NO_PRODUCTIVE_FLATTEN" in current_pointer
