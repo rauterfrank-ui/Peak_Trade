@@ -16,6 +16,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 MASTER_RUNBOOK = REPO_ROOT / "docs" / "runbooks" / "canonical" / "PEAK_TRADE_MASTER_RUNBOOK.md"
 MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
+Z2AH_HEADING = "### 11.13.5.Z2AH API execution denomination PROVEN persist"
 Z2AG_HEADING = "### 11.13.5.Z2AG Scoped API ctVal sizing authority split persist"
 Z2AF_HEADING = "### 11.13.5.Z2AF LF-09 blocker-DAG re-adjudication persist"
 Z2AE_HEADING = "### 11.13.5.Z2AE LF-08 LIVE_FLATTEN_PROVABILITY re-adjudication persist"
@@ -66,8 +67,9 @@ def test_z2af_heading_is_unique_and_follows_z2ae() -> None:
     z2ae = text.find(Z2AE_HEADING)
     z2af = text.find(Z2AF_HEADING)
     z2ag = text.find(Z2AG_HEADING)
+    z2ah = text.find(Z2AH_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2aa < z2ab < z2ac < z2ad < z2ae < z2af < z2ag < ladder
+    assert 0 <= z2aa < z2ab < z2ac < z2ad < z2ae < z2af < z2ag < z2ah < ladder
 
 
 def test_z2af_docs_bind_lf09_complete_without_runtime_or_lf10() -> None:
@@ -244,6 +246,7 @@ def test_z2af_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert f"NEXT_CANONICAL_STEP_POINTER={CONSUMED_Z2AE_POINTER}\n" not in mot
     assert "historical next pointer superseded by §11.13.5.Z2AF" in mot
     assert "historical next pointer superseded by §11.13.5.Z2AG" in mot
+    assert "historical next pointer superseded by §11.13.5.Z2AH" in mot
     assert "LF_09_READ_ONLY_ADJUDICATION=COMPLETE" in mot
     assert "BLOCKER_DAG_CHANGED=false" in mot
     assert "LF_08_DID_NOT_CLOSE_LIVE_FLATTEN_PROVABILITY=true" in mot
