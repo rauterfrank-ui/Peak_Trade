@@ -27884,6 +27884,133 @@ contact. `FRESHNESS_THRESHOLD_MS=5000`.
 `LIVE_AUTHORIZED=false`. No execute. No merge of this ratification
 without a separate `OWNER_MERGE_GO`.
 
+The historical Z2AN next pointer
+`OWNER_GO_REQUIRED_SEPARATE_FOR_ANY_NEXT_OPERATIONAL_OR_ADJUDICATION_STEP_NOT_AUTHORIZED_BY_THIS_RATIFICATION_Z2AN_FRESHNESS_THRESHOLD_MS_5000_OWNER_RATIFIED_EXTRA_DEVIATION_BOUND_NOT_PROVEN_REQUIRED_LIVE_FLATTEN_UNPROVEN_NO_LIVE_WIRE_NO_ORDER_COUNT_LIMIT_RAISE_TO_2_NO_RUNTIME_READ_NO_PRODUCTIVE_FLATTEN_NO_GET_NO_ORDER_NO_ALLOWLIST_CANARY_NOT_AUTHORIZED_SUPPORT_CONTACT_NOT_AUTHORIZED`
+is **consumed** only as the docs-only extra-deviation adjudication
+persist below (§11.13.5.Z2AO). That successor records that a separate
+extra-deviation bound is **not required** for the dedicated quote-locked
+flatten LIMIT contract after Z2AN freshness ratification. It does
+**not** invent or ratify a numeric collar, does **not** promote
+Z2P slippage-reserve or research bps&#47;tick fixtures to flatten px
+policy, does **not** prove live flatten, and does **not** authorize
+GET, POST, order, funding, Canary, or support contact.
+
+### 11.13.5.Z2AO Post-Z2AN extra-deviation-bound offline read-only adjudication persist (BOUND; DOCS-ONLY; EXTRA DEVIATION NOT REQUIRED FOR DEDICATED FLATTEN; LIVE FLATTEN UNPROVEN; NO SUBMIT; NOT EXECUTE)
+
+Owner-GO
+`OWNER_GO=GRANTED_FOR_POST_Z2AN_EXTRA_DEVIATION_BOUND_OFFLINE_READ_ONLY_ADJUDICATION_ONLY`
+(one-shot; now **CONSUMED**) authorized a **docs-only persist** of the
+offline read-only extra-deviation adjudication after Z2AN
+(`origin&#47;main=be446c75606a4aa4d9a780108edaee6f57bbc667`).
+This persist does **not** ratify a numeric extra-deviation bound, does
+**not** invent ticks&#47;bps&#47;percent&#47;absolute collars, does
+**not** change implementation or trading logic, does **not** raise
+`ORDER_COUNT_LIMIT` to 2, and does **not** authorize runtime read, GET,
+POST, order, position, flatten, funding, Canary, or support contact.
+Bound scope:
+
+``` text
+AUTHORIZED_SCOPE=POST_Z2AN_EXTRA_DEVIATION_BOUND_OFFLINE_READ_ONLY_ADJUDICATION_ONLY
+CURRENT_PHASE=SECTION_11_13_5_Z2AO_POST_Z2AN_EXTRA_DEVIATION_BOUND_OFFLINE_READ_ONLY_ADJUDICATION
+OWNER_GO=GRANTED_FOR_POST_Z2AN_EXTRA_DEVIATION_BOUND_OFFLINE_READ_ONLY_ADJUDICATION_ONLY
+OWNER_GO_STATUS=CONSUMED
+BASELINE_ORIGIN_MAIN_SHA=be446c75606a4aa4d9a780108edaee6f57bbc667
+LAST_CANONICALLY_CLOSED_STEP=LF_12
+ADJUDICATED_DEPENDENCY=EXTRA_DEVIATION_BOUND
+ADJUDICATION_RESULT=C
+ADJUDICATION_CLASS=EXTRA_DEVIATION_BOUND_NOT_REQUIRED_FOR_THE_DEDICATED_FLATTEN_CONTRACT
+EXTRA_DEVIATION_BOUND_REQUIRED=false
+EXTRA_DEVIATION_BOUND_PROVEN=false
+EXTRA_DEVIATION_BOUND_VALUE=NONE
+EXTRA_DEVIATION_BOUND_SEMANTICS=NOT_REQUIRED_QUOTE_LOCK_PLUS_TICK_ROUNDING_PLUS_FRESHNESS_5000_IS_THE_PRICE_BOUND
+EXTRA_DEVIATION_BOUND=NOT_REQUIRED_FOR_DEDICATED_FLATTEN_CONTRACT
+EXTRA_DEVIATION_BOUND_RATIFIED=false
+FINITE_EXTRA_DEVIATION_BOUND=NOT_OWNER_RATIFIED_REJECTED
+EXTRA_DEVIATION_DEFENSE_IN_DEPTH=OPTIONAL_UNRATIFIED_CURRENTLY_REJECTED
+REST_QUOTE_LOCK_SUFFICIENT_WITHOUT_EXTRA_BOUND=true
+OWNER_POLICY_REQUIRED=false
+OWNER_POLICY_DECISION_REQUIRED=NONE
+FIXTURE_VALUES_TREATED_AS_AUTHORITY=false
+Z2P_SLIPPAGE_RESERVE_NUMERIC=0.00002
+Z2P_SLIPPAGE_RESERVE_NUMERIC_CLASS=COVER_ALGEBRA_NOT_FLATTEN_PX_GUARD
+FRESHNESS_THRESHOLD_MS=5000
+FRESHNESS_THRESHOLD_RATIFIED=true
+FLATTEN_PRICE_RULE=SELL_USES_BID_ROUND_DOWN_BUY_USES_ASK_ROUND_UP
+FLATTEN_PRICE_POLICY_IMPLEMENTED=true
+FLATTEN_PRICE_POLICY_FULLY_BOUND=true
+DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false
+LIVE_FLATTEN_PROVABILITY=UNPROVEN
+LIVE_FLATTEN_PROVABILITY_REMAINS=UNPROVEN_HARD_STOP
+NEW_PROVEN_CLOSURE=NONE
+CLAIMS_NEWLY_PROVEN_THIS_STEP=NONE
+NO_NEW_PROVEN_CLAIM=true
+NO_NUMERIC_INVENTION=true
+NO_IMPLEMENTATION_CHANGE=true
+NO_RUNTIME_CODE_CHANGE=true
+NO_TRADING_LOGIC_CHANGE=true
+NO_CONFIG_CHANGE=true
+ORDER_COUNT_LIMIT=1
+ORDER_COUNT_LIMIT_RAISED=false
+CLOSE_POSITION_ENDPOINT_ALLOWLISTED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+GET_EXECUTED_THIS_STEP=false
+POST_EXECUTED=false
+NETWORK_REQUEST_EXECUTED=false
+RUNTIME_TOUCHED=false
+DOCS_PERSIST_IS_NOT_ADMISSIBLE_PRODUCTIVE_EVIDENCE=true
+```
+
+Adjudication. After Z2AN, the dedicated flatten LIMIT path is: REST
+ticker `GET &#47;api&#47;v5&#47;market&#47;ticker` → permit uses
+current bid&#47;ask with `quote_age <= 5000` ms → SELL locks bid
+rounded down to tick → BUY locks ask rounded up to tick → no MARKET
+fallback. The issued `px` is the selected quote after tick
+normalization. Side-aware post-round rejects
+(`SELL_LIMIT_ABOVE_BID_AFTER_TICK`, `BUY_LIMIT_BELOW_ASK_AFTER_TICK`)
+keep `px` on the quote-lock side. Any supplied `finite_bound` &#47;
+`bound_kind` is already `FINITE_BOUND_NOT_OWNER_RATIFIED`. Distance
+from selected quote is therefore at most the tick-rounding residual.
+A second collar against the same bid&#47;ask is redundant if
+`>= tick_sz` and would break tick rounding if tighter. A collar
+against mark&#47;mid&#47;last would be a **new** unratified second-source
+policy, not a missing invariant of this contract. Historical GATE_6
+failed because `NO_FLATTEN_LIMIT_PRICE_ALGORITHM`, which Z2AL closed
+by quote-lock; `MAX_DEVIATION_FROM_BID_ASK_MARK=ABSENT` was an
+entry&#47;unbound observation, not proven flatten-collar authority.
+Z2P `0.00002` is Cover-algebra
+(`2 * max(askPx - bidPx, tickSz) * ctVal * qty`), not a LIMIT px
+guard. Research&#47;paper `5.0` bps slippage and the test fixture
+`finite_bound=10 TICKS` are **not** flatten Owner policy. No remaining
+offline discriminator would prove an extra bound required.
+`LIVE_FLATTEN_PROVABILITY` remains `UNPROVEN`.
+
+``` text
+EXISTING_AUTHORITY_FOUND=Z2AM_NOT_PROVEN_REQUIRED;Z2AN_RETAINED_REJECT_UNRATIFIED_FINITE_BOUND;Z2AL_QUOTE_LOCK_TICK_ROUNDING
+MINIMUM_MISSING_DISCRIMINATING_EVIDENCE=NONE_FOR_EXTRA_DEVIATION_BOUND
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_FLATTEN_PROVABILITY
+```
+
+``` text
+CODE_OWNER=docs&#47;runbooks&#47;canonical&#47;PEAK_TRADE_MASTER_RUNBOOK.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_FOR_ANY_NEXT_OPERATIONAL_OR_ADJUDICATION_STEP_NOT_AUTHORIZED_BY_THIS_PERSIST_Z2AO_EXTRA_DEVIATION_BOUND_NOT_REQUIRED_FOR_DEDICATED_FLATTEN_CONTRACT_QUOTE_LOCK_PLUS_TICK_PLUS_FRESHNESS_5000_SUFFICIENT_LIVE_FLATTEN_UNPROVEN_NO_LIVE_WIRE_NO_ORDER_COUNT_LIMIT_RAISE_TO_2_NO_RUNTIME_READ_NO_PRODUCTIVE_FLATTEN_NO_GET_NO_ORDER_NO_ALLOWLIST_CANARY_NOT_AUTHORIZED_SUPPORT_CONTACT_NOT_AUTHORIZED
+NEXT_OWNER_AUTHORIZATION_REQUIRED=SEPARATE_OWNER_GO_REQUIRED_FOR_RUNTIME_READ_OR_PRODUCTIVE_LIVE_FLATTEN_PROOF
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+Hard stop. This extra-deviation adjudication GO is consumed. Do **not**
+reuse it for a numeric collar ratification, live wire, a productive
+flatten, `ORDER_COUNT_LIMIT=2`, GET, Cover instantiation, USD=USDC,
+order, funding, Canary, or support contact.
+`ADJUDICATION_RESULT=C`.
+`EXTRA_DEVIATION_BOUND_REQUIRED=false`.
+`LIVE_FLATTEN_PROVABILITY=UNPROVEN`.
+`LAST_CANONICALLY_CLOSED_STEP=LF_12`.
+`LIVE_AUTHORIZED=false`. No execute. No merge of this persist without a
+separate `OWNER_MERGE_GO`.
+
 ## 11.14 Live order and economic evidence ladder
 
 Live proof claims must use a stricter ladder:
