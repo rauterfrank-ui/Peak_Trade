@@ -80,6 +80,27 @@ _FORBIDDEN_HEADER_NAME_MARKERS = (
 )
 _OKX_MSG_MAX_LEN = 200
 _OKX_CODE_MAX_LEN = 64
+_OKX_SMSG_MAX_LEN = 512
+_OKX_ID_FIELD_MAX_LEN = 128
+_VENUE_NATIVE_SCALAR_MAX_LEN = 128
+
+CANARY_VENUE_NATIVE_REQUEST_FIELDS_V1 = (
+    "instId",
+    "tdMode",
+    "side",
+    "ordType",
+    "sz",
+    "px",
+    "posSide",
+    "reduceOnly",
+    "ccy",
+    "tgtCcy",
+    "banAmend",
+    "stpMode",
+    "tag",
+    "clOrdId",
+)
+OKX_ORDER_DATA_ENTRY_FIELDS_V1 = ("sCode", "sMsg", "ordId", "clOrdId", "tag")
 _CONTENT_TYPE_MAX_LEN = 128
 _LOCATION_MAX_LEN = 512
 
@@ -142,6 +163,106 @@ def signed_wire_body_evidence_v1(
     }
 
 
+def _copy_allowlisted_scalar_fields_v1(
+    source: Mapping[str, Any],
+    allowlist: tuple[str, ...],
+    *,
+    max_len: int,
+) -> dict[str, Any]:
+    """Copy present allowlisted scalars only. Absent keys stay omitted."""
+    out: dict[str, Any] = {}
+    for key in allowlist:
+        if key not in source:
+            continue
+        raw = source[key]
+        if isinstance(raw, (dict, list)):
+            continue
+        if isinstance(raw, (bool, int, float)) or raw is None:
+            out[key] = raw
+            continue
+        out[key] = str(raw)[:max_len]
+    return out
+
+
+def _extract_okx_order_data_entry_v1(item: Any) -> dict[str, Any]:
+    if not isinstance(item, Mapping):
+        return {"_entry_not_object": True}
+    copied = _copy_allowlisted_scalar_fields_v1(
+        item,
+        OKX_ORDER_DATA_ENTRY_FIELDS_V1,
+        max_len=_OKX_SMSG_MAX_LEN,
+    )
+    for key in ("sCode", "ordId", "clOrdId", "tag"):
+        if key in copied and copied[key] is not None and not isinstance(copied[key], bool):
+            copied[key] = str(copied[key])[:_OKX_ID_FIELD_MAX_LEN]
+    if "sMsg" in copied and copied["sMsg"] is not None and not isinstance(copied["sMsg"], bool):
+        copied["sMsg"] = str(copied["sMsg"])[:_OKX_SMSG_MAX_LEN]
+    return copied
+
+
+def extract_canary_venue_native_request_evidence_v1(*, body_text: str) -> dict[str, Any]:
+    """Secret-safe venue-native POST body fields after final serialization."""
+    parse_error: str | None = None
+    payload: Any = None
+    try:
+        payload = json.loads(body_text)
+    except (TypeError, json.JSONDecodeError, UnicodeDecodeError):
+        parse_error = "REQUEST_BODY_NOT_JSON"
+        payload = None
+    if payload is not None and not isinstance(payload, dict):
+        parse_error = "REQUEST_BODY_NOT_JSON_OBJECT"
+        payload = None
+    present_keys: list[str] = []
+    absent_keys: list[str] = []
+    fields: dict[str, Any] = {}
+    if isinstance(payload, dict):
+        fields = _copy_allowlisted_scalar_fields_v1(
+            payload,
+            CANARY_VENUE_NATIVE_REQUEST_FIELDS_V1,
+            max_len=_VENUE_NATIVE_SCALAR_MAX_LEN,
+        )
+        for key in CANARY_VENUE_NATIVE_REQUEST_FIELDS_V1:
+            if key in payload:
+                present_keys.append(key)
+            else:
+                absent_keys.append(key)
+    else:
+        absent_keys = list(CANARY_VENUE_NATIVE_REQUEST_FIELDS_V1)
+    return {
+        "fields": fields,
+        "present_keys": present_keys,
+        "absent_keys": absent_keys,
+        "parse_error": parse_error,
+        "SECRET_VALUES_INCLUDED": False,
+    }
+
+
+def build_canary_submit_adjudication_evidence_v1(
+    *,
+    http_evidence: Mapping[str, Any],
+    venue_native_request: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Compact durable adjudication block. Survives result mapping without stdout."""
+    request_fields = dict(venue_native_request.get("fields") or {})
+    if not request_fields and "fields" not in venue_native_request:
+        request_fields = {
+            key: venue_native_request[key]
+            for key in CANARY_VENUE_NATIVE_REQUEST_FIELDS_V1
+            if key in venue_native_request
+        }
+    return {
+        "HTTP_STATUS": http_evidence.get("http_status"),
+        "TOP_LEVEL_OKX_CODE": http_evidence.get("okx_code"),
+        "TOP_LEVEL_OKX_MSG": http_evidence.get("okx_msg"),
+        "OKX_DATA_COUNT": http_evidence.get("okx_data_count"),
+        "okx_data": list(http_evidence.get("okx_data") or []),
+        "venue_native_request": request_fields,
+        "VENUE_NATIVE_PRESENT_KEYS": list(venue_native_request.get("present_keys") or []),
+        "VENUE_NATIVE_ABSENT_KEYS": list(venue_native_request.get("absent_keys") or []),
+        "SECRET_VALUES_INCLUDED": False,
+    }
+
+
 def extract_canary_http_response_evidence_v1(
     *,
     status_code: int,
@@ -163,6 +284,8 @@ def extract_canary_http_response_evidence_v1(
     okx_code: str | None = None
     okx_msg: str | None = None
     parse_error: str | None = None
+    okx_data: list[dict[str, Any]] = []
+    okx_data_count: int | None = None
     try:
         payload = json.loads(raw.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
@@ -177,6 +300,15 @@ def extract_canary_http_response_evidence_v1(
             okx_code = str(payload.get("code"))[:_OKX_CODE_MAX_LEN]
         if payload.get("msg") is not None:
             okx_msg = str(payload.get("msg"))[:_OKX_MSG_MAX_LEN]
+        if "data" not in payload:
+            okx_data_count = None
+        elif not isinstance(payload.get("data"), list):
+            parse_error = parse_error or "OKX_DATA_NOT_ARRAY"
+            okx_data_count = None
+        else:
+            data_rows = payload.get("data")
+            okx_data_count = len(data_rows)
+            okx_data = [_extract_okx_order_data_entry_v1(item) for item in data_rows]
     location = sanitize_redirect_location_v1(
         redirect_location or headers_safe.get("Location") or headers_safe.get("location")
     )
@@ -184,6 +316,8 @@ def extract_canary_http_response_evidence_v1(
         "http_status": int(status_code),
         "okx_code": okx_code,
         "okx_msg": okx_msg,
+        "okx_data_count": okx_data_count,
+        "okx_data": okx_data,
         "content_type": content_type[:_CONTENT_TYPE_MAX_LEN] if content_type else None,
         "response_headers_safe": headers_safe,
         "json_parse_ok": json_parse_ok,

@@ -41,7 +41,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     LiveCanaryHttpResponseV1,
     LiveCanaryTransportV1,
     UrllibLiveCanaryTransportV1,
+    build_canary_submit_adjudication_evidence_v1,
     extract_canary_http_response_evidence_v1,
+    extract_canary_venue_native_request_evidence_v1,
     parse_json_object_v1,
     signed_wire_body_evidence_v1,
 )
@@ -140,6 +142,7 @@ def _entry_submit_returned_payload_v1(
     client: LiveCanaryHttpClientV1,
     signed_wire: Mapping[str, Any],
     http_evidence: Mapping[str, Any],
+    venue_native_request: Mapping[str, Any],
 ) -> dict[str, Any]:
     status = int(http_evidence.get("http_status") or response.status_code)
     redirectish = bool(http_evidence.get("redirect_status")) or (300 <= status < 400)
@@ -158,6 +161,10 @@ def _entry_submit_returned_payload_v1(
         canary_result = "ENTRY_SUBMIT_POST_REDIRECT_FAIL_CLOSED"
     else:
         canary_result = "ENTRY_SUBMIT_TRANSPORT_RETURNED"
+    adjudication = build_canary_submit_adjudication_evidence_v1(
+        http_evidence=http_evidence,
+        venue_native_request=venue_native_request,
+    )
     payload = {
         "ok": ok,
         "mode": "execute",
@@ -175,6 +182,8 @@ def _entry_submit_returned_payload_v1(
         "counters": client.counters.to_dict(),
         "http_status": status,
         "http_error_evidence": dict(http_evidence),
+        "venue_native_request_evidence": dict(venue_native_request),
+        "submit_adjudication_evidence": adjudication,
         "signed_wire_body_evidence": dict(signed_wire),
         "SIGNED_BODY_EQUALS_WIRE_BODY": bool(signed_wire.get("SIGNED_BODY_EQUALS_WIRE_BODY")),
         "OWNER_GO_CONSUMED": False,
@@ -345,6 +354,7 @@ def run_canary_submit_transport_v1(
         refuse_submit_unless_gates_pass_v1(submit_gate)
 
         body_text = serialize_signed_post_body_v1(plan.venue_native_payload)
+        venue_native_request = extract_canary_venue_native_request_evidence_v1(body_text=body_text)
         url = f"{client.rest_base.rstrip('/')}{ENDPOINT_SUBMIT}"
         headers = build_okx_live_canary_auth_headers_v1(
             handle=handle,
@@ -394,6 +404,17 @@ def run_canary_submit_transport_v1(
                     "BLIND_RETRY": False,
                     "plan": plan.to_dict(),
                     "counters": client.counters.to_dict(),
+                    "venue_native_request_evidence": dict(venue_native_request),
+                    "submit_adjudication_evidence": build_canary_submit_adjudication_evidence_v1(
+                        http_evidence={
+                            "http_status": None,
+                            "okx_code": None,
+                            "okx_msg": None,
+                            "okx_data_count": None,
+                            "okx_data": [],
+                        },
+                        venue_native_request=venue_native_request,
+                    ),
                     "OWNER_GO_CONSUMED": False,
                     "error": str(exc),
                 }
@@ -426,6 +447,7 @@ def run_canary_submit_transport_v1(
             client=client,
             signed_wire=signed_wire,
             http_evidence=http_evidence,
+            venue_native_request=venue_native_request,
         )
     finally:
         if created_handle and handle is not None:
