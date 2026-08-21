@@ -520,6 +520,7 @@ def test_lf04_offline_path_invokes_no_transport_and_is_not_wired() -> None:
     ):
         assert banned not in transport_src
         assert banned not in runner_src
-    assert "post_flatten_order" not in http_src
+    assert "post_flatten_order" in http_src
+    assert "CanaryFlattenHttpPermitV1" in http_src
     assert "CanaryFlattenSubmitPermitV1" not in http_src
     assert FLATTEN_LIMIT_PRICE_GATE_STATUS == "FAIL_CLOSED_UNTIL_SEPARATE_OWNER_GO"

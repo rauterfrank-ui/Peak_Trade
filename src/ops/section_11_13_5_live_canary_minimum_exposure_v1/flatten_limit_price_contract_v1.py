@@ -1,14 +1,15 @@
-"""Offline LF-05 flatten LIMIT price contract.
+"""Offline flatten LIMIT price policy.
 
-PATH B: necessary quote-selection, freshness, finite-bound, and tick-rounding
-semantics are not canonically proven. This module validates structured inputs
-and fail-closes. It never issues an operational price and never POSTs.
+Quote-locked, side-aware, fail-closed. Issues a LIMIT px from caller-supplied
+current bid/ask plus an explicit freshness threshold. Never POSTs, never
+invents MARKET, never uses a hardcoded freshness/deviation default, and does
+not prove live flatten.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal, ROUND_DOWN, ROUND_UP, InvalidOperation
 from math import isfinite
 from typing import Any
 
@@ -21,18 +22,24 @@ class LiveCanaryFlattenLimitPriceError(RuntimeError):
     """Fail-closed flatten LIMIT price-contract violation."""
 
 
-LF_05_IMPLEMENTATION_STATUS = "PARTIAL_FAIL_CLOSED_CONTRACT"
-FLATTEN_PRICE_POLICY_IMPLEMENTED = False
-FLATTEN_PRICE_POLICY_OPERATIONALLY_USABLE = False
-SIDE_AWARE_QUOTE_SELECTION_STATUS = "UNPROVEN"
-QUOTE_FRESHNESS_STATUS = "UNPROVEN"
-FINITE_PRICE_BOUND_STATUS = "UNPROVEN"
-TICK_NORMALIZATION_STATUS = "UNPROVEN"
+LF_05_IMPLEMENTATION_STATUS = "QUOTE_LOCKED_LIMIT_POLICY_V1"
+FLATTEN_PRICE_POLICY_IMPLEMENTED = True
+FLATTEN_PRICE_POLICY_FULLY_BOUND = False
+FLATTEN_PRICE_POLICY_OPERATIONALLY_USABLE = True
+SIDE_AWARE_QUOTE_SELECTION_STATUS = "IMPLEMENTED_BID_FOR_SELL_ASK_FOR_BUY"
+QUOTE_FRESHNESS_STATUS = "CALLER_THRESHOLD_REQUIRED_NO_CANONICAL_DEFAULT"
+FINITE_PRICE_BOUND_STATUS = "QUOTE_LOCKED_NO_EXTRA_DEVIATION"
+TICK_NORMALIZATION_STATUS = "IMPLEMENTED_SELL_ROUND_DOWN_BUY_ROUND_UP"
+FLATTEN_LIMIT_PRICE_GATE_BOUND = "QUOTE_LOCKED_LIMIT_ISSUED"
 LIVE_FLATTEN_PROVABILITY_STATUS = "UNPROVEN"
 LIFECYCLE_FLATTEN_RUNTIME_REACHABLE = False
 NETWORK_EFFECT_NONE = "none"
 ORDER_EFFECT_NONE = "none"
 ACCOUNT_MUTATION_EFFECT_NONE = "none"
+OWNER_BINDING_STILL_REQUIRED = (
+    "FRESHNESS_THRESHOLD_MS_CALLER_SUPPLIED_NO_CANONICAL_DEFAULT;"
+    "NO_OWNER_RATIFIED_EXTRA_DEVIATION_BOUND"
+)
 
 _ALLOWED_SIDES = frozenset({"BUY", "SELL"})
 
@@ -55,7 +62,7 @@ class FlattenPriceInputV1:
 
 @dataclass(frozen=True)
 class FlattenPricePermitV1:
-    """Not issuable while flatten LIMIT price policy remains unproven."""
+    """Offline LIMIT price permit. Not live-submit authorization."""
 
     flatten_side: str
     limit_price: str
@@ -63,14 +70,36 @@ class FlattenPricePermitV1:
     tick_sz: str
 
     def __post_init__(self) -> None:
-        raise LiveCanaryFlattenLimitPriceError(
-            "FLATTEN_PRICE_PERMIT_FORBIDDEN:" + LF_05_IMPLEMENTATION_STATUS
-        )
+        side = str(self.flatten_side or "").strip().upper()
+        quote_side = str(self.selected_quote_side or "").strip().upper()
+        if side not in _ALLOWED_SIDES:
+            raise LiveCanaryFlattenLimitPriceError("FLATTEN_PRICE_PERMIT_SIDE_INVALID")
+        if side == "SELL" and quote_side != "BID":
+            raise LiveCanaryFlattenLimitPriceError("FLATTEN_PRICE_PERMIT_QUOTE_SIDE_INVALID")
+        if side == "BUY" and quote_side != "ASK":
+            raise LiveCanaryFlattenLimitPriceError("FLATTEN_PRICE_PERMIT_QUOTE_SIDE_INVALID")
+        try:
+            px = Decimal(str(self.limit_price))
+            tick = Decimal(str(self.tick_sz))
+        except (InvalidOperation, TypeError, ValueError) as exc:
+            raise LiveCanaryFlattenLimitPriceError("FLATTEN_PRICE_PERMIT_NUMERIC_INVALID") from exc
+        if px <= 0 or tick <= 0:
+            raise LiveCanaryFlattenLimitPriceError("FLATTEN_PRICE_PERMIT_NUMERIC_INVALID")
+        if (px / tick).to_integral_value() * tick != px:
+            raise LiveCanaryFlattenLimitPriceError("FLATTEN_PRICE_PERMIT_NOT_ON_TICK")
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "flatten_side": self.flatten_side,
+            "limit_price": self.limit_price,
+            "selected_quote_side": self.selected_quote_side,
+            "tick_sz": self.tick_sz,
+        }
 
 
 @dataclass(frozen=True)
 class FlattenPriceDecisionV1:
-    """Offline price-contract result. Never a transport or execute authorization."""
+    """Offline price-contract result. Never a live execute authorization."""
 
     permit_issued: bool
     permit: FlattenPricePermitV1 | None
@@ -95,7 +124,7 @@ class FlattenPriceDecisionV1:
     def to_dict(self) -> dict[str, Any]:
         return {
             "permit_issued": self.permit_issued,
-            "permit": None,
+            "permit": None if self.permit is None else self.permit.to_dict(),
             "flatten_side": self.flatten_side,
             "selected_quote_side": self.selected_quote_side,
             "limit_price": self.limit_price,
@@ -180,10 +209,19 @@ def _expected_flatten_side(signed_pos: Decimal) -> str:
     return "SELL" if signed_pos > 0 else "BUY"
 
 
+def _quantize_to_tick(px: Decimal, tick: Decimal, *, flatten_side: str) -> Decimal | None:
+    steps = px / tick
+    rounding = ROUND_DOWN if flatten_side == "SELL" else ROUND_UP
+    quantized_steps = steps.to_integral_value(rounding=rounding)
+    if quantized_steps <= 0:
+        return None
+    return quantized_steps * tick
+
+
 def evaluate_canary_flatten_limit_price_contract_v1(
     price_input: FlattenPriceInputV1,
 ) -> FlattenPriceDecisionV1:
-    """Evaluate an offline flatten LIMIT price. Never issues a usable price."""
+    """Evaluate a quote-locked flatten LIMIT price. Never authorizes live submit."""
     side_raw = None if price_input.flatten_side is None else str(price_input.flatten_side).strip()
     side = side_raw.upper() if side_raw else None
     if side not in _ALLOWED_SIDES:
@@ -248,15 +286,54 @@ def evaluate_canary_flatten_limit_price_contract_v1(
     if quote_ts > eval_ts:
         return _rejected(reasons=("FUTURE_TIMESTAMP",), flatten_side=side)
 
-    policy_reasons: list[str] = []
-    if not _blank(price_input.freshness_threshold_ms):
-        policy_reasons.append("FRESHNESS_THRESHOLD_NOT_CANONICALLY_BOUND")
-    else:
-        policy_reasons.append("QUOTE_FRESHNESS_THRESHOLD_UNPROVEN")
     if not _blank(price_input.finite_bound) or not _blank(price_input.bound_kind):
-        policy_reasons.append("FINITE_BOUND_NOT_CANONICALLY_BOUND")
-    else:
-        policy_reasons.append("FINITE_PRICE_BOUND_UNPROVEN")
-    policy_reasons.append("SIDE_AWARE_QUOTE_SELECTION_UNPROVEN")
-    policy_reasons.append("TICK_NORMALIZATION_UNPROVEN")
-    return _rejected(reasons=tuple(policy_reasons), flatten_side=side)
+        return _rejected(reasons=("FINITE_BOUND_NOT_OWNER_RATIFIED",), flatten_side=side)
+
+    if _blank(price_input.freshness_threshold_ms):
+        return _rejected(reasons=("FRESHNESS_THRESHOLD_REQUIRED",), flatten_side=side)
+    threshold = _parse_timestamp_ms(str(price_input.freshness_threshold_ms))
+    if threshold == "MALFORMED":
+        return _rejected(reasons=("FRESHNESS_THRESHOLD_INVALID",), flatten_side=side)
+    assert isinstance(threshold, int)
+    age_ms = eval_ts - quote_ts
+    if age_ms > threshold:
+        return _rejected(reasons=("STALE_QUOTE",), flatten_side=side)
+
+    selected_quote = bid_parsed if side == "SELL" else ask_parsed
+    selected_quote_side = "BID" if side == "SELL" else "ASK"
+    quantized = _quantize_to_tick(selected_quote, tick_parsed, flatten_side=side)
+    if quantized is None:
+        return _rejected(reasons=("LIMIT_PRICE_NON_POSITIVE_AFTER_TICK",), flatten_side=side)
+    if side == "SELL" and quantized > bid_parsed:
+        return _rejected(reasons=("SELL_LIMIT_ABOVE_BID_AFTER_TICK",), flatten_side=side)
+    if side == "BUY" and quantized < ask_parsed:
+        return _rejected(reasons=("BUY_LIMIT_BELOW_ASK_AFTER_TICK",), flatten_side=side)
+
+    limit_price = format(quantized, "f")
+    permit = FlattenPricePermitV1(
+        flatten_side=side,
+        limit_price=limit_price,
+        selected_quote_side=selected_quote_side,
+        tick_sz=format(tick_parsed, "f"),
+    )
+    return FlattenPriceDecisionV1(
+        permit_issued=True,
+        permit=permit,
+        flatten_side=side,
+        selected_quote_side=selected_quote_side,
+        limit_price=limit_price,
+        reject_reasons=(),
+        operationally_usable=True,
+        implementation_status=LF_05_IMPLEMENTATION_STATUS,
+        quote_selection_status=SIDE_AWARE_QUOTE_SELECTION_STATUS,
+        freshness_status=QUOTE_FRESHNESS_STATUS,
+        finite_bound_status=FINITE_PRICE_BOUND_STATUS,
+        tick_normalization_status=TICK_NORMALIZATION_STATUS,
+        price_gate_status=FLATTEN_LIMIT_PRICE_GATE_BOUND,
+        submit_reachable=False,
+        network_effect=NETWORK_EFFECT_NONE,
+        order_effect=ORDER_EFFECT_NONE,
+        account_mutation_effect=ACCOUNT_MUTATION_EFFECT_NONE,
+        live_flatten_provability=LIVE_FLATTEN_PROVABILITY_STATUS,
+        lifecycle_flatten_runtime_reachable=LIFECYCLE_FLATTEN_RUNTIME_REACHABLE,
+    )

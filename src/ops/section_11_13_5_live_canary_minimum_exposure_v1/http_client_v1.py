@@ -268,6 +268,20 @@ class CanaryEntrySubmitPermitV1:
     kind: str = "ENTRY_SUBMIT"
 
 
+@dataclass(frozen=True)
+class CanaryFlattenHttpPermitV1:
+    """HTTP-layer flatten permit. Distinct from entry. Not live authorization."""
+
+    owner_go: str
+    clordid: str
+    permit_id: str
+    kind: str = "FLATTEN_SUBMIT"
+
+    def __post_init__(self) -> None:
+        if self.kind != "FLATTEN_SUBMIT":
+            raise LiveCanaryHttpError("FLATTEN_HTTP_PERMIT_KIND_INVALID")
+
+
 class LiveCanaryTransportV1(Protocol):
     transport_class: str
     venue_live_contact: bool
@@ -282,6 +296,7 @@ class LiveCanaryRequestCountersV1:
     write_request_count: int = 0
     order_request_count: int = 0
     entry_submit_count: int = 0
+    flatten_submit_count: int = 0
     cancel_request_count: int = 0
     amend_request_count: int = 0
     withdraw_request_count: int = 0
@@ -297,6 +312,7 @@ class LiveCanaryRequestCountersV1:
             "WRITE_REQUEST_COUNT": self.write_request_count,
             "ORDER_REQUEST_COUNT": self.order_request_count,
             "ENTRY_SUBMIT_COUNT": self.entry_submit_count,
+            "FLATTEN_SUBMIT_COUNT": self.flatten_submit_count,
             "CANCEL_REQUEST_COUNT": self.cancel_request_count,
             "AMEND_REQUEST_COUNT": self.amend_request_count,
             "WITHDRAW_REQUEST_COUNT": self.withdraw_request_count,
@@ -310,6 +326,16 @@ class LiveCanaryRequestCountersV1:
 
 def _endpoint_path_only(endpoint: str) -> str:
     return str(endpoint or "").strip().split("?", 1)[0]
+
+
+def _parse_json_object_or_error(body_text: str) -> dict[str, Any]:
+    try:
+        payload = json.loads(body_text)
+    except (TypeError, json.JSONDecodeError) as exc:
+        raise LiveCanaryHttpError("POST_BODY_NOT_JSON_OBJECT") from exc
+    if not isinstance(payload, dict):
+        raise LiveCanaryHttpError("POST_BODY_NOT_JSON_OBJECT")
+    return payload
 
 
 def assert_no_demo_simulation_headers_v1(headers: Mapping[str, str] | None) -> None:
@@ -361,8 +387,11 @@ class LiveCanaryHttpClientV1:
     timeout_seconds: float = 10.0
     counters: LiveCanaryRequestCountersV1 = field(default_factory=LiveCanaryRequestCountersV1)
     _entry_submitted: bool = field(default=False, init=False, repr=False)
+    _flatten_submitted: bool = field(default=False, init=False, repr=False)
     _bound_clordid: str | None = field(default=None, init=False, repr=False)
+    _bound_flatten_clordid: str | None = field(default=None, init=False, repr=False)
     _entry_send_attempted: bool = field(default=False, init=False, repr=False)
+    _flatten_send_attempted: bool = field(default=False, init=False, repr=False)
 
     def _build_request(
         self,
@@ -468,8 +497,17 @@ class LiveCanaryHttpClientV1:
         body_text: str,
         headers: Mapping[str, str],
     ) -> LiveCanaryHttpResponseV1:
+        flatten_kind = str(getattr(permit, "kind", "") or "")
+        if isinstance(permit, CanaryFlattenHttpPermitV1) or flatten_kind == "FLATTEN_SUBMIT":
+            raise LiveCanaryHttpError("FLATTEN_PERMIT_CANNOT_USE_ENTRY_TRANSPORT")
         if permit.kind != "ENTRY_SUBMIT":
             raise LiveCanaryHttpError("ENTRY_PERMIT_KIND_INVALID")
+        parsed_body = _parse_json_object_or_error(body_text)
+        if parsed_body.get("reduceOnly") is True:
+            raise LiveCanaryHttpError("ENTRY_REDUCE_ONLY_FORBIDDEN")
+        entry_ord_type = str(parsed_body.get("ordType") or "").strip().lower()
+        if entry_ord_type and entry_ord_type != "limit":
+            raise LiveCanaryHttpError("ENTRY_MARKET_FORBIDDEN")
         if self._entry_submitted or self.counters.entry_submit_count >= 1:
             raise LiveCanaryHttpError("DUPLICATE_ENTRY_SUBMIT_FORBIDDEN")
         if self._entry_send_attempted:
@@ -504,6 +542,72 @@ class LiveCanaryHttpClientV1:
         self.counters.endpoints_used.append(ENDPOINT_SUBMIT)
         self.counters.http_result_classes.append(classify_http_result_v1(response.status_code))
         self._entry_submitted = True
+        if response.method != "POST":
+            raise LiveCanaryHttpError("TRANSPORT_RETURNED_NON_POST")
+        if response.redirect_followed:
+            raise LiveCanaryHttpError("POST_REDIRECT_FOLLOWED_FORBIDDEN")
+        return replace(
+            response,
+            elapsed_seconds=elapsed,
+            endpoint=ENDPOINT_SUBMIT,
+            method="POST",
+            send_attempted=True,
+        )
+
+    def post_flatten_order(
+        self,
+        *,
+        permit: CanaryFlattenHttpPermitV1,
+        body_text: str,
+        headers: Mapping[str, str],
+    ) -> LiveCanaryHttpResponseV1:
+        if not isinstance(permit, CanaryFlattenHttpPermitV1) or permit.kind != "FLATTEN_SUBMIT":
+            raise LiveCanaryHttpError("FLATTEN_HTTP_PERMIT_KIND_INVALID")
+        if isinstance(permit, CanaryEntrySubmitPermitV1) and permit.kind == "ENTRY_SUBMIT":
+            raise LiveCanaryHttpError("ENTRY_PERMIT_CANNOT_USE_FLATTEN_TRANSPORT")
+        parsed_body = _parse_json_object_or_error(body_text)
+        if parsed_body.get("reduceOnly") is not True:
+            raise LiveCanaryHttpError("FLATTEN_REDUCE_ONLY_REQUIRED")
+        if str(parsed_body.get("ordType") or "").lower() != "limit":
+            raise LiveCanaryHttpError("FLATTEN_MARKET_FORBIDDEN")
+        if not str(parsed_body.get("px") or "").strip():
+            raise LiveCanaryHttpError("FLATTEN_LIMIT_PX_REQUIRED")
+        if self._flatten_submitted or self.counters.flatten_submit_count >= 1:
+            raise LiveCanaryHttpError("DUPLICATE_FLATTEN_SUBMIT_FORBIDDEN")
+        if self._flatten_send_attempted:
+            raise LiveCanaryHttpError("UNKNOWN_FLATTEN_SUBMIT_NO_BLIND_RETRY")
+        if self._bound_flatten_clordid and self._bound_flatten_clordid != permit.clordid:
+            raise LiveCanaryHttpError("FLATTEN_CLORDID_REBIND_FORBIDDEN")
+        self._bound_flatten_clordid = permit.clordid
+        request = self._build_request(
+            method="POST",
+            endpoint=ENDPOINT_SUBMIT,
+            headers=headers,
+            body_text=body_text,
+        )
+        if "/trade/close-position" in str(request.endpoint).lower():
+            raise LiveCanaryHttpError("CLOSE_POSITION_ENDPOINT_FORBIDDEN")
+        self._flatten_send_attempted = True
+        try:
+            started = time.monotonic()
+            response = self.transport.send(request)
+            elapsed = time.monotonic() - started
+        except TimeoutError as exc:
+            self.counters.write_request_count += 1
+            self.counters.order_request_count += 1
+            raise LiveCanaryHttpError("UNKNOWN_FLATTEN_SUBMIT_TIMEOUT") from exc
+        except (URLError, OSError) as exc:
+            self.counters.write_request_count += 1
+            self.counters.order_request_count += 1
+            raise LiveCanaryHttpError("UNKNOWN_FLATTEN_SUBMIT_NETWORK") from exc
+        self.counters.request_count += 1
+        self.counters.write_request_count += 1
+        self.counters.order_request_count += 1
+        self.counters.flatten_submit_count += 1
+        self.counters.methods_used.append("POST")
+        self.counters.endpoints_used.append(ENDPOINT_SUBMIT)
+        self.counters.http_result_classes.append(classify_http_result_v1(response.status_code))
+        self._flatten_submitted = True
         if response.method != "POST":
             raise LiveCanaryHttpError("TRANSPORT_RETURNED_NON_POST")
         if response.redirect_followed:

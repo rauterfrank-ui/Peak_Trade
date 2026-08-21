@@ -120,6 +120,7 @@ FORBIDDEN_MUTATION_ENDPOINT_MARKERS: tuple[str, ...] = (
     "/account/set-",
     "withdraw",
     "transfer",
+    "/trade/close-position",
 )
 
 FORBIDDEN_DEMO_SIMULATION_HEADERS: tuple[str, ...] = (

@@ -1,8 +1,9 @@
-"""LF-05 offline flatten LIMIT price-contract tests. No network, no submit."""
+"""LF-05 quote-locked flatten LIMIT price-policy tests. No network, no submit."""
 
 from __future__ import annotations
 
 import inspect
+from decimal import Decimal
 from typing import Any
 
 import pytest
@@ -23,6 +24,8 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_limit_price_contract_v1 import (
     ACCOUNT_MUTATION_EFFECT_NONE,
     FINITE_PRICE_BOUND_STATUS,
+    FLATTEN_LIMIT_PRICE_GATE_BOUND,
+    FLATTEN_PRICE_POLICY_FULLY_BOUND,
     FLATTEN_PRICE_POLICY_IMPLEMENTED,
     FLATTEN_PRICE_POLICY_OPERATIONALLY_USABLE,
     LF_05_IMPLEMENTATION_STATUS,
@@ -30,6 +33,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_limit_price
     LIVE_FLATTEN_PROVABILITY_STATUS,
     NETWORK_EFFECT_NONE,
     ORDER_EFFECT_NONE,
+    OWNER_BINDING_STILL_REQUIRED,
     QUOTE_FRESHNESS_STATUS,
     SIDE_AWARE_QUOTE_SELECTION_STATUS,
     TICK_NORMALIZATION_STATUS,
@@ -62,6 +66,7 @@ ORIGIN_SHA = "c6e4400c33fa3b4eb31dff202c936a61272486ed"
 TARGET = DEFAULT_INSTRUMENT_ID
 QUOTE_TS = "1787145055768"
 EVAL_TS = "1787145056000"
+CALLER_FRESHNESS_MS = "5000"
 
 
 def _complete(**overrides: Any) -> FlattenPriceInputV1:
@@ -73,49 +78,58 @@ def _complete(**overrides: Any) -> FlattenPriceInputV1:
         "quote_timestamp_ms": QUOTE_TS,
         "evaluation_timestamp_ms": EVAL_TS,
         "tick_sz": "0.1",
+        "freshness_threshold_ms": CALLER_FRESHNESS_MS,
     }
     payload.update(overrides)
     return FlattenPriceInputV1(**payload)
 
 
-def _assert_fail_closed(decision: FlattenPriceDecisionV1) -> None:
+def _assert_rejected(decision: FlattenPriceDecisionV1, reason: str) -> None:
     assert decision.permit_issued is False
     assert decision.permit is None
     assert decision.limit_price is None
     assert decision.selected_quote_side is None
     assert decision.operationally_usable is False
     assert decision.submit_reachable is False
-    assert decision.implementation_status == LF_05_IMPLEMENTATION_STATUS
-    assert decision.quote_selection_status == SIDE_AWARE_QUOTE_SELECTION_STATUS == "UNPROVEN"
-    assert decision.freshness_status == QUOTE_FRESHNESS_STATUS == "UNPROVEN"
-    assert decision.finite_bound_status == FINITE_PRICE_BOUND_STATUS == "UNPROVEN"
-    assert decision.tick_normalization_status == TICK_NORMALIZATION_STATUS == "UNPROVEN"
-    assert decision.price_gate_status == FLATTEN_LIMIT_PRICE_GATE_STATUS
+    assert decision.live_flatten_provability == LIVE_FLATTEN_PROVABILITY_STATUS == "UNPROVEN"
+    assert decision.lifecycle_flatten_runtime_reachable is False
     assert decision.network_effect == NETWORK_EFFECT_NONE == "none"
     assert decision.order_effect == ORDER_EFFECT_NONE == "none"
     assert decision.account_mutation_effect == ACCOUNT_MUTATION_EFFECT_NONE == "none"
-    assert decision.live_flatten_provability == LIVE_FLATTEN_PROVABILITY_STATUS == "UNPROVEN"
-    assert decision.lifecycle_flatten_runtime_reachable is False
-    assert FLATTEN_PRICE_POLICY_IMPLEMENTED is False
-    assert FLATTEN_PRICE_POLICY_OPERATIONALLY_USABLE is False
-    assert LIFECYCLE_FLATTEN_RUNTIME_REACHABLE is False
+    assert reason in decision.reject_reasons
 
 
-CASE_MATRIX: list[tuple[str, FlattenPriceInputV1, str]] = [
-    ("LONG_POSITION_SELL_SELECTION", _complete(), "QUOTE_FRESHNESS_THRESHOLD_UNPROVEN"),
-    (
-        "SHORT_POSITION_BUY_SELECTION",
-        _complete(flatten_side="BUY", observed_signed_pos="-2"),
-        "QUOTE_FRESHNESS_THRESHOLD_UNPROVEN",
-    ),
+def _assert_issued(
+    decision: FlattenPriceDecisionV1,
+    *,
+    side: str,
+    quote_side: str,
+    px: str,
+) -> None:
+    assert decision.permit_issued is True
+    assert decision.permit is not None
+    assert decision.flatten_side == side
+    assert decision.selected_quote_side == quote_side
+    assert decision.limit_price == px
+    assert decision.permit.limit_price == px
+    assert decision.permit.flatten_side == side
+    assert decision.operationally_usable is True
+    assert decision.submit_reachable is False
+    assert decision.price_gate_status == FLATTEN_LIMIT_PRICE_GATE_BOUND
+    assert decision.live_flatten_provability == "UNPROVEN"
+    assert FLATTEN_PRICE_POLICY_IMPLEMENTED is True
+    assert FLATTEN_PRICE_POLICY_OPERATIONALLY_USABLE is True
+    assert FLATTEN_PRICE_POLICY_FULLY_BOUND is False
+
+
+REJECT_MATRIX: list[tuple[str, FlattenPriceInputV1, str]] = [
     ("QUOTE_MISSING", _complete(bid=None, ask=None), "QUOTE_MISSING"),
     ("BID_MISSING", _complete(bid=None), "BID_MISSING"),
     ("ASK_MISSING", _complete(ask=""), "ASK_MISSING"),
     ("MALFORMED_QUOTE", _complete(bid="not-a-price"), "MALFORMED_QUOTE"),
     ("NON_FINITE_QUOTE", _complete(ask="inf"), "NON_FINITE_QUOTE"),
     ("ZERO_OR_NEGATIVE_QUOTE", _complete(bid="0"), "ZERO_OR_NEGATIVE_QUOTE"),
-    ("FRESH_QUOTE", _complete(), "QUOTE_FRESHNESS_THRESHOLD_UNPROVEN"),
-    ("STALE_QUOTE", _complete(quote_timestamp_ms="1000"), "QUOTE_FRESHNESS_THRESHOLD_UNPROVEN"),
+    ("NEGATIVE_QUOTE", _complete(ask="-1"), "ZERO_OR_NEGATIVE_QUOTE"),
     ("FRESHNESS_UNKNOWN", _complete(quote_timestamp_ms=None), "FRESHNESS_UNKNOWN"),
     ("MALFORMED_TIMESTAMP", _complete(evaluation_timestamp_ms="later"), "MALFORMED_TIMESTAMP"),
     (
@@ -123,27 +137,8 @@ CASE_MATRIX: list[tuple[str, FlattenPriceInputV1, str]] = [
         _complete(quote_timestamp_ms="1787145057000", evaluation_timestamp_ms=QUOTE_TS),
         "FUTURE_TIMESTAMP",
     ),
-    ("TICK_SIZE_VALID", _complete(tick_sz="0.1"), "QUOTE_FRESHNESS_THRESHOLD_UNPROVEN"),
     ("TICK_SIZE_MISSING", _complete(tick_sz=None), "TICK_SIZE_MISSING"),
     ("TICK_SIZE_INVALID", _complete(tick_sz="-0.1"), "TICK_SIZE_INVALID"),
-    (
-        "BUY_TICK_NORMALIZATION",
-        _complete(flatten_side="BUY", observed_signed_pos="-1"),
-        "TICK_NORMALIZATION_UNPROVEN",
-    ),
-    ("SELL_TICK_NORMALIZATION", _complete(), "TICK_NORMALIZATION_UNPROVEN"),
-    ("FINITE_BOUND_VALID", _complete(), "FINITE_PRICE_BOUND_UNPROVEN"),
-    (
-        "FINITE_BOUND_MISSING",
-        _complete(finite_bound=None, bound_kind=None),
-        "FINITE_PRICE_BOUND_UNPROVEN",
-    ),
-    (
-        "FINITE_BOUND_EXCEEDED",
-        _complete(finite_bound="1", bound_kind="TICKS"),
-        "FINITE_BOUND_NOT_CANONICALLY_BOUND",
-    ),
-    ("ROUNDING_CAUSES_BOUND_VIOLATION", _complete(), "TICK_NORMALIZATION_UNPROVEN"),
     ("UNKNOWN_SIDE", _complete(flatten_side="FLAT"), "UNKNOWN_SIDE"),
     ("ZERO_POSITION", _complete(observed_signed_pos="0"), "ZERO_POSITION"),
     (
@@ -151,33 +146,82 @@ CASE_MATRIX: list[tuple[str, FlattenPriceInputV1, str]] = [
         _complete(flatten_side="BUY", observed_signed_pos="1"),
         "INCONSISTENT_POSITION",
     ),
-    ("DETERMINISTIC_REPEAT", _complete(), "QUOTE_FRESHNESS_THRESHOLD_UNPROVEN"),
+    (
+        "FRESHNESS_THRESHOLD_REQUIRED",
+        _complete(freshness_threshold_ms=None),
+        "FRESHNESS_THRESHOLD_REQUIRED",
+    ),
+    (
+        "FRESHNESS_THRESHOLD_INVALID",
+        _complete(freshness_threshold_ms="nope"),
+        "FRESHNESS_THRESHOLD_INVALID",
+    ),
+    ("STALE_QUOTE", _complete(quote_timestamp_ms="1000"), "STALE_QUOTE"),
+    (
+        "FINITE_BOUND_NOT_OWNER_RATIFIED",
+        _complete(finite_bound="10", bound_kind="TICKS"),
+        "FINITE_BOUND_NOT_OWNER_RATIFIED",
+    ),
 ]
 
 
 @pytest.mark.parametrize(
     ("case", "price_input", "expected_reason"),
-    CASE_MATRIX,
-    ids=[row[0] for row in CASE_MATRIX],
+    REJECT_MATRIX,
+    ids=[row[0] for row in REJECT_MATRIX],
 )
-def test_lf05_price_contract_fail_closed_matrix(
+def test_lf05_price_contract_rejects_invalid_inputs(
     case: str,
     price_input: FlattenPriceInputV1,
     expected_reason: str,
 ) -> None:
+    del case
     decision = evaluate_canary_flatten_limit_price_contract_v1(price_input)
-    _assert_fail_closed(decision)
-    assert expected_reason in decision.reject_reasons
-    if case == "LONG_POSITION_SELL_SELECTION":
-        assert decision.flatten_side == "SELL"
-    if case == "SHORT_POSITION_BUY_SELECTION":
-        assert decision.flatten_side == "BUY"
-    if case == "DETERMINISTIC_REPEAT":
-        again = evaluate_canary_flatten_limit_price_contract_v1(price_input)
-        assert again.to_dict() == decision.to_dict()
+    _assert_rejected(decision, expected_reason)
 
 
-def test_long_observed_position_still_maps_to_sell_without_price_permit() -> None:
+def test_long_position_issues_sell_limit_at_bid() -> None:
+    decision = evaluate_canary_flatten_limit_price_contract_v1(_complete())
+    _assert_issued(decision, side="SELL", quote_side="BID", px="64805.6")
+
+
+def test_short_position_issues_buy_limit_at_ask() -> None:
+    decision = evaluate_canary_flatten_limit_price_contract_v1(
+        _complete(flatten_side="BUY", observed_signed_pos="-2")
+    )
+    _assert_issued(decision, side="BUY", quote_side="ASK", px="64805.7")
+
+
+def test_sell_tick_rounding_rounds_down() -> None:
+    decision = evaluate_canary_flatten_limit_price_contract_v1(_complete(bid="64805.65"))
+    _assert_issued(decision, side="SELL", quote_side="BID", px="64805.6")
+    assert Decimal(decision.limit_price) <= Decimal("64805.65")
+
+
+def test_buy_tick_rounding_rounds_up() -> None:
+    decision = evaluate_canary_flatten_limit_price_contract_v1(
+        _complete(flatten_side="BUY", observed_signed_pos="-1", ask="64805.65")
+    )
+    _assert_issued(decision, side="BUY", quote_side="ASK", px="64805.7")
+    assert Decimal(decision.limit_price) >= Decimal("64805.65")
+
+
+def test_non_finite_bid_rejected() -> None:
+    decision = evaluate_canary_flatten_limit_price_contract_v1(_complete(bid="NaN"))
+    _assert_rejected(decision, "NON_FINITE_QUOTE")
+
+
+def test_missing_freshness_threshold_rejected_without_invented_default() -> None:
+    src = inspect.getsource(evaluate_canary_flatten_limit_price_contract_v1)
+    assert "5000" not in src
+    decision = evaluate_canary_flatten_limit_price_contract_v1(
+        _complete(freshness_threshold_ms=None)
+    )
+    _assert_rejected(decision, "FRESHNESS_THRESHOLD_REQUIRED")
+    assert "FRESHNESS_THRESHOLD_MS" in OWNER_BINDING_STILL_REQUIRED
+
+
+def test_observed_long_maps_to_sell_with_price_permit() -> None:
     observed = observe_target_position_flatten_candidate_v1(
         positions_payload={"code": "0", "data": [{"instId": TARGET, "pos": "2"}]},
     )
@@ -185,12 +229,10 @@ def test_long_observed_position_still_maps_to_sell_without_price_permit() -> Non
     decision = evaluate_canary_flatten_limit_price_contract_v1(
         _complete(flatten_side=observed.candidate_flatten_side, observed_signed_pos="2")
     )
-    _assert_fail_closed(decision)
-    assert decision.flatten_side == "SELL"
-    assert "SIDE_AWARE_QUOTE_SELECTION_UNPROVEN" in decision.reject_reasons
+    _assert_issued(decision, side="SELL", quote_side="BID", px="64805.6")
 
 
-def test_short_observed_position_still_maps_to_buy_without_price_permit() -> None:
+def test_observed_short_maps_to_buy_with_price_permit() -> None:
     observed = observe_target_position_flatten_candidate_v1(
         positions_payload={"code": "0", "data": [{"instId": TARGET, "pos": "-3"}]},
     )
@@ -198,41 +240,34 @@ def test_short_observed_position_still_maps_to_buy_without_price_permit() -> Non
     decision = evaluate_canary_flatten_limit_price_contract_v1(
         _complete(flatten_side="BUY", observed_signed_pos="-3")
     )
-    _assert_fail_closed(decision)
-    assert decision.flatten_side == "BUY"
+    _assert_issued(decision, side="BUY", quote_side="ASK", px="64805.7")
 
 
-def test_invented_freshness_threshold_and_bound_are_rejected() -> None:
-    decision = evaluate_canary_flatten_limit_price_contract_v1(
-        _complete(freshness_threshold_ms="5000", finite_bound="10", bound_kind="TICKS")
-    )
-    _assert_fail_closed(decision)
-    assert "FRESHNESS_THRESHOLD_NOT_CANONICALLY_BOUND" in decision.reject_reasons
-    assert "FINITE_BOUND_NOT_CANONICALLY_BOUND" in decision.reject_reasons
-    assert decision.permit_issued is False
+def test_deterministic_repeat_for_issued_permit() -> None:
+    first = evaluate_canary_flatten_limit_price_contract_v1(_complete())
+    second = evaluate_canary_flatten_limit_price_contract_v1(_complete())
+    assert first.to_dict() == second.to_dict()
 
 
-def test_price_permit_type_cannot_be_constructed() -> None:
-    with pytest.raises(LiveCanaryFlattenLimitPriceError, match="FLATTEN_PRICE_PERMIT_FORBIDDEN"):
-        FlattenPricePermitV1(
-            flatten_side="SELL",
-            limit_price="64805.6",
-            selected_quote_side="BID",
-            tick_sz="0.1",
-        )
-
-
-def test_existing_flatten_serialization_remains_unbound() -> None:
+def test_naked_px_without_permit_still_unbound() -> None:
     verdict = evaluate_canary_flatten_orchestration_contract_v1(
         positions_payload={"code": "0", "data": [{"instId": TARGET, "pos": "1"}]},
         owner_go=OWNER_GO,
         origin_main_sha=ORIGIN_SHA,
     )
-    assert verdict.permit_issued is True
-    assert verdict.submit_reachable is False
     assert verdict.flatten_plan is not None
     with pytest.raises(LiveCanaryOrderPlanError, match="FLATTEN_LIMIT_PRICE_POLICY_UNBOUND"):
         serialize_canary_flatten_venue_native_payload_v1(verdict.flatten_plan, px="64805.6")
+
+
+def test_malformed_direct_permit_construction_rejected() -> None:
+    with pytest.raises(LiveCanaryFlattenLimitPriceError, match="FLATTEN_PRICE_PERMIT"):
+        FlattenPricePermitV1(
+            flatten_side="SELL",
+            limit_price="64805.6",
+            selected_quote_side="ASK",
+            tick_sz="0.1",
+        )
 
 
 def test_entry_semantics_and_policy_surfaces_unchanged() -> None:
@@ -259,18 +294,22 @@ def test_entry_semantics_and_policy_surfaces_unchanged() -> None:
     lifecycle = build_lifecycle_and_closeout_contract_v1()
     assert lifecycle["ACTIVATED"] is False
     assert lifecycle["order_type_semantics"] == "LIMIT_ONLY_NO_MARKET"
+    assert LF_05_IMPLEMENTATION_STATUS == "QUOTE_LOCKED_LIMIT_POLICY_V1"
+    assert SIDE_AWARE_QUOTE_SELECTION_STATUS == "IMPLEMENTED_BID_FOR_SELL_ASK_FOR_BUY"
+    assert QUOTE_FRESHNESS_STATUS == "CALLER_THRESHOLD_REQUIRED_NO_CANONICAL_DEFAULT"
+    assert FINITE_PRICE_BOUND_STATUS == "QUOTE_LOCKED_NO_EXTRA_DEVIATION"
+    assert TICK_NORMALIZATION_STATUS == "IMPLEMENTED_SELL_ROUND_DOWN_BUY_ROUND_UP"
+    assert LIFECYCLE_FLATTEN_RUNTIME_REACHABLE is False
 
 
-def test_lf05_offline_path_is_not_wired_into_transport_or_runner() -> None:
+def test_lf05_offline_path_is_not_wired_into_entry_transport_or_runner() -> None:
     from src.ops.section_11_13_5_live_canary_minimum_exposure_v1 import (
         flatten_limit_price_contract_v1,
-        http_client_v1,
         runner_v1,
     )
 
     src = inspect.getsource(flatten_limit_price_contract_v1)
     transport_src = inspect.getsource(run_canary_submit_transport_v1)
-    http_src = inspect.getsource(http_client_v1)
     runner_src = inspect.getsource(runner_v1)
     assert "urllib" not in src
     assert "post_flatten_order" not in src
@@ -282,4 +321,4 @@ def test_lf05_offline_path_is_not_wired_into_transport_or_runner() -> None:
     ):
         assert banned not in transport_src
         assert banned not in runner_src
-        assert banned not in http_src
+    assert FLATTEN_LIMIT_PRICE_GATE_STATUS == "FAIL_CLOSED_UNTIL_SEPARATE_OWNER_GO"
