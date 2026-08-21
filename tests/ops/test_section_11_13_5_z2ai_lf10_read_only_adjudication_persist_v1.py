@@ -323,6 +323,6 @@ def test_z2ai_map_of_truth_navigation_pointer_matches_runbook() -> None:
     assert "Z2AH_API_EXECUTION_DENOMINATION_PROVEN" not in current_pointer
     assert "Z2AJ_PUBLIC_CONVERSION_CANDIDATE" not in current_pointer
     assert "Z2AL_STATIC_FLATTEN_PREREQUISITES" not in current_pointer
-    assert "Z2AO_EXTRA_DEVIATION_BOUND_NOT_REQUIRED" in current_pointer
+    assert "Z2AP_OFFLINE_POST_ACTION_PROOF_CONTRACT_BOUND" in current_pointer
     assert "NO_ORDER_COUNT_LIMIT_RAISE_TO_2" in current_pointer
     assert "NO_PRODUCTIVE_FLATTEN" in current_pointer

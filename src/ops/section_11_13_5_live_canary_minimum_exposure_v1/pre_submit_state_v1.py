@@ -72,6 +72,40 @@ def _signed_observed_pos(row: Mapping[str, Any]) -> Decimal:
         raise LiveCanaryPositionObservationError("POSITION_SIZE_UNPARSEABLE") from exc
 
 
+def signed_nonzero_positions_by_instrument_v1(
+    positions_payload: Mapping[str, Any],
+) -> dict[str, Decimal]:
+    """Map instId → signed pos for every nonzero row. Ambiguous instIds fail closed."""
+    rows = _rows(positions_payload)
+    out: dict[str, Decimal] = {}
+    seen: dict[str, int] = {}
+    for row in rows:
+        inst = str(row.get("instId") or "").strip()
+        if not inst:
+            raise LiveCanaryPositionObservationError("POSITION_INSTID_MISSING")
+        seen[inst] = seen.get(inst, 0) + 1
+        signed = _signed_observed_pos(row)
+        if signed == 0:
+            continue
+        out[inst] = signed
+    for inst, count in seen.items():
+        if count != 1:
+            raise LiveCanaryPositionObservationError("AMBIGUOUS_TARGET_POSITION_ROWS")
+    return out
+
+
+def open_order_instruments_v1(pending_orders_payload: Mapping[str, Any]) -> tuple[str, ...]:
+    """Return instIds of open orders. Malformed pending payloads fail closed."""
+    rows = _rows(pending_orders_payload)
+    instruments: list[str] = []
+    for row in rows:
+        inst = str(row.get("instId") or row.get("instID") or "").strip()
+        if not inst:
+            raise LiveCanaryPreSubmitStateError("OPEN_ORDER_INSTID_MISSING")
+        instruments.append(inst)
+    return tuple(instruments)
+
+
 def observe_target_position_flatten_candidate_v1(
     *,
     positions_payload: Mapping[str, Any],
