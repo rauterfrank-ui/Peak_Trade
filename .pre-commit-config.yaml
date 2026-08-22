@@ -24,14 +24,20 @@ repos:
     hooks:
       # KILLER FEATURE: verhindert "new blank line at EOF" Noise zuverlässig.
       - id: end-of-file-fixer
+        exclude: |
+          (?x)^(forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/(desktop|transcripts)/.*)$
 
       # Trim trailing whitespace; behält Markdown-Linebreaks ("two spaces") bei.
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md, --markdown-linebreak-ext=markdown]
+        exclude: |
+          (?x)^(forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/(desktop|transcripts)/.*)$
 
       # Einheitliche Line Endings (LF) erzwingen.
       - id: mixed-line-ending
         args: [--fix=lf]
+        exclude: |
+          (?x)^(forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/(desktop|transcripts)/.*)$
 
       # Kleiner Safety-Net-Stack (low noise, high value)
       - id: check-merge-conflict
