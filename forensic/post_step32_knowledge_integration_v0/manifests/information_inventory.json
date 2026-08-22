@@ -1,0 +1,258 @@
+{
+  "ARTIFACT_AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "SECOND_SSOT": false,
+  "MASTER_RUNBOOK_REMAINS_SOLE_SSOT": true,
+  "NOT_CANONICAL": true,
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "DOCUMENT_CLASS": "NON_AUTHORITATIVE_INFORMATION_INVENTORY",
+  "epistemic_class": "NAVIGATION_INDEX",
+  "PRODUCT_A_ALONE_CAN_RECONSTRUCT_ALL_EVIDENCE": false,
+  "items": [
+    {
+      "id": "I_TARGET_BYTES",
+      "source": "SRC_TARGET",
+      "source_identity": "08ffe7bc…5092",
+      "information_item": "original TARGET bytes including LF ownership and final LF",
+      "epistemic_class": "RAW_VERBATIM_EVIDENCE",
+      "chronology": "current captured identity",
+      "adjudication": "identity remeasured",
+      "dependencies": [],
+      "worktree": "evidence desktop identity copy",
+      "if_only_product_a": "LOST"
+    },
+    {
+      "id": "I_TARGET_PHYSICAL_LINE_ORDER",
+      "source": "SRC_TARGET",
+      "source_identity": "08ffe7bc…5092",
+      "information_item": "30870 LF-delimited physical lines",
+      "epistemic_class": "RAW_VERBATIM_EVIDENCE",
+      "chronology": "current",
+      "adjudication": "counted",
+      "dependencies": [
+        "I_TARGET_BYTES"
+      ],
+      "worktree": "same identity copy"
+    },
+    {
+      "id": "I_PRODUCT_A_OBJECT",
+      "source": "SRC_PRODUCT_A",
+      "source_identity": "e5da88ab…9c91",
+      "information_item": "complete 8-root JSON object",
+      "epistemic_class": "RAW_VERBATIM_EVIDENCE",
+      "chronology": "STEP21 current structured inventory",
+      "adjudication": "identity remeasured",
+      "dependencies": [
+        "SRC_STEP17 historically"
+      ],
+      "worktree": "evidence desktop identity copy"
+    },
+    {
+      "id": "I_STEP15_CONTRACT",
+      "source": "SRC_STEP15",
+      "source_identity": "63829882…7b83",
+      "information_item": "full transformation invariant contract including all FORBID_ lines",
+      "epistemic_class": "TRANSFORMATION_OR_IMPLEMENTATION_CONTRACT",
+      "chronology": "STEP15 still binding",
+      "adjudication": "not re-opened",
+      "dependencies": [],
+      "worktree": "identity copy + manifests/step15_forbid_index.json NAVIGATION only"
+    },
+    {
+      "id": "I_STEP8_BYTES",
+      "source": "SRC_STEP8",
+      "source_identity": "824f4c2c…8d7d",
+      "information_item": "historical output candidate bytes",
+      "epistemic_class": "HISTORICAL_INTERMEDIATE_STATE",
+      "chronology": "historical",
+      "adjudication": "identity only",
+      "dependencies": [],
+      "worktree": "identity copy; no curated promotion"
+    },
+    {
+      "id": "I_STEP9_BYTES",
+      "source": "SRC_STEP9",
+      "source_identity": "53a0f29f…bdd8",
+      "information_item": "historical production transformation including chrome that preview may omit",
+      "epistemic_class": "HISTORICAL_INTERMEDIATE_STATE",
+      "chronology": "historical",
+      "adjudication": "identity only",
+      "dependencies": [],
+      "worktree": "identity copy"
+    },
+    {
+      "id": "I_STEP13_BYTES",
+      "source": "SRC_STEP13",
+      "source_identity": "ba1a7d84…40da",
+      "information_item": "historical preview inventory",
+      "epistemic_class": "HISTORICAL_INTERMEDIATE_STATE",
+      "chronology": "historical",
+      "adjudication": "identity only",
+      "dependencies": [
+        "SRC_STEP9"
+      ],
+      "worktree": "identity copy"
+    },
+    {
+      "id": "I_STEP17_BYTES",
+      "source": "SRC_STEP17",
+      "source_identity": "f5bf2b0f…5f3a",
+      "information_item": "historical structured candidate",
+      "epistemic_class": "HISTORICAL_INTERMEDIATE_STATE",
+      "chronology": "historical",
+      "adjudication": "identity only",
+      "dependencies": [
+        "SRC_STEP13"
+      ],
+      "worktree": "identity copy"
+    },
+    {
+      "id": "I_TX_STEP30",
+      "source": "SRC_STEP30",
+      "source_identity": "98deeee7…68d9",
+      "information_item": "STEP30 specification stdout including I/T/R classes and U_P* openings",
+      "epistemic_class": "RAW_VERBATIM_EVIDENCE",
+      "chronology": "closed operation still binding as spec",
+      "adjudication": "curated findings point here",
+      "dependencies": [],
+      "worktree": "transcript identity copy"
+    },
+    {
+      "id": "I_TX_STEP31",
+      "source": "SRC_STEP31",
+      "source_identity": "3d344528…12eed2",
+      "information_item": "STEP31 adversarial in-memory tests and negative results",
+      "epistemic_class": "RAW_VERBATIM_EVIDENCE",
+      "chronology": "closed",
+      "adjudication": "negative results preserved",
+      "dependencies": [
+        "I_TX_STEP30"
+      ],
+      "worktree": "transcript identity copy"
+    },
+    {
+      "id": "I_TX_STEP32",
+      "source": "SRC_STEP32",
+      "source_identity": "4f9e21e6…0c393",
+      "information_item": "STEP32 materialization specification; T17; sequence closed",
+      "epistemic_class": "RAW_VERBATIM_EVIDENCE",
+      "chronology": "closed numbered sequence",
+      "adjudication": "binding spec",
+      "dependencies": [
+        "I_TX_STEP31"
+      ],
+      "worktree": "transcript identity copy"
+    },
+    {
+      "id": "I_TX_POST32",
+      "source": "SRC_POST32_READINESS",
+      "source_identity": "61d04bb8…894b",
+      "information_item": "readiness adjudication READY_FOR_FILE_WRITE=false for MD",
+      "epistemic_class": "RAW_VERBATIM_EVIDENCE",
+      "chronology": "closed post-step32",
+      "adjudication": "binding",
+      "dependencies": [
+        "I_TX_STEP32"
+      ],
+      "worktree": "transcript identity copy"
+    },
+    {
+      "id": "I_TX_DISCOVERY",
+      "source": "SRC_DISCOVERY",
+      "source_identity": "09634aa8…10f2",
+      "information_item": "CASE_2 M06 discovery empirical measurements and rejected mechanisms",
+      "epistemic_class": "RAW_VERBATIM_EVIDENCE",
+      "chronology": "closed post-step32",
+      "adjudication": "mechanism selection",
+      "dependencies": [
+        "I_TX_STEP32"
+      ],
+      "worktree": "transcript identity copy"
+    },
+    {
+      "id": "I_TX_PRIOR_PREWRITE",
+      "source": "SRC_PRIOR_PREWRITE",
+      "source_identity": "d12a68d0…29af7",
+      "information_item": "first CASE_A pre-write contract full report",
+      "epistemic_class": "RAW_VERBATIM_EVIDENCE",
+      "chronology": "closed; later independently revalidated; do not fuse",
+      "adjudication": "CASE_A",
+      "dependencies": [
+        "I_TX_DISCOVERY"
+      ],
+      "worktree": "transcript identity copy"
+    },
+    {
+      "id": "I_TX_THIS_CHAT",
+      "source": "SRC_CASE_A_REVALIDATION_CHAT",
+      "source_identity": "CAPTURE_AT_END",
+      "information_item": "handover + independent CASE_A revalidation + this collection GO and materialization",
+      "epistemic_class": "RAW_VERBATIM_EVIDENCE",
+      "chronology": "this operation",
+      "adjudication": "n/a raw",
+      "dependencies": [
+        "I_TX_PRIOR_PREWRITE"
+      ],
+      "worktree": "deferred end copy"
+    },
+    {
+      "id": "I_MASTER",
+      "source": "SRC_MASTER",
+      "source_identity": "65f83356…8b98",
+      "information_item": "canonical SSOT at bound SHA; RUNTIME_AUTHORIZATION_EFFECT=NONE",
+      "epistemic_class": "CANONICAL_AUTHORITY",
+      "chronology": "current origin/main document bytes",
+      "adjudication": "n/a",
+      "dependencies": [],
+      "worktree": "repo path not duplicated in forensic/evidence"
+    },
+    {
+      "id": "I_MAP",
+      "source": "SRC_MAP",
+      "source_identity": "97f8d389…ee9d",
+      "information_item": "navigation-only map",
+      "epistemic_class": "NAVIGATION_INDEX",
+      "chronology": "current",
+      "adjudication": "n/a",
+      "dependencies": [],
+      "worktree": "repo path not duplicated in forensic/evidence"
+    },
+    {
+      "id": "I_M06_CONTRACT",
+      "source": "SRC_PRIOR_PREWRITE+SRC_CASE_A_REVALIDATION_CHAT+SRC_DISCOVERY",
+      "source_identity": "see sources",
+      "information_item": "M06 two-layer preservation/recovery contract and pre-write gates",
+      "epistemic_class": "TRANSFORMATION_OR_IMPLEMENTATION_CONTRACT",
+      "chronology": "current selected mechanism; write not executed",
+      "adjudication": "CASE_A",
+      "dependencies": [
+        "I_TARGET_BYTES",
+        "I_PRODUCT_A_OBJECT"
+      ],
+      "worktree": "09_m06_preservation_recovery_contract.md"
+    },
+    {
+      "id": "I_NEGATIVE_MD_CANDIDATES",
+      "source": "SRC_STEP30/31/32/DISCOVERY",
+      "source_identity": "see transcripts",
+      "information_item": "rejected/blocked C01 C02 C03 C04 C06 and M05A JSONL catalog-only",
+      "epistemic_class": "ADJUDICATED_FINDING",
+      "chronology": "historical rejected; still binding as negative",
+      "adjudication": "FAIL/REJECT",
+      "dependencies": [],
+      "worktree": "05_adjudicated_findings.md + transcripts"
+    },
+    {
+      "id": "I_OPEN_POINTS",
+      "source": "multiple",
+      "source_identity": "see open_point_inventory.json",
+      "information_item": "U1 U2 U_P* U_S31* lag markdown blockers VOL_CAP",
+      "epistemic_class": "OPEN_OR_CONTRADICTORY",
+      "chronology": "still open",
+      "adjudication": "not closed",
+      "dependencies": [],
+      "worktree": "07_unresolved_open_issues.md + open_point_inventory.json"
+    }
+  ],
+  "rule": "Every material finding has a destination or an explicit historical-identity-copy representation. Empty curated finding list != disappearance."
+}

@@ -1,0 +1,99 @@
+{
+  "ARTIFACT_AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "SECOND_SSOT": false,
+  "MASTER_RUNBOOK_REMAINS_SOLE_SSOT": true,
+  "NOT_CANONICAL": true,
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "DOCUMENT_CLASS": "NON_AUTHORITATIVE_SOURCE_TO_FINDING_MAP",
+  "epistemic_class": "NAVIGATION_INDEX",
+  "relationship_status": "ESTABLISHED_FROM_BOUND_OPERATIONS_NOT_INFERRED_TREE",
+  "map": {
+    "SRC_TARGET": [
+      "F_TARGET_IDENTITY",
+      "F_UNICODE_NORM_NOT_HARMLESS",
+      "F_PARSER_BASELINE",
+      "F_I06_JSON_EMBED_FAIL",
+      "F_M06_TWO_LAYER",
+      "F_PRODUCT_A_INSUFFICIENT_ALONE"
+    ],
+    "SRC_PRODUCT_A": [
+      "F_PRODUCT_A_EIGHT_ROOTS",
+      "F_CATALOG_23961",
+      "F_OFFSETS_INSUFFICIENT",
+      "F_OCCUPANCY",
+      "F_CARRIER_4856",
+      "F_P19_493",
+      "F_UNRESOLVED_19",
+      "F_ROSTER_ABSENT_26",
+      "F_DUP_FUSION_LOSS",
+      "F_SENTINELS",
+      "F_ENVELOPE_LABELS",
+      "F_SORT_KEYS_FORBIDDEN",
+      "F_JSON_FILE_EQ_DUMPS_PLUS_LF",
+      "F_M06_TWO_LAYER",
+      "F_PRODUCT_A_INSUFFICIENT_ALONE"
+    ],
+    "SRC_STEP15": [
+      "F_P19_493",
+      "F_UNRESOLVED_19",
+      "F_ROSTER_ABSENT_26",
+      "F_SORT_KEYS_FORBIDDEN",
+      "F_PRODUCT_A_INSUFFICIENT_ALONE",
+      "F_HANDOVER_NOT_EVIDENCE",
+      "F_FORENSIC_TRUTH_SHA_LAG"
+    ],
+    "SRC_STEP17": [],
+    "SRC_STEP13": [],
+    "SRC_STEP9": [],
+    "SRC_STEP8": [],
+    "SRC_MASTER": [
+      "F_FORENSIC_TRUTH_SHA_LAG"
+    ],
+    "SRC_MAP": [],
+    "SRC_STEP30": [
+      "F_NO_LOSSLESS_MD",
+      "F_PRODUCT_A_INSUFFICIENT_ALONE"
+    ],
+    "SRC_STEP31": [
+      "F_PARSER_BASELINE",
+      "F_NO_LOSSLESS_MD",
+      "F_C07_C05_HOLDING_ONLY"
+    ],
+    "SRC_STEP32": [
+      "F_NO_LOSSLESS_MD",
+      "F_C07_C05_HOLDING_ONLY",
+      "F_SEQUENCE_CLOSED_STEP32"
+    ],
+    "SRC_POST32_READINESS": [
+      "F_NO_LOSSLESS_MD"
+    ],
+    "SRC_DISCOVERY": [
+      "F_M06_TWO_LAYER",
+      "F_JSONL_CATALOG_ONLY_REJECT",
+      "F_I06_JSON_EMBED_FAIL",
+      "F_OFFSETS_INSUFFICIENT",
+      "F_DUP_FUSION_LOSS",
+      "F_LEFTOVER_GATE_REQUIRED",
+      "F_PRODUCT_A_INSUFFICIENT_ALONE"
+    ],
+    "SRC_PRIOR_PREWRITE": [
+      "F_CASE_A",
+      "F_M06_TWO_LAYER",
+      "F_LEFTOVER_GATE_REQUIRED"
+    ],
+    "SRC_CASE_A_REVALIDATION_CHAT": [
+      "F_CASE_A",
+      "F_M06_TWO_LAYER",
+      "F_HANDOVER_NOT_EVIDENCE"
+    ]
+  },
+  "notes_for_sources_without_curated_findings": {
+    "SRC_STEP8": "No post-STEP21 adjudicated finding is sourced *only* from STEP8. Material information is the artifact identity itself (HISTORICAL_INTERMEDIATE_STATE). Represented by identity copy + historical inventory, not by a curated finding that would promote STEP8 to current structure.",
+    "SRC_STEP9": "Same pattern as STEP8. STEP15 binds STEP9 SHA and forbids treating absence of STEP9 chrome from preview as nonexistence. Identity copy preserves chrome that PRODUCT_A/preview may not contain.",
+    "SRC_STEP13": "Preview inventory; superseded as *current structured inventory* by PRODUCT_A but not deleted. Historical identity preserved.",
+    "SRC_STEP17": "Structured candidate immediately prior to PRODUCT_A. Historical identity preserved. Not fused with PRODUCT_A.",
+    "SRC_MAP": "Navigation-only; no forensic finding is owned by the Map. Placement here is provenance that Map SHA was bound throughout."
+  },
+  "warning": "Empty curated-finding lists do not mean the source is unused; historical identity copies are the representation."
+}

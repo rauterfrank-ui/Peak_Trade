@@ -1,0 +1,90 @@
+{
+  "ARTIFACT_AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "SECOND_SSOT": false,
+  "MASTER_RUNBOOK_REMAINS_SOLE_SSOT": true,
+  "NOT_CANONICAL": true,
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "DOCUMENT_CLASS": "NON_AUTHORITATIVE_DEPENDENCY_MAP",
+  "epistemic_class": "NAVIGATION_INDEX",
+  "relationships": [
+    {
+      "from": "F_M06_TWO_LAYER",
+      "depends_on": [
+        "F_TARGET_IDENTITY",
+        "F_PRODUCT_A_EIGHT_ROOTS",
+        "F_PRODUCT_A_INSUFFICIENT_ALONE",
+        "F_I06_JSON_EMBED_FAIL",
+        "F_OFFSETS_INSUFFICIENT"
+      ],
+      "kind": "construction"
+    },
+    {
+      "from": "F_CASE_A",
+      "depends_on": [
+        "F_M06_TWO_LAYER",
+        "F_NO_LOSSLESS_MD",
+        "F_SEQUENCE_CLOSED_STEP32"
+      ],
+      "kind": "precondition"
+    },
+    {
+      "from": "F_CARRIER_4856",
+      "depends_on": [
+        "F_TARGET_IDENTITY"
+      ],
+      "kind": "I11 glyph identity via TARGET bytes"
+    },
+    {
+      "from": "F_P19_493",
+      "depends_on": [
+        "SRC_STEP15",
+        "SRC_PRODUCT_A"
+      ],
+      "kind": "predicate defined in STEP15 measured on PRODUCT_A LINE_ENTRIES"
+    },
+    {
+      "from": "U_P05",
+      "blocks": [
+        "any claim that index-only recovery equals TARGET"
+      ],
+      "kind": "open_blocker"
+    },
+    {
+      "from": "U_P07",
+      "blocks": [
+        "claim that PRODUCT_A model is complete vs all TARGET glyphs"
+      ],
+      "kind": "open_blocker"
+    },
+    {
+      "from": "U_P10",
+      "blocks": [
+        "markdown materialization write"
+      ],
+      "kind": "open_blocker"
+    },
+    {
+      "from": "VOL_CAP_INT_RENAME_EXCL",
+      "blocks": [
+        "actual M06 disk write using RENAME_EXCL"
+      ],
+      "kind": "write_time_gate"
+    },
+    {
+      "from": "F_FULLFSYNC_DIR_FSYNC",
+      "blocks": [
+        "claiming durable disk persistence"
+      ],
+      "kind": "write_time_gate"
+    },
+    {
+      "from": "NUMBERED_SEQUENCE",
+      "depends_on": [
+        "SRC_STEP32"
+      ],
+      "kind": "STEP33 not defined; post-step32 only"
+    }
+  ],
+  "not_invented": "only dependencies stated in bound STEP15/30/31/32/Discovery/Pre-Write"
+}

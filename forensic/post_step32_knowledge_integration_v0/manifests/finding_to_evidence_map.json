@@ -1,0 +1,117 @@
+{
+  "ARTIFACT_AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "SECOND_SSOT": false,
+  "MASTER_RUNBOOK_REMAINS_SOLE_SSOT": true,
+  "NOT_CANONICAL": true,
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "DOCUMENT_CLASS": "NON_AUTHORITATIVE_FINDING_TO_EVIDENCE_MAP",
+  "epistemic_class": "NAVIGATION_INDEX",
+  "map": {
+    "F_TARGET_IDENTITY": [
+      "SRC_TARGET"
+    ],
+    "F_UNICODE_NORM_NOT_HARMLESS": [
+      "SRC_TARGET"
+    ],
+    "F_PARSER_BASELINE": [
+      "SRC_TARGET",
+      "SRC_STEP31"
+    ],
+    "F_I06_JSON_EMBED_FAIL": [
+      "SRC_TARGET",
+      "SRC_DISCOVERY"
+    ],
+    "F_M06_TWO_LAYER": [
+      "SRC_TARGET",
+      "SRC_PRODUCT_A",
+      "SRC_DISCOVERY",
+      "SRC_PRIOR_PREWRITE",
+      "SRC_CASE_A_REVALIDATION_CHAT"
+    ],
+    "F_PRODUCT_A_INSUFFICIENT_ALONE": [
+      "SRC_TARGET",
+      "SRC_PRODUCT_A",
+      "SRC_STEP15",
+      "SRC_STEP30",
+      "SRC_DISCOVERY"
+    ],
+    "F_PRODUCT_A_EIGHT_ROOTS": [
+      "SRC_PRODUCT_A"
+    ],
+    "F_CATALOG_23961": [
+      "SRC_PRODUCT_A"
+    ],
+    "F_OFFSETS_INSUFFICIENT": [
+      "SRC_PRODUCT_A",
+      "SRC_DISCOVERY"
+    ],
+    "F_OCCUPANCY": [
+      "SRC_PRODUCT_A"
+    ],
+    "F_CARRIER_4856": [
+      "SRC_PRODUCT_A"
+    ],
+    "F_P19_493": [
+      "SRC_PRODUCT_A",
+      "SRC_STEP15"
+    ],
+    "F_UNRESOLVED_19": [
+      "SRC_PRODUCT_A",
+      "SRC_STEP15"
+    ],
+    "F_ROSTER_ABSENT_26": [
+      "SRC_PRODUCT_A",
+      "SRC_STEP15"
+    ],
+    "F_DUP_FUSION_LOSS": [
+      "SRC_PRODUCT_A",
+      "SRC_DISCOVERY"
+    ],
+    "F_SENTINELS": [
+      "SRC_PRODUCT_A"
+    ],
+    "F_ENVELOPE_LABELS": [
+      "SRC_PRODUCT_A"
+    ],
+    "F_SORT_KEYS_FORBIDDEN": [
+      "SRC_PRODUCT_A",
+      "SRC_STEP15"
+    ],
+    "F_JSON_FILE_EQ_DUMPS_PLUS_LF": [
+      "SRC_PRODUCT_A"
+    ],
+    "F_HANDOVER_NOT_EVIDENCE": [
+      "SRC_STEP15",
+      "SRC_CASE_A_REVALIDATION_CHAT"
+    ],
+    "F_FORENSIC_TRUTH_SHA_LAG": [
+      "SRC_STEP15",
+      "SRC_MASTER"
+    ],
+    "F_NO_LOSSLESS_MD": [
+      "SRC_STEP30",
+      "SRC_STEP31",
+      "SRC_STEP32",
+      "SRC_POST32_READINESS"
+    ],
+    "F_C07_C05_HOLDING_ONLY": [
+      "SRC_STEP31",
+      "SRC_STEP32"
+    ],
+    "F_SEQUENCE_CLOSED_STEP32": [
+      "SRC_STEP32"
+    ],
+    "F_JSONL_CATALOG_ONLY_REJECT": [
+      "SRC_DISCOVERY"
+    ],
+    "F_LEFTOVER_GATE_REQUIRED": [
+      "SRC_DISCOVERY",
+      "SRC_PRIOR_PREWRITE"
+    ],
+    "F_CASE_A": [
+      "SRC_PRIOR_PREWRITE",
+      "SRC_CASE_A_REVALIDATION_CHAT"
+    ]
+  }
+}

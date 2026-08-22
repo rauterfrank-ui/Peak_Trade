@@ -1,0 +1,264 @@
+{
+  "ARTIFACT_AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "SECOND_SSOT": false,
+  "MASTER_RUNBOOK_REMAINS_SOLE_SSOT": true,
+  "NOT_CANONICAL": true,
+  "NOT_A_REPLACEMENT_TARGET": true,
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "NUMBERED_FORENSIC_SEQUENCE": "CLOSED_AT_STEP32",
+  "STEP33": "NOT_DEFINED",
+  "THIS_COLLECTION_IS_NOT_FINAL_CANONIZATION": true,
+  "DOCUMENT_CLASS": "NON_AUTHORITATIVE_OPEN_POINT_INVENTORY",
+  "epistemic_class": "OPEN_OR_CONTRADICTORY",
+  "open_points": [
+    {
+      "id": "U1",
+      "status": "OPEN_UNCHANGED",
+      "class": "OPEN_OR_CONTRADICTORY",
+      "sources": [
+        "SRC_PRODUCT_A",
+        "SRC_STEP15",
+        "SRC_STEP30"
+      ],
+      "must_not": "close or semantically reopen beyond envelope"
+    },
+    {
+      "id": "U2",
+      "status": "OPEN_UNCHANGED",
+      "class": "OPEN_OR_CONTRADICTORY",
+      "sources": [
+        "SRC_PRODUCT_A",
+        "SRC_STEP15",
+        "SRC_STEP30"
+      ],
+      "must_not": "close or semantically reopen beyond envelope"
+    },
+    {
+      "id": "U_P01",
+      "status": "UNPROVEN",
+      "label": "FULL_CMARK_GFM_PANDOC_EQUIVALENCE",
+      "sources": [
+        "SRC_STEP30",
+        "SRC_STEP31"
+      ]
+    },
+    {
+      "id": "U_P02",
+      "status": "UNPROVEN",
+      "label": "GITHUB_SETEXT_VS_SCANNER",
+      "sources": [
+        "SRC_STEP30"
+      ]
+    },
+    {
+      "id": "U_P03",
+      "status": "NOT_COMPLETED",
+      "label": "COMPLETE_LINEAR_READ_OF_MASTER_RUNBOOK_ALL_LINES",
+      "sources": [
+        "SRC_STEP30"
+      ]
+    },
+    {
+      "id": "U_P04",
+      "status": "true",
+      "label": "STEP29_AIM_DRY_NOT_RE_EXECUTED",
+      "sources": [
+        "SRC_STEP30",
+        "SRC_STEP31"
+      ]
+    },
+    {
+      "id": "U_P05",
+      "status": "UNPROVEN_AND_INSUFFICIENT",
+      "label": "BYTE_IDENTICAL_RECONSTRUCTION_FROM_PRODUCT_A_ALONE",
+      "sources": [
+        "SRC_STEP15",
+        "SRC_STEP30",
+        "SRC_DISCOVERY"
+      ]
+    },
+    {
+      "id": "U_P06",
+      "status": "UNPROVEN",
+      "label": "I11_WITHOUT_TARGET_READ",
+      "sources": [
+        "SRC_STEP30",
+        "SRC_DISCOVERY"
+      ]
+    },
+    {
+      "id": "U_P07",
+      "status": "UNPROVEN",
+      "label": "MODEL_COMPLETENESS_VS_ALL_TARGET_GLYPHS",
+      "sources": [
+        "SRC_STEP30",
+        "SRC_STEP31",
+        "SRC_DISCOVERY"
+      ],
+      "must_not": "implicitly close by persistence or this collection"
+    },
+    {
+      "id": "U_P08",
+      "status": "NOT_EXHAUSTIVE",
+      "label": "C02B_HTML_BLOCK_END_RULES",
+      "sources": [
+        "SRC_STEP30",
+        "SRC_STEP31"
+      ]
+    },
+    {
+      "id": "U_P09",
+      "status": "UNPROVEN",
+      "label": "FOUR_TICK_UNWRAP_OTHER_PARSERS / C03B_FOUR_TICK_UNWRAP_ACROSS_PARSER_FAMILIES",
+      "sources": [
+        "SRC_STEP30",
+        "SRC_DISCOVERY"
+      ]
+    },
+    {
+      "id": "U_P10",
+      "status": "UNPROVEN",
+      "label": "ANY_IN_FILE_CHROME_SATISFIES_I01_I18",
+      "sources": [
+        "SRC_STEP30",
+        "SRC_STEP32"
+      ]
+    },
+    {
+      "id": "U_P11",
+      "status": "NOT_REOPENED",
+      "label": "U1_U2_SEMANTIC_CONTENT_BEYOND_ENVELOPE",
+      "sources": [
+        "SRC_STEP30"
+      ]
+    },
+    {
+      "id": "U_P12",
+      "status": "NOT_ADJUDICATED",
+      "label": "184_ATX_H1_INSIDE_FENCE_VS_KR11",
+      "sources": [
+        "SRC_STEP30"
+      ]
+    },
+    {
+      "id": "U_P13",
+      "status": "OBSERVED_OVERLAP_NOT_FUSED",
+      "label": "PAU_1199_VS_TR005",
+      "sources": [
+        "SRC_STEP30"
+      ]
+    },
+    {
+      "id": "U_P14",
+      "status": "UNBOUNDED",
+      "label": "FUTURE_DELIMITER_SET",
+      "sources": [
+        "SRC_STEP30",
+        "SRC_DISCOVERY"
+      ]
+    },
+    {
+      "id": "U_P15",
+      "status": "OBSERVED_NOT_SORTED",
+      "label": "OCCUPYING_SEQ_DISCOVERY_ORDER",
+      "sources": [
+        "SRC_STEP30",
+        "SRC_DISCOVERY"
+      ]
+    },
+    {
+      "id": "U_S31_01",
+      "status": "true",
+      "label": "C02B_NOT_EXHAUSTIVE",
+      "sources": [
+        "SRC_STEP31"
+      ]
+    },
+    {
+      "id": "U_S31_02",
+      "status": "UNPROVEN",
+      "label": "C02B_A04_PAU_1199",
+      "sources": [
+        "SRC_STEP31"
+      ]
+    },
+    {
+      "id": "U_S31_03",
+      "status": "UNPROVEN",
+      "label": "LIST_TIGHT_VS_LOOSE",
+      "sources": [
+        "SRC_STEP31"
+      ]
+    },
+    {
+      "id": "U_S31_04",
+      "status": "UNPROVEN",
+      "label": "OTHER_PARSER_FAMILIES",
+      "sources": [
+        "SRC_STEP31"
+      ]
+    },
+    {
+      "id": "U_S31_05",
+      "status": "UNPROVEN_NOT_SERIALIZED_THEN_PARTIALLY_SUPERSEDED_BY_DISCOVERY_JSON_RT",
+      "label": "C05_JSON_TRANSPORT_ESCAPE_ROUND_TRIP",
+      "sources": [
+        "SRC_STEP31",
+        "SRC_DISCOVERY"
+      ],
+      "note": "STEP31 left JSON transport UNPROVEN_NOT_SERIALIZED; Discovery later showed JSON object RT for PRODUCT_A; do not silently treat U_S31_05 as closed; Discovery did not re-execute C05 as STEP31 object"
+    },
+    {
+      "id": "U_S31_06",
+      "status": "UNPROVEN",
+      "label": "C07_EQUALS_STEP29_AIM",
+      "sources": [
+        "SRC_STEP31"
+      ]
+    },
+    {
+      "id": "FORENSIC_TRUTH_SHA_LAG",
+      "status": "NOT_REPAIRED",
+      "label": "runbook CURRENT_FORENSIC_TRUTH_SHA vs origin/main",
+      "sources": [
+        "SRC_MASTER",
+        "SRC_STEP15"
+      ]
+    },
+    {
+      "id": "VOL_CAP_INT_RENAME_EXCL",
+      "status": "UNPROBED",
+      "label": "platform gate for T17 RENAME_EXCL",
+      "sources": [
+        "SRC_PRIOR_PREWRITE"
+      ],
+      "class": "OPEN_OR_CONTRADICTORY"
+    },
+    {
+      "id": "F_FULLFSYNC_DIR_FSYNC",
+      "status": "NOT_EXECUTED",
+      "label": "durability APIs untested",
+      "sources": [
+        "SRC_PRIOR_PREWRITE"
+      ]
+    },
+    {
+      "id": "MARKDOWN_MATERIALIZATION",
+      "status": "NOT_PROVEN_SAFE",
+      "sources": [
+        "SRC_STEP32",
+        "SRC_POST32_READINESS",
+        "SRC_DISCOVERY"
+      ]
+    },
+    {
+      "id": "DISK_T17",
+      "status": "NOT_EXECUTED",
+      "sources": [
+        "SRC_PRIOR_PREWRITE"
+      ]
+    }
+  ],
+  "none_closed_by_this_collection": true
+}

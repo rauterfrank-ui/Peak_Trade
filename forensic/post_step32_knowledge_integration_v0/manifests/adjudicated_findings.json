@@ -1,0 +1,299 @@
+{
+  "ARTIFACT_AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "SECOND_SSOT": false,
+  "MASTER_RUNBOOK_REMAINS_SOLE_SSOT": true,
+  "NOT_CANONICAL": true,
+  "NOT_A_REPLACEMENT_TARGET": true,
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "NUMBERED_FORENSIC_SEQUENCE": "CLOSED_AT_STEP32",
+  "STEP33": "NOT_DEFINED",
+  "THIS_COLLECTION_IS_NOT_FINAL_CANONIZATION": true,
+  "DOCUMENT_CLASS": "NON_AUTHORITATIVE_ADJUDICATED_FINDINGS_INDEX",
+  "epistemic_class": "ADJUDICATED_FINDING",
+  "findings": [
+    {
+      "id": "F_TARGET_IDENTITY",
+      "what": "TARGET bytes SHA256=08ffe7bc…5092 SIZE=1421764 CR=0 LF=30870 FINAL_LF=true NFC=true NFKC=false",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_TARGET"
+      ],
+      "does_not_prove": "canonical authority; completeness of model vs glyphs (U_P07)",
+      "supersedes": null
+    },
+    {
+      "id": "F_PRODUCT_A_EIGHT_ROOTS",
+      "what": "PRODUCT_A has exactly 8 unfused roots in stored order PRODUCT_A_ENVELOPE, PREVIEW_ENVELOPE, CANDIDATE_ENVELOPE, CLOSED_TYPE_ROSTER, CATALOG_RECORDS, LINE_ENTRIES, KR8_KR9_SOURCE_BYTE_CARRIER_INDEX, OCCUPANCY_INDEX",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_PRODUCT_A",
+        "SRC_DISCOVERY"
+      ],
+      "does_not_prove": "PRODUCT_A reconstructs TARGET or post-STEP21 findings"
+    },
+    {
+      "id": "F_CATALOG_23961",
+      "what": "CATALOG_RECORDS n=23961; seq unique=23961; SEQ_EQ_ARRAY_INDEX=0; SEQ_DESCENTS=1193; authority_status NONE n=23961",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_PRODUCT_A"
+      ],
+      "does_not_prove": "seq is physical order"
+    },
+    {
+      "id": "F_OFFSETS_INSUFFICIENT",
+      "what": "byte_offset_start/end present 1101/23961; absent 22860; raw_text==slice 1099; != 2 DeclaredVerbatimBody seq 1100/1101; raw_text JSON_NULL=99; OFFSET_ONLY_CATALOG=REJECT",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_PRODUCT_A",
+        "SRC_DISCOVERY"
+      ],
+      "does_not_prove": "I11 without TARGET"
+    },
+    {
+      "id": "F_OCCUPANCY",
+      "what": "OCCUPANCY_INDEX n=30870 hist {1:4831,2:10417,3:14423,4:1189,5:10}; non-monotone first descent per line=17854; overlaps semantically relevant",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_PRODUCT_A",
+        "SRC_DISCOVERY"
+      ]
+    },
+    {
+      "id": "F_CARRIER_4856",
+      "what": "carrier n=4856 mechanism=SOURCE_FILE_IDENTITY_COPY synthesis=false normalization=false independent_model_bytes=false SHA match 4856/4856",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_PRODUCT_A"
+      ]
+    },
+    {
+      "id": "F_P19_493",
+      "what": "reason in {KR-8,KR-9} AND model_has_independent_bytes=true count=493 (153 NestedStructuralChild + 340 MarkedVerbatimRegion); NOT in carrier index; FORBID moving them into carrier",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_STEP15",
+        "SRC_PRODUCT_A"
+      ],
+      "does_not_prove": "all parent-span lines are 493; total PARENT_SPAN recon=4105 is a broader class"
+    },
+    {
+      "id": "F_UNRESOLVED_19",
+      "what": "unresolved_status UNRESOLVED=19 classification UNRESOLVED=19; U1/U2 OPEN_UNCHANGED; must not auto-convert to UnresolvedRelation",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_PRODUCT_A",
+        "SRC_STEP15"
+      ]
+    },
+    {
+      "id": "F_ROSTER_ABSENT_26",
+      "what": "CLOSED_TYPE_ROSTER 37 types; 11 present; 26 absent including UnresolvedRelation EnvelopeRecord OpenIssue; absent must remain absent",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_PRODUCT_A",
+        "SRC_STEP15"
+      ]
+    },
+    {
+      "id": "F_DUP_FUSION_LOSS",
+      "what": "fusing by raw_text would drop 8642 records; by (type,raw_text) would drop 8104",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_PRODUCT_A",
+        "SRC_DISCOVERY"
+      ]
+    },
+    {
+      "id": "F_UNICODE_NORM_NOT_HARMLESS",
+      "what": "TARGET NFC identity true; NFKC false; NFD encoded len 1422196; NFKC encoded len 1421762",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_TARGET",
+        "SRC_DISCOVERY"
+      ]
+    },
+    {
+      "id": "F_PARSER_BASELINE",
+      "what": "markdown_it CommonMark N_TOKENS=14754 heading_open=1315 h1=83 h2=882 h3=350 fence=1132 markup=``` only html_block=0 hr=681 bullet=133 ordered=38 MATCHES_STEP31_BASE=true",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_STEP31",
+        "SRC_TARGET"
+      ],
+      "does_not_prove": "cmark/GFM/pandoc equivalence (U_P01)"
+    },
+    {
+      "id": "F_NO_LOSSLESS_MD",
+      "what": "LOSSLESS_MARKDOWN_MATERIALIZATION_FOUND=false; C01/C02/C03/C04/C06 rejected or blocked; C03B byte unwrap != semantic MD RT; C02B parser/html/blank interference",
+      "status": "ADJUDICATED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_STEP30",
+        "SRC_STEP31",
+        "SRC_STEP32",
+        "SRC_POST32_READINESS",
+        "SRC_DISCOVERY"
+      ],
+      "does_not_prove": "future delimiter set is bounded (U_P14 UNBOUNDED)"
+    },
+    {
+      "id": "F_C07_C05_HOLDING_ONLY",
+      "what": "C07/C05 empirically non-destructive in RAM holding beside unaltered TARGET; not serialization; not write license",
+      "status": "ADJUDICATED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_STEP31",
+        "SRC_STEP32"
+      ]
+    },
+    {
+      "id": "F_JSONL_CATALOG_ONLY_REJECT",
+      "what": "M05A JSONL catalog-only REJECT because seven roots lost",
+      "status": "ADJUDICATED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_DISCOVERY"
+      ]
+    },
+    {
+      "id": "F_I06_JSON_EMBED_FAIL",
+      "what": "JSON embed TARGET as string: byte recovery true AND escaping required → I06 FAIL as blob transport",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_DISCOVERY",
+        "SRC_TARGET"
+      ]
+    },
+    {
+      "id": "F_SORT_KEYS_FORBIDDEN",
+      "what": "sort_keys=true changes root order and record key order; catalog seq array may stay; GATE_NO_SORT FAIL; STEP15 FORBID_SORT_KEYS_ON_STORED_OBJECTS",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_PRODUCT_A",
+        "SRC_STEP15",
+        "SRC_DISCOVERY"
+      ]
+    },
+    {
+      "id": "F_M06_TWO_LAYER",
+      "what": "M06 = LAYER_1 exact TARGET bytes + LAYER_2 complete 8-root PRODUCT_A; RAM envelope RT PASS leftover=0 ENV_LEN=38221963; CASE_2 mechanism found; READY_FOR_FILE_WRITE=false",
+      "status": "ADJUDICATED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_DISCOVERY",
+        "SRC_PRIOR_PREWRITE",
+        "SRC_CASE_A_REVALIDATION_CHAT"
+      ],
+      "does_not_prove": "disk write; T17 executed; markdown safe; M06 substitutes STEP30-32/Discovery/Pre-Write transcripts"
+    },
+    {
+      "id": "F_CASE_A",
+      "what": "PRE_WRITE_CONTRACT_COMPLETE_ENOUGH_FOR_SEPARATE_OWNER_GO_TO_EXECUTE_A_CONTROLLED_NON_MARKDOWN_WRITE_VALIDATION; CASE_B/C/D false on bound identities",
+      "status": "ADJUDICATED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_PRIOR_PREWRITE",
+        "SRC_CASE_A_REVALIDATION_CHAT"
+      ],
+      "does_not_prove": "write tested; dest exists; VOL_CAP probed; this collection GO is not that write GO"
+    },
+    {
+      "id": "F_PRODUCT_A_INSUFFICIENT_ALONE",
+      "what": "PRODUCT_A_ALONE_CAN_RECONSTRUCT_ALL_EVIDENCE=false; U_P05 UNPROVEN_AND_INSUFFICIENT; I11 requires TARGET identity copy",
+      "status": "ADJUDICATED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_STEP15",
+        "SRC_STEP30",
+        "SRC_DISCOVERY"
+      ]
+    },
+    {
+      "id": "F_SEQUENCE_CLOSED_STEP32",
+      "what": "NUMBERED_FORENSIC_SEQUENCE=CLOSED_AT_STEP32; STEP33 NOT_DEFINED_NOT_INFERRED; later work is FORENSIC_POST_STEP32_*",
+      "status": "ADJUDICATED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_STEP32",
+        "SRC_DISCOVERY"
+      ]
+    },
+    {
+      "id": "F_SENTINELS",
+      "what": "None=518458 strNULL=46 empty=23841 False=74251 int0=27 preserved; FORBID null/empty/false/zero normalization",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_PRODUCT_A",
+        "SRC_STEP15",
+        "SRC_DISCOVERY"
+      ]
+    },
+    {
+      "id": "F_ENVELOPE_LABELS",
+      "what": "PRODUCT_A_ENVELOPE TARGET_AUTHORITY=NONE ARTIFACT_AUTHORITY=NONE SECOND_SSOT=false MASTER_RUNBOOK_REMAINS_SOLE_SSOT=true U1_STATUS=OPEN_UNCHANGED U2_STATUS=OPEN_UNCHANGED NEXT_WRITE_AUTHORIZED=false",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_PRODUCT_A"
+      ]
+    },
+    {
+      "id": "F_LEFTOVER_GATE_REQUIRED",
+      "what": "EXTRA_TRAILING leftover=1 and CONCAT_TWO_ENV leftover=38221963 parse unless leftover==0 mandatory",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_DISCOVERY",
+        "SRC_PRIOR_PREWRITE"
+      ]
+    },
+    {
+      "id": "F_JSON_FILE_EQ_DUMPS_PLUS_LF",
+      "what": "PRODUCT_A file bytes == dumps(ensure_ascii=False,sort_keys=False,allow_nan=False)+LF; without LF original_file_byte_eq=false",
+      "status": "ADJUDICATED_REMEASURED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_PRODUCT_A"
+      ]
+    },
+    {
+      "id": "F_HANDOVER_NOT_EVIDENCE",
+      "what": "Owner handover is not complete evidence and not SSOT; local bound evidence wins; FORBID excerpt incomplete vs STEP15 (80 FORBID_ lines in identity copy)",
+      "status": "ADJUDICATED",
+      "class": "ADJUDICATED_FINDING",
+      "sources": [
+        "SRC_CASE_A_REVALIDATION_CHAT",
+        "SRC_STEP15"
+      ]
+    },
+    {
+      "id": "F_FORENSIC_TRUTH_SHA_LAG",
+      "what": "CURRENT_FORENSIC_TRUTH_SHA in Master Runbook 22d7d423… differs from origin/main 652c2cd4…; NOT_REPAIRED; FORBID using STEP15 to repair",
+      "status": "OPEN_UNCHANGED",
+      "class": "OPEN_OR_CONTRADICTORY",
+      "sources": [
+        "SRC_MASTER",
+        "SRC_STEP15",
+        "SRC_STEP31"
+      ]
+    }
+  ],
+  "note": "Each finding is a curated index into raw evidence; not a second SSOT; not new adjudication in this collection except remeasurement of already established quantities"
+}
