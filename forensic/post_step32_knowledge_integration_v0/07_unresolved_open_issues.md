@@ -8,7 +8,7 @@ NONE_CLOSED_BY_THIS_COLLECTION=true
 FORBID_UNRESOLVED_CLOSEOUT=true
 ```
 
-Machine twin: `manifests/open_point_inventory.json`.
+Machine twin: `manifests&#47;open_point_inventory.json`.
 
 Do not treat presence in this file as adjudication. Status strings are
 copied from bound operations.

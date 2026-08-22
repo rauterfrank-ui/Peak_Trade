@@ -11,7 +11,7 @@ epistemic_class=ADJUDICATED_FINDING
 ```
 
 Each row is a **pointer** into bound raw evidence. Full records:
-`manifests/adjudicated_findings.json`. This collection did not reopen
+`manifests&#47;adjudicated_findings.json`. This collection did not reopen
 U1/U2 and did not invent new mechanism classes.
 
 How established: identity remeasurement and/or closed operation

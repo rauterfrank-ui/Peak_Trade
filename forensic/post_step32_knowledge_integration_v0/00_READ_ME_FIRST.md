@@ -48,8 +48,8 @@ pre-write contract.
 
 1. This file (navigation + authority labels only).
 2. `01_authority_and_epistemic_legend.md`
-3. `02_provenance_source_registry.md` and `manifests/source_identities.json`
-4. Raw identity copies under `evidence/raw_verbatim_identity_copies_authority_none/`
+3. `02_provenance_source_registry.md` and `manifests&#47;source_identities.json`
+4. Raw identity copies under `evidence&#47;raw_verbatim_identity_copies_authority_none&#47;`
 5. Curated findings and contracts (`05_`, `07_`, `09_`) — always as
    pointers into raw evidence, never as replacements.
 
@@ -70,8 +70,8 @@ pre-write contract.
 | `10_step15_forbid_index.md` | FORBID navigation | NAVIGATION_INDEX (not a replacement of STEP15) |
 | `11_adversarial_completeness_audit.md` | reverse audit | INTERPRETATION of completeness, not new facts |
 | `12_what_this_collection_does_not_prove.md` | negative claims | ADJUDICATED_FINDING (limits) |
-| `manifests/*.json` | machine-readable maps | NAVIGATION_INDEX / SOURCE_IDENTITY |
-| `evidence/...` | byte-identical copies | RAW_VERBATIM_EVIDENCE |
+| `manifests&#47;*.json` | machine-readable maps | NAVIGATION_INDEX / SOURCE_IDENTITY |
+| `evidence&#47;...` | byte-identical copies | RAW_VERBATIM_EVIDENCE |
 
 Canonical SSOT and Map stay at their repository paths in this worktree
 (bound SHA `652c2cd4f9e91160a46b86f02014fd019ec33ca5`). They are **not**

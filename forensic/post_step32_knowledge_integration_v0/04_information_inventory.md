@@ -7,7 +7,7 @@ PRODUCT_A_ALONE_CAN_RECONSTRUCT_ALL_EVIDENCE=false
 epistemic_class=NAVIGATION_INDEX
 ```
 
-Machine twin: `manifests/information_inventory.json`.
+Machine twin: `manifests&#47;information_inventory.json`.
 
 Rule used while building this tree: every material item has either
 (1) a curated finding that points at raw evidence, or

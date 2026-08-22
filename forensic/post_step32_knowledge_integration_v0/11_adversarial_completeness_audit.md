@@ -26,7 +26,7 @@ That limitation is explicit in `05_` and `09_`.
 
 ## For every worktree finding: provenance without guessing?
 
-Each `F_*` has sources in `manifests/adjudicated_findings.json` and
+Each `F_*` has sources in `manifests&#47;adjudicated_findings.json` and
 `finding_to_evidence_map.json`. Open points have statuses copied from
 bound transcripts, not inferred closures.
 

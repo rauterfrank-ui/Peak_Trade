@@ -8,7 +8,7 @@ HISTORICAL_IS_NOT_CURRENT=true
 FORBID_USING_HEADINGS_AS_CURRENTNESS_PROMOTION=true
 ```
 
-Machine twin: `manifests/historical_state_inventory.json`.
+Machine twin: `manifests&#47;historical_state_inventory.json`.
 
 These states remain recoverable. They are not the current structured
 inventory. Deduplicating them into PRODUCT_A would destroy chronology
@@ -29,4 +29,4 @@ Closed numbered/post steps (STEP30–32, POST32_READINESS, DISCOVERY) are
 historical *operations* whose results remain **binding**. Binding ≠
 current TARGET rewrite.
 
-Identity copies live under `evidence/raw_verbatim_identity_copies_authority_none/desktop/`.
+Identity copies live under `evidence&#47;raw_verbatim_identity_copies_authority_none&#47;desktop&#47;`.

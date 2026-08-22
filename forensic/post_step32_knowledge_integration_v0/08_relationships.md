@@ -9,9 +9,9 @@ NO_INVENTED_RELATIONSHIPS=true
 
 Machine twins:
 
-- `manifests/source_to_finding_map.json`
-- `manifests/finding_to_evidence_map.json`
-- `manifests/dependency_map.json`
+- `manifests&#47;source_to_finding_map.json`
+- `manifests&#47;finding_to_evidence_map.json`
+- `manifests&#47;dependency_map.json`
 
 ## source → finding
 
@@ -46,7 +46,7 @@ is: curated statement → finding id → source id → SHA256 path in
 
 ## index/navigation → object
 
-This tree and `manifests/*.json` are navigation. They are not semantic
+This tree and `manifests&#47;*.json` are navigation. They are not semantic
 authority. Map of Truth remains the repo navigation SSOT-pointer
 document and still defines no semantics.
 
@@ -60,6 +60,6 @@ document and still defines no semantics.
 
 ## preservation artifact → source identity
 
-See `manifests/raw_evidence_preservation_map.json`. Each copy records
+See `manifests&#47;raw_evidence_preservation_map.json`. Each copy records
 source path, dest path, SHA256, size, `byte_identical=true`,
 `normalization=NONE`.

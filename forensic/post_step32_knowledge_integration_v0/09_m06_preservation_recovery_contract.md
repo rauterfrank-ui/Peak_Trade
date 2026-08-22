@@ -31,7 +31,7 @@ PRODUCT_A_ALONE_CAN_RECONSTRUCT_ALL_EVIDENCE=false
 ```
 
 In this worktree, Layer 1 and Layer 2 are already present as **separate
-identity copies** under `evidence/…/desktop/`. That is collection, not
+identity copies** under `evidence&#47;…&#47;desktop&#47;`. That is collection, not
 the length-prefixed envelope write validation.
 
 ## What M06 is not
@@ -86,7 +86,7 @@ T17-complete.
 ## Relation to the previously proposed Desktop write
 
 A Desktop destination
-`…/PEAK_TRADE_FORENSIC_POST_STEP32_M06_LENGTH_PREFIXED_ENVELOPE_…ptf1idx`
+`…&#47;PEAK_TRADE_FORENSIC_POST_STEP32_M06_LENGTH_PREFIXED_ENVELOPE_…ptf1idx`
 was **proposed** under a separate Write-GO. This collection **did not**
 perform that write. Worktree-local identity copies of TARGET and
 PRODUCT_A are sufficient for inspectability in this phase.
