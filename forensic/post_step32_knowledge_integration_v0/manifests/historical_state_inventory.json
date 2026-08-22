@@ -1,0 +1,85 @@
+{
+  "ARTIFACT_AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "SECOND_SSOT": false,
+  "MASTER_RUNBOOK_REMAINS_SOLE_SSOT": true,
+  "NOT_CANONICAL": true,
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "DOCUMENT_CLASS": "NON_AUTHORITATIVE_HISTORICAL_STATE_INVENTORY",
+  "epistemic_class": "HISTORICAL_INTERMEDIATE_STATE",
+  "states": [
+    {
+      "id": "H_STEP8",
+      "class": "HISTORICAL_INTERMEDIATE_STATE",
+      "currentness": "NOT_CURRENT_STRUCTURE",
+      "sha256": "824f4c2c881989901bc022204d330ebec1f1db0fbdb822383a92fffcee348d7d",
+      "superseded_as_current_by": "later STEP9/13/17/PRODUCT_A",
+      "not_deleted": true
+    },
+    {
+      "id": "H_STEP9",
+      "class": "HISTORICAL_INTERMEDIATE_STATE",
+      "currentness": "NOT_CURRENT_STRUCTURE",
+      "sha256": "53a0f29f480cf46bdb9c0a9cf25a15dd701fe9ecbe99e53f1f1822058d4fbdd8",
+      "note": "STEP15: absence of STEP9 chrome from preview must not be treated as nonexistence"
+    },
+    {
+      "id": "H_STEP13",
+      "class": "HISTORICAL_INTERMEDIATE_STATE",
+      "currentness": "NOT_CURRENT_STRUCTURE",
+      "sha256": "ba1a7d843826b8c008003b46fc48e8aac390ba23e241bd18291db6ed56db40da",
+      "superseded_as_current_inventory_by": "PRODUCT_A"
+    },
+    {
+      "id": "H_STEP17",
+      "class": "HISTORICAL_INTERMEDIATE_STATE",
+      "currentness": "NOT_CURRENT_STRUCTURE",
+      "sha256": "f5bf2b0f17fef8a27b5bed8e8d905b1250fff37b6460cfb4e76a8ddbfca55f3a",
+      "superseded_as_current_inventory_by": "PRODUCT_A"
+    },
+    {
+      "id": "H_STEP30_SPEC",
+      "class": "HISTORICAL_INTERMEDIATE_STATE",
+      "currentness": "CLOSED_OPERATION_STILL_BINDING_AS_SPEC",
+      "source": "SRC_STEP30"
+    },
+    {
+      "id": "H_STEP31_TESTS",
+      "class": "HISTORICAL_INTERMEDIATE_STATE",
+      "currentness": "CLOSED_OPERATION_STILL_BINDING_AS_NEGATIVE_RESULTS",
+      "source": "SRC_STEP31"
+    },
+    {
+      "id": "H_STEP32_SPEC",
+      "class": "HISTORICAL_INTERMEDIATE_STATE",
+      "currentness": "CLOSED_NUMBERED_SEQUENCE",
+      "source": "SRC_STEP32"
+    },
+    {
+      "id": "H_POST32_READINESS",
+      "class": "HISTORICAL_INTERMEDIATE_STATE",
+      "currentness": "CLOSED_OPERATION; markdown write still false",
+      "source": "SRC_POST32_READINESS"
+    },
+    {
+      "id": "H_DISCOVERY_CASE2",
+      "class": "HISTORICAL_INTERMEDIATE_STATE",
+      "currentness": "CLOSED_OPERATION; mechanism still selected",
+      "source": "SRC_DISCOVERY"
+    },
+    {
+      "id": "H_PRIOR_PREWRITE_CASE_A",
+      "class": "HISTORICAL_INTERMEDIATE_STATE",
+      "currentness": "CLOSED_OPERATION; independently revalidated later; do not fuse the two CASE_A transcripts",
+      "source": "SRC_PRIOR_PREWRITE"
+    },
+    {
+      "id": "H_C01_C02_C03_C04_C06",
+      "class": "HISTORICAL_INTERMEDIATE_STATE",
+      "currentness": "REJECTED_OR_BLOCKED_CANDIDATES",
+      "do_not_revive_as_current": true,
+      "source": "SRC_STEP30/SRC_STEP31"
+    }
+  ],
+  "warning": "Historical != current. Heading placement in these docs is not currentness promotion (STEP15 FORBID)."
+}

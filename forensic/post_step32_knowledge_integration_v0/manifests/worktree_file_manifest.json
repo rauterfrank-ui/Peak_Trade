@@ -1,0 +1,205 @@
+{
+  "DOCUMENT_CLASS": "NON_AUTHORITATIVE_WORKTREE_FILE_MANIFEST",
+  "ARTIFACT_AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "SECOND_SSOT": false,
+  "NOT_CANONICAL": true,
+  "n_files": 39,
+  "files": [
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/00_READ_ME_FIRST.md",
+      "size": 3580,
+      "sha256": "46b149b99b389c36195414f544dc50f1b88061848c3e32722ec64b2db11f2de3"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/01_authority_and_epistemic_legend.md",
+      "size": 2174,
+      "sha256": "750f5b546a550c41c54fe37b27ba2137a23c5e3806f047c534c4b98d0f54c323"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/02_provenance_source_registry.md",
+      "size": 4025,
+      "sha256": "a5bbcfd3998bcbbc862df48ff3eef4d9d83c8b629f189d3f9287f9df1501e3b3"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/03_chronology.md",
+      "size": 2099,
+      "sha256": "e4552cd9663b67d7e10e588196f7d62e48f1f6909a792c37a36e7d3412374892"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/04_information_inventory.md",
+      "size": 2107,
+      "sha256": "8ba60924bc523006482da8770f97d201c8ddd823ac83830100703304508847b1"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/05_adjudicated_findings.md",
+      "size": 5292,
+      "sha256": "56bf689b7c36a629f9a9a0d73cefe90c13bfc214b1f0ab6c9891ead8729d6856"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/06_historical_intermediate_states.md",
+      "size": 1459,
+      "sha256": "ddf3a6858fd18d8ff7869dde316093a9363b22437e5e56997f3068ed23885433"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/07_unresolved_open_issues.md",
+      "size": 2407,
+      "sha256": "9646030468d3d0a8ae59c325bae0edc46297a5f30560039bf2eda38a3479c92e"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/08_relationships.md",
+      "size": 2180,
+      "sha256": "a0e080e703429b5f85b087bac7b01766766f0a712400792506e08a7a35a06d1b"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/09_m06_preservation_recovery_contract.md",
+      "size": 3061,
+      "sha256": "bbcab3dc089ea666856b102eaedb99d28f7f06f27fbcfe244d8be3a058b02767"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/10_step15_forbid_index.md",
+      "size": 945,
+      "sha256": "9d13ac278d5e3318570067d9135a541a39396266bc6b1e53442f13218709cf48"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/11_adversarial_completeness_audit.md",
+      "size": 3117,
+      "sha256": "d2ee580f02df979ecd773fa50d40842ab907317958cf82dfc605efcd62d6971f"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/12_what_this_collection_does_not_prove.md",
+      "size": 1061,
+      "sha256": "df4e3cb7c91dd5f601e91c11d9bff67c40323eb43e3a6db4dee89d1a10a36b9b"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/README.md",
+      "size": 881,
+      "sha256": "cc1efad84dd625b2a1918d0d44f05fc42fe075601fb3b535a864d28b06d4893f"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/desktop/PEAK_TRADE_FORENSIC_STEP13_STRUCTURED_INVENTORY_PREVIEW_AUTHORITY_NONE_NOT_TARGET_NOT_SSOT.json",
+      "size": 43022985,
+      "sha256": "ba1a7d843826b8c008003b46fc48e8aac390ba23e241bd18291db6ed56db40da"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/desktop/PEAK_TRADE_FORENSIC_STEP15_NON_AUTHORITATIVE_TRANSFORMATION_INVARIANT_CONTRACT.md",
+      "size": 35647,
+      "sha256": "63829882310eac46f0eb45c1a95f959dc001b37aaff6a83bdb016117f7b47b83"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/desktop/PEAK_TRADE_FORENSIC_STEP17_NON_TARGET_STRUCTURED_CANDIDATE_AUTHORITY_NONE.json",
+      "size": 34242423,
+      "sha256": "f5bf2b0f17fef8a27b5bed8e8d905b1250fff37b6460cfb4e76a8ddbfca55f3a"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/desktop/PEAK_TRADE_FORENSIC_STEP21_PRODUCT_A_NON_TARGET_STRUCTURED_INVENTORY_RENDER_AUTHORITY_NONE_NOT_TARGET_NOT_SSOT.json",
+      "size": 36800176,
+      "sha256": "e5da88abc93108001f3a88736ea1503aabf84eb2b094bf4e204385b888729c91"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/desktop/PEAK_TRADE_FORENSIC_STEP8_OUTPUT_CANDIDATE_AUTHORITY_NONE_NOT_TARGET_NOT_SSOT.json",
+      "size": 11209785,
+      "sha256": "824f4c2c881989901bc022204d330ebec1f1db0fbdb822383a92fffcee348d7d"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/desktop/PEAK_TRADE_FORENSIC_STEP9_PRODUCTION_TRANSFORMATION_AUTHORITY_NONE_NOT_TARGET_NOT_SSOT.json",
+      "size": 43024636,
+      "sha256": "53a0f29f480cf46bdb9c0a9cf25a15dd701fe9ecbe99e53f1f1822058d4fbdd8"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/desktop/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md",
+      "size": 1421764,
+      "sha256": "08ffe7bce3fd7aa94de20737c3bc1cf1721e08e719fc8d3d00d72e079f6a5092"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/CASE_A_REVALIDATION_AND_COLLECTION_78a67012-205d-497c-8edc-52194140291e.jsonl",
+      "size": 106714,
+      "sha256": "2b13587abcb828e388d73012289bdbc613c7c0591f375327aa3ffd2843312d87"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/DISCOVERY_CASE_2_e17bf1e1-99eb-45f7-b547-54c6e1f5d386.jsonl",
+      "size": 115580,
+      "sha256": "09634aa84a684bdfe2f8e04d943a77d144869c28d9897e98cf303a365f5110f2"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/POST32_READINESS_95209de2-8442-49b1-9bcf-0613dbf6c93f.jsonl",
+      "size": 48558,
+      "sha256": "61d04bb80c212ba8765e2e52f9a9538c1651bd4d7ffcb9ed2e5238237229894b"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/PRIOR_PREWRITE_9516c97d-8ec4-4b0a-bcb7-f2a83425ee34.jsonl",
+      "size": 103433,
+      "sha256": "d12a68d0b587c53acbaf4e28adc3e4667c4bdcf52dd50163c40e37a3cf029af7"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/STEP30_98277650-c7c1-43ac-b544-4087f96aef0c.jsonl",
+      "size": 134056,
+      "sha256": "98deeee7dd1a9b1bc1543403163499164dd94014d1713d9620f1e6d3969d68d9"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/STEP31_bbaf1005-725a-427a-a7b0-993d9893ebe8.jsonl",
+      "size": 97751,
+      "sha256": "3d3445289cb20a001101fe5e6ed5c58d039e061b4ea9b3c2160b44a68312eed2"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/transcripts/STEP32_2d0440a7-49c3-4b17-8e61-db6fe670ea6b.jsonl",
+      "size": 75575,
+      "sha256": "4f9e21e6dd0c6d6591a8ede29375896679ec1fddb2dbf4d9e3fb49f928a0c393"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/manifests/adjudicated_findings.json",
+      "size": 10978,
+      "sha256": "f9f7c609d52e519b71506065fb8103bb61f1b05fedc5ce1aa70a2032e9e4232a"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/manifests/dependency_map.json",
+      "size": 2149,
+      "sha256": "e594c65dc17a3c1537c13fb1512304b79a77a47fa9c59e91adcba33d39e84a0e"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/manifests/finding_to_evidence_map.json",
+      "size": 2443,
+      "sha256": "c46111b40223c71ef6e18e04c734ed095ccf39b257cf809c72536c36ab8d54d0"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/manifests/historical_state_inventory.json",
+      "size": 3040,
+      "sha256": "0ec93833f57f9972c512fe7426724d1a1b3f8abbfd96560e55b946a0ed60f592"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/manifests/information_class_inventory.json",
+      "size": 1566,
+      "sha256": "dfb509e7acb25f394c7a1e1f32c79e8525ffe5cdd03d7cf6455eece85a4ce0b4"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/manifests/information_inventory.json",
+      "size": 9336,
+      "sha256": "08a9704123fe8abf9ae79a04abc6ec0a456f8f3188f107685ba69405ad7ae247"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/manifests/open_point_inventory.json",
+      "size": 6117,
+      "sha256": "1ab0d99b7122d66745979f7ff2a0b809658ed56122a689a57b13985b2ac740e3"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/manifests/raw_evidence_preservation_map.json",
+      "size": 18309,
+      "sha256": "13aac44bdad7e278d09310620fa2d2f05d06e5caacf939825d434958c8601eba"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/manifests/source_identities.json",
+      "size": 10878,
+      "sha256": "0a7a595569097f16f34dfc08d75b72e8d06df39b79ef802d9b1f1af9bf437dd8"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/manifests/source_to_finding_map.json",
+      "size": 3435,
+      "sha256": "c7590af7a86071461e28699a8d15e1a55709c5b6e9c2439ffb5ec4b79c575d80"
+    },
+    {
+      "path": "forensic/post_step32_knowledge_integration_v0/manifests/step15_forbid_index.json",
+      "size": 4352,
+      "sha256": "7be2b815e47c670dd64caffce1b54e6a7f8dba4aff11c1be205cf8ec7ffb65a9"
+    }
+  ]
+}

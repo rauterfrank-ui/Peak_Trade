@@ -1,0 +1,66 @@
+{
+  "ARTIFACT_AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "SECOND_SSOT": false,
+  "MASTER_RUNBOOK_REMAINS_SOLE_SSOT": true,
+  "NOT_CANONICAL": true,
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "DOCUMENT_CLASS": "NON_AUTHORITATIVE_EPISTEMIC_CLASS_INVENTORY",
+  "classes": {
+    "CANONICAL_AUTHORITY": [
+      "I_MASTER"
+    ],
+    "RAW_VERBATIM_EVIDENCE": [
+      "I_TARGET_BYTES",
+      "I_PRODUCT_A_OBJECT",
+      "I_TX_*"
+    ],
+    "ADJUDICATED_FINDING": [
+      "F_* in adjudicated_findings.json"
+    ],
+    "HISTORICAL_INTERMEDIATE_STATE": [
+      "I_STEP8_BYTES",
+      "I_STEP9_BYTES",
+      "I_STEP13_BYTES",
+      "I_STEP17_BYTES",
+      "H_*"
+    ],
+    "NAVIGATION_INDEX": [
+      "I_MAP",
+      "manifest JSON maps",
+      "00_READ_ME_FIRST.md"
+    ],
+    "INTERPRETATION": [
+      "this collection's file layout; MUST NOT be read as observation"
+    ],
+    "HYPOTHESIS": [
+      "none newly introduced by this collection"
+    ],
+    "OPEN_OR_CONTRADICTORY": [
+      "U1",
+      "U2",
+      "U_P*",
+      "U_S31*",
+      "FORENSIC_TRUTH_SHA_LAG",
+      "VOL_CAP",
+      "F_FULLFSYNC"
+    ],
+    "TRANSFORMATION_OR_IMPLEMENTATION_CONTRACT": [
+      "I_STEP15_CONTRACT",
+      "I_M06_CONTRACT"
+    ],
+    "SOURCE_IDENTITY_AND_PROVENANCE": [
+      "source_identities.json",
+      "raw_evidence_preservation_map.json"
+    ]
+  },
+  "forbidden_conversions": [
+    "RAW!=ADJUDICATED",
+    "HISTORICAL!=CURRENT",
+    "NAVIGATION!=AUTHORITY",
+    "INTERPRETATION!=OBSERVATION",
+    "OPEN!=CLOSED",
+    "UNPROVEN!=PROVEN",
+    "PRESERVED!=CANONICAL"
+  ]
+}
