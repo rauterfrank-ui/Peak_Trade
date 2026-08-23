@@ -1,0 +1,112 @@
+{
+  "BASELINE_VALIDATION": "PASS",
+  "SOURCE_PATH": "/Users/frnkhrz/Downloads/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md",
+  "SOURCE_SHA256_PRE": "10d9293134426805f38996be848e1de853636d8e6f60745a2330bdfd94e3719f",
+  "SOURCE_SHA256_POST": "10d9293134426805f38996be848e1de853636d8e6f60745a2330bdfd94e3719f",
+  "SOURCE_SIZE_PRE": 8499032,
+  "SOURCE_SIZE_POST": 8499032,
+  "SOURCE_IMMUTABLE": true,
+  "TARGET_AUTHORITY": "NONE",
+  "MASTER_RUNBOOK_REMAINS_SOLE_CANONICAL_SSOT": true,
+  "CANONICALIZATION_PERFORMED": false,
+  "OUTPUT_DIRECTORY": "/Users/frnkhrz/Downloads/peak_trade_temporary_forensic_lossless_structure_v1",
+  "NEW_FILES_CREATED": [
+    "00_READ_ME_FIRST.md",
+    "__pycache__/build_lossless_structure.cpython-311.pyc",
+    "adversarial_validation_report.md",
+    "build_lossless_structure.py",
+    "classification_vocabulary.json",
+    "counts.json",
+    "derived_views/chronological_view.md",
+    "derived_views/current_adjudicated_view.md",
+    "derived_views/gate_relation_view.md",
+    "derived_views/open_contradictions_view.md",
+    "derived_views/owner_decisions_view.md",
+    "losslessness_report.md",
+    "physical_source_index.jsonl",
+    "relations.jsonl",
+    "semantic_facets.jsonl",
+    "source_identity.json",
+    "structural_catalog.jsonl"
+  ],
+  "EXISTING_FILES_MUTATED": [],
+  "SOURCE_LINE_COUNT": 118809,
+  "PHYSICAL_RECORD_COUNT": 118809,
+  "STRUCTURAL_RECORD_COUNT": 137861,
+  "SEMANTIC_FACET_COUNT": 13848,
+  "RELATION_COUNT": 284,
+  "UNKNOWN_STRUCTURAL_COUNT": 0,
+  "UNKNOWN_PROVENANCE_COUNT": 91,
+  "UNKNOWN_EPISTEMIC_COUNT": 12251,
+  "UNACCOUNTED_SOURCE_LINES": 0,
+  "UNACCOUNTED_SOURCE_BYTES": 0,
+  "SILENT_DEDUPLICATION_DETECTED": false,
+  "NORMALIZATION_DETECTED": false,
+  "INVENTED_DEPENDENCIES_DETECTED": false,
+  "INVENTED_GATE_ORDER_DETECTED": false,
+  "HISTORICAL_STATE_PROMOTION_DETECTED": false,
+  "AUTHORITY_PROMOTION_DETECTED": false,
+  "VERBATIM_VALIDATION": "PASS",
+  "TRACEABILITY_VALIDATION": "PASS",
+  "ADVERSARIAL_VALIDATION": "PASS",
+  "LOSSLESSNESS_STATUS": "PASS",
+  "TRANSFORMATION_STATUS": "COMPLETE_LOCAL_ONLY",
+  "REPO_MUTATION": "NONE",
+  "COMMIT_CREATED": false,
+  "PUSH_PERFORMED": false,
+  "PR_CREATED": false,
+  "NEXT_STEP_REQUIRES_SEPARATE_OWNER_GO": true,
+  "HARD_STOP": true,
+  "counts": {
+    "structural_type_counts": {
+      "PhysicalAppendUnit": 1,
+      "Heading": 1477,
+      "BlankLine": 4936,
+      "RawOutputBlock": 1245,
+      "NestedStructuralChild": 106825,
+      "BlockQuote": 4,
+      "Separator": 725,
+      "Paragraph": 1400,
+      "ListItem": 835,
+      "Table": 213,
+      "TableRow": 2596,
+      "TableCell": 17187,
+      "KeyValueStatement": 326,
+      "FencedBlock": 91
+    },
+    "provenance_counts": {
+      "SOURCE_NATIVE": 12455,
+      "VERBATIM_EXTERNAL_OUTPUT": 1245,
+      "OWNER_STATEMENT": 57,
+      "UNKNOWN": 91
+    },
+    "epistemic_counts": {
+      "UNKNOWN": 12251,
+      "FORENSIC_RAW_EVIDENCE": 1336,
+      "PROCESS_METADATA": 110,
+      "OPEN_POINT": 133,
+      "NAVIGATION_INDEX": 6,
+      "CONTRADICTORY_POINT": 9,
+      "CANONICAL_AUTHORITY_REFERENCE": 3
+    },
+    "currentness_counts": {
+      "UNKNOWN": 13592,
+      "HISTORICAL": 163,
+      "SUPERSEDED": 93
+    },
+    "adjudication_counts": {
+      "UNKNOWN": 13846,
+      "SUPERSEDED_DECISION": 2
+    },
+    "relation_type_counts": {
+      "SAME_SUBJECT_AS": 284
+    },
+    "relation_provenance_counts": {
+      "DERIVED_INTERPRETATION": 284
+    },
+    "physical_record_count": 118809,
+    "structural_record_count": 137861,
+    "semantic_facet_count": 13848,
+    "relation_count": 284
+  }
+}

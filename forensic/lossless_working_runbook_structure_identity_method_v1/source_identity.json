@@ -1,0 +1,26 @@
+{
+  "source_logical_id": "peak_trade_temporary_forensic_working_runbook",
+  "source_original_path_if_explicit_in_source": "/Users/frnkhrz/Desktop/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md",
+  "source_original_path_status": "HISTORICAL_TOKEN_UNCORRECTED",
+  "source_observed_path": "/Users/frnkhrz/Downloads/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md",
+  "source_sha256": "10d9293134426805f38996be848e1de853636d8e6f60745a2330bdfd94e3719f",
+  "source_byte_count": 8499032,
+  "source_line_count": 118809,
+  "source_encoding": "utf-8",
+  "source_bom_status": "NONE",
+  "source_newline_observations": {
+    "lf": 118809,
+    "crlf": 0,
+    "cr": 0,
+    "file_ends_with_newline": true,
+    "mixed": false
+  },
+  "transformation_timestamp": "2026-08-23T07:44:01Z",
+  "target_authority": "NONE",
+  "canonicalization_performed": false,
+  "master_runbook_remains_sole_ssot": true,
+  "file_placement_is_not_authority_promotion": true,
+  "old_structural_analysis_target_sha256_not_used": "08ffe7bce3fd7aa94de20737c3bc1cf1721e08e719fc8d3d00d72e079f6a5092",
+  "observed_path_is_metadata_only": true,
+  "historical_paths_not_corrected": true
+}
