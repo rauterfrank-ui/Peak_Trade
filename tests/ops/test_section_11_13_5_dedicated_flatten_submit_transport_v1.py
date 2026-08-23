@@ -183,7 +183,24 @@ def test_instrument_mismatch_rejected() -> None:
             permit=flatten_permit,
             plan=plan,
             price_permit=price_permit,
-            positions_payload=_positions({"instId": "BTC-USDT-SWAP", "pos": "1"}),
+            positions_payload=_positions(),
+        )
+
+
+def test_other_open_instrument_fails_account_wide_cap() -> None:
+    flatten_permit, plan, price_permit, payload = _flatten_bundle(pos="1")
+    with pytest.raises(
+        LiveCanaryFlattenSubmitTransportError,
+        match="ACCOUNT_WIDE_OPEN_POSITION_CAP:DENY_OTHER_OPEN_INSTRUMENT_PRESENT",
+    ):
+        build_canary_flatten_submit_request_v1(
+            permit=flatten_permit,
+            plan=plan,
+            price_permit=price_permit,
+            positions_payload=_positions(
+                {"instId": TARGET, "pos": "1"},
+                {"instId": "BTC-USDT-SWAP", "pos": "1"},
+            ),
         )
 
 

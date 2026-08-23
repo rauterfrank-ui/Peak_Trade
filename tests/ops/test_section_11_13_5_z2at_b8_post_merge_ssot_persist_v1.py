@@ -15,6 +15,7 @@ MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2AT_HEADING = "### 11.13.5.Z2AT Post-B8 pre-submit open-position-cap SSOT persist"
 Z2AS_HEADING = "### 11.13.5.Z2AS Owner P3 independent parallel tracks selection-semantics persist"
+Z2AU_HEADING = "### 11.13.5.Z2AU Offline Z2AP live-flatten construction and gate-binding persist"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 NEXT_POINTER = (
     "OWNER_GO_REQUIRED_SEPARATE_SCOPED_NAMED_TRACK_OR_NAMED_CLASS_"
@@ -36,8 +37,8 @@ def _read(path: Path) -> str:
 def _z2at_section(text: str) -> str:
     start = text.find(Z2AT_HEADING)
     assert start >= 0, "missing §11.13.5.Z2AT heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2AT"
+    end = text.find(Z2AU_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2AU boundary after Z2AT"
     return text[start:end]
 
 
@@ -46,8 +47,9 @@ def test_z2at_heading_is_unique_and_follows_z2as() -> None:
     assert text.count(Z2AT_HEADING) == 1
     z2as = text.find(Z2AS_HEADING)
     z2at = text.find(Z2AT_HEADING)
+    z2au = text.find(Z2AU_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= z2as < z2at < ladder
+    assert 0 <= z2as < z2at < z2au < ladder
 
 
 def test_z2at_docs_bind_b8_merge_without_execution_or_track_consumption() -> None:
