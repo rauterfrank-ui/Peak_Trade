@@ -29448,6 +29448,159 @@ treat offline construction as `LIVE_FLATTEN_PROVABILITY=PROVEN`.
 `LIVE_AUTHORIZED=false`. No execute. No merge of this persist without a
 separate `OWNER_MERGE_GO`.
 
+### 11.13.5.Z2AV Productive live-flatten wiring persist (BOUND; WIRING; NOT EXECUTE; NOT PROVEN)
+
+Owner-GO
+`OWNER_GO=SECTION_11_13_5_POST_Z2AU_PRODUCTIVE_LIVE_FLATTEN_WIRING_MAX_SAFE_SLICE_FAIL_CLOSED_NO_NETWORK_NO_GET_NO_POST_NO_EXECUTE`
+(one-shot; now **CONSUMED** as this wiring slice only) authorized the
+largest remaining **fail-closed source wiring** after Z2AU
+(`origin/main=7085b6e76fef9036319f6d9a4bce0329e5493b02`). This persist
+records that a dedicated productive flatten transport, runner
+`flatten_execute` wiring, separate flatten-execute confirm-token
+authority, and a full pre-send gate object now exist so a hypothetically
+valid productive flatten is **structurally reachable**. This persist
+does **not** prove live flatten, does **not** enable live wire as a
+standing default, does **not** execute Canary, Testnet, Live, or
+flatten, does **not** fund, does **not** perform GET or POST, does
+**not** consume Z2AP as flatten proof, does **not** consume Z2AR, does
+**not** rank either open P3 track, and does **not** invent a flatten
+execute Owner-GO.
+
+This persist is **additive**. §11.13.5.Z2AS remains the policy basis for
+independent parallel tracks. §11.13.5.Z2AP, §11.13.5.Z2AQ, §11.13.5.Z2AR,
+§11.13.5.Z2AS, §11.13.5.Z2AT, and §11.13.5.Z2AU remain historically and
+semantically unchanged. Bound scope:
+
+``` text
+AUTHORIZED_SCOPE=A_Z2AV_PRODUCTIVE_FLATTEN_WIRING_FAIL_CLOSED_NO_NETWORK_NO_GET_NO_POST_NO_EXECUTE_ONLY
+CURRENT_PHASE=SECTION_11_13_5_Z2AV_PRODUCTIVE_FLATTEN_WIRING
+OWNER_GO=SECTION_11_13_5_POST_Z2AU_PRODUCTIVE_LIVE_FLATTEN_WIRING_MAX_SAFE_SLICE_FAIL_CLOSED_NO_NETWORK_NO_GET_NO_POST_NO_EXECUTE
+OWNER_GO_STATUS=CONSUMED
+PERSIST_CLASS=WIRING_IMPLEMENTATION_PLUS_SSOT_PERSIST
+BASELINE_ORIGIN_MAIN_SHA=7085b6e76fef9036319f6d9a4bce0329e5493b02
+PARALLEL_TO_SECTION_11_13_5_Z2AS=true
+PARALLEL_TO_SECTION_11_13_5_Z2AP=true
+PARALLEL_TO_SECTION_11_13_5_Z2AR=true
+Z2AS_REMAINS_P3_POLICY_BASIS=true
+Z2AS_TEXT_REWRITTEN=false
+Z2AP_TEXT_REWRITTEN=false
+Z2AQ_TEXT_REWRITTEN=false
+Z2AR_TEXT_REWRITTEN=false
+Z2AT_TEXT_REWRITTEN=false
+Z2AU_TEXT_REWRITTEN=false
+Z2AP_CONSUMED=false
+Z2AR_CONSUMED=false
+P3_INDEPENDENT_PARALLEL_TRACKS_POLICY=true
+TRACK_RELATION=INDEPENDENT_PARALLEL
+GLOBAL_UNIQUE_CANONICAL_NEXT_STEP=NONE_BY_P3_POLICY
+NO_MAP_OF_TRUTH_MUTATION=true
+LAST_CANONICALLY_CLOSED_STEP=LF_12
+THIS_OWNER_GO_IS_NOT_FLATTEN_EXECUTE_TOKEN=true
+
+SLICE_IMPLEMENTED=true
+DEDICATED_PRODUCTIVE_FLATTEN_TRANSPORT_PRESENT=true
+PRODUCTIVE_FLATTEN_RUNNER_WIRING_PRESENT=true
+SEPARATE_FLATTEN_EXECUTE_AUTHORITY_PRESENT=true
+FULL_PRE_SEND_GATE_OBJECT_REQUIRED=true
+DEFAULT_PRODUCTIVE_SEND_DENIED=true
+B8_MANDATORY=true
+REDUCE_ONLY_MANDATORY=true
+LIMIT_ONLY_MANDATORY=true
+FRESHNESS_5000MS_MANDATORY=true
+ONE_SHOT_NO_RETRY=true
+DUPLICATE_POST_PROTECTION=true
+POST_SUBMIT_PROOF_CONTRACT_PRESERVED=true
+PRODUCTIVE_FLATTEN_PATH_STRUCTURALLY_REACHABLE=true
+PRODUCTIVE_WIRE_SEND_WITHOUT_FULL_RUNTIME_GATES=false
+PRODUCTIVE_WIRE_SEND_WITHOUT_SEPARATE_FLATTEN_EXECUTE_AUTHORITY=false
+NETWORK_USED_DURING_SLICE=false
+GET_EXECUTED_THIS_STEP=false
+POST_EXECUTED=false
+LIVE_FLATTEN_PROVABILITY=UNPROVEN
+PRODUCTIVE_PROOF_EXECUTED=false
+STRUCTURALLY_REACHABLE_NE_PRODUCTIVELY_PROVEN=true
+DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false
+STANDING_LIVE_AUTHORIZED=false
+STANDING_LIVE_ENABLED=false
+STANDING_LIVE_ARMED=false
+FAKE_TRANSPORT_CANNOT_MASQUERADE=true
+RUNNER_FLATTEN_EXECUTE_MODE=flatten_execute
+NO_AUTONOMOUS_FLATTEN_TRIGGER=true
+NO_IMPLICIT_FLATTEN_ON_STARTUP_SHUTDOWN_OR_GENERIC_RISK=true
+SOURCE_FLATTEN_EXECUTE_AUTHORITY=src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+SOURCE_FLATTEN_PRE_SEND_GATE=src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_pre_send_gate_v1.py
+SOURCE_FLATTEN_PRODUCTIVE_TRANSPORT=src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_productive_transport_v1.py
+SOURCE_FLATTEN_GATED_SUBMIT=src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_gated_submit_v1.py
+SOURCE_RUNNER=src/ops/section_11_13_5_live_canary_minimum_exposure_v1/runner_v1.py
+TEST_OWNER_Z2AV_WIRING=tests/ops/test_section_11_13_5_productive_flatten_wiring_v1.py
+TEST_OWNER_Z2AV_PERSIST=tests/ops/test_section_11_13_5_z2av_productive_flatten_wiring_persist_v1.py
+```
+
+Gate architecture. Productive send is denied unless every independent
+predicate in the pre-send object passes, including standing live flags
+remaining false, invocation live claims, dedicated flatten-execute
+token/purpose/owner-go (exact canonical expected-values; missing, wrong,
+forbidden, stale, or wrong-purpose deny), instrument binding, observed
+nonzero position, single-selected instrument match, empty pending-order
+state, B8 cap, close side and qty from the observed position, reduceOnly,
+LIMIT, canonical 5000 ms freshness, limit-price policy, overshoot/flip
+contract, one-shot, and duplicate-POST protection. A generic
+`allow_productive_wire_send=true` flag is never sufficient. Fake/offline
+transport remains distinct and cannot masquerade. The gated productive
+transport defaults `network_session_authorized=false` and this slice never
+sets it true. Runner mode `flatten_execute` is the only orchestration
+entry; preflight/forensic/execute do not invoke flatten.
+
+What this slice proves, and what it does **not** prove:
+
+``` text
+LIVE_FLATTEN_PROVABILITY=UNPROVEN
+PRODUCTIVE_PROOF_READY=true
+PRODUCTIVE_PROOF_EXECUTED=false
+STRUCTURALLY_REACHABLE=true
+PRODUCTIVELY_PROVEN=false
+GET_EXECUTED_THIS_STEP=false
+POST_EXECUTED=false
+NETWORK_REQUEST_EXECUTED=false
+ORDER_SUBMISSION=false
+FLATTEN_EXECUTION=false
+CANARY_EXECUTED=false
+TESTNET_ORDER_EXECUTED=false
+LIVE_ORDER_EXECUTED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+CAN_SUBMIT_ORDER_TODAY=false
+```
+
+Residual after this slice. Remaining evidence is still
+**execution-only**. Wiring does not consume that remainder.
+
+``` text
+EARLIEST_RESIDUAL_DEPENDENCY=SEPARATE_SCOPED_OWNER_GO_FOR_LIVE_READ_AND_OR_FLATTEN_EXECUTE_PLUS_PRODUCTIVE_RUNTIME_OBSERVATION_PLUS_NETWORK_SESSION_AUTHORIZATION_NOT_GRANTED_HERE
+NEXT_EVIDENCE_REQUIRES_SEPARATE_EXECUTION_GO=true
+NO_FLATTEN_EXECUTE_GO_INVENTED_BY_THIS_PERSIST=true
+Z2AP_TRACK_STATUS=OPEN_UNCONSUMED
+Z2AR_SUI_TRACK_STATUS=OPEN_UNCONSUMED
+GLOBAL_UNIQUE_CANONICAL_NEXT_STEP=NONE_BY_P3_POLICY
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+SECTION_LOCAL_CANONICAL_NEXT_STEP_ROLE=RESIDUAL_AUTHORIZATION_BOUNDARY_OF_THIS_PERSIST_NOT_GLOBAL_UNIQUE_NEXT
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_SCOPED_NAMED_TRACK_OR_NAMED_CLASS_PROGRESSION_NOT_AUTHORIZED_BY_THIS_PERSIST_Z2AV_PRODUCTIVE_FLATTEN_WIRING_ONLY_GLOBAL_UNIQUE_CANONICAL_NEXT_STEP_NONE_BY_P3_POLICY_NO_Z2AP_CONSUME_NO_Z2AR_CONSUME_NO_FLATTEN_EXECUTE_NO_LIVE_WIRE_NO_SUI_REPROOF_NO_CANONICAL_REBIND_NO_GET_NO_POST_NO_ORDER_NO_FUNDING_NO_CANARY_NOT_AUTHORIZED
+NEXT_OWNER_AUTHORIZATION_REQUIRED=OWNER_MERGE_GO_FOR_THIS_PERSIST_THEN_SEPARATE_EXPLICIT_EXECUTION_GO_REQUIRED_FOR_ANY_PRODUCTIVE_LIVE_FLATTEN_ATTEMPT
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+Hard stop. This Z2AV wiring GO is consumed as this slice only. Do **not**
+reuse it as flatten execute, live-read, GET, POST, order, funding, Canary,
+testnet, live, or merge authorization. `LIVE_FLATTEN_PROVABILITY=UNPROVEN`.
+`PRODUCTIVE_PROOF_EXECUTED=false`. `Z2AP_CONSUMED=false`.
+`Z2AR_CONSUMED=false`. `CAN_SUBMIT_ORDER_TODAY=false`. No execute. No
+merge of this persist without a separate `OWNER_MERGE_GO`.
+
 ## 11.14 Live order and economic evidence ladder
 
 Live proof claims must use a stricter ladder:

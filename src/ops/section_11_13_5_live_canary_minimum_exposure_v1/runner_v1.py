@@ -62,6 +62,17 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.submit_transport_v1
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.trade_permission_forensic_v1 import (
     build_trade_permission_forensic_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_gated_submit_v1 import (
+    FlattenGatedSubmitBoundaryV1,
+    default_flatten_execute_gate_input_from_runner_v1,
+    default_gated_productive_flatten_transport_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_submit_transport_v1 import (
+    LIVE_FLATTEN_PROVABILITY,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+    DEFAULT_INSTRUMENT_ID as _FLATTEN_DEFAULT_INSTRUMENT_ID,
+)
 
 
 class LiveCanaryRunnerError(RuntimeError):
@@ -106,9 +117,17 @@ def run_section_11_13_5_live_canary_minimum_exposure_v1(
     vault_backend: Any = None,
     vault_file: str | None = None,
     live_canary_cybersecurity_gate: str = "PASS",
+    flatten_execute_token: str | None = None,
+    flatten_execute_purpose: str | None = None,
+    flatten_execute_owner_go: str | None = None,
+    flatten_execute_bound_origin_main_sha: str | None = None,
+    flatten_live_wire_enabled: bool = False,
+    positions_payload: Mapping[str, Any] | None = None,
+    pending_orders_payload: Mapping[str, Any] | None = None,
+    price_input: Any = None,
 ) -> LiveCanaryRunnerResultV1:
     mode_norm = str(mode or "").strip().lower()
-    if mode_norm not in {"preflight", "forensic", "execute"}:
+    if mode_norm not in {"preflight", "forensic", "execute", "flatten_execute"}:
         raise LiveCanaryRunnerError(f"UNKNOWN_MODE:{mode}")
 
     if CAPABILITY_11_9_LIVE_CANARY_ACTIVATED or not CAPABILITY_11_9_REMAINS_FIXTURE_ONLY:
@@ -136,6 +155,27 @@ def run_section_11_13_5_live_canary_minimum_exposure_v1(
         )
     except LiveCanaryConfigError as exc:
         raise LiveCanaryRunnerError(str(exc)) from exc
+
+    if mode_norm == "flatten_execute":
+        return _run_flatten_execute_mode_v1(
+            cfg=cfg,
+            origin_main_sha=origin_main_sha,
+            executed_code_sha=executed_code_sha,
+            owner_go=owner_go,
+            live_canary_authorized=bool(live_canary_authorized),
+            live_enabled=live_enabled,
+            live_armed=live_armed,
+            allow_productive_wire_send=allow_productive_wire_send,
+            transport=transport,
+            flatten_execute_token=flatten_execute_token,
+            flatten_execute_purpose=flatten_execute_purpose,
+            flatten_execute_owner_go=flatten_execute_owner_go,
+            flatten_execute_bound_origin_main_sha=flatten_execute_bound_origin_main_sha,
+            flatten_live_wire_enabled=flatten_live_wire_enabled,
+            positions_payload=positions_payload,
+            pending_orders_payload=pending_orders_payload,
+            price_input=price_input,
+        )
 
     repo = _repo_root()
     forensic = prove_forensic_classification_contract_v1(repo_root=repo)
@@ -282,6 +322,107 @@ def run_section_11_13_5_live_canary_minimum_exposure_v1(
                 classify_from_sealed_evidence_roots_v1(repo_root=repo).get("ok")
             ),
         },
+    )
+
+
+def _run_flatten_execute_mode_v1(
+    *,
+    cfg: Any,
+    origin_main_sha: str,
+    executed_code_sha: str | None,
+    owner_go: str | None,
+    live_canary_authorized: bool,
+    live_enabled: bool,
+    live_armed: bool,
+    allow_productive_wire_send: bool,
+    transport: Any,
+    flatten_execute_token: str | None,
+    flatten_execute_purpose: str | None,
+    flatten_execute_owner_go: str | None,
+    flatten_execute_bound_origin_main_sha: str | None,
+    flatten_live_wire_enabled: bool,
+    positions_payload: Mapping[str, Any] | None,
+    pending_orders_payload: Mapping[str, Any] | None,
+    price_input: Any,
+) -> LiveCanaryRunnerResultV1:
+    """Explicit flatten_execute only. Never runs on preflight/forensic/execute."""
+    payload_cfg = dict(getattr(cfg, "payload", {}) or {})
+    token = flatten_execute_token
+    if token is None:
+        token = str(payload_cfg.get("flatten_execute_token") or "")
+    purpose = flatten_execute_purpose
+    if purpose is None:
+        purpose = str(payload_cfg.get("flatten_execute_purpose") or "")
+    flatten_go = flatten_execute_owner_go
+    if flatten_go is None:
+        flatten_go = str(payload_cfg.get("flatten_execute_owner_go") or "")
+    bound = flatten_execute_bound_origin_main_sha
+    if bound is None:
+        bound = str(payload_cfg.get("flatten_execute_bound_origin_main_sha") or "") or None
+    wire = bool(flatten_live_wire_enabled) or bool(payload_cfg.get("flatten_live_wire_enabled"))
+    instrument_id = str(payload_cfg.get("instrument_id") or "").strip() or None
+    if instrument_id is None:
+        from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+            DEFAULT_INSTRUMENT_ID,
+        )
+
+        instrument_id = DEFAULT_INSTRUMENT_ID
+    flatten_transport = (
+        transport if transport is not None else default_gated_productive_flatten_transport_v1()
+    )
+    if price_input is None:
+        result_payload = {
+            "ok": False,
+            "mode": "flatten_execute",
+            "send_attempted": False,
+            "send_completed": False,
+            "reasons": ["RUNTIME_PRICE_INPUT_UNAVAILABLE"],
+            "LIVE_FLATTEN_PROVABILITY": LIVE_FLATTEN_PROVABILITY,
+            "NETWORK_EFFECT": "NONE",
+            "PRODUCTIVE_VENUE_PROOF": False,
+            "origin_main_sha": origin_main_sha,
+            "executed_code_sha": executed_code_sha or origin_main_sha,
+            "owner_go_observed": owner_go,
+        }
+        return LiveCanaryRunnerResultV1(ok=False, mode="flatten_execute", payload=result_payload)
+    gate_input = default_flatten_execute_gate_input_from_runner_v1(
+        live_authorized=bool(live_canary_authorized),
+        live_enabled=bool(live_enabled),
+        live_armed=bool(live_armed),
+        flatten_live_wire_enabled=wire,
+        allow_productive_wire_send=bool(allow_productive_wire_send),
+        flatten_execute_token=token,
+        flatten_execute_purpose=purpose,
+        flatten_execute_owner_go=flatten_go,
+        flatten_execute_bound_origin_main_sha=bound,
+        positions_payload=positions_payload,
+        pending_orders_payload=pending_orders_payload,
+        price_input=price_input,
+        owner_go=str(owner_go or ""),
+        origin_main_sha=origin_main_sha,
+        instrument_id=instrument_id,
+    )
+    if gate_input is None:
+        raise LiveCanaryRunnerError("FLATTEN_GATE_INPUT_UNAVAILABLE")
+    boundary = FlattenGatedSubmitBoundaryV1()
+    outcome = boundary.submit(gate_input=gate_input, transport=flatten_transport)
+    result_payload = outcome.to_dict()
+    result_payload.update(
+        {
+            "ok": bool(outcome.send_completed),
+            "mode": "flatten_execute",
+            "LIVE_FLATTEN_PROVABILITY": LIVE_FLATTEN_PROVABILITY,
+            "NETWORK_EFFECT": "NONE",
+            "PRODUCTIVE_VENUE_PROOF": False,
+            "origin_main_sha": origin_main_sha,
+            "executed_code_sha": executed_code_sha or origin_main_sha,
+            "owner_go_observed": owner_go,
+        }
+    )
+    return LiveCanaryRunnerResultV1(
+        ok=bool(outcome.send_completed),
+        mode="flatten_execute",
+        payload=result_payload,
     )
 
 

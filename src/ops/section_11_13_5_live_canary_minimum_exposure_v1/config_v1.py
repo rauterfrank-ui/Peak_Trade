@@ -98,8 +98,15 @@ def example_incomplete_config_dict_v1() -> dict[str, Any]:
             "ctVal/tickSz must come from venue instrument metadata. SecretRef must use "
             "/live-canary-minimum-exposure/ path. Instrument minSz/lotSz/ctVal/tickSz "
             "are derived from venue GET at execute and must not be invented. "
-            "Authoring/transport-prep does not authorize execute."
+            "Authoring/transport-prep does not authorize execute. Flatten execute "
+            "defaults remain denied."
         ),
+        "flatten_live_wire_enabled": False,
+        "flatten_execute_token": "",
+        "flatten_execute_purpose": "",
+        "flatten_execute_owner_go": "",
+        "flatten_execute_bound_origin_main_sha": "",
+        "flatten_allow_productive_wire_send": False,
     }
 
 
