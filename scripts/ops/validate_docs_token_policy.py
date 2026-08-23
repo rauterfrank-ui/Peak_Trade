@@ -25,6 +25,25 @@ from typing import List, Dict, Set, Optional, Sequence
 from enum import Enum
 
 
+# Exact V2/V2.1 preservation-pack leaf. Changed-mode product-docs gates skip
+# Markdown under this prefix only. This is not a generic forensic/** exclude.
+V2_V21_PRESERVATION_PACK_CHANGED_MD_EXCLUDE_PREFIX = (
+    "forensic/lossless_structural_projection_v2_v2_1_pack_v1"
+)
+
+
+def is_v2_v21_preservation_pack_changed_md_path(rel_path: str) -> bool:
+    """Return True iff *rel_path* is inside the V2/V2.1 preservation pack leaf.
+
+    Path-boundary safe: sibling prefixes such as
+    ``forensic/lossless_structural_projection_v2_v2_1_pack_v1_other/`` are not
+    excluded. Git ``diff --name-only`` paths are repo-relative with ``/``.
+    """
+    normalized = rel_path.strip()
+    prefix = V2_V21_PRESERVATION_PACK_CHANGED_MD_EXCLUDE_PREFIX
+    return normalized == prefix or normalized.startswith(prefix + "/")
+
+
 class TokenType(Enum):
     """Classification of inline-code tokens containing '/'."""
 
@@ -309,11 +328,14 @@ class DocsTokenPolicyValidator:
                 .split("\n")
             )
 
-            # Filter for .md files
+            # Filter for .md files. Skip the V2/V2.1 preservation pack leaf only.
             md_files = [
                 self.repo_root / f
                 for f in changed_files
-                if f and f.endswith(".md") and (self.repo_root / f).exists()
+                if f
+                and f.endswith(".md")
+                and (self.repo_root / f).exists()
+                and not is_v2_v21_preservation_pack_changed_md_path(f)
             ]
 
             return md_files

@@ -12,6 +12,7 @@ from scripts.ops.validate_docs_token_policy import (
     DocsTokenPolicyValidator,
     TokenType,
     ScanResult,
+    is_v2_v21_preservation_pack_changed_md_path,
 )
 
 
@@ -536,3 +537,85 @@ class TestPreflightWrapper:
         )
         assert result.returncode == 0, result.stderr or result.stdout
         assert "preflight passed" in result.stdout
+
+
+class TestV2V21PreservationPackChangedMdExclude:
+    """Changed-mode skip is the exact V2/V2.1 pack leaf, not forensic/**."""
+
+    def test_pack_leaf_paths_are_excluded(self) -> None:
+        assert is_v2_v21_preservation_pack_changed_md_path(
+            "forensic/lossless_structural_projection_v2_v2_1_pack_v1/00_READ_ME_FIRST.md"
+        )
+        assert is_v2_v21_preservation_pack_changed_md_path(
+            "forensic/lossless_structural_projection_v2_v2_1_pack_v1/"
+            "evidence/raw_verbatim_identity_copies_authority_none/"
+            "PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md"
+        )
+        assert is_v2_v21_preservation_pack_changed_md_path(
+            "forensic/lossless_structural_projection_v2_v2_1_pack_v1"
+        )
+
+    def test_product_docs_and_sibling_forensic_paths_remain_gated(self) -> None:
+        assert not is_v2_v21_preservation_pack_changed_md_path("docs/ops/example.md")
+        assert not is_v2_v21_preservation_pack_changed_md_path("forensic/other_pack/example.md")
+        assert not is_v2_v21_preservation_pack_changed_md_path(
+            "forensic/lossless_structural_projection_v2_v2_1_pack_v1_other/x.md"
+        )
+        assert not is_v2_v21_preservation_pack_changed_md_path("README.md")
+        assert not is_v2_v21_preservation_pack_changed_md_path("")
+
+    def test_get_changed_markdown_files_skips_pack_leaf_only(self, tmp_path: Path) -> None:
+        repo = tmp_path / "repo"
+        repo.mkdir()
+        subprocess.run(["git", "init", "-b", "main"], cwd=repo, check=True, capture_output=True)
+        subprocess.run(
+            ["git", "config", "user.email", "test@example.com"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.name", "PeakTradeTest"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+        )
+        (repo / "README.md").write_text("# base\n")
+        subprocess.run(["git", "add", "README.md"], cwd=repo, check=True, capture_output=True)
+        subprocess.run(
+            ["git", "commit", "-m", "base"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+        )
+        base = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
+
+        pack = repo / "forensic" / "lossless_structural_projection_v2_v2_1_pack_v1"
+        (pack / "nested").mkdir(parents=True)
+        (pack / "nested" / "pack.md").write_text("`src/trading/missing.py`\n")
+        other = repo / "forensic" / "other_pack"
+        other.mkdir(parents=True)
+        (other / "example.md").write_text("`src/trading/missing.py`\n")
+        boundary = repo / "forensic" / "lossless_structural_projection_v2_v2_1_pack_v1_other"
+        boundary.mkdir(parents=True)
+        (boundary / "x.md").write_text("`src/trading/missing.py`\n")
+        docs = repo / "docs" / "ops"
+        docs.mkdir(parents=True)
+        (docs / "example.md").write_text("`src/trading/missing.py`\n")
+
+        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+        subprocess.run(
+            ["git", "commit", "-m", "changed markdown"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+        )
+
+        validator = DocsTokenPolicyValidator(repo)
+        changed = {str(p.relative_to(repo)) for p in validator.get_changed_markdown_files(base)}
+        assert (
+            "forensic/lossless_structural_projection_v2_v2_1_pack_v1/nested/pack.md" not in changed
+        )
+        assert "docs/ops/example.md" in changed
+        assert "forensic/other_pack/example.md" in changed
+        assert "forensic/lossless_structural_projection_v2_v2_1_pack_v1_other/x.md" in changed
