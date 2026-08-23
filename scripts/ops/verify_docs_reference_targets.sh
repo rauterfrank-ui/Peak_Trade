@@ -77,8 +77,14 @@ if [[ "$CHANGED_ONLY" == "1" ]]; then
 
   # Use triple-dot to diff against merge-base
   # Exclude test fixtures (tests/fixtures/) to avoid false positives
+  # Exact V2/V2.1 preservation-pack leaf only — not a generic forensic/** exclude.
+  # Path-boundary: require the trailing slash so sibling prefixes stay gated.
+  _V2_V21_PRESERVATION_PACK_PREFIX="forensic/lossless_structural_projection_v2_v2_1_pack_v1/"
   while IFS= read -r f; do
-    [[ -n "$f" ]] && [[ "$f" != tests/fixtures/* ]] && md_files+=("$f")
+    [[ -z "$f" ]] && continue
+    [[ "$f" == tests/fixtures/* ]] && continue
+    [[ "$f" == "${_V2_V21_PRESERVATION_PACK_PREFIX}"* ]] && continue
+    md_files+=("$f")
   done < <(git diff --name-only "${BASE_REF}...HEAD" -- '*.md' || true)
 else
   # Determine docs_root relative to repo_root for git ls-files
