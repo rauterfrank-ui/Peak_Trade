@@ -1,0 +1,52 @@
+{
+  "structural_type_counts": {
+    "PhysicalAppendUnit": 1,
+    "Heading": 1477,
+    "BlankLine": 4936,
+    "RawOutputBlock": 1245,
+    "NestedStructuralChild": 106825,
+    "BlockQuote": 4,
+    "Separator": 725,
+    "Paragraph": 1400,
+    "ListItem": 835,
+    "Table": 213,
+    "TableRow": 2596,
+    "TableCell": 17187,
+    "KeyValueStatement": 326,
+    "FencedBlock": 91
+  },
+  "provenance_counts": {
+    "SOURCE_NATIVE": 12455,
+    "VERBATIM_EXTERNAL_OUTPUT": 1245,
+    "OWNER_STATEMENT": 57,
+    "UNKNOWN": 91
+  },
+  "epistemic_counts": {
+    "UNKNOWN": 12251,
+    "FORENSIC_RAW_EVIDENCE": 1336,
+    "PROCESS_METADATA": 110,
+    "OPEN_POINT": 133,
+    "NAVIGATION_INDEX": 6,
+    "CONTRADICTORY_POINT": 9,
+    "CANONICAL_AUTHORITY_REFERENCE": 3
+  },
+  "currentness_counts": {
+    "UNKNOWN": 13592,
+    "HISTORICAL": 163,
+    "SUPERSEDED": 93
+  },
+  "adjudication_counts": {
+    "UNKNOWN": 13846,
+    "SUPERSEDED_DECISION": 2
+  },
+  "relation_type_counts": {
+    "SAME_SUBJECT_AS": 284
+  },
+  "relation_provenance_counts": {
+    "DERIVED_INTERPRETATION": 284
+  },
+  "physical_record_count": 118809,
+  "structural_record_count": 137861,
+  "semantic_facet_count": 13848,
+  "relation_count": 284
+}
