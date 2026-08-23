@@ -29454,7 +29454,7 @@ Owner-GO
 `OWNER_GO=SECTION_11_13_5_POST_Z2AU_PRODUCTIVE_LIVE_FLATTEN_WIRING_MAX_SAFE_SLICE_FAIL_CLOSED_NO_NETWORK_NO_GET_NO_POST_NO_EXECUTE`
 (one-shot; now **CONSUMED** as this wiring slice only) authorized the
 largest remaining **fail-closed source wiring** after Z2AU
-(`origin/main=7085b6e76fef9036319f6d9a4bce0329e5493b02`). This persist
+(`origin&#47;main=7085b6e76fef9036319f6d9a4bce0329e5493b02`). This persist
 records that a dedicated productive flatten transport, runner
 `flatten_execute` wiring, separate flatten-execute confirm-token
 authority, and a full pre-send gate object now exist so a hypothetically
