@@ -25,19 +25,31 @@ repos:
       # KILLER FEATURE: verhindert "new blank line at EOF" Noise zuverlässig.
       - id: end-of-file-fixer
         exclude: |
-          (?x)^(forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/(desktop|transcripts)/.*)$
+          (?x)^(
+            forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/(desktop|transcripts)/.*|
+            forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/.*|
+            forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/.*
+          )$
 
       # Trim trailing whitespace; behält Markdown-Linebreaks ("two spaces") bei.
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md, --markdown-linebreak-ext=markdown]
         exclude: |
-          (?x)^(forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/(desktop|transcripts)/.*)$
+          (?x)^(
+            forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/(desktop|transcripts)/.*|
+            forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/.*|
+            forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/.*
+          )$
 
       # Einheitliche Line Endings (LF) erzwingen.
       - id: mixed-line-ending
         args: [--fix=lf]
         exclude: |
-          (?x)^(forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/(desktop|transcripts)/.*)$
+          (?x)^(
+            forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/(desktop|transcripts)/.*|
+            forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/.*|
+            forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/.*
+          )$
 
       # Kleiner Safety-Net-Stack (low noise, high value)
       - id: check-merge-conflict
@@ -46,6 +58,8 @@ repos:
       - id: check-json
       - id: check-added-large-files
         args: [--maxkb=1024]
+        exclude: |
+          (?x)^(forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK\.md)$
 
   # Ruff for linting (kept)
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -53,6 +67,8 @@ repos:
     hooks:
       - id: ruff-check
         args: [--fix]
+        exclude: |
+          (?x)^(forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/peak_trade_v21_gen\.py)$
 
   # Black for formatting (matches CI audit) - DISABLED: conflicts with ruff format
   # See: https://docs.astral.sh/ruff/formatter/#black-compatibility

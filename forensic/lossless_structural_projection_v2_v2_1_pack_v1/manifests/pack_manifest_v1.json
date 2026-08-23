@@ -1,0 +1,284 @@
+{
+  "pack_id": "peak_trade_lossless_structural_projection_v2_v2_1_pack",
+  "pack_version": "v1",
+  "pack_authority": "NONE",
+  "second_ssot": false,
+  "canonicalization_performed": false,
+  "master_runbook_remains_sole_canonical_ssot": true,
+  "not_canonical": true,
+  "file_placement_is_not_authority_promotion": true,
+  "runtime_authorization_effect": "NONE",
+  "trading_mutation_authorized": false,
+  "preferred_parent": "forensic/",
+  "pack_root": "forensic/lossless_structural_projection_v2_v2_1_pack_v1",
+  "storage_strategy": "HYBRID_SOURCE_DIRECT_GIT_JSON_EXTERNAL_SHA_REFERENCE",
+  "git_lfs_status": "NOT_SELECTED",
+  "downloads_is_not_durable_store": true,
+  "bound_origin_main_sha": "b7cf08ded64c32cc7dc8d2fd5f35c98b125ec44e",
+  "source_reference": "/Users/frnkhrz/Downloads/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md",
+  "source_sha256": "10d9293134426805f38996be848e1de853636d8e6f60745a2330bdfd94e3719f",
+  "source_size": 8499032,
+  "source_line_count": 118809,
+  "final_decision_reconciliation_path": "forensic/lossless_structural_projection_v2_v2_1_pack_v1/manifests/final_decision_reconciliation_v1.md",
+  "final_decision_reconciliation_status": "PASS",
+  "preservation_checkpoint_status": "LOCAL_WRITTEN_NOT_COMMITTED",
+  "human_index": {
+    "logical_name": "PACK_INDEX",
+    "repo_path": "forensic/lossless_structural_projection_v2_v2_1_pack_v1/00_READ_ME_FIRST.md",
+    "document_class": "NON_AUTHORITATIVE_NAVIGATION_INDEX",
+    "authority_status": "NONE"
+  },
+  "artifacts": [
+    {
+      "logical_name": "SOURCE",
+      "artifact_class": "ORIGINAL_SOURCE_RECORD",
+      "authority_status": "NONE",
+      "storage_class": "DIRECT_GIT_IDENTITY_COPY",
+      "original_path": "/Users/frnkhrz/Downloads/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md",
+      "original_path_class": "PROVENANCE_ONLY_NOT_RUNTIME_DEPENDENCY",
+      "original_path_is_durable_store": false,
+      "original_path_durability": "PROVENANCE_ONLY_NOT_DURABLE_STORE",
+      "repo_path": "forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md",
+      "basename": "PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md",
+      "sha256": "10d9293134426805f38996be848e1de853636d8e6f60745a2330bdfd94e3719f",
+      "size": 8499032,
+      "line_count": 118809,
+      "line_count_method": "wc_l_newline_count",
+      "ends_with_newline": true,
+      "byte_identity_required": true,
+      "relationship": "ORIGINAL_SOURCE_RECORD",
+      "generated_from": null,
+      "copy_required": true,
+      "mutable": false
+    },
+    {
+      "logical_name": "V2_MD",
+      "artifact_class": "DERIVED_RECORD_WITH_SOURCE_BINDING",
+      "authority_status": "NONE",
+      "storage_class": "DIRECT_GIT_IDENTITY_COPY",
+      "original_path": "/Users/frnkhrz/Downloads/PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2.md",
+      "original_path_class": "PROVENANCE_ONLY_NOT_RUNTIME_DEPENDENCY",
+      "original_path_is_durable_store": false,
+      "original_path_durability": "PROVENANCE_ONLY_NOT_DURABLE_STORE",
+      "repo_path": "forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2.md",
+      "basename": "PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2.md",
+      "sha256": "d240175046f1d6ece5345d172c35171959b270a464fbf98157484c658c4f0e11",
+      "size": 11707,
+      "line_count": 332,
+      "line_count_method": "wc_l_newline_count",
+      "ends_with_newline": true,
+      "byte_identity_required": true,
+      "relationship": "DERIVED_RECORD_WITH_SOURCE_BINDING",
+      "generated_from": "V2_JSON",
+      "copy_required": true,
+      "mutable": false
+    },
+    {
+      "logical_name": "V2_1_MD",
+      "artifact_class": "DERIVED_RECORD_WITH_SOURCE_BINDING",
+      "authority_status": "NONE",
+      "storage_class": "DIRECT_GIT_IDENTITY_COPY",
+      "original_path": "/Users/frnkhrz/Downloads/PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2.1.md",
+      "original_path_class": "PROVENANCE_ONLY_NOT_RUNTIME_DEPENDENCY",
+      "original_path_is_durable_store": false,
+      "original_path_durability": "PROVENANCE_ONLY_NOT_DURABLE_STORE",
+      "repo_path": "forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2.1.md",
+      "basename": "PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2.1.md",
+      "sha256": "6813cf564632dc4ee15cbe3fb0c9866c30f455aaf1c06dd6f599f682342e015c",
+      "size": 3555,
+      "line_count": 130,
+      "line_count_method": "wc_l_newline_count",
+      "ends_with_newline": true,
+      "byte_identity_required": true,
+      "relationship": "DERIVED_RECORD_WITH_SOURCE_BINDING",
+      "generated_from": "V2_1_JSON",
+      "copy_required": true,
+      "mutable": false
+    },
+    {
+      "logical_name": "HARNESS",
+      "artifact_class": "TEST_HARNESS_BEHAVIOR",
+      "authority_status": "NONE",
+      "storage_class": "DIRECT_GIT_IDENTITY_COPY",
+      "original_path": "/tmp/peak_trade_v21_gen.py",
+      "original_path_class": "PROVENANCE_ONLY_NOT_RUNTIME_DEPENDENCY",
+      "original_path_is_durable_store": false,
+      "original_path_durability": "PROVENANCE_ONLY_NOT_DURABLE_STORE",
+      "repo_path": "forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/peak_trade_v21_gen.py",
+      "basename": "peak_trade_v21_gen.py",
+      "sha256": "754f52158f78cb87d8b16eaa1d9564417c2e5ea4b28c8ef3ce517fcf777b7f08",
+      "size": 89877,
+      "line_count": 2026,
+      "line_count_method": "wc_l_newline_count",
+      "ends_with_newline": true,
+      "byte_identity_required": true,
+      "relationship": "TEST_HARNESS_BEHAVIOR",
+      "generated_from": null,
+      "never_source_evidence": true,
+      "copy_required": true,
+      "mutable": false
+    },
+    {
+      "logical_name": "V2_JSON",
+      "artifact_class": "DERIVED_SIDECAR_DATA",
+      "authority_status": "NONE",
+      "storage_class": "EXTERNAL_REFERENCE",
+      "original_path": "/Users/frnkhrz/Downloads/PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2.json",
+      "original_path_class": "PROVENANCE_ONLY_NOT_RUNTIME_DEPENDENCY",
+      "original_path_is_durable_store": false,
+      "original_path_durability": "PROVENANCE_ONLY_NOT_DURABLE_STORE",
+      "repo_path": null,
+      "basename": "PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2.json",
+      "sha256": "c8e8432e52ee5122da31c29fe7b4164e8bc907bad0f259ca67349ce6e8616870",
+      "size": 55645106,
+      "line_count": 0,
+      "line_count_method": "wc_l_newline_count",
+      "ends_with_newline": false,
+      "unterminated_single_line": true,
+      "byte_identity_required": false,
+      "relationship": "DERIVED_SIDECAR_DATA",
+      "generated_from": "SOURCE",
+      "parent_logical_name": "SOURCE",
+      "parent_sha256": "10d9293134426805f38996be848e1de853636d8e6f60745a2330bdfd94e3719f",
+      "parent_size": 8499032,
+      "copy_required": false,
+      "operator_custody_required": true,
+      "durable_store_proven": false,
+      "mutable": false
+    },
+    {
+      "logical_name": "V2_1_JSON",
+      "artifact_class": "DERIVED_SIDECAR_DATA",
+      "authority_status": "NONE",
+      "storage_class": "EXTERNAL_REFERENCE",
+      "original_path": "/Users/frnkhrz/Downloads/PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2.1.json",
+      "original_path_class": "PROVENANCE_ONLY_NOT_RUNTIME_DEPENDENCY",
+      "original_path_is_durable_store": false,
+      "original_path_durability": "PROVENANCE_ONLY_NOT_DURABLE_STORE",
+      "repo_path": null,
+      "basename": "PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2.1.json",
+      "sha256": "631f67d6b76093868b0027671f43012769a059dc544ddbd9cfda1a61a8c08bb0",
+      "size": 71496733,
+      "line_count": 0,
+      "line_count_method": "wc_l_newline_count",
+      "ends_with_newline": false,
+      "unterminated_single_line": true,
+      "byte_identity_required": false,
+      "relationship": "DERIVED_SIDECAR_DATA",
+      "generated_from": "SOURCE",
+      "generator_logical_name": "HARNESS",
+      "parent_logical_name": "SOURCE",
+      "parent_sha256": "10d9293134426805f38996be848e1de853636d8e6f60745a2330bdfd94e3719f",
+      "parent_size": 8499032,
+      "parent_v2_json_sha256": "c8e8432e52ee5122da31c29fe7b4164e8bc907bad0f259ca67349ce6e8616870",
+      "parent_v2_md_sha256": "d240175046f1d6ece5345d172c35171959b270a464fbf98157484c658c4f0e11",
+      "parent_identity_binding_not_generation_input": true,
+      "v2_1_is_not_transform_of_v2_json": true,
+      "copy_required": false,
+      "operator_custody_required": true,
+      "durable_store_proven": false,
+      "mutable": false
+    }
+  ],
+  "external_references": [
+    "V2_JSON",
+    "V2_1_JSON"
+  ],
+  "excluded_artifacts": [
+    {
+      "reason": "UNDERSCORE_BASENAME_DOES_NOT_EXIST_DO_NOT_INVENT",
+      "forbidden_basename": "PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2_1.json"
+    },
+    {
+      "reason": "UNDERSCORE_BASENAME_DOES_NOT_EXIST_DO_NOT_INVENT",
+      "forbidden_basename": "PEAK_TRADE_TEMPORARY_FORENSIC_LOSSLESS_STRUCTURAL_PROJECTION_V2_1.md"
+    },
+    {
+      "reason": "LARGE_JSON_NOT_IN_GIT_NOT_IN_LFS",
+      "logical_names": [
+        "V2_JSON",
+        "V2_1_JSON"
+      ]
+    },
+    {
+      "reason": "DO_NOT_MIX_WITH_POST_STEP32_KNOWLEDGE_INTEGRATION",
+      "forbidden_path_prefix": "forensic/post_step32_knowledge_integration_v0/"
+    },
+    {
+      "reason": "MOVE_OR_DELETE_ORIGINALS_FORBIDDEN",
+      "forbidden_actions": [
+        "MOVE_SOURCE",
+        "DELETE_SOURCE",
+        "REWRITE_SOURCE",
+        "LFS_POINTER",
+        "JSON_PLACEHOLDER_FILE",
+        "JSON_SYMLINK"
+      ]
+    }
+  ],
+  "canonical_references": [
+    {
+      "role": "CANONICAL_AUTHORITY",
+      "path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "copied_into_pack": false,
+      "authority_effect_of_this_pack_on_target": "NONE"
+    },
+    {
+      "role": "NAVIGATION_ONLY",
+      "path": "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+      "copied_into_pack": false,
+      "authority_effect_of_this_pack_on_target": "NONE"
+    }
+  ],
+  "relationships": [
+    {
+      "from": "V2_JSON",
+      "to": "SOURCE",
+      "type": "DERIVED_FROM"
+    },
+    {
+      "from": "V2_MD",
+      "to": "V2_JSON",
+      "type": "DERIVED_FROM"
+    },
+    {
+      "from": "V2_1_JSON",
+      "to": "SOURCE",
+      "type": "DERIVED_FROM"
+    },
+    {
+      "from": "V2_1_JSON",
+      "to": "HARNESS",
+      "type": "GENERATED_WITH"
+    },
+    {
+      "from": "V2_1_MD",
+      "to": "V2_1_JSON",
+      "type": "DERIVED_FROM"
+    },
+    {
+      "from": "V2_1_JSON",
+      "to": "V2_JSON",
+      "type": "PARENT_IDENTITY_BINDING",
+      "parent_sha256": "c8e8432e52ee5122da31c29fe7b4164e8bc907bad0f259ca67349ce6e8616870",
+      "not_generation_input": true,
+      "not_transform_of_v2_json": true
+    },
+    {
+      "from": "V2_1_JSON",
+      "to": "V2_MD",
+      "type": "PARENT_IDENTITY_BINDING",
+      "parent_sha256": "d240175046f1d6ece5345d172c35171959b270a464fbf98157484c658c4f0e11",
+      "not_generation_input": true,
+      "not_transform_of_v2_json": true
+    }
+  ],
+  "residual_risks": [
+    "EXTERNAL_JSON_CUSTODY_DURABILITY_NOT_PROVEN",
+    "ORIGINAL_PATH_DOWNLOADS_IS_NOT_DURABLE_STORE",
+    "HARNESS_SOURCE_IN_TMP_VOLATILE",
+    "POST_STEP32_SAME_BASENAME_DIFFERENT_OBJECT",
+    "JSON_UNTERMINATED_SINGLE_LINE_EOF_FIXER_WOULD_MUTATE_IF_COPIED",
+    "HISTORICAL_OWNER_GOS_CONSUMED_NOT_CURRENT_WRITE_AUTHORIZATION"
+  ]
+}
