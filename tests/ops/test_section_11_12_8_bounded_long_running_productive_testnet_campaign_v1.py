@@ -515,6 +515,16 @@ def test_refuse_invalid_duration_bound() -> None:
 def test_exchange_order_id_persisted_on_port_attempt() -> None:
     class _AckTransport:
         def request(self, *, method: str, endpoint: str, body: dict | None = None) -> dict:
+            path = endpoint.split("?", 1)[0]
+            if method.upper() == "GET" and path == "/api/v5/account/positions":
+                return {
+                    "ok": True,
+                    "stubbed": False,
+                    "wire_sent": False,
+                    "network_send_boundary_reached": True,
+                    "http_status": 200,
+                    "response_body": {"code": "0", "data": []},
+                }
             return {
                 "ok": True,
                 "stubbed": False,
@@ -605,6 +615,16 @@ def test_campaign_executor_emits_alphanumeric_clordid_and_preserves_order_fields
 
     class _CaptureTransport:
         def request(self, *, method: str, endpoint: str, body: dict | None = None) -> dict:
+            path = endpoint.split("?", 1)[0]
+            if method.upper() == "GET" and path == "/api/v5/account/positions":
+                return {
+                    "ok": True,
+                    "stubbed": True,
+                    "wire_sent": False,
+                    "network_send_boundary_reached": True,
+                    "http_status": 200,
+                    "response_body": {"code": "0", "data": []},
+                }
             captured.append(dict(body or {}))
             return {
                 "ok": True,
