@@ -47,11 +47,16 @@ def _read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+Z2AV_HEADING = "### 11.13.5.Z2AV Productive live-flatten wiring persist"
+
+
 def _z2au_section(text: str) -> str:
     start = text.find(Z2AU_HEADING)
     assert start >= 0, "missing §11.13.5.Z2AU heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2AU"
+    end = text.find(Z2AV_HEADING, start)
+    if end < 0:
+        end = text.find(LADDER_HEADING, start)
+    assert end > start, "missing Z2AV/§11.14 boundary after Z2AU"
     return text[start:end]
 
 
