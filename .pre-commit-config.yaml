@@ -68,7 +68,7 @@ repos:
       - id: ruff-check
         args: [--fix]
         exclude: |
-          (?x)^(forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/peak_trade_v21_gen\.py)$
+          (?x)^(forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/peak_trade_v21_gen\.py|forensic/lossless_working_runbook_structure_identity_method_v1/build_lossless_structure\.py)$
 
   # Black for formatting (matches CI audit) - DISABLED: conflicts with ruff format
   # See: https://docs.astral.sh/ruff/formatter/#black-compatibility

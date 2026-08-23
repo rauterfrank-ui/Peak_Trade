@@ -1,0 +1,81 @@
+{
+  "target_authority": "NONE",
+  "structural_types": [
+    "PhysicalAppendUnit",
+    "Heading",
+    "FencedBlock",
+    "RawOutputBlock",
+    "Paragraph",
+    "ListItem",
+    "Table",
+    "TableRow",
+    "TableCell",
+    "KeyValueStatement",
+    "NestedStructuralChild",
+    "Separator",
+    "BlankLine",
+    "BlockQuote",
+    "UnknownStructuralUnit"
+  ],
+  "provenance_classes": [
+    "SOURCE_NATIVE",
+    "VERBATIM_EXTERNAL_OUTPUT",
+    "CHAT_DERIVED",
+    "REPOSITORY_OBSERVATION",
+    "TOOL_OUTPUT",
+    "OWNER_STATEMENT",
+    "CURATED_SUMMARY",
+    "DERIVED_ANALYSIS",
+    "UNKNOWN"
+  ],
+  "epistemic_classes": [
+    "CANONICAL_AUTHORITY_REFERENCE",
+    "FORENSIC_RAW_EVIDENCE",
+    "ADJUDICATED_CONCLUSION",
+    "HISTORICAL_INTERMEDIATE_STATE",
+    "NAVIGATION_INDEX",
+    "INTERPRETATION",
+    "HYPOTHESIS",
+    "OPEN_POINT",
+    "CONTRADICTORY_POINT",
+    "PROCESS_METADATA",
+    "UNKNOWN"
+  ],
+  "currentness_classes": [
+    "CURRENT",
+    "HISTORICAL",
+    "SUPERSEDED",
+    "STALE",
+    "POINT_IN_TIME_ONLY",
+    "UNKNOWN"
+  ],
+  "adjudication_classes": [
+    "NOT_ADJUDICATED",
+    "PREPARED_FOR_ADJUDICATION",
+    "OWNER_ADJUDICATED",
+    "ALREADY_ADJUDICATED_INHERITED",
+    "REJECTED",
+    "SUPERSEDED_DECISION",
+    "DISPUTED",
+    "UNKNOWN"
+  ],
+  "relation_types": [
+    "EXPLICIT_DEPENDS_ON",
+    "EXPLICIT_BLOCKS",
+    "EXPLICIT_NEXT_STEP",
+    "PART_OF_GATE",
+    "EVIDENCE_FOR",
+    "CONTRADICTS",
+    "CORRECTS",
+    "SUPERSEDES",
+    "REPLACES_PROCESS_BOUNDARY",
+    "REFERENCES",
+    "SAME_SUBJECT_AS"
+  ],
+  "relation_provenance": [
+    "EXPLICIT_SOURCE",
+    "ALREADY_ADJUDICATED",
+    "DERIVED_INTERPRETATION"
+  ],
+  "unknown_is_required_when_unproven": true
+}

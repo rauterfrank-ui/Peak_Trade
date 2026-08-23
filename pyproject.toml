@@ -80,6 +80,11 @@ where = ["src"]
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+# Exact-file exclude only. Operator-verify runs `ruff check .` and must not rewrite this
+# preserved forensic generator. Do not widen to forensic/ or other generators.
+extend-exclude = [
+    "forensic/lossless_working_runbook_structure_identity_method_v1/build_lossless_structure.py",
+]
 
 [tool.ruff.lint]
 # Conservative gate to avoid legacy churn
