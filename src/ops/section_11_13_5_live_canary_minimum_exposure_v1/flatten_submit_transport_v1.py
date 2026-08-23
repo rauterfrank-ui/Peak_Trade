@@ -11,10 +11,16 @@ import json
 from decimal import Decimal, InvalidOperation
 from typing import Any, Mapping
 
+from src.ops.pre_submit_open_position_cap_v1 import (
+    PreSubmitOpenPositionCapErrorV1,
+    assert_pre_submit_open_position_cap_allows_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     DEFAULT_INSTRUMENT_ID,
     ENDPOINT_SUBMIT,
+    LIVE_ARMED,
     LIVE_AUTHORIZED,
+    LIVE_ENABLED,
     ORDER_COUNT_LIMIT,
     POSITION_COUNT_LIMIT,
     POST_ENDPOINTS_GATED,
@@ -70,11 +76,19 @@ def _dec(raw: str, *, field: str) -> Decimal:
     return value
 
 
-def _assert_standing_safety(*, transport: LiveCanaryTransportV1) -> None:
+def _assert_flatten_defaults_remain_disabled() -> None:
     if LIVE_AUTHORIZED:
         raise LiveCanaryFlattenSubmitTransportError("LIVE_AUTHORIZED_MUST_REMAIN_FALSE")
+    if LIVE_ENABLED:
+        raise LiveCanaryFlattenSubmitTransportError("LIVE_ENABLED_MUST_REMAIN_FALSE")
+    if LIVE_ARMED:
+        raise LiveCanaryFlattenSubmitTransportError("LIVE_ARMED_MUST_REMAIN_FALSE")
     if DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED:
         raise LiveCanaryFlattenSubmitTransportError("FLATTEN_LIVE_WIRE_MUST_REMAIN_DISABLED")
+
+
+def _assert_standing_safety(*, transport: LiveCanaryTransportV1) -> None:
+    _assert_flatten_defaults_remain_disabled()
     if ORDER_COUNT_LIMIT != 1:
         raise LiveCanaryFlattenSubmitTransportError("ORDER_COUNT_LIMIT_MUST_REMAIN_1")
     if POSITION_COUNT_LIMIT != 1:
@@ -98,6 +112,7 @@ def validate_flatten_qty_against_observed_position_v1(
     requested_qty: str | None = None,
 ) -> None:
     """Full-flatten only: qty must equal abs(observed pos). Oversize/zero/mismatch fail."""
+    _assert_flatten_defaults_remain_disabled()
     if permit is None:
         raise LiveCanaryFlattenSubmitTransportError("FLATTEN_PERMIT_MISSING")
     if not isinstance(permit, CanaryFlattenSubmitPermitV1):
@@ -109,6 +124,15 @@ def validate_flatten_qty_against_observed_position_v1(
         raise LiveCanaryFlattenSubmitTransportError("INSTRUMENT_BINDING_MISMATCH")
     if permit.instrument_id != target or plan.instrument_id != target:
         raise LiveCanaryFlattenSubmitTransportError("INSTRUMENT_MISMATCH")
+    try:
+        assert_pre_submit_open_position_cap_allows_v1(
+            target_instrument_id=target,
+            positions_payload=positions_payload,
+        )
+    except PreSubmitOpenPositionCapErrorV1 as exc:
+        raise LiveCanaryFlattenSubmitTransportError(
+            f"ACCOUNT_WIDE_OPEN_POSITION_CAP:{exc.reason_code}"
+        ) from exc
     try:
         observed = observe_target_position_flatten_candidate_v1(
             positions_payload=positions_payload,

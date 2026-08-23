@@ -22,6 +22,7 @@ Z2AP_HEADING = (
     "### 11.13.5.Z2AP Post-Z2AO live-flatten closure work package to next safety boundary"
 )
 Z2AT_HEADING = "### 11.13.5.Z2AT Post-B8 pre-submit open-position-cap SSOT persist"
+Z2AU_HEADING = "### 11.13.5.Z2AU Offline Z2AP live-flatten construction and gate-binding persist"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 NEXT_POINTER = (
     "OWNER_GO_REQUIRED_SEPARATE_SCOPED_NAMED_TRACK_OR_NAMED_CLASS_"
@@ -55,8 +56,9 @@ def test_z2as_heading_is_unique_and_follows_z2ar() -> None:
     z2ar = text.find(Z2AR_HEADING)
     z2as = text.find(Z2AS_HEADING)
     z2at = text.find(Z2AT_HEADING)
+    z2au = text.find(Z2AU_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= z2ap < z2ar < z2as < z2at < ladder
+    assert 0 <= z2ap < z2ar < z2as < z2at < z2au < ladder
 
 
 def test_z2as_docs_bind_p3_parallel_tracks_without_unique_next_or_execution() -> None:
