@@ -5,6 +5,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from src.ops.pre_submit_open_position_cap_v1 import (
+    PreSubmitOpenPositionCapErrorV1,
+    assert_pre_submit_open_position_cap_allows_v1,
+)
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.constants_v1 import (
     CANONICAL_ALLOWED_ORDER_TYPES,
     CANONICAL_INSTRUMENT_SCOPE,
@@ -16,12 +20,17 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     SWAP_RUNTIME_FALLBACK,
     SWAP_WRITE_AUTHORIZATION,
 )
+from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.final_exchange_reconcile_cleanup_v1 import (
+    ActualStartFinalReconcileError,
+    exchange_payload_from_transport_result_v1,
+)
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.okx_response_mapper_v1 import (
     build_venue_native_cancel_body_v1,
     build_venue_native_order_body_v1,
     parse_okx_order_response_v1,
 )
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.testnet_transport_v1 import (
+    ActualStartTransportError,
     StubbedTestnetTransportV1,
     TestnetTransportPortV1,
 )
@@ -99,6 +108,7 @@ class ProductiveTestnetExecutionPortV1:
             quantity=quantity,
             px=px,
         )
+        self._require_account_wide_open_position_cap_v1(instrument=instrument)
         result = self.transport.request(
             method="POST",
             endpoint="/api/v5/trade/order",
@@ -165,6 +175,40 @@ class ProductiveTestnetExecutionPortV1:
         }
         self.submit_attempts.append(attempt)
         return attempt
+
+    def _require_account_wide_open_position_cap_v1(self, *, instrument: str) -> None:
+        """Fail-closed GET /api/v5/account/positions then shared second-open cap.
+
+        Reuses the existing TestnetTransportPortV1.request GET surface. No new
+        networking layer. Does not invent reduce/close/sizing policy.
+        """
+        if self.transport is None:
+            raise ActualStartPortError("TRANSPORT_NOT_BOUND")
+        try:
+            get_result = self.transport.request(
+                method="GET",
+                endpoint="/api/v5/account/positions",
+                body=None,
+            )
+        except ActualStartPortError:
+            raise
+        except (ActualStartTransportError, TypeError, ValueError) as exc:
+            raise ActualStartPortError("DENY_POSITION_STATE_UNAVAILABLE") from exc
+        except Exception as exc:  # noqa: BLE001 — GET failure is fail-closed
+            raise ActualStartPortError("DENY_POSITION_STATE_UNAVAILABLE") from exc
+        if not isinstance(get_result, dict):
+            raise ActualStartPortError("DENY_POSITION_STATE_UNAVAILABLE")
+        try:
+            payload = exchange_payload_from_transport_result_v1(get_result)
+        except ActualStartFinalReconcileError as exc:
+            raise ActualStartPortError("DENY_POSITION_STATE_UNAVAILABLE") from exc
+        try:
+            assert_pre_submit_open_position_cap_allows_v1(
+                target_instrument_id=instrument,
+                positions_payload=payload,
+            )
+        except PreSubmitOpenPositionCapErrorV1 as exc:
+            raise ActualStartPortError(f"ACCOUNT_WIDE_OPEN_POSITION_CAP:{exc.reason_code}") from exc
 
     def cancel_order_v1(
         self,

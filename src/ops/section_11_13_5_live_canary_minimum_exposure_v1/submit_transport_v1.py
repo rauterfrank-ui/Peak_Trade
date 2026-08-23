@@ -5,6 +5,10 @@ from __future__ import annotations
 from typing import Any, Mapping
 from uuid import uuid4
 
+from src.ops.pre_submit_open_position_cap_v1 import (
+    PreSubmitOpenPositionCapErrorV1,
+    assert_pre_submit_open_position_cap_allows_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.config_v1 import (
     LiveCanaryConfigV1,
 )
@@ -322,6 +326,19 @@ def run_canary_submit_transport_v1(
         except LiveCanaryPreSubmitStateError as exc:
             raise LiveCanarySubmitTransportError(f"PRE_SUBMIT_STATE_BLOCK:{exc}") from exc
 
+        # Account-wide second-open-instrument cap on the already fetched
+        # GET /api/v5/account/positions payload. Does not replace
+        # same-instrument OPEN_POSITION_PRESENT / OPEN_ORDER_PRESENT.
+        try:
+            assert_pre_submit_open_position_cap_allows_v1(
+                target_instrument_id=plan.instrument_id,
+                positions_payload=positions,
+            )
+        except PreSubmitOpenPositionCapErrorV1 as exc:
+            raise LiveCanarySubmitTransportError(
+                f"ACCOUNT_WIDE_OPEN_POSITION_CAP:{exc.reason_code}"
+            ) from exc
+
         submit_gate = evaluate_canary_submit_gates_v1(
             owner_go=owner_go,
             owner_go_consumed=owner_go_consumed,
@@ -341,6 +358,9 @@ def run_canary_submit_transport_v1(
             max_notional=plan.max_notional,
             min_executable_notional=plan.min_executable_notional,
             order_count=1,
+            # LEGACY/NON-AUTHORITATIVE: hardcoded 0 feeds POSITION_COUNT_LIMIT
+            # only. Account-wide second-open-instrument admission is
+            # assert_pre_submit_open_position_cap_allows_v1 on the GET payload.
             position_count=0,
             exposure_above_minimum_bound=False,
             live_canary_cybersecurity_gate=live_canary_cybersecurity_gate,

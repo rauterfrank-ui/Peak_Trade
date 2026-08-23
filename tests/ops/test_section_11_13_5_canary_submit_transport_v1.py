@@ -20,6 +20,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.config_v1 import (
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     AUTHORIZATION_SCOPE,
     CANARY_SUBMIT_TRANSPORT_IMPLEMENTED,
+    DEFAULT_INSTRUMENT_ID,
     GENERAL_LIVE_SUBMIT_UNLOCKED,
     LIVE_AUTHORIZED,
     OWNER_GO_AUTHORING,
@@ -1049,3 +1050,90 @@ def test_xperp_economic_baseline_contract_does_not_inherit_swap_or_demo() -> Non
     assert contract["rejected_swap_instrument"] == "BTC-USDT-SWAP"
     assert contract["rejected_demo_instrument"] == "BTC-USD_UM_XPERP-310328"
     assert contract["CANARY_INSTRUMENT"] != contract["rejected_demo_instrument"]
+
+
+def _assert_no_post(transport: RecordingFakeCanaryTransportV1) -> None:
+    assert all(call.method != "POST" for call in transport.calls)
+
+
+def test_t11_leftover_other_instrument_rejects_before_post() -> None:
+    leftover = "ETH-USD_UM_XPERP-999999"
+    transport = _fake_transport()
+    transport.bodies_by_endpoint["/api/v5/account/positions"] = json.dumps(
+        {"code": "0", "data": [{"instId": leftover, "pos": "1"}]}
+    ).encode()
+    with pytest.raises(LiveCanarySubmitTransportError, match="DENY_OTHER_OPEN_INSTRUMENT_PRESENT"):
+        run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
+    _assert_no_post(transport)
+    assert any("/api/v5/account/positions" in call.endpoint for call in transport.calls)
+
+
+def test_t12_no_open_positions_reaches_downstream_fake_post_without_real_network() -> None:
+    transport = _fake_transport()
+    assert transport.venue_live_contact is False
+    result = run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
+    assert result["ok"] is True
+    posts = [call for call in transport.calls if call.method == "POST"]
+    assert len(posts) == 1
+    assert posts[0].endpoint == "/api/v5/trade/order"
+    assert transport.venue_live_contact is False
+    position_gets = [
+        call
+        for call in transport.calls
+        if call.method == "GET" and "/api/v5/account/positions" in call.endpoint
+    ]
+    assert len(position_gets) == 1
+
+
+def test_t13_open_canonical_canary_instrument_still_open_position_present() -> None:
+    transport = _fake_transport()
+    transport.bodies_by_endpoint["/api/v5/account/positions"] = json.dumps(
+        {"code": "0", "data": [{"instId": DEFAULT_INSTRUMENT_ID, "pos": "1"}]}
+    ).encode()
+    with pytest.raises(LiveCanarySubmitTransportError, match="OPEN_POSITION_PRESENT"):
+        run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
+    _assert_no_post(transport)
+
+
+def test_t14_positions_fetch_failure_no_post() -> None:
+    transport = _fake_transport()
+    transport.bodies_by_endpoint["/api/v5/account/positions"] = b"not-json"
+    with pytest.raises((LiveCanarySubmitTransportError, LiveCanaryHttpError)):
+        run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
+    _assert_no_post(transport)
+
+
+def test_t15_ambiguous_duplicate_rows_no_post() -> None:
+    leftover = "ETH-USD_UM_XPERP-999999"
+    transport = _fake_transport()
+    transport.bodies_by_endpoint["/api/v5/account/positions"] = json.dumps(
+        {
+            "code": "0",
+            "data": [
+                {"instId": leftover, "pos": "1"},
+                {"instId": leftover, "pos": "1"},
+            ],
+        }
+    ).encode()
+    with pytest.raises(LiveCanarySubmitTransportError, match="DENY_AMBIGUOUS_POSITION_ROWS"):
+        run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
+    _assert_no_post(transport)
+
+
+def test_t16_pending_order_gate_still_rejects() -> None:
+    transport = _fake_transport()
+    transport.bodies_by_endpoint["/api/v5/trade/orders-pending"] = json.dumps(
+        {"code": "0", "data": [{"instId": DEFAULT_INSTRUMENT_ID, "ordId": "pending-1"}]}
+    ).encode()
+    with pytest.raises(LiveCanarySubmitTransportError, match="OPEN_ORDER_PRESENT"):
+        run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
+    _assert_no_post(transport)
+
+
+def test_t17_wrong_selected_instrument_still_rejects_binding() -> None:
+    kwargs = _transport_kwargs()
+    kwargs["cfg"].payload["instrument_id"] = "BTC-USDT-SWAP"
+    transport = kwargs["transport"]
+    with pytest.raises(LiveCanarySubmitTransportError, match="INSTRUMENT_BINDING"):
+        run_canary_submit_transport_v1(**kwargs)
+    _assert_no_post(transport)

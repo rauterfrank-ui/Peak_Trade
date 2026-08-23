@@ -61,6 +61,14 @@ class StubbedTestnetTransportV1:
             "submitted": False,
         }
         self.calls.append(record)
+        path = endpoint.split("?", 1)[0]
+        if method.upper() == "GET" and path == "/api/v5/account/positions":
+            response_body: dict[str, Any] = {"code": "0", "data": []}
+        else:
+            response_body = {
+                "code": "0",
+                "data": [{"sCode": "0", "sMsg": "stubbed", "clOrdId": (body or {}).get("clOrdId")}],
+            }
         return {
             "ok": True,
             "http_status": 200,
@@ -69,10 +77,7 @@ class StubbedTestnetTransportV1:
             "network_send_boundary_reached": True,
             "account_identity": "acct-uid-testnet-demo",
             "next_effect": self.next_effect_pending,
-            "response_body": {
-                "code": "0",
-                "data": [{"sCode": "0", "sMsg": "stubbed", "clOrdId": (body or {}).get("clOrdId")}],
-            },
+            "response_body": response_body,
         }
 
 
