@@ -32257,6 +32257,300 @@ claim, or merge authorization.
 No execute. No merge of this persist without a separate
 `OWNER_MERGE_GO`.
 
+### 11.13.5.Z2BH Post-Z2BG SUI MMR_tier_mapping runtime reproof PASS persist (BOUND; DOCS-ONLY; EXISTING SINGLE GET EVIDENCE; NAMED CLASS MMR_tier_mapping; SUI_MMR_PROVEN THIS CLASS ONLY; MMR_TIER_BOUND THIS CLASS ONLY; NOT NEW GET; NOT REBIND; NOT EXECUTE)
+
+Owner-GO
+`OWNER_GO=SECTION_11_13_5_POST_Z2BG_SUI_MMR_TIER_MAPPING_RUNTIME_REPROOF_PASS_CANONICAL_SSOT_PERSIST_DOCS_ONLY`
+(one-shot; now **CONSUMED** as this docs-only persist only) binds the
+already-executed post-Z2BG named-class public `position-tiers` runtime
+reproof for `NAMED_SUI_REPROOF_CLASS=MMR_tier_mapping` into SSOT. This
+slice does **not** perform Exchange network, GET, retry, POST, submit,
+cancel, amend, or flatten, does **not** arm live or testnet execution,
+does **not** perform a canonical or runtime rebind, does **not** change
+`DEFAULT_INSTRUMENT_ID`, and does **not** mutate production source,
+tests, config, Map of Truth, or any external mirror.
+
+This persist closes the named class **only**. `SUI_MMR_PROVEN=true` and
+`MMR_TIER_BOUND=true` apply to `MMR_tier_mapping` only. They do **not**
+prove position-value numerics, risk-envelope numerics, fee binding,
+USD&#47;USDC account settlement, markPx numeric use, ticker slippage
+reserve, live, canary, or canonical rebind.
+
+§11.13.5.Z2BG remains the family-scoped venue-semantics owner-policy
+ratification persist and is **not** rewritten. §11.13.5.Z2BF remains the
+SUI operative-qty venue-constraint-freshness public GET persist and is
+**not** rewritten. §11.13.5.Z2BE remains the SUI operative-qty
+owner-policy ratification persist and is **not** rewritten.
+§11.13.5.Z2BD remains the SUI instrument-contract-metadata capture
+persist and is **not** rewritten. §11.13.5.Z2AR remains the earlier SUI
+successor public evidence pack and reproof-boundary persist and is
+**not** rewritten. Historical Z2AR GET-4 bindings remain historically
+true in that persist and are **not** reused as this current MMR.
+This Z2BH persist is additive. It consumes the Z2BG residual
+authorization boundary **only** as this named-class runtime-reproof
+PASS persist of the already-authorized single public GET.
+
+``` text
+AUTHORIZED_SCOPE=A_Z2BH_POST_Z2BG_SUI_MMR_TIER_MAPPING_RUNTIME_REPROOF_PASS_CANONICAL_SSOT_PERSIST_DOCS_ONLY
+CURRENT_PHASE=11.13.5.Z2BH_SUI_MMR_TIER_MAPPING_RUNTIME_REPROOF_PASS_SSOT_PERSIST
+OWNER_GO=SECTION_11_13_5_POST_Z2BG_SUI_MMR_TIER_MAPPING_RUNTIME_REPROOF_PASS_CANONICAL_SSOT_PERSIST_DOCS_ONLY
+OWNER_GO_STATUS=CONSUMED
+PERSIST_CLASS=Z2AR_SUI_NAMED_CLASS_MMR_TIER_MAPPING_RUNTIME_REPROOF_PASS_SSOT_PERSIST_DOCS_ONLY
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+BASELINE_VALIDATION=PASS
+BASELINE_ORIGIN_MAIN_SHA=065a20b4dbb3f81273fa3f24e07c97d0f90d2938
+REQUESTED_STEP=SECTION_11_13_5_POST_Z2BG_SUI_MMR_TIER_MAPPING_RUNTIME_REPROOF_PASS_CANONICAL_SSOT_PERSIST_DOCS_ONLY
+NAMED_CLASS=MMR_tier_mapping
+OWNER_CLASS_SELECTION_STATUS=EXPLICIT_OWNER_SELECTION_NOT_CANONICAL_RANKING
+Z2BG_TEXT_REWRITTEN=false
+Z2BF_TEXT_REWRITTEN=false
+Z2BE_TEXT_REWRITTEN=false
+Z2BD_TEXT_REWRITTEN=false
+Z2AR_TEXT_REWRITTEN=false
+Z2AS_TEXT_REWRITTEN=false
+Z2AP_TEXT_REWRITTEN=false
+Z2AX_TEXT_REWRITTEN=false
+Z2AR_FURTHER_SUI_PROOF_NEXT_POINTER_CONSUMED_AS_SUI_PROOF=false
+Z2AR_SUI_TRACK_STATUS=OPEN_UNCONSUMED
+Z2AP_TRACK_STATUS=OPEN_UNCONSUMED
+Z2AP_PRODUCTIVE_FLATTEN_NEXT_POINTER_CONSUMED_AS_FLATTEN_PROOF=false
+Z2AX_FLATTEN_RESIDUAL_CONSUMED=false
+OBSERVED_NONZERO_TARGET_POSITION_FLATTEN_PRECONDITION_CONSUMED=false
+SUI_REPROOF_CLASS_SELECTED=false
+SUI_REPROOF_CLASSES_RANKED=false
+NO_CLASS_RANKING_CLAIM=true
+NO_RANKING_OF_REMAINDER=true
+NO_MAP_OF_TRUTH_MUTATION=true
+NO_SOURCE_MUTATION=true
+NO_CONFIG_MUTATION=true
+NO_TEST_MUTATION=true
+GET_EXECUTED_THIS_PERSIST=false
+NO_NEW_EXCHANGE_NETWORK=true
+NO_NEW_GET=true
+NO_RETRY=true
+POST_EXECUTED=false
+EXCHANGE_NETWORK_THIS_PERSIST=false
+NETWORK_USED_DURING_THIS_PERSIST=false
+NETWORK_USED_DURING_SLICE=false
+ORDER_SUBMITTED=false
+ORDER_CANCELLED=false
+ORDER_AMENDED=false
+FLATTEN_EXECUTED=false
+LIVE_ARMED_CHANGED=false
+REQUEST_TRANSMITTED=false
+GENERIC_WIRE_SEND_INVOKED=false
+RUNTIME_EXECUTION=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CANONICAL_REBIND=false
+DEFAULT_INSTRUMENT_ID_CHANGED=false
+SUI_SELECTED_AS_CURRENT_CANONICAL_INSTRUMENT=false
+SUI_CANONICAL_REBIND_READY=false
+SUI_CANONICAL_REBIND_EXECUTED=false
+```
+
+Bound existing single-GET runtime evidence. The GET was authorized and
+executed in the post-Z2BG named-class runtime reproof slice. This
+persist does **not** re-issue that GET. `GET_COUNT=1` is that already
+executed public GET. Historical Z2AR GET-4 is not this window.
+
+``` text
+GET_EXECUTED_PRIOR_AUTHORIZED_RUNTIME_SLICE=true
+GET_COUNT=1
+SECOND_GET_EXECUTED=false
+AUTHENTICATED_GET_EXECUTED=false
+METHOD=GET
+HOST=eea.okx.com
+ENDPOINT=GET /api/v5/public/position-tiers
+QUERY=instType=FUTURES&tdMode=cross&instFamily=SUI-USD_UM_XPERP&instId=SUI-USD_UM_XPERP-310404
+AUTHENTICATION_REQUIREMENT=NONE_PUBLIC
+MAX_RETRIES=0
+RETRY_COUNT=0
+REDIRECT_FOLLOWED=false
+HTTP_STATUS=200
+OKX_CODE=0
+OKX_MSG=
+CAPTURE_DATE=2026-08-24
+CAPTURE_STARTED_UTC=2026-08-24T17:18:15.193512+00:00
+CAPTURE_ENDED_UTC=2026-08-24T17:18:15.383642+00:00
+VENUE_DATE_HEADER=Mon, 24 Aug 2026 17:18:15 GMT
+BODY_BYTES=18264
+BODY_SHA256=9f4d15eb1dccc7f4e521d16055f622a0bbfd80252536277a65e948b8a81ae549
+ROW_COUNT=87
+QTY1_MATCH_COUNT=1
+SELECTED_QTY1_ROW_INDEX=0
+VENUE_SHAPE=FAMILY_SCOPED_EMPTY_INSTID
+EMPTY_INSTID_ROW_COUNT=87
+EXACT_INSTID_ROW_COUNT=0
+FAMILY_MISMATCH_ROW_COUNT=0
+CONFLICTING_INSTID_ROW_COUNT=0
+FAMILY_SCOPED_TABLE_IS_EXACT_INSTID_RESPONSE=false
+EMPTY_INSTID_PROMOTED_TO_EXACT_INSTID_RESPONSE=false
+GET_4_HISTORICAL_FAMILY_SCOPED_EVIDENCE_REUSED_AS_CURRENT_MMR=false
+TARGET_INSTRUMENT=SUI-USD_UM_XPERP-310404
+TARGET_INST_FAMILY=SUI-USD_UM_XPERP
+CURRENT_CANONICAL_INSTRUMENT=BTC-USD_UM_XPERP-310404
+DEFAULT_INSTRUMENT_ID=BTC-USD_UM_XPERP-310404
+BINDING_QTY=OWNER_RATIFIED_1_CONTRACT
+SUI_OPERATIVE_ORDER_SZ=1
+SUI_OPERATIVE_ORDER_SZ_UNIT=CONTRACTS_SZ
+```
+
+Adopted raw values from the unique qty-1 covering row. Empty `instId`
+is persisted as the raw venue field only and is **not** promoted to an
+exact-`instId` response. `minSz=0` is the explicit venue string, not a
+missing-field-as-zero substitution. Optional `imr` is evidence only and
+is **not** an MMR substitute.
+
+``` text
+returned_instFamily=SUI-USD_UM_XPERP
+returned_tier=1
+returned_minSz=0
+returned_maxSz=290000
+returned_raw_mmr=0.02
+optional_raw_imr=0.05
+optional_raw_imr_ROLE=EVIDENCE_ONLY_NOT_MMR_SUBSTITUTE
+observed_instId_field=
+MMR_TIER_MAPPING_RUNTIME_REPROOF_RESULT=PASS
+ALL_Z2BG_RUNTIME_SUCCESS_CRITERIA_PASS=true
+SUI_MMR_PROVEN=true
+SUI_MMR_PROVEN_SCOPE=NAMED_CLASS_MMR_TIER_MAPPING_ONLY
+MMR_TIER_BOUND=true
+MMR_TIER_BOUND_SCOPE=NAMED_CLASS_MMR_TIER_MAPPING_ONLY
+MMR_TIER_MAPPING_RUNTIME_STATUS=PASS_BOUND
+NO_ALGEBRA_PROMOTION=true
+NO_DERIVED_MMR=true
+NO_MISSING_TO_ZERO=true
+NO_ROW_TO_ZERO=true
+NO_CTVAL_TO_POSITION_VALUE=true
+NO_BTC_TO_SUI_TRANSFER=true
+NO_ACCOUNT_MARGIN_TO_PUBLIC_MMR_SCHEDULE=true
+MINSZ_0_IS_EXPLICIT_VENUE_STRING_NOT_MISSING_TO_ZERO=true
+```
+
+Selected qty-1 row raw (index 0):
+
+``` text
+baseMaxLoan=
+imr=0.05
+instFamily=SUI-USD_UM_XPERP
+instId=
+maxLever=20
+maxSz=290000
+minSz=0
+mmr=0.02
+optMgnFactor=0
+quoteMaxLoan=
+tier=1
+uly=SUI-USD
+```
+
+Raw supporting uniqueness evidence. Tier 2 does **not** cover qty 1.
+These values are supporting evidence only and are **not** adopted as
+operative MMR.
+
+``` text
+TIER2_INDEX=1
+TIER2_COVERS_QTY1=false
+TIER2_minSz=290001
+TIER2_maxSz=580000
+TIER2_mmr=0.03
+TIER2_imr=0.0666
+TIER2_tier=2
+TIER2_instFamily=SUI-USD_UM_XPERP
+TIER2_instId=
+TIER2_uly=SUI-USD
+```
+
+What this persist proves, and what it does **not** prove:
+
+- The Z2BG-specified public GET
+  `GET &#47;api&#47;v5&#47;public&#47;position-tiers?instType=FUTURES&tdMode=cross&instFamily=SUI-USD_UM_XPERP&instId=SUI-USD_UM_XPERP-310404`
+  returned HTTP 200, OKX `code=0`, family-scoped empty-`instId` venue
+  shape, 87 rows, and exactly one qty-1 covering row.
+- That unique row has raw `mmr=0.02`, `tier=1`, `minSz=0`,
+  `maxSz=290000`, `instFamily=SUI-USD_UM_XPERP`, and empty `instId`.
+- `BODY_SHA256=9f4d15eb1dccc7f4e521d16055f622a0bbfd80252536277a65e948b8a81ae549`.
+- `SUI_MMR_PROVEN=true` for `MMR_tier_mapping` only.
+- `MMR_TIER_BOUND=true` for `MMR_tier_mapping` only.
+- Family-scoped empty `instId` is **not** an exact-`instId` response.
+  Empty `instId` is **not** promoted.
+- Optional raw `imr=0.05` is evidence only.
+- This persist does **not** prove position-value numerics, risk-envelope
+  numerics, fee binding, USD&#47;USDC account settlement, markPx numeric
+  use, ticker slippage reserve, account-effective MMR, or canonical
+  rebind.
+- Remaining SUI reproof classes remain an **unranked set**. This persist
+  does **not** rank the remainder.
+- `CURRENT_CANONICAL_INSTRUMENT` remains `BTC-USD_UM_XPERP-310404`.
+- Z2AP flatten remains blocked.
+  `OBSERVED_NONZERO_TARGET_POSITION_FLATTEN_PRECONDITION_CONSUMED=false`.
+
+``` text
+SUI_POSITION_VALUE_NUMERIC_PROVEN=false
+SUI_RISK_ENVELOPE_NUMERIC_PROVEN=false
+SUI_FEE_BINDING_PROVEN=false
+USD_USDC_ACCOUNT_SETTLEMENT_PROVEN=false
+MARKPX_NUMERIC_USE_PROVEN=false
+TICKER_SLIPPAGE_RESERVE_NUMERIC_PROVEN=false
+RISK_ENVELOPE_INSTANTIATED=false
+LIVE_FLATTEN_PROVABILITY=UNPROVEN
+PRODUCTIVE_LIVE_FLATTEN_PRE_EXECUTION_GATE=UNSATISFIED
+PRODUCTIVE_PROOF_EXECUTED=false
+LIVE_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+STANDING_LIVE_AUTHORIZED=false
+STANDING_LIVE_ENABLED=false
+STANDING_LIVE_ARMED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+CAN_SUBMIT_ORDER_TODAY=false
+ORDER_SUBMIT_AUTHORIZATION=false
+ORDER_CANCEL_AUTHORIZATION=false
+ORDER_AMEND_AUTHORIZATION=false
+FLATTEN_AUTHORIZATION=false
+BTC_PRODUCTIVE_PROOF=DO_NOT_RUN
+GLOBAL_UNIQUE_CANONICAL_NEXT_STEP=NONE_BY_P3_POLICY
+LAST_CANONICALLY_CLOSED_STEP=LF_12
+OTHER_SUI_REPROOF_CLASSES_CONSUMED=false
+```
+
+``` text
+CODE_OWNER=docs&#47;runbooks&#47;canonical&#47;PEAK_TRADE_MASTER_RUNBOOK.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+SECTION_LOCAL_CANONICAL_NEXT_STEP_ROLE=RESIDUAL_AUTHORIZATION_BOUNDARY_OF_THIS_PERSIST_NOT_GLOBAL_UNIQUE_NEXT
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_SCOPED_NAMED_SLICE_NOT_AUTHORIZED_BY_THIS_PERSIST_Z2BH_SUI_MMR_TIER_MAPPING_RUNTIME_REPROOF_PASS_SSOT_PERSIST_DOCS_ONLY_NO_RANKING_OF_REMAINDER_NO_CANONICAL_REBIND_NO_ALGEBRA_PROMOTION_FROM_CTVAL_NO_NEW_GET_NO_POST_NO_SUBMIT_NO_CANCEL_NO_AMEND_NO_FLATTEN_NO_LIVE_WIRE_NO_CANARY_NOT_AUTHORIZED_GLOBAL_UNIQUE_CANONICAL_NEXT_STEP_NONE_BY_P3_POLICY_OBSERVED_NONZERO_TARGET_POSITION_FLATTEN_PRECONDITION_NOT_CONSUMED
+EARLIEST_UNRESOLVED_DEPENDENCY=SEPARATE_NAMED_OWNER_GO_REQUIRED_UNRANKED_REMAINING_SUI_REPROOF_CLASSES_NO_RANKING_INVENTION_NO_ALGEBRA_PROMOTION_FROM_CTVAL_OBSERVED_NONZERO_TARGET_POSITION_FLATTEN_PRECONDITION_NOT_CONSUMED
+MAX_SAFE_NEXT_SLICE=SEPARATE_NAMED_OWNER_GO_ONLY_NO_REPROOF_RANKING_INVENTION_NO_CANONICAL_REBIND_NO_DEFAULT_INSTRUMENT_CHANGE_NO_ALGEBRA_PROMOTION_FROM_CTVAL_NO_ONE_CONTRACT_EQUALS_ONE_SUI_NO_NEW_GET_NO_EXCHANGE_NETWORK_NO_FLATTEN_OBSERVED_NONZERO_TARGET_POSITION_REMAINS_UNCONSUMED
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+Hard stop. This Z2BH persist GO is consumed as this docs-only named-class
+runtime-reproof PASS persist of the already-executed single public GET
+only. Do **not** reuse it as a new GET, retry, authenticated GET,
+submit, cancel, amend, flatten execute, live-read, POST, order, funding,
+Canary, testnet, live, generic wire-send, canonical rebind, ranking of
+remaining SUI reproof classes, or merge authorization.
+`SUI_MMR_PROVEN=true` for `MMR_tier_mapping` only.
+`MMR_TIER_BOUND=true` for `MMR_tier_mapping` only.
+`MMR_TIER_MAPPING_RUNTIME_STATUS=PASS_BOUND`.
+`FAMILY_SCOPED_TABLE_IS_EXACT_INSTID_RESPONSE=false`.
+`EMPTY_INSTID_PROMOTED_TO_EXACT_INSTID_RESPONSE=false`.
+`returned_raw_mmr=0.02`.
+`SUI_OPERATIVE_QTY_KIND=OWNER_POLICY_PLUS_CURRENT_VENUE_ADMISSIBILITY_ONLY`.
+`BINDING_QTY=OWNER_RATIFIED_1_CONTRACT`.
+`CTVAL_NE_POSITION_VALUE=true`.
+`ONE_CONTRACT_EQUALS_ONE_SUI=false`.
+`SUI_SELECTED_AS_CURRENT_CANONICAL_INSTRUMENT=false`.
+`SUI_REPROOF_CLASSES_RANKED=false`.
+`OBSERVED_NONZERO_TARGET_POSITION_FLATTEN_PRECONDITION_CONSUMED=false`.
+`RUNTIME_AUTHORIZATION_EFFECT=NONE`.
+`EARLIEST_UNRESOLVED_DEPENDENCY=SEPARATE_NAMED_OWNER_GO_REQUIRED_UNRANKED_REMAINING_SUI_REPROOF_CLASSES_NO_RANKING_INVENTION_NO_ALGEBRA_PROMOTION_FROM_CTVAL_OBSERVED_NONZERO_TARGET_POSITION_FLATTEN_PRECONDITION_NOT_CONSUMED`.
+No execute. No merge of this persist without a separate
+`OWNER_MERGE_GO`.
+
 ## 11.14 Live order and economic evidence ladder
 
 Live proof claims must use a stricter ladder:
