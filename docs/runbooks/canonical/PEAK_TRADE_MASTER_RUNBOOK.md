@@ -31931,6 +31931,332 @@ authorization.
 No execute. No merge of this persist without a separate
 `OWNER_MERGE_GO`.
 
+### 11.13.5.Z2BG Post-Z2BF SUI MMR_tier_mapping family-scoped venue-semantics owner-policy ratification persist (BOUND; DOCS-ONLY; OWNER POLICY ONLY; NAMED CLASS MMR_tier_mapping; NOT RUNTIME GET; NOT SUI_MMR_PROVEN; NOT MMR_TIER_BOUND; NOT REBIND; NOT EXECUTE)
+
+Owner-GO
+`OWNER_GO=SECTION_11_13_5_POST_Z2BF_SUI_MMR_TIER_MAPPING_FAMILY_SCOPED_VENUE_SEMANTICS_OWNER_POLICY_RATIFICATION_DOCS_ONLY`
+(one-shot; now **CONSUMED** as this docs-only persist only) records an
+explicit **Owner-policy ratification** for the already-selected unranked
+SUI reproof class `NAMED_SUI_REPROOF_CLASS=MMR_tier_mapping`. This slice
+does **not** select a new class, does **not** rank remaining classes,
+does **not** perform Exchange network, GET, POST, submit, cancel, amend,
+or flatten, does **not** arm live or testnet execution, does **not**
+perform a canonical or runtime rebind, does **not** change
+`DEFAULT_INSTRUMENT_ID`, and does **not** mutate production source,
+tests, config, Map of Truth, or any external mirror.
+
+This persist does **not** close the named class. `SUI_MMR_PROVEN=false`.
+`MMR_TIER_BOUND=false`. `MMR_TIER_MAPPING_RUNTIME_STATUS=OPEN_PENDING_FRESH_RUNTIME_REPROOF`.
+A later runtime reproof remains separately Owner-GO-gated.
+`SEPARATE_RUNTIME_OWNER_GO_REQUIRED=true`. This slice does **not**
+authorize that GET.
+
+§11.13.5.Z2BF remains the SUI operative-qty venue-constraint-freshness
+public GET persist and is **not** rewritten. §11.13.5.Z2BE remains the
+SUI operative-qty owner-policy ratification persist and is **not**
+rewritten. §11.13.5.Z2BD remains the SUI instrument-contract-metadata
+capture persist and is **not** rewritten. §11.13.5.Z2AR remains the
+earlier SUI successor public evidence pack and reproof-boundary persist
+and is **not** rewritten. Historical Z2AR GET-4 bindings and the Z2AR
+forbid-upgrade text remain historically true in that persist. This Z2BG
+persist is additive. It qualifies **only** the named-class closure rule
+that the MMR row itself must contain a non-empty exact `instId`. It
+does **not** delete, hide, or rewrite
+`FORBIDDEN_UPGRADE_FAMILY_SCOPED_POSITION_TIER_TABLE_TO_EXACT_INSTID_MMR=true`
+as a historical Z2AR fact.
+
+Prior PATH_E adjudication is confirmed as the pre-policy state:
+no currently known read-only Exchange surface could close
+`MMR_tier_mapping` under the unqualified exact-row-`instId` demand.
+This Owner policy changes that **closure-rule** for this named class
+only. It does **not** itself produce runtime evidence.
+
+``` text
+AUTHORIZED_SCOPE=A_Z2BG_POST_Z2BF_SUI_MMR_TIER_MAPPING_FAMILY_SCOPED_VENUE_SEMANTICS_OWNER_POLICY_RATIFICATION_DOCS_ONLY
+CURRENT_PHASE=11.13.5.Z2BG_SUI_MMR_TIER_MAPPING_FAMILY_SCOPED_VENUE_SEMANTICS_OWNER_POLICY_RATIFICATION
+OWNER_GO=SECTION_11_13_5_POST_Z2BF_SUI_MMR_TIER_MAPPING_FAMILY_SCOPED_VENUE_SEMANTICS_OWNER_POLICY_RATIFICATION_DOCS_ONLY
+OWNER_GO_STATUS=CONSUMED
+PERSIST_CLASS=Z2AR_SUI_NAMED_CLASS_MMR_TIER_MAPPING_FAMILY_SCOPED_VENUE_POLICY_RATIFICATION_SSOT_PERSIST_DOCS_ONLY
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+BASELINE_VALIDATION=PASS
+BASELINE_ORIGIN_MAIN_SHA=afea75383698ad6545411c6d9a2d6fac8983e2cc
+REQUESTED_STEP=SECTION_11_13_5_POST_Z2BF_SUI_MMR_TIER_MAPPING_FAMILY_SCOPED_VENUE_SEMANTICS_OWNER_POLICY_RATIFICATION_DOCS_ONLY
+NAMED_CLASS=MMR_tier_mapping
+OWNER_CLASS_SELECTION_STATUS=EXPLICIT_OWNER_SELECTION_NOT_CANONICAL_RANKING
+PRIOR_PATH_E_CONFIRMED=true
+Z2BF_TEXT_REWRITTEN=false
+Z2BE_TEXT_REWRITTEN=false
+Z2BD_TEXT_REWRITTEN=false
+Z2AR_TEXT_REWRITTEN=false
+Z2AS_TEXT_REWRITTEN=false
+Z2AP_TEXT_REWRITTEN=false
+Z2AX_TEXT_REWRITTEN=false
+Z2AR_FURTHER_SUI_PROOF_NEXT_POINTER_CONSUMED_AS_SUI_PROOF=false
+Z2AR_SUI_TRACK_STATUS=OPEN_UNCONSUMED
+Z2AP_TRACK_STATUS=OPEN_UNCONSUMED
+Z2AP_PRODUCTIVE_FLATTEN_NEXT_POINTER_CONSUMED_AS_FLATTEN_PROOF=false
+Z2AX_FLATTEN_RESIDUAL_CONSUMED=false
+OBSERVED_NONZERO_TARGET_POSITION_FLATTEN_PRECONDITION_CONSUMED=false
+SUI_REPROOF_CLASS_SELECTED=false
+SUI_REPROOF_CLASSES_RANKED=false
+NO_CLASS_RANKING_CLAIM=true
+NO_RANKING_OF_REMAINDER=true
+NO_MAP_OF_TRUTH_MUTATION=true
+NO_SOURCE_MUTATION=true
+NO_CONFIG_MUTATION=true
+NO_TEST_MUTATION=true
+GET_EXECUTED_THIS_PERSIST=false
+GET_EXECUTED_THIS_STEP=false
+POST_EXECUTED=false
+EXCHANGE_NETWORK_THIS_PERSIST=false
+NETWORK_USED_DURING_THIS_PERSIST=false
+NETWORK_USED_DURING_SLICE=false
+ORDER_SUBMITTED=false
+ORDER_CANCELLED=false
+ORDER_AMENDED=false
+FLATTEN_EXECUTED=false
+LIVE_ARMED_CHANGED=false
+REQUEST_TRANSMITTED=false
+GENERIC_WIRE_SEND_INVOKED=false
+RUNTIME_EXECUTION=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CANONICAL_REBIND=false
+DEFAULT_INSTRUMENT_ID_CHANGED=false
+SUI_SELECTED_AS_CURRENT_CANONICAL_INSTRUMENT=false
+SUI_CANONICAL_REBIND_READY=false
+SUI_CANONICAL_REBIND_EXECUTED=false
+```
+
+Layered provenance. These layers remain distinct. No layer is collapsed
+into another.
+
+A. Exact instrument identity. Successor target
+`SUI-USD_UM_XPERP-310404` is independently exact-`instId` bound by
+Z2AR GET-1 / Z2BD public-instruments observation. This persist does
+**not** re-prove that identity.
+
+B. Instrument family identity. That instrument is independently bound
+to `instFamily=SUI-USD_UM_XPERP` by the same exact-`instId` instrument
+observation. This persist does **not** re-prove that family identity.
+
+C. Venue tier-schedule scope. `GET &#47;api&#47;v5&#47;public&#47;position-tiers`
+for UM_XPERP legitimately returns family-scoped rows with `instId=""`.
+Empty `instId` on those rows is venue-native family-level semantics. It
+is **not** a malformed row and is **not** an exact-`instId` MMR
+response.
+
+D. Adopted MMR binding rule for this named class only. Peak_Trade may
+apply that venue-native family-scoped public position-tier table as
+normative MMR-tier authority for
+`TARGET_INSTRUMENT=SUI-USD_UM_XPERP-310404` **only** through the
+independently proven exact-`instId` → `instFamily` binding. The
+normative chain is:
+
+``` text
+exact-instId instrument identity
+→ independently bound instFamily
+→ venue-native family-scoped tier schedule
+→ unique qty-covered tier
+→ raw mmr
+```
+
+E. Tier selection rule. Only exactly one row covering operative qty
+`sz=1` by `minSz <= 1 <= maxSz` may be used.
+
+F. MMR value rule. Only the explicit non-empty raw `mmr` field of that
+uniquely selected row may be adopted. No algebraic derivation. No
+missing-field-as-zero. Optional raw `imr` may be persisted as evidence
+only and is **not** an MMR substitute.
+
+Owner-policy decision for this named class:
+
+``` text
+OWNER_POLICY_DECISION=FAMILY_SCOPED_VENUE_TIER_MMR_MAY_BE_APPLIED_VIA_INDEPENDENTLY_PROVEN_EXACT_INSTID_TO_INSTFAMILY_BINDING
+OWNER_POLICY_RATIFICATION_STATUS=RATIFIED_DOCS_ONLY_THIS_NAMED_CLASS
+FAMILY_SCOPED_POSITION_TIER_TABLE_ALLOWED_FOR_SUI_MMR_MAPPING=true
+FAMILY_SCOPED_TABLE_IS_EXACT_INSTID_RESPONSE=false
+EXACT_INSTID_INSTRUMENT_IDENTITY_STILL_REQUIRED=true
+EXACT_INSTFAMILY_BINDING_REQUIRED=true
+OPERATIVE_QTY_BINDING_REQUIRED=true
+UNIQUE_QTY_COVERING_TIER_REQUIRED=true
+RAW_MMR_REQUIRED=true
+NO_ALGEBRA_PROMOTION=true
+BTC_TO_SUI_TRANSFER_ALLOWED=false
+MISSING_ROW_IS_ZERO=false
+MISSING_MMR_IS_ZERO=false
+SUI_OPERATIVE_QTY_KIND=OWNER_POLICY_PLUS_CURRENT_VENUE_ADMISSIBILITY_ONLY
+EXCHANGE_SELECTED_QTY=false
+ONE_CONTRACT_EQUALS_ONE_SUI=false
+SUI_SELECTED_AS_CURRENT_CANONICAL_INSTRUMENT=false
+CTVAL_NE_POSITION_VALUE=true
+BINDING_QTY=OWNER_RATIFIED_1_CONTRACT
+SUI_OPERATIVE_ORDER_SZ=1
+SUI_OPERATIVE_ORDER_SZ_UNIT=CONTRACTS_SZ
+TARGET_INSTRUMENT=SUI-USD_UM_XPERP-310404
+TARGET_INST_FAMILY=SUI-USD_UM_XPERP
+CURRENT_CANONICAL_INSTRUMENT=BTC-USD_UM_XPERP-310404
+DEFAULT_INSTRUMENT_ID=BTC-USD_UM_XPERP-310404
+CANONICAL_REBIND=false
+```
+
+Qualification of the historical Z2AR forbid, **not** deletion. Z2AR
+still records:
+
+``` text
+FORBIDDEN_UPGRADE_FAMILY_SCOPED_POSITION_TIER_TABLE_TO_EXACT_INSTID_MMR=true
+FAMILY_SCOPED_POSITION_TIER_TABLE_IS_NOT_EXACT_INSTID_MMR=true
+FAMILY_SCOPED_TIER_TABLE_NE_EXACT_INSTID_MMR=true
+```
+
+Those historical facts remain true as **non-equivalence** and as a ban
+on relabeling. This Z2BG persist qualifies their **closure effect** for
+`MMR_tier_mapping` only:
+
+``` text
+Z2AR_FORBIDDEN_UPGRADE_FAMILY_SCOPED_POSITION_TIER_TABLE_TO_EXACT_INSTID_MMR_HISTORICAL=true
+Z2AR_FORBIDDEN_RELABEL_FAMILY_SCOPED_ROW_AS_EXACT_INSTID_NATIVE_RESPONSE=STILL_FORBIDDEN
+Z2BG_FAMILY_SCOPED_VENUE_MMR_MAY_BE_APPLIED_VIA_INDEPENDENT_EXACT_INSTID_TO_INSTFAMILY_BINDING=true
+Z2BG_DOES_NOT_REWRITE_Z2AR_TEXT=true
+Z2BG_DOES_NOT_CLAIM_FAMILY_SCOPED_TABLE_IS_EXACT_INSTID_RESPONSE=true
+```
+
+Still forbidden:
+
+- calling a family-scoped row an exact-`instId`-native MMR response;
+- transferring BTC Z2K&#47;Z2Q MMR onto SUI;
+- deriving `mmr` from `ctVal`, qty, `markPx`, `imr`, or any other field;
+- treating a missing row or missing `mmr` as zero;
+- adopting account-effective margin values as the public MMR schedule;
+- claiming `SUI_MMR_PROVEN=true` or `MMR_TIER_BOUND=true` from this
+  docs-only persist.
+
+Newly Owner-ratified for this named class:
+
+- venue-native family-scoped public MMR may be used as normative
+  MMR-tier authority for `SUI-USD_UM_XPERP-310404` **if and only if**
+  the provenance chain in D–F is satisfied by a later, separately
+  authorized runtime reproof.
+
+Proof status after this persist. Preconditions A and B remain the
+already-bound instrument&#47;family identity. Operative qty remains the
+Z2BE&#47;Z2BF owner-ratified `sz=1` contract plus current venue
+admissibility. Runtime tier selection and raw `mmr` adoption remain
+**unproven** until a separate runtime Owner-GO.
+
+``` text
+SUI_MMR_PROVEN=false
+MMR_TIER_BOUND=false
+MMR_TIER_MAPPING_RUNTIME_STATUS=OPEN_PENDING_FRESH_RUNTIME_REPROOF
+SEPARATE_RUNTIME_OWNER_GO_REQUIRED=true
+THIS_SLICE_AUTHORIZES_RUNTIME_GET=false
+GET_4_HISTORICAL_FAMILY_SCOPED_EVIDENCE_REUSED_AS_CURRENT_MMR=false
+SUI_POSITION_VALUE_NUMERIC_PROVEN=false
+SUI_RISK_ENVELOPE_NUMERIC_PROVEN=false
+SUI_FEE_BINDING_PROVEN=false
+USD_USDC_ACCOUNT_SETTLEMENT_PROVEN=false
+MARKPX_NUMERIC_USE_PROVEN=false
+TICKER_SLIPPAGE_RESERVE_NUMERIC_PROVEN=false
+RISK_ENVELOPE_INSTANTIATED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+OTHER_SUI_REPROOF_CLASSES_CONSUMED=false
+```
+
+Future runtime reproof specification. Defined here so a later Owner-GO
+can be exact. **Not authorized by this persist.**
+`FUTURE_RUNTIME_MAX_GETS=1`.
+
+``` text
+FUTURE_RUNTIME_ENDPOINT=GET /api/v5/public/position-tiers
+FUTURE_RUNTIME_AUTH=PUBLIC
+FUTURE_RUNTIME_HOST=eea.okx.com
+FUTURE_RUNTIME_QUERY=instType=FUTURES&tdMode=cross&instFamily=SUI-USD_UM_XPERP&instId=SUI-USD_UM_XPERP-310404
+FUTURE_RUNTIME_MAX_GETS=1
+TARGET_OPERATIVE_QTY=1
+FUTURE_RUNTIME_SUCCESS_CRITERIA=HTTP_200;OKX_CODE_0;RESPONSE_FAMILY_EQUALS_SUI-USD_UM_XPERP;AT_LEAST_ONE_TIER_ROW;EXACTLY_ONE_ROW_WITH_MINSZ_LE_1_LE_MAXSZ;THAT_ROW_HAS_EXPLICIT_NON_EMPTY_RAW_MMR;NO_SECOND_QTY1_MATCH;NO_INSTRUMENT_OR_FAMILY_IDENTITY_CONFLICT;VENUE_SHAPE_REMAINS_FAMILY_SCOPED_EMPTY_INSTID_ALLOWED;ALL_ADOPTED_VALUES_RAW_PERSISTABLE
+FUTURE_RUNTIME_FAILURE_CRITERIA=HTTP_OR_CODE_FAILURE;NO_ROW;ZERO_QTY1_MATCHES;MORE_THAN_ONE_QTY1_MATCH;MISSING_EMPTY_OR_UNPARSEABLE_MMR;FAMILY_MISMATCH;CONFLICTING_IDENTITY;VENUE_SHAPE_DEVIATES_FROM_RATIFIED_FAMILY_SCOPED_EMPTY_INSTID_SHAPE
+FUTURE_ALLOWED_ADOPTION=returned_instFamily;returned_tier;returned_minSz;returned_maxSz;returned_raw_mmr;optional_raw_imr_EVIDENCE_ONLY_NOT_MMR_SUBSTITUTE;observed_instId_field_including_empty_string_as_raw_venue_evidence
+FUTURE_FORBIDDEN_PROMOTION=instId_empty_TO_exact_instId_response;ctVal_TO_position_value;BTC_values_TO_SUI;missing_mmr_TO_zero;missing_row_TO_zero;derived_or_calculated_mmr;unrelated_account_margin_values_TO_public_MMR_schedule
+```
+
+What this persist proves, and what it does **not** prove:
+
+- The Owner ratifies that, for `MMR_tier_mapping` only, the
+  venue-native family-scoped public position-tier table may be applied
+  to `SUI-USD_UM_XPERP-310404` through the independently proven
+  exact-`instId` → `instFamily=SUI-USD_UM_XPERP` binding.
+- `FAMILY_SCOPED_POSITION_TIER_TABLE_ALLOWED_FOR_SUI_MMR_MAPPING=true`.
+- `FAMILY_SCOPED_TABLE_IS_EXACT_INSTID_RESPONSE=false`.
+- Exact instrument identity, exact `instFamily`, operative qty unique
+  qty-covering tier, and raw `mmr` remain required.
+- This persist does **not** execute or authorize the future public GET.
+- This persist does **not** set `SUI_MMR_PROVEN=true` or
+  `MMR_TIER_BOUND=true`.
+- Remaining SUI reproof classes remain an **unranked set**. This persist
+  does **not** rank the remainder.
+- `CURRENT_CANONICAL_INSTRUMENT` remains `BTC-USD_UM_XPERP-310404`.
+- Z2AP flatten remains blocked.
+  `OBSERVED_NONZERO_TARGET_POSITION_FLATTEN_PRECONDITION_CONSUMED=false`.
+
+``` text
+LIVE_FLATTEN_PROVABILITY=UNPROVEN
+PRODUCTIVE_LIVE_FLATTEN_PRE_EXECUTION_GATE=UNSATISFIED
+PRODUCTIVE_PROOF_EXECUTED=false
+LIVE_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+STANDING_LIVE_AUTHORIZED=false
+STANDING_LIVE_ENABLED=false
+STANDING_LIVE_ARMED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+CAN_SUBMIT_ORDER_TODAY=false
+ORDER_SUBMIT_AUTHORIZATION=false
+ORDER_CANCEL_AUTHORIZATION=false
+ORDER_AMEND_AUTHORIZATION=false
+FLATTEN_AUTHORIZATION=false
+BTC_PRODUCTIVE_PROOF=DO_NOT_RUN
+GLOBAL_UNIQUE_CANONICAL_NEXT_STEP=NONE_BY_P3_POLICY
+LAST_CANONICALLY_CLOSED_STEP=LF_12
+```
+
+``` text
+CODE_OWNER=docs&#47;runbooks&#47;canonical&#47;PEAK_TRADE_MASTER_RUNBOOK.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+SECTION_LOCAL_CANONICAL_NEXT_STEP_ROLE=RESIDUAL_AUTHORIZATION_BOUNDARY_OF_THIS_PERSIST_NOT_GLOBAL_UNIQUE_NEXT
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_SCOPED_NAMED_SLICE_NOT_AUTHORIZED_BY_THIS_PERSIST_Z2BG_SUI_MMR_TIER_MAPPING_FAMILY_SCOPED_VENUE_POLICY_RATIFICATION_DOCS_ONLY_NO_RUNTIME_GET_NO_SUI_MMR_PROVEN_CLAIM_NO_MMR_TIER_BOUND_CLAIM_NO_RANKING_OF_REMAINDER_NO_CANONICAL_REBIND_NO_ALGEBRA_PROMOTION_FROM_CTVAL_NO_NEW_GET_NO_POST_NO_SUBMIT_NO_CANCEL_NO_AMEND_NO_FLATTEN_NO_LIVE_WIRE_NO_CANARY_NOT_AUTHORIZED_GLOBAL_UNIQUE_CANONICAL_NEXT_STEP_NONE_BY_P3_POLICY_OBSERVED_NONZERO_TARGET_POSITION_FLATTEN_PRECONDITION_NOT_CONSUMED
+EARLIEST_UNRESOLVED_DEPENDENCY=SEPARATE_NAMED_OWNER_GO_REQUIRED_MMR_TIER_MAPPING_OPEN_PENDING_FRESH_RUNTIME_REPROOF_UNRANKED_REMAINING_SUI_REPROOF_CLASSES_NO_RANKING_INVENTION_NO_ALGEBRA_PROMOTION_FROM_CTVAL_OBSERVED_NONZERO_TARGET_POSITION_FLATTEN_PRECONDITION_NOT_CONSUMED
+MAX_SAFE_NEXT_SLICE=SEPARATE_NAMED_OWNER_GO_ONLY_FOR_MMR_TIER_MAPPING_RUNTIME_REPROOF_OR_OTHER_UNRANKED_NAMED_CLASS_NO_REPROOF_RANKING_INVENTION_NO_CANONICAL_REBIND_NO_DEFAULT_INSTRUMENT_CHANGE_NO_ALGEBRA_PROMOTION_FROM_CTVAL_NO_ONE_CONTRACT_EQUALS_ONE_SUI_NO_GET_WITHOUT_SEPARATE_RUNTIME_OWNER_GO_NO_EXCHANGE_NETWORK_NO_FLATTEN_OBSERVED_NONZERO_TARGET_POSITION_REMAINS_UNCONSUMED
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+Hard stop. This Z2BG persist GO is consumed as this docs-only named-class
+owner-policy ratification only. Do **not** reuse it as runtime GET,
+public GET, authenticated GET, submit, cancel, amend, flatten execute,
+live-read, POST, order, funding, Canary, testnet, live, generic
+wire-send, canonical rebind, `SUI_MMR_PROVEN` claim, `MMR_TIER_BOUND`
+claim, or merge authorization.
+`FAMILY_SCOPED_POSITION_TIER_TABLE_ALLOWED_FOR_SUI_MMR_MAPPING=true`.
+`FAMILY_SCOPED_TABLE_IS_EXACT_INSTID_RESPONSE=false`.
+`SUI_MMR_PROVEN=false`.
+`MMR_TIER_BOUND=false`.
+`MMR_TIER_MAPPING_RUNTIME_STATUS=OPEN_PENDING_FRESH_RUNTIME_REPROOF`.
+`SEPARATE_RUNTIME_OWNER_GO_REQUIRED=true`.
+`SUI_OPERATIVE_QTY_KIND=OWNER_POLICY_PLUS_CURRENT_VENUE_ADMISSIBILITY_ONLY`.
+`BINDING_QTY=OWNER_RATIFIED_1_CONTRACT`.
+`CTVAL_NE_POSITION_VALUE=true`.
+`ONE_CONTRACT_EQUALS_ONE_SUI=false`.
+`SUI_SELECTED_AS_CURRENT_CANONICAL_INSTRUMENT=false`.
+`SUI_REPROOF_CLASSES_RANKED=false`.
+`OBSERVED_NONZERO_TARGET_POSITION_FLATTEN_PRECONDITION_CONSUMED=false`.
+`RUNTIME_AUTHORIZATION_EFFECT=NONE`.
+`EARLIEST_UNRESOLVED_DEPENDENCY=SEPARATE_NAMED_OWNER_GO_REQUIRED_MMR_TIER_MAPPING_OPEN_PENDING_FRESH_RUNTIME_REPROOF_UNRANKED_REMAINING_SUI_REPROOF_CLASSES_NO_RANKING_INVENTION_NO_ALGEBRA_PROMOTION_FROM_CTVAL_OBSERVED_NONZERO_TARGET_POSITION_FLATTEN_PRECONDITION_NOT_CONSUMED`.
+No execute. No merge of this persist without a separate
+`OWNER_MERGE_GO`.
+
 ## 11.14 Live order and economic evidence ladder
 
 Live proof claims must use a stricter ladder:
