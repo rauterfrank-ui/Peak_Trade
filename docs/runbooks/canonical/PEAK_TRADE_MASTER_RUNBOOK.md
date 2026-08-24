@@ -29943,6 +29943,190 @@ mint&#47;consume, or merge authorization. `LIVE_FLATTEN_PROVABILITY=UNPROVEN`.
 `NEW_OBSERVATION_CLAIMED_AS_Z2AW_SAME_PACK=false`. No execute. No merge
 of this persist without a separate `OWNER_MERGE_GO`.
 
+### 11.13.5.Z2AY Category C algo/conditional endpoint-binding UNBOUND persist (BOUND; DOCS-ONLY; ADJUDICATION PERSIST; UNBOUND; NOT GET; NOT EXECUTE)
+
+Owner-GO
+`OWNER_GO=SECTION_11_13_5_CATEGORY_C_ALGO_CONDITIONAL_UNBOUND_CANONICAL_PERSIST_DOCS_ONLY_NO_NETWORK_NO_GET_NO_POST_NO_SOURCE_MUTATION_NO_RUNTIME_EXECUTION_HARD_STOP_AFTER_DIFF_VERIFICATION`
+(one-shot; now **CONSUMED** as this docs-only persist only) records the
+already-completed **read-only Source&#47;SSOT adjudication** of inventory
+Category C. This slice does **not** perform an Exchange GET or POST,
+does **not** execute runtime, does **not** submit, cancel, amend, or
+flatten, does **not** invoke generic wire&#47;send, does **not** implement
+an algo client or allowlist entry, and does **not** mutate production
+source, config, tests, Map of Truth, or any external mirror.
+
+§11.13.5.Z2AX remains the fresh target-position observation persist and
+is **not** rewritten. §11.13.5.Z2AW remains the earlier same-pack GET
+evidence persist and is **not** rewritten. This Z2AY persist is
+additive. It does **not** consume the Z2AX flatten residual
+`OBSERVED_NONZERO_TARGET_POSITION`. It does **not** alias
+`GET &#47;api&#47;v5&#47;trade&#47;orders-pending` as an Algo&#47;Conditional
+surface.
+
+Prior separate read-only adjudication Owner-GO (already consumed; not
+this persist)
+`SECTION_11_13_5_OPEN_ALGO_CONDITIONAL_ORDER_ENDPOINT_BINDING_ADJUDICATION_READ_ONLY_NO_NETWORK_NO_GET_NO_POST_NO_SUBMIT_NO_CANCEL_NO_AMEND_NO_FLATTEN_NO_GENERIC_WIRE_SEND_NO_PERSIST_HARD_STOP_AFTER_ADJUDICATION`.
+That adjudication executed no network and persisted no SSOT. This
+persist GO is **not** that adjudication GO, is **not** a runtime GET,
+and is **not** flatten-send, cancel, submit, or implementation
+authority. Public OKX documentation, general API knowledge, and
+historical non-canonical files are **not** a substitute binding.
+
+``` text
+AUTHORIZED_SCOPE=A_Z2AY_CATEGORY_C_ALGO_CONDITIONAL_UNBOUND_CANONICAL_PERSIST_DOCS_ONLY
+CURRENT_PHASE=11.13.5.Z2AY_CATEGORY_C_ALGO_CONDITIONAL_UNBOUND_PERSIST
+OWNER_GO=SECTION_11_13_5_CATEGORY_C_ALGO_CONDITIONAL_UNBOUND_CANONICAL_PERSIST_DOCS_ONLY_NO_NETWORK_NO_GET_NO_POST_NO_SOURCE_MUTATION_NO_RUNTIME_EXECUTION_HARD_STOP_AFTER_DIFF_VERIFICATION
+OWNER_GO_STATUS=CONSUMED
+PERSIST_CLASS=CATEGORY_C_UNBOUND_ADJUDICATION_SSOT_PERSIST_DOCS_ONLY
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+BASELINE_VALIDATION=PASS
+BASELINE_ORIGIN_MAIN_SHA=ee68a7329a10737a39a128e06401c40118fbf614
+PRIOR_CATEGORY_C_ADJUDICATION_OWNER_GO=SECTION_11_13_5_OPEN_ALGO_CONDITIONAL_ORDER_ENDPOINT_BINDING_ADJUDICATION_READ_ONLY_NO_NETWORK_NO_GET_NO_POST_NO_SUBMIT_NO_CANCEL_NO_AMEND_NO_FLATTEN_NO_GENERIC_WIRE_SEND_NO_PERSIST_HARD_STOP_AFTER_ADJUDICATION
+PRIOR_CATEGORY_C_ADJUDICATION_OWNER_GO_STATUS=CONSUMED
+PRIOR_CATEGORY_C_STATUS=NOT_EXECUTED_UNRESOLVED_ENDPOINT_BINDING
+EVIDENCE_BASIS=COMPLETED_LOCAL_READ_ONLY_SOURCE_SSOT_ADJUDICATION
+PUBLIC_OKX_DOCS_ARE_NOT_CANONICAL_BINDING=true
+GENERAL_API_KNOWLEDGE_IS_NOT_CANONICAL_BINDING=true
+HISTORICAL_NONCANONICAL_FILES_ARE_NOT_CANONICAL_BINDING=true
+Z2AX_TEXT_REWRITTEN=false
+Z2AW_TEXT_REWRITTEN=false
+Z2AX_FLATTEN_RESIDUAL_CONSUMED=false
+NO_MAP_OF_TRUTH_MUTATION=true
+NO_SOURCE_MUTATION=true
+NO_CONFIG_MUTATION=true
+NO_TEST_MUTATION=true
+NO_ALGO_CLIENT_IMPLEMENTED=true
+NO_ALLOWLIST_EXPANSION=true
+GET_EXECUTED_THIS_PERSIST=false
+GET_EXECUTED_THIS_STEP=false
+POST_EXECUTED=false
+EXCHANGE_NETWORK_THIS_PERSIST=false
+NETWORK_USED_DURING_THIS_PERSIST=false
+NETWORK_USED_DURING_SLICE=false
+ORDER_SUBMITTED=false
+ORDER_CANCELLED=false
+ORDER_AMENDED=false
+FLATTEN_EXECUTED=false
+FLATTEN_EXECUTION=false
+REQUEST_TRANSMITTED=false
+GENERIC_WIRE_SEND_INVOKED=false
+RUNTIME_EXECUTION=false
+```
+
+Category C adjudication result. Inventory Category C asked whether a
+canonically bound productive read-only GET plus required
+parameter&#47;consumer semantics exists with which currently open
+execution-relevant Algo&#47;Conditional&#47;Trigger&#47;TP&#47;SL orders can be
+observed. The completed local Source&#47;SSOT adjudication found **no**
+such productive binding path.
+
+``` text
+CATEGORY_C_BINDING_ADJUDICATION=C
+CATEGORY_C_CANONICAL_ENDPOINT_BINDING=UNBOUND
+CATEGORY_C_HTTP_METHOD=UNBOUND
+CATEGORY_C_ENDPOINT=UNBOUND
+CATEGORY_C_REQUIRED_PARAMS=UNBOUND
+CATEGORY_C_PRODUCTIVE_SOURCE_EVIDENCE=ABSENT_NO_ALGO_CONDITIONAL_GET_CLIENT_OR_ALLOWLIST_ENTRY
+CATEGORY_C_SSOT_EVIDENCE=ABSENT_NO_PRIOR_SECTION_11_13_5_ALGO_CONDITIONAL_GET_BINDING
+CATEGORY_C_CONSUMER_SEMANTICS=ABSENT_NO_ALGO_CONDITIONAL_RESPONSE_PARSER
+CATEGORY_C_ORDER_CLASSES_COVERED=NONE
+CATEGORY_C_SINGLE_GET_SUFFICIENT=UNPROVEN_NO_CANONICAL_BINDING
+OPEN_ALGO_ORDER_ROWS_OBSERVED=null
+ANY_OPEN_ALGO_ORDER_OBSERVED=UNPROVEN
+```
+
+Adjacent bound surface that must **not** close Category C. The
+productive private-read path already binds
+`GET &#47;api&#47;v5&#47;trade&#47;orders-pending` as the Regular-Pending
+surface (Z2AW R3; §11.13.2&#47;.3&#47;.4&#47;.5 allowlists; canary pre-submit
+consumer). That endpoint remains Regular-Pending only. Its consumer
+semantics read `code`, `data[]`, `instId`&#47;`instID`, and `clOrdId`. They
+do **not** bind Algo&#47;Conditional&#47;Trigger&#47;TP&#47;SL classes. An empty
+Regular-Pending GET does **not** prove absence of those classes.
+
+``` text
+ORDERS_PENDING_SURFACE=REGULAR_PENDING_ONLY
+ORDERS_PENDING_ENDPOINT=GET /api/v5/trade/orders-pending
+ORDERS_PENDING_ALIAS_AS_ALGO_SURFACE=false
+ORDERS_PENDING_COVERS_ALGO_CONDITIONAL_TRIGGER_TP_SL=false
+EMPTY_REGULAR_PENDING_GET_PROVES_ALGO_ABSENCE=false
+```
+
+Order classes **not** proven or observable through the current
+canonical productive path:
+
+``` text
+CATEGORY_C_ORDER_CLASSES_NOT_PROVEN=ALGO;CONDITIONAL;TRIGGER;STANDALONE_TP_SL;PENDING_ALGO;ATTACHED_TP_SL_AS_DISTINCT_EXECUTION_CLASS
+ALGO_ORDERS_OBSERVABLE_ON_CANONICAL_PATH=false
+CONDITIONAL_ORDERS_OBSERVABLE_ON_CANONICAL_PATH=false
+TRIGGER_ORDERS_OBSERVABLE_ON_CANONICAL_PATH=false
+STANDALONE_TP_SL_OBSERVABLE_ON_CANONICAL_PATH=false
+PENDING_ALGO_ORDERS_OBSERVABLE_ON_CANONICAL_PATH=false
+ATTACHED_TP_SL_AS_DISTINCT_EXECUTION_CLASS_OBSERVABLE_ON_CANONICAL_PATH=false
+```
+
+What this persist proves, and what it does **not** prove:
+
+- Category C was read-only adjudicated as `C` /
+  `CATEGORY_C_CANONICAL_ENDPOINT_BINDING=UNBOUND`.
+- No canonically bound Algo&#47;Conditional&#47;Trigger&#47;TP&#47;SL GET exists
+  in the current productive Source&#47;SSOT path.
+- No canonical consumer&#47;parser exists for that surface.
+- `GET &#47;api&#47;v5&#47;trade&#47;orders-pending` remains the bound
+  Regular-Pending surface and must **not** be aliased as the complete
+  Algo&#47;Conditional surface.
+- This persist does **not** authorize runtime GET, endpoint
+  implementation, allowlist expansion, submit, cancel, amend, flatten,
+  Canary, testnet, or live.
+- A later Category C runtime slice is **not** canonically executable
+  until a separate productive read-only binding&#47;implementation slice
+  has been Owner-authorized and completed.
+- Z2AX `LIVE_FLATTEN_PROVABILITY=UNPROVEN` and
+  `EARLIEST_UNRESOLVED_DEPENDENCY=OBSERVED_NONZERO_TARGET_POSITION`
+  remain intact and are **not** cleared here.
+
+``` text
+LIVE_FLATTEN_PROVABILITY=UNPROVEN
+LIVE_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+STANDING_LIVE_AUTHORIZED=false
+STANDING_LIVE_ENABLED=false
+STANDING_LIVE_ARMED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+CAN_SUBMIT_ORDER_TODAY=false
+ORDER_SUBMIT_AUTHORIZATION=false
+ORDER_CANCEL_AUTHORIZATION=false
+ORDER_AMEND_AUTHORIZATION=false
+FLATTEN_AUTHORIZATION=false
+CATEGORY_C_RUNTIME_SLICE_CANONICALLY_EXECUTABLE=false
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+SECTION_LOCAL_CANONICAL_NEXT_STEP_ROLE=RESIDUAL_AUTHORIZATION_BOUNDARY_OF_THIS_PERSIST_NOT_GLOBAL_UNIQUE_NEXT
+CANONICAL_NEXT_STEP=OWNER_GO_REQUIRED_SEPARATE_SCOPED_NAMED_PRODUCTIVE_READ_ONLY_ALGO_CONDITIONAL_TRIGGER_TP_SL_OPEN_ORDER_BINDING_OR_IMPLEMENTATION_SLICE_NOT_AUTHORIZED_BY_THIS_PERSIST_Z2AY_CATEGORY_C_UNBOUND_DOCS_ONLY_NO_ORDERS_PENDING_ALIAS_NO_RUNTIME_GET_NO_ALGO_CLIENT_NO_ALLOWLIST_NO_SUBMIT_NO_CANCEL_NO_AMEND_NO_FLATTEN_NO_LIVE_WIRE_NO_CANARY_NOT_AUTHORIZED_GLOBAL_UNIQUE_CANONICAL_NEXT_STEP_NONE_BY_P3_POLICY_Z2AX_FLATTEN_RESIDUAL_NOT_CONSUMED
+EARLIEST_UNRESOLVED_DEPENDENCY=CANONICAL_PRODUCTIVE_READ_ONLY_OPEN_ALGO_CONDITIONAL_TRIGGER_TP_SL_ORDER_ENDPOINT_BINDING_ABSENT
+MAX_SAFE_NEXT_SLICE=SEPARATE_NAMED_OWNER_GO_ONLY_NO_RUNTIME_GET_NO_ALGO_CLIENT_IMPLEMENTATION_NO_ORDERS_PENDING_ALIAS_AS_ALGO_SURFACE_Z2AX_FLATTEN_RESIDUAL_REMAINS_SEPARATE
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+Hard stop. This Z2AY persist GO is consumed as this docs-only slice
+only. Do **not** reuse it as runtime GET, algo-client implementation,
+allowlist expansion, submit, cancel, amend, flatten execute, live-read,
+POST, order, funding, Canary, testnet, live, generic wire-send, or
+merge authorization. `CATEGORY_C_CANONICAL_ENDPOINT_BINDING=UNBOUND`.
+`ORDERS_PENDING_ALIAS_AS_ALGO_SURFACE=false`.
+`OPEN_ALGO_ORDER_ROWS_OBSERVED=null`.
+`ANY_OPEN_ALGO_ORDER_OBSERVED=UNPROVEN`.
+`EARLIEST_UNRESOLVED_DEPENDENCY=CANONICAL_PRODUCTIVE_READ_ONLY_OPEN_ALGO_CONDITIONAL_TRIGGER_TP_SL_ORDER_ENDPOINT_BINDING_ABSENT`.
+No execute. No merge of this persist without a separate
+`OWNER_MERGE_GO`.
+
 ## 11.14 Live order and economic evidence ladder
 
 Live proof claims must use a stricter ladder:
