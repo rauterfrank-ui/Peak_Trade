@@ -276,6 +276,7 @@ CLORDID_WIRE_ALPHANUMERIC_PREFIX = "ptcanary"
 IDEMPOTENCY_POLICY = "ONE_SHOT_CLORDID_PER_OWNER_GO_BINDING"
 ENDPOINT_ORDERS_HISTORY = "/api/v5/trade/orders-history"
 ENDPOINT_ORDER_GET = "/api/v5/trade/order"
+ENDPOINT_ORDERS_ALGO_PENDING = "/api/v5/trade/orders-algo-pending"
 GET_ENDPOINTS_PUBLIC: tuple[str, ...] = (
     "/api/v5/public/instruments",
     "/api/v5/market/ticker",
@@ -285,6 +286,7 @@ GET_ENDPOINTS_PRIVATE: tuple[str, ...] = (
     "/api/v5/account/config",
     "/api/v5/account/positions",
     "/api/v5/trade/orders-pending",
+    ENDPOINT_ORDERS_ALGO_PENDING,
     "/api/v5/trade/orders-history",
     "/api/v5/trade/order",
 )
