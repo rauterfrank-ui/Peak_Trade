@@ -8,6 +8,8 @@ NOT_CANONICAL=true
 NOT_MASTER_RUNBOOK=true
 NOT_MAP_OF_TRUTH=true
 RUNTIME_AUTHORIZATION_EFFECT=NONE
+RETAINED_OUTPUT_ROLE=DERIVED_FORENSIC_STRUCTURE
+RETAINED_OUTPUT_AUTHORITY=NONE
 ```
 
 This note documents the implemented read-only transformer. It does not
@@ -46,9 +48,26 @@ Stages remain separate modules:
 11. K Contract-Test Evaluation
 12. L Output Eligibility Decision
 
-`OUTPUT_ELIGIBLE=true` means the in-memory test projection passed
-contract checks. It does not authorize a retained transformed forensic
-dataset.
+`OUTPUT_ELIGIBLE=true` means stages A–L passed contract checks. A separate
+Owner-GO is required to persist a retained derived dataset. When that GO is
+present, the merged transformer writes:
+
+```text
+OUTPUT_ROLE=DERIVED_FORENSIC_STRUCTURE
+OUTPUT_AUTHORITY=NONE
+OUTPUT_IS_CANONICAL=false
+```
+
+Retained reports live at
+`forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/`.
+Large dataset shards are regenerated with:
+
+```text
+./scripts/pt -m scripts.ops.run_forensic_structure_schema_v1_transformer --persist-retained-derived
+```
+
+The retained output is not a source replacement, not Master Runbook, and
+not Map of Truth.
 
 ## Identity and joins
 

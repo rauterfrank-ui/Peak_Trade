@@ -130,6 +130,18 @@ class Layer1Occurrence:
     content_hash_sha256: str
     mechanical_type: str
 
+    def to_canonical(self) -> dict[str, Any]:
+        return {
+            "occurrence_id": self.occurrence_id,
+            "source_sequence": self.source_sequence,
+            "byte_start": self.byte_start,
+            "byte_end": self.byte_end,
+            "line_start": self.line_start,
+            "line_end": self.line_end,
+            "content_hash_sha256": self.content_hash_sha256,
+            "mechanical_type": self.mechanical_type,
+        }
+
 
 @dataclass
 class OverlayRecord:
@@ -140,6 +152,17 @@ class OverlayRecord:
     sidecar_index: int
     byte_start: OptionalValue
     byte_end: OptionalValue
+
+    def to_index_canonical(self) -> dict[str, Any]:
+        """Index projection only. Full sidecar payload is not re-emitted."""
+        return {
+            "overlay_id": self.overlay_id,
+            "overlay_kind": self.overlay_kind.to_canonical(),
+            "overlay_class": self.overlay_class,
+            "sidecar_index": self.sidecar_index,
+            "byte_start": self.byte_start.to_canonical(),
+            "byte_end": self.byte_end.to_canonical(),
+        }
 
 
 @dataclass

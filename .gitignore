@@ -133,6 +133,10 @@ docs/evidence/canonical_volatility_numeric_max_age_parameter_research_execution_
 # local scratch (never commit)
 docs/_scratch/
 
+# Regenerable retained forensic transformation dataset blobs
+# (checksummed in transformation_manifest.json; not Git-LFS)
+/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/
+
 # Local Prometheus configs + TSDB (never commit)
 .local/prometheus/data/
 
