@@ -24,6 +24,9 @@ Z2CC_HEADING = (
 )
 Z2CD_HEADING = "### 11.13.5.Z2CD Post-Z2CC P8 final forensic audit persist"
 Z2CE_HEADING = "### 11.13.5.Z2CE Post-Z2CD P7.3 first-party query-grammar and zero-elicitation semantics persist"
+Z2CF_HEADING = (
+    "### 11.13.5.Z2CF Post-Z2CE / post-#6058 normal-system next-pointer adjudication persist"
+)
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = (
     "SECTION_11_13_5_POST_Z2CB_P7_5_LIVE_GATE_RECONCILIATION_READ_ONLY_FORENSIC_ADJUDICATION_ONLY"
@@ -59,8 +62,9 @@ def test_z2cc_heading_is_unique_and_follows_z2cb() -> None:
     z2cc = text.find(Z2CC_HEADING)
     z2cd = text.find(Z2CD_HEADING)
     z2ce = text.find(Z2CE_HEADING)
+    z2cf = text.find(Z2CF_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= z2cb < z2cc < z2cd < z2ce < ladder
+    assert 0 <= z2cb < z2cc < z2cd < z2ce < z2cf < ladder
 
 
 def test_z2cb_historical_slice_was_not_rewritten() -> None:
