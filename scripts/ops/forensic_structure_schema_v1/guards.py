@@ -161,6 +161,97 @@ def forbid_sidecar_dependency_subject_as_source_identity(value: str) -> None:
     )
 
 
+def forbid_missing_binding_as_negative_fact(detail: str) -> None:
+    _fail("ALIGNMENT_MISSING_BINDING", f"missing binding must not become a negative fact: {detail}")
+
+
+def forbid_cross_residual_close_order(detail: str) -> None:
+    _fail(
+        "ALIGNMENT_CROSS_RESIDUAL_CLOSE_ORDER",
+        f"CROSS_RESIDUAL_PREREQUISITES must not be treated as close-order: {detail}",
+    )
+
+
+def forbid_t4_declared_equals_tsv_globally_unverified(detail: str) -> None:
+    _fail(
+        "ALIGNMENT_T4_DECLARED_TSV_IDENTITY",
+        "T4 declared_relation_type must not be globally identified with TSV "
+        f"directionality: {detail}",
+    )
+
+
+def forbid_candidate_as_proven_occurrence(detail: str) -> None:
+    _fail(
+        "SW-R-004",
+        f"binding candidate must not be treated as proven occurrence: {detail}",
+    )
+
+
+def forbid_documentary_parent_as_proven_parentage(detail: str) -> None:
+    _fail(
+        "SW-R-009",
+        f"documentary parent hint must not be treated as proven parentage: {detail}",
+    )
+
+
+def forbid_mechanical_order_as_dependency(detail: str) -> None:
+    _fail("D1", f"mechanical order must not be treated as dependency: {detail}")
+
+
+def forbid_epoch_order_as_currentness(detail: str) -> None:
+    _fail("D13", f"epoch order must not be treated as currentness: {detail}")
+
+
+def forbid_epoch_order_as_supersession(detail: str) -> None:
+    _fail("D13", f"epoch order must not be treated as supersession: {detail}")
+
+
+def forbid_later_record_as_winner(detail: str) -> None:
+    _fail("C5", f"later record must not be selected as winner: {detail}")
+
+
+def forbid_open_residual_status_transition(residual_id: str, observed: str) -> None:
+    _fail(
+        "STAGE_H",
+        f"open residual {residual_id} must not transition from OPEN to {observed}",
+    )
+
+
+def forbid_source_mutation(detail: str) -> None:
+    _fail("SOURCE_MUTATION", f"source mutation is forbidden: {detail}")
+
+
+def forbid_sidecar_mutation(detail: str) -> None:
+    _fail("SIDECAR_MUTATION", f"sidecar mutation is forbidden: {detail}")
+
+
+def forbid_retained_input_rewrite(detail: str) -> None:
+    _fail("RETAINED_INPUT_REWRITE", f"A-L retained input rewrite is forbidden: {detail}")
+
+
+def forbid_disposition_input_rewrite(detail: str) -> None:
+    _fail(
+        "DISPOSITION_INPUT_REWRITE",
+        f"PR-6063 disposition input rewrite is forbidden: {detail}",
+    )
+
+
+def forbid_unknown_to_false_collapse(detail: str) -> None:
+    _fail("C10", f"UNKNOWN must not collapse to false: {detail}")
+
+
+def forbid_absent_to_no_parent_collapse(detail: str) -> None:
+    _fail("G2", f"ABSENT must not collapse to NO_PARENT: {detail}")
+
+
+def forbid_duplicate_evidence_collapse(detail: str) -> None:
+    _fail("C2", f"duplicate evidence must not be collapsed: {detail}")
+
+
+def forbid_provenance_collapse(detail: str) -> None:
+    _fail("C2", f"provenance must not be collapsed: {detail}")
+
+
 def forbid_verbatim_normalization() -> None:
     _fail("C8", "verbatim/path normalization is forbidden")
 
