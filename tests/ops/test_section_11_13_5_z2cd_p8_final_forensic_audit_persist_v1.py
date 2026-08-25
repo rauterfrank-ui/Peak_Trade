@@ -19,6 +19,7 @@ Z2CC_HEADING = (
     "### 11.13.5.Z2CC Post-Z2CB P7.5 live-gate reconciliation bounded forensic adjudication"
 )
 Z2CD_HEADING = "### 11.13.5.Z2CD Post-Z2CC P8 final forensic audit persist"
+Z2CE_HEADING = "### 11.13.5.Z2CE Post-Z2CD P7.3 first-party query-grammar and zero-elicitation semantics persist"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = "SECTION_11_13_5_POST_Z2CC_P8_FINAL_FORENSIC_AUDIT_PERSIST_ONLY"
 BASELINE_SHA = "50baf122b9f42e3e0353108baad1fe014ba8b4bc"
@@ -32,8 +33,8 @@ def _read(path: Path) -> str:
 def _z2cd_section(text: str) -> str:
     start = text.find(Z2CD_HEADING)
     assert start >= 0, "missing §11.13.5.Z2CD heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2CD"
+    end = text.find(Z2CE_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2CE boundary after Z2CD"
     return text[start:end]
 
 
@@ -50,8 +51,9 @@ def test_z2cd_heading_is_unique_and_follows_z2cc() -> None:
     assert text.count(Z2CD_HEADING) == 1
     z2cc = text.find(Z2CC_HEADING)
     z2cd = text.find(Z2CD_HEADING)
+    z2ce = text.find(Z2CE_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= z2cc < z2cd < ladder
+    assert 0 <= z2cc < z2cd < z2ce < ladder
 
 
 def test_z2cc_historical_slice_was_not_rewritten() -> None:
@@ -201,6 +203,7 @@ def test_z2cd_map_of_truth_remains_navigation_only_without_z2cd_ssot_row() -> No
     mot = _read(MAP_OF_TRUTH)
     assert "THIS_DOCUMENT_DEFINES_NO_SEMANTICS=true" in mot
     assert "LIVE_AUTHORIZED=false" in mot
+    assert "§11.13.5.Z2CE |" not in mot
     assert "§11.13.5.Z2CD |" not in mot
     assert "§11.13.5.Z2CC |" not in mot
     assert "§11.13.5.Z2CB |" not in mot
