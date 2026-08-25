@@ -27,6 +27,10 @@ Z2BZ_HEADING = (
     "(BOUND; CONTRACT CLOSURE ONLY; NOT UNIVERSAL ABSENCE; NOT POSITION ZERO; "
     "NOT SUI RUNTIME GET; NOT FLATTEN; NOT LIVE; NOT COVER; NOT RISK)"
 )
+Z2CA_HEADING = (
+    "### 11.13.5.Z2CA Post-Z2BZ P7.3 flatten precondition and fresh SUI "
+    "position-state reobservation"
+)
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = "SECTION_11_13_5_POST_Z2BY_P7_2_CATEGORY_C_BOUNDED_CLOSURE_ONLY"
 BASELINE_SHA = "7062a032fe80491a8749a1641d6f7ec85b50506c"
@@ -40,8 +44,8 @@ def _read(path: Path) -> str:
 def _z2bz_section(text: str) -> str:
     start = text.find(Z2BZ_HEADING)
     assert start >= 0, "missing §11.13.5.Z2BZ heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2BZ"
+    end = text.find(Z2CA_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2CA boundary after Z2BZ"
     return text[start:end]
 
 
@@ -67,8 +71,9 @@ def test_z2bz_heading_is_unique_and_follows_z2by() -> None:
     z2bb = text.find(Z2BB_HEADING)
     z2by = text.find(Z2BY_HEADING)
     z2bz = text.find(Z2BZ_HEADING)
+    z2ca = text.find(Z2CA_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= z2bb < z2by < z2bz < ladder
+    assert 0 <= z2bb < z2by < z2bz < z2ca < ladder
 
 
 def test_z2by_historical_slice_was_not_rewritten() -> None:
