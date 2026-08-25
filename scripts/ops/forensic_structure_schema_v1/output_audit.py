@@ -22,7 +22,19 @@ from scripts.ops.forensic_structure_schema_v1.constants import (
 from scripts.ops.forensic_structure_schema_v1.exceptions import (
     TransformationContractViolation,
 )
-from scripts.ops.forensic_structure_schema_v1.guards import ORDERING_RELATION_TYPES
+from scripts.ops.forensic_structure_schema_v1.guards import (
+    ORDERING_RELATION_TYPES,
+    GuardProgram,
+    forbid_alias_occurrence_bind,
+    forbid_documentary_string_auto_resolution,
+    forbid_epoch_succession_currentness,
+    forbid_layer3_ordered_before_as_t4_src_target_pair,
+    forbid_section_22_rewrite_as_source_identity,
+    forbid_sidecar_dependency_subject_as_source_identity,
+    forbid_t4_contains_fusion_with_wrapper_contains,
+    forbid_t4_directionality_identity_with_layer3_relation_type,
+    forbid_view_parents_parentage,
+)
 
 
 def _fail(rule: str, message: str) -> None:
@@ -47,6 +59,16 @@ def audit_retained_output(
         "PREFIX_EPOCH_SUCCEEDS_TO_DEPENDENCY": False,
         "H1_CONTAINMENT_TO_PARENTAGE": False,
         "VIEW_PARENTS_TO_PARENTAGE": False,
+        "ABSENT_PARENTS_TO_NO_PARENT": False,
+        "PREFIX_EPOCH_SUCCEEDS_TO_CURRENTNESS": False,
+        "PREFIX_EPOCH_SUCCEEDS_TO_SUPERSESSION": False,
+        "PREFIX_EPOCH_SUCCEEDS_TO_WINNER": False,
+        "PREFIX_EPOCH_SUCCEEDS_TO_CANONICAL_SUCCESSOR": False,
+        "T4_DIRECTIONALITY_TO_LAYER3_TYPE_IDENTITY": False,
+        "T4_CONTAINS_TO_WRAPPER_CONTAINS_IDENTITY": False,
+        "LAYER3_ORDERED_BEFORE_TO_T4_SRC_TARGET_PAIR": False,
+        "SECTION_22_REWRITE_TO_SOURCE_IDENTITY": False,
+        "SIDECAR_DEPENDENCY_SUBJECT_TO_SOURCE_IDENTITY": False,
         "WRAPPER_CONTAINS_TO_SEMANTIC_CONTAINER": False,
         "CURRENT_TOKEN_TO_CURRENTNESS": False,
         "SHA_HEX_64_TO_SHA256": False,
@@ -92,9 +114,42 @@ def audit_retained_output(
         if rel["supersession"] != DEFAULT_SUPERSESSION:
             flags["SUPERSESSION_INFERENCE"] = True
             _fail("D13", f"{rel['relation_id']} supersession inferred")
+        if rtype == "PREFIX_EPOCH_SUCCEEDS":
+            if rel["currentness_status"] not in {DEFAULT_CURRENTNESS_STATUS, "historical"}:
+                flags["PREFIX_EPOCH_SUCCEEDS_TO_CURRENTNESS"] = True
+                forbid_epoch_succession_currentness()
+            if rel["supersession"] != DEFAULT_SUPERSESSION:
+                flags["PREFIX_EPOCH_SUCCEEDS_TO_SUPERSESSION"] = True
+                forbid_epoch_succession_currentness()
+            if rel["winner_selected"] is True:
+                flags["PREFIX_EPOCH_SUCCEEDS_TO_WINNER"] = True
+                forbid_epoch_succession_currentness()
+            if str(rel.get("canonical_successor_status", "")) == "CANONICAL_SUCCESSOR":
+                flags["PREFIX_EPOCH_SUCCEEDS_TO_CANONICAL_SUCCESSOR"] = True
+                forbid_epoch_succession_currentness()
+        if rtype == "STRUCTURAL_ORDERED_BEFORE":
+            if rtype == str(rel.get("declared_relation_type")):
+                flags["T4_DIRECTIONALITY_TO_LAYER3_TYPE_IDENTITY"] = True
+                forbid_t4_directionality_identity_with_layer3_relation_type(
+                    str(rel.get("declared_relation_type")), rtype
+                )
+            from_val = str(rel["from_binding"]["value"])
+            to_val = str(rel["to_binding"]["value"])
+            if from_val.startswith("SRC-") and to_val.startswith("SRC-"):
+                flags["LAYER3_ORDERED_BEFORE_TO_T4_SRC_TARGET_PAIR"] = True
+                forbid_layer3_ordered_before_as_t4_src_target_pair(
+                    f"{rel['relation_id']} endpoints are SRC/SRC rather than REL->subject SRC"
+                )
+        if rtype == "CONTAINS":
+            flags["T4_CONTAINS_TO_WRAPPER_CONTAINS_IDENTITY"] = True
+            forbid_t4_contains_fusion_with_wrapper_contains(rel["relation_id"])
+        if rtype == "WRAPPER_CONTAINS" and rel.get("declared_relation_type") == "CONTAINS":
+            flags["T4_CONTAINS_TO_WRAPPER_CONTAINS_IDENTITY"] = True
+            forbid_t4_contains_fusion_with_wrapper_contains(rel["relation_id"])
         for side in ("from_binding", "to_binding"):
             binding = rel[side]
             kind = str(binding["kind"])
+            value = str(binding["value"])
             if kind not in CLOSED_JOIN_SET:
                 _fail("UNAUTHORIZED_JOIN", f"{rel['relation_id']} {side} kind {kind}")
             if (
@@ -106,7 +161,22 @@ def audit_retained_output(
                 and binding.get("unresolved_to_occurrence") is not True
             ):
                 flags["DOCUMENTARY_ENDPOINT_TO_OCCURRENCE_AUTO_BIND"] = True
-                _fail("SW-R-004", f"{rel['relation_id']} {side} auto-bound")
+                if kind == "EXPLICIT_ALIAS_MAP_NAVIGATION_ONLY":
+                    forbid_alias_occurrence_bind(value)
+                else:
+                    forbid_documentary_string_auto_resolution(value)
+            if value == "§22" and (
+                kind == "LAYER1_OCCURRENCE_REFERENCE"
+                or binding.get("unresolved_to_occurrence") is not True
+            ):
+                flags["SECTION_22_REWRITE_TO_SOURCE_IDENTITY"] = True
+                forbid_section_22_rewrite_as_source_identity(value)
+            if value == "Z2AR_SUI_POSITION_VALUE_ALGEBRA_RECORD" and (
+                kind == "LAYER1_OCCURRENCE_REFERENCE"
+                or binding.get("unresolved_to_occurrence") is not True
+            ):
+                flags["SIDECAR_DEPENDENCY_SUBJECT_TO_SOURCE_IDENTITY"] = True
+                forbid_sidecar_dependency_subject_as_source_identity(value)
 
     token_ids: list[str] = []
     historical_locator_count = 0
@@ -267,17 +337,25 @@ def audit_retained_output(
             _fail("NAVIGATION_VIEW_RETENTION", f"{view.get('view_id')} not navigation-only")
         if view.get("parentage_adjudicated") is not False:
             flags["VIEW_PARENTS_TO_PARENTAGE"] = True
-            _fail("SW-R-009", f"{view.get('view_id')} parents promoted to parentage")
+            forbid_view_parents_parentage()
         if view.get("sw_r_009_status") != "OPEN":
             flags["VIEW_PARENTS_TO_PARENTAGE"] = True
-            _fail("SW-R-009", f"{view.get('view_id')} SW-R-009 closed")
+            forbid_view_parents_parentage()
         original = view.get("original_view")
         if not isinstance(original, dict):
             _fail("NAVIGATION_VIEW_RETENTION", f"{view.get('view_id')} original_view missing")
-        if "parents" in original and view.get("parents_field_status") != (
-            "DOCUMENTARY_UNADJUDICATED"
-        ):
-            flags["VIEW_PARENTS_TO_PARENTAGE"] = True
-            _fail("SW-R-009", f"{view.get('view_id')} parents field status mutated")
+        if "parents" in original and original["parents"] is not None:
+            if view.get("parents_field_status") != "DOCUMENTARY_UNADJUDICATED":
+                flags["VIEW_PARENTS_TO_PARENTAGE"] = True
+                _fail("SW-R-009", f"{view.get('view_id')} parents field status mutated")
+        elif "parents" in original and original["parents"] is None:
+            if view.get("parents_field_status") != "NULL":
+                flags["ABSENT_PARENTS_TO_NO_PARENT"] = True
+                _fail("G2", f"{view.get('view_id')} JSON-null parents status mutated")
+        else:
+            if view.get("parents_field_status") != "ABSENT":
+                flags["ABSENT_PARENTS_TO_NO_PARENT"] = True
+                _fail("G2", f"{view.get('view_id')} ABSENT parents status mutated")
+            GuardProgram().assert_absent_parents_not_normalized(view)
 
     return flags

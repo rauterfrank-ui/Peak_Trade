@@ -130,6 +130,7 @@ def run_stage_g(state: PipelineState) -> None:
                     f"{relation_id} EXPLICIT_DEPENDENCY is_dependency=false",
                 )
         state.guards.check_relation(envelope)
+        state.guards.check_cluster_projection(envelope, state)
         relations.append(envelope)
         by_id[relation_id] = envelope
 

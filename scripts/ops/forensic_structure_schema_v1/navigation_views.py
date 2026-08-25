@@ -14,6 +14,7 @@ from scripts.ops.forensic_structure_schema_v1.constants import (
 from scripts.ops.forensic_structure_schema_v1.exceptions import (
     TransformationContractViolation,
 )
+from scripts.ops.forensic_structure_schema_v1.guards import GuardProgram
 from scripts.ops.forensic_structure_schema_v1.id_spaces import classify_view_id
 
 
@@ -63,24 +64,28 @@ def project_navigation_views(sidecar_views: list[Any]) -> list[dict[str, Any]]:
                     "C9",
                     f"{view_id} {field_name}={original.get(field_name)!r}",
                 )
-        retained.append(
-            {
-                "view_id": view_id,
-                "source_order": index,
-                "view_role": VIEW_ROLE_NAVIGATION_OR_ANALYSIS_ONLY,
-                "view_authority": EXPECTED_AUTHORITY,
-                "target_authority": EXPECTED_AUTHORITY,
-                "sidecar_authority": EXPECTED_AUTHORITY,
-                "output_is_canonical": False,
-                "output_is_authority_source": False,
-                "does_not_alter_layer1_order": True,
-                "does_not_alter_layer1_cardinality": True,
-                "parentage_adjudicated": False,
-                "sw_r_009_status": "OPEN",
-                "parents_field_status": (
-                    "DOCUMENTARY_UNADJUDICATED" if "parents" in original else "ABSENT"
-                ),
-                "original_view": original,
-            }
-        )
+        if "parents" not in original:
+            parents_status = "ABSENT"
+        elif original["parents"] is None:
+            parents_status = "NULL"
+        else:
+            parents_status = "DOCUMENTARY_UNADJUDICATED"
+        record = {
+            "view_id": view_id,
+            "source_order": index,
+            "view_role": VIEW_ROLE_NAVIGATION_OR_ANALYSIS_ONLY,
+            "view_authority": EXPECTED_AUTHORITY,
+            "target_authority": EXPECTED_AUTHORITY,
+            "sidecar_authority": EXPECTED_AUTHORITY,
+            "output_is_canonical": False,
+            "output_is_authority_source": False,
+            "does_not_alter_layer1_order": True,
+            "does_not_alter_layer1_cardinality": True,
+            "parentage_adjudicated": False,
+            "sw_r_009_status": "OPEN",
+            "parents_field_status": parents_status,
+            "original_view": original,
+        }
+        GuardProgram().assert_view_parents_not_parentage(record)
+        retained.append(record)
     return retained
