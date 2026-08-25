@@ -21,8 +21,30 @@ def run_stage_j(state: PipelineState) -> None:
     if sidecar_mutated:
         raise TransformationContractViolation("SIDECAR_MUTATION", "sidecar bytes changed")
 
+    layer1 = state.layer1_ordered
+    gaps = 0
+    overlaps = 0
+    for index in range(len(layer1) - 1):
+        left_end = layer1[index].byte_end
+        right_start = layer1[index + 1].byte_start
+        if left_end < right_start:
+            gaps += 1
+        elif left_end > right_start:
+            overlaps += 1
+    heading_outside = 0
+    for rec in state.overlays_by_class["t3_src_span"]:
+        heading = int(rec.payload["heading_line"])
+        start = int(rec.payload["source_start_line"])
+        end = int(rec.payload["source_end_line"])
+        if not (start <= heading <= end):
+            heading_outside += 1
+
     counts = {
-        "LAYER1_COUNT": len(state.layer1_ordered),
+        "LAYER1_COUNT": len(layer1),
+        "LAYER1_GAPS": gaps,
+        "LAYER1_OVERLAPS": overlaps,
+        "LAYER1_BYTE_UNION_START": layer1[0].byte_start if layer1 else None,
+        "LAYER1_BYTE_UNION_END": layer1[-1].byte_end if layer1 else None,
         "FENCE_BLOCK_COUNT": len(state.overlays_by_class["fence_block"]),
         "FENCE_UNIQUE_BODY_HASHES": len(
             {r.payload["body_sha256"] for r in state.overlays_by_class["fence_block"]}
@@ -51,6 +73,7 @@ def run_stage_j(state: PipelineState) -> None:
             if r.payload.get("is_continuation_title") is True
         ),
         "T3_SRC_SPAN_COUNT": len(state.overlays_by_class["t3_src_span"]),
+        "T3_HEADING_OUTSIDE_DECLARED_REGION_COUNT": heading_outside,
         "WRAPPER_MENTION_COUNT": len(state.overlays_by_class["wrapper_mention"]),
         "WRAPPER_PAIR_COUNT": len(state.overlays_by_class["wrapper_pair"]),
         "LAYER2_RECORD_COUNT": len(state.sidecar["layer2_classification"]["records"]),
@@ -69,6 +92,10 @@ def run_stage_j(state: PipelineState) -> None:
     expected = EXPECTED_LOSSLESSNESS
     for key in (
         "LAYER1_COUNT",
+        "LAYER1_GAPS",
+        "LAYER1_OVERLAPS",
+        "LAYER1_BYTE_UNION_START",
+        "LAYER1_BYTE_UNION_END",
         "FENCE_BLOCK_COUNT",
         "FENCE_UNIQUE_BODY_HASHES",
         "FENCE_DUPLICATE_GROUPS",
@@ -79,6 +106,7 @@ def run_stage_j(state: PipelineState) -> None:
         "H1_SPAN_COUNT",
         "H1_CONTINUATION_COUNT",
         "T3_SRC_SPAN_COUNT",
+        "T3_HEADING_OUTSIDE_DECLARED_REGION_COUNT",
         "WRAPPER_MENTION_COUNT",
         "WRAPPER_PAIR_COUNT",
         "LAYER2_RECORD_COUNT",

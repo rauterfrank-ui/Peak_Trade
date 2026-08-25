@@ -19,6 +19,10 @@ from scripts.ops.forensic_structure_schema_v1.constants import (
     HISTORICAL_LOCATOR_TOKEN_CLASS,
     SW_RESIDUAL_IDS,
 )
+from scripts.ops.forensic_structure_schema_v1.retained_output import (
+    build_retained_dataset,
+    dataset_concat_sha256,
+)
 from scripts.ops.forensic_structure_schema_v1.serialization import dumps_canonical_bytes
 from scripts.ops.forensic_structure_schema_v1.transformer import transform_read_only
 
@@ -134,6 +138,11 @@ def test_deterministic_serialization_two_runs() -> None:
     third = transform_read_only(source_path=BOUND_SOURCE, sidecar_path=BOUND_SIDECAR)
     assert second.payload_bytes == third.payload_bytes
     assert dumps_canonical_bytes(second.payload) == second.payload_bytes
+    first_ds = build_retained_dataset(second.state)
+    second_ds = build_retained_dataset(third.state)
+    sha_a, _ = dataset_concat_sha256(first_ds)
+    sha_b, _ = dataset_concat_sha256(second_ds)
+    assert sha_a == sha_b
 
 
 def test_round_trip_traceability() -> None:
