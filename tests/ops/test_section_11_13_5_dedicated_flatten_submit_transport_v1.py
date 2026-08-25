@@ -68,11 +68,11 @@ def _price_permit(*, side: str = "SELL", pos: str = "1") -> Any:
         FlattenPriceInputV1(
             flatten_side=side,
             observed_signed_pos=pos,
-            bid="64805.6",
-            ask="64805.7",
+            bid="0.8209",
+            ask="0.8210",
             quote_timestamp_ms=QUOTE_TS,
             evaluation_timestamp_ms=EVAL_TS,
-            tick_sz="0.1",
+            tick_sz="0.0001",
             freshness_threshold_ms=str(FRESHNESS_THRESHOLD_MS),
         )
     )
@@ -110,7 +110,7 @@ def test_positive_position_serializes_reduce_only_sell() -> None:
     assert body["reduceOnly"] is True
     assert body["ordType"] == "limit"
     assert body["sz"] == "2"
-    assert body["px"] == "64805.6"
+    assert body["px"] == "0.8209"
     assert body["instId"] == TARGET
     assert "posSide" not in body
 
@@ -126,7 +126,7 @@ def test_negative_position_serializes_reduce_only_buy() -> None:
     assert body["side"] == "buy"
     assert body["reduceOnly"] is True
     assert body["sz"] == "3"
-    assert body["px"] == "64805.7"
+    assert body["px"] == "0.8210"
 
 
 def test_qty_exactly_abs_observed_pos() -> None:
@@ -382,13 +382,13 @@ def test_global_invariants_unchanged() -> None:
                 "ruleType": "xperp",
                 "minSz": "1",
                 "lotSz": "1",
-                "tickSz": "0.1",
-                "ctVal": "0.0001",
-                "ctValCcy": "BTC",
+                "tickSz": "0.0001",
+                "ctVal": "1",
+                "ctValCcy": "SUI",
             }
         ],
     }
-    ticker = {"code": "0", "data": [{"instId": TARGET, "last": "63028.1"}]}
+    ticker = {"code": "0", "data": [{"instId": TARGET, "last": "0.8209"}]}
     entry_plan = build_minimum_valid_canary_order_plan_v1(
         instruments_payload=instruments,
         ticker_payload=ticker,
@@ -411,4 +411,4 @@ def test_global_invariants_unchanged() -> None:
 def test_serialize_without_permit_still_unbound() -> None:
     _permit, plan, _price, _payload = _flatten_bundle(pos="1")
     with pytest.raises(Exception, match="FLATTEN_NAKED_PX_FAIL_CLOSED"):
-        serialize_canary_flatten_venue_native_payload_v1(plan, px="64805.6")
+        serialize_canary_flatten_venue_native_payload_v1(plan, px="0.8209")

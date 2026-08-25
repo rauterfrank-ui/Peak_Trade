@@ -56,20 +56,20 @@ INSTRUMENTS = {
     "code": "0",
     "data": [
         {
-            "instId": "BTC-USD_UM_XPERP-310404",
+            "instId": DEFAULT_INSTRUMENT_ID,
             "instType": "FUTURES",
             "ruleType": "xperp",
             "minSz": "1",
             "lotSz": "1",
-            "tickSz": "0.1",
-            "ctVal": "0.0001",
-            "ctValCcy": "BTC",
+            "tickSz": "0.0001",
+            "ctVal": "1",
+            "ctValCcy": "SUI",
             "settleCcy": "USDC",
             "state": "live",
         }
     ],
 }
-TICKER = {"code": "0", "data": [{"instId": "BTC-USD_UM_XPERP-310404", "last": "63028.1"}]}
+TICKER = {"code": "0", "data": [{"instId": DEFAULT_INSTRUMENT_ID, "last": "0.8209"}]}
 EMPTY = {"code": "0", "data": []}
 FIXTURE_MATERIAL = json.dumps(
     {"api_key": "A" * 36, "api_secret": "B" * 32, "passphrase": "C" * 14},
@@ -165,13 +165,13 @@ def test_order_plan_rejects_quantity_above_min_sz() -> None:
         "code": "0",
         "data": [
             {
-                "instId": "BTC-USD_UM_XPERP-310404",
+                "instId": DEFAULT_INSTRUMENT_ID,
                 "instType": "FUTURES",
                 "ruleType": "xperp",
                 "minSz": "1",
                 "lotSz": "2",
-                "tickSz": "0.1",
-                "ctVal": "0.0001",
+                "tickSz": "0.0001",
+                "ctVal": "1",
             }
         ],
     }
@@ -207,7 +207,7 @@ def test_order_plan_reuses_proven_venue_native_body_builder(
     assert plan.venue_native_payload is sentinel
     assert len(calls) == 1
     assert calls[0]["client_order_id"] == plan.clordid
-    assert calls[0]["instrument"] == "BTC-USD_UM_XPERP-310404"
+    assert calls[0]["instrument"] == DEFAULT_INSTRUMENT_ID
     assert calls[0]["order_type"] == "LIMIT"
     assert calls[0]["side"] == "BUY"
     assert calls[0]["quantity"] == plan.quantity == "1"
@@ -245,13 +245,13 @@ def test_order_plan_body_equals_proven_builder_contract() -> None:
         "px",
         "clOrdId",
     }
-    assert plan.venue_native_payload["instId"] == "BTC-USD_UM_XPERP-310404"
+    assert plan.venue_native_payload["instId"] == DEFAULT_INSTRUMENT_ID
     assert plan.venue_native_payload["tdMode"] == "cross"
     assert plan.venue_native_payload["side"] == "buy"
     assert plan.venue_native_payload["ordType"] == "limit"
     assert plan.venue_native_payload["sz"] == "1"
     assert plan.quantity == "1"
-    assert plan.venue_native_payload["px"] == plan.limit_price == "63028.1"
+    assert plan.venue_native_payload["px"] == plan.limit_price == "0.8209"
     assert plan.venue_native_payload["clOrdId"] == plan.clordid
     assert "posSide" not in plan.venue_native_payload
     assert "posMode" not in plan.venue_native_payload
@@ -385,7 +385,7 @@ def test_missing_secretref_and_wrong_host_rejected_before_post() -> None:
 def test_open_position_blocks_before_post() -> None:
     transport = _fake_transport()
     transport.bodies_by_endpoint["/api/v5/account/positions"] = json.dumps(
-        {"code": "0", "data": [{"instId": "BTC-USD_UM_XPERP-310404", "pos": "1"}]}
+        {"code": "0", "data": [{"instId": DEFAULT_INSTRUMENT_ID, "pos": "1"}]}
     ).encode()
     kwargs = _transport_kwargs(transport=transport)
     with pytest.raises(LiveCanarySubmitTransportError, match="OPEN_POSITION"):
@@ -415,7 +415,7 @@ def test_happy_path_fake_exactly_one_post() -> None:
     assert instrument_gets
     assert all("instType=FUTURES" in ep for ep in instrument_gets)
     assert all("instType=SWAP" not in ep for ep in instrument_gets)
-    assert all("BTC-USD_UM_XPERP-310404" in ep for ep in instrument_gets)
+    assert all(DEFAULT_INSTRUMENT_ID in ep for ep in instrument_gets)
     second = run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
     # New client each call; same fake records a second POST only if we reuse client.
     assert second["ORDER_COUNT_SUBMITTED"] == 1
@@ -868,7 +868,7 @@ def test_urllib_post_redirect_fail_closed_no_second_request(status: int) -> None
     thread = threading.Thread(target=httpd.serve_forever, daemon=True)
     thread.start()
     port = httpd.server_address[1]
-    body = '{"instId":"BTC-USD_UM_XPERP-310404"}'
+    body = '{"instId":"' + DEFAULT_INSTRUMENT_ID + '"}'
     try:
         transport = UrllibLiveCanaryTransportV1(wire_send_enabled=True)
         response = transport.send(
@@ -909,7 +909,7 @@ def test_signed_body_equals_wire_body_evidence_contract() -> None:
     )
 
     payload = {
-        "instId": "BTC-USD_UM_XPERP-310404",
+        "instId": DEFAULT_INSTRUMENT_ID,
         "tdMode": "cross",
         "side": "buy",
         "ordType": "limit",
@@ -939,6 +939,7 @@ def test_order_plan_rejects_swap_and_demo_instrument_fallback() -> None:
     from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
         DEMO_XPERP_INSTRUMENT_ID,
         HISTORICAL_REJECTED_SWAP_INSTRUMENT_ID,
+        HISTORICAL_SUPERSEDED_CANONICAL_INSTRUMENT_ID,
         LiveCanaryInstrumentBindingError,
         assert_live_canary_instrument_binding_v1,
     )
@@ -949,21 +950,25 @@ def test_order_plan_rejects_swap_and_demo_instrument_fallback() -> None:
         )
     with pytest.raises(LiveCanaryInstrumentBindingError, match="REJECTED_CANARY_INSTRUMENT"):
         assert_live_canary_instrument_binding_v1(instrument_id=DEMO_XPERP_INSTRUMENT_ID)
+    with pytest.raises(LiveCanaryInstrumentBindingError, match="INSTRUMENT_BINDING_MISMATCH"):
+        assert_live_canary_instrument_binding_v1(
+            instrument_id=HISTORICAL_SUPERSEDED_CANONICAL_INSTRUMENT_ID
+        )
     with pytest.raises(LiveCanaryInstrumentBindingError, match="REJECTED_CANARY_INST_TYPE"):
         assert_live_canary_instrument_binding_v1(
-            instrument_id="BTC-USD_UM_XPERP-310404", inst_type="SWAP"
+            instrument_id=DEFAULT_INSTRUMENT_ID, inst_type="SWAP"
         )
     swap_payload = {
         "code": "0",
         "data": [
             {
-                "instId": "BTC-USD_UM_XPERP-310404",
+                "instId": DEFAULT_INSTRUMENT_ID,
                 "instType": "SWAP",
                 "ruleType": "xperp",
                 "minSz": "1",
                 "lotSz": "1",
-                "tickSz": "0.1",
-                "ctVal": "0.0001",
+                "tickSz": "0.0001",
+                "ctVal": "1",
             }
         ],
     }
@@ -985,8 +990,8 @@ def test_order_plan_rejects_swap_and_demo_instrument_fallback() -> None:
                         "ruleType": "xperp",
                         "minSz": "1",
                         "lotSz": "1",
-                        "tickSz": "0.1",
-                        "ctVal": "0.0001",
+                        "tickSz": "0.0001",
+                        "ctVal": "1",
                     }
                 ],
             },
@@ -999,12 +1004,12 @@ def test_order_plan_rejects_swap_and_demo_instrument_fallback() -> None:
         "code": "0",
         "data": [
             {
-                "instId": "BTC-USD_UM_XPERP-310404",
+                "instId": DEFAULT_INSTRUMENT_ID,
                 "instType": "FUTURES",
                 "ruleType": "xperp",
                 "minSz": "0.01",
                 "lotSz": "0.01",
-                "tickSz": "0.1",
+                "tickSz": "0.0001",
                 "ctVal": "0.01",
             }
         ],
@@ -1024,7 +1029,8 @@ def test_xperp_economic_baseline_contract_does_not_inherit_swap_or_demo() -> Non
     )
 
     contract = live_eea_xperp_310404_economic_baseline_contract_v1()
-    assert contract["CANARY_INSTRUMENT"] == "BTC-USD_UM_XPERP-310404"
+    assert contract["CANARY_INSTRUMENT"] == DEFAULT_INSTRUMENT_ID
+    assert contract["CANARY_INSTRUMENT"] == "SUI-USD_UM_XPERP-310404"
     assert contract["CANARY_INST_TYPE"] == "FUTURES"
     assert contract["PRODUCT_RULE_TYPE"] == "xperp"
     assert contract["SETTLEMENT_ACCOUNT_TRUTH"] == "USDC"
@@ -1032,24 +1038,38 @@ def test_xperp_economic_baseline_contract_does_not_inherit_swap_or_demo() -> Non
     assert contract["INHERITED_FROM_DEMO_310328"] is False
     assert contract["minSz"] == "1"
     assert contract["lotSz"] == "1"
+    assert contract["tickSz"] == "0.0001"
+    assert contract["ctVal"] == "1"
+    assert contract["ctValCcy"] == "SUI"
+    assert contract["ONE_CONTRACT_EQUALS_ONE_SUI"] is False
+    assert contract["EXCHANGE_POSITION_VALUE_STATUS"] == "UNPROVEN"
     assert contract["EXECUTED"] is False
     assert contract["LIVE_AUTHORIZED"] is False
     assert contract["set_account_leverage"] == "3"
     assert contract["set_account_leverage_mgn_mode"] == "cross"
     assert contract["set_account_leverage_pos_side"] == "net"
+    assert contract["HISTORICAL_BTC_SNAPSHOT_ISOLATED"] is True
+    assert contract["HISTORICAL_BTC_SNAPSHOT_INSTRUMENT"] == "BTC-USD_UM_XPERP-310404"
     assert contract["snapshot_mark_px"] == "63043.7"
+    assert contract["snapshot_ct_val"] == "0.0001"
     assert contract["snapshot_theoretical_initial_margin_usdc"] == ("2.101456666666666666666666667")
-    assert contract["minimum_theoretical_initial_margin_proven"] is True
-    assert contract["snapshot_theoretical_funding_floor_proven"] is True
+    assert contract["minimum_theoretical_initial_margin_proven"] is False
+    assert contract["HISTORICAL_BTC_MINIMUM_THEORETICAL_INITIAL_MARGIN_PROVEN"] is True
+    assert contract["snapshot_theoretical_funding_floor_proven"] is False
+    assert contract["HISTORICAL_BTC_SNAPSHOT_THEORETICAL_FUNDING_FLOOR_PROVEN"] is True
     assert contract["canary_operational_minimum_proven"] is False
     assert contract["recommended_bounded_canary_funding_amount_proven"] is False
     assert contract["funding_amount_proven"] is False
     assert contract["tdMode_compatibility"] == ("cross_get_proven_leverage_setting_no_live_post")
     assert contract["tdMode_live_post_proven"] is False
     assert "instType=SWAP" not in str(contract["public_instruments_query"])
+    assert DEFAULT_INSTRUMENT_ID in str(contract["public_instruments_query"])
+    assert "BTC-USD_UM_XPERP-310404" not in str(contract["public_instruments_query"])
+    assert "BTC-USD_UM_XPERP-310404" not in str(contract["mark_last_price_source"])
     assert contract["rejected_swap_instrument"] == "BTC-USDT-SWAP"
     assert contract["rejected_demo_instrument"] == "BTC-USD_UM_XPERP-310328"
     assert contract["CANARY_INSTRUMENT"] != contract["rejected_demo_instrument"]
+    assert contract["CANARY_INSTRUMENT"] != contract["HISTORICAL_BTC_SNAPSHOT_INSTRUMENT"]
 
 
 def _assert_no_post(transport: RecordingFakeCanaryTransportV1) -> None:
@@ -1066,6 +1086,17 @@ def test_t11_leftover_other_instrument_rejects_before_post() -> None:
         run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
     _assert_no_post(transport)
     assert any("/api/v5/account/positions" in call.endpoint for call in transport.calls)
+
+
+def test_t11_historical_btc_row_is_not_sui_target_row() -> None:
+    leftover = "BTC-USD_UM_XPERP-310404"
+    transport = _fake_transport()
+    transport.bodies_by_endpoint["/api/v5/account/positions"] = json.dumps(
+        {"code": "0", "data": [{"instId": leftover, "pos": "1"}]}
+    ).encode()
+    with pytest.raises(LiveCanarySubmitTransportError, match="DENY_OTHER_OPEN_INSTRUMENT_PRESENT"):
+        run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
+    _assert_no_post(transport)
 
 
 def test_t12_no_open_positions_reaches_downstream_fake_post_without_real_network() -> None:
@@ -1135,5 +1166,14 @@ def test_t17_wrong_selected_instrument_still_rejects_binding() -> None:
     kwargs["cfg"].payload["instrument_id"] = "BTC-USDT-SWAP"
     transport = kwargs["transport"]
     with pytest.raises(LiveCanarySubmitTransportError, match="INSTRUMENT_BINDING"):
+        run_canary_submit_transport_v1(**kwargs)
+    _assert_no_post(transport)
+
+
+def test_t17_superseded_btc_310404_as_current_target_fails_closed() -> None:
+    kwargs = _transport_kwargs()
+    kwargs["cfg"].payload["instrument_id"] = "BTC-USD_UM_XPERP-310404"
+    transport = kwargs["transport"]
+    with pytest.raises(LiveCanarySubmitTransportError, match="INSTRUMENT_BINDING_MISMATCH"):
         run_canary_submit_transport_v1(**kwargs)
     _assert_no_post(transport)

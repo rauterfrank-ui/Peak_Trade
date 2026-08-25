@@ -16,6 +16,7 @@ MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2AL_HEADING = "### 11.13.5.Z2AL Static flatten price policy and dedicated flatten transport"
 Z2AK_HEADING = "### 11.13.5.Z2AK LF-11 and LF-12 read-only adjudication persist"
+Z2AM_HEADING = "### 11.13.5.Z2AM Post-Z2AL read-only Owner-binding adjudication persist"
 NEXT_POINTER = (
     "OWNER_GO_REQUIRED_SEPARATE_FOR_ANY_NEXT_OPERATIONAL_OR_ADJUDICATION_"
     "STEP_NOT_AUTHORIZED_BY_THIS_IMPLEMENTATION_Z2AL_STATIC_FLATTEN_"
@@ -36,8 +37,8 @@ def _read(path: Path) -> str:
 def _z2al_section(text: str) -> str:
     start = text.find(Z2AL_HEADING)
     assert start >= 0, "missing §11.13.5.Z2AL heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2AL"
+    end = text.find(Z2AM_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2AM boundary after Z2AL"
     return text[start:end]
 
 
@@ -46,8 +47,9 @@ def test_z2al_heading_is_unique_and_follows_z2ak() -> None:
     assert text.count(Z2AL_HEADING) == 1
     z2ak = text.find(Z2AK_HEADING)
     z2al = text.find(Z2AL_HEADING)
+    z2am = text.find(Z2AM_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2ak < z2al < ladder
+    assert 0 <= z2ak < z2al < z2am < ladder
 
 
 def test_z2al_docs_bind_static_prerequisites_without_live_flatten_proven() -> None:

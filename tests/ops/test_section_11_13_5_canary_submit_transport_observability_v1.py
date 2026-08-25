@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+    DEFAULT_INSTRUMENT_ID,
     GENERAL_LIVE_SUBMIT_UNLOCKED,
     LIVE_AUTHORIZED,
     OWNER_GO_AUTHORING,
@@ -128,7 +129,7 @@ def test_venue_native_request_retains_present_optional_fields_and_marks_absent()
     present = extract_canary_venue_native_request_evidence_v1(
         body_text=json.dumps(
             {
-                "instId": "BTC-USD_UM_XPERP-310404",
+                "instId": DEFAULT_INSTRUMENT_ID,
                 "tdMode": "cross",
                 "side": "buy",
                 "ordType": "limit",
@@ -150,7 +151,7 @@ def test_venue_native_request_retains_present_optional_fields_and_marks_absent()
     )
     assert present["parse_error"] is None
     fields = present["fields"]
-    assert fields["instId"] == "BTC-USD_UM_XPERP-310404"
+    assert fields["instId"] == DEFAULT_INSTRUMENT_ID
     assert fields["tdMode"] == "cross"
     assert fields["side"] == "buy"
     assert fields["ordType"] == "limit"
@@ -173,7 +174,7 @@ def test_venue_native_request_retains_present_optional_fields_and_marks_absent()
     absent_optional = extract_canary_venue_native_request_evidence_v1(
         body_text=json.dumps(
             {
-                "instId": "BTC-USD_UM_XPERP-310404",
+                "instId": DEFAULT_INSTRUMENT_ID,
                 "tdMode": "cross",
                 "side": "buy",
                 "ordType": "limit",
@@ -268,7 +269,7 @@ def test_fail_closed_gates_remain_intact() -> None:
 
     blocked = _fake_transport()
     blocked.bodies_by_endpoint["/api/v5/account/positions"] = json.dumps(
-        {"code": "0", "data": [{"instId": "BTC-USD_UM_XPERP-310404", "pos": "1"}]}
+        {"code": "0", "data": [{"instId": DEFAULT_INSTRUMENT_ID, "pos": "1"}]}
     ).encode("utf-8")
     try:
         run_canary_submit_transport_v1(**_transport_kwargs(transport=blocked))

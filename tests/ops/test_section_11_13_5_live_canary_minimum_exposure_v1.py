@@ -108,7 +108,7 @@ def test_package_defaults_and_cap_11_9_remain_fixture_only() -> None:
     assert CANARY_SUBMIT_TRANSPORT_SCOPE == "SECTION_11_13_5_LIVE_CANARY_MINIMUM_EXPOSURE_ONLY"
     assert GENERAL_LIVE_SUBMIT_UNLOCKED is False
     assert SUBMIT_UNLOCKED is False
-    assert DEFAULT_INSTRUMENT_ID == "BTC-USD_UM_XPERP-310404"
+    assert DEFAULT_INSTRUMENT_ID == "SUI-USD_UM_XPERP-310404"
     assert DEFAULT_INST_TYPE == "FUTURES"
     assert DEFAULT_RULE_TYPE == "xperp"
     assert SETTLEMENT_ACCOUNT_TRUTH == "USDC"
@@ -224,9 +224,9 @@ def test_exposure_requires_min_sz_only() -> None:
         account_scope="acct",
         instrument_min_sz="1",
         instrument_lot_sz="1",
-        instrument_ct_val="0.0001",
-        instrument_tick_sz="0.1",
-        reference_price="63028",
+        instrument_ct_val="1",
+        instrument_tick_sz="0.0001",
+        reference_price="0.8209",
     )
     assert binding.quantity == "1"
     assert binding.max_notional == binding.min_executable_notional
@@ -236,10 +236,10 @@ def test_exposure_requires_min_sz_only() -> None:
             account_scope="acct",
             instrument_min_sz="1",
             instrument_lot_sz="1",
-            instrument_ct_val="0.0001",
-            instrument_tick_sz="0.1",
+            instrument_ct_val="1",
+            instrument_tick_sz="0.0001",
             quantity="2",
-            reference_price="63028",
+            reference_price="0.8209",
         )
     assert (
         exposure_above_minimum_bound_v1(
@@ -257,8 +257,8 @@ def test_exposure_requires_min_sz_only() -> None:
             instrument_min_sz="0.01",
             instrument_lot_sz="0.01",
             instrument_ct_val="0.01",
-            instrument_tick_sz="0.1",
-            reference_price="63028",
+            instrument_tick_sz="0.0001",
+            reference_price="0.8209",
         )
 
 
@@ -296,8 +296,8 @@ def test_secretref_and_demo_binding_rejected_for_execute_fields() -> None:
             "account_scope": "856964404452495999",
             "instrument_min_sz": "1",
             "instrument_lot_sz": "1",
-            "instrument_ct_val": "0.0001",
-            "instrument_tick_sz": "0.1",
+            "instrument_ct_val": "1",
+            "instrument_tick_sz": "0.0001",
             "secretref_uri": "secretref://vault/peak-trade/live-dry-run-order-plan/okx",
             "owner_declared_host_allowlist": ["eea.okx.com"],
         }
@@ -833,7 +833,7 @@ def test_cybersecurity_gate_passes_only_with_full_prerequisites() -> None:
     assert passed["LIVE_AUTHORIZED"] is False
     assert passed["NEW_CANARY_OWNER_GO_GRANTED"] is False
     binding = passed["INSTRUMENT_BINDING_SECURITY"]
-    assert binding["instrument_id"] == "BTC-USD_UM_XPERP-310404"
+    assert binding["instrument_id"] == "SUI-USD_UM_XPERP-310404"
     assert binding["inst_type"] == "FUTURES"
     assert binding["prior_swap_instrument_pass_not_inherited"] is True
     assert binding["demo_310328_alias_forbidden"] is True

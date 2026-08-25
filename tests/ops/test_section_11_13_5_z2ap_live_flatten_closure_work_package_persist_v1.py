@@ -30,6 +30,7 @@ Z2AP_HEADING = (
 Z2AO_HEADING = (
     "### 11.13.5.Z2AO Post-Z2AN extra-deviation-bound offline read-only adjudication persist"
 )
+Z2AR_HEADING = "### 11.13.5.Z2AR SUI successor public evidence pack and reproof boundary persist"
 NEXT_POINTER = (
     "OWNER_GO_REQUIRED_SEPARATE_FOR_PRODUCTIVE_LIVE_FLATTEN_PROOF_NOT_"
     "AUTHORIZED_BY_THIS_CLOSURE_Z2AP_OFFLINE_POST_ACTION_PROOF_CONTRACT_"
@@ -50,8 +51,8 @@ def _read(path: Path) -> str:
 def _z2ap_section(text: str) -> str:
     start = text.find(Z2AP_HEADING)
     assert start >= 0, "missing §11.13.5.Z2AP heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2AP"
+    end = text.find(Z2AR_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2AR boundary after Z2AP"
     return text[start:end]
 
 
@@ -60,8 +61,9 @@ def test_z2ap_heading_is_unique_and_follows_z2ao() -> None:
     assert text.count(Z2AP_HEADING) == 1
     z2ao = text.find(Z2AO_HEADING)
     z2ap = text.find(Z2AP_HEADING)
+    z2ar = text.find(Z2AR_HEADING)
     ladder = text.find("## 11.14 Live order and economic evidence ladder")
-    assert 0 <= z2ao < z2ap < ladder
+    assert 0 <= z2ao < z2ap < z2ar < ladder
 
 
 def test_z2ap_docs_bind_productive_proof_ready_without_live_flatten_proven() -> None:

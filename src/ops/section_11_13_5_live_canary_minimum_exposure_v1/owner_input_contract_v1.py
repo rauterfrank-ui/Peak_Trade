@@ -76,8 +76,9 @@ def build_owner_execute_input_contract_v1() -> dict[str, Any]:
                 "field": "instrument_id",
                 "value_hint": DEFAULT_INSTRUMENT_ID,
                 "notes": (
-                    "Canonical live EEA X-Perp BTC-USD_UM_XPERP-310404 / FUTURES. "
-                    "BTC-USDT-SWAP and Demo BTC-USD_UM_XPERP-310328 are rejected."
+                    "Canonical live EEA X-Perp SUI-USD_UM_XPERP-310404 / FUTURES. "
+                    "BTC-USDT-SWAP, Demo BTC-USD_UM_XPERP-310328, and superseded "
+                    "BTC-USD_UM_XPERP-310404 are rejected as current target."
                 ),
             },
             {
