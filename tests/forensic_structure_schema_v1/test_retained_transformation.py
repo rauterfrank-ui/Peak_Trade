@@ -90,4 +90,19 @@ def test_retained_dataset_oracles_and_non_inference(tmp_path: Path) -> None:
         "UNKNOWN_PRESERVATION": "PASS",
         "UNCLASSIFIED_PRESERVATION": "PASS",
         "SOURCE_ORDER_PRESERVATION": "PASS",
+        "NAVIGATION_VIEW_RETENTION": "PASS",
+        "NAVIGATION_VIEW_NON_AUTHORITY": "PASS",
+        "LAYER1_UNCHANGED_BY_VIEW_RETENTION": "PASS",
     }
+    assert persist.dataset["dataset_only_reconstruction_claim"] is False
+    assert persist.manifest["dataset_only_reconstruction_claim"] is False
+    assert persist.losslessness_audit["reconstruction_sha_match"] is True
+    reconstructed_sha = persist.losslessness_audit["reconstructed_source_sha256"]
+    assert reconstructed_sha == EXPECTED_SOURCE_SHA256
+    views = persist.dataset["navigation_views"]
+    assert len(views) == 12
+    assert all(v["sw_r_009_status"] == "OPEN" for v in views)
+    sw9 = next(r for r in persist.result.state.residuals if r.residual_id == "SW-R-009")
+    assert sw9.status == "OPEN"
+    assert persist.record_counts["navigation_views"] == 12
+    assert persist.record_counts["residuals"] == 21

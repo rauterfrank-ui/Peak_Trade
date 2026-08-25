@@ -42,3 +42,5 @@ REGENERATION_COMMAND=./scripts/pt -m scripts.ops.run_forensic_structure_schema_v
 SW-R-001 through SW-R-015 and DR-001, DR-002, DR-003, DR-006, DR-007,
 DR-008 remain `OPEN`. Transformation success does not close a residual.
 This output does not claim `RESOLVED_BY_TRANSFORMATION`.
+It does not claim dataset-only Source reconstruction.
+Layer-4 views remain `NAVIGATION_OR_ANALYSIS_ONLY`. SW-R-009 remains OPEN.

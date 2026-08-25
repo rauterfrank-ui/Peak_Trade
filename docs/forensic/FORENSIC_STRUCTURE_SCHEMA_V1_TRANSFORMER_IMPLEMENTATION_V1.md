@@ -69,6 +69,16 @@ Large dataset shards are regenerated with:
 The retained output is not a source replacement, not Master Runbook, and
 not Map of Truth.
 
+Layer-1 tiling reconstruction is proven against the bound Source bytes.
+That is not a dataset-only Source reconstruction claim.
+
+Independent Source canaries (`inner_fence_like_count=74`,
+`tick5_outer_count=13`, `triple_backtick_source_line_count=2810`) are
+drift detectors only. They do not synthesize overlays or close SW-R-006.
+
+Layer-4 views are retained as `NAVIGATION_OR_ANALYSIS_ONLY`. SW-R-009
+remains OPEN; documentary `parents` are not parentage.
+
 ## Identity and joins
 
 Token `occ-*` IDs and Layer-1 `occ-*` IDs are disjoint spaces.

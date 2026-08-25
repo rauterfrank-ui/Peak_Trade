@@ -7,6 +7,12 @@ from scripts.ops.forensic_structure_schema_v1.exceptions import (
     TransformationContractViolation,
 )
 from scripts.ops.forensic_structure_schema_v1.models import LosslessnessAudit
+from scripts.ops.forensic_structure_schema_v1.reconstruction import (
+    assert_layer1_reconstruction,
+)
+from scripts.ops.forensic_structure_schema_v1.source_canaries import (
+    assert_bound_source_canaries,
+)
 from scripts.ops.forensic_structure_schema_v1.stages.a_input_verification import sha256_hex
 from scripts.ops.forensic_structure_schema_v1.state import PipelineState
 
@@ -141,6 +147,19 @@ def run_stage_j(state: PipelineState) -> None:
         )
     if any(e.primary_label != "NONE" for e in state.envelopes):
         raise TransformationContractViolation("C4", "primary_label invented")
+
+    reconstruction = assert_layer1_reconstruction(
+        source_bytes=state.source_bytes,
+        spans=state.layer1_ordered,
+        reconstruction_uses_bound_source=True,
+    )
+    canaries = assert_bound_source_canaries(state.source_bytes)
+    counts["RECONSTRUCTED_SOURCE_SHA256"] = reconstruction.reconstructed_source_sha256
+    counts["INNER_FENCE_LIKE_COUNT"] = canaries.inner_fence_like_count
+    counts["TICK5_OUTER_COUNT"] = canaries.tick5_outer_count
+    counts["TRIPLE_BACKTICK_SOURCE_LINE_COUNT"] = canaries.triple_backtick_source_line_count
+    state.reconstruction_report = reconstruction.to_canonical()
+    state.source_canary_report = canaries.to_canonical()
 
     state.source_sha256_after = source_after
     state.sidecar_sha256_after = sidecar_after
