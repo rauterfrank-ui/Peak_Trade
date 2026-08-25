@@ -52,13 +52,13 @@ INSTRUMENTS = {
             "ruleType": "xperp",
             "minSz": "1",
             "lotSz": "1",
-            "tickSz": "0.1",
-            "ctVal": "0.0001",
-            "ctValCcy": "BTC",
+            "tickSz": "0.0001",
+            "ctVal": "1",
+            "ctValCcy": "SUI",
         }
     ],
 }
-TICKER = {"code": "0", "data": [{"instId": TARGET, "last": "63028.1"}]}
+TICKER = {"code": "0", "data": [{"instId": TARGET, "last": "0.8209"}]}
 ENTRY_BODY_KEYS = {
     "instId",
     "tdMode",
@@ -304,7 +304,7 @@ def test_flatten_plan_price_gate_fails_closed_and_is_not_wire_ready() -> None:
     assert plan.limit_price is None
     assert plan.price_gate_status == FLATTEN_LIMIT_PRICE_GATE_STATUS
     with pytest.raises(LiveCanaryOrderPlanError, match="FLATTEN_NAKED_PX_FAIL_CLOSED"):
-        serialize_canary_flatten_venue_native_payload_v1(plan, px="63028.1")
+        serialize_canary_flatten_venue_native_payload_v1(plan, px="0.8209")
 
 
 def test_flatten_contract_is_not_wired_into_execute_or_lifecycle() -> None:

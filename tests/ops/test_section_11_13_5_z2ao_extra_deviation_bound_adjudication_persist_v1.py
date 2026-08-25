@@ -19,6 +19,9 @@ Z2AO_HEADING = (
     "### 11.13.5.Z2AO Post-Z2AN extra-deviation-bound offline read-only adjudication persist"
 )
 Z2AN_HEADING = "### 11.13.5.Z2AN Flatten FRESHNESS_THRESHOLD_MS Owner-policy ratification"
+Z2AP_HEADING = (
+    "### 11.13.5.Z2AP Post-Z2AO live-flatten closure work package to next safety boundary"
+)
 NEXT_POINTER = (
     "OWNER_GO_REQUIRED_SEPARATE_FOR_ANY_NEXT_OPERATIONAL_OR_ADJUDICATION_"
     "STEP_NOT_AUTHORIZED_BY_THIS_PERSIST_Z2AO_EXTRA_DEVIATION_BOUND_NOT_"
@@ -40,8 +43,8 @@ def _read(path: Path) -> str:
 def _z2ao_section(text: str) -> str:
     start = text.find(Z2AO_HEADING)
     assert start >= 0, "missing §11.13.5.Z2AO heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2AO"
+    end = text.find(Z2AP_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2AP boundary after Z2AO"
     return text[start:end]
 
 

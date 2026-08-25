@@ -24,6 +24,9 @@ MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2AN_HEADING = "### 11.13.5.Z2AN Flatten FRESHNESS_THRESHOLD_MS Owner-policy ratification"
 Z2AM_HEADING = "### 11.13.5.Z2AM Post-Z2AL read-only Owner-binding adjudication persist"
+Z2AO_HEADING = (
+    "### 11.13.5.Z2AO Post-Z2AN extra-deviation-bound offline read-only adjudication persist"
+)
 NEXT_POINTER = (
     "OWNER_GO_REQUIRED_SEPARATE_FOR_ANY_NEXT_OPERATIONAL_OR_ADJUDICATION_"
     "STEP_NOT_AUTHORIZED_BY_THIS_RATIFICATION_Z2AN_FRESHNESS_THRESHOLD_MS_"
@@ -44,8 +47,8 @@ def _read(path: Path) -> str:
 def _z2an_section(text: str) -> str:
     start = text.find(Z2AN_HEADING)
     assert start >= 0, "missing §11.13.5.Z2AN heading"
-    end = text.find("## 11.14 Live order and economic evidence ladder", start)
-    assert end > start, "missing §11.14 boundary after Z2AN"
+    end = text.find(Z2AO_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2AO boundary after Z2AN"
     return text[start:end]
 
 

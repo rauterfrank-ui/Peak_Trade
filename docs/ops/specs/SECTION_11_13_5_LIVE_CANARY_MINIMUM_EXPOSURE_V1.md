@@ -180,9 +180,10 @@ oneshot.
    token name containing `MARKET_PERMISSION` is identity only, not a
    proven root cause.
 5. Current canary instrument binding (preparation only):
-   `BTC-USD_UM_XPERP-310404` &#47; `FUTURES` &#47; `xperp` &#47; USDC.
+   `SUI-USD_UM_XPERP-310404` &#47; `FUTURES` &#47; `xperp` &#47; USDC.
    `BTC-USDT-SWAP` is rejected for this EEA path. Demo
-   `BTC-USD_UM_XPERP-310328` remains Demo&#47;historical only. No ID
+   `BTC-USD_UM_XPERP-310328` remains Demo&#47;historical only. Superseded
+   `BTC-USD_UM_XPERP-310404` is not a current-target fallback. No ID
    aliasing. Request-body owner remains
    `build_venue_native_order_body_v1`.
 6. Post-K GET bind (persistence only): `SET_ACCOUNT_LEVERAGE=3` via

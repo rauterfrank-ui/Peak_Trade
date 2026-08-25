@@ -18,6 +18,7 @@ from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.binding
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     AUTHORIZATION_SCOPE,
+    DEFAULT_INST_FAMILY,
     DEFAULT_INSTRUMENT_ID,
     DEFAULT_INST_TYPE,
     ENDPOINT_ALLOWLIST_READ,
@@ -68,7 +69,7 @@ SEALED_HOST = REUSED_BINDING_REST_HOST
 SEALED_METHOD = "GET"
 SEALED_PATH = "/api/v5/account/trade-fee"
 SEALED_INST_TYPE = DEFAULT_INST_TYPE
-SEALED_INST_FAMILY = "BTC-USD_UM_XPERP"
+SEALED_INST_FAMILY = DEFAULT_INST_FAMILY
 SEALED_QUERY = f"instType={SEALED_INST_TYPE}&instFamily={SEALED_INST_FAMILY}"
 SEALED_QUERY_PAIRS: tuple[tuple[str, str], ...] = (
     ("instType", SEALED_INST_TYPE),

@@ -114,7 +114,8 @@ def test_classification_is_authenticated_readonly_exact_grammar() -> None:
     assert classification["HOST"] == "eea.okx.com"
     assert classification["METHOD"] == "GET"
     assert classification["PATH"] == "/api/v5/account/trade-fee"
-    assert classification["QUERY"] == "instType=FUTURES&instFamily=BTC-USD_UM_XPERP"
+    assert classification["QUERY"] == SEALED_QUERY
+    assert classification["QUERY"] == "instType=FUTURES&instFamily=SUI-USD_UM_XPERP"
     assert classification["ENDPOINT"] == SEALED_ENDPOINT
     assert classification["READ_ONLY"] is True
     assert classification["SECRETREF_URI"] == REQUIRED_SECRETREF_URI

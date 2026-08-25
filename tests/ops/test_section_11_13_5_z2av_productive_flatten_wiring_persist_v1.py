@@ -26,6 +26,9 @@ MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2AV_HEADING = "### 11.13.5.Z2AV Productive live-flatten wiring persist"
 Z2AU_HEADING = "### 11.13.5.Z2AU Offline Z2AP live-flatten construction and gate-binding persist"
+Z2AW_HEADING = (
+    "### 11.13.5.Z2AW Post-Z2AV productive flatten pre-execution same-pack GET evidence persist"
+)
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = (
     "SECTION_11_13_5_POST_Z2AU_PRODUCTIVE_LIVE_FLATTEN_WIRING_MAX_SAFE_SLICE_"
@@ -50,8 +53,8 @@ def _read(path: Path) -> str:
 def _z2av_section(text: str) -> str:
     start = text.find(Z2AV_HEADING)
     assert start >= 0, "missing §11.13.5.Z2AV heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2AV"
+    end = text.find(Z2AW_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2AW boundary after Z2AV"
     return text[start:end]
 
 
@@ -60,8 +63,9 @@ def test_z2av_heading_is_unique_and_follows_z2au() -> None:
     assert text.count(Z2AV_HEADING) == 1
     z2au = text.find(Z2AU_HEADING)
     z2av = text.find(Z2AV_HEADING)
+    z2aw = text.find(Z2AW_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= z2au < z2av < ladder
+    assert 0 <= z2au < z2av < z2aw < ladder
 
 
 def test_z2av_docs_bind_wiring_slice_without_execution_or_track_consumption() -> None:
