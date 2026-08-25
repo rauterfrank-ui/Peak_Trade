@@ -118,6 +118,49 @@ def forbid_documentary_string_auto_resolution(value: str) -> None:
     )
 
 
+def forbid_absent_view_parents_as_no_parent(view_id: str, token: str) -> None:
+    _fail(
+        "G2",
+        f"{view_id} ABSENT view.parents must not be normalized to {token}",
+    )
+
+
+def forbid_t4_directionality_identity_with_layer3_relation_type(
+    declared_relation_type: str, layer3_relation_type: str
+) -> None:
+    _fail(
+        "G3",
+        "T4 declared_relation_type/directionality must not be treated as identical "
+        f"to Layer-3 relation_type: {declared_relation_type!r} == {layer3_relation_type!r}",
+    )
+
+
+def forbid_t4_contains_fusion_with_wrapper_contains(detail: str) -> None:
+    _fail("G4", f"T4 CONTAINS must not be fused with WRAPPER_CONTAINS: {detail}")
+
+
+def forbid_layer3_ordered_before_as_t4_src_target_pair(detail: str) -> None:
+    _fail(
+        "G5",
+        "Layer-3 STRUCTURAL_ORDERED_BEFORE must not be reinterpreted as "
+        f"T4 (source_src_id, target_ref): {detail}",
+    )
+
+
+def forbid_section_22_rewrite_as_source_identity(value: str) -> None:
+    _fail(
+        "G6",
+        f"SECTION_22 -> {value!r} rewrite must not be treated as source identity",
+    )
+
+
+def forbid_sidecar_dependency_subject_as_source_identity(value: str) -> None:
+    _fail(
+        "G6",
+        f"sidecar-constructed dependency from_id {value!r} is not source identity",
+    )
+
+
 def forbid_verbatim_normalization() -> None:
     _fail("C8", "verbatim/path normalization is forbidden")
 
@@ -235,6 +278,8 @@ class GuardProgram:
 
     def check_relation(self, relation: Any) -> None:
         assert_ordering_not_dependency(relation.relation_type, relation.is_dependency)
+        if relation.relation_type == "PREFIX_EPOCH_SUCCEEDS":
+            self.assert_epoch_succession_not_currentness(relation)
         if relation.relation_type == "EXPLICIT_CONFLICT" and relation.winner_selected:
             forbid_winner_on_conflict(relation.relation_id)
         if relation.gate_membership != DEFAULT_GATE_MEMBERSHIP:
@@ -248,3 +293,169 @@ class GuardProgram:
             and relation.semantic_container != DEFAULT_SEMANTIC_CONTAINER
         ):
             _fail("D5", "WRAPPER_CONTAINS must not become semantic containment")
+        self.assert_endpoint_not_occurrence_bound(relation.from_binding)
+        self.assert_endpoint_not_occurrence_bound(relation.to_binding)
+
+    def assert_epoch_succession_not_currentness(self, relation: Any) -> None:
+        """Always invoked for PREFIX_EPOCH_SUCCEEDS. Promotions fail closed (G1)."""
+        currentness = str(getattr(relation, "currentness_status", DEFAULT_CURRENTNESS_STATUS))
+        supersession = str(getattr(relation, "supersession", DEFAULT_SUPERSESSION))
+        authority = str(getattr(relation, "authority_status", DEFAULT_AUTHORITY_STATUS))
+        rtype = str(relation.relation_type)
+        promoted = (
+            bool(relation.is_dependency)
+            or bool(relation.winner_selected)
+            or currentness not in {DEFAULT_CURRENTNESS_STATUS, "historical"}
+            or supersession != DEFAULT_SUPERSESSION
+            or authority != DEFAULT_AUTHORITY_STATUS
+            or rtype in {"CURRENT", "SUPERSEDED", "WINNER", "CANONICAL_SUCCESSOR"}
+            or currentness in {"CURRENT", "SUPERSEDED"}
+            or supersession in {"SUPERSEDED", "CURRENT", "CANONICAL_SUCCESSOR"}
+        )
+        if promoted:
+            forbid_epoch_succession_currentness()
+
+    def assert_endpoint_not_occurrence_bound(self, binding: Any) -> None:
+        """Always invoked. Alias/documentary strings stay occurrence-unbound (SW-R-004)."""
+        kind = str(binding.kind)
+        unresolved = bool(binding.unresolved_to_occurrence)
+        if kind == "EXPLICIT_ALIAS_MAP_NAVIGATION_ONLY" and not unresolved:
+            forbid_alias_occurrence_bind(str(binding.value))
+        if kind == "DOCUMENTARY_STRING_ENDPOINT" and not unresolved:
+            forbid_documentary_string_auto_resolution(str(binding.value))
+
+    def assert_view_parents_not_parentage(self, view: dict[str, Any]) -> None:
+        """Always invoked for retained views (SW-R-009 / G2)."""
+        if view.get("parentage_adjudicated") is True:
+            forbid_view_parents_parentage()
+        if view.get("sw_r_009_status") not in {None, "OPEN"}:
+            forbid_view_parents_parentage()
+        status = view.get("parents_field_status")
+        if status == "ABSENT":
+            self.assert_absent_parents_not_normalized(view)
+
+    def assert_absent_parents_not_normalized(self, view: dict[str, Any]) -> None:
+        from scripts.ops.forensic_structure_schema_v1.disposition_constants import (
+            ABSENT_PARENT_FORBIDDEN_KEYS,
+        )
+
+        view_id = str(view.get("view_id", "<unknown>"))
+        if view.get("parents") == {}:
+            forbid_absent_view_parents_as_no_parent(view_id, "parents={}")
+        for token in ABSENT_PARENT_FORBIDDEN_KEYS:
+            if token in view and view.get(token) not in {None, "absent"}:
+                forbid_absent_view_parents_as_no_parent(view_id, token)
+            original = view.get("original_view")
+            if isinstance(original, dict) and token in original:
+                forbid_absent_view_parents_as_no_parent(view_id, f"original_view.{token}")
+
+    def check_cluster_projection(self, relation: Any, state: Any) -> None:
+        """G3–G6 projection guards. Additive; does not rewrite the relation."""
+        rtype = str(relation.relation_type)
+        overlay = None
+        overlay_id = relation.sidecar_overlay_id
+        if overlay_id.presence == "present":
+            overlay = state.overlay_by_id.get(str(overlay_id.value))
+        if rtype == "STRUCTURAL_ORDERED_BEFORE":
+            self._check_g3_g5_ordered_before(relation, overlay, state)
+        if rtype == "WRAPPER_CONTAINS":
+            self._check_g4_wrapper_not_t4_contains(relation, overlay)
+        if rtype == "EXPLICIT_CONFLICT":
+            self._check_g6_section_22(relation)
+        if rtype == "EXPLICIT_DEPENDENCY":
+            self._check_g6_dependency_subject(relation)
+
+    def _check_g3_g5_ordered_before(self, relation: Any, overlay: Any, state: Any) -> None:
+        if overlay is None:
+            _fail("G5", f"{relation.relation_id} missing t4 overlay for projection audit")
+        declared = str(overlay.payload.get("declared_relation_type"))
+        mapped = overlay.payload.get("layer3_mapped_type")
+        if declared == str(relation.relation_type):
+            forbid_t4_directionality_identity_with_layer3_relation_type(
+                declared, str(relation.relation_type)
+            )
+        if "directionality" in overlay.payload:
+            _fail(
+                "G3",
+                f"{overlay.overlay_id} unexpectedly carries source field name directionality",
+            )
+        if mapped != "STRUCTURAL_ORDERED_BEFORE":
+            _fail("G3", f"{relation.relation_id} layer3_mapped_type is not derived mapping")
+        subject = str(overlay.payload.get("subject"))
+        from_id = str(relation.from_binding.value)
+        to_id = str(relation.to_binding.value)
+        if not from_id.startswith("REL-"):
+            forbid_layer3_ordered_before_as_t4_src_target_pair(
+                f"{relation.relation_id} from_id {from_id} is not T4_REL_ALIAS"
+            )
+        if to_id != subject:
+            forbid_layer3_ordered_before_as_t4_src_target_pair(
+                f"{relation.relation_id} to_id {to_id} != overlay.subject {subject}"
+            )
+        raw = _t4_raw_line(state, overlay)
+        if raw is None:
+            return
+        fields = raw.split("|")
+        if len(fields) != int(overlay.payload.get("field_count") or 0):
+            _fail("G5", f"{overlay.overlay_id} TSV field_count drift")
+        from scripts.ops.forensic_structure_schema_v1.disposition_constants import (
+            DERIVED_T4_TSV_INDEX,
+        )
+
+        directionality = fields[DERIVED_T4_TSV_INDEX["directionality"]]
+        target_ref = fields[DERIVED_T4_TSV_INDEX["target_ref"]]
+        subject_src = fields[DERIVED_T4_TSV_INDEX["subject_src"]]
+        if directionality == str(relation.relation_type):
+            forbid_t4_directionality_identity_with_layer3_relation_type(
+                directionality, str(relation.relation_type)
+            )
+        if directionality != declared:
+            _fail("G3", f"{overlay.overlay_id} derived directionality != declared_relation_type")
+        if subject_src != to_id:
+            forbid_layer3_ordered_before_as_t4_src_target_pair(
+                f"{relation.relation_id} TSV subject {subject_src} != to_id {to_id}"
+            )
+        if to_id == target_ref:
+            forbid_layer3_ordered_before_as_t4_src_target_pair(
+                f"{relation.relation_id} to_id equals TSV target_ref {target_ref}"
+            )
+
+    def _check_g4_wrapper_not_t4_contains(self, relation: Any, overlay: Any) -> None:
+        if overlay is not None and overlay.overlay_class == "t4_rel_row":
+            forbid_t4_contains_fusion_with_wrapper_contains(
+                f"{relation.relation_id} bound to t4 overlay {overlay.overlay_id}"
+            )
+        if str(relation.relation_type) == "CONTAINS":
+            forbid_t4_contains_fusion_with_wrapper_contains(relation.relation_id)
+
+    def _check_g6_section_22(self, relation: Any) -> None:
+        from scripts.ops.forensic_structure_schema_v1.disposition_constants import (
+            SECTION_22_SIDECAR_ENDPOINT,
+        )
+
+        for binding in (relation.from_binding, relation.to_binding):
+            if str(binding.value) == SECTION_22_SIDECAR_ENDPOINT:
+                if binding.kind == "LAYER1_OCCURRENCE_REFERENCE":
+                    forbid_section_22_rewrite_as_source_identity(str(binding.value))
+                if not binding.unresolved_to_occurrence:
+                    forbid_section_22_rewrite_as_source_identity(str(binding.value))
+
+    def _check_g6_dependency_subject(self, relation: Any) -> None:
+        from scripts.ops.forensic_structure_schema_v1.disposition_constants import (
+            SIDECAR_DEPENDENCY_SUBJECT,
+        )
+
+        value = str(relation.from_binding.value)
+        if value == SIDECAR_DEPENDENCY_SUBJECT:
+            if relation.from_binding.kind == "LAYER1_OCCURRENCE_REFERENCE":
+                forbid_sidecar_dependency_subject_as_source_identity(value)
+            if not relation.from_binding.unresolved_to_occurrence:
+                forbid_sidecar_dependency_subject_as_source_identity(value)
+
+
+def _t4_raw_line(state: Any, overlay: Any) -> str | None:
+    start = overlay.payload.get("byte_start")
+    end = overlay.payload.get("byte_end")
+    if not isinstance(start, int) or not isinstance(end, int):
+        return None
+    return state.source_bytes[start:end].decode("utf-8")
