@@ -12,6 +12,8 @@ from scripts.ops.validate_docs_token_policy import (
     DocsTokenPolicyValidator,
     TokenType,
     ScanResult,
+    is_forensic_changed_md_excluded_path,
+    is_hash_addressed_forensic_source_changed_md_path,
     is_v2_v21_preservation_pack_changed_md_path,
 )
 
@@ -619,3 +621,118 @@ class TestV2V21PreservationPackChangedMdExclude:
         assert "docs/ops/example.md" in changed
         assert "forensic/other_pack/example.md" in changed
         assert "forensic/lossless_structural_projection_v2_v2_1_pack_v1_other/x.md" in changed
+
+
+HASH_ADDRESSED_SOURCE_PREFIX = (
+    "forensic/evidence/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212"
+)
+HASH_ADDRESSED_SOURCE_MD = (
+    f"{HASH_ADDRESSED_SOURCE_PREFIX}/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md"
+)
+
+
+class TestHashAddressedForensicSourceChangedMdExclude:
+    """Changed-mode skip is the exact hash leaf, not forensic/** or forensic/evidence/**."""
+
+    def test_hash_leaf_paths_are_excluded(self) -> None:
+        assert is_hash_addressed_forensic_source_changed_md_path(HASH_ADDRESSED_SOURCE_MD)
+        assert is_hash_addressed_forensic_source_changed_md_path(
+            f"{HASH_ADDRESSED_SOURCE_PREFIX}/00_READ_ME_FIRST.md"
+        )
+        assert is_hash_addressed_forensic_source_changed_md_path(HASH_ADDRESSED_SOURCE_PREFIX)
+        assert is_forensic_changed_md_excluded_path(HASH_ADDRESSED_SOURCE_MD)
+
+    def test_product_docs_sibling_hash_and_generic_forensic_remain_gated(self) -> None:
+        assert not is_hash_addressed_forensic_source_changed_md_path("docs/ops/example.md")
+        assert not is_hash_addressed_forensic_source_changed_md_path(
+            "forensic/other_pack/example.md"
+        )
+        assert not is_hash_addressed_forensic_source_changed_md_path("forensic/evidence/example.md")
+        assert not is_hash_addressed_forensic_source_changed_md_path(
+            "forensic/evidence/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_other/x.md"
+        )
+        assert not is_hash_addressed_forensic_source_changed_md_path(
+            "forensic/evidence/sha256-08ffe7bce3fd7aa94de20737c3bc1cf1721e08e719fc8d3d00d72e079f6a5092/"
+            "PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md"
+        )
+        assert not is_hash_addressed_forensic_source_changed_md_path(
+            "forensic/evidence/sha256-10d9293134426805f38996be848e1de853636d8e6f60745a2330bdfd94e3719f/"
+            "PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md"
+        )
+        assert not is_hash_addressed_forensic_source_changed_md_path("forensic/README.md")
+        assert not is_hash_addressed_forensic_source_changed_md_path("")
+        assert not is_forensic_changed_md_excluded_path("forensic/evidence/example.md")
+
+    def test_v2_pack_predicate_does_not_cover_hash_leaf(self) -> None:
+        assert not is_v2_v21_preservation_pack_changed_md_path(HASH_ADDRESSED_SOURCE_MD)
+
+    def test_get_changed_markdown_files_skips_hash_leaf_only(self, tmp_path: Path) -> None:
+        repo = tmp_path / "repo"
+        repo.mkdir()
+        subprocess.run(["git", "init", "-b", "main"], cwd=repo, check=True, capture_output=True)
+        subprocess.run(
+            ["git", "config", "user.email", "test@example.com"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.name", "PeakTradeTest"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+        )
+        (repo / "README.md").write_text("# base\n")
+        subprocess.run(["git", "add", "README.md"], cwd=repo, check=True, capture_output=True)
+        subprocess.run(
+            ["git", "commit", "-m", "base"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+        )
+        base = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
+
+        hash_dir = repo / HASH_ADDRESSED_SOURCE_PREFIX
+        hash_dir.mkdir(parents=True)
+        (hash_dir / "PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md").write_text(
+            "`src/trading/missing.py`\n"
+        )
+        (hash_dir / "00_READ_ME_FIRST.md").write_text("`src/trading/missing.py`\n")
+        sibling_hash = (
+            repo
+            / "forensic"
+            / "evidence"
+            / "sha256-08ffe7bce3fd7aa94de20737c3bc1cf1721e08e719fc8d3d00d72e079f6a5092"
+        )
+        sibling_hash.mkdir(parents=True)
+        (sibling_hash / "PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md").write_text(
+            "`src/trading/missing.py`\n"
+        )
+        evidence_root = repo / "forensic" / "evidence"
+        (evidence_root / "example.md").write_text("`src/trading/missing.py`\n")
+        other = repo / "forensic" / "other_pack"
+        other.mkdir(parents=True)
+        (other / "example.md").write_text("`src/trading/missing.py`\n")
+        docs = repo / "docs" / "ops"
+        docs.mkdir(parents=True)
+        (docs / "example.md").write_text("`src/trading/missing.py`\n")
+
+        subprocess.run(["git", "add", "."], cwd=repo, check=True, capture_output=True)
+        subprocess.run(
+            ["git", "commit", "-m", "changed markdown"],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+        )
+
+        validator = DocsTokenPolicyValidator(repo)
+        changed = {str(p.relative_to(repo)) for p in validator.get_changed_markdown_files(base)}
+        assert HASH_ADDRESSED_SOURCE_MD not in changed
+        assert f"{HASH_ADDRESSED_SOURCE_PREFIX}/00_READ_ME_FIRST.md" not in changed
+        assert "docs/ops/example.md" in changed
+        assert "forensic/other_pack/example.md" in changed
+        assert "forensic/evidence/example.md" in changed
+        assert (
+            "forensic/evidence/sha256-08ffe7bce3fd7aa94de20737c3bc1cf1721e08e719fc8d3d00d72e079f6a5092/"
+            "PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md"
+        ) in changed

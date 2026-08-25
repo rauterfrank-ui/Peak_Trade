@@ -31,6 +31,19 @@ V2_V21_PRESERVATION_PACK_CHANGED_MD_EXCLUDE_PREFIX = (
     "forensic/lossless_structural_projection_v2_v2_1_pack_v1"
 )
 
+# Exact hash-addressed forensic source leaf. Changed-mode product-docs gates
+# skip Markdown under this prefix only. This is not a generic forensic/**
+# or forensic/evidence/** exclude. AUTHORITY=NONE; not canonical.
+HASH_ADDRESSED_FORENSIC_SOURCE_CHANGED_MD_EXCLUDE_PREFIX = (
+    "forensic/evidence/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212"
+)
+
+
+def _is_changed_md_path_under_exact_prefix(rel_path: str, prefix: str) -> bool:
+    """Path-boundary-safe prefix match for git ``diff --name-only`` paths."""
+    normalized = rel_path.strip()
+    return normalized == prefix or normalized.startswith(prefix + "/")
+
 
 def is_v2_v21_preservation_pack_changed_md_path(rel_path: str) -> bool:
     """Return True iff *rel_path* is inside the V2/V2.1 preservation pack leaf.
@@ -39,9 +52,27 @@ def is_v2_v21_preservation_pack_changed_md_path(rel_path: str) -> bool:
     ``forensic/lossless_structural_projection_v2_v2_1_pack_v1_other/`` are not
     excluded. Git ``diff --name-only`` paths are repo-relative with ``/``.
     """
-    normalized = rel_path.strip()
-    prefix = V2_V21_PRESERVATION_PACK_CHANGED_MD_EXCLUDE_PREFIX
-    return normalized == prefix or normalized.startswith(prefix + "/")
+    return _is_changed_md_path_under_exact_prefix(
+        rel_path, V2_V21_PRESERVATION_PACK_CHANGED_MD_EXCLUDE_PREFIX
+    )
+
+
+def is_hash_addressed_forensic_source_changed_md_path(rel_path: str) -> bool:
+    """Return True iff *rel_path* is inside the hash-addressed source leaf.
+
+    Path-boundary safe: sibling hashes, ``forensic/evidence/``, and
+    ``forensic/**`` remain gated. Placement does not confer authority.
+    """
+    return _is_changed_md_path_under_exact_prefix(
+        rel_path, HASH_ADDRESSED_FORENSIC_SOURCE_CHANGED_MD_EXCLUDE_PREFIX
+    )
+
+
+def is_forensic_changed_md_excluded_path(rel_path: str) -> bool:
+    """Exact-leaf forensic skips only. Not a generic forensic/** exclude."""
+    return is_v2_v21_preservation_pack_changed_md_path(
+        rel_path
+    ) or is_hash_addressed_forensic_source_changed_md_path(rel_path)
 
 
 class TokenType(Enum):
@@ -328,14 +359,14 @@ class DocsTokenPolicyValidator:
                 .split("\n")
             )
 
-            # Filter for .md files. Skip the V2/V2.1 preservation pack leaf only.
+            # Filter for .md files. Skip exact forensic leaves only — not forensic/**.
             md_files = [
                 self.repo_root / f
                 for f in changed_files
                 if f
                 and f.endswith(".md")
                 and (self.repo_root / f).exists()
-                and not is_v2_v21_preservation_pack_changed_md_path(f)
+                and not is_forensic_changed_md_excluded_path(f)
             ]
 
             return md_files

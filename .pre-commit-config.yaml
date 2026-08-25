@@ -28,7 +28,8 @@ repos:
           (?x)^(
             forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/(desktop|transcripts)/.*|
             forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/.*|
-            forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/.*
+            forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/.*|
+            forensic/evidence/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK\.md
           )$
 
       # Trim trailing whitespace; behält Markdown-Linebreaks ("two spaces") bei.
@@ -38,7 +39,8 @@ repos:
           (?x)^(
             forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/(desktop|transcripts)/.*|
             forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/.*|
-            forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/.*
+            forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/.*|
+            forensic/evidence/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK\.md
           )$
 
       # Einheitliche Line Endings (LF) erzwingen.
@@ -48,7 +50,8 @@ repos:
           (?x)^(
             forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/(desktop|transcripts)/.*|
             forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/.*|
-            forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/.*
+            forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/.*|
+            forensic/evidence/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK\.md
           )$
 
       # Kleiner Safety-Net-Stack (low noise, high value)
@@ -59,7 +62,10 @@ repos:
       - id: check-added-large-files
         args: [--maxkb=1024]
         exclude: |
-          (?x)^(forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK\.md)$
+          (?x)^(
+            forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK\.md|
+            forensic/evidence/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK\.md
+          )$
 
   # Ruff for linting (kept)
   - repo: https://github.com/astral-sh/ruff-pre-commit
