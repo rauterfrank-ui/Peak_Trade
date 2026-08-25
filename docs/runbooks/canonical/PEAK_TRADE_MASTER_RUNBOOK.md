@@ -40353,7 +40353,7 @@ Owner-GO
 `OWNER_GO=SECTION_11_13_5_POST_Z2CA_P7_4_PRODUCTIVE_FLATTEN_PROVABILITY_BOUNDED_FORENSIC_ADJUDICATION_AND_CONDITIONAL_EXECUTION_ONLY`
 (one-shot; now **CONSUMED** as this P7.4 forensic adjudication plus
 docs persist only) reconstructs the currently implemented productive
-flatten path from `origin/main=e410f5b413e33f8183fc2b15876755b8c1fe4be4`
+flatten path from `origin&#47;main=e410f5b413e33f8183fc2b15876755b8c1fe4be4`
 and adjudicates whether a bounded productive flatten mutation is
 authorizable. This persist is additive. It does **not** rewrite
 §11.13.5.Z2CA, §11.13.5.Z2BZ, §11.13.5.Z2BY, §11.13.5.Z2AV, or
