@@ -20,6 +20,9 @@ Z2CE_HEADING = (
     "### 11.13.5.Z2CE Post-Z2CD P7.3 first-party query-grammar and "
     "zero-elicitation semantics persist"
 )
+Z2CF_HEADING = (
+    "### 11.13.5.Z2CF Post-Z2CE / post-#6058 normal-system next-pointer adjudication persist"
+)
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = (
     "SECTION_11_13_5_POST_Z2CD_P7_3_EXTERNAL_FIRST_PARTY_ZERO_SEMANTICS_ADJUDICATION_PERSIST_ONLY"
@@ -35,8 +38,8 @@ def _read(path: Path) -> str:
 def _z2ce_section(text: str) -> str:
     start = text.find(Z2CE_HEADING)
     assert start >= 0, "missing §11.13.5.Z2CE heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2CE"
+    end = text.find(Z2CF_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2CF boundary after Z2CE"
     return text[start:end]
 
 
@@ -53,8 +56,9 @@ def test_z2ce_heading_is_unique_and_follows_z2cd() -> None:
     assert text.count(Z2CE_HEADING) == 1
     z2cd = text.find(Z2CD_HEADING)
     z2ce = text.find(Z2CE_HEADING)
+    z2cf = text.find(Z2CF_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= z2cd < z2ce < ladder
+    assert 0 <= z2cd < z2ce < z2cf < ladder
 
 
 def test_z2cd_historical_slice_was_not_rewritten() -> None:
@@ -165,3 +169,4 @@ def test_z2ce_map_of_truth_remains_navigation_only_without_z2ce_ssot_row() -> No
     assert "LIVE_AUTHORIZED=false" in mot
     assert "§11.13.5.Z2CE |" not in mot
     assert "§11.13.5.Z2CD |" not in mot
+    assert "§11.13.5.Z2CF |" not in mot
