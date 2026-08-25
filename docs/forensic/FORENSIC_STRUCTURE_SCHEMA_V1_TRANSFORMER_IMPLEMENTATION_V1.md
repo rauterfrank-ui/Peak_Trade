@@ -63,7 +63,7 @@ Retained reports live at
 Large dataset shards are regenerated with:
 
 ```text
-./scripts/pt scripts/ops/run_forensic_structure_schema_v1_transformer.py --persist-retained-derived
+./scripts/pt -m scripts.ops.run_forensic_structure_schema_v1_transformer --persist-retained-derived
 ```
 
 The retained output is not a source replacement, not Master Runbook, and

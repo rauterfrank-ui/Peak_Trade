@@ -34,7 +34,7 @@ in `transformation_manifest.json`.
 
 ```text
 DATASET_GIT_PERSISTENCE=MANIFEST_ONLY
-REGENERATION_COMMAND=./scripts/pt scripts/ops/run_forensic_structure_schema_v1_transformer.py --persist-retained-derived
+REGENERATION_COMMAND=./scripts/pt -m scripts.ops.run_forensic_structure_schema_v1_transformer --persist-retained-derived
 ```
 
 ## Residuals

@@ -515,7 +515,7 @@ def persist_retained_derived(
         "dataset_git_persistence": dataset_git_persistence,
         "wallclock_seconds_not_in_artifact": True,
         "regeneration_command": (
-            "./scripts/pt scripts/ops/run_forensic_structure_schema_v1_transformer.py "
+            "./scripts/pt -m scripts.ops.run_forensic_structure_schema_v1_transformer "
             "--persist-retained-derived"
         ),
     }
