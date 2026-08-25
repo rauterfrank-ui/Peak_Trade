@@ -14,6 +14,7 @@ from scripts.ops.forensic_structure_schema_v1.constants import (
     DATASET_SHARD_ORDER,
     DR_RESIDUAL_IDS,
     EXPECTED_LOSSLESSNESS,
+    EXPECTED_NAVIGATION_VIEW_COUNT,
     EXPECTED_SIDECAR_SHA256,
     EXPECTED_SOURCE_BYTES,
     EXPECTED_SOURCE_LINES,
@@ -35,9 +36,13 @@ from scripts.ops.forensic_structure_schema_v1.constants import (
     SCHEMA_VERSION,
     STAGE_ORDER,
     SW_RESIDUAL_IDS,
+    VIEW_ROLE_NAVIGATION_OR_ANALYSIS_ONLY,
 )
 from scripts.ops.forensic_structure_schema_v1.exceptions import (
     TransformationContractViolation,
+)
+from scripts.ops.forensic_structure_schema_v1.navigation_views import (
+    project_navigation_views,
 )
 from scripts.ops.forensic_structure_schema_v1.output_audit import audit_retained_output
 from scripts.ops.forensic_structure_schema_v1.serialization import dumps_canonical_bytes
@@ -149,11 +154,13 @@ def build_retained_dataset(state: PipelineState) -> dict[str, Any]:
         "boundary_adjudication_performed": False,
         "gate_adjudication_performed": False,
         "supersession_adjudication_performed": False,
+        "dataset_only_reconstruction_claim": False,
         "layer1_occurrences": [occ.to_canonical() for occ in state.layer1_ordered],
         "overlay_index": overlay_index,
         "semantic_envelopes": [env.to_canonical() for env in state.envelopes],
         "relation_envelopes": [rel.to_canonical() for rel in state.relations],
         "provenance_registry": [tag.to_canonical() for tag in state.provenance],
+        "navigation_views": project_navigation_views(state.sidecar["layer4_derived_views"]),
     }
 
 
@@ -173,6 +180,7 @@ def dataset_shards(dataset: dict[str, Any]) -> dict[str, Any]:
         "boundary_adjudication_performed",
         "gate_adjudication_performed",
         "supersession_adjudication_performed",
+        "dataset_only_reconstruction_claim",
     )
     return {
         "dataset_header.json": {k: dataset[k] for k in header_keys},
@@ -181,6 +189,7 @@ def dataset_shards(dataset: dict[str, Any]) -> dict[str, Any]:
         "semantic_envelopes.json": dataset["semantic_envelopes"],
         "relation_envelopes.json": dataset["relation_envelopes"],
         "provenance_registry.json": dataset["provenance_registry"],
+        "navigation_views.json": dataset["navigation_views"],
     }
 
 
@@ -238,6 +247,23 @@ def _preservation_oracles(state: PipelineState, dataset: dict[str, Any]) -> dict
         ),
         "SOURCE_ORDER_PRESERVATION": [env["source_order"] for env in dataset["semantic_envelopes"]]
         == sorted(env["source_order"] for env in dataset["semantic_envelopes"]),
+        "NAVIGATION_VIEW_RETENTION": len(dataset["navigation_views"])
+        == EXPECTED_NAVIGATION_VIEW_COUNT
+        and [v["view_id"] for v in dataset["navigation_views"]]
+        == [v["view_id"] for v in state.sidecar["layer4_derived_views"]],
+        "NAVIGATION_VIEW_NON_AUTHORITY": all(
+            v["view_authority"] == OUTPUT_AUTHORITY
+            and v["view_role"] == VIEW_ROLE_NAVIGATION_OR_ANALYSIS_ONLY
+            and v["output_is_canonical"] is False
+            and v["output_is_authority_source"] is False
+            and v["parentage_adjudicated"] is False
+            and v["sw_r_009_status"] == "OPEN"
+            for v in dataset["navigation_views"]
+        ),
+        "LAYER1_UNCHANGED_BY_VIEW_RETENTION": len(dataset["layer1_occurrences"])
+        == expected["LAYER1_COUNT"]
+        and [row["source_sequence"] for row in dataset["layer1_occurrences"]]
+        == list(range(1, expected["LAYER1_COUNT"] + 1)),
     }
     return {key: ("PASS" if ok else "FAIL") for key, ok in oracles.items()}
 
@@ -382,6 +408,8 @@ def persist_retained_derived(
     dataset = build_retained_dataset(state)
     assert state.losslessness_audit is not None
     assert state.invariant_report is not None
+    assert state.reconstruction_report is not None
+    assert state.source_canary_report is not None
     promotion_flags = audit_retained_output(
         dataset=dataset,
         losslessness_counts=state.losslessness_audit.counts,
@@ -423,6 +451,7 @@ def persist_retained_derived(
         "semantic_envelopes": len(dataset["semantic_envelopes"]),
         "relation_envelopes": len(dataset["relation_envelopes"]),
         "provenance_registry": len(dataset["provenance_registry"]),
+        "navigation_views": len(dataset["navigation_views"]),
         "residuals": len(state.residuals),
         "contract_tests": len(state.contract_tests),
     }
@@ -432,6 +461,7 @@ def persist_retained_derived(
         + record_counts["semantic_envelopes"]
         + record_counts["relation_envelopes"]
         + record_counts["provenance_registry"]
+        + record_counts["navigation_views"]
     )
 
     trace_records = _traceability_records(dataset, state)
@@ -446,6 +476,8 @@ def persist_retained_derived(
     git_sha = transformer_git_sha or _git_sha(repo_root, "HEAD")
     origin_sha = origin_main_sha or _git_sha(repo_root, "origin/main")
 
+    reconstruction_report = dict(state.reconstruction_report)
+    source_canary_report = dict(state.source_canary_report)
     losslessness_audit = {
         "role": "LOSSLESSNESS_AUDIT",
         "authority": "NONE",
@@ -456,6 +488,10 @@ def persist_retained_derived(
             state.losslessness_audit.counts["LAYER1_BYTE_UNION_START"],
             state.losslessness_audit.counts["LAYER1_BYTE_UNION_END"],
         ],
+        "reconstruction_uses_bound_source": True,
+        "dataset_only_reconstruction_claim": False,
+        "reconstructed_source_sha256": reconstruction_report["reconstructed_source_sha256"],
+        "reconstruction_sha_match": reconstruction_report["sha_match"],
     }
     invariant_report = {
         "role": "INVARIANT_REPORT",
@@ -534,6 +570,7 @@ def persist_retained_derived(
         "OUTPUT_IS_MAP_OF_TRUTH=false\n"
         "CANONICALIZATION_PERFORMED=false\n"
         "AUTHORITY_PROMOTION_PERFORMED=false\n"
+        "DATASET_ONLY_RECONSTRUCTION_CLAIM=false\n"
         "THIS_DIRECTORY_IS_NOT_CANONICAL_AUTHORITY=true\n"
     )
     (reports / "AUTHORITY_NONE.txt").write_text(authority_text, encoding="utf-8")
@@ -557,6 +594,9 @@ def persist_retained_derived(
         "execution_report.json": execution_report,
         "contract_test_report.json": contract_test_report,
         "non_inference_audit.json": non_inference_audit,
+        "reconstruction_report.json": reconstruction_report,
+        "source_canary_report.json": source_canary_report,
+        "navigation_views.json": dataset["navigation_views"],
     }
     for name, obj in stable_reports.items():
         payload = dumps_canonical_bytes(obj)
@@ -618,6 +658,7 @@ def persist_retained_derived(
         "boundary_adjudication_performed": False,
         "gate_adjudication_performed": False,
         "supersession_adjudication_performed": False,
+        "dataset_only_reconstruction_claim": False,
         "open_residual_ids": list(SW_RESIDUAL_IDS) + list(DR_RESIDUAL_IDS),
         "artifact_sha256s": dict(sorted(artifact_sha256s.items())),
         "artifact_byte_counts": dict(sorted(artifact_byte_counts.items())),

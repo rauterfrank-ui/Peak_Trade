@@ -256,4 +256,28 @@ def audit_retained_output(
         flags["VIEW_PARENTS_TO_PARENTAGE"] = True
         _fail("SW-R-009", "view parents adjudicated as parentage")
 
+    views = dataset.get("navigation_views")
+    if not isinstance(views, list) or len(views) != EXPECTED_LOSSLESSNESS["VIEW_COUNT"]:
+        _fail("NAVIGATION_VIEW_RETENTION", "retained navigation views missing or drifted")
+    for view in views:
+        if view.get("view_authority") != DEFAULT_AUTHORITY_STATUS:
+            flags["AUTHORITY_PROMOTION"] = True
+            _fail("C9", f"{view.get('view_id')} view authority promoted")
+        if view.get("view_role") != "NAVIGATION_OR_ANALYSIS_ONLY":
+            _fail("NAVIGATION_VIEW_RETENTION", f"{view.get('view_id')} not navigation-only")
+        if view.get("parentage_adjudicated") is not False:
+            flags["VIEW_PARENTS_TO_PARENTAGE"] = True
+            _fail("SW-R-009", f"{view.get('view_id')} parents promoted to parentage")
+        if view.get("sw_r_009_status") != "OPEN":
+            flags["VIEW_PARENTS_TO_PARENTAGE"] = True
+            _fail("SW-R-009", f"{view.get('view_id')} SW-R-009 closed")
+        original = view.get("original_view")
+        if not isinstance(original, dict):
+            _fail("NAVIGATION_VIEW_RETENTION", f"{view.get('view_id')} original_view missing")
+        if "parents" in original and view.get("parents_field_status") != (
+            "DOCUMENTARY_UNADJUDICATED"
+        ):
+            flags["VIEW_PARENTS_TO_PARENTAGE"] = True
+            _fail("SW-R-009", f"{view.get('view_id')} parents field status mutated")
+
     return flags

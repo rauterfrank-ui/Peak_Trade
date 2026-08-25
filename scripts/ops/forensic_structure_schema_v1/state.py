@@ -50,6 +50,8 @@ class PipelineState:
     residuals: list[ResidualRecord] = field(default_factory=list)
     invariant_report: InvariantReport | None = None
     losslessness_audit: LosslessnessAudit | None = None
+    reconstruction_report: dict[str, Any] | None = None
+    source_canary_report: dict[str, Any] | None = None
     contract_tests: dict[str, ContractTestResult] = field(default_factory=dict)
     output_eligible: bool = False
     source_sha256_after: str = ""

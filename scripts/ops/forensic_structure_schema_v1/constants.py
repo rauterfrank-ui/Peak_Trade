@@ -64,7 +64,14 @@ DATASET_SHARD_ORDER = (
     "semantic_envelopes.json",
     "relation_envelopes.json",
     "provenance_registry.json",
+    "navigation_views.json",
 )
+
+EXPECTED_INNER_FENCE_LIKE_COUNT = 74
+EXPECTED_TICK5_OUTER_COUNT = 13
+EXPECTED_TRIPLE_BACKTICK_SOURCE_LINE_COUNT = 2810
+EXPECTED_NAVIGATION_VIEW_COUNT = 12
+VIEW_ROLE_NAVIGATION_OR_ANALYSIS_ONLY = "NAVIGATION_OR_ANALYSIS_ONLY"
 
 LAYER1_FIELD_ORDER = (
     "occurrence_id",

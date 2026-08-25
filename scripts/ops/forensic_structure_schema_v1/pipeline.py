@@ -112,6 +112,9 @@ def canonical_test_payload(state: PipelineState) -> dict[str, Any]:
         "sidecar_sha256_after": state.sidecar_sha256_after,
         "source_mutated": False,
         "sidecar_mutated": False,
+        "dataset_only_reconstruction_claim": False,
+        "reconstruction_report": state.reconstruction_report,
+        "source_canary_report": state.source_canary_report,
     }
 
 
