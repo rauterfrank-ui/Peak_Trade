@@ -521,6 +521,7 @@ def persist_retained_derived(
     }
 
     reports.mkdir(parents=True, exist_ok=True)
+    data_dir.mkdir(parents=True, exist_ok=True)
     authority_text = (
         "OUTPUT_AUTHORITY=NONE\n"
         "TARGET_AUTHORITY=NONE\n"
@@ -537,6 +538,9 @@ def persist_retained_derived(
     )
     (reports / "AUTHORITY_NONE.txt").write_text(authority_text, encoding="utf-8")
     (data_dir / "AUTHORITY_NONE.txt").write_text(authority_text, encoding="utf-8")
+    authority_sha = _sha256_hex(authority_text.encode("utf-8"))
+    artifact_sha256s["AUTHORITY_NONE.txt"] = authority_sha
+    artifact_byte_counts["AUTHORITY_NONE.txt"] = len(authority_text.encode("utf-8"))
 
     source_after = _stat_input(src, count_lines=True)
     sidecar_after = _stat_input(sid, count_lines=False)
@@ -545,6 +549,48 @@ def persist_retained_derived(
     if sidecar_after.sha256 != sidecar_before.sha256:
         raise TransformationContractViolation("SIDECAR_MUTATION", "sidecar sha changed")
 
+    stable_reports = {
+        "losslessness_audit.json": losslessness_audit,
+        "invariant_report.json": invariant_report,
+        "residual_register.json": residual_register,
+        "traceability_report.json": traceability_report,
+        "execution_report.json": execution_report,
+        "contract_test_report.json": contract_test_report,
+        "non_inference_audit.json": non_inference_audit,
+    }
+    for name, obj in stable_reports.items():
+        payload = dumps_canonical_bytes(obj)
+        sha, nbytes = _write_bytes(reports / name, payload)
+        artifact_sha256s[name] = sha
+        artifact_byte_counts[name] = nbytes
+        sha2, nbytes2 = _write_bytes(data_dir / name, payload)
+        if sha2 != sha or nbytes2 != nbytes:
+            raise TransformationContractViolation("DETERMINISM_FAILURE", f"{name} copy drift")
+
+    catalog = {
+        "role": "DATASET_CATALOG",
+        "authority": "NONE",
+        "dataset_sha256": dataset_sha256,
+        "dataset_bytes": dataset_bytes,
+        "dataset_git_persistence": dataset_git_persistence,
+        "shard_order": list(DATASET_SHARD_ORDER),
+        "external_dataset_dir": EXTERNAL_RETAINED_DATASET_DIR,
+        "artifact_sha256s": dict(sorted(artifact_sha256s.items())),
+        "artifact_byte_counts": dict(sorted(artifact_byte_counts.items())),
+        "record_counts": record_counts,
+        "regeneration_command": execution_report["regeneration_command"],
+    }
+    catalog_payload = dumps_canonical_bytes(catalog)
+    catalog_sha, catalog_nbytes = _write_bytes(reports / "dataset_catalog.json", catalog_payload)
+    _write_bytes(data_dir / "dataset_catalog.json", catalog_payload)
+    artifact_sha256s["dataset_catalog.json"] = catalog_sha
+    artifact_byte_counts["dataset_catalog.json"] = catalog_nbytes
+
+    if "Desktop" in BOUND_SOURCE_PATH or "Downloads" in BOUND_SOURCE_PATH:
+        raise TransformationContractViolation(
+            "HISTORICAL_LOCATOR_NORMALIZATION",
+            "manifest source_locator is a historical desktop/downloads path",
+        )
     manifest = {
         "schema_id": SCHEMA_ID,
         "schema_version": SCHEMA_VERSION,
@@ -573,7 +619,7 @@ def persist_retained_derived(
         "gate_adjudication_performed": False,
         "supersession_adjudication_performed": False,
         "open_residual_ids": list(SW_RESIDUAL_IDS) + list(DR_RESIDUAL_IDS),
-        "artifact_sha256s": dict(sorted({**artifact_sha256s}.items())),
+        "artifact_sha256s": dict(sorted(artifact_sha256s.items())),
         "artifact_byte_counts": dict(sorted(artifact_byte_counts.items())),
         "record_counts": record_counts,
         "dataset_sha256": dataset_sha256,
@@ -585,59 +631,22 @@ def persist_retained_derived(
         "residuals_auto_closed": False,
         "resolved_by_transformation": False,
         "non_deterministic_manifest_fields": list(MANIFEST_NON_DETERMINISTIC_FIELDS),
+        "manifest_excludes_own_file_sha256": True,
     }
-    if "Desktop" in manifest["source_locator"] or "Downloads" in manifest["source_locator"]:
-        raise TransformationContractViolation(
-            "HISTORICAL_LOCATOR_NORMALIZATION",
-            "manifest source_locator is a historical desktop/downloads path",
-        )
-
-    report_files = {
-        "transformation_manifest.json": manifest,
-        "losslessness_audit.json": losslessness_audit,
-        "invariant_report.json": invariant_report,
-        "residual_register.json": residual_register,
-        "traceability_report.json": traceability_report,
-        "execution_report.json": execution_report,
-        "contract_test_report.json": contract_test_report,
-        "non_inference_audit.json": non_inference_audit,
-        "dataset_catalog.json": {
-            "role": "DATASET_CATALOG",
-            "authority": "NONE",
-            "dataset_sha256": dataset_sha256,
-            "dataset_bytes": dataset_bytes,
-            "dataset_git_persistence": dataset_git_persistence,
-            "shard_order": list(DATASET_SHARD_ORDER),
-            "external_dataset_dir": EXTERNAL_RETAINED_DATASET_DIR,
-            "artifact_sha256s": artifact_sha256s,
-            "artifact_byte_counts": artifact_byte_counts,
-            "record_counts": record_counts,
-            "regeneration_command": execution_report["regeneration_command"],
-        },
-    }
-    for name, obj in report_files.items():
-        sha, nbytes = _write_json(reports / name, obj)
-        artifact_sha256s[name] = sha
-        artifact_byte_counts[name] = nbytes
-        if name != "transformation_manifest.json":
-            sha2, nbytes2 = _write_json(data_dir / name, obj)
-            artifact_sha256s[f"external/{name}"] = sha2
-            artifact_byte_counts[f"external/{name}"] = nbytes2
-
-    manifest["artifact_sha256s"] = dict(sorted(artifact_sha256s.items()))
-    manifest["artifact_byte_counts"] = dict(sorted(artifact_byte_counts.items()))
     manifest_bytes = dumps_canonical_bytes(manifest)
     manifest_sha256, manifest_nbytes = _write_bytes(
         reports / "transformation_manifest.json", manifest_bytes
     )
     _write_bytes(data_dir / "transformation_manifest.json", manifest_bytes)
-    artifact_sha256s["transformation_manifest.json"] = manifest_sha256
-    artifact_byte_counts["transformation_manifest.json"] = manifest_nbytes
+    (reports / "MANIFEST_SHA256.txt").write_text(
+        f"MANIFEST_SHA256={manifest_sha256}\nMANIFEST_BYTES={manifest_nbytes}\n",
+        encoding="utf-8",
+    )
+    (data_dir / "MANIFEST_SHA256.txt").write_text(
+        f"MANIFEST_SHA256={manifest_sha256}\nMANIFEST_BYTES={manifest_nbytes}\n",
+        encoding="utf-8",
+    )
     manifest_semantic_payload_sha256 = manifest_sha256
-
-    authority_sha = _sha256_hex(authority_text.encode("utf-8"))
-    artifact_sha256s["AUTHORITY_NONE.txt"] = authority_sha
-    artifact_byte_counts["AUTHORITY_NONE.txt"] = len(authority_text.encode("utf-8"))
 
     return RetainedPersistResult(
         result=result,
