@@ -476,7 +476,11 @@
         ],
         "repo_sizes": [
           8499032
-        ]
+        ],
+        "SOURCE_IDENTITY_MERGED": false,
+        "HISTORICAL_VARIANT": "PROVEN_FOR_WORKING_RUNBOOK_PAIR",
+        "WHICH_VARIANT_IS_SEMANTICALLY_CURRENT": "NOT_INFERRED_FROM_MTIME",
+        "relation": "CONTENT_OVERLAP_PROVEN"
       },
       {
         "name": "README.md",
