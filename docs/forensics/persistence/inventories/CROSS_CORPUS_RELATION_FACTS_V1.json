@@ -190,6 +190,7 @@
     ],
     "P5_ONLY_FILE_LOCATOR_COUNT": 28,
     "P5_ONLY_UNIQUE_SHA_COUNT": 27,
+    "CROSS_CORPUS_CONFLICT_RECORDS_PROVEN": 0,
     "byte_identical_sha_count": 15,
     "p5_desktop_evidence_bound_candidates": [
       {
@@ -226,7 +227,8 @@
         ],
         "relation": "P5_EVIDENCE_BOUND_ONLY_NOT_P2",
         "sha256": "6f2928e67d45de2162df1589de77ea530061652181ba6efd9a0f528ca7e6ad6e",
-        "size": 38249919
+        "size": 38249919,
+        "SW_R_002_PRESERVATION_BINDING_SHA256_MATCH": true
       },
       {
         "name": "PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.t4-unprojected-relation-loss-register-v1.jsonl",
@@ -235,7 +237,8 @@
         ],
         "relation": "P5_EVIDENCE_BOUND_ONLY_NOT_P2",
         "sha256": "872e1e22fc3e46d8eb3b2975183ca6ce20d1c31fae9992ffd7b863b30db39113",
-        "size": 9254096
+        "size": 9254096,
+        "SW_R_002_PRESERVATION_BINDING_SHA256_MATCH": true
       },
       {
         "name": "t4_overlay_records.json",
@@ -480,7 +483,12 @@
         "SOURCE_IDENTITY_MERGED": false,
         "HISTORICAL_VARIANT": "PROVEN_FOR_WORKING_RUNBOOK_PAIR",
         "WHICH_VARIANT_IS_SEMANTICALLY_CURRENT": "NOT_INFERRED_FROM_MTIME",
-        "relation": "CONTENT_OVERLAP_PROVEN"
+        "relation": "CONTENT_OVERLAP_PROVEN",
+        "p5_lines": [121930],
+        "repo_lines": [118809],
+        "additional_lines": 3121,
+        "additional_bytes": 140337,
+        "semantic_meaning_of_extra_lines": "UNKNOWN"
       },
       {
         "name": "README.md",
@@ -513,7 +521,9 @@
           1011,
           1046,
           1607
-        ]
+        ],
+        "SOURCE_IDENTITY_MERGED": false,
+        "relation": "UNKNOWN_RELATION"
       }
     ]
   }
