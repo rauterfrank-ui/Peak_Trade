@@ -118,6 +118,18 @@ HASHED_P1_FORENSIC_TREE_FILE_COUNT=129
 HASHED_P1_FORENSIC_TREE_BYTE_SUM=22518881
 ```
 
+Those hashed counts remain the discovery-pass snapshot. They are not a
+live tree census. The hashed P1 inventory records do not include
+`docs/forensics/persistence/`.
+
+```text
+P1_HASHED_INVENTORY_IS_DISCOVERY_PASS_SNAPSHOT=true
+P1_INVENTORY_RECORDS_DO_NOT_INCLUDE_DOCS_FORENSICS_PERSISTENCE_TREE=true
+P1_COUNT_IS_DISCOVERY_SNAPSHOT_NOT_LIVE_TREE_CENSUS=true
+HASHED_P1_FORENSIC_TREE_FILE_COUNT=129
+P1_INVENTORY_DOCS_FORENSICS_FILE_COUNT_AT_DISCOVERY=5
+```
+
 Additional P1 trees listed by glob, not re-hashed this pass:
 
 ```text
