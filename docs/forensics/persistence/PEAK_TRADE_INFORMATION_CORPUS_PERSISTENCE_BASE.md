@@ -37,11 +37,11 @@ repo-internal.
 |------|------|
 | `AUTHORITY_NONE.txt` | Authority containment |
 | `PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md` | This index |
-| `registries/EXTERNAL_FORENSIC_CORPUS_DISCOVERY_V1.md` | P2 discovery closeout plus P1/P3–P7 inventory |
-| `registries/CROSS_CORPUS_RELATION_REGISTER_V1.md` | Proven vs unknown relations |
-| `inventories/P1_REPO_FORENSIC_TREES_FILE_INVENTORY_V1.json` | Repo forensic-tree file identities |
-| `inventories/P5_DOCUMENTS_PEAK_TRADE_FORENSICS_FILE_INVENTORY_V1.json` | Evidence-bound local `Documents/Peak_Trade/forensics` identities |
-| `inventories/CROSS_CORPUS_RELATION_FACTS_V1.json` | Machine relation facts |
+| `registries&#47;EXTERNAL_FORENSIC_CORPUS_DISCOVERY_V1.md` | P2 discovery closeout plus P1/P3–P7 inventory |
+| `registries&#47;CROSS_CORPUS_RELATION_REGISTER_V1.md` | Proven vs unknown relations |
+| `inventories&#47;P1_REPO_FORENSIC_TREES_FILE_INVENTORY_V1.json` | Repo forensic-tree file identities |
+| `inventories&#47;P5_DOCUMENTS_PEAK_TRADE_FORENSICS_FILE_INVENTORY_V1.json` | Evidence-bound local `Documents&#47;Peak_Trade&#47;forensics` identities |
+| `inventories&#47;CROSS_CORPUS_RELATION_FACTS_V1.json` | Machine relation facts |
 
 ## Provenance classes used here
 

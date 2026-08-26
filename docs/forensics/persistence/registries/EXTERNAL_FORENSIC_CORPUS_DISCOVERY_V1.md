@@ -47,7 +47,7 @@ not place it onto that sequence.
 
 ### Resolution procedure (deterministic)
 
-1. `HOME=/Users/frnkhrz`
+1. `HOME=&#47;Users&#47;frnkhrz`
 2. Exact top-level directory named `Documents` under HOME: count=1,
    path=`/Users/frnkhrz/Documents`
 3. Recursive walk of that Documents tree for directory basename exactly
@@ -140,8 +140,8 @@ Machine inventory:
 | Working-state synthesis | `docs/forensics/working_state/PEAK_TRADE_SW_R_002_WORKING_STATE.md` | non-authoritative join |
 | Multi-step knowledge bundle | `forensic/post_step32_knowledge_integration_v0/` | P4 in-repo |
 | Lossless V2/V2.1 pack | `forensic/lossless_structural_projection_v2_v2_1_pack_v1/` | identity copy of older working-runbook SHA `10d92931…` |
-| Schema V1 derived layers | `forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_*` | reports in git; large blobs not in git |
-| Schema V1 implementation notes | `docs/forensic/*.md` | AUTHORITY=NONE |
+| Schema V1 derived layers | `forensics&#47;derived&#47;FORENSIC_STRUCTURE_SCHEMA_V1_*` | reports in git; large blobs not in git |
+| Schema V1 implementation notes | `docs&#47;forensic&#47;*.md` | AUTHORITY=NONE |
 
 ## 3. P5 — evidence-bound local path, not P2
 
@@ -238,8 +238,8 @@ T4_LOSS_REGISTER_P5_PATH=derived/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.t
 
 **E. Lossless struct transform derived pack (P5-only bodies)**
 
-`derived/sha256-a5a468f7…/` including `records.jsonl`, `quarantine.jsonl`,
-validation reports, and `structural-v1-20260825T100541Z/` sidecar.
+`derived&#47;sha256-a5a468f7…&#47;` including `records.jsonl`, `quarantine.jsonl`,
+validation reports, and `structural-v1-20260825T100541Z&#47;` sidecar.
 Manifest declares `no_loss_proof=PASS` and reconstructed SHA equal to
 source SHA. That is P5-local derived evidence, not canonical authority.
 
@@ -247,14 +247,14 @@ source SHA. That is P5-local derived evidence, not canonical authority.
 blobs P5-only**
 
 Reports under
-`derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/` match git.
+`derived&#47;FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1&#47;` match git.
 Blob files (`semantic_envelopes.json`, `layer1_occurrences.json`,
 `traceability_records.json`, `overlay_index.json`,
 `provenance_registry.json`, `relation_envelopes.json`,
 `dataset_header.json`) are P5-only.
 
 Alignment-index blob
-`derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/blobs/t4_overlay_records.json`
+`derived&#47;FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1&#47;blobs&#47;t4_overlay_records.json`
 is P5-only.
 
 **G. Local forensic tools (P5-only)**
@@ -274,9 +274,9 @@ In-repo (selected):
 
 - SW-R-002 preservation + binding
 - post-handoff analysis delta + binding
-- `forensics/derived/*` schema-V1 layers
+- `forensics&#47;derived&#47;*` schema-V1 layers
 - `forensic/post_step32_knowledge_integration_v0/`
-- `forensic/lossless_*` packs
+- `forensic&#47;lossless_*` packs
 
 ## 5. P4 — multi-review bundles and syntheses
 

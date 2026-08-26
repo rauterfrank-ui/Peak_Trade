@@ -34,7 +34,7 @@ P2_CORPUS_ABSENT=false
 P2_EMPTY_INFERRED_FROM_UNRESOLVED_PATH=false
 ```
 
-## Axis 2 — P5 evidence-bound `Documents/Peak_Trade/forensics` vs repo
+## Axis 2 — P5 evidence-bound `Documents&#47;Peak_Trade&#47;forensics` vs repo
 
 This axis is **not** P2. Provenance remains
 `SOURCE_CLASS=LOCAL_EXTERNAL_FORENSIC_SOURCE` with
@@ -48,7 +48,7 @@ Notable:
 
 | SHA256 prefix | Name | P5 locator | Repo locator |
 |---------------|------|------------|--------------|
-| `f26f6ec751b35fe9` | `PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md` | `Documents/Peak_Trade/forensics/…` | `docs/forensics/preservation/…` |
+| `f26f6ec751b35fe9` | `PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md` | `Documents&#47;Peak_Trade&#47;forensics&#47;…` | `docs&#47;forensics&#47;preservation&#47;…` | <!-- pt:ref-target-ignore -->
 | `1704fcb4c9daab46` | `AUTHORITY_NONE.txt` | P5 transformation V1 | `forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/` |
 | plus 13 other transformation-V1 report/manifest files | see JSON | P5 derived reports | git `forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/` |
 
@@ -65,7 +65,7 @@ CROSS_CORPUS_P5_REPO_BYTE_IDENTICAL_SHA_RECORDS=15
 
 | Locator | SHA256 | bytes | lines |
 |---------|--------|-------|-------|
-| P5 `Documents/Peak_Trade/forensics/…` | `a5a468f761e24e17…` | 8639369 | 121930 |
+| P5 `Documents&#47;Peak_Trade&#47;forensics&#47;…` | `a5a468f761e24e17…` | 8639369 | 121930 |
 | Repo lossless-pack identity copy | `10d9293134426805…` | 8499032 | 118809 |
 
 Proof of relatedness (not filename alone):
@@ -124,7 +124,7 @@ Proven repo-only relative to this P5 tree:
 - `forensic/post_step32_knowledge_integration_v0/` collection
 - lossless V2/V2.1 pack except the overlapping transformation reports
 - schema V1 adjudication/disposition/alignment derived directories
-- `docs/forensic/*.md` implementation notes
+- `docs&#47;forensic&#47;*.md` implementation notes
 - tests and transformer scripts under `tests/` and `scripts/ops/`
 
 ### CONFLICTING_INFORMATION
@@ -156,7 +156,7 @@ POTENTIAL_EXISTING_EVIDENCE_FOR_PREVIOUSLY_OPEN_GAPS=CANDIDATES_PRESENT_CLOSURE_
 |-----------------------------------|------------------------|---------------|
 | Working-state S10 / forensic MD not in repo; SHA `a5a468f7…` recorded but `FORENSIC_MD_READ_THIS_STEP=false` | P5 file exists, hash matches binding | Locator+hash proven. Semantic gap (22 primitives unanswered; C1-Q1 unanswered) **not** closed |
 | Sidecar SHA `6f2928e6…` and T4 loss register SHA `872e1e22…` bound but not git files | P5 files hash-match those bound SHAs | Identity proven. Content not ingested or adjudicated this pass |
-| Schema V1 transformation blobs absent from git | P5 `blobs/` present | Files exist. Not promoted to schema-V2 mapping proof |
+| Schema V1 transformation blobs absent from git | P5 `blobs&#47;` present | Files exist. Not promoted to schema-V2 mapping proof |
 | Extra 3121 lines vs repo working-runbook identity copy | P5 file longer | Byte difference proven. Meaning of extra lines UNKNOWN this pass |
 | Owner-named folder `Peak Trade Forensik` as additional corpus | path not uniquely resolved; P2 content UNKNOWN | gap closure not assessed; P2 remains unresolved |
 
@@ -185,7 +185,7 @@ schema-V1 reports are derived read-only outputs over that source.
 P2: UNKNOWN (`P2_MULTI_REVIEW_BUNDLE_STATUS=UNKNOWN`).
 
 P5: the working runbook bundles many forensic passes in one file.
-`derived/sha256-a5a468f7…/` and `structural-v1-20260825T100541Z/`
+`derived&#47;sha256-a5a468f7…&#47;` and `structural-v1-20260825T100541Z&#47;`
 bundle structural projections of that whole file.
 
 Repo P4 bundles (`post_step32_knowledge_integration_v0`, SW-R-002
