@@ -47,6 +47,7 @@ repo-internal.
 | `inventories&#47;P6_5189_FINAL_1_UNRESOLVED_RECOVERY_OBSERVATION_V1.json` | Additive P6 5189 final-1 recovery coverage observation (AUTHORITY=NONE) |
 | `inventories&#47;P6_5189_5011_SOURCE_SET_LOCALIZATION_OBSERVATION_V1.json` | Additive P6 5189 5011 source-set localization observation (AUTHORITY=NONE) |
 | `inventories&#47;P6_5189_NON_P2_ARCHIVE_LOCALIZATION_OBSERVATION_V1.json` | Additive P6 5189 non-P2 archive localization observation (AUTHORITY=NONE) |
+| `inventories&#47;P6_5189_RAW_EXECUTION_RECOVERY_OBSERVATION_V1.json` | Additive P6 5189 raw-execution-recovery observation (AUTHORITY=NONE) |
 
 ## Provenance classes used here
 
