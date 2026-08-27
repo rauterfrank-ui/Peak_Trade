@@ -50,6 +50,7 @@ repo-internal.
 | `inventories&#47;P6_5189_RAW_EXECUTION_RECOVERY_OBSERVATION_V1.json` | Additive P6 5189 raw-execution-recovery observation (AUTHORITY=NONE) |
 | `inventories&#47;P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json` | Additive P6 5189 completeness-and-closure synthesis observation (AUTHORITY=NONE) |
 | `inventories&#47;P6_5189_37G_ARCHIVE_SQLITE_VSCDB_BODY_PREIMAGE_PROBE_OBSERVATION_V1.json` | Additive P6 5189 37G-archive sqlite/vscdb-body preimage-probe observation (AUTHORITY=NONE) |
+| `inventories&#47;P6_5189_POST_SQLITE_RESIDUAL_FRONTIER_OBSERVATION_V1.json` | Additive P6 5189 post-PR6081 residual-frontier observation (AUTHORITY=NONE) |
 
 ## Provenance classes used here
 
