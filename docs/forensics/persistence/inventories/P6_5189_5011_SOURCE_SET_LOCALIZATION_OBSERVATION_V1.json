@@ -1,0 +1,224 @@
+{
+  "DOCUMENT_CLASS": "FORENSIC_PERSISTENCE_OBSERVATION",
+  "ARTIFACT_AUTHORITY": "NONE",
+  "AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "SIDECAR_AUTHORITY": "NONE",
+  "THIS_ARTIFACT_IS_NOT_CANONICAL": true,
+  "NOT_CANONICAL": true,
+  "SECOND_SSOT": false,
+  "SEMANTIC_AUTHORITY": false,
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "PERSISTENCE_IS_ADJUDICATION": false,
+  "PERSISTENCE_IS_CANONIZATION": false,
+  "STRUCTURING_IS_CANONIZATION": false,
+  "PERSISTENCE_IMPLIES_GAP_CLOSURE": false,
+  "GAP_CLOSURE_PRESENT": false,
+  "GAP_CLOSED": false,
+  "ALL_P6_RELEVANCE_COMPLETE": false,
+  "HISTORICAL_P6_SOURCE_SET_BOUND": false,
+  "COMPLETENESS_ADJUDICATION_NOT_PERFORMED_IN_THIS_PERSIST": true,
+  "OBSERVATIONAL_UNRESOLVED_ZERO_IS_NOT_ALL_P6_RELEVANCE_COMPLETE": true,
+  "SOURCE_IDENTITY_MERGED": false,
+  "SOURCE_IDENTITY_COLLAPSE_ALLOWED": false,
+  "HISTORICAL_VARIANT_COLLAPSE_ALLOWED": false,
+  "CURRENT_SHA_IS_NOT_HISTORICAL_5189_SHA": true,
+  "IDENTITY_COPY_CREATED": false,
+  "NEW_DOMAIN_ONTOLOGY_CREATED": false,
+  "NEW_CANONICAL_SEMANTICS_CREATED": false,
+  "AUTHORITY_ESCALATION_PRESENT": false,
+  "OWNER_GO": "P6_5189_5011_LOCALIZATION_PERSIST_AND_P2_SOURCE_RESOLUTION_READ_ONLY_V1",
+  "INPUT_READ_ONLY_RESULT": "P6_5189_HISTORICAL_NOT_RELEVANT_5011_SOURCE_SET_EVIDENCE_LOCALIZATION_READ_ONLY_V1",
+  "bound_origin_main_sha": "12681daef1a0f131c35f8961b0342cd8f074289f",
+  "observation_role": "ADDITIVE_LOCALIZATION_OBSERVATION_INVENTORY_ONLY",
+  "THIS_FILE_IS_NOT_A_HISTORICAL_CENSUS_REWRITE": true,
+  "THIS_FILE_IS_NOT_A_DISCOVERY_SNAPSHOT": true,
+  "THIS_FILE_DOES_NOT_MUTATE_PRESERVATION_MAP": true,
+  "THIS_FILE_DOES_NOT_IMPORT_JSONL_IDENTITY_COPIES": true,
+  "THIS_FILE_DOES_NOT_IMPORT_5011_NOT_RELEVANT_SOURCE_IDS": true,
+  "THIS_FILE_DOES_NOT_REWRITE_PRECEDING_OBSERVATION": true,
+  "THIS_OBSERVATION_DOES_NOT_RECLASSIFY_PRESERVATION_MEMBERSHIP": true,
+  "preceding_observation_locator": "docs/forensics/persistence/inventories/P6_5189_FINAL_1_UNRESOLVED_RECOVERY_OBSERVATION_V1.json",
+  "preceding_observation_owner_go": "P6_FINAL_1_RECOVERY_OBSERVATION_PERSIST_V1",
+  "P2_SOURCE_STATUS_BEFORE_THIS_STEP": "NOT_UNIQUELY_RESOLVED",
+  "P2_SOURCE_STATUS_NOT_ADJUDICATED_IN_THIS_PERSIST": true,
+  "historical_counts": {
+    "HISTORICAL_P6_CENSUS": 5189,
+    "HISTORICAL_RELEVANT_SOURCE_COUNT": 174,
+    "HISTORICAL_NOT_RELEVANT_SOURCE_COUNT": 5011,
+    "HISTORICAL_UNRESOLVED_SOURCE_COUNT": 4,
+    "HISTORICAL_COUNTS_NOT_OVERWRITTEN": true,
+    "HISTORICAL_COUNTS_NOT_DECLARED_ERRONEOUS": true
+  },
+  "localization_verdict": {
+    "HISTORICAL_NOT_RELEVANT_5011_SOURCE_SET_CANDIDATE_FOUND": false,
+    "DIRECT_5011_ENUMERATION_FOUND": false,
+    "REPRODUCIBLE_5011_PREIMAGE_FOUND": false,
+    "HISTORICAL_P6_SOURCE_SET_BOUND": false,
+    "ALL_P6_RELEVANCE_COMPLETE": false,
+    "P6_5189_SNAPSHOT_BINDING_VALID": false,
+    "POST_5189_SOURCE_CONTAMINATION_PRESENT": false,
+    "SOURCE_IDENTITY_COLLAPSE_PRESENT": false,
+    "HISTORICAL_VARIANT_COLLAPSE_PRESENT": false
+  },
+  "census_sha": {
+    "CENSUS_SHA_FULL_VALUE": "caa85fb2447af1d22c7752e9cacaecf60d058c2b0265ca44f50c14471b42ef0a",
+    "CENSUS_SHA_PREIMAGE_FOUND": false,
+    "CENSUS_SHA_PREIMAGE_VERIFIED": false,
+    "CENSUS_SHA_SEMANTIC_ROLE": "P6_RELATIVE_LOCATOR_LIST_SHA256",
+    "CENSUS_SHA_IS_NOT_5011_NOT_RELEVANT_SOURCE_ID_SET_HASH": true,
+    "HASH_PREIMAGE_BYTES_DUMPED": false,
+    "algorithm_as_documented_in_ephemeral_script": "sha256((newline_join(sorted_relative_jsonl_locators) + newline).encode('utf-8'))",
+    "ordering_is_part_of_identity": true,
+    "historical_match_claim_in_terminal_640021": "SHA_MATCHES_PREVIOUS=True at 2026-08-27T05:23:34Z with P6_CURRENT_LIVE_CENSUS=5190 after excluding CURRENT_CHAT f799dea0-c24f-4588-b0af-41cb055bdab1",
+    "historical_match_claim_is_not_stored_preimage": true
+  },
+  "hash_only_references": [
+    {
+      "EVIDENCE_CLASS": "HASH_ONLY_REFERENCE",
+      "label": "P6_RELATIVE_LOCATOR_LIST_SHA256",
+      "sha256": "caa85fb2447af1d22c7752e9cacaecf60d058c2b0265ca44f50c14471b42ef0a",
+      "sha_form": "FULL",
+      "preimage_found": false,
+      "preimage_verified": false,
+      "not_a_5011_source_id_set_hash": true
+    },
+    {
+      "EVIDENCE_CLASS": "HASH_ONLY_REFERENCE",
+      "label": "REVIEW_RECORD_LIST_SHA256",
+      "sha256": "267bc03ca823c112d6fc2ecc77227ef1f9c9d2c96ea3ae4cf845437284c6b565",
+      "sha_form": "FULL",
+      "preimage_found": false,
+      "preimage_verified": false,
+      "record_count_claimed_in_terminal_640021": 4970,
+      "blob_never_written_to_durable_storage": true
+    },
+    {
+      "EVIDENCE_CLASS": "HASH_ONLY_REFERENCE",
+      "label": "RESOLUTION_RECORD_LIST_SHA256",
+      "sha256_prefix_only": "60164328",
+      "sha_form": "PREFIX_ONLY_AS_ATTESTED",
+      "full_sha_not_reconstructed_from_prefix": true,
+      "preimage_found": false,
+      "preimage_verified": false,
+      "attested_in": "preserved transcript f799dea0-c24f-4588-b0af-41cb055bdab1 grep input pattern RESOLUTION_RECORD_LIST_SHA256=60164328"
+    }
+  ],
+  "partial_enumeration_first_pass_not_relevant_orphan_subagent_locators": {
+    "EVIDENCE_CLASS": "PARTIAL_ENUMERATION",
+    "THIS_IS_NOT_THE_5011_SET": true,
+    "IDENTITY_CLASS": "RELATIVE_JSONL_LOCATOR_AND_JSONL_BASENAME_STEM",
+    "NOT_DECLARED_AS_SOURCE_UUID": true,
+    "SOURCE_UUID_NOT_PROVEN_FROM_STEM_ALONE": true,
+    "first_pass_not_relevant_count_this_subset": 4,
+    "first_pass_not_relevant_parent_set_count_historical": 56,
+    "subset_of_first_pass_56_not_of_later_5011_union_claimed": true,
+    "d234_attestation": "SUBAGENT_RELEVANCE_FOR_THOSE_FOUR=FORENSIC_NOT_RELEVANT_PROVEN",
+    "records": [
+      {
+        "IDENTITY_CLASS": "RELATIVE_JSONL_LOCATOR_AND_JSONL_BASENAME_STEM",
+        "relative_locator": "c577fdf9-051e-404e-965c-35ff5997643e/subagents/ec21ce10-c19a-4919-b775-62870c5b4c17.jsonl",
+        "parent_directory_uuid": "c577fdf9-051e-404e-965c-35ff5997643e",
+        "jsonl_basename_stem": "ec21ce10-c19a-4919-b775-62870c5b4c17",
+        "kind": "SUBAGENT",
+        "SOURCE_UUID_DECLARED": false,
+        "first_pass_class_attested": "FORENSIC_NOT_RELEVANT_PROVEN"
+      },
+      {
+        "IDENTITY_CLASS": "RELATIVE_JSONL_LOCATOR_AND_JSONL_BASENAME_STEM",
+        "relative_locator": "acdd5a1d-b22c-42ac-8985-803cf9308295/subagents/a31766b5-781b-42a3-8c36-a209370d89f6.jsonl",
+        "parent_directory_uuid": "acdd5a1d-b22c-42ac-8985-803cf9308295",
+        "jsonl_basename_stem": "a31766b5-781b-42a3-8c36-a209370d89f6",
+        "kind": "SUBAGENT",
+        "SOURCE_UUID_DECLARED": false,
+        "first_pass_class_attested": "FORENSIC_NOT_RELEVANT_PROVEN"
+      },
+      {
+        "IDENTITY_CLASS": "RELATIVE_JSONL_LOCATOR_AND_JSONL_BASENAME_STEM",
+        "relative_locator": "acdd5a1d-b22c-42ac-8985-803cf9308295/subagents/a9b30227-54bf-4941-b652-8e08555c4932.jsonl",
+        "parent_directory_uuid": "acdd5a1d-b22c-42ac-8985-803cf9308295",
+        "jsonl_basename_stem": "a9b30227-54bf-4941-b652-8e08555c4932",
+        "kind": "SUBAGENT",
+        "SOURCE_UUID_DECLARED": false,
+        "first_pass_class_attested": "FORENSIC_NOT_RELEVANT_PROVEN"
+      },
+      {
+        "IDENTITY_CLASS": "RELATIVE_JSONL_LOCATOR_AND_JSONL_BASENAME_STEM",
+        "relative_locator": "cb997d27-1235-4592-82b5-a17c65c6e86a/subagents/a1fc0163-562c-4a52-81b1-6dafa080b920.jsonl",
+        "parent_directory_uuid": "cb997d27-1235-4592-82b5-a17c65c6e86a",
+        "jsonl_basename_stem": "a1fc0163-562c-4a52-81b1-6dafa080b920",
+        "kind": "SUBAGENT",
+        "SOURCE_UUID_DECLARED": false,
+        "first_pass_class_attested": "FORENSIC_NOT_RELEVANT_PROVEN"
+      }
+    ]
+  },
+  "intermediate_unresolved_1067": {
+    "EVIDENCE_CLASS": "LOCATOR_ONLY",
+    "THIS_IS_NOT_THE_5011_NOT_RELEVANT_SET": true,
+    "THIS_IS_NOT_A_FINAL_UNRESOLVED_SET": true,
+    "partition_role": "INTERMEDIATE_UNRESOLVED_AFTER_4970_CONTENT_REVIEW",
+    "claimed_locator_count_in_terminal_640021": 1067,
+    "unique_relative_locator_count_parsed_from_terminal": 1067,
+    "unique_jsonl_basename_stem_count_parsed_from_terminal": 1062,
+    "LOCATOR_COUNT_IS_NOT_SOURCE_ID_COUNT": true,
+    "ids_not_copied_into_this_inventory": true,
+    "evidence_locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/terminals/640021.txt",
+    "evidence_block": "=== STILL_UNRESOLVED_IDS ===",
+    "duplicate_agent_tools_copy_locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-tools/17b8d1bb-c7b3-4dac-a882-f6e27650401d.txt",
+    "BYTE_IDENTICAL_COPIES_NOT_MERGED_AS_SOURCE_IDENTITY": true,
+    "contains_historical_unresolved_four": true,
+    "intersection_with_final_174_source_ids": [
+      "437ca6ac-5600-4877-8f8d-21ef6d0ec595",
+      "84a98e65-3ac5-4fdd-9498-5d2064af00f0",
+      "ba538707-0cc3-46b0-a405-8663c78ed7f3"
+    ],
+    "intersection_note": "those three were later classified relevant in residual pass; 1067 is therefore not a not-relevant partition",
+    "first_pass_orphan_four_locators_in_this_1067": false,
+    "post_5189_f799_in_this_1067": false
+  },
+  "count_drift_not_adjudicated": {
+    "COUNT_SEMANTICS_COLLAPSE_PRESENT": false,
+    "HISTORICAL_VARIANT_COLLAPSE_ALLOWED": false,
+    "values_not_corrected": true,
+    "which_value_is_correct_not_adjudicated": true,
+    "observations": [
+      {
+        "label": "TERMINAL_640021_TOTAL_NOT_RELEVANT_PROVEN_COUNT",
+        "value": 3946,
+        "locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/terminals/640021.txt",
+        "context": "after 4970 content review; PREVIOUS_NOT_RELEVANT_COUNT=56 plus NEWLY_NOT_RELEVANT_FROM_UNRESOLVED_COUNT=3890"
+      },
+      {
+        "label": "F799_RESIDUAL_INPUT_TOTAL_NOT_RELEVANT_PROVEN_COUNT",
+        "value": 3951,
+        "locator": "forensic/p6_proven_relevant_jsonl_identity_copies_v1/evidence/raw_verbatim_identity_copies_authority_none/transcripts/f799dea0-c24f-4588-b0af-41cb055bdab1.jsonl",
+        "context": "user residual GO starting state; later arithmetic 3951+1060=5011"
+      }
+    ]
+  },
+  "aggregate_only_not_treated_as_enumeration": {
+    "EVIDENCE_CLASS": "AGGREGATE_ONLY",
+    "historical_first_pass": "163 relevant / 56 not-relevant / 4970 unresolved",
+    "after_4970_review_terminal": "176 relevant / 3946 not-relevant / 1067 unresolved",
+    "after_residual_report": "174 relevant / 5011 not-relevant / 4 unresolved",
+    "ARITHMETIC_IS_NOT_SOURCE_ID_PROOF": true
+  },
+  "missing_enumerations": {
+    "historical_5011_not_relevant_source_ids": "ABSENT",
+    "newly_not_relevant_3890_record_identities": "ABSENT",
+    "residual_not_relevant_1060_record_identities": "ABSENT",
+    "census_locator_list_preimage_bytes": "ABSENT",
+    "review_record_list_preimage_bytes": "ABSENT",
+    "resolution_record_list_preimage_bytes": "ABSENT"
+  },
+  "evidence_class_summary": {
+    "DIRECT_ENUMERATION": false,
+    "REPRODUCIBLE_PARTITION_INPUT": false,
+    "REPRODUCIBLE_MACHINE_OUTPUT": false,
+    "HASH_ONLY_REFERENCE": true,
+    "AGGREGATE_ONLY": true,
+    "PARTIAL_ENUMERATION": true,
+    "LOCATOR_ONLY": true
+  }
+}
