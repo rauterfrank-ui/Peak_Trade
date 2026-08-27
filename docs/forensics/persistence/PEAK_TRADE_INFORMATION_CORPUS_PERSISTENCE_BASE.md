@@ -52,6 +52,7 @@ repo-internal.
 | `inventories&#47;P6_5189_37G_ARCHIVE_SQLITE_VSCDB_BODY_PREIMAGE_PROBE_OBSERVATION_V1.json` | Additive P6 5189 37G-archive sqlite/vscdb-body preimage-probe observation (AUTHORITY=NONE) |
 | `inventories&#47;P6_5189_POST_SQLITE_RESIDUAL_FRONTIER_OBSERVATION_V1.json` | Additive P6 5189 post-PR6081 residual-frontier observation (AUTHORITY=NONE) |
 | `inventories&#47;P6_5189_SCOPED_IRREDUCIBLE_HISTORICAL_UNKNOWN_TWO_FULL_SHA_PREIMAGES_OWNER_ADJUDICATION_V1.json` | Additive P6 5189 scoped Owner acceptance of two full-SHA preimages as irreducible on examined identified surfaces (AUTHORITY=NONE) |
+| `inventories&#47;P6_5189_SLICE_5_NO_CONTRADICTION_LAYERED_STATUSES_OBSERVATION_V1.json` | Additive P6 5189 Slice-5 no-contradiction layered-statuses observation (AUTHORITY=NONE) |
 
 ## Provenance classes used here
 
