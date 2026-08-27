@@ -1,0 +1,592 @@
+{
+  "DOCUMENT_CLASS": "FORENSIC_PERSISTENCE_OBSERVATION",
+  "ARTIFACT_AUTHORITY": "NONE",
+  "AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "FORENSIC_PERSISTENCE_AUTHORITY": "NONE",
+  "SIDECAR_AUTHORITY": "NONE",
+  "THIS_ARTIFACT_IS_NOT_CANONICAL": true,
+  "THIS_RECORD_IS_NOT_CANONICAL_AUTHORITY": true,
+  "THIS_RECORD_IS_PERSISTENCE_NOT_ADJUDICATION": true,
+  "NOT_CANONICAL": true,
+  "SECOND_SSOT": false,
+  "SEMANTIC_AUTHORITY": false,
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "PERSISTENCE_IS_ADJUDICATION": false,
+  "PERSISTENCE_IS_CANONIZATION": false,
+  "STRUCTURING_IS_CANONIZATION": false,
+  "PERSISTENCE_IMPLIES_GAP_CLOSURE": false,
+  "GAP_CLOSURE_PRESENT": false,
+  "GAP_CLOSED": false,
+  "HISTORICAL_P6_SOURCE_SET_BOUND": false,
+  "ALL_P6_RELEVANCE_COMPLETE": false,
+  "P2_SOURCE_RESOLVED": false,
+  "OBSERVATIONAL_UNRESOLVED_ZERO_IS_NOT_ALL_P6_RELEVANCE_COMPLETE": true,
+  "COMPLETENESS_ADJUDICATION_NOT_PERFORMED_IN_THIS_PERSIST": true,
+  "ABSENCE_IMPLIES_NEGATIVE_FACT": false,
+  "ARTIFACTS_NEVER_EXISTED_NOT_CLAIMED": true,
+  "SOURCE_IDENTITY_MERGED": false,
+  "SOURCE_IDENTITY_COLLAPSE_ALLOWED": false,
+  "SOURCE_IDENTITY_COLLAPSE_PRESENT": false,
+  "HISTORICAL_VARIANT_COLLAPSE_ALLOWED": false,
+  "HISTORICAL_VARIANT_COLLAPSE_PRESENT": false,
+  "LOCATOR_COLLAPSE_PRESENT": false,
+  "CLASSIFICATION_CONFLICT_PRESENT": false,
+  "ADJUDICATION_CONFLICT_PRESENT": false,
+  "AUTHORITY_LEAK_PRESENT": false,
+  "COUNT_SEMANTICS_CONFLICT_PRESENT": true,
+  "COUNT_SEMANTICS_CHANGED": false,
+  "COUNT_SEMANTICS_COLLAPSE_PRESENT": false,
+  "CURRENT_SHA_IS_NOT_HISTORICAL_5189_SHA": true,
+  "IDENTITY_COPY_CREATED": false,
+  "NEW_DOMAIN_ONTOLOGY_CREATED": false,
+  "NEW_CANONICAL_SEMANTICS_CREATED": false,
+  "NEW_GATE_OR_DEPENDENCY_CREATED": false,
+  "AUTHORITY_ESCALATION_PRESENT": false,
+  "NO_AUTOMATIC_CLOSURE": true,
+  "REQUIREMENT_STATUS_CHANGE_FROM_THIS_PERSIST": "NONE",
+  "EXACT_ALLOWED_STATUS_CHANGE": "NONE",
+  "PRESERVATION_RELEVANCE_CLASS_REWRITE_PERFORMED": false,
+  "OBSERVATIONAL_VERDICT_REWRITE_PERFORMED": false,
+  "HISTORICAL_OBSERVATIONAL_STATE_REWRITE_PERFORMED": false,
+  "OWNER_GO": "P6_5189_OPEN_FRONTIER_DEPENDENCY_AND_CLOSURE_CRITICAL_PATH_SYNTHESIS_PERSIST_V1",
+  "SOURCE_READ_ONLY_STEP": "P6_5189_OPEN_FRONTIER_DEPENDENCY_AND_CLOSURE_CRITICAL_PATH_SYNTHESIS_READ_ONLY_V1",
+  "PERSISTENCE_STEP": "P6_5189_OPEN_FRONTIER_DEPENDENCY_AND_CLOSURE_CRITICAL_PATH_SYNTHESIS_PERSIST_V1",
+  "INPUT_READ_ONLY_OWNER_GO": "P6_5189_OPEN_FRONTIER_DEPENDENCY_AND_CLOSURE_CRITICAL_PATH_SYNTHESIS_READ_ONLY_V1",
+  "bound_origin_main_sha": "7c929821b6cf6de9c5ab75ab29be79c64657f6c2",
+  "bound_origin_main_sha_contains_pr_6085": true,
+  "observation_role": "ADDITIVE_OPEN_FRONTIER_DEPENDENCY_AND_CLOSURE_CRITICAL_PATH_SYNTHESIS_OBSERVATION_INVENTORY_ONLY",
+  "THIS_FILE_RECORDS_PRIOR_READ_ONLY_FRONTIER_SYNTHESIS": true,
+  "THIS_RECORD_DOES_NOT_CREATE_A_RECLASSIFICATION": true,
+  "THIS_RECORD_IS_NOT_CANONICAL_ADJUDICATION_AUTHORITY": true,
+  "THIS_FILE_IS_NOT_A_HISTORICAL_CENSUS_REWRITE": true,
+  "THIS_FILE_IS_NOT_A_DISCOVERY_SNAPSHOT": true,
+  "THIS_FILE_DOES_NOT_MUTATE_PRESERVATION_MAP": true,
+  "THIS_FILE_DOES_NOT_IMPORT_JSONL_IDENTITY_COPIES": true,
+  "THIS_FILE_DOES_NOT_REWRITE_PRECEDING_OBSERVATION": true,
+  "THIS_FILE_DOES_NOT_REWRITE_SYNTHESIS_OBSERVATION": true,
+  "THIS_FILE_DOES_NOT_REWRITE_POST_SQLITE_RESIDUAL_FRONTIER_OBSERVATION": true,
+  "THIS_FILE_DOES_NOT_REWRITE_SCOPED_TWO_SHA_OWNER_ADJUDICATION": true,
+  "THIS_FILE_DOES_NOT_REWRITE_SLICE_5_OBSERVATION": true,
+  "THIS_FILE_DOES_NOT_REWRITE_PREFIX_60164328_OBSERVATION": true,
+  "THIS_FILE_DOES_NOT_REWRITE_FINAL_4_OR_FINAL_2_OR_FINAL_1_OBSERVATION": true,
+  "THIS_OBSERVATION_DOES_NOT_RECLASSIFY_PRESERVATION_MEMBERSHIP": true,
+  "THIS_PERSIST_IS_NOT_A_NEW_RECOVERY_ROUND": true,
+  "THIS_PERSIST_IS_NOT_P2_RESOLUTION": true,
+  "THIS_PERSIST_IS_NOT_CANONIZATION": true,
+  "THIS_PERSIST_IS_NOT_GAP_CLOSURE": true,
+  "THIS_PERSIST_IS_NOT_COUNT_DRIFT_ADJUDICATION": true,
+  "THIS_PERSIST_IS_NOT_SLICE_6_IRREDUCIBILITY_ADJUDICATION": true,
+  "THIS_PERSIST_DOES_NOT_EXTEND_TWO_SHA_ACCEPTANCE": true,
+  "NEW_EVIDENCE_SEARCH_PERFORMED": false,
+  "PREIMAGE_SEARCH_PERFORMED": false,
+  "ARCHIVE_SEARCH_PERFORMED": false,
+  "SQLITE_REQUERY_PERFORMED": false,
+  "P2_SEARCH_PERFORMED": false,
+  "CLASSIFIER_RERUN_PERFORMED": false,
+  "COUNT_DRIFT_ADJUDICATED_IN_THIS_PERSIST": false,
+  "preceding_observation_locator": "docs/forensics/persistence/inventories/P6_5189_PREFIX_60164328_ATTESTATION_ANATOMY_AND_PREDICATE_SEPARATION_OBSERVATION_V1.json",
+  "preceding_observation_owner_go": "P6_5189_PREFIX_60164328_ATTESTATION_ANATOMY_AND_PREDICATE_SEPARATION_PERSIST_V1",
+  "preceding_observation_pr": 6085,
+  "P2_SOURCE_STATUS_BEFORE_THIS_STEP": "NOT_UNIQUELY_RESOLVED",
+  "P2_SOURCE_STATUS_NOT_ADJUDICATED_IN_THIS_PERSIST": true,
+  "P2_UNRESOLVED_IS_NOT_P2_EMPTY": true,
+  "P2_FRONTIER_PRESERVED_AS_INDEPENDENT": true,
+  "P2_IS_NOT_COUPLED_TO_5011_OR_PREIMAGE_QUESTION": true,
+  "original_read_only_frontier_synthesis_provenance": {
+    "SOURCE_CLASS": "CURSOR_AGENT_TRANSCRIPT_READ_ONLY_SYNTHESIS_REPORT",
+    "THIS_TRANSCRIPT_IS_NOT_A_P6_5189_CENSUS_MEMBER_CLAIM": true,
+    "CURRENT_PERSIST_CHAT_IS_NOT_P6_5189_CENSUS_EVIDENCE": true,
+    "locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/c47de6d0-599e-42d6-9a54-83268350d31c/c47de6d0-599e-42d6-9a54-83268350d31c.jsonl",
+    "jsonl_sha256_at_persist_authoring_snapshot": "7ffe267c8bd013050eb994b66d8006cae3c4b84919468a027502cfb49e02e8ea",
+    "jsonl_bytes_at_persist_authoring_snapshot": 55306,
+    "jsonl_line_count_at_persist_authoring_snapshot": 11,
+    "originating_read_only_owner_go_user_text_jsonl_line": 1,
+    "read_only_report_assistant_jsonl_line": 8,
+    "read_only_report_assistant_text_sha256": "75ca74dfee3d8601c25336b04149d26010d62d05148a6486b986f66aa679ae28",
+    "persist_owner_go_user_text_jsonl_line": 10,
+    "reconstructed_from_memory": false,
+    "THIS_SYNTHESIS_RECORD_SOURCE_IDENTITY_IS_DISTINCT_FROM_CITED_EVIDENCE": true,
+    "THIS_PERSIST_OWNER_GO_USER_TEXT_IS_DISTINCT_JSONL_LINE_FROM_READ_ONLY_REPORT": true
+  },
+  "frontier_working_state": {
+    "SLICE_6": "OPEN",
+    "RESOLUTION_PREFIX_60164328": "OPEN",
+    "P2": "UNRESOLVED",
+    "P2_SOURCE_STATUS": "NOT_UNIQUELY_RESOLVED",
+    "COUNT_DRIFT_3946_VS_3951": "UNADJUDICATED",
+    "HISTORICAL_P6_SOURCE_SET_BOUND": false,
+    "ALL_P6_RELEVANCE_COMPLETE": false,
+    "GAP_CLOSED": false,
+    "SLICE_5": "PERSISTED_UNCHANGED",
+    "SLICE_5_IS_NOT_AN_OPEN_FRONTIER_RECORD": true
+  },
+  "predicate_and_scope_separation": {
+    "PREFIX_PREDICATE_SEPARATE_FROM_SYNTHESIS_SLICE_6": true,
+    "synthesis_slice_6_problem_type_as_already_persisted": "IRREDUCIBLE_HISTORICAL_UNKNOWN_exact_5189_byte_states_of_preserved_relevant_copies",
+    "prefix_predicate": "identity_of_RESOLUTION_RECORD_LIST_SHA256_as_PREFIX_ONLY_AS_ATTESTED_HASH_ONLY_REFERENCE",
+    "sha_form": "PREFIX_ONLY_AS_ATTESTED",
+    "EVIDENCE_CLASS": "HASH_ONLY_REFERENCE",
+    "SAME_PREDICATE": false,
+    "SAME_SCOPE": false,
+    "SAME_TEMPORAL_REFERENCE": false,
+    "layers_merged": false,
+    "P2_PREDICATE": "UNIQUE_OWNER_NAMED_PATH_PEAK_TRADE_FORENSIK_NOT_UNIQUELY_RESOLVED",
+    "P2_UNRESOLVED_IS_NOT_P2_EMPTY": true,
+    "COUNT_PREDICATES_SAME": false,
+    "SAME_POPULATION_PROVEN": false,
+    "SAME_SCOPE_PROVEN": false,
+    "SAME_TIME_PROVEN": false,
+    "SAME_COUNT_SEMANTICS_PROVEN": false,
+    "DIFFERENCE_IS_SAME_PREDICATE_CONTRADICTION": "NOT_PROVEN"
+  },
+  "count_drift_not_adjudicated": {
+    "COUNT_SEMANTICS_CONFLICT_PRESENT": true,
+    "COUNT_SEMANTICS_COLLAPSE_PRESENT": false,
+    "COUNT_SEMANTICS_NORMALIZED": false,
+    "COUNT_DRIFT_ADJUDICATED_IN_THIS_PERSIST": false,
+    "values_not_corrected": true,
+    "which_value_is_correct_not_adjudicated": true,
+    "winner_not_declared": true,
+    "COUNT_PREDICATES_SAME": false,
+    "observations": [
+      {
+        "label": "TERMINAL_640021_TOTAL_NOT_RELEVANT_PROVEN_COUNT",
+        "value": 3946,
+        "locator": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/terminals/640021.txt",
+        "not_identical_to": 3951
+      },
+      {
+        "label": "F799_RESIDUAL_INPUT_TOTAL_NOT_RELEVANT_PROVEN_COUNT",
+        "value": 3951,
+        "locator": "forensic/p6_proven_relevant_jsonl_identity_copies_v1/evidence/raw_verbatim_identity_copies_authority_none/transcripts/f799dea0-c24f-4588-b0af-41cb055bdab1.jsonl",
+        "not_identical_to": 3946
+      }
+    ]
+  },
+  "already_persisted_separations_referenced_not_readjudicated": {
+    "THE_THREE_REMAINING_STATES_ARE_NOT_ONE_GAP": true,
+    "THE_THREE_REMAINING_STATES_ARE_NOT_AN_IMPLICIT_SEQUENCE": true,
+    "R-A2_NOT_INFERRED_FROM_R-A1": true,
+    "THIS_PERSIST_DOES_NOT_READJUDICATE_THESE_STATEMENTS": true,
+    "source_locators": [
+      "docs/forensics/persistence/inventories/P6_5189_POST_SQLITE_RESIDUAL_FRONTIER_OBSERVATION_V1.json",
+      "docs/forensics/persistence/inventories/P6_5189_SCOPED_IRREDUCIBLE_HISTORICAL_UNKNOWN_TWO_FULL_SHA_PREIMAGES_OWNER_ADJUDICATION_V1.json"
+    ]
+  },
+  "authorized_read_only_report_shorthand_DEP_NON_U_is_not_a_new_persistence_status_class": true,
+  "pairwise_relations_as_recorded_in_authorized_read_only_report": [
+    {
+      "pair_id": 1,
+      "from_frontier": "SLICE_6",
+      "to_frontier": "ALL_P6_RELEVANCE_COMPLETE",
+      "authorized_read_only_report_shorthand": "U",
+      "THIS_SHORTHAND_IS_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+      "CURRENT_STATUS": "UNRESOLVED",
+      "statement": "Slice 6 is not listed in synthesis R-B1 through R-B5; R-B3 is PROVEN while exact_5189_byte_state_available=false; the requirement matrix itself remains COMPLETENESS_ADJUDICATION_NOT_PERFORMED. Necessity and independence are both unproven.",
+      "evidence_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_PREFIX_60164328_ATTESTATION_ANATOMY_AND_PREDICATE_SEPARATION_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_SCOPED_IRREDUCIBLE_HISTORICAL_UNKNOWN_TWO_FULL_SHA_PREIMAGES_OWNER_ADJUDICATION_V1.json"
+      ],
+      "NEW_GATE_OR_DEPENDENCY_CREATED": false
+    },
+    {
+      "pair_id": 2,
+      "from_frontier": "P2",
+      "to_frontier": "ALL_P6_RELEVANCE_COMPLETE",
+      "authorized_read_only_report_shorthand": "NON",
+      "THIS_SHORTHAND_IS_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+      "CURRENT_STATUS": "PROVEN",
+      "statement": "Already persisted P2_IS_NOT_COUPLED_TO_5011_OR_PREIMAGE_QUESTION=true; synthesis slice 3 is independent of P6 count arithmetic; P2 requirements sit in R-C, not R-B.",
+      "evidence_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_POST_SQLITE_RESIDUAL_FRONTIER_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_SCOPED_IRREDUCIBLE_HISTORICAL_UNKNOWN_TWO_FULL_SHA_PREIMAGES_OWNER_ADJUDICATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json",
+        "docs/forensics/persistence/registries/EXTERNAL_FORENSIC_CORPUS_DISCOVERY_V1.md",
+        "docs/forensics/persistence/inventories/CROSS_CORPUS_RELATION_FACTS_V1.json"
+      ],
+      "P2_IS_NOT_COUPLED_TO_5011_OR_PREIMAGE_QUESTION": true,
+      "NEW_GATE_OR_DEPENDENCY_CREATED": false
+    },
+    {
+      "pair_id": 3,
+      "from_frontier": "COUNT_DRIFT_3946_3951",
+      "to_frontier": "ALL_P6_RELEVANCE_COMPLETE",
+      "authorized_read_only_report_shorthand": "U",
+      "THIS_SHORTHAND_IS_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+      "CURRENT_STATUS": "UNRESOLVED",
+      "statement": "R-B2 records contradiction_status=3946_vs_3951_unadjudicated_drift; the why of R-B2 remains missing 5011 enumeration, not a proven necessity that the drift be adjudicated before completeness.",
+      "evidence_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_5011_SOURCE_SET_LOCALIZATION_OBSERVATION_V1.json"
+      ],
+      "COUNT_DRIFT_ADJUDICATED_IN_THIS_PERSIST": false,
+      "NEW_GATE_OR_DEPENDENCY_CREATED": false
+    },
+    {
+      "pair_id": 4,
+      "from_frontier": "HISTORICAL_P6_SOURCE_SET_BOUND",
+      "to_frontier": "ALL_P6_RELEVANCE_COMPLETE",
+      "authorized_read_only_report_shorthand": "DEP",
+      "THIS_SHORTHAND_IS_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+      "CURRENT_STATUS": "PROVEN",
+      "statement": "Already persisted synthesis R-B1 provenance_class=depends_on_R-A: relevance completeness cannot be proven without a bound universe; what_would_change_status=R-A1 and R-A2 PROVEN. This persist cites that record; it does not create a new gate.",
+      "evidence_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json"
+      ],
+      "THIS_PERSIST_DOES_NOT_CREATE_THE_DEPENDENCY": true,
+      "NEW_GATE_OR_DEPENDENCY_CREATED": false
+    },
+    {
+      "pair_id": 5,
+      "from_frontier": "SLICE_6",
+      "to_frontier": "GAP_CLOSED",
+      "authorized_read_only_report_shorthand": "U",
+      "THIS_SHORTHAND_IS_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+      "CURRENT_STATUS": "UNRESOLVED",
+      "statement": "Slice 6 is not in synthesis R-D; R-D1 treats gap closure as multiple independent evidence questions.",
+      "evidence_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_POST_SQLITE_RESIDUAL_FRONTIER_OBSERVATION_V1.json"
+      ],
+      "NEW_GATE_OR_DEPENDENCY_CREATED": false
+    },
+    {
+      "pair_id": 6,
+      "from_frontier": "P2",
+      "to_frontier": "GAP_CLOSED",
+      "authorized_read_only_report_shorthand": "U",
+      "THIS_SHORTHAND_IS_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+      "CURRENT_STATUS": "UNRESOLVED",
+      "statement": "Residual already persists that the three remaining states are not one gap and not an implicit sequence; that proven non-identity does not prove GAP_CLOSED can become true without P2.",
+      "evidence_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_POST_SQLITE_RESIDUAL_FRONTIER_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json"
+      ],
+      "NEW_GATE_OR_DEPENDENCY_CREATED": false
+    },
+    {
+      "pair_id": 7,
+      "from_frontier": "COUNT_DRIFT_3946_3951",
+      "to_frontier": "GAP_CLOSED",
+      "authorized_read_only_report_shorthand": "U",
+      "THIS_SHORTHAND_IS_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+      "CURRENT_STATUS": "UNRESOLVED",
+      "statement": "No R-D record sets the 3946/3951 drift as a gap-closure condition.",
+      "evidence_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json"
+      ],
+      "COUNT_DRIFT_ADJUDICATED_IN_THIS_PERSIST": false,
+      "NEW_GATE_OR_DEPENDENCY_CREATED": false
+    },
+    {
+      "pair_id": 8,
+      "from_frontier": "HISTORICAL_P6_SOURCE_SET_BOUND",
+      "to_frontier": "GAP_CLOSED",
+      "authorized_read_only_report_shorthand": "U",
+      "THIS_SHORTHAND_IS_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+      "CURRENT_STATUS": "UNRESOLVED",
+      "statement": "R-D2 is the 5011 localization/raw-recovery gap, not the source-set-bound flag; R-D1 disproves a single boolean. Bound-to-completeness DEP is not inferred as GAP_CLOSED criticality.",
+      "evidence_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json"
+      ],
+      "NEW_GATE_OR_DEPENDENCY_CREATED": false
+    },
+    {
+      "pair_id": 9,
+      "from_frontier": "ALL_P6_RELEVANCE_COMPLETE",
+      "to_frontier": "GAP_CLOSED",
+      "authorized_read_only_report_shorthand": "U",
+      "THIS_SHORTHAND_IS_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+      "CURRENT_STATUS": "UNRESOLVED",
+      "statement": "OBSERVATIONAL_UNRESOLVED_ZERO_IS_NOT_ALL_P6_RELEVANCE_COMPLETE remains; PERSISTENCE_IMPLIES_GAP_CLOSURE=false; no persisted statement that gap closure requires completeness.",
+      "evidence_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json",
+        "docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md"
+      ],
+      "NEW_GATE_OR_DEPENDENCY_CREATED": false
+    },
+    {
+      "pair_id": 10,
+      "from_frontier": "RESOLUTION_PREFIX_60164328",
+      "to_frontier": "SLICE_6",
+      "authorized_read_only_report_shorthand": "NON",
+      "THIS_SHORTHAND_IS_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+      "CURRENT_STATUS": "PROVEN",
+      "statement": "Already persisted PREFIX_PREDICATE_SEPARATE_FROM_SYNTHESIS_SLICE_6=true with SAME_PREDICATE=false, SAME_SCOPE=false, SAME_TEMPORAL_REFERENCE=false.",
+      "evidence_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_PREFIX_60164328_ATTESTATION_ANATOMY_AND_PREDICATE_SEPARATION_OBSERVATION_V1.json"
+      ],
+      "PREFIX_PREDICATE_SEPARATE_FROM_SYNTHESIS_SLICE_6": true,
+      "NEW_GATE_OR_DEPENDENCY_CREATED": false
+    },
+    {
+      "pair_id": 11,
+      "from_frontier": "RESOLUTION_PREFIX_60164328",
+      "to_frontier": "P2",
+      "authorized_read_only_report_shorthand": "NON",
+      "THIS_SHORTHAND_IS_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+      "CURRENT_STATUS": "PROVEN",
+      "statement": "Already persisted P2_IS_NOT_COUPLED_TO_5011_OR_PREIMAGE_QUESTION=true; prefix is HASH_ONLY_REFERENCE / PREFIX_ONLY_AS_ATTESTED of RESOLUTION_RECORD_LIST_SHA256.",
+      "evidence_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_POST_SQLITE_RESIDUAL_FRONTIER_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_SCOPED_IRREDUCIBLE_HISTORICAL_UNKNOWN_TWO_FULL_SHA_PREIMAGES_OWNER_ADJUDICATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_PREFIX_60164328_ATTESTATION_ANATOMY_AND_PREDICATE_SEPARATION_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_5011_SOURCE_SET_LOCALIZATION_OBSERVATION_V1.json"
+      ],
+      "P2_IS_NOT_COUPLED_TO_5011_OR_PREIMAGE_QUESTION": true,
+      "NEW_GATE_OR_DEPENDENCY_CREATED": false
+    },
+    {
+      "pair_id": 12,
+      "from_frontier": "RESOLUTION_PREFIX_60164328",
+      "to_frontier": "HISTORICAL_P6_SOURCE_SET_BOUND",
+      "authorized_read_only_report_shorthand": "U",
+      "THIS_SHORTHAND_IS_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+      "CURRENT_STATUS": "UNRESOLVED",
+      "statement": "Prefix identity is distinct from census SHA caa85fb2 used by R-A1 and is excluded from scoped two-SHA acceptance; prefix is not listed in R-A; that list is not adjudicated as exhaustive.",
+      "evidence_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_5011_SOURCE_SET_LOCALIZATION_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_SCOPED_IRREDUCIBLE_HISTORICAL_UNKNOWN_TWO_FULL_SHA_PREIMAGES_OWNER_ADJUDICATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json"
+      ],
+      "NEW_GATE_OR_DEPENDENCY_CREATED": false
+    },
+    {
+      "pair_id": 13,
+      "from_frontier": "RESOLUTION_PREFIX_60164328",
+      "to_frontier": "ALL_P6_RELEVANCE_COMPLETE",
+      "authorized_read_only_report_shorthand": "U",
+      "THIS_SHORTHAND_IS_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+      "CURRENT_STATUS": "UNRESOLVED",
+      "statement": "A resolution-record-list preimage could bear on R-B5 residual identities; necessity is not proven; PREFIX_ONLY_AS_ATTESTED is not a preimage.",
+      "evidence_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_RAW_EXECUTION_RECOVERY_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_PREFIX_60164328_ATTESTATION_ANATOMY_AND_PREDICATE_SEPARATION_OBSERVATION_V1.json"
+      ],
+      "NEW_GATE_OR_DEPENDENCY_CREATED": false
+    },
+    {
+      "pair_id": 14,
+      "from_frontier": "RESOLUTION_PREFIX_60164328",
+      "to_frontier": "GAP_CLOSED",
+      "authorized_read_only_report_shorthand": "U",
+      "THIS_SHORTHAND_IS_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+      "CURRENT_STATUS": "UNRESOLVED",
+      "statement": "No persisted R-D necessity binds prefix identity to GAP_CLOSED; prefix persist already records THIS_PERSIST_DOES_NOT_CLOSE_GAP=true.",
+      "evidence_locators": [
+        "docs/forensics/persistence/inventories/P6_5189_PREFIX_60164328_ATTESTATION_ANATOMY_AND_PREDICATE_SEPARATION_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json"
+      ],
+      "NEW_GATE_OR_DEPENDENCY_CREATED": false
+    }
+  ],
+  "PROVEN_DEPENDENCY_COUNT": 1,
+  "PROVEN_NON_DEPENDENCY_COUNT": 3,
+  "UNPROVEN_RELATION_COUNT": 10,
+  "critical_path_synthesis": {
+    "HIGHEST_LEVERAGE_NEXT_FRONTIER": "NOT_UNIQUELY_PROVEN",
+    "UNIQUE_CRITICAL_PATH_PROVEN": false,
+    "HISTORICAL_P6_SOURCE_SET_BOUND_IS_THE_ONLY_MATRIX_DEP_FOR_ALL_P6_RELEVANCE_COMPLETE": true,
+    "BOUND_TO_COMPLETENESS_DEP_IS_NOT_INFERRED_AS_GAP_CLOSED_CRITICALITY": true,
+    "SLICE_6_NOT_DECLARED_CLOSURE_CRITICAL": true,
+    "PREFIX_60164328_NOT_DECLARED_CLOSURE_CRITICAL": true,
+    "COUNT_DRIFT_3946_3951_NOT_DECLARED_CLOSURE_CRITICAL": true,
+    "P2_PROVEN_NON_DEPENDENT_ONLY_FOR_ALL_P6_RELEVANCE_COMPLETE_AND_5011_AND_PREIMAGE": true,
+    "P2_GAP_CLOSED_RELATION_UNPROVEN": true,
+    "ARTIFICIAL_RANKING_NOT_CREATED": true,
+    "competing_candidates_not_ranked": [
+      "HISTORICAL_P6_SOURCE_SET_BOUND",
+      "COUNT_DRIFT_3946_3951",
+      "P2"
+    ]
+  },
+  "still_unresolved": {
+    "HISTORICAL_P6_SOURCE_SET_BOUND": false,
+    "ALL_P6_RELEVANCE_COMPLETE": false,
+    "P2_SOURCE_RESOLVED": false,
+    "GAP_CLOSED": false,
+    "SLICE_6": "OPEN",
+    "RESOLUTION_PREFIX_60164328": "OPEN",
+    "COUNT_DRIFT_3946_VS_3951": "UNADJUDICATED",
+    "P2": "UNRESOLVED",
+    "R-A1_AS_PREIMAGE_PROOF": "UNCHANGED",
+    "R-A2": "UNCHANGED",
+    "R-B2": "UNCHANGED",
+    "R-B5_AS_ENUMERATION": "UNCHANGED",
+    "R-D2": "UNCHANGED",
+    "SLICE_5": "PERSISTED_UNCHANGED"
+  },
+  "NEW_PERSISTABLE_FACT_COUNT": 2,
+  "new_persistable_facts": [
+    {
+      "fact_id": 1,
+      "label": "FOURTEEN_PAIRWISE_RELATIONS_ASSEMBLED_FROM_ALREADY_PERSISTED_RECORDS_WITH_COUNTS_1_DEP_3_NON_10_U",
+      "CURRENT_STATUS": "PROVEN",
+      "PROVEN_DEPENDENCY_COUNT": 1,
+      "PROVEN_NON_DEPENDENCY_COUNT": 3,
+      "UNPROVEN_RELATION_COUNT": 10,
+      "NEW_GATE_OR_DEPENDENCY_CREATED": false,
+      "COUNT_DRIFT_ADJUDICATED_IN_THIS_PERSIST": false,
+      "P2_RESOLVED_IN_THIS_PERSIST": false,
+      "SLICE_6_CLOSED_BY_THIS_PERSIST": false,
+      "RESOLUTION_PREFIX_60164328_STATUS": "OPEN"
+    },
+    {
+      "fact_id": 2,
+      "label": "HIGHEST_LEVERAGE_NEXT_FRONTIER_NOT_UNIQUELY_PROVEN",
+      "CURRENT_STATUS": "PROVEN",
+      "HIGHEST_LEVERAGE_NEXT_FRONTIER": "NOT_UNIQUELY_PROVEN",
+      "UNIQUE_CRITICAL_PATH_PROVEN": false,
+      "ARTIFICIAL_RANKING_NOT_CREATED": true
+    }
+  ],
+  "referenced_existing_persistence_records_not_rewritten": [
+    {
+      "locator": "docs/forensics/persistence/inventories/P6_5189_PREFIX_60164328_ATTESTATION_ANATOMY_AND_PREDICATE_SEPARATION_OBSERVATION_V1.json",
+      "sha256_at_this_persist": "4cb281d3ef49fb8b899bfc9b3eab24283b5af62e0638acd01a2ec035c000964a",
+      "bytes_at_this_persist": 15914,
+      "PREFIX_OBSERVATION_REWRITE_PERFORMED": false
+    },
+    {
+      "locator": "docs/forensics/persistence/inventories/P6_5189_SLICE_5_NO_CONTRADICTION_LAYERED_STATUSES_OBSERVATION_V1.json",
+      "sha256_at_this_persist": "46df274076f811104aafbe23512f19cd3d3da1258b1ad7c123a54d50bfbbcda2",
+      "bytes_at_this_persist": 23927,
+      "SLICE_5_REWRITE_PERFORMED": false,
+      "SLICE_5_STATUS": "PERSISTED_UNCHANGED"
+    },
+    {
+      "locator": "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json",
+      "sha256_at_this_persist": "6b17ff348980ac1c0f791f05c2347b1e8991a657091bd94071d556d9e47d0cfa",
+      "bytes_at_this_persist": 46363,
+      "SYNTHESIS_OBSERVATION_REWRITE_PERFORMED": false
+    },
+    {
+      "locator": "docs/forensics/persistence/inventories/P6_5189_SCOPED_IRREDUCIBLE_HISTORICAL_UNKNOWN_TWO_FULL_SHA_PREIMAGES_OWNER_ADJUDICATION_V1.json",
+      "sha256_at_this_persist": "877eed243bf0050b74911a26d9ab8a859858fe4487c141e6ed39a8fe42caa693",
+      "bytes_at_this_persist": 16041,
+      "RESOLUTION_RECORD_LIST_PREFIX_60164328_INCLUDED": false,
+      "SLICE_6_INCLUDED": false
+    },
+    {
+      "locator": "docs/forensics/persistence/inventories/P6_5189_POST_SQLITE_RESIDUAL_FRONTIER_OBSERVATION_V1.json",
+      "sha256_at_this_persist": "3f1a135bdb130d52df2ab79c845cbe783e233c2b54d9c6821cebb416605a9b39",
+      "bytes_at_this_persist": 19150
+    },
+    {
+      "locator": "docs/forensics/persistence/inventories/P6_5189_5011_SOURCE_SET_LOCALIZATION_OBSERVATION_V1.json",
+      "sha256_at_this_persist": "a0bcc3e5d60db142eb8f57d4bed0f9584f898c3def75a5aac4c96b1182f70fdd",
+      "bytes_at_this_persist": 10997
+    },
+    {
+      "locator": "docs/forensics/persistence/inventories/P6_5189_RAW_EXECUTION_RECOVERY_OBSERVATION_V1.json",
+      "sha256_at_this_persist": "161c8f7f4ca070b54eca5b7e2a280bbfbb99e747ab4e30365e5a727c53ce0aa4",
+      "bytes_at_this_persist": 20991
+    },
+    {
+      "locator": "docs/forensics/persistence/inventories/P6_5189_37G_ARCHIVE_SQLITE_VSCDB_BODY_PREIMAGE_PROBE_OBSERVATION_V1.json",
+      "sha256_at_this_persist": "97ffabba7928f4d07d69f357f5dd5fbe488fe9634166f2edbbd8b1293e66b3d6",
+      "bytes_at_this_persist": 17945
+    },
+    {
+      "locator": "docs/forensics/persistence/inventories/CROSS_CORPUS_RELATION_FACTS_V1.json",
+      "sha256_at_this_persist": "f592ee41a10f8f7670e9b070fce985d848f56fac052ce541d70cb4e905b3c22e",
+      "bytes_at_this_persist": 24022
+    },
+    {
+      "locator": "docs/forensics/persistence/registries/EXTERNAL_FORENSIC_CORPUS_DISCOVERY_V1.md",
+      "sha256_at_this_persist": "d66983c5926ff76136aa913fb3e485cd791e872b937301f20ef6becf221917bc",
+      "bytes_at_this_persist": 14512
+    },
+    {
+      "locator": "forensic/p6_proven_relevant_jsonl_identity_copies_v1/manifests/raw_evidence_preservation_map.json",
+      "sha256_at_this_persist": "c93569d35226459fdceb3b67c184e16f79e55515297525eeb5ea868a260ca4ea",
+      "bytes_at_this_persist": 430583,
+      "PRESERVATION_MAP_MUTATED": false
+    }
+  ],
+  "source_identity_and_variant_protection": {
+    "SOURCE_IDENTITY_COLLAPSE_PRESENT": false,
+    "HISTORICAL_VARIANT_COLLAPSE_PRESENT": false,
+    "LOCATOR_COLLAPSE_PRESENT": false,
+    "unmerged_identities_remain_distinct": [
+      "preserved_f799_identity_copy",
+      "later_live_f799_byte_state",
+      "terminals_640021",
+      "agent-tools_17b8d1bb_copy",
+      "RESOLUTION_RECORD_LIST_SHA256_PREFIX_60164328",
+      "P6_RELATIVE_LOCATOR_LIST_SHA256",
+      "REVIEW_RECORD_LIST_SHA256",
+      "prefix_60164328_observation",
+      "this_frontier_synthesis_observation",
+      "read_only_report_assistant_jsonl_line_8",
+      "persist_owner_go_user_jsonl_line_10"
+    ]
+  },
+  "non_implications": {
+    "THIS_PERSIST_DOES_NOT_RESOLVE_PREFIX_60164328": true,
+    "THIS_PERSIST_DOES_NOT_CLOSE_SLICE_6": true,
+    "THIS_PERSIST_DOES_NOT_IDENTIFY_PREFIX_WITH_SYNTHESIS_SLICE_6": true,
+    "THIS_PERSIST_DOES_NOT_NORMALIZE_COUNT_DRIFT_3946_VS_3951": true,
+    "THIS_PERSIST_DOES_NOT_RESOLVE_P2": true,
+    "THIS_PERSIST_DOES_NOT_BOUND_HISTORICAL_P6_SOURCE_SET": true,
+    "THIS_PERSIST_DOES_NOT_MAKE_ALL_P6_RELEVANCE_COMPLETE": true,
+    "THIS_PERSIST_DOES_NOT_CLOSE_GAP": true,
+    "THIS_PERSIST_DOES_NOT_REWRITE_SLICE_5": true,
+    "THIS_PERSIST_DOES_NOT_REWRITE_R-A1_AS_PREIMAGE_PROOF": true,
+    "THIS_PERSIST_DOES_NOT_REWRITE_R-A2": true,
+    "THIS_PERSIST_DOES_NOT_REWRITE_R-B2": true,
+    "THIS_PERSIST_DOES_NOT_REWRITE_R-B5_AS_ENUMERATION": true,
+    "THIS_PERSIST_DOES_NOT_REWRITE_R-D2": true,
+    "SCOPED_TWO_SHA_ACCEPTANCE_NOT_EXTENDED": true,
+    "FALSE_FLAGS_NOT_CONVERTED_TO_LINEAR_GATE_CHAIN": true
+  },
+  "adversarial_revalidation": {
+    "OPEN_IS_DEPENDENCY": false,
+    "CHRONOLOGY_IS_DEPENDENCY": false,
+    "NEXT_ACTION_IS_AUTHORITY": false,
+    "NAVIGATION_IS_SEMANTICS": false,
+    "SLICE6_PREFIX_COLLAPSE": false,
+    "P2_EMPTY_INFERRED": false,
+    "COUNT_NORMALIZATION": false,
+    "SOURCE_IDENTITY_COLLAPSE": false,
+    "LOCATOR_COLLAPSE": false,
+    "HISTORICAL_VARIANT_COLLAPSE": false,
+    "RAW_EVIDENCE_PROMOTED_TO_ADJUDICATED": false,
+    "ADJUDICATED_RESULT_OVERWRITTEN": false,
+    "UNRESOLVEDNESS_ARTIFICIALLY_CLOSED": false,
+    "NEW_DOMAIN_ONTOLOGY_CREATED": false,
+    "NEW_CANONICAL_SEMANTICS_CREATED": false,
+    "AUTHORITY_LEAK": false,
+    "GAP_CLOSURE_INFERRED": false,
+    "PREFIX_PROMOTED_TO_FULL_SHA": false,
+    "COUNT_3946_VS_3951_NORMALIZED": false,
+    "P2_ALTERED": false,
+    "P6_COMPLETENESS_SUGGESTED": false,
+    "GAP_CLOSED_SUGGESTED": false,
+    "UNIQUE_CRITICAL_PATH_INVENTED": false,
+    "FINAL_SEMANTIC_REVALIDATION": "PASS"
+  },
+  "mutation_boundary": {
+    "SLICE_5_OBSERVATION_MUTATED": false,
+    "PREFIX_60164328_OBSERVATION_MUTATED": false,
+    "PRESERVATION_MAP_MUTATED": false,
+    "SYNTHESIS_OBSERVATION_MUTATED": false,
+    "RESIDUAL_FRONTIER_OBSERVATION_MUTATED": false,
+    "SCOPED_TWO_SHA_OWNER_ADJUDICATION_MUTATED": false,
+    "RAW_EXECUTION_RECOVERY_OBSERVATION_MUTATED": false,
+    "SOURCE_SET_5011_OBSERVATION_MUTATED": false,
+    "EXTERNAL_FORENSIC_MD_MUTATED": false,
+    "CANONICAL_SOURCE_MUTATED": false,
+    "SQLITE_REQUERY_PERFORMED_IN_THIS_PERSIST": false,
+    "ARCHIVE_SEARCH_PERFORMED_IN_THIS_PERSIST": false,
+    "P2_SEARCH_PERFORMED_IN_THIS_PERSIST": false,
+    "INFORMATION_CORPUS_PERSISTENCE_BASE_MUTATED": false
+  },
+  "HIGHEST_LEVERAGE_NEXT_FRONTIER": "NOT_UNIQUELY_PROVEN",
+  "UNIQUE_CRITICAL_PATH_PROVEN": false,
+  "OWNER_ACCEPTANCE_AS_IRREDUCIBLE_HISTORICAL_UNKNOWN": false,
+  "SLICE_6_OWNER_IRREDUCIBLE_ACCEPTED": false
+}
