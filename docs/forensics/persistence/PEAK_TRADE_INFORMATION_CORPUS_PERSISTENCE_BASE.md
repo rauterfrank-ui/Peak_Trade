@@ -44,6 +44,7 @@ repo-internal.
 | `inventories&#47;CROSS_CORPUS_RELATION_FACTS_V1.json` | Machine relation facts |
 | `inventories&#47;P6_5189_FINAL_4_UNRESOLVED_RESOLUTION_OBSERVATION_V1.json` | Additive P6 5189 final-4 coverage observation (AUTHORITY=NONE) |
 | `inventories&#47;P6_5189_FINAL_2_UNRESOLVED_RECOVERY_OBSERVATION_V1.json` | Additive P6 5189 final-2 recovery coverage observation (AUTHORITY=NONE) |
+| `inventories&#47;P6_5189_FINAL_1_UNRESOLVED_RECOVERY_OBSERVATION_V1.json` | Additive P6 5189 final-1 recovery coverage observation (AUTHORITY=NONE) |
 
 ## Provenance classes used here
 
