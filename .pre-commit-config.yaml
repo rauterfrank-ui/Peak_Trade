@@ -29,6 +29,7 @@ repos:
             forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/(desktop|transcripts)/.*|
             forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/.*|
             forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/.*|
+            forensic/p6_proven_relevant_jsonl_identity_copies_v1/evidence/raw_verbatim_identity_copies_authority_none/.*|
             forensic/evidence/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK\.md
           )$
 
@@ -40,6 +41,7 @@ repos:
             forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/(desktop|transcripts)/.*|
             forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/.*|
             forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/.*|
+            forensic/p6_proven_relevant_jsonl_identity_copies_v1/evidence/raw_verbatim_identity_copies_authority_none/.*|
             forensic/evidence/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK\.md
           )$
 
@@ -51,6 +53,7 @@ repos:
             forensic/post_step32_knowledge_integration_v0/evidence/raw_verbatim_identity_copies_authority_none/(desktop|transcripts)/.*|
             forensic/lossless_structural_projection_v2_v2_1_pack_v1/evidence/raw_verbatim_identity_copies_authority_none/.*|
             forensic/lossless_structural_projection_v2_v2_1_pack_v1/generator/.*|
+            forensic/p6_proven_relevant_jsonl_identity_copies_v1/evidence/raw_verbatim_identity_copies_authority_none/.*|
             forensic/evidence/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK\.md
           )$
 
