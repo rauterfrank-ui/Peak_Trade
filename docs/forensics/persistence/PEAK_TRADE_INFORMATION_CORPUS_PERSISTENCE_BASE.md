@@ -74,6 +74,16 @@ repo-internal.
 | `inventories&#47;P6_5189_UNRESOLVED_PAIR_MAX_LEVERAGE_MULTI_STEP_READ_ONLY_WORKPACKAGE_OBSERVATION_V1.json` | Additive P6 5189 unresolved-pair max-leverage multi-step read-only workpackage observation (AUTHORITY=NONE; distinct from historical-source-set observation) |
 | `inventories&#47;P6_5189_POST_GLOBAL_CLOSURE_MAX_LEVERAGE_FRONTIER_ADJUDICATION_READ_ONLY_OBSERVATION_V1.json` | Additive historical coverage of the post-global-closure max-leverage read-only execution and its negative finding (AUTHORITY=NONE; distinct from unresolved-dependency-matrix observation) |
 | `inventories&#47;P6_5189_COMPLETENESS_REVALIDATION_OBSERVATION_V1.json` | Additive P6 5189 completeness-revalidation observation (AUTHORITY=NONE; distinct from 5011 localization and from completeness-synthesis observation; index entry is not completeness proof) |
+| `inventories&#47;P6_5189_FORENSIC_LAYER_COMPLETENESS_AUDIT_AND_EXISTING_EVIDENCE_GRAPH_REPRESENTATION_REPAIR_OBSERVATION_V1.json` | Additive persist of the layer-completeness / cross-layer-coverage read-only audit plus existing-evidence graph-representation repair (AUTHORITY=NONE; index entry is not completeness proof; 36 was the pre-workpackage count) |
+
+```text
+PRE_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=36
+POST_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=37
+COUNT_36_IS_HISTORICAL_SNAPSHOT_NOT_CURRENT=true
+INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF=true
+NAVIGATION_ONLY=true
+```
+
 
 ## Provenance classes used here
 

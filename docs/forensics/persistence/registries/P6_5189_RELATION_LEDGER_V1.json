@@ -27,16 +27,23 @@
   "proof_status_classes_are_forensic_audit_categories_not_domain_ontology": true,
   "revalidation_delta_versus_prior_read_only_report": {
     "PRIOR_PROVEN_RELATION_EDGES": 41,
-    "CURRENT_PROVEN_RELATION_COUNT": 42,
-    "DELTA_PROVEN": 1,
+    "LEDGER_AUTHORING_PROVEN_RELATION_COUNT": 42,
+    "PRE_WORKPACKAGE_PROVEN_RELATION_COUNT": 42,
+    "CURRENT_PROVEN_RELATION_COUNT": 45,
+    "DELTA_PROVEN_AT_LEDGER_AUTHORING": 1,
     "DELTA_PROVEN_REASON": "E03B adds explicit persist-preceding FINAL_1 -> 5011 from 5011.preceding_observation_locator; previously folded into G3 transcript order only",
+    "DELTA_PROVEN_THIS_WORKPACKAGE": 3,
+    "DELTA_PROVEN_THIS_WORKPACKAGE_REASON": "E42 N_2SHA->N_SHA_REVIEW ADJUDICATES from two-SHA accepted_artifact_identities; E43 N_IDX->N_G2 and E44 N_IDX->N_G3 REFERENCES from index listings previously folded into E38 semantic_effect; E38 left unchanged",
     "PRIOR_UNPROVEN_RELATION_CANDIDATES": 6,
     "CURRENT_UNPROVEN_RELATION_COUNT": 7,
     "DELTA_UNPROVEN": 1,
     "DELTA_UNPROVEN_REASON": "omitted unattested P6_LIVE_5216 existence candidate; split bundled P2 overlap into three UNPROVEN edges (P1, P5, P6/174); retained prefix-membership and GAP_CLOSED inbound DEP/NON and two causal-successor non-proofs",
     "PRIOR_DISPROVEN_RELATIONS": 8,
     "CURRENT_DISPROVEN_RELATION_COUNT": 8,
-    "COUNT_VALUES_NORMALIZED": false
+    "PRE_WORKPACKAGE_RELATION_COUNT": 57,
+    "COUNT_VALUES_NORMALIZED": false,
+    "FRONTIER_SLICE_6_LEFT_UNRESOLVED": true,
+    "R_D2_NOT_ADDED_AS_RELATION_OR_PREDICATE": true
   },
   "architectural_facts": {
     "G1_G2_G3_ARE_PART_OF_SAME_FORENSIC_ARCHITECTURE": true,
@@ -575,6 +582,42 @@
       "source_identity_merge": false
     },
     {
+      "relation_id": "E42",
+      "from_node": "N_2SHA",
+      "to_node": "N_SHA_REVIEW",
+      "relation_type": "ADJUDICATES",
+      "evidence_locator": "docs/forensics/persistence/inventories/P6_5189_SCOPED_IRREDUCIBLE_HISTORICAL_UNKNOWN_TWO_FULL_SHA_PREIMAGES_OWNER_ADJUDICATION_V1.json",
+      "explicit_or_derived": "explicit",
+      "proof_status": "PROVEN",
+      "authority": "NONE",
+      "semantic_effect": "scoped_irreducible_second_attested_full_sha_REVIEW_RECORD_LIST_SHA256;_not_folded_into_E33_N_SHA_CENSUS;_SCOPE_IS_NOT_GLOBAL;_identities_remain_distinct",
+      "source_identity_merge": false
+    },
+    {
+      "relation_id": "E43",
+      "from_node": "N_IDX",
+      "to_node": "N_G2",
+      "relation_type": "REFERENCES",
+      "evidence_locator": "docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md",
+      "explicit_or_derived": "explicit",
+      "proof_status": "PROVEN",
+      "authority": "NONE",
+      "semantic_effect": "index_navigation_is_not_adjudication;_explicit_listing_of_G2_observation_previously_folded_into_E38_semantic_effect",
+      "source_identity_merge": false
+    },
+    {
+      "relation_id": "E44",
+      "from_node": "N_IDX",
+      "to_node": "N_G3",
+      "relation_type": "REFERENCES",
+      "evidence_locator": "docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md",
+      "explicit_or_derived": "explicit",
+      "proof_status": "PROVEN",
+      "authority": "NONE",
+      "semantic_effect": "index_navigation_is_not_adjudication;_explicit_listing_of_G3_observation_previously_folded_into_E38_semantic_effect",
+      "source_identity_merge": false
+    },
+    {
       "relation_id": "U01",
       "from_node": "N_G2",
       "to_node": "N_DEP",
@@ -755,7 +798,9 @@
       "source_identity_merge": false
     }
   ],
-  "PROVEN_RELATION_COUNT": 42,
+  "PROVEN_RELATION_COUNT": 45,
   "UNPROVEN_RELATION_COUNT": 7,
-  "DISPROVEN_RELATION_COUNT": 8
+  "DISPROVEN_RELATION_COUNT": 8,
+  "PRE_WORKPACKAGE_PROVEN_RELATION_COUNT": 42,
+  "PRE_WORKPACKAGE_RELATION_COUNT": 57
 }
