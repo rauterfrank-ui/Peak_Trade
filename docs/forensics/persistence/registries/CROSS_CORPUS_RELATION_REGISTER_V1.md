@@ -231,3 +231,16 @@ P5 (registered, not copied, not made SSOT):
 - whether any other local folder is the intended Owner-named corpus
 - P6 transcript semantic overlap with P1/P5 (not ingested)
 - README.md same-basename files across packages
+
+## Navigation only — P6_5189 observation graph is a different surface
+
+This register remains the P2-vs-repo and P5-vs-repo cross-corpus axes.
+It is **not** the P6_5189 relation / dependency / proof-obligation graph.
+Axis-1 and Axis-2 semantics above are unchanged.
+
+P6_5189 graph locators (AUTHORITY=NONE; navigation only):
+
+- `docs&#47;forensics&#47;persistence&#47;registries&#47;P6_5189_RELATION_LEDGER_V1.json`
+- `docs&#47;forensics&#47;persistence&#47;registries&#47;P6_5189_RELATION_NODE_REGISTER_V1.json`
+- `docs&#47;forensics&#47;persistence&#47;registries&#47;P6_5189_SET_AND_UNIVERSE_REGISTER_V1.json`
+- `docs&#47;forensics&#47;persistence&#47;registries&#47;P6_5189_PROOF_OBLIGATION_MATRIX_V1.json`
