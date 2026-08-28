@@ -260,8 +260,7 @@ def test_readback_only_after_accepted_mutation_and_max_one() -> None:
 
 def test_accepted_post_is_not_flatten_proof() -> None:
     transport = GatedProductiveFlattenTransportV1()
-    src = inspect.getsource(type(transport).send)
-    assert "PRODUCTIVE_FLATTEN_URLLIB_NOT_AUTHORIZED_BY_WIRING_SLICE" in src
+    assert transport.network_session_authorized is False
     verdict = evaluate_canary_flatten_post_action_proof_contract_v1(
         pre_positions_payload=_empty_positions(),
         post_positions_payload=_empty_positions(),
@@ -318,10 +317,11 @@ def test_no_btc_to_sui_transfer_and_no_one_contract_equals_one_sui() -> None:
         assert str(exc) == "TARGET_INSTRUMENT_NOT_OBSERVED"
 
 
-def test_productive_urllib_send_remains_unimplemented() -> None:
+def test_productive_urllib_send_default_remains_unauthorized() -> None:
     src = inspect.getsource(GatedProductiveFlattenTransportV1.send)
     assert "network_session_authorized" in src
     assert "PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED" in src
-    assert "PRODUCTIVE_FLATTEN_URLLIB_NOT_AUTHORIZED_BY_WIRING_SLICE" in src
+    assert "PRODUCTIVE_FLATTEN_URLLIB_NOT_AUTHORIZED_BY_WIRING_SLICE" not in src
     transport = GatedProductiveFlattenTransportV1()
     assert transport.network_session_authorized is False
+    assert transport.last_wire_attempted is False

@@ -17,6 +17,11 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_limit_price
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_post_action_proof_contract_v1 import (
     FLATTEN_POST_ACTION_PROOF_CONTRACT_IMPLEMENTED,
+    P7_3_EMPTY_DATA_IS_ZERO,
+    POST_ACTION_MISSING_TARGET_MAY_SATISFY_POS_EQ_0,
+    POST_ACTION_REQUIRES_EXPLICIT_PRE_NONZERO,
+    POST_ACTION_SCOPE,
+    POST_ACTION_SUCCESS_PREDICATE_STATUS,
     LiveCanaryFlattenPostActionProofError,
     evaluate_canary_flatten_post_action_proof_contract_v1,
 )
@@ -54,6 +59,11 @@ def test_contract_flags_remain_fail_closed() -> None:
     assert DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED is False
     assert ORDER_COUNT_LIMIT == 1
     assert POSITION_COUNT_LIMIT == 1
+    assert POST_ACTION_SUCCESS_PREDICATE_STATUS == "BOUND_CHOICE_B"
+    assert POST_ACTION_MISSING_TARGET_MAY_SATISFY_POS_EQ_0 is True
+    assert POST_ACTION_REQUIRES_EXPLICIT_PRE_NONZERO is True
+    assert POST_ACTION_SCOPE == "FLATTEN_POST_ACTION_SUCCESS_EVALUATOR_ONLY"
+    assert P7_3_EMPTY_DATA_IS_ZERO is False
 
 
 def test_offline_satisfied_pre_nonzero_post_flat_pending_empty() -> None:
@@ -146,3 +156,38 @@ def test_short_pre_flatten_buy_side_offline_satisfied() -> None:
     assert verdict.pre_signed_pos == "-1"
     assert verdict.post_signed_pos == "0"
     assert verdict.live_flatten_provability == "UNPROVEN"
+
+
+def test_choice_b_pre_nonzero_post_missing_is_success_candidate() -> None:
+    verdict = _evaluate(post_positions_payload=_positions())
+    assert verdict.pre_pos_nonzero is True
+    assert verdict.post_pos_zero is True
+    assert verdict.offline_contract_satisfied is True
+    assert verdict.already_flat_noop is False
+    assert verdict.submit_authorized is False
+    assert verdict.live_flatten_provability == "UNPROVEN"
+
+
+def test_choice_b_pre_missing_post_missing_is_not_productive_success() -> None:
+    verdict = _evaluate(pre_positions_payload=_positions(), post_positions_payload=_positions())
+    assert verdict.already_flat_noop is True
+    assert verdict.offline_contract_satisfied is False
+    assert "ZERO_POSITION_NO_FLATTEN_ORDER" in verdict.blocking_reasons
+    assert verdict.submit_authorized is False
+
+
+def test_choice_b_post_explicit_nonzero_is_not_flat() -> None:
+    verdict = _evaluate(post_positions_payload=_positions({"instId": TARGET, "pos": "1"}))
+    assert verdict.offline_contract_satisfied is False
+    assert "POST_NOT_FLAT" in verdict.blocking_reasons
+
+
+def test_choice_b_explicit_zero_row_does_not_contradict_missing_post() -> None:
+    missing = _evaluate(post_positions_payload=_positions())
+    explicit_zero = _evaluate(post_positions_payload=_positions({"instId": TARGET, "pos": "0"}))
+    assert missing.offline_contract_satisfied is True
+    assert explicit_zero.offline_contract_satisfied is True
+    assert missing.post_pos_zero is True
+    assert explicit_zero.post_pos_zero is True
+    assert missing.live_flatten_provability == "UNPROVEN"
+    assert explicit_zero.live_flatten_provability == "UNPROVEN"

@@ -1,8 +1,8 @@
 """Auditable productive-flatten submit boundary.
 
 Send is reached only after a full pre-send receipt. Fake transports cannot
-masquerade. This slice never opens a network session and never claims
-LIVE_FLATTEN_PROVABILITY.
+masquerade. Network session remains independently gated on the transport.
+This boundary never claims LIVE_FLATTEN_PROVABILITY.
 """
 
 from __future__ import annotations
@@ -161,6 +161,7 @@ class FlattenGatedSubmitBoundaryV1:
         try:
             response = transport.send(request)
         except LiveCanaryFlattenProductiveTransportError as exc:
+            wire_attempted = bool(getattr(transport, "last_wire_attempted", False))
             return FlattenGatedSubmitResultV1(
                 allowed=True,
                 send_attempted=True,
@@ -174,8 +175,9 @@ class FlattenGatedSubmitBoundaryV1:
                 fake_transport_rejected=False,
                 duplicate_blocked="DUPLICATE_POST_FORBIDDEN" in str(exc),
                 retry_attempted=False,
-                network_used=False,
+                network_used=wire_attempted,
             )
+        wire_attempted = bool(getattr(transport, "last_wire_attempted", False))
         return FlattenGatedSubmitResultV1(
             allowed=True,
             send_attempted=True,
@@ -189,7 +191,7 @@ class FlattenGatedSubmitBoundaryV1:
             fake_transport_rejected=False,
             duplicate_blocked=False,
             retry_attempted=False,
-            network_used=False,
+            network_used=wire_attempted,
         )
 
 

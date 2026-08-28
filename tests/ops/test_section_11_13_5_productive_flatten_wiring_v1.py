@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 from typing import Any, Mapping
 
 import pytest
@@ -40,13 +41,18 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_pre_send_ga
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_productive_transport_v1 import (
     GatedProductiveFlattenTransportV1,
+    LiveCanaryFlattenProductiveTransportError,
     RecordingProductiveFlattenTransportV1,
+    open_productive_flatten_urllib_post_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_submit_transport_v1 import (
     DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED,
     LIVE_FLATTEN_PROVABILITY,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
+    CanaryPostRedirectBlockedError,
+    LiveCanaryHttpRequestV1,
+    LiveCanaryHttpResponseV1,
     RecordingFakeCanaryTransportV1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.runner_v1 import (
@@ -284,7 +290,131 @@ def test_gated_transport_never_opens_network_even_with_valid_gate() -> None:
     assert result.send_attempted is True
     assert result.send_completed is False
     assert result.network_used is False
+    assert transport.last_wire_attempted is False
     assert "PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED" in " ".join(result.reasons)
+
+
+def test_gated_transport_mocked_wire_returns_response_when_authorized(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    captured: list[Any] = []
+
+    def _fake_open(request: Any) -> LiveCanaryHttpResponseV1:
+        captured.append(request)
+        return LiveCanaryHttpResponseV1(
+            status_code=200,
+            body_bytes=b'{"code":"0","data":[{"sCode":"0"}]}',
+            elapsed_seconds=0.01,
+            endpoint=request.endpoint,
+            method="POST",
+            send_attempted=True,
+            wire_body_sha256="ab",
+            wire_body_byte_len=1,
+        )
+
+    monkeypatch.setattr(
+        "src.ops.section_11_13_5_live_canary_minimum_exposure_v1."
+        "flatten_productive_transport_v1.open_productive_flatten_urllib_post_v1",
+        _fake_open,
+    )
+    transport = GatedProductiveFlattenTransportV1()
+    transport.network_session_authorized = True
+    result = submit_productive_flatten_v1(gate_input=_valid_gate(), transport=transport)
+    assert result.send_completed is True
+    assert result.network_used is True
+    assert transport.last_wire_attempted is True
+    assert result.response is not None
+    assert result.response.status_code == 200
+    assert result.productive_venue_proof is False
+    assert result.live_flatten_provability == "UNPROVEN"
+    assert len(captured) == 1
+    assert captured[0].method == "POST"
+    assert captured[0].endpoint == "/api/v5/trade/order"
+    assert "OK-ACCESS-SIGN" not in {str(k).upper() for k in captured[0].headers}
+
+
+def test_gated_transport_redirect_fails_closed(monkeypatch: pytest.MonkeyPatch) -> None:
+    def _redirect(_request: Any) -> LiveCanaryHttpResponseV1:
+        raise CanaryPostRedirectBlockedError(
+            status_code=302,
+            location="https://eea.okx.com/elsewhere",
+            body=b"",
+            headers={},
+        )
+
+    monkeypatch.setattr(
+        "src.ops.section_11_13_5_live_canary_minimum_exposure_v1."
+        "flatten_productive_transport_v1.open_productive_flatten_urllib_post_v1",
+        _redirect,
+    )
+    transport = GatedProductiveFlattenTransportV1()
+    transport.network_session_authorized = True
+    result = submit_productive_flatten_v1(gate_input=_valid_gate(), transport=transport)
+    assert result.send_completed is False
+    assert result.network_used is True
+    assert any("POST_REDIRECT_FAIL_CLOSED" in item for item in result.reasons)
+
+
+def test_gated_transport_wire_exception_fails_closed(monkeypatch: pytest.MonkeyPatch) -> None:
+    def _boom(_request: Any) -> LiveCanaryHttpResponseV1:
+        raise TimeoutError("mocked-timeout")
+
+    monkeypatch.setattr(
+        "src.ops.section_11_13_5_live_canary_minimum_exposure_v1."
+        "flatten_productive_transport_v1.open_productive_flatten_urllib_post_v1",
+        _boom,
+    )
+    transport = GatedProductiveFlattenTransportV1()
+    transport.network_session_authorized = True
+    result = submit_productive_flatten_v1(gate_input=_valid_gate(), transport=transport)
+    assert result.send_completed is False
+    assert result.network_used is True
+    assert any("PRODUCTIVE_FLATTEN_WIRE_TIMEOUT" in item for item in result.reasons)
+
+
+def test_gated_transport_second_send_duplicate_forbidden(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def _fake_open(request: Any) -> LiveCanaryHttpResponseV1:
+        return LiveCanaryHttpResponseV1(
+            status_code=200,
+            body_bytes=b'{"code":"0","data":[]}',
+            elapsed_seconds=0.01,
+            endpoint=request.endpoint,
+            method="POST",
+            send_attempted=True,
+        )
+
+    monkeypatch.setattr(
+        "src.ops.section_11_13_5_live_canary_minimum_exposure_v1."
+        "flatten_productive_transport_v1.open_productive_flatten_urllib_post_v1",
+        _fake_open,
+    )
+    transport = GatedProductiveFlattenTransportV1()
+    transport.network_session_authorized = True
+    receipt = evaluate_flatten_pre_send_gate_v1(_valid_gate())
+    transport.attach_pre_send_receipt(receipt)
+    request = LiveCanaryHttpRequestV1(
+        method="POST",
+        url="https://eea.okx.com/api/v5/trade/order",
+        host="eea.okx.com",
+        endpoint="/api/v5/trade/order",
+        headers={"User-Agent": "test"},
+        timeout_seconds=1.0,
+        body_text="{}",
+    )
+    first = transport.send(request)
+    assert first.status_code == 200
+    with pytest.raises(LiveCanaryFlattenProductiveTransportError, match="DUPLICATE_POST_FORBIDDEN"):
+        transport.send(request)
+
+
+def test_open_productive_flatten_urllib_is_not_canary_transport() -> None:
+    src = inspect.getsource(GatedProductiveFlattenTransportV1.send)
+    assert "UrllibLiveCanaryTransportV1" not in src
+    assert "post_entry_order" not in src
+    assert "wire_send_enabled" not in src
+    assert inspect.getsource(open_productive_flatten_urllib_post_v1)
 
 
 def test_duplicate_send_is_blocked() -> None:

@@ -6,6 +6,13 @@ Required productive proof sequence remains:
 
 PRE_POS != 0 then POS == 0, PENDING == EMPTY, NO_FLIP,
 NO_UNEXPECTED_RELATED_INSTRUMENT_POSITION.
+
+§11.13.5.Z2CL CHOICE_B: after an explicitly proven pre-target nonzero
+and a later authorized flatten mutation, absence of a target nonzero
+row in this post-action evaluator may satisfy POS==0. That rule is
+scoped to this consumer only. Pre-send missing remains
+TARGET_INSTRUMENT_NOT_OBSERVED and is not zero. Empty pre+post remains
+ALREADY_FLAT_NOOP, not productive success.
 """
 
 from __future__ import annotations
@@ -40,6 +47,11 @@ class LiveCanaryFlattenPostActionProofError(RuntimeError):
 
 FLATTEN_POST_ACTION_PROOF_CONTRACT_IMPLEMENTED = True
 FLATTEN_POST_ACTION_PROOF_PRODUCTIVE_SEQUENCE_REQUIRED = True
+POST_ACTION_SUCCESS_PREDICATE_STATUS = "BOUND_CHOICE_B"
+POST_ACTION_MISSING_TARGET_MAY_SATISFY_POS_EQ_0 = True
+POST_ACTION_SCOPE = "FLATTEN_POST_ACTION_SUCCESS_EVALUATOR_ONLY"
+POST_ACTION_REQUIRES_EXPLICIT_PRE_NONZERO = True
+P7_3_EMPTY_DATA_IS_ZERO = False
 NETWORK_EFFECT_NONE = "none"
 ORDER_EFFECT_NONE = "none"
 ACCOUNT_MUTATION_EFFECT_NONE = "none"
