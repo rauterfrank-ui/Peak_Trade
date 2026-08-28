@@ -34,12 +34,43 @@ from authorized external read-only surfaces. It must not rewrite those
 sources. It must not present an external locator as originally
 repo-internal.
 
+## Federated information architecture (entrypoint)
+
+Start here for subject/source/state lookup. Do not rediscover all
+corpora. These layers are `AUTHORITY=NONE` navigation. They do not
+replace the Master Runbook or Map of Truth.
+
+| Layer | Path | Role |
+|-------|------|------|
+| L0 | [Federated Source Surface Registry](registries/FEDERATED_SOURCE_SURFACE_REGISTRY_V1.md) | Known source surfaces SS-01..SS-14 |
+| L2 | [Information Object Reference Registry](registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md) | Stable subjects → existing artifacts; Cap-2.1 chain; non-collapse bindings |
+| L4 | [Current State Projection](registries/CURRENT_STATE_PROJECTION_V1.md) | Derived current-state view plus reconstruction tests |
+
+Reused L1 / L3 owners (not rewritten by the federated persist):
+
+- P1 / P5 inventories
+- [External Forensic Corpus Discovery](registries/EXTERNAL_FORENSIC_CORPUS_DISCOVERY_V1.md)
+- [Cross-Corpus Relation Register](registries/CROSS_CORPUS_RELATION_REGISTER_V1.md)
+- P6_5189 relation / node / set / proof registries
+- existing observation identities under `inventories&#47;`
+
+```text
+FEDERATED_ENTRYPOINT_MATERIALIZED=true
+PROJECTION_IS_NOT_CANONICAL=true
+PROJECTION_IS_NOT_NEW_ADJUDICATION=true
+COPY_OF_EXTERNAL_CORPUS_REQUIRED=false
+HISTORICAL_OBSERVATION_REWRITE_COUNT=0
+```
+
 ## Layout
 
 | Path | Role |
 |------|------|
 | `AUTHORITY_NONE.txt` | Authority containment |
 | `PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md` | This index |
+| `registries&#47;FEDERATED_SOURCE_SURFACE_REGISTRY_V1.md` | L0 federated source-surface registry (AUTHORITY=NONE; not a universe census) |
+| `registries&#47;INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md` | L2 subject→artifact reference registry (AUTHORITY=NONE; payloads stay in original artifacts) |
+| `registries&#47;CURRENT_STATE_PROJECTION_V1.md` | L4 derived current-state projection (AUTHORITY=NONE; navigation only; not a new adjudication) |
 | `registries&#47;EXTERNAL_FORENSIC_CORPUS_DISCOVERY_V1.md` | P2 discovery closeout plus P1/P3–P7 inventory |
 | `registries&#47;CROSS_CORPUS_RELATION_REGISTER_V1.md` | Proven vs unknown relations (P2/P5-vs-repo axes; **not** the P6_5189 observation graph) |
 | `registries&#47;P6_5189_RELATION_LEDGER_V1.json` | Central P6_5189 relation ledger (AUTHORITY=NONE; index entry is not adjudication) |
@@ -111,6 +142,8 @@ PRE_POST_PR6105_RANKING_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=45
 POST_POST_PR6105_RANKING_FILE_PERSISTENCE_ARTIFACT_COUNT=46
 PRE_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=46
 POST_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=47
+PRE_FEDERATED_ARCHITECTURE_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=47
+POST_FEDERATED_ARCHITECTURE_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=50
 COUNT_39_IS_PRE_CLASS_A_SNAPSHOT_NOT_CURRENT=true
 COUNT_40_IS_INTERMEDIATE_AFTER_CLASS_A_FILE_NOT_COLLAPSED_ONTO_41=true
 COUNT_41_IS_PRE_CENSUS_WORKPACKAGE_SNAPSHOT_NOT_POST_CENSUS_CURRENT=true
@@ -119,7 +152,8 @@ COUNT_43_IS_POST_CENSUS_FILE_NOT_COLLAPSED_ONTO_44=true
 COUNT_44_IS_POST_BINDING_ADJUDICATION_FILE_NOT_COLLAPSED_ONTO_45=true
 COUNT_45_IS_POST_OPTION_C_FILE_NOT_COLLAPSED_ONTO_46=true
 COUNT_46_IS_POST_PR6106_RANKING_FILE_NOT_COLLAPSED_ONTO_47=true
-COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_AND_46_AND_47_NOT_COLLAPSED=true
+COUNT_47_IS_POST_PR6106_CLOSABILITY_FILE_NOT_COLLAPSED_ONTO_50=true
+COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_AND_46_AND_47_AND_50_NOT_COLLAPSED=true
 INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF=true
 INDEX_ENTRY_IS_NOT_ADJUDICATION=true
 NAVIGATION_ONLY=true
