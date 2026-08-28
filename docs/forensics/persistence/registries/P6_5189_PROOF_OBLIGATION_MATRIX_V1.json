@@ -1,0 +1,239 @@
+{
+  "DOCUMENT_CLASS": "NON_AUTHORITATIVE_P6_5189_PROOF_OBLIGATION_MATRIX",
+  "ARTIFACT_AUTHORITY": "NONE",
+  "AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "FORENSIC_PERSISTENCE_AUTHORITY": "NONE",
+  "SECOND_SSOT": false,
+  "SEMANTIC_AUTHORITY": false,
+  "CANONICAL": false,
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "PERSISTENCE_IS_ADJUDICATION": false,
+  "PERSISTENCE_IS_CANONIZATION": false,
+  "PERSISTENCE_IMPLIES_GAP_CLOSURE": false,
+  "THIS_MATRIX_IS_NOT_THE_SOURCE_GRAPH": true,
+  "SOURCE_GRAPH_AND_PROOF_GRAPH_NOT_MERGED": true,
+  "GLOBAL_PROOF_GRAPH_COMPLETE": false,
+  "GLOBAL_COMPLETENESS_CLAIM_ADDED": false,
+  "GAP_CLOSED_CLAIM_ADDED": false,
+  "OWNER_GO": "P6_5189_GLOBAL_RELATION_AND_PROOF_OBLIGATION_LEDGER_PERSIST_MULTI_STEP_V1",
+  "bound_origin_main_sha": "58dafe420bcfe753f195d31dcb5f76f7620fc56a",
+  "PROOF_PREDICATE_COUNT": 14,
+  "revalidation_delta_versus_prior_read_only_report": {
+    "PRIOR_PROOF_PREDICATE_COUNT": 14,
+    "CURRENT_PROOF_PREDICATE_COUNT": 14,
+    "COUNT_NORMALIZED": false
+  },
+  "predicates": [
+    {
+      "predicate_id": "ALL_P6_RELEVANCE_COMPLETE",
+      "current_status": false,
+      "latest_positive_evidence": "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json requirement R-B3 174 enumerated",
+      "latest_negative_evidence": "docs/forensics/persistence/inventories/P6_5189_COMPLETENESS_REVALIDATION_OBSERVATION_V1.json",
+      "latest_non_proof": "observational unresolved 0 is not completeness",
+      "dependencies": ["HISTORICAL_P6_SOURCE_SET_BOUND", "R-A_bound_universe"],
+      "blockers": ["5011_ids_unbound", "HISTORICAL_P6_SOURCE_SET_BOUND=false"],
+      "related_source_nodes": ["N_PRES_MAP", "N_G3", "N_SYN"],
+      "related_observations": [
+        "docs/forensics/persistence/inventories/P6_5189_COMPLETENESS_REVALIDATION_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json"
+      ],
+      "authority": "NONE"
+    },
+    {
+      "predicate_id": "HISTORICAL_P6_SOURCE_SET_BOUND",
+      "current_status": false,
+      "latest_positive_evidence": "NONE_AS_UNIVERSE",
+      "latest_negative_evidence": "docs/forensics/persistence/inventories/P6_5189_COMPLETENESS_REVALIDATION_OBSERVATION_V1.json",
+      "latest_non_proof": "arithmetic 174+5011+4 is not source-id proof",
+      "dependencies": ["census_locator_list_preimage", "complete_5189_enumeration"],
+      "blockers": ["missing_5011_ids", "missing_census_preimage"],
+      "related_source_nodes": ["N_SHA_CENSUS", "N_HSS", "N_G3", "N_5011"],
+      "related_observations": [
+        "docs/forensics/persistence/inventories/P6_5189_5011_SOURCE_SET_LOCALIZATION_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_HISTORICAL_SOURCE_SET_UNIVERSE_AND_POSITIVE_MEMBERSHIP_LEDGER_AND_THREE_HASH_NON_INFERENCE_OBSERVATION_V1.json"
+      ],
+      "authority": "NONE"
+    },
+    {
+      "predicate_id": "P2_SOURCE_RESOLVED",
+      "current_status": false,
+      "latest_positive_evidence": "name-match count 0 is a discovery fact not a resolution",
+      "latest_negative_evidence": "NONE_AS_EMPTY_CORPUS",
+      "latest_non_proof": "unresolved is not empty",
+      "dependencies": ["Owner_supplied_unique_path"],
+      "blockers": ["no_unique_path"],
+      "related_source_nodes": ["N_P2", "N_XDISC"],
+      "related_observations": [
+        "docs/forensics/persistence/registries/EXTERNAL_FORENSIC_CORPUS_DISCOVERY_V1.md",
+        "docs/forensics/persistence/inventories/CROSS_CORPUS_RELATION_FACTS_V1.json"
+      ],
+      "authority": "NONE"
+    },
+    {
+      "predicate_id": "GLOBAL_EVIDENCE_SURFACE_UNIVERSE_COMPLETE",
+      "current_status": false,
+      "latest_positive_evidence": "NONE",
+      "latest_negative_evidence": "docs/forensics/persistence/inventories/P6_5189_GLOBAL_EVIDENCE_SURFACE_UNIVERSE_COMPLETENESS_AND_EXHAUSTION_ADJUDICATION_OBSERVATION_V1.json",
+      "latest_non_proof": "UNION_OF_KNOWN_LOCATORS_IS_NOT_CLOSED_UNIVERSE",
+      "dependencies": ["closed_locator_union"],
+      "blockers": ["KNOWN_IS_NOT_COMPLETE"],
+      "related_source_nodes": ["N_UNI"],
+      "related_observations": [
+        "docs/forensics/persistence/inventories/P6_5189_GLOBAL_EVIDENCE_SURFACE_UNIVERSE_COMPLETENESS_AND_EXHAUSTION_ADJUDICATION_OBSERVATION_V1.json"
+      ],
+      "authority": "NONE"
+    },
+    {
+      "predicate_id": "PAIR_EXHAUSTION_PROVEN",
+      "current_status": false,
+      "latest_positive_evidence": "scoped preimage exhaustion for pairs 12/13 on known surfaces",
+      "latest_negative_evidence": "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_RELATION_EVIDENCE_SURFACE_EXHAUSTION_AND_OWNER_DECISION_BOUNDARY_ADJUDICATION_OBSERVATION_V1.json",
+      "latest_non_proof": "exhaustion is not DEP or NON; GLOBAL_EXHAUSTION_PROVEN=false",
+      "dependencies": ["GLOBAL_EVIDENCE_SURFACE_UNIVERSE_COMPLETE"],
+      "blockers": ["GLOBAL_EXHAUSTION_PROVEN=false"],
+      "related_source_nodes": ["N_EXH", "N_G1", "N_UNI"],
+      "related_observations": [
+        "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_RELATION_EVIDENCE_SURFACE_EXHAUSTION_AND_OWNER_DECISION_BOUNDARY_ADJUDICATION_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_PAIR_MAX_LEVERAGE_MULTI_STEP_READ_ONLY_WORKPACKAGE_OBSERVATION_V1.json"
+      ],
+      "authority": "NONE"
+    },
+    {
+      "predicate_id": "SHARED_POSITIVE_DISCRIMINANT_EXISTS",
+      "current_status": false,
+      "latest_positive_evidence": "NONE",
+      "latest_negative_evidence": "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_PAIR_MAX_LEVERAGE_MULTI_STEP_READ_ONLY_WORKPACKAGE_OBSERVATION_V1.json",
+      "latest_non_proof": "MAXIMAL_PROVEN_LEVERAGE_SET=EMPTY",
+      "dependencies": ["ten_unresolved_pair_obligations"],
+      "blockers": ["none_of_twenty_obligations_positively_satisfied"],
+      "related_source_nodes": ["N_G1", "N_DN"],
+      "related_observations": [
+        "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_PAIR_DEP_NON_PROOF_OBLIGATION_AND_SHARED_DISCRIMINANT_SYNTHESIS_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_PAIR_MAX_LEVERAGE_MULTI_STEP_READ_ONLY_WORKPACKAGE_OBSERVATION_V1.json"
+      ],
+      "authority": "NONE"
+    },
+    {
+      "predicate_id": "UNIQUE_MAX_LEVERAGE_NEXT_STEP_PROVEN",
+      "current_status": false,
+      "latest_positive_evidence": "scoped label HISTORICAL_P6_SOURCE_SET_BOUND via pair-4 DEP is not unique global next",
+      "latest_negative_evidence": "docs/forensics/persistence/inventories/P6_5189_POST_GLOBAL_CLOSURE_MAX_LEVERAGE_FRONTIER_ADJUDICATION_READ_ONLY_OBSERVATION_V1.json",
+      "latest_non_proof": "THIS_SCOPED_LABEL_IS_NOT_A_UNIQUE_GLOBAL_NEXT_STEP",
+      "dependencies": ["remaining_unresolved_pairs_and_frontiers"],
+      "blockers": ["six_surviving_frontiers", "ten_unresolved_pairs"],
+      "related_source_nodes": ["N_G2", "N_G1", "N_PCD"],
+      "related_observations": [
+        "docs/forensics/persistence/inventories/P6_5189_POST_COUNT_DRIFT_GLOBAL_CLOSURE_FRONTIER_AND_MAX_LEVERAGE_NEXT_STEP_ADJUDICATION_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_POST_GLOBAL_CLOSURE_MAX_LEVERAGE_FRONTIER_ADJUDICATION_READ_ONLY_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_PAIR_MAX_LEVERAGE_MULTI_STEP_READ_ONLY_WORKPACKAGE_OBSERVATION_V1.json"
+      ],
+      "authority": "NONE"
+    },
+    {
+      "predicate_id": "GAP_CLOSED",
+      "current_status": false,
+      "latest_positive_evidence": "NONE",
+      "latest_negative_evidence": "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_DEPENDENCY_MATRIX_AND_GAP_CLOSED_INBOUND_RELATIONS_ADJUDICATION_OBSERVATION_V1.json",
+      "latest_non_proof": "persistence implies gap closure is false; inbound pairs 5,6,7,8,9,14 remain UNRESOLVED",
+      "dependencies": ["unspecified_inbound_dep_or_non"],
+      "blockers": ["GAP_CLOSED_INBOUND_DEP_COUNT=0", "GAP_CLOSED_INBOUND_NON_COUNT=0"],
+      "related_source_nodes": ["N_DEP", "N_G1"],
+      "related_observations": [
+        "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_DEPENDENCY_MATRIX_AND_GAP_CLOSED_INBOUND_RELATIONS_ADJUDICATION_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_PAIR_MAX_LEVERAGE_MULTI_STEP_READ_ONLY_WORKPACKAGE_OBSERVATION_V1.json"
+      ],
+      "authority": "NONE"
+    },
+    {
+      "predicate_id": "P6_5189_SNAPSHOT_BINDING_VALID",
+      "current_status": "DISPROVEN",
+      "latest_positive_evidence": "NONE",
+      "latest_negative_evidence": "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json requirement R-A3",
+      "latest_non_proof": "P6_5189_SNAPSHOT_BINDING_VALID=false in 5011 localization",
+      "dependencies": ["bound_preimage_plus_membership"],
+      "blockers": ["preimage_absent", "membership_list_absent"],
+      "related_source_nodes": ["N_5011", "N_SYN"],
+      "related_observations": [
+        "docs/forensics/persistence/inventories/P6_5189_5011_SOURCE_SET_LOCALIZATION_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_PERSISTED_EVIDENCE_COMPLETENESS_AND_CLOSURE_SYNTHESIS_OBSERVATION_V1.json"
+      ],
+      "authority": "NONE"
+    },
+    {
+      "predicate_id": "PAIR_4_DEP",
+      "current_status": "PROVEN",
+      "latest_positive_evidence": "docs/forensics/persistence/inventories/P6_5189_OPEN_FRONTIER_DEPENDENCY_AND_CLOSURE_CRITICAL_PATH_SYNTHESIS_OBSERVATION_V1.json pair_id 4 HISTORICAL_P6_SOURCE_SET_BOUND -> ALL_P6_RELEVANCE_COMPLETE",
+      "latest_negative_evidence": "NONE",
+      "latest_non_proof": "Bound-to-completeness DEP is not inferred as GAP_CLOSED criticality",
+      "dependencies": ["HISTORICAL_P6_SOURCE_SET_BOUND"],
+      "blockers": ["HISTORICAL_P6_SOURCE_SET_BOUND=false_keeps_completeness_false"],
+      "related_source_nodes": ["N_OF", "N_DEP"],
+      "related_observations": [
+        "docs/forensics/persistence/inventories/P6_5189_OPEN_FRONTIER_DEPENDENCY_AND_CLOSURE_CRITICAL_PATH_SYNTHESIS_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_DEPENDENCY_MATRIX_AND_GAP_CLOSED_INBOUND_RELATIONS_ADJUDICATION_OBSERVATION_V1.json"
+      ],
+      "authority": "NONE"
+    },
+    {
+      "predicate_id": "PAIR_2_10_11_NON",
+      "current_status": "PROVEN",
+      "latest_positive_evidence": "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_DEPENDENCY_MATRIX_AND_GAP_CLOSED_INBOUND_RELATIONS_ADJUDICATION_OBSERVATION_V1.json already_persisted_non_pair_ids 2,10,11",
+      "latest_negative_evidence": "NONE",
+      "latest_non_proof": "NON kinds not generalized to other pair targets",
+      "dependencies": [],
+      "blockers": [],
+      "related_source_nodes": ["N_DEP", "N_G1"],
+      "related_observations": [
+        "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_DEPENDENCY_MATRIX_AND_GAP_CLOSED_INBOUND_RELATIONS_ADJUDICATION_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_PAIR_MAX_LEVERAGE_MULTI_STEP_READ_ONLY_WORKPACKAGE_OBSERVATION_V1.json"
+      ],
+      "authority": "NONE"
+    },
+    {
+      "predicate_id": "SCOPED_TWO_SHA_IRREDUCIBLE",
+      "current_status": "PROVEN_SCOPED_FALSE_GLOBAL",
+      "latest_positive_evidence": "docs/forensics/persistence/inventories/P6_5189_SCOPED_IRREDUCIBLE_HISTORICAL_UNKNOWN_TWO_FULL_SHA_PREIMAGES_OWNER_ADJUDICATION_V1.json",
+      "latest_negative_evidence": "OWNER_ACCEPTANCE_AS_IRREDUCIBLE_HISTORICAL_UNKNOWN=false unconstrained",
+      "latest_non_proof": "SCOPE_IS_NOT_GLOBAL; archive absence is not global absence",
+      "dependencies": ["examined_identified_surfaces"],
+      "blockers": ["not_a_global_nonexistence_claim"],
+      "related_source_nodes": ["N_2SHA", "N_SHA_CENSUS", "N_SHA_REVIEW"],
+      "related_observations": [
+        "docs/forensics/persistence/inventories/P6_5189_SCOPED_IRREDUCIBLE_HISTORICAL_UNKNOWN_TWO_FULL_SHA_PREIMAGES_OWNER_ADJUDICATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_37G_ARCHIVE_SQLITE_VSCDB_BODY_PREIMAGE_PROBE_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_POST_SQLITE_RESIDUAL_FRONTIER_OBSERVATION_V1.json"
+      ],
+      "authority": "NONE"
+    },
+    {
+      "predicate_id": "UNIQUE_PAIR_CLASS_CLOSURE_MODE",
+      "current_status": false,
+      "latest_positive_evidence": "NONE",
+      "latest_negative_evidence": "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_PAIR_CLOSURE_MODE_AND_MAX_LEVERAGE_FRONTIER_ADJUDICATION_OBSERVATION_V1.json",
+      "latest_non_proof": "UNIQUE_PAIR_CLASS_CLOSURE_MODE_PROVEN=false",
+      "dependencies": ["ten_unresolved_pairs"],
+      "blockers": ["ten_unresolved_pairs"],
+      "related_source_nodes": ["N_PCM"],
+      "related_observations": [
+        "docs/forensics/persistence/inventories/P6_5189_UNRESOLVED_PAIR_CLOSURE_MODE_AND_MAX_LEVERAGE_FRONTIER_ADJUDICATION_OBSERVATION_V1.json"
+      ],
+      "authority": "NONE"
+    },
+    {
+      "predicate_id": "COUNT_DRIFT_AS_OPEN_FRONTIER",
+      "current_status": "REMOVED_NOT_A_CONTRADICTION",
+      "latest_positive_evidence": "docs/forensics/persistence/inventories/P6_5189_POST_COUNT_DRIFT_GLOBAL_CLOSURE_FRONTIER_AND_MAX_LEVERAGE_NEXT_STEP_ADJUDICATION_OBSERVATION_V1.json COUNT_DRIFT_3946_3951_OPEN_FRONTIER_REMOVED=true",
+      "latest_negative_evidence": "SAME_PREDICATE_CONTRADICTION_PROVEN=PROVEN_FALSE",
+      "latest_non_proof": "3946 and 3951 remain distinct stage-correct values; open-frontier removal is not GAP_CLOSED",
+      "dependencies": [],
+      "blockers": [],
+      "related_source_nodes": ["N_CD", "N_PCD"],
+      "related_observations": [
+        "docs/forensics/persistence/inventories/P6_5189_COUNT_DRIFT_3946_3951_LOCATOR_SEMANTICS_ADJUDICATION_OBSERVATION_V1.json",
+        "docs/forensics/persistence/inventories/P6_5189_POST_COUNT_DRIFT_GLOBAL_CLOSURE_FRONTIER_AND_MAX_LEVERAGE_NEXT_STEP_ADJUDICATION_OBSERVATION_V1.json"
+      ],
+      "authority": "NONE"
+    }
+  ]
+}

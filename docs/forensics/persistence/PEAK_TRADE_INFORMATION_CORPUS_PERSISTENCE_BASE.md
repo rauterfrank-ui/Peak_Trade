@@ -41,7 +41,11 @@ repo-internal.
 | `AUTHORITY_NONE.txt` | Authority containment |
 | `PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md` | This index |
 | `registries&#47;EXTERNAL_FORENSIC_CORPUS_DISCOVERY_V1.md` | P2 discovery closeout plus P1/P3–P7 inventory |
-| `registries&#47;CROSS_CORPUS_RELATION_REGISTER_V1.md` | Proven vs unknown relations |
+| `registries&#47;CROSS_CORPUS_RELATION_REGISTER_V1.md` | Proven vs unknown relations (P2/P5-vs-repo axes; **not** the P6_5189 observation graph) |
+| `registries&#47;P6_5189_RELATION_LEDGER_V1.json` | Central P6_5189 relation ledger (AUTHORITY=NONE; index entry is not adjudication) |
+| `registries&#47;P6_5189_RELATION_NODE_REGISTER_V1.json` | P6_5189 relation node register (AUTHORITY=NONE; node identity is not source identity) |
+| `registries&#47;P6_5189_SET_AND_UNIVERSE_REGISTER_V1.json` | P6_5189 set/universe register (AUTHORITY=NONE; counts not normalized; 5185 != 5189 != 5190) |
+| `registries&#47;P6_5189_PROOF_OBLIGATION_MATRIX_V1.json` | P6_5189 proof-obligation matrix (AUTHORITY=NONE; source graph is not the proof graph; index entry is not completeness proof) |
 | `inventories&#47;P1_REPO_FORENSIC_TREES_FILE_INVENTORY_V1.json` | Repo forensic-tree file identities |
 | `inventories&#47;P1_REPO_FORENSIC_TREES_FILE_INVENTORY_V1.contract.json` | P1 historical snapshot membership contract sidecar (AUTHORITY=NONE; not a live census) |
 | `inventories&#47;P5_DOCUMENTS_PEAK_TRADE_FORENSICS_FILE_INVENTORY_V1.json` | Evidence-bound local `Documents&#47;Peak_Trade&#47;forensics` identities |
