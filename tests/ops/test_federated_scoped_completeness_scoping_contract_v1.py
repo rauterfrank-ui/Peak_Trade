@@ -243,8 +243,17 @@ def test_stop_without_exhaustion_evidence_cannot_prove_closed_universe() -> None
     assert "POLICY_ALONE_MUST_NOT_SET_SOURCE_UNIVERSE_EXHAUSTED=true" in contract
     assert decision["closed_universe_status"]["CLOSED_UNIVERSE_PROVEN"] is False
     assert decision["closed_universe_status"]["SOURCE_UNIVERSE_EXHAUSTED"] is False
-    assert all(item["closed_universe_proven"] is False for item in sets["sets"])
+    p1 = next(item for item in sets["sets"] if item["set_id"] == "P1_SET")
+    assert p1["closed_universe_proven"] is True
+    assert p1["exhaustion_criterion"] == "SNAPSHOT_FILE_IDENTITY_ENUMERATION_EXHAUSTION_V1"
+    assert p1["member_count"] == 129
+    assert all(
+        item["closed_universe_proven"] is False
+        for item in sets["sets"]
+        if item["set_id"] != "P1_SET"
+    )
     assert sets["POLICY_ALONE_MUST_NOT_SET_CLOSED_UNIVERSE_PROVEN"] is True
+    assert sets["GLOBAL_CLOSED_UNIVERSE_PROVEN"] is False
     entrypoint = _read(ENTRYPOINT)
     assert "POLICY_ALONE_MUST_NOT_SET_CLOSED_UNIVERSE_PROVEN=true" in entrypoint
 
@@ -385,5 +394,7 @@ def test_policy_does_not_claim_closed_universe() -> None:
     assert status["GLOBAL_CLOSED_UNIVERSE_INTENDED"] is False
     assert status["POLICY_ENABLES_FUTURE_PER_DOMAIN_CLOSED_UNIVERSE_PROOF"] is True
     assert "CLOSED_UNIVERSE_PROVEN=false" in l4
+    assert "P1_SET_PER_DOMAIN_CLOSED_UNIVERSE_PROVEN=true" in l4
+    assert "GLOBAL_CLOSED_UNIVERSE_PROVEN=false" in l4
     assert re.search(r"(?<![A-Z_])CLOSED_UNIVERSE_PROVEN=true", contract) is None
     assert re.search(r"(?<![A-Z_])SOURCE_UNIVERSE_EXHAUSTED=true", contract) is None
