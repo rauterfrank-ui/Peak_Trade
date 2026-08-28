@@ -26,7 +26,9 @@
     "PRIOR_SET_NODE_COUNT": 20,
     "CURRENT_SET_NODE_COUNT": 20,
     "P6_LIVE_5216": "still_unattested_not_persisted",
-    "COUNT_NORMALIZED": false
+    "COUNT_NORMALIZED": false,
+    "THIS_WORKPACKAGE_DID_NOT_ADD_OR_CLOSE_A_SET": true,
+    "LIVE_4144_NOT_WRITTEN_AS_5185_OR_5189_OR_5190": true
   },
   "sets": [
     {

@@ -20,8 +20,11 @@
   "OWNER_GO": "P6_5189_GLOBAL_RELATION_AND_PROOF_OBLIGATION_LEDGER_PERSIST_MULTI_STEP_V1",
   "bound_origin_main_sha": "58dafe420bcfe753f195d31dcb5f76f7620fc56a",
   "bound_origin_main_sha_contains_pr_6098": true,
-  "IDENTITY_NODE_COUNT": 41,
-  "revalidation_note": "Count 41 reproduces the authorized read-only graph audit: 7 corpus surfaces + index + 2 registries + facts + preservation map + identity-copy pack + 3 hash identities + P1 contract + 24 P6 observation inventories. P1/P5 inventories are the corpus identity surfaces, not extra nodes.",
+  "IDENTITY_NODE_COUNT": 42,
+  "PRE_WORKPACKAGE_IDENTITY_NODE_COUNT": 41,
+  "PRE_WORKPACKAGE_IDENTITY_NODE_COUNT_SNAPSHOT": "origin/main 99cb4917b1f2f029a0da9ad30ec0fc311b3ff7ab before P6_5189_FORENSIC_AUDIT_PERSIST_AND_EXISTING_EVIDENCE_GRAPH_REPRESENTATION_CLOSURE_WORKPACKAGE_V1",
+  "COUNT_41_IS_PRE_WORKPACKAGE_SNAPSHOT_NOT_POST_WORKPACKAGE_CURRENT": true,
+  "revalidation_note": "Pre-workpackage count 41 reproduces the authorized read-only graph audit: 7 corpus surfaces + index + 2 registries + facts + preservation map + identity-copy pack + 3 hash identities + P1 contract + 24 P6 observation inventories. P1/P5 inventories are the corpus identity surfaces, not extra nodes. Post-workpackage count 42 adds N_LCA for the persisted layer-completeness audit observation. 41 is retained as historical snapshot, not silently replaced as current.",
   "nodes": [
     {
       "node_id": "N_P1",
@@ -577,6 +580,25 @@
       "epistemic_class": "membership_ledger_and_three_hash_non_inference",
       "persistence_status": "persisted",
       "currentness_status": "historical_5189_still_unbound"
+    },
+    {
+      "node_id": "N_LCA",
+      "canonical_name": "P6_5189_FORENSIC_LAYER_COMPLETENESS_AUDIT_AND_EXISTING_EVIDENCE_GRAPH_REPRESENTATION_REPAIR_OBSERVATION_V1",
+      "role": "LAYER_COMPLETENESS_AUDIT_PERSIST_PLUS_GRAPH_REPRESENTATION_REPAIR",
+      "source_identities": [
+        "P6_5189_FORENSIC_LAYER_COMPLETENESS_AUDIT_AND_EXISTING_EVIDENCE_GRAPH_REPRESENTATION_REPAIR_OBSERVATION_V1",
+        "transcript_c1d96411_read_only_layer_completeness_audit"
+      ],
+      "source_locator": "docs/forensics/persistence/inventories/P6_5189_FORENSIC_LAYER_COMPLETENESS_AUDIT_AND_EXISTING_EVIDENCE_GRAPH_REPRESENTATION_REPAIR_OBSERVATION_V1.json",
+      "surface": "forensic_persistence_and_p6_transcript",
+      "authority": "NONE",
+      "temporal_class": "read_only_bound_origin_main_99cb4917_then_persist_workpackage",
+      "epistemic_class": "scoped_layer_completeness_audit_plus_existing_evidence_graph_repair",
+      "persistence_status": "persisted",
+      "currentness_status": "does_not_close_5189_5011_universe_or_p2",
+      "SOURCE_IDENTITY_NOT_MERGED_WITH_PERSIST_CHAT": true,
+      "N_LCA_NOT_FUSED_WITH_N_G3": true,
+      "N_LCA_IS_NOT_A_5189_RECOVERY_CHAIN_SUCCESSOR": true
     }
   ]
 }
