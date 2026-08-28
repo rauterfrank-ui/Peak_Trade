@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import inspect
+import json
 from typing import Any, Mapping
 
 import pytest
@@ -31,6 +32,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_limit_price
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_post_action_proof_contract_v1 import (
     evaluate_canary_flatten_post_action_proof_contract_v1,
+    flatten_post_action_submit_evidence_from_submit_result_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_post_submit_evidence_state_v1 import (
     evaluate_canary_flatten_post_submit_evidence_state_v1,
@@ -43,6 +45,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_productive_
     GatedProductiveFlattenTransportV1,
     LiveCanaryFlattenProductiveTransportError,
     RecordingProductiveFlattenTransportV1,
+    live_canary_http_request_from_flatten_receipt_v1,
     open_productive_flatten_urllib_post_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_submit_transport_v1 import (
@@ -394,15 +397,7 @@ def test_gated_transport_second_send_duplicate_forbidden(
     transport.network_session_authorized = True
     receipt = evaluate_flatten_pre_send_gate_v1(_valid_gate())
     transport.attach_pre_send_receipt(receipt)
-    request = LiveCanaryHttpRequestV1(
-        method="POST",
-        url="https://eea.okx.com/api/v5/trade/order",
-        host="eea.okx.com",
-        endpoint="/api/v5/trade/order",
-        headers={"User-Agent": "test"},
-        timeout_seconds=1.0,
-        body_text="{}",
-    )
+    request = live_canary_http_request_from_flatten_receipt_v1(receipt)
     first = transport.send(request)
     assert first.status_code == 200
     with pytest.raises(LiveCanaryFlattenProductiveTransportError, match="DUPLICATE_POST_FORBIDDEN"):
@@ -538,3 +533,201 @@ def test_post_submit_offline_contract_preserved() -> None:
     assert state.productive_venue_proof is False
     assert state.live_flatten_provability == "UNPROVEN"
     assert state.actual_post is True  # injected send_attempted evidence, not venue POST
+
+
+def _mutated_request(receipt: Any, **body_overrides: Any) -> LiveCanaryHttpRequestV1:
+    body = dict(receipt.request_body or {})
+    body.update(body_overrides)
+    if "drop_reduce_only" in body_overrides:
+        body.pop("drop_reduce_only", None)
+        body.pop("reduceOnly", None)
+    text = json.dumps(body, separators=(",", ":"), ensure_ascii=True)
+    base = live_canary_http_request_from_flatten_receipt_v1(receipt)
+    return LiveCanaryHttpRequestV1(
+        method=base.method,
+        url=base.url,
+        host=base.host,
+        endpoint=base.endpoint,
+        headers=dict(base.headers),
+        timeout_seconds=base.timeout_seconds,
+        body_text=text,
+    )
+
+
+def test_t01_dummy_allowed_receipt_cannot_authorize_send() -> None:
+    transport = GatedProductiveFlattenTransportV1()
+    dummy = type("Dummy", (), {"allowed": True, "gate_digest": "x"})()
+    with pytest.raises(LiveCanaryFlattenProductiveTransportError, match="RECEIPT_MISSING"):
+        transport.attach_pre_send_receipt(dummy)
+    with pytest.raises(LiveCanaryFlattenProductiveTransportError, match="RECEIPT_MISSING"):
+        transport.send(
+            LiveCanaryHttpRequestV1(
+                method="POST",
+                url="https://eea.okx.com/api/v5/trade/order",
+                host="eea.okx.com",
+                endpoint="/api/v5/trade/order",
+                headers={"User-Agent": "x"},
+                timeout_seconds=1.0,
+                body_text="{}",
+            )
+        )
+
+
+def test_t02_body_changed_after_gate_is_denied_before_urllib(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def _boom(_request: Any) -> Any:
+        raise AssertionError("URLLIB_MUST_NOT_RUN")
+
+    monkeypatch.setattr(
+        "src.ops.section_11_13_5_live_canary_minimum_exposure_v1."
+        "flatten_productive_transport_v1.open_productive_flatten_urllib_post_v1",
+        _boom,
+    )
+    transport = GatedProductiveFlattenTransportV1()
+    transport.network_session_authorized = True
+    receipt = evaluate_flatten_pre_send_gate_v1(_valid_gate())
+    transport.attach_pre_send_receipt(receipt)
+    request = _mutated_request(receipt, px="1")
+    with pytest.raises(LiveCanaryFlattenProductiveTransportError, match="BODY_CHANGED_AFTER_GATE"):
+        transport.send(request)
+    assert transport.last_wire_attempted is False
+
+
+def test_t03_instrument_changed_after_gate_is_denied() -> None:
+    transport = RecordingProductiveFlattenTransportV1()
+    receipt = evaluate_flatten_pre_send_gate_v1(_valid_gate())
+    transport.attach_pre_send_receipt(receipt)
+    request = _mutated_request(receipt, instId=OTHER)
+    with pytest.raises(
+        LiveCanaryFlattenProductiveTransportError, match="INSTRUMENT_CHANGED_AFTER_GATE"
+    ):
+        transport.send(request)
+
+
+def test_t04_sz_changed_after_gate_is_denied() -> None:
+    transport = RecordingProductiveFlattenTransportV1()
+    receipt = evaluate_flatten_pre_send_gate_v1(_valid_gate())
+    transport.attach_pre_send_receipt(receipt)
+    request = _mutated_request(receipt, sz="99")
+    with pytest.raises(LiveCanaryFlattenProductiveTransportError, match="SIZE_CHANGED_AFTER_GATE"):
+        transport.send(request)
+
+
+def test_t05_reduce_only_removed_after_gate_is_denied() -> None:
+    transport = RecordingProductiveFlattenTransportV1()
+    receipt = evaluate_flatten_pre_send_gate_v1(_valid_gate())
+    transport.attach_pre_send_receipt(receipt)
+    request = _mutated_request(receipt, drop_reduce_only=True, reduceOnly=False)
+    with pytest.raises(
+        LiveCanaryFlattenProductiveTransportError, match="REDUCE_ONLY_REMOVED_AFTER_GATE"
+    ):
+        transport.send(request)
+
+
+def test_t06_network_session_false_never_opens_urllib() -> None:
+    transport = GatedProductiveFlattenTransportV1()
+    result = submit_productive_flatten_v1(gate_input=_valid_gate(), transport=transport)
+    assert result.send_completed is False
+    assert result.network_used is False
+    assert result.wire_attempted is False
+    assert result.flatten_position_proven is False
+    assert "PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED" in " ".join(result.reasons)
+
+
+def test_t17_http_non_2xx_is_not_flatten_proof(monkeypatch: pytest.MonkeyPatch) -> None:
+    def _fake_open(request: Any) -> LiveCanaryHttpResponseV1:
+        return LiveCanaryHttpResponseV1(
+            status_code=401,
+            body_bytes=b'{"code":"1","data":[]}',
+            elapsed_seconds=0.01,
+            endpoint=request.endpoint,
+            method="POST",
+            send_attempted=True,
+            wire_body_sha256="ab",
+            wire_body_byte_len=1,
+        )
+
+    monkeypatch.setattr(
+        "src.ops.section_11_13_5_live_canary_minimum_exposure_v1."
+        "flatten_productive_transport_v1.open_productive_flatten_urllib_post_v1",
+        _fake_open,
+    )
+    transport = GatedProductiveFlattenTransportV1()
+    transport.network_session_authorized = True
+    result = submit_productive_flatten_v1(gate_input=_valid_gate(), transport=transport)
+    assert result.send_completed is True
+    assert result.http_response_received is True
+    assert result.http_status == 401
+    assert result.venue_acceptance_proven is False
+    assert result.flatten_position_proven is False
+    assert result.productive_venue_proof is False
+
+
+def test_t18_http_200_alone_is_not_flatten_proof(monkeypatch: pytest.MonkeyPatch) -> None:
+    def _fake_open(request: Any) -> LiveCanaryHttpResponseV1:
+        return LiveCanaryHttpResponseV1(
+            status_code=200,
+            body_bytes=b'{"code":"0","data":[{"sCode":"0"}]}',
+            elapsed_seconds=0.01,
+            endpoint=request.endpoint,
+            method="POST",
+            send_attempted=True,
+            wire_body_sha256="ab",
+            wire_body_byte_len=1,
+        )
+
+    monkeypatch.setattr(
+        "src.ops.section_11_13_5_live_canary_minimum_exposure_v1."
+        "flatten_productive_transport_v1.open_productive_flatten_urllib_post_v1",
+        _fake_open,
+    )
+    transport = GatedProductiveFlattenTransportV1()
+    transport.network_session_authorized = True
+    result = submit_productive_flatten_v1(gate_input=_valid_gate(), transport=transport)
+    assert result.http_status == 200
+    assert result.venue_acceptance_proven is True
+    assert result.flatten_position_proven is False
+    assert result.productive_venue_proof is False
+    evidence = flatten_post_action_submit_evidence_from_submit_result_v1(
+        result, post_readback_after_submit=True
+    )
+    proof = evaluate_canary_flatten_post_action_proof_contract_v1(
+        pre_positions_payload=_positions({"instId": TARGET, "pos": "1"}),
+        post_positions_payload=_positions(),
+        post_pending_orders_payload=_pending(),
+        instrument_id=TARGET,
+        submit_evidence=evidence,
+    )
+    assert proof.offline_contract_satisfied is False
+    assert proof.no_flip is False
+
+
+def test_t19_same_receipt_cannot_send_on_second_transport() -> None:
+    receipt = evaluate_flatten_pre_send_gate_v1(_valid_gate())
+    assert receipt.allowed is True
+    first = RecordingProductiveFlattenTransportV1()
+    first.attach_pre_send_receipt(receipt)
+    first.send(live_canary_http_request_from_flatten_receipt_v1(receipt))
+    second = RecordingProductiveFlattenTransportV1()
+    second.attach_pre_send_receipt(receipt)
+    with pytest.raises(LiveCanaryFlattenProductiveTransportError, match="DUPLICATE_POST_FORBIDDEN"):
+        second.send(live_canary_http_request_from_flatten_receipt_v1(receipt))
+
+
+def test_t20_pre_send_missing_target_is_not_zero() -> None:
+    receipt = evaluate_flatten_pre_send_gate_v1(_valid_gate(positions_payload=_positions()))
+    assert receipt.allowed is False
+    joined = " ".join(receipt.reasons)
+    assert "TARGET_INSTRUMENT_NOT_OBSERVED" in joined
+    assert not receipt.approved_request_identity
+    assert receipt.approved_body_text == ""
+
+
+def test_denied_receipt_cannot_authorize_send() -> None:
+    transport = GatedProductiveFlattenTransportV1()
+    transport.network_session_authorized = True
+    receipt = evaluate_flatten_pre_send_gate_v1(_valid_gate(positions_payload=_positions()))
+    assert receipt.allowed is False
+    with pytest.raises(LiveCanaryFlattenProductiveTransportError, match="RECEIPT_NOT_ALLOWED"):
+        transport.attach_pre_send_receipt(receipt)

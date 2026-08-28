@@ -45023,16 +45023,36 @@ PRE_MISSING_PLUS_POST_MISSING_IS_ALREADY_FLAT_NOOP_NOT_PRODUCTIVE_SUCCESS=true
 EXPLICIT_ZERO_ROW_MAY_SATISFY_SAME_POST_ACTION_FLAT_STATE=true
 EXPLICIT_ZERO_ROW_NOT_REQUIRED_FROM_VENUE=true
 Z2AP_POS_EQ_0_INTERPRETATION_THIS_SCOPE=ABSENCE_OF_TARGET_NONZERO_ROW_AFTER_PROVEN_PRE_NONZERO_AND_AUTHORIZED_FLATTEN
+CHOICE_B_CAUSAL_BINDINGS_REQUIRED=true
+CB-01_PRE_TARGET_NONZERO_EXPLICITLY_PROVEN=true
+CB-02_TARGET_INSTRUMENT_PRE_POST_IDENTICAL=true
+CB-03_AUTHORIZED_FLATTEN_MUTATION_PROVEN=true
+CB-04_POST_READBACK_OCCURS_AFTER_THE_AUTHORIZED_SUBMIT_ATTEMPT=true
+CB-05_POST_READBACK_BELONGS_TO_THE_SAME_FLATTEN_OPERATION=true
+CB-06_TRANSPORT_FAILURE_CANNOT_ENTER_POST_ACTION_SUCCESS=true
+CB-07_POST_READBACK_PARSE_OR_SCHEMA_FAILURE_CANNOT_BECOME_EMPTY_SUCCESS=true
+CB-08_DATA_NONE_IS_NOT_VALID_EMPTY_SUCCESS_EVIDENCE=true
+CB-09_POST_NONZERO_TARGET_ALWAYS_FAILS_FLATNESS=true
+CB-10_FLIP_OR_UNEXPECTED_RELATED_STATE_CANNOT_BE_MASKED_BY_MISSING_TARGET=true
+MISSING_TARGET_ALONE_PROVES_NO_FLIP=false
+POST_ACTION_REQUIRES_CAUSAL_SUBMIT_BINDING=true
 ```
 
 Pre-send remains `observe_target_position_flatten_candidate_v1`. Missing
 target before send is `TARGET_INSTRUMENT_NOT_OBSERVED` and is **not** a
 flatten precondition satisfaction. Post-action may treat absence of a
-target nonzero row as `POS==0` only after that explicit pre-nonzero
-proof and a later separately authorized, actually executed flatten
-mutation. An explicit zero-row may satisfy the same post-action flat
-state if the consumer can represent it; the venue is **not** required
-to emit a zero-row.
+target nonzero row as the POS==0 **predicate** only after that explicit
+pre-nonzero proof, a later separately authorized actually attempted
+flatten mutation, and the CB-01..CB-10 causal bindings. Missing target
+does **not** prove NO_FLIP. Overall offline-contract satisfaction still
+requires independently proven PENDING==EMPTY, NO_FLIP, and
+NO_UNEXPECTED_RELATED. An explicit zero-row may satisfy POS==0 and
+NO_FLIP because the target was observed at zero. `data=None`, parse
+failure, and schema failure cannot become valid empty success.
+The first PR `#6116` HEAD `624392b638348a9673cbdf536e1c8630df5a2cf5`
+bound CHOICE_B without these send-time identity and causal checks;
+this unmerged slice tightening records that weaker revision in git
+history and does **not** rewrite origin&#47;main.
 
 B. Prerequisite 23. Defined by this slice. Not execution authorization.
 
@@ -45047,27 +45067,50 @@ EXECUTION_AUTHORIZED=false
 ```
 
 C. Offline productive urllib. `GatedProductiveFlattenTransportV1.send`
-opens urllib only after a passing pre-send receipt, one-shot
-protection, and independently `network_session_authorized=true`. The
-default remains `false`. This class never sets that flag true. Method
-`POST`, host `eea.okx.com`, path `&#47;api&#47;v5&#47;trade&#47;order`. Close-position,
+opens urllib only after a **typed** passing `FlattenPreSendGateReceiptV1`,
+approved-request identity match (method, URL&#47;host&#47;path, exact body,
+instrument, sz, side, reduceOnly=true, ordType, tdMode, px), one-shot
+receipt lease consumption, and independently
+`network_session_authorized=true`. A dummy object with only
+`allowed=true` is rejected. The default network-session flag remains
+`false`. This class never sets that flag true. Method `POST`, host
+`eea.okx.com`, path `&#47;api&#47;v5&#47;trade&#47;order`. Close-position,
 cancel, amend, batch, retry, and alternate hosts remain forbidden.
 `UrllibLiveCanaryTransportV1` is **not** reused as a whole.
+`open_productive_flatten_urllib_post_v1` is not trading authorization.
+`gate_digest` hashes gate decisions only and is **not** the request-body
+identity; `approved_request_identity` is the SHA-256 of method, URL, and
+exact body text.
 
 ``` text
 PRODUCTIVE_URLLIB_SEND_IMPLEMENTED=true
-PRODUCTIVE_TRANSPORT_IMPLEMENTATION_GAP=OFFLINE_IMPLEMENTED_RUNTIME_UNAUTHORIZED
+PRODUCTIVE_TRANSPORT_IMPLEMENTATION_GAP=OFFLINE_IMPLEMENTED_RUNTIME_UNAUTHORIZED_AND_UNAUTHENTICATED
 NETWORK_SESSION_AUTHORIZED_DEFAULT=false
 OFFLINE_IMPLEMENTATION_IMPLIES_NETWORK_AUTHORIZATION=false
 OFFLINE_IMPLEMENTATION_IMPLIES_FLATTEN_AUTHORIZATION=false
 OFFLINE_IMPLEMENTATION_IMPLIES_EXECUTION_READINESS=false
 CANARY_TRANSPORT_REUSED_AS_WHOLE=false
+DUMMY_ALLOWED_RECEIPT_ACCEPTED=false
+REQUEST_BODY_BOUND_TO_RECEIPT=true
+RECEIPT_LEASE_ONE_SHOT_PER_GATE_EVALUATION=true
 FLATTEN_API_ENDPOINT=&#47;api&#47;v5&#47;trade&#47;order
 FLATTEN_HTTP_METHOD=POST
 FLATTEN_API_HOST=eea.okx.com
 CLOSE_POSITION_ENDPOINT_ALLOWLISTED=false
 RETRY_POLICY_ADDED=false
 DUPLICATE_POST_FORBIDDEN=true
+TRANSPORT_CALL_COMPLETED_DISTINCT_FROM_VENUE_ACCEPTANCE=true
+VENUE_ACCEPTANCE_DISTINCT_FROM_FLATTEN_PROOF=true
+HTTP_200_IMPLIES_FLATTEN_SUCCESS=false
+HTTP_NON_2XX_IMPLIES_FLATTEN_SUCCESS=false
+POSITION_OBSERVATION_FRESHNESS_POLICY=UNPROVEN
+POS_SIDE_STATUS=UNPROVEN
+UNIT_CHAIN_VERDICT=PASSTHROUGH_POS_TO_SZ_UNIT_IDENTITY_UNPROVEN
+ONE_CONTRACT_EQUALS_ONE_SUI_ASSUMED=false
+Z2CL_FIRST_PR_HEAD_SHA=624392b638348a9673cbdf536e1c8630df5a2cf5
+Z2CL_PREMERGE_HARDENING_OWNER_GO=P6_Z2CL_PREMERGE_CHOICE_B_CAUSAL_AND_PRODUCTIVE_TRANSPORT_HARDENING_V1
+Z2CL_PREMERGE_HARDENING_OWNER_GO_STATUS=CONSUMED_AS_UNMERGED_SLICE_TIGHTENING_NOT_EXECUTE
+Z2CL_PREMERGE_AUDIT_VERDICT_AT_FIRST_HEAD=DO_NOT_MERGE_YET
 ```
 
 D. Authentication &#47; signing. The existing HMAC header builder
@@ -45157,6 +45200,10 @@ FAIL_CLOSED_IF_AUTHENTICATED_POST_CLAIMED_CLOSED=true
 FAIL_CLOSED_IF_CAP21_OPTION_A_OR_B_SELECTED=true
 FAIL_CLOSED_IF_Z2CK_OR_Z2CB_OR_Z2CA_OR_Z2CE_OR_Z2AP_REWRITTEN=true
 FAIL_CLOSED_IF_PREREQUISITE_16_MARKED_PROVEN_FROM_OFFLINE_CODE_ALONE=true
+FAIL_CLOSED_IF_DUMMY_ALLOWED_RECEIPT_ACCEPTED=true
+FAIL_CLOSED_IF_BODY_CHANGED_AFTER_GATE=true
+FAIL_CLOSED_IF_DATA_NONE_TREATED_AS_EMPTY_SUCCESS=true
+FAIL_CLOSED_IF_MISSING_TARGET_ALONE_PROVES_NO_FLIP=true
 ```
 
 ``` text

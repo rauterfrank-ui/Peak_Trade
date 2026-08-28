@@ -1,24 +1,32 @@
 """Dedicated productive flatten transport classes.
 
 Distinct from RecordingFakeCanaryTransportV1 and UrllibLiveCanaryTransportV1.
-Default: no network session. Send requires an attached passing pre-send receipt.
-Urllib opens only after that receipt, one-shot protection, and an independently
+Default: no network session. Send requires a typed passing pre-send receipt
+whose approved request identity matches the wire request. Urllib opens only
+after that identity check, one-shot lease consumption, and an independently
 true network_session_authorized flag. This module never sets that flag true.
 Authenticated OKX header construction is not wired here.
+open_productive_flatten_urllib_post_v1 is an internal POST opener, not
+trading authorization.
 """
 
 from __future__ import annotations
 
 import hashlib
+import json
 import time
 from dataclasses import dataclass, field
-from typing import Any, Protocol
+from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import ProxyHandler, Request, build_opener
 
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     ENDPOINT_SUBMIT,
     REUSED_BINDING_REST_HOST,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_pre_send_gate_v1 import (
+    FlattenPreSendGateReceiptV1,
+    flatten_approved_request_identity_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
     CanaryPostRedirectBlockedError,
@@ -34,13 +42,106 @@ TRANSPORT_CLASS_PRODUCTIVE_FLATTEN_GATED = "PRODUCTIVE_FLATTEN_GATED"
 TRANSPORT_CLASS_PRODUCTIVE_FLATTEN_GATED_RECORDING = "PRODUCTIVE_FLATTEN_GATED_RECORDING"
 
 
-class FlattenPreSendReceiptLike(Protocol):
-    allowed: bool
-    gate_digest: str
-
-
 class LiveCanaryFlattenProductiveTransportError(RuntimeError):
     """Fail-closed productive flatten transport violation."""
+
+
+def _require_typed_gate_receipt(receipt: Any) -> FlattenPreSendGateReceiptV1:
+    if receipt is None:
+        raise LiveCanaryFlattenProductiveTransportError("RECEIPT_MISSING")
+    if not isinstance(receipt, FlattenPreSendGateReceiptV1):
+        raise LiveCanaryFlattenProductiveTransportError("RECEIPT_MISSING")
+    if not bool(receipt.allowed):
+        raise LiveCanaryFlattenProductiveTransportError("RECEIPT_NOT_ALLOWED")
+    if not str(receipt.approved_request_identity or "").strip():
+        raise LiveCanaryFlattenProductiveTransportError("RECEIPT_REQUEST_IDENTITY_MISSING")
+    if not isinstance(receipt.request_body, dict) or not receipt.request_body:
+        raise LiveCanaryFlattenProductiveTransportError("RECEIPT_REQUEST_IDENTITY_MISSING")
+    return receipt
+
+
+def assert_request_matches_flatten_receipt_v1(
+    receipt: FlattenPreSendGateReceiptV1,
+    request: LiveCanaryHttpRequestV1,
+) -> None:
+    """Fail-closed: the wire request must be the gate-approved request."""
+    method = str(request.method or "").strip().upper()
+    url = str(request.url or "").strip()
+    body_text = request.body_text or ""
+    if method != str(receipt.approved_method or "").strip().upper():
+        raise LiveCanaryFlattenProductiveTransportError("REQUEST_IDENTITY_MISMATCH")
+    if str(request.host or "").strip() != str(receipt.approved_host or "").strip():
+        raise LiveCanaryFlattenProductiveTransportError("REQUEST_IDENTITY_MISMATCH")
+    if str(request.endpoint or "").strip() != str(receipt.approved_endpoint or "").strip():
+        raise LiveCanaryFlattenProductiveTransportError("REQUEST_IDENTITY_MISMATCH")
+    if url.rstrip("/") != str(receipt.approved_url or "").rstrip("/"):
+        raise LiveCanaryFlattenProductiveTransportError("REQUEST_IDENTITY_MISMATCH")
+    incoming_identity = flatten_approved_request_identity_v1(
+        method=method,
+        url=url,
+        body_text=body_text,
+    )
+    if incoming_identity != receipt.approved_request_identity:
+        try:
+            parsed = json.loads(body_text) if body_text else {}
+        except json.JSONDecodeError as exc:
+            raise LiveCanaryFlattenProductiveTransportError("BODY_CHANGED_AFTER_GATE") from exc
+        if not isinstance(parsed, dict):
+            raise LiveCanaryFlattenProductiveTransportError("BODY_CHANGED_AFTER_GATE")
+        approved = receipt.request_body or {}
+        if str(parsed.get("instId") or "") != str(approved.get("instId") or ""):
+            raise LiveCanaryFlattenProductiveTransportError("INSTRUMENT_CHANGED_AFTER_GATE")
+        if str(parsed.get("sz") or "") != str(approved.get("sz") or ""):
+            raise LiveCanaryFlattenProductiveTransportError("SIZE_CHANGED_AFTER_GATE")
+        if parsed.get("reduceOnly") is not True:
+            raise LiveCanaryFlattenProductiveTransportError("REDUCE_ONLY_REMOVED_AFTER_GATE")
+        raise LiveCanaryFlattenProductiveTransportError("BODY_CHANGED_AFTER_GATE")
+    if body_text != (receipt.approved_body_text or ""):
+        raise LiveCanaryFlattenProductiveTransportError("BODY_CHANGED_AFTER_GATE")
+    try:
+        parsed_ok = json.loads(body_text) if body_text else {}
+    except json.JSONDecodeError as exc:
+        raise LiveCanaryFlattenProductiveTransportError("BODY_CHANGED_AFTER_GATE") from exc
+    if not isinstance(parsed_ok, dict):
+        raise LiveCanaryFlattenProductiveTransportError("BODY_CHANGED_AFTER_GATE")
+    if str(parsed_ok.get("instId") or "") != str((receipt.request_body or {}).get("instId") or ""):
+        raise LiveCanaryFlattenProductiveTransportError("INSTRUMENT_CHANGED_AFTER_GATE")
+    if str(parsed_ok.get("sz") or "") != str((receipt.request_body or {}).get("sz") or ""):
+        raise LiveCanaryFlattenProductiveTransportError("SIZE_CHANGED_AFTER_GATE")
+    if parsed_ok.get("reduceOnly") is not True:
+        raise LiveCanaryFlattenProductiveTransportError("REDUCE_ONLY_REMOVED_AFTER_GATE")
+    if str(parsed_ok.get("ordType") or "").lower() != "limit":
+        raise LiveCanaryFlattenProductiveTransportError("BODY_CHANGED_AFTER_GATE")
+    if str(parsed_ok.get("side") or "") != str((receipt.request_body or {}).get("side") or ""):
+        raise LiveCanaryFlattenProductiveTransportError("BODY_CHANGED_AFTER_GATE")
+    if str(parsed_ok.get("tdMode") or "") != str((receipt.request_body or {}).get("tdMode") or ""):
+        raise LiveCanaryFlattenProductiveTransportError("BODY_CHANGED_AFTER_GATE")
+    if str(parsed_ok.get("px") or "") != str((receipt.request_body or {}).get("px") or ""):
+        raise LiveCanaryFlattenProductiveTransportError("BODY_CHANGED_AFTER_GATE")
+
+
+def _consume_receipt_lease(receipt: FlattenPreSendGateReceiptV1) -> None:
+    if receipt.send_lease.consumed:
+        raise LiveCanaryFlattenProductiveTransportError("DUPLICATE_POST_FORBIDDEN")
+    receipt.send_lease.consumed = True
+
+
+def live_canary_http_request_from_flatten_receipt_v1(
+    receipt: FlattenPreSendGateReceiptV1,
+    *,
+    timeout_seconds: float = 1.0,
+    headers: dict[str, str] | None = None,
+) -> LiveCanaryHttpRequestV1:
+    """Build the exact request the gate approved. Not an authorization."""
+    return LiveCanaryHttpRequestV1(
+        method=str(receipt.approved_method or "POST"),
+        url=str(receipt.approved_url or ""),
+        host=str(receipt.approved_host or REUSED_BINDING_REST_HOST),
+        endpoint=str(receipt.approved_endpoint or ENDPOINT_SUBMIT),
+        headers=dict(headers or {"User-Agent": "PeakTrade-Section-11-13-5-FlattenWiring/1"}),
+        timeout_seconds=timeout_seconds,
+        body_text=str(receipt.approved_body_text or ""),
+    )
 
 
 def _response(
@@ -104,8 +205,9 @@ def open_productive_flatten_urllib_post_v1(
 ) -> LiveCanaryHttpResponseV1:
     """POST opener for productive flatten. Redirects fail closed. No canary permit.
 
-    Sends the caller-supplied request as constructed. This is not OKX auth
-    construction and not canary entry POST.
+    Sends the caller-supplied request as constructed after the gated transport
+    has already identity-bound it. This function is not trading authorization,
+    not OKX auth construction, and not a generic public trading POST API.
     """
     assert_productive_flatten_post_request_v1(request)
     wire_bytes = request.body_text.encode("utf-8") if request.body_text else b""
@@ -158,17 +260,16 @@ class RecordingProductiveFlattenTransportV1:
         b'{"code":"0","data":[{"sCode":"0","ordId":"synthetic-flatten","clOrdId":"x","sz":"1"}]}'
     )
     post_status_code: int = 200
-    _receipt: FlattenPreSendReceiptLike | None = field(default=None, init=False, repr=False)
+    _receipt: FlattenPreSendGateReceiptV1 | None = field(default=None, init=False, repr=False)
 
-    def attach_pre_send_receipt(self, receipt: FlattenPreSendReceiptLike) -> None:
-        if receipt is None or not bool(receipt.allowed):
-            raise LiveCanaryFlattenProductiveTransportError("PRODUCTIVE_SEND_RECEIPT_NOT_ALLOWED")
-        self._receipt = receipt
+    def attach_pre_send_receipt(self, receipt: Any) -> None:
+        self._receipt = _require_typed_gate_receipt(receipt)
 
     def send(self, request: LiveCanaryHttpRequestV1) -> LiveCanaryHttpResponseV1:
         self.last_wire_attempted = False
-        if self._receipt is None or not bool(self._receipt.allowed):
-            raise LiveCanaryFlattenProductiveTransportError("PRODUCTIVE_SEND_WITHOUT_GATE_RECEIPT")
+        receipt = _require_typed_gate_receipt(self._receipt)
+        assert_request_matches_flatten_receipt_v1(receipt, request)
+        _consume_receipt_lease(receipt)
         if self.calls:
             raise LiveCanaryFlattenProductiveTransportError("DUPLICATE_POST_FORBIDDEN")
         self.calls.append(request)
@@ -194,20 +295,19 @@ class GatedProductiveFlattenTransportV1:
     venue_live_contact: bool = True
     network_session_authorized: bool = False
     last_wire_attempted: bool = False
-    _receipt: FlattenPreSendReceiptLike | None = field(default=None, init=False, repr=False)
+    _receipt: FlattenPreSendGateReceiptV1 | None = field(default=None, init=False, repr=False)
     _sent: bool = field(default=False, init=False, repr=False)
 
-    def attach_pre_send_receipt(self, receipt: FlattenPreSendReceiptLike) -> None:
-        if receipt is None or not bool(receipt.allowed):
-            raise LiveCanaryFlattenProductiveTransportError("PRODUCTIVE_SEND_RECEIPT_NOT_ALLOWED")
-        self._receipt = receipt
+    def attach_pre_send_receipt(self, receipt: Any) -> None:
+        self._receipt = _require_typed_gate_receipt(receipt)
 
     def send(self, request: LiveCanaryHttpRequestV1) -> LiveCanaryHttpResponseV1:
         self.last_wire_attempted = False
-        if self._receipt is None or not bool(self._receipt.allowed):
-            raise LiveCanaryFlattenProductiveTransportError("PRODUCTIVE_SEND_WITHOUT_GATE_RECEIPT")
-        if self._sent:
+        receipt = _require_typed_gate_receipt(self._receipt)
+        assert_request_matches_flatten_receipt_v1(receipt, request)
+        if self._sent or receipt.send_lease.consumed:
             raise LiveCanaryFlattenProductiveTransportError("DUPLICATE_POST_FORBIDDEN")
+        _consume_receipt_lease(receipt)
         self._sent = True
         if not self.network_session_authorized:
             raise LiveCanaryFlattenProductiveTransportError(

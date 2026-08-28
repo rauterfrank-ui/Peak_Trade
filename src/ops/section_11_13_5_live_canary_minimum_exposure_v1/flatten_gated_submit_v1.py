@@ -23,6 +23,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_pre_send_ga
     FlattenPreSendGateInputV1,
     FlattenPreSendGateReceiptV1,
     evaluate_flatten_pre_send_gate_v1,
+    serialize_approved_flatten_body_text_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_productive_transport_v1 import (
     GatedProductiveFlattenTransportV1,
@@ -41,13 +42,41 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
 DEFAULT_REST_BASE = "https://eea.okx.com"
 
 
+def _venue_acceptance_from_response(response: LiveCanaryHttpResponseV1 | None) -> bool:
+    """OKX envelope ack evidence only. Not flatten position proof."""
+    if response is None:
+        return False
+    try:
+        status = int(response.status_code)
+    except (TypeError, ValueError):
+        return False
+    if not (200 <= status < 300):
+        return False
+    raw = response.body_bytes or b""
+    try:
+        payload = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError, AttributeError):
+        return False
+    if not isinstance(payload, dict):
+        return False
+    if str(payload.get("code") or "") != "0":
+        return False
+    data = payload.get("data")
+    if not isinstance(data, list) or len(data) != 1:
+        return False
+    row = data[0]
+    if not isinstance(row, dict):
+        return False
+    return str(row.get("sCode") or row.get("s_code") or "") == "0"
+
+
 class LiveCanaryFlattenGatedSubmitError(RuntimeError):
     """Fail-closed productive flatten submit-boundary violation."""
 
 
 @dataclass(frozen=True)
 class FlattenGatedSubmitResultV1:
-    """Boundary result. send_completed is not venue proof."""
+    """Boundary result. send_completed is not venue proof and not flatten proof."""
 
     allowed: bool
     send_attempted: bool
@@ -62,6 +91,12 @@ class FlattenGatedSubmitResultV1:
     duplicate_blocked: bool
     retry_attempted: bool
     network_used: bool
+    transport_call_completed: bool = False
+    wire_attempted: bool = False
+    http_response_received: bool = False
+    venue_acceptance_proven: bool = False
+    flatten_position_proven: bool = False
+    http_status: int | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -76,6 +111,12 @@ class FlattenGatedSubmitResultV1:
             "duplicate_blocked": self.duplicate_blocked,
             "retry_attempted": self.retry_attempted,
             "network_used": self.network_used,
+            "transport_call_completed": self.transport_call_completed,
+            "wire_attempted": self.wire_attempted,
+            "http_response_received": self.http_response_received,
+            "venue_acceptance_proven": self.venue_acceptance_proven,
+            "flatten_position_proven": self.flatten_position_proven,
+            "http_status": self.http_status,
             "DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED": (
                 DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED
             ),
@@ -145,13 +186,15 @@ class FlattenGatedSubmitBoundaryV1:
             transport.attach_pre_send_receipt(receipt)
         except LiveCanaryFlattenProductiveTransportError as exc:
             return _denied((str(exc),))
-        body_text = json.dumps(receipt.request_body, separators=(",", ":"), ensure_ascii=True)
-        endpoint = ENDPOINT_SUBMIT
-        url = f"{self.rest_base.rstrip('/')}{endpoint}"
+        body_text = receipt.approved_body_text or serialize_approved_flatten_body_text_v1(
+            receipt.request_body
+        )
+        endpoint = str(receipt.approved_endpoint or ENDPOINT_SUBMIT)
+        url = str(receipt.approved_url or f"{self.rest_base.rstrip('/')}{endpoint}")
         request = LiveCanaryHttpRequestV1(
-            method="POST",
+            method=str(receipt.approved_method or "POST"),
             url=url,
-            host=self.rest_host,
+            host=str(receipt.approved_host or self.rest_host),
             endpoint=endpoint,
             headers={"User-Agent": "PeakTrade-Section-11-13-5-FlattenWiring/1"},
             timeout_seconds=self.timeout_seconds,
@@ -176,8 +219,15 @@ class FlattenGatedSubmitBoundaryV1:
                 duplicate_blocked="DUPLICATE_POST_FORBIDDEN" in str(exc),
                 retry_attempted=False,
                 network_used=wire_attempted,
+                transport_call_completed=True,
+                wire_attempted=wire_attempted,
+                http_response_received=False,
+                venue_acceptance_proven=False,
+                flatten_position_proven=False,
+                http_status=None,
             )
         wire_attempted = bool(getattr(transport, "last_wire_attempted", False))
+        http_status = int(response.status_code) if response is not None else None
         return FlattenGatedSubmitResultV1(
             allowed=True,
             send_attempted=True,
@@ -192,6 +242,12 @@ class FlattenGatedSubmitBoundaryV1:
             duplicate_blocked=False,
             retry_attempted=False,
             network_used=wire_attempted,
+            transport_call_completed=True,
+            wire_attempted=wire_attempted,
+            http_response_received=response is not None,
+            venue_acceptance_proven=_venue_acceptance_from_response(response),
+            flatten_position_proven=False,
+            http_status=http_status,
         )
 
 
