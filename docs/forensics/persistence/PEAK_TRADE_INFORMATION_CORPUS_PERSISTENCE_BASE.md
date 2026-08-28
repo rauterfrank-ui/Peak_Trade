@@ -84,6 +84,7 @@ repo-internal.
 | `inventories&#47;P6_CAP21_SOURCE_EVENT_TIME_CROSS_SOURCE_BINDING_ADJUDICATION_OBSERVATION_V1.json` | Additive persist of the Cap-2.1 `source_event_time` cross-source binding contract adjudication plus Owner Decision Boundary `CAP21_SOURCE_EVENT_TIME_CROSS_SOURCE_BINDING_V1` (AUTHORITY=NONE; does not overwrite the census or raw-envelope files; A/B/C/D result forms are report language not new persistence enums; no offline reclassification; index entry is not canonical adjudication or completeness proof; 43 was the count after the census file) |
 | `inventories&#47;P6_CAP21_SOURCE_EVENT_TIME_CROSS_SOURCE_BINDING_V1_OPTION_C_DECISION_OBSERVATION_V1.json` | Additive persist of Owner OPTION_C `DEFER_KEEP_UNPROVEN` for `CAP21_SOURCE_EVENT_TIME_CROSS_SOURCE_BINDING_V1` plus restatement that the 645 observed rows remain UNPROVEN (AUTHORITY=NONE; does not overwrite the decision-surface file; OPTION_C is not OPTION_A allow and not OPTION_B prohibit; no reclassification; no network GET; no canonical mutation; index entry is not canonical adjudication or completeness proof; 44 was the count after the decision-surface file) |
 | `inventories&#47;P6_POST_PR6105_REMAINING_RESIDUAL_FRONTIER_COMPLETENESS_AND_MAX_LEVERAGE_ADJUDICATION_OBSERVATION_V1.json` | Additive persist of the post-PR6105 remaining-residual-frontier, catalog-completeness, and max-leverage ranking (AUTHORITY=NONE; does not overwrite the OPTION_C decision file, census, or raw envelopes; completeness remains UNPROVEN not DISPROVEN; unique next step is an exhaustion finding for this live GFU eligibility/completeness-proof forensic ladder, not a unique closer of remaining residuals; index entry is not canonical adjudication or completeness proof; 45 was the count after the OPTION_C file) |
+| `inventories&#47;P6_POST_PR6106_SEPARATE_RESIDUALS_FORENSIC_CLOSABILITY_AND_HIGHEST_LEVERAGE_WORKPACKAGE_ADJUDICATION_OBSERVATION_V1.json` | Additive persist of post-PR6106 per-residual forensic closability plus highest-leverage workpackage ranking (AUTHORITY=NONE; does not overwrite the PR6106 ranking file; ranking is a workpackage class not a unique residual closer; OPTION_A/B not selected; no network GET; no reclassification; index entry is not canonical adjudication or completeness proof; 46 was the count after the PR6106 ranking file) |
 
 ```text
 PRE_LAYER_COMPLETENESS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=36
@@ -106,8 +107,10 @@ PRE_BINDING_ADJUDICATION_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=43
 POST_BINDING_ADJUDICATION_FILE_PERSISTENCE_ARTIFACT_COUNT=44
 PRE_OPTION_C_DECISION_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=44
 POST_OPTION_C_DECISION_FILE_PERSISTENCE_ARTIFACT_COUNT=45
-PRE_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=45
-POST_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=46
+PRE_POST_PR6105_RANKING_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=45
+POST_POST_PR6105_RANKING_FILE_PERSISTENCE_ARTIFACT_COUNT=46
+PRE_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=46
+POST_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=47
 COUNT_39_IS_PRE_CLASS_A_SNAPSHOT_NOT_CURRENT=true
 COUNT_40_IS_INTERMEDIATE_AFTER_CLASS_A_FILE_NOT_COLLAPSED_ONTO_41=true
 COUNT_41_IS_PRE_CENSUS_WORKPACKAGE_SNAPSHOT_NOT_POST_CENSUS_CURRENT=true
@@ -115,7 +118,8 @@ COUNT_42_IS_INTERMEDIATE_AFTER_RAW_ENVELOPES_FILE_NOT_COLLAPSED_ONTO_43=true
 COUNT_43_IS_POST_CENSUS_FILE_NOT_COLLAPSED_ONTO_44=true
 COUNT_44_IS_POST_BINDING_ADJUDICATION_FILE_NOT_COLLAPSED_ONTO_45=true
 COUNT_45_IS_POST_OPTION_C_FILE_NOT_COLLAPSED_ONTO_46=true
-COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_AND_46_NOT_COLLAPSED=true
+COUNT_46_IS_POST_PR6106_RANKING_FILE_NOT_COLLAPSED_ONTO_47=true
+COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_AND_46_AND_47_NOT_COLLAPSED=true
 INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF=true
 INDEX_ENTRY_IS_NOT_ADJUDICATION=true
 NAVIGATION_ONLY=true
