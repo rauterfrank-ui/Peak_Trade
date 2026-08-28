@@ -82,6 +82,7 @@ repo-internal.
 | `inventories&#47;P6_LIVE_GFU_NETWORK_GET_ONLY_RAW_GET_SOURCE_ENVELOPES_V1.json` | Additive persist of four verbatim eea.okx.com public GET source envelopes for the live GFU census (AUTHORITY=NONE; four source identities not merged; index entry is not membership authority or completeness proof; 41 was the count after the dual-surface file) |
 | `inventories&#47;P6_LIVE_GFU_NETWORK_GET_ONLY_CENSUS_AND_GAP_ADJUDICATION_OBSERVATION_V1.json` | Additive persist of the NETWORK_GET_ONLY Cap-2.1 eligibility application plus separate GAP-U-GFU-LIVE and GAP-U-CAN-006 adjudication (AUTHORITY=NONE; does not overwrite the dual-surface file; result forms are report language not new persistence enums; GET metadata is not membership authority; index entry is not canonical adjudication or completeness proof; 42 was the count after the raw envelopes file) |
 | `inventories&#47;P6_CAP21_SOURCE_EVENT_TIME_CROSS_SOURCE_BINDING_ADJUDICATION_OBSERVATION_V1.json` | Additive persist of the Cap-2.1 `source_event_time` cross-source binding contract adjudication plus Owner Decision Boundary `CAP21_SOURCE_EVENT_TIME_CROSS_SOURCE_BINDING_V1` (AUTHORITY=NONE; does not overwrite the census or raw-envelope files; A/B/C/D result forms are report language not new persistence enums; no offline reclassification; index entry is not canonical adjudication or completeness proof; 43 was the count after the census file) |
+| `inventories&#47;P6_CAP21_SOURCE_EVENT_TIME_CROSS_SOURCE_BINDING_V1_OPTION_C_DECISION_OBSERVATION_V1.json` | Additive persist of Owner OPTION_C `DEFER_KEEP_UNPROVEN` for `CAP21_SOURCE_EVENT_TIME_CROSS_SOURCE_BINDING_V1` plus restatement that the 645 observed rows remain UNPROVEN (AUTHORITY=NONE; does not overwrite the decision-surface file; OPTION_C is not OPTION_A allow and not OPTION_B prohibit; no reclassification; no network GET; no canonical mutation; index entry is not canonical adjudication or completeness proof; 44 was the count after the decision-surface file) |
 
 ```text
 PRE_LAYER_COMPLETENESS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=36
@@ -100,14 +101,17 @@ POST_DUAL_SURFACE_FILE_PERSISTENCE_ARTIFACT_COUNT=41
 PRE_CENSUS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=41
 POST_RAW_ENVELOPES_FILE_PERSISTENCE_ARTIFACT_COUNT=42
 POST_CENSUS_FILE_PERSISTENCE_ARTIFACT_COUNT=43
-PRE_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=43
-POST_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=44
+PRE_BINDING_ADJUDICATION_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=43
+POST_BINDING_ADJUDICATION_FILE_PERSISTENCE_ARTIFACT_COUNT=44
+PRE_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=44
+POST_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=45
 COUNT_39_IS_PRE_CLASS_A_SNAPSHOT_NOT_CURRENT=true
 COUNT_40_IS_INTERMEDIATE_AFTER_CLASS_A_FILE_NOT_COLLAPSED_ONTO_41=true
 COUNT_41_IS_PRE_CENSUS_WORKPACKAGE_SNAPSHOT_NOT_POST_CENSUS_CURRENT=true
 COUNT_42_IS_INTERMEDIATE_AFTER_RAW_ENVELOPES_FILE_NOT_COLLAPSED_ONTO_43=true
 COUNT_43_IS_POST_CENSUS_FILE_NOT_COLLAPSED_ONTO_44=true
-COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_NOT_COLLAPSED=true
+COUNT_44_IS_POST_BINDING_ADJUDICATION_FILE_NOT_COLLAPSED_ONTO_45=true
+COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_NOT_COLLAPSED=true
 INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF=true
 INDEX_ENTRY_IS_NOT_ADJUDICATION=true
 NAVIGATION_ONLY=true
