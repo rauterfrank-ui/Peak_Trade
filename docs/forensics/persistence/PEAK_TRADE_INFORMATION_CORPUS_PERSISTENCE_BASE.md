@@ -122,6 +122,7 @@ BROAD_REDISCOVERY_REQUIRES_INSUFFICIENCY_FINDING=true
 | `inventories&#47;P6_POST_PR6105_REMAINING_RESIDUAL_FRONTIER_COMPLETENESS_AND_MAX_LEVERAGE_ADJUDICATION_OBSERVATION_V1.json` | Additive persist of the post-PR6105 remaining-residual-frontier, catalog-completeness, and max-leverage ranking (AUTHORITY=NONE; does not overwrite the OPTION_C decision file, census, or raw envelopes; completeness remains UNPROVEN not DISPROVEN; unique next step is an exhaustion finding for this live GFU eligibility/completeness-proof forensic ladder, not a unique closer of remaining residuals; index entry is not canonical adjudication or completeness proof; 45 was the count after the OPTION_C file) |
 | `inventories&#47;P6_POST_PR6106_SEPARATE_RESIDUALS_FORENSIC_CLOSABILITY_AND_HIGHEST_LEVERAGE_WORKPACKAGE_ADJUDICATION_OBSERVATION_V1.json` | Additive persist of post-PR6106 per-residual forensic closability plus highest-leverage workpackage ranking (AUTHORITY=NONE; does not overwrite the PR6106 ranking file; ranking is a workpackage class not a unique residual closer; OPTION_A/B not selected; no network GET; no reclassification; index entry is not canonical adjudication or completeness proof; 46 was the count after the PR6106 ranking file) |
 | `inventories&#47;P6_POST_PR6109_FEDERATED_OPEN_SYSTEM_FRONTIER_DEPENDENCY_CLOSABILITY_AND_MAX_LEVERAGE_ADJUDICATION_OBSERVATION_V1.json` | Additive persist of the post-PR6109 federated open-system-frontier reconstruction, dependency/closability classification, and max-leverage ranking (AUTHORITY=NONE; does not overwrite the PR6107 Cap-2.1 closability file; unique system-wide closer absent; OPTION_A/B not selected; OPTION_C not reopened; RISK007 not reopened; index entry is not canonical adjudication or completeness proof; 51 was the count after the maintenance-contract file) |
+| `inventories&#47;P6_EXISTING_EVIDENCE_FEDERATED_L0_L2_L4_RECONCILIATION_AND_BACKFILL_OBSERVATION_V1.json` | Additive persist of existing-evidence L0/L2/L4 reconciliation and missing-projection backfill (AUTHORITY=NONE; does not overwrite A-OBS-PR6109; no re-adjudication; no new domain ontology; source identities not collapsed; index entry is not canonical adjudication or completeness proof; 52 was the count after the PR6109 system-frontier file) |
 
 ```text
 PRE_LAYER_COMPLETENESS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=36
@@ -154,6 +155,8 @@ PRE_FEDERATED_MAINTENANCE_CONTRACT_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=50
 POST_FEDERATED_MAINTENANCE_CONTRACT_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=51
 PRE_POST_PR6109_SYSTEM_FRONTIER_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=51
 POST_POST_PR6109_SYSTEM_FRONTIER_FILE_PERSISTENCE_ARTIFACT_COUNT=52
+PRE_EXISTING_EVIDENCE_RECONCILIATION_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=52
+POST_EXISTING_EVIDENCE_RECONCILIATION_FILE_PERSISTENCE_ARTIFACT_COUNT=53
 COUNT_39_IS_PRE_CLASS_A_SNAPSHOT_NOT_CURRENT=true
 COUNT_40_IS_INTERMEDIATE_AFTER_CLASS_A_FILE_NOT_COLLAPSED_ONTO_41=true
 COUNT_41_IS_PRE_CENSUS_WORKPACKAGE_SNAPSHOT_NOT_POST_CENSUS_CURRENT=true
@@ -165,7 +168,8 @@ COUNT_46_IS_POST_PR6106_RANKING_FILE_NOT_COLLAPSED_ONTO_47=true
 COUNT_47_IS_POST_PR6106_CLOSABILITY_FILE_NOT_COLLAPSED_ONTO_50=true
 COUNT_50_IS_POST_FEDERATED_ARCHITECTURE_NOT_COLLAPSED_ONTO_51=true
 COUNT_51_IS_POST_PR6109_MAINTENANCE_CONTRACT_NOT_COLLAPSED_ONTO_52=true
-COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_AND_46_AND_47_AND_50_AND_51_AND_52_NOT_COLLAPSED=true
+COUNT_52_IS_POST_PR6109_SYSTEM_FRONTIER_NOT_COLLAPSED_ONTO_53=true
+COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_AND_46_AND_47_AND_50_AND_51_AND_52_AND_53_NOT_COLLAPSED=true
 INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF=true
 INDEX_ENTRY_IS_NOT_ADJUDICATION=true
 NAVIGATION_ONLY=true
