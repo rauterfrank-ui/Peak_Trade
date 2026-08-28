@@ -1,0 +1,211 @@
+{
+  "ARTIFACT_AUTHORITY": "NONE",
+  "AUTHORITY": "NONE",
+  "DOCUMENT_CLASS": "FORENSIC_PERSISTENCE_OBSERVATION",
+  "FORENSIC_PERSISTENCE_AUTHORITY": "NONE",
+  "OBSERVATION_IDENTITY": "P6_Z2CL_OFFLINE_SEMANTIC_BINDINGS_ADJUDICATION_OBSERVATION_V1",
+  "PROPOSED_ALIAS": "A-OBS-Z2CL-OFFLINE-SEM",
+  "OWNER_GO": "P6_Z2CL_OFFLINE_SEMANTIC_BINDINGS_AND_PERSISTENCE_WORKPACKAGE_V1",
+  "PERSISTENCE_IS_NOT_CANONIZATION": true,
+  "THIS_ARTIFACT_IS_NOT_CANONICAL": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL_PREMERGE_INV_AUDIT": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL_HARDEN": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CL_RT_PROOF": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_Z2CK_BLK": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_P3C": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_P3D": true,
+  "SOURCE_IDENTITY_COLLAPSED": false,
+  "HISTORICAL_REWRITE_COUNT": 0,
+  "bound_origin_main_sha": "7c0d3c226df2850205ca2300cb32b637a1155179",
+  "SOURCE_CLASS": "REPO_INTERNAL",
+  "SOURCE_SURFACE_ID": "SS-03",
+  "NETWORK_USED": false,
+  "EXCHANGE_GET_PERFORMED": false,
+  "AUTHENTICATED_POST_PERFORMED": false,
+  "TRADING_PERFORMED": false,
+  "FLATTEN_EXECUTE_PERFORMED": false,
+  "CLASS_D_CONSUMED": false,
+  "Z2AP_CONSUMED": false,
+  "EXECUTION_READY": false,
+  "OPTION_A_SELECTED": false,
+  "OPTION_B_SELECTED": false,
+  "NEW_DOMAIN_ONTOLOGY_CREATED": false,
+  "NEW_RELATION_TYPE_CREATED": false,
+  "SECRET_VALUES_INCLUDED": false,
+  "chronology": {
+    "FOLLOWS": "A-OBS-Z2CL-RT-PROOF",
+    "DOES_NOT_COLLAPSE_ONTO": [
+      "A-OBS-Z2CL",
+      "A-OBS-Z2CL-PREMERGE-INV-AUDIT",
+      "A-OBS-Z2CL-HARDEN",
+      "A-OBS-Z2CL-RT-PROOF",
+      "A-OBS-Z2CK-BLK",
+      "A-OBS-P3C",
+      "A-OBS-P3D"
+    ]
+  },
+  "source_and_test_identities": {
+    "SOURCE_PATHS": [
+      "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_pre_send_gate_v1.py",
+      "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_submit_state_v1.py",
+      "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_submit_transport_v1.py",
+      "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_productive_transport_v1.py",
+      "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_gated_submit_v1.py",
+      "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_post_action_proof_contract_v1.py",
+      "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/runner_v1.py"
+    ],
+    "TEST_PATHS": [
+      "tests/ops/test_section_11_13_5_z2cl_offline_semantic_bindings_v1.py",
+      "tests/ops/test_section_11_13_5_productive_flatten_wiring_v1.py",
+      "tests/ops/test_section_11_13_5_z2cb_p7_4_productive_flatten_provability_contract_v1.py"
+    ],
+    "SOURCE_IDENTITY_COLLAPSE": false
+  },
+  "distinction_report_language_not_new_persistence_enum": {
+    "OFFLINE_IMPLEMENTATION_INVARIANT_PROVEN_IS_NOT_PRODUCTIVE_RUNTIME_PROOF_PROVEN": true,
+    "NEW_PROOF_STATUS_CLASS_CREATED": false
+  },
+  "surface_adjudication_after_offline_implementation": [
+    {
+      "ID": 1,
+      "NAME": "ACCOUNT_CONTEXT",
+      "OFFLINE_IMPLEMENTATION_INVARIANT": "PROVEN",
+      "PRODUCTIVE_RUNTIME_PROOF": "UNPROVEN",
+      "ACCOUNT_CONTEXT_BINDING_STATUS": "UNPROVEN",
+      "ACCOUNT_CONTEXT_MISMATCH_POSSIBLE": true,
+      "ACCOUNT_IDENTITY_INVENTED": false,
+      "NOTE": "opaque digest/class mismatch is denied offline; no UID/account-id invented; Class-C read-only context is not auto-bound as trade POST"
+    },
+    {
+      "ID": 2,
+      "NAME": "POSITION_FRESHNESS_OR_OPERATION_SCOPED_PRE_OWNERSHIP",
+      "OFFLINE_IMPLEMENTATION_INVARIANT": "PROVEN",
+      "PRODUCTIVE_RUNTIME_PROOF": "UNPROVEN",
+      "OPERATION_SCOPED_PRE_OWNERSHIP_STATUS": "OFFLINE_FAILCLOSED_IMPLEMENTED_PRODUCTIVE_UNPROVEN",
+      "POSITION_FRESHNESS_BINDING": "UNPROVEN",
+      "POSITION_FRESHNESS_POLICY_REQUIRED": false,
+      "OPERATION_SCOPED_FRESHNESS_SUFFICIENT": "UNPROVEN",
+      "PRE_CAPTURE_PRECEDES_REQUIRED_OPERATION_AUTH_BOUNDARY": "UNRESOLVED",
+      "POSITION_5000MS_FRESHNESS_INVENTED": false,
+      "NOTE": "PRE without/mismatched/reused operation identity is denied; no quote-freshness 5000ms transferred to positions"
+    },
+    {
+      "ID": 3,
+      "NAME": "POSITION_MODE_POS_SIDE",
+      "OFFLINE_IMPLEMENTATION_INVARIANT": "PROVEN",
+      "PRODUCTIVE_RUNTIME_PROOF": "UNPROVEN",
+      "ACCOUNT_POS_MODE": "net_mode",
+      "ACCOUNT_POS_MODE_PROVEN": "UNPROVEN",
+      "POS_SIDE_OMISSION_VERDICT": "UNPROVEN",
+      "POS_SIDE_REQUEST_REQUIREMENT": "CONTEXT_DEPENDENT_DOCUMENTED_OMITTABLE_IN_NET_MODE_PRODUCTIVE_UNPROVEN",
+      "POSSIDE_OMISSION_PROVEN_WITHOUT_EVIDENCE": false,
+      "NOTE": "fail-closed only when envelope supplies posMode/posSide; Class-C GET net_mode is observation not productive SUI POST proof"
+    },
+    {
+      "ID": 4,
+      "NAME": "POS_TO_SZ_UNIT_AND_SIZE_VALIDITY",
+      "OFFLINE_IMPLEMENTATION_INVARIANT": "PROVEN",
+      "PRODUCTIVE_RUNTIME_PROOF": "UNPROVEN",
+      "POS_TO_SZ_UNIT_IDENTITY": "UNPROVEN",
+      "POS_TO_SZ_SIZE_VALIDITY": "UNPROVEN",
+      "CTVAL_CONVERSION_REQUIRED_FOR_FLATTEN": "UNPROVEN",
+      "ONE_CONTRACT_EQUALS_ONE_SUI_ASSUMED": false,
+      "IMPLEMENTATION_PASSTHROUGH_RULE": "ABS_OBSERVED_POS_COPIED_TO_SZ_EXACT",
+      "VENUE_UNIT_IDENTITY_PROOF": "UNPROVEN",
+      "NOTE": "passthrough remains exact; ctVal is not a flatten sz scaler; lotSz/minSz deny when metadata is supplied; no rounding"
+    },
+    {
+      "ID": 5,
+      "NAME": "AUTHENTICATED_PRODUCTIVE_TRANSPORT",
+      "OFFLINE_IMPLEMENTATION_INVARIANT": "PROVEN",
+      "PRODUCTIVE_RUNTIME_PROOF": "UNPROVEN",
+      "AUTHENTICATED_PRODUCTIVE_TRANSPORT_STATUS": "REMAINS_UNRESOLVED",
+      "FLATTEN_REQUEST_AUTHENTICATED": false,
+      "CREDENTIAL_HANDLE_REACHES_FLATTEN": false,
+      "NETWORK_SESSION_AUTHORIZED": false,
+      "AUTHORITY_LEAK_FROM_CANARY_TO_FLATTEN": false,
+      "NOTE": "generic HMAC primitive remains unwired; canary header wrapper is denied on flatten transport; unsigned remains default"
+    }
+  ],
+  "runtime_proof_surfaces": {
+    "PRODUCTIVE_RUNTIME_PROOF_SURFACE_COUNT": 5,
+    "PRODUCTIVE_RUNTIME_PROOF_SURFACES_PROVEN": 0,
+    "PRODUCTIVE_RUNTIME_PROOF_SURFACES_UNPROVEN": 5,
+    "PRODUCTIVE_RUNTIME_PROOF_SURFACES_DISPROVEN": 0,
+    "COUNT_SEMANTICS_CHANGED": false,
+    "OFFLINE_IMPLEMENTATION_INVARIANT_NOT_COLLAPSED_ONTO_PRODUCTIVE_RUNTIME_PROOF": true
+  },
+  "offline_failclosed_invariants_added": [
+    "PRE_WITHOUT_OPERATION_BINDING",
+    "PRE_FROM_DIFFERENT_OPERATION",
+    "PRE_REUSED_FROM_PRIOR_INVOCATION",
+    "ACCOUNT_CONTEXT_MISMATCH",
+    "ACCOUNT_CONTEXT_BINDING_UNPROVEN",
+    "UNEXPECTED_HEDGE_OR_POSSIDE_CONTEXT",
+    "EXPLICIT_POSSIDE_NOT_NET_SEMANTICS",
+    "LOT_SZ_ALIGNMENT_DENIED",
+    "BELOW_MIN_SZ",
+    "POS_TO_SZ_PASSTHROUGH_MISMATCH",
+    "CREDENTIAL_HANDLE_REACHES_FLATTEN",
+    "RAW_SECRET_FIELD_FORBIDDEN",
+    "CANARY_AUTHORITY_WRAPPER_FORBIDDEN"
+  ],
+  "remaining_gaps": [
+    "PRE_CAPTURE_PRECEDES_REQUIRED_OPERATION_AUTH_BOUNDARY=UNRESOLVED",
+    "productive account identity still absent from flatten datatypes",
+    "ACCOUNT_POS_MODE_PROVEN remains UNPROVEN",
+    "POS_SIDE_OMISSION_VERDICT remains UNPROVEN",
+    "POS_TO_SZ_UNIT_IDENTITY remains UNPROVEN",
+    "authenticated productive flatten POST remains unwired",
+    "PREREQUISITE_16 still blocking offline-implemented runtime-unauthorized",
+    "PREREQUISITE_25 flatten-execute GO and authenticated POST remain separate"
+  ],
+  "prerequisites": {
+    "PREREQUISITE_16_IMPACT": "UNCHANGED_STILL_BLOCKING_OFFLINE_IMPLEMENTED_RUNTIME_UNAUTHORIZED",
+    "PREREQUISITE_25_IMPACT": "UNCHANGED_FLATTEN_EXECUTE_GO_AND_AUTHENTICATED_POST_REMAIN_SEPARATE"
+  },
+  "authenticated_transport_preserved_from_rt_proof": {
+    "AUTHENTICATED_TRANSPORT_MECHANISM_VERDICT": "GENERIC_HMAC_PRIMITIVE_EXISTS_CANARY_HEADER_WRAPPER_MIXED_FLATTEN_UNSIGNED",
+    "AUTH_SIGNER_MECHANICALLY_REUSABLE": true,
+    "AUTH_SIGNER_AUTHORITY_NEUTRAL": true,
+    "CREDENTIAL_HANDLE_REUSE_VERDICT": "HANDLE_TYPE_CANARY_BOUND_NOT_AUTHORITY_NEUTRAL_MATERIAL_BORROW_DOES_NOT_CREATE_AUTHORITY",
+    "CREDENTIAL_HANDLE_ORIGIN_PROVEN": true,
+    "AUTH_MINIMAL_PLUMBING_UNIQUE": false,
+    "AUTHENTICATED_PRODUCTIVE_TRANSPORT_STATUS_AFTER_READ_ONLY": "REMAINS_UNRESOLVED"
+  },
+  "federated_relation": {
+    "BINDING_ID": "FB-P3D-08",
+    "FROM": "A-OBS-Z2CL-RT-PROOF",
+    "TYPE": "INPUT_TO",
+    "TO": "A-OBS-Z2CL-OFFLINE-SEM",
+    "TYPE_REUSED": true,
+    "NEW_RELATION_TYPE_CREATED": false,
+    "EVIDENCE": "same FB-P3D INPUT_TO chain; this observation FOLLOWS A-OBS-Z2CL-RT-PROOF; offline SEM workpackage applied the already-adjudicated unproven surfaces without collapsing identities or promoting offline invariants to productive runtime proofs"
+  },
+  "maintenance_contract": {
+    "SUBJECT_IMPACT_CHECK": "PERFORMED",
+    "IMPACTED_INFORMATION_OBJECT_IDS": [
+      "IO-CAN-NEXT",
+      "IO-FLATTEN"
+    ],
+    "SUBJECT_SUPPLEMENTED": true,
+    "SUBJECT_SUPERSEDED": false,
+    "SUBJECT_NEWLY_ADJUDICATED": false,
+    "SUBJECT_NEW_EVIDENCE_ADDED": true,
+    "SUBJECT_RESIDUAL_STATUS_CHANGED": false,
+    "SUBJECT_OWNER_DECISION_STATUS_CHANGED": false,
+    "SUBJECT_NEW_ARTIFACT_LOCATOR_INTRODUCED": true,
+    "L0_UPDATE_REQUIRED": false,
+    "L0_NO_CHANGE_REASON": "new inventory file remains under already registered SS-03; no new source surface or source-identity class",
+    "L2_UPDATE_REQUIRED": true,
+    "L2_UPDATE_REASON": "new alias A-OBS-Z2CL-OFFLINE-SEM; IO-CAN-NEXT/IO-FLATTEN supporting locator; FB-P3D-08 INPUT_TO without Class D consume or identity collapse",
+    "L4_UPDATE_REQUIRED": true,
+    "L4_UPDATE_REASON": "project distinct offline-SEM adjudication; productive runtime-proof surfaces remain 0 proven / 5 unproven; AUTHENTICATED_PRODUCTIVE_TRANSPORT_STATUS remains REMAINS_UNRESOLVED",
+    "FEDERATED_ENTRYPOINT_UPDATE_NOT_REQUIRED": false,
+    "FEDERATED_ENTRYPOINT_NO_CHANGE_PROOF": "",
+    "FEDERATED_ENTRYPOINT_INSUFFICIENT": false,
+    "MISSING_INFORMATION_TYPE": "",
+    "HISTORICAL_OBSERVATION_REWRITE_COUNT": 0
+  }
+}
