@@ -1,0 +1,278 @@
+{
+  "ANALYTICAL_DECISION_STRINGS_ARE_REPORT_LANGUAGE_NOT_PERSISTENCE_STATUS_CLASSES": true,
+  "ARTIFACT_AUTHORITY": "NONE",
+  "AUTHORITY": "NONE",
+  "BROAD_REDISCOVERY_PERFORMED": false,
+  "CANARY_ACTION_PERFORMED": false,
+  "CANONICAL_MUTATION_PERFORMED": false,
+  "CAP21_OPTION_A_SELECTED": false,
+  "CAP21_OPTION_B_SELECTED": false,
+  "CONFIG_MUTATION_PERFORMED": false,
+  "DOCUMENT_CLASS": "FORENSIC_PERSISTENCE_OBSERVATION",
+  "EXECUTION_READY": false,
+  "EXTERNAL_FORENSIC_MUTATION_PERFORMED": false,
+  "FEDERATED_ENTRYPOINT_USED_AS_PRIMARY_DISCOVERY_PATH": true,
+  "FLATTEN_PERFORMED": false,
+  "FORENSIC_PERSISTENCE_AUTHORITY": "NONE",
+  "HISTORICAL_OBSERVATION_REWRITE_COUNT": 0,
+  "HISTORICAL_REWRITE_COUNT": 0,
+  "LIVE_ACTION_PERFORMED": false,
+  "MASTER_RUNBOOK_REMAINS_SOLE_CANONICAL_SSOT": true,
+  "NEW_DOMAIN_ONTOLOGY_CREATED": false,
+  "NEW_DOMAIN_RELATION_INVENTED": false,
+  "NEW_EXCHANGE_GET_PERFORMED": false,
+  "NEW_PERSISTENCE_ENUM_CREATED": false,
+  "NEW_PROOF_STATUS_CLASS_CREATED": false,
+  "NEW_RELATION_TYPE_CREATED": false,
+  "OPTION_A_SELECTED": false,
+  "OPTION_B_SELECTED": false,
+  "ORDER_MUTATION_PERFORMED": false,
+  "OWNER_GO": "PEAK_TRADE_PR6114_MERGE_Z2CK_CLASS_D_FAIL_CLOSED_SSOT_AND_POST_Z2CK_BLOCKER_ADJUDICATION_MAX_LEVERAGE_V1",
+  "PERSISTENCE_IMPLIES_GAP_CLOSURE": false,
+  "PERSISTENCE_IS_ADJUDICATION": false,
+  "PERSISTENCE_IS_CANONIZATION": false,
+  "PERSISTENCE_IS_NOT_CANONIZATION": true,
+  "PRESERVE_CONTRADICTION": true,
+  "PRODUCTIVE_FLATTEN_EXECUTED": false,
+  "READJUDICATION_OF_CLOSED_GET_PACK_PERFORMED": false,
+  "RISK007_REOPENED": false,
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "SECOND_SSOT": false,
+  "SECRET_VALUES_INCLUDED": false,
+  "SOURCE_CODE_MUTATION_PERFORMED": false,
+  "SOURCE_IDENTITY_COLLAPSED": false,
+  "TARGET_AUTHORITY": "NONE",
+  "TESTNET_ACTION_PERFORMED": false,
+  "THIS_ARTIFACT_IS_NOT_CANONICAL": true,
+  "THIS_FILE_DOES_NOT_REWRITE_A_OBS_P3D": true,
+  "THIS_FILE_DOES_NOT_REWRITE_Z2AP": true,
+  "THIS_FILE_DOES_NOT_REWRITE_Z2CB": true,
+  "THIS_FILE_DOES_NOT_REWRITE_Z2CJ": true,
+  "TRADING_ACTION_PERFORMED": false,
+  "Z2AP_CONSUMED": false,
+  "blocker_normalization": {
+    "BLOCKING_LIST_NINE_IDS_COMPLETE_FOR_NUMBERED_MATRIX": true,
+    "BLOCKING_PRECONDITION_COUNT": 9,
+    "BLOCKING_PRECONDITION_IDS": [
+      "EXECUTION_PREREQUISITE_08_TARGET_POSITION_NONZERO_PROVEN",
+      "EXECUTION_PREREQUISITE_09_TARGET_POSITION_QTY_NUMERIC",
+      "EXECUTION_PREREQUISITE_10_TARGET_POSITION_QTY_UNIT",
+      "EXECUTION_PREREQUISITE_11_POSITION_SIDE_POSSIDE",
+      "EXECUTION_PREREQUISITE_12_EXACT_FLATTEN_PAYLOAD_FROM_OBSERVED_POSITION",
+      "EXECUTION_PREREQUISITE_16_BOUNDED_ACTIVATION_WITHOUT_GLOBAL_LIVE_AUTHORIZED",
+      "EXECUTION_PREREQUISITE_20_MUTATION_LIMITED_TO_PROVEN_POSITION",
+      "EXECUTION_PREREQUISITE_23_READBACK_SUCCESS_PREDICATE_DEFINED_BEFORE_POST",
+      "EXECUTION_PREREQUISITE_25_NO_ADDITIONAL_OWNER_DECISION_REQUIRED"
+    ],
+    "CLASS_D_PRECONDITION_COUNT": 25,
+    "CLASS_D_PRECONDITION_DISPROVEN_COUNT": 3,
+    "CLASS_D_PRECONDITION_PROVEN_COUNT": 12,
+    "CLASS_D_PRECONDITION_UNPROVEN_COUNT": 10,
+    "COUNTS_SILENTLY_REWRITTEN": false,
+    "NINE_ID_LIST_WAS_NOT_AN_ERROR": true,
+    "NON_BLOCKING_NON_PROVEN_PRECONDITION_COUNT": 4,
+    "NON_BLOCKING_NON_PROVEN_PRECONDITION_IDS": [
+      "EXECUTION_PREREQUISITE_18_NO_OTHER_TRADE_THROUGH_SAME_FLOW",
+      "EXECUTION_PREREQUISITE_19_MUTATION_LIMITED_TO_CANONICAL_SUI",
+      "EXECUTION_PREREQUISITE_21_DUPLICATE_SUBMIT_PROTECTION",
+      "EXECUTION_PREREQUISITE_24_AUDIT_TRAIL_SUFFICIENT"
+    ],
+    "NON_BLOCKING_REASON": "UNREACHABLE_OR_CODE_PRESENT_BECAUSE_SEND_UNIMPLEMENTED_NOT_INDEPENDENT_POST_DENY_ONCE_16_HOLDS",
+    "NON_PROVEN_PRECONDITION_COUNT": 13,
+    "PRIMARY_SOURCE": "A-OBS-P3D class_d_z2cb_execution_prerequisite_matrix BLOCKING flags; Z2CB numbered 01-25"
+  },
+  "blocker_decomposition": {
+    "CAUSE_LABELS_ARE_REPORT_LANGUAGE_NOT_NEW_ONTOLOGY": true,
+    "DEPENDENT_BLOCKER_IDS": [
+      "EXECUTION_PREREQUISITE_09_TARGET_POSITION_QTY_NUMERIC",
+      "EXECUTION_PREREQUISITE_10_TARGET_POSITION_QTY_UNIT",
+      "EXECUTION_PREREQUISITE_11_POSITION_SIDE_POSSIDE",
+      "EXECUTION_PREREQUISITE_12_EXACT_FLATTEN_PAYLOAD_FROM_OBSERVED_POSITION",
+      "EXECUTION_PREREQUISITE_20_MUTATION_LIMITED_TO_PROVEN_POSITION"
+    ],
+    "NEW_DOMAIN_RELATION_INVENTED": false,
+    "ROWS": [
+      {
+        "CAUSE": "observe_target_position_flatten_candidate_v1 raised TARGET_INSTRUMENT_NOT_OBSERVED on empty positions data[] this window; empty is not zero",
+        "DEPENDS_ON": [],
+        "ID": "EXECUTION_PREREQUISITE_08_TARGET_POSITION_NONZERO_PROVEN",
+        "KIND": "RUNTIME_EVIDENCE_BLOCKER",
+        "ROOT": true
+      },
+      {
+        "CAUSE": "qty is ABS(observed pos); no observed row this window",
+        "DEPENDS_ON": ["EXECUTION_PREREQUISITE_08_TARGET_POSITION_NONZERO_PROVEN"],
+        "ID": "EXECUTION_PREREQUISITE_09_TARGET_POSITION_QTY_NUMERIC",
+        "KIND": "DEPENDENT_BLOCKER",
+        "ROOT": false
+      },
+      {
+        "CAUSE": "qty unit is the venue pos field copied to sz; no observed row this window",
+        "DEPENDS_ON": ["EXECUTION_PREREQUISITE_08_TARGET_POSITION_NONZERO_PROVEN"],
+        "ID": "EXECUTION_PREREQUISITE_10_TARGET_POSITION_QTY_UNIT",
+        "KIND": "DEPENDENT_BLOCKER",
+        "ROOT": false
+      },
+      {
+        "CAUSE": "side is SELL if signed pos > 0 else BUY; no observed row this window",
+        "DEPENDS_ON": ["EXECUTION_PREREQUISITE_08_TARGET_POSITION_NONZERO_PROVEN"],
+        "ID": "EXECUTION_PREREQUISITE_11_POSITION_SIDE_POSSIDE",
+        "KIND": "DEPENDENT_BLOCKER",
+        "ROOT": false
+      },
+      {
+        "CAUSE": "exact flatten body is derived from observed pos plus quote-locked px; no observed row this window",
+        "DEPENDS_ON": ["EXECUTION_PREREQUISITE_08_TARGET_POSITION_NONZERO_PROVEN"],
+        "ID": "EXECUTION_PREREQUISITE_12_EXACT_FLATTEN_PAYLOAD_FROM_OBSERVED_POSITION",
+        "KIND": "DEPENDENT_BLOCKER",
+        "ROOT": false
+      },
+      {
+        "CAUSE": "GatedProductiveFlattenTransportV1.send raises PRODUCTIVE_FLATTEN_URLLIB_NOT_AUTHORIZED_BY_WIRING_SLICE even when network_session_authorized is true; PRODUCTIVE_URLLIB_SEND_IMPLEMENTED=false",
+        "DEPENDS_ON": [],
+        "ID": "EXECUTION_PREREQUISITE_16_BOUNDED_ACTIVATION_WITHOUT_GLOBAL_LIVE_AUTHORIZED",
+        "KIND": "IMPLEMENTATION_BLOCKER",
+        "ROOT": true
+      },
+      {
+        "CAUSE": "mutation must be limited to a proven position; none proven this window",
+        "DEPENDS_ON": ["EXECUTION_PREREQUISITE_08_TARGET_POSITION_NONZERO_PROVEN"],
+        "ID": "EXECUTION_PREREQUISITE_20_MUTATION_LIMITED_TO_PROVEN_POSITION",
+        "KIND": "DEPENDENT_BLOCKER",
+        "ROOT": false
+      },
+      {
+        "CAUSE": "Z2AP PRE_POS!=0 then POS==0 versus Z2CA/pre-send TARGET_NOT_OBSERVED!=zero versus post-action default Decimal 0 on missing target",
+        "DEPENDS_ON": [],
+        "ID": "EXECUTION_PREREQUISITE_23_READBACK_SUCCESS_PREDICATE_DEFINED_BEFORE_POST",
+        "KIND": "CANONICAL_SEMANTIC_BLOCKER",
+        "ROOT": true
+      },
+      {
+        "CAUSE": "flatten execute requires SECTION_11_13_5_FLATTEN_EXECUTE_OWNER_GO plus confirm token; readiness/authoring GOs are forbidden; urllib send remains a separate wiring decision",
+        "DEPENDS_ON": [],
+        "ID": "EXECUTION_PREREQUISITE_25_NO_ADDITIONAL_OWNER_DECISION_REQUIRED",
+        "KIND": "OWNER_AUTHORITY_BLOCKER",
+        "ROOT": true
+      }
+    ],
+    "ROOT_BLOCKER_IDS": [
+      "EXECUTION_PREREQUISITE_08_TARGET_POSITION_NONZERO_PROVEN",
+      "EXECUTION_PREREQUISITE_16_BOUNDED_ACTIVATION_WITHOUT_GLOBAL_LIVE_AUTHORIZED",
+      "EXECUTION_PREREQUISITE_23_READBACK_SUCCESS_PREDICATE_DEFINED_BEFORE_POST",
+      "EXECUTION_PREREQUISITE_25_NO_ADDITIONAL_OWNER_DECISION_REQUIRED"
+    ]
+  },
+  "bounded_activation_and_authority": {
+    "CANARY_AUTHORIZATION_REQUIRED_FOR_FLATTEN_EXECUTE": false,
+    "CANARY_AUTHORIZATION_REQUIRED_NOTE": "Z2CB requires no invented canary/testnet auth; flatten-execute is a named GO distinct from canary execute",
+    "CONFIRM_TOKEN": "I_AUTHORIZE_SECTION_11_13_5_FLATTEN_EXECUTE",
+    "FUTURE_FLATTEN_REQUIRED_OWNER_AUTHORITIES": [
+      "SECTION_11_13_5_FLATTEN_EXECUTE_OWNER_GO",
+      "I_AUTHORIZE_SECTION_11_13_5_FLATTEN_EXECUTE",
+      "SECTION_11_13_5_FLATTEN_EXECUTE purpose",
+      "invocation live_enabled and live_armed claims true while standing LIVE_ENABLED and LIVE_ARMED remain false",
+      "separate urllib-send wiring authorization; not implied by flatten-execute GO alone under current send()"
+    ],
+    "GLOBAL_LIVE_AUTHORIZATION_REQUIRED": false,
+    "GLOBAL_LIVE_AUTHORIZATION_REQUIRED_NOTE": "Z2CB prereq 16 is bounded activation WITHOUT flipping global LIVE_AUTHORIZED; standing LIVE_AUTHORIZED must remain false",
+    "OWNER_EXECUTE_TOKEN": "SECTION_11_13_5_FLATTEN_EXECUTE_OWNER_GO",
+    "READINESS_GO_IS_FORBIDDEN_EXECUTE_TOKEN": true
+  },
+  "bound_origin_main_sha": "654aaef25cce65adef0a323c4f2d8038bb6de4dc",
+  "count_semantics": {
+    "POST_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT": 58,
+    "PRE_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT": 57
+  },
+  "frontier": {
+    "GLOBAL_UNIQUE_CANONICAL_NEXT_STEP": "NONE_BY_P3_POLICY",
+    "NEXT_HIGHEST_LEVERAGE_SYSTEM_STEP": "SUCCESS_PREDICATE_CANONICAL_RESOLUTION_THEN_SEPARATE_OFFLINE_PRODUCTIVE_TRANSPORT_WIRING;_NOT_FLATTEN_EXECUTE",
+    "NEXT_STEP_REQUIRES_CANONICAL_MUTATION": true,
+    "NEXT_STEP_REQUIRES_OWNER_DECISION": true,
+    "NEXT_STEP_REQUIRES_SOURCE_CODE_MUTATION": false,
+    "NEXT_STEP_REQUIRES_TRADING_AUTHORITY": false,
+    "PARETO": [
+      {
+        "ID": "SUCCESS_PREDICATE_CANONICAL_RESOLUTION",
+        "REQUIRES_CANONICAL_MUTATION": true,
+        "REQUIRES_EXCHANGE_MUTATION": false,
+        "REQUIRES_OWNER_DECISION": true,
+        "REQUIRES_SOURCE_CODE_MUTATION": false,
+        "REQUIRES_TRADING_AUTHORITY": false
+      },
+      {
+        "ID": "PRODUCTIVE_TRANSPORT_OFFLINE_IMPLEMENTATION",
+        "REQUIRES_CANONICAL_MUTATION": false,
+        "REQUIRES_EXCHANGE_MUTATION": false,
+        "REQUIRES_OWNER_DECISION": true,
+        "REQUIRES_SOURCE_CODE_MUTATION": true,
+        "REQUIRES_TRADING_AUTHORITY": false
+      },
+      {
+        "ID": "CLASS_D_CONSUME_REQUIRES_NONZERO_POSITION_PLUS_FLATTEN_EXECUTE_GO",
+        "REQUIRES_CANONICAL_MUTATION": true,
+        "REQUIRES_EXCHANGE_MUTATION": true,
+        "REQUIRES_OWNER_DECISION": true,
+        "REQUIRES_SOURCE_CODE_MUTATION": false,
+        "REQUIRES_TRADING_AUTHORITY": true
+      },
+      {
+        "ID": "CAP21_OPTION_C_DEFER_KEEP_UNPROVEN",
+        "REQUIRES_CANONICAL_MUTATION": false,
+        "REQUIRES_EXCHANGE_MUTATION": false,
+        "REQUIRES_OWNER_DECISION": true,
+        "REQUIRES_SOURCE_CODE_MUTATION": false,
+        "REQUIRES_TRADING_AUTHORITY": false
+      }
+    ],
+    "REMAINING_PARETO_FRONTIER": "SUCCESS_PREDICATE_CANONICAL_RESOLUTION; PRODUCTIVE_TRANSPORT_OFFLINE_IMPLEMENTATION; CLASS_D_UNCONSUMED_REQUIRES_NONZERO_POSITION_PLUS_FLATTEN_EXECUTE_GO; CAP21_OPTION_C_DEFER_KEEP_UNPROVEN",
+    "UNIQUE_GLOBAL_NEXT_INVENTED": false
+  },
+  "l0_locator": "docs/forensics/persistence/registries/FEDERATED_SOURCE_SURFACE_REGISTRY_V1.md",
+  "l2_locator": "docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md",
+  "l4_locator": "docs/forensics/persistence/registries/CURRENT_STATE_PROJECTION_V1.md",
+  "maintenance_contract": {
+    "L0_UPDATE_REQUIRED": false,
+    "L0_NO_CHANGE_REASON": "new inventory file is under already registered SS-03",
+    "L2_UPDATE_REQUIRED": true,
+    "L2_UPDATE_REASON": "new alias A-OBS-Z2CK-BLK; IO-CAN-NEXT/IO-FLATTEN supporting locator; FB-P3D-03 INPUT_TO without Class D consume",
+    "L4_UPDATE_REQUIRED": true,
+    "L4_UPDATE_REASON": "project Z2CK canonical phase and blocker/success-predicate restatement; CLASS_D_UNCONSUMED unchanged"
+  },
+  "observation_identity": "P6_P3_CLASS_D_Z2CK_BLOCKER_SUCCESS_PREDICATE_AND_TRANSPORT_GAP_ADJUDICATION_OBSERVATION_V1",
+  "observation_role": "ADDITIVE_POST_Z2CK_BLOCKER_NORMALIZATION_AND_EXISTING_CONTRACT_APPLICATION_NOT_GET_READJUDICATION",
+  "predecessor_raw_and_observation": {
+    "A_OBS_P3D": "docs/forensics/persistence/inventories/P6_P3_CLASS_D_Z2AP_FLATTEN_PREEXECUTION_READINESS_ADJUDICATION_OBSERVATION_V1.json",
+    "A_OBS_P3D_ENV": "docs/forensics/persistence/inventories/P6_P3_CLASS_D_Z2AP_FLATTEN_PREEXECUTION_READINESS_RAW_GET_SOURCE_ENVELOPES_V1.json"
+  },
+  "success_predicate": {
+    "POST_ACTION_DEFAULTS_MISSING_TARGET_TO_DECIMAL_ZERO": true,
+    "PRE_SEND_MISSING_TARGET_IS_NOT_OBSERVED_NOT_ZERO": true,
+    "PRIMARY_AUTHORITIES": [
+      "A-CAN-MR section 11.13.5.Z2AP PRE_POS!=0 then POS==0 PENDING EMPTY NO_FLIP NO_UNEXPECTED_RELATED",
+      "A-CAN-MR section 11.13.5.Z2CA EMPTY_DATA_IS_NOT_ZERO TARGET_INSTRUMENT_NOT_OBSERVED",
+      "A-CAN-MR section 11.13.5.Z2CB EXECUTION_PREREQUISITE_23=FAIL_AMBIGUOUS",
+      "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_submit_state_v1.py observe_target_position_flatten_candidate_v1",
+      "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_post_action_proof_contract_v1.py _target_signed_pos default 0",
+      "tests/ops/test_section_11_13_5_z2cb_p7_4_productive_flatten_provability_contract_v1.py test_empty_readback_is_not_zero_under_p7_3_contract"
+    ],
+    "PROPOSED_SUCCESS_PREDICATE_DELTA_IF_ANY": "separate Owner canonical decision naming the post-GET success form as unique target zero-row versus continuing to treat missing target as POS==0 in the post-action evaluator; empty=zero remains forbidden; this file does not select",
+    "STATUS": "CONTRADICTED",
+    "SUCCESS_PREDICATE_CANONICAL_DECISION_REQUIRED": true
+  },
+  "transport_gap": {
+    "ENTRY_TRANSPORT_REUSE_FORBIDDEN": true,
+    "EXISTING_REUSABLE_TRANSPORT_FOUND": false,
+    "EXISTING_URLLIB_GET_AND_ENTRY_POST_TRANSPORT": "UrllibLiveCanaryTransportV1 is bound for canary GET/entry POST and is not the productive flatten send path",
+    "MISSING_PATH": "GatedProductiveFlattenTransportV1.send never opens urllib; after receipt and network_session_authorized it raises PRODUCTIVE_FLATTEN_URLLIB_NOT_AUTHORIZED_BY_WIRING_SLICE",
+    "PRODUCTIVE_TRANSPORT_IMPLEMENTATION_GAP_CONFIRMED": true,
+    "PRODUCTIVE_URLLIB_SEND_IMPLEMENTED": false,
+    "PROPOSED_IMPLEMENTATION_WORKPACKAGE": "separate Owner-GO for fail-closed productive flatten urllib send inside GatedProductiveFlattenTransportV1 only; default network_session_authorized remains false; do not reuse entry POST permit path; do not enable live wire or flatten execute; update tests that currently lock the URLLIB_NOT_AUTHORIZED raise string; offline pytest only",
+    "SOURCE_CODE_MUTATION_REQUIRED_TO_CLOSE_TRANSPORT_GAP": true,
+    "TESTS_LOCKING_CURRENT_DENY": [
+      "tests/ops/test_section_11_13_5_z2cb_p7_4_productive_flatten_provability_contract_v1.py",
+      "tests/ops/test_section_11_13_5_productive_flatten_wiring_v1.py"
+    ],
+    "WHY_FAIL_CLOSED": "wiring slice explicitly refuses urllib even when a passing pre-send receipt and network_session_authorized=true are supplied"
+  }
+}
