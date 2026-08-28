@@ -136,6 +136,7 @@ BROAD_REDISCOVERY_REQUIRES_INSUFFICIENCY_FINDING=true
 | `inventories&#47;P6_Z2CL_RUNTIME_UNIVERSE_RECONSTITUTION_OBSERVATION_V1.json` | Additive persist of reconstituted Z2CL SUI full-flatten runtime-universe and connection inventory (AUTHORITY=NONE; does not overwrite A-OBS-Z2CL-OFFLINE-SEM; universe remains OPEN not closed not exhausted; U-RF and CN labels are local audit labels not persistence identities; Z2CL is not Z2L; Category C send wiring absent as flatten_execute fact not global IN/OUT; index entry is not canonical adjudication completeness proof or universe closure; 63 was the count after the offline SEM file) |
 | `inventories&#47;P6_Z2CL_IDENTITY_AND_HEADER_GAP_ADJUDICATION_OBSERVATION_V1.json` | Additive persist of D1 dirty-vs-committed U-RF-19/CN-12 locator contradiction and D2 committed receipt-identity vs forwarded-headers coverage gap (AUTHORITY=NONE; does not overwrite A-OBS-Z2CL-UNIVERSE-RECON; does not mint U-RF/CN/UC IDs; CN-20 remains committed ABSENT / dirty PRESENT; header gap is coverage not authentication; census-count discontinuity remains open; index entry is not canonical adjudication completeness proof or universe closure; 64 was the count after the universe-recon file) |
 | `inventories&#47;P6_Z2CL_SCHEMA_NEGATIVE_CAPABILITY_AND_CENSUS_LINEAGE_OBSERVATION_V1.json` | Additive persist of schema/ontology negative-capability plus Census-48 lineage UNPROVEN (AUTHORITY=NONE; does not overwrite A-OBS-Z2CL-ID-HDR-GAP or A-OBS-Z2CL-UNIVERSE-RECON; does not mint UC/U-RF/CN/SET IDs; does not create a schema or ontology; R3 remains historical design-only; SW_R_002 remains OPEN_NO_TYPE_ONTOLOGY; structural sidecar/FSS remain non-semantic for census membership; P6_5189 SET register remains domain-scoped; no existing examined schema source-bound explains declared 48; count HARD_BLOCK remains OPEN; index entry is not canonical adjudication completeness proof universe closure or hard-block resolution; 65 was the count after the identity/header-gap file) |
+| `inventories&#47;P6_Z2CL_COMPLETENESS_PRECONDITION_AND_CLOSED_UNIVERSE_EXCLUSION_GAP_OBSERVATION_V1.json` | Additive persist of completeness-precondition and closed-universe-exclusion gaps (AUTHORITY=NONE; does not overwrite A-OBS-Z2CL-SCHEMA-NC-CENSUS-LINEAGE; does not mint UC/U-RF/CN/SET IDs; does not create a schema, ontology, CU-exclusion contract, or census domain; 20 scoped exclusions remain distinct from 0 CU-exclusions; L0 remains non-census; 0/22 named domains currently completeness-ready as audit status not impossibility; repo+external union and completeness dedup remain undefined; dirty worktree remains unbound not globally included or excluded; count HARD_BLOCK remains OPEN; index entry is not canonical adjudication completeness proof universe closure or hard-block resolution; 66 was the count after the schema-nc census-lineage file) |
 
 ```text
 PRE_LAYER_COMPLETENESS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=36
@@ -194,6 +195,8 @@ PRE_P3_Z2CL_IDENTITY_HEADER_GAP_FILE_PERSISTENCE_ARTIFACT_COUNT=64
 POST_P3_Z2CL_IDENTITY_HEADER_GAP_FILE_PERSISTENCE_ARTIFACT_COUNT=65
 PRE_P3_Z2CL_SCHEMA_NC_CENSUS_LINEAGE_FILE_PERSISTENCE_ARTIFACT_COUNT=65
 POST_P3_Z2CL_SCHEMA_NC_CENSUS_LINEAGE_FILE_PERSISTENCE_ARTIFACT_COUNT=66
+PRE_P3_Z2CL_COMPLETENESS_PRECONDITION_GAPS_FILE_PERSISTENCE_ARTIFACT_COUNT=66
+POST_P3_Z2CL_COMPLETENESS_PRECONDITION_GAPS_FILE_PERSISTENCE_ARTIFACT_COUNT=67
 COUNT_39_IS_PRE_CLASS_A_SNAPSHOT_NOT_CURRENT=true
 COUNT_40_IS_INTERMEDIATE_AFTER_CLASS_A_FILE_NOT_COLLAPSED_ONTO_41=true
 COUNT_41_IS_PRE_CENSUS_WORKPACKAGE_SNAPSHOT_NOT_POST_CENSUS_CURRENT=true
@@ -219,7 +222,8 @@ COUNT_62_IS_POST_Z2CL_RT_PROOF_NOT_COLLAPSED_ONTO_63=true
 COUNT_63_IS_POST_Z2CL_OFFLINE_SEM_NOT_COLLAPSED_ONTO_64=true
 COUNT_64_IS_POST_Z2CL_UNIVERSE_RECON_NOT_COLLAPSED_ONTO_65=true
 COUNT_65_IS_POST_Z2CL_IDENTITY_HEADER_GAP_NOT_COLLAPSED_ONTO_66=true
-COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_AND_46_AND_47_AND_50_AND_51_AND_52_AND_53_AND_54_AND_55_AND_56_AND_57_AND_58_AND_59_AND_60_AND_61_AND_62_AND_63_AND_64_AND_65_AND_66_NOT_COLLAPSED=true
+COUNT_66_IS_POST_Z2CL_SCHEMA_NC_CENSUS_LINEAGE_NOT_COLLAPSED_ONTO_67=true
+COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_AND_46_AND_47_AND_50_AND_51_AND_52_AND_53_AND_54_AND_55_AND_56_AND_57_AND_58_AND_59_AND_60_AND_61_AND_62_AND_63_AND_64_AND_65_AND_66_AND_67_NOT_COLLAPSED=true
 INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF=true
 INDEX_ENTRY_IS_NOT_ADJUDICATION=true
 NAVIGATION_ONLY=true
