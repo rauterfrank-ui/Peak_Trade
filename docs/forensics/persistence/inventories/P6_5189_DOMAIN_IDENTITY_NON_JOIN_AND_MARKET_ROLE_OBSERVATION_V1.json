@@ -1,0 +1,678 @@
+{
+  "DOCUMENT_CLASS": "FORENSIC_PERSISTENCE_OBSERVATION",
+  "ARTIFACT_AUTHORITY": "NONE",
+  "AUTHORITY": "NONE",
+  "TARGET_AUTHORITY": "NONE",
+  "FORENSIC_PERSISTENCE_AUTHORITY": "NONE",
+  "SIDECAR_AUTHORITY": "NONE",
+  "THIS_ARTIFACT_IS_NOT_CANONICAL": true,
+  "THIS_RECORD_IS_NOT_CANONICAL_AUTHORITY": true,
+  "THIS_RECORD_IS_PERSISTENCE_NOT_ADJUDICATION": true,
+  "NOT_CANONICAL": true,
+  "SECOND_SSOT": false,
+  "SEMANTIC_AUTHORITY": false,
+  "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+  "PERSISTENCE_IS_ADJUDICATION": false,
+  "PERSISTENCE_IS_CANONIZATION": false,
+  "STRUCTURING_IS_CANONIZATION": false,
+  "PERSISTENCE_IMPLIES_GAP_CLOSURE": false,
+  "PERSISTENCE_IS_NOT_ADJUDICATION": true,
+  "PERSISTENCE_IS_NOT_CANONIZATION": true,
+  "SOURCE_IDENTITY_MERGED": false,
+  "SOURCE_IDENTITY_COLLAPSE_ALLOWED": false,
+  "SOURCE_IDENTITY_COLLAPSE_PRESENT": false,
+  "COUNT_VALUES_NORMALIZED": false,
+  "COUNT_SEMANTICS_COLLAPSE_PRESENT": false,
+  "COUNT_SEMANTICS_CHANGED": false,
+  "NEW_DOMAIN_ONTOLOGY_CREATED": false,
+  "NEW_DOMAIN_SEMANTICS_CREATED": false,
+  "NEW_CANONICAL_SEMANTICS_CREATED": false,
+  "NEW_AUTHORITY_CREATED": false,
+  "NEW_RELATION_TYPE_CREATED": false,
+  "NEW_PROOF_STATUS_CLASS_CREATED": false,
+  "NEW_PERSISTENCE_ENUM_CREATED": false,
+  "NEW_PERSISTENCE_CATEGORY_INVENTED": false,
+  "BOUNDARY_CLASS_ENUM_CREATED": false,
+  "THIS_RECORD_DOES_NOT_CREATE_BOUNDARY_CLASS_ENUM": true,
+  "NO_CLASS_CHANGE": true,
+  "NO_SOURCE_IDENTITY_COLLAPSE": true,
+  "NO_AUTHORITY_PROMOTION": true,
+  "GAP_CLOSURE_PRESENT": false,
+  "GAP_CLOSED": false,
+  "THIS_PERSIST_IS_NOT_GAP_CLOSURE": true,
+  "THIS_CHAT_IS_NOT_CENSUS_EVIDENCE": true,
+  "MASTER_RUNBOOK_REMAINS_SOLE_CANONICAL_SSOT": true,
+  "MAP_OF_TRUTH_IS_NAVIGATION_ONLY": true,
+  "OWNER_GO": "P6_5189_DOMAIN_IDENTITY_NON_JOIN_AND_MARKET_ROLE_PERSISTENCE_WORKPACKAGE_V1",
+  "SOURCE_READ_ONLY_STEP": "P6_5189_DOMAIN_UNIVERSE_IDENTITY_AUTHORITY_AND_NON_JOIN_BOUNDARY_ADJUDICATION_READ_ONLY_WORKPACKAGE_V1",
+  "PERSISTENCE_STEP": "P6_5189_DOMAIN_IDENTITY_NON_JOIN_AND_MARKET_ROLE_PERSISTENCE_WORKPACKAGE_V1",
+  "INPUT_READ_ONLY_OWNER_GO": "P6_5189_DOMAIN_UNIVERSE_IDENTITY_AUTHORITY_AND_NON_JOIN_BOUNDARY_ADJUDICATION_READ_ONLY_WORKPACKAGE_V1",
+  "PERSIST_AUTHORIZATION": "OWNER_GO=P6_5189_DOMAIN_IDENTITY_NON_JOIN_AND_MARKET_ROLE_PERSISTENCE_WORKPACKAGE_V1",
+  "REQUESTED_STEP": "P6_5189_DOMAIN_IDENTITY_NON_JOIN_AND_MARKET_ROLE_PERSISTENCE_WORKPACKAGE_V1",
+  "observation_identity": "P6_5189_DOMAIN_IDENTITY_NON_JOIN_AND_MARKET_ROLE_OBSERVATION_V1",
+  "observation_role": "ADDITIVE_DOMAIN_IDENTITY_NON_JOIN_AND_MARKET_ROLE_OBSERVATION_INVENTORY_ONLY",
+  "PERSISTED_DELTA_CLASS": "ADDITIVE_OBSERVATION_ONLY_NO_CANONICAL_SEMANTICS",
+  "PERSISTENCE_DELTA_TYPE": "ADDITIVE_READ_ONLY_DOMAIN_IDENTITY_NON_JOIN_AND_MARKET_ROLE_NO_CLASS_CHANGE",
+  "THIS_FILE_RECORDS_PRIOR_READ_ONLY_DOMAIN_IDENTITY_BOUNDARY_ADJUDICATION": true,
+  "THIS_SYNTHESIS_RECORD_SOURCE_IDENTITY_IS_DISTINCT_FROM_CITED_EVIDENCE": true,
+  "THIS_RECORD_DOES_NOT_CREATE_A_RECLASSIFICATION": true,
+  "THIS_FILE_DOES_NOT_REWRITE_PRECEDING_OBSERVATION": true,
+  "THIS_FILE_DOES_NOT_REWRITE_LAYER_COMPLETENESS_AUDIT_OBSERVATION": true,
+  "THIS_FILE_DOES_NOT_REWRITE_HISTORICAL_SOURCE_SET_UNIVERSE_OBSERVATION": true,
+  "THIS_FILE_DOES_NOT_MUTATE_P6_5189_SET_AND_UNIVERSE_REGISTER": true,
+  "THIS_FILE_DOES_NOT_MUTATE_P6_5189_RELATION_LEDGER": true,
+  "THIS_FILE_DOES_NOT_MUTATE_P6_5189_RELATION_NODE_REGISTER": true,
+  "THIS_FILE_DOES_NOT_MUTATE_P6_5189_PROOF_OBLIGATION_MATRIX": true,
+  "THIS_OBSERVATION_IS_NOT_A_P6_SOURCE_SET": true,
+  "THIS_OBSERVATION_MUST_NOT_ADD_SETS_TO_P6_5189_SET_AND_UNIVERSE_REGISTER": true,
+  "THIS_OBSERVATION_MUST_NOT_REDEFINE_P6_SET_IDENTITIES": true,
+  "THIS_OBSERVATION_MUST_NOT_CREATE_DOMAIN_UNIVERSE_AUTHORITY": true,
+  "THIS_OBSERVATION_MUST_NOT_CREATE_CANONICAL_INSTRUMENT_AUTHORITY": true,
+  "THIS_OBSERVATION_MUST_NOT_CREATE_SELECTION_AUTHORITY": true,
+  "THIS_OBSERVATION_MUST_NOT_CREATE_RUNTIME_AUTHORITY": true,
+  "P6_SET_REGISTER_AND_TRADING_DOMAIN_UNIVERSES_ARE_DISTINCT_SOURCE_IDENTITIES": true,
+  "bound_origin_main_sha": "4915e598f02bf994ba2f0651c82cd58bca7fd3ab",
+  "source_read_only_bound_origin_main_sha": "4915e598f02bf994ba2f0651c82cd58bca7fd3ab",
+  "persist_bound_origin_main_sha": "4915e598f02bf994ba2f0651c82cd58bca7fd3ab",
+  "proof_status_classes_used": ["PROVEN", "UNPROVEN", "DISPROVEN"],
+  "proof_status_classes_are_forensic_audit_categories_not_domain_ontology": true,
+  "THIS_RELATION_LABEL_IS_REPORT_LANGUAGE_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+  "local_analytical_labels_are_not_persistence_status_classes": true,
+  "local_analytical_labels_are_not_canonical_domain_status": true,
+  "LEDGER_RELATION_COUNT_ADDED": 0,
+  "LEDGER_RELATION_COUNT_ADDED_SEMANTIC": "no_rows_appended_to_P6_5189_RELATION_LEDGER_V1",
+  "SET_REGISTER_SET_COUNT_DELTA": 0,
+  "SET_REGISTER_SET_COUNT_DELTA_SEMANTIC": "P6_5189_SET_AND_UNIVERSE_REGISTER_not_mutated",
+  "count_semantics": {
+    "INPUT_READ_ONLY_CLAIMED_NEW_PERSISTABLE_INFORMATION_COUNT": 12,
+    "INPUT_READ_ONLY_CLAIMED_ALREADY_PERSISTED_INFORMATION_COUNT": 0,
+    "INPUT_READ_ONLY_CLAIMED_OWNER_DECISIONS_REQUIRED_COUNT": 3,
+    "INPUT_READ_ONLY_CLAIMED_UNRESOLVED_GAPS_COUNT": 5,
+    "INPUT_COUNTS_NOT_SILENTLY_REPLACED": true,
+    "FACT_RECORD_COUNT": 12,
+    "FACT_RECORD_COUNT_SEMANTIC": "enumerated persisted_fact_records F01_through_F12 in this observation; not a closed universe; not collapsed onto identity_pair_records or interface_edge_records",
+    "IDENTITY_PAIR_RECORD_COUNT": 10,
+    "IDENTITY_PAIR_RECORD_COUNT_SEMANTIC": "enumerated identity_pair_records P01_through_P10; not equal to FACT_RECORD_COUNT",
+    "INTERFACE_EDGE_RECORD_COUNT": 18,
+    "INTERFACE_EDGE_RECORD_COUNT_SEMANTIC": "enumerated interface_edge_records E01_through_E18; class labels are observation grouping not new relation_type ontology",
+    "GAP_RECORD_COUNT": 6,
+    "GAP_RECORD_COUNT_SEMANTIC": "enumerated gap_records G01_through_G06; input read-only claimed UNRESOLVED_GAPS_COUNT=5 plus GAP-U-GFU-LIVE recorded as out-of-scope; 5 is not rewritten as 6 and 6 is not rewritten as 5",
+    "INPUT_UNRESOLVED_GAPS_COUNT_REMAINS_5": true,
+    "GAP_RECORD_COUNT_6_INCLUDES_OUT_OF_SCOPE_LIVE_MEMBERSHIP_RECORD": true,
+    "OWNER_DECISION_RECORD_COUNT": 3,
+    "OWNER_DECISION_RECORD_COUNT_SEMANTIC": "D01_keep_or_retire_MARKET D02_canonical_docs_classification D03_future_mapper_desire; persist-authorization of this observation is already answered by OWNER_GO and is not counted",
+    "GFU_ELIGIBLE_COUNT_CAP21_SNAPSHOT": 2,
+    "GFU_ELIGIBLE_COUNT_CAP24_AND_LATER_EXAMINED_PACKS": 3,
+    "GFU_RANKING_ELIGIBLE_CANDIDATE_COUNT_CAP22_SNAPSHOT": 22,
+    "GFU_ELIGIBLE_COUNTS_2_AND_3_AND_22_NOT_COLLAPSED": true,
+    "STRATEGY_CATALOG_ID_COUNT_REGISTRY_PY_UNION": 23,
+    "STRATEGY_PHASE_9_1_MATRIX_COUNT": 28,
+    "STRATEGY_COUNTS_23_AND_28_NOT_COLLAPSED": true,
+    "MARKET_USDT_ENUMERATED_MEMBER_COUNT": 6,
+    "MARKET_EUR_ENUMERATED_MEMBER_COUNT": 10,
+    "MARKET_EUR_ENABLED_MEMBER_COUNT": 6,
+    "MARKET_EUR_DISABLED_MEMBER_COUNT": 4,
+    "PRE_LAYER_COMPLETENESS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT": 36,
+    "POST_LAYER_COMPLETENESS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT": 37,
+    "PRE_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT": 37,
+    "POST_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT": 38,
+    "COUNT_36_AND_37_AND_38_NOT_COLLAPSED": true,
+    "ALREADY_PERSISTED_DOMAIN_IDENTITY_FACT_COUNT_BEFORE_THIS_FILE": 0,
+    "ALREADY_PERSISTED_INFORMATION_COUNT_REPRODUCED": 0
+  },
+  "cited_evidence_locators_not_rewritten": [
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md",
+    "src/ops/governed_futures_universe_producer_v1/eligibility_v1.py",
+    "src/ops/governed_futures_universe_producer_v1/constants_v1.py",
+    "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py",
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py",
+    "src/strategies/canonical_strategy_registry_suitability_selection_v1/constants_v1.py",
+    "src/webui/workflow_dashboard_readmodel_v1/universe_selection_contract_v1.py",
+    "src/ops/okx_selected_instrument_ohlcv_readmodel_v1.py",
+    "config/markets/crypto_usdt_universe.yaml",
+    "config/markets/crypto_eur_universe.yaml",
+    "scripts/run_portfolio_smoke.py",
+    "docs/evidence/capability_2_1_governed_futures_universe_producer_v1/productive_universe/governed_futures_universe_snapshot_v1.json",
+    "docs/evidence/capability_2_2_productive_futures_ranking_producer_v1/productive_ranking/productive_futures_ranking_snapshot_v1.json",
+    "docs/evidence/capability_2_4_single_selected_future_runtime_binding_v1/productive_binding/universe/governed_futures_universe_snapshot_v1.json",
+    "tests/fixtures/workflow_dashboard_readmodel_v1/universe_selection_readmodel_v1/complete_minimal/universe_selection_readmodel.v1.json"
+  ],
+  "THIS_OBSERVATION_DOES_NOT_REWRITE_CITED_EVIDENCE": true,
+  "RAW_EVIDENCE_PROVENANCE_UNCHANGED": true,
+  "persisted_fact_records": [
+    {
+      "fact_id": "F01",
+      "claim": "canonical_instrument_id and venue_native_inst_id are bound on the same classified governed snapshot row; that same-row bind is the only lossless join persisted here",
+      "proof_status": "PROVEN",
+      "scope": "same_classified_governed_snapshot_row",
+      "not_persisted": "global_bijective_join_function_over_arbitrary_instrument_ids"
+    },
+    {
+      "fact_id": "F02",
+      "claim": "MARKET_UNIVERSE_CRYPTO_USDT_V1 YAML is file-present as a config membership set with proven portfolio-smoke and portfolio-TOML consumers and no proven Cap-2 canonical-chain role",
+      "proof_status": "PROVEN",
+      "scope": "examined_repo_surfaces_on_bound_origin_main",
+      "FILE_PRESENT": true,
+      "CONFIG_MEMBERSHIP_SET": true,
+      "PROVEN_CONSUMER_CLASS": "portfolio_smoke_and_portfolio_toml",
+      "CURRENT_CANONICAL_CAP2_CHAIN_ROLE": "NONE_PROVEN",
+      "SUPERSESSION_PROVEN": false,
+      "RETIREMENT_PROVEN": false,
+      "LEGACY_PROVEN": false,
+      "DEAD_CODE_PROVEN": false
+    },
+    {
+      "fact_id": "F03",
+      "claim": "MARKET_UNIVERSE_CRYPTO_EUR_V1 YAML is file-present as a config membership set with proven portfolio-smoke and portfolio-TOML consumers and no proven Cap-2 canonical-chain role",
+      "proof_status": "PROVEN",
+      "scope": "examined_repo_surfaces_on_bound_origin_main",
+      "FILE_PRESENT": true,
+      "CONFIG_MEMBERSHIP_SET": true,
+      "PROVEN_CONSUMER_CLASS": "portfolio_smoke_and_portfolio_toml",
+      "CURRENT_CANONICAL_CAP2_CHAIN_ROLE": "NONE_PROVEN",
+      "SUPERSESSION_PROVEN": false,
+      "RETIREMENT_PROVEN": false,
+      "LEGACY_PROVEN": false,
+      "DEAD_CODE_PROVEN": false
+    },
+    {
+      "fact_id": "F04",
+      "claim": "MARKET_USDT_TO_GOVERNED_JOIN_PROVEN is false: no evidence-backed lossless identity join and no proven Cap-2 consumer of the USDT YAML universe",
+      "proof_status": "UNPROVEN",
+      "predicate": "lossless_identity_join_MARKET_USDT_to_U_GOVERNED_FUTURES",
+      "not_claimed": "all_future_or_external_mappings_are_impossible"
+    },
+    {
+      "fact_id": "F05",
+      "claim": "MARKET_EUR_TO_GOVERNED_JOIN_PROVEN is false: no evidence-backed lossless identity join and no proven Cap-2 consumer of the EUR YAML universe",
+      "proof_status": "UNPROVEN",
+      "predicate": "lossless_identity_join_MARKET_EUR_to_U_GOVERNED_FUTURES",
+      "not_claimed": "all_future_or_external_mappings_are_impossible"
+    },
+    {
+      "fact_id": "F06",
+      "claim": "PRESENTATION_IS_AUTHORITY is false",
+      "proof_status": "PROVEN",
+      "authority_source_cited": "Master Runbook section 4.4 READ_ONLY_CONSUMER AUTHORITY_EFFECT=NONE; Cap 2.1 spec dashboard never universe authority"
+    },
+    {
+      "fact_id": "F07",
+      "claim": "PRESENTATION_TO_GOVERNED_JOIN_PROVEN is false; selected_future.symbol token similarity does not establish identity",
+      "proof_status": "UNPROVEN",
+      "predicate": "lossless_join_presentation_symbol_to_canonical_or_venue_native",
+      "fixture_provenance_preserved": true,
+      "fixture_context": "tests/fixtures complete_minimal universe_selection_readmodel.v1.json uses ETHUSDT/SOLUSDT/AVAXUSDT with exchange=binance_futures notes=fixture testdata fixture_marked=true; not reinterpreted as OKX EEA or MARKET YAML provenance"
+    },
+    {
+      "fact_id": "F08",
+      "claim": "DEFAULT_INSTRUMENT_ID is a Cap-11.13.5 scalar string constant, not a universe",
+      "proof_status": "DISPROVEN",
+      "predicate": "DEFAULT_INSTRUMENT_ID_IS_UNIVERSE",
+      "DEFAULT_INSTRUMENT_ID_IS_UNIVERSE": false,
+      "DEFAULT_INSTRUMENT_ID_IS_SCALAR": true,
+      "example_value_on_bound_sha": "SUI-USD_UM_XPERP-310404"
+    },
+    {
+      "fact_id": "F09",
+      "claim": "DEFAULT_INSTRUMENT_ID GFU membership is scope-split and those scopes are not collapsed",
+      "DEFAULT_INSTRUMENT_ID_GFU_MEMBERSHIP_PROVEN": false,
+      "EXAMINED_GFU_SNAPSHOT_MEMBERSHIP": "DISPROVEN",
+      "GLOBAL_GFU_MEMBERSHIP": "UNPROVEN",
+      "LIVE_GFU_MEMBERSHIP": "UNPROVEN",
+      "examined_snapshot_disjointness_is_not_global_non_membership": true,
+      "SUI_not_in_FORBIDDEN_BASE_ASSETS_so_global_eligibility_not_disproven_from_producer_BTC_rule": true
+    },
+    {
+      "fact_id": "F10",
+      "claim": "strategy-to-instrument interface is a policy reference, not a membership join",
+      "STRATEGY_TO_INSTRUMENT_INTERFACE": "POLICY_REFERENCE",
+      "STRATEGY_TO_INSTRUMENT_MEMBERSHIP_JOIN_PROVEN": false,
+      "INSTRUMENT_SELECTION_OWNER": "SINGLE_SELECTED_FUTURE",
+      "RUNTIME_EFFECT": false,
+      "proof_status": "DISPROVEN",
+      "predicate": "strategy_catalog_membership_equals_selected_instrument_membership",
+      "no_strategy_activation_decision_created": true
+    },
+    {
+      "fact_id": "F11",
+      "claim": "MARKET_USDT and MARKET_EUR are orphaned relative to the canonical Cap-2 chain as a scoped analytical conclusion, not as a canonical domain status ontology",
+      "local_analytical_label": {
+        "THIS_RELATION_LABEL_IS_REPORT_LANGUAGE_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+        "label": "ORPHANED_RELATIVE_TO_CANONICAL_CHAIN",
+        "not_a_canonical_domain_status": true,
+        "not_persisted_as": "MARKET_*_STATUS=ORPHANED_CONFIGURATION"
+      },
+      "ORPHANED_RELATIVE_TO_CANONICAL_CHAIN": true,
+      "ORPHANED_RELATIVE_TO_CANONICAL_CHAIN_IS_SCOPED_ANALYTICAL_CONCLUSION": true,
+      "ORPHANED_RELATIVE_TO_CANONICAL_CHAIN_IS_NOT_DEAD_CODE": true,
+      "ORPHANED_RELATIVE_TO_CANONICAL_CHAIN_IS_NOT_LEGACY": true,
+      "DEAD_CODE_PROVEN": false,
+      "LEGACY_PROVEN": false
+    },
+    {
+      "fact_id": "F12",
+      "claim": "three Owner semantic decisions remain; persist-authorization of this observation is already answered by this OWNER_GO and is not counted among them",
+      "OWNER_DECISION_RECORD_COUNT": 3,
+      "PERSIST_AUTHORIZATION_ALREADY_ANSWERED_BY_THIS_OWNER_GO": true,
+      "PERSIST_AUTHORIZATION_NOT_RECOUNTED_AS_OPEN_OWNER_DECISION": true
+    }
+  ],
+  "identity_pair_records": [
+    {
+      "pair_id": "P01",
+      "left": "canonical_instrument_id",
+      "right": "venue_native_inst_id",
+      "proof_status": "PROVEN",
+      "scope": "same_classified_governed_snapshot_row",
+      "local_analytical_label": {
+        "THIS_RELATION_LABEL_IS_REPORT_LANGUAGE_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+        "label": "LOSSLESS_JOIN_PROVEN"
+      },
+      "SAME_IDENTITY_PROVEN": false,
+      "evidence_locators": [
+        "src/ops/governed_futures_universe_producer_v1/eligibility_v1.py",
+        "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py"
+      ]
+    },
+    {
+      "pair_id": "P02",
+      "left": "canonical_instrument_id",
+      "right": "MARKET_USDT_symbol",
+      "proof_status": "UNPROVEN",
+      "predicate": "lossless_identity_join",
+      "local_analytical_label": {
+        "THIS_RELATION_LABEL_IS_REPORT_LANGUAGE_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+        "label": "JOIN_UNPROVEN"
+      },
+      "token_or_base_quote_similarity_is_not_identity": true,
+      "BTC_MARKET_members_GFU_eligible_under_current_producer_BTC_exclusion": "DISPROVEN"
+    },
+    {
+      "pair_id": "P03",
+      "left": "canonical_instrument_id",
+      "right": "MARKET_EUR_symbol",
+      "proof_status": "UNPROVEN",
+      "predicate": "lossless_identity_join",
+      "local_analytical_label": {
+        "THIS_RELATION_LABEL_IS_REPORT_LANGUAGE_NOT_A_NEW_PERSISTENCE_STATUS_CLASS": true,
+        "label": "JOIN_UNPROVEN"
+      },
+      "EUR_quote_in_examined_GFU_snapshots": "DISPROVEN",
+      "examined_snapshot_non_membership_is_not_global_impossibility": true
+    },
+    {
+      "pair_id": "P04",
+      "left": "canonical_instrument_id",
+      "right": "DEFAULT_INSTRUMENT_ID",
+      "proof_status": "UNPROVEN",
+      "predicate": "lossless_identity_join_or_global_GFU_membership",
+      "examined_GFU_snapshot_membership": "DISPROVEN",
+      "global_GFU_membership": "UNPROVEN",
+      "live_GFU_membership": "UNPROVEN",
+      "scopes_not_collapsed": true
+    },
+    {
+      "pair_id": "P05",
+      "left": "canonical_instrument_id",
+      "right": "presentation_selected_future.symbol",
+      "proof_status": "UNPROVEN",
+      "predicate": "lossless_identity_join",
+      "token_similarity_is_not_identity": true,
+      "fixture_provenance_not_reinterpreted_as_okx_eea_or_market_yaml": true
+    },
+    {
+      "pair_id": "P06",
+      "left": "venue_native_inst_id",
+      "right": "MARKET_symbol",
+      "proof_status": "UNPROVEN",
+      "predicate": "lossless_identity_join",
+      "example_non_equivalence": "ETH-USDT-SWAP versus ETHUSDT is not a proven lossless conversion"
+    },
+    {
+      "pair_id": "P07",
+      "left": "venue_native_inst_id",
+      "right": "DEFAULT_INSTRUMENT_ID",
+      "proof_status": "DISPROVEN",
+      "predicate": "string_equality_of_examined_values",
+      "proof_status_for_general_mapping_function": "UNPROVEN",
+      "scopes_not_collapsed": true
+    },
+    {
+      "pair_id": "P08",
+      "left": "venue_native_inst_id",
+      "right": "presentation_selected_future.symbol",
+      "proof_status": "UNPROVEN",
+      "predicate": "lossless_identity_join",
+      "ohlcv_copies_symbol_to_selected_provider_instrument_id_without_hyphen_restore": true
+    },
+    {
+      "pair_id": "P09",
+      "left": "MARKET_symbol",
+      "right": "presentation_selected_future.symbol",
+      "proof_status": "UNPROVEN",
+      "predicate": "same_identity",
+      "token_collision_is_not_identity": true,
+      "FILENAME_SIMILARITY_ANALOG_APPLIED": true,
+      "fixture_AVAXUSDT_not_in_MARKET_USDT_yaml": true,
+      "fixture_exchange_binance_futures_not_okx_eea": true
+    },
+    {
+      "pair_id": "P10",
+      "left": "MARKET_symbol",
+      "right": "DEFAULT_INSTRUMENT_ID",
+      "proof_status": "DISPROVEN",
+      "predicate": "string_equality_of_examined_values"
+    }
+  ],
+  "market_role_records": {
+    "MARKET_USDT": {
+      "universe_id_in_yaml": "MARKET_UNIVERSE_CRYPTO_USDT_V1",
+      "file": "config/markets/crypto_usdt_universe.yaml",
+      "FILE_PRESENT": true,
+      "CONFIG_MEMBERSHIP_SET": true,
+      "PROVEN_CONSUMER_CLASS": "portfolio_smoke_and_portfolio_toml",
+      "CURRENT_CANONICAL_CAP2_CHAIN_ROLE": "NONE_PROVEN",
+      "CURRENT_NONCANONICAL_ROLE": "portfolio_smoke_and_asset_portfolio_config",
+      "SUPERSESSION_PROVEN": false,
+      "RETIREMENT_PROVEN": false,
+      "LEGACY_PROVEN": false,
+      "DEAD_CODE_PROVEN": false,
+      "ORPHANED_RELATIVE_TO_CANONICAL_CHAIN": true,
+      "ORPHANED_RELATIVE_TO_CANONICAL_CHAIN_IS_SCOPED_ANALYTICAL_CONCLUSION": true,
+      "MARKET_STATUS_ORPHANED_CONFIGURATION_NOT_PERSISTED_AS_CANONICAL_ONTOLOGY": true
+    },
+    "MARKET_EUR": {
+      "universe_id_in_yaml": "MARKET_UNIVERSE_CRYPTO_EUR_V1",
+      "file": "config/markets/crypto_eur_universe.yaml",
+      "FILE_PRESENT": true,
+      "CONFIG_MEMBERSHIP_SET": true,
+      "PROVEN_CONSUMER_CLASS": "portfolio_smoke_and_portfolio_toml",
+      "CURRENT_CANONICAL_CAP2_CHAIN_ROLE": "NONE_PROVEN",
+      "CURRENT_NONCANONICAL_ROLE": "portfolio_smoke_and_asset_portfolio_config",
+      "SUPERSESSION_PROVEN": false,
+      "RETIREMENT_PROVEN": false,
+      "LEGACY_PROVEN": false,
+      "DEAD_CODE_PROVEN": false,
+      "ORPHANED_RELATIVE_TO_CANONICAL_CHAIN": true,
+      "ORPHANED_RELATIVE_TO_CANONICAL_CHAIN_IS_SCOPED_ANALYTICAL_CONCLUSION": true,
+      "MARKET_STATUS_ORPHANED_CONFIGURATION_NOT_PERSISTED_AS_CANONICAL_ONTOLOGY": true
+    }
+  },
+  "presentation_boundary": {
+    "PRESENTATION_IS_AUTHORITY": false,
+    "PRESENTATION_TO_GOVERNED_JOIN_PROVEN": false,
+    "selected_future_symbol_token_similarity_does_not_establish_identity": true,
+    "fixture_provenance_preserved": true,
+    "fixture_not_reinterpreted_as_okx_eea": true,
+    "fixture_not_reinterpreted_as_market_yaml": true
+  },
+  "canary_scalar_boundary": {
+    "DEFAULT_INSTRUMENT_ID_IS_UNIVERSE": false,
+    "DEFAULT_INSTRUMENT_ID_IS_SCALAR": true,
+    "DEFAULT_INSTRUMENT_ID_GFU_MEMBERSHIP_PROVEN": false,
+    "EXAMINED_GFU_SNAPSHOT_MEMBERSHIP": "DISPROVEN",
+    "GLOBAL_GFU_MEMBERSHIP": "UNPROVEN",
+    "LIVE_GFU_MEMBERSHIP": "UNPROVEN",
+    "LIVE_GFU_MEMBERSHIP_PROVEN": false,
+    "examined_snapshot_disjointness_not_globalized": true
+  },
+  "strategy_boundary": {
+    "STRATEGY_TO_INSTRUMENT_INTERFACE": "POLICY_REFERENCE",
+    "STRATEGY_TO_INSTRUMENT_MEMBERSHIP_JOIN_PROVEN": false,
+    "INSTRUMENT_SELECTION_OWNER": "SINGLE_SELECTED_FUTURE",
+    "RUNTIME_EFFECT": false,
+    "no_strategy_ontology_created": true,
+    "no_activation_decision_created": true
+  },
+  "interface_edge_records": [
+    {
+      "edge_id": "E01",
+      "from": "U_GOVERNED_FUTURES_snapshot",
+      "to": "Cap2.2_ranking",
+      "observation_group": "PROVEN",
+      "proof_status": "PROVEN"
+    },
+    {
+      "edge_id": "E02",
+      "from": "Cap2.2_ranking",
+      "to": "Cap2.3_selection",
+      "observation_group": "PROVEN",
+      "proof_status": "PROVEN"
+    },
+    {
+      "edge_id": "E03",
+      "from": "Cap2.3_selection",
+      "to": "Cap2.4_binding",
+      "observation_group": "PROVEN",
+      "proof_status": "PROVEN"
+    },
+    {
+      "edge_id": "E04",
+      "from": "canonical_instrument_id",
+      "to": "venue_native_inst_id",
+      "observation_group": "PROVEN",
+      "proof_status": "PROVEN",
+      "scope": "same_classified_governed_snapshot_row"
+    },
+    {
+      "edge_id": "E05",
+      "from": "MARKET_YAML",
+      "to": "portfolio_smoke_and_portfolio_toml",
+      "observation_group": "PROVEN",
+      "proof_status": "PROVEN"
+    },
+    {
+      "edge_id": "E06",
+      "from": "strategy_catalog",
+      "to": "loader_and_phase_9_1_classification",
+      "observation_group": "PROVEN",
+      "proof_status": "PROVEN"
+    },
+    {
+      "edge_id": "E07",
+      "from": "persistence_or_readmodel",
+      "to": "dashboard",
+      "observation_group": "PROVEN",
+      "proof_status": "PROVEN",
+      "authority_effect": "NONE"
+    },
+    {
+      "edge_id": "E08",
+      "from": "strategy_suitability_contract",
+      "to": "SINGLE_SELECTED_FUTURE",
+      "observation_group": "POLICY_ONLY",
+      "proof_status": "PROVEN",
+      "predicate": "policy_constant_INSTRUMENT_SELECTION_OWNER",
+      "membership_join_proven": false
+    },
+    {
+      "edge_id": "E09",
+      "from": "canonical_r6_s2_portfolio_risk_contracts",
+      "to": "selected_future_count_N_equals_1",
+      "observation_group": "POLICY_ONLY",
+      "proof_status": "PROVEN",
+      "predicate": "policy_overlay_not_universe_membership_walk"
+    },
+    {
+      "edge_id": "E10",
+      "from": "MARKET_YAML",
+      "to": "Cap2_chain",
+      "observation_group": "UNPROVEN",
+      "proof_status": "UNPROVEN",
+      "predicate": "hidden_or_future_join_or_consumer",
+      "missing_edge_is_not_global_absence_of_all_possible_future_joins": true
+    },
+    {
+      "edge_id": "E11",
+      "from": "presentation_selected_future.symbol",
+      "to": "canonical_or_venue_native",
+      "observation_group": "UNPROVEN",
+      "proof_status": "UNPROVEN"
+    },
+    {
+      "edge_id": "E12",
+      "from": "DEFAULT_INSTRUMENT_ID",
+      "to": "U_GOVERNED_FUTURES_global_membership",
+      "observation_group": "UNPROVEN",
+      "proof_status": "UNPROVEN"
+    },
+    {
+      "edge_id": "E13",
+      "from": "src/risk_or_src/execution",
+      "to": "GFU_universe_membership_read",
+      "observation_group": "UNPROVEN",
+      "proof_status": "UNPROVEN",
+      "direct_membership_consumption_not_proven": true,
+      "not_claimed": "those_packages_have_no_instrument_concept_of_any_kind"
+    },
+    {
+      "edge_id": "E14",
+      "from": "dashboard",
+      "to": "selection_authority",
+      "observation_group": "NEGATIVE_REJECTED_INFERENCE",
+      "proof_status": "DISPROVEN",
+      "existing_ledger_relation_type_if_a_ledger_row_were_ever_authorized": "REJECTS_INFERENCE",
+      "ledger_row_not_added_in_this_workpackage": true
+    },
+    {
+      "edge_id": "E15",
+      "from": "token_or_base_quote_similarity",
+      "to": "identity",
+      "observation_group": "NEGATIVE_REJECTED_INFERENCE",
+      "proof_status": "DISPROVEN",
+      "existing_ledger_relation_type_if_a_ledger_row_were_ever_authorized": "REJECTS_INFERENCE",
+      "ledger_row_not_added_in_this_workpackage": true
+    },
+    {
+      "edge_id": "E16",
+      "from": "examined_SUI_XPerp_DEFAULT_INSTRUMENT_ID",
+      "to": "examined_GFU_snapshot_membership",
+      "observation_group": "NEGATIVE_REJECTED_INFERENCE",
+      "proof_status": "DISPROVEN",
+      "existing_ledger_relation_type_if_a_ledger_row_were_ever_authorized": "PROVES_NON_EQUIVALENCE",
+      "ledger_row_not_added_in_this_workpackage": true,
+      "not_globalized": true
+    },
+    {
+      "edge_id": "E17",
+      "from": "MARKET_BTC_symbols",
+      "to": "GFU_eligibility_under_current_producer_BTC_exclusion",
+      "observation_group": "NEGATIVE_REJECTED_INFERENCE",
+      "proof_status": "DISPROVEN",
+      "scope": "current_Cap2.1_producer_FORBIDDEN_BASE_ASSETS_on_bound_sha",
+      "existing_ledger_relation_type_if_a_ledger_row_were_ever_authorized": "REJECTS_INFERENCE",
+      "ledger_row_not_added_in_this_workpackage": true
+    },
+    {
+      "edge_id": "E18",
+      "from": "adding_trading_domain_universes",
+      "to": "P6_5189_SET_AND_UNIVERSE_REGISTER",
+      "observation_group": "NEGATIVE_REJECTED_INFERENCE",
+      "proof_status": "DISPROVEN",
+      "predicate": "those_are_the_same_source_identity",
+      "existing_ledger_relation_type_if_a_ledger_row_were_ever_authorized": "PROVES_NON_EQUIVALENCE",
+      "ledger_row_not_added_in_this_workpackage": true
+    }
+  ],
+  "observation_group_is_not_a_new_relation_type_ontology": true,
+  "gap_records": [
+    {
+      "gap_id": "GAP-U-ID-001",
+      "proof_status": "PROVEN",
+      "predicate_proven": "identity_non_join_within_examined_evidence",
+      "remaining_unproven": "owner_keep_or_retire_semantics_and_any_future_mapping_decision",
+      "status_free_text": "partially closed within examined evidence; remaining owner keep-retire semantics and any future mapping decision",
+      "status_string_is_not_a_persistence_enum": true
+    },
+    {
+      "gap_id": "GAP-U-MKT-002",
+      "proof_status": "PROVEN",
+      "predicate_proven": "MARKET_role_relative_to_Cap2_chain_NONE_PROVEN_with_smoke_toml_consumers",
+      "remaining_unproven": "keep_versus_retire_owner_decision",
+      "status_free_text": "role relative to Cap-2 chain adjudicated as NONE_PROVEN; remaining keep-versus-retire owner decision",
+      "status_string_is_not_a_persistence_enum": true
+    },
+    {
+      "gap_id": "GAP-U-PRES-005",
+      "proof_status": "UNPROVEN",
+      "predicate": "lossless_join_presentation_symbol_to_canonical_or_native",
+      "status_free_text": "unresolved join",
+      "status_string_is_not_a_persistence_enum": true
+    },
+    {
+      "gap_id": "GAP-U-CAN-006",
+      "proof_status": "UNPROVEN",
+      "predicate": "global_or_live_GFU_membership_of_DEFAULT_INSTRUMENT_ID",
+      "examined_snapshot_membership_proof_status": "DISPROVEN",
+      "status_free_text": "examined-snapshot non-membership adjudicated; global membership unproven",
+      "status_string_is_not_a_persistence_enum": true
+    },
+    {
+      "gap_id": "GAP-U-RISK-007",
+      "proof_status": "UNPROVEN",
+      "predicate": "direct_src_risk_or_src_execution_universe_membership_consumption",
+      "status_free_text": "direct membership consumption unproven",
+      "status_string_is_not_a_persistence_enum": true
+    },
+    {
+      "gap_id": "GAP-U-GFU-LIVE",
+      "proof_status": "UNPROVEN",
+      "predicate": "live_GFU_membership_census",
+      "out_of_this_workpackage_scope": true,
+      "status_free_text": "out of scope; live membership remains unproven",
+      "status_string_is_not_a_persistence_enum": true
+    }
+  ],
+  "owner_decision_boundary": {
+    "PERSIST_AUTHORIZATION_ALREADY_ANSWERED_BY_THIS_OWNER_GO": true,
+    "OWNER_DECISIONS_REMAINING_COUNT": 3,
+    "decisions": [
+      {
+        "decision_id": "D01",
+        "OWNER_DECISION_1": "whether MARKET_USDT/EUR remain intentionally supported parallel smoke/config surfaces or should later be retired/quarantined"
+      },
+      {
+        "decision_id": "D02",
+        "OWNER_DECISION_2": "whether a canonical document should explicitly classify MARKET_* relative to the Cap-2 canonical chain"
+      },
+      {
+        "decision_id": "D03",
+        "OWNER_DECISION_3": "whether any future identity mapper/binding between MARKET/presentation/canary and governed identities is desired"
+      }
+    ]
+  },
+  "adversarial_checks_this_persist": {
+    "P6_5189_SET_AND_UNIVERSE_REGISTER_UNCHANGED": true,
+    "NO_DOMAIN_UNIVERSE_MEMBERS_ADDED_TO_P6_SET_REGISTER": true,
+    "NO_NEW_RELATION_TYPE_ONTOLOGY": true,
+    "NO_NEW_PROOF_STATUS_CLASS": true,
+    "NO_GLOBAL_IDENTITY_FROM_TOKEN_SIMILARITY": true,
+    "NO_GLOBAL_SUI_NON_MEMBERSHIP_FROM_EXAMINED_SNAPSHOTS": true,
+    "MARKET_ORPHANED_RELATIVE_NOT_DEAD_NOT_LEGACY": true,
+    "PRESENTATION_AUTHORITY_REMAINS_NONE": true,
+    "CANARY_SCALAR_REMAINS_NOT_A_UNIVERSE": true,
+    "GFU_LIVE_MEMBERSHIP_REMAINS_UNPROVEN": true,
+    "COUNTS_2_3_22_NOT_COLLAPSED": true,
+    "STRATEGY_COUNTS_23_28_NOT_COLLAPSED": true,
+    "RAW_EVIDENCE_PROVENANCE_UNCHANGED": true,
+    "NO_PRECEDING_OBSERVATION_OVERWRITE": true,
+    "ADDITIVE_ONLY": true,
+    "NO_CANONICAL_FILE_CHANGED": true,
+    "NO_CONFIG_OR_SRC_CHANGED": true,
+    "NO_EXTERNAL_FORENSIC_FILE_CHANGED": true,
+    "NO_NETWORK_ACCESS": true,
+    "NO_TRADING_LIVE_TESTNET_CANARY_STEP": true
+  },
+  "header_claims_from_input_read_only_reproduced_not_copied_uncritically": {
+    "DOMAIN_IDENTITY_BOUNDARY_STATUS": "CLOSED_WITHIN_EXAMINED_EVIDENCE_AS_NON_JOIN",
+    "DOMAIN_IDENTITY_BOUNDARY_STATUS_IS_REPORT_LANGUAGE_NOT_A_PERSISTENCE_ENUM": true,
+    "MARKET_USDT_CANONICAL_CHAIN_ROLE": "NONE_PROVEN",
+    "MARKET_EUR_CANONICAL_CHAIN_ROLE": "NONE_PROVEN",
+    "MARKET_TO_GOVERNED_JOIN_PROVEN": false,
+    "PRESENTATION_TO_GOVERNED_JOIN_PROVEN": false,
+    "DEFAULT_INSTRUMENT_ID_IS_UNIVERSE": false,
+    "DEFAULT_INSTRUMENT_ID_GFU_MEMBERSHIP_PROVEN": false,
+    "LIVE_GFU_MEMBERSHIP_PROVEN": false
+  }
+}

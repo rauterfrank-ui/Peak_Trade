@@ -75,13 +75,20 @@ repo-internal.
 | `inventories&#47;P6_5189_POST_GLOBAL_CLOSURE_MAX_LEVERAGE_FRONTIER_ADJUDICATION_READ_ONLY_OBSERVATION_V1.json` | Additive historical coverage of the post-global-closure max-leverage read-only execution and its negative finding (AUTHORITY=NONE; distinct from unresolved-dependency-matrix observation) |
 | `inventories&#47;P6_5189_COMPLETENESS_REVALIDATION_OBSERVATION_V1.json` | Additive P6 5189 completeness-revalidation observation (AUTHORITY=NONE; distinct from 5011 localization and from completeness-synthesis observation; index entry is not completeness proof) |
 | `inventories&#47;P6_5189_FORENSIC_LAYER_COMPLETENESS_AUDIT_AND_EXISTING_EVIDENCE_GRAPH_REPRESENTATION_REPAIR_OBSERVATION_V1.json` | Additive persist of the layer-completeness / cross-layer-coverage read-only audit plus existing-evidence graph-representation repair (AUTHORITY=NONE; index entry is not completeness proof; 36 was the pre-workpackage count) |
+| `inventories&#47;P6_5189_DOMAIN_IDENTITY_NON_JOIN_AND_MARKET_ROLE_OBSERVATION_V1.json` | Additive persist of the domain-instrument-identity non-join and MARKET role observation (AUTHORITY=NONE; not a P6 source set; does not add members to the P6 set/universe register; index entry is not adjudication or completeness proof; 37 was the pre-this-workpackage count) |
 
 ```text
-PRE_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=36
-POST_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=37
+PRE_LAYER_COMPLETENESS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=36
+POST_LAYER_COMPLETENESS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=37
 COUNT_36_IS_HISTORICAL_SNAPSHOT_NOT_CURRENT=true
+PRE_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=37
+POST_THIS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=38
+COUNT_37_IS_PRE_THIS_WORKPACKAGE_SNAPSHOT_NOT_POST_WORKPACKAGE_CURRENT=true
+COUNT_36_AND_37_AND_38_NOT_COLLAPSED=true
 INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF=true
+INDEX_ENTRY_IS_NOT_ADJUDICATION=true
 NAVIGATION_ONLY=true
+THIS_INDEX_ENTRY_IS_NOT_A_P6_SOURCE_SET=true
 ```
 
 
