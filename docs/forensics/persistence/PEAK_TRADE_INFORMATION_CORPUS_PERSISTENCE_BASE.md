@@ -46,6 +46,7 @@ replace the Master Runbook or Map of Truth.
 | L2 | [Information Object Reference Registry](registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md) | Stable subjects → existing artifacts; Cap-2.1 chain; non-collapse bindings |
 | L4 | [Current State Projection](registries/CURRENT_STATE_PROJECTION_V1.md) | Derived current-state view plus reconstruction tests |
 | Maintenance | [Federated Entrypoint Maintenance Contract](FEDERATED_ENTRYPOINT_MAINTENANCE_CONTRACT_V1.md) | Required L0/L2/L4 impact checks for later persistence mutates |
+| Completeness policy | [Forensic Completeness Scoping Contract](FORENSIC_COMPLETENESS_SCOPING_CONTRACT_V1.md) | Owner-selected `FEDERATED_SCOPED_COMPLETENESS_POLICY_V1` binding (AUTHORITY=NONE; not a universe census; not canonical) |
 
 Reused L1 / L3 owners (not rewritten by the federated persist):
 
@@ -62,6 +63,7 @@ PROJECTION_IS_NOT_NEW_ADJUDICATION=true
 COPY_OF_EXTERNAL_CORPUS_REQUIRED=false
 HISTORICAL_OBSERVATION_REWRITE_COUNT=0
 FEDERATED_ENTRYPOINT_MAINTENANCE_CONTRACT=docs/forensics/persistence/FEDERATED_ENTRYPOINT_MAINTENANCE_CONTRACT_V1.md
+FORENSIC_COMPLETENESS_SCOPING_CONTRACT=docs/forensics/persistence/FORENSIC_COMPLETENESS_SCOPING_CONTRACT_V1.md
 DEFAULT_DISCOVERY_ORDER=BASE_THEN_L0_THEN_L2_THEN_L4_THEN_TARGETED_PRIMARY_EVIDENCE
 BROAD_REDISCOVERY_REQUIRES_INSUFFICIENCY_FINDING=true
 ```
@@ -73,6 +75,7 @@ BROAD_REDISCOVERY_REQUIRES_INSUFFICIENCY_FINDING=true
 | `AUTHORITY_NONE.txt` | Authority containment |
 | `PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md` | This index |
 | `FEDERATED_ENTRYPOINT_MAINTENANCE_CONTRACT_V1.md` | Process contract: L0/L2/L4 impact checks before later persistence mutates (AUTHORITY=NONE) |
+| `FORENSIC_COMPLETENESS_SCOPING_CONTRACT_V1.md` | Owner-selected federated scoped completeness policy binding (AUTHORITY=NONE; not a universe census; not canonical runtime authority) |
 | `registries&#47;FEDERATED_SOURCE_SURFACE_REGISTRY_V1.md` | L0 federated source-surface registry (AUTHORITY=NONE; not a universe census) |
 | `registries&#47;INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md` | L2 subject→artifact reference registry (AUTHORITY=NONE; payloads stay in original artifacts) |
 | `registries&#47;CURRENT_STATE_PROJECTION_V1.md` | L4 derived current-state projection (AUTHORITY=NONE; navigation only; not a new adjudication) |
@@ -138,6 +141,7 @@ BROAD_REDISCOVERY_REQUIRES_INSUFFICIENCY_FINDING=true
 | `inventories&#47;P6_Z2CL_SCHEMA_NEGATIVE_CAPABILITY_AND_CENSUS_LINEAGE_OBSERVATION_V1.json` | Additive persist of schema/ontology negative-capability plus Census-48 lineage UNPROVEN (AUTHORITY=NONE; does not overwrite A-OBS-Z2CL-ID-HDR-GAP or A-OBS-Z2CL-UNIVERSE-RECON; does not mint UC/U-RF/CN/SET IDs; does not create a schema or ontology; R3 remains historical design-only; SW_R_002 remains OPEN_NO_TYPE_ONTOLOGY; structural sidecar/FSS remain non-semantic for census membership; P6_5189 SET register remains domain-scoped; no existing examined schema source-bound explains declared 48; count HARD_BLOCK remains OPEN; index entry is not canonical adjudication completeness proof universe closure or hard-block resolution; 65 was the count after the identity/header-gap file) |
 | `inventories&#47;P6_Z2CL_COMPLETENESS_PRECONDITION_AND_CLOSED_UNIVERSE_EXCLUSION_GAP_OBSERVATION_V1.json` | Additive persist of completeness-precondition and closed-universe-exclusion gaps (AUTHORITY=NONE; does not overwrite A-OBS-Z2CL-SCHEMA-NC-CENSUS-LINEAGE; does not mint UC/U-RF/CN/SET IDs; does not create a schema, ontology, CU-exclusion contract, or census domain; 20 scoped exclusions remain distinct from 0 CU-exclusions; L0 remains non-census; 0/22 named domains currently completeness-ready as audit status not impossibility; repo+external union and completeness dedup remain undefined; dirty worktree remains unbound not globally included or excluded; count HARD_BLOCK remains OPEN; index entry is not canonical adjudication completeness proof universe closure or hard-block resolution; 66 was the count after the schema-nc census-lineage file) |
 | `inventories&#47;P6_Z2CL_OD_01_08_RECONSTRUCTION_DELTA_OBSERVATION_V1.json` | Additive persist of OD-01..OD-08 reconstruction lineage (AUTHORITY=NONE; does not overwrite A-OBS-Z2CL-COMPLETENESS-PRECONDITION-GAPS; does not answer Owner semantic choices; does not create a choice menu or new semantic choice; ENUMERATED_ALLOWED_CHOICES remain NONE_PROVEN; UNIQUE_DECISION_ORDER_PROVEN=false; CROSS_SURFACE_DEPENDENCY_COUNT=0 is not semantic-independence proof; GAP_ID mappings are lineage not source-identity collapse; OD-07 preserves G-STOP-LIVE and G-Z2CL-STOP as separate identities; G-P2 is not OD-09; OD-01..OD-08 are not UQ1..UQ8/RD01..RD10, not IO-SWR002, and not Master-Runbook §20; OD-08 still carries Census-48 HARD_BLOCK with no proven gate order for OD-01..OD-07; 20 scoped exclusions remain distinct from 0 CU-exclusions; count HARD_BLOCK remains OPEN; index entry is not canonical adjudication completeness proof universe closure or hard-block resolution; 67 was the count after the completeness-precondition-gaps file) |
+| `inventories&#47;P6_FEDERATED_SCOPED_COMPLETENESS_POLICY_OWNER_DECISION_OBSERVATION_V1.json` | Additive persist of the Owner-selected `FEDERATED_SCOPED_COMPLETENESS_POLICY_V1` decision bundle (AUTHORITY=NONE; does not overwrite A-OBS-Z2CL-OD-01-08-RECONSTRUCTION-DELTA; records OD-01=A through OD-08=A without creating a global forensic object, UC-IDs, or a union census domain; Census-48 remains unresolved historical assertion not an operational count; policy alone does not set `CLOSED_UNIVERSE_PROVEN` or `SOURCE_UNIVERSE_EXHAUSTED`; index entry is not canonical adjudication completeness proof or universe closure; 69 was the count after the scoping-contract file) |
 
 ```text
 PRE_LAYER_COMPLETENESS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=36
@@ -200,6 +204,9 @@ PRE_P3_Z2CL_COMPLETENESS_PRECONDITION_GAPS_FILE_PERSISTENCE_ARTIFACT_COUNT=66
 POST_P3_Z2CL_COMPLETENESS_PRECONDITION_GAPS_FILE_PERSISTENCE_ARTIFACT_COUNT=67
 PRE_P3_Z2CL_OD_01_08_RECONSTRUCTION_DELTA_FILE_PERSISTENCE_ARTIFACT_COUNT=67
 POST_P3_Z2CL_OD_01_08_RECONSTRUCTION_DELTA_FILE_PERSISTENCE_ARTIFACT_COUNT=68
+PRE_FEDERATED_SCOPED_COMPLETENESS_POLICY_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=68
+POST_FORENSIC_COMPLETENESS_SCOPING_CONTRACT_FILE_PERSISTENCE_ARTIFACT_COUNT=69
+POST_FEDERATED_SCOPED_COMPLETENESS_POLICY_OWNER_DECISION_FILE_PERSISTENCE_ARTIFACT_COUNT=70
 COUNT_39_IS_PRE_CLASS_A_SNAPSHOT_NOT_CURRENT=true
 COUNT_40_IS_INTERMEDIATE_AFTER_CLASS_A_FILE_NOT_COLLAPSED_ONTO_41=true
 COUNT_41_IS_PRE_CENSUS_WORKPACKAGE_SNAPSHOT_NOT_POST_CENSUS_CURRENT=true
@@ -227,7 +234,9 @@ COUNT_64_IS_POST_Z2CL_UNIVERSE_RECON_NOT_COLLAPSED_ONTO_65=true
 COUNT_65_IS_POST_Z2CL_IDENTITY_HEADER_GAP_NOT_COLLAPSED_ONTO_66=true
 COUNT_66_IS_POST_Z2CL_SCHEMA_NC_CENSUS_LINEAGE_NOT_COLLAPSED_ONTO_67=true
 COUNT_67_IS_POST_Z2CL_COMPLETENESS_PRECONDITION_GAPS_NOT_COLLAPSED_ONTO_68=true
-COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_AND_46_AND_47_AND_50_AND_51_AND_52_AND_53_AND_54_AND_55_AND_56_AND_57_AND_58_AND_59_AND_60_AND_61_AND_62_AND_63_AND_64_AND_65_AND_66_AND_67_AND_68_NOT_COLLAPSED=true
+COUNT_68_IS_POST_Z2CL_OD_01_08_RECONSTRUCTION_DELTA_NOT_COLLAPSED_ONTO_69=true
+COUNT_69_IS_INTERMEDIATE_AFTER_SCOPING_CONTRACT_NOT_COLLAPSED_ONTO_70=true
+COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_AND_46_AND_47_AND_50_AND_51_AND_52_AND_53_AND_54_AND_55_AND_56_AND_57_AND_58_AND_59_AND_60_AND_61_AND_62_AND_63_AND_64_AND_65_AND_66_AND_67_AND_68_AND_69_AND_70_NOT_COLLAPSED=true
 INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF=true
 INDEX_ENTRY_IS_NOT_ADJUDICATION=true
 NAVIGATION_ONLY=true

@@ -217,6 +217,26 @@ If any of `L0_UPDATE_REQUIRED`, `L2_UPDATE_REQUIRED`, or
 `L4_UPDATE_REQUIRED` is true, the corresponding PR-#6108 layer file
 must be updated in the **same** persist, or the persist is incomplete.
 
+## 9. Forensic completeness-claim check
+
+When a later persist states a forensic completeness claim, it must
+satisfy
+[`FORENSIC_COMPLETENESS_SCOPING_CONTRACT_V1.md`](FORENSIC_COMPLETENESS_SCOPING_CONTRACT_V1.md).
+
+```text
+FEDERATED_SCOPED_COMPLETENESS_POLICY_V1_BOUND=true
+COMPLETENESS_CLAIM_REQUIRES_NAMED_DOMAIN_ID=true
+COMPLETENESS_CLAIM_REQUIRES_TEMPORAL_ROLE=true
+COMPLETENESS_CLAIM_REQUIRES_LAYER_IDENTITY=true
+NO_NAMED_DOMAIN_ID=FAIL_CLOSED
+POLICY_ALONE_MUST_NOT_SET_CLOSED_UNIVERSE_PROVEN=true
+POLICY_ALONE_MUST_NOT_SET_SOURCE_UNIVERSE_EXHAUSTED=true
+CENSUS_48_MUST_NOT_BE_USED_AS_OPERATIVE_NAMED_DOMAIN_MEMBER_COUNT=true
+```
+
+This section does not close any universe and does not rewrite historical
+observations.
+
 ## This persist (dogfood)
 
 This file is the maintenance contract itself. It does not change any
