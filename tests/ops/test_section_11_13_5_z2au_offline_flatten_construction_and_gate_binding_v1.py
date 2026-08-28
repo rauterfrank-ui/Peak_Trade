@@ -416,7 +416,7 @@ def test_injected_closed_snapshot_is_contract_not_venue_proof() -> None:
         http_status=200,
         response_body={"code": "0", "data": [{"sCode": "0", "ordId": "x", "sz": "1"}]},
         pre_positions_payload=_positions({"instId": TARGET, "pos": "1"}),
-        post_positions_payload=_positions(),
+        post_positions_payload=_positions({"instId": TARGET, "pos": "0"}),
         post_pending_orders_payload=_pending(),
     )
     assert evidence.evidence_state == STATE_POSITION_CLOSED_PROVEN

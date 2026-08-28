@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Mapping
 
 from src.ops.pre_submit_open_position_cap_v1 import (
@@ -18,9 +18,11 @@ from src.ops.pre_submit_open_position_cap_v1 import (
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     DEFAULT_INSTRUMENT_ID,
+    ENDPOINT_SUBMIT,
     LIVE_ARMED,
     LIVE_AUTHORIZED,
     LIVE_ENABLED,
+    REUSED_BINDING_REST_HOST,
     LiveCanaryInstrumentBindingError,
     assert_live_canary_instrument_binding_v1,
 )
@@ -78,6 +80,38 @@ GATE_NAMES: tuple[str, ...] = (
 )
 
 
+APPROVED_FLATTEN_METHOD = "POST"
+
+
+def serialize_approved_flatten_body_text_v1(body: Mapping[str, Any] | None) -> str:
+    """Exact JSON text the gated submit boundary will put on the wire."""
+    if not isinstance(body, dict) or not body:
+        return ""
+    return json.dumps(body, separators=(",", ":"), ensure_ascii=True)
+
+
+def flatten_approved_request_identity_v1(
+    *,
+    method: str,
+    url: str,
+    body_text: str,
+) -> str:
+    """SHA-256 of method, URL, and exact body text. Reuses wire-hash convention."""
+    material = f"{str(method or '').strip().upper()}\n{str(url or '').strip()}\n{body_text or ''}"
+    return hashlib.sha256(material.encode("utf-8")).hexdigest()
+
+
+def canonical_flatten_approved_url_v1() -> str:
+    return f"https://{REUSED_BINDING_REST_HOST}{ENDPOINT_SUBMIT}"
+
+
+@dataclass
+class FlattenReceiptSendLeaseV1:
+    """Mutable one-shot lease bound to one gate evaluation. Not a global singleton."""
+
+    consumed: bool = False
+
+
 @dataclass(frozen=True)
 class FlattenPreSendGateInputV1:
     """Caller-supplied runtime claims and snapshots. No network fetch."""
@@ -122,6 +156,13 @@ class FlattenPreSendGateReceiptV1:
     gate_digest: str
     live_flatten_provability: str
     productive_venue_proof: bool
+    approved_method: str = APPROVED_FLATTEN_METHOD
+    approved_host: str = REUSED_BINDING_REST_HOST
+    approved_endpoint: str = ENDPOINT_SUBMIT
+    approved_url: str = ""
+    approved_body_text: str = ""
+    approved_request_identity: str = ""
+    send_lease: FlattenReceiptSendLeaseV1 = field(default_factory=FlattenReceiptSendLeaseV1)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -139,6 +180,8 @@ class FlattenPreSendGateReceiptV1:
             "gate_digest": self.gate_digest,
             "live_flatten_provability": self.live_flatten_provability,
             "productive_venue_proof": self.productive_venue_proof,
+            "approved_request_identity": self.approved_request_identity,
+            "approved_url": self.approved_url,
         }
 
 
@@ -425,6 +468,15 @@ def evaluate_flatten_pre_send_gate_v1(
         ensure_ascii=True,
     )
     digest = hashlib.sha256(digest_material.encode("utf-8")).hexdigest()
+    approved_url = canonical_flatten_approved_url_v1()
+    approved_body_text = serialize_approved_flatten_body_text_v1(body)
+    approved_identity = ""
+    if allowed and approved_body_text:
+        approved_identity = flatten_approved_request_identity_v1(
+            method=APPROVED_FLATTEN_METHOD,
+            url=approved_url,
+            body_text=approved_body_text,
+        )
     return FlattenPreSendGateReceiptV1(
         allowed=allowed,
         reasons=tuple(reasons),
@@ -443,4 +495,11 @@ def evaluate_flatten_pre_send_gate_v1(
         gate_digest=digest,
         live_flatten_provability=LIVE_FLATTEN_PROVABILITY_STATUS,
         productive_venue_proof=False,
+        approved_method=APPROVED_FLATTEN_METHOD,
+        approved_host=REUSED_BINDING_REST_HOST,
+        approved_endpoint=ENDPOINT_SUBMIT,
+        approved_url=approved_url,
+        approved_body_text=approved_body_text,
+        approved_request_identity=approved_identity,
+        send_lease=FlattenReceiptSendLeaseV1(),
     )
