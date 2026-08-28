@@ -125,6 +125,8 @@ BROAD_REDISCOVERY_REQUIRES_INSUFFICIENCY_FINDING=true
 | `inventories&#47;P6_EXISTING_EVIDENCE_FEDERATED_L0_L2_L4_RECONCILIATION_AND_BACKFILL_OBSERVATION_V1.json` | Additive persist of existing-evidence L0/L2/L4 reconciliation and missing-projection backfill (AUTHORITY=NONE; does not overwrite A-OBS-PR6109; no re-adjudication; no new domain ontology; source identities not collapsed; index entry is not canonical adjudication or completeness proof; 52 was the count after the PR6109 system-frontier file) |
 | `inventories&#47;P6_P3_CLASS_C_AUTHENTICATED_SUI_RUNTIME_GET_RAW_GET_SOURCE_ENVELOPES_V1.json` | Additive persist of six verbatim authenticated eea.okx.com GET source envelopes for the P3 Class C SUI runtime pack (AUTHORITY=NONE; six source identities not merged even where BODY_SHA256 matches historical empty-envelope or 11.13.2 config digests; uid redacted; index entry is not membership authority or completeness proof; 53 was the count after the reconciliation file) |
 | `inventories&#47;P6_P3_CLASS_C_AUTHENTICATED_SUI_RUNTIME_GET_ADJUDICATION_OBSERVATION_V1.json` | Additive persist of the P3 Class C authenticated SUI runtime GET existing-contract application plus dependency cascade (AUTHORITY=NONE; does not overwrite A-OBS-PR6109 or A-OBS-RECON; does not consume canonical Class C; empty≠zero; Category C runtime TARGET_CATEGORY_C_NOT_OBSERVED this window is not universal absence; OPTION_A/B not selected; index entry is not canonical adjudication or completeness proof; 54 was the count after the raw envelopes file) |
+| `inventories&#47;P6_P3_CLASS_D_Z2AP_FLATTEN_PREEXECUTION_READINESS_RAW_GET_SOURCE_ENVELOPES_V1.json` | Additive persist of five verbatim authenticated eea.okx.com GET source envelopes for the P3 Class D / Z2AP flatten pre-execution pack (AUTHORITY=NONE; five source identities not merged even where BODY_SHA256 matches historical empty-envelope digests; index entry is not flatten proof or completeness proof; 55 was the count after the Class C observation file) |
+| `inventories&#47;P6_P3_CLASS_D_Z2AP_FLATTEN_PREEXECUTION_READINESS_ADJUDICATION_OBSERVATION_V1.json` | Additive persist of the P3 Class D / Z2AP flatten pre-execution readiness existing-contract application plus dependency cascade (AUTHORITY=NONE; does not overwrite A-OBS-P3C or Z2CB; does not consume canonical Class D; empty≠zero; EXECUTION_READY=false; OPTION_A/B not selected; index entry is not canonical adjudication or completeness proof; 56 was the count after the Class D raw envelopes file) |
 
 ```text
 PRE_LAYER_COMPLETENESS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=36
@@ -162,6 +164,9 @@ POST_EXISTING_EVIDENCE_RECONCILIATION_FILE_PERSISTENCE_ARTIFACT_COUNT=53
 PRE_P3_CLASS_C_GET_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=53
 POST_P3_CLASS_C_RAW_ENVELOPES_FILE_PERSISTENCE_ARTIFACT_COUNT=54
 POST_P3_CLASS_C_GET_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=55
+PRE_P3_CLASS_D_Z2AP_READINESS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=55
+POST_P3_CLASS_D_Z2AP_READINESS_RAW_ENVELOPES_FILE_PERSISTENCE_ARTIFACT_COUNT=56
+POST_P3_CLASS_D_Z2AP_READINESS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=57
 COUNT_39_IS_PRE_CLASS_A_SNAPSHOT_NOT_CURRENT=true
 COUNT_40_IS_INTERMEDIATE_AFTER_CLASS_A_FILE_NOT_COLLAPSED_ONTO_41=true
 COUNT_41_IS_PRE_CENSUS_WORKPACKAGE_SNAPSHOT_NOT_POST_CENSUS_CURRENT=true
@@ -176,7 +181,9 @@ COUNT_51_IS_POST_PR6109_MAINTENANCE_CONTRACT_NOT_COLLAPSED_ONTO_52=true
 COUNT_52_IS_POST_PR6109_SYSTEM_FRONTIER_NOT_COLLAPSED_ONTO_53=true
 COUNT_53_IS_POST_RECONCILIATION_NOT_COLLAPSED_ONTO_54=true
 COUNT_54_IS_INTERMEDIATE_AFTER_P3_CLASS_C_RAW_ENVELOPES_NOT_COLLAPSED_ONTO_55=true
-COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_AND_46_AND_47_AND_50_AND_51_AND_52_AND_53_AND_54_AND_55_NOT_COLLAPSED=true
+COUNT_55_IS_POST_CLASS_C_NOT_COLLAPSED_ONTO_56=true
+COUNT_56_IS_INTERMEDIATE_AFTER_P3_CLASS_D_RAW_ENVELOPES_NOT_COLLAPSED_ONTO_57=true
+COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_AND_46_AND_47_AND_50_AND_51_AND_52_AND_53_AND_54_AND_55_AND_56_AND_57_NOT_COLLAPSED=true
 INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF=true
 INDEX_ENTRY_IS_NOT_ADJUDICATION=true
 NAVIGATION_ONLY=true
