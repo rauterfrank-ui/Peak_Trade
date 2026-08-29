@@ -3136,6 +3136,97 @@ Missing or stale freshness fails closed. The historical
 fallback. Standing Live / Testnet / Canary authorization remain false.
 Tests are guards, not a second semantic SSOT.
 
+Named subordinate persist for the PRICE_BAND forensic binding and
+productive consumer after the closed MAX_AVAILABLE persist. This does
+**not** reopen restoration, add a Core owner or stage, close LEVERAGE,
+POS_MODE, MARGIN_MODE, AVAILABLE_MARGIN, or INSTRUMENT_STATE, invent a
+TTL or cache, reconstruct the band from percent fields / markPx / last /
+bid/ask / tickSz, POST, trade, or grant live authority. Historical
+`maxPxLmtPct` observation remains non-operative. Historical Cap 11.12
+testnet 51006 PRICE_BAND adaptation remains isolated.
+
+``` text
+PRICE_BAND_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1=true
+SPEC=docs/ops/specs/PEAK_TRADE_PRICE_BAND_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_STATUS=PARTIAL
+VENUE_PRETRADE_LIMIT_GATES_COMPLETE=false
+MAX_SIZE_BINDING_STATUS=PROVEN
+MAX_AVAILABLE_BINDING_STATUS=PROVEN
+PRICE_BAND_BINDING_STATUS=PROVEN
+PRICE_BAND_CANONICAL_DEFINITION=VENUE_NATIVE_PRICE_BAND
+PRICE_BAND_ENDPOINT=/api/v5/public/price-limit
+PRICE_BAND_REQUEST_GRAMMAR=instId
+PRICE_BAND_RESPONSE_FIELDS=instType,instId,buyLmt,sellLmt,ts,enabled
+PRICE_BAND_OUTPUT_DOMAIN=VENUE_LIMIT_PRICE
+PRICE_BAND_SIDE_RULE=BUY_PX_LE_BUYLMT_SELL_PX_GE_SELLLMT
+PRICE_BAND_FRESHNESS_POLICY=FRESH_GET_PER_PRETRADE_DECISION
+PRICE_BAND_TS_AGE_BOUND=UNBOUND
+PRICE_BAND_AUTH_CLASS=PUBLIC_UNSIGNED_GET
+PRICE_BAND_ENABLED_FALSE_POLICY=FAIL_CLOSED_NOT_ACTIVE
+PRICE_BAND_CONSUMER_BOUND=true
+PRICE_BAND_FAIL_CLOSED_BOUND=true
+PERCENT_FIELD_RECONSTRUCTION_USED=false
+MARKPX_SUBSTITUTION_USED=false
+ZERO_NORMALIZATION_PERFORMED=false
+AVAILABLE_MARGIN_BINDING_STATUS=UNBOUND
+LEVERAGE_BINDING_STATUS=UNBOUND
+PRICE_BAND_GET_PERFORMED=true
+PRICE_BAND_GET_TIMESTAMP_UTC=2026-08-29T22:35:08.786566Z
+PRICE_BAND_GET_HTTP_STATUS=200
+PRICE_BAND_GET_VENUE_CODE=0
+PRICE_BAND_RAW_BUYLMT=0.7461
+PRICE_BAND_RAW_SELLLMT=0.7385
+PRICE_BAND_RAW_TS=1788042908790
+PRICE_BAND_RAW_ENABLED=true
+PRICE_BAND_OBSERVATION_CLASS=SUCCESS_NUMERIC
+EVIDENCE_PACK=evidence/ops/price_band_forensic_binding_implementation_and_closure_v1/20260829T223508Z
+ALL_REQUIRED_METADATA_EDGES_BOUND=false
+EARLIEST_REMAINING_UNBOUND_EDGE=LEVERAGE
+EARLIEST_REMAINING_CONFLICT=NONE
+EARLIEST_UNRESOLVED_DEPENDENCY=LEVERAGE
+ORDER_PLAN_TYPED_DOMAIN_PRESERVED=true
+NETWORK_VENUE_GET_PERFORMED=true
+NETWORK_AUTHENTICATED_GET_PERFORMED=false
+NETWORK_POST_PERFORMED=false
+TRADING_PERFORMED=false
+PERSISTED_OBSERVATION_IS_OPERATIVE_CACHE=false
+RUNTIME_ALIGNMENT_REQUIRED=true
+RUNTIME_MUTATION_JUSTIFIED=true
+RUNTIME_MUTATION_PERFORMED=true
+CHANGED_RUNTIME_FILES=price_band_observation_v1.py,price_band_consumer_v1.py,order_plan_v1.py,submit_transport_v1.py,constants_v1.py,config_v1.py
+CANONICAL_VENUE_PRETRADE_OWNER=section_11_13_5.order_plan_v1+exposure_v1@submit_transport_v1
+SECOND_VENUE_PRETRADE_OWNER_EXISTS=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+EXECUTION_ELIGIBLE=false
+LIVE_READINESS=EVALUATED_NOT_READY
+CURRENT_SELECTED_INSTRUMENT=SUI-USD_UM_XPERP-310404
+CURRENT_VENUE=OKX_EEA
+KRAKEN_CURRENT_CANONICAL_ROLE=NONE
+KRAKEN_EXCLUSION_CLOSED=true
+NEXT_DISTINCT_SURFACE=LEVERAGE
+NEXT_DISTINCT_SURFACE_AUTHORIZED=false
+```
+
+Normative subordinate persist:
+[`docs/ops/specs/PEAK_TRADE_PRICE_BAND_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1.md`](../../ops/specs/PEAK_TRADE_PRICE_BAND_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1.md).
+The productive pretrade consumer
+`apply_fresh_price_band_pretrade_gate_v1` is bound into
+`build_minimum_valid_canary_order_plan_v1` from the per-decision
+unsigned public `GET &#47;api&#47;v5&#47;public&#47;price-limit` in
+`submit_transport_v1`. BUY uses fresh `buyLmt` with
+`planned_limit_px <= buyLmt`. SELL uses fresh `sellLmt` with
+`planned_limit_px >= sellLmt`. `enabled=false` fails closed and does
+not become numeric zero. Freshness is a fresh GET per pretrade
+decision. No `ts` age bound is invented. Percent fields, markPx, last,
+bid/ask, and tickSz are not operative PRICE_BAND sources. Standing Live
+/ Testnet / Canary authorization remain false. Tests are guards, not a
+second semantic SSOT.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:

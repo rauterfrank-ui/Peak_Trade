@@ -41,6 +41,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.lifecycle_v1 import
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_available_observation_v1 import (
     account_max_size_query_path_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.price_band_observation_v1 import (
+    public_price_limit_query_path_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.order_plan_v1 import (
     LiveCanaryOrderPlanError,
     build_minimum_valid_canary_order_plan_v1,
@@ -79,6 +82,19 @@ EMPTY = {"code": "0", "data": []}
 MAX_AVAILABLE = {
     "code": "0",
     "data": [{"instId": DEFAULT_INSTRUMENT_ID, "maxBuy": "100", "maxSell": "100"}],
+}
+PRICE_BAND = {
+    "code": "0",
+    "data": [
+        {
+            "instId": DEFAULT_INSTRUMENT_ID,
+            "instType": "FUTURES",
+            "buyLmt": "2.0000",
+            "sellLmt": "0.0001",
+            "ts": "1725000000000",
+            "enabled": True,
+        }
+    ],
 }
 FIXTURE_MATERIAL = json.dumps(
     {"api_key": "A" * 36, "api_secret": "B" * 32, "passphrase": "C" * 14},
@@ -125,6 +141,13 @@ def _max_available_plan_kwargs(**overrides: object) -> dict[str, object]:
         "max_available_http_status": 200,
         "max_available_auth_header_sent": True,
         "max_available_px_sent": "0.8209",
+        "price_band_payload": PRICE_BAND,
+        "price_band_get_performed": True,
+        "price_band_endpoint": public_price_limit_query_path_v1(
+            instrument_id=DEFAULT_INSTRUMENT_ID
+        ),
+        "price_band_http_status": 200,
+        "price_band_auth_header_sent": False,
     }
     body.update(overrides)
     return body
@@ -135,6 +158,7 @@ def _fake_transport() -> RecordingFakeCanaryTransportV1:
         bodies_by_endpoint={
             "/api/v5/public/instruments": json.dumps(INSTRUMENTS).encode(),
             "/api/v5/market/ticker": json.dumps(TICKER).encode(),
+            "/api/v5/public/price-limit": json.dumps(PRICE_BAND).encode(),
             "/api/v5/account/positions": json.dumps(EMPTY).encode(),
             "/api/v5/account/max-size": json.dumps(MAX_AVAILABLE).encode(),
             "/api/v5/trade/orders-pending": json.dumps(EMPTY).encode(),

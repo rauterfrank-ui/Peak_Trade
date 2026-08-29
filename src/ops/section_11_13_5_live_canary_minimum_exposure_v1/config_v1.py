@@ -81,6 +81,7 @@ def example_incomplete_config_dict_v1() -> dict[str, Any]:
             "/api/v5/trade/orders-pending",
             "/api/v5/market/ticker",
             "/api/v5/public/instruments",
+            "/api/v5/public/price-limit",
         ],
         "submit_endpoint": "/api/v5/trade/order",
         "cancel_endpoint": "/api/v5/trade/cancel-order",

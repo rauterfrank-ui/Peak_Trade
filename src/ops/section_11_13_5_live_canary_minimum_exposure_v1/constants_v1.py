@@ -104,6 +104,7 @@ FORBIDDEN_HTTP_METHODS_OUTSIDE_GATED_SUBMIT: tuple[str, ...] = (
     "CONNECT",
 )
 ENDPOINT_ACCOUNT_MAX_SIZE = "/api/v5/account/max-size"
+ENDPOINT_PUBLIC_PRICE_LIMIT = "/api/v5/public/price-limit"
 ENDPOINT_ALLOWLIST_READ: tuple[str, ...] = (
     "/api/v5/account/balance",
     "/api/v5/account/config",
@@ -112,6 +113,7 @@ ENDPOINT_ALLOWLIST_READ: tuple[str, ...] = (
     "/api/v5/trade/orders-pending",
     "/api/v5/market/ticker",
     "/api/v5/public/instruments",
+    ENDPOINT_PUBLIC_PRICE_LIMIT,
 )
 ENDPOINT_SUBMIT = "/api/v5/trade/order"
 ENDPOINT_CANCEL = "/api/v5/trade/cancel-order"
@@ -287,6 +289,7 @@ ENDPOINT_ORDERS_ALGO_PENDING = "/api/v5/trade/orders-algo-pending"
 GET_ENDPOINTS_PUBLIC: tuple[str, ...] = (
     "/api/v5/public/instruments",
     "/api/v5/market/ticker",
+    ENDPOINT_PUBLIC_PRICE_LIMIT,
 )
 GET_ENDPOINTS_PRIVATE: tuple[str, ...] = (
     "/api/v5/account/balance",

@@ -30,7 +30,8 @@
     "/api/v5/account/max-size",
     "/api/v5/trade/orders-pending",
     "/api/v5/market/ticker",
-    "/api/v5/public/instruments"
+    "/api/v5/public/instruments",
+    "/api/v5/public/price-limit"
   ],
   "submit_endpoint": "/api/v5/trade/order",
   "cancel_endpoint": "/api/v5/trade/cancel-order",
