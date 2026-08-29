@@ -313,6 +313,7 @@ PROPOSED_SAFE_ACTION=
 | Accounting / portfolio alignment adjudication | Master §5.3; accounting-portfolio alignment spec | `tests/ops/test_peak_trade_post_restoration_accounting_portfolio_alignment_adjudication_v1.py` | true |
 | Simulated execution pipeline adjudication | Master §5.3; simulated-execution pipeline adjudication spec | `tests/ops/test_peak_trade_post_restoration_simulated_execution_pipeline_adjudication_v1.py` | true |
 | Live safety gates adjudication | Master §5.3; live-safety gates adjudication spec | `tests/ops/test_peak_trade_post_restoration_live_safety_gates_adjudication_v1.py` | true |
+| Venue pretrade limit gates adjudication | Master §5.3; venue-pretrade limit-gates adjudication spec | `tests/ops/test_peak_trade_post_restoration_venue_pretrade_limit_gates_adjudication_v1.py` | true |
 
 Named preservation invariants for the closed simulated-execution
 adjudication. This contract does not itself perform that adjudication and
@@ -335,6 +336,20 @@ SECOND_CORE_SAFETY_OWNER_PROHIBITED=true
 LIVE_SAFETY_RUNTIME_REWIRE_REQUIRED=false
 LIVE_AUTHORITY_REMAINS_FALSE=true
 VENUE_PRETRADE_REMAINS_SEPARATE=true
+```
+
+Named preservation invariants for the persisted venue-pretrade limit-gates
+adjudication. This contract does not itself perform that adjudication, does
+not implement unbound venue metadata gates, and does not grant live or
+execution authority.
+
+```text
+VENUE_PRETRADE_ADJUDICATION_PRESERVED=true
+VENUE_PRETRADE_RUNTIME_REWIRE_REQUIRED=false
+CURRENT_OKX_VENUE_IDENTITY_PRESERVED=true
+KRAKEN_NOT_CURRENT_CANONICAL_VENUE=true
+KRAKEN_IS_NOT_CURRENT_CANONICAL_VENUE=true
+MAX_SIZE_REMAINS_EARLIEST_UNRESOLVED_EDGE=true
 ```
 
 ## 13) Missing protection closed by this contract

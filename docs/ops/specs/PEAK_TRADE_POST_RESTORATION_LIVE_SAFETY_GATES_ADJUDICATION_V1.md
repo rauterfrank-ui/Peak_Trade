@@ -299,6 +299,7 @@ REQUIRED_CALL_GRAPH_HARMONIZATION=NOT_THIS_SLICE
 TEST_CONSTANTS_AND_CALL_GRAPH_BOUND_REPAIR=NOT_THIS_SLICE
 VENUE_PRETRADE_LIMIT_GATES=NOT_THIS_SLICE
 VENUE_PRETRADE_ADJUDICATION_IN_SCOPE=false
+SEE_ALSO_VENUE_PRETRADE_LIMIT_GATES_ADJUDICATION=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_VENUE_PRETRADE_LIMIT_GATES_ADJUDICATION_V1.md
 CANARY_EXECUTE=NOT_THIS_SLICE
 FLATTEN=NOT_THIS_SLICE
 MULTI_FUTURE=NOT_THIS_SLICE
@@ -315,7 +316,10 @@ CORE_RUNTIME_MUTATION=false
 
 Historical `LIVE_SAFETY_GATES=NOT_THIS_SLICE` rows in prior post-restoration
 specs remain historically true for those slices. Later live-safety
-adjudication is recorded here.
+adjudication is recorded here. Later venue-pretrade limit-gates adjudication
+is recorded in `SEE_ALSO_VENUE_PRETRADE_LIMIT_GATES_ADJUDICATION`. Historical
+`VENUE_PRETRADE_LIMIT_GATES=NOT_THIS_SLICE` remains true for this live-safety
+slice.
 
 ## 12) Existing guards reused (not duplicated)
 
