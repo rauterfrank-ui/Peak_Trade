@@ -1,0 +1,78 @@
+AUTHORITY: NONE
+PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+CANONICAL_SELECTION: false
+RUNTIME_SELECTION: false
+TRADING_AUTHORITY: false
+CANONICAL_AUTHORITY: false
+SOURCE_AUTHORITY: NONE
+note: Index of source-declared SSOT-transition mentions; not a current SSOT change.
+anchors:
+- line: 25750
+  excerpt: '`HISTORICAL_SURFACE_PRESENT=true` · `CURRENT_SSOT_NAMED=false` außer Exit-policy in §5.3/Cap
+    6.5 · `CURRENT_CODE_OWNER_PROVEN=true` im Replay/Policy-Pfad · `...'
+  heading_path: Temporary Forensic Working Runbook — Continuation > 2. Migrationsbeweis ≠ Runtime ≠ Parity
+    > Proof-Achsen — echte Core-Surfaces (24)
+- line: 25753
+  excerpt: '`HISTORICAL_SURFACE_PRESENT=true` (DP namentlich; MV2 als Architektur + aktuelle Stufe) ·
+    `CURRENT_SSOT_NAMED=true` · `CURRENT_CODE_OWNER_PROVEN=true` (`src/...'
+  heading_path: Temporary Forensic Working Runbook — Continuation > 2. Migrationsbeweis ≠ Runtime ≠ Parity
+    > Proof-Achsen — echte Core-Surfaces (24)
+- line: 28521
+  excerpt: '| **F3 Master V2 First Live Index** | Derived docs-only Spec | G1 … G12 | 12 | nein (Mapping,
+    nicht SSOT-Sequenz) |'
+  heading_path: GATE TOPOLOGY AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION > 1. Getrennte Gate-Familien
+    (nicht vermischen)
+- line: 29833
+  excerpt: CURRENT_FACT=M05 ist Nenner-CORE_SURFACE; Code-Owner=trading.master_v2.double_play_state.transition_state;
+    named SSOT=false; absorption=owner-mapping only; n...
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Open-Item-Mapping (jedes
+    Gate-1-Item) > 1. `BULL_BEAR_STATE_SWITCH_NOT_IN_CAP72_DOD_NO_RUNTIME_REWIRE`
+- line: 1302
+  excerpt: 11. Duplicate-authority / second-SSOT risks
+  heading_path: Temporary Forensic Working Runbook — Continuation > PASS=AUTHORITY_PARTITION_BINDING_READ_ONLY
+    > 11. Duplicate-authority / second-SSOT risks
+- line: 1686
+  excerpt: J. Second-SSOT / Duplicate-Authority Findings
+  heading_path: Temporary Forensic Working Runbook — Continuation > J. Second-SSOT / Duplicate-Authority
+    Findings
+- line: 4259
+  excerpt: G. SECOND-PATH / SSOT RECHECK (Authority Partition complete; evidence-only)
+  heading_path: Temporary Forensic Working Runbook — Continuation > G. SECOND-PATH / SSOT RECHECK (Authority
+    Partition complete; evidence-only)
+- line: 4397
+  excerpt: B. Inventory SSOT pins (current HEAD; inventory ≠ authority assignment)
+  heading_path: Temporary Forensic Working Runbook — Continuation > B. Inventory SSOT pins (current HEAD;
+    inventory ≠ authority assignment)
+- line: 18784
+  excerpt: 2. SSOT mutation (minimal)
+  heading_path: Temporary Forensic Working Runbook — Continuation > 2. SSOT mutation (minimal)
+- line: 19328
+  excerpt: A. Baseline / HEAD / SSOT binding
+  heading_path: Temporary Forensic Working Runbook — Continuation > A. Baseline / HEAD / SSOT binding
+- line: 19483
+  excerpt: A. Baseline / SSOT
+  heading_path: Temporary Forensic Working Runbook — Continuation > A. Baseline / SSOT
+- line: 19558
+  excerpt: E. UNPROVEN execute-time / SSOT items (7; not invented)
+  heading_path: Temporary Forensic Working Runbook — Continuation > E. UNPROVEN execute-time / SSOT items
+    (7; not invented)
+- line: 23298
+  excerpt: 2. Policy reconstruction (SSOT + UQ5 + existing owners)
+  heading_path: Temporary Forensic Working Runbook — Continuation > 2. Policy reconstruction (SSOT + UQ5
+    + existing owners)
+- line: 25232
+  excerpt: 2. Canonical owners (origin/main; no second SSOT)
+  heading_path: Temporary Forensic Working Runbook — Continuation > 2. Canonical owners (origin/main;
+    no second SSOT)
+- line: 29312
+  excerpt: 16. SSOT-Transition
+  heading_path: READ-ONLY INTEGRATION & CANARY TRANSITION AUDIT > 16. SSOT-Transition
+- line: 29803
+  excerpt: F6 — SSOT / Owner binding
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Spätere Gates > F6
+    — SSOT / Owner binding
+- line: 29969
+  excerpt: 8. `UQ1_UQ8_NOT_BOUND_IN_MASTER_SSOT`
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Open-Item-Mapping (jedes
+    Gate-1-Item) > 8. `UQ1_UQ8_NOT_BOUND_IN_MASTER_SSOT`

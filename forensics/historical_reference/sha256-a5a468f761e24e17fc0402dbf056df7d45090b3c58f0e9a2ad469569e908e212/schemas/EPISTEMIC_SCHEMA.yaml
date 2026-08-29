@@ -1,0 +1,46 @@
+AUTHORITY: NONE
+PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+CANONICAL_SELECTION: false
+RUNTIME_SELECTION: false
+TRADING_AUTHORITY: false
+CANONICAL_AUTHORITY: false
+SOURCE_AUTHORITY: NONE
+PRESERVATION_CLASS: SOURCE_DECLARED_SCHEMA_COPY
+source_heading: '# Forensic Persist — T5 Epistemic and Provenance Classification Evidence'
+source_line_range:
+  start_inclusive: 113319
+  end_inclusive: 113329
+compact_fields: 17
+field_order:
+- classification_id
+- source_src_id
+- source_lines
+- segment_locator
+- excerpt_sha256
+- epistemic_class
+- provenance_class
+- classification_basis
+- source_declared_currentness
+- source_declared_authority
+- adjudication_status
+- boundary_status
+- endpoint_resolution
+- ambiguity_status
+- t3_support_refs
+- t4_support_refs
+- notes
+epistemic_class_counts_source_declared:
+  CANONICAL_AUTHORITY_REFERENCE: 801
+  FORENSIC_RAW_EVIDENCE: 532
+  ADJUDICATED_CONCLUSION: 98
+  HISTORICAL_INTERMEDIATE_STATE: 189
+  NAVIGATION_INDEX: 1587
+  INTERPRETATION: 20
+  HYPOTHESIS: 3
+  OPEN_OR_CONFLICTED: 637
+  TOTAL: 3867
+  SOURCE_LINE_RANGE:
+    start_inclusive: 113332
+    end_inclusive: 113343
+this_schema_is_not_current_authority: true

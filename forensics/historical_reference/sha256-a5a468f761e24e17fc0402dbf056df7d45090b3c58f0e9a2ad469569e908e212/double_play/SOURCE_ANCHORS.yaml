@@ -1,0 +1,440 @@
+AUTHORITY: NONE
+PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+CANONICAL_SELECTION: false
+RUNTIME_SELECTION: false
+TRADING_AUTHORITY: false
+CANONICAL_AUTHORITY: false
+SOURCE_AUTHORITY: NONE
+MODEL_ID: double_play
+SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+OBSERVED_IN_SOURCE: true
+PRESERVATION_CLASS: DERIVED_INDEX
+hit_count: 74
+hit_truncated: false
+hits:
+- line: 620
+  excerpt: 4. **Selection / Intent authority remains Master V2 → Double Play → Risk → Safety**
+  heading_path: Temporary Forensic Working Runbook — Continuation > D. UQ2_RECOMMENDATION — Autonomous
+    Strategy Authority Model
+- line: 1432
+  excerpt: '| DP-BEZUG | Forensic „DP“ = **Double Play / Cap7.2 host matrix**, nicht separates Dual-Process-Produkt
+    |'
+  heading_path: Temporary Forensic Working Runbook — Continuation > B. I08 + I43 versus I68 — Execution
+    Equivalence Audit > B2. I43 Legacy `LiveSessionRunner` (+ DP-Bezug)
+- line: 1939
+  excerpt: '| `master_v2_double_play_integrated_offline_replay` | same | **Shared decision logic import**
+    |'
+  heading_path: Temporary Forensic Working Runbook — Continuation > E. I26 — Cap7.2 host graph vs WALLCLOCK_HARDENING_V2
+    > Side-by-side stage map
+- line: 2147
+  excerpt: I26 -PROVEN_SHARED_LOGIC-> master_v2_double_play_integrated_offline_replay
+  heading_path: Temporary Forensic Working Runbook — Continuation > K. UPDATED_CROSS_PATH_GRAPH
+- line: 4440
+  excerpt: '| FILES/MODULES | Master §5.3 Cap7.2 host; `src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_*`;
+    `src/ops/productive_futures_a...'
+  heading_path: Temporary Forensic Working Runbook — Continuation > C. EXECUTION PATHS FOUND (materially
+    distinct) > XP-01 CAP72_INTERNAL_SIMULATED_HOST
+- line: 8256
+  excerpt: '| Strategy orchestration | Master V2 / Double Play remain single-selected-future consumers.
+    Registry (G14) non-authoritative. Research cross-sectional bindin...'
+  heading_path: Temporary Forensic Working Runbook — Continuation > B. Surface trace (HEAD `3581a6b3b06cb8d50c4bfb250229176edd306b85`)
+    > B2. Runtime / host / selection / execution
+- line: 16905
+  excerpt: → Master V2 / Double Play
+  heading_path: Temporary Forensic Working Runbook — Continuation > B. Canonical target E2E chain (reconstructed
+    from Master Runbook §1 / §11.1)
+- line: 16926
+  excerpt: → C1 / Features / Confirmation / Master V2 / Double Play / Scope
+  heading_path: Temporary Forensic Working Runbook — Continuation > B. Canonical target E2E chain (reconstructed
+    from Master Runbook §1 / §11.1)
+- line: 16963
+  excerpt: '| Strategy / signal (Master V2 / Double Play) | PROVEN_TEST | Decision core | Cap 7.1 traces;
+    parity-proven | Research strategies remain RESEARCH_INFORMATION |'
+  heading_path: Temporary Forensic Working Runbook — Continuation > C. Stage classification (origin/main
+    @ 9f09d6d)
+- line: 17057
+  excerpt: START=Cap 7.2 stateful no-order host + Cap 7.1 deterministic lifecycle fixtures/replay (persisted
+    selection → native binding → C1–C3 → Master V2/Double Play ...
+  heading_path: Temporary Forensic Working Runbook — Continuation > F. Proposed next bounded E2E verification
+    run (PLAN ONLY — NOT EXECUTED)
+- line: 21888
+  excerpt: MASTER_V2_DOUBLE_PLAY_NOT_REWIRED=true
+  heading_path: Temporary Forensic Working Runbook — Continuation > 1. Requirements reconstructed
+- line: 22190
+  excerpt: DOUBLE_PLAY_IMPORT=false
+  heading_path: Temporary Forensic Working Runbook — Continuation > 2. Inventory (producers / adapters
+    / schemas / configs / tests / consumers) > I04 Sentiment / News / Onchain
+- line: 22229
+  excerpt: DOUBLE_PLAY_IMPORT=false
+  heading_path: Temporary Forensic Working Runbook — Continuation > 2. Inventory (producers / adapters
+    / schemas / configs / tests / consumers) > I55 Macro regimes / Macro context
+- line: 22232
+  excerpt: MUST_NOT_BIND_INTO=R3; Master V2; Double Play
+  heading_path: Temporary Forensic Working Runbook — Continuation > 2. Inventory (producers / adapters
+    / schemas / configs / tests / consumers) > I55 Macro regimes / Macro context
+- line: 24379
+  excerpt: STRATEGY_PORTFOLIO_ID=master_v2_double_play_paper_shadow_observation_portfolio_v1
+  heading_path: Temporary Forensic Working Runbook — Continuation > 4. I17 7200s session reconstruction
+    (existing artifacts only; no relaunch)
+- line: 24407
+  excerpt: '| strategy/config identity | **false** | I57: CLI `strategy_key` (examples `ma_crossover`);
+    I17: `strategy_portfolio_id=master_v2_double_play_paper_shadow_ob...'
+  heading_path: Temporary Forensic Working Runbook — Continuation > 5. Equivalence matrix (no equality
+    from names)
+- line: 25452
+  excerpt: '| BULL_BEAR_STATE_SWITCH | Gate 1: **nicht** Cap72-DoD; v4.4.12 SUPERSEDED | `double_play_state.transition_state`;
+    binding `OWNER_BINDING_ONLY_NO_RUNTIME_REW...'
+  heading_path: Temporary Forensic Working Runbook — Continuation > PASS=GATE_1_CURRENT_AUDIT_PERSIST_READ_ONLY_APPEND
+    > Compact audit matrix (unchanged from preceding audit)
+- line: 25609
+  excerpt: '| M05 | Bull/Bear State Switch | `CORE_SURFACE` | ja — eigene historische Kettenstufe, getrennt
+    von Double Play |'
+  heading_path: Temporary Forensic Working Runbook — Continuation > 1. Nenner-Normalisierung (49 Roh-Items)
+    > ITEM_KIND je Ledger-Item
+- line: 25616
+  excerpt: '| M12d | Double Play | `CORE_SURFACE` | ja |'
+  heading_path: Temporary Forensic Working Runbook — Continuation > 1. Nenner-Normalisierung (49 Roh-Items)
+    > ITEM_KIND je Ledger-Item
+- line: 25652
+  excerpt: '| M48 | Master V2 / Double Play ownership interaction | `RELATIONSHIP` | **nein** |'
+  heading_path: Temporary Forensic Working Runbook — Continuation > 1. Nenner-Normalisierung (49 Roh-Items)
+    > ITEM_KIND je Ledger-Item
+- line: 25657
+  excerpt: M48 ist in Gate 2 selbst als „Gate-2-Beziehungsfrage, kein Vollautonomie-Kapitel“ beschrieben.
+    Der Quellnenner nennt **Master V2** und **Double Play**, keine...
+  heading_path: Temporary Forensic Working Runbook — Continuation > 1. Nenner-Normalisierung (49 Roh-Items)
+    > M48 — False Surface
+- line: 25744
+  excerpt: '`HISTORICAL_SURFACE_PRESENT=true` · `CURRENT_SSOT_NAMED=true` (§1) · `CURRENT_CODE_OWNER_PROVEN=true`
+    (`survival_assessment_v1` / `suitability_binding_v1` / ...'
+  heading_path: Temporary Forensic Working Runbook — Continuation > 2. Migrationsbeweis ≠ Runtime ≠ Parity
+    > Proof-Achsen — echte Core-Surfaces (24)
+- line: 25750
+  excerpt: '`HISTORICAL_SURFACE_PRESENT=true` · `CURRENT_SSOT_NAMED=false` außer Exit-policy in §5.3/Cap
+    6.5 · `CURRENT_CODE_OWNER_PROVEN=true` im Replay/Policy-Pfad · `...'
+  heading_path: Temporary Forensic Working Runbook — Continuation > 2. Migrationsbeweis ≠ Runtime ≠ Parity
+    > Proof-Achsen — echte Core-Surfaces (24)
+- line: 25752
+  excerpt: '**M12d Double Play / M41 Master V2**'
+  heading_path: Temporary Forensic Working Runbook — Continuation > 2. Migrationsbeweis ≠ Runtime ≠ Parity
+    > Proof-Achsen — echte Core-Surfaces (24)
+- line: 25753
+  excerpt: '`HISTORICAL_SURFACE_PRESENT=true` (DP namentlich; MV2 als Architektur + aktuelle Stufe) ·
+    `CURRENT_SSOT_NAMED=true` · `CURRENT_CODE_OWNER_PROVEN=true` (`src/...'
+  heading_path: Temporary Forensic Working Runbook — Continuation > 2. Migrationsbeweis ≠ Runtime ≠ Parity
+    > Proof-Achsen — echte Core-Surfaces (24)
+- line: 25785
+  excerpt: BULL_BEAR_STATE_SWITCH_OWNER=trading.master_v2.double_play_state.transition_state
+  heading_path: Temporary Forensic Working Runbook — Continuation > 3. Bull/Bear State Switch — harte
+    Adjudikation
+- line: 25790
+  excerpt: BULL_BEAR_STATE_SWITCH_CURRENT_CORE_MEMBERSHIP=VIA_DOUBLE_PLAY_TRANSITION_STATE_NOT_NAMED_SSOT_STAGE
+  heading_path: Temporary Forensic Working Runbook — Continuation > 3. Bull/Bear State Switch — harte
+    Adjudikation
+- line: 25800
+  excerpt: '| Code-Owner | true | `transition_state` in `double_play_state.py` |'
+  heading_path: Temporary Forensic Working Runbook — Continuation > 3. Bull/Bear State Switch — harte
+    Adjudikation
+- line: 25807
+  excerpt: '| Named core membership | nicht bewiesen | Owner-Funktion von Double Play ≠ namentliche §1-Stufe
+    |'
+  heading_path: Temporary Forensic Working Runbook — Continuation > 3. Bull/Bear State Switch — harte
+    Adjudikation
+- line: 25843
+  excerpt: '- `SAME_NAMED_SURFACE_CARRIED_FORWARD`: Survival, Suitability, Composition, Double Play, Master
+    V2, Risk, Safety, KillSwitch, Reconciliation, Intent, Dynamic...'
+  heading_path: Temporary Forensic Working Runbook — Continuation > 5. Carry-Forward-Wording
+- line: 25958
+  excerpt: BULL_BEAR_STATE_SWITCH_CURRENT_CORE_MEMBERSHIP=VIA_DOUBLE_PLAY_TRANSITION_STATE_NOT_NAMED_SSOT_STAGE
+  heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion
+- line: 26049
+  excerpt: BULL_BEAR_STATE_SWITCH_OWNER=trading.master_v2.double_play_state.transition_state
+  heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion > A-annex. Derived
+    compact handover checkpoint (not a substitute for section A)
+- line: 26056
+  excerpt: BULL_BEAR_STATE_SWITCH_CURRENT_CORE_MEMBERSHIP=VIA_DOUBLE_PLAY_TRANSITION_STATE_NOT_NAMED_SSOT_STAGE
+  heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion > A-annex. Derived
+    compact handover checkpoint (not a substitute for section A)
+- line: 26065
+  excerpt: M48_WHY=Quellnenner hat nur Master_V2 + Double_Play; ONE_DECISION_AUTHORITY_CHAIN ist Eigenschaft
+    von M41+M12d, keine dritte Surface
+  heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion > A-annex. Derived
+    compact handover checkpoint (not a substitute for section A)
+- line: 26098
+  excerpt: M12d Double_Play
+  heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion > A-annex. Derived
+    compact handover checkpoint (not a substitute for section A)
+- line: 26143
+  excerpt: M48 Master_V2_Double_Play_ownership_interaction
+  heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion > A-annex. Derived
+    compact handover checkpoint (not a substitute for section A)
+- line: 26152
+  excerpt: SAME_NAMED_SURFACE=Survival;Suitability;Composition;Double_Play;Master_V2;Risk;Safety;KillSwitch;Reconciliation;Intent;Dynamic_Scope;CMC_code_name
+  heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion > A-annex. Derived
+    compact handover checkpoint (not a substitute for section A)
+- line: 26450
+  excerpt: BULL_BEAR_STATE_SWITCH_CURRENT_CORE_MEMBERSHIP=VIA_DOUBLE_PLAY_TRANSITION_STATE_NOT_NAMED_SSOT_STAGE
+  heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion > A-annex. Derived
+    compact handover checkpoint (not a substitute for section A)
+- line: 26451
+  excerpt: BULL_BEAR_STATE_SWITCH_OWNER=trading.master_v2.double_play_state.transition_state
+  heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion > A-annex. Derived
+    compact handover checkpoint (not a substitute for section A)
+- line: 26672
+  excerpt: 4. Current intended core names Double Play, not a Bull/Bear State Switch stage
+  heading_path: POST-GATE-2 GATE ARCHITECTURE / OWNER REVIEW / FINAL GATE-3 CONTRACT
+- line: 26709
+  excerpt: MEMBERSHIP_FORM=VIA_DOUBLE_PLAY_NOT_NAMED_§1_STAGE
+  heading_path: POST-GATE-2 GATE ARCHITECTURE / OWNER REVIEW / FINAL GATE-3 CONTRACT
+- line: 26847
+  excerpt: M05=ABSORBED_INTO_DOUBLE_PLAY_NO_REWIRE_NO_PARITY_DEMAND
+  heading_path: POST-GATE-2 GATE ARCHITECTURE / OWNER REVIEW / FINAL GATE-3 CONTRACT
+- line: 26877
+  excerpt: M05_NAMED_CURRENT_MEMBER=Double_Play
+  heading_path: POST-GATE-2 GATE ARCHITECTURE / OWNER REVIEW / FINAL GATE-3 CONTRACT
+- line: 26881
+  excerpt: BULL_BEAR_STATE_SWITCH_CURRENT_CODE_OWNER=trading.master_v2.double_play_state.transition_state
+  heading_path: POST-GATE-2 GATE ARCHITECTURE / OWNER REVIEW / FINAL GATE-3 CONTRACT
+- line: 27360
+  excerpt: Source denominator names only Master V2 and Double Play
+  heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — READ-ONLY FINDINGS
+- line: 27390
+  excerpt: Owner=double_play_state.transition_state
+  heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — READ-ONLY FINDINGS
+- line: 27392
+  excerpt: Membership=VIA_DOUBLE_PLAY_TRANSITION_STATE_NOT_NAMED_SSOT_STAGE
+  heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — READ-ONLY FINDINGS
+- line: 27683
+  excerpt: BULL_BEAR_STATE_SWITCH_OWNER=trading.master_v2.double_play_state.transition_state
+  heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — READ-ONLY FINDINGS
+- line: 27689
+  excerpt: BULL_BEAR_STATE_SWITCH_CURRENT_CORE_MEMBERSHIP=VIA_DOUBLE_PLAY_TRANSITION_STATE_NOT_NAMED_SSOT_STAGE
+  heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — READ-ONLY FINDINGS
+- line: 28100
+  excerpt: '**EXACT_FACT_ESTABLISHED=** M48 ist Beziehungsfrage, kein Vollautonomie-Kapitel; Quellnenner
+    nennt nur Master V2 und Double Play; `ONE_DECISION_AUTHORITY_CHA...'
+  heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION
+    > Transition Matrix
+- line: 28120
+  excerpt: '**EXACT_FACT_ESTABLISHED=** `STAY_STATE_EXISTS=false`; `C3_EQUALS_BULL_BEAR_STATE_SWITCH=false`;
+    Owner=`double_play_state.transition_state`; Absorption nur O...'
+  heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION
+    > Transition Matrix
+- line: 28304
+  excerpt: CORE_SURFACE_M05_WITH_OWNER_MAPPING_INTO_DOUBLE_PLAY_TRANSITION_STATE
+  heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION
+    > Pflicht-Abschlussblock
+- line: 28898
+  excerpt: → Master V2 / Double Play  (offline replay)
+  heading_path: READ-ONLY INTEGRATION & CANARY TRANSITION AUDIT > 5. Rekonstruierte End-to-End-Kette >
+    Kette A — kanonischer No-Order-Host (Cap 7.2)
+- line: 28939
+  excerpt: '**Kritischer Befund:** Kette A und Kette B teilen **keine bewiesene Intent-Kante**. Der Cap-7.2-Host
+    importiert `section_11_13_5` nicht. Das Canary-Paket kon...'
+  heading_path: READ-ONLY INTEGRATION & CANARY TRANSITION AUDIT > 5. Rekonstruierte End-to-End-Kette >
+    Dokumentiertes Ziel (§11.2) — nicht als Runtime bewiesen
+- line: 28945
+  excerpt: C123 --> MV2[Master V2 Double Play]
+  heading_path: READ-ONLY INTEGRATION & CANARY TRANSITION AUDIT > 5. Rekonstruierte End-to-End-Kette >
+    Dokumentiertes Ziel (§11.2) — nicht als Runtime bewiesen
+- line: 28969
+  excerpt: '| Master V2 / Double Play | IMPLEMENTED | PARTIAL | §1 / §5.3 | Cap-6.4 continuity PROVEN;
+    Full-Chain-Parity **false** (forensic) | hoch, aber unverbunden | ...'
+  heading_path: READ-ONLY INTEGRATION & CANARY TRANSITION AUDIT > 6. Node-Inventar
+- line: 29833
+  excerpt: CURRENT_FACT=M05 ist Nenner-CORE_SURFACE; Code-Owner=trading.master_v2.double_play_state.transition_state;
+    named SSOT=false; absorption=owner-mapping only; n...
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Open-Item-Mapping (jedes
+    Gate-1-Item) > 1. `BULL_BEAR_STATE_SWITCH_NOT_IN_CAP72_DOD_NO_RUNTIME_REWIRE`
+- line: 29835
+  excerpt: MISSING_PROOF_OR_IMPLEMENTATION=Ob VIA_DOUBLE_PLAY_TRANSITION_STATE aktuelle Core-Mitgliedschaft
+    erfüllt; named SSOT continuity; named rewire; full-chain parity
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Open-Item-Mapping (jedes
+    Gate-1-Item) > 1. `BULL_BEAR_STATE_SWITCH_NOT_IN_CAP72_DOD_NO_RUNTIME_REWIRE`
+- line: 30227
+  excerpt: Gate2_CODE_OWNER=survival_assessment_v1/suitability_binding_v1/double_play_composition_matrix_v1
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Die vier Items
+- line: 30230
+  excerpt: Cap72_graph_folds_them_into_Master_V2_Double_Play_integrated_offline_replay
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Die vier Items
+- line: 30286
+  excerpt: CURRENT_CORE_MEMBERSHIP_PROVEN=true_VIA_DOUBLE_PLAY_TRANSITION_STATE
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Die vier Items
+- line: 30288
+  excerpt: Gate2_CURRENT_CORE_MEMBERSHIP=VIA_DOUBLE_PLAY_TRANSITION_STATE_NOT_NAMED_SSOT_STAGE
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Die vier Items
+- line: 30290
+  excerpt: OWNER=trading.master_v2.double_play_state.transition_state
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Die vier Items
+- line: 30297
+  excerpt: function_is_inside_Double_Play_replay
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Die vier Items
+- line: 30306
+  excerpt: Current_intended_core_Master_§1_§4.2_names_Double_Play_not_State_Switch
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Die vier Items
+- line: 30318
+  excerpt: Gate 3 muss M05 **verbuchen**, nicht per Rewire/Parity „vollständig“ machen. Gegen den aktuellen
+    Intended Core ist die Funktion bereits in Double Play. Named...
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Die vier Items
+- line: 30339
+  excerpt: M05 recorded as VIA_DOUBLE_PLAY without promoting rewire/parity into completeness
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Reconstructed Gate
+    3
+- line: 30416
+  excerpt: 4. Current intended core names Double Play, not a Bull/Bear State Switch stage
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Reconstructed Gate
+    3
+- line: 30458
+  excerpt: '**Verdict:** Die Gate-3-Grenze (Nenner 36 gegen aktuellen Intended Core, read-only, keine
+    Implementation/Runtime/Canary) bleibt gültig. Das vorige Blockerset...'
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Reconstructed Gate
+    3
+- line: 30534
+  excerpt: 3. M05 kann die Disposition **direkt** erhalten. Gate 2 hat Absorption als Owner-Mapping bereits
+    `true`; der aktuelle Intended Core nennt Double Play, nicht ...
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Reconstructed Gate
+    3
+- line: 30538
+  excerpt: M05_NAMED_CURRENT_MEMBER=Double_Play
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Reconstructed Gate
+    3
+- line: 30565
+  excerpt: M05=ABSORBED_INTO_DOUBLE_PLAY_NO_REWIRE_NO_PARITY_DEMAND
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Reconstructed Gate
+    3
+- line: 103201
+  excerpt: '"verbatim": "CURRENT_CORE_MEMBERSHIP_PROVEN=true_VIA_DOUBLE_PLAY_TRANSITION_STATE",'
+  heading_path: Forensic Persist — T3 Metadata Extraction Evidence > 5. T3 Metadata Records (88/88) >
+    SRC-000087
+- line: 112079
+  excerpt: REL-006156|T4-B|SRC-000087|SOURCE_DECLARED_RELATION|STATUS_TOKEN|DIRECTED|SOURCE_DECLARED_ONLY|NON_AUTHORITATIVE_FORENSIC_EVIDENCE|RESOLVED_AT_EXISTING_SRC_L...
+  heading_path: Forensic Persist — T4 Relation Extraction Evidence > 7. T4 Canon Compact TSV Corpus
+covering_ranges:
+- start: 601
+  end: 644
+  heading_path: Temporary Forensic Working Runbook — Continuation > D. UQ2_RECOMMENDATION — Autonomous
+    Strategy Authority Model
+- start: 1419
+  end: 1433
+  heading_path: Temporary Forensic Working Runbook — Continuation > B. I08 + I43 versus I68 — Execution
+    Equivalence Audit > B2. I43 Legacy `LiveSessionRunner` (+ DP-Bezug)
+- start: 1926
+  end: 1982
+  heading_path: Temporary Forensic Working Runbook — Continuation > E. I26 — Cap7.2 host graph vs WALLCLOCK_HARDENING_V2
+    > Side-by-side stage map
+- start: 2136
+  end: 2158
+  heading_path: Temporary Forensic Working Runbook — Continuation > K. UPDATED_CROSS_PATH_GRAPH
+- start: 4436
+  end: 4457
+  heading_path: Temporary Forensic Working Runbook — Continuation > C. EXECUTION PATHS FOUND (materially
+    distinct) > XP-01 CAP72_INTERNAL_SIMULATED_HOST
+- start: 8244
+  end: 8262
+  heading_path: Temporary Forensic Working Runbook — Continuation > B. Surface trace (HEAD `3581a6b3b06cb8d50c4bfb250229176edd306b85`)
+    > B2. Runtime / host / selection / execution
+- start: 16892
+  end: 16951
+  heading_path: Temporary Forensic Working Runbook — Continuation > B. Canonical target E2E chain (reconstructed
+    from Master Runbook §1 / §11.1)
+- start: 16952
+  end: 17005
+  heading_path: Temporary Forensic Working Runbook — Continuation > C. Stage classification (origin/main
+    @ 9f09d6d)
+- start: 17052
+  end: 17078
+  heading_path: Temporary Forensic Working Runbook — Continuation > F. Proposed next bounded E2E verification
+    run (PLAN ONLY — NOT EXECUTED)
+- start: 21877
+  end: 21894
+  heading_path: Temporary Forensic Working Runbook — Continuation > 1. Requirements reconstructed
+- start: 22177
+  end: 22196
+  heading_path: Temporary Forensic Working Runbook — Continuation > 2. Inventory (producers / adapters
+    / schemas / configs / tests / consumers) > I04 Sentiment / News / Onchain
+- start: 22214
+  end: 22236
+  heading_path: Temporary Forensic Working Runbook — Continuation > 2. Inventory (producers / adapters
+    / schemas / configs / tests / consumers) > I55 Macro regimes / Macro context
+- start: 24369
+  end: 24402
+  heading_path: Temporary Forensic Working Runbook — Continuation > 4. I17 7200s session reconstruction
+    (existing artifacts only; no relaunch)
+- start: 24403
+  end: 24436
+  heading_path: Temporary Forensic Working Runbook — Continuation > 5. Equivalence matrix (no equality
+    from names)
+- start: 25423
+  end: 25596
+  heading_path: Temporary Forensic Working Runbook — Continuation > PASS=GATE_1_CURRENT_AUDIT_PERSIST_READ_ONLY_APPEND
+    > Compact audit matrix (unchanged from preceding audit)
+- start: 25601
+  end: 25654
+  heading_path: Temporary Forensic Working Runbook — Continuation > 1. Nenner-Normalisierung (49 Roh-Items)
+    > ITEM_KIND je Ledger-Item
+- start: 25655
+  end: 25660
+  heading_path: Temporary Forensic Working Runbook — Continuation > 1. Nenner-Normalisierung (49 Roh-Items)
+    > M48 — False Surface
+- start: 25731
+  end: 25777
+  heading_path: Temporary Forensic Working Runbook — Continuation > 2. Migrationsbeweis ≠ Runtime ≠ Parity
+    > Proof-Achsen — echte Core-Surfaces (24)
+- start: 25778
+  end: 25812
+  heading_path: Temporary Forensic Working Runbook — Continuation > 3. Bull/Bear State Switch — harte
+    Adjudikation
+- start: 25839
+  end: 25853
+  heading_path: Temporary Forensic Working Runbook — Continuation > 5. Carry-Forward-Wording
+- start: 25908
+  end: 26495
+  heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion
+- start: 25977
+  end: 26495
+  heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion > A-annex. Derived
+    compact handover checkpoint (not a substitute for section A)
+- start: 26496
+  end: 27059
+  heading_path: POST-GATE-2 GATE ARCHITECTURE / OWNER REVIEW / FINAL GATE-3 CONTRACT
+- start: 27060
+  end: 27890
+  heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — READ-ONLY FINDINGS
+- start: 27992
+  end: 28195
+  heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION
+    > Transition Matrix
+- start: 28221
+  end: 28432
+  heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION
+    > Pflicht-Abschlussblock
+- start: 28885
+  end: 28907
+  heading_path: READ-ONLY INTEGRATION & CANARY TRANSITION AUDIT > 5. Rekonstruierte End-to-End-Kette >
+    Kette A — kanonischer No-Order-Host (Cap 7.2)
+- start: 28924
+  end: 28960
+  heading_path: READ-ONLY INTEGRATION & CANARY TRANSITION AUDIT > 5. Rekonstruierte End-to-End-Kette >
+    Dokumentiertes Ziel (§11.2) — nicht als Runtime bewiesen
+- start: 28961
+  end: 28997
+  heading_path: READ-ONLY INTEGRATION & CANARY TRANSITION AUDIT > 6. Node-Inventar
+- start: 29829
+  end: 29848
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Open-Item-Mapping (jedes
+    Gate-1-Item) > 1. `BULL_BEAR_STATE_SWITCH_NOT_IN_CAP72_DOD_NO_RUNTIME_REWIRE`
+- start: 30181
+  end: 30321
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Die vier Items
+- start: 30322
+  end: 30616
+  heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Reconstructed Gate
+    3
+- start: 102046
+  end: 104608
+  heading_path: Forensic Persist — T3 Metadata Extraction Evidence > 5. T3 Metadata Records (88/88) >
+    SRC-000087
+- start: 105912
+  end: 113100
+  heading_path: Forensic Persist — T4 Relation Extraction Evidence > 7. T4 Canon Compact TSV Corpus

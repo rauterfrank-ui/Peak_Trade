@@ -1,0 +1,620 @@
+AUTHORITY: NONE
+PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+CANONICAL_SELECTION: false
+RUNTIME_SELECTION: false
+TRADING_AUTHORITY: false
+CANONICAL_AUTHORITY: false
+SOURCE_AUTHORITY: NONE
+PRESERVATION_CLASS: DERIVED_INDEX
+h1_count: 92
+h1:
+- line: 1
+  text: Peak_Trade Temporary Forensic Working Runbook
+  end: 21
+- line: 22
+  text: Peak_Trade Temporary Forensic Working Runbook
+  end: 507
+- line: 508
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 1049
+- line: 1050
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 1369
+- line: 1370
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 1755
+- line: 1756
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 3906
+- line: 3907
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 4360
+- line: 4361
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 4910
+- line: 4911
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 5232
+- line: 5233
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 5727
+- line: 5728
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 5958
+- line: 5959
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 6326
+- line: 6327
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 6563
+- line: 6564
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 6970
+- line: 6971
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 7257
+- line: 7258
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 7633
+- line: 7634
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 7648
+- line: 7649
+  text: OWNER_RATIFICATION_EG_I82_JOIN_OPTION_A
+  end: 7737
+- line: 7738
+  text: READ_ONLY_CROSS_LANE_IDENTITY_JOIN_MATRIX_ATTESTATION
+  end: 8134
+- line: 8135
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 8562
+- line: 8563
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 8839
+- line: 8840
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 9171
+- line: 9172
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 9807
+- line: 9808
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 10109
+- line: 10110
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 10385
+- line: 10386
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 10644
+- line: 10645
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 10844
+- line: 10845
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 11090
+- line: 11091
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 11343
+- line: 11344
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 11623
+- line: 11624
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 11912
+- line: 11913
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 12224
+- line: 12225
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 12482
+- line: 12483
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 12757
+- line: 12758
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 13050
+- line: 13051
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 13337
+- line: 13338
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 13625
+- line: 13626
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 13925
+- line: 13926
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 14253
+- line: 14254
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 14824
+- line: 14825
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 15074
+- line: 15075
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 15335
+- line: 15336
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 15596
+- line: 15597
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 15951
+- line: 15952
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 16303
+- line: 16304
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 16611
+- line: 16612
+  text: U-I82-R24 — End-to-end live-owner graph attestation and EG-I82-JOIN closure
+  end: 16846
+- line: 16847
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 17122
+- line: 17123
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 17160
+- line: 17161
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 17335
+- line: 17336
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 17656
+- line: 17657
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 17893
+- line: 17894
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 18310
+- line: 18311
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 18558
+- line: 18559
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 18732
+- line: 18733
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 18818
+- line: 18819
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 19591
+- line: 19592
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 21230
+- line: 21231
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 21560
+- line: 21561
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 21837
+- line: 21838
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 22856
+- line: 22857
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 22912
+- line: 22913
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 22959
+- line: 22960
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 22999
+- line: 23000
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 23264
+- line: 23265
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 23428
+- line: 23429
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 23620
+- line: 23621
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 23771
+- line: 23772
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 24038
+- line: 24039
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 24268
+- line: 24269
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 24557
+- line: 24558
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 24849
+- line: 24850
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 25200
+- line: 25201
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 26495
+- line: 26496
+  text: POST-GATE-2 GATE ARCHITECTURE / OWNER REVIEW / FINAL GATE-3 CONTRACT
+  end: 27059
+- line: 27060
+  text: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — READ-ONLY FINDINGS
+  end: 27890
+- line: 27891
+  text: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION
+  end: 28432
+- line: 28433
+  text: GATE TOPOLOGY AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION
+  end: 28812
+- line: 28813
+  text: Forensic Persist — READ-ONLY INTEGRATION & CANARY TRANSITION AUDIT
+  end: 28856
+- line: 28857
+  text: READ-ONLY INTEGRATION & CANARY TRANSITION AUDIT
+  end: 29480
+- line: 29481
+  text: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION
+  end: 30616
+- line: 30617
+  text: Temporary Forensic Working Runbook — Continuation
+  end: 30870
+- line: 30871
+  text: Forensic Persist — T3 Metadata Extraction Evidence
+  end: 105667
+- line: 105668
+  text: T3P Post-Append Integrity Closeout
+  end: 105687
+- line: 105688
+  text: Forensic Persist — T4 Relation Extraction Evidence
+  end: 113208
+- line: 113209
+  text: Forensic Persist — T5 Epistemic and Provenance Classification Evidence
+  end: 117419
+- line: 117420
+  text: Forensic Persist — T5PR Wrapper-Boundary Reproof and Append-Only Adjudication Supplement
+  end: 117630
+- line: 117631
+  text: Forensic Persist — T6 Definition Discovery — Read-Only Findings Persistence
+  end: 117956
+- line: 117957
+  text: Forensic Persist — Historical T-Workflow Definition Discovery — Read-Only Findings Persistence
+  end: 118450
+- line: 118451
+  text: FORENSIC PERSIST — CANONICAL NEXT POINTER CONFLICT ADJUDICATION — UNRESOLVED
+  end: 118810
+- line: 118811
+  text: SUI_RECENT_REPROOF_REPORTS_LOSSLESS_FORENSIC_PRESERVATION
+  end: 121600
+- line: 121601
+  text: Forensischer Report — Verlustfreies Strukturmodell (Read-only)
+  end: 121930
+pass_headings:
+- line: 509
+  level: 2
+  text: PASS=OWNER_TARGET_REVIEW_PREPARATION
+  verbatim: '## PASS=OWNER_TARGET_REVIEW_PREPARATION  '
+- line: 1051
+  level: 2
+  text: PASS=OWNER_TARGET_DOCTRINE_RATIFICATION + AUTHORITY_PARTITION_BINDING_READ_ONLY
+  verbatim: '## PASS=OWNER_TARGET_DOCTRINE_RATIFICATION + AUTHORITY_PARTITION_BINDING_READ_ONLY'
+- line: 1137
+  level: 2
+  text: PASS=AUTHORITY_PARTITION_BINDING_READ_ONLY
+  verbatim: '## PASS=AUTHORITY_PARTITION_BINDING_READ_ONLY'
+- line: 1371
+  level: 2
+  text: PASS=EQUIVALENCE_AND_SECOND_PATH_DISPOSITION_PRECONDITION_READ_ONLY
+  verbatim: '## PASS=EQUIVALENCE_AND_SECOND_PATH_DISPOSITION_PRECONDITION_READ_ONLY'
+- line: 1757
+  level: 2
+  text: PASS=OWNER_DISPOSITION_DECISION_PREPARATION_I67_I82_I26_I34_I44_READ_ONLY
+  verbatim: '## PASS=OWNER_DISPOSITION_DECISION_PREPARATION_I67_I82_I26_I34_I44_READ_ONLY  '
+- line: 2243
+  level: 2
+  text: PASS=OWNER_DISPOSITION_RATIFICATION_I67_I82_I26_I34_I44
+  verbatim: '## PASS=OWNER_DISPOSITION_RATIFICATION_I67_I82_I26_I34_I44  '
+- line: 2453
+  level: 2
+  text: PASS=GLOBAL_FORENSIC_CONSOLIDATION_AND_OPEN_GAP_REGISTER_READ_ONLY
+  verbatim: '## PASS=GLOBAL_FORENSIC_CONSOLIDATION_AND_OPEN_GAP_REGISTER_READ_ONLY  '
+- line: 3038
+  level: 2
+  text: PASS=I32_PRIMARY_TARGET_ROLE_RESOLUTION_READ_ONLY
+  verbatim: '## PASS=I32_PRIMARY_TARGET_ROLE_RESOLUTION_READ_ONLY  '
+- line: 3298
+  level: 2
+  text: PASS=OWNER_DECISION_PREPARATION_I32_MULTI_LANE_ROADMAP_READ_ONLY
+  verbatim: '## PASS=OWNER_DECISION_PREPARATION_I32_MULTI_LANE_ROADMAP_READ_ONLY  '
+- line: 3708
+  level: 2
+  text: PASS=OWNER_DISPOSITION_RATIFICATION_I32
+  verbatim: '## PASS=OWNER_DISPOSITION_RATIFICATION_I32  '
+- line: 3908
+  level: 2
+  text: PASS=POST_AUTHORITY_PARTITION_OPEN_GAP_DEPENDENCY_RECONCILIATION_READ_ONLY
+  verbatim: '## PASS=POST_AUTHORITY_PARTITION_OPEN_GAP_DEPENDENCY_RECONCILIATION_READ_ONLY'
+- line: 4362
+  level: 2
+  text: PASS=OWNER_DECISION_PREPARATION_U_CANONICAL_EXEC_OWNER_READ_ONLY
+  verbatim: '## PASS=OWNER_DECISION_PREPARATION_U_CANONICAL_EXEC_OWNER_READ_ONLY'
+- line: 4912
+  level: 2
+  text: PASS=OWNER_RATIFICATION_U_CANONICAL_EXEC_OWNER_OPTION_A
+  verbatim: '## PASS=OWNER_RATIFICATION_U_CANONICAL_EXEC_OWNER_OPTION_A'
+- line: 5234
+  level: 2
+  text: PASS=EVIDENCE_DESIGN_EG_I08_I68_READ_ONLY
+  verbatim: '## PASS=EVIDENCE_DESIGN_EG_I08_I68_READ_ONLY'
+- line: 5729
+  level: 2
+  text: PASS=OFFLINE_ORDERS_LAYER_PARITY_SUITE_V0_I08_vs_I68_PAPER
+  verbatim: '## PASS=OFFLINE_ORDERS_LAYER_PARITY_SUITE_V0_I08_vs_I68_PAPER'
+- line: 5960
+  level: 2
+  text: PASS=OWNER_DISPOSITION_PREPARATION_EG_I08_I68_FROM_OFFLINE_PARITY_EVIDENCE_READ_ONLY
+  verbatim: '## PASS=OWNER_DISPOSITION_PREPARATION_EG_I08_I68_FROM_OFFLINE_PARITY_EVIDENCE_READ_ONLY'
+- line: 6328
+  level: 2
+  text: PASS=OWNER_RATIFICATION_EG_I08_I68_OPTION_C_BOUNDARY_CLOSE
+  verbatim: '## PASS=OWNER_RATIFICATION_EG_I08_I68_OPTION_C_BOUNDARY_CLOSE'
+- line: 6565
+  level: 2
+  text: PASS=OWNER_DISPOSITION_PREPARATION_EG_I43_I68_READ_ONLY
+  verbatim: '## PASS=OWNER_DISPOSITION_PREPARATION_EG_I43_I68_READ_ONLY'
+- line: 6972
+  level: 2
+  text: PASS=OWNER_RATIFICATION_EG_I43_I68_OPTION_A_BOUNDARY_CLOSE
+  verbatim: '## PASS=OWNER_RATIFICATION_EG_I43_I68_OPTION_A_BOUNDARY_CLOSE'
+- line: 7259
+  level: 2
+  text: PASS=OWNER_DISPOSITION_PREPARATION_EG_I82_JOIN_READ_ONLY
+  verbatim: '## PASS=OWNER_DISPOSITION_PREPARATION_EG_I82_JOIN_READ_ONLY'
+- line: 7635
+  level: 2
+  text: PASS=OWNER_RATIFICATION_EG_I82_JOIN_OPTION_A_THEN_READ_ONLY_JOIN_MATRIX_EVIDENCE
+  verbatim: '## PASS=OWNER_RATIFICATION_EG_I82_JOIN_OPTION_A_THEN_READ_ONLY_JOIN_MATRIX_EVIDENCE'
+- line: 8136
+  level: 2
+  text: PASS=OWNER_DISPOSITION_PREPARATION_U_MF_S1_READ_ONLY
+  verbatim: '## PASS=OWNER_DISPOSITION_PREPARATION_U_MF_S1_READ_ONLY'
+- line: 8564
+  level: 2
+  text: PASS=OWNER_RATIFICATION_U_MF_S1_OPTION_B_TARGET_STATE_ONLY
+  verbatim: '## PASS=OWNER_RATIFICATION_U_MF_S1_OPTION_B_TARGET_STATE_ONLY'
+- line: 8841
+  level: 2
+  text: PASS=EG_I82_JOIN_COMPLETE_JOIN_EVIDENCE_READ_ONLY
+  verbatim: '## PASS=EG_I82_JOIN_COMPLETE_JOIN_EVIDENCE_READ_ONLY'
+- line: 9173
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_PLAN_PREPARATION_READ_ONLY
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_PLAN_PREPARATION_READ_ONLY'
+- line: 9809
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R1
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R1'
+- line: 10111
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R2
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R2'
+- line: 10387
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R3
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R3'
+- line: 10646
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R4
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R4'
+- line: 10846
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R5
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R5'
+- line: 11092
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R6
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R6'
+- line: 11345
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R7
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R7'
+- line: 11625
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R8
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R8'
+- line: 11914
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R9
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R9'
+- line: 12226
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R10
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R10'
+- line: 12484
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R11
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R11'
+- line: 12759
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R12
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R12'
+- line: 13052
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R13
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R13'
+- line: 13339
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R14
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R14'
+- line: 13627
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R15
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R15'
+- line: 13927
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R16
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R16'
+- line: 14255
+  level: 2
+  text: PASS=EG_I82_JOIN_CLOSURE_PROOF_U_I82_R17
+  verbatim: '## PASS=EG_I82_JOIN_CLOSURE_PROOF_U_I82_R17'
+- line: 14826
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R18
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R18'
+- line: 15076
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R19
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R19'
+- line: 15337
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R20
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R20'
+- line: 15598
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R21
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R21'
+- line: 15953
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R22
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R22'
+- line: 16305
+  level: 2
+  text: PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R23
+  verbatim: '## PASS=EG_I82_JOIN_REMEDIATION_IMPLEMENTATION_U_I82_R23'
+- line: 16848
+  level: 2
+  text: PASS=CANONICAL_END_TO_END_READINESS_AUDIT
+  verbatim: '## PASS=CANONICAL_END_TO_END_READINESS_AUDIT'
+- line: 17124
+  level: 2
+  text: PASS=NOTION_MIRROR_REFRESH_CURRENT_CANONICAL_STATE
+  verbatim: '## PASS=NOTION_MIRROR_REFRESH_CURRENT_CANONICAL_STATE'
+- line: 17162
+  level: 2
+  text: PASS=OWNER_GO_BOUNDED_OFFLINE_DETERMINISTIC_NO_ORDER_CURRENT_SHA_E2E
+  verbatim: '## PASS=OWNER_GO_BOUNDED_OFFLINE_DETERMINISTIC_NO_ORDER_CURRENT_SHA_E2E'
+- line: 17337
+  level: 2
+  text: PASS=OWNER_GO_U_E2E_R1
+  verbatim: '## PASS=OWNER_GO_U_E2E_R1'
+- line: 17658
+  level: 2
+  text: PASS=OWNER_GO_U_E2E_R2
+  verbatim: '## PASS=OWNER_GO_U_E2E_R2'
+- line: 17895
+  level: 2
+  text: PASS=OWNER_GO_U_E2E_R3
+  verbatim: '## PASS=OWNER_GO_U_E2E_R3'
+- line: 18312
+  level: 2
+  text: PASS=OWNER_GO_U_E2E_R4
+  verbatim: '## PASS=OWNER_GO_U_E2E_R4'
+- line: 18560
+  level: 2
+  text: PASS=OWNER_GO_U_E2E_R5
+  verbatim: '## PASS=OWNER_GO_U_E2E_R5'
+- line: 18734
+  level: 2
+  text: PASS=OWNER_GO_U_E2E_R6
+  verbatim: '## PASS=OWNER_GO_U_E2E_R6'
+- line: 18820
+  level: 2
+  text: PASS=OWNER_GO_U_E2E_R6_NOTION_MIRROR_REFRESH_AND_SUCCESSOR_GAP_AUDIT
+  verbatim: '## PASS=OWNER_GO_U_E2E_R6_NOTION_MIRROR_REFRESH_AND_SUCCESSOR_GAP_AUDIT'
+- line: 19007
+  level: 2
+  text: PASS=OWNER_GO_OKX_TEMP_SECURITY_CLEARANCE_EVIDENCE_COLLECTION
+  verbatim: '## PASS=OWNER_GO_OKX_TEMP_SECURITY_CLEARANCE_EVIDENCE_COLLECTION'
+- line: 19151
+  level: 2
+  text: PASS=OWNER_GO_OKX_TEMP_SECURITY_CLEARANCE_USE_EXISTING_GOOGLE_CHROME_WINDOW_ONLY
+  verbatim: '## PASS=OWNER_GO_OKX_TEMP_SECURITY_CLEARANCE_USE_EXISTING_GOOGLE_CHROME_WINDOW_ONLY'
+- line: 19285
+  level: 2
+  text: PASS=OWNER_GO_LIVE_CANARY_CYBERSECURITY_GATE_REEVALUATION
+  verbatim: '## PASS=OWNER_GO_LIVE_CANARY_CYBERSECURITY_GATE_REEVALUATION'
+- line: 19442
+  level: 2
+  text: PASS=OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE_PREFLIGHT_READ_ONLY
+  verbatim: '## PASS=OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE_PREFLIGHT_READ_ONLY'
+- line: 19593
+  level: 2
+  text: PASS=POST_CURRENT_SHA_GLOBAL_FORENSIC_GAP_RECONCILIATION_READ_ONLY
+  verbatim: '## PASS=POST_CURRENT_SHA_GLOBAL_FORENSIC_GAP_RECONCILIATION_READ_ONLY'
+- line: 21232
+  level: 2
+  text: PASS=R1_UQ6_FEATURE_DATA_CONTRACT_LAYER_PLUS_MAX_AGE_WATCHDOG_ONLY
+  verbatim: '## PASS=R1_UQ6_FEATURE_DATA_CONTRACT_LAYER_PLUS_MAX_AGE_WATCHDOG_ONLY'
+- line: 21562
+  level: 2
+  text: PASS=R2_STRATEGY_REGISTRY_SUITABILITY_SELECTION
+  verbatim: '## PASS=R2_STRATEGY_REGISTRY_SUITABILITY_SELECTION'
+- line: 21839
+  level: 2
+  text: PASS=R3_REGIME_META_GATED_SELECTION
+  verbatim: '## PASS=R3_REGIME_META_GATED_SELECTION'
+- line: 22102
+  level: 2
+  text: PASS=EG-ALT-CONSUMER
+  verbatim: '## PASS=EG-ALT-CONSUMER'
+- line: 22523
+  level: 2
+  text: PASS=R4_I17_SHADOW_CONTRACT_AND_EVIDENCE_READINESS
+  verbatim: '## PASS=R4_I17_SHADOW_CONTRACT_AND_EVIDENCE_READINESS'
+- line: 22858
+  level: 2
+  text: PASS=EG_I17_SHADOW_EXTERNAL_ABORT_FORENSIC_CLOSEOUT
+  verbatim: '## PASS=EG_I17_SHADOW_EXTERNAL_ABORT_FORENSIC_CLOSEOUT'
+- line: 22914
+  level: 2
+  text: PASS=EG_I17_SHADOW_CANONICAL_DURATION_6H_TO_2H
+  verbatim: '## PASS=EG_I17_SHADOW_CANONICAL_DURATION_6H_TO_2H'
+- line: 22961
+  level: 2
+  text: PASS=EG_I17_SHADOW_CANONICAL_7200S_QUALIFICATION_CLOSEOUT
+  verbatim: '## PASS=EG_I17_SHADOW_CANONICAL_7200S_QUALIFICATION_CLOSEOUT'
+- line: 23001
+  level: 2
+  text: PASS=R5_REALISTIC_SIM_REPLAY
+  verbatim: '## PASS=R5_REALISTIC_SIM_REPLAY'
+- line: 23266
+  level: 2
+  text: PASS=R6_MULTI_FUTURE_PHASE_8_1_PRECONDITION_AND_POLICY_DETAIL_READ_ONLY
+  verbatim: '## PASS=R6_MULTI_FUTURE_PHASE_8_1_PRECONDITION_AND_POLICY_DETAIL_READ_ONLY'
+- line: 23430
+  level: 2
+  text: PASS=R6_S2_PORTFOLIO_RISK_CONTRACTS_READ_ONLY
+  verbatim: '## PASS=R6_S2_PORTFOLIO_RISK_CONTRACTS_READ_ONLY'
+- line: 23622
+  level: 2
+  text: PASS=R12_EG_I44_FUND_DEDICATED_FUNDING_ACCOUNTING_CONTRACT_READ_ONLY
+  verbatim: '## PASS=R12_EG_I44_FUND_DEDICATED_FUNDING_ACCOUNTING_CONTRACT_READ_ONLY'
+- line: 23773
+  level: 2
+  text: PASS=R13_EG_I45_G15_EVIDENCE_FRESHNESS_AND_PRESERVATION_READ_ONLY
+  verbatim: '## PASS=R13_EG_I45_G15_EVIDENCE_FRESHNESS_AND_PRESERVATION_READ_ONLY'
+- line: 24040
+  level: 2
+  text: PASS=EG_I51_CFG_CONFIG_MUTATION_EDGE_AUDIT_READ_ONLY
+  verbatim: '## PASS=EG_I51_CFG_CONFIG_MUTATION_EDGE_AUDIT_READ_ONLY'
+- line: 24270
+  level: 2
+  text: PASS=EG_I57_I17_FORWARD_SIGNAL_SHADOW_EQUIVALENCE_READ_ONLY
+  verbatim: '## PASS=EG_I57_I17_FORWARD_SIGNAL_SHADOW_EQUIVALENCE_READ_ONLY'
+- line: 24559
+  level: 2
+  text: PASS=EG_I46_EX_PUBLIC_MD_NATURAL_ENTRY_EXIT_EVIDENCE_GAP_READ_ONLY
+  verbatim: '## PASS=EG_I46_EX_PUBLIC_MD_NATURAL_ENTRY_EXIT_EVIDENCE_GAP_READ_ONLY'
+- line: 24851
+  level: 2
+  text: PASS=EG_I71_I64_OBSERVABILITY_DATA_LAKE_OWNERSHIP_LINEAGE_READ_ONLY
+  verbatim: '## PASS=EG_I71_I64_OBSERVABILITY_DATA_LAKE_OWNERSHIP_LINEAGE_READ_ONLY'
+- line: 25202
+  level: 2
+  text: PASS=EG_OKX_NORM_READ_ONLY
+  verbatim: '## PASS=EG_OKX_NORM_READ_ONLY'
+- line: 25367
+  level: 2
+  text: PASS=GATE_1_CURRENT_AUDIT_PERSIST_READ_ONLY_APPEND
+  verbatim: '## PASS=GATE_1_CURRENT_AUDIT_PERSIST_READ_ONLY_APPEND'
+- line: 30618
+  level: 2
+  text: PASS=STEP_4_MINIMAL_KR11_H91_PRECEDENCE_SUPPLEMENT
+  verbatim: '## PASS=STEP_4_MINIMAL_KR11_H91_PRECEDENCE_SUPPLEMENT'

@@ -1,0 +1,15 @@
+AUTHORITY: NONE
+PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+CANONICAL_SELECTION: false
+RUNTIME_SELECTION: false
+TRADING_AUTHORITY: false
+CANONICAL_AUTHORITY: false
+SOURCE_AUTHORITY: NONE
+note: Edges are index co-occurrence, not proven runtime dependencies.
+edges:
+- from_family: I01_I85
+  to_family: RD01_RD10
+  edge_class: SOURCE_COOCCURRENCE_INDEX_NOT_PROVEN_DEPENDENCY
+  evidence: doctrine matrix and later ratification passes share document
+  AUTHORITY: NONE

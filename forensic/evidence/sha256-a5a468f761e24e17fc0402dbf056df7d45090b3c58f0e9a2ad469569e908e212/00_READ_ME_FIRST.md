@@ -1,0 +1,21 @@
+```text
+DOCUMENT_CLASS=NON_AUTHORITATIVE_HASH_ADDRESSED_FORENSIC_SOURCE_LEAF
+AUTHORITY=NONE
+PURPOSE=FORENSIC_HISTORICAL_REFERENCE
+MUTABILITY=IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+CANONICAL_SELECTION=false
+RUNTIME_SELECTION=false
+TRADING_AUTHORITY=false
+FILE_PLACEMENT_IS_NOT_AUTHORITY_PROMOTION=true
+MASTER_RUNBOOK_REMAINS_SOLE_CANONICAL_SSOT=true
+MAP_OF_TRUTH_REMAINS_NAVIGATION_ONLY=true
+```
+
+This leaf stores the byte-identical identity copy of the Temp forensic working
+runbook bound by SHA-256 `a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212`.
+
+It is not canonical working authority. It does not replace
+`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`.
+
+Extracted historical-reference objects live under
+`forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/`.
