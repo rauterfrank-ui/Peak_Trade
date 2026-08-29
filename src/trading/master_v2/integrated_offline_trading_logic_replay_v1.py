@@ -148,6 +148,10 @@ from trading.master_v2.reversal_preparation_scenario_binding_adapter_v0 import (
 from trading.master_v2.scope_event_generator_scenario_binding_adapter_v0 import (
     derive_scope_adverse_exit_signal_v0,
 )
+from trading.master_v2.strategy_identity_binding_v1 import (
+    STRATEGY_IDENTITY_ENFORCEMENT_REGISTRY_DERIVED,
+    collect_suitability_identity_failures_v1,
+)
 from trading.master_v2.suitability_binding_v1 import (
     SUITABILITY_BINDING_LAYER_VERSION,
     SuitabilityBindingInputV1,
@@ -312,6 +316,9 @@ class IntegratedOfflineReplayInputV1:
     # Optional explicit path for EVIDENCE_ONLY regime/bull-bear/switch capture.
     # Never a trading state root; unused by decision evaluation.
     regime_bull_bear_switch_evidence_path: Optional[str] = None
+    # EXPLICIT_INJECTION preserves fixture DI. REGISTRY_DERIVED enforces catalog identity.
+    strategy_identity_enforcement: str = "EXPLICIT_INJECTION"
+    registry_snapshot_digest: str = ""
 
 
 @dataclass(frozen=True)
@@ -372,6 +379,34 @@ class IntegratedOfflineReplayResultV1:
     intermediate: Optional[IntegratedOfflineReplayIntermediateV1] = None
     # EVIDENCE_ONLY capture; never restart/trading input authority.
     regime_bull_bear_switch_evidence_readmodel: Optional[object] = None
+    compute_owner: str = INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_OWNER
+    consumed_strategy_ids: Tuple[str, ...] = ()
+    registry_snapshot_digest: str = ""
+    strategy_identity_enforcement: str = "EXPLICIT_INJECTION"
+    decision_packet_role: str = "HANDOFF_EVIDENCE_ONLY"
+
+
+def _annotated_replay_result(
+    inp: IntegratedOfflineReplayInputV1,
+    *,
+    replay_pass: bool,
+    fail_reasons: Tuple[str, ...] | list[str],
+    evidence: CanonicalTradingDecisionEvidenceV1,
+    intermediate: Optional[IntegratedOfflineReplayIntermediateV1] = None,
+    regime_bull_bear_switch_evidence_readmodel: Optional[object] = None,
+) -> IntegratedOfflineReplayResultV1:
+    return IntegratedOfflineReplayResultV1(
+        replay_pass=replay_pass,
+        fail_reasons=tuple(fail_reasons),
+        evidence=evidence,
+        intermediate=intermediate,
+        regime_bull_bear_switch_evidence_readmodel=regime_bull_bear_switch_evidence_readmodel,
+        compute_owner=INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_OWNER,
+        consumed_strategy_ids=tuple(entry.strategy_id for entry in inp.strategy_registry.entries),
+        registry_snapshot_digest=inp.registry_snapshot_digest,
+        strategy_identity_enforcement=inp.strategy_identity_enforcement,
+        decision_packet_role="HANDOFF_EVIDENCE_ONLY",
+    )
 
 
 def _valid_sha256_hex(value: str) -> bool:
@@ -1242,6 +1277,9 @@ def run_integrated_offline_trading_logic_replay_v1(
     fail_reasons: list[str] = []
     regime_bull_bear_switch_evidence_readmodel: Optional[object] = None
 
+    if inp.strategy_identity_enforcement == STRATEGY_IDENTITY_ENFORCEMENT_REGISTRY_DERIVED:
+        fail_reasons.extend(collect_suitability_identity_failures_v1(inp.strategy_registry))
+
     if not _instrument_allowed(inp.instrument_id):
         fail_reasons.append("instrument_kind_forbidden")
     if inp.instrument_id != inp.canonical_market_context.instrument_id:
@@ -1273,9 +1311,10 @@ def run_integrated_offline_trading_logic_replay_v1(
 
     if fail_reasons:
         evidence = _blocked_evidence(inp, fail_reasons=tuple(fail_reasons))
-        return IntegratedOfflineReplayResultV1(
+        return _annotated_replay_result(
+            inp,
             replay_pass=False,
-            fail_reasons=tuple(fail_reasons),
+            fail_reasons=fail_reasons,
             evidence=evidence,
         )
 
@@ -1296,13 +1335,21 @@ def run_integrated_offline_trading_logic_replay_v1(
             fail_reasons=reasons or ("market_context_blocked",),
             decision_outcome="blocked",
         )
-        return IntegratedOfflineReplayResultV1(
-            False, reasons or ("market_context_blocked",), evidence
+        return _annotated_replay_result(
+            inp,
+            replay_pass=False,
+            fail_reasons=reasons or ("market_context_blocked",),
+            evidence=evidence,
         )
 
     if not binding.context:
         evidence = _blocked_evidence(inp, fail_reasons=("missing_market_context_output",))
-        return IntegratedOfflineReplayResultV1(False, ("missing_market_context_output",), evidence)
+        return _annotated_replay_result(
+            inp,
+            replay_pass=False,
+            fail_reasons=("missing_market_context_output",),
+            evidence=evidence,
+        )
 
     bound_context = binding.context
 
@@ -1383,7 +1430,8 @@ def run_integrated_offline_trading_logic_replay_v1(
                     market_context_ref=bound_context.context_id,
                 )
                 evidence = with_computed_evidence_semantic_digest(evidence)
-                return IntegratedOfflineReplayResultV1(
+                return _annotated_replay_result(
+                    inp,
                     replay_pass=False,
                     fail_reasons=tuple(dict.fromkeys((*reasons,))),
                     evidence=evidence,
@@ -1394,7 +1442,12 @@ def run_integrated_offline_trading_logic_replay_v1(
                 fail_reasons=reasons,
                 decision_outcome="blocked",
             )
-            return IntegratedOfflineReplayResultV1(False, reasons, evidence)
+            return _annotated_replay_result(
+                inp,
+                replay_pass=False,
+                fail_reasons=reasons,
+                evidence=evidence,
+            )
 
     scope_init = initialize_canonical_scope(
         bound_context,
@@ -1409,7 +1462,12 @@ def run_integrated_offline_trading_logic_replay_v1(
         )
         decision_outcome = "observe" if any("warmup" in r for r in reasons) else "blocked"
         evidence = _blocked_evidence(inp, fail_reasons=reasons, decision_outcome=decision_outcome)
-        return IntegratedOfflineReplayResultV1(False, reasons, evidence)
+        return _annotated_replay_result(
+            inp,
+            replay_pass=False,
+            fail_reasons=reasons,
+            evidence=evidence,
+        )
 
     current_scope = scope_init.scope
 
@@ -1891,9 +1949,10 @@ def run_integrated_offline_trading_logic_replay_v1(
     if not boundary_ok:
         fail_reasons.append("runtime_order_boundary_violation")
 
-    return IntegratedOfflineReplayResultV1(
+    return _annotated_replay_result(
+        inp,
         replay_pass=replay_pass,
-        fail_reasons=tuple(fail_reasons),
+        fail_reasons=fail_reasons,
         evidence=evidence,
         intermediate=intermediate,
         regime_bull_bear_switch_evidence_readmodel=regime_bull_bear_switch_evidence_readmodel,

@@ -6,10 +6,13 @@ from typing import Any, Dict, Tuple
 from trading.master_v2.double_play_sole_authority_quarantine_v1 import (
     OPS_EVALUATE_DOUBLE_PLAY_ROLE,
     OPS_MAY_WRITE_SIDE_STATE,
+    OPS_SPECIALISTS_AUTHORITY_CLASS,
     OPS_SWITCH_AUTHORIZATION,
     OPS_SWITCH_GATE_AUTHORITY_STATUS,
     REASON_OPS_PROJECTION_ONLY,
     REASON_OPS_SWITCH_AUTHORITY_DISABLED,
+    assert_path_cannot_escalate_to_compute_owner_v1,
+    assert_path_cannot_write_side_state_v1,
 )
 from trading.master_v2.evaluate_double_play_authority_boundary_v0 import (
     OPS_EVALUATE_DOUBLE_PLAY_AUTHORITY,
@@ -45,6 +48,15 @@ def evaluate_double_play(*, context: Dict[str, Any]) -> DoublePlayDecision:
             context.get("system_economic_evidence_requested", False)
         ),
     )
+    assert_path_cannot_write_side_state_v1(
+        path_id=OPS_EVALUATE_DOUBLE_PLAY_CALLABLE,
+        claimed_may_write_side_state=context.get("may_write_side_state", OPS_MAY_WRITE_SIDE_STATE),
+    )
+    assert_path_cannot_escalate_to_compute_owner_v1(
+        path_id=OPS_EVALUATE_DOUBLE_PLAY_CALLABLE,
+        claimed_role=str(context.get("claimed_compute_role", "") or ""),
+        claimed_compute_owner=str(context.get("claimed_compute_owner", "") or ""),
+    )
     sg = context.get("switch_gate", {}) or {}
     state_d = dict(sg.get("state", {}) or {})
     active = str(state_d.get("active", "bull") or "bull")
@@ -62,6 +74,7 @@ def evaluate_double_play(*, context: Dict[str, Any]) -> DoublePlayDecision:
     )
     details: Dict[str, Any] = {
         "path_authority": OPS_EVALUATE_DOUBLE_PLAY_AUTHORITY,
+        "authority_class": OPS_SPECIALISTS_AUTHORITY_CLASS,
         "system_economic_evidence_admissible": False,
         "ops_role": OPS_EVALUATE_DOUBLE_PLAY_ROLE,
         "switch_gate_authority_status": OPS_SWITCH_GATE_AUTHORITY_STATUS,
