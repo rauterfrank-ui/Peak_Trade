@@ -44,7 +44,7 @@ cd <path>
 ./scripts/pt runtime-check
 ```
 
-`./scripts/pt-bootstrap` runs `uv sync --dev` in that checkout when `.venv` is missing. It refuses a `.venv` symlink and does not unlink it.
+[`scripts/pt-bootstrap`](../../scripts/pt-bootstrap) runs `uv sync --dev` in that checkout when `.venv` is missing. It refuses a `.venv` symlink and does not unlink it.
 
 ## Fingerprint
 
@@ -61,15 +61,15 @@ Schema `peak_trade_env_fingerprint_v1` binds:
 - sha256 of `pyproject.toml` raw bytes
 - bootstrap and runtime contract ids
 
-The file is local/derived and must not be committed (it lives under ignored `.venv/`).
+The file is local/derived and must not be committed (it lives under ignored `.venv&#47;`).
 
 `scripts/pt` validates the fingerprint before execution in repo-venv mode. It does not auto-sync.
 
 ## Fail closed
 
-- missing checkout `.venv` → `./scripts/pt-bootstrap`
+- missing checkout `.venv` → [`scripts/pt-bootstrap`](../../scripts/pt-bootstrap)
 - `.venv` is a symlink to another worktree → unsupported, no unlink
-- fingerprint missing, malformed, or lock/pyproject/python mismatch → `./scripts/pt-bootstrap`
+- fingerprint missing, malformed, or lock/pyproject/python mismatch → [`scripts/pt-bootstrap`](../../scripts/pt-bootstrap)
 - editable install bound to another checkout → unsupported
 
 Pytest `conftest.py` path injection is not an environment health proof.

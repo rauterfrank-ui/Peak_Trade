@@ -34,7 +34,7 @@ Bootstrap (operator-invoked):
 ./scripts/pt-bootstrap
 ```
 
-That surface runs `uv sync --dev` in the current checkout when `.venv` is missing, writes a lock-bound fingerprint under `.venv/`, and refuses a `.venv` symlink to another worktree. See [`PEAK_TRADE_WORKTREE_PYTHON_ENVIRONMENT_BOOTSTRAP_CONTRACT_V1.md`](PEAK_TRADE_WORKTREE_PYTHON_ENVIRONMENT_BOOTSTRAP_CONTRACT_V1.md).
+That surface runs `uv sync --dev` in the current checkout when `.venv` is missing, writes a lock-bound fingerprint under `.venv&#47;`, and refuses a `.venv` symlink to another worktree. See [`PEAK_TRADE_WORKTREE_PYTHON_ENVIRONMENT_BOOTSTRAP_CONTRACT_V1.md`](PEAK_TRADE_WORKTREE_PYTHON_ENVIRONMENT_BOOTSTRAP_CONTRACT_V1.md).
 
 Runtime must only validate and use the provisioned environment. Runtime must
 not create a venv, install packages, or source `.venv&#47;bin&#47;activate`.
