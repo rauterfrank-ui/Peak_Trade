@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0.0",
+  "generator_version": "structural-sidecar-v1.0.0",
+  "generation_utc": "2026-08-25T10:05:41Z",
+  "owner_go": "PEAK_TRADE_TEMPORARY_FORENSIC_RUNBOOK_LOSSLESS_STRUCTURAL_SIDECAR_TRANSFORMATION_V1",
+  "target_authority": "NONE",
+  "PREEXISTING_DERIVED_ARTIFACTS_USED_AS_INPUT": false,
+  "byte_range_convention": "half_open_start_inclusive_end_exclusive",
+  "source": {
+    "observed_path": "/Users/frnkhrz/Documents/Peak_Trade/forensics/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md",
+    "sha256": "a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212",
+    "bytes": 8639369,
+    "lines": 121930,
+    "newline": "LF",
+    "trailing_newline": true
+  },
+  "authority": {
+    "canonical_repo_authority": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "map_of_truth_role": "NAVIGATION_ONLY",
+    "sidecar_authority": "NONE"
+  },
+  "rulesets": {
+    "level_1": "R0_LF_LINE_RECORD",
+    "structural_overlay": "PARTITION_RULESET_V1",
+    "heuristic_rule_count": 0,
+    "partition_rules": [
+      "R1A_FENCE_BLOCK_OVERLAY",
+      "R1B_EXPLICIT_HASH_DELIMITER_LINE",
+      "R1C_ATX_HEADING_LINE",
+      "R1D_UNCLASSIFIED_RUN",
+      "R1E_HR_NOT_A_BOUNDARY",
+      "R2_DELIMITER_PAIR_RELATION",
+      "R3_SRC_TOKEN_IS_NOT_HEADING"
+    ]
+  },
+  "explicitly_not_authorized": [
+    "canonicalization",
+    "source_mutation",
+    "repo_mutation",
+    "semantic_deduplication",
+    "gate_inference",
+    "dependency_inference",
+    "P7_3_status_change"
+  ],
+  "logical_container_ambiguities_unresolved": [
+    {
+      "id": 1,
+      "topic": "Continuation-H1 as Pass-Container",
+      "status": "UNRESOLVED",
+      "class": "LOGICAL_CONTAINER_AMBIGUITY",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "id": 2,
+      "topic": "other H1 as Persist-Container",
+      "status": "UNRESOLVED",
+      "class": "LOGICAL_CONTAINER_AMBIGUITY",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "id": 3,
+      "topic": "SRC-heading as region until next SRC",
+      "status": "UNRESOLVED",
+      "class": "LOGICAL_CONTAINER_AMBIGUITY",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "id": 4,
+      "topic": "BEGIN/END as logical container versus line+relation",
+      "status": "UNRESOLVED",
+      "class": "LOGICAL_CONTAINER_AMBIGUITY",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "id": 5,
+      "topic": "H2 PRESERVED_REPORT / PASS= as wrapper-/pass-container",
+      "status": "UNRESOLVED",
+      "class": "LOGICAL_CONTAINER_AMBIGUITY",
+      "container_role": "UNSPECIFIED"
+    }
+  ],
+  "output_root": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z",
+  "files_created": [
+    "manifest.json",
+    "records.jsonl",
+    "relations.jsonl",
+    "structural_ranges.jsonl",
+    "validation.json",
+    "index.json",
+    "README.md"
+  ],
+  "sidecar_state": "COMPLETE"
+}

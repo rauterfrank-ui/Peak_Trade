@@ -1,0 +1,67 @@
+AUTHORITY: NONE
+PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+CANONICAL_SELECTION: false
+RUNTIME_SELECTION: false
+TRADING_AUTHORITY: false
+CANONICAL_AUTHORITY: false
+SOURCE_AUTHORITY: NONE
+LOSSY_EXTRACTION: false
+FULL_SOURCE_COMMITTED: true
+excluded_derived_blobs:
+- item: structural-v1 records.jsonl
+  external_path: /Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z/records.jsonl
+  exists_at_capture: true
+  exclusion_reason: GIT_LARGE_FILE_UNSUITABLE_REGENERABLE_FROM_COMMITTED_SOURCE
+  committed: false
+  bytes: 78065664
+  sha256: b85b438cddc81aa9405f09632346c0b2f5a731ca69a96d21180b8d3f59285743
+- item: structure-v1.json overlay
+  external_path: /Users/frnkhrz/Documents/Peak_Trade/forensics/derived/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.structure-v1.json
+  exists_at_capture: true
+  exclusion_reason: GIT_LARGE_FILE_UNSUITABLE_DERIVED_OVERLAY
+  committed: false
+  bytes: 38249919
+  sha256: 6f2928e67d45de2162df1589de77ea530061652181ba6efd9a0f528ca7e6ad6e
+- item: t4 unprojected relation loss register
+  external_path: /Users/frnkhrz/Documents/Peak_Trade/forensics/derived/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.t4-unprojected-relation-loss-register-v1.jsonl
+  exists_at_capture: true
+  exclusion_reason: GIT_LARGE_FILE_UNSUITABLE_DERIVED_OVERLAY
+  committed: false
+  bytes: 9254096
+  sha256: 872e1e22fc3e46d8eb3b2975183ca6ce20d1c31fae9992ffd7b863b30db39113
+- item: lossless-struct records.jsonl
+  external_path: /Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/records.jsonl
+  exists_at_capture: true
+  exclusion_reason: GIT_LARGE_FILE_UNSUITABLE_REGENERABLE_FROM_COMMITTED_SOURCE
+  committed: false
+  bytes: 12308840
+  sha256: c24739ea71138210a1810a7aa601170399c38a2249f831673f6ec98ccb4ecada
+- item: lossless-struct quarantine.jsonl
+  external_path: /Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/quarantine.jsonl
+  exists_at_capture: true
+  exclusion_reason: GIT_LARGE_FILE_UNSUITABLE_QUARANTINE_DERIVED
+  committed: false
+  bytes: 7175315
+  sha256: d554068fa19c46e32a7b54419bae26d735ca1a19168df86c561de1edf0fa3755
+intentionally_not_preserved:
+- 78MiB structural sidecar line-records.jsonl (regenerable from committed source)
+- 38MiB structure-v1.json overlay (derived; not required when source bytes are committed)
+- Temp-only extraction tools runtime state
+- Chat transcripts not present in the primary source file
+unresolved_items:
+- item: CAPABILITY_CHAIN
+  status: NOT_OBSERVED_AS_REQUIRED_TOKEN_IN_PRIMARY_SOURCE
+  may_exist_under_alias: true
+- item: ECONOMIC_VIABILITY
+  status: NOT_OBSERVED_AS_REQUIRED_TOKEN_IN_PRIMARY_SOURCE
+  may_exist_under_alias: true
+- item: FULL_CANONICAL_SYSTEM_WIRING
+  status: NOT_OBSERVED_AS_REQUIRED_TOKEN_IN_PRIMARY_SOURCE
+  may_exist_under_alias: true
+- item: AUTH_001_TO_023
+  status: NOT_OBSERVED_AS_REQUIRED_TOKEN_IN_PRIMARY_SOURCE
+  may_exist_under_alias: true
+- item: DOC_01_TO_12
+  status: NOT_OBSERVED_AS_REQUIRED_TOKEN_IN_PRIMARY_SOURCE
+  may_exist_under_alias: true

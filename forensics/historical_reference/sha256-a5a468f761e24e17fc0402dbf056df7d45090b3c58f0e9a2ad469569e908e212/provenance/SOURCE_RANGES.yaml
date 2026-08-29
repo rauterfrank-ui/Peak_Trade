@@ -1,0 +1,19 @@
+AUTHORITY: NONE
+PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+CANONICAL_SELECTION: false
+RUNTIME_SELECTION: false
+TRADING_AUTHORITY: false
+CANONICAL_AUTHORITY: false
+SOURCE_AUTHORITY: NONE
+byte_range_convention: line_inclusive_1_based
+document_line_range:
+  start_inclusive: 1
+  end_inclusive: 121930
+t3_physical_source_lines_declared:
+  start_inclusive: 1
+  end_inclusive: 30870
+t3_physical_source_declaration_line: 113303
+src_block_count: 88
+h1_count: 92
+heading_count: 1538

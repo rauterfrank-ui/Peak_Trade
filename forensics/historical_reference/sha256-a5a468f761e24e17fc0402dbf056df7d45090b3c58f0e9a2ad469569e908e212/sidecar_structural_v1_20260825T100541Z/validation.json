@@ -1,0 +1,131 @@
+{
+  "SIDECAR_VALIDATION": "PASS",
+  "SIDECAR_STATE": "COMPLETE",
+  "TRANSFORMATION_COMPLETE": true,
+  "CANONICALIZATION_EXECUTED": false,
+  "TARGET_FILE_MUTATED": false,
+  "HARD_STOP": true,
+  "PRE_WRITE_SOURCE_SHA256": "a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212",
+  "POST_WRITE_SOURCE_SHA256": "a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212",
+  "SOURCE_IMMUTABLE": true,
+  "RECONSTRUCTED_SHA256": "a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212",
+  "RECONSTRUCTED_SHA_MATCH": true,
+  "R0_RECORD_COUNT": 121930,
+  "SEQ_INDEX_UNIQUE": true,
+  "SEQ_INDEX_CONTIGUOUS": true,
+  "BYTE_RANGES_CONTIGUOUS": true,
+  "BYTE_GAP_COUNT": 0,
+  "BYTE_OVERLAP_COUNT": 0,
+  "SOURCE_BYTE_COVERAGE": 8639369,
+  "NORMALIZED_BYTES": 0,
+  "DEDUPLICATED_OCCURRENCES": 0,
+  "SLICE_SHA256_MISMATCH_COUNT": 0,
+  "HEURISTIC_RULE_COUNT": 0,
+  "LOGICAL_CONTAINER_AMBIGUITY_COUNT": 5,
+  "logical_container_ambiguities": [
+    {
+      "id": 1,
+      "topic": "Continuation-H1 as Pass-Container",
+      "status": "UNRESOLVED",
+      "class": "LOGICAL_CONTAINER_AMBIGUITY",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "id": 2,
+      "topic": "other H1 as Persist-Container",
+      "status": "UNRESOLVED",
+      "class": "LOGICAL_CONTAINER_AMBIGUITY",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "id": 3,
+      "topic": "SRC-heading as region until next SRC",
+      "status": "UNRESOLVED",
+      "class": "LOGICAL_CONTAINER_AMBIGUITY",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "id": 4,
+      "topic": "BEGIN/END as logical container versus line+relation",
+      "status": "UNRESOLVED",
+      "class": "LOGICAL_CONTAINER_AMBIGUITY",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "id": 5,
+      "topic": "H2 PRESERVED_REPORT / PASS= as wrapper-/pass-container",
+      "status": "UNRESOLVED",
+      "class": "LOGICAL_CONTAINER_AMBIGUITY",
+      "container_role": "UNSPECIFIED"
+    }
+  ],
+  "observed_fence": {
+    "FENCE_OPENS": 1368,
+    "FENCE_CLOSES": 1368,
+    "TICK_3_OPENS": 1355,
+    "TICK_5_OPENS": 13,
+    "INNER_SHORTER_FENCE_LINES_NOT_CLOSING": 74,
+    "FENCE_STACK_END_DEPTH": 0,
+    "MAX_FENCE_DEPTH": 1
+  },
+  "expected_fence": {
+    "FENCE_OPENS": 1368,
+    "FENCE_CLOSES": 1368,
+    "TICK_3_OPENS": 1355,
+    "TICK_5_OPENS": 13,
+    "INNER_SHORTER_FENCE_LINES_NOT_CLOSING": 74,
+    "FENCE_STACK_END_DEPTH": 0,
+    "MAX_FENCE_DEPTH": 1
+  },
+  "fence_controls_match": true,
+  "observed_delim": {
+    "OUTSIDE_FENCE_BEGIN_COUNT": 16,
+    "OUTSIDE_FENCE_END_COUNT": 16,
+    "UNPAIRED_EXPLICIT_DELIMITER_COUNT": 0,
+    "NESTED_DELIMITER_CONTAINMENTS": 1
+  },
+  "expected_delim": {
+    "OUTSIDE_FENCE_BEGIN_COUNT": 16,
+    "OUTSIDE_FENCE_END_COUNT": 16,
+    "UNPAIRED_EXPLICIT_DELIMITER_COUNT": 0,
+    "NESTED_DELIMITER_CONTAINMENTS": 1
+  },
+  "delim_controls_match": true,
+  "relation_count": 1385,
+  "structural_range_count": 4039,
+  "classification_method_counts": {
+    "SYNTACTIC": 99582,
+    "UNCLASSIFIED": 22228,
+    "EXPLICIT_TOKEN": 88,
+    "EXPLICIT_DELIMITER": 32
+  },
+  "syntactic_tag_counts": {
+    "ATX_HEADING_LINE": 1450,
+    "H1_LINE": 92,
+    "FENCE_OPEN": 1368,
+    "TEXT_FENCE": 1277,
+    "FENCE_BODY": 94700,
+    "FENCE_CLOSE": 1368,
+    "HR_LINE": 728,
+    "H1_CONTINUATION_LINE": 70,
+    "MERMAID_FENCE": 2,
+    "SRC_HEADING_LINE": 88,
+    "JSON_FENCE": 89,
+    "EXPLICIT_BEGIN_DELIMITER": 16,
+    "EXPLICIT_END_DELIMITER": 16
+  },
+  "PREEXISTING_DERIVED_ARTIFACTS_USED_AS_INPUT": false,
+  "SOURCE_MUTATED": false,
+  "output_root": "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/structural-v1-20260825T100541Z",
+  "file_sha256": {
+    "manifest.json": "ce53cbec9b546fcd824e382caaa288457aaf3c14c92f422e61a4878c9c3f7eb0",
+    "records.jsonl": "b85b438cddc81aa9405f09632346c0b2f5a731ca69a96d21180b8d3f59285743",
+    "relations.jsonl": "ae0a5cf26ab65d5db47b26ff7ed6c72c43ffbf8322e948b9e24add08ab33d514",
+    "structural_ranges.jsonl": "b13ff2b21b32fae8035cfdc38fd7560dcccd1121b23687fe2aa225c8f0445a10",
+    "index.json": "63f7fc50f64d55be54583e87e9925f4c22233a2a8c97a77ba5088788f4f6003b",
+    "README.md": "ef5782faff31cb82f39d4ccc25c35a5d3a48c8e38c48b8df15526a3dc5e8f58a",
+    "validation.json": "62de737e98937ec65acab130887d496e5d9a991ef40a9df1c436b2f7dd5ce54a"
+  },
+  "SEPARATE_OWNER_GO_REQUIRED_FOR_LEVEL_2_ADJUDICATION": true,
+  "SEPARATE_OWNER_GO_REQUIRED_FOR_ANY_CANONICALIZATION": true
+}

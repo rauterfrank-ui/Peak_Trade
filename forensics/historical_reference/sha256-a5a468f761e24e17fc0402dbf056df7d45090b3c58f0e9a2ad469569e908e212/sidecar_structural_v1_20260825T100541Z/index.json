@@ -1,0 +1,162 @@
+{
+  "schema_version": "1.0.0",
+  "authority": "NONE",
+  "role": "NAVIGATION_ONLY",
+  "source_sha256": "a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212",
+  "r0_record_count": 121930,
+  "relation_count": 1385,
+  "structural_range_count": 4039,
+  "classification_method_counts": {
+    "SYNTACTIC": 99582,
+    "UNCLASSIFIED": 22228,
+    "EXPLICIT_TOKEN": 88,
+    "EXPLICIT_DELIMITER": 32
+  },
+  "syntactic_tag_counts": {
+    "ATX_HEADING_LINE": 1450,
+    "H1_LINE": 92,
+    "FENCE_OPEN": 1368,
+    "TEXT_FENCE": 1277,
+    "FENCE_BODY": 94700,
+    "FENCE_CLOSE": 1368,
+    "HR_LINE": 728,
+    "H1_CONTINUATION_LINE": 70,
+    "MERMAID_FENCE": 2,
+    "SRC_HEADING_LINE": 88,
+    "JSON_FENCE": 89,
+    "EXPLICIT_BEGIN_DELIMITER": 16,
+    "EXPLICIT_END_DELIMITER": 16
+  },
+  "delimiter_pairs": [
+    {
+      "begin_seq_index": 118848,
+      "end_seq_index": 119173,
+      "begin_token": "BEGIN_VERBATIM_ORIGINAL_REPORT",
+      "end_token": "END_VERBATIM_ORIGINAL_REPORT",
+      "label": "SUI_Z2AR_PUBLIC_EVIDENCE_ACQUISITION_ABSCHLUSS_2026-08-22T2307Z",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "begin_seq_index": 119193,
+      "end_seq_index": 119331,
+      "begin_token": "BEGIN_VERBATIM_ORIGINAL_REPORT",
+      "end_token": "END_VERBATIM_ORIGINAL_REPORT",
+      "label": "SUI_PUBLIC_INSTRUMENT_CTVAL_REPROOF_2026-08-23T1428Z",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "begin_seq_index": 119351,
+      "end_seq_index": 119492,
+      "begin_token": "BEGIN_VERBATIM_ORIGINAL_REPORT",
+      "end_token": "END_VERBATIM_ORIGINAL_REPORT",
+      "label": "SUI_POSITION_VALUE_ALGEBRA_REPROOF_2026-08-23T1432Z",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "begin_seq_index": 119512,
+      "end_seq_index": 119727,
+      "begin_token": "BEGIN_VERBATIM_ORIGINAL_REPORT",
+      "end_token": "END_VERBATIM_ORIGINAL_REPORT",
+      "label": "SUI_PUBLIC_MMR_TIER_REPROOF_2026-08-23T1441Z",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "begin_seq_index": 119747,
+      "end_seq_index": 119852,
+      "begin_token": "BEGIN_VERBATIM_ORIGINAL_REPORT",
+      "end_token": "END_VERBATIM_ORIGINAL_REPORT",
+      "label": "SUI_MARKPX_NUMERIC_USE_REPROOF_2026-08-23T1448Z",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "begin_seq_index": 119872,
+      "end_seq_index": 120005,
+      "begin_token": "BEGIN_VERBATIM_ORIGINAL_REPORT",
+      "end_token": "END_VERBATIM_ORIGINAL_REPORT",
+      "label": "SUI_TICKER_SLIPPAGE_RESERVE_NUMERIC_REPROOF_2026-08-23T1450Z",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "begin_seq_index": 120025,
+      "end_seq_index": 120230,
+      "begin_token": "BEGIN_VERBATIM_ORIGINAL_REPORT",
+      "end_token": "END_VERBATIM_ORIGINAL_REPORT",
+      "label": "SUI_OPERATIVE_QTY_REPROOF_2026-08-23T1454Z",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "begin_seq_index": 120250,
+      "end_seq_index": 120568,
+      "begin_token": "BEGIN_VERBATIM_ORIGINAL_REPORT",
+      "end_token": "END_VERBATIM_ORIGINAL_REPORT",
+      "label": "SUI_AUTHENTICATED_FEE_REPROOF_2026-08-23T1458Z",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "begin_seq_index": 120588,
+      "end_seq_index": 120858,
+      "begin_token": "BEGIN_VERBATIM_ORIGINAL_REPORT",
+      "end_token": "END_VERBATIM_ORIGINAL_REPORT",
+      "label": "SUI_USD_USDC_REPROOF_2026-08-23T1517Z",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "begin_seq_index": 120878,
+      "end_seq_index": 121129,
+      "begin_token": "BEGIN_VERBATIM_ORIGINAL_REPORT",
+      "end_token": "END_VERBATIM_ORIGINAL_REPORT",
+      "label": "SUI_SETTLEMENT_SEMANTICS_REPROOF_2026-08-23T1525Z",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "begin_seq_index": 121156,
+      "end_seq_index": 121245,
+      "begin_token": "BEGIN_VERBATIM_ORIGINAL_REPORT",
+      "end_token": "END_VERBATIM_ORIGINAL_REPORT",
+      "label": "PR_6016_POST_MERGE_EVIDENCE_2026-08-23T1410Z",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "begin_seq_index": 121266,
+      "end_seq_index": 121354,
+      "begin_token": "BEGIN_VERBATIM_ORIGINAL_REPORT",
+      "end_token": "END_VERBATIM_ORIGINAL_REPORT",
+      "label": "REPO_FIRST_Z2AS_P3_BIND_TEST_2026-08-23T1415Z",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "begin_seq_index": 121375,
+      "end_seq_index": 121473,
+      "begin_token": "BEGIN_VERBATIM_ORIGINAL_REPORT",
+      "end_token": "END_VERBATIM_ORIGINAL_REPORT",
+      "label": "Z2AS_P3_BIND_TEST_REANCHOR_AND_LOCAL_COMMIT_2026-08-23T1424Z",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "begin_seq_index": 121475,
+      "end_seq_index": 121566,
+      "begin_token": "BEGIN_FORENSIC_RECORD",
+      "end_token": "END_FORENSIC_RECORD",
+      "label": "Z2AR_SUI_POSITION_VALUE_ALGEBRA_CURRENT_OPEN_STATE_READ_ONLY_ADJUDICATION_PERSIST_2026-08-23T154152Z",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "begin_seq_index": 121594,
+      "end_seq_index": 121927,
+      "begin_token": "BEGIN_VERBATIM_ORIGINAL_REPORT",
+      "end_token": "END_VERBATIM_ORIGINAL_REPORT",
+      "label": "LOSSLESS_STRUCTURE_MODEL_REPORT_2026-08-23T155800Z",
+      "container_role": "UNSPECIFIED"
+    },
+    {
+      "begin_seq_index": 121568,
+      "end_seq_index": 121929,
+      "begin_token": "BEGIN_FORENSIC_RECORD",
+      "end_token": "END_FORENSIC_RECORD",
+      "label": "LOSSLESS_STRUCTURE_MODEL_REPORT_PRESERVATION_2026-08-23T155800Z",
+      "container_role": "UNSPECIFIED"
+    }
+  ],
+  "fence_block_count": 1368,
+  "logical_container_ambiguities_unresolved_count": 5
+}

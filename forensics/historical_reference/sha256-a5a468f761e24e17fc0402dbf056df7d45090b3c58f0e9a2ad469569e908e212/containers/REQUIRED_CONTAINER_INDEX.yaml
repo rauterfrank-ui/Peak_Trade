@@ -1,0 +1,913 @@
+AUTHORITY: NONE
+PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+CANONICAL_SELECTION: false
+RUNTIME_SELECTION: false
+TRADING_AUTHORITY: false
+CANONICAL_AUTHORITY: false
+SOURCE_AUTHORITY: NONE
+items:
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:INTEGRATED_REPLAY
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 1926
+    end_inclusive: 1982
+  SOURCE_HEADING_PATH: INTEGRATED_REPLAY
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: DERIVED_INDEX
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: INTEGRATED_REPLAY
+  hit_count: 7
+  observed_in_source: true
+  covering_ranges:
+  - start: 1926
+    end: 1982
+    heading_path: Temporary Forensic Working Runbook — Continuation > E. I26 — Cap7.2 host graph vs WALLCLOCK_HARDENING_V2
+      > Side-by-side stage map
+  - start: 2136
+    end: 2158
+    heading_path: Temporary Forensic Working Runbook — Continuation > K. UPDATED_CROSS_PATH_GRAPH
+  - start: 24369
+    end: 24402
+    heading_path: Temporary Forensic Working Runbook — Continuation > 4. I17 7200s session reconstruction
+      (existing artifacts only; no relaunch)
+  - start: 25702
+    end: 25777
+    heading_path: Temporary Forensic Working Runbook — Continuation > 2. Migrationsbeweis ≠ Runtime ≠
+      Parity
+  - start: 25854
+    end: 25869
+    heading_path: Temporary Forensic Working Runbook — Continuation > 6. Runtime-Terminologie
+  - start: 25977
+    end: 26495
+    heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion > A-annex.
+      Derived compact handover checkpoint (not a substitute for section A)
+  - start: 30181
+    end: 30321
+    heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Die vier Items
+  obligation_count: 5
+  dependency_count: 3
+  invariant_count: 5
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:STRATEGY_AUTHORITY
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 134
+    end_inclusive: 150
+  SOURCE_HEADING_PATH: STRATEGY_AUTHORITY
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: DERIVED_INDEX
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: STRATEGY_AUTHORITY
+  hit_count: 12
+  observed_in_source: true
+  covering_ranges:
+  - start: 134
+    end: 150
+    heading_path: Peak_Trade Temporary Forensic Working Runbook > E. Updated Root Doctrine Decisions
+  - start: 601
+    end: 644
+    heading_path: Temporary Forensic Working Runbook — Continuation > D. UQ2_RECOMMENDATION — Autonomous
+      Strategy Authority Model
+  - start: 645
+    end: 683
+    heading_path: Temporary Forensic Working Runbook — Continuation > E. UQ3_RECOMMENDATION — Autonomy
+      Authority-Class Map
+  - start: 1070
+    end: 1076
+    heading_path: Temporary Forensic Working Runbook — Continuation > 0. OWNER_TARGET_DOCTRINE_RATIFICATION
+      (UQ1–UQ8) > UQ2 / RD04 — AUTONOMOUS STRATEGY AUTHORITY MODEL — **RATIFIED**
+  - start: 1686
+    end: 1702
+    heading_path: Temporary Forensic Working Runbook — Continuation > J. Second-SSOT / Duplicate-Authority
+      Findings
+  - start: 2488
+    end: 2528
+    heading_path: Temporary Forensic Working Runbook — Continuation > 1. GLOBAL_DECISION_REGISTER
+  - start: 19700
+    end: 19720
+    heading_path: Temporary Forensic Working Runbook — Continuation > 2. Input register extracted (IDs
+      unchanged) > 2.1 Ratified doctrine (still binding; not reopened)
+  - start: 25423
+    end: 25596
+    heading_path: Temporary Forensic Working Runbook — Continuation > PASS=GATE_1_CURRENT_AUDIT_PERSIST_READ_ONLY_APPEND
+      > Compact audit matrix (unchanged from preceding audit)
+  - start: 32383
+    end: 33628
+    heading_path: Forensic Persist — T3 Metadata Extraction Evidence > 5. T3 Metadata Records (88/88)
+      > SRC-000002
+  - start: 33629
+    end: 34996
+    heading_path: Forensic Persist — T3 Metadata Extraction Evidence > 5. T3 Metadata Records (88/88)
+      > SRC-000003
+  - start: 105912
+    end: 113100
+    heading_path: Forensic Persist — T4 Relation Extraction Evidence > 7. T4 Canon Compact TSV Corpus
+  obligation_count: 1
+  dependency_count: 1
+  invariant_count: 0
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:REGISTRY_TO_CORE
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 89
+    end_inclusive: 116
+  SOURCE_HEADING_PATH: REGISTRY_TO_CORE
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: DERIVED_INDEX
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: REGISTRY_TO_CORE
+  hit_count: 10
+  observed_in_source: true
+  covering_ranges:
+  - start: 89
+    end: 116
+    heading_path: Peak_Trade Temporary Forensic Working Runbook > C. Current-State vs Target-State Distinction
+  - start: 188
+    end: 289
+    heading_path: Peak_Trade Temporary Forensic Working Runbook > G. I01–I85 Long-Term Relevance Matrix
+  - start: 356
+    end: 371
+    heading_path: Peak_Trade Temporary Forensic Working Runbook > J. Current Authorization / Transitional
+      Gates
+  - start: 516
+    end: 536
+    heading_path: Temporary Forensic Working Runbook — Continuation > A. BASELINE_VALIDATION
+  - start: 1139
+    end: 1234
+    heading_path: Temporary Forensic Working Runbook — Continuation > PASS=AUTHORITY_PARTITION_BINDING_READ_ONLY
+      > 1. Full I01–I85 Authority Partition Matrix
+  - start: 6613
+    end: 6648
+    heading_path: Temporary Forensic Working Runbook — Continuation > B. Identity reconstruction (code
+      / tests / docs / git / prior forensic) > B1. I43 — Legacy LiveSession orchestrator
+  - start: 6708
+    end: 6727
+    heading_path: Temporary Forensic Working Runbook — Continuation > D. Eight-way overlap audit > Minimal
+      common surface (concrete refs)
+  - start: 18902
+    end: 18924
+    heading_path: Temporary Forensic Working Runbook — Continuation > C. Successor Gap Audit — STRICT
+      READ-ONLY > C1. Capability strands reviewed
+  - start: 20617
+    end: 20646
+    heading_path: Temporary Forensic Working Runbook — Continuation > 4. Newer work vs old gaps (no double-count)
+  - start: 20647
+    end: 20893
+    heading_path: Temporary Forensic Working Runbook — Continuation > 5. Long-term target completeness
+      audit (clusters A–Q)
+  obligation_count: 17
+  dependency_count: 17
+  invariant_count: 0
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:CAPITAL_ARCHITECTURE
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 23471
+    end_inclusive: 23504
+  SOURCE_HEADING_PATH: CAPITAL_ARCHITECTURE
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: DERIVED_INDEX
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: CAPITAL_ARCHITECTURE
+  hit_count: 9
+  observed_in_source: true
+  covering_ranges:
+  - start: 23471
+    end: 23504
+    heading_path: Temporary Forensic Working Runbook — Continuation > 3. Canonical risk authority chain
+      (proven, not invented)
+  - start: 23538
+    end: 23549
+    heading_path: Temporary Forensic Working Runbook — Continuation > 6. I37 / I74 / I85
+  - start: 23562
+    end: 23577
+    heading_path: Temporary Forensic Working Runbook — Continuation > 8. S3 boundary (not started)
+  - start: 25601
+    end: 25654
+    heading_path: Temporary Forensic Working Runbook — Continuation > 1. Nenner-Normalisierung (49 Roh-Items)
+      > ITEM_KIND je Ledger-Item
+  - start: 25977
+    end: 26495
+    heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion > A-annex.
+      Derived compact handover checkpoint (not a substitute for section A)
+  - start: 91318
+    end: 92066
+    heading_path: Forensic Persist — T3 Metadata Extraction Evidence > 5. T3 Metadata Records (88/88)
+      > SRC-000074
+  obligation_count: 1
+  dependency_count: 3
+  invariant_count: 5
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:ECM_ARMSTRONG
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 29796
+    end_inclusive: 29802
+  SOURCE_HEADING_PATH: ECM_ARMSTRONG
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: DERIVED_INDEX
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: ECM_ARMSTRONG
+  hit_count: 2
+  observed_in_source: true
+  covering_ranges:
+  - start: 29796
+    end: 29802
+    heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Spätere Gates > F5
+      — Migration proof (I82 remainder)
+  - start: 29949
+    end: 29968
+    heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Open-Item-Mapping
+      (jedes Gate-1-Item) > 7. `I82_FULL_MIGRATION_PROVEN_false`
+  obligation_count: 1
+  dependency_count: 1
+  invariant_count: 0
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:FIRST_LIVE
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 23811
+    end_inclusive: 23841
+  SOURCE_HEADING_PATH: FIRST_LIVE
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: DERIVED_INDEX
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: FIRST_LIVE
+  hit_count: 12
+  observed_in_source: true
+  covering_ranges:
+  - start: 23811
+    end: 23841
+    heading_path: Temporary Forensic Working Runbook — Continuation > 2. Master-G15 semantics (naming
+      collisions proven distinct)
+  - start: 23864
+    end: 23888
+    heading_path: Temporary Forensic Working Runbook — Continuation > 4. Canonical owners (reuse; no second
+      G15 owner created)
+  - start: 28515
+    end: 28531
+    heading_path: GATE TOPOLOGY AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION > 1. Getrennte Gate-Familien
+      (nicht vermischen)
+  - start: 28590
+    end: 28609
+    heading_path: GATE TOPOLOGY AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION > 4. Weitere explizite,
+      aber **nicht** in F1 einreihbare Gates
+  - start: 28610
+    end: 28653
+    heading_path: GATE TOPOLOGY AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION > 5. Numerische Topologie
+      (Q1–Q10)
+  - start: 28669
+    end: 28697
+    heading_path: GATE TOPOLOGY AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION > 7. Drei Topologien,
+      ungemischt
+  - start: 28712
+    end: 28812
+    heading_path: GATE TOPOLOGY AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION > Machine block (Scope
+      = F1 Forensic Working Model)
+  - start: 101190
+    end: 102045
+    heading_path: Forensic Persist — T3 Metadata Extraction Evidence > 5. T3 Metadata Records (88/88)
+      > SRC-000086
+  obligation_count: 0
+  dependency_count: 0
+  invariant_count: 0
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:CAPABILITY_CHAIN
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 0
+    end_inclusive: 0
+  SOURCE_HEADING_PATH: CAPABILITY_CHAIN
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: NOT_OBSERVED
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: CAPABILITY_CHAIN
+  hit_count: 0
+  observed_in_source: false
+  covering_ranges: []
+  obligation_count: 0
+  dependency_count: 0
+  invariant_count: 0
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:SAFETY_KERNEL
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 22197
+    end_inclusive: 22213
+  SOURCE_HEADING_PATH: SAFETY_KERNEL
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: DERIVED_INDEX
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: SAFETY_KERNEL
+  hit_count: 5
+  observed_in_source: true
+  covering_ranges:
+  - start: 22197
+    end: 22213
+    heading_path: Temporary Forensic Working Runbook — Continuation > 2. Inventory (producers / adapters
+      / schemas / configs / tests / consumers) > I05 Orderbook / Tick / Microstructure
+  - start: 22237
+    end: 22261
+    heading_path: Temporary Forensic Working Runbook — Continuation > 3. Complete I04/I05/I55 Consumer-Matrix
+  - start: 22294
+    end: 22309
+    heading_path: Temporary Forensic Working Runbook — Continuation > 6. Duplicate / bypass audit
+  - start: 23471
+    end: 23504
+    heading_path: Temporary Forensic Working Runbook — Continuation > 3. Canonical risk authority chain
+      (proven, not invented)
+  - start: 28961
+    end: 28997
+    heading_path: READ-ONLY INTEGRATION & CANARY TRANSITION AUDIT > 6. Node-Inventar
+  obligation_count: 0
+  dependency_count: 0
+  invariant_count: 0
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:KILL_SWITCH
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 188
+    end_inclusive: 289
+  SOURCE_HEADING_PATH: KILL_SWITCH
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: DERIVED_INDEX
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: KILL_SWITCH
+  hit_count: 28
+  observed_in_source: true
+  covering_ranges:
+  - start: 188
+    end: 289
+    heading_path: Peak_Trade Temporary Forensic Working Runbook > G. I01–I85 Long-Term Relevance Matrix
+  - start: 684
+    end: 726
+    heading_path: Temporary Forensic Working Runbook — Continuation > F. UQ4_RECOMMENDATION — Multi-Venue
+      Architecture & Staging
+  - start: 801
+    end: 840
+    heading_path: Temporary Forensic Working Runbook — Continuation > I. UQ7_RECOMMENDATION — Learning
+      / Promotion / Demotion Loop
+  - start: 1139
+    end: 1234
+    heading_path: Temporary Forensic Working Runbook — Continuation > PASS=AUTHORITY_PARTITION_BINDING_READ_ONLY
+      > 1. Full I01–I85 Authority Partition Matrix
+  - start: 1434
+    end: 1459
+    heading_path: Temporary Forensic Working Runbook — Continuation > B. I08 + I43 versus I68 — Execution
+      Equivalence Audit > B3. Semantik-Vergleich vs I68 (`src/orders/*`)
+  - start: 16952
+    end: 17005
+    heading_path: Temporary Forensic Working Runbook — Continuation > C. Stage classification (origin/main
+      @ 9f09d6d)
+  - start: 18902
+    end: 18924
+    heading_path: Temporary Forensic Working Runbook — Continuation > C. Successor Gap Audit — STRICT
+      READ-ONLY > C1. Capability strands reviewed
+  - start: 19442
+    end: 19482
+    heading_path: Temporary Forensic Working Runbook — Continuation > PASS=OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE_PREFLIGHT_READ_ONLY
+  - start: 19513
+    end: 19526
+    heading_path: Temporary Forensic Working Runbook — Continuation > C. Closed prerequisite reconstruction
+      (25/25 PROVEN)
+  - start: 20647
+    end: 20893
+    heading_path: Temporary Forensic Working Runbook — Continuation > 5. Long-term target completeness
+      audit (clusters A–Q)
+  - start: 23327
+    end: 23359
+    heading_path: Temporary Forensic Working Runbook — Continuation > 4–5. S1 checklist (machine-checkable)
+  - start: 23505
+    end: 23537
+    heading_path: Temporary Forensic Working Runbook — Continuation > 4–5. S2 contract dimensions
+  - start: 24109
+    end: 24142
+    heading_path: Temporary Forensic Working Runbook — Continuation > 3. Mutation-surface inventory (I51
+      + adjacent)
+  - start: 24143
+    end: 24156
+    heading_path: Temporary Forensic Working Runbook — Continuation > 4. Canonical owners
+  - start: 25601
+    end: 25654
+    heading_path: Temporary Forensic Working Runbook — Continuation > 1. Nenner-Normalisierung (49 Roh-Items)
+      > ITEM_KIND je Ledger-Item
+  - start: 25731
+    end: 25777
+    heading_path: Temporary Forensic Working Runbook — Continuation > 2. Migrationsbeweis ≠ Runtime ≠
+      Parity > Proof-Achsen — echte Core-Surfaces (24)
+  - start: 25839
+    end: 25853
+    heading_path: Temporary Forensic Working Runbook — Continuation > 5. Carry-Forward-Wording
+  - start: 25977
+    end: 26495
+    heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion > A-annex.
+      Derived compact handover checkpoint (not a substitute for section A)
+  - start: 28961
+    end: 28997
+    heading_path: READ-ONLY INTEGRATION & CANARY TRANSITION AUDIT > 6. Node-Inventar
+  - start: 71821
+    end: 72653
+    heading_path: Forensic Persist — T3 Metadata Extraction Evidence > 5. T3 Metadata Records (88/88)
+      > SRC-000049
+  obligation_count: 18
+  dependency_count: 20
+  invariant_count: 5
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:SINGLE_WRITER
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 727
+    end_inclusive: 766
+  SOURCE_HEADING_PATH: SINGLE_WRITER
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: DERIVED_INDEX
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: SINGLE_WRITER
+  hit_count: 14
+  observed_in_source: true
+  covering_ranges:
+  - start: 727
+    end: 766
+    heading_path: Temporary Forensic Working Runbook — Continuation > G. UQ5_RECOMMENDATION — Multi-Future
+      Staged Unlock
+  - start: 1926
+    end: 1982
+    heading_path: Temporary Forensic Working Runbook — Continuation > E. I26 — Cap7.2 host graph vs WALLCLOCK_HARDENING_V2
+      > Side-by-side stage map
+  - start: 2072
+    end: 2083
+    heading_path: Temporary Forensic Working Runbook — Continuation > H. OWNER_DECISION_PACKET (advisory
+      only — NOT ratified) > OD-I26
+  - start: 8319
+    end: 8338
+    heading_path: Temporary Forensic Working Runbook — Continuation > D. Explicit MF state vector
+  - start: 8421
+    end: 8441
+    heading_path: Temporary Forensic Working Runbook — Continuation > F. Owner options (mutually exclusive;
+      evidence-backed) > Option C — Authorize Multi-Future runtime **now**
+  - start: 8521
+    end: 8562
+    heading_path: Temporary Forensic Working Runbook — Continuation > J. Terminal Summary
+  - start: 8611
+    end: 8621
+    heading_path: Temporary Forensic Working Runbook — Continuation > B. Ratification record > B1. Binding
+      meaning (exact)
+  - start: 8622
+    end: 8649
+    heading_path: Temporary Forensic Working Runbook — Continuation > B. Ratification record > B2. Architecture
+      boundary
+  - start: 8793
+    end: 8839
+    heading_path: Temporary Forensic Working Runbook — Continuation > H. Terminal Summary
+  - start: 20647
+    end: 20893
+    heading_path: Temporary Forensic Working Runbook — Continuation > 5. Long-term target completeness
+      audit (clusters A–Q)
+  - start: 23298
+    end: 23314
+    heading_path: Temporary Forensic Working Runbook — Continuation > 2. Policy reconstruction (SSOT +
+      UQ5 + existing owners)
+  - start: 23505
+    end: 23537
+    heading_path: Temporary Forensic Working Runbook — Continuation > 4–5. S2 contract dimensions
+  - start: 23562
+    end: 23577
+    heading_path: Temporary Forensic Working Runbook — Continuation > 8. S3 boundary (not started)
+  obligation_count: 24
+  dependency_count: 20
+  invariant_count: 0
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:ECONOMIC_VIABILITY
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 0
+    end_inclusive: 0
+  SOURCE_HEADING_PATH: ECONOMIC_VIABILITY
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: NOT_OBSERVED
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: ECONOMIC_VIABILITY
+  hit_count: 0
+  observed_in_source: false
+  covering_ranges: []
+  obligation_count: 0
+  dependency_count: 0
+  invariant_count: 0
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:BACKTEST_RUNTIME_PARITY
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 25908
+    end_inclusive: 26495
+  SOURCE_HEADING_PATH: BACKTEST_RUNTIME_PARITY
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: DERIVED_INDEX
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: BACKTEST_RUNTIME_PARITY
+  hit_count: 6
+  observed_in_source: true
+  covering_ranges:
+  - start: 25908
+    end: 26495
+    heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion
+  - start: 25977
+    end: 26495
+    heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion > A-annex.
+      Derived compact handover checkpoint (not a substitute for section A)
+  - start: 27060
+    end: 27890
+    heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — READ-ONLY FINDINGS
+  - start: 28196
+    end: 28220
+    heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — COMPLETE PRECEDING AUDIT OUTPUT
+      PRESERVATION > Special Axis Check
+  - start: 28221
+    end: 28432
+    heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — COMPLETE PRECEDING AUDIT OUTPUT
+      PRESERVATION > Pflicht-Abschlussblock
+  obligation_count: 14
+  dependency_count: 8
+  invariant_count: 13
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:FULL_CANONICAL_SYSTEM_PARITY
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 25731
+    end_inclusive: 25777
+  SOURCE_HEADING_PATH: FULL_CANONICAL_SYSTEM_PARITY
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: DERIVED_INDEX
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: FULL_CANONICAL_SYSTEM_PARITY
+  hit_count: 7
+  observed_in_source: true
+  covering_ranges:
+  - start: 25731
+    end: 25777
+    heading_path: Temporary Forensic Working Runbook — Continuation > 2. Migrationsbeweis ≠ Runtime ≠
+      Parity > Proof-Achsen — echte Core-Surfaces (24)
+  - start: 25908
+    end: 26495
+    heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion
+  - start: 27992
+    end: 28195
+    heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — COMPLETE PRECEDING AUDIT OUTPUT
+      PRESERVATION > Transition Matrix
+  - start: 28610
+    end: 28653
+    heading_path: GATE TOPOLOGY AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION > 5. Numerische Topologie
+      (Q1–Q10)
+  - start: 28961
+    end: 28997
+    heading_path: READ-ONLY INTEGRATION & CANARY TRANSITION AUDIT > 6. Node-Inventar
+  - start: 29288
+    end: 29311
+    heading_path: READ-ONLY INTEGRATION & CANARY TRANSITION AUDIT > 15. Forensic Gate-Modell — nicht vermischt
+  - start: 30181
+    end: 30321
+    heading_path: COMPLETE GATE-2 → GATE-3 ORIGINAL TRANSITION OUTPUT PRESERVATION > Die vier Items
+  obligation_count: 6
+  dependency_count: 3
+  invariant_count: 5
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:FULL_CANONICAL_SYSTEM_WIRING
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 0
+    end_inclusive: 0
+  SOURCE_HEADING_PATH: FULL_CANONICAL_SYSTEM_WIRING
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: NOT_OBSERVED
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: FULL_CANONICAL_SYSTEM_WIRING
+  hit_count: 0
+  observed_in_source: false
+  covering_ranges: []
+  obligation_count: 0
+  dependency_count: 0
+  invariant_count: 0
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:STEP_29
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 25597
+    end_inclusive: 25701
+  SOURCE_HEADING_PATH: STEP_29
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: DERIVED_INDEX
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: STEP_29
+  hit_count: 8
+  observed_in_source: true
+  covering_ranges:
+  - start: 25597
+    end: 25701
+    heading_path: Temporary Forensic Working Runbook — Continuation > 1. Nenner-Normalisierung (49 Roh-Items)
+  - start: 25601
+    end: 25654
+    heading_path: Temporary Forensic Working Runbook — Continuation > 1. Nenner-Normalisierung (49 Roh-Items)
+      > ITEM_KIND je Ledger-Item
+  - start: 25977
+    end: 26495
+    heading_path: Temporary Forensic Working Runbook — Continuation > 9. Gate-2-Completion > A-annex.
+      Derived compact handover checkpoint (not a substitute for section A)
+  - start: 27060
+    end: 27890
+    heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — READ-ONLY FINDINGS
+  - start: 27992
+    end: 28195
+    heading_path: POST-GATE-1 → GATE-2 TRANSITION COMPLETENESS AUDIT — COMPLETE PRECEDING AUDIT OUTPUT
+      PRESERVATION > Transition Matrix
+  - start: 28590
+    end: 28609
+    heading_path: GATE TOPOLOGY AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION > 4. Weitere explizite,
+      aber **nicht** in F1 einreihbare Gates
+  - start: 28610
+    end: 28653
+    heading_path: GATE TOPOLOGY AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION > 5. Numerische Topologie
+      (Q1–Q10)
+  - start: 28669
+    end: 28697
+    heading_path: GATE TOPOLOGY AUDIT — COMPLETE PRECEDING AUDIT OUTPUT PRESERVATION > 7. Drei Topologien,
+      ungemischt
+  obligation_count: 8
+  dependency_count: 5
+  invariant_count: 8
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:LEVEL_0_TO_10
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 25731
+    end_inclusive: 25777
+  SOURCE_HEADING_PATH: LEVEL_0_TO_10
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: DERIVED_INDEX
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: LEVEL_0_TO_10
+  hit_count: 6
+  observed_in_source: true
+  covering_ranges:
+  - start: 25731
+    end: 25777
+    heading_path: Temporary Forensic Working Runbook — Continuation > 2. Migrationsbeweis ≠ Runtime ≠
+      Parity > Proof-Achsen — echte Core-Surfaces (24)
+  - start: 30618
+    end: 30665
+    heading_path: Temporary Forensic Working Runbook — Continuation > PASS=STEP_4_MINIMAL_KR11_H91_PRECEDENCE_SUPPLEMENT
+  - start: 30703
+    end: 30736
+    heading_path: Temporary Forensic Working Runbook — Continuation > C. KR-11 leftover ATX-H1 after closed
+      lists
+  - start: 30737
+    end: 30759
+    heading_path: Temporary Forensic Working Runbook — Continuation > D. TR-006 corresponding restriction
+      (heading_level only)
+  obligation_count: 0
+  dependency_count: 2
+  invariant_count: 1
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:AUTH_001_TO_023
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 0
+    end_inclusive: 0
+  SOURCE_HEADING_PATH: AUTH_001_TO_023
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: NOT_OBSERVED
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: AUTH_001_TO_023
+  hit_count: 0
+  observed_in_source: false
+  covering_ranges: []
+  obligation_count: 0
+  dependency_count: 0
+  invariant_count: 0
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:DOC_01_TO_12
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 0
+    end_inclusive: 0
+  SOURCE_HEADING_PATH: DOC_01_TO_12
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: NOT_OBSERVED
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: DOC_01_TO_12
+  hit_count: 0
+  observed_in_source: false
+  covering_ranges: []
+  obligation_count: 0
+  dependency_count: 0
+  invariant_count: 0
+- PRESERVATION_ID: peak_trade_historical_reference_a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212_v1:container:B_01_TO_07
+  SOURCE_SHA256: a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+  SOURCE_LINE_RANGE:
+    start_inclusive: 29156
+    end_inclusive: 29189
+  SOURCE_HEADING_PATH: B_01_TO_07
+  SOURCE_COMMIT_IF_KNOWN: null
+  SOURCE_PR_IF_KNOWN: null
+  AUTHORITY_AT_TIME: NONE
+  TEMPORAL_STATUS: HISTORICAL
+  ASSERTION_STATUS: DERIVED_INDEX
+  PRESERVATION_CLASS: DERIVED_INDEX
+  AUTHORITY: NONE
+  PURPOSE: FORENSIC_HISTORICAL_REFERENCE
+  MUTABILITY: IMMUTABLE_CONTENT_ADD_ONLY_CORRECTIONS
+  CANONICAL_SELECTION: false
+  RUNTIME_SELECTION: false
+  TRADING_AUTHORITY: false
+  CANONICAL_AUTHORITY: false
+  SOURCE_AUTHORITY: NONE
+  model_id: B_01_TO_07
+  hit_count: 14
+  observed_in_source: true
+  covering_ranges:
+  - start: 29156
+    end: 29189
+    heading_path: READ-ONLY INTEGRATION & CANARY TRANSITION AUDIT > 11. Blocker DAG
+  obligation_count: 0
+  dependency_count: 0
+  invariant_count: 0
