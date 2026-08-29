@@ -45,12 +45,15 @@ AUTH_PATH = (
     / "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json"
 )
 
-COMMITTED_SLICE_GRANT_ID = "SAFETY_KERNEL_BEFORE_INTENT_BOUNDED_SLICE_V1"
+COMMITTED_SLICE_GRANT_ID = "INTEGRATED_REPLAY_SAFETY_BEFORE_INTENT_BOUNDED_SLICE_V1"
 COMMITTED_SLICE_GRANT_PATHS = [
-    "src/trading/master_v2/capital_risk_sizing_safety_intent_restore_v1.py",
-    "tests/trading/master_v2/test_master_v2_capital_risk_sizing_safety_intent_restore_contract_v1.py",
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+    "tests/trading/master_v2/test_master_v2_integrated_replay_safety_before_intent_restore_contract_v1.py",
 ]
 HISTORICAL_A06_ADAPTER_PATH = "src/trading/master_v2/capital_risk_sizing_intent_restore_v1.py"
+HISTORICAL_SIBLING_ADAPTER_PATH = (
+    "src/trading/master_v2/capital_risk_sizing_safety_intent_restore_v1.py"
+)
 UNGRANTED_PROTECTED_PATH = "src/governance/capital_risk_sizing_v1.py"
 
 FIXTURE_GRANTED_PATH = "src/trading/master_v2/survival_assessment_v1.py"
@@ -90,6 +93,7 @@ class TestRestorationAdmissionClassContractV1:
         assert auth["slice_grant_id"] == COMMITTED_SLICE_GRANT_ID
         assert auth["RESTORATION_TARGET_CONFORMANCE"] is True
         assert auth["CURRENT_SYSTEM_SEMANTIC_DELTA"] is True
+        assert auth["CANONICAL_COMPUTE_OWNER_CHANGED"] is False
         assert auth["SAFETY_AUTHORITY_CHANGED"] is False
         assert auth["EXECUTION_AUTHORITY_CHANGED"] is False
         assert auth["LIVE_AUTHORITY_CHANGED"] is False
@@ -140,6 +144,7 @@ class TestRestorationAdmissionClassContractV1:
         assert auth["BROAD_MASTER_V2_GRANT"] is False
         assert auth["authorized_path_prefixes"] == []
         assert HISTORICAL_A06_ADAPTER_PATH not in auth["allowed_paths"]
+        assert HISTORICAL_SIBLING_ADAPTER_PATH not in auth["allowed_paths"]
         assert "src/trading/master_v2/" not in auth["allowed_paths"]
         assert auth["PR_SPECIFIC_EXCEPTION"] is False
         assert auth["BRANCH_SPECIFIC_EXCEPTION"] is False

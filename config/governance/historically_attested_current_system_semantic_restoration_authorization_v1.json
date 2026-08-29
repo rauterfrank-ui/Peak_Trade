@@ -17,8 +17,8 @@
   "TRADING_AUTHORITY_CHANGED": false,
   "UNATTESTED_FORMULA_CHANGE": false,
   "allowed_paths": [
-    "src/trading/master_v2/capital_risk_sizing_safety_intent_restore_v1.py",
-    "tests/trading/master_v2/test_master_v2_capital_risk_sizing_safety_intent_restore_contract_v1.py"
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+    "tests/trading/master_v2/test_master_v2_integrated_replay_safety_before_intent_restore_contract_v1.py"
   ],
   "allowed_surface_classes": [
     "MASTER_V2"
@@ -78,10 +78,11 @@
     "Separate restoration admission class. Not TECHNICAL_CANONICAL_WIRING_ONLY.",
     "Normative restoration target is MASTER_V2_DOUBLE_PLAY_CONSERVED_REFERENCE_V1.",
     "origin/main is a technical baseline only. Candidate implementation diffs are not the target.",
-    "Bounded exact-file slice grant SAFETY_KERNEL_BEFORE_INTENT_BOUNDED_SLICE_V1 is active.",
-    "Slice composition attestation: docs/ops/specs/MASTER_V2_CAPITAL_RISK_SIZING_SAFETY_INTENT_RESTORE_V1.md",
-    "Prior CAPITAL_RISK_SIZING_INTENT_BOUNDED_SLICE_V1 grant is historical record only; machine state is the single active exact-file grant.",
+    "Bounded exact-file slice grant INTEGRATED_REPLAY_SAFETY_BEFORE_INTENT_BOUNDED_SLICE_V1 is active.",
+    "Slice composition attestation: docs/ops/specs/MASTER_V2_INTEGRATED_REPLAY_SAFETY_BEFORE_INTENT_RESTORE_V1.md",
+    "Prior SAFETY_KERNEL_BEFORE_INTENT_BOUNDED_SLICE_V1 and CAPITAL_RISK_SIZING_INTENT_BOUNDED_SLICE_V1 grants are historical record only; machine state is the single active exact-file grant.",
     "Class attestation remains docs/ops/specs/HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_ADMISSION_V1.md",
+    "CANONICAL_COMPUTE_OWNER_CHANGED=false because the same Integrated Replay remains Compute Owner. COMPUTE_OWNER_WIRING_CHANGED=true is expressed as CURRENT_SYSTEM_SEMANTIC_DELTA=true, not as an owner-identity change.",
     "CURRENT_SYSTEM_SEMANTIC_DELTA=true is required because invocation/wiring changes.",
     "SAFETY_AUTHORITY_CHANGED=false means no execution/submission permission and no new Safety authority. It does not mean Safety wiring is unchanged.",
     "RISK_SIZING_SEMANTICS_CHANGED=false is not representable. SAFETY_SEMANTICS_CHANGED is not representable.",
@@ -107,5 +108,5 @@
   "restoration_target_id": "MASTER_V2_DOUBLE_PLAY_CONSERVED_REFERENCE_V1",
   "restoration_target_kind": "HISTORICAL_SEMANTIC_MODEL",
   "scope_id": "HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_AUTHORIZATION_V1",
-  "slice_grant_id": "SAFETY_KERNEL_BEFORE_INTENT_BOUNDED_SLICE_V1"
+  "slice_grant_id": "INTEGRATED_REPLAY_SAFETY_BEFORE_INTENT_BOUNDED_SLICE_V1"
 }

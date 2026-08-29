@@ -90,6 +90,13 @@ Declared Owner policy / human-adjudicated (not proven by JSON booleans):
 - `CANONICAL_COMPUTE_OWNER_CHANGED=false`
 - `RESTORATION_TARGET_CONFORMANCE` of any future granted slice
 
+`CANONICAL_COMPUTE_OWNER_CHANGED=false` means the existing Integrated Replay
+function remains the Compute Owner. It does **not** mean internal call
+order is frozen. Restoring historically proven invocation order inside that
+owner is `COMPUTE_OWNER_WIRING_CHANGED=true` and requires
+`CURRENT_SYSTEM_SEMANTIC_DELTA=true`. Wiring change is not owner-authority
+change.
+
 This class must **not** claim `RISK_SIZING_SEMANTICS_CHANGED=false`.
 This class must **not** claim `SAFETY_SEMANTICS_CHANGED=false`.
 
@@ -119,17 +126,18 @@ Committed authorization state (single active grant; no multi-grant model):
 
 ```text
 grant_active=true
-slice_grant_id=SAFETY_KERNEL_BEFORE_INTENT_BOUNDED_SLICE_V1
+slice_grant_id=INTEGRATED_REPLAY_SAFETY_BEFORE_INTENT_BOUNDED_SLICE_V1
 RESTORATION_TARGET_CONFORMANCE=true
 restoration_target_id=MASTER_V2_DOUBLE_PLAY_CONSERVED_REFERENCE_V1
 binds_to_current_a06_code=false
 allowed_paths=
-  src/trading/master_v2/capital_risk_sizing_safety_intent_restore_v1.py
-  tests/trading/master_v2/test_master_v2_capital_risk_sizing_safety_intent_restore_contract_v1.py
+  src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+  tests/trading/master_v2/test_master_v2_integrated_replay_safety_before_intent_restore_contract_v1.py
 ```
 
-The prior `CAPITAL_RISK_SIZING_INTENT_BOUNDED_SLICE_V1` exact-file grant is
-historical record only. It is not accumulated. A06 protected paths are not
+The prior `SAFETY_KERNEL_BEFORE_INTENT_BOUNDED_SLICE_V1` and
+`CAPITAL_RISK_SIZING_INTENT_BOUNDED_SLICE_V1` exact-file grants are
+historical record only. They are not accumulated. A06 protected paths are not
 widened into a directory permission.
 
 Ungranted protected surfaces remain fail-closed, including
