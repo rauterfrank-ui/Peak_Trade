@@ -45,11 +45,11 @@ AUTH_PATH = (
     / "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json"
 )
 
-CANDIDATE_RESTORE_PATHS_WITHOUT_GRANT = [
-    "src/governance/capital_risk_sizing_v1.py",
+COMMITTED_SLICE_GRANT_PATHS = [
     "src/trading/master_v2/capital_risk_sizing_intent_restore_v1.py",
     "tests/trading/master_v2/test_master_v2_a06_capital_risk_sizing_intent_restore_contract_v1.py",
 ]
+UNGRANTED_PROTECTED_PATH = "src/governance/capital_risk_sizing_v1.py"
 
 FIXTURE_GRANTED_PATH = "src/trading/master_v2/survival_assessment_v1.py"
 
@@ -71,7 +71,7 @@ def _grant_fixture(allowed_paths: list[str]) -> dict:
 
 
 class TestRestorationAdmissionClassContractV1:
-    def test_committed_artifact_is_valid_empty_grant(self) -> None:
+    def test_committed_artifact_is_valid_bounded_slice_grant(self) -> None:
         auth = load_restoration_authorization(REPO_ROOT)
         assert auth is not None
         valid, reasons = validate_restoration_authorization(auth, repo_root=REPO_ROOT)
@@ -82,8 +82,11 @@ class TestRestorationAdmissionClassContractV1:
         assert auth["authorization_token"] == RESTORATION_AUTHORIZATION_ID
         assert auth["mutation_purpose_class"] == RESTORATION_MUTATION_PURPOSE
         assert auth["restoration_target_id"] == RESTORATION_TARGET_ID
-        assert auth["grant_active"] is False
-        assert auth["allowed_paths"] == []
+        assert auth["grant_active"] is True
+        assert auth["allowed_paths"] == COMMITTED_SLICE_GRANT_PATHS
+        assert auth["allowed_surface_classes"] == ["MASTER_V2"]
+        assert auth["slice_grant_id"] == "CAPITAL_RISK_SIZING_INTENT_BOUNDED_SLICE_V1"
+        assert auth["RESTORATION_TARGET_CONFORMANCE"] is True
         assert auth["CURRENT_SYSTEM_SEMANTIC_DELTA"] is True
         assert auth["binds_to_restoration_target"] is True
         assert auth["binds_to_current_a06_code"] is False
@@ -92,6 +95,8 @@ class TestRestorationAdmissionClassContractV1:
         assert auth["restoration_attestation_id"] == RESTORATION_CLASS_ATTESTATION_RELATIVE
         assert "RISK_SIZING_SEMANTICS_CHANGED" not in auth.get("restoration_invariants", {})
         assert "RISK_SIZING_SEMANTICS_CHANGED" not in auth
+        assert "A06" not in auth["restoration_target_id"]
+        assert "A06" not in auth["slice_grant_id"]
 
     def test_bound_from_boundary_contract(self) -> None:
         contract = load_contract(REPO_ROOT)
@@ -104,14 +109,13 @@ class TestRestorationAdmissionClassContractV1:
             == "config/governance/technical_canonical_wiring_authorization_v1.json"
         )
 
-    def test_committed_artifact_does_not_grant_candidate_restore_paths(self) -> None:
+    def test_committed_artifact_does_not_grant_unrelated_protected_owner(self) -> None:
         auth = _load_restoration()
         allowed = set(auth["allowed_paths"])
-        for path in CANDIDATE_RESTORE_PATHS_WITHOUT_GRANT:
-            assert path not in allowed
+        assert UNGRANTED_PROTECTED_PATH not in allowed
         serialized = json.dumps(auth)
-        assert "capital_risk_sizing_intent_restore_v1.py" not in serialized
         assert "A06RestoreError" not in serialized
+        assert "src/governance/capital_risk_sizing_v1.py" not in serialized
 
     def test_token_alone_is_insufficient(self) -> None:
         token_only = {
@@ -162,9 +166,9 @@ class TestTechnicalWiringRegressionUnchangedV1:
 
 
 class TestRestorationAdmissionNegativeV1:
-    def test_candidate_restore_paths_without_grant_fail(self) -> None:
+    def test_ungranted_protected_owner_still_fails(self) -> None:
         report = build_boundary_report(
-            CANDIDATE_RESTORE_PATHS_WITHOUT_GRANT,
+            [UNGRANTED_PROTECTED_PATH],
             repo_root=REPO_ROOT,
         )
         assert report.admissible is False
@@ -174,6 +178,17 @@ class TestRestorationAdmissionNegativeV1:
         assert "FORBIDDEN_MUTATION_SURFACE_MATCH" in report.reason_codes
         assert REASON_RESTORATION_PATH_UNAUTHORIZED in report.reason_codes
         assert forbidden_surface_changed_count(report) >= 1
+
+    def test_committed_slice_grant_admits_exact_restore_files(self) -> None:
+        report = build_boundary_report(
+            COMMITTED_SLICE_GRANT_PATHS,
+            repo_root=REPO_ROOT,
+        )
+        assert report.admissible is True
+        assert report.fail_closed is False
+        assert report.restoration_authorization_applied is True
+        assert REASON_RESTORATION_AUTHORIZED in report.reason_codes
+        assert report.canonical_trading_semantics_changed is True
 
     def test_wrong_contract_version_fails(self) -> None:
         auth = _load_restoration()

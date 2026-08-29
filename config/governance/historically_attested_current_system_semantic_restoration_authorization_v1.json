@@ -10,14 +10,19 @@
   "NEW_POLICY_INTRODUCED": false,
   "PR_SPECIFIC_EXCEPTION": false,
   "REQUIRED_CHECK_WAIVER": false,
-  "RESTORATION_TARGET_CONFORMANCE": false,
+  "RESTORATION_TARGET_CONFORMANCE": true,
   "RUNTIME_ACTIVATION": false,
   "SAFETY_AUTHORITY_CHANGED": false,
   "TOKEN_ALONE_IS_INSUFFICIENT": true,
   "TRADING_AUTHORITY_CHANGED": false,
   "UNATTESTED_FORMULA_CHANGE": false,
-  "allowed_paths": [],
-  "allowed_surface_classes": [],
+  "allowed_paths": [
+    "src/trading/master_v2/capital_risk_sizing_intent_restore_v1.py",
+    "tests/trading/master_v2/test_master_v2_a06_capital_risk_sizing_intent_restore_contract_v1.py"
+  ],
+  "allowed_surface_classes": [
+    "MASTER_V2"
+  ],
   "authorization_token": "HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_AUTHORIZATION_V1",
   "authorized_path_prefixes": [],
   "authorized_scope_class": "HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_V1",
@@ -62,7 +67,7 @@
     "RUNTIME_EFFECT": "NONE",
     "SCHEDULER_EFFECT": "NONE"
   },
-  "grant_active": false,
+  "grant_active": true,
   "historical_reference_authority": "NONE",
   "historical_reference_canonical_authority": false,
   "historical_reference_package_path": "forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212",
@@ -73,7 +78,9 @@
     "Separate restoration admission class. Not TECHNICAL_CANONICAL_WIRING_ONLY.",
     "Normative restoration target is MASTER_V2_DOUBLE_PLAY_CONSERVED_REFERENCE_V1.",
     "origin/main is a technical baseline only. Candidate implementation diffs are not the target.",
-    "No slice grant is active. Exact-file grants require a later Owner authorization after target re-adjudication.",
+    "Bounded exact-file slice grant CAPITAL_RISK_SIZING_INTENT_BOUNDED_SLICE_V1 is active.",
+    "Slice composition attestation: docs/ops/specs/MASTER_V2_A06_CAPITAL_RISK_SIZING_INTENT_RESTORE_V1.md",
+    "Class attestation remains docs/ops/specs/HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_ADMISSION_V1.md",
     "CURRENT_SYSTEM_SEMANTIC_DELTA=true is required. RISK_SIZING_SEMANTICS_CHANGED=false is not representable.",
     "Historical forensic package remains AUTHORITY=NONE / FORENSIC_REFERENCE_BINDING."
   ],
@@ -97,5 +104,5 @@
   "restoration_target_id": "MASTER_V2_DOUBLE_PLAY_CONSERVED_REFERENCE_V1",
   "restoration_target_kind": "HISTORICAL_SEMANTIC_MODEL",
   "scope_id": "HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_AUTHORIZATION_V1",
-  "slice_grant_id": ""
+  "slice_grant_id": "CAPITAL_RISK_SIZING_INTENT_BOUNDED_SLICE_V1"
 }
