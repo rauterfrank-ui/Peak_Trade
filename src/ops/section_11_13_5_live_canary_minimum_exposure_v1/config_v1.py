@@ -77,6 +77,7 @@ def example_incomplete_config_dict_v1() -> dict[str, Any]:
             "/api/v5/account/balance",
             "/api/v5/account/config",
             "/api/v5/account/positions",
+            "/api/v5/account/max-size",
             "/api/v5/trade/orders-pending",
             "/api/v5/market/ticker",
             "/api/v5/public/instruments",

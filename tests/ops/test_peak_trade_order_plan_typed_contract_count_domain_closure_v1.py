@@ -55,6 +55,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.venue_contract_coun
     select_max_size_field_for_order_type_v1,
     serialize_venue_sz_from_typed_contract_count_v1,
 )
+from tests.ops.test_section_11_13_5_canary_submit_transport_v1 import (
+    _max_available_plan_kwargs,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MASTER_RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
@@ -332,6 +335,7 @@ def test_submit_transport_identity_after_contract_sizing() -> None:
         owner_go="OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE",
         origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
         pretrade_decision_id="test-fresh-decision-typed-domain",
+        **_max_available_plan_kwargs(),
     )
     assert plan.quantity == "1"
     assert plan.quantity_domain == ORDER_PLAN_QTY_DOMAIN

@@ -39,6 +39,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_submit_state_v1
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.submit_transport_v1 import (
     run_canary_submit_transport_v1,
 )
+from tests.ops.test_section_11_13_5_canary_submit_transport_v1 import (
+    _max_available_plan_kwargs,
+)
 
 OWNER_GO = "OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE"
 ORIGIN_SHA = "aa421d84cd0223146ab63f94405e81ed813d40c3"
@@ -273,6 +276,7 @@ def test_entry_plan_remains_entry_only_and_omits_reduce_only() -> None:
         owner_go=OWNER_GO,
         origin_main_sha=ORIGIN_SHA,
         pretrade_decision_id="test-fresh-decision-flatten-entry",
+        **_max_available_plan_kwargs(),
     )
     assert plan.side == "BUY"
     assert plan.quantity == "1"

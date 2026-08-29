@@ -3044,6 +3044,98 @@ fails closed. The #6148 window remains non-reusable. Standing Live /
 Testnet / Canary authorization remain false. Tests are guards, not a
 second semantic SSOT.
 
+Named subordinate persist for the MAX_AVAILABLE Owner-policy
+adjudication and productive consumer after the closed MAX_SIZE fresh
+observation persist. This does **not** reopen restoration, add a Core
+owner or stage, close AVAILABLE_MARGIN, fall back to
+`&#47;account&#47;max-avail-size`, invent a TTL or cache, POST, trade, mutate
+leverage or account mode, or grant live authority. The #6148 naming of
+`GET &#47;api&#47;v5&#47;account&#47;max-avail-size` as official max-avail surface
+remains historically true for that unit slice and is
+`SUPERSEDED_BY_OWNER_ADJUDICATION` as the operative MAX_AVAILABLE
+source.
+
+``` text
+MAX_AVAILABLE_OWNER_POLICY_ADJUDICATION_AND_CLOSURE_V1=true
+SPEC=docs/ops/specs/PEAK_TRADE_MAX_AVAILABLE_OWNER_POLICY_ADJUDICATION_AND_CLOSURE_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_STATUS=PARTIAL
+VENUE_PRETRADE_LIMIT_GATES_COMPLETE=false
+MAX_SIZE_BINDING_STATUS=PROVEN
+MAX_SIZE_CONSUMER_BOUND=true
+LIMIT_MAX_SIZE_GATE_BOUND=true
+MARKET_MAX_SIZE_GATE_BOUND=true
+MAX_AVAILABLE_BINDING_STATUS=PROVEN
+MAX_AVAILABLE_CANONICAL_DEFINITION=VENUE_ACCOUNT_MAXIMUM_ORDER_QUANTITY
+MAX_AVAILABLE_ENDPOINT=/api/v5/account/max-size
+MAX_AVAILABLE_RESPONSE_FIELDS=maxBuy,maxSell
+MAX_AVAILABLE_OUTPUT_DOMAIN=VENUE_CONTRACT_COUNT
+MAX_AVAILABLE_SIDE_RULE=BUY_MAXBUY_SELL_MAXSELL
+MAX_AVAILABLE_FRESHNESS_POLICY=FRESH_GET_PER_PRETRADE_DECISION
+MAX_AVAILABLE_PX_SOURCE=ORDER_PLAN_LIMIT_PX
+MAX_AVAILABLE_LEVERAGE_REQUEST_POLICY=OMIT
+MAX_AVAILABLE_CONSUMER_BOUND=true
+MAX_AVAILABLE_FAIL_CLOSED_BOUND=true
+PREVIOUS_BINDING_DISPOSITION=SUPERSEDED_BY_OWNER_ADJUDICATION
+AVAILABLE_MARGIN_BINDING_STATUS=UNBOUND
+AVAILABLE_MARGIN_CLOSED_BY_THIS_SLICE=false
+MAX_AVAIL_SIZE_FALLBACK_USED=false
+ZERO_NORMALIZATION_PERFORMED=false
+ACCOUNT_MODE=UNPROVEN
+ACCOUNT_MODE_PROOF_STATUS=UNPROVEN
+DEFAULT_TDMODE_CROSS_IS_NOT_ACCOUNT_MODE_PROOF=true
+MAX_AVAILABLE_GET_PERFORMED=true
+MAX_AVAILABLE_GET_TIMESTAMP_UTC=2026-08-29T22:02:34.509031Z
+MAX_AVAILABLE_GET_HTTP_STATUS=200
+MAX_AVAILABLE_GET_VENUE_CODE=0
+MAX_AVAILABLE_SELECTED_FIELD=maxBuy
+MAX_AVAILABLE_VALIDATED_VALUE=0
+MAX_AVAILABLE_VALIDATED_DOMAIN=VENUE_CONTRACT_COUNT
+MAX_AVAILABLE_OBSERVATION_CLASS=SUCCESS_NUMERIC
+ACCOUNT_MODE_SUPPORT_FOR_MAX_SIZE_CROSS_DERIVATIVES=PROVEN_SUPPORTED
+EVIDENCE_PACK=evidence/ops/max_available_owner_policy_adjudication_and_closure_v1/20260829T220234Z
+ALL_REQUIRED_METADATA_EDGES_BOUND=false
+EARLIEST_REMAINING_UNBOUND_EDGE=PRICE_BAND
+EARLIEST_REMAINING_CONFLICT=NONE
+EARLIEST_UNRESOLVED_DEPENDENCY=PRICE_BAND
+ORDER_PLAN_TYPED_DOMAIN_PRESERVED=true
+NETWORK_VENUE_GET_PERFORMED=true
+NETWORK_POST_PERFORMED=false
+TRADING_PERFORMED=false
+RUNTIME_ALIGNMENT_REQUIRED=true
+RUNTIME_MUTATION_JUSTIFIED=true
+RUNTIME_MUTATION_PERFORMED=true
+CHANGED_RUNTIME_FILES=max_available_observation_v1.py,max_available_consumer_v1.py,order_plan_v1.py,submit_transport_v1.py,constants_v1.py,config_v1.py
+CANONICAL_VENUE_PRETRADE_OWNER=section_11_13_5.order_plan_v1+exposure_v1@submit_transport_v1
+SECOND_VENUE_PRETRADE_OWNER_EXISTS=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+EXECUTION_ELIGIBLE=false
+LIVE_READINESS=EVALUATED_NOT_READY
+CURRENT_SELECTED_INSTRUMENT=SUI-USD_UM_XPERP-310404
+CURRENT_VENUE=OKX_EEA
+KRAKEN_CURRENT_CANONICAL_ROLE=NONE
+KRAKEN_EXCLUSION_CLOSED=true
+NEXT_DISTINCT_SURFACE=PRICE_BAND
+NEXT_DISTINCT_SURFACE_AUTHORIZED=false
+```
+
+Normative subordinate persist:
+[`docs/ops/specs/PEAK_TRADE_MAX_AVAILABLE_OWNER_POLICY_ADJUDICATION_AND_CLOSURE_V1.md`](../../ops/specs/PEAK_TRADE_MAX_AVAILABLE_OWNER_POLICY_ADJUDICATION_AND_CLOSURE_V1.md).
+The productive pretrade consumer
+`apply_fresh_max_available_pretrade_gate_v1` is bound into
+`build_minimum_valid_canary_order_plan_v1` from the per-decision
+authenticated `GET &#47;api&#47;v5&#47;account&#47;max-size` in
+`submit_transport_v1`. BUY uses fresh `maxBuy`. SELL uses fresh
+`maxSell`. LIMIT uses planned OrderPlan `px`. Leverage is omitted.
+Missing or stale freshness fails closed. The historical
+`&#47;account&#47;max-avail-size` association remains superseded and is not a
+fallback. Standing Live / Testnet / Canary authorization remain false.
+Tests are guards, not a second semantic SSOT.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:

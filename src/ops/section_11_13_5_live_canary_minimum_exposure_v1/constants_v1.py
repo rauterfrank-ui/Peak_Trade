@@ -103,10 +103,12 @@ FORBIDDEN_HTTP_METHODS_OUTSIDE_GATED_SUBMIT: tuple[str, ...] = (
     "TRACE",
     "CONNECT",
 )
+ENDPOINT_ACCOUNT_MAX_SIZE = "/api/v5/account/max-size"
 ENDPOINT_ALLOWLIST_READ: tuple[str, ...] = (
     "/api/v5/account/balance",
     "/api/v5/account/config",
     "/api/v5/account/positions",
+    ENDPOINT_ACCOUNT_MAX_SIZE,
     "/api/v5/trade/orders-pending",
     "/api/v5/market/ticker",
     "/api/v5/public/instruments",
@@ -290,6 +292,7 @@ GET_ENDPOINTS_PRIVATE: tuple[str, ...] = (
     "/api/v5/account/balance",
     "/api/v5/account/config",
     "/api/v5/account/positions",
+    ENDPOINT_ACCOUNT_MAX_SIZE,
     "/api/v5/trade/orders-pending",
     ENDPOINT_ORDERS_ALGO_PENDING,
     "/api/v5/trade/orders-history",

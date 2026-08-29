@@ -38,6 +38,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.lifecycle_v1 import (
     build_lifecycle_and_closeout_contract_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_available_observation_v1 import (
+    account_max_size_query_path_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.order_plan_v1 import (
     LiveCanaryOrderPlanError,
     build_minimum_valid_canary_order_plan_v1,
@@ -73,6 +76,10 @@ INSTRUMENTS = {
 }
 TICKER = {"code": "0", "data": [{"instId": DEFAULT_INSTRUMENT_ID, "last": "0.8209"}]}
 EMPTY = {"code": "0", "data": []}
+MAX_AVAILABLE = {
+    "code": "0",
+    "data": [{"instId": DEFAULT_INSTRUMENT_ID, "maxBuy": "100", "maxSell": "100"}],
+}
 FIXTURE_MATERIAL = json.dumps(
     {"api_key": "A" * 36, "api_secret": "B" * 32, "passphrase": "C" * 14},
     separators=(",", ":"),
@@ -108,12 +115,28 @@ def _execute_cfg() -> dict:
     return payload
 
 
+def _max_available_plan_kwargs(**overrides: object) -> dict[str, object]:
+    body: dict[str, object] = {
+        "max_available_payload": MAX_AVAILABLE,
+        "max_available_get_performed": True,
+        "max_available_endpoint": account_max_size_query_path_v1(
+            instrument_id=DEFAULT_INSTRUMENT_ID, td_mode="cross", px="0.8209"
+        ),
+        "max_available_http_status": 200,
+        "max_available_auth_header_sent": True,
+        "max_available_px_sent": "0.8209",
+    }
+    body.update(overrides)
+    return body
+
+
 def _fake_transport() -> RecordingFakeCanaryTransportV1:
     return RecordingFakeCanaryTransportV1(
         bodies_by_endpoint={
             "/api/v5/public/instruments": json.dumps(INSTRUMENTS).encode(),
             "/api/v5/market/ticker": json.dumps(TICKER).encode(),
             "/api/v5/account/positions": json.dumps(EMPTY).encode(),
+            "/api/v5/account/max-size": json.dumps(MAX_AVAILABLE).encode(),
             "/api/v5/trade/orders-pending": json.dumps(EMPTY).encode(),
             "/api/v5/trade/orders-history": json.dumps(EMPTY).encode(),
         },
@@ -208,6 +231,7 @@ def test_order_plan_reuses_proven_venue_native_body_builder(
         owner_go=OWNER_GO_EXECUTE,
         origin_main_sha=ORIGIN_SHA,
         pretrade_decision_id="test-fresh-decision-body-builder",
+        **_max_available_plan_kwargs(),
     )
     assert len(calls) == 1
     assert calls[0]["client_order_id"] == plan.clordid
@@ -230,6 +254,7 @@ def test_order_plan_body_equals_proven_builder_contract() -> None:
         owner_go=OWNER_GO_EXECUTE,
         origin_main_sha=ORIGIN_SHA,
         pretrade_decision_id="test-fresh-decision-body-equals",
+        **_max_available_plan_kwargs(),
     )
     expected = build_venue_native_order_body_v1(
         client_order_id=plan.clordid,
