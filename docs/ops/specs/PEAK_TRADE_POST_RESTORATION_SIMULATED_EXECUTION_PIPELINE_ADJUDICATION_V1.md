@@ -249,7 +249,7 @@ lifecycle claim. It is not a simulated-execution pipeline gap.
 
 Known test:
 
-`tests/ops/test_productive_futures_accounting_runtime_binding_v1.py::test_constants_and_call_graph_bound`
+`tests&#47;ops&#47;test_productive_futures_accounting_runtime_binding_v1.py::test_constants_and_call_graph_bound`
 
 Known inequality: `CALL_GRAPH_V1 != REQUIRED_CALL_GRAPH`.
 
