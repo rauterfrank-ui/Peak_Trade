@@ -23,6 +23,9 @@ Z2CM_HEADING = (
     "### 11.13.5.Z2CM Post-Z2CL fail-closed position-state predicate and "
     "flatten_execute post-action wiring persist"
 )
+Z2CN_HEADING = (
+    "### 11.13.5.Z2CN Post-Z2CM fresh unfiltered target-position runtime observation persist"
+)
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = (
     "PEAK_TRADE_11_13_5_Z2CM_FAIL_CLOSED_POSITION_STATE_PREDICATE_AND_"
@@ -40,8 +43,10 @@ def _read(path: Path) -> str:
 def _z2cm_section(text: str) -> str:
     start = text.find(Z2CM_HEADING)
     assert start >= 0, "missing §11.13.5.Z2CM heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2CM"
+    end = text.find(Z2CN_HEADING, start)
+    if end < 0:
+        end = text.find(LADDER_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2CN or §11.14 boundary after Z2CM"
     return text[start:end]
 
 
@@ -58,8 +63,9 @@ def test_z2cm_heading_is_unique_and_follows_z2cl() -> None:
     assert text.count(Z2CM_HEADING) == 1
     z2cl = text.find(Z2CL_HEADING)
     z2cm = text.find(Z2CM_HEADING)
+    z2cn = text.find(Z2CN_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= z2cl < z2cm < ladder
+    assert 0 <= z2cl < z2cm < z2cn < ladder
 
 
 def test_z2cl_historical_slice_was_not_rewritten() -> None:
