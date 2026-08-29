@@ -463,8 +463,11 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardNegativeV0:
     @pytest.mark.parametrize(
         ("changed_files", "expected_flag"),
         [
-            (["src/trading/master_v2/directional_assessment_v1.py"], "master_v2_changed"),
-            (["src/trading/master_v2/directional_assessment_v1.py"], "bull_bear_changed"),
+            (["src/trading/master_v2/survival_assessment_v1.py"], "master_v2_changed"),
+            (
+                ["src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py"],
+                "bull_bear_changed",
+            ),
             (["src/trading/master_v2/double_play_composition.py"], "double_play_changed"),
             (
                 [
