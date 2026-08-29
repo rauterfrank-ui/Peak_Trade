@@ -25,8 +25,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     DEFAULT_TD_MODE,
     LiveCanaryInstrumentBindingError,
     REUSED_BINDING_ACCOUNT_SCOPE,
+    REUSED_BINDING_REST_HOST,
     REUSED_BINDING_VENUE,
     assert_live_canary_instrument_binding_v1,
+    public_instruments_query_path_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.exposure_v1 import (
     LiveCanaryExposureError,
@@ -35,6 +37,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.exposure_v1 import 
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_submit_state_v1 import (
     LiveCanaryPositionObservationError,
     observe_target_position_flatten_candidate_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_size_consumer_v1 import (
+    LiveCanaryMaxSizeConsumerError,
+    apply_fresh_max_size_pretrade_gate_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.venue_contract_count_v1 import (
     ORDER_PLAN_QTY_DOMAIN,
@@ -217,9 +223,17 @@ def build_minimum_valid_canary_order_plan_v1(
     ticker_payload: Mapping[str, Any],
     owner_go: str,
     origin_main_sha: str,
+    pretrade_decision_id: str,
     instrument_id: str = DEFAULT_INSTRUMENT_ID,
     side: str = DEFAULT_SIDE,
     td_mode: str = DEFAULT_TD_MODE,
+    max_size_http_status: int = 200,
+    max_size_endpoint: str = "",
+    max_size_observed_at_utc: str | None = None,
+    max_size_get_performed: bool = True,
+    max_size_auth_header_sent: bool = False,
+    max_size_historical_reuse: bool = False,
+    max_size_body_sha256: str = "",
 ) -> CanaryOrderPlanV1:
     constraints = extract_instrument_constraints_v1(
         instruments_payload=instruments_payload,
@@ -243,6 +257,28 @@ def build_minimum_valid_canary_order_plan_v1(
         )
     except LiveCanaryExposureError as exc:
         raise LiveCanaryOrderPlanError(f"UNSAFE_QUANTITY:{exc}") from exc
+    try:
+        apply_fresh_max_size_pretrade_gate_v1(
+            pretrade_decision_id=pretrade_decision_id,
+            instruments_payload=instruments_payload,
+            instrument_id=instrument_id,
+            order_type=DEFAULT_ORDER_TYPE,
+            venue_contract_count=exposure.quantity,
+            quantity_domain=exposure.quantity_domain,
+            http_status=max_size_http_status,
+            endpoint=max_size_endpoint
+            or public_instruments_query_path_v1(
+                instrument_id=instrument_id, inst_type=DEFAULT_INST_TYPE
+            ),
+            observed_at_utc=max_size_observed_at_utc,
+            get_performed=max_size_get_performed,
+            rest_host=REUSED_BINDING_REST_HOST,
+            auth_header_sent=max_size_auth_header_sent,
+            historical_reuse=max_size_historical_reuse,
+            body_sha256=max_size_body_sha256,
+        )
+    except LiveCanaryMaxSizeConsumerError as exc:
+        raise LiveCanaryOrderPlanError(f"MAX_SIZE_GATE:{exc}") from exc
     clordid = serialize_canary_clordid_v1(owner_go=owner_go, origin_main_sha=origin_main_sha)
     try:
         typed_sz = serialize_venue_sz_from_typed_contract_count_v1(
@@ -292,7 +328,7 @@ def build_minimum_valid_canary_order_plan_v1(
 # Quote-lock LIMIT policy is implemented (Z2AL). This status is only the
 # naked qty-plan / no-FlattenPricePermitV1 fail-closed gate. It is not a
 # claim that price policy awaits a separate Owner GO. Live wire remains
-# disabled. Freshness canonical default remains unbound.
+# disabled. Entry max-size freshness is per-decision GET, not a cache.
 FLATTEN_LIMIT_PRICE_GATE_STATUS = "NAKED_PX_FAIL_CLOSED_PRICE_PERMIT_REQUIRED"
 FLATTEN_NAKED_PX_FAIL_CLOSED_REASON = (
     "FLATTEN_NAKED_PX_FAIL_CLOSED:" + FLATTEN_LIMIT_PRICE_GATE_STATUS

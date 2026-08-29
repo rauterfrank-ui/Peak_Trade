@@ -385,6 +385,8 @@ def test_global_invariants_unchanged() -> None:
                 "tickSz": "0.0001",
                 "ctVal": "1",
                 "ctValCcy": "SUI",
+                "maxLmtSz": "100000000",
+                "maxMktSz": "100000",
             }
         ],
     }
@@ -394,6 +396,7 @@ def test_global_invariants_unchanged() -> None:
         ticker_payload=ticker,
         owner_go=OWNER_GO,
         origin_main_sha=ORIGIN_SHA,
+        pretrade_decision_id="test-fresh-decision-dedicated-flatten",
     )
     assert "reduceOnly" not in entry_plan.venue_native_payload
     flatten_permit = issue_canary_flatten_submit_permit_v1(

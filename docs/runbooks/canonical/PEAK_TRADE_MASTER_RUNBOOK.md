@@ -2965,6 +2965,85 @@ false. The preexisting `CALL_GRAPH_V1` / `REQUIRED_CALL_GRAPH` tuple
 inequality remains `LABEL_ONLY` and is not repaired here. Tests are
 guards, not a second semantic SSOT.
 
+Named subordinate persist for the MAX_SIZE fresh observation and
+productive consumer wiring after the closed freshness Owner-policy
+persist. This does **not** reopen restoration, add a Core owner or
+stage, implement MAX_AVAILABLE, invent a TTL or cache, reuse the #6148
+window as an operative numeric, POST, trade, or grant live authority.
+#6148 remains historically non-reusable. The persisted 20260829T210523Z
+pack is forensic evidence for this Owner-GO and is **not** an operative
+cache. Each later pretrade decision must perform its own unsigned
+public-instruments GET.
+
+``` text
+MAX_SIZE_FRESH_OBSERVATION_AND_CONSUMER_WIRING_V1=true
+SPEC=docs/ops/specs/PEAK_TRADE_MAX_SIZE_FRESH_OBSERVATION_AND_CONSUMER_WIRING_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_STATUS=PARTIAL
+VENUE_PRETRADE_LIMIT_GATES_COMPLETE=false
+MAX_SIZE_BINDING_STATUS=PROVEN
+ALL_REQUIRED_METADATA_EDGES_BOUND=false
+EARLIEST_REMAINING_UNBOUND_EDGE=MAX_AVAILABLE
+EARLIEST_REMAINING_CONFLICT=NONE
+EARLIEST_UNRESOLVED_DEPENDENCY=MAX_AVAILABLE
+MAX_SIZE_UNIT=contracts
+MAX_SIZE_NORMALIZATION_STATUS=BOUND
+MAX_SIZE_FRESHNESS_POLICY_STATUS=BOUND
+MAX_SIZE_FRESHNESS_POLICY=FRESH_GET_PER_PRETRADE_DECISION
+MAX_SIZE_CONSUMER_BOUND=true
+MAX_SIZE_CONSUMER_CAN_NOW_BE_BOUND=true
+LIMIT_MAX_SIZE_GATE_BOUND=true
+MARKET_MAX_SIZE_GATE_BOUND=true
+FAIL_CLOSED_ON_MISSING_FRESH_OBSERVATION=true
+HISTORICAL_MAX_SIZE_REUSE_ALLOWED=false
+PERSISTED_OBSERVATION_IS_OPERATIVE_CACHE=false
+HISTORICAL_REUSE_PATH_EXISTS=false
+OBSERVATION_BOUND_TO_CURRENT_DECISION_CONTRACT=true
+CURRENT_REUSABLE_MAXLMTSZ_PROVEN=false
+CURRENT_REUSABLE_MAXMKTSZ_PROVEN=false
+FRESH_MAXLMTSZ_OBSERVED=true
+FRESH_MAXLMTSZ_VALUE=100000000
+FRESH_MAXLMTSZ_DOMAIN=VENUE_CONTRACT_COUNT
+FRESH_MAXMKTSZ_OBSERVED=true
+FRESH_MAXMKTSZ_VALUE=100000
+FRESH_MAXMKTSZ_DOMAIN=VENUE_CONTRACT_COUNT
+DOMAIN_COMPATIBILITY_PROVEN=true
+ORDER_PLAN_TYPED_DOMAIN_PRESERVED=true
+NETWORK_VENUE_GET_PERFORMED=true
+NETWORK_POST_PERFORMED=false
+TRADING_PERFORMED=false
+RUNTIME_ALIGNMENT_REQUIRED=true
+RUNTIME_MUTATION_JUSTIFIED=true
+RUNTIME_MUTATION_PERFORMED=true
+CHANGED_RUNTIME_FILES=max_size_observation_v1.py,max_size_consumer_v1.py,order_plan_v1.py,submit_transport_v1.py
+CANONICAL_VENUE_PRETRADE_OWNER=section_11_13_5.order_plan_v1+exposure_v1@submit_transport_v1
+SECOND_VENUE_PRETRADE_OWNER_EXISTS=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+EXECUTION_ELIGIBLE=false
+LIVE_READINESS=EVALUATED_NOT_READY
+CURRENT_SELECTED_INSTRUMENT=SUI-USD_UM_XPERP-310404
+CURRENT_VENUE=OKX_EEA
+KRAKEN_CURRENT_CANONICAL_ROLE=NONE
+KRAKEN_EXCLUSION_CLOSED=true
+NEXT_DISTINCT_SURFACE=MAX_AVAILABLE
+NEXT_DISTINCT_SURFACE_AUTHORIZED=false
+```
+
+Normative subordinate persist:
+[`docs/ops/specs/PEAK_TRADE_MAX_SIZE_FRESH_OBSERVATION_AND_CONSUMER_WIRING_V1.md`](../../ops/specs/PEAK_TRADE_MAX_SIZE_FRESH_OBSERVATION_AND_CONSUMER_WIRING_V1.md).
+The productive pretrade consumer
+`apply_fresh_max_size_pretrade_gate_v1` is bound into
+`build_minimum_valid_canary_order_plan_v1` from the per-decision unsigned
+public-instruments GET in `submit_transport_v1`. LIMIT uses fresh
+`maxLmtSz`. MARKET uses fresh `maxMktSz`. Missing or stale freshness
+fails closed. The #6148 window remains non-reusable. Standing Live /
+Testnet / Canary authorization remain false. Tests are guards, not a
+second semantic SSOT.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:

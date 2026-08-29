@@ -105,6 +105,8 @@ INSTRUMENTS = {
             "tickSz": "0.0001",
             "ctVal": "1",
             "ctValCcy": "SUI",
+            "maxLmtSz": "100000000",
+            "maxMktSz": "100000",
         }
     ],
 }
@@ -329,6 +331,7 @@ def test_submit_transport_identity_after_contract_sizing() -> None:
         ticker_payload=TICKER,
         owner_go="OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE",
         origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        pretrade_decision_id="test-fresh-decision-typed-domain",
     )
     assert plan.quantity == "1"
     assert plan.quantity_domain == ORDER_PLAN_QTY_DOMAIN

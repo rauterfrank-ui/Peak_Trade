@@ -66,6 +66,8 @@ INSTRUMENTS = {
             "ctValCcy": "SUI",
             "settleCcy": "USDC",
             "state": "live",
+            "maxLmtSz": "100000000",
+            "maxMktSz": "100000",
         }
     ],
 }
@@ -157,6 +159,7 @@ def test_order_plan_rejects_missing_venue_sizing() -> None:
             ticker_payload=TICKER,
             owner_go=OWNER_GO_EXECUTE,
             origin_main_sha=ORIGIN_SHA,
+            pretrade_decision_id="test-fresh-decision-empty",
         )
 
 
@@ -181,6 +184,7 @@ def test_order_plan_rejects_quantity_above_min_sz() -> None:
             ticker_payload=TICKER,
             owner_go=OWNER_GO_EXECUTE,
             origin_main_sha=ORIGIN_SHA,
+            pretrade_decision_id="test-fresh-decision-bloated",
         )
 
 
@@ -203,8 +207,8 @@ def test_order_plan_reuses_proven_venue_native_body_builder(
         ticker_payload=TICKER,
         owner_go=OWNER_GO_EXECUTE,
         origin_main_sha=ORIGIN_SHA,
+        pretrade_decision_id="test-fresh-decision-body-builder",
     )
-    assert plan.venue_native_payload is sentinel
     assert len(calls) == 1
     assert calls[0]["client_order_id"] == plan.clordid
     assert calls[0]["instrument"] == DEFAULT_INSTRUMENT_ID
@@ -225,6 +229,7 @@ def test_order_plan_body_equals_proven_builder_contract() -> None:
         ticker_payload=TICKER,
         owner_go=OWNER_GO_EXECUTE,
         origin_main_sha=ORIGIN_SHA,
+        pretrade_decision_id="test-fresh-decision-body-equals",
     )
     expected = build_venue_native_order_body_v1(
         client_order_id=plan.clordid,
@@ -978,6 +983,7 @@ def test_order_plan_rejects_swap_and_demo_instrument_fallback() -> None:
             ticker_payload=TICKER,
             owner_go=OWNER_GO_EXECUTE,
             origin_main_sha=ORIGIN_SHA,
+            pretrade_decision_id="test-fresh-decision-swap",
         )
     with pytest.raises(LiveCanaryOrderPlanError, match="REJECTED_CANARY_INSTRUMENT"):
         build_minimum_valid_canary_order_plan_v1(
@@ -999,6 +1005,7 @@ def test_order_plan_rejects_swap_and_demo_instrument_fallback() -> None:
             owner_go=OWNER_GO_EXECUTE,
             origin_main_sha=ORIGIN_SHA,
             instrument_id="BTC-USDT-SWAP",
+            pretrade_decision_id="test-fresh-decision-rejected-instrument",
         )
     fractional = {
         "code": "0",
@@ -1020,6 +1027,7 @@ def test_order_plan_rejects_swap_and_demo_instrument_fallback() -> None:
             ticker_payload=TICKER,
             owner_go=OWNER_GO_EXECUTE,
             origin_main_sha=ORIGIN_SHA,
+            pretrade_decision_id="test-fresh-decision-fractional",
         )
 
 

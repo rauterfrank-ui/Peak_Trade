@@ -440,6 +440,22 @@ def test_max_size_freshness_owner_policy_decision_is_preserved() -> None:
     assert "test_peak_trade_max_size_freshness_owner_policy_decision_v1.py" in spec
 
 
+def test_max_size_fresh_observation_and_consumer_wiring_is_preserved() -> None:
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "MAX_SIZE_FRESH_OBSERVATION_AND_CONSUMER_WIRING_V1_PRESERVED=true" in spec
+    assert "CURRENT_MAX_SIZE_CONSUMER_BOUND=true" in spec
+    assert "CURRENT_MAX_SIZE_BINDING_STATUS=PROVEN" in spec
+    assert "CURRENT_MAX_SIZE_FRESHNESS_POLICY=FRESH_GET_PER_PRETRADE_DECISION" in spec
+    assert "HISTORICAL_FRESHNESS_POLICY_CONSUMER_UNBOUND_PRESERVED=true" in spec
+    assert "PERSISTED_OBSERVATION_IS_OPERATIVE_CACHE=false" in spec
+    assert "FAIL_CLOSED_ON_MISSING_FRESH_OBSERVATION=true" in spec
+    assert "CURRENT_REUSABLE_MAXLMTSZ_PROVEN=false" in spec
+    assert "CURRENT_REUSABLE_MAXMKTSZ_PROVEN=false" in spec
+    assert "LIMIT_MAX_SIZE_GATE_BOUND=true" in spec
+    assert "MARKET_MAX_SIZE_GATE_BOUND=true" in spec
+    assert "test_peak_trade_max_size_fresh_observation_and_consumer_wiring_v1.py" in spec
+
+
 def test_master_names_subordinate_preservation_spec() -> None:
     section = _section_5_3(MASTER_RUNBOOK.read_text(encoding="utf-8"))
     assert (
