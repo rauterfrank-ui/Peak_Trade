@@ -51,6 +51,8 @@ _EXISTING_GUARDS = (
     / "tests/trading/master_v2/test_master_v2_owner_composed_full_chain_host_consumption_proof_v1.py",
     REPO_ROOT
     / "tests/governance/test_historically_attested_current_system_semantic_restoration_authorization_v1.py",
+    REPO_ROOT
+    / "tests/ops/test_peak_trade_post_restoration_parallel_owner_and_skip_safety_path_quarantine_v1.py",
 )
 
 _FORBIDDEN_MAPPER_CALLS = frozenset(
@@ -247,6 +249,7 @@ def test_existing_preservation_guards_remain_present() -> None:
     hardening = _EXISTING_GUARDS[4].read_text(encoding="utf-8")
     full_chain = _EXISTING_GUARDS[5].read_text(encoding="utf-8")
     restoration_auth = _EXISTING_GUARDS[6].read_text(encoding="utf-8")
+    parallel_owner = _EXISTING_GUARDS[7].read_text(encoding="utf-8")
     for path in _EXISTING_GUARDS:
         assert path.is_file(), path
     assert "crs < safety < intent" in restore
@@ -258,6 +261,7 @@ def test_existing_preservation_guards_remain_present() -> None:
     assert "historical_exit_or_reduce_host_action_v2" in hardening
     assert "OWNER_COMPOSED" in full_chain or "owner-composed" in full_chain
     assert 'historical_reference_authority"] == "NONE"' in restoration_auth
+    assert "EVALUATE_BRIDGE_SAFETY_V2_PRODUCTIVE_OWNER=false" in parallel_owner
 
 
 def test_replay_source_keeps_29p_before_safety_before_29q() -> None:

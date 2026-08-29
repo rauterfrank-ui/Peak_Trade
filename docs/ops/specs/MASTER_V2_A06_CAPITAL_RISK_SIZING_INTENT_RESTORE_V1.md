@@ -20,6 +20,9 @@ A06_ADAPTER_COMPUTE_OWNER=false
 A06_ADAPTER_RISK_OWNER=false
 A06_ADAPTER_SIZING_OWNER=false
 A06_ADAPTER_INTENT_OWNER=false
+CRS_INTENT_RESTORE_V1_PRODUCTIVE_PATH=false
+CRS_INTENT_RESTORE_PRODUCTIVE_REACHABLE=false
+PRODUCTIVE_REPLAY_ORCHESTRATOR=false
 ```
 
 ## 1) Epistemic classes
@@ -106,7 +109,7 @@ Owners:
 | SideState writer | `trading.master_v2.double_play_state.transition_state` |
 | Capital / Risk / Sizing | `src.governance.capital_risk_sizing_v1` |
 | Position Intent | `src.governance.canonical_order_intent_v1` |
-| Composition adapter | `trading.master_v2.capital_risk_sizing_intent_restore_v1` (not an owner) |
+| Composition adapter | `trading.master_v2.capital_risk_sizing_intent_restore_v1` (not an owner; `CRS_INTENT_RESTORE_V1_PRODUCTIVE_PATH=false`) |
 
 The adapter calls `evaluate_quantity_chain_v1` once. It does not independently
 re-evaluate the envelope. Mapping chain fields onto the existing 29Q decision
