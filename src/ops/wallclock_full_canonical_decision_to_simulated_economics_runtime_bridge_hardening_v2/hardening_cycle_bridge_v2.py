@@ -22,6 +22,17 @@ from src.ops.decision_config_ownership_and_consumer_closure_v1.host_binding_v1 i
     ensure_host_decision_config_binding_v1,
     require_bound_decision_config_v1,
 )
+from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
+    CALL_GRAPH_EXIT_PRODUCER_STEP,
+    SAFETY_PRODUCER_OWNER,
+)
+from src.ops.exit_policy_producer_binding_v1.host_binding_v1 import (
+    HostExitPolicyBindingV1,
+    ensure_host_exit_policy_binding_v1,
+    evaluate_host_exit_policy_producers_v1,
+    exit_policy_config_digest_v1,
+)
+from src.ops.exit_policy_producer_binding_v1.models_v1 import ExitPolicyProducerBundleV1
 from src.ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_model_v1 import (
     PortfolioEconomicsModelParamsV1,
     SimulatedFillV1,
@@ -30,6 +41,8 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
     AI_LAYER_CAN_OVERRIDE_DECISIONS,
     AI_LAYER_NON_AUTHORITY,
     AI_LAYER_ROLE,
+    BRIDGE_SAFETY_ROLE,
+    CANONICAL_REPLAY_SAFETY_OWNER,
     CAPABILITY_ID,
     DECISION_AUTHORITY_OWNER,
     ECONOMIC_VALIDITY_PASS,
@@ -63,9 +76,10 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
     portfolio_state_hash,
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.safety_binding_v2 import (
-    evaluate_bridge_safety_v2,
+    SafetyEvaluationV2,
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.intended_action_mapper_v1 import (
+    IntendedAnalyticalActionV1,
     map_replay_result_to_intended_analytical_action_v1,
 )
 from trading.market_state.distinct_market_observation_acceptor_v1 import (
@@ -147,9 +161,9 @@ from trading.master_v2.double_play_entry_exit_policy_v0 import (
     DoublePlayEntryExitPolicyV0,
     EntryExitDirectionState,
     ExistingPositionSide,
-    PolicySignalV0,
     PositionState,
     ReconciliationState,
+    SafetyMode,
 )
 from trading.master_v2.double_play_futures_input import FuturesMarketType
 from trading.master_v2.double_play_state import SideState
@@ -183,12 +197,140 @@ def derive_required_window_complete_v2(*, warmup_complete: bool, features_ok: bo
     return bool(warmup_complete)
 
 
+_EXIT_REDUCE_ACTIONS = frozenset({"EXIT", "REDUCE"})
+_EXIT_REDUCE_OUTCOMES = frozenset({"exit", "reduce"})
+_NEW_EXPOSURE_GUARD_REASON = "DOWNSTREAM_NEW_EXPOSURE_NOT_ELIGIBLE"
+
+
+def historical_exit_or_reduce_host_action_v2(
+    *,
+    intent_action: str,
+    decision_outcome: str,
+) -> bool:
+    """True when host action is a historical EXIT/REDUCE, not new exposure."""
+    action = str(intent_action or "").strip().upper()
+    outcome = str(decision_outcome or "").strip().lower()
+    if action in _EXIT_REDUCE_ACTIONS:
+        return True
+    if action.startswith("EXIT") or action.startswith("REDUCE"):
+        return True
+    return outcome in _EXIT_REDUCE_OUTCOMES
+
+
+def apply_hardening_v2_downstream_new_exposure_guard_v2(
+    intended: IntendedAnalyticalActionV1 | Mapping[str, Any],
+    *,
+    producer_safety_result: str,
+    warmup_complete: bool,
+) -> dict[str, Any]:
+    """Fail-closed execution eligibility for new exposure only.
+
+    Does not rewrite Replay decision_outcome, SideState, sizing, or CanonicalOrderIntent.
+    Must not suppress historical EXIT/REDUCE mapped BUY/SELL.
+    """
+    intended_dict = (
+        intended.to_dict() if isinstance(intended, IntendedAnalyticalActionV1) else dict(intended)
+    )
+    side = str(intended_dict.get("intended_side") or "")
+    if side not in {"BUY", "SELL"}:
+        return intended_dict
+    if historical_exit_or_reduce_host_action_v2(
+        intent_action=str(intended_dict.get("intent_action") or ""),
+        decision_outcome=str(intended_dict.get("decision_outcome") or ""),
+    ):
+        return intended_dict
+    if str(producer_safety_result) in {"BLOCKED", "EXIT_ONLY"} or not bool(warmup_complete):
+        reasons = list(intended_dict.get("reason_codes") or [])
+        if _NEW_EXPOSURE_GUARD_REASON not in reasons:
+            reasons.append(_NEW_EXPOSURE_GUARD_REASON)
+        return {
+            **intended_dict,
+            "intended_side": "HOLD",
+            "intended_quantity": "0",
+            "quantity_source": "downstream_new_exposure_execution_guard",
+            "reason_codes": reasons,
+        }
+    return intended_dict
+
+
+def _safety_evaluation_from_cap65_bundle_v2(
+    bundle: ExitPolicyProducerBundleV1,
+) -> SafetyEvaluationV2:
+    """Adapt Cap 6.5 producer outputs to existing cycle evidence shape.
+
+    Not a second Replay Safety evaluation. Bridge safety remains INPUT_PRODUCER_ONLY.
+    """
+    mode = str(bundle.safety_mode)
+    if mode == SafetyMode.BLOCKED.value:
+        safety_result = "BLOCKED"
+    elif mode == SafetyMode.EXIT_ONLY.value:
+        safety_result = "EXIT_ONLY"
+    else:
+        safety_result = "PASS"
+    veto = str(bundle.safety_exit.reason_code or "")
+    if not veto and safety_result == "EXIT_ONLY":
+        veto = "WARMUP_OR_REGIME_INCOMPLETE"
+    if not veto and safety_result == "BLOCKED":
+        veto = str(bundle.hard_risk_reduction.reason_code or "")
+    return SafetyEvaluationV2(
+        safety_mode=mode,
+        trading_gate=str(bundle.trading_gate),
+        safety_exit_signal={
+            "triggered": bool(bundle.safety_exit.triggered),
+            "reason_code": str(bundle.safety_exit.reason_code or ""),
+        },
+        hard_risk_reduction_signal={
+            "triggered": bool(bundle.hard_risk_reduction.triggered),
+            "reason_code": str(bundle.hard_risk_reduction.reason_code or ""),
+        },
+        veto_reason=veto,
+        safety_inputs={
+            "evaluation_owner": SAFETY_PRODUCER_OWNER,
+            "bridge_safety_role": BRIDGE_SAFETY_ROLE,
+            "canonical_replay_safety_owner": CANONICAL_REPLAY_SAFETY_OWNER,
+        },
+        safety_result=safety_result,
+        evaluation_bound=bool(bundle.evaluation_bound),
+    )
+
+
+def _portfolio_position_fields_v2(
+    state: "HardenedBridgeSessionStateV2",
+) -> tuple[bool, str, float | None]:
+    snap = state.portfolio.snapshot()
+    positions = (snap.get("state") or {}).get("positions") or {}
+    pos = positions.get(state.instrument_id) or {}
+    try:
+        qty = Decimal(str(pos.get("quantity", "0")))
+    except Exception:  # noqa: BLE001
+        qty = Decimal("0")
+    has_open = qty != 0
+    if qty > 0:
+        side = ExistingPositionSide.LONG.value
+    elif qty < 0:
+        side = ExistingPositionSide.SHORT.value
+    else:
+        side = ExistingPositionSide.NONE.value
+    entry_raw = pos.get("avg_entry_price")
+    entry_price: float | None
+    try:
+        entry_price = (
+            float(entry_raw) if entry_raw is not None and Decimal(str(entry_raw)) != 0 else None
+        )
+    except Exception:  # noqa: BLE001
+        entry_price = None
+    if not has_open:
+        entry_price = None
+    return has_open, side, entry_price
+
+
 CALL_GRAPH_V2: tuple[str, ...] = (
     "okx_public_market_data",
     CALL_GRAPH_CONFIG_BIND_STEP,
     "feature_pipeline",
     "regime_pipeline",
     "canonical_volatility_productive_runtime_cmc_typed_binding",
+    CALL_GRAPH_EXIT_PRODUCER_STEP,
     "master_v2_double_play_integrated_offline_replay",
     "risk_position_sizing",
     "safety_kernel",
@@ -401,6 +543,7 @@ class HardenedBridgeSessionStateV2:
     )
     decision_config_state_root: str | None = None
     decision_config_repository_sha: str = _HARDENING_V2_DECISION_CONFIG_REPOSITORY_SHA
+    exit_policy_binding: HostExitPolicyBindingV1 = field(default_factory=HostExitPolicyBindingV1)
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -527,15 +670,55 @@ def run_hardened_bridge_cycle_v2(
     )
     features = compute_feature_regime_from_mid_prices_v2(state.mid_prices)
     metrics0 = state.portfolio.economic_metrics()
-    safety = evaluate_bridge_safety_v2(
-        killstate_active=state.killstate_active,
-        killstate_trigger=state.killstate_trigger,
-        warmup_complete=features.warmup_complete,
-        regime_ok=features.ok,
-        price_basis_ok=basis.mid_price > 0,
-        max_drawdown=float(metrics0.drawdown),
-        bridge_enabled=True,
+    has_open_position, position_side, entry_price = _portfolio_position_fields_v2(state)
+    ensure_host_exit_policy_binding_v1(
+        state.exit_policy_binding,
+        instrument_id=state.instrument_id,
+        repository_sha=str(
+            state.decision_config_repository_sha or _HARDENING_V2_DECISION_CONFIG_REPOSITORY_SHA
+        ),
+        config_digest=exit_policy_config_digest_v1(
+            adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
+            profit_protection_distance=float(decision_cfg.up_distance),
+        ),
+        state_root=None,
     )
+    _exit_bundle, exit_signals, _exit_safety_mode, _exit_trading_gate = (
+        evaluate_host_exit_policy_producers_v1(
+            state.exit_policy_binding,
+            mark_price=float(features.mark_price or basis.mid_price),
+            event_ts_unix=float(event_ts_unix),
+            observation_digest="",
+            has_open_position=has_open_position,
+            existing_position_side=position_side,
+            entry_price=entry_price,
+            entry_event_time=(
+                float(state.exit_policy_binding.entry_event_time)
+                if state.exit_policy_binding.entry_event_time is not None
+                else float(event_ts_unix)
+                if has_open_position
+                else None
+            ),
+            entry_trading_epoch=(
+                int(state.exit_policy_binding.entry_trading_epoch)
+                if state.exit_policy_binding.entry_trading_epoch is not None
+                else int(state.trading_epoch)
+                if has_open_position
+                else None
+            ),
+            data_integrity_trusted=True,
+            adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
+            profit_protection_distance=float(decision_cfg.up_distance),
+            killstate_active=bool(state.killstate_active),
+            killstate_trigger=str(state.killstate_trigger or ""),
+            warmup_complete=bool(features.warmup_complete),
+            regime_ok=bool(features.ok),
+            price_basis_ok=bool(basis.mid_price > 0),
+            max_drawdown=float(metrics0.drawdown),
+        )
+    )
+    _ = (_exit_safety_mode, _exit_trading_gate)
+    safety = _safety_evaluation_from_cap65_bundle_v2(_exit_bundle)
 
     params = state.portfolio.model.params
     config_digest = build_config_bundle_digest(
@@ -709,12 +892,12 @@ def run_hardened_bridge_cycle_v2(
         existing_position_side=state.existing_position_side,
         venue_flat=state.venue_flat,
         cooldown_pass=True,
-        scope_adverse_exit_signal=PolicySignalV0(triggered=False),
-        profit_protection_signal=PolicySignalV0(triggered=False),
-        time_exit_signal=PolicySignalV0(triggered=False),
-        strategy_invalidation_signal=PolicySignalV0(triggered=False),
-        hard_risk_reduction_signal=safety.hard_risk_signal_obj,
-        safety_exit_signal=safety.safety_exit_signal_obj,
+        scope_adverse_exit_signal=exit_signals["scope_adverse_exit_signal"],
+        profit_protection_signal=exit_signals["profit_protection_signal"],
+        time_exit_signal=exit_signals["time_exit_signal"],
+        strategy_invalidation_signal=exit_signals["strategy_invalidation_signal"],
+        hard_risk_reduction_signal=exit_signals["hard_risk_reduction_signal"],
+        safety_exit_signal=exit_signals["safety_exit_signal"],
         policies=_default_policies(),
         component_versions=_component_versions(),
         policy_versions=_policy_versions(),
@@ -750,38 +933,11 @@ def run_hardened_bridge_cycle_v2(
             "reason_codes": ["FORCED_WIRING_FIXTURE"],
         }
     else:
-        # Non-actionable if safety veto or incomplete regime/warmup.
-        if safety.safety_result in {"BLOCKED", "EXIT_ONLY"} and intended.intended_side in {
-            "BUY",
-            "SELL",
-        }:
-            if safety.safety_result == "BLOCKED" or (
-                safety.safety_result == "EXIT_ONLY" and intended.intent_action.startswith("ENTER")
-            ):
-                intended_dict = {
-                    "intended_side": "HOLD",
-                    "intended_quantity": "0",
-                    "decision_outcome": str(intended.decision_outcome),
-                    "selected_side": intended.selected_side,
-                    "intent_action": intended.intent_action,
-                    "quantity_source": "safety_veto",
-                    "safety_blocked": True,
-                    "reason_codes": list(intended.reason_codes)
-                    + [safety.veto_reason or "SAFETY_VETO"],
-                }
-            else:
-                intended_dict = intended.to_dict()
-        else:
-            intended_dict = intended.to_dict()
-            if not features.warmup_complete:
-                intended_dict = {
-                    **intended_dict,
-                    "intended_side": "HOLD",
-                    "intended_quantity": "0",
-                    "quantity_source": "insufficient_history",
-                    "reason_codes": list(intended_dict.get("reason_codes") or [])
-                    + ["INSUFFICIENT_HISTORY"],
-                }
+        intended_dict = apply_hardening_v2_downstream_new_exposure_guard_v2(
+            intended,
+            producer_safety_result=str(safety.safety_result),
+            warmup_complete=bool(features.warmup_complete),
+        )
 
     before_hash = portfolio_state_hash(state.portfolio.snapshot())
     fill_id = None
@@ -882,6 +1038,9 @@ def run_hardened_bridge_cycle_v2(
         "risk_sizing_result": sizing_result,
         "safety_evaluation": safety.to_dict(),
         "safety_result": safety.safety_result,
+        "bridge_safety_role": BRIDGE_SAFETY_ROLE,
+        "canonical_replay_safety_owner": CANONICAL_REPLAY_SAFETY_OWNER,
+        "cap65_exit_producers": _exit_bundle.to_dict(),
         "intended_action": {
             **intended_dict,
             "session_id": session_id,
@@ -935,6 +1094,7 @@ def run_hardened_bridge_cycle_v2(
             "NO_ORDERS",
             "NO_IMPLICIT_RESUME",
             "SAFETY_KERNEL_REAL_EVALUATION_BOUND",
+            "BRIDGE_SAFETY_INPUT_PRODUCER_ONLY",
             "AI_LAYER_NON_AUTHORITY",
         ],
     }
