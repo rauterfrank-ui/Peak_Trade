@@ -35,6 +35,23 @@ ECONOMIC_GATE_REMAINS_FAIL_CLOSED=true
 AUTHORITY_EFFECT=NONE
 ```
 
+Current restored-baseline overlay (this inventory snapshot is preserved; it
+is **not** rewritten). Historical `REACHABLE_PRODUCTIVE` / `UNRESOLVED`
+labels remain technical inventory. They are not owner-graph authorization
+for the restored Master V2 / Double Play productive host.
+
+```text
+HISTORICAL_INVENTORY_SNAPSHOT_PRESERVED=true
+CURRENT_NORMATIVE_EFFECT_AS_CANONICAL_PRODUCTIVE_RISK_OWNER=REJECTED_BY_RESTORED_BASELINE
+LEGACY_STRATEGY_POSITION_SIZERS_CANONICAL_RISK_OWNER=false
+LEGACY_STRATEGY_POSITION_SIZERS_PRODUCTIVE_HOST_REACHABLE=false
+LEGACY_STRATEGY_POSITION_SIZERS_ROLE=RESEARCH_BACKTEST_NON_PRODUCTIVE
+REACHABLE_PRODUCTIVE_IN_THIS_INVENTORY=HISTORICAL_TECHNICAL_CAPABILITY_INVENTORY_NOT_OWNER_GRAPH_AUTHORIZATION
+RESTORED_PRODUCTIVE_RISK_OWNER=STEP-29P / src.governance.capital_risk_sizing_v1
+THIS_SLICE_DOES_NOT_CONSOLIDATE_REPO_WIDE_SIZING=true
+SEE_ALSO=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_REMAINING_P0_QUARANTINE_V1.md
+```
+
 **INVENTORY ONLY — NOT CONSOLIDATED.** This slice does **not** claim Risk/Sizing is consolidated, does not rewire owners, and does not change sizing formulas, risk limits, leverage, notional, quantity, stop rules, trading-core semantics, runtime bridge, live/order flags, or the economic gate. The surface contract below is an **inventory / drift freeze only**.
 
 ## 1. Executive Summary

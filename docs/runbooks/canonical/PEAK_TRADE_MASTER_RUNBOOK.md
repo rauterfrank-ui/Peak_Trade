@@ -2179,6 +2179,41 @@ CRS_SAFETY_INTENT_RESTORE_V1 remain non-productive. Integrated Replay remains
 the sole productive owner graph. 29P → Replay Safety → 29Q remains the
 productive order.
 
+Named subordinate quarantine for the two remaining post-PR-6141 P0 residual
+surfaces. This does **not** reopen restoration, add an owner or stage, or
+grant live or execution authority.
+
+``` text
+REMAINING_P0_QUARANTINE_V1=true
+SPEC=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_REMAINING_P0_QUARANTINE_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+LEGACY_STRATEGY_POSITION_SIZERS_PRODUCTIVE_HOST_REACHABLE=false
+LEGACY_STRATEGY_POSITION_SIZERS_CANONICAL_RISK_OWNER=false
+LEGACY_STRATEGY_POSITION_SIZERS_ROLE=RESEARCH_BACKTEST_NON_PRODUCTIVE
+INDEPENDENT_PRE_TRADE_SAFETY_KERNEL_PRODUCTIVE_REPLAY_REACHABLE=false
+INDEPENDENT_PRE_TRADE_SAFETY_KERNEL_REPLAY_SAFETY_OWNER=false
+INDEPENDENT_PRE_TRADE_SAFETY_KERNEL_ROLE=NON_AUTHORIZING_NON_REPLAY_SAFETY
+SECOND_COMPUTE_OWNER_EXISTS=false
+SECOND_RISK_OWNER_EXISTS=false
+SECOND_SAFETY_OWNER_EXISTS=false
+SECOND_INTENT_OWNER_EXISTS=false
+NO_29Q_BEFORE_SAFETY=true
+RESTORATION_REOPEN_REQUIRED=false
+CHANGED_RUNTIME_FILES=NONE
+RUNTIME_DECOUPLING_REQUIRED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+```
+
+Normative subordinate quarantine:
+[`docs/ops/specs/PEAK_TRADE_POST_RESTORATION_REMAINING_P0_QUARANTINE_V1.md`](../../ops/specs/PEAK_TRADE_POST_RESTORATION_REMAINING_P0_QUARANTINE_V1.md).
+Legacy strategy position sizers remain research/backtest-only and are not
+the restored Risk owner. The independent pre-trade safety kernel remains
+`NON_AUTHORIZING` and is not Replay Safety. STEP-29P remains the sole
+productive Risk/Sizing owner. Replay Safety remains the sole Safety owner.
+29P → Replay Safety → 29Q remains the productive order.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:

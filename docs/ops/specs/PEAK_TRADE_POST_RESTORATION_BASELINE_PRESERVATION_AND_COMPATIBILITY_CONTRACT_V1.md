@@ -309,6 +309,7 @@ PROPOSED_SAFE_ACTION=
 | Restoration admission; forensic AUTHORITY=NONE | restoration admission spec + JSON grant | `tests/governance/test_historically_attested_current_system_semantic_restoration_authorization_v1.py` | true |
 | Forensic package AUTHORITY=NONE | `AUTHORITY_NONE.txt` in historical-reference package | package files + restoration grant | true |
 | Parallel-owner / skip-safety residual quarantine | Master §5.3; parallel-owner quarantine spec | `tests/ops/test_peak_trade_post_restoration_parallel_owner_and_skip_safety_path_quarantine_v1.py` | true |
+| Remaining P0 sizer / independent-kernel quarantine | Master §5.3; remaining-P0 quarantine spec | `tests/ops/test_peak_trade_post_restoration_remaining_p0_quarantine_v1.py` | true |
 
 ## 13) Missing protection closed by this contract
 
