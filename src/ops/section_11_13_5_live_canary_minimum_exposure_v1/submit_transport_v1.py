@@ -20,6 +20,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     CANARY_SUBMIT_TRANSPORT_SCOPE,
     DEFAULT_INST_TYPE,
     DEFAULT_INSTRUMENT_ID,
+    DEFAULT_ORDER_TYPE,
     ENDPOINT_ORDERS_HISTORY,
     ENDPOINT_SUBMIT,
     GENERAL_LIVE_SUBMIT_UNLOCKED,
@@ -65,9 +66,16 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_sig
     build_okx_live_canary_auth_headers_v1,
     serialize_signed_post_body_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_available_observation_v1 import (
+    LiveCanaryMaxAvailableObservationError,
+    account_max_size_query_path_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.order_plan_v1 import (
     LiveCanaryOrderPlanError,
     build_minimum_valid_canary_order_plan_v1,
+    extract_instrument_constraints_v1,
+    extract_reference_price_v1,
+    quantize_limit_price_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_submit_state_v1 import (
     LiveCanaryPreSubmitStateError,
@@ -320,6 +328,48 @@ def run_canary_submit_transport_v1(
         except LiveCanaryHttpError as exc:
             raise LiveCanarySubmitTransportError(f"MAX_SIZE_FRESH_GET_BODY:{exc}") from exc
         ticker = _signed_get(client=client, handle=handle, endpoint=tick_ep)
+        side = str(cfg.payload.get("side") or "BUY")
+        td_mode = str(cfg.payload.get("td_mode") or "cross")
+        try:
+            constraints = extract_instrument_constraints_v1(
+                instruments_payload=instruments, instrument_id=instrument_id
+            )
+            reference = extract_reference_price_v1(ticker_payload=ticker)
+            limit_px = quantize_limit_price_v1(
+                reference_price=reference, tick_sz=constraints["tickSz"]
+            )
+        except LiveCanaryOrderPlanError as exc:
+            raise LiveCanarySubmitTransportError(
+                f"ORDER_PLAN_FAIL_CLOSED_BEFORE_POST:{exc}"
+            ) from exc
+        try:
+            max_avail_ep = account_max_size_query_path_v1(
+                instrument_id=instrument_id,
+                td_mode=td_mode,
+                px=limit_px,
+                order_type=DEFAULT_ORDER_TYPE,
+            )
+        except LiveCanaryMaxAvailableObservationError as exc:
+            raise LiveCanarySubmitTransportError(f"MAX_AVAILABLE_GATE:{exc}") from exc
+        max_avail_headers = {"User-Agent": USER_AGENT_CANARY}
+        try:
+            max_avail_url = f"{client.rest_base.rstrip('/')}{max_avail_ep}"
+            max_avail_headers = build_okx_live_canary_auth_headers_v1(
+                handle=handle, url=max_avail_url, method="GET"
+            )
+            max_avail_response = client.get(endpoint=max_avail_ep, headers=max_avail_headers)
+        except LiveCanaryHttpError as exc:
+            raise LiveCanarySubmitTransportError(f"MAX_AVAILABLE_FRESH_GET_FAILED:{exc}") from exc
+        finally:
+            max_avail_headers.clear()
+        if int(max_avail_response.status_code) != 200:
+            raise LiveCanarySubmitTransportError(
+                f"MAX_AVAILABLE_FRESH_GET_HTTP:{max_avail_response.status_code}"
+            )
+        try:
+            max_available_payload = parse_json_object_v1(max_avail_response.body_bytes)
+        except LiveCanaryHttpError as exc:
+            raise LiveCanarySubmitTransportError(f"MAX_AVAILABLE_FRESH_GET_BODY:{exc}") from exc
         try:
             plan = build_minimum_valid_canary_order_plan_v1(
                 instruments_payload=instruments,
@@ -328,14 +378,22 @@ def run_canary_submit_transport_v1(
                 origin_main_sha=origin_main_sha,
                 pretrade_decision_id=pretrade_decision_id,
                 instrument_id=instrument_id,
-                side=str(cfg.payload.get("side") or "BUY"),
-                td_mode=str(cfg.payload.get("td_mode") or "cross"),
+                side=side,
+                td_mode=td_mode,
                 max_size_http_status=int(inst_response.status_code),
                 max_size_endpoint=inst_ep,
                 max_size_observed_at_utc=observed_at,
                 max_size_get_performed=True,
                 max_size_auth_header_sent=False,
                 max_size_historical_reuse=False,
+                max_available_payload=max_available_payload,
+                max_available_http_status=int(max_avail_response.status_code),
+                max_available_endpoint=max_avail_ep,
+                max_available_observed_at_utc=observed_at,
+                max_available_get_performed=True,
+                max_available_auth_header_sent=True,
+                max_available_historical_reuse=False,
+                max_available_px_sent=limit_px,
             )
         except LiveCanaryOrderPlanError as exc:
             raise LiveCanarySubmitTransportError(

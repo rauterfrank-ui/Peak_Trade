@@ -38,6 +38,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_submit_state_v1
     LiveCanaryPositionObservationError,
     observe_target_position_flatten_candidate_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_available_consumer_v1 import (
+    LiveCanaryMaxAvailableConsumerError,
+    apply_fresh_max_available_pretrade_gate_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_size_consumer_v1 import (
     LiveCanaryMaxSizeConsumerError,
     apply_fresh_max_size_pretrade_gate_v1,
@@ -234,6 +238,15 @@ def build_minimum_valid_canary_order_plan_v1(
     max_size_auth_header_sent: bool = False,
     max_size_historical_reuse: bool = False,
     max_size_body_sha256: str = "",
+    max_available_payload: Mapping[str, Any] | None = None,
+    max_available_http_status: int = 200,
+    max_available_endpoint: str = "",
+    max_available_observed_at_utc: str | None = None,
+    max_available_get_performed: bool = False,
+    max_available_auth_header_sent: bool = True,
+    max_available_historical_reuse: bool = False,
+    max_available_body_sha256: str = "",
+    max_available_px_sent: str = "",
 ) -> CanaryOrderPlanV1:
     constraints = extract_instrument_constraints_v1(
         instruments_payload=instruments_payload,
@@ -279,6 +292,28 @@ def build_minimum_valid_canary_order_plan_v1(
         )
     except LiveCanaryMaxSizeConsumerError as exc:
         raise LiveCanaryOrderPlanError(f"MAX_SIZE_GATE:{exc}") from exc
+    try:
+        apply_fresh_max_available_pretrade_gate_v1(
+            pretrade_decision_id=pretrade_decision_id,
+            payload=max_available_payload or {},
+            instrument_id=instrument_id,
+            side=side,
+            td_mode=td_mode,
+            venue_contract_count=exposure.quantity,
+            quantity_domain=exposure.quantity_domain,
+            http_status=max_available_http_status,
+            endpoint=max_available_endpoint,
+            px_sent=max_available_px_sent or limit_px,
+            observed_at_utc=max_available_observed_at_utc,
+            get_performed=max_available_get_performed,
+            rest_host=REUSED_BINDING_REST_HOST,
+            auth_header_sent=max_available_auth_header_sent,
+            historical_reuse=max_available_historical_reuse,
+            body_sha256=max_available_body_sha256,
+            order_type=DEFAULT_ORDER_TYPE,
+        )
+    except LiveCanaryMaxAvailableConsumerError as exc:
+        raise LiveCanaryOrderPlanError(f"MAX_AVAILABLE_GATE:{exc}") from exc
     clordid = serialize_canary_clordid_v1(owner_go=owner_go, origin_main_sha=origin_main_sha)
     try:
         typed_sz = serialize_venue_sz_from_typed_contract_count_v1(

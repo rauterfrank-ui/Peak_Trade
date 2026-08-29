@@ -49,6 +49,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.order_plan_v1 impor
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.venue_contract_count_v1 import (
     ORDER_PLAN_QTY_DOMAIN,
 )
+from tests.ops.test_section_11_13_5_canary_submit_transport_v1 import (
+    _max_available_plan_kwargs,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MASTER_RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
@@ -256,6 +259,7 @@ def test_typed_order_plan_domain_preserved_and_plan_gate_wired() -> None:
         owner_go="OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE",
         origin_main_sha="ae302d2b4c0425c4d42ece494d1b5996a9e54243",
         pretrade_decision_id="decision-plan",
+        **_max_available_plan_kwargs(),
     )
     assert plan.quantity_domain == ORDER_PLAN_QTY_DOMAIN
     assert plan.quantity == "1"
