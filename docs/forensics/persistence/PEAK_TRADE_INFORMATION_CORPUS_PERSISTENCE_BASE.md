@@ -145,6 +145,7 @@ BROAD_REDISCOVERY_REQUIRES_INSUFFICIENCY_FINDING=true
 | `inventories&#47;P1_SET_SNAPSHOT_FILE_IDENTITY_ENUMERATION_EXHAUSTION_OBSERVATION_V1.json` | Additive persist of Owner-selected `SNAPSHOT_FILE_IDENTITY_ENUMERATION_EXHAUSTION_V1` plus P1_SET snapshot completeness/exhaustion proof (AUTHORITY=NONE; does not overwrite A-OBS-FSC-POLICY or A-PER-P1INV; 129 path identities not collapsed onto 125 SHA; scoped exclusion `docs&#47;forensics&#47;persistence&#47;` remains; live growth is not P1 membership; Census-48 remains unresolved historical assertion; global closed universe remains unproven; index entry is not global completeness proof; 70 was the count after the FSC-policy observation file) |
 | `inventories&#47;P5_SET_SNAPSHOT_FILE_IDENTITY_ENUMERATION_EXHAUSTION_OBSERVATION_V1.json` | Additive persist of Owner-selected `P5_SNAPSHOT_FILE_IDENTITY_ENUMERATION_EXHAUSTION_V1` plus P5_SET snapshot completeness/exhaustion proof (AUTHORITY=NONE; does not overwrite A-OBS-FSC-POLICY, A-OBS-P1-EXH, A-PER-P5INV, or A-PER-XFACTS; 44 file_locator identities not collapsed onto 28 P5-only locators or 27 P5-only SHA; 42 full-P5 SHA is fingerprint not membership; BYTE_IDENTICAL P5/P1 relations remain dual identity; P2 remains unresolved not empty; live Documents tree is not P5 membership; Census-48 remains unresolved historical assertion; global closed universe remains unproven; index entry is not global completeness proof; 71 was the count after the P1 exhaustion observation file) |
 | `inventories&#47;P6_5189_PREIMAGE_RECOVERY_NEGATIVE_FINDINGS_AND_1067_LOCATOR_BINDING_OBSERVATION_V1.json` | Additive persist of bounded P6 historical preimage-recovery negative findings plus lossless M4_1067 relative_locator replica (AUTHORITY=NONE; original 17b8d1bb source identity not collapsed onto this replica; 1067 locators are not 5185/5189/5190/5011 membership and are not the census SHA preimage; current locator absence is not historical non-existence; examined-surface pattern miss is not PREIMAGE_DOES_NOT_EXIST; search-surface exhaustion is not source-set exhaustion; P1/P5 membership and closure unchanged; Census-48 remains unresolved; global closed universe remains unproven; index entry is not completeness proof; 72 was the count after the P5 exhaustion observation file) |
+| `inventories&#47;P6_5189_FINAL_SURVIVING_COPY_RECOVERY_AND_EVIDENCE_BOUNDARY_OBSERVATION_V1.json` | Additive persist of recovered census/review producer provenance plus bounded final local surviving-copy recovery and evidence-boundary (AUTHORITY=NONE; does not rewrite A-OBS-P6-PREIMAGE-1067; producer non-materialization is not global nonexistence; local recovery-path EXHAUSTED is not source-set exhaustion, not P6 CU, and not 5011 membership; P2 remains unresolved not empty; APFS OS-update snapshot content not examined due to access boundary; P1/P5 membership and closure unchanged; Census-48 remains unresolved; global closed universe remains unproven; index entry is not completeness proof; 73 was the count after the P6 preimage-recovery 1067 observation file) |
 
 ```text
 PRE_LAYER_COMPLETENESS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=36
@@ -216,6 +217,8 @@ PRE_P5_SET_SNAPSHOT_EXHAUSTION_FILE_PERSISTENCE_ARTIFACT_COUNT=71
 POST_P5_SET_SNAPSHOT_EXHAUSTION_FILE_PERSISTENCE_ARTIFACT_COUNT=72
 PRE_P6_PREIMAGE_RECOVERY_1067_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=72
 POST_P6_PREIMAGE_RECOVERY_1067_FILE_PERSISTENCE_ARTIFACT_COUNT=73
+PRE_P6_SURVIVING_COPY_BOUNDARY_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=73
+POST_P6_SURVIVING_COPY_BOUNDARY_FILE_PERSISTENCE_ARTIFACT_COUNT=74
 COUNT_39_IS_PRE_CLASS_A_SNAPSHOT_NOT_CURRENT=true
 COUNT_40_IS_INTERMEDIATE_AFTER_CLASS_A_FILE_NOT_COLLAPSED_ONTO_41=true
 COUNT_41_IS_PRE_CENSUS_WORKPACKAGE_SNAPSHOT_NOT_POST_CENSUS_CURRENT=true
@@ -248,7 +251,8 @@ COUNT_69_IS_INTERMEDIATE_AFTER_SCOPING_CONTRACT_NOT_COLLAPSED_ONTO_70=true
 COUNT_70_IS_POST_FSC_POLICY_OBSERVATION_NOT_COLLAPSED_ONTO_71=true
 COUNT_71_IS_POST_P1_EXHAUSTION_NOT_COLLAPSED_ONTO_72=true
 COUNT_72_IS_POST_P5_EXHAUSTION_NOT_COLLAPSED_ONTO_73=true
-COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_AND_46_AND_47_AND_50_AND_51_AND_52_AND_53_AND_54_AND_55_AND_56_AND_57_AND_58_AND_59_AND_60_AND_61_AND_62_AND_63_AND_64_AND_65_AND_66_AND_67_AND_68_AND_69_AND_70_AND_71_AND_72_NOT_COLLAPSED=true
+COUNT_73_IS_POST_P6_PREIMAGE_1067_NOT_COLLAPSED_ONTO_74=true
+COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_AND_46_AND_47_AND_50_AND_51_AND_52_AND_53_AND_54_AND_55_AND_56_AND_57_AND_58_AND_59_AND_60_AND_61_AND_62_AND_63_AND_64_AND_65_AND_66_AND_67_AND_68_AND_69_AND_70_AND_71_AND_72_AND_73_NOT_COLLAPSED=true
 INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF=true
 INDEX_ENTRY_IS_NOT_ADJUDICATION=true
 NAVIGATION_ONLY=true
