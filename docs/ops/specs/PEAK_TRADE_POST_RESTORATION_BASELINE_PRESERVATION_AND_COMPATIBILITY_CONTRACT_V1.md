@@ -319,6 +319,7 @@ PROPOSED_SAFE_ACTION=
 | Post-6148 MAX_SIZE unit adjudication | Master §5.3; post-6148 MAX_SIZE unit adjudication spec | `tests/ops/test_peak_trade_post_6148_max_size_unit_adjudication_v1.py` | true |
 | Post-6149 MAX_SIZE normalization adjudication | Master §5.3; post-6149 MAX_SIZE normalization adjudication spec | `tests/ops/test_peak_trade_post_6149_max_size_normalization_adjudication_v1.py` | true |
 | Order-plan typed contract-count domain closure | Master §5.3; order-plan typed contract-count domain closure spec | `tests/ops/test_peak_trade_order_plan_typed_contract_count_domain_closure_v1.py` | true |
+| MAX_SIZE freshness Owner-policy decision | Master §5.3; MAX_SIZE freshness Owner-policy decision spec | `tests/ops/test_peak_trade_max_size_freshness_owner_policy_decision_v1.py` | true |
 
 Named preservation invariants for the closed simulated-execution
 adjudication. This contract does not itself perform that adjudication and
@@ -451,6 +452,37 @@ ONE_CONTRACT_EQUALS_ONE_SUI_REMAINS_FALSE=true
 MAX_SIZE_BINDING_REMAINS_PARTIALLY_BOUND=true
 MAX_SIZE_CONSUMER_REMAINS_UNBOUND=true
 MAX_SIZE_FRESHNESS_POLICY_REMAINS_UNBOUND=true
+CURRENT_OKX_VENUE_IDENTITY_PRESERVED=true
+KRAKEN_NOT_CURRENT_CANONICAL_VENUE=true
+```
+
+Named preservation invariants for the persisted MAX_SIZE freshness
+Owner-policy decision. This contract does not itself perform that
+decision, does not implement a max-size consumer, does not authorize a
+venue GET, and does not grant live or execution authority. The #6151
+persist remains historically `MAX_SIZE_FRESHNESS_POLICY=UNBOUND` for
+that typed-domain slice. The #6148 GET window remains historically
+non-operative.
+
+```text
+MAX_SIZE_FRESHNESS_OWNER_POLICY_DECISION_V1_PRESERVED=true
+CURRENT_MAX_SIZE_UNIT_BOUND=true
+CURRENT_MAX_SIZE_UNIT=contracts
+CURRENT_MAX_SIZE_NORMALIZATION_BOUND=true
+CURRENT_MAX_SIZE_FRESHNESS_POLICY_BOUND=true
+CURRENT_MAX_SIZE_FRESHNESS_POLICY=FRESH_GET_PER_PRETRADE_DECISION
+HISTORICAL_6151_MAX_SIZE_FRESHNESS_POLICY_UNBOUND_PRESERVED=true
+HISTORICAL_MAX_SIZE_REUSE_ALLOWED=false
+PERSISTED_OBSERVATION_IS_OPERATIVE_CACHE=false
+FIXED_TTL_DEFINED=false
+EVENT_INVALIDATED_CACHE_DEFINED=false
+FAIL_CLOSED_ON_MISSING_FRESH_OBSERVATION=true
+CURRENT_REUSABLE_MAXLMTSZ_PROVEN=false
+CURRENT_REUSABLE_MAXMKTSZ_PROVEN=false
+MAX_SIZE_CONSUMER_CAN_NOW_BE_BOUND=true
+MAX_SIZE_BINDING_REMAINS_PARTIALLY_BOUND=true
+MAX_SIZE_CONSUMER_REMAINS_UNBOUND=true
+ONE_CONTRACT_EQUALS_ONE_SUI_REMAINS_FALSE=true
 CURRENT_OKX_VENUE_IDENTITY_PRESERVED=true
 KRAKEN_NOT_CURRENT_CANONICAL_VENUE=true
 ```

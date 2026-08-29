@@ -422,6 +422,24 @@ def test_order_plan_typed_contract_count_domain_closure_is_preserved() -> None:
     assert "test_peak_trade_order_plan_typed_contract_count_domain_closure_v1.py" in spec
 
 
+def test_max_size_freshness_owner_policy_decision_is_preserved() -> None:
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "MAX_SIZE_FRESHNESS_OWNER_POLICY_DECISION_V1_PRESERVED=true" in spec
+    assert "CURRENT_MAX_SIZE_FRESHNESS_POLICY_BOUND=true" in spec
+    assert "CURRENT_MAX_SIZE_FRESHNESS_POLICY=FRESH_GET_PER_PRETRADE_DECISION" in spec
+    assert "HISTORICAL_6151_MAX_SIZE_FRESHNESS_POLICY_UNBOUND_PRESERVED=true" in spec
+    assert "HISTORICAL_MAX_SIZE_REUSE_ALLOWED=false" in spec
+    assert "PERSISTED_OBSERVATION_IS_OPERATIVE_CACHE=false" in spec
+    assert "FIXED_TTL_DEFINED=false" in spec
+    assert "EVENT_INVALIDATED_CACHE_DEFINED=false" in spec
+    assert "FAIL_CLOSED_ON_MISSING_FRESH_OBSERVATION=true" in spec
+    assert "CURRENT_REUSABLE_MAXLMTSZ_PROVEN=false" in spec
+    assert "CURRENT_REUSABLE_MAXMKTSZ_PROVEN=false" in spec
+    assert "MAX_SIZE_CONSUMER_CAN_NOW_BE_BOUND=true" in spec
+    assert "MAX_SIZE_CONSUMER_REMAINS_UNBOUND=true" in spec
+    assert "test_peak_trade_max_size_freshness_owner_policy_decision_v1.py" in spec
+
+
 def test_master_names_subordinate_preservation_spec() -> None:
     section = _section_5_3(MASTER_RUNBOOK.read_text(encoding="utf-8"))
     assert (
