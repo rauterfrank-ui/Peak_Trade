@@ -41,6 +41,23 @@ EXPECTED_EXECUTE_FROM_SIGNALS_EXTERNAL_CALLER_COUNT=0
 LEVERAGE_APPLICATION_STATUS=declared_pass_through_not_applied_in_quantity_chain
 ```
 
+Current restored-baseline overlay (this topology freeze is preserved; it is
+**not** rewritten). Historical `CANONICAL_RISK_SIZING_OWNER=UNRESOLVED` and
+`productive_direct_edges` remain inventory freeze language. They are not
+owner-graph authorization for the restored Master V2 / Double Play
+productive host.
+
+```text
+HISTORICAL_TOPOLOGY_SNAPSHOT_PRESERVED=true
+CURRENT_NORMATIVE_EFFECT_AS_CANONICAL_PRODUCTIVE_RISK_OWNER=REJECTED_BY_RESTORED_BASELINE
+LEGACY_STRATEGY_POSITION_SIZERS_CANONICAL_RISK_OWNER=false
+LEGACY_STRATEGY_POSITION_SIZERS_PRODUCTIVE_HOST_REACHABLE=false
+LEGACY_STRATEGY_POSITION_SIZERS_ROLE=RESEARCH_BACKTEST_NON_PRODUCTIVE
+RESTORED_PRODUCTIVE_RISK_OWNER=STEP-29P / src.governance.capital_risk_sizing_v1
+THIS_SLICE_DOES_NOT_RESOLVE_REPO_WIDE_TOPOLOGY=true
+SEE_ALSO=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_REMAINING_P0_QUARANTINE_V1.md
+```
+
 ## Purpose
 
 Closed-world freeze of the existing **caller→owner topology** for Risk&#47;Sizing. This slice does **not**:
