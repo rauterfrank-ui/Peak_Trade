@@ -54,6 +54,8 @@ _EXISTING_GUARDS = (
     REPO_ROOT
     / "tests/ops/test_peak_trade_post_restoration_parallel_owner_and_skip_safety_path_quarantine_v1.py",
     REPO_ROOT / "tests/ops/test_peak_trade_post_restoration_remaining_p0_quarantine_v1.py",
+    REPO_ROOT
+    / "tests/ops/test_peak_trade_post_restoration_accounting_portfolio_alignment_adjudication_v1.py",
 )
 
 _FORBIDDEN_MAPPER_CALLS = frozenset(
@@ -262,9 +264,11 @@ def test_existing_preservation_guards_remain_present() -> None:
     assert "historical_exit_or_reduce_host_action_v2" in hardening
     assert "OWNER_COMPOSED" in full_chain or "owner-composed" in full_chain
     remaining_p0 = _EXISTING_GUARDS[8].read_text(encoding="utf-8")
+    accounting_align = _EXISTING_GUARDS[9].read_text(encoding="utf-8")
     assert 'historical_reference_authority"] == "NONE"' in restoration_auth
     assert "EVALUATE_BRIDGE_SAFETY_V2_PRODUCTIVE_OWNER=false" in parallel_owner
     assert "LEGACY_STRATEGY_POSITION_SIZERS_PRODUCTIVE_HOST_REACHABLE=false" in remaining_p0
+    assert "ADJUDICATION_RESULT=DISTINCT_COMPATIBLE_RESPONSIBILITIES" in accounting_align
 
 
 def test_replay_source_keeps_29p_before_safety_before_29q() -> None:
