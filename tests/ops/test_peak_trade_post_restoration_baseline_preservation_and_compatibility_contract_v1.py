@@ -359,6 +359,16 @@ def test_live_safety_gates_adjudication_is_preserved() -> None:
     assert "test_peak_trade_post_restoration_live_safety_gates_adjudication_v1.py" in spec
 
 
+def test_venue_pretrade_limit_gates_adjudication_is_preserved() -> None:
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "VENUE_PRETRADE_ADJUDICATION_PRESERVED=true" in spec
+    assert "VENUE_PRETRADE_RUNTIME_REWIRE_REQUIRED=false" in spec
+    assert "CURRENT_OKX_VENUE_IDENTITY_PRESERVED=true" in spec
+    assert "KRAKEN_NOT_CURRENT_CANONICAL_VENUE=true" in spec
+    assert "MAX_SIZE_REMAINS_EARLIEST_UNRESOLVED_EDGE=true" in spec
+    assert "test_peak_trade_post_restoration_venue_pretrade_limit_gates_adjudication_v1.py" in spec
+
+
 def test_master_names_subordinate_preservation_spec() -> None:
     section = _section_5_3(MASTER_RUNBOOK.read_text(encoding="utf-8"))
     assert (

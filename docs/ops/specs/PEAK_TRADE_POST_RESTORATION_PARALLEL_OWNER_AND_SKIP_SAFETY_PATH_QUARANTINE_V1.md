@@ -233,6 +233,7 @@ LIVE_EXECUTION_BOUNDARY=NOT_THIS_SLICE
 LIVE_SAFETY_GATES=NOT_THIS_SLICE
 SEE_ALSO_LIVE_SAFETY_GATES_ADJUDICATION=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_LIVE_SAFETY_GATES_ADJUDICATION_V1.md
 VENUE_PRETRADE_LIMIT_GATES=NOT_THIS_SLICE
+SEE_ALSO_VENUE_PRETRADE_LIMIT_GATES_ADJUDICATION=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_VENUE_PRETRADE_LIMIT_GATES_ADJUDICATION_V1.md
 MULTI_FUTURE=NOT_THIS_SLICE
 CANARY=NOT_THIS_SLICE
 FLATTEN=NOT_THIS_SLICE
@@ -245,6 +246,9 @@ true for this quarantine slice. Later simulated-execution pipeline
 adjudication is recorded in the SEE_ALSO spec. Later live-safety gates
 adjudication is recorded in `SEE_ALSO_LIVE_SAFETY_GATES_ADJUDICATION`.
 Historical `LIVE_SAFETY_GATES=NOT_THIS_SLICE` remains true for this
+quarantine slice. Later venue-pretrade limit-gates adjudication is
+recorded in `SEE_ALSO_VENUE_PRETRADE_LIMIT_GATES_ADJUDICATION`. Historical
+`VENUE_PRETRADE_LIMIT_GATES=NOT_THIS_SLICE` remains true for this
 quarantine slice. Safety-before-Intent remains protected. This quarantine
 does not reopen, add a second execution owner, or require a runtime rewire.
 
