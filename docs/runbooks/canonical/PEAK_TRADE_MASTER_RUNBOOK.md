@@ -1978,7 +1978,56 @@ Interpretation:
 ## 5.3 Canonical productive no-order call graph
 
 Dual-host documentation residual (not a second decision-authority stack;
-not a proven core-logic defect):
+not a proven core-logic defect).
+
+Canonical owner graph (actual compute / risk / safety / intent owners).
+Post-Replay host consumption does **not** re-invoke those owners:
+
+``` text
+CANONICAL_OWNER_GRAPH=
+  Cap-6.5 canonical input producers
+  → Integrated Replay
+      Double Play SideState / EntryExit
+      → STEP-29P Risk/Sizing
+      → canonical Replay Safety boundary
+      → STEP-29Q PLAN_ONLY
+         - ENTER hard block: no ENTER-29Q / no ENTER CanonicalOrderIntent
+         - EXIT/REDUCE not blanket-suppressed
+      → Recon Evidence Binder
+      → KillSwitch Evidence Binder
+  → Intended Action Mapper (CONSUMER_TRANSLATOR_ONLY)
+  → simulated execution / accounting / portfolio
+  → Evidence → Verifier
+
+POST_REPLAY_RISK_OWNER_REINVOKED=false
+POST_REPLAY_SAFETY_OWNER_REINVOKED=false
+POST_REPLAY_INTENT_OWNER_REINVOKED=false
+SECOND_COMPUTE_OWNER_EXISTS=false
+SECOND_RISK_OWNER_EXISTS=false
+SECOND_SAFETY_OWNER_EXISTS=false
+SECOND_INTENT_OWNER_EXISTS=false
+HOST_MAPPER_ROLE=CONSUMER_TRANSLATOR_ONLY
+BRIDGE_SAFETY_ROLE=INPUT_PRODUCER_ONLY
+HOST_RECOMPUTES_CORE_LOGIC=false
+HOST_REWRITES_REPLAY_DECISION=false
+HOST_REWRITES_CANONICAL_INTENT=false
+```
+
+Existing Cap 7.2 / Hardening-v2 `CALL_GRAPH` tuples keep historical stage
+labels for evidence and compatibility. Labels after
+`master_v2_double_play_integrated_offline_replay` that read
+`Risk → Safety → Intent` or `risk_position_sizing` /
+`safety_kernel` / `intended_side_quantity` are
+
+`POST_REPLAY_EVIDENCE_OR_CONSUMPTION_STAGE_LABEL_ONLY`
+
+and are **not**
+
+`POST_REPLAY_COMPUTE_OWNER_CALL`.
+
+They record Replay-produced risk / safety / intent evidence and mapper
+consumption. They must not be read as a second post-Replay owner call of
+`capital_risk_sizing_v1`, Replay Safety, or `canonical_order_intent_v1`.
 
 ``` text
 CAP7_2_STATEFUL_HOST_GRAPH=
@@ -1994,6 +2043,7 @@ CAP7_2_STATEFUL_HOST_GRAPH=
   → Master V2 / Double Play integrated offline replay
   → confirmation / scope / decision-path atomic commits
   → Risk → Safety → Intent
+      [POST_REPLAY_EVIDENCE_OR_CONSUMPTION_STAGE_LABEL_ONLY]
   → Simulated execution / fill / accounting / portfolio
   → Evidence → Verifier
 
@@ -2006,6 +2056,7 @@ WALLCLOCK_HARDENING_V2_GRAPH=
   → risk_position_sizing
   → safety_kernel
   → intended_side_quantity
+      [POST_REPLAY_EVIDENCE_OR_CONSUMPTION_STAGE_LABEL_ONLY]
   → analytical_simulated_execution
   → simulated_fill_fee_slippage
   → session_persistent_portfolio
@@ -2016,15 +2067,22 @@ WALLCLOCK_HARDENING_V2_GRAPH=
 ``` text
 ONE_DECISION_AUTHORITY_CHAIN=true
 NO_PARALLEL_DECISION_AUTHORITY_STACK=true
+HOST_GRAPH_SSOT_STATUS=CORRECTED
+DOC_RUNTIME_MATCH=true
 HOST_CALL_GRAPH_DOCUMENTATION_RESIDUAL=
   WALLCLOCK_HARDENING_V2_CALL_GRAPH_OMITS_EXPLICIT_C1_C2_STAGES_VS_CAP72_HOST
+  PLUS_POST_REPLAY_RISK_SAFETY_INTENT_STAGE_LABELS_ARE_EVIDENCE_OR_CONSUMPTION_ONLY
 HOST_CALL_GRAPH_RESIDUAL_IS_CORE_LOGIC_DEFECT=false
+POST_REPLAY_STAGE_LABEL_CLASS=
+  POST_REPLAY_EVIDENCE_OR_CONSUMPTION_STAGE_LABEL_ONLY
 ```
 
 The Cap 7.2 stateful host remains the authoritative full decision-path
 graph for stateful no-order activation. The wallclock hardening_v2 graph
 is an abbreviated public-MD bridge/host surface that includes the typed
 volatility CMC edge and does not republish every Cap 7.2 stage label.
+Post-Replay stage labels in either graph are not a second Risk / Safety /
+Intent owner stack.
 
 ## 5.4 Closed or materially established baseline capabilities
 
@@ -2139,6 +2197,7 @@ EVIDENCE_CLAIM_DEFECTS_DETECTED=false_for_corrected_capability_claims
 PUBLIC_MD_NATURAL_LIFECYCLE_EVIDENCE_GAP=false_for_phase_9_2_session_ladder_continuity
 PHASE_9_2_LADDER_INCOMPLETE_BEYOND_SMOKE=false
 WALLCLOCK_HARDENING_V2_CALL_GRAPH_OMITS_EXPLICIT_C1_C2_STAGES_VS_CAP72_HOST=true
+SECTION_5_3_POST_REPLAY_RISK_SAFETY_INTENT_LABELS_ARE_OWNER_REINVOKE=false
 HARDENING_V2_LOCAL_DISTANCE_LITERALS_RESIDUAL_AFTER_CAP63=false
 LEGACY_PARALLEL_AUTHORITY_DETECTED=false
 REGIME_UNCLASSIFIED_FAIL_CLOSED_IS_DEFECT=false
