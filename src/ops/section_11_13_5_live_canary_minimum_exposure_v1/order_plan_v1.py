@@ -17,6 +17,7 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.okx
     build_venue_native_order_body_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+    DEFAULT_INST_FAMILY,
     DEFAULT_INSTRUMENT_ID,
     DEFAULT_INST_TYPE,
     DEFAULT_ORDER_TYPE,
@@ -45,6 +46,14 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_available_consu
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_size_consumer_v1 import (
     LiveCanaryMaxSizeConsumerError,
     apply_fresh_max_size_pretrade_gate_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.leverage_consumer_v1 import (
+    LiveCanaryLeverageConsumerError,
+    apply_fresh_leverage_pretrade_gate_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.leverage_observation_v1 import (
+    LEVERAGE_EXPECTED_MGN_MODE,
+    LEVERAGE_OUTPUT_DOMAIN,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.price_band_consumer_v1 import (
     LiveCanaryPriceBandConsumerError,
@@ -262,6 +271,15 @@ def build_minimum_valid_canary_order_plan_v1(
     price_band_auth_header_sent: bool = False,
     price_band_historical_reuse: bool = False,
     price_band_body_sha256: str = "",
+    leverage_payload: Mapping[str, Any] | None = None,
+    leverage_http_status: int = 200,
+    leverage_endpoint: str = "",
+    leverage_observed_at_utc: str | None = None,
+    leverage_get_performed: bool = False,
+    leverage_auth_header_sent: bool = True,
+    leverage_historical_reuse: bool = False,
+    leverage_body_sha256: str = "",
+    leverage_mgn_mode: str = LEVERAGE_EXPECTED_MGN_MODE,
 ) -> CanaryOrderPlanV1:
     constraints = extract_instrument_constraints_v1(
         instruments_payload=instruments_payload,
@@ -349,6 +367,26 @@ def build_minimum_valid_canary_order_plan_v1(
         )
     except LiveCanaryPriceBandConsumerError as exc:
         raise LiveCanaryOrderPlanError(f"PRICE_BAND_GATE:{exc}") from exc
+    try:
+        apply_fresh_leverage_pretrade_gate_v1(
+            pretrade_decision_id=pretrade_decision_id,
+            payload=leverage_payload or {},
+            instrument_id=instrument_id,
+            mgn_mode=leverage_mgn_mode,
+            leverage_domain=LEVERAGE_OUTPUT_DOMAIN,
+            http_status=leverage_http_status,
+            endpoint=leverage_endpoint,
+            observed_at_utc=leverage_observed_at_utc,
+            get_performed=leverage_get_performed,
+            rest_host=REUSED_BINDING_REST_HOST,
+            auth_header_sent=leverage_auth_header_sent,
+            historical_reuse=leverage_historical_reuse,
+            body_sha256=leverage_body_sha256,
+            expected_inst_family=DEFAULT_INST_FAMILY,
+            td_mode=td_mode,
+        )
+    except LiveCanaryLeverageConsumerError as exc:
+        raise LiveCanaryOrderPlanError(f"LEVERAGE_GATE:{exc}") from exc
     clordid = serialize_canary_clordid_v1(owner_go=owner_go, origin_main_sha=origin_main_sha)
     try:
         typed_sz = serialize_venue_sz_from_typed_contract_count_v1(
