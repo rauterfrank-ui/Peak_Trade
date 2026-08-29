@@ -316,6 +316,7 @@ PROPOSED_SAFE_ACTION=
 | Venue pretrade limit gates adjudication | Master §5.3; venue-pretrade limit-gates adjudication spec | `tests/ops/test_peak_trade_post_restoration_venue_pretrade_limit_gates_adjudication_v1.py` | true |
 | Venue pretrade metadata-binding alignment adjudication | Master §5.3; venue-pretrade metadata-binding alignment adjudication spec | `tests/ops/test_peak_trade_post_restoration_venue_pretrade_metadata_binding_alignment_adjudication_v1.py` | true |
 | Exact venue metadata GET current SUI pretrade MAX_SIZE | Master §5.3; exact venue metadata GET spec | `tests/ops/test_peak_trade_exact_venue_metadata_get_current_sui_pretrade_max_size_v1.py` | true |
+| Post-6148 MAX_SIZE unit adjudication | Master §5.3; post-6148 MAX_SIZE unit adjudication spec | `tests/ops/test_peak_trade_post_6148_max_size_unit_adjudication_v1.py` | true |
 
 Named preservation invariants for the closed simulated-execution
 adjudication. This contract does not itself perform that adjudication and
@@ -372,13 +373,32 @@ Named preservation invariants for the persisted exact venue metadata GET
 for current SUI pretrade MAX_SIZE. This contract does not itself perform
 that GET, does not bind MAX_SIZE unit or consumer, and does not grant live
 or execution authority. The #6147 identification of a GET as required and
-unauthorized remains historically true for that slice.
+unauthorized remains historically true for that slice. The #6148 GET
+slice remains historically `MAX_SIZE_UNIT=UNBOUND`.
 
 ```text
 EXACT_VENUE_METADATA_GET_CURRENT_SUI_PRETRADE_MAX_SIZE_V1_PRESERVED=true
 CURRENT_RAW_MAXLMTSZ_OBSERVATION_PERSISTED=true
 MAX_SIZE_BINDING_REMAINS_PARTIALLY_BOUND=true
-MAX_SIZE_UNIT_REMAINS_UNBOUND=true
+HISTORICAL_6148_MAX_SIZE_UNIT_UNBOUND_PRESERVED=true
+MAX_SIZE_CONSUMER_REMAINS_UNBOUND=true
+MAX_SIZE_FRESHNESS_POLICY_REMAINS_UNBOUND=true
+CURRENT_OKX_VENUE_IDENTITY_PRESERVED=true
+KRAKEN_NOT_CURRENT_CANONICAL_VENUE=true
+```
+
+Named preservation invariants for the persisted post-#6148 MAX_SIZE unit
+adjudication. This contract does not itself perform that adjudication,
+does not bind freshness policy, does not bind quantity-domain
+normalization, does not implement a consumer, and does not grant live or
+execution authority.
+
+```text
+POST_6148_MAX_SIZE_UNIT_ADJUDICATION_V1_PRESERVED=true
+CURRENT_MAX_SIZE_UNIT_BOUND=true
+CURRENT_MAX_SIZE_UNIT=contracts
+MAX_SIZE_NORMALIZATION_REMAINS_UNBOUND=true
+MAX_SIZE_BINDING_REMAINS_PARTIALLY_BOUND=true
 MAX_SIZE_CONSUMER_REMAINS_UNBOUND=true
 MAX_SIZE_FRESHNESS_POLICY_REMAINS_UNBOUND=true
 CURRENT_OKX_VENUE_IDENTITY_PRESERVED=true

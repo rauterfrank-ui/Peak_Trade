@@ -2568,6 +2568,92 @@ enablement, and arming remain false. The preexisting `CALL_GRAPH_V1` /
 `REQUIRED_CALL_GRAPH` tuple inequality remains `LABEL_ONLY` and is not
 repaired here. Tests are guards, not a second semantic SSOT.
 
+Named subordinate persist for the post-#6148 MAX_SIZE unit adjudication.
+This does **not** reopen restoration, add a Core owner or stage, bind
+MAX_SIZE freshness policy, bind quantity-domain normalization to
+`order_plan_v1.qty`, implement a runtime consumer, perform a venue GET or
+POST, repair the preexisting Cap 3.1 `CALL_GRAPH` tuple drift, or grant
+live or execution authority. #6148 remains historically
+`MAX_SIZE_UNIT=UNBOUND` for that GET slice.
+
+``` text
+POST_6148_MAX_SIZE_UNIT_ADJUDICATION_V1=true
+SPEC=docs/ops/specs/PEAK_TRADE_POST_6148_MAX_SIZE_UNIT_ADJUDICATION_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_STATUS=PARTIAL
+VENUE_PRETRADE_LIMIT_GATES_COMPLETE=false
+MAX_SIZE_BINDING_STATUS=PARTIALLY_BOUND
+ALL_REQUIRED_METADATA_EDGES_BOUND=false
+EARLIEST_REMAINING_UNBOUND_EDGE=MAX_SIZE
+EARLIEST_REMAINING_CONFLICT=NONE
+EARLIEST_UNRESOLVED_DEPENDENCY=MAX_SIZE_NORMALIZATION
+BEGINNING_AT=MAX_SIZE
+EARLIEST_REMAINING_MAX_SIZE_GAP=MAX_SIZE_NORMALIZATION
+MAXLMTSZ_UNIT_STATUS=BOUND
+MAXLMTSZ_UNIT=contracts
+MAXMKTSZ_UNIT_STATUS=BOUND
+MAXMKTSZ_UNIT=contracts
+MAX_SIZE_UNIT_STATUS=BOUND
+MAX_SIZE_UNIT=contracts
+GLOBAL_DOC_SEMANTICS_APPLICABLE_TO_OKX_EEA=true
+UNIT_REQUIRES_CTVAL=false
+UNIT_REQUIRES_CTMULT=false
+UNIT_REQUIRES_CTTYPE=false
+MAX_SIZE_NORMALIZATION_STATUS=UNBOUND
+MAX_SIZE_FRESHNESS_STATUS=WINDOW_OBSERVED_NOT_POLICY_BOUND
+MAX_SIZE_FRESHNESS_POLICY=UNBOUND
+MAX_SIZE_CONSUMER_BOUND=false
+CURRENT_REUSABLE_MAXLMTSZ_PROVEN=false
+CURRENT_MAXLMTSZ_RAW_VALUE=100000000
+CURRENT_MAXMKTSZ_RAW_VALUE=100000
+NETWORK_DOCUMENTATION_READ_PERFORMED=true
+NETWORK_VENUE_GET_PERFORMED=false
+NETWORK_POST_PERFORMED=false
+RUNTIME_ALIGNMENT_REQUIRED=false
+RUNTIME_MUTATION_JUSTIFIED=false
+CHANGED_RUNTIME_FILES=NONE
+CANONICAL_VENUE_PRETRADE_OWNER=section_11_13_5.order_plan_v1+exposure_v1@submit_transport_v1
+SECOND_VENUE_PRETRADE_OWNER_EXISTS=false
+SECOND_COMPUTE_OWNER_EXISTS=false
+SECOND_RISK_OWNER_EXISTS=false
+SECOND_SAFETY_OWNER_EXISTS=false
+SECOND_INTENT_OWNER_EXISTS=false
+SECOND_EXECUTION_OWNER_EXISTS=false
+NO_29Q_BEFORE_SAFETY=true
+RESTORATION_REOPEN_REQUIRED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+EXECUTION_ELIGIBLE=false
+LIVE_READINESS=EVALUATED_NOT_READY
+CURRENT_SELECTED_INSTRUMENT=SUI-USD_UM_XPERP-310404
+CURRENT_VENUE=OKX_EEA
+INSTRUMENT_BIND_PROVEN=true
+KRAKEN_CURRENT_CANONICAL_ROLE=NONE
+KRAKEN_EVIDENCE_USED_FOR_CURRENT_OKX_PRETRADE=false
+KRAKEN_EXCLUSION_CLOSED=true
+PREEXISTING_CALL_GRAPH_DRIFT_CLASS=LABEL_ONLY
+PREEXISTING_CALL_GRAPH_DRIFT_IN_SCOPE=false
+NEXT_DISTINCT_SURFACE=MAX_SIZE_NORMALIZATION
+NEXT_DISTINCT_SURFACE_AUTHORIZED=false
+```
+
+Normative subordinate persist:
+[`docs/ops/specs/PEAK_TRADE_POST_6148_MAX_SIZE_UNIT_ADJUDICATION_V1.md`](../../ops/specs/PEAK_TRADE_POST_6148_MAX_SIZE_UNIT_ADJUDICATION_V1.md).
+Official OKX EEA API documentation at `my.okx.com&#47;docs-v5&#47;en&#47;`
+names Production Trading REST `https:&#47;&#47;eea.okx.com` and defines
+`maxLmtSz` / `maxMktSz` for a derivatives contract as the number of
+contracts. Current SUI `instType=FUTURES` `ruleType=xperp` is on that
+derivatives branch. Unit is therefore `contracts`. Normalization to
+`order_plan_v1.qty`, freshness policy, and consumer remain unbound.
+Kraken is not the current canonical venue. Flatten remains a separate
+emergency authority. Standing Live / Testnet / Canary authorization,
+enablement, and arming remain false. The preexisting `CALL_GRAPH_V1` /
+`REQUIRED_CALL_GRAPH` tuple inequality remains `LABEL_ONLY` and is not
+repaired here. Tests are guards, not a second semantic SSOT.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:
