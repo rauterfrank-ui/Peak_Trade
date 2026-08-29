@@ -38,6 +38,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.lifecycle_v1 import (
     build_lifecycle_and_closeout_contract_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.leverage_observation_v1 import (
+    account_leverage_info_query_path_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_available_observation_v1 import (
     account_max_size_query_path_v1,
 )
@@ -96,6 +99,18 @@ PRICE_BAND = {
         }
     ],
 }
+LEVERAGE = {
+    "code": "0",
+    "data": [
+        {
+            "instId": DEFAULT_INSTRUMENT_ID,
+            "ccy": "",
+            "mgnMode": "cross",
+            "posSide": "net",
+            "lever": "5",
+        }
+    ],
+}
 FIXTURE_MATERIAL = json.dumps(
     {"api_key": "A" * 36, "api_secret": "B" * 32, "passphrase": "C" * 14},
     separators=(",", ":"),
@@ -148,6 +163,14 @@ def _max_available_plan_kwargs(**overrides: object) -> dict[str, object]:
         ),
         "price_band_http_status": 200,
         "price_band_auth_header_sent": False,
+        "leverage_payload": LEVERAGE,
+        "leverage_get_performed": True,
+        "leverage_endpoint": account_leverage_info_query_path_v1(
+            instrument_id=DEFAULT_INSTRUMENT_ID, mgn_mode="cross"
+        ),
+        "leverage_http_status": 200,
+        "leverage_auth_header_sent": True,
+        "leverage_mgn_mode": "cross",
     }
     body.update(overrides)
     return body
@@ -161,6 +184,7 @@ def _fake_transport() -> RecordingFakeCanaryTransportV1:
             "/api/v5/public/price-limit": json.dumps(PRICE_BAND).encode(),
             "/api/v5/account/positions": json.dumps(EMPTY).encode(),
             "/api/v5/account/max-size": json.dumps(MAX_AVAILABLE).encode(),
+            "/api/v5/account/leverage-info": json.dumps(LEVERAGE).encode(),
             "/api/v5/trade/orders-pending": json.dumps(EMPTY).encode(),
             "/api/v5/trade/orders-history": json.dumps(EMPTY).encode(),
         },

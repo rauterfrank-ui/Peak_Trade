@@ -3227,6 +3227,114 @@ bid/ask, and tickSz are not operative PRICE_BAND sources. Standing Live
 / Testnet / Canary authorization remain false. Tests are guards, not a
 second semantic SSOT.
 
+Named subordinate persist for the LEVERAGE forensic binding and
+productive consumer after the closed PRICE_BAND persist. This does
+**not** reopen restoration, add a Core owner or stage, close POS_MODE,
+MARGIN_MODE, AVAILABLE_MARGIN, or INSTRUMENT_STATE, invent a TTL or
+cache, reconstruct leverage from IMR/MMR/max leverage/public
+instruments/positions, POST `set-leverage`, trade, or grant live
+authority. Historical BTC `lever=3` remains non-transferable. Request
+`instId` is a family selector, not per-instId scope. `mgnMode` is not
+`tdMode` and is not account-mode proof.
+
+``` text
+LEVERAGE_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1=true
+SPEC=docs/ops/specs/PEAK_TRADE_LEVERAGE_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_STATUS=PARTIAL
+VENUE_PRETRADE_LIMIT_GATES_COMPLETE=false
+MAX_SIZE_BINDING_STATUS=PROVEN
+MAX_AVAILABLE_BINDING_STATUS=PROVEN
+PRICE_BAND_BINDING_STATUS=PROVEN
+LEVERAGE_BINDING_STATUS=PROVEN
+LEVERAGE_CANONICAL_DEFINITION=SET_ACCOUNT_LEVERAGE
+LEVERAGE_ENDPOINT=/api/v5/account/leverage-info
+LEVERAGE_REQUEST_GRAMMAR=instId,mgnMode
+LEVERAGE_RESPONSE_FIELDS=instId,ccy,mgnMode,posSide,lever
+LEVERAGE_OUTPUT_DOMAIN=SET_ACCOUNT_LEVERAGE
+LEVERAGE_SCOPE=PER_INSTRUMENT_FAMILY
+REQUEST_INSTID_ROLE=FAMILY_SELECTOR
+LEVERAGE_EXPECTED_MGN_MODE=cross
+LEVERAGE_EXPECTED_POS_SIDE=net
+LEVERAGE_FRESHNESS_POLICY=FRESH_GET_PER_PRETRADE_DECISION
+LEVERAGE_TS_AGE_BOUND=UNBOUND
+LEVERAGE_NO_TS_FIELD=true
+LEVERAGE_AUTH_CLASS=AUTHENTICATED_PRIVATE_GET
+LEVERAGE_CONSUMER_BOUND=true
+LEVERAGE_FAIL_CLOSED_BOUND=true
+MGNMODE_IS_NOT_TDMODE=true
+MGNMODE_IS_NOT_ACCOUNT_MODE=true
+TDMODE_CROSS_IS_NOT_ACCOUNT_MODE_PROOF=true
+CROSS_TDMODE_USED_AS_ACCOUNT_MODE_PROOF=false
+ACCOUNT_MODE=UNPROVEN
+ACCOUNT_MODE_PROOF_STATUS=UNPROVEN
+HISTORICAL_BTC_LEVERAGE_REUSED=false
+DEFAULT_LEVERAGE_USED=false
+MAX_LEVERAGE_SUBSTITUTION_USED=false
+IMR_MMR_RECONSTRUCTION_USED=false
+ZERO_NORMALIZATION_PERFORMED=false
+SET_LEVERAGE_EXECUTED=false
+AVAILABLE_MARGIN_BINDING_STATUS=UNBOUND
+POS_MODE_BINDING_STATUS=UNBOUND
+MARGIN_MODE_BINDING_STATUS=UNBOUND
+LEVERAGE_GET_PERFORMED=true
+LEVERAGE_GET_TIMESTAMP_UTC=2026-08-29T23:03:36.913601Z
+LEVERAGE_GET_HTTP_STATUS=200
+LEVERAGE_GET_VENUE_CODE=0
+LEVERAGE_RAW_INST_ID=SUI-USD_UM_XPERP-310404
+LEVERAGE_RAW_CCY=
+LEVERAGE_RAW_MGN_MODE=cross
+LEVERAGE_RAW_POS_SIDE=net
+LEVERAGE_RAW_LEVER=3
+LEVERAGE_BOUND_INST_FAMILY=SUI-USD_UM_XPERP
+LEVERAGE_OBSERVATION_CLASS=SUCCESS_NUMERIC
+EVIDENCE_PACK=evidence/ops/leverage_forensic_binding_implementation_and_closure_v1/20260829T230336Z
+ALL_REQUIRED_METADATA_EDGES_BOUND=false
+EARLIEST_REMAINING_UNBOUND_EDGE=POS_MODE
+EARLIEST_REMAINING_CONFLICT=NONE
+EARLIEST_UNRESOLVED_DEPENDENCY=POS_MODE
+ORDER_PLAN_TYPED_DOMAIN_PRESERVED=true
+NETWORK_VENUE_GET_PERFORMED=true
+NETWORK_AUTHENTICATED_GET_PERFORMED=true
+NETWORK_POST_PERFORMED=false
+TRADING_PERFORMED=false
+PERSISTED_OBSERVATION_IS_OPERATIVE_CACHE=false
+RUNTIME_ALIGNMENT_REQUIRED=true
+RUNTIME_MUTATION_JUSTIFIED=true
+RUNTIME_MUTATION_PERFORMED=true
+CHANGED_RUNTIME_FILES=leverage_observation_v1.py,leverage_consumer_v1.py,order_plan_v1.py,submit_transport_v1.py,constants_v1.py,config_v1.py
+CANONICAL_VENUE_PRETRADE_OWNER=section_11_13_5.order_plan_v1+exposure_v1@submit_transport_v1
+SECOND_VENUE_PRETRADE_OWNER_EXISTS=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+EXECUTION_ELIGIBLE=false
+LIVE_READINESS=EVALUATED_NOT_READY
+CURRENT_SELECTED_INSTRUMENT=SUI-USD_UM_XPERP-310404
+CURRENT_VENUE=OKX_EEA
+KRAKEN_CURRENT_CANONICAL_ROLE=NONE
+KRAKEN_EXCLUSION_CLOSED=true
+NEXT_DISTINCT_SURFACE=POS_MODE
+NEXT_DISTINCT_SURFACE_AUTHORIZED=false
+```
+
+Normative subordinate persist:
+[`docs/ops/specs/PEAK_TRADE_LEVERAGE_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1.md`](../../ops/specs/PEAK_TRADE_LEVERAGE_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1.md).
+The productive pretrade consumer
+`apply_fresh_leverage_pretrade_gate_v1` is bound into
+`build_minimum_valid_canary_order_plan_v1` from the per-decision
+authenticated `GET &#47;api&#47;v5&#47;account&#47;leverage-info` in
+`submit_transport_v1`. Request grammar is `instId` plus required
+`mgnMode=cross`. Request `instId` is a family selector for FUTURES
+cross. Unique `posSide=net` is required. `lever` is current configured
+set-account leverage, not maximum leverage. Historical BTC `lever=3` is
+not reused. Freshness is a fresh GET per pretrade decision. No `ts`
+age bound is invented. Failure prevents downstream POST. Standing Live
+/ Testnet / Canary authorization remain false. Tests are guards, not a
+second semantic SSOT.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:

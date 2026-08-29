@@ -66,6 +66,11 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_sig
     build_okx_live_canary_auth_headers_v1,
     serialize_signed_post_body_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.leverage_observation_v1 import (
+    LEVERAGE_EXPECTED_MGN_MODE,
+    LiveCanaryLeverageObservationError,
+    account_leverage_info_query_path_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_available_observation_v1 import (
     LiveCanaryMaxAvailableObservationError,
     account_max_size_query_path_v1,
@@ -393,6 +398,32 @@ def run_canary_submit_transport_v1(
         except LiveCanaryHttpError as exc:
             raise LiveCanarySubmitTransportError(f"MAX_AVAILABLE_FRESH_GET_BODY:{exc}") from exc
         try:
+            leverage_ep = account_leverage_info_query_path_v1(
+                instrument_id=instrument_id,
+                mgn_mode=LEVERAGE_EXPECTED_MGN_MODE,
+            )
+        except LiveCanaryLeverageObservationError as exc:
+            raise LiveCanarySubmitTransportError(f"LEVERAGE_GATE:{exc}") from exc
+        leverage_headers = {"User-Agent": USER_AGENT_CANARY}
+        try:
+            leverage_url = f"{client.rest_base.rstrip('/')}{leverage_ep}"
+            leverage_headers = build_okx_live_canary_auth_headers_v1(
+                handle=handle, url=leverage_url, method="GET"
+            )
+            leverage_response = client.get(endpoint=leverage_ep, headers=leverage_headers)
+        except LiveCanaryHttpError as exc:
+            raise LiveCanarySubmitTransportError(f"LEVERAGE_FRESH_GET_FAILED:{exc}") from exc
+        finally:
+            leverage_headers.clear()
+        if int(leverage_response.status_code) != 200:
+            raise LiveCanarySubmitTransportError(
+                f"LEVERAGE_FRESH_GET_HTTP:{leverage_response.status_code}"
+            )
+        try:
+            leverage_payload = parse_json_object_v1(leverage_response.body_bytes)
+        except LiveCanaryHttpError as exc:
+            raise LiveCanarySubmitTransportError(f"LEVERAGE_FRESH_GET_BODY:{exc}") from exc
+        try:
             plan = build_minimum_valid_canary_order_plan_v1(
                 instruments_payload=instruments,
                 ticker_payload=ticker,
@@ -423,6 +454,14 @@ def run_canary_submit_transport_v1(
                 price_band_get_performed=True,
                 price_band_auth_header_sent=False,
                 price_band_historical_reuse=False,
+                leverage_payload=leverage_payload,
+                leverage_http_status=int(leverage_response.status_code),
+                leverage_endpoint=leverage_ep,
+                leverage_observed_at_utc=observed_at,
+                leverage_get_performed=True,
+                leverage_auth_header_sent=True,
+                leverage_historical_reuse=False,
+                leverage_mgn_mode=LEVERAGE_EXPECTED_MGN_MODE,
             )
         except LiveCanaryOrderPlanError as exc:
             raise LiveCanarySubmitTransportError(
