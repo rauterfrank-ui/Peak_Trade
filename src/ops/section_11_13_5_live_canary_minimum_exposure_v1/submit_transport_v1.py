@@ -77,6 +77,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.submit_gates_v1 imp
     evaluate_canary_submit_gates_v1,
     refuse_submit_unless_gates_pass_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.venue_contract_count_v1 import (
+    LiveCanaryVenueContractCountError,
+    assert_identity_sz_after_contract_sizing_v1,
+)
 
 
 class LiveCanarySubmitTransportError(RuntimeError):
@@ -313,6 +317,16 @@ def run_canary_submit_transport_v1(
         except LiveCanaryOrderPlanError as exc:
             raise LiveCanarySubmitTransportError(
                 f"ORDER_PLAN_FAIL_CLOSED_BEFORE_POST:{exc}"
+            ) from exc
+        try:
+            assert_identity_sz_after_contract_sizing_v1(
+                quantity=plan.quantity,
+                sz=str(plan.venue_native_payload.get("sz") or ""),
+                quantity_domain=plan.quantity_domain,
+            )
+        except LiveCanaryVenueContractCountError as exc:
+            raise LiveCanarySubmitTransportError(
+                f"ORDER_PLAN_SZ_IDENTITY_FAIL_CLOSED_BEFORE_POST:{exc}"
             ) from exc
 
         positions = _signed_get(client=client, handle=handle, endpoint="/api/v5/account/positions")

@@ -2758,6 +2758,114 @@ preexisting `CALL_GRAPH_V1` / `REQUIRED_CALL_GRAPH` tuple inequality
 remains `LABEL_ONLY` and is not repaired here. Tests are guards, not a
 second semantic SSOT.
 
+Named subordinate persist for the order-plan typed venue-contract-count
+domain closure after the closed #6150 historical UNBOUND mapping persist.
+This does **not** reopen restoration, add a Core owner or stage, bind
+MAX_SIZE freshness policy, implement a max-size consumer, perform a
+venue GET or POST, fetch official documentation, rewrite the official
+Place Order request-parameter unit, promote `minSz` to operative qty,
+repair the preexisting Cap 3.1 `CALL_GRAPH` tuple drift, or grant live
+or execution authority. #6150 remains historically
+`MAX_SIZE_NORMALIZATION_STATUS=UNBOUND` for that investigation slice.
+This slice defines the typed Peak_Trade quantity domain as venue
+contract count and aligns the canary producer to already-bound
+`SUI_OPERATIVE_ORDER_SZ`.
+
+``` text
+ORDER_PLAN_TYPED_CONTRACT_COUNT_DOMAIN_CLOSURE_V1=true
+SPEC=docs/ops/specs/PEAK_TRADE_ORDER_PLAN_TYPED_CONTRACT_COUNT_DOMAIN_CLOSURE_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_STATUS=PARTIAL
+VENUE_PRETRADE_LIMIT_GATES_COMPLETE=false
+MAX_SIZE_BINDING_STATUS=PARTIALLY_BOUND
+ALL_REQUIRED_METADATA_EDGES_BOUND=false
+EARLIEST_REMAINING_UNBOUND_EDGE=MAX_SIZE
+EARLIEST_REMAINING_CONFLICT=NONE
+EARLIEST_UNRESOLVED_DEPENDENCY=MAX_SIZE_FRESHNESS_POLICY
+BEGINNING_AT=MAX_SIZE
+EARLIEST_REMAINING_MAX_SIZE_GAP=MAX_SIZE_FRESHNESS_POLICY
+MAX_SIZE_UNIT_STATUS=BOUND
+MAX_SIZE_UNIT=contracts
+ORDER_PLAN_QTY_SEMANTIC_STATUS=BOUND
+ORDER_PLAN_QTY_SEMANTIC=executable venue order quantity expressed as venue contract count
+ORDER_PLAN_QTY_UNIT_STATUS=BOUND
+ORDER_PLAN_QTY_UNIT=contracts
+ORDER_PLAN_QTY_DOMAIN_STATUS=BOUND
+ORDER_PLAN_QTY_DOMAIN=VENUE_CONTRACT_COUNT
+CONTRACT_SIZING_PRODUCER=venue_contract_count_v1.canary_venue_contract_count_v1@exposure_v1.build_canary_exposure_binding_v1
+CONTRACT_SIZING_FORMULA_STATUS=BOUND
+CONTRACT_SIZING_FORMULA=venue_contract_count = SUI_OPERATIVE_ORDER_SZ
+ORDER_PLAN_QTY_TO_VENUE_SZ_MAPPING_STATUS=BOUND
+ORDER_PLAN_QTY_TO_VENUE_SZ_MAPPING=IDENTITY_AFTER_CONTRACT_SIZING
+LOT_SIZE_ROLE_STATUS=BOUND
+LOT_SIZE_QUANTIZATION_STATUS=NOT_REQUIRED
+MIN_SIZE_ROLE_STATUS=BOUND
+FORBIDDEN_UPGRADE_MINSZ_1_TO_OPERATIVE_QTY_1=true
+ONE_CONTRACT_EQUALS_ONE_SUI=false
+NORMALIZATION_REQUIRES_CTVAL=false
+NORMALIZATION_REQUIRES_CTMULT=false
+NORMALIZATION_REQUIRES_CTTYPE=false
+MAX_SIZE_COMPARISON_DOMAIN_STATUS=BOUND
+MAX_SIZE_COMPARISON_DOMAIN=venue_contract_count
+MAX_SIZE_NORMALIZATION_STATUS=BOUND
+MAX_SIZE_FRESHNESS_STATUS=WINDOW_OBSERVED_NOT_POLICY_BOUND
+MAX_SIZE_FRESHNESS_POLICY=UNBOUND
+MAX_SIZE_CONSUMER_BOUND=false
+CURRENT_REUSABLE_MAXLMTSZ_PROVEN=false
+CURRENT_MAXLMTSZ_RAW_VALUE=100000000
+CURRENT_MAXMKTSZ_RAW_VALUE=100000
+NETWORK_DOCUMENTATION_READ_PERFORMED=false
+NETWORK_VENUE_GET_PERFORMED=false
+NETWORK_POST_PERFORMED=false
+RUNTIME_ALIGNMENT_REQUIRED=true
+RUNTIME_MUTATION_JUSTIFIED=true
+RUNTIME_MUTATION_PERFORMED=true
+CHANGED_RUNTIME_FILES=venue_contract_count_v1.py,exposure_v1.py,order_plan_v1.py,submit_transport_v1.py
+CANONICAL_VENUE_PRETRADE_OWNER=section_11_13_5.order_plan_v1+exposure_v1@submit_transport_v1
+SECOND_VENUE_PRETRADE_OWNER_EXISTS=false
+SECOND_COMPUTE_OWNER_EXISTS=false
+SECOND_RISK_OWNER_EXISTS=false
+SECOND_SAFETY_OWNER_EXISTS=false
+SECOND_INTENT_OWNER_EXISTS=false
+SECOND_EXECUTION_OWNER_EXISTS=false
+NO_29Q_BEFORE_SAFETY=true
+RESTORATION_REOPEN_REQUIRED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+EXECUTION_ELIGIBLE=false
+LIVE_READINESS=EVALUATED_NOT_READY
+CURRENT_SELECTED_INSTRUMENT=SUI-USD_UM_XPERP-310404
+CURRENT_VENUE=OKX_EEA
+INSTRUMENT_BIND_PROVEN=true
+KRAKEN_CURRENT_CANONICAL_ROLE=NONE
+KRAKEN_EVIDENCE_USED_FOR_CURRENT_OKX_PRETRADE=false
+KRAKEN_EXCLUSION_CLOSED=true
+PREEXISTING_CALL_GRAPH_DRIFT_CLASS=LABEL_ONLY
+PREEXISTING_CALL_GRAPH_DRIFT_IN_SCOPE=false
+NEXT_DISTINCT_SURFACE=MAX_SIZE_FRESHNESS_POLICY
+NEXT_DISTINCT_SURFACE_AUTHORIZED=false
+```
+
+Normative subordinate persist:
+[`docs/ops/specs/PEAK_TRADE_ORDER_PLAN_TYPED_CONTRACT_COUNT_DOMAIN_CLOSURE_V1.md`](../../ops/specs/PEAK_TRADE_ORDER_PLAN_TYPED_CONTRACT_COUNT_DOMAIN_CLOSURE_V1.md).
+Peak_Trade order-plan `quantity` (docs alias `qty`) is now the typed
+venue contract-count domain. Canary sizing produces
+`SUI_OPERATIVE_ORDER_SZ` rather than copying `minSz`. `minSz` remains a
+floor. `lotSz` remains increment admissibility without quantization
+rewrite. Place Order `sz` is identity serialization after that typed
+count. `maxLmtSz` / `maxMktSz` comparison therefore shares
+`venue_contract_count`. Official Place Order request-parameter unit
+remains underspecified and is not rewritten. `ONE_CONTRACT_EQUALS_ONE_SUI`
+remains false. Freshness policy and consumer remain unbound. Kraken is
+not the current canonical venue. Flatten remains a separate emergency
+authority. Standing Live / Testnet / Canary authorization, enablement,
+and arming remain false. The preexisting `CALL_GRAPH_V1` /
+`REQUIRED_CALL_GRAPH` tuple inequality remains `LABEL_ONLY` and is not
+repaired here. Tests are guards, not a second semantic SSOT.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:

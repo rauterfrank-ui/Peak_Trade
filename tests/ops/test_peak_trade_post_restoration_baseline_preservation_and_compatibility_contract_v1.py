@@ -410,6 +410,18 @@ def test_post_6149_max_size_normalization_adjudication_is_preserved() -> None:
     assert "test_peak_trade_post_6149_max_size_normalization_adjudication_v1.py" in spec
 
 
+def test_order_plan_typed_contract_count_domain_closure_is_preserved() -> None:
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "ORDER_PLAN_TYPED_CONTRACT_COUNT_DOMAIN_CLOSURE_V1_PRESERVED=true" in spec
+    assert "CURRENT_ORDER_PLAN_QTY_UNIT=contracts" in spec
+    assert "CURRENT_ORDER_PLAN_QTY_DOMAIN=VENUE_CONTRACT_COUNT" in spec
+    assert "CURRENT_MAX_SIZE_NORMALIZATION_BOUND=true" in spec
+    assert "CURRENT_MAX_SIZE_COMPARISON_DOMAIN=venue_contract_count" in spec
+    assert "CURRENT_ORDER_PLAN_QTY_TO_VENUE_SZ_MAPPING=IDENTITY_AFTER_CONTRACT_SIZING" in spec
+    assert "HISTORICAL_6150_MAX_SIZE_NORMALIZATION_UNBOUND_PRESERVED=true" in spec
+    assert "test_peak_trade_order_plan_typed_contract_count_domain_closure_v1.py" in spec
+
+
 def test_master_names_subordinate_preservation_spec() -> None:
     section = _section_5_3(MASTER_RUNBOOK.read_text(encoding="utf-8"))
     assert (

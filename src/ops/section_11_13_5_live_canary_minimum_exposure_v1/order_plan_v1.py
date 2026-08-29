@@ -36,6 +36,13 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_submit_state_v1
     LiveCanaryPositionObservationError,
     observe_target_position_flatten_candidate_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.venue_contract_count_v1 import (
+    ORDER_PLAN_QTY_DOMAIN,
+    ORDER_PLAN_QTY_UNIT,
+    LiveCanaryVenueContractCountError,
+    assert_identity_sz_after_contract_sizing_v1,
+    serialize_venue_sz_from_typed_contract_count_v1,
+)
 
 
 class LiveCanaryOrderPlanError(RuntimeError):
@@ -169,6 +176,8 @@ class CanaryOrderPlanV1:
     order_type: str
     td_mode: str
     quantity: str
+    quantity_domain: str
+    quantity_unit: str
     limit_price: str
     min_sz: str
     lot_sz: str
@@ -187,6 +196,8 @@ class CanaryOrderPlanV1:
             "order_type": self.order_type,
             "td_mode": self.td_mode,
             "quantity": self.quantity,
+            "quantity_domain": self.quantity_domain,
+            "quantity_unit": self.quantity_unit,
             "limit_price": self.limit_price,
             "min_sz": self.min_sz,
             "lot_sz": self.lot_sz,
@@ -234,15 +245,27 @@ def build_minimum_valid_canary_order_plan_v1(
         raise LiveCanaryOrderPlanError(f"UNSAFE_QUANTITY:{exc}") from exc
     clordid = serialize_canary_clordid_v1(owner_go=owner_go, origin_main_sha=origin_main_sha)
     try:
+        typed_sz = serialize_venue_sz_from_typed_contract_count_v1(
+            venue_contract_count=exposure.quantity,
+            quantity_domain=exposure.quantity_domain,
+        )
         payload = build_venue_native_order_body_v1(
             client_order_id=clordid,
             instrument=instrument_id,
             order_type=DEFAULT_ORDER_TYPE,
             side=side,
-            quantity=exposure.quantity,
+            quantity=typed_sz,
             td_mode=td_mode,
             px=limit_px,
         )
+        if isinstance(payload, dict) and "sz" in payload:
+            assert_identity_sz_after_contract_sizing_v1(
+                quantity=exposure.quantity,
+                sz=str(payload.get("sz") or ""),
+                quantity_domain=exposure.quantity_domain,
+            )
+    except LiveCanaryVenueContractCountError as exc:
+        raise LiveCanaryOrderPlanError(f"VENUE_SZ_IDENTITY:{exc}") from exc
     except OkxResponseMapperError as exc:
         raise LiveCanaryOrderPlanError(f"VENUE_NATIVE_BODY:{exc}") from exc
     return CanaryOrderPlanV1(
@@ -251,6 +274,8 @@ def build_minimum_valid_canary_order_plan_v1(
         order_type="LIMIT",
         td_mode=td_mode,
         quantity=exposure.quantity,
+        quantity_domain=exposure.quantity_domain or ORDER_PLAN_QTY_DOMAIN,
+        quantity_unit=exposure.quantity_unit or ORDER_PLAN_QTY_UNIT,
         limit_price=limit_px,
         min_sz=constraints["minSz"],
         lot_sz=constraints["lotSz"],
