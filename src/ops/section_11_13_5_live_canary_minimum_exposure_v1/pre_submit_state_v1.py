@@ -19,6 +19,18 @@ class LiveCanaryPositionObservationError(RuntimeError):
     """Fail-closed observed-position flatten-candidate violation."""
 
 
+TARGET_POSITION_NOT_OBSERVED = "TARGET_POSITION_NOT_OBSERVED"
+TARGET_POSITION_ZERO_PROVEN = "TARGET_POSITION_ZERO_PROVEN"
+TARGET_POSITION_NONZERO_PROVEN = "TARGET_POSITION_NONZERO_PROVEN"
+TARGET_POSITION_UNKNOWN = "UNKNOWN"
+
+EMPTY_DATA_IS_NOT_ZERO = True
+ABSENT_TARGET_ROW_IS_NOT_ZERO = True
+ABSENT_TARGET_ROW_IS_NOT_FLAT = True
+HTTP_OK_DOES_NOT_PROVE_COMPLETENESS = True
+QUERY_COMPLETENESS_PROVEN_DEFAULT = False
+
+
 @dataclass(frozen=True)
 class ObservedTargetPositionFlattenCandidateV1:
     """Offline observation only. Not productive flatten authorization."""
@@ -37,15 +49,50 @@ class ObservedTargetPositionFlattenCandidateV1:
         }
 
 
+@dataclass(frozen=True)
+class TargetPositionStateClassificationV1:
+    """Fail-closed target-position predicate. Never promotes empty or absent to zero."""
+
+    instrument_id: str
+    state: str
+    signed_pos: str | None
+    reason: str
+    query_completeness_proven: bool = False
+    empty_data_is_zero: bool = False
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "instrument_id": self.instrument_id,
+            "state": self.state,
+            "signed_pos": self.signed_pos,
+            "reason": self.reason,
+            "query_completeness_proven": self.query_completeness_proven,
+            "empty_data_is_zero": self.empty_data_is_zero,
+            "HTTP_OK_DOES_NOT_PROVE_COMPLETENESS": HTTP_OK_DOES_NOT_PROVE_COMPLETENESS,
+        }
+
+
 def _rows(payload: Mapping[str, Any]) -> list[Mapping[str, Any]]:
+    """Valid code==0 list envelope. data=None / missing data is not empty."""
+    if not isinstance(payload, Mapping):
+        raise LiveCanaryPreSubmitStateError("EXCHANGE_STATE_PAYLOAD_NOT_MAPPING")
+    if "code" not in payload:
+        raise LiveCanaryPreSubmitStateError("EXCHANGE_STATE_CODE_MISSING")
     if str(payload.get("code") or "") != "0":
         raise LiveCanaryPreSubmitStateError("EXCHANGE_STATE_PAYLOAD_NOT_OK")
-    data = payload.get("data")
+    if "data" not in payload:
+        raise LiveCanaryPreSubmitStateError("EXCHANGE_STATE_DATA_MISSING")
+    data = payload["data"]
     if data is None:
-        return []
+        raise LiveCanaryPreSubmitStateError("EXCHANGE_STATE_DATA_NONE")
     if not isinstance(data, list):
         raise LiveCanaryPreSubmitStateError("EXCHANGE_STATE_DATA_NOT_LIST")
-    return [row for row in data if isinstance(row, Mapping)]
+    rows: list[Mapping[str, Any]] = []
+    for row in data:
+        if not isinstance(row, Mapping):
+            raise LiveCanaryPreSubmitStateError("EXCHANGE_STATE_ROW_NOT_MAPPING")
+        rows.append(row)
+    return rows
 
 
 def _pos_size(row: Mapping[str, Any]) -> Decimal:
@@ -106,36 +153,106 @@ def open_order_instruments_v1(pending_orders_payload: Mapping[str, Any]) -> tupl
     return tuple(instruments)
 
 
+def classify_target_position_state_v1(
+    *,
+    positions_payload: Mapping[str, Any] | None,
+    instrument_id: str = DEFAULT_INSTRUMENT_ID,
+) -> TargetPositionStateClassificationV1:
+    """Classify target position as not-observed, explicit zero, nonzero, or unknown.
+
+    Empty data[] is not zero. data=None / missing data is not empty. A successful
+    envelope is not completeness. This classifier never authorizes flatten or live.
+    """
+    target = str(instrument_id or "").strip()
+    if not target:
+        return TargetPositionStateClassificationV1(
+            instrument_id="",
+            state=TARGET_POSITION_UNKNOWN,
+            signed_pos=None,
+            reason="TARGET_INSTRUMENT_REQUIRED",
+        )
+    if positions_payload is None:
+        return TargetPositionStateClassificationV1(
+            instrument_id=target,
+            state=TARGET_POSITION_UNKNOWN,
+            signed_pos=None,
+            reason="POSITIONS_PAYLOAD_MISSING",
+        )
+    try:
+        rows = _rows(positions_payload)
+    except LiveCanaryPreSubmitStateError as exc:
+        return TargetPositionStateClassificationV1(
+            instrument_id=target,
+            state=TARGET_POSITION_UNKNOWN,
+            signed_pos=None,
+            reason=str(exc),
+        )
+    matching = [row for row in rows if str(row.get("instId") or "").strip() == target]
+    if not matching:
+        return TargetPositionStateClassificationV1(
+            instrument_id=target,
+            state=TARGET_POSITION_NOT_OBSERVED,
+            signed_pos=None,
+            reason="TARGET_INSTRUMENT_NOT_OBSERVED",
+        )
+    if len(matching) != 1:
+        return TargetPositionStateClassificationV1(
+            instrument_id=target,
+            state=TARGET_POSITION_UNKNOWN,
+            signed_pos=None,
+            reason="AMBIGUOUS_TARGET_POSITION_ROWS",
+        )
+    try:
+        signed = _signed_observed_pos(matching[0])
+    except LiveCanaryPositionObservationError as exc:
+        return TargetPositionStateClassificationV1(
+            instrument_id=target,
+            state=TARGET_POSITION_UNKNOWN,
+            signed_pos=None,
+            reason=str(exc),
+        )
+    if signed == 0:
+        return TargetPositionStateClassificationV1(
+            instrument_id=target,
+            state=TARGET_POSITION_ZERO_PROVEN,
+            signed_pos=format(signed, "f"),
+            reason="ZERO_POSITION_NO_FLATTEN_ORDER",
+        )
+    return TargetPositionStateClassificationV1(
+        instrument_id=target,
+        state=TARGET_POSITION_NONZERO_PROVEN,
+        signed_pos=format(signed, "f"),
+        reason="TARGET_POSITION_NONZERO_PROVEN",
+    )
+
+
 def observe_target_position_flatten_candidate_v1(
     *,
     positions_payload: Mapping[str, Any],
     instrument_id: str = DEFAULT_INSTRUMENT_ID,
 ) -> ObservedTargetPositionFlattenCandidateV1:
-    """Derive flatten qty/side from a unique observed target position.
+    """Derive flatten qty/side from a unique observed nonzero target position.
 
     Submitted Entry quantity is not an input and cannot be authority.
-    Zero, missing, malformed, or ambiguous rows fail closed. This result
-    is not productive flatten authorization.
+    Empty data[] is TARGET_INSTRUMENT_NOT_OBSERVED, not zero. data=None is
+    UNKNOWN, not not-observed. This result is not productive flatten
+    authorization.
     """
-    target = str(instrument_id or "").strip()
-    if not target:
-        raise LiveCanaryPositionObservationError("TARGET_INSTRUMENT_REQUIRED")
-    try:
-        rows = _rows(positions_payload)
-    except LiveCanaryPreSubmitStateError as exc:
-        raise LiveCanaryPositionObservationError(str(exc)) from exc
-    matching = [row for row in rows if str(row.get("instId") or "") == target]
-    if not matching:
+    classified = classify_target_position_state_v1(
+        positions_payload=positions_payload,
+        instrument_id=instrument_id,
+    )
+    if classified.state == TARGET_POSITION_NOT_OBSERVED:
         raise LiveCanaryPositionObservationError("TARGET_INSTRUMENT_NOT_OBSERVED")
-    if len(matching) != 1:
-        raise LiveCanaryPositionObservationError("AMBIGUOUS_TARGET_POSITION_ROWS")
-    signed = _signed_observed_pos(matching[0])
-    if signed == 0:
+    if classified.state == TARGET_POSITION_ZERO_PROVEN:
         raise LiveCanaryPositionObservationError("ZERO_POSITION_NO_FLATTEN_ORDER")
+    if classified.state != TARGET_POSITION_NONZERO_PROVEN or classified.signed_pos is None:
+        raise LiveCanaryPositionObservationError(classified.reason)
+    signed = Decimal(classified.signed_pos)
     abs_qty = abs(signed)
     side = "SELL" if signed > 0 else "BUY"
     return ObservedTargetPositionFlattenCandidateV1(
-        instrument_id=target,
+        instrument_id=classified.instrument_id,
         signed_pos=signed,
         candidate_flatten_qty=abs_qty,
         candidate_flatten_side=side,
