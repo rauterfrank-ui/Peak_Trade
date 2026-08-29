@@ -312,6 +312,7 @@ PROPOSED_SAFE_ACTION=
 | Remaining P0 sizer / independent-kernel quarantine | Master §5.3; remaining-P0 quarantine spec | `tests/ops/test_peak_trade_post_restoration_remaining_p0_quarantine_v1.py` | true |
 | Accounting / portfolio alignment adjudication | Master §5.3; accounting-portfolio alignment spec | `tests/ops/test_peak_trade_post_restoration_accounting_portfolio_alignment_adjudication_v1.py` | true |
 | Simulated execution pipeline adjudication | Master §5.3; simulated-execution pipeline adjudication spec | `tests/ops/test_peak_trade_post_restoration_simulated_execution_pipeline_adjudication_v1.py` | true |
+| Live safety gates adjudication | Master §5.3; live-safety gates adjudication spec | `tests/ops/test_peak_trade_post_restoration_live_safety_gates_adjudication_v1.py` | true |
 
 Named preservation invariants for the closed simulated-execution
 adjudication. This contract does not itself perform that adjudication and
@@ -322,6 +323,18 @@ SIMULATED_EXECUTION_PIPELINE_ADJUDICATION_PRESERVED=true
 SIMULATED_EXECUTION_RUNTIME_REWIRE_REQUIRED=false
 SECOND_EXECUTION_OWNER_PROHIBITED=true
 MASTER_V2_DOUBLE_PLAY_EXECUTION_BOUNDARY_PRESERVED=true
+```
+
+Named preservation invariants for the closed live-safety gates
+adjudication. This contract does not itself perform that adjudication and
+does not grant live or execution authority.
+
+```text
+LIVE_SAFETY_GATES_ADJUDICATION_PRESERVED=true
+SECOND_CORE_SAFETY_OWNER_PROHIBITED=true
+LIVE_SAFETY_RUNTIME_REWIRE_REQUIRED=false
+LIVE_AUTHORITY_REMAINS_FALSE=true
+VENUE_PRETRADE_REMAINS_SEPARATE=true
 ```
 
 ## 13) Missing protection closed by this contract

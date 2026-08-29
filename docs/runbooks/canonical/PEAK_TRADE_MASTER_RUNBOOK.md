@@ -2306,6 +2306,60 @@ translator-only. The preexisting `CALL_GRAPH_V1` / `REQUIRED_CALL_GRAPH`
 tuple inequality remains `LABEL_ONLY` and is not repaired here. Tests are
 guards, not a second semantic SSOT.
 
+Named subordinate adjudication for the live-safety admission layer after the
+closed simulated-execution pipeline. This does **not** reopen restoration,
+add a Core owner or stage, reclassify Replay Safety as Live admission, repair
+the preexisting Cap 3.1 `CALL_GRAPH` tuple drift, adjudicate venue-pretrade
+limits, or grant live or execution authority.
+
+``` text
+LIVE_SAFETY_GATES_ADJUDICATION_V1=true
+LIVE_SAFETY_GATES_ADJUDICATION_RESULT=DISTINCT_COMPATIBLE_LIVE_SAFETY_RESPONSIBILITIES
+SPEC=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_LIVE_SAFETY_GATES_ADJUDICATION_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+LIVE_SAFETY_GATES_COMPLETE=true
+EARLIEST_INCOMPLETE_LIVE_SAFETY_EDGE=NONE
+LIVE_GATE_OWNER_MODEL=DISTINCT_NON_OVERLAPPING_HOST_FAMILY_ADMISSION_GATES_NOT_A_SECOND_CORE_SAFETY_OWNER
+SECOND_LIVE_SAFETY_OWNER_EXISTS=false
+SECOND_CORE_SAFETY_OWNER_EXISTS=false
+BYPASS_PATH_CONFLICT=false
+RUNTIME_ALIGNMENT_REQUIRED=false
+RUNTIME_MUTATION_JUSTIFIED=false
+CHANGED_RUNTIME_FILES=NONE
+SECOND_COMPUTE_OWNER_EXISTS=false
+SECOND_RISK_OWNER_EXISTS=false
+SECOND_SAFETY_OWNER_EXISTS=false
+SECOND_INTENT_OWNER_EXISTS=false
+SECOND_EXECUTION_OWNER_EXISTS=false
+NO_29Q_BEFORE_SAFETY=true
+RESTORATION_REOPEN_REQUIRED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+EXECUTION_ELIGIBLE=false
+LIVE_READINESS=EVALUATED_NOT_READY
+VENUE_PRETRADE_WORK_REMAINS=true
+NEXT_DISTINCT_SURFACE=VENUE_PRETRADE_LIMIT_GATES
+PREEXISTING_CALL_GRAPH_DRIFT_CLASS=LABEL_ONLY
+PREEXISTING_CALL_GRAPH_DRIFT_IN_SCOPE=false
+```
+
+Normative subordinate adjudication:
+[`docs/ops/specs/PEAK_TRADE_POST_RESTORATION_LIVE_SAFETY_GATES_ADJUDICATION_V1.md`](../../ops/specs/PEAK_TRADE_POST_RESTORATION_LIVE_SAFETY_GATES_ADJUDICATION_V1.md).
+Replay Safety remains the sole Core Safety owner for Master V2 / Double Play.
+Live admission remains downstream host-family gates and is not Replay Safety.
+OKX Canary uses `evaluate_canary_submit_gates_v1`. Pipeline / Kraken uses
+`SafetyGuard.ensure_may_place_order`. Networked onramp remains networkless
+deny. The Cap 7.2 no-order host refuses live/testnet flags. Flatten remains
+a separate emergency authority. Standing Live / Testnet / Canary
+authorization, enablement, and arming remain false. Venue-native
+size / price / leverage / posMode / margin / maxAvail / lot / tick remain
+the next named surface. The preexisting `CALL_GRAPH_V1` /
+`REQUIRED_CALL_GRAPH` tuple inequality remains `LABEL_ONLY` and is not
+repaired here. Tests are guards, not a second semantic SSOT.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:
