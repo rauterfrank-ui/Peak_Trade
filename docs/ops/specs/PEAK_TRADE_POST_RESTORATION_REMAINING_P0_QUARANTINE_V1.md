@@ -223,6 +223,7 @@ SIMULATED_EXECUTION_COMPLETION=NOT_THIS_SLICE
 EXECUTION_PIPELINE=NOT_THIS_SLICE
 SEE_ALSO_SIMULATED_EXECUTION_PIPELINE_ADJUDICATION=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_SIMULATED_EXECUTION_PIPELINE_ADJUDICATION_V1.md
 LIVE_SAFETY_GATES=NOT_THIS_SLICE
+SEE_ALSO_LIVE_SAFETY_GATES_ADJUDICATION=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_LIVE_SAFETY_GATES_ADJUDICATION_V1.md
 VENUE_PRETRADE_LIMIT_GATES=NOT_THIS_SLICE
 CANARY=NOT_THIS_SLICE
 FLATTEN=NOT_THIS_SLICE
@@ -235,7 +236,10 @@ RECOVERY_TRACK=NOT_THIS_SLICE
 Historical `SIMULATED_EXECUTION_COMPLETION=NOT_THIS_SLICE` and
 `EXECUTION_PIPELINE=NOT_THIS_SLICE` remain true for this quarantine slice.
 Later simulated-execution pipeline adjudication is recorded in the SEE_ALSO
-spec. This quarantine does not reopen, add a second execution owner, or
+spec. Later live-safety gates adjudication is recorded in
+`SEE_ALSO_LIVE_SAFETY_GATES_ADJUDICATION`. Historical
+`LIVE_SAFETY_GATES=NOT_THIS_SLICE` remains true for this quarantine slice.
+This quarantine does not reopen, add a second execution owner, or
 require a runtime rewire.
 
 ## 6) Existing guards reused (not duplicated)

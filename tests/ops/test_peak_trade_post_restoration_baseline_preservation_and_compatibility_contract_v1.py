@@ -349,6 +349,16 @@ def test_simulated_execution_pipeline_adjudication_is_preserved() -> None:
     )
 
 
+def test_live_safety_gates_adjudication_is_preserved() -> None:
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "LIVE_SAFETY_GATES_ADJUDICATION_PRESERVED=true" in spec
+    assert "SECOND_CORE_SAFETY_OWNER_PROHIBITED=true" in spec
+    assert "LIVE_SAFETY_RUNTIME_REWIRE_REQUIRED=false" in spec
+    assert "LIVE_AUTHORITY_REMAINS_FALSE=true" in spec
+    assert "VENUE_PRETRADE_REMAINS_SEPARATE=true" in spec
+    assert "test_peak_trade_post_restoration_live_safety_gates_adjudication_v1.py" in spec
+
+
 def test_master_names_subordinate_preservation_spec() -> None:
     section = _section_5_3(MASTER_RUNBOOK.read_text(encoding="utf-8"))
     assert (
