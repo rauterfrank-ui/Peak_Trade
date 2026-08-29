@@ -318,6 +318,7 @@ PROPOSED_SAFE_ACTION=
 | Exact venue metadata GET current SUI pretrade MAX_SIZE | Master §5.3; exact venue metadata GET spec | `tests/ops/test_peak_trade_exact_venue_metadata_get_current_sui_pretrade_max_size_v1.py` | true |
 | Post-6148 MAX_SIZE unit adjudication | Master §5.3; post-6148 MAX_SIZE unit adjudication spec | `tests/ops/test_peak_trade_post_6148_max_size_unit_adjudication_v1.py` | true |
 | Post-6149 MAX_SIZE normalization adjudication | Master §5.3; post-6149 MAX_SIZE normalization adjudication spec | `tests/ops/test_peak_trade_post_6149_max_size_normalization_adjudication_v1.py` | true |
+| Order-plan typed contract-count domain closure | Master §5.3; order-plan typed contract-count domain closure spec | `tests/ops/test_peak_trade_order_plan_typed_contract_count_domain_closure_v1.py` | true |
 
 Named preservation invariants for the closed simulated-execution
 adjudication. This contract does not itself perform that adjudication and
@@ -421,6 +422,31 @@ MAX_SIZE_NORMALIZATION_REMAINS_UNBOUND=true
 ORDER_PLAN_QTY_UNIT_REMAINS_UNBOUND=true
 ORDER_PLAN_QTY_TO_VENUE_SZ_MAPPING_REMAINS_UNBOUND=true
 MAX_SIZE_COMPARISON_DOMAIN_REMAINS_UNBOUND=true
+ONE_CONTRACT_EQUALS_ONE_SUI_REMAINS_FALSE=true
+MAX_SIZE_BINDING_REMAINS_PARTIALLY_BOUND=true
+MAX_SIZE_CONSUMER_REMAINS_UNBOUND=true
+MAX_SIZE_FRESHNESS_POLICY_REMAINS_UNBOUND=true
+CURRENT_OKX_VENUE_IDENTITY_PRESERVED=true
+KRAKEN_NOT_CURRENT_CANONICAL_VENUE=true
+```
+
+Named preservation invariants for the persisted order-plan typed
+venue-contract-count domain closure. This contract does not itself
+perform that closure, does not bind freshness policy, does not
+implement a max-size consumer, and does not grant live or execution
+authority. The #6150 persist remains historically
+`MAX_SIZE_NORMALIZATION_STATUS=UNBOUND` for that investigation slice.
+
+```text
+ORDER_PLAN_TYPED_CONTRACT_COUNT_DOMAIN_CLOSURE_V1_PRESERVED=true
+CURRENT_MAX_SIZE_UNIT_BOUND=true
+CURRENT_MAX_SIZE_UNIT=contracts
+CURRENT_ORDER_PLAN_QTY_UNIT=contracts
+CURRENT_ORDER_PLAN_QTY_DOMAIN=VENUE_CONTRACT_COUNT
+CURRENT_MAX_SIZE_NORMALIZATION_BOUND=true
+CURRENT_MAX_SIZE_COMPARISON_DOMAIN=venue_contract_count
+CURRENT_ORDER_PLAN_QTY_TO_VENUE_SZ_MAPPING=IDENTITY_AFTER_CONTRACT_SIZING
+HISTORICAL_6150_MAX_SIZE_NORMALIZATION_UNBOUND_PRESERVED=true
 ONE_CONTRACT_EQUALS_ONE_SUI_REMAINS_FALSE=true
 MAX_SIZE_BINDING_REMAINS_PARTIALLY_BOUND=true
 MAX_SIZE_CONSUMER_REMAINS_UNBOUND=true
