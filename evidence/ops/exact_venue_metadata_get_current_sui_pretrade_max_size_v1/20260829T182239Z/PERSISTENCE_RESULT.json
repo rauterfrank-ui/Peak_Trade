@@ -1,0 +1,11 @@
+{
+  "CURRENT_RAW_MAXLMTSZ_OBSERVED": true,
+  "CURRENT_REUSABLE_MAXLMTSZ_PROVEN": false,
+  "GET_EXECUTED": true,
+  "MAX_SIZE_BINDING_STATUS": "PARTIALLY_BOUND",
+  "POST_COUNT": 0,
+  "RUN_ID": "20260829T182239Z",
+  "SECRET_VALUES_INCLUDED": false,
+  "evidence_root": "evidence/ops/exact_venue_metadata_get_current_sui_pretrade_max_size_v1/20260829T182239Z",
+  "ok": true
+}

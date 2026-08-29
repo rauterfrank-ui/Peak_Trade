@@ -380,6 +380,16 @@ def test_venue_pretrade_metadata_binding_alignment_adjudication_is_preserved() -
     )
 
 
+def test_exact_venue_metadata_get_current_sui_pretrade_max_size_is_preserved() -> None:
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "EXACT_VENUE_METADATA_GET_CURRENT_SUI_PRETRADE_MAX_SIZE_V1_PRESERVED=true" in spec
+    assert "CURRENT_RAW_MAXLMTSZ_OBSERVATION_PERSISTED=true" in spec
+    assert "MAX_SIZE_UNIT_REMAINS_UNBOUND=true" in spec
+    assert "MAX_SIZE_CONSUMER_REMAINS_UNBOUND=true" in spec
+    assert "MAX_SIZE_FRESHNESS_POLICY_REMAINS_UNBOUND=true" in spec
+    assert "test_peak_trade_exact_venue_metadata_get_current_sui_pretrade_max_size_v1.py" in spec
+
+
 def test_master_names_subordinate_preservation_spec() -> None:
     section = _section_5_3(MASTER_RUNBOOK.read_text(encoding="utf-8"))
     assert (
