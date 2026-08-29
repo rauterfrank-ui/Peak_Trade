@@ -3,125 +3,128 @@
 status: ACTIVE
 last_updated: 2026-08-29
 owner: Peak_Trade
-purpose: Current-system mapping of restored A06 semantic stages. Not canonical authority.
+purpose: Bounded current-system composition of STEP-29P and STEP-29Q after A01–A05 evidence. Not canonical authority. Not a new semantic owner.
 docs_token: DOCS_TOKEN_MASTER_V2_A06_CAPITAL_RISK_SIZING_INTENT_RESTORE_V1
 
 ```text
 HISTORICAL_REFERENCE_AUTHORITY=NONE
+FORENSIC_REFERENCE_AUTHORITY_NONE=true
 REFERENCE_MODEL=MASTER_V2_DOUBLE_PLAY_CONSERVED_REFERENCE_V1
-REFERENCE_FIRST=true
-CURRENT_SYSTEM_ADAPTATION=true
 A06_ONLY=true
 NO_TRADING=true
 NO_LIVE_AUTHORITY=true
 NO_EXECUTION_AUTHORITY=true
-CANONICAL_MUTATION=false
+SAFETY_RESTORED=false
+A08_STARTED=false
+A06_ADAPTER_COMPUTE_OWNER=false
+A06_ADAPTER_RISK_OWNER=false
+A06_ADAPTER_SIZING_OWNER=false
+A06_ADAPTER_INTENT_OWNER=false
 ```
 
-## 1) Historical obligation source
+## 1) Epistemic classes
 
-Obligations are derived from the repo-preserved forensic historical reference
-(PR #6130; SHA-256 `a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212`).
-That package has `AUTHORITY=NONE`. It is not promoted to canonical working
-authority. Current-system code is adapted to the proven stage obligations.
+| Class | Meaning |
+|---|---|
+| HISTORICALLY_PROVEN | Supported by forensic Master V2 / Double Play structure plus existing STEP-29P / 29Q owners |
+| IMPLEMENTATION_DETAIL | Adapter mapping with no new business/authority semantics |
+| OUT_OF_SCOPE | Not this slice |
+| DEFERRED_TO_A08 | Historical E2E includes Safety before executable downstream; not implemented here |
+| FORENSIC_REFERENCE_AUTHORITY_NONE | Forensic package is evidence/reference only |
 
-Primary historical anchors (forensic blob, not SSOT):
+This spec is not Restoration SSOT. Restoration admission authority remains the
+merged class `HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_V1`.
 
-- Canonical target chain / stage classification around forensic lines 16892–16970
-  (`Risk`, `Sizing &#47; exposure`, `Execution decision &#47; Intent` as distinct stages)
-- Capital-path layering in `MASTER_V2_SCOPE_CAPITAL_ENVELOPE_CLARIFICATION_V1`
-  (Scope/Capital Envelope upstream of Risk/Exposure caps)
-- Current-system STEP 29P/29Q owners:
-  `src/governance/capital_risk_sizing_v1.py`
-  `src/governance/canonical_order_intent_v1.py`
-
-## 2) Current A06 implementation mapping
+## 2) Bounded restoration target
 
 ```text
-Registry snapshot
-  → Suitability
-  → Integrated Replay (compute owner)
-  → Double Play / SideState
-  → CanonicalTradingDecisionEvidenceV1
-  → CAPITAL_ENVELOPE  (ScopeCapitalEnvelopeV1)
-  → RISK              (PreSizingRiskAssessmentV1)
-  → SIZING            (CanonicalPositionSizingV1)
-  → POSITION_INTENT   (CanonicalOrderIntentV1, PLAN_ONLY)
+A01–A05 authoritative CanonicalTradingDecisionEvidenceV1
+  → STEP-29P evaluate_quantity_chain_v1
+       envelope → pre-sizing risk → sizing → post-sizing risk → provenance
+  → STEP-29Q build_canonical_order_intent_v1
+       PLAN_ONLY / submission_authorized=false
 ```
 
-Current-system owners:
+Replay remains compute owner. Decision Packet remains derived handoff.
+Double Play / SideState writer remains unchanged. A06 does not rewrite them.
 
-| Semantic stage | Current type | Module |
-|---|---|---|
-| Decision Evidence | `CanonicalTradingDecisionEvidenceV1` | `trading.master_v2.canonical_trading_decision_evidence_v1` |
-| Capital Envelope | `ScopeCapitalEnvelopeV1` | `src.governance.capital_risk_sizing_v1` |
-| Risk | `PreSizingRiskAssessmentV1` | `src.governance.capital_risk_sizing_v1` |
-| Sizing | `CanonicalPositionSizingV1` | `src.governance.capital_risk_sizing_v1` |
-| Position Intent | `CanonicalOrderIntentV1` | `src.governance.canonical_order_intent_v1` |
-| A06 restore facade | `capital_risk_sizing_intent_restore_v1` | `trading.master_v2.capital_risk_sizing_intent_restore_v1` |
+Historical full E2E ordering includes Safety before executable downstream
+progression. A06 does **not** restore Safety and does **not** claim full E2E.
 
-A01–A05 core wiring remains the upstream path. Integrated Replay remains the
-decision/replay compute owner. The Decision Packet remains derived handoff only.
+## 3) Obligation matrix (readjudicated)
 
-## 3) Semantic-stage vs module-separation
+| ID | Obligation | Status | Class |
+|---|---|---|---|
+| O01 | Capital Envelope is a distinct functional stage | PROVEN | HISTORICALLY_PROVEN via STEP-29P `ScopeCapitalEnvelopeV1` |
+| O02 | Envelope consumes authoritative replay evidence | PROVEN | HISTORICALLY_PROVEN |
+| O03 | Risk consumes Envelope inside the 29P quantity chain | PROVEN | HISTORICALLY_PROVEN in `evaluate_quantity_chain_v1`; not a parallel A06 layer |
+| O04 | Sizing consumes risk-approved/bounded 29P output | PROVEN | HISTORICALLY_PROVEN |
+| O05 | Position Intent is downstream of Sizing | PROVEN | HISTORICALLY_PROVEN via STEP-29Q; Safety remains deferred |
+| O06 | Decision Packet is derived handoff, not compute owner | PROVEN | HISTORICALLY_PROVEN in A01–A05; not an A06 gate |
+| O07 | Integrated Replay remains compute owner | PROVEN | HISTORICALLY_PROVEN |
+| O08 | No A06 rewrite of SideState / Double Play authority | PROVEN | HISTORICALLY_PROVEN as non-mutation; A06-owned override-reject gate is not historical |
+| O09 | 29P rejection remains fail-closed | PROVEN | HISTORICALLY_PROVEN owner behavior; extra A06 gates are not restoration obligations |
+| O10 | Position Intent remains non-executing PLAN_ONLY | PROVEN | HISTORICALLY_PROVEN |
+| O11 | No order submission or live authority | PROVEN | HISTORICALLY_PROVEN |
+| O12 | 29P stages remain independently observable | PROVEN | HISTORICALLY_PROVEN via chain fields, not A06 stage objects |
+
+Downgraded relative to the first A06 attestation: O03/O08/O09 no longer treat
+A06-facade mechanics as proven restoration.
+
+## 4) Not restoration obligations
+
+OUT_OF_SCOPE / not historically required:
+
+- A06 facade architecture / stage-object protocol / stage digests
+- A06-specific semantic IDs (`a06-intent::`)
+- duplicate independent envelope evaluation
+- A06-owned Risk/Sizing orchestration
+- Packet-as-compute-owner rejection as a novel A06 semantic gate
+- SideState-override rejection as a novel A06 semantic gate
+- legacy-replay rejection as an A06 restoration invariant
+- accidental-execution assertion framework as historical restoration
+- extra provenance constraints beyond the proven owner chain
+
+DEFERRED_TO_A08:
+
+- Safety kernel / Safety stage between Risk and executable Intent progression
+- any claim that execution admission is restored
+
+## 5) Current-system composition
 
 ```text
 FUNCTIONAL_STAGE_SEPARATION_REQUIRED=true
 MANDATORY_MODULE_SEPARATION=false
-SEMANTIC_STAGE_OWNERSHIP_SEPARATE=true
-IMPLEMENTATION_MODULE_OWNERSHIP_MAY_BE_COMBINED=true
+A06_IS_COMPOSITION_ADAPTER=true
 ```
 
-Capital Envelope, Risk, and Sizing remain independently observable stages even
-though they share `capital_risk_sizing_v1.py`. Position Intent remains a
-downstream module (`canonical_order_intent_v1.py`) and is non-executing.
+Owners:
 
-## 4) AUTH-014 disposition
+| Role | Owner |
+|---|---|
+| Decision / replay compute | `trading.master_v2.integrated_offline_trading_logic_replay_v1` |
+| SideState writer | `trading.master_v2.double_play_state.transition_state` |
+| Capital / Risk / Sizing | `src.governance.capital_risk_sizing_v1` |
+| Position Intent | `src.governance.canonical_order_intent_v1` |
+| Composition adapter | `trading.master_v2.capital_risk_sizing_intent_restore_v1` (not an owner) |
 
-```text
-AUTH_014_STATUS=CONSERVATIVE_SEMANTIC_STAGES_SEPARATE_MODULE_MAY_COMBINE
-AUTH_014_POLICY_CHOICE_REQUIRED=false
-AUTH_014_OWNER_QUESTION=NONE
-STOP_BEFORE_SEMANTIC_CHOICE=false
-```
-
-Historical evidence requires functional Capital → Risk → Sizing boundaries.
-It does not require mutually incompatible Python-module ownership that cannot
-be represented conservatively. No owner-policy choice is made or required.
-
-## 5) Fail-closed behavior
-
-The restore facade fails closed for:
-
-- missing / non-authoritative decision evidence
-- unknown, ambiguous, or snapshot-mismatched strategy identity
-- missing Capital Envelope output
-- Capital→Risk provenance mismatch / duplicate inconsistent identifiers
-- Risk rejection
-- Sizing without valid risk approval
-- Position Intent without valid sizing
-- legacy Decision Packet offered as independent compute authority
-- downstream attempt to override Double Play / SideState authority
-- accidental execution / live / order-submit authorization
-
-The A06 path calls `evaluate_quantity_chain_v1` with the authoritative replay
-evidence. It does not use the legacy flat-input synthesizer
-(`evaluate_capital_risk_sizing_v1` / `replay_id="legacy-replay"`) as decision
-authority.
+The adapter calls `evaluate_quantity_chain_v1` once. It does not independently
+re-evaluate the envelope. Mapping chain fields onto the existing 29Q decision
+contract is IMPLEMENTATION_DETAIL, not a second Risk/Sizing computation.
 
 ## 6) Non-execution boundary
-
-Existing project-standard equivalents are reused; no new live vocabulary:
 
 ```text
 EXECUTION_MODE=PLAN_ONLY
 ORDER_SUBMIT_AUTHORIZED=false
 LIVE_AUTHORIZED=false
-RUNTIME_BRIDGE_STATUS=BOUND_NOT_ACTIVATED
 CanonicalOrderIntentV1.submission_authorized=false
 CanonicalOrderIntentV1.execution_eligible=false
-plan_only_boundary_owner=src.execution_pipeline.plan_only_boundary_v0
+SAFETY_RESTORED=false
+A08_STARTED=false
 ```
+
+PLAN_ONLY intent before A08 is not execution admission.
 
 ## 7) Remaining unresolved work (not this slice)
 
@@ -132,6 +135,4 @@ A09_KILL_SWITCH_RESTORE=false
 A10_SINGLE_WRITER_RESTORE=false
 A11_EV_RESTORE=false
 A12_LIVE_GATE_RESTORE=false
-A13_CONFIG_REBIND=false
-A15_DOC_SELECTOR_REBIND=false
 ```

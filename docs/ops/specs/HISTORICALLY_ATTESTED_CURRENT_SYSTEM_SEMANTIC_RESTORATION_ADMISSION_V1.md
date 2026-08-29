@@ -15,7 +15,7 @@ RESTORATION_ADMISSION_BINDS_TO_CURRENT_A06_CODE=false
 HISTORICAL_REFERENCE_AUTHORITY=NONE
 CURRENT_SYSTEM_SEMANTIC_DELTA=true
 RISK_SIZING_SEMANTICS_CHANGED_FALSE_REQUIRED=false
-GRANT_ACTIVE=false
+GRANT_ACTIVE=true
 TOKEN_ALONE_IS_INSUFFICIENT=true
 ```
 
@@ -37,9 +37,9 @@ It is distinct from
 The existing technical wiring authorization remains unchanged and is not
 overloaded.
 
-This document does **not** authorize any concrete restoration slice.
-`grant_active=false`. Exact-file grants require a later Owner authorization
-after the candidate diff is re-adjudicated against the restoration target.
+This document is the class attestation. A later Owner authorization may add an
+exact-file slice grant. The class still does not bind to candidate-implementation
+identity and does not use an A06 token as `restoration_target_id`.
 
 ## 2) Restoration precedence
 
@@ -91,42 +91,37 @@ The following candidate-implementation constructs remain historically
 unproven or require exact provenance review. They are **not** admitted by
 this class and must not be copied into this contract as required semantics.
 
-| Construct | HISTORICAL_SUPPORT | RESTORATION_TARGET_CONFORMANCE | CURRENT_A06_IMPLEMENTATION_STATUS |
+| Construct | HISTORICAL_SUPPORT | RESTORATION_TARGET_CONFORMANCE | CURRENT_STATUS |
 |---|---|---|---|
-| Additional candidate fail-closed gates beyond attested stage fail-closed | UNPROVEN | UNPROVEN | PRESENT |
-| Packet-as-compute-owner constraints | UNPROVEN | UNPROVEN | PRESENT |
-| SideState override constraints | UNPROVEN | UNPROVEN | PRESENT |
-| Provenance restrictions beyond historically proven behavior | UNPROVEN | UNPROVEN | PRESENT |
-| Stage-contract mechanics not directly evidenced by Master V2 / Double Play | UNPROVEN | UNPROVEN | PRESENT |
-| Candidate-specific identifiers or orchestration conventions | UNPROVEN | UNPROVEN | PRESENT |
-| Distinct Capital / Risk / Sizing / Intent stages | PROVEN | UNPROVEN | PRESENT |
-| Existing STEP 29P / 29Q compute owners as current-system adapters | PROVEN | UNPROVEN | PRESENT |
+| Additional candidate fail-closed gates beyond attested stage fail-closed | UNPROVEN | UNPROVEN | REMOVED |
+| Packet-as-compute-owner constraints as A06 semantic gate | UNPROVEN | UNPROVEN | REMOVED |
+| SideState override constraints as A06 semantic gate | UNPROVEN | UNPROVEN | REMOVED |
+| Provenance restrictions beyond historically proven behavior | UNPROVEN | UNPROVEN | REMOVED |
+| Stage-contract mechanics not directly evidenced by Master V2 / Double Play | UNPROVEN | UNPROVEN | REMOVED |
+| Candidate-specific identifiers or orchestration conventions | UNPROVEN | UNPROVEN | REMOVED |
+| Distinct Capital / Risk / Sizing / Intent stages | PROVEN | PROVEN | PRESENT via STEP-29P / 29Q |
+| Existing STEP 29P / 29Q owners as current-system composition | PROVEN | PROVEN | PRESENT |
 
 `UNPROVEN` historical support must not be silently promoted into this
-admission contract. If later comparison proves a candidate construct
-incompatible with the restoration target:
+admission contract.
 
-```text
-A06_IMPLEMENTATION_DIVERGENCE_FROM_RESTORATION_TARGET=true
-A06_GRANT_MUST_NOT_BE_ISSUED=true
-```
-
-until a separately authorized correction restores conformance.
-That remediation is out of scope for this governance-prerequisite slice.
-
-## 5) Empty grant
+## 5) Bounded exact-file slice grant
 
 Committed authorization state:
 
 ```text
-grant_active=false
-allowed_paths=[]
-slice_grant_id=
-RESTORATION_TARGET_CONFORMANCE=false
+grant_active=true
+slice_grant_id=CAPITAL_RISK_SIZING_INTENT_BOUNDED_SLICE_V1
+RESTORATION_TARGET_CONFORMANCE=true
+restoration_target_id=MASTER_V2_DOUBLE_PLAY_CONSERVED_REFERENCE_V1
+binds_to_current_a06_code=false
+allowed_paths=
+  src/trading/master_v2/capital_risk_sizing_intent_restore_v1.py
+  tests/trading/master_v2/test_master_v2_a06_capital_risk_sizing_intent_restore_contract_v1.py
 ```
 
-Protected surfaces without an exact-file grant remain fail-closed,
-including candidate Capital / Risk / Sizing / Intent restore paths.
+Ungranted protected surfaces remain fail-closed, including
+`src/governance/capital_risk_sizing_v1.py`.
 
 ## 6) Owners
 

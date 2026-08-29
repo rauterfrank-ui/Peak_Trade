@@ -563,43 +563,6 @@ def _validate_context_and_evidence(
     return tuple(dict.fromkeys(reasons))
 
 
-def evaluate_scope_capital_envelope_v1(
-    evidence: CanonicalTradingDecisionEvidenceV1,
-    context: CapitalRiskSizingContextV1,
-    policy: CapitalRiskSizingPolicyV1,
-) -> ScopeCapitalEnvelopeV1:
-    """Public Capital Envelope stage. Same module as Risk/Sizing; distinct functional stage."""
-
-    return _build_scope_capital_envelope_v1(evidence, context, policy)
-
-
-def compute_capital_risk_sizing_policy_digest_v1(policy: CapitalRiskSizingPolicyV1) -> str:
-    return _policy_digest(policy)
-
-
-def chain_result_to_decision_v1(
-    chain: CapitalRiskSizingChainResultV1,
-    *,
-    selected_side: str,
-) -> CapitalRiskSizingDecisionV1:
-    """Map the quantity-chain result onto the intent-facing decision contract."""
-
-    return CapitalRiskSizingDecisionV1(
-        outcome=chain.outcome,
-        final_quantity=chain.final_quantity,
-        selected_side=_normalize_side(selected_side),
-        scope_capital_envelope=chain.scope_capital_envelope,
-        pre_sizing_risk=chain.pre_sizing_risk,
-        canonical_position_sizing=chain.canonical_position_sizing,
-        post_sizing_risk=chain.post_sizing_risk,
-        quantity_provenance=chain.quantity_provenance,
-        reason_codes=chain.reason_codes,
-        authority_effect=chain.authority_effect,
-        runtime_effect=chain.runtime_effect,
-        adapter_compatible=chain.adapter_compatible,
-    )
-
-
 def _build_scope_capital_envelope_v1(
     evidence: CanonicalTradingDecisionEvidenceV1,
     context: CapitalRiskSizingContextV1,
