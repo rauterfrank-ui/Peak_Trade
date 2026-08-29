@@ -1,0 +1,100 @@
+#!/bin/sh
+# Peak_Trade operator bootstrap for a checkout-local Python environment.
+# Resolves REPO_ROOT from this script location. May run `uv sync --dev`.
+# Does not unlink .venv. Does not authorize trading, Live, Testnet, or orders.
+# Runtime remains scripts/pt (never creates a venv).
+set -eu
+
+die() {
+  code="$1"
+  shift
+  printf '%s\n' "$*" >&2
+  exit "$code"
+}
+
+resolve_self() {
+  target=$0
+  max=32
+  while [ "$max" -gt 0 ]; do
+    max=$((max - 1))
+    case "$target" in
+      /*) abs=$target ;;
+      */*)
+        _dir=${target%/*}
+        _base=${target##*/}
+        abs="$(CDPATH= cd -- "$_dir" && pwd)/$_base"
+        ;;
+      *) abs="$(pwd)/$target" ;;
+    esac
+    if [ -L "$abs" ]; then
+      _link=
+      if [ -x /usr/bin/readlink ]; then
+        _link=$(/usr/bin/readlink "$abs")
+      elif [ -x /bin/readlink ]; then
+        _link=$(/bin/readlink "$abs")
+      else
+        die 7 "PT_BOOTSTRAP_FAIL: cannot resolve bootstrap symlink without readlink"
+      fi
+      case "$_link" in
+        /*) target=$_link ;;
+        *) target="${abs%/*}/$_link" ;;
+      esac
+    else
+      printf '%s\n' "$abs"
+      return 0
+    fi
+  done
+  die 7 "PT_BOOTSTRAP_FAIL: cannot resolve bootstrap path"
+}
+
+SELF=$(resolve_self)
+SCRIPTS_DIR=$(CDPATH= cd -- "${SELF%/*}" && pwd)
+REPO_ROOT=$(CDPATH= cd -- "$SCRIPTS_DIR/.." && pwd)
+VENV_DIR="$REPO_ROOT/.venv"
+INTERPRETER="$VENV_DIR/bin/python"
+ENV_PY="$REPO_ROOT/scripts/runtime/pt_worktree_environment_v1.py"
+
+if [ ! -f "$REPO_ROOT/pyproject.toml" ] || [ ! -f "$REPO_ROOT/uv.lock" ] || [ ! -f "$REPO_ROOT/scripts/pt" ]; then
+  die 7 "PT_BOOTSTRAP_FAIL: checkout incomplete at $REPO_ROOT (need pyproject.toml, uv.lock, scripts/pt)"
+fi
+
+if [ -L "$VENV_DIR" ]; then
+  _target=
+  if [ -x /usr/bin/readlink ]; then
+    _target=$(/usr/bin/readlink "$VENV_DIR")
+  elif [ -x /bin/readlink ]; then
+    _target=$(/bin/readlink "$VENV_DIR")
+  else
+    _target="(unreadable)"
+  fi
+  die 10 "PT_BOOTSTRAP_FAIL: foreign/shared/symlinked worktree environment is unsupported
+REPO_ROOT=$REPO_ROOT
+.venv is a symlink to $_target
+Do not reuse another worktree .venv.
+./scripts/pt-bootstrap will not unlink automatically.
+Remove the symlink yourself only when it is an untracked local link, then re-run."
+fi
+
+if [ -e "$VENV_DIR" ] && [ ! -d "$VENV_DIR" ]; then
+  die 10 "PT_BOOTSTRAP_FAIL: $VENV_DIR exists and is not a directory"
+fi
+
+if ! command -v uv >/dev/null 2>&1; then
+  die 14 "PT_BOOTSTRAP_FAIL: uv is not available on PATH. Install uv, then re-run ./scripts/pt-bootstrap"
+fi
+
+CDPATH= cd -- "$REPO_ROOT"
+
+if [ ! -d "$VENV_DIR" ]; then
+  printf '%s\n' "PT_BOOTSTRAP: provisioning checkout-local .venv via uv sync --dev in $REPO_ROOT"
+  uv sync --dev
+fi
+
+if [ ! -x "$INTERPRETER" ]; then
+  die 3 "PT_BOOTSTRAP_FAIL: canonical interpreter missing after provision: $INTERPRETER"
+fi
+
+"$INTERPRETER" "$ENV_PY" write-fingerprint
+"$INTERPRETER" "$ENV_PY" validate
+printf '%s\n' "PT_BOOTSTRAP_OK repo_root=$REPO_ROOT"
+exit 0

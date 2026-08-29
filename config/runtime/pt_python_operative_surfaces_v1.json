@@ -8,6 +8,11 @@
       "role": "canonical_launcher"
     },
     {
+      "path": "scripts/pt-bootstrap",
+      "class": "OPERATIVE_CANONICAL",
+      "role": "operator_worktree_environment_bootstrap"
+    },
+    {
       "path": "pt",
       "class": "OPERATIVE_WRAPPER",
       "role": "root_trampoline_to_scripts_pt"
@@ -16,6 +21,11 @@
       "path": "scripts/runtime/pt_python_runtime_contract_v1.py",
       "class": "OPERATIVE_CANONICAL",
       "role": "runtime_contract_library"
+    },
+    {
+      "path": "scripts/runtime/pt_worktree_environment_v1.py",
+      "class": "OPERATIVE_CANONICAL",
+      "role": "worktree_environment_isolation_library"
     },
     {
       "path": "Makefile",
@@ -106,6 +116,11 @@
       "path": "docs/runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md",
       "class": "OPERATIVE_CANONICAL",
       "role": "canonical_runtime_doc"
+    },
+    {
+      "path": "docs/runtime/PEAK_TRADE_WORKTREE_PYTHON_ENVIRONMENT_BOOTSTRAP_CONTRACT_V1.md",
+      "class": "OPERATIVE_CANONICAL",
+      "role": "worktree_environment_bootstrap_doc"
     },
     {
       "path": "docs/ops/PYTHON_VERSION_PLAN.md",

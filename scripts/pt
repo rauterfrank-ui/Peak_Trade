@@ -58,6 +58,7 @@ SCRIPTS_DIR=$(CDPATH= cd -- "${SELF%/*}" && pwd)
 REPO_ROOT=$(CDPATH= cd -- "$SCRIPTS_DIR/.." && pwd)
 INTERPRETER="$REPO_ROOT/.venv/bin/python"
 CONTRACT_PY="$REPO_ROOT/scripts/runtime/pt_python_runtime_contract_v1.py"
+ENV_PY="$REPO_ROOT/scripts/runtime/pt_worktree_environment_v1.py"
 
 if [ ! -f "$REPO_ROOT/pyproject.toml" ]; then
   die 7 "PT_RUNTIME_FAIL: repository root unresolved at $REPO_ROOT"
@@ -70,7 +71,7 @@ if [ "$cmd" = "bootstrap-help" ]; then
 Peak_Trade Python runtime contract ${CONTRACT_VERSION}
 
 BOOTSTRAP (operator-invoked, not runtime):
-  uv sync --dev
+  ./scripts/pt-bootstrap
 
 RUNTIME (no activation, no PATH python3):
   ./scripts/pt runtime-check
@@ -105,9 +106,15 @@ if [ "${PT_RUNTIME_MODE:-}" = "provisioned" ]; then
   fi
 else
   INTERPRETER="$REPO_ROOT/.venv/bin/python"
+  if [ -L "$REPO_ROOT/.venv" ]; then
+    die 10 "PT_RUNTIME_FAIL: foreign/shared/symlinked worktree environment is unsupported
+.venv must be a real directory in this checkout.
+Bootstrap with: ./scripts/pt-bootstrap
+Do not symlink to another worktree .venv."
+  fi
   if [ ! -f "$INTERPRETER" ]; then
     die 3 "PT_RUNTIME_FAIL: canonical interpreter missing: $INTERPRETER
-Bootstrap with: uv sync --dev
+Bootstrap with: ./scripts/pt-bootstrap
 Do not use PATH python/python3."
   fi
   if [ ! -x "$INTERPRETER" ]; then
@@ -125,6 +132,16 @@ if [ "${PT_KEEP_CWD:-0}" != "1" ]; then
   cd "$REPO_ROOT"
 fi
 
+if [ "${PT_RUNTIME_MODE:-}" != "provisioned" ]; then
+  _iso_rc=0
+  "$INTERPRETER" "$ENV_PY" validate || _iso_rc=$?
+  if [ "$_iso_rc" -ne 0 ]; then
+    die "$_iso_rc" "PT_RUNTIME_FAIL: per-worktree environment isolation failed.
+Bootstrap with: ./scripts/pt-bootstrap
+VIRTUAL_ENV is not a correctness authority."
+  fi
+fi
+
 if [ "$cmd" = "runtime-check" ] || [ "$cmd" = "fingerprint" ]; then
   exec "$INTERPRETER" "$CONTRACT_PY" "$cmd"
 fi
@@ -135,7 +152,7 @@ if [ "${PT_SKIP_TRADING_PREFLIGHT:-0}" != "1" ]; then
   if ! "$INTERPRETER" -c "import importlib.util, sys; spec = importlib.util.find_spec('trading');
 raise SystemExit(0 if spec is not None else 6)"; then
     die 6 "PT_RUNTIME_FAIL: import trading failed under $INTERPRETER
-Do not set PYTHONPATH. Bootstrap with: uv sync --dev"
+Do not set PYTHONPATH. Bootstrap with: ./scripts/pt-bootstrap"
   fi
 fi
 

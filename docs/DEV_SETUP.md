@@ -6,7 +6,7 @@ Anleitung zum Einrichten der Entwicklungsumgebung.
 
 ## Voraussetzungen
 
-- **Python floor:** `requires-python = ">=3.10"` (`pyproject.toml`). Recommended local interpreter: repository `.venv` (CPython 3.11.x) via `uv sync --dev`.
+- **Python floor:** `requires-python = ">=3.10"` (`pyproject.toml`). Recommended local interpreter: repository `.venv` (CPython 3.11.x) via [`scripts/pt-bootstrap`](../scripts/pt-bootstrap).
 - **Git**
 - Optional: VS Code, PyCharm oder andere IDE
 - Canonical runtime: [`PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md`](runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md)
@@ -25,7 +25,7 @@ cd Peak_Trade
 ## 2. Environment bootstrap
 
 ```bash
-uv sync --dev
+./scripts/pt-bootstrap
 ./scripts/pt runtime-check
 ```
 

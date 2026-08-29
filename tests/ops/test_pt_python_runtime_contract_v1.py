@@ -12,6 +12,7 @@ from pathlib import Path
 
 import pytest
 
+from tests.ops.pt_isolated_venv_test_support_v1 import complete_isolated_test_venv
 from scripts.runtime.pt_python_runtime_contract_v1 import (
     CANONICAL_INTERPRETER_REL,
     CONTRACT_VERSION,
@@ -50,6 +51,10 @@ def _seed_fake_repo(tmp: Path) -> Path:
         (tmp / "scripts" / "pt").stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
     )
     shutil.copy2(CONTRACT_PY, tmp / "scripts" / "runtime" / "pt_python_runtime_contract_v1.py")
+    shutil.copy2(
+        REPO_ROOT / "scripts" / "runtime" / "pt_worktree_environment_v1.py",
+        tmp / "scripts" / "runtime" / "pt_worktree_environment_v1.py",
+    )
     (tmp / "pyproject.toml").write_text(
         '[project]\nname = "peak_trade_runtime_fixture"\nrequires-python = ">=3.10"\n',
         encoding="utf-8",
@@ -120,6 +125,7 @@ def test_path_poisoning_does_not_select_system_python(tmp_path: Path) -> None:
     venv_python = repo / CANONICAL_INTERPRETER_REL
     venv_python.parent.mkdir(parents=True)
     venv_python.symlink_to(Path(sys.executable).resolve())
+    complete_isolated_test_venv(repo)
     poison = tmp_path / "poison" / "bin"
     poison.mkdir(parents=True)
     _write_executable(
@@ -158,6 +164,7 @@ def test_nested_cwd_and_no_activation(tmp_path: Path) -> None:
     venv_python = repo / CANONICAL_INTERPRETER_REL
     venv_python.parent.mkdir(parents=True)
     venv_python.symlink_to(Path(sys.executable).resolve())
+    complete_isolated_test_venv(repo)
     env = {
         "PATH": "/usr/bin:/bin",
         "HOME": str(tmp_path / "home"),
@@ -183,6 +190,7 @@ def test_empty_path_still_uses_canonical_interpreter(tmp_path: Path) -> None:
     venv_python = repo / CANONICAL_INTERPRETER_REL
     venv_python.parent.mkdir(parents=True)
     venv_python.symlink_to(Path(sys.executable).resolve())
+    complete_isolated_test_venv(repo)
     proc = subprocess.run(
         [str(repo / "scripts" / "pt"), "-c", "print('ok')"],
         cwd=repo,
@@ -375,6 +383,7 @@ def test_operative_surface_manifest_exists() -> None:
     assert payload["contract_id"] == "pt_python_operative_surfaces_v1"
     classes = {item["path"]: item["class"] for item in payload["surfaces"]}
     assert classes["scripts/pt"] == "OPERATIVE_CANONICAL"
+    assert classes["scripts/pt-bootstrap"] == "OPERATIVE_CANONICAL"
     assert classes["tests/conftest.py"] == "TEST_ONLY"
     assert classes["docs/ops/PYTHON_VERSION_PLAN.md"] == "HISTORICAL"
 
@@ -399,6 +408,7 @@ def test_pyenv_system_does_not_alter_selected_runtime(tmp_path: Path) -> None:
     venv_python = repo / CANONICAL_INTERPRETER_REL
     venv_python.parent.mkdir(parents=True)
     venv_python.symlink_to(Path(sys.executable).resolve())
+    complete_isolated_test_venv(repo)
     poison = tmp_path / "pyenv" / "shims"
     poison.mkdir(parents=True)
     _write_executable(poison / "python3", "#!/bin/sh\necho PYENV_SYSTEM >&2\nexit 99\n")
