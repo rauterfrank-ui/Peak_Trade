@@ -15,6 +15,7 @@
     "src/trading/master_v2/registry_suitability_snapshot_v1.py",
     "src/trading/master_v2/strategy_identity_binding_v1.py",
     "tests/trading/master_v2/test_master_v2_double_play_core_wiring_restore_contract_v1.py",
+    "tests/trading/master_v2/test_master_v2_integrated_replay_appendix_a_core_logic_parity_post_6135_contract_v1.py",
     "src/trading/master_v2/double_play_sole_authority_quarantine_v1.py",
     "src/trading/master_v2/chop_scope_event_policy_binding_v1.py",
     "src/trading/master_v2/double_play_state.py",
@@ -1133,7 +1134,8 @@
     "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_SESSION_S03_PRODUCTIVE_AUTH_V2_CONSUMPTION_AND_EXECUTION_ENABLEMENT_V1: enable productive Auth-v2 consumption/execution flags and CLI real-path wiring on the existing S03 owner; interactive confirm-token only; no production consumption/session/network during enablement PR; current auth requires separate revocation/reissuance; no numeric max-age selection; no policy enforcement.",
     "MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_ADDITIONAL_EVIDENCE_S03_ATOMIC_AUTH_V2_REISSUE_CONSUME_EXECUTE_WITH_EPHEMERAL_CONFIRM_TOKEN_V1: authorize atomic same-process Auth-v2 revoke/reissue/consume/execute orchestration owner with ephemeral confirm-token handle; reuses mint/issue/revoke and canonical S03 execution owner; offline probe + CLI wiring only in this capability PR; no productive auth mutation/session/network during merge; no token recovery/persistence; no numeric max-age selection; no policy enforcement.",
     "CAPABILITY_7_1_SIMULATED_ENTRY_REDUCE_EXIT_ACTIONABILITY_EVIDENCE_V1: authorize exact-file semantics-neutral capital-risk sizing input completeness on the intent-pipeline bridge (propagate decision_outcome into CapitalRiskSizingInputV1 so short/reduce/exit stay side-consistent). No threshold/rule/Master-V2 semantic mutation; no live/testnet/orders; no broad master_v2 grant.",
-    "PRODUCTIVE_TYPED_VOLATILITY_PRODUCER_AND_CMC_HOT_PATH_BINDING_V1: authorize exact-file PT1M mark observation finalizer + focused test only (forbidden MASTER_V2 surfaces). Reuses existing producer/CMC/presence-gate/hardening-bridge authorities. No formula/window/ddof/unit/threshold change; Numeric Max-Age remains non-enforcing; no proxy promotion; CORE_LOGIC_CHANGE=false; no live/testnet/orders."
+    "PRODUCTIVE_TYPED_VOLATILITY_PRODUCER_AND_CMC_HOT_PATH_BINDING_V1: authorize exact-file PT1M mark observation finalizer + focused test only (forbidden MASTER_V2 surfaces). Reuses existing producer/CMC/presence-gate/hardening-bridge authorities. No formula/window/ddof/unit/threshold change; Numeric Max-Age remains non-enforcing; no proxy promotion; CORE_LOGIC_CHANGE=false; no live/testnet/orders.",
+    "MASTER_V2_INTEGRATED_REPLAY_APPENDIX_A_CORE_LOGIC_PARITY_POST_6135_V1: authorize exact-file proof-only / test-only / semantics-neutral Appendix A core-logic parity contract test. Non-runtime, non-authoritative. Does not expand historically attested restoration allowed_paths. No replay rewire, no owner change, no live/testnet/orders."
   ],
   "pr_specific_exception": false,
   "required_check_waiver": false,
@@ -1173,6 +1175,7 @@
     "CAPABILITY_REGIME_BULL_BEAR_SWITCH_EVIDENCE_READMODEL_V1: authorize exact-file EVIDENCE_ONLY / NON_RESTART_AUTHORITY capture carrier + post-transition capture binding in integrated offline replay + focused tests. No Master-V2/Double-Play restart persistence domain; CanonicalDynamicScopeStateV1.side_state remains sole SideState restart owner; CORE_SEMANTICS_CHANGED=false; no live/testnet/orders.",
     "EG_I82_PACKAGE_N_LIVE_OWNER_JOIN_CLOSEOUT: authorize exact-file I16 lineage remaining-plane identity-join sidecar + focused tests under Package-N SHA256-only join. No promotion authority, runtime activation, orders, credentials, scheduler, migration, or backfill. Other promotion_loop paths remain unauthorized.",
     "PHASE_0B_LEGACY_LEARNING_AUTHORITY_FIREWALL_FAIL_CLOSED: authorize exact-file fail-closed non-authority wiring of the promotion_loop live-override writer sink and its negative contract test only. No promotion runtime authority, order authority, scheduler authority, credential authority, or live authority. Learning remains non-self-authorizing.",
-    "MASTER_V2_DOUBLE_PLAY_CORE_WIRING_RESTORE_V1 exact-file allowlist for current-system Registry to Suitability snapshot to Integrated Replay compute wiring, derived Decision Packet handoff, fail-closed AUTH-001 identity binding, and subordinate Ops/scenario authority class. No capital-policy ratification, no economic viability restoration, no live/testnet/canary/orders."
+    "MASTER_V2_DOUBLE_PLAY_CORE_WIRING_RESTORE_V1 exact-file allowlist for current-system Registry to Suitability snapshot to Integrated Replay compute wiring, derived Decision Packet handoff, fail-closed AUTH-001 identity binding, and subordinate Ops/scenario authority class. No capital-policy ratification, no economic viability restoration, no live/testnet/canary/orders.",
+    "MASTER_V2_INTEGRATED_REPLAY_APPENDIX_A_CORE_LOGIC_PARITY_POST_6135_V1 exact-file allowlist for the proof-only Appendix A core-logic parity contract test (test-only; semantics-neutral; no runtime authority; no restoration-slice expansion)."
   ]
 }
