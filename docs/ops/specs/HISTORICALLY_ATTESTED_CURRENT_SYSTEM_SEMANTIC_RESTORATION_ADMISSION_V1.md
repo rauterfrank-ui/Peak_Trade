@@ -37,9 +37,10 @@ It is distinct from
 The existing technical wiring authorization remains unchanged and is not
 overloaded.
 
-This document is the class attestation. A later Owner authorization may add an
-exact-file slice grant. The class still does not bind to candidate-implementation
-identity and does not use an A06 token as `restoration_target_id`.
+This document is the class attestation. The committed machine state is a
+single exact-file slice grant. The class still does not bind to
+candidate-implementation identity and does not use an A06 token as
+`restoration_target_id`.
 
 ## 2) Restoration precedence
 
@@ -76,6 +77,12 @@ Machine-validated (repo-state):
 - purpose class is not semantics-neutral technical wiring
 - `binds_to_current_a06_code=false`
 
+`SAFETY_AUTHORITY_CHANGED=false` means Safety emits no execution/submission
+permission and gains no new authority. It does not mean Safety wiring is
+unchanged. `CURRENT_SYSTEM_SEMANTIC_DELTA=true` is required because
+invocation/wiring changes. Safety owner identity and Safety policy remain
+the existing owner; this class does not claim that Safety semantics changed.
+
 Declared Owner policy / human-adjudicated (not proven by JSON booleans):
 
 - `NEW_POLICY_INTRODUCED=false`
@@ -84,6 +91,7 @@ Declared Owner policy / human-adjudicated (not proven by JSON booleans):
 - `RESTORATION_TARGET_CONFORMANCE` of any future granted slice
 
 This class must **not** claim `RISK_SIZING_SEMANTICS_CHANGED=false`.
+This class must **not** claim `SAFETY_SEMANTICS_CHANGED=false`.
 
 ## 4) Constructs that must not acquire de-facto authority from a candidate implementation
 
@@ -107,18 +115,22 @@ admission contract.
 
 ## 5) Bounded exact-file slice grant
 
-Committed authorization state:
+Committed authorization state (single active grant; no multi-grant model):
 
 ```text
 grant_active=true
-slice_grant_id=CAPITAL_RISK_SIZING_INTENT_BOUNDED_SLICE_V1
+slice_grant_id=SAFETY_KERNEL_BEFORE_INTENT_BOUNDED_SLICE_V1
 RESTORATION_TARGET_CONFORMANCE=true
 restoration_target_id=MASTER_V2_DOUBLE_PLAY_CONSERVED_REFERENCE_V1
 binds_to_current_a06_code=false
 allowed_paths=
-  src/trading/master_v2/capital_risk_sizing_intent_restore_v1.py
-  tests/trading/master_v2/test_master_v2_a06_capital_risk_sizing_intent_restore_contract_v1.py
+  src/trading/master_v2/capital_risk_sizing_safety_intent_restore_v1.py
+  tests/trading/master_v2/test_master_v2_capital_risk_sizing_safety_intent_restore_contract_v1.py
 ```
+
+The prior `CAPITAL_RISK_SIZING_INTENT_BOUNDED_SLICE_V1` exact-file grant is
+historical record only. It is not accumulated. A06 protected paths are not
+widened into a directory permission.
 
 Ungranted protected surfaces remain fail-closed, including
 `src/governance/capital_risk_sizing_v1.py`.

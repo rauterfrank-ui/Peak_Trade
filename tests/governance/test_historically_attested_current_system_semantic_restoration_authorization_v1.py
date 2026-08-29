@@ -45,10 +45,12 @@ AUTH_PATH = (
     / "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json"
 )
 
+COMMITTED_SLICE_GRANT_ID = "SAFETY_KERNEL_BEFORE_INTENT_BOUNDED_SLICE_V1"
 COMMITTED_SLICE_GRANT_PATHS = [
-    "src/trading/master_v2/capital_risk_sizing_intent_restore_v1.py",
-    "tests/trading/master_v2/test_master_v2_a06_capital_risk_sizing_intent_restore_contract_v1.py",
+    "src/trading/master_v2/capital_risk_sizing_safety_intent_restore_v1.py",
+    "tests/trading/master_v2/test_master_v2_capital_risk_sizing_safety_intent_restore_contract_v1.py",
 ]
+HISTORICAL_A06_ADAPTER_PATH = "src/trading/master_v2/capital_risk_sizing_intent_restore_v1.py"
 UNGRANTED_PROTECTED_PATH = "src/governance/capital_risk_sizing_v1.py"
 
 FIXTURE_GRANTED_PATH = "src/trading/master_v2/survival_assessment_v1.py"
@@ -85,9 +87,15 @@ class TestRestorationAdmissionClassContractV1:
         assert auth["grant_active"] is True
         assert auth["allowed_paths"] == COMMITTED_SLICE_GRANT_PATHS
         assert auth["allowed_surface_classes"] == ["MASTER_V2"]
-        assert auth["slice_grant_id"] == "CAPITAL_RISK_SIZING_INTENT_BOUNDED_SLICE_V1"
+        assert auth["slice_grant_id"] == COMMITTED_SLICE_GRANT_ID
         assert auth["RESTORATION_TARGET_CONFORMANCE"] is True
         assert auth["CURRENT_SYSTEM_SEMANTIC_DELTA"] is True
+        assert auth["SAFETY_AUTHORITY_CHANGED"] is False
+        assert auth["EXECUTION_AUTHORITY_CHANGED"] is False
+        assert auth["LIVE_AUTHORITY_CHANGED"] is False
+        assert auth["TRADING_AUTHORITY_CHANGED"] is False
+        assert auth["PR_SPECIFIC_EXCEPTION"] is False
+        assert auth["BRANCH_SPECIFIC_EXCEPTION"] is False
         assert auth["binds_to_restoration_target"] is True
         assert auth["binds_to_current_a06_code"] is False
         assert auth["historical_reference_sha256"] == RESTORATION_HISTORICAL_REFERENCE_SHA256
@@ -95,6 +103,7 @@ class TestRestorationAdmissionClassContractV1:
         assert auth["restoration_attestation_id"] == RESTORATION_CLASS_ATTESTATION_RELATIVE
         assert "RISK_SIZING_SEMANTICS_CHANGED" not in auth.get("restoration_invariants", {})
         assert "RISK_SIZING_SEMANTICS_CHANGED" not in auth
+        assert "SAFETY_SEMANTICS_CHANGED" not in auth.get("restoration_invariants", {})
         assert "A06" not in auth["restoration_target_id"]
         assert "A06" not in auth["slice_grant_id"]
 
@@ -116,6 +125,26 @@ class TestRestorationAdmissionClassContractV1:
         serialized = json.dumps(auth)
         assert "A06RestoreError" not in serialized
         assert "src/governance/capital_risk_sizing_v1.py" not in serialized
+
+    def test_committed_grant_is_exact_file_only_not_directory_glob_or_blanket(self) -> None:
+        auth = _load_restoration()
+        for path in auth["allowed_paths"]:
+            assert isinstance(path, str)
+            assert path.endswith(".py")
+            assert "*" not in path
+            assert "**" not in path
+            assert not path.endswith("/")
+            assert path != "src/trading/master_v2/"
+            assert not path.endswith("/**")
+        assert auth["DIRECTORY_GRANT"] is False
+        assert auth["BROAD_MASTER_V2_GRANT"] is False
+        assert auth["authorized_path_prefixes"] == []
+        assert HISTORICAL_A06_ADAPTER_PATH not in auth["allowed_paths"]
+        assert "src/trading/master_v2/" not in auth["allowed_paths"]
+        assert auth["PR_SPECIFIC_EXCEPTION"] is False
+        assert auth["BRANCH_SPECIFIC_EXCEPTION"] is False
+        assert auth["BRANCH_PROTECTION_BYPASS"] is False
+        assert auth["REQUIRED_CHECK_WAIVER"] is False
 
     def test_token_alone_is_insufficient(self) -> None:
         token_only = {
