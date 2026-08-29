@@ -3335,6 +3335,120 @@ age bound is invented. Failure prevents downstream POST. Standing Live
 / Testnet / Canary authorization remain false. Tests are guards, not a
 second semantic SSOT.
 
+Named subordinate persist for the POS_MODE forensic binding and
+productive consumer after the closed LEVERAGE persist. This does
+**not** reopen restoration, add a Core owner or stage, close
+MARGIN_MODE, AVAILABLE_MARGIN, ACCOUNT_MODE, or INSTRUMENT_STATE,
+invent a TTL or cache, rewrite raw `net_mode` to `net`, infer
+`posMode` from `posSide`, substitute `acctLv`, POST
+`set-position-mode`, trade, or grant live authority. Historical GATE_21
+`posMode=net` remains internal presentation, not exchange-raw.
+Historical BTC-era `account&#47;config` remains non-transferable as a
+current SUI reobservation. Leverage `posSide=net` remains a different
+domain. Request grammar is none. Venue scope is account-global.
+Consumer scope remains the current SUI pretrade path.
+
+``` text
+POS_MODE_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1=true
+SPEC=docs/ops/specs/PEAK_TRADE_POS_MODE_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_STATUS=PARTIAL
+VENUE_PRETRADE_LIMIT_GATES_COMPLETE=false
+MAX_SIZE_BINDING_STATUS=PROVEN
+MAX_AVAILABLE_BINDING_STATUS=PROVEN
+PRICE_BAND_BINDING_STATUS=PROVEN
+LEVERAGE_BINDING_STATUS=PROVEN
+POS_MODE_BINDING_STATUS=PROVEN
+POS_MODE_CANONICAL_DEFINITION=ACCOUNT_POS_MODE
+POS_MODE_ENDPOINT=/api/v5/account/config
+POS_MODE_REQUEST_GRAMMAR=NONE
+POS_MODE_RESPONSE_FIELD=posMode
+POS_MODE_OUTPUT_DOMAIN=ACCOUNT_POS_MODE
+POS_MODE_VENUE_SCOPE=ACCOUNT_GLOBAL
+POS_MODE_CONSUMER_SCOPE=CURRENT_SUI_PRETRADE_CONSUMER
+POS_MODE_REQUIRED_VALUE=net_mode
+POS_MODE_RAW_VALUE=net_mode
+POS_MODE_SEMANTIC_VALUE=NET_POSITION_MODE
+POS_MODE_FRESHNESS_POLICY=CONFIGURATION_SCOPED_CURRENT_READ_PER_PRETRADE_DECISION
+POS_MODE_TS_AGE_BOUND=UNBOUND
+POS_MODE_NO_TS_FIELD=true
+POS_MODE_AUTH_CLASS=AUTHENTICATED_PRIVATE_GET
+POS_MODE_CONSUMER_BOUND=true
+POS_MODE_FAIL_CLOSED_BOUND=true
+ACCTLV_IS_NOT_POS_MODE=true
+POSSIDE_NET_IS_NOT_POS_MODE=true
+TDMODE_CROSS_IS_NOT_POS_MODE=true
+MGNMODE_CROSS_IS_NOT_POS_MODE=true
+MAX_POSITIONS_IS_NOT_POS_MODE=true
+SINGLE_SELECTED_FUTURE_IS_NOT_POS_MODE=true
+ACCOUNT_MODE=UNPROVEN
+ACCOUNT_MODE_PROOF_STATUS=UNPROVEN
+LEVERAGE_POSSIDE_NET_REUSED_AS_POS_MODE_PROOF=false
+POS_SIDE_INFERENCE_USED_AS_AUTHORITY=false
+HISTORICAL_POS_MODE_REUSED=false
+DEFAULT_POS_MODE_USED=false
+ZERO_NORMALIZATION_PERFORMED=false
+SET_POSITION_MODE_EXECUTED=false
+POSITION_MODE_MUTATION_PERFORMED=false
+ACCOUNT_MODE_MUTATION_PERFORMED=false
+AVAILABLE_MARGIN_BINDING_STATUS=UNBOUND
+MARGIN_MODE_BINDING_STATUS=UNBOUND
+POS_MODE_GET_PERFORMED=true
+POS_MODE_GET_TIMESTAMP_UTC=2026-08-29T23:33:51.694980Z
+POS_MODE_GET_HTTP_STATUS=200
+POS_MODE_GET_VENUE_CODE=0
+POS_MODE_OBSERVATION_CLASS=SUCCESS_TOKEN
+POS_MODE_OBSERVATION_ENVIRONMENT=OKX_EEA_PRODUCTION
+POS_MODE_OBSERVATION_AUTHENTICATED=true
+POS_MODE_HISTORICAL_NORMALIZATION_STATUS=CLASSIFIED_GATE21_POSMODE_NET_IS_INTERNAL_PRESENTATION_NOT_EXCHANGE_RAW
+ACCT_LV_RAW_CONTEXTUAL=2
+EVIDENCE_PACK=evidence/ops/pos_mode_forensic_binding_implementation_and_closure_v1/20260829T233351Z
+ALL_REQUIRED_METADATA_EDGES_BOUND=false
+EARLIEST_REMAINING_UNBOUND_EDGE=MARGIN_MODE
+EARLIEST_REMAINING_CONFLICT=NONE
+EARLIEST_UNRESOLVED_DEPENDENCY=MARGIN_MODE
+ORDER_PLAN_TYPED_DOMAIN_PRESERVED=true
+NETWORK_VENUE_GET_PERFORMED=true
+NETWORK_AUTHENTICATED_GET_PERFORMED=true
+NETWORK_POST_PERFORMED=false
+TRADING_PERFORMED=false
+PERSISTED_OBSERVATION_IS_OPERATIVE_CACHE=false
+RUNTIME_ALIGNMENT_REQUIRED=true
+RUNTIME_MUTATION_JUSTIFIED=true
+RUNTIME_MUTATION_PERFORMED=true
+CHANGED_RUNTIME_FILES=pos_mode_observation_v1.py,pos_mode_consumer_v1.py,order_plan_v1.py,submit_transport_v1.py,constants_v1.py
+CANONICAL_VENUE_PRETRADE_OWNER=section_11_13_5.order_plan_v1+exposure_v1@submit_transport_v1
+SECOND_VENUE_PRETRADE_OWNER_EXISTS=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+EXECUTION_ELIGIBLE=false
+LIVE_READINESS=EVALUATED_NOT_READY
+CURRENT_SELECTED_INSTRUMENT=SUI-USD_UM_XPERP-310404
+CURRENT_VENUE=OKX_EEA
+KRAKEN_CURRENT_CANONICAL_ROLE=NONE
+KRAKEN_EXCLUSION_CLOSED=true
+NEXT_DISTINCT_SURFACE=MARGIN_MODE
+NEXT_DISTINCT_SURFACE_AUTHORIZED=false
+```
+
+Normative subordinate persist:
+[`docs/ops/specs/PEAK_TRADE_POS_MODE_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1.md`](../../ops/specs/PEAK_TRADE_POS_MODE_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1.md).
+The productive pretrade consumer
+`apply_fresh_pos_mode_pretrade_gate_v1` is bound into
+`build_minimum_valid_canary_order_plan_v1` from the per-decision
+authenticated `GET &#47;api&#47;v5&#47;account&#47;config` in
+`submit_transport_v1`. Request grammar is none. Raw `posMode` is
+`net_mode`. Semantic class is `NET_POSITION_MODE` and is not a rewrite
+to `posSide` `net`. `acctLv` remains unbound. Historical
+`posMode=net` is internal presentation. Leverage `posSide=net` is not
+POS_MODE proof. Freshness is a configuration-scoped current read per
+pretrade decision. No `ts` age bound is invented. Failure prevents
+downstream POST. Standing Live / Testnet / Canary authorization remain
+false. Tests are guards, not a second semantic SSOT.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:

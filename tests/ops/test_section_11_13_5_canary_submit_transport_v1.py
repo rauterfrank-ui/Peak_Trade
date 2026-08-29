@@ -41,6 +41,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.lifecycle_v1 import
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.leverage_observation_v1 import (
     account_leverage_info_query_path_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pos_mode_observation_v1 import (
+    account_config_query_path_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_available_observation_v1 import (
     account_max_size_query_path_v1,
 )
@@ -111,6 +114,17 @@ LEVERAGE = {
         }
     ],
 }
+POS_MODE = {
+    "code": "0",
+    "data": [
+        {
+            "uid": "856964404452495999",
+            "acctLv": "2",
+            "posMode": "net_mode",
+            "perm": "read_only,trade",
+        }
+    ],
+}
 FIXTURE_MATERIAL = json.dumps(
     {"api_key": "A" * 36, "api_secret": "B" * 32, "passphrase": "C" * 14},
     separators=(",", ":"),
@@ -171,6 +185,11 @@ def _max_available_plan_kwargs(**overrides: object) -> dict[str, object]:
         "leverage_http_status": 200,
         "leverage_auth_header_sent": True,
         "leverage_mgn_mode": "cross",
+        "pos_mode_payload": POS_MODE,
+        "pos_mode_get_performed": True,
+        "pos_mode_endpoint": account_config_query_path_v1(),
+        "pos_mode_http_status": 200,
+        "pos_mode_auth_header_sent": True,
     }
     body.update(overrides)
     return body
@@ -185,6 +204,7 @@ def _fake_transport() -> RecordingFakeCanaryTransportV1:
             "/api/v5/account/positions": json.dumps(EMPTY).encode(),
             "/api/v5/account/max-size": json.dumps(MAX_AVAILABLE).encode(),
             "/api/v5/account/leverage-info": json.dumps(LEVERAGE).encode(),
+            "/api/v5/account/config": json.dumps(POS_MODE).encode(),
             "/api/v5/trade/orders-pending": json.dumps(EMPTY).encode(),
             "/api/v5/trade/orders-history": json.dumps(EMPTY).encode(),
         },
