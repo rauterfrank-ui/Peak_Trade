@@ -2654,6 +2654,110 @@ enablement, and arming remain false. The preexisting `CALL_GRAPH_V1` /
 `REQUIRED_CALL_GRAPH` tuple inequality remains `LABEL_ONLY` and is not
 repaired here. Tests are guards, not a second semantic SSOT.
 
+Named subordinate persist for the post-#6149 MAX_SIZE normalization
+adjudication. This does **not** reopen restoration, add a Core owner
+or stage, bind MAX_SIZE freshness policy, implement a runtime consumer,
+perform a venue GET or POST, fetch official documentation, repair the
+preexisting Cap 3.1 `CALL_GRAPH` tuple drift, or grant live or
+execution authority. #6149 remains historically
+`MAX_SIZE_UNIT=contracts` and historically
+`MAX_SIZE_NORMALIZATION_STATUS=UNBOUND` for that unit slice. This
+slice investigates existing repo, forensic, and reused official
+evidence and persists that domain identity from `order_plan_v1.qty`
+to Place Order `sz` remains unproven.
+
+``` text
+POST_6149_MAX_SIZE_NORMALIZATION_ADJUDICATION_V1=true
+SPEC=docs/ops/specs/PEAK_TRADE_POST_6149_MAX_SIZE_NORMALIZATION_ADJUDICATION_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_STATUS=PARTIAL
+VENUE_PRETRADE_LIMIT_GATES_COMPLETE=false
+MAX_SIZE_BINDING_STATUS=PARTIALLY_BOUND
+ALL_REQUIRED_METADATA_EDGES_BOUND=false
+EARLIEST_REMAINING_UNBOUND_EDGE=MAX_SIZE
+EARLIEST_REMAINING_CONFLICT=NONE
+EARLIEST_UNRESOLVED_DEPENDENCY=MAX_SIZE_NORMALIZATION
+BEGINNING_AT=MAX_SIZE
+EARLIEST_REMAINING_MAX_SIZE_GAP=MAX_SIZE_NORMALIZATION
+MAX_SIZE_UNIT_STATUS=BOUND
+MAX_SIZE_UNIT=contracts
+ORDER_PLAN_QTY_SEMANTIC_STATUS=BOUND
+ORDER_PLAN_QTY_SEMANTIC=runtime_field_quantity_docs_alias_qty_canary_minimum_exposure_order_size_string_copied_from_instrument_min_sz
+ORDER_PLAN_QTY_UNIT_STATUS=UNBOUND
+ORDER_PLAN_QTY_UNIT=UNBOUND
+VENUE_ORDER_SZ_SEMANTIC_STATUS=BOUND
+VENUE_ORDER_SZ_SEMANTIC=official_place_order_request_parameter_quantity_to_buy_or_sell
+VENUE_ORDER_SZ_UNIT_STATUS=UNBOUND
+ORDER_PLAN_QTY_TO_VENUE_SZ_MAPPING_STATUS=UNBOUND
+ORDER_PLAN_QTY_TO_VENUE_SZ_MAPPING=UNBOUND
+LOT_SIZE_ROLE_STATUS=BOUND
+LOT_SIZE_ROLE=venue_increment_constraint_official_derivatives_number_of_contracts_runtime_modulo_validation_not_qty_to_sz_transform
+NORMALIZATION_REQUIRES_CTVAL=false
+NORMALIZATION_REQUIRES_CTMULT=false
+NORMALIZATION_REQUIRES_CTTYPE=false
+ONE_CONTRACT_EQUALS_ONE_SUI=false
+MAX_SIZE_COMPARISON_DOMAIN_STATUS=UNBOUND
+MAX_SIZE_COMPARISON_DOMAIN=UNBOUND
+MAX_SIZE_NORMALIZATION_STATUS=UNBOUND
+MAX_SIZE_FRESHNESS_STATUS=WINDOW_OBSERVED_NOT_POLICY_BOUND
+MAX_SIZE_FRESHNESS_POLICY=UNBOUND
+MAX_SIZE_CONSUMER_BOUND=false
+CURRENT_REUSABLE_MAXLMTSZ_PROVEN=false
+CURRENT_MAXLMTSZ_RAW_VALUE=100000000
+CURRENT_MAXMKTSZ_RAW_VALUE=100000
+NETWORK_DOCUMENTATION_READ_PERFORMED=false
+NETWORK_VENUE_GET_PERFORMED=false
+NETWORK_POST_PERFORMED=false
+RUNTIME_ALIGNMENT_REQUIRED=unproven
+RUNTIME_MUTATION_JUSTIFIED=false
+CHANGED_RUNTIME_FILES=NONE
+CANONICAL_VENUE_PRETRADE_OWNER=section_11_13_5.order_plan_v1+exposure_v1@submit_transport_v1
+SECOND_VENUE_PRETRADE_OWNER_EXISTS=false
+SECOND_COMPUTE_OWNER_EXISTS=false
+SECOND_RISK_OWNER_EXISTS=false
+SECOND_SAFETY_OWNER_EXISTS=false
+SECOND_INTENT_OWNER_EXISTS=false
+SECOND_EXECUTION_OWNER_EXISTS=false
+NO_29Q_BEFORE_SAFETY=true
+RESTORATION_REOPEN_REQUIRED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+EXECUTION_ELIGIBLE=false
+LIVE_READINESS=EVALUATED_NOT_READY
+CURRENT_SELECTED_INSTRUMENT=SUI-USD_UM_XPERP-310404
+CURRENT_VENUE=OKX_EEA
+INSTRUMENT_BIND_PROVEN=true
+KRAKEN_CURRENT_CANONICAL_ROLE=NONE
+KRAKEN_EVIDENCE_USED_FOR_CURRENT_OKX_PRETRADE=false
+KRAKEN_EXCLUSION_CLOSED=true
+PREEXISTING_CALL_GRAPH_DRIFT_CLASS=LABEL_ONLY
+PREEXISTING_CALL_GRAPH_DRIFT_IN_SCOPE=false
+NEXT_DISTINCT_SURFACE=MAX_SIZE_NORMALIZATION
+NEXT_DISTINCT_SURFACE_AUTHORIZED=false
+```
+
+Normative subordinate persist:
+[`docs/ops/specs/PEAK_TRADE_POST_6149_MAX_SIZE_NORMALIZATION_ADJUDICATION_V1.md`](../../ops/specs/PEAK_TRADE_POST_6149_MAX_SIZE_NORMALIZATION_ADJUDICATION_V1.md).
+Runtime `order_plan_v1` field `quantity` (docs alias `qty`) is a canary
+minimum-exposure order-size string copied from `minSz` and identity-copied
+into Place Order `sz`. That string copy is implementation, not domain
+identity. Official Place Order `sz` remains "Quantity to buy or sell"
+without a request-parameter unit. Canonical SUI operative `sz=1`
+contract is a separate Owner-policy object and must not be conflated
+with the runtime minSz copy. `lotSz` is a modulo validation, not a
+qty→sz transform. `ctVal` / `ctMult` / `ctType` are not qty→sz
+operands. `ONE_CONTRACT_EQUALS_ONE_SUI` remains false. Comparison with
+`maxLmtSz` / `maxMktSz` therefore remains UNBOUND. Freshness policy and
+consumer remain unbound. Kraken is not the current canonical venue.
+Flatten remains a separate emergency authority. Standing Live / Testnet
+/ Canary authorization, enablement, and arming remain false. The
+preexisting `CALL_GRAPH_V1` / `REQUIRED_CALL_GRAPH` tuple inequality
+remains `LABEL_ONLY` and is not repaired here. Tests are guards, not a
+second semantic SSOT.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:

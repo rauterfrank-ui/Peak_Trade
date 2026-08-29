@@ -399,6 +399,17 @@ def test_post_6148_max_size_unit_adjudication_is_preserved() -> None:
     assert "test_peak_trade_post_6148_max_size_unit_adjudication_v1.py" in spec
 
 
+def test_post_6149_max_size_normalization_adjudication_is_preserved() -> None:
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "POST_6149_MAX_SIZE_NORMALIZATION_ADJUDICATION_V1_PRESERVED=true" in spec
+    assert "ORDER_PLAN_QTY_UNIT_REMAINS_UNBOUND=true" in spec
+    assert "ORDER_PLAN_QTY_TO_VENUE_SZ_MAPPING_REMAINS_UNBOUND=true" in spec
+    assert "MAX_SIZE_COMPARISON_DOMAIN_REMAINS_UNBOUND=true" in spec
+    assert "ONE_CONTRACT_EQUALS_ONE_SUI_REMAINS_FALSE=true" in spec
+    assert "MAX_SIZE_NORMALIZATION_REMAINS_UNBOUND=true" in spec
+    assert "test_peak_trade_post_6149_max_size_normalization_adjudication_v1.py" in spec
+
+
 def test_master_names_subordinate_preservation_spec() -> None:
     section = _section_5_3(MASTER_RUNBOOK.read_text(encoding="utf-8"))
     assert (
