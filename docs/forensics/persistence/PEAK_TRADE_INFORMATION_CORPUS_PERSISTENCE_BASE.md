@@ -144,6 +144,7 @@ BROAD_REDISCOVERY_REQUIRES_INSUFFICIENCY_FINDING=true
 | `inventories&#47;P6_FEDERATED_SCOPED_COMPLETENESS_POLICY_OWNER_DECISION_OBSERVATION_V1.json` | Additive persist of the Owner-selected `FEDERATED_SCOPED_COMPLETENESS_POLICY_V1` decision bundle (AUTHORITY=NONE; does not overwrite A-OBS-Z2CL-OD-01-08-RECONSTRUCTION-DELTA; records OD-01=A through OD-08=A without creating a global forensic object, UC-IDs, or a union census domain; Census-48 remains unresolved historical assertion not an operational count; policy alone does not set `CLOSED_UNIVERSE_PROVEN` or `SOURCE_UNIVERSE_EXHAUSTED`; index entry is not canonical adjudication completeness proof or universe closure; 69 was the count after the scoping-contract file) |
 | `inventories&#47;P1_SET_SNAPSHOT_FILE_IDENTITY_ENUMERATION_EXHAUSTION_OBSERVATION_V1.json` | Additive persist of Owner-selected `SNAPSHOT_FILE_IDENTITY_ENUMERATION_EXHAUSTION_V1` plus P1_SET snapshot completeness/exhaustion proof (AUTHORITY=NONE; does not overwrite A-OBS-FSC-POLICY or A-PER-P1INV; 129 path identities not collapsed onto 125 SHA; scoped exclusion `docs&#47;forensics&#47;persistence&#47;` remains; live growth is not P1 membership; Census-48 remains unresolved historical assertion; global closed universe remains unproven; index entry is not global completeness proof; 70 was the count after the FSC-policy observation file) |
 | `inventories&#47;P5_SET_SNAPSHOT_FILE_IDENTITY_ENUMERATION_EXHAUSTION_OBSERVATION_V1.json` | Additive persist of Owner-selected `P5_SNAPSHOT_FILE_IDENTITY_ENUMERATION_EXHAUSTION_V1` plus P5_SET snapshot completeness/exhaustion proof (AUTHORITY=NONE; does not overwrite A-OBS-FSC-POLICY, A-OBS-P1-EXH, A-PER-P5INV, or A-PER-XFACTS; 44 file_locator identities not collapsed onto 28 P5-only locators or 27 P5-only SHA; 42 full-P5 SHA is fingerprint not membership; BYTE_IDENTICAL P5/P1 relations remain dual identity; P2 remains unresolved not empty; live Documents tree is not P5 membership; Census-48 remains unresolved historical assertion; global closed universe remains unproven; index entry is not global completeness proof; 71 was the count after the P1 exhaustion observation file) |
+| `inventories&#47;P6_5189_PREIMAGE_RECOVERY_NEGATIVE_FINDINGS_AND_1067_LOCATOR_BINDING_OBSERVATION_V1.json` | Additive persist of bounded P6 historical preimage-recovery negative findings plus lossless M4_1067 relative_locator replica (AUTHORITY=NONE; original 17b8d1bb source identity not collapsed onto this replica; 1067 locators are not 5185/5189/5190/5011 membership and are not the census SHA preimage; current locator absence is not historical non-existence; examined-surface pattern miss is not PREIMAGE_DOES_NOT_EXIST; search-surface exhaustion is not source-set exhaustion; P1/P5 membership and closure unchanged; Census-48 remains unresolved; global closed universe remains unproven; index entry is not completeness proof; 72 was the count after the P5 exhaustion observation file) |
 
 ```text
 PRE_LAYER_COMPLETENESS_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=36
@@ -209,6 +210,12 @@ POST_P3_Z2CL_OD_01_08_RECONSTRUCTION_DELTA_FILE_PERSISTENCE_ARTIFACT_COUNT=68
 PRE_FEDERATED_SCOPED_COMPLETENESS_POLICY_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=68
 POST_FORENSIC_COMPLETENESS_SCOPING_CONTRACT_FILE_PERSISTENCE_ARTIFACT_COUNT=69
 POST_FEDERATED_SCOPED_COMPLETENESS_POLICY_OWNER_DECISION_FILE_PERSISTENCE_ARTIFACT_COUNT=70
+PRE_P1_SET_SNAPSHOT_EXHAUSTION_FILE_PERSISTENCE_ARTIFACT_COUNT=70
+POST_P1_SET_SNAPSHOT_EXHAUSTION_FILE_PERSISTENCE_ARTIFACT_COUNT=71
+PRE_P5_SET_SNAPSHOT_EXHAUSTION_FILE_PERSISTENCE_ARTIFACT_COUNT=71
+POST_P5_SET_SNAPSHOT_EXHAUSTION_FILE_PERSISTENCE_ARTIFACT_COUNT=72
+PRE_P6_PREIMAGE_RECOVERY_1067_WORKPACKAGE_PERSISTENCE_ARTIFACT_COUNT=72
+POST_P6_PREIMAGE_RECOVERY_1067_FILE_PERSISTENCE_ARTIFACT_COUNT=73
 COUNT_39_IS_PRE_CLASS_A_SNAPSHOT_NOT_CURRENT=true
 COUNT_40_IS_INTERMEDIATE_AFTER_CLASS_A_FILE_NOT_COLLAPSED_ONTO_41=true
 COUNT_41_IS_PRE_CENSUS_WORKPACKAGE_SNAPSHOT_NOT_POST_CENSUS_CURRENT=true
@@ -239,7 +246,9 @@ COUNT_67_IS_POST_Z2CL_COMPLETENESS_PRECONDITION_GAPS_NOT_COLLAPSED_ONTO_68=true
 COUNT_68_IS_POST_Z2CL_OD_01_08_RECONSTRUCTION_DELTA_NOT_COLLAPSED_ONTO_69=true
 COUNT_69_IS_INTERMEDIATE_AFTER_SCOPING_CONTRACT_NOT_COLLAPSED_ONTO_70=true
 COUNT_70_IS_POST_FSC_POLICY_OBSERVATION_NOT_COLLAPSED_ONTO_71=true
-COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_AND_46_AND_47_AND_50_AND_51_AND_52_AND_53_AND_54_AND_55_AND_56_AND_57_AND_58_AND_59_AND_60_AND_61_AND_62_AND_63_AND_64_AND_65_AND_66_AND_67_AND_68_AND_69_AND_70_AND_71_NOT_COLLAPSED=true
+COUNT_71_IS_POST_P1_EXHAUSTION_NOT_COLLAPSED_ONTO_72=true
+COUNT_72_IS_POST_P5_EXHAUSTION_NOT_COLLAPSED_ONTO_73=true
+COUNT_36_AND_37_AND_38_AND_39_AND_40_AND_41_AND_42_AND_43_AND_44_AND_45_AND_46_AND_47_AND_50_AND_51_AND_52_AND_53_AND_54_AND_55_AND_56_AND_57_AND_58_AND_59_AND_60_AND_61_AND_62_AND_63_AND_64_AND_65_AND_66_AND_67_AND_68_AND_69_AND_70_AND_71_AND_72_NOT_COLLAPSED=true
 INDEX_ENTRY_IS_NOT_COMPLETENESS_PROOF=true
 INDEX_ENTRY_IS_NOT_ADJUDICATION=true
 NAVIGATION_ONLY=true
