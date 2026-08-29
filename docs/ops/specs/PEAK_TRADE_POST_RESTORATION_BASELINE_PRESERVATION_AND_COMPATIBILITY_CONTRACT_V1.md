@@ -314,6 +314,7 @@ PROPOSED_SAFE_ACTION=
 | Simulated execution pipeline adjudication | Master §5.3; simulated-execution pipeline adjudication spec | `tests/ops/test_peak_trade_post_restoration_simulated_execution_pipeline_adjudication_v1.py` | true |
 | Live safety gates adjudication | Master §5.3; live-safety gates adjudication spec | `tests/ops/test_peak_trade_post_restoration_live_safety_gates_adjudication_v1.py` | true |
 | Venue pretrade limit gates adjudication | Master §5.3; venue-pretrade limit-gates adjudication spec | `tests/ops/test_peak_trade_post_restoration_venue_pretrade_limit_gates_adjudication_v1.py` | true |
+| Venue pretrade metadata-binding alignment adjudication | Master §5.3; venue-pretrade metadata-binding alignment adjudication spec | `tests/ops/test_peak_trade_post_restoration_venue_pretrade_metadata_binding_alignment_adjudication_v1.py` | true |
 
 Named preservation invariants for the closed simulated-execution
 adjudication. This contract does not itself perform that adjudication and
@@ -350,6 +351,20 @@ CURRENT_OKX_VENUE_IDENTITY_PRESERVED=true
 KRAKEN_NOT_CURRENT_CANONICAL_VENUE=true
 KRAKEN_IS_NOT_CURRENT_CANONICAL_VENUE=true
 MAX_SIZE_REMAINS_EARLIEST_UNRESOLVED_EDGE=true
+```
+
+Named preservation invariants for the persisted venue-pretrade
+metadata-binding alignment adjudication. This contract does not itself
+perform that adjudication, does not freeze a current max-size numeric,
+does not authorize a Network GET, and does not grant live or execution
+authority.
+
+```text
+VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION_PRESERVED=true
+MAX_SIZE_BINDING_REMAINS_PARTIALLY_BOUND=true
+NETWORK_GET_REQUIRED_REMAINS_IDENTIFIED_NOT_AUTHORIZED=true
+CURRENT_OKX_VENUE_IDENTITY_PRESERVED=true
+KRAKEN_NOT_CURRENT_CANONICAL_VENUE=true
 ```
 
 ## 13) Missing protection closed by this contract

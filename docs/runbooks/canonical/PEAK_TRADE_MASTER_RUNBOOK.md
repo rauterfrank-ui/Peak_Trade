@@ -2418,6 +2418,75 @@ preexisting `CALL_GRAPH_V1` / `REQUIRED_CALL_GRAPH` tuple inequality remains
 `LABEL_ONLY` and is not repaired here. Tests are guards, not a second
 semantic SSOT.
 
+Named subordinate adjudication for venue-pretrade metadata-binding alignment
+beginning at `MAX_SIZE` after the closed venue-pretrade limit-gates persist.
+This does **not** reopen restoration, add a Core owner or stage, freeze a
+current max-size numeric, invent units or freshness, implement enforcement,
+perform a Network GET or POST, repair the preexisting Cap 3.1 `CALL_GRAPH`
+tuple drift, or grant live or execution authority.
+
+``` text
+VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION_V1=true
+VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_STATUS=PARTIAL
+SPEC=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+VENUE_PRETRADE_LIMIT_GATES_COMPLETE=false
+MAX_SIZE_BINDING_STATUS=PARTIALLY_BOUND
+ALL_REQUIRED_METADATA_EDGES_BOUND=false
+EARLIEST_INCOMPLETE_VENUE_PRETRADE_EDGE=MAX_SIZE
+EARLIEST_REMAINING_UNBOUND_EDGE=MAX_SIZE
+EARLIEST_REMAINING_CONFLICT=NONE
+NETWORK_GET_REQUIRED=true
+NETWORK_GET_PERFORMED=false
+NETWORK_POST_PERFORMED=false
+CANONICAL_VENUE_PRETRADE_OWNER=section_11_13_5.order_plan_v1+exposure_v1@submit_transport_v1
+VENUE_PRETRADE_OWNER_MODEL=OKX_EEA_CANARY_VENUE_CONSTRAINT_PLAN_OWNER_NOT_A_SECOND_CORE_RISK_OR_SAFETY_OWNER
+SECOND_VENUE_PRETRADE_OWNER_EXISTS=false
+SECOND_OWNER_REQUIRED=false
+BYPASS_PATH_CONFLICT=false
+RUNTIME_ALIGNMENT_REQUIRED=false
+RUNTIME_MUTATION_JUSTIFIED=false
+NEW_VENUE_PRETRADE_COMPONENT_REQUIRED=false
+NEW_ABSTRACTION_REQUIRED=false
+CHANGED_RUNTIME_FILES=NONE
+SECOND_COMPUTE_OWNER_EXISTS=false
+SECOND_RISK_OWNER_EXISTS=false
+SECOND_SAFETY_OWNER_EXISTS=false
+SECOND_INTENT_OWNER_EXISTS=false
+SECOND_EXECUTION_OWNER_EXISTS=false
+NO_29Q_BEFORE_SAFETY=true
+RESTORATION_REOPEN_REQUIRED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+EXECUTION_ELIGIBLE=false
+LIVE_READINESS=EVALUATED_NOT_READY
+CURRENT_SELECTED_INSTRUMENT=SUI-USD_UM_XPERP-310404
+CURRENT_VENUE=OKX_EEA
+INSTRUMENT_BIND_PROVEN=true
+KRAKEN_CURRENT_CANONICAL_ROLE=NONE
+KRAKEN_EVIDENCE_USED_FOR_CURRENT_OKX_PRETRADE=false
+PREEXISTING_CALL_GRAPH_DRIFT_CLASS=LABEL_ONLY
+PREEXISTING_CALL_GRAPH_DRIFT_IN_SCOPE=false
+```
+
+Normative subordinate adjudication:
+[`docs/ops/specs/PEAK_TRADE_POST_RESTORATION_VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION_V1.md`](../../ops/specs/PEAK_TRADE_POST_RESTORATION_VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION_V1.md).
+Historical Z2AR GET 1 observed `maxLmtSz=100000000` for exact
+`SUI-USD_UM_XPERP-310404` on OKX EEA. That observation is not a current
+reusable numeric, not a unit proof, and not a runtime consumer. `maxLmtSz`
+is not `maxMktSz` and is not family-scoped position-tier `maxSz`. Exposure
+`max_notional` is not venue max-size. Freshness remains unbound. A public
+instruments GET is identified as the earliest next proof step for a current
+`maxLmtSz` observation and is **not** authorized here. Kraken is not the
+current canonical venue. Flatten remains a separate emergency authority.
+Standing Live / Testnet / Canary authorization, enablement, and arming
+remain false. The preexisting `CALL_GRAPH_V1` / `REQUIRED_CALL_GRAPH` tuple
+inequality remains `LABEL_ONLY` and is not repaired here. Tests are
+guards, not a second semantic SSOT.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:
