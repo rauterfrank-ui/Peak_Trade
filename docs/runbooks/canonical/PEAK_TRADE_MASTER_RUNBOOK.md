@@ -46767,6 +46767,12 @@ UNTRACKED_EVIDENCE_PRESERVED=true
 
 Any deviation not explicitly authorized is a hard stop.
 
+Local Python environments follow the same checkout isolation. Each Git
+worktree is its own `REPO_ROOT` and must own a real `.venv/` provisioned by
+`scripts/pt-bootstrap`. Symlinking another worktree `.venv` is unsupported.
+Normative subordinate contract:
+[`docs/runtime/PEAK_TRADE_WORKTREE_PYTHON_ENVIRONMENT_BOOTSTRAP_CONTRACT_V1.md`](../../runtime/PEAK_TRADE_WORKTREE_PYTHON_ENVIRONMENT_BOOTSTRAP_CONTRACT_V1.md).
+
 ------------------------------------------------------------------------
 
 

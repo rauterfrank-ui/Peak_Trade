@@ -22,7 +22,10 @@ Docs: `docs/runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md`
 - Direct `python3 src/...py` is unsupported for package code.
 
 ```text
+./scripts/pt-bootstrap
 ./scripts/pt runtime-check
 ./scripts/pt -m pytest -q
 ./scripts/pt -c "import trading"
 ```
+
+Worktrees: each checkout owns a real `.venv/` via `./scripts/pt-bootstrap`. Do not symlink another worktree `.venv`.

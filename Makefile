@@ -266,6 +266,9 @@ workflow-officer-preflight:
 # Deterministic Python runtime contract
 # ============================================================================
 
-.PHONY: runtime-check
+.PHONY: bootstrap runtime-check
+bootstrap:
+	$(REPO_ROOT)/scripts/pt-bootstrap
+
 runtime-check:
 	$(PT) runtime-check

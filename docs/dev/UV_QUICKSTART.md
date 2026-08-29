@@ -1,5 +1,10 @@
 # UV Quickstart
 
+Canonical Peak_Trade bootstrap for this checkout or Git worktree is
+[`scripts/pt-bootstrap`](../../scripts/pt-bootstrap) (creates a real local `.venv`, refuses shared
+symlinks). See
+[`PEAK_TRADE_WORKTREE_PYTHON_ENVIRONMENT_BOOTSTRAP_CONTRACT_V1.md`](../runtime/PEAK_TRADE_WORKTREE_PYTHON_ENVIRONMENT_BOOTSTRAP_CONTRACT_V1.md).
+
 [uv](https://github.com/astral-sh/uv) ist ein extrem schneller Python-Paketmanager, geschrieben in Rust.
 
 Für den **Peak Trade–Kanon** (englischer Überblick) siehe [Development Tooling](tooling.md) — dieser Text ist eine **kurze deutschsprachige** Einstiegshilfe und folgt dort demselben **`uv sync`‑first**‑Setup.

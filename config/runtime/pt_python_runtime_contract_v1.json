@@ -13,6 +13,11 @@
   "cwd_dependency": false,
   "silently_create_venv": false,
   "silently_install_dependencies": false,
+  "shared_venv_symlink_allowed": false,
+  "worktree_environment_model": "PER_WORKTREE_VENV",
+  "bootstrap_surface": "scripts/pt-bootstrap",
+  "env_fingerprint_relpath": ".venv/.peak_trade_env_fingerprint.json",
+  "env_fingerprint_schema_id": "peak_trade_env_fingerprint_v1",
   "provisioned_mode_env": "PT_RUNTIME_MODE",
   "provisioned_mode_value": "provisioned",
   "github_actions_env": "GITHUB_ACTIONS"

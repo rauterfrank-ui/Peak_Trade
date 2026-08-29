@@ -23,8 +23,8 @@ Python 3.9 ist kein unterstützter Projekt-Runtime.
 ## 2. Quick Commands
 
 ```bash
-# Bootstrap (operator-invoked)
-uv sync --dev
+# Bootstrap (operator-invoked, per checkout/worktree)
+./scripts/pt-bootstrap
 
 # Never execute Peak_Trade Python using PATH python/python3.
 ./scripts/pt runtime-check

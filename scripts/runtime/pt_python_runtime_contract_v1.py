@@ -17,6 +17,39 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Final, Mapping
 
+try:
+    from scripts.runtime.pt_worktree_environment_v1 import (
+        EXIT_ENV_FINGERPRINT,
+        EXIT_FOREIGN_SOURCE,
+        EXIT_UV_LOCK_MISSING,
+        EXIT_VENV_SYMLINK,
+        REASON_ENV_FINGERPRINT_MALFORMED,
+        REASON_ENV_FINGERPRINT_MISSING,
+        REASON_ENV_FINGERPRINT_MISMATCH,
+        REASON_FOREIGN_SOURCE_BINDING,
+        REASON_SOURCE_BINDING_MISSING,
+        REASON_UV_LOCK_MISSING,
+        REASON_VENV_NOT_DIRECTORY,
+        REASON_VENV_SYMLINK,
+        validate_worktree_environment,
+    )
+except ImportError:  # executed as scripts/runtime/*.py
+    from pt_worktree_environment_v1 import (
+        EXIT_ENV_FINGERPRINT,
+        EXIT_FOREIGN_SOURCE,
+        EXIT_UV_LOCK_MISSING,
+        EXIT_VENV_SYMLINK,
+        REASON_ENV_FINGERPRINT_MALFORMED,
+        REASON_ENV_FINGERPRINT_MISSING,
+        REASON_ENV_FINGERPRINT_MISMATCH,
+        REASON_FOREIGN_SOURCE_BINDING,
+        REASON_SOURCE_BINDING_MISSING,
+        REASON_UV_LOCK_MISSING,
+        REASON_VENV_NOT_DIRECTORY,
+        REASON_VENV_SYMLINK,
+        validate_worktree_environment,
+    )
+
 CONTRACT_ID: Final = "pt_python_runtime_contract_v1"
 CONTRACT_VERSION: Final = "v1"
 CANONICAL_LAUNCHER_REL: Final = Path("scripts/pt")
@@ -59,6 +92,14 @@ _REASON_EXIT: Final = {
     REASON_REPO_ROOT_UNRESOLVED: EXIT_REPO_ROOT_UNRESOLVED,
     REASON_PROVISIONED_REFUSED: EXIT_PROVISIONED_REFUSED,
     REASON_PYPROJECT_DRIFT: EXIT_PYPROJECT_DRIFT,
+    REASON_VENV_SYMLINK: EXIT_VENV_SYMLINK,
+    REASON_VENV_NOT_DIRECTORY: EXIT_VENV_SYMLINK,
+    REASON_UV_LOCK_MISSING: EXIT_UV_LOCK_MISSING,
+    REASON_ENV_FINGERPRINT_MISSING: EXIT_ENV_FINGERPRINT,
+    REASON_ENV_FINGERPRINT_MALFORMED: EXIT_ENV_FINGERPRINT,
+    REASON_ENV_FINGERPRINT_MISMATCH: EXIT_ENV_FINGERPRINT,
+    REASON_FOREIGN_SOURCE_BINDING: EXIT_FOREIGN_SOURCE,
+    REASON_SOURCE_BINDING_MISSING: EXIT_FOREIGN_SOURCE,
 }
 
 
@@ -139,16 +180,18 @@ def _venv_root_from_executable(executable: Path) -> Path | None:
 
 
 def is_canonical_running_interpreter(repo_root: Path, running: Path) -> bool:
-    """True when this process was launched via REPO_ROOT/.venv/bin/python.
+    """True when this process was launched via a real REPO_ROOT/.venv/bin/python.
 
-    Compares venv homes, not the fully resolved uv/CPython binary. Multiple
-    repository checkouts may share the same CPython build.
+    Compares venv homes, not the fully resolved uv/CPython binary. A ``.venv``
+    symlink to another worktree is never canonical.
     """
-    expected = (repo_root / ".venv").resolve()
-    invoked_root = _venv_root_from_executable(running)
-    if invoked_root is None:
+    expected_dir = repo_root / ".venv"
+    if expected_dir.is_symlink():
         return False
-    return invoked_root.resolve() == expected
+    invoked_root = _venv_root_from_executable(running)
+    if invoked_root is None or invoked_root.is_symlink():
+        return False
+    return invoked_root.resolve() == expected_dir.resolve()
 
 
 def interpreter_version_tuple(executable: Path) -> tuple[int, int, str] | None:
@@ -251,6 +294,18 @@ def validate_runtime(
         selected = current
     else:
         selected = canonical_interpreter_path(root)
+        symlink_home = root / ".venv"
+        if symlink_home.is_symlink():
+            return _fail(
+                reason=REASON_VENV_SYMLINK,
+                mode=mode,
+                repo_root=root,
+                interpreter=selected,
+                diagnostic=(
+                    "foreign/shared/symlinked worktree environment is unsupported. "
+                    "Bootstrap with: ./scripts/pt-bootstrap"
+                ),
+            )
         if not selected.is_file():
             return _fail(
                 reason=REASON_VENV_MISSING,
@@ -258,7 +313,7 @@ def validate_runtime(
                 repo_root=root,
                 interpreter=selected,
                 diagnostic=(
-                    "Canonical interpreter missing. Bootstrap with: uv sync --dev "
+                    "Canonical interpreter missing. Bootstrap with: ./scripts/pt-bootstrap "
                     f"(creates {CANONICAL_INTERPRETER_REL}). Do not use PATH python3."
                 ),
             )
@@ -269,6 +324,15 @@ def validate_runtime(
                 repo_root=root,
                 interpreter=selected,
                 diagnostic=f"Canonical interpreter is not executable: {selected}",
+            )
+        isolation = validate_worktree_environment(root, python_version=sys.version.split()[0])
+        if not isolation.ok:
+            return _fail(
+                reason=isolation.reason_code,
+                mode=mode,
+                repo_root=root,
+                interpreter=selected,
+                diagnostic=isolation.diagnostic,
             )
         if check_running_identity and not is_canonical_running_interpreter(root, current):
             return _fail(
@@ -322,7 +386,7 @@ def validate_runtime(
                 interpreter_version=interpreter_version,
                 diagnostic=(
                     "import trading failed under the selected interpreter. "
-                    "Do not set PYTHONPATH. Bootstrap with uv sync --dev. "
+                    "Do not set PYTHONPATH. Bootstrap with ./scripts/pt-bootstrap. "
                     f"error={exc}"
                 ),
             )

@@ -41,7 +41,7 @@ cd peak_trade
 ### 2.2 Bootstrap (repository environment)
 
 ```bash
-uv sync --dev
+./scripts/pt-bootstrap
 ./scripts/pt runtime-check
 ```
 

@@ -9,8 +9,8 @@ Peak_Trade ist ein modulares, research-getriebenes Trading-Framework mit konsequ
 ### 🚀 Quick Start: Ersten Backtest in 5 Minuten
 
 ```bash
-# 1. Bootstrap (einmalig, legt .venv an)
-uv sync --dev
+# 1. Bootstrap (einmalig pro Checkout/Worktree, legt .venv an)
+./scripts/pt-bootstrap
 
 # 2. Canonical runtime check
 ./scripts/pt runtime-check

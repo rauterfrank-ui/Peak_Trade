@@ -103,6 +103,22 @@ git worktree prune
 
 ---
 
+## Python environment (per worktree)
+
+Each Git worktree is a separate checkout. After `git worktree add`:
+
+```bash
+cd <worktree>
+./scripts/pt-bootstrap
+./scripts/pt runtime-check
+```
+
+`.venv` must be a real directory in that worktree. Do **not** symlink another worktree's `.venv`. Shared mutable environment reuse is unsupported.
+
+Canonical contract: [`docs/runtime/PEAK_TRADE_WORKTREE_PYTHON_ENVIRONMENT_BOOTSTRAP_CONTRACT_V1.md`](../runtime/PEAK_TRADE_WORKTREE_PYTHON_ENVIRONMENT_BOOTSTRAP_CONTRACT_V1.md).
+
+---
+
 ## Quick Verification (Operator)
 
 ```bash
