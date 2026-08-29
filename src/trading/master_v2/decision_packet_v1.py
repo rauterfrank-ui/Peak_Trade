@@ -22,6 +22,14 @@ class UniverseSelectionHandoffV1:
 class DoubleplayResolutionHandoffV1:
     layer_version: str
     resolution: str = "ok"
+    # Provenance for the restored wiring. Default preserves legacy fixture packets.
+    # DERIVED_FROM_INTEGRATED_REPLAY = handoff only; never an independent compute owner.
+    source_role: str = "LEGACY_HANDOFF_UNPROVEN"
+    compute_owner: str = ""
+    derived_from_replay_id: str = ""
+    derived_from_evidence_decision_id: str = ""
+    composition_result_ref: str = ""
+    selected_side: str = ""
 
 
 @dataclass(frozen=True)

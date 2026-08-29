@@ -65,6 +65,7 @@ def evaluate_master_v2_local_flow_v1(
     risk_cap: Optional[RiskExposureCapHandoffV1] = None,
     safety: Optional[SafetyKillSwitchHandoffV1] = None,
     with_snapshot: bool = True,
+    require_canonical_derived_doubleplay_handoff: bool = False,
 ) -> MasterV2LocalFlowResultV1:
     """
     Reihenfolge: Staged-validate → build → validate → critic → optional snapshot.
@@ -106,6 +107,22 @@ def evaluate_master_v2_local_flow_v1(
         risk_cap=risk_cap,
         safety=safety,
     )
+    if require_canonical_derived_doubleplay_handoff:
+        from .decision_packet_from_integrated_replay_v1 import (
+            DecisionPacketWithoutCanonicalReplayEvidenceError,
+            require_canonical_derived_doubleplay_handoff_v1,
+        )
+
+        try:
+            require_canonical_derived_doubleplay_handoff_v1(p.doubleplay)
+        except DecisionPacketWithoutCanonicalReplayEvidenceError:
+            return MasterV2LocalFlowResultV1(
+                layer_version=LOCAL_FLOW_LAYER_VERSION,
+                flow_ok=False,
+                correlation_id=correlation_id.strip(),
+                packet=p,
+                rejection_reason="PACKET_WITHOUT_CANONICAL_REPLAY_EVIDENCE",
+            )
     v = validate_master_v2_decision_packet_v1(p)
     cr = critique_master_v2_decision_packet_v1(p)
 

@@ -61,8 +61,57 @@ LIVE_AUTHORIZED = "false"
 ORDERS_ENABLED = "false"
 RUNTIME_BRIDGE_STATUS = "BOUND_NOT_ACTIVATED"
 
+OPS_SPECIALISTS_AUTHORITY_CLASS = "NON_AUTHORITATIVE"
+SCENARIO_REPLAY_AUTHORITY_CLASS = "SUBORDINATE"
+
 REASON_OPS_SWITCH_AUTHORITY_DISABLED = "ops_switch_authority_fail_closed_disabled"
 REASON_OPS_PROJECTION_ONLY = "ops_double_play_projection_diagnostic_only"
+REASON_SUBORDINATE_EVALUATOR_AUTHORITY_ESCALATION = "subordinate_evaluator_authority_escalation"
+REASON_COMPETING_SIDE_STATE_WRITER = "competing_side_state_writer"
+
+
+class CompetingAuthorityEscalationError(RuntimeError):
+    """Raised when a subordinate/non-authoritative path claims compute ownership."""
+
+
+class CompetingSideStateWriterError(RuntimeError):
+    """Raised when a non-canonical path claims SideState write authority."""
+
+
+def assert_path_cannot_escalate_to_compute_owner_v1(
+    *,
+    path_id: str,
+    claimed_role: str = "",
+    claimed_compute_owner: str = "",
+) -> None:
+    """Fail-closed: Ops/scenario paths cannot become the Integrated Replay compute owner."""
+    subordinate_paths = {
+        "src.ops.double_play.specialists.evaluate_double_play",
+        "trading.master_v2.offline_double_play_scenario_replay_v0."
+        "run_offline_double_play_scenario_replay_v0",
+        OPS_EVALUATE_DOUBLE_PLAY_ROLE,
+        OPS_SPECIALISTS_AUTHORITY_CLASS,
+        SCENARIO_REPLAY_AUTHORITY_CLASS,
+    }
+    claimed = str(claimed_role or "").strip()
+    owner = str(claimed_compute_owner or "").strip()
+    if claimed in {"COMPUTE_OWNER", "CANONICAL_COMPUTE_OWNER", CANONICAL_OFFLINE_ORCHESTRATOR}:
+        raise CompetingAuthorityEscalationError(REASON_SUBORDINATE_EVALUATOR_AUTHORITY_ESCALATION)
+    if owner == CANONICAL_OFFLINE_ORCHESTRATOR and str(path_id) in subordinate_paths:
+        raise CompetingAuthorityEscalationError(REASON_SUBORDINATE_EVALUATOR_AUTHORITY_ESCALATION)
+    if str(path_id) in subordinate_paths and claimed == CANONICAL_OFFLINE_ORCHESTRATOR:
+        raise CompetingAuthorityEscalationError(REASON_SUBORDINATE_EVALUATOR_AUTHORITY_ESCALATION)
+
+
+def assert_path_cannot_write_side_state_v1(
+    *,
+    path_id: str,
+    claimed_may_write_side_state: object,
+) -> None:
+    """Fail-closed: only double_play_state.transition_state writes SideState/Switch."""
+    truthy = claimed_may_write_side_state in (True, "true", "TRUE", "True", 1)
+    if truthy:
+        raise CompetingSideStateWriterError(f"{REASON_COMPETING_SIDE_STATE_WRITER}:{path_id}")
 
 
 def build_double_play_sole_authority_status_fields_v1() -> Mapping[str, str]:
@@ -96,5 +145,7 @@ def build_double_play_sole_authority_status_fields_v1() -> Mapping[str, str]:
         "LIVE_AUTHORIZED": LIVE_AUTHORIZED,
         "ORDERS_ENABLED": ORDERS_ENABLED,
         "RUNTIME_BRIDGE_STATUS": RUNTIME_BRIDGE_STATUS,
+        "OPS_SPECIALISTS_AUTHORITY_CLASS": OPS_SPECIALISTS_AUTHORITY_CLASS,
+        "SCENARIO_REPLAY_AUTHORITY_CLASS": SCENARIO_REPLAY_AUTHORITY_CLASS,
         "DOUBLE_PLAY_PRIMARY_SSOT_CONFIRMED": "true",
     }

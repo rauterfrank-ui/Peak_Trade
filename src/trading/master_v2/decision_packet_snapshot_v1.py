@@ -63,13 +63,27 @@ def _dp_in(d: Optional[Mapping[str, Any]]) -> Optional[DoubleplayResolutionHando
     return DoubleplayResolutionHandoffV1(
         layer_version=d["layer_version"],
         resolution=str(d.get("resolution", "")),
+        source_role=str(d.get("source_role", "LEGACY_HANDOFF_UNPROVEN")),
+        compute_owner=str(d.get("compute_owner", "")),
+        derived_from_replay_id=str(d.get("derived_from_replay_id", "")),
+        derived_from_evidence_decision_id=str(d.get("derived_from_evidence_decision_id", "")),
+        composition_result_ref=str(d.get("composition_result_ref", "")),
+        selected_side=str(d.get("selected_side", "")),
     )
 
 
 def _dp_out(h: Optional[DoubleplayResolutionHandoffV1]) -> Optional[Dict[str, Any]]:
     if h is None:
         return None
-    return {"layer_version": h.layer_version, "resolution": h.resolution}
+    out: Dict[str, Any] = {"layer_version": h.layer_version, "resolution": h.resolution}
+    if h.source_role != "LEGACY_HANDOFF_UNPROVEN":
+        out["source_role"] = h.source_role
+        out["compute_owner"] = h.compute_owner
+        out["derived_from_replay_id"] = h.derived_from_replay_id
+        out["derived_from_evidence_decision_id"] = h.derived_from_evidence_decision_id
+        out["composition_result_ref"] = h.composition_result_ref
+        out["selected_side"] = h.selected_side
+    return out
 
 
 def _scope_in(d: Optional[Mapping[str, Any]]) -> Optional[ScopeCapitalEnvelopeHandoffV1]:

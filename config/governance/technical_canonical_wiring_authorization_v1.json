@@ -7,6 +7,14 @@
     "src/trading/master_v2/strategy_suitability_agreement_material_v1.py",
     "src/trading/master_v2/suitability_binding_v1.py",
     "src/trading/master_v2/evaluate_double_play_authority_boundary_v0.py",
+    "src/trading/master_v2/decision_packet_v1.py",
+    "src/trading/master_v2/decision_packet_snapshot_v1.py",
+    "src/trading/master_v2/decision_packet_from_integrated_replay_v1.py",
+    "src/trading/master_v2/double_play_core_wiring_v1.py",
+    "src/trading/master_v2/local_evaluator_v1.py",
+    "src/trading/master_v2/registry_suitability_snapshot_v1.py",
+    "src/trading/master_v2/strategy_identity_binding_v1.py",
+    "tests/trading/master_v2/test_master_v2_double_play_core_wiring_restore_contract_v1.py",
     "src/trading/master_v2/double_play_sole_authority_quarantine_v1.py",
     "src/trading/master_v2/chop_scope_event_policy_binding_v1.py",
     "src/trading/master_v2/double_play_state.py",
@@ -1164,6 +1172,7 @@
     "PRODUCTIVE_TYPED_VOLATILITY_PRODUCER_AND_CMC_HOT_PATH_BINDING_V1 exact-file allowlist for PT1M mark observation finalizer under master_v2 (wiring/observation finalization only; no core trading logic mutation; no numeric max-age enforcement).",
     "CAPABILITY_REGIME_BULL_BEAR_SWITCH_EVIDENCE_READMODEL_V1: authorize exact-file EVIDENCE_ONLY / NON_RESTART_AUTHORITY capture carrier + post-transition capture binding in integrated offline replay + focused tests. No Master-V2/Double-Play restart persistence domain; CanonicalDynamicScopeStateV1.side_state remains sole SideState restart owner; CORE_SEMANTICS_CHANGED=false; no live/testnet/orders.",
     "EG_I82_PACKAGE_N_LIVE_OWNER_JOIN_CLOSEOUT: authorize exact-file I16 lineage remaining-plane identity-join sidecar + focused tests under Package-N SHA256-only join. No promotion authority, runtime activation, orders, credentials, scheduler, migration, or backfill. Other promotion_loop paths remain unauthorized.",
-    "PHASE_0B_LEGACY_LEARNING_AUTHORITY_FIREWALL_FAIL_CLOSED: authorize exact-file fail-closed non-authority wiring of the promotion_loop live-override writer sink and its negative contract test only. No promotion runtime authority, order authority, scheduler authority, credential authority, or live authority. Learning remains non-self-authorizing."
+    "PHASE_0B_LEGACY_LEARNING_AUTHORITY_FIREWALL_FAIL_CLOSED: authorize exact-file fail-closed non-authority wiring of the promotion_loop live-override writer sink and its negative contract test only. No promotion runtime authority, order authority, scheduler authority, credential authority, or live authority. Learning remains non-self-authorizing.",
+    "MASTER_V2_DOUBLE_PLAY_CORE_WIRING_RESTORE_V1 exact-file allowlist for current-system Registry to Suitability snapshot to Integrated Replay compute wiring, derived Decision Packet handoff, fail-closed AUTH-001 identity binding, and subordinate Ops/scenario authority class. No capital-policy ratification, no economic viability restoration, no live/testnet/canary/orders."
   ]
 }
