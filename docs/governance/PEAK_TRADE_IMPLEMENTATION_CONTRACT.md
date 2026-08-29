@@ -322,6 +322,7 @@ docs/governance/ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_
 config/governance/economic_diagnostic_optimization_boundary_v0.json
 config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json
 config/governance/technical_canonical_wiring_authorization_v1.json
+config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json
 src/governance/economic_diagnostic_optimization_boundary_v0.py
 scripts/ops/check_economic_diagnostic_optimization_boundary_guard_v0.py
 ```
@@ -338,6 +339,26 @@ PR_SPECIFIC_EXCEPTION=false
 BRANCH_SPECIFIC_EXCEPTION=false
 TOKEN_ALONE_INSUFFICIENT=true
 ```
+
+Eng begrenzte Historically-Attested Semantic-Restoration-Authorization
+(`HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_V1`) — **eigene
+Klasse, keine Erweiterung von TECHNICAL_CANONICAL_WIRING_ONLY**:
+
+```text
+RESTORATION_AUTHORIZATION_VERSION=historically_attested_current_system_semantic_restoration_v1
+AUTHORIZED_SCOPE_CLASS=HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_V1
+MUTATION_PURPOSE_CLASS=HISTORICALLY_ATTESTED_CANONICAL_SEMANTIC_RESTORATION
+RESTORATION_TARGET_ID=MASTER_V2_DOUBLE_PLAY_CONSERVED_REFERENCE_V1
+BINDS_TO_RESTORATION_TARGET=true
+BINDS_TO_CURRENT_A06_CODE=false
+CURRENT_SYSTEM_SEMANTIC_DELTA=true
+RISK_SIZING_SEMANTICS_CHANGED_FALSE_REQUIRED=false
+GRANT_ACTIVE=false
+TOKEN_ALONE_INSUFFICIENT=true
+```
+
+Owner: `config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json`.
+Attestation: `docs/ops/specs/HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_ADMISSION_V1.md`.
 
 ## 13. Trend Following v2 Recovery Wiring (v0)
 

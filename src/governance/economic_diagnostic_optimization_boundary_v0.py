@@ -6,6 +6,10 @@ and allowed surfaces from versioned canonical owner maps — no path guessing at
 Optional narrow override: versioned TECHNICAL_CANONICAL_WIRING_ONLY authorization. Token,
 scope class, authorized paths, and semantic invariants must validate jointly. Does not
 waive MASTER_V2_MUTATION_ALLOWED=false as a global default.
+
+Second, semantically distinct override: HISTORICALLY_ATTESTED_CANONICAL_SEMANTIC_RESTORATION.
+It is not semantics-neutral technical wiring. CURRENT_SYSTEM_SEMANTIC_DELTA=true is required
+for that class. RISK_SIZING_SEMANTICS_CHANGED=false is neither required nor representable.
 """
 
 from __future__ import annotations
@@ -27,6 +31,10 @@ DEFAULT_OWNER_MAP_PATH = (
 DEFAULT_TECHNICAL_WIRING_AUTH_PATH = (
     "config/governance/technical_canonical_wiring_authorization_v1.json"
 )
+DEFAULT_RESTORATION_AUTH_PATH = (
+    "config/governance/"
+    "historically_attested_current_system_semantic_restoration_authorization_v1.json"
+)
 
 TECHNICAL_WIRING_AUTH_VERSION = "technical_canonical_wiring_authorization_v1"
 TECHNICAL_WIRING_SCOPE_CLASS = "TECHNICAL_CANONICAL_WIRING_ONLY"
@@ -34,6 +42,25 @@ TECHNICAL_WIRING_SCOPE_CLASS = "TECHNICAL_CANONICAL_WIRING_ONLY"
 # "...TOKEN =" to avoid the policy-critic NO_SECRETS false-positive pattern.
 TECHNICAL_WIRING_AUTHORIZATION_ID = "TECHNICAL_CANONICAL_WIRING_AUTHORIZATION_V1"
 TECHNICAL_WIRING_MUTATION_PURPOSE = "SEMANTICS_NEUTRAL_TECHNICAL_CANONICAL_WIRING"
+
+RESTORATION_AUTH_VERSION = "historically_attested_current_system_semantic_restoration_v1"
+RESTORATION_SCOPE_CLASS = "HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_V1"
+RESTORATION_AUTHORIZATION_ID = (
+    "HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_AUTHORIZATION_V1"
+)
+RESTORATION_MUTATION_PURPOSE = "HISTORICALLY_ATTESTED_CANONICAL_SEMANTIC_RESTORATION"
+RESTORATION_SCOPE_ID = "HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_AUTHORIZATION_V1"
+RESTORATION_TARGET_ID = "MASTER_V2_DOUBLE_PLAY_CONSERVED_REFERENCE_V1"
+RESTORATION_HISTORICAL_REFERENCE_SHA256 = (
+    "a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212"
+)
+RESTORATION_CLASS_ATTESTATION_RELATIVE = (
+    "docs/ops/specs/HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_ADMISSION_V1.md"
+)
+RESTORATION_HISTORICAL_PACKAGE_RELATIVE = (
+    "forensics/historical_reference/"
+    "sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212"
+)
 
 BOUNDARY_GOVERNED_PREFIXES: tuple[str, ...] = (
     "src/research/",
@@ -52,6 +79,15 @@ REASON_TECHNICAL_WIRING_AUTH_INVALID = "TECHNICAL_CANONICAL_WIRING_AUTHORIZATION
 REASON_TECHNICAL_WIRING_AUTH_MISSING = "TECHNICAL_CANONICAL_WIRING_AUTHORIZATION_MISSING"
 REASON_TECHNICAL_WIRING_UNAUTHORIZED_PATH = "TECHNICAL_CANONICAL_WIRING_UNAUTHORIZED_PATH"
 REASON_TECHNICAL_WIRING_EFFECT_FORBIDDEN = "TECHNICAL_CANONICAL_WIRING_EFFECT_FORBIDDEN"
+REASON_RESTORATION_AUTHORIZED = "HISTORICALLY_ATTESTED_CANONICAL_SEMANTIC_RESTORATION_AUTHORIZED"
+REASON_RESTORATION_MISSING = "RESTORATION_AUTHORIZATION_MISSING"
+REASON_RESTORATION_INVALID = "RESTORATION_AUTHORIZATION_INVALID"
+REASON_RESTORATION_PATH_UNAUTHORIZED = "RESTORATION_PATH_UNAUTHORIZED"
+REASON_RESTORATION_TARGET_BINDING_INVALID = "RESTORATION_TARGET_BINDING_INVALID"
+REASON_RESTORATION_ATTESTATION_BINDING_INVALID = "RESTORATION_ATTESTATION_BINDING_INVALID"
+REASON_RESTORATION_REFERENCE_BINDING_INVALID = "RESTORATION_REFERENCE_BINDING_INVALID"
+REASON_RESTORATION_BROAD_SCOPE_FORBIDDEN = "RESTORATION_BROAD_SCOPE_FORBIDDEN"
+REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID = "RESTORATION_SEMANTIC_INVARIANT_INVALID"
 
 _REQUIRED_EFFECT_NONE = (
     "RUNTIME_EFFECT",
@@ -68,6 +104,47 @@ _REQUIRED_SEMANTIC_FALSE = (
 
 _PR_OR_BRANCH_HARDCODE_RE = re.compile(
     r"(?i)(\bpr\s*#?\s*\d+\b|#\d{3,}\b|\bbranch[_-]specific\b|\bcursor/[a-z0-9._/-]+)",
+)
+_SHA256_HEX_RE = re.compile(r"^[0-9a-f]{64}$")
+_A06_IDENTIFIER_RE = re.compile(r"(?i)\ba06\b")
+_CLAIM_EPISTEMIC_ALLOWED = frozenset(
+    {"MACHINE_VALIDATED", "HUMAN_ADJUDICATED", "DECLARED_OWNER_POLICY"}
+)
+_RESTORATION_REQUIRED_FALSE = (
+    "NEW_POLICY_INTRODUCED",
+    "UNATTESTED_FORMULA_CHANGE",
+    "CANONICAL_COMPUTE_OWNER_CHANGED",
+    "EXECUTION_AUTHORITY_CHANGED",
+    "LIVE_AUTHORITY_CHANGED",
+    "SAFETY_AUTHORITY_CHANGED",
+    "TRADING_AUTHORITY_CHANGED",
+    "BROAD_MASTER_V2_GRANT",
+    "DIRECTORY_GRANT",
+    "REQUIRED_CHECK_WAIVER",
+    "BRANCH_PROTECTION_BYPASS",
+    "PR_SPECIFIC_EXCEPTION",
+    "BRANCH_SPECIFIC_EXCEPTION",
+    "RUNTIME_ACTIVATION",
+)
+_RESTORATION_FORBIDDEN_NEUTRAL_KEYS = frozenset(
+    {
+        "RISK_SIZING_SEMANTICS_CHANGED",
+        "CORE_SEMANTICS_CHANGED",
+        "SAFETY_SEMANTICS_CHANGED",
+    }
+)
+_RESTORATION_REQUIRED_EPISTEMICS = (
+    "CURRENT_SYSTEM_SEMANTIC_DELTA",
+    "RESTORATION_TARGET_CONFORMANCE",
+    "NEW_POLICY_INTRODUCED",
+    "UNATTESTED_FORMULA_CHANGE",
+    "CANONICAL_COMPUTE_OWNER_CHANGED",
+    "EXECUTION_AUTHORITY_CHANGED",
+    "LIVE_AUTHORITY_CHANGED",
+    "SAFETY_AUTHORITY_CHANGED",
+    "TRADING_AUTHORITY_CHANGED",
+    "EXACT_FILE_SCOPE",
+    "HISTORICAL_REFERENCE_AUTHORITY",
 )
 
 
@@ -87,6 +164,18 @@ class TechnicalWiringAuthorizationDecision:
     reason_codes: tuple[str, ...]
     authorized_paths: tuple[str, ...]
     unauthorized_forbidden_paths: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class RestorationAuthorizationDecision:
+    applied: bool
+    valid: bool
+    version: str | None
+    reason_codes: tuple[str, ...]
+    authorized_paths: tuple[str, ...]
+    unauthorized_forbidden_paths: tuple[str, ...]
+    grant_active: bool = False
+    mutation_purpose_class: str | None = None
 
 
 @dataclass(frozen=True)
@@ -110,6 +199,9 @@ class BoundaryReport:
     impact_unknown: bool
     technical_wiring_authorization_applied: bool = False
     technical_wiring_authorization_version: str | None = None
+    restoration_authorization_applied: bool = False
+    restoration_authorization_version: str | None = None
+    restoration_mutation_purpose_class: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -142,6 +234,9 @@ class BoundaryReport:
             "impact_unknown": self.impact_unknown,
             "technical_wiring_authorization_applied": (self.technical_wiring_authorization_applied),
             "technical_wiring_authorization_version": (self.technical_wiring_authorization_version),
+            "restoration_authorization_applied": self.restoration_authorization_applied,
+            "restoration_authorization_version": self.restoration_authorization_version,
+            "restoration_mutation_purpose_class": self.restoration_mutation_purpose_class,
         }
 
 
@@ -192,6 +287,35 @@ def load_technical_wiring_authorization(
 ) -> dict[str, Any] | None:
     root = repo_root or repo_root_from_module()
     path = authorization_path or resolve_technical_wiring_authorization_path(contract, root)
+    if not path.is_file():
+        return None
+    return load_json(path)
+
+
+def resolve_restoration_authorization_path(
+    contract: Mapping[str, Any] | None = None,
+    repo_root: Path | None = None,
+) -> Path:
+    root = repo_root or repo_root_from_module()
+    relative = DEFAULT_RESTORATION_AUTH_PATH
+    if contract is not None:
+        relative = str(
+            contract.get(
+                "historically_attested_current_system_semantic_restoration_authorization",
+                relative,
+            )
+        )
+    return root / relative
+
+
+def load_restoration_authorization(
+    repo_root: Path | None = None,
+    *,
+    contract: Mapping[str, Any] | None = None,
+    authorization_path: Path | None = None,
+) -> dict[str, Any] | None:
+    root = repo_root or repo_root_from_module()
+    path = authorization_path or resolve_restoration_authorization_path(contract, root)
     if not path.is_file():
         return None
     return load_json(path)
@@ -440,6 +564,254 @@ def evaluate_technical_wiring_authorization(
     )
 
 
+def _restoration_contains_semantics_neutral_claim(auth: Mapping[str, Any]) -> bool:
+    for container_key in ("restoration_invariants", "required_semantic_invariants"):
+        container = auth.get(container_key)
+        if not isinstance(container, dict):
+            continue
+        if _RESTORATION_FORBIDDEN_NEUTRAL_KEYS.intersection(container):
+            return True
+    return False
+
+
+def validate_restoration_authorization(
+    auth: Mapping[str, Any] | None,
+    *,
+    repo_root: Path | None = None,
+) -> tuple[bool, tuple[str, ...]]:
+    """Validate restoration contract jointly. Does not prove historical semantics."""
+    reasons: list[str] = []
+    if auth is None:
+        return False, (REASON_RESTORATION_MISSING,)
+
+    if auth.get("contract_version") != RESTORATION_AUTH_VERSION:
+        reasons.append("RESTORATION_AUTH_VERSION_MISMATCH")
+    if auth.get("authorized_scope_class") != RESTORATION_SCOPE_CLASS:
+        reasons.append("RESTORATION_SCOPE_CLASS_MISMATCH")
+    if auth.get("authorization_token") != RESTORATION_AUTHORIZATION_ID:
+        reasons.append("RESTORATION_TOKEN_MISMATCH")
+    purpose = auth.get("mutation_purpose_class")
+    if purpose != RESTORATION_MUTATION_PURPOSE:
+        reasons.append("RESTORATION_MUTATION_PURPOSE_MISMATCH")
+    if purpose == TECHNICAL_WIRING_MUTATION_PURPOSE:
+        reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+    if auth.get("scope_id") != RESTORATION_SCOPE_ID:
+        reasons.append("RESTORATION_SCOPE_ID_MISMATCH")
+    if auth.get("authorized_scope_class") == TECHNICAL_WIRING_SCOPE_CLASS:
+        reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+
+    target_id = auth.get("restoration_target_id")
+    if target_id != RESTORATION_TARGET_ID or _A06_IDENTIFIER_RE.search(str(target_id or "")):
+        reasons.append(REASON_RESTORATION_TARGET_BINDING_INVALID)
+
+    if auth.get("binds_to_restoration_target") is not True:
+        reasons.append(REASON_RESTORATION_TARGET_BINDING_INVALID)
+    if auth.get("binds_to_current_a06_code") is not False:
+        reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+
+    attestation_id = auth.get("restoration_attestation_id")
+    if not isinstance(attestation_id, str) or not _is_exact_file_path(attestation_id):
+        reasons.append(REASON_RESTORATION_ATTESTATION_BINDING_INVALID)
+    elif attestation_id != RESTORATION_CLASS_ATTESTATION_RELATIVE:
+        reasons.append(REASON_RESTORATION_ATTESTATION_BINDING_INVALID)
+    else:
+        root = repo_root or repo_root_from_module()
+        if not (root / attestation_id).is_file():
+            reasons.append(REASON_RESTORATION_ATTESTATION_BINDING_INVALID)
+
+    sha256 = auth.get("historical_reference_sha256")
+    package = auth.get("historical_reference_package_path")
+    if (
+        not isinstance(sha256, str)
+        or _SHA256_HEX_RE.fullmatch(sha256) is None
+        or sha256 != RESTORATION_HISTORICAL_REFERENCE_SHA256
+    ):
+        reasons.append(REASON_RESTORATION_REFERENCE_BINDING_INVALID)
+    if auth.get("historical_reference_authority") != "NONE":
+        reasons.append(REASON_RESTORATION_REFERENCE_BINDING_INVALID)
+    if auth.get("historical_reference_role") != "FORENSIC_REFERENCE_BINDING":
+        reasons.append(REASON_RESTORATION_REFERENCE_BINDING_INVALID)
+    if auth.get("historical_reference_canonical_authority") is not False:
+        reasons.append(REASON_RESTORATION_REFERENCE_BINDING_INVALID)
+    if package != RESTORATION_HISTORICAL_PACKAGE_RELATIVE:
+        reasons.append(REASON_RESTORATION_REFERENCE_BINDING_INVALID)
+    else:
+        root = repo_root or repo_root_from_module()
+        if not (root / RESTORATION_HISTORICAL_PACKAGE_RELATIVE).is_dir():
+            reasons.append(REASON_RESTORATION_REFERENCE_BINDING_INVALID)
+
+    if auth.get("CURRENT_SYSTEM_SEMANTIC_DELTA") is not True:
+        reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+    if auth.get("TOKEN_ALONE_IS_INSUFFICIENT") is not True:
+        reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+
+    grant_active = auth.get("grant_active")
+    if grant_active is not False and grant_active is not True:
+        reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+        grant_active = False
+
+    invariants = auth.get("restoration_invariants")
+    if not isinstance(invariants, dict):
+        reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+        invariants = {}
+    if _restoration_contains_semantics_neutral_claim(auth):
+        reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+    for flag in _RESTORATION_REQUIRED_FALSE:
+        if auth.get(flag) is not False:
+            reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+            break
+        if (
+            isinstance(invariants, dict)
+            and flag in invariants
+            and invariants.get(flag) is not False
+        ):
+            reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+            break
+
+    epistemics = auth.get("claim_epistemics")
+    if not isinstance(epistemics, dict):
+        reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+    else:
+        for key in _RESTORATION_REQUIRED_EPISTEMICS:
+            value = epistemics.get(key)
+            if value not in _CLAIM_EPISTEMIC_ALLOWED:
+                reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+                break
+        if epistemics.get("CURRENT_SYSTEM_SEMANTIC_DELTA") != "MACHINE_VALIDATED":
+            reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+        if epistemics.get("NEW_POLICY_INTRODUCED") != "DECLARED_OWNER_POLICY":
+            reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+        if epistemics.get("RESTORATION_TARGET_CONFORMANCE") != "HUMAN_ADJUDICATED":
+            reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+
+    forbidden_effects = auth.get("forbidden_effects")
+    if not isinstance(forbidden_effects, dict):
+        reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+    else:
+        for key in _REQUIRED_EFFECT_NONE:
+            if forbidden_effects.get(key) != "NONE":
+                reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+                break
+
+    prefixes = auth.get("authorized_path_prefixes")
+    if prefixes not in ([], None):
+        reasons.append(REASON_RESTORATION_BROAD_SCOPE_FORBIDDEN)
+
+    allowed_paths = auth.get("allowed_paths")
+    if not isinstance(allowed_paths, list):
+        reasons.append(REASON_RESTORATION_BROAD_SCOPE_FORBIDDEN)
+        allowed_paths = []
+    elif not all(isinstance(item, str) for item in allowed_paths):
+        reasons.append(REASON_RESTORATION_BROAD_SCOPE_FORBIDDEN)
+    else:
+        path_list = [str(item) for item in allowed_paths]
+        if grant_active is True and not path_list:
+            reasons.append(REASON_RESTORATION_PATH_UNAUTHORIZED)
+        if grant_active is False and path_list:
+            reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+        if path_list:
+            if not all(_is_exact_file_path(item) for item in path_list):
+                reasons.append(REASON_RESTORATION_BROAD_SCOPE_FORBIDDEN)
+            if _detect_broad_master_v2_grant(path_list):
+                reasons.append(REASON_RESTORATION_BROAD_SCOPE_FORBIDDEN)
+
+    surface_classes = auth.get("allowed_surface_classes")
+    if not isinstance(surface_classes, list):
+        reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+    elif grant_active is True and not surface_classes:
+        reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+    elif grant_active is False and surface_classes:
+        reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+
+    if auth.get("RESTORATION_TARGET_CONFORMANCE") is True and grant_active is not True:
+        reasons.append(REASON_RESTORATION_TARGET_BINDING_INVALID)
+    if grant_active is True and auth.get("RESTORATION_TARGET_CONFORMANCE") is not True:
+        reasons.append(REASON_RESTORATION_TARGET_BINDING_INVALID)
+    if grant_active is False and auth.get("RESTORATION_TARGET_CONFORMANCE") is not False:
+        reasons.append(REASON_RESTORATION_TARGET_BINDING_INVALID)
+
+    slice_grant_id = auth.get("slice_grant_id")
+    if grant_active is False and slice_grant_id not in ("", None):
+        reasons.append(REASON_RESTORATION_TARGET_BINDING_INVALID)
+    if grant_active is True:
+        if not isinstance(slice_grant_id, str) or not slice_grant_id.strip():
+            reasons.append(REASON_RESTORATION_TARGET_BINDING_INVALID)
+        elif _A06_IDENTIFIER_RE.search(slice_grant_id):
+            reasons.append(REASON_RESTORATION_TARGET_BINDING_INVALID)
+
+    rules = auth.get("fail_closed_validation_rules")
+    if not isinstance(rules, list) or "TOKEN_ALONE_IS_INSUFFICIENT" not in rules:
+        reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+
+    if _detect_pr_or_branch_hardcode(auth):
+        reasons.append(REASON_RESTORATION_SEMANTIC_INVARIANT_INVALID)
+
+    if reasons:
+        reasons.insert(0, REASON_RESTORATION_INVALID)
+        return False, tuple(dict.fromkeys(reasons))
+    return True, ()
+
+
+def evaluate_restoration_authorization(
+    forbidden_matches: Sequence[SurfaceMatch],
+    *,
+    auth: Mapping[str, Any] | None,
+    repo_root: Path | None = None,
+) -> RestorationAuthorizationDecision:
+    """Apply restoration admission only after forbidden surfaces were identified."""
+    valid, validation_reasons = validate_restoration_authorization(auth, repo_root=repo_root)
+    purpose = None if auth is None else str(auth.get("mutation_purpose_class") or "") or None
+    grant_active = bool(auth and auth.get("grant_active") is True)
+    if not valid:
+        return RestorationAuthorizationDecision(
+            applied=False,
+            valid=False,
+            version=None if auth is None else str(auth.get("contract_version")),
+            reason_codes=validation_reasons,
+            authorized_paths=(),
+            unauthorized_forbidden_paths=tuple(
+                sorted({match.matched_path for match in forbidden_matches})
+            ),
+            grant_active=grant_active,
+            mutation_purpose_class=purpose,
+        )
+
+    assert auth is not None
+    allowed = frozenset(_normalize_path(str(p)) for p in auth.get("allowed_paths") or [])
+    unauthorized = sorted(
+        {
+            match.matched_path
+            for match in forbidden_matches
+            if _normalize_path(match.matched_path) not in allowed
+        }
+    )
+    if not grant_active or unauthorized:
+        return RestorationAuthorizationDecision(
+            applied=False,
+            valid=True,
+            version=RESTORATION_AUTH_VERSION,
+            reason_codes=(
+                REASON_FORBIDDEN_SURFACE,
+                REASON_RESTORATION_PATH_UNAUTHORIZED,
+            ),
+            authorized_paths=tuple(sorted(allowed)),
+            unauthorized_forbidden_paths=tuple(unauthorized),
+            grant_active=grant_active,
+            mutation_purpose_class=purpose,
+        )
+
+    return RestorationAuthorizationDecision(
+        applied=True,
+        valid=True,
+        version=RESTORATION_AUTH_VERSION,
+        reason_codes=(REASON_RESTORATION_AUTHORIZED,),
+        authorized_paths=tuple(sorted(allowed)),
+        unauthorized_forbidden_paths=(),
+        grant_active=True,
+        mutation_purpose_class=purpose,
+    )
+
+
 def build_boundary_report(
     changed_files: Sequence[str],
     *,
@@ -448,6 +820,9 @@ def build_boundary_report(
     technical_wiring_authorization: Mapping[str, Any] | None = None,
     technical_wiring_authorization_path: Path | None = None,
     skip_technical_wiring_authorization: bool = False,
+    restoration_authorization: Mapping[str, Any] | None = None,
+    restoration_authorization_path: Path | None = None,
+    skip_restoration_authorization: bool = False,
 ) -> BoundaryReport:
     root = repo_root or repo_root_from_module()
     contract = load_contract(root)
@@ -476,6 +851,18 @@ def build_boundary_report(
             root,
             contract=contract,
             authorization_path=technical_wiring_authorization_path,
+        )
+
+    restoration_payload: Mapping[str, Any] | None
+    if skip_restoration_authorization:
+        restoration_payload = None
+    elif restoration_authorization is not None:
+        restoration_payload = restoration_authorization
+    else:
+        restoration_payload = load_restoration_authorization(
+            root,
+            contract=contract,
+            authorization_path=restoration_authorization_path,
         )
 
     for path in normalized_files:
@@ -507,6 +894,14 @@ def build_boundary_report(
         authorized_paths=(),
         unauthorized_forbidden_paths=(),
     )
+    restoration_decision = RestorationAuthorizationDecision(
+        applied=False,
+        valid=False,
+        version=None,
+        reason_codes=(),
+        authorized_paths=(),
+        unauthorized_forbidden_paths=(),
+    )
     blocking_forbidden = list(forbidden_matches)
     if forbidden_matches:
         auth_decision = evaluate_technical_wiring_authorization(
@@ -520,13 +915,34 @@ def build_boundary_report(
                 for match in forbidden_matches
                 if match.matched_path not in authorized_path_set
             ]
-            # Authorized wiring paths may also classify as allowed research surfaces
-            # when they appear in the allowed owner map (e.g. mv2_research_wiring).
             for path in normalized_files:
                 if path in authorized_path_set:
                     allowed_hits.update(classify_allowed_surfaces(path, rules))
+        else:
+            restoration_decision = evaluate_restoration_authorization(
+                forbidden_matches,
+                auth=restoration_payload,
+                repo_root=root,
+            )
+            if restoration_decision.applied:
+                authorized_path_set = frozenset(restoration_decision.authorized_paths)
+                blocking_forbidden = [
+                    match
+                    for match in forbidden_matches
+                    if match.matched_path not in authorized_path_set
+                ]
+                for path in normalized_files:
+                    if path in authorized_path_set:
+                        allowed_hits.update(classify_allowed_surfaces(path, rules))
 
-    forbidden_ids = {match.surface_id for match in blocking_forbidden}
+    if restoration_decision.applied:
+        flag_source = forbidden_matches
+        canonical_trading_semantics_changed = True
+    else:
+        flag_source = blocking_forbidden
+        canonical_trading_semantics_changed = bool(blocking_forbidden)
+
+    forbidden_ids = {match.surface_id for match in flag_source}
     master_v2_changed = "MASTER_V2" in forbidden_ids
     bull_bear_changed = "BULL_BEAR_ASSESSMENT" in forbidden_ids
     double_play_changed = "DOUBLE_PLAY_COMPOSITION" in forbidden_ids
@@ -543,14 +959,13 @@ def build_boundary_report(
     promotion_runtime_authority_changed = (
         "PROMOTION_RUNTIME_ORDER_CREDENTIAL_SCHEDULER_AUTHORITY" in forbidden_ids
     )
-    # Authorized wiring does not assert semantic change; invariants are contract-bound.
-    canonical_trading_semantics_changed = bool(blocking_forbidden)
 
     reason_codes: list[str] = []
     fail_closed = False
     impact_unknown = False
     admissible = True
     auth_applied = auth_decision.applied
+    restoration_applied = restoration_decision.applied
 
     if all_governance_self and normalized_files:
         reason_codes.append(REASON_GOVERNANCE_SELF)
@@ -559,7 +974,6 @@ def build_boundary_report(
         reason_codes.append(REASON_NO_BOUNDARY_GOVERNED_CHANGES)
         economic_or_diagnostic_only = False
     elif blocking_forbidden:
-        # Forbidden surfaces matched and were not fully covered by valid authorization.
         if forbidden_matches and not auth_decision.valid:
             reason_codes.extend(auth_decision.reason_codes or (REASON_FORBIDDEN_SURFACE,))
             if REASON_FORBIDDEN_SURFACE not in reason_codes:
@@ -570,10 +984,15 @@ def build_boundary_report(
                 reason_codes.insert(0, REASON_FORBIDDEN_SURFACE)
         else:
             reason_codes.append(REASON_FORBIDDEN_SURFACE)
+        if restoration_decision.reason_codes:
+            for code in restoration_decision.reason_codes:
+                if code not in reason_codes:
+                    reason_codes.append(code)
         fail_closed = True
         admissible = False
         economic_or_diagnostic_only = False
         auth_applied = False
+        restoration_applied = False
     elif unclassified:
         reason_codes.append(REASON_IMPACT_UNKNOWN)
         impact_unknown = True
@@ -581,6 +1000,14 @@ def build_boundary_report(
         admissible = False
         economic_or_diagnostic_only = any_boundary_governed
         auth_applied = False
+        restoration_applied = False
+    elif restoration_decision.applied:
+        reason_codes.append(REASON_RESTORATION_AUTHORIZED)
+        if allowed_hits:
+            reason_codes.append(REASON_ALLOWED_ONLY)
+        economic_or_diagnostic_only = False
+        auth_applied = False
+        restoration_applied = True
     elif auth_decision.applied:
         reason_codes.append(REASON_TECHNICAL_WIRING_AUTHORIZED)
         if allowed_hits:
@@ -621,6 +1048,13 @@ def build_boundary_report(
         impact_unknown=impact_unknown,
         technical_wiring_authorization_applied=auth_applied,
         technical_wiring_authorization_version=(auth_decision.version if auth_applied else None),
+        restoration_authorization_applied=restoration_applied,
+        restoration_authorization_version=(
+            restoration_decision.version if restoration_applied else None
+        ),
+        restoration_mutation_purpose_class=(
+            restoration_decision.mutation_purpose_class if restoration_applied else None
+        ),
     )
 
 
@@ -638,9 +1072,9 @@ def evaluate_diff_admissibility(
 
 
 def forbidden_surface_changed_count(report: BoundaryReport) -> int:
-    # Authorized technical-wiring applications keep forbidden matches for audit but do not
-    # count them as blocking forbidden surface changes.
-    if report.technical_wiring_authorization_applied:
+    # Authorized wiring/restoration applications keep forbidden matches for audit but do
+    # not count them as blocking forbidden surface changes.
+    if report.technical_wiring_authorization_applied or report.restoration_authorization_applied:
         return 0
     return len({match.matched_path for match in report.forbidden_surface_matches})
 
@@ -651,6 +1085,10 @@ def export_canonical_owner_inventory(repo_root: Path | None = None) -> dict[str,
     owner_map = load_owner_map(root)
     auth = load_technical_wiring_authorization(root, contract=contract)
     auth_valid, auth_reasons = validate_technical_wiring_authorization(auth)
+    restoration = load_restoration_authorization(root, contract=contract)
+    restoration_valid, restoration_reasons = validate_restoration_authorization(
+        restoration, repo_root=root
+    )
     return {
         "contract_version": CONTRACT_VERSION,
         "package_marker": PACKAGE_MARKER,
@@ -673,6 +1111,30 @@ def export_canonical_owner_inventory(repo_root: Path | None = None) -> dict[str,
             "contract_version": None if auth is None else auth.get("contract_version"),
             "authorized_scope_class": (
                 None if auth is None else auth.get("authorized_scope_class")
+            ),
+        },
+        "historically_attested_current_system_semantic_restoration_authorization": {
+            "path": contract.get(
+                "historically_attested_current_system_semantic_restoration_authorization"
+            ),
+            "present": restoration is not None,
+            "valid": restoration_valid,
+            "validation_reasons": list(restoration_reasons),
+            "contract_version": None
+            if restoration is None
+            else restoration.get("contract_version"),
+            "authorized_scope_class": (
+                None if restoration is None else restoration.get("authorized_scope_class")
+            ),
+            "mutation_purpose_class": (
+                None if restoration is None else restoration.get("mutation_purpose_class")
+            ),
+            "restoration_target_id": (
+                None if restoration is None else restoration.get("restoration_target_id")
+            ),
+            "grant_active": None if restoration is None else restoration.get("grant_active"),
+            "binds_to_current_a06_code": (
+                None if restoration is None else restoration.get("binds_to_current_a06_code")
             ),
         },
     }
