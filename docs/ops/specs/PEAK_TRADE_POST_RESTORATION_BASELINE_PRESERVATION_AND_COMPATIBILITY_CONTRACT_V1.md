@@ -317,6 +317,7 @@ PROPOSED_SAFE_ACTION=
 | Venue pretrade metadata-binding alignment adjudication | Master §5.3; venue-pretrade metadata-binding alignment adjudication spec | `tests/ops/test_peak_trade_post_restoration_venue_pretrade_metadata_binding_alignment_adjudication_v1.py` | true |
 | Exact venue metadata GET current SUI pretrade MAX_SIZE | Master §5.3; exact venue metadata GET spec | `tests/ops/test_peak_trade_exact_venue_metadata_get_current_sui_pretrade_max_size_v1.py` | true |
 | Post-6148 MAX_SIZE unit adjudication | Master §5.3; post-6148 MAX_SIZE unit adjudication spec | `tests/ops/test_peak_trade_post_6148_max_size_unit_adjudication_v1.py` | true |
+| Post-6149 MAX_SIZE normalization adjudication | Master §5.3; post-6149 MAX_SIZE normalization adjudication spec | `tests/ops/test_peak_trade_post_6149_max_size_normalization_adjudication_v1.py` | true |
 
 Named preservation invariants for the closed simulated-execution
 adjudication. This contract does not itself perform that adjudication and
@@ -398,6 +399,29 @@ POST_6148_MAX_SIZE_UNIT_ADJUDICATION_V1_PRESERVED=true
 CURRENT_MAX_SIZE_UNIT_BOUND=true
 CURRENT_MAX_SIZE_UNIT=contracts
 MAX_SIZE_NORMALIZATION_REMAINS_UNBOUND=true
+MAX_SIZE_BINDING_REMAINS_PARTIALLY_BOUND=true
+MAX_SIZE_CONSUMER_REMAINS_UNBOUND=true
+MAX_SIZE_FRESHNESS_POLICY_REMAINS_UNBOUND=true
+CURRENT_OKX_VENUE_IDENTITY_PRESERVED=true
+KRAKEN_NOT_CURRENT_CANONICAL_VENUE=true
+```
+
+Named preservation invariants for the persisted post-#6149 MAX_SIZE
+normalization adjudication. This contract does not itself perform that
+adjudication, does not bind freshness policy, does not implement a
+consumer, does not bind qty→sz domain identity, and does not grant live
+or execution authority. The #6149 unit persist remains historically
+`MAX_SIZE_NORMALIZATION_STATUS=UNBOUND` for that unit slice.
+
+```text
+POST_6149_MAX_SIZE_NORMALIZATION_ADJUDICATION_V1_PRESERVED=true
+CURRENT_MAX_SIZE_UNIT_BOUND=true
+CURRENT_MAX_SIZE_UNIT=contracts
+MAX_SIZE_NORMALIZATION_REMAINS_UNBOUND=true
+ORDER_PLAN_QTY_UNIT_REMAINS_UNBOUND=true
+ORDER_PLAN_QTY_TO_VENUE_SZ_MAPPING_REMAINS_UNBOUND=true
+MAX_SIZE_COMPARISON_DOMAIN_REMAINS_UNBOUND=true
+ONE_CONTRACT_EQUALS_ONE_SUI_REMAINS_FALSE=true
 MAX_SIZE_BINDING_REMAINS_PARTIALLY_BOUND=true
 MAX_SIZE_CONSUMER_REMAINS_UNBOUND=true
 MAX_SIZE_FRESHNESS_POLICY_REMAINS_UNBOUND=true
