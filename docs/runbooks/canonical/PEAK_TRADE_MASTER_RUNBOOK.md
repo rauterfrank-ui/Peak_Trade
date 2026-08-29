@@ -2214,6 +2214,48 @@ the restored Risk owner. The independent pre-trade safety kernel remains
 productive Risk/Sizing owner. Replay Safety remains the sole Safety owner.
 29P → Replay Safety → 29Q remains the productive order.
 
+Named subordinate adjudication for the two simulated accounting/portfolio
+write paths after the closed P0-quarantine cluster. This does **not** reopen
+restoration, add a Core owner or stage, unify economics, or grant live or
+execution authority.
+
+``` text
+ACCOUNTING_PORTFOLIO_ALIGNMENT_ADJUDICATION_V1=true
+SPEC=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_ACCOUNTING_PORTFOLIO_ALIGNMENT_ADJUDICATION_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+ADJUDICATION_RESULT=DISTINCT_COMPATIBLE_RESPONSIBILITIES
+ACCOUNTING_PORTFOLIO_OWNER_MODEL=DISTINCT_NON_OVERLAPPING_RESPONSIBILITIES
+PRODUCTIVE_FUTURES_ACCOUNTING_ROLE=CANONICAL_DOWNSTREAM_FUTURES_ACCOUNTING_WRITER_FOR_WALLCLOCK_V1_AND_CAP72
+HARDENING_PORTFOLIO_ROLE=MODE_SPECIFIC_ANALYTICAL_PAPER_SHADOW_PORTFOLIO_WRITER
+BOTH_PATHS_CAN_WRITE_EQUIVALENT_ACCOUNT_STATE=false
+SAME_CANONICAL_ACCOUNT_STATE_DOUBLE_WRITTEN_IN_ONE_CYCLE=false
+PORTFOLIO_WRITER_DUPLICATION_UNRESOLVED=false
+ACCOUNTING_SEMANTIC_DIVERGENCE_UNRESOLVED=false
+RUNTIME_ALIGNMENT_REQUIRED=false
+CHANGED_RUNTIME_FILES=NONE
+SECOND_COMPUTE_OWNER_EXISTS=false
+SECOND_RISK_OWNER_EXISTS=false
+SECOND_SAFETY_OWNER_EXISTS=false
+SECOND_INTENT_OWNER_EXISTS=false
+NO_29Q_BEFORE_SAFETY=true
+RESTORATION_REOPEN_REQUIRED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+```
+
+Normative subordinate adjudication:
+[`docs/ops/specs/PEAK_TRADE_POST_RESTORATION_ACCOUNTING_PORTFOLIO_ALIGNMENT_ADJUDICATION_V1.md`](../../ops/specs/PEAK_TRADE_POST_RESTORATION_ACCOUNTING_PORTFOLIO_ALIGNMENT_ADJUDICATION_V1.md).
+Cap 3.1 `futures_accounting` remains the canonical downstream futures
+writer for wallclock-v1 / Cap 7.2 (`SimulatedExecutionPortV1` when
+activation is enabled). Hardening-v2 `IdempotentPortfolioV2` /
+paper-shadow economics remains a distinct mode-specific analytical
+portfolio writer. The two paths can consume equivalent mapper
+BUY/SELL/HOLD decisions but do not write equivalent canonical account
+state and must not double-mutate one account in one cycle. Cash, flip,
+and idempotence semantics remain `DISTINCT_RESPONSIBILITY`. Tests are
+guards, not a second semantic SSOT.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:
