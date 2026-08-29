@@ -70,6 +70,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_available_obser
     LiveCanaryMaxAvailableObservationError,
     account_max_size_query_path_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.price_band_observation_v1 import (
+    LiveCanaryPriceBandObservationError,
+    public_price_limit_query_path_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.order_plan_v1 import (
     LiveCanaryOrderPlanError,
     build_minimum_valid_canary_order_plan_v1,
@@ -343,6 +347,24 @@ def run_canary_submit_transport_v1(
                 f"ORDER_PLAN_FAIL_CLOSED_BEFORE_POST:{exc}"
             ) from exc
         try:
+            price_band_ep = public_price_limit_query_path_v1(instrument_id=instrument_id)
+        except LiveCanaryPriceBandObservationError as exc:
+            raise LiveCanarySubmitTransportError(f"PRICE_BAND_GATE:{exc}") from exc
+        try:
+            price_band_headers = {"User-Agent": USER_AGENT_CANARY}
+            price_band_response = client.get(endpoint=price_band_ep, headers=price_band_headers)
+            price_band_headers.clear()
+        except LiveCanaryHttpError as exc:
+            raise LiveCanarySubmitTransportError(f"PRICE_BAND_FRESH_GET_FAILED:{exc}") from exc
+        if int(price_band_response.status_code) != 200:
+            raise LiveCanarySubmitTransportError(
+                f"PRICE_BAND_FRESH_GET_HTTP:{price_band_response.status_code}"
+            )
+        try:
+            price_band_payload = parse_json_object_v1(price_band_response.body_bytes)
+        except LiveCanaryHttpError as exc:
+            raise LiveCanarySubmitTransportError(f"PRICE_BAND_FRESH_GET_BODY:{exc}") from exc
+        try:
             max_avail_ep = account_max_size_query_path_v1(
                 instrument_id=instrument_id,
                 td_mode=td_mode,
@@ -394,6 +416,13 @@ def run_canary_submit_transport_v1(
                 max_available_auth_header_sent=True,
                 max_available_historical_reuse=False,
                 max_available_px_sent=limit_px,
+                price_band_payload=price_band_payload,
+                price_band_http_status=int(price_band_response.status_code),
+                price_band_endpoint=price_band_ep,
+                price_band_observed_at_utc=observed_at,
+                price_band_get_performed=True,
+                price_band_auth_header_sent=False,
+                price_band_historical_reuse=False,
             )
         except LiveCanaryOrderPlanError as exc:
             raise LiveCanarySubmitTransportError(
