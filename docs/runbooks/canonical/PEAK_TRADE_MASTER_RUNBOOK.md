@@ -2013,6 +2013,29 @@ HOST_REWRITES_REPLAY_DECISION=false
 HOST_REWRITES_CANONICAL_INTENT=false
 ```
 
+Named SSOT pointer for the already attested post-confirmation binding.
+This names the existing Survival → Suitability → Composition binding
+inside Integrated Replay. It does **not** add a stage or owner.
+
+``` text
+C4_NAMED_MASTER_SSOT_POINTER=true
+CAPABILITY_ID=POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1
+SPEC=docs/ops/specs/MV2_C4_POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1.md
+RUNTIME_BINDING_SURFACE=trading.master_v2.post_confirmation_survival_suitability_composition_binding_v1
+CONSUMER=trading.master_v2.integrated_offline_trading_logic_replay_v1
+BINDING_FOR=Survival → Suitability → Composition
+C4_NEW_STAGE=false
+C4_NEW_OWNER=false
+SECOND_COMPUTE_OWNER=false
+```
+
+Normative capability/spec:
+[`docs/ops/specs/MV2_C4_POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1.md`](../../ops/specs/MV2_C4_POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1.md).
+Runtime binding surface remains
+`trading.master_v2.post_confirmation_survival_suitability_composition_binding_v1`.
+Integrated Replay consumes that binding. Compute owner remains Integrated
+Replay. Survival / Suitability / Composition semantics are unchanged.
+
 Existing Cap 7.2 / Hardening-v2 `CALL_GRAPH` tuples keep historical stage
 labels for evidence and compatibility. Labels after
 `master_v2_double_play_integrated_offline_replay` that read
