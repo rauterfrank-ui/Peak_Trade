@@ -87,7 +87,9 @@ def map_replay_result_to_intended_analytical_action_v1(
             qty = Decimal(str(raw_q))
         intent_action = f"SIZING::{outcome}"
 
-    if safety_blocked or not result.replay_pass:
+    historical_exit_or_reduce = outcome in {"exit", "reduce"} or intent_action in {"EXIT", "REDUCE"}
+    # replay_pass=false still maps historical EXIT/REDUCE (e.g. typed-vol protection path).
+    if not result.replay_pass and not historical_exit_or_reduce:
         return IntendedAnalyticalActionV1(
             intended_side="HOLD",
             intended_quantity=_ZERO,
@@ -97,6 +99,35 @@ def map_replay_result_to_intended_analytical_action_v1(
             quantity_source="safety_or_fail_closed",
             safety_blocked=True,
             reason_codes=reasons or ("FAIL_CLOSED_HOLD",),
+        )
+
+    if safety_blocked and not historical_exit_or_reduce:
+        return IntendedAnalyticalActionV1(
+            intended_side="HOLD",
+            intended_quantity=_ZERO,
+            decision_outcome=outcome or "blocked",
+            selected_side=selected or "neutral",
+            intent_action=intent_action,
+            quantity_source="safety_or_fail_closed",
+            safety_blocked=True,
+            reason_codes=reasons or ("FAIL_CLOSED_HOLD",),
+        )
+
+    # ENTER without CanonicalOrderIntent must not become BUY/SELL via sizing fallback.
+    # Historical Safety hard-block skips ENTER-29Q; host consumption may not invent an entry.
+    enter_without_coi = intent is None and (
+        outcome in {"enter_long", "enter_short"} or str(intent_action).startswith("SIZING::enter_")
+    )
+    if enter_without_coi:
+        return IntendedAnalyticalActionV1(
+            intended_side="HOLD",
+            intended_quantity=_ZERO,
+            decision_outcome=outcome,
+            selected_side=selected,
+            intent_action=intent_action,
+            quantity_source="enter_without_canonical_order_intent",
+            safety_blocked=False,
+            reason_codes=reasons + ("NO_CANONICAL_ORDER_INTENT",),
         )
 
     if outcome == "enter_long" or intent_action == "ENTER_LONG":

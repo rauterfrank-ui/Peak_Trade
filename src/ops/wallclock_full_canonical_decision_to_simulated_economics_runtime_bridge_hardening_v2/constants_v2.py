@@ -59,6 +59,11 @@ DECISION_AUTHORITY_OWNER = (
     "trading.master_v2.integrated_offline_trading_logic_replay_v1."
     "run_integrated_offline_trading_logic_replay_v1"
 )
+BRIDGE_SAFETY_ROLE = "INPUT_PRODUCER_ONLY"
+CANONICAL_REPLAY_SAFETY_OWNER = (
+    "trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0."
+    "evaluate_offline_safety_kernel_boundary_v0"
+)
 
 # Runbook-required streams that productive wallclock must append per cycle.
 PRODUCTIVE_WALLCLOCK_REQUIRED_APPEND_STREAMS: tuple[str, ...] = (
