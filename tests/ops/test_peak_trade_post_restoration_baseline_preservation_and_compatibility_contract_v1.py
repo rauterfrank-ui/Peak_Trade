@@ -56,6 +56,8 @@ _EXISTING_GUARDS = (
     REPO_ROOT / "tests/ops/test_peak_trade_post_restoration_remaining_p0_quarantine_v1.py",
     REPO_ROOT
     / "tests/ops/test_peak_trade_post_restoration_accounting_portfolio_alignment_adjudication_v1.py",
+    REPO_ROOT
+    / "tests/ops/test_peak_trade_post_restoration_simulated_execution_pipeline_adjudication_v1.py",
 )
 
 _FORBIDDEN_MAPPER_CALLS = frozenset(
@@ -265,10 +267,12 @@ def test_existing_preservation_guards_remain_present() -> None:
     assert "OWNER_COMPOSED" in full_chain or "owner-composed" in full_chain
     remaining_p0 = _EXISTING_GUARDS[8].read_text(encoding="utf-8")
     accounting_align = _EXISTING_GUARDS[9].read_text(encoding="utf-8")
+    execution_align = _EXISTING_GUARDS[10].read_text(encoding="utf-8")
     assert 'historical_reference_authority"] == "NONE"' in restoration_auth
     assert "EVALUATE_BRIDGE_SAFETY_V2_PRODUCTIVE_OWNER=false" in parallel_owner
     assert "LEGACY_STRATEGY_POSITION_SIZERS_PRODUCTIVE_HOST_REACHABLE=false" in remaining_p0
     assert "ADJUDICATION_RESULT=DISTINCT_COMPATIBLE_RESPONSIBILITIES" in accounting_align
+    assert "ADJUDICATION_RESULT=DISTINCT_COMPATIBLE_EXECUTION_RESPONSIBILITIES" in execution_align
 
 
 def test_replay_source_keeps_29p_before_safety_before_29q() -> None:
@@ -332,6 +336,17 @@ def test_forensic_reference_authority_remains_none() -> None:
     assert "O059_UNRESOLVED_TOKEN_ALIASES_CANONICALIZED=false" in spec
     assert "FORENSIC_REFERENCE_AUTHORITY=CANONICAL" not in spec
     assert "GATE_3_CANONICALIZED=false" in spec
+
+
+def test_simulated_execution_pipeline_adjudication_is_preserved() -> None:
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "SIMULATED_EXECUTION_PIPELINE_ADJUDICATION_PRESERVED=true" in spec
+    assert "SIMULATED_EXECUTION_RUNTIME_REWIRE_REQUIRED=false" in spec
+    assert "SECOND_EXECUTION_OWNER_PROHIBITED=true" in spec
+    assert "MASTER_V2_DOUBLE_PLAY_EXECUTION_BOUNDARY_PRESERVED=true" in spec
+    assert (
+        "test_peak_trade_post_restoration_simulated_execution_pipeline_adjudication_v1.py" in spec
+    )
 
 
 def test_master_names_subordinate_preservation_spec() -> None:
