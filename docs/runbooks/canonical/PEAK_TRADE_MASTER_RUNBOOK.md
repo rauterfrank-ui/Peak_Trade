@@ -2256,6 +2256,56 @@ state and must not double-mutate one account in one cycle. Cash, flip,
 and idempotence semantics remain `DISTINCT_RESPONSIBILITY`. Tests are
 guards, not a second semantic SSOT.
 
+Named subordinate adjudication for the simulated execution pipeline after
+the closed accounting/portfolio alignment. This does **not** reopen
+restoration, add a Core owner or stage, unify host fill economics, repair
+the preexisting Cap 3.1 `CALL_GRAPH` tuple drift, or grant live or
+execution authority.
+
+``` text
+SIMULATED_EXECUTION_PIPELINE_ADJUDICATION_V1=true
+SIMULATED_EXECUTION_PIPELINE_ADJUDICATION_RESULT=DISTINCT_COMPATIBLE_EXECUTION_RESPONSIBILITIES
+SPEC=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_SIMULATED_EXECUTION_PIPELINE_ADJUDICATION_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+SIMULATED_EXECUTION_PIPELINE_COMPLETE=true
+EARLIEST_INCOMPLETE_EDGE=NONE
+CANONICAL_EXECUTION_OWNER=SimulatedExecutionPortV1_DELEGATE_CAP3_1
+SECOND_EXECUTION_OWNER_EXISTS=false
+SAME_EXECUTION_RESPONSIBILITY=false
+HARDENING_V2_IS_SECOND_CANONICAL_EXECUTION_OWNER=false
+INTEGRATED_REPLAY_FILL_AUTHORITY=NONE
+MAPPER_EXECUTION_AUTHORITY=NONE
+RUNTIME_ALIGNMENT_REQUIRED=false
+RUNTIME_MUTATION_JUSTIFIED=false
+NEW_EXECUTION_COMPONENT_REQUIRED=false
+PREEXISTING_CALL_GRAPH_DRIFT_CLASS=LABEL_ONLY
+PREEXISTING_CALL_GRAPH_DRIFT_IN_SCOPE=false
+CHANGED_RUNTIME_FILES=NONE
+SECOND_COMPUTE_OWNER_EXISTS=false
+SECOND_RISK_OWNER_EXISTS=false
+SECOND_SAFETY_OWNER_EXISTS=false
+SECOND_INTENT_OWNER_EXISTS=false
+NO_29Q_BEFORE_SAFETY=true
+RESTORATION_REOPEN_REQUIRED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+```
+
+Normative subordinate adjudication:
+[`docs/ops/specs/PEAK_TRADE_POST_RESTORATION_SIMULATED_EXECUTION_PIPELINE_ADJUDICATION_V1.md`](../../ops/specs/PEAK_TRADE_POST_RESTORATION_SIMULATED_EXECUTION_PIPELINE_ADJUDICATION_V1.md).
+Cap 7.2 `SimulatedExecutionPortV1` remains the canonical no-order simulated
+execution owner when activation is enabled and delegates fill construction
+to Cap 3.1 `build_simulated_fill_v1` /
+`apply_intended_action_via_canonical_accounting_v1`. The Cap 7.1
+activation-disabled direct Cap 3.1 apply remains a historically required
+adapter of that same kernel. Hardening-v2 paper-shadow fill/portfolio
+remains a distinct mode-specific analytical writer, not a second canonical
+execution owner. Integrated Replay has no fill authority. The mapper remains
+translator-only. The preexisting `CALL_GRAPH_V1` / `REQUIRED_CALL_GRAPH`
+tuple inequality remains `LABEL_ONLY` and is not repaired here. Tests are
+guards, not a second semantic SSOT.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:

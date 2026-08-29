@@ -354,6 +354,7 @@ Guards must keep:
 
 ```text
 EXECUTION_PIPELINE_INTEGRATION=NOT_THIS_SLICE
+SEE_ALSO_SIMULATED_EXECUTION_PIPELINE_ADJUDICATION=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_SIMULATED_EXECUTION_PIPELINE_ADJUDICATION_V1.md
 LIVE_EXECUTION_BOUNDARY=NOT_THIS_SLICE
 LIVE_SAFETY_GATES=NOT_THIS_SLICE
 VENUE_PRETRADE_LIMIT_GATES=NOT_THIS_SLICE
@@ -370,7 +371,10 @@ CORE_RUNTIME_MUTATION=false
 
 P0-quarantine remains closed. Historical
 `ACCOUNTING_PORTFOLIO_ALIGNMENT=NOT_THIS_SLICE` rows in the prior quarantine
-specs remain historically true for those slices.
+specs remain historically true for those slices. Historical
+`EXECUTION_PIPELINE_INTEGRATION=NOT_THIS_SLICE` remains true for this
+accounting slice; later simulated-execution pipeline adjudication is
+recorded in the SEE_ALSO spec.
 
 ## 11) Existing guards reused (not duplicated)
 
