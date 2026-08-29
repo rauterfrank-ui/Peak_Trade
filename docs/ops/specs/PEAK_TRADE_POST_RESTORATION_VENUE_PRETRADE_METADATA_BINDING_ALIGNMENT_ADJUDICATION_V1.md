@@ -716,12 +716,16 @@ CURRENT_NUMERIC_FREEZE=NOT_THIS_SLICE
 UNIT_INVENTION=NOT_THIS_SLICE
 FRESHNESS_POLICY_INVENTION=NOT_THIS_SLICE
 CORE_RUNTIME_MUTATION=false
+SEE_ALSO_EXACT_VENUE_METADATA_GET_CURRENT_SUI_PRETRADE_MAX_SIZE=docs/ops/specs/PEAK_TRADE_EXACT_VENUE_METADATA_GET_CURRENT_SUI_PRETRADE_MAX_SIZE_V1.md
 ```
 
 Historical `VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT=NOT_THIS_SLICE` in
 #6146 remains historically true for that slice. Later metadata-binding
 adjudication is recorded here. This persist does not close venue-pretrade
-completeness and does not implement venue limit gates.
+completeness and does not implement venue limit gates. The later authorized
+exact venue metadata GET is recorded in
+`SEE_ALSO_EXACT_VENUE_METADATA_GET_CURRENT_SUI_PRETRADE_MAX_SIZE`. This
+#6147 persist did not perform that GET.
 
 ## 15) Existing guards reused (not duplicated)
 

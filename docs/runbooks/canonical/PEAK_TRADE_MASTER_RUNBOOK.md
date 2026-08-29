@@ -2487,6 +2487,87 @@ remain false. The preexisting `CALL_GRAPH_V1` / `REQUIRED_CALL_GRAPH` tuple
 inequality remains `LABEL_ONLY` and is not repaired here. Tests are
 guards, not a second semantic SSOT.
 
+Named subordinate persist for the authorized exact public instruments GET
+for current SUI pretrade MAX_SIZE after the closed #6147 metadata-binding
+alignment persist. This does **not** reopen restoration, add a Core owner
+or stage, bind MAX_SIZE unit or freshness policy, implement a runtime
+consumer, repair the preexisting Cap 3.1 `CALL_GRAPH` tuple drift, or
+grant live or execution authority. #6147 remains historically
+`NETWORK_GET_PERFORMED=false` for that slice.
+
+``` text
+EXACT_VENUE_METADATA_GET_CURRENT_SUI_PRETRADE_MAX_SIZE_V1=true
+SPEC=docs/ops/specs/PEAK_TRADE_EXACT_VENUE_METADATA_GET_CURRENT_SUI_PRETRADE_MAX_SIZE_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+EVIDENCE_PACK=evidence/ops/exact_venue_metadata_get_current_sui_pretrade_max_size_v1/20260829T182239Z
+VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_STATUS=PARTIAL
+VENUE_PRETRADE_LIMIT_GATES_COMPLETE=false
+MAX_SIZE_BINDING_STATUS=PARTIALLY_BOUND
+ALL_REQUIRED_METADATA_EDGES_BOUND=false
+EARLIEST_REMAINING_UNBOUND_EDGE=MAX_SIZE
+EARLIEST_REMAINING_CONFLICT=NONE
+EARLIEST_UNRESOLVED_DEPENDENCY=MAX_SIZE_UNIT
+BEGINNING_AT=MAX_SIZE
+THIS_SLICE_NETWORK_GET_PERFORMED=true
+NETWORK_POST_PERFORMED=false
+AUTH_REQUIRED=false
+CURRENT_RAW_MAXLMTSZ_OBSERVED=true
+CURRENT_REUSABLE_MAXLMTSZ_PROVEN=false
+CURRENT_MAXLMTSZ_RAW_VALUE=100000000
+CURRENT_MAXMKTSZ_RAW_VALUE=100000
+MAXLMTSZ_RAW_VALUE_PARITY_WITH_Z2AR=true
+MAXMKTSZ_RAW_VALUE_PARITY_WITH_Z2AR=true
+MAX_SIZE_UNIT=UNBOUND
+MAX_SIZE_FRESHNESS_STATUS=WINDOW_OBSERVED_NOT_POLICY_BOUND
+MAX_SIZE_FRESHNESS_POLICY=UNBOUND
+MAX_SIZE_NORMALIZATION_STATUS=UNBOUND_NONE_APPLIED_NONE_PROVEN
+MAX_SIZE_CONSUMER_BOUND=false
+RUNTIME_ALIGNMENT_REQUIRED=false
+RUNTIME_MUTATION_JUSTIFIED=false
+CHANGED_RUNTIME_FILES=NONE
+CANONICAL_VENUE_PRETRADE_OWNER=section_11_13_5.order_plan_v1+exposure_v1@submit_transport_v1
+SECOND_VENUE_PRETRADE_OWNER_EXISTS=false
+SECOND_COMPUTE_OWNER_EXISTS=false
+SECOND_RISK_OWNER_EXISTS=false
+SECOND_SAFETY_OWNER_EXISTS=false
+SECOND_INTENT_OWNER_EXISTS=false
+SECOND_EXECUTION_OWNER_EXISTS=false
+NO_29Q_BEFORE_SAFETY=true
+RESTORATION_REOPEN_REQUIRED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+EXECUTION_ELIGIBLE=false
+LIVE_READINESS=EVALUATED_NOT_READY
+CURRENT_SELECTED_INSTRUMENT=SUI-USD_UM_XPERP-310404
+CURRENT_VENUE=OKX_EEA
+INSTRUMENT_BIND_PROVEN=true
+KRAKEN_CURRENT_CANONICAL_ROLE=NONE
+KRAKEN_EVIDENCE_USED_FOR_CURRENT_OKX_PRETRADE=false
+KRAKEN_EXCLUSION_CLOSED=true
+PREEXISTING_CALL_GRAPH_DRIFT_CLASS=LABEL_ONLY
+PREEXISTING_CALL_GRAPH_DRIFT_IN_SCOPE=false
+NEXT_DISTINCT_SURFACE=MAX_SIZE_UNIT
+NEXT_DISTINCT_SURFACE_AUTHORIZED=false
+```
+
+Normative subordinate persist:
+[`docs/ops/specs/PEAK_TRADE_EXACT_VENUE_METADATA_GET_CURRENT_SUI_PRETRADE_MAX_SIZE_V1.md`](../../ops/specs/PEAK_TRADE_EXACT_VENUE_METADATA_GET_CURRENT_SUI_PRETRADE_MAX_SIZE_V1.md).
+One unauthenticated public GET to `eea.okx.com` using the canonical
+`public_instruments_query_path_v1` grammar
+observed `HTTP=200`, `OKX_CODE=0`, exactly one target row, and
+`maxLmtSz=100000000` / `maxMktSz=100000` with Z2AR raw-value parity.
+That current-window raw observation is not a unit proof, not a freshness
+policy, and not a runtime consumer. `CURRENT_REUSABLE_MAXLMTSZ_PROVEN`
+remains false. The earliest remaining MAX_SIZE gap is unit semantics.
+Kraken is not the current canonical venue. Flatten remains a separate
+emergency authority. Standing Live / Testnet / Canary authorization,
+enablement, and arming remain false. The preexisting `CALL_GRAPH_V1` /
+`REQUIRED_CALL_GRAPH` tuple inequality remains `LABEL_ONLY` and is not
+repaired here. Tests are guards, not a second semantic SSOT.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:
