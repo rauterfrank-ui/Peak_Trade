@@ -2107,6 +2107,44 @@ volatility CMC edge and does not republish every Cap 7.2 stage label.
 Post-Replay stage labels in either graph are not a second Risk / Safety /
 Intent owner stack.
 
+Named subordinate preservation and compatibility contract for the restored
+Master V2 / Double Play baseline. This names the restoration completion
+checkpoint and the future-component adjudication schema. It is **not** a
+second SSOT, not a freeze of `main` at the checkpoint SHA, not a new
+owner or stage, and not live or execution authority.
+
+``` text
+RESTORATION_COMPLETION_CHECKPOINT_SHA=21452016ff998c1af63f24c36060f2a54020c0df
+RESTORATION_COMPLETION_CHECKPOINT=true
+MAIN_MUST_FOREVER_EQUAL_CHECKPOINT_SHA=false
+RESTORED_BASELINE_MUST_NOT_REGRESS=true
+HISTORICAL_CORE_SEMANTICS_MUST_NOT_BE_REWRITTEN=true
+HISTORICAL_MASTER_V2_DOUBLE_PLAY_BASELINE=IMMUTABLE_NORMATIVE_BASELINE
+CURRENT_SYSTEM_MUST_CONFORM_TO_HISTORICAL_CORE=true
+NO_CURRENT_FIRST_ARCHITECTURE=true
+SPEC=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_BASELINE_PRESERVATION_AND_COMPATIBILITY_CONTRACT_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+PARALLEL_SSOT_CREATED=false
+COMPATIBILITY_CONTRACT_DOES_NOT_GRANT_EXECUTION_AUTHORITY=true
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+SECOND_COMPUTE_OWNER_EXISTS=false
+SECOND_RISK_OWNER_EXISTS=false
+SECOND_SAFETY_OWNER_EXISTS=false
+SECOND_INTENT_OWNER_EXISTS=false
+C4_NEW_STAGE=false
+C4_NEW_OWNER=false
+```
+
+Normative subordinate contract:
+[`docs/ops/specs/PEAK_TRADE_POST_RESTORATION_BASELINE_PRESERVATION_AND_COMPATIBILITY_CONTRACT_V1.md`](../../ops/specs/PEAK_TRADE_POST_RESTORATION_BASELINE_PRESERVATION_AND_COMPATIBILITY_CONTRACT_V1.md).
+Protected Core remains historically attested Master V2 / Double Play
+semantics. Later Current-/Host-/Hardening-/Feature-components must be
+adjudicated against that contract before keep / adapt / decouple /
+degrade / remove / rewire. Core must not be rewritten to preserve an
+incompatible later component.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:
