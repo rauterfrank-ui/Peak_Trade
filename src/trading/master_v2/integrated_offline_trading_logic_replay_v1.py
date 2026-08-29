@@ -1815,17 +1815,6 @@ def run_integrated_offline_trading_logic_replay_v1(
     evidence = sizing_binding.evidence
     capital_risk_sizing_decision = sizing_binding.sizing_decision
 
-    _coi_binding = importlib.import_module(
-        "trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0"
-    )
-    intent_binding = _coi_binding.bind_canonical_order_intent_offline_replay_evidence_v0(
-        evidence,
-        sizing_decision=capital_risk_sizing_decision,
-        capital_context=capital_context,
-    )
-    evidence = intent_binding.evidence
-    canonical_order_intent = intent_binding.canonical_intent
-
     _sk_binding = importlib.import_module(
         "trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0"
     )
@@ -1848,6 +1837,23 @@ def run_integrated_offline_trading_logic_replay_v1(
         ),
     )
     evidence = safety_binding.evidence
+
+    _coi_binding = importlib.import_module(
+        "trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0"
+    )
+    canonical_order_intent = None
+    enter_blocked_by_safety = bool(safety_binding.boundary.hard_block_reasons) and (
+        evidence.decision_outcome
+        in {DecisionOutcome.ENTER_LONG.value, DecisionOutcome.ENTER_SHORT.value}
+    )
+    if not enter_blocked_by_safety:
+        intent_binding = _coi_binding.bind_canonical_order_intent_offline_replay_evidence_v0(
+            evidence,
+            sizing_decision=capital_risk_sizing_decision,
+            capital_context=capital_context,
+        )
+        evidence = intent_binding.evidence
+        canonical_order_intent = intent_binding.canonical_intent
 
     _ruo_binding = importlib.import_module(
         "trading.master_v2.reconciliation_unknown_outcome_offline_replay_binding_adapter_v0"
