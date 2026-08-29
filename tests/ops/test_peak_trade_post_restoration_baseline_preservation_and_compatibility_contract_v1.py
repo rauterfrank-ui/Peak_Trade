@@ -369,6 +369,17 @@ def test_venue_pretrade_limit_gates_adjudication_is_preserved() -> None:
     assert "test_peak_trade_post_restoration_venue_pretrade_limit_gates_adjudication_v1.py" in spec
 
 
+def test_venue_pretrade_metadata_binding_alignment_adjudication_is_preserved() -> None:
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION_PRESERVED=true" in spec
+    assert "MAX_SIZE_BINDING_REMAINS_PARTIALLY_BOUND=true" in spec
+    assert "NETWORK_GET_REQUIRED_REMAINS_IDENTIFIED_NOT_AUTHORIZED=true" in spec
+    assert (
+        "test_peak_trade_post_restoration_venue_pretrade_metadata_binding_alignment_adjudication_v1.py"
+        in spec
+    )
+
+
 def test_master_names_subordinate_preservation_spec() -> None:
     section = _section_5_3(MASTER_RUNBOOK.read_text(encoding="utf-8"))
     assert (

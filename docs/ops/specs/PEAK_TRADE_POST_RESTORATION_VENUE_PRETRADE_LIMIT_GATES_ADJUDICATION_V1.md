@@ -351,6 +351,7 @@ CALL_GRAPH_V1_HARMONIZATION=NOT_THIS_SLICE
 REQUIRED_CALL_GRAPH_HARMONIZATION=NOT_THIS_SLICE
 TEST_CONSTANTS_AND_CALL_GRAPH_BOUND_REPAIR=NOT_THIS_SLICE
 VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT=NOT_THIS_SLICE
+SEE_ALSO_VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION_V1.md
 MAX_SIZE_IMPLEMENTATION=NOT_THIS_SLICE
 MAX_AVAILABLE_IMPLEMENTATION=NOT_THIS_SLICE
 PRICE_BAND_IMPLEMENTATION=NOT_THIS_SLICE
@@ -377,7 +378,11 @@ CORE_RUNTIME_MUTATION=false
 
 Historical `VENUE_PRETRADE_LIMIT_GATES=NOT_THIS_SLICE` rows in prior
 post-restoration specs remain historically true for those slices. Later
-venue-pretrade adjudication is recorded here. This persist does not close
+venue-pretrade adjudication is recorded here. Later venue-pretrade
+metadata-binding alignment adjudication is recorded in
+`SEE_ALSO_VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION`.
+Historical `VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT=NOT_THIS_SLICE`
+remains true for this limit-gates slice. This persist does not close
 venue-pretrade completeness and does not implement venue limit gates.
 
 ## 12) Existing guards reused (not duplicated)
