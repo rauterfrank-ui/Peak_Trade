@@ -106,9 +106,10 @@ FORBIDDEN_HTTP_METHODS_OUTSIDE_GATED_SUBMIT: tuple[str, ...] = (
 ENDPOINT_ACCOUNT_MAX_SIZE = "/api/v5/account/max-size"
 ENDPOINT_PUBLIC_PRICE_LIMIT = "/api/v5/public/price-limit"
 ENDPOINT_ACCOUNT_LEVERAGE_INFO = "/api/v5/account/leverage-info"
+ENDPOINT_ACCOUNT_CONFIG = "/api/v5/account/config"
 ENDPOINT_ALLOWLIST_READ: tuple[str, ...] = (
     "/api/v5/account/balance",
-    "/api/v5/account/config",
+    ENDPOINT_ACCOUNT_CONFIG,
     "/api/v5/account/positions",
     ENDPOINT_ACCOUNT_MAX_SIZE,
     ENDPOINT_ACCOUNT_LEVERAGE_INFO,
@@ -295,7 +296,7 @@ GET_ENDPOINTS_PUBLIC: tuple[str, ...] = (
 )
 GET_ENDPOINTS_PRIVATE: tuple[str, ...] = (
     "/api/v5/account/balance",
-    "/api/v5/account/config",
+    ENDPOINT_ACCOUNT_CONFIG,
     "/api/v5/account/positions",
     ENDPOINT_ACCOUNT_MAX_SIZE,
     ENDPOINT_ACCOUNT_LEVERAGE_INFO,
