@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any, Mapping
 
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.authorization_v1 import (
@@ -61,6 +62,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.submit_transport_v1
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.trade_permission_forensic_v1 import (
     build_trade_permission_forensic_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_execute_post_action_binding_v1 import (
+    bind_flatten_execute_post_action_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_gated_submit_v1 import (
     FlattenGatedSubmitBoundaryV1,
@@ -125,6 +129,9 @@ def run_section_11_13_5_live_canary_minimum_exposure_v1(
     positions_payload: Mapping[str, Any] | None = None,
     pending_orders_payload: Mapping[str, Any] | None = None,
     price_input: Any = None,
+    post_positions_payload: Mapping[str, Any] | None = None,
+    post_pending_orders_payload: Mapping[str, Any] | None = None,
+    category_c_runtime_status: str | None = None,
 ) -> LiveCanaryRunnerResultV1:
     mode_norm = str(mode or "").strip().lower()
     if mode_norm not in {"preflight", "forensic", "execute", "flatten_execute"}:
@@ -175,6 +182,9 @@ def run_section_11_13_5_live_canary_minimum_exposure_v1(
             positions_payload=positions_payload,
             pending_orders_payload=pending_orders_payload,
             price_input=price_input,
+            post_positions_payload=post_positions_payload,
+            post_pending_orders_payload=post_pending_orders_payload,
+            category_c_runtime_status=category_c_runtime_status,
         )
 
     repo = _repo_root()
@@ -344,6 +354,9 @@ def _run_flatten_execute_mode_v1(
     positions_payload: Mapping[str, Any] | None,
     pending_orders_payload: Mapping[str, Any] | None,
     price_input: Any,
+    post_positions_payload: Mapping[str, Any] | None,
+    post_pending_orders_payload: Mapping[str, Any] | None,
+    category_c_runtime_status: str | None,
 ) -> LiveCanaryRunnerResultV1:
     """Explicit flatten_execute only. Never runs on preflight/forensic/execute."""
     payload_cfg = dict(getattr(cfg, "payload", {}) or {})
@@ -383,7 +396,18 @@ def _run_flatten_execute_mode_v1(
             "origin_main_sha": origin_main_sha,
             "executed_code_sha": executed_code_sha or origin_main_sha,
             "owner_go_observed": owner_go,
+            "flatten_position_proven": False,
         }
+        result_payload.update(
+            bind_flatten_execute_post_action_v1(
+                submit_result=SimpleNamespace(send_attempted=False),
+                pre_positions_payload=positions_payload,
+                post_positions_payload=post_positions_payload,
+                post_pending_orders_payload=post_pending_orders_payload,
+                category_c_runtime_status=category_c_runtime_status,
+                instrument_id=instrument_id,
+            )
+        )
         return LiveCanaryRunnerResultV1(ok=False, mode="flatten_execute", payload=result_payload)
     gate_input = default_flatten_execute_gate_input_from_runner_v1(
         live_authorized=bool(live_canary_authorized),
@@ -408,6 +432,16 @@ def _run_flatten_execute_mode_v1(
     outcome = boundary.submit(gate_input=gate_input, transport=flatten_transport)
     result_payload = outcome.to_dict()
     result_payload.update(
+        bind_flatten_execute_post_action_v1(
+            submit_result=outcome,
+            pre_positions_payload=positions_payload,
+            post_positions_payload=post_positions_payload,
+            post_pending_orders_payload=post_pending_orders_payload,
+            category_c_runtime_status=category_c_runtime_status,
+            instrument_id=instrument_id,
+        )
+    )
+    result_payload.update(
         {
             "ok": bool(outcome.send_completed),
             "mode": "flatten_execute",
@@ -417,6 +451,7 @@ def _run_flatten_execute_mode_v1(
             "origin_main_sha": origin_main_sha,
             "executed_code_sha": executed_code_sha or origin_main_sha,
             "owner_go_observed": owner_go,
+            "flatten_position_proven": False,
         }
     )
     return LiveCanaryRunnerResultV1(
