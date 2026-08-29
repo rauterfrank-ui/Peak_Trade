@@ -16,6 +16,8 @@ AUTHORITY_EFFECT=NONE
 **Maschinenlesbarer Owner:** [`config/governance/economic_diagnostic_optimization_boundary_v0.json`](../../config/governance/economic_diagnostic_optimization_boundary_v0.json)
 **Owner-Map:** [`config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json`](../../config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json)
 **Technical Wiring Authorization:** [`config/governance/technical_canonical_wiring_authorization_v1.json`](../../config/governance/technical_canonical_wiring_authorization_v1.json)
+**Restoration Admission Authorization:** [`config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json`](../../config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json)
+**Restoration class attestation:** [`docs/ops/specs/HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_ADMISSION_V1.md`](../ops/specs/HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_ADMISSION_V1.md)
 **Guard:** [`src/governance/economic_diagnostic_optimization_boundary_v0.py`](../../src/governance/economic_diagnostic_optimization_boundary_v0.py)
 
 ## 1. Unveränderliche Flags
@@ -98,6 +100,7 @@ THEN admissible_for_bounded_review=true
 
 IF change_affects_any_forbidden_mutation_surface
    AND NOT valid_technical_canonical_wiring_authorization
+   AND NOT valid_historically_attested_restoration_authorization
 THEN admissible=false AND fail_closed=true
 
 IF forbidden_surface_match
@@ -105,6 +108,20 @@ IF forbidden_surface_match
    AND required_semantic_invariants_bound
 THEN admissible=true
      authorized_scope_class=TECHNICAL_CANONICAL_WIRING_ONLY
+     mutation_purpose_class=SEMANTICS_NEUTRAL_TECHNICAL_CANONICAL_WIRING
+     MASTER_V2_MUTATION_ALLOWED default remains false
+
+IF forbidden_surface_match
+   AND NOT valid_technical_canonical_wiring_authorization_covers_all_matched_paths
+   AND valid_restoration_authorization_covers_all_matched_paths
+   AND restoration_invariants_bound
+THEN admissible=true
+     authorized_scope_class=HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_V1
+     mutation_purpose_class=HISTORICALLY_ATTESTED_CANONICAL_SEMANTIC_RESTORATION
+     CURRENT_SYSTEM_SEMANTIC_DELTA=true required
+     RISK_SIZING_SEMANTICS_CHANGED=false not required and not representable
+     binds_to_restoration_target=true
+     binds_to_current_a06_code=false
      MASTER_V2_MUTATION_ALLOWED default remains false
 
 IF impact_unknown
@@ -135,6 +152,40 @@ Joint validation (Token allein reicht nicht):
 
 Owner: [`config/governance/technical_canonical_wiring_authorization_v1.json`](../../config/governance/technical_canonical_wiring_authorization_v1.json)
 
+## 5.2 Historically Attested Canonical Semantic Restoration (v1)
+
+Semantisch eigene Admission-Klasse. Keine Semantics-Neutral-Attestierung.
+
+```text
+AUTHORIZED_SCOPE_CLASS=HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_V1
+MUTATION_PURPOSE_CLASS=HISTORICALLY_ATTESTED_CANONICAL_SEMANTIC_RESTORATION
+RESTORATION_TARGET_ID=MASTER_V2_DOUBLE_PLAY_CONSERVED_REFERENCE_V1
+BINDS_TO_RESTORATION_TARGET=true
+BINDS_TO_CURRENT_A06_CODE=false
+CURRENT_SYSTEM_SEMANTIC_DELTA=true
+GRANT_ACTIVE=false
+```
+
+Joint validation (Token allein reicht nicht):
+
+- contract version, scope, token, purpose class
+- restoration target id (historical model; not a candidate-implementation id)
+- class attestation file
+- forensic SHA-256 binding with `AUTHORITY=NONE`
+- exact allowed paths when a later slice grant is active
+- restoration invariants including `CURRENT_SYSTEM_SEMANTIC_DELTA=true`
+- forbidden effects = NONE
+- no PR-/Branch-Hardcode
+- no directory / broad MASTER_V2 grant
+- no required-check waiver / branch-protection bypass
+- `binds_to_current_a06_code=false`
+
+Owner: [`config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json`](../../config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json)
+
+Attestation: [`docs/ops/specs/HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_ADMISSION_V1.md`](../ops/specs/HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_ADMISSION_V1.md)
+
+This prerequisite contains **no slice grant**.
+
 ## 6. Boundary-Report (Pflicht für Research/Economic/Diagnostics/Cost/Target/Feature/Parameter-PRs)
 
 Maschinenlesbar via Guard-CLI. Pflichtfelder:
@@ -156,6 +207,9 @@ Maschinenlesbar via Guard-CLI. Pflichtfelder:
 - `reason_codes`
 - `technical_wiring_authorization_applied`
 - `technical_wiring_authorization_version`
+- `restoration_authorization_applied`
+- `restoration_authorization_version`
+- `restoration_mutation_purpose_class`
 
 ## 7. Guard
 
@@ -169,6 +223,7 @@ CI: Lint Gate (always-run). Positiv- und Negativtests:
 
 - `tests/governance/test_economic_diagnostic_optimization_boundary_guard_v0.py`
 - `tests/governance/test_technical_canonical_wiring_authorization_bound_to_boundary_guard_v1.py`
+- `tests/governance/test_historically_attested_current_system_semantic_restoration_authorization_v1.py
 
 ## 8. Normative Referenz
 
