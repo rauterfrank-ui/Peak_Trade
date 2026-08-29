@@ -16,6 +16,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     LIVE_AUTHORIZED,
     LIVE_ENABLED,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_action_eligibility_v1 import (
+    FLATTEN_ACTION_BRANCH_NO_ACTION,
+    PREREQUISITE_08_FAIL_NOT_NONZERO_POST_BRANCH_ONLY,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_execute_authority_v1 import (
     FLATTEN_EXECUTE_CONFIRM_TOKEN_CANONICAL,
     FLATTEN_EXECUTE_OWNER_GO_CANONICAL,
@@ -235,6 +239,13 @@ def test_empty_pre_is_not_observed_and_does_not_send() -> None:
     result = _run(positions_payload=_positions(), transport=RecordingProductiveFlattenTransportV1())
     assert result.payload.get("send_completed") is False
     assert result.payload.get("pre_position_state", {}).get("state") == TARGET_POSITION_NOT_OBSERVED
+    eligibility = result.payload.get("flatten_action_eligibility") or {}
+    assert eligibility.get("branch") == FLATTEN_ACTION_BRANCH_NO_ACTION
+    assert eligibility.get("execution_prerequisite_08_status") == (
+        PREREQUISITE_08_FAIL_NOT_NONZERO_POST_BRANCH_ONLY
+    )
+    assert eligibility.get("flatten_post_permitted") is False
+    assert eligibility.get("target_position_zero_proven") is False
     assert result.payload.get("flatten_position_proven") is False
 
 

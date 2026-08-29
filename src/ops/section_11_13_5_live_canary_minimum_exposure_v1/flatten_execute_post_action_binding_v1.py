@@ -15,6 +15,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.category_c_open_alg
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     DEFAULT_INSTRUMENT_ID,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_action_eligibility_v1 import (
+    classify_flatten_action_eligibility_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_limit_price_contract_v1 import (
     LIVE_FLATTEN_PROVABILITY_STATUS,
 )
@@ -98,10 +101,15 @@ def bind_flatten_execute_post_action_v1(
         positions_payload=pre_positions_payload,
         instrument_id=instrument_id,
     )
+    eligibility = classify_flatten_action_eligibility_v1(
+        positions_payload=pre_positions_payload,
+        instrument_id=instrument_id,
+    )
     category_c = classify_category_c_flatten_completeness_v1(category_c_runtime_status)
     binding: dict[str, Any] = {
         "POST_ACTION_WIRED_IN_FLATTEN_EXECUTE": POST_ACTION_WIRED_IN_FLATTEN_EXECUTE,
         "pre_position_state": pre_state.to_dict(),
+        "flatten_action_eligibility": eligibility.to_dict(),
         "flatten_position_proven": False,
         "LIVE_FLATTEN_PROVABILITY": LIVE_FLATTEN_PROVABILITY_STATUS,
         "productive_sequence_required": True,

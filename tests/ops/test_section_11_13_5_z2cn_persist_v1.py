@@ -45,6 +45,10 @@ Z2CM_HEADING = (
 Z2CN_HEADING = (
     "### 11.13.5.Z2CN Post-Z2CM fresh unfiltered target-position runtime observation persist"
 )
+Z2CO_HEADING = (
+    "### 11.13.5.Z2CO Post-Z2CN prerequisite 08 POST-branch refinement and "
+    "not-observed no-action closure persist"
+)
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = (
     "PEAK_TRADE_POST_Z2CM_FRESH_UNFILTERED_TARGET_POSITION_RUNTIME_OBSERVATION_AND_PERSIST_V1"
@@ -63,8 +67,10 @@ def _read(path: Path) -> str:
 def _z2cn_section(text: str) -> str:
     start = text.find(Z2CN_HEADING)
     assert start >= 0, "missing §11.13.5.Z2CN heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2CN"
+    end = text.find(Z2CO_HEADING, start)
+    if end < 0:
+        end = text.find(LADDER_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2CO or §11.14 boundary after Z2CN"
     return text[start:end]
 
 
