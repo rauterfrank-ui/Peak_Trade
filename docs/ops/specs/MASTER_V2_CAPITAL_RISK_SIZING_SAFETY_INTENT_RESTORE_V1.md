@@ -35,6 +35,8 @@ ADAPTER_RISK_OWNER=false
 ADAPTER_SIZING_OWNER=false
 ADAPTER_SAFETY_OWNER=false
 ADAPTER_INTENT_OWNER=false
+CRS_SAFETY_INTENT_RESTORE_V1_ROLE=PROOF_OR_RESTORE_COMPOSER_ONLY
+PRODUCTIVE_OWNER=false
 ```
 
 This document is bounded slice attestation, implementation notes, evidence
@@ -90,7 +92,7 @@ derived handoff. Double Play / SideState writer remains unchanged.
 | Capital / Risk / Sizing | `src.governance.capital_risk_sizing_v1.evaluate_quantity_chain_v1` |
 | Safety | `trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0.bind_safety_kernel_offline_replay_evidence_v0` |
 | Position Intent | `src.governance.canonical_order_intent_v1.build_canonical_order_intent_v1` |
-| Composition adapter | `trading.master_v2.capital_risk_sizing_safety_intent_restore_v1` (not an owner) |
+| Composition adapter | `trading.master_v2.capital_risk_sizing_safety_intent_restore_v1` (`PROOF_OR_RESTORE_COMPOSER_ONLY`; not an owner) |
 
 Safety role on this path: boundary/block evidence only. No sizing, quantity
 ownership, direction selection, SideState write, Intent construction,

@@ -2145,6 +2145,40 @@ adjudicated against that contract before keep / adapt / decouple /
 degrade / remove / rewire. Core must not be rewritten to preserve an
 incompatible later component.
 
+Named subordinate quarantine for post-restoration P0 residual parallel-owner
+and skip-safety paths. This does **not** reopen restoration, add an owner or
+stage, or grant live or execution authority.
+
+``` text
+PARALLEL_OWNER_AND_SKIP_SAFETY_PATH_QUARANTINE_V1=true
+SPEC=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_PARALLEL_OWNER_AND_SKIP_SAFETY_PATH_QUARANTINE_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+EVALUATE_BRIDGE_SAFETY_V2_PRODUCTIVE_OWNER=false
+EVALUATE_BRIDGE_SAFETY_V2_PRODUCTIVE_HOST_REACHABLE=false
+CAP_6_5_EXIT_POLICY_PRODUCERS=INPUT_PRODUCERS_ONLY
+CAP65_STALE_BIND_LANGUAGE_RESOLVED=true
+INTENT_PIPELINE_BRIDGE_PRODUCTIVE_REACHABLE=false
+CRS_INTENT_RESTORE_V1_PRODUCTIVE_PATH=false
+CRS_SAFETY_INTENT_RESTORE_V1_ROLE=PROOF_OR_RESTORE_COMPOSER_ONLY
+SECOND_COMPUTE_OWNER_EXISTS=false
+SECOND_RISK_OWNER_EXISTS=false
+SECOND_SAFETY_OWNER_EXISTS=false
+SECOND_INTENT_OWNER_EXISTS=false
+NO_29Q_BEFORE_SAFETY=true
+RESTORATION_REOPEN_REQUIRED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+```
+
+Normative subordinate quarantine:
+[`docs/ops/specs/PEAK_TRADE_POST_RESTORATION_PARALLEL_OWNER_AND_SKIP_SAFETY_PATH_QUARANTINE_V1.md`](../../ops/specs/PEAK_TRADE_POST_RESTORATION_PARALLEL_OWNER_AND_SKIP_SAFETY_PATH_QUARANTINE_V1.md).
+`evaluate_bridge_safety_v2`, Cap 6.5 Current-first host-bind language, the
+Intent Pipeline Bridge v0, CRS_INTENT_RESTORE_V1, and
+CRS_SAFETY_INTENT_RESTORE_V1 remain non-productive. Integrated Replay remains
+the sole productive owner graph. 29P → Replay Safety → 29Q remains the
+productive order.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:

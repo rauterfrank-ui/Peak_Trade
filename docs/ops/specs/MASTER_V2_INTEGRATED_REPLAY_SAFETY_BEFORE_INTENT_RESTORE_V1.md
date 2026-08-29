@@ -115,11 +115,13 @@ concept as Safety's killswitch input.
 
 The merged sibling adapter
 `capital_risk_sizing_safety_intent_restore_v1.py` remains
-`INDEPENDENT_REFERENCE_COMPOSITION`. Replay does not import or route
-through it.
+`INDEPENDENT_REFERENCE_COMPOSITION` /
+`PROOF_OR_RESTORE_COMPOSER_ONLY`. Replay does not import or route
+through it. `PRODUCTIVE_OWNER=false`.
 
 A06 `capital_risk_sizing_intent_restore_v1.py` remains closed and is not
 the historical orchestration SSOT.
+`CRS_INTENT_RESTORE_V1_PRODUCTIVE_PATH=false`.
 
 ## 5) Non-execution / negative contract
 

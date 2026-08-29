@@ -33,11 +33,31 @@ RUNTIME_ACTIVATED=false
 | Exit producer binding | `ops.exit_policy_producer_binding_v1` |
 | Entry/Exit policy authority | `evaluate_double_play_entry_exit_policy_v0` |
 | Adverse foundation | `derive_scope_adverse_exit_signal_v0` / host adverse distance eval |
-| Safety / hard-risk | `evaluate_bridge_safety_v2` |
+| Safety / hard-risk input producer (`NOT_SAFETY_OWNER`) | `evaluate_bridge_safety_v2` |
 | Time foundation | `wallclock_time_exit_due_v1` |
 | Decision config distances | Cap 6.3 `adverse_exit_distance` / `up_distance` |
 | Atomic restart boundary | Cap 6.4 coordinator (same host cycle commit) |
 | Productive host | `decision_economics_cycle_bridge_v1.run_bridge_cycle_v1` |
+
+## Restored-baseline producer role
+
+```text
+CAP_6_5_EXIT_POLICY_PRODUCERS=INPUT_PRODUCERS_ONLY
+NOT_SAFETY_OWNER=true
+NOT_ENTRY_EXIT_OWNER=true
+NOT_INTENT_OWNER=true
+NOT_EXECUTION_AUTHORITY=true
+EVALUATE_BRIDGE_SAFETY_V2_PRODUCTIVE_OWNER=false
+EVALUATE_BRIDGE_SAFETY_V2_PRODUCTIVE_HOST_REACHABLE=false
+CAP65_STALE_BIND_LANGUAGE_RESOLVED=true
+```
+
+Cap 6.5 producers may supply inputs for the historical EntryExit / Replay path.
+They must not be treated as a second Safety, EntryExit, or Intent owner.
+The Current-first requirement `bind evaluate_bridge_safety_v2 into productive host`
+is `REJECTED_BY_RESTORED_BASELINE`. Historical Cap 6.5 closeout JSON and the
+Cap 6.5 authority-matrix snapshot may retain that string. Current specs must
+not reimpose it as a productive Safety-owner bind.
 
 ## Claim semantics
 
