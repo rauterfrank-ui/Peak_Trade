@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from typing import Any, Mapping
 from uuid import uuid4
 
@@ -302,7 +303,22 @@ def run_canary_submit_transport_v1(
             instrument_id=instrument_id, inst_type=DEFAULT_INST_TYPE
         )
         tick_ep = f"/api/v5/market/ticker?instId={instrument_id}"
-        instruments = _signed_get(client=client, handle=handle, endpoint=inst_ep)
+        pretrade_decision_id = str(uuid4())
+        observed_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        try:
+            inst_headers = {"User-Agent": USER_AGENT_CANARY}
+            inst_response = client.get(endpoint=inst_ep, headers=inst_headers)
+            inst_headers.clear()
+        except LiveCanaryHttpError as exc:
+            raise LiveCanarySubmitTransportError(f"MAX_SIZE_FRESH_GET_FAILED:{exc}") from exc
+        if int(inst_response.status_code) != 200:
+            raise LiveCanarySubmitTransportError(
+                f"MAX_SIZE_FRESH_GET_HTTP:{inst_response.status_code}"
+            )
+        try:
+            instruments = parse_json_object_v1(inst_response.body_bytes)
+        except LiveCanaryHttpError as exc:
+            raise LiveCanarySubmitTransportError(f"MAX_SIZE_FRESH_GET_BODY:{exc}") from exc
         ticker = _signed_get(client=client, handle=handle, endpoint=tick_ep)
         try:
             plan = build_minimum_valid_canary_order_plan_v1(
@@ -310,9 +326,16 @@ def run_canary_submit_transport_v1(
                 ticker_payload=ticker,
                 owner_go=str(owner_go),
                 origin_main_sha=origin_main_sha,
+                pretrade_decision_id=pretrade_decision_id,
                 instrument_id=instrument_id,
                 side=str(cfg.payload.get("side") or "BUY"),
                 td_mode=str(cfg.payload.get("td_mode") or "cross"),
+                max_size_http_status=int(inst_response.status_code),
+                max_size_endpoint=inst_ep,
+                max_size_observed_at_utc=observed_at,
+                max_size_get_performed=True,
+                max_size_auth_header_sent=False,
+                max_size_historical_reuse=False,
             )
         except LiveCanaryOrderPlanError as exc:
             raise LiveCanarySubmitTransportError(

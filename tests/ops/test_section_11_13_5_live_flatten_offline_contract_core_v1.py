@@ -55,6 +55,8 @@ INSTRUMENTS = {
             "tickSz": "0.0001",
             "ctVal": "1",
             "ctValCcy": "SUI",
+            "maxLmtSz": "100000000",
+            "maxMktSz": "100000",
         }
     ],
 }
@@ -270,6 +272,7 @@ def test_entry_plan_remains_entry_only_and_omits_reduce_only() -> None:
         ticker_payload=TICKER,
         owner_go=OWNER_GO,
         origin_main_sha=ORIGIN_SHA,
+        pretrade_decision_id="test-fresh-decision-flatten-entry",
     )
     assert plan.side == "BUY"
     assert plan.quantity == "1"
