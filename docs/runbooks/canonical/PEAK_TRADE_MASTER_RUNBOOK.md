@@ -3855,6 +3855,140 @@ Canary authorization remain false. Tests are guards, not a second
 semantic SSOT. ACCOUNT_MODE remains the next distinct unauthorized
 surface.
 
+Named subordinate persist for the ACCOUNT_MODE forensic binding and
+productive consumer after the closed INSTRUMENT_STATE persist. This
+does **not** reopen restoration, add a Core owner or stage, close
+`VENUE_PRETRADE_LIMIT_GATES`, invent a TTL or cache, perform a new
+network GET, POST `set-account-level`, trade, or grant live authority.
+Authority is the exact account-config field `acctLv`. The only
+admissible Peak_Trade canary value is the exact documented token `2`.
+Documented negatives include `1`, `3`, and `4`. Unknown enums, empty,
+missing, null, and non-string types fail closed. `acctLv` is not
+`posMode`, not `tdMode`, not `mgnMode`, not leverage, not `settleCcy`,
+not instrument `state`, and not account identity. GATE_20 historical
+`SATISFIED_HISTORICAL_ACCOUNT_WIDE_GET_acctLv=2_NOT_REOBSERVED_POST_SUI`
+remains historical and is not current binding. The productive runtime
+reuses the same authenticated `GET &#47;api&#47;v5&#47;account&#47;config`
+already performed for `POS_MODE`. No second private GET is added at
+submit time. This slice performs no network GET. The committed POS_MODE
+pack is forensic closure evidence only and is not an operative cache.
+
+``` text
+ACCOUNT_MODE_FORENSIC_BINDING_AND_CLOSURE_V1=true
+SPEC=docs/ops/specs/PEAK_TRADE_ACCOUNT_MODE_FORENSIC_BINDING_AND_CLOSURE_V1.md
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_STATUS=COMPLETE
+VENUE_PRETRADE_LIMIT_GATES_COMPLETE=false
+MAX_SIZE_BINDING_STATUS=PROVEN
+MAX_AVAILABLE_BINDING_STATUS=PROVEN
+PRICE_BAND_BINDING_STATUS=PROVEN
+LEVERAGE_BINDING_STATUS=PROVEN
+POS_MODE_BINDING_STATUS=PROVEN
+MARGIN_MODE_BINDING_STATUS=PROVEN
+AVAILABLE_MARGIN_BINDING_STATUS=PROVEN
+INSTRUMENT_STATE_BINDING_STATUS=PROVEN
+ACCOUNT_MODE_BINDING_STATUS=PROVEN
+ACCOUNT_MODE_CANONICAL_DEFINITION=OKX_ACCOUNT_CONFIG_ACCTLV
+ACCOUNT_MODE_ENDPOINT=/api/v5/account/config
+ACCOUNT_MODE_SOURCE_ENDPOINT=/api/v5/account/config
+ACCOUNT_MODE_REQUEST_GRAMMAR=NONE
+ACCOUNT_MODE_RAW_FIELD=acctLv
+ACCOUNT_MODE_ADMISSIBLE_RAW=2
+ACCOUNT_MODE_KNOWN_NEGATIVE_RAW=1,3,4
+ACCOUNT_MODE_RAW_VALUE=2
+ACCOUNT_MODE_SEMANTIC_VALUE=FUTURES_MODE
+ACCOUNT_MODE_OUTPUT_DOMAIN=ACCOUNT_ACCTLV
+ACCOUNT_MODE_VENUE_SCOPE=ACCOUNT_GLOBAL
+ACCOUNT_MODE_CONSUMER_SCOPE=CURRENT_SUI_PRETRADE_CONSUMER
+ACCOUNT_MODE_FRESHNESS_POLICY=CONFIGURATION_SCOPED_CURRENT_READ_PER_PRETRADE_DECISION
+ACCOUNT_MODE_TS_AGE_BOUND=UNBOUND
+ACCOUNT_MODE_NO_TS_FIELD=true
+ACCOUNT_MODE_AUTH_CLASS=AUTHENTICATED_PRIVATE_GET
+ACCOUNT_MODE_NORMALIZATION_STATUS=EXPLICIT_ENUM_PROJECTION_ONLY
+ACCOUNT_MODE_CONSUMER_BOUND=true
+ACCOUNT_MODE_FAIL_CLOSED_BOUND=true
+ACCOUNT_MODE_REUSES_POS_MODE_ACCOUNT_CONFIG_GET=true
+SECOND_ACCOUNT_CONFIG_GET_ADDED=false
+POS_MODE_IS_NOT_ACCOUNT_MODE=true
+TDMODE_CROSS_IS_NOT_ACCOUNT_MODE=true
+MGNMODE_CROSS_IS_NOT_ACCOUNT_MODE=true
+LEVERAGE_IS_NOT_ACCOUNT_MODE=true
+SETTLE_CCY_IS_NOT_ACCOUNT_MODE=true
+INSTRUMENT_STATE_IS_NOT_ACCOUNT_MODE=true
+AVAILABLE_MARGIN_IS_NOT_ACCOUNT_MODE=true
+ACCOUNT_IDENTITY_IS_NOT_ACCOUNT_MODE=true
+DEFAULT_TDMODE_CROSS_IS_NOT_ACCOUNT_MODE_PROOF=true
+GATE20_HISTORICAL_SATISFIED_IS_NOT_CURRENT_BINDING=true
+INTEGER_2_IS_NOT_STRING_2=true
+UNKNOWN_ACCTLV_IS_NOT_FUTURES=true
+NOT_OBSERVED_IS_NOT_FUTURES=true
+ACCOUNT_MODE_UID_RAW=856964404452495999
+ACCOUNT_IDENTITY_BOUND=true
+ENVIRONMENT_BOUND=true
+PROVENANCE_BOUND=true
+ALL_REQUIRED_METADATA_EDGES_BOUND=true
+ACCOUNT_MODE_OBSERVATION_CLASS=SUCCESS_TOKEN
+ACCOUNT_MODE_OBSERVATION_ENVIRONMENT=OKX_EEA_PRODUCTION
+ACCOUNT_MODE_OBSERVATION_AUTHENTICATED=true
+ACCOUNT_MODE_GET_PERFORMED=false
+ACCOUNT_MODE_GET_TIMESTAMP_UTC=2026-08-29T23:33:51.694980Z
+ACCOUNT_MODE_GET_HTTP_STATUS=200
+ACCOUNT_MODE_GET_VENUE_CODE=0
+ACCOUNT_MODE_BODY_SHA256=cc422bd0667007af7207eb09c8ae5a01b5ccef20ddf48a3a0ef26c4df05d36ae
+SOURCE_EVIDENCE=evidence/ops/pos_mode_forensic_binding_implementation_and_closure_v1/20260829T233351Z/GET_SNAPSHOT.sanitized.json
+EVIDENCE_PACK=evidence/ops/pos_mode_forensic_binding_implementation_and_closure_v1/20260829T233351Z
+REQUIRED_METADATA_EDGE_COUNT=8
+BOUND_METADATA_EDGE_COUNT=8
+EARLIEST_REMAINING_UNBOUND_EDGE=NONE
+EARLIEST_REMAINING_CONFLICT=NONE
+EARLIEST_UNRESOLVED_DEPENDENCY=VENUE_PRETRADE_LIMIT_GATES
+ORDER_PLAN_TYPED_DOMAIN_PRESERVED=true
+NETWORK_GET_PERFORMED=false
+NETWORK_GET_ENDPOINT=/api/v5/account/config
+NETWORK_VENUE_GET_PERFORMED=false
+NETWORK_AUTHENTICATED_GET_PERFORMED=false
+NETWORK_POST_PERFORMED=false
+ACCOUNT_CONFIGURATION_MUTATION_PERFORMED=false
+TRADING_PERFORMED=false
+PERSISTED_OBSERVATION_IS_OPERATIVE_CACHE=false
+RUNTIME_ALIGNMENT_REQUIRED=true
+RUNTIME_MUTATION_JUSTIFIED=true
+RUNTIME_MUTATION_PERFORMED=true
+CHANGED_RUNTIME_FILES=account_mode_observation_v1.py,account_mode_consumer_v1.py,order_plan_v1.py
+CANONICAL_VENUE_PRETRADE_OWNER=section_11_13_5.order_plan_v1+exposure_v1@submit_transport_v1
+SECOND_VENUE_PRETRADE_OWNER_EXISTS=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+EXECUTION_ELIGIBLE=false
+LIVE_READINESS=EVALUATED_NOT_READY
+CURRENT_SELECTED_INSTRUMENT=SUI-USD_UM_XPERP-310404
+CURRENT_VENUE=OKX_EEA
+KRAKEN_CURRENT_CANONICAL_ROLE=NONE
+KRAKEN_EXCLUSION_CLOSED=true
+NEXT_DISTINCT_SURFACE=VENUE_PRETRADE_LIMIT_GATES
+NEXT_DISTINCT_SURFACE_AUTHORIZED=false
+```
+
+Normative subordinate persist:
+[`docs/ops/specs/PEAK_TRADE_ACCOUNT_MODE_FORENSIC_BINDING_AND_CLOSURE_V1.md`](../../ops/specs/PEAK_TRADE_ACCOUNT_MODE_FORENSIC_BINDING_AND_CLOSURE_V1.md).
+The productive pretrade consumer
+`apply_fresh_account_mode_pretrade_gate_v1` is bound into
+`build_minimum_valid_canary_order_plan_v1` after INSTRUMENT_STATE from
+the per-decision authenticated
+`GET &#47;api&#47;v5&#47;account&#47;config` already performed for
+`POS_MODE` in `submit_transport_v1`. Authority is exact `acctLv`.
+Order-attempt eligibility requires exact documented token `2`.
+`acctLv=2` is not `LIVE_AUTHORIZED=true`. `posMode` is not this edge.
+Freshness is a configuration-scoped current read per pretrade decision.
+No `ts` age bound is invented. Failure prevents downstream POST.
+Standing Live / Testnet / Canary authorization remain false. Tests are
+guards, not a second semantic SSOT.
+`VENUE_PRETRADE_LIMIT_GATES` remains the next distinct unauthorized
+surface.
+
 ## 5.4 Closed or materially established baseline capabilities
 
 The following are no longer to be treated as missing greenfield work:
