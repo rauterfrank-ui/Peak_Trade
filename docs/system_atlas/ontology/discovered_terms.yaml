@@ -1,0 +1,419 @@
+# ATLAS_AUTHORITY=NONE
+# Bottom-up discovered terms beyond the seed vocabulary. Not exhaustive.
+terms:
+  - id: TERM:double_play
+    kind: TERM
+    name: Double Play
+    exact_observed_spellings: ["Double Play", double_play, DOUBLE_PLAY]
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: STILL_CURRENT_AND_CANONICALLY_SUPPORTED
+    definition: Inner functional core of Master V2, not a competing generation.
+    definition_source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - src/trading/master_v2/double_play_composition.py
+    do_not_confuse_with: "ops.double_play.evaluate_double_play (quarantined projection); dashboard family_id double_play"
+
+  - id: TERM:master_v2
+    kind: TERM
+    name: Master V2
+    exact_observed_spellings: ["Master V2", master_v2, MASTER_V2]
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: STILL_CURRENT_AND_CANONICALLY_SUPPORTED
+    definition: Current trading-logic generation containing Double Play as functional core.
+    definition_source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: TERM:capability_closure_standard
+    kind: TERM
+    name: Mandatory Capability Closure Standard
+    exact_observed_spellings: ["Mandatory Capability Closure Standard"]
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    definition: Per-capability required specification fields in Master Runbook §11.
+    definition_source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    do_not_confuse_with: "Program Definition of Done; pytest"
+
+  - id: TERM:map_of_truth
+    kind: TERM
+    name: Map of Truth
+    exact_observed_spellings: ["Map of Truth", PEAK_TRADE_MAP_OF_TRUTH]
+    epistemic_class: NAVIGATION_ONLY
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    semantic_authority: false
+    definition: Navigation/path resolution only. Not semantic SSOT.
+    definition_source: docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+
+  - id: TERM:confirm_token
+    kind: TERM
+    name: confirm-token
+    exact_observed_spellings: [confirm-token, confirm_token]
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: Flatten/canary execute authority token family observed in Cap 11.13.5 flatten_execute_authority_v1.
+    definition_source: src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+    evidence_sources:
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+
+  - id: TERM:dynamic_scope
+    kind: TERM
+    name: Dynamic Scope
+    exact_observed_spellings: ["Dynamic Scope", dynamic_scope, DSE]
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    definition: Futures Dynamic Scope envelope; double_play_state.py is declared sole canonical pure-model candidate in INV-045 tests.
+    definition_source: tests/ops/test_master_v2_dynamic_scope_owner_boundary_contract_v0.py
+    evidence_sources:
+      - src/trading/master_v2/double_play_state.py
+      - tests/ops/test_master_v2_dynamic_scope_owner_boundary_contract_v0.py
+    do_not_confuse_with: "dashboard family_id dynamic_scope"
+
+  - id: TERM:pure_stack
+    kind: TERM
+    name: Pure Stack
+    exact_observed_spellings: ["pure stack", PURE_STACK, "Double Play pure layers"]
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: Documented layering futures_input → state → survival → suitability → capital_slot → composition.
+    definition_source: docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md
+    do_not_confuse_with: "Family/Child hierarchy (unproven)"
+
+  - id: TERM:fail_closed
+    kind: TERM
+    name: fail-closed
+    exact_observed_spellings: [fail-closed, FAIL_CLOSED, fail_closed]
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    definition: Default deny / stop on missing proof, drift, or absent authorization.
+    definition_source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: TERM:owner_go
+    kind: TERM
+    name: Owner-GO
+    exact_observed_spellings: [Owner-GO, OPERATOR_GO, GO]
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    definition: Explicit scoped owner authorization token. Documentation does not confer it.
+    definition_source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: TERM:shadow
+    kind: TERM
+    name: Shadow
+    exact_observed_spellings: [SHADOW, Shadow, "Paper Shadow"]
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: Observation/simulation class distinct from PAPER_EXCHANGE, TESTNET, and LIVE. Must not be equated.
+    definition_source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    do_not_confuse_with: "TESTNET; LIVE; INTERNAL_SIMULATED_EXECUTION"
+
+  - id: TERM:canary
+    kind: TERM
+    name: Canary
+    exact_observed_spellings: [Canary, LIVE_CANARY_MINIMUM_EXPOSURE, canary]
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    definition: Cap 11.13.5 live canary minimum exposure. Authoring-bound; NOT EXECUTED / NOT PROVEN on origin/main.
+    definition_source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: TERM:flatten
+    kind: TERM
+    name: Flatten
+    exact_observed_spellings: [Flatten, flatten_execute]
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: Position-close path under Cap 11.13.5 flatten_execute_authority. Post-action evaluator wiring recorded OPEN.
+    definition_source: src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+    evidence_sources:
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+
+  - id: TERM:uly
+    kind: TERM
+    name: uly
+    exact_observed_spellings: [uly]
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: OKX instrument underlying field. In GFU eligibility used as BASE fallback only, never quote.
+    definition_source: src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+    do_not_confuse_with: "quoteCcy; instId; instFamily"
+
+  - id: TERM:quoteCcy
+    kind: TERM
+    name: quoteCcy
+    exact_observed_spellings: [quoteCcy]
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: OKX quote currency field. Forensic census observed empty on EEA public instruments GET.
+    definition_source: src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+      - docs/forensics/persistence/inventories/P6_LIVE_GFU_NETWORK_GET_ONLY_CENSUS_AND_GAP_ADJUDICATION_OBSERVATION_V1.json
+
+  - id: TERM:focused_full_noop
+    kind: TERM
+    name: FOCUSED / FULL / NO_OP
+    exact_observed_spellings: [FOCUSED, FULL, NO_OP]
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: CI test-selection modes from scripts/ops/ci_test_selection_v1.py.
+    definition_source: scripts/ops/ci_test_selection_v1.py
+    evidence_sources:
+      - scripts/ops/ci_test_selection_v1.py
+
+  - id: TERM:document_class
+    kind: TERM
+    name: DOCUMENT_CLASS
+    exact_observed_spellings: [DOCUMENT_CLASS]
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: FORENSIC_REFERENCE_ONLY
+    definition: Forensic/canonical document classifier header. Master Runbook uses DOCUMENT_CLASS=CANONICAL_MASTER_RUNBOOK.
+    definition_source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+
+  - id: TERM:information_corpus
+    kind: TERM
+    name: Information Corpus
+    exact_observed_spellings: ["Information Corpus", INFORMATION_CORPUS]
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: FORENSIC_REFERENCE_ONLY
+    definition: Forensic persistence base. AUTHORITY=NONE.
+    definition_source: docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+    evidence_sources:
+      - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+
+  - id: TERM:trading_decision_core
+    kind: TERM
+    name: TRADING_DECISION_CORE
+    exact_observed_spellings: [TRADING_DECISION_CORE]
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: SUPERSEDED
+    temporal_class: HISTORICAL_ONLY
+    definition: Historical Vollautonomie domain name. Superseded as SSOT.
+    definition_source: docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+    evidence_sources:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+    first_proven_occurrence: OPEN
+    last_proven_occurrence: docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+    replacement_if_proven: SUBSYSTEM:master_v2
+    notes: Replacement is owner-bound current architecture, not inferred solely from similar functionality.
+
+  - id: TERM:levelup
+    kind: TERM
+    name: LevelUp
+    exact_observed_spellings: [LevelUp, levelup]
+    epistemic_class: OPEN
+    current_canonical: false
+    current_status: OPEN
+    definition: OPEN in this census pass; seed-adjacent historical reference may exist.
+    definition_source: OPEN
+    evidence_sources:
+      - docs/system_atlas/census/census_meta.yaml
+
+  - id: TERM:nested_structural_child
+    kind: TERM
+    name: NestedStructuralChild
+    exact_observed_spellings: [NestedStructuralChild, HEADING_CHILDREN]
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: FORENSIC_REFERENCE_ONLY
+    temporal_class: HISTORICAL_ONLY
+    definition: Forensic information-model structural child of a PhysicalAppendUnit. Not SSOT_CHILD.
+    definition_source: forensic/evidence/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md
+    evidence_sources:
+      - forensic/evidence/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md
+
+  - id: TERM:historical_child_ledger
+    kind: TERM
+    name: HISTORICAL_CHILD_LEDGER child_id
+    exact_observed_spellings: [child_id, children, SRC-000001]
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: FORENSIC_REFERENCE_ONLY
+    temporal_class: HISTORICAL_ONLY
+    definition: 88 forensic source-region children SRC-*; ssot_role=HISTORICAL_FORENSIC_REGION_NOT_CURRENT_SSOT. Not a formal SSOT_CHILD kind.
+    definition_source: forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
+    evidence_sources:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
+
+  - id: TERM:confirm_token_family_matrix
+    kind: TERM
+    name: confirm-token FAMILY_* matrix
+    exact_observed_spellings: [FAMILY_LEGACY_LITERAL_V1, FAMILY_LIVE_ARMED_V1, FAMILY_PSO_GOVERNED_PUBLIC_MD_V1, FAMILY_RESEARCH_S03_V1, FAMILY_TESTNET_HARNESS_V1]
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: O3 secure confirm-token family matrix. Cross-family substitution blocked. Not dashboard family_id and not OKX instFamily.
+    definition_source: docs/evidence/capability_o3_secure_confirm_token_family_and_hidden_input_handoff_v1/FAMILY_MATRIX.json
+    evidence_sources:
+      - docs/evidence/capability_o3_secure_confirm_token_family_and_hidden_input_handoff_v1/FAMILY_MATRIX.json
+    do_not_confuse_with: "projection octet family_id; strategy Family; Gate-Familien F1-F6"
+
+  - id: TERM:gate_families_f1_f6
+    kind: TERM
+    name: Gate-Familien F1–F6
+    exact_observed_spellings: ["Gate-Familien", "F1 Forensic Working Model", "F6 Named, unnummerierte Gates"]
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: FORENSIC_REFERENCE_ONLY
+    temporal_class: HISTORICAL_ONLY
+    definition: Historical forensic heading "Getrennte Gate-Familien (nicht vermischen)".
+    definition_source: forensic/evidence/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md
+    evidence_sources:
+      - forensic/evidence/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md
+
+  - id: TERM:no_family_ontology
+    kind: TERM
+    name: NO_FAMILY_ONTOLOGY
+    exact_observed_spellings: [NO_FAMILY_ONTOLOGY, CBK-FAMILY-PROJECTION]
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: OPEN
+    definition: Closure blocker kind for 5-family projection completeness only; not automatic member-universe closure.
+    definition_source: docs/forensics/persistence/inventories/P6_Z2CL_RUNTIME_UNIVERSE_RECONSTITUTION_OBSERVATION_V1.json
+    evidence_sources:
+      - docs/forensics/persistence/inventories/P6_Z2CL_RUNTIME_UNIVERSE_RECONSTITUTION_OBSERVATION_V1.json
+
+  - id: TERM:btc_productive_proof_do_not_run
+    kind: TERM
+    name: BTC_PRODUCTIVE_PROOF=DO_NOT_RUN
+    exact_observed_spellings: [BTC_PRODUCTIVE_PROOF, DO_NOT_RUN, NO_BTC_TO_SUI_EVIDENCE_SUBSTITUTION]
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    definition: Owner policy flag on §11.13.5 Z2AQ+ persists. Distinct from Cap 2.1 BTC_EXCLUDED eligibility gate. Historical BTC-USDT-SWAP 11.12.8 path CLOSED.
+    definition_source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    do_not_confuse_with: "GATE:btc_exclusion; superseded canary id BTC-USD_UM_XPERP-310404"
+
+  - id: TERM:schema_version
+    kind: TERM
+    name: SCHEMA_VERSION
+    exact_observed_spellings: [SCHEMA_VERSION, schema_version]
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: Version token for persistence/wire snapshots. Not automatically a SCHEMA entity; see census/schema_like_src.yaml.
+    definition_source: src/ops/governed_futures_universe_producer_v1/constants_v1.py
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/constants_v1.py
+      - docs/system_atlas/census/schema_like_src.yaml
+    do_not_confuse_with: "JSON Schema files under docs/ops/schemas; dataclass TYPE_ONLY"
+
+  - id: TERM:bound_instrument
+    kind: TERM
+    name: BoundInstrumentV1
+    exact_observed_spellings: [BoundInstrumentV1, bound_instrument]
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: Cap 2.4 dataclass DATA_CONTRACT carrying identity/digests into Cap 7.2. Not a venue field schema.
+    definition_source: src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+    evidence_sources:
+      - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+    do_not_confuse_with: "SCHEMA:runtime_binding_v1 version string; OKX instId"
+
+  - id: TERM:settleCcy
+    kind: TERM
+    name: settleCcy
+    exact_observed_spellings: [settleCcy]
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: OKX settlement currency field. Distinct from quoteCcy; SETTLE_VS_QUOTE remains OPEN.
+    definition_source: docs/evidence/capability_2_1_governed_futures_universe_producer_v1/fixtures/okx_eea_instruments_input_v1.json
+    evidence_sources:
+      - docs/evidence/capability_2_1_governed_futures_universe_producer_v1/fixtures/okx_eea_instruments_input_v1.json
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+    do_not_confuse_with: "quoteCcy; uly; baseCcy"
+
+  - id: TERM:sign_okx_request_v1
+    kind: TERM
+    name: sign_okx_request_v1
+    exact_observed_spellings: [sign_okx_request_v1]
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: HMAC-SHA256 OKX REST signer. Implemented; not live-unlocked.
+    definition_source: src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    do_not_confuse_with: "July-17 audit claimed absence; C-OKX-AUDIT-SIGNED-REST-001"
+
+  - id: TERM:x_simulated_trading
+    kind: TERM
+    name: x-simulated-trading
+    exact_observed_spellings: [x-simulated-trading]
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: OKX demo/simulated-trading HTTP header token. Not a credential.
+    definition_source: src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    do_not_confuse_with: "LIVE_AUTHORIZED; TESTNET_AUTHORIZED"
+
+  - id: TERM:live_authorized
+    kind: TERM
+    name: LIVE_AUTHORIZED
+    exact_observed_spellings: [LIVE_AUTHORIZED, TESTNET_AUTHORIZED]
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    definition: Fail-closed runtime authorization flags. Default false unless scoped Owner-GO plus canonical evidence.
+    definition_source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    do_not_confuse_with: "implementation presence; HMAC signer existence"

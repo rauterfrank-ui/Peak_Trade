@@ -1,0 +1,72 @@
+# ATLAS_AUTHORITY=NONE
+terms:
+  - id: TERM:family_polyvalent
+    kind: TERM
+    name: Family
+    exact_observed_spellings:
+      - Family
+      - Families
+      - family_id
+      - instFamily
+      - producer_family
+      - signal family
+    epistemic_class: CONTRADICTED
+    current_canonical: false
+    current_status: OPEN
+    definition: Multiple incompatible uses; no single definition adopted by Atlas.
+    definition_source: OPEN
+    do_not_confuse_with: "Child; SSOT child; OKX instFamily; OKX mmr"
+    evidence_sources:
+      - docs/ops/market_dashboard/market_dashboard_projection_octet_upstream_artifact_creation_v1/VERIFY.json
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+      - src/trading/master_v2/regime_bull_bear_switch_evidence_readmodel_v1/constants_v1.py
+  - id: TERM:child_unproven_kind
+    kind: TERM
+    name: Child
+    exact_observed_spellings: [Child, Children]
+    epistemic_class: OPEN
+    current_canonical: false
+    current_status: OPEN
+    definition: No formal architectural Child kind located on origin/main.
+    definition_source: OPEN
+    evidence_sources:
+      - docs/system_atlas/census/census_meta.yaml
+  - id: TERM:ssot_child_unproven
+    kind: TERM
+    name: SSOT child
+    exact_observed_spellings: ["SSOT child", SSOT_CHILD]
+    epistemic_class: OPEN
+    current_canonical: false
+    current_status: OPEN
+    definition: Term requested by owner workpackage; not found as a formal in-repo kind.
+    definition_source: OPEN
+    evidence_sources:
+      - docs/system_atlas/census/census_meta.yaml
+  - id: TERM:mmr_polyvalent
+    kind: TERM
+    name: MMR
+    exact_observed_spellings: [MMR, mmr]
+    epistemic_class: CONTRADICTED
+    current_canonical: false
+    current_status: OPEN
+    definition: At least OKX maintenance-margin-ratio field vs unproven architectural MMR.
+    definition_source: OPEN
+    do_not_confuse_with: "Family; instFamily"
+    evidence_sources:
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/cover_usdc_current_public_tier_mmr_productive_evidence_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+  - id: TERM:cap23
+    kind: TERM
+    name: CAP23
+    exact_observed_spellings: [CAP23, "Cap 2.3", CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1]
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    definition: Capability 2.3 Single Selected Future Policy; exclusive productive selection path.
+    definition_source: docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md

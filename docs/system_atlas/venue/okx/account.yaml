@@ -1,0 +1,14 @@
+# ATLAS_AUTHORITY=NONE
+note: Account endpoints listed in endpoints.yaml. Presence in tree != LIVE authorization.
+authenticated_reads:
+  - /api/v5/account/config
+  - /api/v5/account/balance
+  - /api/v5/account/positions
+  - /api/v5/account/instruments
+mutating:
+  - /api/v5/account/set-leverage
+  - /api/v5/account/set-position-mode
+  - /api/v5/account/set-isolated-mode
+demo_header: x-simulated-trading
+evidence:
+  - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py

@@ -1,0 +1,30 @@
+# ATLAS_AUTHORITY=NONE
+configs:
+  - id: CFG:exchange_okx_europe_eea
+    key: exchange.okx_europe_eea
+    source: config/config.toml
+    default: enabled=false validate_only=true (as historically observed on origin/main)
+    consumers: OKX EEA adapter / testnet bindings
+    runtime_effect: Venue enablement; does not confer LIVE_AUTHORIZED
+    current_status: CURRENT_NONCANONICAL
+  - id: CFG:live_authorized
+    key: LIVE_AUTHORIZED
+    source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    default: "false"
+    consumers: all execution/canary paths
+    runtime_effect: standing fail-closed deny of live orders
+    current_status: CURRENT_CANONICAL
+  - id: CFG:testnet_authorized
+    key: TESTNET_AUTHORIZED
+    source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    default: "false"
+    consumers: testnet execute paths
+    runtime_effect: standing fail-closed unless scoped Owner-GO
+    current_status: CURRENT_CANONICAL
+  - id: CFG:max_positions
+    key: CURRENT_MAX_POSITIONS
+    source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    default: "1"
+    consumers: GATE:max_positions_1
+    runtime_effect: single-future position cap
+    current_status: CURRENT_CANONICAL

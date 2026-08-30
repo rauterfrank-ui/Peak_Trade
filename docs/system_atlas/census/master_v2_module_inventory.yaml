@@ -1,0 +1,232 @@
+# ATLAS_AUTHORITY=NONE
+# File inventory of origin/main Master V2 Python modules and capability spec files.
+# File inventory plus semantic cluster mapping. entity_mapping_complete=true.
+schema_version: system_atlas.v1
+origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+scope: origin/main src/trading/master_v2/**/*.py plus docs/ops/specs/MASTER_V2_CAPABILITY_*.md
+file_inventory_complete: true
+entity_mapping_complete: true
+python_file_count: 102
+double_play_named_file_count: 17
+capability_spec_file_count: 7
+capability_spec_inventory_complete: true
+capability_spec_files:
+  - path: docs/ops/specs/MASTER_V2_CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1.md
+    entity: CAPABILITY:cap_1_1_reconciliation
+  - path: docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    entity: CAPABILITY:cap_2_1_gfu
+  - path: docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
+    entity: CAPABILITY:cap_2_2_ranking
+  - path: docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+    entity: CAPABILITY:cap_2_3_single_selected_future
+  - path: docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md
+    entity: CAPABILITY:cap_2_4_runtime_binding
+  - path: docs/ops/specs/MASTER_V2_CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1.md
+    entity: CAPABILITY:cap_3_1_futures_accounting
+  - path: docs/ops/specs/MASTER_V2_CAPABILITY_4_1_SINGLE_FUTURE_CANONICAL_RUNTIME_PRE_ACTIVATION_CLOSURE_V1.md
+    entity: CAPABILITY:cap_4_1_pre_activation_closure
+files:
+  - path: src/trading/master_v2/__init__.py
+    double_play_named: false
+  - path: src/trading/master_v2/ai_observability_boundary_backtest_state_file_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/ai_observability_boundary_offline_replay_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/arithmetic_decimal_float_conversion_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_market_context_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_order_intent_boundary_backtest_state_file_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_order_intent_offline_replay_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_scope_initialization_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_trading_decision_evidence_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_volatility_binding_and_provenance_transport_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_volatility_default_quarantine_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_volatility_estimate_feature_contract_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_volatility_estimate_materializer_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_volatility_estimate_typed_consumption_contract_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_volatility_hot_path_contract_closure_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_volatility_productive_runtime_cmc_typed_binding_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_volatility_pt1m_mark_observation_finalizer_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_volatility_runtime_mark_history_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/canonical_volatility_typed_runtime_producer_scaffold_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/capital_risk_sizing_intent_restore_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/capital_risk_sizing_safety_intent_restore_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/chop_scope_event_policy_binding_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/decision_packet_critic_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/decision_packet_fixtures_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/decision_packet_from_integrated_replay_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/decision_packet_replay_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/decision_packet_roundtrip_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/decision_packet_snapshot_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/decision_packet_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/deterministic_scope_event_generator_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/directional_assessment_confirmation_integration_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/directional_assessment_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/double_play_capital_slot.py
+    double_play_named: true
+  - path: src/trading/master_v2/double_play_composition.py
+    double_play_named: true
+  - path: src/trading/master_v2/double_play_composition_matrix_v1.py
+    double_play_named: true
+  - path: src/trading/master_v2/double_play_composition_scenario_matrix_adapter_v0.py
+    double_play_named: true
+  - path: src/trading/master_v2/double_play_core_wiring_v1.py
+    double_play_named: true
+  - path: src/trading/master_v2/double_play_dashboard_display.py
+    double_play_named: true
+  - path: src/trading/master_v2/double_play_entry_exit_policy_v0.py
+    double_play_named: true
+  - path: src/trading/master_v2/double_play_entry_exit_scenario_binding_adapter_v0.py
+    double_play_named: true
+  - path: src/trading/master_v2/double_play_futures_input.py
+    double_play_named: true
+  - path: src/trading/master_v2/double_play_futures_input_producer.py
+    double_play_named: true
+  - path: src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py
+    double_play_named: true
+  - path: src/trading/master_v2/double_play_sole_authority_quarantine_v1.py
+    double_play_named: true
+  - path: src/trading/master_v2/double_play_state.py
+    double_play_named: true
+  - path: src/trading/master_v2/double_play_suitability.py
+    double_play_named: true
+  - path: src/trading/master_v2/double_play_survival.py
+    double_play_named: true
+  - path: src/trading/master_v2/evaluate_double_play_authority_boundary_v0.py
+    double_play_named: true
+  - path: src/trading/master_v2/feedback_learning_boundary_backtest_state_file_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/feedback_learning_boundary_offline_replay_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/flat_before_opposite_side_scenario_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/happy_raw_input_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/input_adapter_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/integrated_offline_replay_evidence_writer_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/killswitch_boundary_backtest_state_file_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/killswitch_boundary_offline_replay_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/legacy_runtime_entrypoint_guard_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/local_debug_cli_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/local_evaluator_scenarios_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/local_evaluator_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/next_full_canonical_parity_surface_after_surface_p_assessment_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/offline_double_play_scenario_replay_v0.py
+    double_play_named: true
+  - path: src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/pr4985_runtime_activation_materiality_classifier_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/promotion_gate_boundary_backtest_state_file_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/promotion_gate_boundary_offline_replay_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/reconciliation_boundary_backtest_state_file_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/reconciliation_unknown_outcome_offline_replay_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/regime_bull_bear_switch_evidence_readmodel_v1/__init__.py
+    double_play_named: false
+  - path: src/trading/master_v2/regime_bull_bear_switch_evidence_readmodel_v1/capture_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/regime_bull_bear_switch_evidence_readmodel_v1/constants_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/regime_bull_bear_switch_evidence_readmodel_v1/models_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/regime_bull_bear_switch_evidence_readmodel_v1/persistence_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/registry_suitability_snapshot_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/reversal_preparation_scenario_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/runtime_bridge_boundary_gap_assessment_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/runtime_bridge_pre_activation_gate_assessment_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/runtime_bridge_pre_activation_gate_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/safety_kernel_boundary_backtest_state_file_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/scenario_matrix_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/staged_execution_enablement_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/strategy_identity_binding_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/strategy_suitability_agreement_material_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/suitability_binding_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/surface_p_final_flags_fail_closed_contract_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/surface_p_required_proof_input_binding_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/surface_p_semantic_parity_gap_assessment_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/survival_assessment_v1.py
+    double_play_named: false
+  - path: src/trading/master_v2/survival_suitability_scenario_binding_adapter_v0.py
+    double_play_named: false

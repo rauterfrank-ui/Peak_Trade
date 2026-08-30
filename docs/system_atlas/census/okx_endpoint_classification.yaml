@@ -1,0 +1,418 @@
+# ATLAS_AUTHORITY=NONE
+# Reconcile 69 raw /api/v5 hits vs 49 modeled VENUE_ENDPOINT rows.
+schema_version: system_atlas.v1
+origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+okx_raw_api_path_hit_count: 69
+okx_unique_endpoint_candidate_count: 48
+okx_modeled_endpoint_count: 49
+okx_grep_noise_count: 21
+okx_unclassified_endpoint_count: 0
+endpoint_inventory_complete: true
+namespaces_searched: [public, market, account, trade, asset, finance, funding, rubik, system, users, private]
+namespaces_found: [public, market, account, trade, asset, rubik, users]
+namespaces_absent:
+  - token: finance
+    class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+  - token: funding
+    class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    notes: funding-rate-history is under /api/v5/public/, not a /api/v5/funding namespace
+  - token: system
+    class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+discrepancy_resolution: >-
+  69 raw hits include 21 grep noise (prefix stubs, trailing-dot artifacts,
+  concat tokens, private/x stubs). 48 unique normalized REST paths remain.
+  Modeled count is 49 because GET and POST /api/v5/trade/order are two
+  VENUE_ENDPOINT rows. Noise is not promoted to VENUE_ENDPOINT.
+candidates:
+  - path: /api/v5/account
+    class: ENDPOINT_TEMPLATE
+  - path: /api/v5/account/
+    class: ENDPOINT_TEMPLATE
+  - path: /api/v5/account/account-position-risk
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_account_account_position_risk
+    domain_group: account
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/account/adjust-leverage-info
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_account_adjust_leverage_info
+    domain_group: account
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/account/balance
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_account_balance
+    domain_group: account
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/account/balance.
+    class: MALFORMED_GREP_HIT
+  - path: /api/v5/account/bills
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_account_bills
+    domain_group: account
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/account/config
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_account_config
+    domain_group: account
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/account/config.
+    class: MALFORMED_GREP_HIT
+  - path: /api/v5/account/instruments
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_account_instruments
+    domain_group: account
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/account/leverage-info
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_account_leverage_info
+    domain_group: account
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/account/leverage-info.
+    class: MALFORMED_GREP_HIT
+  - path: /api/v5/account/max-avail-size
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_account_max_avail_size
+    domain_group: account
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/account/max-size
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_account_max_size
+    domain_group: account
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/account/max-size.
+    class: MALFORMED_GREP_HIT
+  - path: /api/v5/account/positions
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_account_positions
+    domain_group: account
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/account/positions-history
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_account_positions_history
+    domain_group: account
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/account/set-isolated-mode
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_account_set_isolated_mode
+    domain_group: account
+    http_methods: [POST]
+    auth_required: true
+    signed: true
+  - path: /api/v5/account/set-leverage
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_account_set_leverage
+    domain_group: account
+    http_methods: [POST]
+    auth_required: true
+    signed: true
+  - path: /api/v5/account/set-position-mode
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_account_set_position_mode
+    domain_group: account
+    http_methods: [POST]
+    auth_required: true
+    signed: true
+  - path: /api/v5/account/trade-fee
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_account_trade_fee
+    domain_group: account
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/asset/
+    class: ENDPOINT_TEMPLATE
+  - path: /api/v5/asset/currencies
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_asset_currencies
+    domain_group: asset
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/asset/transfer
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_asset_transfer
+    domain_group: asset
+    http_methods: [POST]
+    auth_required: true
+    signed: true
+  - path: /api/v5/asset/withdrawal
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_asset_withdrawal
+    domain_group: asset
+    http_methods: [POST]
+    auth_required: true
+    signed: true
+  - path: /api/v5/market/
+    class: ENDPOINT_TEMPLATE
+  - path: /api/v5/market/books
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_market_books
+    domain_group: market
+    http_methods: [GET]
+    auth_required: false
+    signed: false
+  - path: /api/v5/market/candles
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_market_candles
+    domain_group: market
+    http_methods: [GET]
+    auth_required: false
+    signed: false
+    current_runtime_reachability: PUBLIC_MD_CLIENT
+  - path: /api/v5/market/history-candles
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_market_history_candles
+    domain_group: market
+    http_methods: [GET]
+    auth_required: false
+    signed: false
+  - path: /api/v5/market/history-index-candles
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_market_history_index_candles
+    domain_group: market
+    http_methods: [GET]
+    auth_required: false
+    signed: false
+  - path: /api/v5/market/history-mark-price-candles
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_market_history_mark_price_candles
+    domain_group: market
+    http_methods: [GET]
+    auth_required: false
+    signed: false
+  - path: /api/v5/market/index-tickers
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_market_index_tickers
+    domain_group: market
+    http_methods: [GET]
+    auth_required: false
+    signed: false
+  - path: /api/v5/market/ticker
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_market_ticker
+    domain_group: market
+    http_methods: [GET]
+    auth_required: false
+    signed: false
+    current_runtime_reachability: PUBLIC_MD_CLIENT
+  - path: /api/v5/market/tickers
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_market_tickers
+    domain_group: market
+    http_methods: [GET]
+    auth_required: false
+    signed: false
+    current_runtime_reachability: PUBLIC_MD_CLIENT
+  - path: /api/v5/market/trades
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_market_trades
+    domain_group: market
+    http_methods: [GET]
+    auth_required: false
+    signed: false
+  - path: /api/v5/private/account
+    class: STUB
+  - path: /api/v5/private/x
+    class: STUB
+  - path: /api/v5/public/
+    class: ENDPOINT_TEMPLATE
+  - path: /api/v5/public/funding-rate-history
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_public_funding_rate_history
+    domain_group: public
+    http_methods: [GET]
+    auth_required: false
+    signed: false
+  - path: /api/v5/public/instruments
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_public_instruments
+    domain_group: public
+    http_methods: [GET]
+    auth_required: false
+    signed: false
+    product_types: [SWAP, FUTURES]
+    current_runtime_reachability: GFU_PUBLIC_GET
+    current_status: CURRENT_NONCANONICAL
+  - path: /api/v5/public/mark-price
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_public_mark_price
+    domain_group: public
+    http_methods: [GET]
+    auth_required: false
+    signed: false
+    current_runtime_reachability: GFU_PUBLIC_GET
+  - path: /api/v5/public/mark-price.
+    class: MALFORMED_GREP_HIT
+  - path: /api/v5/public/position-tiers
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_public_position_tiers
+    domain_group: public
+    http_methods: [GET]
+    auth_required: false
+    signed: false
+    current_runtime_reachability: CANARY_MMR_PUBLIC_GET
+  - path: /api/v5/public/price-limit
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_public_price_limit
+    domain_group: public
+    http_methods: [GET]
+    auth_required: false
+    signed: false
+  - path: /api/v5/public/price-limit.
+    class: MALFORMED_GREP_HIT
+  - path: /api/v5/public/time
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_public_time
+    domain_group: public
+    http_methods: [GET]
+    auth_required: false
+    signed: false
+  - path: /api/v5/rubik/stat/contracts/open-interest-history
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_rubik_stat_contracts_open_interest_history
+    domain_group: rubik
+    http_methods: [GET]
+    auth_required: false
+    signed: false
+  - path: /api/v5/rubik/stat/contracts/open-interest-history.
+    class: MALFORMED_GREP_HIT
+  - path: /api/v5/trade
+    class: ENDPOINT_TEMPLATE
+  - path: /api/v5/trade/
+    class: ENDPOINT_TEMPLATE
+  - path: /api/v5/trade/amend-order
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_trade_amend_order
+    domain_group: trade
+    http_methods: [POST]
+    auth_required: true
+    signed: true
+  - path: /api/v5/trade/batch-orders
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_trade_batch_orders
+    domain_group: trade
+    http_methods: [POST]
+    auth_required: true
+    signed: true
+  - path: /api/v5/trade/cancel-batch-orders
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_trade_cancel_batch_orders
+    domain_group: trade
+    http_methods: [POST]
+    auth_required: true
+    signed: true
+  - path: /api/v5/trade/cancel-order
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_trade_cancel_order
+    domain_group: trade
+    http_methods: [POST]
+    auth_required: true
+    signed: true
+  - path: /api/v5/trade/close-position
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_trade_close_position
+    domain_group: trade
+    http_methods: [POST]
+    auth_required: true
+    signed: true
+  - path: /api/v5/trade/close-position_MARKET
+    class: MALFORMED_GREP_HIT
+  - path: /api/v5/trade/fills
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_trade_fills
+    domain_group: trade
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/trade/order
+    class: REAL_OKX_ENDPOINT
+    modeled_ids:
+      - VENUE_ENDPOINT:okx_trade_order
+      - VENUE_ENDPOINT:okx_trade_order_get
+    domain_group: trade
+    http_methods: [GET, POST]
+    auth_required: true
+    signed: true
+    notes: One path, two modeled rows (GET vs POST).
+  - path: /api/v5/trade/order-algo
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_trade_order_algo
+    domain_group: trade
+    http_methods: [POST]
+    auth_required: true
+    signed: true
+  - path: /api/v5/trade/order-precheck
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_trade_order_precheck
+    domain_group: trade
+    http_methods: [POST]
+    auth_required: true
+    signed: true
+  - path: /api/v5/trade/order-precheck.
+    class: MALFORMED_GREP_HIT
+  - path: /api/v5/trade/order_LIMIT_REDUCEONLY
+    class: MALFORMED_GREP_HIT
+  - path: /api/v5/trade/orders-algo-pending
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_trade_orders_algo_pending
+    domain_group: trade
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/trade/orders-history
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_trade_orders_history
+    domain_group: trade
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/trade/orders-pending
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_trade_orders_pending
+    domain_group: trade
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+  - path: /api/v5/users/
+    class: ENDPOINT_TEMPLATE
+  - path: /api/v5/users/...
+    class: STUB
+  - path: /api/v5/users/self/verify
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_users_self_verify
+    domain_group: users
+    http_methods: [POST]
+    auth_required: true
+    signed: true
+  - path: /api/v5/users/subaccount/list
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_users_subaccount_list
+    domain_group: users
+    http_methods: [GET]
+    auth_required: true
+    signed: true
+notes: >-
+  Presence of a path literal is not activation. LIVE_AUTHORIZED=false.
+  Private REST reachability is bound-testnet/canary gated, not live-unlocked.

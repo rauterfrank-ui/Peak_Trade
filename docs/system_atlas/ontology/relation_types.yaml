@@ -1,0 +1,27 @@
+# ATLAS_AUTHORITY=NONE
+graphs:
+  - id: GRAPH:structural
+    kind: TERM
+    name: structural
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: OPEN
+    evidence_sources:
+      - docs/system_atlas/ATLAS_AUTHORITY_AND_USAGE.md
+  - id: GRAPH:runtime
+    kind: TERM
+    name: runtime
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: OPEN
+    evidence_sources:
+      - docs/system_atlas/ATLAS_AUTHORITY_AND_USAGE.md
+  - id: GRAPH:authority_evidence
+    kind: TERM
+    name: authority_evidence
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: OPEN
+    evidence_sources:
+      - docs/system_atlas/ATLAS_AUTHORITY_AND_USAGE.md
+note: Relation type vocabularies live in scripts/ops/system_atlas_v1/constants_v1.py. Inverse edges are not stored unless proven.

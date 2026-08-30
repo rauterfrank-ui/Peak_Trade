@@ -1,0 +1,642 @@
+# ATLAS_AUTHORITY=NONE
+features:
+  - id: OKX_FEATURE:public_instruments
+    kind: OKX_FEATURE
+    name: public_instruments
+    category: instrument_discovery
+    current_implementation: GET /api/v5/public/instruments
+    historical_implementation: OPEN
+    product_types: FUTURES,SWAP
+    endpoints: GET /api/v5/public/instruments
+    auth_required: false
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+  - id: OKX_FEATURE:public_mark_price
+    kind: OKX_FEATURE
+    name: public_mark_price
+    category: market_data
+    current_implementation: GET /api/v5/public/mark-price
+    historical_implementation: OPEN
+    product_types: FUTURES,SWAP
+    endpoints: GET /api/v5/public/mark-price
+    auth_required: false
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+  - id: OKX_FEATURE:public_time
+    kind: OKX_FEATURE
+    name: public_time
+    category: market_data
+    current_implementation: GET /api/v5/public/time
+    historical_implementation: OPEN
+    product_types: n/a
+    endpoints: GET /api/v5/public/time
+    auth_required: false
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - tests/ops/test_phase_9_2_step_4_governed_productive_transport_fault_control_binding_v1.py
+  - id: OKX_FEATURE:position_tiers_mmr
+    kind: OKX_FEATURE
+    name: position_tiers_mmr
+    category: risk_margin
+    current_implementation: GET /api/v5/public/position-tiers
+    historical_implementation: OPEN
+    product_types: FUTURES
+    endpoints: GET /api/v5/public/position-tiers
+    auth_required: false
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/cover_usdc_current_public_tier_mmr_productive_evidence_v1.py
+  - id: OKX_FEATURE:tickers
+    kind: OKX_FEATURE
+    name: tickers
+    category: market_data
+    current_implementation: GET /api/v5/market/tickers
+    historical_implementation: OPEN
+    product_types: FUTURES,SWAP
+    endpoints: GET /api/v5/market/tickers
+    auth_required: false
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+  - id: OKX_FEATURE:candles
+    kind: OKX_FEATURE
+    name: candles
+    category: market_data
+    current_implementation: GET /api/v5/market/candles
+    historical_implementation: OPEN
+    product_types: FUTURES,SWAP
+    endpoints: GET /api/v5/market/candles
+    auth_required: false
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+  - id: OKX_FEATURE:history_candles
+    kind: OKX_FEATURE
+    name: history_candles
+    category: market_data
+    current_implementation: GET /api/v5/market/history-candles
+    historical_implementation: OPEN
+    product_types: FUTURES,SWAP
+    endpoints: GET /api/v5/market/history-candles
+    auth_required: false
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+  - id: OKX_FEATURE:history_mark_price_candles
+    kind: OKX_FEATURE
+    name: history_mark_price_candles
+    category: market_data
+    current_implementation: GET /api/v5/market/history-mark-price-candles
+    historical_implementation: OPEN
+    product_types: FUTURES,SWAP
+    endpoints: GET /api/v5/market/history-mark-price-candles
+    auth_required: false
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - docs/ops/schemas/productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_decisions_v1.schema.json
+  - id: OKX_FEATURE:trades
+    kind: OKX_FEATURE
+    name: trades
+    category: market_data
+    current_implementation: GET /api/v5/market/trades
+    historical_implementation: OPEN
+    product_types: FUTURES,SWAP
+    endpoints: GET /api/v5/market/trades
+    auth_required: false
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+  - id: OKX_FEATURE:orderbook
+    kind: OKX_FEATURE
+    name: orderbook
+    category: market_data
+    current_implementation: GET /api/v5/market/books
+    historical_implementation: OPEN
+    product_types: OPEN
+    endpoints: GET /api/v5/market/books
+    auth_required: false
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: OKX_FEATURE:funding_rate_history
+    kind: OKX_FEATURE
+    name: funding_rate_history
+    category: funding
+    current_implementation: GET /api/v5/public/funding-rate-history
+    historical_implementation: OPEN
+    product_types: SWAP
+    endpoints: GET /api/v5/public/funding-rate-history
+    auth_required: false
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/research/longer_chronological_pit_acquisition_v1/source_discovery.py
+  - id: OKX_FEATURE:rubik_open_interest
+    kind: OKX_FEATURE
+    name: rubik_open_interest
+    category: research
+    current_implementation: GET /api/v5/rubik/stat/contracts/open-interest-history
+    historical_implementation: OPEN
+    product_types: FUTURES,SWAP
+    endpoints: GET /api/v5/rubik/stat/contracts/open-interest-history
+    auth_required: false
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - tests/research/test_okx_self_accumulated_forward_open_interest_one_shot_collector_harness_v0_contract.py
+  - id: OKX_FEATURE:account_config
+    kind: OKX_FEATURE
+    name: account_config
+    category: account
+    current_implementation: GET /api/v5/account/config
+    historical_implementation: OPEN
+    product_types: n/a
+    endpoints: GET /api/v5/account/config
+    auth_required: true
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+  - id: OKX_FEATURE:account_balance
+    kind: OKX_FEATURE
+    name: account_balance
+    category: account
+    current_implementation: GET /api/v5/account/balance
+    historical_implementation: OPEN
+    product_types: n/a
+    endpoints: GET /api/v5/account/balance
+    auth_required: true
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+  - id: OKX_FEATURE:account_positions
+    kind: OKX_FEATURE
+    name: account_positions
+    category: positions
+    current_implementation: GET /api/v5/account/positions
+    historical_implementation: OPEN
+    product_types: FUTURES
+    endpoints: GET /api/v5/account/positions
+    auth_required: true
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+  - id: OKX_FEATURE:orders_pending
+    kind: OKX_FEATURE
+    name: orders_pending
+    category: orders
+    current_implementation: GET /api/v5/trade/orders-pending
+    historical_implementation: OPEN
+    product_types: FUTURES
+    endpoints: GET /api/v5/trade/orders-pending
+    auth_required: true
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+  - id: OKX_FEATURE:place_order
+    kind: OKX_FEATURE
+    name: place_order
+    category: orders
+    current_implementation: POST /api/v5/trade/order
+    historical_implementation: OPEN
+    product_types: FUTURES
+    endpoints: POST /api/v5/trade/order
+    auth_required: true
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+  - id: OKX_FEATURE:cancel_order
+    kind: OKX_FEATURE
+    name: cancel_order
+    category: orders
+    current_implementation: POST /api/v5/trade/cancel-order
+    historical_implementation: OPEN
+    product_types: FUTURES
+    endpoints: POST /api/v5/trade/cancel-order
+    auth_required: true
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+  - id: OKX_FEATURE:close_position
+    kind: OKX_FEATURE
+    name: close_position
+    category: orders
+    current_implementation: POST /api/v5/trade/close-position
+    historical_implementation: OPEN
+    product_types: FUTURES
+    endpoints: POST /api/v5/trade/close-position
+    auth_required: true
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: OKX_FEATURE:algo_order
+    kind: OKX_FEATURE
+    name: algo_order
+    category: algo_orders
+    current_implementation: POST /api/v5/trade/order-algo
+    historical_implementation: OPEN
+    product_types: FUTURES
+    endpoints: POST /api/v5/trade/order-algo
+    auth_required: true
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: OKX_FEATURE:set_leverage
+    kind: OKX_FEATURE
+    name: set_leverage
+    category: leverage
+    current_implementation: POST /api/v5/account/set-leverage
+    historical_implementation: OPEN
+    product_types: FUTURES
+    endpoints: POST /api/v5/account/set-leverage
+    auth_required: true
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: OKX_FEATURE:hmac_auth
+    kind: OKX_FEATURE
+    name: hmac_auth
+    category: authentication
+    current_implementation: OK-ACCESS-* HMAC-SHA256
+    historical_implementation: OPEN
+    product_types: n/a
+    endpoints: OK-ACCESS-* HMAC-SHA256
+    auth_required: true
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+  - id: OKX_FEATURE:demo_simulated_trading_header
+    kind: OKX_FEATURE
+    name: demo_simulated_trading_header
+    category: authentication
+    current_implementation: x-simulated-trading
+    historical_implementation: OPEN
+    product_types: n/a
+    endpoints: x-simulated-trading
+    auth_required: true
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+  - id: OKX_FEATURE:quote_identity_from_quoteCcy_or_instId
+    kind: OKX_FEATURE
+    name: quote_identity_from_quoteCcy_or_instId
+    category: instrument_identity
+    current_implementation: _extract_base_quote
+    historical_implementation: OPEN
+    product_types: FUTURES,SWAP,XPERP
+    endpoints: _extract_base_quote
+    auth_required: false
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+  - id: OKX_FEATURE:websocket_hosts_configured
+    kind: OKX_FEATURE
+    name: websocket_hosts_configured
+    category: websocket
+    current_implementation: wseeapap.okx.com:8443
+    historical_implementation: OPEN
+    product_types: OPEN
+    endpoints: wseeapap.okx.com:8443
+    auth_required: OPEN
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - config/config.toml
+  - id: OKX_FEATURE:execution_adapter_mocks_only
+    kind: OKX_FEATURE
+    name: execution_adapter_mocks_only
+    category: execution_adapter
+    current_implementation: src/execution/adapters/providers/okx_v1.py
+    historical_implementation: OPEN
+    product_types: n/a
+    endpoints: src/execution/adapters/providers/okx_v1.py
+    auth_required: false
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/execution/adapters/providers/okx_v1.py
+  - id: OKX_FEATURE:asset_transfer
+    kind: OKX_FEATURE
+    name: asset_transfer
+    category: assets
+    current_implementation: POST /api/v5/asset/transfer
+    historical_implementation: OPEN
+    product_types: n/a
+    endpoints: POST /api/v5/asset/transfer
+    auth_required: true
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: OKX_FEATURE:asset_withdrawal
+    kind: OKX_FEATURE
+    name: asset_withdrawal
+    category: assets
+    current_implementation: POST /api/v5/asset/withdrawal
+    historical_implementation: OPEN
+    product_types: n/a
+    endpoints: POST /api/v5/asset/withdrawal
+    auth_required: true
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: OKX_FEATURE:subaccount_list
+    kind: OKX_FEATURE
+    name: subaccount_list
+    category: account
+    current_implementation: GET /api/v5/users/subaccount/list
+    historical_implementation: OPEN
+    product_types: n/a
+    endpoints: GET /api/v5/users/subaccount/list
+    auth_required: true
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: OKX_FEATURE:fills
+    kind: OKX_FEATURE
+    name: fills
+    category: orders
+    current_implementation: GET /api/v5/trade/fills
+    historical_implementation: OPEN
+    product_types: FUTURES
+    endpoints: GET /api/v5/trade/fills
+    auth_required: true
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: OKX_FEATURE:price_limit
+    kind: OKX_FEATURE
+    name: price_limit
+    category: market_data
+    current_implementation: GET /api/v5/public/price-limit
+    historical_implementation: OPEN
+    product_types: FUTURES
+    endpoints: GET /api/v5/public/price-limit
+    auth_required: false
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: OKX_FEATURE:xperp_instid_pattern
+    kind: OKX_FEATURE
+    name: xperp_instid_pattern
+    category: instrument_identity
+    current_implementation: SUI-USD_UM_XPERP-310404 style ids
+    historical_implementation: OPEN
+    product_types: XPERP
+    endpoints: SUI-USD_UM_XPERP-310404 style ids
+    auth_required: false
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - docs/forensics/persistence/inventories/P6_LIVE_GFU_NETWORK_GET_ONLY_CENSUS_AND_GAP_ADJUDICATION_OBSERVATION_V1.json

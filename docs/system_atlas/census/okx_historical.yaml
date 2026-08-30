@@ -1,0 +1,214 @@
+# ATLAS_AUTHORITY=NONE
+# origin/main git archaeology after unshallow. Not SSOT. Not restoration.
+schema_version: system_atlas.v1
+origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+search_scope: origin/main full history after git fetch --unshallow; not unmerged feature-branch-only blobs
+okx_named_path_deletions_on_origin_main: 0
+git_is_shallow: false
+historical_fetch_performed: true
+first_proven_okx_token_commit: 96d8195ac12a35df942cde7c8b4cbdc74d6431e3
+first_proven_okx_token_date: "2026-02-16"
+first_proven_okx_named_implementation_commit: 5c588999731757f19cfb2ef9b85055af0eca760e
+first_proven_okx_named_implementation_date: "2026-02-16"
+first_proven_okx_named_implementation_pr: "#1436"
+historical_feature_count: 9
+removed_okx_named_component_count: 0
+historical_endpoint_count_new_vs_current_tree: 0
+historical_auth_implementation_count: 2
+historical_websocket_implementation_count: 0
+xperp_historical_uly_handler_found: true
+xperp_historical_quote_mapping_found: false
+xperp_previous_owner_component: src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+c_okx_quote_uly_status_changed: false
+remaining_limits:
+  - Unmerged feature-branch-only history not treated as product SSOT
+  - Fixture JSON bytes not field-enumerated
+  - Non-okx-named modules that may call /api/v5 sampled, not every src file
+  - 69 current-tree grep paths still include noise; not promoted to new historical endpoints
+features:
+  - id: OKX_FEATURE:p108_mocks_only_adapter
+    first_proven_commit: 5c588999731757f19cfb2ef9b85055af0eca760e
+    first_proven_date: "2026-02-16"
+    last_proven_commit_if_removed: null
+    files_symbols:
+      - src/execution/adapters/providers/okx_v1.py
+    feature_category: execution_adapter
+    product_types: OPEN
+    endpoints: none (mocks only)
+    fields: []
+    host_environment: offline_mock
+    auth_implementation: none
+    current_status: CURRENT_NONCANONICAL
+    superseded_by_if_proven: OPEN
+    removal_reason_if_proven: null
+    current_equivalent_if_proven: still present on origin/main as MOCKS ONLY; not BoundOkxTestnetHttpClientV1
+    epistemic_status: FORENSIC_RAW
+    evidence: git show origin/main:src/execution/adapters/providers/okx_v1.py
+  - id: OKX_FEATURE:eea_xperp_offline_contracts
+    first_proven_commit: 8457850cbf10a4ec040d320ac9bb84d2fc63c844
+    first_proven_date: "2026-06-26"
+    last_proven_commit_if_removed: null
+    files_symbols:
+      - src/ops/aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py
+    feature_category: venue_binding
+    product_types: FUTURES X-Perp
+    endpoints: OPEN
+    fields: []
+    host_environment: eea.okx.com / documented www.okx.com
+    auth_implementation: OPEN
+    current_status: CURRENT_NONCANONICAL
+    superseded_by_if_proven: OPEN
+    removal_reason_if_proven: null
+    current_equivalent_if_proven: config/config.toml exchange.okx_europe_eea
+    epistemic_status: FORENSIC_RAW
+    evidence: "PR #4587"
+  - id: OKX_FEATURE:public_futures_md_ingest
+    first_proven_commit: 713db77d083197cc59b8ce4f3217b6b5f2935529
+    first_proven_date: "2026-07-01"
+    last_proven_commit_if_removed: null
+    files_symbols:
+      - scripts/ops/ingest_okx_futures_public_market_data_canonical_dataset_staging_v1.py
+    feature_category: market_data
+    product_types: FUTURES
+    endpoints: GET /api/v5/public/instruments and related public paths
+    fields:
+      - uly
+    host_environment: www.okx.com public
+    auth_implementation: OK-ACCESS headers appear in tree; not the later HMAC signer
+    current_status: CURRENT_NONCANONICAL
+    superseded_by_if_proven: src/ops/okx_public_market_data_client_v1.py
+    removal_reason_if_proven: null
+    current_equivalent_if_proven: OPEN (name similarity is not proven equivalence)
+    epistemic_status: FORENSIC_RAW
+    evidence: "PR #4726"
+  - id: OKX_FEATURE:hmac_sign_okx_request_v1
+    first_proven_commit: 35519be2684b65491fbe53b09f82e91370e7cc89
+    first_proven_date: "2026-08-08"
+    last_proven_commit_if_removed: null
+    files_symbols:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    feature_category: authentication
+    product_types: FUTURES X-Perp demo
+    endpoints: private REST via BoundOkxTestnetHttpClientV1
+    fields: []
+    host_environment: OKX EEA Demo
+    auth_implementation: sign_okx_request_v1 HMAC-SHA256
+    current_status: CURRENT_NONCANONICAL
+    superseded_by_if_proven: null
+    removal_reason_if_proven: null
+    current_equivalent_if_proven: AUTH_PRIMITIVE:okx_hmac_sign
+    epistemic_status: FORENSIC_RAW
+    evidence: "PR #5830; supersedes July-17 audit claim of absent signed REST (C-OKX-AUDIT-SIGNED-REST-001)"
+  - id: OKX_FEATURE:cap21_uly_base_only
+    first_proven_commit: 02095305f1ecaaa94e294ab73010ffdf33c905f0
+    first_proven_date: "2026-08-02"
+    last_proven_commit_if_removed: null
+    files_symbols:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py _extract_base_quote
+    feature_category: instrument_identity
+    product_types: SWAP,FUTURES
+    endpoints: consumes public instruments rows
+    fields:
+      - uly
+      - quoteCcy
+      - baseCcy
+      - instId
+    host_environment: GFU producer
+    auth_implementation: none
+    current_status: CURRENT_NONCANONICAL
+    superseded_by_if_proven: null
+    removal_reason_if_proven: null
+    current_equivalent_if_proven: same function still on origin/main
+    epistemic_status: ADJUDICATED
+    evidence: "git show 02095305:.../eligibility_v1.py; uly fills BASE only; quote never from uly"
+  - id: OKX_FEATURE:ws_hosts_configured
+    first_proven_commit: 8457850cbf10a4ec040d320ac9bb84d2fc63c844
+    first_proven_date: "2026-06-26"
+    last_proven_commit_if_removed: null
+    files_symbols:
+      - config/config.toml
+    feature_category: websocket_config
+    product_types: OPEN
+    endpoints: wss hosts in config
+    fields: []
+    host_environment: configured
+    auth_implementation: none proven live
+    current_status: CURRENT_NONCANONICAL
+    superseded_by_if_proven: null
+    removal_reason_if_proven: null
+    current_equivalent_if_proven: OKX_FEATURE:websocket_hosts_configured
+    epistemic_status: FORENSIC_RAW
+    evidence: "PR #4587; no proven live OKX WS client on origin/main"
+  - id: OKX_FEATURE:live_feed_stub_pre_okx
+    first_proven_commit: 6ef85a6137075b333ce81f393a3d49a8e976eed9
+    first_proven_date: "2026-01-01"
+    last_proven_commit_if_removed: null
+    files_symbols:
+      - src/data/feeds/live_feed.py
+    feature_category: websocket_stub
+    product_types: OPEN
+    endpoints: none
+    fields: []
+    host_environment: offline stub
+    auth_implementation: none
+    current_status: CURRENT_NONCANONICAL
+    superseded_by_if_proven: OPEN (Phase 2+ WS never proven as OKX client)
+    removal_reason_if_proven: null
+    current_equivalent_if_proven: still a stub on origin/main
+    epistemic_status: FORENSIC_RAW
+    evidence: "PR #434; predates first OKX adapter; not an OKX integration"
+  - id: OKX_FEATURE:dashboard_intrabar_ohlcv
+    first_proven_commit: 6f38df4d833945197e8f472c09f402ee767c85ad
+    first_proven_date: "2026-07-25"
+    last_proven_commit_if_removed: null
+    files_symbols:
+      - src/ops/okx_public_market_data_client_v1.py
+      - static/js/market_dashboard_landscape_v2.js
+    feature_category: market_data_ui
+    product_types: FUTURES
+    endpoints: public market REST (not proven as live WS session)
+    fields: []
+    host_environment: webui /market
+    auth_implementation: public
+    current_status: CURRENT_NONCANONICAL
+    superseded_by_if_proven: OPEN
+    removal_reason_if_proven: null
+    current_equivalent_if_proven: ADAPTER:okx_public_md_client
+    epistemic_status: FORENSIC_RAW
+    evidence: "PR #5548; do not infer WebSocket session from commit subject"
+  - id: OKX_FEATURE:july17_read_only_audit
+    first_proven_commit: f5114401f6a76171840040f0c44d0de05df61bf5
+    first_proven_date: "2026-07-17"
+    last_proven_commit_if_removed: null
+    files_symbols:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    feature_category: audit_document
+    product_types: FUTURES X-Perp
+    endpoints: documented
+    fields: []
+    host_environment: document
+    auth_implementation: claimed signed private REST absent (later superseded by HMAC client)
+    current_status: SUPERSEDED
+    superseded_by_if_proven: OKX_FEATURE:hmac_sign_okx_request_v1
+    removal_reason_if_proven: document remains in tree; claim superseded
+    current_equivalent_if_proven: C-OKX-AUDIT-SIGNED-REST-001
+    epistemic_status: FORENSIC_RAW
+    evidence: "PR #5298"
+auth_implementations:
+  - id: AUTH:ok_access_headers_in_ingest
+    first_proven_commit: 713db77d083197cc59b8ce4f3217b6b5f2935529
+    first_proven_date: "2026-07-01"
+    current_status: CURRENT_NONCANONICAL
+    notes: Header names present; not proven as the later sign_okx_request_v1 primitive
+  - id: AUTH:sign_okx_request_v1
+    first_proven_commit: 35519be2684b65491fbe53b09f82e91370e7cc89
+    first_proven_date: "2026-08-08"
+    current_status: CURRENT_NONCANONICAL
+uly_quote_adjudication:
+  handler_found: true
+  handler_role: base_filler_only
+  quote_from_uly_found: false
+  first_cap21_commit: 02095305f1ecaaa94e294ab73010ffdf33c905f0
+  previous_owner: src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+  removed_uly_quote_parser_found: false
+  intentional_xperp_product_exclusion_found: false

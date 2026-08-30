@@ -1,0 +1,69 @@
+# ATLAS_AUTHORITY=NONE
+# Git-introduction proof from origin/main after unshallow. Document dates are not git proof.
+events:
+  - id: OKX_CHRONO:first_token
+    sort_key: "2026-02-16a"
+    when: "2026-02-16 96d8195ac (#1424)"
+    what: First origin/main commit whose diff contains token OKX (P99 guarded launcher docs)
+    epistemic_status: ADJUDICATED
+    evidence: git log origin/main --reverse -S OKX
+  - id: OKX_CHRONO:p108_mocks_adapter
+    sort_key: "2026-02-16b"
+    when: "2026-02-16 5c5889997 (#1436)"
+    what: First OKX-named implementation; mocks-only execution adapter (still present)
+    epistemic_status: ADJUDICATED
+    evidence: src/execution/adapters/providers/okx_v1.py
+  - id: OKX_CHRONO:eea_xperp_contracts
+    sort_key: "2026-06-26"
+    when: "2026-06-26 8457850cb (#4587)"
+    what: OKX Europe X-Perp offline contracts; eea.okx.com / wss hosts enter config
+    epistemic_status: ADJUDICATED
+    evidence: src/ops/aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py
+  - id: OKX_CHRONO:kraken_off_okx_staged
+    sort_key: "2026-06-27"
+    when: "2026-06-27 da9b257bf (#4616)"
+    what: Kraken deactivated; disabled OKX target staged
+    epistemic_status: FORENSIC_RAW
+    evidence: git log -S eea.okx.com
+  - id: OKX_CHRONO:public_md_ingest
+    sort_key: "2026-07-01"
+    when: "2026-07-01 713db77d0 (#4726)"
+    what: OKX public futures market-data ingest; first uly field-token in Python ingest path
+    epistemic_status: ADJUDICATED
+    evidence: scripts/ops/ingest_okx_futures_public_market_data_canonical_dataset_staging_v1.py
+  - id: OKX_CHRONO:audit_2026_07_17
+    sort_key: "2026-07-17"
+    when: "2026-07-17 f5114401f (#5298); document date matches git introduction"
+    what: Read-only OKX integration audit claimed signed private REST absent
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: OKX_CHRONO:dashboard_intrabar
+    sort_key: "2026-07-25"
+    when: "2026-07-25 6f38df4d8 (#5548)"
+    what: Dashboard OKX futures intrabar OHLCV path; not proven as a live WebSocket session
+    epistemic_status: FORENSIC_RAW
+    evidence: src/ops/okx_public_market_data_client_v1.py
+  - id: OKX_CHRONO:cap21_uly_base
+    sort_key: "2026-08-02"
+    when: "2026-08-02 02095305f Cap 2.1 GFU"
+    what: _extract_base_quote uses uly for BASE only; quote never from uly (original behavior)
+    epistemic_status: ADJUDICATED
+    evidence: src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+  - id: OKX_CHRONO:hmac_signer
+    sort_key: "2026-08-08"
+    when: "2026-08-08 35519be26 (#5830)"
+    what: sign_okx_request_v1 HMAC signer on §11.12.8 Testnet execute path
+    epistemic_status: FORENSIC_RAW
+    evidence: src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+  - id: OKX_CHRONO:okx_named_deletions
+    sort_key: "2026-08-30"
+    when: "census after unshallow"
+    what: origin/main has zero deleted OKX-named paths (git log --diff-filter=D -- *okx*)
+    epistemic_status: ADJUDICATED
+    evidence: docs/system_atlas/census/okx_historical.yaml
+  - id: OKX_CHRONO:shallow_artifact_corrected
+    sort_key: "2026-08-30b"
+    when: "2026-08-06 ec0e0272d was local shallow root, not first OKX introduction"
+    what: Prior Atlas chronology that treated ec0e0272d as first OKX bulk-add is superseded
+    epistemic_status: ADJUDICATED
+    evidence: git fetch --unshallow; earliest commit 78979ed413 2025-12-02

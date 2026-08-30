@@ -1,0 +1,409 @@
+# ATLAS_AUTHORITY=NONE
+fields:
+  - id: VENUE_FIELD:instId
+    kind: VENUE_FIELD
+    name: instId
+    field: instId
+    identity_role: instrument_id
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+  - id: VENUE_FIELD:uly
+    kind: VENUE_FIELD
+    name: uly
+    field: uly
+    identity_role: underlying_base_fallback_only
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+  - id: VENUE_FIELD:quoteCcy
+    kind: VENUE_FIELD
+    name: quoteCcy
+    field: quoteCcy
+    identity_role: quote_currency
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+  - id: VENUE_FIELD:instFamily
+    kind: VENUE_FIELD
+    name: instFamily
+    field: instFamily
+    identity_role: okx_instrument_family
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+  - id: VENUE_FIELD:instType
+    kind: VENUE_FIELD
+    name: instType
+    field: instType
+    identity_role: product_type
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+  - id: VENUE_FIELD:mmr
+    kind: VENUE_FIELD
+    name: mmr
+    field: mmr
+    identity_role: maintenance_margin_ratio_venue_field
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/cover_usdc_current_public_tier_mmr_productive_evidence_v1.py
+  - id: VENUE_FIELD:markPx
+    kind: VENUE_FIELD
+    name: markPx
+    field: markPx
+    identity_role: mark_price
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+  - id: VENUE_FIELD:ctType
+    kind: VENUE_FIELD
+    name: ctType
+    field: ctType
+    identity_role: contract_type
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+  - id: VENUE_FIELD:ruleType
+    kind: VENUE_FIELD
+    name: ruleType
+    field: ruleType
+    identity_role: rule_type_xperp_observed
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/forensics/persistence/inventories/P6_LIVE_GFU_NETWORK_GET_ONLY_CENSUS_AND_GAP_ADJUDICATION_OBSERVATION_V1.json
+  - id: VENUE_FIELD:posSide
+    kind: VENUE_FIELD
+    name: posSide
+    field: posSide
+    identity_role: position_side
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: VENUE_FIELD:lever
+    kind: VENUE_FIELD
+    name: lever
+    field: lever
+    identity_role: leverage
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: VENUE_FIELD:ordId
+    kind: VENUE_FIELD
+    name: ordId
+    field: ordId
+    identity_role: order_id
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: VENUE_FIELD:clOrdId
+    kind: VENUE_FIELD
+    name: clOrdId
+    field: clOrdId
+    identity_role: client_order_id
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: VENUE_FIELD:state
+    kind: VENUE_FIELD
+    name: state
+    field: state
+    identity_role: order_or_account_state
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: VENUE_FIELD:availBal
+    kind: VENUE_FIELD
+    name: availBal
+    field: availBal
+    identity_role: available_balance
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: VENUE_FIELD:baseCcy
+    kind: VENUE_FIELD
+    name: baseCcy
+    field: baseCcy
+    identity_role: base_currency
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/evidence/capability_2_1_governed_futures_universe_producer_v1/fixtures/okx_eea_instruments_input_v1.json
+  - id: VENUE_FIELD:settleCcy
+    kind: VENUE_FIELD
+    name: settleCcy
+    field: settleCcy
+    identity_role: settlement_currency
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/evidence/capability_2_1_governed_futures_universe_producer_v1/fixtures/okx_eea_instruments_input_v1.json
+    notes: SETTLE_VS_QUOTE remains OPEN. Not collapsed into quoteCcy.
+  - id: VENUE_FIELD:ctVal
+    kind: VENUE_FIELD
+    name: ctVal
+    field: ctVal
+    identity_role: contract_value
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/evidence/capability_2_1_governed_futures_universe_producer_v1/fixtures/okx_eea_instruments_input_v1.json
+  - id: VENUE_FIELD:ctMult
+    kind: VENUE_FIELD
+    name: ctMult
+    field: ctMult
+    identity_role: contract_multiplier
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/venue_pretrade_limit_observation_v1.py
+  - id: VENUE_FIELD:ctValCcy
+    kind: VENUE_FIELD
+    name: ctValCcy
+    field: ctValCcy
+    identity_role: contract_value_currency
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/evidence/capability_2_1_governed_futures_universe_producer_v1/fixtures/okx_eea_instruments_input_v1.json
+  - id: VENUE_FIELD:tickSz
+    kind: VENUE_FIELD
+    name: tickSz
+    field: tickSz
+    identity_role: tick_size
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/evidence/capability_2_1_governed_futures_universe_producer_v1/fixtures/okx_eea_instruments_input_v1.json
+  - id: VENUE_FIELD:lotSz
+    kind: VENUE_FIELD
+    name: lotSz
+    field: lotSz
+    identity_role: lot_size
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/evidence/capability_2_1_governed_futures_universe_producer_v1/fixtures/okx_eea_instruments_input_v1.json
+  - id: VENUE_FIELD:minSz
+    kind: VENUE_FIELD
+    name: minSz
+    field: minSz
+    identity_role: min_size
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/evidence/capability_2_1_governed_futures_universe_producer_v1/fixtures/okx_eea_instruments_input_v1.json
+  - id: VENUE_FIELD:expTime
+    kind: VENUE_FIELD
+    name: expTime
+    field: expTime
+    identity_role: expiry_timestamp
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/evidence/capability_2_1_governed_futures_universe_producer_v1/fixtures/okx_eea_instruments_input_v1.json
+  - id: VENUE_FIELD:mgnMode
+    kind: VENUE_FIELD
+    name: mgnMode
+    field: mgnMode
+    identity_role: margin_mode
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: VENUE_FIELD:posMode
+    kind: VENUE_FIELD
+    name: posMode
+    field: posMode
+    identity_role: position_mode
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: VENUE_FIELD:pos
+    kind: VENUE_FIELD
+    name: pos
+    field: pos
+    identity_role: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: POLYVALENT token; not all file hits are OKX position size.
+  - id: VENUE_FIELD:avgPx
+    kind: VENUE_FIELD
+    name: avgPx
+    field: avgPx
+    identity_role: average_price
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: VENUE_FIELD:last
+    kind: VENUE_FIELD
+    name: last
+    field: last
+    identity_role: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+    notes: POLYVALENT_WIRE_TOKEN.
+  - id: VENUE_FIELD:bidPx
+    kind: VENUE_FIELD
+    name: bidPx
+    field: bidPx
+    identity_role: bid_price
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+  - id: VENUE_FIELD:askPx
+    kind: VENUE_FIELD
+    name: askPx
+    field: askPx
+    identity_role: ask_price
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+  - id: VENUE_FIELD:sz
+    kind: VENUE_FIELD
+    name: sz
+    field: sz
+    identity_role: size
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: VENUE_FIELD:side
+    kind: VENUE_FIELD
+    name: side
+    field: side
+    identity_role: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: POLYVALENT_WIRE_TOKEN.
+  - id: VENUE_FIELD:tdMode
+    kind: VENUE_FIELD
+    name: tdMode
+    field: tdMode
+    identity_role: trade_mode
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: VENUE_FIELD:ordType
+    kind: VENUE_FIELD
+    name: ordType
+    field: ordType
+    identity_role: order_type
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: VENUE_FIELD:px
+    kind: VENUE_FIELD
+    name: px
+    field: px
+    identity_role: price
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: VENUE_FIELD:reduceOnly
+    kind: VENUE_FIELD
+    name: reduceOnly
+    field: reduceOnly
+    identity_role: reduce_only_flag
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+  - id: VENUE_FIELD:code
+    kind: VENUE_FIELD
+    name: code
+    field: code
+    identity_role: okx_response_code
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+    notes: Envelope code; POLYVALENT across non-OKX usages.
+  - id: VENUE_FIELD:msg
+    kind: VENUE_FIELD
+    name: msg
+    field: msg
+    identity_role: okx_response_message
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+    notes: POLYVALENT_WIRE_TOKEN.
+  - id: VENUE_FIELD:ts
+    kind: VENUE_FIELD
+    name: ts
+    field: ts
+    identity_role: timestamp
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - tests/fixtures/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/mark_price_valid.json
+    notes: POLYVALENT_WIRE_TOKEN.

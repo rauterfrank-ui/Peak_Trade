@@ -1,0 +1,29 @@
+# ATLAS_AUTHORITY=NONE
+chains:
+  - id: CHAIN:gfu_eligibility
+    steps:
+      - ADAPTER:okx_public_md_client
+      - RUNTIME_COMPONENT:gfu_eligibility
+      - GATE:btc_exclusion
+      - UNIVERSE:governed_futures_universe
+    missing_edges: []
+    epistemic_status: FORENSIC_RAW
+    evidence: src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+  - id: CHAIN:canary_flatten
+    steps:
+      - GATE:live_authorized_false
+      - GATE:flatten_execute_authority
+      - CAPABILITY:cap_11_13_5_live_canary
+      - OBSERVER:post_action_canary
+    missing_edges:
+      - OBSERVER:post_action_canary
+    epistemic_status: OPEN
+    evidence: docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md
+  - id: CHAIN:order_submit_standing_deny
+    steps:
+      - GATE:live_authorized_false
+      - TRANSPORT:bound_okx_testnet_http
+      - VENUE_ENDPOINT:okx_trade_order
+    missing_edges: []
+    epistemic_status: ADJUDICATED
+    evidence: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md

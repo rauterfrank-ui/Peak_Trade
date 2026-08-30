@@ -1,0 +1,152 @@
+# ATLAS_AUTHORITY=NONE
+gaps:
+  - id: GAP:post_action_not_wired
+    class: DEFINED_BUT_NO_CONSUMER
+    entity: OBSERVER:post_action_canary
+    epistemic_status: OPEN
+    expected_relation_if_authority_proves_one: OBSERVER:post_action_canary CONSUMES flatten-execute post-action
+    observed_relation: Forensic registry records POST_ACTION_NOT_WIRED_IN_FLATTEN_EXECUTE
+    missing_edge: post-action observer not consumed by flatten execute
+    impact: Canary post-action telemetry is defined but not wired into flatten execute
+    current_runtime_effect: Observer exists; flatten execute does not consume it
+    authority: NONE
+    evidence: Forensic registry POST_ACTION_NOT_WIRED_IN_FLATTEN_EXECUTE
+    repair_required: OPEN
+    repair_owner: OPEN
+    repair_performed: false
+    notes: Forensic registry records POST_ACTION_NOT_WIRED_IN_FLATTEN_EXECUTE
+  - id: GAP:ssot_child_undefined
+    class: TERM_WITHOUT_FORMAL_KIND
+    entity: TERM:ssot_child_unproven
+    epistemic_status: OPEN
+    expected_relation_if_authority_proves_one: HAS_SSOT_CHILD from a proven parent
+    observed_relation: Literal SSOT_CHILD / ssot_child / "SSOT child" as a formal kind not found
+    missing_edge: No SSOT_CHILD entity with a proven parent
+    impact: Owner-requested SSOT child remains an absence record, not a hierarchy
+    current_runtime_effect: NONE
+    authority: NONE
+    evidence: origin/main literal search; census/family_child_usage.yaml ssot_child_literal_found=false
+    repair_required: false
+    repair_owner: OPEN
+    repair_performed: false
+    notes: Owner-requested SSOT child has no formal in-repo definition
+  - id: GAP:architectural_mmr
+    class: TERM_WITHOUT_FORMAL_KIND
+    entity: TERM:mmr_polyvalent
+    epistemic_status: OPEN
+    expected_relation_if_authority_proves_one: HAS_MMR from Master V2 to an architectural MMR kind
+    observed_relation: Venue/margin MMR (OKX mmr field) proven; architectural Master-V2 MMR kind not found
+    missing_edge: Architectural MMR entity
+    impact: C-MMR-POLYVALENT-001 remains; do not invent a second MMR kind
+    current_runtime_effect: Venue mmr field used on GFU/canary public-tier path
+    authority: NONE
+    evidence: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md WHAT_IS_MAINTENANCE_MARGIN_REQUIREMENT_MMR
+    repair_required: false
+    repair_owner: OPEN
+    repair_performed: false
+    notes: Architectural MMR unproven; OKX mmr is a venue field
+  - id: GAP:sui_xperp_gfu_membership
+    class: PRODUCTIVE_MEMBERSHIP_UNPROVEN
+    entity: UNIVERSE:governed_futures_universe
+    epistemic_status: OPEN
+    expected_relation_if_authority_proves_one: UNIVERSE:governed_futures_universe CONTAINS SUI-USD_UM_XPERP-310404
+    observed_relation: GAP-U-CAN-006 SUI XPERP blocked by missing quote and source_event_time
+    missing_edge: Productive GFU membership of the canary hardcoded instrument
+    impact: Canary instrument is not proven as a GFU member; Cap 2.3 remains a parallel authority
+    current_runtime_effect: Canary uses hardcoded SUI-USD_UM_XPERP-310404; GFU producer fail-closed on missing quote
+    authority: NONE
+    evidence: docs/forensics/persistence/inventories/P6_LIVE_GFU_NETWORK_GET_ONLY_CENSUS_AND_GAP_ADJUDICATION_OBSERVATION_V1.json
+    repair_required: OPEN
+    repair_owner: OPEN
+    repair_performed: false
+    notes: GAP-U-CAN-006 SUI XPERP blocked by missing quote and source_event_time. NO XPERP REPAIR in this workpackage.
+  - id: GAP:live_ws_client
+    class: CONFIGURED_BUT_NO_CLIENT
+    entity: OKX_FEATURE:websocket_hosts_configured
+    epistemic_status: OPEN
+    expected_relation_if_authority_proves_one: RUNTIME_COMPONENT live WS client CALLS OKX WS hosts
+    observed_relation: WS hosts configured; src/data/feeds/live_feed.py is a stub
+    missing_edge: Proven live WebSocket client
+    impact: Public-MD/canary paths use REST; live WS not a proven runtime surface
+    current_runtime_effect: No proven live WS session
+    authority: NONE
+    evidence: config/config.toml; src/data/feeds/live_feed.py
+    repair_required: OPEN
+    repair_owner: OPEN
+    repair_performed: false
+    notes: WS hosts configured; no proven live WS client; src/data/feeds/live_feed.py is a stub
+  - id: GAP:okx_historical_removals
+    class: CENSUS_INCOMPLETE
+    entity: VENUE:okx
+    epistemic_status: OPEN
+    expected_relation_if_authority_proves_one: Historical VENUE_ENDPOINT rows for deleted non-okx-named modules
+    observed_relation: origin/main OKX-named path deletions are zero after unshallow; non-okx-named /api/v5 callers remain sampled
+    missing_edge: Exhaustive non-okx-named historical OKX API callers
+    impact: okx_historical_census_complete=true for named-path history; in-repo okx_census_complete=true; external corpus NOT_STARTED
+    current_runtime_effect: NONE
+    authority: NONE
+    evidence: git log origin/main --diff-filter=D -- '*okx*' '*OKX*' empty; docs/system_atlas/census/okx_historical.yaml
+    repair_required: false
+    repair_owner: OPEN
+    repair_performed: false
+    notes: Unshallow complete. Named-path removals searched. Do not equate remaining non-named callers with missing history.
+  - id: GAP:schema_field_enumeration
+    class: CENSUS_CLOSED_FOR_DECLARED_SCOPE
+    entity: SCHEMA:pure_stack_numeric_policy_evidence_pack_v1
+    epistemic_status: ADJUDICATED
+    expected_relation_if_authority_proves_one: SCHEMA field-level required/optional/types for docs/ops/schemas/*.schema.json
+    observed_relation: census/schema_field_inventory.yaml enumerates required/optional/types for all 10 JSON Schema files
+    missing_edge: remaining SCHEMA_VERSION tokens are VERSION_TOKEN/TYPE_ONLY, not per-token SCHEMA entities
+    impact: Declared JSON Schema scope closed; material src contracts classified in census/schema_like_src.yaml
+    current_runtime_effect: NONE
+    authority: NONE
+    evidence: docs/system_atlas/census/schema_field_inventory.yaml
+    repair_required: false
+    repair_owner: OPEN
+    repair_performed: false
+    notes: JSON Schema field inventory plus src schema-like classification closed; remaining VERSION_TOKEN payloads are not SCHEMA entities
+  - id: GAP:cap23_not_wired_to_canary
+    class: PARALLEL_INSTRUMENT_AUTHORITY
+    entity: CAPABILITY:cap_2_3_single_selected_future
+    epistemic_status: ADJUDICATED
+    expected_relation_if_authority_proves_one: CAPABILITY:cap_11_13_5_live_canary CONSUMES CAPABILITY:cap_2_3_single_selected_future
+    observed_relation: Section 11.13.5 canary hardcoded SUI-USD_UM_XPERP-310404; no Cap 2.3 import on origin/main
+    missing_edge: Canary does not import Cap 2.3 selection
+    impact: C-CAP23-VS-CANARY-INSTRUMENT-001; parallel instrument authorities
+    current_runtime_effect: Canary instrument authority is hardcoded, not Cap 2.3
+    authority: NONE
+    evidence: origin/main src/ops/section_11_13_5_live_canary_minimum_exposure_v1 (no Cap 2.3 import)
+    repair_required: OPEN
+    repair_owner: OPEN
+    repair_performed: false
+    notes: Section 11.13.5 canary hardcoded SUI-USD_UM_XPERP-310404; no Cap 2.3 import on origin/main
+  - id: GAP:flatten_live_wire_disabled
+    class: IMPLEMENTED_BUT_UNREACHABLE
+    entity: GATE:flatten_live_wire
+    epistemic_status: FORENSIC_RAW
+    expected_relation_if_authority_proves_one: GATE:flatten_execute_authority AUTHORIZES live flatten transport
+    observed_relation: DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false; LIVE_FLATTEN_PROVABILITY not PROVEN
+    missing_edge: Live flatten wire remains disabled
+    impact: Flatten transport implemented but not live-reachable
+    current_runtime_effect: LIVE_WIRE_DISABLED; standing LIVE_AUTHORIZED=false
+    authority: NONE
+    evidence: flatten execute authority constants on origin/main
+    repair_required: OPEN
+    repair_owner: OPEN
+    repair_performed: false
+    notes: DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false; LIVE_FLATTEN_PROVABILITY not PROVEN
+  - id: GAP:no_family_ontology_projection
+    class: TERM_WITHOUT_FORMAL_KIND
+    entity: TERM:family_polyvalent
+    epistemic_status: OPEN
+    expected_relation_if_authority_proves_one: Unified Families ontology covering projection-octet, confirm-token, Gate F1–F6
+    observed_relation: Distinct usages enumerated; CBK-FAMILY-PROJECTION KIND=NO_FAMILY_ONTOLOGY
+    missing_edge: Unified Family ontology
+    impact: C-FAMILY-POLYVALENT-001 preserved; family_census_complete means usage enum, not ontology-solved
+    current_runtime_effect: Confirm-token and dashboard family_id remain separate surfaces
+    authority: NONE
+    evidence: docs/system_atlas/census/family_child_usage.yaml
+    repair_required: false
+    repair_owner: OPEN
+    repair_performed: false
+    notes: CBK-FAMILY-PROJECTION KIND=NO_FAMILY_ONTOLOGY blocks 5-family projection completeness only

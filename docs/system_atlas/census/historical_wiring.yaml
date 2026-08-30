@@ -1,0 +1,69 @@
+# ATLAS_AUTHORITY=NONE
+# Time-bounded wiring observations from origin/main history. Not inferred current equivalence.
+schema_version: system_atlas.v1
+origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+historical_wiring_change_count: 5
+edges:
+  - id: HW:ops_dp_specialists_introduced
+    source: src/ops/double_play
+    relation: INTRODUCED
+    target: bull/bear specialists scaffold
+    valid_from: "2026-02-20"
+    valid_to: still present (quarantined)
+    introduced_by: a3dd22619a66bd7fe859c4cd3d2e24fa16513e75
+    removed_or_superseded_by: null
+    epistemic_status: FORENSIC_RAW
+    evidence: "PR #1535"
+  - id: HW:master_v2_contains_dp_pure_stack
+    source: src/trading/master_v2
+    relation: CONTAINS
+    target: double_play_{state,survival,suitability,composition}
+    valid_from: "2026-04-25"
+    valid_to: current
+    introduced_by: f78e1c9de767346e52ae7f35df7681141d7ed645
+    removed_or_superseded_by: null
+    epistemic_status: FORENSIC_RAW
+    evidence: "PRs #3035–#3040"
+  - id: HW:webui_dp_dashboard_removed
+    source: src/webui/market_dashboard_readmodels_v1/adapters/double_play.py
+    relation: REMOVED_CONSUMER
+    target: Double Play display
+    valid_from: OPEN
+    valid_to: "2026-07-17"
+    introduced_by: OPEN
+    removed_or_superseded_by: b5b8172806eae55d8639f964fcb2ad036337a0f3
+    epistemic_status: FORENSIC_RAW
+    evidence: git log --diff-filter=D -- *double_play*
+  - id: HW:kraken_deactivated_okx_staged
+    source: config
+    relation: SUPERSEDED_BY
+    target: disabled OKX target staging
+    valid_from: "2026-06-27"
+    valid_to: current (Kraken deactivated)
+    introduced_by: da9b257bf1630758e204db16cb15c97fcfef3ad6
+    removed_or_superseded_by: null
+    epistemic_status: FORENSIC_RAW
+    evidence: "PR #4616"
+  - id: HW:dp_core_wiring_restored
+    source: src/trading/master_v2/double_play_core_wiring_v1.py
+    relation: RESTORED
+    target: FUNCTIONAL_CORE:double_play facade
+    valid_from: "2026-08-29"
+    valid_to: current
+    introduced_by: 13a38b0b8fd814b9018ad25831aa3f879a81722e
+    removed_or_superseded_by: null
+    epistemic_status: FORENSIC_RAW
+    evidence: "PR #6131"
+deleted_superseded:
+  - id: DEL:webui_double_play_dashboard
+    classification: REMOVED
+    current_equivalent: CURRENT_EQUIVALENT_OPEN
+    notes: Dashboard product stack delete; not Master V2 composition removal
+  - id: DEL:okx_named_modules
+    classification: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    current_equivalent: none deleted on origin/main
+    notes: git log origin/main --diff-filter=D -- '*okx*' '*OKX*' empty
+  - id: DEL:src_execution_adapters
+    classification: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    current_equivalent: none deleted
+    notes: git log origin/main --diff-filter=D -- src/execution/** empty

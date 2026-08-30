@@ -1,0 +1,95 @@
+# ATLAS_AUTHORITY=NONE
+# origin/main chronology. Not a reinterpretation of owner-bound Master V2 / Double Play relation.
+schema_version: system_atlas.v1
+origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+c_dp_order_001_status_changed: false
+c_functional_core_token_001_status_changed: false
+functional_core_token_hits_on_origin_main: 0
+has_functional_core_token_hits_on_origin_main: 0
+master_v2_material_change_count: 8
+double_play_material_change_count: 8
+events:
+  - id: HIST:ops_double_play_switch_gate
+    when: "2026-02-20"
+    commit: be23189f49a4c98026e4d4984ba11142c9e32b1f
+    pr: "#1531"
+    what: Deterministic switch-gate + double-play runbook (before Master V2 tree)
+    current_status: HISTORICAL_ONLY
+  - id: HIST:ops_double_play_specialists
+    when: "2026-02-20"
+    commit: a3dd22619a66bd7fe859c4cd3d2e24fa16513e75
+    pr: "#1535"
+    what: src/ops/double_play bull/bear specialists scaffold (safe default off)
+    current_status: CURRENT_NONCANONICAL
+    notes: Later quarantined as competing-authority projection; not Master V2 composition
+  - id: HIST:master_v2_tree
+    when: "2026-04-23"
+    commit: c47b89077b48a48c5f11b7c53cf8edc3b7ccd751
+    pr: "#2822"
+    what: Master V2 canonical dry-flow tree introduced
+    current_status: STILL_CURRENT_AND_CANONICALLY_SUPPORTED
+  - id: HIST:dp_pure_stack
+    when: "2026-04-25"
+    commit: f78e1c9de767346e52ae7f35df7681141d7ed645
+    pr: "#3035"
+    what: Double Play pure scope/state then survival/suitability/composition on Master V2
+    current_status: STILL_CURRENT_AND_CANONICALLY_SUPPORTED
+  - id: HIST:webui_dp_dashboard_removed
+    when: "2026-07-17"
+    commit: b5b8172806eae55d8639f964fcb2ad036337a0f3
+    pr: OPEN
+    what: Market-dashboard Double Play webui stack deleted
+    current_status: REMOVED
+    classification: SUPERSEDED
+  - id: HIST:cap21_gfu
+    when: "2026-08-02"
+    commit: 02095305f1ecaaa94e294ab73010ffdf33c905f0
+    pr: OPEN
+    what: Capability 2.1 GFU producer introduced (uly base-only from first commit)
+    current_status: CURRENT_NONCANONICAL
+  - id: HIST:dp_core_wiring_restored
+    when: "2026-08-29"
+    commit: 13a38b0b8fd814b9018ad25831aa3f879a81722e
+    pr: "#6131"
+    what: Restore current-system Double-Play core wiring on Master V2
+    current_status: CURRENT_NONCANONICAL
+    classification: RESTORED
+  - id: HIST:selector_policy_reverted
+    when: "2026-08-30"
+    commit: afbae518b67eb1b789c835e219db37f5b15f308b
+    pr: "#6166"
+    what: Revert Master V2 minimal selector policy (#6165)
+    current_status: REJECTED
+relation_changes:
+  - id: REL_HIST:ops_dp_before_master_v2
+    old_relation: Double Play specialists exist without Master V2 package
+    new_relation: Master V2 tree contains Double Play pure stack
+    first_proven_change_commit: c47b89077b48a48c5f11b7c53cf8edc3b7ccd751
+    pr_if_proven: "#2822"
+    reason_if_proven: Master V2 consolidation after earlier ops.double_play scaffold
+    current_status: ADJUDICATED
+    evidence: git log origin/main -- src/ops/double_play vs src/trading/master_v2
+  - id: REL_HIST:pure_stack_composition
+    old_relation: specialists scaffold
+    new_relation: composition consumes survival+suitability+state+capital_slot
+    first_proven_change_commit: fc2d38b6d5db0d397112cbee57c6c136c169f7d9
+    pr_if_proven: "#3040"
+    reason_if_proven: pure composition model v0
+    current_status: FORENSIC_RAW
+    evidence: src/trading/master_v2/double_play_composition.py introduction
+  - id: REL_HIST:webui_dp_removed
+    old_relation: webui market dashboard consumes Double Play display
+    new_relation: those templates/adapters deleted
+    first_proven_change_commit: b5b8172806eae55d8639f964fcb2ad036337a0f3
+    pr_if_proven: OPEN
+    reason_if_proven: market dashboard product stack delete
+    current_status: REMOVED
+    evidence: git log --diff-filter=D -- *double_play*
+  - id: REL_HIST:core_wiring_restored
+    old_relation: OPEN (wiring module absent before restore)
+    new_relation: double_play_core_wiring_v1 facade on Master V2
+    first_proven_change_commit: 13a38b0b8fd814b9018ad25831aa3f879a81722e
+    pr_if_proven: "#6131"
+    reason_if_proven: restore current-system Double-Play core wiring
+    current_status: FORENSIC_RAW
+    evidence: git log -- src/trading/master_v2/double_play_core_wiring_v1.py

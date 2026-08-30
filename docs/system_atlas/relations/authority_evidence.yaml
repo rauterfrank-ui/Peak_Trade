@@ -1,0 +1,67 @@
+# ATLAS_AUTHORITY=NONE
+relations:
+  - id: REL:a_runbook_governs_system
+    source: RUNBOOK:canonical_master_runbook
+    type: GOVERNS
+    target: SYSTEM:peak_trade
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: REL:a_runbook_does_not_authorize_live
+    source: RUNBOOK:canonical_master_runbook
+    type: DOES_NOT_AUTHORIZE
+    target: GATE:live_authorized_false
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: REL:a_owner_binds_cap23
+    source: OWNER_DECISION:cap23_exclusive_selection
+    type: BINDS
+    target: CAPABILITY:cap_2_3_single_selected_future
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+
+  - id: REL:a_owner_binds_btc
+    source: OWNER_DECISION:btc_excluded
+    type: BINDS
+    target: GATE:btc_exclusion
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/constants_v1.py
+
+  - id: REL:a_spec_claims_cap21
+    source: CAPABILITY:cap_2_1_gfu
+    type: CLAIMS_TO_IMPLEMENT
+    target: INVARIANT:missing_metadata_never_defaulted
+    epistemic_status: CONTRADICTED
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+    notes: Spec claims never-defaulted; implementation defaults missing base. See C-OKX-QUOTE-ULY-001.
+
+  - id: REL:a_map_documents_runbook
+    source: NAVIGATION_INDEX:map_of_truth
+    type: DOCUMENTS
+    target: RUNBOOK:canonical_master_runbook
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+
+  - id: REL:a_forensic_does_not_authorize
+    source: FORENSIC_REFERENCE:information_corpus_persistence_base
+    type: DOES_NOT_AUTHORIZE
+    target: SYSTEM:peak_trade
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md

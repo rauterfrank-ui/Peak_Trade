@@ -1,0 +1,156 @@
+# ATLAS_AUTHORITY=NONE
+# DoD is a first-class completion contract. Not collapsed into tests or Capability Closure Standard.
+dods:
+  - id: DOD:program_final
+    kind: DOD
+    name: Program Definition of Done
+    scope: program
+    subject: Peak_Trade no-order system finish program
+    criteria: FINAL_PROGRAM_DOD_REQUIRED_STATE block including DOCUMENTATION_RUNTIME_DRIFT=false, SINGLE_SELECTED_FUTURE_RUNTIME_CLOSED, C1/C2/C3 productively bound, Master V2 reachable, Double Play unambiguous, LIVE not implied
+    authority: canonical_master_runbook_section_21
+    source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    consumers:
+      - RUNBOOK:canonical_master_runbook
+    validators: []
+    tests: []
+    related_invariants: []
+    related_gates:
+      - GATE:live_authorized_false
+    related_predicates: []
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    temporal_class: CURRENT
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: Named "Program Definition of Done" in §21. Distinct from §11 Mandatory Capability Closure Standard.
+
+  - id: DOD:capability_closure_standard
+    kind: DOD
+    name: Mandatory Capability Closure Standard
+    scope: capability
+    subject: Every capability specification
+    criteria: CAPABILITY_ID, TITLE, OWNER_REQUIREMENT, CURRENT_STATE, TARGET_STATE, SAFETY_INVARIANTS, TEST_PLAN, EVIDENCE_PLAN, ACTIVATION_STATE, and remaining §11 required fields
+    authority: canonical_master_runbook_section_11
+    source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    consumers:
+      - CAPABILITY:cap_2_1_gfu
+      - CAPABILITY:cap_2_3_single_selected_future
+    validators: []
+    tests: []
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    temporal_class: CURRENT
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: Related to DoD but not named DoD. Recorded here so the collision is visible, not collapsed.
+
+  - id: DOD:vollautonomie_trading_logic
+    kind: DOD
+    name: Definition of Done — Trading Logic
+    scope: historical_runbook
+    subject: TRADING_DECISION_CORE / Vollautonomie trading logic
+    criteria: Vollautonomie v4.4.12 §37
+    authority: historical_superseded_ssot
+    source: docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+    consumers:
+      - RUNBOOK:vollautonomie_v4_4_12
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: SUPERSEDED
+    temporal_class: HISTORICAL_ONLY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+
+  - id: DOD:vollautonomie_economic_validity
+    kind: DOD
+    name: Definition of Done — Economic Validity
+    scope: historical_runbook
+    subject: Economic validity of the Vollautonomie target system
+    criteria: Vollautonomie v4.4.12 §38
+    authority: historical_superseded_ssot
+    source: docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+    consumers:
+      - RUNBOOK:vollautonomie_v4_4_12
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: SUPERSEDED
+    temporal_class: HISTORICAL_ONLY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+
+  - id: DOD:vollautonomie_safety_runtime
+    kind: DOD
+    name: Definition of Done — Safety and Runtime
+    scope: historical_runbook
+    subject: Safety and runtime of the Vollautonomie target system
+    criteria: Vollautonomie v4.4.12 §39 including a later Multi-Future-Runtime DoD clause
+    authority: historical_superseded_ssot
+    source: docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+    consumers:
+      - RUNBOOK:vollautonomie_v4_4_12
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: SUPERSEDED
+    temporal_class: HISTORICAL_ONLY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+
+  - id: DOD:pr_queue_per_pr
+    kind: DOD
+    name: Definition of Done pro PR
+    scope: process
+    subject: Pull-request merge queue item
+    criteria: Queue strategy document; not Master Runbook program DoD
+    authority: non_authoritative_ops_docs
+    source: docs/ops/QUEUE_DURCHZIEHEN_STRATEGIE.md
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    temporal_class: CURRENT
+    evidence_sources:
+      - docs/ops/QUEUE_DURCHZIEHEN_STRATEGIE.md
+    notes: Process DoD. Must not be read as program or capability closure.
+
+  - id: DOD:cybersecurity_runbook
+    kind: DOD
+    name: Cybersecurity Runbook Definition of Done
+    scope: cybersecurity_runbook
+    subject: Canonical cybersecurity runbook v2.1 §16
+    criteria: Cybersecurity runbook §16
+    authority: cybersecurity_runbook_not_trading_ssot
+    source: docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: Master Runbook states cybersecurity runbook is not trading SSOT.
+
+  - id: DOD:roadmap_phase_generic
+    kind: DOD
+    name: Historical phase/roadmap Definition of Done headings
+    scope: documentation_historical
+    subject: PHASE_*, WP*, Wave3, mini-roadmap packets
+    criteria: OPEN — many documents contain a heading; individual criteria not inventoried
+    authority: non_authoritative
+    source: docs/PEAK_TRADE_MINI_ROADMAP_V1_RESEARCH_LIVE_BETA.md
+    epistemic_class: OPEN
+    current_canonical: false
+    current_status: OPEN
+    evidence_sources:
+      - docs/PEAK_TRADE_MINI_ROADMAP_V1_RESEARCH_LIVE_BETA.md
+      - docs/PHASE_83_LIVE_GATING_AND_RISK_POLICIES.md
+    notes: Census records the class of occurrence. Exhaustive per-heading inventory remains OPEN.

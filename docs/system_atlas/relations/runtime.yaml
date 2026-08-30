@@ -1,0 +1,170 @@
+# ATLAS_AUTHORITY=NONE
+relations:
+  - id: REL:r_gfu_eligibility_filters
+    source: RUNTIME_COMPONENT:gfu_eligibility
+    type: FILTERS
+    target: UNIVERSE:governed_futures_universe
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+    requires_okx_fields:
+      - instId
+      - quoteCcy
+      - uly
+
+  - id: REL:r_cap21_produces_universe
+    source: CAPABILITY:cap_2_1_gfu
+    type: PRODUCES
+    target: UNIVERSE:governed_futures_universe
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/producer_v1.py
+
+  - id: REL:r_cap22_ranks_universe
+    source: SELECTOR:productive_futures_ranking
+    type: RANKS
+    target: UNIVERSE:governed_futures_universe
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/productive_futures_ranking_producer_v1/policy_v1.py
+
+  - id: REL:r_cap23_selects
+    source: SELECTOR:single_selected_future_policy
+    type: SELECTS
+    target: SELECTOR:productive_futures_ranking
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/single_selected_future_policy_v1/producer_v1.py
+
+  - id: REL:r_cap24_binds
+    source: BINDER:bound_instrument_v1
+    type: BINDS
+    target: SELECTOR:single_selected_future_policy
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
+
+  - id: REL:r_host72_consumes_binding
+    source: HOST:cap72_stateful_host
+    type: CONSUMES
+    target: BINDER:bound_instrument_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/single_future_stateful_no_order_runtime_activation_v1/host_binding_v1.py
+
+  - id: REL:r_script_gfu_calls_cap21
+    source: SCRIPT:run_gfu_producer
+    type: CALLS
+    target: CAPABILITY:cap_2_1_gfu
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+
+  - id: REL:r_script_cap23_calls
+    source: SCRIPT:run_cap23_policy
+    type: CALLS
+    target: CAPABILITY:cap_2_3_single_selected_future
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+
+  - id: REL:r_md_client_fetches_instruments
+    source: ADAPTER:okx_public_md_client
+    type: FETCHES
+    target: VENUE_ENDPOINT:okx_public_instruments
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+
+  - id: REL:r_transport_signs
+    source: TRANSPORT:bound_okx_testnet_http
+    type: SIGNS
+    target: AUTH_PRIMITIVE:okx_hmac_sign
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+
+  - id: REL:r_flatten_gates
+    source: GATE:flatten_execute_authority
+    type: GATES
+    target: CAPABILITY:cap_11_13_5_live_canary
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+
+  - id: REL:r_post_action_observes
+    source: OBSERVER:post_action_canary
+    type: OBSERVES
+    target: GATE:flatten_execute_authority
+    epistemic_status: OPEN
+    render_as_proven: false
+    evidence_sources:
+      - docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md
+    notes: Forensic record POST_ACTION_NOT_WIRED_IN_FLATTEN_EXECUTE.
+
+  - id: REL:r_dp_composition_consumes_survival
+    source: RUNTIME_COMPONENT:dp_composition
+    type: CONSUMES
+    target: RUNTIME_COMPONENT:dp_survival
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+      - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md
+
+  - id: REL:r_dp_composition_consumes_suitability
+    source: RUNTIME_COMPONENT:dp_composition
+    type: CONSUMES
+    target: RUNTIME_COMPONENT:dp_suitability
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+
+  - id: REL:r_dp_state_calls
+    source: RUNTIME_COMPONENT:dp_composition
+    type: READS
+    target: RUNTIME_COMPONENT:dp_state
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+
+  - id: REL:r_live_auth_denies
+    source: GATE:live_authorized_false
+    type: DENIES
+    target: CAPABILITY:cap_11_13_5_live_canary
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: REL:r_dp_composition_consumes_capital_slot
+    source: RUNTIME_COMPONENT:dp_composition
+    type: CONSUMES
+    target: RUNTIME_COMPONENT:dp_capital_slot
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+
+  - id: REL:r_dp_core_wiring_calls_integrated_replay
+    source: RUNTIME_COMPONENT:dp_core_wiring
+    type: CALLS
+    target: RUNTIME_COMPONENT:mv2_integrated_replay
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/master_v2/double_play_core_wiring_v1.py
+
+  - id: REL:r_dp_core_wiring_calls_decision_packet
+    source: RUNTIME_COMPONENT:dp_core_wiring
+    type: CALLS
+    target: RUNTIME_COMPONENT:mv2_decision_packet
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/master_v2/double_play_core_wiring_v1.py
+
+  - id: REL:r_dp_core_wiring_calls_quarantine
+    source: RUNTIME_COMPONENT:dp_core_wiring
+    type: CALLS
+    target: RUNTIME_COMPONENT:dp_sole_authority_quarantine
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/master_v2/double_play_core_wiring_v1.py

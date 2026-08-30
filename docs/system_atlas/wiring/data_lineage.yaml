@@ -1,0 +1,35 @@
+# ATLAS_AUTHORITY=NONE
+lineage:
+  - id: LINEAGE:quote_currency
+    value: quote_currency
+    origin: OKX instruments row
+    raw_source_field: quoteCcy else instId regex group 2
+    unit: currency_code
+    current_path: eligibility_v1._extract_base_quote → GovernedUniverseInstrumentV1.quote_currency
+    epistemic_status: FORENSIC_RAW
+    evidence: src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+  - id: LINEAGE:base_currency
+    value: base_currency
+    origin: OKX instruments row
+    raw_source_field: baseCcy / instId group 1 / uly fallback
+    unit: currency_code
+    current_path: eligibility_v1._extract_base_quote → GovernedUniverseInstrumentV1.base_currency
+    epistemic_status: CONTRADICTED
+    evidence: src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+    notes: Spec says missing metadata never defaulted; uly/instId used as base fallback
+  - id: LINEAGE:venue_native_id
+    value: venue_native_id
+    origin: Cap 2.3 selection / Cap 2.4 binding
+    raw_source_field: venue native instId
+    unit: identity
+    current_path: selection snapshot → BoundInstrumentV1.venue_native_id
+    epistemic_status: FORENSIC_RAW
+    evidence: src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+  - id: LINEAGE:mark_px
+    value: mark_price
+    origin: OKX public mark-price
+    raw_source_field: markPx
+    unit: price
+    current_path: OkxPublicMarketDataClientV1 GET /api/v5/public/mark-price
+    epistemic_status: FORENSIC_RAW
+    evidence: src/ops/okx_public_market_data_client_v1.py

@@ -1,0 +1,76 @@
+# ATLAS_AUTHORITY=NONE
+hosts:
+  - id: OKX_HOST:eea_okx_com
+    kind: OKX_HOST
+    name: eea.okx.com
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/section_11_12_8_okx_eea_demo_xperp_campaign_private_write_gate_v1/constants_v1.py
+    notes: EEA REST productive host constant
+  - id: OKX_HOST:www_okx_com
+    kind: OKX_HOST
+    name: www.okx.com
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+    notes: Public MD client host; often forbidden on EEA productive paths
+  - id: OKX_HOST:openapi_okx_com
+    kind: OKX_HOST
+    name: openapi.okx.com
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: OPEN
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Mentioned; current productive binding OPEN
+  - id: OKX_HOST:aws_okx_com
+    kind: OKX_HOST
+    name: aws.okx.com
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: OPEN
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Mentioned; current productive binding OPEN
+  - id: OKX_HOST:wseeapap
+    kind: OKX_HOST
+    name: wseeapap.okx.com:8443
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - config/config.toml
+    notes: WS host configured; no proven live WS client
+  - id: OKX_HOST:static_okx_com
+    kind: OKX_HOST
+    name: static.okx.com
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: OPEN
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Mentioned
+  - id: OKX_HOST:us_okx_com
+    kind: OKX_HOST
+    name: us.okx.com
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: HISTORICAL_ONLY
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Mentioned; not proven productive EEA path
+    temporal_class: HISTORICAL_ONLY
+  - id: OKX_HOST:tr_okx_com
+    kind: OKX_HOST
+    name: tr.okx.com
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: HISTORICAL_ONLY
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Mentioned; not proven productive EEA path
+    temporal_class: HISTORICAL_ONLY

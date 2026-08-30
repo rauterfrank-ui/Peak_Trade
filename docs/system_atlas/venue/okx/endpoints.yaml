@@ -1,0 +1,590 @@
+# ATLAS_AUTHORITY=NONE
+endpoints:
+  - id: VENUE_ENDPOINT:okx_public_instruments
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/public/instruments
+    method: GET
+    path: /api/v5/public/instruments
+    mutation_class: READ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_public_mark_price
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/public/mark-price
+    method: GET
+    path: /api/v5/public/mark-price
+    mutation_class: READ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_public_time
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/public/time
+    method: GET
+    path: /api/v5/public/time
+    mutation_class: READ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - tests/ops/test_phase_9_2_step_4_governed_productive_transport_fault_control_binding_v1.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_public_position_tiers
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/public/position-tiers
+    method: GET
+    path: /api/v5/public/position-tiers
+    mutation_class: READ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/cover_usdc_current_public_tier_mmr_productive_evidence_v1.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_public_price_limit
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/public/price-limit
+    method: GET
+    path: /api/v5/public/price-limit
+    mutation_class: READ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_public_funding_rate_history
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/public/funding-rate-history
+    method: GET
+    path: /api/v5/public/funding-rate-history
+    mutation_class: READ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/research/longer_chronological_pit_acquisition_v1/source_discovery.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_market_tickers
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/market/tickers
+    method: GET
+    path: /api/v5/market/tickers
+    mutation_class: READ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_market_ticker
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/market/ticker
+    method: GET
+    path: /api/v5/market/ticker
+    mutation_class: READ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_market_candles
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/market/candles
+    method: GET
+    path: /api/v5/market/candles
+    mutation_class: READ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_market_history_candles
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/market/history-candles
+    method: GET
+    path: /api/v5/market/history-candles
+    mutation_class: READ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_market_history_mark_price_candles
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/market/history-mark-price-candles
+    method: GET
+    path: /api/v5/market/history-mark-price-candles
+    mutation_class: READ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/schemas/productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_decisions_v1.schema.json
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_market_history_index_candles
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/market/history-index-candles
+    method: GET
+    path: /api/v5/market/history-index-candles
+    mutation_class: READ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_market_trades
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/market/trades
+    method: GET
+    path: /api/v5/market/trades
+    mutation_class: READ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_market_books
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/market/books
+    method: GET
+    path: /api/v5/market/books
+    mutation_class: READ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_market_index_tickers
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/market/index-tickers
+    method: GET
+    path: /api/v5/market/index-tickers
+    mutation_class: READ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_rubik_stat_contracts_open_interest_history
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/rubik/stat/contracts/open-interest-history
+    method: GET
+    path: /api/v5/rubik/stat/contracts/open-interest-history
+    mutation_class: READ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - tests/research/test_okx_self_accumulated_forward_open_interest_one_shot_collector_harness_v0_contract.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_account_config
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/account/config
+    method: GET
+    path: /api/v5/account/config
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_account_balance
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/account/balance
+    method: GET
+    path: /api/v5/account/balance
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_account_positions
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/account/positions
+    method: GET
+    path: /api/v5/account/positions
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_account_instruments
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/account/instruments
+    method: GET
+    path: /api/v5/account/instruments
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_account_bills
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/account/bills
+    method: GET
+    path: /api/v5/account/bills
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_account_positions_history
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/account/positions-history
+    method: GET
+    path: /api/v5/account/positions-history
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_account_leverage_info
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/account/leverage-info
+    method: GET
+    path: /api/v5/account/leverage-info
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_account_adjust_leverage_info
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/account/adjust-leverage-info
+    method: GET
+    path: /api/v5/account/adjust-leverage-info
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_account_max_size
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/account/max-size
+    method: GET
+    path: /api/v5/account/max-size
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_account_max_avail_size
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/account/max-avail-size
+    method: GET
+    path: /api/v5/account/max-avail-size
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_account_trade_fee
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/account/trade-fee
+    method: GET
+    path: /api/v5/account/trade-fee
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_account_account_position_risk
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/account/account-position-risk
+    method: GET
+    path: /api/v5/account/account-position-risk
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_account_set_leverage
+    kind: VENUE_ENDPOINT
+    name: POST /api/v5/account/set-leverage
+    method: POST
+    path: /api/v5/account/set-leverage
+    mutation_class: MUTATING
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_account_set_position_mode
+    kind: VENUE_ENDPOINT
+    name: POST /api/v5/account/set-position-mode
+    method: POST
+    path: /api/v5/account/set-position-mode
+    mutation_class: MUTATING
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_account_set_isolated_mode
+    kind: VENUE_ENDPOINT
+    name: POST /api/v5/account/set-isolated-mode
+    method: POST
+    path: /api/v5/account/set-isolated-mode
+    mutation_class: MUTATING
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_trade_orders_pending
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/trade/orders-pending
+    method: GET
+    path: /api/v5/trade/orders-pending
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_trade_orders_history
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/trade/orders-history
+    method: GET
+    path: /api/v5/trade/orders-history
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_trade_orders_algo_pending
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/trade/orders-algo-pending
+    method: GET
+    path: /api/v5/trade/orders-algo-pending
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/forensics/persistence/inventories/P6_P3_CLASS_C_AUTHENTICATED_SUI_RUNTIME_GET_ADJUDICATION_OBSERVATION_V1.json
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_trade_fills
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/trade/fills
+    method: GET
+    path: /api/v5/trade/fills
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_trade_order
+    kind: VENUE_ENDPOINT
+    name: POST /api/v5/trade/order
+    method: POST
+    path: /api/v5/trade/order
+    mutation_class: MUTATING
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_trade_order_get
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/trade/order
+    method: GET
+    path: /api/v5/trade/order
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_post_action_binding_v1.py
+    notes: Read-back of a single order; distinct from POST submit. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_trade_cancel_order
+    kind: VENUE_ENDPOINT
+    name: POST /api/v5/trade/cancel-order
+    method: POST
+    path: /api/v5/trade/cancel-order
+    mutation_class: MUTATING
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_trade_amend_order
+    kind: VENUE_ENDPOINT
+    name: POST /api/v5/trade/amend-order
+    method: POST
+    path: /api/v5/trade/amend-order
+    mutation_class: MUTATING
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_trade_batch_orders
+    kind: VENUE_ENDPOINT
+    name: POST /api/v5/trade/batch-orders
+    method: POST
+    path: /api/v5/trade/batch-orders
+    mutation_class: MUTATING
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_trade_cancel_batch_orders
+    kind: VENUE_ENDPOINT
+    name: POST /api/v5/trade/cancel-batch-orders
+    method: POST
+    path: /api/v5/trade/cancel-batch-orders
+    mutation_class: MUTATING
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_trade_close_position
+    kind: VENUE_ENDPOINT
+    name: POST /api/v5/trade/close-position
+    method: POST
+    path: /api/v5/trade/close-position
+    mutation_class: MUTATING
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_trade_order_algo
+    kind: VENUE_ENDPOINT
+    name: POST /api/v5/trade/order-algo
+    method: POST
+    path: /api/v5/trade/order-algo
+    mutation_class: MUTATING
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_trade_order_precheck
+    kind: VENUE_ENDPOINT
+    name: POST /api/v5/trade/order-precheck
+    method: POST
+    path: /api/v5/trade/order-precheck
+    mutation_class: MUTATING
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_asset_currencies
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/asset/currencies
+    method: GET
+    path: /api/v5/asset/currencies
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_asset_transfer
+    kind: VENUE_ENDPOINT
+    name: POST /api/v5/asset/transfer
+    method: POST
+    path: /api/v5/asset/transfer
+    mutation_class: MUTATING
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_asset_withdrawal
+    kind: VENUE_ENDPOINT
+    name: POST /api/v5/asset/withdrawal
+    method: POST
+    path: /api/v5/asset/withdrawal
+    mutation_class: MUTATING
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_users_self_verify
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/users/self/verify
+    method: GET
+    path: /api/v5/users/self/verify
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.
+  - id: VENUE_ENDPOINT:okx_users_subaccount_list
+    kind: VENUE_ENDPOINT
+    name: GET /api/v5/users/subaccount/list
+    method: GET
+    path: /api/v5/users/subaccount/list
+    mutation_class: READ_AUTH
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    notes: Literal path occurrence on origin/main tree or cited forensic/audit evidence. Presence != activation.

@@ -1,0 +1,247 @@
+# ATLAS_AUTHORITY=NONE
+# Why each *_COMPLETE flag is true or false. Not a second SSOT.
+# Classes (exactly one primary; additional_classes optional):
+#   GENUINELY_UNSEARCHED
+#   SEARCHED_BUT_NO_EVIDENCE_FOUND
+#   UNRESOLVED_CONTRADICTION
+#   HISTORICAL_SOURCE_UNAVAILABLE
+#   TERMINOLOGY_UNRESOLVED
+schema_version: system_atlas.v1
+incompleteness_classes:
+  - GENUINELY_UNSEARCHED
+  - SEARCHED_BUT_NO_EVIDENCE_FOUND
+  - UNRESOLVED_CONTRADICTION
+  - HISTORICAL_SOURCE_UNAVAILABLE
+  - TERMINOLOGY_UNRESOLVED
+closed_domains:
+  - id: ssot_child_census_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes: []
+    scope: origin/main tree literal search for SSOT_CHILD / ssot_child / "SSOT child" as a formal kind
+    remaining: Literal absent. TERM:ssot_child_unproven and GAP:ssot_child_undefined remain as absence records, not missing search.
+    evidence:
+      - docs/system_atlas/wiring/gaps.yaml
+      - docs/system_atlas/contradictions/register.yaml
+  - id: mmr_census_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes:
+      - UNRESOLVED_CONTRADICTION
+    scope: Master Runbook WHAT_IS_MAINTENANCE_MARGIN_REQUIREMENT_MMR; scoped MASTER_V2 specs; src/trading/master_v2
+    remaining: Venue/margin MMR proven. Architectural Master-V2 MMR kind not found (not invented). C-MMR-POLYVALENT-001 preserved.
+    evidence:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/system_atlas/contradictions/register.yaml
+  - id: schema_file_inventory_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes: []
+    scope: docs/ops/schemas/*.schema.json file universe on origin/main (10 files)
+    remaining: Field-level enumeration is in census/schema_field_inventory.yaml (schema_field_enumeration_complete=true). Remaining src SCHEMA_VERSION tokens classified VERSION_TOKEN/TYPE_ONLY in census/schema_like_src.yaml.
+    evidence:
+      - docs/ops/schemas/
+      - docs/system_atlas/census/schema_field_inventory.yaml
+  - id: master_v2_capability_spec_inventory_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes: []
+    scope: origin/main docs/ops/specs/MASTER_V2_CAPABILITY_*.md file universe (7 files)
+    remaining: Spec files inventoried and entity-mapped. Cap 7.2 and 11.13.5 have no MASTER_V2_CAPABILITY_* spec file.
+    evidence:
+      - docs/ops/specs/
+      - docs/system_atlas/census/master_v2_module_inventory.yaml
+  - id: master_v2_module_file_inventory_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes: []
+    scope: origin/main src/trading/master_v2/**/*.py (102 files including package subdir)
+    remaining: File list inventoried. Semantic clusters in census/master_v2_semantic_map.yaml.
+    evidence:
+      - docs/system_atlas/census/master_v2_module_inventory.yaml
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+  - id: master_v2_census_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes: []
+    scope: origin/main src/trading/master_v2/**/*.py semantic clusters
+    remaining: Adapter/Surface-P runtime reachability remains library/offline/bound-not-activated. Not live activation.
+    evidence:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+  - id: double_play_census_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes:
+      - UNRESOLVED_CONTRADICTION
+    scope: 17 double_play-named origin/main files plus core composition/survival/suitability/state
+    remaining: C-DP-ORDER-001 preserved. ops.double_play.evaluate_double_play remains quarantined projection.
+    evidence:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+      - docs/system_atlas/contradictions/register.yaml
+  - id: family_census_complete
+    flag: true
+    primary_class: UNRESOLVED_CONTRADICTION
+    additional_classes:
+      - TERMINOLOGY_UNRESOLVED
+    scope: Distinct observed Family usages (not a unified ontology)
+    remaining: C-FAMILY-POLYVALENT-001 preserved. NO_FAMILY_ONTOLOGY blocker remains.
+    evidence:
+      - docs/system_atlas/census/family_child_usage.yaml
+  - id: child_census_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes:
+      - TERMINOLOGY_UNRESOLVED
+    scope: HISTORICAL_CHILD_LEDGER, NestedStructuralChild, Falls-Parent/Child
+    remaining: None of these is SSOT_CHILD. Literal SSOT_CHILD still absent.
+    evidence:
+      - docs/system_atlas/census/family_child_usage.yaml
+  - id: schema_field_enumeration_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes: []
+    scope: docs/ops/schemas/*.schema.json field-level required/optional/types
+    remaining: Remaining SCHEMA_VERSION assignment lines are VERSION_TOKEN/TYPE_ONLY, not unadjudicated SCHEMA entities (schema_census_complete=true).
+    evidence:
+      - docs/system_atlas/census/schema_field_inventory.yaml
+  - id: okx_current_tree_census_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes: []
+    scope: origin/main OKX-named files plus /api/v5 literal paths plus websocket mention files
+    remaining: Grep path noise (trailing dots, prefix stubs) not promoted to VENUE_ENDPOINT rows. Historical archaeology is separate (okx_historical_census_complete=true).
+    evidence:
+      - docs/system_atlas/census/okx_current_tree.yaml
+  - id: dod_census_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes: []
+    scope: Named FORMAL_DODs plus 66 docs files containing a Definition of Done heading classified as GENERIC_CHECKLIST/RUNBOOK_COMPLETION_CRITERIA
+    remaining: Individual PHASE_* heading criteria not copied verbatim.
+    evidence:
+      - docs/system_atlas/census/dod_heading_inventory.yaml
+  - id: okx_historical_census_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes: []
+    scope: origin/main full history after unshallow for OKX-named paths, uly/quote, auth, WS, deletions
+    remaining: Unmerged feature-branch-only blobs and fixture bytes not enumerated. Non-okx-named /api/v5 callers sampled.
+    evidence:
+      - docs/system_atlas/census/okx_historical.yaml
+  - id: historical_terminology_census_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes:
+      - TERMINOLOGY_UNRESOLVED
+    scope: origin/main full history for OPEN expansions, SSOT_CHILD, Family/Child literals
+    remaining: Not an exhaustive all-caps vocabulary of every deleted Peak_Trade-native token. OPEN expansions remain OPEN.
+    evidence:
+      - docs/system_atlas/census/historical_terminology.yaml
+  - id: system_atlas_master_view_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes:
+      - UNRESOLVED_CONTRADICTION
+    scope: Integrated SYSTEM_ATLAS.md topology overview
+    remaining: GLOBAL_CENSUS_EXHAUSTED=false. OPEN acronym expansions and owner-decision/runtime facts remain visible. In-repo fixture inspection is closed. External corpus is NOT_STARTED. Contradictions stay represented.
+    evidence:
+      - docs/system_atlas/generated/SYSTEM_ATLAS.md
+  - id: terminology_census_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes:
+      - TERMINOLOGY_UNRESOLVED
+    scope: Current origin/main architectural/governance/runtime tokens plus historical census
+    remaining: >-
+      Inventory of material current-project tokens is closed. Unresolved acronym
+      expansions remain OPEN (acronym_census_complete=false). Not an exhaustive
+      all-caps blob-history of every Peak_Trade-native token.
+    evidence:
+      - docs/system_atlas/ontology/discovered_terms.yaml
+      - docs/system_atlas/census/historical_terminology.yaml
+  - id: schema_census_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes: []
+    scope: JSON Schema files plus material src schema-like contracts classified SCHEMA/DATA_CONTRACT/CONFIG_CONTRACT/TYPE_ONLY/VERSION_TOKEN
+    remaining: Per-field payloads of remaining SCHEMA_VERSION tokens are TYPE_ONLY/VERSION_TOKEN, not unadjudicated SCHEMA.
+    evidence:
+      - docs/system_atlas/ontology/schemas.yaml
+      - docs/system_atlas/census/schema_like_src.yaml
+      - docs/system_atlas/census/schema_field_inventory.yaml
+  - id: okx_census_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    additional_classes: []
+    scope: origin/main OKX named-path, /api/v5, fixtures, docs/tests/config/scripts/evidence, product types, auth
+    remaining: >-
+      In-repo OKX census closed. External/temp forensic corpus is NOT_STARTED and is
+      not a remaining in-repo search. Unresolved quote/XPERP/canary facts are
+      preserved system records, not missing census.
+    evidence:
+      - docs/system_atlas/census/okx_fixture_census.yaml
+      - docs/system_atlas/census/okx_product_types.yaml
+      - docs/system_atlas/census/okx_endpoint_classification.yaml
+remaining_domains:
+  - id: acronym_census_complete
+    flag: false
+    primary_class: TERMINOLOGY_UNRESOLVED
+    additional_classes:
+      - SEARCHED_BUT_NO_EVIDENCE_FOUND
+    remaining: >-
+      Inventory complete (acronym_census_inventory_complete=true). OPEN expansions
+      searched on origin/main full history without inventing: EEA, OKX, XPERP, C1,
+      C2, C3, PRE, PENDING. TERM_MEANING_KNOWN for venue/token usage;
+      ACRONYM_EXPANSIONS_RESOLVED=false. Not an exhaustive all-caps token census.
+    evidence:
+      - docs/system_atlas/ontology/acronyms.yaml
+completeness_flag_reasons:
+  - id: current_tree_search_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    remaining: OKX-named files (381) and /api/v5 literals inventoried on origin/main. Not every src/ path is an Atlas entity.
+  - id: git_history_search_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    remaining: origin/main full history searched for OKX/uly/auth/WS/deletions/OPEN expansions. Unmerged-only branches not treated as product SSOT.
+  - id: forensic_corpus_search_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    remaining: In-repo OKX forensic inventories structure-inspected. EXTERNAL_FORENSIC_CORPUS_CENSUS_COMPLETE=NOT_STARTED.
+  - id: docs_search_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    remaining: OKX-named docs (40) plus venue/audit/spec surfaces mapped. Unrelated prose mentions are reference-only, not new endpoints.
+  - id: tests_search_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    remaining: OKX-named tests (73) plus fixture payloads inspected. Full tests/ universe is not every-file entity-mapped.
+  - id: config_search_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    remaining: OKX-named config (48) plus config.toml exchange.okx_europe_eea mapped. Unrelated config keys remain out of OKX census.
+  - id: raw_response_fixture_search_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    remaining: All 147 candidates classified; JSON structures inspected; payloads not copied. External corpus NOT_STARTED.
+  - id: endpoint_inventory_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    remaining: 69 raw hits classified; 21 grep noise; 48 unique REST paths; 49 modeled rows (GET/POST /trade/order). finance/funding/system namespaces absent.
+  - id: field_inventory_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    remaining: 42 seed+observed tokens classified; 40 VENUE_FIELD rows; availPos zero hits; envelope data not a scalar field. Not every undocumented OKX v5 packet field.
+  - id: product_type_inventory_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    remaining: SWAP/FUTURES implemented; SPOT explicit GFU reject; MARGIN/OPTION no OKX instType evidence; xperp partial (not a separate instType).
+  - id: auth_inventory_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    remaining: HMAC signer, OK-ACCESS-* headers, x-simulated-trading, REST/WS hosts, LIVE_AUTHORIZED gate recorded. Credential values never stored. Other undocumented auth surfaces not claimed.
+  - id: historical_removal_search_complete
+    flag: true
+    primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    remaining: origin/main OKX-named path deletions are zero. Non-okx-named historical API callers not every-file enumerated.
+
