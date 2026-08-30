@@ -158,15 +158,15 @@ OKX_EVIDENCE_CENSUS_COMPLETE=true
 - `Family usages enumerated; no unified Families ontology (C-FAMILY-POLYVALENT-001)`
 - `Vollautonomie vs Master Runbook Double Play order CONTRADICTED`
 - `quoteCcy empty on EEA public instruments; uly not used for quote`
-- `Canary/Flatten post-action and productive GFU membership of SUI XPERP unproven`
-- `origin/main OKX-named deletions are zero; in-repo fixture structures inspected (147/147); external corpus NOT_STARTED`
+- `Canary&#47;Flatten post-action and productive GFU membership of SUI XPERP unproven`
+- `origin&#47;main OKX-named deletions are zero; in-repo fixture structures inspected (147&#47;147); external corpus NOT_STARTED`
 - `WebSocket hosts configured; no proven live WS client`
 - `Acronym expansions OPEN (EEA, OKX, XPERP, C1, C2, C3, PRE, PENDING); terminology inventory is otherwise closed`
-- `Remaining SCHEMA_VERSION tokens classified TYPE_ONLY/VERSION_TOKEN, not per-token SCHEMA entities`
+- `Remaining SCHEMA_VERSION tokens classified TYPE_ONLY&#47;VERSION_TOKEN, not per-token SCHEMA entities`
 - `Cap23 analytical exclusivity vs 11.13.5 canary hardcoded SUI (parallel authority)`
-- `Master title V2.2 vs REVISION/Map V2.3 version-token mismatch`
+- `Master title V2.2 vs REVISION&#47;Map V2.3 version-token mismatch`
 - `Cyber header PRE_LIVE_GATE=PASS vs ratification JSON NOT_PASSED`
-- `Exact token HAS_FUNCTIONAL_CORE / FUNCTIONAL_CORE not found; Modul-Owner of one Trading Core is proven`
+- `Exact token HAS_FUNCTIONAL_CORE &#47; FUNCTIONAL_CORE not found; Modul-Owner of one Trading Core is proven`
 - `Flatten transport implemented but LIVE_WIRE_DISABLED; LIVE_FLATTEN_PROVABILITY not PROVEN`
 
 ## Census incompleteness (five-class)

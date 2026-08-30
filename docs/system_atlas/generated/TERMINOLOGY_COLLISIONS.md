@@ -15,7 +15,7 @@ Collisions are preserved, not normalized.
 
 ### COLLISION:dod_vs_capability_closure
 
-- term: `DoD / Definition of Done`
+- term: `DoD &#47; Definition of Done`
 - meaning_a: Program Definition of Done (Master Runbook §21 named DoD)
 - source_a: `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`
 - meaning_b: Mandatory Capability Closure Standard (Master Runbook §11; not named DoD) plus historical Vollautonomie §§37-39 plus process/PR DoD headings
@@ -33,7 +33,7 @@ Collisions are preserved, not normalized.
 
 ### COLLISION:mmr_polyvalent
 
-- term: `MMR / mmr`
+- term: `MMR &#47; mmr`
 - meaning_a: Master Runbook Maintenance Margin Requirement (account-effective vs public-tier mmr)
 - source_a: `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`
 - meaning_b: Architectural Master-V2 MMR kind (not found in scoped MASTER_V2 specs)
@@ -60,7 +60,7 @@ Collisions are preserved, not normalized.
 
 ### COLLISION:ssot_child_vs_ssot
 
-- term: `SSOT / SSOT child`
+- term: `SSOT &#47; SSOT child`
 - meaning_a: Single Source of Truth authority uniqueness
 - source_a: `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`
 - meaning_b: SSOT child as an architectural kind — not found as a formal in-repo definition
@@ -69,7 +69,7 @@ Collisions are preserved, not normalized.
 
 ### COLLISION:double_play_order
 
-- term: `Double Play ordering versus Survival/Suitability`
+- term: `Double Play ordering versus Survival&#47;Suitability`
 - meaning_a: Master Runbook current chain Market State → Master V2 → Double Play → Survival/Suitability/Composition
 - source_a: `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`
 - meaning_b: Historical Vollautonomie Survival → Suitability → Double Play → Canonical Trading Decision

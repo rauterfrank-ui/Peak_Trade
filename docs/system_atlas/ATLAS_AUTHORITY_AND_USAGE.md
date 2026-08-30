@@ -70,7 +70,7 @@ IMPLEMENTATION CHANGE
 ```
 
 1. Do not manually patch generated Markdown.
-2. Update machine-readable records first (`docs/system_atlas/**/*.yaml` except `generated/`).
+2. Update machine-readable records first (`docs&#47;system_atlas&#47;**&#47;*.yaml` except `generated&#47;`).
 3. Run `./scripts/pt scripts/ops/generate_system_atlas_v1.py`.
 4. Run `./scripts/pt scripts/ops/validate_system_atlas_v1.py`.
 5. Run `./scripts/pt scripts/ops/check_system_atlas_impact_v1.py --base origin/main`.

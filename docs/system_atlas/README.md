@@ -13,8 +13,8 @@ This directory is an evidence-bound topology and navigation atlas. It is not a b
 
 - Canonical semantic authority remains `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`.
 - Map of Truth remains navigation-only.
-- Generated markdown under `generated/` is deterministic output. Do not edit it by hand.
-- Census completeness flags in `census/census_meta.yaml` are fail-closed: `false` unless every required search flag is proven.
+- Generated markdown under `generated&#47;` is deterministic output. Do not edit it by hand.
+- Census completeness flags in `census&#47;census_meta.yaml` are fail-closed: `false` unless every required search flag is proven.
 
 Navigation:
 

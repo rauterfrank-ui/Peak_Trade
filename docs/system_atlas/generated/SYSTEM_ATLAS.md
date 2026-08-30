@@ -225,7 +225,7 @@ Standing fail-closed: `LIVE_AUTHORIZED=false`, `TESTNET_AUTHORIZED=false` unless
 
 ## 2. Master V2 / Double Play relation
 
-Peak_Trade's trading core is named `Master V2 / Double Play` on the Master Runbook SYSTEM header. They are Modul-Owner of **one** Trading Core (`SEPARATE_*_ALLOWED=false` in architecture text). They are not competing generations.
+Peak_Trade's trading core is named `Master V2 &#47; Double Play` on the Master Runbook SYSTEM header. They are Modul-Owner of **one** Trading Core (`SEPARATE_*_ALLOWED=false` in architecture text). They are not competing generations.
 
 Atlas kind `FUNCTIONAL_CORE` and relation type `HAS_FUNCTIONAL_CORE` are census labels. Exact tokens `FUNCTIONAL_CORE` / `inner core` were **not** found on origin/main. The stored edge `REL:s_master_v2_has_dp` is `ADJUDICATED`, not a Master Runbook token. Historical Vollautonomie ordering vs current §4.2 chain is CONTRADICTED (`C-DP-ORDER-001`). `ops.double_play.evaluate_double_play` is quarantined projection-only.
 
@@ -269,7 +269,7 @@ Observed Family senses include: projection-octet `family_id` (8 ids), OKX `instF
 
 ## 5. Capability map
 
-Capabilities are numbered packages with specs under `docs/ops/specs/MASTER_V2_CAPABILITY_*`. Presence of code is not activation.
+Capabilities are numbered packages with specs under `docs&#47;ops&#47;specs&#47;MASTER_V2_CAPABILITY_*`. Presence of code is not activation.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |

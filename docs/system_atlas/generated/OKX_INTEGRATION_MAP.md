@@ -14,7 +14,7 @@
 OKX is a first-class venue domain. XPERP is one product/instrument family, not the organizing center.
 
 `OKX_CENSUS_COMPLETE=true`  
-`OKX_CENSUS_SCOPE=current_origin_main_tree_literal_path_and_host_search plus bounded git name-search for *okx* plus forensic persistence inventories plus docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md plus config/config.toml [exchange.okx_europe_eea]; not exhaustive blob-history of every deleted non-okx-named module; in-repo fixture/docs/tests/config/product-type inventories closed. External/temp forensic corpus is NOT_STARTED.`
+`OKX_CENSUS_SCOPE=current_origin_main_tree_literal_path_and_host_search plus bounded git name-search for *okx* plus forensic persistence inventories plus docs&#47;audits&#47;OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md plus config&#47;config.toml [exchange.okx_europe_eea]; not exhaustive blob-history of every deleted non-okx-named module; in-repo fixture&#47;docs&#47;tests&#47;config&#47;product-type inventories closed. External&#47;temp forensic corpus is NOT_STARTED.`
 
 ```text
 OKX_RAW_API_PATH_HIT_COUNT=69

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections import defaultdict, deque
 from pathlib import Path
 from typing import Any, Iterable
@@ -182,6 +183,110 @@ _DOWNSTREAM_TYPES = frozenset(
 
 def _md_escape(text: str) -> str:
     return str(text).replace("|", "\\|")
+
+
+_INLINE_CODE_RE = re.compile(r"`([^`\n]+?)`")
+_BARE_REPO_FILE_RE = re.compile(
+    r"(?:(?:config|docs|src|scripts|\.github)/[A-Za-z0-9_\-./]+?"
+    r"\.(?:toml|md|py|yml|yaml|sh|json|txt))"
+)
+_LOCAL_OR_URL_PREFIXES = ("./", "../", "~/", "/", "http://", "https://")
+_COMMAND_INLINE_PREFIXES = (
+    "python ",
+    "python3 ",
+    "python3.11 ",
+    "python3.10 ",
+    "git ",
+    "gh ",
+    "uv ",
+    "make ",
+    "bash ",
+    "sh ",
+    "cd ",
+    "./scripts/",
+    "./scripts/pt ",
+)
+
+
+def _inline_code_spans(line: str) -> list[tuple[int, int]]:
+    return [(m.start(), m.end()) for m in _INLINE_CODE_RE.finditer(line)]
+
+
+def _range_overlaps(start: int, end: int, spans: list[tuple[int, int]]) -> bool:
+    return any(start < span_end and end > span_start for span_start, span_end in spans)
+
+
+def _should_encode_illustrative_inline(token: str, *, repo_root: Path) -> bool:
+    if "/" not in token or "&#47;" in token:
+        return False
+    if token.startswith(_LOCAL_OR_URL_PREFIXES):
+        return False
+    if any(token.startswith(prefix) for prefix in _COMMAND_INLINE_PREFIXES):
+        return False
+    if (repo_root / token).exists():
+        return False
+    return True
+
+
+def _encode_illustrative_inline_line(line: str, *, repo_root: Path) -> str:
+    def _replace(match: re.Match[str]) -> str:
+        token = match.group(1)
+        if not _should_encode_illustrative_inline(token, repo_root=repo_root):
+            return match.group(0)
+        return "`" + token.replace("/", "&#47;") + "`"
+
+    return _INLINE_CODE_RE.sub(_replace, line)
+
+
+def _encode_nonlive_bare_repo_files_line(line: str, *, repo_root: Path) -> str:
+    spans = _inline_code_spans(line)
+    pieces: list[str] = []
+    cursor = 0
+    for match in _BARE_REPO_FILE_RE.finditer(line):
+        start, end = match.start(), match.end()
+        if _range_overlaps(start, end, spans):
+            continue
+        path = match.group(0)
+        pieces.append(line[cursor:start])
+        if (repo_root / path).is_file():
+            pieces.append(path)
+        else:
+            pieces.append(path.replace("/", "&#47;"))
+        cursor = end
+    pieces.append(line[cursor:])
+    return "".join(pieces)
+
+
+def _apply_docs_gate_presentation(text: str, *, repo_root: Path) -> str:
+    """Keep historical/illustrative path text visible without live-reference semantics.
+
+    Non-existent repo file paths are not emitted as live markdown targets.
+    Illustrative inline-code tokens containing '/' use the repository &#47; encoding.
+    Existing files remain live references. Fenced blocks are left unchanged.
+    """
+    out: list[str] = []
+    in_fence = False
+    for line in text.splitlines(keepends=True):
+        newline = ""
+        body = line
+        if line.endswith("\n"):
+            newline = "\n"
+            body = line[:-1]
+            if body.endswith("\r"):
+                newline = "\r\n"
+                body = body[:-1]
+        stripped = body.strip()
+        if stripped.startswith("```"):
+            in_fence = not in_fence
+            out.append(line)
+            continue
+        if in_fence:
+            out.append(line)
+            continue
+        encoded = _encode_illustrative_inline_line(body, repo_root=repo_root)
+        encoded = _encode_nonlive_bare_repo_files_line(encoded, repo_root=repo_root)
+        out.append(encoded + newline)
+    return "".join(out)
 
 
 def _collapse_ws(text: str) -> str:
@@ -486,7 +591,10 @@ def generate_views_v1(*, atlas: dict[str, Any], repo_root: Path) -> dict[str, st
         iter_collisions(atlas),
         atlas,
     )
-    return views
+    return {
+        name: _apply_docs_gate_presentation(text, repo_root=repo_root)
+        for name, text in views.items()
+    }
 
 
 def _status_bucket(entity: dict[str, Any]) -> str:

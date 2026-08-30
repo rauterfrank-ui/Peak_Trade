@@ -36,7 +36,7 @@
 
 ### C-DP-ORDER-001
 
-- subject: `Double Play versus Survival/Suitability order`
+- subject: `Double Play versus Survival&#47;Suitability order`
 - claim_a (CANONICAL_AUTHORITY): Market State → Master V2 → Double Play → Survival/Suitability/Composition
 - source_a: `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`
 - claim_b (HISTORICAL): Historical Vollautonomie Survival → Suitability → Double Play → Canonical Trading Decision
@@ -59,7 +59,7 @@
 
 ### C-FUNCTIONAL-CORE-TOKEN-001
 
-- subject: `FUNCTIONAL_CORE / HAS_FUNCTIONAL_CORE as Atlas labels`
+- subject: `FUNCTIONAL_CORE &#47; HAS_FUNCTIONAL_CORE as Atlas labels`
 - claim_a (INTERPRETATION): Owner Atlas workpackage and census kind FUNCTIONAL_CORE record Double Play as inner functional core of Master V2
 - source_a: `docs/system_atlas/census/census_meta.yaml`
 - claim_b (FORENSIC_RAW): Exact spellings FUNCTIONAL_CORE, HAS_FUNCTIONAL_CORE, inner core, Funktionskern not found on origin/main in scoped docs; proven wording is Modul-Owner of one Trading Core
@@ -94,7 +94,7 @@
 
 ### C-OKX-QUOTE-ULY-001
 
-- subject: `Cap 2.1 quote/base identity versus never-defaulted invariant`
+- subject: `Cap 2.1 quote&#47;base identity versus never-defaulted invariant`
 - claim_a (CANONICAL_AUTHORITY): Missing metadata is never defaulted
 - source_a: `docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md`
 - claim_b (FORENSIC_RAW): _extract_base_quote defaults missing base from instId/uly; quote never from uly; XPERP instIds fail quote regex

@@ -38,9 +38,9 @@
 - path: `scripts/ops/run_governed_futures_universe_producer_v1.py`
 - class: `PRODUCTIVE_OFFLINE_PRODUCER`
 - epistemic: `STATUS=FORENSIC_RAW`
-- network: `Discovery is offline/injected payload in GFU producer itself; public MD client is a separate adapter`
+- network: `Discovery is offline&#47;injected payload in GFU producer itself; public MD client is a separate adapter`
 - evidence: `docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md`
 
   1. `SCRIPT:run_gfu_producer` -> `CAPABILITY:cap_2_1_gfu` gate=`GATE:btc_exclusion` fail=`fail-closed eligibility reject`
-  2. `CAPABILITY:cap_2_1_gfu` -> `RUNTIME_COMPONENT:gfu_eligibility` gate=`INVARIANT:missing_metadata_never_defaulted` fail=`MISSING_QUOTE_CURRENCY / exclusion codes`
+  2. `CAPABILITY:cap_2_1_gfu` -> `RUNTIME_COMPONENT:gfu_eligibility` gate=`INVARIANT:missing_metadata_never_defaulted` fail=`MISSING_QUOTE_CURRENCY &#47; exclusion codes`
 

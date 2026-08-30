@@ -201,7 +201,7 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 | --- | --- | --- | --- | --- | --- | --- |
 | HW:ops_dp_specialists_introduced | src/ops/double_play | INTRODUCED | bull/bear specialists scaffold | 2026-02-20 | still present (quarantined) | STATUS=FORENSIC_RAW |
 | HW:master_v2_contains_dp_pure_stack | src/trading/master_v2 | CONTAINS | double_play_{state,survival,suitability,composition} | 2026-04-25 | current | STATUS=FORENSIC_RAW |
-| HW:webui_dp_dashboard_removed | src/webui/market_dashboard_readmodels_v1/adapters/double_play.py | REMOVED_CONSUMER | Double Play display | OPEN | 2026-07-17 | STATUS=FORENSIC_RAW |
+| HW:webui_dp_dashboard_removed | src&#47;webui&#47;market_dashboard_readmodels_v1&#47;adapters&#47;double_play.py | REMOVED_CONSUMER | Double Play display | OPEN | 2026-07-17 | STATUS=FORENSIC_RAW |
 | HW:kraken_deactivated_okx_staged | config | SUPERSEDED_BY | disabled OKX target staging | 2026-06-27 | current (Kraken deactivated) | STATUS=FORENSIC_RAW |
-| HW:dp_core_wiring_restored | src/trading/master_v2/double_play_core_wiring_v1.py | RESTORED | FUNCTIONAL_CORE:double_play facade | 2026-08-29 | current | STATUS=FORENSIC_RAW |
+| HW:dp_core_wiring_restored | src&#47;trading&#47;master_v2&#47;double_play_core_wiring_v1.py | RESTORED | FUNCTIONAL_CORE:double_play facade | 2026-08-29 | current | STATUS=FORENSIC_RAW |
 

@@ -57,6 +57,19 @@ jobs:
           base="${{ steps.base.outputs.base_ref }}"
           python3 scripts/ops/check_docs_drift_guard.py --base "${base}"
 
+      - name: Validate System Atlas generated views
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/ops/validate_system_atlas_v1.py
+
+      - name: Run System Atlas impact checker
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="${{ steps.base.outputs.base_ref }}"
+          python3 scripts/ops/check_system_atlas_impact_v1.py --base "${base}"
+
   repo_truth_claims:
     name: repo-truth-claims
     runs-on: ubuntu-latest
