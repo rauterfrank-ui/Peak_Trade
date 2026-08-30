@@ -107,10 +107,11 @@ ENDPOINT_ACCOUNT_MAX_SIZE = "/api/v5/account/max-size"
 ENDPOINT_PUBLIC_PRICE_LIMIT = "/api/v5/public/price-limit"
 ENDPOINT_ACCOUNT_LEVERAGE_INFO = "/api/v5/account/leverage-info"
 ENDPOINT_ACCOUNT_CONFIG = "/api/v5/account/config"
+ENDPOINT_ACCOUNT_POSITIONS = "/api/v5/account/positions"
 ENDPOINT_ALLOWLIST_READ: tuple[str, ...] = (
     "/api/v5/account/balance",
     ENDPOINT_ACCOUNT_CONFIG,
-    "/api/v5/account/positions",
+    ENDPOINT_ACCOUNT_POSITIONS,
     ENDPOINT_ACCOUNT_MAX_SIZE,
     ENDPOINT_ACCOUNT_LEVERAGE_INFO,
     "/api/v5/trade/orders-pending",
@@ -297,7 +298,7 @@ GET_ENDPOINTS_PUBLIC: tuple[str, ...] = (
 GET_ENDPOINTS_PRIVATE: tuple[str, ...] = (
     "/api/v5/account/balance",
     ENDPOINT_ACCOUNT_CONFIG,
-    "/api/v5/account/positions",
+    ENDPOINT_ACCOUNT_POSITIONS,
     ENDPOINT_ACCOUNT_MAX_SIZE,
     ENDPOINT_ACCOUNT_LEVERAGE_INFO,
     "/api/v5/trade/orders-pending",

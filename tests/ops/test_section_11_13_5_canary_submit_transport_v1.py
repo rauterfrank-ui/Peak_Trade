@@ -190,6 +190,11 @@ def _max_available_plan_kwargs(**overrides: object) -> dict[str, object]:
         "pos_mode_endpoint": account_config_query_path_v1(),
         "pos_mode_http_status": 200,
         "pos_mode_auth_header_sent": True,
+        "margin_mode_payload": EMPTY,
+        "margin_mode_get_performed": True,
+        "margin_mode_endpoint": "/api/v5/account/positions",
+        "margin_mode_http_status": 200,
+        "margin_mode_auth_header_sent": True,
     }
     body.update(overrides)
     return body
@@ -483,7 +488,16 @@ def test_missing_secretref_and_wrong_host_rejected_before_post() -> None:
 def test_open_position_blocks_before_post() -> None:
     transport = _fake_transport()
     transport.bodies_by_endpoint["/api/v5/account/positions"] = json.dumps(
-        {"code": "0", "data": [{"instId": DEFAULT_INSTRUMENT_ID, "pos": "1"}]}
+        {
+            "code": "0",
+            "data": [
+                {
+                    "instId": DEFAULT_INSTRUMENT_ID,
+                    "pos": "1",
+                    "mgnMode": "cross",
+                }
+            ],
+        }
     ).encode()
     kwargs = _transport_kwargs(transport=transport)
     with pytest.raises(LiveCanarySubmitTransportError, match="OPEN_POSITION"):
@@ -1220,7 +1234,16 @@ def test_t12_no_open_positions_reaches_downstream_fake_post_without_real_network
 def test_t13_open_canonical_canary_instrument_still_open_position_present() -> None:
     transport = _fake_transport()
     transport.bodies_by_endpoint["/api/v5/account/positions"] = json.dumps(
-        {"code": "0", "data": [{"instId": DEFAULT_INSTRUMENT_ID, "pos": "1"}]}
+        {
+            "code": "0",
+            "data": [
+                {
+                    "instId": DEFAULT_INSTRUMENT_ID,
+                    "pos": "1",
+                    "mgnMode": "cross",
+                }
+            ],
+        }
     ).encode()
     with pytest.raises(LiveCanarySubmitTransportError, match="OPEN_POSITION_PRESENT"):
         run_canary_submit_transport_v1(**_transport_kwargs(transport=transport))
