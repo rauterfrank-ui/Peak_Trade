@@ -67,6 +67,10 @@ _SOURCE_FILES = (
     "provenance/impact_state.yaml",
 )
 
+# Loaded Atlas record files. Reconciliation YAML is adjacent governance, not
+# an entity-record source, and is intentionally absent from this list.
+ATLAS_ENTITY_RECORD_FILES = _SOURCE_FILES
+
 
 def atlas_root(repo_root: Path) -> Path:
     return repo_root / ATLAS_RELATIVE_ROOT

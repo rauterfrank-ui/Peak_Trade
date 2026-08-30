@@ -154,6 +154,7 @@ schemas:
     evidence_sources:
       - scripts/ops/system_atlas_v1/constants_v1.py
       - scripts/ops/system_atlas_v1/validate_v1.py
+    modified_by: PENDING_CHANGE
     notes: Atlas schema is not canonical trading authority.
 
   - id: SCHEMA:pure_stack_numeric_policy_evidence_pack_v1
