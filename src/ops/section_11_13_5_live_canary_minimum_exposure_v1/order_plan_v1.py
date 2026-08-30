@@ -62,6 +62,13 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.available_margin_co
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.available_margin_observation_v1 import (
     AVAILABLE_MARGIN_OUTPUT_DOMAIN,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.account_mode_consumer_v1 import (
+    LiveCanaryAccountModeConsumerError,
+    apply_fresh_account_mode_pretrade_gate_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.account_mode_observation_v1 import (
+    ACCOUNT_MODE_OUTPUT_DOMAIN,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.instrument_state_consumer_v1 import (
     LiveCanaryInstrumentStateConsumerError,
     apply_fresh_instrument_state_pretrade_gate_v1,
@@ -517,6 +524,25 @@ def build_minimum_valid_canary_order_plan_v1(
         )
     except LiveCanaryInstrumentStateConsumerError as exc:
         raise LiveCanaryOrderPlanError(f"INSTRUMENT_STATE_GATE:{exc}") from exc
+    try:
+        apply_fresh_account_mode_pretrade_gate_v1(
+            pretrade_decision_id=pretrade_decision_id,
+            payload=pos_mode_payload or {},
+            instrument_id=instrument_id,
+            account_mode_domain=ACCOUNT_MODE_OUTPUT_DOMAIN,
+            http_status=pos_mode_http_status,
+            endpoint=pos_mode_endpoint,
+            observed_at_utc=pos_mode_observed_at_utc,
+            get_performed=pos_mode_get_performed,
+            rest_host=REUSED_BINDING_REST_HOST,
+            auth_header_sent=pos_mode_auth_header_sent,
+            historical_reuse=pos_mode_historical_reuse,
+            body_sha256=pos_mode_body_sha256,
+            td_mode=td_mode,
+            mgn_mode=leverage_mgn_mode,
+        )
+    except LiveCanaryAccountModeConsumerError as exc:
+        raise LiveCanaryOrderPlanError(f"ACCOUNT_MODE_GATE:{exc}") from exc
     clordid = serialize_canary_clordid_v1(owner_go=owner_go, origin_main_sha=origin_main_sha)
     try:
         typed_sz = serialize_venue_sz_from_typed_contract_count_v1(
