@@ -71,6 +71,11 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.leverage_observatio
     LiveCanaryLeverageObservationError,
     account_leverage_info_query_path_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.margin_mode_observation_v1 import (
+    LiveCanaryMarginModeObservationError,
+    account_positions_query_path_v1,
+    require_canonical_execution_td_mode_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pos_mode_observation_v1 import (
     LiveCanaryPosModeObservationError,
     account_config_query_path_v1,
@@ -344,6 +349,10 @@ def run_canary_submit_transport_v1(
         side = str(cfg.payload.get("side") or "BUY")
         td_mode = str(cfg.payload.get("td_mode") or "cross")
         try:
+            require_canonical_execution_td_mode_v1(td_mode)
+        except LiveCanaryMarginModeObservationError as exc:
+            raise LiveCanarySubmitTransportError(f"MARGIN_MODE_GATE:{exc}") from exc
+        try:
             constraints = extract_instrument_constraints_v1(
                 instruments_payload=instruments, instrument_id=instrument_id
             )
@@ -449,6 +458,11 @@ def run_canary_submit_transport_v1(
             pos_mode_payload = parse_json_object_v1(pos_mode_response.body_bytes)
         except LiveCanaryHttpError as exc:
             raise LiveCanarySubmitTransportError(f"POS_MODE_FRESH_GET_BODY:{exc}") from exc
+        margin_mode_ep = account_positions_query_path_v1()
+        try:
+            positions = _signed_get(client=client, handle=handle, endpoint=margin_mode_ep)
+        except LiveCanaryHttpError as exc:
+            raise LiveCanarySubmitTransportError(f"MARGIN_MODE_FRESH_GET_FAILED:{exc}") from exc
         try:
             plan = build_minimum_valid_canary_order_plan_v1(
                 instruments_payload=instruments,
@@ -495,6 +509,13 @@ def run_canary_submit_transport_v1(
                 pos_mode_get_performed=True,
                 pos_mode_auth_header_sent=True,
                 pos_mode_historical_reuse=False,
+                margin_mode_payload=positions,
+                margin_mode_http_status=200,
+                margin_mode_endpoint=margin_mode_ep,
+                margin_mode_observed_at_utc=observed_at,
+                margin_mode_get_performed=True,
+                margin_mode_auth_header_sent=True,
+                margin_mode_historical_reuse=False,
             )
         except LiveCanaryOrderPlanError as exc:
             raise LiveCanarySubmitTransportError(
@@ -511,7 +532,6 @@ def run_canary_submit_transport_v1(
                 f"ORDER_PLAN_SZ_IDENTITY_FAIL_CLOSED_BEFORE_POST:{exc}"
             ) from exc
 
-        positions = _signed_get(client=client, handle=handle, endpoint="/api/v5/account/positions")
         pending = _signed_get(client=client, handle=handle, endpoint="/api/v5/trade/orders-pending")
         try:
             pre_state = evaluate_pre_submit_exchange_state_v1(

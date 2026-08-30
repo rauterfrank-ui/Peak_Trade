@@ -55,6 +55,15 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.leverage_observatio
     LEVERAGE_EXPECTED_MGN_MODE,
     LEVERAGE_OUTPUT_DOMAIN,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.margin_mode_consumer_v1 import (
+    LiveCanaryMarginModeConsumerError,
+    apply_fresh_margin_mode_pretrade_gate_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.margin_mode_observation_v1 import (
+    MARGIN_MODE_OUTPUT_DOMAIN,
+    LiveCanaryMarginModeObservationError,
+    require_canonical_execution_td_mode_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pos_mode_consumer_v1 import (
     LiveCanaryPosModeConsumerError,
     apply_fresh_pos_mode_pretrade_gate_v1,
@@ -295,6 +304,14 @@ def build_minimum_valid_canary_order_plan_v1(
     pos_mode_auth_header_sent: bool = True,
     pos_mode_historical_reuse: bool = False,
     pos_mode_body_sha256: str = "",
+    margin_mode_payload: Mapping[str, Any] | None = None,
+    margin_mode_http_status: int = 200,
+    margin_mode_endpoint: str = "",
+    margin_mode_observed_at_utc: str | None = None,
+    margin_mode_get_performed: bool = False,
+    margin_mode_auth_header_sent: bool = True,
+    margin_mode_historical_reuse: bool = False,
+    margin_mode_body_sha256: str = "",
 ) -> CanaryOrderPlanV1:
     constraints = extract_instrument_constraints_v1(
         instruments_payload=instruments_payload,
@@ -421,6 +438,25 @@ def build_minimum_valid_canary_order_plan_v1(
         )
     except LiveCanaryPosModeConsumerError as exc:
         raise LiveCanaryOrderPlanError(f"POS_MODE_GATE:{exc}") from exc
+    try:
+        apply_fresh_margin_mode_pretrade_gate_v1(
+            pretrade_decision_id=pretrade_decision_id,
+            payload=margin_mode_payload or {},
+            instrument_id=instrument_id,
+            margin_mode_domain=MARGIN_MODE_OUTPUT_DOMAIN,
+            planned_td_mode=td_mode,
+            http_status=margin_mode_http_status,
+            endpoint=margin_mode_endpoint,
+            observed_at_utc=margin_mode_observed_at_utc,
+            get_performed=margin_mode_get_performed,
+            rest_host=REUSED_BINDING_REST_HOST,
+            auth_header_sent=margin_mode_auth_header_sent,
+            historical_reuse=margin_mode_historical_reuse,
+            body_sha256=margin_mode_body_sha256,
+            leverage_mgn_mode=leverage_mgn_mode,
+        )
+    except LiveCanaryMarginModeConsumerError as exc:
+        raise LiveCanaryOrderPlanError(f"MARGIN_MODE_GATE:{exc}") from exc
     clordid = serialize_canary_clordid_v1(owner_go=owner_go, origin_main_sha=origin_main_sha)
     try:
         typed_sz = serialize_venue_sz_from_typed_contract_count_v1(
@@ -533,6 +569,10 @@ def build_minimum_valid_canary_flatten_order_plan_v1(
     No LIMIT price is bound. No venue-native payload is produced.
     """
     del submitted_entry_sz
+    try:
+        require_canonical_execution_td_mode_v1(td_mode)
+    except LiveCanaryMarginModeObservationError as exc:
+        raise LiveCanaryOrderPlanError(f"MARGIN_MODE_GATE:{exc}") from exc
     try:
         observed = observe_target_position_flatten_candidate_v1(
             positions_payload=positions_payload,
