@@ -30,8 +30,23 @@ were HTTP 200), or onto `account&#47;instruments` (not on the submit
 path; empty SWAP list `CAUSAL_RELATION_UNPROVEN`). A later execute requires a **new** one-shot Owner-GO after merge **and**
 a **separate** funding GO. Do not treat analog
 GET `50113` as the proven historical incident body. Historical `50110`
-IP-whitelist is cleared and is not the oneshot `50124`. The current
-EEA canary instrument is `SUI-USD_UM_XPERP-310404` &#47; `FUTURES` &#47;
+IP-whitelist clearance is a §11.13.5.I-era fact only and is not the
+oneshot `50124`. It is not a current auth attestation. This Owner
+execute-input contract does not bind current egress IP, does not bind
+current whitelist state, and does not authorize whitelist mutation.
+Auth-repair authority is separate from Canary-submit authority.
+
+```text
+HISTORICAL_50110_CLEARANCE_REFERENCE=SECTION_11_13_5_I_ONLY
+HISTORICAL_50110_CLEARANCE_IS_NOT_CURRENT_AUTH_ATTESTATION=true
+OWNER_EXECUTE_INPUT_DOES_NOT_BIND_CURRENT_EGRESS_IP=true
+OWNER_EXECUTE_INPUT_DOES_NOT_BIND_CURRENT_WHITELIST_STATE=true
+OWNER_EXECUTE_INPUT_DOES_NOT_AUTHORIZE_WHITELIST_MUTATION=true
+AUTH_REPAIR_AUTHORITY_SEPARATE_FROM_CANARY_SUBMIT_AUTHORITY=true
+IP_WHITELIST_MUTATION_CANONICAL_CONTRACT=NONE_CURRENT
+```
+
+The current EEA canary instrument is `SUI-USD_UM_XPERP-310404` &#47; `FUTURES` &#47;
 `xperp` &#47; USDC account truth. `BTC-USDT-SWAP` is rejected for this
 path. Demo `BTC-USD_UM_XPERP-310328` remains Demo&#47;historical only.
 Superseded `BTC-USD_UM_XPERP-310404` is not a current-target fallback.
