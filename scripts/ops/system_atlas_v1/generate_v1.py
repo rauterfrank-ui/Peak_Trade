@@ -238,7 +238,31 @@ def _encode_illustrative_inline_line(line: str, *, repo_root: Path) -> str:
     return _INLINE_CODE_RE.sub(_replace, line)
 
 
-def _encode_nonlive_bare_repo_files_line(line: str, *, repo_root: Path) -> str:
+def _file_like_repo_path(value: str) -> str | None:
+    text = str(value or "").strip()
+    match = _BARE_REPO_FILE_RE.fullmatch(text)
+    return match.group(0) if match else None
+
+
+def historical_nonlive_repo_paths(atlas: dict[str, Any]) -> frozenset[str]:
+    """Repo file paths that historical wiring records as time-bounded observations.
+
+    These are not live markdown targets. Classification is model-driven and must
+    not consult the active checkout filesystem.
+    """
+    wiring = (atlas.get("records") or {}).get("census/historical_wiring.yaml") or {}
+    out: set[str] = set()
+    for edge in wiring.get("edges") or []:
+        if not isinstance(edge, dict):
+            continue
+        for key in ("source", "target"):
+            path = _file_like_repo_path(str(edge.get(key) or ""))
+            if path:
+                out.add(path)
+    return frozenset(out)
+
+
+def _encode_nonlive_bare_repo_files_line(line: str, *, nonlive_paths: frozenset[str]) -> str:
     spans = _inline_code_spans(line)
     pieces: list[str] = []
     cursor = 0
@@ -248,21 +272,25 @@ def _encode_nonlive_bare_repo_files_line(line: str, *, repo_root: Path) -> str:
             continue
         path = match.group(0)
         pieces.append(line[cursor:start])
-        if (repo_root / path).is_file():
-            pieces.append(path)
-        else:
+        if path in nonlive_paths:
             pieces.append(path.replace("/", "&#47;"))
+        else:
+            pieces.append(path)
         cursor = end
     pieces.append(line[cursor:])
     return "".join(pieces)
 
 
-def _apply_docs_gate_presentation(text: str, *, repo_root: Path) -> str:
+def _apply_docs_gate_presentation(
+    text: str, *, repo_root: Path, nonlive_paths: frozenset[str]
+) -> str:
     """Keep historical/illustrative path text visible without live-reference semantics.
 
-    Non-existent repo file paths are not emitted as live markdown targets.
-    Illustrative inline-code tokens containing '/' use the repository &#47; encoding.
-    Existing files remain live references. Fenced blocks are left unchanged.
+    Historical-wiring file paths are never live markdown targets, independent of
+    whether they exist in the active checkout. Current/live evidence paths that
+    are not historical-wiring sources remain live slash references.
+    Illustrative inline-code tokens containing '/' use the repository &#47;
+    encoding. Fenced blocks are left unchanged.
     """
     out: list[str] = []
     in_fence = False
@@ -284,7 +312,7 @@ def _apply_docs_gate_presentation(text: str, *, repo_root: Path) -> str:
             out.append(line)
             continue
         encoded = _encode_illustrative_inline_line(body, repo_root=repo_root)
-        encoded = _encode_nonlive_bare_repo_files_line(encoded, repo_root=repo_root)
+        encoded = _encode_nonlive_bare_repo_files_line(encoded, nonlive_paths=nonlive_paths)
         out.append(encoded + newline)
     return "".join(out)
 
@@ -591,8 +619,9 @@ def generate_views_v1(*, atlas: dict[str, Any], repo_root: Path) -> dict[str, st
         iter_collisions(atlas),
         atlas,
     )
+    nonlive_paths = historical_nonlive_repo_paths(atlas)
     return {
-        name: _apply_docs_gate_presentation(text, repo_root=repo_root)
+        name: _apply_docs_gate_presentation(text, repo_root=repo_root, nonlive_paths=nonlive_paths)
         for name, text in views.items()
     }
 

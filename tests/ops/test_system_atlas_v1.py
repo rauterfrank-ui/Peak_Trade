@@ -19,6 +19,7 @@ from scripts.ops.system_atlas_v1.generate_v1 import (
     _alias,
     generate_views_v1,
     generated_drift_v1,
+    historical_nonlive_repo_paths,
 )
 from scripts.ops.system_atlas_v1.load_v1 import iter_entities, iter_relations, load_atlas_v1
 from scripts.ops.system_atlas_v1.validate_v1 import AtlasValidationError, validate_atlas_v1
@@ -64,6 +65,48 @@ def test_generated_views_are_deterministic(atlas: dict) -> None:
 def test_generated_views_up_to_date(atlas: dict) -> None:
     drift = generated_drift_v1(atlas=atlas, repo_root=REPO_ROOT)
     assert drift == []
+
+
+def test_historical_nonlive_paths_are_model_driven(atlas: dict) -> None:
+    wiring = atlas["records"]["census/historical_wiring.yaml"]
+    edges = list(wiring.get("edges") or [])
+    relations = {str(edge.get("relation") or "") for edge in edges}
+    assert "REMOVED_CONSUMER" in relations
+    assert "RESTORED" in relations
+    nonlive = historical_nonlive_repo_paths(atlas)
+    for edge in edges:
+        source = str(edge.get("source") or "")
+        if source.endswith(".py"):
+            assert source in nonlive
+
+
+def test_generated_views_independent_of_checkout_path_existence(
+    atlas: dict, tmp_path: Path
+) -> None:
+    nonlive = historical_nonlive_repo_paths(atlas)
+    assert nonlive, "historical wiring must declare at least one file-like source"
+    present_root = tmp_path / "path_present"
+    for rel in nonlive:
+        target = present_root / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text("# checkout-presence stub\n", encoding="utf-8")
+    absent_root = tmp_path / "path_absent"
+    absent_root.mkdir()
+    views_absent = generate_views_v1(atlas=atlas, repo_root=absent_root)
+    views_present = generate_views_v1(atlas=atlas, repo_root=present_root)
+    assert views_absent.keys() == views_present.keys()
+    for name in GENERATED_VIEW_NAMES:
+        assert views_absent[name] == views_present[name]
+    sample = next(iter(nonlive))
+    encoded = sample.replace("/", "&#47;")
+    joined = "".join(
+        views_absent[name] for name in ("RUNTIME_GRAPH.md", "FULL_DEPENDENCY_GRAPH.md")
+    )
+    assert encoded in joined
+    assert sample not in joined
+    live_control = "src/trading/master_v2/double_play_composition.py"
+    assert live_control not in nonlive
+    assert live_control in views_absent["RUNTIME_GRAPH.md"]
 
 
 def test_terminology_and_dod_and_schema_entities_present(atlas: dict) -> None:
