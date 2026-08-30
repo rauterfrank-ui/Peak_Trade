@@ -89,6 +89,7 @@ def _payload(**fields: str) -> dict[str, object]:
         "tickSz": "0.0001",
         "ctVal": "1",
         "ctValCcy": "SUI",
+        "state": "live",
         "maxLmtSz": "100000000",
         "maxMktSz": "100000",
     }
