@@ -55,6 +55,13 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.leverage_observatio
     LEVERAGE_EXPECTED_MGN_MODE,
     LEVERAGE_OUTPUT_DOMAIN,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.available_margin_consumer_v1 import (
+    LiveCanaryAvailableMarginConsumerError,
+    apply_fresh_available_margin_pretrade_gate_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.available_margin_observation_v1 import (
+    AVAILABLE_MARGIN_OUTPUT_DOMAIN,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.margin_mode_consumer_v1 import (
     LiveCanaryMarginModeConsumerError,
     apply_fresh_margin_mode_pretrade_gate_v1,
@@ -312,6 +319,14 @@ def build_minimum_valid_canary_order_plan_v1(
     margin_mode_auth_header_sent: bool = True,
     margin_mode_historical_reuse: bool = False,
     margin_mode_body_sha256: str = "",
+    available_margin_payload: Mapping[str, Any] | None = None,
+    available_margin_http_status: int = 200,
+    available_margin_endpoint: str = "",
+    available_margin_observed_at_utc: str | None = None,
+    available_margin_get_performed: bool = False,
+    available_margin_auth_header_sent: bool = True,
+    available_margin_historical_reuse: bool = False,
+    available_margin_body_sha256: str = "",
 ) -> CanaryOrderPlanV1:
     constraints = extract_instrument_constraints_v1(
         instruments_payload=instruments_payload,
@@ -457,6 +472,24 @@ def build_minimum_valid_canary_order_plan_v1(
         )
     except LiveCanaryMarginModeConsumerError as exc:
         raise LiveCanaryOrderPlanError(f"MARGIN_MODE_GATE:{exc}") from exc
+    try:
+        apply_fresh_available_margin_pretrade_gate_v1(
+            pretrade_decision_id=pretrade_decision_id,
+            payload=available_margin_payload or {},
+            instrument_id=instrument_id,
+            available_margin_domain=AVAILABLE_MARGIN_OUTPUT_DOMAIN,
+            planned_td_mode=td_mode,
+            http_status=available_margin_http_status,
+            endpoint=available_margin_endpoint,
+            observed_at_utc=available_margin_observed_at_utc,
+            get_performed=available_margin_get_performed,
+            rest_host=REUSED_BINDING_REST_HOST,
+            auth_header_sent=available_margin_auth_header_sent,
+            historical_reuse=available_margin_historical_reuse,
+            body_sha256=available_margin_body_sha256,
+        )
+    except LiveCanaryAvailableMarginConsumerError as exc:
+        raise LiveCanaryOrderPlanError(f"AVAILABLE_MARGIN_GATE:{exc}") from exc
     clordid = serialize_canary_clordid_v1(owner_go=owner_go, origin_main_sha=origin_main_sha)
     try:
         typed_sz = serialize_venue_sz_from_typed_contract_count_v1(

@@ -71,6 +71,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.leverage_observatio
     LiveCanaryLeverageObservationError,
     account_leverage_info_query_path_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.available_margin_observation_v1 import (
+    LiveCanaryAvailableMarginObservationError,
+    account_balance_query_path_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.margin_mode_observation_v1 import (
     LiveCanaryMarginModeObservationError,
     account_positions_query_path_v1,
@@ -463,6 +467,17 @@ def run_canary_submit_transport_v1(
             positions = _signed_get(client=client, handle=handle, endpoint=margin_mode_ep)
         except LiveCanaryHttpError as exc:
             raise LiveCanarySubmitTransportError(f"MARGIN_MODE_FRESH_GET_FAILED:{exc}") from exc
+        available_margin_ep = account_balance_query_path_v1()
+        try:
+            available_margin_payload = _signed_get(
+                client=client, handle=handle, endpoint=available_margin_ep
+            )
+        except LiveCanaryHttpError as exc:
+            raise LiveCanarySubmitTransportError(
+                f"AVAILABLE_MARGIN_FRESH_GET_FAILED:{exc}"
+            ) from exc
+        except LiveCanaryAvailableMarginObservationError as exc:
+            raise LiveCanarySubmitTransportError(f"AVAILABLE_MARGIN_GATE:{exc}") from exc
         try:
             plan = build_minimum_valid_canary_order_plan_v1(
                 instruments_payload=instruments,
@@ -516,6 +531,13 @@ def run_canary_submit_transport_v1(
                 margin_mode_get_performed=True,
                 margin_mode_auth_header_sent=True,
                 margin_mode_historical_reuse=False,
+                available_margin_payload=available_margin_payload,
+                available_margin_http_status=200,
+                available_margin_endpoint=available_margin_ep,
+                available_margin_observed_at_utc=observed_at,
+                available_margin_get_performed=True,
+                available_margin_auth_header_sent=True,
+                available_margin_historical_reuse=False,
             )
         except LiveCanaryOrderPlanError as exc:
             raise LiveCanarySubmitTransportError(

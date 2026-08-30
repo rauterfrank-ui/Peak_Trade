@@ -125,6 +125,28 @@ POS_MODE = {
         }
     ],
 }
+AVAILABLE_MARGIN = {
+    "code": "0",
+    "msg": "",
+    "data": [
+        {
+            "adjEq": "12.5",
+            "availEq": "12.5",
+            "totalEq": "12.5",
+            "uTime": "1788042908790",
+            "details": [
+                {
+                    "ccy": "USDC",
+                    "availEq": "10.25",
+                    "availBal": "10.10",
+                    "eq": "10.25",
+                    "cashBal": "10.25",
+                    "uTime": "1788042908790",
+                }
+            ],
+        }
+    ],
+}
 FIXTURE_MATERIAL = json.dumps(
     {"api_key": "A" * 36, "api_secret": "B" * 32, "passphrase": "C" * 14},
     separators=(",", ":"),
@@ -195,6 +217,11 @@ def _max_available_plan_kwargs(**overrides: object) -> dict[str, object]:
         "margin_mode_endpoint": "/api/v5/account/positions",
         "margin_mode_http_status": 200,
         "margin_mode_auth_header_sent": True,
+        "available_margin_payload": AVAILABLE_MARGIN,
+        "available_margin_get_performed": True,
+        "available_margin_endpoint": "/api/v5/account/balance",
+        "available_margin_http_status": 200,
+        "available_margin_auth_header_sent": True,
     }
     body.update(overrides)
     return body
@@ -210,6 +237,7 @@ def _fake_transport() -> RecordingFakeCanaryTransportV1:
             "/api/v5/account/max-size": json.dumps(MAX_AVAILABLE).encode(),
             "/api/v5/account/leverage-info": json.dumps(LEVERAGE).encode(),
             "/api/v5/account/config": json.dumps(POS_MODE).encode(),
+            "/api/v5/account/balance": json.dumps(AVAILABLE_MARGIN).encode(),
             "/api/v5/trade/orders-pending": json.dumps(EMPTY).encode(),
             "/api/v5/trade/orders-history": json.dumps(EMPTY).encode(),
         },
