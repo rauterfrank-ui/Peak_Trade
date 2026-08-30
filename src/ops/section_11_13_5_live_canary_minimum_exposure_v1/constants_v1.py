@@ -108,8 +108,9 @@ ENDPOINT_PUBLIC_PRICE_LIMIT = "/api/v5/public/price-limit"
 ENDPOINT_ACCOUNT_LEVERAGE_INFO = "/api/v5/account/leverage-info"
 ENDPOINT_ACCOUNT_CONFIG = "/api/v5/account/config"
 ENDPOINT_ACCOUNT_POSITIONS = "/api/v5/account/positions"
+ENDPOINT_ACCOUNT_BALANCE = "/api/v5/account/balance"
 ENDPOINT_ALLOWLIST_READ: tuple[str, ...] = (
-    "/api/v5/account/balance",
+    ENDPOINT_ACCOUNT_BALANCE,
     ENDPOINT_ACCOUNT_CONFIG,
     ENDPOINT_ACCOUNT_POSITIONS,
     ENDPOINT_ACCOUNT_MAX_SIZE,
@@ -296,7 +297,7 @@ GET_ENDPOINTS_PUBLIC: tuple[str, ...] = (
     ENDPOINT_PUBLIC_PRICE_LIMIT,
 )
 GET_ENDPOINTS_PRIVATE: tuple[str, ...] = (
-    "/api/v5/account/balance",
+    ENDPOINT_ACCOUNT_BALANCE,
     ENDPOINT_ACCOUNT_CONFIG,
     ENDPOINT_ACCOUNT_POSITIONS,
     ENDPOINT_ACCOUNT_MAX_SIZE,
