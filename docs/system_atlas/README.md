@@ -61,4 +61,8 @@ IMPLEMENTATION CHANGE
 
 Allowed impact classifications: `ATLAS_IMPACT=UPDATED` or `ATLAS_IMPACT=NONE_WITH_PROOF`. Unmapped material architecture is `ATLAS_IMPACT=REVIEW_REQUIRED` (fail closed). This mechanism does not make the Atlas canonical authority.
 
-See `ATLAS_AUTHORITY_AND_USAGE.md`.
+Historical reconsolidation governance and the empty reconciliation ledger live
+under `reconciliation&#47;`. That tree is governance/evidence only. It does not raise Atlas authority,
+does not replace the Atlas census, and does not authorize runtime, trading, risk, or execution.
+
+See `ATLAS_AUTHORITY_AND_USAGE.md` and `reconciliation&#47;README.md`.

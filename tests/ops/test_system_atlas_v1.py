@@ -44,6 +44,9 @@ def test_readme_declares_atlas_authority_none() -> None:
     usage = (ATLAS_ROOT / "ATLAS_AUTHORITY_AND_USAGE.md").read_text(encoding="utf-8")
     assert "ATLAS_AUTHORITY=NONE" in usage
     assert "ATLAS_MUST_NOT_CREATE_AUTHORITY=true" in usage
+    recon = (ATLAS_ROOT / "reconciliation" / "README.md").read_text(encoding="utf-8")
+    assert "RECONCILIATION_AUTHORITY=NONE" in recon
+    assert "CREATES_CANONICAL_AUTHORITY=false" in recon
 
 
 def test_atlas_loads_and_validates(atlas: dict) -> None:

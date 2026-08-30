@@ -108,3 +108,108 @@ def test_truth_gates_run_atlas_impact_checker() -> None:
     assert "check_system_atlas_impact_v1.py" in text
     assert "validate_system_atlas_v1.py" in text
     assert "name: docs-drift-guard" in text
+
+
+def test_true_atlas_entity_id_in_entity_record_diff_is_detected() -> None:
+    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+    yaml_diff = (
+        "diff --git a/docs/system_atlas/entities/catalog.yaml "
+        "b/docs/system_atlas/entities/catalog.yaml\n"
+        "@@\n"
+        "+  - id: RUNTIME_COMPONENT:brand_new_untracked_thing\n"
+    )
+    report = classify_atlas_impact_v1(
+        atlas=atlas,
+        changed_files=["docs/system_atlas/entities/catalog.yaml"],
+        atlas_yaml_diff=yaml_diff,
+    )
+    assert "RUNTIME_COMPONENT:brand_new_untracked_thing" in report.changed_entities
+    assert report.impact == ATLAS_IMPACT_UPDATED
+
+
+def test_tracked_runtime_without_yaml_remains_review_required() -> None:
+    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+    report = classify_atlas_impact_v1(atlas=atlas, changed_files=[ELIGIBILITY])
+    assert report.impact == ATLAS_IMPACT_REVIEW_REQUIRED
+    assert any(
+        item.startswith("TRACKED_ENTITY_UNREVIEWED:") for item in report.review_required_items
+    )
+
+
+def test_reconciliation_search_anchors_are_not_atlas_entities() -> None:
+    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+    yaml_diff = (
+        "diff --git a/docs/system_atlas/reconciliation/search_anchors.yaml "
+        "b/docs/system_atlas/reconciliation/search_anchors.yaml\n"
+        "@@\n"
+        "+  - id: ANCHOR:landscape\n"
+        "+  - id: ANCHOR:master_v2\n"
+        "+  - id: ANCHOR:double_play\n"
+    )
+    report = classify_atlas_impact_v1(
+        atlas=atlas,
+        changed_files=["docs/system_atlas/reconciliation/search_anchors.yaml"],
+        atlas_yaml_diff=yaml_diff,
+    )
+    assert "ANCHOR:landscape" not in report.changed_entities
+    assert "ANCHOR:master_v2" not in report.changed_entities
+    assert "ANCHOR:double_play" not in report.changed_entities
+    assert not any(
+        item.startswith("TRACKED_ENTITY_UNREVIEWED:ANCHOR:")
+        for item in report.review_required_items
+    )
+    assert report.impact == ATLAS_IMPACT_UPDATED
+    assert report.drift_detected is False
+
+
+def test_reconciliation_schema_id_is_not_atlas_schema_entity() -> None:
+    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+    yaml_diff = (
+        "diff --git a/docs/system_atlas/reconciliation/schema.yaml "
+        "b/docs/system_atlas/reconciliation/schema.yaml\n"
+        "@@\n"
+        "+  - id: SCHEMA:atlas_v1\n"
+    )
+    report = classify_atlas_impact_v1(
+        atlas=atlas,
+        changed_files=["docs/system_atlas/reconciliation/schema.yaml"],
+        atlas_yaml_diff=yaml_diff,
+    )
+    assert "SCHEMA_UNREVIEWED:SCHEMA:atlas_v1" not in report.review_required_items
+    assert not any(
+        item.startswith("TRACKED_ENTITY_UNREVIEWED:SCHEMA:atlas_v1")
+        for item in report.review_required_items
+    )
+    assert report.impact == ATLAS_IMPACT_UPDATED
+
+
+def test_reconciliation_governance_path_visible_without_entity_false_positive() -> None:
+    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+    yaml_diff = (
+        "diff --git a/docs/system_atlas/reconciliation/GOVERNANCE_V1.yaml "
+        "b/docs/system_atlas/reconciliation/GOVERNANCE_V1.yaml\n"
+        "@@\n"
+        "+sequence:\n"
+        "+  - FIND_COMPLETELY\n"
+    )
+    report = classify_atlas_impact_v1(
+        atlas=atlas,
+        changed_files=["docs/system_atlas/reconciliation/GOVERNANCE_V1.yaml"],
+        atlas_yaml_diff=yaml_diff,
+    )
+    assert report.impact == ATLAS_IMPACT_UPDATED
+    assert not any(
+        item.startswith("TRACKED_ENTITY_UNREVIEWED:") for item in report.review_required_items
+    )
+    assert not any(item.startswith("SCHEMA_UNREVIEWED:") for item in report.review_required_items)
+
+
+def test_parser_does_not_globally_ignore_id_lines_without_git_headers() -> None:
+    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+    report = classify_atlas_impact_v1(
+        atlas=atlas,
+        changed_files=["docs/system_atlas/entities/catalog.yaml"],
+        atlas_yaml_diff="   - id: SCRIPT:check_system_atlas_impact\n",
+    )
+    assert "SCRIPT:check_system_atlas_impact" in report.changed_entities
+    assert report.impact == ATLAS_IMPACT_UPDATED

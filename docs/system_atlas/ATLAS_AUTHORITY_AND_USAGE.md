@@ -55,6 +55,8 @@ canonical authority
 
 `docs/system_atlas/generated/SYSTEM_ATLAS.md` is the primary human entrypoint. Specialized files are drill-down views. Do not treat a generated overview as canonical SSOT.
 
+`docs/system_atlas/reconciliation/` persists reconsolidation methodology and the reconciliation ledger. It is not Atlas authority, not a canonical SSOT, and not a runtime authorization surface. It must not be used to silently rewrite Atlas facts.
+
 ## Change coupling / drift prevention
 
 This Atlas must stay synchronized with future architecture and runtime changes. Synchronization does **not** make the Atlas canonical authority. Canonical authority remains the Master Runbook and must still be cited by Atlas records.

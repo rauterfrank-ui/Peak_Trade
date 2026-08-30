@@ -12,8 +12,12 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable
 
-from scripts.ops.system_atlas_v1.constants_v1 import ATLAS_RELATIVE_ROOT
+from scripts.ops.system_atlas_v1.constants_v1 import (
+    ATLAS_RELATIVE_ROOT,
+    RECONCILIATION_RELATIVE_ROOT,
+)
 from scripts.ops.system_atlas_v1.load_v1 import (
+    ATLAS_ENTITY_RECORD_FILES,
     iter_closures,
     iter_configs,
     iter_entities,
@@ -56,6 +60,11 @@ MATERIAL_PREFIXES = (
 _ID_LINE = re.compile(r"^[-+ ]\s*-?\s*id:\s*(\S+)\s*$", re.M)
 _REL_ID_LINE = re.compile(r"^[-+]\s*-?\s*id:\s*((?:REL|FCM):\S+)\s*$")
 _FILE_LIKE = re.compile(r"^(src|docs|scripts|config|tests|forensics)/.+")
+_DIFF_GIT_LINE = re.compile(r"^diff --git a/(.+) b/(.+)$")
+ATLAS_RECONCILIATION_PREFIX = f"{RECONCILIATION_RELATIVE_ROOT}/"
+ATLAS_ENTITY_RECORD_PATHS = frozenset(
+    f"{ATLAS_SOURCE_PREFIX}{rel}" for rel in ATLAS_ENTITY_RECORD_FILES
+)
 
 
 @dataclass
@@ -265,8 +274,55 @@ def _hits_for_changed(
     return found
 
 
+def _is_reconciliation_path(path: str) -> bool:
+    p = _norm(path)
+    return p == RECONCILIATION_RELATIVE_ROOT or p.startswith(ATLAS_RECONCILIATION_PREFIX)
+
+
+def _is_atlas_entity_record_path(path: str) -> bool:
+    """True only for loaded Atlas YAML records. Reconciliation metadata is excluded."""
+    p = _norm(path)
+    if _is_reconciliation_path(p):
+        return False
+    return p in ATLAS_ENTITY_RECORD_PATHS
+
+
+def _iter_unified_diff_files(diff_text: str) -> list[tuple[str, str]]:
+    files: list[tuple[str, str]] = []
+    current_path: str | None = None
+    chunks: list[str] = []
+    for line in (diff_text or "").splitlines(keepends=True):
+        match = _DIFF_GIT_LINE.match(line.rstrip("\n"))
+        if match:
+            if current_path is not None:
+                files.append((current_path, "".join(chunks)))
+            current_path = _norm(match.group(2))
+            chunks = [line]
+        else:
+            chunks.append(line)
+    if current_path is not None:
+        files.append((current_path, "".join(chunks)))
+    return files
+
+
 def _ids_in_atlas_diff(atlas_diff: str) -> set[str]:
-    return {m.group(1) for m in _ID_LINE.finditer(atlas_diff or "")}
+    """Extract Atlas entity IDs from entity-record YAML diffs only.
+
+    Reconciliation search-anchor / schema metadata uses `id:` but is not an
+    Atlas entity surface. Snippets without `diff --git` headers (unit tests)
+    remain entity-record diffs.
+    """
+    if not atlas_diff:
+        return set()
+    per_file = _iter_unified_diff_files(atlas_diff)
+    if not per_file:
+        return {m.group(1) for m in _ID_LINE.finditer(atlas_diff)}
+    ids: set[str] = set()
+    for path, blob in per_file:
+        if not _is_atlas_entity_record_path(path):
+            continue
+        ids.update(m.group(1) for m in _ID_LINE.finditer(blob))
+    return ids
 
 
 def _relation_add_remove(atlas_diff: str) -> tuple[list[str], list[str]]:

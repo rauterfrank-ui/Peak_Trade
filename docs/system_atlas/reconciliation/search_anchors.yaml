@@ -1,0 +1,23 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+kind: KNOWN_SEARCH_ANCHOR
+anchors_are_not_ledger_records: true
+anchors_are_not_census_boundaries: true
+counted_as_ledger_records: false
+purpose_investigated: false
+adjudicated: false
+note: >
+  Known names used only as later search anchors. They are not complete
+  reconciliation records and do not bound the census. Evidence for these
+  names was not investigated in this workpackage.
+anchors:
+  - id: ANCHOR:landscape
+    name: Landscape
+    kind: KNOWN_SEARCH_ANCHOR
+  - id: ANCHOR:master_v2
+    name: Master V2
+    kind: KNOWN_SEARCH_ANCHOR
+  - id: ANCHOR:double_play
+    name: Double Play
+    kind: KNOWN_SEARCH_ANCHOR

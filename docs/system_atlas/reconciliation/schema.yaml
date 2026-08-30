@@ -1,0 +1,73 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+description: >
+  Field catalog for ledger records. Empty ledger is valid. Categories remain
+  epistemically separate. This file is documentation for later census work,
+  not a populated record set.
+identity:
+  - reconciliation_id
+  - canonical_record_name
+  - historical_names
+  - aliases
+discovery:
+  - discovery_status
+  - discovered_from
+  - discovery_evidence
+  - first_bound_ref
+  - historical_paths
+  - historical_refs
+  - historical_commits
+understanding:
+  - purpose_understood
+  - purpose_statement
+  - historical_problem_statement
+  - inputs
+  - outputs
+  - dependencies
+  - consumers
+  - authority_role
+  - safety_role
+  - runtime_role
+  - invariants
+relations:
+  - relation_type
+  - target_id
+  - unresolved_target
+  - evidence
+  - epistemic_status
+current_comparison:
+  - current_equivalent
+  - current_paths
+  - capability_overlap
+  - semantic_compatibility
+  - authority_compatibility
+  - safety_compatibility
+  - runtime_compatibility
+  - conflicts
+  - gaps
+adjudication:
+  - lifecycle_state
+  - disposition
+  - positive_reason
+  - evidence_refs
+  - contradictions
+  - unresolved_questions
+integration:
+  - reintegration_required
+  - adaptation_required
+  - implementation_status
+  - implementation_refs
+audit:
+  - created_from_evidence
+  - last_adjudicated_against_sha
+  - notes
+allowed_relation_types:
+  - POSSIBLE_SAME_AS
+  - DEPENDS_ON
+  - SUPERSEDES
+  - REPLACED_BY
+  - CONSUMED_BY
+  - IMPLEMENTS
+  - CONFLICTS_WITH
+  - COVERED_BY
