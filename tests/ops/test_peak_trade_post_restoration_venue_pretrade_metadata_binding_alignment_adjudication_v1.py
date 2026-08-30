@@ -129,6 +129,14 @@ def _section_5_3(text: str) -> str:
     return text[start:end]
 
 
+def _this_persist(section: str) -> str:
+    """Historical #6147 persist only. Later §5.3 slices may supersede STATUS."""
+    marker = "VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION_V1=true"
+    start = section.index(marker)
+    end = section.index("Normative subordinate adjudication:", start)
+    return section[start:end]
+
+
 def test_spec_is_subordinate_and_does_not_grant_authority() -> None:
     spec = SPEC_PATH.read_text(encoding="utf-8")
     assert SPEC_PATH.is_file()
@@ -177,7 +185,7 @@ def test_master_pointer_and_adjudication_result() -> None:
     assert "ADJUDICATION_RESULT=BLOCKED_BY_MISSING_SOURCE" not in spec
     assert "ADJUDICATION_RESULT=BLOCKED_BY_CONFLICT" not in spec
     assert "VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_STATUS=COMPLETE" not in spec
-    assert "VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_STATUS=COMPLETE" not in section
+    assert "VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_STATUS=COMPLETE" not in _this_persist(section)
     assert "MAX_SIZE_BINDING_STATUS=PROVEN" not in spec
     assert "NEXT_DISTINCT_SURFACE_AUTHORIZED=false" in spec
     assert "NETWORK_GET_REQUIRED_IS_NOT_NETWORK_GET_AUTHORIZATION=true" in spec

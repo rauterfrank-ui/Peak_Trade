@@ -62,6 +62,13 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.available_margin_co
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.available_margin_observation_v1 import (
     AVAILABLE_MARGIN_OUTPUT_DOMAIN,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.instrument_state_consumer_v1 import (
+    LiveCanaryInstrumentStateConsumerError,
+    apply_fresh_instrument_state_pretrade_gate_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.instrument_state_observation_v1 import (
+    INSTRUMENT_STATE_OUTPUT_DOMAIN,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.margin_mode_consumer_v1 import (
     LiveCanaryMarginModeConsumerError,
     apply_fresh_margin_mode_pretrade_gate_v1,
@@ -490,6 +497,26 @@ def build_minimum_valid_canary_order_plan_v1(
         )
     except LiveCanaryAvailableMarginConsumerError as exc:
         raise LiveCanaryOrderPlanError(f"AVAILABLE_MARGIN_GATE:{exc}") from exc
+    try:
+        apply_fresh_instrument_state_pretrade_gate_v1(
+            pretrade_decision_id=pretrade_decision_id,
+            instruments_payload=instruments_payload,
+            instrument_id=instrument_id,
+            instrument_state_domain=INSTRUMENT_STATE_OUTPUT_DOMAIN,
+            http_status=max_size_http_status,
+            endpoint=max_size_endpoint
+            or public_instruments_query_path_v1(
+                instrument_id=instrument_id, inst_type=DEFAULT_INST_TYPE
+            ),
+            observed_at_utc=max_size_observed_at_utc,
+            get_performed=max_size_get_performed,
+            rest_host=REUSED_BINDING_REST_HOST,
+            auth_header_sent=max_size_auth_header_sent,
+            historical_reuse=max_size_historical_reuse,
+            body_sha256=max_size_body_sha256,
+        )
+    except LiveCanaryInstrumentStateConsumerError as exc:
+        raise LiveCanaryOrderPlanError(f"INSTRUMENT_STATE_GATE:{exc}") from exc
     clordid = serialize_canary_clordid_v1(owner_go=owner_go, origin_main_sha=origin_main_sha)
     try:
         typed_sz = serialize_venue_sz_from_typed_contract_count_v1(
