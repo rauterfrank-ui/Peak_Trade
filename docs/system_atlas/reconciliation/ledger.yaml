@@ -1,0 +1,8 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+# This ledger is reconciliation evidence, not trading or runtime authority.
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_sha: 90dec7208554deb5d2af0a2021bb7bceaf5d6662
+bound_against_ref: origin/main
+ledger_record_count: 0
+records: []

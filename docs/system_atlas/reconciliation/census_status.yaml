@@ -1,0 +1,15 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_sha: 90dec7208554deb5d2af0a2021bb7bceaf5d6662
+bound_against_ref: origin/main
+census_status: CENSUS_NOT_STARTED
+census_exhaustion_proven: false
+census_closed: false
+search_universe_bound: false
+search_universe_evidence: []
+exhaustion_evidence: []
+historical_census_performed: false
+note: >
+  Initial governance persist only. No historical census was performed.
+  Completeness is unproven. This is a valid state.

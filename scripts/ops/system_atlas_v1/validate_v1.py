@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from scripts.ops.system_atlas_v1.constants_v1 import (
@@ -183,6 +184,7 @@ def validate_atlas_v1(atlas: dict[str, Any]) -> list[str]:
 
     _validate_incompleteness(atlas, meta)
     _validate_master_v2_inventory(atlas, meta)
+    _validate_reconciliation_if_present(atlas)
 
     return []
 
@@ -294,3 +296,23 @@ def _validate_master_v2_inventory(atlas: dict[str, Any], meta: dict[str, Any]) -
     for spec in specs:
         if not str(spec.get("entity") or "").startswith("CAPABILITY:"):
             raise AtlasValidationError(f"MASTER_V2_SPEC_ENTITY_MISSING:{spec.get('path')}")
+
+
+def _validate_reconciliation_if_present(atlas: dict[str, Any]) -> None:
+    """Validate adjacent reconciliation tree without raising Atlas authority."""
+    repo_root_raw = atlas.get("repo_root")
+    if not repo_root_raw:
+        return
+    repo_root = Path(str(repo_root_raw))
+    recon = repo_root / "docs" / "system_atlas" / "reconciliation"
+    if not recon.is_dir():
+        return
+    from scripts.ops.system_atlas_v1.reconciliation_v1 import (
+        ReconciliationValidationError,
+        validate_reconciliation_tree_v1,
+    )
+
+    try:
+        validate_reconciliation_tree_v1(repo_root=repo_root)
+    except ReconciliationValidationError as exc:
+        raise AtlasValidationError(f"RECONCILIATION_INVALID:{exc}") from exc

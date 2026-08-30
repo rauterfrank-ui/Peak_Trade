@@ -9,6 +9,10 @@ SCHEMA_VERSION = "system_atlas.v1"
 GENERATOR_MODULE = "scripts/ops/generate_system_atlas_v1.py"
 ATLAS_RELATIVE_ROOT = "docs/system_atlas"
 GENERATED_MARKER = "GENERATED/DO_NOT_EDIT"
+RECONCILIATION_AUTHORITY = "NONE"
+RECONCILIATION_ROLE = "GOVERNANCE_AND_EVIDENCE_NOT_RUNTIME"
+RECONCILIATION_RELATIVE_ROOT = "docs/system_atlas/reconciliation"
+RECONCILIATION_SCHEMA_VERSION = "peak_trade.reconciliation_governance.v1"
 
 EPISTEMIC_CLASSES = frozenset(
     {

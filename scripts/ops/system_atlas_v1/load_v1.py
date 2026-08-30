@@ -84,6 +84,8 @@ def load_atlas_v1(*, repo_root: Path) -> dict[str, Any]:
     payload: dict[str, Any] = {
         "atlas_authority": "NONE",
         "schema_version": "system_atlas.v1",
+        "repo_root": str(repo_root),
+        "atlas_root": str(root),
         "source_files": [],
         "records": {},
     }

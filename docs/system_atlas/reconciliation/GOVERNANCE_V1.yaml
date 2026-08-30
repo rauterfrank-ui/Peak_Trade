@@ -1,0 +1,189 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+# RECONCILIATION_ROLE=GOVERNANCE_AND_EVIDENCE_NOT_RUNTIME
+# RUNTIME_AUTHORIZATION_EFFECT=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+reconciliation_base_sha: 90dec7208554deb5d2af0a2021bb7bceaf5d6662
+reconciliation_base_ref: origin/main
+reconciliation_base_worktree: PRIMARY_MAIN
+system_atlas_authority_changed: false
+canonical_authority_changed: false
+creates_productive_authority: false
+creates_runtime_authorization: false
+
+sequence:
+  - FIND_COMPLETELY
+  - UNDERSTAND
+  - EVALUATE_INDIVIDUALLY
+  - INTEGRATE_OR_DISPOSITION
+
+sequence_rule: >
+  No component may receive a final integrate-or-disposition decision
+  before FIND_COMPLETELY evidence for that component, PURPOSE_UNDERSTOOD,
+  and CURRENT_SYSTEM_COMPARED are bound. Known names are search anchors,
+  not census boundaries.
+
+find_completely:
+  census_driven: true
+  known_names_are_search_anchors_not_census_boundaries: true
+  unknown_historical_components_must_be_searchable: true
+  memory_is_not_a_fact: true
+  allowed_later_evidence_surfaces:
+    - historical_trees
+    - branches
+    - commits
+    - persisted_forensics
+    - evidence
+    - documentation
+    - relations
+    - tooling
+    - other_provable_repository_or_corpus_surfaces
+
+understand_required_fields:
+  - historical_identity
+  - names_and_aliases
+  - historical_paths
+  - historical_version_commit_ref_if_provable
+  - purpose
+  - historical_problem
+  - inputs
+  - outputs
+  - dependencies
+  - consumers
+  - authority_role
+  - safety_role
+  - runtime_role
+  - relations
+  - invariants
+  - proven_historical_utility
+  - open_or_contradictory_facts
+purpose_not_understood_blocks_final_disposition: true
+
+evaluate_individually_against:
+  - current_origin_main
+  - repository_system_atlas_v1
+  - current_authority_bounds
+  - current_safety_fail_closed_bounds
+  - current_runtime_execution_architecture
+  - current_canonical_ssots
+  - master_v2_double_play_system_relation_if_evidence_bound
+  - already_present_replacement_capabilities
+  - semantic_conflicts
+  - functional_coverage
+  - integration_cost_and_structural_impact_if_provable
+mass_disposition_by_age_path_generation_or_name_schema_forbidden: true
+
+epistemic_rules:
+  HISTORICAL_EXISTENCE_IS_NOT_AUTOMATIC_AUTHORITY: true
+  HISTORICAL_EXISTENCE_IS_NOT_AUTOMATIC_REINTEGRATION: true
+  HISTORICAL_EXISTENCE_IS_NOT_REJECTION_GROUNDS: true
+  LOST_COMPONENT_IS_INVESTIGATION_TRIGGER: true
+  MEMORY_OF_COMPONENT_NAMES_IS_NOT_CENSUS_BOUNDARY: true
+  UNKNOWN_HISTORICAL_COMPONENTS_MUST_BE_SEARCHABLE: true
+  NO_COMPONENT_DISPOSITION_BEFORE_PURPOSE_UNDERSTOOD: true
+  NO_REINTEGRATION_BEFORE_CURRENT_SYSTEM_COMPATIBILITY_ASSESSED: true
+  NO_REJECTION_WITHOUT_POSITIVE_REASON: true
+  INSUFFICIENT_EVIDENCE_REMAINS_OPEN: true
+  CURRENT_ABSENCE_DOES_NOT_PROVE_HISTORICAL_IRRELEVANCE: true
+  CURRENT_REPLACEMENT_MUST_BE_PROVEN_NOT_ASSUMED: true
+  HISTORICAL_PURPOSE_AND_CURRENT_FIT_ARE_SEPARATE_QUESTIONS: true
+  CENSUS_COMPLETENESS_MUST_BE_PROVEN_NOT_INFERRED: true
+  UNPROVEN_COMPLETENESS_REMAINS_UNPROVEN: true
+  NO_SILENT_NORMALIZATION: true
+  NO_MISSING_FACT_RECONSTRUCTION: true
+  CONTRADICTIONS_ARE_PRESERVED_AS_SYSTEM_FACTS: true
+
+disposition_taxonomy:
+  RETAIN_AS_IS: >
+    Historical capability remains useful, currently required or valuable,
+    and compatible with today's architecture; largely unchanged reintegration
+    is justifiable.
+  ADAPT_AND_REINTEGRATE: >
+    Historical purpose remains valuable, but the historical implementation
+    or authority/safety/runtime embedding is not compatible unchanged.
+    Adapt under control to the current system.
+  CAPABILITY_ALREADY_COVERED: >
+    Historical purpose remains legitimate, but a current capability
+    provably covers it. Do not keep a duplicate mechanism for historical
+    reasons alone.
+  HISTORICALLY_VALID_BUT_INCOMPATIBLE: >
+    The component had a proven legitimate historical purpose, but it is
+    incompatible with the current system or current invariants.
+    Historical legitimacy remains documented.
+  INSUFFICIENT_EVIDENCE: >
+    Purpose, utility, relations, or current comparability are not
+    sufficiently proven. The case remains OPEN. This is not a rejection.
+  REJECT_FOR_CURRENT_SYSTEM: >
+    Not because of age or current absence. Allowed only when a positive,
+    reviewable reason shows why the capability should not be adopted
+    for the current system.
+
+lifecycle_states:
+  - DISCOVERED
+  - EVIDENCE_BOUND
+  - PURPOSE_UNDERSTOOD
+  - CURRENT_SYSTEM_COMPARED
+  - ADJUDICATED
+  - DISPOSITION_DECIDED
+post_decision_states:
+  - REINTEGRATED
+  - COVERED
+  - INCOMPATIBLE
+  - REJECTED
+  - OPEN
+automatic_advancement_forbidden: true
+insufficient_evidence_may_remain_open_indefinitely: true
+
+id_schema:
+  pattern: "^RCN-[0-9]{6}$"
+  reuse_forbidden: true
+  rename_does_not_change_id: true
+  name_is_not_identity: true
+  possible_same_as_relation: POSSIBLE_SAME_AS
+  premature_deduplication_forbidden: true
+
+claim_classes:
+  - CANONICAL_CURRENT_FACT
+  - FORENSIC_RAW_FACT
+  - HISTORICAL_FACT
+  - ADJUDICATED_CONCLUSION
+  - INTERPRETATION
+  - HYPOTHESIS
+  - OPEN_QUESTION
+  - CONTRADICTION
+hypothesis_must_not_serialize_as_fact: true
+
+census_status_values:
+  - CENSUS_NOT_STARTED
+  - CENSUS_IN_PROGRESS
+  - CENSUS_SCOPE_BOUND
+  - CENSUS_EXHAUSTION_PROVEN
+  - CENSUS_CLOSED
+census_closed_requires_bound_search_universe_and_proven_exhaustion: true
+census_not_closed_by:
+  - many_components_found
+  - all_known_names_found
+  - no_obvious_further_hits
+  - single_branch_exhausted
+  - single_forensic_corpus_exhausted
+
+atlas_epistemic_class_mapping_navigation_only:
+  CANONICAL_CURRENT_FACT: CANONICAL_AUTHORITY
+  FORENSIC_RAW_FACT: FORENSIC_RAW
+  HISTORICAL_FACT: HISTORICAL
+  ADJUDICATED_CONCLUSION: ADJUDICATED
+  INTERPRETATION: INTERPRETATION
+  HYPOTHESIS: HYPOTHESIS
+  OPEN_QUESTION: OPEN
+  CONTRADICTION: CONTRADICTED
+mapping_does_not_mutate_atlas_ontology: true
+
+required_record_categories:
+  - identity
+  - discovery
+  - understanding
+  - relations
+  - current_comparison
+  - adjudication
+  - integration
+  - audit
