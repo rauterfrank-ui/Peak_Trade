@@ -199,6 +199,7 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`docs/ops/specs/PEAK_TRADE_AVAILABLE_MARGIN_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1.md`](../ops/specs/PEAK_TRADE_AVAILABLE_MARGIN_FORENSIC_BINDING_IMPLEMENTATION_AND_CLOSURE_V1.md) | AVAILABLE_MARGIN Forensic Binding Implementation and Closure (navigation only) |
 | [`docs/ops/specs/PEAK_TRADE_INSTRUMENT_STATE_FORENSIC_BINDING_AND_CLOSURE_V1.md`](../ops/specs/PEAK_TRADE_INSTRUMENT_STATE_FORENSIC_BINDING_AND_CLOSURE_V1.md) | INSTRUMENT_STATE Forensic Binding and Closure (navigation only) |
 | [`docs/ops/specs/PEAK_TRADE_ACCOUNT_MODE_FORENSIC_BINDING_AND_CLOSURE_V1.md`](../ops/specs/PEAK_TRADE_ACCOUNT_MODE_FORENSIC_BINDING_AND_CLOSURE_V1.md) | ACCOUNT_MODE Forensic Binding and Closure (navigation only) |
+| [`docs/ops/specs/PEAK_TRADE_VENUE_PRETRADE_LIMIT_GATES_FORENSIC_BINDING_AND_CLOSURE_V1.md`](../ops/specs/PEAK_TRADE_VENUE_PRETRADE_LIMIT_GATES_FORENSIC_BINDING_AND_CLOSURE_V1.md) | VENUE_PRETRADE_LIMIT_GATES Forensic Binding and Closure (navigation only) |
 
 ---
 
