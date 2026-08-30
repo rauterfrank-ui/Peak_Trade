@@ -1,0 +1,341 @@
+# Peak_Trade — VENUE_PRETRADE_LIMIT_GATES Forensic Binding and Closure v1
+
+status: ACTIVE
+last_updated: 2026-08-30
+owner: Peak_Trade
+purpose: Bind Peak_Trade VENUE_PRETRADE_LIMIT_GATES to the First-Party public instruments exact-row LIMIT constraints minSz, lotSz, tickSz, and maxLmtSz, wire a provenance-bound fail-closed consumer into the canary order-plan, and close the surface from committed post-SUI evidence. Not a second SSOT. Not restoration reopen. Not live or trading authority. Not a new network GET. Not AVAILABLE_MARGIN, leverage, POS_MODE, MARGIN_MODE, ACCOUNT_MODE, flatten, iceberg/TWAP/trigger/stop, maxLmtAmt, or internal order-count caps. Not silent clamping or rounding. Not GATE_20. Not historical #6146 completeness-flag rewrite.
+docs_token: DOCS_TOKEN_PEAK_TRADE_VENUE_PRETRADE_LIMIT_GATES_FORENSIC_BINDING_AND_CLOSURE_V1
+
+```text
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+AUTHORITY_RELATION=SUBORDINATE_TO_MASTER_RUNBOOK_SECTION_5_3
+CANONICAL_AUTHORITY=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PARENT_CONTRACT=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_BASELINE_PRESERVATION_AND_COMPATIBILITY_CONTRACT_V1.md
+PRIOR_ACCOUNT_MODE_FORENSIC_BINDING=docs/ops/specs/PEAK_TRADE_ACCOUNT_MODE_FORENSIC_BINDING_AND_CLOSURE_V1.md
+PRIOR_INSTRUMENT_STATE_FORENSIC_BINDING=docs/ops/specs/PEAK_TRADE_INSTRUMENT_STATE_FORENSIC_BINDING_AND_CLOSURE_V1.md
+PRIOR_VENUE_PRETRADE_LIMIT_GATES_ADJUDICATION=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_VENUE_PRETRADE_LIMIT_GATES_ADJUDICATION_V1.md
+PRIOR_VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION_V1.md
+EVIDENCE_PACK=evidence/ops/instrument_state_forensic_binding_and_closure_v1/20260830T044522Z
+SOURCE_EVIDENCE=evidence/ops/instrument_state_forensic_binding_and_closure_v1/20260830T044522Z/GET_SNAPSHOT.sanitized.json
+PARALLEL_SSOT_CREATED=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CORE_RUNTIME_MUTATION=false
+CANARY_VENUE_CONSTRAINT_PLAN_RUNTIME_MUTATION=true
+NEW_SEMANTIC_POLICY=true
+NEW_RUNTIME_OWNER=false
+NEW_STAGE=false
+NEW_VENUE_PRETRADE_COMPONENT_REQUIRED=false
+RESTORATION_REOPEN_REQUIRED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+EXECUTION_ELIGIBLE=false
+LIVE_READINESS=EVALUATED_NOT_READY
+ORDERS_AUTHORIZED=false
+NO_TRADING=true
+NO_LIVE_AUTHORITY=true
+NO_EXECUTION_AUTHORITY=true
+CHANGED_RUNTIME_FILES=venue_pretrade_limit_observation_v1.py,venue_pretrade_limit_gates_consumer_v1.py,order_plan_v1.py
+RUNTIME_ALIGNMENT_REQUIRED=true
+RUNTIME_MUTATION_JUSTIFIED=true
+RUNTIME_MUTATION_PERFORMED=true
+NETWORK_GET_AUTHORIZED=false
+NETWORK_GET_PERFORMED=false
+NETWORK_VENUE_GET_PERFORMED=false
+NETWORK_AUTHENTICATED_GET_PERFORMED=false
+NETWORK_POST_AUTHORIZED=false
+NETWORK_POST_PERFORMED=false
+ACCOUNT_CONFIGURATION_MUTATION_AUTHORIZED=false
+ACCOUNT_CONFIGURATION_MUTATION_PERFORMED=false
+TRADING_PERFORMED=false
+AUTH_REQUIRED=false
+AUTH_HEADER_SENT=false
+```
+
+This document is subordinate to the Master Runbook. Peak_Trade
+`VENUE_PRETRADE_LIMIT_GATES` is the aggregated typed fail-closed LIMIT-entry
+validator for venue-native instrument size and price-increment constraints.
+It is not a single field. It is not the eight required metadata edges. It is
+not ACCOUNT_MODE. Authority is the exact public instruments row for
+`SUI-USD_UM_XPERP-310404` on OKX EEA.
+
+## 1) Epistemic class separation
+
+```text
+CANONICAL_AUTHORITY=MASTER_RUNBOOK_PLUS_THIS_SUBORDINATE_PERSIST
+RAW_OBSERVATION=COMMITTED_INSTRUMENT_STATE_GET_SNAPSHOT_PAYLOAD_EXACT_ROW
+VALIDATED_FACTS=THIS_DOCUMENT_SECTION_4
+ADJUDICATED_CONSUMER_CONTRACT=THIS_DOCUMENT_SECTION_5
+HISTORICAL_INTERMEDIATE=POST_RESTORATION_VENUE_PRETRADE_LIMIT_GATES_ADJUDICATION_V1_GATE_COUNT_12_AND_COMPLETE_FALSE
+NAVIGATION_ONLY=MAP_OF_TRUTH
+HYPOTHESIS=NONE_USED_AS_CONCLUSION
+OPEN=CANARY_SUBMIT_AUTHORIZATION
+CONFLICTED=NONE
+```
+
+Do not silently normalize:
+
+- integer `1` into string `1`
+- empty `minSz` into `0`
+- absent `maxLmtSz` into infinite
+- `maxMktSz` into LIMIT max
+- `maxIcebergSz` / `maxTwapSz` / `maxTriggerSz` / `maxStopSz` into LIMIT max
+- `maxLmtAmt` into `maxLmtSz`
+- internal `ORDER_COUNT_LIMIT` into a venue limit
+- available margin into a venue size cap
+- leverage into a venue size cap
+- `ctVal`/`ctMult` into a rewritten size
+- float equality for tick or lot multiples
+- `ROUND_DOWN` tick quantization into this gate
+- historical #6146 `VENUE_PRETRADE_GATE_COUNT=12` into current required count
+- Z2AR / Z2BD / Z2BF bodies into this slice's forensic pack
+- fixture instruments into committed evidence
+
+## 2) Semantic definition
+
+```text
+VENUE_PRETRADE_LIMIT_GATES_SEMANTIC_DEFINITION=AGGREGATED_TYPED_FAIL_CLOSED_LIMIT_ENTRY_VALIDATOR_FOR_VENUE_NATIVE_INSTRUMENT_MINSZ_LOTSZ_TICKSZ_MAXLMTSZ
+REQUIRED_GATE_COUNT=4
+REQUIRED_GATES=MIN_SIZE,LOT_SIZE,TICK_SIZE,MAX_LIMIT_SIZE
+CANONICAL_VENUE_PRETRADE_OWNER=section_11_13_5.order_plan_v1+exposure_v1@submit_transport_v1
+SECOND_VENUE_PRETRADE_OWNER_EXISTS=false
+FLATTEN_IS_NOT_ENTRY_VENUE_PRETRADE_OWNER=true
+ORDER_PLAN_IS_CANONICAL_OWNER_SURFACE=true
+EXPOSURE_IS_CONSUMER_NOT_AUTHORITY=true
+SUBMIT_TRANSPORT_IS_CONSUMER_NOT_AUTHORITY=true
+CANARY_ENTRY_ORDER_TYPE=LIMIT
+```
+
+Current required gates are the venue-native LIMIT predicates that remain after
+the eight required metadata edges and ACCOUNT_MODE are already PROVEN.
+Historical #6146 `VENUE_PRETRADE_GATE_COUNT=12` mixed geometry, order-shape,
+and then-unbound metadata. That count is historical intermediate, not current
+required count.
+
+## 3) Owner-GO and current instrument
+
+```text
+OWNER_GO_THIS_SLICE=PEAK_TRADE_POST_6161_VENUE_PRETRADE_LIMIT_GATES_FORENSIC_BINDING_AND_CLOSURE_V1
+BOUND_ORIGIN_MAIN_SHA=4ef142a7ef4747c931773daaee2d947732132dfd
+CANONICAL_INSTRUMENT_ID=SUI-USD_UM_XPERP-310404
+CURRENT_SELECTED_INSTRUMENT=SUI-USD_UM_XPERP-310404
+CURRENT_VENUE=OKX_EEA
+CURRENT_REST_HOST=eea.okx.com
+CANARY_ENTRY_ORDER_TYPE=LIMIT
+CANARY_ENTRY_SIDE=BUY
+```
+
+## 4) Current operative binding
+
+```text
+VENUE_PRETRADE_LIMIT_GATES_ENDPOINT=/api/v5/public/instruments
+VENUE_PRETRADE_LIMIT_GATES_SOURCE_ENDPOINT=/api/v5/public/instruments
+VENUE_PRETRADE_LIMIT_GATES_QUERY=instType=FUTURES&instId=SUI-USD_UM_XPERP-310404
+VENUE_PRETRADE_LIMIT_GATES_REQUEST_GRAMMAR=instType_AND_exact_instId
+VENUE_PRETRADE_LIMIT_GATES_AUTH_CLASS=PUBLIC_UNSIGNED_GET
+VENUE_PRETRADE_LIMIT_GATES_FRESHNESS_POLICY=FRESH_GET_PER_PRETRADE_DECISION
+VENUE_PRETRADE_LIMIT_GATES_TS_AGE_BOUND=UNBOUND
+VENUE_PRETRADE_LIMIT_GATES_NO_TS_FIELD=true
+VENUE_PRETRADE_LIMIT_GATES_REUSES_INSTRUMENT_STATE_PUBLIC_GET=true
+SECOND_PUBLIC_INSTRUMENTS_GET_ADDED=false
+SIZE_COMPARISON_DOMAIN=VENUE_CONTRACT_COUNT
+SIZE_UNIT=contracts
+PRICE_UNIT=venue_price_increment
+CTVAL_CONVERSION_PERFORMED=false
+CTMULT_CONVERSION_PERFORMED=false
+NO_SILENT_CLAMPING=true
+NO_IMPLICIT_ROUNDING=true
+NO_ABSENT_MAX_EQUALS_INFINITE=true
+NO_ABSENT_MIN_EQUALS_ZERO=true
+VENUE_PRETRADE_LIMIT_GATES_CONSUMER_BOUND=true
+VENUE_PRETRADE_LIMIT_GATES_FAIL_CLOSED_BOUND=true
+```
+
+The productive runtime reuses the same unsigned instruments GET already
+performed for `MAX_SIZE` and `INSTRUMENT_STATE`. No second public GET is
+added. This slice performs no network GET. The committed INSTRUMENT_STATE
+pack is forensic closure evidence only and is not an operative cache.
+
+Existing `quantize_limit_price_v1` remains the LIMIT-price producer and is
+not this gate. This gate validates the planned LIMIT price as an exact
+`tickSz` multiple and does not round.
+
+## 5) Raw observation (committed INSTRUMENT_STATE GET; no new GET)
+
+```text
+VENUE_PRETRADE_LIMIT_GATES_OBSERVATION_PERFORMED=true
+VENUE_PRETRADE_LIMIT_GATES_GET_PERFORMED=false
+VENUE_PRETRADE_LIMIT_GATES_REUSES_EXISTING_INSTRUMENT_STATE_GET=true
+VENUE_PRETRADE_LIMIT_GATES_OBSERVATION_AUTHENTICATED=false
+VENUE_PRETRADE_LIMIT_GATES_OBSERVATION_ENVIRONMENT=OKX_EEA_PRODUCTION
+VENUE_PRETRADE_LIMIT_GATES_GET_TIMESTAMP_UTC=2026-08-30T04:45:22.376551Z
+VENUE_PRETRADE_LIMIT_GATES_GET_REQUEST_TIMESTAMP_UTC=2026-08-30T04:45:22.194082Z
+VENUE_PRETRADE_LIMIT_GATES_GET_HTTP_STATUS=200
+VENUE_PRETRADE_LIMIT_GATES_GET_VENUE_CODE=0
+VENUE_PRETRADE_LIMIT_GATES_ENDPOINT_OBSERVED=/api/v5/public/instruments?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404
+VENUE_PRETRADE_LIMIT_GATES_RAW_ROW_COUNT=1
+MIN_SZ_RAW_FIELD=minSz
+MIN_SZ_RAW_VALUE=1
+MIN_SZ_RAW_UNIT=contracts
+LOT_SZ_RAW_FIELD=lotSz
+LOT_SZ_RAW_VALUE=1
+LOT_SZ_RAW_UNIT=contracts
+TICK_SZ_RAW_FIELD=tickSz
+TICK_SZ_RAW_VALUE=0.0001
+TICK_SZ_RAW_UNIT=venue_price_increment
+MAX_LMT_SZ_RAW_FIELD=maxLmtSz
+MAX_LMT_SZ_RAW_VALUE=100000000
+MAX_LMT_SZ_RAW_UNIT=contracts
+MAX_MKT_SZ_RAW_VALUE=100000
+MAX_MKT_SZ_APPLIED=false
+CT_VAL_RAW_VALUE=1
+CT_MULT_RAW_VALUE=1
+CT_VAL_CCY_RAW_VALUE=SUI
+INSTRUMENT_BOUND=true
+ENVIRONMENT_BOUND=true
+PROVENANCE_BOUND=true
+ACCOUNT_IDENTITY_BOUND_IF_REQUIRED=N/A
+ALL_REQUIRED_METADATA_EDGES_BOUND=true
+RESPONSE_BODY_SHA256=038f2bf82f18f2d42ed26dca281cc7733e4ef7d07206fd0b19637189ec3e4cd2
+PERSISTED_OBSERVATION_IS_OPERATIVE_CACHE=false
+VENUE_PRETRADE_LIMIT_GATES_BINDING_STATUS=PROVEN
+```
+
+Disambiguation (not required for this LIMIT-entry surface):
+
+| TERM | RAW_FIELD | REQUIRED_FOR_VENUE_PRETRADE_LIMIT_GATES | Reason |
+|---|---|---|---|
+| minSz | minSz | true | LIMIT size floor |
+| lotSz | lotSz | true | LIMIT size increment |
+| tickSz | tickSz | true | LIMIT price increment |
+| maxLmtSz | maxLmtSz | true | LIMIT max size |
+| maxMktSz | maxMktSz | false | MARKET peer; not LIMIT substitute |
+| maxIcebergSz | maxIcebergSz | false | iceberg order type |
+| maxTwapSz | maxTwapSz | false | TWAP order type |
+| maxTriggerSz | maxTriggerSz | false | trigger order type |
+| maxStopSz | maxStopSz | false | stop order type |
+| maxLmtAmt | maxLmtAmt | false | notional; not size |
+| ctVal | ctVal | unit context only | no size conversion |
+| ctMult | ctMult | unit context only | no size conversion |
+| ORDER_COUNT_LIMIT | internal | false | internal Peak_Trade cap |
+| AVAILABLE_MARGIN | availEq | false | distinct proven edge |
+| LEVERAGE | lever | false | distinct proven edge |
+| ACCOUNT_MODE | acctLv | false | distinct proven edge |
+
+## 6) Productive consumer
+
+`apply_fresh_venue_pretrade_limit_gates_v1` is bound into
+`build_minimum_valid_canary_order_plan_v1` after MAX_SIZE and before
+MAX_AVAILABLE. Failure prevents downstream POST. Flatten planning does not
+consume this entry-pretrade gate.
+
+```text
+VENUE_PRETRADE_LIMIT_GATES_CONSUMER_IDENTIFIED=apply_fresh_venue_pretrade_limit_gates_v1@order_plan_v1.build_minimum_valid_canary_order_plan_v1@submit_transport_v1
+VENUE_PRETRADE_LIMIT_GATES_CONSUMER_BOUND=true
+VENUE_PRETRADE_LIMIT_GATES_FAIL_CLOSED_BOUND=true
+FAIL_CLOSED_ON_MISSING_FRESH_OBSERVATION=true
+MAX_SIZE_BINDING_STATUS=PROVEN
+INSTRUMENT_STATE_BINDING_STATUS=PROVEN
+ACCOUNT_MODE_BINDING_STATUS=PROVEN
+POS_MODE_BINDING_STATUS=PROVEN
+MARGIN_MODE_BINDING_STATUS=PROVEN
+LEVERAGE_BINDING_STATUS=PROVEN
+AVAILABLE_MARGIN_BINDING_STATUS=PROVEN
+PRICE_BAND_BINDING_STATUS=PROVEN
+```
+
+Gate behavior:
+
+| GATE_NAME | PASS | FAIL |
+|---|---|---|
+| MIN_SIZE | size == minSz | size < minSz |
+| LOT_SIZE | exact lotSz multiple | non-multiple; no rounding |
+| TICK_SIZE | planned px exact tickSz multiple | non-multiple; no rounding |
+| MAX_LIMIT_SIZE | size == maxLmtSz | size > maxLmtSz |
+
+## 7) Required edge reassessment
+
+| EDGE_ID | CURRENT_STATUS | Reason |
+|---|---|---|
+| MAX_SIZE | PROVEN | unchanged; LIMIT maxLmtSz reused as MAX_LIMIT_SIZE |
+| MAX_AVAILABLE | PROVEN | unchanged; not this surface |
+| PRICE_BAND | PROVEN | unchanged; not this surface |
+| LEVERAGE | PROVEN | unchanged; not this surface |
+| POS_MODE | PROVEN | unchanged |
+| MARGIN_MODE | PROVEN | unchanged |
+| AVAILABLE_MARGIN | PROVEN | unchanged; not this surface |
+| INSTRUMENT_STATE | PROVEN | unchanged; same public instruments GET reused |
+| ACCOUNT_MODE | PROVEN | unchanged |
+| MIN_SIZE | PROVEN | this slice |
+| LOT_SIZE | PROVEN | this slice |
+| TICK_SIZE | PROVEN | this slice |
+| MAX_LIMIT_SIZE | PROVEN | this slice; LIMIT-only |
+
+```text
+REQUIRED_METADATA_EDGE_COUNT=8
+BOUND_METADATA_EDGE_COUNT=8
+UNBOUND_METADATA_EDGE_COUNT=0
+UNBOUND_EDGE_IDS=
+ALL_REQUIRED_METADATA_EDGES_BOUND=true
+EARLIEST_REMAINING_UNBOUND_EDGE=NONE
+EARLIEST_REMAINING_CONFLICT=NONE
+EARLIEST_UNRESOLVED_DEPENDENCY=CANARY_SUBMIT_AUTHORIZATION
+VENUE_PRETRADE_LIMIT_GATES_BINDING_STATUS=PROVEN
+VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_STATUS=COMPLETE
+ADJUDICATION_RESULT=VENUE_PRETRADE_LIMIT_GATES_BOUND_CANARY_SUBMIT_AUTHORIZATION_REMAINS
+NEXT_DISTINCT_SURFACE=CANARY_SUBMIT_AUTHORIZATION
+NEXT_DISTINCT_SURFACE_AUTHORIZED=false
+```
+
+`CANARY_SUBMIT_AUTHORIZATION` is derived from the implemented canary path
+`evaluate_canary_submit_gates_v1` remaining fail-closed before POST. It is
+not authorized by this slice.
+
+Historical #6146 `VENUE_PRETRADE_LIMIT_GATES_COMPLETE=false` remains true
+for that persist. This slice does not rewrite that historical flag in
+Master §5.3. Current authority for this surface is
+`VENUE_PRETRADE_LIMIT_GATES_BINDING_STATUS=PROVEN`.
+
+## 8) Negative contract
+
+```text
+MIN_SIZE_IS_NOT_MAX_SIZE=true
+LOT_SIZE_IS_NOT_MAX_AVAILABLE=true
+TICK_ALIGNMENT_IS_NOT_PRICE_BAND=true
+MAX_MKT_SZ_IS_NOT_LIMIT_MAX=true
+MAX_ICEBERG_SZ_IS_NOT_LIMIT_MAX=true
+MAX_TWAP_SZ_IS_NOT_LIMIT_MAX=true
+MAX_TRIGGER_SZ_IS_NOT_LIMIT_MAX=true
+MAX_STOP_SZ_IS_NOT_LIMIT_MAX=true
+MAX_LMT_AMT_IS_NOT_MAX_LMT_SZ=true
+INTERNAL_ORDER_COUNT_LIMIT_IS_NOT_VENUE_LIMIT=true
+AVAILABLE_MARGIN_IS_NOT_VENUE_PRETRADE_LIMIT=true
+LEVERAGE_IS_NOT_VENUE_PRETRADE_LIMIT=true
+ACCOUNT_MODE_IS_NOT_VENUE_PRETRADE_LIMIT=true
+INSTRUMENT_STATE_IS_NOT_VENUE_PRETRADE_LIMIT=true
+INTEGER_1_IS_NOT_STRING_1=true
+ABSENT_MAX_IS_NOT_INFINITE=true
+ABSENT_MIN_IS_NOT_ZERO=true
+NO_SILENT_CLAMPING=true
+NO_IMPLICIT_ROUNDING=true
+QUANTIZE_LIMIT_PRICE_IS_NOT_THIS_GATE=true
+CTVAL_IS_NOT_SIZE_AUTHORITY=true
+CTMULT_IS_NOT_SIZE_AUTHORITY=true
+HISTORICAL_6146_GATE_COUNT_12_IS_NOT_CURRENT_REQUIRED_COUNT=true
+HISTORICAL_Z2AR_IS_NOT_CURRENT_BINDING=true
+FIXTURE_IS_NOT_COMMITTED_EVIDENCE=true
+FLATTEN_IS_NOT_ENTRY_VENUE_PRETRADE_OWNER=true
+KRAKEN_IS_NOT_CURRENT_CANONICAL_VENUE=true
+NETWORK_GET_PERFORMED=false
+NETWORK_POST_PERFORMED=false
+ACCOUNT_CONFIGURATION_MUTATION_PERFORMED=false
+TRADING_PERFORMED=false
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+SEE_ALSO_ACCOUNT_MODE=docs/ops/specs/PEAK_TRADE_ACCOUNT_MODE_FORENSIC_BINDING_AND_CLOSURE_V1.md
+SEE_ALSO_INSTRUMENT_STATE=docs/ops/specs/PEAK_TRADE_INSTRUMENT_STATE_FORENSIC_BINDING_AND_CLOSURE_V1.md
+SEE_ALSO_HISTORICAL_LIMIT_GATES_ADJUDICATION=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_VENUE_PRETRADE_LIMIT_GATES_ADJUDICATION_V1.md
+```

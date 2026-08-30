@@ -106,6 +106,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.venue_contract_coun
     assert_identity_sz_after_contract_sizing_v1,
     serialize_venue_sz_from_typed_contract_count_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.venue_pretrade_limit_gates_consumer_v1 import (
+    LiveCanaryVenuePretradeLimitGatesConsumerError,
+    apply_fresh_venue_pretrade_limit_gates_v1,
+)
 
 
 class LiveCanaryOrderPlanError(RuntimeError):
@@ -386,6 +390,29 @@ def build_minimum_valid_canary_order_plan_v1(
         )
     except LiveCanaryMaxSizeConsumerError as exc:
         raise LiveCanaryOrderPlanError(f"MAX_SIZE_GATE:{exc}") from exc
+    try:
+        apply_fresh_venue_pretrade_limit_gates_v1(
+            pretrade_decision_id=pretrade_decision_id,
+            instruments_payload=instruments_payload,
+            instrument_id=instrument_id,
+            order_type=DEFAULT_ORDER_TYPE,
+            venue_contract_count=exposure.quantity,
+            planned_limit_px=limit_px,
+            quantity_domain=exposure.quantity_domain,
+            http_status=max_size_http_status,
+            endpoint=max_size_endpoint
+            or public_instruments_query_path_v1(
+                instrument_id=instrument_id, inst_type=DEFAULT_INST_TYPE
+            ),
+            observed_at_utc=max_size_observed_at_utc,
+            get_performed=max_size_get_performed,
+            rest_host=REUSED_BINDING_REST_HOST,
+            auth_header_sent=max_size_auth_header_sent,
+            historical_reuse=max_size_historical_reuse,
+            body_sha256=max_size_body_sha256,
+        )
+    except LiveCanaryVenuePretradeLimitGatesConsumerError as exc:
+        raise LiveCanaryOrderPlanError(f"VENUE_PRETRADE_LIMIT_GATES:{exc}") from exc
     try:
         apply_fresh_max_available_pretrade_gate_v1(
             pretrade_decision_id=pretrade_decision_id,
