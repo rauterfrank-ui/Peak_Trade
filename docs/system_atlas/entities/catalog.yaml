@@ -1,0 +1,1109 @@
+# ATLAS_AUTHORITY=NONE
+# Primary entity catalog. current_canonical requires external (non-Atlas) authority_sources.
+entities:
+  - id: SYSTEM:peak_trade
+    kind: SYSTEM
+    name: Peak_Trade
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: Futures-only trading engine. Master V2 / Double Play target system.
+
+  - id: SUBSYSTEM:master_v2
+    kind: SUBSYSTEM
+    name: Master V2
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: STILL_CURRENT_AND_CANONICALLY_SUPPORTED
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+    notes: Not a competing generation versus Double Play.
+
+  - id: FUNCTIONAL_CORE:double_play
+    kind: FUNCTIONAL_CORE
+    name: Double Play
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: STILL_CURRENT_AND_CANONICALLY_SUPPORTED
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - src/trading/master_v2/double_play_composition.py
+      - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md
+    notes: Inner functional core census label for Double Play relative to Master V2. Exact token FUNCTIONAL_CORE not found on origin/main; proven as Modul-Owner of one Trading Core.
+
+  - id: RUNBOOK:canonical_master_runbook
+    kind: RUNBOOK
+    name: Peak_Trade Master Runbook
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK_RATIFICATION.json
+
+  - id: NAVIGATION_INDEX:map_of_truth
+    kind: NAVIGATION_INDEX
+    name: Map of Truth
+    epistemic_class: NAVIGATION_ONLY
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    semantic_authority: false
+    authority_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+
+  - id: FORENSIC_REFERENCE:information_corpus_persistence_base
+    kind: FORENSIC_REFERENCE
+    name: Information Corpus Persistence Base
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: FORENSIC_REFERENCE_ONLY
+    temporal_class: HISTORICAL_ONLY
+    authority_sources: []
+    evidence_sources:
+      - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+
+  - id: RUNBOOK:vollautonomie_v4_4_12
+    kind: RUNBOOK
+    name: Kanonisches Vollautonomie-Runbook v4.4.12
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: SUPERSEDED
+    temporal_class: HISTORICAL_ONLY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: OWNER_DECISION:cap23_exclusive_selection
+    kind: OWNER_DECISION
+    name: CAP23 exclusive productive selection
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+
+  - id: OWNER_DECISION:btc_excluded
+    kind: OWNER_DECISION
+    name: BTC productively excluded
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/constants_v1.py
+
+  - id: CAPABILITY:cap_2_1_gfu
+    kind: CAPABILITY
+    name: Governed Futures Universe Producer
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+
+  - id: CAPABILITY:cap_2_2_ranking
+    kind: CAPABILITY
+    name: Productive Futures Ranking Producer
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
+
+  - id: CAPABILITY:cap_2_3_single_selected_future
+    kind: CAPABILITY
+    name: Single Selected Future Policy
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+    evidence_sources:
+      - src/ops/single_selected_future_policy_v1/producer_v1.py
+
+  - id: CAPABILITY:cap_2_4_runtime_binding
+    kind: CAPABILITY
+    name: Single Selected Future Runtime Binding
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md
+    evidence_sources:
+      - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
+
+  - id: CAPABILITY:cap_1_1_reconciliation
+    kind: CAPABILITY
+    name: Productive Reconciliation Runtime Binding
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1.md
+    notes: CAPABILITY_AVAILABLE; ACTIVATION_STATE=BOUND_NOT_ACTIVATED; LIVE_AUTHORIZED=false. Implementation is not activation.
+
+  - id: CAPABILITY:cap_3_1_futures_accounting
+    kind: CAPABILITY
+    name: Productive Futures Accounting Runtime Binding
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1.md
+      - src/execution/paper/futures_accounting.py
+    notes: BOUND_RUNTIME_REACHABLE_NOT_ACTIVATED. Canonical kernel owner src.execution.paper.futures_accounting. Not live.
+
+  - id: CAPABILITY:cap_4_1_pre_activation_closure
+    kind: CAPABILITY
+    name: Single Future Canonical Runtime Pre-Activation Closure
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_4_1_SINGLE_FUTURE_CANONICAL_RUNTIME_PRE_ACTIVATION_CLOSURE_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_4_1_SINGLE_FUTURE_CANONICAL_RUNTIME_PRE_ACTIVATION_CLOSURE_V1.md
+    notes: READY_FOR_ACTIVATION_NOT_ACTIVATED. Proves readiness only; does not activate runtime.
+
+  - id: CAPABILITY:cap_7_2_stateful_no_order
+    kind: CAPABILITY
+    name: Single-Future Canonical Stateful Runtime Activation
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - src/ops/single_future_stateful_no_order_runtime_activation_v1/host_binding_v1.py
+
+  - id: CAPABILITY:cap_11_13_5_live_canary
+    kind: CAPABILITY
+    name: LIVE_CANARY_MINIMUM_EXPOSURE
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: Authoring bound; NOT EXECUTED; NOT PROVEN on origin/main §11.13.5.
+
+  - id: UNIVERSE:governed_futures_universe
+    kind: UNIVERSE
+    name: Governed Futures Universe snapshot
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/models_v1.py
+
+  - id: SELECTOR:productive_futures_ranking
+    kind: SELECTOR
+    name: Productive futures ranking
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    evidence_sources:
+      - src/ops/productive_futures_ranking_producer_v1/policy_v1.py
+
+  - id: SELECTOR:single_selected_future_policy
+    kind: SELECTOR
+    name: Single selected future policy producer
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    evidence_sources:
+      - src/ops/single_selected_future_policy_v1/producer_v1.py
+
+  - id: BINDER:bound_instrument_v1
+    kind: BINDER
+    name: BoundInstrumentV1
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    evidence_sources:
+      - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+
+  - id: HOST:cap72_stateful_host
+    kind: HOST
+    name: Cap 7.2 stateful no-order host
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - src/ops/single_future_stateful_no_order_runtime_activation_v1/host_binding_v1.py
+
+  - id: RUNTIME_COMPONENT:gfu_eligibility
+    kind: RUNTIME_COMPONENT
+    name: GFU eligibility classifier
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+    source_symbols:
+      - _extract_base_quote
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+
+  - id: RUNTIME_COMPONENT:dp_futures_input
+    kind: RUNTIME_COMPONENT
+    name: Double Play futures input
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    evidence_sources:
+      - src/trading/master_v2/double_play_futures_input.py
+      - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md
+
+  - id: RUNTIME_COMPONENT:dp_state
+    kind: RUNTIME_COMPONENT
+    name: Double Play state / dynamic scope
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    evidence_sources:
+      - src/trading/master_v2/double_play_state.py
+
+  - id: RUNTIME_COMPONENT:dp_survival
+    kind: RUNTIME_COMPONENT
+    name: Double Play survival envelope
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    evidence_sources:
+      - src/trading/master_v2/double_play_survival.py
+
+  - id: RUNTIME_COMPONENT:dp_suitability
+    kind: RUNTIME_COMPONENT
+    name: Double Play suitability
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    evidence_sources:
+      - src/trading/master_v2/double_play_suitability.py
+
+  - id: RUNTIME_COMPONENT:dp_capital_slot
+    kind: RUNTIME_COMPONENT
+    name: Double Play capital slot
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    evidence_sources:
+      - src/trading/master_v2/double_play_capital_slot.py
+
+  - id: RUNTIME_COMPONENT:dp_composition
+    kind: RUNTIME_COMPONENT
+    name: Double Play composition
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+
+  - id: RUNTIME_COMPONENT:ops_evaluate_double_play
+    kind: RUNTIME_COMPONENT
+    name: ops.double_play.evaluate_double_play
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: SUPERSEDED
+    evidence_sources:
+      - src/ops/double_play/specialists.py
+    notes: Quarantined projection-only; must not switch or write SideState.
+
+  - id: ADAPTER:okx_public_md_client
+    kind: ADAPTER
+    name: OkxPublicMarketDataClientV1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+
+  - id: ADAPTER:okx_execution_mock_v1
+    kind: ADAPTER
+    name: OKXExecutionAdapterV1 mocks-only
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/execution/adapters/providers/okx_v1.py
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+
+  - id: ADAPTER:okx_europe_lifecycle_contract
+    kind: ADAPTER
+    name: OKX Europe adapter lifecycle contract
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_europe_adapter_lifecycle_contract_v0.py
+
+  - id: TRANSPORT:bound_okx_testnet_http
+    kind: TRANSPORT
+    name: BoundOkxTestnetHttpClientV1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+
+  - id: AUTH_PRIMITIVE:okx_hmac_sign
+    kind: AUTH_PRIMITIVE
+    name: sign_okx_request_v1 HMAC-SHA256
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+
+  - id: GATE:flatten_execute_authority
+    kind: GATE
+    name: Flatten execute confirm-token authority
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    fail_closed: true
+    evidence_sources:
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+
+  - id: GATE:btc_exclusion
+    kind: GATE
+    name: BTC_EXCLUDED
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    fail_closed: true
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/constants_v1.py
+
+  - id: GATE:max_positions_1
+    kind: GATE
+    name: CURRENT_MAX_POSITIONS=1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    fail_closed: true
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: GATE:live_authorized_false
+    kind: GATE
+    name: LIVE_AUTHORIZED=false standing
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    fail_closed: true
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: DATA_CONTRACT:bound_instrument_v1
+    kind: DATA_CONTRACT
+    name: BoundInstrumentV1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    unit: identity
+    evidence_sources:
+      - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+
+  - id: DATA_CONTRACT:governed_universe_instrument_v1
+    kind: DATA_CONTRACT
+    name: GovernedUniverseInstrumentV1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    unit: mixed
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/models_v1.py
+
+  - id: VENUE:okx
+    kind: VENUE
+    name: OKX
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+      - config/config.toml
+
+  - id: VENUE:okx_eea
+    kind: VENUE
+    name: OKX EEA / Europe
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/bounded_futures_testnet_venue_binding_v0.py
+      - config/config.toml
+
+  - id: FAMILY:dashboard_dynamic_scope
+    kind: FAMILY
+    name: dashboard family_id dynamic_scope
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    do_not_confuse_with: "Master V2 architectural Family; OKX instFamily"
+    evidence_sources:
+      - docs/ops/market_dashboard/market_dashboard_projection_octet_upstream_artifact_creation_v1/VERIFY.json
+
+  - id: FAMILY:dashboard_double_play
+    kind: FAMILY
+    name: dashboard family_id double_play
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/market_dashboard/market_dashboard_projection_octet_upstream_artifact_creation_v1/VERIFY.json
+
+  - id: FAMILY:dashboard_regime_bull_bear
+    kind: FAMILY
+    name: dashboard family_id regime_bull_bear_switch
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/market_dashboard/market_dashboard_projection_octet_upstream_artifact_creation_v1/VERIFY.json
+      - src/trading/master_v2/regime_bull_bear_switch_evidence_readmodel_v1/constants_v1.py
+
+  - id: SCRIPT:run_gfu_producer
+    kind: SCRIPT
+    name: run_governed_futures_universe_producer_v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+
+  - id: SCRIPT:run_cap23_policy
+    kind: SCRIPT
+    name: run_single_selected_future_policy_v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+
+  - id: INVARIANT:missing_metadata_never_defaulted
+    kind: INVARIANT
+    name: Cap 2.1 missing metadata never defaulted
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+
+  - id: SUBSYSTEM:trading_decision_core
+    kind: SUBSYSTEM
+    name: TRADING_DECISION_CORE
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: SUPERSEDED
+    temporal_class: HISTORICAL_ONLY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+    notes: Historical Vollautonomie domain. Superseded as SSOT; still describes target cores.
+
+  - id: OBSERVER:post_action_canary
+    kind: OBSERVER
+    name: Canary post-action evaluator
+    epistemic_class: OPEN
+    current_canonical: false
+    current_status: OPEN
+    evidence_sources:
+      - docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md
+    notes: Forensic registry records POST_ACTION_NOT_WIRED_IN_FLATTEN_EXECUTE. Runtime census also records flatten post-action contract implemented but LIVE_FLATTEN_PROVABILITY not PROVEN.
+
+  - id: TEST:gfu_producer
+    kind: TEST
+    name: test_governed_futures_universe_producer_v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+
+  - id: FAMILY:dashboard_canonical_decision
+    kind: FAMILY
+    name: dashboard family_id canonical_decision
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    do_not_confuse_with: "strategy visual-map Family; confirm-token FAMILY_*; OKX instFamily"
+    evidence_sources:
+      - docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/FAMILY_MATRIX.json
+
+  - id: FAMILY:dashboard_safety_authority
+    kind: FAMILY
+    name: dashboard family_id safety_authority
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/FAMILY_MATRIX.json
+
+  - id: FAMILY:dashboard_risk_sizing_capital
+    kind: FAMILY
+    name: dashboard family_id risk_sizing_capital
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/FAMILY_MATRIX.json
+
+  - id: FAMILY:dashboard_execution_reconciliation
+    kind: FAMILY
+    name: dashboard family_id execution_reconciliation
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/FAMILY_MATRIX.json
+
+  - id: FAMILY:dashboard_economic_summary
+    kind: FAMILY
+    name: dashboard family_id economic_summary
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/FAMILY_MATRIX.json
+
+  - id: RUNBOOK:cybersecurity_v2_1
+    kind: RUNBOOK
+    name: Canonical Cybersecurity Runbook V2.1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md
+      - docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1_RATIFICATION.json
+    notes: Derived-domain only; not trading SSOT. Header vs ratification gate conflict C-CYBER-GATE-PASS-VS-MANIFEST-001.
+
+  - id: RUNBOOK:presentation_implementation
+    kind: RUNBOOK
+    name: Canonical Presentation Implementation Runbook
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_CANONICAL_PRESENTATION_IMPLEMENTATION_RUNBOOK.md
+    notes: No PEAK_TRADE_CANONICAL_PRESENTATION_*_RATIFICATION.json on origin/main.
+
+  - id: PHASE:z2cn
+    kind: PHASE
+    name: 11.13.5.Z2CN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: Latest ### 11.13.5.Z2* persist on census SHA. Embedded CURRENT_ORIGIN_MAIN_SHA in slice may differ from census SHA.
+
+  - id: FORENSIC_REFERENCE:historical_child_ledger
+    kind: FORENSIC_REFERENCE
+    name: HISTORICAL_CHILD_LEDGER (88 SRC-* children)
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: FORENSIC_REFERENCE_ONLY
+    temporal_class: HISTORICAL_ONLY
+    evidence_sources:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
+    notes: child_id SRC-000001..SRC-000088; ssot_role=HISTORICAL_FORENSIC_REGION_NOT_CURRENT_SSOT. Not SSOT_CHILD.
+
+  - id: GATE:flatten_live_wire
+    kind: GATE
+    name: DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    fail_closed: true
+    evidence_sources:
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_submit_transport_v1.py
+
+  - id: SCRIPT:check_system_atlas_impact
+    kind: SCRIPT
+    name: check_system_atlas_impact_v1
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - scripts/ops/check_system_atlas_impact_v1.py
+      - scripts/ops/system_atlas_v1/impact_v1.py
+    evidence_sources:
+      - scripts/ops/check_system_atlas_impact_v1.py
+    notes: Drift-prevention classifier. ATLAS_AUTHORITY=NONE. Does not confer canonical SSOT.
+
+  - id: RUNTIME_COMPONENT:mv2_package_init
+    kind: RUNTIME_COMPONENT
+    name: Master V2 package init
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: package_init
+    source_paths:
+      - src/trading/master_v2/__init__.py
+    evidence_sources:
+      - src/trading/master_v2/__init__.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:dp_core_wiring
+    kind: RUNTIME_COMPONENT
+    name: Double Play core wiring
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    module_role: double_play_current_core
+    source_paths:
+      - src/trading/master_v2/double_play_core_wiring_v1.py
+    evidence_sources:
+      - src/trading/master_v2/double_play_core_wiring_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:dp_entry_exit_policy
+    kind: RUNTIME_COMPONENT
+    name: Double Play entry/exit policy v0
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    module_role: double_play_current_noncanonical
+    source_paths:
+      - src/trading/master_v2/double_play_entry_exit_policy_v0.py
+    evidence_sources:
+      - src/trading/master_v2/double_play_entry_exit_policy_v0.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:dp_volatility_presence_gate
+    kind: RUNTIME_COMPONENT
+    name: Double Play typed volatility presence gate
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    module_role: double_play_current_noncanonical
+    source_paths:
+      - src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py
+    evidence_sources:
+      - src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:dp_dashboard_display
+    kind: RUNTIME_COMPONENT
+    name: Double Play dashboard display projection
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: double_play_projection_not_authority
+    source_paths:
+      - src/trading/master_v2/double_play_dashboard_display.py
+    evidence_sources:
+      - src/trading/master_v2/double_play_dashboard_display.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:dp_sole_authority_quarantine
+    kind: RUNTIME_COMPONENT
+    name: Double Play sole-authority quarantine
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: double_play_quarantine
+    source_paths:
+      - src/trading/master_v2/double_play_sole_authority_quarantine_v1.py
+    evidence_sources:
+      - src/trading/master_v2/double_play_sole_authority_quarantine_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:dp_evaluate_authority_boundary
+    kind: RUNTIME_COMPONENT
+    name: evaluate_double_play authority boundary v0
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: double_play_quarantine
+    source_paths:
+      - src/trading/master_v2/evaluate_double_play_authority_boundary_v0.py
+    evidence_sources:
+      - src/trading/master_v2/evaluate_double_play_authority_boundary_v0.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:dp_offline_scenario_replay
+    kind: RUNTIME_COMPONENT
+    name: Offline Double Play scenario replay
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: double_play_offline_replay
+    source_paths:
+      - src/trading/master_v2/offline_double_play_scenario_replay_v0.py
+    evidence_sources:
+      - src/trading/master_v2/offline_double_play_scenario_replay_v0.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_post_confirmation_ssc
+    kind: RUNTIME_COMPONENT
+    name: Post-confirmation survival/suitability/composition binding
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    module_role: current_noncanonical
+    source_paths:
+      - src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py
+    evidence_sources:
+      - src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_decision_packet
+    kind: RUNTIME_COMPONENT
+    name: Canonical decision packet cluster
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    module_role: current_noncanonical
+    source_paths:
+      - src/trading/master_v2/decision_packet_v1.py
+    evidence_sources:
+      - src/trading/master_v2/decision_packet_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_canonical_volatility
+    kind: RUNTIME_COMPONENT
+    name: Canonical volatility stack
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    module_role: current_noncanonical
+    source_paths:
+      - src/trading/master_v2/canonical_volatility_estimate_materializer_v1.py
+    evidence_sources:
+      - src/trading/master_v2/canonical_volatility_estimate_materializer_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_canonical_market_context
+    kind: RUNTIME_COMPONENT
+    name: Canonical market context
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    module_role: current_noncanonical
+    source_paths:
+      - src/trading/master_v2/canonical_market_context_v1.py
+    evidence_sources:
+      - src/trading/master_v2/canonical_market_context_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_canonical_scope
+    kind: RUNTIME_COMPONENT
+    name: Canonical scope initialization
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    module_role: current_noncanonical
+    source_paths:
+      - src/trading/master_v2/canonical_scope_initialization_v1.py
+    evidence_sources:
+      - src/trading/master_v2/canonical_scope_initialization_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_canonical_trading_decision_evidence
+    kind: RUNTIME_COMPONENT
+    name: Canonical trading decision evidence
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    module_role: current_noncanonical
+    source_paths:
+      - src/trading/master_v2/canonical_trading_decision_evidence_v1.py
+    evidence_sources:
+      - src/trading/master_v2/canonical_trading_decision_evidence_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_directional_assessment
+    kind: RUNTIME_COMPONENT
+    name: Directional assessment
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    module_role: current_noncanonical
+    source_paths:
+      - src/trading/master_v2/directional_assessment_v1.py
+    evidence_sources:
+      - src/trading/master_v2/directional_assessment_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_capital_risk_sizing
+    kind: RUNTIME_COMPONENT
+    name: Capital risk sizing restore/adapters
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    module_role: current_noncanonical
+    source_paths:
+      - src/trading/master_v2/capital_risk_sizing_intent_restore_v1.py
+    evidence_sources:
+      - src/trading/master_v2/capital_risk_sizing_intent_restore_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_surface_p
+    kind: RUNTIME_COMPONENT
+    name: Surface P bound-not-activated contracts
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: bound_not_activated
+    source_paths:
+      - src/trading/master_v2/surface_p_required_proof_input_binding_v0.py
+    evidence_sources:
+      - src/trading/master_v2/surface_p_required_proof_input_binding_v0.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_runtime_bridge
+    kind: RUNTIME_COMPONENT
+    name: Canonical core runtime bridge / pre-activation gate
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: bound_not_activated
+    source_paths:
+      - src/trading/master_v2/runtime_bridge_pre_activation_gate_v0.py
+    evidence_sources:
+      - src/trading/master_v2/runtime_bridge_pre_activation_gate_v0.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_scope_events
+    kind: RUNTIME_COMPONENT
+    name: Scope event generator / chop policy
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    module_role: current_noncanonical
+    source_paths:
+      - src/trading/master_v2/deterministic_scope_event_generator_v1.py
+    evidence_sources:
+      - src/trading/master_v2/deterministic_scope_event_generator_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_regime_bull_bear_readmodel
+    kind: RUNTIME_COMPONENT
+    name: Regime bull/bear switch evidence readmodel
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    module_role: current_noncanonical
+    source_paths:
+      - src/trading/master_v2/regime_bull_bear_switch_evidence_readmodel_v1/models_v1.py
+    evidence_sources:
+      - src/trading/master_v2/regime_bull_bear_switch_evidence_readmodel_v1/models_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_local_evaluator
+    kind: RUNTIME_COMPONENT
+    name: Local evaluator / debug CLI
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: offline_local_only
+    source_paths:
+      - src/trading/master_v2/local_evaluator_v1.py
+    evidence_sources:
+      - src/trading/master_v2/local_evaluator_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_input_happy_path
+    kind: RUNTIME_COMPONENT
+    name: Input adapter / happy raw input
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    module_role: current_noncanonical
+    source_paths:
+      - src/trading/master_v2/input_adapter_v1.py
+    evidence_sources:
+      - src/trading/master_v2/input_adapter_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_integrated_replay
+    kind: RUNTIME_COMPONENT
+    name: Integrated offline trading-logic replay
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: offline_replay
+    source_paths:
+      - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+    evidence_sources:
+      - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_parity_gap_assessment
+    kind: RUNTIME_COMPONENT
+    name: Full canonical parity gap assessments
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: assessment_not_activation
+    source_paths:
+      - src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py
+    evidence_sources:
+      - src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_strategy_identity
+    kind: RUNTIME_COMPONENT
+    name: Strategy identity binding
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    module_role: current_noncanonical
+    source_paths:
+      - src/trading/master_v2/strategy_identity_binding_v1.py
+    evidence_sources:
+      - src/trading/master_v2/strategy_identity_binding_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_arithmetic_decimal
+    kind: RUNTIME_COMPONENT
+    name: Arithmetic decimal/float conversion
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: helper
+    source_paths:
+      - src/trading/master_v2/arithmetic_decimal_float_conversion_v0.py
+    evidence_sources:
+      - src/trading/master_v2/arithmetic_decimal_float_conversion_v0.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_pr4985_materiality_classifier
+    kind: RUNTIME_COMPONENT
+    name: PR4985 runtime activation materiality classifier
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: assessment_not_activation
+    source_paths:
+      - src/trading/master_v2/pr4985_runtime_activation_materiality_classifier_v0.py
+    evidence_sources:
+      - src/trading/master_v2/pr4985_runtime_activation_materiality_classifier_v0.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_scenario_matrix
+    kind: RUNTIME_COMPONENT
+    name: Scenario matrix / scenario adapters
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: offline_replay
+    source_paths:
+      - src/trading/master_v2/scenario_matrix_v1.py
+    evidence_sources:
+      - src/trading/master_v2/scenario_matrix_v1.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: RUNTIME_COMPONENT:mv2_offline_boundary_adapters
+    kind: RUNTIME_COMPONENT
+    name: Offline/backtest boundary adapters
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: offline_replay_adapter
+    source_paths:
+      - src/trading/master_v2/killswitch_boundary_offline_replay_binding_adapter_v0.py
+    evidence_sources:
+      - src/trading/master_v2/killswitch_boundary_offline_replay_binding_adapter_v0.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: CHILD:nested_structural_child
+    kind: CHILD
+    name: NestedStructuralChild forensic structural type
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: FORENSIC_REFERENCE_ONLY
+    module_role: historical_forensic_not_ssot_child
+    source_paths:
+      - forensic/lossless_working_runbook_structure_identity_method_v1/build_lossless_structure.py
+    evidence_sources:
+      - forensic/lossless_working_runbook_structure_identity_method_v1/build_lossless_structure.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: TERM:falls_parent_child
+    kind: TERM
+    name: Falls-Parent/Child forensic coupling
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: FORENSIC_REFERENCE_ONLY
+    module_role: historical_forensic_not_ssot_child
+    source_paths:
+      - docs/forensics/preservation/PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md
+    evidence_sources:
+      - docs/forensics/preservation/PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.

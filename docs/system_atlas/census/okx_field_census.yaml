@@ -1,0 +1,263 @@
+# ATLAS_AUTHORITY=NONE
+# Material OKX field token census. Semantics only when proven. Seed list is not exhaustive.
+schema_version: system_atlas.v1
+origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+okx_field_token_count: 42
+okx_modeled_field_count: 40
+okx_unclassified_material_field_count: 0
+field_inventory_complete: true
+search_scope: origin/main src/** tests/** docs/evidence/** docs/forensics/** docs/audits/**
+notes: >-
+  Generic polyvalent tokens (state/side/code/msg/ts/last/pos/data) are inventoried
+  with that caveat. availPos had zero word hits and is classified
+  SEARCHED_BUT_NO_EVIDENCE_FOUND, not a VENUE_FIELD. Envelope key data is a
+  container, not a scalar venue field. uly remains BASE fallback only.
+tokens:
+  - field_id: VENUE_FIELD:instId
+    exact_token: instId
+    request_or_response: BOTH
+    endpoints: [/api/v5/public/instruments, /api/v5/public/mark-price]
+    product_types: [SWAP, FUTURES]
+    semantics_if_proven: instrument_id
+    identity_role: instrument_id
+    ignored_by_current_code: false
+    current_status: CURRENT_NONCANONICAL
+    file_hits: 180
+  - field_id: VENUE_FIELD:instType
+    exact_token: instType
+    request_or_response: BOTH
+    semantics_if_proven: product_type
+    identity_role: product_type
+    file_hits: 97
+  - field_id: VENUE_FIELD:instFamily
+    exact_token: instFamily
+    request_or_response: RESPONSE
+    semantics_if_proven: okx_instrument_family
+    do_not_confuse_with: architectural Family
+    file_hits: 7
+  - field_id: VENUE_FIELD:uly
+    exact_token: uly
+    request_or_response: RESPONSE
+    semantics_if_proven: underlying_base_fallback_only
+    identity_role: underlying_base_fallback_only
+    currency_role: BASE_FALLBACK_ONLY
+    notes: Quote is never taken from uly in Cap 2.1 _extract_base_quote.
+    file_hits: 27
+  - field_id: VENUE_FIELD:baseCcy
+    exact_token: baseCcy
+    request_or_response: RESPONSE
+    endpoints: [/api/v5/public/instruments]
+    semantics_if_proven: base_currency
+    currency_role: BASE
+    identity_role: base_currency
+    file_hits: 28
+    evidence:
+      - docs/evidence/capability_2_1_governed_futures_universe_producer_v1/fixtures/okx_eea_instruments_input_v1.json
+  - field_id: VENUE_FIELD:quoteCcy
+    exact_token: quoteCcy
+    request_or_response: RESPONSE
+    currency_role: QUOTE
+    identity_role: quote_currency
+    notes: Often empty on EEA public instruments; hyphen instId fallback in Cap 2.1.
+    file_hits: 17
+  - field_id: VENUE_FIELD:settleCcy
+    exact_token: settleCcy
+    request_or_response: RESPONSE
+    currency_role: SETTLE
+    identity_role: settlement_currency
+    notes: SETTLE_VS_QUOTE remains OPEN. Public XPERP settleCcy=USD vs account USDC must not be collapsed.
+    file_hits: 42
+  - field_id: VENUE_FIELD:ctVal
+    exact_token: ctVal
+    request_or_response: RESPONSE
+    unit: OPEN
+    identity_role: contract_value
+    file_hits: 53
+  - field_id: VENUE_FIELD:ctMult
+    exact_token: ctMult
+    request_or_response: RESPONSE
+    identity_role: contract_multiplier
+    file_hits: 6
+  - field_id: VENUE_FIELD:ctValCcy
+    exact_token: ctValCcy
+    request_or_response: RESPONSE
+    currency_role: CONTRACT_VALUE
+    identity_role: contract_value_currency
+    file_hits: 28
+  - field_id: VENUE_FIELD:tickSz
+    exact_token: tickSz
+    request_or_response: RESPONSE
+    identity_role: tick_size
+    file_hits: 40
+  - field_id: VENUE_FIELD:lotSz
+    exact_token: lotSz
+    request_or_response: RESPONSE
+    identity_role: lot_size
+    file_hits: 41
+  - field_id: VENUE_FIELD:minSz
+    exact_token: minSz
+    request_or_response: RESPONSE
+    identity_role: min_size
+    file_hits: 45
+  - field_id: VENUE_FIELD:state
+    exact_token: state
+    request_or_response: RESPONSE
+    identity_role: order_or_account_or_instrument_state
+    notes: POLYVALENT_WIRE_TOKEN; 921 file hits are not all OKX.
+    file_hits: 921
+  - field_id: VENUE_FIELD:ruleType
+    exact_token: ruleType
+    request_or_response: RESPONSE
+    identity_role: rule_type_xperp_observed
+    file_hits: 16
+  - field_id: VENUE_FIELD:expTime
+    exact_token: expTime
+    request_or_response: RESPONSE
+    timestamp_role: expiry
+    identity_role: expiry_timestamp
+    file_hits: 36
+  - field_id: VENUE_FIELD:lever
+    exact_token: lever
+    request_or_response: BOTH
+    identity_role: leverage
+    file_hits: 6
+  - field_id: VENUE_FIELD:mgnMode
+    exact_token: mgnMode
+    request_or_response: BOTH
+    identity_role: margin_mode
+    file_hits: 16
+  - field_id: VENUE_FIELD:posMode
+    exact_token: posMode
+    request_or_response: BOTH
+    identity_role: position_mode
+    file_hits: 14
+  - field_id: VENUE_FIELD:pos
+    exact_token: pos
+    request_or_response: RESPONSE
+    identity_role: OPEN
+    notes: POLYVALENT; 98 file hits are not all OKX position size.
+    file_hits: 98
+  - field_id: VENUE_FIELD:posSide
+    exact_token: posSide
+    request_or_response: BOTH
+    identity_role: position_side
+    file_hits: 15
+  - field_id: NOT_OBSERVED:availPos
+    exact_token: availPos
+    classification: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    request_or_response: OPEN
+    semantics_if_proven: OPEN
+    file_hits: 0
+    modeled: false
+  - field_id: VENUE_FIELD:avgPx
+    exact_token: avgPx
+    request_or_response: RESPONSE
+    identity_role: average_price
+    file_hits: 3
+  - field_id: VENUE_FIELD:markPx
+    exact_token: markPx
+    request_or_response: RESPONSE
+    identity_role: mark_price
+    file_hits: 75
+  - field_id: VENUE_FIELD:last
+    exact_token: last
+    request_or_response: RESPONSE
+    identity_role: OPEN
+    notes: POLYVALENT_WIRE_TOKEN.
+    file_hits: 206
+  - field_id: VENUE_FIELD:bidPx
+    exact_token: bidPx
+    request_or_response: RESPONSE
+    identity_role: bid_price
+    file_hits: 9
+  - field_id: VENUE_FIELD:askPx
+    exact_token: askPx
+    request_or_response: RESPONSE
+    identity_role: ask_price
+    file_hits: 10
+  - field_id: VENUE_FIELD:sz
+    exact_token: sz
+    request_or_response: BOTH
+    identity_role: size
+    file_hits: 55
+  - field_id: VENUE_FIELD:side
+    exact_token: side
+    request_or_response: BOTH
+    identity_role: OPEN
+    notes: POLYVALENT_WIRE_TOKEN.
+    file_hits: 826
+  - field_id: VENUE_FIELD:tdMode
+    exact_token: tdMode
+    request_or_response: REQUEST
+    identity_role: trade_mode
+    file_hits: 32
+  - field_id: VENUE_FIELD:ordType
+    exact_token: ordType
+    request_or_response: BOTH
+    identity_role: order_type
+    file_hits: 26
+  - field_id: VENUE_FIELD:px
+    exact_token: px
+    request_or_response: BOTH
+    identity_role: price
+    file_hits: 58
+  - field_id: VENUE_FIELD:reduceOnly
+    exact_token: reduceOnly
+    request_or_response: REQUEST
+    identity_role: reduce_only_flag
+    file_hits: 19
+  - field_id: VENUE_FIELD:clOrdId
+    exact_token: clOrdId
+    request_or_response: BOTH
+    identity_role: client_order_id
+    file_hits: 24
+  - field_id: VENUE_FIELD:ordId
+    exact_token: ordId
+    request_or_response: BOTH
+    identity_role: order_id
+    file_hits: 12
+  - field_id: VENUE_FIELD:code
+    exact_token: code
+    request_or_response: RESPONSE
+    identity_role: okx_response_code
+    notes: Envelope success/error code; POLYVALENT across non-OKX code.
+    file_hits: 713
+  - field_id: VENUE_FIELD:msg
+    exact_token: msg
+    request_or_response: RESPONSE
+    identity_role: okx_response_message
+    notes: POLYVALENT_WIRE_TOKEN.
+    file_hits: 278
+  - field_id: ENVELOPE:data
+    exact_token: data
+    classification: ENVELOPE_CONTAINER
+    modeled: false
+    notes: Typical OKX REST envelope array/object container. Not a VENUE_FIELD scalar.
+    file_hits: 1027
+  - field_id: VENUE_FIELD:ts
+    exact_token: ts
+    request_or_response: RESPONSE
+    timestamp_role: venue_timestamp
+    identity_role: timestamp
+    notes: POLYVALENT_WIRE_TOKEN.
+    file_hits: 415
+  - field_id: VENUE_FIELD:availBal
+    exact_token: availBal
+    request_or_response: RESPONSE
+    identity_role: available_balance
+    file_hits: 5
+  - field_id: VENUE_FIELD:mmr
+    exact_token: mmr
+    request_or_response: RESPONSE
+    endpoints: [/api/v5/public/position-tiers]
+    identity_role: maintenance_margin_ratio_venue_field
+    file_hits: 8
+  - field_id: VENUE_FIELD:ctType
+    exact_token: ctType
+    request_or_response: RESPONSE
+    identity_role: contract_type
+    file_hits: 39
+xperp_uly_append: >-
+  GFU fixture instruments rows include both quoteCcy and uly. Cap 2.1 still
+  uses uly for BASE only. No quote-from-uly adapter found. Status of
+  C-OKX-QUOTE-ULY-001 unchanged.

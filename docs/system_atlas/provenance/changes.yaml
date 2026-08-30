@@ -1,0 +1,20 @@
+# ATLAS_AUTHORITY=NONE
+changes:
+  - id: CHANGE:master_runbook_supersedes_vollautonomie
+    from: RUNBOOK:vollautonomie_v4_4_12
+    to: RUNBOOK:canonical_master_runbook
+    type: SUPERSEDES
+    epistemic_status: CANONICAL_AUTHORITY
+    evidence: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+  - id: CHANGE:signed_rest_after_july17_audit
+    from: docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    to: src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    type: SUPERSESSION
+    epistemic_status: ADJUDICATED
+    evidence: C-OKX-AUDIT-SIGNED-REST-001
+  - id: CHANGE:historical_okx_removals
+    from: OPEN
+    to: OPEN
+    type: REMOVAL_SEARCH
+    epistemic_status: OPEN
+    evidence: docs/system_atlas/census/census_meta.yaml

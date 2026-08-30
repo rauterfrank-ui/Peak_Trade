@@ -1,0 +1,89 @@
+# ATLAS_AUTHORITY=NONE
+kinds:
+  - id: KIND:SYSTEM
+    kind: TERM
+    name: SYSTEM
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: OPEN
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: Atlas entity kind; not a Peak_Trade runtime type.
+  - id: KIND:FUNCTIONAL_CORE
+    kind: TERM
+    name: FUNCTIONAL_CORE
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: OPEN
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: Used for Double Play relative to Master V2 per owner-bound relation.
+  - id: KIND:FAMILY
+    kind: TERM
+    name: FAMILY
+    epistemic_class: OPEN
+    current_canonical: false
+    current_status: OPEN
+    do_not_confuse_with: "OKX instFamily; dashboard family_id; research signal family; confirm-token family"
+    evidence_sources:
+      - docs/ops/market_dashboard/market_dashboard_projection_octet_upstream_artifact_creation_v1/VERIFY.json
+    notes: Multiple incompatible observed meanings. Not merged.
+  - id: KIND:CHILD
+    kind: TERM
+    name: CHILD
+    epistemic_class: OPEN
+    current_canonical: false
+    current_status: OPEN
+    do_not_confuse_with: "SSOT_CHILD; HISTORICAL_CHILD_LEDGER; NestedStructuralChild; Falls-Parent/Child"
+    evidence_sources:
+      - docs/system_atlas/census/family_child_usage.yaml
+    notes: Heterogeneous observed Child usages. Not equated with SSOT_CHILD.
+  - id: KIND:SSOT_CHILD
+    kind: TERM
+    name: SSOT_CHILD
+    epistemic_class: OPEN
+    current_canonical: false
+    current_status: OPEN
+    evidence_sources:
+      - docs/system_atlas/census/census_meta.yaml
+    notes: No formal in-repo definition located. Do not invent.
+  - id: KIND:MMR
+    kind: TERM
+    name: MMR
+    epistemic_class: OPEN
+    current_canonical: false
+    current_status: OPEN
+    do_not_confuse_with: "OKX public/position-tiers mmr maintenance-margin-ratio"
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: Architectural MMR (Master V2) unproven as a named kind; OKX mmr is a venue field.
+  - id: KIND:DOD
+    kind: TERM
+    name: DOD
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: OPEN
+    do_not_confuse_with: "Mandatory Capability Closure Standard; tests; acceptance criteria"
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+    notes: First-class completion-contract kind. Not collapsed into tests.
+  - id: KIND:SCHEMA
+    kind: TERM
+    name: SCHEMA
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: OPEN
+    do_not_confuse_with: "DATA_CONTRACT; dataclass; CONFIG; PROTOCOL"
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/constants_v1.py
+    notes: Shape/version identifier. Relation to DATA_CONTRACT recorded only if proven.
+  - id: KIND:ACRONYM
+    kind: TERM
+    name: ACRONYM
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: OPEN
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: Expansion never invented; OPEN if unproven.

@@ -1,0 +1,301 @@
+# ATLAS_AUTHORITY=NONE
+# SCHEMA is not automatically DATA_CONTRACT, dataclass, CONFIG, or PROTOCOL.
+schemas:
+  - id: SCHEMA:gfu_snapshot_v1
+    kind: SCHEMA
+    name: governed_futures_universe_snapshot.v1
+    schema_kind: evidence_snapshot_serialization
+    source: src/ops/governed_futures_universe_producer_v1/constants_v1.py
+    definition: SCHEMA_VERSION string enforced on GovernedFuturesUniverseSnapshotV1 persistence/load
+    fields:
+      - schema_version
+      - instruments
+    field_types: OPEN
+    required_fields: OPEN
+    optional_fields: OPEN
+    validation: persistence_v1 expected_schema_version mismatch fail-closed
+    producers:
+      - CAPABILITY:cap_2_1_gfu
+      - SCRIPT:run_gfu_producer
+    consumers:
+      - UNIVERSE:governed_futures_universe
+      - CAPABILITY:cap_2_2_ranking
+    serialization: json
+    versioning: suffix .v1 in SCHEMA_VERSION constant
+    migration: OPEN
+    related_contracts:
+      - DATA_CONTRACT:governed_universe_instrument_v1
+    related_entities:
+      - UNIVERSE:governed_futures_universe
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/constants_v1.py
+      - src/ops/governed_futures_universe_producer_v1/persistence_v1.py
+      - src/ops/governed_futures_universe_producer_v1/models_v1.py
+
+  - id: SCHEMA:single_selected_future_selection_v1
+    kind: SCHEMA
+    name: single_selected_future_selection.v1
+    schema_kind: selection_snapshot_serialization
+    source: src/ops/single_selected_future_policy_v1/constants_v1.py
+    definition: SCHEMA_VERSION for Cap 2.3 selection persistence
+    producers:
+      - CAPABILITY:cap_2_3_single_selected_future
+      - SCRIPT:run_cap23_policy
+    consumers:
+      - CAPABILITY:cap_2_4_runtime_binding
+      - BINDER:bound_instrument_v1
+    serialization: json
+    versioning: suffix .v1
+    migration: OPEN
+    related_entities:
+      - SELECTOR:single_selected_future_policy
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/single_selected_future_policy_v1/constants_v1.py
+
+  - id: SCHEMA:runtime_binding_v1
+    kind: SCHEMA
+    name: single_selected_future_runtime_binding.v1
+    schema_kind: runtime_binding_serialization
+    source: src/ops/single_selected_future_runtime_binding_v1/constants_v1.py
+    definition: SCHEMA_VERSION for Cap 2.4 binding evidence/DTOs
+    producers:
+      - CAPABILITY:cap_2_4_runtime_binding
+    consumers:
+      - HOST:cap72_stateful_host
+    related_contracts:
+      - DATA_CONTRACT:bound_instrument_v1
+    related_entities:
+      - BINDER:bound_instrument_v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/single_selected_future_runtime_binding_v1/constants_v1.py
+      - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+    notes: BoundInstrumentV1 is a dataclass DATA_CONTRACT; this SCHEMA_VERSION is the serialization contract. Not equated.
+
+  - id: SCHEMA:ranking_snapshot_v1
+    kind: SCHEMA
+    name: productive_futures_ranking_snapshot.v1
+    schema_kind: evidence_snapshot_serialization
+    source: src/ops/productive_futures_ranking_producer_v1/constants_v1.py
+    definition: SCHEMA_VERSION string enforced on productive futures ranking snapshot persistence/load
+    producers:
+      - CAPABILITY:cap_2_2_ranking
+    consumers:
+      - CAPABILITY:cap_2_3_single_selected_future
+    serialization: json
+    versioning: suffix .v1 in SCHEMA_VERSION constant
+    related_entities:
+      - UNIVERSE:governed_futures_universe
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/productive_futures_ranking_producer_v1/constants_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/persistence_v1.py
+
+  - id: SCHEMA:bound_instrument_dataclass_v1
+    kind: SCHEMA
+    name: BoundInstrumentV1 dataclass shape
+    schema_kind: python_dataclass_implicit_schema
+    source: src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+    definition: Frozen dataclass fields instrument_id, venue_native_id, ranking_snapshot_id, ranking_integrity_digest, universe_snapshot_id, selection_id, selection_integrity_digest, selection_state, selected_future_count, max_positions_effective
+    fields:
+      - instrument_id
+      - venue_native_id
+      - ranking_snapshot_id
+      - ranking_integrity_digest
+      - universe_snapshot_id
+      - selection_id
+      - selection_integrity_digest
+      - selection_state
+      - selected_future_count
+      - max_positions_effective
+    related_contracts:
+      - DATA_CONTRACT:bound_instrument_v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+    notes: Implicit schema enforced by dataclass + to_dict. Distinct from SCHEMA:runtime_binding_v1 version string.
+
+  - id: SCHEMA:forensic_document_class
+    kind: SCHEMA
+    name: DOCUMENT_CLASS forensic header
+    schema_kind: forensic_document_marker
+    source: docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+    definition: Header field DOCUMENT_CLASS=... plus AUTHORITY=NONE on forensic persistence docs
+    producers: []
+    consumers:
+      - FORENSIC_REFERENCE:information_corpus_persistence_base
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: FORENSIC_REFERENCE_ONLY
+    evidence_sources:
+      - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+
+  - id: SCHEMA:atlas_v1
+    kind: SCHEMA
+    name: system_atlas.v1
+    schema_kind: atlas_record_schema
+    source: scripts/ops/system_atlas_v1/constants_v1.py
+    definition: Atlas YAML record contract (kinds, epistemic classes, relation types)
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - scripts/ops/system_atlas_v1/constants_v1.py
+      - scripts/ops/system_atlas_v1/validate_v1.py
+    notes: Atlas schema is not canonical trading authority.
+
+  - id: SCHEMA:pure_stack_numeric_policy_evidence_pack_v1
+    kind: SCHEMA
+    name: productive_pure_stack_numeric_policy_evidence_pack/v1
+    schema_kind: json_schema
+    source: docs/ops/schemas/productive_pure_stack_numeric_policy_evidence_pack_v1.schema.json
+    definition: JSON Schema draft 2020-12; additionalProperties false; required schema_version const
+    serialization: json
+    versioning: schema_version const productive_pure_stack_numeric_policy_evidence_pack/v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/schemas/productive_pure_stack_numeric_policy_evidence_pack_v1.schema.json
+    notes: docs/ops/schemas/*.schema.json files inventoried and field-enumerated in census/schema_field_inventory.yaml. Remaining src SCHEMA_VERSION tokens are VERSION_TOKEN/TYPE_ONLY (census/schema_like_src.yaml). SCHEMA_CENSUS_COMPLETE=true.
+
+  - id: SCHEMA:okx_public_get_envelope
+    kind: SCHEMA
+    name: OKX public GET source envelope (forensic)
+    schema_kind: forensic_raw_http_envelope
+    source: docs/forensics/persistence/inventories/P6_LIVE_GFU_NETWORK_GET_ONLY_RAW_GET_SOURCE_ENVELOPES_V1.json
+    definition: Verbatim eea.okx.com public GET envelopes used by live GFU census. AUTHORITY=NONE.
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: FORENSIC_REFERENCE_ONLY
+    evidence_sources:
+      - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+
+  - id: SCHEMA:pure_stack_stage2_surface_b_owner_sta_raw_pt1m_observation
+    kind: SCHEMA
+    name: productive_pure_stack_stage2_surface_b_owner_sta_raw_pt1m_observation_input_and_exclusive_tip_proof_decisions/v1
+    schema_kind: json_schema
+    source: docs/ops/schemas/productive_pure_stack_stage2_surface_b_owner_sta_raw_pt1m_observation_input_and_exclusive_tip_proof_decisions_v1.schema.json
+    field_types: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/schemas/productive_pure_stack_stage2_surface_b_owner_sta_raw_pt1m_observation_input_and_exclusive_tip_proof_decisions_v1.schema.json
+    notes: File inventoried. Fields not enumerated in this entity; JSON field inventory is census/schema_field_inventory.yaml.
+
+  - id: SCHEMA:pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decisions
+    kind: SCHEMA
+    name: productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decisions/v1
+    schema_kind: json_schema
+    source: docs/ops/schemas/productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decisions_v1.schema.json
+    field_types: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/schemas/productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decisions_v1.schema.json
+    notes: File inventoried. Fields not enumerated.
+
+  - id: SCHEMA:pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_execution
+    kind: SCHEMA
+    name: productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_execution/v1
+    schema_kind: json_schema
+    source: docs/ops/schemas/productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_execution_v1.schema.json
+    field_types: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/schemas/productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_execution_v1.schema.json
+    notes: File inventoried. Fields not enumerated.
+
+  - id: SCHEMA:pure_stack_stage2_surface_b_owner_sta_candle_mark_instrument_authority
+    kind: SCHEMA
+    name: productive_pure_stack_stage2_surface_b_owner_sta_candle_mark_instrument_authority_decisions/v1
+    schema_kind: json_schema
+    source: docs/ops/schemas/productive_pure_stack_stage2_surface_b_owner_sta_candle_mark_instrument_authority_decisions_v1.schema.json
+    field_types: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/schemas/productive_pure_stack_stage2_surface_b_owner_sta_candle_mark_instrument_authority_decisions_v1.schema.json
+    notes: File inventoried. Fields not enumerated.
+
+  - id: SCHEMA:pure_stack_stage2_surface_b_owner_sta_regime_coverage_sta_open_inputs_closeout
+    kind: SCHEMA
+    name: productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_sta_open_inputs_closeout_decisions/v1
+    schema_kind: json_schema
+    source: docs/ops/schemas/productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_sta_open_inputs_closeout_decisions_v1.schema.json
+    field_types: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/schemas/productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_sta_open_inputs_closeout_decisions_v1.schema.json
+    notes: File inventoried. Fields not enumerated.
+
+  - id: SCHEMA:pure_stack_stage2_surface_b_raw_pt1m_input_pack
+    kind: SCHEMA
+    name: productive_pure_stack_stage2_surface_b_raw_pt1m_input_pack_decisions/v1
+    schema_kind: json_schema
+    source: docs/ops/schemas/productive_pure_stack_stage2_surface_b_raw_pt1m_input_pack_decisions_v1.schema.json
+    field_types: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/schemas/productive_pure_stack_stage2_surface_b_raw_pt1m_input_pack_decisions_v1.schema.json
+    notes: File inventoried. Fields not enumerated.
+
+  - id: SCHEMA:pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m
+    kind: SCHEMA
+    name: productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_decisions/v1
+    schema_kind: json_schema
+    source: docs/ops/schemas/productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_decisions_v1.schema.json
+    field_types: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/schemas/productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_decisions_v1.schema.json
+    notes: File inventoried. Fields not enumerated.
+
+  - id: SCHEMA:pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout
+    kind: SCHEMA
+    name: productive_pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout/v1
+    schema_kind: json_schema
+    source: docs/ops/schemas/productive_pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout_v1.schema.json
+    field_types: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/schemas/productive_pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout_v1.schema.json
+    notes: File inventoried. Fields not enumerated.
+
+  - id: SCHEMA:pure_stack_stage2_surface_b_owner_sta_regime_coverage_producer
+    kind: SCHEMA
+    name: productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_producer_decisions/v1
+    schema_kind: json_schema
+    source: docs/ops/schemas/productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_producer_decisions_v1.schema.json
+    field_types: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/schemas/productive_pure_stack_stage2_surface_b_owner_sta_regime_coverage_producer_decisions_v1.schema.json
+    notes: File inventoried. Fields not enumerated.

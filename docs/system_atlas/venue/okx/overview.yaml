@@ -1,0 +1,15 @@
+# ATLAS_AUTHORITY=NONE
+okx_census_complete: true
+note: >
+  In-repo OKX census closed on origin/main: named-path tree, git history,
+  endpoints, fields, auth, fixtures, docs/tests/config/scripts/evidence,
+  and product types. External/temp forensic corpus is NOT_STARTED. XPERP is
+  one product/instrument family, not the organizing center.
+venue_id: VENUE:okx
+productive_eea_id: VENUE:okx_eea
+config_block: "[exchange.okx_europe_eea] in config/config.toml; historically enabled=false validate_only=true on origin/main"
+xperp_adapter_required: false
+quote_ownership: Cap 2.1 eligibility_v1._extract_base_quote
+quote_gap_class: MAPPING_GAP_IN_CAP_2_1_EXTRACTOR
+intentional_xperp_product_ban: false
+

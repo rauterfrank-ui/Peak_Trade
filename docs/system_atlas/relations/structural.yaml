@@ -1,0 +1,697 @@
+# ATLAS_AUTHORITY=NONE
+relations:
+  - id: REL:s_system_contains_master_v2
+    source: SYSTEM:peak_trade
+    type: CONTAINS
+    target: SUBSYSTEM:master_v2
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: REL:s_master_v2_has_dp
+    source: SUBSYSTEM:master_v2
+    type: HAS_FUNCTIONAL_CORE
+    target: FUNCTIONAL_CORE:double_play
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md
+    notes: >
+      Exact tokens HAS_FUNCTIONAL_CORE / FUNCTIONAL_CORE / inner core were not found
+      on origin/main. Proven: Master V2 and Double Play are Modul-Owner of one
+      Trading Core (SEPARATE_*_ALLOWED=false). Atlas kind FUNCTIONAL_CORE is a
+      census label, not a Master Runbook token.
+
+  - id: REL:s_runbook_supersedes_vollautonomie
+    source: RUNBOOK:canonical_master_runbook
+    type: SUPERSEDES
+    target: RUNBOOK:vollautonomie_v4_4_12
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: REL:s_map_navigates_runbook
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNBOOK:canonical_master_runbook
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+
+  - id: REL:s_system_has_cap21
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_2_1_gfu
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+
+  - id: REL:s_system_has_cap22
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_2_2_ranking
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
+
+  - id: REL:s_system_has_cap23
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_2_3_single_selected_future
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+
+  - id: REL:s_system_has_cap24
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_2_4_runtime_binding
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md
+
+  - id: REL:s_system_has_cap11
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_1_1_reconciliation
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1.md
+
+  - id: REL:s_system_has_cap31
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_3_1_futures_accounting
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1.md
+
+  - id: REL:s_system_has_cap41
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_4_1_pre_activation_closure
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_4_1_SINGLE_FUTURE_CANONICAL_RUNTIME_PRE_ACTIVATION_CLOSURE_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_4_1_SINGLE_FUTURE_CANONICAL_RUNTIME_PRE_ACTIVATION_CLOSURE_V1.md
+
+  - id: REL:s_system_has_cap72
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_7_2_stateful_no_order
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: REL:s_system_has_cap11135
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_11_13_5_live_canary
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: REL:s_cap23_depends_cap22
+    source: CAPABILITY:cap_2_3_single_selected_future
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_2_ranking
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/single_selected_future_policy_v1/constants_v1.py
+
+  - id: REL:s_cap22_depends_cap21
+    source: CAPABILITY:cap_2_2_ranking
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_1_gfu
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
+
+  - id: REL:s_cap24_depends_cap23
+    source: CAPABILITY:cap_2_4_runtime_binding
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_3_single_selected_future
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/single_selected_future_runtime_binding_v1/constants_v1.py
+
+  - id: REL:s_cap72_depends_cap24
+    source: CAPABILITY:cap_7_2_stateful_no_order
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_4_runtime_binding
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/single_future_stateful_no_order_runtime_activation_v1/host_binding_v1.py
+
+  - id: REL:s_cap31_depends_cap24
+    source: CAPABILITY:cap_3_1_futures_accounting
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_4_runtime_binding
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1.md
+
+  - id: REL:s_cap41_depends_cap24
+    source: CAPABILITY:cap_4_1_pre_activation_closure
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_4_runtime_binding
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_4_1_SINGLE_FUTURE_CANONICAL_RUNTIME_PRE_ACTIVATION_CLOSURE_V1.md
+
+  - id: REL:s_cap41_depends_cap11
+    source: CAPABILITY:cap_4_1_pre_activation_closure
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_1_1_reconciliation
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_4_1_SINGLE_FUTURE_CANONICAL_RUNTIME_PRE_ACTIVATION_CLOSURE_V1.md
+
+  - id: REL:s_cap41_depends_cap31
+    source: CAPABILITY:cap_4_1_pre_activation_closure
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_3_1_futures_accounting
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_4_1_SINGLE_FUTURE_CANONICAL_RUNTIME_PRE_ACTIVATION_CLOSURE_V1.md
+
+  - id: REL:s_cap21_governed_by_btc
+    source: CAPABILITY:cap_2_1_gfu
+    type: GOVERNED_BY
+    target: GATE:btc_exclusion
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/constants_v1.py
+
+  - id: REL:s_cap21_governed_by_never_default
+    source: CAPABILITY:cap_2_1_gfu
+    type: GOVERNED_BY
+    target: INVARIANT:missing_metadata_never_defaulted
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    notes: Implementation contradiction recorded separately.
+
+  - id: REL:s_universe_uses_gfu_schema
+    source: UNIVERSE:governed_futures_universe
+    type: USES_SCHEMA
+    target: SCHEMA:gfu_snapshot_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/constants_v1.py
+
+  - id: REL:s_schema_gfu_defines_contract
+    source: SCHEMA:gfu_snapshot_v1
+    type: DEFINES_SHAPE_OF
+    target: DATA_CONTRACT:governed_universe_instrument_v1
+    epistemic_status: INTERPRETATION
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/models_v1.py
+    notes: Snapshot schema_version and instrument dataclass are related, not equated.
+
+  - id: REL:s_selection_uses_schema
+    source: SELECTOR:single_selected_future_policy
+    type: USES_SCHEMA
+    target: SCHEMA:single_selected_future_selection_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/single_selected_future_policy_v1/constants_v1.py
+
+  - id: REL:s_binder_uses_schema
+    source: BINDER:bound_instrument_v1
+    type: USES_SCHEMA
+    target: SCHEMA:runtime_binding_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/single_selected_future_runtime_binding_v1/constants_v1.py
+
+  - id: REL:s_schema_binding_defines_dto
+    source: SCHEMA:bound_instrument_dataclass_v1
+    type: DEFINES_SHAPE_OF
+    target: DATA_CONTRACT:bound_instrument_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+
+  - id: REL:s_runbook_has_program_dod
+    source: RUNBOOK:canonical_master_runbook
+    type: HAS_DOD
+    target: DOD:program_final
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: REL:s_runbook_has_closure_std
+    source: RUNBOOK:canonical_master_runbook
+    type: HAS_DOD
+    target: DOD:capability_closure_standard
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: Closure standard is related-not-same as named DoD.
+
+  - id: REL:s_va_has_dod_tl
+    source: RUNBOOK:vollautonomie_v4_4_12
+    type: HAS_DOD
+    target: DOD:vollautonomie_trading_logic
+    epistemic_status: HISTORICAL
+    evidence_sources:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+
+  - id: REL:s_va_has_dod_econ
+    source: RUNBOOK:vollautonomie_v4_4_12
+    type: HAS_DOD
+    target: DOD:vollautonomie_economic_validity
+    epistemic_status: HISTORICAL
+    evidence_sources:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+
+  - id: REL:s_va_has_dod_safety
+    source: RUNBOOK:vollautonomie_v4_4_12
+    type: HAS_DOD
+    target: DOD:vollautonomie_safety_runtime
+    epistemic_status: HISTORICAL
+    evidence_sources:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+
+  - id: REL:s_cap21_tested_by
+    source: CAPABILITY:cap_2_1_gfu
+    type: TESTED_BY
+    target: TEST:gfu_producer
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+
+  - id: REL:s_cap23_governed_by_owner
+    source: CAPABILITY:cap_2_3_single_selected_future
+    type: GOVERNED_BY
+    target: OWNER_DECISION:cap23_exclusive_selection
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+
+  - id: REL:s_venue_okx_contains_eea
+    source: VENUE:okx
+    type: CONTAINS
+    target: VENUE:okx_eea
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - config/config.toml
+
+  - id: REL:s_forensic_reference_of_corpus
+    source: FORENSIC_REFERENCE:information_corpus_persistence_base
+    type: REFERENCE_OF
+    target: SYSTEM:peak_trade
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+
+  - id: REL:s_mv2_contains_mv2_package_init
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_package_init
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_core_wiring
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_core_wiring
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_entry_exit_policy
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_entry_exit_policy
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_volatility_presence_gate
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_volatility_presence_gate
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_dashboard_display
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_dashboard_display
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_sole_authority_quarantine
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_sole_authority_quarantine
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_evaluate_authority_boundary
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_evaluate_authority_boundary
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_offline_scenario_replay
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_offline_scenario_replay
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_post_confirmation_ssc
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_post_confirmation_ssc
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_decision_packet
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_decision_packet
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_canonical_volatility
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_canonical_volatility
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_canonical_market_context
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_canonical_market_context
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_canonical_scope
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_canonical_scope
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_canonical_trading_decision_evidence
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_canonical_trading_decision_evidence
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_directional_assessment
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_directional_assessment
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_capital_risk_sizing
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_capital_risk_sizing
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_surface_p
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_surface_p
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_runtime_bridge
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_runtime_bridge
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_scope_events
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_scope_events
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_regime_bull_bear_readmodel
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_regime_bull_bear_readmodel
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_local_evaluator
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_local_evaluator
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_input_happy_path
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_input_happy_path
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_integrated_replay
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_integrated_replay
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_parity_gap_assessment
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_parity_gap_assessment
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_strategy_identity
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_strategy_identity
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_arithmetic_decimal
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_arithmetic_decimal
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_pr4985_materiality_classifier
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_pr4985_materiality_classifier
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_scenario_matrix
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_scenario_matrix
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_offline_boundary_adapters
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_offline_boundary_adapters
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_composition
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_composition
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_survival
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_survival
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_suitability
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_suitability
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_state
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_state
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_futures_input
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_futures_input
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_capital_slot
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_capital_slot
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_dp_contains_dp_composition
+    source: FUNCTIONAL_CORE:double_play
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_composition
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Same Trading Core membership. HAS_FUNCTIONAL_CORE remains ADJUDICATED census label.
+
+  - id: REL:s_dp_contains_dp_survival
+    source: FUNCTIONAL_CORE:double_play
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_survival
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Same Trading Core membership. HAS_FUNCTIONAL_CORE remains ADJUDICATED census label.
+
+  - id: REL:s_dp_contains_dp_suitability
+    source: FUNCTIONAL_CORE:double_play
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_suitability
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Same Trading Core membership. HAS_FUNCTIONAL_CORE remains ADJUDICATED census label.
+
+  - id: REL:s_dp_contains_dp_state
+    source: FUNCTIONAL_CORE:double_play
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_state
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Same Trading Core membership. HAS_FUNCTIONAL_CORE remains ADJUDICATED census label.
+
+  - id: REL:s_dp_contains_dp_futures_input
+    source: FUNCTIONAL_CORE:double_play
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_futures_input
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Same Trading Core membership. HAS_FUNCTIONAL_CORE remains ADJUDICATED census label.
+
+  - id: REL:s_dp_contains_dp_capital_slot
+    source: FUNCTIONAL_CORE:double_play
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_capital_slot
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Same Trading Core membership. HAS_FUNCTIONAL_CORE remains ADJUDICATED census label.
+
+  - id: REL:s_dp_contains_dp_core_wiring
+    source: FUNCTIONAL_CORE:double_play
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_core_wiring
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Same Trading Core membership. HAS_FUNCTIONAL_CORE remains ADJUDICATED census label.
+
+  - id: REL:s_forensic_has_nested_child
+    source: FORENSIC_REFERENCE:information_corpus_persistence_base
+    type: HAS_CHILD
+    target: CHILD:nested_structural_child
+    epistemic_status: HISTORICAL
+    evidence_sources:
+      - forensic/lossless_working_runbook_structure_identity_method_v1/build_lossless_structure.py
+    notes: Not SSOT_CHILD.

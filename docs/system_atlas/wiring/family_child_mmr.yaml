@@ -1,0 +1,123 @@
+# ATLAS_AUTHORITY=NONE
+# Heterogeneous meanings. Not a single hierarchy.
+relations:
+  - id: FCM:dashboard_dynamic_scope
+    parent: SYSTEM:peak_trade
+    relation_type: HAS_FAMILY
+    child: FAMILY:dashboard_dynamic_scope
+    meaning_class: dashboard_family_id
+    role: projection_grouping
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/ops/market_dashboard/market_dashboard_projection_octet_upstream_artifact_creation_v1/VERIFY.json
+  - id: FCM:dashboard_double_play
+    parent: SYSTEM:peak_trade
+    relation_type: HAS_FAMILY
+    child: FAMILY:dashboard_double_play
+    meaning_class: dashboard_family_id
+    role: projection_grouping
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/ops/market_dashboard/market_dashboard_projection_octet_upstream_artifact_creation_v1/VERIFY.json
+  - id: FCM:dashboard_regime
+    parent: SYSTEM:peak_trade
+    relation_type: HAS_FAMILY
+    child: FAMILY:dashboard_regime_bull_bear
+    meaning_class: dashboard_family_id
+    role: projection_grouping
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/ops/market_dashboard/market_dashboard_projection_octet_upstream_artifact_creation_v1/VERIFY.json
+  - id: FCM:okx_instfamily
+    parent: VENUE:okx
+    relation_type: HAS_FAMILY
+    child: VENUE_FIELD:instFamily
+    meaning_class: okx_venue_field
+    role: instrument_family
+    epistemic_status: FORENSIC_RAW
+    evidence: src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+  - id: FCM:okx_mmr_field
+    parent: VENUE:okx
+    relation_type: HAS_MMR
+    child: VENUE_FIELD:mmr
+    meaning_class: okx_venue_field
+    role: maintenance_margin_ratio
+    epistemic_status: FORENSIC_RAW
+    evidence: src/ops/section_11_13_5_live_canary_minimum_exposure_v1/cover_usdc_current_public_tier_mmr_productive_evidence_v1.py
+  - id: FCM:architectural_mmr
+    parent: SUBSYSTEM:master_v2
+    relation_type: HAS_MMR
+    child: TERM:mmr_polyvalent
+    meaning_class: architectural_unproven
+    role: OPEN
+    epistemic_status: OPEN
+    evidence: docs/system_atlas/census/census_meta.yaml
+  - id: FCM:ssot_child
+    parent: SYSTEM:peak_trade
+    relation_type: HAS_SSOT_CHILD
+    child: TERM:ssot_child_unproven
+    meaning_class: unproven_kind
+    role: OPEN
+    epistemic_status: OPEN
+    evidence: docs/system_atlas/census/census_meta.yaml
+  - id: FCM:master_v2_functional_core
+    parent: SUBSYSTEM:master_v2
+    relation_type: HAS_FUNCTIONAL_CORE
+    child: FUNCTIONAL_CORE:double_play
+    meaning_class: owner_bound_atlas_label
+    role: modul_owner_same_trading_core
+    epistemic_status: ADJUDICATED
+    evidence: docs/architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md
+  - id: FCM:dashboard_canonical_decision
+    parent: SYSTEM:peak_trade
+    relation_type: HAS_FAMILY
+    child: FAMILY:dashboard_canonical_decision
+    meaning_class: dashboard_family_id
+    role: projection_grouping
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/FAMILY_MATRIX.json
+  - id: FCM:dashboard_safety
+    parent: SYSTEM:peak_trade
+    relation_type: HAS_FAMILY
+    child: FAMILY:dashboard_safety_authority
+    meaning_class: dashboard_family_id
+    role: projection_grouping
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/FAMILY_MATRIX.json
+  - id: FCM:dashboard_risk
+    parent: SYSTEM:peak_trade
+    relation_type: HAS_FAMILY
+    child: FAMILY:dashboard_risk_sizing_capital
+    meaning_class: dashboard_family_id
+    role: projection_grouping
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/FAMILY_MATRIX.json
+  - id: FCM:dashboard_exec_recon
+    parent: SYSTEM:peak_trade
+    relation_type: HAS_FAMILY
+    child: FAMILY:dashboard_execution_reconciliation
+    meaning_class: dashboard_family_id
+    role: projection_grouping
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/FAMILY_MATRIX.json
+  - id: FCM:dashboard_econ
+    parent: SYSTEM:peak_trade
+    relation_type: HAS_FAMILY
+    child: FAMILY:dashboard_economic_summary
+    meaning_class: dashboard_family_id
+    role: projection_grouping
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/FAMILY_MATRIX.json
+  - id: FCM:nested_structural_child
+    parent: FORENSIC_REFERENCE:information_corpus_persistence_base
+    relation_type: HAS_CHILD
+    child: CHILD:nested_structural_child
+    meaning_class: forensic_lossless_structure
+    role: nested_structural_child_not_ssot_child
+    epistemic_status: HISTORICAL
+    evidence: forensic/lossless_working_runbook_structure_identity_method_v1/build_lossless_structure.py
+  - id: FCM:falls_parent_child
+    parent: FORENSIC_REFERENCE:information_corpus_persistence_base
+    relation_type: HAS_CHILD
+    child: TERM:falls_parent_child
+    meaning_class: forensic_falls_coupling
+    role: falls_parent_child_not_ssot_child
+    epistemic_status: HISTORICAL
+    evidence: docs/forensics/preservation/PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md

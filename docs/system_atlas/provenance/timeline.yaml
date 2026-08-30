@@ -1,0 +1,33 @@
+# ATLAS_AUTHORITY=NONE
+events:
+  - id: PROV:origin_main_census_sha
+    sort_key: "2026-08-30"
+    when: census bound
+    what: Census baseline origin/main SHA afbae518b67eb1b789c835e219db37f5b15f308b
+    epistemic_status: ADJUDICATED
+    commit_or_pr: afbae518b67eb1b789c835e219db37f5b15f308b
+  - id: PROV:unshallow_historical_census
+    sort_key: "2026-08-30b"
+    when: 2026-08-30 owner GO unshallow
+    what: git fetch --unshallow origin; earliest local commit becomes 78979ed413 (2025-12-02); HEAD unchanged
+    epistemic_status: ADJUDICATED
+    commit_or_pr: FETCH_ONLY
+  - id: PROV:first_okx_named_adapter
+    sort_key: "2026-02-16"
+    when: 2026-02-16
+    what: First OKX-named implementation (P108 mocks-only adapter #1436)
+    epistemic_status: ADJUDICATED
+    commit_or_pr: 5c588999731757f19cfb2ef9b85055af0eca760e
+  - id: PROV:july17_audit_doc
+    sort_key: "2026-07-17"
+    when: 2026-07-17 git introduction
+    what: OKX read-only audit document merged (#5298)
+    epistemic_status: FORENSIC_RAW
+    commit_or_pr: f5114401f6a76171840040f0c44d0de05df61bf5
+  - id: PROV:vollautonomie_superseded
+    sort_key: "open-ssot-succession"
+    when: OPEN
+    what: Vollautonomie v4.4.12 superseded as SSOT by Master Runbook
+    epistemic_status: CANONICAL_AUTHORITY
+    commit_or_pr: OPEN
+    evidence: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md

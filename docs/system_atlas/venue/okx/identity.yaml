@@ -1,0 +1,15 @@
+# ATLAS_AUTHORITY=NONE
+note: Instrument identity. Quote is never taken from uly in current GFU eligibility.
+identity_rules:
+  - id: identity_quote_from_quoteCcy_or_instId
+    description: quote from quoteCcy else instId regex ^([A-Z0-9]+)-([A-Z0-9]+)(?:-([A-Z0-9]+))?$
+    uly_role: BASE fallback only; never quote
+    xperp_note: ids like SUI-USD_UM_XPERP-310404 fail the regex → MISSING_QUOTE_CURRENCY
+    evidence:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+      - docs/forensics/persistence/inventories/P6_LIVE_GFU_NETWORK_GET_ONLY_CENSUS_AND_GAP_ADJUDICATION_OBSERVATION_V1.json
+product_types_observed:
+  - FUTURES
+  - SWAP
+  - XPERP_as_ruleType_or_instId_family
+contradiction: C-OKX-QUOTE-ULY-001

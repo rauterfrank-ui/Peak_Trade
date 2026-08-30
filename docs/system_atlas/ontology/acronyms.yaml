@@ -1,0 +1,283 @@
+# ATLAS_AUTHORITY=NONE
+# Expansion never invented. OPEN if the spelled-out form is not proven in-repo.
+acronyms:
+  - id: ACRONYM:SSOT
+    kind: ACRONYM
+    name: SSOT
+    acronym: SSOT
+    expansion: Single Source of Truth
+    expansion_source: docs/PEAK_TRADE_V1_OVERVIEW_FULL.md
+    meaning: Authority / uniqueness claim for a document or runtime surface. Master Runbook uses SSOT as a status marker without always spelling the expansion.
+    entity_kind: TERM
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    do_not_confuse_with: "SSOT child (unproven kind); dashboard as SSOT (forbidden)"
+    evidence_sources:
+      - docs/PEAK_TRADE_V1_OVERVIEW_FULL.md
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    current_usage: Master Runbook authority uniqueness; PRESENTATION_IS_SSOT=false
+    historical_usage: Multiple historical docs claimed SSOT status; superseded by Master Runbook
+
+  - id: ACRONYM:DOD
+    kind: ACRONYM
+    name: DoD
+    acronym: DoD
+    expansion: Definition of Done
+    expansion_source: docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+    meaning: Named completion contract. Multiple scopes exist; see DOD_MAP.
+    entity_kind: DOD
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    do_not_confuse_with: "Mandatory Capability Closure Standard; pytest; PR checklist DoD"
+    evidence_sources:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: ACRONYM:GFU
+    kind: ACRONYM
+    name: GFU
+    acronym: GFU
+    expansion: Governed Futures Universe
+    expansion_source: docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    meaning: Cap 2.1 productive universe snapshot / eligibility surface. Forensic IDs GAP-U-GFU-LIVE / IO-GFU-LIVE use the acronym.
+    entity_kind: UNIVERSE
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    do_not_confuse_with: "OKX instruments listing; ranking snapshot"
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+      - docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md
+
+  - id: ACRONYM:MMR
+    kind: ACRONYM
+    name: MMR
+    acronym: MMR
+    expansion: Maintenance Margin Requirement
+    expansion_source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    meaning: Proven venue/margin sense (account-effective MMR vs public-tier mmr; INSTRUMENT_FAMILY_DEPENDENT). Architectural Master-V2 MMR kind not found in scoped MASTER_V2 specs.
+    entity_kind: MMR
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    do_not_confuse_with: "instFamily; Family; unproven architectural MMR kind"
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/cover_usdc_current_public_tier_mmr_productive_evidence_v1.py
+    notes: Heading token WHAT_IS_MAINTENANCE_MARGIN_REQUIREMENT_MMR on origin/main. Venue/margin sense only.
+
+  - id: ACRONYM:CAP
+    kind: ACRONYM
+    name: CAP
+    acronym: CAP
+    expansion: Capability
+    expansion_source: docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+    meaning: Numbered capability identifier (Cap 2.1, CAP23, CAPABILITY_ID=...).
+    entity_kind: CAPABILITY
+    epistemic_class: ADJUDICATED
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    do_not_confuse_with: "capital; CAPM"
+
+  - id: ACRONYM:CAP23
+    kind: ACRONYM
+    name: CAP23
+    acronym: CAP23
+    expansion: Capability 2.3 Single Selected Future Policy
+    expansion_source: docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+    meaning: Exclusive productive selection path.
+    entity_kind: CAPABILITY
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+    do_not_confuse_with: "Cap 2.1 GFU; Cap 2.2 ranking; Cap 2.4 binding"
+
+  - id: ACRONYM:EEA
+    kind: ACRONYM
+    name: EEA
+    acronym: EEA
+    expansion: OPEN
+    expansion_source: OPEN
+    searched_but_no_evidence_found: true
+    search_scope: origin/main full git history after unshallow plus current tree; spelled expansion not found; TERM_MEANING_KNOWN=OKX Europe venue label
+    meaning: OKX Europe venue label (okx_europe_eea, eea.okx.com). Spelled-out expansion not proven as a Peak_Trade definition; host/config usage is proven.
+    current_usage: eea.okx.com; okx_europe_eea config; Cap 11.12.8 EEA demo binding
+    historical_usage: same venue label in July-17 audit and later EEA bindings
+    entity_kind: VENUE
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - config/config.toml
+      - src/ops/section_11_12_8_okx_eea_demo_xperp_campaign_private_write_gate_v1/constants_v1.py
+
+  - id: ACRONYM:C1
+    kind: ACRONYM
+    name: C1
+    acronym: C1
+    expansion: OPEN
+    expansion_source: OPEN
+    searched_but_no_evidence_found: true
+    search_scope: origin/main docs+src+tests; spelled expansion not found; TERM_MEANING_KNOWN=program-status flag and Package C slice label
+    meaning: At least the program-status flag C1_PRODUCTIVELY_BOUND and separately Package C Slice C1 (INV-045 Dynamic Scope owner boundary).
+    current_usage: C1_PRODUCTIVELY_BOUND; Package C Slice C1
+    historical_usage: OPEN as a single expansion
+    entity_kind: TERM
+    epistemic_class: CONTRADICTED
+    current_canonical: false
+    current_status: OPEN
+    do_not_confuse_with: "C2; C3; C4_NAMED_MASTER_SSOT_POINTER; Cap 1"
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - tests/ops/test_master_v2_dynamic_scope_owner_boundary_contract_v0.py
+
+  - id: ACRONYM:C2
+    kind: ACRONYM
+    name: C2
+    acronym: C2
+    expansion: OPEN
+    expansion_source: OPEN
+    searched_but_no_evidence_found: true
+    search_scope: origin/main docs+src+tests; spelled expansion not found; TERM_MEANING_KNOWN=program-status flag and INV-046 slice label
+    meaning: Program-status flag C2_PRODUCTIVELY_BOUND; also INV-046 state-switch owner slice labelled C2.
+    current_usage: C2_PRODUCTIVELY_BOUND; INV-046 slice C2
+    historical_usage: OPEN as a single expansion
+    entity_kind: TERM
+    epistemic_class: CONTRADICTED
+    current_canonical: false
+    current_status: OPEN
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - tests/ops/test_master_v2_dynamic_scope_owner_boundary_contract_v0.py
+
+  - id: ACRONYM:C3
+    kind: ACRONYM
+    name: C3
+    acronym: C3
+    expansion: OPEN
+    expansion_source: OPEN
+    searched_but_no_evidence_found: true
+    search_scope: origin/main docs+src+tests; spelled expansion not found; TERM_MEANING_KNOWN=program-status flag C3_PRODUCTIVELY_BOUND
+    meaning: Program-status flag C3_PRODUCTIVELY_BOUND. Spelled expansion not proven.
+    current_usage: C3_PRODUCTIVELY_BOUND
+    historical_usage: OPEN as a single expansion
+    entity_kind: TERM
+    epistemic_class: OPEN
+    current_canonical: false
+    current_status: OPEN
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: ACRONYM:FND
+    kind: ACRONYM
+    name: FND
+    acronym: FND
+    expansion: Finding
+    expansion_source: docs/audit/findings/FND-0003.md
+    meaning: Numbered audit/finding identifier FND-NNNN.
+    entity_kind: TERM
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/audit/findings/FND-0003.md
+
+  - id: ACRONYM:PIT
+    kind: ACRONYM
+    name: PIT
+    acronym: PIT
+    expansion: point-in-time
+    expansion_source: src/research/pit_futures_universe_manifest_generator_v1.py
+    meaning: Research no-lookahead / point-in-time panel and universe semantics.
+    entity_kind: TERM
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    do_not_confuse_with: "PRE; PENDING"
+    evidence_sources:
+      - src/research/pit_futures_universe_manifest_generator_v1.py
+
+  - id: ACRONYM:PRE
+    kind: ACRONYM
+    name: PRE
+    acronym: PRE
+    expansion: OPEN
+    expansion_source: OPEN
+    searched_but_no_evidence_found: true
+    search_scope: origin/main docs+src+config+tests; no single Peak_Trade expansion proven
+    meaning: Recurs as a seed term; no single Peak_Trade expansion proven in this census pass.
+    current_usage: seed vocabulary token; not a proven spelled form
+    historical_usage: OPEN
+    entity_kind: TERM
+    epistemic_class: OPEN
+    current_canonical: false
+    current_status: OPEN
+    evidence_sources:
+      - docs/system_atlas/census/census_meta.yaml
+
+  - id: ACRONYM:PENDING
+    kind: ACRONYM
+    name: PENDING
+    acronym: PENDING
+    expansion: OPEN
+    expansion_source: OPEN
+    searched_but_no_evidence_found: true
+    search_scope: origin/main docs+src; status token usages found; spelled expansion not a single acronym
+    meaning: Status token (SUPPORT_EVIDENCE_STATUS=PENDING, SUBMIT_PENDING, orders-pending). Not a single expansion.
+    current_usage: status token on orders-pending and evidence status fields
+    historical_usage: same polyvalent status spelling
+    entity_kind: TERM
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    do_not_confuse_with: "PRE; OPEN"
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: ACRONYM:XPERP
+    kind: ACRONYM
+    name: XPERP
+    acronym: XPERP
+    expansion: OPEN
+    expansion_source: OPEN
+    searched_but_no_evidence_found: true
+    search_scope: origin/main full git history after unshallow plus docs+src+config+tests+forensic inventories; spelled expansion not found; TERM_MEANING_KNOWN=OKX instrument family/ruleType token
+    meaning: OKX instrument family / ruleType observed on dated futures ids such as SUI-USD_UM_XPERP-310404. Spelled expansion not proven in-repo.
+    current_usage: ruleType/instrument id family on FUTURES dated contracts; canary hardcoded SUI-USD_UM_XPERP-310404
+    historical_usage: X-Perp spelling in #4587; uly BASE-only from first Cap 2.1 commit
+    entity_kind: VENUE_PRODUCT_TYPE
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+      - docs/forensics/persistence/inventories/P6_LIVE_GFU_NETWORK_GET_ONLY_CENSUS_AND_GAP_ADJUDICATION_OBSERVATION_V1.json
+
+  - id: ACRONYM:OKX
+    kind: ACRONYM
+    name: OKX
+    acronym: OKX
+    expansion: OPEN
+    expansion_source: OPEN
+    searched_but_no_evidence_found: true
+    search_scope: origin/main full git history after unshallow; corporate spelled expansion not defined in-repo; TERM_MEANING_KNOWN=venue name
+    meaning: Venue name as used in Peak_Trade. Corporate expansion not defined in-repo.
+    current_usage: venue name; REST/WS hosts; HMAC signer; GFU public instruments
+    historical_usage: mocks-only okx_v1.py then HMAC signer; July-17 audit claimed signed REST absent
+    entity_kind: VENUE
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - config/config.toml
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md

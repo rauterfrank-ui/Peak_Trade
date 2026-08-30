@@ -1,0 +1,95 @@
+# ATLAS_AUTHORITY=NONE
+scheme: HMAC-SHA256
+headers:
+  - OK-ACCESS-KEY
+  - OK-ACCESS-SIGN
+  - OK-ACCESS-TIMESTAMP
+  - OK-ACCESS-PASSPHRASE
+signer: sign_okx_request_v1
+owner_module: src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+reused_by:
+  - section_11_13_2
+  - section_11_13_3
+  - section_11_13_4
+  - section_11_13_5
+demo_header: x-simulated-trading
+july_17_audit: claimed signed private REST absent; later implementations exist — supersession, see C-OKX-AUDIT-SIGNED-REST-001
+auth_inventory_complete: true
+components:
+  - auth_component: HMAC_REQUEST_SIGNER
+    source_symbol: sign_okx_request_v1
+    consumers:
+      - BoundOkxTestnetHttpClientV1
+      - section_11_13_2
+      - section_11_13_3
+      - section_11_13_4
+      - section_11_13_5
+    request_identity_inputs:
+      - timestamp
+      - method
+      - request_path
+      - body
+    headers:
+      - OK-ACCESS-KEY
+      - OK-ACCESS-SIGN
+      - OK-ACCESS-TIMESTAMP
+      - OK-ACCESS-PASSPHRASE
+    environment: bound_testnet_or_demo_gated
+    current_runtime_reachability: IMPLEMENTED_NOT_LIVE_UNLOCKED
+    status: CURRENT_NONCANONICAL
+    evidence:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+  - auth_component: HEADER_CONSTRUCTION
+    source_symbol: BoundOkxTestnetHttpClientV1
+    consumers:
+      - section_11_12_8
+      - section_11_13_5
+    headers:
+      - OK-ACCESS-KEY
+      - OK-ACCESS-SIGN
+      - OK-ACCESS-TIMESTAMP
+      - OK-ACCESS-PASSPHRASE
+      - x-simulated-trading
+    environment: demo_or_testnet_header_gated
+    status: CURRENT_NONCANONICAL
+    notes: Passphrase/key referenced by config binding only; secrets are not recorded in Atlas.
+  - auth_component: TIMESTAMP_SOURCE
+    source_symbol: OK-ACCESS-TIMESTAMP
+    request_identity_inputs: [timestamp]
+    status: CURRENT_NONCANONICAL
+    notes: Signer consumes a timestamp string; clock source implementation detail not separately entity-mapped.
+  - auth_component: DEMO_SIMULATED_TRADING_HEADER
+    source_symbol: x-simulated-trading
+    environment: demo
+    status: CURRENT_NONCANONICAL
+    evidence:
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+  - auth_component: NETWORK_AUTHORIZATION_GATES
+    source_symbol: LIVE_AUTHORIZED / TESTNET_AUTHORIZED
+    environment: fail_closed_default
+    current_runtime_reachability: LIVE_AUTHORIZED_FALSE
+    status: CURRENT_CANONICAL_CONSTRAINT
+    notes: Atlas records the gate; it does not authorize network trading.
+    evidence:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+  - auth_component: REST_HOSTS
+    source_symbol: eea.okx.com / www.okx.com
+    consumers:
+      - src/ops/okx_public_market_data_client_v1.py
+      - section_11_12_8 constants
+    environment: eea_vs_global
+    status: CURRENT_NONCANONICAL
+    evidence:
+      - docs/system_atlas/venue/okx/hosts.yaml
+  - auth_component: WEBSOCKET_HOSTS
+    source_symbol: wseeapap.okx.com:8443
+    consumers: []
+    environment: configured
+    current_runtime_reachability: CONFIGURED_NO_PROVEN_LIVE_CLIENT
+    status: CURRENT_NONCANONICAL
+    evidence:
+      - config/config.toml
+credentials_policy: NEVER_RECORD_SECRETS
+evidence:
+  - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+  - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md

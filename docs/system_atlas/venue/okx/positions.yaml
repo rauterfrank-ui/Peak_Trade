@@ -1,0 +1,16 @@
+# ATLAS_AUTHORITY=NONE
+note: Position observation via GET /api/v5/account/positions. Flatten/close-position wiring for canary post-action remains OPEN.
+reads:
+  - /api/v5/account/positions
+  - /api/v5/account/positions-history
+  - /api/v5/public/position-tiers
+close:
+  - /api/v5/trade/close-position
+fields:
+  - posSide
+  - mmr
+  - lever
+evidence:
+  - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+open_gaps:
+  - OBSERVER:post_action_canary not wired in flatten execute

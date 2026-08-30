@@ -1,0 +1,25 @@
+# ATLAS_AUTHORITY=NONE
+# Committed snapshot for generated ATLAS_CHANGE_IMPACT.md.
+# Live PRs are classified by scripts/ops/check_system_atlas_impact_v1.py.
+# Do not invent commit or PR identifiers before they exist.
+schema_version: system_atlas.v1
+pending_change: true
+introduced_by: PENDING_CHANGE
+modified_by: PENDING_CHANGE
+superseded_by: null
+last_recorded_impact: UPDATED
+note: >-
+  Atlas drift-prevention machinery introduced in this workpackage.
+  Bind INTRODUCED_BY / MODIFIED_BY to the origin/main commit/PR after merge.
+  This snapshot is not live git classification.
+changed_entities:
+  - SCRIPT:check_system_atlas_impact
+changed_relations: []
+new_relations: []
+removed_relations: []
+affected_dependency_closures: []
+affected_okx_surfaces: []
+affected_safety_surfaces: []
+affected_schemas:
+  - SCHEMA:atlas_v1
+review_required_items: []

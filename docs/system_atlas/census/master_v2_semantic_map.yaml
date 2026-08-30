@@ -1,0 +1,2018 @@
+# ATLAS_AUTHORITY=NONE
+# Semantic file-to-entity map. Generated from origin/main AST. Not SSOT.
+schema_version: system_atlas.v1
+origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+python_file_count_inventoried: 102
+python_file_count_semantically_mapped: 102
+unmapped_file_count: 0
+entity_cluster_count: 35
+double_play_named_file_count: 17
+double_play_file_count_semantically_mapped: 17
+double_play_unmapped_file_count: 0
+unmapped_files:
+  []
+clusters:
+  - id: RUNTIME_COMPONENT:mv2_package_init
+    name: Master V2 package init
+    module_role: package_init
+    files:
+      - path: src/trading/master_v2/__init__.py
+        primary_symbols:
+          []
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+  - id: RUNTIME_COMPONENT:dp_composition
+    name: Double Play composition
+    module_role: double_play_current_core
+    files:
+      - path: src/trading/master_v2/double_play_composition.py
+        primary_symbols:
+          - DoublePlayCompositionStatus
+          - DoublePlayCompositionBlockReason
+          - RequestedSide
+          - DoublePlayCompositionInput
+          - DoublePlayCompositionDecision
+          - compose_double_play_decision
+        master_v2_imports:
+          - trading.master_v2.double_play_capital_slot
+          - trading.master_v2.double_play_state
+          - trading.master_v2.double_play_suitability
+          - trading.master_v2.double_play_survival
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+      - path: src/trading/master_v2/double_play_composition_matrix_v1.py
+        primary_symbols:
+          - CompositionDirectionState
+          - PositionManagementContext
+          - CompositionStatus
+          - CompositionSelectedSide
+          - CompositionConflictStatus
+          - CompositionChopGuardStatus
+          - CompositionBlockedReason
+          - BothCandidateOutcome
+          - BothInvalidOutcome
+          - SuitabilityResultRefV1
+          - DoublePlayCompositionPolicyV1
+          - DoublePlayCompositionInputV1
+          - _valid_sha256_hex
+          - _positive_int
+          - _instrument_id_allowed
+          - validate_double_play_composition_policy
+          - suitability_result_ref_from_result
+          - serialize_composition_input_canonical
+          - _serialize_survival_canonical
+          - _serialize_suitability_canonical
+          - compute_composition_input_digest
+          - serialize_composition_result_canonical
+          - _serialize_directional_ref
+          - _serialize_survival_ref
+        master_v2_imports:
+          - trading.master_v2.directional_assessment_v1
+          - trading.master_v2.suitability_binding_v1
+          - trading.master_v2.survival_assessment_v1
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+  - id: RUNTIME_COMPONENT:dp_survival
+    name: Double Play survival
+    module_role: double_play_current_core
+    files:
+      - path: src/trading/master_v2/double_play_survival.py
+        primary_symbols:
+          - SurvivalBlockReason
+          - SurvivalEnvelopeStatus
+          - ArithmeticFingerprint
+          - LayerArithmeticStatus
+          - SequenceSurvivalMetrics
+          - StateSwitchSurvivalLimits
+          - DoublePlaySurvivalEnvelope
+          - SurvivalEnvelopeDecision
+          - core_fingerprint_complete
+          - arithmetic_complete
+          - layer_arithmetic_complete
+          - sequence_metrics_complete
+          - evaluate_survival_envelope
+        master_v2_imports:
+          []
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+      - path: src/trading/master_v2/survival_assessment_v1.py
+        primary_symbols:
+          - SurvivalAssessmentStatus
+          - SurvivalSubcheckStatus
+          - SurvivalHardFailReason
+          - SurvivalBlockedReason
+          - DirectionalAssessmentRefV1
+          - SurvivalSubcheckResultV1
+          - SurvivalCostInputsV1
+          - SurvivalMetricInputsV1
+          - SurvivalAssessmentPolicyV1
+          - SurvivalAssessmentInputV1
+          - SurvivalResultV1
+          - _valid_sha256_hex
+          - _positive_finite
+          - _non_negative_finite
+          - _positive_int
+          - _instrument_id_allowed
+          - directional_assessment_ref_from_assessment
+          - validate_survival_assessment_policy
+          - compute_expected_roundtrip_cost
+          - compute_net_expected_edge
+          - _collect_cost_blocked_reasons
+          - _evaluate_data_completeness
+          - _evaluate_ratio_subcheck
+        master_v2_imports:
+          - trading.master_v2.directional_assessment_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+  - id: RUNTIME_COMPONENT:dp_suitability
+    name: Double Play suitability
+    module_role: double_play_current_core
+    files:
+      - path: src/trading/master_v2/double_play_suitability.py
+        primary_symbols:
+          - SuitabilityClass
+          - SideCompatibility
+          - SuitabilityBlockReason
+          - StrategyMetadata
+          - InstrumentIntelligenceSummary
+          - SuitabilityProjectionInput
+          - StrategySuitabilityProjection
+          - SuitabilityProjectionDecision
+          - metadata_has_authoritative_side_evidence
+          - instrument_intelligence_complete
+          - survival_allows_projection
+          - _pool_flags_for_class
+          - _classify_from_declared_and_evidence
+          - project_strategy_suitability
+          - _unknown_projection
+          - _decision_from_projection
+        master_v2_imports:
+          []
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+      - path: src/trading/master_v2/suitability_binding_v1.py
+        primary_symbols:
+          - SuitabilityBindingStatus
+          - SuitabilityRegimeStatus
+          - SuitabilityHardBlockReason
+          - SuitabilityBlockedReason
+          - DirectionalAssessmentRefV1
+          - SurvivalResultRefV1
+          - SuitabilityStrategyEntryV1
+          - SuitabilityStrategyRegistryV1
+          - SuitabilityRankingPolicyV1
+          - SuitabilityBindingInputV1
+          - SuitabilityResultV1
+          - _valid_sha256_hex
+          - _positive_int
+          - _instrument_id_allowed
+          - directional_assessment_ref_from_assessment_v1
+          - survival_result_ref_from_result
+          - validate_suitability_ranking_policy
+          - _is_unknown_regime
+          - _strategy_supports_side
+          - strategy_supports_regime_v1
+          - regime_wildcard_matched_v1
+          - _strategy_supports_regime
+          - filter_eligible_strategies
+        master_v2_imports:
+          - trading.master_v2.directional_assessment_v1
+          - trading.master_v2.strategy_suitability_agreement_material_v1
+          - trading.master_v2.survival_assessment_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/strategy_suitability_agreement_material_v1.py
+        primary_symbols:
+          - StrategySignalEncodingClassV1
+          - StrategySideAgreementV1
+          - StrategyAgreementEventKindV1
+          - StrategyEntrySideCarrierV1
+          - StrategySuitabilityAgreementErrorV1
+          - StrategySuitabilityAgreementMaterialV1
+          - _valid_sha256_hex
+          - compute_strategy_suitability_agreement_material_digest_v1
+          - serialize_strategy_suitability_agreement_material_v1
+          - deserialize_strategy_suitability_agreement_material_v1
+          - fold_strategy_suitability_agreement_into_input_digest_v1
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/registry_suitability_snapshot_v1.py
+        primary_symbols:
+          - RegistrySuitabilitySnapshotError
+          - RegistryDerivedSuitabilitySnapshotV1
+          - _stable_digest
+          - _assert_unique_entry_ids
+          - finalize_registry_suitability_snapshot_v1
+          - build_registry_derived_suitability_snapshot_v1
+        master_v2_imports:
+          - trading.master_v2.strategy_identity_binding_v1
+          - trading.master_v2.suitability_binding_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+  - id: RUNTIME_COMPONENT:dp_state
+    name: Double Play state / side transition
+    module_role: double_play_current_core
+    files:
+      - path: src/trading/master_v2/double_play_state.py
+        primary_symbols:
+          - SideState
+          - ScopeEvent
+          - ActiveSide
+          - StaticHardLimits
+          - RuntimeEnvelope
+          - DynamicScopeRules
+          - RuntimeScopeState
+          - TransitionDecision
+          - derive_active_side
+          - _both_active_invariant_ok
+          - envelope_valid
+          - rules_valid
+          - _switch_count_ok
+          - _cooldown_allows_opposite_switch
+          - clamp_band_width
+          - update_dynamic_boundaries
+          - transition_state
+        master_v2_imports:
+          []
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+  - id: RUNTIME_COMPONENT:dp_futures_input
+    name: Double Play futures input
+    module_role: double_play_current_core
+    files:
+      - path: src/trading/master_v2/double_play_futures_input.py
+        primary_symbols:
+          - FuturesMarketType
+          - FuturesFreshnessState
+          - FuturesReadinessStatus
+          - FuturesInputBlockReason
+          - FuturesCandidateSnapshot
+          - FuturesRankingSnapshot
+          - FuturesInstrumentMetadataStatus
+          - FuturesMarketDataProvenanceStatus
+          - FuturesVolatilityProfile
+          - FuturesLiquidityProfile
+          - FuturesDerivativesProfile
+          - FuturesOpportunityProfile
+          - instrument_metadata_complete
+          - market_data_provenance_complete
+          - volatility_profile_complete
+          - liquidity_profile_complete
+          - perpetual_derivatives_profile_complete
+          - _perpetual_like
+          - evaluate_futures_input_snapshot
+        master_v2_imports:
+          []
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+      - path: src/trading/master_v2/double_play_futures_input_producer.py
+        primary_symbols:
+          - FuturesProducerAdapterStatus
+          - FuturesProducerAdapterBlockReason
+          - FuturesProducerCandidate
+          - FuturesProducerRanking
+          - FuturesProducerInstrumentMetadata
+          - FuturesProducerMarketDataProvenance
+          - FuturesProducerVolatility
+          - FuturesProducerLiquidity
+          - FuturesProducerDerivatives
+          - FuturesProducerOpportunity
+          - FuturesProducerPacket
+          - FuturesProducerAdapterDecision
+          - producer_packet_has_runtime_handles
+          - producer_packet_complete_enough_for_snapshot
+          - _to_candidate
+          - _to_ranking
+          - _to_instrument
+          - _to_provenance
+          - _to_volatility
+          - _to_liquidity
+          - _to_derivatives
+          - _to_opportunity
+          - producer_packet_to_snapshot
+          - adapt_producer_packet_to_futures_input_snapshot
+        master_v2_imports:
+          - trading.master_v2.double_play_futures_input
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+  - id: RUNTIME_COMPONENT:dp_capital_slot
+    name: Double Play capital slot
+    module_role: double_play_current_core
+    files:
+      - path: src/trading/master_v2/double_play_capital_slot.py
+        primary_symbols:
+          - CapitalSlotStatus
+          - CapitalSlotReleaseReason
+          - CapitalSlotBlockReason
+          - CapitalSlotConfig
+          - CapitalSlotState
+          - CapitalSlotRatchetDecision
+          - CapitalSlotReleaseDecision
+          - calculate_ratchet_target
+          - cashflow_split_valid
+          - apply_loss_following_base
+          - evaluate_capital_slot_ratchet
+          - evaluate_capital_slot_release
+        master_v2_imports:
+          []
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+  - id: RUNTIME_COMPONENT:dp_core_wiring
+    name: Double Play core wiring
+    module_role: double_play_current_core
+    files:
+      - path: src/trading/master_v2/double_play_core_wiring_v1.py
+        primary_symbols:
+          - MasterV2DoublePlayCoreWiringResultV1
+          - attach_registry_derived_suitability_snapshot_v1
+          - run_master_v2_double_play_core_wiring_v1
+          - assert_core_wiring_authority_invariants_v1
+        master_v2_imports:
+          - trading.master_v2.decision_packet_from_integrated_replay_v1
+          - trading.master_v2.decision_packet_v1
+          - trading.master_v2.double_play_sole_authority_quarantine_v1
+          - trading.master_v2.integrated_offline_trading_logic_replay_v1
+          - trading.master_v2.registry_suitability_snapshot_v1
+          - trading.master_v2.staged_execution_enablement_v1
+          - trading.master_v2.strategy_identity_binding_v1
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+  - id: RUNTIME_COMPONENT:dp_entry_exit_policy
+    name: Double Play entry/exit policy (v0)
+    module_role: double_play_current_noncanonical
+    files:
+      - path: src/trading/master_v2/double_play_entry_exit_policy_v0.py
+        primary_symbols:
+          - EntryExitDirectionState
+          - PositionState
+          - ReconciliationState
+          - TradingGate
+          - SafetyMode
+          - ExistingPositionSide
+          - ExitClass
+          - DecisionOutcome
+          - EntryEligibility
+          - PositionManagementAction
+          - ReversalState
+          - PolicyBlockedReason
+          - _valid_sha256_hex
+          - _instrument_id_allowed
+          - _position_blocks_opposite_entry
+          - _position_is_flat
+          - _position_has_open
+          - _reconciliation_blocks_entry
+          - _effective_flat
+          - _selected_side_status
+          - _direction_armed_for_entry
+          - _entry_gate_allows
+          - _resolve_mandatory_exit
+          - _mandatory_outcome_for
+        master_v2_imports:
+          - trading.master_v2.canonical_market_context_v1
+          - trading.master_v2.directional_assessment_v1
+          - trading.master_v2.double_play_composition_matrix_v1
+          - trading.master_v2.suitability_binding_v1
+          - trading.master_v2.survival_assessment_v1
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/double_play_entry_exit_scenario_binding_adapter_v0.py
+        primary_symbols:
+          - ScenarioEntryExitPolicyContextV0
+          - side_state_to_entry_exit_direction
+          - default_scenario_entry_exit_policy_context_v0
+          - build_scenario_entry_exit_policy_input_v0
+          - evaluate_scenario_entry_exit_policy_v0
+          - entry_exit_decision_non_authority_boundary_ok_v0
+          - scenario_entry_exit_side_states_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_market_context_v1
+          - trading.master_v2.double_play_composition_matrix_v1
+          - trading.master_v2.double_play_entry_exit_policy_v0
+          - trading.master_v2.double_play_state
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+  - id: RUNTIME_COMPONENT:dp_volatility_presence_gate
+    name: Double Play typed volatility presence gate
+    module_role: double_play_current_noncanonical
+    files:
+      - path: src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py
+        primary_symbols:
+          - DoublePlayTypedVolatilityPresenceGateResultV1
+          - evaluate_double_play_runtime_typed_volatility_presence_gate_v1
+          - demote_trading_gate_for_typed_presence_failure_v1
+          - protection_authority_required_v1
+          - _non_authorizing_observe_composition_v1
+          - evaluate_protection_authority_when_typed_absent_v1
+          - assert_architecture_guards_v1
+          - assert_capability_non_goals_v1
+        master_v2_imports:
+          - trading.master_v2.canonical_market_context_v1
+          - trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1
+          - trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_v1
+          - trading.master_v2.canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1
+          - trading.master_v2.directional_assessment_v1
+          - trading.master_v2.double_play_composition_matrix_v1
+          - trading.master_v2.double_play_entry_exit_policy_v0
+          - trading.master_v2.suitability_binding_v1
+          - trading.master_v2.survival_assessment_v1
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+  - id: RUNTIME_COMPONENT:dp_dashboard_display
+    name: Double Play dashboard display projection
+    module_role: double_play_projection_not_authority
+    files:
+      - path: src/trading/master_v2/double_play_dashboard_display.py
+        primary_symbols:
+          - DashboardDisplayStatus
+          - DoublePlayDashboardPanel
+          - DoublePlayDashboardDisplaySnapshot
+          - _panel
+          - _severity_rank
+          - _max_severity
+          - _collect_input_live_warnings
+          - _panel_futures_input
+          - _panel_transition
+          - _panel_survival
+          - _panel_suitability
+          - _panel_ratchet
+          - _panel_release
+          - _panel_composition
+          - build_dashboard_display_snapshot
+        master_v2_imports:
+          - trading.master_v2.double_play_capital_slot
+          - trading.master_v2.double_play_composition
+          - trading.master_v2.double_play_futures_input
+          - trading.master_v2.double_play_state
+          - trading.master_v2.double_play_suitability
+          - trading.master_v2.double_play_survival
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+  - id: RUNTIME_COMPONENT:dp_sole_authority_quarantine
+    name: Double Play sole-authority quarantine
+    module_role: double_play_quarantine
+    files:
+      - path: src/trading/master_v2/double_play_sole_authority_quarantine_v1.py
+        primary_symbols:
+          - CompetingAuthorityEscalationError
+          - CompetingSideStateWriterError
+          - assert_path_cannot_escalate_to_compute_owner_v1
+          - assert_path_cannot_write_side_state_v1
+          - build_double_play_sole_authority_status_fields_v1
+        master_v2_imports:
+          []
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+  - id: RUNTIME_COMPONENT:dp_evaluate_authority_boundary
+    name: evaluate_double_play authority boundary (v0)
+    module_role: double_play_quarantine
+    files:
+      - path: src/trading/master_v2/evaluate_double_play_authority_boundary_v0.py
+        primary_symbols:
+          - LegacyDuplicateDecisionPathSystemEvidenceBlockedError
+          - LegacyDoublePlayLiveGatesAnnotationV0
+          - classify_ops_evaluate_double_play_authority
+          - classify_offline_scenario_replay_authority
+          - assert_legacy_duplicate_decision_path_blocks_system_economic_evidence_v0
+          - declare_legacy_duplicate_decision_path_v0
+          - build_legacy_double_play_live_gates_annotation
+          - build_slice_e_status_fields_v0
+          - build_slice_4_legacy_boundary_status_fields_v0
+        master_v2_imports:
+          []
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+  - id: RUNTIME_COMPONENT:dp_offline_scenario_replay
+    name: Offline Double Play scenario replay (v0)
+    module_role: double_play_offline_replay
+    files:
+      - path: src/trading/master_v2/offline_double_play_scenario_replay_v0.py
+        primary_symbols:
+          - OfflineDoublePlayProofEvent
+          - OfflineScenarioTickProvenanceV1
+          - OfflineDoublePlayScenarioTickV0
+          - OfflineDoublePlayScenarioReplayInputV0
+          - OfflineDoublePlayScenarioReplayTickRecordV0
+          - OfflineDoublePlayScenarioReplaySummaryV0
+          - OfflineDoublePlayScenarioReplayResultV0
+          - MasterV2ReplayStateEventProjectionResultV0
+          - _layer
+          - _survival_envelope
+          - _capital_config
+          - _default_capital_state
+          - _requested_side
+          - _suitability_input
+          - _component_digest
+          - _dashboard_display_projection_digest
+          - _validate_instrument
+          - build_offline_replay_futures_input_snapshot
+          - resolve_replay_futures_input_snapshot
+          - resolve_allow_test_scope_event_injection
+        master_v2_imports:
+          - trading.master_v2.bull_bear_state_switch_scenario_binding_adapter_v0
+          - trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0
+          - trading.master_v2.canonical_volatility_default_quarantine_v1
+          - trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0
+          - trading.master_v2.decision_packet_v1
+          - trading.master_v2.deterministic_scope_event_generator_v1
+          - trading.master_v2.double_play_capital_slot
+          - trading.master_v2.double_play_composition
+          - trading.master_v2.double_play_composition_scenario_matrix_adapter_v0
+          - trading.master_v2.double_play_dashboard_display
+          - trading.master_v2.double_play_entry_exit_policy_v0
+          - trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0
+          - trading.master_v2.double_play_futures_input
+          - trading.master_v2.double_play_sole_authority_quarantine_v1
+          - trading.master_v2.double_play_state
+          - trading.master_v2.double_play_suitability
+          - trading.master_v2.double_play_survival
+          - trading.master_v2.evaluate_double_play_authority_boundary_v0
+          - trading.master_v2.flat_before_opposite_side_scenario_binding_adapter_v0
+          - trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/double_play_composition_scenario_matrix_adapter_v0.py
+        primary_symbols:
+          - _apply_legacy_pre_matrix_gates
+          - _apply_legacy_capital_slot_overlay
+          - build_scenario_matrix_composition_input_v0
+          - _position_management_context
+          - _previous_direction_state
+          - evaluate_scenario_matrix_composition_v0
+          - compose_double_play_scenario_via_canonical_matrix_v0
+          - legacy_and_matrix_composition_parity_aligned_v0
+        master_v2_imports:
+          - trading.master_v2.double_play_composition
+          - trading.master_v2.double_play_composition_matrix_v1
+          - trading.master_v2.double_play_state
+          - trading.master_v2.double_play_suitability
+          - trading.master_v2.double_play_survival
+          - trading.master_v2.survival_suitability_scenario_binding_adapter_v0
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+  - id: RUNTIME_COMPONENT:mv2_post_confirmation_ssc
+    name: Post-confirmation survival/suitability/composition binding
+    module_role: current_noncanonical
+    files:
+      - path: src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py
+        primary_symbols:
+          - PostC3DownstreamConfirmationAuthorityErrorV1
+          - assert_post_c3_downstream_confirmation_non_authority_v1
+          - assert_c4_c3_assessment_identity_binding_v1
+          - _call_names_from_ast
+          - _imported_module_tails_from_ast
+          - collect_forbidden_downstream_confirmation_calls_v1
+          - collect_forbidden_scenario_legacy_imports_v1
+          - assert_productive_c4_modules_confirmation_non_authority_v1
+        master_v2_imports:
+          - trading.master_v2.directional_assessment_v1
+          - trading.master_v2.double_play_composition_matrix_v1
+          - trading.master_v2.suitability_binding_v1
+          - trading.master_v2.survival_assessment_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+  - id: RUNTIME_COMPONENT:mv2_decision_packet
+    name: Canonical decision packet
+    module_role: current_noncanonical
+    files:
+      - path: src/trading/master_v2/decision_packet_v1.py
+        primary_symbols:
+          - UniverseSelectionHandoffV1
+          - DoubleplayResolutionHandoffV1
+          - ScopeCapitalEnvelopeHandoffV1
+          - RiskExposureCapHandoffV1
+          - SafetyKillSwitchHandoffV1
+          - MasterV2DecisionPacketV1
+          - MasterV2DecisionPacketValidationV1
+          - build_master_v2_decision_packet_v1
+          - _check_safety_mismatch
+          - _check_risk_cap
+          - _check_live_auth
+          - validate_master_v2_decision_packet_v1
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/decision_packet_snapshot_v1.py
+        primary_symbols:
+          - _staged_in
+          - _staged_out
+          - _uni_in
+          - _uni_out
+          - _dp_in
+          - _dp_out
+          - _scope_in
+          - _scope_out
+          - _risk_in
+          - _risk_out
+          - _safety_in
+          - _safety_out
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/decision_packet_critic_v1.py
+        primary_symbols:
+          - CriticFindingSeverityV1
+          - DecisionPacketCriticFindingV1
+          - DecisionPacketCriticReportV1
+          - _optional_layer_warnings
+          - critique_master_v2_decision_packet_v1
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/decision_packet_fixtures_v1.py
+        primary_symbols:
+          - sample_universe_selection_v1
+          - sample_doubleplay_decision_v1
+          - sample_scope_envelope_v1
+          - sample_risk_caps_result_v1
+          - sample_safety_decision_v1
+          - sample_staged_execution_enablement_input_v1
+          - sample_staged_execution_enablement_decision_v1
+          - sample_master_v2_decision_packet_v1
+          - sample_decision_packet_snapshot_v1
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/decision_packet_replay_v1.py
+        primary_symbols:
+          - decision_packet_roundtrip_v1
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/decision_packet_roundtrip_v1.py
+        primary_symbols:
+          - MasterV2DecisionPacketRoundtripResultV1
+          - roundtrip_master_v2_decision_packet_v1
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/decision_packet_from_integrated_replay_v1.py
+        primary_symbols:
+          - DecisionPacketWithoutCanonicalReplayEvidenceError
+          - derive_doubleplay_handoff_from_integrated_replay_v1
+          - require_canonical_derived_doubleplay_handoff_v1
+          - build_master_v2_decision_packet_from_integrated_replay_v1
+        master_v2_imports:
+          - trading.master_v2.decision_packet_v1
+          - trading.master_v2.integrated_offline_trading_logic_replay_v1
+          - trading.master_v2.staged_execution_enablement_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+  - id: RUNTIME_COMPONENT:mv2_canonical_volatility
+    name: Canonical volatility stack
+    module_role: current_noncanonical
+    files:
+      - path: src/trading/master_v2/canonical_volatility_binding_and_provenance_transport_v1.py
+        primary_symbols:
+          - VolatilityStaleStatusV1
+          - VolatilityValidationResultV1
+          - CanonicalVolatilityBindingErrorCode
+          - CanonicalVolatilityBindingError
+          - CanonicalVolatilityBindingCapabilityManifestV1
+          - _raise
+          - _stable_digest
+          - serialize_canonical_volatility_estimate_for_digest_v1
+          - compute_typed_estimate_digest_v1
+          - compute_legacy_adaptation_digest_v1
+          - compute_volatility_input_binding_digest_v1
+          - reject_untyped_float_at_typed_cmc_boundary_v1
+          - validate_typed_estimate_for_cmc_binding_v1
+          - adapt_validated_typed_estimate_to_legacy_float_v1
+          - bind_typed_canonical_volatility_estimate_into_market_context_v1
+          - assert_typed_metadata_preserved_until_boundary_v1
+          - resolve_legacy_volatility_float_for_consumer_v1
+        master_v2_imports:
+          - trading.master_v2.canonical_market_context_v1
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.canonical_volatility_estimate_feature_contract_v1
+          - trading.master_v2.canonical_volatility_estimate_materializer_v1
+          - trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/canonical_volatility_default_quarantine_v1.py
+        primary_symbols:
+          - VolatilityQuarantineDispositionV1
+          - CanonicalVolatilityQuarantineErrorCode
+          - CanonicalVolatilityQuarantineError
+          - CanonicalVolatilityQuarantineResultV1
+          - CanonicalVolatilityQuarantineEvidenceProvenanceV1
+          - _raise
+          - _stable_digest
+          - compute_quarantine_digest_v1
+          - _build_result
+          - quarantine_result_to_evidence_provenance_v1
+          - quarantine_legacy_volatility_input_v1
+          - require_admitted_legacy_volatility_float_v1
+          - quarantine_explicit_replay_default_volatility_v1
+          - quarantine_explicit_test_fixture_volatility_v1
+          - quarantine_historical_bar_volatility_v1
+          - quarantine_research_fleet_join_volatility_v1
+          - admit_positive_volatility_without_strategy_floor_v1
+        master_v2_imports:
+          - trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1
+          - trading.master_v2.canonical_volatility_estimate_feature_contract_v1
+          - trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/canonical_volatility_estimate_feature_contract_v1.py
+        primary_symbols:
+          - CanonicalVolatilityFeatureContractError
+          - RatificationVerdict
+          - CanonicalVolatilityFeatureContractV1
+          - repo_root
+          - contract_config_path
+          - load_contract_config_v1
+          - _require_exact
+          - validate_contract_config_v1
+          - parse_contract_v1
+          - load_ratified_contract_v1
+          - compute_contract_digest_v1
+          - materialize_owner_ratification_v1
+          - materialize_normative_field_binding_v1
+          - materialize_implementation_boundary_v1
+          - materialize_test_requirements_v1
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/canonical_volatility_estimate_materializer_v1.py
+        primary_symbols:
+          - CanonicalVolatilityEstimateMaterializerError
+          - MaterializerRejectionReason
+          - VolatilityMaterializationResultV1
+          - _stable_digest
+          - _assert_pt1m_contiguity
+          - validate_finalized_mark_price_inputs_v1
+          - compute_canonical_volatility_estimate_from_mark_prices_v1
+          - materialize_volatility_estimate_on_bars_v1
+          - exact_known_61_price_fixture_v1
+          - expected_population_std_for_fixture_v1
+          - count_closed_return_observations_v1
+          - build_digest_dependency_graph_v1
+          - build_before_after_field_diff_v1
+        master_v2_imports:
+          - src.trading.master_v2
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/canonical_volatility_estimate_typed_consumption_contract_v1.py
+        primary_symbols:
+          - CanonicalVolatilityTypedConsumptionErrorCode
+          - CanonicalVolatilityTypedConsumptionError
+          - CanonicalVolatilityEstimateV1
+          - _raise
+          - compute_source_digest_v1
+          - validate_canonical_volatility_estimate_v1
+          - resolve_canonical_config_digest_v1
+          - build_canonical_volatility_estimate_v1
+          - derive_return_observation_count_from_closed_window_v1
+          - materialize_typed_canonical_volatility_estimate_v1
+          - adapt_canonical_volatility_estimate_to_legacy_float_v1
+          - reject_implicit_legacy_float_input_v1
+          - assert_capability_non_goals_v1
+          - with_mutated_field_for_tests_v1
+        master_v2_imports:
+          - src.trading.master_v2
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/canonical_volatility_hot_path_contract_closure_v1.py
+        primary_symbols:
+          - VolatilityHotPathStatusV1
+          - CanonicalVolatilityHotPathClosureError
+          - HotPathVolatilityCycleEvidenceV1
+          - _stable_digest
+          - closure_config_path
+          - load_closure_config_v1
+          - compute_closure_config_digest_v1
+          - productive_cmc_volatility_seed_v1
+          - clear_untyped_productive_volatility_float_v1
+          - reject_naked_float_productive_binding_v1
+          - reject_competing_bridge_producer_as_productive_authority_v1
+          - assert_config_digest_matches_runtime_v1
+          - assert_source_digest_matches_v1
+          - classify_hot_path_status_v1
+          - compute_volatility_age_seconds_diagnostic_v1
+        master_v2_imports:
+          - trading.master_v2.canonical_market_context_v1
+          - trading.master_v2.canonical_volatility_default_quarantine_v1
+          - trading.master_v2.canonical_volatility_estimate_feature_contract_v1
+          - trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_v1
+          - trading.master_v2.canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1.py
+        primary_symbols:
+          - MaxAgeResearchDesignContractError
+          - MaxAgeResearchDimensionV1
+          - MaxAgeResearchMetricV1
+          - MaxAgeLeakageControlV1
+          - MaxAgeStressControlV1
+          - MaxAgeRobustnessRequirementV1
+          - MaxAgeRejectionCriterionV1
+          - MaxAgeSelectionCriterionV1
+          - CounterfactualAgeLabelV1
+          - CanonicalVolatilityMaxAgeResearchDesignContractV1
+          - CanonicalVolatilityMaxAgeResearchEvidenceJoinV1
+          - CounterfactualMaxAgeThresholdDiagnosticV1
+          - _canonical_json_bytes
+          - _sha256_hex
+          - _require_nonempty_identity
+          - _require_nonempty_text
+          - _require_nonempty_str_tuple
+          - _as_optional_int
+          - _as_optional_float
+          - _as_optional_bool
+          - _optional_identity
+          - _assert_identity_agreement
+          - _preregistration_digest_v1
+          - build_ratified_max_age_research_design_contract_v1
+        master_v2_imports:
+          - trading.master_v2.canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1.py
+        primary_symbols:
+          - CanonicalVolatilityMaxAgePolicyContractError
+          - VolatilityMaxAgeReasonCodeV1
+          - VolatilityMaxAgeStatusV1
+          - VolatilityPresenceStatusV1
+          - VolatilityReuseStatusV1
+          - VolatilityRestartStatusV1
+          - VolatilityMaxAgeDecisionV1
+          - CanonicalVolatilityNumericMaxAgePolicyContractV1
+          - CanonicalVolatilityMaxAgePolicyEvidenceV1
+          - validate_canonical_volatility_numeric_max_age_policy_contract_v1
+          - build_ratified_unresolved_max_age_policy_contract_v1
+          - parse_event_time_instant_v1
+          - _iso_utc
+          - _evidence
+          - evaluate_canonical_volatility_estimate_age_policy_v1
+          - derive_presence_status_for_age_policy_v1
+          - derive_reuse_and_restart_status_for_age_policy_v1
+          - assert_architecture_guards_v1
+          - assert_capability_non_goals_v1
+        master_v2_imports:
+          - trading.master_v2.canonical_market_context_v1
+          - trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/canonical_volatility_productive_runtime_cmc_typed_binding_v1.py
+        primary_symbols:
+          - ProductiveTypedBindingFailClosedReasonV1
+          - ProductiveRuntimeCmcTypedBindingTelemetryV1
+          - ProductiveRuntimeCmcTypedBindingResultV1
+          - CanonicalVolatilityProductiveRuntimeCmcTypedBindingHostV1
+          - _as_of_iso
+          - _fail_reason_for_outcome
+          - assert_architecture_guards_v1
+          - assert_capability_non_goals_v1
+        master_v2_imports:
+          - trading.market_state.distinct_market_observation_acceptor_v1
+          - trading.market_state.time_sample_epoch_semantics_v1
+          - trading.master_v2.canonical_market_context_v1
+          - trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1
+          - trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_v1
+          - trading.master_v2.canonical_volatility_hot_path_contract_closure_v1
+          - trading.master_v2.canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1
+          - trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/canonical_volatility_pt1m_mark_observation_finalizer_v1.py
+        primary_symbols:
+          - Pt1mMarkObservationFinalizerError
+          - FinalizedPt1mMarkObservationV1
+          - CanonicalVolatilityPt1mMarkObservationFinalizerV1
+          - pt1m_bucket_start_unix_seconds_v1
+          - _validate_mark_price_v1
+        master_v2_imports:
+          - trading.master_v2.canonical_volatility_estimate_materializer_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/canonical_volatility_runtime_mark_history_v1.py
+        primary_symbols:
+          - RuntimeMarkHistoryError
+          - RuntimeMarkHistoryRecordV1
+          - CanonicalVolatilityRuntimeMarkHistoryHostV1
+          - compute_sample_digest_v1
+          - compute_history_digest_v1
+          - _assert_record_instrument_coherence
+          - assert_pt1m_trailing_window_contiguous_v1
+          - atomic_write_history_persistence_v1
+          - load_history_persistence_v1
+        master_v2_imports:
+          - trading.market_state.distinct_market_observation_acceptor_v1
+          - trading.market_state.observation_identity_v1
+          - trading.market_state.time_sample_epoch_semantics_v1
+          - trading.master_v2
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/canonical_volatility_typed_runtime_producer_scaffold_v1.py
+        primary_symbols:
+          - TypedRuntimeProducerOutcomeV1
+          - TypedRuntimeProducerResultV1
+          - TypedRuntimeProducerOutputPortV1
+          - CanonicalVolatilityTypedRuntimeProducerScaffoldV1
+          - _event_time_to_datetime
+          - _classify_non_distinct
+          - validate_finalized_mark_sample_fields_v1
+          - assert_capability_guards_v1
+        master_v2_imports:
+          - trading.market_state.distinct_market_observation_acceptor_v1
+          - trading.market_state.time_sample_epoch_semantics_v1
+          - trading.master_v2
+          - trading.master_v2.canonical_volatility_runtime_mark_history_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+  - id: RUNTIME_COMPONENT:mv2_canonical_market_context
+    name: Canonical market context
+    module_role: current_noncanonical
+    files:
+      - path: src/trading/master_v2/canonical_market_context_v1.py
+        primary_symbols:
+          - BarFinalityStatus
+          - WarmupStatus
+          - DataIntegrityStatus
+          - ClockTrustStatus
+          - CanonicalMarketContextBlockReason
+          - CanonicalMarketContextBindingOutcome
+          - CanonicalMarketContextV1
+          - CanonicalMarketContextEligibilityV1
+          - CanonicalMarketContextBindingStateV1
+          - CanonicalMarketContextBindingResultV1
+          - futures_market_type_to_canonical
+          - canonical_market_type_allowed
+          - _normalize_feature_set
+          - _valid_sha256_hex
+          - _parse_utc_instant
+          - _instrument_id_valid
+          - _positive_finite
+          - _non_negative_finite
+          - _spread_matches_bid_ask
+          - validate_canonical_market_context_fields
+          - _validate_typed_volatility_consistency
+          - serialize_canonical_market_context_canonical
+        master_v2_imports:
+          - trading.master_v2.double_play_futures_input
+        runtime_reachability: OFFLINE_OR_LIBRARY
+  - id: RUNTIME_COMPONENT:mv2_canonical_scope
+    name: Canonical scope initialization
+    module_role: current_noncanonical
+    files:
+      - path: src/trading/master_v2/canonical_scope_initialization_v1.py
+        primary_symbols:
+          - CanonicalScopeLifecycleState
+          - CanonicalScopeBlockReason
+          - CanonicalScopeInitializationPolicyV1
+          - ScopeInitializationPrerequisitesV1
+          - ScopeReinitializationGuardV1
+          - CanonicalScopeSnapshotV1
+          - CanonicalScopeInitializationResultV1
+          - _valid_sha256_hex
+          - _positive_finite
+          - _non_negative_finite
+          - validate_scope_initialization_policy
+          - clamp_scope_band
+          - _derive_scope_id
+          - _sorted_reason_code_values
+          - _reinitialization_guard_blocks
+          - _collect_prerequisite_blocks
+          - _is_warming_up_block
+          - _is_hard_invalid_block
+          - classify_scope_lifecycle_state
+        master_v2_imports:
+          - trading.master_v2.canonical_market_context_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+  - id: RUNTIME_COMPONENT:mv2_canonical_trading_decision_evidence
+    name: Canonical trading decision evidence
+    module_role: current_noncanonical
+    files:
+      - path: src/trading/master_v2/canonical_trading_decision_evidence_v1.py
+        primary_symbols:
+          - ComponentRefV1
+          - CanonicalVolatilityDecisionEvidenceProvenanceV1
+          - CanonicalTradingDecisionEvidenceV1
+          - _valid_sha256_hex
+          - _sorted_mapping
+          - serialize_canonical_trading_decision_evidence_canonical
+          - compute_canonical_trading_decision_evidence_semantic_digest
+          - finalize_offline_replay_decision_evidence_v1
+          - with_computed_evidence_semantic_digest
+          - derive_decision_id
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+  - id: RUNTIME_COMPONENT:mv2_directional_assessment
+    name: Directional assessment
+    module_role: current_noncanonical
+    files:
+      - path: src/trading/master_v2/directional_assessment_v1.py
+        primary_symbols:
+          - DirectionalAssessmentSide
+          - DirectionalAssessmentStatus
+          - DirectionalAssessmentHardBlockReason
+          - ScopeEventRefV1
+          - DirectionalConfirmationStateV1
+          - DirectionalAssessmentPolicyV1
+          - DirectionalAssessmentInputV1
+          - DirectionalAssessmentV1
+          - normalize_bull_bear_side
+          - _valid_sha256_hex
+          - _positive_finite
+          - _positive_int
+          - _instrument_id_allowed
+          - _sorted_reason_values
+          - validate_directional_assessment_policy
+          - compute_signal_strength
+          - mirror_price_path_for_short
+          - compute_directional_confidence
+          - _collect_input_gate_blocks
+          - _resolve_epoch_semantics
+        master_v2_imports:
+          - trading.master_v2.canonical_market_context_v1
+          - trading.master_v2.deterministic_scope_event_generator_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/directional_assessment_confirmation_integration_v1.py
+        primary_symbols:
+          - ParallelConfirmationAuthorityErrorV1
+          - DirectionalConfirmationSideStateCarrierV1
+          - DirectionalAssessmentConfirmationIntegrationInputV1
+          - DirectionalAssessmentConfirmationIntegrationResultV1
+          - assert_c3_confirmation_authority_exclusive_v1
+          - initial_directional_confirmation_side_state_carrier_v1
+          - non_advancing_observation_acceptance_result_v1
+          - map_signal_strength_to_confirmation_assessment_signal_v1
+          - map_confirmation_assessment_state_to_directional_status_v1
+          - map_directional_side_to_confirmation_side_v1
+          - _fail_closed_status_for_reason
+          - evaluate_directional_assessment_with_confirmation_progress_v1
+          - evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1
+        master_v2_imports:
+          - trading.market_state.directional_confirmation_progress_v1
+          - trading.market_state.distinct_market_observation_acceptor_v1
+          - trading.market_state.observation_identity_v1
+          - trading.master_v2.directional_assessment_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+  - id: RUNTIME_COMPONENT:mv2_capital_risk_sizing
+    name: Capital risk sizing restore/adapters
+    module_role: current_noncanonical
+    files:
+      - path: src/trading/master_v2/capital_risk_sizing_intent_restore_v1.py
+        primary_symbols:
+          - MasterV2CapitalRiskSizingIntentCompositionV1
+          - capital_context_to_quantity_chain_inputs_v1
+          - _sizing_input_for_29q
+          - _decision_from_chain
+          - _expected_position_side
+          - compose_capital_risk_sizing_intent_from_core_evidence_v1
+        master_v2_imports:
+          - trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0
+          - trading.master_v2.decision_packet_from_integrated_replay_v1
+          - trading.master_v2.double_play_core_wiring_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/capital_risk_sizing_safety_intent_restore_v1.py
+        primary_symbols:
+          - MasterV2CapitalRiskSizingSafetyIntentCompositionV1
+          - safety_context_from_integrated_replay_input_v1
+          - capital_context_to_quantity_chain_inputs_v1
+          - _sizing_input_for_29q
+          - _decision_from_chain
+          - _expected_position_side
+          - compose_capital_risk_sizing_safety_intent_from_core_evidence_v1
+        master_v2_imports:
+          - trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0
+          - trading.master_v2.decision_packet_from_integrated_replay_v1
+          - trading.master_v2.double_play_core_wiring_v1
+          - trading.master_v2.double_play_entry_exit_policy_v0
+          - trading.master_v2.double_play_state
+          - trading.master_v2.integrated_offline_trading_logic_replay_v1
+          - trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0.py
+        primary_symbols:
+          - CapitalRiskSizingBacktestStateFileRecordV0
+          - CapitalRiskSizingBoundaryBacktestStateFileEvidenceV0
+          - _canonical_payload_bytes
+          - compute_backtest_state_file_digest_v0
+          - compute_backtest_state_file_digest_from_payload_v0
+          - _parse_positive_decimal
+          - _parse_non_negative_decimal
+          - _parse_required_str
+          - parse_capital_risk_sizing_backtest_state_file_v0
+          - verify_capital_risk_sizing_backtest_state_file_digest_v0
+          - _capital_context_from_state_file
+          - bind_capital_risk_sizing_boundary_backtest_state_file_evidence_v0
+          - evaluate_backtest_capital_risk_sizing_state_file_boundary_only_v0
+          - apply_backtest_capital_risk_sizing_exposure_gate_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py
+        primary_symbols:
+          - CapitalRiskSizingOfflineReplayBindingResultV0
+          - default_offline_replay_instrument_v0
+          - default_offline_replay_capital_context_v0
+          - compute_risk_sizing_decision_ref_v0
+          - _quantity_status_from_sizing_v0
+          - bind_capital_risk_sizing_offline_replay_evidence_v0
+          - build_scenario_tick_decision_evidence_v0
+          - evaluate_scenario_capital_risk_sizing_v0
+          - capital_risk_sizing_binding_non_authority_boundary_ok_v0
+          - system_economic_evidence_admissible_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+  - id: RUNTIME_COMPONENT:mv2_surface_p
+    name: Surface P bound-not-activated contracts
+    module_role: bound_not_activated
+    files:
+      - path: src/trading/master_v2/surface_p_final_flags_fail_closed_contract_v0.py
+        primary_symbols:
+          - SurfacePFinalFlagsEvidenceInputV0
+          - SurfacePFinalFlagsResultV0
+          - SurfacePFinalFlagsPromotionResultV0
+          - reject_direct_true_flag_assignment_v0
+          - _manifest_verified_v0
+          - _semantic_bindings_confirmed_v0
+          - evaluate_surface_p_final_flags_fail_closed_contract_v0
+          - derive_targeted_semantic_binding_confirmations_from_gap_assessment_v0
+          - derive_surface_p_parity_suite_confirmed_from_targeted_tests_v0
+          - resolve_canonical_parity_source_manifest_verify_rc_v0
+          - verify_evidence_dir_manifest_sha256_v0
+          - _repo_head_v0
+          - is_head_ancestor_or_equal_v0
+          - _load_json_object_v0
+          - validate_eligibility_gate_promotion_context_v0
+        master_v2_imports:
+          []
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0.py
+        primary_symbols:
+          - SurfacePSemanticStatusV0
+          - _runtime_bridge_binding_status_v0
+          - evaluate_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0
+          - surface_p_offline_parity_complete_runtime_activation_pending_v0
+          - surface_p_semantic_status_to_dict_v0
+        master_v2_imports:
+          - trading.master_v2.ai_observability_boundary_offline_replay_binding_adapter_v0
+          - trading.master_v2.integrated_vs_scenario_replay_full_system_parity_harness_v0
+          - trading.master_v2.legacy_runtime_entrypoint_guard_v0
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/surface_p_required_proof_input_binding_v0.py
+        primary_symbols:
+          - SurfacePRequiredProofInputBindingResultV0
+          - _count_present_evidence_refs
+          - evaluate_surface_p_required_proof_input_binding_v0
+          - surface_p_required_proof_input_binding_to_dict_v0
+          - binding_result_field_names_v0
+        master_v2_imports:
+          []
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/surface_p_semantic_parity_gap_assessment_v0.py
+        primary_symbols:
+          - SourceEvidenceRefV0
+          - SurfacePSemanticParityGapAssessmentResultV0
+          - _line_context_protected
+          - scan_forbidden_positive_claims
+          - verify_source_manifest
+          - collect_source_evidence_refs
+          - _load_pr5022_proof_bundle_payload
+          - _surface_p_gap_assessment_entry_v0
+          - evaluate_surface_p_semantic_parity_gap_assessment_v0
+          - surface_p_semantic_parity_gap_assessment_to_dict_v0
+          - render_surface_p_semantic_parity_gap_matrix_json_v0
+          - render_surface_p_semantic_parity_gap_report_markdown_v0
+          - assessment_result_field_names_v0
+        master_v2_imports:
+          []
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+  - id: RUNTIME_COMPONENT:mv2_runtime_bridge
+    name: Canonical core runtime bridge / pre-activation gate
+    module_role: bound_not_activated
+    files:
+      - path: src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py
+        primary_symbols:
+          - CanonicalCoreRuntimeIntegrationInputV0
+          - CanonicalCoreRuntimeIntegrationResultV0
+          - _valid_sha256_hex
+          - _instrument_forbidden
+          - map_harness_instrument_to_canonical_id
+          - validate_canonical_core_runtime_integration_input_v0
+          - _features
+          - _default_policies
+          - _component_versions
+          - _policy_versions
+          - _strategy_registry
+          - _market_context_for_harness
+          - build_integrated_offline_replay_input_from_harness_v0
+          - _blocked_integration_result
+        master_v2_imports:
+          - trading.master_v2.canonical_market_context_v1
+          - trading.master_v2.canonical_scope_initialization_v1
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.deterministic_scope_event_generator_v1
+          - trading.master_v2.directional_assessment_v1
+          - trading.master_v2.double_play_composition_matrix_v1
+          - trading.master_v2.double_play_entry_exit_policy_v0
+          - trading.master_v2.double_play_futures_input
+          - trading.master_v2.double_play_state
+          - trading.master_v2.integrated_offline_trading_logic_replay_v1
+          - trading.master_v2.suitability_binding_v1
+          - trading.master_v2.survival_assessment_v1
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py
+        primary_symbols:
+          - CanonicalCoreRuntimeCapitalContextV0
+          - CanonicalCoreRuntimeIntentPipelineInputV0
+          - CanonicalCoreRuntimeIntentPipelineResultV0
+          - _valid_sha256_hex
+          - map_decision_outcome_to_intent_action
+          - decision_outcome_is_actionable
+          - map_selected_side_to_sizing_side
+          - _instrument_forbidden
+          - build_capital_risk_sizing_input_from_decision_v0
+          - _expected_position_side
+          - _blocked_result
+          - _build_execution_plan_from_canonical_intent_v0
+          - run_canonical_core_runtime_integration_intent_pipeline_bridge_v0
+          - run_canonical_core_runtime_integration_intent_pipeline_from_harness_v0
+          - build_slice_b_evidence_fields_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_core_runtime_integration_bridge_v0
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.integrated_offline_trading_logic_replay_v1
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/runtime_bridge_pre_activation_gate_v0.py
+        primary_symbols:
+          - RuntimeBridgePreActivationGateInputV0
+          - RuntimeBridgePreActivationGateResultV0
+          - _gate_values
+          - _is_gate_pass
+          - evaluate_runtime_bridge_pre_activation_gate_v0
+          - _bool_to_gate_status
+          - current_head_default_gate_input_v0
+        master_v2_imports:
+          []
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/runtime_bridge_pre_activation_gate_assessment_v0.py
+        primary_symbols:
+          - SourceEvidenceRefV0
+          - RuntimeBridgePreActivationGateAssessmentResultV0
+          - _line_context_protected
+          - scan_forbidden_positive_claims
+          - verify_source_manifest
+          - collect_source_evidence_refs
+          - evaluate_runtime_bridge_pre_activation_gate_assessment_v0
+          - runtime_bridge_pre_activation_gate_assessment_to_dict_v0
+          - render_runtime_bridge_pre_activation_gate_matrix_json_v0
+          - render_runtime_bridge_pre_activation_gate_report_markdown_v0
+          - assessment_result_field_names_v0
+        master_v2_imports:
+          []
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/runtime_bridge_boundary_gap_assessment_v0.py
+        primary_symbols:
+          - SourceEvidenceRefV0
+          - RuntimeBridgeBoundaryGapAssessmentResultV0
+          - _line_context_protected
+          - scan_forbidden_positive_claims
+          - verify_source_manifest
+          - collect_source_evidence_refs
+          - _trace_matrix_snapshot_v0
+          - _narrow_rewire_justified_v0
+          - evaluate_runtime_bridge_boundary_gap_assessment_v0
+          - runtime_bridge_boundary_gap_assessment_to_dict_v0
+          - render_runtime_bridge_boundary_gap_matrix_json_v0
+          - render_runtime_bridge_boundary_gap_report_markdown_v0
+          - assessment_result_field_names_v0
+        master_v2_imports:
+          []
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/legacy_runtime_entrypoint_guard_v0.py
+        primary_symbols:
+          - LegacyRuntimeEntrypointBlockResult
+          - LegacyRuntimeEntrypointBlockedError
+          - legacy_runtime_test_only_allowed
+          - evaluate_legacy_runtime_entrypoint_block
+          - require_legacy_runtime_entrypoint_deauthorized
+          - cli_legacy_runtime_entrypoint_blocked_exit_message
+          - legacy_runtime_cli_start_exit_code
+          - build_slice_d_status_fields_v0
+        master_v2_imports:
+          []
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/staged_execution_enablement_v1.py
+        primary_symbols:
+          - ExecutionStageV1
+          - StagedExecutionEnablementInputV1
+          - StagedExecutionEnablementDecisionV1
+          - validate_staged_execution_enablement_input_v1
+          - evaluate_staged_execution_enablement_v1
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+  - id: RUNTIME_COMPONENT:mv2_scope_events
+    name: Scope event generator / chop policy
+    module_role: current_noncanonical
+    files:
+      - path: src/trading/master_v2/deterministic_scope_event_generator_v1.py
+        primary_symbols:
+          - ScopeDirectionState
+          - ScopeCandidateKind
+          - CanonicalScopeEventType
+          - ScopeEventBlockReason
+          - ScopeEventGeneratorPolicyV1
+          - ScopeCooldownStateV1
+          - ScopeConfirmationStateV1
+          - ScopeEventGeneratorInputV1
+          - EvaluatedThresholdsV1
+          - ScopeEventSemanticBindingV1
+          - ScopeEventEvidenceV1
+          - _valid_sha256_hex
+          - _positive_finite
+          - _positive_int
+          - _instrument_id_allowed
+          - _sorted_reason_values
+          - validate_scope_event_generator_policy
+          - _collect_input_gate_blocks
+          - active_side_from_direction
+          - compute_evaluated_thresholds
+          - mirror_price_for_short
+          - _matched_directional_conditions
+          - _candidate_kind_to_matched_condition
+        master_v2_imports:
+          - trading.master_v2.canonical_market_context_v1
+          - trading.master_v2.canonical_scope_initialization_v1
+          - trading.master_v2.double_play_state
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/chop_scope_event_policy_binding_v1.py
+        primary_symbols:
+          - ChopScopePolicyStatus
+          - ChopScopePolicyEvidenceReason
+          - ChopScopePolicyResultV1
+          - apply_chop_scope_event_policy_v1
+          - chop_scope_policy_blocks_side_transition_v1
+          - project_composition_chop_guard_from_scope_policy_v1
+          - build_chop_scope_event_policy_status_fields_v1
+          - assert_chop_scope_policy_invariants_v1
+        master_v2_imports:
+          - trading.master_v2.double_play_state
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py
+        primary_symbols:
+          - ScenarioScopeEventContextV0
+          - ScenarioScopeEventBindingResultV0
+          - active_side_to_scope_direction_v0
+          - _resolve_trust_gates_v0
+          - _distance_triplet_from_scope_v0
+          - build_scenario_canonical_scope_snapshot_v0
+          - build_scenario_scope_generator_input_v0
+          - derive_scope_adverse_exit_signal_v0
+          - _derive_scope_event_ref
+          - evaluate_scenario_scope_event_v0
+          - scope_event_binding_non_authority_boundary_ok_v0
+          - system_economic_evidence_admissible_v0
+          - scope_event_parity_adverse_signal_aligned_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_market_context_v1
+          - trading.master_v2.canonical_scope_initialization_v1
+          - trading.master_v2.deterministic_scope_event_generator_v1
+          - trading.master_v2.double_play_entry_exit_policy_v0
+          - trading.master_v2.double_play_state
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+  - id: RUNTIME_COMPONENT:mv2_regime_bull_bear_readmodel
+    name: Regime bull/bear switch evidence readmodel
+    module_role: current_noncanonical
+    files:
+      - path: src/trading/master_v2/regime_bull_bear_switch_evidence_readmodel_v1/__init__.py
+        primary_symbols:
+          []
+        master_v2_imports:
+          - trading.master_v2.regime_bull_bear_switch_evidence_readmodel_v1.capture_v1
+          - trading.master_v2.regime_bull_bear_switch_evidence_readmodel_v1.constants_v1
+          - trading.master_v2.regime_bull_bear_switch_evidence_readmodel_v1.models_v1
+          - trading.master_v2.regime_bull_bear_switch_evidence_readmodel_v1.persistence_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/regime_bull_bear_switch_evidence_readmodel_v1/capture_v1.py
+        primary_symbols:
+          - capture_regime_bull_bear_switch_evidence_readmodel_v1
+          - try_capture_regime_bull_bear_switch_evidence_readmodel_v1
+        master_v2_imports:
+          - trading.master_v2.double_play_state
+          - trading.master_v2.regime_bull_bear_switch_evidence_readmodel_v1.models_v1
+          - trading.master_v2.regime_bull_bear_switch_evidence_readmodel_v1.persistence_v1
+          - trading.master_v2.suitability_binding_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/regime_bull_bear_switch_evidence_readmodel_v1/constants_v1.py
+        primary_symbols:
+          []
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/regime_bull_bear_switch_evidence_readmodel_v1/models_v1.py
+        primary_symbols:
+          - RegimeBullBearSwitchEvidenceError
+          - RegimeBullBearSwitchEvidenceReadmodelV1
+          - _require_nonempty_str
+          - _parse_side_state
+          - _parse_scope_event
+          - _parse_regime_status
+          - build_from_authorized_capture_inputs_v1
+        master_v2_imports:
+          - trading.master_v2.double_play_state
+          - trading.master_v2.regime_bull_bear_switch_evidence_readmodel_v1.constants_v1
+          - trading.master_v2.suitability_binding_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/regime_bull_bear_switch_evidence_readmodel_v1/persistence_v1.py
+        primary_symbols:
+          - _atomic_write_text
+          - write_regime_bull_bear_switch_evidence_readmodel_v1
+          - load_regime_bull_bear_switch_evidence_readmodel_v1
+        master_v2_imports:
+          - trading.master_v2.regime_bull_bear_switch_evidence_readmodel_v1.constants_v1
+          - trading.master_v2.regime_bull_bear_switch_evidence_readmodel_v1.models_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+  - id: RUNTIME_COMPONENT:mv2_local_evaluator
+    name: Local evaluator / debug CLI
+    module_role: offline_local_only
+    files:
+      - path: src/trading/master_v2/local_evaluator_v1.py
+        primary_symbols:
+          - MasterV2LocalFlowResultV1
+          - evaluate_master_v2_local_flow_v1
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/local_evaluator_scenarios_v1.py
+        primary_symbols:
+          - run_master_v2_scenario_case_v1
+          - _local_flow_for_scenario_case
+          - run_master_v2_scenario_matrix_v1
+          - assert_master_v2_scenario_harness_outcome_v1
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/local_debug_cli_v1.py
+        primary_symbols:
+          - _json_load
+          - _load_input
+          - _enrich_from_packet
+          - master_v2_debug_result_to_dict
+          - run_master_v2_local_debug_cli_v1
+          - main
+          - _emit_error
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+  - id: RUNTIME_COMPONENT:mv2_input_happy_path
+    name: Input adapter / happy raw input
+    module_role: current_noncanonical
+    files:
+      - path: src/trading/master_v2/input_adapter_v1.py
+        primary_symbols:
+          - MasterV2InputAdapterResultV1
+          - _fail
+          - _layer_version
+          - _parse_stage_value
+          - _parse_staged_block
+          - _parse_universe
+          - _parse_doubleplay
+          - _parse_scope
+          - _parse_risk
+          - _parse_safety
+          - _parse_optional_mapping
+          - adapt_inputs_to_master_v2_flow_v1
+          - iter_unexpected_top_level_keys
+        master_v2_imports:
+          []
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/happy_raw_input_v1.py
+        primary_symbols:
+          - build_master_v2_happy_scenario_raw_input_v1
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+  - id: RUNTIME_COMPONENT:mv2_integrated_replay
+    name: Integrated offline trading-logic replay
+    module_role: offline_replay
+    files:
+      - path: src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+        primary_symbols:
+          - IntegratedOfflineReplayPoliciesV1
+          - IntegratedOfflineReplayInputV1
+          - StateSwitchEvidenceV1
+          - IntegratedOfflineReplayIntermediateV1
+          - IntegratedOfflineReplayResultV1
+          - _annotated_replay_result
+          - _valid_sha256_hex
+          - _builder_type_name_ok
+          - _builder_enum_ok
+          - _builder_mapping_str_str_ok
+          - _builder_finite_number
+          - build_integrated_offline_replay_input_v1
+          - _instrument_allowed
+          - _canonical_scope_event_to_scope_event
+          - scope_direction_from_side_state_v1
+          - _seed_runtime_scope_from_snapshot_v1
+          - _resolve_runtime_scope_state_for_cycle_v1
+        master_v2_imports:
+          - trading.market_state.distinct_market_observation_acceptor_v1
+          - trading.market_state.observation_identity_v1
+          - trading.master_v2.canonical_market_context_v1
+          - trading.master_v2.canonical_scope_initialization_v1
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.canonical_volatility_default_quarantine_v1
+          - trading.master_v2.deterministic_scope_event_generator_v1
+          - trading.master_v2.directional_assessment_confirmation_integration_v1
+          - trading.master_v2.directional_assessment_v1
+          - trading.master_v2.double_play_composition_matrix_v1
+          - trading.master_v2.double_play_entry_exit_policy_v0
+          - trading.master_v2.double_play_state
+          - trading.master_v2.post_confirmation_survival_suitability_composition_binding_v1
+          - trading.master_v2.reversal_preparation_scenario_binding_adapter_v0
+          - trading.master_v2.scope_event_generator_scenario_binding_adapter_v0
+          - trading.master_v2.strategy_identity_binding_v1
+          - trading.master_v2.strategy_suitability_agreement_material_v1
+          - trading.master_v2.suitability_binding_v1
+          - trading.master_v2.survival_assessment_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/integrated_offline_replay_evidence_writer_v1.py
+        primary_symbols:
+          - _jsonable
+          - _write_json
+          - _file_sha256
+          - write_integrated_offline_replay_evidence_bundle_v1
+          - verify_evidence_manifest_v1
+        master_v2_imports:
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.integrated_offline_trading_logic_replay_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py
+        primary_symbols:
+          - ParityDecisionEnvelopeV0
+          - ParityCaseV0
+          - FullSystemFourWayParityAssessmentV0
+          - SurfacePBarSequenceFixtureV0
+          - SurfacePBarSequenceFixtureAssessmentV0
+          - SurfacePFullBarSequenceParityAssessmentV0
+          - scan_forbidden_runtime_import_modules_v0
+          - evaluate_scenario_matrix_for_side_state_v0
+          - extract_integrated_parity_envelope_v0
+          - extract_scenario_matrix_parity_envelope_v0
+          - extract_entry_exit_policy_parity_envelope_v0
+          - extract_capital_risk_sizing_parity_envelope_v0
+          - extract_scenario_replay_tick_capital_risk_sizing_envelope_v0
+          - extract_scenario_replay_tick_parity_envelope_v0
+          - extract_state_switch_parity_envelope_v0
+          - extract_scenario_replay_tick_state_switch_envelope_v0
+          - assert_state_switch_non_authority_boundary_v0
+          - evaluate_scenario_state_switch_for_fixture_v0
+        master_v2_imports:
+          - trading.master_v2.ai_observability_boundary_backtest_state_file_binding_adapter_v0
+          - trading.master_v2.ai_observability_boundary_offline_replay_binding_adapter_v0
+          - trading.master_v2.bull_bear_state_switch_scenario_binding_adapter_v0
+          - trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0
+          - trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0
+          - trading.master_v2.directional_assessment_v1
+          - trading.master_v2.double_play_composition
+          - trading.master_v2.double_play_composition_matrix_v1
+          - trading.master_v2.double_play_composition_scenario_matrix_adapter_v0
+          - trading.master_v2.double_play_entry_exit_policy_v0
+          - trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0
+          - trading.master_v2.double_play_state
+          - trading.master_v2.feedback_learning_boundary_backtest_state_file_binding_adapter_v0
+          - trading.master_v2.feedback_learning_boundary_offline_replay_binding_adapter_v0
+          - trading.master_v2.flat_before_opposite_side_scenario_binding_adapter_v0
+          - trading.master_v2.integrated_offline_trading_logic_replay_v1
+          - trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0
+          - trading.master_v2.offline_double_play_scenario_replay_v0
+          - trading.master_v2.promotion_gate_boundary_backtest_state_file_binding_adapter_v0
+          - trading.master_v2.promotion_gate_boundary_offline_replay_binding_adapter_v0
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+  - id: RUNTIME_COMPONENT:mv2_parity_gap_assessment
+    name: Full canonical parity gap assessments
+    module_role: assessment_not_activation
+    files:
+      - path: src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py
+        primary_symbols:
+          - ParitySurfaceAssessmentV0
+          - _parity_surface_assessments_base_v0
+          - parity_surface_assessments_v0
+          - normalize_matrix_status_v0
+          - get_surface_p_required_proof_input_binding_v0
+          - parity_gap_records_v0
+          - render_parity_gap_matrix_json_v0
+          - parity_status_counts_v0
+          - render_parity_gap_matrix_markdown_v0
+          - scan_changed_paths_for_forbidden_runtime_v0
+        master_v2_imports:
+          []
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/next_full_canonical_parity_surface_after_surface_p_assessment_v0.py
+        primary_symbols:
+          - SourceEvidenceRefV0
+          - NextFullCanonicalParitySurfaceAssessmentResultV0
+          - _line_context_protected
+          - scan_forbidden_positive_claims
+          - verify_source_manifest
+          - collect_source_evidence_refs
+          - _trace_matrix_snapshot_v0
+          - resolve_next_unbound_canonical_parity_node_v0
+          - evaluate_next_full_canonical_parity_surface_after_surface_p_assessment_v0
+          - next_full_canonical_parity_surface_assessment_to_dict_v0
+          - render_next_full_canonical_parity_surface_matrix_json_v0
+          - render_next_full_canonical_parity_surface_report_markdown_v0
+          - assessment_result_field_names_v0
+        master_v2_imports:
+          []
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+  - id: RUNTIME_COMPONENT:mv2_strategy_identity
+    name: Strategy identity binding
+    module_role: current_noncanonical
+    files:
+      - path: src/trading/master_v2/strategy_identity_binding_v1.py
+        primary_symbols:
+          - StrategyIdentityBindingError
+          - StrategyIdentityBindingV1
+          - _normalize_requested_id
+          - bind_strategy_identity_v1
+          - assert_auth_001_not_collapsed_v1
+          - bind_requested_strategy_ids_v1
+          - auth_001_relation_for_ids_v1
+          - collect_suitability_identity_failures_v1
+        master_v2_imports:
+          - trading.master_v2.suitability_binding_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
+  - id: RUNTIME_COMPONENT:mv2_arithmetic_decimal
+    name: Arithmetic decimal/float conversion
+    module_role: helper
+    files:
+      - path: src/trading/master_v2/arithmetic_decimal_float_conversion_v0.py
+        primary_symbols:
+          - MasterV2BoundaryField
+          - MasterV2BoundaryConversionErrorCode
+          - _FieldConversionPolicy
+          - MasterV2BoundaryFieldInput
+          - MasterV2BoundaryConversionSuccess
+          - MasterV2BoundaryConversionError
+          - MasterV2BoundaryConversionResult
+          - MasterV2BoundaryBatchConversionResult
+          - _error
+          - _failure
+          - _is_finite_number
+          - _to_decimal_text
+          - _validate_range
+          - _validate_precision_metadata
+          - _delegate_quantize
+          - _convert_field_with_policy
+          - convert_master_v2_boundary_field
+          - convert_master_v2_boundary_fields_batch
+        master_v2_imports:
+          []
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+  - id: RUNTIME_COMPONENT:mv2_pr4985_materiality_classifier
+    name: PR4985 runtime activation materiality classifier
+    module_role: assessment_not_activation
+    files:
+      - path: src/trading/master_v2/pr4985_runtime_activation_materiality_classifier_v0.py
+        primary_symbols:
+          - ClassifierHitV0
+          - RuntimeActivationMaterialityResultV0
+          - _normalize_rel_path
+          - _is_negative_contract_test_path
+          - _is_guarded_infrastructure_path
+          - _should_scan_execution_source
+          - _line_in_docstring_ranges
+          - _docstring_ranges
+          - _call_name
+          - _line_is_doctest_example
+          - _line_is_string_literal_fixture
+          - _is_negative_guard_script_path
+          - _classify_authority_line
+          - _file_has_material_authority_assignment
+        master_v2_imports:
+          []
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+  - id: RUNTIME_COMPONENT:mv2_scenario_matrix
+    name: Scenario matrix / scenario adapters
+    module_role: offline_replay
+    files:
+      - path: src/trading/master_v2/scenario_matrix_v1.py
+        primary_symbols:
+          - ScenarioExpectedOutcomeV1
+          - MasterV2ScenarioCaseV1
+          - _snap_if_ok
+          - _case_happy_live_gated
+          - _case_safety_blocked
+          - _case_risk_blocked
+          - _case_live_auth_missing_ack
+          - _case_optional_layers_missing
+          - build_master_v2_scenario_matrix_v1
+          - get_master_v2_scenario_case_v1
+          - scenario_matrix_all_names_v1
+        master_v2_imports:
+          []
+        runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py
+        primary_symbols:
+          - ScenarioStateSwitchContextV0
+          - ScenarioStateSwitchBindingResultV0
+          - project_bull_layer_side_state_v0
+          - project_bear_layer_side_state_v0
+          - _derive_state_switch_id
+          - compute_state_switch_semantic_digest_v0
+          - evaluate_scenario_state_switch_v0
+          - state_switch_binding_non_authority_boundary_ok_v0
+          - system_economic_evidence_admissible_v0
+          - state_switch_parity_aligned_v0
+          - mirrored_side_states_parity_ok_v0
+        master_v2_imports:
+          - trading.master_v2.double_play_state
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/flat_before_opposite_side_scenario_binding_adapter_v0.py
+        primary_symbols:
+          - derive_flat_before_opposite_side_position_context_v0
+          - merge_flat_before_opposite_side_policy_context_v0
+          - evaluate_scenario_flat_before_opposite_side_entry_exit_v0
+          - flat_before_opposite_side_blocks_opposite_entry_v0
+          - flat_before_opposite_side_binding_non_authority_boundary_ok_v0
+          - system_economic_evidence_admissible_v0
+          - canonical_entry_exit_owner_ref_v0
+        master_v2_imports:
+          - trading.master_v2.double_play_composition_matrix_v1
+          - trading.master_v2.double_play_entry_exit_policy_v0
+          - trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0
+          - trading.master_v2.double_play_state
+          - trading.master_v2.reversal_preparation_scenario_binding_adapter_v0
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/reversal_preparation_scenario_binding_adapter_v0.py
+        primary_symbols:
+          - is_reversal_preparation_composition_v0
+          - derive_reversal_preparation_position_context_v0
+          - project_composition_for_reversal_preparation_entry_exit_v0
+          - evaluate_scenario_reversal_preparation_entry_exit_v0
+          - reversal_preparation_decision_is_reduce_only_preparation_v0
+          - reversal_preparation_binding_non_authority_boundary_ok_v0
+          - system_economic_evidence_admissible_v0
+          - canonical_entry_exit_owner_ref_v0
+        master_v2_imports:
+          - trading.master_v2.double_play_composition_matrix_v1
+          - trading.master_v2.double_play_entry_exit_policy_v0
+          - trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0
+          - trading.master_v2.double_play_state
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/survival_suitability_scenario_binding_adapter_v0.py
+        primary_symbols:
+          - ScenarioSurvivalSuitabilityOverridesV0
+          - ScenarioSurvivalSuitabilityEvaluationV0
+          - scenario_survival_policy_v0
+          - scenario_suitability_ranking_policy_v0
+          - scenario_strategy_registry_v0
+          - legacy_side_to_assessment_statuses_v0
+          - stub_scenario_directional_assessment_v0
+          - evaluate_scenario_directional_survival_v0
+          - _scenario_strategy_entry
+          - evaluate_scenario_directional_suitability_v0
+          - evaluate_scenario_survival_suitability_v0
+          - canonical_survival_blocks_entry_v0
+          - canonical_suitability_blocks_entry_v0
+          - canonical_survival_suitability_allows_composition_v0
+        master_v2_imports:
+          - trading.master_v2.directional_assessment_v1
+          - trading.master_v2.double_play_composition
+          - trading.master_v2.double_play_state
+          - trading.master_v2.suitability_binding_v1
+          - trading.master_v2.survival_assessment_v1
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+  - id: RUNTIME_COMPONENT:mv2_offline_boundary_adapters
+    name: Offline/backtest boundary adapters (non-DP-named)
+    module_role: offline_replay_adapter
+    files:
+      - path: src/trading/master_v2/ai_observability_boundary_backtest_state_file_binding_adapter_v0.py
+        primary_symbols:
+          - AiObservabilityBacktestStateFileRecordV0
+          - AiObservabilityBoundaryBacktestStateFileEvidenceV0
+          - _canonical_payload_bytes
+          - compute_backtest_state_file_digest_v0
+          - compute_backtest_state_file_digest_from_payload_v0
+          - _require_text
+          - parse_ai_observability_backtest_state_file_v0
+          - verify_ai_observability_backtest_state_file_digest_v0
+          - _context_from_state_file
+          - bind_ai_observability_boundary_backtest_state_file_evidence_v0
+          - evaluate_backtest_ai_observability_state_file_boundary_only_v0
+          - apply_backtest_ai_observability_exposure_gate_v0
+          - ai_observability_boundary_semantics_represented_in_backtest_v0
+          - backtest_ai_observability_state_file_binding_non_authority_ok_v0
+        master_v2_imports:
+          - trading.master_v2.ai_observability_boundary_offline_replay_binding_adapter_v0
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.decision_packet_v1
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/ai_observability_boundary_offline_replay_binding_adapter_v0.py
+        primary_symbols:
+          - AiObservabilityBoundaryOfflineReplayContextV0
+          - AiObservabilityBoundaryOfflineReplayBoundaryV0
+          - AiObservabilityBoundaryOfflineReplayBindingResultV0
+          - _compute_input_digest
+          - _serialize_boundary_canonical
+          - evaluate_offline_ai_observability_boundary_v0
+          - compute_ai_observability_boundary_ref_v0
+          - bind_ai_observability_boundary_offline_replay_evidence_v0
+          - ai_observability_boundary_binding_non_authority_boundary_ok_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.decision_packet_v1
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/canonical_order_intent_boundary_backtest_state_file_binding_adapter_v0.py
+        primary_symbols:
+          - CanonicalOrderIntentBacktestStateFileRecordV0
+          - CanonicalOrderIntentBoundaryBacktestStateFileEvidenceV0
+          - _canonical_payload_bytes
+          - compute_backtest_state_file_digest_v0
+          - compute_backtest_state_file_digest_from_payload_v0
+          - _parse_positive_decimal
+          - _parse_non_negative_decimal
+          - _parse_required_str
+          - parse_canonical_order_intent_backtest_state_file_v0
+          - verify_canonical_order_intent_backtest_state_file_digest_v0
+          - _capital_context_from_state_file
+          - bind_canonical_order_intent_boundary_backtest_state_file_evidence_v0
+          - evaluate_backtest_canonical_order_intent_state_file_boundary_only_v0
+          - apply_backtest_canonical_order_intent_exposure_gate_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/canonical_order_intent_offline_replay_binding_adapter_v0.py
+        primary_symbols:
+          - CanonicalOrderIntentOfflineReplayBindingResultV0
+          - _expected_position_side
+          - compute_order_intent_ref_v0
+          - bind_canonical_order_intent_offline_replay_evidence_v0
+          - evaluate_scenario_canonical_order_intent_v0
+          - canonical_order_intent_binding_non_authority_boundary_ok_v0
+          - system_economic_evidence_admissible_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/feedback_learning_boundary_backtest_state_file_binding_adapter_v0.py
+        primary_symbols:
+          - FeedbackLearningBacktestStateFileRecordV0
+          - FeedbackLearningBoundaryBacktestStateFileEvidenceV0
+          - _canonical_payload_bytes
+          - compute_backtest_state_file_digest_v0
+          - compute_backtest_state_file_digest_from_payload_v0
+          - _require_text
+          - parse_feedback_learning_backtest_state_file_v0
+          - verify_feedback_learning_backtest_state_file_digest_v0
+          - _context_from_state_file
+          - bind_feedback_learning_boundary_backtest_state_file_evidence_v0
+          - evaluate_backtest_feedback_learning_state_file_boundary_only_v0
+          - apply_backtest_feedback_learning_exposure_gate_v0
+          - feedback_learning_boundary_semantics_represented_in_backtest_v0
+          - backtest_feedback_learning_state_file_binding_non_authority_ok_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.feedback_learning_boundary_offline_replay_binding_adapter_v0
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/feedback_learning_boundary_offline_replay_binding_adapter_v0.py
+        primary_symbols:
+          - FeedbackLearningBoundaryOfflineReplayContextV0
+          - FeedbackLearningBoundaryOfflineReplayBoundaryV0
+          - FeedbackLearningBoundaryOfflineReplayBindingResultV0
+          - _authority_invariants_satisfied
+          - _compute_input_digest
+          - _serialize_boundary_canonical
+          - evaluate_offline_feedback_learning_boundary_v0
+          - compute_feedback_learning_boundary_ref_v0
+          - bind_feedback_learning_boundary_offline_replay_evidence_v0
+          - feedback_learning_boundary_binding_non_authority_boundary_ok_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/killswitch_boundary_backtest_state_file_binding_adapter_v0.py
+        primary_symbols:
+          - KillSwitchBacktestStateFileRecordV0
+          - KillSwitchBoundaryBacktestStateFileEvidenceV0
+          - _canonical_payload_bytes
+          - compute_backtest_state_file_digest_v0
+          - compute_backtest_state_file_digest_from_payload_v0
+          - _parse_boundary_mode
+          - parse_killswitch_backtest_state_file_v0
+          - verify_killswitch_backtest_state_file_digest_v0
+          - _derive_reconciliation_required
+          - _derive_no_new_positions
+          - bind_killswitch_boundary_backtest_state_file_evidence_v0
+          - evaluate_backtest_state_file_boundary_only_v0
+          - apply_backtest_killswitch_exposure_gate_v0
+          - apply_backtest_combined_safety_and_killswitch_exposure_gate_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.double_play_entry_exit_policy_v0
+          - trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/killswitch_boundary_offline_replay_binding_adapter_v0.py
+        primary_symbols:
+          - KillSwitchBoundaryMode
+          - KillSwitchBoundaryOfflineReplayContextV0
+          - KillSwitchBoundaryOfflineReplayBoundaryV0
+          - KillSwitchBoundaryOfflineReplayBindingResultV0
+          - derive_killswitch_boundary_mode_v0
+          - _killswitch_active
+          - _compute_input_digest
+          - _serialize_boundary_canonical
+          - compute_killswitch_boundary_ref_v0
+          - evaluate_offline_killswitch_boundary_v0
+          - bind_killswitch_boundary_offline_replay_evidence_v0
+          - evaluate_scenario_killswitch_boundary_v0
+          - killswitch_boundary_binding_non_authority_boundary_ok_v0
+          - system_economic_evidence_admissible_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.double_play_entry_exit_policy_v0
+          - trading.master_v2.double_play_state
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/promotion_gate_boundary_backtest_state_file_binding_adapter_v0.py
+        primary_symbols:
+          - PromotionGateBacktestStateFileRecordV0
+          - PromotionGateBoundaryBacktestStateFileEvidenceV0
+          - _canonical_payload_bytes
+          - compute_backtest_state_file_digest_v0
+          - compute_backtest_state_file_digest_from_payload_v0
+          - _require_text
+          - _require_status
+          - parse_promotion_gate_backtest_state_file_v0
+          - verify_promotion_gate_backtest_state_file_digest_v0
+          - _context_from_state_file
+          - bind_promotion_gate_boundary_backtest_state_file_evidence_v0
+          - evaluate_backtest_promotion_gate_state_file_boundary_only_v0
+          - apply_backtest_promotion_gate_exposure_gate_v0
+          - promotion_gate_boundary_semantics_represented_in_backtest_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.promotion_gate_boundary_offline_replay_binding_adapter_v0
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/promotion_gate_boundary_offline_replay_binding_adapter_v0.py
+        primary_symbols:
+          - PromotionGateBoundaryOfflineReplayContextV0
+          - PromotionGateBoundaryOfflineReplayBoundaryV0
+          - PromotionGateBoundaryOfflineReplayBindingResultV0
+          - _compute_input_digest
+          - _serialize_boundary_canonical
+          - build_promotion_gate_input_v0
+          - evaluate_offline_promotion_gate_boundary_v0
+          - compute_promotion_gate_boundary_ref_v0
+          - bind_promotion_gate_boundary_offline_replay_evidence_v0
+          - promotion_gate_boundary_binding_non_authority_boundary_ok_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/reconciliation_boundary_backtest_state_file_binding_adapter_v0.py
+        primary_symbols:
+          - ReconciliationBacktestStateFileRecordV0
+          - ReconciliationBoundaryBacktestStateFileEvidenceV0
+          - _canonical_payload_bytes
+          - compute_backtest_state_file_digest_v0
+          - compute_backtest_state_file_digest_from_payload_v0
+          - _parse_enum_value
+          - parse_reconciliation_backtest_state_file_v0
+          - verify_reconciliation_backtest_state_file_digest_v0
+          - _context_from_state_file
+          - _derive_query_by_client_order_id_represented
+          - _derive_open_orders_reconciliation_represented
+          - _derive_no_position_increase_during_unresolved
+          - bind_reconciliation_boundary_backtest_state_file_evidence_v0
+          - evaluate_backtest_reconciliation_state_file_boundary_only_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.double_play_entry_exit_policy_v0
+          - trading.master_v2.reconciliation_unknown_outcome_offline_replay_binding_adapter_v0
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/reconciliation_unknown_outcome_offline_replay_binding_adapter_v0.py
+        primary_symbols:
+          - ReconciliationUnknownOutcomeOfflineReplayContextV0
+          - ReconciliationUnknownOutcomeOfflineReplayBoundaryV0
+          - ReconciliationUnknownOutcomeOfflineReplayBindingResultV0
+          - _compute_input_digest
+          - _serialize_boundary_canonical
+          - compute_reconciliation_unknown_outcome_ref_v0
+          - _snapshots_unresolved
+          - evaluate_offline_reconciliation_unknown_outcome_boundary_v0
+          - bind_reconciliation_unknown_outcome_offline_replay_evidence_v0
+          - evaluate_scenario_reconciliation_unknown_outcome_v0
+          - reconciliation_unknown_outcome_binding_non_authority_boundary_ok_v0
+          - system_economic_evidence_admissible_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.double_play_entry_exit_policy_v0
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/safety_kernel_boundary_backtest_state_file_binding_adapter_v0.py
+        primary_symbols:
+          - SafetyKernelBacktestStateFileRecordV0
+          - SafetyKernelBoundaryBacktestStateFileEvidenceV0
+          - _canonical_payload_bytes
+          - compute_backtest_state_file_digest_v0
+          - compute_backtest_state_file_digest_from_payload_v0
+          - _parse_enum_value
+          - parse_safety_kernel_backtest_state_file_v0
+          - verify_safety_kernel_backtest_state_file_digest_v0
+          - _context_from_state_file
+          - bind_safety_kernel_boundary_backtest_state_file_evidence_v0
+          - evaluate_backtest_safety_kernel_state_file_boundary_only_v0
+          - apply_backtest_safety_kernel_exposure_gate_v0
+          - backtest_safety_kernel_state_file_binding_non_authority_ok_v0
+          - load_safety_kernel_backtest_state_file_record_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.double_play_entry_exit_policy_v0
+          - trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py
+        primary_symbols:
+          - SafetyKernelOfflineReplayContextV0
+          - SafetyKernelOfflineReplayBoundaryV0
+          - SafetyKernelOfflineReplayBindingResultV0
+          - _compute_input_digest
+          - _serialize_boundary_canonical
+          - compute_safety_boundary_ref_v0
+          - evaluate_offline_safety_kernel_boundary_v0
+          - bind_safety_kernel_offline_replay_evidence_v0
+          - evaluate_scenario_safety_kernel_v0
+          - safety_kernel_binding_non_authority_boundary_ok_v0
+          - system_economic_evidence_admissible_v0
+        master_v2_imports:
+          - trading.master_v2.canonical_trading_decision_evidence_v1
+          - trading.master_v2.double_play_entry_exit_policy_v0
+        runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER

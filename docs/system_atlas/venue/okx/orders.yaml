@@ -1,0 +1,10 @@
+# ATLAS_AUTHORITY=NONE
+note: Order paths exist in testnet/canary code. LIVE_AUTHORIZED=false standing. Implementation != activation.
+submit: /api/v5/trade/order
+cancel: /api/v5/trade/cancel-order
+pending: /api/v5/trade/orders-pending
+algo_pending: /api/v5/trade/orders-algo-pending
+fills: /api/v5/trade/fills
+evidence:
+  - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+  - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md

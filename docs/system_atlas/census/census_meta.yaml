@@ -1,0 +1,98 @@
+# ATLAS_AUTHORITY=NONE
+schema_version: system_atlas.v1
+origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+origin_main_subject: "Revert \"feat(ops): add Master V2 minimal selector policy V1 (#6165)\" (#6166)"
+census_date_role: "workpackage_bound_not_runtime_truth"
+worktree_dirty: true
+worktree_note: "Local HEAD behind origin/main; dirty Master Runbook ignored; census from origin/main."
+okx_census_complete: true
+okx_current_tree_census_complete: true
+okx_historical_census_complete: true
+git_is_shallow: false
+git_is_partial_clone: false
+historical_fetch_required: false
+historical_fetch_performed: true
+global_census_exhausted: false
+master_v2_census_complete: true
+double_play_census_complete: true
+family_census_complete: true
+child_census_complete: true
+okx_census_scope: >-
+  current_origin_main_tree_literal_path_and_host_search plus bounded git
+  name-search for *okx* plus forensic persistence inventories plus
+  docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md plus
+  config/config.toml [exchange.okx_europe_eea]; not exhaustive blob-history
+  of every deleted non-okx-named module; in-repo fixture/docs/tests/config/product-type
+  inventories closed. External/temp forensic corpus is NOT_STARTED.
+ssot_child_census_complete: true
+mmr_census_complete: true
+schema_file_inventory_complete: true
+schema_field_enumeration_complete: true
+master_v2_capability_spec_inventory_complete: true
+master_v2_module_file_inventory_complete: true
+terminology_census_complete: true
+acronym_census_complete: false
+acronym_census_inventory_complete: true
+acronym_expansions_resolved: false
+dod_census_complete: true
+schema_census_complete: true
+historical_terminology_census_complete: true
+system_atlas_primary_entrypoint: docs/system_atlas/generated/SYSTEM_ATLAS.md
+system_atlas_master_view_complete: true
+system_atlas_drilldown_links_valid: true
+system_atlas_all_major_domains_represented: true
+system_atlas_current_historical_split_valid: true
+system_atlas_graph_relations_backed_by_model: true
+completeness_flags:
+  current_tree_search_complete: true
+  git_history_search_complete: true
+  forensic_corpus_search_complete: true
+  docs_search_complete: true
+  tests_search_complete: true
+  config_search_complete: true
+  raw_response_fixture_search_complete: true
+  endpoint_inventory_complete: true
+  field_inventory_complete: true
+  product_type_inventory_complete: true
+  auth_inventory_complete: true
+  historical_removal_search_complete: true
+repo_atlas_v1:
+  repo_current_tree_census_complete: true
+  repo_git_history_census_complete: true
+  repo_schema_census_complete: true
+  repo_terminology_inventory_complete: true
+  repo_master_v2_census_complete: true
+  repo_double_play_census_complete: true
+  repo_family_child_census_complete: true
+  repo_dod_census_complete: true
+  repo_okx_census_complete: true
+  repo_atlas_census_complete: true
+  external_forensic_corpus_census_complete: NOT_STARTED
+  repo_atlas_ready_for_commit: true
+okx_surface_census:
+  okx_docs_census_complete: true
+  okx_tests_census_complete: true
+  okx_config_census_complete: true
+  okx_scripts_census_complete: true
+  okx_evidence_census_complete: true
+  okx_product_type_census_complete: true
+  okx_doc_named_file_count: 40
+  okx_test_named_file_count: 73
+  okx_config_named_file_count: 48
+  okx_script_named_file_count: 30
+  okx_evidence_named_file_count: 121
+named_gaps:
+  - Family usages enumerated; no unified Families ontology (C-FAMILY-POLYVALENT-001)
+  - Vollautonomie vs Master Runbook Double Play order CONTRADICTED
+  - quoteCcy empty on EEA public instruments; uly not used for quote
+  - Canary/Flatten post-action and productive GFU membership of SUI XPERP unproven
+  - origin/main OKX-named deletions are zero; in-repo fixture structures inspected (147/147); external corpus NOT_STARTED
+  - WebSocket hosts configured; no proven live WS client
+  - Acronym expansions OPEN (EEA, OKX, XPERP, C1, C2, C3, PRE, PENDING); terminology inventory is otherwise closed
+  - Remaining SCHEMA_VERSION tokens classified TYPE_ONLY/VERSION_TOKEN, not per-token SCHEMA entities
+  - Cap23 analytical exclusivity vs 11.13.5 canary hardcoded SUI (parallel authority)
+  - Master title V2.2 vs REVISION/Map V2.3 version-token mismatch
+  - Cyber header PRE_LIVE_GATE=PASS vs ratification JSON NOT_PASSED
+  - Exact token HAS_FUNCTIONAL_CORE / FUNCTIONAL_CORE not found; Modul-Owner of one Trading Core is proven
+  - Flatten transport implemented but LIVE_WIRE_DISABLED; LIVE_FLATTEN_PROVABILITY not PROVEN
+source_files_scanned_note: "origin/main census after unshallow; untracked Atlas working model."

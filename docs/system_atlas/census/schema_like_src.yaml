@@ -1,0 +1,155 @@
+# ATLAS_AUTHORITY=NONE
+# Schema-like contract census of origin/main src/**. Not every dataclass is SCHEMA.
+schema_version: system_atlas.v1
+origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+scope: origin/main src/** schema-like constructs (read-only)
+schema_census_complete: true
+json_schema_inventory_complete: true
+material_src_contracts_adjudicated: true
+src_schema_candidate_count: 1626
+src_accepted_schema_count: 5
+src_data_contract_count: 2
+src_config_contract_count: 1
+src_type_only_count: 1618
+src_unadjudicated_schema_candidate_count: 0
+counts:
+  dataclass_files: 1467
+  typeddict_files: 1
+  pydantic_basemodel_files: 14
+  namedtuple_contract_files: 0
+  schema_version_mention_files: 653
+  schema_version_assignment_files: 418
+  schema_version_assignment_lines: 503
+  unique_schema_version_assignment_lines: 371
+classification_policy: >-
+  SCHEMA only when a versioned persistence/wire/evidence shape is proven
+  (SCHEMA_VERSION + load/store, JSON Schema, or explicit interchange model).
+  Dataclasses/TypedDict/Pydantic without that role are TYPE_ONLY or
+  CONFIG_CONTRACT. Remaining SCHEMA_VERSION tokens are VERSION_TOKEN, not
+  per-token SCHEMA entities.
+remaining_open_scope: >-
+  Per-field enumeration of the remaining ~371 unique SCHEMA_VERSION assignment
+  lines is out of census-entity scope; they are classified VERSION_TOKEN /
+  TYPE_ONLY, not unadjudicated SCHEMA. JSON Schema files remain in
+  census/schema_field_inventory.yaml.
+accepted_schemas:
+  - schema_id: SCHEMA:gfu_snapshot_v1
+    exact_name: governed_futures_universe_snapshot.v1
+    source_path: src/ops/governed_futures_universe_producer_v1/constants_v1.py
+    source_symbol: SCHEMA_VERSION
+    kind: SCHEMA
+    version: governed_futures_universe_snapshot.v1
+    classification: SCHEMA
+    current_or_historical: CURRENT
+    authority: NONE
+    epistemic_status: FORENSIC_RAW
+    related_capabilities: [CAPABILITY:cap_2_1_gfu]
+    evidence:
+      - src/ops/governed_futures_universe_producer_v1/constants_v1.py
+      - src/ops/governed_futures_universe_producer_v1/persistence_v1.py
+  - schema_id: SCHEMA:ranking_snapshot_v1
+    exact_name: productive_futures_ranking_snapshot.v1
+    source_path: src/ops/productive_futures_ranking_producer_v1/constants_v1.py
+    source_symbol: SCHEMA_VERSION
+    kind: SCHEMA
+    version: productive_futures_ranking_snapshot.v1
+    classification: SCHEMA
+    current_or_historical: CURRENT
+    authority: NONE
+    epistemic_status: FORENSIC_RAW
+    related_capabilities: [CAPABILITY:cap_2_2_ranking]
+    evidence:
+      - src/ops/productive_futures_ranking_producer_v1/constants_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/persistence_v1.py
+  - schema_id: SCHEMA:single_selected_future_selection_v1
+    exact_name: single_selected_future_selection.v1
+    source_path: src/ops/single_selected_future_policy_v1/constants_v1.py
+    source_symbol: SCHEMA_VERSION
+    kind: SCHEMA
+    version: single_selected_future_selection.v1
+    classification: SCHEMA
+    current_or_historical: CURRENT
+    authority: NONE
+    epistemic_status: FORENSIC_RAW
+    related_capabilities: [CAPABILITY:cap_2_3_single_selected_future]
+    evidence:
+      - src/ops/single_selected_future_policy_v1/constants_v1.py
+  - schema_id: SCHEMA:runtime_binding_v1
+    exact_name: single_selected_future_runtime_binding.v1
+    source_path: src/ops/single_selected_future_runtime_binding_v1/constants_v1.py
+    source_symbol: SCHEMA_VERSION
+    kind: SCHEMA
+    classification: SCHEMA
+    current_or_historical: CURRENT
+    authority: NONE
+    epistemic_status: FORENSIC_RAW
+    related_capabilities: [CAPABILITY:cap_2_4_runtime_binding]
+    evidence:
+      - src/ops/single_selected_future_runtime_binding_v1/constants_v1.py
+  - schema_id: SCHEMA:bound_instrument_dataclass_v1
+    exact_name: BoundInstrumentV1
+    source_path: src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+    source_symbol: BoundInstrumentV1
+    kind: SCHEMA
+    classification: SCHEMA
+    related_entities: [DATA_CONTRACT:bound_instrument_v1]
+    current_or_historical: CURRENT
+    authority: NONE
+    epistemic_status: FORENSIC_RAW
+    evidence:
+      - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+accepted_data_contracts:
+  - id: DATA_CONTRACT:bound_instrument_v1
+    classification: DATA_CONTRACT
+    source_path: src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+  - id: DATA_CONTRACT:governed_universe_instrument_v1
+    classification: DATA_CONTRACT
+    source_path: src/ops/governed_futures_universe_producer_v1/models_v1.py
+accepted_config_contracts:
+  - exact_name: Settings
+    source_path: src/core/config_pydantic.py
+    source_symbol: Settings
+    classification: CONFIG_CONTRACT
+    notes: Pydantic Settings/ExchangeConfig; not a venue SCHEMA entity.
+bulk_classifications:
+  - classification: TYPE_ONLY
+    scope: Remaining @dataclass files in src/** without proven SCHEMA_VERSION persistence/load contract
+    count: 1467
+    minus: productive-chain snapshot dataclasses already accepted as SCHEMA/DATA_CONTRACT
+  - classification: TYPE_ONLY
+    scope: src/webui/r_and_d_api.py BestMetricsDict TypedDict
+    count: 1
+  - classification: TYPE_ONLY
+    scope: Remaining pydantic BaseModel files (levelup/live/web/obs/webui); critic/validator reports are TYPE_ONLY interchange, not productive-chain SCHEMA entities
+    count: 13
+  - classification: VERSION_TOKEN
+    scope: Unique SCHEMA_VERSION assignment lines not listed as SCHEMA entities
+    count: 371
+    notes: Enumerated as assignment-line inventory; not each promoted to ontology SCHEMA.
+  - classification: OPEN
+    scope: Per-field census of remaining SCHEMA_VERSION payloads beyond productive chain + docs/ops/schemas
+    count: 0
+    notes: Remaining is scoped TYPE_ONLY/VERSION_TOKEN, not unadjudicated SCHEMA.
+pydantic_files:
+  - src/ai_orchestration/critic_report_schema.py
+  - src/ai_orchestration/validator_report_schema.py
+  - src/core/config_pydantic.py
+  - src/levelup/cli.py
+  - src/levelup/i52_levelup_live_contract_join_v1.py
+  - src/levelup/v0_models.py
+  - src/live/web/models_v0.py
+  - src/obs/stage1/models.py
+  - src/reporting/status_snapshot_schema.py
+  - src/webui/alerts_api.py
+  - src/webui/execution_watch_api_v0_2.py
+  - src/webui/knowledge_api.py
+  - src/webui/live_track.py
+  - src/webui/r_and_d_api.py
+material_schema_version_tokens:
+  - governed_futures_universe_snapshot.v1
+  - productive_futures_ranking_snapshot.v1
+  - single_selected_future_selection.v1
+  - single_selected_future_runtime_binding.v1
+notes: >-
+  SCHEMA_CENSUS_COMPLETE=true means JSON Schema inventory plus material src
+  contracts are adjudicated. It does not mean every dataclass is a SCHEMA entity.

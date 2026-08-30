@@ -1,0 +1,138 @@
+# ATLAS_AUTHORITY=NONE
+# Repo Atlas v1 fixture/evidence closure. Structure only; no payload dump; no secrets.
+schema_version: system_atlas.v1
+origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+okx_fixture_candidate_count: 147
+okx_fixture_candidate_count_recomputed_strict: 133
+okx_fixture_candidate_count_delta: 14
+okx_fixture_bytes_or_structure_inspected_count: 147
+okx_uninspected_material_fixture_count: 0
+okx_confirmed_fixture_count: 16
+okx_raw_response_count: 2
+okx_distinct_response_shape_count: 6
+okx_unclassified_fixture_count: 0
+raw_response_fixture_search_complete: true
+inspection_note: >-
+  All 133 origin/main okx-named json/jsonl-or-fixture-path files were opened
+  (JSON parse or explicit non-JSON class). 14 declared-count sidecars classified
+  by type (txt/sha256/png/toml/bin) as SIDE_CAR_METADATA without payload copy.
+  Extra in-repo captures without okx in the filename were also structure-inspected
+  (public-MD capture envelopes, P6 RAW_GET inventories, Cap 5.1/5.2 fixtures).
+  External/temp corpus is NOT_STARTED and is not a remaining in-repo candidate.
+by_class:
+  REAL_OKX_RAW_RESPONSE: 2
+  NORMALIZED_OKX_FIXTURE: 2
+  OKX_TEST_PAYLOAD: 11
+  OKX_MOCK_RESPONSE: 0
+  OKX_EXPECTED_OUTPUT: 1
+  OKX_EVIDENCE_CAPTURE: 68
+  SIDE_CAR_METADATA: 16
+  NON_OKX_FIXTURE: 47
+  DUPLICATE_STRUCTURE: 0
+  EMPTY_OR_NONSTRUCTURAL: 0
+  OPEN: 0
+class_notes: >-
+  147 = 2 raw + 2 normalized + 11 test + 1 expected + 68 evidence + 16 sidecar
+  (jsonl + provenance.txt + 14 declared-count delta) + 47 non-okx config/research.
+  mark_price_empty is OKX_TEST_PAYLOAD with empty data list (not a new shape).
+  Nested public-MD capture is an extra confirmed artifact outside the okx-named glob.
+inspected_material:
+  - fixture_id: FIXTURE:gfu_okx_eea_instruments_input_v1
+    source_path: docs/evidence/capability_2_1_governed_futures_universe_producer_v1/fixtures/okx_eea_instruments_input_v1.json
+    source_class: NORMALIZED_OKX_FIXTURE
+    endpoint_if_proven: /api/v5/public/instruments
+    http_method_if_proven: GET
+    request_or_response: RESPONSE
+    product_type_if_proven: [SWAP, FUTURES]
+    success_or_error: SUCCESS
+    top_level_structure: [code, data, msg]
+    nested_structures: [instruments_row]
+    material_fields: [baseCcy, ctType, ctVal, ctValCcy, expTime, instId, instType, lotSz, minSz, quoteCcy, settleCcy, state, tickSz, uly]
+    timestamp_fields: [expTime]
+    identity_fields: [instId]
+    currency_fields: [baseCcy, quoteCcy, settleCcy, ctValCcy]
+    duplicate_of: null
+  - fixture_id: FIXTURE:gfu_okx_eea_mark_price_input_v1
+    source_path: docs/evidence/capability_2_1_governed_futures_universe_producer_v1/fixtures/okx_eea_mark_price_input_v1.json
+    source_class: NORMALIZED_OKX_FIXTURE
+    endpoint_if_proven: /api/v5/public/mark-price
+    http_method_if_proven: GET
+    request_or_response: RESPONSE
+    success_or_error: SUCCESS
+    top_level_structure: [code, data, msg]
+    nested_structures: [mark_price_row]
+    material_fields: [instId, markPx]
+    identity_fields: [instId]
+  - fixture_id: FIXTURE:stage2_candle_raw_http_response
+    source_path: docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_v1/candle_raw_http_response.json
+    source_class: REAL_OKX_RAW_RESPONSE
+    endpoint_if_proven: /api/v5/market/candles
+    http_method_if_proven: GET
+    request_or_response: RESPONSE
+    success_or_error: SUCCESS
+    top_level_structure: [code, msg, data]
+    nested_structures: [candles_array]
+    timestamp_fields: ["data[0][0]"]
+  - fixture_id: FIXTURE:stage2_mark_raw_http_response
+    source_path: docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_v1/mark_raw_http_response.json
+    source_class: REAL_OKX_RAW_RESPONSE
+    endpoint_if_proven: /api/v5/market/history-mark-price-candles
+    http_method_if_proven: GET
+    request_or_response: RESPONSE
+    success_or_error: SUCCESS
+    top_level_structure: [code, msg, data]
+    nested_structures: [mark_price_candles_array]
+    notes: Endpoint binding is structural resemblance, not a live-caller proof.
+  - fixture_id: FIXTURE:okx_native_binding_test_payloads
+    source_path: tests/fixtures/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/
+    source_class: OKX_TEST_PAYLOAD
+    request_or_response: RESPONSE
+    success_or_error: MIXED
+    notes: >-
+      11 JSON files inspected. Envelope code/msg/data throughout. Distinct nested
+      keysets are subsets of instruments_row, mark_price_row, or ticker_row.
+      ticker_no_markpx is ticker_row (askPx, bidPx, instId, last).
+      mark_price_empty has data=[].
+    test_consumers:
+      - tests/ops/test_okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.py
+  - fixture_id: FIXTURE:public_md_capture_v1
+    source_path: docs/evidence/capability_5_2_single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/productive_public_md_shadow/gate_evidence/public_md_capture_v1.json
+    source_class: OKX_EVIDENCE_CAPTURE
+    endpoint_if_proven: /api/v5/public/mark-price
+    http_method_if_proven: GET
+    request_or_response: RESPONSE
+    product_type_if_proven: [SWAP]
+    success_or_error: SUCCESS
+    top_level_structure: [capture_digest, capture_envelopes, inst_type, venue_native_id]
+    nested_structures: [okx_public_get_envelope_in_raw_body_utf8]
+    material_fields: [instId, instType, markPx]
+    identity_fields: [instId]
+    notes: >-
+      Eight nested raw_body_utf8 envelopes, all GET /api/v5/public/mark-price
+      for ADA-USDT-SWAP on www.okx.com. Bodies not copied. No uly/quoteCcy in
+      these mark-price rows. Confirmed extra artifact outside the okx-named glob.
+    duplicate_of: OKX_RESPONSE_SHAPE:mark_price_row
+extra_in_repo_non_glob:
+  - source_path: docs/forensics/persistence/inventories/P6_LIVE_GFU_NETWORK_GET_ONLY_RAW_GET_SOURCE_ENVELOPES_V1.json
+    source_class: OKX_EVIDENCE_CAPTURE
+    notes: Forensic metadata/SHA pointers; no nested code/data/msg body in this artifact.
+  - source_path: docs/forensics/persistence/inventories/P6_P3_CLASS_C_AUTHENTICATED_SUI_RUNTIME_GET_RAW_GET_SOURCE_ENVELOPES_V1.json
+    source_class: OKX_EVIDENCE_CAPTURE
+    notes: Empty-envelope SHA records; raw OKX bodies not inlined.
+  - source_path: evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/progress.jsonl
+    source_class: SIDE_CAR_METADATA
+    notes: JSONL session progress; first record has n/monotonic/decision keys, not an OKX wire envelope.
+distinct_shapes:
+  - OKX_RESPONSE_SHAPE:public_get_code_data
+  - OKX_RESPONSE_SHAPE:instruments_row
+  - OKX_RESPONSE_SHAPE:mark_price_row
+  - OKX_RESPONSE_SHAPE:candles_array
+  - OKX_RESPONSE_SHAPE:mark_price_candles_array
+  - OKX_RESPONSE_SHAPE:ticker_row
+new_fields_from_fixtures: []
+new_endpoints_from_fixtures: []
+xperp_uly_append: >-
+  Nested live public-MD mark-price envelopes are SWAP hyphen ids (ADA-USDT-SWAP)
+  with instId/instType/markPx only. They do not add quote-from-uly evidence.
+  GFU instruments fixture still has quoteCcy and uly on the same row.
+  C-OKX-QUOTE-ULY-001 status unchanged.

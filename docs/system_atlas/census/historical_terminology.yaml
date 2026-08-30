@@ -1,0 +1,100 @@
+# ATLAS_AUTHORITY=NONE
+# Full origin/main history search for scoped terms. Expansions never invented.
+schema_version: system_atlas.v1
+origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+search_scope: git log -S / git grep origin/main after unshallow
+ssot_child_literal_found_in_origin_main_history: false
+has_functional_core_literal_found_in_origin_main_history: false
+architectural_mmr_kind_found_in_origin_main_history: false
+open_expansion_reassessment:
+  - term: EEA
+    expansion: OPEN
+    searched_but_no_evidence_found: true
+    search_scope: origin/main full history; no "European Economic Area" commit hit
+    term_meaning_known: OKX Europe venue label
+  - term: OKX
+    expansion: OPEN
+    searched_but_no_evidence_found: true
+    search_scope: origin/main full history; no in-repo corporate expansion
+    term_meaning_known: venue name
+  - term: XPERP
+    expansion: OPEN
+    searched_but_no_evidence_found: true
+    search_scope: origin/main full history
+    term_meaning_known: instrument family / ruleType token
+    additional_historical_spelling: X-Perp
+    additional_spelling_first_proven: 8457850cbf10a4ec040d320ac9bb84d2fc63c844
+  - term: C1
+    expansion: OPEN
+    searched_but_no_evidence_found: true
+    search_scope: origin/main full history
+  - term: C2
+    expansion: OPEN
+    searched_but_no_evidence_found: true
+    search_scope: origin/main full history
+  - term: C3
+    expansion: OPEN
+    searched_but_no_evidence_found: true
+    search_scope: origin/main full history
+  - term: PRE
+    expansion: OPEN
+    searched_but_no_evidence_found: true
+    search_scope: origin/main full history
+  - term: PENDING
+    expansion: OPEN
+    searched_but_no_evidence_found: true
+    search_scope: origin/main full history
+historical_terms:
+  - term: X-Perp
+    exact_historical_spelling: X-Perp
+    expansion_if_proven: OPEN
+    meaning: Documented hyphenated spelling of the XPERP instrument-family token
+    entity_kind: VENUE_PRODUCT_TYPE
+    first_proven_usage: 8457850cbf10a4ec040d320ac9bb84d2fc63c844
+    last_proven_usage: still current
+    files_sections:
+      - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    current_equivalent_if_proven: ACRONYM:XPERP
+    replaced_by_if_proven: null
+    status: CURRENT_NONCANONICAL
+    evidence: "PR #4587"
+  - term: SSOT_CHILD
+    exact_historical_spelling: SSOT_CHILD
+    expansion_if_proven: OPEN
+    meaning: Owner-requested kind; literal absent from origin/main history
+    entity_kind: SSOT_CHILD
+    first_proven_usage: null
+    last_proven_usage: null
+    files_sections: []
+    current_equivalent_if_proven: null
+    replaced_by_if_proven: null
+    status: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    evidence: git log origin/main -S SSOT_CHILD and -i -S ssot_child empty
+  - term: Gate-Familien
+    exact_historical_spelling: Gate-Familien
+    expansion_if_proven: OPEN
+    meaning: Historical forensic F1–F6 heading
+    entity_kind: FAMILY
+    first_proven_usage: e94ff20c8ffb6f7e69152bcb9e2972165897cc43
+    last_proven_usage: forensic preservation copies
+    files_sections:
+      - forensic working runbook preservation
+    current_equivalent_if_proven: not dashboard family_id
+    replaced_by_if_proven: null
+    status: HISTORICAL_ONLY
+    evidence: "PR #6013"
+  - term: NestedStructuralChild
+    exact_historical_spelling: NestedStructuralChild
+    expansion_if_proven: OPEN
+    meaning: Forensic lossless structure type; not SSOT_CHILD
+    entity_kind: CHILD
+    first_proven_usage: b81d5181c04c2a3dc156d089fc8790ed4419782b
+    last_proven_usage: forensic preservation
+    files_sections:
+      - forensic/lossless_working_runbook_structure_identity_method_v1
+    current_equivalent_if_proven: null
+    replaced_by_if_proven: null
+    status: FORENSIC_REFERENCE_ONLY
+    evidence: git log -S NestedStructuralChild
+historical_project_native_term_count: 4
+remaining_limits: Not an exhaustive all-caps / deleted-docs vocabulary census of every Peak_Trade-native token.

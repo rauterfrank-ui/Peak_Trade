@@ -1,0 +1,105 @@
+# ATLAS_AUTHORITY=NONE
+# Peak_Trade evidence for OKX instType / product tokens. Not generic OKX capability.
+schema_version: system_atlas.v1
+origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+okx_product_type_census_complete: true
+scope: origin/main tree + full history for SPOT, MARGIN, SWAP, FUTURES, OPTION, xperp/XPERP as Peak_Trade evidence
+product_types:
+  - product_type: SWAP
+    status: IMPLEMENTED
+    current_components:
+      - src/ops/governed_futures_universe_producer_v1/constants_v1.py
+      - src/ops/okx_public_market_data_client_v1.py
+    endpoints: [/api/v5/public/instruments, /api/v5/public/mark-price]
+    fields: [instType]
+    runtime_reachability: GFU_AND_PUBLIC_MD
+    canonical_support: PRODUCTIVE_GFU_SUPPORTED_INST_TYPES
+    evidence:
+      - src/ops/governed_futures_universe_producer_v1/constants_v1.py
+      - docs/evidence/capability_5_2_single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/productive_public_md_shadow/gate_evidence/public_md_capture_v1.json
+  - product_type: FUTURES
+    status: IMPLEMENTED
+    current_components:
+      - src/ops/governed_futures_universe_producer_v1/constants_v1.py
+    endpoints: [/api/v5/public/instruments]
+    fields: [instType, ruleType]
+    runtime_reachability: GFU_SUPPORTED
+    canonical_support: PRODUCTIVE_GFU_SUPPORTED_INST_TYPES
+    evidence:
+      - src/ops/governed_futures_universe_producer_v1/constants_v1.py
+      - tests/fixtures/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/instruments_futures_live.json
+  - product_type: SPOT
+    status: UNSUPPORTED
+    current_components:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+    endpoints: []
+    fields: [instType]
+    runtime_reachability: EXPLICIT_GFU_REJECT
+    canonical_support: false
+    evidence:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+    notes: instType==SPOT appends UniverseFailureCodeV1.SPOT_INSTRUMENT. Other SPOT hits are paper-shadow/EUR identity hints, not OKX spot trading.
+  - product_type: MARGIN
+    status: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    current_components: []
+    historical_components: []
+    endpoints: []
+    fields: []
+    runtime_reachability: NONE_AS_OKX_INSTTYPE
+    canonical_support: false
+    evidence: []
+    notes: Word hits exist in non-OKX contexts. No src/ops OKX path uses instType=MARGIN.
+  - product_type: OPTION
+    status: SEARCHED_BUT_NO_EVIDENCE_FOUND
+    current_components: []
+    historical_components: []
+    endpoints: []
+    fields: []
+    runtime_reachability: NONE_AS_OKX_INSTTYPE
+    canonical_support: false
+    evidence: []
+    notes: No src/ops OKX path uses instType=OPTION. Not inferred from generic OKX docs.
+  - product_type: xperp
+    status: PARTIALLY_IMPLEMENTED
+    current_components:
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+    endpoints: [/api/v5/public/instruments]
+    fields: [ruleType, instId, uly, quoteCcy]
+    runtime_reachability: CANARY_HARDCODED_NOT_GFU_MEMBERSHIP_PROVEN
+    canonical_support: NOT_A_SEPARATE_INSTTYPE
+    evidence:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+      - docs/forensics/persistence/inventories/P6_LIVE_GFU_NETWORK_GET_ONLY_CENSUS_AND_GAP_ADJUDICATION_OBSERVATION_V1.json
+    notes: ruleType/instrument-family token on FUTURES dated ids, not a sixth instType. GFU quote/uly gap preserved. No adapter invented.
+file_hits_origin_main_word:
+  SWAP: 539
+  FUTURES: 164
+  SPOT: 62
+  OPTION: 9
+  MARGIN: 6
+  xperp: 46
+  XPERP: 13
+okx_named_file_counts:
+  docs: 40
+  tests: 73
+  config: 48
+  scripts: 30
+  evidence: 121
+  src: 69
+  total: 381
+okx_content_grep_file_counts:
+  docs: 816
+  tests: 383
+  config: 271
+  scripts: 94
+  evidence: 282
+content_grep_note: >-
+  Content grep is case-insensitive token okx in any file. Completeness is claimed
+  for named-path inventories plus material venue/audit/spec/fixture content already
+  mapped; not every prose mention is an Atlas entity.
+okx_docs_census_complete: true
+okx_tests_census_complete: true
+okx_config_census_complete: true
+okx_scripts_census_complete: true
+okx_evidence_census_complete: true
