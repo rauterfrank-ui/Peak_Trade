@@ -1,0 +1,132 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+atlas_authority: NONE
+reconciliation_authority: NONE
+evidence_resolution_pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+final_disposition_change_performed: false
+adjudication_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+understand_snapshot_frozen: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+record_id: RCN-000019
+evidence_resolution_status: EVIDENCE_GAP_PARTIALLY_RESOLVED
+identity_merge_performed: false
+disposition_unchanged: true
+missing_proof_question: Are deleted top-level kill_switch.py / LiquidityGate / StressGate / VaRGate / metrics the same identity
+  as src/risk_layer/kill_switch/ or covered by risk_gate.py?
+identity_gap:
+  status: PROVEN_DISTINCT_KILL_SWITCH_PY_VS_PACKAGE
+  statement: 'At 14d58ec3 both src/risk_layer/kill_switch.py (blob 0980df3c) and src/risk_layer/kill_switch/ package (core.py
+    blob fca4f4c1) coexisted. git log --follow on kill_switch.py shows D, not R, at f83442953. Different class names: KillSwitchLayer
+    vs KillSwitch. Adapter.py labeled TEMPORARY/DEPRECATED legacy KillSwitchLayer API. Coexistence + different blobs + no
+    rename is not identity.'
+  used_as_fact: true
+  source: 14d58ec3b9d7acac26720d1aa4cf5ce46acfb725
+  source_sha: 14d58ec3b9d7acac26720d1aa4cf5ce46acfb725
+  evidence_type: FORENSIC_RAW
+function_gap:
+  status: PROVEN_HISTORICAL_FUNCTION_PER_MODULE
+  statement: 'kill_switch.py: KillSwitchLayer emergency sticky block on daily loss/drawdown/volatility using RiskMetrics.
+    liquidity_gate.py: pre-trade microstructure OK/WARN/BLOCK (missing metrics → OK). stress_gate.py: scenario shocks. var_gate.py:
+    portfolio VaR vs thresholds, RiskGate orchestration interface. metrics.py / micro_metrics.py: extractors. Functions are
+    proven per historical blob.'
+  used_as_fact: true
+  source: 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7
+  source_sha: 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7
+  evidence_type: FORENSIC_RAW
+relation_gap:
+  status: PROVEN_CO_DELETION_AND_LEGACY_ADAPTER_NOT_FUSION
+  statement: 'f83442953 (#413) deleted kill_switch.py, liquidity_gate.py, stress_gate.py, var_gate.py, metrics.py, micro_metrics.py,
+    and also risk_gate.py/models.py/audit_log.py on origin/main. kill_switch/ package survived that commit. PR #409 adapter
+    bridged old KillSwitchLayer evaluator API to new state machine. Adapter is compatibility, not SAME_AS.'
+  used_as_fact: true
+  source: f834429531cef0a6e9897c30fc792620d4f8dffa
+  source_sha: f834429531cef0a6e9897c30fc792620d4f8dffa
+  evidence_type: FORENSIC_RAW
+successor_or_replacement_gap:
+  status: NOT_PROVEN_FOR_GATES
+  statement: 'Current risk_gate.py docstring: ''In this skeleton version, only basic validation is performed. Future versions
+    will integrate VaR, stress testing, and other risk models.'' No LiquidityGate/StressGate/VaRGate imports in current risk_gate.py
+    or kill_switch package. src/risk_layer/types.py has class RiskMetrics (namesake). docs/risk/*_GATE_RUNBOOK.md still show
+    from src.risk_layer.var_gate import VaRGate which is documentation of a missing module, not current code identity.'
+  used_as_fact: true
+  source: src/risk_layer/risk_gate.py
+  source_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  evidence_type: FORENSIC_RAW
+current_system_fit_gap:
+  status: UNPROVEN
+  statement: Record still bundles present package + absent modules. Stronger family-level disposition would conflate them.
+    Unique current value of missing gates remains unproven. No disposition in this pass.
+  used_as_fact: false
+  source: docs/system_atlas/reconciliation/evaluate/records/RCN-000019.yaml
+  source_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+  evidence_type: OPEN_OR_CONTRADICTORY
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 14d58ec3 contains BOTH src/risk_layer/kill_switch.py and src/risk_layer/kill_switch/.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  used_as_fact: true
+  source_sha: 14d58ec3b9d7acac26720d1aa4cf5ce46acfb725
+  source_path: src/risk_layer/kill_switch.py
+  evidence_type: FORENSIC_RAW
+- claim_class: FORENSIC_RAW_FACT
+  text: Historical kill_switch.py class is KillSwitchLayer; package core.py class is KillSwitch.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  - src/risk_layer/kill_switch/core.py
+  used_as_fact: true
+  source_sha: 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7
+  source_path: src/risk_layer/kill_switch.py
+  evidence_type: FORENSIC_RAW
+- claim_class: FORENSIC_RAW_FACT
+  text: 'adapter.py: TEMPORARY / DEPRECATED Legacy Adapter for KillSwitchLayer API Compatibility.'
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  used_as_fact: true
+  source_sha: 14d58ec3b9d7acac26720d1aa4cf5ce46acfb725
+  source_path: src/risk_layer/kill_switch/adapter.py
+  evidence_type: FORENSIC_RAW
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Current risk_gate.py is a skeleton orchestrator importing KillSwitch package; it does not import liquidity_gate, stress_gate,
+    or var_gate.
+  evidence:
+  - src/risk_layer/risk_gate.py
+  - src/risk_layer/kill_switch/__init__.py
+  used_as_fact: true
+  source_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  source_path: src/risk_layer/risk_gate.py
+  evidence_type: CANONICAL_AUTHORITY
+- claim_class: HYPOTHESIS
+  text: risk_gate.py may later grow VaR/stress integration as its docstring speculates; that is not current coverage of historical
+    LiquidityGate/StressGate/VaRGate.
+  evidence:
+  - src/risk_layer/risk_gate.py
+  used_as_fact: false
+  source_path: src/risk_layer/risk_gate.py
+  evidence_type: HYPOTHESIS
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000019.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000019.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000019.yaml
+- src/risk_layer/kill_switch/__init__.py
+- src/risk_layer/kill_switch/core.py
+- src/risk_layer/risk_gate.py
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
+remaining_open_questions:
+- Are LiquidityGate/StressGate/VaRGate purposes covered anywhere other than the skeleton risk_gate docstring?
+- Should the bundled family record later be split? Splitting is not identity fusion and is not done here.
+relations_proven: []
+contradictions: []
+census_bound_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+adjudicate_frozen_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+evaluate_frozen_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+understand_frozen_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478

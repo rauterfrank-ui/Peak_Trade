@@ -1,0 +1,92 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+atlas_authority: NONE
+reconciliation_authority: NONE
+evidence_resolution_pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+final_disposition_change_performed: false
+adjudication_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+understand_snapshot_frozen: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+record_id: RCN-000049
+evidence_resolution_status: EVIDENCE_GAP_PARTIALLY_RESOLVED
+identity_merge_performed: false
+disposition_unchanged: true
+missing_proof_question: Are current overview docs the relocated 00_overview family, or separately authored?
+identity_gap:
+  status: MIXED_TWO_PATH_HISTORIES_NOT_FUSED
+  statement: On origin/main, docs/00_overview TODO-board files were added 6cf92151a and removed 9ede5aca0. Separately, never-merged
+    42c3f443d R100-moved several docs/*.md into docs/00_overview/. These are two histories under one path family name; they
+    are not fused.
+  used_as_fact: true
+  source: 42c3f443d84c4f27110083c86d0c99db61a022ed
+  source_sha: 42c3f443d84c4f27110083c86d0c99db61a022ed
+  evidence_type: FORENSIC_RAW
+function_gap:
+  status: PROVEN_HISTORICAL_FUNCTION_SPLIT
+  statement: TODO-board HTML/README on origin/main (deleted). Overview/status/roadmap markdowns on the never-merged tidy commit.
+  used_as_fact: true
+  source: docs/system_atlas/reconciliation/understand/records/RCN-000049.yaml
+  source_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+  evidence_type: HISTORICAL_INTERMEDIATE
+relation_gap:
+  status: HYPOTHESIS_VERSUS_RCN_000053
+  statement: POSSIBLE_SAME_AS src/docs (RCN-000053, RETAIN) remains hypothesis. 42c3f443d also R100-moved src/docs/Peak_Trade_WORKFLOW_NOTES.md
+    into docs/00_overview/ on that never-merged commit — that is not origin/main identity.
+  used_as_fact: false
+  source: src/docs/Peak_Trade_OVERVIEW.md
+  source_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  evidence_type: HYPOTHESIS
+successor_or_replacement_gap:
+  status: NOT_PROVEN
+  statement: Current overview docs are not proven to be the relocated 00_overview family.
+  used_as_fact: true
+  source: src/docs/Peak_Trade_OVERVIEW.md
+  source_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  evidence_type: FORENSIC_RAW
+current_system_fit_gap:
+  status: UNPROVEN
+  statement: Unique current value of the deleted 00_overview family remains unproven.
+  used_as_fact: false
+  source: docs/system_atlas/reconciliation/evaluate/records/RCN-000049.yaml
+  source_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+  evidence_type: OPEN_OR_CONTRADICTORY
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'origin/main history for docs/00_overview: add 6cf92151a, delete 9ede5aca0 (TODO board).'
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  used_as_fact: true
+  source_sha: 9ede5aca0
+  source_path: docs/00_overview
+  evidence_type: FORENSIC_RAW
+- claim_class: FORENSIC_RAW_FACT
+  text: 42c3f443d R100 docs/PEAK_TRADE_OVERVIEW.md → docs/00_overview/PEAK_TRADE_OVERVIEW.md on a commit that is not an ancestor
+    of origin/main.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  used_as_fact: true
+  source_sha: 42c3f443d84c4f27110083c86d0c99db61a022ed
+  evidence_type: FORENSIC_RAW
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000049.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000049.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000049.yaml
+- src/docs/Peak_Trade_OVERVIEW.md
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
+remaining_open_questions:
+- POSSIBLE_SAME_AS src/docs RCN-000053 remains hypothesis; different path families.
+relations_proven: []
+contradictions: []
+census_bound_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+adjudicate_frozen_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+evaluate_frozen_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+understand_frozen_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478

@@ -167,6 +167,22 @@ census_not_closed_by:
   - single_branch_exhausted
   - single_forensic_corpus_exhausted
 
+supporting_passes:
+  - OPEN_EVIDENCE_RESOLUTION
+  - REEVALUATE_OPEN_RECORDS
+supporting_pass_rule: >
+  OPEN_EVIDENCE_RESOLUTION may persist forensic evidence and
+  evidence-resolution status for records that remain
+  INSUFFICIENT_EVIDENCE/OPEN after INTEGRATE_OR_DISPOSITION.
+  REEVALUATE_OPEN_RECORDS may re-evaluate and adjudicate those
+  same OPEN records against the repository taxonomy when a
+  disposition's burden of proof is met. INSUFFICIENT_EVIDENCE
+  remains OPEN when no stronger class is proven. Neither
+  supporting pass is a fifth sequence step, identity fusion,
+  or reintegration. Frozen UNDERSTAND, EVALUATE,
+  INTEGRATE_OR_DISPOSITION, and OPEN_EVIDENCE_RESOLUTION
+  snapshots remain frozen.
+
 atlas_epistemic_class_mapping_navigation_only:
   CANONICAL_CURRENT_FACT: CANONICAL_AUTHORITY
   FORENSIC_RAW_FACT: FORENSIC_RAW

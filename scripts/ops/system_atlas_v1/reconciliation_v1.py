@@ -76,6 +76,32 @@ ALLOWED_CURRENT_PRESENCE = frozenset(
         "CURRENT_IDENTITY_UNRESOLVED",
     }
 )
+ALLOWED_EVIDENCE_RESOLUTION_STATUSES = frozenset(
+    {
+        "EVIDENCE_GAP_RESOLVED",
+        "EVIDENCE_GAP_PARTIALLY_RESOLVED",
+        "EVIDENCE_GAP_UNRESOLVED",
+        "CONTRADICTION_DISCOVERED",
+    }
+)
+EVIDENCE_RESOLUTION_REQUIRED_GAPS = (
+    "identity_gap",
+    "function_gap",
+    "relation_gap",
+    "successor_or_replacement_gap",
+    "current_system_fit_gap",
+)
+REEVALUATE_REQUIRED_TEXT_FIELDS = (
+    "historical_function",
+    "historical_relations",
+    "current_system_analogues",
+    "identity_status",
+    "successor_status",
+    "replacement_status",
+    "current_value_status",
+    "current_compatibility_status",
+    "evaluation_result",
+)
 CENSUS_STARTED_STATUSES = frozenset(
     {
         "CENSUS_IN_PROGRESS",
@@ -190,6 +216,8 @@ def _claims_of(record: dict[str, Any]) -> list[dict[str, Any]]:
         "current_comparison",
         "adjudication",
         "audit",
+        "evidence_resolution",
+        "reevaluate",
     ):
         block = record.get(section) or {}
         if isinstance(block, dict):
@@ -442,7 +470,90 @@ def _validate_record(
     for claim in _claims_of(record):
         if isinstance(claim, dict):
             _validate_claim(claim, rid=rid)
+    _validate_optional_evidence_resolution(record, rid=rid)
+    _validate_optional_reevaluate(record, rid=rid)
     return rid
+
+
+def _validate_optional_evidence_resolution(record: dict[str, Any], *, rid: str) -> None:
+    block = record.get("evidence_resolution")
+    if block is None:
+        return
+    if not isinstance(block, dict):
+        raise ReconciliationValidationError(f"EVIDENCE_RESOLUTION_NOT_MAPPING:{rid}")
+    status = str(block.get("evidence_resolution_status") or "")
+    if status not in ALLOWED_EVIDENCE_RESOLUTION_STATUSES:
+        raise ReconciliationValidationError(f"EVIDENCE_RESOLUTION_STATUS_UNKNOWN:{rid}:{status}")
+    for gap_key in EVIDENCE_RESOLUTION_REQUIRED_GAPS:
+        gap = block.get(gap_key)
+        if not isinstance(gap, dict):
+            raise ReconciliationValidationError(f"EVIDENCE_RESOLUTION_GAP_MISSING:{rid}:{gap_key}")
+        if not str(gap.get("status") or "").strip():
+            raise ReconciliationValidationError(
+                f"EVIDENCE_RESOLUTION_GAP_STATUS_MISSING:{rid}:{gap_key}"
+            )
+        if not str(gap.get("statement") or "").strip():
+            raise ReconciliationValidationError(
+                f"EVIDENCE_RESOLUTION_GAP_STATEMENT_MISSING:{rid}:{gap_key}"
+            )
+    if block.get("final_disposition_change_performed") is True:
+        raise ReconciliationValidationError(f"EVIDENCE_RESOLUTION_CHANGED_DISPOSITION:{rid}")
+    if block.get("identity_merge_performed") is True:
+        raise ReconciliationValidationError(f"EVIDENCE_RESOLUTION_IDENTITY_MERGE:{rid}")
+    if block.get("reintegration_performed") is True:
+        raise ReconciliationValidationError(f"EVIDENCE_RESOLUTION_REINTEGRATION:{rid}")
+    if block.get("runtime_mutation_performed") is True:
+        raise ReconciliationValidationError(f"EVIDENCE_RESOLUTION_RUNTIME_MUTATION:{rid}")
+    adj = record.get("adjudication") or {}
+    if str(adj.get("disposition") or "") == "INSUFFICIENT_EVIDENCE":
+        if str(adj.get("lifecycle_state") or "") != "OPEN":
+            raise ReconciliationValidationError(f"EVIDENCE_RESOLUTION_OPEN_STATE_DRIFT:{rid}")
+
+
+def _validate_optional_reevaluate(record: dict[str, Any], *, rid: str) -> None:
+    block = record.get("reevaluate")
+    if block is None:
+        return
+    if not isinstance(block, dict):
+        raise ReconciliationValidationError(f"REEVALUATE_NOT_MAPPING:{rid}")
+    burden_met = _as_bool(
+        block.get("disposition_burden_met"), field=f"disposition_burden_met:{rid}"
+    )
+    if block.get("identity_merge_performed") is True:
+        raise ReconciliationValidationError(f"REEVALUATE_IDENTITY_MERGE:{rid}")
+    if block.get("reintegration_performed") is True:
+        raise ReconciliationValidationError(f"REEVALUATE_REINTEGRATION:{rid}")
+    if block.get("runtime_mutation_performed") is True:
+        raise ReconciliationValidationError(f"REEVALUATE_RUNTIME_MUTATION:{rid}")
+    for field in REEVALUATE_REQUIRED_TEXT_FIELDS:
+        if not str(block.get(field) or "").strip():
+            raise ReconciliationValidationError(f"REEVALUATE_FIELD_MISSING:{rid}:{field}")
+    if not list(block.get("current_evidence_set") or []):
+        raise ReconciliationValidationError(f"REEVALUATE_EVIDENCE_SET_MISSING:{rid}")
+    if not list(block.get("alternatives_rejected") or []):
+        raise ReconciliationValidationError(f"REEVALUATE_ALTERNATIVES_MISSING:{rid}")
+    if not list(block.get("unresolved_gaps") or []):
+        raise ReconciliationValidationError(f"REEVALUATE_GAPS_MISSING:{rid}")
+    adj = record.get("adjudication") or {}
+    if burden_met is False:
+        if block.get("final_disposition_change_performed") is True:
+            raise ReconciliationValidationError(
+                f"REEVALUATE_BURDEN_UNMET_CHANGED_DISPOSITION:{rid}"
+            )
+        if str(block.get("disposition") or "") != "INSUFFICIENT_EVIDENCE":
+            raise ReconciliationValidationError(f"REEVALUATE_BURDEN_UNMET_NOT_OPEN:{rid}")
+        if str(block.get("lifecycle_state") or "") != "OPEN":
+            raise ReconciliationValidationError(f"REEVALUATE_BURDEN_UNMET_STATE_DRIFT:{rid}")
+        if str(adj.get("disposition") or "") != "INSUFFICIENT_EVIDENCE":
+            raise ReconciliationValidationError(f"REEVALUATE_LIVE_DISPOSITION_DRIFT:{rid}")
+        if str(adj.get("lifecycle_state") or "") != "OPEN":
+            raise ReconciliationValidationError(f"REEVALUATE_LIVE_STATE_DRIFT:{rid}")
+    if rid == "RCN-000052":
+        presence = str((record.get("discovery") or {}).get("current_presence") or "")
+        if presence != "CURRENTLY_ABSENT":
+            raise ReconciliationValidationError("REEVALUATE_RCN000052_PRESENCE_REWRITE")
+        if str(block.get("disposition") or "") == "RETAIN_AS_IS":
+            raise ReconciliationValidationError("REEVALUATE_RCN000052_RETAIN_WHILE_CONTRADICTED")
 
 
 def _validate_ledger(ledger: dict[str, Any], gov: dict[str, Any]) -> list[dict[str, Any]]:
