@@ -19,6 +19,7 @@ from src.core.backup_recovery import (
     ConfigBackup,
     DataBackup,
     RecoveryManager,
+    PRODUCTIVE_RESTORE_DENIED,
 )
 
 
@@ -391,7 +392,7 @@ class TestRecoveryManager:
         assert len(config_backups) == 2
 
     def test_restore_backup(self, recovery_mgr, sample_config, tmp_path):
-        """Test restoring from backup."""
+        """Productive restore through RecoveryManager is fail-closed."""
         recovery_mgr.config_backup.add_config(sample_config)
 
         # Create backup
@@ -400,12 +401,10 @@ class TestRecoveryManager:
         # Modify original file
         sample_config.write_text("modified = true")
 
-        # Restore
-        success = recovery_mgr.restore_backup(backup_id, restore_config=True)
+        with pytest.raises(PermissionError, match=PRODUCTIVE_RESTORE_DENIED):
+            recovery_mgr.restore_backup(backup_id, restore_config=True)
 
-        assert success
-        # Original content should be restored
-        assert "setting = 'value'" in sample_config.read_text()
+        assert sample_config.read_text() == "modified = true"
 
     def test_restore_dry_run(self, recovery_mgr, sample_config):
         """Test restore in dry-run mode."""
@@ -423,8 +422,11 @@ class TestRecoveryManager:
         assert sample_config.read_text() == "modified"
 
     def test_restore_nonexistent_backup(self, recovery_mgr):
-        """Test restoring from nonexistent backup."""
-        success = recovery_mgr.restore_backup("nonexistent_backup_id")
+        """Productive restore is denied even for a missing backup id."""
+        with pytest.raises(PermissionError, match=PRODUCTIVE_RESTORE_DENIED):
+            recovery_mgr.restore_backup("nonexistent_backup_id")
+
+        success = recovery_mgr.restore_backup("nonexistent_backup_id", dry_run=True)
         assert not success
 
     def test_delete_backup(self, recovery_mgr, sample_config):
@@ -529,14 +531,13 @@ class TestBackupRecoveryIntegration:
         config_file.write_text("corrupted")
         data_file.write_text("corrupted")
 
-        # Restore
-        success = recovery.restore_backup(
-            backup_id, restore_config=True, restore_data=True, restore_state=True
-        )
+        with pytest.raises(PermissionError, match=PRODUCTIVE_RESTORE_DENIED):
+            recovery.restore_backup(
+                backup_id, restore_config=True, restore_data=True, restore_state=True
+            )
 
-        assert success
-        assert "[settings]" in config_file.read_text()
-        assert "a,b,c" in data_file.read_text()
+        assert config_file.read_text() == "corrupted"
+        assert data_file.read_text() == "corrupted"
 
     def test_multiple_backups_and_selective_restore(self, tmp_path):
         """Test creating multiple backups and selective restore."""
@@ -565,13 +566,11 @@ class TestBackupRecoveryIntegration:
         # Corrupt config
         config_file.write_text("corrupted")
 
-        # Restore version 1
-        recovery.restore_backup(backup_v1, restore_config=True)
-        assert "version = 1" in config_file.read_text()
-
-        # Restore version 2
-        recovery.restore_backup(backup_v2, restore_config=True)
-        assert "version = 2" in config_file.read_text()
+        with pytest.raises(PermissionError, match=PRODUCTIVE_RESTORE_DENIED):
+            recovery.restore_backup(backup_v1, restore_config=True)
+        with pytest.raises(PermissionError, match=PRODUCTIVE_RESTORE_DENIED):
+            recovery.restore_backup(backup_v2, restore_config=True)
+        assert config_file.read_text() == "corrupted"
 
 
 if __name__ == "__main__":

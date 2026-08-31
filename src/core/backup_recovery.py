@@ -42,6 +42,9 @@ from enum import Enum
 
 logger = logging.getLogger(__name__)
 
+# D5: productive restore through the public RecoveryManager surface is deauthorized.
+PRODUCTIVE_RESTORE_DENIED = "PRODUCTIVE_RESTORE_DENIED"
+
 
 def get_utc_now() -> datetime:
     """Get current UTC time in a timezone-aware manner."""
@@ -560,16 +563,29 @@ class RecoveryManager:
         """
         Restore from a backup.
 
+        Productive restore (dry_run=False) is fail-closed and deauthorized.
+        Dry-run inspection remains available and must not mutate the filesystem.
+
         Args:
             backup_id: ID of the backup to restore
             restore_config: Restore configuration files
             restore_state: Restore state (note: requires manual application)
             restore_data: Restore data files
-            dry_run: If True, only simulate restore
+            dry_run: If True, only simulate restore without writes
 
         Returns:
-            True if restore successful, False otherwise
+            True if dry-run inspection succeeded, False otherwise
+
+        Raises:
+            PermissionError: if dry_run is False (productive restore denied)
         """
+        if not dry_run:
+            raise PermissionError(
+                f"{PRODUCTIVE_RESTORE_DENIED}: public BackupRecovery restore is "
+                "deauthorized for productive filesystem restore. Use dry_run=True "
+                "for non-mutating inspection."
+            )
+
         backup_dir = self._get_backup_dir(backup_id)
         if not backup_dir.exists():
             logger.error(f"Backup {backup_id} not found")
@@ -713,4 +729,5 @@ __all__ = [
     "ConfigBackup",
     "DataBackup",
     "RecoveryManager",
+    "PRODUCTIVE_RESTORE_DENIED",
 ]
