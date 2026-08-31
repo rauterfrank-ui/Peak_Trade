@@ -4,12 +4,13 @@ schema_version: peak_trade.reconciliation_governance.v1
 bound_against_ref: origin/main
 atlas_authority: NONE
 reconciliation_authority: NONE
-census_pass_id: FIND_COMPLETELY_PASS_V2
-dedup_rule: exact_git_object_or_tree_sha_only
+census_pass_id: FIND_COMPLETELY_PASS_V3
+dedup_rule: exact_git_blob_sha_only
 identity_fusion_forbidden: true
 disposition_performed: false
 bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
-relation_count: 38
+relation_count: 39
+possible_same_as_count: 37
 items:
 - from: RCN-000001
   relation_type: POSSIBLE_SAME_AS
@@ -277,5 +278,13 @@ items:
   evidence:
   - observability documentation naming hypothesis
   epistemic_status: HYPOTHESIS
+- from: RCN-000053
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000049
+  unresolved_target: ''
+  evidence:
+  - overview/workflow notes also appear under docs/00_overview
+  epistemic_status: HYPOTHESIS
 identity_merges_performed: 0
-note: Copied from ledger. POSSIBLE_SAME_AS remains hypothesis until identity is proven.
+note: Copied from ledger. POSSIBLE_SAME_AS remains hypothesis. PATH_MOVED_OR_RENAMED_TO / SAME_BLOB_AS unused unless blob-SHA
+  or R100 evidence is attached to a ledger record. Git rename detection alone is not identity.

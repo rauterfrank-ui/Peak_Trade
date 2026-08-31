@@ -29,7 +29,7 @@ search_surfaces.yaml   bound repository-internal search universe
 coverage.yaml          per-surface coverage matrix
 discovery_candidates.yaml  hits below ledger threshold
 relations.yaml         copied relation index
-inventories/           pass v2 reproducible search inventories
+inventories/           pass v2/v3 reproducible search inventories
 ```
 
 Governance persist baseline: `90dec7208554deb5d2af0a2021bb7bceaf5d6662`.
@@ -153,7 +153,29 @@ A hypothesis must not be serialized as a fact. Evidence should point at
 repository paths, commit SHAs, refs, persisted forensics, Atlas
 entities/relations, or other inspectable sources. Do not invent sources.
 
-## Census pass v2 state
+## Census pass v3 state (current)
+
+```text
+CENSUS_STATUS=CENSUS_CLOSED
+CENSUS_EXHAUSTION_PROVEN=true
+CENSUS_CLOSED=true
+KNOWN_SEARCH_ANCHORS=Landscape;Master V2;Double Play
+SURFACES_EXHAUSTION_PROVEN=17
+SURFACES_EXHAUSTION_UNPROVEN=0
+```
+
+Pass v3 bound two git-history universes (`origin/main` vs `refs/heads` +
+`refs/remotes/origin` + `refs/tags`), SHA-deduped unique blobs, content-scanned
+relevant text blobs, and exhausted bound commit subjects and bodies.
+`git rev-list --all` is not the bound universe. Extra local stash/review/tmp
+refs and LOSS_REGISTER-derived unreachable blobs remain documented out of
+scope. Atlas `COMPLETE` flags and a stale Atlas `census_meta` SHA are not
+authority for this census. No UNDERSTAND, EVALUATE, disposition, or
+reintegration.
+
+Inventories live under `docs/system_atlas/reconciliation/inventories/`.
+
+## Census pass v2 state (historical)
 
 ```text
 CENSUS_STATUS=CENSUS_IN_PROGRESS
@@ -164,10 +186,7 @@ KNOWN_SEARCH_ANCHORS=Landscape;Master V2;Double Play
 
 Pass v2 walked unique tip trees by exact Git tree SHA, inventoried reachable
 object path names, and file-inventoried `archive/PeakTradeRepo`. Git-history
-blob contents remain unproven. Search anchors are still not ledger records
-and still not census boundaries. No disposition. No reintegration.
-
-Inventories live under `docs/system_atlas/reconciliation/inventories/`.
+blob contents remained unproven after that pass.
 
 ## Census pass v1 state (historical)
 

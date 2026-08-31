@@ -87,8 +87,15 @@ allowed_relation_types:
   - CALLS
   - DERIVES_FROM
   - RENAMED_TO
+  - PATH_MOVED_OR_RENAMED_TO
   - SPLIT_INTO
   - MERGED_INTO
+  - SAME_BLOB_AS
+  - REFERENCES
+  - IMPORTS
+  - TESTS
+  - DOCUMENTS
+  - ARCHIVES
 census_artifact_files:
   - search_surfaces.yaml
   - coverage.yaml
@@ -105,5 +112,13 @@ census_artifact_files:
   - inventories/terminology_census.yaml
   - inventories/blob_scan_decision.yaml
   - inventories/summary.yaml
+  - inventories/pass_v3_baseline.yaml
+  - inventories/git_universe_v3.yaml
+  - inventories/blob_scope_v3.yaml
+  - inventories/historical_symbol_census_v3.yaml
+  - inventories/historical_terminology_census_v3.yaml
+  - inventories/commit_messages_v3.yaml
+  - inventories/pass_v3_summary.yaml
+  - inventories/candidate_class_adjudication_v3.yaml
 current_presence_is_not_disposition: true
 current_presence_is_not_current_system_comparison: true

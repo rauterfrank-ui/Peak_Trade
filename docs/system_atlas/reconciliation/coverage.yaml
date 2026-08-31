@@ -4,28 +4,34 @@ schema_version: peak_trade.reconciliation_governance.v1
 bound_against_ref: origin/main
 atlas_authority: NONE
 reconciliation_authority: NONE
-census_pass_id: FIND_COMPLETELY_PASS_V2
-dedup_rule: exact_git_object_or_tree_sha_only
+census_pass_id: FIND_COMPLETELY_PASS_V3
+dedup_rule: exact_git_blob_sha_only
 identity_fusion_forbidden: true
 disposition_performed: false
 bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
-census_status: CENSUS_IN_PROGRESS
-exhaustion_proven: false
-census_closed: false
-surfaces_exhaustion_proven: 14
-surfaces_exhaustion_unproven: 3
-open_coverage_gaps:
-- Blob-level scan of 7260 reachable commits not performed.
-- Commit message bodies not exhaustively tokenized.
-- Import/symbol census of historical non-tip blobs not performed.
-- Terminology census of historical blob contents beyond current headings and path tokens not performed.
-- Atlas census_meta SHA stale; COMPLETE flags ignored for exhaustion.
-- LOSS_REGISTER derived blobs remain out of repository-internal scope.
+census_status: CENSUS_CLOSED
+exhaustion_proven: true
+census_closed: true
+surfaces_exhaustion_proven: 17
+surfaces_exhaustion_unproven: 0
+open_coverage_gaps: []
+out_of_scope_discovery_areas:
+- 22 extra local refs (refs/stash, refs/review/*, refs/tmp/*, refs/tmpreview/*) with 13 commits not reachable from the bound
+  search universe (heads+origin remotes+tags). Contrast --all commit count=7261.
+- LOSS_REGISTER derived blobs that are not normal reachable Git objects in this repository.
+- External sources.
+- Temp/external recovery corpora.
+atlas_census_meta_stale_sha_does_not_gate_this_census: true
+atlas_complete_flags_are_not_authority: true
 tree_content_census_count: 970
 historical_path_family_count: 78
 import_symbol_census_count: 6379
 terminology_candidate_count: 9391
 inner_archive_file_count: 16
+unique_blob_count_origin_main: 33443
+unique_blob_count_all_bound: 34770
+unique_relevant_text_blob_count: 34125
+commit_message_count: 7248
 rows:
 - surface_id: SURF:current_tree
   surface_type: CURRENT_TREE
@@ -45,33 +51,41 @@ rows:
 - surface_id: SURF:git_history_origin_main
   surface_type: GIT_HISTORY
   searched: true
-  method: git log origin/main --diff-filter=D --name-only; blob contents not read
-  scope_count: 1153
-  evidence_reference: docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
-  exhaustion_proven: false
-  remaining_gap: Blob contents of origin/main commits were not scanned.
-  exhaustion_unproven_reason: Path-name deletion census is not blob-level content exhaustion.
+  method: git rev-list --objects origin/main; cat-file blob SHA dedup; content scan of relevant unique blobs whose SHA is
+    origin/main-reachable
+  scope_count: 33443
+  evidence_reference: docs/system_atlas/reconciliation/inventories/blob_scope_v3.yaml
+  exhaustion_proven: true
+  remaining_gap: First-observed path per blob only. Per-blob first/last commit not computed for the full set. Neither is a
+    remaining unscanned origin/main blob.
+  exhaustion_unproven_reason: ''
   search_executed: true
-  search_method: git log origin/main --diff-filter=D --name-only; blob contents not read
-  result_count: 1153
-  evidence_ref: docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
-  coverage_status: EXHAUSTION_UNPROVEN
-  limitations: Deleted paths listed; historical blob contents unread.
+  search_method: git rev-list --objects origin/main; cat-file blob SHA dedup; content scan of relevant unique blobs whose
+    SHA is origin/main-reachable
+  result_count: 33443
+  evidence_ref: docs/system_atlas/reconciliation/inventories/blob_scope_v3.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Unique blob SHA content scan of origin/main-reachable blobs. Path alias completeness is not claimed. LOSS_REGISTER
+    derived blobs remain out of scope.
 - surface_id: SURF:git_history_all_reachable
   surface_type: GIT_HISTORY
   searched: true
-  method: git rev-list --objects --all path inventory; unique tip-tree delta vs origin/main
-  scope_count: 19428
-  evidence_reference: docs/system_atlas/reconciliation/inventories/reachable_object_paths.yaml
-  exhaustion_proven: false
-  remaining_gap: Blob contents of 7260 reachable commits were not scanned.
-  exhaustion_unproven_reason: Object path inventory is not blob-level content exhaustion.
+  method: git rev-list --objects --branches --tags --remotes=origin; unique blob SHA dedup; content scan of unique relevant
+    text blobs. Explicitly NOT git rev-list --all.
+  scope_count: 34770
+  evidence_reference: docs/system_atlas/reconciliation/inventories/git_universe_v3.yaml
+  exhaustion_proven: true
+  remaining_gap: 22 extra local refs (stash/review/tmp) and 13 commits only reachable from those refs are outside the already-bound
+    search universe and are out of scope.
+  exhaustion_unproven_reason: ''
   search_executed: true
-  search_method: git rev-list --objects --all path inventory; unique tip-tree delta vs origin/main
-  result_count: 19428
-  evidence_ref: docs/system_atlas/reconciliation/inventories/reachable_object_paths.yaml
-  coverage_status: EXHAUSTION_UNPROVEN
-  limitations: Path names bound; per-commit blob contents unread.
+  search_method: git rev-list --objects --branches --tags --remotes=origin; unique blob SHA dedup; content scan of unique
+    relevant text blobs. Explicitly NOT git rev-list --all.
+  result_count: 34770
+  evidence_ref: docs/system_atlas/reconciliation/inventories/git_universe_v3.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Bound universe is refs/heads + refs/remotes/origin + refs/tags. --all contrast count is documented and is not
+    this surface's search space.
 - surface_id: SURF:local_branches
   surface_type: LOCAL_BRANCH
   searched: true
@@ -270,15 +284,17 @@ rows:
 - surface_id: SURF:commit_messages
   surface_type: GIT_HISTORY
   searched: true
-  method: pass v1 seed grep plus pass v2 path/token census; commit bodies not fully scanned
-  scope_count: 19428
-  evidence_reference: docs/system_atlas/reconciliation/inventories/blob_scan_decision.yaml
-  exhaustion_proven: false
-  remaining_gap: Commit message bodies of 7260 reachable commits were not exhaustively tokenized.
-  exhaustion_unproven_reason: Subject/body blob scan was not this pass's bound completed space.
+  method: git rev-list --branches --tags --remotes=origin then git log --no-walk --stdin subject+body; 1:1 with bound commit
+    count
+  scope_count: 7248
+  evidence_reference: docs/system_atlas/reconciliation/inventories/commit_messages_v3.yaml
+  exhaustion_proven: true
+  remaining_gap: Commit messages are forensic/navigational discovery evidence, not existence proof.
+  exhaustion_unproven_reason: ''
   search_executed: true
-  search_method: pass v1 seed grep plus pass v2 path/token census; commit bodies not fully scanned
-  result_count: 19428
-  evidence_ref: docs/system_atlas/reconciliation/inventories/blob_scan_decision.yaml
-  coverage_status: EXHAUSTION_UNPROVEN
-  limitations: Seed grep plus path/token census; unknown names in commit bodies remain.
+  search_method: git rev-list --branches --tags --remotes=origin then git log --no-walk --stdin subject+body; 1:1 with bound
+    commit count
+  result_count: 7248
+  evidence_ref: docs/system_atlas/reconciliation/inventories/commit_messages_v3.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Bound commit set only. Extra local-ref commits out of scope.

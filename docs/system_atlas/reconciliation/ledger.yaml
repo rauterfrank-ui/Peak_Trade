@@ -3,7 +3,7 @@
 schema_version: peak_trade.reconciliation_governance.v1
 bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
 bound_against_ref: origin/main
-ledger_record_count: 52
+ledger_record_count: 53
 records:
 - identity:
     reconciliation_id: RCN-000001
@@ -3912,4 +3912,85 @@ records:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
     notes: Fail-open versus RCN-000020. Path prefix differs.
-census_pass_id: FIND_COMPLETELY_PASS_V2
+- identity:
+    reconciliation_id: RCN-000053
+    canonical_record_name: src/docs misplaced documentation tree
+    historical_names:
+    - src/docs
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - SURF:git_history_all_reachable
+    - SURF:current_tree
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/blob_scope_v3.yaml
+    - origin/main:src/docs
+    - blob:3dd607a3b721b5d82174abc291628fba5947ee56
+    - origin/main:src/docs/CONTRIBUTING.md
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/docs
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: origin/main contains 13 markdown files under src/docs/. Unique historical blobs for those paths were content-scanned
+        in pass v3.
+      evidence:
+      - origin/main:src/docs
+    - claim_class: OPEN_QUESTION
+      text: Whether src/docs is a documentation component versus a misplaced dump of files that also exist under docs/ remains
+        uninvestigated.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000049
+      unresolved_target: ''
+      evidence:
+      - overview/workflow notes also appear under docs/00_overview
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Distinct documentation set versus copies of docs/ files?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Path-family census from unique blob inventory. Not purpose-understood. Not fused with CAND:src_docs_workflow_notes
+      or RCN-000049.
+census_pass_id: FIND_COMPLETELY_PASS_V3

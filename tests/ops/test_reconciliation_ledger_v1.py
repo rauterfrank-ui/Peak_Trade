@@ -132,11 +132,11 @@ def test_constructed_empty_ledger_and_not_started_still_valid() -> None:
     assert validate_reconciliation_v1(payload) == []
 
 
-def test_live_census_in_progress_has_bound_universe() -> None:
+def test_live_census_closed_after_pass_v3() -> None:
     census = _payload()["records"]["census_status.yaml"]
-    assert census["census_status"] == "CENSUS_IN_PROGRESS"
-    assert census["census_exhaustion_proven"] is False
-    assert census["census_closed"] is False
+    assert census["census_status"] == "CENSUS_CLOSED"
+    assert census["census_exhaustion_proven"] is True
+    assert census["census_closed"] is True
     assert census["search_universe_bound"] is True
     assert census["historical_census_performed"] is True
 
@@ -266,6 +266,14 @@ def test_census_closed_with_unproven_coverage_surfaces_rejected() -> None:
     coverage = payload["records"]["coverage.yaml"]
     coverage["exhaustion_proven"] = True
     coverage["census_closed"] = True
+    rows = list(coverage.get("rows") or [])
+    assert rows
+    rows[0]["exhaustion_proven"] = False
+    rows[0]["remaining_gap"] = "forced unproven surface for contract test"
+    rows[0]["exhaustion_unproven_reason"] = "forced"
+    coverage["rows"] = rows
+    coverage["surfaces_exhaustion_proven"] = len(rows) - 1
+    coverage["surfaces_exhaustion_unproven"] = 1
     with pytest.raises(ReconciliationValidationError, match="CENSUS_CLOSED_WITH_UNPROVEN_SURFACES"):
         validate_reconciliation_v1(payload)
 

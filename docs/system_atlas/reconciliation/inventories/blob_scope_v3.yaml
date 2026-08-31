@@ -1,0 +1,471 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+atlas_authority: NONE
+reconciliation_authority: NONE
+census_pass_id: FIND_COMPLETELY_PASS_V3
+dedup_rule: exact_git_blob_sha_only
+identity_fusion_forbidden: true
+disposition_performed: false
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+unique_blob_count_origin_main: 33443
+unique_blob_count_all_bound: 34770
+unique_non_main_blob_count: 1327
+blob_path_relation_count: 34770
+unique_blob_count_total: 34770
+unique_relevant_text_blob_count: 34125
+excluded_binary_blob_count: 331
+excluded_generated_or_vendor_blob_count: 36
+other_excluded_blob_count: 278
+class_counts:
+  other_excluded_unlisted_extension: 195
+  relevant_text: 34107
+  relevant_text_unknown_ext: 18
+  excluded_binary: 331
+  other_excluded_oversize: 83
+  excluded_generated_or_vendor: 36
+exclusion_taxonomy:
+  excluded_binary: Extension in BINARY_EXTENSIONS (images/archives/binaries).
+  excluded_generated_or_vendor: Path contains vendor/generated markers.
+  other_excluded_oversize: Size > 1500000 bytes.
+  other_excluded_unlisted_extension: Non-empty unlisted extension, not relevant/binary.
+  relevant_text: Documented source/config/docs/test/script/manifest extensions.
+  relevant_text_unknown_ext: No/lock extension, UTF-8 text candidate under size cap.
+max_text_blob_bytes: 1500000
+blob_sha_digest_origin_main: 69528d4f63f4ff3db65063aea16a6eb6587e733fd9cd6e7cc0619bbbf11ee136
+blob_sha_digest_bound: c293c84cd251dd1c4f6da8412e6ae7859815fcf78d06f4fcf514669a4a4ad433
+blob_sha_digest_relevant: 47a3478277ad9c69d5636ca509ba98a6299e1dcc0fff63d4aba1a1c47bf59c0a
+non_main_blob_sample:
+- sha: 00b5e65ea104ce64b3a62b81f50086e0496bbd01
+  paths:
+  - tests/test_experiments_integration.py
+  class: relevant_text
+  sample_commit_shas:
+  - 16fc378b27204282f2c9ed5080536f0c00ebb8b6
+- sha: 00c6a44622f76f6c22d22b74d46467adf0526c33
+  paths:
+  - src/webui/live_track.py
+  class: relevant_text
+  sample_commit_shas:
+  - 16fc378b27204282f2c9ed5080536f0c00ebb8b6
+- sha: 011d76c56a367ce95ab5d0da75cde6d633938a83
+  paths:
+  - tests/test_phase72_live_operator_status.py
+  class: relevant_text
+  sample_commit_shas:
+  - cfdf0a95fc2ea83443f690c3b0dc13bb65db645a
+- sha: 01308cd1790971b174d63aa9e9893f0170f9ff66
+  paths:
+  - tests/test_portfolio_presets_tiering.py
+  class: relevant_text
+  sample_commit_shas:
+  - 16fc378b27204282f2c9ed5080536f0c00ebb8b6
+- sha: 0153a0744be7f99e76074c0c97b87e2865fbd7ce
+  paths:
+  - docs/system_atlas/generated/OKX_INTEGRATION_MAP.md
+  class: excluded_generated_or_vendor
+  sample_commit_shas:
+  - 9fcab14fd31557492ebc5e4eb69bb8223cf64322
+  - 4a518d1c2475355653e6c0907311cd9d8132e3e9
+- sha: 01836c6e619ee65728d8246550a3bc8a9df14003
+  paths:
+  - tests/risk/test_backtest_integration.py
+  class: relevant_text
+  sample_commit_shas:
+  - 6d1673ffbc3e394c161ac451897d17b5f18ef20e
+- sha: 01a7baa3279782ba78f754bba8daef63636162cc
+  paths:
+  - tests/test_analytics_experiments_smoke.py
+  class: relevant_text
+  sample_commit_shas:
+  - 16fc378b27204282f2c9ed5080536f0c00ebb8b6
+- sha: 01b19b6ecfc8ec00f88b291ac302c34bdc89b250
+  paths:
+  - src/infra/backup/backup_manager.py
+  class: relevant_text
+  sample_commit_shas:
+  - 12188014cb93a78555bbdf5cbaaf60906f6755a5
+- sha: 01f3ae521e1546292362375d71f972ceb9500d13
+  paths:
+  - docs/ops/runbooks/STEP_29U_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESIS_RETIREMENT_V0.md
+  class: relevant_text
+  sample_commit_shas:
+  - 6f7c6bc66c5c493b2efa2e3a2145fd4215b10388
+  - b356b202183f9aab550fc1b6ef2109313dca629e
+- sha: 020c18daa5a0baf1499348f82b4bd605df51852d
+  paths:
+  - docs/webui/MARKET_SURFACE_V0.md
+  class: relevant_text
+  sample_commit_shas:
+  - 1e6fa1eba8b4d792ddb284d8336ef10f5371d394
+  - c21de931d2c9977b607546eaec288c737e02ba4a
+- sha: 0226615a5ab90fba518fdacbd91f4b5e71ca1f8c
+  paths:
+  - tests/test_live_ops_cli.py
+  class: relevant_text
+  sample_commit_shas:
+  - 16fc378b27204282f2c9ed5080536f0c00ebb8b6
+- sha: 02954116b774730a80ae92b9d52b0f36c2e0dd6f
+  paths:
+  - artifacts/market_dashboard_phase3_chart_polish_v1/capture_raw.json
+  class: relevant_text
+  sample_commit_shas:
+  - 23a8275041691f1c23f31a9b9bf1eafd98d2d73c
+- sha: 02cacc3ed0da30df9442fa724fff1d97865e472f
+  paths:
+  - src/strategies/armstrong/cycle_model.py
+  class: relevant_text
+  sample_commit_shas:
+  - cfdf0a95fc2ea83443f690c3b0dc13bb65db645a
+- sha: 02cfb44fe555660f4af0563871f2da57485d0183
+  paths:
+  - src/reporting/portfolio_psychology.py
+  class: relevant_text
+  sample_commit_shas:
+  - 16fc378b27204282f2c9ed5080536f0c00ebb8b6
+- sha: 02d1a22f02591a147a61f024af290f98876f316a
+  paths:
+  - docs/ops/specs/SECTION_11_13_2_OWNER_EXECUTE_INPUT_CONTRACT_V1.md
+  class: relevant_text
+  sample_commit_shas:
+  - 7631c99d225d9a543f84c5778c62ef2ef8f3008d
+  - ac9d18f395a0b90021e56c7e234becbfcc934fec
+- sha: 02d7f25401385a0502478d6626ea7c35ff9c1f59
+  paths:
+  - docs/ops/PRODUCTIVE_PURE_STACK_NUMERIC_POLICY_SHADOW_CAMPAIGN_V1.md
+  class: relevant_text
+  sample_commit_shas:
+  - 0ae183bc2fd1e6afb2eca6846b52a94439376b40
+  - 6581d9c073ea96713022ad3c98793f88ce98df14
+- sha: 0365b3346d0b1f67c3768b41b9f95830529ca25f
+  paths:
+  - tests/ops/test_section_11_13_5_z2am_post_z2al_binding_adjudication_persist_v1.py
+  class: relevant_text
+  sample_commit_shas:
+  - b04a19603f04d827badaf1a98251f562e18562f1
+  - bbefda256301a25a1f2f378e4644654542c4bf1b
+- sha: 0369665cd2699de79e43272a5ebb153565f21d46
+  paths:
+  - tests/test_portfolio_fixed_weights.py
+  class: relevant_text
+  sample_commit_shas:
+  - 16fc378b27204282f2c9ed5080536f0c00ebb8b6
+- sha: 03d9fc71fb8420d44da1941f2be16f1fe9f8c2d9
+  paths:
+  - src/strategies/regime_aware_portfolio.py
+  class: relevant_text
+  sample_commit_shas:
+  - 16fc378b27204282f2c9ed5080536f0c00ebb8b6
+- sha: 03ed237f8399b0af88bc8f56509fcce0aa33c683
+  paths:
+  - tests/ops/test_pt_python_runtime_contract_v1.py
+  class: relevant_text
+  sample_commit_shas:
+  - 85517b276be96f7075ca7ae87c7513ec6747795b
+  - 6ea02d968875d90f72434f1deaeffa87a061433a
+- sha: 042141f099101a703afe63b42fac38b0b5921a1a
+  paths:
+  - docs/reporting/EVIDENCE_CHAIN_INTEGRATION.md
+  class: relevant_text
+  sample_commit_shas:
+  - 9ad79b81dfd45e63acb458d006c4781f1ce9f8be
+  - 1f16ff4697800d6b9518f5c28645dd00eb45c65e
+- sha: 0429bf365939da1053a3bdf05a7420498bfa2960
+  paths:
+  - src/governance/promotion_loop/engine.py
+  class: relevant_text
+  sample_commit_shas:
+  - 16fc378b27204282f2c9ed5080536f0c00ebb8b6
+- sha: 04318cdd023480b8802e16540e7464719523933a
+  paths:
+  - docs/forensics/persistence/registries/CROSS_CORPUS_RELATION_REGISTER_V1.md
+  class: relevant_text
+  sample_commit_shas:
+  - b64937b212ae1172cb3f3fdf9592bfe8e720c581
+  - 62e4d9e7a963b5a94566d20a1e07f8c5fb590af1
+- sha: 048e7505b23b0b6e24a66f5b1e83d95e4da71953
+  paths:
+  - evidence/ops/step_29u_offline_capability/2026-07-25_capability_hold_cycle/mode_identity.json
+  class: relevant_text
+  sample_commit_shas:
+  - 237cfe07850d9a579f73f596bb4df18adddfbe69
+  - cf5d8dab847b4f9e7363a9c16b4f00746134fef6
+- sha: 04d89505f7011a3641f5f9027bb441e9378de11a
+  paths:
+  - src/experiments/portfolio_presets.py
+  class: relevant_text
+  sample_commit_shas:
+  - 16fc378b27204282f2c9ed5080536f0c00ebb8b6
+name_based_dedup_forbidden: true
+first_last_observation: NOT_COMPUTED_FOR_FULL_SET
+first_last_observation_reason: Per-blob first/last commit would require a full tree walk of every bound commit. Pass v3 binds
+  blob SHA + observed path family from rev-list --objects. A 25-blob non-main sample records find-object provenance only.
+non_main_src_path_prefix_count: 262
+non_main_src_path_prefixes:
+- src/analytics/__init__.py
+- src/analytics/experiments_analysis.py
+- src/analytics/explorer.py
+- src/analytics/filter_flow.py
+- src/analytics/leaderboard.py
+- src/analytics/notebook_helpers.py
+- src/analytics/portfolio_builder.py
+- src/analytics/regimes.py
+- src/analytics/risk_monitor.py
+- src/backtest/__init__.py
+- src/backtest/engine.py
+- src/backtest/registry_engine.py
+- src/backtest/reporting.py
+- src/backtest/result.py
+- src/backtest/stats.py
+- src/backtest/walkforward.py
+- src/core/__init__.py
+- src/core/config_pydantic.py
+- src/core/config_registry.py
+- src/core/config_simple.py
+- src/core/environment.py
+- src/core/experiments.py
+- src/core/peak_config.py
+- src/core/position_sizing.py
+- src/core/regime.py
+- src/core/risk.py
+- src/core/tracking.py
+- src/data/__init__.py
+- src/data/cache.py
+- src/data/feeds
+- src/data/kraken.py
+- src/data/kraken_cache_loader.py
+- src/data/kraken_live.py
+- src/data/kraken_pipeline.py
+- src/data/lake
+- src/data/loader.py
+- src/data/normalizer.py
+- src/data/offline_realtime
+- src/data/safety
+- src/exchange/__init__.py
+- src/exchange/base.py
+- src/exchange/ccxt_client.py
+- src/exchange/dummy_client.py
+- src/exchange/kraken_testnet.py
+- src/execution/__init__.py
+- src/execution/live_session.py
+- src/execution/metrics
+- src/execution/pipeline.py
+- src/experiments/__init__.py
+- src/experiments/armstrong_elkaroui_combi_experiment.py
+- src/experiments/base.py
+- src/experiments/canonical_experiment_identity_v1.py
+- src/experiments/live_session_registry.py
+- src/experiments/monte_carlo.py
+- src/experiments/portfolio_presets.py
+- src/experiments/portfolio_recipes.py
+- src/experiments/portfolio_robustness.py
+- src/experiments/r_and_d_presets.py
+- src/experiments/regime_aware_portfolio_sweeps.py
+- src/experiments/regime_sweeps.py
+- src/experiments/research_playground.py
+- src/experiments/strategy_profiles.py
+- src/experiments/strategy_sweeps.py
+- src/experiments/stress_tests.py
+- src/experiments/topn_promotion.py
+- src/forward/__init__.py
+- src/forward/signals.py
+- src/governance/__init__.py
+- src/governance/capital_risk_sizing_v1.py
+- src/governance/economic_diagnostic_optimization_boundary_v0.py
+- src/governance/go_no_go.py
+- src/governance/policy_critic
+- src/governance/promotion_loop
+- src/governance/strategy_switch_sanity_check.py
+- src/infra/backup
+- src/infra/escalation
+- src/infra/health
+- src/infra/monitoring
+- src/infra/resilience
+- src/infra/runbooks
+- src/live/__init__.py
+- src/live/alert_manager.py
+- src/live/alert_pipeline.py
+- src/live/alert_rules.py
+- src/live/alert_storage.py
+- src/live/alerts.py
+- src/live/audit.py
+- src/live/broker_base.py
+- src/live/drills.py
+- src/live/live_gates.py
+- src/live/monitoring.py
+- src/live/orders.py
+- src/live/portfolio_monitor.py
+- src/live/risk_alert_helpers.py
+- src/live/risk_limits.py
+- src/live/risk_runbook.py
+- src/live/run_logging.py
+- src/live/safety.py
+- src/live/shadow_session.py
+- src/live/testnet_limits.py
+- src/live/testnet_orchestrator.py
+- src/live/testnet_profiles.py
+- src/live/web
+- src/live/workflows.py
+- src/live_eval/live_session_eval.py
+- src/live_eval/live_session_io.py
+- src/macro_regimes/loader.py
+- src/market_sentinel/__init__.py
+- src/market_sentinel/v0_daily_outlook.py
+- src/meta/infostream
+- src/meta/learning_loop
+- src/notifications/__init__.py
+- src/notifications/base.py
+- src/notifications/combined.py
+- src/notifications/console.py
+- src/notifications/file.py
+- src/notifications/slack.py
+- src/ops/__init__.py
+- src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py
+- src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py
+- src/ops/bounded_futures_testnet_venue_binding_v0.py
+- src/ops/config_truth_alignment_contract_v1.py
+- src/ops/doctor.py
+- src/ops/durable_completion_validation
+- src/ops/integrated_paper_shadow_economic_validity_pipeline_v1.py
+- src/ops/integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1
+- src/ops/okx_captured_at_freshness_policy_v1.py
+- src/ops/okx_public_market_data_client_v1.py
+- src/ops/okx_selected_instrument_ohlcv_readmodel_v1.py
+- src/ops/phase_9_2_step_5_final_generic_session_authorization_consume_and_network_start_binding_v1
+- src/ops/phase_9_2_step_6_governed_adverse_stale_data_session_execution_v1
+- src/ops/pre_economic_zero_order_decision_cycle_observer_v1.py
+- src/ops/pre_economic_zero_order_economic_evidence_v1.py
+- src/ops/pre_economic_zero_order_evidence_session_production_runner_v1.py
+- src/ops/pre_economic_zero_order_evidence_session_production_verifier_v1.py
+- src/ops/pre_economic_zero_order_wallclock_arming_v1.py
+- src/ops/productive_pure_stack_numeric_policy_shadow_campaign_v1
+- src/ops/productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decision_v1
+- src/ops/section_11_12_8_actual_productive_testnet_campaign_run_start_v1
+- src/ops/section_11_12_8_okx_eea_demo_xperp_campaign_private_write_gate_v1
+- src/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1
+- src/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1
+- src/ops/section_11_13_2_live_private_read_only_v1
+- src/ops/section_11_13_5_live_canary_minimum_exposure_v1
+- src/ops/step_29u_offline_capability_v0
+- src/ops/test_health_history.py
+- src/ops/test_health_runner.py
+- src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2
+- src/orders/__init__.py
+- src/orders/base.py
+- src/orders/exchange.py
+- src/orders/mappers.py
+- src/orders/paper.py
+- src/orders/shadow.py
+- src/orders/testnet_executor.py
+- src/portfolio/__init__.py
+- src/portfolio/base.py
+- src/portfolio/config.py
+- src/portfolio/equal_weight.py
+- src/portfolio/fixed_weights.py
+- src/portfolio/manager.py
+- src/portfolio/vol_target.py
+- src/regime/__init__.py
+- src/regime/base.py
+- src/regime/config.py
+- src/regime/detectors.py
+- src/regime/switching.py
+- src/reporting/__init__.py
+- src/reporting/backtest_report.py
+- src/reporting/base.py
+- src/reporting/execution_plots.py
+- src/reporting/execution_reports.py
+- src/reporting/experiment_report.py
+- src/reporting/html_reports.py
+- src/reporting/live_run_report.py
+- src/reporting/live_session_report.py
+- src/reporting/live_status_report.py
+- src/reporting/live_status_snapshot_builder.py
+- src/reporting/monte_carlo_report.py
+- src/reporting/offline_paper_trade_integration.py
+- src/reporting/offline_paper_trade_report.py
+- src/reporting/plots.py
+- src/reporting/portfolio_psychology.py
+- src/reporting/portfolio_robustness_report.py
+- src/reporting/psychology_heatmap.py
+- src/reporting/psychology_heuristics.py
+- src/reporting/regime_reporting.py
+- src/reporting/status_snapshot_schema.py
+- src/reporting/stress_test_report.py
+- src/reporting/sweep_visualization.py
+- src/reporting/trigger_training_report.py
+- src/reporting/walkforward_report.py
+- src/research/__init__.py
+- src/research/bollinger_mr_midband_exit_reentry_cooldown_development_evaluation_authorization_ratification_v7.py
+- src/research/canonical_open_mr_entry_eligibility_hypothesis_backlog_v1.py
+- src/research/canonical_open_mr_exit_efficiency_hypothesis_backlog_v1.py
+- src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1
+- src/research/canonical_volatility_numeric_max_age_additional_evidence_s03_atomic_auth_v2_reissue_consume_execute_v1
+- src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v1
+- src/research/final_research_fleet_offline_economic_evaluation_execution_v0.py
+- src/research/ml
+- src/research/step29m_candidate_specific_research_scope_implementation_v0.py
+- src/risk/__init__.py
+- src/risk/ci_gate_test.py
+- src/risk/hotfix_smoke_test.py
+- src/risk/limits.py
+- src/risk/position_sizer.py
+- src/risk/position_sizer_old_backup.py
+- src/risk/var.py
+- src/scheduler/__init__.py
+- src/scheduler/config_loader.py
+- src/scheduler/models.py
+- src/scheduler/runner.py
+- src/strategies/armstrong
+- src/strategies/base.py
+- src/strategies/bollinger.py
+- src/strategies/bouchaud
+- src/strategies/breakout.py
+- src/strategies/breakout_donchian.py
+- src/strategies/composite.py
+- src/strategies/diagnostics.py
+- src/strategies/ecm.py
+- src/strategies/ehlers
+- src/strategies/el_karoui
+- src/strategies/gatheral_cont
+- src/strategies/ideas
+- src/strategies/lopez_de_prado
+- src/strategies/ma_crossover.py
+- src/strategies/macd.py
+- src/strategies/mean_reversion.py
+- src/strategies/mean_reversion_channel.py
+- src/strategies/momentum.py
+- src/strategies/my_strategy.py
+- src/strategies/parameters.py
+- src/strategies/regime_aware_portfolio.py
+- src/strategies/registry.py
+- src/strategies/rsi.py
+- src/strategies/rsi_reversion.py
+- src/strategies/step29m_bollinger_bands_v2.py
+- src/strategies/step29m_momentum_1h_v2.py
+- src/strategies/step29m_trend_following_v2.py
+- src/strategies/trend_following.py
+- src/strategies/vol_breakout.py
+- src/strategies/vol_regime_filter.py
+- src/sweeps/__init__.py
+- src/sweeps/engine.py
+- src/trading/master_v2
+- src/trigger_training/__init__.py
+- src/trigger_training/hooks.py
+- src/trigger_training/operator_meta_report.py
+- src/trigger_training/reaction_stats.py
+- src/trigger_training/session_data_store.py
+- src/trigger_training/session_store.py
+- src/webui/alerts_api.py
+- src/webui/app.py
+- src/webui/live_track.py
+- src/webui/market_dashboard_landscape_producer_binding_v2.py
+- src/webui/market_dashboard_landscape_shell_router_v2.py
+- src/webui/market_dashboard_landscape_v2
+- src/webui/market_surface.py
+- src/webui/market_visual_operator_surface_v1
+- src/webui/r_and_d_api.py
+path_observation_method: git rev-list --objects emits each blob SHA once with one first-observed path. BLOB_PATH_RELATION_COUNT
+  equals unique blob count under this method. It is not an all-historical-path alias inventory. Path names were inventoried
+  in pass v2.
+path_observation_is_first_observed_not_complete_path_family: true

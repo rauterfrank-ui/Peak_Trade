@@ -1,0 +1,24 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+atlas_authority: NONE
+reconciliation_authority: NONE
+census_pass_id: FIND_COMPLETELY_PASS_V3
+dedup_rule: exact_git_blob_sha_only
+identity_fusion_forbidden: true
+disposition_performed: false
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+kind: CANDIDATE_CLASS_ADJUDICATION
+not_component_disposition: true
+candidate_not_ledger_bound_count_before: 7
+candidate_not_ledger_bound_count_after: 7
+new_ledger_records:
+- RCN-000053
+new_candidates_from_commit_messages: 0
+commit_messages_are_not_existence_proof: true
+identity_merges_performed: 0
+functional_core_literal_found: true
+ssot_child_literal_found: true
+note: FUNCTIONAL_CORE and SSOT_CHILD literals were found as Atlas ontology tokens. They were not promoted to ledger records.
+  src/docs path family was ledger-bound as RCN-000053. The original seven candidates remain candidate-not-ledger-bound.

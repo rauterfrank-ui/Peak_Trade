@@ -51,8 +51,15 @@ ALLOWED_RELATION_TYPES = frozenset(
         "CALLS",
         "DERIVES_FROM",
         "RENAMED_TO",
+        "PATH_MOVED_OR_RENAMED_TO",
         "SPLIT_INTO",
         "MERGED_INTO",
+        "SAME_BLOB_AS",
+        "REFERENCES",
+        "IMPORTS",
+        "TESTS",
+        "DOCUMENTS",
+        "ARCHIVES",
     }
 )
 ALLOWED_CURRENT_PRESENCE = frozenset(

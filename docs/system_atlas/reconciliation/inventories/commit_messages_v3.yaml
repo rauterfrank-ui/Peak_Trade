@@ -1,0 +1,3843 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+atlas_authority: NONE
+reconciliation_authority: NONE
+census_pass_id: FIND_COMPLETELY_PASS_V3
+dedup_rule: exact_git_blob_sha_only
+identity_fusion_forbidden: true
+disposition_performed: false
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+method: git rev-list --branches --tags --remotes=origin then git log --no-walk --stdin --format=SHA,subject,body
+bound_commit_count: 7248
+commit_message_count: 7248
+commit_message_count_matches_bound_commits: true
+commit_message_with_body_count: 7034
+commit_message_discovery_hit_count: 3350
+named_architecture_or_path_hit_count: 390
+commit_message_set_digest: 8ca03cca91217f49d4ad3b0fa834ac17e737b6be909085647ffbcf3eb43a695c
+discovery_hit_sha_digest: 818a84ea62488175269a41e0d58f546ba98954359333913a9b518d15314f1c4a
+hits_are_navigational_not_existence_proof: true
+named_hits:
+- commit_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+  subject: 'docs/system-atlas: add reconciliation governance and ledger v1'
+  has_body: true
+  observed_paths:
+  - docs/system-atlas
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 90dec7208554deb5d2af0a2021bb7bceaf5d6662
+  subject: 'docs/system-atlas: add evidence-bound repository system atlas v1'
+  has_body: true
+  observed_paths:
+  - docs/system-atlas
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 4a518d1c2475355653e6c0907311cd9d8132e3e9
+  subject: 'docs/system-atlas: add evidence-bound repository system atlas v1'
+  has_body: true
+  observed_paths:
+  - docs/system-atlas
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 6be08dae9f9eaf26f0efee540661a459a945ec8b
+  subject: 'docs(ops): persist post-Z2AL freshness and extra-deviation binding adjudication (#6000)'
+  has_body: true
+  observed_paths:
+  - tests/ops
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: b04a19603f04d827badaf1a98251f562e18562f1
+  subject: 'docs(ops): restore PR 6000 to docs-only by reverting unauthorized persist-test deltas'
+  has_body: true
+  observed_paths:
+  - tests/ops
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 61d9abb07d4d88a0f1be19b9476db8ca0d3ba135
+  subject: 'docs(ops): add Surface-B raw input-pack materialization decision + Owner authorize value (#5740)'
+  has_body: true
+  observed_paths:
+  - docs/manifest/schema/validator
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 59bda81aec59b149d52e5cc863691fd7ac16de02
+  subject: 'docs(ops): add Surface-B raw input-pack materialization Owner/STA decision surface'
+  has_body: true
+  observed_paths:
+  - docs/manifest/schema/validator
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 55922609182a3166320c0a66a3a0b7cda5c13090
+  subject: 'feat(ops): Stage-2 Pure-Stack numeric policy shadow campaign runner v1 (#5728)'
+  has_body: true
+  observed_paths:
+  - src/trading/master_v2
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 0ae183bc2fd1e6afb2eca6846b52a94439376b40
+  subject: 'fix(ops): relocate Stage-2 shadow formulas outside MASTER_V2 surface'
+  has_body: true
+  observed_paths:
+  - src/trading/master_v2
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: adc1fe77a84871a42fc59e530200b1d86d4dcdc7
+  subject: 'feat(master-v2): add non-enforcing volatility max-age policy telemetry (#5614)'
+  has_body: true
+  observed_paths:
+  - tests/docs
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 97cfe112ff072c1dc8cfe33a6129bbc6bb6ce9ac
+  subject: 'feat(master-v2): add deterministic distinct market observation acceptor v1 (#5603)'
+  has_body: true
+  observed_paths:
+  - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 317799e14fe4347350dff259bc8fedac22d58f71
+  subject: 'fix(docs): rename C1 acceptor spec off forbidden DOUBLE_PLAY docs glob'
+  has_body: true
+  observed_paths:
+  - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 04d2ea19d2adb4b9d180c9c66822a396c6ddbe8b
+  subject: Secret Hygiene and Redaction Unification V1 (#5572)
+  has_body: true
+  observed_paths:
+  - scripts/security/secret_hygiene_redaction_v1
+  - tests/ci
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 89c0af25b30173ff56e04f929dce1fdd237fbe23
+  subject: 'Security: unify secret hygiene and redaction under one canonical owner.'
+  has_body: true
+  observed_paths:
+  - scripts/security/secret_hygiene_redaction_v1
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 2ae6db83c45ecec9d18c2d989925103ba37fbc2d
+  subject: Market Dashboard Landscape V2 — Phase 3 Landscape Shell (#5501)
+  has_body: true
+  observed_paths:
+  - tests/ci
+  - tests/ops
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: c413fb9a957e856d3f21b2afb8a64fd7c3aa7815
+  subject: 'research: record VEFCF v1 DEVELOPMENT_FAIL (slot consumed) (#5472)'
+  has_body: true
+  observed_paths:
+  - src/risk/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 8ed59484959504e7d477dc9e8d4adedd2ec022b0
+  subject: 'docs(gov): diagnose trend_following entry_side impact DA→composition (#5319)'
+  has_body: true
+  observed_paths:
+  - scripts/research
+  - tests/research
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: b113ef57d5f2995dc43afdec6f5e9c40c8563e41
+  subject: 'Merge pull request #5257 from rauterfrank-ui/docs/dashboard-master-runbook-v1'
+  has_body: true
+  observed_paths:
+  - docs/dashboard-master-runbook-v1
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: fead65d8ae148725cdb7793e9ea5293a376d0e9b
+  subject: 'docs: adopt canonical runbook v4.4.10 and implementation contract (#5090)'
+  has_body: true
+  observed_paths:
+  - docs/governance
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 6e1a13966a8f471f299bd2639de01933dc3a232b
+  subject: MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0_DEFERRED_REMINDER (#4966)
+  has_body: true
+  observed_paths:
+  - docs/planning/deferred
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7224fa126dde8baabe8d74848fcc150e4b15aef9
+  subject: 'Governance: clean up legacy docs token policy debt v0 (#4866)'
+  has_body: true
+  observed_paths:
+  - src/docs
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 8624425ee5fdb0f484556803e19d8f3720702636
+  subject: 'feat: add semantic-diff evidence offline slice'
+  has_body: true
+  observed_paths: []
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 841be8b4e8460fcd68814c21feeba1f8e28e8052
+  subject: 'feat: add secure handoff envelope v1 offline slice (#4640)'
+  has_body: true
+  observed_paths:
+  - tests/ci/test_ci_diff_aware_test_selection_v1.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: ca9ad03e07f9e50e2d052779fc53aa62f40eec32
+  subject: 'feat(master-v2): bind display projection digest to completion evidence'
+  has_body: true
+  observed_paths: []
+  observed_labels:
+  - MasterV2
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 219c7bf14b17a3088fa63dc6507edb4044e9c7ae
+  subject: 'feat(ops): bind futures review chain to durable evidence'
+  has_body: true
+  observed_paths:
+  - archive/manifest
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 5f405b57a5ef6f58af6c091701206699aa00a4c8
+  subject: 'refactor(research): reuse canonical ohlcv loader'
+  has_body: true
+  observed_paths:
+  - scripts/run_backtest.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 6f2c3c4717a03bb2573ce66dfb334237fc9c1d0f
+  subject: 'feat(research): add quiet mode to phase41 sweep CLIs'
+  has_body: true
+  observed_paths:
+  - src/experiments/base.py.
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7fe16fd38016185dda589133756530946448447d
+  subject: 'feat(research): add quiet mode to sweep strategy CLI'
+  has_body: true
+  observed_paths:
+  - scripts/run_sweep_strategy.py
+  - src/sweeps/engine.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: cbbb1189612563aa7fd7fba44b8d09290dbfe3f3
+  subject: 'refactor(strategy): migrate config resolver to load_strategy'
+  has_body: true
+  observed_paths:
+  - scripts/run_strategy_from_config.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 56156a66f23827bf46b7a156e6cc08061a54acbd
+  subject: 'auto: feat/u2b-min-notional-s2-crossreference-docs-truth-map-guard-v1 -> main (#4188)'
+  has_body: true
+  observed_paths:
+  - docs/tests
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 31dd07bf7c844954e9d4e5ae6342ee19eb35da51
+  subject: 'auto: feat/gap4-gap7-ci-audit-section5-crosslink-v1 -> main (#4181)'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: cdafc812bd8231c29b0a23b9057a15087102e471
+  subject: 'auto: feat/gap1-gap3-ci-audit-section5-crosslink-v1 -> main (#4179)'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 703e9b7ccf5c07f0f0c20efccf7f375b37378ffd
+  subject: 'docs: add scheduler boundary CI audit preflight crosslink (#4177)'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: e5066f4d4e1fa009163071128bc096b8ba468a69
+  subject: 'auto: feat/runtime-lane-taxonomy-ci-audit-preflight-crosslink-v1 -> main (#4176)'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 1c86e7fe04dd57e02db993a714c733d0ac35358c
+  subject: 'auto: feat/pe-eer1-hold-binding-crosslink-chain-static-review-v1 -> main (#4174)'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: d17cc7d9bcb0e6e246e45ab9bfa93a624f421235
+  subject: 'docs: add EER1 CI audit section5 reciprocal crosslink guard (#4173)'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f80c34af8b87007eaf3ac94a30e8273135079dc8
+  subject: 'docs: add PE4 bounded observation closeout CI audit crosslink'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: b31db679d0ab69b617eb77206a03e297ed8b6aa7
+  subject: 'docs: add PE7 order cap CI audit crosslink'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a3733366206466fc806e336f950615e5267c0992
+  subject: 'docs: add section5 hold binding profile crosslinks (#4167)'
+  has_body: true
+  observed_paths:
+  - docs/tests
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 4907f9a9c6f6f2b61278b70e4ca16a2b30e19d7c
+  subject: 'docs: add paper L2 120min hold binding preflight crosslink (#4166)'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: b8a8775f030c8e54b25c7ac7ec87c7d5299ba256
+  subject: 'test: guard order capability readiness gap review (#4155)'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 9cbc6da3b34c47077a95979c724026cecacffd46
+  subject: 'auto: feat/preflight-process-gate-false-positive-dot-python-version-docs-tests-guard-v1 -> main (#4154)'
+  has_body: true
+  observed_paths: []
+  observed_labels:
+  - Peak_Trade
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 26b32dc69e22e88dc1ddde3c12e0916ada2010b1
+  subject: 'PE-8: Order-Capability fixture-binding offline durable closeout wiring guard'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 86cbc6c2326142b9eca089d56ec3dc540c338e46
+  subject: 'guard: Market tape SSR DOCS_TRUTH_MAP/CI_AUDIT static crosslink v1 (#4139)'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 29f46402f5d4ed378656e9870ca9214b41bf26d2
+  subject: 'guard: Order-Capability fixture-binding DOCS_TRUTH_MAP static crosslink v1 (#4138)'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 13f6e63bfa91ebab26d9baf604ba3f7bb2aebca0
+  subject: Add dest manifest verify RC cross-surface parity matrix guard (docs/tests) (#4137)
+  has_body: true
+  observed_paths:
+  - docs/tests
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 4c3257957a9749f59b5388a95aaa0650e784f712
+  subject: 'ci: add PRB scheduled workflow contract tests'
+  has_body: true
+  observed_paths:
+  - docs/tests
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: d48f920809a488c3f0b6c272da615f277d1cf9be
+  subject: Add U5C transform contract from Kraken probe to U2c snapshot
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: ea6c2d13c96c1070a32bebf17c99d036063fca3a
+  subject: Add U5B Kraken futures public market data probe
+  has_body: true
+  observed_paths:
+  - docs/surfaces
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 5e2e019821d60cd5e6567605891647a8508883d4
+  subject: Add U5 real futures market data source contract
+  has_body: true
+  observed_paths:
+  - docs/surfaces
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: d224d354c924ea024286025ace2eb60d0e78a79b
+  subject: 'docs/tests: reflect T3 bounded execute run attempt policy gate (#4017)'
+  has_body: true
+  observed_paths:
+  - docs/tests
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 2bad96ff8bcb6a57302c3c15f2764a201545e75b
+  subject: 'tests(ops): guard bounded network testnet preflight (#3974)'
+  has_body: true
+  observed_paths:
+  - docs/tests-only.
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 84337294b66ba6c77902c5b3aaabfe541ea6edee
+  subject: 'docs(ops): define tier1 primary evidence enforcement contract (#3970)'
+  has_body: true
+  observed_paths:
+  - docs/tests
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 724066b41e03ef5934e6b526ce159306e8127604
+  subject: 'docs(tests): CSC-RCHAIN 005c Scheduler 000253 SC-G governed reflection v0 (#3933)'
+  has_body: true
+  observed_paths:
+  - docs/tests
+  - scripts/run_scheduler.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a07a5c91144b01941d84176e864ebba91e5b471b
+  subject: CSC-RCHAIN 005a Bundle C inactive PARK-marker governed reflection v0 (#3932)
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7877f05b935bd214aa65f0055323f6da15128759
+  subject: 'docs: CSC-RCHAIN 005a Bundle B active non-PRB governed reflection v0 (#3931)'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f8db05d1d5b0a5149024658062f30f3998f8d37d
+  subject: 'docs/tests: CSC-RCHAIN 005a Bundle A PRB scorecard governed reflection v0 (#3929)'
+  has_body: true
+  observed_paths:
+  - docs/tests
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: e42e75e2a0094410e6b11177f794bbe05e52e386
+  subject: 'docs(ci): CSC-RCHAIN 005c Slice-1 governed reflection guard v0 (#3922)'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  - src/scripts
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f1fd7285ad3184a9f0e04914d714abf57a96af63
+  subject: Add CSC-RCHAIN 003d governed reflection docs/tests guards. (#3921)
+  has_body: true
+  observed_paths:
+  - docs/tests
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: c4b5f6e2f57b39e89889c172f3485cd9c54d61a0
+  subject: CSC-RCHAIN 003f-C governed reflection (docs/tests-only). (#3916)
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 707860b2e2dfc1b0369655c6b9e0b68546148b86
+  subject: 'docs: start cybersecurity visibility release (#3904)'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: b833248b717a9c41c2ccb8bd4d7b820a6efa05da
+  subject: 'ops: add remote runtime contract guard (#3848)'
+  has_body: true
+  observed_paths:
+  - docs/tests
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: c0a28af37c89c10c1d7e797c892ee3b880d13d2b
+  subject: 'fix(ci): exclude static contract tests from code filter (#3713)'
+  has_body: true
+  observed_paths:
+  - tests/ci
+  - tests/ops-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 112c8c1039cf7c57c777cc32d14cb88c69cf414e
+  subject: 'ops: add remote runtime command contract (#3682)'
+  has_body: true
+  observed_paths:
+  - docs/tests-only
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: c10ea7433a8f3c3ead2c1dcbedb048e399f4e3c6
+  subject: 'feat(webui): denser read-only Market v0 pro shell and ladder tables (#3441)'
+  has_body: true
+  observed_paths:
+  - src/Double-Play/JS
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 135c0782ccee3f055b5fdde65b16a8a7b6364eda
+  subject: 'test(webui): add API security-header route visibility contract v0 (#3423)'
+  has_body: true
+  observed_paths:
+  - src/webui
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: bdf9a8074f4d12dc8fe7c6f5fdc1a22fa6b5a418
+  subject: 'feat(webui): Market Surface v1 visual dashboard shell (template/tests/docs) (#3222)'
+  has_body: true
+  observed_paths:
+  - tests/docs
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 3fcaca613ab9c3053085a0a2865a5f8e9fa35b5c
+  subject: 'test(ops): add CLI contract tests for validate_merge_logs_setup.sh (#3173)'
+  has_body: true
+  observed_paths:
+  - docs/ops
+  - scripts/ops
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 395f51f7a179f64f6ea185287d23430ce5aac096
+  subject: 'test(ops): add CLI contract tests for check_ops_docs_navigation.sh (#3172)'
+  has_body: true
+  observed_paths:
+  - docs/ops/status
+  - scripts/ops
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7324b74fc4334d72730fc72bc36464b939a179ee
+  subject: 'test(ops): add CLI contract tests for check_required_ci_contexts_present.sh (#3171)'
+  has_body: true
+  observed_paths:
+  - tests/matrix/smoke
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 1a77e8ea9f843756d2b54573b9d84b4781bc2b9e
+  subject: 'feat(ops): add class a spot paper snapshot report v0 (#3159)'
+  has_body: true
+  observed_paths:
+  - src/execution
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 9f498980cb2950624461731bc0ee918b699e6009
+  subject: 'docs(ops): producer adapter pure stack test anchors v0 (#3061)'
+  has_body: true
+  observed_paths:
+  - src/tests/WebUI
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 997b15ec73fc101a2bad2b2815ce32199542fe59
+  subject: 'feat(forward): add market_data_provenance v1 to evaluate run manifests (#2994)'
+  has_body: true
+  observed_paths:
+  - scripts/_market_data_provenance.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: ce25b733f29ce8c7d5f82fe6fde9b5f4baefc8c0
+  subject: 'feat(ops): canonical bounded-pilot readiness preflight CLI (#2787)'
+  has_body: true
+  observed_paths:
+  - scripts/ops/check_bounded_pilot_readiness.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 521e051f484abeabf278cf82c51e8d4ca5d014d7
+  subject: 'fix: deterministic UTC hourly index for dummy returns (#2641)'
+  has_body: true
+  observed_paths:
+  - src/experiments/dummy_returns_timeline.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 779978e16d10806823b630e042c4d5078c77702b
+  subject: 'refactor(strategies): remove legacy MACD helper API (#2601)'
+  has_body: true
+  observed_paths:
+  - scripts/demo_execution_backtest.get_strategy_fn
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 34fcba2fc5ef2986a8e5b24b9690004539b0b56f
+  subject: 'feat(r-and-d): add summary html view for dashboard v0 (#2531)'
+  has_body: true
+  observed_paths:
+  - tests/test_r_and_d_api.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 60f42533aeb00317f80a9871eab0ef68205dc5b5
+  subject: 'auto: feat/r-and-d-dashboard-v0-experiment-detail -> main (#2529)'
+  has_body: true
+  observed_paths:
+  - tests/test_live_web.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 807c16ea285ad6b066b13d9d02042615c4608234
+  subject: 'docs(ops): add Ops Cockpit payload read-model contract + key test (#2521)'
+  has_body: true
+  observed_paths:
+  - tests/ops/test_ops_cockpit_payload_top_level_contract.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 1725145c0cabc2a39bd0cdbd0915eec80ac4b648
+  subject: 'feat(scripts): LB-EMG-001 mock emergency close shell (dry_run default) (#2419)'
+  has_body: true
+  observed_paths:
+  - tests/scripts.
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7ca8e0b6d5f4f608f2fc25d0aca7eb2968e3b916
+  subject: 'docs(ops): replace placeholder H1 on ops README (link audit) (#2306)'
+  has_body: true
+  observed_paths:
+  - docs/README.md
+  - docs/WORKFLOW_FRONTDOOR.md
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 8ef487927dc69b22fdd409d379d122d0fd90e2db
+  subject: 'feat(ops): ignore bare path matches inside inline code (reference targets) (#2303)'
+  has_body: true
+  observed_paths:
+  - scripts/obs/foo.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: af223f0c25280a7b447706ce49864bb7dde50b28
+  subject: 'docs(ops): fix dead runbook index links (dashboard watch-only) (#2302)'
+  has_body: true
+  observed_paths:
+  - docs/webui/LIVE_STATUS_PANELS.md.
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 6217d852f9e453bdf73679e018ba609a4401fffb
+  subject: 'auto: feat(ops): add src/scripts top-file slices to placeholder target map (#2237)'
+  has_body: true
+  observed_paths:
+  - src/scripts
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: b99e5073bbc6640f79efe63b8ab4cb43e35cf7f1
+  subject: 'feat(ops): add local bounded secret launcher and validation closeout (#1854)'
+  has_body: true
+  observed_paths:
+  - docs/ops/examples/bounded_pilot.env.example
+  - docs/ops/runbooks/LOCAL_BOUNDED_SECRET_LAUNCHER_RUNBOOK.md
+  - docs/ops/specs/LOCAL_BOUNDED_SECRET_ENV_FILE_CONTRACT.md
+  - scripts/ops/run_bounded_pilot_with_local_secrets.py
+  - tests/ops/test_run_bounded_pilot_with_local_secrets.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: dbf28e50d51efe0b192332f90d9264e1d06df3c7
+  subject: 'docs: add TREASURY_BALANCE_SEPARATION_SPEC (#1797)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 578b72a6c6be2e1270db4356b5750cbd8b297b8f
+  subject: 'docs(ops): add pilot go/no-go operational slice mapping (#1796)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 161ddace143899dcd2f2ad45b5f984b9f632d0cc
+  subject: 'docs: add RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY (#1795)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 8e7980886f95a332747a8086f35dfe9b07b6a8f0
+  subject: 'docs: add RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH (#1793)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7d0fef7785b1f1f64263fdcf8324d9754741c25f
+  subject: 'feat(ops): harden dependencies_state with P85 and market_data_cache signals (#1788)'
+  has_body: true
+  observed_paths:
+  - docs/ops/specs/OPS_SUITE_DEPENDENCIES_STATE_DATA_QUALITY_REVIEW.md
+  - src/webui/ops_cockpit.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 2a7c020d4020db4a9e35b0a5bc45f36ad4cbc3a9
+  subject: 'feat(ops): harden policy_state with config and kill-switch signals (#1787)'
+  has_body: true
+  observed_paths:
+  - docs/ops/specs/OPS_SUITE_POLICY_STATE_REAL_SIGNAL_REVIEW.md
+  - src/webui/ops_cockpit.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a8dcbadcf5e3070f99856b322604fc8b6804d9b8
+  subject: 'feat(ops): harden operator_state with config and kill-switch signals (#1786)'
+  has_body: true
+  observed_paths:
+  - docs/ops/specs/OPS_SUITE_OPERATOR_STATE_REAL_SIGNAL_REVIEW.md
+  - src/webui/ops_cockpit.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: cdf3d44b36e368687b236ffba81d24231c8a81ca
+  subject: 'feat(ops): add live_runs exposure reader for Ops Cockpit (#1781)'
+  has_body: true
+  observed_paths:
+  - src/live/exposure_reader.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: c5ecd2dee3d2821fba251cf2cb9aabf53e7fd03e
+  subject: 'docs(governance): add UNTRACKED_LOCAL_REPORTS_POLICY for local-only reports (#1762)'
+  has_body: true
+  observed_paths:
+  - docs/GOVERNANCE_DATAFLOW_REPORT.md
+  - docs/REPO_AUDIT_REPORT.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: e2fe223af14f3641acb9ad1bdafa8eb139081a29
+  subject: 'auto: feat/full-scan-wave35-consolidation-audit-snapshot -> main (#1761)'
+  has_body: true
+  observed_paths:
+  - docs/GOVERNANCE_DATAFLOW_REPORT.md
+  - docs/REPO_AUDIT_REPORT.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 86ee5e79115544f1d30bea60e510e3b84558ea98
+  subject: 'docs(ops): Wave 29 required contexts proof review — evidence package (#1757)'
+  has_body: true
+  observed_paths:
+  - docs/GOVERNANCE_DATAFLOW_REPORT.md
+  - docs/REPO_AUDIT_REPORT.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 4cd50b850e9febde1f03a66faa97fe90050c5394
+  subject: 'docs(ops): Wave 27 Tier-1 CI/Ops docs alignment (F07–F11, F02, F03) (#1755)'
+  has_body: true
+  observed_paths:
+  - docs/INDEX
+  - docs/runbooks
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 4e97de38a3919ff5643c757a0adc90af04af7750
+  subject: 'feat(ops): Wave 26 CI/Ops hygiene review — classification and planning (#1754)'
+  has_body: true
+  observed_paths:
+  - docs/GOVERNANCE_DATAFLOW_REPORT.md
+  - docs/REPO_AUDIT_REPORT.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f79e11e3e3e25a51cf6ba8063282a8424a796a3c
+  subject: 'docs(ops): Wave 25 archive/historical consolidation review — classification only (#1753)'
+  has_body: true
+  observed_paths:
+  - archive/historical
+  - docs/GOVERNANCE_DATAFLOW_REPORT.md
+  - docs/REPO_AUDIT_REPORT.md
+  - docs/REPO_AUDIT_REPORT.md.
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 5f70e8e135887fcc088df248919b19e21d2310a5
+  subject: 'chore(ops): Wave 19 safe-delete execution evidence — 0 branches deleted (#1741)'
+  has_body: true
+  observed_paths:
+  - docs/GOVERNANCE_DATAFLOW_REPORT.md
+  - docs/REPO_AUDIT_REPORT.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 791f4136ea7541440d5c2c6adc4b836aa7f208ed
+  subject: 'auto: feat/full-scan-wave18-disposal-proof-review -> main (#1740)'
+  has_body: true
+  observed_paths:
+  - docs/GOVERNANCE_DATAFLOW_REPORT.md
+  - docs/REPO_AUDIT_REPORT.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 4bbb110c6377dd5775f5ef6cef09f96c19b580d2
+  subject: 'auto: feat/full-scan-wave17-branch-archive-phase8-review -> main (#1739)'
+  has_body: true
+  observed_paths:
+  - docs/GOVERNANCE_DATAFLOW_REPORT.md
+  - docs/REPO_AUDIT_REPORT.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 91f2723c7880320d3f591b5ef61593114d414441
+  subject: 'feat(ops): Wave 17 Phase 8 — Branch Archive Review (recover/wip/backup/tmp) (#1738)'
+  has_body: true
+  observed_paths:
+  - docs/GOVERNANCE_DATAFLOW_REPORT.md
+  - docs/REPO_AUDIT_REPORT.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: aa1c3ced19322356a265290509a783db989b67b7
+  subject: 'auto: feat/full-scan-wave16-historical-governance-docs -> main (#1737)'
+  has_body: true
+  observed_paths:
+  - docs/INDEX.md
+  - docs/X
+  - docs/audit/
+  - docs/audit/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 6b6147d00871c621ce44f036d9757efee6f68407
+  subject: 'ops(branch-archive): phase 4 salvage/recover consolidation review (#1727)'
+  has_body: true
+  observed_paths:
+  - archive/delete
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: d2b81d58980aa34317b0401ad3f531a7313c9902
+  subject: 'docs(drift): canonical index + ECM differentiation + superseded markers (#1724)'
+  has_body: true
+  observed_paths:
+  - docs/INDEX.md
+  - docs/features
+  - docs/ops/RUNBOOK_INDEX.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 2529dd9f68b09afa8af074c9cc1d5800807e6920
+  subject: 'ops: add macOS LaunchAgent install/uninstall for operator_all (local automation) (#1670)'
+  has_body: true
+  observed_paths:
+  - docs/ci
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 87136581e9c32ea77b3d2a37fd2796ef84667366
+  subject: 'auto: feat/p4c-l2-market-outlook -> main (#1522)'
+  has_body: true
+  observed_paths:
+  - tests/fixtures/p4c_l2_market_outlook/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 607f1c4a79e53177478c60ccb675d0d3e9018ed7
+  subject: 'docs(ops): Phase S — canonical registry index + DONE marker (#1505)'
+  has_body: true
+  observed_paths:
+  - docs/ops/registry/INDEX.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 0923d7829f0474ef90e558d2fdfe33af5a48d866
+  subject: 'feat(ops): Phase Q — operator verify entrypoint (#1503)'
+  has_body: true
+  observed_paths:
+  - docs/ops/registry/
+  - docs/ops/registry/README.md
+  - scripts/ops/verify_from_registry.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 9d861e4ddba3f5fc9ac1b45964dd195d392a2941
+  subject: feat/p104 soak watch v1 (#1430)
+  has_body: true
+  observed_paths:
+  - docs/analysis/p104/README.md
+  - docs/ops/services/launchd_p104_soak_watch_v1.template.plist
+  - scripts/ops/install_launchd_p104_soak_watch_v1.sh
+  - scripts/ops/p104_soak_watch_v1.sh
+  - tests/p104/test_p104_soak_watch_exists.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a108c39a7649fb5f825b888851918ad9513d32f0
+  subject: feat/p44 pr ops runbook v1 (#1356)
+  has_body: true
+  observed_paths:
+  - docs/ops
+  - docs/ops/README.md
+  - docs/ops/pr/pr_ops_v1_runbook.md
+  - docs/ops/runbooks/README.md
+  - scripts/ops/p44_
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: d3d1a8060279542570abb56b2085727d83b163ec
+  subject: 'auto: feat/ci-trigger-hardening-v1 -> main (#1351)'
+  has_body: true
+  observed_paths:
+  - docs/ops/ci/trigger_runbook.md
+  - scripts/ops/ci_pr_checks_retrigger_v1.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7686e369df50ab696090a1f53e5350931790628e
+  subject: 'exec(ledger): add deterministic ledger accounting (slice2) (#1322)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 1966dee464dd14892e35d168a87c342e5f7d95b0
+  subject: 'docs(ops): add PR body and review pack for Phase H todo index helper (#1320)'
+  has_body: true
+  observed_paths:
+  - docs/analysis/p23/README.md
+  - docs/governance/matrix
+  - docs/grafana/workflow-only
+  - docs/ops/README.md
+  - docs/runbooks/archives
+  - scripts/ops/cmes_evidence_bundle.py
+  - src/execution_pipeline/store.py
+  - src/risk/cmes/facts.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 955d18ac481fc99ef9e82d3c980de9654c13304f
+  subject: 'auto: feat/metrics-ulcer-recovery -> main (#1271)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 6678a478cbc0d25076a16760e97e37a47375a88d
+  subject: Docs/runbook risk strategy cmes (#1238)
+  has_body: true
+  observed_paths:
+  - scripts/ops/cmes_evidence_bundle.py
+  - src/risk/cmes/facts.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 24fa37761d96b54d91ec711f5b2b76b2850f1ca2
+  subject: 'Governance: AI autonomy matrix single-source + consistency gate + hooks bootstrap (#1158)'
+  has_body: true
+  observed_paths:
+  - docs/governance/matrix
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7a600424410b66839b4880a11be9804134d062f1
+  subject: 'fix: ruff format src/execution_pipeline/store.py (#1130)'
+  has_body: true
+  observed_paths:
+  - src/execution_pipeline/store.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 32eab2f1c04ed5170e1198da4fdd28beea04f0c3
+  subject: 'feat(cme): NQ/MNQ enablement MVP (specs, roll, continuous, docs/scripts) (#1093)'
+  has_body: true
+  observed_paths:
+  - docs/scripts
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 1d42adc74ea4b0461d21114931033df8e69e9faa
+  subject: 'docs(ops): add Mode B metricsd operator verify evidence (#1079)'
+  has_body: true
+  observed_paths:
+  - docs/ops/EVIDENCE_INDEX.md.
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 797751816fe5a350d82df44812552f50bbd401df
+  subject: 'fix(obs): make pt_metricsd runnable from repo root (#1077)'
+  has_body: true
+  observed_paths:
+  - scripts/obs/pt_metricsd.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: ec162db736619eb03eddd1973814b579ed1f149f
+  subject: 'docs(ops): add merge log for Item A series (#1032)'
+  has_body: true
+  observed_paths:
+  - docs/ops/merge_logs/PR_1031_MERGE_LOG.md
+  - docs/ops/merge_logs/README.md
+  - scripts/ops/check_merge_log_hygiene.py
+  - scripts/ops/pt_docs_gates_snapshot.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f19ef7455b155c14468df2d2cacb6e80ae1ccd4d
+  subject: 'techdebt(A): two-pass allocation for portfolio backtests (#1027)'
+  has_body: true
+  observed_paths:
+  - src/backtest/engine.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 6724e265acd9e2aecbd631e3073f71527225f34f
+  subject: 'obs(ops): add AI Live local verify wrapper + runbook quickstart (#991)'
+  has_body: true
+  observed_paths:
+  - tests/docs
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: ab44e9e176bb27e0193a0fd57d5f5bdc4a49b8ba
+  subject: 'docs(ops): add PR #994 merge log (#995)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md.
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: fb816ce004f9fb950cd686efe66c0da83333ee45
+  subject: 'obs(verify): harden Prometheus query parsing (#948)'
+  has_body: true
+  observed_paths:
+  - scripts/obs/_prom_query_json.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 4452e954dd3b1502adea82c9beff3dd87195d110
+  subject: 'feat(obs): add AI Live telemetry exporter + Grafana row (#955)'
+  has_body: true
+  observed_paths:
+  - src/execution/orchestrator.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 2919d69a14c6636b1a5c08ae46078722aeb1e59d
+  subject: 'obs(grafana): operator home + drilldowns (ux pack v5) (#950)'
+  has_body: true
+  observed_paths:
+  - scripts/obs
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: bf024942b142e1fb9bcfd0d05a504d5159c36da3
+  subject: 'docs(ops): add repo-root legacy docs archive (additive) (#807)'
+  has_body: true
+  observed_paths:
+  - docs/ops/archives/repo_root_docs/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 5463138ea830ed4e27646c4ab3673d69afe9228a
+  subject: 'docs(observability): add grafana-only compose (prometheus-local) (#760)'
+  has_body: true
+  observed_paths:
+  - docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: ace815cdacd32cbb1b551f5dc9ea248689a47ec8
+  subject: 'docs(observability): add labeled dashboard for prometheus-local (#759)'
+  has_body: true
+  observed_paths:
+  - docs/webui/observability/grafana/dashboards/peaktrade-labeled-local.json
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a7ed025ecbe3c60d4a801c8698d0a241970db343
+  subject: 'docs(observability): provision grafana + default prometheus-local datasource (#758)'
+  has_body: true
+  observed_paths:
+  - docs/configs
+  observed_labels:
+  - Peak_Trade
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 85cd52ca835ca4bd3440e6c194c56986d8f6323e
+  subject: 'feat(ci): Phase 4A Evidence Pack CI Gate + Auto-Creation (#616)'
+  has_body: true
+  observed_paths:
+  - docs/ai/EVIDENCE_PACK_CI_GATE.md
+  - scripts/validate_evidence_pack_ci.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 1cd1646897dc7d2b6e5dba29b79cb555edf848e1
+  subject: 'docs(ops): Add CI triage runbook for docs gates fix-forward (#729)'
+  has_body: true
+  observed_paths:
+  - docs/ops/runbooks/README.md
+  - docs/ops/runbooks/RUNBOOK_DOCS_GATES_FIX_FORWARD_CI_TRIAGE_CURSOR_MULTI_AGENT.md
+  - src/utils
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 4d6920d12a4eee5935fcdf6cf0dccf6c1eacb307
+  subject: 'docs(ops): add docs-only PR lifecycle + fastpath runbooks (#728)'
+  has_body: true
+  observed_paths:
+  - docs/ops/file.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: fc52edc20d54968be42c2cc1ced217f3ff733db3
+  subject: 'fix(docs): fix token policy violations in pointer pattern quarterly review runbook (#723)'
+  has_body: true
+  observed_paths:
+  - docs/ops/runbooks/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: b72bd78e3fec4639a1082ec63f4a16c10e6cd713
+  subject: 'docs(ops): add PR #721 merge log (#722)'
+  has_body: true
+  observed_paths:
+  - docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7c9f9e2cb55efcf1dbab354c1c946bcb0440f199
+  subject: 'docs(ops): add pointer pattern operations runbook (#721)'
+  has_body: true
+  observed_paths:
+  - docs/ops/runbooks/README.md
+  - docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: baa8b383fc926c02ea134d93fc4686b4953696b1
+  subject: 'docs(ops): integrate commit salvage runbook with pointer pattern (#719)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PR_718_MERGE_LOG.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 8e3d3cb3eecef06a52b211ebe2416b8bd73b119f
+  subject: 'docs(ops): Phase 9C closeout graph + salvage runbook (#718)'
+  has_body: true
+  observed_paths:
+  - docs/ops/example.md
+  - docs/phase9c-closeout-graph
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7cc8e98edaaa9fd6cc7e8c57c15bb025cacde933
+  subject: 'docs(ops): add PR #714 merge log and evidence index entry (#715)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PRE_PR_FULL_SCAN_CI_PARITY.md
+  - docs/ops/merge_logs/PR_714_MERGE_LOG.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 02c271adda3f34ecf4d71658897d47f659f404f6
+  subject: 'docs(ops): Phase 9C Wave 3 remediation (broken targets + token policy) (#712)'
+  has_body: true
+  observed_paths:
+  - docs/...
+  - docs/SMOKE_TESTS.md
+  - docs/ops/PR_250_MERGE_LOG.md
+  - scripts/...
+  - src/...
+  - tests/...
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 2243cfacd947cb13f26d0c54522896c175f362ef
+  subject: 'docs(ops): reintegrate runbooks & incident handling into navigation (#706)'
+  has_body: true
+  observed_paths:
+  - docs/README.md
+  - docs/runbooks-frontdoor-reintegration
+  - docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 290b4fafbc8b047f8f5b6bbc2e589546c505e2ab
+  subject: 'docs(ops): add PR #696 merge log (#697)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PR_696_MERGE_LOG.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 37a51cb8a198a893109e9f12fd0f671bc6d2941a
+  subject: 'docs(ops): PR #693 post-merge documentation + evidence + frontdoor integration (#694)'
+  has_body: true
+  observed_paths:
+  - docs/ops/EVIDENCE_INDEX.md
+  - docs/ops/PR_693_MERGE_LOG.md
+  - docs/ops/PR_693_POST_MERGE_VERIFICATION.md
+  - docs/ops/README.md
+  - docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md
+  - scripts/ops/autofix_docs_token_policy_inline_code.py
+  - scripts/ops/validate_docs_token_policy.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: e51e55aa880732c029824a10ac64e1c0f4e23cff
+  subject: 'ci(ops): add docs token policy gate + tests + runbook (#693)'
+  has_body: true
+  observed_paths:
+  - docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md
+  - docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md
+  - docs/update
+  - scripts/local.py
+  - scripts/ops/docs_token_policy_allowlist.txt
+  - scripts/ops/validate_docs_token_policy.py
+  - scripts/run.py
+  - tests/ops/test_validate_docs_token_policy.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7894e5776604eea1083fac34dc3807138283c073
+  subject: 'docs(ops): post-merge docs for PR #690/#691 (#692)'
+  has_body: true
+  observed_paths:
+  - docs/...
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 55c961c40c36f31b10e8cb964f922d25091aabb8
+  subject: 'docs(ops): integrate workflow notes + docs-reference-targets-gate policy (#691)'
+  has_body: true
+  observed_paths:
+  - docs/BACKTEST_ENGINE.md
+  - docs/PEAK_TRADE_OVERVIEW.md
+  - docs/README.md
+  - docs/STRATEGY_DEV_GUIDE.md
+  - docs/ops/README.md
+  - docs/ops/workflows/
+  - scripts/run_walkforward.py
+  - src/data/data_loader.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: d41c1f3f9181efe6d5c7005691d5187f521f9fe5
+  subject: 'docs(ops): add docs frontdoor + crosslink hardening (#690)'
+  has_body: true
+  observed_paths:
+  - docs/BACKTEST_ENGINE.md
+  - docs/PEAK_TRADE_OVERVIEW.md
+  - docs/README.md
+  - docs/STRATEGY_DEV_GUIDE.md
+  - scripts/run_walkforward.py
+  - src/data/data_loader.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7152c7251cda868c7fd71fdb124103b7c5d79a88
+  subject: 'docs(ops): PR #686 closeout artifacts (merge log + evidence index) (#687)'
+  has_body: true
+  observed_paths:
+  - docs/installation-roadmap-integration-2026-01-12
+  - docs/ops/EVIDENCE_INDEX.md
+  - docs/ops/merge_logs/PR_686_MERGE_LOG.md
+  - scripts/ops/verify_docs_reference_targets.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: ed2640ba6f408f0fddd58c2ace2ba2f8dd847e4c
+  subject: 'docs(ops): Archive workflow docs integration temp artifacts (#685)'
+  has_body: true
+  observed_paths:
+  - docs/ops/_archive/workflow_docs_integration/2026-01-12/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: cca487537f731cfea92cf388a4ed5d43dc005a6e
+  subject: 'docs(ops): Workflow docs integration (frontdoor + runbook index) (#684)'
+  has_body: true
+  observed_paths:
+  - docs/WORKFLOW_FRONTDOOR.md
+  - docs/ops/README.md
+  - docs/ops/runbooks/RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a9d0ef805aecef6776aa05b910db130fced475ff
+  subject: 'docs(ops): add PR #669 merge log + evidence (post-merge) (#670)'
+  has_body: true
+  observed_paths: []
+  observed_labels:
+  - Peak_Trade
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f960d61e725ad5cd1d17c50427cad3c7e4c2cfc5
+  subject: 'docs(ops): add PR #669 dispatch-guard no-op proof merge log + evidence index'
+  has_body: true
+  observed_paths: []
+  observed_labels:
+  - Peak_Trade
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f2826d0a9b8f148be5e6e8fa5226978c27fd964d
+  subject: 'docs(ops): Phase 5C dispatch guard enforcement closeout (#667)'
+  has_body: true
+  observed_paths:
+  - docs/ops/EVIDENCE_INDEX.md
+  - docs/ops/PHASE5C_WORKFLOW_DISPATCH_GUARD_ENFORCEMENT_CLOSEOUT.md
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f750bc48c0208b3d7ac54fd67f316a05a9c7a8ee
+  subject: 'feat(aiops): Phase 5B trend ledger consumer from seed (#661)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 632c0618433b05bb89cc7a87f587de02c975c93f
+  subject: 'docs(ops): Phase 4E post-merge audit docs (#658)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PR_656_MERGE_LOG.md
+  - docs/ops/reports/2026-01-11_PHASE4E_POST_MERGE_AUDIT.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 8fa3ce80da77c361520371ac47a04d1cc6d8957a
+  subject: 'docs(ops): add PR #645 merge log (Phase 4C: L4 Critic Determinism) (#646)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: b048b7a61f119946a58109523b9c2066a3029e77
+  subject: 'docs(ops): D03A drill — CI polling without watch timeouts (#633)'
+  has_body: true
+  observed_paths:
+  - docs/drill-d03a-ci-polling-20260109
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 1db287c366eafa2afb93e9b3101229ebb1a4ead2
+  subject: 'docs(ops): D02 meta-drill — M01 process + D03A selection (CI polling) (#632)'
+  has_body: true
+  observed_paths:
+  - docs/ops/drills/D02_...
+  - docs/ops/drills/backlog/D02_...
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a040c3c8297d88031bd049367fffd3c79c6ad394
+  subject: 'docs(ops): add control center incident triage + operator cheatsheet (#626)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  - docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_INCIDENT_TRIAGE.md
+  - docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M3_CONTROL_CENTER_OPERATOR_CHEATSHEET.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: c921d103b8ff0e05810613cbe270a320426d17cf
+  subject: 'docs(ops): AI Autonomy Control Center v0.1 - Dashboard + Layer Matrix + Navigation (#624)'
+  has_body: true
+  observed_paths:
+  - docs/ai-autonomy-control-center-v0
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 15b60968c053b00dd0b27fef05b725f18a4f1fdb
+  subject: 'docs: AI Autonomy 4B M2 operator runbook (#615) (#619)'
+  has_body: true
+  observed_paths:
+  - docs/governance/ai_autonomy/README.md
+  - docs/ops/PR_615_MERGE_LOG.md
+  - docs/ops/README.md
+  - docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 3d86c07320dbd46dde7e21b695ca837ec4d666c5
+  subject: 'feat(ai): 4B M2 cursor multi-agent workflow (#617)'
+  has_body: true
+  observed_paths:
+  - docs/ops/runbooks/
+  - docs/runbooks/
+  observed_labels:
+  - Peak_Trade
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 340dd29c652149ea482fe5a97eb8cb8ad939fc3b
+  subject: 'docs(ops): add PR #614 merge log template (#615)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PHASE3B_EVIDENCE_PACK_QUICKSTART.md
+  - docs/ops/README.md
+  - scripts/validate_evidence_pack.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f365b3d7e6afe944d1213302bcbecb2c06949284
+  subject: 'feat(ai-autonomy): Phase 3B – Evidence Pack Validator (#614)'
+  has_body: true
+  observed_paths:
+  - scripts/validate_evidence_pack.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7f35423a565e7054e47ef529c888f982909abea3
+  subject: 'docs(ops): add PR #611 merge log (AI Autonomy Phase 3) (#613)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 0d5d97ababce51a52e025a2d548c67d94ae31a81
+  subject: 'feat(ai-autonomy): Phase 3 – Runtime Orchestrator v0 (fail-closed) (#611)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PHASE3_CRITIC_REVIEW.md
+  - docs/ops/PHASE3_MISSION_BRIEF.md
+  - docs/ops/PHASE3_ORCHESTRATOR_QUICKSTART.md
+  - docs/ops/PHASE3_PR_DESCRIPTION.md
+  - docs/ops/PHASE3_VERIFICATION_EVIDENCE_PACK.md
+  - scripts/orchestrator_dryrun.py
+  - src/ai_orchestration/orchestrator.py
+  - tests/ai_orchestration/test_orchestrator.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: cf7a500bc2d0a9fd56b0009fb6350bb6984de148
+  subject: docs(ai-autonomy):dd Phase 2 capability scopes, model registry, and templates (#610)
+  has_body: true
+  observed_paths:
+  - docs/config/src/tests/scripts
+  - tests/ai_orchestration/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 70f035772c68856ecf925ecfc5ca807db2845e3f
+  subject: 'docs(ops): add ops templates for merge logs and audit artifacts (#598)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  - docs/ops/templates/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 519bd62bff636d504ee81b6eb14b5950346f6954
+  subject: docs/merge log pr 350 docs reference targets golden corpus (#587)
+  has_body: true
+  observed_paths:
+  - docs/merge
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: bfeb9c52fe635ab599408c6479657011ea9d4aa7
+  subject: docs/frontdoor roadmap runner (#592)
+  has_body: true
+  observed_paths:
+  - docs/frontdoor
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a71e1e6bcf31506d3706546e7e6d12fc9d8368bd
+  subject: 'docs(ops): expand Evidence Index to v0.1 (Tier B entries) (#607)'
+  has_body: true
+  observed_paths:
+  - docs/ops/EVIDENCE_INDEX.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 944bc9980079018beb3b57e5d1290603b1874fd3
+  subject: 'docs(ops): Add PR #605 merge log and evidence entry (#606)'
+  has_body: true
+  observed_paths:
+  - scripts/run_audit.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 59fa5eb42bc00e8acb406ec535f3fca565d567a6
+  subject: 'fix(audit): Remediate pip-audit vulnerabilities and fix Makefile path (#605)'
+  has_body: true
+  observed_paths:
+  - docs/ops/AUDIT_DEPENDENCY_REMEDIATION_2026-01-07.md
+  - scripts/ops/run_audit.sh
+  - scripts/run_audit.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 0cc07c40a733501242decc1475e2139fd7e693ca
+  subject: 'feat(ops): Tier B Phase 1 Evidence Entries (4 entries) (#603)'
+  has_body: true
+  observed_paths:
+  - docs/ops/evidence/
+  - scripts/ops/check_required_ci_contexts_present.sh
+  - scripts/ops/verify_docs_reference_targets.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 517412a9316f56bfcdffebcc4ce0dc84a5d7a8b4
+  subject: 'feat(ops): Evidence System v0.2 (schema + generator + validator) (#602)'
+  has_body: true
+  observed_paths:
+  - docs/ops
+  - docs/ops/EVIDENCE_ENTRY_TEMPLATE.md
+  - docs/ops/EVIDENCE_INDEX.md
+  - docs/ops/EVIDENCE_SCHEMA.md
+  - docs/ops/EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md
+  - scripts/ops
+  - scripts/ops/generate_evidence_entry.py
+  - scripts/ops/validate_evidence_index.py
+  - src/governance/policy_critic/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 8f1f105b30678f7a9e9b237bee37706f73b9c82d
+  subject: 'docs(ops): evidence index v0.1 - add Priority 2+3 entries (config + runbook)'
+  has_body: true
+  observed_paths:
+  - docs/ops/EXECUTION_TELEMETRY_INCIDENT_RUNBOOK.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 89e729c6a629bb69dd0fabb53666020bb612c3a6
+  subject: 'docs(ops): add placeholder standards v0 (policy + deterministic generator) (#596)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: e555a083397e3856d0beb8693750c642c11b300b
+  subject: 'docs(ops): add docs link debt baseline tracking system (#595)'
+  has_body: true
+  observed_paths:
+  - docs/ops
+  - docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json
+  - docs/ops/DOCS_REFERENCE_TARGETS_DEBT_GUIDE.md
+  - scripts/tests
+  - src/trading/advanced_orders.py
+  - tests/ops/test_docs_reference_targets_baseline.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 33973670050540f8d3b18f77809f42683610c707
+  subject: 'docs(ops): consolidate stub targets after PR #593 (#594)'
+  has_body: true
+  observed_paths:
+  - docs/frontdoor-roadmap-runner
+  - docs/merge-log-pr-350-docs-reference-targets-golden-corpus
+  - docs/ops
+  - docs/ops-pr-85-merge-log
+  - docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md
+  - docs/ops/PR_76_MERGE_LOG.md
+  - docs/ops/PR_85_MERGE_LOG.md
+  - docs/ops/PR_93_MERGE_LOG.md
+  - docs/ops/WAVE3_MERGE_READINESS_MATRIX.md
+  - docs/ops/merge_logs/2025-12-25_pr-350_docs-reference-targets-golden-corpus.md
+  - docs/ops/pr-93-merge-log
+  - docs/pr-76-merge-log
+  - scripts/ops/wave3_restore_batch.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 064cf6cacad08bf1566fd3fbc109856c57a94d19
+  subject: 'docs(ops): Wave3 control framework documentation (#593)'
+  has_body: true
+  observed_paths:
+  - docs/ai/
+  - scripts/aiops/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 897a87035982b094b6881d2def587857288170e0
+  subject: 'docs(ops): add Wave Restore tools to README index (#583)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 38831e987c36ef7ebdf5207436a24efb683352b1
+  subject: 'docs(ops): add Wave Restore runbook and status dashboard (#582)'
+  has_body: true
+  observed_paths:
+  - scripts/ops/wave_restore_status.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f4911214ca8f05e459b038214d50677f06f77e76
+  subject: 'docs(ops): add PR #569 merge log to README index (#580)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: c4227c824b63c0be5001f59d322742f3e57a6d19
+  subject: 'docs(navigation): add audit/governance navigation + index new docs (#577)'
+  has_body: true
+  observed_paths:
+  - docs/README.md
+  - docs/audit/AUDIT_RUNBOOK_COMPLETE.md
+  - docs/audit/README.md
+  - docs/governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md
+  - docs/governance/README.md
+  - docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE.md
+  - docs/ops/README.md
+  - docs/ops/SESSION_CLOSEOUT_20260106_PEAK_TRADE_DOCS_OPS_INTEGRATION.md
+  - docs/ops/TOOLS_PEAK_TRADE_SCRIPTS_GAP_ANALYSIS.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 5c8d53900f8fb4f432eedc8c2784ca7ba7ec80cf
+  subject: 'docs(ops): add PR #569 merge log to README index'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 410feb3a717b411efed1c2f75f9b77c86a31b5f1
+  subject: 'feat(tracking): recover missing MLflow declarations from worktree patches (#569)'
+  has_body: true
+  observed_paths:
+  - docs/ops/WORKTREE_PATCHES_RECOVERY_20260105_REPORT.md
+  - src/core/tracking.py
+  - tests/test_tracking_mlflow_integration.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: ecf34d25a6c1fe5075523074ad25358e2ee1f2da
+  subject: 'feat(experiments): add Phase 16C experiment tracking system (#558)'
+  has_body: true
+  observed_paths:
+  - docs/dev/REPORTING.md
+  - docs/ops/PHASE_16C_FILES.txt
+  - docs/ops/PHASE_16C_IMPLEMENTATION_SUMMARY.md
+  - scripts/dev/compare_runs.py
+  - scripts/dev/demo_tracking.py
+  - src/experiments/tracking/__init__.py
+  - src/experiments/tracking/peaktrade_run.py
+  - src/experiments/tracking/run_summary.py
+  - tests/test_compare_runs.py
+  - tests/test_run_summary_contract.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a9749a5ecbc254c3a767693c5a9238d51a3ab874
+  subject: 'docs(ops): Add PR #562 merge log and update ops index'
+  has_body: true
+  observed_paths:
+  - docs/ops/PR_562_MERGE_LOG.md
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 0b8b2797b7a1bdeeac9bfaa8a7baa664956baf09
+  subject: 'feat(aiops): AI-Ops Toolchain v1.1 - Evals runner + CI + scoreboard + testcases (#562)'
+  has_body: true
+  observed_paths:
+  - docs/ai/
+  - docs/ai/AI_EVALS_SCOREBOARD.md
+  - docs/evals
+  - scripts/aiops/
+  - scripts/aiops/run_promptfoo_eval.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 452bf1e6d2570b00c4421602ddf614e3d04441e3
+  subject: 'docs(ops): Add PR #560 merge log'
+  has_body: true
+  observed_paths:
+  - docs/ops/PR_560_MERGE_LOG.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 13d94ed15de07252bcfdbd54c4e4f99c32463c6b
+  subject: 'feat(aiops): Cursor Multi-Agent toolchain v1 (governance-first)'
+  has_body: true
+  observed_paths:
+  - docs/ai/
+  - docs/ops/runbooks/
+  observed_labels:
+  - Peak_Trade
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 0431a6c98f467a8aa65444227add4725f4fcdfd2
+  subject: 'test(data): add comprehensive data layer test suite'
+  has_body: true
+  observed_paths:
+  - tests/conftest.py
+  - tests/test_data_layer_
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: b3352c3364a53012af04697daf7f49b15276d270
+  subject: 'feat(obs): enhance OpenTelemetry integration'
+  has_body: true
+  observed_paths:
+  - src/obs/__init__.py
+  - src/obs/otel.py
+  - tests/obs/__init__.py
+  - tests/obs/test_otel.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7ce9d8cb58b50ded1ae3daa0067531161436feb0
+  subject: 'docs(risk): add risk layer phase0 alignment scaffolding (#391)'
+  has_body: true
+  observed_paths:
+  - docs/risk/RISK_LAYER_ROADMAP.md
+  - docs/risk/roadmaps/
+  - docs/risk/roadmaps/README.md
+  - docs/risk/roadmaps/RISK_LAYER_ROADMAP.md
+  - src/risk_layer/
+  - src/risk_layer/__init__.py
+  - src/risk_layer/exceptions.py
+  - src/risk_layer/types.py
+  - tests/risk_layer/
+  - tests/risk_layer/test_imports_smoke.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 2637b9d01d837ab20d2a198a0be9764f09ea6e62
+  subject: 'refactor(risk): dedup Kupiec POF (single engine + legacy wrapper) (#421)'
+  has_body: true
+  observed_paths:
+  - src/risk/validation/kupiec_pof.py
+  - src/risk_layer/var_backtest/kupiec_pof.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 8e2b8888b9c83ad42fecbabad58e080026118933
+  subject: 'fix(pr-531): restore green CI (no test changes) (#551)'
+  has_body: true
+  observed_paths:
+  - archive/README.md
+  - archive/legacy_scripts/
+  - docs/...
+  - docs/README.md
+  - docs/adr/
+  - docs/architecture/
+  - docs/architecture/REPO_STRUCTURE.md
+  - docs/audit/
+  - docs/audit/AUDIT_CHECK_ANALYSIS_PR_1_229.md
+  - docs/audit/AUDIT_CHECK_TIMELINE_INVESTIGATION.md
+  - docs/audit/AUDIT_COMPLETE_SUMMARY_20251226.md
+  - docs/audit/AUDIT_REMEDIATION_20251226.md
+  - docs/dev/knowledge/
+  - docs/execution/PEAK_TRADE_LIVE_EXECUTION_ROADMAP_MULTI_AGENT_v1_0.md
+  - docs/execution/README.md
+  - docs/execution/RUNBOOK_RECON_DIFFS.md
+  - docs/execution/WP0A_COMPLETION_REPORT.md
+  - docs/execution/WP0A_GATE_REPORT.md
+  - docs/execution/WP0C_COMPLETION_REPORT.md
+  - docs/execution/phase0/WP0A_TASK_PACKET.md
+  observed_labels:
+  - Peak_Trade
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 42c173a0dbde919716a9b650e8748667cb9de581
+  subject: 'ci(risk): add Phase 8E/8F report regression gate (#547)'
+  has_body: true
+  observed_paths:
+  - docs/ops/runbooks/var_report_compare.md
+  - tests/risk/validation/test_report_compare.py
+  - tests/risk/validation/test_report_index.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a557ac46015074989739010870bbee1c5360e41c
+  subject: 'docs(risk): Phase 8D report index & compare tools (#546)'
+  has_body: true
+  observed_paths:
+  - scripts/risk/var_suite_build_index.py
+  - scripts/risk/var_suite_compare_runs.py
+  - src/risk/validation/__init__.py.
+  - src/risk/validation/report_compare.py
+  - src/risk/validation/report_index.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 3ff8813d94c3aa8355914dea9b80cb5acae158be
+  subject: 'docs(ops): add merge log for PR #544 (VaR Backtest Suite Phase 8C) (#545)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  - docs/ops/merge_logs/20260104_pr-544_var-backtest-suite-phase-8c.md
+  - docs/risk/VAR_BACKTEST_SUITE_QUICKSTART.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: fe4f40b53b92463031a213e9494b88d47f502ebc
+  subject: 'feat(risk): Phase 8C - VaR backtest suite runner + deterministic reports (#544)'
+  has_body: true
+  observed_paths:
+  - scripts/risk/run_var_backtest_suite.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 71becbbc97363028a18d9ad9dc56dd01fcd72c00
+  subject: 'docs(risk): link Christoffersen tests guide and merge log (#543)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  - docs/risk/README.md
+  - docs/risk/RISK_LAYER_ROADMAP.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 4cc64646e259b8685bc54270f8eec1ae4e3cfceb
+  subject: 'restore: feat-live-exec-phase0-foundation (#532)'
+  has_body: true
+  observed_paths:
+  - scripts/execution/
+  - scripts/risk/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 2ce33fa142f4ace11fba2ed3ddda78574cf8ed34
+  subject: 'docs: fix reference targets (priority1) (#540)'
+  has_body: true
+  observed_paths:
+  - docs/ops/DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md
+  - docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt
+  - docs/ops/DOCS_REFERENCE_TARGETS_TRIAGE_20260101.md
+  - docs/ops/README.md
+  - docs/ops/RUNBOOK_BACKGROUND_JOBS.md
+  - docs/ops/merge_logs/2025-12-25_pr-347_docs-reference-targets-guardrail.md
+  - scripts/ops/bg_job.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f7b7d1892a1c1efc2ffc4556b190699643af8e3a
+  subject: 'restore: docs/fix-reference-targets-priority1 (#528)'
+  has_body: true
+  observed_paths:
+  - docs/fix-reference-targets-priority1
+  - docs/ops/DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md
+  - docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt
+  - docs/ops/DOCS_REFERENCE_TARGETS_TRIAGE_20260101.md
+  - docs/ops/README.md
+  - docs/ops/RUNBOOK_BACKGROUND_JOBS.md
+  - docs/ops/merge_logs/2025-12-25_pr-347_docs-reference-targets-guardrail.md
+  - scripts/ops/bg_job.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 902c490df50d63bbec86c61197c3a3567c0c67ad
+  subject: 'restore: docs/merge-log-pr488 (#529)'
+  has_body: true
+  observed_paths:
+  - docs/merge-log-pr488
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 3324e174730714164d85aa53e96a2cbe51708f8e
+  subject: 'restore: feat/stability-wave-b - cache manifest + repro helpers (#524)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PR_70_FINAL_REPORT.md
+  - scripts/automation/generate_pr_report.sh
+  - scripts/automation/unicode_guard.py
+  - src/data/__init__.py
+  - src/data/cache_manifest.py
+  - tests/test_cache_manifest.py
+  - tests/test_stability_smoke.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 70021561e579a6472312934e411f114baaf6e31c
+  subject: 'docs(ops): add terminal hang diagnostics tool + runbook (#523)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PAGER_HOOK_HANG_TRIAGE.md
+  - docs/ops/README.md
+  - docs/ops/TERMINAL_HANG_DIAGNOSTICS_SETUP.md
+  - scripts/ops/
+  - scripts/ops/diag_terminal_hang.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 5b7a7291ef842e62d4e8e3ff59445ed998f55f16
+  subject: 'docs(ops): add CI Health Panel v0.2 docs index + smoke test (#522)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  - scripts/ops/smoke_ci_health_panel_v0_2.sh
+  - tests/webui/test_ops_ci_health_router.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 0839527ed2a2ef44f722d03d32a2c7501d94691f
+  subject: 'ops(dashboard): add CI & governance health panel (#518)'
+  has_body: true
+  observed_paths:
+  - src/webui/app.py
+  - src/webui/ops_ci_health_router.py
+  - tests/webui/test_ops_ci_health_router.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a6de9942ab36dc140aaf8217375a5e14aa39e1df
+  subject: 'ops(restore): Optuna/MLflow tracking from BK1 (#509)'
+  has_body: true
+  observed_paths:
+  - scripts/rescue/pin_unreferenced_commits.sh
+  - scripts/run_optuna_study.py
+  - scripts/run_study_optuna_placeholder.py
+  - scripts/smoke_test_mlflow.py
+  - src/strategies/parameters.py
+  - tests/backtest/test_engine_tracking.py
+  - tests/data/test_backend.py
+  - tests/scripts/test_optuna_runner_smoke.py
+  - tests/strategies/test_parameter_schema.py
+  - tests/test_optuna_integration.py
+  - tests/test_tracking_mlflow_integration.py
+  - tests/test_tracking_noop.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: ea13cc516b0770c68a80fbae232f3f915a9ff3b8
+  subject: 'docs(ops): Merge log for PR #504 (WP5A NO-LIVE Drill Pack) (#505)'
+  has_body: true
+  observed_paths:
+  - docs/ops
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: fe068a28cfc18260f8da5631fdd950b6f854cf4e
+  subject: 'ci(governance): audited execution override for Policy Critic (evidence-required) (#495)'
+  has_body: true
+  observed_paths:
+  - docs/ops/evidence/PR_
+  - docs/ops/runbooks/policy_critic_execution_override.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 6ef85a6137075b333ce81f393a3d49a8e976eed9
+  subject: 'feat(phase1): Shadow Trading (WP1A-D) complete (#434)'
+  has_body: true
+  observed_paths:
+  - scripts/execution/
+  - scripts/risk/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 2ad86a2ae300c9b880afad53057a9dec7aaf4b8e
+  subject: 'rescue(docs): align risk-layer phase0 documentation [rescued] (#494)'
+  has_body: true
+  observed_paths:
+  - docs/risk/RISK_LAYER_ROADMAP.md
+  - docs/risk/roadmaps/
+  - docs/risk/roadmaps/README.md
+  - docs/risk/roadmaps/RISK_LAYER_ROADMAP.md
+  - docs/types
+  - src/risk_layer/
+  - src/risk_layer/__init__.py
+  - src/risk_layer/exceptions.py
+  - src/risk_layer/types.py
+  - tests/risk_layer/
+  - tests/risk_layer/test_imports_smoke.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 451ff7475a11c887832387fc3e1e290e51bd069f
+  subject: 'rescue(docs): integrate docs reference-target priority fixes [rescued] (#493)'
+  has_body: true
+  observed_paths:
+  - docs/ops/DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md
+  - docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt
+  - docs/ops/DOCS_REFERENCE_TARGETS_TRIAGE_20260101.md
+  - docs/ops/README.md
+  - docs/ops/merge_logs/2025-12-25_pr-347_docs-reference-targets-guardrail.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 73c60c04f6df21b9237422cd50b74a548ef12a14
+  subject: 'ops(docs,scripts): fix bg_job truth + correct PR #486 merge log (#491)'
+  has_body: true
+  observed_paths:
+  - docs/ops/RUNBOOK_BACKGROUND_JOBS.md
+  - scripts/ops/bg_job.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: aa4c85dab054992096766adc30501251fc1b9dae
+  subject: 'docs(ops): docs reference targets parity + ignore list + priority fixes (#485)'
+  has_body: true
+  observed_paths:
+  - docs/ops/DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md
+  - docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt
+  - docs/ops/DOCS_REFERENCE_TARGETS_TRIAGE_20260101.md
+  - docs/ops/README.md
+  - docs/ops/merge_logs/2025-12-25_pr-347_docs-reference-targets-guardrail.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: b197d754c2ae43fd8eb1cdf1585415bb68bb552e
+  subject: 'fix(execution): make recon audit gate wrapper pyenv-safe (#470)'
+  has_body: true
+  observed_paths:
+  - docs/execution/RUNBOOK_RECON_DIFFS.md
+  - scripts/execution/recon_audit_gate.sh
+  - tests/scripts/test_show_recon_audit_smoke.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 92d8cfc1083c10c248e3b8277691a37db06e1339
+  subject: 'feat(execution): add recon audit gate wrapper script (#469)'
+  has_body: true
+  observed_paths:
+  - docs/execution/RUNBOOK_RECON_DIFFS.md
+  - scripts/execution/recon_audit_gate.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f5f7ed80a059a6541ce98f91ad4a2b52af3fa532
+  subject: 'feat(execution): add json output + exit-code option to recon audit cli (#468)'
+  has_body: true
+  observed_paths:
+  - docs/execution/RUNBOOK_RECON_DIFFS.md
+  - scripts/execution/show_recon_audit.py
+  - scripts/tests/docs
+  - tests/scripts/test_show_recon_audit_smoke.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: cf3b6365ac1a38ef9d0e6657481f3839489ecb94
+  subject: 'feat(execution): Add CLI tool for recon audit event analysis (#467)'
+  has_body: true
+  observed_paths:
+  - docs/execution/RUNBOOK_RECON_DIFFS.md
+  - scripts/execution/demo_recon_audit.py
+  - scripts/execution/show_recon_audit.py
+  - tests/scripts/test_show_recon_audit_smoke.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: ec438dc0fc185ebd88de273beb58e33167fba51f
+  subject: 'feat(execution): WP0D recon summary observability (audit events + runbook + docs nav) (#466)'
+  has_body: true
+  observed_paths:
+  - docs/README.md
+  - docs/execution/README.md
+  - docs/execution/RUNBOOK_RECON_DIFFS.md
+  - docs/runbooks/
+  - src/execution/audit_log.py
+  - src/execution/contracts.py
+  - src/execution/reconciliation.py
+  - tests/execution/test_wp0d_recon_summary_observability.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: cf6ccee42ee3478b8d86f7a43708784f9137a813
+  subject: 'docs(ops): add PR #462 merge log + ID0 integration evidence (#463)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PR_462_MERGE_LOG.md
+  - docs/ops/README.md
+  - docs/ops/integration_days/
+  - docs/ops/integration_days/PHASE0_ID0_WP0D_INTEGRATION_DAY_REPORT.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 170eaa296867a8c4dee210198ac5e7c223217de7
+  subject: 'docs(ops): add PR #458 to verified merge logs (#459)'
+  has_body: true
+  observed_paths:
+  - docs/execution/phase0/WP0E_IMPLEMENTATION_GATE_REPORT.md
+  - docs/ops/PR_458_MERGE_LOG.md
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: d9e6a9a9212b1fc335cd12a4b00fc1d7e99699b6
+  subject: 'docs(ops): add live execution roadmap runner appendix (#452)'
+  has_body: true
+  observed_paths:
+  - docs/execution/PEAK_TRADE_LIVE_EXECUTION_ROADMAP_MULTI_AGENT_v1_0.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 3be604b84e1bf11a08cdf6c8cb29f42b9e2eb238
+  subject: 'docs(ops): deprecate inspect_offline_feed references (#447)'
+  has_body: true
+  observed_paths:
+  - scripts/automation/update_pr_final_report_post_merge.sh
+  - scripts/finalize_workflow_docs_pr.sh
+  - scripts/post_merge_workflow.sh
+  - scripts/quick_pr_merge.sh
+  - scripts/render_last_report.sh
+  - scripts/update_pr_final_report_post_merge.sh
+  - scripts/utils/render_last_report.sh
+  - scripts/workflows/finalize_workflow_docs_pr.sh
+  - scripts/workflows/post_merge_workflow.sh
+  - scripts/workflows/quick_pr_merge.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 9ad79b81dfd45e63acb458d006c4781f1ce9f8be
+  subject: 'docs(ci): fix remaining moved script paths (render_last_report, update_pr_final_report, test.yml)'
+  has_body: true
+  observed_paths:
+  - scripts/automation/update_pr_final_report_post_merge.sh
+  - scripts/render_last_report.sh
+  - scripts/update_pr_final_report_post_merge.sh
+  - scripts/utils/render_last_report.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7fe036f2b2fe717c025dc78f90034b1787396190
+  subject: 'docs(ci): fix additional moved workflow script paths'
+  has_body: true
+  observed_paths:
+  - scripts/finalize_workflow_docs_pr.sh
+  - scripts/post_merge_workflow.sh
+  - scripts/quick_pr_merge.sh
+  - scripts/workflows/finalize_workflow_docs_pr.sh
+  - scripts/workflows/post_merge_workflow.sh
+  - scripts/workflows/quick_pr_merge.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 424d68b013ccdb2dbf15e2c1d1a4ed4bff6fb981
+  subject: 'docs(audit): update script paths to current locations (#445)'
+  has_body: true
+  observed_paths:
+  - docs/audit/AUDIT_CHECK_ANALYSIS_PR_1_229.md
+  - docs/audit/AUDIT_CHECK_TIMELINE_INVESTIGATION.md
+  - docs/audit/AUDIT_COMPLETE_SUMMARY_20251226.md
+  - docs/audit/AUDIT_REMEDIATION_20251226.md
+  - docs/ops/AUDIT_VALIDATION_NOTES.md
+  - docs/ops/PR_271_MERGE_LOG.md
+  - docs/ops/incidents/2025-12-26_formatter_drift_audit_alignment.md
+  - scripts/ops/
+  - scripts/ops/pr_audit_scan.sh
+  - scripts/ops/run_audit.sh
+  - scripts/pr_audit_scan.sh
+  - scripts/run_audit.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: ae65de2f55d50ca5dc37e9c593579ac364a1850f
+  subject: 'chore(format): normalize EOF and remove trailing whitespace (#444)'
+  has_body: true
+  observed_paths:
+  - docs/audit/
+  - docs/risk/
+  - scripts/ops/
+  - scripts/ops/pr_audit_scan.sh
+  - scripts/ops/run_audit.sh
+  - scripts/pr_audit_scan.sh
+  - scripts/run_audit.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 6e568152c122a070ab8e4886c2890cc8b37c2ad0
+  subject: 'docs(audit): close remediation – GO for bounded-live (#441)'
+  has_body: true
+  observed_paths:
+  - scripts/live/test_bounded_live_limits.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f336a3bdf5fd942c1dad7c166e998e2c5f62cc09
+  subject: 'docs(ops): add legacy risk_runtime verification note (#436)'
+  has_body: true
+  observed_paths:
+  - src/risk/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 0a12061b5053f807e7c3adb49603e5e37d1ff91a
+  subject: 'feat(execution): Phase 0 foundation (WP0E/WP0A) (#433)'
+  has_body: true
+  observed_paths:
+  - docs/execution/WP0A_COMPLETION_REPORT.md
+  - scripts/execution/
+  - scripts/risk/
+  - scripts/risk/generate_contracts_smoke.py
+  - src/core/config.py
+  - src/execution/audit_log.py
+  - src/execution/order_ledger.py
+  - src/execution/order_state_machine.py
+  - src/execution/position_ledger.py
+  - src/execution/retry_policy.py
+  - src/governance/live_mode_gate.py
+  - tests/execution/test_wp0a_smoke.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: c9a36162ae86fa10dd2d195da1ea121dfce76371
+  subject: 'feat(execution): Phase 0 Foundation - WP0E + WP0A (#432)'
+  has_body: true
+  observed_paths:
+  - docs/execution/WP0A_COMPLETION_REPORT.md
+  - scripts/execution/
+  - scripts/risk/
+  - scripts/risk/generate_contracts_smoke.py
+  - src/core/config.py
+  - src/execution/audit_log.py
+  - src/execution/order_ledger.py
+  - src/execution/order_state_machine.py
+  - src/execution/position_ledger.py
+  - src/execution/retry_policy.py
+  - src/governance/live_mode_gate.py
+  - tests/execution/test_wp0a_smoke.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 683b789784d521ee27998728beb25aa33bc79011
+  subject: 'docs(risk): Phase 11 – VaR Backtest Suite UX & Docs-Verkabelung (#429)'
+  has_body: true
+  observed_paths:
+  - docs/risk/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: dbbae48343ba7e99ec6a1f07ca6776f5d4f6093f
+  subject: 'docs(ops): add verified merge log for PR #426 (#428)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PR_426_MERGE_LOG.md
+  - docs/ops/README.md
+  - scripts/create_verified_merge_log_pr.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 0bd75ea696850d6f27a40707371532590b3280fb
+  subject: 'docs(ops): add verified merge log for PR #424 (#427)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PR_424_MERGE_LOG.md
+  - docs/ops/README.md
+  - scripts/create_verified_merge_log_pr.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 63fa0990991db0cca2fa8ddc132575f36c08926f
+  subject: 'refactor(risk): dedup Traffic Light (single engine + legacy wrapper) (#423)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  - src/risk/validation/traffic_light.py
+  - src/risk_layer/var_backtest/traffic_light.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 6b91140ac1d6a1c2d006733f24ac30cdeb2add01
+  subject: 'feat(ops): add idempotent verified merge-log PR script (#420)'
+  has_body: true
+  observed_paths:
+  - scripts/README_MERGE_LOG_PR.md
+  - scripts/create_verified_merge_log_pr.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: e91a8f177ed1ff8f530e6715f85d2bd33c12805a
+  subject: 'feat(risk): add Kupiec POF Phase-7 convenience API (n/x/alpha wrappers) (#418)'
+  has_body: true
+  observed_paths:
+  - scripts/run_kupiec_pof.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f834429531cef0a6e9897c30fc792620d4f8dffa
+  subject: 'feat(risk): VaR validation (Kupiec + Basel traffic light + backtest) (#413)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PR_409_MERGE_LOG.md
+  - src/risk/validation/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7
+  subject: 'docs(ops): add PR #409 to verified merge log examples (#412)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PR_409_MERGE_LOG.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 14d58ec3b9d7acac26720d1aa4cf5ce46acfb725
+  subject: 'fix(kill-switch): stabilize tests + add legacy adapter for risk-gate (#409)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  - docs/risk/KILL_SWITCH_ARCHITECTURE.md
+  - scripts/ops/kill_switch_ctl.sh
+  - src/risk/
+  - src/risk_layer/
+  - src/risk_layer/kill_switch/
+  - src/risk_layer/kill_switch/__init__.py
+  - src/risk_layer/kill_switch/audit.py
+  - src/risk_layer/kill_switch/cli.py
+  - src/risk_layer/kill_switch/config.py
+  - src/risk_layer/kill_switch/core.py
+  - src/risk_layer/kill_switch/execution_gate.py
+  - src/risk_layer/kill_switch/health_check.py
+  - src/risk_layer/kill_switch/persistence.py
+  - src/risk_layer/kill_switch/recovery.py
+  - src/risk_layer/kill_switch/state.py
+  - src/risk_layer/kill_switch/triggers/__init__.py
+  - src/risk_layer/kill_switch/triggers/base.py
+  - src/risk_layer/kill_switch/triggers/external.py
+  - src/risk_layer/kill_switch/triggers/manual.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 18d57183cd3afb035b73d1cb604a6356d725cc7c
+  subject: 'feat(risk): Risk Layer v1.0 (Phases 1–6) + integration + docs + e2e (#408)'
+  has_body: true
+  observed_paths:
+  - docs/risk/AGENT_HANDOFF.md
+  - docs/risk/RISK_LAYER_OVERVIEW.md
+  - docs/risk/RISK_LAYER_V1_GUIDE.md
+  - docs/risk/roadmaps/RISK_LAYER_ROADMAP_CRITICAL.md
+  - src/risk/
+  - src/risk/__init__.py
+  - src/risk/monte_carlo.py
+  - src/risk_layer/
+  - src/risk_layer/var_backtest/__init__.py
+  - src/risk_layer/var_backtest/christoffersen_tests.py
+  - src/risk_layer/var_backtest/traffic_light.py
+  - tests/integration/test_risk_layer_e2e.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: e7fdf47ae55d1f41d7fd0628e43b089b7b6a547d
+  subject: 'feat(alerting): multi-channel routing + full channel test suite (#407)'
+  has_body: true
+  observed_paths:
+  - src/risk/alerting
+  - src/risk_layer/alerting
+  - tests/risk_layer/alerting/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: ec50c5501416834ffdfb42c7bb05b5f9976e00f3
+  subject: 'feat(shadow): add HTML quality report for phase2 smoke runs (#399)'
+  has_body: true
+  observed_paths:
+  - src/data/shadow/quality_report.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 18f1ed007f19b2f4f345537cf4f37989a47e6a60
+  subject: 'feat(ops): integrate full audit system into ops_center and CI (#387)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  - scripts/ops/run_full_audit.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a259ab3c869f2bbc4c89fc19ca9b40c0bd2badcb
+  subject: 'docs(dev): add canonical runner index (tier A/B/C) (#141)'
+  has_body: true
+  observed_paths:
+  - scripts/dev/curate_runner_index.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 54a66b96320f5d670689ffb33d8ab030f31030b7
+  subject: 'docs(stability): mark Wave A+B stack complete, add deployment runbook (#140)'
+  has_body: true
+  observed_paths:
+  - src/core/repro.py
+  - src/data/cache_manifest.py
+  - tests/test_stability_smoke.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: e9c3fa91d204e893302c4b8b242c38d1552b3b47
+  subject: 'docs(ops): repo cleanup inventory + plan (PR1) (#366)'
+  has_body: true
+  observed_paths:
+  - scripts/cleanup_repo.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 08d735d240d0fe17bd097fa2a9dc50404a1421bb
+  subject: 'docs(ops): add stability & resilience plan v1 (#135)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PR_70_FINAL_REPORT.md
+  - scripts/automation/generate_pr_report.sh
+  - scripts/automation/unicode_guard.py
+  observed_labels:
+  - Peak_Trade
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 283ef43706705f2a639e67255e6c39f9dc012813
+  subject: 'fix(ops): omit branch lines from merge logs to satisfy docs-reference-targets (#379)'
+  has_body: true
+  observed_paths:
+  - docs/...
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 2b5a7fc9031b3a3d73f62f9bc7965f9572b55d50
+  subject: 'docs(ops): fix Ops Doctor WARNs (docs navigation + required checks drift) (#374)'
+  has_body: true
+  observed_paths:
+  - scripts/ops/check_ops_docs_navigation.sh
+  - scripts/ops/ops_center.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a2d88f9759d9ce4f29f3005bc902cf674216333d
+  subject: 'docs(ops): refine Noise-Free standard + correct canonical uv export flags (#373)'
+  has_body: true
+  observed_paths:
+  - scripts/ops/ops_center.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: b194a6229bf9447caf1086b051fddc5d1ca91970
+  subject: 'docs(ops): fix broken internal links + anchors (Doctor docs nav health) (#370)'
+  has_body: true
+  observed_paths:
+  - docs/adr/
+  - docs/ops/
+  - docs/ops/README.md
+  - docs/ops/reports/phases/
+  - scripts/ops/
+  - src/data/schema.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: e97395c8194783cf1c326d15769e1bcda70ea67c
+  subject: 'chore(repo): repo cleanup execution (PR2) (#367)'
+  has_body: true
+  observed_paths:
+  - archive/README.md
+  - archive/legacy_scripts/
+  - docs/architecture/
+  - docs/architecture/REPO_STRUCTURE.md
+  - docs/dev/knowledge/
+  - docs/features/
+  - docs/ops/
+  - docs/ops/README.md
+  - docs/ops/reports/
+  - docs/ops/reports/phases/
+  - docs/risk/
+  - docs/script
+  - scripts/automation/
+  - scripts/ci/
+  - scripts/cleanup_repo.sh
+  - scripts/dev/
+  - scripts/ops/
+  - scripts/run/
+  - scripts/utils/
+  - scripts/workflows/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7ed48e3e66381ebaccb6a517a7d5f7e4eadc8bfb
+  subject: 'feat(ops): integrate CI contract guard into ops doctor + CI workflow (#364)'
+  has_body: true
+  observed_paths:
+  - docs/ops/ci_required_checks_matrix_naming_contract.md
+  - scripts/ops/check_required_ci_contexts_present.sh
+  - scripts/ops/ops_center.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a4850c66b8974281c8f18204ed48813c4352b995
+  subject: 'docs(ops): add CI required checks contract + guard script (#363)'
+  has_body: true
+  observed_paths:
+  - docs/ops/ci_required_checks_matrix_naming_contract.md
+  - scripts/ops/check_required_ci_contexts_present.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7ef7696e8ec05dc449df7c0813755720e757efa4
+  subject: 'docs(risk): portfolio-level VaR roadmap (#303)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md.
+  - docs/risk/README.md
+  - docs/risk/roadmaps/PORTFOLIO_VAR_ROADMAP.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: e0297f9b621ae095587daac9159adab74b28e39b
+  subject: 'feat(risk): add liquidity gate v1 (#341)'
+  has_body: true
+  observed_paths:
+  - docs/risk/LIQUIDITY_GATE_RUNBOOK.md
+  - src/risk_layer/liquidity_gate.py
+  - src/risk_layer/micro_metrics.py
+  - src/risk_layer/risk_gate.py
+  - tests/risk_layer/test_liquidity_gate.py
+  - tests/risk_layer/test_micro_metrics.py
+  - tests/risk_layer/test_risk_gate.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 5b0c056cdd0ccdfd0f2d912ed8caba70d30cbe33
+  subject: 'feat(risk): add liquidity gate v1'
+  has_body: true
+  observed_paths:
+  - docs/risk/LIQUIDITY_GATE_RUNBOOK.md
+  - src/risk_layer/liquidity_gate.py
+  - src/risk_layer/micro_metrics.py
+  - src/risk_layer/risk_gate.py
+  - tests/risk_layer/test_liquidity_gate.py
+  - tests/risk_layer/test_micro_metrics.py
+  - tests/risk_layer/test_risk_gate.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a572a49127fba329054591ac051272bced671fb0
+  subject: 'feat(risk): metrics plumbing v1 (canonical schema + extractor) (#338)'
+  has_body: true
+  observed_paths:
+  - docs/risk/KILL_SWITCH_RUNBOOK.md
+  - docs/risk/RISK_METRICS_SCHEMA.md
+  - src/risk_layer/kill_switch.py
+  - src/risk_layer/metrics.py
+  - src/risk_layer/risk_gate.py
+  - tests/risk_layer/test_kill_switch.py
+  - tests/risk_layer/test_metrics.py
+  - tests/risk_layer/test_risk_gate.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 21dc8aba72fb2737251a0b4a32efeb6c99eac5a9
+  subject: 'docs(ops): move drift guard operator notes to docs/ops/ (#325)'
+  has_body: true
+  observed_paths:
+  - docs/ops/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: cfce62557b31efa3e9664c2ea8bf43849954afbf
+  subject: 'feat(ops): add required checks drift guard v1 (#323)'
+  has_body: true
+  observed_paths:
+  - docs/risk/COMPONENT_VAR_MVP.md
+  - scripts/risk/demo_component_var.py
+  - src/risk/component_var.py
+  - src/risk/covariance.py
+  - src/risk/parametric_var.py
+  - tests/risk/
+  - tests/risk/test_component_var.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 0492659f505b34885386accc23db9bc1bb6aac9b
+  subject: 'docs(ops): document required checks (Docs Diff Guard Policy Gate) (#320)'
+  has_body: true
+  observed_paths:
+  - docs/ops/BRANCH_PROTECTION_REQUIRED_CHECKS.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: e89dc8cc6a9705692c90dc6d1dbf2a4cf0cdf798
+  subject: 'feat(ci): add docs diff guard policy gate (always-run) (#318)'
+  has_body: true
+  observed_paths:
+  - docs/ops/
+  - docs/ops/README.md
+  - scripts/ci/check_docs_diff_guard_section.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 1acb5b0d85b428b5036f858d5a98b1d140f500b2
+  subject: 'chore(ops): compact insert/append log messages (#317)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  - docs/ops/TOOLKIT.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 0f08d866f459a5f70c2abd67ee1904c9e8d26836
+  subject: 'feat(ops): add docs diff guard (mass-deletion protection) (#311)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  - scripts/ops/docs_diff_guard.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 8346619e5cec4c4fbb8d074e294e43028654346c
+  subject: 'feat(ops): add branch hygiene script (origin/main enforcement) (#309)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  - scripts/ops/new_branch_from_origin_main.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: b1aeb44d7ff6b551db0deec1d6b2c4afabcc426b
+  subject: 'style: apply ruff formatting to fix Lint Gate (pre-existing drift) (#285)'
+  has_body: true
+  observed_paths:
+  - scripts/run_audit.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 2cd13aec743ba0f49fde9490392f92df40580f41
+  subject: 'feat(risk): risk layer v1 (implementation + tests + operator guide) (#270)'
+  has_body: true
+  observed_paths:
+  - docs/risk/RISK_LAYER_V1_OPERATOR_GUIDE.md
+  - docs/risk_layer_v1.md
+  - scripts/run_risk_stress_report.py
+  - src/backtest/engine.py
+  - src/core/risk.PortfolioVaRStressRiskManager
+  - src/risk/__init__.py
+  - src/risk/enforcement.py
+  - src/risk/portfolio.py
+  - src/risk/stress.py
+  - src/risk/types.py
+  - src/risk/var.py
+  - tests/risk/test_backtest_integration.py
+  - tests/risk/test_enforcement.py
+  - tests/risk/test_portfolio.py
+  - tests/risk/test_stress.py
+  - tests/risk/test_var.py
+  observed_labels:
+  - RiskLimitsV2
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 6d1673ffbc3e394c161ac451897d17b5f18ef20e
+  subject: 'test(risk): Add comprehensive test suite for Risk Layer v1 (96 tests, 100% pass)'
+  has_body: true
+  observed_paths:
+  - docs/risk/RISK_LAYER_V1_OPERATOR_GUIDE.md
+  - scripts/run_risk_stress_report.py
+  - tests/risk/test_backtest_integration.py
+  - tests/risk/test_enforcement.py
+  - tests/risk/test_portfolio.py
+  - tests/risk/test_stress.py
+  - tests/risk/test_var.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 45aa95ebf0bcb3944cbc6d6623109a224f7130d3
+  subject: 'feat(risk): Implement Risk Layer v1 with VaR/CVaR and Stress-Testing'
+  has_body: true
+  observed_paths:
+  - docs/risk_layer_v1.md
+  - src/backtest/engine.py
+  - src/core/risk.PortfolioVaRStressRiskManager
+  - src/risk/__init__.py
+  - src/risk/enforcement.py
+  - src/risk/portfolio.py
+  - src/risk/stress.py
+  - src/risk/types.py
+  - src/risk/var.py
+  observed_labels:
+  - RiskLimitsV2
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 382fb8dca730a2b2ebaf766d67bd6b7f4e4095f4
+  subject: 'ci(policy): add format-only verifier guardrail for Policy Critic (#256)'
+  has_body: true
+  observed_paths:
+  - docs/ops/POLICY_CRITIC_TRIAGE_RUNBOOK.md
+  - docs/ops/README.md
+  - scripts/ops/verify_format_only_pr.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 19c0a7c5499947ab322212e992a1a86cb5e5ae05
+  subject: 'docs(ops): document known CI audit non-blocking issue (#253)'
+  has_body: true
+  observed_paths:
+  - docs/merge-log
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 885f4ad37cb4a6f4d9525933c8c981db8a4af92d
+  subject: 'feat(webui): knowledge API endpoints + readonly/web-write gating + smoke runners (#243)'
+  has_body: true
+  observed_paths:
+  - scripts/ops/knowledge_smoke_runner.sh
+  - scripts/ops/knowledge_smoke_runner_auto.sh
+  - src/webui/knowledge_api.py
+  - src/webui/services/knowledge_service.py
+  - tests/test_webui_knowledge_endpoints.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 5b54c403b6b3605557d6f70103f325a99df7c120
+  subject: 'feat(webui): live status panel providers + service layer (#242)'
+  has_body: true
+  observed_paths:
+  - tests/test_health_detailed_panel_mapping.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: dfae29b4e64986ea788baf1eacf3a12e5859b3ab
+  subject: 'docs(ops): align PR #144 merge log with standard format (#145)'
+  has_body: true
+  observed_paths:
+  - docs/reporting
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 9e9c04f61b31bd69574bf84216547ef1ce03389f
+  subject: 'ci(policy): guard against tracked files in reports/ and docs/reports/ (#146)'
+  has_body: true
+  observed_paths:
+  - docs/reports/
+  - docs/reports/PeakTrade_enhanced.pdf
+  - docs/reports/dashboard.html
+  - docs/reports/peak_trade_documentation.html
+  - docs/reports/peak_trade_documentation.pdf
+  - scripts/ci/guard_no_tracked_reports.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f72ee6975c3a3debd7b1025fc7c0b2b09692ee17
+  subject: 'docs(adr): finalize ADR_0001 Peak Tool Stack with P0/P1/P2 status (#148)'
+  has_body: true
+  observed_paths:
+  - docs/adr/ADR_0001_Peak_Tool_Stack.md
+  - docs/reporting/EVIDENCE_CHAIN_INTEGRATION.md
+  - docs/roadmap/P2_OBSERVABILITY_BACKLOG.md
+  - src/data/lake/
+  - src/obs/otel.py
+  - src/reporting/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a4bb642ee1edd3999e33711c71ea759f44141a85
+  subject: 'chore(ops): enforce depth=1 policy for merge-log PRs (#232)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: cf748a8cd01739a78ca0bdac9da441aaaaf43a03
+  subject: chore/ops convenience pack 2025 12 21 ee67053 (#228)
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 1395b31a7d1e6ec9eb6517a3f21213bacf73b8f7
+  subject: 'docs(ops): add PR #206 merge log (#207)'
+  has_body: true
+  observed_paths:
+  - scripts/audit/check_ops_merge_logs.py
+  - scripts/ops/generate_legacy_merge_log_backlog.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a561574b19f8d92042943a10be71f691196c0d45
+  subject: 'docs(ops): workflow scripts documentation + automation infrastructure (#204)'
+  has_body: true
+  observed_paths:
+  - docs/PEAK_TRADE_STATUS_OVERVIEW.md
+  - docs/ops/README.md
+  - docs/ops/WORKFLOW_SCRIPTS.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 6d929a38359ad124c826a03d27e62bc8617a41de
+  subject: 'feat(ops): Docker Ops Runner for Stage1 monitoring (Phase 16L) (#199)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PHASE_16L_DOCKER_OPS_RUNNER.md
+  - docs/ops/README.md
+  - src/utils/report_paths.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 0e89e878c64a9ce1bce283e4a288c8e9bdab4767
+  subject: 'chore(ops): add PR #195 merge log + ops docs index update (#196)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 34d3a04ede55c9e479cf05e991ec163a56ea8163
+  subject: 'chore: fix ruff linting errors in stage1 obs scripts (#193)'
+  has_body: true
+  observed_paths:
+  - scripts/obs/stage1_daily_snapshot.py
+  - scripts/obs/stage1_trend_report.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 34dea2cfd60549b6c8e0e5dcdd5c5397bf93675b
+  subject: 'feat(execution): Phase 16J alert lifecycle & noise control'
+  has_body: true
+  observed_paths:
+  - docs/PEAK_TRADE_STATUS_OVERVIEW.md
+  - docs/ops/TELEMETRY_ALERTING_LIFECYCLE_RUNBOOK.md
+  - scripts/telemetry_alerts.py
+  - scripts/telemetry_alerts_lifecycle.py
+  - src/execution/alerting/__init__.py
+  - src/execution/alerting/engine.py
+  - src/execution/alerting/history.py
+  - src/execution/alerting/operator_state.py
+  - tests/execution/test_alerting_lifecycle.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 87293e982362cb9170625819674ac3d5bd3c73ad
+  subject: 'feat(execution): Phase 16I real-time alerting & incident hooks'
+  has_body: true
+  observed_paths:
+  - docs/PEAK_TRADE_STATUS_OVERVIEW.md
+  - docs/ops/TELEMETRY_ALERTING_RUNBOOK.md
+  - scripts/telemetry_alerts.py
+  - src/execution/alerting/
+  - src/execution/alerting/adapters/
+  - src/execution/alerting/persistence.py
+  - tests/execution/test_alerting.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 91e7f8319a487296d9c25fc535d3ef7d22566839
+  subject: 'feat(execution): Phase 16H historical health trends dashboard (#192)'
+  has_body: true
+  observed_paths:
+  - docs/PEAK_TRADE_STATUS_OVERVIEW.md
+  - docs/ops/TELEMETRY_HEALTH_TRENDS_RUNBOOK.md
+  - scripts/telemetry_health_snapshot.py
+  - src/execution/telemetry_health_trends.py
+  - src/webui/app.py
+  - tests/execution/test_telemetry_health_trends.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 55924e350853eb30ddb293e965cdb2f2bb1f3c3a
+  subject: 'feat(execution): Phase 16F telemetry console & health monitoring (#187)'
+  has_body: true
+  observed_paths:
+  - docs/PEAK_TRADE_STATUS_OVERVIEW.md
+  - docs/ops/TELEMETRY_HEALTH_RUNBOOK.md
+  - scripts/telemetry_health_check.py
+  - src/execution/telemetry_health.py
+  - src/webui/app.py
+  - tests/execution/test_telemetry_health_check.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 9d5254438bb99ae688b07fd90eeb1592b184456d
+  subject: 'docs(ops): add PR #186 merge log + update status overview for Phase 16E'
+  has_body: true
+  observed_paths:
+  - docs/PEAK_TRADE_STATUS_OVERVIEW.md
+  - docs/ops/PR_186_MERGE_LOG.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 0cdd910fea431474431cbbc131e7be2369d1a128
+  subject: 'feat(execution): Phase 16E telemetry retention & compression (#186)'
+  has_body: true
+  observed_paths:
+  - scripts/ops/telemetry_retention.py
+  - src/execution/telemetry_retention.py
+  - tests/execution/test_telemetry_retention_policy.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: cdc87ab20a9afded6e42b9a736d25bd87ba0f9df
+  subject: 'docs(ops): add PR #185 merge log + update status overview'
+  has_body: true
+  observed_paths:
+  - docs/PEAK_TRADE_STATUS_OVERVIEW.md
+  - docs/ops/PR_185_MERGE_LOG.md
+  - tests/execution/test_telemetry_regression_gates.py
+  - tests/execution/test_telemetry_viewer.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: b26a69dc397892941a6b10b1a75a94abe638cf02
+  subject: 'feat(execution): Phase 16A+B - Simplified pipeline + telemetry & live-track bridge (#183)'
+  has_body: true
+  observed_paths:
+  - docs/execution/EXECUTION_SIMPLE_V1.md
+  - docs/execution/EXECUTION_TELEMETRY_LIVE_TRACK_V1.md
+  - docs/ops/PR_PHASE_16AB_EXECUTION_PIPELINE_TELEMETRY.md
+  - scripts/run_execution_simple_dry_run.py
+  - src/execution/
+  - src/execution/events.py
+  - src/execution/telemetry.py
+  - src/execution_simple/
+  - src/live/execution_bridge.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f449beedbe20629226a82a0a54cb32a678124ecd
+  subject: 'feat(p2.1): minimal data lake implementation with optional DuckDB support'
+  has_body: true
+  observed_paths:
+  - docs/roadmap/P2_OBSERVABILITY_BACKLOG.md
+  - src/data/lake/
+  - src/data/lake/__init__.py
+  - src/data/lake/client.py
+  - src/data/lake/errors.py
+  - tests/data/test_lake_client.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: c200e054c24e70a5f11dfa4609d21399280183eb
+  subject: 'docs(adr): finalize ADR_0001 Peak Tool Stack with P0/P1/P2 status'
+  has_body: true
+  observed_paths:
+  - docs/adr/ADR_0001_Peak_Tool_Stack.md
+  - docs/reporting/EVIDENCE_CHAIN_INTEGRATION.md
+  - docs/roadmap/P2_OBSERVABILITY_BACKLOG.md
+  - src/data/lake/
+  - src/obs/otel.py
+  - src/reporting/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 715ac558346b22b2518d3d48aed79d5b5d391557
+  subject: 'docs(adr): finalize ADR_0001 Peak Tool Stack with P0/P1/P2 status'
+  has_body: true
+  observed_paths:
+  - docs/adr/ADR_0001_Peak_Tool_Stack.md
+  - docs/reporting/EVIDENCE_CHAIN_INTEGRATION.md
+  - docs/roadmap/P2_OBSERVABILITY_BACKLOG.md
+  - src/data/lake/
+  - src/obs/otel.py
+  - src/reporting/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: a4a18f21d2cd61c438bc678c235a1ca2282299fc
+  subject: 'docs(reporting): clean up doc paths, avoid tracking in ignored dirs (#144)'
+  has_body: true
+  observed_paths:
+  - docs/reports
+  - docs/reports/
+  - docs/research
+  - docs/research/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 8f3bc5f4c3b7350587e8b9900ce7ca2fdee2a77a
+  subject: 'feat(stability): wave B config validation, observability, invariants, registry hardening (#137)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PR_70_FINAL_REPORT.md
+  - scripts/automation/generate_pr_report.sh
+  - scripts/automation/unicode_guard.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 9e8ebcf6ab3a4dd638b0fbab58057cf3f2cbe71c
+  subject: 'feat(stability): wave A contracts, cache integrity, errors, reproducibility (#136)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PR_70_FINAL_REPORT.md
+  - docs/ops/STABILITY_RESILIENCE_PLAN_V1.md
+  - scripts/automation/generate_pr_report.sh
+  - scripts/automation/unicode_guard.py
+  - tests/test_cache_atomic.py
+  - tests/test_data_contracts.py
+  - tests/test_error_taxonomy.py
+  - tests/test_repro.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 893ed18a96e43a06e03b00661c4df84302b19b8e
+  subject: 'chore(tooling): add uv + ruff lint gate (#108)'
+  has_body: true
+  observed_paths:
+  - docs/dev/tooling.md
+  - src/tests/scripts
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: bd443bbe1771834b666f6a5bcd4574935c0b3e73
+  subject: 'docs(ops): add PR #112 merge log (#113)'
+  has_body: true
+  observed_paths:
+  - docs/dev/
+  - scripts/dev/report_smoke.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 3503332854e19e745bc5bb0a7c8151a1d813b192
+  subject: 'docs(ops): add PR #70 final report (#72)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PR_70_FINAL_REPORT.md
+  - scripts/automation/generate_pr_report.sh
+  - scripts/automation/unicode_guard.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 959e1cbd23a398da1c5dd588fa9bc770803162ec
+  subject: 'chore(ci): add Quarto no-exec guard (#116)'
+  has_body: true
+  observed_paths:
+  - docs/dev/
+  - scripts/dev/report_smoke.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 781e3142c59f9fe1601b66c9dc50a7613eee7830
+  subject: 'fix(reporting): make Quarto smoke report truly no-exec (#114)'
+  has_body: true
+  observed_paths:
+  - docs/dev/
+  - scripts/dev/report_smoke.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: dd168b950e554a2900d708d326d295daaa7f4a92
+  subject: 'fix(reporting): make Quarto smoke report no-exec (#112)'
+  has_body: true
+  observed_paths:
+  - docs/dev/
+  - scripts/dev/report_smoke.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 02725516d24622e4d75f43dca6015e8b0eafb7fb
+  subject: 'feat(reporting): Quarto smoke report (#110)'
+  has_body: true
+  observed_paths:
+  - docs/dev/
+  - scripts/dev/report_smoke.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 50a0532b2836c68419117349595a916c1f7cac9c
+  subject: 'feat(reporting): add Quarto smoke report'
+  has_body: true
+  observed_paths:
+  - docs/dev/
+  - scripts/dev/report_smoke.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 03864a59dcd17250c44e883dc076ad93bdccb792
+  subject: 'feat: add script to bulk-add issues to project'
+  has_body: true
+  observed_paths:
+  - scripts/add_issues_to_project.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 023d703a982732a4c169dfe08a7322f0074433f0
+  subject: 'chore(ops): add git state + post-merge verification scripts (#90)'
+  has_body: true
+  observed_paths:
+  - scripts/automation/format_merge_log_snippet.sh
+  - scripts/automation/post_merge_verify.sh
+  - scripts/validate_git_state.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 28520859643601c8ebf8f8d485c64aee0dc5a74e
+  subject: 'chore(repo): simplify reports ignore policy (#84)'
+  has_body: true
+  observed_paths:
+  - docs/ARCHITECTURE.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 30d6d5472b409ba07636b055b02161ca19562812
+  subject: 'docs(repo): document reports/ generated artifacts policy'
+  has_body: true
+  observed_paths:
+  - docs/ARCHITECTURE.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: c34fd10f46e5a7c56128754219b02f2271edc719
+  subject: 'chore(ops): enforce unicode guard in PR report automation (#73)'
+  has_body: true
+  observed_paths:
+  - docs/ops/PR_70_FINAL_REPORT.md
+  - scripts/automation/generate_pr_report.sh
+  - scripts/automation/unicode_guard.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: ab236255d2218c4f1c99f6e719168e92b9974b4c
+  subject: 'chore(ops): PR report validation guard + runbook (#70)'
+  has_body: true
+  observed_paths:
+  - docs/ops/
+  - docs/ops/PR_
+  - docs/ops/PR_REPORT_AUTOMATION_RUNBOOK.md
+  - scripts/automation/validate_all_pr_reports.sh
+  - scripts/validate_pr_report_format.sh
+  - scripts/validate_pr_report_format.sh.
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 292ae628e34e5ba130b786602d3b3e194fb58e57
+  subject: 'docs(ops): update ops final report index (PR #61-#63) (#65)'
+  has_body: true
+  observed_paths:
+  - src/data/feeds
+  - src/data/safety
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 286ffbec0491a20eed3b4ccfc83b8db69399dad1
+  subject: 'chore(ops): add post-merge PR final report automation (#62)'
+  has_body: true
+  observed_paths:
+  - src/data/feeds
+  - src/data/safety
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: cebd6a1453511c176abbb28d4ba49f539a34bee2
+  subject: 'chore(data): add package init exports for feeds and safety (#61)'
+  has_body: true
+  observed_paths:
+  - src/data/feeds
+  - src/data/safety
+  - src/execution/pipeline.py
+  - src/strategies/armstrong/
+  - src/strategies/el_karoui/
+  - tests/test_execution_pipeline.py
+  - tests/test_research_strategies.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 782979c79ab20f8d8fb96fcbef473c9afa04edf4
+  subject: 'chore(data): add package init exports for feeds and safety (#59)'
+  has_body: true
+  observed_paths:
+  - src/data/feeds
+  - src/data/safety
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 42129192d87d89ffaa79197890ffc76f44fbf44b
+  subject: 'chore(data): add package init exports for feeds and safety'
+  has_body: true
+  observed_paths:
+  - src/data/feeds
+  - src/data/safety
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 2f41b68094c2eba72cdb274aa3b47c25929c892d
+  subject: 'feat(live-eval): add offline live session evaluation CLI + metrics (#51)'
+  has_body: true
+  observed_paths:
+  - docs/ops/LIVE_SESSION_EVALUATION.md
+  - docs/ops/README.md
+  - scripts/evaluate_live_session.py
+  - src/live_eval/
+  observed_labels:
+  - Peak_Trade
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: eca4719203fdd3def2cad5961a2a0c92da25ba34
+  subject: 'ci(rl): harden fast-lane smoke + upload reports on smoke/contract failure (#39)'
+  has_body: true
+  observed_paths:
+  - docs/ops/CI.md
+  - scripts/validate_rl_v0_1.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: d93e68b1758adeba1c850ee57735a32905346b0d
+  subject: 'chore: remove TODO Board test remnants and audit references'
+  has_body: true
+  observed_paths:
+  - scripts/run_audit.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 9ede5aca0918d2778e07f0ec6f2fa9a3a18e5865
+  subject: Remove TODO Board implementation completely
+  has_body: true
+  observed_paths:
+  - docs/00_overview
+  - docs/ops/todo/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: ae2357cb2ec6b26d0a1efd1e35b16498ff014e18
+  subject: 'chore(audit): harden script + add machine-readable output (v1.1)'
+  has_body: true
+  observed_paths:
+  - docs/ops/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 0140b5fdf1244529bab31cb353d62f27c12b0d1c
+  subject: 'ci(audit): add scheduled + manual audit workflow'
+  has_body: true
+  observed_paths:
+  - scripts/run_audit.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: cdd20e1d9fc3934f89220037f7c5d04a79851ef3
+  subject: 'chore(audit): capture validation notes + keep repo green'
+  has_body: true
+  observed_paths:
+  - docs/ops/PYTHON_VERSION_PLAN.md
+  - scripts/run_audit.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 78d569356a52a0a8d08df3eaf1ec1d0c4272ad43
+  subject: 'chore(repo): add cleanup targets + gitignore hygiene'
+  has_body: true
+  observed_paths:
+  - scripts/cleanup_repo.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 44a95261ae54385b8f6d1012decdbc814d05d46d
+  subject: 'docs(todo-board): add operator quick commands to generated README (#37)'
+  has_body: true
+  observed_paths:
+  - scripts/check_todo_board_ci.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7a8d8dcfe15def7e482a62e7ea45c031878588f8
+  subject: 'ci(todo-board): add guard script + dedicated workflow for diff-zero regression'
+  has_body: true
+  observed_paths:
+  - scripts/check_todo_board_ci.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 9bc5e55e685a8f59e40d226dfe313223a5aa2aa8
+  subject: 'docs(todo-board): document idempotency + CI regression coverage'
+  has_body: true
+  observed_paths:
+  - docs/00_overview/README_TODO_BOARD.md
+  - tests/test_todo_board_idempotency.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 65084f1ba0cc20f105a0d14f830b62b9ebd27d29
+  subject: 'fix(todo-board): robust encoding + correct repo root for cursor/claude links'
+  has_body: true
+  observed_paths:
+  - docs/00_overview/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 8177d8e56493cad8c84010a2eb2cc0d0ba17151d
+  subject: 'fix(ci): make TODO board generation 100% deterministic'
+  has_body: true
+  observed_paths:
+  - docs/00_overview/PEAK_TRADE_TODO_BOARD.html
+  - docs/00_overview/README_TODO_BOARD.md
+  - scripts/build_todo_board_html.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 0ee46ef122668b5a430df787df3a2da40d195e96
+  subject: Market sentinel + outlook (v1) (#34)
+  has_body: true
+  observed_paths:
+  - scripts/generate_market_outlook_daily.py
+  - tests/test_market_sentinel_v0_daily.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 79dd4d150713598e16f56cc1bcc0e6a45e918b21
+  subject: Macro regimes (v1) (#33)
+  has_body: true
+  observed_paths:
+  - scripts/create_macro_event.py
+  - tests/test_macro_regime_integration.py
+  - tests/test_macro_regime_loader.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 66f06b149b2289b5abb748932eb04ed223318636
+  subject: Meta / InfoStream (v1) (#32)
+  has_body: true
+  observed_paths:
+  - scripts/generate_infostream_packet.py
+  - scripts/infostream_run_cycle.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 5252783cfef8370e6156827f23271d9dbeeb6cb1
+  subject: 'fix(ci): deterministic TODO board marker + proper PR checkout (#29)'
+  has_body: true
+  observed_paths:
+  - scripts/install_desktop_shortcuts.sh
+  - scripts/open_todo_board.sh
+  - src/analytics/notebook_helpers.py
+  - tests/test_operator_shortcuts_smoke.py
+  observed_labels:
+  - Peak_Trade_Docs_Overview
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 6cf92151ac9cf3a6b97ab59b02ef02a8922952b5
+  subject: 'feat(ops): restore TODO board builder + integrate auto-injection'
+  has_body: true
+  observed_paths:
+  - scripts/build_todo_board_html.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: e6f6b98bf34f1551c584456596612470a392714f
+  subject: 'docs(ops): add Claude Code auth reset script + runbook'
+  has_body: true
+  observed_paths:
+  - docs/ops/CLAUDE_CODE_AUTH_RUNBOOK.md
+  - scripts/claude_code_auth_reset.sh
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 92edea7c2061c70ff741e00f83085b2816264566
+  subject: 'chore(governance): G3.6 policy pack tuning - UX improvements and critical path enforcement'
+  has_body: true
+  observed_paths:
+  - src/exchange/
+  - src/execution/
+  - src/live/
+  - src/risk/
+  - src/strategies/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 29ce2fc309e4a1ff370d1a1b21505cae6276aea2
+  subject: 'docs(governance): add G3.5 synthetic policy critic cycles'
+  has_body: true
+  observed_paths:
+  - src/live/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f501d2588e425f269ea9994aecb980c20f6cd18e
+  subject: 'test: add secrets to src/risk for CI gate trigger'
+  has_body: false
+  observed_paths:
+  - src/risk
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 02b7ad69d46de603aa18ed919adacccb8fe10ba3
+  subject: 'feat(governance): PolicyCritic + Policy Packs (G2+G3)'
+  has_body: true
+  observed_paths:
+  - docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md
+  - docs/governance/LLM_POLICY_CRITIC_CHARTER.md
+  - scripts/run_policy_critic.py
+  - src/governance/policy_critic/
+  - src/governance/policy_critic/packs.py
+  - tests/governance/policy_critic/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 42c3f443d84c4f27110083c86d0c99db61a022ed
+  subject: 'chore(repo): tidy docs and repo structure for future phases'
+  has_body: true
+  observed_paths:
+  - docs/40_reference/
+  - docs/99_archive/
+  - docs/README.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: cfbccc9306572bb468447f0ed782c56223d0331f
+  subject: 'docs: add test health automation quick start guide'
+  has_body: true
+  observed_paths:
+  - docs/ops/TEST_HEALTH_QUICKSTART.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 34951eb8422fc15ef8875f1aefd543d736fc89be
+  subject: 'ci: add test health automation GitHub Actions workflow'
+  has_body: true
+  observed_paths:
+  - docs/ops/TEST_HEALTH_BADGE_TEMPLATE.md
+  - docs/ops/TEST_HEALTH_CI_CD.md
+  - scripts/validate_ci_config.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 683832b834a481a2ec74159fa2bb0c309e1af992
+  subject: 'feat(ops): add P2 stdout/stderr capture and pytest markers for optional deps'
+  has_body: true
+  observed_paths:
+  - src/ops/test_health_runner.py
+  - tests/ops/test_test_health_runner.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 58753df32ebbf28fd4f2eb518e0c14d9db552d2f
+  subject: 'feat(ops): add TestHealth history tracking and R&D experimental profile'
+  has_body: true
+  observed_paths:
+  - scripts/show_test_health_history.py
+  - src/ops/__init__.py
+  - src/ops/test_health_history.py
+  - src/ops/test_health_runner.py
+  - tests/ops/test_test_health_runner.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 03e1f770034202600e4b8da86fb3c9ad1e9dca0f
+  subject: 'feat(ops): implement TestHealthAutomation v0 with P0 fixes'
+  has_body: true
+  observed_paths:
+  - docs/ops/
+  - scripts/run_offline_synth_session_smoke.py
+  - scripts/run_test_health_profile.py
+  - src/ops/test_health_runner.py
+  - tests/ops/test_test_health_runner.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: ab86accc18db77e40f9fa9af9a2e528ecce06fe0
+  subject: 'feat(reporting): add psychology heatmap module and templates'
+  has_body: true
+  observed_paths:
+  - src/reporting/__init__.py
+  - src/reporting/psychology_heatmap.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f7491b4a7ab1954a8b1dd6ca3fed62a70afbf41b
+  subject: 'feat(trigger-training): add demo load_data_for_session and basic loader test'
+  has_body: true
+  observed_paths:
+  - scripts/run_offline_trigger_training_drill_example.py
+  - tests/trigger_training/test_offline_trigger_training_demo_loader.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 3d25b52d40026cf87992572ceb3362c9414c0180
+  subject: 'feat(docs): add Armstrong Cycle R&D status document'
+  has_body: true
+  observed_paths: []
+  observed_labels:
+  - Peak_Trade
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: bf32e7bdb53a8896e76894a80fc8b5ce1b7978e3
+  subject: 'docs(phase77): add R&D experiment detail & report viewer overview'
+  has_body: true
+  observed_paths:
+  - docs/PEAK_TRADE_STATUS_OVERVIEW.md
+  - docs/PEAK_TRADE_V1_OVERVIEW_FULL.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 7f0ead53ec8f98aaed50922c9a4946d8bd87b14e
+  subject: 'feat(phase76): add R&D experiments overview view to web dashboard'
+  has_body: true
+  observed_paths:
+  - src/webui/app.py
+  - tests/test_r_and_d_api.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: b6b69550052e3a22760a2b457935eca2b5b60670
+  subject: 'feat(phase76): add R&D API skeleton for experiments endpoints'
+  has_body: true
+  observed_paths:
+  - src/webui/r_and_d_api.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 549df73813433a45d1fa477f51cea911e444a7ad
+  subject: 'docs(phase76): add R&D Dashboard v0 design specification'
+  has_body: true
+  observed_paths: []
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: e74edb61f35d8bc382baa444fb87b557bec5a139
+  subject: 'feat(cli): add R&D experiments viewer CLI tool'
+  has_body: true
+  observed_paths:
+  - scripts/view_r_and_d_experiments.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 9e9c6f887f3a8f310688460aa633add28e53f6fb
+  subject: 'feat(research): add run-experiment subcommand for R&D presets'
+  has_body: true
+  observed_paths:
+  - scripts/research_cli.py
+  - src/experiments/r_and_d_presets.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 4922cb59743a4cb90e053da15741f75d4ef95e3e
+  subject: 'docs(live): add Live-Track doc index v1.1 and link from overview'
+  has_body: true
+  observed_paths:
+  - docs/LIVE_TRACK_DOC_INDEX_V1.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 34639fe99b80978140209e3325e0ea8faee96652
+  subject: 'docs(demo): add 2-minute live-demo-script for dashboard v1.1'
+  has_body: true
+  observed_paths:
+  - docs/DEMO_SCRIPT_DASHBOARD_V11.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: e13362a0823305dd632691b83269209abd1b7f29
+  subject: 'feat(phase85): add live-track session explorer'
+  has_body: true
+  observed_paths:
+  - docs/PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md
+  - src/webui/app.py
+  - src/webui/live_track.py
+  - tests/test_webui_live_track.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: c828d9f3f94fad3b8bc04939f339bdc49e29d540
+  subject: 'feat(web): add Peak_Trade web dashboard v0 (read-only status & tiering)'
+  has_body: true
+  observed_paths: []
+  observed_labels:
+  - Peak_Trade
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 48ecf509063e77b9473961aeca4c0e1999c6c246
+  subject: 'feat(v1.0): add regime-aware portfolio sweeps, reporting and live audit modules'
+  has_body: true
+  observed_paths:
+  - scripts/export_live_audit_snapshot.py
+  - src/experiments/regime_aware_portfolio_sweeps.py
+  - src/live/audit.py
+  - src/reporting/regime_reporting.py
+  - src/strategies/regime_aware_portfolio.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: ce2da33f529ca2ff2824cac8b868eae03c78ccd9
+  subject: 'docs: add Peak_Trade v1.0 release notes (research & live-beta)'
+  has_body: false
+  observed_paths: []
+  observed_labels:
+  - Peak_Trade
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 4a5edae32f984129e4a3765ea511badaae7f5a14
+  subject: 'feat(phase85): add live-beta drill for shadow/testnet'
+  has_body: true
+  observed_paths:
+  - scripts/run_live_beta_drill.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 8b455fab812e79326888815443c5fb4473f3404b
+  subject: 'feat(phase84): add operator dashboard and basic alerts'
+  has_body: true
+  observed_paths:
+  - scripts/operator_dashboard.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 4c58ff33436b005ffdf7b25d65c42720d463fa7d
+  subject: 'feat(phase83): introduce live gating and risk policies v1'
+  has_body: true
+  observed_paths:
+  - src/live/live_gates.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: f8929523b5d5f716d28872956fb086f1ec5e3f3d
+  subject: 'docs(phase81): add research golden paths & link from onboarding'
+  has_body: true
+  observed_paths:
+  - scripts/run_research_golden_path.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: e96df20a2c1ffeeb71bcd5eff2e1a6e9c583c626
+  subject: 'feat(phase80): add tiered portfolio presets based on strategy tiering'
+  has_body: true
+  observed_paths:
+  - src/experiments/portfolio_presets.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 6d3afdc055e34a259c93e038eeda0a75d823ab3b
+  subject: 'feat(phase41b): add Strategy Robustness Profiling & Tiering System'
+  has_body: true
+  observed_paths:
+  - docs/PHASE_41B_STRATEGY_ROBUSTNESS_AND_TIERING.md
+  - docs/strategy_profiles/RSI_REVERSION_PROFILE_v1.md
+  - src/experiments/strategy_profiles.py
+  - tests/test_strategy_profile_cli.py
+  - tests/test_strategy_profiles.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: e939920e5d57ad80cf083aaf46c30bf333aed9ae
+  subject: 'feat(data): add core data modules'
+  has_body: true
+  observed_paths:
+  - src/data/
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 568b0293a71906c2e4728325b252804a24144f63
+  subject: 'fix(data): track kraken_cache_loader module'
+  has_body: true
+  observed_paths:
+  - src/data/
+  - src/data/kraken_cache_loader.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 4f5d945c48e86a23b18238cb511f7cda6c378c60
+  subject: 'phase75: consolidate strategy library v1.1'
+  has_body: true
+  observed_paths:
+  - tests/test_strategy_configs_and_sweeps.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 5f84216f29dd19a14b6b2f172c3e499fbe27cb47
+  subject: 'feat(phase73): add live dry-run drills and safety validation'
+  has_body: true
+  observed_paths:
+  - scripts/run_live_dry_run_drills.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 92e18bacbd25e2e378320c37918bfaf7fe563f06
+  subject: 'feat(phase72): add live operator status CLI (read-only)'
+  has_body: true
+  observed_paths:
+  - scripts/live_operator_status.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 2bc885fa49beca45e3f48ccba320ace1562ad82e
+  subject: 'docs: add First 7 Days onboarding guide'
+  has_body: true
+  observed_paths:
+  - docs/PEAK_TRADE_FIRST_7_DAYS.md
+  observed_labels:
+  - Peak_Trade
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 22e827831be241c8378ec03324fdece8035a0742
+  subject: 'feat(phase67): add live web dashboard v0'
+  has_body: true
+  observed_paths:
+  - scripts/live_web_server.py
+  - src/live/web/app.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: eb3ac1747e51f647a3e09f95c9676322f62d5b7e
+  subject: 'feat(phase64): add testnet orchestrator v1 for shadow/testnet runs'
+  has_body: true
+  observed_paths:
+  - scripts/testnet_orchestrator_cli.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 17b0cc4a240e21cd5821b3b450accba4e8f8cb31
+  subject: 'docs(phase58): prepare peak_trade v1.0 release and onboarding package'
+  has_body: true
+  observed_paths:
+  - docs/ARCHITECTURE_OVERVIEW.md
+  - docs/CLI_CHEATSHEET.md
+  - docs/GETTING_STARTED.md
+  - docs/PEAK_TRADE_STATUS_OVERVIEW.md
+  - docs/PEAK_TRADE_V1_RELEASE_NOTES.md
+  observed_labels:
+  - Peak_Trade
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 89c5e46a2c2904fd334dd1a4d231ffd3b6e4fde4
+  subject: 'feat(phase57): add live status report generator'
+  has_body: true
+  observed_paths:
+  - docs/CLI_CHEATSHEET.md
+  - docs/GOVERNANCE_AND_SAFETY_OVERVIEW.md
+  - docs/LIVE_STATUS_REPORTS.md
+  - docs/LIVE_TESTNET_TRACK_STATUS.md
+  - scripts/generate_live_status_report.py
+  - src/reporting/__init__.py
+  - src/reporting/live_status_report.py
+  - tests/test_generate_live_status_report_cli.py
+  - tests/test_live_status_report.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 1024034e120b7b381e0cc0f59c5347448f1d5277
+  subject: 'docs(phase56): add incident simulation drills and drill log'
+  has_body: true
+  observed_paths: []
+  observed_labels:
+  - Peak_Trade
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 8e7d49aae6bdcfc01bad35de5b8bae94d1aaca13
+  subject: 'chore(phase55): cleanup docs, consolidate AI guide, update status'
+  has_body: true
+  observed_paths:
+  - docs/CLAUDE_WORKFLOW.md
+  - docs/ai/CLAUDE_GUIDE.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 226dfac6287da5d97bb1db51e0514bf02bbaf626
+  subject: 'docs: add comprehensive project status overview (phases 1-49)'
+  has_body: true
+  observed_paths: []
+  observed_labels:
+  - Peak_Trade
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 0c15d2904dd9a919261c1599c83aa5fed71299cc
+  subject: 'feat: add live portfolio monitoring and risk bridge (phase 48)'
+  has_body: true
+  observed_paths:
+  - docs/CLI_CHEATSHEET.md
+  - docs/PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md
+  - scripts/preview_live_portfolio.py
+  - src/live/portfolio_monitor.py
+  - src/live/risk_limits.py
+  - tests/test_live_portfolio_monitor.py
+  - tests/test_live_risk_limits_portfolio_bridge.py
+  - tests/test_preview_live_portfolio.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: dfa0cf88ec22b13c3aa9f5f2bc89a6702ecb1868
+  subject: 'feat: add portfolio recipes & presets support to research CLI'
+  has_body: true
+  observed_paths:
+  - docs/CLI_CHEATSHEET.md
+  - docs/PORTFOLIO_RECIPES_AND_PRESETS.md
+  - scripts/run_portfolio_robustness.py
+  - src/experiments/portfolio_recipes.py
+  - tests/test_portfolio_recipes.py
+  - tests/test_research_cli_portfolio_presets.py
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: 6ec080ba40d481a3d829e720527a7c4392ba0845
+  subject: Move CLAUDE.md to docs/CLAUDE_WORKFLOW.md
+  has_body: false
+  observed_paths:
+  - docs/CLAUDE_WORKFLOW.md
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+- commit_sha: b81c4bf39a1adc1f713b8858a1efee9e33fda1c7
+  subject: 'docs: move IMPLEMENTATION_SUMMARY.md to docs/project_docs'
+  has_body: false
+  observed_paths:
+  - docs/project_docs
+  observed_labels: []
+  epistemic_status: FORENSIC_RAW_FACT
+  not_proof_of_component_existence: true
+exhaustion_proven_for_bound_commit_messages: true
+remaining_gap: ''
