@@ -36,7 +36,7 @@ def setup_health_checks() -> None:
     Includes:
     - Backtest Engine check
     - Database check (if available)
-    - Exchange API check (automatically registered by ResilientExchangeClient)
+    - Exchange API check (fail-closed without an authorized venue)
     """
     logger.info("Setting up health checks...")
 
@@ -81,22 +81,13 @@ def setup_health_checks() -> None:
     health_check.register("database", check_database)
 
     # Exchange API Health Check
-    # This is automatically registered when ResilientExchangeClient is instantiated
-    # We'll create a test instance to trigger registration
+    # No implicit venue binding is authorized for this dashboard.
     def check_exchange_api() -> Tuple[bool, str]:
-        """Check exchange API connectivity."""
-        try:
-            from src.data.exchange_client import ResilientExchangeClient
-
-            # Create client instance (this registers its own health check)
-            # Use paper/testnet config to avoid hitting live API
-            client = ResilientExchangeClient(exchange_id="kraken", config={"enableRateLimit": True})
-
-            # The client registers itself, so we just verify it was created
-            return True, "Exchange API client initialized"
-
-        except Exception as e:
-            return False, f"Exchange API check failed: {str(e)}"
+        """Fail-closed: no authorized venue is bound for the health dashboard."""
+        return (
+            False,
+            "Exchange API client not bound: no authorized venue for health dashboard",
+        )
 
     health_check.register("exchange_api", check_exchange_api)
 

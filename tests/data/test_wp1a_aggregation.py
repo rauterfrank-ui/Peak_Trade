@@ -14,6 +14,11 @@ from src.data.shadow.bar_aggregator import BarAggregator
 from src.data.shadow.models import Tick
 
 
+def _tick(**kwargs):
+    kwargs.setdefault("source", "test")
+    return Tick(**kwargs)
+
+
 class TestBarAggregator:
     """Test suite for BarAggregator."""
 
@@ -21,7 +26,7 @@ class TestBarAggregator:
         """Test bar from single tick."""
         aggregator = BarAggregator(timeframe_ms=60_000, timeframe_str="1m")
 
-        tick = Tick(
+        tick = _tick(
             ts_ms=1000_000,  # 1000 seconds
             price=50000.0,
             volume=0.5,
@@ -47,14 +52,14 @@ class TestBarAggregator:
         # Bar: [960_000, 1_020_000) - so ticks must be < 1_020_000
         base_ts_ms = 960_000
         ticks = [
-            Tick(ts_ms=base_ts_ms + 0, price=50000.0, volume=0.5, symbol="BTC/EUR"),
-            Tick(
+            _tick(ts_ms=base_ts_ms + 0, price=50000.0, volume=0.5, symbol="BTC/EUR"),
+            _tick(
                 ts_ms=base_ts_ms + 10_000,
                 price=51000.0,
                 volume=0.3,
                 symbol="BTC/EUR",
             ),
-            Tick(
+            _tick(
                 ts_ms=base_ts_ms + 20_000,
                 price=49000.0,
                 volume=0.2,
@@ -84,14 +89,14 @@ class TestBarAggregator:
         # Second bar: [1_020_000, 1_080_000)
         base_ts_ms = 960_000
         ticks = [
-            Tick(ts_ms=base_ts_ms + 0, price=50000.0, volume=0.5, symbol="BTC/EUR"),
-            Tick(
+            _tick(ts_ms=base_ts_ms + 0, price=50000.0, volume=0.5, symbol="BTC/EUR"),
+            _tick(
                 ts_ms=base_ts_ms + 30_000,
                 price=51000.0,
                 volume=0.3,
                 symbol="BTC/EUR",
             ),
-            Tick(
+            _tick(
                 ts_ms=base_ts_ms + 60_000,  # Next bar (at boundary)
                 price=52000.0,
                 volume=0.2,
@@ -127,11 +132,11 @@ class TestBarAggregator:
         # Bar: [960_000, 1_020_000)
         base_ts_ms = 960_000
         ticks = [
-            Tick(ts_ms=base_ts_ms + 0, price=100.0, volume=1.0, symbol="BTC/EUR"),
-            Tick(ts_ms=base_ts_ms + 10_000, price=110.0, volume=1.0, symbol="BTC/EUR"),  # High
-            Tick(ts_ms=base_ts_ms + 20_000, price=90.0, volume=1.0, symbol="BTC/EUR"),  # Low
-            Tick(ts_ms=base_ts_ms + 30_000, price=105.0, volume=1.0, symbol="BTC/EUR"),  # Close
-            Tick(ts_ms=base_ts_ms + 60_000, price=200.0, volume=1.0, symbol="BTC/EUR"),  # Next bar
+            _tick(ts_ms=base_ts_ms + 0, price=100.0, volume=1.0, symbol="BTC/EUR"),
+            _tick(ts_ms=base_ts_ms + 10_000, price=110.0, volume=1.0, symbol="BTC/EUR"),  # High
+            _tick(ts_ms=base_ts_ms + 20_000, price=90.0, volume=1.0, symbol="BTC/EUR"),  # Low
+            _tick(ts_ms=base_ts_ms + 30_000, price=105.0, volume=1.0, symbol="BTC/EUR"),  # Close
+            _tick(ts_ms=base_ts_ms + 60_000, price=200.0, volume=1.0, symbol="BTC/EUR"),  # Next bar
         ]
 
         bars = []
@@ -155,10 +160,10 @@ class TestBarAggregator:
 
         base_ts_ms = 1000_000
         ticks = [
-            Tick(ts_ms=base_ts_ms + 0, price=50000.0, volume=0.5, symbol="BTC/EUR"),
-            Tick(ts_ms=base_ts_ms + 0, price=2000.0, volume=1.0, symbol="ETH/EUR"),
-            Tick(ts_ms=base_ts_ms + 60_000, price=50100.0, volume=0.3, symbol="BTC/EUR"),
-            Tick(ts_ms=base_ts_ms + 60_000, price=2010.0, volume=0.8, symbol="ETH/EUR"),
+            _tick(ts_ms=base_ts_ms + 0, price=50000.0, volume=0.5, symbol="BTC/EUR"),
+            _tick(ts_ms=base_ts_ms + 0, price=2000.0, volume=1.0, symbol="ETH/EUR"),
+            _tick(ts_ms=base_ts_ms + 60_000, price=50100.0, volume=0.3, symbol="BTC/EUR"),
+            _tick(ts_ms=base_ts_ms + 60_000, price=2010.0, volume=0.8, symbol="ETH/EUR"),
         ]
 
         bars = []
@@ -178,7 +183,7 @@ class TestBarAggregator:
         aggregator = BarAggregator(timeframe_ms=60_000, timeframe_str="1m")
 
         base_ts_ms = 1000_000
-        tick = Tick(ts_ms=base_ts_ms, price=50000.0, volume=0.5, symbol="BTC/EUR")
+        tick = _tick(ts_ms=base_ts_ms, price=50000.0, volume=0.5, symbol="BTC/EUR")
         aggregator.add_tick(tick)
 
         # No bars emitted yet
@@ -202,8 +207,8 @@ class TestBarAggregator:
 
         base_ts_ms = 1000_000
         ticks = [
-            Tick(ts_ms=base_ts_ms, price=50000.0, volume=0.5, symbol="BTC/EUR"),
-            Tick(ts_ms=base_ts_ms, price=2000.0, volume=1.0, symbol="ETH/EUR"),
+            _tick(ts_ms=base_ts_ms, price=50000.0, volume=0.5, symbol="BTC/EUR"),
+            _tick(ts_ms=base_ts_ms, price=2000.0, volume=1.0, symbol="ETH/EUR"),
         ]
 
         for tick in ticks:
@@ -224,7 +229,7 @@ class TestBarAggregator:
         aggregator = BarAggregator(timeframe_ms=60_000, timeframe_str="1m")
 
         # Tick at arbitrary timestamp
-        tick = Tick(
+        tick = _tick(
             ts_ms=1_234_567_890,  # Not aligned
             price=50000.0,
             volume=0.5,
@@ -233,7 +238,7 @@ class TestBarAggregator:
         aggregator.add_tick(tick)
 
         # Trigger emit
-        next_tick = Tick(
+        next_tick = _tick(
             ts_ms=1_234_567_890 + 60_000,
             price=50100.0,
             volume=0.3,
@@ -257,8 +262,8 @@ class TestNormalizationConsistency:
 
         base_ts_ms = 1000_000
         ticks = [
-            Tick(ts_ms=base_ts_ms + 0, price=100.0, volume=1.0, symbol="BTC/EUR"),
-            Tick(ts_ms=base_ts_ms + 60_000, price=200.0, volume=1.0, symbol="BTC/EUR"),
+            _tick(ts_ms=base_ts_ms + 0, price=100.0, volume=1.0, symbol="BTC/EUR"),
+            _tick(ts_ms=base_ts_ms + 60_000, price=200.0, volume=1.0, symbol="BTC/EUR"),
         ]
 
         bars = []

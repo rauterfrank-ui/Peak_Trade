@@ -28,7 +28,7 @@ class TestLiveFeedClient:
 
     def test_connect_success(self):
         """Test successful connection."""
-        config = FeedConfig(symbols=["BTC/EUR"])
+        config = FeedConfig(exchange="kraken", symbols=["BTC/EUR"])
         client = LiveFeedClient(config)
 
         assert client.state == ConnectionState.DISCONNECTED
@@ -41,7 +41,7 @@ class TestLiveFeedClient:
 
     def test_disconnect(self):
         """Test disconnection."""
-        config = FeedConfig(symbols=["BTC/EUR"])
+        config = FeedConfig(exchange="kraken", symbols=["BTC/EUR"])
         client = LiveFeedClient(config)
 
         client.connect()
@@ -55,6 +55,7 @@ class TestLiveFeedClient:
     def test_reconnect_on_disconnect(self):
         """Test automatic reconnection after disconnect."""
         config = FeedConfig(
+            exchange="kraken",
             symbols=["BTC/EUR"],
             reconnect_enabled=True,
             reconnect_max_attempts=3,
@@ -76,6 +77,7 @@ class TestLiveFeedClient:
     def test_reconnect_backoff_deterministic(self):
         """Test exponential backoff is deterministic."""
         config = FeedConfig(
+            exchange="kraken",
             symbols=["BTC/EUR"],
             reconnect_enabled=True,
             reconnect_max_attempts=3,
@@ -96,6 +98,7 @@ class TestLiveFeedClient:
     def test_reconnect_max_attempts_reached(self):
         """Test failure after max reconnect attempts."""
         config = FeedConfig(
+            exchange="kraken",
             symbols=["BTC/EUR"],
             reconnect_enabled=True,
             reconnect_max_attempts=0,  # Fail immediately
@@ -122,6 +125,7 @@ class TestLiveFeedClient:
     def test_backfill_triggered_on_reconnect(self):
         """Test backfill is triggered on reconnect."""
         config = FeedConfig(
+            exchange="kraken",
             symbols=["BTC/EUR"],
             reconnect_enabled=True,
             backfill_enabled=True,
@@ -150,6 +154,7 @@ class TestLiveFeedClient:
     def test_backfill_not_triggered_when_disabled(self):
         """Test backfill is NOT triggered when disabled."""
         config = FeedConfig(
+            exchange="kraken",
             symbols=["BTC/EUR"],
             reconnect_enabled=True,
             backfill_enabled=False,  # Disabled
@@ -171,7 +176,7 @@ class TestMessageParsing:
 
     def test_process_valid_kraken_message(self):
         """Test processing valid Kraken trade message."""
-        config = FeedConfig(symbols=["BTC/EUR"])
+        config = FeedConfig(exchange="kraken", symbols=["BTC/EUR"])
         client = LiveFeedClient(config)
 
         # Valid Kraken trade message
@@ -197,7 +202,7 @@ class TestMessageParsing:
 
     def test_process_invalid_message(self):
         """Test processing invalid message."""
-        config = FeedConfig(symbols=["BTC/EUR"])
+        config = FeedConfig(exchange="kraken", symbols=["BTC/EUR"])
         client = LiveFeedClient(config)
 
         # Invalid message
@@ -212,7 +217,7 @@ class TestMessageParsing:
     def test_latency_tracking(self):
         """Test latency metrics are recorded."""
         metrics = MetricsCollector()
-        config = FeedConfig(symbols=["BTC/EUR"])
+        config = FeedConfig(exchange="kraken", symbols=["BTC/EUR"])
         client = LiveFeedClient(config, metrics_collector=metrics)
 
         past_ts = _FIXED_NOW - 1.0
@@ -234,7 +239,7 @@ class TestMessageParsing:
 
     def test_on_tick_callback(self):
         """Test on_tick callback is invoked."""
-        config = FeedConfig(symbols=["BTC/EUR"])
+        config = FeedConfig(exchange="kraken", symbols=["BTC/EUR"])
         client = LiveFeedClient(config)
 
         received_ticks = []
@@ -258,7 +263,7 @@ class TestConnectionStateCallbacks:
 
     def test_state_change_callback(self):
         """Test state change callback is invoked."""
-        config = FeedConfig(symbols=["BTC/EUR"])
+        config = FeedConfig(exchange="kraken", symbols=["BTC/EUR"])
         client = LiveFeedClient(config)
 
         state_changes = []
@@ -287,7 +292,7 @@ class TestFeedStats:
 
     def test_stats_initial_state(self):
         """Test stats are initialized correctly."""
-        config = FeedConfig()
+        config = FeedConfig(exchange="kraken")
         client = LiveFeedClient(config)
 
         stats = client.get_stats()
@@ -300,7 +305,7 @@ class TestFeedStats:
 
     def test_stats_updated_on_processing(self):
         """Test stats are updated correctly."""
-        config = FeedConfig()
+        config = FeedConfig(exchange="kraken")
         client = LiveFeedClient(config)
 
         # Valid message

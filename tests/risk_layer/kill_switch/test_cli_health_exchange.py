@@ -50,9 +50,25 @@ def test_resolve_auto_unset_uses_probe_disabled_fallback(monkeypatch):
     assert meta.get("exchange_connected_source") == "probe_disabled_fallback"
 
 
+def test_resolve_auto_unset_without_probe_url_fail_closed(monkeypatch):
+    monkeypatch.delenv(_EXCHANGE_CONNECTED_ENV, raising=False)
+    monkeypatch.delenv(_PROBE_DISABLED_ENV, raising=False)
+    monkeypatch.delenv("PEAK_KILL_SWITCH_EXCHANGE_PROBE_URL", raising=False)
+
+    def _must_not_run(req, timeout=None):
+        raise AssertionError("urlopen must not run without explicit probe URL")
+
+    monkeypatch.setattr("urllib.request.urlopen", _must_not_run)
+    ok, meta = resolve_exchange_connected_for_health("auto")
+    assert ok is False
+    assert meta.get("exchange_connected_source") == "http_probe_not_configured"
+    assert meta.get("probe_error") == "probe_url_not_configured"
+
+
 def test_resolve_auto_unset_runs_http_probe(monkeypatch):
     monkeypatch.delenv(_EXCHANGE_CONNECTED_ENV, raising=False)
     monkeypatch.delenv(_PROBE_DISABLED_ENV, raising=False)
+    monkeypatch.setenv("PEAK_KILL_SWITCH_EXCHANGE_PROBE_URL", "https://example.test/status")
 
     class _Resp:
         def __enter__(self):

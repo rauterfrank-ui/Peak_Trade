@@ -20,14 +20,14 @@ class Tick:
         price: Trade Price
         volume: Trade Volume
         symbol: Symbol (z.B. "XBT/EUR", "BTC-EUR")
-        source: Datenquelle (default: "kraken_ws")
+        source: Datenquelle; required, no implicit venue default
     """
 
     ts_ms: int
     price: float
     volume: float
     symbol: str
-    source: str = "kraken_ws"
+    source: str
 
     def __post_init__(self) -> None:
         if self.price <= 0:
@@ -36,6 +36,8 @@ class Tick:
             raise ValueError(f"Invalid volume: {self.volume}")
         if self.ts_ms <= 0:
             raise ValueError(f"Invalid timestamp: {self.ts_ms}")
+        if not str(self.source).strip():
+            raise ValueError("source is required; no implicit venue default is authorized")
 
 
 @dataclass(frozen=True)

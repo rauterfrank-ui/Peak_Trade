@@ -13,6 +13,11 @@ from src.data.shadow.live_quality_checks import LiveQualityChecker
 from src.data.shadow.models import Bar, Tick
 
 
+def _tick(**kwargs):
+    kwargs.setdefault("source", "test")
+    return Tick(**kwargs)
+
+
 class TestLiveQualityChecker:
     """Test suite for LiveQualityChecker."""
 
@@ -21,9 +26,9 @@ class TestLiveQualityChecker:
         checker = LiveQualityChecker()
 
         ticks = [
-            Tick(ts_ms=1000_000, price=50000.0, volume=0.5, symbol="BTC/EUR"),
-            Tick(ts_ms=1010_000, price=50100.0, volume=0.3, symbol="BTC/EUR"),
-            Tick(ts_ms=1020_000, price=50200.0, volume=0.2, symbol="BTC/EUR"),
+            _tick(ts_ms=1000_000, price=50000.0, volume=0.5, symbol="BTC/EUR"),
+            _tick(ts_ms=1010_000, price=50100.0, volume=0.3, symbol="BTC/EUR"),
+            _tick(ts_ms=1020_000, price=50200.0, volume=0.2, symbol="BTC/EUR"),
         ]
 
         for tick in ticks:
@@ -38,9 +43,9 @@ class TestLiveQualityChecker:
         checker = LiveQualityChecker()
 
         ticks = [
-            Tick(ts_ms=1000_000, price=50000.0, volume=0.5, symbol="BTC/EUR"),
-            Tick(ts_ms=1010_000, price=50100.0, volume=0.3, symbol="BTC/EUR"),
-            Tick(ts_ms=1005_000, price=50050.0, volume=0.2, symbol="BTC/EUR"),  # Earlier!
+            _tick(ts_ms=1000_000, price=50000.0, volume=0.5, symbol="BTC/EUR"),
+            _tick(ts_ms=1010_000, price=50100.0, volume=0.3, symbol="BTC/EUR"),
+            _tick(ts_ms=1005_000, price=50050.0, volume=0.2, symbol="BTC/EUR"),  # Earlier!
         ]
 
         all_issues = []
@@ -231,7 +236,7 @@ class TestLiveQualityChecker:
         checker = LiveQualityChecker(stale_threshold_ms=10_000)
 
         # First tick
-        tick1 = Tick(ts_ms=1000_000, price=50000.0, volume=0.5, symbol="BTC/EUR")
+        tick1 = _tick(ts_ms=1000_000, price=50000.0, volume=0.5, symbol="BTC/EUR")
         checker.check_tick(tick1)
 
         # Check staleness after 5 seconds (not stale)
@@ -252,14 +257,14 @@ class TestLiveQualityChecker:
 
         # BTC ticks
         btc_ticks = [
-            Tick(ts_ms=1000_000, price=50000.0, volume=0.5, symbol="BTC/EUR"),
-            Tick(ts_ms=1010_000, price=50100.0, volume=0.3, symbol="BTC/EUR"),
+            _tick(ts_ms=1000_000, price=50000.0, volume=0.5, symbol="BTC/EUR"),
+            _tick(ts_ms=1010_000, price=50100.0, volume=0.3, symbol="BTC/EUR"),
         ]
 
         # ETH ticks (non-monotonic)
         eth_ticks = [
-            Tick(ts_ms=2000_000, price=2000.0, volume=1.0, symbol="ETH/EUR"),
-            Tick(ts_ms=1990_000, price=1990.0, volume=0.8, symbol="ETH/EUR"),  # Earlier!
+            _tick(ts_ms=2000_000, price=2000.0, volume=1.0, symbol="ETH/EUR"),
+            _tick(ts_ms=1990_000, price=1990.0, volume=0.8, symbol="ETH/EUR"),  # Earlier!
         ]
 
         all_issues = []
@@ -275,7 +280,7 @@ class TestLiveQualityChecker:
         """Test checker reset clears state."""
         checker = LiveQualityChecker()
 
-        tick = Tick(ts_ms=1000_000, price=50000.0, volume=0.5, symbol="BTC/EUR")
+        tick = _tick(ts_ms=1000_000, price=50000.0, volume=0.5, symbol="BTC/EUR")
         checker.check_tick(tick)
 
         stats_before = checker.get_stats()

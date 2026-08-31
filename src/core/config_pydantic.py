@@ -79,7 +79,7 @@ class LiveConfig(BaseModel):
 
     enabled: bool = Field(default=False)
     mode: str = Field(default="paper", pattern="^(paper|dry_run|live)$")
-    exchange: str = Field(default="kraken")
+    exchange: str = Field(default="")
     default_pair: str = Field(default="BTC/USD")
 
 

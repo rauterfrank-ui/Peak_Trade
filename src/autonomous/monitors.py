@@ -117,12 +117,12 @@ class MarketMonitor:
         # Placeholder
         return 0.18
 
-    def is_market_hours(self, exchange: str = "kraken") -> bool:
+    def is_market_hours(self, exchange: str) -> bool:
         """
         Check if market is in active trading hours.
 
         Args:
-            exchange: Exchange name
+            exchange: Exchange name; required, no implicit venue default
 
         Returns:
             True if in market hours

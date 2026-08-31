@@ -78,7 +78,10 @@ def build_exchange_client_from_config(cfg) -> ExchangeClientProtocol:
         >>> client = build_exchange_client_from_config(cfg)
         >>> ticker = client.fetch_ticker("BTC/EUR")
     """
-    exchange_id = cfg.get("exchange.id", "kraken")
+    exchange_id = cfg.get("exchange.id")
+    if exchange_id is None or str(exchange_id).strip() == "":
+        raise ValueError("exchange.id is required; no implicit venue fallback is authorized")
+    exchange_id = str(exchange_id).strip()
     sandbox = cfg.get("exchange.sandbox", True)
     enable_rate_limit = cfg.get("exchange.enable_rate_limit", True)
 

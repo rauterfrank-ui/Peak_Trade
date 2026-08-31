@@ -818,9 +818,8 @@ use_experiments_for_daily_pnl = true
 # Für Order-Execution siehe [live]-Sektion.
 
 [exchange]
-# Exchange-ID (ccxt-kompatibel)
+# Exchange-ID (ccxt-kompatibel) must be set explicitly; no implicit venue.
 # Verfügbare: kraken, binance, coinbasepro, bitstamp, etc.
-id = "kraken"
 
 # Sandbox/Testnet-Modus (falls vom Exchange unterstützt)
 # EMPFOHLEN: true für Entwicklung!
