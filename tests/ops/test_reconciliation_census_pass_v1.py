@@ -218,13 +218,18 @@ def test_census_pass_v3_bound_universes_and_blob_sha_dedup() -> None:
     main = commit_shas(repo_root=REPO_ROOT, args=["origin/main"])
     bound = commit_shas(repo_root=REPO_ROOT, args=list(BOUND_REV_LIST_ARGS))
     all_refs = commit_shas(repo_root=REPO_ROOT, args=["--all"])
+    scan_bound = int(summary["reachable_commit_count_all_bound"])
     assert len(main) == int(summary["reachable_commit_count_origin_main"])
-    assert len(bound) == int(summary["reachable_commit_count_all_bound"])
+    # Scan-time bound count is frozen. Live bound may include later census persist
+    # commits on refs/heads (the snapshot commit cannot contain itself).
+    persist_delta = len(bound) - scan_bound
+    assert persist_delta >= 0
+    assert persist_delta <= 5
     assert len(bound) < len(all_refs)
     assert int(universe["commits_only_on_extra_local_refs_count"]) == len(
         set(all_refs) - set(bound)
     )
-    assert int(messages["commit_message_count"]) == len(bound)
+    assert int(messages["commit_message_count"]) == scan_bound
     assert messages["commit_message_count_matches_bound_commits"] is True
     assert int(messages["commit_message_with_body_count"]) > 0
 

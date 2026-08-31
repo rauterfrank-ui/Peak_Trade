@@ -164,8 +164,8 @@ SURFACES_EXHAUSTION_PROVEN=17
 SURFACES_EXHAUSTION_UNPROVEN=0
 ```
 
-Pass v3 bound two git-history universes (`origin/main` vs `refs/heads` +
-`refs/remotes/origin` + `refs/tags`), SHA-deduped unique blobs, content-scanned
+Pass v3 bound two git-history universes (`origin/main` vs `refs&#47;heads` +
+`refs&#47;remotes&#47;origin` + `refs&#47;tags`), SHA-deduped unique blobs, content-scanned
 relevant text blobs, and exhausted bound commit subjects and bodies.
 `git rev-list --all` is not the bound universe. Extra local stash/review/tmp
 refs and LOSS_REGISTER-derived unreachable blobs remain documented out of
@@ -185,7 +185,7 @@ KNOWN_SEARCH_ANCHORS=Landscape;Master V2;Double Play
 ```
 
 Pass v2 walked unique tip trees by exact Git tree SHA, inventoried reachable
-object path names, and file-inventoried `archive/PeakTradeRepo`. Git-history
+object path names, and file-inventoried `archive&#47;PeakTradeRepo`. Git-history
 blob contents remained unproven after that pass.
 
 ## Census pass v1 state (historical)
