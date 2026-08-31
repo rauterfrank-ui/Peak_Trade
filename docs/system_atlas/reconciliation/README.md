@@ -230,9 +230,9 @@ terminal class is assigned only when that class's burden of proof is met.
 This persist assigned none; all 35 remain `INSUFFICIENT_EVIDENCE` / `OPEN`.
 That outcome is not a rejection. Reintegration, identity fusion, runtime
 mutation, commit, push, and PR are not authorized. UNDERSTAND snapshots
-under `understand/`, EVALUATE snapshots under `evaluate/`, INTEGRATE_OR_DISPOSITION
-snapshots under `adjudicate/`, and OPEN_EVIDENCE_RESOLUTION snapshots under
-`evidence_resolution/` remain phase-frozen. Census `current_presence` is not
+under `understand&#47;`, EVALUATE snapshots under `evaluate&#47;`, INTEGRATE_OR_DISPOSITION
+snapshots under `adjudicate&#47;`, and OPEN_EVIDENCE_RESOLUTION snapshots under
+`evidence_resolution&#47;` remain phase-frozen. Census `current_presence` is not
 rewritten, including the RCN-000052 contradiction.
 
 ## OPEN_EVIDENCE_RESOLUTION pass v1 state (historical)
@@ -250,8 +250,8 @@ This pass exhausts repository-internal evidence for the 35 records that
 remained `INSUFFICIENT_EVIDENCE` / `OPEN` after INTEGRATE_OR_DISPOSITION
 pass v1. It records an evidence-resolution status per OPEN record. That
 status is not a new terminal disposition. UNDERSTAND snapshots under
-`understand/`, EVALUATE snapshots under `evaluate/`, and INTEGRATE_OR_DISPOSITION
-snapshots under `adjudicate/` remain phase-frozen. Census
+`understand&#47;`, EVALUATE snapshots under `evaluate&#47;`, and INTEGRATE_OR_DISPOSITION
+snapshots under `adjudicate&#47;` remain phase-frozen. Census
 `current_presence` is not rewritten, including the RCN-000052 contradiction.
 
 ## EVALUATE_INDIVIDUALLY pass v1 state (historical)
