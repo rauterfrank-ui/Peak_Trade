@@ -189,7 +189,7 @@ IDENTITY_MERGES_PERFORMED=0
 UNDERSTAND pass v2 exhausted remaining OPEN/PARTIAL records against
 repository-internal historical evidence. `evidence_exhausted=true` may coexist
 with PARTIAL/OPEN when the bound evidence does not carry the missing statement.
-Clusters under `understand/clusters.yaml` are navigation only, not identity
+Clusters under `understand&#47;clusters.yaml` are navigation only, not identity
 groups. `POSSIBLE_SAME_AS` remains hypothesis. Archive presence is not obsolete.
 Historical revert is not disposition. No EVALUATE, current-system comparison,
 disposition, reintegration, or identity fusion.
