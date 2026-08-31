@@ -15,7 +15,7 @@ from src.observability.metrics import MetricsCollector
 def generate_latency_snapshot():
     """Generate latency snapshot evidence."""
     metrics = MetricsCollector()
-    config = FeedConfig(symbols=["BTC/EUR", "ETH/EUR"])
+    config = FeedConfig(exchange="latency_snapshot", symbols=["BTC/EUR", "ETH/EUR"])
     client = LiveFeedClient(config, metrics_collector=metrics)
 
     # Simulate some messages with known latencies

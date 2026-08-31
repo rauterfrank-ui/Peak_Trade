@@ -45,6 +45,24 @@ def test_probe_exchange_http_public_http_error(monkeypatch):
         )
 
     monkeypatch.setattr(ep.urllib.request, "urlopen", _fake_urlopen)
+    monkeypatch.setenv("PEAK_KILL_SWITCH_EXCHANGE_PROBE_URL", "https://example.test/status")
     ok, meta = ep.probe_exchange_http_public()
     assert ok is False
     assert meta["probe_http_status"] == 503
+
+
+def test_probe_exchange_http_public_missing_url_fail_closed_no_request(monkeypatch):
+    called = []
+
+    def _fake_urlopen(req, timeout=None):
+        called.append((req, timeout))
+        raise AssertionError("urlopen must not be called without explicit probe URL")
+
+    monkeypatch.setattr(ep.urllib.request, "urlopen", _fake_urlopen)
+    monkeypatch.delenv("PEAK_KILL_SWITCH_EXCHANGE_PROBE_URL", raising=False)
+    ok, meta = ep.probe_exchange_http_public()
+    assert ok is False
+    assert called == []
+    assert meta["probe_error"] == "probe_url_not_configured"
+    assert meta["exchange_connected_source"] == "http_probe_not_configured"
+    assert "kraken" not in str(meta).lower()

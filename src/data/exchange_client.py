@@ -29,7 +29,9 @@ def _load_impl():
 
 
 class ResilientExchangeClient:
-    def __init__(self, exchange_id: str = "kraken", config: Optional[Dict[str, Any]] = None):
+    def __init__(self, exchange_id: str, config: Optional[Dict[str, Any]] = None):
+        if not isinstance(exchange_id, str) or not exchange_id.strip():
+            raise ValueError("exchange_id is required; no implicit venue default is authorized")
         impl_cls = _load_impl()
         self._impl = impl_cls(exchange_id=exchange_id, config=config)
 

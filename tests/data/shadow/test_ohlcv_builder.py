@@ -9,6 +9,13 @@ from __future__ import annotations
 import pytest
 
 from src.data.shadow.models import Tick
+
+
+def _tick(**kwargs):
+    kwargs.setdefault("source", "test")
+    return Tick(**kwargs)
+
+
 from src.data.shadow.ohlcv_builder import OHLCVBuilder, tf_to_ms
 
 
@@ -47,9 +54,9 @@ def test_ohlcv_builder_single_bar():
     base_ts = 1735347600000  # Aligned to minute
 
     ticks = [
-        Tick(ts_ms=base_ts, price=50000.0, volume=0.1, symbol="XBT/EUR"),
-        Tick(ts_ms=base_ts + 10000, price=50010.0, volume=0.2, symbol="XBT/EUR"),
-        Tick(ts_ms=base_ts + 20000, price=50005.0, volume=0.15, symbol="XBT/EUR"),
+        _tick(ts_ms=base_ts, price=50000.0, volume=0.1, symbol="XBT/EUR"),
+        _tick(ts_ms=base_ts + 10000, price=50010.0, volume=0.2, symbol="XBT/EUR"),
+        _tick(ts_ms=base_ts + 20000, price=50005.0, volume=0.15, symbol="XBT/EUR"),
     ]
 
     builder = OHLCVBuilder(symbol="XBT/EUR", timeframe="1m")
@@ -79,9 +86,9 @@ def test_ohlcv_builder_multiple_bars():
 
     ticks = [
         # Minute 1
-        Tick(ts_ms=base_ts, price=50000.0, volume=0.1, symbol="XBT/EUR"),
+        _tick(ts_ms=base_ts, price=50000.0, volume=0.1, symbol="XBT/EUR"),
         # Minute 2
-        Tick(ts_ms=base_ts + 60000, price=50100.0, volume=0.2, symbol="XBT/EUR"),
+        _tick(ts_ms=base_ts + 60000, price=50100.0, volume=0.2, symbol="XBT/EUR"),
     ]
 
     builder = OHLCVBuilder(symbol="XBT/EUR", timeframe="1m")
@@ -107,8 +114,8 @@ def test_ohlcv_builder_filters_wrong_symbol():
     base_ts = 1735347600000
 
     ticks = [
-        Tick(ts_ms=base_ts, price=50000.0, volume=0.1, symbol="XBT/EUR"),
-        Tick(ts_ms=base_ts, price=3000.0, volume=0.5, symbol="ETH/EUR"),  # wrong
+        _tick(ts_ms=base_ts, price=50000.0, volume=0.1, symbol="XBT/EUR"),
+        _tick(ts_ms=base_ts, price=3000.0, volume=0.5, symbol="ETH/EUR"),  # wrong
     ]
 
     builder = OHLCVBuilder(symbol="XBT/EUR", timeframe="1m")
@@ -126,15 +133,15 @@ def test_ohlcv_builder_deterministisch():
 
     # Ticks in zufälliger Reihenfolge
     ticks_order1 = [
-        Tick(ts_ms=base_ts + 20000, price=50005.0, volume=0.15, symbol="XBT/EUR"),
-        Tick(ts_ms=base_ts, price=50000.0, volume=0.1, symbol="XBT/EUR"),
-        Tick(ts_ms=base_ts + 10000, price=50010.0, volume=0.2, symbol="XBT/EUR"),
+        _tick(ts_ms=base_ts + 20000, price=50005.0, volume=0.15, symbol="XBT/EUR"),
+        _tick(ts_ms=base_ts, price=50000.0, volume=0.1, symbol="XBT/EUR"),
+        _tick(ts_ms=base_ts + 10000, price=50010.0, volume=0.2, symbol="XBT/EUR"),
     ]
 
     ticks_order2 = [
-        Tick(ts_ms=base_ts + 10000, price=50010.0, volume=0.2, symbol="XBT/EUR"),
-        Tick(ts_ms=base_ts + 20000, price=50005.0, volume=0.15, symbol="XBT/EUR"),
-        Tick(ts_ms=base_ts, price=50000.0, volume=0.1, symbol="XBT/EUR"),
+        _tick(ts_ms=base_ts + 10000, price=50010.0, volume=0.2, symbol="XBT/EUR"),
+        _tick(ts_ms=base_ts + 20000, price=50005.0, volume=0.15, symbol="XBT/EUR"),
+        _tick(ts_ms=base_ts, price=50000.0, volume=0.1, symbol="XBT/EUR"),
     ]
 
     builder1 = OHLCVBuilder(symbol="XBT/EUR", timeframe="1m")
@@ -159,10 +166,10 @@ def test_ohlcv_builder_5m_timeframe():
 
     ticks = [
         # First 5m window
-        Tick(ts_ms=base_ts, price=50000.0, volume=0.1, symbol="XBT/EUR"),
-        Tick(ts_ms=base_ts + 60000, price=50100.0, volume=0.2, symbol="XBT/EUR"),
+        _tick(ts_ms=base_ts, price=50000.0, volume=0.1, symbol="XBT/EUR"),
+        _tick(ts_ms=base_ts + 60000, price=50100.0, volume=0.2, symbol="XBT/EUR"),
         # Second 5m window
-        Tick(ts_ms=base_ts + 300000, price=50200.0, volume=0.3, symbol="XBT/EUR"),
+        _tick(ts_ms=base_ts + 300000, price=50200.0, volume=0.3, symbol="XBT/EUR"),
     ]
 
     builder = OHLCVBuilder(symbol="XBT/EUR", timeframe="5m")

@@ -23,7 +23,9 @@ class ResilientExchangeClient:
     Exchange client with circuit breaker and retry logic (read-only).
     """
 
-    def __init__(self, exchange_id: str = "kraken", config: Optional[Dict[str, Any]] = None):
+    def __init__(self, exchange_id: str, config: Optional[Dict[str, Any]] = None):
+        if not isinstance(exchange_id, str) or not exchange_id.strip():
+            raise ValueError("exchange_id is required; no implicit venue default is authorized")
         self.exchange_id = exchange_id
         self.config = config or {}
 

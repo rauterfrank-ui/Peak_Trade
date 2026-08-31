@@ -1,8 +1,9 @@
 """Lightweight exchange reachability probe for kill-switch health (NO-LIVE, public API).
 
-Uses a configurable HTTPS GET (default: Kraken public ``SystemStatus``) so operators
-get a real connectivity signal without API keys. Optional env disables the probe for
-air-gapped CI or sandboxes.
+Uses a configurable HTTPS GET so operators get a real connectivity signal without
+API keys. The probe URL must be set explicitly via
+``PEAK_KILL_SWITCH_EXCHANGE_PROBE_URL``; there is no implicit venue URL.
+Optional env disables the probe for air-gapped CI or sandboxes.
 """
 
 from __future__ import annotations
@@ -12,7 +13,6 @@ import urllib.error
 import urllib.request
 from typing import Any, Dict, Tuple
 
-_DEFAULT_PROBE_URL = "https://api.kraken.com/0/public/SystemStatus"
 _PROBE_DISABLED_ENV = "PEAK_KILL_SWITCH_EXCHANGE_PROBE_DISABLED"
 _PROBE_URL_ENV = "PEAK_KILL_SWITCH_EXCHANGE_PROBE_URL"
 _TIMEOUT_ENV = "PEAK_KILL_SWITCH_EXCHANGE_PROBE_TIMEOUT_S"
@@ -34,7 +34,14 @@ def probe_exchange_http_public() -> Tuple[bool, Dict[str, Any]]:
     meta:
         ``probe_url``, ``probe_http_status`` or ``probe_error`` / ``probe_error_type``.
     """
-    url = (os.environ.get(_PROBE_URL_ENV) or _DEFAULT_PROBE_URL).strip() or _DEFAULT_PROBE_URL
+    url = (os.environ.get(_PROBE_URL_ENV) or "").strip()
+    if not url:
+        return False, {
+            "probe_url": None,
+            "probe_error": "probe_url_not_configured",
+            "probe_error_type": "ProbeUrlNotConfigured",
+            "exchange_connected_source": "http_probe_not_configured",
+        }
     try:
         timeout = float(os.environ.get(_TIMEOUT_ENV, "5") or "5")
     except ValueError:

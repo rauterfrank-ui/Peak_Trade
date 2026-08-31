@@ -42,7 +42,7 @@ class FeedConfig:
     Configuration for LiveFeedClient.
 
     Attributes:
-        exchange: Exchange name (e.g., "kraken")
+        exchange: Exchange name; required, no implicit venue default
         symbols: List of symbols to subscribe
         reconnect_enabled: Enable automatic reconnection
         reconnect_max_attempts: Maximum reconnection attempts
@@ -51,13 +51,17 @@ class FeedConfig:
         backfill_lookback_ms: Backfill lookback window (ms)
     """
 
-    exchange: str = "kraken"
+    exchange: str
     symbols: list[str] = field(default_factory=lambda: ["BTC/EUR"])
     reconnect_enabled: bool = True
     reconnect_max_attempts: int = 5
     reconnect_backoff_base: float = 2.0
     backfill_enabled: bool = True
     backfill_lookback_ms: int = 60_000  # 1 minute
+
+    def __post_init__(self) -> None:
+        if not str(self.exchange).strip():
+            raise ValueError("exchange is required; no implicit venue default is authorized")
 
 
 @dataclass
@@ -99,7 +103,7 @@ class LiveFeedClient:
     This is a STUB for Phase 1. Real WebSocket implementation in Phase 2+.
 
     Usage:
-        >>> config = FeedConfig(symbols=["BTC/EUR"])
+        >>> config = FeedConfig(exchange="explicit", symbols=["BTC/EUR"])
         >>> client = LiveFeedClient(config)
         >>> client.on_tick = lambda tick: print(f"Tick: {tick}")
         >>> client.connect()

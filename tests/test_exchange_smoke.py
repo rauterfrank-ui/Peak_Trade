@@ -195,8 +195,8 @@ secret = ""
     assert client.get_name() == "binance"
 
 
-def test_build_exchange_client_defaults(tmp_path):
-    """Test: Factory verwendet Defaults wenn Config minimal ist."""
+def test_build_exchange_client_missing_exchange_id_fail_closed(tmp_path):
+    """Test: Factory fail-closed, wenn exchange.id fehlt (kein Venue-Fallback)."""
     pytest.importorskip("ccxt")
     config_text = """
 [general]
@@ -206,10 +206,8 @@ base_currency = "EUR"
     cfg_path.write_text(config_text, encoding="utf-8")
 
     cfg = load_config(cfg_path)
-    client = build_exchange_client_from_config(cfg)
-
-    # Default ist "kraken"
-    assert client.get_name() == "kraken"
+    with pytest.raises(ValueError, match="exchange.id is required"):
+        build_exchange_client_from_config(cfg)
 
 
 # ============================================================================
@@ -367,16 +365,9 @@ def test_integration_fetch_markets():
     assert len(btc_markets) > 0
 
 
-@pytest.mark.skipif(
-    not EXCHANGE_TESTS_ENABLED,
-    reason="Exchange-Tests erfordern PEAK_TRADE_EXCHANGE_TESTS=1",
-)
-def test_integration_from_config():
-    """Integration-Test: Client aus config.toml funktioniert."""
+def test_integration_from_config_requires_explicit_exchange_id():
+    """Canonical config has no exchange.id; factory must fail closed (no implicit venue)."""
     pytest.importorskip("ccxt")
     cfg = load_config()
-    client = build_exchange_client_from_config(cfg)
-
-    # Sollte funktionieren, auch ohne API-Key (nur Public-Daten)
-    ticker = client.fetch_ticker("BTC/EUR")
-    assert ticker.last is not None
+    with pytest.raises(ValueError, match="exchange.id is required"):
+        build_exchange_client_from_config(cfg)
