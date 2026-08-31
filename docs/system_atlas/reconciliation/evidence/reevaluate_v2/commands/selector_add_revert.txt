@@ -39,4 +39,3 @@ or Cap 2.4 ranking-gated binding.
 """
 
 from __future__ import annotations
-
