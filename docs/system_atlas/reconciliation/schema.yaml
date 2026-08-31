@@ -248,3 +248,15 @@ reevaluate_v2_rcn_000052_remains_open: true
 reevaluate_v2_no_identity_merges: true
 reevaluate_v2_no_runtime_mutation: true
 reevaluate_v2_no_reintegration: true
+working_node_final_disposition_artifact_files:
+- working_nodes/pass_v1_status.yaml
+- working_nodes/index.yaml
+working_node_final_disposition_is_not_rcn_census: true
+working_node_final_disposition_is_not_reintegration: true
+working_node_final_disposition_implementation_authorized: false
+working_node_final_disposition_record_count: 99
+working_node_final_disposition_retain_count: 78
+working_node_final_disposition_adapt_count: 12
+working_node_final_disposition_covered_count: 5
+working_node_final_disposition_hvbi_count: 3
+working_node_final_disposition_reject_count: 1

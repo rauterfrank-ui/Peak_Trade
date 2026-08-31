@@ -1,0 +1,50 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: b6bcdfbd62205d3be9ca30105735132ac9e7aaec
+atlas_authority: NONE
+reconciliation_authority: NONE
+pass_id: WORKING_NODE_FINAL_DISPOSITION_PASS_V1
+owner_go: PEAK_TRADE_RECONSOLIDATION_CANONICAL_FINAL_DISPOSITION_PERSISTENCE_V1
+identity_universe: RELATIONAL_WORKING_NODE_NOT_RCN_CENSUS
+identity_fusion_forbidden: true
+rcn_census_reopened: false
+rcn_ledger_mutated: false
+reintegration_performed: false
+runtime_mutation_performed: false
+implementation_authorized: false
+integrate_or_disposition_execution_authorized: false
+working_node_id: WN-HIST-INFRA-RESILIENCE
+adjudication_index: A93
+canonical_record_name: WN-HIST-INFRA-RESILIENCE
+temporal_class: HISTORICAL_ONLY
+primary_paths:
+- src/infra/resilience
+current_presence: CURRENTLY_ABSENT
+proposed_disposition_owner_label: ADAPT
+final_disposition_owner_label: ADAPT
+proposed_disposition: ADAPT_AND_REINTEGRATE
+final_disposition: ADAPT_AND_REINTEGRATE
+proposal_accepted: true
+lifecycle_state: DISPOSITION_DECIDED
+identity_fusion_performed: false
+safety_critical: true
+final_reason: preserve RateLimiter + Fallback capability if implemented; integrate into current core resilience, no second
+  resilience SSOT
+positive_reason: preserve RateLimiter + Fallback capability if implemented; integrate into current core resilience, no second
+  resilience SSOT
+preserve_capability: RateLimiter (token bucket) + Fallback around external calls, plus CB/retry semantics already partly in
+  core
+do_not_restore_or_preserve: Kraken-scoped hist package; async registry as second resilience SSOT
+target_current_architectural_home: src/core/resilience.py extensions
+adaptation_boundary: no venue-specific Kraken assumptions; no second CB owner
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: WN-HIST-INFRA-RESILIENCE owner-final disposition is ADAPT_AND_REINTEGRATE (ADAPT). Classification finality is not
+    implementation, deletion, restoration, or runtime authorization.
+  evidence:
+  - src/infra/resilience
+  - docs/system_atlas/reconciliation/working_nodes/pass_v1_status.yaml
+  - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+  used_as_fact: true
