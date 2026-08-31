@@ -1,15 +1,27 @@
 # ATLAS_AUTHORITY=NONE
 # RECONCILIATION_AUTHORITY=NONE
 schema_version: peak_trade.reconciliation_governance.v1
-bound_against_sha: 90dec7208554deb5d2af0a2021bb7bceaf5d6662
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
 bound_against_ref: origin/main
-census_status: CENSUS_NOT_STARTED
-census_exhaustion_proven: false
-census_closed: false
-search_universe_bound: false
-search_universe_evidence: []
-exhaustion_evidence: []
-historical_census_performed: false
-note: >
-  Initial governance persist only. No historical census was performed.
-  Completeness is unproven. This is a valid state.
+census_status: CENSUS_CLOSED
+census_exhaustion_proven: true
+census_closed: true
+search_universe_bound: true
+search_universe_evidence:
+- docs/system_atlas/reconciliation/search_surfaces.yaml
+- docs/system_atlas/reconciliation/coverage.yaml
+exhaustion_evidence:
+- docs/system_atlas/reconciliation/inventories/pass_v3_baseline.yaml
+- docs/system_atlas/reconciliation/inventories/git_universe_v3.yaml
+- docs/system_atlas/reconciliation/inventories/blob_scope_v3.yaml
+- docs/system_atlas/reconciliation/inventories/historical_symbol_census_v3.yaml
+- docs/system_atlas/reconciliation/inventories/historical_terminology_census_v3.yaml
+- docs/system_atlas/reconciliation/inventories/commit_messages_v3.yaml
+- docs/system_atlas/reconciliation/inventories/pass_v3_summary.yaml
+- docs/system_atlas/reconciliation/inventories/blob_scan_decision.yaml
+historical_census_performed: true
+census_pass_id: FIND_COMPLETELY_PASS_V3
+note: FIND_COMPLETELY pass v3. Unique historical blobs SHA-deduped and relevant contents scanned. Bound commit messages exhausted.
+  17/17 surfaces exhaustion_proven. Census closed for repository-internal discovery. No UNDERSTAND/EVALUATE/disposition.
+surfaces_exhaustion_proven: 17
+surfaces_exhaustion_unproven: 0

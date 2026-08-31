@@ -118,21 +118,27 @@ def test_authority_markers_remain_none() -> None:
     assert "does not raise Atlas authority" in atlas_readme
 
 
-def test_initial_empty_ledger_valid() -> None:
-    payload = _payload()
+def test_constructed_empty_ledger_and_not_started_still_valid() -> None:
+    payload = copy.deepcopy(_payload())
+    payload["records"]["ledger.yaml"]["records"] = []
+    payload["records"]["ledger.yaml"]["ledger_record_count"] = 0
+    census = payload["records"]["census_status.yaml"]
+    census["census_status"] = "CENSUS_NOT_STARTED"
+    census["census_exhaustion_proven"] = False
+    census["census_closed"] = False
+    census["search_universe_bound"] = False
+    census["historical_census_performed"] = False
+    census["search_universe_evidence"] = []
     assert validate_reconciliation_v1(payload) == []
-    ledger = payload["records"]["ledger.yaml"]
-    assert ledger["ledger_record_count"] == 0
-    assert ledger["records"] == []
 
 
-def test_census_not_started_valid() -> None:
+def test_live_census_closed_after_pass_v3() -> None:
     census = _payload()["records"]["census_status.yaml"]
-    assert census["census_status"] == "CENSUS_NOT_STARTED"
-    assert census["census_exhaustion_proven"] is False
-    assert census["census_closed"] is False
-    assert census["search_universe_bound"] is False
-    assert census["historical_census_performed"] is False
+    assert census["census_status"] == "CENSUS_CLOSED"
+    assert census["census_exhaustion_proven"] is True
+    assert census["census_closed"] is True
+    assert census["search_universe_bound"] is True
+    assert census["historical_census_performed"] is True
 
 
 def test_known_search_anchors_are_not_records() -> None:
@@ -141,8 +147,11 @@ def test_known_search_anchors_are_not_records() -> None:
     names = [row["name"] for row in anchors["anchors"]]
     assert names == ["Landscape", "Master V2", "Double Play"]
     assert anchors["counted_as_ledger_records"] is False
-    assert len(payload["records"]["ledger.yaml"]["records"]) == 0
-    assert payload["records"]["ledger.yaml"]["ledger_record_count"] == 0
+    record_ids = {
+        str((rec.get("identity") or {}).get("reconciliation_id") or "")
+        for rec in payload["records"]["ledger.yaml"]["records"]
+    }
+    assert not any(str(row.get("id") or "") in record_ids for row in anchors["anchors"])
 
 
 def test_valid_lifecycle_and_open_insufficient_evidence() -> None:
@@ -247,6 +256,28 @@ def test_census_closed_without_exhaustion_rejected() -> None:
         validate_reconciliation_v1(payload)
 
 
+def test_census_closed_with_unproven_coverage_surfaces_rejected() -> None:
+    payload = copy.deepcopy(_payload())
+    census = payload["records"]["census_status.yaml"]
+    census["census_status"] = "CENSUS_CLOSED"
+    census["census_closed"] = True
+    census["census_exhaustion_proven"] = True
+    census["search_universe_bound"] = True
+    coverage = payload["records"]["coverage.yaml"]
+    coverage["exhaustion_proven"] = True
+    coverage["census_closed"] = True
+    rows = list(coverage.get("rows") or [])
+    assert rows
+    rows[0]["exhaustion_proven"] = False
+    rows[0]["remaining_gap"] = "forced unproven surface for contract test"
+    rows[0]["exhaustion_unproven_reason"] = "forced"
+    coverage["rows"] = rows
+    coverage["surfaces_exhaustion_proven"] = len(rows) - 1
+    coverage["surfaces_exhaustion_unproven"] = 1
+    with pytest.raises(ReconciliationValidationError, match="CENSUS_CLOSED_WITH_UNPROVEN_SURFACES"):
+        validate_reconciliation_v1(payload)
+
+
 def test_search_anchor_counted_as_record_rejected() -> None:
     payload = copy.deepcopy(_payload())
     payload["records"]["search_anchors.yaml"]["counted_as_ledger_records"] = True
@@ -290,7 +321,7 @@ def test_atlas_validate_surfaces_reconciliation_failure() -> None:
     broken["records"]["ledger.yaml"]["ledger_record_count"] = 7
     with pytest.raises(ReconciliationValidationError, match="LEDGER_RECORD_COUNT_MISMATCH"):
         validate_reconciliation_v1(broken)
-    # Atlas hook uses on-disk tree; on-disk empty ledger remains valid.
+    # Atlas hook uses on-disk tree; live census ledger remains valid when consistent.
     assert validate_atlas_v1(atlas) == []
 
 

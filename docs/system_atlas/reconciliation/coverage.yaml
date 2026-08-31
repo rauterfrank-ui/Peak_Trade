@@ -1,0 +1,300 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+atlas_authority: NONE
+reconciliation_authority: NONE
+census_pass_id: FIND_COMPLETELY_PASS_V3
+dedup_rule: exact_git_blob_sha_only
+identity_fusion_forbidden: true
+disposition_performed: false
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+census_status: CENSUS_CLOSED
+exhaustion_proven: true
+census_closed: true
+surfaces_exhaustion_proven: 17
+surfaces_exhaustion_unproven: 0
+open_coverage_gaps: []
+out_of_scope_discovery_areas:
+- 22 extra local refs (refs/stash, refs/review/*, refs/tmp/*, refs/tmpreview/*) with 13 commits not reachable from the bound
+  search universe (heads+origin remotes+tags). Contrast --all commit count=7261.
+- LOSS_REGISTER derived blobs that are not normal reachable Git objects in this repository.
+- External sources.
+- Temp/external recovery corpora.
+atlas_census_meta_stale_sha_does_not_gate_this_census: true
+atlas_complete_flags_are_not_authority: true
+tree_content_census_count: 970
+historical_path_family_count: 78
+import_symbol_census_count: 6379
+terminology_candidate_count: 9391
+inner_archive_file_count: 16
+unique_blob_count_origin_main: 33443
+unique_blob_count_all_bound: 34770
+unique_relevant_text_blob_count: 34125
+commit_message_count: 7248
+rows:
+- surface_id: SURF:current_tree
+  surface_type: CURRENT_TREE
+  searched: true
+  method: git ls-tree -r of relevant prefixes on origin/main; first-level package listing
+  scope_count: 16042
+  evidence_reference: docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml
+  exhaustion_proven: true
+  remaining_gap: Not every file is a ledger record; that is identification policy.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: git ls-tree -r of relevant prefixes on origin/main; first-level package listing
+  result_count: 16042
+  evidence_ref: docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Relevant prefixes only; ignored non-relevant root clutter as component sources.
+- surface_id: SURF:git_history_origin_main
+  surface_type: GIT_HISTORY
+  searched: true
+  method: git rev-list --objects origin/main; cat-file blob SHA dedup; content scan of relevant unique blobs whose SHA is
+    origin/main-reachable
+  scope_count: 33443
+  evidence_reference: docs/system_atlas/reconciliation/inventories/blob_scope_v3.yaml
+  exhaustion_proven: true
+  remaining_gap: First-observed path per blob only. Per-blob first/last commit not computed for the full set. Neither is a
+    remaining unscanned origin/main blob.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: git rev-list --objects origin/main; cat-file blob SHA dedup; content scan of relevant unique blobs whose
+    SHA is origin/main-reachable
+  result_count: 33443
+  evidence_ref: docs/system_atlas/reconciliation/inventories/blob_scope_v3.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Unique blob SHA content scan of origin/main-reachable blobs. Path alias completeness is not claimed. LOSS_REGISTER
+    derived blobs remain out of scope.
+- surface_id: SURF:git_history_all_reachable
+  surface_type: GIT_HISTORY
+  searched: true
+  method: git rev-list --objects --branches --tags --remotes=origin; unique blob SHA dedup; content scan of unique relevant
+    text blobs. Explicitly NOT git rev-list --all.
+  scope_count: 34770
+  evidence_reference: docs/system_atlas/reconciliation/inventories/git_universe_v3.yaml
+  exhaustion_proven: true
+  remaining_gap: 22 extra local refs (stash/review/tmp) and 13 commits only reachable from those refs are outside the already-bound
+    search universe and are out of scope.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: git rev-list --objects --branches --tags --remotes=origin; unique blob SHA dedup; content scan of unique
+    relevant text blobs. Explicitly NOT git rev-list --all.
+  result_count: 34770
+  evidence_ref: docs/system_atlas/reconciliation/inventories/git_universe_v3.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Bound universe is refs/heads + refs/remotes/origin + refs/tags. --all contrast count is documented and is not
+    this surface's search space.
+- surface_id: SURF:local_branches
+  surface_type: LOCAL_BRANCH
+  searched: true
+  method: git for-each-ref refs/heads + unique tip tree SHA + relevant-path delta vs origin/main
+  scope_count: 634
+  evidence_reference: docs/system_atlas/reconciliation/inventories/ref_inventory.yaml
+  exhaustion_proven: true
+  remaining_gap: Tip trees exhausted; intermediate non-tip commits belong to GIT_HISTORY.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: git for-each-ref refs/heads + unique tip tree SHA + relevant-path delta vs origin/main
+  result_count: 634
+  evidence_ref: docs/system_atlas/reconciliation/inventories/ref_inventory.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Bound space is local branch tips, not full branch histories.
+- surface_id: SURF:origin_branches
+  surface_type: REMOTE_BRANCH
+  searched: true
+  method: git for-each-ref refs/remotes/origin + unique tip tree SHA + relevant-path delta
+  scope_count: 25
+  evidence_reference: docs/system_atlas/reconciliation/inventories/ref_inventory.yaml
+  exhaustion_proven: true
+  remaining_gap: Tip trees exhausted; intermediate origin commits belong to GIT_HISTORY.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: git for-each-ref refs/remotes/origin + unique tip tree SHA + relevant-path delta
+  result_count: 25
+  evidence_ref: docs/system_atlas/reconciliation/inventories/ref_inventory.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Bound space is origin remote tips.
+- surface_id: SURF:tags
+  surface_type: TAG
+  searched: true
+  method: git for-each-ref refs/tags + unique peeled tip tree SHA + relevant-path delta
+  scope_count: 154
+  evidence_reference: docs/system_atlas/reconciliation/inventories/ref_inventory.yaml
+  exhaustion_proven: true
+  remaining_gap: Tag tip trees exhausted; tag-pointed commit bodies not blob-scanned.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: git for-each-ref refs/tags + unique peeled tip tree SHA + relevant-path delta
+  result_count: 154
+  evidence_ref: docs/system_atlas/reconciliation/inventories/ref_inventory.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Bound space is tag tip trees.
+- surface_id: SURF:historical_path_family_src
+  surface_type: HISTORICAL_PATH_FAMILY
+  searched: true
+  method: git log --all --diff-filter=D/R plus reachable object src families
+  scope_count: 71
+  evidence_reference: docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+  exhaustion_proven: true
+  remaining_gap: Named deleted/renamed src paths bound; blob contents unread.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: git log --all --diff-filter=D/R plus reachable object src families
+  result_count: 71
+  evidence_ref: docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Name-status census, not content understanding.
+- surface_id: SURF:historical_path_family_docs
+  surface_type: HISTORICAL_PATH_FAMILY
+  searched: true
+  method: git log --all --diff-filter=D/R docs families plus tip-tree added docs paths
+  scope_count: 1160
+  evidence_reference: docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+  exhaustion_proven: true
+  remaining_gap: Named deleted docs paths bound; markdown contents not mined for purpose.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: git log --all --diff-filter=D/R docs families plus tip-tree added docs paths
+  result_count: 1160
+  evidence_ref: docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Path-family inventory, not document understanding.
+- surface_id: SURF:evidence_corpus
+  surface_type: EVIDENCE_CORPUS
+  searched: true
+  method: git ls-tree evidence/ plus evidence/ops pack directory file counts
+  scope_count: 99
+  evidence_reference: docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml
+  exhaustion_proven: true
+  remaining_gap: Pack contents were counted, not semantically opened as components.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: git ls-tree evidence/ plus evidence/ops pack directory file counts
+  result_count: 99
+  evidence_ref: docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Directory/file-count inventory of origin/main evidence/.
+- surface_id: SURF:forensic_corpus
+  surface_type: FORENSIC_CORPUS
+  searched: true
+  method: git ls-tree forensics/, forensic/, docs/forensics, docs/forensic
+  scope_count: 331
+  evidence_reference: docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml
+  exhaustion_proven: true
+  remaining_gap: LOSS_REGISTER derived blobs remain out of repository-internal scope.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: git ls-tree forensics/, forensic/, docs/forensics, docs/forensic
+  result_count: 331
+  evidence_ref: docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: In-repo forensic directory inventory only.
+- surface_id: SURF:archived_code
+  surface_type: ARCHIVED_CODE
+  searched: true
+  method: ls-tree archive/PeakTradeRepo plus added-path listing of other archive/ trees
+  scope_count: 16
+  evidence_reference: docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+  exhaustion_proven: true
+  remaining_gap: Inner file contents were inventoried, not understood.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: ls-tree archive/PeakTradeRepo plus added-path listing of other archive/ trees
+  result_count: 16
+  evidence_ref: docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: File inventory of nested archive trees in reachable history.
+- surface_id: SURF:archived_docs
+  surface_type: ARCHIVED_DOCS
+  searched: true
+  method: deleted docs/product and docs/observability plus archive/legacy_docs path inventory
+  scope_count: 47
+  evidence_reference: docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+  exhaustion_proven: true
+  remaining_gap: Deleted markdown bodies not mined for purpose.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: deleted docs/product and docs/observability plus archive/legacy_docs path inventory
+  result_count: 47
+  evidence_ref: docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Path inventory of archived/deleted docs families.
+- surface_id: SURF:test_corpus
+  surface_type: TEST_CORPUS
+  searched: true
+  method: origin/main tests/ first-level listing plus deleted tests path families
+  scope_count: 3148
+  evidence_reference: docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml
+  exhaustion_proven: true
+  remaining_gap: Tests remain evidence pointers; not individually ledger-bound as components.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: origin/main tests/ first-level listing plus deleted tests path families
+  result_count: 3148
+  evidence_ref: docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Path inventory, not every test as a component.
+- surface_id: SURF:tooling_corpus
+  surface_type: TOOLING_CORPUS
+  searched: true
+  method: origin/main scripts/ first-level listing plus deleted scripts path families
+  scope_count: 1324
+  evidence_reference: docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml
+  exhaustion_proven: true
+  remaining_gap: Historical deleted scripts listed by family; not every script is a component.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: origin/main scripts/ first-level listing plus deleted scripts path families
+  result_count: 1324
+  evidence_ref: docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Path inventory of tooling.
+- surface_id: SURF:manifest_index
+  surface_type: MANIFEST_INDEX
+  searched: true
+  method: origin/main ls-tree paths whose names contain MANIFEST
+  scope_count: 571
+  evidence_reference: docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml
+  exhaustion_proven: true
+  remaining_gap: Manifest files listed; contents not imported as components.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: origin/main ls-tree paths whose names contain MANIFEST
+  result_count: 571
+  evidence_ref: docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Filename inventory, not manifest-body census.
+- surface_id: SURF:atlas_index
+  surface_type: ATLAS_INDEX
+  searched: true
+  method: path inventory of docs/system_atlas YAML; Atlas COMPLETE flags ignored
+  scope_count: 60
+  evidence_reference: docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml
+  exhaustion_proven: true
+  remaining_gap: Atlas YAML paths listed. Atlas COMPLETE flags are not reconciliation exhaustion.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: path inventory of docs/system_atlas YAML; Atlas COMPLETE flags ignored
+  result_count: 60
+  evidence_ref: docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Navigation only. census_meta SHA remains stale relative to origin/main.
+- surface_id: SURF:commit_messages
+  surface_type: GIT_HISTORY
+  searched: true
+  method: git rev-list --branches --tags --remotes=origin then git log --no-walk --stdin subject+body; 1:1 with bound commit
+    count
+  scope_count: 7248
+  evidence_reference: docs/system_atlas/reconciliation/inventories/commit_messages_v3.yaml
+  exhaustion_proven: true
+  remaining_gap: Commit messages are forensic/navigational discovery evidence, not existence proof.
+  exhaustion_unproven_reason: ''
+  search_executed: true
+  search_method: git rev-list --branches --tags --remotes=origin then git log --no-walk --stdin subject+body; 1:1 with bound
+    commit count
+  result_count: 7248
+  evidence_ref: docs/system_atlas/reconciliation/inventories/commit_messages_v3.yaml
+  coverage_status: EXHAUSTION_PROVEN
+  limitations: Bound commit set only. Extra local-ref commits out of scope.

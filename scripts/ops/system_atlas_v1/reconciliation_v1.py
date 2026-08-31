@@ -25,6 +25,59 @@ RECONCILIATION_SOURCE_FILES = (
     "ledger.yaml",
     "schema.yaml",
 )
+CENSUS_ARTIFACT_FILES = (
+    "search_surfaces.yaml",
+    "coverage.yaml",
+    "discovery_candidates.yaml",
+    "relations.yaml",
+)
+ALLOWED_RELATION_TYPES = frozenset(
+    {
+        "POSSIBLE_SAME_AS",
+        "DEPENDS_ON",
+        "SUPERSEDES",
+        "REPLACED_BY",
+        "CONSUMED_BY",
+        "IMPLEMENTS",
+        "CONFLICTS_WITH",
+        "COVERED_BY",
+        "PRODUCES_FOR",
+        "CONSUMES_FROM",
+        "WRAPS",
+        "ORCHESTRATES",
+        "GATES",
+        "SELECTS",
+        "BINDS",
+        "CALLS",
+        "DERIVES_FROM",
+        "RENAMED_TO",
+        "PATH_MOVED_OR_RENAMED_TO",
+        "SPLIT_INTO",
+        "MERGED_INTO",
+        "SAME_BLOB_AS",
+        "REFERENCES",
+        "IMPORTS",
+        "TESTS",
+        "DOCUMENTS",
+        "ARCHIVES",
+    }
+)
+ALLOWED_CURRENT_PRESENCE = frozenset(
+    {
+        "CURRENTLY_PRESENT",
+        "CURRENTLY_ABSENT",
+        "CURRENTLY_PARTIAL",
+        "CURRENT_IDENTITY_UNRESOLVED",
+    }
+)
+CENSUS_STARTED_STATUSES = frozenset(
+    {
+        "CENSUS_IN_PROGRESS",
+        "CENSUS_SCOPE_BOUND",
+        "CENSUS_EXHAUSTION_PROVEN",
+        "CENSUS_CLOSED",
+    }
+)
 
 REQUIRED_INITIAL_ANCHOR_NAMES = ("Landscape", "Master V2", "Double Play")
 ID_PATTERN = re.compile(r"^RCN-[0-9]{6}$")
@@ -95,6 +148,15 @@ def load_reconciliation_v1(*, repo_root: Path) -> dict[str, Any]:
         if not path.is_file():
             raise ReconciliationValidationError(f"RECONCILIATION_SOURCE_MISSING:{rel}")
         payload["records"][rel] = _read_yaml(path)
+    census_status = str(
+        (payload["records"].get("census_status.yaml") or {}).get("census_status") or ""
+    )
+    for rel in CENSUS_ARTIFACT_FILES:
+        path = root / rel
+        if path.is_file():
+            payload["records"][rel] = _read_yaml(path)
+        elif census_status in CENSUS_STARTED_STATUSES:
+            raise ReconciliationValidationError(f"RECONCILIATION_CENSUS_ARTIFACT_MISSING:{rel}")
     return payload
 
 
@@ -334,20 +396,14 @@ def _validate_record(
             raise ReconciliationValidationError(f"REJECT_WITHOUT_POSITIVE_REASON:{rid}")
     if lifecycle == "OPEN" and disposition not in {"", "INSUFFICIENT_EVIDENCE"}:
         raise ReconciliationValidationError(f"OPEN_WITHOUT_INSUFFICIENT_EVIDENCE:{rid}")
+    discovery = record.get("discovery") or {}
+    presence = str(discovery.get("current_presence") or "")
+    if presence and presence not in ALLOWED_CURRENT_PRESENCE:
+        raise ReconciliationValidationError(f"CURRENT_PRESENCE_UNKNOWN:{rid}:{presence}")
     relations = record.get("relations") or {}
-    allowed_rel = {
-        "POSSIBLE_SAME_AS",
-        "DEPENDS_ON",
-        "SUPERSEDES",
-        "REPLACED_BY",
-        "CONSUMED_BY",
-        "IMPLEMENTS",
-        "CONFLICTS_WITH",
-        "COVERED_BY",
-    }
     for rel in relations.get("items") or relations.get("relations") or []:
         rtype = str(rel.get("relation_type") or rel.get("type") or "")
-        if rtype and rtype not in allowed_rel:
+        if rtype and rtype not in ALLOWED_RELATION_TYPES:
             raise ReconciliationValidationError(f"RELATION_TYPE_UNKNOWN:{rid}:{rtype}")
         epi = str(rel.get("epistemic_status") or "")
         if epi and epi not in (FACT_CLAIM_CLASSES | NON_FACT_CLAIM_CLASSES):
@@ -376,6 +432,60 @@ def _validate_ledger(ledger: dict[str, Any], gov: dict[str, Any]) -> list[dict[s
     return records
 
 
+def _validate_census_artifacts(payload: dict[str, Any], census: dict[str, Any]) -> None:
+    status = str(census.get("census_status") or "")
+    if status not in CENSUS_STARTED_STATUSES:
+        return
+    for rel in CENSUS_ARTIFACT_FILES:
+        row = payload["records"].get(rel)
+        if not isinstance(row, dict):
+            raise ReconciliationValidationError(f"RECONCILIATION_CENSUS_ARTIFACT_MISSING:{rel}")
+        _require_schema_version(row, source=rel)
+    coverage = payload["records"].get("coverage.yaml") or {}
+    rows = list(coverage.get("rows") or [])
+    proven = 0
+    unproven = 0
+    for row in rows:
+        if not isinstance(row, dict):
+            raise ReconciliationValidationError("COVERAGE_ROW_NOT_MAPPING")
+        sid = str(row.get("surface_id") or "")
+        if "searched" not in row:
+            raise ReconciliationValidationError(f"COVERAGE_SEARCHED_MISSING:{sid}")
+        if not str(row.get("method") or row.get("search_method") or "").strip():
+            raise ReconciliationValidationError(f"COVERAGE_METHOD_MISSING:{sid}")
+        if "exhaustion_proven" not in row:
+            raise ReconciliationValidationError(f"COVERAGE_EXHAUSTION_FLAG_MISSING:{sid}")
+        exhausted = _as_bool(row.get("exhaustion_proven"), field=f"exhaustion_proven:{sid}")
+        if exhausted:
+            proven += 1
+            if not str(row.get("evidence_reference") or row.get("evidence_ref") or "").strip():
+                raise ReconciliationValidationError(f"COVERAGE_EXHAUSTION_WITHOUT_EVIDENCE:{sid}")
+        else:
+            unproven += 1
+            if not str(row.get("remaining_gap") or "").strip():
+                raise ReconciliationValidationError(f"COVERAGE_UNPROVEN_WITHOUT_GAP:{sid}")
+            reason = str(
+                row.get("exhaustion_unproven_reason") or row.get("limitations") or ""
+            ).strip()
+            if not reason:
+                raise ReconciliationValidationError(f"COVERAGE_UNPROVEN_WITHOUT_REASON:{sid}")
+    declared_proven = coverage.get("surfaces_exhaustion_proven")
+    declared_unproven = coverage.get("surfaces_exhaustion_unproven")
+    if declared_proven is not None and int(declared_proven) != proven:
+        raise ReconciliationValidationError(
+            f"COVERAGE_PROVEN_COUNT_MISMATCH:{declared_proven}!={proven}"
+        )
+    if declared_unproven is not None and int(declared_unproven) != unproven:
+        raise ReconciliationValidationError(
+            f"COVERAGE_UNPROVEN_COUNT_MISMATCH:{declared_unproven}!={unproven}"
+        )
+    closed = _as_bool(census.get("census_closed"), field="census_closed")
+    if closed and unproven:
+        raise ReconciliationValidationError("CENSUS_CLOSED_WITH_UNPROVEN_SURFACES")
+    if closed and proven != len(rows):
+        raise ReconciliationValidationError("CENSUS_CLOSED_WITHOUT_ALL_SURFACES_PROVEN")
+
+
 def validate_reconciliation_v1(payload: dict[str, Any]) -> list[str]:
     """Return empty list on PASS. Raise on integrity failure."""
     gov = payload["records"]["GOVERNANCE_V1.yaml"] or {}
@@ -388,6 +498,7 @@ def validate_reconciliation_v1(payload: dict[str, Any]) -> list[str]:
     records = _validate_ledger(ledger, gov)
     _validate_census(census, gov)
     _validate_anchors(anchors, records)
+    _validate_census_artifacts(payload, census)
     return []
 
 

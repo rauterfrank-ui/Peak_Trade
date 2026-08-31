@@ -8,9 +8,10 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 CREATES_CANONICAL_AUTHORITY=false
 ```
 
-This directory persists the rules and the empty ledger for later historical
-reconsolidation. It is Atlas-adjacent evidence, not Atlas authority, not a
-second Master Runbook, and not a runtime, trading, risk, or execution permit.
+This directory persists reconsolidation methodology, the search universe,
+and the reconciliation ledger. It is Atlas-adjacent evidence, not Atlas
+authority, not a second Master Runbook, and not a runtime, trading, risk,
+or execution permit.
 
 Canonical semantic authority remains
 `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`.
@@ -20,13 +21,19 @@ Machine-readable sources:
 
 ```text
 GOVERNANCE_V1.yaml     methodology, taxonomy, epistemic rules
-census_status.yaml     census lifecycle; initially CENSUS_NOT_STARTED
+census_status.yaml     census lifecycle
 search_anchors.yaml    known names; not ledger records
-ledger.yaml            reconciliation records; initially empty
+ledger.yaml            reconciliation records
+schema.yaml            field catalog
+search_surfaces.yaml   bound repository-internal search universe
+coverage.yaml          per-surface coverage matrix
+discovery_candidates.yaml  hits below ledger threshold
+relations.yaml         copied relation index
+inventories/           pass v2/v3 reproducible search inventories
 ```
 
-Bound baseline: `origin/main` SHA
-`90dec7208554deb5d2af0a2021bb7bceaf5d6662`.
+Governance persist baseline: `90dec7208554deb5d2af0a2021bb7bceaf5d6662`.
+Census pass v2 bound against: `1b52df25b99a36b99eed91943c2a203ce84f1cad`.
 
 ## Sequence
 
@@ -146,23 +153,56 @@ A hypothesis must not be serialized as a fact. Evidence should point at
 repository paths, commit SHAs, refs, persisted forensics, Atlas
 entities/relations, or other inspectable sources. Do not invent sources.
 
-## Initial state
+## Census pass v3 state (current)
 
 ```text
-CENSUS_STATUS=CENSUS_NOT_STARTED
+CENSUS_STATUS=CENSUS_CLOSED
+CENSUS_EXHAUSTION_PROVEN=true
+CENSUS_CLOSED=true
+KNOWN_SEARCH_ANCHORS=Landscape;Master V2;Double Play
+SURFACES_EXHAUSTION_PROVEN=17
+SURFACES_EXHAUSTION_UNPROVEN=0
+```
+
+Pass v3 bound two git-history universes (`origin/main` vs `refs&#47;heads` +
+`refs&#47;remotes&#47;origin` + `refs&#47;tags`), SHA-deduped unique blobs, content-scanned
+relevant text blobs, and exhausted bound commit subjects and bodies.
+`git rev-list --all` is not the bound universe. Extra local stash/review/tmp
+refs and LOSS_REGISTER-derived unreachable blobs remain documented out of
+scope. Atlas `COMPLETE` flags and a stale Atlas `census_meta` SHA are not
+authority for this census. No UNDERSTAND, EVALUATE, disposition, or
+reintegration.
+
+Inventories live under `docs/system_atlas/reconciliation/inventories/`.
+
+## Census pass v2 state (historical)
+
+```text
+CENSUS_STATUS=CENSUS_IN_PROGRESS
 CENSUS_EXHAUSTION_PROVEN=false
 CENSUS_CLOSED=false
 KNOWN_SEARCH_ANCHORS=Landscape;Master V2;Double Play
-LEDGER_RECORD_COUNT=0
 ```
 
-No historical component is treated as understood or adjudicated here.
-The discarded dirty worktree state is not an implementation basis.
+Pass v2 walked unique tip trees by exact Git tree SHA, inventoried reachable
+object path names, and file-inventoried `archive&#47;PeakTradeRepo`. Git-history
+blob contents remained unproven after that pass.
+
+## Census pass v1 state (historical)
+
+Pass v1 bound a repository-internal search universe and opened the first
+ledger records in `DISCOVERED`/`EVIDENCE_BOUND` only. Exhaustion remained
+unproven.
+
+## Initial governance persist (historical)
+
+The empty-ledger `CENSUS_NOT_STARTED` persist remains a valid schema state.
+It is no longer the live tree state after census pass v1.
 
 ## Validation
 
 ```text
-./scripts/pt -m pytest -q tests/ops/test_reconciliation_ledger_v1.py tests/ops/test_system_atlas_v1.py
+./scripts/pt -m pytest -q tests/ops/test_reconciliation_ledger_v1.py tests/ops/test_reconciliation_census_pass_v1.py tests/ops/test_system_atlas_v1.py
 ./scripts/pt scripts/ops/validate_system_atlas_v1.py
 ```
 

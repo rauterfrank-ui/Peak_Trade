@@ -2,9 +2,9 @@
 # RECONCILIATION_AUTHORITY=NONE
 schema_version: peak_trade.reconciliation_governance.v1
 description: >
-  Field catalog for ledger records. Empty ledger is valid. Categories remain
-  epistemically separate. This file is documentation for later census work,
-  not a populated record set.
+  Field catalog for ledger records. Empty ledger remains schema-valid.
+  Categories remain epistemically separate. Census artifact files listed
+  below are evidence, not a second authority.
 identity:
   - reconciliation_id
   - canonical_record_name
@@ -12,6 +12,7 @@ identity:
   - aliases
 discovery:
   - discovery_status
+  - current_presence
   - discovered_from
   - discovery_evidence
   - first_bound_ref
@@ -62,6 +63,11 @@ audit:
   - created_from_evidence
   - last_adjudicated_against_sha
   - notes
+allowed_current_presence:
+  - CURRENTLY_PRESENT
+  - CURRENTLY_ABSENT
+  - CURRENTLY_PARTIAL
+  - CURRENT_IDENTITY_UNRESOLVED
 allowed_relation_types:
   - POSSIBLE_SAME_AS
   - DEPENDS_ON
@@ -71,3 +77,48 @@ allowed_relation_types:
   - IMPLEMENTS
   - CONFLICTS_WITH
   - COVERED_BY
+  - PRODUCES_FOR
+  - CONSUMES_FROM
+  - WRAPS
+  - ORCHESTRATES
+  - GATES
+  - SELECTS
+  - BINDS
+  - CALLS
+  - DERIVES_FROM
+  - RENAMED_TO
+  - PATH_MOVED_OR_RENAMED_TO
+  - SPLIT_INTO
+  - MERGED_INTO
+  - SAME_BLOB_AS
+  - REFERENCES
+  - IMPORTS
+  - TESTS
+  - DOCUMENTS
+  - ARCHIVES
+census_artifact_files:
+  - search_surfaces.yaml
+  - coverage.yaml
+  - discovery_candidates.yaml
+  - relations.yaml
+  - inventories/ref_inventory.yaml
+  - inventories/unique_trees.yaml
+  - inventories/tree_content_census.yaml
+  - inventories/historical_path_families.yaml
+  - inventories/reachable_object_paths.yaml
+  - inventories/inner_archive_peaktraderepo.yaml
+  - inventories/corpus_enumeration.yaml
+  - inventories/import_symbol_census.yaml
+  - inventories/terminology_census.yaml
+  - inventories/blob_scan_decision.yaml
+  - inventories/summary.yaml
+  - inventories/pass_v3_baseline.yaml
+  - inventories/git_universe_v3.yaml
+  - inventories/blob_scope_v3.yaml
+  - inventories/historical_symbol_census_v3.yaml
+  - inventories/historical_terminology_census_v3.yaml
+  - inventories/commit_messages_v3.yaml
+  - inventories/pass_v3_summary.yaml
+  - inventories/candidate_class_adjudication_v3.yaml
+current_presence_is_not_disposition: true
+current_presence_is_not_current_system_comparison: true
