@@ -1,0 +1,64 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+atlas_authority: NONE
+reconciliation_authority: NONE
+adjudicate_pass_id: INTEGRATE_OR_DISPOSITION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: true
+current_system_compared: true
+evaluate_performed: true
+adjudication_attempted: true
+reintegration_performed: false
+runtime_mutation_performed: false
+record_id: RCN-000019
+canonical_record_name: risk_layer historical top-level modules
+census_current_presence: CURRENTLY_PARTIAL
+evaluate_capability_overlap: SAME_PATH_FAMILY_PARTIAL
+disposition: INSUFFICIENT_EVIDENCE
+lifecycle_state: OPEN
+identity_status: PARTIAL_FAMILY_IDENTITY_UNPROVEN
+positive_reason: The record bundles historical top-level modules. KillSwitch currently exists as src/risk_layer/kill_switch/
+  package; that does not prove identity with the missing historical top-level kill_switch.py, LiquidityGate, StressGate, VaRGate,
+  or metrics modules. SAME_PATH_FAMILY_PARTIAL is comparison, not identity proof. Coverage of the missing gate functions by
+  risk_gate.py is unproven. Record-level stronger class would silently conflate present package with absent modules.
+alternatives_rejected:
+- 'RETAIN_AS_IS for the whole family: missing historical modules are not present as those artifacts'
+- 'CAPABILITY_ALREADY_COVERED by kill_switch package: does not cover unproven Liquidity/Stress/VaR identity'
+- 'ADAPT_AND_REINTEGRATE of missing gates: unique current value versus risk_gate.py is unproven'
+- 'REJECT because modules were deleted: absence is not rejection'
+further_evidence_required: true
+reintegration_candidate: false
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: 'risk_layer historical top-level modules: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+    remains OPEN and is not a rejection.'
+  evidence:
+  - docs/system_atlas/reconciliation/understand/records/RCN-000019.yaml
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000019.yaml
+  - src/risk_layer/kill_switch/__init__.py
+  - src/risk_layer/risk_gate.py
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: KillSwitch public API exists under src/risk_layer/kill_switch/; historical liquidity_gate.py is absent.
+  evidence:
+  - src/risk_layer/kill_switch/__init__.py
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000019.yaml
+  used_as_fact: true
+- claim_class: HYPOTHESIS
+  text: risk_gate.py may overlap some historical gate purposes; that overlap is not proven.
+  evidence:
+  - src/risk_layer/risk_gate.py
+  used_as_fact: false
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000019.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000019.yaml
+- src/risk_layer/kill_switch/__init__.py
+- src/risk_layer/risk_gate.py
+contradictions: []
+unresolved_questions:
+- Are LiquidityGate/StressGate/VaRGate purposes covered by current risk_gate.py or elsewhere?
+- Is src/risk_layer/kill_switch/ the same historical kill_switch.py or a later package?
+evaluate_compared_sha: 0e6cbb860f716d527873d97556d0968df4a197bf

@@ -1,0 +1,38 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+atlas_authority: NONE
+reconciliation_authority: NONE
+adjudicate_pass_id: INTEGRATE_OR_DISPOSITION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: true
+current_system_compared: true
+evaluate_performed: true
+adjudication_attempted: true
+reintegration_performed: false
+runtime_mutation_performed: false
+census_closed: true
+census_status: CENSUS_CLOSED
+surfaces_exhaustion_proven: 17
+ledger_record_count: 53
+current_system_compared_record_count: 53
+adjudication_attempted_record_count: 53
+adjudicated_record_count: 53
+disposition_decided_record_count: 18
+open_insufficient_evidence_count: 35
+retain_as_is_count: 18
+adapt_and_reintegrate_count: 0
+capability_already_covered_count: 0
+historically_valid_but_incompatible_count: 0
+reject_for_current_system_count: 0
+insufficient_evidence_count: 35
+identity_merges_performed: 0
+no_reintegration_performed: true
+no_identity_fusion_performed: true
+no_runtime_mutation_performed: true
+disposition_counts:
+  RETAIN_AS_IS: 18
+  INSUFFICIENT_EVIDENCE: 35
+adjudicate_phase_status: ADJUDICATION_ATTEMPTED

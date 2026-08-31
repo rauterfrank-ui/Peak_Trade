@@ -1,0 +1,49 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+atlas_authority: NONE
+reconciliation_authority: NONE
+adjudicate_pass_id: INTEGRATE_OR_DISPOSITION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: true
+current_system_compared: true
+evaluate_performed: true
+adjudication_attempted: true
+reintegration_performed: false
+runtime_mutation_performed: false
+record_id: RCN-000002
+canonical_record_name: Market Dashboard Landscape V2 Master Runbook
+census_current_presence: CURRENTLY_PRESENT
+evaluate_capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+disposition: RETAIN_AS_IS
+lifecycle_state: DISPOSITION_DECIDED
+identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+positive_reason: The same documentary runbook remains on origin/main as a non-SSOT planning index with DASHBOARD_AUTHORITY_EFFECT=NONE.
+  Compatible current documentation artifact.
+alternatives_rejected:
+- 'CAPABILITY_ALREADY_COVERED: the record is this file, not a superseded duplicate of Master Runbook'
+- 'REJECT_FOR_CURRENT_SYSTEM: no positive reason against keeping a non-authorizing index'
+further_evidence_required: false
+reintegration_candidate: false
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: Market Dashboard Landscape V2 Master Runbook remains on the bound current tree as the same artifact; current role
+    is compatible. SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path presence
+    plus compatible authority/safety/runtime role.
+  evidence:
+  - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000002.yaml
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+  evidence:
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000002.yaml
+  used_as_fact: true
+evidence_refs:
+- docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000002.yaml
+contradictions: []
+unresolved_questions: []
+evaluate_compared_sha: 0e6cbb860f716d527873d97556d0968df4a197bf

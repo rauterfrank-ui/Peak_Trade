@@ -13,16 +13,32 @@ from scripts.ops.system_atlas_v1.reconciliation_v1 import (
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 ALLOWED_LIFECYCLE = frozenset(
-    {"DISCOVERED", "EVIDENCE_BOUND", "PURPOSE_UNDERSTOOD", "CURRENT_SYSTEM_COMPARED"}
+    {
+        "DISCOVERED",
+        "EVIDENCE_BOUND",
+        "PURPOSE_UNDERSTOOD",
+        "CURRENT_SYSTEM_COMPARED",
+        "ADJUDICATED",
+        "DISPOSITION_DECIDED",
+        "OPEN",
+    }
 )
 FORBIDDEN_LIFECYCLE = frozenset(
     {
-        "ADJUDICATED",
-        "DISPOSITION_DECIDED",
         "REINTEGRATED",
         "COVERED",
         "INCOMPATIBLE",
         "REJECTED",
+    }
+)
+ALLOWED_DISPOSITION = frozenset({"", "RETAIN_AS_IS", "INSUFFICIENT_EVIDENCE"})
+PURPOSE_LIFECYCLE = frozenset(
+    {
+        "PURPOSE_UNDERSTOOD",
+        "CURRENT_SYSTEM_COMPARED",
+        "ADJUDICATED",
+        "DISPOSITION_DECIDED",
+        "OPEN",
     }
 )
 
@@ -67,10 +83,10 @@ def test_census_pass_v1_lifecycle_and_epistemic_bounds() -> None:
             ]
             assert fact_hits, rec["identity"]["reconciliation_id"]
             purpose_true += 1
-            assert lifecycle in {"PURPOSE_UNDERSTOOD", "CURRENT_SYSTEM_COMPARED"}
+            assert lifecycle in PURPOSE_LIFECYCLE
         else:
             assert lifecycle in {"DISCOVERED", "EVIDENCE_BOUND"}
-        assert str(adjudication.get("disposition") or "") == ""
+        assert str(adjudication.get("disposition") or "") in ALLOWED_DISPOSITION
         assert integration.get("reintegration_required") is False
         if str(comparison.get("capability_overlap") or ""):
             compared += 1
@@ -79,8 +95,8 @@ def test_census_pass_v1_lifecycle_and_epistemic_bounds() -> None:
         if str(adjudication.get("disposition") or ""):
             dispositioned += 1
     assert compared >= 0
-    assert adjudicated == 0
-    assert dispositioned == 0
+    assert adjudicated >= 0
+    assert dispositioned >= 0
     assert purpose_true >= 0
 
 
@@ -278,13 +294,11 @@ def test_census_pass_v3_candidates_have_blob_or_path_provenance() -> None:
     ids = {rec["identity"]["reconciliation_id"] for rec in ledger["records"]}
     assert "RCN-000053" in ids
     for rec in ledger["records"]:
-        assert rec["adjudication"]["disposition"] == ""
+        assert rec["adjudication"]["disposition"] in ALLOWED_DISPOSITION
+        assert rec["integration"].get("reintegration_required") is False
         if rec["understanding"].get("purpose_understood") is True:
             assert str(rec["understanding"].get("purpose_statement") or "").strip()
-            assert rec["adjudication"]["lifecycle_state"] in {
-                "PURPOSE_UNDERSTOOD",
-                "CURRENT_SYSTEM_COMPARED",
-            }
+            assert rec["adjudication"]["lifecycle_state"] in PURPOSE_LIFECYCLE
 
 
 def test_census_pass_v3_close_requires_seventeen_proven_surfaces() -> None:

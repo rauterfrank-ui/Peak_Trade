@@ -386,6 +386,40 @@ def test_disposition_during_current_system_compare_rejected() -> None:
         validate_reconciliation_v1(payload)
 
 
+def test_disposition_before_current_system_compare_rejected() -> None:
+    payload = _with_records(
+        _payload(),
+        [
+            _minimal_record(
+                lifecycle_state="PURPOSE_UNDERSTOOD",
+                purpose_understood=True,
+                disposition="RETAIN_AS_IS",
+                positive_reason="too early",
+            )
+        ],
+    )
+    with pytest.raises(
+        ReconciliationValidationError, match="DISPOSITION_BEFORE_CURRENT_SYSTEM_COMPARE"
+    ):
+        validate_reconciliation_v1(payload)
+
+
+def test_disposition_decided_without_disposition_rejected() -> None:
+    payload = _with_records(
+        _payload(),
+        [
+            _minimal_record(
+                lifecycle_state="DISPOSITION_DECIDED",
+                purpose_understood=True,
+            )
+        ],
+    )
+    with pytest.raises(
+        ReconciliationValidationError, match="DISPOSITION_STATE_WITHOUT_DISPOSITION"
+    ):
+        validate_reconciliation_v1(payload)
+
+
 def test_hypothesis_serialized_as_fact_rejected() -> None:
     record = _minimal_record()
     record["claims"] = [
