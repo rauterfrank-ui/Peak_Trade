@@ -35,6 +35,7 @@ evaluate/              EVALUATE_INDIVIDUALLY pass v1 current-system comparison
 adjudicate/            INTEGRATE_OR_DISPOSITION pass v1 adjudication
 evidence_resolution/   OPEN_EVIDENCE_RESOLUTION pass v1 (OPEN records only)
 reevaluate/            REEVALUATE_OPEN_RECORDS pass v2 current; pass v1 snapshots frozen
+working_nodes/         WORKING_NODE_FINAL_DISPOSITION pass v1; not RCN census
 evidence/understand_v1/ raw quotes separated from interpretation
 evidence/reevaluate_v2/ raw quotes and command captures for pass v2
 ```
@@ -211,6 +212,40 @@ Repository taxonomy names (obeyed; not renamed):
 `CAPABILITY_ALREADY_COVERED` (not `ALREADY_COVERED`);
 `INSUFFICIENT_EVIDENCE` (not `OPEN_INSUFFICIENT_EVIDENCE`).
 
+## WORKING_NODE_FINAL_DISPOSITION pass v1 state (current)
+
+```text
+PASS_ID=WORKING_NODE_FINAL_DISPOSITION_PASS_V1
+OWNER_GO=PEAK_TRADE_RECONSOLIDATION_CANONICAL_FINAL_DISPOSITION_PERSISTENCE_V1
+BOUND_AGAINST_SHA=b6bcdfbd62205d3be9ca30105735132ac9e7aaec
+IDENTITY_UNIVERSE=RELATIONAL_WORKING_NODE_NOT_RCN_CENSUS
+WORKING_NODE_RECORD_COUNT=99
+RETAIN_AS_IS_COUNT=78
+ADAPT_AND_REINTEGRATE_COUNT=12
+CAPABILITY_ALREADY_COVERED_COUNT=5
+HISTORICALLY_VALID_BUT_INCOMPATIBLE_COUNT=3
+REJECT_FOR_CURRENT_SYSTEM_COUNT=1
+PROPOSAL_ACCEPTED_COUNT=95
+PROPOSAL_CHANGED_COUNT=4
+REMAINING_OPEN_RECORD_COUNT=0
+IDENTITY_MERGES_PERFORMED=0
+RCN_LEDGER_MUTATED=false
+REINTEGRATION_PERFORMED=false
+IMPLEMENTATION_AUTHORIZED=false
+```
+
+This additive persist records the 99 owner-final Working-Node classifications
+so a fresh agent can continue fail-closed. It is a different identity universe
+from the 53 `RCN-` census records. It does not reopen census, fuse WN identity
+into `RCN-` IDs, overwrite frozen UNDERSTAND &#47; EVALUATE &#47; ADJUDICATE &#47;
+EVIDENCE_RESOLUTION &#47; REEVALUATE snapshots, or mutate `ledger.yaml`.
+Owner shorthand (`ADAPT`, `ALREADY_COVERED`, `REJECT_WITH_POSITIVE_REASON`) is
+stored as labels; repository taxonomy names are the disposition values.
+`DISPOSITION_DECIDED` is classification only. Post-decision states
+`REINTEGRATED` &#47; `COVERED` &#47; `INCOMPATIBLE` &#47; `REJECTED` are not
+advanced. No ADAPT implementation, deletion, restoration, runtime rewiring,
+Live &#47; Testnet &#47; Canary, commit, push, or PR is authorized by this persist.
+
 ## REEVALUATE_OPEN_RECORDS pass v2 state (current)
 
 ```text
@@ -367,7 +402,7 @@ It is no longer the live tree state after census pass v1.
 ## Validation
 
 ```text
-./scripts/pt -m pytest -q tests/ops/test_reconciliation_ledger_v1.py tests/ops/test_reconciliation_census_pass_v1.py tests/ops/test_reconciliation_understand_pass_v1.py tests/ops/test_reconciliation_understand_pass_v2.py tests/ops/test_reconciliation_evaluate_pass_v1.py tests/ops/test_reconciliation_adjudicate_pass_v1.py tests/ops/test_reconciliation_evidence_resolution_pass_v1.py tests/ops/test_reconciliation_reevaluate_open_records_pass_v1.py tests/ops/test_reconciliation_reevaluate_open_records_pass_v2.py tests/ops/test_system_atlas_v1.py
+./scripts/pt -m pytest -q tests/ops/test_reconciliation_ledger_v1.py tests/ops/test_reconciliation_census_pass_v1.py tests/ops/test_reconciliation_understand_pass_v1.py tests/ops/test_reconciliation_understand_pass_v2.py tests/ops/test_reconciliation_evaluate_pass_v1.py tests/ops/test_reconciliation_adjudicate_pass_v1.py tests/ops/test_reconciliation_evidence_resolution_pass_v1.py tests/ops/test_reconciliation_reevaluate_open_records_pass_v1.py tests/ops/test_reconciliation_reevaluate_open_records_pass_v2.py tests/ops/test_reconciliation_working_node_final_disposition_pass_v1.py tests/ops/test_system_atlas_v1.py
 ./scripts/pt scripts/ops/validate_system_atlas_v1.py
 ```
 

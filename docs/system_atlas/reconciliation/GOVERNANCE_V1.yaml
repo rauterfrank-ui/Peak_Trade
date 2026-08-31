@@ -185,6 +185,18 @@ supporting_pass_rule: >
   EVALUATE, INTEGRATE_OR_DISPOSITION, OPEN_EVIDENCE_RESOLUTION,
   and REEVALUATE_OPEN_RECORDS pass-v1 snapshots remain frozen.
 
+working_node_final_disposition_pass:
+  pass_id: WORKING_NODE_FINAL_DISPOSITION_PASS_V1
+  identity_universe: RELATIONAL_WORKING_NODE_NOT_RCN_CENSUS
+  does_not_reopen_census: true
+  does_not_mutate_rcn_ledger: true
+  is_not_fifth_sequence_step: true
+  is_not_identity_fusion: true
+  is_not_reintegration: true
+  implementation_authorized: false
+  integrate_or_disposition_execution_authorized: false
+  owner_shorthand_is_not_taxonomy_rename: true
+
 atlas_epistemic_class_mapping_navigation_only:
   CANONICAL_CURRENT_FACT: CANONICAL_AUTHORITY
   FORENSIC_RAW_FACT: FORENSIC_RAW
