@@ -1,0 +1,20 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+atlas_authority: NONE
+reconciliation_authority: NONE
+census_pass_id: FIND_COMPLETELY_PASS_V2
+dedup_rule: exact_git_object_or_tree_sha_only
+identity_fusion_forbidden: true
+disposition_performed: false
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+blob_level_scan_required: true
+blob_level_scan_performed: false
+blob_level_scan_scope: none
+reason_required: After ref/tree/path/symbol/terminology census, symbols and headings that exist only inside historical non-tip
+  blob contents remain unprovable. Path names of 19428 reachable objects are inventoried. Unique tip trees were delta-walked.
+  This does not read blob contents of 7260 reachable commits.
+reachable_commit_count_all_refs: 7260
+reachable_object_path_count: 19428
+next_exhaustion_stage: BLOB_LEVEL_COMMIT_CONTENT_SCAN

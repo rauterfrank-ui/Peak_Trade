@@ -29,10 +29,11 @@ search_surfaces.yaml   bound repository-internal search universe
 coverage.yaml          per-surface coverage matrix
 discovery_candidates.yaml  hits below ledger threshold
 relations.yaml         copied relation index
+inventories/           pass v2 reproducible search inventories
 ```
 
 Governance persist baseline: `90dec7208554deb5d2af0a2021bb7bceaf5d6662`.
-Census pass v1 bound against: `1b52df25b99a36b99eed91943c2a203ce84f1cad`.
+Census pass v2 bound against: `1b52df25b99a36b99eed91943c2a203ce84f1cad`.
 
 ## Sequence
 
@@ -152,7 +153,7 @@ A hypothesis must not be serialized as a fact. Evidence should point at
 repository paths, commit SHAs, refs, persisted forensics, Atlas
 entities/relations, or other inspectable sources. Do not invent sources.
 
-## Census pass v1 state
+## Census pass v2 state
 
 ```text
 CENSUS_STATUS=CENSUS_IN_PROGRESS
@@ -161,11 +162,18 @@ CENSUS_CLOSED=false
 KNOWN_SEARCH_ANCHORS=Landscape;Master V2;Double Play
 ```
 
-The first FIND_COMPLETELY pass bound a repository-internal search universe
-and opened ledger records in `DISCOVERED`/`EVIDENCE_BOUND` only. Purpose is
-not understood. No current-system comparison, disposition, or reintegration
-was performed. Exhaustion remains unproven. Search anchors are still not
-ledger records and still not census boundaries.
+Pass v2 walked unique tip trees by exact Git tree SHA, inventoried reachable
+object path names, and file-inventoried `archive/PeakTradeRepo`. Git-history
+blob contents remain unproven. Search anchors are still not ledger records
+and still not census boundaries. No disposition. No reintegration.
+
+Inventories live under `docs/system_atlas/reconciliation/inventories/`.
+
+## Census pass v1 state (historical)
+
+Pass v1 bound a repository-internal search universe and opened the first
+ledger records in `DISCOVERED`/`EVIDENCE_BOUND` only. Exhaustion remained
+unproven.
 
 ## Initial governance persist (historical)
 

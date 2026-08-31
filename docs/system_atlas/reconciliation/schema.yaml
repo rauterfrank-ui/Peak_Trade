@@ -94,5 +94,16 @@ census_artifact_files:
   - coverage.yaml
   - discovery_candidates.yaml
   - relations.yaml
+  - inventories/ref_inventory.yaml
+  - inventories/unique_trees.yaml
+  - inventories/tree_content_census.yaml
+  - inventories/historical_path_families.yaml
+  - inventories/reachable_object_paths.yaml
+  - inventories/inner_archive_peaktraderepo.yaml
+  - inventories/corpus_enumeration.yaml
+  - inventories/import_symbol_census.yaml
+  - inventories/terminology_census.yaml
+  - inventories/blob_scan_decision.yaml
+  - inventories/summary.yaml
 current_presence_is_not_disposition: true
 current_presence_is_not_current_system_comparison: true

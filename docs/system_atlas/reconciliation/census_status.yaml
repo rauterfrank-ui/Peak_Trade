@@ -8,11 +8,18 @@ census_exhaustion_proven: false
 census_closed: false
 search_universe_bound: true
 search_universe_evidence:
-  - docs/system_atlas/reconciliation/search_surfaces.yaml
-  - docs/system_atlas/reconciliation/coverage.yaml
-exhaustion_evidence: []
+- docs/system_atlas/reconciliation/search_surfaces.yaml
+- docs/system_atlas/reconciliation/coverage.yaml
+exhaustion_evidence:
+- docs/system_atlas/reconciliation/inventories/ref_inventory.yaml
+- docs/system_atlas/reconciliation/inventories/unique_trees.yaml
+- docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+- docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+- docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml
+- docs/system_atlas/reconciliation/inventories/blob_scan_decision.yaml
 historical_census_performed: true
-census_pass_id: FIND_COMPLETELY_PASS_V1
-note: >
-  First repository-internal FIND_COMPLETELY pass. Search universe is bound
-  but not exhausted. No census closure. No disposition. No reintegration.
+census_pass_id: FIND_COMPLETELY_PASS_V2
+note: 'FIND_COMPLETELY pass v2. Unique tip trees walked by exact SHA. Inner archive file-inventoried. Census not closed: git-history
+  blob contents remain unproven.'
+surfaces_exhaustion_proven: 14
+surfaces_exhaustion_unproven: 3

@@ -256,6 +256,20 @@ def test_census_closed_without_exhaustion_rejected() -> None:
         validate_reconciliation_v1(payload)
 
 
+def test_census_closed_with_unproven_coverage_surfaces_rejected() -> None:
+    payload = copy.deepcopy(_payload())
+    census = payload["records"]["census_status.yaml"]
+    census["census_status"] = "CENSUS_CLOSED"
+    census["census_closed"] = True
+    census["census_exhaustion_proven"] = True
+    census["search_universe_bound"] = True
+    coverage = payload["records"]["coverage.yaml"]
+    coverage["exhaustion_proven"] = True
+    coverage["census_closed"] = True
+    with pytest.raises(ReconciliationValidationError, match="CENSUS_CLOSED_WITH_UNPROVEN_SURFACES"):
+        validate_reconciliation_v1(payload)
+
+
 def test_search_anchor_counted_as_record_rejected() -> None:
     payload = copy.deepcopy(_payload())
     payload["records"]["search_anchors.yaml"]["counted_as_ledger_records"] = True

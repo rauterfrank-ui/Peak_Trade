@@ -1,0 +1,3733 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+atlas_authority: NONE
+reconciliation_authority: NONE
+census_pass_id: FIND_COMPLETELY_PASS_V2
+dedup_rule: exact_git_object_or_tree_sha_only
+identity_fusion_forbidden: true
+disposition_performed: false
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+origin_main_tree_sha: fe9fb8b470b734148c27a923cc8c84c134515245
+groups:
+  local:
+  - tree_sha: 3f379d4556ceb75dc280cb03a78caf768d912d0a
+    ref_count: 7
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/obl-b05-trend-following-side-impact-baseline-v1
+    - refs/heads/fix/offline-evaluation-sizing-config-digest-baseline-v1
+    - refs/heads/fix/offline-sizing-config-digest-drift-v2-v3
+    - refs/heads/fix/offline-sizing-legacy-raw-signal-economic-block-v1
+    - refs/heads/fix/offline-sizing-registry-terminal-state-v1
+    - refs/heads/fix/offline-sizing-strategy-params-digest-drift-v1
+    - refs/heads/investigate/offline-evaluation-sizing-contract-baseline-failures-v1
+  - tree_sha: 28b616a906dc1c369efc84c65d767f155b84fe1a
+    ref_count: 3
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/o7-governed-end-to-end-runtime-and-dashboard-evidence-v1
+    - refs/heads/capability/o7-network-bound-evidence-session-v1
+    - refs/heads/capability/o7-remaining-network-gaps-targeted-v1
+  - tree_sha: 3b98e6df13d77099a87f4b37bda40530ec6c7070
+    ref_count: 3
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/okx-governed-packet-intake-readmodel
+    - refs/heads/okx-5522-update
+    - refs/heads/verify-main
+  - tree_sha: 0abe5dbfa356b223db75c66662b812a628c3f2f8
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/cap11-live-canary-submit-transport-prep
+    - refs/heads/verify-pr5900-main
+  - tree_sha: 1492ad76a845b5b973a8624b582694c401d69089
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/phase-9-2-step-5-final-generic-consume-network-start-binding-v1
+    - refs/heads/review/pr-5765-independent-owner-validation
+  - tree_sha: 2d320132c554edc2652a17c1e7bdaba4ac864a0c
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/cross-family-coercion-ma-crossover-v1
+    - refs/heads/fix/offline-sizing-contract-baseline-integration-v1
+  - tree_sha: 2d5172e63b0e1a1df37291086b41657d33ec308d
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/phase-9-2-step-5-final-generic-binding-evidence-ephemeral-persistence-fix-v1
+    - refs/heads/review/pr-5766-combined-independent-owner-validation
+  - tree_sha: 43264f936ac0894185d75770ace9eb852af52816
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/reconcile-current-truth-fnd-001-fnd-002
+    - refs/heads/section-11-13-5-z2i-current-public-tier-mmr-public-get
+  - tree_sha: 783c23407577ca984d2d4839f9c477e8e9b461c6
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/canonical-end-state-wiring-map-materialization-v1
+    - refs/heads/recovery/stale-main-index-pr5738-20260805
+  - tree_sha: 8a19dbd867db68e4bac678c6bf70d5ec4acdbb73
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/offline-rolling-linear-drift-diagnostics-v0
+    - refs/heads/feat/offline-rolling-linear-drift-interpretation-reevaluation-v0
+  - tree_sha: 8e63f9315e01807f14555c7cae2df77566a9a752
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/cybersecurity-historical-current-scope-reconciliation-v1
+    - refs/heads/revert/pr-6165-master-v2-minimal-selector-v1
+  - tree_sha: 9a4ee3a0fb72f429b60caba32c498b84ee3aa44c
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/_verify_bridge_main
+    - refs/heads/capability/wallclock-full-canonical-decision-to-simulated-economics-runtime-bridge-v1
+  - tree_sha: a91f4e34d0bc460c8796b68de9c1ad3188e67614
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/forensic/z2aq-sui-successor-target-clean
+    - refs/heads/forensic/z2ar-sui-successor-evidence-boundary-clean
+  - tree_sha: b176a3f4aa4f0eaacf6f760400d48fd518451844
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/cap-11-12-section-11-12-1-residual-proof-bind
+    - refs/heads/docs/cap-11-12-star-nomenclature-regression-fix
+  - tree_sha: b3705ec2569b58bb6915ef7795901945c0a618d8
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/archive/evaluate-ma-trend-alignment-mr-entry-eligibility-development-v1-e24f9aa2
+    - refs/heads/research/evaluate-ma-trend-alignment-mr-entry-eligibility-development-v1
+  - tree_sha: ded6b9b50a3289109865ddc933006985a15ea8de
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/audit/canonical-chain-post-5337-zero-trade-v1
+    - refs/heads/audit/scope-event-noop-root-cause-v1
+  - tree_sha: ef6016458bc7fc78d495e1b04d81d18322e9bdf8
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/master-runbook-canonical-presentation-architecture-v1
+    - refs/heads/forensic/landscape-v2-a-slot-presentation-fidelity-refresh-v1
+  - tree_sha: fe9fb8b470b734148c27a923cc8c84c134515245
+    ref_count: 2
+    is_origin_main_tree: true
+    refs:
+    - refs/heads/feat/reconciliation-governance-ledger-v1
+    - refs/heads/main
+  - tree_sha: 003aae9cf5ed3ecef521644b9483947631a786b4
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/canonical-master-runbook-ratification-v2
+  - tree_sha: 007ac4b4f2f9c22810cb2a05f82e830ea96164f3
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-13-5-o-operational-funding-evidence-fail-closed
+  - tree_sha: 013f2934d9cdd658793064ebf2bb3081884b923b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/1-1-productive-reconciliation-runtime-binding-v1
+  - tree_sha: 0269f528c143273c11ecbd968a8b2bb1d1fc9f46
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/phase9-2-public-md-restart-real-network-binding-v1
+  - tree_sha: 026e90e84a29e2a50d226cd9688c8c7ea57cb70a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/section-11-13-5-canary-reuse-proven-venue-native-body-builder
+  - tree_sha: 02a5608e6fa519dafb82d35eedc3a8bc08d20382
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs-11-13-5-s-operational-funding-get-evidence
+  - tree_sha: 03242cbe91c1ba630eb1a598aa04a8a746536741
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/dashboard-composition-decision-surface-hierarchy-v1
+  - tree_sha: 036f759ef036e1c54d1d3a1c703c6ec199e2f7a2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/okx-futures-shadow-offline-e2e-projection-binding-v0
+  - tree_sha: 0388134f7f6360863fe17c995b9547edb6ba63f6
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/strategy-signal-canonical-consumer-authorization-v1
+  - tree_sha: 03cfb4282f2f3453b33f8558040ede057c23ac40
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/master-v2-post-a06-safety-before-intent-restore-v1
+  - tree_sha: 03d541d238807571164673c13fa2e27ce5f89642
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2bc-fresh-target-position-reobservation-persist
+  - tree_sha: 03e73e87ef313b8854103a10cfe292418bbea790
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/market-dashboard-phase-5-task8-performance-measured
+  - tree_sha: 03e92bbf9f28f9ce89870d5c649c52b70b77fce6
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ci/narrow-ready-for-review-execution
+  - tree_sha: 04a3d56dbdefcd3490141d29a8dbfd42036c4b02
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/canary-submit-authorization-contract-docs-only-v1
+  - tree_sha: 0713f80d9f8899fdd184cf105b53a696a89f853a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-evidence-collection-collector-v1
+  - tree_sha: 077948b22aef39fd94aaa537bd87168fe04d6822
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/post-restoration-remaining-p0-quarantine-v1
+  - tree_sha: 07c449607c9faac77d0d628fe2efa588e5d837b1
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-post-confirmation-survival-suitability-composition-binding-v1
+  - tree_sha: 0829cdc4e3a2e7b7e6a73fe05734dccf8d441fe2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/step-29u-economic-failure-closeout-recovery-decision-v0
+  - tree_sha: 088355a109f0aa1c51fe66ec20b2245df75d0095
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/r6-s3-canonical-persistence
+  - tree_sha: 08d164f5822dc07805e9ef401b20aeed28638576
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/volatility-expansion-persistence-v1-bounded-development-evaluation-v1
+  - tree_sha: 095574af68e6e5ed1ec15d0055816e2d7113b4f5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/notion-mirror-stage2-surface-b-post-5730-v1
+  - tree_sha: 09cce64208d21d2f8f9e7c22bff37a0306a04442
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/canonical-chain-next-slice-discovery-v1
+  - tree_sha: 09e7ba5c8723b7e882e6544ed21a62d88f1c3c94
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-raw-input-pack-instance-fields-closeout-v1
+  - tree_sha: 0a32f264a1560f57527a18aa978ff8e41322726f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/version-canonical-open-mr-eligibility-backlog-v1
+  - tree_sha: 0a8f5e8b655a144f287e571ac1a07d92174fe9bf
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-directional-assessment-confirmation-integration-v1
+  - tree_sha: 0b0753eaee16bbc2154565e6893f11bebcd07daf
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/system-r4-i17-owner-mutation-canonical-persistence
+  - tree_sha: 0b479d43fd0308c864a1517bc4cb83678ed60d9c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/step-29u-canonical-shadow-binding-v0
+  - tree_sha: 0b89ed5f9ddb1b5b9c7b67be6e17c285f39077ad
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/shadow-prep-pr5583-post-merge-ratification
+  - tree_sha: 0bc3547046ccd5e0a0be8a2541fd21c1f7d07037
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/presentation/market_dashboard_bind_universe_selection_rail_facts_v1
+  - tree_sha: 0bd793095f7abaee9d69620222b2ccfa48c8c5a4
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/preregistration-probe-fixture-repository-sha-binding-v1
+  - tree_sha: 0d24d23963da1979040f1b2ef3bed376ee725cde
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-canonical-volatility-default-quarantine-v1
+  - tree_sha: 0d2ed8210b4e66b2a7834c936cdb0ed01c87e89a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/z2ai-lf10-read-only-adjudication-persist
+  - tree_sha: 0deffaad777e2208816e1760768a2acc326cbf45
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/r6-s2-canonical-persistence
+  - tree_sha: 0f28be8f716a3a0b551ae4952d695f469fbd38ff
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/evaluate-bollinger-mr-midband-exit-reentry-cooldown-development-v7
+  - tree_sha: 0fc17016154ad84d5fd0e408c42d555348ddab5a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/rd-strategy-status-grammar-v0
+  - tree_sha: 108705f61920fbcb040aaec8c2d9a6c9a07a11af
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/market-dashboard-product-recovery-v1
+  - tree_sha: 112511bab59f506c0f40fef188ccc032bb6b99e8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2br-sui-mm-liq-buffer-numeric
+  - tree_sha: 114e5b588535d0ca53f6da9eb6a0ac36fa1c866d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/phase10-persist-consumes-identity-binding
+  - tree_sha: 11f9516af42be7603dc3038d622f85158b50b5dc
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/p6-5189-post-sqlite-residual-frontier-observation-v1
+  - tree_sha: 120b5c7548af999c0de782f9e9a7e90740289119
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-13-5-post-k-persistence-remediation
+  - tree_sha: 121a76ba12227eb93f0c1100bec21f30e12ec66f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/bouchaud-offline-productive-linear-diagnostics-execution-support-evidence-v0
+  - tree_sha: 12827496c98b6a41bc403b3437eb668412e1d328
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-12-9-23-cybersecurity-architecture-review
+  - tree_sha: 12d9c90dd717586d7134f836e5cdc3e1153ea90a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/preregister-macd-histogram-countertrend-mr-eligibility-hypothesis-v1
+  - tree_sha: 1389b1b7e09edee135a8c87cc23bc81bd6d56ecd
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/phase-9-2-step-5-productive-real-network-session-activation-and-wiring-v1
+  - tree_sha: 142cfc3479bee5bfc41499886d49c2bf2be31310
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/cap11-live-canary-cybersecurity-gate-pass-persist
+  - tree_sha: 14b24d8b208db1f20d3bcd04ecad21f1e8138d75
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/step-29u-terminal-final-fleet-hypothesis-retirement-v0
+  - tree_sha: 15dd3ad2af5f375b297d196dff0c8a936ef24548
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/chore/ignore-playwright-mcp-output
+  - tree_sha: 169212b0d94d98716e6f25008c2f2bcd4a57dcea
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/master-v2-minimal-selector-v1
+  - tree_sha: 16e51c4e68820f86dcdfb24a5b262d0c51e7dff3
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/test/canonical-architecture-drift-guard-v1
+  - tree_sha: 16ff8920f4daa958213b0fdd85f6f6ba6273df25
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/test/section-11-13-5-z2as-p3-independent-parallel-tracks-policy-bind
+  - tree_sha: 177a8d1c6a82455822e64c1c6e1aa59fad50e416
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/11-13-5-z2n-fee-reserve-rates-rebind-get-evidence-ssot-bind
+  - tree_sha: 177d40bccfebef31451a66154b709d762be4f7cc
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/ops/productive-pure-stack-input-authorities-owner-ratification-v1
+  - tree_sha: 17bb9c484ec34e3962926dd51bc05e0b2699df06
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/section-11-13-5-post-z2am-offline-flatten-contract-alignment
+  - tree_sha: 17db53dd267573c2682b0710a1d14accbec8d29b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-13-5-p-operational-formula-ratification-fail-closed
+  - tree_sha: 184b67f30fa276842a1880007805ad3c463e0747
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/phase11/okx-eea-xperp-rebinding-section-11-12-8-prep-no-order
+  - tree_sha: 184c7e686478b8ab67122352b53411bb8bcbdf8d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/drift-b01-b07-missing-features-plan-deferred-alignment-v0
+  - tree_sha: 1930bdf08bf1cac5805cd6301e96cbea2b7a27a8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2cg-sui-same-pack-freshness-vs-identity
+  - tree_sha: 19cdab87aa719b2d16b589ae8c08c40f95864e0f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/pairwise-spillover-v1-reevaluation-baseline-dataset-digest-reconciliation-repair-v0
+  - tree_sha: 19d0c1ac90541ccd8c4a510a1aba53fef11c7d35
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-p6-z2cl-identity-header-gap-persist-v1
+  - tree_sha: 1a55f486e44e23fa0ce4aea50f18bf196f14a168
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/trend-following-v2-offline-economic-evaluation-execution-infrastructure-v0
+  - tree_sha: 1a65e8df22b488c00ccfb1d00b4a00f95504ca2f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/workflow-dashboard-canonical-archive-root-contract
+  - tree_sha: 1a69447c50b7d1f1066397f94e5fa0876854763b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2bd-sui-instrument-metadata-reobservation-persist
+  - tree_sha: 1b2a1f48f4e1ed1c6d95f4980feef7b8acb80bfc
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/notion-mirror-attestation-rebind-post-5748-v1
+  - tree_sha: 1bb1ba733d92fdb95d19174d1835eda8719bca7d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/p6-5189-final-1-recovery-observation
+  - tree_sha: 1c4a24d7bbffdeb1ba718d65c31f252e8babad68
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/cv-maxage-additional-evidence-authorization-v2-authority-v1
+  - tree_sha: 1c6485a04ccbade47a5227b88707e2185e87b0da
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-13-5-z2bk-sui-markpx-numeric-use-runtime-reproof
+  - tree_sha: 1d286f08acbe0a36b83fdd08c04970e11ba216e6
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/section-11-13-5-oem-clarification-prep
+  - tree_sha: 1d99e824af1645f85520afc9e30a978b40d5bb8e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/market-landscape-v2-ohlcv-presentation-decimal-declutter-v1
+  - tree_sha: 1db8c9e481b6348f29ea27c3000a4d96cee4257c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/cv-maxage-additional-evidence-s03-session-execution-owner-v1
+  - tree_sha: 1f471bcc3030be147dcaf26e8c827547b37fc29d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/phase9-2-step4-governed-real-network-execution-binding-hidden-pty-v1
+  - tree_sha: 1f542b9252fce2ce3e791253f2569b91c3267c51
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/section-11-13-5-e-economic-baseline-and-okx-clearance-evidence
+  - tree_sha: 1fa08f9cdd7ca85d49b7900057a2fc850534ad86
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/phase-9-canonical-portfolio-learning
+  - tree_sha: 2061c502425343360bdd8992ff36fcb7d97cb355
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/5_2_single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1
+  - tree_sha: 2085c7b06c4edfe01533bb7a20b6a5712f2027f8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/capability-11-3-private-readonly-venue-integration-and-reconciliation
+  - tree_sha: 21ff933d897d396a6318b81f9d92ea973b441579
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2bw-sui-p4-composition-numeric-exact-sum
+  - tree_sha: 22b6ee61c51389a137b8014820bbc6ca02307c9b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/fnd-015-phase17-live-header-superseded
+  - tree_sha: 22d27ffd1d34e66a7a0a4ff4b4f28f39dec506e8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-owner-sta-candle-mark-instrument-authority-v1
+  - tree_sha: 22e5aaa136db48e64551f35938e915cac7a1c3a9
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/repo-system-atlas-v1
+  - tree_sha: 22e8e49ac27ffb72d40f9ca349b05e7590311812
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/master-v2-double-play-host-graph-ssot-and-owner-composed-full-chain-proof-v1
+  - tree_sha: 23123dd45e6c4db4ada9f8790c3bb54e17d1b839
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/forensic/class-d-policy1-a-final-config
+  - tree_sha: 23243be23858a8db9b19370c4a60c2c1fb304f58
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-regime-coverage-dashboard-input-gap-v1
+  - tree_sha: 2339957c4c032199aee78c579b7cf62620b9db44
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/multi-session-natural-age-typed-vol-actionable-strata-evidence-v1
+  - tree_sha: 239fe10b2b7196066c51260865618d05e350782f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/canonical-11-13-5-z2ck-class-d-fail-closed-ssot-v1
+  - tree_sha: 23b191070951a7496c9b625194b92e762142bb71
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/market-dashboard-consumer-only-truth-wording-v0
+  - tree_sha: 23eaea6a5fcf8d6a8367f8d2dd45a7edca843344
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/paper-shadow-obs-operator-go-session-prereg-v1
+  - tree_sha: 2458a58171d75a457ec02d6fb5fe9fea07543ea8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/mv2-double-play-a06-capital-risk-sizing-intent-v1
+  - tree_sha: 2682bb7098f9fce67aba3b8f4b9d75cd8399ead2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/identity-bound-offline-observation-binding
+  - tree_sha: 274c9acdba16f64084bc48db484bf8ede9b4664b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/shadow-prep-readiness-offline-operator-entrypoint-v0
+  - tree_sha: 2770cac65cfbe994d155083c5562dfb0d75b6153
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/11-13-5-t-formula-instantiation-fail-closed
+  - tree_sha: 27e84d499be2a32c16eeb2b7fc83780d2077c1e0
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-regime-coverage-sta-open-inputs-closeout-v1
+  - tree_sha: 28680dbaff8d4ea52b9c185c4070f82ae9c4cb6d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/canonical-durable-authorization-lifecycle-and-revocation-v1
+  - tree_sha: 29288fa3e8e0e9c7a13b686e0036947fc93deea0
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/market-dashboard-phase1a-composition-foundation-v1
+  - tree_sha: 2a54d28b169fd1fd5083e49264ef450d54e3b5c3
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/chore/cursor-governance-rule-dedup
+  - tree_sha: 2ab1f0c4954a8b7a15a29fefb6f647d46d9ee863
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/market-dashboard-v2-final-closeout-hygiene
+  - tree_sha: 2b39424792f717109b22d403658260505e209dde
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/shadow-preparation-path-reference-failclosed-v0
+  - tree_sha: 2c5a4e98ccb6ec345f0460b3c83e70ba6ae3a501
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/phase-9-2-step-4-mdb-transport-failure-reconnect-routing-fix-v1
+  - tree_sha: 2c5ac2bddcadf39e6e736833d497404358f59660
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/canonical-product-path-recovery-forensic-mode-termination-v1
+  - tree_sha: 2c924f37eaac8c8e9be724d96b4586bee33712fd
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/pairwise-spillover-v1-reevaluation-baseline-actual-execution-owner-implementation-v0
+  - tree_sha: 2cdd0db2338c6013c210dc22653baa2b6b62812a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/11-13-5-z2p-same-pack-slippage-reserve-numeric
+  - tree_sha: 2cf646903506a0b584d29121cd744a78fa77a06e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/r12-eg-i44-fund-canonical-persistence
+  - tree_sha: 2d082ceba8d4c97accbe0bddd15a701b3a163fb5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/cv-maxage-natural-age-progression-actionable-strata-evidence-plan-v1
+  - tree_sha: 2d6b0d2b8e0a4a324e38b4d85497d30a2bdb654b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/phase-6-canonical-champion-challenger
+  - tree_sha: 2daf0c14ccc956ff874f6e17a2137f0c0deb6792
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/eg-alt-consumer-canonical-persistence
+  - tree_sha: 2e40e6f040eed995df8d34b750b2b43924949fba
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/post-cap72-truth-map-alignment-v1
+  - tree_sha: 2ecbd5a2b698f8970d69f084564f18d71db9ad88
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-regime-coverage-producer-decision-v1
+  - tree_sha: 2f8812f1b66c9ee79456a7e3b759453ef811603f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/cybersecurity-runbook-v2-1-pre-live-gate-ratification
+  - tree_sha: 2feed4066b85926fc8ca2fa40774e1f15381b4fc
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-regime-coverage-producer-impl-v1
+  - tree_sha: 308d6d02ccbaf18fd1240b34b63b3c9879f033e7
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/z2cm-fail-closed-position-state-predicate
+  - tree_sha: 3097c147255c65dfedffb0c71e583577377f860a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/pos-mode-forensic-binding-implementation-and-closure-v1
+  - tree_sha: 30f97c7311a21ebef38cecb901aff1a52619c070
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/cursor/trend-following-v2-baseline-execution-entry-point-implementation-v0
+  - tree_sha: 320c8d9191524510eb58fef54feb5eb6c97b2118
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/phase9-2-public-md-rate-limit-reconnect-wallclock-binding-v1
+  - tree_sha: 326ef227fa028058fb0186dc1abae23fa75fe16c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/phase-9-2-evidence-generator-portable-path-fix-v1
+  - tree_sha: 32d84899abc51fbaae74085d757e4da03eb1a74c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/section-11-13-5-z2ap-live-flatten-closure-work-package
+  - tree_sha: 34b20b6ccbbd4045abdda708e862eef2a23c3db5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/market-dashboard-authentic-intrabar-v0
+  - tree_sha: 354bf1b74faf2f40dc8607d9a51e385b87fb02f2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/signal-orthogonality-diagnostics-v0
+  - tree_sha: 356062cde1f519940487e40b08db3ce3071f61eb
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/section-11-13-5-z2ca-p7-3-flatten-precondition-reobservation-v1
+  - tree_sha: 358f4db5b7c3299e24e3db25673acd5f12f97cc2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-13-5-z2b-ticket-7823581-expiry-fee-evidence
+  - tree_sha: 35f86019a3c46fa53ca2be4adab5852e52c65e2d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/phase-9-2-restart-recovery-session-contract-and-productive-harness-v1
+  - tree_sha: 36638a27260abab39df712253b1b1d1a520c5d4d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability-3-1-productive-futures-accounting-runtime-binding-v1
+  - tree_sha: 36b28de1c34b4d2afcbda0aa598e8f998d552bfb
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/z2cd-p8-final-forensic-audit-persist
+  - tree_sha: 36dec1dfbb2eac4ea608fbc06da28b4f0da145b2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/market-dashboard-phase-5-task4-deferral-ratification
+  - tree_sha: 3715418416255f3e36f9f7d639fa9077c7892f88
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/11-13-5-z2q-same-pack-mm-liq-buffer-numeric
+  - tree_sha: 37af3478249d724a587bd2bf0140026632bd158b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/r6-s1-canonical-persistence
+  - tree_sha: 3864c3ae0c585a8a1f5603de36da6c6916b0142b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/tmp/pr4878-verify
+  - tree_sha: 389891bff34392bf4fb4063d0c81c7d1f674482f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/canonical-trade-ledger-equity-curve-decision-funnel-persistence-v0
+  - tree_sha: 38a8c8a6f50c1788c542eef00572222f0138c186
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/phase-7-canonical-reality-gap-store
+  - tree_sha: 396960d7294909d8d5d044f45ce32872bf1cfedc
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/post-auth021-auth022-next-workstream-discovery-v1
+  - tree_sha: 3a0f965425ae87dd11ce176a6aaedefb23841368
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/section-11-13-5-z2h-current-ticker-bid-ask-public-get
+  - tree_sha: 3ab31aac55c9ca07144bdc0fb38450543760811f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/presentation-double-play-projection-materializer-autobind-v1
+  - tree_sha: 3b051bc81058f47db690c0689827ad8aafb7ffd0
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/o7-remaining-network-gaps-productive-wiring-v1
+  - tree_sha: 3bb259cabd099e95985dc027df04a868f905f7a5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/11.13.5-z2m-fee-reserve-rates-rebind-get-evidence
+  - tree_sha: 3bbae2542f1ae059001a327bac2a9fe945bc4596
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/step-29u-activation-evidence-economic-readiness-v0
+  - tree_sha: 3c6630832f2f04cb44c5b37826ce04aaedfd2846
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/ohlcv-pt1m-open-tip-authentic-replacement
+  - tree_sha: 3cb586848684a17c55e1b71a592d1091b9872dec
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2ch-class-b-history-h0-frontier
+  - tree_sha: 3ce4fd3e659f35cf652f9e445055f9c86837df3f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-p6-5189-post-count-drift-global-frontier-persist
+  - tree_sha: 3d010f0910559632ea29902de6507ba42f740545
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/productive-pure-stack-numeric-policy-shadow-campaign-runner-v1
+  - tree_sha: 3f7b7fc6a76762ab4c90e7ebd6874832773f82d2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-12-9-24-threat-model-current
+  - tree_sha: 3f9a99e59540b9b453ef7a88dc1b06e729157d6e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-canonical-volatility-numeric-max-age-public-md-rate-limit-hardening-v1
+  - tree_sha: 3fd352631717ecc21c3f342e6f2f84198c9b1587
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/post-drift-b03-next-workstream-discovery-v1
+  - tree_sha: 40451e469ffc888811fef49f7c185c409903909c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/trend-following-v2-offline-economic-evaluation-authorization-v0
+  - tree_sha: 4085247f06ecd5576e7eaa2c8fdee927d755e76e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/post-restoration-venue-pretrade-metadata-binding-alignment-v1
+  - tree_sha: 4164ce97f842bf03855ead0d595bb68abc8ff2d9
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/11-11-live-autonomous-recovery-and-degradation-evidence-v1
+  - tree_sha: 418997b53d88fdfcc09be1bb583199fa8a7a6385
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/post-restoration-parallel-owner-skip-safety-quarantine-v1
+  - tree_sha: 423d6ccef965b38bd99ce63b9edfe3a0033da9bf
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/webui-ci-health-test-assertion-repair-v1
+  - tree_sha: 4252e9d6299a8d20b7b9b70bd1c05fd481955e94
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/canonical-derived-economic-trade-metrics-v0
+  - tree_sha: 4354e7c070ba7115217dc63cc9d5c5c3a71a4e4a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/post-restoration-baseline-preservation-compatibility-contract-v1
+  - tree_sha: 43f635d92d7431292e0861ea38c6c14920a30d31
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/market-dashboard-product-maturity-chrome-v0
+  - tree_sha: 460ee8088bd84d88358c6a662201d47f423d365c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/phase-9-2-wallclock-outcome-telemetry-verifier-completeness-v1
+  - tree_sha: 463db37e87ce039e91f6a77050ada61b52fea147
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/bouchaud-promotion-economic-gate-consumer-binding-v0
+  - tree_sha: 46eead181213861836fff285e76dae96c344ecec
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/pr5162-factor-exposure-materializer-contract-roundtrip-v0
+  - tree_sha: 4724561024d7499a857c66ebc393e791ba235f92
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/phase11/section-11-12-8-long-running-autonomous-testnet-campaign-v1
+  - tree_sha: 4798fb0805fb5340b58ff9be19f3741cc9164957
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/phase9-2-step4-activation-runner-signature-owner-permit-wiring-v1
+  - tree_sha: 47b287a628555083aae459cc2ceb9633f31af23b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/slice3-classic-caller-canonicalization-v1
+  - tree_sha: 47b34f68346a65bf46a2668af727ad3b9beec0f6
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/z2co-prereq-08-post-branch-no-action-closure
+  - tree_sha: 4893f0f5a19b5fe33b1f555278ab53c6880cee4a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/post-restoration-live-safety-gates-adjudication-v1
+  - tree_sha: 490f9e8510e7ec536c4b3abc689d9b28029fbb8f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/forensics/sw-r-002-working-state-synthesis
+  - tree_sha: 4a145a9d40bff8fb2d21fb1d24bd118a8be6648a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-time-sample-epoch-semantics-v1
+  - tree_sha: 4a21473105f80a85603edd0204b23bcdb1accabe
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/s03-atomic-auth-v2-reissue-consume-execute-ephemeral-token-v1
+  - tree_sha: 4a90fb489e570319585442fa7be4ff555a4ef066
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/master-v2-integrated-replay-safety-before-intent-rewire-v1
+  - tree_sha: 4ac2de3279cab621f9464bbbecfe059b48cb7a53
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-raw-input-pack-instance-values-fill-v1
+  - tree_sha: 4b187712d11386346e60b00678cf28ad20f91536
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2bq-sui-mm-liq-buffer-mmr-operand-numeric
+  - tree_sha: 4b68fe874f0404c97c2990b82d7ce5b49cc4b769
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/canonical-runbook-post-merge-binding-v1
+  - tree_sha: 4b9ea6775336279f9f553476961bdfc5a6674a34
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/b8-account-wide-second-open-position-cap
+  - tree_sha: 4bd9165f927a0da4136af54feb0011203f46d896
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/cursor/momentum-1h-v2-execution-v1-token-binding-repair-v0
+  - tree_sha: 4c8f45ddf0fdede556c68447faceb29076c99695
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/dashboard-composition-observability-surface-hierarchy-v1
+  - tree_sha: 4c901ea189a3e3786f15b440342062ad82ade667
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/market-dashboard-landscape-v2-final-runbook-closeout
+  - tree_sha: 4d1db336e4598e48b38d5a345d83cb3af78c6745
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/canonical-chain-wiring-repair-final-technical-closeout-v1
+  - tree_sha: 4ee733ae8760f55b590f54ca443ac063ad7df84a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/step29u-canonical-semantics-contract-v0
+  - tree_sha: 4ee92cd1a1940f0210bfbdc8d0139ad0b495ea2f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/class-d-offline-evaluation-squash-merge-current-main-contract-v0
+  - tree_sha: 4ee9aef49a5af8596730cac1328ac3e481ec7b63
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/pairwise-spillover-v1-offline-economic-evaluation-implementation-repair-v0
+  - tree_sha: 4f1b647ad1d3a345c41c29df2796e10cf92ed743
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-double-play-runtime-typed-volatility-presence-gate-v1
+  - tree_sha: 4f278d822f93873c98527a344f94e61ad7285747
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/runtime/pt-python-runtime-contract-v1
+  - tree_sha: 4f4029914eadfa3f1634a413c3a344caded25a4a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/market-dashboard-phase3-chart-polish-after-5254-v1
+  - tree_sha: 4f516f2c2e9a2c8228ce8ea5521f668ac60471e5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/section-11-12-8-okx-clordid-alphanumeric-ack-proof
+  - tree_sha: 4fc2a7b76144cad55cbd713f85761c3dc1c99042
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/integrated-paper-shadow-productive-auth-real-network-v1
+  - tree_sha: 5146682dddc87d5047c1392422e408255da38b6f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/momentum-v2-vol-scaled-terminal-retirement-v0
+  - tree_sha: 527ac316abe89380ce261adf9137beb9ac7a849c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/market-dashboard-phase-4-7b-autonomy-option-d-closeout
+  - tree_sha: 52ad13eca4dd4e42afb3661592a40ad86422d5b6
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/phase-4-canonical-robustness-suite
+  - tree_sha: 52c44f0d91eeada22e85953fd77594595d10c82e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/global-runbook-next-workstream-discovery-v1
+  - tree_sha: 52f097daa058da3167c6843bfaa723eeea90984a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2bf-sui-operative-qty-venue-constraint-freshness
+  - tree_sha: 53e2a0bc8f4c2943562c762f1549872a02cb3c17
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/authorize-volatility-decay-breakout-v1-development-evaluation-only
+  - tree_sha: 53e2a435b5587148be906a3f526b7b7f59e3b5cd
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/mg-i82-emitter-cutover-preparation
+  - tree_sha: 54761d44effd9469874d06964c2ad01312e3d72f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-p3-class-d-z2ap-flatten-preexecution-readiness-v1
+  - tree_sha: 548dd738518c10e654da049bcfa94ef4ce459a5b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/momentum-v2-vol-scaled-dev-eval-v0
+  - tree_sha: 5597c30dc301178da478e45936b27f2088768674
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/section-11-13-5-z2al-static-flatten-prerequisites
+  - tree_sha: 55daae2ddc1de99b0043a8559038d38f07eb519d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/11-13-5-z2i-delivery-0003-vs-0001-provenance
+  - tree_sha: 5632815e2963e602e767448508a95cdce716774c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/section-11-13-4-live-dry-run-order-plan
+  - tree_sha: 56dd6b5b084627a9438de36cc1667d342a76ffa9
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/market-dashboard-gov-econ-diag-autonomy-v0
+  - tree_sha: 577f29db24bc67dd37bd39b8298b83ecb2a3da65
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-raw-pt1m-observation-input-and-exclusive-tip-proof-v1
+  - tree_sha: 5857aab481a4062f4407f1516528c98f16b42858
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-13-5-n-funding-amount-fail-closed
+  - tree_sha: 587a72b1aa4d8c89fcf0c24519c8ba07599bffe1
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/hardening-v2-required-window-complete-decouple-from-features-ok-v1
+  - tree_sha: 594472ab65507354900f63dc12468d76ead0992c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/market-dashboard-governance-ssot-normalization-v1
+  - tree_sha: 59934c573ae7bd56e74239d5740e166a8fcd01dc
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/phase11-owner-auth-artifact-testnet-credential-scope-private-network-v1
+  - tree_sha: 59e9d831b7b05edd1e595d17158cee6b8dbd56d4
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/phase-9-2-step-6-adverse-stale-data-session-continuation-v1
+  - tree_sha: 5a678a3bea88629dd8a891b4c764ac580a23d618
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/post-cap-7-2-cybersecurity-review-v1
+  - tree_sha: 5a7065e059c49d975704b8590ae11f7cbad34ec5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-canonical-volatility-binding-provenance-transport-v1
+  - tree_sha: 5a9b133f32a641fe1687da5b22845e536fdac59b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ci/shadow-preparation-focused-owner-tests-v0
+  - tree_sha: 5ab9a3f42ddc9e4d9b2ced85d54658b35bad46bb
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/pairwise-spillover-v1-execution-dispatch-implementation-v0
+  - tree_sha: 5b1f1c7f62c9728837ec56cb9b691510fa182420
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/csrhr-v1-development-evaluation-v0
+  - tree_sha: 5bb457bd784311140c2ee5d0f85ceb062ab24295
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/presentation/market_dashboard_projection_octet_runtime_verify_v1
+  - tree_sha: 5c75db56fc74cdc4b172e15e34296653f8af986c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/section-11-12-8-xperp-campaign-forensic-closeout-package-v1
+  - tree_sha: 5c78a1f93269c22b0018a20bfba7d446af06eec4
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/phase11/section-11-12-8-productive-testnet-campaign-run-v1
+  - tree_sha: 5ce36a6b8efb2eb2caeb584359615d05b4e5406a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-canonical-volatility-numeric-max-age-productive-evidence-session-preregistration-v1
+  - tree_sha: 5cf23f50f4ac2fe5efe982da489ef9db7a1d7cdc
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/section-11-13-5-z2m-trade-fee-get-path
+  - tree_sha: 5cf93a61d8d367c8ac5936a69c516cfa54793581
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/p6-5189-prefix-60164328-attestation-anatomy-v1
+  - tree_sha: 5d365f844a9bcd3b1ea5d4c3073570eb4b40c3d9
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/step29m-offline-economic-evaluation-execution-v0
+  - tree_sha: 5e08ea2a08e463680b3fcd254e9d78bbbbc62de5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/section-11-13-5-canary-execution-plumbing-remediation-v1
+  - tree_sha: 5ef1c2724f5774f1637c6d76d7ee52b76326c58a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/section-11-13-5-z2ao-extra-deviation-bound-adjudication
+  - tree_sha: 5f42bdb41d0b5bf236af561b2656ed149a8523aa
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/governance/pre_runtime_current_state_sync_and_observability_prep_scope_v0
+  - tree_sha: 5f502858c82322596ae3fcd871185708a769e8c3
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/o3-secure-confirm-token-family-and-hidden-input-handoff-v1
+  - tree_sha: 5fdeaa42501659d801fcfb3d20c9a297f74360b6
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/post-restoration-accounting-portfolio-alignment-v1
+  - tree_sha: 6082d22c39b1af4ba1fa8ccb44df5b10b253f2a4
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-13-5-z2am-post-z2al-binding-adjudication-persist
+  - tree_sha: 60f69d38b8694e319c346f74fdc28dfe6673c1b3
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/leverage-forensic-binding-implementation-and-closure-v1
+  - tree_sha: 6117ca919408ac9c8ff53ef899ca586ccfd4998e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/visual-operator-dashboard-v1-3-phase-minus-1-rebaseline-v1
+  - tree_sha: 612d5df668288270667af98eaa12d69f58fb50a5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/work/p6-post-pr6106-separate-residuals-closability-v1
+  - tree_sha: 614cdb05a752f32f69c1ab7ce61bc70edef49034
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/governance/integrated-paper-shadow-economic-validity-reconciliation-v1
+  - tree_sha: 62736b3631630baa23471caddeda3277ae31f0ea
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/phase11/section-11-12-1-productive-private-readonly-api-account-identity
+  - tree_sha: 62a83e924ebf18557a476979eaf18dec58206195
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/okx-shadow-600s-soak-evidence-closeout-v0
+  - tree_sha: 636b3f501e5298dd39a1a05e49725570a87a3f1d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/phase-9-2-step-4-productive-real-network-session-activation-binding-v1
+  - tree_sha: 63ea427a6dd7e7652b2d18f6640c2af0419730be
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/section-11-13-5-z2ab-productive-runtime-proof-admissibility
+  - tree_sha: 647a9465076e1406ff121aef73427e64a0c57b62
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/capability-11-2-credential-authorization-account-identity-boundary
+  - tree_sha: 64b4a0c67f48d3adf12519766fc6bd95d307bac1
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/shadow-prep-readiness-offline-projection-pipeline-v0
+  - tree_sha: 64c2c8e441dfd010434432c7f77966fbcfc0e9fd
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/capability-11-4-testnet-execution-adapter-and-lifecycle-closure
+  - tree_sha: 64f764533362583a24ebd0e7a05a4d4840376de7
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/cv-maxage-s03-productive-auth-v2-execution-enablement-v1
+  - tree_sha: 664902ef8e59d56e49c338929a06e0b9a9f3655c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-canonical-volatility-max-age-productive-research-evidence-accumulation-v1
+  - tree_sha: 667652f04466795bb352b7a24c8e9f9caa5c1f72
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability-2-3-single-selected-future-policy-v1
+  - tree_sha: 6693bed3e125292848f16d6ced0bb5c1b3e706c3
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/safety/phase-0b-legacy-learning-authority-firewall
+  - tree_sha: 66ebf4297220f0f6b2a9d0b41f9db608a0272048
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/local_market_dashboard_launchagent_v1
+  - tree_sha: 66f2b5fc6b6cc8328c661acf9a12441f1afa0820
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/capability-11-6-long-running-autonomous-testnet-evidence
+  - tree_sha: 67399ac7c02a09f36118573dcac2f14eb45948c8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/section-11-13-5-z2e-exact-formula-body
+  - tree_sha: 676cbb569a623d332e73b59d172144728315c6d5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/per-worktree-python-environment-bootstrap-isolation-v1
+  - tree_sha: 67811905e48869f9f04b9d383fd1f26624dab521
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/phase11-s1117-canonical-stateful-core-proven-evidence-closure-v1
+  - tree_sha: 683704087424ce66b28132fc4183542a2001617e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/authorize-volatility-expansion-persistence-v1-development-evaluation
+  - tree_sha: 685864268a3fd231b4a0e8e028773734c38cafdb
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-persistence-bootstrap-authority-none
+  - tree_sha: 6a926e7b8267cf615a40780181c54b5021307e82
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2aw-get-evidence-persist
+  - tree_sha: 6ab17e6253a28b67e6f39d0db0ccb9e81d2b5594
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/post-6148-max-size-unit-adjudication-v1
+  - tree_sha: 6acdb087a9a93f9cb7791b1fe643255f73f444a4
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/0-4-deferred-work-recovery-register-rotation-policy-resubmission-v1
+  - tree_sha: 6b7280859952fc312f5791a130e4760245262ae9
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-p5-set-snapshot-exhaustion
+  - tree_sha: 6beb23bdd7b2554095ac6aff42ba2e156dd0d441
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feature/phase-9-2-step-7-campaign-binding-verifier-v1
+  - tree_sha: 6d0c93327f662819c993a6a1c94a01cb119639fb
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/okx-shadow-29u-readiness-blocker-repair-v0
+  - tree_sha: 6ddd9d340a47f98d77caeed82bd5b878ce6857d2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/trend-following-v2-offline-economic-evaluation-execution-dispatch-implementation-v0
+  - tree_sha: 6dfb19b21640db64311690a112e906cfd6430253
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/11-13-5-w-persist-fresh-xperp-trade-fee-get
+  - tree_sha: 6e0331cbb9d769b5008633b2a3489cb1891ee5eb
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/market-dashboard-production-closeout-v0
+  - tree_sha: 6e51909563fc36ffb5d3f819a0196f54de47f8ad
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/market-dashboard-phase-5-pr3-compact-source-health-freshness
+  - tree_sha: 6e5ece56d8e4e2c7bb986fd47060b6276aabd3a1
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/phase-8-canonical-regime-aware-evaluation
+  - tree_sha: 6e7ffd9d421f12fad159bac75e074ed27264da88
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/momentum-v2-vol-scaled-selection-impl-v0
+  - tree_sha: 6f4c2cfcad94db88ef135a78e34331277d771c8a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/historical-reference-repo-preservation-v1
+  - tree_sha: 6f7b882bcd6b949d5bc930b56987290da7fd5e47
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/canonical-chain-wiring-repair-final-closeout-v1
+  - tree_sha: 6fbee0143bed4265898cae33b43f23e81a5b800d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/system-r1-canonical-persistence
+  - tree_sha: 6fd8ac56a5d32ffaf5f86e4f78c71892eb599c20
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/okx-shadow-prep-canonical-operator-command-closeout-v0
+  - tree_sha: 71f54ee76e90d55130b28593ed083745bf415851
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/p6-5189-relation-proof-obligation-ledger
+  - tree_sha: 727c84beee733496830f895ab2bf2734593a310d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-p6-5189-unresolved-relation-exhaustion-boundary-persist
+  - tree_sha: 72ba0be859e8c9aacd24906fabb560b37f9de6b8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/okx-market-dashboard-true-live-intrabar
+  - tree_sha: 745b291549d3a84dedb59a8aa0113a5141b07ac0
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/lf-01-lf-02-offline-flatten-contract-core
+  - tree_sha: 74a0c93321dce7014cbd49414565750609547778
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/webui-default-archive-root-ci-runner-safety
+  - tree_sha: 74efc997eaa3449589f5f82d2751a26dda0b1707
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/market_landscape_v2_ohlcv_bound_status_line_remove_v1
+  - tree_sha: 751a0f70ced2fcd01004adc1ee9daa07ab11c647
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-p1-set-snapshot-exhaustion-v1
+  - tree_sha: 75258d821e3a35bec5ec811ea162d3cc8f1f351f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/master-v2-canonical-volatility-numeric-max-age-parameter-research-execution-v1
+  - tree_sha: 753b5bf6e2ea5d06b98ae7f28213d1679893c81d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/market-dashboard-composition-first-refactor-v1
+  - tree_sha: 758e20a62c1e0abb98414891906f80646f9d0dd6
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/phase-9-2-step-4-productive-reconnect-surface-binding-hardening-v1
+  - tree_sha: 75cf367befca96f956e2d1545b29b0f0643df9a5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/phase-5-canonical-comparison-ssot
+  - tree_sha: 75de9082dbb2a53d050b5cf44a1b06524256a09d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/cross-sectional-lead-lag-v0-evaluation-path-parity-flag-ratification-v1
+  - tree_sha: 7627e4ae5e29676cb00cbe4cb75ae0a9f42bea83
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/11-13-5-z2v-negative-runtime-probe-bind
+  - tree_sha: 7719177a7a554047923abb8518817770af10716f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensic-persistence-proven-gap-and-provenance-backfill
+  - tree_sha: 776f6354f08775436a9862b8871490666258e226
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/dashboard-composition-engineering-drawer-deemphasis-v1
+  - tree_sha: 77f81f72e473963fe131a0629312c2729f750e93
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/integrated-paper-shadow-observation-wallclock-session-execution-v1
+  - tree_sha: 781fb9f3aa82e21da3b566233b95b356d28bbd77
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/cursor/trend-following-v2-mandatory-boundary-state-file-binding-rewire-v0
+  - tree_sha: 78843e3b567d0a8258e2d263048821de8a4ab4a4
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/11-13-5-v-xperp-trade-fee-query-grammar
+  - tree_sha: 790a87b10c13d00eb638f98686393e4cfc30322b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/section-11-13-5-z2bz-p7-2-category-c-bounded-closure-v1
+  - tree_sha: 791b6752e67306abbd8317e823864bb1b2ded990
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2bb-category-c-runtime-observation-persist
+  - tree_sha: 7ab7810826b246648c1603e87878bdee96d24599
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/instrument-state-forensic-binding-and-closure-v1
+  - tree_sha: 7ad77e6c45e85944c154c1d8b9df325d2e6d0d70
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/cap-6-5-exit-policy-producer-binding-v1
+  - tree_sha: 7aea25f6abfed172b25a8ac56aa4465f9e58a285
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/section-11-13-5-eea-xperp-310404-rebind-prep
+  - tree_sha: 7b5aedbb97ded335cebf6b4619578178d8895f40
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/offline-diagnostic-parameter-sensitivity-model-spec-alignment-v0
+  - tree_sha: 7b8b132009ec7843978443a6fd90a98c94579985
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/cyber/ci-supply-chain-hardening-v1
+  - tree_sha: 7be45031e147fd076806e86ea7c8f3583d99860a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/step-29u-post-merge-shadow-soak-closeout-v0
+  - tree_sha: 7c099b58fd0f89fc89558f4149d3facaacc21908
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/cursor/momentum-1h-v2-offline-economic-evaluation-execution-infrastructure-v0
+  - tree_sha: 7c69fc772435345ff873122edef0a904f04da8e2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/master-v2-canonical-volatility-numeric-max-age-productive-evidence-accumulation-v1
+  - tree_sha: 7d76581fb86f009cf25311dd311dcc482cb6fd00
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-13-5-z2bj-sui-markpx-numeric-use-owner-policy-binding
+  - tree_sha: 7d7aef668bfe2a4916e2ec1f247c40c0533b7392
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/2-2-productive-futures-ranking-producer-v1
+  - tree_sha: 7dcc856b8d3f0c0710056f177e5a34da6f0f7bd9
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/csrhr-v1-terminal-retirement-closeout-v0
+  - tree_sha: 7e01476b8c5e8cd20fa54755c7f5663356140382
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-canonical-volatility-max-age-policy-telemetry-v1
+  - tree_sha: 7e71717050938d8092093981b5149c69cae84d64
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/engine-signal-source-mv2-replay-binding-v0
+  - tree_sha: 7e7e7f22a9021c7dae48128222a31ad342d74463
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/shadow-prep-readiness-projection-reader-verifier-v0
+  - tree_sha: 7ea2b8f531a75f9bef52eaaed1df041c879f80ef
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/lf-06-ssot-persist-only
+  - tree_sha: 7f0046ad3df7edf675d672b47ad187224c26de85
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/phase-9-2-step-5-productive-session-evidence-seal-and-productive-verifier-v1
+  - tree_sha: 7fdb8b9c4bd824d28618d590cede408c886168dc
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/canonical-wallclock-authorization-consumption-authority-and-mandatory-bindings-v1
+  - tree_sha: 803999bdf04697a5c80cc2ba4c19d7c10be81822
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/11-13-5-z2s-position-value-algebra-unproven
+  - tree_sha: 804f6bfe9709616fa29a288dd4fbdf321de36d5e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/phase-9-2-rate-limit-metric-false-positive-v1
+  - tree_sha: 80bf2a357d871c0560e5ee8f78b0d50bc2a8e30d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/okx-market-pipeline-c-intake-readmodels
+  - tree_sha: 80cda677c6abc6f809b538c2ad2f957adff0dc44
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/preregister-adx-di-direction-confirmation-mr-entry-eligibility-v1
+  - tree_sha: 8112e4c4f2f9f838db321fdbfc47252ef1cdce4a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/economic-viability-mandatory-state-binding-fixture-v1
+  - tree_sha: 81a7058a416ca743fbab1cc9f500a0023b925ed0
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/final-research-fleet-signal-matrix-productive-join-v0
+  - tree_sha: 81b389a5fd72d3fa53d2f3c4717134e7fd110632
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/section-11-13-5-z2c-expiry-fee-internal-bound
+  - tree_sha: 8257fa2ad49c7758b55632f73489da3ed9aab8d7
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2bx-sui-p5-risk-envelope-identity-cover-negative-contract
+  - tree_sha: 82c5ca9ce068e3d69dc259c7ff2d8a064398319c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/okx-market-pipeline-d-dashboard-binding
+  - tree_sha: 830596711ec14f4ab32f1e31f506423e2ce1ec88
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-p6-5189-unresolved-pair-closure-mode-and-max-leverage-frontier-persist
+  - tree_sha: 837a795b38a9308dc10ccc0d53c800246251bfde
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/final-research-fleet-real-panel-dataset-binding-v0
+  - tree_sha: 843c16a52b9193cd525599d8d4822e78bcb3ef9e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-double-play-c2-directional-confirmation-progress-v1
+  - tree_sha: 845a0c04a921b3716ac97ddb51862dc77d659e57
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/cybersecurity-stage2-surface-b-post-5731-v1
+  - tree_sha: 853d2440c73eb6cc4ed24819edd5d2e52dfa2e86
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/trend-following-v2-baseline-owner-panel-member-dataset-repair-v0
+  - tree_sha: 858906047f9d255fa515564a9b11a9960e2dcd28
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/ops/section-11-12-9-25-pre-live-secrets-review
+  - tree_sha: 871b7dfa1799b03d29a9b1f888b53897aa7d3df4
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/11-13-5-u-operational-reserve-policy-forms
+  - tree_sha: 887c1f0eaa463ba3d7ba92bd196b8fd7d349a597
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/market-dashboard-phase-3-chart-polish-v1
+  - tree_sha: 88f49b023a2669e2da927a3f15e0655a28b07b83
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/section-11-13-5-post-401-bounded-remediation
+  - tree_sha: 89019ffb27de6c3fd3fbebf70a009104fdd5104e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/section-11-13-5-z2k-current-public-tier-mmr-public-get
+  - tree_sha: 89a8e77c0344ec5072ea671f82e72aade00717ec
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/lf-07-ssot-persist-only
+  - tree_sha: 8a75869b17264f3fae14a18410bace2c0c009ab0
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-raw-input-pack-materialization-v1
+  - tree_sha: 8ae00ee67e62bc61a906707b437513ea8a092caf
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/market-dashboard-phase-5-pr4-engineering-drawer-completeness
+  - tree_sha: 8ae6116a0d615e9cce63f3614d51d84afb9774fe
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/11-13-5-q-operational-funding-policy-spec
+  - tree_sha: 8ae846b96ac29e16a24f34afc7fabe66d0bc3d31
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/ops/section-11-13-live-readiness-evaluation
+  - tree_sha: 8b215a4f4d2ebbf15319ec1bc6024748bab065b1
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/section-11-13-5-z2aa-safety-dependency-earliest-blocker
+  - tree_sha: 8ba82ab94bbf814204b05b32d7d072c231500702
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/capability-11-9-live-canary-order-execution-contracts
+  - tree_sha: 8bb5a643fbfc9f53b8336e3213770c2cab5543aa
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/ssot-synthesis-auth021-auth022-closeout-projection-v0
+  - tree_sha: 8ca5f86aae6062e933ed8dae50991127955fd94b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/core-system-completion-surface-p-proof-input-gap-assessment-binding-v0
+  - tree_sha: 8cde41c73a9c782c5be9f67b5a634f7b2d1ddbe2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/reconsolidation-census-v1
+  - tree_sha: 8e087fdb3a3f8445817f46950ba2d66a06deacdc
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ci/operator-verify-install-tooling-robustness
+  - tree_sha: 8e604b84644ba4cdc0f80a1aac73669c5853c842
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/productive-pure-stack-display-decision-host-binding-v1
+  - tree_sha: 8e87260b5eb9dc2293dd55ce87531b9ca846ff03
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/wallclock-bridge-hardening-v2
+  - tree_sha: 8f697a5a767b4f7f7ff0ee57f8299737529cb970
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/phase-9-2-prolonged-natural-market-wallclock-binding-v1
+  - tree_sha: 903cb445479c02a455072afd5d9b1a14b8f7d721
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/post-auth021-auth003-next-workstream-discovery-v1
+  - tree_sha: 904f4931bb61d1667ed6bbf3cf63faec12b6f601
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/lf-09-ssot-persist-only
+  - tree_sha: 906199e59fdafba7c5adaf4ae0eb193efcd0d6a8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/p6-5189-forensic-audit-persist-and-graph-representation-repair
+  - tree_sha: 90dfb933fcbf32e052266d265d1ca8f4b1695fad
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/okx-market-dashboard-continuous-ohlcv-refresh
+  - tree_sha: 9108372e594bef9911b851d6dc0558e9efc869a8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feature/cap-11-12-8-productive-campaign-activation-handoff
+  - tree_sha: 915539d2fd98cc98c83a857da9002b19022d1cac
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/canonical-master-runbook-truth-reconciliation-post-typed-vol-cold-start-v1
+  - tree_sha: 922c05614178a9b0997d99883960f9eebd240b39
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/canonical-11-13-5-z2cl-choice-b-offline-productive-transport-v1
+  - tree_sha: 92569fed5d235f30de1a07db26027619eee411c2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-p6-5189-count-drift-adjudication-persist
+  - tree_sha: 9279b5df85c34f84017c43edc7062609cea13475
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/11-section-11-12-8-productive-campaign-run-activation-v1
+  - tree_sha: 92c80db19e4ecd54715da73919decf96b4ace52d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/canonical-replay-input-builder-v1-discovery-closeout
+  - tree_sha: 936d989888af8ee2eb18f2152a4420f5307bb4e1
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/z2cc-p7-5-live-gate-reconciliation-forensic
+  - tree_sha: 943fa85873941d1bb67d71439d6cad0e65086a08
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/phase-9-2-ladder-status-reconciliation-step4-closed-pass-v1
+  - tree_sha: 9465ab7b519deb5b3e223981c48ffa23d869306b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/section-11-12-8-bounded-long-running-productive-testnet-campaign
+  - tree_sha: 94ae8838393c6c48cd5ea164ebf770bd13b8d4ab
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/regime_bull_bear_switch_evidence_readmodel_v1
+  - tree_sha: 94b663473f4c7a5feb8de77c47b4926715f5fafc
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/reconcile-mr-entry-eligibility-backlog-ssot-v1
+  - tree_sha: 9703a66cc03809fce0d9e9bf5946b71a4ddd107c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/market-dashboard-projection-octet-upstream-artifact-creation-v1
+  - tree_sha: 9714ffdb59de1f46a8c103f993780dfb235ebe0e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/chore/forensic-hash-addressed-source-ingress-gate-policy-v1
+  - tree_sha: 977ff285fd97e1c14cd7c8f222ce5206b75dbd64
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/canonical-open-mr-backlog-post-ma-terminal-ssot-coherence-v1
+  - tree_sha: 97c8bef0558362a847e673f79a415239a23ba97f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/o5-canonical-read-model-and-market-dashboard-rebuild-v1
+  - tree_sha: 98fc4915775d2d64cbf9a3302ec97a7cf9fffb6e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/auth021-auth003-authority-matrix-b01-b07-closeout-sync-v0
+  - tree_sha: 9ac70bfacb50bcdb12e5bdcbaf5150cec5eb83d7
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2bs-sui-slippage-reserve-formula-operand-roles
+  - tree_sha: 9b0ef4c2a1025597fe2dc0f6b9e67d53c800a0a4
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/self-learning-phase3-failure-memory
+  - tree_sha: 9b47ae7537b464479959be4e403803a4e33edc24
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/lf-05-flatten-limit-price-contract
+  - tree_sha: 9c023d176c34bd00a5ca11eb7886b7dce9be8fdc
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/hardening-v2-safety-seam-remediation-v1
+  - tree_sha: 9c7033197fd33f22cab055d4556c5d03ff01107c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/p6-cap2-post-risk-false-gap-persist-dual-execution-live-frontier-v1
+  - tree_sha: 9d1c36dfc9f98aaa8a2ab8e445fa93ee23525c41
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/11-13-5-owner-ratify-expiry-rate-0003
+  - tree_sha: 9d46323e6a832322d41216de706f643575078de5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/phase-9-1-strategy-registry-closure-v1
+  - tree_sha: 9d46c07ef14e159b27f6b145962d1a2d9f357a12
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-canonical-volatility-numeric-max-age-campaign-authorization-v1
+  - tree_sha: 9df95be59d3d379f40e8f5d031b4a27e2ac1a4aa
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/runtime-operations-runbook-v2-4-ratification
+  - tree_sha: 9f068106c37f0649b22e562245e0d80fe7350d19
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/phase-2-immutable-experiment-memory
+  - tree_sha: 9f302c1305d79bd8e306fe74137e913b94a885d7
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/okx-market-pipeline-e-continuous-readonly-refresh
+  - tree_sha: 9f33559b87f43541de0bf376e1a142a3f6998e23
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/system-r5-canonical-persistence
+  - tree_sha: 9f7703194149487784b6c560d0ebb13f49ed0ede
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-canonical-volatility-typed-runtime-producer-scaffold-v1
+  - tree_sha: a0762665bc21fcd13cfca720b5a692e576fb3a47
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/phase11-cap-11-2-productive-credential-load-path-binding-v1
+  - tree_sha: a0c9e27667cee2f813265de0340e6eddbd9cd78f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/fnd-010-canonical-experiment-identity-non-equivalence
+  - tree_sha: a18a7d9491ec9a3f8f4694151358f292780de390
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/z2aj-usd-usdc-public-get-adjudication-persist
+  - tree_sha: a195510a074b2c6626eb1da054f58e8bd01e0d32
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/o6-runtime-health-recovery-and-failure-injection-closure-v1
+  - tree_sha: a1cfda0e2757a96e9a50fc228cc73a433817957c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/forensic/post-step32-knowledge-integration
+  - tree_sha: a2f80769167ca3661012a114e75fc7cf48721491
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/dynamic-scope-archive-sibling-exporter-v1
+  - tree_sha: a30bedfb3b381234607c5fdec68637e44ffc0233
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/phase-10-automated-offline-research-loop
+  - tree_sha: a3cb9df1c4cae8013061e252454813483414013f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/step-29u-activation-eligibility-inventory-v0
+  - tree_sha: a45051a717c8366dc62d305f3d26e33b22db2714
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/master-v2-double-play-c4-named-master-ssot-pointer-v1
+  - tree_sha: a45cdf585d9243cb962466b3c60692db50b2c9ea
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/market-dashboard-visual-foundation-rework-v1
+  - tree_sha: a4b3a3e5addd84bafa495076cf1f680c6bbcd821
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-owner-sta-triad-authority-ratification-v1
+  - tree_sha: a4d173f29702eb4dcce86a0f3d5e27e904ddba88
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/master-v2-integrated-replay-appendix-a-core-logic-parity-post-6135
+  - tree_sha: a58c32dae98d6b8ca6fc89c1982e1c34fea0af91
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/11-13-5-y-xperp-delivery-fee-algebra-body
+  - tree_sha: a5e3961a5e2a870c957b12e7afa18002f901d77c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-federated-scoped-completeness-policy-v1
+  - tree_sha: a5efcba0cf68430954cf8f9b16eaa382b9866d87
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/config-truth-alignment-v1
+  - tree_sha: a684c4d94daaf22be5cc8572e69ffd0fabaf30c5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2ay-category-c-unbound-persist
+  - tree_sha: a6a7bf809033f662d1bd6a52d9cf649ba3f71ddc
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/cv-maxage-productive-bridge-natural-age-lifecycle-wiring-v1
+  - tree_sha: a7eedc58dfff59a59a56f05884f150f456cf051b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/webui-review-server-harness-v1
+  - tree_sha: aa03ae156678cc000a543012d290dbeea346ede8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/p6-5189-domain-identity-d01-d03-owner-decision-adjudication-persist
+  - tree_sha: aa08529b4981cc9fc12419d8822285083d9b8da2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/section-11-13-5-z2g-current-markpx-public-get
+  - tree_sha: aa115367d296c81cacc9a26398d52f234215fba9
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-federated-information-architecture-l0-l2-l4-v1
+  - tree_sha: aab87f94390ab46e26692803f8b72ca5c8e42cc6
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-p6-5189-unresolved-pair-dep-non-proof-obligation-shared-discriminant-persist
+  - tree_sha: ab8588a6d7c8fecde7fbfa8b0e556ae975fbe3c6
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/order-plan-typed-contract-count-domain-closure-v1
+  - tree_sha: aca59e82f994da28f05d9d4cd645e5b9d678f7ee
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/z2ag-api-ctval-sizing-split-persist
+  - tree_sha: acd7c34cff1e6e2fd11331849cf7716623deb3ae
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/recovery/preservation-phase1-minimal-canonical-recovery
+  - tree_sha: ad31d22b529461787f732fe701a8b1d8c8df4d07
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/okx-market-pipeline-a-ratified-policies
+  - tree_sha: ae296a5a5a180520b19914d2ef4cfd574ac3f40c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/phase-1-canonical-experiment-identity
+  - tree_sha: ae3dc87d8abc1b204190b091aad5662046644001
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/venue-pretrade-limit-gates-forensic-binding-and-closure-v1
+  - tree_sha: aec51c9e3f1fbdcd1be1dbaf7c2713b440fefeb6
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/evaluate-macd-histogram-countertrend-mr-development-v1
+  - tree_sha: aeca7e1f11a3df73e6355cd3c0463b404ba55b42
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-p6-z2cl-runtime-universe-reconstitution-persist-v1
+  - tree_sha: af65ebe485349405d103407c71dd11eaba744bed
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/r6-s3-runtime-implementation
+  - tree_sha: af68be936f437113760789e4026ed6eb1cf57365
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/eg-i08-i68-canonical-persistence
+  - tree_sha: af933cf489b5051d9fde9d6de0b47b8104b6c230
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/exact-venue-metadata-get-current-sui-pretrade-max-size-v1
+  - tree_sha: af9977a198790056b0de9dc4bff475339eb137f0
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/evaluate-regime-gated-standaside-mr-development-v1
+  - tree_sha: afa8433e14420989ca73b4ed9f1797687aed42f7
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/shadow-preparation-mindestkontrakt-gap-inventory-v0
+  - tree_sha: afe797eb9e83fbc3037dd0a3f17a83f124b0eec5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/csf-rdm-v0-dataset-funding-binding-materialization-preflight-v0
+  - tree_sha: afee2c6d197fb417f22e324917aece816003c4b8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/section-11-13-5-z2d-position-value-fx-rounding
+  - tree_sha: b0458320b4fe72abeab4f02958a9e161edb37fb4
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/slice4-runtime-backtest-parity-legacy-boundary-v1
+  - tree_sha: b09133478f58efb36f6af8bcc8bac882cc2f9139
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/phase-9-2-step-6-governed-adverse-stale-session-execution-binding-v1
+  - tree_sha: b0fc89f2da0c337047fe9508a6546dfba097bd1a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/section-11-13-5-z2j-cover-usdc-semantic-adjudication
+  - tree_sha: b19a147fd6ed5ad5499da34862d54a30e701e90b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/dashboard-composition-post-hierarchy-rebaseline-v1
+  - tree_sha: b218e4c4957204c5dc7b286d79a144ac44ca9f05
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/okx-governed-futures-producer-charter-v1
+  - tree_sha: b26db421121bb5c493279f44603ccfc852571eec
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/system-r2-canonical-persistence
+  - tree_sha: b2e46bfe2f90ec5f3ddc5ce339b0504763a6c25a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/cv-maxage-additional-session-contract-sha-rebase-v1
+  - tree_sha: b31fdcbf2bf42db939f909a6a2d94c442b0efccc
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/o4-canonical-public-md-and-ohlcv-transport-reconciliation-v1
+  - tree_sha: b38ab94413491430669c914b750a4a55e8bb766c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/pairwise-spillover-v1-reevaluation-baseline-execution-data-unavailable-repair-v0
+  - tree_sha: b470a2b4a5f1b11e5f09ff5d82fc274ca6ac0316
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/market-dashboard-visual-operator-surface-v1
+  - tree_sha: b4993582b3c28fd20498ba0f340ee217ff4f5b4d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/operator-ratify-lead-lag-v0-post-oi-zscore-insufficient-sample-v0
+  - tree_sha: b49af48a637a19e7d1733f20141d9a2cfb257ab5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-existing-evidence-l0-l2-l4-reconciliation-backfill-v1
+  - tree_sha: b4d5ff8ee787670d642305b8333f955b1cbadad5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/market-dashboard-risk-exec-binding-v0
+  - tree_sha: b4e4cabd780bb562c4ee41b3ca6f877b1fb3f9ac
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/section-11-13-5-z2y-filled-position-derived-authorizability-adjudication
+  - tree_sha: b57f67c4c5e90fc9a2733199b9159c6a6c90f729
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/phase-9-2-step-7-productive-campaign-execution-path-v1
+  - tree_sha: b585a1907bf84c9938b5e0d0db641e035b910079
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/wallclock-full-canonical-decision-to-simulated-economics-runtime-bridge-forensic-v4
+  - tree_sha: b5c8786ce19a5314af79f0acc5ec008c5dc28caf
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/okx-futures-shadow-no-order-entrypoint-v0
+  - tree_sha: b649d2445c920b195ae7d49aca9d2e7952ecdfae
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/phase-11-meta-learning
+  - tree_sha: b68d130cf5af214577e04c8480ad30c4b2e96b0c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/section-11-12-8-okx-cancel-instid-clean-closeout
+  - tree_sha: b696038648157f88b42df2eeac798df94e8c4837
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/available-margin-forensic-binding-implementation-and-closure-v1
+  - tree_sha: b6ab9067900b165884b6038f013085b3095b995c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/section-11-13-5-z2u-operative-algebra-bind
+  - tree_sha: b6ae6cfb6f1dbde378367d1db7f12b93d0a1bc2e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/fnd-005-live-overrides-fail-closed
+  - tree_sha: b6d01e2355fca78685f9c1e246f290a2219b06d4
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/phase9-2-step4-final-generic-session-activation-binding-v1
+  - tree_sha: b727195a866c0ee96cbe27fbe50215e63bfe7455
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/phase11-cap-11-3-productive-private-readonly-path-binding-v1
+  - tree_sha: b78a775cdf4ec673be69f6c08ff9fa603c061956
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/5_1_single_future_canonical_runtime_deterministic_offline_evidence_v1
+  - tree_sha: b78d3d9a2f5875f0ff3fa425f182e21cc2a88b39
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/i82-emitter-cutover-mu6
+  - tree_sha: b7f0571b86779fbe23cf770f8aa4455f65ad1519
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-13-5-z2-edge-i-closeout
+  - tree_sha: b7fff99bf666ffe9dd13e1c630b335b1d31add57
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/post-6149-max-size-normalization-adjudication-v1
+  - tree_sha: b830140c9826a9759c2587ba84c9c27361052d88
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/extended-chronological-v1-public-okx-materialization-v0
+  - tree_sha: b83a317a77488684cd3ea0187eefe0bcce43c347
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/phase-9-2-step-6-real-tty-hard-stop-runbook-current-truth-reconciliation-v1
+  - tree_sha: b8436feaad21ee9fdcce1f649b0434da4bac9f69
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/class-b-complete-h-series-adjudication
+  - tree_sha: b847312611e9906cbbfd074bda7e086200d17ba8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/system-r3-canonical-persistence
+  - tree_sha: b907a76beb30bdb91467e0b7a2e4226fa8cb3866
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/phase-9-2-ladder-status-reconcile-step3-closed-pass-v1
+  - tree_sha: b91955254411512d4102ead802bbb8b946fd3ad2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-13-5-z2a-unknown-none-delivery-term-contract
+  - tree_sha: b9686bae17e6fbfc6cd286dae8980b551c4f4b1c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/csrhr-v1-offline-strategy-implementation-v0
+  - tree_sha: ba1881c467d60cd07c5427fd7b0473aa446acaf5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2ax-fresh-position-observation-persist
+  - tree_sha: ba66ed2f9fb2c08d38644c63ca79a9e4e372fbbb
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-13-5-z2bi-sui-pv1-owner-policy-closure-rule
+  - tree_sha: ba8e123b623acf7b0132a4aafb0ddeca5f527b39
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/full-canonical-parity-required-proof-input-gap-assessment-binding-v0
+  - tree_sha: baa2e4119e0e4fbfa77d2300dd6b1925c1ac1203
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-canonical-volatility-max-age-productive-bridge-accumulation-binding-v1
+  - tree_sha: bb1044ee4d24202af42e005d217ccdc7cd0aa3d6
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/archive_sibling_export_contract_v1
+  - tree_sha: bc23eff5ec2a56c8372e57464ad8cf97a4e7cd9a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/post-restoration-venue-pretrade-limit-gates-adjudication-v1
+  - tree_sha: bd94d1dc91ce112c1acf95a5ef48df6f148e5b39
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/section-11-13-5-evidence-boundary-reached
+  - tree_sha: bfbe963bd345aa47e99b9fa630a300f2a8c4677e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/post-drift-b02-next-workstream-discovery-v1
+  - tree_sha: bfc7ecf561d680e092828470006e32228ad5ed48
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-p6-5189-positive-membership-frontier-persist
+  - tree_sha: c01dc0e6c7d7da23722ce7739f749ccf728f1c81
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/okx-market-pipeline-b-governed-producer
+  - tree_sha: c18b1f2039ba9f3172c8da675d4ce3a01f45f2c5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-p6-5189-global-evidence-universe-adjudication-persist
+  - tree_sha: c1fe37052ad379d652f70f4b832455caa433ef15
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/section-11-13-2-live-private-read-only-preparation
+  - tree_sha: c282e2836a8f249c2e091afbcccae64312ba6550
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/price-band-forensic-binding-implementation-and-closure-v1
+  - tree_sha: c2bb1dd3ceb6f9208a63b30fac6013edd276d7c2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/shadow-preparation-durable-readiness-projection-v0
+  - tree_sha: c2cbbc55e117a168a02ac656f19a6520a6bde004
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/canonical-economic-report-consumer-v1
+  - tree_sha: c346e3d2aeae369d3f56236ab45fe5e21d15073a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/ipso-6h-productive-technical-evidence-closeout-v1
+  - tree_sha: c3c9fbdfa46e0657b64c41f421a3b97af411d798
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/section-11-13-5-z1-xperp-normal-expiry-fee-applicability
+  - tree_sha: c42348a6ed220de9e17eaaa757f2ebc777581a19
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/post-b01-b07-next-workstream-discovery-v1
+  - tree_sha: c4dc7c65e8a109d75c813752e6f06673fcfdb784
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/drift-b03-ops-double-play-authority-markers-v0
+  - tree_sha: c4e2744ac2160fe8a9d3cb84f4c241e67b221438
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-z2cl-schema-nc-census-lineage-v1
+  - tree_sha: c525a9a63177de37b3277c0be4238cc67ec9f539
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/6_1_stateful_confirmation_and_c1_productive_binding_v1
+  - tree_sha: c57d944cbaaf86d32efa7d94e4554462ac93ae29
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/p6-5189-5011-source-set-localization
+  - tree_sha: c58d962cdbe1075aa95e659c829f460d7308e7a1
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2az-same-pack-evidence-persist
+  - tree_sha: c7055dc3f3f0c7013338af3e3dc638ff4df7b7c3
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/market-dashboard-landmark-discovery-delta-v1
+  - tree_sha: c7397ee8eb50a67ec769d3f7c4dc45dae9f17409
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-raw-input-pack-non-provable-instance-values-decision-packet-v1
+  - tree_sha: c782112979ec7e2d936f1907a54d2f6c0bc49899
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/mv2-boundary-state-file-binding-baseline-v1
+  - tree_sha: c7842c1dc0932b35d3df5dca887de17acf962a97
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/r6-s5-canonical-persistence
+  - tree_sha: c7e2f745c00914e4230e3131716922d11d5ebf33
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-z2cl-completeness-precondition-gaps-v1
+  - tree_sha: c817c0a8b386cf4e6fbad7b1339880d13c0fbf75
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/cap11-okx-e1-temp-security-clearance-persist
+  - tree_sha: c828671136b271a0a0c8e998352f54c653d4dc5c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/market-dashboard-final-product-state-closeout-v1
+  - tree_sha: c8384811c4806115ddb106d6912c97bd0fa9bad6
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/strategy-signal-architecture-ratification-runbook-closeout-v1-20260715T201905Z
+  - tree_sha: c8695c23c5a3e369c42ec8b77d42d91ce5469ca4
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/r6-s4-canonical-persistence
+  - tree_sha: c8c9ca0b306baba2e9afb2766d9b3d2246f3992a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/close-entry-and-prereg-exit-v8-holdout-successor-v1
+  - tree_sha: c8db8a83bbee29126d1ebe644e004c34528e6e6f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/dashboard-three-family-canonical-source-persistence-v1
+  - tree_sha: c9052cd174037be415e2c468390d3991eb5e7617
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/market-dashboard-daily-okx-archive-observation-v0
+  - tree_sha: c9f88df5bedd7c060017622b6a7d240acd10f42a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-raw-pt1m-input-pack-owner-decision-v1
+  - tree_sha: cb32965c24036b6efbb56c84922bb3e931f5f42e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/p6-5189-domain-identity-non-join-and-market-role-persist
+  - tree_sha: ccc4dcd1fc09172ce60d96bbd7af1ca9f6e6aba7
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/phase9-2-step4-productive-v2-authorization-artifact-binding-fix-v1
+  - tree_sha: ce67f3f2c4a553dbc6e78ba0fac99afab3191ab8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/phase10-consumes-identity-observation-binding
+  - tree_sha: ce6c675a92e3f6fbb26dcfb3b46a46b149edfe8e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/pre_economic_zero_order_evidence_implementation_readiness_v1
+  - tree_sha: cf77257738128697714926f3ddf919c8cc7e2482
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/section-11-12-8-okx-eea-demo-xperp-private-write-path-v1
+  - tree_sha: cfef419ae1612de6b498471a9785d01b79590e9f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability-4-1-single-future-canonical-runtime-pre-activation-closure-v1
+  - tree_sha: d07a300e6f6af2fd62b4a175e1c28eddcbfa59e8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/mv2-double-play-core-wiring-restore-v1
+  - tree_sha: d125a3d931f71a4cf4843bd9c89897f886ec64e0
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/historically-attested-restoration-admission-v1
+  - tree_sha: d12d4bbbbe5ea4f9510a135c6de9955b205fccc7
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/fnd-004-topn-promotion-non-authorizing
+  - tree_sha: d168b4b1788065c0a0c8931d9cd33ad192d0c7fc
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/capability-11-7-live-private-readonly-and-shadow-reconciliation
+  - tree_sha: d1c5ad23f19402eb8c4a52208186b56d37e32217
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/market-dashboard-cap8-post-5566-docs-truth-repair-v0
+  - tree_sha: d1e6f4a20603f53adf3938c520237612d53976b3
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-12-9-44-pre-live-cybersecurity-gate-pass
+  - tree_sha: d2529713231c29a891370a2a75fd4c3e9e9b522f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/section-11-13-5-exchange-truth-adoption
+  - tree_sha: d283f24b50d4f581315361a45ed9cfee968c7957
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/tmp/pr4877-verify
+  - tree_sha: d315809200fcb1eee9d2a9ae21149981e220ad92
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-12-9-22-pre-live-gate-post-long-running-reeval
+  - tree_sha: d41a1ef680cfe04ac8a20651d76ad9310acde1b4
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/cap7-review-server-macos-path-identity-v0
+  - tree_sha: d58403cdb4b0f49196d4c22aac2f0d3aeef699b0
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/phase-9-2-productive-decision-graph-actionability-forensic-telemetry-v1
+  - tree_sha: d5f12a916f641787602a7940d8a2a935a1ec1586
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/phase-9-2-step-6-productive-real-network-execution-path-v1
+  - tree_sha: d7d05eccc10fa43e9b2704cb0311a61db0b0119b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/cursor/canonical-replay-input-builder-consolidation-v1
+  - tree_sha: d7e54fb15a173f2113b7242840dee465f4c8f791
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/2_1_governed_futures_universe_producer_v1
+  - tree_sha: d866c4e5c00871f13798baba529751b44f2b052a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/cv-maxage-additional-evidence-repository-sha-semantics-resolution-v1
+  - tree_sha: d8c3096247a4c1722fa22682e61726ea6ea0d589
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/section-11-13-5-z2t-first-party-algebra-shape-split
+  - tree_sha: d92367aea4c833884adc51ba22f28e6fd36340be
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/double_play_archive_sibling_exporter_v1
+  - tree_sha: d92b778fc7bc78d2abbd2cd0b501071a4fcfe72c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/cv-maxage-additional-evidence-session-contract-hardening-v1
+  - tree_sha: d932efd915dde0c82c323a1cc2cecd1bc9c22e8c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-12-9-pre-live-cybersecurity-gate-evaluation
+  - tree_sha: d9330fc64adf407d3bf6f0325efa236d60f2d7dd
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/phase-9-2-step-5-governed-prolonged-natural-market-session-execution-v1
+  - tree_sha: da2d4ac56d1f9cc272d40b5b2332ee67ece4f43d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/signal-binding-mv2-wiring-and-mandatory-state-file-binding-v1
+  - tree_sha: daaf3950b3b596e9e2e7065f4146c1e372b50d66
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/security/secret-hygiene-redaction-unification-v1
+  - tree_sha: db5a619b229423356b248354da74ec1f8d1bc08c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/post-restoration-simulated-execution-adjudication-v1
+  - tree_sha: db6aa86105d2480273d2b6ed28d1be6f8337ac53
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/step29m-candidate-specific-research-scope-implementation-v0
+  - tree_sha: dc6494b2366a0a097547224700be66685d21f297
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/maintenance/operator-verify-expired-artifact-handling
+  - tree_sha: dc75dcc9d3e3b2af5f7d7cb17e1c1c87e82b1ece
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/preregister-bollinger-mr-midband-exit-efficiency-hypothesis-v5
+  - tree_sha: dc794a7466f60f37d8740453906faab32f53fa89
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/market-dashboard-architecture-reset-v1
+  - tree_sha: de1ea439b7c52e6250c8e90ade40fe53dbcc5310
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/section-11-13-5-z2av-productive-flatten-wiring
+  - tree_sha: deb5e1fafced021c82e69f4d906d12f1dc0a464b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/phase-9-2-public-md-session-preflight-v1
+  - tree_sha: dee3cf92c4e89bc7c5a6244d41846022e64ad647
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ci/skip-rclone-setup-on-pr
+  - tree_sha: df2b27cafb320f92b93a8b168b92bd3f37d274cc
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/canonical-runtime-truth-map-and-documentation-alignment-v1
+  - tree_sha: dfbb0e6c73bd545d0a7e7377500c06882466485d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2be-sui-operative-qty-owner-policy-ratification
+  - tree_sha: dff7f641582df858539f3ae06d814071315afa1c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2bn-pv1-internal-numeric-instance
+  - tree_sha: e02e01767fd88e4cbfc8dfd5f52836e101d9ae01
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/wire-bollinger-mr-midband-exit-reentry-cooldown-development-evaluation-v8
+  - tree_sha: e04e6833ffe509580a384db36bf711686e372fa3
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/preregister-bollinger-mr-midband-exit-efficiency-development-v2
+  - tree_sha: e1686253b88a12e84a34cf723f3cea598b524538
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/max-size-freshness-owner-policy-decision-v1
+  - tree_sha: e18e0fd14d449f629c3ed5a5e85d61a4313cd4b9
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-canonical-volatility-max-age-research-design-evidence-accumulation-v1
+  - tree_sha: e1cc148b59be6aa25b6693046cc8d2f324697525
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/obl-b05-bollinger-smoke-baseline-v1
+  - tree_sha: e2161d33bdd9b40d3498c4a9923294bf1059d397
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/decision-d-strategy-signal-suitability-binding-v1
+  - tree_sha: e21d88c93ad048ce74bc7fc6a348af7938fb1441
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/ops/market_dashboard_projection_octet_materialization_path_discovery_v1
+  - tree_sha: e261748953835d034d1cdb5f7aaa92de03d65cf8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/phase-9-2-step-6-governed-productive-real-network-session-executor-binding-v1
+  - tree_sha: e29538195b425097dc394716290cb1bac11c1594
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/canonical_decision_archive_sibling_exporter_v1
+  - tree_sha: e2ce95824470a2aa11ec885307b8fc4f7753cd7d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/ops/productive-pure-stack-owner-values-two-stage-ratification-v1
+  - tree_sha: e3585a0da7ade61ea89c3855665eaceaed13f9c5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/p6-5189-scoped-irreducible-two-full-sha-preimages-adjudication-v1
+  - tree_sha: e38b29392d5452b11f29e8118b6339dceb165c53
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/backup/local-main-pre-repoint-b51f088de
+  - tree_sha: e3b54f26657b3d055f7a66005cb0af18c941d873
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-okx-public-pt1m-raw-bytes-and-exclusive-tip-proof-v1
+  - tree_sha: e3e324008be48a35d412a34004a83d5e91b43860
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/market-dashboard-phase-5-task7-accessibility-baseline
+  - tree_sha: e57ed09667abef4d949cc475cb51b56c96e5eaef
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/step-29u-offline-capability-v0
+  - tree_sha: e604b9729f25e872b5fbe82bdd8b1ff4912c48ba
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/productive-pure-stack-numeric-policy-evidence-pack-scaffolding-v1
+  - tree_sha: e6225422ec4bda09e1a01258b54a6dd5bf354ff3
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/okx-native-instrument-and-mark-price-runtime-binding-fail-closed-v1
+  - tree_sha: e687451338109c71ba88f77947042c736144c305
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/market-dashboard-runbook-post-5548-reconcile
+  - tree_sha: e7310350f70fd0599e12e1d5d2b295b16fe7bd51
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/shadow-prep-readiness-bundle-v0
+  - tree_sha: e79e6ac7c93d58e5da91c5d31735711adbcf27e1
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/cursor/momentum-1h-v2-offline-economic-evaluation-dispatch-to-baseline-repair-v0
+  - tree_sha: e7d220e93507017ca27be804023d81879889fa76
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/p6-live-gfu-network-get-only-census-gap-adjudication-v1
+  - tree_sha: e91d4ec7386fe2a0f45b72ced7c6489e80619145
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/capability-11-5-testnet-restart-recovery-and-kill-switch-closure
+  - tree_sha: e93a68c18b2974ff0ef770f0ce895a1ccbb32541
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/section-11-13-5-z2an-freshness-threshold-owner-policy-ratification
+  - tree_sha: e944759b9046f315abca3052236706397f6b0ed5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/phase9-2-step4-product-session-request-cli-adapter-v1
+  - tree_sha: e95cd853c1d814c1e9deb6121b1e1d836f1f530f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability-2-4-single-selected-future-runtime-binding-v1
+  - tree_sha: ea4291d1eb8e59002d6ea8ad0a260d2b04ab7383
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/identity-admission-package-n-i16
+  - tree_sha: ea9329841a18c1f1613cef1d6ff23593be1e2048
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-raw-input-pack-materialization-decision-v1
+  - tree_sha: eabfdba8766b85a8cb5853e50472c30180e9b706
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/market-dashboard-architecture-reset-runbook-v1
+  - tree_sha: eadbe9ca7f298434f1b9bb9d62b031eaae4dcb09
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/section-11-13-3-live-shadow-exchange-reconciliation-prep
+  - tree_sha: eae7f5eacf3925be4e493d2fc445290ad56b4305
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/section-11-13-5-z2z-evidence-model-re-adjudication
+  - tree_sha: eb5777dea5415b649938581afe29b235b32d1428
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/evaluate-bollinger-mr-midband-exit-efficiency-development-v4
+  - tree_sha: ece2b887ca14ee2e4cc29245d39a363891f0993c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2bt-sui-slippage-reserve-operand-bindings-numeric
+  - tree_sha: ed1d24cdf339c09b6532529c9a1d94b56800dfec
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/11-13-5-x-delivery-fee-algebra-fail-closed
+  - tree_sha: ed98f6b1cef00d5e4726b4ee35045aa02fca8dcf
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/economic-evidence-persist-output-lifecycle-v0
+  - tree_sha: ee6f46e9a39eece42c836da8cafd70142f89b3c3
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/margin-mode-forensic-binding-implementation-and-closure-v1
+  - tree_sha: ee6fa30b068bedd8029ac5c4209669d19d040506
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability-11-section-11-12-4-entry-partial-fill-cancel-exit-lifecycles-v1
+  - tree_sha: eeaf126e9bfd0b04edcb0618461407feaf1b2344
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/pairwise-spillover-v1-reevaluation-baseline-execution-implementation-v0
+  - tree_sha: eec71ae05118ad698374769a8a7cb0ea23b2ed13
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-p6-5189-unresolved-dependency-gap-inbound-adjudication-persist
+  - tree_sha: eed21180240ae89c1022e73db2383183a44a5daf
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-shadow-campaign-input-authority-v1
+  - tree_sha: eede331054a5f01f8ce2c547a55fc88cf1b6ed78
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/phase-9-2-step-6-productive-real-network-session-start-invoke-edge-v1
+  - tree_sha: eefdeffa83fae5eecde843cc0ed9b328ac3dac49
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2bu-sui-fee-delivery-internal-policy-and-trade-fee-query-grammar
+  - tree_sha: ef35252940b32cd5699e56cbf4b1e1dc44c22df3
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/u-e2e-canonical-persistence
+  - tree_sha: ef353f968710a615f5db2464d5a9bc1d03f575b7
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/phase11/section-11-12-8-productive-testnet-campaign-execution-v1
+  - tree_sha: ef479e41ae65fa00bda97fdb087b68159d10e1a3
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-regime-coverage-producer-owner-value-v1
+  - tree_sha: f044a0f458b692fef04f4e33d5932cabf956adba
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/lf-04-lifecycle-failure-matrix-tests
+  - tree_sha: f0539a84129dcc28ad92341cc898ce5be5866c65
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/phase11/11-12-8-real-productive-testnet-execute-path-unlock-v1
+  - tree_sha: f08a66f94f1392f2f36b581cfc8eec24a756e1d2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/11-13-5-z2o-same-pack-markpx-internal-notional-envelope
+  - tree_sha: f1061e39ab121b4e5d6e1d5e9d3bfee268a01d2e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/account-mode-forensic-binding-and-closure-v1
+  - tree_sha: f11957c3d051170eb6dd304a3eb07a318d015754
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/section-11-12-8-okx-global-demo-binding-v1
+  - tree_sha: f196dfee7e69724b6b351be5fb1ce5999ec5b090
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/governance/end-to-end-executability-gate-v1
+  - tree_sha: f1b3e464fcc21fb92f9715412aed4aa95fe9978e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/canonical-wallclock-v2-authorization-consumption-fail-closed-completion-v1
+  - tree_sha: f22b1f4815f32440728f931a5adff89133c60dc1
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-12-8-owner-closeout-package
+  - tree_sha: f261115676ffe47fda9a772771ff170046310f4a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/canonical-full-system-economic-reevaluation-warmup-gating-repair-v0
+  - tree_sha: f33e713ac32b30820c9ae700cd48129520640296
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-canonical-volatility-productive-runtime-cmc-typed-binding-v1
+  - tree_sha: f34da4b7478ddf5ea2337279354fa841eb1c95e8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/section-11-13-5-z2bh-sui-mmr-tier-mapping-runtime-reproof
+  - tree_sha: f3fccab2bd182fc5edc365af0a945493f2691194
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/cursor/trend-following-v2-post-repair-economic-fail-governance-closeout-v0
+  - tree_sha: f4a719a936c0dc771e7ad2417439ecb2bdb8af24
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/cv-maxage-additional-evidence-session-preregistration-contract-v1
+  - tree_sha: f51775d188e5661e7b8e3a9717e581c866d2346f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/phase9-2-step4-governed-productive-real-network-session-execution-impl-v1
+  - tree_sha: f519bd8760251bb334cfe97b03ab972d84e790ac
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/11-1-execution-domain-and-order-lifecycle-contracts-v1
+  - tree_sha: f5a3d8046e1a8d3c2dcbfd0ac0119443f7f8eacd
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/section-11-13-5-acct-lv2-unfilled-order-documentary-discriminator
+  - tree_sha: f5b2076ccf7ce0c61df88632ef2c953678d214b2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/agent/fnd-014-config-path-precedence
+  - tree_sha: f5c3b1b224108bbb87fa4b62e5fadc6b049049b2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/stage2-surface-b-raw-input-pack-authorize-detail-closeout-v1
+  - tree_sha: f5c48517deea65a959fadd6d34ce0a7d1ef578c6
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/pre-economic-zero-order-wallclock-arming-v1
+  - tree_sha: f629bdbd518a7494369a8dccd5e43fec6a017a85
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2bp-sui-mm-liq-buffer-mmr-operand-role-source
+  - tree_sha: f6a5b19414fbd3d364abece2f48bcc0bfe447cca
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2bv-sui-p3-one-authenticated-trade-fee-get-term-numerics
+  - tree_sha: f6ca3f94d913ecfa9ad373398c7d30a36293a871
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/market-dashboard-universe-default-path-binding-slice1
+  - tree_sha: f72328aa1339341838be80821e4b0f2b8c854f2e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-double-play-c1-observation-acceptor-v1
+  - tree_sha: f7895758a9d464525b100d1888c04fe47dd249bd
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/z2by-p71-canonical-sui-identity-rebind-fail-closed
+  - tree_sha: f85f9b8571aa6d4e0d1783d6dfea6922e81f4b8d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/section-11-13-5-z2r-target-ctmult-public-get
+  - tree_sha: f8ee94b88e1aeb5bcb86efd7613faf133eff2d29
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/cursor/technical-canonical-wiring-authorization-v1
+  - tree_sha: f9235a1ea6486a0c4613b4b1e8260129884bddad
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-z2cl-od-01-08-reconstruction-delta-v1
+  - tree_sha: f967ab68ac67416a9cb93ccb65fa505faa73d50e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/market-dashboard-reductive-composition-v1
+  - tree_sha: f9c31bf28e68a4d0a5bdfcd136a8854d2a3cc26e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/11-13-5-z-xperp-delivery-rate-operand-fail-closed
+  - tree_sha: fa0623a83c4cc03dacae81611c67cd39d7f36a98
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/admissible-futures-dataset-volatility-binding-v1
+  - tree_sha: fa20d0de5d5d83caea561deb254ef5eaa967d241
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/7_2_single_future_stateful_no_order_runtime_activation_v1
+  - tree_sha: fa7131ddbc89f704d728b69f79e53fea13d8ab06
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/fix/shadow-prep-dashboard-intrabar-blocker-authority-reconcile-v1
+  - tree_sha: fb9028610f9e591dc93b476fa71897a708fe4fb9
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/phase-9-2-productive-public-md-restart-recovery-network-entrypoint-v1
+  - tree_sha: fb9f7bec7d6de1f5e932087cf3a60552705344e5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/cap11-section-11-13-5-j-50124-classification-prep
+  - tree_sha: fbb66b243f7125047328a6375351250aca118c8d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/phase-9-2-public-md-smoke-path-normalization-reseal-v1
+  - tree_sha: fbba8bf6a6520815a1054b075206af7dbf57a634
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/declare-awaiting-explicit-successor-hypothesis-both-lanes-v1
+  - tree_sha: fbec373f908be1c3c64d7e93ef467eaebd233545
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/master-v2-canonical-volatility-estimate-typed-consumption-contract-v1
+  - tree_sha: fbfe750a0934bc39f05e4cffbc61baa147f01d99
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/phase-12-advanced-search
+  - tree_sha: fc4c13f3dc7c2fcdb69fc8e6b5ea899d8e9dd088
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/fnd-011-submit-path-go-scope
+  - tree_sha: fc87a1fe89dfb2454588e38eb3229c43be3f36cd
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs-11-13-5-r-owner-funding-policy-decisions
+  - tree_sha: fc8c418d4fcea736fec56a1911982bcc51a0c3a2
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/offline-productive-factor-exposure-diagnostics-v0
+  - tree_sha: fdbac7f77231ac0e50e5ccf62272bc910252c263
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/capability/o2-canonical-local-launcher-and-process-supervision-v1
+  - tree_sha: fdf749dd2cdf9800e490056680c993bcd19f27fe
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/feat/lf-08-ssot-persist-only
+  - tree_sha: fef4c3a88cb9a638f4face29124f206de09526bc
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-working-runbook-historical-variant-binding
+  - tree_sha: ff034deac81f03a63cb2739b7e2354b380369c01
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/ops/section-11-13-3-productive-execute-unlock
+  - tree_sha: ff2a2fb069d9ce583d7bdf88c7d7bf0fa1e753ad
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/research/preregister-ma-trend-alignment-mr-eligibility-v1
+  - tree_sha: ffcd25100574b087d679106e31dafdee90d0f549
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/heads/docs/forensics-federated-entrypoint-maintenance-contract-v1
+  origin:
+  - tree_sha: fe9fb8b470b734148c27a923cc8c84c134515245
+    ref_count: 2
+    is_origin_main_tree: true
+    refs:
+    - refs/remotes/origin/HEAD
+    - refs/remotes/origin/main
+  - tree_sha: 01ba3bd6495dbe0a0d4e686abcb919460db4d6f1
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/ops/step-29u-binding-implementation-inventory-v0
+  - tree_sha: 1492ad76a845b5b973a8624b582694c401d69089
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/ops/phase-9-2-step-5-final-generic-consume-network-start-binding-v1
+  - tree_sha: 1b287aa03405bb87d2503db8a66c7e9add0ceabf
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/feat/pe38-readiness-fixture-recovery-v1
+  - tree_sha: 22daf5a627816d3499b98b30ea61165ef7916636
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/chore/market-ranking-funnel-charter-test-to-ops-v0
+  - tree_sha: 23123dd45e6c4db4ada9f8790c3bb54e17d1b839
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/forensic/class-d-policy1-a-final-config
+  - tree_sha: 25a21175679f05d590beac177a01f640fe08d2f5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/feat/pe54-tiny-order-focused-selector-recovery-v1
+  - tree_sha: 2d320132c554edc2652a17c1e7bdaba4ac864a0c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/fix/offline-sizing-contract-baseline-integration-v1
+  - tree_sha: 3c1ac3162f5778f5dbfb3d732323dda5c607b5e5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/feat/first-bounded-live-order-invocation-slice
+  - tree_sha: 47b34f68346a65bf46a2668af727ad3b9beec0f6
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/feat/z2co-prereq-08-post-branch-no-action-closure
+  - tree_sha: 4a3f8bc6cee40ec432336eec04fd1857dcb20905
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/feat/ops-cockpit-v2-5-freshness
+  - tree_sha: 4f4029914eadfa3f1634a413c3a344caded25a4a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/feat/market-dashboard-phase3-chart-polish-after-5254-v1
+  - tree_sha: 60db382d6e8ffefcd331b5686437a6f85ae6ad9b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/fix/class-d-offline-evaluation-current-main-sha-rebind-after-pr4834-v0
+  - tree_sha: 72ba0be859e8c9aacd24906fabb560b37f9de6b8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/feat/okx-market-dashboard-true-live-intrabar
+  - tree_sha: 753b5bf6e2ea5d06b98ae7f28213d1679893c81d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/feat/market-dashboard-composition-first-refactor-v1
+  - tree_sha: 7a2d22ac6dda3f464b2b02b578e33c8d1920a2d7
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/feat/package-e-e2-inv033-okx-adapter-lifecycle-contracts-v0
+  - tree_sha: 845cb3d0e7b6cfc30e3848d97523bd6281f26ef1
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/feat/ci-full-suite-sharding-nightly-v1
+  - tree_sha: 887c1f0eaa463ba3d7ba92bd196b8fd7d349a597
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/feat/market-dashboard-phase-3-chart-polish-v1
+  - tree_sha: 8ca5f86aae6062e933ed8dae50991127955fd94b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/core-system-completion-surface-p-proof-input-gap-assessment-binding-v0
+  - tree_sha: 981e35be35fc5b94252d074201dc5f1068bb3fa5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/feat/pe38-frozen-fixture-main-red-close-v1
+  - tree_sha: 9c7fb93ee497013897008ab9cf57fa89af4c0d68
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/feat/runbooks-index-execution-watch-link-fix
+  - tree_sha: a91f4e34d0bc460c8796b68de9c1ad3188e67614
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/forensic/z2aq-sui-successor-target-clean
+  - tree_sha: d8c0a0a3c73443ea1b28efd432cd9fa428f2b858
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/feat/durable-completion-glb019-event-stream-validator-v0
+  - tree_sha: f967ab68ac67416a9cb93ccb65fa505faa73d50e
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/remotes/origin/fix/market-dashboard-reductive-composition-v1
+  tag:
+  - tree_sha: 0dec0671254efdf3f6a7a51873c5b49b9f46a66d
+    ref_count: 4
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/nervous-wilbur
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/nervous-wilbur-local
+    - refs/tags/archive/branch-tips/20260122T163831Z/nervous-wilbur
+    - refs/tags/archive/branch-tips/20260122T163831Z/nervous-wilbur-local
+  - tree_sha: 3785c7a6659b2276fd4bd73a887eb3152993eeaa
+    ref_count: 4
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/stupefied-montalcini
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/vigilant-thompson
+    - refs/tags/archive/branch-tips/20260122T163831Z/stupefied-montalcini
+    - refs/tags/archive/branch-tips/20260122T163831Z/vigilant-thompson
+  - tree_sha: e78daf196921d762e5ef6b3fb42107dac1ae1d73
+    ref_count: 3
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/ci-pr-gate-routing-final-20260207-0249Z
+    - refs/tags/ci-pr-gate-routing-final-final-20260207-0254Z
+    - refs/tags/ci-pr-gate-routing-smoke-3case-20260207-0234Z
+  - tree_sha: 03f9eab6be93e063d94958da7d1b95b93c15c32e
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/pr-334-rebase
+    - refs/tags/archive/branch-tips/20260122T163831Z/pr-334-rebase
+  - tree_sha: 04c8c88856fb12d9f21a28c212d805a4217a0cb1
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/chore/cleanup-gitignore-reports
+    - refs/tags/archive/branch-tips/20260122T163831Z/chore__cleanup-gitignore-reports
+  - tree_sha: 1710dafea5e8ed52a2d7ba1004470ea017824eb1
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/ci/fast-lane-matrix
+    - refs/tags/archive/branch-tips/20260122T163831Z/ci__fast-lane-matrix
+  - tree_sha: 1c0f2b84a052f68546c53c785218c1c98825a643
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/test/p0-guardrails-drill
+    - refs/tags/archive/branch-tips/20260122T163831Z/test__p0-guardrails-drill
+  - tree_sha: 1cf006b445ac4fdd315479de35781f63d6de6337
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/fix/ci-required-checks-docs-prs
+    - refs/tags/archive/branch-tips/20260122T163831Z/fix__ci-required-checks-docs-prs
+  - tree_sha: 1deb38a677c2f344a1703b9765018939cb99cd25
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/laughing-shockley
+    - refs/tags/archive/branch-tips/20260122T163831Z/laughing-shockley
+  - tree_sha: 20deedff1cb32f79e880f1f2dd8a85a9a882470f
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/chore/github-guardrails-p0-only
+    - refs/tags/archive/branch-tips/20260122T163831Z/chore__github-guardrails-p0-only
+  - tree_sha: 26dc52de1bd6be26dd8c75c3f4df058f5a654e75
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/loving-gauss
+    - refs/tags/archive/branch-tips/20260122T163831Z/loving-gauss
+  - tree_sha: 295b0144bb3f51fb57a0a4905587a91f64c087e0
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/docs/pr-66-finalization
+    - refs/tags/archive/branch-tips/20260122T163831Z/docs__pr-66-finalization
+  - tree_sha: 2f0b708db39a09087b23bbe2cce211938d8becc3
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/wip/stash-archive-20251227_010341_1
+    - refs/tags/archive/branch-tips/20260122T163831Z/wip__stash-archive-20251227_010341_1
+  - tree_sha: 339eafff1f705ed8bc661007752a3667d411586b
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/chore/github-guardrails-p0
+    - refs/tags/archive/branch-tips/20260122T163831Z/chore__github-guardrails-p0
+  - tree_sha: 362c04b8d0a84127189bd8d7fe10a9452e4a46fa
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/wip/stash-archive-20251227_010344_2
+    - refs/tags/archive/branch-tips/20260122T163831Z/wip__stash-archive-20251227_010344_2
+  - tree_sha: 41515444927194b143e0cfcb037247e964b801ee
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/docs/pr-63-finalization
+    - refs/tags/archive/branch-tips/20260122T163831Z/docs__pr-63-finalization
+  - tree_sha: 449dbae4abc4f088d5d2c45f144daeeb79329675
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/copilot/add-health-check-system-again
+    - refs/tags/archive/branch-tips/20260122T163831Z/copilot__add-health-check-system-again
+  - tree_sha: 4a19e27982d03d3701e7bab4ddf3b2f4147b9c62
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/wip/stash-archive-20251227_010316_0
+    - refs/tags/archive/branch-tips/20260122T163831Z/wip__stash-archive-20251227_010316_0
+  - tree_sha: 4b8e3d68cdab613ab88b015069d5543f7b54a206
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/docs/cursor-multi-agent-phase4-runner
+    - refs/tags/archive/branch-tips/20260122T163831Z/docs__cursor-multi-agent-phase4-runner
+  - tree_sha: 4daf37eb9dab2a525bc09702927dc73790aaf32c
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/wip/stash-archive-20251227_010347_3
+    - refs/tags/archive/branch-tips/20260122T163831Z/wip__stash-archive-20251227_010347_3
+  - tree_sha: 51ea9db2b330e648fb420c2b79c90d46dd0ab276
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/docs/ops-pr206-merge-log
+    - refs/tags/archive/branch-tips/20260122T163831Z/docs__ops-pr206-merge-log
+  - tree_sha: 6048dcb8c0b31ef8e731462bfd284367795ac986
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/chore/tooling-uv-ruff
+    - refs/tags/archive/branch-tips/20260122T163831Z/chore__tooling-uv-ruff
+  - tree_sha: 66f740dd825c4f89bfa3d33ec2cd81801a3d1d5c
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/docs/ops/pr-92-merge-log
+    - refs/tags/archive/branch-tips/20260122T163831Z/docs__ops__pr-92-merge-log
+  - tree_sha: 69fccb695f81846ae9a9e7534600763b925da667
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/docs/ops-index-pr-61-63
+    - refs/tags/archive/branch-tips/20260122T163831Z/docs__ops-index-pr-61-63
+  - tree_sha: 6a64e1406a9ee6b6435992915dab9e650eba8a11
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/test/ci-gate-block-trigger
+    - refs/tags/archive/branch-tips/20260122T163831Z/test__ci-gate-block-trigger
+  - tree_sha: 6b03455a499d5617f9263519e48037b286196c2c
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/docs/ops-merge-both-prs-dryrun-workflow
+    - refs/tags/archive/branch-tips/20260122T163831Z/docs__ops-merge-both-prs-dryrun-workflow
+  - tree_sha: 6d73a99dc97a21f60d4d1fd0ca45cfdd6fd98a6a
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/reboot/from-pr-380
+    - refs/tags/archive/branch-tips/20260122T163831Z/reboot__from-pr-380
+  - tree_sha: 7d4b0d5d8d19287adbca9f1cee62a4e50c057f62
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/feat/phase-9b-rolling-backtests
+    - refs/tags/archive/branch-tips/20260122T163831Z/feat__phase-9b-rolling-backtests
+  - tree_sha: 808c25468773a47aa3d3c6bd68bc274859973757
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/laughing-hawking
+    - refs/tags/archive/branch-tips/20260122T163831Z/laughing-hawking
+  - tree_sha: 88d46d0a880ba66ae41e42f499401ad861078b50
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/vibrant-antonelli
+    - refs/tags/archive/branch-tips/20260122T163831Z/vibrant-antonelli
+  - tree_sha: 9040ae9d80770445400017394a9171290d595707
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/docs/merge-log-pr488
+    - refs/tags/archive/branch-tips/20260122T163831Z/docs__merge-log-pr488
+  - tree_sha: 912f6994be5e1f091922d56f31b5d586c6dda0cd
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/feat/risk-liquidity-gate-v1
+    - refs/tags/archive/branch-tips/20260122T163831Z/feat__risk-liquidity-gate-v1
+  - tree_sha: 978d7e89b7a0a6de12282a5a820a8396237e8c61
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/wip/untracked-salvage-20251224_081737
+    - refs/tags/archive/branch-tips/20260122T163831Z/wip__untracked-salvage-20251224_081737
+  - tree_sha: 9f7aa9fec71a9fcf7c9dcb7482ce16317df636d3
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/docs/ops-docs-reference-targets-supported-formats
+    - refs/tags/archive/branch-tips/20260122T163831Z/docs__ops-docs-reference-targets-supported-formats
+  - tree_sha: a02b6241dbf624fee591c3ac20320cc7805bed03
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/test/verify-dispatch-guard-enforcement
+    - refs/tags/archive/branch-tips/20260122T163831Z/test__verify-dispatch-guard-enforcement
+  - tree_sha: a6899141823359f1ddcdd1ac023e2b8519450a34
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/docs/github-rulesets-runbook
+    - refs/tags/archive/branch-tips/20260122T163831Z/docs__github-rulesets-runbook
+  - tree_sha: b38ecf7f5cf3001c22f16644a116fedc7331c571
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/chore/folder-cleanup
+    - refs/tags/archive/branch-tips/20260122T163831Z/chore__folder-cleanup
+  - tree_sha: bc155e742d9c5d39e80d066c2ff3d27777896044
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/fix/requirements-txt-sync-correct-flags
+    - refs/tags/archive/branch-tips/20260122T163831Z/fix__requirements-txt-sync-correct-flags
+  - tree_sha: bd981dcd791bf58975365463f29fa6ef92edd792
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/docs/pr-74-delivery-note
+    - refs/tags/archive/branch-tips/20260122T163831Z/docs__pr-74-delivery-note
+  - tree_sha: beabc50cf603441710c163a6aad358adb91ad8ee
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/docs/add-pr569-readme-link
+    - refs/tags/archive/branch-tips/20260122T163831Z/docs__add-pr569-readme-link
+  - tree_sha: bf11942e221e5ae6b156f7d71ad57be70303d6ae
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/feat/governance-g4-telemetry-automation
+    - refs/tags/archive/branch-tips/20260122T163831Z/feat__governance-g4-telemetry-automation
+  - tree_sha: bfdf11c7dae5c9b702dd7141dca0cc8411f0e632
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/pr-72
+    - refs/tags/archive/branch-tips/20260122T163831Z/pr-72
+  - tree_sha: c2241eb51da3edb4fc92e9103608e6a9db609eab
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/feat/phase-57-live-status-snapshot-builder-api
+    - refs/tags/archive/branch-tips/20260122T163831Z/feat__phase-57-live-status-snapshot-builder-api
+  - tree_sha: c45f3816f65e15b5680e66a188507b6fde7eae6c
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/feat/ops-evidence-system-v02
+    - refs/tags/archive/branch-tips/20260122T163831Z/feat__ops-evidence-system-v02
+  - tree_sha: c5070161574347100f3272f91bf2efba01444323
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/cool-williamson
+    - refs/tags/archive/branch-tips/20260122T163831Z/cool-williamson
+  - tree_sha: c84e18e35eea9b6d00877c9dcb3a8e24cb3f3df4
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/hotfix/policy-critic-ci-gate
+    - refs/tags/archive/branch-tips/20260122T163831Z/hotfix__policy-critic-ci-gate
+  - tree_sha: d398f14490c76280ee89da779aa787144ae6c1de
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/ci-fastlane-impl
+    - refs/tags/archive/branch-tips/20260122T163831Z/ci-fastlane-impl
+  - tree_sha: d5767184d3d06e25361c48feba10a0bca7bfed38
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/governance-ai-matrix-validator-help-v1
+    - refs/tags/governance-ai-matrix-validator-v1
+  - tree_sha: dbc1b6648be30c63d93b0c19b02c85a15effeef1
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/feat/execution-pipeline-fill-idempotency
+    - refs/tags/archive/branch-tips/20260122T163831Z/feat__execution-pipeline-fill-idempotency
+  - tree_sha: e03f081ffbe258f1e7edb3cca24c0316c1e3b271
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/docs/ops/pr-87-merge-log
+    - refs/tags/archive/branch-tips/20260122T163831Z/docs__ops__pr-87-merge-log
+  - tree_sha: ed2582166a89d1b1bd0fe87761c0f2e0fca23c21
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/feat/ops-merge-log-tooling-v1
+    - refs/tags/archive/branch-tips/20260122T163831Z/feat__ops-merge-log-tooling-v1
+  - tree_sha: eeba77010cefc1001f1e6702d6958872b8a269b6
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/evidence-index-v0.1
+    - refs/tags/archive/branch-tips/20260122T163831Z/evidence-index-v0.1
+  - tree_sha: f5b6e3490f8b393e771f5cb2fe9ffcd98bcd37ff
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/feat/strategy-layer-vnext-tracking
+    - refs/tags/archive/branch-tips/20260122T163831Z/feat__strategy-layer-vnext-tracking
+  - tree_sha: f5c79fab63b19f17ffa1907cdbd9e1ad8c38560e
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/docs/fix-moved-script-paths-phase1
+    - refs/tags/archive/branch-tips/20260122T163831Z/docs__fix-moved-script-paths-phase1
+  - tree_sha: f7f3e3874425ed5b1c8d8ab7e425b533080f0b57
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/docs/dispatch-guard-noop-proof-20260112
+    - refs/tags/archive/branch-tips/20260122T163831Z/docs__dispatch-guard-noop-proof-20260112
+  - tree_sha: fed3377c0f5e0bc82077418fed4c01c2f3bf74fa
+    ref_count: 2
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/archive/branch-hygiene/20260122T163831Z/wip/salvage-code-tests-untracked-20251224_082521
+    - refs/tags/archive/branch-tips/20260122T163831Z/wip__salvage-code-tests-untracked-20251224_082521
+  - tree_sha: 00433d20ce77fc0e91ea8cc0704a1374c0c7c935
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/governance-ai-matrix-validator-p2-v1
+  - tree_sha: 01d3215750f77b9a996f9598a1b824e0b72a95f4
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/governance-ai-matrix-validator-release-note-v1
+  - tree_sha: 04cabe926237dac6aac99ea25a81936a6c1d7df5
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/grafana-unified-nodata-robust-20260207-0055Z
+  - tree_sha: 0da933ce441436a9207d51b4bde2b4782937a814
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/runbook-cursor-ma-v5
+  - tree_sha: 0e4dd85bd9cf1e3c4c033f5d3cf6072c7a4098b9
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/ci-pragmatic-pr-gate-docs-smoke-20260207-0128Z
+  - tree_sha: 11115b2c4438ae92b7d4e0914d8c8b843fd3ca15
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/runbook-cursor-multiagent-2026-02-03
+  - tree_sha: 1a5119ccce2651611ba34a4809324ce8967f2482
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/docs-observability-runbook-20260206-2339Z
+  - tree_sha: 219743fc5c8458e6b8cde42a6663113c4f0f81f7
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/ingress-A-v1
+  - tree_sha: 2994ebfda171f9ac09d4b7352111578ecf0452a3
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/ops-compose-resolver-obse-ailive-20260206-1311Z
+  - tree_sha: 35f4f72894bf9acd712f734fc2785350c4d003fe
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/ops-tag-retarget-helper-20260206-103219Z
+  - tree_sha: 3d0b8d429ae16134f308195a5da8b5a2a73f96ca
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/governance-ai-matrix-backlog-v1
+  - tree_sha: 3f5821807f6a523426f01116565f12fe1096680c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/ci-aiops-eval-empty-marker-20260206-1958Z
+  - tree_sha: 46f8e3af72c9bf1c9e5483d3960dc4febb1d265d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/ops-runbook-prom-9094-9095-20260206-1245Z
+  - tree_sha: 4c01e4423847ebb7f20e18e2748f98d1aa2e678b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/governance-ai-matrix-gate-passline-v1
+  - tree_sha: 4f59daaafac4a5f16d038e2be35967b7371fce14
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/backup/pre-reboot-2025-12-29
+  - tree_sha: 537556f6675d6b588dee9071448f6876cb9026d7
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/new-listings-p11-bootstrap
+  - tree_sha: 695bc7f7721c2220c7b19311f6368db3cea32c6a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/runbook-cursor-ma-v2
+  - tree_sha: 723a129ed51880b2c17182918238b24abf1f5864
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/ingress-A-v1.1
+  - tree_sha: 7f7c0fe145ae941bc12e4ffb88fb55c2fe766236
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/v2.0-telemetry-16f
+  - tree_sha: 843c21be84304c65db6e4632f56074858750952c
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/ops-restart-prom-9094-9095-20260206-1222Z
+  - tree_sha: 8c069d5985138e02f872a6c9650b6d0598496d39
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/ci-pragmatic-pr-gate-fastlane-20260207-0123Z
+  - tree_sha: 8cc210dfa1074ef8e777c1e921c038478dbeb377
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/ci-pragmatic-pr-gate-code-smoke-20260207-0150Z
+  - tree_sha: 8d13b78b99b9b7786146f33cb11ad2e390c4f9bb
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/runbook-cursor-ma-v6
+  - tree_sha: 93ac60c4d52e78effb7cdfd2b4e8698b05a38815
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/governance-ai-matrix-20260206-094537Z
+  - tree_sha: 93ddbc25a6f23f15ceeb6765c917a1d708b5167a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/runbook-cursor-ma-v3
+  - tree_sha: a18efcd2237f34335527241a33633779337bed0b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/governance-ai-matrix-v1
+  - tree_sha: aeade2f668c8e1da1bc9c9da6908c4b05ad16559
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/ops-ci-pr-gate-sanity-20260207-0209Z
+  - tree_sha: b16f6a7e8a110327f02358c0dec5c0db9b654ef8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/v2.0-telemetry-observability-16e
+  - tree_sha: daf31f3e5c19232dafac74bf1312271875efcbd6
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/runbook-cursor-ma-v1
+  - tree_sha: df69e17b3033a51144f3f950076865645fb44fd8
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/docs-observability-runbook-20260206-1905Z
+  - tree_sha: e249e2634ff6bac2981ac79e3accf4fa31f25309
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/grafana-unified-generator-pin-stackfp-20260206-1712Z
+  - tree_sha: e589997f626d50064d778281b196b2d807dfee9d
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/runbook-phase-d-complete-2026-02-03
+  - tree_sha: e632b2e6e2bfe529f9693cbba17a3ed3186b1dd4
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/ops-l3-keep-container-20260206-1109Z
+  - tree_sha: e6425c951ce7a832014db7011a28fddbc249ff6b
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/governance-ai-matrix-ergonomics-merged-20260206-100738Z
+  - tree_sha: ea3a4e914ac11b13dc8b997aabfba8a736d16b8f
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/runbook-cursor-ma-v4
+  - tree_sha: f40f8f8584bafbf9ad6fb3b8a21fb959412abb9a
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/ci-pragmatic-pr-gate-workflow-smoke-20260207-0134Z
+  - tree_sha: f8a69fe1571274084e1049b69a73e0fa29ed5f15
+    ref_count: 1
+    is_origin_main_tree: false
+    refs:
+    - refs/tags/ci-aiops-artifacts-skip-marker-20260206-1936Z

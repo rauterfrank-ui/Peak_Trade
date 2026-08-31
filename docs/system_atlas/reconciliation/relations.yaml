@@ -1,9 +1,15 @@
 # ATLAS_AUTHORITY=NONE
 # RECONCILIATION_AUTHORITY=NONE
-# Relations copied from ledger records for coverage. Not a second SSOT.
 schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+atlas_authority: NONE
+reconciliation_authority: NONE
+census_pass_id: FIND_COMPLETELY_PASS_V2
+dedup_rule: exact_git_object_or_tree_sha_only
+identity_fusion_forbidden: true
+disposition_performed: false
 bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
-relation_count: 21
+relation_count: 38
 items:
 - from: RCN-000001
   relation_type: POSSIBLE_SAME_AS
@@ -152,3 +158,124 @@ items:
   evidence:
   - Landscape naming
   epistemic_status: HYPOTHESIS
+- from: RCN-000027
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000009
+  unresolved_target: ''
+  evidence:
+  - deleted dashboard generation hypothesis
+  epistemic_status: HYPOTHESIS
+- from: RCN-000028
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000027
+  unresolved_target: ''
+  evidence:
+  - adjacent deleted v0 dashboard modules
+  epistemic_status: HYPOTHESIS
+- from: RCN-000029
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000009
+  unresolved_target: ''
+  evidence:
+  - deleted dashboard generation hypothesis
+  epistemic_status: HYPOTHESIS
+- from: RCN-000030
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000012
+  unresolved_target: ''
+  evidence:
+  - v0 dashboard generation hypothesis
+  epistemic_status: HYPOTHESIS
+- from: RCN-000031
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000009
+  unresolved_target: ''
+  evidence:
+  - deleted dashboard generation hypothesis
+  epistemic_status: HYPOTHESIS
+- from: RCN-000032
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000012
+  unresolved_target: ''
+  evidence:
+  - v0 dashboard generation hypothesis
+  epistemic_status: HYPOTHESIS
+- from: RCN-000033
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000001
+  unresolved_target: ''
+  evidence:
+  - later landscape naming hypothesis
+  epistemic_status: HYPOTHESIS
+- from: RCN-000034
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000009
+  unresolved_target: ''
+  evidence:
+  - product_surface_v1 documentation hypothesis
+  epistemic_status: HYPOTHESIS
+- from: RCN-000034
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000011
+  unresolved_target: ''
+  evidence:
+  - visual operator runbook naming
+  epistemic_status: HYPOTHESIS
+- from: RCN-000035
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000002
+  unresolved_target: ''
+  evidence:
+  - master runbook naming hypothesis
+  epistemic_status: HYPOTHESIS
+- from: RCN-000036
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000014
+  unresolved_target: ''
+  evidence:
+  - both are nested archive trees
+  epistemic_status: HYPOTHESIS
+- from: RCN-000044
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000014
+  unresolved_target: ''
+  evidence:
+  - files live inside the nested archive tree
+  epistemic_status: HYPOTHESIS
+- from: RCN-000045
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000014
+  unresolved_target: ''
+  evidence:
+  - files live inside the nested archive tree
+  epistemic_status: HYPOTHESIS
+- from: RCN-000046
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000014
+  unresolved_target: ''
+  evidence:
+  - files live inside the nested archive tree
+  epistemic_status: HYPOTHESIS
+- from: RCN-000046
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000036
+  unresolved_target: ''
+  evidence:
+  - export tree also lists src/strategies/ma_crossover.py
+  epistemic_status: HYPOTHESIS
+- from: RCN-000047
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000013
+  unresolved_target: ''
+  evidence:
+  - dashboard evidence-pack naming hypothesis
+  epistemic_status: HYPOTHESIS
+- from: RCN-000052
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000020
+  unresolved_target: ''
+  evidence:
+  - observability documentation naming hypothesis
+  epistemic_status: HYPOTHESIS
+identity_merges_performed: 0
+note: Copied from ledger. POSSIBLE_SAME_AS remains hypothesis until identity is proven.

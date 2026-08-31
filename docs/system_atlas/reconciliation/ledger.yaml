@@ -1,11 +1,9 @@
 # ATLAS_AUTHORITY=NONE
 # RECONCILIATION_AUTHORITY=NONE
-# This ledger is reconciliation evidence, not trading or runtime authority.
-# FIND_COMPLETELY pass v1. No disposition. No reintegration.
 schema_version: peak_trade.reconciliation_governance.v1
 bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
 bound_against_ref: origin/main
-ledger_record_count: 24
+ledger_record_count: 52
 records:
 - identity:
     reconciliation_id: RCN-000001
@@ -45,8 +43,7 @@ records:
       evidence:
       - git ls-tree origin/main src/webui/market_dashboard_landscape_v2
     - claim_class: HISTORICAL_FACT
-      text: 'First addition of Landscape V2 projection contracts is commit 82f71bbe (2026-07-23, PR
-        #5499).'
+      text: 'First addition of Landscape V2 projection contracts is commit 82f71bbe (2026-07-23, PR #5499).'
       evidence:
       - 82f71bbef835e6a63453190b5eb1e3d4c2ef1884
     - claim_class: OPEN_QUESTION
@@ -96,8 +93,7 @@ records:
     evidence_refs: []
     contradictions: []
     unresolved_questions:
-    - Is this the historical component remembered as Landscape, or a later dashboard generation that
-      reused the name?
+    - Is this the historical component remembered as Landscape, or a later dashboard generation that reused the name?
     - What was the original purpose of this package?
   integration:
     reintegration_required: false
@@ -262,8 +258,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: 'Separate Landscape-named artifact. Fail-open: no POSSIBLE_SAME_AS without evidence they
-      are one component.'
+    notes: 'Separate Landscape-named artifact. Fail-open: no POSSIBLE_SAME_AS without evidence they are one component.'
 - identity:
     reconciliation_id: RCN-000004
     canonical_record_name: Master V2 trading package
@@ -601,8 +596,7 @@ records:
     evidence_refs: []
     contradictions: []
     unresolved_questions:
-    - Is this extract identical to current src/trading/master_v2, a historical snapshot, or a different
-      source?
+    - Is this extract identical to current src/trading/master_v2, a historical snapshot, or a different source?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1028,8 +1022,8 @@ records:
       evidence:
       - evidence/market_dashboard_deletion/preserved_domain_components.txt
     - claim_class: OPEN_QUESTION
-      text: Pack is evidence of a deletion event, not itself a trading component. Purpose of the deleted
-        product is not understood here.
+      text: Pack is evidence of a deletion event, not itself a trading component. Purpose of the deleted product is not understood
+        here.
       evidence: []
   understanding:
     purpose_understood: false
@@ -1306,8 +1300,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Historical canonical predecessor document. Content not mined for component names in this
-      pass.
+    notes: Historical canonical predecessor document. Content not mined for component names in this pass.
 - identity:
     reconciliation_id: RCN-000017
     canonical_record_name: Information Corpus Persistence Base
@@ -1552,8 +1545,7 @@ records:
     historical_commits: []
     claims:
     - claim_class: FORENSIC_RAW_FACT
-      text: docs/observability path family is in deleted-path census and absent as a current docs/observability
-        tree.
+      text: docs/observability path family is in deleted-path census and absent as a current docs/observability tree.
       evidence:
       - git ls-tree origin/main docs/observability
     - claim_class: OPEN_QUESTION
@@ -1629,8 +1621,7 @@ records:
       - src/webui/double_play_dashboard_display_json_route_v0.py
       - evidence/market_dashboard_deletion/preserved_domain_components.txt
     - claim_class: OPEN_QUESTION
-      text: Atlas historical_architecture mentions a deleted webui Double Play stack; identity versus
-        this remnant is unresolved.
+      text: Atlas historical_architecture mentions a deleted webui Double Play stack; identity versus this remnant is unresolved.
       evidence:
       - docs/system_atlas/census/historical_architecture.yaml
   understanding:
@@ -1871,8 +1862,7 @@ records:
       evidence:
       - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
     - claim_class: HISTORICAL_FACT
-      text: 'Commit 4a758bf4 subject: feat(dashboard): serve supervised graphical market landscape
-        (#5684).'
+      text: 'Commit 4a758bf4 subject: feat(dashboard): serve supervised graphical market landscape (#5684).'
       evidence:
       - 4a758bf4b9f2a3805380bb4b8cde816153073d14
     - claim_class: OPEN_QUESTION
@@ -1925,3 +1915,2001 @@ records:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
     notes: Test/commit hit. Implementation path not fully bound this pass.
+- identity:
+    reconciliation_id: RCN-000025
+    canonical_record_name: Gate-Familien F1-F6 forensic heading family
+    historical_names:
+    - Gate-Familien
+    - F1
+    - F2
+    - F3
+    - F4
+    - F5
+    - F6
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - SURF:atlas_index
+    - SURF:forensic_corpus
+    discovery_evidence:
+    - docs/system_atlas/census/historical_terminology.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - docs/system_atlas/census/historical_terminology.yaml
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Atlas historical_terminology records Gate-Familien as a historical forensic F1-F6 heading.
+      evidence:
+      - docs/system_atlas/census/historical_terminology.yaml
+    - claim_class: OPEN_QUESTION
+      text: Whether F1-F6 named a runtime gate family remains uninvestigated. Atlas status is navigation only.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Are F1-F6 a standalone historical component versus headings only?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Promoted from CAND:gate_familien_f1_f6. Purpose not investigated. Not fused with dashboard family_id.
+- identity:
+    reconciliation_id: RCN-000026
+    canonical_record_name: NestedStructuralChild forensic structure type
+    historical_names:
+    - NestedStructuralChild
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - SURF:forensic_corpus
+    - SURF:atlas_index
+    discovery_evidence:
+    - forensic/post_step32_knowledge_integration_v0/05_adjudicated_findings.md
+    - docs/system_atlas/census/historical_terminology.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - forensic/post_step32_knowledge_integration_v0/
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Literal NestedStructuralChild exists in committed forensic extracts.
+      evidence:
+      - forensic/post_step32_knowledge_integration_v0/05_adjudicated_findings.md
+    - claim_class: OPEN_QUESTION
+      text: Forensic type versus a lost runtime child component is unresolved.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Is this only a forensic structure label?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Terminology/forensic hit. Atlas says not SSOT_CHILD. Not fused with CAND:ssot_child_literal.
+- identity:
+    reconciliation_id: RCN-000027
+    canonical_record_name: Market depth v0 readmodel/runtime
+    historical_names:
+    - market_depth_readmodel_v0
+    - market_depth_runtime_v0
+    - market_depth_api_v0
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_src
+    - SURF:local_branches
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/webui/market_depth_api_v0.py
+    - src/webui/market_depth_readmodel_v0
+    - src/webui/market_depth_runtime_v0.py
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Deleted src/webui market_depth v0 paths appear in the all-refs deletion census and on non-main tip trees.
+      evidence:
+      - src/webui/market_depth_readmodel_v0
+    - claim_class: OPEN_QUESTION
+      text: Identity versus later dashboard packages is unresolved.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000009
+      unresolved_target: ''
+      evidence:
+      - deleted dashboard generation hypothesis
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Standalone depth component versus product_surface_v1?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Split from CAND:market_dashboard_v0_depth_tape_funnel. Fail-open versus other v0 modules.
+- identity:
+    reconciliation_id: RCN-000028
+    canonical_record_name: Market tape v0 readmodel
+    historical_names:
+    - market_tape_readmodel_v0
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_src
+    - SURF:local_branches
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/webui/market_tape_readmodel_v0
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Path family src/webui/market_tape_readmodel_v0 is in the deletion census and absent from origin/main.
+      evidence:
+      - src/webui/market_tape_readmodel_v0
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000027
+      unresolved_target: ''
+      evidence:
+      - adjacent deleted v0 dashboard modules
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Standalone tape component versus later dashboard packages?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Split from grouped v0 candidate. Not fused with depth/funnel.
+- identity:
+    reconciliation_id: RCN-000029
+    canonical_record_name: Market ranking funnel v0
+    historical_names:
+    - market_ranking_funnel_readmodel_v0
+    - market_ranking_funnel_runtime_v0
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_src
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/webui/market_ranking_funnel_readmodel_v0
+    - src/webui/market_ranking_funnel_runtime_v0.py
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Deleted ranking-funnel v0 paths are in the deletion census.
+      evidence:
+      - src/webui/market_ranking_funnel_readmodel_v0
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000009
+      unresolved_target: ''
+      evidence:
+      - deleted dashboard generation hypothesis
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Relation to later landscape ranking displays?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Fail-open versus other v0 modules.
+- identity:
+    reconciliation_id: RCN-000030
+    canonical_record_name: Market futures OHLCV v0
+    historical_names:
+    - market_futures_ohlcv_readmodel_v0
+    - market_futures_ohlcv_runtime_v0
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_src
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/webui/market_futures_ohlcv_readmodel_v0
+    - src/webui/market_futures_ohlcv_runtime_v0.py
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Deleted futures OHLCV v0 paths are in the deletion census.
+      evidence:
+      - src/webui/market_futures_ohlcv_readmodel_v0
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000012
+      unresolved_target: ''
+      evidence:
+      - v0 dashboard generation hypothesis
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Standalone OHLCV component versus later dashboard packages?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Fail-open versus other v0 modules.
+- identity:
+    reconciliation_id: RCN-000031
+    canonical_record_name: Market instrument eligibility v0
+    historical_names:
+    - market_instrument_eligibility_v0
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_src
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/webui/market_instrument_eligibility_v0.py
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: src/webui/market_instrument_eligibility_v0.py is in the deletion census.
+      evidence:
+      - src/webui/market_instrument_eligibility_v0.py
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000009
+      unresolved_target: ''
+      evidence:
+      - deleted dashboard generation hypothesis
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Standalone eligibility module versus later ranking/universe producers?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Single named vanished module. Not fused.
+- identity:
+    reconciliation_id: RCN-000032
+    canonical_record_name: Market active paper run runtime v0
+    historical_names:
+    - market_active_paper_run_runtime_v0
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_src
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/webui/market_active_paper_run_runtime_v0.py
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: src/webui/market_active_paper_run_runtime_v0.py is in the deletion census.
+      evidence:
+      - src/webui/market_active_paper_run_runtime_v0.py
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000012
+      unresolved_target: ''
+      evidence:
+      - v0 dashboard generation hypothesis
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Relation to paper-shadow runtimes?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Named vanished module. Purpose not investigated.
+- identity:
+    reconciliation_id: RCN-000033
+    canonical_record_name: Market dashboard current state v0
+    historical_names:
+    - market_dashboard_current_state_runtime_v0
+    - market_dashboard_current_state_snapshot_v0
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_src
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/webui/market_dashboard_current_state_runtime_v0.py
+    - src/webui/market_dashboard_current_state_snapshot_v0.py
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Deleted current-state v0 modules are in the deletion census.
+      evidence:
+      - src/webui/market_dashboard_current_state_runtime_v0.py
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000001
+      unresolved_target: ''
+      evidence:
+      - later landscape naming hypothesis
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Predecessor of later landscape current-state?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Fail-open versus Landscape V2 package.
+- identity:
+    reconciliation_id: RCN-000034
+    canonical_record_name: Deleted market dashboard product runbooks
+    historical_names:
+    - Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0
+    - Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3
+    - MARKET_DASHBOARD_PRODUCT_SURFACE_V1
+    - MARKET_DASHBOARD_READMODELS_V1
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:archived_docs
+    - SURF:historical_path_family_docs
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md
+    - docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
+    - docs/webui/MARKET_DASHBOARD_PRODUCT_SURFACE_V1.md
+    - docs/webui/MARKET_DASHBOARD_READMODELS_V1.md
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Named product/webui dashboard runbooks are in the deletion census and absent from origin/main as those paths.
+      evidence:
+      - docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000009
+      unresolved_target: ''
+      evidence:
+      - product_surface_v1 documentation hypothesis
+      epistemic_status: HYPOTHESIS
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000011
+      unresolved_target: ''
+      evidence:
+      - visual operator runbook naming
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Documentation of RCN-000009/000010/000011 or a distinct product definition?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Promoted from CAND:deleted_market_dashboard_product_runbooks. Not fused with code packages.
+- identity:
+    reconciliation_id: RCN-000035
+    canonical_record_name: Composition Landmark Master Runbook v1.3
+    historical_names:
+    - Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_docs
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Deleted composition-landmark runbook path is in the docs deletion census.
+      evidence:
+      - docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000002
+      unresolved_target: ''
+      evidence:
+      - master runbook naming hypothesis
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Distinct from Landscape V2 master runbook RCN-000002?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Fail-open versus RCN-000002 and RCN-000034.
+- identity:
+    reconciliation_id: RCN-000036
+    canonical_record_name: archive/full_files_stand_02.12.2025 export tree
+    historical_names:
+    - full_files_stand_02.12.2025
+    - peak_trade_export
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:archived_code
+    - SURF:local_branches
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - archive/full_files_stand_02.12.2025/INSTALLATION.txt
+    - archive/full_files_stand_02.12.2025/peak_trade_export
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Historical archive export tree exists in reachable history and on non-main tip trees; absent from origin/main.
+      evidence:
+      - archive/full_files_stand_02.12.2025/peak_trade_export/src/backtest/engine.py
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000014
+      unresolved_target: ''
+      evidence:
+      - both are nested archive trees
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Same snapshot as archive/PeakTradeRepo or a different export?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Inner python modules listed in tree census. Not fused with RCN-000014.
+- identity:
+    reconciliation_id: RCN-000037
+    canonical_record_name: archive/legacy_docs
+    historical_names:
+    - legacy_docs
+    - README.before_phase58
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:archived_docs
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - archive/legacy_docs/README.before_phase58.md
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: archive/legacy_docs/README.before_phase58.md exists in reachable history and is absent from origin/main.
+      evidence:
+      - archive/legacy_docs/README.before_phase58.md
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - What documents did this archive hold besides the README?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Path inventory hit. Contents not mined for purpose.
+- identity:
+    reconciliation_id: RCN-000038
+    canonical_record_name: archive/legacy_scripts run_regime_experiments
+    historical_names:
+    - run_regime_experiments.sh
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:tooling_corpus
+    - SURF:archived_code
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - archive/legacy_scripts/run_regime_experiments.sh
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Deleted legacy script archive/legacy_scripts/run_regime_experiments.sh is in reachable history.
+      evidence:
+      - archive/legacy_scripts/run_regime_experiments.sh
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Standalone tooling component versus later regime sweep scripts?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Single archived script. Purpose not investigated.
+- identity:
+    reconciliation_id: RCN-000039
+    canonical_record_name: src/infra/health historical package
+    historical_names:
+    - infra.health
+    - health_checker
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:local_branches
+    - SURF:historical_path_family_src
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/infra/health
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: src/infra/health exists on non-main unique tip trees and is absent from origin/main src/infra (which has escalation/runbooks
+        only).
+      evidence:
+      - src/infra/health/health_checker.py
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Deleted, renamed, or never merged to origin/main?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Tip-tree discovery. Not fused with current src/infra/escalation.
+- identity:
+    reconciliation_id: RCN-000040
+    canonical_record_name: src/infra/backup historical package
+    historical_names:
+    - infra.backup
+    - backup_manager
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:local_branches
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/infra/backup
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: src/infra/backup exists on non-main unique tip trees and is absent from origin/main.
+      evidence:
+      - src/infra/backup/backup_manager.py
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Relation to disaster-recovery docs/scripts?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Fail-open versus other infra tip packages.
+- identity:
+    reconciliation_id: RCN-000041
+    canonical_record_name: src/infra/monitoring historical package
+    historical_names:
+    - infra.monitoring
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:local_branches
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/infra/monitoring
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: src/infra/monitoring exists on non-main unique tip trees and is absent from origin/main.
+      evidence:
+      - src/infra/monitoring/metrics.py
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Relation to current src/obs or src/observability?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Name similarity to observability is not identity.
+- identity:
+    reconciliation_id: RCN-000042
+    canonical_record_name: src/infra/resilience historical package
+    historical_names:
+    - infra.resilience
+    - circuit_breaker
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:local_branches
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/infra/resilience
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: src/infra/resilience exists on non-main unique tip trees and is absent from origin/main.
+      evidence:
+      - src/infra/resilience/circuit_breaker.py
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Relation to current resilience docs/tests?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Fail-open versus other infra packages.
+- identity:
+    reconciliation_id: RCN-000043
+    canonical_record_name: pre_economic_zero_order observer/arming tip modules
+    historical_names:
+    - pre_economic_zero_order_decision_cycle_observer_v1
+    - pre_economic_zero_order_economic_evidence_v1
+    - pre_economic_zero_order_wallclock_arming_v1
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:local_branches
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/ops/pre_economic_zero_order_decision_cycle_observer_v1.py
+    - src/ops/pre_economic_zero_order_economic_evidence_v1.py
+    - src/ops/pre_economic_zero_order_wallclock_arming_v1.py
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: These three modules exist on non-main tip trees. origin/main has a different pre_economic_zero_order_evidence_session_*
+        family.
+      evidence:
+      - src/ops/pre_economic_zero_order_wallclock_arming_v1.py
+    - claim_class: OPEN_QUESTION
+      text: Rename/absorption into evidence_session_* is not proven.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Same family as current evidence_session modules or a distinct observer/arming stack?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Fail-open versus current origin/main pre_economic_zero_order_evidence_session_* files.
+- identity:
+    reconciliation_id: RCN-000044
+    canonical_record_name: PeakTradeRepo nested backtest engine
+    historical_names:
+    - archive/PeakTradeRepo/src/backtest
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:archived_code
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - archive/PeakTradeRepo/src/backtest/engine.py
+    - archive/PeakTradeRepo/src/backtest/results.py
+    - archive/PeakTradeRepo/src/backtest/stats.py
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Inner archive file inventory lists three backtest modules under archive/PeakTradeRepo.
+      evidence:
+      - archive/PeakTradeRepo/src/backtest/engine.py
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000014
+      unresolved_target: ''
+      evidence:
+      - files live inside the nested archive tree
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Same component as later src/backtest or a distinct nested snapshot?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Inner file of RCN-000014. Not fused with current src/backtest. Purpose not investigated.
+- identity:
+    reconciliation_id: RCN-000045
+    canonical_record_name: PeakTradeRepo nested position_sizer
+    historical_names:
+    - archive/PeakTradeRepo/src/risk/position_sizer.py
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:archived_code
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - archive/PeakTradeRepo/src/risk/position_sizer.py
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Inner archive file inventory lists src/risk/position_sizer.py inside PeakTradeRepo.
+      evidence:
+      - archive/PeakTradeRepo/src/risk/position_sizer.py
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000014
+      unresolved_target: ''
+      evidence:
+      - files live inside the nested archive tree
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Identity versus deleted position_sizer_old_backup or current sizer modules?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Fail-open versus CAND:position_sizer_old_backup. Name is not identity.
+- identity:
+    reconciliation_id: RCN-000046
+    canonical_record_name: PeakTradeRepo nested ma_crossover strategy
+    historical_names:
+    - archive/PeakTradeRepo/src/strategies/ma_crossover.py
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:archived_code
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - archive/PeakTradeRepo/src/strategies/ma_crossover.py
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Inner archive file inventory lists src/strategies/ma_crossover.py inside PeakTradeRepo.
+      evidence:
+      - archive/PeakTradeRepo/src/strategies/ma_crossover.py
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000014
+      unresolved_target: ''
+      evidence:
+      - files live inside the nested archive tree
+      epistemic_status: HYPOTHESIS
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000036
+      unresolved_target: ''
+      evidence:
+      - export tree also lists src/strategies/ma_crossover.py
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Same strategy as later ma_crossover implementations?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Fail-open versus archive/full_files_stand export ma_crossover.
+- identity:
+    reconciliation_id: RCN-000047
+    canonical_record_name: evidence/market_dashboard_reset pack
+    historical_names:
+    - market_dashboard_reset
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:evidence_corpus
+    - SURF:local_branches
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - evidence/market_dashboard_reset/pr_a
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: evidence/market_dashboard_reset/pr_a exists on non-main tip trees and is absent from origin/main evidence/ top-level.
+      evidence:
+      - evidence/market_dashboard_reset/pr_a
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000013
+      unresolved_target: ''
+      evidence:
+      - dashboard evidence-pack naming hypothesis
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Same deletion event as evidence/market_dashboard_deletion or a different reset pack?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Fail-open versus RCN-000013.
+- identity:
+    reconciliation_id: RCN-000048
+    canonical_record_name: docs/20_phases historical path family
+    historical_names:
+    - docs/20_phases
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_docs
+    - SURF:local_branches
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - docs/20_phases
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: docs/20_phases/PHASE_*.md paths exist on non-main tip trees. origin/main currently has many PHASE_*.md files at
+        docs/ root, not under docs/20_phases/.
+      evidence:
+      - docs/20_phases/PHASE_16A_EXECUTION_PIPELINE.md
+    - claim_class: OPEN_QUESTION
+      text: Rename from docs/20_phases/ to docs/ is not proven. No RENAMED_TO asserted.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Path move versus a distinct document set?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Path-family census. Not a current-system comparison. Purpose of the family not investigated.
+- identity:
+    reconciliation_id: RCN-000049
+    canonical_record_name: docs/00_overview historical path family
+    historical_names:
+    - docs/00_overview
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_docs
+    - SURF:local_branches
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - docs/00_overview
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: docs/00_overview paths exist on non-main tip trees. Matching filenames currently exist at docs/ root on origin/main.
+      evidence:
+      - docs/00_overview/PEAK_TRADE_OVERVIEW.md
+    - claim_class: OPEN_QUESTION
+      text: Rename is not proven.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Path move versus distinct overview documents?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Fail-open versus current docs/ root files with similar names.
+- identity:
+    reconciliation_id: RCN-000050
+    canonical_record_name: step29m strategy/research family
+    historical_names:
+    - step29m_bollinger_bands_v2
+    - step29m_momentum_1h_v2
+    - step29m_trend_following_v2
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:local_branches
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/strategies/step29m_bollinger_bands_v2.py
+    - src/strategies/step29m_momentum_1h_v2.py
+    - src/strategies/step29m_trend_following_v2.py
+    - src/research/step29m_candidate_specific_research_scope_implementation_v0.py
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: step29m strategy/research modules exist on non-main tip trees and are absent from origin/main.
+      evidence:
+      - src/strategies/step29m_bollinger_bands_v2.py
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - One research workstream or three distinct strategies? Grouping is path-prefix only.
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Path-prefix grouping is not identity fusion of the three strategy files with each other as one component; record
+      is the named workstream family. Individual files remain listed.
+- identity:
+    reconciliation_id: RCN-000051
+    canonical_record_name: archive/noch_einordnen
+    historical_names:
+    - noch_einordnen
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:archived_docs
+    - SURF:archived_code
+    discovery_evidence:
+    - git log --all -- archive/noch_einordnen
+    first_bound_ref: origin/main
+    historical_paths:
+    - archive/noch_einordnen/README.md
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: archive/noch_einordnen/README.md exists in reachable added-path history.
+      evidence:
+      - archive/noch_einordnen/README.md
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - What was queued in this archive?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Named archive bucket. Not exhausted beyond the README path.
+- identity:
+    reconciliation_id: RCN-000052
+    canonical_record_name: docs/webui/observability deleted family
+    historical_names:
+    - docs/webui/observability
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_docs
+    - SURF:archived_docs
+    discovery_evidence:
+    - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - docs/webui/observability
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: docs/webui/observability is a deleted-path family (31 files in census) and also appears on non-main tip trees.
+      evidence:
+      - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000020
+      unresolved_target: ''
+      evidence:
+      - observability documentation naming hypothesis
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Same observability stack as deleted docs/observability Grafana family RCN-000020?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Fail-open versus RCN-000020. Path prefix differs.
+census_pass_id: FIND_COMPLETELY_PASS_V2

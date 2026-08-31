@@ -434,6 +434,49 @@ def _validate_census_artifacts(payload: dict[str, Any], census: dict[str, Any]) 
         if not isinstance(row, dict):
             raise ReconciliationValidationError(f"RECONCILIATION_CENSUS_ARTIFACT_MISSING:{rel}")
         _require_schema_version(row, source=rel)
+    coverage = payload["records"].get("coverage.yaml") or {}
+    rows = list(coverage.get("rows") or [])
+    proven = 0
+    unproven = 0
+    for row in rows:
+        if not isinstance(row, dict):
+            raise ReconciliationValidationError("COVERAGE_ROW_NOT_MAPPING")
+        sid = str(row.get("surface_id") or "")
+        if "searched" not in row:
+            raise ReconciliationValidationError(f"COVERAGE_SEARCHED_MISSING:{sid}")
+        if not str(row.get("method") or row.get("search_method") or "").strip():
+            raise ReconciliationValidationError(f"COVERAGE_METHOD_MISSING:{sid}")
+        if "exhaustion_proven" not in row:
+            raise ReconciliationValidationError(f"COVERAGE_EXHAUSTION_FLAG_MISSING:{sid}")
+        exhausted = _as_bool(row.get("exhaustion_proven"), field=f"exhaustion_proven:{sid}")
+        if exhausted:
+            proven += 1
+            if not str(row.get("evidence_reference") or row.get("evidence_ref") or "").strip():
+                raise ReconciliationValidationError(f"COVERAGE_EXHAUSTION_WITHOUT_EVIDENCE:{sid}")
+        else:
+            unproven += 1
+            if not str(row.get("remaining_gap") or "").strip():
+                raise ReconciliationValidationError(f"COVERAGE_UNPROVEN_WITHOUT_GAP:{sid}")
+            reason = str(
+                row.get("exhaustion_unproven_reason") or row.get("limitations") or ""
+            ).strip()
+            if not reason:
+                raise ReconciliationValidationError(f"COVERAGE_UNPROVEN_WITHOUT_REASON:{sid}")
+    declared_proven = coverage.get("surfaces_exhaustion_proven")
+    declared_unproven = coverage.get("surfaces_exhaustion_unproven")
+    if declared_proven is not None and int(declared_proven) != proven:
+        raise ReconciliationValidationError(
+            f"COVERAGE_PROVEN_COUNT_MISMATCH:{declared_proven}!={proven}"
+        )
+    if declared_unproven is not None and int(declared_unproven) != unproven:
+        raise ReconciliationValidationError(
+            f"COVERAGE_UNPROVEN_COUNT_MISMATCH:{declared_unproven}!={unproven}"
+        )
+    closed = _as_bool(census.get("census_closed"), field="census_closed")
+    if closed and unproven:
+        raise ReconciliationValidationError("CENSUS_CLOSED_WITH_UNPROVEN_SURFACES")
+    if closed and proven != len(rows):
+        raise ReconciliationValidationError("CENSUS_CLOSED_WITHOUT_ALL_SURFACES_PROVEN")
 
 
 def validate_reconciliation_v1(payload: dict[str, Any]) -> list[str]:

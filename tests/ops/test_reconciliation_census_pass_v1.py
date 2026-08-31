@@ -4,6 +4,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import yaml
+
+from scripts.ops.system_atlas_v1.census_inventory_v2 import (
+    collect_ref_inventory,
+    unique_trees_by_group,
+)
 from scripts.ops.system_atlas_v1.reconciliation_v1 import (
     load_reconciliation_v1,
     validate_reconciliation_v1,
@@ -94,4 +100,82 @@ def test_census_pass_v1_artifacts_and_anchors() -> None:
     assert anchors["anchors_are_not_census_boundaries"] is True
     coverage = payload["records"]["coverage.yaml"]
     assert coverage.get("exhaustion_proven") is False
-    assert int(coverage.get("surfaces_exhaustion_proven") or 0) == 0
+    assert coverage.get("census_closed") is False
+    assert int(coverage.get("surfaces_exhaustion_unproven") or 0) >= 1
+
+
+def test_census_pass_v2_no_identity_fusion_or_disposition() -> None:
+    payload = _payload()
+    ledger = payload["records"]["ledger.yaml"]
+    fusion_types = {"MERGED_INTO", "RENAMED_TO", "SPLIT_INTO"}
+    psa = 0
+    for rec in ledger["records"]:
+        rid = rec["identity"]["reconciliation_id"]
+        discovery = rec["discovery"]
+        evidence = list(discovery.get("discovery_evidence") or [])
+        claims = list(discovery.get("claims") or rec.get("claims") or [])
+        claim_evidence = []
+        for claim in claims:
+            if isinstance(claim, dict):
+                claim_evidence.extend(list(claim.get("evidence") or []))
+        assert evidence or claim_evidence, rid
+        for rel in (rec.get("relations") or {}).get("items") or []:
+            rtype = str(rel.get("relation_type") or "")
+            assert rtype not in fusion_types, rid
+            if rtype == "POSSIBLE_SAME_AS":
+                psa += 1
+                assert str(rel.get("epistemic_status") or "") == "HYPOTHESIS", rid
+    relations = payload["records"]["relations.yaml"]
+    assert int(relations.get("identity_merges_performed") or 0) == 0
+    assert psa == sum(
+        1
+        for item in relations.get("items") or []
+        if item.get("relation_type") == "POSSIBLE_SAME_AS"
+    )
+
+
+def test_census_pass_v2_coverage_and_reproducible_tip_trees() -> None:
+    payload = _payload()
+    coverage = payload["records"]["coverage.yaml"]
+    rows = list(coverage.get("rows") or [])
+    assert len(rows) == 17
+    proven = [row for row in rows if row.get("exhaustion_proven") is True]
+    unproven = [row for row in rows if row.get("exhaustion_proven") is False]
+    assert len(proven) == int(coverage["surfaces_exhaustion_proven"])
+    assert len(unproven) == int(coverage["surfaces_exhaustion_unproven"])
+    assert coverage["census_closed"] is False
+    for row in proven:
+        assert row.get("searched") is True
+        assert str(row.get("evidence_reference") or row.get("evidence_ref") or "")
+        evidence = REPO_ROOT / str(row.get("evidence_reference") or row.get("evidence_ref"))
+        assert evidence.is_file(), str(evidence)
+    for row in unproven:
+        assert str(row.get("remaining_gap") or "")
+        assert str(row.get("exhaustion_unproven_reason") or row.get("limitations") or "")
+
+    inventory = collect_ref_inventory(repo_root=REPO_ROOT)
+    grouped = unique_trees_by_group(inventory)
+    summary = yaml.safe_load(
+        (REPO_ROOT / "docs/system_atlas/reconciliation/inventories/summary.yaml").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert len(grouped["local"]) == int(summary["unique_local_branch_tree_count"])
+    assert len(grouped["origin"]) == int(summary["unique_origin_branch_tree_count"])
+    assert len(grouped["tag"]) == int(summary["unique_tag_tree_count"])
+    inner = yaml.safe_load(
+        (
+            REPO_ROOT
+            / "docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml"
+        ).read_text(encoding="utf-8")
+    )
+    assert int(inner["file_count"]) == len(inner["files"]) == 16
+    blob = yaml.safe_load(
+        (
+            REPO_ROOT / "docs/system_atlas/reconciliation/inventories/blob_scan_decision.yaml"
+        ).read_text(encoding="utf-8")
+    )
+    assert blob["blob_level_scan_performed"] is False
+    candidates = payload["records"]["discovery_candidates.yaml"]
+    assert candidates["counted_as_ledger_records"] is False
+    assert len(list(candidates.get("candidates") or [])) == 7
