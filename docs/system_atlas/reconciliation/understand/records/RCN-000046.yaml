@@ -5,25 +5,32 @@ bound_against_ref: origin/main
 bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
 atlas_authority: NONE
 reconciliation_authority: NONE
-understand_pass_id: UNDERSTAND_PASS_V1
+understand_pass_id: UNDERSTAND_PASS_V2
 identity_fusion_forbidden: true
 disposition_performed: false
 current_system_compared: false
 evaluate_performed: false
 record_id: RCN-000046
 canonical_record_name: PeakTradeRepo nested ma_crossover strategy
-understand_status: UNDERSTAND_OPEN
-purpose_understood: false
-historical_purpose: ''
-historical_problem_statement: ''
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+evidence_exhausted: true
+historical_purpose: Nested archive/PeakTradeRepo/src/strategies/ma_crossover.py recovered blob is '# MA Strategy placeholder'
+  (blob 83bb6775). Distinct from export MaCrossoverStrategy blob c89dad61 and from README claims in the same PeakTradeRepo
+  tree.
+historical_problem_statement: Placeholder nested MA strategy inside PeakTradeRepo archive tree.
 historical_inputs: []
-historical_outputs: []
-historical_dependencies: []
+historical_outputs:
+- Placeholder file only
+historical_dependencies:
+- RCN-000014
 historical_dependents: []
 historical_paths:
 - archive/PeakTradeRepo/src/strategies/ma_crossover.py
-historical_commits: []
-historical_blobs: []
+historical_commits:
+- 75722feea8c342c56ef93f796983467f33f98f25
+historical_blobs:
+- 83bb67757202b250a8273faac1b1e3dd794f8493
 relations:
 - relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000014
@@ -37,17 +44,27 @@ relations:
   evidence:
   - export tree also lists src/strategies/ma_crossover.py
   epistemic_status: HYPOTHESIS
-open_questions:
-- Same strategy as later ma_crossover implementations?
-evidence_refs:
-- docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
-claims:
-- claim_class: OPEN_QUESTION
-  text: Purpose not evidence-bound in UNDERSTAND pass v1.
+- relation_type: DEPENDS_ON
+  target_id: RCN-000014
+  unresolved_target: ''
   evidence:
-  - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
-  used_as_fact: false
-epistemic_class: OPEN_QUESTION
-clusters: []
+  - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/strategies/ma_crossover.py
+  epistemic_status: FORENSIC_RAW_FACT
+open_questions:
+- Not proven SAME_AS later ma_crossover implementations.
+evidence_refs:
+- 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/strategies/ma_crossover.py
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: Parent blob is '# MA Strategy placeholder'.
+  evidence:
+  - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/strategies/ma_crossover.py
+  - blob:83bb67757202b250a8273faac1b1e3dd794f8493
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- archive_peaktraderepo
 identity_merge_performed: false
 disposition_decided: false
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

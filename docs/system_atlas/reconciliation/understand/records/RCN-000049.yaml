@@ -5,37 +5,58 @@ bound_against_ref: origin/main
 bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
 atlas_authority: NONE
 reconciliation_authority: NONE
-understand_pass_id: UNDERSTAND_PASS_V1
+understand_pass_id: UNDERSTAND_PASS_V2
 identity_fusion_forbidden: true
 disposition_performed: false
 current_system_compared: false
 evaluate_performed: false
 record_id: RCN-000049
 canonical_record_name: docs/00_overview historical path family
-understand_status: UNDERSTAND_OPEN
-purpose_understood: false
-historical_purpose: ''
-historical_problem_statement: ''
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+evidence_exhausted: true
+historical_purpose: docs/00_overview path family historically held overview/roadmap/status/workflow notes plus a TODO board
+  (PEAK_TRADE_OVERVIEW.md redirected to ARCHITECTURE.md; TODO board later removed by 9ede5aca). Distinct path family from
+  src/docs (RCN-000053).
+historical_problem_statement: Hold overview and TODO-board documents at docs/00_overview.
 historical_inputs: []
-historical_outputs: []
+historical_outputs:
+- Overview/status/roadmap/TODO-board markdown/HTML
 historical_dependencies: []
-historical_dependents: []
+historical_dependents:
+- Historical onboarding/TODO generation
 historical_paths:
 - docs/00_overview
-historical_commits: []
+historical_commits:
+- 9ede5aca0918d2778e07f0ec6f2fa9a3a18e5865
+- 42c3f443d84c4f27110083c86d0c99db61a022ed
 historical_blobs: []
-relations: []
-open_questions:
-- Path move versus distinct overview documents?
-evidence_refs:
-- docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
-claims:
-- claim_class: OPEN_QUESTION
-  text: Purpose not evidence-bound in UNDERSTAND pass v1.
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000053
+  unresolved_target: ''
   evidence:
-  - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
-  used_as_fact: false
-epistemic_class: OPEN_QUESTION
-clusters: []
+  - 42c3f443d84c4f27110083c86d0c99db61a022ed:docs/00_overview/PEAK_TRADE_OVERVIEW.md
+  epistemic_status: HYPOTHESIS
+open_questions:
+- POSSIBLE_SAME_AS src/docs RCN-000053 remains hypothesis; different path families.
+evidence_refs:
+- 42c3f443d84c4f27110083c86d0c99db61a022ed:docs/00_overview/PEAK_TRADE_OVERVIEW.md
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'PEAK_TRADE_OVERVIEW.md: Architektur & Überblick; Hinweis konsolidiert zu ARCHITECTURE.md.'
+  evidence:
+  - 42c3f443d84c4f27110083c86d0c99db61a022ed:docs/00_overview/PEAK_TRADE_OVERVIEW.md
+  used_as_fact: true
+- claim_class: HISTORICAL_FACT
+  text: TODO board removed by Remove TODO Board implementation completely.
+  evidence:
+  - 9ede5aca0918d2778e07f0ec6f2fa9a3a18e5865
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- archives_legacy
 identity_merge_performed: false
 disposition_decided: false
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

@@ -43,3 +43,6 @@ clusters:
 - archives_legacy
 identity_merge_performed: false
 disposition_decided: false
+evidence_exhausted: true
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

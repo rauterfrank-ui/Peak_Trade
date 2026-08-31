@@ -94,10 +94,11 @@ def test_understand_purpose_requires_evidence_and_no_evaluate() -> None:
             assert lifecycle == "PURPOSE_UNDERSTOOD"
         else:
             assert lifecycle in {"DISCOVERED", "EVIDENCE_BOUND"}
+    latest = UNDERSTAND_ROOT / "pass_v2_status.yaml"
+    if not latest.is_file():
+        latest = UNDERSTAND_ROOT / "pass_v1_status.yaml"
     assert purpose == int(
-        yaml.safe_load((UNDERSTAND_ROOT / "pass_v1_status.yaml").read_text(encoding="utf-8"))[
-            "purpose_understood_record_count"
-        ]
+        yaml.safe_load(latest.read_text(encoding="utf-8"))["purpose_understood_record_count"]
     )
 
 

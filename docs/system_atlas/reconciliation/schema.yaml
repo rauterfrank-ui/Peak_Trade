@@ -31,6 +31,7 @@ understanding:
 - safety_role
 - runtime_role
 - invariants
+- evidence_exhausted
 relations:
 - relation_type
 - target_id
@@ -107,6 +108,8 @@ understand_artifact_files:
 - understand/index.yaml
 - understand/clusters.yaml
 - evidence/understand_v1/raw_quotes.yaml
+- understand/pass_v2_status.yaml
+- evidence/understand_v2/raw_quotes.yaml
 census_artifact_files:
 - search_surfaces.yaml
 - coverage.yaml

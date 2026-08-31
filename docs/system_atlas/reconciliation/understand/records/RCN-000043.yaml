@@ -5,39 +5,72 @@ bound_against_ref: origin/main
 bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
 atlas_authority: NONE
 reconciliation_authority: NONE
-understand_pass_id: UNDERSTAND_PASS_V1
+understand_pass_id: UNDERSTAND_PASS_V2
 identity_fusion_forbidden: true
 disposition_performed: false
 current_system_compared: false
 evaluate_performed: false
 record_id: RCN-000043
 canonical_record_name: pre_economic_zero_order observer/arming tip modules
-understand_status: UNDERSTAND_OPEN
-purpose_understood: false
-historical_purpose: ''
-historical_problem_statement: ''
-historical_inputs: []
-historical_outputs: []
-historical_dependencies: []
-historical_dependents: []
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+evidence_exhausted: true
+historical_purpose: 'Pre-Economic Zero-Order v1 observer/arming/evidence trio: wallclock arming lease (two-stage GO+lease,
+  never places orders), economic evidence schema for hypothetical zero-order decisions, and decision-cycle observer of Master-V2
+  / Bull-Bear / Double-Play / Risk-Sizing / Killstate emitting hypothetical economics. Never grants downstream Economic/Shadow/Paper/Testnet/Live
+  authority.'
+historical_problem_statement: Observe a zero-order wallclock session and persist hypothetical economics.
+historical_inputs:
+- Operator-GO + AuthorizationContractV1
+- transition_state via bull_bear_state_switch_scenario_binding_adapter_v0
+- landscape Availability for switch freshness
+historical_outputs:
+- economic_decisions.jsonl; session_economic_summary.json; HypotheticalDecisionRecordV1
+historical_dependencies:
+- RCN-000004 Master V2 double_play_state / adapter
+historical_dependents:
+- Pre-economic zero-order evidence session (historical)
 historical_paths:
 - src/ops/pre_economic_zero_order_decision_cycle_observer_v1.py
 - src/ops/pre_economic_zero_order_economic_evidence_v1.py
 - src/ops/pre_economic_zero_order_wallclock_arming_v1.py
-historical_commits: []
+historical_commits:
+- 00417f6ea5b6a79732b5a96fc132f158436a56a9
 historical_blobs: []
-relations: []
-open_questions:
-- Same family as current evidence_session modules or a distinct observer/arming stack?
-evidence_refs:
-- docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
-claims:
-- claim_class: OPEN_QUESTION
-  text: Purpose not evidence-bound in UNDERSTAND pass v1.
+relations:
+- relation_type: IMPORTS
+  target_id: RCN-000004
+  unresolved_target: ''
   evidence:
-  - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
-  used_as_fact: false
-epistemic_class: OPEN_QUESTION
-clusters: []
+  - 00417f6ea5b6a79732b5a96fc132f158436a56a9:src/ops/pre_economic_zero_order_decision_cycle_observer_v1.py
+  epistemic_status: FORENSIC_RAW_FACT
+open_questions:
+- Same family as later evidence_session modules is unproven identity.
+evidence_refs:
+- 00417f6ea5b6a79732b5a96fc132f158436a56a9:src/ops/pre_economic_zero_order_wallclock_arming_v1.py
+- 00417f6ea5b6a79732b5a96fc132f158436a56a9:src/ops/pre_economic_zero_order_economic_evidence_v1.py
+- 00417f6ea5b6a79732b5a96fc132f158436a56a9:src/ops/pre_economic_zero_order_decision_cycle_observer_v1.py
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'wallclock_arming_v1: never places orders and never grants Economic/Shadow/Paper/Testnet/Live.'
+  evidence:
+  - 00417f6ea5b6a79732b5a96fc132f158436a56a9:src/ops/pre_economic_zero_order_wallclock_arming_v1.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'economic_evidence_v1: hypothetical zero-order decision economics only.'
+  evidence:
+  - 00417f6ea5b6a79732b5a96fc132f158436a56a9:src/ops/pre_economic_zero_order_economic_evidence_v1.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'decision_cycle_observer_v1: Never submits orders. Never grants downstream authority. Imports trading.master_v2.double_play_state.'
+  evidence:
+  - 00417f6ea5b6a79732b5a96fc132f158436a56a9:src/ops/pre_economic_zero_order_decision_cycle_observer_v1.py
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- risk_execution
+- master_v2_double_play
 identity_merge_performed: false
 disposition_decided: false
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

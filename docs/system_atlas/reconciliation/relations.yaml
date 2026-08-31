@@ -5,15 +5,15 @@ bound_against_ref: origin/main
 bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
 atlas_authority: NONE
 reconciliation_authority: NONE
-understand_pass_id: UNDERSTAND_PASS_V1
+understand_pass_id: UNDERSTAND_PASS_V2
 identity_fusion_forbidden: true
 disposition_performed: false
 current_system_compared: false
 evaluate_performed: false
 census_pass_id: FIND_COMPLETELY_PASS_V3
 dedup_rule: exact_git_blob_sha_only
-relation_count: 53
-possible_same_as_count: 37
+relation_count: 66
+possible_same_as_count: 39
 items:
 - from: RCN-000001
   relation_type: POSSIBLE_SAME_AS
@@ -183,12 +183,40 @@ items:
   evidence:
   - evidence/market_dashboard_deletion/preserved_domain_components.txt
   epistemic_status: FORENSIC_RAW_FACT
+- from: RCN-000014
+  relation_type: ARCHIVES
+  target_id: RCN-000044
+  unresolved_target: ''
+  evidence:
+  - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+  epistemic_status: FORENSIC_RAW_FACT
+- from: RCN-000014
+  relation_type: ARCHIVES
+  target_id: RCN-000045
+  unresolved_target: ''
+  evidence:
+  - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+  epistemic_status: FORENSIC_RAW_FACT
+- from: RCN-000014
+  relation_type: ARCHIVES
+  target_id: RCN-000046
+  unresolved_target: ''
+  evidence:
+  - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+  epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000015
   relation_type: DEPENDS_ON
   target_id: RCN-000004
   unresolved_target: ''
   evidence:
   - name and path refer to Master V2
+  epistemic_status: FORENSIC_RAW_FACT
+- from: RCN-000018
+  relation_type: REFERENCES
+  target_id: RCN-000022
+  unresolved_target: ''
+  evidence:
+  - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
   epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000021
   relation_type: POSSIBLE_SAME_AS
@@ -253,6 +281,13 @@ items:
   evidence:
   - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
   epistemic_status: FORENSIC_RAW_FACT
+- from: RCN-000025
+  relation_type: REFERENCES
+  target_id: RCN-000022
+  unresolved_target: ''
+  evidence:
+  - docs/system_atlas/census/historical_terminology.yaml
+  epistemic_status: HYPOTHESIS
 - from: RCN-000027
   relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000009
@@ -330,6 +365,13 @@ items:
   evidence:
   - master runbook naming hypothesis
   epistemic_status: HYPOTHESIS
+- from: RCN-000035
+  relation_type: DOCUMENTS
+  target_id: RCN-000011
+  unresolved_target: ''
+  evidence:
+  - 987e020378d1767fbd6fb1f0914d475f9a485f51:docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+  epistemic_status: HYPOTHESIS
 - from: RCN-000036
   relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000014
@@ -337,6 +379,13 @@ items:
   evidence:
   - both are nested archive trees
   epistemic_status: HYPOTHESIS
+- from: RCN-000043
+  relation_type: IMPORTS
+  target_id: RCN-000004
+  unresolved_target: ''
+  evidence:
+  - 00417f6ea5b6a79732b5a96fc132f158436a56a9:src/ops/pre_economic_zero_order_decision_cycle_observer_v1.py
+  epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000044
   relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000014
@@ -344,6 +393,13 @@ items:
   evidence:
   - files live inside the nested archive tree
   epistemic_status: HYPOTHESIS
+- from: RCN-000044
+  relation_type: DEPENDS_ON
+  target_id: RCN-000014
+  unresolved_target: ''
+  evidence:
+  - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/backtest/engine.py
+  epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000045
   relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000014
@@ -351,6 +407,13 @@ items:
   evidence:
   - files live inside the nested archive tree
   epistemic_status: HYPOTHESIS
+- from: RCN-000045
+  relation_type: DEPENDS_ON
+  target_id: RCN-000014
+  unresolved_target: ''
+  evidence:
+  - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/risk/position_sizer.py
+  epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000046
   relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000014
@@ -365,12 +428,40 @@ items:
   evidence:
   - export tree also lists src/strategies/ma_crossover.py
   epistemic_status: HYPOTHESIS
+- from: RCN-000046
+  relation_type: DEPENDS_ON
+  target_id: RCN-000014
+  unresolved_target: ''
+  evidence:
+  - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/strategies/ma_crossover.py
+  epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000047
   relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000013
   unresolved_target: ''
   evidence:
   - dashboard evidence-pack naming hypothesis
+  epistemic_status: HYPOTHESIS
+- from: RCN-000047
+  relation_type: REFERENCES
+  target_id: RCN-000023
+  unresolved_target: ''
+  evidence:
+  - 987e020378d1767fbd6fb1f0914d475f9a485f51:evidence/market_dashboard_reset/pr_a/file_inventory.tsv
+  epistemic_status: FORENSIC_RAW_FACT
+- from: RCN-000049
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000053
+  unresolved_target: ''
+  evidence:
+  - 42c3f443d84c4f27110083c86d0c99db61a022ed:docs/00_overview/PEAK_TRADE_OVERVIEW.md
+  epistemic_status: HYPOTHESIS
+- from: RCN-000051
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000014
+  unresolved_target: ''
+  evidence:
+  - 24001182de0209dabac4d6296bc7738eec442107^:archive/noch_einordnen/README.md
   epistemic_status: HYPOTHESIS
 - from: RCN-000052
   relation_type: POSSIBLE_SAME_AS
@@ -387,5 +478,5 @@ items:
   - overview/workflow notes also appear under docs/00_overview
   epistemic_status: HYPOTHESIS
 identity_merges_performed: 0
-note: UNDERSTAND pass v1 copied from ledger. POSSIBLE_SAME_AS remains hypothesis. No SAME_AS / MERGED_INTO / RENAMED_TO identity
-  fusion.
+note: UNDERSTAND pass v2 copied from ledger. POSSIBLE_SAME_AS remains hypothesis. No SAME_AS identity fusion. Archive presence
+  is not obsolete. Historical revert is not disposition.

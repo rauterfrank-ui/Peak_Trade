@@ -1456,19 +1456,73 @@ records:
       text: Inner historical src/docs were not file-inventoried in this pass.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
+    purpose_understood: true
+    purpose_statement: Nested archive/PeakTradeRepo tree (16 files) bound at tree_sha 8da09657…. README describes a Peak_Trade
+      backtest/strategy stack; recovered nested .py files in that same tree are one-line placeholders.
+    historical_problem_statement: Preserve a nested historical Peak_Trade snapshot inside archive/.
     inputs: []
-    outputs: []
+    outputs:
+    - 16 archived files including README, docs, placeholder src modules, tests
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - RCN-000044
+    - RCN-000045
+    - RCN-000046 nested path records
+    authority_role: Archive snapshot; not runtime authority
+    safety_role: Not an order path
+    runtime_role: Archived tree; removed from origin/main by 75722fee (#573)
+    invariants:
+    - Inner file inventory complete at 16 files
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'inner_archive_peaktraderepo.yaml: file_count=16 including src/backtest/engine.py, src/risk/position_sizer.py,
+        src/strategies/ma_crossover.py.'
+      evidence:
+      - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob README: Gesamtübersicht; Option A rewrites ma_crossover to state signals 0/1.'
+      evidence:
+      - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/README.md
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Parent blob src/backtest/engine.py is '# Engine placeholder'.
+      evidence:
+      - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/backtest/engine.py
+      - blob:19aaa49470aa766a9f813b672278fe2bcbdac3e3
+      used_as_fact: true
+    - claim_class: CONTRADICTION
+      text: PeakTradeRepo README describes a rewritten ma_crossover with state signals, while the nested ma_crossover.py blob
+        in the same tree is a one-line placeholder.
+      evidence:
+      - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/README.md
+      - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/strategies/ma_crossover.py
+      used_as_fact: false
+    - claim_class: HISTORICAL_FACT
+      text: 'Removed from tracked tree by docs: governance/audit runbooks + remove obsolete archive/ (#573).'
+      evidence:
+      - 75722feea8c342c56ef93f796983467f33f98f25
+      used_as_fact: true
   relations:
-    items: []
+    items:
+    - relation_type: ARCHIVES
+      target_id: RCN-000044
+      unresolved_target: ''
+      evidence:
+      - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+      epistemic_status: FORENSIC_RAW_FACT
+    - relation_type: ARCHIVES
+      target_id: RCN-000045
+      unresolved_target: ''
+      evidence:
+      - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+      epistemic_status: FORENSIC_RAW_FACT
+    - relation_type: ARCHIVES
+      target_id: RCN-000046
+      unresolved_target: ''
+      evidence:
+      - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -1480,13 +1534,16 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
-    contradictions: []
+    contradictions:
+    - PeakTradeRepo README describes a rewritten ma_crossover with state signals, while the nested ma_crossover.py blob in
+      the same tree is a one-line placeholder.
     unresolved_questions:
     - What components lived inside the nested archive tree?
+    - Whether a fuller PeakTradeRepo snapshot existed before these placeholder blobs is not reconstructed.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1796,19 +1853,37 @@ records:
       text: That ledger is not this reconciliation ledger. Contents were not imported.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    purpose_understood: true
+    purpose_statement: 'Derived conservation HISTORICAL_CHILD_LEDGER.yaml: 88 child regions (SRC-000001..) sliced from the
+      SHA-256-bound Temporary Forensic Working Runbook. AUTHORITY NONE; not canonical selection.'
+    historical_problem_statement: Index forensic working-runbook children without promoting them.
+    inputs:
+    - Source blob SHA-256 a5a468f7… line ranges
+    outputs:
+    - 88 child_id rows with source_region_sha256 and ssot_role
+    dependencies:
+    - RCN-000022 historical_reference tree
+    consumers:
+    - Forensic navigation
+    authority_role: 'AUTHORITY: NONE; CANONICAL_SELECTION=false'
+    safety_role: TRADING_AUTHORITY=false
+    runtime_role: Derived YAML index; not importable runtime
+    invariants:
+    - 'count: 88 children'
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'HISTORICAL_CHILD_LEDGER.yaml header PURPOSE=FORENSIC_HISTORICAL_REFERENCE; count: 88.'
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
+      used_as_fact: true
   relations:
-    items: []
+    items:
+    - relation_type: REFERENCES
+      target_id: RCN-000022
+      unresolved_target: ''
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -1820,13 +1895,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Which child identities in that ledger are missing from this reconciliation census?
+    - 1:1 mapping of 88 SRC children onto RCN ledger records is not proven and is not a census reopen.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1876,17 +1952,52 @@ records:
       text: Rename/absorption is not proven. RENAMED_TO not asserted.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    purpose_understood: true
+    purpose_statement: 'Historical top-level src/risk_layer modules: KillSwitch (emergency sticky block on daily loss/drawdown/volatility),
+      LiquidityGate (pre-trade microstructure OK/WARN/BLOCK), StressGate (scenario shocks), VaRGate (portfolio VaR vs thresholds),
+      plus RiskMetrics and MicrostructureMetrics extractors. Gate outputs are OK/WARN/BLOCK statuses, not order submission.'
+    historical_problem_statement: Provide operational risk-gate evaluation interfaces for trading decisions.
+    inputs:
+    - PeakConfig; RiskMetrics; MicrostructureMetrics; portfolio positions/returns
+    outputs:
+    - KillSwitchStatus; LiquiditySeverity; Stress/VaR gate status dataclasses
+    dependencies:
+    - src.core.peak_config; src.risk.portfolio_var (VaRGate docstring)
+    consumers:
+    - Historical RiskGate orchestration (named in VaRGate docstring)
+    authority_role: Policy/gate evaluator; docstring does not submit orders
+    safety_role: KillSwitch sticky until reset; LiquidityGate missing metrics → OK default
+    runtime_role: Historical top-level modules; package prefix src/risk_layer/ still present as kill_switch/ and other packages
+    invariants:
+    - CURRENTLY_PARTIAL is mechanical path presence, not identity with later packages
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob kill_switch.py: Emergency safety stop; sticky until reset.'
+      evidence:
+      - 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7:src/risk_layer/kill_switch.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob liquidity_gate.py: Pre-Trade Microstructure Guards; safe defaults missing metrics → OK.'
+      evidence:
+      - 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7:src/risk_layer/liquidity_gate.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob var_gate.py: VaR evaluation gate; integrates src/risk/portfolio_var.py; gate interface for RiskGate
+        orchestration.'
+      evidence:
+      - 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7:src/risk_layer/var_gate.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob stress_gate.py: Scenario-based stress testing gate.'
+      evidence:
+      - 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7:src/risk_layer/stress_gate.py
+      used_as_fact: true
+    - claim_class: OPEN_QUESTION
+      text: Identity between deleted top-level kill_switch.py and any later src/risk_layer/kill_switch package is unproven
+        (not fused).
+      evidence:
+      - f834429531cef0a6e9897c30fc792620d4f8dffa
+      used_as_fact: false
   relations:
     items: []
   current_comparison:
@@ -1900,13 +2011,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Were the deleted top-level modules renamed into src/risk_layer/kill_switch/ and related packages?
+    - Rename/move of top-level modules into src/risk_layer/kill_switch/ is unproven identity.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1950,17 +2062,38 @@ records:
       text: Current equivalent under another path was not proven this pass.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: docs/observability Grafana/OTLP local observability stack runbook family (Collector, Tempo, Loki, Prometheus,
+      Grafana UI) plus WP0D structured logging field catalog. Purged by security commit 1c71a4ea (#1578).
+    historical_problem_statement: Document a minimal local observability stack and standard log fields.
+    inputs:
+    - scripts/obs/up.sh / down.sh; OTLP extras
+    outputs:
+    - Operator runbook for Grafana:3000, Prometheus:9090, Tempo, Loki
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
+    consumers:
+    - Local operator observability
+    authority_role: Documentation; not a trading authority
+    safety_role: Local stack; credentials via .env/GRAFANA_AUTH named in runbook
+    runtime_role: Deleted docs family; not a runtime package
     invariants: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob OBS_STACK_RUNBOOK.md: minimal local observability stack OTLP Collector, Tempo, Loki, Prometheus,
+        Grafana.'
+      evidence:
+      - 1c71a4eab503b2b4d06fb310a1b85b9a127e8495^:docs/observability/OBS_STACK_RUNBOOK.md
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob LOGGING_FIELDS.md: WP0D structured logging fields (trace_id, session_id, strategy_id, env).'
+      evidence:
+      - 1c71a4eab503b2b4d06fb310a1b85b9a127e8495^:docs/observability/LOGGING_FIELDS.md
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: 'Purged by security: purge Grafana artifacts and switch dashboard output to neutral .metrics (#1578).'
+      evidence:
+      - 1c71a4eab503b2b4d06fb310a1b85b9a127e8495
+      used_as_fact: true
   relations:
     items: []
   current_comparison:
@@ -1974,13 +2107,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Does a current Grafana/observability stack remain under another path?
+    - Whether a later Grafana stack exists under another path is not answered here (EVALUATE-forbidden).
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2440,19 +2574,38 @@ records:
       text: Whether F1-F6 named a runtime gate family remains uninvestigated. Atlas status is navigation only.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    purpose_understood: true
+    purpose_statement: 'Historical forensic heading family ''Gate-Familien'' F1–F6: a terminology label in Atlas historical_terminology.yaml
+      pointing at forensic working runbook preservation. Not proven as a standalone runtime component.'
+    historical_problem_statement: Record the historical spelling Gate-Familien / F1–F6 as a heading family.
+    inputs:
+    - Forensic working runbook preservation copies
+    outputs:
+    - Terminology census row entity_kind=FAMILY, status=HISTORICAL_ONLY
+    dependencies:
+    - RCN-000022 forensic working runbook extract (heading source)
+    consumers:
+    - Atlas terminology navigation
+    authority_role: Heading/index only; not a gate authority
+    safety_role: Not a runtime gate
+    runtime_role: Terminology census file currently present
+    invariants:
+    - 'meaning: Historical forensic F1–F6 heading'
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'historical_terminology.yaml: Gate-Familien meaning Historical forensic F1–F6 heading; entity_kind FAMILY; status
+        HISTORICAL_ONLY.'
+      evidence:
+      - docs/system_atlas/census/historical_terminology.yaml
+      used_as_fact: true
   relations:
-    items: []
+    items:
+    - relation_type: REFERENCES
+      target_id: RCN-000022
+      unresolved_target: ''
+      evidence:
+      - docs/system_atlas/census/historical_terminology.yaml
+      epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -2464,13 +2617,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Are F1-F6 a standalone historical component versus headings only?
+    - Whether F1–F6 named distinct runtime gate packages exist as other RCN records is not proven from this heading row.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2510,17 +2664,35 @@ records:
       text: Forensic type versus a lost runtime child component is unresolved.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: 'Forensic lossless structure type NestedStructuralChild: 153 of the P19-493 KR-8/KR-9 independent-byte
+      records in post_step32 adjudicated findings. Explicitly not SSOT_CHILD. Structure type / catalog class, not a trading
+      component.'
+    historical_problem_statement: Keep NestedStructuralChild distinct from SSOT_CHILD and carrier index.
+    inputs:
+    - PRODUCT_A / TARGET forensic collection
+    outputs:
+    - Adjudicated finding F_P19_493 count split 153 NestedStructuralChild + 340 MarkedVerbatimRegion
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Forensic reconstruction method
+    authority_role: ARTIFACT_AUTHORITY=NONE; SECOND_SSOT=false
+    safety_role: Must not be moved into the carrier index (finding text)
+    runtime_role: Forensic type label in post_step32 collection
+    invariants:
+    - not SSOT_CHILD (historical_terminology.yaml)
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: '05_adjudicated_findings.md F_P19_493: 153 NestedStructuralChild + 340 MarkedVerbatimRegion; must not be fused
+        with broader PARENT_SPAN 4105.'
+      evidence:
+      - forensic/post_step32_knowledge_integration_v0/05_adjudicated_findings.md
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'historical_terminology.yaml: NestedStructuralChild = Forensic lossless structure type; not SSOT_CHILD; FORENSIC_REFERENCE_ONLY.'
+      evidence:
+      - docs/system_atlas/census/historical_terminology.yaml
+      used_as_fact: true
   relations:
     items: []
   current_comparison:
@@ -2534,7 +2706,7 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -3312,17 +3484,39 @@ records:
       evidence:
       - docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
+    purpose_understood: true
+    purpose_statement: 'Peak_Trade Visual Operator Dashboard Runbook v1.3 Composition+Landmark edition: one full-page composition,
+      landmarks as information architecture, dashboard as consumer of canonical core. Header STATUS=HISTORICAL_PRE_RESET and
+      superseded for Architecture Reset/Rebuild scope. Deleted with product stack b5b81728.'
+    historical_problem_statement: Define pre-reset visual operator dashboard as a single composition with landmarks.
     inputs: []
-    outputs: []
+    outputs:
+    - Product runbook markdown (composition + technical discovery)
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Pre-reset dashboard implementers/audits (stated)
+    authority_role: Historical pre-reset runbook; MAY_NOT_OVERRIDE_ACTIVE_RESET_SSOT=true
+    safety_role: Dashboard exclusively consumer; no second fachliche Wahrheit (stated)
+    runtime_role: Documentation; deleted with product stack
+    invariants:
+    - STATUS=HISTORICAL_PRE_RESET
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob title: Visual Operator Dashboard Runbook v1.3 Canonical Composition + Technical Discovery; Ziel =
+        eine zusammenhängende Full-Page-Komposition.'
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Header SUPERSEDED_FOR_ARCHITECTURE_RESET_REBUILD=true; ACTIVE_FOR_ARCHITECTURE_RESET_REBUILD_SCOPE=false.
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: Deleted by b5b81728 with the market dashboard product stack.
+      evidence:
+      - b5b8172806eae55d8639f964fcb2ad036337a0f3
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -3330,6 +3524,12 @@ records:
       unresolved_target: ''
       evidence:
       - master runbook naming hypothesis
+      epistemic_status: HYPOTHESIS
+    - relation_type: DOCUMENTS
+      target_id: RCN-000011
+      unresolved_target: ''
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
       epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
@@ -3342,13 +3542,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Distinct from Landscape V2 master runbook RCN-000002?
+    - Distinct from Landscape V2 master runbook RCN-000002; POSSIBLE_SAME_AS remains hypothesis.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3386,17 +3587,41 @@ records:
       evidence:
       - archive/full_files_stand_02.12.2025/peak_trade_export/src/backtest/engine.py
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: 'Dated archive/full_files_stand_02.12.2025 export: INSTALLATION.txt for peak_trade_phase1_phase2.tar.gz
+      unpack plus peak_trade_export/ containing a BacktestEngine with commission/slippage, MaCrossoverStrategy, and FixedFractionalPositionSizer
+      implementations (non-placeholder blobs).'
+    historical_problem_statement: Hold a Phase 1+2 complete file export for installation/demo.
+    inputs:
+    - peak_trade_phase1_phase2.tar.gz (named in INSTALLATION.txt)
+    outputs:
+    - 20 archived files under archive/full_files_stand_02.12.2025/
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Historical install/demo path
+    authority_role: Export snapshot; not current authority
+    safety_role: Demo scripts named; not an order path in recovered INSTALLATION.txt
+    runtime_role: 'Archived export; removed by #573'
+    invariants:
+    - Export engine blob 0d9869d7 ≠ PeakTradeRepo placeholder engine 19aaa494
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'INSTALLATION.txt: PEAK_TRADE INSTALLATION Phase 1 + Phase 2 Complete; unpack peak_trade_phase1_phase2.tar.gz.'
+      evidence:
+      - 75722feea8c342c56ef93f796983467f33f98f25^:archive/full_files_stand_02.12.2025/INSTALLATION.txt
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Export BacktestEngine docstring: Position-basierte Backtests with commission and slippage.'
+      evidence:
+      - 75722feea8c342c56ef93f796983467f33f98f25^:archive/full_files_stand_02.12.2025/peak_trade_export/src/backtest/engine.py
+      - blob:0d9869d743175c85f3e0286fc45b3b17f9d3d695
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Export MaCrossoverStrategy: Long bei Fast > Slow; register_strategy.'
+      evidence:
+      - 75722feea8c342c56ef93f796983467f33f98f25^:archive/full_files_stand_02.12.2025/peak_trade_export/src/strategies/ma_crossover.py
+      - blob:c89dad61caad99c51bd2e219d66af5956ecf28a9
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -3416,13 +3641,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Same snapshot as archive/PeakTradeRepo or a different export?
+    - Different tree and different blobs from archive/PeakTradeRepo; POSSIBLE_SAME_AS remains hypothesis.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3458,17 +3684,29 @@ records:
       evidence:
       - archive/legacy_docs/README.before_phase58.md
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
+    purpose_understood: true
+    purpose_statement: 'archive/legacy_docs held a single recovered file README.before_phase58.md: project README describing
+      a modular crypto trading/backtest stack (data layer, backtest engine, strategy registry, position sizing, risk, paper/live
+      pipeline) as of ''Phase 1-4''.'
+    historical_problem_statement: Retain a pre-phase-58 project README in archive/legacy_docs.
     inputs: []
-    outputs: []
+    outputs:
+    - README.before_phase58.md
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Historical project onboarding text
+    authority_role: Archived README; not SSOT
+    safety_role: 'Disclaimer: educational/research; never unaffordable capital'
+    runtime_role: 'Docs archive; removed by #573'
+    invariants:
+    - Tree listing recovers only this one file
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'README.before_phase58.md: Modularer Trading- und Backtest-Stack; Phase 1-4; Data Layer, Backtest Engine, Strategy
+        Registry, Risk, Forward/Paper Trading.'
+      evidence:
+      - 75722feea8c342c56ef93f796983467f33f98f25^:archive/legacy_docs/README.before_phase58.md
+      used_as_fact: true
   relations:
     items: []
   current_comparison:
@@ -3482,7 +3720,7 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -3524,17 +3762,28 @@ records:
       evidence:
       - archive/legacy_scripts/run_regime_experiments.sh
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
+    purpose_understood: true
+    purpose_statement: 'archive/legacy_scripts/run_regime_experiments.sh: bash sequencer for a BTCUSDT regime-analysis experiment
+      series (pytest regime-aware portfolio, run_portfolio_backtest.py with --run-name/--tag, crash stress tests).'
+    historical_problem_statement: Run a structured 7-experiment / 3-phase regime analysis sequence.
+    inputs:
+    - config/config.toml; pytest tests/test_regime_aware_portfolio.py
+    outputs:
+    - Named backtest runs under reports/regime_* (commented)
+    dependencies:
+    - scripts/run_portfolio_backtest.py (invoked)
+    consumers:
+    - Operator running regime experiments
+    authority_role: Offline experiment driver; not live order authority
+    safety_role: set -e; comments warn about unsupported --override-scale
+    runtime_role: 'Archived shell script; removed by #573'
     invariants: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Script header: Regime-Analyse Experiment-Serie (BTCUSDT); 7 Experimente in 3 Phasen; pytest + run_portfolio_backtest.py.'
+      evidence:
+      - 75722feea8c342c56ef93f796983467f33f98f25^:archive/legacy_scripts/run_regime_experiments.sh
+      used_as_fact: true
   relations:
     items: []
   current_comparison:
@@ -3548,13 +3797,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Standalone tooling component versus later regime sweep scripts?
+    - Relation to later regime-sweep scripts is unproven identity.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3592,17 +3842,33 @@ records:
       evidence:
       - src/infra/health/health_checker.py
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: 'src/infra/health: central health-check package with HealthChecker/HealthStatus ampel (GREEN/YELLOW/RED)
+      and checks for backtest, exchange, live, portfolio, risk. CLI: python -m src.infra.health.health_checker.'
+    historical_problem_statement: Provide a central module health-check / status ampel.
+    inputs:
+    - Per-module BaseHealthCheck implementations
+    outputs:
+    - HealthCheckResult / HealthStatus
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
+    consumers:
+    - CLI health_checker
+    authority_role: Monitoring/status; not order authority
+    safety_role: LiveHealthCheck exists as a check class name; not proven as live arming
+    runtime_role: Historical package; currently absent on origin/main
     invariants: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: '__init__.py: Zentrale Health-Check-Komponenten; Ampel GREEN/YELLOW/RED.'
+      evidence:
+      - 781713e9b2304733c399979273c588fec8cc7eab:src/infra/health/__init__.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'health_checker.py: CLI python -m src.infra.health.health_checker; imports Backtest/Exchange/Live/Portfolio/Risk
+        health checks.'
+      evidence:
+      - 781713e9b2304733c399979273c588fec8cc7eab:src/infra/health/health_checker.py
+      used_as_fact: true
   relations:
     items: []
   current_comparison:
@@ -3616,13 +3882,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Deleted, renamed, or never merged to origin/main?
+    - Deleted vs never merged to later origin/main is a presence fact, not disposition.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3658,17 +3925,27 @@ records:
       evidence:
       - src/infra/backup/backup_manager.py
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: 'src/infra/backup: automatic backups and recovery for portfolio states, trading history, and configurations
+      (BackupManager, RecoveryManager).'
+    historical_problem_statement: Persist and recover portfolio/trading-history/config snapshots.
+    inputs:
+    - BackupConfig
+    outputs:
+    - Backup artifacts via BackupManager; recovery via RecoveryManager
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
+    consumers:
+    - get_backup_manager / get_recovery_manager callers
+    authority_role: Infra backup/recovery; not trading permission
+    safety_role: Recovery manager named; not an order path
+    runtime_role: Historical package; currently absent
     invariants: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: '__init__.py: Automatische Backups und Recovery für Portfolio-States, Trading-History und Konfigurationen.'
+      evidence:
+      - 12188014cb93a78555bbdf5cbaaf60906f6755a5:src/infra/backup/__init__.py
+      used_as_fact: true
   relations:
     items: []
   current_comparison:
@@ -3682,13 +3959,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Relation to disaster-recovery docs/scripts?
+    - Relation to later disaster-recovery docs/scripts is unproven identity.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3723,17 +4001,27 @@ records:
       evidence:
       - src/infra/monitoring/metrics.py
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: 'src/infra/monitoring: structured logging, performance metrics collector, and AlertManager (AlertLevel)
+      package.'
+    historical_problem_statement: Provide structured logs, metrics, and alerts inside infra.
+    inputs:
+    - Application log/metric events
+    outputs:
+    - get_logger; MetricsCollector; AlertManager
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
+    consumers:
+    - Historical runtime modules importing this package
+    authority_role: Monitoring/alerting; not trading permission
+    safety_role: AlertManager is notification, not kill-switch (not claimed as such)
+    runtime_role: Historical package; currently absent
     invariants: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: '__init__.py: Strukturiertes Logging, Performance-Metriken und Alert-System.'
+      evidence:
+      - 12188014cb93a78555bbdf5cbaaf60906f6755a5:src/infra/monitoring/__init__.py
+      used_as_fact: true
   relations:
     items: []
   current_comparison:
@@ -3747,13 +4035,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Relation to current src/obs or src/observability?
+    - Relation to deleted docs/observability or later src/obs is unproven identity.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3789,17 +4078,26 @@ records:
       evidence:
       - src/infra/resilience/circuit_breaker.py
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: 'src/infra/resilience: CircuitBreaker, retry_with_backoff, Fallback, and RateLimiter helpers.'
+    historical_problem_statement: Provide circuit-breaker, retry, fallback, and rate-limit primitives.
+    inputs:
+    - Wrapped callables / RateLimiterConfig / CircuitBreakerConfig
+    outputs:
+    - circuit_breaker decorator; retry; fallback; rate_limit
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
+    consumers:
+    - Historical callers of get_circuit_breaker / retry
+    authority_role: Infra resilience primitives; not trading permission
+    safety_role: CircuitBreakerOpenError fail-closed for wrapped calls
+    runtime_role: Historical package; currently absent
     invariants: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: '__init__.py: Circuit-Breaker, Retry-Logic, Fallback-Strategien und Rate-Limiting.'
+      evidence:
+      - 12188014cb93a78555bbdf5cbaaf60906f6755a5:src/infra/resilience/__init__.py
+      used_as_fact: true
   relations:
     items: []
   current_comparison:
@@ -3813,13 +4111,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Relation to current resilience docs/tests?
+    - Relation to later resilience docs/tests is unproven identity.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3862,19 +4161,51 @@ records:
       text: Rename/absorption into evidence_session_* is not proven.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    purpose_understood: true
+    purpose_statement: 'Pre-Economic Zero-Order v1 observer/arming/evidence trio: wallclock arming lease (two-stage GO+lease,
+      never places orders), economic evidence schema for hypothetical zero-order decisions, and decision-cycle observer of
+      Master-V2 / Bull-Bear / Double-Play / Risk-Sizing / Killstate emitting hypothetical economics. Never grants downstream
+      Economic/Shadow/Paper/Testnet/Live authority.'
+    historical_problem_statement: Observe a zero-order wallclock session and persist hypothetical economics.
+    inputs:
+    - Operator-GO + AuthorizationContractV1
+    - transition_state via bull_bear_state_switch_scenario_binding_adapter_v0
+    - landscape Availability for switch freshness
+    outputs:
+    - economic_decisions.jsonl; session_economic_summary.json; HypotheticalDecisionRecordV1
+    dependencies:
+    - RCN-000004 Master V2 double_play_state / adapter
+    consumers:
+    - Pre-economic zero-order evidence session (historical)
+    authority_role: Observer/evidence/arming lease; never submits orders (docstrings)
+    safety_role: Fail-closed two-stage arming; FORBIDDEN_TRUTH_CLAIMS in arming module
+    runtime_role: Historical ops modules; currently absent on origin/main
+    invariants:
+    - Never claims ECONOMIC_VALIDITY_PASS / profitability / Shadow readiness
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'wallclock_arming_v1: never places orders and never grants Economic/Shadow/Paper/Testnet/Live.'
+      evidence:
+      - 00417f6ea5b6a79732b5a96fc132f158436a56a9:src/ops/pre_economic_zero_order_wallclock_arming_v1.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'economic_evidence_v1: hypothetical zero-order decision economics only.'
+      evidence:
+      - 00417f6ea5b6a79732b5a96fc132f158436a56a9:src/ops/pre_economic_zero_order_economic_evidence_v1.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'decision_cycle_observer_v1: Never submits orders. Never grants downstream authority. Imports trading.master_v2.double_play_state.'
+      evidence:
+      - 00417f6ea5b6a79732b5a96fc132f158436a56a9:src/ops/pre_economic_zero_order_decision_cycle_observer_v1.py
+      used_as_fact: true
   relations:
-    items: []
+    items:
+    - relation_type: IMPORTS
+      target_id: RCN-000004
+      unresolved_target: ''
+      evidence:
+      - 00417f6ea5b6a79732b5a96fc132f158436a56a9:src/ops/pre_economic_zero_order_decision_cycle_observer_v1.py
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -3886,13 +4217,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Same family as current evidence_session modules or a distinct observer/arming stack?
+    - Same family as later evidence_session modules is unproven identity.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3929,17 +4261,28 @@ records:
       evidence:
       - archive/PeakTradeRepo/src/backtest/engine.py
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
+    purpose_understood: true
+    purpose_statement: Nested archive/PeakTradeRepo/src/backtest/engine.py recovered blob is the one-line comment '# Engine
+      placeholder' (blob 19aaa494). It is not the implemented BacktestEngine in the 02.12.2025 export (blob 0d9869d7).
+    historical_problem_statement: Placeholder nested backtest module inside PeakTradeRepo archive tree.
     inputs: []
-    outputs: []
-    dependencies: []
+    outputs:
+    - Placeholder file only
+    dependencies:
+    - RCN-000014 containing tree
     consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    authority_role: Archive placeholder; not an execution engine
+    safety_role: No order path in recovered blob
+    runtime_role: Archived placeholder
+    invariants:
+    - blob 19aaa494 ≠ export engine 0d9869d7
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Parent blob is '# Engine placeholder'.
+      evidence:
+      - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/backtest/engine.py
+      - blob:19aaa49470aa766a9f813b672278fe2bcbdac3e3
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -3948,6 +4291,12 @@ records:
       evidence:
       - files live inside the nested archive tree
       epistemic_status: HYPOTHESIS
+    - relation_type: DEPENDS_ON
+      target_id: RCN-000014
+      unresolved_target: ''
+      evidence:
+      - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/backtest/engine.py
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -3959,13 +4308,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Same component as later src/backtest or a distinct nested snapshot?
+    - Not proven SAME_AS later src/backtest; placeholder vs implemented export engine.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4000,17 +4350,28 @@ records:
       evidence:
       - archive/PeakTradeRepo/src/risk/position_sizer.py
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
+    purpose_understood: true
+    purpose_statement: Nested archive/PeakTradeRepo/src/risk/position_sizer.py recovered blob is '# Position sizer placeholder'
+      (blob 439a60c8). Distinct from the 02.12.2025 export FixedFractionalPositionSizer module.
+    historical_problem_statement: Placeholder nested position sizer inside PeakTradeRepo archive tree.
     inputs: []
-    outputs: []
-    dependencies: []
+    outputs:
+    - Placeholder file only
+    dependencies:
+    - RCN-000014
     consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    authority_role: Archive placeholder; not a sizing authority
+    safety_role: No sizing math in recovered blob
+    runtime_role: Archived placeholder
+    invariants:
+    - blob 439a60c8 is the nested placeholder
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Parent blob is '# Position sizer placeholder'.
+      evidence:
+      - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/risk/position_sizer.py
+      - blob:439a60c8176d2990ea8e199443283f2b3e0f9a33
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -4019,6 +4380,12 @@ records:
       evidence:
       - files live inside the nested archive tree
       epistemic_status: HYPOTHESIS
+    - relation_type: DEPENDS_ON
+      target_id: RCN-000014
+      unresolved_target: ''
+      evidence:
+      - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/risk/position_sizer.py
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -4030,13 +4397,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Identity versus deleted position_sizer_old_backup or current sizer modules?
+    - Identity versus later sizer modules or position_sizer_old_backup is unproven; no SAME_AS.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4071,17 +4439,29 @@ records:
       evidence:
       - archive/PeakTradeRepo/src/strategies/ma_crossover.py
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
+    purpose_understood: true
+    purpose_statement: Nested archive/PeakTradeRepo/src/strategies/ma_crossover.py recovered blob is '# MA Strategy placeholder'
+      (blob 83bb6775). Distinct from export MaCrossoverStrategy blob c89dad61 and from README claims in the same PeakTradeRepo
+      tree.
+    historical_problem_statement: Placeholder nested MA strategy inside PeakTradeRepo archive tree.
     inputs: []
-    outputs: []
-    dependencies: []
+    outputs:
+    - Placeholder file only
+    dependencies:
+    - RCN-000014
     consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    authority_role: Archive placeholder; not a strategy owner
+    safety_role: No signal logic in recovered blob
+    runtime_role: Archived placeholder
+    invariants:
+    - blob 83bb6775 ≠ export ma blob c89dad61
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Parent blob is '# MA Strategy placeholder'.
+      evidence:
+      - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/strategies/ma_crossover.py
+      - blob:83bb67757202b250a8273faac1b1e3dd794f8493
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -4096,6 +4476,12 @@ records:
       evidence:
       - export tree also lists src/strategies/ma_crossover.py
       epistemic_status: HYPOTHESIS
+    - relation_type: DEPENDS_ON
+      target_id: RCN-000014
+      unresolved_target: ''
+      evidence:
+      - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/strategies/ma_crossover.py
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -4107,13 +4493,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Same strategy as later ma_crossover implementations?
+    - Not proven SAME_AS later ma_crossover implementations.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4149,24 +4536,39 @@ records:
       evidence:
       - evidence/market_dashboard_reset/pr_a
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: Unknown beyond census path-family evidence; not reconstructed.
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: 'evidence/market_dashboard_reset/pr_a is a PR-A architecture-reset evidence pack (2026-07-17): git_state,
+      file_inventory of then-active GET /market presenters/templates, allowlists, recovery logs. Distinct from the later complete
+      deletion pack RCN-000013 (777 deleted paths).'
+    historical_problem_statement: Record the architecture-reset worktree inventories before later product-stack deletion.
+    inputs:
+    - Worktree on fix/market-dashboard-architecture-reset-v1 at cf416c03
+    outputs:
+    - TSV inventories, git_state, recovery/, validation logs
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: Absent path family
-    invariants: []
+    consumers:
+    - Reset/deletion forensics
+    authority_role: Evidence pack; not runtime
+    safety_role: forbidden_scope_list / preserve_list present as inventories
+    runtime_role: Absent path family after b5b81728
+    invariants:
+    - Pack asserts a reset inventory, not the 777-path deletion manifest
     claims:
-    - claim_class: OPEN_QUESTION
-      text: evidence/market_dashboard_reset/pr_a is absent on current origin/main; purpose text of that pack was not recovered
-        in this pass.
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'git_state.txt: branch=fix/market-dashboard-architecture-reset-v1 head=cf416c03; timestamp 20260717T075706Z.'
       evidence:
-      - docs/system_atlas/reconciliation/ledger.yaml
-      used_as_fact: false
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:evidence/market_dashboard_reset/pr_a/git_state.txt
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: file_inventory.tsv classifies src/webui/market_surface.py as PRESENTER CANONICAL_MARKET_ROUTE_OWNER active_on_market=yes.
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:evidence/market_dashboard_reset/pr_a/file_inventory.tsv
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: Path family deleted with product stack b5b81728.
+      evidence:
+      - b5b8172806eae55d8639f964fcb2ad036337a0f3
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -4175,6 +4577,12 @@ records:
       evidence:
       - dashboard evidence-pack naming hypothesis
       epistemic_status: HYPOTHESIS
+    - relation_type: REFERENCES
+      target_id: RCN-000023
+      unresolved_target: ''
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:evidence/market_dashboard_reset/pr_a/file_inventory.tsv
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -4186,7 +4594,7 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -4194,6 +4602,7 @@ records:
     unresolved_questions:
     - Same deletion event as evidence/market_dashboard_deletion or a different reset pack?
     - What did the reset pack assert that the deletion pack (RCN-000013) did not?
+    - 'POSSIBLE_SAME_AS RCN-000013 remains hypothesis: reset pack vs later deletion pack are different evidence events.'
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4233,17 +4642,27 @@ records:
       text: Rename from docs/20_phases/ to docs/ is not proven. No RENAMED_TO asserted.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
+    purpose_understood: true
+    purpose_statement: 'docs/20_phases path family: numbered phase markdowns (e.g. Phase 16A ExecutionPipeline core package:
+      orders from strategies through Environment/Safety to Executor + RunLogger; LIVE blocked in Phase 16A).'
+    historical_problem_statement: Document sequential product/engineering phases as markdown files.
     inputs: []
-    outputs: []
+    outputs:
+    - Phase_*.md files under docs/20_phases
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
+    consumers:
+    - Historical phase navigation
+    authority_role: Phase documentation; Phase 16A text blocks LIVE
+    safety_role: LIVE-Mode hart blockiert (Phase 16A recovered header)
+    runtime_role: Docs family; currently absent
     invariants: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'PHASE_16A_EXECUTION_PIPELINE.md: ExecutionPipeline takes orders from strategies/portfolios through Environment
+        & Safety to Executor; ohne Live-Support; LIVE hart blockiert.'
+      evidence:
+      - 42c3f443d84c4f27110083c86d0c99db61a022ed:docs/20_phases/PHASE_16A_EXECUTION_PIPELINE.md
+      used_as_fact: true
   relations:
     items: []
   current_comparison:
@@ -4257,13 +4676,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Path move versus a distinct document set?
+    - Path move versus later runbook locations is unproven identity.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4302,19 +4722,40 @@ records:
       text: Rename is not proven.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
+    purpose_understood: true
+    purpose_statement: docs/00_overview path family historically held overview/roadmap/status/workflow notes plus a TODO board
+      (PEAK_TRADE_OVERVIEW.md redirected to ARCHITECTURE.md; TODO board later removed by 9ede5aca). Distinct path family from
+      src/docs (RCN-000053).
+    historical_problem_statement: Hold overview and TODO-board documents at docs/00_overview.
     inputs: []
-    outputs: []
+    outputs:
+    - Overview/status/roadmap/TODO-board markdown/HTML
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
+    consumers:
+    - Historical onboarding/TODO generation
+    authority_role: Overview docs; PEAK_TRADE_OVERVIEW.md says use ARCHITECTURE.md
+    safety_role: Not runtime
+    runtime_role: Docs family; currently absent
     invariants: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'PEAK_TRADE_OVERVIEW.md: Architektur & Überblick; Hinweis konsolidiert zu ARCHITECTURE.md.'
+      evidence:
+      - 42c3f443d84c4f27110083c86d0c99db61a022ed:docs/00_overview/PEAK_TRADE_OVERVIEW.md
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: TODO board removed by Remove TODO Board implementation completely.
+      evidence:
+      - 9ede5aca0918d2778e07f0ec6f2fa9a3a18e5865
+      used_as_fact: true
   relations:
-    items: []
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000053
+      unresolved_target: ''
+      evidence:
+      - 42c3f443d84c4f27110083c86d0c99db61a022ed:docs/00_overview/PEAK_TRADE_OVERVIEW.md
+      epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -4326,13 +4767,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Path move versus distinct overview documents?
+    - POSSIBLE_SAME_AS src/docs RCN-000053 remains hypothesis; different path families.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4372,17 +4814,46 @@ records:
       evidence:
       - src/strategies/step29m_bollinger_bands_v2.py
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    purpose_understood: true
+    purpose_statement: 'STEP29M candidate-specific offline v2 research family: three versioned strategy modules (bollinger_bands,
+      momentum_1h, trend_following) plus research-scope implementation v0. Each v2 keeps parent v1 as immutable negative baseline;
+      no economic evaluation, no runtime authority, no policy relaxation. Grouping is path-prefix plus shared research owner;
+      the three STRATEGY_IDs remain distinct.'
+    historical_problem_statement: Diagnose named terminal failure classes offline without forcing trades or relaxing gates.
+    inputs:
+    - OHLCV DataFrame; parent v1 strategy owners
+    outputs:
+    - v2 strategy signals + eligibility/guard traces; research-scope runner
+    dependencies:
+    - src.strategies.bollinger / momentum / trend_following v1 owners
+    consumers:
+    - STEP29M research-scope implementation v0
+    authority_role: Offline research; no runtime authority (research module docstring)
+    safety_role: Does not relax survival/suitability/risk/safety/economic policy gates (bollinger v2)
+    runtime_role: Historical strategies/research modules; currently absent
+    invariants:
+    - Parent v1 remains immutable negative baseline
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'step29m_bollinger_bands_v2.py: offline-only diagnostic-first; no forcing trades or relaxing policy gates.'
+      evidence:
+      - 34574e1392af7bbfab20ce87854ee47bf5fbbe76:src/strategies/step29m_bollinger_bands_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'step29m_momentum_1h_v2.py: offline-only; SPARSE_SAMPLE_SINGLE_TRADE_DOMINANCE guards.'
+      evidence:
+      - 34574e1392af7bbfab20ce87854ee47bf5fbbe76:src/strategies/step29m_momentum_1h_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'step29m_trend_following_v2.py: offline-only; preserves v1 entry semantics.'
+      evidence:
+      - 34574e1392af7bbfab20ce87854ee47bf5fbbe76:src/strategies/step29m_trend_following_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'research scope v0: No economic evaluation, no runtime authority, no policy relaxation.'
+      evidence:
+      - cef8881d417752dfea044c44b0014bf59190545f:src/research/step29m_candidate_specific_research_scope_implementation_v0.py
+      used_as_fact: true
   relations:
     items: []
   current_comparison:
@@ -4396,13 +4867,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - One research workstream or three distinct strategies? Grouping is path-prefix only.
+    - Ledger record groups three strategies by path prefix; they are not fused into one identity.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4439,19 +4911,34 @@ records:
       evidence:
       - archive/noch_einordnen/README.md
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
+    purpose_understood: true
+    purpose_statement: archive/noch_einordnen held a single README.md whose recovered text matches the PeakTradeRepo README
+      (Option A–F Gesamtübersicht). Queued archive folder; not a second proven source tree.
+    historical_problem_statement: Queue unclassified archive material (folder name noch_einordnen).
     inputs: []
-    outputs: []
+    outputs:
+    - README.md only in recovered tree
     dependencies: []
     consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    authority_role: Queue folder; not runtime
+    safety_role: Not an order path
+    runtime_role: Archived; last touch 24001182
+    invariants:
+    - Recovered tree listing is README.md only
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Parent blob README.md starts Peak_Trade System – Gesamtübersicht with Option A Strategy-Fix (State-Signale).
+      evidence:
+      - 24001182de0209dabac4d6296bc7738eec442107^:archive/noch_einordnen/README.md
+      used_as_fact: true
   relations:
-    items: []
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000014
+      unresolved_target: ''
+      evidence:
+      - 24001182de0209dabac4d6296bc7738eec442107^:archive/noch_einordnen/README.md
+      epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -4463,13 +4950,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - What was queued in this archive?
+    - Text overlap with PeakTradeRepo README is not SAME_AS without blob-identity proof.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4505,17 +4993,29 @@ records:
       evidence:
       - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: 'docs/webui/observability family: Observability Hub v0 read-only HTML surface (GET /observability)
+      bundling links to existing GET endpoints without orders, activation, capital/scope release, kill-switch override, or
+      workflow trigger; plus Paper/Shadow read-model contracts and futures universe/source contracts.'
+    historical_problem_statement: Provide a display-only operator observability hub and related contracts.
+    inputs:
+    - Existing GET endpoints / template status stub
+    outputs:
+    - Hub HTML docs; contract markdowns; PROMETHEUS_LOCAL_SCRAPE.yml
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Operator WebUI observability route (documented)
+    authority_role: Read-only / display-only; no new authority (hub doc)
+    safety_role: 'Explicit non-offer: no orders, no live activation, no kill-switch override'
+    runtime_role: Deleted docs family (last tree 7a320ff9)
+    invariants:
+    - No client polling on hub HTML (stated)
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'OBSERVABILITY_HUB_V0.md: read-only/display-only HTML; keine Orders; keine Testnet-/Live-Aktivierung; kein KillSwitch-Override.'
+      evidence:
+      - 1cf4c2714b79ddbaeb367b44f945097bf54905fb:docs/webui/observability/OBSERVABILITY_HUB_V0.md
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -4535,13 +5035,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Same observability stack as deleted docs/observability Grafana family RCN-000020?
+    - POSSIBLE_SAME_AS Grafana docs/observability RCN-000020 remains hypothesis (different stack/docs generation).
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4649,5 +5150,5 @@ records:
     notes: Path-family census from unique blob inventory. Not purpose-understood. Not fused with CAND:src_docs_workflow_notes
       or RCN-000049.
 census_pass_id: FIND_COMPLETELY_PASS_V3
-understand_pass_id: UNDERSTAND_PASS_V1
+understand_pass_id: UNDERSTAND_PASS_V2
 understand_bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478

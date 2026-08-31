@@ -5,40 +5,60 @@ bound_against_ref: origin/main
 bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
 atlas_authority: NONE
 reconciliation_authority: NONE
-understand_pass_id: UNDERSTAND_PASS_V1
+understand_pass_id: UNDERSTAND_PASS_V2
 identity_fusion_forbidden: true
 disposition_performed: false
 current_system_compared: false
 evaluate_performed: false
 record_id: RCN-000020
 canonical_record_name: docs/observability Grafana runbook family
-understand_status: UNDERSTAND_OPEN
-purpose_understood: false
-historical_purpose: ''
-historical_problem_statement: ''
-historical_inputs: []
-historical_outputs: []
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+evidence_exhausted: true
+historical_purpose: docs/observability Grafana/OTLP local observability stack runbook family (Collector, Tempo, Loki, Prometheus,
+  Grafana UI) plus WP0D structured logging field catalog. Purged by security commit 1c71a4ea (#1578).
+historical_problem_statement: Document a minimal local observability stack and standard log fields.
+historical_inputs:
+- scripts/obs/up.sh / down.sh; OTLP extras
+historical_outputs:
+- Operator runbook for Grafana:3000, Prometheus:9090, Tempo, Loki
 historical_dependencies: []
-historical_dependents: []
+historical_dependents:
+- Local operator observability
 historical_paths:
 - docs/observability/LOGGING_FIELDS.md
 - docs/observability/OBS_STACK_RUNBOOK.md
 - docs/observability/Peak_Trade_Observability_Runbook_Grafana_Dashboard_Setup.md
 - docs/observability/STATUS_GRAFANA_PROMETHEUS_AKTUELL.md
-historical_commits: []
+historical_commits:
+- 1c71a4eab503b2b4d06fb310a1b85b9a127e8495
 historical_blobs: []
 relations: []
 open_questions:
-- Does a current Grafana/observability stack remain under another path?
+- Whether a later Grafana stack exists under another path is not answered here (EVALUATE-forbidden).
 evidence_refs:
-- docs/observability/OBS_STACK_RUNBOOK.md
+- 1c71a4eab503b2b4d06fb310a1b85b9a127e8495^:docs/observability/OBS_STACK_RUNBOOK.md
+- 1c71a4eab503b2b4d06fb310a1b85b9a127e8495^:docs/observability/LOGGING_FIELDS.md
 claims:
-- claim_class: OPEN_QUESTION
-  text: Purpose not evidence-bound in UNDERSTAND pass v1.
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Parent blob OBS_STACK_RUNBOOK.md: minimal local observability stack OTLP Collector, Tempo, Loki, Prometheus, Grafana.'
   evidence:
-  - docs/observability/OBS_STACK_RUNBOOK.md
-  used_as_fact: false
-epistemic_class: OPEN_QUESTION
-clusters: []
+  - 1c71a4eab503b2b4d06fb310a1b85b9a127e8495^:docs/observability/OBS_STACK_RUNBOOK.md
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Parent blob LOGGING_FIELDS.md: WP0D structured logging fields (trace_id, session_id, strategy_id, env).'
+  evidence:
+  - 1c71a4eab503b2b4d06fb310a1b85b9a127e8495^:docs/observability/LOGGING_FIELDS.md
+  used_as_fact: true
+- claim_class: HISTORICAL_FACT
+  text: 'Purged by security: purge Grafana artifacts and switch dashboard output to neutral .metrics (#1578).'
+  evidence:
+  - 1c71a4eab503b2b4d06fb310a1b85b9a127e8495
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- observability_infra
 identity_merge_performed: false
 disposition_decided: false
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

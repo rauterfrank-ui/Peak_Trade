@@ -5,37 +5,54 @@ bound_against_ref: origin/main
 bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
 atlas_authority: NONE
 reconciliation_authority: NONE
-understand_pass_id: UNDERSTAND_PASS_V1
+understand_pass_id: UNDERSTAND_PASS_V2
 identity_fusion_forbidden: true
 disposition_performed: false
 current_system_compared: false
 evaluate_performed: false
 record_id: RCN-000025
 canonical_record_name: Gate-Familien F1-F6 forensic heading family
-understand_status: UNDERSTAND_OPEN
-purpose_understood: false
-historical_purpose: ''
-historical_problem_statement: ''
-historical_inputs: []
-historical_outputs: []
-historical_dependencies: []
-historical_dependents: []
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+evidence_exhausted: true
+historical_purpose: 'Historical forensic heading family ''Gate-Familien'' F1–F6: a terminology label in Atlas historical_terminology.yaml
+  pointing at forensic working runbook preservation. Not proven as a standalone runtime component.'
+historical_problem_statement: Record the historical spelling Gate-Familien / F1–F6 as a heading family.
+historical_inputs:
+- Forensic working runbook preservation copies
+historical_outputs:
+- Terminology census row entity_kind=FAMILY, status=HISTORICAL_ONLY
+historical_dependencies:
+- RCN-000022 forensic working runbook extract (heading source)
+historical_dependents:
+- Atlas terminology navigation
 historical_paths:
 - docs/system_atlas/census/historical_terminology.yaml
-historical_commits: []
+historical_commits:
+- e94ff20c8ffb6f7e69152bcb9e2972165897cc43
 historical_blobs: []
-relations: []
+relations:
+- relation_type: REFERENCES
+  target_id: RCN-000022
+  unresolved_target: ''
+  evidence:
+  - docs/system_atlas/census/historical_terminology.yaml
+  epistemic_status: HYPOTHESIS
 open_questions:
-- Are F1-F6 a standalone historical component versus headings only?
+- Whether F1–F6 named distinct runtime gate packages exist as other RCN records is not proven from this heading row.
 evidence_refs:
 - docs/system_atlas/census/historical_terminology.yaml
 claims:
-- claim_class: OPEN_QUESTION
-  text: Purpose not evidence-bound in UNDERSTAND pass v1.
+- claim_class: FORENSIC_RAW_FACT
+  text: 'historical_terminology.yaml: Gate-Familien meaning Historical forensic F1–F6 heading; entity_kind FAMILY; status
+    HISTORICAL_ONLY.'
   evidence:
   - docs/system_atlas/census/historical_terminology.yaml
-  used_as_fact: false
-epistemic_class: OPEN_QUESTION
-clusters: []
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- governance_gates
 identity_merge_performed: false
 disposition_decided: false
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

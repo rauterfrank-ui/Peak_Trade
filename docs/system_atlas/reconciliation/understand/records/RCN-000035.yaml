@@ -5,24 +5,31 @@ bound_against_ref: origin/main
 bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
 atlas_authority: NONE
 reconciliation_authority: NONE
-understand_pass_id: UNDERSTAND_PASS_V1
+understand_pass_id: UNDERSTAND_PASS_V2
 identity_fusion_forbidden: true
 disposition_performed: false
 current_system_compared: false
 evaluate_performed: false
 record_id: RCN-000035
 canonical_record_name: Composition Landmark Master Runbook v1.3
-understand_status: UNDERSTAND_OPEN
-purpose_understood: false
-historical_purpose: ''
-historical_problem_statement: ''
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+evidence_exhausted: true
+historical_purpose: 'Peak_Trade Visual Operator Dashboard Runbook v1.3 Composition+Landmark edition: one full-page composition,
+  landmarks as information architecture, dashboard as consumer of canonical core. Header STATUS=HISTORICAL_PRE_RESET and superseded
+  for Architecture Reset/Rebuild scope. Deleted with product stack b5b81728.'
+historical_problem_statement: Define pre-reset visual operator dashboard as a single composition with landmarks.
 historical_inputs: []
-historical_outputs: []
+historical_outputs:
+- Product runbook markdown (composition + technical discovery)
 historical_dependencies: []
-historical_dependents: []
+historical_dependents:
+- Pre-reset dashboard implementers/audits (stated)
 historical_paths:
 - docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
-historical_commits: []
+historical_commits:
+- b5b8172806eae55d8639f964fcb2ad036337a0f3
+- 987e020378d1767fbd6fb1f0914d475f9a485f51
 historical_blobs: []
 relations:
 - relation_type: POSSIBLE_SAME_AS
@@ -31,17 +38,38 @@ relations:
   evidence:
   - master runbook naming hypothesis
   epistemic_status: HYPOTHESIS
-open_questions:
-- Distinct from Landscape V2 master runbook RCN-000002?
-evidence_refs:
-- docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
-claims:
-- claim_class: OPEN_QUESTION
-  text: Purpose not evidence-bound in UNDERSTAND pass v1.
+- relation_type: DOCUMENTS
+  target_id: RCN-000011
+  unresolved_target: ''
   evidence:
-  - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
-  used_as_fact: false
-epistemic_class: OPEN_QUESTION
-clusters: []
+  - 987e020378d1767fbd6fb1f0914d475f9a485f51:docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+  epistemic_status: HYPOTHESIS
+open_questions:
+- Distinct from Landscape V2 master runbook RCN-000002; POSSIBLE_SAME_AS remains hypothesis.
+evidence_refs:
+- 987e020378d1767fbd6fb1f0914d475f9a485f51:docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Parent blob title: Visual Operator Dashboard Runbook v1.3 Canonical Composition + Technical Discovery; Ziel = eine
+    zusammenhängende Full-Page-Komposition.'
+  evidence:
+  - 987e020378d1767fbd6fb1f0914d475f9a485f51:docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: Header SUPERSEDED_FOR_ARCHITECTURE_RESET_REBUILD=true; ACTIVE_FOR_ARCHITECTURE_RESET_REBUILD_SCOPE=false.
+  evidence:
+  - 987e020378d1767fbd6fb1f0914d475f9a485f51:docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+  used_as_fact: true
+- claim_class: HISTORICAL_FACT
+  text: Deleted by b5b81728 with the market dashboard product stack.
+  evidence:
+  - b5b8172806eae55d8639f964fcb2ad036337a0f3
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- governance_gates
+- landscape_dashboard
 identity_merge_performed: false
 disposition_decided: false
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

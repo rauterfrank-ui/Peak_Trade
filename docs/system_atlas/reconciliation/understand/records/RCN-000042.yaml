@@ -5,37 +5,45 @@ bound_against_ref: origin/main
 bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
 atlas_authority: NONE
 reconciliation_authority: NONE
-understand_pass_id: UNDERSTAND_PASS_V1
+understand_pass_id: UNDERSTAND_PASS_V2
 identity_fusion_forbidden: true
 disposition_performed: false
 current_system_compared: false
 evaluate_performed: false
 record_id: RCN-000042
 canonical_record_name: src/infra/resilience historical package
-understand_status: UNDERSTAND_OPEN
-purpose_understood: false
-historical_purpose: ''
-historical_problem_statement: ''
-historical_inputs: []
-historical_outputs: []
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+evidence_exhausted: true
+historical_purpose: 'src/infra/resilience: CircuitBreaker, retry_with_backoff, Fallback, and RateLimiter helpers.'
+historical_problem_statement: Provide circuit-breaker, retry, fallback, and rate-limit primitives.
+historical_inputs:
+- Wrapped callables / RateLimiterConfig / CircuitBreakerConfig
+historical_outputs:
+- circuit_breaker decorator; retry; fallback; rate_limit
 historical_dependencies: []
-historical_dependents: []
+historical_dependents:
+- Historical callers of get_circuit_breaker / retry
 historical_paths:
 - src/infra/resilience
-historical_commits: []
+historical_commits:
+- 12188014cb93a78555bbdf5cbaaf60906f6755a5
 historical_blobs: []
 relations: []
 open_questions:
-- Relation to current resilience docs/tests?
+- Relation to later resilience docs/tests is unproven identity.
 evidence_refs:
-- docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+- 12188014cb93a78555bbdf5cbaaf60906f6755a5:src/infra/resilience/__init__.py
 claims:
-- claim_class: OPEN_QUESTION
-  text: Purpose not evidence-bound in UNDERSTAND pass v1.
+- claim_class: FORENSIC_RAW_FACT
+  text: '__init__.py: Circuit-Breaker, Retry-Logic, Fallback-Strategien und Rate-Limiting.'
   evidence:
-  - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
-  used_as_fact: false
-epistemic_class: OPEN_QUESTION
-clusters: []
+  - 12188014cb93a78555bbdf5cbaaf60906f6755a5:src/infra/resilience/__init__.py
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- observability_infra
 identity_merge_performed: false
 disposition_decided: false
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

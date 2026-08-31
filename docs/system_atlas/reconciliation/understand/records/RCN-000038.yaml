@@ -5,37 +5,47 @@ bound_against_ref: origin/main
 bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
 atlas_authority: NONE
 reconciliation_authority: NONE
-understand_pass_id: UNDERSTAND_PASS_V1
+understand_pass_id: UNDERSTAND_PASS_V2
 identity_fusion_forbidden: true
 disposition_performed: false
 current_system_compared: false
 evaluate_performed: false
 record_id: RCN-000038
 canonical_record_name: archive/legacy_scripts run_regime_experiments
-understand_status: UNDERSTAND_OPEN
-purpose_understood: false
-historical_purpose: ''
-historical_problem_statement: ''
-historical_inputs: []
-historical_outputs: []
-historical_dependencies: []
-historical_dependents: []
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+evidence_exhausted: true
+historical_purpose: 'archive/legacy_scripts/run_regime_experiments.sh: bash sequencer for a BTCUSDT regime-analysis experiment
+  series (pytest regime-aware portfolio, run_portfolio_backtest.py with --run-name/--tag, crash stress tests).'
+historical_problem_statement: Run a structured 7-experiment / 3-phase regime analysis sequence.
+historical_inputs:
+- config/config.toml; pytest tests/test_regime_aware_portfolio.py
+historical_outputs:
+- Named backtest runs under reports/regime_* (commented)
+historical_dependencies:
+- scripts/run_portfolio_backtest.py (invoked)
+historical_dependents:
+- Operator running regime experiments
 historical_paths:
 - archive/legacy_scripts/run_regime_experiments.sh
-historical_commits: []
+historical_commits:
+- 75722feea8c342c56ef93f796983467f33f98f25
 historical_blobs: []
 relations: []
 open_questions:
-- Standalone tooling component versus later regime sweep scripts?
+- Relation to later regime-sweep scripts is unproven identity.
 evidence_refs:
-- docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+- 75722feea8c342c56ef93f796983467f33f98f25^:archive/legacy_scripts/run_regime_experiments.sh
 claims:
-- claim_class: OPEN_QUESTION
-  text: Purpose not evidence-bound in UNDERSTAND pass v1.
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Script header: Regime-Analyse Experiment-Serie (BTCUSDT); 7 Experimente in 3 Phasen; pytest + run_portfolio_backtest.py.'
   evidence:
-  - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
-  used_as_fact: false
-epistemic_class: OPEN_QUESTION
-clusters: []
+  - 75722feea8c342c56ef93f796983467f33f98f25^:archive/legacy_scripts/run_regime_experiments.sh
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- archive_peaktraderepo
 identity_merge_performed: false
 disposition_decided: false
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true
