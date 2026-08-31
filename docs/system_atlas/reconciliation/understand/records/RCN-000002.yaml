@@ -1,0 +1,76 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000002
+canonical_record_name: Market Dashboard Landscape V2 Master Runbook
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: Canonical planning/handover/execution runbook for Market Dashboard Landscape V2 as a strictly read-only
+  consumer. Documentary index; not a second technical SSOT.
+historical_problem_statement: Bind Landscape V2 workstream status, route, and consumer-closeout semantics for operators without
+  raising dashboard authority.
+historical_inputs:
+- Workstream phase evidence and merged capability PRs named in the runbook
+historical_outputs:
+- Operator/planning document MARKET_DASHBOARD_V2_WORKSTREAM_COMPLETE
+historical_dependencies:
+- RCN-000001 implementation package named as the consumer surface
+historical_dependents:
+- Operator/agent handover for Landscape V2
+historical_paths:
+- docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+historical_commits:
+- e18a16e138d643cac5748c8ccafaea0b871a80c8
+historical_blobs: []
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000001
+  unresolved_target: ''
+  evidence:
+  - same Landscape V2 naming window
+  epistemic_status: HYPOTHESIS
+- relation_type: DOCUMENTS
+  target_id: RCN-000001
+  unresolved_target: ''
+  evidence:
+  - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+  epistemic_status: FORENSIC_RAW_FACT
+open_questions:
+- 'Document versus package: same Landscape V2 workstream, not proven same identity.'
+evidence_refs:
+- docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Header: Ziel = Neuer Market-Workspace als strikt read-only Consumer.'
+  evidence:
+  - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: DASHBOARD_AUTHORITY_EFFECT=NONE; DASHBOARD_TRADING_INPUT=false; DASHBOARD_SSOT=false.
+  evidence:
+  - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+  used_as_fact: true
+- claim_class: HISTORICAL_FACT
+  text: Added 2026-07-23 as Landscape V2 master runbook (#5500).
+  evidence:
+  - e18a16e138d643cac5748c8ccafaea0b871a80c8
+  used_as_fact: true
+- claim_class: OPEN_QUESTION
+  text: Whether this document is a distinct component from RCN-000001 or only its documentation remains a navigation distinction;
+    records are not fused.
+  evidence: []
+  used_as_fact: false
+epistemic_class: HISTORICAL_FACT
+clusters:
+- landscape_dashboard
+identity_merge_performed: false
+disposition_decided: false

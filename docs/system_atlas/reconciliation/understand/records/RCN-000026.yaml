@@ -1,0 +1,43 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000026
+canonical_record_name: NestedStructuralChild forensic structure type
+understand_status: UNDERSTAND_OPEN
+purpose_understood: false
+historical_purpose: ''
+historical_problem_statement: ''
+historical_inputs: []
+historical_outputs: []
+historical_dependencies: []
+historical_dependents: []
+historical_paths:
+- forensic/post_step32_knowledge_integration_v0/
+historical_commits: []
+historical_blobs: []
+relations: []
+open_questions:
+- Is this only a forensic structure label?
+evidence_refs:
+- forensic/post_step32_knowledge_integration_v0/05_adjudicated_findings.md
+- docs/system_atlas/census/historical_terminology.yaml
+claims:
+- claim_class: OPEN_QUESTION
+  text: Purpose not evidence-bound in UNDERSTAND pass v1.
+  evidence:
+  - forensic/post_step32_knowledge_integration_v0/05_adjudicated_findings.md
+  - docs/system_atlas/census/historical_terminology.yaml
+  used_as_fact: false
+epistemic_class: OPEN_QUESTION
+clusters: []
+identity_merge_performed: false
+disposition_decided: false

@@ -1,0 +1,57 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000053
+canonical_record_name: src/docs misplaced documentation tree
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: 'Documentation tree under src/docs: Peak_Trade_OVERVIEW.md describes a modular trading-framework prototype
+  (Kraken-spot backtesting, MA-crossover, backtest engine). Other files are contributing/setup/architecture notes.'
+historical_problem_statement: Provide a project overview for new chats/machines (stated in OVERVIEW).
+historical_inputs: []
+historical_outputs:
+- Markdown documentation files under src/docs/
+historical_dependencies: []
+historical_dependents:
+- Human/agent onboarding (stated)
+historical_paths:
+- src/docs
+historical_commits: []
+historical_blobs: []
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000049
+  unresolved_target: ''
+  evidence:
+  - overview/workflow notes also appear under docs/00_overview
+  epistemic_status: HYPOTHESIS
+open_questions:
+- Whether src/docs was an accidental copy of docs/00_overview is unproven.
+evidence_refs:
+- src/docs/Peak_Trade_OVERVIEW.md
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Peak_Trade_OVERVIEW.md: modular Trading-Framework-Prototyp with Kraken-Spot backtesting and MA-crossover; live bot
+    not part of MVP.'
+  evidence:
+  - src/docs/Peak_Trade_OVERVIEW.md
+  used_as_fact: true
+- claim_class: OPEN_QUESTION
+  text: POSSIBLE_SAME_AS docs/00_overview (RCN-000049) remains hypothesis; path families are not fused.
+  evidence:
+  - docs/system_atlas/reconciliation/relations.yaml
+  used_as_fact: false
+epistemic_class: HISTORICAL_FACT
+clusters:
+- archives_legacy
+identity_merge_performed: false
+disposition_decided: false

@@ -2,14 +2,17 @@
 # RECONCILIATION_AUTHORITY=NONE
 schema_version: peak_trade.reconciliation_governance.v1
 bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
 atlas_authority: NONE
 reconciliation_authority: NONE
-census_pass_id: FIND_COMPLETELY_PASS_V3
-dedup_rule: exact_git_blob_sha_only
+understand_pass_id: UNDERSTAND_PASS_V1
 identity_fusion_forbidden: true
 disposition_performed: false
-bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
-relation_count: 39
+current_system_compared: false
+evaluate_performed: false
+census_pass_id: FIND_COMPLETELY_PASS_V3
+dedup_rule: exact_git_blob_sha_only
+relation_count: 53
 possible_same_as_count: 37
 items:
 - from: RCN-000001
@@ -33,6 +36,13 @@ items:
   evidence:
   - same Landscape V2 naming window
   epistemic_status: HYPOTHESIS
+- from: RCN-000002
+  relation_type: DOCUMENTS
+  target_id: RCN-000001
+  unresolved_target: ''
+  evidence:
+  - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+  epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000004
   relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000007
@@ -61,6 +71,13 @@ items:
   evidence:
   - forensic extract labeled double_play
   epistemic_status: HYPOTHESIS
+- from: RCN-000005
+  relation_type: IMPORTS
+  target_id: RCN-000004
+  unresolved_target: ''
+  evidence:
+  - src/trading/master_v2/double_play_composition.py
+  epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000006
   relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000005
@@ -68,6 +85,13 @@ items:
   evidence:
   - shared Double Play name
   epistemic_status: HYPOTHESIS
+- from: RCN-000006
+  relation_type: IMPORTS
+  target_id: RCN-000004
+  unresolved_target: ''
+  evidence:
+  - src/ops/double_play/specialists.py
+  epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000007
   relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000004
@@ -75,6 +99,13 @@ items:
   evidence:
   - shared Master V2 label
   epistemic_status: HYPOTHESIS
+- from: RCN-000007
+  relation_type: REFERENCES
+  target_id: RCN-000022
+  unresolved_target: ''
+  evidence:
+  - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/README.md
+  epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000008
   relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000005
@@ -89,6 +120,13 @@ items:
   evidence:
   - shared Double Play label
   epistemic_status: HYPOTHESIS
+- from: RCN-000008
+  relation_type: REFERENCES
+  target_id: RCN-000022
+  unresolved_target: ''
+  evidence:
+  - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/README.md
+  epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000009
   relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000001
@@ -96,6 +134,13 @@ items:
   evidence:
   - dashboard generation hypothesis
   epistemic_status: HYPOTHESIS
+- from: RCN-000009
+  relation_type: IMPORTS
+  target_id: RCN-000010
+  unresolved_target: ''
+  evidence:
+  - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_dashboard_product_surface_v1/presenter.py
+  epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000010
   relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000009
@@ -117,6 +162,27 @@ items:
   evidence:
   - dashboard generation hypothesis
   epistemic_status: HYPOTHESIS
+- from: RCN-000013
+  relation_type: REFERENCES
+  target_id: RCN-000009
+  unresolved_target: ''
+  evidence:
+  - evidence/market_dashboard_deletion/deletion_manifest.txt
+  epistemic_status: FORENSIC_RAW_FACT
+- from: RCN-000013
+  relation_type: REFERENCES
+  target_id: RCN-000004
+  unresolved_target: ''
+  evidence:
+  - evidence/market_dashboard_deletion/preserved_domain_components.txt
+  epistemic_status: FORENSIC_RAW_FACT
+- from: RCN-000013
+  relation_type: REFERENCES
+  target_id: RCN-000021
+  unresolved_target: ''
+  evidence:
+  - evidence/market_dashboard_deletion/preserved_domain_components.txt
+  epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000015
   relation_type: DEPENDS_ON
   target_id: RCN-000004
@@ -131,6 +197,20 @@ items:
   evidence:
   - Double Play display naming
   epistemic_status: HYPOTHESIS
+- from: RCN-000021
+  relation_type: IMPORTS
+  target_id: RCN-000004
+  unresolved_target: ''
+  evidence:
+  - src/webui/double_play_dashboard_display_json_route_v0.py
+  epistemic_status: FORENSIC_RAW_FACT
+- from: RCN-000021
+  relation_type: CALLS
+  target_id: RCN-000005
+  unresolved_target: ''
+  evidence:
+  - src/webui/double_play_dashboard_display_json_route_v0.py
+  epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000022
   relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000007
@@ -152,6 +232,13 @@ items:
   evidence:
   - early dashboard surface hypothesis
   epistemic_status: HYPOTHESIS
+- from: RCN-000023
+  relation_type: CALLS
+  target_id: RCN-000009
+  unresolved_target: ''
+  evidence:
+  - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_surface.py
+  epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000024
   relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000001
@@ -159,6 +246,13 @@ items:
   evidence:
   - Landscape naming
   epistemic_status: HYPOTHESIS
+- from: RCN-000024
+  relation_type: TESTS
+  target_id: RCN-000001
+  unresolved_target: ''
+  evidence:
+  - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+  epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000027
   relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000009
@@ -222,6 +316,13 @@ items:
   evidence:
   - visual operator runbook naming
   epistemic_status: HYPOTHESIS
+- from: RCN-000034
+  relation_type: DOCUMENTS
+  target_id: RCN-000009
+  unresolved_target: ''
+  evidence:
+  - 987e020378d1767fbd6fb1f0914d475f9a485f51:docs/webui/MARKET_DASHBOARD_PRODUCT_SURFACE_V1.md
+  epistemic_status: FORENSIC_RAW_FACT
 - from: RCN-000035
   relation_type: POSSIBLE_SAME_AS
   target_id: RCN-000002
@@ -286,5 +387,5 @@ items:
   - overview/workflow notes also appear under docs/00_overview
   epistemic_status: HYPOTHESIS
 identity_merges_performed: 0
-note: Copied from ledger. POSSIBLE_SAME_AS remains hypothesis. PATH_MOVED_OR_RENAMED_TO / SAME_BLOB_AS unused unless blob-SHA
-  or R100 evidence is attached to a ledger record. Git rename detection alone is not identity.
+note: UNDERSTAND pass v1 copied from ledger. POSSIBLE_SAME_AS remains hypothesis. No SAME_AS / MERGED_INTO / RENAMED_TO identity
+  fusion.

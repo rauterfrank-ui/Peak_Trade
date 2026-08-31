@@ -51,17 +51,63 @@ records:
       evidence:
       - docs/system_atlas/reconciliation/search_anchors.yaml
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    purpose_understood: true
+    purpose_statement: Read-only Market Dashboard Landscape V2 projection contracts, page aggregate/presenter, and GET /market
+      shell. Consumer foundation only; no runtime activation, orders, or domain recomputation.
+    historical_problem_statement: Provide a single Landscape market workspace as a strictly read-only consumer of already-produced
+      Peak_Trade snapshots.
+    inputs:
+    - Durable presentation projections / injected snapshots for bound slots
+    - okx_selected_instrument_ohlcv_readmodel.v1 for OHLCV poll
+    - Workflow Dashboard archive root for fail-closed producer binding
+    outputs:
+    - GET /market HTML via present_market_landscape_v2
+    - GET /api/market/landscape/ohlcv JSON poll payload
+    - Availability-tagged projection snapshots (never silent defaults)
+    dependencies:
+    - RCN-000002 documents this package
+    - producer binding lives in market_dashboard_landscape_producer_binding_v2
+    consumers:
+    - RCN-000024 contract tests
+    - browser GET /market
+    authority_role: DASHBOARD_AUTHORITY_EFFECT=NONE; consumer snapshots only
+    safety_role: Fail-closed unavailable/STALE; never fabricate producer outputs
+    runtime_role: Read-only SSR/JSON consumer; no order/runtime-activation imports
+    invariants:
+    - Unbound slots use explicit Availability states
+    - Package stays free of trading producer imports (binding lives outside)
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Package docstring states read-only projection contracts + page shell; no runtime activation, orders, or domain
+        recomputation.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/__init__.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'contracts.py: consumer snapshots only; do not recompute decision, risk, sizing, scope, or Double Play authority.'
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/contracts.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Shell router: GET /market read-only SSR; no POST/PUT/PATCH/DELETE; no execution/order/runtime-activation imports.'
+      evidence:
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Producer binding lives outside the package so the package stays free of trading/webui producer imports.
+      evidence:
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Owner registry maps projection slots to existing canonical producer modules; consumer boundary only.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: OPEN_QUESTION
+      text: Identity versus deleted product_surface_v1 (RCN-000009) remains unproven; POSSIBLE_SAME_AS stays hypothesis.
+      evidence:
+      - docs/system_atlas/reconciliation/relations.yaml
+      used_as_fact: false
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -87,7 +133,7 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -95,6 +141,7 @@ records:
     unresolved_questions:
     - Is this the historical component remembered as Landscape, or a later dashboard generation that reused the name?
     - What was the original purpose of this package?
+    - Is Landscape V2 a later generation of product_surface_v1, or a distinct package that reused dashboard naming?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -138,17 +185,46 @@ records:
       text: Purpose and authority role not investigated in this pass.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    purpose_understood: true
+    purpose_statement: Canonical planning/handover/execution runbook for Market Dashboard Landscape V2 as a strictly read-only
+      consumer. Documentary index; not a second technical SSOT.
+    historical_problem_statement: Bind Landscape V2 workstream status, route, and consumer-closeout semantics for operators
+      without raising dashboard authority.
+    inputs:
+    - Workstream phase evidence and merged capability PRs named in the runbook
+    outputs:
+    - Operator/planning document MARKET_DASHBOARD_V2_WORKSTREAM_COMPLETE
+    dependencies:
+    - RCN-000001 implementation package named as the consumer surface
+    consumers:
+    - Operator/agent handover for Landscape V2
+    authority_role: Documentation Anchor role only; DASHBOARD_AUTHORITY_EFFECT=NONE
+    safety_role: LIVE_AUTHORIZED=false; ORDERS=false stated in header
+    runtime_role: Not a runtime module; documents BOUND_NOT_ACTIVATED
+    invariants:
+    - LANDSCAPE_COMPLETE_MEANS_CONSUMER_CLOSEOUT_ONLY=true
+    - LANDSCAPE_COMPLETE_DOES_NOT_MEAN_TRADING_RUNTIME_ACTIVATED=true
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Header: Ziel = Neuer Market-Workspace als strikt read-only Consumer.'
+      evidence:
+      - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: DASHBOARD_AUTHORITY_EFFECT=NONE; DASHBOARD_TRADING_INPUT=false; DASHBOARD_SSOT=false.
+      evidence:
+      - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: Added 2026-07-23 as Landscape V2 master runbook (#5500).
+      evidence:
+      - e18a16e138d643cac5748c8ccafaea0b871a80c8
+      used_as_fact: true
+    - claim_class: OPEN_QUESTION
+      text: Whether this document is a distinct component from RCN-000001 or only its documentation remains a navigation distinction;
+        records are not fused.
+      evidence: []
+      used_as_fact: false
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -157,6 +233,12 @@ records:
       evidence:
       - same Landscape V2 naming window
       epistemic_status: HYPOTHESIS
+    - relation_type: DOCUMENTS
+      target_id: RCN-000001
+      unresolved_target: ''
+      evidence:
+      - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -168,13 +250,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Does this document define a component distinct from RCN-000001?
+    - 'Document versus package: same Landscape V2 workstream, not proven same identity.'
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -219,17 +302,39 @@ records:
       text: Name collision with Market Landscape is unresolved; records not merged.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: Central entry index of Peak_Trade runbooks and operator guides (execution, live-risk, alerts, governance,
+      R&D). The word Landscape here names a runbook catalog, not the Market Dashboard Landscape V2 package.
+    historical_problem_statement: Give operators/on-call/risk owners a single table to find the matching runbook in an incident
+      or before critical actions.
+    inputs:
+    - Paths of runbooks under docs/ and docs/runbooks/
+    outputs:
+    - Markdown index table with scope/cluster/layer/2026-ready status
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Operators, on-call, risk owners (stated audience)
+    authority_role: Index/navigation; not stated as SSOT
+    safety_role: R&D rows marked not live-released
+    runtime_role: Documentation only
+    invariants:
+    - Name collision with Market Landscape is unresolved; no POSSIBLE_SAME_AS
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Title: Peak_Trade – Runbooks Landscape (2026-ready). Central entry for all runbooks and operator guides.'
+      evidence:
+      - docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: Added 2025-12-09 as Runbooks Landscape overview.
+      evidence:
+      - 40c057a5fe0795a3a8595e9a873628c05d3ac945
+      used_as_fact: true
+    - claim_class: OPEN_QUESTION
+      text: No evidence this index is the same component as Market Dashboard Landscape V2; records remain unfused.
+      evidence:
+      - docs/system_atlas/reconciliation/ledger.yaml
+      used_as_fact: false
   relations:
     items: []
   current_comparison:
@@ -243,13 +348,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Is this a runbook index only, unrelated to Market Landscape V2?
+    - Shared token Landscape is a naming collision, not an identity proof.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -299,17 +405,44 @@ records:
       evidence:
       - docs/system_atlas/entities/catalog.yaml
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: 'Direction-locked Master V2 trading package: upstream handoff-only decision-packet, local evaluator,
+      and Double Play model modules. Package marker: no live authority.'
+    historical_problem_statement: Hold Master V2 decision-packet/local-flow/Double Play model logic without conferring live
+      trading authority from the package itself.
+    inputs:
+    - Adapted Master V2 flow inputs / decision packet snapshots
+    outputs:
+    - MasterV2DecisionPacketV1 and related handoff types
+    - Local flow evaluation results
+    - Double Play composition/state/survival/suitability model outputs
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - RCN-000005 composition stack
+    - RCN-000006 ops.double_play
+    - RCN-000021
+    authority_role: Upstream handoff-only; no live authority (package docstring)
+    safety_role: Contains safety/kill-switch handoff types; not a live arming path
+    runtime_role: Model/local-eval package under src/trading/master_v2/
+    invariants:
+    - '__init__.py: Direction-locked Master V2: upstream handoff-only'
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'src/trading/master_v2/__init__.py: Direction-locked Master V2: upstream handoff-only (no live authority).'
+      evidence:
+      - src/trading/master_v2/__init__.py
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: 'Canonical dry-flow tree introduced 2026-04-23 commit c47b8907 PR #2822.'
+      evidence:
+      - c47b89077b48a48c5f11b7c53cf8edc3b7ccd751
+      used_as_fact: true
+    - claim_class: OPEN_QUESTION
+      text: Forensic extract RCN-000007 shares the Master V2 label but is a derived index over a working-runbook blob, not
+        this package.
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/master_v2/STRUCTURE.md
+      used_as_fact: false
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -329,13 +462,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - What is the historical purpose of Master V2 as a system, beyond the package existing?
+    - POSSIBLE_SAME_AS RCN-000007 remains hypothesis; extract is derived index.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -387,17 +521,40 @@ records:
       text: Purpose and relation to ops.double_play not understood in this pass.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    purpose_understood: true
+    purpose_statement: Pure composition of Double Play transition, survival envelope, and suitability decisions into a data-only
+      eligibility/blocked/observe status. Not trading permission. No I/O, no execution, no registry, no live authority.
+    historical_problem_statement: Combine Double Play model outputs for one composition step without issuing execution or
+      live go.
+    inputs:
+    - TransitionDecision + resulting SideState
+    - SurvivalEnvelopeDecision
+    - SuitabilityProjectionDecision
+    - RequestedSide
+    - optional capital-slot ratchet/release decisions
+    outputs:
+    - DoublePlayCompositionDecision / DoublePlayCompositionStatus
+    dependencies:
+    - RCN-000004 modules double_play_state/survival/suitability/capital_slot
+    consumers:
+    - RCN-000021 build_dashboard_display_snapshot / compose_double_play_decision
+    authority_role: Model-level composition; not execution or live go
+    safety_role: Can emit KILL_ALL / CHOP_GUARD / LIVE_NOT_AUTHORIZED block reasons
+    runtime_role: Pure in-process composition; no I/O
+    invariants:
+    - ELIGIBLE_MODEL_ONLY is not trading permission
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'double_play_composition.py module docstring: Pure composition; data-only eligibility/blocked/observe; not trading
+        permission.'
+      evidence:
+      - src/trading/master_v2/double_play_composition.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'double_play_state.py: Pure, dependency-light state model; no I/O, no exchange, no risk layer wiring.'
+      evidence:
+      - src/trading/master_v2/double_play_state.py
+      used_as_fact: true
   relations:
     items:
     - relation_type: DEPENDS_ON
@@ -418,6 +575,12 @@ records:
       evidence:
       - forensic extract labeled double_play
       epistemic_status: HYPOTHESIS
+    - relation_type: IMPORTS
+      target_id: RCN-000004
+      unresolved_target: ''
+      evidence:
+      - src/trading/master_v2/double_play_composition.py
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -429,13 +592,15 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Is this the same historical Double Play as ops.double_play specialists?
+    - ops.double_play (RCN-000006) shares the Double Play name but is a quarantined projection path; POSSIBLE_SAME_AS remains
+      hypothesis.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -484,17 +649,34 @@ records:
       text: Current files may be a remnant; purpose not investigated.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
+    purpose_understood: true
+    purpose_statement: ops.double_play.evaluate_double_play is a SAFE DEFAULT OFF projection/diagnostic consumer. Competing
+      SwitchGate authority is fail-closed disabled. Canonical Bull/Bear switch remains trading.master_v2.double_play_state.transition_state.
+    historical_problem_statement: Keep a legacy ops Double Play callable from escalating to compute owner or writing SideState.
+    inputs:
+    - context dict including switch_gate state projection and flags
+    outputs:
+    - DoublePlayDecision frozen projection (enabled, active_specialist, reasons)
+    dependencies:
+    - RCN-000004 quarantine/authority-boundary modules
     consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    authority_role: OPS_EVALUATE_DOUBLE_PLAY_AUTHORITY; projection only
+    safety_role: assert_path_cannot_write_side_state; switch authority disabled
+    runtime_role: ops scaffold callable; not canonical switch owner
+    invariants:
+    - never calls step_switch_gate; never writes SideState
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'evaluate_double_play docstring: SAFE DEFAULT OFF; projection/diagnostic consumer only; never authorizes Bull/Bear
+        switch.'
+      evidence:
+      - src/ops/double_play/specialists.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Canonical Bull/Bear / Switch authority remains trading.master_v2.double_play_state.transition_state.
+      evidence:
+      - src/ops/double_play/specialists.py
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -503,6 +685,12 @@ records:
       evidence:
       - shared Double Play name
       epistemic_status: HYPOTHESIS
+    - relation_type: IMPORTS
+      target_id: RCN-000004
+      unresolved_target: ''
+      evidence:
+      - src/ops/double_play/specialists.py
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -514,13 +702,15 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - What did evaluate_double_play historically do, and is the remaining scaffold the same component?
+    - Whether this scaffold historically computed switches before quarantine is not reconstructed in this pass; current blob
+      is projection-only.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -560,17 +750,34 @@ records:
       evidence:
       - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/AUTHORITY_NONE.txt
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    purpose_understood: true
+    purpose_statement: Derived forensic index of Master V2 heading ranges inside the SHA-256-bound Temporary Forensic Working
+      Runbook extract. Not raw evidence, not current authority, not the src/trading/master_v2 package.
+    historical_problem_statement: Navigate Master V2 mentions in the preserved forensic working runbook blob.
+    inputs:
+    - SOURCE_ANCHORS / source blob SHA-256 a5a468f7…
+    outputs:
+    - STRUCTURE.md covering heading ranges; hit count 63
+    dependencies:
+    - RCN-000022 historical_reference tree
+    consumers:
+    - Forensic navigation
+    authority_role: AUTHORITY=NONE; CANONICAL_SELECTION=false; TRADING_AUTHORITY=false
+    safety_role: Preservation class DERIVED_INDEX
+    runtime_role: Not importable as runtime
+    invariants:
+    - Resolve every row against the committed source blob
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'master_v2/STRUCTURE.md: derived index; not raw evidence; not current authority; Model master_v2; hit count 63.'
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/master_v2/STRUCTURE.md
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent README: storing the package in git does not make it canonical working authority.'
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/README.md
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -579,6 +786,12 @@ records:
       evidence:
       - shared Master V2 label
       epistemic_status: HYPOTHESIS
+    - relation_type: REFERENCES
+      target_id: RCN-000022
+      unresolved_target: ''
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/README.md
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -590,13 +803,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Is this extract identical to current src/trading/master_v2, a historical snapshot, or a different source?
+    - Label overlap with RCN-000004 is not identity; POSSIBLE_SAME_AS stays hypothesis.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -635,17 +849,29 @@ records:
       text: Identity versus RCN-000005 and RCN-000006 is unresolved.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    purpose_understood: true
+    purpose_statement: Derived forensic index of Double Play heading ranges in the same SHA-256-bound working-runbook extract.
+      Not the src/trading/master_v2 Double Play composition stack and not ops.double_play.
+    historical_problem_statement: Navigate Double Play mentions in the preserved forensic working runbook blob.
+    inputs:
+    - SOURCE_ANCHORS / source blob SHA-256 a5a468f7…
+    outputs:
+    - STRUCTURE.md covering heading ranges; hit count 74
+    dependencies:
+    - RCN-000022 historical_reference tree
+    consumers:
+    - Forensic navigation
+    authority_role: AUTHORITY=NONE
+    safety_role: DERIVED_INDEX
+    runtime_role: Not runtime
+    invariants:
+    - Not raw evidence; resolve against source blob
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'double_play/STRUCTURE.md: derived index; Model double_play; hit count 74.'
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/double_play/STRUCTURE.md
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -660,6 +886,12 @@ records:
       evidence:
       - shared Double Play label
       epistemic_status: HYPOTHESIS
+    - relation_type: REFERENCES
+      target_id: RCN-000022
+      unresolved_target: ''
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/README.md
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -671,13 +903,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Does this extract describe ops.double_play, Master V2 Double Play, or another source?
+    - POSSIBLE_SAME_AS RCN-000005/RCN-000006 remains hypothesis.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -722,17 +955,46 @@ records:
       text: Current absence is not rejection and not proven absorption.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    purpose_understood: true
+    purpose_statement: 'Market Dashboard product surface v1 (PR-D): read-only presentation path source loader → page aggregate
+      → presenter → template for GET /market.'
+    historical_problem_statement: Bind /market to a product presenter without producer I/O in the presenter.
+    inputs:
+    - MarketDashboardPageSnapshotV1 from readmodels_v1
+    outputs:
+    - MarketDashboardPageContextV1 / product template context
+    dependencies:
+    - RCN-000010 readmodels_v1 (presenter imports)
+    consumers:
+    - RCN-000023 market_surface.py GET /market handler (historical)
+    authority_role: Presentation-only; no producer I/O, no domain imports in presenter
+    safety_role: Display-only view model
+    runtime_role: Historical SSR product surface; deleted from current origin/main
+    invariants:
+    - PRESENTER_OWNER bound to build_market_dashboard_page_context_v1
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob of deletion commit: product surface v1 read-only presentation path source loader → page aggregate
+        → presenter → template.'
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_dashboard_product_surface_v1/__init__.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'presenter.py: Maps MarketDashboardPageSnapshotV1 to a deterministic template view model. No producer I/O, no
+        domain imports.'
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_dashboard_product_surface_v1/presenter.py
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: 'Deleted on origin/main by commit b5b81728 (delete(webui): remove market dashboard product stack).'
+      evidence:
+      - b5b8172806eae55d8639f964fcb2ad036337a0f3
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: 'Package added 2026-07-17 commit 1d61ec0d PR #5287.'
+      evidence:
+      - 1d61ec0deba49ca38a11f1a16ac53679a48608a0
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -741,6 +1003,12 @@ records:
       evidence:
       - dashboard generation hypothesis
       epistemic_status: HYPOTHESIS
+    - relation_type: IMPORTS
+      target_id: RCN-000010
+      unresolved_target: ''
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_dashboard_product_surface_v1/presenter.py
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -752,13 +1020,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Was this deleted, renamed, or absorbed into Landscape V2?
+    - Not proven SAME_AS Landscape V2 (RCN-000001); deletion is not absorption proof.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -796,17 +1065,34 @@ records:
       text: Identity versus RCN-000009 is unresolved.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: 'Market Dashboard ReadModel contracts v1: typed, immutable, versioned, fail-closed consumer contracts
+      for the Market Dashboard architecture reset. Producer binding was PR-C; UI/page binding was PR-D.'
+    historical_problem_statement: Give the dashboard typed consumer snapshots without owning producer truth.
+    inputs:
+    - PR-C adapters / page source inputs (historical)
+    outputs:
+    - MarketDashboardPageSnapshotV1 and slot snapshot types
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - RCN-000009 presenter imported these contracts
+    authority_role: Consumer contracts; producer binding out of package (PR-C)
+    safety_role: Fail-closed availability states in contracts
+    runtime_role: Historical readmodel package; deleted with product stack
+    invariants:
+    - Package documentation path MARKET_DASHBOARD_READMODELS_V1.md named in docstring
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob __init__.py: typed, immutable, versioned, fail-closed consumer contracts for the Market Dashboard
+        architecture reset.'
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_dashboard_readmodels_v1/__init__.py
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: Deleted by b5b81728 with the market dashboard product stack.
+      evidence:
+      - b5b8172806eae55d8639f964fcb2ad036337a0f3
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -826,13 +1112,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Separate component versus product_surface_v1?
+    - Adjacent to product_surface_v1 but a separate package; not fused.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -871,17 +1158,33 @@ records:
       text: Purpose not investigated.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: 'Market visual operator surface v1: read-only, non-authorizing SSR display for the /market dashboard
+      visual operator zone (decision funnel, economic observability, AI linear diagnostics, compact operator header).'
+    historical_problem_statement: Show operator-zone view models without inventing data or carrying order authority.
+    inputs:
+    - Offline evidence bundles; ENV_EVIDENCE_ROOT / ENV_LINEAR_DIAGNOSTICS_ROOT
+    outputs:
+    - build_market_visual_operator_surface_context display view models
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Historical /market visual operator zone
+    authority_role: Non-authorizing SSR display
+    safety_role: Fails closed when offline evidence bundles unconfigured or missing
+    runtime_role: Historical display package; deleted with product stack
+    invariants:
+    - never invents data; never carries trading/runtime/order authority
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Parent blob __init__.py states read-only non-authorizing SSR display and fail-closed missing evidence.
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_visual_operator_surface_v1/__init__.py
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: Deleted by b5b81728.
+      evidence:
+      - b5b8172806eae55d8639f964fcb2ad036337a0f3
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -901,13 +1204,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Relation to Landscape V2 and product_surface_v1?
+    - Relation to Landscape V2 operator chrome is unproven identity.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -946,17 +1250,32 @@ records:
       text: Identity versus later dashboard generations unresolved.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: F5 Futures Read-only Market Dashboard runtime (SSR-only, offline/fixture) behind PEAK_TRADE_F5_MARKET_DASHBOARD_ENABLED.
+    historical_problem_statement: Render an offline/fixture futures read-only market dashboard for F5.
+    inputs:
+    - ENV_BUNDLE_ROOT fixture bundle; env enable flag
+    outputs:
+    - SSR dashboard for READMODEL_ID futures_read_only_market_dashboard_v0
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Historical F5 /market fixture path
+    authority_role: Read-only SSR; fixture/offline
+    safety_role: Env-gated enable; status model includes unsupported_for_live
+    runtime_role: Historical SSR runtime module; deleted with product stack
+    invariants:
+    - SSR-only, offline/fixture (module docstring)
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob: F5 Futures Read-only Market Dashboard runtime (SSR-only, offline/fixture).'
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/futures_read_only_market_dashboard_runtime_v0.py
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: Deleted by b5b81728.
+      evidence:
+      - b5b8172806eae55d8639f964fcb2ad036337a0f3
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -976,13 +1295,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Predecessor of later dashboard packages?
+    - Not proven SAME_AS product_surface_v1; POSSIBLE_SAME_AS stays hypothesis.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1026,19 +1346,53 @@ records:
         here.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: Evidence pack recording complete deletion of the market dashboard product stack (777 deleted tracked
+      paths) while listing domain owners to keep, including src/trading/master_v2/** and double_play_dashboard_display_json_route_v0.py.
+    historical_problem_statement: Persist forensic proof of the dashboard deletion scope and preserved domain owners.
+    inputs:
+    - Worktree deletion diff / intended file lists
+    outputs:
+    - deletion_manifest.txt, preserved_domain_components.txt, inventories
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Later forensic reconstruction of deleted dashboard paths
+    authority_role: Evidence pack; not runtime
+    safety_role: Lists KEEP_DOMAIN_OWNER for trading/master_v2 and related owners
+    runtime_role: Not a runtime component
+    invariants:
+    - DELETED_TRACKED=777 stated in deletion_manifest.txt
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'deletion_manifest.txt header: Market Dashboard complete deletion manifest; DELETED_TRACKED=777.'
+      evidence:
+      - evidence/market_dashboard_deletion/deletion_manifest.txt
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: preserved_domain_components.txt KEEP_DOMAIN_OWNER includes src/trading/master_v2/** and src/webui/double_play_dashboard_display_json_route_v0.py.
+      evidence:
+      - evidence/market_dashboard_deletion/preserved_domain_components.txt
+      used_as_fact: true
   relations:
-    items: []
+    items:
+    - relation_type: REFERENCES
+      target_id: RCN-000009
+      unresolved_target: ''
+      evidence:
+      - evidence/market_dashboard_deletion/deletion_manifest.txt
+      epistemic_status: FORENSIC_RAW_FACT
+    - relation_type: REFERENCES
+      target_id: RCN-000004
+      unresolved_target: ''
+      evidence:
+      - evidence/market_dashboard_deletion/preserved_domain_components.txt
+      epistemic_status: FORENSIC_RAW_FACT
+    - relation_type: REFERENCES
+      target_id: RCN-000021
+      unresolved_target: ''
+      evidence:
+      - evidence/market_dashboard_deletion/preserved_domain_components.txt
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -1050,13 +1404,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Which ledger records does this pack prove were deleted versus preserved?
+    - Pack documents deletion; it does not prove Landscape V2 identity with v1.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1184,17 +1539,36 @@ records:
       text: Revert is not a reconciliation disposition.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    purpose_understood: true
+    purpose_statement: 'Master V2 minimal selector V1 owner policy: census → structural eligibility → exactly-one-or-none
+      → durable artifact → narrowed runtime-binding adapter. Ranking is not a selection authority. HISTORICAL_CLAIM=false
+      on the package.'
+    historical_problem_statement: Select exactly one or none Master V2 instrument under an owner policy, not GFU ranking.
+    inputs:
+    - Census/eligibility inputs to decide_master_v2_minimal_selection_v1
+    outputs:
+    - MasterV2SelectionDecisionV1 durable artifact
+    dependencies:
+    - RCN-000004 (name/path refer to Master V2)
+    consumers:
+    - runtime_binding_adapter_v1 (historical package)
+    authority_role: Owner policy selector; ranking is not selection authority
+    safety_role: exactly-one-or-none
+    runtime_role: 'Historical ops package; currently absent after revert of #6165 via #6166'
+    invariants:
+    - OWNER_POLICY_VERSION=V1; HISTORICAL_CLAIM=false
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Add-commit blob: Master V2 minimal selector V1 (Owner policy; not historical GFU semantics). Ranking is not a
+        selection authority.'
+      evidence:
+      - 75eee7bdc501ab4b0ec93812675cd074acb9e2ee:src/ops/master_v2_minimal_selector_v1/__init__.py
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: 'Added in feat(ops): add Master V2 minimal selector policy V1 (#6165).'
+      evidence:
+      - 75eee7bdc501ab4b0ec93812675cd074acb9e2ee
+      used_as_fact: true
   relations:
     items:
     - relation_type: DEPENDS_ON
@@ -1214,13 +1588,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - What did the selector policy do, and why was it reverted? Purpose still uninvestigated.
+    - Current absence after revert is not a disposition of the historical purpose.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1261,17 +1636,28 @@ records:
       evidence:
       - docs/system_atlas/entities/catalog.yaml
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
+    purpose_understood: true
+    purpose_statement: 'Historical predecessor strategic/operational implementation runbook (v4.4.12). File header: DOCUMENT_CLASS=HISTORICAL;
+      STATUS=SUPERSEDED; SUPERSEDED_BY canonical Master Runbook; AUTHORITY_EFFECT=NONE.'
+    historical_problem_statement: Preserve the superseded Vollautonomie runbook as historical predecessor reference without
+      remaining current implementation authority.
     inputs: []
-    outputs: []
+    outputs:
+    - Historical markdown runbook body
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Historical predecessor reference (stated in header)
+    authority_role: NONE; superseded; must not be used as current authority
+    safety_role: 'Header: PHASE_1_SAFETY_BOUNDS_REMAIN_CURRENTLY_BINDING is a document claim, not evaluated here'
+    runtime_role: Documentation only
+    invariants:
+    - NON_CURRENT_RUNTIME_TRUTH=true
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Header STATUS=SUPERSEDED; SUPERSEDED_BY=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md; AUTHORITY_EFFECT=NONE.
+      evidence:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+      used_as_fact: true
   relations:
     items: []
   current_comparison:
@@ -1285,13 +1671,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - What components did this historical runbook name that are now lost?
+    - Whether any body sections remain binding is not adjudicated in UNDERSTAND.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1330,17 +1717,28 @@ records:
       text: This pass did not exhaust the information corpus.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: 'Non-authoritative information-corpus persistence base: registry and navigation only so a later agent
+      can continue without chat memory. Must not override Master Runbook or Map of Truth.'
+    historical_problem_statement: Persist discovery/identity/provenance registration for corpus work.
+    inputs:
+    - Repo locators and authorized external read-only surfaces (stated)
+    outputs:
+    - Registry/navigation markdown under docs/forensics/persistence/
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Later main agent continuation (stated)
+    authority_role: AUTHORITY=NONE; NAVIGATION_ONLY=true; CANONICAL=false
+    safety_role: Must not activate live/testnet/orders/credentials
+    runtime_role: Documentation/registry only
+    invariants:
+    - INDEX_ENTRY_IS_NOT_ADJUDICATION=true
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: DOCUMENT_CLASS=NON_AUTHORITATIVE_INFORMATION_CORPUS_PERSISTENCE_BASE; DOCUMENT_ROLE=REGISTRY_AND_NAVIGATION_ONLY.
+      evidence:
+      - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+      used_as_fact: true
   relations:
     items: []
   current_comparison:
@@ -1354,7 +1752,7 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -1625,17 +2023,35 @@ records:
       evidence:
       - docs/system_atlas/census/historical_architecture.yaml
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    purpose_understood: true
+    purpose_statement: 'Master V2 Double Play read-only dashboard display JSON route v0: GET-only snapshot from pure build_dashboard_display_snapshot
+      using a static in-memory long/bull + capital-slot fixture (no scanner, exchange, session, or market-data).'
+    historical_problem_statement: Expose Double Play composition as read-only JSON without live inputs.
+    inputs:
+    - Static in-memory fixture SideState/capital-slot/survival/suitability
+    outputs:
+    - JSONResponse under prefix /api/master-v2/double-play
+    dependencies:
+    - RCN-000005 compose_double_play_decision
+    - RCN-000004 modules
+    consumers:
+    - Read-only dashboard JSON clients
+    authority_role: Read-only display route; tags include dashboard-display-readonly
+    safety_role: No scanner/exchange/session/market-data (module docstring)
+    runtime_role: FastAPI GET route remnant; kept as domain owner in deletion pack
+    invariants:
+    - GET-only; fixture-driven
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Module docstring: GET-only snapshot from pure build_dashboard_display_snapshot; static in-memory fixture.'
+      evidence:
+      - src/webui/double_play_dashboard_display_json_route_v0.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Imports compose_double_play_decision and transition_state from trading.master_v2.
+      evidence:
+      - src/webui/double_play_dashboard_display_json_route_v0.py
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -1644,6 +2060,18 @@ records:
       evidence:
       - Double Play display naming
       epistemic_status: HYPOTHESIS
+    - relation_type: IMPORTS
+      target_id: RCN-000004
+      unresolved_target: ''
+      evidence:
+      - src/webui/double_play_dashboard_display_json_route_v0.py
+      epistemic_status: FORENSIC_RAW_FACT
+    - relation_type: CALLS
+      target_id: RCN-000005
+      unresolved_target: ''
+      evidence:
+      - src/webui/double_play_dashboard_display_json_route_v0.py
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -1655,13 +2083,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Is this a remnant of a deleted Double Play webui dashboard stack?
+    - POSSIBLE_SAME_AS RCN-000005 is naming/use, not identity of the route vs composition module.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1705,17 +2134,30 @@ records:
       text: External derived paths are outside repository-internal census scope.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: Immutable historical forensic reference package bound to SHA-256 a5a468f7… of PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md.
+      Git storage does not make it canonical working authority.
+    historical_problem_statement: Preserve a forensic working-runbook blob with derived indexes without promoting it.
+    inputs:
+    - Source blob via gated ingress path named in README
+    outputs:
+    - provenance/, master_v2/, double_play/, conservation/, schemas/ trees
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - RCN-000007
+    - RCN-000008
+    - RCN-000018 conservation child ledger
+    authority_role: AUTHORITY=NONE; CANONICAL_SELECTION=false
+    safety_role: Do not import this tree from runtime code (README)
+    runtime_role: Forensic preservation tree
+    invariants:
+    - REPO_PRESERVATION != CANONICAL_PROMOTION
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'README: immutable historical forensic reference; storing it in git does not make it canonical working authority.'
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/README.md
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -1741,7 +2183,7 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -1786,17 +2228,34 @@ records:
       text: Identity unresolved versus later dashboard packages.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    purpose_understood: true
+    purpose_statement: 'Read-only Market Surface module: GET /market bound to PR-D product surface (build_market_dashboard_product_template_context_v1
+      → presenter → market_dashboard_product_v1.html). Legacy producers remain unreachable from the routed GET /market handler.'
+    historical_problem_statement: Own the GET /market route for the v1 product surface.
+    inputs:
+    - PR-D product template context builder
+    outputs:
+    - GET /market HTML; GET /api/market/ohlcv JSON (legacy kraken/dummy)
+    dependencies:
+    - RCN-000009 product surface
+    consumers:
+    - Historical browser /market
+    authority_role: Read-only product surface route
+    safety_role: Legacy producers unreachable from routed GET /market (docstring)
+    runtime_role: Historical FastAPI/SSR module; deleted with product stack
+    invariants:
+    - PR-D binds /market to product presenter
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob: Read-only Market Surface — PR-D product surface on GET /market.'
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_surface.py
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: Deleted by b5b81728.
+      evidence:
+      - b5b8172806eae55d8639f964fcb2ad036337a0f3
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -1805,6 +2264,12 @@ records:
       evidence:
       - early dashboard surface hypothesis
       epistemic_status: HYPOTHESIS
+    - relation_type: CALLS
+      target_id: RCN-000009
+      unresolved_target: ''
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_surface.py
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -1816,13 +2281,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Standalone surface versus later dashboard packages?
+    - POSSIBLE_SAME_AS RCN-000012 remains hypothesis.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1869,17 +2335,34 @@ records:
       text: Not merged with Market Dashboard Landscape V2 package without identity proof.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
+    purpose_understood: true
+    purpose_statement: 'Contract tests proving supervised graphical Market Landscape presentation-only v1: existing JSON routes
+      stay semantically compatible; GET /landscape returns text/html; static CSS/JS HTTP 200; no direct_browser_okx path in
+      JS.'
+    historical_problem_statement: Prove Landscape presentation-only HTTP/static contracts without changing route semantics.
+    inputs:
+    - create_o2_dashboard_http_app_v1; durable read model fixture
+    outputs:
+    - pytest assertions over /health /market /landscape /ohlcv
+    dependencies:
+    - RCN-000001 templates/JS and dashboard HTTP host
     consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    authority_role: Test-only; not a product authority
+    safety_role: Asserts failures are visible; no direct_browser_okx
+    runtime_role: pytest contract tests
+    invariants:
+    - Legacy browser_payload is not required
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Module docstring lists GET /landscape HTML, static CSS/JS 200, no direct_browser_okx path in JS.
+      evidence:
+      - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Test file references static/js/market_dashboard_landscape_v2.js and templates/peak_trade_dashboard/market_landscape_v2.html.
+      evidence:
+      - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -1888,6 +2371,12 @@ records:
       evidence:
       - Landscape naming
       epistemic_status: HYPOTHESIS
+    - relation_type: TESTS
+      target_id: RCN-000001
+      unresolved_target: ''
+      evidence:
+      - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -1899,13 +2388,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Is this the same Landscape as RCN-000001 or a distinct presentation-only capability?
+    - POSSIBLE_SAME_AS RCN-000001 is test-to-package, not identity fusion.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2093,17 +2583,34 @@ records:
       text: Identity versus later dashboard packages is unresolved.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    purpose_understood: true
+    purpose_statement: Market Depth runtime resolution (env + offline bundle builder), shared by HTTP and future SSR. Env-gated
+      PEAK_TRADE_MARKET_DEPTH_ENABLED.
+    historical_problem_statement: Resolve market-depth readmodel payload from an offline bundle for display.
+    inputs:
+    - ENV_BUNDLE_ROOT offline bundle
+    outputs:
+    - build_market_depth_readmodel_v0 JSON dict
+    dependencies:
+    - market_depth_readmodel_v0 package (same historical family)
+    consumers:
+    - Historical HTTP/SSR depth display
+    authority_role: Readmodel runtime; env-gated
+    safety_role: Offline bundle; no live book inferred from docstring
+    runtime_role: Historical; deleted with product stack
+    invariants:
+    - READMODEL_ID from depth builder
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob: Market Depth runtime resolution (env + offline bundle builder).'
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_depth_runtime_v0.py
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: Deleted by b5b81728.
+      evidence:
+      - b5b8172806eae55d8639f964fcb2ad036337a0f3
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -2123,13 +2630,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Standalone depth component versus product_surface_v1?
+    - POSSIBLE_SAME_AS RCN-000009 is generation hypothesis only.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2165,17 +2673,33 @@ records:
       evidence:
       - src/webui/market_tape_readmodel_v0
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: 'Read-only Market Trades/Tape readmodel v0: intentionally pure/offline with no provider calls, no network,
+      no trading-side handles, no dashboard polling.'
+    historical_problem_statement: Build an offline tape/trades readmodel for display.
+    inputs:
+    - Offline bundle via ENV_BUNDLE_ROOT when enabled
+    outputs:
+    - build_market_tape_readmodel_v0 JSON dict
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Historical tape display
+    authority_role: AUTHORITY_BOUNDARY exported; read-only
+    safety_role: No provider/network/trading handles (docstring)
+    runtime_role: Historical package; deleted with product stack
+    invariants:
+    - pure/offline for v0
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob: no provider calls, no network, no trading-side handles, no dashboard polling.'
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_tape_readmodel_v0/__init__.py
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: Deleted by b5b81728.
+      evidence:
+      - b5b8172806eae55d8639f964fcb2ad036337a0f3
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -2195,7 +2719,7 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -2238,17 +2762,32 @@ records:
       evidence:
       - src/webui/market_ranking_funnel_readmodel_v0
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: Market Ranking Funnel runtime resolution (env + offline bundle), SSR-only. Stages labeled universe/shortlist/selected.
+    historical_problem_statement: Resolve ranking-funnel readmodel from an offline bundle for SSR.
+    inputs:
+    - PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT
+    outputs:
+    - build_market_ranking_funnel_readmodel payload
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Historical SSR ranking funnel
+    authority_role: SSR-only env-gated runtime
+    safety_role: Offline bundle
+    runtime_role: Historical; deleted with product stack
+    invariants:
+    - SSR-only (module docstring)
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob: Market Ranking Funnel runtime resolution (env + offline bundle), SSR-only.'
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_ranking_funnel_runtime_v0.py
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: Deleted by b5b81728.
+      evidence:
+      - b5b8172806eae55d8639f964fcb2ad036337a0f3
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -2268,13 +2807,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Relation to later landscape ranking displays?
+    - POSSIBLE_SAME_AS RCN-000009 is hypothesis.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2311,17 +2851,32 @@ records:
       evidence:
       - src/webui/market_futures_ohlcv_readmodel_v0
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: Market Futures OHLCV runtime resolution (env + offline bundle), SSR-only.
+    historical_problem_statement: Resolve futures OHLCV readmodel from an offline bundle for SSR.
+    inputs:
+    - PEAK_TRADE_MARKET_FUTURES_OHLCV_BUNDLE_ROOT
+    outputs:
+    - build_market_futures_ohlcv_readmodel payload
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Historical SSR OHLCV panel
+    authority_role: SSR-only env-gated
+    safety_role: Offline bundle
+    runtime_role: Historical; deleted with product stack
+    invariants:
+    - SSR-only
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob: Market Futures OHLCV runtime resolution (env + offline bundle), SSR-only.'
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_futures_ohlcv_runtime_v0.py
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: Deleted by b5b81728.
+      evidence:
+      - b5b8172806eae55d8639f964fcb2ad036337a0f3
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -2341,13 +2896,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Standalone OHLCV component versus later dashboard packages?
+    - POSSIBLE_SAME_AS RCN-000012 is hypothesis.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2382,17 +2938,33 @@ records:
       evidence:
       - src/webui/market_instrument_eligibility_v0.py
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: Canonical instrument eligibility/exclusion for read-only market dashboard (SSR-only). CANONICAL_EXCLUSION_OWNER
+      bound to this file; Bitcoin base aliases and instrument IDs listed.
+    historical_problem_statement: Exclude/label instruments (including Bitcoin aliases) for the read-only dashboard.
+    inputs:
+    - Instrument id/symbol strings
+    outputs:
+    - Eligibility/exclusion classification (module-level constants and helpers)
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Historical read-only market dashboard
+    authority_role: Canonical exclusion owner string self-declared
+    safety_role: SSR-only dashboard eligibility; not an order gate in the recovered header
+    runtime_role: Historical module; deleted with product stack
+    invariants:
+    - SSR-only (module docstring)
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob: Canonical instrument eligibility / exclusion for read-only market dashboard (SSR-only).'
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_instrument_eligibility_v0.py
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: Deleted by b5b81728.
+      evidence:
+      - b5b8172806eae55d8639f964fcb2ad036337a0f3
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -2412,13 +2984,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Standalone eligibility module versus later ranking/universe producers?
+    - POSSIBLE_SAME_AS RCN-000009 is hypothesis.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2453,17 +3026,32 @@ records:
       evidence:
       - src/webui/market_active_paper_run_runtime_v0.py
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: SSR-only active Paper run panel for GET /market (env-gated, bridge/staging evidence).
+    historical_problem_statement: Show an active paper-run panel from bridge evidence without making it a control surface.
+    inputs:
+    - PEAK_TRADE_MARKET_ACTIVE_PAPER_RUN_BRIDGE_ROOT
+    outputs:
+    - SSR panel context; ACTIVE_IDLE_MINUTES=10
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Historical GET /market paper-run panel
+    authority_role: Env-gated SSR panel
+    safety_role: bridge/staging evidence (docstring)
+    runtime_role: Historical; deleted with product stack
+    invariants:
+    - SSR-only
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob: SSR-only active Paper run panel for GET /market (env-gated, bridge/staging evidence).'
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_active_paper_run_runtime_v0.py
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: Deleted by b5b81728.
+      evidence:
+      - b5b8172806eae55d8639f964fcb2ad036337a0f3
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -2483,13 +3071,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Relation to paper-shadow runtimes?
+    - POSSIBLE_SAME_AS RCN-000012 is hypothesis.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2526,17 +3115,33 @@ records:
       evidence:
       - src/webui/market_dashboard_current_state_runtime_v0.py
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
-    inputs: []
-    outputs: []
+    purpose_understood: true
+    purpose_statement: SSR display context for STEP29M current-state panel on GET /market (always on, view-only). Builds template
+      context from market_dashboard_current_state_snapshot_v0 with controls_allowed=False.
+    historical_problem_statement: Show current-system/governance/evidence snapshot on /market without controls.
+    inputs:
+    - market_dashboard_current_state_snapshot_v0()
+    outputs:
+    - template context with view_only=True, controls_allowed=False
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    consumers:
+    - Historical GET /market current-state panel
+    authority_role: view-only SSR; no duplicate SSOT (docstring)
+    safety_role: controls_allowed=False
+    runtime_role: Historical; deleted with product stack
+    invariants:
+    - always on, view-only
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob: SSR display context for STEP29M current-state panel on GET /market (always on, view-only).'
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_dashboard_current_state_runtime_v0.py
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: Deleted by b5b81728.
+      evidence:
+      - b5b8172806eae55d8639f964fcb2ad036337a0f3
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -2556,13 +3161,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Predecessor of later landscape current-state?
+    - POSSIBLE_SAME_AS RCN-000001 is later-landscape naming hypothesis only.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2604,17 +3210,35 @@ records:
       evidence:
       - docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
+    purpose_understood: true
+    purpose_statement: 'Deleted Market Dashboard product-surface documentation: PR-D ownership of page aggregate/presenter/route/template
+      and GET /market path. Authority/SSOT reference pointed at the Architecture Reset Master Runbook without duplicating
+      it.'
+    historical_problem_statement: Document the v1 product surface owners and GET /market binding.
     inputs: []
-    outputs: []
-    dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
-    invariants: []
+    outputs:
+    - Markdown ownership/path documentation
+    dependencies:
+    - RCN-000009 / RCN-000010 owners named in the doc
+    consumers:
+    - Historical implementers of PR-D
+    authority_role: Documentation; points to product runbook as SSOT reference
+    safety_role: Not runtime
+    runtime_role: Deleted docs with product stack
+    invariants:
+    - 'Active route owner: product surface only (document text)'
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Parent blob: Market Dashboard Product Surface v1 (PR-D; active after merge) with GET /market path through source_loader
+        → page_builder → presenter.'
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:docs/webui/MARKET_DASHBOARD_PRODUCT_SURFACE_V1.md
+      used_as_fact: true
+    - claim_class: HISTORICAL_FACT
+      text: Deleted by b5b81728.
+      evidence:
+      - b5b8172806eae55d8639f964fcb2ad036337a0f3
+      used_as_fact: true
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -2629,6 +3253,12 @@ records:
       evidence:
       - visual operator runbook naming
       epistemic_status: HYPOTHESIS
+    - relation_type: DOCUMENTS
+      target_id: RCN-000009
+      unresolved_target: ''
+      evidence:
+      - 987e020378d1767fbd6fb1f0914d475f9a485f51:docs/webui/MARKET_DASHBOARD_PRODUCT_SURFACE_V1.md
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -2640,13 +3270,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Documentation of RCN-000009/000010/000011 or a distinct product definition?
+    - POSSIBLE_SAME_AS RCN-000009/011 remains documentation-to-code hypothesis.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3520,15 +4151,22 @@ records:
   understanding:
     purpose_understood: false
     purpose_statement: ''
-    historical_problem_statement: ''
+    historical_problem_statement: Unknown beyond census path-family evidence; not reconstructed.
     inputs: []
     outputs: []
     dependencies: []
     consumers: []
     authority_role: ''
     safety_role: ''
-    runtime_role: ''
+    runtime_role: Absent path family
     invariants: []
+    claims:
+    - claim_class: OPEN_QUESTION
+      text: evidence/market_dashboard_reset/pr_a is absent on current origin/main; purpose text of that pack was not recovered
+        in this pass.
+      evidence:
+      - docs/system_atlas/reconciliation/ledger.yaml
+      used_as_fact: false
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -3555,6 +4193,7 @@ records:
     contradictions: []
     unresolved_questions:
     - Same deletion event as evidence/market_dashboard_deletion or a different reset pack?
+    - What did the reset pack assert that the deletion pack (RCN-000013) did not?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3946,17 +4585,32 @@ records:
         uninvestigated.
       evidence: []
   understanding:
-    purpose_understood: false
-    purpose_statement: ''
-    historical_problem_statement: ''
+    purpose_understood: true
+    purpose_statement: 'Documentation tree under src/docs: Peak_Trade_OVERVIEW.md describes a modular trading-framework prototype
+      (Kraken-spot backtesting, MA-crossover, backtest engine). Other files are contributing/setup/architecture notes.'
+    historical_problem_statement: Provide a project overview for new chats/machines (stated in OVERVIEW).
     inputs: []
-    outputs: []
+    outputs:
+    - Markdown documentation files under src/docs/
     dependencies: []
-    consumers: []
-    authority_role: ''
-    safety_role: ''
-    runtime_role: ''
+    consumers:
+    - Human/agent onboarding (stated)
+    authority_role: Documentation; not declared canonical SSOT in recovered header
+    safety_role: Live-trading-bot described as not part of then-current MVP
+    runtime_role: Docs misplaced under src/; not executable runtime
     invariants: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'Peak_Trade_OVERVIEW.md: modular Trading-Framework-Prototyp with Kraken-Spot backtesting and MA-crossover; live
+        bot not part of MVP.'
+      evidence:
+      - src/docs/Peak_Trade_OVERVIEW.md
+      used_as_fact: true
+    - claim_class: OPEN_QUESTION
+      text: POSSIBLE_SAME_AS docs/00_overview (RCN-000049) remains hypothesis; path families are not fused.
+      evidence:
+      - docs/system_atlas/reconciliation/relations.yaml
+      used_as_fact: false
   relations:
     items:
     - relation_type: POSSIBLE_SAME_AS
@@ -3976,13 +4630,14 @@ records:
     conflicts: []
     gaps: []
   adjudication:
-    lifecycle_state: EVIDENCE_BOUND
+    lifecycle_state: PURPOSE_UNDERSTOOD
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Distinct documentation set versus copies of docs/ files?
+    - Whether src/docs was an accidental copy of docs/00_overview is unproven.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3994,3 +4649,5 @@ records:
     notes: Path-family census from unique blob inventory. Not purpose-understood. Not fused with CAND:src_docs_workflow_notes
       or RCN-000049.
 census_pass_id: FIND_COMPLETELY_PASS_V3
+understand_pass_id: UNDERSTAND_PASS_V1
+understand_bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478

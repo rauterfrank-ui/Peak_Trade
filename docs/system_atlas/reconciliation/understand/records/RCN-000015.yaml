@@ -1,0 +1,61 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000015
+canonical_record_name: Master V2 minimal selector policy v1
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: 'Master V2 minimal selector V1 owner policy: census → structural eligibility → exactly-one-or-none → durable
+  artifact → narrowed runtime-binding adapter. Ranking is not a selection authority. HISTORICAL_CLAIM=false on the package.'
+historical_problem_statement: Select exactly one or none Master V2 instrument under an owner policy, not GFU ranking.
+historical_inputs:
+- Census/eligibility inputs to decide_master_v2_minimal_selection_v1
+historical_outputs:
+- MasterV2SelectionDecisionV1 durable artifact
+historical_dependencies:
+- RCN-000004 (name/path refer to Master V2)
+historical_dependents:
+- runtime_binding_adapter_v1 (historical package)
+historical_paths:
+- src/ops/master_v2_minimal_selector_v1
+historical_commits:
+- 75eee7bdc501ab4b0ec93812675cd074acb9e2ee
+historical_blobs: []
+relations:
+- relation_type: DEPENDS_ON
+  target_id: RCN-000004
+  unresolved_target: ''
+  evidence:
+  - name and path refer to Master V2
+  epistemic_status: FORENSIC_RAW_FACT
+open_questions:
+- Current absence after revert is not a disposition of the historical purpose.
+evidence_refs:
+- 75eee7bdc501ab4b0ec93812675cd074acb9e2ee:src/ops/master_v2_minimal_selector_v1/__init__.py
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Add-commit blob: Master V2 minimal selector V1 (Owner policy; not historical GFU semantics). Ranking is not a selection
+    authority.'
+  evidence:
+  - 75eee7bdc501ab4b0ec93812675cd074acb9e2ee:src/ops/master_v2_minimal_selector_v1/__init__.py
+  used_as_fact: true
+- claim_class: HISTORICAL_FACT
+  text: 'Added in feat(ops): add Master V2 minimal selector policy V1 (#6165).'
+  evidence:
+  - 75eee7bdc501ab4b0ec93812675cd074acb9e2ee
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- master_v2_double_play
+- governance_gates
+identity_merge_performed: false
+disposition_decided: false

@@ -1,0 +1,49 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000047
+canonical_record_name: evidence/market_dashboard_reset pack
+understand_status: UNDERSTAND_PARTIAL
+purpose_understood: false
+historical_purpose: ''
+historical_problem_statement: Unknown beyond census path-family evidence; not reconstructed.
+historical_inputs: []
+historical_outputs: []
+historical_dependencies: []
+historical_dependents: []
+historical_paths:
+- evidence/market_dashboard_reset/pr_a
+historical_commits: []
+historical_blobs: []
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000013
+  unresolved_target: ''
+  evidence:
+  - dashboard evidence-pack naming hypothesis
+  epistemic_status: HYPOTHESIS
+open_questions:
+- What did the reset pack assert that the deletion pack (RCN-000013) did not?
+evidence_refs:
+- docs/system_atlas/reconciliation/ledger.yaml
+claims:
+- claim_class: OPEN_QUESTION
+  text: evidence/market_dashboard_reset/pr_a is absent on current origin/main; purpose text of that pack was not recovered
+    in this pass.
+  evidence:
+  - docs/system_atlas/reconciliation/ledger.yaml
+  used_as_fact: false
+epistemic_class: OPEN_QUESTION
+clusters:
+- landscape_dashboard
+identity_merge_performed: false
+disposition_decided: false

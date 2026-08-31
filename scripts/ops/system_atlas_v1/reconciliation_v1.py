@@ -60,6 +60,12 @@ ALLOWED_RELATION_TYPES = frozenset(
         "TESTS",
         "DOCUMENTS",
         "ARCHIVES",
+        "IMPORTED_BY",
+        "CALLED_BY",
+        "TESTED_BY",
+        "CONFIGURES",
+        "REGISTERED_AS",
+        "MOVED_TO",
     }
 )
 ALLOWED_CURRENT_PRESENCE = frozenset(
@@ -355,6 +361,19 @@ def _validate_record(
     purpose_understood = understanding.get("purpose_understood")
     if purpose_understood not in {True, False}:
         raise ReconciliationValidationError(f"PURPOSE_UNDERSTOOD_NOT_BOOLEAN:{rid}")
+    if purpose_understood is True:
+        statement = str(understanding.get("purpose_statement") or "").strip()
+        if not statement:
+            raise ReconciliationValidationError(f"PURPOSE_UNDERSTOOD_WITHOUT_STATEMENT:{rid}")
+        claim_evidence = []
+        for claim in list(understanding.get("claims") or []):
+            if not isinstance(claim, dict):
+                continue
+            cls = str(claim.get("claim_class") or "")
+            if cls in FACT_CLAIM_CLASSES:
+                claim_evidence.extend([str(x) for x in (claim.get("evidence") or []) if str(x)])
+        if not claim_evidence:
+            raise ReconciliationValidationError(f"PURPOSE_UNDERSTOOD_WITHOUT_EVIDENCE:{rid}")
     adjudication = record.get("adjudication") or {}
     lifecycle = str(adjudication.get("lifecycle_state") or "")
     lifecycle_allowed = list(gov.get("lifecycle_states") or []) + list(

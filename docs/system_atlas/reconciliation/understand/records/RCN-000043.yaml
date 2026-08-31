@@ -1,0 +1,43 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000043
+canonical_record_name: pre_economic_zero_order observer/arming tip modules
+understand_status: UNDERSTAND_OPEN
+purpose_understood: false
+historical_purpose: ''
+historical_problem_statement: ''
+historical_inputs: []
+historical_outputs: []
+historical_dependencies: []
+historical_dependents: []
+historical_paths:
+- src/ops/pre_economic_zero_order_decision_cycle_observer_v1.py
+- src/ops/pre_economic_zero_order_economic_evidence_v1.py
+- src/ops/pre_economic_zero_order_wallclock_arming_v1.py
+historical_commits: []
+historical_blobs: []
+relations: []
+open_questions:
+- Same family as current evidence_session modules or a distinct observer/arming stack?
+evidence_refs:
+- docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+claims:
+- claim_class: OPEN_QUESTION
+  text: Purpose not evidence-bound in UNDERSTAND pass v1.
+  evidence:
+  - docs/system_atlas/reconciliation/inventories/tree_content_census.yaml
+  used_as_fact: false
+epistemic_class: OPEN_QUESTION
+clusters: []
+identity_merge_performed: false
+disposition_decided: false

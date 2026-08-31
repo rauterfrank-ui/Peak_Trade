@@ -30,6 +30,8 @@ coverage.yaml          per-surface coverage matrix
 discovery_candidates.yaml  hits below ledger threshold
 relations.yaml         copied relation index
 inventories/           pass v2/v3 reproducible search inventories
+understand/            UNDERSTAND pass v1 historical evidence binding
+evidence/understand_v1/ raw quotes separated from interpretation
 ```
 
 Governance persist baseline: `90dec7208554deb5d2af0a2021bb7bceaf5d6662`.
@@ -170,8 +172,25 @@ relevant text blobs, and exhausted bound commit subjects and bodies.
 `git rev-list --all` is not the bound universe. Extra local stash/review/tmp
 refs and LOSS_REGISTER-derived unreachable blobs remain documented out of
 scope. Atlas `COMPLETE` flags and a stale Atlas `census_meta` SHA are not
-authority for this census. No UNDERSTAND, EVALUATE, disposition, or
-reintegration.
+authority for this census. No EVALUATE, disposition, or reintegration in that census closeout.
+
+## UNDERSTAND pass v1 state (current)
+
+```text
+UNDERSTAND_PASS_ID=UNDERSTAND_PASS_V1
+UNDERSTAND_BOUND_AGAINST_SHA=a70bed0dc1586bedb58642fe7f6c6fef760b2478
+CENSUS_CLOSED=true
+CURRENT_SYSTEM_COMPARED_RECORD_COUNT=0
+ADJUDICATED_RECORD_COUNT=0
+DISPOSITION_DECIDED_RECORD_COUNT=0
+IDENTITY_MERGES_PERFORMED=0
+```
+
+UNDERSTAND binds historical purpose/inputs/outputs/relations from repository
+evidence. Clusters under `understand/clusters.yaml` are navigation only, not
+identity groups. `POSSIBLE_SAME_AS` remains hypothesis. Purpose requires a
+non-empty statement plus at least one fact-class claim with evidence.
+Unproven purpose stays `PURPOSE_UNDERSTOOD=false` with open questions.
 
 Inventories live under `docs/system_atlas/reconciliation/inventories/`.
 

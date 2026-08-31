@@ -1,0 +1,58 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000032
+canonical_record_name: Market active paper run runtime v0
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: SSR-only active Paper run panel for GET /market (env-gated, bridge/staging evidence).
+historical_problem_statement: Show an active paper-run panel from bridge evidence without making it a control surface.
+historical_inputs:
+- PEAK_TRADE_MARKET_ACTIVE_PAPER_RUN_BRIDGE_ROOT
+historical_outputs:
+- SSR panel context; ACTIVE_IDLE_MINUTES=10
+historical_dependencies: []
+historical_dependents:
+- Historical GET /market paper-run panel
+historical_paths:
+- src/webui/market_active_paper_run_runtime_v0.py
+historical_commits:
+- b5b8172806eae55d8639f964fcb2ad036337a0f3
+- 987e020378d1767fbd6fb1f0914d475f9a485f51
+historical_blobs: []
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000012
+  unresolved_target: ''
+  evidence:
+  - v0 dashboard generation hypothesis
+  epistemic_status: HYPOTHESIS
+open_questions:
+- POSSIBLE_SAME_AS RCN-000012 is hypothesis.
+evidence_refs:
+- 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_active_paper_run_runtime_v0.py
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Parent blob: SSR-only active Paper run panel for GET /market (env-gated, bridge/staging evidence).'
+  evidence:
+  - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_active_paper_run_runtime_v0.py
+  used_as_fact: true
+- claim_class: HISTORICAL_FACT
+  text: Deleted by b5b81728.
+  evidence:
+  - b5b8172806eae55d8639f964fcb2ad036337a0f3
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- landscape_dashboard
+identity_merge_performed: false
+disposition_decided: false

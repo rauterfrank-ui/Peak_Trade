@@ -1,0 +1,67 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000008
+canonical_record_name: Forensic historical_reference Double Play extract
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: Derived forensic index of Double Play heading ranges in the same SHA-256-bound working-runbook extract.
+  Not the src/trading/master_v2 Double Play composition stack and not ops.double_play.
+historical_problem_statement: Navigate Double Play mentions in the preserved forensic working runbook blob.
+historical_inputs:
+- SOURCE_ANCHORS / source blob SHA-256 a5a468f7…
+historical_outputs:
+- STRUCTURE.md covering heading ranges; hit count 74
+historical_dependencies:
+- RCN-000022 historical_reference tree
+historical_dependents:
+- Forensic navigation
+historical_paths:
+- forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/double_play/
+historical_commits: []
+historical_blobs:
+- a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000005
+  unresolved_target: ''
+  evidence:
+  - shared Double Play label
+  epistemic_status: HYPOTHESIS
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000006
+  unresolved_target: ''
+  evidence:
+  - shared Double Play label
+  epistemic_status: HYPOTHESIS
+- relation_type: REFERENCES
+  target_id: RCN-000022
+  unresolved_target: ''
+  evidence:
+  - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/README.md
+  epistemic_status: FORENSIC_RAW_FACT
+open_questions:
+- POSSIBLE_SAME_AS RCN-000005/RCN-000006 remains hypothesis.
+evidence_refs:
+- forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/double_play/STRUCTURE.md
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'double_play/STRUCTURE.md: derived index; Model double_play; hit count 74.'
+  evidence:
+  - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/double_play/STRUCTURE.md
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- master_v2_double_play
+- archives_legacy
+identity_merge_performed: false
+disposition_decided: false

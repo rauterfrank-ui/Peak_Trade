@@ -1,0 +1,46 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000016
+canonical_record_name: Kanonisches Vollautonomie-Runbook v4.4.12
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: 'Historical predecessor strategic/operational implementation runbook (v4.4.12). File header: DOCUMENT_CLASS=HISTORICAL;
+  STATUS=SUPERSEDED; SUPERSEDED_BY canonical Master Runbook; AUTHORITY_EFFECT=NONE.'
+historical_problem_statement: Preserve the superseded Vollautonomie runbook as historical predecessor reference without remaining
+  current implementation authority.
+historical_inputs: []
+historical_outputs:
+- Historical markdown runbook body
+historical_dependencies: []
+historical_dependents:
+- Historical predecessor reference (stated in header)
+historical_paths:
+- docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+historical_commits: []
+historical_blobs: []
+relations: []
+open_questions:
+- Whether any body sections remain binding is not adjudicated in UNDERSTAND.
+evidence_refs:
+- docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: Header STATUS=SUPERSEDED; SUPERSEDED_BY=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md; AUTHORITY_EFFECT=NONE.
+  evidence:
+  - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- governance_gates
+identity_merge_performed: false
+disposition_decided: false

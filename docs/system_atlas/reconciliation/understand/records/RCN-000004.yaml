@@ -1,0 +1,70 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000004
+canonical_record_name: Master V2 trading package
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: 'Direction-locked Master V2 trading package: upstream handoff-only decision-packet, local evaluator, and
+  Double Play model modules. Package marker: no live authority.'
+historical_problem_statement: Hold Master V2 decision-packet/local-flow/Double Play model logic without conferring live trading
+  authority from the package itself.
+historical_inputs:
+- Adapted Master V2 flow inputs / decision packet snapshots
+historical_outputs:
+- MasterV2DecisionPacketV1 and related handoff types
+- Local flow evaluation results
+- Double Play composition/state/survival/suitability model outputs
+historical_dependencies: []
+historical_dependents:
+- RCN-000005 composition stack
+- RCN-000006 ops.double_play
+- RCN-000021
+historical_paths:
+- src/trading/master_v2/
+historical_commits:
+- c47b89077b48a48c5f11b7c53cf8edc3b7ccd751
+- be0320920a772f1c8201dd321bcac8404a9cd46f
+historical_blobs: []
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000007
+  unresolved_target: ''
+  evidence:
+  - forensic extract labeled master_v2
+  epistemic_status: HYPOTHESIS
+open_questions:
+- POSSIBLE_SAME_AS RCN-000007 remains hypothesis; extract is derived index.
+evidence_refs:
+- src/trading/master_v2/__init__.py
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'src/trading/master_v2/__init__.py: Direction-locked Master V2: upstream handoff-only (no live authority).'
+  evidence:
+  - src/trading/master_v2/__init__.py
+  used_as_fact: true
+- claim_class: HISTORICAL_FACT
+  text: 'Canonical dry-flow tree introduced 2026-04-23 commit c47b8907 PR #2822.'
+  evidence:
+  - c47b89077b48a48c5f11b7c53cf8edc3b7ccd751
+  used_as_fact: true
+- claim_class: OPEN_QUESTION
+  text: Forensic extract RCN-000007 shares the Master V2 label but is a derived index over a working-runbook blob, not this
+    package.
+  evidence:
+  - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/master_v2/STRUCTURE.md
+  used_as_fact: false
+epistemic_class: HISTORICAL_FACT
+clusters:
+- master_v2_double_play
+identity_merge_performed: false
+disposition_decided: false

@@ -1,0 +1,67 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000007
+canonical_record_name: Forensic historical_reference Master V2 extract
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: Derived forensic index of Master V2 heading ranges inside the SHA-256-bound Temporary Forensic Working
+  Runbook extract. Not raw evidence, not current authority, not the src/trading/master_v2 package.
+historical_problem_statement: Navigate Master V2 mentions in the preserved forensic working runbook blob.
+historical_inputs:
+- SOURCE_ANCHORS / source blob SHA-256 a5a468f7…
+historical_outputs:
+- STRUCTURE.md covering heading ranges; hit count 63
+historical_dependencies:
+- RCN-000022 historical_reference tree
+historical_dependents:
+- Forensic navigation
+historical_paths:
+- forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/master_v2/
+historical_commits: []
+historical_blobs:
+- a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000004
+  unresolved_target: ''
+  evidence:
+  - shared Master V2 label
+  epistemic_status: HYPOTHESIS
+- relation_type: REFERENCES
+  target_id: RCN-000022
+  unresolved_target: ''
+  evidence:
+  - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/README.md
+  epistemic_status: FORENSIC_RAW_FACT
+open_questions:
+- Label overlap with RCN-000004 is not identity; POSSIBLE_SAME_AS stays hypothesis.
+evidence_refs:
+- forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/master_v2/STRUCTURE.md
+- forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/README.md
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'master_v2/STRUCTURE.md: derived index; not raw evidence; not current authority; Model master_v2; hit count 63.'
+  evidence:
+  - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/master_v2/STRUCTURE.md
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Parent README: storing the package in git does not make it canonical working authority.'
+  evidence:
+  - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/README.md
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- master_v2_double_play
+- archives_legacy
+identity_merge_performed: false
+disposition_decided: false

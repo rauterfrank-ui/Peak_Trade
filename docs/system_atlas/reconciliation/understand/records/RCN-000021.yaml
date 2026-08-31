@@ -1,0 +1,73 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000021
+canonical_record_name: Double Play dashboard display JSON route remnant
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: 'Master V2 Double Play read-only dashboard display JSON route v0: GET-only snapshot from pure build_dashboard_display_snapshot
+  using a static in-memory long/bull + capital-slot fixture (no scanner, exchange, session, or market-data).'
+historical_problem_statement: Expose Double Play composition as read-only JSON without live inputs.
+historical_inputs:
+- Static in-memory fixture SideState/capital-slot/survival/suitability
+historical_outputs:
+- JSONResponse under prefix /api/master-v2/double-play
+historical_dependencies:
+- RCN-000005 compose_double_play_decision
+- RCN-000004 modules
+historical_dependents:
+- Read-only dashboard JSON clients
+historical_paths:
+- src/webui/double_play_dashboard_display_json_route_v0.py
+historical_commits: []
+historical_blobs: []
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000005
+  unresolved_target: ''
+  evidence:
+  - Double Play display naming
+  epistemic_status: HYPOTHESIS
+- relation_type: IMPORTS
+  target_id: RCN-000004
+  unresolved_target: ''
+  evidence:
+  - src/webui/double_play_dashboard_display_json_route_v0.py
+  epistemic_status: FORENSIC_RAW_FACT
+- relation_type: CALLS
+  target_id: RCN-000005
+  unresolved_target: ''
+  evidence:
+  - src/webui/double_play_dashboard_display_json_route_v0.py
+  epistemic_status: FORENSIC_RAW_FACT
+open_questions:
+- POSSIBLE_SAME_AS RCN-000005 is naming/use, not identity of the route vs composition module.
+evidence_refs:
+- src/webui/double_play_dashboard_display_json_route_v0.py
+- docs/ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Module docstring: GET-only snapshot from pure build_dashboard_display_snapshot; static in-memory fixture.'
+  evidence:
+  - src/webui/double_play_dashboard_display_json_route_v0.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: Imports compose_double_play_decision and transition_state from trading.master_v2.
+  evidence:
+  - src/webui/double_play_dashboard_display_json_route_v0.py
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- landscape_dashboard
+- master_v2_double_play
+identity_merge_performed: false
+disposition_decided: false

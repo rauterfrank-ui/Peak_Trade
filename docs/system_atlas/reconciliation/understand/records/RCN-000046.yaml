@@ -1,0 +1,53 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000046
+canonical_record_name: PeakTradeRepo nested ma_crossover strategy
+understand_status: UNDERSTAND_OPEN
+purpose_understood: false
+historical_purpose: ''
+historical_problem_statement: ''
+historical_inputs: []
+historical_outputs: []
+historical_dependencies: []
+historical_dependents: []
+historical_paths:
+- archive/PeakTradeRepo/src/strategies/ma_crossover.py
+historical_commits: []
+historical_blobs: []
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000014
+  unresolved_target: ''
+  evidence:
+  - files live inside the nested archive tree
+  epistemic_status: HYPOTHESIS
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000036
+  unresolved_target: ''
+  evidence:
+  - export tree also lists src/strategies/ma_crossover.py
+  epistemic_status: HYPOTHESIS
+open_questions:
+- Same strategy as later ma_crossover implementations?
+evidence_refs:
+- docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+claims:
+- claim_class: OPEN_QUESTION
+  text: Purpose not evidence-bound in UNDERSTAND pass v1.
+  evidence:
+  - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+  used_as_fact: false
+epistemic_class: OPEN_QUESTION
+clusters: []
+identity_merge_performed: false
+disposition_decided: false

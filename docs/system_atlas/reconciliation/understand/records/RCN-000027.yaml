@@ -1,0 +1,63 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000027
+canonical_record_name: Market depth v0 readmodel/runtime
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: Market Depth runtime resolution (env + offline bundle builder), shared by HTTP and future SSR. Env-gated
+  PEAK_TRADE_MARKET_DEPTH_ENABLED.
+historical_problem_statement: Resolve market-depth readmodel payload from an offline bundle for display.
+historical_inputs:
+- ENV_BUNDLE_ROOT offline bundle
+historical_outputs:
+- build_market_depth_readmodel_v0 JSON dict
+historical_dependencies:
+- market_depth_readmodel_v0 package (same historical family)
+historical_dependents:
+- Historical HTTP/SSR depth display
+historical_paths:
+- src/webui/market_depth_api_v0.py
+- src/webui/market_depth_readmodel_v0
+- src/webui/market_depth_runtime_v0.py
+historical_commits:
+- b5b8172806eae55d8639f964fcb2ad036337a0f3
+- 987e020378d1767fbd6fb1f0914d475f9a485f51
+historical_blobs: []
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000009
+  unresolved_target: ''
+  evidence:
+  - deleted dashboard generation hypothesis
+  epistemic_status: HYPOTHESIS
+open_questions:
+- POSSIBLE_SAME_AS RCN-000009 is generation hypothesis only.
+evidence_refs:
+- 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_depth_runtime_v0.py
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Parent blob: Market Depth runtime resolution (env + offline bundle builder).'
+  evidence:
+  - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_depth_runtime_v0.py
+  used_as_fact: true
+- claim_class: HISTORICAL_FACT
+  text: Deleted by b5b81728.
+  evidence:
+  - b5b8172806eae55d8639f964fcb2ad036337a0f3
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- landscape_dashboard
+- data_market
+identity_merge_performed: false
+disposition_decided: false

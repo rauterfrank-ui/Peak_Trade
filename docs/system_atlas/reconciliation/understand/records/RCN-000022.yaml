@@ -1,0 +1,61 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000022
+canonical_record_name: Temporary Forensic Working Runbook historical_reference source
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: Immutable historical forensic reference package bound to SHA-256 a5a468f7… of PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md.
+  Git storage does not make it canonical working authority.
+historical_problem_statement: Preserve a forensic working-runbook blob with derived indexes without promoting it.
+historical_inputs:
+- Source blob via gated ingress path named in README
+historical_outputs:
+- provenance/, master_v2/, double_play/, conservation/, schemas/ trees
+historical_dependencies: []
+historical_dependents:
+- RCN-000007
+- RCN-000008
+- RCN-000018 conservation child ledger
+historical_paths:
+- forensics/historical_reference/
+historical_commits: []
+historical_blobs:
+- a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000007
+  unresolved_target: ''
+  evidence:
+  - same historical_reference tree
+  epistemic_status: HYPOTHESIS
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000008
+  unresolved_target: ''
+  evidence:
+  - same historical_reference tree
+  epistemic_status: HYPOTHESIS
+open_questions: []
+evidence_refs:
+- forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/README.md
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'README: immutable historical forensic reference; storing it in git does not make it canonical working authority.'
+  evidence:
+  - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/README.md
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- master_v2_double_play
+- archives_legacy
+identity_merge_performed: false
+disposition_decided: false

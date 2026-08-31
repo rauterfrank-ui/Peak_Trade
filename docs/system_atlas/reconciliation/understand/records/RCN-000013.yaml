@@ -1,0 +1,71 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000013
+canonical_record_name: Market dashboard deletion evidence pack
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: Evidence pack recording complete deletion of the market dashboard product stack (777 deleted tracked paths)
+  while listing domain owners to keep, including src/trading/master_v2/** and double_play_dashboard_display_json_route_v0.py.
+historical_problem_statement: Persist forensic proof of the dashboard deletion scope and preserved domain owners.
+historical_inputs:
+- Worktree deletion diff / intended file lists
+historical_outputs:
+- deletion_manifest.txt, preserved_domain_components.txt, inventories
+historical_dependencies: []
+historical_dependents:
+- Later forensic reconstruction of deleted dashboard paths
+historical_paths:
+- evidence/market_dashboard_deletion/
+historical_commits:
+- b5b8172806eae55d8639f964fcb2ad036337a0f3
+historical_blobs: []
+relations:
+- relation_type: REFERENCES
+  target_id: RCN-000009
+  unresolved_target: ''
+  evidence:
+  - evidence/market_dashboard_deletion/deletion_manifest.txt
+  epistemic_status: FORENSIC_RAW_FACT
+- relation_type: REFERENCES
+  target_id: RCN-000004
+  unresolved_target: ''
+  evidence:
+  - evidence/market_dashboard_deletion/preserved_domain_components.txt
+  epistemic_status: FORENSIC_RAW_FACT
+- relation_type: REFERENCES
+  target_id: RCN-000021
+  unresolved_target: ''
+  evidence:
+  - evidence/market_dashboard_deletion/preserved_domain_components.txt
+  epistemic_status: FORENSIC_RAW_FACT
+open_questions:
+- Pack documents deletion; it does not prove Landscape V2 identity with v1.
+evidence_refs:
+- evidence/market_dashboard_deletion/deletion_manifest.txt
+- evidence/market_dashboard_deletion/preserved_domain_components.txt
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'deletion_manifest.txt header: Market Dashboard complete deletion manifest; DELETED_TRACKED=777.'
+  evidence:
+  - evidence/market_dashboard_deletion/deletion_manifest.txt
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: preserved_domain_components.txt KEEP_DOMAIN_OWNER includes src/trading/master_v2/** and src/webui/double_play_dashboard_display_json_route_v0.py.
+  evidence:
+  - evidence/market_dashboard_deletion/preserved_domain_components.txt
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- landscape_dashboard
+identity_merge_performed: false
+disposition_decided: false

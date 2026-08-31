@@ -1,0 +1,48 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000019
+canonical_record_name: risk_layer historical top-level modules
+understand_status: UNDERSTAND_OPEN
+purpose_understood: false
+historical_purpose: ''
+historical_problem_statement: ''
+historical_inputs: []
+historical_outputs: []
+historical_dependencies: []
+historical_dependents: []
+historical_paths:
+- src/risk_layer/kill_switch.py
+- src/risk_layer/liquidity_gate.py
+- src/risk_layer/metrics.py
+- src/risk_layer/micro_metrics.py
+- src/risk_layer/stress_gate.py
+- src/risk_layer/var_gate.py
+historical_commits: []
+historical_blobs: []
+relations: []
+open_questions:
+- Were the deleted top-level modules renamed into src/risk_layer/kill_switch/ and related packages?
+evidence_refs:
+- src/risk_layer/kill_switch.py
+- src/risk_layer/kill_switch/
+claims:
+- claim_class: OPEN_QUESTION
+  text: Purpose not evidence-bound in UNDERSTAND pass v1.
+  evidence:
+  - src/risk_layer/kill_switch.py
+  - src/risk_layer/kill_switch/
+  used_as_fact: false
+epistemic_class: OPEN_QUESTION
+clusters: []
+identity_merge_performed: false
+disposition_decided: false
