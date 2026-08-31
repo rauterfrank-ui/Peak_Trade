@@ -25,6 +25,52 @@ RECONCILIATION_SOURCE_FILES = (
     "ledger.yaml",
     "schema.yaml",
 )
+CENSUS_ARTIFACT_FILES = (
+    "search_surfaces.yaml",
+    "coverage.yaml",
+    "discovery_candidates.yaml",
+    "relations.yaml",
+)
+ALLOWED_RELATION_TYPES = frozenset(
+    {
+        "POSSIBLE_SAME_AS",
+        "DEPENDS_ON",
+        "SUPERSEDES",
+        "REPLACED_BY",
+        "CONSUMED_BY",
+        "IMPLEMENTS",
+        "CONFLICTS_WITH",
+        "COVERED_BY",
+        "PRODUCES_FOR",
+        "CONSUMES_FROM",
+        "WRAPS",
+        "ORCHESTRATES",
+        "GATES",
+        "SELECTS",
+        "BINDS",
+        "CALLS",
+        "DERIVES_FROM",
+        "RENAMED_TO",
+        "SPLIT_INTO",
+        "MERGED_INTO",
+    }
+)
+ALLOWED_CURRENT_PRESENCE = frozenset(
+    {
+        "CURRENTLY_PRESENT",
+        "CURRENTLY_ABSENT",
+        "CURRENTLY_PARTIAL",
+        "CURRENT_IDENTITY_UNRESOLVED",
+    }
+)
+CENSUS_STARTED_STATUSES = frozenset(
+    {
+        "CENSUS_IN_PROGRESS",
+        "CENSUS_SCOPE_BOUND",
+        "CENSUS_EXHAUSTION_PROVEN",
+        "CENSUS_CLOSED",
+    }
+)
 
 REQUIRED_INITIAL_ANCHOR_NAMES = ("Landscape", "Master V2", "Double Play")
 ID_PATTERN = re.compile(r"^RCN-[0-9]{6}$")
@@ -95,6 +141,15 @@ def load_reconciliation_v1(*, repo_root: Path) -> dict[str, Any]:
         if not path.is_file():
             raise ReconciliationValidationError(f"RECONCILIATION_SOURCE_MISSING:{rel}")
         payload["records"][rel] = _read_yaml(path)
+    census_status = str(
+        (payload["records"].get("census_status.yaml") or {}).get("census_status") or ""
+    )
+    for rel in CENSUS_ARTIFACT_FILES:
+        path = root / rel
+        if path.is_file():
+            payload["records"][rel] = _read_yaml(path)
+        elif census_status in CENSUS_STARTED_STATUSES:
+            raise ReconciliationValidationError(f"RECONCILIATION_CENSUS_ARTIFACT_MISSING:{rel}")
     return payload
 
 
@@ -334,20 +389,14 @@ def _validate_record(
             raise ReconciliationValidationError(f"REJECT_WITHOUT_POSITIVE_REASON:{rid}")
     if lifecycle == "OPEN" and disposition not in {"", "INSUFFICIENT_EVIDENCE"}:
         raise ReconciliationValidationError(f"OPEN_WITHOUT_INSUFFICIENT_EVIDENCE:{rid}")
+    discovery = record.get("discovery") or {}
+    presence = str(discovery.get("current_presence") or "")
+    if presence and presence not in ALLOWED_CURRENT_PRESENCE:
+        raise ReconciliationValidationError(f"CURRENT_PRESENCE_UNKNOWN:{rid}:{presence}")
     relations = record.get("relations") or {}
-    allowed_rel = {
-        "POSSIBLE_SAME_AS",
-        "DEPENDS_ON",
-        "SUPERSEDES",
-        "REPLACED_BY",
-        "CONSUMED_BY",
-        "IMPLEMENTS",
-        "CONFLICTS_WITH",
-        "COVERED_BY",
-    }
     for rel in relations.get("items") or relations.get("relations") or []:
         rtype = str(rel.get("relation_type") or rel.get("type") or "")
-        if rtype and rtype not in allowed_rel:
+        if rtype and rtype not in ALLOWED_RELATION_TYPES:
             raise ReconciliationValidationError(f"RELATION_TYPE_UNKNOWN:{rid}:{rtype}")
         epi = str(rel.get("epistemic_status") or "")
         if epi and epi not in (FACT_CLAIM_CLASSES | NON_FACT_CLAIM_CLASSES):
@@ -376,6 +425,17 @@ def _validate_ledger(ledger: dict[str, Any], gov: dict[str, Any]) -> list[dict[s
     return records
 
 
+def _validate_census_artifacts(payload: dict[str, Any], census: dict[str, Any]) -> None:
+    status = str(census.get("census_status") or "")
+    if status not in CENSUS_STARTED_STATUSES:
+        return
+    for rel in CENSUS_ARTIFACT_FILES:
+        row = payload["records"].get(rel)
+        if not isinstance(row, dict):
+            raise ReconciliationValidationError(f"RECONCILIATION_CENSUS_ARTIFACT_MISSING:{rel}")
+        _require_schema_version(row, source=rel)
+
+
 def validate_reconciliation_v1(payload: dict[str, Any]) -> list[str]:
     """Return empty list on PASS. Raise on integrity failure."""
     gov = payload["records"]["GOVERNANCE_V1.yaml"] or {}
@@ -388,6 +448,7 @@ def validate_reconciliation_v1(payload: dict[str, Any]) -> list[str]:
     records = _validate_ledger(ledger, gov)
     _validate_census(census, gov)
     _validate_anchors(anchors, records)
+    _validate_census_artifacts(payload, census)
     return []
 
 

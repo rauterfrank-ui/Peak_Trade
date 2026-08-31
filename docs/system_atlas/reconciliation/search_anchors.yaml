@@ -8,9 +8,10 @@ counted_as_ledger_records: false
 purpose_investigated: false
 adjudicated: false
 note: >
-  Known names used only as later search anchors. They are not complete
-  reconciliation records and do not bound the census. Evidence for these
-  names was not investigated in this workpackage.
+  Known names used only as search anchors. They are not complete
+  reconciliation records and do not bound the census. FIND_COMPLETELY pass
+  v1 used them as query seeds only. Hits were ledger-bound as separate
+  records. Purpose remains uninvestigated.
 anchors:
   - id: ANCHOR:landscape
     name: Landscape

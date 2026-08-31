@@ -1,0 +1,128 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+# Weaker hits from FIND_COMPLETELY pass v1. Not ledger records.
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+kind: CANDIDATE_NOT_LEDGER_BOUND
+counted_as_ledger_records: false
+note: >
+  Hits below did not meet the ledger record threshold, or identity is too
+  weak to assign an RCN-ID. They remain searchable. Name equality is not
+  identity.
+candidates:
+  - id: CAND:functional_core_literal
+    observed_names:
+      - FUNCTIONAL_CORE
+      - Functional Core
+    discovery_source: SURF:atlas_index
+    why_not_ledger_bound: >
+      Atlas historical_terminology reports the literal token absent from
+      origin/main history. Absence is not a component.
+    evidence:
+      - docs/system_atlas/census/historical_terminology.yaml
+    current_presence: CURRENT_IDENTITY_UNRESOLVED
+  - id: CAND:ssot_child_literal
+    observed_names:
+      - SSOT_CHILD
+      - SSOT child
+    discovery_source: SURF:atlas_index
+    why_not_ledger_bound: Literal search reported no origin/main history hit.
+    evidence:
+      - docs/system_atlas/census/historical_terminology.yaml
+    current_presence: CURRENT_IDENTITY_UNRESOLVED
+  - id: CAND:gate_familien_f1_f6
+    observed_names:
+      - Gate-Familien
+      - F1
+      - F2
+      - F3
+      - F4
+      - F5
+      - F6
+    discovery_source: SURF:atlas_index
+    why_not_ledger_bound: >
+      Historical forensic heading family; not yet bound as a standalone
+      runtime component. Further understanding required.
+    evidence:
+      - docs/system_atlas/census/historical_terminology.yaml
+    current_presence: CURRENT_IDENTITY_UNRESOLVED
+  - id: CAND:risk_hotfix_smoke_test
+    observed_names:
+      - hotfix_smoke_test
+    historical_paths:
+      - src/risk/hotfix_smoke_test.py
+    discovery_source: SURF:historical_path_family_src
+    why_not_ledger_bound: Single deleted test/helper file; not a named architecture component.
+    evidence:
+      - git log --all --diff-filter=D -- src/risk/hotfix_smoke_test.py
+    current_presence: CURRENTLY_ABSENT
+  - id: CAND:position_sizer_old_backup
+    observed_names:
+      - position_sizer_old_backup
+    historical_paths:
+      - src/risk/position_sizer_old_backup.py
+    discovery_source: SURF:historical_path_family_src
+    why_not_ledger_bound: Filename marks a backup copy; identity/purpose unproven.
+    evidence:
+      - git log --all --diff-filter=D -- src/risk/position_sizer_old_backup.py
+    current_presence: CURRENTLY_ABSENT
+  - id: CAND:market_dashboard_v0_depth_tape_funnel
+    observed_names:
+      - market_depth_readmodel_v0
+      - market_depth_runtime_v0
+      - market_tape_readmodel_v0
+      - market_ranking_funnel_readmodel_v0
+      - market_ranking_funnel_runtime_v0
+      - market_futures_ohlcv_readmodel_v0
+      - market_futures_ohlcv_runtime_v0
+      - market_instrument_eligibility_v0
+      - market_active_paper_run_runtime_v0
+      - market_dashboard_current_state_runtime_v0
+    historical_paths:
+      - src/webui/market_depth_api_v0.py
+      - src/webui/market_depth_readmodel_v0
+      - src/webui/market_depth_runtime_v0.py
+      - src/webui/market_tape_readmodel_v0
+      - src/webui/market_ranking_funnel_readmodel_v0
+      - src/webui/market_ranking_funnel_runtime_v0.py
+      - src/webui/market_futures_ohlcv_readmodel_v0
+      - src/webui/market_futures_ohlcv_runtime_v0.py
+      - src/webui/market_instrument_eligibility_v0.py
+      - src/webui/market_active_paper_run_runtime_v0.py
+      - src/webui/market_dashboard_current_state_runtime_v0.py
+      - src/webui/market_dashboard_current_state_snapshot_v0.py
+    discovery_source: SURF:historical_path_family_src
+    why_not_ledger_bound: >
+      Multiple deleted v0 modules. Fail-open: not merged into one RCN without
+      identity proof. May relate to later dashboard generations.
+    evidence:
+      - git log --all --diff-filter=D -- src/webui
+    current_presence: CURRENTLY_ABSENT
+    possible_same_as_open:
+      - RCN-000009
+      - RCN-000012
+      - RCN-000001
+  - id: CAND:deleted_market_dashboard_product_runbooks
+    observed_names:
+      - Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0
+      - Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3
+      - MARKET_DASHBOARD_PRODUCT_SURFACE_V1
+      - MARKET_DASHBOARD_READMODELS_V1
+    historical_paths:
+      - docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md
+      - docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
+      - docs/webui/MARKET_DASHBOARD_PRODUCT_SURFACE_V1.md
+      - docs/webui/MARKET_DASHBOARD_READMODELS_V1.md
+    discovery_source: SURF:archived_docs
+    why_not_ledger_bound: Documentation hits supporting vanished packages already ledger-bound.
+    evidence:
+      - git log --all --diff-filter=D -- docs/product docs/webui
+    current_presence: CURRENTLY_ABSENT
+  - id: CAND:local_branch_trees_unsearched
+    observed_names:
+      - local refs/heads
+    discovery_source: SURF:local_branches
+    why_not_ledger_bound: Ref inventory is not a component. Branch trees remain a coverage gap.
+    evidence:
+      - docs/system_atlas/reconciliation/search_surfaces.yaml
+    current_presence: CURRENT_IDENTITY_UNRESOLVED

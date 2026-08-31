@@ -1,0 +1,192 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+# Coverage matrix for FIND_COMPLETELY pass v1. Exhaustion is unproven.
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+bound_against_ref: origin/main
+census_status: CENSUS_IN_PROGRESS
+exhaustion_proven: false
+census_closed: false
+surfaces_exhaustion_proven: 0
+surfaces_exhaustion_unproven: 17
+open_coverage_gaps:
+  - Local branch trees (634) not fully walked.
+  - origin non-main remote trees not fully walked.
+  - Tag trees (154) not content-searched.
+  - Blob-level scan of all 7259 reachable commits not performed.
+  - evidence/ops not exhaustively opened.
+  - Full tests/ and scripts/ historical trees not enumerated as components.
+  - Import/symbol census not exhaustive.
+  - Terminology census not exhaustive beyond known anchors plus vanished src pkg3.
+  - Atlas census_meta bound SHA is stale relative to this pass; Atlas COMPLETE flags ignored for exhaustion.
+rows:
+  - surface_id: SURF:current_tree
+    surface_type: CURRENT_TREE
+    search_method: git ls-tree -r; src/docs/evidence first-level listing
+    search_executed: true
+    result_count: 50
+    ledger_records_created: 8
+    unresolved_candidates: 0
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: First-level src packages counted; files inside packages not all recorded.
+    evidence_ref: docs/system_atlas/reconciliation/search_surfaces.yaml
+  - surface_id: SURF:git_history_origin_main
+    surface_type: GIT_HISTORY
+    search_method: git log origin/main --diff-filter=D --name-only
+    search_executed: true
+    result_count: 1153
+    ledger_records_created: 10
+    unresolved_candidates: 20
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: Deleted paths listed; content of historical blobs not fully read.
+    evidence_ref: docs/system_atlas/reconciliation/discovery_candidates.yaml
+  - surface_id: SURF:git_history_all_reachable
+    surface_type: GIT_HISTORY
+    search_method: git rev-list --all; git log --all --diff-filter=D
+    search_executed: true
+    result_count: 7259
+    ledger_records_created: 1
+    unresolved_candidates: 0
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: Commit count bound; per-commit tree comparison vs HEAD not complete.
+    evidence_ref: docs/system_atlas/reconciliation/search_surfaces.yaml
+  - surface_id: SURF:local_branches
+    surface_type: LOCAL_BRANCH
+    search_method: git for-each-ref refs/heads
+    search_executed: true
+    result_count: 634
+    ledger_records_created: 0
+    unresolved_candidates: 634
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: Refs listed only.
+    evidence_ref: docs/system_atlas/reconciliation/search_surfaces.yaml
+  - surface_id: SURF:origin_branches
+    surface_type: REMOTE_BRANCH
+    search_method: git for-each-ref refs/remotes/origin
+    search_executed: true
+    result_count: 25
+    ledger_records_created: 0
+    unresolved_candidates: 24
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: Non-main origin trees not searched as component sources.
+    evidence_ref: docs/system_atlas/reconciliation/search_surfaces.yaml
+  - surface_id: SURF:tags
+    surface_type: TAG
+    search_method: git tag --list
+    search_executed: true
+    result_count: 154
+    ledger_records_created: 0
+    unresolved_candidates: 154
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: Tag names listed; objects not content-searched.
+    evidence_ref: docs/system_atlas/reconciliation/search_surfaces.yaml
+  - surface_id: SURF:historical_path_family_src
+    surface_type: HISTORICAL_PATH_FAMILY
+    search_method: vanished src pkg3 vs current tree
+    search_executed: true
+    result_count: 26
+    ledger_records_created: 8
+    unresolved_candidates: 12
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: pkg3 heuristic; rename/absorption not proven.
+    evidence_ref: docs/system_atlas/reconciliation/discovery_candidates.yaml
+  - surface_id: SURF:historical_path_family_docs
+    surface_type: HISTORICAL_PATH_FAMILY
+    search_method: vanished docs/archive pkg3
+    search_executed: true
+    result_count: 427
+    ledger_records_created: 3
+    unresolved_candidates: 40
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: Many deleted reports/tmp/docs remain unbound candidates.
+    evidence_ref: docs/system_atlas/reconciliation/discovery_candidates.yaml
+  - surface_id: SURF:evidence_corpus
+    surface_type: EVIDENCE_CORPUS
+    search_method: evidence/ top-level plus market_dashboard_deletion
+    search_executed: true
+    result_count: 3
+    ledger_records_created: 1
+    unresolved_candidates: 2
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: evidence/ops not exhaustively opened.
+    evidence_ref: evidence/market_dashboard_deletion/
+  - surface_id: SURF:forensic_corpus
+    surface_type: FORENSIC_CORPUS
+    search_method: forensics/historical_reference read
+    search_executed: true
+    result_count: 1
+    ledger_records_created: 3
+    unresolved_candidates: 5
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: Derived external blobs in LOSS_REGISTER are out of repository-internal scope.
+    evidence_ref: forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/LOSS_REGISTER.yaml
+  - surface_id: SURF:archived_code
+    surface_type: ARCHIVED_CODE
+    search_method: git history of archive/PeakTradeRepo
+    search_executed: true
+    result_count: 1
+    ledger_records_created: 1
+    unresolved_candidates: 0
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: Nested historical src/docs inside the archive were not re-inventoried file-by-file.
+    evidence_ref: docs/system_atlas/reconciliation/ledger.yaml
+  - surface_id: SURF:archived_docs
+    surface_type: ARCHIVED_DOCS
+    search_method: deleted docs/product and docs/observability families
+    search_executed: true
+    result_count: 8
+    ledger_records_created: 1
+    unresolved_candidates: 7
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: Deleted dashboard product runbooks not individually ledger-bound.
+    evidence_ref: docs/system_atlas/reconciliation/discovery_candidates.yaml
+  - surface_id: SURF:test_corpus
+    surface_type: TEST_CORPUS
+    search_method: current landscape/double_play tests; deleted tests/webui market_* 
+    search_executed: true
+    result_count: 40
+    ledger_records_created: 0
+    unresolved_candidates: 30
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: Tests used as evidence pointers, not as separate components.
+    evidence_ref: tests/webui/
+  - surface_id: SURF:tooling_corpus
+    surface_type: TOOLING_CORPUS
+    search_method: current scripts/ops/system_atlas_v1 listing
+    search_executed: true
+    result_count: 1
+    ledger_records_created: 0
+    unresolved_candidates: 0
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: Historical tooling deletions not fully listed.
+    evidence_ref: scripts/ops/system_atlas_v1/reconciliation_v1.py
+  - surface_id: SURF:manifest_index
+    surface_type: MANIFEST_INDEX
+    search_method: known forensic/evidence manifests
+    search_executed: true
+    result_count: 2
+    ledger_records_created: 0
+    unresolved_candidates: 0
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: evidence/ops manifests not exhaustively opened.
+    evidence_ref: forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/MANIFEST.yaml
+  - surface_id: SURF:atlas_index
+    surface_type: ATLAS_INDEX
+    search_method: navigation of atlas census YAML
+    search_executed: true
+    result_count: 8
+    ledger_records_created: 0
+    unresolved_candidates: 3
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: Atlas facts are navigation only; not copied as adjudicated conclusions.
+    evidence_ref: docs/system_atlas/census/historical_architecture.yaml
+  - surface_id: SURF:commit_messages
+    surface_type: GIT_HISTORY
+    search_method: git log --grep Landscape|Master V2|Double Play
+    search_executed: true
+    result_count: 30
+    ledger_records_created: 0
+    unresolved_candidates: 0
+    coverage_status: EXHAUSTION_UNPROVEN
+    limitations: Seed grep only; unknown names in subjects remain unsearched.
+    evidence_ref: docs/system_atlas/reconciliation/search_surfaces.yaml

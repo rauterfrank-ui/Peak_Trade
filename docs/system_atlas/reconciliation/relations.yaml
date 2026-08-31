@@ -1,0 +1,154 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+# Relations copied from ledger records for coverage. Not a second SSOT.
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+relation_count: 21
+items:
+- from: RCN-000001
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000002
+  unresolved_target: ''
+  evidence:
+  - shared Landscape V2 naming on 2026-07-23 commits
+  epistemic_status: HYPOTHESIS
+- from: RCN-000001
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000009
+  unresolved_target: ''
+  evidence:
+  - later current landscape package vs deleted product_surface_v1
+  epistemic_status: HYPOTHESIS
+- from: RCN-000002
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000001
+  unresolved_target: ''
+  evidence:
+  - same Landscape V2 naming window
+  epistemic_status: HYPOTHESIS
+- from: RCN-000004
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000007
+  unresolved_target: ''
+  evidence:
+  - forensic extract labeled master_v2
+  epistemic_status: HYPOTHESIS
+- from: RCN-000005
+  relation_type: DEPENDS_ON
+  target_id: RCN-000004
+  unresolved_target: ''
+  evidence:
+  - files live under src/trading/master_v2/
+  epistemic_status: FORENSIC_RAW_FACT
+- from: RCN-000005
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000006
+  unresolved_target: ''
+  evidence:
+  - shared Double Play name; different packages and dates
+  epistemic_status: HYPOTHESIS
+- from: RCN-000005
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000008
+  unresolved_target: ''
+  evidence:
+  - forensic extract labeled double_play
+  epistemic_status: HYPOTHESIS
+- from: RCN-000006
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000005
+  unresolved_target: ''
+  evidence:
+  - shared Double Play name
+  epistemic_status: HYPOTHESIS
+- from: RCN-000007
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000004
+  unresolved_target: ''
+  evidence:
+  - shared Master V2 label
+  epistemic_status: HYPOTHESIS
+- from: RCN-000008
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000005
+  unresolved_target: ''
+  evidence:
+  - shared Double Play label
+  epistemic_status: HYPOTHESIS
+- from: RCN-000008
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000006
+  unresolved_target: ''
+  evidence:
+  - shared Double Play label
+  epistemic_status: HYPOTHESIS
+- from: RCN-000009
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000001
+  unresolved_target: ''
+  evidence:
+  - dashboard generation hypothesis
+  epistemic_status: HYPOTHESIS
+- from: RCN-000010
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000009
+  unresolved_target: ''
+  evidence:
+  - adjacent deleted dashboard packages
+  epistemic_status: HYPOTHESIS
+- from: RCN-000011
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000009
+  unresolved_target: ''
+  evidence:
+  - deleted dashboard product family
+  epistemic_status: HYPOTHESIS
+- from: RCN-000012
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000009
+  unresolved_target: ''
+  evidence:
+  - dashboard generation hypothesis
+  epistemic_status: HYPOTHESIS
+- from: RCN-000015
+  relation_type: DEPENDS_ON
+  target_id: RCN-000004
+  unresolved_target: ''
+  evidence:
+  - name and path refer to Master V2
+  epistemic_status: FORENSIC_RAW_FACT
+- from: RCN-000021
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000005
+  unresolved_target: ''
+  evidence:
+  - Double Play display naming
+  epistemic_status: HYPOTHESIS
+- from: RCN-000022
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000007
+  unresolved_target: ''
+  evidence:
+  - same historical_reference tree
+  epistemic_status: HYPOTHESIS
+- from: RCN-000022
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000008
+  unresolved_target: ''
+  evidence:
+  - same historical_reference tree
+  epistemic_status: HYPOTHESIS
+- from: RCN-000023
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000012
+  unresolved_target: ''
+  evidence:
+  - early dashboard surface hypothesis
+  epistemic_status: HYPOTHESIS
+- from: RCN-000024
+  relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000001
+  unresolved_target: ''
+  evidence:
+  - Landscape naming
+  epistemic_status: HYPOTHESIS

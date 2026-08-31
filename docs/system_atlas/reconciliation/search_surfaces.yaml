@@ -1,0 +1,163 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+# FIND_COMPLETELY search-universe binding. Not census closure.
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+bound_against_ref: origin/main
+repository_internal_only: true
+git_is_shallow: false
+git_is_partial_clone: false
+reachable_commit_count_all_refs: 7259
+reachable_commit_count_origin_main: 6328
+root_commits:
+  - 78979ed413aae9bee0dee4b9c5451a308f30a114
+  - e95ae98b725ba4e75cff55cd2372dcdc2a9cadc1
+origin_main_root: 78979ed413aae9bee0dee4b9c5451a308f30a114
+local_branch_count: 634
+origin_remote_branch_count: 25
+tag_count: 154
+deleted_path_count_origin_main: 1153
+deleted_path_count_all_refs: 1160
+search_universe_bound: true
+exhaustion_proven: false
+note: >
+  Repository-internal search universe inventoried from the primary git
+  object store. Binding the universe is not exhaustion. Local branch
+  trees, tag trees, and blob-level history were not fully walked.
+surfaces:
+  - id: SURF:current_tree
+    surface_type: CURRENT_TREE
+    source_ref: origin/main@1b52df25b99a36b99eed91943c2a203ce84f1cad
+    coverage_method: git ls-tree -r origin/main
+    coverage_status: SEARCHED
+    known_limitations:
+      - Component extraction used structural heuristics, not every file as a record.
+    evidence_pointer: docs/system_atlas/reconciliation/coverage.yaml
+  - id: SURF:git_history_origin_main
+    surface_type: GIT_HISTORY
+    source_ref: origin/main
+    coverage_method: git rev-list / git log --diff-filter=D --name-only
+    coverage_status: PARTIALLY_SEARCHED
+    known_limitations:
+      - Not every blob of 6328 commits was content-scanned.
+    evidence_pointer: docs/system_atlas/reconciliation/coverage.yaml
+  - id: SURF:git_history_all_reachable
+    surface_type: GIT_HISTORY
+    source_ref: refs --all
+    coverage_method: git rev-list --all; git log --all --diff-filter=D
+    coverage_status: PARTIALLY_SEARCHED
+    known_limitations:
+      - Reachable commits counted; per-commit tree diff vs HEAD not exhaustive.
+    evidence_pointer: docs/system_atlas/reconciliation/coverage.yaml
+  - id: SURF:local_branches
+    surface_type: LOCAL_BRANCH
+    source_ref: refs/heads
+    coverage_method: git for-each-ref refs/heads
+    coverage_status: PARTIALLY_SEARCHED
+    known_limitations:
+      - 634 local branches listed; individual branch trees not fully searched.
+    evidence_pointer: docs/system_atlas/reconciliation/coverage.yaml
+  - id: SURF:origin_branches
+    surface_type: REMOTE_BRANCH
+    source_ref: refs/remotes/origin
+    coverage_method: git for-each-ref refs/remotes/origin
+    coverage_status: PARTIALLY_SEARCHED
+    known_limitations:
+      - 25 origin refs listed; non-main remote trees not fully searched.
+    evidence_pointer: docs/system_atlas/reconciliation/coverage.yaml
+  - id: SURF:tags
+    surface_type: TAG
+    source_ref: refs/tags
+    coverage_method: git tag --list
+    coverage_status: PARTIALLY_SEARCHED
+    known_limitations:
+      - 154 tags listed; tag tree contents not fully searched.
+    evidence_pointer: docs/system_atlas/reconciliation/coverage.yaml
+  - id: SURF:historical_path_family_src
+    surface_type: HISTORICAL_PATH_FAMILY
+    source_ref: git log --all --diff-filter=D -- src
+    coverage_method: deleted-path pkg3 vs current ls-tree
+    coverage_status: SEARCHED
+    known_limitations:
+      - Package-prefix heuristic; file-level identity not proven.
+    evidence_pointer: docs/system_atlas/reconciliation/discovery_candidates.yaml
+  - id: SURF:historical_path_family_docs
+    surface_type: HISTORICAL_PATH_FAMILY
+    source_ref: git log --all --diff-filter=D -- docs archive
+    coverage_method: deleted pkg3 families
+    coverage_status: PARTIALLY_SEARCHED
+    known_limitations:
+      - Many deleted docs/reports/tmp paths remain candidates, not records.
+    evidence_pointer: docs/system_atlas/reconciliation/discovery_candidates.yaml
+  - id: SURF:evidence_corpus
+    surface_type: EVIDENCE_CORPUS
+    source_ref: origin/main:evidence/
+    coverage_method: git ls-tree evidence/; path inspection
+    coverage_status: PARTIALLY_SEARCHED
+    known_limitations:
+      - evidence/ops is large; this pass bound market_dashboard_deletion plus top-level.
+    evidence_pointer: evidence/market_dashboard_deletion/
+  - id: SURF:forensic_corpus
+    surface_type: FORENSIC_CORPUS
+    source_ref: origin/main:forensics/ docs/forensics/ docs/forensic/
+    coverage_method: tree listing plus historical_reference read
+    coverage_status: PARTIALLY_SEARCHED
+    known_limitations:
+      - LOSS_REGISTER lists derived blobs excluded from git; those are out of this GO.
+    evidence_pointer: forensics/historical_reference/README.md
+  - id: SURF:archived_code
+    surface_type: ARCHIVED_CODE
+    source_ref: historical path archive/PeakTradeRepo
+    coverage_method: git log --diff-filter=A/D -- archive/PeakTradeRepo
+    coverage_status: SEARCHED
+    known_limitations:
+      - Nested archive tree is absent from current origin/main; blobs remain in history.
+    evidence_pointer: docs/system_atlas/reconciliation/ledger.yaml
+  - id: SURF:archived_docs
+    surface_type: ARCHIVED_DOCS
+    source_ref: archive/legacy_docs and deleted docs/product dashboard runbooks
+    coverage_method: deleted-path census
+    coverage_status: PARTIALLY_SEARCHED
+    known_limitations:
+      - Not every deleted markdown file was opened.
+    evidence_pointer: docs/system_atlas/reconciliation/discovery_candidates.yaml
+  - id: SURF:test_corpus
+    surface_type: TEST_CORPUS
+    source_ref: tests/
+    coverage_method: current landscape/double_play tests plus deleted test pkg3
+    coverage_status: PARTIALLY_SEARCHED
+    known_limitations:
+      - Full tests/ tree not enumerated as components.
+    evidence_pointer: docs/system_atlas/reconciliation/coverage.yaml
+  - id: SURF:tooling_corpus
+    surface_type: TOOLING_CORPUS
+    source_ref: scripts/ops/system_atlas_v1
+    coverage_method: current atlas/reconciliation tooling listing
+    coverage_status: PARTIALLY_SEARCHED
+    known_limitations:
+      - Historical scripts under archive/ and deleted scripts not fully inventoried.
+    evidence_pointer: scripts/ops/system_atlas_v1/reconciliation_v1.py
+  - id: SURF:manifest_index
+    surface_type: MANIFEST_INDEX
+    source_ref: evidence manifests; forensics MANIFEST.yaml
+    coverage_method: path inspection of known manifests
+    coverage_status: PARTIALLY_SEARCHED
+    known_limitations:
+      - Not every MANIFEST.sha256 in evidence/ops was opened.
+    evidence_pointer: forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/MANIFEST.yaml
+  - id: SURF:atlas_index
+    surface_type: ATLAS_INDEX
+    source_ref: docs/system_atlas/
+    coverage_method: load/navigation of atlas census YAML; not treated as authority
+    coverage_status: PARTIALLY_SEARCHED
+    known_limitations:
+      - Atlas census_meta origin_main_sha is older than 1b52df25; Atlas COMPLETE flags are not reconciliation exhaustion.
+    evidence_pointer: docs/system_atlas/census/census_meta.yaml
+  - id: SURF:commit_messages
+    surface_type: GIT_HISTORY
+    source_ref: git log origin/main --grep
+    coverage_method: grep Landscape / Master V2 / Double Play
+    coverage_status: PARTIALLY_SEARCHED
+    known_limitations:
+      - Grep is seed-based; unknown names in commit subjects remain unsearched.
+    evidence_pointer: docs/system_atlas/reconciliation/coverage.yaml

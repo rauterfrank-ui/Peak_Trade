@@ -1,8 +1,1927 @@
 # ATLAS_AUTHORITY=NONE
 # RECONCILIATION_AUTHORITY=NONE
 # This ledger is reconciliation evidence, not trading or runtime authority.
+# FIND_COMPLETELY pass v1. No disposition. No reintegration.
 schema_version: peak_trade.reconciliation_governance.v1
-bound_against_sha: 90dec7208554deb5d2af0a2021bb7bceaf5d6662
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
 bound_against_ref: origin/main
-ledger_record_count: 0
-records: []
+ledger_record_count: 24
+records:
+- identity:
+    reconciliation_id: RCN-000001
+    canonical_record_name: Market Dashboard Landscape V2 package
+    historical_names:
+    - Market Dashboard Landscape V2
+    - Market Landscape V2
+    - landscape_v2
+    aliases:
+    - src/webui/market_dashboard_landscape_v2
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - ANCHOR:landscape
+    - SURF:current_tree
+    - SURF:commit_messages
+    discovery_evidence:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - static/js/market_dashboard_landscape_v2.js
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    historical_refs:
+    - origin/main
+    historical_commits:
+    - 82f71bbef835e6a63453190b5eb1e3d4c2ef1884
+    - 2ae6db83c45ecec9d18c2d989925103ba37fbc2d
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Path src/webui/market_dashboard_landscape_v2 exists on origin/main@1b52df25.
+      evidence:
+      - git ls-tree origin/main src/webui/market_dashboard_landscape_v2
+    - claim_class: HISTORICAL_FACT
+      text: 'First addition of Landscape V2 projection contracts is commit 82f71bbe (2026-07-23, PR
+        #5499).'
+      evidence:
+      - 82f71bbef835e6a63453190b5eb1e3d4c2ef1884
+    - claim_class: OPEN_QUESTION
+      text: Identity versus other Landscape-named artifacts is unresolved.
+      evidence:
+      - docs/system_atlas/reconciliation/search_anchors.yaml
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000002
+      unresolved_target: ''
+      evidence:
+      - shared Landscape V2 naming on 2026-07-23 commits
+      epistemic_status: HYPOTHESIS
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000009
+      unresolved_target: ''
+      evidence:
+      - later current landscape package vs deleted product_surface_v1
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Is this the historical component remembered as Landscape, or a later dashboard generation that
+      reused the name?
+    - What was the original purpose of this package?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Anchor seed Landscape. Hit is not census boundary. Purpose not investigated.
+- identity:
+    reconciliation_id: RCN-000002
+    canonical_record_name: Market Dashboard Landscape V2 Master Runbook
+    historical_names:
+    - PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - ANCHOR:landscape
+    - SURF:current_tree
+    discovery_evidence:
+    - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+    first_bound_ref: origin/main
+    historical_paths:
+    - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+    historical_refs:
+    - origin/main
+    historical_commits:
+    - e18a16e138d643cac5748c8ccafaea0b871a80c8
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: File exists on origin/main.
+      evidence:
+      - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+    - claim_class: HISTORICAL_FACT
+      text: Added 2026-07-23 as canonical Landscape V2 master runbook (#5500).
+      evidence:
+      - e18a16e138d643cac5748c8ccafaea0b871a80c8
+    - claim_class: OPEN_QUESTION
+      text: Purpose and authority role not investigated in this pass.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000001
+      unresolved_target: ''
+      evidence:
+      - same Landscape V2 naming window
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Does this document define a component distinct from RCN-000001?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Documentation hit for Landscape seed. Not merged with the package record.
+- identity:
+    reconciliation_id: RCN-000003
+    canonical_record_name: Runbooks Landscape 2026-ready index
+    historical_names:
+    - Runbooks Landscape
+    - RUNBOOKS_LANDSCAPE_2026_READY
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - ANCHOR:landscape
+    - SURF:current_tree
+    discovery_evidence:
+    - docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md
+    first_bound_ref: origin/main
+    historical_paths:
+    - docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md
+    historical_refs:
+    - origin/main
+    historical_commits:
+    - 40c057a5fe0795a3a8595e9a873628c05d3ac945
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: File exists and titles itself Peak_Trade – Runbooks Landscape (2026-ready).
+      evidence:
+      - docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md
+    - claim_class: HISTORICAL_FACT
+      text: Added 2025-12-09 as Runbooks Landscape overview.
+      evidence:
+      - 40c057a5fe0795a3a8595e9a873628c05d3ac945
+    - claim_class: OPEN_QUESTION
+      text: Name collision with Market Landscape is unresolved; records not merged.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Is this a runbook index only, unrelated to Market Landscape V2?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: 'Separate Landscape-named artifact. Fail-open: no POSSIBLE_SAME_AS without evidence they
+      are one component.'
+- identity:
+    reconciliation_id: RCN-000004
+    canonical_record_name: Master V2 trading package
+    historical_names:
+    - Master V2
+    - master_v2
+    aliases:
+    - src/trading/master_v2
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - ANCHOR:master_v2
+    - SURF:current_tree
+    - SURF:atlas_index
+    discovery_evidence:
+    - src/trading/master_v2/
+    - c47b89077b48a48c5f11b7c53cf8edc3b7ccd751
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/trading/master_v2/
+    historical_refs:
+    - origin/main
+    historical_commits:
+    - c47b89077b48a48c5f11b7c53cf8edc3b7ccd751
+    - be0320920a772f1c8201dd321bcac8404a9cd46f
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Package src/trading/master_v2 exists on origin/main with 102 python files including subdirs.
+      evidence:
+      - git ls-tree -r origin/main -- src/trading/master_v2
+    - claim_class: HISTORICAL_FACT
+      text: 'Canonical dry-flow tree introduced 2026-04-23 commit c47b8907 PR #2822.'
+      evidence:
+      - c47b89077b48a48c5f11b7c53cf8edc3b7ccd751
+    - claim_class: OPEN_QUESTION
+      text: Purpose not investigated. Atlas entity SUBSYSTEM:master_v2 is navigation only.
+      evidence:
+      - docs/system_atlas/entities/catalog.yaml
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000007
+      unresolved_target: ''
+      evidence:
+      - forensic extract labeled master_v2
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - What is the historical purpose of Master V2 as a system, beyond the package existing?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Anchor seed Master V2. Current presence is mechanical, not coverage adjudication.
+- identity:
+    reconciliation_id: RCN-000005
+    canonical_record_name: Double Play composition stack on Master V2
+    historical_names:
+    - Double Play
+    - double_play_composition
+    aliases:
+    - double_play_composition.py
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - ANCHOR:double_play
+    - SURF:current_tree
+    discovery_evidence:
+    - src/trading/master_v2/double_play_composition.py
+    - src/trading/master_v2/double_play_core_wiring_v1.py
+    - f78e1c9de767346e52ae7f35df7681141d7ed645
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/trading/master_v2/double_play_composition.py
+    - src/trading/master_v2/double_play_survival.py
+    - src/trading/master_v2/double_play_capital_slot.py
+    - src/trading/master_v2/double_play_core_wiring_v1.py
+    historical_refs:
+    - origin/main
+    historical_commits:
+    - f78e1c9de767346e52ae7f35df7681141d7ed645
+    - 13a38b0b8fd814b9018ad25831aa3f879a81722e
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: double_play_* modules exist under src/trading/master_v2 on origin/main.
+      evidence:
+      - src/trading/master_v2/double_play_composition.py
+    - claim_class: HISTORICAL_FACT
+      text: 'Double Play pure scope/state added 2026-04-25 commit f78e1c9d PR #3035.'
+      evidence:
+      - f78e1c9de767346e52ae7f35df7681141d7ed645
+    - claim_class: OPEN_QUESTION
+      text: Purpose and relation to ops.double_play not understood in this pass.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: DEPENDS_ON
+      target_id: RCN-000004
+      unresolved_target: ''
+      evidence:
+      - files live under src/trading/master_v2/
+      epistemic_status: FORENSIC_RAW_FACT
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000006
+      unresolved_target: ''
+      evidence:
+      - shared Double Play name; different packages and dates
+      epistemic_status: HYPOTHESIS
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000008
+      unresolved_target: ''
+      evidence:
+      - forensic extract labeled double_play
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Is this the same historical Double Play as ops.double_play specialists?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Anchor seed Double Play. Not merged with ops.double_play.
+- identity:
+    reconciliation_id: RCN-000006
+    canonical_record_name: ops.double_play specialists scaffold
+    historical_names:
+    - ops.double_play
+    - double_play specialists
+    aliases:
+    - src/ops/double_play
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - ANCHOR:double_play
+    - SURF:current_tree
+    - SURF:git_history_origin_main
+    discovery_evidence:
+    - src/ops/double_play/specialists.py
+    - a3dd22619a66bd7fe859c4cd3d2e24fa16513e75
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/ops/double_play/__init__.py
+    - src/ops/double_play/specialists.py
+    historical_refs:
+    - origin/main
+    historical_commits:
+    - a3dd22619a66bd7fe859c4cd3d2e24fa16513e75
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: src/ops/double_play still exists on origin/main with specialists.py.
+      evidence:
+      - src/ops/double_play/specialists.py
+    - claim_class: HISTORICAL_FACT
+      text: 'Introduced 2026-02-20 commit a3dd2261 PR #1535 before Master V2 tree.'
+      evidence:
+      - a3dd22619a66bd7fe859c4cd3d2e24fa16513e75
+    - claim_class: OPEN_QUESTION
+      text: Current files may be a remnant; purpose not investigated.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000005
+      unresolved_target: ''
+      evidence:
+      - shared Double Play name
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - What did evaluate_double_play historically do, and is the remaining scaffold the same component?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Earlier dated Double Play scaffold. Fail-open versus Master V2 Double Play stack.
+- identity:
+    reconciliation_id: RCN-000007
+    canonical_record_name: Forensic historical_reference Master V2 extract
+    historical_names:
+    - historical_reference master_v2
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - ANCHOR:master_v2
+    - SURF:forensic_corpus
+    discovery_evidence:
+    - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/master_v2/STRUCTURE.md
+    first_bound_ref: origin/main
+    historical_paths:
+    - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/master_v2/
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Committed forensic extract directory labeled master_v2 exists.
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/master_v2/STRUCTURE.md
+    - claim_class: OPEN_QUESTION
+      text: Source identity versus live package is unresolved.
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/AUTHORITY_NONE.txt
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000004
+      unresolved_target: ''
+      evidence:
+      - shared Master V2 label
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Is this extract identical to current src/trading/master_v2, a historical snapshot, or a different
+      source?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Forensic extract is not Atlas authority and not a runtime component by itself.
+- identity:
+    reconciliation_id: RCN-000008
+    canonical_record_name: Forensic historical_reference Double Play extract
+    historical_names:
+    - historical_reference double_play
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - ANCHOR:double_play
+    - SURF:forensic_corpus
+    discovery_evidence:
+    - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/double_play/STRUCTURE.md
+    first_bound_ref: origin/main
+    historical_paths:
+    - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/double_play/
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Committed forensic extract directory labeled double_play exists.
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/double_play/STRUCTURE.md
+    - claim_class: OPEN_QUESTION
+      text: Identity versus RCN-000005 and RCN-000006 is unresolved.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000005
+      unresolved_target: ''
+      evidence:
+      - shared Double Play label
+      epistemic_status: HYPOTHESIS
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000006
+      unresolved_target: ''
+      evidence:
+      - shared Double Play label
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Does this extract describe ops.double_play, Master V2 Double Play, or another source?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Fail-open forensic extract. AUTHORITY NONE in source tree.
+- identity:
+    reconciliation_id: RCN-000009
+    canonical_record_name: Market dashboard product surface v1
+    historical_names:
+    - market_dashboard_product_surface_v1
+    aliases:
+    - MARKET_DASHBOARD_PRODUCT_SURFACE_V1
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_src
+    - SURF:test_corpus
+    discovery_evidence:
+    - git log --all --diff-filter=D -- src/webui/market_dashboard_product_surface_v1
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/webui/market_dashboard_product_surface_v1
+    historical_refs:
+    - origin/main
+    historical_commits:
+    - 1d61ec0deba49ca38a11f1a16ac53679a48608a0
+    claims:
+    - claim_class: HISTORICAL_FACT
+      text: 'Package was added 2026-07-17 commit 1d61ec0d PR #5287.'
+      evidence:
+      - 1d61ec0deba49ca38a11f1a16ac53679a48608a0
+    - claim_class: FORENSIC_RAW_FACT
+      text: Path is absent from current origin/main tree.
+      evidence:
+      - git ls-tree origin/main src/webui/market_dashboard_product_surface_v1
+    - claim_class: OPEN_QUESTION
+      text: Current absence is not rejection and not proven absorption.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000001
+      unresolved_target: ''
+      evidence:
+      - dashboard generation hypothesis
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Was this deleted, renamed, or absorbed into Landscape V2?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Unknown-component discovery via vanished src pkg3.
+- identity:
+    reconciliation_id: RCN-000010
+    canonical_record_name: Market dashboard readmodels v1
+    historical_names:
+    - market_dashboard_readmodels_v1
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_src
+    discovery_evidence:
+    - git log --all --diff-filter=D -- src/webui/market_dashboard_readmodels_v1
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/webui/market_dashboard_readmodels_v1
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Path family is in deleted-path census and absent from current origin/main.
+      evidence:
+      - git log --all --diff-filter=D -- src/webui/market_dashboard_readmodels_v1
+    - claim_class: OPEN_QUESTION
+      text: Identity versus RCN-000009 is unresolved.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000009
+      unresolved_target: ''
+      evidence:
+      - adjacent deleted dashboard packages
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Separate component versus product_surface_v1?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Fail-open versus product surface.
+- identity:
+    reconciliation_id: RCN-000011
+    canonical_record_name: Market visual operator surface v1
+    historical_names:
+    - market_visual_operator_surface_v1
+    aliases:
+    - Visual Operator Dashboard
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_src
+    discovery_evidence:
+    - git log --all --diff-filter=D -- src/webui/market_visual_operator_surface_v1
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/webui/market_visual_operator_surface_v1
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Deleted src/webui/market_visual_operator_surface_v1 is absent from current origin/main.
+      evidence:
+      - git log --all --diff-filter=D -- src/webui/market_visual_operator_surface_v1
+    - claim_class: OPEN_QUESTION
+      text: Purpose not investigated.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000009
+      unresolved_target: ''
+      evidence:
+      - deleted dashboard product family
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Relation to Landscape V2 and product_surface_v1?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Named vanished package.
+- identity:
+    reconciliation_id: RCN-000012
+    canonical_record_name: Futures read-only market dashboard runtime v0
+    historical_names:
+    - futures_read_only_market_dashboard_runtime_v0
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_src
+    - SURF:test_corpus
+    discovery_evidence:
+    - src/webui/futures_read_only_market_dashboard_runtime_v0.py
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/webui/futures_read_only_market_dashboard_runtime_v0.py
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: File path is in deleted-path census and absent from current origin/main.
+      evidence:
+      - git log --all --diff-filter=D -- src/webui/futures_read_only_market_dashboard_runtime_v0.py
+    - claim_class: OPEN_QUESTION
+      text: Identity versus later dashboard generations unresolved.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000009
+      unresolved_target: ''
+      evidence:
+      - dashboard generation hypothesis
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Predecessor of later dashboard packages?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: v0 runtime module; not merged with v1 packages.
+- identity:
+    reconciliation_id: RCN-000013
+    canonical_record_name: Market dashboard deletion evidence pack
+    historical_names:
+    - market_dashboard_deletion
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - SURF:evidence_corpus
+    discovery_evidence:
+    - evidence/market_dashboard_deletion/deletion_manifest.txt
+    - evidence/market_dashboard_deletion/preserved_domain_components.txt
+    first_bound_ref: origin/main
+    historical_paths:
+    - evidence/market_dashboard_deletion/
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Persisted evidence directory evidence/market_dashboard_deletion exists on origin/main.
+      evidence:
+      - evidence/market_dashboard_deletion/deletion_manifest.txt
+    - claim_class: FORENSIC_RAW_FACT
+      text: preserved_domain_components.txt lists KEEP_DOMAIN_OWNER paths including src/trading/master_v2/**.
+      evidence:
+      - evidence/market_dashboard_deletion/preserved_domain_components.txt
+    - claim_class: OPEN_QUESTION
+      text: Pack is evidence of a deletion event, not itself a trading component. Purpose of the deleted
+        product is not understood here.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Which ledger records does this pack prove were deleted versus preserved?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Evidence corpus hit. Does not dispose deleted components.
+- identity:
+    reconciliation_id: RCN-000014
+    canonical_record_name: archive/PeakTradeRepo nested historical tree
+    historical_names:
+    - PeakTradeRepo
+    - archive/PeakTradeRepo
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:archived_code
+    - SURF:git_history_all_reachable
+    discovery_evidence:
+    - git log --all -- archive/PeakTradeRepo
+    first_bound_ref: origin/main
+    historical_paths:
+    - archive/PeakTradeRepo
+    historical_refs:
+    - origin/main
+    historical_commits:
+    - cf2253aa60ffdbfd77356e33e611cd85ea53b849
+    claims:
+    - claim_class: HISTORICAL_FACT
+      text: archive/PeakTradeRepo was added in 2025-12-02 commit cf2253aa during project restructure.
+      evidence:
+      - cf2253aa60ffdbfd77356e33e611cd85ea53b849
+    - claim_class: FORENSIC_RAW_FACT
+      text: Path is absent from current origin/main tree.
+      evidence:
+      - git ls-tree origin/main archive
+    - claim_class: OPEN_QUESTION
+      text: Inner historical src/docs were not file-inventoried in this pass.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - What components lived inside the nested archive tree?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Historical nested repository snapshot. Inner census remains open.
+- identity:
+    reconciliation_id: RCN-000015
+    canonical_record_name: Master V2 minimal selector policy v1
+    historical_names:
+    - master_v2_minimal_selector_v1
+    - Master V2 minimal selector policy V1
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - ANCHOR:master_v2
+    - SURF:historical_path_family_src
+    - SURF:git_history_origin_main
+    discovery_evidence:
+    - src/ops/master_v2_minimal_selector_v1
+    - 75eee7bdc501ab4b0ec93812675cd074acb9e2ee
+    - afbae518b67eb1b789c835e219db37f5b15f308b
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/ops/master_v2_minimal_selector_v1
+    historical_refs:
+    - origin/main
+    historical_commits:
+    - 75eee7bdc501ab4b0ec93812675cd074acb9e2ee
+    - afbae518b67eb1b789c835e219db37f5b15f308b
+    claims:
+    - claim_class: HISTORICAL_FACT
+      text: Added 2026-08-30 commit 75eee7bd as feat(ops) Master V2 minimal selector policy V1 (#6165).
+      evidence:
+      - 75eee7bdc501ab4b0ec93812675cd074acb9e2ee
+    - claim_class: HISTORICAL_FACT
+      text: 'origin/main later contains revert commit afbae518 PR #6166 removing that change.'
+      evidence:
+      - afbae518b67eb1b789c835e219db37f5b15f308b
+    - claim_class: FORENSIC_RAW_FACT
+      text: Path is absent from current origin/main.
+      evidence:
+      - git ls-tree origin/main src/ops/master_v2_minimal_selector_v1
+    - claim_class: OPEN_QUESTION
+      text: Revert is not a reconciliation disposition.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: DEPENDS_ON
+      target_id: RCN-000004
+      unresolved_target: ''
+      evidence:
+      - name and path refer to Master V2
+      epistemic_status: FORENSIC_RAW_FACT
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - What did the selector policy do, and why was it reverted? Purpose still uninvestigated.
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Recently vanished. No REJECT disposition in this GO.
+- identity:
+    reconciliation_id: RCN-000016
+    canonical_record_name: Kanonisches Vollautonomie-Runbook v4.4.12
+    historical_names:
+    - Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12
+    aliases:
+    - Vollautonomie v4.4.12
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - SURF:atlas_index
+    - SURF:current_tree
+    discovery_evidence:
+    - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+    first_bound_ref: origin/main
+    historical_paths:
+    - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: File exists on origin/main.
+      evidence:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+    - claim_class: OPEN_QUESTION
+      text: Atlas marks it SUPERSEDED; that Atlas status is not copied as a reconciliation disposition.
+      evidence:
+      - docs/system_atlas/entities/catalog.yaml
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - What components did this historical runbook name that are now lost?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Historical canonical predecessor document. Content not mined for component names in this
+      pass.
+- identity:
+    reconciliation_id: RCN-000017
+    canonical_record_name: Information Corpus Persistence Base
+    historical_names:
+    - PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - SURF:forensic_corpus
+    - SURF:atlas_index
+    discovery_evidence:
+    - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+    first_bound_ref: origin/main
+    historical_paths:
+    - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Forensic persistence base document exists on origin/main.
+      evidence:
+      - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+    - claim_class: OPEN_QUESTION
+      text: This pass did not exhaust the information corpus.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - What corpus items remain unextracted into this reconciliation census?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Forensic corpus pointer. Not authority.
+- identity:
+    reconciliation_id: RCN-000018
+    canonical_record_name: Historical Child Ledger forensic extract
+    historical_names:
+    - HISTORICAL_CHILD_LEDGER
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - SURF:forensic_corpus
+    discovery_evidence:
+    - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: A separate historical child ledger YAML exists in the forensic extract.
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
+    - claim_class: OPEN_QUESTION
+      text: That ledger is not this reconciliation ledger. Contents were not imported.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Which child identities in that ledger are missing from this reconciliation census?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Do not merge into RCN IDs without identity proof. Not imported this pass.
+- identity:
+    reconciliation_id: RCN-000019
+    canonical_record_name: risk_layer historical top-level modules
+    historical_names:
+    - risk_layer/kill_switch.py
+    - risk_layer/liquidity_gate.py
+    - risk_layer/var_gate.py
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PARTIAL
+    discovered_from:
+    - SURF:historical_path_family_src
+    discovery_evidence:
+    - src/risk_layer/kill_switch.py
+    - src/risk_layer/kill_switch/
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/risk_layer/kill_switch.py
+    - src/risk_layer/liquidity_gate.py
+    - src/risk_layer/metrics.py
+    - src/risk_layer/micro_metrics.py
+    - src/risk_layer/stress_gate.py
+    - src/risk_layer/var_gate.py
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Deleted top-level module paths appear in git deletion census.
+      evidence:
+      - git log --all --diff-filter=D -- src/risk_layer/kill_switch.py
+    - claim_class: FORENSIC_RAW_FACT
+      text: src/risk_layer/kill_switch/ package exists on current origin/main.
+      evidence:
+      - src/risk_layer/kill_switch/__init__.py
+    - claim_class: OPEN_QUESTION
+      text: Rename/absorption is not proven. RENAMED_TO not asserted.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Were the deleted top-level modules renamed into src/risk_layer/kill_switch/ and related packages?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Mechanical partial presence. Not a current-system comparison.
+- identity:
+    reconciliation_id: RCN-000020
+    canonical_record_name: docs/observability Grafana runbook family
+    historical_names:
+    - docs/observability
+    - OBS_STACK_RUNBOOK
+    - Grafana Dashboard Setup
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_docs
+    - SURF:archived_docs
+    discovery_evidence:
+    - docs/observability/OBS_STACK_RUNBOOK.md
+    first_bound_ref: origin/main
+    historical_paths:
+    - docs/observability/LOGGING_FIELDS.md
+    - docs/observability/OBS_STACK_RUNBOOK.md
+    - docs/observability/Peak_Trade_Observability_Runbook_Grafana_Dashboard_Setup.md
+    - docs/observability/STATUS_GRAFANA_PROMETHEUS_AKTUELL.md
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: docs/observability path family is in deleted-path census and absent as a current docs/observability
+        tree.
+      evidence:
+      - git ls-tree origin/main docs/observability
+    - claim_class: OPEN_QUESTION
+      text: Current equivalent under another path was not proven this pass.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items: []
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Does a current Grafana/observability stack remain under another path?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Documentation family vanished. Not a runtime disposition.
+- identity:
+    reconciliation_id: RCN-000021
+    canonical_record_name: Double Play dashboard display JSON route remnant
+    historical_names:
+    - double_play_dashboard_display_json_route_v0
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - ANCHOR:double_play
+    - SURF:current_tree
+    - SURF:evidence_corpus
+    discovery_evidence:
+    - src/webui/double_play_dashboard_display_json_route_v0.py
+    - evidence/market_dashboard_deletion/preserved_domain_components.txt
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/webui/double_play_dashboard_display_json_route_v0.py
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: File exists on origin/main and is listed KEEP_DOMAIN_OWNER in deletion evidence.
+      evidence:
+      - src/webui/double_play_dashboard_display_json_route_v0.py
+      - evidence/market_dashboard_deletion/preserved_domain_components.txt
+    - claim_class: OPEN_QUESTION
+      text: Atlas historical_architecture mentions a deleted webui Double Play stack; identity versus
+        this remnant is unresolved.
+      evidence:
+      - docs/system_atlas/census/historical_architecture.yaml
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000005
+      unresolved_target: ''
+      evidence:
+      - Double Play display naming
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Is this a remnant of a deleted Double Play webui dashboard stack?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Current remnant. Not proof the deleted dashboard stack is covered.
+- identity:
+    reconciliation_id: RCN-000022
+    canonical_record_name: Temporary Forensic Working Runbook historical_reference source
+    historical_names:
+    - PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK
+    - historical_reference sha256-a5a468f7
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - SURF:forensic_corpus
+    discovery_evidence:
+    - forensics/historical_reference/README.md
+    - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/LOSS_REGISTER.yaml
+    first_bound_ref: origin/main
+    historical_paths:
+    - forensics/historical_reference/
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Committed historical_reference tree exists with AUTHORITY NONE.
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/AUTHORITY_NONE.txt
+    - claim_class: FORENSIC_RAW_FACT
+      text: LOSS_REGISTER lists derived blobs excluded from git as GIT_LARGE_FILE_UNSUITABLE.
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/LOSS_REGISTER.yaml
+    - claim_class: OPEN_QUESTION
+      text: External derived paths are outside repository-internal census scope.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000007
+      unresolved_target: ''
+      evidence:
+      - same historical_reference tree
+      epistemic_status: HYPOTHESIS
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000008
+      unresolved_target: ''
+      evidence:
+      - same historical_reference tree
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Which named historical components inside the working runbook are still missing from this census?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Corpus container. Not exhausted.
+- identity:
+    reconciliation_id: RCN-000023
+    canonical_record_name: webui market_surface.py v0
+    historical_names:
+    - market_surface.py
+    - MARKET_SURFACE_V0
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_ABSENT
+    discovered_from:
+    - SURF:historical_path_family_src
+    discovery_evidence:
+    - src/webui/market_surface.py
+    first_bound_ref: origin/main
+    historical_paths:
+    - src/webui/market_surface.py
+    historical_refs:
+    - origin/main
+    historical_commits: []
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: src/webui/market_surface.py is in deleted-path census and absent from current origin/main.
+      evidence:
+      - git log --all --diff-filter=D -- src/webui/market_surface.py
+    - claim_class: OPEN_QUESTION
+      text: Identity unresolved versus later dashboard packages.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000012
+      unresolved_target: ''
+      evidence:
+      - early dashboard surface hypothesis
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Standalone surface versus later dashboard packages?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Named vanished module.
+- identity:
+    reconciliation_id: RCN-000024
+    canonical_record_name: Supervised graphical market landscape presentation
+    historical_names:
+    - supervised graphical market landscape
+    - supervised_graphical_market_landscape_presentation_only_v1
+    aliases: []
+  discovery:
+    discovery_status: EVIDENCE_BOUND
+    current_presence: CURRENTLY_PRESENT
+    discovered_from:
+    - ANCHOR:landscape
+    - SURF:test_corpus
+    - SURF:commit_messages
+    discovery_evidence:
+    - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+    - 4a758bf4b9f2a3805380bb4b8cde816153073d14
+    first_bound_ref: origin/main
+    historical_paths:
+    - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+    historical_refs:
+    - origin/main
+    historical_commits:
+    - 4a758bf4b9f2a3805380bb4b8cde816153073d14
+    claims:
+    - claim_class: FORENSIC_RAW_FACT
+      text: Tests named supervised graphical market landscape exist on origin/main.
+      evidence:
+      - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+    - claim_class: HISTORICAL_FACT
+      text: 'Commit 4a758bf4 subject: feat(dashboard): serve supervised graphical market landscape
+        (#5684).'
+      evidence:
+      - 4a758bf4b9f2a3805380bb4b8cde816153073d14
+    - claim_class: OPEN_QUESTION
+      text: Not merged with Market Dashboard Landscape V2 package without identity proof.
+      evidence: []
+  understanding:
+    purpose_understood: false
+    purpose_statement: ''
+    historical_problem_statement: ''
+    inputs: []
+    outputs: []
+    dependencies: []
+    consumers: []
+    authority_role: ''
+    safety_role: ''
+    runtime_role: ''
+    invariants: []
+  relations:
+    items:
+    - relation_type: POSSIBLE_SAME_AS
+      target_id: RCN-000001
+      unresolved_target: ''
+      evidence:
+      - Landscape naming
+      epistemic_status: HYPOTHESIS
+  current_comparison:
+    current_equivalent: ''
+    current_paths: []
+    capability_overlap: ''
+    semantic_compatibility: ''
+    authority_compatibility: ''
+    safety_compatibility: ''
+    runtime_compatibility: ''
+    conflicts: []
+    gaps: []
+  adjudication:
+    lifecycle_state: EVIDENCE_BOUND
+    disposition: ''
+    positive_reason: ''
+    evidence_refs: []
+    contradictions: []
+    unresolved_questions:
+    - Is this the same Landscape as RCN-000001 or a distinct presentation-only capability?
+  integration:
+    reintegration_required: false
+    adaptation_required: false
+    implementation_status: ''
+    implementation_refs: []
+  audit:
+    created_from_evidence: true
+    last_adjudicated_against_sha: ''
+    notes: Test/commit hit. Implementation path not fully bound this pass.
