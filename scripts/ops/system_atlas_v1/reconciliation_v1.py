@@ -415,6 +415,14 @@ def _validate_record(
             raise ReconciliationValidationError(f"REJECT_WITHOUT_POSITIVE_REASON:{rid}")
     if lifecycle == "OPEN" and disposition not in {"", "INSUFFICIENT_EVIDENCE"}:
         raise ReconciliationValidationError(f"OPEN_WITHOUT_INSUFFICIENT_EVIDENCE:{rid}")
+    if lifecycle == "CURRENT_SYSTEM_COMPARED":
+        if purpose_understood is not True:
+            raise ReconciliationValidationError(f"COMPARE_BEFORE_PURPOSE_UNDERSTOOD:{rid}")
+        if disposition:
+            raise ReconciliationValidationError(f"DISPOSITION_DURING_CURRENT_SYSTEM_COMPARE:{rid}")
+        overlap = str((record.get("current_comparison") or {}).get("capability_overlap") or "")
+        if not overlap.strip():
+            raise ReconciliationValidationError(f"CURRENT_SYSTEM_COMPARED_WITHOUT_OVERLAP:{rid}")
     discovery = record.get("discovery") or {}
     presence = str(discovery.get("current_presence") or "")
     if presence and presence not in ALLOWED_CURRENT_PRESENCE:

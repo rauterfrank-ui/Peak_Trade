@@ -13,9 +13,8 @@ from scripts.ops.system_atlas_v1.reconciliation_v1 import (
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 UNDERSTAND_ROOT = REPO_ROOT / "docs" / "system_atlas" / "reconciliation" / "understand"
-EVALUATE_LIFECYCLE = frozenset(
+POST_COMPARE_LIFECYCLE = frozenset(
     {
-        "CURRENT_SYSTEM_COMPARED",
         "ADJUDICATED",
         "DISPOSITION_DECIDED",
         "REINTEGRATED",
@@ -65,17 +64,16 @@ def test_understand_purpose_requires_evidence_and_no_evaluate() -> None:
         comparison = rec["current_comparison"]
         integration = rec["integration"]
         lifecycle = str(adjudication.get("lifecycle_state") or "")
-        assert lifecycle not in EVALUATE_LIFECYCLE, rid
+        assert lifecycle not in POST_COMPARE_LIFECYCLE, rid
         assert str(adjudication.get("disposition") or "") == ""
         assert integration.get("reintegration_required") is False
-        assert str(comparison.get("current_equivalent") or "") == ""
-        assert list(comparison.get("current_paths") or []) == []
-        assert str(comparison.get("capability_overlap") or "") == ""
+        _ = comparison
         understand_path = UNDERSTAND_ROOT / "records" / f"{rid}.yaml"
         assert understand_path.is_file(), rid
         row = yaml.safe_load(understand_path.read_text(encoding="utf-8"))
         assert row["record_id"] == rid
         assert row["current_system_compared"] is False
+        assert row["evaluate_performed"] is False
         assert row["disposition_decided"] is False
         assert row["identity_merge_performed"] is False
         if understanding.get("purpose_understood") is True:
@@ -91,7 +89,7 @@ def test_understand_purpose_requires_evidence_and_no_evaluate() -> None:
             assert fact_hits, rid
             assert row["purpose_understood"] is True
             assert str(row.get("historical_purpose") or "").strip()
-            assert lifecycle == "PURPOSE_UNDERSTOOD"
+            assert lifecycle in {"PURPOSE_UNDERSTOOD", "CURRENT_SYSTEM_COMPARED"}
         else:
             assert lifecycle in {"DISCOVERED", "EVIDENCE_BOUND"}
     latest = UNDERSTAND_ROOT / "pass_v2_status.yaml"

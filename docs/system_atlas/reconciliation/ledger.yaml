@@ -123,17 +123,38 @@ records:
       - later current landscape package vs deleted product_surface_v1
       epistemic_status: HYPOTHESIS
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: src/webui/market_dashboard_landscape_v2/
+    current_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE
+    safety_compatibility: COMPATIBLE
+    runtime_compatibility: COMPATIBLE
     conflicts: []
     gaps: []
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Landscape V2 package still exists on the bound origin/main SHA as a read-only consumer.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Owner registry remains consumer-boundary mapping; AUTHORITY_EFFECT=NONE in slot notes.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -142,6 +163,7 @@ records:
     - Is this the historical component remembered as Landscape, or a later dashboard generation that reused the name?
     - What was the original purpose of this package?
     - Is Landscape V2 a later generation of product_surface_v1, or a distinct package that reused dashboard naming?
+    - Identity versus deleted product_surface_v1 remains unproven and is not decided here.
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -150,7 +172,8 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Anchor seed Landscape. Hit is not census boundary. Purpose not investigated.
+    notes: Anchor seed Landscape. Hit is not census boundary. Purpose not investigated. EVALUATE_PASS_V1 compared against
+      0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000002
     canonical_record_name: Market Dashboard Landscape V2 Master Runbook
@@ -240,17 +263,27 @@ records:
       - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+    current_paths:
+    - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: NOT_RUNTIME
     conflicts: []
     gaps: []
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Landscape V2 Master Runbook file still exists on the bound SHA.
+      evidence:
+      - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -266,7 +299,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Documentation hit for Landscape seed. Not merged with the package record.
+    notes: Documentation hit for Landscape seed. Not merged with the package record. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000003
     canonical_record_name: Runbooks Landscape 2026-ready index
@@ -338,17 +371,27 @@ records:
   relations:
     items: []
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md
+    current_paths:
+    - docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: NOT_RUNTIME
     conflicts: []
     gaps: []
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Runbooks Landscape 2026-ready index still exists; Landscape here names a catalog.
+      evidence:
+      - docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -364,7 +407,8 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: 'Separate Landscape-named artifact. Fail-open: no POSSIBLE_SAME_AS without evidence they are one component.'
+    notes: 'Separate Landscape-named artifact. Fail-open: no POSSIBLE_SAME_AS without evidence they are one component. EVALUATE_PASS_V1
+      compared against 0e6cbb860f716d527873d97556d0968df4a197bf.'
 - identity:
     reconciliation_id: RCN-000004
     canonical_record_name: Master V2 trading package
@@ -452,17 +496,27 @@ records:
       - forensic extract labeled master_v2
       epistemic_status: HYPOTHESIS
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: src/trading/master_v2/
+    current_paths:
+    - src/trading/master_v2/
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE
+    safety_compatibility: COMPATIBLE
+    runtime_compatibility: COMPATIBLE
     conflicts: []
     gaps: []
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: src/trading/master_v2/ remains the current Master V2 trading package path.
+      evidence:
+      - src/trading/master_v2/
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -478,7 +532,8 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Anchor seed Master V2. Current presence is mechanical, not coverage adjudication.
+    notes: Anchor seed Master V2. Current presence is mechanical, not coverage adjudication. EVALUATE_PASS_V1 compared against
+      0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000005
     canonical_record_name: Double Play composition stack on Master V2
@@ -582,17 +637,33 @@ records:
       - src/trading/master_v2/double_play_composition.py
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: src/trading/master_v2/double_play_composition.py
+    current_paths:
+    - src/trading/master_v2/double_play_composition.py
+    - src/trading/master_v2/double_play_survival.py
+    - src/trading/master_v2/double_play_capital_slot.py
+    - src/trading/master_v2/double_play_core_wiring_v1.py
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE
+    safety_compatibility: COMPATIBLE
+    runtime_compatibility: COMPATIBLE
     conflicts: []
     gaps: []
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Double Play composition stack files still exist under src/trading/master_v2/.
+      evidence:
+      - src/trading/master_v2/double_play_composition.py
+      - src/trading/master_v2/double_play_survival.py
+      - src/trading/master_v2/double_play_capital_slot.py
+      - src/trading/master_v2/double_play_core_wiring_v1.py
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -609,7 +680,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Anchor seed Double Play. Not merged with ops.double_play.
+    notes: Anchor seed Double Play. Not merged with ops.double_play. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000006
     canonical_record_name: ops.double_play specialists scaffold
@@ -692,17 +763,29 @@ records:
       - src/ops/double_play/specialists.py
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: src/ops/double_play/
+    current_paths:
+    - src/ops/double_play/__init__.py
+    - src/ops/double_play/specialists.py
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE
+    safety_compatibility: COMPATIBLE
+    runtime_compatibility: COMPATIBLE
     conflicts: []
     gaps: []
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: ops.double_play scaffold still exists as a projection/diagnostic consumer path.
+      evidence:
+      - src/ops/double_play/__init__.py
+      - src/ops/double_play/specialists.py
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -719,7 +802,8 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Earlier dated Double Play scaffold. Fail-open versus Master V2 Double Play stack.
+    notes: Earlier dated Double Play scaffold. Fail-open versus Master V2 Double Play stack. EVALUATE_PASS_V1 compared against
+      0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000007
     canonical_record_name: Forensic historical_reference Master V2 extract
@@ -793,17 +877,27 @@ records:
       - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/README.md
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/master_v2/
+    current_paths:
+    - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/master_v2/
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: NOT_RUNTIME
     conflicts: []
     gaps: []
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Forensic Master V2 extract directory still exists under historical_reference.
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/master_v2/
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -819,7 +913,8 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Forensic extract is not Atlas authority and not a runtime component by itself.
+    notes: Forensic extract is not Atlas authority and not a runtime component by itself. EVALUATE_PASS_V1 compared against
+      0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000008
     canonical_record_name: Forensic historical_reference Double Play extract
@@ -893,17 +988,27 @@ records:
       - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/README.md
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/double_play/
+    current_paths:
+    - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/double_play/
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: NOT_RUNTIME
     conflicts: []
     gaps: []
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Forensic Double Play extract directory still exists under historical_reference.
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/double_play/
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -919,7 +1024,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Fail-open forensic extract. AUTHORITY NONE in source tree.
+    notes: Fail-open forensic extract. AUTHORITY NONE in source tree. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000009
     canonical_record_name: Market dashboard product surface v1
@@ -1011,16 +1116,46 @@ records:
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical path src/webui/market_dashboard_product_surface_v1 is absent on origin/main@0e6cbb860f71
+    - identity versus Landscape V2 remains unproven; POSSIBLE_SAME_AS stays hypothesis
+    - current absence does not prove historical irrelevance
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: GET /market read-only consumer currently exists as Landscape V2; this is not a proven identity match.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Landscape V2 owner registry maps projection slots; it does not declare itself as product_surface_v1.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: A later GET /market consumer may cover part of this historical purpose; replacement is not proven.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -1028,6 +1163,7 @@ records:
     unresolved_questions:
     - Was this deleted, renamed, or absorbed into Landscape V2?
     - Not proven SAME_AS Landscape V2 (RCN-000001); deletion is not absorption proof.
+    - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1036,7 +1172,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Unknown-component discovery via vanished src pkg3.
+    notes: Unknown-component discovery via vanished src pkg3. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000010
     canonical_record_name: Market dashboard readmodels v1
@@ -1103,16 +1239,46 @@ records:
       epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical path src/webui/market_dashboard_readmodels_v1 is absent on origin/main@0e6cbb860f71
+    - identity versus Landscape V2 remains unproven; POSSIBLE_SAME_AS stays hypothesis
+    - current absence does not prove historical irrelevance
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: GET /market read-only consumer currently exists as Landscape V2; this is not a proven identity match.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Landscape V2 owner registry maps projection slots; it does not declare itself as product_surface_v1.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: A later GET /market consumer may cover part of this historical purpose; replacement is not proven.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -1120,6 +1286,7 @@ records:
     unresolved_questions:
     - Separate component versus product_surface_v1?
     - Adjacent to product_surface_v1 but a separate package; not fused.
+    - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1128,7 +1295,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Fail-open versus product surface.
+    notes: Fail-open versus product surface. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000011
     canonical_record_name: Market visual operator surface v1
@@ -1195,16 +1362,52 @@ records:
       epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical path src/webui/market_visual_operator_surface_v1 is absent on origin/main@0e6cbb860f71
+    - identity versus Landscape V2 remains unproven; POSSIBLE_SAME_AS stays hypothesis
+    - current absence does not prove historical irrelevance
+    - diagnostics_summary Landscape V2 slot remains NOT_BOUND on the bound SHA
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: GET /market read-only consumer currently exists as Landscape V2; this is not a proven identity match.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Landscape V2 owner registry maps projection slots; it does not declare itself as product_surface_v1.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: A later GET /market consumer may cover part of this historical purpose; replacement is not proven.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      used_as_fact: false
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Landscape V2 diagnostics_summary slot is NOT_BOUND; visual-operator diagnostics are not proven covered.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -1212,6 +1415,7 @@ records:
     unresolved_questions:
     - Relation to Landscape V2 and product_surface_v1?
     - Relation to Landscape V2 operator chrome is unproven identity.
+    - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1220,7 +1424,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Named vanished package.
+    notes: Named vanished package. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000012
     canonical_record_name: Futures read-only market dashboard runtime v0
@@ -1286,16 +1490,46 @@ records:
       epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical path src/webui/futures_read_only_market_dashboard_runtime_v0.py is absent on origin/main@0e6cbb860f71
+    - identity versus Landscape V2 remains unproven; POSSIBLE_SAME_AS stays hypothesis
+    - current absence does not prove historical irrelevance
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: GET /market read-only consumer currently exists as Landscape V2; this is not a proven identity match.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Landscape V2 owner registry maps projection slots; it does not declare itself as product_surface_v1.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: A later GET /market consumer may cover part of this historical purpose; replacement is not proven.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -1303,6 +1537,7 @@ records:
     unresolved_questions:
     - Predecessor of later dashboard packages?
     - Not proven SAME_AS product_surface_v1; POSSIBLE_SAME_AS stays hypothesis.
+    - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1311,7 +1546,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: v0 runtime module; not merged with v1 packages.
+    notes: v0 runtime module; not merged with v1 packages. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000013
     canonical_record_name: Market dashboard deletion evidence pack
@@ -1394,17 +1629,27 @@ records:
       - evidence/market_dashboard_deletion/preserved_domain_components.txt
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: evidence/market_dashboard_deletion/
+    current_paths:
+    - evidence/market_dashboard_deletion/
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: NOT_RUNTIME
     conflicts: []
     gaps: []
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Market dashboard deletion evidence pack directory still exists.
+      evidence:
+      - evidence/market_dashboard_deletion/
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -1420,7 +1665,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Evidence corpus hit. Does not dispose deleted components.
+    notes: Evidence corpus hit. Does not dispose deleted components. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000014
     canonical_record_name: archive/PeakTradeRepo nested historical tree
@@ -1526,15 +1771,32 @@ records:
   current_comparison:
     current_equivalent: ''
     current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    capability_overlap: NO_CURRENT_EQUIVALENT_PROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical archive path archive/PeakTradeRepo is absent on origin/main@0e6cbb860f71
+    - archive presence is not obsolete; current absence is not rejection
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Bound current tree 0e6cbb860f716d527873d97556d0968df4a197bf does not contain archive/PeakTradeRepo.
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000014.yaml
+      - docs/system_atlas/reconciliation/ledger.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: No current equivalent path was proven for this archive artifact on the bound SHA.
+      evidence:
+      - docs/system_atlas/reconciliation/ledger.yaml
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -1544,6 +1806,7 @@ records:
     unresolved_questions:
     - What components lived inside the nested archive tree?
     - Whether a fuller PeakTradeRepo snapshot existed before these placeholder blobs is not reconstructed.
+    - Is there a proven current replacement, or only a later namesake?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1552,7 +1815,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Historical nested repository snapshot. Inner census remains open.
+    notes: Historical nested repository snapshot. Inner census remains open. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000015
     canonical_record_name: Master V2 minimal selector policy v1
@@ -1636,16 +1899,44 @@ records:
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/ops/single_selected_future_policy_v1/
+    - src/ops/single_selected_future_policy_v1/policy_v1.py
+    - src/ops/single_selected_future_runtime_binding_v1/
+    capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - 'src/ops/master_v2_minimal_selector_v1 is absent after revert of #6165 via #6166'
+    - current Single Selected Future policy is a later capability path, not a proven identity
+    - historical revert is not disposition
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Historical master_v2_minimal_selector_v1 path is absent on the bound SHA.
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000015.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: src/ops/single_selected_future_policy_v1 exists and encodes SINGLE_SELECTED_FUTURE.
+      evidence:
+      - src/ops/single_selected_future_policy_v1/
+      - src/ops/single_selected_future_policy_v1/policy_v1.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Cap 2.3 policy may serve a similar exactly-one selection purpose; replacement is not proven.
+      evidence:
+      - src/ops/single_selected_future_policy_v1/
+      - src/ops/single_selected_future_policy_v1/policy_v1.py
+      - src/ops/single_selected_future_runtime_binding_v1/
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -1653,6 +1944,7 @@ records:
     unresolved_questions:
     - What did the selector policy do, and why was it reverted? Purpose still uninvestigated.
     - Current absence after revert is not a disposition of the historical purpose.
+    - Is single_selected_future_policy_v1 a successor of master_v2_minimal_selector_v1, or a distinct later owner?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1661,7 +1953,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Recently vanished. No REJECT disposition in this GO.
+    notes: Recently vanished. No REJECT disposition in this GO. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000016
     canonical_record_name: Kanonisches Vollautonomie-Runbook v4.4.12
@@ -1718,17 +2010,34 @@ records:
   relations:
     items: []
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+    current_paths:
+    - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+    - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: NOT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - successor Master Runbook presence is documented; this is comparison, not disposition
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: v4.4.12 file still exists on the bound SHA as a historical superseded document.
+      evidence:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Map of Truth names the Canonical Master Runbook as current working authority and v4.4.12 as SUPERSEDED.
+      evidence:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -1744,7 +2053,8 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Historical canonical predecessor document. Content not mined for component names in this pass.
+    notes: Historical canonical predecessor document. Content not mined for component names in this pass. EVALUATE_PASS_V1
+      compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000017
     canonical_record_name: Information Corpus Persistence Base
@@ -1799,17 +2109,27 @@ records:
   relations:
     items: []
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+    current_paths:
+    - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: NOT_RUNTIME
     conflicts: []
     gaps: []
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Information Corpus Persistence Base markdown still exists.
+      evidence:
+      - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -1824,7 +2144,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Forensic corpus pointer. Not authority.
+    notes: Forensic corpus pointer. Not authority. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000018
     canonical_record_name: Historical Child Ledger forensic extract
@@ -1885,17 +2205,27 @@ records:
       - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
+    current_paths:
+    - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: NOT_RUNTIME
     conflicts: []
     gaps: []
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: HISTORICAL_CHILD_LEDGER.yaml still exists in the forensic conservation tree.
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -1911,7 +2241,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Do not merge into RCN IDs without identity proof. Not imported this pass.
+    notes: Do not merge into RCN IDs without identity proof. Not imported this pass. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000019
     canonical_record_name: risk_layer historical top-level modules
@@ -2001,17 +2331,45 @@ records:
   relations:
     items: []
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: src/risk_layer/kill_switch/
+    current_paths:
+    - src/risk_layer/kill_switch/
+    - src/risk_layer/kill_switch/core.py
+    - src/risk_layer/risk_gate.py
+    - src/risk_layer/alerting/
+    - src/risk_layer/var_backtest/
+    capability_overlap: SAME_PATH_FAMILY_PARTIAL
+    semantic_compatibility: PARTIAL
+    authority_compatibility: PARTIAL
+    safety_compatibility: PARTIAL
+    runtime_compatibility: PARTIAL
     conflicts: []
-    gaps: []
+    gaps:
+    - historical top-level src/risk_layer/kill_switch.py is absent
+    - historical liquidity_gate.py, metrics.py, micro_metrics.py, stress_gate.py, var_gate.py are absent
+    - current package uses kill_switch/ package plus risk_gate.py; identity of each missing module is unproven
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: src/risk_layer/kill_switch/ package exists with KillSwitch public API.
+      evidence:
+      - src/risk_layer/kill_switch/__init__.py
+      - src/risk_layer/kill_switch/core.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Landscape V2 safety_authority slot names src.risk_layer.kill_switch as owner.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: src/risk_layer/liquidity_gate.py is absent on the bound SHA.
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000019.yaml
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -2019,6 +2377,7 @@ records:
     unresolved_questions:
     - Were the deleted top-level modules renamed into src/risk_layer/kill_switch/ and related packages?
     - Rename/move of top-level modules into src/risk_layer/kill_switch/ is unproven identity.
+    - Are LiquidityGate/StressGate/VaRGate purposes covered by current risk_gate.py or elsewhere?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2027,7 +2386,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Mechanical partial presence. Not a current-system comparison.
+    notes: Mechanical partial presence. Not a current-system comparison. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000020
     canonical_record_name: docs/observability Grafana runbook family
@@ -2098,16 +2457,41 @@ records:
     items: []
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - docs/OBSERVABILITY_AND_MONITORING_PLAN.md
+    - docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml
+    - docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C4_OBSERVABILITY_OPERATOR_DRYRUN.md
+    capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: NOT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - docs/observability Grafana/OTLP runbook family is absent on the bound SHA
+    - later observability docs exist under other paths; Grafana-stack identity is unproven
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: docs/observability/ path family is absent on the bound SHA.
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000020.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Later observability docs exist (plan, Prometheus scrape YAML, operator dry-run).
+      evidence:
+      - docs/OBSERVABILITY_AND_MONITORING_PLAN.md
+      - docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Later docs may cover local observability; they are not proven to be the purged Grafana family.
+      evidence:
+      - docs/OBSERVABILITY_AND_MONITORING_PLAN.md
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -2115,6 +2499,7 @@ records:
     unresolved_questions:
     - Does a current Grafana/observability stack remain under another path?
     - Whether a later Grafana stack exists under another path is not answered here (EVALUATE-forbidden).
+    - Does a current Grafana/OTLP stack runbook exist under another path?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2123,7 +2508,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Documentation family vanished. Not a runtime disposition.
+    notes: Documentation family vanished. Not a runtime disposition. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000021
     canonical_record_name: Double Play dashboard display JSON route remnant
@@ -2207,17 +2592,27 @@ records:
       - src/webui/double_play_dashboard_display_json_route_v0.py
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: src/webui/double_play_dashboard_display_json_route_v0.py
+    current_paths:
+    - src/webui/double_play_dashboard_display_json_route_v0.py
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE
+    safety_compatibility: COMPATIBLE
+    runtime_compatibility: COMPATIBLE
     conflicts: []
     gaps: []
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Double Play dashboard display JSON route remnant still exists.
+      evidence:
+      - src/webui/double_play_dashboard_display_json_route_v0.py
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -2233,7 +2628,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Current remnant. Not proof the deleted dashboard stack is covered.
+    notes: Current remnant. Not proof the deleted dashboard stack is covered. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000022
     canonical_record_name: Temporary Forensic Working Runbook historical_reference source
@@ -2307,17 +2702,27 @@ records:
       - same historical_reference tree
       epistemic_status: HYPOTHESIS
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: forensics/historical_reference/
+    current_paths:
+    - forensics/historical_reference/
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: NOT_RUNTIME
     conflicts: []
     gaps: []
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: forensics/historical_reference/ tree still exists on the bound SHA.
+      evidence:
+      - forensics/historical_reference/
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -2332,7 +2737,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Corpus container. Not exhausted.
+    notes: Corpus container. Not exhausted. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000023
     canonical_record_name: webui market_surface.py v0
@@ -2406,16 +2811,46 @@ records:
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical path src/webui/market_surface.py is absent on origin/main@0e6cbb860f71
+    - identity versus Landscape V2 remains unproven; POSSIBLE_SAME_AS stays hypothesis
+    - current absence does not prove historical irrelevance
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: GET /market read-only consumer currently exists as Landscape V2; this is not a proven identity match.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Landscape V2 owner registry maps projection slots; it does not declare itself as product_surface_v1.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: A later GET /market consumer may cover part of this historical purpose; replacement is not proven.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -2423,6 +2858,7 @@ records:
     unresolved_questions:
     - Standalone surface versus later dashboard packages?
     - POSSIBLE_SAME_AS RCN-000012 remains hypothesis.
+    - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2431,7 +2867,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Named vanished module.
+    notes: Named vanished module. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000024
     canonical_record_name: Supervised graphical market landscape presentation
@@ -2512,17 +2948,27 @@ records:
       - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+    current_paths:
+    - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: NOT_RUNTIME
     conflicts: []
     gaps: []
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Supervised graphical market landscape presentation contract test still exists.
+      evidence:
+      - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -2538,7 +2984,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Test/commit hit. Implementation path not fully bound this pass.
+    notes: Test/commit hit. Implementation path not fully bound this pass. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000025
     canonical_record_name: Gate-Familien F1-F6 forensic heading family
@@ -2607,17 +3053,27 @@ records:
       - docs/system_atlas/census/historical_terminology.yaml
       epistemic_status: HYPOTHESIS
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: docs/system_atlas/census/historical_terminology.yaml
+    current_paths:
+    - docs/system_atlas/census/historical_terminology.yaml
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: NOT_RUNTIME
     conflicts: []
     gaps: []
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Atlas historical_terminology.yaml still exists and remains Atlas-authority NONE.
+      evidence:
+      - docs/system_atlas/census/historical_terminology.yaml
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -2633,7 +3089,8 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Promoted from CAND:gate_familien_f1_f6. Purpose not investigated. Not fused with dashboard family_id.
+    notes: Promoted from CAND:gate_familien_f1_f6. Purpose not investigated. Not fused with dashboard family_id. EVALUATE_PASS_V1
+      compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000026
     canonical_record_name: NestedStructuralChild forensic structure type
@@ -2696,17 +3153,27 @@ records:
   relations:
     items: []
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: forensic/post_step32_knowledge_integration_v0/
+    current_paths:
+    - forensic/post_step32_knowledge_integration_v0/
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: NOT_RUNTIME
     conflicts: []
     gaps: []
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: post_step32 knowledge integration forensic tree still exists.
+      evidence:
+      - forensic/post_step32_knowledge_integration_v0/
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -2721,7 +3188,8 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Terminology/forensic hit. Atlas says not SSOT_CHILD. Not fused with CAND:ssot_child_literal.
+    notes: Terminology/forensic hit. Atlas says not SSOT_CHILD. Not fused with CAND:ssot_child_literal. EVALUATE_PASS_V1 compared
+      against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000027
     canonical_record_name: Market depth v0 readmodel/runtime
@@ -2793,16 +3261,47 @@ records:
       epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical path src/webui/market_depth_runtime_v0.py is absent on origin/main@0e6cbb860f71
+    - identity versus Landscape V2 remains unproven; POSSIBLE_SAME_AS stays hypothesis
+    - current absence does not prove historical irrelevance
+    - Landscape V2 owner registry has no market_depth slot on the bound SHA
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: GET /market read-only consumer currently exists as Landscape V2; this is not a proven identity match.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Landscape V2 owner registry maps projection slots; it does not declare itself as product_surface_v1.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: A later GET /market consumer may cover part of this historical purpose; replacement is not proven.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -2810,6 +3309,7 @@ records:
     unresolved_questions:
     - Standalone depth component versus product_surface_v1?
     - POSSIBLE_SAME_AS RCN-000009 is generation hypothesis only.
+    - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2818,7 +3318,8 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Split from CAND:market_dashboard_v0_depth_tape_funnel. Fail-open versus other v0 modules.
+    notes: Split from CAND:market_dashboard_v0_depth_tape_funnel. Fail-open versus other v0 modules. EVALUATE_PASS_V1 compared
+      against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000028
     canonical_record_name: Market tape v0 readmodel
@@ -2882,22 +3383,54 @@ records:
       epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical path src/webui/market_tape_readmodel_v0 is absent on origin/main@0e6cbb860f71
+    - identity versus Landscape V2 remains unproven; POSSIBLE_SAME_AS stays hypothesis
+    - current absence does not prove historical irrelevance
+    - Landscape V2 owner registry has no market_tape slot on the bound SHA
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: GET /market read-only consumer currently exists as Landscape V2; this is not a proven identity match.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Landscape V2 owner registry maps projection slots; it does not declare itself as product_surface_v1.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: A later GET /market consumer may cover part of this historical purpose; replacement is not proven.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - Standalone tape component versus later dashboard packages?
+    - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2906,7 +3439,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Split from grouped v0 candidate. Not fused with depth/funnel.
+    notes: Split from grouped v0 candidate. Not fused with depth/funnel. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000029
     canonical_record_name: Market ranking funnel v0
@@ -2970,16 +3503,52 @@ records:
       epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical path src/webui/market_ranking_funnel_runtime_v0.py is absent on origin/main@0e6cbb860f71
+    - identity versus Landscape V2 remains unproven; POSSIBLE_SAME_AS stays hypothesis
+    - current absence does not prove historical irrelevance
+    - universe_ranking Landscape slot exists; funnel-stage identity with v0 is unproven
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: GET /market read-only consumer currently exists as Landscape V2; this is not a proven identity match.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Landscape V2 owner registry maps projection slots; it does not declare itself as product_surface_v1.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: A later GET /market consumer may cover part of this historical purpose; replacement is not proven.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      used_as_fact: false
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Landscape V2 universe_ranking slot binds universe_selection_readmodel.v1.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -2987,6 +3556,7 @@ records:
     unresolved_questions:
     - Relation to later landscape ranking displays?
     - POSSIBLE_SAME_AS RCN-000009 is hypothesis.
+    - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2995,7 +3565,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Fail-open versus other v0 modules.
+    notes: Fail-open versus other v0 modules. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000030
     canonical_record_name: Market futures OHLCV v0
@@ -3059,16 +3629,52 @@ records:
       epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical path src/webui/market_futures_ohlcv_runtime_v0.py is absent on origin/main@0e6cbb860f71
+    - identity versus Landscape V2 remains unproven; POSSIBLE_SAME_AS stays hypothesis
+    - current absence does not prove historical irrelevance
+    - current OHLCV bind is okx_selected_instrument_ohlcv_readmodel.v1; identity with v0 runtime is unproven
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: GET /market read-only consumer currently exists as Landscape V2; this is not a proven identity match.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Landscape V2 owner registry maps projection slots; it does not declare itself as product_surface_v1.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: A later GET /market consumer may cover part of this historical purpose; replacement is not proven.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      used_as_fact: false
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: okx_selected_instrument_ohlcv_readmodel_v1 exists as a later OHLCV readmodel.
+      evidence:
+      - src/ops/okx_selected_instrument_ohlcv_readmodel_v1.py
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -3076,6 +3682,7 @@ records:
     unresolved_questions:
     - Standalone OHLCV component versus later dashboard packages?
     - POSSIBLE_SAME_AS RCN-000012 is hypothesis.
+    - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3084,7 +3691,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Fail-open versus other v0 modules.
+    notes: Fail-open versus other v0 modules. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000031
     canonical_record_name: Market instrument eligibility v0
@@ -3147,16 +3754,47 @@ records:
       epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical path src/webui/market_instrument_eligibility_v0.py is absent on origin/main@0e6cbb860f71
+    - identity versus Landscape V2 remains unproven; POSSIBLE_SAME_AS stays hypothesis
+    - current absence does not prove historical irrelevance
+    - current selection eligibility lives under single_selected_future_policy_v1; identity unproven
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: GET /market read-only consumer currently exists as Landscape V2; this is not a proven identity match.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Landscape V2 owner registry maps projection slots; it does not declare itself as product_surface_v1.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: A later GET /market consumer may cover part of this historical purpose; replacement is not proven.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -3164,6 +3802,7 @@ records:
     unresolved_questions:
     - Standalone eligibility module versus later ranking/universe producers?
     - POSSIBLE_SAME_AS RCN-000009 is hypothesis.
+    - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3172,7 +3811,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Single named vanished module. Not fused.
+    notes: Single named vanished module. Not fused. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000032
     canonical_record_name: Market active paper run runtime v0
@@ -3234,16 +3873,46 @@ records:
       epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical path src/webui/market_active_paper_run_runtime_v0.py is absent on origin/main@0e6cbb860f71
+    - identity versus Landscape V2 remains unproven; POSSIBLE_SAME_AS stays hypothesis
+    - current absence does not prove historical irrelevance
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: GET /market read-only consumer currently exists as Landscape V2; this is not a proven identity match.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Landscape V2 owner registry maps projection slots; it does not declare itself as product_surface_v1.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: A later GET /market consumer may cover part of this historical purpose; replacement is not proven.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -3251,6 +3920,7 @@ records:
     unresolved_questions:
     - Relation to paper-shadow runtimes?
     - POSSIBLE_SAME_AS RCN-000012 is hypothesis.
+    - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3259,7 +3929,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Named vanished module. Purpose not investigated.
+    notes: Named vanished module. Purpose not investigated. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000033
     canonical_record_name: Market dashboard current state v0
@@ -3324,16 +3994,46 @@ records:
       epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical path src/webui/market_dashboard_current_state_runtime_v0.py is absent on origin/main@0e6cbb860f71
+    - identity versus Landscape V2 remains unproven; POSSIBLE_SAME_AS stays hypothesis
+    - current absence does not prove historical irrelevance
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: GET /market read-only consumer currently exists as Landscape V2; this is not a proven identity match.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Landscape V2 owner registry maps projection slots; it does not declare itself as product_surface_v1.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: A later GET /market consumer may cover part of this historical purpose; replacement is not proven.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -3341,6 +4041,7 @@ records:
     unresolved_questions:
     - Predecessor of later landscape current-state?
     - POSSIBLE_SAME_AS RCN-000001 is later-landscape naming hypothesis only.
+    - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3349,7 +4050,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Fail-open versus Landscape V2 package.
+    notes: Fail-open versus Landscape V2 package. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000034
     canonical_record_name: Deleted market dashboard product runbooks
@@ -3433,16 +4134,53 @@ records:
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical path docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md is absent
+      on origin/main@0e6cbb860f71
+    - identity versus Landscape V2 remains unproven; POSSIBLE_SAME_AS stays hypothesis
+    - current absence does not prove historical irrelevance
+    - current Landscape V2 runbook is a later document; identity with deleted product runbooks is unproven
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: GET /market read-only consumer currently exists as Landscape V2; this is not a proven identity match.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Landscape V2 owner registry maps projection slots; it does not declare itself as product_surface_v1.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: A later GET /market consumer may cover part of this historical purpose; replacement is not proven.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      used_as_fact: false
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Current Landscape V2 Master Runbook exists; it is not proven to be these deleted product docs.
+      evidence:
+      - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -3450,6 +4188,7 @@ records:
     unresolved_questions:
     - Documentation of RCN-000009/000010/000011 or a distinct product definition?
     - POSSIBLE_SAME_AS RCN-000009/011 remains documentation-to-code hypothesis.
+    - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3458,7 +4197,8 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Promoted from CAND:deleted_market_dashboard_product_runbooks. Not fused with code packages.
+    notes: Promoted from CAND:deleted_market_dashboard_product_runbooks. Not fused with code packages. EVALUATE_PASS_V1 compared
+      against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000035
     canonical_record_name: Composition Landmark Master Runbook v1.3
@@ -3533,16 +4273,46 @@ records:
       epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical path docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md is absent on origin/main@0e6cbb860f71
+    - identity versus Landscape V2 remains unproven; POSSIBLE_SAME_AS stays hypothesis
+    - current absence does not prove historical irrelevance
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: GET /market read-only consumer currently exists as Landscape V2; this is not a proven identity match.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Landscape V2 owner registry maps projection slots; it does not declare itself as product_surface_v1.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: A later GET /market consumer may cover part of this historical purpose; replacement is not proven.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -3550,6 +4320,7 @@ records:
     unresolved_questions:
     - Distinct from Landscape V2 master runbook RCN-000002?
     - Distinct from Landscape V2 master runbook RCN-000002; POSSIBLE_SAME_AS remains hypothesis.
+    - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3558,7 +4329,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Fail-open versus RCN-000002 and RCN-000034.
+    notes: Fail-open versus RCN-000002 and RCN-000034. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000036
     canonical_record_name: archive/full_files_stand_02.12.2025 export tree
@@ -3632,16 +4403,41 @@ records:
       epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/backtest/engine.py
+    - src/strategies/ma_crossover.py
+    capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical archive path archive/full_files_stand_02.12.2025/peak_trade_export is absent on origin/main@0e6cbb860f71
+    - archive presence is not obsolete; current absence is not rejection
+    - current backtest engine and ma_crossover exist; they are not proven to be the 02.12.2025 export blobs
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Bound current tree 0e6cbb860f716d527873d97556d0968df4a197bf does not contain archive/full_files_stand_02.12.2025/peak_trade_export.
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000036.yaml
+      - docs/system_atlas/reconciliation/ledger.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Named current paths exist; they are not proven to be the historical archive artifact.
+      evidence: &id001
+      - src/backtest/engine.py
+      - src/strategies/ma_crossover.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Current modules with similar names may be later implementations; identity remains unproven.
+      evidence: *id001
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -3649,6 +4445,7 @@ records:
     unresolved_questions:
     - Same snapshot as archive/PeakTradeRepo or a different export?
     - Different tree and different blobs from archive/PeakTradeRepo; POSSIBLE_SAME_AS remains hypothesis.
+    - Is there a proven current replacement, or only a later namesake?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3657,7 +4454,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Inner python modules listed in tree census. Not fused with RCN-000014.
+    notes: Inner python modules listed in tree census. Not fused with RCN-000014. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000037
     canonical_record_name: archive/legacy_docs
@@ -3712,21 +4509,39 @@ records:
   current_comparison:
     current_equivalent: ''
     current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    capability_overlap: NO_CURRENT_EQUIVALENT_PROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical archive path archive/legacy_docs/README.before_phase58.md is absent on origin/main@0e6cbb860f71
+    - archive presence is not obsolete; current absence is not rejection
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Bound current tree 0e6cbb860f716d527873d97556d0968df4a197bf does not contain archive/legacy_docs/README.before_phase58.md.
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000037.yaml
+      - docs/system_atlas/reconciliation/ledger.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: No current equivalent path was proven for this archive artifact on the bound SHA.
+      evidence:
+      - docs/system_atlas/reconciliation/ledger.yaml
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
     contradictions: []
     unresolved_questions:
     - What documents did this archive hold besides the README?
+    - Is there a proven current replacement, or only a later namesake?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3735,7 +4550,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Path inventory hit. Contents not mined for purpose.
+    notes: Path inventory hit. Contents not mined for purpose. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000038
     canonical_record_name: archive/legacy_scripts run_regime_experiments
@@ -3789,15 +4604,32 @@ records:
   current_comparison:
     current_equivalent: ''
     current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    capability_overlap: NO_CURRENT_EQUIVALENT_PROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical archive path archive/legacy_scripts/run_regime_experiments.sh is absent on origin/main@0e6cbb860f71
+    - archive presence is not obsolete; current absence is not rejection
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Bound current tree 0e6cbb860f716d527873d97556d0968df4a197bf does not contain archive/legacy_scripts/run_regime_experiments.sh.
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000038.yaml
+      - docs/system_atlas/reconciliation/ledger.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: No current equivalent path was proven for this archive artifact on the bound SHA.
+      evidence:
+      - docs/system_atlas/reconciliation/ledger.yaml
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -3805,6 +4637,7 @@ records:
     unresolved_questions:
     - Standalone tooling component versus later regime sweep scripts?
     - Relation to later regime-sweep scripts is unproven identity.
+    - Is there a proven current replacement, or only a later namesake?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3813,7 +4646,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Single archived script. Purpose not investigated.
+    notes: Single archived script. Purpose not investigated. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000039
     canonical_record_name: src/infra/health historical package
@@ -3873,16 +4706,41 @@ records:
     items: []
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/risk_layer/kill_switch/health_check.py
+    - src/core/resilience.py
+    capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - src/infra/health package is absent on the bound SHA
+    - HealthChecker exists inside kill_switch; HealthCheck exists in src/core/resilience.py; identity with infra.health is
+      unproven
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: src/infra currently contains escalation and runbooks packages, not health.
+      evidence:
+      - src/infra/__init__.py
+      - src/infra/escalation/__init__.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: A HealthChecker class exists in src/risk_layer/kill_switch/health_check.py.
+      evidence:
+      - src/risk_layer/kill_switch/health_check.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Current health helpers may overlap historically; they are not proven to be src/infra/health.
+      evidence:
+      - src/risk_layer/kill_switch/health_check.py
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -3890,6 +4748,7 @@ records:
     unresolved_questions:
     - Deleted, renamed, or never merged to origin/main?
     - Deleted vs never merged to later origin/main is a presence fact, not disposition.
+    - Did src/infra/health migrate into kill_switch health_check, core.resilience, or neither?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3898,7 +4757,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Tip-tree discovery. Not fused with current src/infra/escalation.
+    notes: Tip-tree discovery. Not fused with current src/infra/escalation. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000040
     canonical_record_name: src/infra/backup historical package
@@ -3951,15 +4810,26 @@ records:
   current_comparison:
     current_equivalent: ''
     current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    capability_overlap: NO_CURRENT_EQUIVALENT_PROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - src/infra/backup is absent on the bound SHA
+    - no current BackupManager implementation path was proven
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: src/infra/backup is absent; src/infra holds escalation and runbooks only.
+      evidence:
+      - src/infra/__init__.py
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -3967,6 +4837,7 @@ records:
     unresolved_questions:
     - Relation to disaster-recovery docs/scripts?
     - Relation to later disaster-recovery docs/scripts is unproven identity.
+    - Does a later backup/recovery owner exist under another path?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3975,7 +4846,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Fail-open versus other infra tip packages.
+    notes: Fail-open versus other infra tip packages. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000041
     canonical_record_name: src/infra/monitoring historical package
@@ -4026,16 +4897,34 @@ records:
     items: []
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/risk_layer/alerting/
+    capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - src/infra/monitoring is absent on the bound SHA
+    - current risk_layer alerting exists; identity with infra.monitoring is unproven
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: src/infra/monitoring is absent; src/risk_layer/alerting/ exists.
+      evidence:
+      - src/risk_layer/alerting/__init__.py
+      - src/infra/__init__.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: AlertManager in risk_layer may overlap historical infra.monitoring; replacement is not proven.
+      evidence:
+      - src/risk_layer/alerting/alert_manager.py
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -4043,6 +4932,7 @@ records:
     unresolved_questions:
     - Relation to current src/obs or src/observability?
     - Relation to deleted docs/observability or later src/obs is unproven identity.
+    - Is risk_layer.alerting a successor of src/infra/monitoring, or a distinct later package?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4051,7 +4941,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Name similarity to observability is not identity.
+    notes: Name similarity to observability is not identity. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000042
     canonical_record_name: src/infra/resilience historical package
@@ -4102,16 +4992,34 @@ records:
     items: []
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/core/resilience.py
+    - src/core/resilience_helpers.py
+    capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: UNPROVEN
     conflicts: []
-    gaps: []
+    gaps:
+    - src/infra/resilience is absent on the bound SHA
+    - src/core/resilience.py names CircuitBreaker and retry_with_backoff; path/identity unproven
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: src/core/resilience.py exists and documents CircuitBreaker and retry_with_backoff.
+      evidence:
+      - src/core/resilience.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: core.resilience may be a moved successor of infra.resilience; identity is not proven.
+      evidence:
+      - src/core/resilience.py
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -4119,6 +5027,7 @@ records:
     unresolved_questions:
     - Relation to current resilience docs/tests?
     - Relation to later resilience docs/tests is unproven identity.
+    - Is src/core/resilience.py the same historical package as src/infra/resilience?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4127,7 +5036,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Fail-open versus other infra packages.
+    notes: Fail-open versus other infra packages. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000043
     canonical_record_name: pre_economic_zero_order observer/arming tip modules
@@ -4208,16 +5117,39 @@ records:
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/ops/pre_economic_zero_order_evidence_session_contract_v1.py
+    - src/ops/pre_economic_zero_order_evidence_session_okx_readonly_telemetry_v1.py
+    capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - observer/arming/evidence trio modules are absent on the bound SHA
+    - later pre_economic_zero_order evidence-session modules exist; they are not proven to be that trio
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: pre_economic_zero_order_decision_cycle_observer_v1.py is absent on the bound SHA.
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000043.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Later zero-order evidence-session contract/telemetry modules exist.
+      evidence: &id002
+      - src/ops/pre_economic_zero_order_evidence_session_contract_v1.py
+      - src/ops/pre_economic_zero_order_evidence_session_okx_readonly_telemetry_v1.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Evidence-session modules may continue a related zero-order campaign; identity with the deleted trio is unproven.
+      evidence: *id002
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -4225,6 +5157,7 @@ records:
     unresolved_questions:
     - Same family as current evidence_session modules or a distinct observer/arming stack?
     - Same family as later evidence_session modules is unproven identity.
+    - Do current evidence-session modules replace observer/arming/evidence, or only share a campaign name?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4233,7 +5166,8 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Fail-open versus current origin/main pre_economic_zero_order_evidence_session_* files.
+    notes: Fail-open versus current origin/main pre_economic_zero_order_evidence_session_* files. EVALUATE_PASS_V1 compared
+      against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000044
     canonical_record_name: PeakTradeRepo nested backtest engine
@@ -4299,16 +5233,39 @@ records:
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/backtest/engine.py
+    capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical archive path archive/PeakTradeRepo/src/backtest/engine.py is absent on origin/main@0e6cbb860f71
+    - archive presence is not obsolete; current absence is not rejection
+    - current src/backtest/engine.py exists; recovered archive blob was a one-line placeholder
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Bound current tree 0e6cbb860f716d527873d97556d0968df4a197bf does not contain archive/PeakTradeRepo/src/backtest/engine.py.
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000044.yaml
+      - docs/system_atlas/reconciliation/ledger.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Named current paths exist; they are not proven to be the historical archive artifact.
+      evidence: &id003
+      - src/backtest/engine.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Current modules with similar names may be later implementations; identity remains unproven.
+      evidence: *id003
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -4316,6 +5273,7 @@ records:
     unresolved_questions:
     - Same component as later src/backtest or a distinct nested snapshot?
     - Not proven SAME_AS later src/backtest; placeholder vs implemented export engine.
+    - Is there a proven current replacement, or only a later namesake?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4324,7 +5282,8 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Inner file of RCN-000014. Not fused with current src/backtest. Purpose not investigated.
+    notes: Inner file of RCN-000014. Not fused with current src/backtest. Purpose not investigated. EVALUATE_PASS_V1 compared
+      against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000045
     canonical_record_name: PeakTradeRepo nested position_sizer
@@ -4388,16 +5347,39 @@ records:
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/risk/position_sizer.py
+    capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical archive path archive/PeakTradeRepo/src/risk/position_sizer.py is absent on origin/main@0e6cbb860f71
+    - archive presence is not obsolete; current absence is not rejection
+    - current src/risk/position_sizer.py exists; recovered archive blob was a placeholder
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Bound current tree 0e6cbb860f716d527873d97556d0968df4a197bf does not contain archive/PeakTradeRepo/src/risk/position_sizer.py.
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000045.yaml
+      - docs/system_atlas/reconciliation/ledger.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Named current paths exist; they are not proven to be the historical archive artifact.
+      evidence: &id004
+      - src/risk/position_sizer.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Current modules with similar names may be later implementations; identity remains unproven.
+      evidence: *id004
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -4405,6 +5387,7 @@ records:
     unresolved_questions:
     - Identity versus deleted position_sizer_old_backup or current sizer modules?
     - Identity versus later sizer modules or position_sizer_old_backup is unproven; no SAME_AS.
+    - Is there a proven current replacement, or only a later namesake?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4413,7 +5396,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Fail-open versus CAND:position_sizer_old_backup. Name is not identity.
+    notes: Fail-open versus CAND:position_sizer_old_backup. Name is not identity. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000046
     canonical_record_name: PeakTradeRepo nested ma_crossover strategy
@@ -4484,16 +5467,39 @@ records:
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/strategies/ma_crossover.py
+    capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical archive path archive/PeakTradeRepo/src/strategies/ma_crossover.py is absent on origin/main@0e6cbb860f71
+    - archive presence is not obsolete; current absence is not rejection
+    - current src/strategies/ma_crossover.py exists; recovered archive blob was a placeholder
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Bound current tree 0e6cbb860f716d527873d97556d0968df4a197bf does not contain archive/PeakTradeRepo/src/strategies/ma_crossover.py.
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000046.yaml
+      - docs/system_atlas/reconciliation/ledger.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Named current paths exist; they are not proven to be the historical archive artifact.
+      evidence: &id005
+      - src/strategies/ma_crossover.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Current modules with similar names may be later implementations; identity remains unproven.
+      evidence: *id005
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -4501,6 +5507,7 @@ records:
     unresolved_questions:
     - Same strategy as later ma_crossover implementations?
     - Not proven SAME_AS later ma_crossover implementations.
+    - Is there a proven current replacement, or only a later namesake?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4509,7 +5516,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Fail-open versus archive/full_files_stand export ma_crossover.
+    notes: Fail-open versus archive/full_files_stand export ma_crossover. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000047
     canonical_record_name: evidence/market_dashboard_reset pack
@@ -4585,16 +5592,46 @@ records:
       epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_shell_router_v2.py
+    - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - templates/peak_trade_dashboard/market_landscape_v2.html
+    capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical path evidence/market_dashboard_reset/pr_a is absent on origin/main@0e6cbb860f71
+    - identity versus Landscape V2 remains unproven; POSSIBLE_SAME_AS stays hypothesis
+    - current absence does not prove historical irrelevance
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: GET /market read-only consumer currently exists as Landscape V2; this is not a proven identity match.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Landscape V2 owner registry maps projection slots; it does not declare itself as product_surface_v1.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: A later GET /market consumer may cover part of this historical purpose; replacement is not proven.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_shell_router_v2.py
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -4603,6 +5640,7 @@ records:
     - Same deletion event as evidence/market_dashboard_deletion or a different reset pack?
     - What did the reset pack assert that the deletion pack (RCN-000013) did not?
     - 'POSSIBLE_SAME_AS RCN-000013 remains hypothesis: reset pack vs later deletion pack are different evidence events.'
+    - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4611,7 +5649,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Fail-open versus RCN-000013.
+    notes: Fail-open versus RCN-000013. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000048
     canonical_record_name: docs/20_phases historical path family
@@ -4667,16 +5705,33 @@ records:
     items: []
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: NOT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - docs/20_phases path family is absent on the bound SHA
+    - Master Runbook capability sequence exists; identity with numbered 20_phases docs is unproven
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: docs/20_phases is absent; Canonical Master Runbook remains the current semantic authority document.
+      evidence:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Phase documentation may have been absorbed into the Master Runbook; that absorption is not proven here.
+      evidence:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -4684,6 +5739,7 @@ records:
     unresolved_questions:
     - Path move versus a distinct document set?
     - Path move versus later runbook locations is unproven identity.
+    - Were 20_phases markdowns superseded by Master Runbook sections, or lost without replacement?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4692,7 +5748,8 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Path-family census. Not a current-system comparison. Purpose of the family not investigated.
+    notes: Path-family census. Not a current-system comparison. Purpose of the family not investigated. EVALUATE_PASS_V1 compared
+      against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000049
     canonical_record_name: docs/00_overview historical path family
@@ -4758,16 +5815,30 @@ records:
       epistemic_status: HYPOTHESIS
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - docs/PEAK_TRADE_OVERVIEW.md
+    - docs/ARCHITECTURE_OVERVIEW.md
+    capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: NOT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - docs/00_overview path family is absent on the bound SHA
+    - current overview markdowns exist at different paths; identity unproven
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: docs/00_overview is absent; docs/PEAK_TRADE_OVERVIEW.md and docs/ARCHITECTURE_OVERVIEW.md exist.
+      evidence:
+      - docs/PEAK_TRADE_OVERVIEW.md
+      - docs/ARCHITECTURE_OVERVIEW.md
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -4775,6 +5846,7 @@ records:
     unresolved_questions:
     - Path move versus distinct overview documents?
     - POSSIBLE_SAME_AS src/docs RCN-000053 remains hypothesis; different path families.
+    - Are current overview docs the relocated 00_overview family, or separately authored?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4783,7 +5855,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Fail-open versus current docs/ root files with similar names.
+    notes: Fail-open versus current docs/ root files with similar names. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000050
     canonical_record_name: step29m strategy/research family
@@ -4858,16 +5930,42 @@ records:
     items: []
   current_comparison:
     current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_paths:
+    - src/strategies/bollinger.py
+    - src/strategies/momentum.py
+    - src/strategies/trend_following.py
+    capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: UNPROVEN
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - step29m v2 strategy/research modules are absent on the bound SHA
+    - parent-named strategy modules exist; they are not proven to be the step29m v2 family
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: step29m_bollinger_bands_v2.py and sibling step29m modules are absent.
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000050.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: src/strategies/bollinger.py, momentum.py, and trend_following.py exist.
+      evidence:
+      - src/strategies/bollinger.py
+      - src/strategies/momentum.py
+      - src/strategies/trend_following.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Current strategy modules may be the parent v1 lineage step29m wrapped; identity is unproven.
+      evidence:
+      - src/strategies/bollinger.py
+      used_as_fact: false
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -4875,6 +5973,7 @@ records:
     unresolved_questions:
     - One research workstream or three distinct strategies? Grouping is path-prefix only.
     - Ledger record groups three strategies by path prefix; they are not fused into one identity.
+    - Did step29m v2 wrappers retire into parent modules, or was the family removed without replacement?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4884,7 +5983,7 @@ records:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
     notes: Path-prefix grouping is not identity fusion of the three strategy files with each other as one component; record
-      is the named workstream family. Individual files remain listed.
+      is the named workstream family. Individual files remain listed. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000051
     canonical_record_name: archive/noch_einordnen
@@ -4942,15 +6041,32 @@ records:
   current_comparison:
     current_equivalent: ''
     current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    capability_overlap: NO_CURRENT_EQUIVALENT_PROVEN
+    semantic_compatibility: UNPROVEN
+    authority_compatibility: UNPROVEN
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - historical archive path archive/noch_einordnen/README.md is absent on origin/main@0e6cbb860f71
+    - archive presence is not obsolete; current absence is not rejection
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Bound current tree 0e6cbb860f716d527873d97556d0968df4a197bf does not contain archive/noch_einordnen/README.md.
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000051.yaml
+      - docs/system_atlas/reconciliation/ledger.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: No current equivalent path was proven for this archive artifact on the bound SHA.
+      evidence:
+      - docs/system_atlas/reconciliation/ledger.yaml
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -4958,6 +6074,7 @@ records:
     unresolved_questions:
     - What was queued in this archive?
     - Text overlap with PeakTradeRepo README is not SAME_AS without blob-identity proof.
+    - Is there a proven current replacement, or only a later namesake?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4966,7 +6083,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Named archive bucket. Not exhausted beyond the README path.
+    notes: Named archive bucket. Not exhausted beyond the README path. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000052
     canonical_record_name: docs/webui/observability deleted family
@@ -5025,24 +6142,52 @@ records:
       - observability documentation naming hypothesis
       epistemic_status: HYPOTHESIS
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
-    conflicts: []
-    gaps: []
+    current_equivalent: docs/webui/observability/OBSERVABILITY_HUB_V0.md
+    current_paths:
+    - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+    - docs/webui/observability/PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md
+    - docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml
+    capability_overlap: CENSUS_ABSENT_BUT_CURRENT_TREE_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+    safety_compatibility: COMPATIBLE
+    runtime_compatibility: NOT_RUNTIME
+    conflicts:
+    - census current_presence=CURRENTLY_ABSENT but origin/main@0e6cbb86 contains docs/webui/observability/
+    gaps:
+    - census presence is a historical discovery snapshot and is not rewritten here
+    - runtime GET /observability wiring is not proven by docs presence alone
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: docs/webui/observability/OBSERVABILITY_HUB_V0.md exists on the bound SHA.
+      evidence:
+      - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+      used_as_fact: true
+    - claim_class: CONTRADICTION
+      text: Ledger discovery.current_presence is CURRENTLY_ABSENT while the bound current tree contains the family.
+      evidence:
+      - docs/system_atlas/reconciliation/ledger.yaml
+      - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+      used_as_fact: false
+    - claim_class: FORENSIC_RAW_FACT
+      text: Hub document states read-only / display-only GET /observability with no orders or activation.
+      evidence:
+      - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
-    contradictions: []
+    contradictions:
+    - Ledger discovery.current_presence is CURRENTLY_ABSENT while the bound current tree contains the family.
     unresolved_questions:
     - Same observability stack as deleted docs/observability Grafana family RCN-000020?
     - POSSIBLE_SAME_AS Grafana docs/observability RCN-000020 remains hypothesis (different stack/docs generation).
+    - Was the family restored after the census SHA, or was census presence bound against a different tree?
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -5051,7 +6196,7 @@ records:
   audit:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
-    notes: Fail-open versus RCN-000020. Path prefix differs.
+    notes: Fail-open versus RCN-000020. Path prefix differs. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 - identity:
     reconciliation_id: RCN-000053
     canonical_record_name: src/docs misplaced documentation tree
@@ -5121,17 +6266,30 @@ records:
       - overview/workflow notes also appear under docs/00_overview
       epistemic_status: HYPOTHESIS
   current_comparison:
-    current_equivalent: ''
-    current_paths: []
-    capability_overlap: ''
-    semantic_compatibility: ''
-    authority_compatibility: ''
-    safety_compatibility: ''
-    runtime_compatibility: ''
+    current_equivalent: src/docs
+    current_paths:
+    - src/docs
+    - src/docs/Peak_Trade_OVERVIEW.md
+    capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+    semantic_compatibility: COMPATIBLE
+    authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+    safety_compatibility: NOT_RUNTIME
+    runtime_compatibility: NOT_RUNTIME
     conflicts: []
-    gaps: []
+    gaps:
+    - path remains under src/; this is comparison of presence, not a move/disposition decision
+    compared_against_ref: origin/main
+    compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+    comparison_status: CURRENT_SYSTEM_COMPARED
+    claims:
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: src/docs documentation tree still exists on the bound SHA.
+      evidence:
+      - src/docs/Peak_Trade_OVERVIEW.md
+      - src/docs/CONTRIBUTING.md
+      used_as_fact: true
   adjudication:
-    lifecycle_state: PURPOSE_UNDERSTOOD
+    lifecycle_state: CURRENT_SYSTEM_COMPARED
     disposition: ''
     positive_reason: ''
     evidence_refs: []
@@ -5148,7 +6306,9 @@ records:
     created_from_evidence: true
     last_adjudicated_against_sha: ''
     notes: Path-family census from unique blob inventory. Not purpose-understood. Not fused with CAND:src_docs_workflow_notes
-      or RCN-000049.
+      or RCN-000049. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
 census_pass_id: FIND_COMPLETELY_PASS_V3
 understand_pass_id: UNDERSTAND_PASS_V2
 understand_bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+evaluate_pass_id: EVALUATE_INDIVIDUALLY_PASS_V1
+evaluate_bound_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf

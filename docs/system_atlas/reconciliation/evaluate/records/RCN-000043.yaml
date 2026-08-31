@@ -1,0 +1,50 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+atlas_authority: NONE
+reconciliation_authority: NONE
+evaluate_pass_id: EVALUATE_INDIVIDUALLY_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: true
+evaluate_performed: true
+reintegration_performed: false
+record_id: RCN-000043
+canonical_record_name: pre_economic_zero_order observer/arming tip modules
+census_current_presence: CURRENTLY_ABSENT
+comparison_status: CURRENT_SYSTEM_COMPARED
+compared_against_ref: origin/main
+compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+current_equivalent: ''
+current_paths:
+- src/ops/pre_economic_zero_order_evidence_session_contract_v1.py
+- src/ops/pre_economic_zero_order_evidence_session_okx_readonly_telemetry_v1.py
+capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+semantic_compatibility: UNPROVEN
+authority_compatibility: UNPROVEN
+safety_compatibility: UNPROVEN
+runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
+conflicts: []
+gaps:
+- observer/arming/evidence trio modules are absent on the bound SHA
+- later pre_economic_zero_order evidence-session modules exist; they are not proven to be that trio
+claims:
+- claim_class: CANONICAL_CURRENT_FACT
+  text: pre_economic_zero_order_decision_cycle_observer_v1.py is absent on the bound SHA.
+  evidence:
+  - docs/system_atlas/reconciliation/understand/records/RCN-000043.yaml
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Later zero-order evidence-session contract/telemetry modules exist.
+  evidence: &id001
+  - src/ops/pre_economic_zero_order_evidence_session_contract_v1.py
+  - src/ops/pre_economic_zero_order_evidence_session_okx_readonly_telemetry_v1.py
+  used_as_fact: true
+- claim_class: HYPOTHESIS
+  text: Evidence-session modules may continue a related zero-order campaign; identity with the deleted trio is unproven.
+  evidence: *id001
+  used_as_fact: false
+open_questions:
+- Do current evidence-session modules replace observer/arming/evidence, or only share a campaign name?

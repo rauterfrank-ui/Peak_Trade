@@ -1,0 +1,45 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+atlas_authority: NONE
+reconciliation_authority: NONE
+evaluate_pass_id: EVALUATE_INDIVIDUALLY_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: true
+evaluate_performed: true
+reintegration_performed: false
+record_id: RCN-000042
+canonical_record_name: src/infra/resilience historical package
+census_current_presence: CURRENTLY_ABSENT
+comparison_status: CURRENT_SYSTEM_COMPARED
+compared_against_ref: origin/main
+compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+current_equivalent: ''
+current_paths:
+- src/core/resilience.py
+- src/core/resilience_helpers.py
+capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+semantic_compatibility: UNPROVEN
+authority_compatibility: UNPROVEN
+safety_compatibility: UNPROVEN
+runtime_compatibility: UNPROVEN
+conflicts: []
+gaps:
+- src/infra/resilience is absent on the bound SHA
+- src/core/resilience.py names CircuitBreaker and retry_with_backoff; path/identity unproven
+claims:
+- claim_class: CANONICAL_CURRENT_FACT
+  text: src/core/resilience.py exists and documents CircuitBreaker and retry_with_backoff.
+  evidence:
+  - src/core/resilience.py
+  used_as_fact: true
+- claim_class: HYPOTHESIS
+  text: core.resilience may be a moved successor of infra.resilience; identity is not proven.
+  evidence:
+  - src/core/resilience.py
+  used_as_fact: false
+open_questions:
+- Is src/core/resilience.py the same historical package as src/infra/resilience?

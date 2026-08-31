@@ -1,0 +1,63 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+atlas_authority: NONE
+reconciliation_authority: NONE
+evaluate_pass_id: EVALUATE_INDIVIDUALLY_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: true
+evaluate_performed: true
+reintegration_performed: false
+record_id: RCN-000029
+canonical_record_name: Market ranking funnel v0
+census_current_presence: CURRENTLY_ABSENT
+comparison_status: CURRENT_SYSTEM_COMPARED
+compared_against_ref: origin/main
+compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+current_equivalent: ''
+current_paths:
+- src/webui/market_dashboard_landscape_v2/
+- src/webui/market_dashboard_landscape_shell_router_v2.py
+- src/webui/market_dashboard_landscape_producer_binding_v2.py
+- src/webui/market_dashboard_landscape_v2/owner_registry.py
+- templates/peak_trade_dashboard/market_landscape_v2.html
+capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+semantic_compatibility: UNPROVEN
+authority_compatibility: UNPROVEN
+safety_compatibility: UNPROVEN
+runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
+conflicts: []
+gaps:
+- historical path src/webui/market_ranking_funnel_runtime_v0.py is absent on origin/main@0e6cbb860f71
+- identity versus Landscape V2 remains unproven; POSSIBLE_SAME_AS stays hypothesis
+- current absence does not prove historical irrelevance
+- universe_ranking Landscape slot exists; funnel-stage identity with v0 is unproven
+claims:
+- claim_class: CANONICAL_CURRENT_FACT
+  text: GET /market read-only consumer currently exists as Landscape V2; this is not a proven identity match.
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/
+  - src/webui/market_dashboard_landscape_shell_router_v2.py
+  - src/webui/market_dashboard_landscape_producer_binding_v2.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: Landscape V2 owner registry maps projection slots; it does not declare itself as product_surface_v1.
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/owner_registry.py
+  used_as_fact: true
+- claim_class: HYPOTHESIS
+  text: A later GET /market consumer may cover part of this historical purpose; replacement is not proven.
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/
+  - src/webui/market_dashboard_landscape_shell_router_v2.py
+  used_as_fact: false
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Landscape V2 universe_ranking slot binds universe_selection_readmodel.v1.
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/owner_registry.py
+  used_as_fact: true
+open_questions:
+- Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?

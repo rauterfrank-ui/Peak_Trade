@@ -1,0 +1,51 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+atlas_authority: NONE
+reconciliation_authority: NONE
+evaluate_pass_id: EVALUATE_INDIVIDUALLY_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: true
+evaluate_performed: true
+reintegration_performed: false
+record_id: RCN-000039
+canonical_record_name: src/infra/health historical package
+census_current_presence: CURRENTLY_ABSENT
+comparison_status: CURRENT_SYSTEM_COMPARED
+compared_against_ref: origin/main
+compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+current_equivalent: ''
+current_paths:
+- src/risk_layer/kill_switch/health_check.py
+- src/core/resilience.py
+capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+semantic_compatibility: UNPROVEN
+authority_compatibility: UNPROVEN
+safety_compatibility: UNPROVEN
+runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
+conflicts: []
+gaps:
+- src/infra/health package is absent on the bound SHA
+- HealthChecker exists inside kill_switch; HealthCheck exists in src/core/resilience.py; identity with infra.health is unproven
+claims:
+- claim_class: CANONICAL_CURRENT_FACT
+  text: src/infra currently contains escalation and runbooks packages, not health.
+  evidence:
+  - src/infra/__init__.py
+  - src/infra/escalation/__init__.py
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: A HealthChecker class exists in src/risk_layer/kill_switch/health_check.py.
+  evidence:
+  - src/risk_layer/kill_switch/health_check.py
+  used_as_fact: true
+- claim_class: HYPOTHESIS
+  text: Current health helpers may overlap historically; they are not proven to be src/infra/health.
+  evidence:
+  - src/risk_layer/kill_switch/health_check.py
+  used_as_fact: false
+open_questions:
+- Did src/infra/health migrate into kill_switch health_check, core.resilience, or neither?
