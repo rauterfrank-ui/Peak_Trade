@@ -1,0 +1,88 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+atlas_authority: NONE
+reconciliation_authority: NONE
+reevaluate_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+input_pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
+identity_fusion_forbidden: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+understand_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+adjudication_snapshot_frozen: true
+evidence_resolution_snapshot_frozen: true
+record_id: RCN-000031
+reevaluation_attempted: true
+adjudication_attempted: true
+disposition_burden_met: false
+disposition_candidate: INSUFFICIENT_EVIDENCE
+disposition: INSUFFICIENT_EVIDENCE
+lifecycle_state: OPEN
+final_disposition_change_performed: false
+identity_merge_performed: false
+reintegration_candidate: false
+further_evidence_required: true
+current_evidence_set:
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000031.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000031.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000031.yaml
+- src/webui/market_dashboard_landscape_v2/owner_registry.py
+historical_function: Instrument eligibility helper for the v1 market surface.
+historical_relations: Named CANONICAL_ELIGIBILITY_OWNER by market_surface.py; co-deleted in b5b81728.
+current_system_analogues: No owner_registry slot is this eligibility module.
+identity_status: PROVEN_DISTINCT_FROM_LANDSCAPE_V2_NOT_SAME_AS_SIBLINGS
+successor_status: NOT_PROVEN
+replacement_status: NOT_PROVEN
+current_value_status: UNPROVEN
+current_compatibility_status: UNPROVEN_NOT_RETAINABLE_WHILE_ABSENT
+contradictions: []
+unresolved_gaps:
+- Unique purpose coverage by a specific Landscape V2 slot remains unproven.
+- GET /market consumer overlap is not identity and not replacement.
+evaluation_result: 'market_instrument_eligibility_v0: INPUT_PASS proved distinctness from Landscape V2, co-deletion in b5b81728,
+  and internal v1 relations where attested. That does not meet RETAIN (absent), COVERED (endpoint/slot similarity forbidden
+  as sole proof), ADAPT (unique current value unproven), INCOMPATIBLE (no current invariant proof), or REJECT (absence/deletion/no-rebuild
+  are not positive reject grounds). INSUFFICIENT_EVIDENCE remains OPEN.'
+alternatives_rejected:
+- 'RETAIN_AS_IS: historical path is CURRENTLY_ABSENT; same-identity current artifact is not proven'
+- 'CAPABILITY_ALREADY_COVERED: GET /market overlap and Landscape V2 owner_registry slots are not proven replacement of this
+  artifact''s unique purpose'
+- 'ADAPT_AND_REINTEGRATE: independent current value versus Landscape V2 is unproven; reintegration is not authorized'
+- 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: no proven current Master-V2/Double-Play/Safety invariant incompatibility for this
+  artifact'
+- 'REJECT_FOR_CURRENT_SYSTEM: deletion, absence, and historical ''kein Rebuild autorisiert'' are not a positive current rejection
+  reason'
+- 'Identity fusion with RCN-000001 or sibling v1 records: forbidden without SAME_AS proof'
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: 'market_instrument_eligibility_v0: evidence after OPEN_EVIDENCE_RESOLUTION_PASS_V1 still does not meet the burden
+    of a stronger terminal class. INSUFFICIENT_EVIDENCE remains OPEN and is not a rejection.'
+  evidence:
+  - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000031.yaml
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000031.yaml
+  - src/webui/market_dashboard_landscape_v2/owner_registry.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'INPUT_PASS: Landscape V2 was added 82f71bbe after v1 stack deletion b5b81728; GET /market overlap is not identity.'
+  evidence:
+  - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000031.yaml
+  - src/webui/market_dashboard_landscape_v2/owner_registry.py
+  used_as_fact: true
+- claim_class: HYPOTHESIS
+  text: A later slot-level coverage proof might support COVERED or ADAPT; it is not proven here.
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/owner_registry.py
+  used_as_fact: false
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000031.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000031.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000031.yaml
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000031.yaml
+- docs/system_atlas/reconciliation/evidence_resolution/pass_v1_status.yaml
+- src/webui/market_dashboard_landscape_v2/owner_registry.py
+input_pass_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+adjudicate_frozen_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2

@@ -1,0 +1,15 @@
+COMMAND=git ls-tree -r --name-only 1b52df25b99a36b99eed91943c2a203ce84f1cad -- docs/webui/observability
+EPISTEMIC_CLASS=FORENSIC_RAW
+SOURCE_SHA=1b52df25b99a36b99eed91943c2a203ce84f1cad
+
+docs/webui/observability/FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md
+docs/webui/observability/FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md
+docs/webui/observability/OBSERVABILITY_HUB_V0.md
+docs/webui/observability/OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md
+docs/webui/observability/PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md
+docs/webui/observability/PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md
+docs/webui/observability/PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md
+docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml
+docs/webui/observability/REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md
+docs/webui/observability/UNIVERSE_SELECTION_READMODEL_V1.md
+docs/webui/observability/WORKFLOW_DASHBOARD_ARCHIVE_ROOT_V1.md

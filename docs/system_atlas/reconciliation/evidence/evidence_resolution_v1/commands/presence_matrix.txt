@@ -1,0 +1,41 @@
+COMMAND=git ls-tree -r --name-only <sha> -- <historical_path[0]>
+CENSUS_SHA=1b52df25b99a36b99eed91943c2a203ce84f1cad
+ORIGIN_MAIN_SHA=f9618c73f1834b68588ceab586da4d6408962a10
+EPISTEMIC_CLASS=FORENSIC_RAW
+
+RID          presence               census_n   main_n path
+RCN-000009   CURRENTLY_ABSENT              0        0 src/webui/market_dashboard_product_surface_v1
+RCN-000010   CURRENTLY_ABSENT              0        0 src/webui/market_dashboard_readmodels_v1
+RCN-000011   CURRENTLY_ABSENT              0        0 src/webui/market_visual_operator_surface_v1
+RCN-000012   CURRENTLY_ABSENT              0        0 src/webui/futures_read_only_market_dashboard_runtime_v0.py
+RCN-000014   CURRENTLY_ABSENT              0        0 archive/PeakTradeRepo
+RCN-000015   CURRENTLY_ABSENT              0        0 src/ops/master_v2_minimal_selector_v1
+RCN-000019   CURRENTLY_PARTIAL             0        0 src/risk_layer/kill_switch.py
+RCN-000020   CURRENTLY_ABSENT              0        0 docs/observability/LOGGING_FIELDS.md
+RCN-000023   CURRENTLY_ABSENT              0        0 src/webui/market_surface.py
+RCN-000027   CURRENTLY_ABSENT              0        0 src/webui/market_depth_api_v0.py
+RCN-000028   CURRENTLY_ABSENT              0        0 src/webui/market_tape_readmodel_v0
+RCN-000029   CURRENTLY_ABSENT              0        0 src/webui/market_ranking_funnel_readmodel_v0
+RCN-000030   CURRENTLY_ABSENT              0        0 src/webui/market_futures_ohlcv_readmodel_v0
+RCN-000031   CURRENTLY_ABSENT              0        0 src/webui/market_instrument_eligibility_v0.py
+RCN-000032   CURRENTLY_ABSENT              0        0 src/webui/market_active_paper_run_runtime_v0.py
+RCN-000033   CURRENTLY_ABSENT              0        0 src/webui/market_dashboard_current_state_runtime_v0.py
+RCN-000034   CURRENTLY_ABSENT              0        0 docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md
+RCN-000035   CURRENTLY_ABSENT              0        0 docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+RCN-000036   CURRENTLY_ABSENT              0        0 archive/full_files_stand_02.12.2025/INSTALLATION.txt
+RCN-000037   CURRENTLY_ABSENT              0        0 archive/legacy_docs/README.before_phase58.md
+RCN-000038   CURRENTLY_ABSENT              0        0 archive/legacy_scripts/run_regime_experiments.sh
+RCN-000039   CURRENTLY_ABSENT              0        0 src/infra/health
+RCN-000040   CURRENTLY_ABSENT              0        0 src/infra/backup
+RCN-000041   CURRENTLY_ABSENT              0        0 src/infra/monitoring
+RCN-000042   CURRENTLY_ABSENT              0        0 src/infra/resilience
+RCN-000043   CURRENTLY_ABSENT              0        0 src/ops/pre_economic_zero_order_decision_cycle_observer_v1.py
+RCN-000044   CURRENTLY_ABSENT              0        0 archive/PeakTradeRepo/src/backtest/engine.py
+RCN-000045   CURRENTLY_ABSENT              0        0 archive/PeakTradeRepo/src/risk/position_sizer.py
+RCN-000046   CURRENTLY_ABSENT              0        0 archive/PeakTradeRepo/src/strategies/ma_crossover.py
+RCN-000047   CURRENTLY_ABSENT              0        0 evidence/market_dashboard_reset/pr_a
+RCN-000048   CURRENTLY_ABSENT              0        0 docs/20_phases
+RCN-000049   CURRENTLY_ABSENT              0        0 docs/00_overview
+RCN-000050   CURRENTLY_ABSENT              0        0 src/strategies/step29m_bollinger_bands_v2.py
+RCN-000051   CURRENTLY_ABSENT              0        0 archive/noch_einordnen/README.md
+RCN-000052   CURRENTLY_ABSENT             11       11 docs/webui/observability

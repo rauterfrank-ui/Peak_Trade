@@ -154,3 +154,56 @@ adjudicate_artifact_files:
 - adjudicate/pass_v1_status.yaml
 - adjudicate/index.yaml
 - evidence/adjudicate_v1/raw_quotes.yaml
+evidence_resolution_artifact_files:
+- evidence_resolution/pass_v1_status.yaml
+- evidence_resolution/index.yaml
+- evidence/evidence_resolution_v1/raw_quotes.yaml
+evidence_resolution:
+- pass_id
+- evidence_resolution_status
+- missing_proof_question
+- identity_gap
+- function_gap
+- relation_gap
+- successor_or_replacement_gap
+- current_system_fit_gap
+- claims
+- evidence_refs
+- remaining_open_questions
+- relations_proven
+- contradictions
+allowed_evidence_resolution_statuses:
+- CONTRADICTION_DISCOVERED
+- EVIDENCE_GAP_PARTIALLY_RESOLVED
+- EVIDENCE_GAP_RESOLVED
+- EVIDENCE_GAP_UNRESOLVED
+evidence_resolution_is_not_disposition: true
+reevaluate_artifact_files:
+- reevaluate/pass_v1_status.yaml
+- reevaluate/index.yaml
+reevaluate:
+- pass_id
+- input_pass_id
+- disposition_burden_met
+- disposition_candidate
+- disposition
+- lifecycle_state
+- final_disposition_change_performed
+- current_evidence_set
+- historical_function
+- historical_relations
+- current_system_analogues
+- identity_status
+- successor_status
+- replacement_status
+- current_value_status
+- current_compatibility_status
+- contradictions
+- unresolved_gaps
+- evaluation_result
+- alternatives_rejected
+- claims
+- evidence_refs
+- previous_adjudication
+reevaluate_is_not_reintegration: true
+reevaluate_burden_unmet_remains_open: true

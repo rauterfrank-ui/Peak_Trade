@@ -1,0 +1,92 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+atlas_authority: NONE
+reconciliation_authority: NONE
+evidence_resolution_pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+final_disposition_change_performed: false
+adjudication_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+understand_snapshot_frozen: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+record_id: RCN-000037
+evidence_resolution_status: EVIDENCE_GAP_PARTIALLY_RESOLVED
+identity_merge_performed: false
+disposition_unchanged: true
+missing_proof_question: What documents did this archive hold besides the README?
+identity_gap:
+  status: PROVEN_HISTORICAL_PATH_THEN_DELETED_ON_MAIN
+  statement: archive/legacy_docs is historically attested then deleted on origin/main by 75722feea8c342c56ef93f796983467f33f98f25.
+    Deletion is not identity with later namesakes.
+  used_as_fact: true
+  source: 75722feea8c342c56ef93f796983467f33f98f25
+  source_sha: 75722feea8c342c56ef93f796983467f33f98f25
+  evidence_type: FORENSIC_RAW
+function_gap:
+  status: PROVEN_HISTORICAL_FUNCTION
+  statement: Legacy docs archive (README.before_phase58.md attested).
+  used_as_fact: true
+  source: docs/system_atlas/reconciliation/understand/records/RCN-000037.yaml
+  source_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+  evidence_type: HISTORICAL_INTERMEDIATE
+relation_gap:
+  status: PROVEN_CO_DELETION_EVENT_NOT_IDENTITY
+  statement: Multiple archive/* trees were removed by the same 75722feea docs/archive cleanup where applicable. Shared deletion
+    event is not SAME_AS among archive trees.
+  used_as_fact: true
+  source: 75722feea8c342c56ef93f796983467f33f98f25
+  source_sha: 75722feea8c342c56ef93f796983467f33f98f25
+  evidence_type: FORENSIC_RAW
+successor_or_replacement_gap:
+  status: NOT_PROVEN
+  statement: Later current modules with similar names are not proven replacements. Absence is not irrelevance. Relocation
+    is not assumed.
+  used_as_fact: true
+  source: docs/system_atlas/reconciliation/evaluate/records/RCN-000037.yaml
+  source_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+  evidence_type: FORENSIC_RAW
+current_system_fit_gap:
+  status: UNPROVEN
+  statement: Current unique value versus later namesakes remains unproven. No disposition.
+  used_as_fact: false
+  source: docs/system_atlas/reconciliation/evaluate/records/RCN-000037.yaml
+  source_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+  evidence_type: OPEN_OR_CONTRADICTORY
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: archive/legacy_docs is absent on origin/main and census SHA (path count 0).
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
+  used_as_fact: true
+  source_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+  source_path: archive/legacy_docs
+  evidence_type: FORENSIC_RAW
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Last origin/main touching commit for this archive family includes 75722feea8c342c56ef93f796983467f33f98f25 (docs:
+    governance/audit runbooks + remove obsolete archive/ #573) except where a different deletion SHA is bound on the record.'
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  used_as_fact: true
+  source_sha: 75722feea8c342c56ef93f796983467f33f98f25
+  source_path: archive/legacy_docs
+  evidence_type: FORENSIC_RAW
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000037.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000037.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000037.yaml
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
+remaining_open_questions:
+- Full inner listing beyond the README is not reconstructed.
+relations_proven: []
+contradictions: []
+census_bound_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+adjudicate_frozen_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+evaluate_frozen_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+understand_frozen_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478

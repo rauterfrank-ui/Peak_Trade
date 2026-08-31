@@ -1,0 +1,103 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+atlas_authority: NONE
+reconciliation_authority: NONE
+evidence_resolution_pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+final_disposition_change_performed: false
+adjudication_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+understand_snapshot_frozen: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+record_id: RCN-000039
+evidence_resolution_status: EVIDENCE_GAP_PARTIALLY_RESOLVED
+identity_merge_performed: false
+disposition_unchanged: true
+missing_proof_question: Did src/infra/health migrate into kill_switch health_check, core.resilience, or neither?
+identity_gap:
+  status: PROVEN_HISTORICAL_EXISTENCE_ON_NON_MAIN_COMMIT
+  statement: src/infra/health exists at 781713e9b2304733c399979273c588fec8cc7eab. git merge-base --is-ancestor 781713e9b2304733c399979273c588fec8cc7eab
+    origin/main is false. Historical existence is proven off origin/main; it is not a current origin/main identity.
+  used_as_fact: true
+  source: 781713e9b2304733c399979273c588fec8cc7eab
+  source_sha: 781713e9b2304733c399979273c588fec8cc7eab
+  evidence_type: FORENSIC_RAW
+function_gap:
+  status: PROVEN_HISTORICAL_FUNCTION
+  statement: Central HealthChecker/HealthStatus ampel GREEN/YELLOW/RED with backtest/exchange/live/portfolio/risk checks;
+    CLI python -m src.infra.health.health_checker.
+  used_as_fact: true
+  source: docs/system_atlas/reconciliation/understand/records/RCN-000039.yaml
+  source_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+  evidence_type: HISTORICAL_INTERMEDIATE
+relation_gap:
+  status: UNPROVEN_VERSUS_CURRENT_NAMESAKE
+  statement: Current kill_switch.health_check.HealthChecker validates recovery from killed state (psutil/system issues). That
+    is not proven SAME_AS infra.health ampel. src/core/resilience.py HealthCheck is a third namesake.
+  used_as_fact: false
+  source: src/risk_layer/kill_switch/health_check.py
+  source_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  evidence_type: HYPOTHESIS
+successor_or_replacement_gap:
+  status: NOT_PROVEN
+  statement: Current namesake src/risk_layer/kill_switch/health_check.py is not proven SAME_AS / RENAMED_TO / REPLACED_BY
+    src/infra/health. Similar theme is not replacement. Never-merged-to-main is not rejection.
+  used_as_fact: true
+  source: src/risk_layer/kill_switch/health_check.py
+  source_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  evidence_type: FORENSIC_RAW
+current_system_fit_gap:
+  status: UNPROVEN
+  statement: Current unique value versus the namesake remains unproven. No disposition.
+  used_as_fact: false
+  source: docs/system_atlas/reconciliation/evaluate/records/RCN-000039.yaml
+  source_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+  evidence_type: OPEN_OR_CONTRADICTORY
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: src/infra/health is absent on origin/main@f9618c73f1834b68588ceab586da4d6408962a10 and census SHA 1b52df25b99a36b99eed91943c2a203ce84f1cad
+    (path count 0).
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
+  used_as_fact: true
+  source_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+  source_path: src/infra/health
+  evidence_type: FORENSIC_RAW
+- claim_class: FORENSIC_RAW_FACT
+  text: Commit 781713e9b2304733c399979273c588fec8cc7eab is not an ancestor of origin/main@f9618c73f1834b68588ceab586da4d6408962a10.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  used_as_fact: true
+  source_sha: 781713e9b2304733c399979273c588fec8cc7eab
+  source_path: src/infra/health
+  evidence_type: FORENSIC_RAW
+- claim_class: HYPOTHESIS
+  text: src/risk_layer/kill_switch/health_check.py may overlap thematically with src/infra/health; identity is unproven.
+  evidence:
+  - src/risk_layer/kill_switch/health_check.py
+  used_as_fact: false
+  source_path: src/risk_layer/kill_switch/health_check.py
+  evidence_type: HYPOTHESIS
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000039.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000039.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000039.yaml
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
+- src/risk_layer/kill_switch/health_check.py
+- src/core/resilience.py
+remaining_open_questions:
+- Blob identity versus kill_switch/health_check.py is unproven.
+- Never-merged-to-origin/main is presence, not disposition.
+relations_proven: []
+contradictions: []
+census_bound_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+adjudicate_frozen_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+evaluate_frozen_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+understand_frozen_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478

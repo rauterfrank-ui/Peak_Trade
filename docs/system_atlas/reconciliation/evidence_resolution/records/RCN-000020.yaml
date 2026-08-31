@@ -1,0 +1,90 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+atlas_authority: NONE
+reconciliation_authority: NONE
+evidence_resolution_pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+final_disposition_change_performed: false
+adjudication_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+understand_snapshot_frozen: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+record_id: RCN-000020
+evidence_resolution_status: EVIDENCE_GAP_PARTIALLY_RESOLVED
+identity_merge_performed: false
+disposition_unchanged: true
+missing_proof_question: Does a current Grafana/observability stack remain under another path as the same identity?
+identity_gap:
+  status: PROVEN_HISTORICAL_PATH_PURGED_ON_MAIN
+  statement: 'docs/observability Grafana family was purged on origin/main by 1c71a4eab 2026-02-23 security: purge Grafana
+    artifacts (#1578). Path count 0 on current origin/main and census SHA.'
+  used_as_fact: true
+  source: 1c71a4eab503b2b4d06fb310a1b85b9a127e8495
+  source_sha: 1c71a4eab503b2b4d06fb310a1b85b9a127e8495
+  evidence_type: FORENSIC_RAW
+function_gap:
+  status: PROVEN_HISTORICAL_FUNCTION
+  statement: Grafana/Prometheus observability runbook family (LOGGING_FIELDS, OBS_STACK_RUNBOOK, dashboard setup).
+  used_as_fact: true
+  source: docs/system_atlas/reconciliation/understand/records/RCN-000020.yaml
+  source_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+  evidence_type: HISTORICAL_INTERMEDIATE
+relation_gap:
+  status: UNPROVEN_VERSUS_WEBUI_OBSERVABILITY_AND_SRC_OBS
+  statement: RCN-000052 docs/webui/observability is a different path family (hub HTML, not Grafana). src/obs and src/observability
+    are later code packages. POSSIBLE_SAME_AS remains hypothesis.
+  used_as_fact: false
+  source: docs/webui/observability/OBSERVABILITY_HUB_V0.md
+  source_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  evidence_type: HYPOTHESIS
+successor_or_replacement_gap:
+  status: NOT_PROVEN
+  statement: Later src/obs / src/observability existence is not proven Grafana-runbook replacement.
+  used_as_fact: true
+  source: docs/system_atlas/reconciliation/evaluate/records/RCN-000020.yaml
+  source_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+  evidence_type: FORENSIC_RAW
+current_system_fit_gap:
+  status: UNPROVEN
+  statement: Current unique value of a Grafana stack versus src/obs remains unproven. No disposition.
+  used_as_fact: false
+  source: docs/system_atlas/reconciliation/evaluate/records/RCN-000020.yaml
+  source_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+  evidence_type: OPEN_OR_CONTRADICTORY
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 1c71a4eab is an ancestor of origin/main and is the last origin/main commit touching docs/observability.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
+  used_as_fact: true
+  source_sha: 1c71a4eab503b2b4d06fb310a1b85b9a127e8495
+  source_path: docs/observability
+  evidence_type: FORENSIC_RAW
+- claim_class: HYPOTHESIS
+  text: src/obs or src/observability may cover some observability purpose; Grafana identity is unproven.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  used_as_fact: false
+  evidence_type: HYPOTHESIS
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000020.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000020.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000020.yaml
+- docs/webui/observability/OBSERVABILITY_HUB_V0.md
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
+remaining_open_questions:
+- Is any current Grafana/OTLP runbook the same identity as the purged docs/observability family?
+relations_proven: []
+contradictions: []
+census_bound_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+adjudicate_frozen_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+evaluate_frozen_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+understand_frozen_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478

@@ -33,6 +33,8 @@ inventories/           pass v2/v3 reproducible search inventories
 understand/            UNDERSTAND pass v2 historical evidence binding
 evaluate/              EVALUATE_INDIVIDUALLY pass v1 current-system comparison
 adjudicate/            INTEGRATE_OR_DISPOSITION pass v1 adjudication
+evidence_resolution/   OPEN_EVIDENCE_RESOLUTION pass v1 (OPEN records only)
+reevaluate/            REEVALUATE_OPEN_RECORDS pass v1 (OPEN records only)
 evidence/understand_v1/ raw quotes separated from interpretation
 ```
 
@@ -176,7 +178,7 @@ refs and LOSS_REGISTER-derived unreachable blobs remain documented out of
 scope. Atlas `COMPLETE` flags and a stale Atlas `census_meta` SHA are not
 authority for this census. No EVALUATE, disposition, or reintegration in that census closeout.
 
-## INTEGRATE_OR_DISPOSITION pass v1 state (current)
+## INTEGRATE_OR_DISPOSITION pass v1 state (frozen)
 
 ```text
 PASS_ID=INTEGRATE_OR_DISPOSITION_PASS_V1
@@ -207,6 +209,50 @@ and EVALUATE snapshots under `evaluate&#47;` remain phase-frozen. Census
 Repository taxonomy names (obeyed; not renamed):
 `CAPABILITY_ALREADY_COVERED` (not `ALREADY_COVERED`);
 `INSUFFICIENT_EVIDENCE` (not `OPEN_INSUFFICIENT_EVIDENCE`).
+
+## REEVALUATE_OPEN_RECORDS pass v1 state (current)
+
+```text
+PASS_ID=REEVALUATE_OPEN_RECORDS_PASS_V1
+INPUT_PASS_ID=OPEN_EVIDENCE_RESOLUTION_PASS_V1
+REEVALUATE_BOUND_SHA=f9618c73f1834b68588ceab586da4d6408962a10
+INPUT_RECORD_COUNT=35
+NEW_FINAL_DISPOSITION_COUNT=0
+REMAINING_INSUFFICIENT_EVIDENCE_OPEN_COUNT=35
+IDENTITY_MERGES_PERFORMED=0
+REINTEGRATION_PERFORMED=false
+```
+
+This pass re-evaluates and adjudicates the 35 records that remained
+`INSUFFICIENT_EVIDENCE` / `OPEN` after INTEGRATE_OR_DISPOSITION pass v1,
+using OPEN_EVIDENCE_RESOLUTION_PASS_V1 as bound forensic input. A stronger
+terminal class is assigned only when that class's burden of proof is met.
+This persist assigned none; all 35 remain `INSUFFICIENT_EVIDENCE` / `OPEN`.
+That outcome is not a rejection. Reintegration, identity fusion, runtime
+mutation, commit, push, and PR are not authorized. UNDERSTAND snapshots
+under `understand&#47;`, EVALUATE snapshots under `evaluate&#47;`, INTEGRATE_OR_DISPOSITION
+snapshots under `adjudicate&#47;`, and OPEN_EVIDENCE_RESOLUTION snapshots under
+`evidence_resolution&#47;` remain phase-frozen. Census `current_presence` is not
+rewritten, including the RCN-000052 contradiction.
+
+## OPEN_EVIDENCE_RESOLUTION pass v1 state (historical)
+
+```text
+PASS_ID=OPEN_EVIDENCE_RESOLUTION_PASS_V1
+EVIDENCE_RESOLUTION_BOUND_SHA=f9618c73f1834b68588ceab586da4d6408962a10
+INPUT_OPEN_RECORD_COUNT=35
+FINAL_DISPOSITION_CHANGES_PERFORMED=0
+IDENTITY_MERGES_PERFORMED=0
+REINTEGRATION_PERFORMED=false
+```
+
+This pass exhausts repository-internal evidence for the 35 records that
+remained `INSUFFICIENT_EVIDENCE` / `OPEN` after INTEGRATE_OR_DISPOSITION
+pass v1. It records an evidence-resolution status per OPEN record. That
+status is not a new terminal disposition. UNDERSTAND snapshots under
+`understand&#47;`, EVALUATE snapshots under `evaluate&#47;`, and INTEGRATE_OR_DISPOSITION
+snapshots under `adjudicate&#47;` remain phase-frozen. Census
+`current_presence` is not rewritten, including the RCN-000052 contradiction.
 
 ## EVALUATE_INDIVIDUALLY pass v1 state (historical)
 
@@ -291,7 +337,7 @@ It is no longer the live tree state after census pass v1.
 ## Validation
 
 ```text
-./scripts/pt -m pytest -q tests/ops/test_reconciliation_ledger_v1.py tests/ops/test_reconciliation_census_pass_v1.py tests/ops/test_reconciliation_understand_pass_v1.py tests/ops/test_reconciliation_understand_pass_v2.py tests/ops/test_reconciliation_evaluate_pass_v1.py tests/ops/test_reconciliation_adjudicate_pass_v1.py tests/ops/test_system_atlas_v1.py
+./scripts/pt -m pytest -q tests/ops/test_reconciliation_ledger_v1.py tests/ops/test_reconciliation_census_pass_v1.py tests/ops/test_reconciliation_understand_pass_v1.py tests/ops/test_reconciliation_understand_pass_v2.py tests/ops/test_reconciliation_evaluate_pass_v1.py tests/ops/test_reconciliation_adjudicate_pass_v1.py tests/ops/test_reconciliation_evidence_resolution_pass_v1.py tests/ops/test_system_atlas_v1.py
 ./scripts/pt scripts/ops/validate_system_atlas_v1.py
 ```
 

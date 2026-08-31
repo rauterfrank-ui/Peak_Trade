@@ -1,0 +1,74 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+atlas_authority: NONE
+reconciliation_authority: NONE
+reevaluate_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+input_pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
+identity_fusion_forbidden: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+understand_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+adjudication_snapshot_frozen: true
+evidence_resolution_snapshot_frozen: true
+record_id: RCN-000040
+reevaluation_attempted: true
+adjudication_attempted: true
+disposition_burden_met: false
+disposition_candidate: INSUFFICIENT_EVIDENCE
+disposition: INSUFFICIENT_EVIDENCE
+lifecycle_state: OPEN
+final_disposition_change_performed: false
+identity_merge_performed: false
+reintegration_candidate: false
+further_evidence_required: true
+current_evidence_set:
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000040.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000040.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000040.yaml
+historical_function: Historical backup package on never-merged commit 12188014.
+historical_relations: Bundled with resilience/monitoring on that commit; not on origin/main.
+current_system_analogues: No src/infra/backup on origin/main. Disaster-recovery docs are not proven SAME_AS.
+identity_status: PROVEN_HISTORICAL_EXISTENCE_ON_NON_MAIN_COMMIT
+successor_status: NOT_PROVEN
+replacement_status: NOT_PROVEN
+current_value_status: UNPROVEN
+current_compatibility_status: UNPROVEN
+contradictions: []
+unresolved_gaps:
+- Later backup/recovery owner same-identity is unproven.
+evaluation_result: 'src/infra/backup: historical function is understood at UNDERSTAND/INPUT_PASS level, but current same-identity
+  presence, proven replacement, unique current value, proven incompatibility, and positive reject reason are not all (or any
+  stronger class) satisfied. INSUFFICIENT_EVIDENCE remains OPEN.'
+alternatives_rejected:
+- 'RETAIN_AS_IS: CURRENTLY_ABSENT'
+- 'CAPABILITY_ALREADY_COVERED: later DR docs/scripts not proven replacement'
+- 'ADAPT_AND_REINTEGRATE: unique value unproven'
+- 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: none proven'
+- 'REJECT_FOR_CURRENT_SYSTEM: never-merged/absent is not reject'
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: 'src/infra/backup: after OPEN_EVIDENCE_RESOLUTION_PASS_V1 the burden for a stronger terminal class is not met. INSUFFICIENT_EVIDENCE
+    remains OPEN.'
+  evidence:
+  - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000040.yaml
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000040.yaml
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: Current absence, later namesakes, and never-merged-to-origin/main presence are not identity, not replacement, and
+    not rejection.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000040.yaml
+  used_as_fact: true
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000040.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000040.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000040.yaml
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000040.yaml
+- docs/system_atlas/reconciliation/evidence_resolution/pass_v1_status.yaml
+input_pass_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+adjudicate_frozen_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
