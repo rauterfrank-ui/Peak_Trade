@@ -1,0 +1,38 @@
+{
+  "PRE_EXECUTION_SURFACE_MAP": {
+    "EIGHT_METADATA_EDGES": [
+      "MAX_SIZE",
+      "MAX_AVAILABLE",
+      "PRICE_BAND",
+      "LEVERAGE",
+      "POS_MODE",
+      "MARGIN_MODE",
+      "AVAILABLE_MARGIN",
+      "INSTRUMENT_STATE",
+      "ACCOUNT_MODE"
+    ],
+    "EXECUTE_TRANSPORT_USED": false,
+    "NOTE_EDGE_COUNT": "Canonical persist names 8 metadata edges; ACCOUNT_MODE is an additional bound consumer sharing account/config with POS_MODE. LIMIT_GATES consume public instruments.",
+    "OBSERVATION_MODULES": [
+      "fetch/get via LiveCanaryHttpClientV1.get + query-path helpers",
+      "public_instruments_query_path_v1",
+      "public_price_limit_query_path_v1",
+      "account_config_query_path_v1",
+      "account_leverage_info_query_path_v1",
+      "account_max_size_query_path_v1",
+      "account_balance_query_path_v1",
+      "account_positions_query_path_v1"
+    ],
+    "ORDER_PLAN_BUILDER": "src.ops.section_11_13_5_live_canary_minimum_exposure_v1.order_plan_v1.build_minimum_valid_canary_order_plan_v1",
+    "OWNER_GO_EXECUTE_USED": false,
+    "PERSIST_WRAPPERS_NOT_USED_REASON": "persist_authorized_* functions are locked to historical slice GOs; lower-level GET helpers + consumers + order_plan_v1 are GO-unlocked",
+    "POST_BOUNDARY": "LiveCanaryHttpClientV1.post / ENDPOINT_SUBMIT=/api/v5/trade/order via run_canary_submit_transport_v1",
+    "PROOF_EXECUTABLE_WITH_EXISTING_RUNTIME": true,
+    "REST_HOST": "eea.okx.com",
+    "RUNTIME_MUTATION_REQUIRED": false,
+    "TARGET_INSTRUMENT_ID": "SUI-USD_UM_XPERP-310404",
+    "VENUE": "OKX_EEA",
+    "VENUE_NATIVE_PAYLOAD_BUILDER": "src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.okx_response_mapper_v1.build_venue_native_order_body_v1",
+    "VENUE_PRETRADE_LIMIT_GATES_CONSUMER": "apply_fresh_venue_pretrade_limit_gates_v1 inside build_minimum_valid_canary_order_plan_v1"
+  }
+}

@@ -1,0 +1,236 @@
+{
+  "edges": [
+    {
+      "AUTH_CLASS": "PUBLIC_UNSIGNED_GET",
+      "BODY_BYTES": 1134,
+      "BODY_SHA256": "038f2bf82f18f2d42ed26dca281cc7733e4ef7d07206fd0b19637189ec3e4cd2",
+      "CONSUMER": "apply_fresh_max_size_pretrade_gate_v1 + apply_fresh_venue_pretrade_limit_gates_v1",
+      "EDGE_ID": "MAX_SIZE",
+      "ENDPOINT": "/api/v5/public/instruments?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "HTTP_STATUS": 200,
+      "METHOD": "GET",
+      "OBSERVED_VALUE": {
+        "ctVal": "1",
+        "lotSz": "1",
+        "maxLmtSz": "100000000",
+        "maxMktSz": "100000",
+        "minSz": "1",
+        "tickSz": "0.0001"
+      },
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "REQUEST_TIME_UTC": "2026-08-31T17:09:44.097134Z",
+      "RESPONSE_TIME_UTC": "2026-08-31T17:09:44.312540Z",
+      "TARGET_ROW_OBSERVED": true
+    },
+    {
+      "AUTH_CLASS": "PUBLIC_UNSIGNED_GET",
+      "BODY_BYTES": 1134,
+      "BODY_SHA256": "038f2bf82f18f2d42ed26dca281cc7733e4ef7d07206fd0b19637189ec3e4cd2",
+      "CONSUMER": "apply_fresh_instrument_state_pretrade_gate_v1",
+      "EDGE_ID": "INSTRUMENT_STATE",
+      "ENDPOINT": "/api/v5/public/instruments?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "HTTP_STATUS": 200,
+      "METHOD": "GET",
+      "OBSERVED_VALUE": {
+        "instId": "SUI-USD_UM_XPERP-310404",
+        "state": "live"
+      },
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "REQUEST_TIME_UTC": "2026-08-31T17:09:44.097134Z",
+      "RESPONSE_TIME_UTC": "2026-08-31T17:09:44.312540Z",
+      "TARGET_ROW_OBSERVED": true
+    },
+    {
+      "AUTH_CLASS": "PUBLIC_UNSIGNED_GET",
+      "BODY_BYTES": 1134,
+      "BODY_SHA256": "038f2bf82f18f2d42ed26dca281cc7733e4ef7d07206fd0b19637189ec3e4cd2",
+      "CONSUMER": "apply_fresh_venue_pretrade_limit_gates_v1",
+      "EDGE_ID": "VENUE_PRETRADE_LIMIT_GATES",
+      "ENDPOINT": "/api/v5/public/instruments?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "HTTP_STATUS": 200,
+      "METHOD": "GET",
+      "OBSERVED_VALUE": {
+        "lotSz": "1",
+        "maxLmtSz": "100000000",
+        "minSz": "1",
+        "tickSz": "0.0001"
+      },
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "REQUEST_TIME_UTC": "2026-08-31T17:09:44.097134Z",
+      "RESPONSE_TIME_UTC": "2026-08-31T17:09:44.312540Z",
+      "TARGET_ROW_OBSERVED": true
+    },
+    {
+      "AUTH_CLASS": "PUBLIC_UNSIGNED_GET",
+      "BODY_BYTES": 333,
+      "BODY_SHA256": "14a88940eb9b26a1d3eeb82521f8f3e9c8238aa34d522ff5bed9749309c595bd",
+      "CONSUMER": "extract_reference_price_v1 + quantize_limit_price_v1",
+      "EDGE_ID": "TICKER_REFERENCE_PRICE",
+      "ENDPOINT": "/api/v5/market/ticker?instId=SUI-USD_UM_XPERP-310404",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "HTTP_STATUS": 200,
+      "METHOD": "GET",
+      "OBSERVED_VALUE": {
+        "askPx": "0.722",
+        "bidPx": "0.7217",
+        "last": "0.7215"
+      },
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "REQUEST_TIME_UTC": "2026-08-31T17:09:44.314075Z",
+      "RESPONSE_TIME_UTC": "2026-08-31T17:09:44.553657Z",
+      "TARGET_ROW_OBSERVED": true
+    },
+    {
+      "AUTH_CLASS": "PUBLIC_UNSIGNED_GET",
+      "BODY_BYTES": 161,
+      "BODY_SHA256": "a8970a3e4f9ce4d8993216224827707fc25a9f65e90fe9bf5caf8a01e2c74b4f",
+      "CONSUMER": "apply_fresh_price_band_pretrade_gate_v1",
+      "EDGE_ID": "PRICE_BAND",
+      "ENDPOINT": "/api/v5/public/price-limit?instId=SUI-USD_UM_XPERP-310404",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "HTTP_STATUS": 200,
+      "METHOD": "GET",
+      "OBSERVED_VALUE": {
+        "buyLmt": "0.7255",
+        "enabled": true,
+        "sellLmt": "0.7182"
+      },
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "REQUEST_TIME_UTC": "2026-08-31T17:09:44.554784Z",
+      "RESPONSE_TIME_UTC": "2026-08-31T17:09:44.716742Z",
+      "TARGET_ROW_OBSERVED": true
+    },
+    {
+      "AUTH_CLASS": "AUTHENTICATED_PRIVATE_GET",
+      "BODY_BYTES": 663,
+      "BODY_SHA256": "cc422bd0667007af7207eb09c8ae5a01b5ccef20ddf48a3a0ef26c4df05d36ae",
+      "CONSUMER": "apply_fresh_pos_mode_pretrade_gate_v1",
+      "EDGE_ID": "POS_MODE",
+      "ENDPOINT": "/api/v5/account/config",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "HTTP_STATUS": 200,
+      "METHOD": "GET",
+      "OBSERVED_VALUE": {
+        "posMode": "net_mode"
+      },
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "REQUEST_TIME_UTC": "2026-08-31T17:09:44.719109Z",
+      "RESPONSE_TIME_UTC": "2026-08-31T17:09:44.959393Z",
+      "TARGET_ROW_OBSERVED": true
+    },
+    {
+      "AUTH_CLASS": "AUTHENTICATED_PRIVATE_GET",
+      "BODY_BYTES": 663,
+      "BODY_SHA256": "cc422bd0667007af7207eb09c8ae5a01b5ccef20ddf48a3a0ef26c4df05d36ae",
+      "CONSUMER": "apply_fresh_account_mode_pretrade_gate_v1",
+      "EDGE_ID": "ACCOUNT_MODE",
+      "ENDPOINT": "/api/v5/account/config",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "HTTP_STATUS": 200,
+      "METHOD": "GET",
+      "OBSERVED_VALUE": {
+        "acctLv": "2"
+      },
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "REQUEST_TIME_UTC": "2026-08-31T17:09:44.719109Z",
+      "RESPONSE_TIME_UTC": "2026-08-31T17:09:44.959393Z",
+      "TARGET_ROW_OBSERVED": true
+    },
+    {
+      "AUTH_CLASS": "AUTHENTICATED_PRIVATE_GET",
+      "BODY_BYTES": 122,
+      "BODY_SHA256": "fbfc9480218e15b0a15a5aac5b662b222108336d71501da82436b8df60b42ef7",
+      "CONSUMER": "apply_fresh_leverage_pretrade_gate_v1",
+      "EDGE_ID": "LEVERAGE",
+      "ENDPOINT": "/api/v5/account/leverage-info?instId=SUI-USD_UM_XPERP-310404&mgnMode=cross",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "HTTP_STATUS": 200,
+      "METHOD": "GET",
+      "OBSERVED_VALUE": {
+        "instFamily": null,
+        "instId": "SUI-USD_UM_XPERP-310404",
+        "lever": "3",
+        "mgnMode": "cross",
+        "posSide": "net"
+      },
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "REQUEST_TIME_UTC": "2026-08-31T17:09:44.961260Z",
+      "RESPONSE_TIME_UTC": "2026-08-31T17:09:45.110588Z",
+      "TARGET_ROW_OBSERVED": true
+    },
+    {
+      "AUTH_CLASS": "AUTHENTICATED_PRIVATE_GET",
+      "BODY_BYTES": 122,
+      "BODY_SHA256": "5f877ef730a9a7ba112d0997d051cd8969a687bf3c1288dce9728ac16a1c0acd",
+      "CONSUMER": "apply_fresh_max_available_pretrade_gate_v1",
+      "EDGE_ID": "MAX_AVAILABLE",
+      "ENDPOINT": "/api/v5/account/max-size?instId=SUI-USD_UM_XPERP-310404&tdMode=cross&px=0.7215",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "HTTP_STATUS": 200,
+      "METHOD": "GET",
+      "OBSERVED_VALUE": {
+        "maxBuy": "0",
+        "maxSell": "0"
+      },
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "REQUEST_TIME_UTC": "2026-08-31T17:09:45.111735Z",
+      "RESPONSE_TIME_UTC": "2026-08-31T17:09:45.273476Z",
+      "TARGET_ROW_OBSERVED": true
+    },
+    {
+      "AUTH_CLASS": "AUTHENTICATED_PRIVATE_GET",
+      "BODY_BYTES": 360,
+      "BODY_SHA256": "09d337254c3675e7db91d1ce03c47226ad53af324cad2e2d6adaad122fdb5dbd",
+      "CONSUMER": "apply_fresh_available_margin_pretrade_gate_v1",
+      "EDGE_ID": "AVAILABLE_MARGIN",
+      "ENDPOINT": "/api/v5/account/balance",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "HTTP_STATUS": 200,
+      "METHOD": "GET",
+      "OBSERVED_VALUE": {
+        "USDC_DETAIL_OBSERVED": false,
+        "availEq": null,
+        "ccy": null
+      },
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "REQUEST_TIME_UTC": "2026-08-31T17:09:45.275585Z",
+      "RESPONSE_TIME_UTC": "2026-08-31T17:09:45.519882Z",
+      "TARGET_ROW_OBSERVED": true
+    },
+    {
+      "AUTH_CLASS": "AUTHENTICATED_PRIVATE_GET",
+      "BODY_BYTES": 31,
+      "BODY_SHA256": "fc24d69479edbb84f22c7d5bd4525349734056ad3baf7a5adf7e553f68c06a3a",
+      "CONSUMER": "apply_fresh_margin_mode_pretrade_gate_v1",
+      "EDGE_ID": "MARGIN_MODE",
+      "ENDPOINT": "/api/v5/account/positions",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "HTTP_STATUS": 200,
+      "METHOD": "GET",
+      "OBSERVED_VALUE": {
+        "DATA_COUNT": 0,
+        "EMPTY_DATA_IS_NOT_ZERO": true,
+        "TARGET_ROW_OBSERVED": false,
+        "mgnMode": null
+      },
+      "OKX_CODE": "0",
+      "OKX_MSG": "",
+      "REQUEST_TIME_UTC": "2026-08-31T17:09:45.521220Z",
+      "RESPONSE_TIME_UTC": "2026-08-31T17:09:45.685472Z",
+      "TARGET_ROW_OBSERVED": false
+    }
+  ]
+}

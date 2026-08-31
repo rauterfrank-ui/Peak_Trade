@@ -51,6 +51,7 @@ entities:
     evidence_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK_RATIFICATION.json
+      - docs/ops/specs/PEAK_TRADE_BIND_CURRENT_SUI_L4_FAIL_CLOSED_MAX_AVAILABLE_ZERO_END_STATE_NO_REPAIR_V1.md
 
   - id: NAVIGATION_INDEX:map_of_truth
     kind: NAVIGATION_INDEX
@@ -63,6 +64,7 @@ entities:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/PEAK_TRADE_BIND_CURRENT_SUI_L4_FAIL_CLOSED_MAX_AVAILABLE_ZERO_END_STATE_NO_REPAIR_V1.md
 
   - id: FORENSIC_REFERENCE:information_corpus_persistence_base
     kind: FORENSIC_REFERENCE
@@ -214,7 +216,14 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     evidence_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
-    notes: Authoring bound; NOT EXECUTED; NOT PROVEN on origin/main §11.13.5.
+      - docs/ops/specs/PEAK_TRADE_BIND_CURRENT_SUI_L4_FAIL_CLOSED_MAX_AVAILABLE_ZERO_END_STATE_NO_REPAIR_V1.md
+      - evidence/ops/post_reconsolidation_current_sui_l4_pre_submit_no_wire_v1/20260831T170944Z/CLAIMS.json
+    notes: >-
+      Authoring bound; NOT EXECUTED; NOT PROVEN. Subordinate persist records
+      Current-SUI L4 FAIL_CLOSED_AT_MAX_AVAILABLE (maxBuy=0, maxSell=0,
+      FAIL_CLOSED:VENUE_CONTRACT_COUNT_EXCEEDS_MAXBUY);
+      ROOT_CAUSE_OF_MAX_AVAILABLE_ZERO=UNPROVEN; no repair; forensic pack is
+      not SSOT and not operative cache.
 
   - id: UNIVERSE:governed_futures_universe
     kind: UNIVERSE

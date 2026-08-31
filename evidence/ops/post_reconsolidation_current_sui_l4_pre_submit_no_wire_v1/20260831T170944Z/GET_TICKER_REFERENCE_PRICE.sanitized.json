@@ -1,0 +1,52 @@
+{
+  "AUTH_HEADER_PERSISTED": false,
+  "BODY_SHA256": "14a88940eb9b26a1d3eeb82521f8f3e9c8238aa34d522ff5bed9749309c595bd",
+  "EDGE_ID": "TICKER_REFERENCE_PRICE",
+  "ENDPOINT": "/api/v5/market/ticker?instId=SUI-USD_UM_XPERP-310404",
+  "HTTP_STATUS": 200,
+  "OKX_CODE": "0",
+  "OKX_MSG": "",
+  "SECRET_VALUES_INCLUDED": false,
+  "TARGET_ROW": {
+    "askPx": "0.722",
+    "askSz": "676",
+    "bidPx": "0.7217",
+    "bidSz": "968",
+    "high24h": "0.7628",
+    "instId": "SUI-USD_UM_XPERP-310404",
+    "instType": "FUTURES",
+    "last": "0.7215",
+    "lastSz": "57",
+    "low24h": "0.6973",
+    "open24h": "0.7583",
+    "sodUtc0": "0.71",
+    "sodUtc8": "0.7195",
+    "ts": "1788196183074",
+    "vol24h": "4215275",
+    "volCcy24h": "4215275"
+  },
+  "payload": {
+    "code": "0",
+    "data": [
+      {
+        "askPx": "0.722",
+        "askSz": "676",
+        "bidPx": "0.7217",
+        "bidSz": "968",
+        "high24h": "0.7628",
+        "instId": "SUI-USD_UM_XPERP-310404",
+        "instType": "FUTURES",
+        "last": "0.7215",
+        "lastSz": "57",
+        "low24h": "0.6973",
+        "open24h": "0.7583",
+        "sodUtc0": "0.71",
+        "sodUtc8": "0.7195",
+        "ts": "1788196183074",
+        "vol24h": "4215275",
+        "volCcy24h": "4215275"
+      }
+    ],
+    "msg": ""
+  }
+}
