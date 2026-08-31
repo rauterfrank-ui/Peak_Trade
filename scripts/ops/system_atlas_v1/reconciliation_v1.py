@@ -6,6 +6,7 @@ Governance/evidence only. Not runtime authorization.
 
 from __future__ import annotations
 
+import hashlib
 import re
 from pathlib import Path
 from typing import Any
@@ -472,6 +473,7 @@ def _validate_record(
             _validate_claim(claim, rid=rid)
     _validate_optional_evidence_resolution(record, rid=rid)
     _validate_optional_reevaluate(record, rid=rid)
+    _validate_optional_reevaluate_v2(record, rid=rid)
     return rid
 
 
@@ -535,6 +537,7 @@ def _validate_optional_reevaluate(record: dict[str, Any], *, rid: str) -> None:
     if not list(block.get("unresolved_gaps") or []):
         raise ReconciliationValidationError(f"REEVALUATE_GAPS_MISSING:{rid}")
     adj = record.get("adjudication") or {}
+    v2 = record.get("reevaluate_v2")
     if burden_met is False:
         if block.get("final_disposition_change_performed") is True:
             raise ReconciliationValidationError(
@@ -544,16 +547,109 @@ def _validate_optional_reevaluate(record: dict[str, Any], *, rid: str) -> None:
             raise ReconciliationValidationError(f"REEVALUATE_BURDEN_UNMET_NOT_OPEN:{rid}")
         if str(block.get("lifecycle_state") or "") != "OPEN":
             raise ReconciliationValidationError(f"REEVALUATE_BURDEN_UNMET_STATE_DRIFT:{rid}")
-        if str(adj.get("disposition") or "") != "INSUFFICIENT_EVIDENCE":
-            raise ReconciliationValidationError(f"REEVALUATE_LIVE_DISPOSITION_DRIFT:{rid}")
-        if str(adj.get("lifecycle_state") or "") != "OPEN":
-            raise ReconciliationValidationError(f"REEVALUATE_LIVE_STATE_DRIFT:{rid}")
+        if not isinstance(v2, dict):
+            if str(adj.get("disposition") or "") != "INSUFFICIENT_EVIDENCE":
+                raise ReconciliationValidationError(f"REEVALUATE_LIVE_DISPOSITION_DRIFT:{rid}")
+            if str(adj.get("lifecycle_state") or "") != "OPEN":
+                raise ReconciliationValidationError(f"REEVALUATE_LIVE_STATE_DRIFT:{rid}")
     if rid == "RCN-000052":
         presence = str((record.get("discovery") or {}).get("current_presence") or "")
         if presence != "CURRENTLY_ABSENT":
             raise ReconciliationValidationError("REEVALUATE_RCN000052_PRESENCE_REWRITE")
         if str(block.get("disposition") or "") == "RETAIN_AS_IS":
             raise ReconciliationValidationError("REEVALUATE_RCN000052_RETAIN_WHILE_CONTRADICTED")
+
+
+def _validate_optional_reevaluate_v2(record: dict[str, Any], *, rid: str) -> None:
+    block = record.get("reevaluate_v2")
+    if block is None:
+        return
+    if not isinstance(block, dict):
+        raise ReconciliationValidationError(f"REEVALUATE_V2_NOT_MAPPING:{rid}")
+    from scripts.ops.system_atlas_v1.reevaluate_open_records_pass_v2_records import (
+        CONTRADICTION_ID_052,
+        EXPLICIT_REMAIN_OPEN_IDS,
+        INCOMPATIBLE,
+        INPUT_PASS_ID,
+        PREDECESSOR_BOUND_SHA,
+        PREDECESSOR_PASS_ID,
+        REJECT,
+        REEVALUATE_V2_BOUND_SHA,
+        REEVALUATE_V2_PASS_ID,
+        TARGET_FINAL_IDS,
+        V2_WRITTEN_RECORD_IDS,
+    )
+
+    if rid not in V2_WRITTEN_RECORD_IDS:
+        raise ReconciliationValidationError(f"REEVALUATE_V2_OUT_OF_SCOPE:{rid}")
+    if str(block.get("pass_id") or "") != REEVALUATE_V2_PASS_ID:
+        raise ReconciliationValidationError(f"REEVALUATE_V2_PASS_ID_MISMATCH:{rid}")
+    if str(block.get("input_pass_id") or "") != INPUT_PASS_ID:
+        raise ReconciliationValidationError(f"REEVALUATE_V2_INPUT_PASS_MISMATCH:{rid}")
+    if str(block.get("predecessor_pass_id") or "") != PREDECESSOR_PASS_ID:
+        raise ReconciliationValidationError(f"REEVALUATE_V2_PREDECESSOR_MISMATCH:{rid}")
+    if str(block.get("predecessor_bound_sha") or "") != PREDECESSOR_BOUND_SHA:
+        raise ReconciliationValidationError(f"REEVALUATE_V2_PREDECESSOR_SHA_MISMATCH:{rid}")
+    if str(block.get("bound_against_sha") or "") != REEVALUATE_V2_BOUND_SHA:
+        raise ReconciliationValidationError(f"REEVALUATE_V2_BOUND_SHA_MISMATCH:{rid}")
+    burden_met = _as_bool(
+        block.get("disposition_burden_met"), field=f"reevaluate_v2.disposition_burden_met:{rid}"
+    )
+    if block.get("identity_merge_performed") is True:
+        raise ReconciliationValidationError(f"REEVALUATE_V2_IDENTITY_MERGE:{rid}")
+    if block.get("reintegration_performed") is True:
+        raise ReconciliationValidationError(f"REEVALUATE_V2_REINTEGRATION:{rid}")
+    if block.get("runtime_mutation_performed") is True:
+        raise ReconciliationValidationError(f"REEVALUATE_V2_RUNTIME_MUTATION:{rid}")
+    for field in REEVALUATE_REQUIRED_TEXT_FIELDS:
+        if not str(block.get(field) or "").strip():
+            raise ReconciliationValidationError(f"REEVALUATE_V2_FIELD_MISSING:{rid}:{field}")
+    if not list(block.get("current_evidence_set") or []):
+        raise ReconciliationValidationError(f"REEVALUATE_V2_EVIDENCE_SET_MISSING:{rid}")
+    if not list(block.get("alternatives_rejected") or []):
+        raise ReconciliationValidationError(f"REEVALUATE_V2_ALTERNATIVES_MISSING:{rid}")
+    if not list(block.get("unresolved_gaps") or []):
+        raise ReconciliationValidationError(f"REEVALUATE_V2_GAPS_MISSING:{rid}")
+    adj = record.get("adjudication") or {}
+    if burden_met is True:
+        if rid not in TARGET_FINAL_IDS:
+            raise ReconciliationValidationError(f"REEVALUATE_V2_UNEXPECTED_FINAL:{rid}")
+        if block.get("final_disposition_change_performed") is not True:
+            raise ReconciliationValidationError(f"REEVALUATE_V2_FINAL_FLAG_MISSING:{rid}")
+        disposition = str(block.get("disposition") or "")
+        if disposition not in {INCOMPATIBLE, REJECT}:
+            raise ReconciliationValidationError(
+                f"REEVALUATE_V2_DISPOSITION_NOT_ALLOWED:{rid}:{disposition}"
+            )
+        if str(adj.get("disposition") or "") != disposition:
+            raise ReconciliationValidationError(f"REEVALUATE_V2_LIVE_DISPOSITION_DRIFT:{rid}")
+        if str(adj.get("lifecycle_state") or "") != str(block.get("lifecycle_state") or ""):
+            raise ReconciliationValidationError(f"REEVALUATE_V2_LIVE_STATE_DRIFT:{rid}")
+        if not str(adj.get("positive_reason") or "").strip():
+            raise ReconciliationValidationError(f"REEVALUATE_V2_POSITIVE_REASON_MISSING:{rid}")
+    else:
+        if rid not in EXPLICIT_REMAIN_OPEN_IDS:
+            raise ReconciliationValidationError(f"REEVALUATE_V2_UNEXPECTED_OPEN_BLOCK:{rid}")
+        if block.get("final_disposition_change_performed") is True:
+            raise ReconciliationValidationError(f"REEVALUATE_V2_OPEN_CHANGED_DISPOSITION:{rid}")
+        if str(block.get("disposition") or "") != "INSUFFICIENT_EVIDENCE":
+            raise ReconciliationValidationError(f"REEVALUATE_V2_OPEN_NOT_INSUFFICIENT:{rid}")
+        if str(block.get("lifecycle_state") or "") != "OPEN":
+            raise ReconciliationValidationError(f"REEVALUATE_V2_OPEN_STATE_DRIFT:{rid}")
+        if str(adj.get("disposition") or "") != "INSUFFICIENT_EVIDENCE":
+            raise ReconciliationValidationError(f"REEVALUATE_V2_LIVE_OPEN_DRIFT:{rid}")
+        if str(adj.get("lifecycle_state") or "") != "OPEN":
+            raise ReconciliationValidationError(f"REEVALUATE_V2_LIVE_OPEN_STATE_DRIFT:{rid}")
+    if rid == "RCN-000052":
+        presence = str((record.get("discovery") or {}).get("current_presence") or "")
+        if presence != "CURRENTLY_ABSENT":
+            raise ReconciliationValidationError("REEVALUATE_V2_RCN000052_PRESENCE_REWRITE")
+        if str(block.get("disposition") or "") == "RETAIN_AS_IS":
+            raise ReconciliationValidationError("REEVALUATE_V2_RCN000052_RETAIN_WHILE_CONTRADICTED")
+        if str(adj.get("disposition") or "") == "RETAIN_AS_IS":
+            raise ReconciliationValidationError("REEVALUATE_V2_RCN000052_LIVE_RETAIN")
+        if str(block.get("contradiction_id") or "") != CONTRADICTION_ID_052:
+            raise ReconciliationValidationError("REEVALUATE_V2_RCN000052_CONTRADICTION_ID")
 
 
 def _validate_ledger(ledger: dict[str, Any], gov: dict[str, Any]) -> list[dict[str, Any]]:
@@ -641,7 +737,155 @@ def validate_reconciliation_v1(payload: dict[str, Any]) -> list[str]:
     _validate_census(census, gov)
     _validate_anchors(anchors, records)
     _validate_census_artifacts(payload, census)
+    _validate_reevaluate_pass_v2_tree(payload, records)
     return []
+
+
+def _validate_reevaluate_pass_v2_tree(
+    payload: dict[str, Any], records: list[dict[str, Any]]
+) -> None:
+    ledger = payload["records"]["ledger.yaml"] or {}
+    schema = payload["records"]["schema.yaml"] or {}
+    root = Path(str(payload.get("root") or ""))
+    status_path = root / "reevaluate" / "pass_v2_status.yaml"
+    live_pass = str(ledger.get("reevaluate_pass_id") or "")
+    if live_pass != "REEVALUATE_OPEN_RECORDS_PASS_V2":
+        return
+    if len(records) != 53:
+        return
+    if not status_path.is_file():
+        raise ReconciliationValidationError("REEVALUATE_V2_STATUS_MISSING")
+    from scripts.ops.system_atlas_v1.reevaluate_open_records_pass_v1_records import (
+        REEVALUATE_BOUND_SHA as REEVALUATE_V1_BOUND_SHA,
+        REEVALUATE_PASS_ID as REEVALUATE_V1_PASS_ID,
+    )
+    from scripts.ops.system_atlas_v1.reevaluate_open_records_pass_v2_records import (
+        CONTRADICTION_ID_052,
+        INCOMPATIBLE,
+        INPUT_PASS_ID,
+        OUT_OF_SCOPE_OPEN_IDS,
+        PREDECESSOR_BOUND_SHA,
+        PREDECESSOR_PASS_ID,
+        REJECT,
+        REEVALUATE_V2_BOUND_SHA,
+        REEVALUATE_V2_PASS_ID,
+        REMAINING_OPEN_IDS,
+        RESULTING_DISPOSITIONS,
+        TARGET_FINAL_IDS,
+        V2_WRITTEN_RECORD_IDS,
+    )
+    from scripts.ops.system_atlas_v1.evidence_resolution_pass_v1_records import OPEN_IDS
+    from scripts.ops.system_atlas_v1.adjudicate_pass_v1_records import RETAIN, RETAIN_IDS
+
+    status = _read_yaml(status_path)
+    if str(status.get("reevaluate_pass_id") or "") != REEVALUATE_V2_PASS_ID:
+        raise ReconciliationValidationError("REEVALUATE_V2_STATUS_PASS_ID")
+    if str(status.get("predecessor_pass_id") or "") != PREDECESSOR_PASS_ID:
+        raise ReconciliationValidationError("REEVALUATE_V2_STATUS_PREDECESSOR")
+    if str(status.get("predecessor_bound_sha") or "") != PREDECESSOR_BOUND_SHA:
+        raise ReconciliationValidationError("REEVALUATE_V2_STATUS_PREDECESSOR_SHA")
+    if str(status.get("input_pass_id") or "") != INPUT_PASS_ID:
+        raise ReconciliationValidationError("REEVALUATE_V2_STATUS_INPUT_PASS")
+    if str(status.get("bound_against_sha") or "") != REEVALUATE_V2_BOUND_SHA:
+        raise ReconciliationValidationError("REEVALUATE_V2_STATUS_BOUND_SHA")
+    if int(status.get("input_open_record_count", -1)) != 35:
+        raise ReconciliationValidationError("REEVALUATE_V2_INPUT_OPEN_COUNT")
+    if int(status.get("new_final_disposition_count", -1)) != 5:
+        raise ReconciliationValidationError("REEVALUATE_V2_FINALIZED_COUNT")
+    if int(status.get("remaining_insufficient_evidence_open_count", -1)) != 30:
+        raise ReconciliationValidationError("REEVALUATE_V2_REMAINING_OPEN_COUNT")
+    if int(status.get("identity_merges_performed", -1)) != 0:
+        raise ReconciliationValidationError("REEVALUATE_V2_IDENTITY_MERGES")
+    if status.get("reintegration_performed") is True:
+        raise ReconciliationValidationError("REEVALUATE_V2_REINTEGRATION")
+    if status.get("runtime_mutation_performed") is True:
+        raise ReconciliationValidationError("REEVALUATE_V2_RUNTIME")
+    if status.get("rcn_000052_remains_open") is not True:
+        raise ReconciliationValidationError("REEVALUATE_V2_052_NOT_MARKED_OPEN")
+    if str(ledger.get("reevaluate_v1_pass_id_frozen") or "") != REEVALUATE_V1_PASS_ID:
+        raise ReconciliationValidationError("REEVALUATE_V2_V1_PASS_FROZEN_MISSING")
+    if str(ledger.get("reevaluate_v1_bound_against_sha_frozen") or "") != REEVALUATE_V1_BOUND_SHA:
+        raise ReconciliationValidationError("REEVALUATE_V2_V1_SHA_FROZEN_MISSING")
+    if schema.get("reevaluate_v1_snapshots_are_frozen") is not True:
+        raise ReconciliationValidationError("REEVALUATE_V2_SCHEMA_V1_FROZEN_FLAG")
+
+    hashes = status.get("v1_frozen_file_sha256") or {}
+    if not isinstance(hashes, dict) or len(hashes) != 37:
+        raise ReconciliationValidationError("REEVALUATE_V2_V1_HASH_CATALOG")
+    for rel, expected in hashes.items():
+        path = root / str(rel)
+        if not path.is_file():
+            raise ReconciliationValidationError(f"REEVALUATE_V2_V1_FILE_MISSING:{rel}")
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        if digest != str(expected):
+            raise ReconciliationValidationError(f"REEVALUATE_V2_V1_HASH_MISMATCH:{rel}")
+
+    retain = 0
+    insufficient = 0
+    incompatible = 0
+    rejected = 0
+    ids: list[str] = []
+    for rec in records:
+        rid = str((rec.get("identity") or {}).get("reconciliation_id") or "")
+        ids.append(rid)
+        disp = str((rec.get("adjudication") or {}).get("disposition") or "")
+        if disp == RETAIN:
+            retain += 1
+            if rec.get("reevaluate_v2") is not None:
+                raise ReconciliationValidationError(f"REEVALUATE_V2_ON_RETAIN:{rid}")
+            if rid not in RETAIN_IDS:
+                raise ReconciliationValidationError(f"REEVALUATE_V2_RETAIN_ID_DRIFT:{rid}")
+        elif disp == "INSUFFICIENT_EVIDENCE":
+            insufficient += 1
+        elif disp == INCOMPATIBLE:
+            incompatible += 1
+        elif disp == REJECT:
+            rejected += 1
+        if rid in TARGET_FINAL_IDS:
+            expected = RESULTING_DISPOSITIONS[rid]
+            if disp != expected:
+                raise ReconciliationValidationError(
+                    f"REEVALUATE_V2_TARGET_DISPOSITION:{rid}:{disp}!={expected}"
+                )
+            if rec.get("reevaluate_v2") is None:
+                raise ReconciliationValidationError(f"REEVALUATE_V2_TARGET_BLOCK_MISSING:{rid}")
+        elif rid in OUT_OF_SCOPE_OPEN_IDS:
+            if disp != "INSUFFICIENT_EVIDENCE":
+                raise ReconciliationValidationError(f"REEVALUATE_V2_OUT_OF_SCOPE_MUTATED:{rid}")
+            if rec.get("reevaluate_v2") is not None:
+                raise ReconciliationValidationError(f"REEVALUATE_V2_OUT_OF_SCOPE_BLOCK:{rid}")
+        if rid == "RCN-000052":
+            if disp != "INSUFFICIENT_EVIDENCE":
+                raise ReconciliationValidationError("REEVALUATE_V2_052_FINALIZED")
+            v2 = rec.get("reevaluate_v2") or {}
+            if str(v2.get("contradiction_id") or "") != CONTRADICTION_ID_052:
+                raise ReconciliationValidationError("REEVALUATE_V2_052_CONTRADICTION")
+        for rel in (rec.get("relations") or {}).get("items") or []:
+            rtype = str(rel.get("relation_type") or "")
+            if rtype in {"MERGED_INTO", "RENAMED_TO", "SPLIT_INTO", "SAME_AS"}:
+                raise ReconciliationValidationError(f"REEVALUATE_V2_IDENTITY_FUSION:{rid}:{rtype}")
+    if len(ids) != 53 or len(set(ids)) != 53:
+        raise ReconciliationValidationError("REEVALUATE_V2_RECORD_ID_COUNT")
+    if retain != 18 or incompatible != 1 or rejected != 4 or insufficient != 30:
+        raise ReconciliationValidationError(
+            f"REEVALUATE_V2_COUNT_MISMATCH:{retain}:{incompatible}:{rejected}:{insufficient}"
+        )
+    live_open = tuple(
+        rec["identity"]["reconciliation_id"]
+        for rec in records
+        if str((rec.get("adjudication") or {}).get("disposition") or "") == "INSUFFICIENT_EVIDENCE"
+    )
+    if live_open != REMAINING_OPEN_IDS:
+        raise ReconciliationValidationError("REEVALUATE_V2_REMAINING_OPEN_SET")
+    if tuple(OPEN_IDS) != OPEN_IDS:
+        raise ReconciliationValidationError("REEVALUATE_V2_INPUT_OPEN_SET")
+    for rid in V2_WRITTEN_RECORD_IDS:
+        path = root / "reevaluate" / "records_v2" / f"{rid}.yaml"
+        if not path.is_file():
+            raise ReconciliationValidationError(f"REEVALUATE_V2_RECORD_MISSING:{rid}")
+    extra = list((root / "reevaluate" / "records_v2").glob("RCN-*.yaml"))
+    if len(extra) != 6:
+        raise ReconciliationValidationError("REEVALUATE_V2_EXTRA_RECORDS")
 
 
 def validate_reconciliation_tree_v1(*, repo_root: Path) -> list[str]:

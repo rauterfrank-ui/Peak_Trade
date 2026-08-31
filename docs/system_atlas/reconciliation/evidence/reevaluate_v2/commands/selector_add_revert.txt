@@ -1,0 +1,42 @@
+EPISTEMIC_CLASS=FORENSIC_RAW
+SELECTOR_ADD_SHA=75eee7bdc501ab4b0ec93812675cd074acb9e2ee
+SELECTOR_REVERT_SHA=afbae518b67eb1b789c835e219db37f5b15f308b
+75eee7bdc501ab4b0ec93812675cd074acb9e2ee feat(ops): add Master V2 minimal selector policy V1 (#6165)
+
+ scripts/ops/run_master_v2_minimal_selector_v1.py   |  76 ++++
+ src/ops/master_v2_minimal_selector_v1/__init__.py  |  48 +++
+ .../master_v2_minimal_selector_v1/constants_v1.py  | 128 +++++++
+ src/ops/master_v2_minimal_selector_v1/models_v1.py | 333 ++++++++++++++++++
+ .../persistence_v1.py                              | 113 ++++++
+ .../reason_codes_v1.py                             |  32 ++
+ .../runtime_binding_adapter_v1.py                  | 159 +++++++++
+ .../master_v2_minimal_selector_v1/selection_v1.py  | 204 +++++++++++
+ .../structural_eligibility_v1.py                   | 203 +++++++++++
+ tests/ops/test_master_v2_minimal_selector_v1.py    | 385 +++++++++++++++++++++
+ 10 files changed, 1681 insertions(+)
+afbae518b67eb1b789c835e219db37f5b15f308b Revert "feat(ops): add Master V2 minimal selector policy V1 (#6165)" (#6166)
+
+ scripts/ops/run_master_v2_minimal_selector_v1.py   |  76 ----
+ src/ops/master_v2_minimal_selector_v1/__init__.py  |  48 ---
+ .../master_v2_minimal_selector_v1/constants_v1.py  | 128 -------
+ src/ops/master_v2_minimal_selector_v1/models_v1.py | 333 ------------------
+ .../persistence_v1.py                              | 113 ------
+ .../reason_codes_v1.py                             |  32 --
+ .../runtime_binding_adapter_v1.py                  | 159 ---------
+ .../master_v2_minimal_selector_v1/selection_v1.py  | 204 -----------
+ .../structural_eligibility_v1.py                   | 203 -----------
+ tests/ops/test_master_v2_minimal_selector_v1.py    | 385 ---------------------
+ 10 files changed, 1681 deletions(-)
+CONSTANTS_HEAD=
+"""Owner-adjudicated Master V2 minimal selector constants (policy V1).
+
+OWNER_POLICY_VERSION=V1
+HISTORICAL_CLAIM=false
+
+This package is a new Owner policy surface. It does not rewrite Cap 2.1 GFU
+eligibility, Cap 2.2 ranking authority, Cap 2.3 stickiness/ranking selection,
+or Cap 2.4 ranking-gated binding.
+"""
+
+from __future__ import annotations
+

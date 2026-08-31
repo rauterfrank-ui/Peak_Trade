@@ -1,0 +1,100 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
+atlas_authority: NONE
+reconciliation_authority: NONE
+reevaluate_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V2
+input_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+predecessor_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+predecessor_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+identity_fusion_forbidden: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+understand_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+adjudication_snapshot_frozen: true
+evidence_resolution_snapshot_frozen: true
+reevaluate_v1_snapshot_frozen: true
+record_id: RCN-000044
+reevaluation_attempted: true
+adjudication_attempted: true
+disposition_burden_met: true
+disposition_candidate: REJECT_FOR_CURRENT_SYSTEM
+disposition: REJECT_FOR_CURRENT_SYSTEM
+lifecycle_state: DISPOSITION_DECIDED
+final_disposition_change_performed: true
+identity_merge_performed: false
+reintegration_candidate: false
+further_evidence_required: false
+positive_reason: Nested PeakTradeRepo backtest engine/results/stats blobs are one-line placeholders (engine 19aaa494='# Engine
+  placeholder'; results cd074be6='# Results placeholder'; stats 7dd32407='# Stats placeholder'). Export engine 0d9869d7 and
+  current src/backtest/engine.py a7a54e35 are blob-distinct. This nested snapshot is not a current-system capability to adopt.
+  README narrative is not used in place of blob content. Deletion is not the reject reason.
+contradiction_id: ''
+current_evidence_set:
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000044.yaml
+- docs/system_atlas/reconciliation/understand/records/RCN-000044.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+- src/backtest/engine.py
+historical_function: Nested archive backtest engine/results/stats snapshot whose recovered blobs are placeholders.
+historical_relations: Inner component of RCN-000014; not fused. Blob-distinct from export and current engine.
+current_system_analogues: Later src/backtest/engine.py is a distinct blob; not SAME_AS.
+identity_status: PLACEHOLDER_BLOB_DISTINCT_FROM_EXPORT_AND_CURRENT
+successor_status: NOT_PROVEN
+replacement_status: NOT_PROVEN
+current_value_status: NO_INDEPENDENT_CURRENT_CAPABILITY
+current_compatibility_status: REJECT_PLACEHOLDER_NOT_ADOPTABLE
+contradictions: []
+unresolved_gaps:
+- 'None required for REJECT: placeholder blob content is the positive reason.'
+evaluation_result: Burden for REJECT_FOR_CURRENT_SYSTEM is met from blob content, not from absence. Nested engine/results/stats
+  are placeholders. Export and current engines are blob-distinct. No identity merge with RCN-000014.
+alternatives_rejected:
+- 'RETAIN_AS_IS: CURRENTLY_ABSENT; placeholder is not a retained current artifact'
+- 'CAPABILITY_ALREADY_COVERED: later src/backtest not proven SAME_AS; namesake is not coverage'
+- 'ADAPT_AND_REINTEGRATE: placeholder has no independent current value to adapt'
+- 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: placeholder is not a historically valid implemented capability that conflicts with
+  current invariants'
+- 'REJECT because deleted: deletion is not a positive rejection reason'
+- 'Using PeakTradeRepo README as this record''s purpose: forbidden; blob content is authoritative'
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: Nested backtest engine/results/stats are placeholders and are rejected for the current system.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+  - src/backtest/engine.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: blob:19aaa49470aa766a9f813b672278fe2bcbdac3e3 = '# Engine placeholder'; blob:cd074be6849834125b0ad5e6e331dc7f2109a1d7
+    = '# Results placeholder'; blob:7dd32407016f955f2ab4707ae122323a091dab4a = '# Stats placeholder'.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: Export engine blob:0d9869d743175c85f3e0286fc45b3b17f9d3d695 and current src/backtest/engine.py blob:a7a54e35bbd81d2ed21ce14a7abbaebcf76de889
+    are distinct from nested placeholders.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+  - src/backtest/engine.py
+  used_as_fact: true
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000044.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000044.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000044.yaml
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000044.yaml
+- docs/system_atlas/reconciliation/reevaluate/records/RCN-000044.yaml
+- docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+- src/backtest/engine.py
+previous_adjudication:
+  pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+  bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  disposition: INSUFFICIENT_EVIDENCE
+  lifecycle_state: OPEN
+  adjudicate_pass_id_frozen: INTEGRATE_OR_DISPOSITION_PASS_V1
+  adjudicate_bound_sha_frozen: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+v1_snapshot_frozen: true

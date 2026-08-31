@@ -1,0 +1,13 @@
+EPISTEMIC_CLASS=FORENSIC_RAW
+SOURCE=https://github.com/rauterfrank-ui/Peak_Trade/pull/6166
+
+## Summary
+
+- Reverts squash commit `75eee7bdc501ab4b0ec93812675cd074acb9e2ee` (PR #6165) only.
+- Owner decision (A+1): Cap 2.3 remains exclusive selection authority. BTC remains excluded from the productive Master V2 / Double Play path.
+- Existing productive chain is unchanged: Cap 2.1 → Cap 2.2 → Cap 2.3 → Cap 2.4 → Wallclock → Master V2 → Double Play.
+- #6165 was isolated add-only (10 files), not runtime-consumed, and created no Cap-2.x / host importers.
+
+## Scope (exact)
+
+Deletes only the 10 files added by #6165. No Cap-2.x, Wallclock, Master V2, Double Play, BTC-policy, canonical-doc, config, or governance changes.

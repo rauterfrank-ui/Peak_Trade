@@ -85,19 +85,21 @@ def test_reevaluate_pass_v1_status_invariants() -> None:
 
 
 def test_open_set_is_exactly_the_35_and_retain_18_untouched() -> None:
+    index = yaml.safe_load((PASS_ROOT / "index.yaml").read_text(encoding="utf-8"))
+    assert int(index["row_count"]) == 35
+    assert tuple(row["record_id"] for row in index["rows"]) == OPEN_IDS
     payload = _payload()
     assert validate_reconciliation_v1(payload) == []
     ledger = payload["records"]["ledger.yaml"]
     assert len(ledger["records"]) == 53
-    open_ids = []
+    v1_open_ids = []
     retain = 0
     for rec in ledger["records"]:
-        adj = rec["adjudication"]
         rid = rec["identity"]["reconciliation_id"]
-        if adj["disposition"] == INSUFFICIENT:
-            assert adj["lifecycle_state"] == "OPEN"
-            open_ids.append(rid)
+        if rid in OPEN_IDS:
+            v1_open_ids.append(rid)
             block = rec.get("reevaluate") or {}
+            assert block.get("pass_id") == REEVALUATE_PASS_ID
             assert block.get("disposition_burden_met") is False
             assert block.get("disposition") == INSUFFICIENT
             assert block.get("lifecycle_state") == "OPEN"
@@ -108,13 +110,15 @@ def test_open_set_is_exactly_the_35_and_retain_18_untouched() -> None:
             assert rec["evidence_resolution"]["final_disposition_change_performed"] is False
         else:
             retain += 1
-            assert adj["disposition"] == RETAIN
+            assert rec["adjudication"]["disposition"] == RETAIN
             assert rec.get("reevaluate") is None
             assert rec.get("evidence_resolution") is None
             assert rid in RETAIN_IDS
-    assert tuple(open_ids) == OPEN_IDS
+    assert tuple(v1_open_ids) == OPEN_IDS
     assert retain == 18
-    assert ledger["reevaluate_pass_id"] == REEVALUATE_PASS_ID
+    assert ledger.get("reevaluate_v1_pass_id_frozen", ledger.get("reevaluate_pass_id")) == (
+        REEVALUATE_PASS_ID
+    )
     assert ledger["evidence_resolution_pass_id"] == EVIDENCE_RESOLUTION_PASS_ID
     assert ledger["adjudicate_bound_against_sha"] == ADJUDICATE_BOUND_SHA
 
