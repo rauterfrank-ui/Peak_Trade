@@ -55,6 +55,15 @@ def _minimal_record(*, rid: str = "RCN-000001", **adjudication: object) -> dict:
     if "purpose_understood" in adjudication:
         understanding["purpose_understood"] = bool(adjudication["purpose_understood"])
         adj.pop("purpose_understood", None)
+    if understanding["purpose_understood"] is True:
+        understanding["claims"] = [
+            {
+                "claim_class": "FORENSIC_RAW_FACT",
+                "text": "test-bound purpose evidence",
+                "evidence": ["tests/ops/test_reconciliation_ledger_v1.py"],
+                "used_as_fact": True,
+            }
+        ]
     return {
         "identity": {
             "reconciliation_id": rid,
@@ -183,6 +192,21 @@ def test_valid_reject_with_positive_reason() -> None:
         ],
     )
     assert validate_reconciliation_v1(payload) == []
+
+
+def test_purpose_understood_without_evidence_rejected() -> None:
+    payload = _with_records(
+        _payload(),
+        [
+            _minimal_record(
+                lifecycle_state="PURPOSE_UNDERSTOOD",
+                purpose_understood=True,
+            )
+        ],
+    )
+    payload["records"]["ledger.yaml"]["records"][0]["understanding"]["claims"] = []
+    with pytest.raises(ReconciliationValidationError, match="PURPOSE_UNDERSTOOD_WITHOUT_EVIDENCE"):
+        validate_reconciliation_v1(payload)
 
 
 def test_duplicate_id_rejected() -> None:

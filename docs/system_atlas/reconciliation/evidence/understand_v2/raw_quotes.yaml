@@ -1,0 +1,27 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V2
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+kind: FORENSIC_RAW_QUOTES
+interpretation_forbidden_in_this_file: true
+items:
+- id: Q-PTR-ENGINE
+  path: archive/PeakTradeRepo/src/backtest/engine.py
+  quote: '# Engine placeholder'
+- id: Q-EXPORT-ENGINE
+  path: archive/full_files_stand_02.12.2025/peak_trade_export/src/backtest/engine.py
+  quote: 'BacktestEngine: Generische Engine für Position-basierte Backtests.'
+- id: Q-RESET-BRANCH
+  path: evidence/market_dashboard_reset/pr_a/git_state.txt
+  quote: branch=fix/market-dashboard-architecture-reset-v1
+- id: Q-ZERO-ORDER
+  path: src/ops/pre_economic_zero_order_wallclock_arming_v1.py
+  quote: This module never places orders and never grants Economic/Shadow/Paper/Testnet/Live.

@@ -1,0 +1,73 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V2
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000036
+canonical_record_name: archive/full_files_stand_02.12.2025 export tree
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+evidence_exhausted: true
+historical_purpose: 'Dated archive/full_files_stand_02.12.2025 export: INSTALLATION.txt for peak_trade_phase1_phase2.tar.gz
+  unpack plus peak_trade_export/ containing a BacktestEngine with commission/slippage, MaCrossoverStrategy, and FixedFractionalPositionSizer
+  implementations (non-placeholder blobs).'
+historical_problem_statement: Hold a Phase 1+2 complete file export for installation/demo.
+historical_inputs:
+- peak_trade_phase1_phase2.tar.gz (named in INSTALLATION.txt)
+historical_outputs:
+- 20 archived files under archive/full_files_stand_02.12.2025/
+historical_dependencies: []
+historical_dependents:
+- Historical install/demo path
+historical_paths:
+- archive/full_files_stand_02.12.2025/INSTALLATION.txt
+- archive/full_files_stand_02.12.2025/peak_trade_export
+historical_commits:
+- 75722feea8c342c56ef93f796983467f33f98f25
+historical_blobs:
+- 0d9869d743175c85f3e0286fc45b3b17f9d3d695
+- c89dad61caad99c51bd2e219d66af5956ecf28a9
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000014
+  unresolved_target: ''
+  evidence:
+  - both are nested archive trees
+  epistemic_status: HYPOTHESIS
+open_questions:
+- Different tree and different blobs from archive/PeakTradeRepo; POSSIBLE_SAME_AS remains hypothesis.
+evidence_refs:
+- 75722feea8c342c56ef93f796983467f33f98f25^:archive/full_files_stand_02.12.2025/INSTALLATION.txt
+- 75722feea8c342c56ef93f796983467f33f98f25^:archive/full_files_stand_02.12.2025/peak_trade_export/src/backtest/engine.py
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'INSTALLATION.txt: PEAK_TRADE INSTALLATION Phase 1 + Phase 2 Complete; unpack peak_trade_phase1_phase2.tar.gz.'
+  evidence:
+  - 75722feea8c342c56ef93f796983467f33f98f25^:archive/full_files_stand_02.12.2025/INSTALLATION.txt
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Export BacktestEngine docstring: Position-basierte Backtests with commission and slippage.'
+  evidence:
+  - 75722feea8c342c56ef93f796983467f33f98f25^:archive/full_files_stand_02.12.2025/peak_trade_export/src/backtest/engine.py
+  - blob:0d9869d743175c85f3e0286fc45b3b17f9d3d695
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Export MaCrossoverStrategy: Long bei Fast > Slow; register_strategy.'
+  evidence:
+  - 75722feea8c342c56ef93f796983467f33f98f25^:archive/full_files_stand_02.12.2025/peak_trade_export/src/strategies/ma_crossover.py
+  - blob:c89dad61caad99c51bd2e219d66af5956ecf28a9
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- archive_peaktraderepo
+identity_merge_performed: false
+disposition_decided: false
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

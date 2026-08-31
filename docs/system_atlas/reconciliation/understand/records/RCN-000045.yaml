@@ -1,0 +1,64 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V2
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000045
+canonical_record_name: PeakTradeRepo nested position_sizer
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+evidence_exhausted: true
+historical_purpose: Nested archive/PeakTradeRepo/src/risk/position_sizer.py recovered blob is '# Position sizer placeholder'
+  (blob 439a60c8). Distinct from the 02.12.2025 export FixedFractionalPositionSizer module.
+historical_problem_statement: Placeholder nested position sizer inside PeakTradeRepo archive tree.
+historical_inputs: []
+historical_outputs:
+- Placeholder file only
+historical_dependencies:
+- RCN-000014
+historical_dependents: []
+historical_paths:
+- archive/PeakTradeRepo/src/risk/position_sizer.py
+historical_commits:
+- 75722feea8c342c56ef93f796983467f33f98f25
+historical_blobs:
+- 439a60c8176d2990ea8e199443283f2b3e0f9a33
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000014
+  unresolved_target: ''
+  evidence:
+  - files live inside the nested archive tree
+  epistemic_status: HYPOTHESIS
+- relation_type: DEPENDS_ON
+  target_id: RCN-000014
+  unresolved_target: ''
+  evidence:
+  - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/risk/position_sizer.py
+  epistemic_status: FORENSIC_RAW_FACT
+open_questions:
+- Identity versus later sizer modules or position_sizer_old_backup is unproven; no SAME_AS.
+evidence_refs:
+- 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/risk/position_sizer.py
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: Parent blob is '# Position sizer placeholder'.
+  evidence:
+  - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/risk/position_sizer.py
+  - blob:439a60c8176d2990ea8e199443283f2b3e0f9a33
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- archive_peaktraderepo
+- risk_execution
+identity_merge_performed: false
+disposition_decided: false
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

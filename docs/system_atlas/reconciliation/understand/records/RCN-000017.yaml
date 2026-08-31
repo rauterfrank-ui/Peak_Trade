@@ -1,0 +1,48 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000017
+canonical_record_name: Information Corpus Persistence Base
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: 'Non-authoritative information-corpus persistence base: registry and navigation only so a later agent
+  can continue without chat memory. Must not override Master Runbook or Map of Truth.'
+historical_problem_statement: Persist discovery/identity/provenance registration for corpus work.
+historical_inputs:
+- Repo locators and authorized external read-only surfaces (stated)
+historical_outputs:
+- Registry/navigation markdown under docs/forensics/persistence/
+historical_dependencies: []
+historical_dependents:
+- Later main agent continuation (stated)
+historical_paths:
+- docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+historical_commits: []
+historical_blobs: []
+relations: []
+open_questions: []
+evidence_refs:
+- docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: DOCUMENT_CLASS=NON_AUTHORITATIVE_INFORMATION_CORPUS_PERSISTENCE_BASE; DOCUMENT_ROLE=REGISTRY_AND_NAVIGATION_ONLY.
+  evidence:
+  - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- archives_legacy
+identity_merge_performed: false
+disposition_decided: false
+evidence_exhausted: true
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

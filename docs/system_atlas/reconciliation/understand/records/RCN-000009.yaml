@@ -1,0 +1,84 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000009
+canonical_record_name: Market dashboard product surface v1
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: 'Market Dashboard product surface v1 (PR-D): read-only presentation path source loader → page aggregate
+  → presenter → template for GET /market.'
+historical_problem_statement: Bind /market to a product presenter without producer I/O in the presenter.
+historical_inputs:
+- MarketDashboardPageSnapshotV1 from readmodels_v1
+historical_outputs:
+- MarketDashboardPageContextV1 / product template context
+historical_dependencies:
+- RCN-000010 readmodels_v1 (presenter imports)
+historical_dependents:
+- RCN-000023 market_surface.py GET /market handler (historical)
+historical_paths:
+- src/webui/market_dashboard_product_surface_v1
+historical_commits:
+- b5b8172806eae55d8639f964fcb2ad036337a0f3
+- 987e020378d1767fbd6fb1f0914d475f9a485f51
+- 1d61ec0deba49ca38a11f1a16ac53679a48608a0
+historical_blobs: []
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000001
+  unresolved_target: ''
+  evidence:
+  - dashboard generation hypothesis
+  epistemic_status: HYPOTHESIS
+- relation_type: IMPORTS
+  target_id: RCN-000010
+  unresolved_target: ''
+  evidence:
+  - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_dashboard_product_surface_v1/presenter.py
+  epistemic_status: FORENSIC_RAW_FACT
+open_questions:
+- Not proven SAME_AS Landscape V2 (RCN-000001); deletion is not absorption proof.
+evidence_refs:
+- 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_dashboard_product_surface_v1/__init__.py
+- 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_dashboard_product_surface_v1/presenter.py
+- evidence/market_dashboard_deletion/deletion_manifest.txt
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Parent blob of deletion commit: product surface v1 read-only presentation path source loader → page aggregate → presenter
+    → template.'
+  evidence:
+  - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_dashboard_product_surface_v1/__init__.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'presenter.py: Maps MarketDashboardPageSnapshotV1 to a deterministic template view model. No producer I/O, no domain
+    imports.'
+  evidence:
+  - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_dashboard_product_surface_v1/presenter.py
+  used_as_fact: true
+- claim_class: HISTORICAL_FACT
+  text: 'Deleted on origin/main by commit b5b81728 (delete(webui): remove market dashboard product stack).'
+  evidence:
+  - b5b8172806eae55d8639f964fcb2ad036337a0f3
+  used_as_fact: true
+- claim_class: HISTORICAL_FACT
+  text: 'Package added 2026-07-17 commit 1d61ec0d PR #5287.'
+  evidence:
+  - 1d61ec0deba49ca38a11f1a16ac53679a48608a0
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- landscape_dashboard
+identity_merge_performed: false
+disposition_decided: false
+evidence_exhausted: true
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

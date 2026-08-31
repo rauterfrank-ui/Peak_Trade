@@ -12,10 +12,9 @@ from scripts.ops.system_atlas_v1.reconciliation_v1 import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-ALLOWED_LIFECYCLE = frozenset({"DISCOVERED", "EVIDENCE_BOUND"})
+ALLOWED_LIFECYCLE = frozenset({"DISCOVERED", "EVIDENCE_BOUND", "PURPOSE_UNDERSTOOD"})
 FORBIDDEN_LIFECYCLE = frozenset(
     {
-        "PURPOSE_UNDERSTOOD",
         "CURRENT_SYSTEM_COMPARED",
         "ADJUDICATED",
         "DISPOSITION_DECIDED",
@@ -54,24 +53,36 @@ def test_census_pass_v1_lifecycle_and_epistemic_bounds() -> None:
         lifecycle = str(adjudication.get("lifecycle_state") or "")
         assert lifecycle in ALLOWED_LIFECYCLE
         assert lifecycle not in FORBIDDEN_LIFECYCLE
-        assert understanding.get("purpose_understood") is False
-        assert str(understanding.get("purpose_statement") or "") == ""
+        if understanding.get("purpose_understood") is True:
+            assert str(understanding.get("purpose_statement") or "").strip()
+            claims = list(understanding.get("claims") or [])
+            fact_hits = [
+                claim
+                for claim in claims
+                if isinstance(claim, dict)
+                and str(claim.get("claim_class") or "")
+                in {"FORENSIC_RAW_FACT", "HISTORICAL_FACT", "CANONICAL_CURRENT_FACT"}
+                and list(claim.get("evidence") or [])
+            ]
+            assert fact_hits, rec["identity"]["reconciliation_id"]
+            purpose_true += 1
+            assert lifecycle == "PURPOSE_UNDERSTOOD"
+        else:
+            assert lifecycle in {"DISCOVERED", "EVIDENCE_BOUND"}
         assert str(adjudication.get("disposition") or "") == ""
         assert integration.get("reintegration_required") is False
         assert str(comparison.get("current_equivalent") or "") == ""
         assert list(comparison.get("current_paths") or []) == []
-        if understanding.get("purpose_understood") is True:
-            purpose_true += 1
         if str(comparison.get("capability_overlap") or ""):
             compared += 1
         if lifecycle in {"ADJUDICATED", "DISPOSITION_DECIDED"}:
             adjudicated += 1
         if str(adjudication.get("disposition") or ""):
             dispositioned += 1
-    assert purpose_true == 0
     assert compared == 0
     assert adjudicated == 0
     assert dispositioned == 0
+    assert purpose_true >= 0
 
 
 def test_census_pass_v1_artifacts_and_anchors() -> None:
@@ -268,10 +279,11 @@ def test_census_pass_v3_candidates_have_blob_or_path_provenance() -> None:
     ids = {rec["identity"]["reconciliation_id"] for rec in ledger["records"]}
     assert "RCN-000053" in ids
     for rec in ledger["records"]:
-        understanding = rec["understanding"]
-        assert understanding["purpose_understood"] is False
         assert rec["adjudication"]["disposition"] == ""
         assert rec["current_comparison"]["current_equivalent"] == ""
+        if rec["understanding"].get("purpose_understood") is True:
+            assert str(rec["understanding"].get("purpose_statement") or "").strip()
+            assert rec["adjudication"]["lifecycle_state"] == "PURPOSE_UNDERSTOOD"
 
 
 def test_census_pass_v3_close_requires_seventeen_proven_surfaces() -> None:

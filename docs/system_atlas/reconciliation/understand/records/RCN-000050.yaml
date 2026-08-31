@@ -1,0 +1,74 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V2
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000050
+canonical_record_name: step29m strategy/research family
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+evidence_exhausted: true
+historical_purpose: 'STEP29M candidate-specific offline v2 research family: three versioned strategy modules (bollinger_bands,
+  momentum_1h, trend_following) plus research-scope implementation v0. Each v2 keeps parent v1 as immutable negative baseline;
+  no economic evaluation, no runtime authority, no policy relaxation. Grouping is path-prefix plus shared research owner;
+  the three STRATEGY_IDs remain distinct.'
+historical_problem_statement: Diagnose named terminal failure classes offline without forcing trades or relaxing gates.
+historical_inputs:
+- OHLCV DataFrame; parent v1 strategy owners
+historical_outputs:
+- v2 strategy signals + eligibility/guard traces; research-scope runner
+historical_dependencies:
+- src.strategies.bollinger / momentum / trend_following v1 owners
+historical_dependents:
+- STEP29M research-scope implementation v0
+historical_paths:
+- src/strategies/step29m_bollinger_bands_v2.py
+- src/strategies/step29m_momentum_1h_v2.py
+- src/strategies/step29m_trend_following_v2.py
+- src/research/step29m_candidate_specific_research_scope_implementation_v0.py
+historical_commits:
+- 34574e1392af7bbfab20ce87854ee47bf5fbbe76
+historical_blobs: []
+relations: []
+open_questions:
+- Ledger record groups three strategies by path prefix; they are not fused into one identity.
+evidence_refs:
+- 34574e1392af7bbfab20ce87854ee47bf5fbbe76:src/strategies/step29m_bollinger_bands_v2.py
+- 34574e1392af7bbfab20ce87854ee47bf5fbbe76:src/strategies/step29m_momentum_1h_v2.py
+- 34574e1392af7bbfab20ce87854ee47bf5fbbe76:src/strategies/step29m_trend_following_v2.py
+- cef8881d417752dfea044c44b0014bf59190545f:src/research/step29m_candidate_specific_research_scope_implementation_v0.py
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'step29m_bollinger_bands_v2.py: offline-only diagnostic-first; no forcing trades or relaxing policy gates.'
+  evidence:
+  - 34574e1392af7bbfab20ce87854ee47bf5fbbe76:src/strategies/step29m_bollinger_bands_v2.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'step29m_momentum_1h_v2.py: offline-only; SPARSE_SAMPLE_SINGLE_TRADE_DOMINANCE guards.'
+  evidence:
+  - 34574e1392af7bbfab20ce87854ee47bf5fbbe76:src/strategies/step29m_momentum_1h_v2.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'step29m_trend_following_v2.py: offline-only; preserves v1 entry semantics.'
+  evidence:
+  - 34574e1392af7bbfab20ce87854ee47bf5fbbe76:src/strategies/step29m_trend_following_v2.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'research scope v0: No economic evaluation, no runtime authority, no policy relaxation.'
+  evidence:
+  - cef8881d417752dfea044c44b0014bf59190545f:src/research/step29m_candidate_specific_research_scope_implementation_v0.py
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- risk_execution
+identity_merge_performed: false
+disposition_decided: false
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

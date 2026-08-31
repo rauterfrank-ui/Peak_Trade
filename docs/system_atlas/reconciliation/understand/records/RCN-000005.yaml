@@ -1,0 +1,94 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000005
+canonical_record_name: Double Play composition stack on Master V2
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: Pure composition of Double Play transition, survival envelope, and suitability decisions into a data-only
+  eligibility/blocked/observe status. Not trading permission. No I/O, no execution, no registry, no live authority.
+historical_problem_statement: Combine Double Play model outputs for one composition step without issuing execution or live
+  go.
+historical_inputs:
+- TransitionDecision + resulting SideState
+- SurvivalEnvelopeDecision
+- SuitabilityProjectionDecision
+- RequestedSide
+- optional capital-slot ratchet/release decisions
+historical_outputs:
+- DoublePlayCompositionDecision / DoublePlayCompositionStatus
+historical_dependencies:
+- RCN-000004 modules double_play_state/survival/suitability/capital_slot
+historical_dependents:
+- RCN-000021 build_dashboard_display_snapshot / compose_double_play_decision
+historical_paths:
+- src/trading/master_v2/double_play_composition.py
+- src/trading/master_v2/double_play_survival.py
+- src/trading/master_v2/double_play_capital_slot.py
+- src/trading/master_v2/double_play_core_wiring_v1.py
+historical_commits:
+- f78e1c9de767346e52ae7f35df7681141d7ed645
+- 13a38b0b8fd814b9018ad25831aa3f879a81722e
+historical_blobs: []
+relations:
+- relation_type: DEPENDS_ON
+  target_id: RCN-000004
+  unresolved_target: ''
+  evidence:
+  - files live under src/trading/master_v2/
+  epistemic_status: FORENSIC_RAW_FACT
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000006
+  unresolved_target: ''
+  evidence:
+  - shared Double Play name; different packages and dates
+  epistemic_status: HYPOTHESIS
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000008
+  unresolved_target: ''
+  evidence:
+  - forensic extract labeled double_play
+  epistemic_status: HYPOTHESIS
+- relation_type: IMPORTS
+  target_id: RCN-000004
+  unresolved_target: ''
+  evidence:
+  - src/trading/master_v2/double_play_composition.py
+  epistemic_status: FORENSIC_RAW_FACT
+open_questions:
+- ops.double_play (RCN-000006) shares the Double Play name but is a quarantined projection path; POSSIBLE_SAME_AS remains
+  hypothesis.
+evidence_refs:
+- src/trading/master_v2/double_play_composition.py
+- src/trading/master_v2/double_play_state.py
+- src/trading/master_v2/double_play_survival.py
+- src/trading/master_v2/double_play_capital_slot.py
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'double_play_composition.py module docstring: Pure composition; data-only eligibility/blocked/observe; not trading
+    permission.'
+  evidence:
+  - src/trading/master_v2/double_play_composition.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'double_play_state.py: Pure, dependency-light state model; no I/O, no exchange, no risk layer wiring.'
+  evidence:
+  - src/trading/master_v2/double_play_state.py
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- master_v2_double_play
+identity_merge_performed: false
+disposition_decided: false
+evidence_exhausted: true
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

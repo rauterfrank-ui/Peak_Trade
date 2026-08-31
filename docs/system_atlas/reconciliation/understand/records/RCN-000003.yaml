@@ -1,0 +1,62 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000003
+canonical_record_name: Runbooks Landscape 2026-ready index
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: Central entry index of Peak_Trade runbooks and operator guides (execution, live-risk, alerts, governance,
+  R&D). The word Landscape here names a runbook catalog, not the Market Dashboard Landscape V2 package.
+historical_problem_statement: Give operators/on-call/risk owners a single table to find the matching runbook in an incident
+  or before critical actions.
+historical_inputs:
+- Paths of runbooks under docs/ and docs/runbooks/
+historical_outputs:
+- Markdown index table with scope/cluster/layer/2026-ready status
+historical_dependencies: []
+historical_dependents:
+- Operators, on-call, risk owners (stated audience)
+historical_paths:
+- docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md
+historical_commits:
+- 40c057a5fe0795a3a8595e9a873628c05d3ac945
+historical_blobs: []
+relations: []
+open_questions:
+- Shared token Landscape is a naming collision, not an identity proof.
+evidence_refs:
+- docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Title: Peak_Trade – Runbooks Landscape (2026-ready). Central entry for all runbooks and operator guides.'
+  evidence:
+  - docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md
+  used_as_fact: true
+- claim_class: HISTORICAL_FACT
+  text: Added 2025-12-09 as Runbooks Landscape overview.
+  evidence:
+  - 40c057a5fe0795a3a8595e9a873628c05d3ac945
+  used_as_fact: true
+- claim_class: OPEN_QUESTION
+  text: No evidence this index is the same component as Market Dashboard Landscape V2; records remain unfused.
+  evidence:
+  - docs/system_atlas/reconciliation/ledger.yaml
+  used_as_fact: false
+epistemic_class: HISTORICAL_FACT
+clusters:
+- landscape_dashboard
+- governance_gates
+identity_merge_performed: false
+disposition_decided: false
+evidence_exhausted: true
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

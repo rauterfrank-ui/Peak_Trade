@@ -1,0 +1,50 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V2
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000048
+canonical_record_name: docs/20_phases historical path family
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+evidence_exhausted: true
+historical_purpose: 'docs/20_phases path family: numbered phase markdowns (e.g. Phase 16A ExecutionPipeline core package:
+  orders from strategies through Environment/Safety to Executor + RunLogger; LIVE blocked in Phase 16A).'
+historical_problem_statement: Document sequential product/engineering phases as markdown files.
+historical_inputs: []
+historical_outputs:
+- Phase_*.md files under docs/20_phases
+historical_dependencies: []
+historical_dependents:
+- Historical phase navigation
+historical_paths:
+- docs/20_phases
+historical_commits:
+- 42c3f443d84c4f27110083c86d0c99db61a022ed
+historical_blobs: []
+relations: []
+open_questions:
+- Path move versus later runbook locations is unproven identity.
+evidence_refs:
+- 42c3f443d84c4f27110083c86d0c99db61a022ed:docs/20_phases/PHASE_16A_EXECUTION_PIPELINE.md
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'PHASE_16A_EXECUTION_PIPELINE.md: ExecutionPipeline takes orders from strategies/portfolios through Environment &
+    Safety to Executor; ohne Live-Support; LIVE hart blockiert.'
+  evidence:
+  - 42c3f443d84c4f27110083c86d0c99db61a022ed:docs/20_phases/PHASE_16A_EXECUTION_PIPELINE.md
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- governance_gates
+identity_merge_performed: false
+disposition_decided: false
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

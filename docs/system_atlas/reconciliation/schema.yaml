@@ -1,124 +1,138 @@
 # ATLAS_AUTHORITY=NONE
 # RECONCILIATION_AUTHORITY=NONE
 schema_version: peak_trade.reconciliation_governance.v1
-description: >
-  Field catalog for ledger records. Empty ledger remains schema-valid.
-  Categories remain epistemically separate. Census artifact files listed
-  below are evidence, not a second authority.
+description: 'Field catalog for ledger records. Empty ledger remains schema-valid. Categories remain epistemically separate.
+  Census artifact files listed below are evidence, not a second authority.
+
+  '
 identity:
-  - reconciliation_id
-  - canonical_record_name
-  - historical_names
-  - aliases
+- reconciliation_id
+- canonical_record_name
+- historical_names
+- aliases
 discovery:
-  - discovery_status
-  - current_presence
-  - discovered_from
-  - discovery_evidence
-  - first_bound_ref
-  - historical_paths
-  - historical_refs
-  - historical_commits
+- discovery_status
+- current_presence
+- discovered_from
+- discovery_evidence
+- first_bound_ref
+- historical_paths
+- historical_refs
+- historical_commits
 understanding:
-  - purpose_understood
-  - purpose_statement
-  - historical_problem_statement
-  - inputs
-  - outputs
-  - dependencies
-  - consumers
-  - authority_role
-  - safety_role
-  - runtime_role
-  - invariants
+- purpose_understood
+- purpose_statement
+- historical_problem_statement
+- inputs
+- outputs
+- dependencies
+- consumers
+- authority_role
+- safety_role
+- runtime_role
+- invariants
+- evidence_exhausted
 relations:
-  - relation_type
-  - target_id
-  - unresolved_target
-  - evidence
-  - epistemic_status
+- relation_type
+- target_id
+- unresolved_target
+- evidence
+- epistemic_status
 current_comparison:
-  - current_equivalent
-  - current_paths
-  - capability_overlap
-  - semantic_compatibility
-  - authority_compatibility
-  - safety_compatibility
-  - runtime_compatibility
-  - conflicts
-  - gaps
+- current_equivalent
+- current_paths
+- capability_overlap
+- semantic_compatibility
+- authority_compatibility
+- safety_compatibility
+- runtime_compatibility
+- conflicts
+- gaps
 adjudication:
-  - lifecycle_state
-  - disposition
-  - positive_reason
-  - evidence_refs
-  - contradictions
-  - unresolved_questions
+- lifecycle_state
+- disposition
+- positive_reason
+- evidence_refs
+- contradictions
+- unresolved_questions
 integration:
-  - reintegration_required
-  - adaptation_required
-  - implementation_status
-  - implementation_refs
+- reintegration_required
+- adaptation_required
+- implementation_status
+- implementation_refs
 audit:
-  - created_from_evidence
-  - last_adjudicated_against_sha
-  - notes
+- created_from_evidence
+- last_adjudicated_against_sha
+- notes
 allowed_current_presence:
-  - CURRENTLY_PRESENT
-  - CURRENTLY_ABSENT
-  - CURRENTLY_PARTIAL
-  - CURRENT_IDENTITY_UNRESOLVED
+- CURRENTLY_PRESENT
+- CURRENTLY_ABSENT
+- CURRENTLY_PARTIAL
+- CURRENT_IDENTITY_UNRESOLVED
 allowed_relation_types:
-  - POSSIBLE_SAME_AS
-  - DEPENDS_ON
-  - SUPERSEDES
-  - REPLACED_BY
-  - CONSUMED_BY
-  - IMPLEMENTS
-  - CONFLICTS_WITH
-  - COVERED_BY
-  - PRODUCES_FOR
-  - CONSUMES_FROM
-  - WRAPS
-  - ORCHESTRATES
-  - GATES
-  - SELECTS
-  - BINDS
-  - CALLS
-  - DERIVES_FROM
-  - RENAMED_TO
-  - PATH_MOVED_OR_RENAMED_TO
-  - SPLIT_INTO
-  - MERGED_INTO
-  - SAME_BLOB_AS
-  - REFERENCES
-  - IMPORTS
-  - TESTS
-  - DOCUMENTS
-  - ARCHIVES
+- POSSIBLE_SAME_AS
+- DEPENDS_ON
+- SUPERSEDES
+- REPLACED_BY
+- CONSUMED_BY
+- IMPLEMENTS
+- CONFLICTS_WITH
+- COVERED_BY
+- PRODUCES_FOR
+- CONSUMES_FROM
+- WRAPS
+- ORCHESTRATES
+- GATES
+- SELECTS
+- BINDS
+- CALLS
+- DERIVES_FROM
+- RENAMED_TO
+- PATH_MOVED_OR_RENAMED_TO
+- SPLIT_INTO
+- MERGED_INTO
+- SAME_BLOB_AS
+- REFERENCES
+- IMPORTS
+- TESTS
+- DOCUMENTS
+- ARCHIVES
+- IMPORTED_BY
+- CALLED_BY
+- TESTED_BY
+- CONFIGURES
+- REGISTERED_AS
+- MOVED_TO
+understand_artifact_files:
+- understand/pass_v1_status.yaml
+- understand/index.yaml
+- understand/clusters.yaml
+- evidence/understand_v1/raw_quotes.yaml
+- understand/pass_v2_status.yaml
+- evidence/understand_v2/raw_quotes.yaml
 census_artifact_files:
-  - search_surfaces.yaml
-  - coverage.yaml
-  - discovery_candidates.yaml
-  - relations.yaml
-  - inventories/ref_inventory.yaml
-  - inventories/unique_trees.yaml
-  - inventories/tree_content_census.yaml
-  - inventories/historical_path_families.yaml
-  - inventories/reachable_object_paths.yaml
-  - inventories/inner_archive_peaktraderepo.yaml
-  - inventories/corpus_enumeration.yaml
-  - inventories/import_symbol_census.yaml
-  - inventories/terminology_census.yaml
-  - inventories/blob_scan_decision.yaml
-  - inventories/summary.yaml
-  - inventories/pass_v3_baseline.yaml
-  - inventories/git_universe_v3.yaml
-  - inventories/blob_scope_v3.yaml
-  - inventories/historical_symbol_census_v3.yaml
-  - inventories/historical_terminology_census_v3.yaml
-  - inventories/commit_messages_v3.yaml
-  - inventories/pass_v3_summary.yaml
-  - inventories/candidate_class_adjudication_v3.yaml
+- search_surfaces.yaml
+- coverage.yaml
+- discovery_candidates.yaml
+- relations.yaml
+- inventories/ref_inventory.yaml
+- inventories/unique_trees.yaml
+- inventories/tree_content_census.yaml
+- inventories/historical_path_families.yaml
+- inventories/reachable_object_paths.yaml
+- inventories/inner_archive_peaktraderepo.yaml
+- inventories/corpus_enumeration.yaml
+- inventories/import_symbol_census.yaml
+- inventories/terminology_census.yaml
+- inventories/blob_scan_decision.yaml
+- inventories/summary.yaml
+- inventories/pass_v3_baseline.yaml
+- inventories/git_universe_v3.yaml
+- inventories/blob_scope_v3.yaml
+- inventories/historical_symbol_census_v3.yaml
+- inventories/historical_terminology_census_v3.yaml
+- inventories/commit_messages_v3.yaml
+- inventories/pass_v3_summary.yaml
+- inventories/candidate_class_adjudication_v3.yaml
 current_presence_is_not_disposition: true
 current_presence_is_not_current_system_comparison: true

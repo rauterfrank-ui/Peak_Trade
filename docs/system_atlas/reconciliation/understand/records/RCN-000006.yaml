@@ -1,0 +1,71 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000006
+canonical_record_name: ops.double_play specialists scaffold
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: ops.double_play.evaluate_double_play is a SAFE DEFAULT OFF projection/diagnostic consumer. Competing SwitchGate
+  authority is fail-closed disabled. Canonical Bull/Bear switch remains trading.master_v2.double_play_state.transition_state.
+historical_problem_statement: Keep a legacy ops Double Play callable from escalating to compute owner or writing SideState.
+historical_inputs:
+- context dict including switch_gate state projection and flags
+historical_outputs:
+- DoublePlayDecision frozen projection (enabled, active_specialist, reasons)
+historical_dependencies:
+- RCN-000004 quarantine/authority-boundary modules
+historical_dependents: []
+historical_paths:
+- src/ops/double_play/__init__.py
+- src/ops/double_play/specialists.py
+historical_commits:
+- a3dd22619a66bd7fe859c4cd3d2e24fa16513e75
+historical_blobs: []
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000005
+  unresolved_target: ''
+  evidence:
+  - shared Double Play name
+  epistemic_status: HYPOTHESIS
+- relation_type: IMPORTS
+  target_id: RCN-000004
+  unresolved_target: ''
+  evidence:
+  - src/ops/double_play/specialists.py
+  epistemic_status: FORENSIC_RAW_FACT
+open_questions:
+- Whether this scaffold historically computed switches before quarantine is not reconstructed in this pass; current blob is
+  projection-only.
+evidence_refs:
+- src/ops/double_play/__init__.py
+- src/ops/double_play/specialists.py
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'evaluate_double_play docstring: SAFE DEFAULT OFF; projection/diagnostic consumer only; never authorizes Bull/Bear
+    switch.'
+  evidence:
+  - src/ops/double_play/specialists.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: Canonical Bull/Bear / Switch authority remains trading.master_v2.double_play_state.transition_state.
+  evidence:
+  - src/ops/double_play/specialists.py
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- master_v2_double_play
+identity_merge_performed: false
+disposition_decided: false
+evidence_exhausted: true
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

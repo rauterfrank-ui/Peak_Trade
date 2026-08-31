@@ -30,6 +30,8 @@ coverage.yaml          per-surface coverage matrix
 discovery_candidates.yaml  hits below ledger threshold
 relations.yaml         copied relation index
 inventories/           pass v2/v3 reproducible search inventories
+understand/            UNDERSTAND pass v2 historical evidence binding
+evidence/understand_v1/ raw quotes separated from interpretation
 ```
 
 Governance persist baseline: `90dec7208554deb5d2af0a2021bb7bceaf5d6662`.
@@ -170,8 +172,39 @@ relevant text blobs, and exhausted bound commit subjects and bodies.
 `git rev-list --all` is not the bound universe. Extra local stash/review/tmp
 refs and LOSS_REGISTER-derived unreachable blobs remain documented out of
 scope. Atlas `COMPLETE` flags and a stale Atlas `census_meta` SHA are not
-authority for this census. No UNDERSTAND, EVALUATE, disposition, or
-reintegration.
+authority for this census. No EVALUATE, disposition, or reintegration in that census closeout.
+
+## UNDERSTAND pass v2 state (current)
+
+```text
+UNDERSTAND_PASS_ID=UNDERSTAND_PASS_V2
+UNDERSTAND_BOUND_AGAINST_SHA=a70bed0dc1586bedb58642fe7f6c6fef760b2478
+CENSUS_CLOSED=true
+CURRENT_SYSTEM_COMPARED_RECORD_COUNT=0
+ADJUDICATED_RECORD_COUNT=0
+DISPOSITION_DECIDED_RECORD_COUNT=0
+IDENTITY_MERGES_PERFORMED=0
+```
+
+UNDERSTAND pass v2 exhausted remaining OPEN/PARTIAL records against
+repository-internal historical evidence. `evidence_exhausted=true` may coexist
+with PARTIAL/OPEN when the bound evidence does not carry the missing statement.
+Clusters under `understand&#47;clusters.yaml` are navigation only, not identity
+groups. `POSSIBLE_SAME_AS` remains hypothesis. Archive presence is not obsolete.
+Historical revert is not disposition. No EVALUATE, current-system comparison,
+disposition, reintegration, or identity fusion.
+
+## UNDERSTAND pass v1 state (historical)
+
+```text
+UNDERSTAND_PASS_ID=UNDERSTAND_PASS_V1
+UNDERSTAND_BOUND_AGAINST_SHA=a70bed0dc1586bedb58642fe7f6c6fef760b2478
+```
+
+UNDERSTAND binds historical purpose/inputs/outputs/relations from repository
+evidence. Purpose requires a non-empty statement plus at least one fact-class
+claim with evidence. Unproven purpose stays `PURPOSE_UNDERSTOOD=false` with
+open questions.
 
 Inventories live under `docs/system_atlas/reconciliation/inventories/`.
 
@@ -202,7 +235,7 @@ It is no longer the live tree state after census pass v1.
 ## Validation
 
 ```text
-./scripts/pt -m pytest -q tests/ops/test_reconciliation_ledger_v1.py tests/ops/test_reconciliation_census_pass_v1.py tests/ops/test_system_atlas_v1.py
+./scripts/pt -m pytest -q tests/ops/test_reconciliation_ledger_v1.py tests/ops/test_reconciliation_census_pass_v1.py tests/ops/test_reconciliation_understand_pass_v1.py tests/ops/test_reconciliation_understand_pass_v2.py tests/ops/test_system_atlas_v1.py
 ./scripts/pt scripts/ops/validate_system_atlas_v1.py
 ```
 
