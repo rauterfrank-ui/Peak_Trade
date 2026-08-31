@@ -35,7 +35,7 @@ from src.meta.learning_loop.manifest_bridge_v1 import (
 )
 from src.meta.learning_loop.models import ConfigPatch, PatchStatus
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 # Owner-listed currently proven narrow ConfigPatch promotion path only.
 PROVEN_CONFIGPATCH_PATH: tuple[str, ...] = (
