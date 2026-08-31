@@ -32,6 +32,7 @@ relations.yaml         copied relation index
 inventories/           pass v2/v3 reproducible search inventories
 understand/            UNDERSTAND pass v2 historical evidence binding
 evaluate/              EVALUATE_INDIVIDUALLY pass v1 current-system comparison
+adjudicate/            INTEGRATE_OR_DISPOSITION pass v1 adjudication
 evidence/understand_v1/ raw quotes separated from interpretation
 ```
 
@@ -175,7 +176,39 @@ refs and LOSS_REGISTER-derived unreachable blobs remain documented out of
 scope. Atlas `COMPLETE` flags and a stale Atlas `census_meta` SHA are not
 authority for this census. No EVALUATE, disposition, or reintegration in that census closeout.
 
-## EVALUATE_INDIVIDUALLY pass v1 state (current)
+## INTEGRATE_OR_DISPOSITION pass v1 state (current)
+
+```text
+PASS_ID=INTEGRATE_OR_DISPOSITION_PASS_V1
+ADJUDICATE_BOUND_AGAINST_SHA=64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+CENSUS_CLOSED=true
+LEDGER_RECORD_COUNT=53
+ADJUDICATION_ATTEMPTED_RECORD_COUNT=53
+DISPOSITION_DECIDED_RECORD_COUNT=18
+INSUFFICIENT_EVIDENCE_COUNT=35
+RETAIN_AS_IS_COUNT=18
+ADAPT_AND_REINTEGRATE_COUNT=0
+CAPABILITY_ALREADY_COVERED_COUNT=0
+HISTORICALLY_VALID_BUT_INCOMPATIBLE_COUNT=0
+REJECT_FOR_CURRENT_SYSTEM_COUNT=0
+IDENTITY_MERGES_PERFORMED=0
+REINTEGRATION_PERFORMED=false
+```
+
+Each of the 53 ledger records was adjudicated against the persisted
+EVALUATE_INDIVIDUALLY_PASS_V1 comparison and UNDERSTAND evidence.
+`INSUFFICIENT_EVIDENCE` remains `OPEN` and is not a rejection.
+`ADAPT_AND_REINTEGRATE` would be a candidate label only; this pass assigned
+none. Reintegration, identity fusion, runtime mutation, commit, push, and PR
+are not authorized by this persist. UNDERSTAND snapshots under `understand&#47;`
+and EVALUATE snapshots under `evaluate&#47;` remain phase-frozen. Census
+`current_presence` is not rewritten.
+
+Repository taxonomy names (obeyed; not renamed):
+`CAPABILITY_ALREADY_COVERED` (not `ALREADY_COVERED`);
+`INSUFFICIENT_EVIDENCE` (not `OPEN_INSUFFICIENT_EVIDENCE`).
+
+## EVALUATE_INDIVIDUALLY pass v1 state (historical)
 
 ```text
 EVALUATE_PASS_ID=EVALUATE_INDIVIDUALLY_PASS_V1
@@ -193,7 +226,9 @@ Each of the 53 ledger records was compared one-by-one to `origin&#47;main` at
 the bound SHA. Historical purpose and current fit remain separate questions.
 Current absence is not irrelevance. A later path with a similar name is not a
 proven replacement. UNDERSTAND snapshots under `understand&#47;` stay unevaluated.
-No disposition, reintegration, identity fusion, runtime mutation, or merge.
+No disposition, reintegration, identity fusion, runtime mutation, or merge in
+that EVALUATE closeout. Live ledger later advanced under INTEGRATE_OR_DISPOSITION
+pass v1; the `evaluate&#47;` snapshot tree remains comparison-only.
 
 ## UNDERSTAND pass v2 state (historical)
 
@@ -256,7 +291,7 @@ It is no longer the live tree state after census pass v1.
 ## Validation
 
 ```text
-./scripts/pt -m pytest -q tests/ops/test_reconciliation_ledger_v1.py tests/ops/test_reconciliation_census_pass_v1.py tests/ops/test_reconciliation_understand_pass_v1.py tests/ops/test_reconciliation_understand_pass_v2.py tests/ops/test_reconciliation_evaluate_pass_v1.py tests/ops/test_system_atlas_v1.py
+./scripts/pt -m pytest -q tests/ops/test_reconciliation_ledger_v1.py tests/ops/test_reconciliation_census_pass_v1.py tests/ops/test_reconciliation_understand_pass_v1.py tests/ops/test_reconciliation_understand_pass_v2.py tests/ops/test_reconciliation_evaluate_pass_v1.py tests/ops/test_reconciliation_adjudicate_pass_v1.py tests/ops/test_system_atlas_v1.py
 ./scripts/pt scripts/ops/validate_system_atlas_v1.py
 ```
 

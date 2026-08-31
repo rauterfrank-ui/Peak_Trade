@@ -149,10 +149,7 @@ def test_no_evaluate_disposition_reintegration_or_fusion() -> None:
         adj = rec["adjudication"]
         comparison = rec["current_comparison"]
         integration = rec["integration"]
-        assert str(adj.get("disposition") or "") == ""
         assert str(adj.get("lifecycle_state") or "") not in {
-            "ADJUDICATED",
-            "DISPOSITION_DECIDED",
             "REINTEGRATED",
             "COVERED",
             "INCOMPATIBLE",

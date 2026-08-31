@@ -1,0 +1,62 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+atlas_authority: NONE
+reconciliation_authority: NONE
+adjudicate_pass_id: INTEGRATE_OR_DISPOSITION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: true
+current_system_compared: true
+evaluate_performed: true
+adjudication_attempted: true
+reintegration_performed: false
+runtime_mutation_performed: false
+record_id: RCN-000052
+canonical_record_name: docs/webui/observability deleted family
+census_current_presence: CURRENTLY_ABSENT
+evaluate_capability_overlap: CENSUS_ABSENT_BUT_CURRENT_TREE_PRESENT
+disposition: INSUFFICIENT_EVIDENCE
+lifecycle_state: OPEN
+identity_status: CENSUS_TREE_CONTRADICTION
+positive_reason: Census discovery.current_presence remains CURRENTLY_ABSENT and is not rewritten. The compared/current tree
+  contains docs/webui/observability/OBSERVABILITY_HUB_V0.md as a read-only hub. That mismatch is a preserved contradiction.
+  RETAIN_AS_IS would silently treat the census-deleted identity as the currently present docs without resolving lineage. CAPABILITY_ALREADY_COVERED
+  would assume the present docs are the same family. The contradiction blocks a stronger terminal class.
+alternatives_rejected:
+- 'RETAIN_AS_IS: would normalize census CURRENTLY_ABSENT into a currently retained identity'
+- 'CAPABILITY_ALREADY_COVERED: present hub docs are not proven identical to the census-deleted family'
+- 'Rewriting discovery.current_presence: forbidden; census field is historical discovery fact'
+- REJECT because census said deleted
+further_evidence_required: true
+reintegration_candidate: false
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: 'docs/webui/observability deleted family: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+    remains OPEN and is not a rejection.'
+  evidence:
+  - docs/system_atlas/reconciliation/ledger.yaml
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000052.yaml
+  - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: docs/webui/observability/OBSERVABILITY_HUB_V0.md exists on the current bound tree.
+  evidence:
+  - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+  used_as_fact: true
+- claim_class: CONTRADICTION
+  text: Ledger discovery.current_presence is CURRENTLY_ABSENT while the bound current tree contains the family.
+  evidence:
+  - docs/system_atlas/reconciliation/ledger.yaml
+  - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+  used_as_fact: false
+evidence_refs:
+- docs/system_atlas/reconciliation/ledger.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000052.yaml
+- docs/webui/observability/OBSERVABILITY_HUB_V0.md
+contradictions:
+- Ledger discovery.current_presence is CURRENTLY_ABSENT while the bound current tree contains the family.
+unresolved_questions:
+- Was the family restored after the census SHA, or was census presence bound against a different tree?
+evaluate_compared_sha: 0e6cbb860f716d527873d97556d0968df4a197bf

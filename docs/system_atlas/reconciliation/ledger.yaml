@@ -154,16 +154,47 @@ records:
       - src/webui/market_dashboard_landscape_v2/owner_registry.py
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: The same Landscape V2 consumer package remains on origin/main. UNDERSTAND binds a read-only GET /market
+      shell with DASHBOARD_AUTHORITY_EFFECT=NONE. Current owner registry still maps projection slots without owning trading
+      truth. Compatible present artifact; reintegration is not required because it is already current.
+    evidence_refs:
+    - src/webui/market_dashboard_landscape_v2/
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
+    - docs/system_atlas/reconciliation/understand/records/RCN-000001.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
     contradictions: []
     unresolved_questions:
     - Is this the historical component remembered as Landscape, or a later dashboard generation that reused the name?
     - What was the original purpose of this package?
     - Is Landscape V2 a later generation of product_surface_v1, or a distinct package that reused dashboard naming?
     - Identity versus deleted product_surface_v1 remains unproven and is not decided here.
+    - Identity versus deleted product_surface_v1 remains unproven and is out of this retain scope.
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: this record IS the current consumer, not a duplicate to drop'
+    - 'ADAPT_AND_REINTEGRATE: no proven embedding incompatibility for unchanged retain'
+    - 'INSUFFICIENT_EVIDENCE: purpose, path, and current role are evidence-bound'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Market Dashboard Landscape V2 package remains on the bound current tree as the same artifact; current role is
+        compatible. SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path presence
+        plus compatible authority/safety/runtime role.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      - docs/system_atlas/reconciliation/understand/records/RCN-000001.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -171,9 +202,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Anchor seed Landscape. Hit is not census boundary. Purpose not investigated. EVALUATE_PASS_V1 compared against
-      0e6cbb860f716d527873d97556d0968df4a197bf.
+      0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000002
     canonical_record_name: Market Dashboard Landscape V2 Master Runbook
@@ -283,14 +314,38 @@ records:
       - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: The same documentary runbook remains on origin/main as a non-SSOT planning index with DASHBOARD_AUTHORITY_EFFECT=NONE.
+      Compatible current documentation artifact.
+    evidence_refs:
+    - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000002.yaml
     contradictions: []
     unresolved_questions:
     - Does this document define a component distinct from RCN-000001?
     - 'Document versus package: same Landscape V2 workstream, not proven same identity.'
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: the record is this file, not a superseded duplicate of Master Runbook'
+    - 'REJECT_FOR_CURRENT_SYSTEM: no positive reason against keeping a non-authorizing index'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Market Dashboard Landscape V2 Master Runbook remains on the bound current tree as the same artifact; current role
+        is compatible. SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path
+        presence plus compatible authority/safety/runtime role.
+      evidence:
+      - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000002.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000002.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -298,8 +353,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Documentation hit for Landscape seed. Not merged with the package record. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000003
     canonical_record_name: Runbooks Landscape 2026-ready index
@@ -391,14 +447,37 @@ records:
       - docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: The same runbook catalog remains on origin/main. UNDERSTAND binds Landscape here as a catalog name, not
+      Market Dashboard Landscape V2. Compatible navigation document.
+    evidence_refs:
+    - docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md
+    - docs/system_atlas/reconciliation/understand/records/RCN-000003.yaml
     contradictions: []
     unresolved_questions:
     - Is this a runbook index only, unrelated to Market Landscape V2?
     - Shared token Landscape is a naming collision, not an identity proof.
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'Identity fusion with Market Landscape V2: UNDERSTAND already separates the names'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Runbooks Landscape 2026-ready index remains on the bound current tree as the same artifact; current role is compatible.
+        SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path presence plus
+        compatible authority/safety/runtime role.
+      evidence:
+      - docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md
+      - docs/system_atlas/reconciliation/understand/records/RCN-000003.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000003.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -406,9 +485,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: 'Separate Landscape-named artifact. Fail-open: no POSSIBLE_SAME_AS without evidence they are one component. EVALUATE_PASS_V1
-      compared against 0e6cbb860f716d527873d97556d0968df4a197bf.'
+      compared against 0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.'
 - identity:
     reconciliation_id: RCN-000004
     canonical_record_name: Master V2 trading package
@@ -516,14 +595,37 @@ records:
       - src/trading/master_v2/
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: src/trading/master_v2/ remains the current Master V2 package with no-live-authority package marker. Compatible
+      current trading-model artifact; not a live arming path.
+    evidence_refs:
+    - src/trading/master_v2/
+    - docs/system_atlas/reconciliation/understand/records/RCN-000004.yaml
     contradictions: []
     unresolved_questions:
     - What is the historical purpose of Master V2 as a system, beyond the package existing?
     - POSSIBLE_SAME_AS RCN-000007 remains hypothesis; extract is derived index.
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'ADAPT_AND_REINTEGRATE: no proven need to replace the current package in this pass'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Master V2 trading package remains on the bound current tree as the same artifact; current role is compatible.
+        SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path presence plus
+        compatible authority/safety/runtime role.
+      evidence:
+      - src/trading/master_v2/
+      - docs/system_atlas/reconciliation/understand/records/RCN-000004.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000004.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -531,9 +633,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Anchor seed Master V2. Current presence is mechanical, not coverage adjudication. EVALUATE_PASS_V1 compared against
-      0e6cbb860f716d527873d97556d0968df4a197bf.
+      0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000005
     canonical_record_name: Double Play composition stack on Master V2
@@ -663,15 +765,40 @@ records:
       - src/trading/master_v2/double_play_core_wiring_v1.py
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: The same composition modules remain under src/trading/master_v2/. UNDERSTAND binds pure in-process composition,
+      not execution permission. Compatible current model stack.
+    evidence_refs:
+    - src/trading/master_v2/double_play_composition.py
+    - src/trading/master_v2/double_play_survival.py
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000005.yaml
     contradictions: []
     unresolved_questions:
     - Is this the same historical Double Play as ops.double_play specialists?
     - ops.double_play (RCN-000006) shares the Double Play name but is a quarantined projection path; POSSIBLE_SAME_AS remains
       hypothesis.
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED by ops.double_play: UNDERSTAND binds ops as non-canonical projection'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Double Play composition stack on Master V2 remains on the bound current tree as the same artifact; current role
+        is compatible. SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path
+        presence plus compatible authority/safety/runtime role.
+      evidence:
+      - src/trading/master_v2/double_play_composition.py
+      - src/trading/master_v2/double_play_survival.py
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000005.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000005.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -679,8 +806,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Anchor seed Double Play. Not merged with ops.double_play. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000006
     canonical_record_name: ops.double_play specialists scaffold
@@ -785,15 +913,38 @@ records:
       - src/ops/double_play/specialists.py
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: ops.double_play remains present as SAFE DEFAULT OFF projection/diagnostic consumer with switch authority
+      fail-closed disabled. Compatible current ops scaffold.
+    evidence_refs:
+    - src/ops/double_play/__init__.py
+    - src/ops/double_play/specialists.py
     contradictions: []
     unresolved_questions:
     - What did evaluate_double_play historically do, and is the remaining scaffold the same component?
     - Whether this scaffold historically computed switches before quarantine is not reconstructed in this pass; current blob
       is projection-only.
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'Treating ops.double_play as canonical Bull/Bear switch owner: UNDERSTAND forbids that'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: ops.double_play specialists scaffold remains on the bound current tree as the same artifact; current role is compatible.
+        SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path presence plus
+        compatible authority/safety/runtime role.
+      evidence:
+      - src/ops/double_play/__init__.py
+      - src/ops/double_play/specialists.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000006.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -801,9 +952,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Earlier dated Double Play scaffold. Fail-open versus Master V2 Double Play stack. EVALUATE_PASS_V1 compared against
-      0e6cbb860f716d527873d97556d0968df4a197bf.
+      0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000007
     canonical_record_name: Forensic historical_reference Master V2 extract
@@ -897,14 +1048,35 @@ records:
       - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/master_v2/
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: The SHA-256-bound forensic extract remains present with AUTHORITY=NONE. Compatible as forensic preservation,
+      not current trading authority.
+    evidence_refs:
+    - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/master_v2/
     contradictions: []
     unresolved_questions:
     - Is this extract identical to current src/trading/master_v2, a historical snapshot, or a different source?
     - Label overlap with RCN-000004 is not identity; POSSIBLE_SAME_AS stays hypothesis.
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'Elevating the extract to canonical Master V2 authority: headers bind AUTHORITY=NONE'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Forensic historical_reference Master V2 extract remains on the bound current tree as the same artifact; current
+        role is compatible. SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path
+        presence plus compatible authority/safety/runtime role.
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/master_v2/
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000007.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -912,9 +1084,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Forensic extract is not Atlas authority and not a runtime component by itself. EVALUATE_PASS_V1 compared against
-      0e6cbb860f716d527873d97556d0968df4a197bf.
+      0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000008
     canonical_record_name: Forensic historical_reference Double Play extract
@@ -1008,14 +1180,35 @@ records:
       - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/double_play/
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: The forensic Double Play extract remains present with AUTHORITY=NONE. Compatible preservation artifact,
+      distinct from src/trading/master_v2 Double Play.
+    evidence_refs:
+    - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/double_play/
     contradictions: []
     unresolved_questions:
     - Does this extract describe ops.double_play, Master V2 Double Play, or another source?
     - POSSIBLE_SAME_AS RCN-000005/RCN-000006 remains hypothesis.
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'Identity fusion with RCN-000005 composition stack: different trees and authority class'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Forensic historical_reference Double Play extract remains on the bound current tree as the same artifact; current
+        role is compatible. SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path
+        presence plus compatible authority/safety/runtime role.
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/double_play/
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000008.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1023,8 +1216,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Fail-open forensic extract. AUTHORITY NONE in source tree. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000009
     canonical_record_name: Market dashboard product surface v1
@@ -1155,15 +1349,51 @@ records:
       - src/webui/market_dashboard_landscape_shell_router_v2.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Market dashboard product surface v1 is absent on the compared SHA. Landscape V2 is a later GET /market
+      consumer surface (RCN-000001). Shared consumer surface is not identity and not proven replacement. Unique remaining
+      value, coverage, and incompatibility are all unproven. Evaluate overlap LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+      is comparison only.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000009.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
     contradictions: []
     unresolved_questions:
     - Was this deleted, renamed, or absorbed into Landscape V2?
     - Not proven SAME_AS Landscape V2 (RCN-000001); deletion is not absorption proof.
     - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
+    - Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+    identity_status: IDENTITY_UNPROVEN_VERSUS_LANDSCAPE_V2
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: replacement by Landscape V2 is not proven'
+    - 'ADAPT_AND_REINTEGRATE: unique current value of the deleted v1 artifact is not proven'
+    - 'REJECT_FOR_CURRENT_SYSTEM: deletion/absence is not a positive rejection reason'
+    - 'RETAIN_AS_IS: historical path is absent; cannot retain an absent artifact'
+    - 'Identity fusion with RCN-000001: POSSIBLE_SAME_AS remains hypothesis'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'Market dashboard product surface v1: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000009.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate class is LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000009.yaml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Landscape V2 may later be shown to cover part of this purpose; that is not proven here.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1171,8 +1401,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Unknown-component discovery via vanished src pkg3. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000010
     canonical_record_name: Market dashboard readmodels v1
@@ -1278,15 +1509,51 @@ records:
       - src/webui/market_dashboard_landscape_shell_router_v2.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Market dashboard readmodels v1 is absent on the compared SHA. Landscape V2 is a later GET /market consumer
+      surface (RCN-000001). Shared consumer surface is not identity and not proven replacement. Unique remaining value, coverage,
+      and incompatibility are all unproven. Evaluate overlap LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN is comparison
+      only.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000010.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
     contradictions: []
     unresolved_questions:
     - Separate component versus product_surface_v1?
     - Adjacent to product_surface_v1 but a separate package; not fused.
     - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
+    - Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+    identity_status: IDENTITY_UNPROVEN_VERSUS_LANDSCAPE_V2
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: replacement by Landscape V2 is not proven'
+    - 'ADAPT_AND_REINTEGRATE: unique current value of the deleted v1 artifact is not proven'
+    - 'REJECT_FOR_CURRENT_SYSTEM: deletion/absence is not a positive rejection reason'
+    - 'RETAIN_AS_IS: historical path is absent; cannot retain an absent artifact'
+    - 'Identity fusion with RCN-000001: POSSIBLE_SAME_AS remains hypothesis'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'Market dashboard readmodels v1: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000010.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate class is LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000010.yaml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Landscape V2 may later be shown to cover part of this purpose; that is not proven here.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1294,8 +1561,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
-    notes: Fail-open versus product surface. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+    notes: Fail-open versus product surface. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1
+      adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000011
     canonical_record_name: Market visual operator surface v1
@@ -1407,15 +1675,51 @@ records:
       - src/webui/market_dashboard_landscape_v2/owner_registry.py
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Market visual operator surface v1 is absent on the compared SHA. Landscape V2 is a later GET /market
+      consumer surface (RCN-000001). Shared consumer surface is not identity and not proven replacement. Unique remaining
+      value, coverage, and incompatibility are all unproven. Evaluate overlap LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+      is comparison only.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000011.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
     contradictions: []
     unresolved_questions:
     - Relation to Landscape V2 and product_surface_v1?
     - Relation to Landscape V2 operator chrome is unproven identity.
     - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
+    - Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+    identity_status: IDENTITY_UNPROVEN_VERSUS_LANDSCAPE_V2
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: replacement by Landscape V2 is not proven'
+    - 'ADAPT_AND_REINTEGRATE: unique current value of the deleted v1 artifact is not proven'
+    - 'REJECT_FOR_CURRENT_SYSTEM: deletion/absence is not a positive rejection reason'
+    - 'RETAIN_AS_IS: historical path is absent; cannot retain an absent artifact'
+    - 'Identity fusion with RCN-000001: POSSIBLE_SAME_AS remains hypothesis'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'Market visual operator surface v1: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000011.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate class is LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000011.yaml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Landscape V2 may later be shown to cover part of this purpose; that is not proven here.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1423,8 +1727,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
-    notes: Named vanished package. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+    notes: Named vanished package. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1
+      adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000012
     canonical_record_name: Futures read-only market dashboard runtime v0
@@ -1529,15 +1834,51 @@ records:
       - src/webui/market_dashboard_landscape_shell_router_v2.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Futures read-only market dashboard runtime v0 is absent on the compared SHA. Landscape V2 is a later
+      GET /market consumer surface (RCN-000001). Shared consumer surface is not identity and not proven replacement. Unique
+      remaining value, coverage, and incompatibility are all unproven. Evaluate overlap LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+      is comparison only.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000012.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
     contradictions: []
     unresolved_questions:
     - Predecessor of later dashboard packages?
     - Not proven SAME_AS product_surface_v1; POSSIBLE_SAME_AS stays hypothesis.
     - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
+    - Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+    identity_status: IDENTITY_UNPROVEN_VERSUS_LANDSCAPE_V2
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: replacement by Landscape V2 is not proven'
+    - 'ADAPT_AND_REINTEGRATE: unique current value of the deleted v1 artifact is not proven'
+    - 'REJECT_FOR_CURRENT_SYSTEM: deletion/absence is not a positive rejection reason'
+    - 'RETAIN_AS_IS: historical path is absent; cannot retain an absent artifact'
+    - 'Identity fusion with RCN-000001: POSSIBLE_SAME_AS remains hypothesis'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'Futures read-only market dashboard runtime v0: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000012.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate class is LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000012.yaml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Landscape V2 may later be shown to cover part of this purpose; that is not proven here.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1545,8 +1886,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: v0 runtime module; not merged with v1 packages. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000013
     canonical_record_name: Market dashboard deletion evidence pack
@@ -1649,14 +1991,35 @@ records:
       - evidence/market_dashboard_deletion/
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: The deletion evidence pack remains on origin/main as evidence, not runtime. Compatible forensic/evidence
+      artifact recording the product-stack deletion.
+    evidence_refs:
+    - evidence/market_dashboard_deletion/
     contradictions: []
     unresolved_questions:
     - Which ledger records does this pack prove were deleted versus preserved?
     - Pack documents deletion; it does not prove Landscape V2 identity with v1.
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'REJECT because it documents deletion: evidence packs are not rejection of the pack itself'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Market dashboard deletion evidence pack remains on the bound current tree as the same artifact; current role is
+        compatible. SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path presence
+        plus compatible authority/safety/runtime role.
+      evidence:
+      - evidence/market_dashboard_deletion/
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000013.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1664,8 +2027,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Evidence corpus hit. Does not dispose deleted components. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000014
     canonical_record_name: archive/PeakTradeRepo nested historical tree
@@ -1796,17 +2160,43 @@ records:
       - docs/system_atlas/reconciliation/ledger.yaml
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: The nested archive tree is absent from origin/main. UNDERSTAND binds a contradiction between README claims
+      and one-line placeholder .py blobs. No current equivalent is proven. Archive absence is not obsolete and not rejection.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/understand/records/RCN-000014.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000014.yaml
     contradictions:
     - PeakTradeRepo README describes a rewritten ma_crossover with state signals, while the nested ma_crossover.py blob in
       the same tree is a one-line placeholder.
+    - PeakTradeRepo README describes an implemented stack; recovered nested .py blobs are placeholders.
+    - UNDERSTAND preserves PeakTradeRepo README-versus-placeholder contradiction; not used as fact.
     unresolved_questions:
     - What components lived inside the nested archive tree?
     - Whether a fuller PeakTradeRepo snapshot existed before these placeholder blobs is not reconstructed.
     - Is there a proven current replacement, or only a later namesake?
+    - Which recovered blobs, if any, represent the claimed historical stack?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - 'REJECT because archived/deleted: taxonomy forbids rejection for absence'
+    - 'CAPABILITY_ALREADY_COVERED by current backtest/strategy tree: identity unproven'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'archive/PeakTradeRepo nested historical tree: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000014.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000014.yaml
+      used_as_fact: true
+    - claim_class: CONTRADICTION
+      text: UNDERSTAND preserves PeakTradeRepo README-versus-placeholder contradiction; not used as fact.
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000014.yaml
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1814,8 +2204,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Historical nested repository snapshot. Inner census remains open. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000015
     canonical_record_name: Master V2 minimal selector policy v1
@@ -1936,15 +2327,48 @@ records:
       - src/ops/single_selected_future_runtime_binding_v1/
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: 'The historical selector path is absent after revert of #6165 via #6166. Historical revert is not disposition.
+      Cap 2.3 single_selected_future_policy_v1 is a later exactly-one selection candidate. EVALUATE class CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+      does not prove successor, replacement, or identity. Semantic relationship remains open.'
+    evidence_refs:
+    - docs/system_atlas/reconciliation/understand/records/RCN-000015.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000015.yaml
+    - src/ops/single_selected_future_policy_v1/policy_v1.py
     contradictions: []
     unresolved_questions:
     - What did the selector policy do, and why was it reverted? Purpose still uninvestigated.
     - Current absence after revert is not a disposition of the historical purpose.
     - Is single_selected_future_policy_v1 a successor of master_v2_minimal_selector_v1, or a distinct later owner?
+    identity_status: IDENTITY_UNPROVEN_VERSUS_CAP_2_3
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED by Cap 2.3: replacement/identity not proven'
+    - 'REJECT because reverted: revert is not a positive rejection reason'
+    - 'ADAPT_AND_REINTEGRATE: unique uncovered selector semantics versus Cap 2.3 are unproven'
+    - 'Declaring SAME_AS / successor of single_selected_future_policy_v1: forbidden without proof'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'Master V2 minimal selector policy v1: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000015.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000015.yaml
+      - src/ops/single_selected_future_policy_v1/policy_v1.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Cap 2.3 policy encodes SINGLE_SELECTED_FUTURE; that is current-system fact, not identity with RCN-000015.
+      evidence:
+      - src/ops/single_selected_future_policy_v1/policy_v1.py
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Cap 2.3 may serve a similar exactly-one purpose; successor relation is not proven.
+      evidence:
+      - src/ops/single_selected_future_policy_v1/policy_v1.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -1952,8 +2376,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Recently vanished. No REJECT disposition in this GO. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000016
     canonical_record_name: Kanonisches Vollautonomie-Runbook v4.4.12
@@ -2037,14 +2462,42 @@ records:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: The superseded v4.4.12 file remains present. Map of Truth and the file header bind STATUS=SUPERSEDED
+      and SUPERSEDED_BY the Canonical Master Runbook. Retain as historical document in that declared role, not as current
+      authority.
+    evidence_refs:
+    - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+    - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     contradictions: []
     unresolved_questions:
     - What components did this historical runbook name that are now lost?
     - Whether any body sections remain binding is not adjudicated in UNDERSTAND.
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'Using v4.4.12 as current SSOT: header and Map of Truth bind SUPERSEDED'
+    - 'CAPABILITY_ALREADY_COVERED as a reason to delete the historical file: lineage preservation is the current role'
+    - 'REJECT_FOR_CURRENT_SYSTEM merely because it is old: forbidden by taxonomy'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Kanonisches Vollautonomie-Runbook v4.4.12 remains on the bound current tree as the same artifact; current role
+        is compatible. SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path
+        presence plus compatible authority/safety/runtime role.
+      evidence:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000016.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2052,9 +2505,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Historical canonical predecessor document. Content not mined for component names in this pass. EVALUATE_PASS_V1
-      compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      compared against 0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000017
     canonical_record_name: Information Corpus Persistence Base
@@ -2129,13 +2582,34 @@ records:
       - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: The persistence-base markdown remains present with AUTHORITY=NONE / NAVIGATION_ONLY. Compatible non-authoritative
+      navigation artifact.
+    evidence_refs:
+    - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
     contradictions: []
     unresolved_questions:
     - What corpus items remain unextracted into this reconciliation census?
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'Treating it as a second Master Runbook: header forbids override'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Information Corpus Persistence Base remains on the bound current tree as the same artifact; current role is compatible.
+        SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path presence plus
+        compatible authority/safety/runtime role.
+      evidence:
+      - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000017.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2143,8 +2617,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Forensic corpus pointer. Not authority. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000018
     canonical_record_name: Historical Child Ledger forensic extract
@@ -2225,14 +2700,35 @@ records:
       - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: HISTORICAL_CHILD_LEDGER.yaml remains in the forensic conservation tree with AUTHORITY NONE. Compatible
+      derived index, not canonical selection.
+    evidence_refs:
+    - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
     contradictions: []
     unresolved_questions:
     - Which child identities in that ledger are missing from this reconciliation census?
     - 1:1 mapping of 88 SRC children onto RCN ledger records is not proven and is not a census reopen.
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'Promoting child regions to SSOT_CHILD: UNDERSTAND binds not canonical selection'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Historical Child Ledger forensic extract remains on the bound current tree as the same artifact; current role
+        is compatible. SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path
+        presence plus compatible authority/safety/runtime role.
+      evidence:
+      - forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000018.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2240,8 +2736,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Do not merge into RCN IDs without identity proof. Not imported this pass. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000019
     canonical_record_name: risk_layer historical top-level modules
@@ -2369,15 +2866,54 @@ records:
       - docs/system_atlas/reconciliation/understand/records/RCN-000019.yaml
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: The record bundles historical top-level modules. KillSwitch currently exists as src/risk_layer/kill_switch/
+      package; that does not prove identity with the missing historical top-level kill_switch.py, LiquidityGate, StressGate,
+      VaRGate, or metrics modules. SAME_PATH_FAMILY_PARTIAL is comparison, not identity proof. Coverage of the missing gate
+      functions by risk_gate.py is unproven. Record-level stronger class would silently conflate present package with absent
+      modules.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/understand/records/RCN-000019.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000019.yaml
+    - src/risk_layer/kill_switch/__init__.py
+    - src/risk_layer/risk_gate.py
     contradictions: []
     unresolved_questions:
     - Were the deleted top-level modules renamed into src/risk_layer/kill_switch/ and related packages?
     - Rename/move of top-level modules into src/risk_layer/kill_switch/ is unproven identity.
     - Are LiquidityGate/StressGate/VaRGate purposes covered by current risk_gate.py or elsewhere?
+    - Is src/risk_layer/kill_switch/ the same historical kill_switch.py or a later package?
+    identity_status: PARTIAL_FAMILY_IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - 'RETAIN_AS_IS for the whole family: missing historical modules are not present as those artifacts'
+    - 'CAPABILITY_ALREADY_COVERED by kill_switch package: does not cover unproven Liquidity/Stress/VaR identity'
+    - 'ADAPT_AND_REINTEGRATE of missing gates: unique current value versus risk_gate.py is unproven'
+    - 'REJECT because modules were deleted: absence is not rejection'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'risk_layer historical top-level modules: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000019.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000019.yaml
+      - src/risk_layer/kill_switch/__init__.py
+      - src/risk_layer/risk_gate.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: KillSwitch public API exists under src/risk_layer/kill_switch/; historical liquidity_gate.py is absent.
+      evidence:
+      - src/risk_layer/kill_switch/__init__.py
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000019.yaml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: risk_gate.py may overlap some historical gate purposes; that overlap is not proven.
+      evidence:
+      - src/risk_layer/risk_gate.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2385,8 +2921,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Mechanical partial presence. Not a current-system comparison. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000020
     canonical_record_name: docs/observability Grafana runbook family
@@ -2491,15 +3028,33 @@ records:
       - docs/OBSERVABILITY_AND_MONITORING_PLAN.md
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: The Grafana/OTLP docs/observability family is absent. Later observability docs exist on other paths.
+      Path/name similarity is not proven identity with the purged family.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000020.yaml
+    - docs/OBSERVABILITY_AND_MONITORING_PLAN.md
     contradictions: []
     unresolved_questions:
     - Does a current Grafana/observability stack remain under another path?
     - Whether a later Grafana stack exists under another path is not answered here (EVALUATE-forbidden).
     - Does a current Grafana/OTLP stack runbook exist under another path?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED by later observability docs: identity unproven'
+    - 'REJECT because purged: purge is not a positive rejection reason'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'docs/observability Grafana runbook family: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000020.yaml
+      - docs/OBSERVABILITY_AND_MONITORING_PLAN.md
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2507,8 +3062,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Documentation family vanished. Not a runtime disposition. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000021
     canonical_record_name: Double Play dashboard display JSON route remnant
@@ -2612,14 +3168,35 @@ records:
       - src/webui/double_play_dashboard_display_json_route_v0.py
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: The GET-only display JSON route remains present as a read-only remnant kept as a domain owner in the
+      deletion pack. Compatible non-authorizing display route.
+    evidence_refs:
+    - src/webui/double_play_dashboard_display_json_route_v0.py
     contradictions: []
     unresolved_questions:
     - Is this a remnant of a deleted Double Play webui dashboard stack?
     - POSSIBLE_SAME_AS RCN-000005 is naming/use, not identity of the route vs composition module.
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'Treating the route as live Double Play authority: docstring binds display-only'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Double Play dashboard display JSON route remnant remains on the bound current tree as the same artifact; current
+        role is compatible. SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path
+        presence plus compatible authority/safety/runtime role.
+      evidence:
+      - src/webui/double_play_dashboard_display_json_route_v0.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000021.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2627,8 +3204,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Current remnant. Not proof the deleted dashboard stack is covered. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000022
     canonical_record_name: Temporary Forensic Working Runbook historical_reference source
@@ -2722,13 +3300,33 @@ records:
       - forensics/historical_reference/
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: The historical_reference tree remains present with AUTHORITY=NONE. Compatible forensic preservation package.
+    evidence_refs:
+    - forensics/historical_reference/
     contradictions: []
     unresolved_questions:
     - Which named historical components inside the working runbook are still missing from this census?
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'Importing this tree into runtime: README forbids runtime import'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Temporary Forensic Working Runbook historical_reference source remains on the bound current tree as the same artifact;
+        current role is compatible. SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven
+        same-path presence plus compatible authority/safety/runtime role.
+      evidence:
+      - forensics/historical_reference/
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000022.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2736,8 +3334,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
-    notes: Corpus container. Not exhausted. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+    notes: Corpus container. Not exhausted. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1
+      adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000023
     canonical_record_name: webui market_surface.py v0
@@ -2850,15 +3449,51 @@ records:
       - src/webui/market_dashboard_landscape_shell_router_v2.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: webui market_surface.py v0 is absent on the compared SHA. Landscape V2 is a later GET /market consumer
+      surface (RCN-000001). Shared consumer surface is not identity and not proven replacement. Unique remaining value, coverage,
+      and incompatibility are all unproven. Evaluate overlap LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN is comparison
+      only.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000023.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
     contradictions: []
     unresolved_questions:
     - Standalone surface versus later dashboard packages?
     - POSSIBLE_SAME_AS RCN-000012 remains hypothesis.
     - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
+    - Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+    identity_status: IDENTITY_UNPROVEN_VERSUS_LANDSCAPE_V2
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: replacement by Landscape V2 is not proven'
+    - 'ADAPT_AND_REINTEGRATE: unique current value of the deleted v1 artifact is not proven'
+    - 'REJECT_FOR_CURRENT_SYSTEM: deletion/absence is not a positive rejection reason'
+    - 'RETAIN_AS_IS: historical path is absent; cannot retain an absent artifact'
+    - 'Identity fusion with RCN-000001: POSSIBLE_SAME_AS remains hypothesis'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'webui market_surface.py v0: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE remains
+        OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000023.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate class is LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000023.yaml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Landscape V2 may later be shown to cover part of this purpose; that is not proven here.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2866,8 +3501,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
-    notes: Named vanished module. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+    notes: Named vanished module. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1
+      adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000024
     canonical_record_name: Supervised graphical market landscape presentation
@@ -2968,14 +3604,34 @@ records:
       - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: The presentation-only contract test remains present. Compatible test artifact; not a product authority.
+    evidence_refs:
+    - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
     contradictions: []
     unresolved_questions:
     - Is this the same Landscape as RCN-000001 or a distinct presentation-only capability?
     - POSSIBLE_SAME_AS RCN-000001 is test-to-package, not identity fusion.
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'Dropping tests because they mention Landscape: tests are current contracts'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Supervised graphical market landscape presentation tests remains on the bound current tree as the same artifact;
+        current role is compatible. SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven
+        same-path presence plus compatible authority/safety/runtime role.
+      evidence:
+      - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000024.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -2983,8 +3639,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Test/commit hit. Implementation path not fully bound this pass. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000025
     canonical_record_name: Gate-Familien F1-F6 forensic heading family
@@ -3073,14 +3730,35 @@ records:
       - docs/system_atlas/census/historical_terminology.yaml
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: historical_terminology.yaml remains present as Atlas terminology, not a runtime gate. Compatible HISTORICAL_ONLY
+      heading family.
+    evidence_refs:
+    - docs/system_atlas/census/historical_terminology.yaml
     contradictions: []
     unresolved_questions:
     - Are F1-F6 a standalone historical component versus headings only?
     - Whether F1–F6 named distinct runtime gate packages exist as other RCN records is not proven from this heading row.
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'Treating Gate-Familien as a live gate authority: UNDERSTAND binds heading/index only'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Gate-Familien F1-F6 forensic heading family remains on the bound current tree as the same artifact; current role
+        is compatible. SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path
+        presence plus compatible authority/safety/runtime role.
+      evidence:
+      - docs/system_atlas/census/historical_terminology.yaml
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000025.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3088,9 +3766,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Promoted from CAND:gate_familien_f1_f6. Purpose not investigated. Not fused with dashboard family_id. EVALUATE_PASS_V1
-      compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      compared against 0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000026
     canonical_record_name: NestedStructuralChild forensic structure type
@@ -3173,13 +3851,34 @@ records:
       - forensic/post_step32_knowledge_integration_v0/
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: The post_step32 forensic collection remains present with ARTIFACT_AUTHORITY=NONE. Compatible forensic
+      type catalog, not SSOT_CHILD.
+    evidence_refs:
+    - forensic/post_step32_knowledge_integration_v0/
     contradictions: []
     unresolved_questions:
     - Is this only a forensic structure label?
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'Moving NestedStructuralChild into carrier index: finding text forbids that'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: NestedStructuralChild forensic structure type remains on the bound current tree as the same artifact; current
+        role is compatible. SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path
+        presence plus compatible authority/safety/runtime role.
+      evidence:
+      - forensic/post_step32_knowledge_integration_v0/
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000026.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3187,9 +3886,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Terminology/forensic hit. Atlas says not SSOT_CHILD. Not fused with CAND:ssot_child_literal. EVALUATE_PASS_V1 compared
-      against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      against 0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000027
     canonical_record_name: Market depth v0 readmodel/runtime
@@ -3301,15 +4000,51 @@ records:
       - src/webui/market_dashboard_landscape_shell_router_v2.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Market depth v0 readmodel/runtime is absent on the compared SHA. Landscape V2 is a later GET /market
+      consumer surface (RCN-000001). Shared consumer surface is not identity and not proven replacement. Unique remaining
+      value, coverage, and incompatibility are all unproven. Evaluate overlap LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+      is comparison only.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000027.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
     contradictions: []
     unresolved_questions:
     - Standalone depth component versus product_surface_v1?
     - POSSIBLE_SAME_AS RCN-000009 is generation hypothesis only.
     - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
+    - Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+    identity_status: IDENTITY_UNPROVEN_VERSUS_LANDSCAPE_V2
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: replacement by Landscape V2 is not proven'
+    - 'ADAPT_AND_REINTEGRATE: unique current value of the deleted v1 artifact is not proven'
+    - 'REJECT_FOR_CURRENT_SYSTEM: deletion/absence is not a positive rejection reason'
+    - 'RETAIN_AS_IS: historical path is absent; cannot retain an absent artifact'
+    - 'Identity fusion with RCN-000001: POSSIBLE_SAME_AS remains hypothesis'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'Market depth v0 readmodel/runtime: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000027.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate class is LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000027.yaml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Landscape V2 may later be shown to cover part of this purpose; that is not proven here.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3317,9 +4052,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Split from CAND:market_dashboard_v0_depth_tape_funnel. Fail-open versus other v0 modules. EVALUATE_PASS_V1 compared
-      against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      against 0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000028
     canonical_record_name: Market tape v0 readmodel
@@ -3423,14 +4158,50 @@ records:
       - src/webui/market_dashboard_landscape_shell_router_v2.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Market tape v0 readmodel is absent on the compared SHA. Landscape V2 is a later GET /market consumer
+      surface (RCN-000001). Shared consumer surface is not identity and not proven replacement. Unique remaining value, coverage,
+      and incompatibility are all unproven. Evaluate overlap LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN is comparison
+      only.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000028.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
     contradictions: []
     unresolved_questions:
     - Standalone tape component versus later dashboard packages?
     - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
+    - Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+    identity_status: IDENTITY_UNPROVEN_VERSUS_LANDSCAPE_V2
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: replacement by Landscape V2 is not proven'
+    - 'ADAPT_AND_REINTEGRATE: unique current value of the deleted v1 artifact is not proven'
+    - 'REJECT_FOR_CURRENT_SYSTEM: deletion/absence is not a positive rejection reason'
+    - 'RETAIN_AS_IS: historical path is absent; cannot retain an absent artifact'
+    - 'Identity fusion with RCN-000001: POSSIBLE_SAME_AS remains hypothesis'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'Market tape v0 readmodel: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE remains
+        OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000028.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate class is LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000028.yaml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Landscape V2 may later be shown to cover part of this purpose; that is not proven here.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3438,8 +4209,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Split from grouped v0 candidate. Not fused with depth/funnel. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000029
     canonical_record_name: Market ranking funnel v0
@@ -3548,15 +4320,51 @@ records:
       - src/webui/market_dashboard_landscape_v2/owner_registry.py
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Market ranking funnel v0 is absent on the compared SHA. Landscape V2 is a later GET /market consumer
+      surface (RCN-000001). Shared consumer surface is not identity and not proven replacement. Unique remaining value, coverage,
+      and incompatibility are all unproven. Evaluate overlap LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN is comparison
+      only.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000029.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
     contradictions: []
     unresolved_questions:
     - Relation to later landscape ranking displays?
     - POSSIBLE_SAME_AS RCN-000009 is hypothesis.
     - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
+    - Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+    identity_status: IDENTITY_UNPROVEN_VERSUS_LANDSCAPE_V2
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: replacement by Landscape V2 is not proven'
+    - 'ADAPT_AND_REINTEGRATE: unique current value of the deleted v1 artifact is not proven'
+    - 'REJECT_FOR_CURRENT_SYSTEM: deletion/absence is not a positive rejection reason'
+    - 'RETAIN_AS_IS: historical path is absent; cannot retain an absent artifact'
+    - 'Identity fusion with RCN-000001: POSSIBLE_SAME_AS remains hypothesis'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'Market ranking funnel v0: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE remains
+        OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000029.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate class is LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000029.yaml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Landscape V2 may later be shown to cover part of this purpose; that is not proven here.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3564,8 +4372,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Fail-open versus other v0 modules. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000030
     canonical_record_name: Market futures OHLCV v0
@@ -3674,15 +4483,51 @@ records:
       - src/ops/okx_selected_instrument_ohlcv_readmodel_v1.py
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Market futures OHLCV v0 is absent on the compared SHA. Landscape V2 is a later GET /market consumer surface
+      (RCN-000001). Shared consumer surface is not identity and not proven replacement. Unique remaining value, coverage,
+      and incompatibility are all unproven. Evaluate overlap LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN is comparison
+      only.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000030.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
     contradictions: []
     unresolved_questions:
     - Standalone OHLCV component versus later dashboard packages?
     - POSSIBLE_SAME_AS RCN-000012 is hypothesis.
     - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
+    - Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+    identity_status: IDENTITY_UNPROVEN_VERSUS_LANDSCAPE_V2
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: replacement by Landscape V2 is not proven'
+    - 'ADAPT_AND_REINTEGRATE: unique current value of the deleted v1 artifact is not proven'
+    - 'REJECT_FOR_CURRENT_SYSTEM: deletion/absence is not a positive rejection reason'
+    - 'RETAIN_AS_IS: historical path is absent; cannot retain an absent artifact'
+    - 'Identity fusion with RCN-000001: POSSIBLE_SAME_AS remains hypothesis'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'Market futures OHLCV v0: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE remains
+        OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000030.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate class is LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000030.yaml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Landscape V2 may later be shown to cover part of this purpose; that is not proven here.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3690,8 +4535,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Fail-open versus other v0 modules. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000031
     canonical_record_name: Market instrument eligibility v0
@@ -3794,15 +4640,51 @@ records:
       - src/webui/market_dashboard_landscape_shell_router_v2.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Market instrument eligibility v0 is absent on the compared SHA. Landscape V2 is a later GET /market consumer
+      surface (RCN-000001). Shared consumer surface is not identity and not proven replacement. Unique remaining value, coverage,
+      and incompatibility are all unproven. Evaluate overlap LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN is comparison
+      only.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000031.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
     contradictions: []
     unresolved_questions:
     - Standalone eligibility module versus later ranking/universe producers?
     - POSSIBLE_SAME_AS RCN-000009 is hypothesis.
     - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
+    - Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+    identity_status: IDENTITY_UNPROVEN_VERSUS_LANDSCAPE_V2
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: replacement by Landscape V2 is not proven'
+    - 'ADAPT_AND_REINTEGRATE: unique current value of the deleted v1 artifact is not proven'
+    - 'REJECT_FOR_CURRENT_SYSTEM: deletion/absence is not a positive rejection reason'
+    - 'RETAIN_AS_IS: historical path is absent; cannot retain an absent artifact'
+    - 'Identity fusion with RCN-000001: POSSIBLE_SAME_AS remains hypothesis'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'Market instrument eligibility v0: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000031.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate class is LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000031.yaml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Landscape V2 may later be shown to cover part of this purpose; that is not proven here.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3810,8 +4692,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Single named vanished module. Not fused. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000032
     canonical_record_name: Market active paper run runtime v0
@@ -3912,15 +4795,51 @@ records:
       - src/webui/market_dashboard_landscape_shell_router_v2.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Market active paper run runtime v0 is absent on the compared SHA. Landscape V2 is a later GET /market
+      consumer surface (RCN-000001). Shared consumer surface is not identity and not proven replacement. Unique remaining
+      value, coverage, and incompatibility are all unproven. Evaluate overlap LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+      is comparison only.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000032.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
     contradictions: []
     unresolved_questions:
     - Relation to paper-shadow runtimes?
     - POSSIBLE_SAME_AS RCN-000012 is hypothesis.
     - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
+    - Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+    identity_status: IDENTITY_UNPROVEN_VERSUS_LANDSCAPE_V2
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: replacement by Landscape V2 is not proven'
+    - 'ADAPT_AND_REINTEGRATE: unique current value of the deleted v1 artifact is not proven'
+    - 'REJECT_FOR_CURRENT_SYSTEM: deletion/absence is not a positive rejection reason'
+    - 'RETAIN_AS_IS: historical path is absent; cannot retain an absent artifact'
+    - 'Identity fusion with RCN-000001: POSSIBLE_SAME_AS remains hypothesis'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'Market active paper run runtime v0: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000032.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate class is LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000032.yaml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Landscape V2 may later be shown to cover part of this purpose; that is not proven here.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3928,8 +4847,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Named vanished module. Purpose not investigated. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000033
     canonical_record_name: Market dashboard current state v0
@@ -4033,15 +4953,51 @@ records:
       - src/webui/market_dashboard_landscape_shell_router_v2.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Market dashboard current state v0 is absent on the compared SHA. Landscape V2 is a later GET /market
+      consumer surface (RCN-000001). Shared consumer surface is not identity and not proven replacement. Unique remaining
+      value, coverage, and incompatibility are all unproven. Evaluate overlap LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+      is comparison only.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000033.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
     contradictions: []
     unresolved_questions:
     - Predecessor of later landscape current-state?
     - POSSIBLE_SAME_AS RCN-000001 is later-landscape naming hypothesis only.
     - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
+    - Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+    identity_status: IDENTITY_UNPROVEN_VERSUS_LANDSCAPE_V2
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: replacement by Landscape V2 is not proven'
+    - 'ADAPT_AND_REINTEGRATE: unique current value of the deleted v1 artifact is not proven'
+    - 'REJECT_FOR_CURRENT_SYSTEM: deletion/absence is not a positive rejection reason'
+    - 'RETAIN_AS_IS: historical path is absent; cannot retain an absent artifact'
+    - 'Identity fusion with RCN-000001: POSSIBLE_SAME_AS remains hypothesis'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'Market dashboard current state v0: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000033.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate class is LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000033.yaml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Landscape V2 may later be shown to cover part of this purpose; that is not proven here.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4049,8 +5005,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Fail-open versus Landscape V2 package. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000034
     canonical_record_name: Deleted market dashboard product runbooks
@@ -4180,15 +5137,51 @@ records:
       - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Deleted market dashboard product runbooks is absent on the compared SHA. Landscape V2 is a later GET
+      /market consumer surface (RCN-000001). Shared consumer surface is not identity and not proven replacement. Unique remaining
+      value, coverage, and incompatibility are all unproven. Evaluate overlap LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+      is comparison only.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000034.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
     contradictions: []
     unresolved_questions:
     - Documentation of RCN-000009/000010/000011 or a distinct product definition?
     - POSSIBLE_SAME_AS RCN-000009/011 remains documentation-to-code hypothesis.
     - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
+    - Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+    identity_status: IDENTITY_UNPROVEN_VERSUS_LANDSCAPE_V2
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: replacement by Landscape V2 is not proven'
+    - 'ADAPT_AND_REINTEGRATE: unique current value of the deleted v1 artifact is not proven'
+    - 'REJECT_FOR_CURRENT_SYSTEM: deletion/absence is not a positive rejection reason'
+    - 'RETAIN_AS_IS: historical path is absent; cannot retain an absent artifact'
+    - 'Identity fusion with RCN-000001: POSSIBLE_SAME_AS remains hypothesis'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'Deleted market dashboard product runbooks: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000034.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate class is LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000034.yaml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Landscape V2 may later be shown to cover part of this purpose; that is not proven here.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4196,9 +5189,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Promoted from CAND:deleted_market_dashboard_product_runbooks. Not fused with code packages. EVALUATE_PASS_V1 compared
-      against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      against 0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000035
     canonical_record_name: Composition Landmark Master Runbook v1.3
@@ -4312,15 +5305,51 @@ records:
       - src/webui/market_dashboard_landscape_shell_router_v2.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Composition Landmark Master Runbook v1.3 is absent on the compared SHA. Landscape V2 is a later GET /market
+      consumer surface (RCN-000001). Shared consumer surface is not identity and not proven replacement. Unique remaining
+      value, coverage, and incompatibility are all unproven. Evaluate overlap LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+      is comparison only.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000035.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
     contradictions: []
     unresolved_questions:
     - Distinct from Landscape V2 master runbook RCN-000002?
     - Distinct from Landscape V2 master runbook RCN-000002; POSSIBLE_SAME_AS remains hypothesis.
     - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
+    - Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+    identity_status: IDENTITY_UNPROVEN_VERSUS_LANDSCAPE_V2
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: replacement by Landscape V2 is not proven'
+    - 'ADAPT_AND_REINTEGRATE: unique current value of the deleted v1 artifact is not proven'
+    - 'REJECT_FOR_CURRENT_SYSTEM: deletion/absence is not a positive rejection reason'
+    - 'RETAIN_AS_IS: historical path is absent; cannot retain an absent artifact'
+    - 'Identity fusion with RCN-000001: POSSIBLE_SAME_AS remains hypothesis'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'Composition Landmark Master Runbook v1.3: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000035.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate class is LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000035.yaml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Landscape V2 may later be shown to cover part of this purpose; that is not proven here.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4328,8 +5357,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Fail-open versus RCN-000002 and RCN-000034. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000036
     canonical_record_name: archive/full_files_stand_02.12.2025 export tree
@@ -4437,15 +5467,35 @@ records:
       evidence: *id001
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: The dated export is absent. Current src/backtest/engine.py and src/strategies/ma_crossover.py exist but
+      are not proven to be the 02.12.2025 export blobs.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000036.yaml
+    - src/backtest/engine.py
+    - src/strategies/ma_crossover.py
     contradictions: []
     unresolved_questions:
     - Same snapshot as archive/PeakTradeRepo or a different export?
     - Different tree and different blobs from archive/PeakTradeRepo; POSSIBLE_SAME_AS remains hypothesis.
     - Is there a proven current replacement, or only a later namesake?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED by current backtest/ma_crossover: blob identity unproven'
+    - 'REJECT because archived: absence is not rejection'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'archive/full_files_stand_02.12.2025 export tree: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000036.yaml
+      - src/backtest/engine.py
+      - src/strategies/ma_crossover.py
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4453,8 +5503,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Inner python modules listed in tree census. Not fused with RCN-000014. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000037
     canonical_record_name: archive/legacy_docs
@@ -4534,14 +5585,29 @@ records:
       - docs/system_atlas/reconciliation/ledger.yaml
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: The legacy_docs archive path is absent. No current equivalent is proven. Absence is not irrelevance.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000037.yaml
     contradictions: []
     unresolved_questions:
     - What documents did this archive hold besides the README?
     - Is there a proven current replacement, or only a later namesake?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - REJECT because archived
+    - 'CAPABILITY_ALREADY_COVERED by current overview docs: identity unproven'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'archive/legacy_docs: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE remains
+        OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000037.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4549,8 +5615,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Path inventory hit. Contents not mined for purpose. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000038
     canonical_record_name: archive/legacy_scripts run_regime_experiments
@@ -4629,15 +5696,30 @@ records:
       - docs/system_atlas/reconciliation/ledger.yaml
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: The archived experiment sequencer is absent. No current equivalent script is proven.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000038.yaml
     contradictions: []
     unresolved_questions:
     - Standalone tooling component versus later regime sweep scripts?
     - Relation to later regime-sweep scripts is unproven identity.
     - Is there a proven current replacement, or only a later namesake?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - REJECT because archived
+    - 'ADAPT_AND_REINTEGRATE: unique current value unproven'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'archive/legacy_scripts run_regime_experiments: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000038.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4645,8 +5727,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Single archived script. Purpose not investigated. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000039
     canonical_record_name: src/infra/health historical package
@@ -4740,15 +5823,35 @@ records:
       - src/risk_layer/kill_switch/health_check.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: src/infra/health is absent. HealthChecker in kill_switch and HealthCheck in src/core/resilience.py are
+      later namesakes; identity with infra.health is unproven.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000039.yaml
+    - src/risk_layer/kill_switch/health_check.py
+    - src/core/resilience.py
     contradictions: []
     unresolved_questions:
     - Deleted, renamed, or never merged to origin/main?
     - Deleted vs never merged to later origin/main is a presence fact, not disposition.
     - Did src/infra/health migrate into kill_switch health_check, core.resilience, or neither?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED by kill_switch HealthChecker: identity unproven'
+    - 'CAPABILITY_ALREADY_COVERED by core.resilience HealthCheck: identity unproven'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'src/infra/health historical package: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000039.yaml
+      - src/risk_layer/kill_switch/health_check.py
+      - src/core/resilience.py
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4756,8 +5859,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Tip-tree discovery. Not fused with current src/infra/escalation. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000040
     canonical_record_name: src/infra/backup historical package
@@ -4829,15 +5933,33 @@ records:
       - src/infra/__init__.py
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: src/infra/backup is absent. EVALUATE found no current BackupManager implementation path. No equivalent
+      is proven. That is not proof the historical backup purpose is irrelevant.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000040.yaml
+    - src/infra/__init__.py
     contradictions: []
     unresolved_questions:
     - Relation to disaster-recovery docs/scripts?
     - Relation to later disaster-recovery docs/scripts is unproven identity.
     - Does a later backup/recovery owner exist under another path?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - REJECT because absent
+    - 'ADAPT_AND_REINTEGRATE: unique current uncovered backup value is not proven from remaining evidence'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'src/infra/backup historical package: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000040.yaml
+      - src/infra/__init__.py
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4845,8 +5967,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Fail-open versus other infra tip packages. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000041
     canonical_record_name: src/infra/monitoring historical package
@@ -4924,15 +6047,31 @@ records:
       - src/risk_layer/alerting/alert_manager.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: src/infra/monitoring is absent. src/risk_layer/alerting/ exists; identity with infra.monitoring is unproven.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000041.yaml
+    - src/risk_layer/alerting/__init__.py
     contradictions: []
     unresolved_questions:
     - Relation to current src/obs or src/observability?
     - Relation to deleted docs/observability or later src/obs is unproven identity.
     - Is risk_layer.alerting a successor of src/infra/monitoring, or a distinct later package?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED by risk_layer.alerting: identity unproven'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'src/infra/monitoring historical package: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000041.yaml
+      - src/risk_layer/alerting/__init__.py
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -4940,8 +6079,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Name similarity to observability is not identity. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000042
     canonical_record_name: src/infra/resilience historical package
@@ -5019,15 +6159,32 @@ records:
       - src/core/resilience.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: src/infra/resilience is absent. src/core/resilience.py documents CircuitBreaker and retry_with_backoff;
+      different path is not proven identity.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000042.yaml
+    - src/core/resilience.py
     contradictions: []
     unresolved_questions:
     - Relation to current resilience docs/tests?
     - Relation to later resilience docs/tests is unproven identity.
     - Is src/core/resilience.py the same historical package as src/infra/resilience?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED by src/core/resilience.py: identity unproven'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'src/infra/resilience historical package: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000042.yaml
+      - src/core/resilience.py
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -5035,8 +6192,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Fail-open versus other infra packages. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000043
     canonical_record_name: pre_economic_zero_order observer/arming tip modules
@@ -5149,15 +6307,33 @@ records:
       evidence: *id002
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: The observer/arming/evidence trio is absent. Later pre_economic_zero_order evidence-session modules exist;
+      campaign-name similarity is not proven identity with the deleted trio.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000043.yaml
+    - src/ops/pre_economic_zero_order_evidence_session_contract_v1.py
     contradictions: []
     unresolved_questions:
     - Same family as current evidence_session modules or a distinct observer/arming stack?
     - Same family as later evidence_session modules is unproven identity.
     - Do current evidence-session modules replace observer/arming/evidence, or only share a campaign name?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED by evidence-session modules: identity unproven'
+    - REJECT because deleted
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'pre_economic_zero_order observer/arming tip modules: evidence is not sufficient for a stronger terminal class.
+        INSUFFICIENT_EVIDENCE remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000043.yaml
+      - src/ops/pre_economic_zero_order_evidence_session_contract_v1.py
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -5165,9 +6341,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Fail-open versus current origin/main pre_economic_zero_order_evidence_session_* files. EVALUATE_PASS_V1 compared
-      against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      against 0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000044
     canonical_record_name: PeakTradeRepo nested backtest engine
@@ -5265,15 +6441,35 @@ records:
       evidence: *id003
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Recovered archive blob for archive/PeakTradeRepo/src/backtest/engine.py is a one-line placeholder. Current
+      src/backtest/engine.py exists and is not proven to be that placeholder blob. A placeholder is not proof that the intended
+      historical capability is covered or should be rejected.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000044.yaml
+    - src/backtest/engine.py
     contradictions: []
     unresolved_questions:
     - Same component as later src/backtest or a distinct nested snapshot?
     - Not proven SAME_AS later src/backtest; placeholder vs implemented export engine.
     - Is there a proven current replacement, or only a later namesake?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED by the current module: blob identity unproven'
+    - 'REJECT because the recovered blob is a placeholder: intended capability remains a separate question'
+    - REJECT because archived
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'PeakTradeRepo nested backtest engine: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000044.yaml
+      - src/backtest/engine.py
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -5281,9 +6477,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Inner file of RCN-000014. Not fused with current src/backtest. Purpose not investigated. EVALUATE_PASS_V1 compared
-      against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      against 0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000045
     canonical_record_name: PeakTradeRepo nested position_sizer
@@ -5379,15 +6575,35 @@ records:
       evidence: *id004
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Recovered archive blob for archive/PeakTradeRepo/src/risk/position_sizer.py is a one-line placeholder.
+      Current src/risk/position_sizer.py exists and is not proven to be that placeholder blob. A placeholder is not proof
+      that the intended historical capability is covered or should be rejected.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000045.yaml
+    - src/risk/position_sizer.py
     contradictions: []
     unresolved_questions:
     - Identity versus deleted position_sizer_old_backup or current sizer modules?
     - Identity versus later sizer modules or position_sizer_old_backup is unproven; no SAME_AS.
     - Is there a proven current replacement, or only a later namesake?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED by the current module: blob identity unproven'
+    - 'REJECT because the recovered blob is a placeholder: intended capability remains a separate question'
+    - REJECT because archived
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'PeakTradeRepo nested position_sizer: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000045.yaml
+      - src/risk/position_sizer.py
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -5395,8 +6611,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Fail-open versus CAND:position_sizer_old_backup. Name is not identity. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000046
     canonical_record_name: PeakTradeRepo nested ma_crossover strategy
@@ -5499,15 +6716,35 @@ records:
       evidence: *id005
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Recovered archive blob for archive/PeakTradeRepo/src/strategies/ma_crossover.py is a one-line placeholder.
+      Current src/strategies/ma_crossover.py exists and is not proven to be that placeholder blob. A placeholder is not proof
+      that the intended historical capability is covered or should be rejected.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000046.yaml
+    - src/strategies/ma_crossover.py
     contradictions: []
     unresolved_questions:
     - Same strategy as later ma_crossover implementations?
     - Not proven SAME_AS later ma_crossover implementations.
     - Is there a proven current replacement, or only a later namesake?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED by the current module: blob identity unproven'
+    - 'REJECT because the recovered blob is a placeholder: intended capability remains a separate question'
+    - REJECT because archived
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'PeakTradeRepo nested ma_crossover strategy: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000046.yaml
+      - src/strategies/ma_crossover.py
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -5515,8 +6752,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Fail-open versus archive/full_files_stand export ma_crossover. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000047
     canonical_record_name: evidence/market_dashboard_reset pack
@@ -5631,16 +6869,52 @@ records:
       - src/webui/market_dashboard_landscape_shell_router_v2.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: evidence/market_dashboard_reset pack is absent on the compared SHA. Landscape V2 is a later GET /market
+      consumer surface (RCN-000001). Shared consumer surface is not identity and not proven replacement. Unique remaining
+      value, coverage, and incompatibility are all unproven. Evaluate overlap LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+      is comparison only.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000047.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+    - src/webui/market_dashboard_landscape_v2/owner_registry.py
     contradictions: []
     unresolved_questions:
     - Same deletion event as evidence/market_dashboard_deletion or a different reset pack?
     - What did the reset pack assert that the deletion pack (RCN-000013) did not?
     - 'POSSIBLE_SAME_AS RCN-000013 remains hypothesis: reset pack vs later deletion pack are different evidence events.'
     - Does a current Landscape V2 slot cover this historical purpose, or only share the GET /market surface?
+    - Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+    identity_status: IDENTITY_UNPROVEN_VERSUS_LANDSCAPE_V2
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED: replacement by Landscape V2 is not proven'
+    - 'ADAPT_AND_REINTEGRATE: unique current value of the deleted v1 artifact is not proven'
+    - 'REJECT_FOR_CURRENT_SYSTEM: deletion/absence is not a positive rejection reason'
+    - 'RETAIN_AS_IS: historical path is absent; cannot retain an absent artifact'
+    - 'Identity fusion with RCN-000001: POSSIBLE_SAME_AS remains hypothesis'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'evidence/market_dashboard_reset pack: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000047.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate class is LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000047.yaml
+      used_as_fact: true
+    - claim_class: HYPOTHESIS
+      text: Landscape V2 may later be shown to cover part of this purpose; that is not proven here.
+      evidence:
+      - src/webui/market_dashboard_landscape_v2/owner_registry.py
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -5648,8 +6922,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
-    notes: Fail-open versus RCN-000013. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+    notes: Fail-open versus RCN-000013. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1
+      adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000048
     canonical_record_name: docs/20_phases historical path family
@@ -5731,15 +7006,33 @@ records:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: docs/20_phases is absent. The Canonical Master Runbook exists as current semantic authority. Absorption
+      of numbered 20_phases markdowns into Master Runbook sections is not proven.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000048.yaml
+    - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     contradictions: []
     unresolved_questions:
     - Path move versus a distinct document set?
     - Path move versus later runbook locations is unproven identity.
     - Were 20_phases markdowns superseded by Master Runbook sections, or lost without replacement?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED by Master Runbook: absorption/identity unproven'
+    - REJECT because the path family is gone
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'docs/20_phases historical path family: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000048.yaml
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -5747,9 +7040,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Path-family census. Not a current-system comparison. Purpose of the family not investigated. EVALUATE_PASS_V1 compared
-      against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      against 0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000049
     canonical_record_name: docs/00_overview historical path family
@@ -5838,15 +7131,34 @@ records:
       - docs/ARCHITECTURE_OVERVIEW.md
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: docs/00_overview is absent. Current overview markdowns exist at different paths. Relocation versus separately
+      authored docs is unproven.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000049.yaml
+    - docs/PEAK_TRADE_OVERVIEW.md
+    - docs/ARCHITECTURE_OVERVIEW.md
     contradictions: []
     unresolved_questions:
     - Path move versus distinct overview documents?
     - POSSIBLE_SAME_AS src/docs RCN-000053 remains hypothesis; different path families.
     - Are current overview docs the relocated 00_overview family, or separately authored?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED by current overview docs: identity unproven'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'docs/00_overview historical path family: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000049.yaml
+      - docs/PEAK_TRADE_OVERVIEW.md
+      - docs/ARCHITECTURE_OVERVIEW.md
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -5854,8 +7166,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Fail-open versus current docs/ root files with similar names. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000050
     canonical_record_name: step29m strategy/research family
@@ -5965,15 +7278,36 @@ records:
       - src/strategies/bollinger.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: step29m v2 modules are absent. Parent-named strategy modules exist. UNDERSTAND binds step29m v2 as wrappers
+      around parent v1; that does not prove current bollinger.py / momentum.py / trend_following.py are those wrappers or
+      cover that family.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/understand/records/RCN-000050.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000050.yaml
+    - src/strategies/bollinger.py
     contradictions: []
     unresolved_questions:
     - One research workstream or three distinct strategies? Grouping is path-prefix only.
     - Ledger record groups three strategies by path prefix; they are not fused into one identity.
     - Did step29m v2 wrappers retire into parent modules, or was the family removed without replacement?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - 'CAPABILITY_ALREADY_COVERED by current strategy modules: identity with step29m v2 unproven'
+    - REJECT because research family was removed
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'step29m strategy/research family: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000050.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000050.yaml
+      - src/strategies/bollinger.py
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -5981,9 +7315,10 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Path-prefix grouping is not identity fusion of the three strategy files with each other as one component; record
       is the named workstream family. Individual files remain listed. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000051
     canonical_record_name: archive/noch_einordnen
@@ -6066,15 +7401,31 @@ records:
       - docs/system_atlas/reconciliation/ledger.yaml
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: The queued archive folder is absent. UNDERSTAND binds recovered README text matching PeakTradeRepo README.
+      No current equivalent is proven.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000051.yaml
     contradictions: []
     unresolved_questions:
     - What was queued in this archive?
     - Text overlap with PeakTradeRepo README is not SAME_AS without blob-identity proof.
     - Is there a proven current replacement, or only a later namesake?
+    identity_status: IDENTITY_UNPROVEN
+    alternatives_rejected:
+    - REJECT because archived
+    - 'Identity fusion with RCN-000014: not proven'
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'archive/noch_einordnen: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE remains
+        OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000051.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -6082,8 +7433,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Named archive bucket. Not exhausted beyond the README path. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000052
     canonical_record_name: docs/webui/observability deleted family
@@ -6178,16 +7530,52 @@ records:
       - docs/webui/observability/OBSERVABILITY_HUB_V0.md
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: OPEN
+    disposition: INSUFFICIENT_EVIDENCE
+    positive_reason: Census discovery.current_presence remains CURRENTLY_ABSENT and is not rewritten. The compared/current
+      tree contains docs/webui/observability/OBSERVABILITY_HUB_V0.md as a read-only hub. That mismatch is a preserved contradiction.
+      RETAIN_AS_IS would silently treat the census-deleted identity as the currently present docs without resolving lineage.
+      CAPABILITY_ALREADY_COVERED would assume the present docs are the same family. The contradiction blocks a stronger terminal
+      class.
+    evidence_refs:
+    - docs/system_atlas/reconciliation/ledger.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000052.yaml
+    - docs/webui/observability/OBSERVABILITY_HUB_V0.md
     contradictions:
     - Ledger discovery.current_presence is CURRENTLY_ABSENT while the bound current tree contains the family.
     unresolved_questions:
     - Same observability stack as deleted docs/observability Grafana family RCN-000020?
     - POSSIBLE_SAME_AS Grafana docs/observability RCN-000020 remains hypothesis (different stack/docs generation).
     - Was the family restored after the census SHA, or was census presence bound against a different tree?
+    identity_status: CENSUS_TREE_CONTRADICTION
+    alternatives_rejected:
+    - 'RETAIN_AS_IS: would normalize census CURRENTLY_ABSENT into a currently retained identity'
+    - 'CAPABILITY_ALREADY_COVERED: present hub docs are not proven identical to the census-deleted family'
+    - 'Rewriting discovery.current_presence: forbidden; census field is historical discovery fact'
+    - REJECT because census said deleted
+    further_evidence_required: true
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'docs/webui/observability deleted family: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+        remains OPEN and is not a rejection.'
+      evidence:
+      - docs/system_atlas/reconciliation/ledger.yaml
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000052.yaml
+      - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: docs/webui/observability/OBSERVABILITY_HUB_V0.md exists on the current bound tree.
+      evidence:
+      - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+      used_as_fact: true
+    - claim_class: CONTRADICTION
+      text: Ledger discovery.current_presence is CURRENTLY_ABSENT while the bound current tree contains the family.
+      evidence:
+      - docs/system_atlas/reconciliation/ledger.yaml
+      - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -6195,8 +7583,9 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Fail-open versus RCN-000020. Path prefix differs. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 - identity:
     reconciliation_id: RCN-000053
     canonical_record_name: src/docs misplaced documentation tree
@@ -6289,14 +7678,39 @@ records:
       - src/docs/CONTRIBUTING.md
       used_as_fact: true
   adjudication:
-    lifecycle_state: CURRENT_SYSTEM_COMPARED
-    disposition: ''
-    positive_reason: ''
-    evidence_refs: []
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: RETAIN_AS_IS
+    positive_reason: src/docs remains present as documentation under src/. Not declared canonical SSOT. Compatible as non-authority
+      docs; path placement is not a proven safety conflict.
+    evidence_refs:
+    - src/docs/Peak_Trade_OVERVIEW.md
+    - src/docs/CONTRIBUTING.md
     contradictions: []
     unresolved_questions:
     - Distinct documentation set versus copies of docs/ files?
     - Whether src/docs was an accidental copy of docs/00_overview is unproven.
+    - Whether src/docs should later move is a separate docs-hygiene question, not this disposition.
+    identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+    alternatives_rejected:
+    - 'HISTORICALLY_VALID_BUT_INCOMPATIBLE solely because the path is under src/: placement is not a proven invariant breach'
+    - 'REJECT because misplaced: taxonomy forbids rejection for inconvenience'
+    further_evidence_required: false
+    reintegration_candidate: false
+    adjudication_attempted: true
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: src/docs misplaced documentation tree remains on the bound current tree as the same artifact; current role is
+        compatible. SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path presence
+        plus compatible authority/safety/runtime role.
+      evidence:
+      - src/docs/Peak_Trade_OVERVIEW.md
+      - src/docs/CONTRIBUTING.md
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+      evidence:
+      - docs/system_atlas/reconciliation/evaluate/records/RCN-000053.yaml
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -6304,11 +7718,14 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: ''
+    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Path-family census from unique blob inventory. Not purpose-understood. Not fused with CAND:src_docs_workflow_notes
-      or RCN-000049. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
+      or RCN-000049. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1
+      adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
 census_pass_id: FIND_COMPLETELY_PASS_V3
 understand_pass_id: UNDERSTAND_PASS_V2
 understand_bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
 evaluate_pass_id: EVALUATE_INDIVIDUALLY_PASS_V1
 evaluate_bound_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+adjudicate_pass_id: INTEGRATE_OR_DISPOSITION_PASS_V1
+adjudicate_bound_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2

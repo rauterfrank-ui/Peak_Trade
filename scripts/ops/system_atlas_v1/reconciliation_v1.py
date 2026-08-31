@@ -415,6 +415,10 @@ def _validate_record(
             raise ReconciliationValidationError(f"REJECT_WITHOUT_POSITIVE_REASON:{rid}")
     if lifecycle == "OPEN" and disposition not in {"", "INSUFFICIENT_EVIDENCE"}:
         raise ReconciliationValidationError(f"OPEN_WITHOUT_INSUFFICIENT_EVIDENCE:{rid}")
+    if lifecycle in {"DISCOVERED", "EVIDENCE_BOUND", "PURPOSE_UNDERSTOOD"} and disposition:
+        raise ReconciliationValidationError(f"DISPOSITION_BEFORE_CURRENT_SYSTEM_COMPARE:{rid}")
+    if lifecycle in {"DISPOSITION_DECIDED", "ADJUDICATED"} and not disposition:
+        raise ReconciliationValidationError(f"DISPOSITION_STATE_WITHOUT_DISPOSITION:{rid}")
     if lifecycle == "CURRENT_SYSTEM_COMPARED":
         if purpose_understood is not True:
             raise ReconciliationValidationError(f"COMPARE_BEFORE_PURPOSE_UNDERSTOOD:{rid}")

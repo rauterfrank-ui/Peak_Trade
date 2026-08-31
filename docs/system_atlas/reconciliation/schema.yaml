@@ -59,6 +59,12 @@ adjudication:
 - evidence_refs
 - contradictions
 - unresolved_questions
+- identity_status
+- alternatives_rejected
+- further_evidence_required
+- reintegration_candidate
+- adjudication_attempted
+- claims
 integration:
 - reintegration_required
 - adaptation_required
@@ -144,3 +150,7 @@ evaluate_artifact_files:
 - evaluate/pass_v1_status.yaml
 - evaluate/index.yaml
 - evidence/evaluate_v1/raw_quotes.yaml
+adjudicate_artifact_files:
+- adjudicate/pass_v1_status.yaml
+- adjudicate/index.yaml
+- evidence/adjudicate_v1/raw_quotes.yaml

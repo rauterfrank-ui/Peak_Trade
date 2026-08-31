@@ -1,0 +1,60 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+atlas_authority: NONE
+reconciliation_authority: NONE
+adjudicate_pass_id: INTEGRATE_OR_DISPOSITION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: true
+current_system_compared: true
+evaluate_performed: true
+adjudication_attempted: true
+reintegration_performed: false
+runtime_mutation_performed: false
+record_id: RCN-000030
+canonical_record_name: Market futures OHLCV v0
+census_current_presence: CURRENTLY_ABSENT
+evaluate_capability_overlap: LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN
+disposition: INSUFFICIENT_EVIDENCE
+lifecycle_state: OPEN
+identity_status: IDENTITY_UNPROVEN_VERSUS_LANDSCAPE_V2
+positive_reason: Market futures OHLCV v0 is absent on the compared SHA. Landscape V2 is a later GET /market consumer surface
+  (RCN-000001). Shared consumer surface is not identity and not proven replacement. Unique remaining value, coverage, and
+  incompatibility are all unproven. Evaluate overlap LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN is comparison only.
+alternatives_rejected:
+- 'CAPABILITY_ALREADY_COVERED: replacement by Landscape V2 is not proven'
+- 'ADAPT_AND_REINTEGRATE: unique current value of the deleted v1 artifact is not proven'
+- 'REJECT_FOR_CURRENT_SYSTEM: deletion/absence is not a positive rejection reason'
+- 'RETAIN_AS_IS: historical path is absent; cannot retain an absent artifact'
+- 'Identity fusion with RCN-000001: POSSIBLE_SAME_AS remains hypothesis'
+further_evidence_required: true
+reintegration_candidate: false
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: 'Market futures OHLCV v0: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE remains
+    OPEN and is not a rejection.'
+  evidence:
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000030.yaml
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+  - src/webui/market_dashboard_landscape_v2/owner_registry.py
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Evaluate class is LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN.
+  evidence:
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000030.yaml
+  used_as_fact: true
+- claim_class: HYPOTHESIS
+  text: Landscape V2 may later be shown to cover part of this purpose; that is not proven here.
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/owner_registry.py
+  used_as_fact: false
+evidence_refs:
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000030.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+- src/webui/market_dashboard_landscape_v2/owner_registry.py
+contradictions: []
+unresolved_questions:
+- Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+evaluate_compared_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
