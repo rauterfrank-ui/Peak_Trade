@@ -1,0 +1,150 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
+atlas_authority: NONE
+reconciliation_authority: NONE
+reevaluate_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V2
+input_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+predecessor_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+predecessor_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+identity_fusion_forbidden: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+understand_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+adjudication_snapshot_frozen: true
+evidence_resolution_snapshot_frozen: true
+reevaluate_v1_snapshot_frozen: true
+census_closed: true
+census_status: CENSUS_CLOSED
+adjudicate_pass_id_frozen: INTEGRATE_OR_DISPOSITION_PASS_V1
+baseline_origin_main_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
+ledger_record_count: 53
+ledger_input_insufficient_evidence_count: 35
+input_open_record_count: 35
+reevaluation_attempted_record_count: 35
+v2_written_record_count: 6
+target_final_record_ids:
+- RCN-000015
+- RCN-000044
+- RCN-000045
+- RCN-000046
+- RCN-000051
+explicit_remain_open_record_ids:
+- RCN-000052
+out_of_scope_open_record_ids:
+- RCN-000009
+- RCN-000010
+- RCN-000011
+- RCN-000012
+- RCN-000014
+- RCN-000019
+- RCN-000020
+- RCN-000023
+- RCN-000027
+- RCN-000028
+- RCN-000029
+- RCN-000030
+- RCN-000031
+- RCN-000032
+- RCN-000033
+- RCN-000034
+- RCN-000035
+- RCN-000036
+- RCN-000037
+- RCN-000038
+- RCN-000039
+- RCN-000040
+- RCN-000041
+- RCN-000042
+- RCN-000043
+- RCN-000047
+- RCN-000048
+- RCN-000049
+- RCN-000050
+resulting_dispositions:
+  RCN-000015: HISTORICALLY_VALID_BUT_INCOMPATIBLE
+  RCN-000044: REJECT_FOR_CURRENT_SYSTEM
+  RCN-000045: REJECT_FOR_CURRENT_SYSTEM
+  RCN-000046: REJECT_FOR_CURRENT_SYSTEM
+  RCN-000051: REJECT_FOR_CURRENT_SYSTEM
+  RCN-000052: INSUFFICIENT_EVIDENCE
+new_retain_as_is_count: 0
+new_adapt_and_reintegrate_count: 0
+new_capability_already_covered_count: 0
+new_historically_valid_but_incompatible_count: 1
+new_reject_for_current_system_count: 4
+remaining_insufficient_evidence_open_count: 30
+new_final_disposition_count: 5
+final_disposition_changes_performed: 5
+rcn_000052_remains_open: true
+rcn_000052_contradiction_id: C052-1
+c052_contradiction_resolved: false
+no_identity_merges: true
+no_reintegration: true
+no_runtime_mutation: true
+frozen_v1_snapshots_unchanged: true
+v1_frozen_file_sha256:
+  reevaluate/pass_v1_status.yaml: 37c402da4302f0aaa9ee7fe74ce41c2c7df0198ebd0ecf6ad2644f2171ab2ce0
+  reevaluate/index.yaml: 99fbd534080f4c22848fd9c869e1a2012f566e8bde9cde0d6433d6f58650fc34
+  reevaluate/records/RCN-000009.yaml: 41eb81470601418dfc8fea58ae8bd2659faa67df76247eb087ff606deda5f76c
+  reevaluate/records/RCN-000010.yaml: f349d6d0a620cb20228f8d67edfa93fe978adbd907c1a0e49f7f3f9ca81d65ec
+  reevaluate/records/RCN-000011.yaml: 50ebce696235bbac707cb2e4f56e1b94b2e92d369155b888dd7c8a2c244f4e98
+  reevaluate/records/RCN-000012.yaml: 3bb9789f1f0949621e9b5ff4409bf0e7e57ff97e05d7b31ebc61361b8db92250
+  reevaluate/records/RCN-000014.yaml: 970114a94bb06285d374a01481462ff9bba3f06546d1529b2f2d8c602a01e5da
+  reevaluate/records/RCN-000015.yaml: 34d6a3ea19c2b93ce7f6bf3714b547c95b23e6e8fa30bc4b4e929348f11920c7
+  reevaluate/records/RCN-000019.yaml: d3be1dd30bc5f558e76f5b3bf57ace46bb9745a647d45e702d7edd837b00288a
+  reevaluate/records/RCN-000020.yaml: 27792a5bf68a0ddd7d2e2dcc54e58840bcc69ed3e657be8457273acd765e3b15
+  reevaluate/records/RCN-000023.yaml: 89d4cb7b1302ae220689c4de881d70acffbccce5ed292d2ab8b89fbd65121adb
+  reevaluate/records/RCN-000027.yaml: f777cada9fa06d4e1e10b2ef475f2bf77e7661ef816c80a9f6d18fd6bd06c602
+  reevaluate/records/RCN-000028.yaml: 7c73a30ac5c83e8381bb7cb929c2f91554bfe54663b28998dee6c5ba6e5ee855
+  reevaluate/records/RCN-000029.yaml: 8f07f867316ceb3851f810fa00ec349e54a385c119319ee95e7bc72714343322
+  reevaluate/records/RCN-000030.yaml: eaacfce094da62c298b972b5e03a0c021bc8adda9b7bb64488c57691ac846ae0
+  reevaluate/records/RCN-000031.yaml: f76ab0cecdb51978c72208a31d186a6ad7f9b560a6e6473d2b9b64dbd3719899
+  reevaluate/records/RCN-000032.yaml: 184841dc1794c7905ebf2769b36e37ab5cba18e86fb47e8434466f6e0972a269
+  reevaluate/records/RCN-000033.yaml: 5b507808843bb685b47116295dc554315888a3fd43a2eb2bd02f4d98e7e917f4
+  reevaluate/records/RCN-000034.yaml: 7ba19e584312e3161d777fa949b9062cf69f3e7f58730631a4267efcfb046e55
+  reevaluate/records/RCN-000035.yaml: 085757d5d51c8e0988538763e2a3e8eff3c030bff1e955071f8733e311434664
+  reevaluate/records/RCN-000036.yaml: c7b20b692d2de04c407b12bae7c3b4603e975788a447906d5c92f4a8c8a835ec
+  reevaluate/records/RCN-000037.yaml: d8934f7d81f23f736a3ef6fb1ab8eb54406ceeb7af2da580a3589b549d42c13d
+  reevaluate/records/RCN-000038.yaml: c827acb3ace1d8771e767cdf9cb6569a0925829900b69b56f3fe57ef96a1bac3
+  reevaluate/records/RCN-000039.yaml: 6b14ea801c51b7ae87bda51dfa0134b8a9d954673d57fbcd61c3db9dba958534
+  reevaluate/records/RCN-000040.yaml: e02d5666e66fe75660b522376a598e85fc010e4f77b7b7858e6a046390361c44
+  reevaluate/records/RCN-000041.yaml: 0638e0c4fe598e45d5f471f12ed04a0c60ba8a259462523e09e55ed6758e6c5d
+  reevaluate/records/RCN-000042.yaml: 6e421da0d73ee95728675ab462298fd0b9ab746632cffd4cc6ca280f41a58e82
+  reevaluate/records/RCN-000043.yaml: 7f0ed32ef595e07482b54f208b1cf93d6719ded4d1fa7fbf54e85656cb316f59
+  reevaluate/records/RCN-000044.yaml: 5b80a050321a22fe28b1c496454b8e047e0a93de1d6f5598aa83a62da6b259f9
+  reevaluate/records/RCN-000045.yaml: 6186b55e368b6f626713b4f6fb39931ddff3520e2b21a89cf3861bcc86573664
+  reevaluate/records/RCN-000046.yaml: 76e642f105dd629eef88b2fd93c9f7bd0d97431366f8834fe8486dfa073f58de
+  reevaluate/records/RCN-000047.yaml: 5f3c517f044cd9aa130f8ee7e4c719a3710e1f38799a7d4f2494c74b7dde1412
+  reevaluate/records/RCN-000048.yaml: 26a7a0adb2b3fd54e7fad76dbec3b8b2dce58fde58f2c64b3aeed695c27f5a7f
+  reevaluate/records/RCN-000049.yaml: 0023adb140454d33a886609b7d2426171817d9eb530156b5aab62234145bf105
+  reevaluate/records/RCN-000050.yaml: b20eecd8174308cdde4508f1b0101bee4ff8dc625cfd9a88684b9a6964864685
+  reevaluate/records/RCN-000051.yaml: faef8e39c647fb15239b729a256d1907be2174d5dc411d685680ebd77f9abd0f
+  reevaluate/records/RCN-000052.yaml: cbae60d56374f182ea6b9cf67b361500fef06c8633ab579013a488d12a8a8201
+landscape_v1_ids:
+- RCN-000009
+- RCN-000010
+- RCN-000011
+- RCN-000012
+- RCN-000023
+- RCN-000027
+- RCN-000028
+- RCN-000029
+- RCN-000030
+- RCN-000031
+- RCN-000032
+- RCN-000033
+- RCN-000034
+- RCN-000035
+- RCN-000047
+total_ledger_record_count: 53
+total_retain_as_is_count: 18
+total_adapt_and_reintegrate_count: 0
+total_capability_already_covered_count: 0
+total_historically_valid_but_incompatible_count: 1
+total_reject_for_current_system_count: 4
+total_insufficient_evidence_count: 30

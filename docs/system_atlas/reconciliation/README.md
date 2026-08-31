@@ -34,8 +34,9 @@ understand/            UNDERSTAND pass v2 historical evidence binding
 evaluate/              EVALUATE_INDIVIDUALLY pass v1 current-system comparison
 adjudicate/            INTEGRATE_OR_DISPOSITION pass v1 adjudication
 evidence_resolution/   OPEN_EVIDENCE_RESOLUTION pass v1 (OPEN records only)
-reevaluate/            REEVALUATE_OPEN_RECORDS pass v1 (OPEN records only)
+reevaluate/            REEVALUATE_OPEN_RECORDS pass v2 current; pass v1 snapshots frozen
 evidence/understand_v1/ raw quotes separated from interpretation
+evidence/reevaluate_v2/ raw quotes and command captures for pass v2
 ```
 
 Governance persist baseline: `90dec7208554deb5d2af0a2021bb7bceaf5d6662`.
@@ -210,7 +211,36 @@ Repository taxonomy names (obeyed; not renamed):
 `CAPABILITY_ALREADY_COVERED` (not `ALREADY_COVERED`);
 `INSUFFICIENT_EVIDENCE` (not `OPEN_INSUFFICIENT_EVIDENCE`).
 
-## REEVALUATE_OPEN_RECORDS pass v1 state (current)
+## REEVALUATE_OPEN_RECORDS pass v2 state (current)
+
+```text
+PASS_ID=REEVALUATE_OPEN_RECORDS_PASS_V2
+PREDECESSOR_PASS_ID=REEVALUATE_OPEN_RECORDS_PASS_V1
+PREDECESSOR_BOUND_SHA=f9618c73f1834b68588ceab586da4d6408962a10
+BASELINE_ORIGIN_MAIN_SHA=7426af2daa4019e7986584a4c53d40b5e182673d
+INPUT_OPEN_RECORD_COUNT=35
+NEW_FINAL_DISPOSITION_COUNT=5
+REMAINING_INSUFFICIENT_EVIDENCE_OPEN_COUNT=30
+NEW_HISTORICALLY_VALID_BUT_INCOMPATIBLE_COUNT=1
+NEW_REJECT_FOR_CURRENT_SYSTEM_COUNT=4
+RCN_000052_REMAINS_OPEN=true
+IDENTITY_MERGES_PERFORMED=0
+REINTEGRATION_PERFORMED=false
+RUNTIME_MUTATION_PERFORMED=false
+FROZEN_V1_SNAPSHOTS_UNCHANGED=true
+```
+
+This additive persist re-evaluates the 35 records that remained
+`INSUFFICIENT_EVIDENCE` / `OPEN` after pass v1. Five records receive a
+new final disposition (`RCN-000015`, `RCN-000044`, `RCN-000045`,
+`RCN-000046`, `RCN-000051`). `RCN-000052` remains
+`INSUFFICIENT_EVIDENCE` / `OPEN` with `CONTRADICTION_ID=C052-1`. The
+other 29 open records and the 18 `RETAIN_AS_IS` records are unchanged.
+Pass v1 files under `reevaluate&#47;pass_v1_status.yaml`,
+`reevaluate&#47;index.yaml`, and `reevaluate&#47;records&#47;` remain phase-frozen.
+No identity merge, reintegration, or runtime mutation.
+
+## REEVALUATE_OPEN_RECORDS pass v1 state (historical)
 
 ```text
 PASS_ID=REEVALUATE_OPEN_RECORDS_PASS_V1
@@ -337,7 +367,7 @@ It is no longer the live tree state after census pass v1.
 ## Validation
 
 ```text
-./scripts/pt -m pytest -q tests/ops/test_reconciliation_ledger_v1.py tests/ops/test_reconciliation_census_pass_v1.py tests/ops/test_reconciliation_understand_pass_v1.py tests/ops/test_reconciliation_understand_pass_v2.py tests/ops/test_reconciliation_evaluate_pass_v1.py tests/ops/test_reconciliation_adjudicate_pass_v1.py tests/ops/test_reconciliation_evidence_resolution_pass_v1.py tests/ops/test_system_atlas_v1.py
+./scripts/pt -m pytest -q tests/ops/test_reconciliation_ledger_v1.py tests/ops/test_reconciliation_census_pass_v1.py tests/ops/test_reconciliation_understand_pass_v1.py tests/ops/test_reconciliation_understand_pass_v2.py tests/ops/test_reconciliation_evaluate_pass_v1.py tests/ops/test_reconciliation_adjudicate_pass_v1.py tests/ops/test_reconciliation_evidence_resolution_pass_v1.py tests/ops/test_reconciliation_reevaluate_open_records_pass_v1.py tests/ops/test_reconciliation_reevaluate_open_records_pass_v2.py tests/ops/test_system_atlas_v1.py
 ./scripts/pt scripts/ops/validate_system_atlas_v1.py
 ```
 

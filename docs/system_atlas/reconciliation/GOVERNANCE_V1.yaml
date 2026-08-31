@@ -176,12 +176,14 @@ supporting_pass_rule: >
   INSUFFICIENT_EVIDENCE/OPEN after INTEGRATE_OR_DISPOSITION.
   REEVALUATE_OPEN_RECORDS may re-evaluate and adjudicate those
   same OPEN records against the repository taxonomy when a
-  disposition's burden of proof is met. INSUFFICIENT_EVIDENCE
-  remains OPEN when no stronger class is proven. Neither
-  supporting pass is a fifth sequence step, identity fusion,
-  or reintegration. Frozen UNDERSTAND, EVALUATE,
-  INTEGRATE_OR_DISPOSITION, and OPEN_EVIDENCE_RESOLUTION
-  snapshots remain frozen.
+  disposition's burden of proof is met. Additive later persist
+  versions of that supporting pass (pass v2, …) may finalize
+  remaining OPEN records without overwriting frozen predecessor
+  snapshots. INSUFFICIENT_EVIDENCE remains OPEN when no stronger
+  class is proven. Neither supporting pass is a fifth sequence
+  step, identity fusion, or reintegration. Frozen UNDERSTAND,
+  EVALUATE, INTEGRATE_OR_DISPOSITION, OPEN_EVIDENCE_RESOLUTION,
+  and REEVALUATE_OPEN_RECORDS pass-v1 snapshots remain frozen.
 
 atlas_epistemic_class_mapping_navigation_only:
   CANONICAL_CURRENT_FACT: CANONICAL_AUTHORITY

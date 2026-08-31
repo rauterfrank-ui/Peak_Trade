@@ -70,17 +70,18 @@ def test_evidence_resolution_pass_v1_status_invariants() -> None:
 
 
 def test_open_set_is_exactly_the_35_insufficient_open_records() -> None:
+    index = yaml.safe_load((PASS_ROOT / "index.yaml").read_text(encoding="utf-8"))
+    assert int(index["row_count"]) == 35
+    assert tuple(row["record_id"] for row in index["rows"]) == OPEN_IDS
     payload = _payload()
     assert validate_reconciliation_v1(payload) == []
     ledger = payload["records"]["ledger.yaml"]
-    open_ids = []
     retain = 0
+    er_ids = []
     for rec in ledger["records"]:
-        adj = rec["adjudication"]
         rid = rec["identity"]["reconciliation_id"]
-        if adj["disposition"] == INSUFFICIENT:
-            assert adj["lifecycle_state"] == "OPEN"
-            open_ids.append(rid)
+        if rid in OPEN_IDS:
+            er_ids.append(rid)
             block = rec.get("evidence_resolution") or {}
             assert block.get("evidence_resolution_status")
             assert block.get("final_disposition_change_performed") is False
@@ -95,11 +96,14 @@ def test_open_set_is_exactly_the_35_insufficient_open_records() -> None:
                 gap = block[gap_key]
                 assert str(gap.get("status") or "").strip()
                 assert str(gap.get("statement") or "").strip()
+            if rec["adjudication"]["disposition"] == INSUFFICIENT:
+                assert rec["adjudication"]["lifecycle_state"] == "OPEN"
         else:
             retain += 1
             assert rec.get("evidence_resolution") is None
             assert rid in RETAIN_IDS
-    assert tuple(open_ids) == OPEN_IDS
+            assert rec["adjudication"]["disposition"] != INSUFFICIENT
+    assert tuple(er_ids) == OPEN_IDS
     assert retain == 18
     assert ledger["evidence_resolution_pass_id"] == EVIDENCE_RESOLUTION_PASS_ID
     assert ledger["adjudicate_bound_against_sha"] == ADJUDICATE_BOUND_SHA

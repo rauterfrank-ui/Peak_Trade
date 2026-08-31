@@ -181,6 +181,9 @@ evidence_resolution_is_not_disposition: true
 reevaluate_artifact_files:
 - reevaluate/pass_v1_status.yaml
 - reevaluate/index.yaml
+- reevaluate/pass_v2_status.yaml
+- reevaluate/index_v2.yaml
+- evidence/reevaluate_v2/raw_quotes.yaml
 reevaluate:
 - pass_id
 - input_pass_id
@@ -207,3 +210,41 @@ reevaluate:
 - previous_adjudication
 reevaluate_is_not_reintegration: true
 reevaluate_burden_unmet_remains_open: true
+reevaluate_v2:
+- pass_id
+- input_pass_id
+- disposition_burden_met
+- disposition_candidate
+- disposition
+- lifecycle_state
+- final_disposition_change_performed
+- current_evidence_set
+- historical_function
+- historical_relations
+- current_system_analogues
+- identity_status
+- successor_status
+- replacement_status
+- current_value_status
+- current_compatibility_status
+- contradictions
+- unresolved_gaps
+- evaluation_result
+- alternatives_rejected
+- claims
+- evidence_refs
+- previous_adjudication
+- predecessor_pass_id
+- predecessor_bound_sha
+- contradiction_id
+- positive_reason
+- v1_snapshot_frozen
+reevaluate_v1_snapshots_are_frozen: true
+reevaluate_v2_is_not_reintegration: true
+reevaluate_v2_input_open_count: 35
+reevaluate_v2_finalized_count: 5
+reevaluate_v2_remaining_open_count: 30
+reevaluate_v2_rcn_000052_remains_open: true
+reevaluate_v2_no_identity_merges: true
+reevaluate_v2_no_runtime_mutation: true
+reevaluate_v2_no_reintegration: true

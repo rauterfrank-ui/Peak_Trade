@@ -85,7 +85,6 @@ def test_all_records_attempted_with_schema_disposition() -> None:
         rid = rec["identity"]["reconciliation_id"]
         adj = rec["adjudication"]
         integration = rec["integration"]
-        audit = rec["audit"]
         row = generated[rid]
         assert adj["adjudication_attempted"] is True
         assert str(adj.get("disposition") or "") in ALLOWED_DISPOSITIONS
@@ -93,27 +92,31 @@ def test_all_records_attempted_with_schema_disposition() -> None:
         assert list(adj.get("evidence_refs") or [])
         assert list(adj.get("alternatives_rejected") or [])
         assert list(adj.get("claims") or [])
-        assert adj["disposition"] == row["disposition"]
-        assert adj["lifecycle_state"] == row["lifecycle_state"]
         assert integration.get("reintegration_required") is False
         assert adj.get("reintegration_candidate") is False
         assert str(adj.get("lifecycle_state") or "") not in POST_IMPLEMENTATION
-        assert audit.get("last_adjudicated_against_sha") == ADJUDICATE_BOUND_SHA
-        if adj["disposition"] == RETAIN:
-            retain += 1
-            assert adj["lifecycle_state"] == "DISPOSITION_DECIDED"
-            assert adj["further_evidence_required"] is False
-        if adj["disposition"] == INSUFFICIENT:
-            insufficient += 1
-            assert adj["lifecycle_state"] == "OPEN"
-            assert adj["further_evidence_required"] is True
         path = ADJUDICATE_ROOT / "records" / f"{rid}.yaml"
         persisted = yaml.safe_load(path.read_text(encoding="utf-8"))
         assert persisted["record_id"] == rid
         assert persisted["adjudication_attempted"] is True
         assert persisted["reintegration_performed"] is False
         assert persisted["identity_fusion_forbidden"] is True
-        assert persisted["disposition"] == adj["disposition"]
+        assert persisted["disposition"] == row["disposition"]
+        assert persisted["lifecycle_state"] == row["lifecycle_state"]
+        v2 = rec.get("reevaluate_v2") or {}
+        if v2.get("final_disposition_change_performed") is True:
+            assert adj["disposition"] == v2["disposition"]
+            assert adj["lifecycle_state"] == v2["lifecycle_state"]
+        else:
+            assert adj["disposition"] == persisted["disposition"]
+            assert adj["lifecycle_state"] == persisted["lifecycle_state"]
+            assert rec["audit"].get("last_adjudicated_against_sha") == ADJUDICATE_BOUND_SHA
+        if persisted["disposition"] == RETAIN:
+            retain += 1
+            assert persisted["lifecycle_state"] == "DISPOSITION_DECIDED"
+        if persisted["disposition"] == INSUFFICIENT:
+            insufficient += 1
+            assert persisted["lifecycle_state"] == "OPEN"
         for claim in persisted.get("claims") or []:
             if str(claim.get("claim_class") or "") in {"HYPOTHESIS", "CONTRADICTION"}:
                 assert claim.get("used_as_fact") is False

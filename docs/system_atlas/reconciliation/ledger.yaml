@@ -3197,9 +3197,9 @@ records:
       evidence: []
   understanding:
     purpose_understood: true
-    purpose_statement: 'Master V2 minimal selector V1 owner policy: census → structural eligibility → exactly-one-or-none
-      → durable artifact → narrowed runtime-binding adapter. Ranking is not a selection authority. HISTORICAL_CLAIM=false
-      on the package.'
+    purpose_statement: 'Master V2 minimal selector V1 owner policy: census → structural eligibility → exactly-one-or-none →
+      durable artifact → narrowed runtime-binding adapter. Ranking is not a selection authority. HISTORICAL_CLAIM=false on the
+      package.'
     historical_problem_statement: Select exactly one or none Master V2 instrument under an owner policy, not GFU ranking.
     inputs:
     - Census/eligibility inputs to decide_master_v2_minimal_selection_v1
@@ -3216,8 +3216,8 @@ records:
     - OWNER_POLICY_VERSION=V1; HISTORICAL_CLAIM=false
     claims:
     - claim_class: FORENSIC_RAW_FACT
-      text: 'Add-commit blob: Master V2 minimal selector V1 (Owner policy; not historical GFU semantics). Ranking is not a
-        selection authority.'
+      text: 'Add-commit blob: Master V2 minimal selector V1 (Owner policy; not historical GFU semantics). Ranking is not a selection
+        authority.'
       evidence:
       - 75eee7bdc501ab4b0ec93812675cd074acb9e2ee:src/ops/master_v2_minimal_selector_v1/__init__.py
       used_as_fact: true
@@ -3273,48 +3273,70 @@ records:
       - src/ops/single_selected_future_runtime_binding_v1/
       used_as_fact: false
   adjudication:
-    lifecycle_state: OPEN
-    disposition: INSUFFICIENT_EVIDENCE
-    positive_reason: 'The historical selector path is absent after revert of #6165 via #6166. Historical revert is not disposition.
-      Cap 2.3 single_selected_future_policy_v1 is a later exactly-one selection candidate. EVALUATE class CURRENT_FUNCTION_CANDIDATE_UNPROVEN
-      does not prove successor, replacement, or identity. Semantic relationship remains open.'
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: HISTORICALLY_VALID_BUT_INCOMPATIBLE
+    positive_reason: 'Owner-adjudicated Master V2 minimal selector (#6165 / 75eee7bdc) had a proven historical fail-closed-unless-exactly-one
+      purpose and was add-only (10 files), not runtime-consumed, and created no Cap-2.x importers. Owner reason in #6166 / afbae518b:
+      Cap 2.3 remains exclusive selection authority; BTC remains excluded. Selector constants do not rewrite Cap 2.3. Cap 2.3
+      (ecb44849, 2026-08-02) predates the selector; successor-of-Cap-2.3 is refuted. Revert is not the rejection reason. The
+      exclusive Cap 2.3 selection-authority invariant makes the dormant second selector policy incompatible with the current
+      system.'
     evidence_refs:
     - docs/system_atlas/reconciliation/understand/records/RCN-000015.yaml
     - docs/system_atlas/reconciliation/evaluate/records/RCN-000015.yaml
-    - src/ops/single_selected_future_policy_v1/policy_v1.py
+    - docs/system_atlas/reconciliation/adjudicate/records/RCN-000015.yaml
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000015.yaml
+    - docs/system_atlas/reconciliation/reevaluate/records/RCN-000015.yaml
+    - docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/pr_6166_body.txt
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/selector_add_revert.txt
+    - src/ops/single_selected_future_policy_v1/constants_v1.py
     contradictions: []
     unresolved_questions:
-    - What did the selector policy do, and why was it reverted? Purpose still uninvestigated.
-    - Current absence after revert is not a disposition of the historical purpose.
-    - Is single_selected_future_policy_v1 a successor of master_v2_minimal_selector_v1, or a distinct later owner?
-    identity_status: IDENTITY_UNPROVEN_VERSUS_CAP_2_3
+    - 'None required for this terminal class: Owner exclusive-authority reason is bound.'
+    identity_status: PROVEN_DISTINCT_FROM_CAP_2_3
     alternatives_rejected:
-    - 'CAPABILITY_ALREADY_COVERED by Cap 2.3: replacement/identity not proven'
-    - 'REJECT because reverted: revert is not a positive rejection reason'
-    - 'ADAPT_AND_REINTEGRATE: unique uncovered selector semantics versus Cap 2.3 are unproven'
-    - 'Declaring SAME_AS / successor of single_selected_future_policy_v1: forbidden without proof'
-    further_evidence_required: true
+    - 'RETAIN_AS_IS: selector path CURRENTLY_ABSENT after revert; absence is not retain'
+    - 'CAPABILITY_ALREADY_COVERED: Cap 2.3 ranking/hysteresis selection is a distinct later exclusive owner, not proven coverage
+      of fail-closed-unless-exactly-one'
+    - 'ADAPT_AND_REINTEGRATE: reintegration is not authorized; exclusive Cap 2.3 authority forbids a second selector policy'
+    - 'REJECT_FOR_CURRENT_SYSTEM: revert #6166 is not a positive rejection reason; historical purpose remains legitimate'
+    - 'Declaring SAME_AS / successor of single_selected_future_policy_v1: refuted, not a merge'
+    further_evidence_required: false
     reintegration_candidate: false
     adjudication_attempted: true
     claims:
     - claim_class: ADJUDICATED_CONCLUSION
-      text: 'Master V2 minimal selector policy v1: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
-        remains OPEN and is not a rejection.'
+      text: Master V2 minimal selector is historically valid and incompatible with exclusive Cap 2.3 selection authority.
       evidence:
-      - docs/system_atlas/reconciliation/understand/records/RCN-000015.yaml
-      - docs/system_atlas/reconciliation/evaluate/records/RCN-000015.yaml
-      - src/ops/single_selected_future_policy_v1/policy_v1.py
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/pr_6166_body.txt
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/selector_add_revert.txt
+      - src/ops/single_selected_future_policy_v1/constants_v1.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'PR #6166 Owner decision (A+1): Cap 2.3 remains exclusive selection authority. BTC remains excluded. #6165 was isolated
+        add-only (10 files), not runtime-consumed, and created no Cap-2.x / host importers.'
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/pr_6166_body.txt
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Selector package states it does not rewrite Cap 2.3 stickiness/ranking selection.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/selector_add_revert.txt
       used_as_fact: true
     - claim_class: CANONICAL_CURRENT_FACT
-      text: Cap 2.3 policy encodes SINGLE_SELECTED_FUTURE; that is current-system fact, not identity with RCN-000015.
+      text: Cap 2.3 remains current SINGLE_SELECTED_FUTURE selection owner with SELECTION_AUTHORITY_ADDED=True.
       evidence:
-      - src/ops/single_selected_future_policy_v1/policy_v1.py
+      - src/ops/single_selected_future_policy_v1/constants_v1.py
       used_as_fact: true
-    - claim_class: HYPOTHESIS
-      text: Cap 2.3 may serve a similar exactly-one purpose; successor relation is not proven.
+    - claim_class: FORENSIC_RAW_FACT
+      text: Cap 2.3 was added 2026-08-02 (#5642 / ecb44849) before selector add 2026-08-30 (#6165). Successor-of-Cap-2.3 is
+        refuted.
       evidence:
-      - src/ops/single_selected_future_policy_v1/policy_v1.py
-      used_as_fact: false
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/selector_add_revert.txt
+      - src/ops/single_selected_future_policy_v1/constants_v1.py
+      used_as_fact: true
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -3322,11 +3344,12 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+    last_adjudicated_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
     notes: Recently vanished. No REJECT disposition in this GO. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
       INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2. OPEN_EVIDENCE_RESOLUTION_PASS_V1
-      bound against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged. REEVALUATE_OPEN_RECORDS_PASS_V1 bound
-      against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged; INSUFFICIENT_EVIDENCE remains OPEN.
+      bound against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged. REEVALUATE_OPEN_RECORDS_PASS_V1 bound against
+      f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged; INSUFFICIENT_EVIDENCE remains OPEN. REEVALUATE_OPEN_RECORDS_PASS_V2
+      bound against 7426af2daa4019e7986584a4c53d40b5e182673d. Final disposition HISTORICALLY_VALID_BUT_INCOMPATIBLE.
   evidence_resolution:
     pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
     evidence_resolution_status: EVIDENCE_GAP_PARTIALLY_RESOLVED
@@ -3338,8 +3361,8 @@ records:
       later/earlier owner? Why was #6165 reverted?'
     identity_gap:
       status: PROVEN_DISTINCT_FROM_CAP_2_3
-      statement: Capability IDs differ (MASTER_V2_MINIMAL_SELECTOR_V1 vs CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1).
-        The selector package itself states it does not rewrite Cap 2.3 stickiness/ranking selection. Cap 2.3 was added 2026-08-02
+      statement: Capability IDs differ (MASTER_V2_MINIMAL_SELECTOR_V1 vs CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1). The
+        selector package itself states it does not rewrite Cap 2.3 stickiness/ranking selection. Cap 2.3 was added 2026-08-02
         (#5642 / ecb44849) before the selector add 2026-08-30 (#6165).
       used_as_fact: true
       source: 75eee7bdc501ab4b0ec93812675cd074acb9e2ee
@@ -3389,8 +3412,8 @@ records:
       source_path: src/ops/master_v2_minimal_selector_v1/constants_v1.py
       evidence_type: FORENSIC_RAW
     - claim_class: FORENSIC_RAW_FACT
-      text: 'Selector selection_v1.py: eligible_count == 0 → NO_SELECTION; == 1 → SELECT; > 1 → NO_SELECTION. No ranking,
-        score, sort-to-select, fallback, cadence, or hot-path rescan.'
+      text: 'Selector selection_v1.py: eligible_count == 0 → NO_SELECTION; == 1 → SELECT; > 1 → NO_SELECTION. No ranking, score,
+        sort-to-select, fallback, cadence, or hot-path rescan.'
       evidence:
       - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
       used_as_fact: true
@@ -3398,8 +3421,8 @@ records:
       source_path: src/ops/master_v2_minimal_selector_v1/selection_v1.py
       evidence_type: FORENSIC_RAW
     - claim_class: FORENSIC_RAW_FACT
-      text: 'Cap 2.3 added ecb44849 2026-08-02 feat(ops): Single Selected Future Policy (Capability 2.3) (#5642). Selector
-        added 75eee7bd 2026-08-30 (#6165) and reverted afbae518 2026-08-30 (#6166).'
+      text: 'Cap 2.3 added ecb44849 2026-08-02 feat(ops): Single Selected Future Policy (Capability 2.3) (#5642). Selector added
+        75eee7bd 2026-08-30 (#6165) and reverted afbae518 2026-08-30 (#6166).'
       evidence:
       - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
       - src/ops/single_selected_future_policy_v1/constants_v1.py
@@ -3408,8 +3431,8 @@ records:
       source_path: src/ops/single_selected_future_policy_v1/constants_v1.py
       evidence_type: FORENSIC_RAW
     - claim_class: FORENSIC_RAW_FACT
-      text: 'Revert #6166 body is only: This reverts commit 75eee7bdc501ab4b0ec93812675cd074acb9e2ee. No additional causal
-        statement is in that commit message.'
+      text: 'Revert #6166 body is only: This reverts commit 75eee7bdc501ab4b0ec93812675cd074acb9e2ee. No additional causal statement
+        is in that commit message.'
       evidence:
       - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
       used_as_fact: true
@@ -3485,10 +3508,10 @@ records:
     unresolved_gaps:
     - 'Why was #6165 reverted, beyond the revert pointer in #6166?'
     - Unique current value of fail-closed-unless-exactly-one versus Cap 2.3 ranking selection remains unproven.
-    evaluation_result: INPUT_PASS proved the selector is a distinct Owner policy that does not rewrite Cap 2.3 and cannot
-      be Cap 2.3's successor (Cap 2.3 predates it). Different selection semantics are not functional coverage. Revert is not
-      REJECT. Unique current value is unproven, so ADAPT burden is unmet. Hypothetical co-authority conflict is not a proven
-      INCOMPATIBLE invariant. INSUFFICIENT_EVIDENCE remains OPEN.
+    evaluation_result: INPUT_PASS proved the selector is a distinct Owner policy that does not rewrite Cap 2.3 and cannot be
+      Cap 2.3's successor (Cap 2.3 predates it). Different selection semantics are not functional coverage. Revert is not REJECT.
+      Unique current value is unproven, so ADAPT burden is unmet. Hypothetical co-authority conflict is not a proven INCOMPATIBLE
+      invariant. INSUFFICIENT_EVIDENCE remains OPEN.
     alternatives_rejected:
     - 'RETAIN_AS_IS: selector path CURRENTLY_ABSENT after revert'
     - 'CAPABILITY_ALREADY_COVERED: Cap 2.3 ranking/hysteresis selection does not provenly fulfill fail-closed-unless-exactly-one;
@@ -3500,8 +3523,8 @@ records:
     - 'Declaring SAME_AS / successor of single_selected_future_policy_v1: refuted, not a merge'
     claims:
     - claim_class: ADJUDICATED_CONCLUSION
-      text: 'Master V2 minimal selector: stronger terminal class burden is not met after INPUT_PASS. INSUFFICIENT_EVIDENCE
-        remains OPEN.'
+      text: 'Master V2 minimal selector: stronger terminal class burden is not met after INPUT_PASS. INSUFFICIENT_EVIDENCE remains
+        OPEN.'
       evidence:
       - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000015.yaml
       - src/ops/single_selected_future_policy_v1/constants_v1.py
@@ -3536,6 +3559,109 @@ records:
       disposition: INSUFFICIENT_EVIDENCE
       lifecycle_state: OPEN
     bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  reevaluate_v2:
+    pass_id: REEVALUATE_OPEN_RECORDS_PASS_V2
+    input_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+    predecessor_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+    predecessor_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+    disposition_burden_met: true
+    disposition_candidate: HISTORICALLY_VALID_BUT_INCOMPATIBLE
+    disposition: HISTORICALLY_VALID_BUT_INCOMPATIBLE
+    lifecycle_state: DISPOSITION_DECIDED
+    final_disposition_change_performed: true
+    identity_merge_performed: false
+    reintegration_performed: false
+    reintegration_candidate: false
+    runtime_mutation_performed: false
+    further_evidence_required: false
+    positive_reason: 'Owner-adjudicated Master V2 minimal selector (#6165 / 75eee7bdc) had a proven historical fail-closed-unless-exactly-one
+      purpose and was add-only (10 files), not runtime-consumed, and created no Cap-2.x importers. Owner reason in #6166 / afbae518b:
+      Cap 2.3 remains exclusive selection authority; BTC remains excluded. Selector constants do not rewrite Cap 2.3. Cap 2.3
+      (ecb44849, 2026-08-02) predates the selector; successor-of-Cap-2.3 is refuted. Revert is not the rejection reason. The
+      exclusive Cap 2.3 selection-authority invariant makes the dormant second selector policy incompatible with the current
+      system.'
+    contradiction_id: ''
+    current_evidence_set:
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000015.yaml
+    - docs/system_atlas/reconciliation/reevaluate/records/RCN-000015.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/pr_6166_body.txt
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/selector_add_revert.txt
+    - src/ops/single_selected_future_policy_v1/constants_v1.py
+    historical_function: Census → structural eligibility → exactly-one-or-none; ranking is not selection authority; fail-closed
+      if eligible_count != 1.
+    historical_relations: 'Selector constants explicitly do not rewrite Cap 2.3. Cap 2.3 predates selector #6165/#6166. Succession
+      selector→Cap 2.3 is refuted. Add-only; not runtime-consumed.'
+    current_system_analogues: 'Cap 2.3 single_selected_future_policy_v1 is current exclusive selection owner: SELECTION_AUTHORITY_ADDED=True;
+      ranking hysteresis/min holding.'
+    identity_status: PROVEN_DISTINCT_FROM_CAP_2_3
+    successor_status: REFUTED_AS_SUCCESSOR_OF_CAP_2_3
+    replacement_status: NOT_A_REPLACEMENT_OF_CAP_2_3
+    current_value_status: HISTORICALLY_VALID_NOT_CURRENTLY_ADOPTABLE
+    current_compatibility_status: INCOMPATIBLE_WITH_EXCLUSIVE_CAP_2_3_SELECTION_AUTHORITY
+    contradictions: []
+    unresolved_gaps:
+    - 'None required for this terminal class: Owner exclusive-authority reason is bound.'
+    evaluation_result: 'Burden for HISTORICALLY_VALID_BUT_INCOMPATIBLE is met. Historical purpose is proven. Owner #6166 states
+      Cap 2.3 remains exclusive selection authority. Selector does not rewrite Cap 2.3 and is not its successor. Revert is not
+      REJECT. INCOMPATIBLE is the terminal class; historical legitimacy remains documented.'
+    alternatives_rejected:
+    - 'RETAIN_AS_IS: selector path CURRENTLY_ABSENT after revert; absence is not retain'
+    - 'CAPABILITY_ALREADY_COVERED: Cap 2.3 ranking/hysteresis selection is a distinct later exclusive owner, not proven coverage
+      of fail-closed-unless-exactly-one'
+    - 'ADAPT_AND_REINTEGRATE: reintegration is not authorized; exclusive Cap 2.3 authority forbids a second selector policy'
+    - 'REJECT_FOR_CURRENT_SYSTEM: revert #6166 is not a positive rejection reason; historical purpose remains legitimate'
+    - 'Declaring SAME_AS / successor of single_selected_future_policy_v1: refuted, not a merge'
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Master V2 minimal selector is historically valid and incompatible with exclusive Cap 2.3 selection authority.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/pr_6166_body.txt
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/selector_add_revert.txt
+      - src/ops/single_selected_future_policy_v1/constants_v1.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: 'PR #6166 Owner decision (A+1): Cap 2.3 remains exclusive selection authority. BTC remains excluded. #6165 was isolated
+        add-only (10 files), not runtime-consumed, and created no Cap-2.x / host importers.'
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/pr_6166_body.txt
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Selector package states it does not rewrite Cap 2.3 stickiness/ranking selection.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/selector_add_revert.txt
+      used_as_fact: true
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: Cap 2.3 remains current SINGLE_SELECTED_FUTURE selection owner with SELECTION_AUTHORITY_ADDED=True.
+      evidence:
+      - src/ops/single_selected_future_policy_v1/constants_v1.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Cap 2.3 was added 2026-08-02 (#5642 / ecb44849) before selector add 2026-08-30 (#6165). Successor-of-Cap-2.3 is
+        refuted.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/selector_add_revert.txt
+      - src/ops/single_selected_future_policy_v1/constants_v1.py
+      used_as_fact: true
+    evidence_refs:
+    - docs/system_atlas/reconciliation/understand/records/RCN-000015.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000015.yaml
+    - docs/system_atlas/reconciliation/adjudicate/records/RCN-000015.yaml
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000015.yaml
+    - docs/system_atlas/reconciliation/reevaluate/records/RCN-000015.yaml
+    - docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/pr_6166_body.txt
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/selector_add_revert.txt
+    - src/ops/single_selected_future_policy_v1/constants_v1.py
+    previous_adjudication:
+      pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+      bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+      disposition: INSUFFICIENT_EVIDENCE
+      lifecycle_state: OPEN
+      adjudicate_pass_id_frozen: INTEGRATE_OR_DISPOSITION_PASS_V1
+      adjudicate_bound_sha_frozen: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+    bound_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
+    v1_snapshot_frozen: true
 - identity:
     reconciliation_id: RCN-000016
     canonical_record_name: Kanonisches Vollautonomie-Runbook v4.4.12
@@ -11057,41 +11183,64 @@ records:
       used_as_fact: true
     - claim_class: CANONICAL_CURRENT_FACT
       text: Named current paths exist; they are not proven to be the historical archive artifact.
-      evidence: &id003
+      evidence:
       - src/backtest/engine.py
       used_as_fact: true
     - claim_class: HYPOTHESIS
       text: Current modules with similar names may be later implementations; identity remains unproven.
-      evidence: *id003
+      evidence:
+      - src/backtest/engine.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: OPEN
-    disposition: INSUFFICIENT_EVIDENCE
-    positive_reason: Recovered archive blob for archive/PeakTradeRepo/src/backtest/engine.py is a one-line placeholder. Current
-      src/backtest/engine.py exists and is not proven to be that placeholder blob. A placeholder is not proof that the intended
-      historical capability is covered or should be rejected.
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: REJECT_FOR_CURRENT_SYSTEM
+    positive_reason: Nested PeakTradeRepo backtest engine/results/stats blobs are one-line placeholders (engine 19aaa494='#
+      Engine placeholder'; results cd074be6='# Results placeholder'; stats 7dd32407='# Stats placeholder'). Export engine 0d9869d7
+      and current src/backtest/engine.py a7a54e35 are blob-distinct. This nested snapshot is not a current-system capability
+      to adopt. README narrative is not used in place of blob content. Deletion is not the reject reason.
     evidence_refs:
+    - docs/system_atlas/reconciliation/understand/records/RCN-000044.yaml
     - docs/system_atlas/reconciliation/evaluate/records/RCN-000044.yaml
+    - docs/system_atlas/reconciliation/adjudicate/records/RCN-000044.yaml
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000044.yaml
+    - docs/system_atlas/reconciliation/reevaluate/records/RCN-000044.yaml
+    - docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
     - src/backtest/engine.py
     contradictions: []
     unresolved_questions:
-    - Same component as later src/backtest or a distinct nested snapshot?
-    - Not proven SAME_AS later src/backtest; placeholder vs implemented export engine.
-    - Is there a proven current replacement, or only a later namesake?
-    identity_status: IDENTITY_UNPROVEN
+    - 'None required for REJECT: placeholder blob content is the positive reason.'
+    identity_status: PLACEHOLDER_BLOB_DISTINCT_FROM_EXPORT_AND_CURRENT
     alternatives_rejected:
-    - 'CAPABILITY_ALREADY_COVERED by the current module: blob identity unproven'
-    - 'REJECT because the recovered blob is a placeholder: intended capability remains a separate question'
-    - REJECT because archived
-    further_evidence_required: true
+    - 'RETAIN_AS_IS: CURRENTLY_ABSENT; placeholder is not a retained current artifact'
+    - 'CAPABILITY_ALREADY_COVERED: later src/backtest not proven SAME_AS; namesake is not coverage'
+    - 'ADAPT_AND_REINTEGRATE: placeholder has no independent current value to adapt'
+    - 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: placeholder is not a historically valid implemented capability that conflicts with
+      current invariants'
+    - 'REJECT because deleted: deletion is not a positive rejection reason'
+    - 'Using PeakTradeRepo README as this record''s purpose: forbidden; blob content is authoritative'
+    further_evidence_required: false
     reintegration_candidate: false
     adjudication_attempted: true
     claims:
     - claim_class: ADJUDICATED_CONCLUSION
-      text: 'PeakTradeRepo nested backtest engine: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
-        remains OPEN and is not a rejection.'
+      text: Nested backtest engine/results/stats are placeholders and are rejected for the current system.
       evidence:
-      - docs/system_atlas/reconciliation/evaluate/records/RCN-000044.yaml
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+      - src/backtest/engine.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: blob:19aaa49470aa766a9f813b672278fe2bcbdac3e3 = '# Engine placeholder'; blob:cd074be6849834125b0ad5e6e331dc7f2109a1d7
+        = '# Results placeholder'; blob:7dd32407016f955f2ab4707ae122323a091dab4a = '# Stats placeholder'.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Export engine blob:0d9869d743175c85f3e0286fc45b3b17f9d3d695 and current src/backtest/engine.py blob:a7a54e35bbd81d2ed21ce14a7abbaebcf76de889
+        are distinct from nested placeholders.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
       - src/backtest/engine.py
       used_as_fact: true
   integration:
@@ -11101,11 +11250,12 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+    last_adjudicated_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
     notes: Inner file of RCN-000014. Not fused with current src/backtest. Purpose not investigated. EVALUATE_PASS_V1 compared
       against 0e6cbb860f716d527873d97556d0968df4a197bf. INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2.
       OPEN_EVIDENCE_RESOLUTION_PASS_V1 bound against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged. REEVALUATE_OPEN_RECORDS_PASS_V1
-      bound against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged; INSUFFICIENT_EVIDENCE remains OPEN.
+      bound against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged; INSUFFICIENT_EVIDENCE remains OPEN. REEVALUATE_OPEN_RECORDS_PASS_V2
+      bound against 7426af2daa4019e7986584a4c53d40b5e182673d. Final disposition REJECT_FOR_CURRENT_SYSTEM.
   evidence_resolution:
     pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
     evidence_resolution_status: EVIDENCE_GAP_PARTIALLY_RESOLVED
@@ -11131,8 +11281,8 @@ records:
       evidence_type: HISTORICAL_INTERMEDIATE
     relation_gap:
       status: PROVEN_CO_DELETION_EVENT_NOT_IDENTITY
-      statement: Multiple archive/* trees were removed by the same 75722feea docs/archive cleanup where applicable. Shared
-        deletion event is not SAME_AS among archive trees.
+      statement: Multiple archive/* trees were removed by the same 75722feea docs/archive cleanup where applicable. Shared deletion
+        event is not SAME_AS among archive trees.
       used_as_fact: true
       source: 75722feea8c342c56ef93f796983467f33f98f25
       source_sha: 75722feea8c342c56ef93f796983467f33f98f25
@@ -11228,8 +11378,8 @@ records:
       - docs/system_atlas/reconciliation/evaluate/records/RCN-000044.yaml
       used_as_fact: true
     - claim_class: FORENSIC_RAW_FACT
-      text: Current absence, later namesakes, and never-merged-to-origin/main presence are not identity, not replacement,
-        and not rejection.
+      text: Current absence, later namesakes, and never-merged-to-origin/main presence are not identity, not replacement, and
+        not rejection.
       evidence:
       - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000044.yaml
       used_as_fact: true
@@ -11245,6 +11395,91 @@ records:
       disposition: INSUFFICIENT_EVIDENCE
       lifecycle_state: OPEN
     bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  reevaluate_v2:
+    pass_id: REEVALUATE_OPEN_RECORDS_PASS_V2
+    input_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+    predecessor_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+    predecessor_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+    disposition_burden_met: true
+    disposition_candidate: REJECT_FOR_CURRENT_SYSTEM
+    disposition: REJECT_FOR_CURRENT_SYSTEM
+    lifecycle_state: DISPOSITION_DECIDED
+    final_disposition_change_performed: true
+    identity_merge_performed: false
+    reintegration_performed: false
+    reintegration_candidate: false
+    runtime_mutation_performed: false
+    further_evidence_required: false
+    positive_reason: Nested PeakTradeRepo backtest engine/results/stats blobs are one-line placeholders (engine 19aaa494='#
+      Engine placeholder'; results cd074be6='# Results placeholder'; stats 7dd32407='# Stats placeholder'). Export engine 0d9869d7
+      and current src/backtest/engine.py a7a54e35 are blob-distinct. This nested snapshot is not a current-system capability
+      to adopt. README narrative is not used in place of blob content. Deletion is not the reject reason.
+    contradiction_id: ''
+    current_evidence_set:
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000044.yaml
+    - docs/system_atlas/reconciliation/understand/records/RCN-000044.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+    - src/backtest/engine.py
+    historical_function: Nested archive backtest engine/results/stats snapshot whose recovered blobs are placeholders.
+    historical_relations: Inner component of RCN-000014; not fused. Blob-distinct from export and current engine.
+    current_system_analogues: Later src/backtest/engine.py is a distinct blob; not SAME_AS.
+    identity_status: PLACEHOLDER_BLOB_DISTINCT_FROM_EXPORT_AND_CURRENT
+    successor_status: NOT_PROVEN
+    replacement_status: NOT_PROVEN
+    current_value_status: NO_INDEPENDENT_CURRENT_CAPABILITY
+    current_compatibility_status: REJECT_PLACEHOLDER_NOT_ADOPTABLE
+    contradictions: []
+    unresolved_gaps:
+    - 'None required for REJECT: placeholder blob content is the positive reason.'
+    evaluation_result: Burden for REJECT_FOR_CURRENT_SYSTEM is met from blob content, not from absence. Nested engine/results/stats
+      are placeholders. Export and current engines are blob-distinct. No identity merge with RCN-000014.
+    alternatives_rejected:
+    - 'RETAIN_AS_IS: CURRENTLY_ABSENT; placeholder is not a retained current artifact'
+    - 'CAPABILITY_ALREADY_COVERED: later src/backtest not proven SAME_AS; namesake is not coverage'
+    - 'ADAPT_AND_REINTEGRATE: placeholder has no independent current value to adapt'
+    - 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: placeholder is not a historically valid implemented capability that conflicts with
+      current invariants'
+    - 'REJECT because deleted: deletion is not a positive rejection reason'
+    - 'Using PeakTradeRepo README as this record''s purpose: forbidden; blob content is authoritative'
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Nested backtest engine/results/stats are placeholders and are rejected for the current system.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+      - src/backtest/engine.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: blob:19aaa49470aa766a9f813b672278fe2bcbdac3e3 = '# Engine placeholder'; blob:cd074be6849834125b0ad5e6e331dc7f2109a1d7
+        = '# Results placeholder'; blob:7dd32407016f955f2ab4707ae122323a091dab4a = '# Stats placeholder'.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: Export engine blob:0d9869d743175c85f3e0286fc45b3b17f9d3d695 and current src/backtest/engine.py blob:a7a54e35bbd81d2ed21ce14a7abbaebcf76de889
+        are distinct from nested placeholders.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+      - src/backtest/engine.py
+      used_as_fact: true
+    evidence_refs:
+    - docs/system_atlas/reconciliation/understand/records/RCN-000044.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000044.yaml
+    - docs/system_atlas/reconciliation/adjudicate/records/RCN-000044.yaml
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000044.yaml
+    - docs/system_atlas/reconciliation/reevaluate/records/RCN-000044.yaml
+    - docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+    - src/backtest/engine.py
+    previous_adjudication:
+      pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+      bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+      disposition: INSUFFICIENT_EVIDENCE
+      lifecycle_state: OPEN
+      adjudicate_pass_id_frozen: INTEGRATE_OR_DISPOSITION_PASS_V1
+      adjudicate_bound_sha_frozen: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+    bound_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
+    v1_snapshot_frozen: true
 - identity:
     reconciliation_id: RCN-000045
     canonical_record_name: PeakTradeRepo nested position_sizer
@@ -11332,42 +11567,58 @@ records:
       used_as_fact: true
     - claim_class: CANONICAL_CURRENT_FACT
       text: Named current paths exist; they are not proven to be the historical archive artifact.
-      evidence: &id004
+      evidence:
       - src/risk/position_sizer.py
       used_as_fact: true
     - claim_class: HYPOTHESIS
       text: Current modules with similar names may be later implementations; identity remains unproven.
-      evidence: *id004
+      evidence:
+      - src/risk/position_sizer.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: OPEN
-    disposition: INSUFFICIENT_EVIDENCE
-    positive_reason: Recovered archive blob for archive/PeakTradeRepo/src/risk/position_sizer.py is a one-line placeholder.
-      Current src/risk/position_sizer.py exists and is not proven to be that placeholder blob. A placeholder is not proof
-      that the intended historical capability is covered or should be rejected.
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: REJECT_FOR_CURRENT_SYSTEM
+    positive_reason: Nested PeakTradeRepo position_sizer blob is the one-line placeholder '# Position sizer placeholder' (439a60c8).
+      Backup 9a854113, current src/risk/position_sizer.py c3325deb, and export position_sizing 04046eb6 are blob-distinct. CAND:position_sizer_old_backup
+      is related, not SAME_AS. No identity merge. Placeholder is not a current-system capability to adopt.
     evidence_refs:
+    - docs/system_atlas/reconciliation/understand/records/RCN-000045.yaml
     - docs/system_atlas/reconciliation/evaluate/records/RCN-000045.yaml
+    - docs/system_atlas/reconciliation/adjudicate/records/RCN-000045.yaml
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000045.yaml
+    - docs/system_atlas/reconciliation/reevaluate/records/RCN-000045.yaml
+    - docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
     - src/risk/position_sizer.py
     contradictions: []
     unresolved_questions:
-    - Identity versus deleted position_sizer_old_backup or current sizer modules?
-    - Identity versus later sizer modules or position_sizer_old_backup is unproven; no SAME_AS.
-    - Is there a proven current replacement, or only a later namesake?
-    identity_status: IDENTITY_UNPROVEN
+    - CAND:position_sizer_old_backup remains a candidate, not a ledger identity merge.
+    identity_status: PLACEHOLDER_BLOB_DISTINCT_FROM_BACKUP_EXPORT_AND_CURRENT
     alternatives_rejected:
-    - 'CAPABILITY_ALREADY_COVERED by the current module: blob identity unproven'
-    - 'REJECT because the recovered blob is a placeholder: intended capability remains a separate question'
-    - REJECT because archived
-    further_evidence_required: true
+    - 'RETAIN_AS_IS: CURRENTLY_ABSENT; placeholder is not retained'
+    - 'CAPABILITY_ALREADY_COVERED: later sizer modules are not proven SAME_AS'
+    - 'ADAPT_AND_REINTEGRATE: placeholder has no independent current value to adapt'
+    - 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: placeholder is not a historically valid implemented sizer that conflicts with current
+      invariants'
+    - 'REJECT because deleted: deletion is not a positive rejection reason'
+    - 'SAME_AS CAND:position_sizer_old_backup or current sizer: blob-distinct; merge forbidden'
+    further_evidence_required: false
     reintegration_candidate: false
     adjudication_attempted: true
     claims:
     - claim_class: ADJUDICATED_CONCLUSION
-      text: 'PeakTradeRepo nested position_sizer: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
-        remains OPEN and is not a rejection.'
+      text: Nested position_sizer is a placeholder and is rejected for the current system.
       evidence:
-      - docs/system_atlas/reconciliation/evaluate/records/RCN-000045.yaml
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
       - src/risk/position_sizer.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: blob:439a60c8176d2990ea8e199443283f2b3e0f9a33 = '# Position sizer placeholder'. Distinct from backup 9a854113d6a230f83fc2c063169761df9d3dc6e0,
+        export 04046eb61f426683a2b070ef7e2dd2b27fd1023f, current c3325deb59eb15a92767b9ca1c7eaa745efc4544.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+      - docs/system_atlas/reconciliation/discovery_candidates.yaml
       used_as_fact: true
   integration:
     reintegration_required: false
@@ -11376,11 +11627,12 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+    last_adjudicated_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
     notes: Fail-open versus CAND:position_sizer_old_backup. Name is not identity. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
       INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2. OPEN_EVIDENCE_RESOLUTION_PASS_V1
-      bound against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged. REEVALUATE_OPEN_RECORDS_PASS_V1 bound
-      against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged; INSUFFICIENT_EVIDENCE remains OPEN.
+      bound against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged. REEVALUATE_OPEN_RECORDS_PASS_V1 bound against
+      f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged; INSUFFICIENT_EVIDENCE remains OPEN. REEVALUATE_OPEN_RECORDS_PASS_V2
+      bound against 7426af2daa4019e7986584a4c53d40b5e182673d. Final disposition REJECT_FOR_CURRENT_SYSTEM.
   evidence_resolution:
     pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
     evidence_resolution_status: EVIDENCE_GAP_PARTIALLY_RESOLVED
@@ -11391,8 +11643,8 @@ records:
     missing_proof_question: Identity versus deleted position_sizer_old_backup or current sizer modules?
     identity_gap:
       status: PROVEN_HISTORICAL_PATH_THEN_DELETED_ON_MAIN
-      statement: archive/PeakTradeRepo/src/risk/position_sizer.py is historically attested then deleted on origin/main by
-        75722feea8c342c56ef93f796983467f33f98f25. Deletion is not identity with later namesakes.
+      statement: archive/PeakTradeRepo/src/risk/position_sizer.py is historically attested then deleted on origin/main by 75722feea8c342c56ef93f796983467f33f98f25.
+        Deletion is not identity with later namesakes.
       used_as_fact: true
       source: 75722feea8c342c56ef93f796983467f33f98f25
       source_sha: 75722feea8c342c56ef93f796983467f33f98f25
@@ -11406,8 +11658,8 @@ records:
       evidence_type: HISTORICAL_INTERMEDIATE
     relation_gap:
       status: PROVEN_CO_DELETION_EVENT_NOT_IDENTITY
-      statement: Multiple archive/* trees were removed by the same 75722feea docs/archive cleanup where applicable. Shared
-        deletion event is not SAME_AS among archive trees.
+      statement: Multiple archive/* trees were removed by the same 75722feea docs/archive cleanup where applicable. Shared deletion
+        event is not SAME_AS among archive trees.
       used_as_fact: true
       source: 75722feea8c342c56ef93f796983467f33f98f25
       source_sha: 75722feea8c342c56ef93f796983467f33f98f25
@@ -11502,8 +11754,8 @@ records:
       - docs/system_atlas/reconciliation/evaluate/records/RCN-000045.yaml
       used_as_fact: true
     - claim_class: FORENSIC_RAW_FACT
-      text: Current absence, later namesakes, and never-merged-to-origin/main presence are not identity, not replacement,
-        and not rejection.
+      text: Current absence, later namesakes, and never-merged-to-origin/main presence are not identity, not replacement, and
+        not rejection.
       evidence:
       - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000045.yaml
       used_as_fact: true
@@ -11519,6 +11771,85 @@ records:
       disposition: INSUFFICIENT_EVIDENCE
       lifecycle_state: OPEN
     bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  reevaluate_v2:
+    pass_id: REEVALUATE_OPEN_RECORDS_PASS_V2
+    input_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+    predecessor_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+    predecessor_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+    disposition_burden_met: true
+    disposition_candidate: REJECT_FOR_CURRENT_SYSTEM
+    disposition: REJECT_FOR_CURRENT_SYSTEM
+    lifecycle_state: DISPOSITION_DECIDED
+    final_disposition_change_performed: true
+    identity_merge_performed: false
+    reintegration_performed: false
+    reintegration_candidate: false
+    runtime_mutation_performed: false
+    further_evidence_required: false
+    positive_reason: Nested PeakTradeRepo position_sizer blob is the one-line placeholder '# Position sizer placeholder' (439a60c8).
+      Backup 9a854113, current src/risk/position_sizer.py c3325deb, and export position_sizing 04046eb6 are blob-distinct. CAND:position_sizer_old_backup
+      is related, not SAME_AS. No identity merge. Placeholder is not a current-system capability to adopt.
+    contradiction_id: ''
+    current_evidence_set:
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000045.yaml
+    - docs/system_atlas/reconciliation/understand/records/RCN-000045.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+    - src/risk/position_sizer.py
+    - docs/system_atlas/reconciliation/discovery_candidates.yaml
+    historical_function: Nested archive position_sizer snapshot whose recovered blob is a placeholder.
+    historical_relations: Inner component of RCN-000014; not fused. Distinct from backup/current/export sizers.
+    current_system_analogues: Later src/risk/position_sizer.py is a distinct blob; CAND:position_sizer_old_backup is not SAME_AS.
+    identity_status: PLACEHOLDER_BLOB_DISTINCT_FROM_BACKUP_EXPORT_AND_CURRENT
+    successor_status: NOT_PROVEN
+    replacement_status: NOT_PROVEN
+    current_value_status: NO_INDEPENDENT_CURRENT_CAPABILITY
+    current_compatibility_status: REJECT_PLACEHOLDER_NOT_ADOPTABLE
+    contradictions: []
+    unresolved_gaps:
+    - CAND:position_sizer_old_backup remains a candidate, not a ledger identity merge.
+    evaluation_result: Burden for REJECT_FOR_CURRENT_SYSTEM is met from nested placeholder blob content. Backup/current/export
+      are blob-distinct. Identity merge is forbidden and was not performed.
+    alternatives_rejected:
+    - 'RETAIN_AS_IS: CURRENTLY_ABSENT; placeholder is not retained'
+    - 'CAPABILITY_ALREADY_COVERED: later sizer modules are not proven SAME_AS'
+    - 'ADAPT_AND_REINTEGRATE: placeholder has no independent current value to adapt'
+    - 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: placeholder is not a historically valid implemented sizer that conflicts with current
+      invariants'
+    - 'REJECT because deleted: deletion is not a positive rejection reason'
+    - 'SAME_AS CAND:position_sizer_old_backup or current sizer: blob-distinct; merge forbidden'
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Nested position_sizer is a placeholder and is rejected for the current system.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+      - src/risk/position_sizer.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: blob:439a60c8176d2990ea8e199443283f2b3e0f9a33 = '# Position sizer placeholder'. Distinct from backup 9a854113d6a230f83fc2c063169761df9d3dc6e0,
+        export 04046eb61f426683a2b070ef7e2dd2b27fd1023f, current c3325deb59eb15a92767b9ca1c7eaa745efc4544.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+      - docs/system_atlas/reconciliation/discovery_candidates.yaml
+      used_as_fact: true
+    evidence_refs:
+    - docs/system_atlas/reconciliation/understand/records/RCN-000045.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000045.yaml
+    - docs/system_atlas/reconciliation/adjudicate/records/RCN-000045.yaml
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000045.yaml
+    - docs/system_atlas/reconciliation/reevaluate/records/RCN-000045.yaml
+    - docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+    - src/risk/position_sizer.py
+    previous_adjudication:
+      pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+      bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+      disposition: INSUFFICIENT_EVIDENCE
+      lifecycle_state: OPEN
+      adjudicate_pass_id_frozen: INTEGRATE_OR_DISPOSITION_PASS_V1
+      adjudicate_bound_sha_frozen: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+    bound_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
+    v1_snapshot_frozen: true
 - identity:
     reconciliation_id: RCN-000046
     canonical_record_name: PeakTradeRepo nested ma_crossover strategy
@@ -11613,43 +11944,68 @@ records:
       used_as_fact: true
     - claim_class: CANONICAL_CURRENT_FACT
       text: Named current paths exist; they are not proven to be the historical archive artifact.
-      evidence: &id005
+      evidence:
       - src/strategies/ma_crossover.py
       used_as_fact: true
     - claim_class: HYPOTHESIS
       text: Current modules with similar names may be later implementations; identity remains unproven.
-      evidence: *id005
+      evidence:
+      - src/strategies/ma_crossover.py
       used_as_fact: false
   adjudication:
-    lifecycle_state: OPEN
-    disposition: INSUFFICIENT_EVIDENCE
-    positive_reason: Recovered archive blob for archive/PeakTradeRepo/src/strategies/ma_crossover.py is a one-line placeholder.
-      Current src/strategies/ma_crossover.py exists and is not proven to be that placeholder blob. A placeholder is not proof
-      that the intended historical capability is covered or should be rejected.
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: REJECT_FOR_CURRENT_SYSTEM
+    positive_reason: Nested PeakTradeRepo MA strategy blob is the one-line placeholder '# MA Strategy placeholder' (83bb6775).
+      Export MA c89dad61 and current src/strategies/ma_crossover.py 82e99483 are blob-distinct. README-versus-placeholder contradiction
+      in the PeakTradeRepo tree is preserved and is not resolved by substituting README narrative for blob content.
     evidence_refs:
+    - docs/system_atlas/reconciliation/understand/records/RCN-000046.yaml
     - docs/system_atlas/reconciliation/evaluate/records/RCN-000046.yaml
+    - docs/system_atlas/reconciliation/adjudicate/records/RCN-000046.yaml
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000046.yaml
+    - docs/system_atlas/reconciliation/reevaluate/records/RCN-000046.yaml
+    - docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
     - src/strategies/ma_crossover.py
-    contradictions: []
+    contradictions:
+    - PeakTradeRepo README describes MA strategy capability while nested blob is '# MA Strategy placeholder'. Contradiction
+      is preserved; README is not substituted for blob content.
     unresolved_questions:
-    - Same strategy as later ma_crossover implementations?
-    - Not proven SAME_AS later ma_crossover implementations.
-    - Is there a proven current replacement, or only a later namesake?
-    identity_status: IDENTITY_UNPROVEN
+    - README-versus-placeholder contradiction remains documented and is not normalized.
+    identity_status: PLACEHOLDER_BLOB_DISTINCT_FROM_EXPORT_AND_CURRENT
     alternatives_rejected:
-    - 'CAPABILITY_ALREADY_COVERED by the current module: blob identity unproven'
-    - 'REJECT because the recovered blob is a placeholder: intended capability remains a separate question'
-    - REJECT because archived
-    further_evidence_required: true
+    - 'RETAIN_AS_IS: CURRENTLY_ABSENT; placeholder is not retained'
+    - 'CAPABILITY_ALREADY_COVERED: later MA module is not proven SAME_AS'
+    - 'ADAPT_AND_REINTEGRATE: placeholder has no independent current value to adapt'
+    - 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: placeholder is not a historically valid implemented MA strategy that conflicts with
+      current invariants'
+    - 'REJECT because deleted: deletion is not a positive rejection reason'
+    - 'Using PeakTradeRepo README as this record''s implemented purpose: forbidden; blob content is authoritative'
+    further_evidence_required: false
     reintegration_candidate: false
     adjudication_attempted: true
     claims:
     - claim_class: ADJUDICATED_CONCLUSION
-      text: 'PeakTradeRepo nested ma_crossover strategy: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
-        remains OPEN and is not a rejection.'
+      text: Nested MA strategy is a placeholder and is rejected for the current system.
       evidence:
-      - docs/system_atlas/reconciliation/evaluate/records/RCN-000046.yaml
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
       - src/strategies/ma_crossover.py
       used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: blob:83bb67757202b250a8273faac1b1e3dd794f8493 = '# MA Strategy placeholder'. Distinct from export c89dad61caad99c51bd2e219d66af5956ecf28a9
+        and current 82e994839b55c7a48258d9864834c96c73781dfd.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+      - src/strategies/ma_crossover.py
+      used_as_fact: true
+    - claim_class: CONTRADICTION
+      text: PeakTradeRepo README capability narrative versus nested MA placeholder blob is preserved and not used as fact for
+        identity.
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000046.yaml
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+      used_as_fact: false
   integration:
     reintegration_required: false
     adaptation_required: false
@@ -11657,11 +12013,12 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+    last_adjudicated_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
     notes: Fail-open versus archive/full_files_stand export ma_crossover. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
       INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2. OPEN_EVIDENCE_RESOLUTION_PASS_V1
-      bound against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged. REEVALUATE_OPEN_RECORDS_PASS_V1 bound
-      against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged; INSUFFICIENT_EVIDENCE remains OPEN.
+      bound against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged. REEVALUATE_OPEN_RECORDS_PASS_V1 bound against
+      f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged; INSUFFICIENT_EVIDENCE remains OPEN. REEVALUATE_OPEN_RECORDS_PASS_V2
+      bound against 7426af2daa4019e7986584a4c53d40b5e182673d. Final disposition REJECT_FOR_CURRENT_SYSTEM.
   evidence_resolution:
     pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
     evidence_resolution_status: EVIDENCE_GAP_PARTIALLY_RESOLVED
@@ -11672,8 +12029,8 @@ records:
     missing_proof_question: Same strategy as later ma_crossover implementations?
     identity_gap:
       status: PROVEN_HISTORICAL_PATH_THEN_DELETED_ON_MAIN
-      statement: archive/PeakTradeRepo/src/strategies/ma_crossover.py is historically attested then deleted on origin/main
-        by 75722feea8c342c56ef93f796983467f33f98f25. Deletion is not identity with later namesakes.
+      statement: archive/PeakTradeRepo/src/strategies/ma_crossover.py is historically attested then deleted on origin/main by
+        75722feea8c342c56ef93f796983467f33f98f25. Deletion is not identity with later namesakes.
       used_as_fact: true
       source: 75722feea8c342c56ef93f796983467f33f98f25
       source_sha: 75722feea8c342c56ef93f796983467f33f98f25
@@ -11687,8 +12044,8 @@ records:
       evidence_type: HISTORICAL_INTERMEDIATE
     relation_gap:
       status: PROVEN_CO_DELETION_EVENT_NOT_IDENTITY
-      statement: Multiple archive/* trees were removed by the same 75722feea docs/archive cleanup where applicable. Shared
-        deletion event is not SAME_AS among archive trees.
+      statement: Multiple archive/* trees were removed by the same 75722feea docs/archive cleanup where applicable. Shared deletion
+        event is not SAME_AS among archive trees.
       used_as_fact: true
       source: 75722feea8c342c56ef93f796983467f33f98f25
       source_sha: 75722feea8c342c56ef93f796983467f33f98f25
@@ -11776,15 +12133,15 @@ records:
     - 'REJECT_FOR_CURRENT_SYSTEM: deletion is not reject'
     claims:
     - claim_class: ADJUDICATED_CONCLUSION
-      text: 'PeakTradeRepo nested ma_crossover: after OPEN_EVIDENCE_RESOLUTION_PASS_V1 the burden for a stronger terminal
-        class is not met. INSUFFICIENT_EVIDENCE remains OPEN.'
+      text: 'PeakTradeRepo nested ma_crossover: after OPEN_EVIDENCE_RESOLUTION_PASS_V1 the burden for a stronger terminal class
+        is not met. INSUFFICIENT_EVIDENCE remains OPEN.'
       evidence:
       - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000046.yaml
       - docs/system_atlas/reconciliation/evaluate/records/RCN-000046.yaml
       used_as_fact: true
     - claim_class: FORENSIC_RAW_FACT
-      text: Current absence, later namesakes, and never-merged-to-origin/main presence are not identity, not replacement,
-        and not rejection.
+      text: Current absence, later namesakes, and never-merged-to-origin/main presence are not identity, not replacement, and
+        not rejection.
       evidence:
       - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000046.yaml
       used_as_fact: true
@@ -11800,6 +12157,93 @@ records:
       disposition: INSUFFICIENT_EVIDENCE
       lifecycle_state: OPEN
     bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  reevaluate_v2:
+    pass_id: REEVALUATE_OPEN_RECORDS_PASS_V2
+    input_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+    predecessor_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+    predecessor_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+    disposition_burden_met: true
+    disposition_candidate: REJECT_FOR_CURRENT_SYSTEM
+    disposition: REJECT_FOR_CURRENT_SYSTEM
+    lifecycle_state: DISPOSITION_DECIDED
+    final_disposition_change_performed: true
+    identity_merge_performed: false
+    reintegration_performed: false
+    reintegration_candidate: false
+    runtime_mutation_performed: false
+    further_evidence_required: false
+    positive_reason: Nested PeakTradeRepo MA strategy blob is the one-line placeholder '# MA Strategy placeholder' (83bb6775).
+      Export MA c89dad61 and current src/strategies/ma_crossover.py 82e99483 are blob-distinct. README-versus-placeholder contradiction
+      in the PeakTradeRepo tree is preserved and is not resolved by substituting README narrative for blob content.
+    contradiction_id: ''
+    current_evidence_set:
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000046.yaml
+    - docs/system_atlas/reconciliation/understand/records/RCN-000046.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+    - src/strategies/ma_crossover.py
+    historical_function: Nested archive MA strategy snapshot whose recovered blob is a placeholder.
+    historical_relations: Inner component of RCN-000014; not fused. Distinct from export/current MA.
+    current_system_analogues: Later src/strategies/ma_crossover.py is a distinct blob; not SAME_AS.
+    identity_status: PLACEHOLDER_BLOB_DISTINCT_FROM_EXPORT_AND_CURRENT
+    successor_status: NOT_PROVEN
+    replacement_status: NOT_PROVEN
+    current_value_status: NO_INDEPENDENT_CURRENT_CAPABILITY
+    current_compatibility_status: REJECT_PLACEHOLDER_NOT_ADOPTABLE
+    contradictions:
+    - PeakTradeRepo README describes MA strategy capability while nested blob is '# MA Strategy placeholder'. Contradiction
+      is preserved; README is not substituted for blob content.
+    unresolved_gaps:
+    - README-versus-placeholder contradiction remains documented and is not normalized.
+    evaluation_result: Burden for REJECT_FOR_CURRENT_SYSTEM is met from nested placeholder blob content. Export/current MA blobs
+      are distinct. README contradiction is preserved.
+    alternatives_rejected:
+    - 'RETAIN_AS_IS: CURRENTLY_ABSENT; placeholder is not retained'
+    - 'CAPABILITY_ALREADY_COVERED: later MA module is not proven SAME_AS'
+    - 'ADAPT_AND_REINTEGRATE: placeholder has no independent current value to adapt'
+    - 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: placeholder is not a historically valid implemented MA strategy that conflicts with
+      current invariants'
+    - 'REJECT because deleted: deletion is not a positive rejection reason'
+    - 'Using PeakTradeRepo README as this record''s implemented purpose: forbidden; blob content is authoritative'
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: Nested MA strategy is a placeholder and is rejected for the current system.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+      - src/strategies/ma_crossover.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: blob:83bb67757202b250a8273faac1b1e3dd794f8493 = '# MA Strategy placeholder'. Distinct from export c89dad61caad99c51bd2e219d66af5956ecf28a9
+        and current 82e994839b55c7a48258d9864834c96c73781dfd.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+      - src/strategies/ma_crossover.py
+      used_as_fact: true
+    - claim_class: CONTRADICTION
+      text: PeakTradeRepo README capability narrative versus nested MA placeholder blob is preserved and not used as fact for
+        identity.
+      evidence:
+      - docs/system_atlas/reconciliation/understand/records/RCN-000046.yaml
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+      used_as_fact: false
+    evidence_refs:
+    - docs/system_atlas/reconciliation/understand/records/RCN-000046.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000046.yaml
+    - docs/system_atlas/reconciliation/adjudicate/records/RCN-000046.yaml
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000046.yaml
+    - docs/system_atlas/reconciliation/reevaluate/records/RCN-000046.yaml
+    - docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+    - src/strategies/ma_crossover.py
+    previous_adjudication:
+      pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+      bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+      disposition: INSUFFICIENT_EVIDENCE
+      lifecycle_state: OPEN
+      adjudicate_pass_id_frozen: INTEGRATE_OR_DISPOSITION_PASS_V1
+      adjudicate_bound_sha_frozen: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+    bound_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
+    v1_snapshot_frozen: true
 - identity:
     reconciliation_id: RCN-000047
     canonical_record_name: evidence/market_dashboard_reset pack
@@ -13052,6 +13496,14 @@ records:
       evidence:
       - 24001182de0209dabac4d6296bc7738eec442107^:archive/noch_einordnen/README.md
       epistemic_status: HYPOTHESIS
+    - relation_type: SAME_BLOB_AS
+      target_id: RCN-000014
+      unresolved_target: ''
+      evidence:
+      - 24001182de0209dabac4d6296bc7738eec442107^:archive/noch_einordnen/README.md
+      - cf2253aa60ffdbfd77356e33e611cd85ea53b849:archive/PeakTradeRepo/README.md
+      - blob:8914c7c59c19601053b0965f3a4787abfe68e637
+      epistemic_status: FORENSIC_RAW_FACT
   current_comparison:
     current_equivalent: ''
     current_paths: []
@@ -13080,30 +13532,49 @@ records:
       - docs/system_atlas/reconciliation/ledger.yaml
       used_as_fact: true
   adjudication:
-    lifecycle_state: OPEN
-    disposition: INSUFFICIENT_EVIDENCE
-    positive_reason: The queued archive folder is absent. UNDERSTAND binds recovered README text matching PeakTradeRepo README.
-      No current equivalent is proven.
+    lifecycle_state: DISPOSITION_DECIDED
+    disposition: REJECT_FOR_CURRENT_SYSTEM
+    positive_reason: Last attested archive/noch_einordnen tree contains only README.md whose blob 8914c7c5 is SAME_BLOB_AS archive/PeakTradeRepo/README.md
+      at cf2253aa60ffdbfd77356e33e611cd85ea53b849. Queued duplicate document; not an independent current capability. Folder
+      identity merge with RCN-000014 is not performed. CAPABILITY_ALREADY_COVERED is rejected because RCN-000014 is itself OPEN/ABSENT,
+      not a current covering capability.
     evidence_refs:
+    - docs/system_atlas/reconciliation/understand/records/RCN-000051.yaml
     - docs/system_atlas/reconciliation/evaluate/records/RCN-000051.yaml
+    - docs/system_atlas/reconciliation/adjudicate/records/RCN-000051.yaml
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000051.yaml
+    - docs/system_atlas/reconciliation/reevaluate/records/RCN-000051.yaml
+    - docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+    - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
     contradictions: []
     unresolved_questions:
-    - What was queued in this archive?
-    - Text overlap with PeakTradeRepo README is not SAME_AS without blob-identity proof.
-    - Is there a proven current replacement, or only a later namesake?
-    identity_status: IDENTITY_UNPROVEN
+    - Folder identity versus RCN-000014 remains unmerged by design.
+    identity_status: QUEUED_DUPLICATE_README_NOT_FOLDER_MERGE
     alternatives_rejected:
-    - REJECT because archived
-    - 'Identity fusion with RCN-000014: not proven'
-    further_evidence_required: true
+    - 'RETAIN_AS_IS: CURRENTLY_ABSENT; queued duplicate is not retained'
+    - 'CAPABILITY_ALREADY_COVERED: RCN-000014 is OPEN/ABSENT and is not a current covering capability'
+    - 'ADAPT_AND_REINTEGRATE: duplicate README has no independent current value to adapt'
+    - 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: queued duplicate document is not a historically distinct capability that conflicts
+      with current invariants'
+    - 'Folder identity merge into RCN-000014: forbidden; SAME_BLOB_AS of README is not SAME_AS of records'
+    - 'SAME_AS RCN-000014: not proven; merge not performed'
+    further_evidence_required: false
     reintegration_candidate: false
     adjudication_attempted: true
     claims:
     - claim_class: ADJUDICATED_CONCLUSION
-      text: 'archive/noch_einordnen: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE remains
-        OPEN and is not a rejection.'
+      text: archive/noch_einordnen is a queued duplicate README and is rejected for the current system. Folder identity is not
+        merged.
       evidence:
-      - docs/system_atlas/reconciliation/evaluate/records/RCN-000051.yaml
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+      - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: blob:8914c7c59c19601053b0965f3a4787abfe68e637 is the PeakTradeRepo README blob and the only path under 24001182de0209dabac4d6296bc7738eec442107^:archive/noch_einordnen.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
       used_as_fact: true
   integration:
     reintegration_required: false
@@ -13112,11 +13583,12 @@ records:
     implementation_refs: []
   audit:
     created_from_evidence: true
-    last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+    last_adjudicated_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
     notes: Named archive bucket. Not exhausted beyond the README path. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
       INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2. OPEN_EVIDENCE_RESOLUTION_PASS_V1
-      bound against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged. REEVALUATE_OPEN_RECORDS_PASS_V1 bound
-      against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged; INSUFFICIENT_EVIDENCE remains OPEN.
+      bound against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged. REEVALUATE_OPEN_RECORDS_PASS_V1 bound against
+      f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged; INSUFFICIENT_EVIDENCE remains OPEN. REEVALUATE_OPEN_RECORDS_PASS_V2
+      bound against 7426af2daa4019e7986584a4c53d40b5e182673d. Final disposition REJECT_FOR_CURRENT_SYSTEM.
   evidence_resolution:
     pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
     evidence_resolution_status: EVIDENCE_GAP_PARTIALLY_RESOLVED
@@ -13142,8 +13614,8 @@ records:
       evidence_type: HISTORICAL_INTERMEDIATE
     relation_gap:
       status: PROVEN_CO_DELETION_EVENT_NOT_IDENTITY
-      statement: Multiple archive/* trees were removed by the same 75722feea docs/archive cleanup where applicable. Shared
-        deletion event is not SAME_AS among archive trees.
+      statement: Multiple archive/* trees were removed by the same 75722feea docs/archive cleanup where applicable. Shared deletion
+        event is not SAME_AS among archive trees.
       used_as_fact: true
       source: 24001182de0209dabac4d6296bc7738eec442107
       source_sha: 24001182de0209dabac4d6296bc7738eec442107
@@ -13221,8 +13693,8 @@ records:
     unresolved_gaps:
     - What was queued in this archive remains incompletely listed.
     evaluation_result: 'archive/noch_einordnen: historical function is understood at UNDERSTAND/INPUT_PASS level, but current
-      same-identity presence, proven replacement, unique current value, proven incompatibility, and positive reject reason
-      are not all (or any stronger class) satisfied. INSUFFICIENT_EVIDENCE remains OPEN.'
+      same-identity presence, proven replacement, unique current value, proven incompatibility, and positive reject reason are
+      not all (or any stronger class) satisfied. INSUFFICIENT_EVIDENCE remains OPEN.'
     alternatives_rejected:
     - 'RETAIN_AS_IS: CURRENTLY_ABSENT'
     - 'CAPABILITY_ALREADY_COVERED: not proven'
@@ -13238,8 +13710,8 @@ records:
       - docs/system_atlas/reconciliation/evaluate/records/RCN-000051.yaml
       used_as_fact: true
     - claim_class: FORENSIC_RAW_FACT
-      text: Current absence, later namesakes, and never-merged-to-origin/main presence are not identity, not replacement,
-        and not rejection.
+      text: Current absence, later namesakes, and never-merged-to-origin/main presence are not identity, not replacement, and
+        not rejection.
       evidence:
       - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000051.yaml
       used_as_fact: true
@@ -13255,6 +13727,84 @@ records:
       disposition: INSUFFICIENT_EVIDENCE
       lifecycle_state: OPEN
     bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  reevaluate_v2:
+    pass_id: REEVALUATE_OPEN_RECORDS_PASS_V2
+    input_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+    predecessor_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+    predecessor_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+    disposition_burden_met: true
+    disposition_candidate: REJECT_FOR_CURRENT_SYSTEM
+    disposition: REJECT_FOR_CURRENT_SYSTEM
+    lifecycle_state: DISPOSITION_DECIDED
+    final_disposition_change_performed: true
+    identity_merge_performed: false
+    reintegration_performed: false
+    reintegration_candidate: false
+    runtime_mutation_performed: false
+    further_evidence_required: false
+    positive_reason: Last attested archive/noch_einordnen tree contains only README.md whose blob 8914c7c5 is SAME_BLOB_AS archive/PeakTradeRepo/README.md
+      at cf2253aa60ffdbfd77356e33e611cd85ea53b849. Queued duplicate document; not an independent current capability. Folder
+      identity merge with RCN-000014 is not performed. CAPABILITY_ALREADY_COVERED is rejected because RCN-000014 is itself OPEN/ABSENT,
+      not a current covering capability.
+    contradiction_id: ''
+    current_evidence_set:
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000051.yaml
+    - docs/system_atlas/reconciliation/understand/records/RCN-000051.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+    historical_function: Queued archive/noch_einordnen folder whose last attested content is one README.
+    historical_relations: README blob 8914c7c59c19601053b0965f3a4787abfe68e637 is SAME_BLOB_AS PeakTradeRepo README. POSSIBLE_SAME_AS
+      RCN-000014 remains hypothesis for folder identity; SAME_AS / folder merge not performed.
+    current_system_analogues: No independent current capability. Duplicate queued document only.
+    identity_status: QUEUED_DUPLICATE_README_NOT_FOLDER_MERGE
+    successor_status: NOT_APPLICABLE
+    replacement_status: NOT_PROVEN
+    current_value_status: NO_INDEPENDENT_CURRENT_CAPABILITY
+    current_compatibility_status: REJECT_QUEUED_DUPLICATE_DOCUMENT
+    contradictions: []
+    unresolved_gaps:
+    - Folder identity versus RCN-000014 remains unmerged by design.
+    evaluation_result: 'Burden for REJECT_FOR_CURRENT_SYSTEM is met: last attested content is a queued duplicate README (SAME_BLOB_AS
+      PeakTradeRepo README), not a standalone capability. Identity merge is not performed.'
+    alternatives_rejected:
+    - 'RETAIN_AS_IS: CURRENTLY_ABSENT; queued duplicate is not retained'
+    - 'CAPABILITY_ALREADY_COVERED: RCN-000014 is OPEN/ABSENT and is not a current covering capability'
+    - 'ADAPT_AND_REINTEGRATE: duplicate README has no independent current value to adapt'
+    - 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: queued duplicate document is not a historically distinct capability that conflicts
+      with current invariants'
+    - 'Folder identity merge into RCN-000014: forbidden; SAME_BLOB_AS of README is not SAME_AS of records'
+    - 'SAME_AS RCN-000014: not proven; merge not performed'
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: archive/noch_einordnen is a queued duplicate README and is rejected for the current system. Folder identity is not
+        merged.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+      - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: blob:8914c7c59c19601053b0965f3a4787abfe68e637 is the PeakTradeRepo README blob and the only path under 24001182de0209dabac4d6296bc7738eec442107^:archive/noch_einordnen.
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+      used_as_fact: true
+    evidence_refs:
+    - docs/system_atlas/reconciliation/understand/records/RCN-000051.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000051.yaml
+    - docs/system_atlas/reconciliation/adjudicate/records/RCN-000051.yaml
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000051.yaml
+    - docs/system_atlas/reconciliation/reevaluate/records/RCN-000051.yaml
+    - docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+    - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+    previous_adjudication:
+      pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+      bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+      disposition: INSUFFICIENT_EVIDENCE
+      lifecycle_state: OPEN
+      adjudicate_pass_id_frozen: INTEGRATE_OR_DISPOSITION_PASS_V1
+      adjudicate_bound_sha_frozen: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+    bound_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
+    v1_snapshot_frozen: true
 - identity:
     reconciliation_id: RCN-000052
     canonical_record_name: docs/webui/observability deleted family
@@ -13282,9 +13832,9 @@ records:
       - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
   understanding:
     purpose_understood: true
-    purpose_statement: 'docs/webui/observability family: Observability Hub v0 read-only HTML surface (GET /observability)
-      bundling links to existing GET endpoints without orders, activation, capital/scope release, kill-switch override, or
-      workflow trigger; plus Paper/Shadow read-model contracts and futures universe/source contracts.'
+    purpose_statement: 'docs/webui/observability family: Observability Hub v0 read-only HTML surface (GET /observability) bundling
+      links to existing GET endpoints without orders, activation, capital/scope release, kill-switch override, or workflow trigger;
+      plus Paper/Shadow read-model contracts and futures universe/source contracts.'
     historical_problem_statement: Provide a display-only operator observability hub and related contracts.
     inputs:
     - Existing GET endpoints / template status stub
@@ -13351,8 +13901,8 @@ records:
   adjudication:
     lifecycle_state: OPEN
     disposition: INSUFFICIENT_EVIDENCE
-    positive_reason: Census discovery.current_presence remains CURRENTLY_ABSENT and is not rewritten. The compared/current
-      tree contains docs/webui/observability/OBSERVABILITY_HUB_V0.md as a read-only hub. That mismatch is a preserved contradiction.
+    positive_reason: Census discovery.current_presence remains CURRENTLY_ABSENT and is not rewritten. The compared/current tree
+      contains docs/webui/observability/OBSERVABILITY_HUB_V0.md as a read-only hub. That mismatch is a preserved contradiction.
       RETAIN_AS_IS would silently treat the census-deleted identity as the currently present docs without resolving lineage.
       CAPABILITY_ALREADY_COVERED would assume the present docs are the same family. The contradiction blocks a stronger terminal
       class.
@@ -13405,8 +13955,9 @@ records:
     last_adjudicated_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
     notes: Fail-open versus RCN-000020. Path prefix differs. EVALUATE_PASS_V1 compared against 0e6cbb860f716d527873d97556d0968df4a197bf.
       INTEGRATE_OR_DISPOSITION_PASS_V1 adjudicated against 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2. OPEN_EVIDENCE_RESOLUTION_PASS_V1
-      bound against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged. REEVALUATE_OPEN_RECORDS_PASS_V1 bound
-      against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged; INSUFFICIENT_EVIDENCE remains OPEN.
+      bound against f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged. REEVALUATE_OPEN_RECORDS_PASS_V1 bound against
+      f9618c73f1834b68588ceab586da4d6408962a10. Disposition unchanged; INSUFFICIENT_EVIDENCE remains OPEN. REEVALUATE_OPEN_RECORDS_PASS_V2
+      bound against 7426af2daa4019e7986584a4c53d40b5e182673d. C052-1 remains OPEN; INSUFFICIENT_EVIDENCE unchanged.
   evidence_resolution:
     pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
     evidence_resolution_status: CONTRADICTION_DISCOVERED
@@ -13414,13 +13965,12 @@ records:
     identity_merge_performed: false
     reintegration_performed: false
     runtime_mutation_performed: false
-    missing_proof_question: Was the family restored after the census SHA, or was census presence bound against a different
-      tree?
+    missing_proof_question: Was the family restored after the census SHA, or was census presence bound against a different tree?
     identity_gap:
       status: CONTRADICTION_CENSUS_ABSENT_VS_TREE_PRESENT
-      statement: Ledger discovery.current_presence remains CURRENTLY_ABSENT (census field, not rewritten). git ls-tree of
-        census SHA 1b52df25 already contains 11 files under docs/webui/observability, matching origin/main@f9618c73. The family
-        was not restored after the census SHA; it was already present on the census-bound tree.
+      statement: Ledger discovery.current_presence remains CURRENTLY_ABSENT (census field, not rewritten). git ls-tree of census
+        SHA 1b52df25 already contains 11 files under docs/webui/observability, matching origin/main@f9618c73. The family was
+        not restored after the census SHA; it was already present on the census-bound tree.
       used_as_fact: true
       source: docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
       source_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
@@ -13436,8 +13986,8 @@ records:
     relation_gap:
       status: UNPROVEN_VERSUS_GRAFANA_RCN_000020
       statement: POSSIBLE_SAME_AS Grafana docs/observability RCN-000020 remains hypothesis (different stack/docs generation).
-        Partial deletion of some hub files occurred inside b5b81728 (market dashboard product stack delete) and files are
-        present again by census SHA — that collateral history does not rewrite census presence.
+        Partial deletion of some hub files occurred inside b5b81728 (market dashboard product stack delete) and files are present
+        again by census SHA — that collateral history does not rewrite census presence.
       used_as_fact: false
       source: docs/system_atlas/reconciliation/understand/records/RCN-000052.yaml
       source_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
@@ -13589,6 +14139,124 @@ records:
       disposition: INSUFFICIENT_EVIDENCE
       lifecycle_state: OPEN
     bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  reevaluate_v2:
+    pass_id: REEVALUATE_OPEN_RECORDS_PASS_V2
+    input_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+    predecessor_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+    predecessor_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+    disposition_burden_met: false
+    disposition_candidate: INSUFFICIENT_EVIDENCE
+    disposition: INSUFFICIENT_EVIDENCE
+    lifecycle_state: OPEN
+    final_disposition_change_performed: false
+    identity_merge_performed: false
+    reintegration_performed: false
+    reintegration_candidate: false
+    runtime_mutation_performed: false
+    further_evidence_required: true
+    positive_reason: Contradiction C052-1 remains unresolved. FIND bound CURRENTLY_ABSENT to a D/R-deleted 31-file family while
+      11 hub files existed at census SHA and exist now. GET /observability is currently wired. Record identity is mixed and
+      not split. Presence rewrite and RETAIN_AS_IS are forbidden while the contradiction is not adjudicated. SAME_AS RCN-000020
+      is forbidden.
+    contradiction_id: C052-1
+    current_evidence_set:
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000052.yaml
+    - docs/system_atlas/reconciliation/reevaluate/records/RCN-000052.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/rcn_000052_presence_scope.txt
+    - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+    - src/webui/app.py
+    - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+    - scripts/ops/system_atlas_v1/census_pass_v2_records.py
+    historical_function: Observability Hub v0 read-only HTML plus Paper/Shadow contracts; census also bound a 31-file deleted
+      family under the same prefix.
+    historical_relations: Census CURRENTLY_ABSENT vs 11 hub files present at census SHA and origin/main. POSSIBLE_SAME_AS Grafana
+      RCN-000020 remains hypothesis. No SAME_AS. No split.
+    current_system_analogues: docs/webui/observability/OBSERVABILITY_HUB_V0.md exists on origin/main. GET /observability is
+      wired in src/webui/app.py.
+    identity_status: CENSUS_TREE_CONTRADICTION_MIXED_IDENTITY_NOT_SPLIT
+    successor_status: NOT_APPLICABLE
+    replacement_status: NOT_PROVEN
+    current_value_status: UNPROVEN_WHILE_PRESENCE_CONTRADICTED
+    current_compatibility_status: CONTRADICTION_BLOCKS_PRESENCE_NORMALIZATION
+    contradictions:
+    - 'C052-1: FIND band CURRENTLY_ABSENT to a D/R-deleted 31-file family while git ls-tree census SHA 1b52df25b99a36b99eed91943c2a203ce84f1cad
+      and origin/main 7426af2daa4019e7986584a4c53d40b5e182673d both contain 11 docs/webui/observability hub files. SCOPE_RECONSTRUCTED_NOT_NORMALIZED.
+      C052_CONTRADICTION_RESOLVED=false.'
+    unresolved_gaps:
+    - Why did FIND_COMPLETELY bind current_presence=CURRENTLY_ABSENT for a path present on the census SHA?
+    - 31-file D/R family versus 11 remaining hub files is mixed identity and is not split.
+    - POSSIBLE_SAME_AS Grafana docs/observability RCN-000020 remains hypothesis.
+    evaluation_result: 'Fail-closed: C052-1 is preserved and not semantically resolved. RETAIN_AS_IS from tree presence would
+      silently overwrite CURRENTLY_ABSENT. Presence rewrite is forbidden. No split. No SAME_AS with RCN-000020. INSUFFICIENT_EVIDENCE
+      remains OPEN.'
+    alternatives_rejected:
+    - 'RETAIN_AS_IS: would normalize census CURRENTLY_ABSENT into a currently retained identity'
+    - 'CAPABILITY_ALREADY_COVERED: present hub docs are not proven identical to the census-deleted 31-file family'
+    - 'ADAPT_AND_REINTEGRATE: contradiction blocks treating the census identity as an adaptation candidate'
+    - 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: tree presence is not incompatibility'
+    - 'REJECT_FOR_CURRENT_SYSTEM: census said deleted is not a positive reject reason'
+    - 'Rewriting discovery.current_presence: forbidden; census field is historical discovery fact'
+    - 'Split into hub-present versus deleted-family records: not authorized'
+    - 'SAME_AS RCN-000020: forbidden; POSSIBLE_SAME_AS remains hypothesis'
+    claims:
+    - claim_class: ADJUDICATED_CONCLUSION
+      text: 'docs/webui/observability: C052-1 unresolved; stronger class burden unmet. INSUFFICIENT_EVIDENCE remains OPEN.'
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/rcn_000052_presence_scope.txt
+      - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+      - src/webui/app.py
+      - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+      - scripts/ops/system_atlas_v1/census_pass_v2_records.py
+      - docs/system_atlas/reconciliation/ledger.yaml
+      used_as_fact: true
+    - claim_class: CONTRADICTION
+      text: 'C052-1: Ledger discovery.current_presence is CURRENTLY_ABSENT while census SHA and current origin/main both contain
+        11 hub files. Census field is not rewritten. SCOPE_RECONSTRUCTED_NOT_NORMALIZED.'
+      evidence:
+      - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/rcn_000052_presence_scope.txt
+      - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+      - src/webui/app.py
+      - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+      - scripts/ops/system_atlas_v1/census_pass_v2_records.py
+      - docs/system_atlas/reconciliation/ledger.yaml
+      used_as_fact: false
+    - claim_class: CANONICAL_CURRENT_FACT
+      text: docs/webui/observability/OBSERVABILITY_HUB_V0.md exists on origin/main@7426af2daa4019e7986584a4c53d40b5e182673d.
+        GET /observability is wired.
+      evidence:
+      - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+      - src/webui/app.py
+      used_as_fact: true
+    - claim_class: FORENSIC_RAW_FACT
+      text: inventories/historical_path_families.yaml counts deleted_docs_families docs/webui/observability as 31 (git log --diff-filter=D/R).
+        FIND v2 hardcoded CURRENTLY_ABSENT and '31 files in census'.
+      evidence:
+      - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+      - scripts/ops/system_atlas_v1/census_pass_v2_records.py
+      used_as_fact: true
+    evidence_refs:
+    - docs/system_atlas/reconciliation/understand/records/RCN-000052.yaml
+    - docs/system_atlas/reconciliation/evaluate/records/RCN-000052.yaml
+    - docs/system_atlas/reconciliation/adjudicate/records/RCN-000052.yaml
+    - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000052.yaml
+    - docs/system_atlas/reconciliation/reevaluate/records/RCN-000052.yaml
+    - docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+    - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/rcn_000052_presence_scope.txt
+    - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+    - src/webui/app.py
+    - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+    - scripts/ops/system_atlas_v1/census_pass_v2_records.py
+    - docs/system_atlas/reconciliation/ledger.yaml
+    previous_adjudication:
+      pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+      bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+      disposition: INSUFFICIENT_EVIDENCE
+      lifecycle_state: OPEN
+      adjudicate_pass_id_frozen: INTEGRATE_OR_DISPOSITION_PASS_V1
+      adjudicate_bound_sha_frozen: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+    bound_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
+    v1_snapshot_frozen: true
 - identity:
     reconciliation_id: RCN-000053
     canonical_record_name: src/docs misplaced documentation tree
@@ -13734,6 +14402,9 @@ adjudicate_pass_id: INTEGRATE_OR_DISPOSITION_PASS_V1
 adjudicate_bound_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
 evidence_resolution_pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
 evidence_resolution_bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
-reevaluate_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
-reevaluate_bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
-reevaluate_input_pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
+reevaluate_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V2
+reevaluate_bound_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
+reevaluate_input_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+reevaluate_v1_pass_id_frozen: REEVALUATE_OPEN_RECORDS_PASS_V1
+reevaluate_v1_bound_against_sha_frozen: f9618c73f1834b68588ceab586da4d6408962a10
+reevaluate_v1_input_pass_id_frozen: OPEN_EVIDENCE_RESOLUTION_PASS_V1

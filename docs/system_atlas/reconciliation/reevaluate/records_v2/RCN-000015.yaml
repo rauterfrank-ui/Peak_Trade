@@ -1,0 +1,116 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
+atlas_authority: NONE
+reconciliation_authority: NONE
+reevaluate_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V2
+input_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+predecessor_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+predecessor_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+identity_fusion_forbidden: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+understand_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+adjudication_snapshot_frozen: true
+evidence_resolution_snapshot_frozen: true
+reevaluate_v1_snapshot_frozen: true
+record_id: RCN-000015
+reevaluation_attempted: true
+adjudication_attempted: true
+disposition_burden_met: true
+disposition_candidate: HISTORICALLY_VALID_BUT_INCOMPATIBLE
+disposition: HISTORICALLY_VALID_BUT_INCOMPATIBLE
+lifecycle_state: DISPOSITION_DECIDED
+final_disposition_change_performed: true
+identity_merge_performed: false
+reintegration_candidate: false
+further_evidence_required: false
+positive_reason: 'Owner-adjudicated Master V2 minimal selector (#6165 / 75eee7bdc) had a proven historical fail-closed-unless-exactly-one
+  purpose and was add-only (10 files), not runtime-consumed, and created no Cap-2.x importers. Owner reason in #6166 / afbae518b:
+  Cap 2.3 remains exclusive selection authority; BTC remains excluded. Selector constants do not rewrite Cap 2.3. Cap 2.3
+  (ecb44849, 2026-08-02) predates the selector; successor-of-Cap-2.3 is refuted. Revert is not the rejection reason. The exclusive
+  Cap 2.3 selection-authority invariant makes the dormant second selector policy incompatible with the current system.'
+contradiction_id: ''
+current_evidence_set:
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000015.yaml
+- docs/system_atlas/reconciliation/reevaluate/records/RCN-000015.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/pr_6166_body.txt
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/selector_add_revert.txt
+- src/ops/single_selected_future_policy_v1/constants_v1.py
+historical_function: Census → structural eligibility → exactly-one-or-none; ranking is not selection authority; fail-closed
+  if eligible_count != 1.
+historical_relations: 'Selector constants explicitly do not rewrite Cap 2.3. Cap 2.3 predates selector #6165/#6166. Succession
+  selector→Cap 2.3 is refuted. Add-only; not runtime-consumed.'
+current_system_analogues: 'Cap 2.3 single_selected_future_policy_v1 is current exclusive selection owner: SELECTION_AUTHORITY_ADDED=True;
+  ranking hysteresis/min holding.'
+identity_status: PROVEN_DISTINCT_FROM_CAP_2_3
+successor_status: REFUTED_AS_SUCCESSOR_OF_CAP_2_3
+replacement_status: NOT_A_REPLACEMENT_OF_CAP_2_3
+current_value_status: HISTORICALLY_VALID_NOT_CURRENTLY_ADOPTABLE
+current_compatibility_status: INCOMPATIBLE_WITH_EXCLUSIVE_CAP_2_3_SELECTION_AUTHORITY
+contradictions: []
+unresolved_gaps:
+- 'None required for this terminal class: Owner exclusive-authority reason is bound.'
+evaluation_result: 'Burden for HISTORICALLY_VALID_BUT_INCOMPATIBLE is met. Historical purpose is proven. Owner #6166 states
+  Cap 2.3 remains exclusive selection authority. Selector does not rewrite Cap 2.3 and is not its successor. Revert is not
+  REJECT. INCOMPATIBLE is the terminal class; historical legitimacy remains documented.'
+alternatives_rejected:
+- 'RETAIN_AS_IS: selector path CURRENTLY_ABSENT after revert; absence is not retain'
+- 'CAPABILITY_ALREADY_COVERED: Cap 2.3 ranking/hysteresis selection is a distinct later exclusive owner, not proven coverage
+  of fail-closed-unless-exactly-one'
+- 'ADAPT_AND_REINTEGRATE: reintegration is not authorized; exclusive Cap 2.3 authority forbids a second selector policy'
+- 'REJECT_FOR_CURRENT_SYSTEM: revert #6166 is not a positive rejection reason; historical purpose remains legitimate'
+- 'Declaring SAME_AS / successor of single_selected_future_policy_v1: refuted, not a merge'
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: Master V2 minimal selector is historically valid and incompatible with exclusive Cap 2.3 selection authority.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/pr_6166_body.txt
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/selector_add_revert.txt
+  - src/ops/single_selected_future_policy_v1/constants_v1.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'PR #6166 Owner decision (A+1): Cap 2.3 remains exclusive selection authority. BTC remains excluded. #6165 was isolated
+    add-only (10 files), not runtime-consumed, and created no Cap-2.x / host importers.'
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/pr_6166_body.txt
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: Selector package states it does not rewrite Cap 2.3 stickiness/ranking selection.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/selector_add_revert.txt
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Cap 2.3 remains current SINGLE_SELECTED_FUTURE selection owner with SELECTION_AUTHORITY_ADDED=True.
+  evidence:
+  - src/ops/single_selected_future_policy_v1/constants_v1.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: Cap 2.3 was added 2026-08-02 (#5642 / ecb44849) before selector add 2026-08-30 (#6165). Successor-of-Cap-2.3 is refuted.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/selector_add_revert.txt
+  - src/ops/single_selected_future_policy_v1/constants_v1.py
+  used_as_fact: true
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000015.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000015.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000015.yaml
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000015.yaml
+- docs/system_atlas/reconciliation/reevaluate/records/RCN-000015.yaml
+- docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/pr_6166_body.txt
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/selector_add_revert.txt
+- src/ops/single_selected_future_policy_v1/constants_v1.py
+previous_adjudication:
+  pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+  bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  disposition: INSUFFICIENT_EVIDENCE
+  lifecycle_state: OPEN
+  adjudicate_pass_id_frozen: INTEGRATE_OR_DISPOSITION_PASS_V1
+  adjudicate_bound_sha_frozen: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+v1_snapshot_frozen: true
