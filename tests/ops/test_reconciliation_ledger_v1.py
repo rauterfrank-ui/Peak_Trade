@@ -349,6 +349,43 @@ def test_atlas_validate_surfaces_reconciliation_failure() -> None:
     assert validate_atlas_v1(atlas) == []
 
 
+def test_current_system_compared_without_overlap_rejected() -> None:
+    payload = _with_records(
+        _payload(),
+        [
+            _minimal_record(
+                lifecycle_state="CURRENT_SYSTEM_COMPARED",
+                purpose_understood=True,
+            )
+        ],
+    )
+    with pytest.raises(
+        ReconciliationValidationError, match="CURRENT_SYSTEM_COMPARED_WITHOUT_OVERLAP"
+    ):
+        validate_reconciliation_v1(payload)
+
+
+def test_disposition_during_current_system_compare_rejected() -> None:
+    payload = _with_records(
+        _payload(),
+        [
+            _minimal_record(
+                lifecycle_state="CURRENT_SYSTEM_COMPARED",
+                purpose_understood=True,
+                disposition="RETAIN_AS_IS",
+                positive_reason="not allowed during compare",
+            )
+        ],
+    )
+    payload["records"]["ledger.yaml"]["records"][0]["current_comparison"]["capability_overlap"] = (
+        "SAME_ARTIFACT_STILL_PRESENT"
+    )
+    with pytest.raises(
+        ReconciliationValidationError, match="DISPOSITION_DURING_CURRENT_SYSTEM_COMPARE"
+    ):
+        validate_reconciliation_v1(payload)
+
+
 def test_hypothesis_serialized_as_fact_rejected() -> None:
     record = _minimal_record()
     record["claims"] = [

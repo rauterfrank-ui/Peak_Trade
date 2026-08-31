@@ -1,0 +1,44 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+atlas_authority: NONE
+reconciliation_authority: NONE
+evaluate_pass_id: EVALUATE_INDIVIDUALLY_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: true
+evaluate_performed: true
+reintegration_performed: false
+record_id: RCN-000051
+canonical_record_name: archive/noch_einordnen
+census_current_presence: CURRENTLY_ABSENT
+comparison_status: CURRENT_SYSTEM_COMPARED
+compared_against_ref: origin/main
+compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+current_equivalent: ''
+current_paths: []
+capability_overlap: NO_CURRENT_EQUIVALENT_PROVEN
+semantic_compatibility: UNPROVEN
+authority_compatibility: UNPROVEN
+safety_compatibility: NOT_RUNTIME
+runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
+conflicts: []
+gaps:
+- historical archive path archive/noch_einordnen/README.md is absent on origin/main@0e6cbb860f71
+- archive presence is not obsolete; current absence is not rejection
+claims:
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Bound current tree 0e6cbb860f716d527873d97556d0968df4a197bf does not contain archive/noch_einordnen/README.md.
+  evidence:
+  - docs/system_atlas/reconciliation/understand/records/RCN-000051.yaml
+  - docs/system_atlas/reconciliation/ledger.yaml
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: No current equivalent path was proven for this archive artifact on the bound SHA.
+  evidence:
+  - docs/system_atlas/reconciliation/ledger.yaml
+  used_as_fact: true
+open_questions:
+- Is there a proven current replacement, or only a later namesake?

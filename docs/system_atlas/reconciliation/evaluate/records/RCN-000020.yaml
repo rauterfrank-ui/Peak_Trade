@@ -1,0 +1,52 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+atlas_authority: NONE
+reconciliation_authority: NONE
+evaluate_pass_id: EVALUATE_INDIVIDUALLY_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: true
+evaluate_performed: true
+reintegration_performed: false
+record_id: RCN-000020
+canonical_record_name: docs/observability Grafana runbook family
+census_current_presence: CURRENTLY_ABSENT
+comparison_status: CURRENT_SYSTEM_COMPARED
+compared_against_ref: origin/main
+compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+current_equivalent: ''
+current_paths:
+- docs/OBSERVABILITY_AND_MONITORING_PLAN.md
+- docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml
+- docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C4_OBSERVABILITY_OPERATOR_DRYRUN.md
+capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+semantic_compatibility: UNPROVEN
+authority_compatibility: UNPROVEN
+safety_compatibility: NOT_RUNTIME
+runtime_compatibility: NOT_RUNTIME
+conflicts: []
+gaps:
+- docs/observability Grafana/OTLP runbook family is absent on the bound SHA
+- later observability docs exist under other paths; Grafana-stack identity is unproven
+claims:
+- claim_class: CANONICAL_CURRENT_FACT
+  text: docs/observability/ path family is absent on the bound SHA.
+  evidence:
+  - docs/system_atlas/reconciliation/understand/records/RCN-000020.yaml
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Later observability docs exist (plan, Prometheus scrape YAML, operator dry-run).
+  evidence:
+  - docs/OBSERVABILITY_AND_MONITORING_PLAN.md
+  - docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml
+  used_as_fact: true
+- claim_class: HYPOTHESIS
+  text: Later docs may cover local observability; they are not proven to be the purged Grafana family.
+  evidence:
+  - docs/OBSERVABILITY_AND_MONITORING_PLAN.md
+  used_as_fact: false
+open_questions:
+- Does a current Grafana/OTLP stack runbook exist under another path?

@@ -1,0 +1,55 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+atlas_authority: NONE
+reconciliation_authority: NONE
+evaluate_pass_id: EVALUATE_INDIVIDUALLY_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: true
+evaluate_performed: true
+reintegration_performed: false
+record_id: RCN-000015
+canonical_record_name: Master V2 minimal selector policy v1
+census_current_presence: CURRENTLY_ABSENT
+comparison_status: CURRENT_SYSTEM_COMPARED
+compared_against_ref: origin/main
+compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+current_equivalent: ''
+current_paths:
+- src/ops/single_selected_future_policy_v1/
+- src/ops/single_selected_future_policy_v1/policy_v1.py
+- src/ops/single_selected_future_runtime_binding_v1/
+capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+semantic_compatibility: UNPROVEN
+authority_compatibility: UNPROVEN
+safety_compatibility: UNPROVEN
+runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
+conflicts: []
+gaps:
+- 'src/ops/master_v2_minimal_selector_v1 is absent after revert of #6165 via #6166'
+- current Single Selected Future policy is a later capability path, not a proven identity
+- historical revert is not disposition
+claims:
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Historical master_v2_minimal_selector_v1 path is absent on the bound SHA.
+  evidence:
+  - docs/system_atlas/reconciliation/understand/records/RCN-000015.yaml
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: src/ops/single_selected_future_policy_v1 exists and encodes SINGLE_SELECTED_FUTURE.
+  evidence:
+  - src/ops/single_selected_future_policy_v1/
+  - src/ops/single_selected_future_policy_v1/policy_v1.py
+  used_as_fact: true
+- claim_class: HYPOTHESIS
+  text: Cap 2.3 policy may serve a similar exactly-one selection purpose; replacement is not proven.
+  evidence:
+  - src/ops/single_selected_future_policy_v1/
+  - src/ops/single_selected_future_policy_v1/policy_v1.py
+  - src/ops/single_selected_future_runtime_binding_v1/
+  used_as_fact: false
+open_questions:
+- Is single_selected_future_policy_v1 a successor of master_v2_minimal_selector_v1, or a distinct later owner?

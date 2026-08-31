@@ -1,0 +1,32 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+atlas_authority: NONE
+reconciliation_authority: NONE
+evaluate_pass_id: EVALUATE_INDIVIDUALLY_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: true
+evaluate_performed: true
+reintegration_performed: false
+census_closed: true
+census_status: CENSUS_CLOSED
+surfaces_exhaustion_proven: 17
+ledger_record_count: 53
+current_system_compared_record_count: 53
+adjudicated_record_count: 0
+disposition_decided_record_count: 0
+identity_merges_performed: 0
+no_disposition_decided: true
+no_reintegration_performed: true
+no_identity_fusion_performed: true
+overlap_counts:
+  SAME_ARTIFACT_STILL_PRESENT: 18
+  LATER_CONSUMER_SURFACE_OVERLAP_IDENTITY_UNPROVEN: 15
+  NO_CURRENT_EQUIVALENT_PROVEN: 5
+  CURRENT_FUNCTION_CANDIDATE_UNPROVEN: 13
+  SAME_PATH_FAMILY_PARTIAL: 1
+  CENSUS_ABSENT_BUT_CURRENT_TREE_PRESENT: 1
+evaluate_phase_status: CURRENT_SYSTEM_COMPARED

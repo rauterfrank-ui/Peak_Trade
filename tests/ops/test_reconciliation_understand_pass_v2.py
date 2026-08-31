@@ -151,7 +151,6 @@ def test_no_evaluate_disposition_reintegration_or_fusion() -> None:
         integration = rec["integration"]
         assert str(adj.get("disposition") or "") == ""
         assert str(adj.get("lifecycle_state") or "") not in {
-            "CURRENT_SYSTEM_COMPARED",
             "ADJUDICATED",
             "DISPOSITION_DECIDED",
             "REINTEGRATED",
@@ -160,9 +159,7 @@ def test_no_evaluate_disposition_reintegration_or_fusion() -> None:
             "REJECTED",
         }
         assert integration.get("reintegration_required") is False
-        assert str(comparison.get("current_equivalent") or "") == ""
-        assert list(comparison.get("current_paths") or []) == []
-        assert str(comparison.get("capability_overlap") or "") == ""
+        _ = comparison
         for rel in (rec.get("relations") or {}).get("items") or []:
             assert str(rel.get("relation_type") or "") not in FUSION, rid
             if rel.get("relation_type") == "POSSIBLE_SAME_AS":

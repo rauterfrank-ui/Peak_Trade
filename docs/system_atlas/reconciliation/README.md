@@ -31,6 +31,7 @@ discovery_candidates.yaml  hits below ledger threshold
 relations.yaml         copied relation index
 inventories/           pass v2/v3 reproducible search inventories
 understand/            UNDERSTAND pass v2 historical evidence binding
+evaluate/              EVALUATE_INDIVIDUALLY pass v1 current-system comparison
 evidence/understand_v1/ raw quotes separated from interpretation
 ```
 
@@ -174,7 +175,27 @@ refs and LOSS_REGISTER-derived unreachable blobs remain documented out of
 scope. Atlas `COMPLETE` flags and a stale Atlas `census_meta` SHA are not
 authority for this census. No EVALUATE, disposition, or reintegration in that census closeout.
 
-## UNDERSTAND pass v2 state (current)
+## EVALUATE_INDIVIDUALLY pass v1 state (current)
+
+```text
+EVALUATE_PASS_ID=EVALUATE_INDIVIDUALLY_PASS_V1
+EVALUATE_BOUND_AGAINST_SHA=0e6cbb860f716d527873d97556d0968df4a197bf
+CENSUS_CLOSED=true
+UNDERSTAND_PHASE_STATUS=EVIDENCE_EXHAUSTED
+LEDGER_RECORD_COUNT=53
+CURRENT_SYSTEM_COMPARED_RECORD_COUNT=53
+ADJUDICATED_RECORD_COUNT=0
+DISPOSITION_DECIDED_RECORD_COUNT=0
+IDENTITY_MERGES_PERFORMED=0
+```
+
+Each of the 53 ledger records was compared one-by-one to `origin&#47;main` at
+the bound SHA. Historical purpose and current fit remain separate questions.
+Current absence is not irrelevance. A later path with a similar name is not a
+proven replacement. UNDERSTAND snapshots under `understand&#47;` stay unevaluated.
+No disposition, reintegration, identity fusion, runtime mutation, or merge.
+
+## UNDERSTAND pass v2 state (historical)
 
 ```text
 UNDERSTAND_PASS_ID=UNDERSTAND_PASS_V2
@@ -192,7 +213,7 @@ with PARTIAL/OPEN when the bound evidence does not carry the missing statement.
 Clusters under `understand&#47;clusters.yaml` are navigation only, not identity
 groups. `POSSIBLE_SAME_AS` remains hypothesis. Archive presence is not obsolete.
 Historical revert is not disposition. No EVALUATE, current-system comparison,
-disposition, reintegration, or identity fusion.
+disposition, reintegration, or identity fusion in that UNDERSTAND closeout.
 
 ## UNDERSTAND pass v1 state (historical)
 
@@ -235,7 +256,7 @@ It is no longer the live tree state after census pass v1.
 ## Validation
 
 ```text
-./scripts/pt -m pytest -q tests/ops/test_reconciliation_ledger_v1.py tests/ops/test_reconciliation_census_pass_v1.py tests/ops/test_reconciliation_understand_pass_v1.py tests/ops/test_reconciliation_understand_pass_v2.py tests/ops/test_system_atlas_v1.py
+./scripts/pt -m pytest -q tests/ops/test_reconciliation_ledger_v1.py tests/ops/test_reconciliation_census_pass_v1.py tests/ops/test_reconciliation_understand_pass_v1.py tests/ops/test_reconciliation_understand_pass_v2.py tests/ops/test_reconciliation_evaluate_pass_v1.py tests/ops/test_system_atlas_v1.py
 ./scripts/pt scripts/ops/validate_system_atlas_v1.py
 ```
 
