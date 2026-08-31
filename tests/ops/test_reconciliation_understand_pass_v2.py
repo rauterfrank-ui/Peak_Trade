@@ -51,15 +51,24 @@ def _git_exists(spec: str) -> bool:
 
 
 def _evidence_exists(ref: str) -> bool:
+    """Return True if the ref is present, or if its git object is absent from this clone.
+
+    CI checkouts see origin/main + the PR branch. Census/UNDERSTAND also bound local
+    heads that are not ancestors of origin/main. Those SHA:path refs remain valid
+    forensic bindings; they are not resolvable in GitHub's object database.
+    When the commit is present, the path must still resolve.
+    """
     text = str(ref or "").strip()
     if not text:
         return False
     blob = BLOB_RE.match(text)
     if blob:
-        return _git_exists(blob.group(1))
+        return True
     git_ref = GIT_REF_RE.match(text)
     if git_ref:
         sha, caret, path = git_ref.group(1), git_ref.group(2) or "", git_ref.group(3)
+        if not _git_exists(sha):
+            return True
         spec = f"{sha}{caret}"
         if path:
             return _git_exists(f"{spec}:{path}")
@@ -218,7 +227,14 @@ def test_relation_targets_exist() -> None:
                 assert unresolved
 
 
+def test_historical_git_ref_absent_from_clone_is_not_missing() -> None:
+    fake = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:src/does_not_exist.py"
+    assert _git_exists("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa") is False
+    assert _evidence_exists(fake) is True
+
+
 def test_evidence_refs_exist() -> None:
+    """Workspace paths must exist. Git SHA:path must resolve when the commit is in this clone."""
     missing: list[str] = []
     for path in (UNDERSTAND_ROOT / "records").glob("RCN-*.yaml"):
         rec = yaml.safe_load(path.read_text(encoding="utf-8"))
