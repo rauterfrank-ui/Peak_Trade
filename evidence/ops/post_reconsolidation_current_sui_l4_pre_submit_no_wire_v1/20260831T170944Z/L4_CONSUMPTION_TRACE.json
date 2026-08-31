@@ -1,0 +1,159 @@
+{
+  "consumption": [
+    {
+      "CONSUMED_VALUE": {
+        "ctVal": "1",
+        "lotSz": "1",
+        "maxLmtSz": "100000000",
+        "maxMktSz": "100000",
+        "minSz": "1",
+        "tickSz": "0.0001"
+      },
+      "CONSUMER": "apply_fresh_max_size_pretrade_gate_v1 + apply_fresh_venue_pretrade_limit_gates_v1",
+      "EDGE_ID": "MAX_SIZE",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "GATE_RESULT": "SEE_ORDER_PLAN_ERROR",
+      "HTTP_STATUS": 200,
+      "OBSERVED": true,
+      "OKX_CODE": "0"
+    },
+    {
+      "CONSUMED_VALUE": {
+        "instId": "SUI-USD_UM_XPERP-310404",
+        "state": "live"
+      },
+      "CONSUMER": "apply_fresh_instrument_state_pretrade_gate_v1",
+      "EDGE_ID": "INSTRUMENT_STATE",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "GATE_RESULT": "SEE_ORDER_PLAN_ERROR",
+      "HTTP_STATUS": 200,
+      "OBSERVED": true,
+      "OKX_CODE": "0"
+    },
+    {
+      "CONSUMED_VALUE": {
+        "lotSz": "1",
+        "maxLmtSz": "100000000",
+        "minSz": "1",
+        "tickSz": "0.0001"
+      },
+      "CONSUMER": "apply_fresh_venue_pretrade_limit_gates_v1",
+      "EDGE_ID": "VENUE_PRETRADE_LIMIT_GATES",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "GATE_RESULT": "SEE_ORDER_PLAN_ERROR",
+      "HTTP_STATUS": 200,
+      "OBSERVED": true,
+      "OKX_CODE": "0"
+    },
+    {
+      "CONSUMED_VALUE": {
+        "askPx": "0.722",
+        "bidPx": "0.7217",
+        "last": "0.7215"
+      },
+      "CONSUMER": "extract_reference_price_v1 + quantize_limit_price_v1",
+      "EDGE_ID": "TICKER_REFERENCE_PRICE",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "GATE_RESULT": "SEE_ORDER_PLAN_ERROR",
+      "HTTP_STATUS": 200,
+      "OBSERVED": true,
+      "OKX_CODE": "0"
+    },
+    {
+      "CONSUMED_VALUE": {
+        "buyLmt": "0.7255",
+        "enabled": true,
+        "sellLmt": "0.7182"
+      },
+      "CONSUMER": "apply_fresh_price_band_pretrade_gate_v1",
+      "EDGE_ID": "PRICE_BAND",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "GATE_RESULT": "SEE_ORDER_PLAN_ERROR",
+      "HTTP_STATUS": 200,
+      "OBSERVED": true,
+      "OKX_CODE": "0"
+    },
+    {
+      "CONSUMED_VALUE": {
+        "posMode": "net_mode"
+      },
+      "CONSUMER": "apply_fresh_pos_mode_pretrade_gate_v1",
+      "EDGE_ID": "POS_MODE",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "GATE_RESULT": "SEE_ORDER_PLAN_ERROR",
+      "HTTP_STATUS": 200,
+      "OBSERVED": true,
+      "OKX_CODE": "0"
+    },
+    {
+      "CONSUMED_VALUE": {
+        "acctLv": "2"
+      },
+      "CONSUMER": "apply_fresh_account_mode_pretrade_gate_v1",
+      "EDGE_ID": "ACCOUNT_MODE",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "GATE_RESULT": "SEE_ORDER_PLAN_ERROR",
+      "HTTP_STATUS": 200,
+      "OBSERVED": true,
+      "OKX_CODE": "0"
+    },
+    {
+      "CONSUMED_VALUE": {
+        "instFamily": null,
+        "instId": "SUI-USD_UM_XPERP-310404",
+        "lever": "3",
+        "mgnMode": "cross",
+        "posSide": "net"
+      },
+      "CONSUMER": "apply_fresh_leverage_pretrade_gate_v1",
+      "EDGE_ID": "LEVERAGE",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "GATE_RESULT": "SEE_ORDER_PLAN_ERROR",
+      "HTTP_STATUS": 200,
+      "OBSERVED": true,
+      "OKX_CODE": "0"
+    },
+    {
+      "CONSUMED_VALUE": {
+        "maxBuy": "0",
+        "maxSell": "0"
+      },
+      "CONSUMER": "apply_fresh_max_available_pretrade_gate_v1",
+      "EDGE_ID": "MAX_AVAILABLE",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "GATE_RESULT": "SEE_ORDER_PLAN_ERROR",
+      "HTTP_STATUS": 200,
+      "OBSERVED": true,
+      "OKX_CODE": "0"
+    },
+    {
+      "CONSUMED_VALUE": {
+        "USDC_DETAIL_OBSERVED": false,
+        "availEq": null,
+        "ccy": null
+      },
+      "CONSUMER": "apply_fresh_available_margin_pretrade_gate_v1",
+      "EDGE_ID": "AVAILABLE_MARGIN",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "GATE_RESULT": "SEE_ORDER_PLAN_ERROR",
+      "HTTP_STATUS": 200,
+      "OBSERVED": true,
+      "OKX_CODE": "0"
+    },
+    {
+      "CONSUMED_VALUE": {
+        "DATA_COUNT": 0,
+        "EMPTY_DATA_IS_NOT_ZERO": true,
+        "TARGET_ROW_OBSERVED": false,
+        "mgnMode": null
+      },
+      "CONSUMER": "apply_fresh_margin_mode_pretrade_gate_v1",
+      "EDGE_ID": "MARGIN_MODE",
+      "FRESHNESS_STATUS": "FRESH_GET_THIS_PACK",
+      "GATE_RESULT": "SEE_ORDER_PLAN_ERROR",
+      "HTTP_STATUS": 200,
+      "OBSERVED": true,
+      "OKX_CODE": "0"
+    }
+  ]
+}
