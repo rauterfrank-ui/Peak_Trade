@@ -405,7 +405,7 @@ entities:
     fail_closed: true
     evidence_sources:
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO, the §11.13.5.Z2CP freshness persist/implement Owner-GO, the §11.13.5.Z2CQ post-Z2CP prerequisite-08 cluster Owner-GO, the §11.13.5.Z2CR prerequisite-08 fresh position-observation Owner-GO, the §11.13.5.Z2CS prerequisite-08 resolution-authority adjudication Owner-GO, the §11.13.5.Z2CT prerequisite-08 single unfiltered position-observation Owner-GO, the §11.13.5.Z2CU post-Z2CT named progression-track adjudication Owner-GO, and the §11.13.5.Z2CV COVER_USDC remaining unranked SUI offline reproof Owner-GO. Not execute enablement. Atlas is not trading authority.
+    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO, the §11.13.5.Z2CP freshness persist/implement Owner-GO, the §11.13.5.Z2CQ post-Z2CP prerequisite-08 cluster Owner-GO, the §11.13.5.Z2CR prerequisite-08 fresh position-observation Owner-GO, the §11.13.5.Z2CS prerequisite-08 resolution-authority adjudication Owner-GO, the §11.13.5.Z2CT prerequisite-08 single unfiltered position-observation Owner-GO, the §11.13.5.Z2CU post-Z2CT named progression-track adjudication Owner-GO, the §11.13.5.Z2CV COVER_USDC remaining unranked SUI offline reproof Owner-GO, and the §11.13.5.Z2CW FX remaining unranked SUI offline reproof Owner-GO. Not execute enablement. Atlas is not trading authority.
 
   - id: GATE:btc_exclusion
     kind: GATE
@@ -757,7 +757,19 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/z2ar_cover_usdc_offline_reproof_v1.py
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-    notes: Additive post-Z2CU offline COVER_USDC remaining unranked SUI reproof. Fail-closed NOT_REPROVEN_MISSING_EVIDENCE. Does not instantiate COVER_USDC. Does not adjudicate FX, ROUNDING, finished RISK_ENVELOPE_NUMERIC, or USD_USDC_ACCOUNT_SETTLEMENT. Does not supersede Z2CT as last canonically closed 11.13.5 slice. Atlas is not trading authority.
+    notes: Additive post-Z2CU offline COVER_USDC remaining unranked SUI reproof. Fail-closed NOT_REPROVEN_MISSING_EVIDENCE. Does not instantiate COVER_USDC. Does not adjudicate FX, ROUNDING, finished RISK_ENVELOPE_NUMERIC, or USD_USDC_ACCOUNT_SETTLEMENT. Does not supersede Z2CT as last canonically closed 11.13.5 slice. Predecessor of additive PHASE:z2cw. Atlas is not trading authority.
+
+  - id: PHASE:z2cw
+    kind: PHASE
+    name: 11.13.5.Z2CW
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/z2ar_fx_offline_reproof_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+    notes: Additive post-Z2CV offline FX remaining unranked SUI reproof. Fail-closed NOT_REPROVEN_MISSING_EVIDENCE. Does not prove an FX operator. Does not treat idxPx=1 or USD≈USDC as conversion proof. Does not adjudicate COVER_USDC, ROUNDING, finished RISK_ENVELOPE_NUMERIC, or USD_USDC_ACCOUNT_SETTLEMENT. Does not supersede Z2CT as last canonically closed 11.13.5 slice. Atlas is not trading authority.
 
   - id: GATE:target_position_state
     kind: GATE
