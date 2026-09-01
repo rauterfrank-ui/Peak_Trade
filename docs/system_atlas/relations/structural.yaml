@@ -326,8 +326,10 @@ relations:
     type: CONTAINS
     target: VENUE:okx_eea
     epistemic_status: FORENSIC_RAW
+    modified_by: PENDING_CHANGE
     evidence_sources:
       - config/config.toml
+    notes: Structural containment unchanged. Current docs no longer present Kraken as an operative venue.
 
   - id: REL:s_forensic_reference_of_corpus
     source: FORENSIC_REFERENCE:information_corpus_persistence_base

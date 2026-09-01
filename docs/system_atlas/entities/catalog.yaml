@@ -472,7 +472,7 @@ entities:
     evidence_sources:
       - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
       - config/config.toml
-    notes: Inventory only. Current operative venue family is OKX EEA. Atlas is not trading authority.
+    notes: Inventory only. Current operative venue family is OKX EEA. Current docs no longer present Kraken as an operative venue. Atlas is not trading authority.
 
   - id: VENUE:okx_eea
     kind: VENUE
@@ -485,7 +485,8 @@ entities:
       - src/ops/bounded_futures_testnet_venue_binding_v0.py
       - config/config.toml
       - src/exchange/operative_venue_boundary_v1.py
-    notes: Inventory only. Sole current operative venue. Non-OKX productive venue count is zero. Atlas is not trading authority.
+      - docs/ARCHITECTURE.md
+    notes: Inventory only. Sole current operative venue. Non-OKX productive venue count is zero. Current docs no longer present Kraken as an operative venue. Atlas is not trading authority.
 
   - id: FAMILY:dashboard_dynamic_scope
     kind: FAMILY

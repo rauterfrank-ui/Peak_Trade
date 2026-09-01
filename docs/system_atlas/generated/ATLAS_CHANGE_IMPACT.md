@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=6
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=7
+ATLAS_CHANGED_RELATION_COUNT=1
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,18 +40,19 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `ACRONYM:EEA` |
+| `ACRONYM:OKX` |
+| `CFG:exchange_okx_europe_eea` |
+| `OKX_FEATURE:websocket_hosts_configured` |
+| `OKX_HOST:wseeapap` |
 | `VENUE:okx` |
 | `VENUE:okx_eea` |
-| `REGISTRY:execution_adapters_v1` |
-| `RUNTIME_COMPONENT:operative_venue_boundary_v1` |
-| `ADAPTER:kraken_live_client` |
-| `OKX_FEATURE:execution_adapter_mocks_only` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:s_venue_okx_contains_eea` |
 
 ## NEW_RELATIONS
 
@@ -69,13 +70,14 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| _(none)_ |
+| `CLOSURE:productive_universe` |
 
 ## AFFECTED_OKX_SURFACES
 
 | id |
 | --- |
-| `OKX_FEATURE:execution_adapter_mocks_only` |
+| `OKX_FEATURE:websocket_hosts_configured` |
+| `OKX_HOST:wseeapap` |
 
 ## AFFECTED_SAFETY_SURFACES
 
@@ -87,7 +89,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `SCHEMA:atlas_v1` |
+| _(none)_ |
 
 ## REVIEW_REQUIRED_ITEMS
 
@@ -97,7 +99,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Atlas drift-prevention machinery introduced in this workpackage. Bind INTRODUCED_BY / MODIFIED_BY to the origin/main commit/PR after merge. This snapshot is not live git classification.
+- Minimal source rebind of existing OKX/EEA inventory after current-doc Kraken residual decommission. No new Atlas entity. Runtime venue semantics unchanged. Atlas is not trading authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

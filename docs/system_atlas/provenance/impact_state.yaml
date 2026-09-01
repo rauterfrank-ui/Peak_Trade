@@ -9,23 +9,26 @@ modified_by: PENDING_CHANGE
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Atlas drift-prevention machinery introduced in this workpackage.
-  Bind INTRODUCED_BY / MODIFIED_BY to the origin/main commit/PR after merge.
-  This snapshot is not live git classification.
+  Minimal source rebind of existing OKX/EEA inventory after current-doc
+  Kraken residual decommission. No new Atlas entity. Runtime venue
+  semantics unchanged. Atlas is not trading authority.
 changed_entities:
+  - ACRONYM:EEA
+  - ACRONYM:OKX
+  - CFG:exchange_okx_europe_eea
+  - OKX_FEATURE:websocket_hosts_configured
+  - OKX_HOST:wseeapap
   - VENUE:okx
   - VENUE:okx_eea
-  - REGISTRY:execution_adapters_v1
-  - RUNTIME_COMPONENT:operative_venue_boundary_v1
-  - ADAPTER:kraken_live_client
-  - OKX_FEATURE:execution_adapter_mocks_only
-changed_relations: []
+changed_relations:
+  - REL:s_venue_okx_contains_eea
 new_relations: []
 removed_relations: []
-affected_dependency_closures: []
+affected_dependency_closures:
+  - CLOSURE:productive_universe
 affected_okx_surfaces:
-  - OKX_FEATURE:execution_adapter_mocks_only
+  - OKX_FEATURE:websocket_hosts_configured
+  - OKX_HOST:wseeapap
 affected_safety_surfaces: []
-affected_schemas:
-  - SCHEMA:atlas_v1
+affected_schemas: []
 review_required_items: []
