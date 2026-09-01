@@ -561,7 +561,7 @@ jobs:
             tests/webui/test_last_paper_run_panel_readmodel_v0.py \
             tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py \
             tests/ops/test_last_paper_run_panel_env_schema_boundary_v0.py \
-            tests/webui/test_market_dashboard_tombstone_v1.py \
+            tests/webui/test_pkg_landscape_current_consumer_boundary_v1.py \
             tests/webui/test_market_landscape_dashboard_v2_contracts_v0.py \
             tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py \
             tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py \

@@ -306,4 +306,4 @@ The builder MUST NOT emit summary semantics that imply:
 - [**Paper/Shadow Runtime Source Contract v0**](PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md) — **runtime source** boundary for the shipped env-gated **`GET`** (server-side config; no browser path).
 - [**Paper/Shadow Artifact Read-model v0**](PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md) — parent contract, §7–§8, source matrix v0.8b.
 - [**Observability Hub v0**](OBSERVABILITY_HUB_V0.md) — hub boundaries; summary **`GET`** exists; **no** wired Paper/Shadow panel **`GET &#47;observability`** yet.
-- [**Market Surface v0**](../MARKET_DASHBOARD_REMOVED.md) — orthogonal read-only display precedent.
+- [**Market Dashboard Landscape V2**](../../ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) — current read-only visual consumer. Historical legacy product evidence: [MARKET_DASHBOARD_REMOVED.md](../MARKET_DASHBOARD_REMOVED.md).
