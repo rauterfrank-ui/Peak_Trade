@@ -4,7 +4,25 @@
 
 Dieses Dokument beschreibt **drei typische Research-Golden-Paths** mit konkreten Befehlen und Code-Snippets. **Beispiel-Logs, Metrik-Zahlen und „Erwartete Ausgabe“-Blöcke sind illustrativ**; referenzierte Skripte, Module und CLI-Flags entsprechen dem aktuellen Stand im Repository.
 
-**Stand:** Phase 81 (v1.0)
+```text
+GOLDEN_PATH_ROLE=NON_AUTHORITY_RESEARCH_OPERATOR
+AUTHORITY_EFFECT=NONE
+CANONICAL_LAUNCHER=scripts/pt
+LIVE_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+ORDERS_ALLOWED=false
+```
+
+Research-CLIs sind **kein** Trading-, Selection-, Runtime-, Execution-, Promotion- oder Learning-Owner. Venue-OHLCV ist kein operativer Research-Pfad; wo früher Marktdaten geladen wurden, ist `--use-dummy-data` Pflicht. Der kanonische Launcher ist `scripts/pt`, nicht PATH `python` oder `python3`.
+
+Wrapper:
+
+```bash
+./scripts/pt scripts/run_research_golden_path.py --help
+```
+
+**Stand:** Phase 81 (v1.0), WP-01 operator reconciliation
 
 ---
 
@@ -125,7 +143,7 @@ class TestMyNewStrategy:
 
 ```bash
 # Test ausführen
-python3 -m pytest tests/test_strategy_my_new_strategy.py -v
+./scripts/pt -m pytest tests/test_strategy_my_new_strategy.py -v
 ```
 
 ### Schritt 4: Sweep-Definition erstellen
@@ -156,7 +174,7 @@ commission = 0.001
 
 ```bash
 # Sweep starten
-python3 scripts/research_cli.py sweep \
+./scripts/pt scripts/research_cli.py sweep \
     --sweep-name my_new_strategy_basic \
     --config config/config.toml
 
@@ -171,7 +189,7 @@ python3 scripts/research_cli.py sweep \
 
 ```bash
 # Report erstellen
-python3 scripts/research_cli.py report \
+./scripts/pt scripts/research_cli.py report \
     --sweep-name my_new_strategy_basic \
     --format both \
     --with-plots
@@ -186,40 +204,44 @@ python3 scripts/research_cli.py report \
 
 ```bash
 # Walk-Forward Testing
-python3 scripts/research_cli.py walkforward \
+./scripts/pt scripts/research_cli.py walkforward \
     --sweep-name my_new_strategy_basic \
     --top-n 5 \
     --train-window 90d \
-    --test-window 30d
+    --test-window 30d \
+    --use-dummy-data
 
 # Monte-Carlo Analyse
-python3 scripts/research_cli.py montecarlo \
+./scripts/pt scripts/research_cli.py montecarlo \
     --sweep-name my_new_strategy_basic \
     --config config/config.toml \
     --top-n 3 \
-    --num-runs 500
+    --num-runs 500 \
+    --use-dummy-data
 
 # Stress-Tests
-python3 scripts/research_cli.py stress \
+./scripts/pt scripts/research_cli.py stress \
     --sweep-name my_new_strategy_basic \
     --config config/config.toml \
     --top-n 3 \
     --scenarios single_crash_bar vol_spike \
-    --severity 0.2
+    --severity 0.2 \
+    --use-dummy-data
 ```
 
 ### Schritt 8: StrategyProfile generieren
 
 ```bash
 # Profil erstellen
-python3 scripts/research_cli.py strategy-profile \
+./scripts/pt scripts/research_cli.py strategy-profile \
     --strategy-id my_new_strategy \
     --output-format both \
     --with-regime \
     --with-montecarlo \
     --mc-num-runs 100 \
     --with-stress \
-    --stress-scenarios single_crash_bar vol_spike
+    --stress-scenarios single_crash_bar vol_spike \
+    --use-dummy-data
 
 # Ausgabe:
 # Strategy Profile: my_new_strategy
@@ -254,7 +276,7 @@ Wenn die Strategie als `aux` oder `core` klassifiziert wurde:
 
 ```bash
 # Validieren dass Tiering korrekt ist
-python3 -c "
+./scripts/pt -c "
 from src.experiments.portfolio_presets import get_strategy_tier
 print(f'Tier: {get_strategy_tier(\"my_new_strategy\")}')
 "
@@ -276,14 +298,14 @@ Strategie auswählen → Sweep anpassen → Top-N → Robustness → Update Prof
 
 ```bash
 # Verfügbare Strategien anzeigen
-python3 -c "
+./scripts/pt -c "
 from src.strategies.registry import get_available_strategy_keys
 for name in sorted(get_available_strategy_keys()):
     print(f'  - {name}')
 "
 
 # Tiering prüfen
-python3 -c "
+./scripts/pt -c "
 from src.experiments.portfolio_presets import get_all_tiered_strategies
 for tier, strategies in get_all_tiered_strategies().items():
     print(f'{tier}: {strategies}')
@@ -331,7 +353,7 @@ commission = 0.001
 
 ```bash
 # End-to-End Pipeline mit allen Robustness-Tests
-python3 scripts/research_cli.py pipeline \
+./scripts/pt scripts/research_cli.py pipeline \
     --sweep-name rsi_reversion_tuning_v2 \
     --config config/config.toml \
     --format both \
@@ -340,10 +362,13 @@ python3 scripts/research_cli.py pipeline \
     --run-walkforward \
     --walkforward-train-window 90d \
     --walkforward-test-window 30d \
+    --walkforward-use-dummy-data \
     --run-montecarlo \
     --mc-num-runs 500 \
+    --mc-use-dummy-data \
     --run-stress-tests \
-    --stress-scenarios single_crash_bar vol_spike drawdown_extension
+    --stress-scenarios single_crash_bar vol_spike drawdown_extension \
+    --stress-use-dummy-data
 
 # Erwartete Ausgabe (schematisch; Step-Anzahl hängt von optionalen Flags ab):
 # === RESEARCH PIPELINE ===
@@ -377,11 +402,12 @@ ls reports/sweeps/rsi_reversion_tuning_v2_report_*.md
 
 ```bash
 # Neues Profil generieren
-python3 scripts/research_cli.py strategy-profile \
+./scripts/pt scripts/research_cli.py strategy-profile \
     --strategy-id rsi_reversion \
     --output-format both \
     --with-regime \
-    --with-montecarlo
+    --with-montecarlo \
+    --use-dummy-data
 
 # Vergleich mit altem Profil
 diff reports/strategy_profiles/rsi_reversion_profile_v1.json \
@@ -417,7 +443,7 @@ Tier-Filter → Strategien auswählen → Gewichte definieren → Preset erstell
 
 ```bash
 # Tiering-Status anzeigen
-python3 -c "
+./scripts/pt -c "
 from src.experiments.portfolio_presets import (
     get_all_tiered_strategies,
     get_strategies_by_tier,
@@ -523,7 +549,7 @@ tags = ["core", "custom", "tiered"]
 
 ```bash
 # Validierung (Beispiel mit existierendem Preset core_balanced)
-python3 -c "
+./scripts/pt -c "
 from src.experiments.portfolio_presets import validate_preset_tiering_compliance
 from src.experiments.portfolio_recipes import load_portfolio_recipes
 from pathlib import Path
@@ -548,7 +574,7 @@ print(result)
 
 ```bash
 # Portfolio-Level Robustness
-python3 scripts/research_cli.py portfolio \
+./scripts/pt scripts/research_cli.py portfolio \
     --config config/config.toml \
     --portfolio-preset my_custom_portfolio \
     --format both \
@@ -579,11 +605,11 @@ python3 scripts/research_cli.py portfolio \
 - [ ] Walk-Forward OOS/IS Ratio > 0.7
 - [ ] Keine einzelne Strategie dominiert (max 50% Gewicht)
 
-**Bei "Go":** Portfolio ist bereit für Shadow/Testnet
+**Bei "Go":** Research-Go ist **kein** Shadow/Testnet/Live-Grant. `LIVE_AUTHORIZED=false`.
 
 ```bash
 # Portfolio-Snapshot + Risk-Check (Phase 48, PaperBroker-Fallback)
-python3 scripts/preview_live_portfolio.py \
+./scripts/pt scripts/preview_live_portfolio.py \
     --config config/config.toml \
     --no-risk
 
@@ -601,56 +627,56 @@ python3 scripts/preview_live_portfolio.py \
 
 ```bash
 # Sweep starten
-python3 scripts/research_cli.py sweep --sweep-name NAME --config config/config.toml
+./scripts/pt scripts/research_cli.py sweep --sweep-name NAME --config config/config.toml
 
 # Report generieren
-python3 scripts/research_cli.py report --sweep-name NAME --format both --with-plots
+./scripts/pt scripts/research_cli.py report --sweep-name NAME --format both --with-plots
 
-# Top-N promoten
-python3 scripts/research_cli.py promote --sweep-name NAME --top-n 5
+# Top-N promoten (research ranking only; not productive promotion authority)
+./scripts/pt scripts/research_cli.py promote --sweep-name NAME --top-n 5
 ```
 
 ### Robustness-Tests
 
 ```bash
 # Walk-Forward
-python3 scripts/research_cli.py walkforward --sweep-name NAME --top-n 3 --train-window 90d --test-window 30d
+./scripts/pt scripts/research_cli.py walkforward --sweep-name NAME --top-n 3 --train-window 90d --test-window 30d --use-dummy-data
 
 # Monte-Carlo
-python3 scripts/research_cli.py montecarlo --sweep-name NAME --config config/config.toml --top-n 3 --num-runs 500
+./scripts/pt scripts/research_cli.py montecarlo --sweep-name NAME --config config/config.toml --top-n 3 --num-runs 500 --use-dummy-data
 
 # Stress-Tests
-python3 scripts/research_cli.py stress --sweep-name NAME --config config/config.toml --top-n 3 --scenarios single_crash_bar vol_spike --severity 0.2
+./scripts/pt scripts/research_cli.py stress --sweep-name NAME --config config/config.toml --top-n 3 --scenarios single_crash_bar vol_spike --severity 0.2 --use-dummy-data
 ```
 
 ### Portfolio
 
 ```bash
 # Portfolio-Robustness
-python3 scripts/research_cli.py portfolio --config config/config.toml --portfolio-preset NAME --format both --use-dummy-data
+./scripts/pt scripts/research_cli.py portfolio --config config/config.toml --portfolio-preset NAME --format both --use-dummy-data
 
 # Portfolio-Snapshot (Phase 48)
-python3 scripts/preview_live_portfolio.py --config config/config.toml --no-risk
+./scripts/pt scripts/preview_live_portfolio.py --config config/config.toml --no-risk
 ```
 
 ### Profiling & Tiering
 
 ```bash
-# Strategy-Profile generieren
-python3 scripts/research_cli.py strategy-profile --strategy-id NAME --output-format both --with-regime --with-montecarlo --with-stress
+# Strategy-Profile generieren (requires --use-dummy-data)
+./scripts/pt scripts/research_cli.py strategy-profile --strategy-id NAME --output-format both --with-regime --with-montecarlo --with-stress --use-dummy-data
 
 # Tiering-Status anzeigen
-python3 -c "from src.experiments.portfolio_presets import get_all_tiered_strategies; print(get_all_tiered_strategies())"
+./scripts/pt -c "from src.experiments.portfolio_presets import get_all_tiered_strategies; print(get_all_tiered_strategies())"
 
 # Tiering-Compliance prüfen
-python3 -c "from src.experiments.portfolio_presets import validate_preset_tiering_compliance; ..."
+./scripts/pt -c "from src.experiments.portfolio_presets import validate_preset_tiering_compliance; ..."
 ```
 
 ### Full Pipeline
 
 ```bash
 # End-to-End Pipeline
-python3 scripts/research_cli.py pipeline \
+./scripts/pt scripts/research_cli.py pipeline \
     --sweep-name NAME \
     --config config/config.toml \
     --format both \
@@ -659,10 +685,13 @@ python3 scripts/research_cli.py pipeline \
     --run-walkforward \
     --walkforward-train-window 90d \
     --walkforward-test-window 30d \
+    --walkforward-use-dummy-data \
     --run-montecarlo \
     --mc-num-runs 500 \
+    --mc-use-dummy-data \
     --run-stress-tests \
-    --stress-scenarios single_crash_bar vol_spike
+    --stress-scenarios single_crash_bar vol_spike \
+    --stress-use-dummy-data
 ```
 
 ---
