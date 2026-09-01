@@ -118,6 +118,10 @@ _HUB_ENTITY_IDS = frozenset(
         "VENUE_ENDPOINT:okx_public_instruments",
         "VENUE_ENDPOINT:okx_trade_order",
         "FORENSIC_REFERENCE:information_corpus_persistence_base",
+        "PHASE:ddo_offline_foundation",
+        "RUNTIME_COMPONENT:ddo_capture_v0",
+        "RUNTIME_COMPONENT:ddo_ledger_v0",
+        "HOST:wallclock_decision_economics_cycle",
     }
 )
 

@@ -25,3 +25,22 @@ changes:
     epistemic_status: ADJUDICATED
     evidence: src/exchange/operative_venue_boundary_v1.py
     notes: Current-tree non-OKX runtime adapters/clients removed. Sole operative venue remains OKX EEA. Historical names are not restated as current components. Atlas is not trading authority.
+  - id: CHANGE:atlas_hist_selector_revert_sha_corrected
+    from: HIST:selector_policy_reverted
+    to: HIST:selector_policy_reverted
+    type: CORRECTION
+    epistemic_status: FORENSIC_RAW
+    evidence: git log afbae518b67eb1b789c835e219db37f5b15f308b
+    notes: >-
+      Corrected HIST:selector_policy_reverted from WP-FA-07 SHA 615de3b3 to
+      git-proven revert #6166 SHA afbae518b. WP-FA-07 retained separately as
+      HIST:wp_fa_07 / #6209. Atlas is not trading authority.
+  - id: CHANGE:atlas_post_6210_navigation_rebind
+    from: 615de3b307132b73a60df33fd3bedfac811c8cce
+    to: 46d2c1734746d6d1332de0dfb03840d3bd8c31b1
+    type: NAVIGATION_REBIND
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/system_atlas/census/census_meta.yaml
+    notes: >-
+      Fresh navigation rebind after #6210. Domain census payloads were not
+      freshly exhaustively rerun. Atlas is not trading authority.

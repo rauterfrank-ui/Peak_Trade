@@ -150,3 +150,33 @@ gaps:
     repair_owner: OPEN
     repair_performed: false
     notes: CBK-FAMILY-PROJECTION KIND=NO_FAMILY_ONTOLOGY blocks 5-family projection completeness only
+  - id: GAP:ddo_declared_seams_without_host_decorator
+    class: DECLARED_SEAM_WITHOUT_PROVEN_HOST_EDGE
+    entity: RUNTIME_COMPONENT:ddo_capture_v0
+    epistemic_status: OPEN
+    expected_relation_if_authority_proves_one: >-
+      Host-decorator OBSERVES edges for declared IMPLEMENTED_CAPTURE_SEAMS_V0
+      that currently lack a proven producer decorator
+    observed_relation: >-
+      Seams are declared in IMPLEMENTED_CAPTURE_SEAMS_V0. Proven host
+      decorators exist only for selection.universe, selection.ranking,
+      selection.single_future, selection.runtime_binding, recon.startup_gate,
+      and execution.simulated_outcome. Wallclock may additionally pass already
+      computed cycle objects into record_productive_cycle_capture_v0; that is
+      not a host decorator on those producers.
+    missing_edge: >-
+      No runtime graph OBSERVES/CALLS/PRODUCES/CONSUMES edges for
+      feature.regime, core.bull_bear, core.master_v2_evidence,
+      core.double_play_entry_exit, core.dynamic_scope, risk.step_29p,
+      safety.kernel, plan.step_29q, mapper.intended_action, or other declared
+      seams lacking a proven host decorator
+    impact: Declared seams remain open navigation metadata, not inferred runtime wiring
+    current_runtime_effect: NONE as graph edges; capture no-op without enabled session
+    authority: NONE
+    evidence: src/learning/deterministic_decision_outcome_v0/capture_v0.py IMPLEMENTED_CAPTURE_SEAMS_V0 versus observe_after_producer_v0 host grep
+    repair_required: false
+    repair_owner: OPEN
+    repair_performed: false
+    notes: >-
+      Unproven declared seams are retained as OPEN gap metadata. They are not
+      converted into runtime graph edges. WP-FA-08 is not this gap.

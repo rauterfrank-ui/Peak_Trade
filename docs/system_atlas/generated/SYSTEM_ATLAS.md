@@ -25,7 +25,7 @@ SYSTEM_ATLAS_GRAPH_RELATIONS_BACKED_BY_MODEL=true
 
 Navigation: `README.md` explains Atlas authority. This file is the complete overview. Specialized generated files are drill-down. YAML under `docs/system_atlas/` is the source model. Canonical authority remains the Master Runbook, external to the Atlas.
 
-Census SHA: `615de3b307132b73a60df33fd3bedfac811c8cce`. Worktree dirty records are not origin/main truth.
+Census SHA: `46d2c1734746d6d1332de0dfb03840d3bd8c31b1`. Worktree dirty records are not origin/main truth.
 
 ## Integrated current topology (model-backed)
 
@@ -51,13 +51,17 @@ flowchart TB
   n_GATE_flatten_execute_authority["GATE:flatten_execute_authority<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
   n_GATE_live_authorized_false["GATE:live_authorized_false<br/>CURRENT_CANONICAL"]
   n_HOST_cap72_stateful_host["HOST:cap72_stateful_host<br/>CURRENT_CANONICAL"]
+  n_HOST_wallclock_decision_economics_cycle["HOST:wallclock_decision_economics_cycle<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
   n_INVARIANT_missing_metadata_never_defaulted["INVARIANT:missing_metadata_never_defaulted<br/>CURRENT_CANONICAL"]
   n_NAVIGATION_INDEX_map_of_truth["NAVIGATION_INDEX:map_of_truth<br/>ADJUDICATED"]
   n_OBSERVER_post_action_canary["OBSERVER:post_action_canary<br/>OPEN"]
   n_OWNER_DECISION_btc_excluded["OWNER_DECISION:btc_excluded<br/>CURRENT_CANONICAL"]
   n_OWNER_DECISION_cap23_exclusive_selection["OWNER_DECISION:cap23_exclusive_selection<br/>CURRENT_CANONICAL"]
+  n_PHASE_ddo_offline_foundation["PHASE:ddo_offline_foundation<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
   n_RUNBOOK_canonical_master_runbook["RUNBOOK:canonical_master_runbook<br/>CURRENT_CANONICAL"]
   n_RUNBOOK_vollautonomie_v4_4_12["RUNBOOK:vollautonomie_v4_4_12<br/>SUPERSEDED"]
+  n_RUNTIME_COMPONENT_ddo_capture_v0["RUNTIME_COMPONENT:ddo_capture_v0<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
+  n_RUNTIME_COMPONENT_ddo_ledger_v0["RUNTIME_COMPONENT:ddo_ledger_v0<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
   n_RUNTIME_COMPONENT_dp_composition["RUNTIME_COMPONENT:dp_composition<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
   n_RUNTIME_COMPONENT_dp_core_wiring["RUNTIME_COMPONENT:dp_core_wiring<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
   n_RUNTIME_COMPONENT_dp_state["RUNTIME_COMPONENT:dp_state<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
@@ -88,6 +92,11 @@ flowchart TB
   n_SELECTOR_productive_futures_ranking -->|"RANKS (ADJUDICATED)"| n_UNIVERSE_governed_futures_universe
   n_SELECTOR_single_selected_future_policy -->|"SELECTS (ADJUDICATED)"| n_SELECTOR_productive_futures_ranking
   n_BINDER_bound_instrument_v1 -->|"BINDS (ADJUDICATED)"| n_SELECTOR_single_selected_future_policy
+  n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"OBSERVES"| n_BINDER_bound_instrument_v1
+  n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"OBSERVES"| n_SELECTOR_productive_futures_ranking
+  n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"OBSERVES"| n_SELECTOR_single_selected_future_policy
+  n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"OBSERVES"| n_CAPABILITY_cap_2_1_gfu
+  n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"PERSISTS"| n_RUNTIME_COMPONENT_ddo_ledger_v0
   n_RUNTIME_COMPONENT_dp_composition -->|"CONSUMES"| n_RUNTIME_COMPONENT_dp_suitability
   n_RUNTIME_COMPONENT_dp_composition -->|"CONSUMES"| n_RUNTIME_COMPONENT_dp_survival
   n_RUNTIME_COMPONENT_dp_core_wiring -->|"CALLS"| n_RUNTIME_COMPONENT_mv2_decision_packet
@@ -102,6 +111,8 @@ flowchart TB
   n_SCRIPT_run_cap23_policy -->|"CALLS"| n_CAPABILITY_cap_2_3_single_selected_future
   n_SCRIPT_run_gfu_producer -->|"CALLS"| n_CAPABILITY_cap_2_1_gfu
   n_TRANSPORT_bound_okx_testnet_http -->|"SIGNS"| n_AUTH_PRIMITIVE_okx_hmac_sign
+  n_HOST_wallclock_decision_economics_cycle -->|"CALLS"| n_RUNTIME_COMPONENT_ddo_capture_v0
+  n_HOST_wallclock_decision_economics_cycle -->|"INJECTS"| n_RUNTIME_COMPONENT_ddo_capture_v0
   n_CAPABILITY_cap_2_1_gfu -->|"GOVERNED_BY"| n_GATE_btc_exclusion
   n_CAPABILITY_cap_2_1_gfu -->|"GOVERNED_BY"| n_INVARIANT_missing_metadata_never_defaulted
   n_CAPABILITY_cap_2_2_ranking -->|"DEPENDS_ON (ADJUDICATED)"| n_CAPABILITY_cap_2_1_gfu
@@ -113,6 +124,8 @@ flowchart TB
   n_CAPABILITY_cap_4_1_pre_activation_closure -->|"DEPENDS_ON (ADJUDICATED)"| n_CAPABILITY_cap_2_4_runtime_binding
   n_CAPABILITY_cap_4_1_pre_activation_closure -->|"DEPENDS_ON (ADJUDICATED)"| n_CAPABILITY_cap_3_1_futures_accounting
   n_CAPABILITY_cap_7_2_stateful_no_order -->|"DEPENDS_ON (ADJUDICATED)"| n_CAPABILITY_cap_2_4_runtime_binding
+  n_PHASE_ddo_offline_foundation -->|"CONTAINS"| n_RUNTIME_COMPONENT_ddo_capture_v0
+  n_PHASE_ddo_offline_foundation -->|"CONTAINS"| n_RUNTIME_COMPONENT_ddo_ledger_v0
   n_FUNCTIONAL_CORE_double_play -->|"CONTAINS (ADJUDICATED)"| n_RUNTIME_COMPONENT_dp_composition
   n_FUNCTIONAL_CORE_double_play -->|"CONTAINS (ADJUDICATED)"| n_RUNTIME_COMPONENT_dp_core_wiring
   n_FUNCTIONAL_CORE_double_play -->|"CONTAINS (ADJUDICATED)"| n_RUNTIME_COMPONENT_dp_state
@@ -141,7 +154,7 @@ flowchart TB
   n_SYSTEM_peak_trade -->|"HAS_CAPABILITY"| n_CAPABILITY_cap_7_2_stateful_no_order
   n_VENUE_okx -->|"CONTAINS"| n_VENUE_okx_eea
 ```
-Hub relations shown: `63`. Full graphs: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md), [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [AUTHORITY_GRAPH.md](AUTHORITY_GRAPH.md), [FULL_DEPENDENCY_GRAPH.md](FULL_DEPENDENCY_GRAPH.md).
+Hub relations shown: `72`. Full graphs: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md), [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [AUTHORITY_GRAPH.md](AUTHORITY_GRAPH.md), [FULL_DEPENDENCY_GRAPH.md](FULL_DEPENDENCY_GRAPH.md).
 
 | id | source | type | target | epistemic |
 | --- | --- | --- | --- | --- |
@@ -156,6 +169,11 @@ Hub relations shown: `63`. Full graphs: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.m
 | REL:r_cap22_ranks_universe | SELECTOR:productive_futures_ranking | RANKS | UNIVERSE:governed_futures_universe | STATUS=ADJUDICATED |
 | REL:r_cap23_selects | SELECTOR:single_selected_future_policy | SELECTS | SELECTOR:productive_futures_ranking | STATUS=ADJUDICATED |
 | REL:r_cap24_binds | BINDER:bound_instrument_v1 | BINDS | SELECTOR:single_selected_future_policy | STATUS=ADJUDICATED |
+| REL:r_ddo_capture_observes_binding | RUNTIME_COMPONENT:ddo_capture_v0 | OBSERVES | BINDER:bound_instrument_v1 | STATUS=FORENSIC_RAW |
+| REL:r_ddo_capture_observes_ranking | RUNTIME_COMPONENT:ddo_capture_v0 | OBSERVES | SELECTOR:productive_futures_ranking | STATUS=FORENSIC_RAW |
+| REL:r_ddo_capture_observes_selection | RUNTIME_COMPONENT:ddo_capture_v0 | OBSERVES | SELECTOR:single_selected_future_policy | STATUS=FORENSIC_RAW |
+| REL:r_ddo_capture_observes_universe | RUNTIME_COMPONENT:ddo_capture_v0 | OBSERVES | CAPABILITY:cap_2_1_gfu | STATUS=FORENSIC_RAW |
+| REL:r_ddo_capture_persists_ledger | RUNTIME_COMPONENT:ddo_capture_v0 | PERSISTS | RUNTIME_COMPONENT:ddo_ledger_v0 | STATUS=FORENSIC_RAW |
 | REL:r_dp_composition_consumes_suitability | RUNTIME_COMPONENT:dp_composition | CONSUMES | RUNTIME_COMPONENT:dp_suitability | STATUS=FORENSIC_RAW |
 | REL:r_dp_composition_consumes_survival | RUNTIME_COMPONENT:dp_composition | CONSUMES | RUNTIME_COMPONENT:dp_survival | STATUS=FORENSIC_RAW |
 | REL:r_dp_core_wiring_calls_decision_packet | RUNTIME_COMPONENT:dp_core_wiring | CALLS | RUNTIME_COMPONENT:mv2_decision_packet | STATUS=FORENSIC_RAW |
@@ -170,6 +188,8 @@ Hub relations shown: `63`. Full graphs: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.m
 | REL:r_script_cap23_calls | SCRIPT:run_cap23_policy | CALLS | CAPABILITY:cap_2_3_single_selected_future | STATUS=FORENSIC_RAW |
 | REL:r_script_gfu_calls_cap21 | SCRIPT:run_gfu_producer | CALLS | CAPABILITY:cap_2_1_gfu | STATUS=FORENSIC_RAW |
 | REL:r_transport_signs | TRANSPORT:bound_okx_testnet_http | SIGNS | AUTH_PRIMITIVE:okx_hmac_sign | STATUS=FORENSIC_RAW |
+| REL:r_wallclock_calls_ddo_cycle_capture | HOST:wallclock_decision_economics_cycle | CALLS | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=FORENSIC_RAW |
+| REL:r_wallclock_injects_ddo_capture_session | HOST:wallclock_decision_economics_cycle | INJECTS | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=FORENSIC_RAW |
 | REL:s_cap21_governed_by_btc | CAPABILITY:cap_2_1_gfu | GOVERNED_BY | GATE:btc_exclusion | STATUS=CANONICAL_AUTHORITY |
 | REL:s_cap21_governed_by_never_default | CAPABILITY:cap_2_1_gfu | GOVERNED_BY | INVARIANT:missing_metadata_never_defaulted | STATUS=CANONICAL_AUTHORITY |
 | REL:s_cap22_depends_cap21 | CAPABILITY:cap_2_2_ranking | DEPENDS_ON | CAPABILITY:cap_2_1_gfu | STATUS=ADJUDICATED |
@@ -181,6 +201,8 @@ Hub relations shown: `63`. Full graphs: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.m
 | REL:s_cap41_depends_cap24 | CAPABILITY:cap_4_1_pre_activation_closure | DEPENDS_ON | CAPABILITY:cap_2_4_runtime_binding | STATUS=ADJUDICATED |
 | REL:s_cap41_depends_cap31 | CAPABILITY:cap_4_1_pre_activation_closure | DEPENDS_ON | CAPABILITY:cap_3_1_futures_accounting | STATUS=ADJUDICATED |
 | REL:s_cap72_depends_cap24 | CAPABILITY:cap_7_2_stateful_no_order | DEPENDS_ON | CAPABILITY:cap_2_4_runtime_binding | STATUS=ADJUDICATED |
+| REL:s_ddo_phase_contains_capture | PHASE:ddo_offline_foundation | CONTAINS | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=FORENSIC_RAW |
+| REL:s_ddo_phase_contains_ledger | PHASE:ddo_offline_foundation | CONTAINS | RUNTIME_COMPONENT:ddo_ledger_v0 | STATUS=FORENSIC_RAW |
 | REL:s_dp_contains_dp_composition | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_composition | STATUS=ADJUDICATED |
 | REL:s_dp_contains_dp_core_wiring | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_core_wiring | STATUS=ADJUDICATED |
 | REL:s_dp_contains_dp_state | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_state | STATUS=ADJUDICATED |
@@ -233,12 +255,13 @@ Drill-down: [MASTER_V2_DOUBLE_PLAY_MAP.md](MASTER_V2_DOUBLE_PLAY_MAP.md).
 
 ## 3. System / subsystem hierarchy
 
-`SYSTEM:peak_trade` `CONTAINS` `SUBSYSTEM:master_v2`. Recorded `HAS_CAPABILITY` edges from the system entity are Caps 1.1, 2.1–2.4, 3.1, 4.1, 7.2, and 11.13.5. The seven `MASTER_V2_CAPABILITY_*.md` spec files (1.1, 2.1–2.4, 3.1, 4.1) are inventoried; Caps 7.2 and 11.13.5 are Master-Runbook capabilities without a numbered MASTER_V2 spec file. Structural relation count: `80`. Drill-down: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md).
+`SYSTEM:peak_trade` `CONTAINS` `SUBSYSTEM:master_v2`. Recorded `HAS_CAPABILITY` edges from the system entity are Caps 1.1, 2.1–2.4, 3.1, 4.1, 7.2, and 11.13.5. The seven `MASTER_V2_CAPABILITY_*.md` spec files (1.1, 2.1–2.4, 3.1, 4.1) are inventoried; Caps 7.2 and 11.13.5 are Master-Runbook capabilities without a numbered MASTER_V2 spec file. Structural relation count: `84`. Drill-down: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md).
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
 | FUNCTIONAL_CORE:double_play | FUNCTIONAL_CORE | Double Play | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | HOST:cap72_stateful_host | HOST | Cap 7.2 stateful no-order host | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
+| HOST:wallclock_decision_economics_cycle | HOST | Wallclock decision-to-simulated-economics cycle | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | SUBSYSTEM:master_v2 | SUBSYSTEM | Master V2 | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | SUBSYSTEM:trading_decision_core | SUBSYSTEM | TRADING_DECISION_CORE | SUPERSEDED | STATUS=HISTORICAL |
 | SYSTEM:peak_trade | SYSTEM | Peak_Trade | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
@@ -295,7 +318,7 @@ Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md]
 
 ## 7. Runtime call / data flow
 
-Runtime relation count: `20`. Entrypoints recorded: `3`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
+Runtime relation count: `29`. Entrypoints recorded: `3`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
 
 Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md](ENTRYPOINT_RUNTIME_TRACES.md).
 
@@ -400,7 +423,7 @@ Architectural-kind count in this bucket: `19`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `57`.
+Architectural-kind count in this bucket: `58`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -424,6 +447,7 @@ Architectural-kind count in this bucket: `57`.
 | GATE:flatten_live_wire | GATE | DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:position_observation_freshness | GATE | POSITION_OBSERVATION_FRESHNESS | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:target_position_state | GATE | TARGET_POSITION_STATE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| HOST:wallclock_decision_economics_cycle | HOST | Wallclock decision-to-simulated-economics cycle | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:ddo_offline_foundation | PHASE | 11.13.5 Parallel-track DDO offline foundation | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:z2cn | PHASE | 11.13.5.Z2CN | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:z2co | PHASE | 11.13.5.Z2CO | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -443,9 +467,8 @@ Architectural-kind count in this bucket: `57`.
 | RUNBOOK:presentation_implementation | RUNBOOK | Canonical Presentation Implementation Runbook | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | SCHEMA:bound_instrument_dataclass_v1 | SCHEMA | BoundInstrumentV1 dataclass shape | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | SCHEMA:gfu_snapshot_v1 | SCHEMA | governed_futures_universe_snapshot.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:pure_stack_numeric_policy_evidence_pack_v1 | SCHEMA | productive_pure_stack_numeric_policy_evidence_pack/v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `57` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `58` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -582,12 +605,13 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `10`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `46`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `11`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `49`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
 | GAP:architectural_mmr | TERM_WITHOUT_FORMAL_KIND | TERM:mmr_polyvalent | STATUS=OPEN (not proven) |
 | GAP:cap23_not_wired_to_canary | PARALLEL_INSTRUMENT_AUTHORITY | CAPABILITY:cap_2_3_single_selected_future | STATUS=ADJUDICATED |
+| GAP:ddo_declared_seams_without_host_decorator | DECLARED_SEAM_WITHOUT_PROVEN_HOST_EDGE | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=OPEN (not proven) |
 | GAP:flatten_live_wire_disabled | IMPLEMENTED_BUT_UNREACHABLE | GATE:flatten_live_wire | STATUS=FORENSIC_RAW |
 | GAP:live_ws_client | CONFIGURED_BUT_NO_CLIENT | OKX_FEATURE:websocket_hosts_configured | STATUS=OPEN (not proven) |
 | GAP:no_family_ontology_projection | TERM_WITHOUT_FORMAL_KIND | TERM:family_polyvalent | STATUS=OPEN (not proven) |
@@ -679,11 +703,11 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 ## 20. Coverage / completeness status
 
 ```text
-CURRENT_ORIGIN_MAIN_SHA=615de3b307132b73a60df33fd3bedfac811c8cce
-ENTITY_TOTAL=346
-HUB_RELATION_COUNT=63
-STRUCTURAL_RELATION_COUNT=80
-RUNTIME_RELATION_COUNT=20
+CURRENT_ORIGIN_MAIN_SHA=46d2c1734746d6d1332de0dfb03840d3bd8c31b1
+ENTITY_TOTAL=353
+HUB_RELATION_COUNT=72
+STRUCTURAL_RELATION_COUNT=84
+RUNTIME_RELATION_COUNT=29
 AUTHORITY_RELATION_COUNT=7
 UNRESOLVED_CONTRADICTION_COUNT=9
 OKX_CENSUS_COMPLETE=true
@@ -761,12 +785,13 @@ Remaining census domains:
 | DATA_CONTRACT | 2 |
 | DOD | 8 |
 | EXECUTION_COMPONENT | 1 |
+| EXPERIMENT | 1 |
 | FAMILY | 8 |
 | FORENSIC_REFERENCE | 2 |
 | FUNCTIONAL_CORE | 1 |
 | GATE | 7 |
 | GUARD | 1 |
-| HOST | 1 |
+| HOST | 2 |
 | INVARIANT | 1 |
 | NAVIGATION_INDEX | 1 |
 | OBSERVER | 1 |
@@ -777,7 +802,7 @@ Remaining census domains:
 | PHASE | 15 |
 | REGISTRY | 1 |
 | RUNBOOK | 4 |
-| RUNTIME_COMPONENT | 40 |
+| RUNTIME_COMPONENT | 45 |
 | SCHEMA | 18 |
 | SCRIPT | 3 |
 | SELECTOR | 2 |

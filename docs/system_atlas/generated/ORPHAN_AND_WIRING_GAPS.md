@@ -15,6 +15,7 @@
 | --- | --- | --- | --- | --- |
 | GAP:architectural_mmr | TERM_WITHOUT_FORMAL_KIND | TERM:mmr_polyvalent | STATUS=OPEN (not proven) | Architectural MMR unproven; OKX mmr is a venue field |
 | GAP:cap23_not_wired_to_canary | PARALLEL_INSTRUMENT_AUTHORITY | CAPABILITY:cap_2_3_single_selected_future | STATUS=ADJUDICATED | Section 11.13.5 canary hardcoded SUI-USD_UM_XPERP-310404; no Cap 2.3 import on origin/main |
+| GAP:ddo_declared_seams_without_host_decorator | DECLARED_SEAM_WITHOUT_PROVEN_HOST_EDGE | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=OPEN (not proven) | Unproven declared seams are retained as OPEN gap metadata. They are not converted into runtime graph edges. WP-FA-08 is  |
 | GAP:flatten_live_wire_disabled | IMPLEMENTED_BUT_UNREACHABLE | GATE:flatten_live_wire | STATUS=FORENSIC_RAW | DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false; LIVE_FLATTEN_PROVABILITY not PROVEN |
 | GAP:live_ws_client | CONFIGURED_BUT_NO_CLIENT | OKX_FEATURE:websocket_hosts_configured | STATUS=OPEN (not proven) | WS hosts configured; no proven live WS client; src/data/feeds/live_feed.py is a stub |
 | GAP:no_family_ontology_projection | TERM_WITHOUT_FORMAL_KIND | TERM:family_polyvalent | STATUS=OPEN (not proven) | CBK-FAMILY-PROJECTION KIND=NO_FAMILY_ONTOLOGY blocks 5-family projection completeness only |
@@ -33,6 +34,7 @@
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap_3_1_futures_accounting | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap_3_1_futures_accounting | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap_4_1_pre_activation_closure | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap_4_1_pre_activation_closure | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap_7_2_stateful_no_order | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap_7_2_stateful_no_order | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_experiment_identity_binding | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_experiment_identity_binding | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_capital_slot | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_capital_slot | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_dashboard_display | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_dashboard_display | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_entry_exit_policy | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_entry_exit_policy | STATUS=OPEN (not proven) |  |
@@ -68,5 +70,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ops_evaluate_double_play | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ops_evaluate_double_play | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:promotion_loop_safety | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:promotion_loop_safety | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:recon_startup_gate_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:recon_startup_gate_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:simulated_execution_port_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:simulated_execution_port_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:TRANSPORT:bound_okx_testnet_http | DEFINED_BUT_NO_CONSUMER | TRANSPORT:bound_okx_testnet_http | STATUS=OPEN (not proven) |  |
 

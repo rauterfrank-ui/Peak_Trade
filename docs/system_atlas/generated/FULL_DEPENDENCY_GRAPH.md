@@ -97,6 +97,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
+### HOST:wallclock_decision_economics_cycle
+
+- direct_upstream: `RUNTIME_COMPONENT:ddo_capture_v0`
+- transitive_upstream: `RUNTIME_COMPONENT:ddo_capture_v0`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
 ### OWNER_DECISION:btc_excluded
 
 - direct_upstream: `GATE:btc_exclusion`
@@ -111,6 +118,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
+### PHASE:ddo_offline_foundation
+
+- direct_upstream: `(none)`
+- transitive_upstream: `(none)`
+- direct_downstream: `RUNTIME_COMPONENT:ddo_capture_v0, RUNTIME_COMPONENT:ddo_experiment_identity_binding, RUNTIME_COMPONENT:ddo_ledger_v0`
+- transitive_downstream: `RUNTIME_COMPONENT:ddo_capture_v0, RUNTIME_COMPONENT:ddo_experiment_identity_binding, RUNTIME_COMPONENT:ddo_ledger_v0`
+
 ### RUNBOOK:canonical_master_runbook
 
 - direct_upstream: `(none)`
@@ -124,6 +138,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - transitive_upstream: `(none)`
 - direct_downstream: `DOD:vollautonomie_economic_validity, DOD:vollautonomie_safety_runtime, DOD:vollautonomie_trading_logic`
 - transitive_downstream: `DOD:vollautonomie_economic_validity, DOD:vollautonomie_safety_runtime, DOD:vollautonomie_trading_logic`
+
+### RUNTIME_COMPONENT:ddo_capture_v0
+
+- direct_upstream: `(none)`
+- transitive_upstream: `(none)`
+- direct_downstream: `HOST:wallclock_decision_economics_cycle, RUNTIME_COMPONENT:ddo_ledger_v0`
+- transitive_downstream: `RUNTIME_COMPONENT:ddo_ledger_v0`
 
 ### RUNTIME_COMPONENT:dp_composition
 

@@ -168,3 +168,115 @@ relations:
     epistemic_status: FORENSIC_RAW
     evidence_sources:
       - src/trading/master_v2/double_play_core_wiring_v1.py
+
+  - id: REL:r_ddo_capture_observes_universe
+    source: RUNTIME_COMPONENT:ddo_capture_v0
+    type: OBSERVES
+    target: CAPABILITY:cap_2_1_gfu
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/producer_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      Host decorator observe_after_producer_v0 seam selection.universe.
+      No-op unless an enabled DdoCaptureBindingV0 session is bound. Does not
+      mutate the producer result. Not PRODUCES/CONSUMES/CALLS.
+
+  - id: REL:r_ddo_capture_observes_ranking
+    source: RUNTIME_COMPONENT:ddo_capture_v0
+    type: OBSERVES
+    target: SELECTOR:productive_futures_ranking
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/productive_futures_ranking_producer_v1/producer_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      Host decorator observe_after_producer_v0 seam selection.ranking.
+      No-op unless an enabled capture session is bound. Not PRODUCES/CONSUMES/CALLS.
+
+  - id: REL:r_ddo_capture_observes_selection
+    source: RUNTIME_COMPONENT:ddo_capture_v0
+    type: OBSERVES
+    target: SELECTOR:single_selected_future_policy
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/single_selected_future_policy_v1/selection_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      Host decorator observe_after_producer_v0 seam selection.single_future.
+      No-op unless an enabled capture session is bound. Not PRODUCES/CONSUMES/CALLS.
+
+  - id: REL:r_ddo_capture_observes_binding
+    source: RUNTIME_COMPONENT:ddo_capture_v0
+    type: OBSERVES
+    target: BINDER:bound_instrument_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      Host decorator observe_after_producer_v0 seam selection.runtime_binding.
+      No-op unless an enabled capture session is bound. Not Cap-2.4 BINDS.
+
+  - id: REL:r_ddo_capture_observes_recon_startup
+    source: RUNTIME_COMPONENT:ddo_capture_v0
+    type: OBSERVES
+    target: RUNTIME_COMPONENT:recon_startup_gate_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      Host decorator observe_after_producer_v0 seam recon.startup_gate.
+      No-op unless an enabled capture session is bound. DDO does not own recon.
+
+  - id: REL:r_ddo_capture_observes_sim_exec
+    source: RUNTIME_COMPONENT:ddo_capture_v0
+    type: OBSERVES
+    target: RUNTIME_COMPONENT:simulated_execution_port_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/single_future_stateful_no_order_runtime_activation_v1/simulated_execution_port_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      Host decorator observe_after_producer_v0 seam execution.simulated_outcome.
+      No-op unless an enabled capture session is bound. Not venue submit.
+
+  - id: REL:r_wallclock_injects_ddo_capture_session
+    source: HOST:wallclock_decision_economics_cycle
+    type: INJECTS
+    target: RUNTIME_COMPONENT:ddo_capture_v0
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      with_ddo_capture_session_v0 binds DdoCaptureBindingV0 into a ContextVar
+      for the cycle. Ontology has no CAPTURES type. Session bind is not
+      trading authority.
+
+  - id: REL:r_wallclock_calls_ddo_cycle_capture
+    source: HOST:wallclock_decision_economics_cycle
+    type: CALLS
+    target: RUNTIME_COMPONENT:ddo_capture_v0
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      Direct call to record_productive_cycle_capture_v0. No-op if binding is
+      missing or disabled. Observation of already-computed cycle objects.
+      Does not alter the productive cycle.
+
+  - id: REL:r_ddo_capture_persists_ledger
+    source: RUNTIME_COMPONENT:ddo_capture_v0
+    type: PERSISTS
+    target: RUNTIME_COMPONENT:ddo_ledger_v0
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+      - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
+    notes: >-
+      Ontology has no MAY_PERSIST type. PERSISTS is optional at runtime:
+      append occurs only when ledger_path is set on an enabled capture
+      binding. In-memory captured_records still accumulate without a path.

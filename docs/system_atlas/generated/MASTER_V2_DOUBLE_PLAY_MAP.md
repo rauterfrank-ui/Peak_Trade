@@ -105,4 +105,5 @@ Owner-bound Master V2 / Double Play same-system relation is not reinterpreted.
 | HIST:cap21_gfu | 2026-08-02 | OPEN | Capability 2.1 GFU producer introduced (uly base-only from first commit) | CURRENT_NONCANONICAL |
 | HIST:dp_core_wiring_restored | 2026-08-29 | #6131 | Restore current-system Double-Play core wiring on Master V2 | CURRENT_NONCANONICAL |
 | HIST:selector_policy_reverted | 2026-08-30 | #6166 | Revert Master V2 minimal selector policy (#6165) | REJECTED |
+| HIST:wp_fa_07 | 2026-09-01 | #6209 | Bind DDO to existing experiment identity and offline drift contracts (WP-FA-07) | CURRENT_NONCANONICAL |
 
