@@ -6,15 +6,52 @@ DOCUMENT_CLASS=CURRENT_RUNTIME_TRUTH
 
 status: ACTIVE
 last_updated: 2026-06-15
+current_truth_reconciled_at: 2026-09-02
 owner: Peak_Trade
 purpose: Canonical docs-only, non-authorizing decision-authority mapping for Master V2 First Live Enablement
 docs_token: DOCS_TOKEN_MASTER_V2_DECISION_AUTHORITY_MAP_V1
+
+```text
+DOCUMENT_ROLE=NAVIGATION_ONLY
+DECISION_MAP_AUTHORITY=NAVIGATION_ONLY
+SELECTION_OWNER=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1
+SECOND_SELECTION_AUTHORITY=false
+HISTORICAL_MAP_DATE=2026-06-15
+HISTORICAL_UNIVERSE_SELECTION_ROW_PRESERVED=true
+LIVE_AUTHORIZED=false
+ORDERS_ALLOWED=false
+```
 
 ## 1) Executive Summary
 
 This document materializes a canonical, mapping-only decision-authority view for the Master V2 First Live Enablement path.
 
 It is explicitly non-authorizing: it improves legibility and auditability of authority boundaries, but it does not grant live permissions, close gates, or redefine runtime behavior.
+
+### 1.1 Current vs historical selection authority (WP-04)
+
+This map does **not** own selection. Current repository truth wins for CURRENT-state claims. The 2026-06-15 stage table is a preserved historical snapshot and is **not** rewritten as though later capabilities had always existed.
+
+```text
+CURRENT_SELECTION_OWNER=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1
+GFU_ROLE=UNIVERSE_MEMBERSHIP_INPUT_AUTHORITY
+RANKING_ROLE=CANDIDATE_CONTEXT_ONLY
+CAP24_ROLE=RUNTIME_BINDING_CONSUMER
+SECOND_SELECTION_AUTHORITY_CREATED=false
+```
+
+| claim class | surface | current reading |
+|---|---|---|
+| CURRENT_TRUE | Cap 2.3 | sole productive `SINGLE_SELECTED_FUTURE` selection owner (`docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md`) |
+| CURRENT_TRUE | Cap 2.1 GFU | universe-membership input only; not selection |
+| CURRENT_TRUE | Cap 2.2 ranking | Top-20 candidate context only; not selection |
+| CURRENT_TRUE | Cap 2.4 runtime binding | consumes Cap 2.3; does not own selection |
+| HISTORICAL_TRUE | §4 Universe Selection row as of 2026-06-15 | classified selection as `partial` / not fully consolidated; preserved verbatim below |
+| HISTORICAL_PROVENANCE | `scripts/scan_markets.py`; `run_market_scan.py`; `src/experiments/topn_promotion.py` | 2026-06-15 map evidence citations; not the current selection owner |
+| CURRENT_TRUE | Slice E Double-Play overlay | canonical offline Double-Play owner is `trading.master_v2.double_play_composition_matrix_v1`; ops evaluator remains `LEGACY_NON_AUTHORITATIVE` |
+| HISTORICAL_TRUE | §4 Doubleplay directional-evaluation row as of 2026-06-15 | `partial` classification preserved; do not collapse into Slice E |
+
+Do not treat ranking, dashboard, allowlist, Top-N promotion, Landscape, Atlas, WebUI, USP, DDO, `learning_loop`, or the promotion engine as a second selection authority.
 
 ## 2) Scope and Non-Goals
 
@@ -78,8 +115,8 @@ Boundary lock:
 
 ## 6) Stage-by-Stage Mapping Notes
 
-- Universe Selection and Market Eligibility: advisory-heavy evidence exists; final singular authority remains partial.
-- Doubleplay directional evaluation: intended business core is clear; explicit canonical authority node remains partial.
+- Universe Selection and Market Eligibility: the 2026-06-15 row remains HISTORICAL_TRUE (`partial` / not fully consolidated). Current selection owner is Cap 2.3; GFU/ranking remain input/candidate-context only.
+- Doubleplay directional evaluation: the 2026-06-15 row remains HISTORICAL_TRUE (`partial`). Current offline overlay is Slice E; do not rewrite the historical row.
 - Bull and Bear specialist contributions: both are mapped as contributors, not final authorizers.
 - LONG or SHORT or FLAT aggregation and arbitration: aggregation exists conceptually; explicit authoritative arbitration owner remains partial.
 - Scope and Capital Envelope determination: distinction from risk caps is canonical; ownership remains unclear in one consolidated authority artifact.
@@ -179,6 +216,10 @@ Static guard: `tests/ops/test_master_v2_decision_authority_map_static_crosslink_
 
 ## 11) Cross-References
 
+- `docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md` (current GFU input owner; not selection)
+- `docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md` (current ranking candidate-context owner; not selection)
+- `docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md` (current sole Selection Owner)
+- `docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md` (current runtime-binding consumer; not selection)
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md` (G10 handoff legibility note: §4.6)
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md`

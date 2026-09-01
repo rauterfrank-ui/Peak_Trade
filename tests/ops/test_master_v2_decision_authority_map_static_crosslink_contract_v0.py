@@ -92,6 +92,22 @@ def test_decision_authority_map_canonical_stages_present_v0() -> None:
         assert stage in text, f"missing canonical stage: {stage!r}"
 
 
+def test_decision_authority_map_current_selection_owner_cap23_historical_row_preserved_v1() -> None:
+    text = _read(AUTHORITY_MAP)
+    plain = _plain(AUTHORITY_MAP)
+    assert "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1" in text
+    assert "SELECTION_OWNER=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1" in text
+    assert "SECOND_SELECTION_AUTHORITY=false" in text
+    assert "DOCUMENT_ROLE=NAVIGATION_ONLY" in text
+    assert "HISTORICAL_UNIVERSE_SELECTION_ROW_PRESERVED=true" in text
+    assert "single canonical authoritative decider is not fully consolidated" in text
+    assert "scripts/scan_markets.py" in text
+    assert "MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md" in text
+    assert "does not grant live permissions" in plain.lower()
+    assert "LIVE_AUTHORIZED=false" in text
+    assert "ORDERS_ALLOWED=false" in text
+
+
 def test_decision_authority_map_partial_and_unclear_markers_preserved_v0() -> None:
     text = _read(AUTHORITY_MAP)
     assert "| partial |" in text
