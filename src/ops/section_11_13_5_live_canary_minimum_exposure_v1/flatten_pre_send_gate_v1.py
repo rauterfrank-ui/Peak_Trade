@@ -54,6 +54,8 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.position_observatio
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_submit_state_v1 import (
     LiveCanaryPositionObservationError,
     LiveCanaryPreSubmitStateError,
+    TARGET_POSITION_NONZERO_PROVEN,
+    classify_target_position_state_v1,
     observe_target_position_flatten_candidate_v1,
     open_order_instruments_v1,
 )
@@ -68,6 +70,7 @@ GATE_NAMES: tuple[str, ...] = (
     "FLATTEN_EXECUTE_AUTHORITY",
     "FLATTEN_EXECUTE_BOUND_SHA",
     "INSTRUMENT_BINDING",
+    "TARGET_POSITION_STATE",
     "PRODUCTIVE_POSITION_OBSERVED",
     "PRE_POS_NONZERO",
     "SINGLE_SELECTED_INSTRUMENT",
@@ -299,6 +302,16 @@ def evaluate_flatten_pre_send_gate_v1(
     plan: CanaryFlattenOrderPlanV1 | None = None
     price_permit: FlattenPricePermitV1 | None = None
     body: dict[str, Any] | None = None
+
+    classified = classify_target_position_state_v1(
+        positions_payload=gate.positions_payload,
+        instrument_id=target or DEFAULT_INSTRUMENT_ID,
+    )
+    if classified.state == TARGET_POSITION_NONZERO_PROVEN:
+        decisions.append(_decision("TARGET_POSITION_STATE", True))
+    else:
+        reasons.append(f"TARGET_POSITION_STATE:{classified.reason}")
+        decisions.append(_decision("TARGET_POSITION_STATE", False, classified.reason))
 
     try:
         observed = observe_target_position_flatten_candidate_v1(

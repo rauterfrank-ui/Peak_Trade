@@ -41,9 +41,9 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `GATE:flatten_execute_authority` |
-| `GATE:position_observation_freshness` |
-| `PHASE:z2co` |
+| `GATE:target_position_state` |
 | `PHASE:z2cp` |
+| `PHASE:z2cq` |
 
 ## CHANGED_RELATIONS
 
@@ -80,7 +80,7 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `GATE:flatten_execute_authority` |
-| `GATE:position_observation_freshness` |
+| `GATE:target_position_state` |
 
 ## AFFECTED_SCHEMAS
 
@@ -96,7 +96,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Additive PHASE:z2cp catalog navigation for §11.13.5.Z2CP persist of the Owner-ratified flatten pre-send position-observation freshness 5000ms policy plus offline fail-closed enforcement. GATE:position_observation_freshness indexes the new pre-send gate. PHASE:z2cn remains the last canonically closed 11.13.5 slice. GATE:flatten_execute_authority deny-list records the Z2CP Owner-GO as not execute. Atlas is not trading authority. No venue, secret, HMAC, or flatten execute mutation.
+- Additive PHASE:z2cq catalog navigation for §11.13.5.Z2CQ persist of the post-Z2CP EXECUTION_PREREQUISITE_08 flatten dependency cluster census plus offline fail-closed TARGET_POSITION_STATE gating. PHASE:z2cn remains the last canonically closed 11.13.5 slice. GATE:flatten_execute_authority deny-list records the Z2CQ Owner-GO as not execute. Atlas is not trading authority. No venue, secret, HMAC, or flatten execute mutation.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
