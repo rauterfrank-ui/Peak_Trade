@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=7
-ATLAS_CHANGED_RELATION_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,19 +40,15 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `ACRONYM:EEA` |
-| `ACRONYM:OKX` |
-| `CFG:exchange_okx_europe_eea` |
-| `OKX_FEATURE:websocket_hosts_configured` |
-| `OKX_HOST:wseeapap` |
-| `VENUE:okx` |
-| `VENUE:okx_eea` |
+| `GATE:flatten_execute_authority` |
+| `PHASE:z2cn` |
+| `PHASE:z2co` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_venue_okx_contains_eea` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
@@ -70,14 +66,13 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CLOSURE:productive_universe` |
+| _(none)_ |
 
 ## AFFECTED_OKX_SURFACES
 
 | id |
 | --- |
-| `OKX_FEATURE:websocket_hosts_configured` |
-| `OKX_HOST:wseeapap` |
+| _(none)_ |
 
 ## AFFECTED_SAFETY_SURFACES
 
@@ -99,7 +94,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Minimal source rebind of existing OKX/EEA inventory after current-doc Kraken residual decommission. No new Atlas entity. Runtime venue semantics unchanged. Atlas is not trading authority.
+- Additive PHASE:z2co catalog navigation for §11.13.5.Z2CO docs/contract persist of freshness form plus prerequisites 18/19/21/24. PHASE:z2cn remains the last canonically closed 11.13.5 slice. GATE:flatten_execute_authority deny-list records the same Owner-GO as not execute. Atlas is not trading authority. No runtime, live, flatten, venue, or secret mutation.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

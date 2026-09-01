@@ -405,6 +405,7 @@ entities:
     fail_closed: true
     evidence_sources:
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO. Not execute enablement. Atlas is not trading authority.
 
   - id: GATE:btc_exclusion
     kind: GATE
@@ -655,7 +656,17 @@ entities:
     current_status: CURRENT_NONCANONICAL
     evidence_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
-    notes: Latest ### 11.13.5.Z2* persist on census SHA. Embedded CURRENT_ORIGIN_MAIN_SHA in slice may differ from census SHA.
+    notes: Last canonically closed 11.13.5 slice. Predecessor of additive PHASE:z2co. Embedded CURRENT_ORIGIN_MAIN_SHA in slice may differ from census SHA. Atlas is not trading authority.
+
+  - id: PHASE:z2co
+    kind: PHASE
+    name: 11.13.5.Z2CO
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: Latest additive ### 11.13.5.Z2* persist. Does not supersede Z2CN as last canonically closed 11.13.5 slice. Atlas is not trading authority.
 
   - id: FORENSIC_REFERENCE:historical_child_ledger
     kind: FORENSIC_REFERENCE

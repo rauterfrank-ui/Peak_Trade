@@ -398,7 +398,7 @@ Architectural-kind count in this bucket: `19`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `41`.
+Architectural-kind count in this bucket: `42`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -421,6 +421,7 @@ Architectural-kind count in this bucket: `41`.
 | GATE:flatten_execute_authority | GATE | Flatten execute confirm-token authority | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:flatten_live_wire | GATE | DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:z2cn | PHASE | 11.13.5.Z2CN | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| PHASE:z2co | PHASE | 11.13.5.Z2CO | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | RUNBOOK:cybersecurity_v2_1 | RUNBOOK | Canonical Cybersecurity Runbook V2.1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | RUNBOOK:presentation_implementation | RUNBOOK | Canonical Presentation Implementation Runbook | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | SCHEMA:bound_instrument_dataclass_v1 | SCHEMA | BoundInstrumentV1 dataclass shape | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -441,9 +442,8 @@ Architectural-kind count in this bucket: `41`.
 | SELECTOR:productive_futures_ranking | SELECTOR | Productive futures ranking | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=ADJUDICATED |
 | SELECTOR:single_selected_future_policy | SELECTOR | Single selected future policy producer | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=ADJUDICATED |
 | TRANSPORT:bound_okx_testnet_http | TRANSPORT | BoundOkxTestnetHttpClientV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| UNIVERSE:governed_futures_universe | UNIVERSE | Governed Futures Universe snapshot | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=ADJUDICATED |
 
-Truncated to 40 of `41` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `42` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -678,7 +678,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=afbae518b67eb1b789c835e219db37f5b15f308b
-ENTITY_TOTAL=324
+ENTITY_TOTAL=325
 HUB_RELATION_COUNT=63
 STRUCTURAL_RELATION_COUNT=80
 RUNTIME_RELATION_COUNT=20
@@ -772,7 +772,7 @@ Remaining census domains:
 | OKX_HOST | 8 |
 | OKX_RESPONSE_SHAPE | 6 |
 | OWNER_DECISION | 2 |
-| PHASE | 1 |
+| PHASE | 2 |
 | REGISTRY | 1 |
 | RUNBOOK | 4 |
 | RUNTIME_COMPONENT | 40 |
