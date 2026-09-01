@@ -450,7 +450,7 @@ def test_authority_inventory_contract() -> None:
 
 @pytest.mark.parametrize(
     "venue",
-    [None, "", "okx", " OKX", "BINANCE", "Okx"],
+    [None, "", "okx", " OKX", "UNDECLARED_VENUE", "Okx"],
 )
 def test_venue_mismatch_or_missing_fail_closed(tmp_path: Path, venue: object) -> None:
     path, token, payload = _write_bound_v2(tmp_path)
@@ -518,7 +518,7 @@ def test_session_runtime_no_evidence_on_venue_mismatch(tmp_path: Path) -> None:
     raw = json.loads(path.read_text(encoding="utf-8"))
     raw.pop("integrity_digest", None)
     raw.pop("digest_scope", None)
-    raw["venue"] = "BINANCE"
+    raw["venue"] = "UNDECLARED_VENUE"
     from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.integrity_v1 import (
         stamp_integrity_digest,
     )

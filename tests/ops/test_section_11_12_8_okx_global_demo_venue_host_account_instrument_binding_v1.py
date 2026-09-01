@@ -109,9 +109,7 @@ def test_silent_host_symbol_venue_fallback_impossible() -> None:
     with pytest.raises(OkxGlobalDemoBindingError, match="SILENT_VENUE_FALLBACK_FORBIDDEN"):
         evaluate_okx_global_demo_binding_v1(headers=headers, venue="okx_eea")
     with pytest.raises(OkxGlobalDemoBindingError, match="HOST_NOT_OKX_GLOBAL_DEMO_ALLOWLIST"):
-        evaluate_okx_global_demo_binding_v1(
-            headers=headers, rest_base="https://testnet.binancefuture.com"
-        )
+        evaluate_okx_global_demo_binding_v1(headers=headers, rest_base="https://example.invalid")
 
 
 def test_no_order_send_by_this_package() -> None:

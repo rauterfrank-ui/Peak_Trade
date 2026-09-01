@@ -9,6 +9,7 @@ from urllib import error
 import pytest
 
 from scripts.ops import archive_futures_testnet_harness_v0 as harness
+from src.exchange.operative_venue_boundary_v1 import NoncanonicalVenueRejectedError
 from src.ops.bounded_futures_private_readonly_contract_v0 import (
     CONFIRM_TOKEN_PRIVATE_READONLY_REACHABILITY,
     DEMO_FUTURES_REST_BASE_URL,
@@ -17,6 +18,7 @@ from src.ops.bounded_futures_private_readonly_contract_v0 import (
     PRIVATE_READONLY_ENDPOINT_ORDER,
     PRIVATE_READONLY_HTTP_WIRING_PRESENT,
     PrivateReadonlyHttpRequest,
+    build_non_authorizing_credential_checker_boundary,
     build_private_readonly_evidence_from_network,
     build_private_readonly_get_request_plan,
     build_private_readonly_http_request,
@@ -26,9 +28,6 @@ from src.ops.bounded_futures_private_readonly_contract_v0 import (
     run_private_readonly_reachability,
     summarize_private_response_for_evidence,
     validate_redacted_network_call_record,
-)
-from src.ops.kraken_futures_demo_credential_presence_contract_v0 import (
-    build_checker_boundary_v0,
 )
 
 TEST_PACKAGE_MARKER = "BOUNDED_FUTURES_PRIVATE_READONLY_HTTP_WIRING_GUARD_V0=true"
@@ -217,76 +216,69 @@ def test_mocked_reachability_calls_three_endpoints() -> None:
 
 
 def test_credentials_present_does_not_authorize_execute() -> None:
-    boundary = build_checker_boundary_v0()
+    boundary = build_non_authorizing_credential_checker_boundary()
     skeleton = build_private_readonly_plan_evidence_skeleton(run_id="x")
     assert boundary["futures_private_api_authorized"] is False
     assert skeleton["futures_private_api_authorized"] is False
     assert skeleton["private_readonly_execute_wired"] is True
 
 
-def test_resolve_credentials_from_environ_without_logging() -> None:
+def test_resolve_credentials_from_environ_rejects_foreign_secrets() -> None:
     secret = base64.b64encode(b"s" * 32).decode()
     creds = resolve_private_readonly_credentials_from_environ(
         {
-            "KRAKEN_FUTURES_DEMO_API_KEY": "k",
-            "KRAKEN_FUTURES_DEMO_API_SECRET": secret,
+            "FOREIGN_VENUE_API_KEY": "k",
+            "FOREIGN_VENUE_API_SECRET": secret,
         }
     )
-    assert creds == ("k", secret)
+    assert creds is None
 
 
-def test_harness_private_execute_blocked_without_confirm(tmp_path) -> None:
+def test_harness_private_execute_rejected_as_noncanonical_venue(tmp_path) -> None:
     from tests.ops.test_archive_futures_testnet_harness_v0 import _durable_test_archive_root
 
     archive = _durable_test_archive_root(tmp_path)
-    rc = harness.main(
-        [
-            "--archive-root",
-            str(archive),
-            "--run-id",
-            "no-confirm",
-            "--mode",
-            "private_readonly_reachability_only",
-            "--execute-network",
-        ],
-        environ={
-            "KRAKEN_FUTURES_DEMO_API_KEY": "k",
-            "KRAKEN_FUTURES_DEMO_API_SECRET": base64.b64encode(b"x" * 32).decode(),
-        },
-    )
-    assert rc == harness.USAGE_EXIT
+    with pytest.raises(NoncanonicalVenueRejectedError):
+        harness.main(
+            [
+                "--archive-root",
+                str(archive),
+                "--run-id",
+                "no-confirm",
+                "--mode",
+                "private_readonly_reachability_only",
+                "--execute-network",
+            ],
+            environ={
+                "FOREIGN_VENUE_API_KEY": "k",
+                "FOREIGN_VENUE_API_SECRET": base64.b64encode(b"x" * 32).decode(),
+            },
+        )
 
 
-def test_harness_private_execute_mocked_fetcher(tmp_path) -> None:
+def test_harness_private_execute_mocked_fetcher_rejected(tmp_path) -> None:
     from tests.ops.test_archive_futures_testnet_harness_v0 import _durable_test_archive_root
 
     archive = _durable_test_archive_root(tmp_path)
     fake = _FakePrivateFetcher()
     secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
-    rc = harness.main(
-        [
-            "--archive-root",
-            str(archive),
-            "--run-id",
-            "privexec",
-            "--mode",
-            "private_readonly_reachability_only",
-            "--execute-network",
-            "--confirm-futures-private-readonly-reachability",
-            CONFIRM_TOKEN_PRIVATE_READONLY_REACHABILITY,
-        ],
-        private_fetcher=fake,
-        environ={
-            "KRAKEN_FUTURES_DEMO_API_KEY": "demo-key",
-            "KRAKEN_FUTURES_DEMO_API_SECRET": secret,
-        },
-    )
-    assert rc == 0
-    assert len(fake.requests) == 3
-    evidence_path = list((archive / "runtime").iterdir())[0] / "FUTURES_EVIDENCE.json"
-    evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
-    assert evidence["request_count"] == 3
-    assert evidence["private_readonly_reachability_proven"] is True
-    dump = json.dumps(evidence)
-    assert "demo-key" not in dump
-    assert evidence["futures_private_api_authorized"] is False
+    with pytest.raises(NoncanonicalVenueRejectedError):
+        harness.main(
+            [
+                "--archive-root",
+                str(archive),
+                "--run-id",
+                "privexec",
+                "--mode",
+                "private_readonly_reachability_only",
+                "--execute-network",
+                "--confirm-futures-private-readonly-reachability",
+                CONFIRM_TOKEN_PRIVATE_READONLY_REACHABILITY,
+            ],
+            private_fetcher=fake,
+            environ={
+                "FOREIGN_VENUE_API_KEY": "demo-key",
+                "FOREIGN_VENUE_API_SECRET": secret,
+            },
+        )
+    assert fake.requests == []

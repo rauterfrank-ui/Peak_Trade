@@ -62,7 +62,7 @@ def _candidate(**overrides: object) -> FuturesProducerCandidate:
         "instrument_id": "inst-eth-perp",
         "symbol": "ETHUSDT",
         "market_type": FuturesMarketType.PERPETUAL,
-        "exchange": "binance_futures",
+        "exchange": "other_venue",
         "base_currency": "ETH",
         "quote_currency": "USDT",
         "live_authorization": False,

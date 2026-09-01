@@ -65,7 +65,7 @@ MANIFEST_VERIFY_RC=0
 | Readmodel persistence | [UNIVERSE_SELECTION_READMODEL_V1.md](UNIVERSE_SELECTION_READMODEL_V1.md) |
 | Provenance (F2) | [FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md](../../ops/specs/FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md) |
 | Instrument metadata (F1) | [FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md](../../ops/specs/FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md) |
-| Public REST capture pattern (spot reference) | `scripts/ops/capture_public_rest_binance_book_ticker_v0.py` |
+| Public REST capture pattern (spot reference) | removed (not a current operative capture surface) |
 | Futures testnet endpoint inventory (offline) | `src/ops/bounded_futures_testnet_adapter_contract_v0.py` |
 | U1 upstream adapter | `src/webui/workflow_dashboard_readmodel_v1/futures_universe_upstream_adapter_v1.py` |
 | U2b loader guard | `src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_real_metadata_source_v1.py` |
@@ -101,17 +101,9 @@ Future provider probes and loaders must extend this chain — **not** fork a sec
 | `forbidden_hosts` | `https://api.kraken.com` (spot), any live-order host without explicit separate GO |
 | `market_type` | `futures`, `perpetual`, `swap` only — **not** spot slash pairs |
 
-**Reference (offline inventory):** `FUTURES_TESTNET_ENDPOINT_ALLOWLIST` in `bounded_futures_testnet_adapter_contract_v0.py` lists futures REST paths; this charter restricts the **first safe probe slice** to the **public GET subset** above only.
+**Reference (offline inventory):** `FUTURES_TESTNET_ENDPOINT_ALLOWLIST` in `bounded_futures_testnet_adapter_contract_v0.py` lists futures REST paths; this charter restricts the **first safe probe slice** to the **public GET subset** above only. This Kraken provider id is **not** a current operative market-data source.
 
-### 5.2 Binance Futures — public market-data-only (deferred)
-
-| Field | Value |
-|-------|-------|
-| `provider_id` | `binance_futures_public_market_data_only` |
-| `status` | **deferred** — repo has spot public REST capture (`binance_spot_market_data_only`); futures public path requires separate bounded charter extension before probe |
-| `note` | Do not reuse spot `data-api.binance.vision` bookTicker path as futures instrument truth |
-
-### 5.3 Forbidden provider kinds
+### 5.2 Forbidden provider kinds
 
 | Forbidden | Reason |
 |-----------|--------|
@@ -175,14 +167,14 @@ REAL_FUTURES_MARKET_DATA_WIRING_AUTHORIZED=false
 
 Charter markers remain fail-closed. **U5b probe CLI** is an isolated manual operator tool — not observability truth, not dashboard wiring, not Truth-GO.
 
-**U5b probe module (bounded):** `scripts&#47;ops&#47;probe_kraken_futures_public_market_data_v1.py`
+**U5b probe module:** ABSENT from the current tree. The former public-market probe is historical only and is not an OKX relabel.
 
 - Explicit confirm token: `CONFIRM_VIEW_ONLY_PUBLIC_MARKET_DATA_PROBE_V1`
 - Public GET allowlist only: `/derivatives/api/v3/instruments`, `/derivatives/api/v3/tickers`
 - urllib-only, one-shot, no daemon, no auth, no readmodel write
 - **Response byte-cap policy (bounded, not unbounded):** CLI default `--max-response-bytes` stays conservative (`262144`). Hard cap `3145728`. Manual Kraken instruments probe requires operator to set an explicit limit **at or above** `2097152` (live instruments payload observed ~1.2 MiB; tickers ~163 KiB). Exceeding cap fails with `INSTRUMENTS_RESPONSE_EXCEEDS_MAX_RESPONSE_BYTES` including observed/required bytes — no retry loop, no host workaround.
 - CI/tests: mocked/offline only; live network requires manual operator CLI with confirm token
-- Sibling pattern: `capture_public_rest_binance_book_ticker_v0.py` (spot reference only)
+- Sibling pattern: public REST one-shot capture (removed as a current operative surface)
 
 ## 10. Implementation slices (reference)
 
@@ -204,8 +196,8 @@ Charter markers remain fail-closed. **U5b probe CLI** is an isolated manual oper
 |-------------|---------|
 | `tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py` | Doc existence, machine markers, U4b cross-link |
 | `tests/ops/test_real_futures_market_data_source_contract_boundary_v1.py` | Charter boundary, U5c transform contract, forbidden provider ids, no dummy substitution |
-| `tests/ops/test_probe_kraken_futures_public_market_data_v1.py` | U5b probe CLI boundary, mocked HTTP, confirm token, no network in CI |
-| `tests/ops/test_transform_kraken_futures_raw_to_u2c_candidate_v1.py` | U5d offline transform validation CLI, fixture-only, no network |
+| `tests&#47;ops&#47;test_probe_kraken_futures_public_market_data_v1.py` | U5b probe CLI boundary, mocked HTTP, confirm token, no network in CI |
+| `tests&#47;ops&#47;test_transform_kraken_futures_raw_to_u2c_candidate_v1.py` | U5d offline transform validation CLI, fixture-only, no network |
 
 ## 12. U5C Transform Contract to U2c Governed Snapshot Candidate
 
@@ -347,8 +339,8 @@ Missing Kraken fields must remain in `missing_fields` — **no BTC&#47;USD subst
 | Test module | Purpose |
 |-------------|---------|
 | `tests/ops/test_real_futures_market_data_source_contract_boundary_v1.py` | U5c §12 markers, intake-not-ready, forbidden shortcuts, reuse chain |
-| `tests/ops/test_probe_kraken_futures_public_market_data_v1.py` | U5b probe remains view-only, preview not governed |
-| `tests/ops/test_transform_kraken_futures_raw_to_u2c_candidate_v1.py` | U5d offline validation artifact markers, no network, no intake |
+| `tests&#47;ops&#47;test_probe_kraken_futures_public_market_data_v1.py` | U5b probe remains view-only, preview not governed |
+| `tests&#47;ops&#47;test_transform_kraken_futures_raw_to_u2c_candidate_v1.py` | U5d offline validation artifact markers, no network, no intake |
 | `tests/webui/test_futures_producer_packet_real_metadata_source_v1.py` | U2b loader rejection reasons (unchanged — referenced by gates) |
 
 ### 12.11 U5D Offline Transform Validation CLI
@@ -413,5 +405,5 @@ CVC and diagnostic surfaces **must not** weaken strict upstream gates or promote
 |-------------|---------|
 | `tests/ops/test_u2c_packet_shape_v1.py` | `MISSING_PROVIDER_METADATA_NOT_IN_PUBLIC_VIEW`; `impactMidSize` ≠ `min_notional` |
 | `tests/ops/test_real_futures_market_data_source_contract_boundary_v1.py` | §12.12 markers present; no forbidden heuristic language |
-| `tests/ops/test_transform_kraken_futures_raw_to_u2c_candidate_v1.py` | U5d rows keep `missing_provider_metadata=["min_notional"]` |
+| `tests&#47;ops&#47;test_transform_kraken_futures_raw_to_u2c_candidate_v1.py` | U5d rows keep `missing_provider_metadata=["min_notional"]` |
 | `tests/webui/test_candidate_validation_readmodel_projection_v1.py` | Strict path still blocked for CVC bundles |

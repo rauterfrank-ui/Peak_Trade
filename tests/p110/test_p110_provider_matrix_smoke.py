@@ -17,15 +17,11 @@ from src.execution.adapters.base_v1 import (
 def _provider_classes() -> List[Type[ExecutionAdapterV1]]:
     # NOTE: keep imports inside to avoid import-time side effects; these are mocks-only.
     from src.execution.adapters.mock_v1 import MockExecutionAdapterV1
-    from src.execution.adapters.providers.bybit_v1 import BybitExecutionAdapterV1
-    from src.execution.adapters.providers.coinbase_v1 import CoinbaseExecutionAdapterV1
     from src.execution.adapters.providers.okx_v1 import OKXExecutionAdapterV1
 
     return [
         MockExecutionAdapterV1,
-        CoinbaseExecutionAdapterV1,
         OKXExecutionAdapterV1,
-        BybitExecutionAdapterV1,
     ]
 
 

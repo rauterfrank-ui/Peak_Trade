@@ -202,7 +202,7 @@
       "proof_status": "UNPROVEN",
       "predicate": "lossless_join_presentation_symbol_to_canonical_or_venue_native",
       "fixture_provenance_preserved": true,
-      "fixture_context": "tests/fixtures complete_minimal universe_selection_readmodel.v1.json uses ETHUSDT/SOLUSDT/AVAXUSDT with exchange=binance_futures notes=fixture testdata fixture_marked=true; not reinterpreted as OKX EEA or MARKET YAML provenance"
+      "fixture_context": "tests/fixtures complete_minimal universe_selection_readmodel.v1.json uses ETHUSDT/SOLUSDT/AVAXUSDT with exchange=other_venue notes=fixture testdata fixture_marked=true; not reinterpreted as OKX EEA or MARKET YAML provenance"
     },
     {
       "fact_id": "F08",
@@ -355,7 +355,7 @@
       "token_collision_is_not_identity": true,
       "FILENAME_SIMILARITY_ANALOG_APPLIED": true,
       "fixture_AVAXUSDT_not_in_MARKET_USDT_yaml": true,
-      "fixture_exchange_binance_futures_not_okx_eea": true
+      "fixture_exchange_other_venue_not_okx_eea": true
     },
     {
       "pair_id": "P10",

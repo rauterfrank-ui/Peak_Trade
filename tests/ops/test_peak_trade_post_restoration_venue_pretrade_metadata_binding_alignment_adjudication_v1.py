@@ -232,11 +232,7 @@ def test_kraken_and_btc_firewall_remain() -> None:
     assert "KRAKEN_METADATA_REUSED=false" in spec
     assert "KRAKEN_NOT_CURRENT_CANONICAL_VENUE=true" in parent
     assert REUSED_BINDING_VENUE != "KRAKEN"
-    kraken = KRAKEN_LIVE.read_text(encoding="utf-8")
-    assert "def place_order(" in kraken
-    assert "lotSz" not in kraken
-    assert "maxAvailSize" not in kraken
-    assert "maxLmtSz" not in kraken
+    assert not KRAKEN_LIVE.is_file()
 
 
 def test_max_size_is_partially_bound_not_current_numeric() -> None:

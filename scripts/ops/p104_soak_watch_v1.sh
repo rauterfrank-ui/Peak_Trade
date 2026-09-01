@@ -14,8 +14,6 @@ deny_vars=(
   LIVE RECORD
   EXECUTION_ENABLE TRADING_ENABLE ENABLE_LIVE_TRADING
   PT_ARMED PT_ENABLED PT_CONFIRM_TOKEN PT_CONFIRM_MERGE
-  KRAKEN_API_KEY KRAKEN_API_SECRET
-  BINANCE_API_KEY BINANCE_API_SECRET
   API_KEY API_SECRET
 )
 for v in "${deny_vars[@]}"; do
@@ -24,6 +22,13 @@ for v in "${deny_vars[@]}"; do
     exit 3
   fi
 done
+while IFS= read -r v; do
+  [ -z "$v" ] && continue
+  if [ -n "${!v:-}" ]; then
+    echo "P104_GUARD_FAIL: env_var_disallowed $v" >&2
+    exit 3
+  fi
+done < <(compgen -e | grep -E '_API_(KEY|SECRET)$' || true)
 
 if [ "$MODE" != "shadow" ] && [ "$MODE" != "paper" ]; then
   echo "P104_GUARD_FAIL: mode_not_allowed mode=$MODE" >&2

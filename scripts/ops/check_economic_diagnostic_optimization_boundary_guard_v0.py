@@ -131,6 +131,15 @@ def main() -> int:
     )
     payload = report.to_dict()
     payload["FORBIDDEN_SURFACE_CHANGED_COUNT"] = forbidden_surface_changed_count(report)
+    payload["ECONOMIC_GUARD_PROTECTED_TOUCH_COUNT"] = len(
+        {match.matched_path for match in report.forbidden_surface_matches}
+    )
+    payload["DECOMMISSION_ADMISSION_COUNT"] = report.decommission_admission_count
+    payload["OWNER_ADJUDICATED_NONPRODUCTIVE_CHANGE_COUNT"] = (
+        report.owner_adjudicated_nonproductive_change_count
+    )
+    payload["ECONOMIC_GUARD_UNCLASSIFIED_TOUCH_COUNT"] = report.unclassified_touch_count
+    payload["ECONOMIC_GUARD_BLOCK_COUNT"] = 0 if report.admissible else 1
 
     if args.json_out is not None:
         args.json_out.write_text(

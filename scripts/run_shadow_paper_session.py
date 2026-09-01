@@ -75,8 +75,7 @@ from src.live.run_logging import (
     generate_run_id,
     create_run_logger_from_config,
 )
-from src.data.kraken_live import (
-    KrakenLiveCandleSource,
+from src.data.simulation_candles import (
     ShadowPaperConfig,
     LiveExchangeConfig,
     load_shadow_paper_config,
@@ -247,17 +246,10 @@ def build_session(
     strategy = create_strategy(strategy_name, cfg)
     logger.info(f"Strategie geladen: {strategy}")
 
-    # 4. Datenquelle erstellen
-    logger.info(f"Initialisiere Datenquelle: {shadow_cfg.symbol} @ {shadow_cfg.timeframe}")
-    data_source = KrakenLiveCandleSource(
-        symbol=shadow_cfg.symbol,
-        timeframe=shadow_cfg.timeframe,
-        base_url=exchange_cfg.base_url,
-        warmup_candles=shadow_cfg.warmup_candles,
-        max_retries=exchange_cfg.max_retries,
-        retry_delay=exchange_cfg.retry_delay_seconds,
-        rate_limit_ms=exchange_cfg.rate_limit_ms,
-    )
+    # 4. Datenquelle: no implicit noncanonical venue MD construction.
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+    reject_noncanonical_operative_surface(surface="run_shadow_paper_session.data_source")
 
     # 5. Execution-Pipeline mit Shadow-Executor
     logger.info("Initialisiere Execution-Pipeline (Shadow-Modus)")

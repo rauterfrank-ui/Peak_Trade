@@ -384,7 +384,7 @@ Recommended properties:
 | Status | Select | yes | Draft / Proposed / Reviewed / Approved / Revoked / Expired |
 | Account Type | Select | yes | Spot / Futures / Paper / Testnet / Unknown |
 | Environment Scope | Select | yes | Research / Shadow / Paper / Testnet / Canary / Live |
-| Exchange | Select | no | Kraken / Binance / Other |
+| Exchange | Select | no | Kraken / Other |
 | Strategy Scope | Text | no | Strategy or layer |
 | Instrument Scope | Text | no | Symbol/instrument scope |
 | Max Notional | Number/Text | no | Limit if applicable |

@@ -20,10 +20,10 @@ if [[ "$DRY_RUN" != "YES" ]]; then
 fi
 
 # deny env (minimal, keep aligned with existing patterns)
-DENY_ENV_RE='(^| )(LIVE|RECORD|TRADING_ENABLE|PT_ARMED|PT_ENABLED|PT_CONFIRM|API_KEY|API_SECRET|API_TOKEN|COINBASE_|KRAKEN_|OKX_|BYBIT_)'
-if env | grep -Eqi "$DENY_ENV_RE"; then
+DENY_ENV_RE='^(LIVE|RECORD|TRADING_ENABLE|PT_ARMED|PT_ENABLED|PT_CONFIRM|API_KEY|API_SECRET|API_TOKEN)$|_API_(KEY|SECRET|TOKEN)$'
+if env | cut -d= -f1 | grep -Eqi "$DENY_ENV_RE"; then
   echo "P136_GUARD_FAIL: deny_env_present" >&2
-  env | grep -Ei "$DENY_ENV_RE" >&2 || true
+  env | cut -d= -f1 | grep -Ei "$DENY_ENV_RE" >&2 || true
   exit 3
 fi
 

@@ -142,7 +142,7 @@ def _report(
 
 
 class TestDecommissionAdmissionClassContractV1:
-    def test_committed_artifact_is_valid_inactive_grant(self) -> None:
+    def test_committed_artifact_is_valid_digest_bound_grant(self) -> None:
         auth = load_decommission_authorization(REPO_ROOT)
         assert auth is not None
         valid, reasons = validate_decommission_authorization(auth, repo_root=REPO_ROOT)
@@ -152,21 +152,25 @@ class TestDecommissionAdmissionClassContractV1:
         assert auth["authorized_scope_class"] == DECOMMISSION_SCOPE_CLASS
         assert auth["authorization_token"] == DECOMMISSION_AUTHORIZATION_ID
         assert auth["mutation_purpose_class"] == DECOMMISSION_MUTATION_PURPOSE
-        assert auth["grant_active"] is False
-        assert auth["allowed_paths"] == []
-        assert auth["allowed_surface_classes"] == []
         assert auth["pr_specific_exception"] is False
         assert auth["branch_specific_exception"] is False
         assert auth["blanket_allowlist"] is False
         assert auth["directory_grant"] is False
         assert auth["broad_master_v2_grant"] is False
-        assert auth["authorized_evidence_digest"] == ""
         assert auth["evidence_digest_algorithm"] == EVIDENCE_DIGEST_ALGORITHM
         assert auth["evidence_digest_canonicalization"] == EVIDENCE_DIGEST_CANONICALIZATION
         assert "pr_number" not in auth
         assert "branch_name" not in auth
         assert auth["class_attestation"] == DECOMMISSION_CLASS_ATTESTATION_RELATIVE
         assert (REPO_ROOT / DECOMMISSION_CLASS_ATTESTATION_RELATIVE).is_file()
+        if auth["grant_active"] is False:
+            assert auth["allowed_paths"] == []
+            assert auth["allowed_surface_classes"] == []
+            assert auth["authorized_evidence_digest"] == ""
+        else:
+            assert auth["allowed_paths"]
+            assert all("/" in path and "*" not in path for path in auth["allowed_paths"])
+            assert len(auth["authorized_evidence_digest"]) == 64
 
     def test_bound_from_boundary_contract(self) -> None:
         contract = load_contract(REPO_ROOT)
@@ -461,16 +465,15 @@ class TestDecommissionGuardMatrixV1:
         assert report.admissible is False
         assert report.semantics_neutral_decommission_authorization_applied is False
 
-    def test_inactive_grant_is_noop_same_as_skipped_class(self) -> None:
+    def test_unrelated_active_grant_does_not_admit_ungranted_protected_path(self) -> None:
         changed = [UNGRANTED_MASTER_V2_PATH]
-        default_report = _report(changed)
+        report = _report(changed)
         skipped = _report(changed, skip_decommission=True)
-        assert default_report.admissible is False
+        assert report.admissible is False
         assert skipped.admissible is False
-        assert default_report.reason_codes == skipped.reason_codes
-        assert default_report.restoration_authorization_applied is False
+        assert report.restoration_authorization_applied is False
         assert skipped.restoration_authorization_applied is False
-        assert default_report.semantics_neutral_decommission_authorization_applied is False
+        assert report.semantics_neutral_decommission_authorization_applied is False
 
 
 class TestExistingAuthorizationSemanticsUnchangedV1:
@@ -579,7 +582,7 @@ class TestGenericDecommissionReplayShapesV1:
         diffs = {
             PROTECTED_MASTER_V2_PATH: _unified_diff(
                 PROTECTED_MASTER_V2_PATH,
-                ['    "src/exchange/kraken_live.py",'],
+                ['    "src/exchange/operative_venue_boundary_v1.py",'],
                 [],
             )
         }

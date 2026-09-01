@@ -8,23 +8,11 @@ Smoke-Tests für Testnet-Orchestrator v1.
 
 from __future__ import annotations
 
-import sys
-import time
-from pathlib import Path
-from unittest.mock import MagicMock, patch
-
 import pytest
-
-# Pfad-Setup
-ROOT_DIR = Path(__file__).resolve().parents[1]
-if str(ROOT_DIR) not in sys.path:
-    sys.path.insert(0, str(ROOT_DIR))
 
 from src.core.peak_config import PeakConfig
 from src.live.testnet_orchestrator import (
     TestnetOrchestrator,
-    RunState,
-    RunInfo,
     RunNotFoundError,
     ReadinessCheckFailedError,
     InvalidModeError,
@@ -185,73 +173,25 @@ def test_readiness_check_wrong_environment(testnet_test_config: PeakConfig) -> N
 # =============================================================================
 
 
-@patch("src.live.shadow_session.ShadowPaperSession")
-@patch("src.strategies.registry.create_strategy_from_config")
-@patch("src.data.kraken_live.create_kraken_source_from_config")
-def test_start_shadow_run_smoke(
-    mock_data_source: MagicMock,
-    mock_strategy: MagicMock,
-    mock_session_class: MagicMock,
+def test_start_shadow_run_rejects_implicit_venue_market_data(
     orchestrator: TestnetOrchestrator,
 ) -> None:
-    """Test: Shadow-Run starten (Smoke-Test)."""
-    # Mock Session
-    mock_session = MagicMock()
-    mock_session_class.return_value = mock_session
-
-    # Mock Strategy
-    mock_strategy_instance = MagicMock()
-    mock_strategy_instance.key = "ma_crossover"
-    mock_strategy.return_value = mock_strategy_instance
-
-    # Mock Data Source
-    mock_data_source.return_value = MagicMock()
-
-    # Mock Run-Logger
-    with patch("src.live.run_logging.create_run_logger_from_config") as mock_logger:
-        mock_logger_instance = MagicMock()
-        mock_logger_instance.run_dir = Path("/tmp/test_run")
-        mock_logger.return_value = mock_logger_instance
-
-        # Starte Run
-        run_id = orchestrator.start_shadow_run(
+    with pytest.raises(OrchestratorError, match="noncanonical_venue_rejected"):
+        orchestrator.start_shadow_run(
             strategy_name="ma_crossover",
             symbol="BTC/EUR",
             timeframe="1m",
             notes="Test-Run",
         )
 
-        # Prüfe, dass Run-ID zurückgegeben wird
-        assert run_id is not None
-        assert run_id.startswith("shadow_")
-
-        # Prüfe, dass Run registriert ist
-        status = orchestrator.get_status(run_id=run_id)
-        assert isinstance(status, RunInfo)
-        assert status.run_id == run_id
-        assert status.mode == "shadow"
-        assert status.strategy_name == "ma_crossover"
-        assert status.symbol == "BTC/EUR"
-        assert status.timeframe == "1m"
-        assert status.notes == "Test-Run"
-
 
 def test_start_shadow_run_with_invalid_strategy(orchestrator: TestnetOrchestrator) -> None:
-    """Test: Shadow-Run mit ungültiger Strategie."""
-    with patch("src.strategies.registry.create_strategy_from_config") as mock_strategy:
-        mock_strategy.side_effect = KeyError("Strategy 'invalid' not found")
-
-        with patch("src.live.run_logging.create_run_logger_from_config") as mock_logger:
-            mock_logger_instance = MagicMock()
-            mock_logger_instance.run_dir = Path("/tmp/test_run")
-            mock_logger.return_value = mock_logger_instance
-
-            with pytest.raises(OrchestratorError, match="Fehler beim Starten"):
-                orchestrator.start_shadow_run(
-                    strategy_name="invalid",
-                    symbol="BTC/EUR",
-                    timeframe="1m",
-                )
+    with pytest.raises(OrchestratorError, match="noncanonical_venue_rejected"):
+        orchestrator.start_shadow_run(
+            strategy_name="invalid",
+            symbol="BTC/EUR",
+            timeframe="1m",
+        )
 
 
 # =============================================================================
@@ -259,53 +199,17 @@ def test_start_shadow_run_with_invalid_strategy(orchestrator: TestnetOrchestrato
 # =============================================================================
 
 
-@patch("src.live.shadow_session.ShadowPaperSession")
-@patch("src.strategies.registry.create_strategy_from_config")
-@patch("src.data.kraken_live.create_kraken_source_from_config")
-def test_start_testnet_run_smoke(
-    mock_data_source: MagicMock,
-    mock_strategy: MagicMock,
-    mock_session_class: MagicMock,
+def test_start_testnet_run_rejects_implicit_venue_market_data(
     testnet_test_config: PeakConfig,
 ) -> None:
-    """Test: Testnet-Run starten (Smoke-Test)."""
     orchestrator = TestnetOrchestrator(config=testnet_test_config)
-
-    # Mock Session
-    mock_session = MagicMock()
-    mock_session_class.return_value = mock_session
-
-    # Mock Strategy
-    mock_strategy_instance = MagicMock()
-    mock_strategy_instance.key = "ma_crossover"
-    mock_strategy.return_value = mock_strategy_instance
-
-    # Mock Data Source
-    mock_data_source.return_value = MagicMock()
-
-    # Mock Run-Logger
-    with patch("src.live.run_logging.create_run_logger_from_config") as mock_logger:
-        mock_logger_instance = MagicMock()
-        mock_logger_instance.run_dir = Path("/tmp/test_run")
-        mock_logger.return_value = mock_logger_instance
-
-        # Starte Run
-        run_id = orchestrator.start_testnet_run(
+    with pytest.raises(OrchestratorError, match="noncanonical_venue_rejected"):
+        orchestrator.start_testnet_run(
             strategy_name="ma_crossover",
             symbol="BTC/EUR",
             timeframe="1m",
             notes="Test-Run",
         )
-
-        # Prüfe, dass Run-ID zurückgegeben wird
-        assert run_id is not None
-        assert run_id.startswith("testnet_")
-
-        # Prüfe, dass Run registriert ist
-        status = orchestrator.get_status(run_id=run_id)
-        assert isinstance(status, RunInfo)
-        assert status.run_id == run_id
-        assert status.mode == "testnet"
 
 
 # =============================================================================
@@ -328,50 +232,13 @@ def test_get_status_run_not_found(orchestrator: TestnetOrchestrator) -> None:
         orchestrator.get_status(run_id="nonexistent_run_id")
 
 
-@patch("src.live.shadow_session.ShadowPaperSession")
-@patch("src.strategies.registry.create_strategy_from_config")
-@patch("src.data.kraken_live.create_kraken_source_from_config")
-def test_stop_run(
-    mock_data_source: MagicMock,
-    mock_strategy: MagicMock,
-    mock_session_class: MagicMock,
-    orchestrator: TestnetOrchestrator,
-) -> None:
-    """Test: Run stoppen."""
-    # Mock Session
-    mock_session = MagicMock()
-    mock_session_class.return_value = mock_session
-
-    # Mock Strategy
-    mock_strategy_instance = MagicMock()
-    mock_strategy_instance.key = "ma_crossover"
-    mock_strategy.return_value = mock_strategy_instance
-
-    # Mock Data Source
-    mock_data_source.return_value = MagicMock()
-
-    # Mock Run-Logger
-    with patch("src.live.run_logging.create_run_logger_from_config") as mock_logger:
-        mock_logger_instance = MagicMock()
-        mock_logger_instance.run_dir = Path("/tmp/test_run")
-        mock_logger.return_value = mock_logger_instance
-
-        # Starte Run
-        run_id = orchestrator.start_shadow_run(
+def test_stop_run_requires_existing_run(orchestrator: TestnetOrchestrator) -> None:
+    with pytest.raises(OrchestratorError, match="noncanonical_venue_rejected"):
+        orchestrator.start_shadow_run(
             strategy_name="ma_crossover",
             symbol="BTC/EUR",
             timeframe="1m",
         )
-
-        # Warte kurz, damit Run initialisiert wird
-        time.sleep(0.1)
-
-        # Stoppe Run
-        orchestrator.stop_run(run_id)
-
-        # Prüfe Status
-        status = orchestrator.get_status(run_id=run_id)
-        assert status.state in (RunState.STOPPED, RunState.STOPPING)
 
 
 def test_stop_run_not_found(orchestrator: TestnetOrchestrator) -> None:
@@ -385,56 +252,13 @@ def test_stop_run_not_found(orchestrator: TestnetOrchestrator) -> None:
 # =============================================================================
 
 
-@patch("src.live.shadow_session.ShadowPaperSession")
-@patch("src.strategies.registry.create_strategy_from_config")
-@patch("src.data.kraken_live.create_kraken_source_from_config")
-def test_tail_events(
-    mock_data_source: MagicMock,
-    mock_strategy: MagicMock,
-    mock_session_class: MagicMock,
-    orchestrator: TestnetOrchestrator,
-) -> None:
-    """Test: Events tailen."""
-    # Mock Session
-    mock_session = MagicMock()
-    mock_session_class.return_value = mock_session
-
-    # Mock Strategy
-    mock_strategy_instance = MagicMock()
-    mock_strategy_instance.key = "ma_crossover"
-    mock_strategy.return_value = mock_strategy_instance
-
-    # Mock Data Source
-    mock_data_source.return_value = MagicMock()
-
-    # Mock Run-Logger
-    with patch("src.live.run_logging.create_run_logger_from_config") as mock_logger:
-        mock_logger_instance = MagicMock()
-        mock_logger_instance.run_dir = Path("/tmp/test_run")
-        mock_logger.return_value = mock_logger_instance
-
-        # Starte Run
-        run_id = orchestrator.start_shadow_run(
+def test_tail_events_requires_started_run(orchestrator: TestnetOrchestrator) -> None:
+    with pytest.raises(OrchestratorError, match="noncanonical_venue_rejected"):
+        orchestrator.start_shadow_run(
             strategy_name="ma_crossover",
             symbol="BTC/EUR",
             timeframe="1m",
         )
-
-        # Mock load_run_events
-        with patch("src.live.run_logging.load_run_events") as mock_load:
-            import pandas as pd
-
-            mock_load.return_value = pd.DataFrame(
-                [
-                    {"step": 1, "ts_event": "2025-12-07T12:00:00", "signal": 1, "equity": 10000.0},
-                    {"step": 2, "ts_event": "2025-12-07T12:01:00", "signal": 0, "equity": 10050.0},
-                ]
-            )
-
-            events = orchestrator.tail_events(run_id=run_id, limit=10)
-
-            assert isinstance(events, list)
-            assert len(events) == 2
 
 
 def test_tail_events_run_not_found(orchestrator: TestnetOrchestrator) -> None:

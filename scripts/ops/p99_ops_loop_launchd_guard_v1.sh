@@ -34,23 +34,14 @@ for v in "${deny_vars[@]}"; do
 done
 
 # Block typical exchange secret envs if present (readiness loop should not need them).
-# Adjust list if you have canonical names in repo; this is a safety net.
-secretish=(
-  "KRAKEN_API_KEY" "KRAKEN_API_SECRET"
-  "BINANCE_API_KEY" "BINANCE_API_SECRET"
-  "COINBASE_API_KEY" "COINBASE_API_SECRET"
-  "OKX_API_KEY" "OKX_API_SECRET"
-  "EXCHANGE_API_KEY" "EXCHANGE_API_SECRET"
-  "CCXT_API_KEY" "CCXT_API_SECRET"
-  "API_KEY" "API_SECRET"
-)
-
-for v in "${secretish[@]}"; do
+# Venue-neutral: any *API_KEY / *API_SECRET name is rejected.
+while IFS= read -r v; do
+  [ -z "$v" ] && continue
   if [ "${!v:-}" != "" ]; then
     echo "P99_GUARD_FAIL: secret_env_not_allowed $v is set" >&2
     exit 3
   fi
-done
+done < <(compgen -e | grep -E '(_API_KEY|_API_SECRET|^API_KEY$|^API_SECRET$|^APIKEY$|^APISECRET)$' || true)
 
 # Require OUT_DIR to point into out/ops to keep artifacts local + predictable.
 OUT_DIR_DEFAULT="out/ops/online_readiness_supervisor/$(ls -1 out/ops/online_readiness_supervisor 2>/dev/null | grep '^run_' | LC_ALL=C sort | tail -n 1)"

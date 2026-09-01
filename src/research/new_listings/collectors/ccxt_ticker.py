@@ -21,7 +21,7 @@ def _get_ccxt_config(cfg: Mapping[str, Any]) -> dict[str, Any]:
     sources = cfg.get("sources") or {}
     ccxt_cfg = sources.get("ccxt") or {}
     return {
-        "exchange": str(ccxt_cfg.get("exchange", "kraken")),
+        "exchange": str(ccxt_cfg["exchange"]).strip() if ccxt_cfg.get("exchange") else "",
         "symbols": ccxt_cfg.get("symbols"),  # optional: list of symbols
         "market_type": ccxt_cfg.get("market_type"),  # optional: spot/future etc
         "max_markets": int(ccxt_cfg.get("max_markets", 50)),
@@ -46,10 +46,17 @@ class CcxtTickerCollector:
             import ccxt
         except ModuleNotFoundError as e:
             raise ModuleNotFoundError(
-                "CcxtTickerCollector requires 'ccxt'. Install with: pip install ccxt (or pip install -e '.[kraken]')"
+                "CcxtTickerCollector requires 'ccxt'. Install with: pip install ccxt"
             ) from e
 
         exchange_id = self._ccxt_config["exchange"]
+        if not exchange_id:
+            raise ValueError(
+                "sources.ccxt.exchange is required; no implicit venue default is authorized"
+            )
+        from src.exchange.operative_venue_boundary_v1 import assert_operative_ccxt_venue_id
+
+        exchange_id = assert_operative_ccxt_venue_id(exchange_id)
         max_markets = self._ccxt_config["max_markets"]
         rate_limit_ms = self._ccxt_config["rate_limit_ms"]
         symbols = self._ccxt_config["symbols"]

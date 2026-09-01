@@ -35,8 +35,8 @@ from src.ops.bounded_futures_testnet_contract_v0 import (
     default_bounded_futures_private_readonly_reachability_v0_spec,
     evaluate_bounded_futures_testnet_evidence,
 )
-from src.ops.kraken_futures_demo_credential_presence_contract_v0 import (
-    build_checker_boundary_v0,
+from src.ops.bounded_futures_private_readonly_contract_v0 import (
+    build_non_authorizing_credential_checker_boundary,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -148,7 +148,7 @@ def test_redaction_fails_if_raw_values_emitted_flag_set() -> None:
 
 def test_credential_presence_does_not_authorize_execute() -> None:
     boundary = build_private_readonly_checker_boundary()
-    presence = build_checker_boundary_v0()
+    presence = build_non_authorizing_credential_checker_boundary()
     assert boundary["futures_private_api_authorized"] is False
     assert boundary["next_execute_allowed"] is False
     assert boundary["credential_presence_implies_execute"] is False

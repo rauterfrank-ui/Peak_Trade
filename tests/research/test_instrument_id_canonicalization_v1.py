@@ -64,8 +64,8 @@ def test_inverse_future_explicitly_typed() -> None:
 
 def test_multiple_venues_remain_distinct() -> None:
     okx = canonicalize_instrument_id_v1(_input(venue_id="okx"))
-    binance = canonicalize_instrument_id_v1(_input(venue_id="binance_usdm", venue_symbol="ETHUSDT"))
-    assert okx.instrument_id != binance.instrument_id
+    other = canonicalize_instrument_id_v1(_input(venue_id="other_venue", venue_symbol="ETHUSDT"))
+    assert okx.instrument_id != other.instrument_id
 
 
 def test_rename_with_stable_native_id_remains_identical() -> None:

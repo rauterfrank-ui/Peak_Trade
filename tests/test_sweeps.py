@@ -1372,11 +1372,6 @@ class TestSweepParquetCacheContracts:
         def _forbidden_network(*_args, **_kwargs):
             raise AssertionError("network must not be used in offline sweep cache tests")
 
-        monkeypatch.setattr("src.data.kraken.fetch_ohlcv_df", _forbidden_network)
-        monkeypatch.setattr(
-            "src.data.providers.kraken_ccxt_backend.KrakenCcxtBackend", _forbidden_network
-        )
-
         df = self._sample_df(seed=12)
         loader = self._synthetic_loader(df)
         cache = ParquetCache(cache_dir=str(tmp_path / "cache"))

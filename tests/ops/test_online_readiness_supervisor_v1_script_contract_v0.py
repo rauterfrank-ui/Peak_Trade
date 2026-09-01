@@ -148,7 +148,6 @@ def test_online_readiness_supervisor_v1_contract_does_not_directly_submit_orders
         "market_sell(",
         "private_post_order",
         "futures_create_order",
-        "binance.create_order",
         "exchange.create_order",
         "ccxt.",
     )

@@ -24,7 +24,7 @@ class ExecutionSessionContextV1:
     out_base: str = "out/ops/execution_sessions"
     ts_utc: str | None = None
 
-    adapters: tuple[str, ...] = ("mock", "coinbase", "okx", "bybit")
+    adapters: tuple[str, ...] = ("mock", "okx")
     intents: tuple[str, ...] = ("place_order", "cancel_all")
 
     market: str = "BTC-USD"
@@ -44,17 +44,9 @@ class ExecutionSessionContextV1:
     )
     secret_vars: tuple[str, ...] = (
         "API_KEY",
-        "KRAKEN_API_KEY",
-        "BINANCE_API_KEY",
-        "COINBASE_API_KEY",
         "OKX_API_KEY",
-        "BYBIT_API_KEY",
         "API_SECRET",
-        "KRAKEN_API_SECRET",
-        "BINANCE_API_SECRET",
-        "COINBASE_API_SECRET",
         "OKX_API_SECRET",
-        "BYBIT_API_SECRET",
     )
 
 
@@ -129,6 +121,10 @@ def _guard(ctx: ExecutionSessionContextV1) -> None:
     for k in ctx.secret_vars:
         if os.environ.get(k):
             raise SystemExit(f"P115_GUARD_FAIL: secret_var_set {k}")
+    for env_key in os.environ:
+        uk = env_key.upper()
+        if uk.endswith(("_API_KEY", "_API_SECRET", "_API_PASSPHRASE")):
+            raise SystemExit(f"P115_GUARD_FAIL: secret_var_set {env_key}")
 
 
 def run_execution_session_v1(ctx: ExecutionSessionContextV1) -> dict[str, Any]:

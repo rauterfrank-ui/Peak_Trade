@@ -305,64 +305,12 @@ class TestnetOrchestrator:
         Returns:
             Konfigurierte ShadowPaperSession
         """
-        from ..core.environment import get_environment_from_config
-        from ..data.kraken_live import (
-            ShadowPaperConfig,
-            LiveExchangeConfig,
-            create_kraken_source_from_config,
+        del strategy_name, symbol, timeframe, run_id, run_logger
+        raise RuntimeError(
+            "testnet_orchestrator_noncanonical_venue_rejected: "
+            "implicit venue market-data construction is not authorized; "
+            "canonical public MD remains the existing OKX contracts"
         )
-        from ..strategies.registry import create_strategy_from_config
-        from ..execution.pipeline import ExecutionPipeline
-        from .risk_limits import LiveRiskLimits
-        from .shadow_session import ShadowPaperSession
-
-        # Environment-Config
-        env_config = get_environment_from_config(self._config)
-
-        # Shadow-Config
-        shadow_cfg = ShadowPaperConfig(
-            mode="shadow",
-            symbol=symbol,
-            timeframe=timeframe,
-            position_fraction=0.1,  # Default, kann später konfigurierbar sein
-            warmup_candles=200,
-        )
-
-        # Exchange-Config (keine symbol/timeframe Parameter - diese sind in shadow_cfg)
-        exchange_cfg = LiveExchangeConfig()
-
-        # Data-Source
-        data_source = create_kraken_source_from_config(shadow_cfg, exchange_cfg)
-
-        # Strategie
-        strategy = create_strategy_from_config(strategy_name, self._config)
-
-        # Execution-Pipeline mit Shadow-Executor
-        pipeline = ExecutionPipeline.for_shadow(
-            fee_rate=shadow_cfg.fee_rate,
-            slippage_bps=shadow_cfg.slippage_bps,
-        )
-
-        # Risk-Limits
-        starting_cash = float(self._config.get("general.starting_capital", 10000.0))
-        risk_limits = LiveRiskLimits.from_config(
-            self._config,
-            starting_cash=starting_cash,
-        )
-
-        # Session erstellen
-        session = ShadowPaperSession(
-            env_config=env_config,
-            shadow_cfg=shadow_cfg,
-            exchange_cfg=exchange_cfg,
-            data_source=data_source,
-            strategy=strategy,
-            pipeline=pipeline,
-            risk_limits=risk_limits,
-            run_logger=run_logger,
-        )
-
-        return session
 
     def start_shadow_run(
         self,

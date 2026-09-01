@@ -31,7 +31,7 @@ from tests.utils.dt import normalize_dt_index
 from src.data import (
     DataNormalizer,
     CsvLoader,
-    KrakenCsvLoader,
+    UnixSecondsOhlcCsvLoader,
     ParquetCache,
     REQUIRED_OHLCV_COLUMNS,
     resample_ohlcv,
@@ -125,7 +125,7 @@ class TestPipelineFetchCacheNormalize:
         cache = ParquetCache(cache_dir=str(tmp_path / "cache"))
 
         # STEP 1: Load Kraken CSV
-        loader = KrakenCsvLoader()
+        loader = UnixSecondsOhlcCsvLoader()
         raw_df = loader.load(str(raw_kraken_csv))
 
         # Verify Raw-Daten

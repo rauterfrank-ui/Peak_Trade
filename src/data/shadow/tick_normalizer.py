@@ -1,7 +1,7 @@
 """
-Tick Normalizer — Kraken WebSocket Trade Message Parser.
+Tick Normalizer — list-shaped WebSocket trade message parser.
 
-Parsed Kraken WS Trade-Messages zu standardisierten Tick-Objekten.
+Parst listenförmige WS-Trade-Messages zu standardisierten Tick-Objekten.
 """
 
 from __future__ import annotations
@@ -14,11 +14,11 @@ from src.data.shadow.models import Tick
 logger = logging.getLogger(__name__)
 
 
-def parse_kraken_trade_message(msg: Any) -> list[Tick]:
+def parse_list_trade_message(msg: Any) -> list[Tick]:
     """
-    Parsed eine Kraken WS Trade Message.
+    Parst eine listenförmige WS Trade Message.
 
-    Kraken Format:
+    List format:
     [
         channelID,
         [[price, volume, time, side, orderType, misc], ...],
@@ -76,7 +76,7 @@ def parse_kraken_trade_message(msg: Any) -> list[Tick]:
                     price=price,
                     volume=volume,
                     symbol=symbol,
-                    source="kraken_ws",
+                    source="ws_trade",
                 )
                 ticks.append(tick)
 
@@ -87,7 +87,7 @@ def parse_kraken_trade_message(msg: Any) -> list[Tick]:
         return ticks
 
     except Exception as e:
-        logger.warning(f"Failed to parse Kraken trade message: {msg} — {e}")
+        logger.warning(f"Failed to parse list trade message: {msg} — {e}")
         return []
 
 
@@ -96,7 +96,7 @@ def normalize_ticks_from_messages(messages: list[Any]) -> list[Tick]:
     Parsed Liste von Messages, flattet Ticks und sortiert.
 
     Args:
-        messages: Liste von Kraken WS Messages
+        messages: Liste von WS Messages
 
     Returns:
         List[Tick]: Sortiert nach ts_ms, filtered (price/volume > 0)
@@ -104,7 +104,7 @@ def normalize_ticks_from_messages(messages: list[Any]) -> list[Tick]:
     all_ticks: list[Tick] = []
 
     for msg in messages:
-        ticks = parse_kraken_trade_message(msg)
+        ticks = parse_list_trade_message(msg)
         all_ticks.extend(ticks)
 
     # Filter invalid (sollte schon in parse passiert sein, aber doppelt sicher)

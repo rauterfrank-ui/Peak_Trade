@@ -118,12 +118,12 @@ def load_signal_df(path: Path | str) -> pd.DataFrame:
 
 def _print_ohlcv_load_observability(meta: Dict[str, Any], *, run_id: str | None = None) -> None:
     """Stdout: J1-Observability für UTC-/Fenster-Debugging (Evaluate-Pfad)."""
-    pag = meta.get("kraken_pagination_used")
+    pag = meta.get("pagination_used")
     if pag is None:
         pag_s = "n/a (dummy)"
     else:
         pag_s = "ja" if pag else "nein"
-    sf = meta.get("kraken_bars_shortfall")
+    sf = meta.get("bars_shortfall")
     if sf is None:
         sf_s = "n/a (dummy)"
     else:

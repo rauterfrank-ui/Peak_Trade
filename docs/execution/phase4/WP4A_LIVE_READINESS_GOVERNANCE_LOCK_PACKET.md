@@ -42,7 +42,7 @@ Dieses Dokument definiert den **Governance-gestützten Prozess** für den Überg
 | Begriff | Definition |
 |---------|------------|
 | **Shadow Mode** | Execution-Pipeline läuft gegen Live-Daten, Orders werden simuliert (nicht gesendet) |
-| **Testnet** | Execution gegen Testnet-API (z.B. Binance Testnet); echte API-Calls, aber kein echtes Geld |
+| **Testnet** | Execution gegen Testnet-API; echte API-Calls, aber kein echtes Geld |
 | **LIVE_BLOCKED** | System ist technisch ready, aber durch Governance-Gates blockiert |
 | **Manual-Only** | Keine automatisierten Aktivierungspfade; jede Stufe erfordert manuelles Sign-off |
 | **Governance-Lock** | Explizite Kontrolle durch Governance-Rolle; Unlock nur nach formaler Review |
@@ -581,10 +581,10 @@ rg "enable_live_trading.*true|live_mode.*true" docs/ && echo "FAIL" || echo "PAS
 
 ```bash
 # Live-Track Report (read-only)
-python3 scripts/reporting/render_live_track_report.py --session <session_id>
+python3 scripts/reporting/render_live_track_report.py --session <session_id> <!-- pt:ref-target-ignore -->
 
 # Recon-Diffs Report
-python3 scripts/execution/report_recon_diffs.py --date <YYYY-MM-DD>
+python3 scripts/execution/report_recon_diffs.py --date <YYYY-MM-DD> <!-- pt:ref-target-ignore -->
 
 # Telemetry Snapshot
 tail -n 100 logs/telemetry_health_snapshots.jsonl

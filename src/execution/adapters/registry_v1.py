@@ -7,8 +7,6 @@ from typing import Dict, List, Optional, Type
 
 from src.execution.adapters.base_v1 import AdapterCapabilitiesV1, ExecutionAdapterV1
 from src.execution.adapters.mock_v1 import MockExecutionAdapterV1
-from src.execution.adapters.providers.bybit_v1 import BybitExecutionAdapterV1
-from src.execution.adapters.providers.coinbase_v1 import CoinbaseExecutionAdapterV1
 from src.execution.adapters.providers.okx_v1 import OKXExecutionAdapterV1
 
 
@@ -24,17 +22,7 @@ def build_adapter_registry_v1() -> Dict[str, AdapterRegistryEntryV1]:
     entries: List[AdapterRegistryEntryV1] = [
         AdapterRegistryEntryV1(name="mock", adapter_cls=MockExecutionAdapterV1, markets=["spot"]),
         AdapterRegistryEntryV1(
-            name="coinbase",
-            adapter_cls=CoinbaseExecutionAdapterV1,
-            markets=["spot"],
-        ),
-        AdapterRegistryEntryV1(
             name="okx", adapter_cls=OKXExecutionAdapterV1, markets=["spot", "perp"]
-        ),
-        AdapterRegistryEntryV1(
-            name="bybit",
-            adapter_cls=BybitExecutionAdapterV1,
-            markets=["spot", "perp"],
         ),
     ]
     return {e.name: e for e in entries}

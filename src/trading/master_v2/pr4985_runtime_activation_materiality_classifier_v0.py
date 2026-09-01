@@ -57,7 +57,6 @@ GUARDED_INFRASTRUCTURE_PATH_PREFIXES: tuple[str, ...] = (
     "src/exchange/dummy_client.py",
     "src/exchange/base.py",
     "src/exchange/__init__.py",
-    "src/exchange/kraken_live.py",
     "src/execution/broker/adapter.py",
     "src/live/safety.py",
     "src/orders/exchange.py",

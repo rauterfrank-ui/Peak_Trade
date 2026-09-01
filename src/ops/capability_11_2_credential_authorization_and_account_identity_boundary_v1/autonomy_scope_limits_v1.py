@@ -91,7 +91,7 @@ def prove_autonomy_scope_limits_v1(binding: AuthorizationBindingV1) -> dict[str,
 
     venue_blocked = False
     try:
-        refuse_venue_enablement_v1(binding, new_venue="BINANCE")
+        refuse_venue_enablement_v1(binding, new_venue="UNDECLARED_VENUE")
     except AutonomyScopeViolationError:
         venue_blocked = True
 

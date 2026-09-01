@@ -1027,7 +1027,6 @@ Nur dann:
 **Exchange-APIs:**
 - [CCXT Documentation](https://docs.ccxt.com/)
 - [Kraken API Docs](https://docs.kraken.com/rest/)
-- [Binance API Docs](https://binance-docs.github.io/apidocs/)
 
 **Testing & Quality:**
 - [Pytest Documentation](https://docs.pytest.org/)

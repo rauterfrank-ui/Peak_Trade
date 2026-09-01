@@ -89,7 +89,7 @@ require_micro_metrics = false
 # -----------------------------------------------------------------------------
 # PROFILE 3: CRYPTO MODERATE
 # -----------------------------------------------------------------------------
-# Use case: Mainstream crypto (BTC, ETH, major pairs on Binance/Coinbase)
+# Use case: Mainstream crypto (BTC, ETH, major pairs)
 # Characteristics: Wider spreads expected, higher slippage tolerance
 # Risk: May miss some adverse conditions unique to crypto volatility
 

@@ -393,7 +393,7 @@ def run_data_qc_only(args) -> int:
 
     # Lade QC-Funktionen
     try:
-        from src.data.kraken_cache_loader import (
+        from src.data.market_data_cache_loader import (
             check_data_health_only,
             get_real_market_smokes_config,
             list_available_cache_files,

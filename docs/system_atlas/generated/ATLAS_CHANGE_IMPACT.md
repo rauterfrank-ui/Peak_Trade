@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=6
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,7 +40,12 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `SCRIPT:check_system_atlas_impact` |
+| `VENUE:okx` |
+| `VENUE:okx_eea` |
+| `REGISTRY:execution_adapters_v1` |
+| `RUNTIME_COMPONENT:operative_venue_boundary_v1` |
+| `ADAPTER:kraken_live_client` |
+| `OKX_FEATURE:execution_adapter_mocks_only` |
 
 ## CHANGED_RELATIONS
 
@@ -70,7 +75,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| _(none)_ |
+| `OKX_FEATURE:execution_adapter_mocks_only` |
 
 ## AFFECTED_SAFETY_SURFACES
 

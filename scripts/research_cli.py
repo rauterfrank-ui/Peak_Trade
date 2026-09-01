@@ -1111,15 +1111,8 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
     else:
         # Versuche echte Daten zu laden
         try:
-            from src.data.kraken import fetch_ohlcv_df
-
-            output.progress(logger, f"Lade Marktdaten für {args.symbol} ({args.timeframe})")
-            df = fetch_ohlcv_df(
-                symbol=args.symbol,
-                timeframe=args.timeframe,
-                limit=720,
-                use_cache=True,
-            )
+            output.progress(logger, "Venue OHLCV is not a current operative path; using dummy data")
+            raise RuntimeError("legacy_venue_ohlcv_removed")
 
             if df.empty:
                 logger.warning("Keine Marktdaten gefunden, verwende Dummy-Daten")
@@ -1499,15 +1492,10 @@ def run_experiment(args: argparse.Namespace) -> int:
     else:
         # Versuche echte Daten zu laden
         try:
-            from src.data.kraken import fetch_ohlcv_df
-
-            output.progress(logger, f"  Lade Marktdaten für {symbol} ({timeframe})")
-            df = fetch_ohlcv_df(
-                symbol=symbol,
-                timeframe=timeframe,
-                limit=2000,
-                use_cache=True,
+            output.progress(
+                logger, "  Venue OHLCV is not a current operative path; using dummy data"
             )
+            raise RuntimeError("legacy_venue_ohlcv_removed")
 
             if df.empty:
                 logger.warning("  Keine Marktdaten gefunden, verwende Dummy-Daten")

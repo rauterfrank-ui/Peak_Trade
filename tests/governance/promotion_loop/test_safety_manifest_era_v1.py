@@ -71,7 +71,7 @@ def test_filter_rejects_candidates_not_eligible_for_live() -> None:
 
 def test_blacklist_target_adds_p0_flag() -> None:
     config = SafetyConfig(blacklist_targets=["live.api_keys"])
-    candidate = _candidate(target="live.api_keys.binance")
+    candidate = _candidate(target="live.api_keys.foreign_venue")
     violations = check_blacklist(candidate, config)
     assert violations
     apply_safety_filters(candidate, config, mode="manual_only")

@@ -81,8 +81,6 @@ SENSITIVE_KEY_NAMES: frozenset[str] = frozenset(
         "okx_passphrase",
         "kraken_api_key",
         "kraken_api_secret",
-        "binance_api_key",
-        "binance_api_secret",
     }
 )
 

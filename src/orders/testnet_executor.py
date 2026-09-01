@@ -4,11 +4,11 @@ Peak_Trade: Testnet Exchange Order Executor (Phase 35)
 ======================================================
 
 Implementiert einen Order-Executor fuer Testnet-/Demo-Trading.
-Dieser Executor sendet Orders an den KrakenTestnetClient und ist
-streng an Environment & Safety gebunden.
+Dieser Legacy-Executor ist kein aktueller operativer Venue-Pfad
+und fail-closed bei Konstruktion.
 
 Features:
-- Integration mit KrakenTestnetClient
+- Integration mit einem Testnet-Client (aktuell nicht operativ)
 - Safety-Guards (nur Testnet-Environment erlaubt)
 - LiveRiskLimits-Integration
 - Mapping zwischen OrderRequest und Exchange-API
@@ -49,7 +49,6 @@ from src.live.safety import (
 )
 
 if TYPE_CHECKING:
-    from src.exchange.kraken_testnet import KrakenTestnetClient
     from src.live.risk_limits import LiveRiskLimits, LiveRiskCheckResult
     from src.live.orders import LiveOrderRequest
 
@@ -142,7 +141,7 @@ class TestnetExchangeOrderExecutor:
     1. Prueft das Environment (MUSS TradingEnvironment.TESTNET sein)
     2. Prueft die Safety-Guards (testnet_dry_run muss False sein fuer echte Orders)
     3. Prueft LiveRiskLimits vor jeder Order
-    4. Sendet Orders an den KrakenTestnetClient
+    4. Legacy venue submit is not a current operative path
     5. Mappt Exchange-Responses auf OrderExecutionResult
 
     Sicherheitsmerkmale:
@@ -156,14 +155,14 @@ class TestnetExchangeOrderExecutor:
     Example:
         >>> from src.core.environment import EnvironmentConfig, TradingEnvironment
         >>> from src.live.safety import SafetyGuard
-        >>> from src.exchange.kraken_testnet import KrakenTestnetClient, KrakenTestnetConfig
+        >>> from src.live.safety import SafetyGuard
         >>>
         >>> env_config = EnvironmentConfig(
         ...     environment=TradingEnvironment.TESTNET,
         ...     testnet_dry_run=False,  # Echte Testnet-Orders
         ... )
         >>> safety_guard = SafetyGuard(env_config=env_config)
-        >>> client = KrakenTestnetClient(KrakenTestnetConfig())
+        >>> client = object()  # not a venue client; constructor rejects
         >>>
         >>> executor = TestnetExchangeOrderExecutor(
         ...     exchange_client=client,
@@ -175,24 +174,14 @@ class TestnetExchangeOrderExecutor:
 
     def __init__(
         self,
-        exchange_client: "KrakenTestnetClient",
+        exchange_client: Any,
         safety_guard: SafetyGuard,
         risk_limits: Optional["LiveRiskLimits"] = None,
         env_config: Optional[EnvironmentConfig] = None,
     ) -> None:
-        """
-        Initialisiert den TestnetExchangeOrderExecutor.
+        from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
 
-        Args:
-            exchange_client: KrakenTestnetClient fuer API-Calls
-            safety_guard: SafetyGuard fuer Safety-Pruefungen
-            risk_limits: Optionale LiveRiskLimits fuer Risk-Pruefungen
-            env_config: Optionale EnvironmentConfig (sonst aus safety_guard)
-
-        Raises:
-            EnvironmentNotTestnetError: Wenn Environment nicht TESTNET ist
-        """
-        self._client = exchange_client
+        reject_noncanonical_operative_surface(surface="TestnetExchangeOrderExecutor")
         self._safety_guard = safety_guard
         self._risk_limits = risk_limits
         self._env_config = env_config or safety_guard.env_config
@@ -613,15 +602,18 @@ class TestnetExchangeOrderExecutor:
 
 def create_testnet_executor_from_config(
     cfg: "PeakConfig",
-    exchange_client: Optional["KrakenTestnetClient"] = None,
+    exchange_client: Optional[Any] = None,
     risk_limits: Optional["LiveRiskLimits"] = None,
 ) -> TestnetExchangeOrderExecutor:
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+    reject_noncanonical_operative_surface(surface="create_testnet_executor_from_config")
     """
     Factory-Funktion fuer TestnetExchangeOrderExecutor aus PeakConfig.
 
     Args:
         cfg: PeakConfig-Instanz
-        exchange_client: Optionaler KrakenTestnetClient (sonst neu erstellt)
+        exchange_client: Optionaler Client (aktuell nicht operativ)
         risk_limits: Optionale LiveRiskLimits (sonst aus Config)
 
     Returns:
@@ -639,10 +631,7 @@ def create_testnet_executor_from_config(
     from src.core.environment import get_environment_from_config
     from src.live.safety import SafetyGuard
     from src.live.risk_limits import LiveRiskLimits
-    from src.exchange.kraken_testnet import (
-        KrakenTestnetClient,
-        create_kraken_testnet_client_from_config,
-    )
+    from src.live.risk_limits import LiveRiskLimits
 
     # Environment-Config laden
     env_config = get_environment_from_config(cfg)
@@ -652,7 +641,7 @@ def create_testnet_executor_from_config(
 
     # Exchange-Client erstellen falls nicht uebergeben
     if exchange_client is None:
-        exchange_client = create_kraken_testnet_client_from_config(cfg)
+        reject_noncanonical_operative_surface(surface="create_testnet_executor_from_config.client")
 
     # Risk-Limits laden falls nicht uebergeben
     if risk_limits is None:

@@ -32,7 +32,7 @@ External research anchors:
 
 - Futures and virtual-currency derivatives are leveraged products; leverage amplifies gains and losses, and small price moves can cause large losses relative to margin. CFTC and futures-risk disclosures explicitly warn about leveraged virtual-currency futures risk.
 - Futures exchanges expose fields and controls not present in spot: instrument contract metadata, tick/lot sizes, mark/index prices, funding, margin modes, leverage settings, position/ADL information, and futures order flags.
-- Kraken and Binance futures APIs document distinct derivatives endpoints for instruments, leverage/margin settings, mark price/funding rate, and futures order placement.
+- Kraken futures APIs document distinct derivatives endpoints for instruments, leverage/margin settings, mark price/funding rate, and futures order placement.
 - CCXT unifies some derivatives concepts, but exchange-specific params and flags remain critical.
 
 ---
@@ -69,7 +69,7 @@ A futures/perpetual instrument model must include at least:
 | Field | Why it matters |
 |---|---|
 | `instrument_type` | spot, margin, future, perpetual/swap, option |
-| `exchange` | Binance, Kraken Futures, CME, OKX, Bybit, etc. |
+| `exchange` | Kraken Futures, CME, OKX, etc. |
 | `symbol_native` | exchange-native instrument id |
 | `symbol_unified` | canonical internal symbol |
 | `base_asset` | e.g. BTC |
@@ -110,7 +110,7 @@ Futures dashboards and backtests should distinguish:
 - Contract metadata freshness.
 - Cache provenance.
 
-For perpetuals, mark/index/funding data are not optional for realistic risk display. Binance documents a futures endpoint for mark price and funding rate (`&#47;fapi&#47;v1&#47;premiumIndex`), and Kraken Futures exposes futures market-data endpoints such as tickers and instruments.
+For perpetuals, mark/index/funding data are not optional for realistic risk display. Kraken Futures exposes futures market-data endpoints such as tickers and instruments.
 
 ### 2.3 Margin, Leverage, and Liquidation
 
@@ -169,7 +169,7 @@ Futures order model must explicitly support or reject:
 | notional cap | risk layer |
 | margin/leverage preflight | before order construction |
 
-Binance futures order docs expose futures-specific parameters such as position side, reduce-only, close-position, stop price, activation price, callback rate, and working type. Kraken Futures order docs expose futures contract order placement and order types such as limit, stop, take profit, and IOC.
+Kraken Futures order docs expose futures contract order placement and order types such as limit, stop, take profit, and IOC.
 
 ### 2.6 Exchange Adapter and Testnet
 
@@ -547,10 +547,6 @@ These external sources informed the runbook:
 
 - CFTC virtual currency risk advisory: https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/understand_risks_of_virtual_currency.html
 - CME/FIA futures risk disclosure: https://www.cmegroup.com/fcm/files/fia-risk-disclosure.pdf
-- Binance USDⓈ-M Futures New Order API: https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api
-- Binance Futures Mark Price and Funding Rate API: https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Mark-Price
-- Binance Futures Exchange Information API: https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Exchange-Information
-- Binance Coin-M Futures common definitions / lot-size filters: https://developers.binance.com/docs/derivatives/coin-margined-futures/common-definition
 - Kraken Futures instruments API: https://docs.kraken.com/api/docs/futures-api/trading/get-instruments
 - Kraken Futures send-order API: https://docs.kraken.com/api/docs/futures-api/trading/send-order/
 - Kraken leverage settings API: https://docs.kraken.com/api/docs/futures-api/trading/set-leverage-setting

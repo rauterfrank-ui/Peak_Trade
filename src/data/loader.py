@@ -67,39 +67,18 @@ class CsvLoader:
             raise ValueError(f"Fehler beim Laden der CSV-Datei: {exc}") from exc
 
 
-class KrakenCsvLoader(CsvLoader):
-    """
-    Spezialisierter Loader für Kraken OHLC CSV-Exporte.
-
-    Kraken-Format (typisch):
-    - Spalten: time, open, high, low, close, vwap, volume, count
-    - time: Unix-Timestamp (Sekunden)
-    """
+class UnixSecondsOhlcCsvLoader(CsvLoader):
+    """CSV loader for OHLC exports whose ``time`` column is unix seconds."""
 
     def __init__(self) -> None:
-        """Initialisiert mit Kraken-spezifischen Settings."""
         super().__init__(delimiter=",", decimal=".", parse_dates=False)
 
     def load(self, filepath: str) -> pd.DataFrame:
-        """
-        Lädt Kraken CSV.
-
-        Args:
-            filepath: Pfad zur Kraken CSV
-
-        Returns:
-            DataFrame mit DatetimeIndex (UTC) und Kraken-Spalten
-
-        Raises:
-            FileNotFoundError: Wenn Datei nicht existiert
-            ValueError: Wenn CSV nicht lesbar ist oder 'time'-Spalte fehlt
-        """
         df = super().load(filepath)
 
         if "time" not in df.columns:
             raise ValueError(
-                "Kraken CSV muss eine 'time'-Spalte enthalten. "
-                f"Gefundene Spalten: {list(df.columns)}"
+                f"OHLC CSV must contain a 'time' column. Found columns: {list(df.columns)}"
             )
 
         df.index = pd.to_datetime(df["time"], unit="s", utc=True)

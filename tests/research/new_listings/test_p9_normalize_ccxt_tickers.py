@@ -104,7 +104,7 @@ def test_p9_normalize_ccxt_snapshot_volume_usd(tmp_path: Path) -> None:
                     "venue_type": "ccxt",
                     "observed_at": "2026-02-09T13:00:00Z",
                     "payload": {
-                        "exchange": "binance",
+                        "exchange": "other_venue",
                         "symbol": "ETH/USDT",
                         "observed_at": "2026-02-09T13:00:00Z",
                         "ticker": {"last": 3000.0, "volume": 10.0},
@@ -127,12 +127,12 @@ def test_p9_normalize_ccxt_snapshot_volume_usd(tmp_path: Path) -> None:
 
     con = sqlite3.connect(str(db))
     row = con.execute(
-        "SELECT asset_id, symbol FROM assets WHERE asset_id = 'cex:binance:ETH'"
+        "SELECT asset_id, symbol FROM assets WHERE asset_id = 'cex:other_venue:ETH'"
     ).fetchone()
     assert row is not None
 
     snap = con.execute(
-        "SELECT price, volume_24h_usd FROM market_snapshots WHERE asset_id = 'cex:binance:ETH'"
+        "SELECT price, volume_24h_usd FROM market_snapshots WHERE asset_id = 'cex:other_venue:ETH'"
     ).fetchone()
     assert snap is not None
     assert snap[0] == 3000.0

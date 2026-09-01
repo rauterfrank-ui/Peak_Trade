@@ -18,7 +18,7 @@ CANONICAL_ORDER_INTENT_OWNER_MV2_SCOPE=src.governance.canonical_order_intent_v1
 CANONICAL_EXECUTION_AUTHORITY_OWNER=UNRESOLVED
 PRODUCTIVE_ORDER_INTENT_DECISION_OWNER_COUNT=3
 PRODUCTIVE_BYPASS_PATH_COUNT=4
-DIRECT_SUBMISSION_BYPASS_COUNT=5
+DIRECT_SUBMISSION_BYPASS_COUNT=4
 DIRECT_SUBMISSION_SURFACE_CONTRACT_V1=true
 DIRECT_SUBMISSION_SURFACE_CONTRACT_SEMANTICS=INVENTORY_ONLY_NOT_EXECUTION_PERMISSION
 DIRECT_SUBMISSION_SURFACE_CONTRACT_IS_NOT_EXECUTION_ALLOWLIST=true
@@ -64,7 +64,7 @@ Repo-wide forensic inventory of order-intent producers, transformers, routers, a
 
 **Why execution authority is UNRESOLVED:** Submission unlocks are split across `go_no_go`, `SafetyGuard`, canary/transport gates, and executors. The canonical COI path never grants submission (`execution_eligible=false`, `submission_authorized=false`, plan-only boundary).
 
-**Why `authority_leak_detected=false`:** Productive live entrypoints remain deauthorized (`BOUND_NOT_ACTIVATED`, legacy entrypoint guard, canary deny-all, live_order_execution locked). Latent library capability (`KrakenLiveClient`) without an open productive entrypoint is **not** counted as a leak.
+**Why `authority_leak_detected=false`:** Productive live entrypoints remain deauthorized (`BOUND_NOT_ACTIVATED`, legacy entrypoint guard, canary deny-all, live_order_execution locked). The historical `KrakenLiveClient` library path is **ABSENT from current tree** and is **not** counted as a leak.
 
 ## 2. Owner / Path Matrix
 
@@ -82,7 +82,7 @@ Repo-wide forensic inventory of order-intent producers, transformers, routers, a
 | Router `OrderIntentV1` path | `src/execution/router/router_v1.py` | PRODUCTIVE_BYPASS | REACHABLE_PRODUCTIVE | Yes | Mocks |
 | `ExchangeOrderExecutor` | `src/orders/exchange.py` | PRODUCTIVE_BYPASS | REACHABLE_PRODUCTIVE | No | Yes if client set |
 | Unguarded shadow script | `scripts/run_shadow_execution.py` | PRODUCTIVE_BYPASS | REACHABLE_PRODUCTIVE | Yes | Shadow/paper |
-| `KrakenLiveClient` | `src/exchange/kraken_live.py` | PRODUCTIVE_BYPASS | REACHABLE_PRODUCTIVE (library) | No | Yes (API) |
+| Historical `KrakenLiveClient` | `src&#47;exchange&#47;kraken_live.py` | ABSENT from current tree | NOT_REACHABLE | No | No | <!-- pt:ref-target-ignore -->
 | `LiveSessionRunner` | `src/execution/live_session.py` | PRODUCTIVE_BYPASS | UNREACHABLE | Indirect | Guarded |
 | `execution_simple` | `src/execution_simple/pipeline.py` | PRODUCTIVE_BYPASS | UNREACHABLE | Yes | Guarded |
 | Legacy entrypoint guard | `src/trading/master_v2/legacy_runtime_entrypoint_guard_v0.py` | REPORTING_OR_OBSERVABILITY | REACHABLE_PRODUCTIVE | No | Blocks |
@@ -104,7 +104,7 @@ CRS (capital_risk_sizing_v1)
 LEGACY PARALLEL (no COI):
   signals → ExecutionPipeline.OrderIntent / execute_from_signals / submit_order
          → Paper|Shadow|Testnet|ExchangeOrderExecutor[(client)]
-              → [bounded_pilot] KrakenLiveClient   ← entrypoint currently guarded
+              → [historical] KrakenLiveClient   ← ABSENT from current tree
 
 ADAPTER PARALLEL:
   OrderIntentV1 → Router/Adapters (mocks; shadow/paper modes)
@@ -162,13 +162,14 @@ Per-owner freeze pins (inventory-backed IDs / paths / symbols only):
 3. `orders` + `ExchangeOrderExecutor` / `OrderRequest` path
 4. Unguarded shadow/paper scripts
 
-### Direct submission bypasses (5)
+### Direct submission bypasses (4 current-tree)
 
 1. `ExecutionPipeline.submit_order`
 2. `ExchangeOrderExecutor`
-3. `KrakenLiveClient.place_order`
-4. `ExecutionRouterV1.place_order` (mocks)
-5. `execution_pipeline.ExecutionPipeline.execute` adapter submit
+3. `ExecutionRouterV1.place_order` (mocks)
+4. `execution_pipeline.ExecutionPipeline.execute` adapter submit
+
+Historically a fifth surface (`KrakenLiveClient.place_order`) was inventoried; that module is **ABSENT from current tree** and must not be restored as a second venue.
 
 ### Direct-submission surface static contract (drift guard only)
 
@@ -176,11 +177,11 @@ Per-owner freeze pins (inventory-backed IDs / paths / symbols only):
 DIRECT_SUBMISSION_SURFACE_CONTRACT_V1=true
 DIRECT_SUBMISSION_SURFACE_CONTRACT_SEMANTICS=INVENTORY_ONLY_NOT_EXECUTION_PERMISSION
 DIRECT_SUBMISSION_SURFACE_CONTRACT_IS_NOT_EXECUTION_ALLOWLIST=true
-EXPECTED_SURFACE_COUNT=5
+EXPECTED_SURFACE_COUNT=4
 DRIFT_POLICY=addition/removal/rename/duplicate/unresolved_symbol → FAIL
 ```
 
-The five inventoried direct-submission surfaces are **frozen as a static inventory/drift contract** so that addition, removal, rename, duplicate IDs, or unresolved symbols fail closed in tests.
+The four inventoried current-tree direct-submission surfaces are **frozen as a static inventory/drift contract** so that addition, removal, rename, duplicate IDs, or unresolved symbols fail closed in tests.
 
 This frozen set is NOT an execution allowlist and does not:
 - authorize, enable, or activate any surface
@@ -191,7 +192,7 @@ This frozen set is NOT an execution allowlist and does not:
 
 `REACHABLE_PRODUCTIVE` and `can_submit_orders=true` describe **technical capability / reachability only**, never authorization.
 
-`KrakenLiveClient.place_order` (`submission.kraken_live_client`) remains a **legacy direct-submission bypass** for governance visibility:
+The historical `KrakenLiveClient.place_order` surface is **ABSENT from current tree** (`src&#47;exchange&#47;kraken_live.py` is not a current inventory pin): <!-- pt:ref-target-ignore -->
 - `canonical=false`
 - `authorized=false`
 - `enabled=false`
@@ -212,7 +213,7 @@ DECOMMISSION_STATUS=NOT_STARTED
 INVENTORY_ONLY=true
 ```
 
-Do **not** delete or rewire legacy surfaces in this slice. Decommission requires a separate Operator-GO PR after review.
+Do **not** delete or rewire remaining current-tree legacy surfaces in this inventory slice. Full P2 decommission still requires a separate Operator-GO. The historical `KrakenLiveClient` path is **ABSENT from current tree** and must not be restored as a second venue.
 
 ## 6. Safety invariants (unchanged)
 
@@ -229,7 +230,7 @@ Do **not** delete or rewire legacy surfaces in this slice. Decommission requires
 2. Force all `OrderIntentV1` producers through COI transform only?
 3. Hard-deauthorize unguarded scripts / exchange executor without semantic change?
 4. Select a single execution-authority owner under Operator-GO
-5. Keep `KrakenLiveClient` library-only until canonical submission exists
+5. Historical `KrakenLiveClient` remains ABSENT from current tree (do not restore as a second venue)
 
 ## 8. Next plan item
 

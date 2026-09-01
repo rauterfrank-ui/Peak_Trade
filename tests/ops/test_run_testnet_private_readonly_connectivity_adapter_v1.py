@@ -13,6 +13,7 @@ from pathlib import Path
 
 import pytest
 
+from src.exchange.operative_venue_boundary_v1 import NoncanonicalVenueRejectedError
 from src.ops.bounded_futures_private_readonly_contract_v0 import (
     FUTURES_PRIVATE_READONLY_GET_ENDPOINTS,
     PrivateReadonlyHttpRequest,
@@ -37,8 +38,8 @@ ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archiv
 
 _FAKE_SECRET_B64 = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
 _FAKE_CRED_ENV = {
-    "KRAKEN_FUTURES_DEMO_API_KEY": "demo-key-not-real",
-    "KRAKEN_FUTURES_DEMO_API_SECRET": _FAKE_SECRET_B64,
+    "FOREIGN_VENUE_API_KEY": "demo-key-not-real",
+    "FOREIGN_VENUE_API_SECRET": _FAKE_SECRET_B64,
 }
 
 
@@ -164,11 +165,11 @@ def test_plan_forbids_staging_script_in_commands(tmp_path: Path) -> None:
     assert "run_testnet_session.py" not in joined
 
 
-def test_plan_references_credential_presence_script(tmp_path: Path) -> None:
+def test_plan_does_not_reference_removed_legacy_credential_script(tmp_path: Path) -> None:
     plan = _plan_dict(_staging(tmp_path))
-    assert "check_kraken_futures_demo_credentials_presence_readonly_v0.py" in json.dumps(
-        plan["commands"]
-    )
+    dumped = json.dumps(plan)
+    assert "check_kraken_futures_demo_credentials_presence_readonly_v0.py" not in dumped
+    assert plan.get("credential_presence_script") in ("", None)
 
 
 def test_execute_without_approval_record_fails(tmp_path: Path) -> None:
@@ -243,90 +244,49 @@ def test_execute_blocks_forbidden_env(tmp_path: Path) -> None:
     assert rc != 0
 
 
-def test_fake_fetcher_hits_allowlisted_endpoints_only(tmp_path: Path) -> None:
+def test_fake_fetcher_execute_rejected_as_noncanonical_venue(tmp_path: Path) -> None:
     fetcher = _FakePrivateFetcher()
     mod = _load_adapter()
     staging = _staging(tmp_path)
     archive = _durable_archive(tmp_path)
-
-    def _review_runner(staging_root: Path, review_out: Path) -> tuple[int, dict]:
-        review_mod = _load_review()
-        result = review_mod.review_evidence(staging_root)
-        review_out.parent.mkdir(parents=True, exist_ok=True)
-        review_out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
-        return 0 if result["verdict"] == review_mod.PASS else 1, result
-
-    rc = mod.main(
-        _base_argv(staging, archive)
-        + [
-            "--execute",
-            "--approval-record",
-            str(APPROVAL_FIXTURE),
-            "--no-strict-repo-clean",
-        ],
-        private_fetcher=fetcher,
-        credential_presence_checker=_mock_credential_checker,
-        repo_clean_checker=lambda _root: (True, ""),
-        review_runner=_review_runner,
-        environ=_FAKE_CRED_ENV,
-    )
-    assert rc == 0
-    assert len(fetcher.requests) == 3
-    called_paths = {req.url.split("/derivatives/api/v3")[-1] for req in fetcher.requests}
-    assert called_paths == {
-        "/accounts",
-        "/openpositions",
-        "/openorders",
-    }
-    for req in fetcher.requests:
-        assert req.method == "GET"
-        assert "sendorder" not in req.url.lower()
+    with pytest.raises(NoncanonicalVenueRejectedError):
+        mod.main(
+            _base_argv(staging, archive)
+            + [
+                "--execute",
+                "--approval-record",
+                str(APPROVAL_FIXTURE),
+                "--no-strict-repo-clean",
+            ],
+            private_fetcher=fetcher,
+            credential_presence_checker=_mock_credential_checker,
+            repo_clean_checker=lambda _root: (True, ""),
+            environ=_FAKE_CRED_ENV,
+        )
+    assert fetcher.requests == []
 
 
-def test_execute_with_fake_fetcher_produces_durable_manifest(tmp_path: Path) -> None:
+def test_execute_with_fake_fetcher_rejected_as_noncanonical_venue(tmp_path: Path) -> None:
     mod = _load_adapter()
     staging = _staging(tmp_path)
     archive = _durable_archive(tmp_path)
-
-    def _review_runner(staging_root: Path, review_out: Path) -> tuple[int, dict]:
-        review_mod = _load_review()
-        result = review_mod.review_evidence(staging_root)
-        review_out.parent.mkdir(parents=True, exist_ok=True)
-        review_out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
-        return 0 if result["verdict"] == review_mod.PASS else 1, result
-
-    rc = mod.main(
-        _base_argv(staging, archive)
-        + [
-            "--execute",
-            "--approval-record",
-            str(APPROVAL_FIXTURE),
-            "--no-strict-repo-clean",
-        ],
-        private_fetcher=_FakePrivateFetcher(),
-        credential_presence_checker=_mock_credential_checker,
-        repo_clean_checker=lambda _root: (True, ""),
-        review_runner=_review_runner,
-        environ=_FAKE_CRED_ENV,
+    with pytest.raises(NoncanonicalVenueRejectedError):
+        mod.main(
+            _base_argv(staging, archive)
+            + [
+                "--execute",
+                "--approval-record",
+                str(APPROVAL_FIXTURE),
+                "--no-strict-repo-clean",
+            ],
+            private_fetcher=_FakePrivateFetcher(),
+            credential_presence_checker=_mock_credential_checker,
+            repo_clean_checker=lambda _root: (True, ""),
+            environ=_FAKE_CRED_ENV,
+        )
+    assert not (archive / "runs" / "testnet").exists() or not list(
+        (archive / "runs" / "testnet").glob("*")
     )
-    assert rc == 0
-    run_dirs = list((archive / "runs" / "testnet").iterdir())
-    assert run_dirs
-    copied = run_dirs[0]
-    assert (copied / "MANIFEST.sha256").is_file()
-    ok, reason = mod.verify_manifest_sha256(copied)
-    assert ok, reason
-    manifest = json.loads((copied / "wrapper_evidence" / "manifest.json").read_text())
-    assert manifest["path_b_is_not_path_c"] is True
-    assert manifest["session_class"] == "path_c_private_readonly_connectivity_v0"
-    assert manifest["private_readonly_reachability_proven"] is True
-    assert manifest["order_submission_allowed"] is False
-    assert manifest["max_orders"] == 0
-    assert manifest["max_cancel"] == 0
-    assert manifest["get_only"] is True
-    assert set(manifest["endpoints_called"]) == set(FUTURES_PRIVATE_READONLY_GET_ENDPOINTS)
-    assert (copied / "CLOSEOUT.md").is_file()
-    assert (copied / "RUN_METADATA.json").is_file()
 
 
 def test_missing_credentials_fail_before_harness(tmp_path: Path) -> None:
@@ -355,34 +315,24 @@ def test_missing_credentials_fail_before_harness(tmp_path: Path) -> None:
     assert called["count"] == 0
 
 
-def test_logs_do_not_contain_secret_marker(tmp_path: Path) -> None:
+def test_execute_rejection_does_not_leak_secret_marker(tmp_path: Path) -> None:
     mod = _load_adapter()
     staging = _staging(tmp_path)
     archive = _durable_archive(tmp_path)
     secret_env = dict(_FAKE_CRED_ENV)
-    secret_env["KRAKEN_FUTURES_DEMO_API_SECRET"] = base64.b64encode(b"super-secret-value").decode()
-
-    def _review_runner(staging_root: Path, review_out: Path) -> tuple[int, dict]:
-        review_mod = _load_review()
-        result = review_mod.review_evidence(staging_root)
-        review_out.write_text(json.dumps(result) + "\n", encoding="utf-8")
-        return 0, result
-
-    mod.main(
-        _base_argv(staging, archive)
-        + [
-            "--execute",
-            "--approval-record",
-            str(APPROVAL_FIXTURE),
-            "--no-strict-repo-clean",
-        ],
-        private_fetcher=_FakePrivateFetcher(),
-        credential_presence_checker=_mock_credential_checker,
-        repo_clean_checker=lambda _root: (True, ""),
-        review_runner=_review_runner,
-        environ=secret_env,
-    )
-    for log_name in ("wrapper_stdout.log", "wrapper_stderr.log"):
-        text = (staging / "logs" / log_name).read_text(encoding="utf-8")
-        assert "super-secret-value" not in text
-        assert "KRAKEN_FUTURES_DEMO_API_SECRET" not in text
+    secret_env["FOREIGN_VENUE_API_SECRET"] = base64.b64encode(b"super-secret-value").decode()
+    with pytest.raises(NoncanonicalVenueRejectedError) as exc:
+        mod.main(
+            _base_argv(staging, archive)
+            + [
+                "--execute",
+                "--approval-record",
+                str(APPROVAL_FIXTURE),
+                "--no-strict-repo-clean",
+            ],
+            private_fetcher=_FakePrivateFetcher(),
+            credential_presence_checker=_mock_credential_checker,
+            repo_clean_checker=lambda _root: (True, ""),
+            environ=secret_env,
+        )
+    assert "super-secret-value" not in str(exc.value)

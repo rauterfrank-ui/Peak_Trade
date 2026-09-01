@@ -324,6 +324,7 @@ config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_
 config/governance/technical_canonical_wiring_authorization_v1.json
 config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json
 config/governance/semantics_neutral_decommission_authorization_v1.json
+config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json
 src/governance/economic_diagnostic_optimization_boundary_v0.py
 scripts/ops/check_economic_diagnostic_optimization_boundary_guard_v0.py
 ```
@@ -381,6 +382,30 @@ MASTER_V2_MUTATION_ALLOWED=false
 
 Owner: `config/governance/semantics_neutral_decommission_authorization_v1.json`.
 Attestation: `docs/ops/specs/SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1.md`.
+
+Eng begrenzte Explicit-Owner-Adjudicated Nonproductive-Contract-Change-Authorization
+(`EXPLICIT_OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE`) — **eigene Klasse,
+kein Decommission, keine Restoration, kein Technical Wiring, kein Research-Prefix,
+keine Trading Authority**:
+
+```text
+OWNER_ADJUDICATION_AUTHORIZATION_VERSION=explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1
+AUTHORIZED_SCOPE_CLASS=EXPLICIT_OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE
+MUTATION_PURPOSE_CLASS=OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE
+TOKEN_ALONE_INSUFFICIENT=true
+OWNER_APPROVED_ALONE_INSUFFICIENT=true
+AUTHORIZED_EVIDENCE_DIGEST_REQUIRED=true
+BOUND_DIFF_BASE_SHA_REQUIRED=true
+OWNER_ADJUDICATION_FUTURE_REUSE_POSSIBLE=false
+PR_SPECIFIC_EXCEPTION=false
+BRANCH_SPECIFIC_EXCEPTION=false
+BLANKET_ALLOWLIST=false
+DIRECTORY_GRANT=false
+MASTER_V2_MUTATION_ALLOWED=false
+```
+
+Owner: `config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json`.
+Attestation: `docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE_AUTHORIZATION_V1.md`.
 
 ## 13. Trend Following v2 Recovery Wiring (v0)
 

@@ -62,9 +62,9 @@ echo "============================================================"
 "${PIP_KRAKEN}" -q install -e ".[kraken]"
 
 echo
-echo "-- Provider import smoke (no network)"
-"${PY_KRAKEN}" -c "from src.data.providers.kraken_ccxt_backend import KrakenCcxtBackend; KrakenCcxtBackend()"
-echo "OK: kraken provider import + init"
+echo "-- CCXT client import smoke (no network)"
+"${PY_KRAKEN}" -c "from src.exchange.ccxt_client import CcxtExchangeClient; CcxtExchangeClient('okx')"
+echo "OK: ccxt OKX client import + init"
 
 echo
 echo "============================================================"

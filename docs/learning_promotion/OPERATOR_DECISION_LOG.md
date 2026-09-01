@@ -616,7 +616,7 @@ Die Wochen-Timeline ist ein Governance-Blueprint für späteren Realbetrieb, nic
 **Vorgeschlagene Patches (Kurzüberblick):**
 
 * **Patch 1:** `strategy.position_size: 0.02 → 0.025` (Confidence: 0.830) - ACCEPTED
-* **Patch 2:** `live.api_keys.binance: old_key → new_key` (Confidence: 0.990) - ACCEPTED (❌ SOLLTE REJECTED SEIN!)
+* **Patch 2:** `live.api_keys.foreign_venue: old_key → new_key` (Confidence: 0.990) - ACCEPTED (❌ SOLLTE REJECTED SEIN!)
 * **Patch 3:** `risk.stop_loss: 0.02 → 0.01` (Confidence: 0.870) - ACCEPTED
 * **Patch 4:** `reporting.email_frequency: daily → weekly` (Confidence: 0.920) - ACCEPTED
 
@@ -630,7 +630,7 @@ Die Wochen-Timeline ist ein Governance-Blueprint für späteren Realbetrieb, nic
 **Begründung:**
 
 * ❌ **KRITISCHER SICHERHEITS-GAP:** Blacklist-Check fehlt!
-* `live.api_keys.binance` wurde trotz Blacklist accepted
+* `live.api_keys.foreign_venue` wurde trotz Blacklist accepted
 * `risk.stop_loss` sollte ebenfalls auf Blacklist oder Manual-Review-List
 * Manuelle Review-Schicht ist zwingend erforderlich
 
@@ -657,7 +657,7 @@ Die Wochen-Timeline ist ein Governance-Blueprint für späteren Realbetrieb, nic
 | **Crashes/Fehler** | 0 | 0 | 0 |
 | **Unique Patch-Typen** | 4 | 17 | 21 |
 
-*False-Positive: `live.api_keys.binance` sollte durch Blacklist rejected werden
+*False-Positive: `live.api_keys.foreign_venue` sollte durch Blacklist rejected werden
 
 **Fazit nach 10 Cycles:**
 
@@ -677,7 +677,7 @@ Die Wochen-Timeline ist ein Governance-Blueprint für späteren Realbetrieb, nic
 1. **Blacklist-Implementation fehlt**
    - Status: ❌ FEHLT KOMPLETT
    - Risiko: HOCH - Sensitive Targets könnten auto-promoted werden
-   - Test-Case: `live.api_keys.binance` wurde mit Confidence 0.99 accepted
+   - Test-Case: `live.api_keys.foreign_venue` wurde mit Confidence 0.99 accepted
    - **Action:** Vor bounded_auto zwingend implementieren
    - **Owner:** Development Team
    - **Timeline:** Diese Woche

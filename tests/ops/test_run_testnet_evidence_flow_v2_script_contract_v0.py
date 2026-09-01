@@ -136,7 +136,6 @@ def test_run_testnet_evidence_flow_v2_contract_does_not_directly_submit_orders()
         "market_sell(",
         "private_post_order",
         "futures_create_order",
-        "binance.create_order",
         "exchange.create_order",
         "ccxt.",
     )

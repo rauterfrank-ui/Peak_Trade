@@ -247,6 +247,47 @@ Attestation: [`docs/ops/specs/SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1.md
 Default grant is inactive. This class does not create trading, selection, risk,
 execution, or venue authority.
 
+## 5.4 Explicit Owner-Adjudicated Nonproductive Contract Change (v1)
+
+Semantisch eigene Admission-Klasse für explizit Owner-adjudizierte
+nichtproduktive Contract-Änderungen auf unklassifizierten Boundary-Pfaden.
+Keine Decommission-Klasse. Keine Restoration-Klasse. Keine Technical-Wiring-Klasse.
+Keine Research-Prefix-Allowlist. Keine Trading Authority.
+
+```text
+AUTHORIZED_SCOPE_CLASS=EXPLICIT_OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE
+MUTATION_PURPOSE_CLASS=OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE
+TOKEN_ALONE_IS_INSUFFICIENT=true
+OWNER_APPROVED_ALONE_IS_INSUFFICIENT=true
+PR_SPECIFIC_EXCEPTION=false
+BRANCH_SPECIFIC_EXCEPTION=false
+BLANKET_ALLOWLIST=false
+DIRECTORY_GRANT=false
+BROAD_MASTER_V2_GRANT=false
+```
+
+Joint validation (Token oder Owner-Approval allein reicht nicht):
+
+- contract version, scope, token, purpose class
+- class attestation file
+- exact-file `allowed_paths` when a grant is active
+- empty `allowed_paths` while `grant_active=false`
+- `authorized_evidence_digest` required and SHA-256-bound when a grant is active
+  (reuses `decommission_evidence_digest_v1`)
+- `bound_diff_base_sha` required when a grant is active
+- required semantic invariants remain false and are machine-validated on hunks
+- capability invariants remain false (no live/testnet/canary/reachability increase)
+- forbidden effects = NONE
+- no PR-/Branch-Hardcode
+- no directory / path-prefix / broad MASTER_V2 grant
+- no required-check waiver / branch-protection bypass
+
+Owner: [`config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json`](../../config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json)
+
+Attestation: [`docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE_AUTHORIZATION_V1.md`](../ops/specs/EXPLICIT_OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE_AUTHORIZATION_V1.md)
+
+This class does not create trading, selection, risk, execution, or venue authority.
+
 ## 6. Boundary-Report (Pflicht für Research/Economic/Diagnostics/Cost/Target/Feature/Parameter-PRs)
 
 Maschinenlesbar via Guard-CLI. Pflichtfelder:
@@ -275,6 +316,9 @@ Maschinenlesbar via Guard-CLI. Pflichtfelder:
 - `semantics_neutral_decommission_authorization_version`
 - `semantics_neutral_decommission_mutation_purpose_class`
 - `semantics_neutral_decommission_proven_predicates`
+- `owner_adjudicated_nonproductive_contract_change_authorization_applied`
+- `owner_adjudicated_nonproductive_contract_change_authorization_version`
+- `owner_adjudicated_nonproductive_contract_change_mutation_purpose_class`
 
 ## 7. Guard
 
@@ -290,6 +334,7 @@ CI: Lint Gate (always-run). Positiv- und Negativtests:
 - `tests/governance/test_technical_canonical_wiring_authorization_bound_to_boundary_guard_v1.py`
 - `tests/governance/test_historically_attested_current_system_semantic_restoration_authorization_v1.py`
 - `tests/governance/test_semantics_neutral_decommission_authorization_v1.py`
+- `tests/governance/test_explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.py`
 
 ## 8. Normative Referenz
 

@@ -10,7 +10,7 @@ case "$MODE" in shadow|paper) :;; *) echo "P135_GUARD_FAIL mode_invalid=$MODE" >
 if [ "$DRY_RUN" != "YES" ]; then echo "P135_GUARD_FAIL dry_run_must_be_yes" >&2; exit 3; fi
 
 # deny-list (minimal)
-DENY_ENV_REGEX='^(LIVE|RECORD|TRADING_ENABLE|PT_ARMED|PT_ENABLED|API_KEY|API_SECRET|APIKEY|APISECRET|KRAKEN_|COINBASE_|OKX_|BYBIT_)'
+DENY_ENV_REGEX='^(LIVE|RECORD|TRADING_ENABLE|PT_ARMED|PT_ENABLED|API_KEY|API_SECRET|APIKEY|APISECRET)$|_API_(KEY|SECRET)$'
 if env | cut -d= -f1 | grep -Eq "$DENY_ENV_REGEX"; then
   echo "P135_GUARD_FAIL denied_env_present" >&2
   env | cut -d= -f1 | grep -E "$DENY_ENV_REGEX" >&2 || true

@@ -1,5 +1,5 @@
 """
-Tests für Kraken Trade Message Normalizer.
+Tests für List trade message normalizer.
 
 Prüft Parsing, Filtering, Sorting.
 """
@@ -10,11 +10,11 @@ import pytest
 
 from src.data.shadow.tick_normalizer import (
     normalize_ticks_from_messages,
-    parse_kraken_trade_message,
+    parse_list_trade_message,
 )
 
 
-def test_parse_kraken_trade_message_single_trade():
+def test_parse_list_trade_message_single_trade():
     """Parsed Single Trade korrekt."""
     msg = [
         123,  # channelID
@@ -25,7 +25,7 @@ def test_parse_kraken_trade_message_single_trade():
         "XBT/EUR",
     ]
 
-    ticks = parse_kraken_trade_message(msg)
+    ticks = parse_list_trade_message(msg)
 
     assert len(ticks) == 1
     tick = ticks[0]
@@ -35,7 +35,7 @@ def test_parse_kraken_trade_message_single_trade():
     assert tick.ts_ms == 1735347600000  # seconds → ms
 
 
-def test_parse_kraken_trade_message_multiple_trades():
+def test_parse_list_trade_message_multiple_trades():
     """Parsed Multiple Trades."""
     msg = [
         123,
@@ -47,14 +47,14 @@ def test_parse_kraken_trade_message_multiple_trades():
         "XBT/EUR",
     ]
 
-    ticks = parse_kraken_trade_message(msg)
+    ticks = parse_list_trade_message(msg)
 
     assert len(ticks) == 2
     assert ticks[0].price == 50000.0
     assert ticks[1].price == 50010.0
 
 
-def test_parse_kraken_trade_message_filters_invalid_price():
+def test_parse_list_trade_message_filters_invalid_price():
     """Filtert Trades mit price <= 0."""
     msg = [
         123,
@@ -66,13 +66,13 @@ def test_parse_kraken_trade_message_filters_invalid_price():
         "XBT/EUR",
     ]
 
-    ticks = parse_kraken_trade_message(msg)
+    ticks = parse_list_trade_message(msg)
 
     assert len(ticks) == 1
     assert ticks[0].price == 50000.0
 
 
-def test_parse_kraken_trade_message_filters_invalid_volume():
+def test_parse_list_trade_message_filters_invalid_volume():
     """Filtert Trades mit volume <= 0."""
     msg = [
         123,
@@ -84,13 +84,13 @@ def test_parse_kraken_trade_message_filters_invalid_volume():
         "XBT/EUR",
     ]
 
-    ticks = parse_kraken_trade_message(msg)
+    ticks = parse_list_trade_message(msg)
 
     assert len(ticks) == 1
     assert ticks[0].volume == 0.1
 
 
-def test_parse_kraken_trade_message_ignores_non_trade_channel():
+def test_parse_list_trade_message_ignores_non_trade_channel():
     """Ignoriert Non-Trade Channels (z.B. heartbeat)."""
     msg = [
         123,
@@ -99,21 +99,21 @@ def test_parse_kraken_trade_message_ignores_non_trade_channel():
         "",
     ]
 
-    ticks = parse_kraken_trade_message(msg)
+    ticks = parse_list_trade_message(msg)
 
     assert len(ticks) == 0
 
 
-def test_parse_kraken_trade_message_ignores_invalid_format():
+def test_parse_list_trade_message_ignores_invalid_format():
     """Ignoriert Messages mit falschem Format."""
     # Not a list
-    assert parse_kraken_trade_message("invalid") == []
+    assert parse_list_trade_message("invalid") == []
 
     # Too short
-    assert parse_kraken_trade_message([1, 2]) == []
+    assert parse_list_trade_message([1, 2]) == []
 
     # Trades not a list
-    assert parse_kraken_trade_message([123, "notalist", "trade", "XBT/EUR"]) == []
+    assert parse_list_trade_message([123, "notalist", "trade", "XBT/EUR"]) == []
 
 
 def test_normalize_ticks_from_messages_sorts_by_ts():

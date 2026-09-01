@@ -553,24 +553,12 @@
     {
       "source_file": "docs/ops/ai/WORKBOOK_EXECUTION_WIRING_A2Z_V1.md",
       "line_number": 32,
-      "target": "src/execution/providers/coinbase/client_v1.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ai/WORKBOOK_EXECUTION_WIRING_A2Z_V1.md",
-      "line_number": 33,
       "target": "src/execution/providers/okx/client_v1.py",
       "link_text": null
     },
     {
       "source_file": "docs/ops/ai/WORKBOOK_EXECUTION_WIRING_A2Z_V1.md",
-      "line_number": 34,
-      "target": "src/execution/providers/bybit/client_v1.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ai/WORKBOOK_EXECUTION_WIRING_A2Z_V1.md",
-      "line_number": 46,
+      "line_number": 44,
       "target": "scripts/ops/p119_execution_wiring_plan_snapshot_v1.sh",
       "link_text": null
     },

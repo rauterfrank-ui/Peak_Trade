@@ -8,7 +8,7 @@
 
 ## B) Current baseline (DONE)
 - Adapter Protocol + Capability matrix (P106)
-- Provider mocks: coinbase/okx/bybit (P107–P109)
+- Provider mocks: okx (P108)
 - Registry + selector (P111)
 - Router + CLI (P112–P114) + dry-run hard-guard (P115)
 - Evidence + ops-loop hook (P116–P118, P117)
@@ -29,9 +29,7 @@ Produce a **provider wiring plan** that defines:
 
 ## E) Phase 2: "Sandbox-ready provider stubs"
 - Provider-specific client stubs with **no HTTP**:
-  - `src&#47;execution&#47;providers&#47;coinbase&#47;client_v1.py` <!-- pt:ref-target-ignore -->
   - `src&#47;execution&#47;providers&#47;okx&#47;client_v1.py` <!-- pt:ref-target-ignore -->
-  - `src&#47;execution&#47;providers&#47;bybit&#47;client_v1.py` <!-- pt:ref-target-ignore -->
 - These only validate intents, normalize symbols, simulate responses.
 
 ## F) Phase 3: Future integration hooks (no implementation yet)

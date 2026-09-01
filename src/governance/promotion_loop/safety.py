@@ -65,7 +65,7 @@ def check_blacklist(candidate: PromotionCandidate, config: SafetyConfig) -> List
     # Check target against blacklist patterns
     target = candidate.patch.target
     for blacklist_pattern in config.blacklist_targets:
-        # Support prefix matching (e.g., "live.api_keys" matches "live.api_keys.binance")
+        # Support prefix matching (e.g., "live.api_keys" matches nested keys)
         if target.startswith(blacklist_pattern):
             violations.append(
                 f"P0_BLACKLIST: Target '{target}' matches blacklisted pattern '{blacklist_pattern}'"

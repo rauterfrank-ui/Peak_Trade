@@ -7,9 +7,9 @@
   "non_authorizing": true,
   "fixture_marked": true,
   "universe": [
-    {"row_id": "u-eth", "symbol": "ETHUSDT", "rank": 1, "exchange": "binance_futures", "notes": "fixture testdata"},
-    {"row_id": "u-sol", "symbol": "SOLUSDT", "rank": 2, "exchange": "binance_futures", "notes": "fixture testdata"},
-    {"row_id": "u-avax", "symbol": "AVAXUSDT", "rank": 3, "exchange": "binance_futures", "notes": "fixture testdata"}
+    {"row_id": "u-eth", "symbol": "ETHUSDT", "rank": 1, "exchange": "other_venue", "notes": "fixture testdata"},
+    {"row_id": "u-sol", "symbol": "SOLUSDT", "rank": 2, "exchange": "other_venue", "notes": "fixture testdata"},
+    {"row_id": "u-avax", "symbol": "AVAXUSDT", "rank": 3, "exchange": "other_venue", "notes": "fixture testdata"}
   ],
   "ranking": [
     {"row_id": "r-eth", "symbol": "ETHUSDT", "rank": 1, "display_score": 0.91, "notes": "fixture testdata"},
@@ -27,7 +27,7 @@
     "truth_status": "PERSISTED",
     "source_kind": "governed_producer_fixture",
     "snapshot_id": "fixture-snapshot-001",
-    "exchange": "binance_futures",
+    "exchange": "other_venue",
     "captured_at": "2026-06-08T11:59:00Z"
   },
   "evidence": {

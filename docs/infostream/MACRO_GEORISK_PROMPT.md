@@ -214,7 +214,7 @@ Bei Breaking News:
 
 ```
 URGENT: Analysiere sofort für Peak_Trade:
-"Binance US stoppt USD-Einzahlungen, SEC-Klage eskaliert"
+"A foreign venue US unit stops USD deposits; regulatory action escalates"
 ```
 
 ---
@@ -229,7 +229,7 @@ URGENT: Analysiere sofort für Peak_Trade:
 
 ```bash
 # Speichern eines Makro-Pakets
-python3 scripts/create_info_packet.py \
+python3 scripts/create_info_packet.py \ <!-- pt:ref-target-ignore -->
     --source macro_georisk_specialist \
     --category market_analysis \
     --severity warning \

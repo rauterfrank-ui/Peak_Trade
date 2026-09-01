@@ -133,7 +133,7 @@ def _assembled_snapshot(*records: SourceObservationRecordV1):
     result = assemble_registry_snapshot_v1(
         records,
         generated_at=_GENERATED_AT,
-        venue_scope=("okx", "binance_usdm"),
+        venue_scope=("okx", "other_venue"),
         config_digest=_CONFIG_DIGEST,
         implementation_digest=_IMPL_DIGEST,
     )
@@ -164,7 +164,7 @@ def _panel_registry():
         ("AVAX", "AVAX-USDT-SWAP", "avax"),
         ("LINK", "LINK-USDT-SWAP", "link"),
         ("DOT", "DOT-USDT-SWAP", "dot"),
-        ("ADA", "ADAUSDT", "ada", "binance_usdm"),
+        ("ADA", "ADAUSDT", "ada", "other_venue"),
     ]
     records = []
     supplementary = []
@@ -189,7 +189,7 @@ def _manual_snapshot(*intervals: InstrumentLifecycleIntervalV1) -> RegistrySnaps
         policy_version=REGISTRY_VERSION,
         source_priority_policy_version="source_priority_policy.v1",
         conflict_resolution_policy_version="conflict_resolution_policy.v1",
-        venue_scope=("okx", "binance_usdm"),
+        venue_scope=("okx", "other_venue"),
         generated_at=_GENERATED_AT,
         intervals=intervals,
         config_digest=_CONFIG_DIGEST,
@@ -253,7 +253,7 @@ def _build_binding_input(
         bar_interval="PT1H",
         minimum_history_bars=_MIN_HISTORY,
         minimum_required_member_count=5,
-        venue_scope=("binance_usdm", "okx"),
+        venue_scope=("other_venue", "okx"),
         source_snapshot_refs=(_DATASET_REF,),
         source_digests=(compute_sha256_digest({"source_dataset_refs": [_DATASET_REF]}),),
         period_binding_ref=_PERIOD_REF,

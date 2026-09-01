@@ -263,7 +263,7 @@ def test_04_unknown_session_rejected(tmp_path: Path) -> None:
         ("preregistration_digest", "0" * 64, "preregistration_digest"),
         ("authorization_digest", "0" * 64, "authorization_digest"),
         ("repository_sha", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", "repository_sha"),
-        ("venue", "BINANCE", "venue_mismatch"),
+        ("venue", "UNDECLARED_VENUE", "venue_mismatch"),
         ("instrument_id", "BTC-USD_UM_XPERP-999", "instrument_mismatch"),
         ("market_data_scope", "WRONG_SCOPE", "market_data_scope"),
         ("evidence_scope", "wrong_evidence_scope", "evidence_scope"),

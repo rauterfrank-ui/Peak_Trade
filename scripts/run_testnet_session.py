@@ -26,9 +26,9 @@ Usage:
     python -m scripts.run_testnet_session --no-logging
 
 Voraussetzungen:
-    - Environment-Variablen KRAKEN_TESTNET_API_KEY und KRAKEN_TESTNET_API_SECRET
+    - Environment-Variablen fuer Credentials nur nach separatem Owner-GO
     - config/config.toml mit [environment] mode = "testnet"
-    - config/config.toml mit [exchange.kraken_testnet] Block
+    - config/config.toml with explicit environment and no implicit venue
 
 WICHTIG:
     - Nur Testnet-Environment ist erlaubt!
@@ -97,12 +97,6 @@ from src.orders.testnet_executor import (
     TestnetExchangeOrderExecutor,
     EnvironmentNotTestnetError,
 )
-from src.exchange.kraken_testnet import (
-    KrakenTestnetClient,
-    KrakenTestnetConfig,
-    create_kraken_testnet_client_from_config,
-    ExchangeAPIError,
-)
 from src.strategies.base import BaseStrategy
 from src.execution.pipeline import ExecutionPipeline, SignalEvent
 
@@ -125,7 +119,7 @@ def _maybe_emit_heartbeat(now_ts: float, last_ts: float, throttle_s: int, symbol
             level="info",
             msg=f"tick symbol={symbol}",
             symbol=symbol,
-            exchange="kraken",
+            exchange="none",
             is_anomaly=False,
             is_error=False,
         )
@@ -314,7 +308,7 @@ class TestnetSession:
         self,
         env_config: EnvironmentConfig,
         session_config: TestnetSessionConfig,
-        exchange_client: KrakenTestnetClient,
+        exchange_client: Any,
         executor: TestnetExchangeOrderExecutor,
         strategy: BaseStrategy,
         risk_limits: LiveRiskLimits,
@@ -326,7 +320,7 @@ class TestnetSession:
         Args:
             env_config: Environment-Konfiguration
             session_config: Session-Konfiguration
-            exchange_client: Kraken Testnet Client
+            exchange_client: Exchange client (legacy; not a current operative venue)
             executor: Testnet Order Executor
             strategy: Trading-Strategie
             risk_limits: Risk-Limits
@@ -810,15 +804,10 @@ def build_testnet_session(
             f"Setze [environment] mode = 'testnet' in config.toml"
         )
 
-    # 3. Exchange-Client erstellen
-    logger.info("Initialisiere Kraken Testnet Client...")
-    exchange_client = create_kraken_testnet_client_from_config(cfg)
+    # 3. Legacy venue client construction is not a current operative path.
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
 
-    if not exchange_client.has_credentials:
-        logger.warning(
-            "WARNUNG: Keine API-Credentials gefunden! "
-            "Setze KRAKEN_TESTNET_API_KEY und KRAKEN_TESTNET_API_SECRET"
-        )
+    reject_noncanonical_operative_surface(surface="run_testnet_session.exchange_client")
 
     # 4. Risk-Limits
     logger.info("Initialisiere Risk-Limits...")
@@ -981,6 +970,9 @@ def main() -> int:
     Returns:
         Exit-Code (0 = Success, 1 = Error)
     """
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+    reject_noncanonical_operative_surface(surface="run_testnet_session")
     parser = argparse.ArgumentParser(
         description="Run Peak_Trade Testnet Session with exchange API calls.",
         formatter_class=argparse.RawDescriptionHelpFormatter,

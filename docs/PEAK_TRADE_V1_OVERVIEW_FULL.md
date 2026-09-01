@@ -962,7 +962,7 @@ python3 scripts/generate_live_status_report.py \
 | Limitierung | Status | Kommentar |
 |-------------|--------|-----------|
 | **Keine echte Live-Order-Ausführung** | Bewusst blockiert | SafetyGuard blockt alle Live-Orders in Phase 17+. Live ist architektonisch vorbereitet, aber nicht aktiviert. |
-| **Nur Kraken als Exchange** | v1.0 | Weitere Exchanges (Binance, Coinbase) können über `DEV_GUIDE_ADD_EXCHANGE.md` hinzugefügt werden. |
+| **Nur Kraken als Exchange** | v1.0 | Noncanonical additional venues are not implemented. |
 | **Keine automatische Hedge-/Position-Sizing** | v1.0 | Order-Sizing ist manuell oder über Konfiguration. |
 
 ### 11.2 Web-Dashboard

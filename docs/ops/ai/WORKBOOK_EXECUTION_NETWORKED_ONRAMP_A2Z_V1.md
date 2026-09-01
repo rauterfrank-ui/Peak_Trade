@@ -10,7 +10,7 @@ A) Preconditions
 B) Secrets / Config (Operator-only)
 
 - Keys stored in OS keychain / env at runtime only.
-- Explicit allowlist: COINBASE / OKX / BYBIT (as chosen).
+- Explicit allowlist: OKX only.
 - Deny: LIVE, TRADING_ENABLE, PT_ARMED, etc.
 
 C) Transport Gate

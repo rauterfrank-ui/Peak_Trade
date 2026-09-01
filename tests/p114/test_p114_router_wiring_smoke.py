@@ -20,7 +20,7 @@ def test_router_builds_and_has_adapter_name() -> None:
 
 
 def test_router_place_order_ok_in_dry_run() -> None:
-    ctx = ExecutionRouterContextV1(mode="shadow", dry_run=True, adapter_name="coinbase")
+    ctx = ExecutionRouterContextV1(mode="shadow", dry_run=True, adapter_name="mock")
     router = build_execution_router_v1(ctx)
     intent = OrderIntentV1(
         symbol="BTC-USD",
@@ -31,7 +31,6 @@ def test_router_place_order_ok_in_dry_run() -> None:
     )
     res = router.place_order(intent)
     assert res.ok is True
-    # Adapter name from capabilities (e.g. coinbase_advanced, okx, bybit_v1, mock)
     assert res.adapter and len(res.adapter) > 0
 
 

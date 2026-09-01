@@ -81,7 +81,7 @@ auto_apply_whitelist = [
 
 # Blacklist für Auto-Apply-Targets (P0)
 # Diese Config-Pfade dürfen NIEMALS automatisch geändert werden
-# Prefix-Matching: "live.api_keys" blockt auch "live.api_keys.binance"
+# Prefix-Matching: "live.api_keys" blockt auch "live.api_keys.foreign_venue"
 auto_apply_blacklist = [
     "risk.stop_loss",           # Kritisch - manuell only
     "live.api_keys",            # Kritisch - manuell only

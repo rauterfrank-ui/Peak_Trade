@@ -15,6 +15,13 @@ Third, semantically distinct override: SEMANTICS_NEUTRAL_DECOMMISSION_ONLY. Exac
 evidence-bound obsolete-reference cleanup. Token alone is insufficient. Does not waive
 MASTER_V2_MUTATION_ALLOWED=false. Does not create trading, selection, risk, or execution
 authority.
+
+Fourth, semantically distinct override:
+EXPLICIT_OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE. Exact-file, evidence-bound
+Owner-adjudicated nonproductive contract change on unclassified boundary paths.
+Owner adjudication is necessary and not sufficient. Does not waive
+MASTER_V2_MUTATION_ALLOWED=false. Does not create trading, selection, risk, or
+execution authority. Not a research path-prefix allowlist.
 """
 
 from __future__ import annotations
@@ -26,6 +33,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+from .explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1 import (
+    DEFAULT_OWNER_ADJUDICATION_AUTH_PATH,
+    REASON_OWNER_ADJUDICATION_AUTHORIZED,
+    OwnerAdjudicationAuthorizationDecision,
+    evaluate_owner_adjudication_authorization,
+    validate_owner_adjudication_authorization,
+)
 from .semantics_neutral_decommission_authorization_v1 import (
     DEFAULT_DECOMMISSION_AUTH_PATH,
     REASON_DECOMMISSION_AUTHORIZED,
@@ -219,6 +233,12 @@ class BoundaryReport:
     semantics_neutral_decommission_authorization_version: str | None = None
     semantics_neutral_decommission_mutation_purpose_class: str | None = None
     semantics_neutral_decommission_proven_predicates: tuple[str, ...] = ()
+    owner_adjudicated_nonproductive_contract_change_authorization_applied: bool = False
+    owner_adjudicated_nonproductive_contract_change_authorization_version: str | None = None
+    owner_adjudicated_nonproductive_contract_change_mutation_purpose_class: str | None = None
+    decommission_admission_count: int = 0
+    owner_adjudicated_nonproductive_change_count: int = 0
+    unclassified_touch_count: int = 0
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -266,6 +286,20 @@ class BoundaryReport:
             "semantics_neutral_decommission_proven_predicates": list(
                 self.semantics_neutral_decommission_proven_predicates
             ),
+            "owner_adjudicated_nonproductive_contract_change_authorization_applied": (
+                self.owner_adjudicated_nonproductive_contract_change_authorization_applied
+            ),
+            "owner_adjudicated_nonproductive_contract_change_authorization_version": (
+                self.owner_adjudicated_nonproductive_contract_change_authorization_version
+            ),
+            "owner_adjudicated_nonproductive_contract_change_mutation_purpose_class": (
+                self.owner_adjudicated_nonproductive_contract_change_mutation_purpose_class
+            ),
+            "decommission_admission_count": self.decommission_admission_count,
+            "owner_adjudicated_nonproductive_change_count": (
+                self.owner_adjudicated_nonproductive_change_count
+            ),
+            "unclassified_touch_count": self.unclassified_touch_count,
         }
 
 
@@ -374,6 +408,35 @@ def load_decommission_authorization(
 ) -> dict[str, Any] | None:
     root = repo_root or repo_root_from_module()
     path = authorization_path or resolve_decommission_authorization_path(contract, root)
+    if not path.is_file():
+        return None
+    return load_json(path)
+
+
+def resolve_owner_adjudication_authorization_path(
+    contract: Mapping[str, Any] | None = None,
+    repo_root: Path | None = None,
+) -> Path:
+    root = repo_root or repo_root_from_module()
+    relative = DEFAULT_OWNER_ADJUDICATION_AUTH_PATH
+    if contract is not None:
+        relative = str(
+            contract.get(
+                "explicit_owner_adjudicated_nonproductive_contract_change_authorization",
+                relative,
+            )
+        )
+    return root / relative
+
+
+def load_owner_adjudication_authorization(
+    repo_root: Path | None = None,
+    *,
+    contract: Mapping[str, Any] | None = None,
+    authorization_path: Path | None = None,
+) -> dict[str, Any] | None:
+    root = repo_root or repo_root_from_module()
+    path = authorization_path or resolve_owner_adjudication_authorization_path(contract, root)
     if not path.is_file():
         return None
     return load_json(path)
@@ -884,6 +947,9 @@ def build_boundary_report(
     decommission_authorization: Mapping[str, Any] | None = None,
     decommission_authorization_path: Path | None = None,
     skip_decommission_authorization: bool = False,
+    owner_adjudication_authorization: Mapping[str, Any] | None = None,
+    owner_adjudication_authorization_path: Path | None = None,
+    skip_owner_adjudication_authorization: bool = False,
     file_diffs: Mapping[str, str] | None = None,
     evidence_repo_root: Path | None = None,
     diff_base_sha: str | None = None,
@@ -941,6 +1007,18 @@ def build_boundary_report(
             authorization_path=decommission_authorization_path,
         )
 
+    owner_adjudication_payload: Mapping[str, Any] | None
+    if skip_owner_adjudication_authorization:
+        owner_adjudication_payload = None
+    elif owner_adjudication_authorization is not None:
+        owner_adjudication_payload = owner_adjudication_authorization
+    else:
+        owner_adjudication_payload = load_owner_adjudication_authorization(
+            root,
+            contract=contract,
+            authorization_path=owner_adjudication_authorization_path,
+        )
+
     for path in normalized_files:
         if is_boundary_governed_path(path):
             any_boundary_governed = True
@@ -985,6 +1063,15 @@ def build_boundary_report(
         reason_codes=(),
         authorized_paths=(),
         unauthorized_forbidden_paths=(),
+        grant_active=False,
+    )
+    owner_adjudication_decision = OwnerAdjudicationAuthorizationDecision(
+        applied=False,
+        valid=True,
+        version=None,
+        reason_codes=(),
+        authorized_paths=(),
+        unauthorized_paths=(),
         grant_active=False,
     )
     blocking_forbidden = list(forbidden_matches)
@@ -1053,6 +1140,23 @@ def build_boundary_report(
                     if path in authorized_path_set:
                         allowed_hits.update(classify_allowed_surfaces(path, rules))
 
+    if remaining_unclassified and not skip_owner_adjudication_authorization:
+        owner_adjudication_decision = evaluate_owner_adjudication_authorization(
+            auth=owner_adjudication_payload,
+            unclassified_paths=remaining_unclassified,
+            file_diffs=file_diffs,
+            diff_base_sha=diff_base_sha,
+            repo_root=root,
+        )
+        if owner_adjudication_decision.applied:
+            owner_admitted = frozenset(
+                owner_adjudication_decision.admitted_paths
+                or owner_adjudication_decision.authorized_paths
+            )
+            remaining_unclassified = [
+                path for path in remaining_unclassified if path not in owner_admitted
+            ]
+
     unclassified = remaining_unclassified
 
     if restoration_decision.applied:
@@ -1087,6 +1191,7 @@ def build_boundary_report(
     auth_applied = auth_decision.applied
     restoration_applied = restoration_decision.applied
     decommission_applied = decommission_decision.applied
+    owner_applied = owner_adjudication_decision.applied
 
     if all_governance_self and normalized_files:
         reason_codes.append(REASON_GOVERNANCE_SELF)
@@ -1113,16 +1218,25 @@ def build_boundary_report(
             for code in decommission_decision.reason_codes:
                 if code not in reason_codes:
                     reason_codes.append(code)
+        if owner_adjudication_decision.reason_codes:
+            for code in owner_adjudication_decision.reason_codes:
+                if code not in reason_codes:
+                    reason_codes.append(code)
         fail_closed = True
         admissible = False
         economic_or_diagnostic_only = False
         auth_applied = False
         restoration_applied = False
         decommission_applied = False
+        owner_applied = False
     elif unclassified:
         reason_codes.append(REASON_IMPACT_UNKNOWN)
         if decommission_decision.reason_codes:
             for code in decommission_decision.reason_codes:
+                if code not in reason_codes:
+                    reason_codes.append(code)
+        if owner_adjudication_decision.reason_codes:
+            for code in owner_adjudication_decision.reason_codes:
                 if code not in reason_codes:
                     reason_codes.append(code)
         impact_unknown = True
@@ -1132,6 +1246,7 @@ def build_boundary_report(
         auth_applied = False
         restoration_applied = False
         decommission_applied = False
+        owner_applied = False
     elif restoration_decision.applied:
         reason_codes.append(REASON_RESTORATION_AUTHORIZED)
         if allowed_hits:
@@ -1140,14 +1255,19 @@ def build_boundary_report(
         auth_applied = False
         restoration_applied = True
         decommission_applied = False
-    elif decommission_decision.applied:
-        reason_codes.append(REASON_DECOMMISSION_AUTHORIZED)
+        owner_applied = False
+    elif decommission_decision.applied or owner_adjudication_decision.applied:
+        if decommission_decision.applied:
+            reason_codes.append(REASON_DECOMMISSION_AUTHORIZED)
+        if owner_adjudication_decision.applied:
+            reason_codes.append(REASON_OWNER_ADJUDICATION_AUTHORIZED)
         if allowed_hits:
             reason_codes.append(REASON_ALLOWED_ONLY)
         economic_or_diagnostic_only = False
         auth_applied = False
         restoration_applied = False
-        decommission_applied = True
+        decommission_applied = decommission_decision.applied
+        owner_applied = owner_adjudication_decision.applied
     elif auth_decision.applied:
         reason_codes.append(REASON_TECHNICAL_WIRING_AUTHORIZED)
         if allowed_hits:
@@ -1167,6 +1287,16 @@ def build_boundary_report(
     else:
         reason_codes.append(REASON_NO_BOUNDARY_GOVERNED_CHANGES)
         economic_or_diagnostic_only = False
+
+    decommission_admission_count = (
+        len(frozenset(decommission_decision.authorized_paths).intersection(normalized_files))
+        if decommission_applied
+        else 0
+    )
+    owner_admitted = owner_adjudication_decision.admitted_paths or ()
+    owner_adjudicated_nonproductive_change_count = (
+        len(frozenset(owner_admitted).intersection(normalized_files)) if owner_applied else 0
+    )
 
     return BoundaryReport(
         changed_files=normalized_files,
@@ -1205,6 +1335,16 @@ def build_boundary_report(
         semantics_neutral_decommission_proven_predicates=(
             decommission_decision.proven_predicates if decommission_applied else ()
         ),
+        owner_adjudicated_nonproductive_contract_change_authorization_applied=owner_applied,
+        owner_adjudicated_nonproductive_contract_change_authorization_version=(
+            owner_adjudication_decision.version if owner_applied else None
+        ),
+        owner_adjudicated_nonproductive_contract_change_mutation_purpose_class=(
+            owner_adjudication_decision.mutation_purpose_class if owner_applied else None
+        ),
+        decommission_admission_count=decommission_admission_count,
+        owner_adjudicated_nonproductive_change_count=(owner_adjudicated_nonproductive_change_count),
+        unclassified_touch_count=len(unclassified),
     )
 
 
@@ -1228,6 +1368,7 @@ def forbidden_surface_changed_count(report: BoundaryReport) -> int:
         report.technical_wiring_authorization_applied
         or report.restoration_authorization_applied
         or report.semantics_neutral_decommission_authorization_applied
+        or report.owner_adjudicated_nonproductive_contract_change_authorization_applied
     ):
         return 0
     return len({match.matched_path for match in report.forbidden_surface_matches})
@@ -1246,6 +1387,10 @@ def export_canonical_owner_inventory(repo_root: Path | None = None) -> dict[str,
     decommission = load_decommission_authorization(root, contract=contract)
     decommission_valid, decommission_reasons = validate_decommission_authorization(
         decommission, repo_root=root
+    )
+    owner_adjudication = load_owner_adjudication_authorization(root, contract=contract)
+    owner_adjudication_valid, owner_adjudication_reasons = (
+        validate_owner_adjudication_authorization(owner_adjudication, repo_root=root)
     )
     return {
         "contract_version": CONTRACT_VERSION,
@@ -1310,5 +1455,29 @@ def export_canonical_owner_inventory(repo_root: Path | None = None) -> dict[str,
                 None if decommission is None else decommission.get("mutation_purpose_class")
             ),
             "grant_active": None if decommission is None else decommission.get("grant_active"),
+        },
+        "explicit_owner_adjudicated_nonproductive_contract_change_authorization": {
+            "path": contract.get(
+                "explicit_owner_adjudicated_nonproductive_contract_change_authorization"
+            ),
+            "present": owner_adjudication is not None,
+            "valid": owner_adjudication_valid,
+            "validation_reasons": list(owner_adjudication_reasons),
+            "contract_version": None
+            if owner_adjudication is None
+            else owner_adjudication.get("contract_version"),
+            "authorized_scope_class": (
+                None
+                if owner_adjudication is None
+                else owner_adjudication.get("authorized_scope_class")
+            ),
+            "mutation_purpose_class": (
+                None
+                if owner_adjudication is None
+                else owner_adjudication.get("mutation_purpose_class")
+            ),
+            "grant_active": None
+            if owner_adjudication is None
+            else owner_adjudication.get("grant_active"),
         },
     }

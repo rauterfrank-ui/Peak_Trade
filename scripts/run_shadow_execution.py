@@ -52,7 +52,7 @@ from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.backtest.engine import BacktestEngine
 from src.backtest.stats import compute_backtest_stats
-from src.data import DataNormalizer, CsvLoader, KrakenCsvLoader
+from src.data import DataNormalizer, CsvLoader, UnixSecondsOhlcCsvLoader
 from src.execution.pipeline import ExecutionPipeline
 from src.orders.shadow import ShadowOrderExecutor, ShadowMarketContext
 from src.core.experiments import log_shadow_run, RUN_TYPE_SHADOW_RUN
@@ -303,7 +303,7 @@ def load_ohlcv_data(
 
         # Kraken-spezifisches Format erkennen
         if "kraken" in str(path).lower():
-            loader = KrakenCsvLoader()
+            loader = UnixSecondsOhlcCsvLoader()
         else:
             loader = CsvLoader()
 

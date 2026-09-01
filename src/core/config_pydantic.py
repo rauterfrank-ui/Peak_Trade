@@ -100,14 +100,14 @@ class ExchangeConfig(BaseModel):
     Bestimmt, welcher Exchange-Client für Trading verwendet wird.
 
     Attributes:
-        default_type: Client-Typ ("dummy", "kraken_testnet", später "kraken_live")
+        default_type: Client-Typ ("dummy" = Test/Simulation, keine Venue)
         dummy: Einstellungen für DummyExchangeClient
     """
 
     default_type: str = Field(
         default="dummy",
-        pattern="^(dummy|kraken_testnet|kraken_live)$",
-        description="Exchange-Client-Typ",
+        pattern="^(dummy)$",
+        description="Exchange-Client-Typ (dummy is simulation, not a venue)",
     )
     dummy: ExchangeDummyConfig = Field(default_factory=ExchangeDummyConfig)
 

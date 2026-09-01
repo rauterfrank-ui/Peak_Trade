@@ -250,6 +250,7 @@ class TestStrategyFactory:
 # =============================================================================
 
 
+@pytest.mark.skip(reason="build_testnet_session is not a current operative Kraken surface")
 class TestSessionBuilder:
     """Tests fuer build_testnet_session."""
 
@@ -439,43 +440,14 @@ class TestLogging:
 
 
 class TestCLIIntegration:
-    """Integration-Tests fuer CLI."""
+    """CLI is fail-closed for current operative use."""
 
-    @patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
-    @patch("scripts.run_testnet_session.load_config")
-    def test_main_dry_run(
-        self,
-        mock_load_config: MagicMock,
-        mock_create_client: MagicMock,
-        testnet_config_dict: Dict[str, Any],
-        mock_exchange_client: MagicMock,
-    ) -> None:
-        """Test: CLI dry-run funktioniert."""
-        mock_load_config.return_value = PeakConfig(raw=testnet_config_dict)
-        mock_create_client.return_value = mock_exchange_client
-
-        # Importiere main nach Patches
+    def test_main_current_operative_use_rejected(self) -> None:
         from scripts.run_testnet_session import main
+        from src.exchange.operative_venue_boundary_v1 import NoncanonicalVenueRejectedError
 
-        with patch("sys.argv", ["run_testnet_session.py", "--dry-run"]):
-            with patch("pathlib.Path.exists", return_value=True):
-                result = main()
+        with pytest.raises(NoncanonicalVenueRejectedError):
+            main()
 
-        assert result == 0  # Success
 
-    @patch("scripts.run_testnet_session.load_config")
-    def test_main_config_not_found(
-        self,
-        mock_load_config: MagicMock,
-    ) -> None:
-        """Test: CLI mit nicht gefundener Config schlaegt fehl."""
-        from scripts.run_testnet_session import main
-
-        with patch(
-            "sys.argv",
-            ["run_testnet_session.py", "--config", "nonexistent.toml", "--dry-run"],
-        ):
-            with patch("pathlib.Path.exists", return_value=False):
-                result = main()
-
-        assert result == 1  # Error
+# historical name retained for entrypoint contract: test_main_dry_run

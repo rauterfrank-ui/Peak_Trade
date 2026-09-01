@@ -79,8 +79,8 @@ def _load_scripts_ops_module(fake_name: str, path: Path) -> Any:
 
 
 def test_public_capture_and_recorded_adapter_surfaces_exist() -> None:
-    matches = list(REPO_ROOT.glob("scripts/ops/capture_public_rest_binance*_v0.py"))
-    assert matches, "expected at least one public REST capture script under scripts/ops/"
+    matches = list(REPO_ROOT.glob("scripts/ops/capture_public_rest_*_v0.py"))
+    assert matches == []
     assert _RECORDED_ADAPTER.is_file()
 
 
@@ -133,11 +133,9 @@ def test_static_market_capture_package_and_bridge_share_offline_confirm_token() 
 
 
 def test_public_rest_capture_script_uses_distinct_confirm_token_from_static_offline_gate() -> None:
-    """One-shot public REST capture keeps its own token; do not conflate with offline package/bridge gate."""
-    cap = next(REPO_ROOT.glob("scripts/ops/capture_public_rest_binance*_v0.py"))
-    body = cap.read_text(encoding="utf-8")
-    assert 'CONFIRM_TOKEN = "ALLOW_PUBLIC_REST_MARKET_DATA_ONE_SHOT_NO_AUTH_NO_ORDERS"' in body
-    assert f'CONFIRM_TOKEN = "{_OFFLINE_GATE_CONFIRM_TOKEN}"' not in body
+    """Branded one-shot public REST capture is not a current operative surface."""
+    matches = list(REPO_ROOT.glob("scripts/ops/capture_public_rest_*_v0.py"))
+    assert matches == []
 
 
 def test_declarative_no_order_surfaces_reject_live_and_execution_authority() -> None:

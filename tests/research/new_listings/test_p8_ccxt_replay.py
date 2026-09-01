@@ -30,7 +30,11 @@ def test_replay_collector_contract(tmp_path: Path) -> None:
                     "source": "replay",
                     "venue_type": "ccxt",
                     "observed_at": "2026-02-09T12:00:00Z",
-                    "payload": {"exchange": "kraken", "symbol": "BTC/EUR", "ticker": {"last": 1.0}},
+                    "payload": {
+                        "exchange": "venue_a",
+                        "symbol": "BTC/EUR",
+                        "ticker": {"last": 1.0},
+                    },
                 }
             ]
         ),
@@ -63,8 +67,8 @@ def test_replay_collector_empty_dir_returns_empty(tmp_path: Path) -> None:
     assert list(c.collect(ctx)) == []
 
 
-def test_ccxt_ticker_collector_contract_mock() -> None:
-    """CcxtTickerCollector with mocked ccxt (no network): emits RawEvents from fetch_tickers."""
+def test_ccxt_ticker_collector_contract_mock_operative_okx() -> None:
+    """Collector success path is the gated OKX ccxt id (mocked; no network)."""
     mock_exchange = MagicMock()
     mock_exchange.fetch_markets.return_value = [{"id": "btceur", "symbol": "BTC/EUR"}]
     mock_exchange.fetch_tickers.return_value = {
@@ -72,14 +76,14 @@ def test_ccxt_ticker_collector_contract_mock() -> None:
     }
     mock_klass = MagicMock(return_value=mock_exchange)
     mock_ccxt = MagicMock()
-    mock_ccxt.kraken = mock_klass
+    mock_ccxt.okx = mock_klass
     mock_ccxt.NetworkError = Exception
     mock_ccxt.ExchangeError = Exception
 
     cfg = {
         "sources": {
             "ccxt": {
-                "exchange": "kraken",
+                "exchange": "okx",
                 "max_markets": 10,
                 "rate_limit_ms": 1200,
                 "enabled": True,
@@ -96,24 +100,43 @@ def test_ccxt_ticker_collector_contract_mock() -> None:
     assert e.source == "ccxt_ticker"
     assert e.venue_type == "ccxt"
     assert "observed_at" in e.payload
-    assert e.payload.get("exchange") == "kraken"
+    assert e.payload.get("exchange") == "okx"
     assert e.payload.get("symbol") == "BTC/EUR"
     mock_exchange.fetch_markets.assert_called_once()
     mock_exchange.fetch_tickers.assert_called_once()
 
 
+def test_ccxt_ticker_collector_example_venue_rejected() -> None:
+    """Generic/research fixture ids are not remapped onto OKX."""
+    cfg = {
+        "sources": {
+            "ccxt": {
+                "exchange": "example_venue",
+                "max_markets": 10,
+                "enabled": True,
+            }
+        }
+    }
+    mock_ccxt = MagicMock()
+    with patch.dict(sys.modules, {"ccxt": mock_ccxt}):
+        collector = CcxtTickerCollector(cfg)
+        ctx = CollectorContext(run_id="nl_test", config_hash="0" * 64)
+        with pytest.raises(ValueError, match="noncanonical_venue_rejected"):
+            list(collector.collect(ctx))
+
+
 def test_get_ccxt_config_defaults() -> None:
-    assert _get_ccxt_config({})["exchange"] == "kraken"
+    assert _get_ccxt_config({})["exchange"] == ""
     assert _get_ccxt_config({})["enabled"] is True
     assert _get_ccxt_config({})["max_markets"] == 50
     assert (
-        _get_ccxt_config({"sources": {"ccxt": {"exchange": "binance", "max_markets": 5}}})[
+        _get_ccxt_config({"sources": {"ccxt": {"exchange": "venue_a", "max_markets": 5}}})[
             "exchange"
         ]
-        == "binance"
+        == "venue_a"
     )
     assert (
-        _get_ccxt_config({"sources": {"ccxt": {"exchange": "binance", "max_markets": 5}}})[
+        _get_ccxt_config({"sources": {"ccxt": {"exchange": "venue_a", "max_markets": 5}}})[
             "max_markets"
         ]
         == 5
@@ -153,12 +176,12 @@ def test_build_collectors_ccxt_and_replay() -> None:
 
 @pytest.mark.network
 def test_ccxt_ticker_collector_integration_real_fetch() -> None:
-    """Optional: real CCXT public fetch (marked network). Run with pytest -m network to execute."""
+    """Network marker retained; collector rejects non-operative ids before HTTP."""
     pytest.importorskip("ccxt")
     cfg = {
         "sources": {
             "ccxt": {
-                "exchange": "kraken",
+                "exchange": "example_venue",
                 "max_markets": 3,
                 "rate_limit_ms": 1200,
                 "enabled": True,
@@ -167,6 +190,5 @@ def test_ccxt_ticker_collector_integration_real_fetch() -> None:
     }
     collector = CcxtTickerCollector(cfg)
     ctx = CollectorContext(run_id="nl_net", config_hash="0" * 64)
-    events = list(collector.collect(ctx))
-    assert len(events) >= 1
-    assert all(e.source == "ccxt_ticker" and e.venue_type == "ccxt" for e in events)
+    with pytest.raises(ValueError, match="noncanonical_venue_rejected"):
+        list(collector.collect(ctx))

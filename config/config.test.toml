@@ -41,7 +41,7 @@ cache_format = "parquet"
 [live]
 enabled = false
 mode = "paper"
-exchange = "kraken"
+exchange = ""
 default_pair = "BTC/USD"
 
 [validation]
@@ -243,9 +243,7 @@ fee_rate = 0.0026
 slippage_bps = 5.0
 
 [live_exchange]
-name = "kraken"
 use_sandbox = true
-base_url = "https://api.kraken.com"
 rate_limit_ms = 1000
 max_retries = 3
 retry_delay_seconds = 5.0
@@ -323,16 +321,7 @@ slippage_bps = 5.0
 # ============================================================================
 # TESTNET EXCHANGE INTEGRATION (Phase 35 - fuer Tests)
 # ============================================================================
-
-[exchange.kraken_testnet]
-enabled = false
-base_url = "https://api.kraken.com"
-api_key_env_var = "KRAKEN_TESTNET_API_KEY"
-api_secret_env_var = "KRAKEN_TESTNET_API_SECRET"
-validate_only = true
-timeout_seconds = 30.0
-max_retries = 3
-rate_limit_ms = 1000
+# Kraken testnet tables are not selectable.
 
 [exchange.okx_europe_eea]
 enabled = false

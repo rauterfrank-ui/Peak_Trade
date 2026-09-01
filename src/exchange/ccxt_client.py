@@ -7,26 +7,12 @@ Read-only Exchange-Client basierend auf ccxt.
 Dieses Modul implementiert das `ExchangeClient`-Protokoll mit ccxt als Backend.
 Alle Methoden sind ausschließlich lesend – keine Order-Platzierung!
 
-Unterstützte Exchanges:
-    Alle von ccxt unterstützten Exchanges (140+), z.B.:
-    - kraken
-    - binance
-    - coinbasepro
-    - bitstamp
+Productive CCXT dispatch is gated by the existing Peak_Trade OKX venue
+boundary (`assert_operative_ccxt_venue_id`). Arbitrary ccxt venue ids are
+rejected. This module does not treat a generic example id as a venue.
 
-Verwendung:
-    >>> client = CcxtExchangeClient("kraken")
-    >>> ticker = client.fetch_ticker("BTC/EUR")
-    >>> print(f"BTC: {ticker.last}")
-
-    >>> # Mit API-Key für Balance-Abfragen
-    >>> client = CcxtExchangeClient(
-    ...     "kraken",
-    ...     api_key="...",
-    ...     secret="...",
-    ...     sandbox=True,
-    ... )
-    >>> balance = client.fetch_balance()
+Constructor usage is covered by the exchange smoke tests: the success path
+uses a current operative OKX name; any other id must fail closed.
 """
 
 from __future__ import annotations
@@ -56,7 +42,7 @@ def _load_impl():
             "This feature depends on 'ccxt'. Install it (or the project's optional extra) and retry.\n\n"
             "Examples:\n"
             "  pip install ccxt\n"
-            '  pip install -e ".[kraken]"\n'
+            '  pip install -e ".[ccxt]"\n'
         )
         raise ModuleNotFoundError(msg) from exc
 
@@ -79,6 +65,9 @@ class CcxtExchangeClient:
         sandbox: bool = False,
         extra_config: Optional[Dict[str, Any]] = None,
     ) -> None:
+        from src.exchange.operative_venue_boundary_v1 import assert_operative_ccxt_venue_id
+
+        exchange_id = assert_operative_ccxt_venue_id(str(exchange_id))
         impl_cls = _load_impl()
         self._impl = impl_cls(
             exchange_id=exchange_id,

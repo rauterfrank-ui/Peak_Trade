@@ -8,7 +8,7 @@ Führt Live-Datenquelle, Strategie, ExecutionPipeline, OrderExecutor
 und RiskLimits in einem kontinuierlichen Loop zusammen.
 
 Features:
-- Live-Marktdaten von Kraken (oder anderer Quelle)
+- Live-Marktdaten über eine übergebene CandleSource (kein implizites Venue)
 - Strategie-Signalgenerierung auf Live-Daten
 - Paper-Order-Execution (keine echten Orders)
 - Live-Risk-Limit-Prüfung vor jeder Order
@@ -19,9 +19,9 @@ WICHTIG: Diese Session sendet NIEMALS echte Orders!
 
 Example:
     >>> from src.live.shadow_session import ShadowPaperSession
-    >>> from src.data.kraken_live import KrakenLiveCandleSource
+    >>> from src.data.simulation_candles import FakeCandleSource
     >>>
-    >>> source = KrakenLiveCandleSource(symbol="BTC/EUR", timeframe="1m")
+    >>> source = FakeCandleSource(symbol="BTC/EUR")
     >>> session = ShadowPaperSession(
     ...     data_source=source,
     ...     strategy=my_strategy,
@@ -57,7 +57,7 @@ from ..orders.base import OrderRequest, OrderExecutionResult
 from ..orders.paper import PaperMarketContext, PaperOrderExecutor
 from ..orders.shadow import ShadowMarketContext, ShadowOrderExecutor
 from ..execution.pipeline import ExecutionPipeline, SignalEvent
-from ..data.kraken_live import (
+from ..data.simulation_candles import (
     ShadowPaperConfig,
     LiveExchangeConfig,
     LiveCandle,
@@ -205,7 +205,7 @@ class ShadowPaperSession:
             env_config: Environment-Konfiguration
             shadow_cfg: Shadow/Paper Session Config
             exchange_cfg: Exchange Config
-            data_source: Live-Datenquelle (z.B. KrakenLiveCandleSource)
+            data_source: Live-Datenquelle (CandleSource Protocol)
             strategy: Trading-Strategie
             pipeline: Execution-Pipeline
             risk_limits: Live-Risk-Limits
@@ -806,7 +806,7 @@ def create_shadow_paper_session(
     Args:
         cfg: PeakConfig-Instanz
         strategy: Trading-Strategie
-        data_source: Optionale Datenquelle (sonst KrakenLiveCandleSource)
+        data_source: Erforderliche Datenquelle (kein implizites Venue)
         run_id: Optionale Run-ID (sonst automatisch generiert)
         enable_logging: Run-Logging aktivieren (default: True)
         log_dir_override: Optionales Override für Log-Verzeichnis
@@ -828,10 +828,9 @@ def create_shadow_paper_session(
         operation="factory",
     )
 
-    from ..data.kraken_live import (
+    from ..data.simulation_candles import (
         load_shadow_paper_config,
         load_live_exchange_config,
-        create_kraken_source_from_config,
     )
     from ..live.run_logging import (
         create_run_logger_from_config,
@@ -846,7 +845,9 @@ def create_shadow_paper_session(
 
     # Datenquelle erstellen falls nicht übergeben
     if data_source is None:
-        data_source = create_kraken_source_from_config(shadow_cfg, exchange_cfg)
+        raise ValueError(
+            "data_source is required; no implicit venue market-data default is authorized"
+        )
 
     # Shadow-Executor erstellen
     market_context = ShadowMarketContext(

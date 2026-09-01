@@ -472,7 +472,7 @@ def test_g_schema_version_fail_closed(mutate, error) -> None:
     ("mutate", "error"),
     [
         (lambda p: (p.pop("venue"), p)[1], "venue_binding_mismatch"),
-        (lambda p: {**p, "venue": "BINANCE"}, "venue_binding_mismatch"),
+        (lambda p: {**p, "venue": "UNDECLARED_VENUE"}, "venue_binding_mismatch"),
         (lambda p: {**p, "venue": ""}, "venue_binding_mismatch"),
         (lambda p: {**p, "venue": "okx"}, "venue_binding_mismatch"),
         (lambda p: {**p, "venue": " OKX "}, "venue_binding_mismatch"),
@@ -705,7 +705,7 @@ def test_g51_unknown_field_with_rehashed_digest_still_rejected() -> None:
 
 
 def test_g52_wrong_scope_with_rehashed_digest_still_rejected() -> None:
-    payload = _rehash({**_valid_payload(), "venue": "BINANCE"})
+    payload = _rehash({**_valid_payload(), "venue": "UNDECLARED_VENUE"})
     with pytest.raises(
         AdditionalEvidenceSessionPreregistrationContractError,
         match="venue_binding_mismatch",

@@ -513,6 +513,7 @@ features:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
     canonical_support: OPEN
     runtime_reachable: OPEN
     tested: OPEN
@@ -520,6 +521,8 @@ features:
     open_gaps: census_not_complete
     evidence_sources:
       - src/execution/adapters/providers/okx_v1.py
+      - src/execution/adapters/registry_v1.py
+    notes: Current registry entries are mock and okx only. Non-OKX providers were removed. Not a live unlock.
   - id: OKX_FEATURE:asset_transfer
     kind: OKX_FEATURE
     name: asset_transfer

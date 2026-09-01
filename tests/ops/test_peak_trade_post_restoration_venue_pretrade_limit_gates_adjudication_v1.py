@@ -223,11 +223,7 @@ def test_kraken_is_not_current_canonical_venue_or_okx_metadata_authority() -> No
     assert "PIPELINE_KRAKEN_CURRENT_OKX_VENUE_METADATA_AUTHORITY=false" in spec
     assert "KRAKEN_NOT_CURRENT_CANONICAL_VENUE=true" in parent
     assert REUSED_BINDING_VENUE != "KRAKEN"
-    assert KRAKEN_LIVE.is_file()
-    kraken = KRAKEN_LIVE.read_text(encoding="utf-8")
-    assert "def place_order(" in kraken
-    assert "lotSz" not in kraken
-    assert "maxAvailSize" not in kraken
+    assert not KRAKEN_LIVE.is_file()
 
 
 def test_existing_bound_gates_remain_described_as_bound() -> None:

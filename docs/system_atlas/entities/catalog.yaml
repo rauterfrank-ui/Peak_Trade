@@ -468,9 +468,11 @@ entities:
     epistemic_class: ADJUDICATED
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
     evidence_sources:
       - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
       - config/config.toml
+    notes: Inventory only. Current operative venue family is OKX EEA. Atlas is not trading authority.
 
   - id: VENUE:okx_eea
     kind: VENUE
@@ -478,9 +480,12 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
     evidence_sources:
       - src/ops/bounded_futures_testnet_venue_binding_v0.py
       - config/config.toml
+      - src/exchange/operative_venue_boundary_v1.py
+    notes: Inventory only. Sole current operative venue. Non-OKX productive venue count is zero. Atlas is not trading authority.
 
   - id: FAMILY:dashboard_dynamic_scope
     kind: FAMILY
@@ -1117,6 +1122,106 @@ entities:
       - docs/system_atlas/census/master_v2_semantic_map.yaml
     notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
 
+  - id: RUNTIME_COMPONENT:operative_venue_boundary_v1
+    kind: RUNTIME_COMPONENT
+    name: Operative venue boundary v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/exchange/operative_venue_boundary_v1.py
+    evidence_sources:
+      - src/exchange/operative_venue_boundary_v1.py
+    notes: Fail-closed current-tree boundary. Maps Peak_Trade OKX names to existing ccxt okx id only. Does not implement exchange I/O. Does not relabel other venues as OKX. Atlas is not trading authority.
+
+  - id: REGISTRY:execution_adapters_v1
+    kind: REGISTRY
+    name: Execution adapter registry v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/execution/adapters/registry_v1.py
+      - src/execution/adapters/providers
+    evidence_sources:
+      - src/execution/adapters/registry_v1.py
+      - src/execution/adapters/providers/okx_v1.py
+      - src/execution/adapters/mock_v1.py
+    notes: Current registry entries are mock and okx only. Mock is not a venue authority. Non-OKX provider modules were removed from the current tree. Historical provider names are not restated here.
+
+  - id: EXECUTION_COMPONENT:live_session_failclosed
+    kind: EXECUTION_COMPONENT
+    name: Live session fail-closed surface
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/execution/live_session.py
+      - src/execution/networked/entry_contract_v1.py
+      - src/execution/session/runner_v1.py
+    evidence_sources:
+      - src/execution/live_session.py
+      - src/execution/networked/entry_contract_v1.py
+      - src/execution/session/runner_v1.py
+    notes: Fail-closed / decommission touch. No new network endpoint. No new order submit path. Atlas is not execution authority.
+
+  - id: RUNTIME_COMPONENT:promotion_loop_safety
+    kind: RUNTIME_COMPONENT
+    name: Promotion-loop safety comments
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/governance/promotion_loop/safety.py
+    evidence_sources:
+      - src/governance/promotion_loop/safety.py
+    notes: Comment/example nested-key wording only. Promotion authority unchanged.
+
+  - id: ADAPTER:kraken_live_client
+    kind: ADAPTER
+    name: Historical Kraken live client
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: REMOVED
+    temporal_class: HISTORICAL_ONLY
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/exchange/kraken_live.py
+      - src/exchange/kraken_testnet.py
+      - src/ops/kraken_futures_demo_credential_presence_contract_v0.py
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: Removed from the current tree. Not an operative venue. Not relabeled to OKX. Historical traceability only.
+
+  - id: RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces
+    kind: RUNTIME_COMPONENT
+    name: Ops fail-closed surfaces touched by single-venue cleanup
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/bounded_futures_private_readonly_contract_v0.py
+      - src/ops/bounded_futures_testnet_contract_v0.py
+      - src/ops/bounded_testnet_runtime_market_observation_producer_v0.py
+      - src/ops/capability_11_2_credential_authorization_and_account_identity_boundary_v1/autonomy_scope_limits_v1.py
+      - src/ops/market_data_cache_observation_reader.py
+      - src/ops/order_capability_payload_builder_contract_v1.py
+      - src/ops/p67/recorded_price_series_v0.py
+      - src/ops/p85/run_live_data_ingest_readiness_v1.py
+      - src/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/constants_v1.py
+      - src/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/constants_v1.py
+      - src/ops/section_11_13_2_live_private_read_only_v1/constants_v1.py
+      - src/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1/constants_v1.py
+      - src/ops/section_11_13_4_live_dry_run_order_plan_v1/constants_v1.py
+    evidence_sources:
+      - src/ops/bounded_futures_private_readonly_contract_v0.py
+    notes: Fail-closed / decommission token cleanup on existing contracts. No new live, testnet, or canary capability. Atlas is not trading authority.
+
   - id: GUARD:economic_diagnostic_optimization_boundary
     kind: GUARD
     name: Economic diagnostic optimization boundary guard
@@ -1127,12 +1232,16 @@ entities:
     source_paths:
       - src/governance/economic_diagnostic_optimization_boundary_v0.py
       - src/governance/semantics_neutral_decommission_authorization_v1.py
+      - src/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.py
     authority_sources:
       - docs/governance/ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_LOGIC_IMMUTABILITY_CONTRACT_V0.md
     evidence_sources:
       - src/governance/economic_diagnostic_optimization_boundary_v0.py
       - src/governance/semantics_neutral_decommission_authorization_v1.py
+      - src/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.py
       - config/governance/semantics_neutral_decommission_authorization_v1.json
+      - config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json
       - docs/governance/ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_LOGIC_IMMUTABILITY_CONTRACT_V0.md
       - docs/ops/specs/SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1.md
-    notes: Atlas inventory only. Not a trading authority. Default grant remains fail-closed. Active grants require a SHA-256 evidence digest over canonical unified diffs and the diff base SHA. Same paths with a different diff cannot reuse a grant. ATLAS_AUTHORITY=NONE.
+      - docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE_AUTHORIZATION_V1.md
+    notes: Atlas inventory only. Not a trading authority. Default grants remain fail-closed unless an exact-file SHA-256 evidence digest over canonical unified diffs and the diff base SHA is bound. Same paths with a different diff cannot reuse a grant. Owner adjudication is necessary and not sufficient. ATLAS_AUTHORITY=NONE.

@@ -307,7 +307,7 @@ A86|WN-SRC-AI|RETAIN_AS_IS|RETAIN_AS_IS|model-invocation utilities; distinct fro
 A87|WN-SRC-KNOWLEDGE|RETAIN_AS_IS|RETAIN_AS_IS|research KB; not runtime authority
 A88|WN-OPS-RECON|RETAIN_AS_IS|RETAIN_AS_IS|canonical recon gate; SAFETY CRITICAL
 A89|WN-OPS-TEST-HEALTH|RETAIN_AS_IS|RETAIN_AS_IS|CI/test-health runner
-A90|WN-HIST-INFRA-HEALTH|ADAPT|ADAPT|preserve domain-specific operational health concept; no old CCXT Kraken/Binance/Coinbase or live-enable semantics
+A90|WN-HIST-INFRA-HEALTH|ADAPT|ADAPT|preserve domain-specific operational health concept; no old CCXT Kraken or live-enable semantics
 A91|WN-HIST-INFRA-BACKUP|ADAPT|HISTORICALLY_VALID_BUT_INCOMPATIBLE|historical gzip/caller-dict/retention residuals are not a required current strategic capability; unsafe as recovery owner
 A92|WN-HIST-INFRA-MONITORING|ADAPT|ALREADY_COVERED|current split observability/alerting/escalation architecture covers the strategic capability; historical unified facade is not a required strategic residual
 A93|WN-HIST-INFRA-RESILIENCE|ADAPT|ADAPT|preserve RateLimiter + Fallback capability if implemented; integrate into current core resilience, no second resilience SSOT
@@ -370,7 +370,7 @@ ADAPT_DETAILS: dict[str, dict[str, str]] = {
     },
     "WN-HIST-INFRA-HEALTH": {
         "preserve_capability": "DOMAIN_SPECIFIC_OPERATIONAL_HEALTH (module probes with explicit fail states)",
-        "do_not_restore_or_preserve": "CCXT Kraken/Binance/Coinbase exchange_check; old enable_live_trading flags; hist package identity as live gate",
+        "do_not_restore_or_preserve": "CCXT Kraken exchange_check; old enable_live_trading flags; hist package identity as live gate",
         "target_current_architectural_home": "ops.gates / core.resilience HealthCheck registrations bound to current OKX/no-order predicates",
         "adaptation_boundary": "no multi-venue ccxt; no live enablement semantics",
     },

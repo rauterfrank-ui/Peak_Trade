@@ -166,7 +166,7 @@ def test_run_portfolio_backtest_v2_accepts_local_csv_source_smoke(tmp_path):
 
 def test_portfolio_backtest_ohlcv_load_meta_parity_kraken_shortfall(monkeypatch):
     """
-    J1: Loader-Meta (z. B. kraken_bars_shortfall) muss wie bei Evaluate in Result- und
+    J1: Loader-Meta (z. B. bars_shortfall) muss wie bei Evaluate in Result- und
     Aggregat-Metadaten erscheinen; kein Netz: nur load_dummy_ohlcv + synthetische Meta.
     """
     from src.core.peak_config import load_config
@@ -194,8 +194,8 @@ def test_portfolio_backtest_ohlcv_load_meta_parity_kraken_shortfall(monkeypatch)
             "timeframe": timeframe,
             "n_bars_requested": n_bars,
             "bars_loaded": len(df),
-            "kraken_pagination_used": False,
-            "kraken_bars_shortfall": True,
+            "pagination_used": False,
+            "bars_shortfall": True,
             "ohlcv_csv_resolved": None,
             "csv_bars_shortfall": None,
         }
@@ -214,10 +214,10 @@ def test_portfolio_backtest_ohlcv_load_meta_parity_kraken_shortfall(monkeypatch)
     )
 
     ohlcv_load = res.metadata.get("ohlcv_load", {})
-    assert ohlcv_load.get("kraken_bars_shortfall") is True
+    assert ohlcv_load.get("bars_shortfall") is True
     assert ohlcv_load.get("symbol") == "BTC/EUR"
 
     ohlcv_by_sym = {
         "BTC/EUR": res.metadata.get("ohlcv_load", {}),
     }
-    assert ohlcv_by_sym["BTC/EUR"].get("kraken_bars_shortfall") is True
+    assert ohlcv_by_sym["BTC/EUR"].get("bars_shortfall") is True

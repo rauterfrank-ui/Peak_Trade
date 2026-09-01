@@ -2,48 +2,16 @@
 Peak_Trade Exchange Layer Smoke Tests
 =====================================
 
-Smoke- und Integration-Tests für den Exchange-Layer.
+Offline smoke tests for the exchange layer.
 
-WICHTIG: Diese Datei enthält zwei Kategorien von Tests:
+1. Dataclasses, dummy trading client, and protocol checks (no venue).
+2. Operative CCXT constructor/factory success using existing OKX names.
+3. Fail-closed rejection of foreign / undeclared / missing venue ids.
 
-1. OFFLINE-TESTS (Standard)
-   - Laufen OHNE Netzwerkzugriff
-   - Testen Dataclasses, Konstruktoren, Protokolle
-   - Werden bei jedem `pytest`-Lauf ausgeführt
-   - Keine API-Keys erforderlich
-
-2. INTEGRATION-TESTS (Opt-in)
-   - Machen ECHTE HTTP-Requests zur Exchange (Kraken)
-   - Standardmäßig GESKIPPT
-   - Nur für manuelles Testen der Exchange-Anbindung gedacht
-   - NICHT Teil der normalen CI/Dev-Suite
-
-INTEGRATION-TESTS AKTIVIEREN:
------------------------------
-Um die Integration-Tests auszuführen, setze die Umgebungsvariable:
-
-    export PEAK_TRADE_EXCHANGE_TESTS=1
-    pytest tests/test_exchange_smoke.py -v
-
-Oder in einer Zeile:
-
-    PEAK_TRADE_EXCHANGE_TESTS=1 pytest tests/test_exchange_smoke.py -v
-
-HINWEISE zu Integration-Tests:
-- Erfordern Internetzugang (zu api.kraken.com)
-- Für Public-API-Tests (Ticker, OHLCV, Markets) sind KEINE API-Keys nötig
-- Für authentifizierte Tests (Balance, Orders) müssten API-Keys gesetzt sein
-- Diese Tests sind bewusst NICHT Teil der CI-Pipeline
-
-Phase 38: Ergänzt um TradingExchangeClient-Offline-Tests (DummyExchangeClient).
+No network. No Live. No Testnet wire. Dummy is simulation, not a venue.
 """
 
-import os
 import pytest
-
-ccxt = pytest.importorskip("ccxt", reason="Optional dependency missing: ccxt")
-
-import pandas as pd
 
 from src.exchange.base import Ticker, Balance, ExchangeClient, TradingExchangeClient
 from src.exchange.ccxt_client import CcxtExchangeClient
@@ -124,61 +92,79 @@ def test_balance_get_asset_missing():
     assert unknown["total"] == 0.0
 
 
-def test_ccxt_client_construction():
-    """Test: CcxtExchangeClient kann mit gültiger Exchange-ID erstellt werden."""
-    pytest.importorskip("ccxt")
-    client = CcxtExchangeClient("kraken")
+def test_ccxt_client_construction_operative_okx():
+    """Operative constructor success uses the existing OKX ccxt class id."""
+    pytest.importorskip("ccxt", reason="Optional dependency missing: ccxt")
+    client = CcxtExchangeClient("okx")
 
-    assert client.get_name() == "kraken"
-    assert repr(client) == "<CcxtExchangeClient(kraken, no API-Key)>"
+    assert client.get_name() == "okx"
+    assert "okx" in repr(client)
 
 
-def test_ccxt_client_construction_with_credentials():
-    """Test: CcxtExchangeClient mit API-Key."""
-    pytest.importorskip("ccxt")
+def test_ccxt_client_construction_with_credentials_operative_okx():
+    """Operative constructor still accepts credential kwargs for the OKX id."""
+    pytest.importorskip("ccxt", reason="Optional dependency missing: ccxt")
     client = CcxtExchangeClient(
-        "kraken",
+        "okx",
         api_key="test_key",
         secret="test_secret",
     )
 
-    assert client.get_name() == "kraken"
+    assert client.get_name() == "okx"
     assert "with API-Key" in repr(client)
 
 
+def test_ccxt_client_foreign_venue_rejected():
+    """A foreign venue id is not a second productive ccxt venue."""
+    with pytest.raises(ValueError, match="noncanonical_venue_rejected"):
+        CcxtExchangeClient("foreign_venue")
+
+
 def test_ccxt_client_invalid_exchange():
-    """Test: Ungültige Exchange-ID wirft ValueError."""
-    pytest.importorskip("ccxt")
-    with pytest.raises(ValueError, match="Unknown ccxt exchange id"):
-        CcxtExchangeClient("invalid_exchange_xyz")
+    """Undeclared ccxt ids fail closed at the operative venue boundary."""
+    with pytest.raises(ValueError, match="noncanonical_venue_rejected"):
+        CcxtExchangeClient("undeclared_venue")
 
 
-def test_ccxt_client_available_timeframes():
-    """Test: Timeframes können abgerufen werden (offline)."""
-    pytest.importorskip("ccxt")
-    client = CcxtExchangeClient("kraken")
+def test_ccxt_client_available_timeframes_operative_okx():
+    """Timeframe listing is exercised through the gated OKX constructor."""
+    pytest.importorskip("ccxt", reason="Optional dependency missing: ccxt")
+    client = CcxtExchangeClient("okx")
 
     timeframes = client.get_available_timeframes()
     assert isinstance(timeframes, list)
-    # Kraken unterstützt mehrere Timeframes
     assert len(timeframes) > 0
 
 
-def test_ccxt_client_implements_protocol():
-    """Test: CcxtExchangeClient implementiert ExchangeClient-Protokoll."""
-    pytest.importorskip("ccxt")
-    client = CcxtExchangeClient("kraken")
+def test_ccxt_client_implements_protocol_operative_okx():
+    """The gated OKX ccxt client satisfies the read-only ExchangeClient protocol."""
+    pytest.importorskip("ccxt", reason="Optional dependency missing: ccxt")
+    client = CcxtExchangeClient("okx")
 
-    # Protocol-Check
     assert isinstance(client, ExchangeClient)
 
 
-def test_build_exchange_client_from_config(tmp_path):
-    """Test: Factory-Funktion erstellt Client aus Config."""
-    pytest.importorskip("ccxt")
+def test_build_exchange_client_from_config_foreign_venue_rejected(tmp_path):
+    """Alternate/foreign factory ids are rejected; they are not remapped to OKX."""
     config_text = """
 [exchange]
-id = "binance"
+id = "foreign_venue"
+sandbox = true
+"""
+    cfg_path = tmp_path / "config.toml"
+    cfg_path.write_text(config_text, encoding="utf-8")
+
+    cfg = load_config(cfg_path)
+    with pytest.raises(ValueError, match="noncanonical_venue_rejected"):
+        build_exchange_client_from_config(cfg)
+
+
+def test_build_exchange_client_from_config_okx_europe_eea(tmp_path):
+    """Factory success path maps the existing Peak_Trade OKX name onto ccxt okx."""
+    pytest.importorskip("ccxt", reason="Optional dependency missing: ccxt")
+    config_text = """
+[exchange]
+id = "okx_europe_eea"
 sandbox = true
 enable_rate_limit = true
 
@@ -192,12 +178,26 @@ secret = ""
     cfg = load_config(cfg_path)
     client = build_exchange_client_from_config(cfg)
 
-    assert client.get_name() == "binance"
+    assert client.get_name() == "okx"
+
+
+def test_build_exchange_client_noncanonical_rejected(tmp_path):
+    """Factory rejects a noncanonical venue id."""
+    config_text = """
+[exchange]
+id = "noncanonical_venue"
+sandbox = true
+"""
+    cfg_path = tmp_path / "config.toml"
+    cfg_path.write_text(config_text, encoding="utf-8")
+
+    cfg = load_config(cfg_path)
+    with pytest.raises(ValueError, match="noncanonical_venue_rejected"):
+        build_exchange_client_from_config(cfg)
 
 
 def test_build_exchange_client_missing_exchange_id_fail_closed(tmp_path):
     """Test: Factory fail-closed, wenn exchange.id fehlt (kein Venue-Fallback)."""
-    pytest.importorskip("ccxt")
     config_text = """
 [general]
 base_currency = "EUR"
@@ -272,102 +272,14 @@ def test_trading_client_order_execution():
     assert status.fee is not None
 
 
-# ============================================================================
-# INTEGRATION-TESTS (erfordern Netzwerk & explizites Opt-in)
-# ============================================================================
-#
-# ACHTUNG: Die folgenden Tests machen ECHTE HTTP-Requests zur Kraken-API!
-#
-# Diese Tests sind standardmäßig DEAKTIVIERT und werden nur ausgeführt, wenn
-# die Environment-Variable PEAK_TRADE_EXCHANGE_TESTS gesetzt ist.
-#
-# AKTIVIERUNG:
-#     export PEAK_TRADE_EXCHANGE_TESTS=1
-#     pytest tests/test_exchange_smoke.py::test_integration_fetch_ticker -v
-#
-# ODER für alle Integration-Tests:
-#     PEAK_TRADE_EXCHANGE_TESTS=1 pytest tests/test_exchange_smoke.py -v -k integration
-#
-# VORAUSSETZUNGEN:
-#     - Internetzugang (zu api.kraken.com)
-#     - Für Public-API-Tests: Keine API-Keys erforderlich
-#     - Für authentifizierte Tests: KRAKEN_API_KEY und KRAKEN_API_SECRET setzen
-#
-# WICHTIG:
-#     - Diese Tests sind NICHT Teil der normalen CI/Dev-Suite
-#     - Sie dienen nur zum manuellen Testen der Exchange-Anbindung
-#     - Sie können fehlschlagen, wenn die Exchange nicht erreichbar ist
-#
-# ============================================================================
-
-EXCHANGE_TESTS_ENABLED = os.environ.get("PEAK_TRADE_EXCHANGE_TESTS", "").lower() in (
-    "1",
-    "true",
-    "yes",
-)
-
-
-@pytest.mark.skipif(
-    not EXCHANGE_TESTS_ENABLED,
-    reason="Exchange-Tests erfordern PEAK_TRADE_EXCHANGE_TESTS=1",
-)
-def test_integration_fetch_ticker():
-    """Integration-Test: Ticker von Kraken abrufen."""
-    pytest.importorskip("ccxt")
-    client = CcxtExchangeClient("kraken")
-
-    ticker = client.fetch_ticker("BTC/EUR")
-
-    assert ticker.symbol.startswith("BTC")
-    assert ticker.last is not None
-    assert ticker.last > 0
-
-
-@pytest.mark.skipif(
-    not EXCHANGE_TESTS_ENABLED,
-    reason="Exchange-Tests erfordern PEAK_TRADE_EXCHANGE_TESTS=1",
-)
-def test_integration_fetch_ohlcv():
-    """Integration-Test: OHLCV-Daten von Kraken abrufen."""
-    pytest.importorskip("ccxt")
-    client = CcxtExchangeClient("kraken")
-
-    df = client.fetch_ohlcv("BTC/EUR", timeframe="1h", limit=10)
-
-    assert isinstance(df, pd.DataFrame)
-    assert len(df) > 0
-    assert "open" in df.columns
-    assert "high" in df.columns
-    assert "low" in df.columns
-    assert "close" in df.columns
-    assert "volume" in df.columns
-
-    # Index ist DatetimeIndex
-    assert isinstance(df.index, pd.DatetimeIndex)
-
-
-@pytest.mark.skipif(
-    not EXCHANGE_TESTS_ENABLED,
-    reason="Exchange-Tests erfordern PEAK_TRADE_EXCHANGE_TESTS=1",
-)
-def test_integration_fetch_markets():
-    """Integration-Test: Märkte von Kraken abrufen."""
-    pytest.importorskip("ccxt")
-    client = CcxtExchangeClient("kraken")
-
-    markets = client.fetch_markets()
-
-    assert isinstance(markets, list)
-    assert len(markets) > 0
-
-    # Mindestens ein BTC-Markt sollte existieren
-    btc_markets = [m for m in markets if m.get("base") == "BTC"]
-    assert len(btc_markets) > 0
+def test_integration_noncanonical_ccxt_id_rejected():
+    """Former public-HTTP integration path is not a current operative venue."""
+    with pytest.raises(ValueError, match="noncanonical_venue_rejected"):
+        CcxtExchangeClient("example_venue")
 
 
 def test_integration_from_config_requires_explicit_exchange_id():
     """Canonical config has no exchange.id; factory must fail closed (no implicit venue)."""
-    pytest.importorskip("ccxt")
     cfg = load_config()
     with pytest.raises(ValueError, match="exchange.id is required"):
         build_exchange_client_from_config(cfg)

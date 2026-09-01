@@ -1,10 +1,33 @@
 {
   "TOKEN_ALONE_IS_INSUFFICIENT": true,
-  "allowed_paths": [],
-  "allowed_surface_classes": [],
+  "allowed_paths": [
+    "src/governance/promotion_loop/safety.py",
+    "src/trading/master_v2/pr4985_runtime_activation_materiality_classifier_v0.py",
+    "tests/governance/promotion_loop/test_safety_manifest_era_v1.py",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/fixture_builder.py",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_btc_base.json",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_digest_mismatch.json",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_duplicate_instrument.json",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_insufficient_history.json",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_spot.json",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_synthetic_spot.json",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_xbt_base.json",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/valid_multi_epoch.json",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/valid_single_epoch.json",
+    "tests/research/new_listings/test_p9_normalize_ccxt_tickers.py",
+    "tests/research/test_instrument_id_canonicalization_v1.py",
+    "tests/research/test_pit_futures_universe_manifest_generator_registry_consumer_binding_v1.py",
+    "tests/research/test_pit_futures_universe_manifest_generator_v1.py",
+    "tests/trading/master_v2/test_canonical_volatility_typed_runtime_producer_scaffold_v1.py",
+    "tests/trading/master_v2/test_pr4985_runtime_activation_materiality_classifier_v0.py"
+  ],
+  "allowed_surface_classes": [
+    "MASTER_V2",
+    "PROMOTION_RUNTIME_ORDER_CREDENTIAL_SCHEDULER_AUTHORITY"
+  ],
   "authority_effect": "NONE",
   "authorization_token": "SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1",
-  "authorized_evidence_digest": "",
+  "authorized_evidence_digest": "7ca0623a46dad4bc9346a240bcea30a66c00fcde108ada875f8cea979f84dc81",
   "authorized_path_prefixes": [],
   "authorized_scope_class": "SEMANTICS_NEUTRAL_DECOMMISSION_ONLY",
   "blanket_allowlist": false,
@@ -56,11 +79,10 @@
     "RUNTIME_EFFECT": "NONE",
     "SCHEDULER_EFFECT": "NONE"
   },
-  "grant_active": false,
+  "grant_active": true,
   "mutation_purpose_class": "SEMANTICS_NEUTRAL_DECOMMISSION",
   "notes": [
-    "Inactive default grant. Exact-file allowed_paths and authorized_evidence_digest stay empty until a later decommission PR activates this class.",
-    "An active grant is bound to the canonical SHA-256 evidence digest of the attested unified diffs and diff base. A later unrelated diff on the same paths does not reuse the grant.",
+    "Active exact-file grant bound to the canonical SHA-256 evidence digest of the attested unified diffs and diff base. A later unrelated diff on the same paths does not reuse the grant.",
     "Does not waive MASTER_V2_MUTATION_ALLOWED=false as a global default.",
     "Does not authorize live, testnet, canary, orders, or productive reachability increases.",
     "Token alone is insufficient. Diff evidence must prove at least one decommission predicate and no forbidden semantic delta."

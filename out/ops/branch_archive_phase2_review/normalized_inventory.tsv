@@ -148,7 +148,6 @@ feat/p104-soak-watch-v1	2026-02-16	2f34758e	origin/feat/p104-soak-watch-v1	no	fe
 feat/p105-exchange-execution-workbook-v1	2026-02-16	9f2ab28b	origin/feat/p105-exchange-execution-workbook-v1	no	feat	INITIAL
 feat/p106-execution-adapter-cap-matrix-v1	2026-02-16	f3286ae8	origin/feat/p106-execution-adapter-cap-matrix-v1	no	feat	INITIAL
 feat/p108-okx-adapter-v1-mocks-only	2026-02-17	7dd3e44e	origin/feat/p108-okx-adapter-v1-mocks-only	no	feat	INITIAL
-feat/p109-bybit-adapter-v1-mocks-only	2026-02-17	8be6beaf	origin/feat/p109-bybit-adapter-v1-mocks-only	no	feat	INITIAL
 feat/p110-execution-adapter-matrix-smoke-v1	2026-02-17	37e33b7e	origin/feat/p110-execution-adapter-matrix-smoke-v1	no	feat	INITIAL
 feat/p112-execution-router-v1-mocks-only	2026-02-17	762994c4	origin/feat/p112-execution-router-v1-mocks-only	no	feat	INITIAL
 feat/p113-execution-router-cli-v1	2026-02-17	8b7c5459	origin/feat/p113-execution-router-cli-v1	no	feat	INITIAL

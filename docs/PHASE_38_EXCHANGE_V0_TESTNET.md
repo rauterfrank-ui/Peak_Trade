@@ -244,7 +244,7 @@ PEAK_TRADE_EXCHANGE_TESTS=1 python3 -m pytest tests/test_exchange_smoke.py -v
 | Phase 39+ | `KrakenTestnetClient` vollständig an `TradingExchangeClient` anbinden |
 | Phase 40+ | `KrakenLiveClient` mit echten Orders (mit allen Safety-Guards) |
 | Phase 41+ | Integration in Live-/Testnet-Orchestrierung |
-| Später | Multi-Exchange-Support (Binance, etc.) |
+| Später | Multi-Exchange-Support (noncanonical venues remain rejected) |
 
 ---
 

@@ -65,7 +65,7 @@ Integration mit Exchange-APIs eingeführt – strikt **ohne echten Live-Handel**
 ### Exchange-Client
 
 ```
-src/exchange/kraken_testnet.py
+src/exchange/kraken_testnet.py <!-- pt:ref-target-ignore -->
 ├── KrakenTestnetConfig       # Konfiguration
 ├── KrakenTestnetClient       # API-Client
 ├── KrakenOrderResponse       # Response-Dataclass
@@ -322,7 +322,7 @@ Die Architektur ist so gestaltet, dass später:
    - Neuer `LiveExchangeOrderExecutor` (Phase 40+)
 
 2. **Weitere Exchanges** durch:
-   - Neue Client-Klassen (z.B. `BinanceTestnetClient`)
+   - Neue Client-Klassen für noncanonical venues are forbidden
    - Gemeinsames Protocol/Interface für Clients
 
 3. **Erweiterte Order-Typen** durch:

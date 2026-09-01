@@ -70,7 +70,7 @@ LEGACY_NON_AUTHORITATIVE_PATH = LEGACY_NON_AUTHORITATIVE
 SYSTEM_ECONOMIC_EVIDENCE_BLOCKED = True
 LEGACY_NON_AUTHORITATIVE_FLAG = True
 from src.backtest.stats import compute_backtest_stats, validate_for_live_trading
-from src.data import DataNormalizer, CsvLoader, KrakenCsvLoader
+from src.data import DataNormalizer, CsvLoader, UnixSecondsOhlcCsvLoader
 from src.core.experiments import log_backtest_result
 from src.strategies import STRATEGY_REGISTRY, load_strategy
 from src.strategies.registry import (
@@ -393,7 +393,7 @@ def load_ohlcv_data(
         else:
             # Kraken-spezifisches Format erkennen
             if "kraken" in str(path).lower():
-                loader = KrakenCsvLoader()
+                loader = UnixSecondsOhlcCsvLoader()
             else:
                 loader = CsvLoader()
 

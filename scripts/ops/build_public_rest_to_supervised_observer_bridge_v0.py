@@ -16,8 +16,6 @@ CONFIRM_TOKEN = "NO_NETWORK_NO_BROKER_NO_EXCHANGE_NO_ORDERS"
 
 CAPTURE_MANIFEST_SCHEMA_EXPECTED = "public_rest_market_capture_package_manifest_v0"
 CAPTURE_SOURCE_EXPECTED = "public_rest_snapshot_one_shot"
-PROVIDER_EXPECTED = "binance_spot_market_data_only"
-SYMBOL_EXPECTED = "BTCUSDT"
 NORMALIZED_REL = Path("normalized/captured_realistic_snapshots.json")
 MANIFEST_REL = Path("manifest/capture_manifest.json")
 
@@ -140,16 +138,20 @@ def _load_json_dict(path: Path) -> Dict[str, Any]:
 def _validate_upstream_capture_manifest(man: Mapping[str, Any]) -> None:
     if man.get("schema") != CAPTURE_MANIFEST_SCHEMA_EXPECTED:
         raise ValueError("capture_manifest.schema mismatch")
-    if man.get("provider") != PROVIDER_EXPECTED:
-        raise ValueError("capture_manifest.provider mismatch")
+    provider = str(man.get("provider") or "").strip()
+    if not provider:
+        raise ValueError("capture_manifest.provider missing")
+    symbol = str(man.get("symbol") or "").strip()
+    if not symbol:
+        raise ValueError("capture_manifest.symbol missing")
     if man.get("source") != CAPTURE_SOURCE_EXPECTED:
         raise ValueError("capture_manifest.source mismatch")
     if man.get("network_allowed") is not True:
         raise ValueError("capture_manifest.network_allowed must be true")
     if man.get("auth_required") is not False:
         raise ValueError("capture_manifest.auth_required must be false")
-    if man.get("symbol") != SYMBOL_EXPECTED:
-        raise ValueError("capture_manifest.symbol mismatch")
+    if not str(man.get("symbol") or "").strip():
+        raise ValueError("capture_manifest.symbol missing")
     if man.get("normalized_file") != "normalized/captured_realistic_snapshots.json":
         raise ValueError("capture_manifest.normalized_file mismatch")
     if man.get("snapshot_count") != 1:
@@ -165,7 +167,11 @@ def _validate_upstream_capture_manifest(man: Mapping[str, Any]) -> None:
 
 
 def _validate_upstream_normalized(
-    raw: Dict[str, Any], *, expected_sha: str, norm_path: Path
+    raw: Dict[str, Any],
+    *,
+    expected_sha: str,
+    expected_provider: str,
+    norm_path: Path,
 ) -> Tuple[Mapping[str, Any], Mapping[str, str]]:
     scan = _scan_structure_forbidden(raw)
     if scan:
@@ -188,7 +194,7 @@ def _validate_upstream_normalized(
         raise ValueError("normalized provenance.contains_fills must be false")
     if prov.get("source_class") != "public_rest_snapshot_one_shot":
         raise ValueError("normalized provenance.source_class mismatch")
-    if prov.get("provider") != PROVIDER_EXPECTED:
+    if prov.get("provider") != expected_provider:
         raise ValueError("normalized provenance.provider mismatch")
     shots = raw.get("snapshots")
     if not isinstance(shots, list) or len(shots) != 1:
@@ -228,6 +234,7 @@ def _bridge_normalized(
     upstream_normalized_sha256: str,
     symbol: str,
     observed_at_utc: str,
+    provider: str,
 ) -> Dict[str, Any]:
     base_bid = str(upstream_payload["bid"]).strip()
     base_ask = str(upstream_payload["ask"]).strip()
@@ -271,7 +278,7 @@ def _bridge_normalized(
         "contains_fills": False,
         "upstream_network_fetch_during_test": True,
         "upstream_source_class": CAPTURE_SOURCE_EXPECTED,
-        "upstream_provider": PROVIDER_EXPECTED,
+        "upstream_provider": provider,
         "bridge_generated": True,
         "bridge_schema": "public_rest_capture_package_to_supervised_input_bridge_v0",
         "bridge_reason": "supervised_observer_min_snapshot_count_compatibility",
@@ -325,6 +332,7 @@ def run_bridge(
 
     man = _load_json_dict(manifest_src)
     try:
+        provider = str(man.get("provider") or "").strip()
         _validate_upstream_capture_manifest(man)
     except ValueError as e:
         _die(f"ERR: {e}")
@@ -333,7 +341,10 @@ def run_bridge(
     norm_obj = _load_json_dict(norm_src)
     try:
         prov_u, pay_u = _validate_upstream_normalized(
-            norm_obj, expected_sha=expected_norm_sha, norm_path=norm_src
+            norm_obj,
+            expected_sha=expected_norm_sha,
+            expected_provider=provider,
+            norm_path=norm_src,
         )
     except ValueError as e:
         _die(f"ERR: {e}")
@@ -342,8 +353,8 @@ def run_bridge(
     if not isinstance(snap0, dict):
         _die("ERR: upstream snapshot must be object")
     sym = str(snap0.get("symbol", "")).strip()
-    if sym != SYMBOL_EXPECTED:
-        _die("ERR: upstream snapshot symbol mismatch")
+    if not sym:
+        _die("ERR: upstream snapshot symbol empty")
     obs_at = str(snap0.get("observed_at_utc", "")).strip()
     if not obs_at:
         _die("ERR: upstream snapshot.observed_at_utc empty")
@@ -373,6 +384,7 @@ def run_bridge(
         upstream_normalized_sha256=upstream_nm_sha,
         symbol=sym,
         observed_at_utc=obs_at,
+        provider=provider,
     )
     bridge_norm_path = norm_dir / "captured_realistic_snapshots_bridge.json"
     bridge_norm_path.write_bytes(_canonical_json_bytes(bridge_obj))
@@ -386,8 +398,8 @@ def run_bridge(
         "source": BRIDGE_MANIFEST_SOURCE,
         "network_allowed": False,
         "upstream_network_fetch_during_test": True,
-        "provider": PROVIDER_EXPECTED,
-        "symbol": SYMBOL_EXPECTED,
+        "provider": provider,
+        "symbol": sym,
         "upstream_snapshot_count": 1,
         "bridge_snapshot_count": 3,
         "bridge_expansion_method": BRIDGE_EXPANSION_METHOD,
@@ -465,8 +477,8 @@ def run_bridge(
         "BRIDGE_NETWORK_FETCH_DURING_TEST=false",
         "UPSTREAM_SNAPSHOT_COUNT=1",
         "BRIDGE_SNAPSHOT_COUNT=3",
-        "PUBLIC_REST_PROVIDER_ID=" + PROVIDER_EXPECTED,
-        "PUBLIC_REST_SYMBOL=BTCUSDT",
+        "PUBLIC_REST_PROVIDER_ID=" + provider,
+        "PUBLIC_REST_SYMBOL=" + sym,
         "PRIVATE_EXCHANGE_CAPTURE_ALLOWED=false",
         "BROKER_CAPTURE_ALLOWED=false",
         "LIVE_ALLOWED=false",

@@ -624,43 +624,9 @@ def _load_data(config: ArmstrongElKarouiCombiConfig) -> pd.DataFrame:
     Returns:
         DataFrame mit OHLCV-Daten
     """
-    try:
-        from src.data.kraken import fetch_ohlcv_df
-    except ImportError:
-        logger.warning("Kraken-Data-Loader nicht verfügbar, verwende Dummy-Daten")
-        return _generate_dummy_data(config)
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
 
-    try:
-        # Versuche echte Daten zu laden
-        df = fetch_ohlcv_df(
-            symbol=config.symbol,
-            timeframe=config.timeframe,
-            limit=2000,
-            use_cache=True,
-        )
-
-        if df.empty:
-            logger.warning("Keine Marktdaten gefunden, verwende Dummy-Daten")
-            return _generate_dummy_data(config)
-
-        # Datums-Filter anwenden
-        if config.start_date:
-            start_dt = pd.to_datetime(config.start_date)
-            if start_dt.tz is None and df.index.tz is not None:
-                start_dt = start_dt.tz_localize(df.index.tz)
-            df = df[df.index >= start_dt]
-
-        if config.end_date:
-            end_dt = pd.to_datetime(config.end_date)
-            if end_dt.tz is None and df.index.tz is not None:
-                end_dt = end_dt.tz_localize(df.index.tz)
-            df = df[df.index <= end_dt]
-
-        return df
-
-    except Exception as e:
-        logger.warning(f"Konnte Marktdaten nicht laden: {e}")
-        return _generate_dummy_data(config)
+    reject_noncanonical_operative_surface(surface="armstrong_elkaroui.load_market_data")
 
 
 def _generate_dummy_data(config: ArmstrongElKarouiCombiConfig) -> pd.DataFrame:

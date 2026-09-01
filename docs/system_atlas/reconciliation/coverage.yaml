@@ -25,7 +25,7 @@ atlas_census_meta_stale_sha_does_not_gate_this_census: true
 atlas_complete_flags_are_not_authority: true
 tree_content_census_count: 970
 historical_path_family_count: 78
-import_symbol_census_count: 6379
+import_symbol_census_count: 6375
 terminology_candidate_count: 9391
 inner_archive_file_count: 16
 unique_blob_count_origin_main: 33443

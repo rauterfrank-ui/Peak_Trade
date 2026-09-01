@@ -458,10 +458,11 @@ Architectural-kind count in this bucket: `4`.
 
 ### HISTORICAL_REFERENCE_ONLY
 
-Architectural-kind count in this bucket: `2`.
+Architectural-kind count in this bucket: `3`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
+| ADAPTER:kraken_live_client | ADAPTER | Historical Kraken live client | HISTORICAL_REFERENCE_ONLY | STATUS=HISTORICAL |
 | ADAPTER:okx_execution_mock_v1 | ADAPTER | OKXExecutionAdapterV1 mocks-only | HISTORICAL_REFERENCE_ONLY | STATUS=HISTORICAL |
 | DOD:pr_queue_per_pr | DOD | Definition of Done pro PR | HISTORICAL_REFERENCE_ONLY | STATUS=HISTORICAL |
 
@@ -579,7 +580,7 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `10`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `42`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `10`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `46`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
@@ -677,7 +678,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=afbae518b67eb1b789c835e219db37f5b15f308b
-ENTITY_TOTAL=318
+ENTITY_TOTAL=324
 HUB_RELATION_COUNT=63
 STRUCTURAL_RELATION_COUNT=80
 RUNTIME_RELATION_COUNT=20
@@ -750,13 +751,14 @@ Remaining census domains:
 | kind | count |
 | --- | --- |
 | ACRONYM | 16 |
-| ADAPTER | 3 |
+| ADAPTER | 4 |
 | AUTH_PRIMITIVE | 1 |
 | BINDER | 1 |
 | CAPABILITY | 9 |
 | CHILD | 1 |
 | DATA_CONTRACT | 2 |
 | DOD | 8 |
+| EXECUTION_COMPONENT | 1 |
 | FAMILY | 8 |
 | FORENSIC_REFERENCE | 2 |
 | FUNCTIONAL_CORE | 1 |
@@ -771,8 +773,9 @@ Remaining census domains:
 | OKX_RESPONSE_SHAPE | 6 |
 | OWNER_DECISION | 2 |
 | PHASE | 1 |
+| REGISTRY | 1 |
 | RUNBOOK | 4 |
-| RUNTIME_COMPONENT | 37 |
+| RUNTIME_COMPONENT | 40 |
 | SCHEMA | 18 |
 | SCRIPT | 3 |
 | SELECTOR | 2 |

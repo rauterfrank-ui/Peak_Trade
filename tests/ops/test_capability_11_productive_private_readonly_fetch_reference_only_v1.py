@@ -182,7 +182,7 @@ def test_bad_allowlist_and_non_testnet_fail_closed() -> None:
     )
     assert (
         build_productive_private_readonly_fetch_reference_only_v1(
-            **_complete_kwargs(expected_venue="BINANCE")
+            **_complete_kwargs(expected_venue="UNDECLARED_VENUE")
         ).reference_only_fetch_admissible
         is False
     )

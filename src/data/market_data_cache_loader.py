@@ -1,8 +1,8 @@
 """
-Peak_Trade – Kraken Cache Loader with Data-QC (Phase 79)
+Peak_Trade – Market-data cache loader with Data-QC (Phase 79)
 =========================================================
 
-Lokaler Loader fuer Kraken-Cache-Parquet-Dateien mit integrierter
+Lokaler Loader fuer lokalen Cache-Parquet-Dateien mit integrierter
 Data-Quality-Control (QC) fuer Real-Market-Smoke-Tests.
 
 Features:
@@ -12,9 +12,9 @@ Features:
 - Strukturierte Health-Reports
 
 Usage:
-    from src.data.kraken_cache_loader import (
-        KrakenDataHealth,
-        load_kraken_cache_window,
+    from src.data.market_data_cache_loader import (
+        MarketDataCacheHealth,
+        load_market_data_cache_window,
         get_real_market_smokes_config,
     )
 
@@ -22,7 +22,7 @@ Usage:
     cfg = get_real_market_smokes_config()
 
     # Daten mit Health-Check laden
-    df, health = load_kraken_cache_window(
+    df, health = load_market_data_cache_window(
         base_path=Path(cfg["base_path"]),
         market="BTC/EUR",
         timeframe="1h",
@@ -57,9 +57,9 @@ HealthStatus = Literal["ok", "missing_file", "too_few_bars", "empty", "invalid_f
 
 
 @dataclass
-class KrakenDataHealth:
+class MarketDataCacheHealth:
     """
-    Data-Health-Report fuer Kraken-Cache-Daten.
+    Data-Health-Report fuer Cache-Daten.
 
     Attributes:
         status: Health-Status ("ok", "missing_file", "too_few_bars", "empty", "other")
@@ -117,7 +117,7 @@ def get_real_market_smokes_config(
         # Return sane defaults
         return {
             "base_path": "data/cache",
-            "test_base_path": "tests/data/kraken_smoke",
+            "test_base_path": "tests/data/market_data_smoke",
             "default_market": "BTC/EUR",
             "default_timeframe": "1h",
             "default_lookback_days": 30,
@@ -134,7 +134,7 @@ def get_real_market_smokes_config(
 
     return {
         "base_path": rms.get("base_path", "data/cache"),
-        "test_base_path": rms.get("test_base_path", "tests/data/kraken_smoke"),
+        "test_base_path": rms.get("test_base_path", "tests/data/market_data_smoke"),
         "default_market": rms.get("default_market", "BTC/EUR"),
         "default_timeframe": rms.get("default_timeframe", "1h"),
         "default_lookback_days": rms.get("default_lookback_days", 30),
@@ -178,16 +178,16 @@ def _timeframe_to_hours(timeframe: str) -> float:
     return mapping.get(timeframe, 1.0)
 
 
-def load_kraken_cache_window(
+def load_market_data_cache_window(
     base_path: Path,
     market: str,
     timeframe: str,
     lookback_days: int = 30,
     min_bars: int = 500,
     n_bars: Optional[int] = None,
-) -> Tuple[pd.DataFrame, KrakenDataHealth]:
+) -> Tuple[pd.DataFrame, MarketDataCacheHealth]:
     """
-    Laedt Daten aus lokalem Kraken-Cache mit Data-QC.
+    Laedt Daten aus lokalem lokalen Cache mit Data-QC.
 
     Fuehrt automatische Quality-Checks durch und gibt strukturierten
     Health-Report zurueck.
@@ -201,9 +201,9 @@ def load_kraken_cache_window(
         n_bars: Explizite Anzahl Bars (ueberschreibt lookback_days)
 
     Returns:
-        Tuple von (DataFrame, KrakenDataHealth)
+        Tuple von (DataFrame, MarketDataCacheHealth)
         - DataFrame: OHLCV-Daten (leer bei Fehler)
-        - KrakenDataHealth: Strukturierter Health-Report
+        - MarketDataCacheHealth: Strukturierter Health-Report
     """
     # Pfad bauen
     cache_path = _build_cache_path(Path(base_path), market, timeframe)
@@ -221,7 +221,7 @@ def load_kraken_cache_window(
         else:
             available = list(Path(base_path).glob("*.parquet")) if Path(base_path).exists() else []
             available_str = ", ".join([f.name for f in available]) if available else "keine"
-            return pd.DataFrame(), KrakenDataHealth(
+            return pd.DataFrame(), MarketDataCacheHealth(
                 status="missing_file",
                 num_bars=0,
                 notes=f"Cache-Datei nicht gefunden: {cache_path.name}. Verfuegbar: {available_str}",
@@ -232,7 +232,7 @@ def load_kraken_cache_window(
     try:
         df = pd.read_parquet(cache_path)
     except Exception as e:
-        return pd.DataFrame(), KrakenDataHealth(
+        return pd.DataFrame(), MarketDataCacheHealth(
             status="invalid_format",
             num_bars=0,
             notes=f"Parquet-Ladefehler: {str(e)[:100]}",
@@ -241,7 +241,7 @@ def load_kraken_cache_window(
 
     # 3. Leere Datei pruefen
     if len(df) == 0:
-        return pd.DataFrame(), KrakenDataHealth(
+        return pd.DataFrame(), MarketDataCacheHealth(
             status="empty",
             num_bars=0,
             notes="Cache-Datei ist leer",
@@ -260,7 +260,7 @@ def load_kraken_cache_window(
                 pass
 
         if not isinstance(df.index, pd.DatetimeIndex):
-            return pd.DataFrame(), KrakenDataHealth(
+            return pd.DataFrame(), MarketDataCacheHealth(
                 status="invalid_format",
                 num_bars=0,
                 notes=f"Kein DatetimeIndex: {type(df.index).__name__}",
@@ -280,7 +280,7 @@ def load_kraken_cache_window(
     expected_cols = ["open", "high", "low", "close", "volume"]
     missing_cols = set(expected_cols) - set(df.columns)
     if missing_cols:
-        return pd.DataFrame(), KrakenDataHealth(
+        return pd.DataFrame(), MarketDataCacheHealth(
             status="invalid_format",
             num_bars=len(df),
             start_ts=df.index[0],
@@ -315,7 +315,7 @@ def load_kraken_cache_window(
         lookback_days_actual = 0.0
 
     if actual_bars < min_bars:
-        return df[expected_cols], KrakenDataHealth(
+        return df[expected_cols], MarketDataCacheHealth(
             status="too_few_bars",
             num_bars=actual_bars,
             start_ts=start_ts,
@@ -326,7 +326,7 @@ def load_kraken_cache_window(
         )
 
     # 11. Alles OK
-    return df[expected_cols], KrakenDataHealth(
+    return df[expected_cols], MarketDataCacheHealth(
         status="ok",
         num_bars=actual_bars,
         start_ts=start_ts,
@@ -341,7 +341,7 @@ def check_data_health_only(
     market: str,
     timeframe: str,
     min_bars: int = 500,
-) -> KrakenDataHealth:
+) -> MarketDataCacheHealth:
     """
     Fuehrt nur Data-QC durch ohne Daten zu laden.
 
@@ -354,9 +354,9 @@ def check_data_health_only(
         min_bars: Minimum benoetigte Bars
 
     Returns:
-        KrakenDataHealth mit Status-Info
+        MarketDataCacheHealth mit Status-Info
     """
-    _, health = load_kraken_cache_window(
+    _, health = load_market_data_cache_window(
         base_path=base_path,
         market=market,
         timeframe=timeframe,
