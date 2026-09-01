@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=4
+ATLAS_CHANGED_ENTITY_COUNT=3
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -41,9 +41,8 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `GATE:flatten_execute_authority` |
-| `PHASE:z2cn` |
-| `PHASE:z2cq` |
 | `PHASE:z2cr` |
+| `PHASE:z2cs` |
 
 ## CHANGED_RELATIONS
 
@@ -95,7 +94,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Additive PHASE:z2cr catalog navigation for §11.13.5.Z2CR one authenticated unfiltered positions GET persist plus Prerequisite-08 window re-evaluation. Empty data is not zero. Prerequisite 08 remains unresolved. GATE:flatten_execute_authority deny-list records the Z2CR Owner-GO as not execute. Atlas is not trading authority. No POST, secret mutation, HMAC, or flatten execute mutation.
+- Additive PHASE:z2cs catalog navigation for §11.13.5.Z2CS offline Prerequisite-08 resolution-authority adjudication. Unfiltered positions GET plus classifier is the already-canonical 08 path. Current runtime GO is NONE. NOT_OBSERVED is fail-closed, not a zero-semantics gap. GATE:flatten_execute_authority deny-list records the Z2CS Owner-GO as not execute. Atlas is not trading authority. No GET, POST, secret mutation, HMAC, or flatten execute mutation.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
