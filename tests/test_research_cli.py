@@ -1043,3 +1043,39 @@ class TestResearchCliQuietMode:
         sweep_args, output = mock_run_sweep.call_args[0]
         assert sweep_args.command == "sweep"
         assert output.quiet is True
+
+
+class TestOfflineVenueOhlcvContract:
+    """WP-01: venue OHLCV is not operative; dummy must be explicit."""
+
+    def test_authority_markers(self) -> None:
+        assert research_cli.AUTHORITY_CLASS == "NON_AUTHORITY_RESEARCH_OPERATOR"
+        assert research_cli.AUTHORITY_EFFECT == "NONE"
+
+    def test_strategy_profile_without_dummy_fails_closed(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        parser = research_cli.build_parser()
+        args = parser.parse_args(["strategy-profile", "--strategy-id", "rsi_reversion"])
+        assert args.use_dummy_data is False
+        with caplog.at_level(logging.ERROR):
+            rc = research_cli.run_strategy_profile(args)
+        assert rc == 1
+        assert research_cli.LEGACY_VENUE_OHLCV_NOT_OPERATIVE in caplog.text
+
+    def test_run_experiment_without_dummy_fails_closed(self) -> None:
+        parser = research_cli.build_parser()
+        args = parser.parse_args(["run-experiment", "--preset", "armstrong_ecm_btc_longterm_v1"])
+        assert args.use_dummy_data is False
+        assert research_cli.run_experiment(args) == 1
+
+    def test_source_has_no_legacy_venue_loader(self) -> None:
+        source = (
+            Path(__file__)
+            .parent.parent.joinpath("scripts/research_cli.py")
+            .read_text(encoding="utf-8")
+        )
+        assert "src.data.kraken" not in source
+        assert "fetch_ohlcv_df" not in source
+        assert "legacy_venue_ohlcv_removed" not in source
+        assert research_cli.refuse_inoperative_venue_ohlcv_v1(command="probe") == 1

@@ -228,9 +228,17 @@ def test_isolated_load_strategy_binding_per_run_experiment_call(tmp_path) -> Non
     assert load_calls == [PRESET_STRATEGY_KEY, PRESET_STRATEGY_KEY]
 
 
-def test_run_experiment_unknown_strategy_fail_closed(tmp_path) -> None:
-    args = _experiment_args(tmp_path, preset="does_not_exist_preset_xyz")
+def test_run_experiment_without_dummy_fails_closed(tmp_path) -> None:
+    args = _experiment_args(tmp_path, use_dummy_data=False)
     assert research_cli.run_experiment(args) == 1
+
+
+def test_run_experiment_source_has_no_legacy_venue_loader() -> None:
+    source = _run_experiment_source()
+    assert "src.data.kraken" not in source
+    assert "fetch_ohlcv_df" not in source
+    assert "legacy_venue_ohlcv_removed" not in source
+    assert "refuse_inoperative_venue_ohlcv_v1" in source
 
 
 def test_load_strategy_unknown_key_fail_closed() -> None:
@@ -249,12 +257,13 @@ def test_load_strategy_no_network_calls() -> None:
 
 
 def test_ruff_format_check() -> None:
+    # pytest interpreter, not scripts/pt: GitHub tests matrix has no .venv.
     targets = [
         str(project_root / "scripts/research_cli.py"),
         str(project_root / "tests/scripts/test_research_cli_run_experiment_load_strategy_v1.py"),
     ]
     subprocess.run(
-        ["ruff", "format", "--check", *targets],
+        [sys.executable, "-m", "ruff", "format", "--check", *targets],
         check=True,
         cwd=project_root,
     )
@@ -266,7 +275,7 @@ def test_ruff_check() -> None:
         str(project_root / "tests/scripts/test_research_cli_run_experiment_load_strategy_v1.py"),
     ]
     subprocess.run(
-        ["ruff", "check", *targets],
+        [sys.executable, "-m", "ruff", "check", *targets],
         check=True,
         cwd=project_root,
     )

@@ -3,20 +3,57 @@
 Tests für Phase 81: Research Golden Paths
 
 Testet:
-- Golden-Path-Skript ist ausführbar
-- Golden-Path-Dokumentation existiert und ist vollständig
+- Golden-Path-Skript --help über den pytest-Interpreter (CI ohne .venv)
+- Operator-Kinderprozesse binden an scripts/pt
+- Command builders bind research_cli subcommands and dummy-data flags
+- Golden-Path-Dokumentation beschreibt den heutigen Research-Contract
 - Helper-Funktionen funktionieren korrekt
+- No trading/selection/execution ownership transfer
 """
 
-import pytest
+import argparse
+import ast
 import subprocess
 import sys
 from pathlib import Path
 
-# Pfade
+import pytest
+
 PROJECT_ROOT = Path(__file__).parent.parent
 SCRIPTS_DIR = PROJECT_ROOT / "scripts"
 DOCS_DIR = PROJECT_ROOT / "docs"
+PT_LAUNCHER = SCRIPTS_DIR / "pt"
+GOLDEN_PATH_SCRIPT = SCRIPTS_DIR / "run_research_golden_path.py"
+RESEARCH_CLI = SCRIPTS_DIR / "research_cli.py"
+
+FORBIDDEN_OWNERSHIP_MARKERS = (
+    "trading.master_v2",
+    "SimulatedExecutionPort",
+    "canonical_order_intent",
+    "governed_futures_universe_producer_v1",
+    "single_selected_future_policy_v1",
+    "src.autonomous",
+    "src.learning",
+    "src.ai",
+    "src.data.kraken",
+    "fetch_ohlcv_df",
+    "submit_order",
+)
+
+
+def _pytest_interpreter_run(*args: str) -> subprocess.CompletedProcess[str]:
+    """Execute wrapper argparse via the pytest interpreter.
+
+    GitHub ``tests`` jobs use setup-python without ``.venv``. ``scripts/pt``
+    therefore cannot launch help in that matrix. Operator children still bind
+    to ``scripts/pt`` (see ``test_canonical_argv_uses_scripts_pt``).
+    """
+    return subprocess.run(
+        [sys.executable, *args],
+        capture_output=True,
+        text=True,
+        cwd=PROJECT_ROOT,
+    )
 
 
 class TestGoldenPathScript:
@@ -24,51 +61,30 @@ class TestGoldenPathScript:
 
     def test_script_exists(self):
         """Golden-Path-Skript existiert."""
-        script = SCRIPTS_DIR / "run_research_golden_path.py"
-        assert script.exists(), f"Script not found: {script}"
+        assert GOLDEN_PATH_SCRIPT.exists(), f"Script not found: {GOLDEN_PATH_SCRIPT}"
 
     def test_script_help_runs(self):
-        """Skript --help funktioniert."""
-        script = SCRIPTS_DIR / "run_research_golden_path.py"
-        result = subprocess.run(
-            [sys.executable, str(script), "--help"],
-            capture_output=True,
-            text=True,
-        )
+        """Skript --help funktioniert über den pytest-Interpreter."""
+        result = _pytest_interpreter_run(str(GOLDEN_PATH_SCRIPT), "--help")
         assert result.returncode == 0, f"Help failed: {result.stderr}"
         assert "Golden Path" in result.stdout or "golden_path" in result.stdout
 
     def test_new_strategy_help(self):
         """new_strategy subcommand help funktioniert."""
-        script = SCRIPTS_DIR / "run_research_golden_path.py"
-        result = subprocess.run(
-            [sys.executable, str(script), "new_strategy", "--help"],
-            capture_output=True,
-            text=True,
-        )
+        result = _pytest_interpreter_run(str(GOLDEN_PATH_SCRIPT), "new_strategy", "--help")
         assert result.returncode == 0
         assert "--strategy-id" in result.stdout
         assert "--sweep-name" in result.stdout
 
     def test_optimize_help(self):
         """optimize subcommand help funktioniert."""
-        script = SCRIPTS_DIR / "run_research_golden_path.py"
-        result = subprocess.run(
-            [sys.executable, str(script), "optimize", "--help"],
-            capture_output=True,
-            text=True,
-        )
+        result = _pytest_interpreter_run(str(GOLDEN_PATH_SCRIPT), "optimize", "--help")
         assert result.returncode == 0
         assert "--sweep-name" in result.stdout
 
     def test_portfolio_help(self):
         """portfolio subcommand help funktioniert."""
-        script = SCRIPTS_DIR / "run_research_golden_path.py"
-        result = subprocess.run(
-            [sys.executable, str(script), "portfolio", "--help"],
-            capture_output=True,
-            text=True,
-        )
+        result = _pytest_interpreter_run(str(GOLDEN_PATH_SCRIPT), "portfolio", "--help")
         assert result.returncode == 0
         assert "--preset" in result.stdout
 
@@ -98,8 +114,12 @@ class TestGoldenPathDocumentation:
 
         # Prüfe auf CLI-Befehle
         assert "research_cli.py" in content
-        # Docs-Hygiene: CLI-Snippets sollen `python3` verwenden (nicht `python`).
-        assert "python3 scripts/" in content or "python3 scripts" in content.lower()
+        # Docs-Hygiene: CLI-Snippets müssen den kanonischen Launcher nutzen.
+        assert "./scripts/pt scripts/" in content
+        assert "python3 scripts/" not in content
+        assert "python scripts/run_research_golden_path.py" not in content
+        assert "--use-dummy-data" in content
+        assert "NON_AUTHORITY_RESEARCH_OPERATOR" in content
 
     def test_documentation_references_tiering(self):
         """Dokumentation referenziert das Tiering-System."""
@@ -176,3 +196,113 @@ class TestGoldenPathIntegration:
         """profile_research_and_portfolio.py existiert."""
         script = SCRIPTS_DIR / "profile_research_and_portfolio.py"
         assert script.exists(), f"profile script not found: {script}"
+
+
+class TestGoldenPathOperatorContract:
+    """WP-01: launcher, dummy-data, subcommand, and authority-boundary proofs."""
+
+    def test_canonical_argv_uses_scripts_pt(self) -> None:
+        from scripts.run_research_golden_path import canonical_research_cli_argv
+
+        argv = canonical_research_cli_argv("sweep", "--sweep-name", "demo")
+        assert argv[0] == str(PT_LAUNCHER)
+        assert argv[1] == str(RESEARCH_CLI)
+        assert argv[2] == "sweep"
+        assert "python" not in Path(argv[0]).name
+        assert "python3" not in Path(argv[0]).name
+
+    def test_new_strategy_commands_bind_dummy_and_existing_subcommands(self) -> None:
+        from scripts.run_research_golden_path import (
+            GOLDEN_PATH_RESEARCH_CLI_SUBCOMMANDS,
+            new_strategy_commands,
+        )
+
+        args = argparse.Namespace(
+            strategy_id="rsi_reversion",
+            sweep_name="rsi_reversion_basic",
+            top_n=5,
+            train_window="90d",
+            test_window="30d",
+            mc_runs=50,
+        )
+        steps = new_strategy_commands(args)
+        subcommands = [cmd[2] for cmd, _desc in steps]
+        assert subcommands == [
+            "sweep",
+            "report",
+            "walkforward",
+            "montecarlo",
+            "strategy-profile",
+        ]
+        for cmd, _desc in steps:
+            assert cmd[0] == str(PT_LAUNCHER)
+            assert cmd[1] == str(RESEARCH_CLI)
+            assert cmd[2] in GOLDEN_PATH_RESEARCH_CLI_SUBCOMMANDS
+        walkforward = steps[2][0]
+        montecarlo = steps[3][0]
+        profile = steps[4][0]
+        assert "--use-dummy-data" in walkforward
+        assert "--use-dummy-data" in montecarlo
+        assert "--use-dummy-data" in profile
+
+    def test_optimize_and_portfolio_commands_bind_dummy(self) -> None:
+        from scripts.run_research_golden_path import optimize_command, portfolio_command
+
+        opt = optimize_command(
+            argparse.Namespace(
+                sweep_name="rsi_reversion_tuning_v2",
+                top_n=5,
+                train_window="90d",
+                test_window="30d",
+                mc_runs=50,
+                run_walkforward=True,
+                run_montecarlo=True,
+                run_stress=True,
+            )
+        )
+        assert opt[2] == "pipeline"
+        assert "--walkforward-use-dummy-data" in opt
+        assert "--mc-use-dummy-data" in opt
+        assert "--stress-use-dummy-data" in opt
+
+        port = portfolio_command(argparse.Namespace(preset="core_balanced", with_plots=True))
+        assert port[2] == "portfolio"
+        assert "--use-dummy-data" in port
+
+    def test_research_cli_exposes_all_golden_path_subcommands(self) -> None:
+        import argparse
+
+        import scripts.research_cli as research_cli
+        from scripts.run_research_golden_path import GOLDEN_PATH_RESEARCH_CLI_SUBCOMMANDS
+
+        parser = research_cli.build_parser()
+        subparsers = [
+            action for action in parser._actions if isinstance(action, argparse._SubParsersAction)
+        ]
+        assert subparsers, "research_cli parser has no subcommands"
+        choices = set(subparsers[0].choices)
+        missing = set(GOLDEN_PATH_RESEARCH_CLI_SUBCOMMANDS) - choices
+        assert not missing, f"missing research_cli subcommands: {missing}"
+
+    def test_wrapper_has_no_forbidden_ownership_imports(self) -> None:
+        source = GOLDEN_PATH_SCRIPT.read_text(encoding="utf-8")
+        tree = ast.parse(source)
+        imported: set[str] = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                imported.update(alias.name for alias in node.names)
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                imported.add(node.module)
+        joined = " ".join(sorted(imported))
+        for marker in FORBIDDEN_OWNERSHIP_MARKERS:
+            assert marker not in source
+            assert marker not in joined
+        assert "AUTHORITY_EFFECT" in source
+        assert "NON_AUTHORITY_RESEARCH_OPERATOR" in source
+
+    def test_research_cli_does_not_restore_legacy_venue_ohlcv(self) -> None:
+        source = RESEARCH_CLI.read_text(encoding="utf-8")
+        assert "src.data.kraken" not in source
+        assert "fetch_ohlcv_df" not in source
+        assert "legacy_venue_ohlcv_removed" not in source
+        assert "LEGACY_VENUE_OHLCV_NOT_OPERATIVE" in source

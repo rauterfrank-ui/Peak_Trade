@@ -15,40 +15,44 @@ Gebündelte CLI für den gesamten Research-Workflow:
 
 Verwendung:
     # Strategy-Sweep ausführen
-    python scripts/research_cli.py sweep --sweep-name rsi_reversion_basic --config config/config.toml
+    ./scripts/pt scripts/research_cli.py sweep --sweep-name rsi_reversion_basic --config config/config.toml
 
     # Sweep-Report generieren
-    python scripts/research_cli.py report --sweep-name rsi_reversion_basic --format both --with-plots
+    ./scripts/pt scripts/research_cli.py report --sweep-name rsi_reversion_basic --format both --with-plots
 
-    # Top-N Promotion
-    python scripts/research_cli.py promote --sweep-name rsi_reversion_basic --top-n 5
+    # Top-N Promotion (research ranking only; not productive promotion authority)
+    ./scripts/pt scripts/research_cli.py promote --sweep-name rsi_reversion_basic --top-n 5
 
     # Walk-Forward-Testing
-    python scripts/research_cli.py walkforward --sweep-name rsi_reversion_basic --top-n 3 --train-window 90d --test-window 30d --use-dummy-data
+    ./scripts/pt scripts/research_cli.py walkforward --sweep-name rsi_reversion_basic --top-n 3 --train-window 90d --test-window 30d --use-dummy-data
 
     # Monte-Carlo-Robustness
-    python scripts/research_cli.py montecarlo --sweep-name rsi_reversion_basic --config config/config.toml --top-n 3 --num-runs 1000
+    ./scripts/pt scripts/research_cli.py montecarlo --sweep-name rsi_reversion_basic --config config/config.toml --top-n 3 --num-runs 1000 --use-dummy-data
 
     # Stress-Tests
-    python scripts/research_cli.py stress --sweep-name rsi_reversion_basic --config config/config.toml --top-n 3 --scenarios single_crash_bar vol_spike
+    ./scripts/pt scripts/research_cli.py stress --sweep-name rsi_reversion_basic --config config/config.toml --top-n 3 --scenarios single_crash_bar vol_spike --use-dummy-data
 
     # Portfolio-Level Robustness
-    python scripts/research_cli.py portfolio --sweep-name rsi_reversion_basic --config config/config.toml --top-n 3 --portfolio-name rsi_portfolio_v1 --run-montecarlo --run-stress-tests
+    ./scripts/pt scripts/research_cli.py portfolio --sweep-name rsi_reversion_basic --config config/config.toml --top-n 3 --portfolio-name rsi_portfolio_v1 --run-montecarlo --run-stress-tests --use-dummy-data
 
-    # Strategy-Profile generieren (Phase 41B)
-    python scripts/research_cli.py strategy-profile --strategy-id rsi_reversion --output-format both --with-regime --with-montecarlo --with-stress
+    # Strategy-Profile generieren (Phase 41B; dummy data required)
+    ./scripts/pt scripts/research_cli.py strategy-profile --strategy-id rsi_reversion --output-format both --with-regime --with-montecarlo --with-stress --use-dummy-data
 
     # End-to-End-Pipeline
-    python scripts/research_cli.py pipeline \\
+    ./scripts/pt scripts/research_cli.py pipeline \\
         --sweep-name rsi_reversion_basic \\
         --config config/config.toml \\
         --format both \\
         --with-plots \\
         --top-n 5 \\
         --run-walkforward \\
-        --train-window 90d \\
-        --test-window 30d \\
-        --use-dummy-data
+        --walkforward-train-window 90d \\
+        --walkforward-test-window 30d \\
+        --walkforward-use-dummy-data \\
+        --run-montecarlo \\
+        --mc-use-dummy-data \\
+        --run-stress-tests \\
+        --stress-use-dummy-data
 """
 
 from __future__ import annotations
@@ -63,6 +67,20 @@ from pathlib import Path
 from typing import Any, Optional, Sequence
 
 _RESEARCH_CLI_LOGGER = logging.getLogger(__name__)
+
+AUTHORITY_CLASS = "NON_AUTHORITY_RESEARCH_OPERATOR"
+AUTHORITY_EFFECT = "NONE"
+LEGACY_VENUE_OHLCV_NOT_OPERATIVE = "LEGACY_VENUE_OHLCV_NOT_OPERATIVE"
+
+
+def refuse_inoperative_venue_ohlcv_v1(*, command: str) -> int:
+    """Fail closed when a research command would load removed venue OHLCV."""
+    _RESEARCH_CLI_LOGGER.error(
+        "%s: %s requires --use-dummy-data; venue OHLCV is not an operative research path",
+        LEGACY_VENUE_OHLCV_NOT_OPERATIVE,
+        command,
+    )
+    return 1
 
 
 @dataclass(frozen=True)
@@ -1075,10 +1093,15 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
     strategy_id = getattr(args, "strategy_id", None)
     if not strategy_id or not str(strategy_id).strip():
         logger.error("--strategy-id ist erforderlich (außer mit --list-strategies).")
-        logger.info("Tipp: `python3 scripts/research_cli.py strategy-profile --list-strategies`")
+        logger.info(
+            "Tipp: `./scripts/pt scripts/research_cli.py strategy-profile --list-strategies`"
+        )
         return 1
 
     strategy_id = str(strategy_id).strip()
+
+    if not args.use_dummy_data:
+        return refuse_inoperative_venue_ohlcv_v1(command="strategy-profile")
 
     # Validiere Strategy-ID
     available = get_available_strategy_keys()
@@ -1100,41 +1123,12 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
     # Random Seed setzen
     np.random.seed(args.seed)
 
-    # Generiere oder lade Daten
-    if args.use_dummy_data:
-        output.progress(logger, f"Verwende Dummy-Daten ({args.dummy_bars} Bars)")
-        n = args.dummy_bars
-        dates = pd.date_range("2024-01-01", periods=n, freq="1h")
-        returns = np.random.normal(0.0005, 0.02, n)
-        equity = (1 + pd.Series(returns, index=dates)).cumprod() * 10000
-        builder.set_data_range("2024-01-01", dates[-1].strftime("%Y-%m-%d"))
-    else:
-        # Versuche echte Daten zu laden
-        try:
-            output.progress(logger, "Venue OHLCV is not a current operative path; using dummy data")
-            raise RuntimeError("legacy_venue_ohlcv_removed")
-
-            if df.empty:
-                logger.warning("Keine Marktdaten gefunden, verwende Dummy-Daten")
-                n = args.dummy_bars
-                dates = pd.date_range("2024-01-01", periods=n, freq="1h")
-                returns = np.random.normal(0.0005, 0.02, n)
-                equity = (1 + pd.Series(returns, index=dates)).cumprod() * 10000
-            else:
-                returns = df["close"].pct_change().dropna()
-                equity = (1 + returns).cumprod() * 10000
-                builder.set_data_range(
-                    df.index[0].strftime("%Y-%m-%d"),
-                    df.index[-1].strftime("%Y-%m-%d"),
-                )
-        except Exception as e:
-            logger.warning(f"Konnte Marktdaten nicht laden: {e}")
-            output.progress(logger, "Fallback zu Dummy-Daten")
-            n = args.dummy_bars
-            dates = pd.date_range("2024-01-01", periods=n, freq="1h")
-            returns = np.random.normal(0.0005, 0.02, n)
-            equity = (1 + pd.Series(returns, index=dates)).cumprod() * 10000
-            builder.set_data_range("2024-01-01", dates[-1].strftime("%Y-%m-%d"))
+    output.progress(logger, f"Verwende Dummy-Daten ({args.dummy_bars} Bars)")
+    n = args.dummy_bars
+    dates = pd.date_range("2024-01-01", periods=n, freq="1h")
+    returns = np.random.normal(0.0005, 0.02, n)
+    equity = (1 + pd.Series(returns, index=dates)).cumprod() * 10000
+    builder.set_data_range("2024-01-01", dates[-1].strftime("%Y-%m-%d"))
 
     # Returns als Series
     if not isinstance(returns, pd.Series):
@@ -1457,64 +1451,36 @@ def run_experiment(args: argparse.Namespace) -> int:
     # Daten laden oder generieren
     output.progress(logger, "\n[1/4] Daten laden...")
 
-    if getattr(args, "use_dummy_data", False):
-        # Dummy-Daten generieren
-        n_bars = args.dummy_bars
-        output.progress(logger, f"  Generiere {n_bars} Dummy-Bars")
+    if not getattr(args, "use_dummy_data", False):
+        return refuse_inoperative_venue_ohlcv_v1(command="run-experiment")
 
-        end = datetime.now()
-        start = end - timedelta(hours=n_bars)
+    n_bars = args.dummy_bars
+    output.progress(logger, f"  Generiere {n_bars} Dummy-Bars")
 
-        # Timeframe zu Frequenz mappen
-        freq_map = {"1h": "1h", "4h": "4h", "1d": "1D", "1w": "1W"}
-        freq = freq_map.get(timeframe, "1h")
+    end = datetime.now()
+    start = end - timedelta(hours=n_bars)
 
-        index = pd.date_range(start=start, periods=n_bars, freq=freq, tz="UTC")
+    freq_map = {"1h": "1h", "4h": "4h", "1d": "1D", "1w": "1W"}
+    freq = freq_map.get(timeframe, "1h")
 
-        # Random Walk für Close
-        base_price = 50000.0
-        volatility = 0.015
-        returns = np.random.normal(0, volatility, n_bars)
-        trend = np.sin(np.linspace(0, 4 * np.pi, n_bars)) * 0.001
-        returns = returns + trend
-        close_prices = base_price * np.exp(np.cumsum(returns))
+    index = pd.date_range(start=start, periods=n_bars, freq=freq, tz="UTC")
 
-        df = pd.DataFrame(index=index)
-        df["close"] = close_prices
-        df["open"] = df["close"].shift(1).fillna(base_price)
-        high_bump = np.random.uniform(0, 0.005, n_bars)
-        df["high"] = np.maximum(df["open"], df["close"]) * (1 + high_bump)
-        low_dip = np.random.uniform(0, 0.005, n_bars)
-        df["low"] = np.minimum(df["open"], df["close"]) * (1 - low_dip)
-        df["volume"] = np.random.uniform(100, 1000, n_bars)
-        df = df[["open", "high", "low", "close", "volume"]]
+    base_price = 50000.0
+    volatility = 0.015
+    returns = np.random.normal(0, volatility, n_bars)
+    trend = np.sin(np.linspace(0, 4 * np.pi, n_bars)) * 0.001
+    returns = returns + trend
+    close_prices = base_price * np.exp(np.cumsum(returns))
 
-    else:
-        # Versuche echte Daten zu laden
-        try:
-            output.progress(
-                logger, "  Venue OHLCV is not a current operative path; using dummy data"
-            )
-            raise RuntimeError("legacy_venue_ohlcv_removed")
-
-            if df.empty:
-                logger.warning("  Keine Marktdaten gefunden, verwende Dummy-Daten")
-                args.use_dummy_data = True
-                return run_experiment(args)
-
-            # Datums-Filter anwenden
-            if from_date:
-                start_dt = pd.to_datetime(from_date).tz_localize("UTC")
-                df = df[df.index >= start_dt]
-            if to_date:
-                end_dt = pd.to_datetime(to_date).tz_localize("UTC")
-                df = df[df.index <= end_dt]
-
-        except Exception as e:
-            logger.warning(f"  Konnte Marktdaten nicht laden: {e}")
-            output.progress(logger, "  Fallback zu Dummy-Daten")
-            args.use_dummy_data = True
-            return run_experiment(args)
+    df = pd.DataFrame(index=index)
+    df["close"] = close_prices
+    df["open"] = df["close"].shift(1).fillna(base_price)
+    high_bump = np.random.uniform(0, 0.005, n_bars)
+    df["high"] = np.maximum(df["open"], df["close"]) * (1 + high_bump)
+    low_dip = np.random.uniform(0, 0.005, n_bars)
+    df["low"] = np.minimum(df["open"], df["close"]) * (1 - low_dip)
+    df["volume"] = np.random.uniform(100, 1000, n_bars)
+    df = df[["open", "high", "low", "close", "volume"]]
 
     output.progress(logger, f"  {len(df)} Bars geladen")
     output.progress(logger, f"  Zeitraum: {df.index[0]} - {df.index[-1]}")
