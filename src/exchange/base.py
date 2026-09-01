@@ -103,18 +103,13 @@ class ExchangeClient(Protocol):
     Dieses Protokoll definiert das Interface für Exchange-Clients.
     Alle Methoden sind ausschließlich lesend – keine Order-Platzierung!
 
-    Implementierungen:
-    - `CcxtExchangeClient`: Konkrete Implementierung mit ccxt
-
-    Example:
-        >>> client: ExchangeClient = CcxtExchangeClient("okx")
-        >>> ticker = client.fetch_ticker("BTC/EUR")
-        >>> print(f"BTC/EUR: {ticker.last}")
+    Concrete exchange implementations implement this interface.
+    This protocol does not name or select a venue.
     """
 
     def get_name(self) -> str:
         """
-        Name/ID des Exchanges (operative ccxt id string).
+        Implementation-defined exchange id string.
 
         Returns:
             Exchange-ID als String

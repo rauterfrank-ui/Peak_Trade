@@ -7,22 +7,12 @@ Read-only Exchange-Client basierend auf ccxt.
 Dieses Modul implementiert das `ExchangeClient`-Protokoll mit ccxt als Backend.
 Alle Methoden sind ausschließlich lesend – keine Order-Platzierung!
 
-Unterstützte Exchanges:
-    Productive CCXT dispatch is bound to the existing OKX class only.
+Productive CCXT dispatch is gated by the existing Peak_Trade OKX venue
+boundary (`assert_operative_ccxt_venue_id`). Arbitrary ccxt venue ids are
+rejected. This module does not treat a generic example id as a venue.
 
-Verwendung:
-    >>> client = CcxtExchangeClient("okx")
-    >>> ticker = client.fetch_ticker("BTC/EUR")
-    >>> print(f"BTC: {ticker.last}")
-
-    >>> # Mit API-Key für Balance-Abfragen
-    >>> client = CcxtExchangeClient(
-    ...     "okx",
-    ...     api_key="...",
-    ...     secret="...",
-    ...     sandbox=True,
-    ... )
-    >>> balance = client.fetch_balance()
+Constructor usage is covered by the exchange smoke tests: the success path
+uses a current operative OKX name; any other id must fail closed.
 """
 
 from __future__ import annotations
