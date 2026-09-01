@@ -30,7 +30,6 @@ from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
     DdoLedgerCorruptionError,
     DdoLineageError,
     DdoMalformedRecordError,
-    DdoUnsupportedLineageSlotError,
     DdoUnsupportedSchemaVersionError,
     DdoValidationError,
 )
@@ -311,9 +310,18 @@ def test_outcome_ref_nullability() -> None:
         )
 
 
-def test_reserved_lineage_slots_must_be_empty() -> None:
-    with pytest.raises(DdoUnsupportedLineageSlotError):
-        build_decision_event_v0(_decision(attribution_refs=["attr-0001"]))
+def test_forward_lineage_refs_require_existing_typed_records(tmp_path: Path) -> None:
+    ledger = AppendOnlyDdoLedgerV0(tmp_path / "ddo_ledger_v0.jsonl")
+    ledger.append(_decision())
+    with pytest.raises(DdoLineageError, match="ATTRIBUTION_REFS_MISSING"):
+        ledger.append(
+            _decision(
+                record_id="dec-0002",
+                event_id="evt-0002",
+                causal_parent_ids=["dec-0001"],
+                attribution_refs=["attr-missing"],
+            )
+        )
 
 
 def test_append_read_idempotent_and_conflict(tmp_path: Path) -> None:

@@ -14,14 +14,38 @@ from types import MappingProxyType
 from typing import Any, Final, Mapping
 
 from src.learning.deterministic_decision_outcome_v0.common_v0 import (
+    SCHEMA_NAME_ATTRIBUTION_RECORD,
+    SCHEMA_NAME_AUTONOMY_CYCLE,
+    SCHEMA_NAME_CANDIDATE_ARTIFACT,
+    SCHEMA_NAME_COUNTERFACTUAL_RECORD,
     SCHEMA_NAME_DECISION_EVENT,
+    SCHEMA_NAME_DEPLOYMENT_RECORD,
+    SCHEMA_NAME_HEALTH_SNAPSHOT,
     SCHEMA_NAME_INCIDENT_RECORD,
+    SCHEMA_NAME_LEARNING_HYPOTHESIS,
     SCHEMA_NAME_LEDGER_ENVELOPE,
     SCHEMA_NAME_OUTCOME_RECORD,
+    SCHEMA_NAME_PROMOTION_ELIGIBILITY,
+    SCHEMA_NAME_PROMOTION_POLICY,
+    SCHEMA_NAME_RELEASE_ARTIFACT,
+    SCHEMA_NAME_ROLLBACK_RECORD,
+    SCHEMA_NAME_VALIDATION_EVIDENCE_PACK,
+    SCHEMA_VERSION_ATTRIBUTION_RECORD_V0,
+    SCHEMA_VERSION_AUTONOMY_CYCLE_V0,
+    SCHEMA_VERSION_CANDIDATE_ARTIFACT_V0,
+    SCHEMA_VERSION_COUNTERFACTUAL_RECORD_V0,
     SCHEMA_VERSION_DECISION_EVENT_V0,
+    SCHEMA_VERSION_DEPLOYMENT_RECORD_V0,
+    SCHEMA_VERSION_HEALTH_SNAPSHOT_V0,
     SCHEMA_VERSION_INCIDENT_RECORD_V0,
+    SCHEMA_VERSION_LEARNING_HYPOTHESIS_V0,
     SCHEMA_VERSION_LEDGER_ENVELOPE_V0,
     SCHEMA_VERSION_OUTCOME_RECORD_V0,
+    SCHEMA_VERSION_PROMOTION_ELIGIBILITY_V0,
+    SCHEMA_VERSION_PROMOTION_POLICY_V0,
+    SCHEMA_VERSION_RELEASE_ARTIFACT_V0,
+    SCHEMA_VERSION_ROLLBACK_RECORD_V0,
+    SCHEMA_VERSION_VALIDATION_EVIDENCE_PACK_V0,
     require_event_time_utc,
     require_record_id,
 )
@@ -37,15 +61,35 @@ from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
     DdoUnsupportedSchemaVersionError,
     DdoValidationError,
 )
+from src.learning.deterministic_decision_outcome_v0.evaluation_records_v0 import (
+    validate_attribution_record_v0,
+    validate_counterfactual_record_v0,
+)
 from src.learning.deterministic_decision_outcome_v0.incident_record_v0 import (
     validate_incident_record_v0,
 )
+from src.learning.deterministic_decision_outcome_v0.learning_records_v0 import (
+    validate_candidate_artifact_v0,
+    validate_learning_hypothesis_v0,
+    validate_validation_evidence_pack_v0,
+)
 from src.learning.deterministic_decision_outcome_v0.lineage_v0 import validate_record_lineage_v0
 from src.learning.deterministic_decision_outcome_v0.outcome_v0 import validate_outcome_record_v0
+from src.learning.deterministic_decision_outcome_v0.promotion_records_v0 import (
+    validate_deployment_record_v0,
+    validate_promotion_eligibility_record_v0,
+    validate_promotion_policy_v0,
+    validate_release_artifact_v0,
+    validate_rollback_record_v0,
+)
 from src.learning.deterministic_decision_outcome_v0.serialization_v0 import (
     canonical_json_dumps_v0,
     compute_content_hash_v0,
     sha256_hex_v0,
+)
+from src.learning.deterministic_decision_outcome_v0.supervisor_records_v0 import (
+    validate_autonomy_cycle_record_v0,
+    validate_health_snapshot_v0,
 )
 
 GENESIS_LEDGER_HASH: Final[str] = "GENESIS"
@@ -55,7 +99,43 @@ _VALIDATORS = {
     (SCHEMA_NAME_DECISION_EVENT, SCHEMA_VERSION_DECISION_EVENT_V0): validate_decision_event_v0,
     (SCHEMA_NAME_INCIDENT_RECORD, SCHEMA_VERSION_INCIDENT_RECORD_V0): validate_incident_record_v0,
     (SCHEMA_NAME_OUTCOME_RECORD, SCHEMA_VERSION_OUTCOME_RECORD_V0): validate_outcome_record_v0,
+    (SCHEMA_NAME_COUNTERFACTUAL_RECORD, SCHEMA_VERSION_COUNTERFACTUAL_RECORD_V0): (
+        validate_counterfactual_record_v0
+    ),
+    (SCHEMA_NAME_ATTRIBUTION_RECORD, SCHEMA_VERSION_ATTRIBUTION_RECORD_V0): (
+        validate_attribution_record_v0
+    ),
+    (SCHEMA_NAME_LEARNING_HYPOTHESIS, SCHEMA_VERSION_LEARNING_HYPOTHESIS_V0): (
+        validate_learning_hypothesis_v0
+    ),
+    (SCHEMA_NAME_CANDIDATE_ARTIFACT, SCHEMA_VERSION_CANDIDATE_ARTIFACT_V0): (
+        validate_candidate_artifact_v0
+    ),
+    (SCHEMA_NAME_VALIDATION_EVIDENCE_PACK, SCHEMA_VERSION_VALIDATION_EVIDENCE_PACK_V0): (
+        validate_validation_evidence_pack_v0
+    ),
+    (
+        SCHEMA_NAME_PROMOTION_POLICY,
+        SCHEMA_VERSION_PROMOTION_POLICY_V0,
+    ): validate_promotion_policy_v0,
+    (SCHEMA_NAME_PROMOTION_ELIGIBILITY, SCHEMA_VERSION_PROMOTION_ELIGIBILITY_V0): (
+        validate_promotion_eligibility_record_v0
+    ),
+    (
+        SCHEMA_NAME_RELEASE_ARTIFACT,
+        SCHEMA_VERSION_RELEASE_ARTIFACT_V0,
+    ): validate_release_artifact_v0,
+    (SCHEMA_NAME_DEPLOYMENT_RECORD, SCHEMA_VERSION_DEPLOYMENT_RECORD_V0): (
+        validate_deployment_record_v0
+    ),
+    (SCHEMA_NAME_ROLLBACK_RECORD, SCHEMA_VERSION_ROLLBACK_RECORD_V0): validate_rollback_record_v0,
+    (SCHEMA_NAME_AUTONOMY_CYCLE, SCHEMA_VERSION_AUTONOMY_CYCLE_V0): (
+        validate_autonomy_cycle_record_v0
+    ),
+    (SCHEMA_NAME_HEALTH_SNAPSHOT, SCHEMA_VERSION_HEALTH_SNAPSHOT_V0): validate_health_snapshot_v0,
 }
+
+_KNOWN_SCHEMA_NAMES = {schema for schema, _version in _VALIDATORS}
 
 
 @dataclass(frozen=True)
@@ -72,11 +152,7 @@ def validate_canonical_record_v0(payload: Mapping[str, Any]) -> MappingProxyType
     schema_version = payload.get("schema_version")
     validator = _VALIDATORS.get((str(schema_name), str(schema_version)))
     if validator is None:
-        if schema_name in {
-            SCHEMA_NAME_DECISION_EVENT,
-            SCHEMA_NAME_INCIDENT_RECORD,
-            SCHEMA_NAME_OUTCOME_RECORD,
-        }:
+        if schema_name in _KNOWN_SCHEMA_NAMES:
             raise DdoUnsupportedSchemaVersionError(
                 f"UNSUPPORTED_SCHEMA_VERSION:{schema_name}:{schema_version!r}"
             )
@@ -85,14 +161,9 @@ def validate_canonical_record_v0(payload: Mapping[str, Any]) -> MappingProxyType
 
 
 def _record_type_for_schema(schema_name: str) -> str:
-    mapping = {
-        SCHEMA_NAME_DECISION_EVENT: "decision_event",
-        SCHEMA_NAME_INCIDENT_RECORD: "incident_record",
-        SCHEMA_NAME_OUTCOME_RECORD: "outcome_record",
-    }
-    if schema_name not in mapping:
+    if schema_name not in _KNOWN_SCHEMA_NAMES:
         raise DdoValidationError(f"UNKNOWN_RECORD_TYPE:{schema_name}")
-    return mapping[schema_name]
+    return schema_name
 
 
 def _envelope_chain_material(

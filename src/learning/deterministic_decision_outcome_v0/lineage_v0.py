@@ -5,13 +5,85 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 from src.learning.deterministic_decision_outcome_v0.common_v0 import (
+    SCHEMA_NAME_ATTRIBUTION_RECORD,
+    SCHEMA_NAME_AUTONOMY_CYCLE,
+    SCHEMA_NAME_CANDIDATE_ARTIFACT,
+    SCHEMA_NAME_COUNTERFACTUAL_RECORD,
     SCHEMA_NAME_DECISION_EVENT,
+    SCHEMA_NAME_DEPLOYMENT_RECORD,
+    SCHEMA_NAME_HEALTH_SNAPSHOT,
     SCHEMA_NAME_INCIDENT_RECORD,
+    SCHEMA_NAME_LEARNING_HYPOTHESIS,
     SCHEMA_NAME_OUTCOME_RECORD,
+    SCHEMA_NAME_PROMOTION_ELIGIBILITY,
+    SCHEMA_NAME_PROMOTION_POLICY,
+    SCHEMA_NAME_RELEASE_ARTIFACT,
+    SCHEMA_NAME_ROLLBACK_RECORD,
+    SCHEMA_NAME_VALIDATION_EVIDENCE_PACK,
 )
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoLineageError
 
 _MAX_LINEAGE_WALK = 1024
+
+_OPTIONAL_TYPED_REFS: tuple[tuple[str, str], ...] = (
+    ("decision_event_ref", SCHEMA_NAME_DECISION_EVENT),
+    ("incident_record_ref", SCHEMA_NAME_INCIDENT_RECORD),
+    ("outcome_record_ref", SCHEMA_NAME_OUTCOME_RECORD),
+    ("hypothesis_ref", SCHEMA_NAME_LEARNING_HYPOTHESIS),
+    ("candidate_artifact_ref", SCHEMA_NAME_CANDIDATE_ARTIFACT),
+    ("incumbent_artifact_ref", SCHEMA_NAME_CANDIDATE_ARTIFACT),
+    ("validation_evidence_pack_ref", SCHEMA_NAME_VALIDATION_EVIDENCE_PACK),
+    ("promotion_policy_ref", SCHEMA_NAME_PROMOTION_POLICY),
+    ("release_artifact_ref", SCHEMA_NAME_RELEASE_ARTIFACT),
+    ("deployment_record_ref", SCHEMA_NAME_DEPLOYMENT_RECORD),
+    ("previous_known_good_ref", SCHEMA_NAME_RELEASE_ARTIFACT),
+    ("known_good_artifact_ref", SCHEMA_NAME_RELEASE_ARTIFACT),
+    ("health_snapshot_ref", SCHEMA_NAME_HEALTH_SNAPSHOT),
+)
+
+_LIST_TYPED_REFS: tuple[tuple[str, str], ...] = (
+    ("attribution_refs", SCHEMA_NAME_ATTRIBUTION_RECORD),
+    ("counterfactual_refs", SCHEMA_NAME_COUNTERFACTUAL_RECORD),
+    ("candidate_refs", SCHEMA_NAME_CANDIDATE_ARTIFACT),
+)
+
+_REQUIRED_TYPED_REFS: dict[str, tuple[tuple[str, str], ...]] = {
+    SCHEMA_NAME_OUTCOME_RECORD: (("decision_event_ref", SCHEMA_NAME_DECISION_EVENT),),
+    SCHEMA_NAME_COUNTERFACTUAL_RECORD: (("decision_event_ref", SCHEMA_NAME_DECISION_EVENT),),
+    SCHEMA_NAME_CANDIDATE_ARTIFACT: (("hypothesis_ref", SCHEMA_NAME_LEARNING_HYPOTHESIS),),
+    SCHEMA_NAME_VALIDATION_EVIDENCE_PACK: (
+        ("candidate_artifact_ref", SCHEMA_NAME_CANDIDATE_ARTIFACT),
+    ),
+    SCHEMA_NAME_PROMOTION_ELIGIBILITY: (
+        ("candidate_artifact_ref", SCHEMA_NAME_CANDIDATE_ARTIFACT),
+        ("validation_evidence_pack_ref", SCHEMA_NAME_VALIDATION_EVIDENCE_PACK),
+        ("promotion_policy_ref", SCHEMA_NAME_PROMOTION_POLICY),
+    ),
+    SCHEMA_NAME_RELEASE_ARTIFACT: (
+        ("candidate_artifact_ref", SCHEMA_NAME_CANDIDATE_ARTIFACT),
+        ("validation_evidence_pack_ref", SCHEMA_NAME_VALIDATION_EVIDENCE_PACK),
+    ),
+    SCHEMA_NAME_DEPLOYMENT_RECORD: (
+        ("release_artifact_ref", SCHEMA_NAME_RELEASE_ARTIFACT),
+        ("previous_known_good_ref", SCHEMA_NAME_RELEASE_ARTIFACT),
+    ),
+    SCHEMA_NAME_ROLLBACK_RECORD: (
+        ("deployment_record_ref", SCHEMA_NAME_DEPLOYMENT_RECORD),
+        ("known_good_artifact_ref", SCHEMA_NAME_RELEASE_ARTIFACT),
+    ),
+}
+
+_MISSING_CODES: dict[tuple[str, str], str] = {
+    (SCHEMA_NAME_OUTCOME_RECORD, "decision_event_ref"): "OUTCOME_DECISION_REF_MISSING",
+    (SCHEMA_NAME_OUTCOME_RECORD, "incident_record_ref"): "OUTCOME_INCIDENT_REF_MISSING",
+    (SCHEMA_NAME_INCIDENT_RECORD, "decision_event_ref"): "INCIDENT_DECISION_REF_MISSING",
+}
+
+_TYPE_CODES: dict[tuple[str, str], str] = {
+    (SCHEMA_NAME_OUTCOME_RECORD, "decision_event_ref"): "OUTCOME_DECISION_REF_NOT_DECISION_EVENT",
+    (SCHEMA_NAME_OUTCOME_RECORD, "incident_record_ref"): "OUTCOME_INCIDENT_REF_NOT_INCIDENT_RECORD",
+    (SCHEMA_NAME_INCIDENT_RECORD, "decision_event_ref"): "INCIDENT_DECISION_REF_NOT_DECISION_EVENT",
+}
 
 
 def _walk_chain(
@@ -37,6 +109,27 @@ def _walk_chain(
         if not nxt:
             return
         current = str(nxt)
+
+
+def _require_typed_ref(
+    *,
+    field: str,
+    target: str,
+    expected_schema: str,
+    existing_by_id: Mapping[str, Mapping[str, Any]],
+    missing_code: str,
+    type_code: str,
+) -> None:
+    if target not in existing_by_id:
+        raise DdoLineageError(f"{missing_code}:{target}")
+    if existing_by_id[target].get("schema_name") != expected_schema:
+        raise DdoLineageError(f"{type_code}:{field}:{target}")
+
+
+def _codes_for(schema_name: str, field: str) -> tuple[str, str]:
+    missing = _MISSING_CODES.get((schema_name, field), f"{field.upper()}_MISSING")
+    type_code = _TYPE_CODES.get((schema_name, field), f"{field.upper()}_TYPE_MISMATCH")
+    return missing, type_code
 
 
 def validate_record_lineage_v0(
@@ -65,29 +158,56 @@ def validate_record_lineage_v0(
     for parent_id in record.get("causal_parent_ids") or []:
         if parent_id not in existing_by_id:
             raise DdoLineageError(f"CAUSAL_PARENT_MISSING:{parent_id}")
-    if schema_name == SCHEMA_NAME_OUTCOME_RECORD:
-        decision_id = record.get("decision_event_ref")
-        if decision_id not in existing_by_id:
-            raise DdoLineageError(f"OUTCOME_DECISION_REF_MISSING:{decision_id}")
-        if existing_by_id[decision_id].get("schema_name") != SCHEMA_NAME_DECISION_EVENT:
-            raise DdoLineageError("OUTCOME_DECISION_REF_NOT_DECISION_EVENT")
-        incident_id = record.get("incident_record_ref")
-        if incident_id is not None:
-            if incident_id not in existing_by_id:
-                raise DdoLineageError(f"OUTCOME_INCIDENT_REF_MISSING:{incident_id}")
-            if existing_by_id[incident_id].get("schema_name") != SCHEMA_NAME_INCIDENT_RECORD:
-                raise DdoLineageError("OUTCOME_INCIDENT_REF_NOT_INCIDENT_RECORD")
-    if schema_name == SCHEMA_NAME_INCIDENT_RECORD:
-        decision_id = record.get("decision_event_ref")
-        if decision_id is not None:
-            if decision_id not in existing_by_id:
-                raise DdoLineageError(f"INCIDENT_DECISION_REF_MISSING:{decision_id}")
-            if existing_by_id[decision_id].get("schema_name") != SCHEMA_NAME_DECISION_EVENT:
-                raise DdoLineageError("INCIDENT_DECISION_REF_NOT_DECISION_EVENT")
+    required_fields = {item[0] for item in _REQUIRED_TYPED_REFS.get(schema_name, ())}
+    for field, expected in _REQUIRED_TYPED_REFS.get(schema_name, ()):
+        target = record.get(field)
+        missing_code, type_code = _codes_for(schema_name, field)
+        _require_typed_ref(
+            field=field,
+            target=str(target),
+            expected_schema=expected,
+            existing_by_id=existing_by_id,
+            missing_code=missing_code,
+            type_code=type_code,
+        )
+    if schema_name == SCHEMA_NAME_ATTRIBUTION_RECORD:
+        if record.get("decision_event_ref") is None and record.get("incident_record_ref") is None:
+            raise DdoLineageError("ATTRIBUTION_REQUIRES_DECISION_OR_INCIDENT_REF")
+    if schema_name == SCHEMA_NAME_AUTONOMY_CYCLE and not record.get("cycle_id"):
+        raise DdoLineageError("AUTONOMY_CYCLE_REQUIRES_CYCLE_ID")
+    for field, expected in _OPTIONAL_TYPED_REFS:
+        if field in required_fields:
+            continue
+        target = record.get(field)
+        if target is None:
+            continue
+        missing_code, type_code = _codes_for(schema_name, field)
+        _require_typed_ref(
+            field=field,
+            target=str(target),
+            expected_schema=expected,
+            existing_by_id=existing_by_id,
+            missing_code=missing_code,
+            type_code=type_code,
+        )
+    for field, expected in _LIST_TYPED_REFS:
+        for target in record.get(field) or []:
+            _require_typed_ref(
+                field=field,
+                target=str(target),
+                expected_schema=expected,
+                existing_by_id=existing_by_id,
+                missing_code=f"{field.upper()}_MISSING",
+                type_code=f"{field.upper()}_TYPE_MISMATCH",
+            )
     expected = record.get("expected_outcome_ref")
     if isinstance(expected, Mapping) and expected.get("link_status") == "PRESENT":
         outcome_id = expected.get("outcome_record_id")
-        if outcome_id not in existing_by_id:
-            raise DdoLineageError(f"EXPECTED_OUTCOME_REF_MISSING:{outcome_id}")
-        if existing_by_id[outcome_id].get("schema_name") != SCHEMA_NAME_OUTCOME_RECORD:
-            raise DdoLineageError("EXPECTED_OUTCOME_REF_NOT_OUTCOME_RECORD")
+        _require_typed_ref(
+            field="expected_outcome_ref",
+            target=str(outcome_id),
+            expected_schema=SCHEMA_NAME_OUTCOME_RECORD,
+            existing_by_id=existing_by_id,
+            missing_code="EXPECTED_OUTCOME_REF_MISSING",
+            type_code="EXPECTED_OUTCOME_REF_NOT_OUTCOME_RECORD",
+        )

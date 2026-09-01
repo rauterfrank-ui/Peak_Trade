@@ -99,10 +99,110 @@ OUTCOME_LINK_STATUS_V0: Final[tuple[str, ...]] = (
     UNKNOWN,
 )
 
+PROMOTION_CLASS_V0: Final[tuple[str, ...]] = (
+    "P0",
+    "P1",
+    "P2",
+    "P3",
+)
+
+GATE_RESULT_V0: Final[tuple[str, ...]] = (
+    "PASS",
+    "FAIL",
+    "INSUFFICIENT_EVIDENCE",
+    UNKNOWN,
+)
+
+SUPERVISOR_STATE_V0: Final[tuple[str, ...]] = (
+    "STOPPED",
+    "INITIALIZING",
+    "SYNCING",
+    "READY",
+    "EVALUATING",
+    "PLANNED",
+    "PERMISSION_CHECK",
+    "SUBMITTING",
+    "RECONCILING",
+    "OBSERVING",
+    "WAITING",
+    "DEGRADED",
+    "RECOVERING",
+    "HALTED",
+)
+
+SUPERVISOR_OUTCOME_V0: Final[tuple[str, ...]] = (
+    "CONTINUE",
+    "WAIT",
+    "DEGRADE",
+    "HALT",
+    "RECOVER",
+    "RETRY",
+)
+
+SUPERVISOR_EVENT_V0: Final[tuple[str, ...]] = (
+    "authorized_start",
+    "invariants_valid",
+    "critical_invariant_fails",
+    "fresh_state_proven",
+    "recoverable_dependency_issue",
+    "cycle_due",
+    "canonical_no_action",
+    "canonical_plan_candidate_produced",
+    "plan_still_admissible",
+    "ephemeral_predicates_true",
+    "hard_predicate_false",
+    "transport_outcome_known",
+    "transport_outcome_ambiguous",
+    "venue_truth_proven",
+    "truth_not_provable_recoverable",
+    "evidence_persisted_coherent",
+    "recovery_policy_admits_attempt",
+    "reproof_succeeds",
+    "unrecoverable_invariant",
+    "duplicate_cycle_invocation",
+    UNKNOWN,
+)
+
+SUPERVISOR_ACTION_V0: Final[tuple[str, ...]] = (
+    "create_cycle_epoch",
+    "load_exact_versions",
+    "persist_initialization_proof",
+    "persist_failure",
+    "persist_sync_proof",
+    "record_degraded_reason",
+    "allocate_unique_cycle_id",
+    "persist_decision_event",
+    "persist_decision_lineage",
+    "freeze_plan_identity",
+    "persist_permit_identity",
+    "persist_deny_no_wire",
+    "persist_exact_response",
+    "forbid_resend_mark_ambiguity",
+    "persist_reconciliation_proof",
+    "no_risk_increase",
+    "close_cycle",
+    "bounded_recovery_action",
+    "fail_closed",
+    "no_wire",
+    "collapse_duplicate_cycle",
+)
+
 RECORD_TYPE_V0: Final[tuple[str, ...]] = (
     "decision_event",
     "incident_record",
     "outcome_record",
+    "counterfactual_record",
+    "attribution_record",
+    "learning_hypothesis",
+    "candidate_artifact",
+    "validation_evidence_pack",
+    "promotion_policy",
+    "promotion_eligibility_record",
+    "release_artifact",
+    "deployment_record",
+    "rollback_record",
+    "autonomy_cycle_record",
+    "health_snapshot",
 )
 
 NULLABILITY_V0: Final[tuple[str, ...]] = (
@@ -111,9 +211,34 @@ NULLABILITY_V0: Final[tuple[str, ...]] = (
     "CONDITIONALLY_REQUIRED",
 )
 
+VALIDATION_GATE_IDS_V0: Final[tuple[str, ...]] = (
+    "provenance_complete",
+    "deterministic_replay_pass",
+    "walk_forward_pass",
+    "monte_carlo_pass",
+    "stress_pass",
+    "fault_injection_pass",
+    "safety_regression_pass",
+    "authority_invariants_pass",
+    "observability_non_regression_pass",
+    "shadow_min_evidence_met",
+    "economic_policy_pass",
+    "rollback_ready",
+    "compatibility_pass",
+)
+
+HARD_ELIGIBILITY_GATES_V0: Final[tuple[str, ...]] = (
+    "safety_regression_pass",
+    "authority_invariants_pass",
+)
+
 OPEN_UNBOUND_ENUMS_V0: Final[tuple[str, ...]] = (
     "DECISION_TYPE_TRADE_SPECIFIC_TOKENS",
     "DECISION_RESULT_BEYOND_NO_ACTION_AND_UNKNOWN",
+    "HEALTH_SNAPSHOT_OPAQUE_READINESS_TOKENS",
+    "DEPLOYMENT_RESULT_TOKENS",
+    "ROLLBACK_RESULT_TOKENS",
+    "HYPOTHESIS_AUTHOR_KIND_TOKENS",
 )
 
 DECISION_TYPE_TRADE_SPECIFIC_STATUS: Final[str] = "OPEN"

@@ -27,10 +27,7 @@ from src.learning.deterministic_decision_outcome_v0.enums_v0 import (
     DECISION_RESULT_V0,
     DECISION_TYPE_V0,
 )
-from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
-    DdoUnsupportedLineageSlotError,
-    DdoValidationError,
-)
+from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
 from src.learning.deterministic_decision_outcome_v0.outcome_v0 import validate_outcome_ref_v0
 from src.learning.deterministic_decision_outcome_v0.reason_codes_v0 import (
     validate_hard_block_reasons_v0,
@@ -135,21 +132,21 @@ DECISION_EVENT_FIELD_SPECS_V0: Final[tuple[FieldSpecV0, ...]] = (
         "OPTIONAL",
         "record_id[]",
         True,
-        "Reserved lineage slot. Must be empty in v0.",
+        "Forward refs to attribution_record. Empty until those records exist.",
     ),
     FieldSpecV0(
         "counterfactual_refs",
         "OPTIONAL",
         "record_id[]",
         True,
-        "Reserved lineage slot. Must be empty in v0.",
+        "Forward refs to counterfactual_record. Empty until those records exist.",
     ),
     FieldSpecV0(
         "candidate_refs",
         "OPTIONAL",
         "record_id[]",
         True,
-        "Reserved lineage slot. Must be empty in v0.",
+        "Forward refs to candidate_artifact. Empty until those records exist.",
     ),
     FieldSpecV0("content_hash", "REQUIRED", "sha256", False, "Computed; excluded from hash scope."),
 )
@@ -157,13 +154,6 @@ DECISION_EVENT_FIELD_SPECS_V0: Final[tuple[FieldSpecV0, ...]] = (
 DECISION_EVENT_ALLOWED_FIELDS: Final[frozenset[str]] = frozenset(
     spec.name for spec in DECISION_EVENT_FIELD_SPECS_V0
 )
-
-
-def _empty_reserved(value: Any, field: str) -> list[str]:
-    ids = [] if value is None else value
-    if ids:
-        raise DdoUnsupportedLineageSlotError(f"RESERVED_LINEAGE_SLOT_MUST_BE_EMPTY:{field}")
-    return []
 
 
 def _evidence_refs(value: Any) -> list[str]:
@@ -249,11 +239,11 @@ def build_decision_event_v0(payload: Mapping[str, Any]) -> MappingProxyType[str,
         "corrects_id": None
         if raw.get("corrects_id") is None
         else require_record_id(raw.get("corrects_id"), "corrects_id"),
-        "attribution_refs": _empty_reserved(raw.get("attribution_refs"), "attribution_refs"),
-        "counterfactual_refs": _empty_reserved(
+        "attribution_refs": require_id_list(raw.get("attribution_refs"), "attribution_refs"),
+        "counterfactual_refs": require_id_list(
             raw.get("counterfactual_refs"), "counterfactual_refs"
         ),
-        "candidate_refs": _empty_reserved(raw.get("candidate_refs"), "candidate_refs"),
+        "candidate_refs": require_id_list(raw.get("candidate_refs"), "candidate_refs"),
     }
     hashed = attach_content_hash(canonical)
     if "content_hash" in raw and raw["content_hash"] != hashed["content_hash"]:
