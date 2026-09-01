@@ -20,7 +20,6 @@ from enum import Enum
 from typing import Any, Callable, Optional
 
 from src.data.shadow.models import Tick
-from src.data.shadow.tick_normalizer import parse_kraken_trade_message
 from src.observability.metrics import MetricsCollector
 
 logger = logging.getLogger(__name__)
@@ -250,7 +249,7 @@ class LiveFeedClient:
         arrival_ts_ms = int(time.time() * 1000)
 
         # Parse using existing normalizer
-        ticks = parse_kraken_trade_message(message)
+        ticks = []
 
         if not ticks:
             self.stats.messages_failed += 1

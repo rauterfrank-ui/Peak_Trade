@@ -44,6 +44,9 @@ class KrakenCcxtBackend:
         self._exchange_instance: Any | None = None
 
     def _exchange(self) -> Any:
+        from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+        reject_noncanonical_operative_surface(surface="KrakenCcxtBackend")
         """
         Erstellt (lazy) eine ccxt.kraken Instanz.
         """

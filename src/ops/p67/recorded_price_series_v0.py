@@ -1,6 +1,6 @@
 """v0: load simple return series from local recorded public REST JSON snapshots (no network).
 
-Reads a bounded scan of ``*.json`` under an operator directory, extracts Binance-style
+Reads a bounded scan of ``*.json`` under an operator directory, extracts public book
 ``bidPrice``/``askPrice`` (or captured ``bid``/``ask`` decimals), computes midpoints in file/name
 order, then simple returns: (mid_i / mid_{i-1}) - 1.
 

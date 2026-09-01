@@ -74,7 +74,7 @@ class KrakenLiveConfig:
         rate_limit_ms: Rate-Limit-Pause zwischen Requests in ms
     """
 
-    base_url: str = "https://api.kraken.com"
+    base_url: str = ""
     api_key_env_var: str = "KRAKEN_API_KEY"
     api_secret_env_var: str = "KRAKEN_API_SECRET"
     timeout_seconds: float = 30.0
@@ -128,7 +128,9 @@ class KrakenLiveClient:
     """
 
     def __init__(self, config: KrakenLiveConfig) -> None:
-        self._config = config
+        from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+        reject_noncanonical_operative_surface(surface="KrakenLiveClient")
         self._api_key, self._api_secret = config.load_credentials()
 
         self._session = requests.Session()
@@ -359,6 +361,9 @@ def create_kraken_live_client_from_config(
     cfg: Any,
     config_prefix: str = "exchange.kraken_live",
 ) -> KrakenLiveClient:
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+    reject_noncanonical_operative_surface(surface="create_kraken_live_client_from_config")
     """
     Factory für KrakenLiveClient aus PeakConfig.
 

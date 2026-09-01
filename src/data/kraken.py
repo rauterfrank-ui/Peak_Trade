@@ -22,6 +22,9 @@ logger = logging.getLogger(__name__)
 
 
 def get_kraken_client() -> Any:
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+    reject_noncanonical_operative_surface(surface="get_kraken_client")
     """
     Erstellt Kraken-Client mit sicheren Defaults.
 
@@ -58,6 +61,9 @@ def fetch_ohlcv_df(
     since_ms: Optional[int] = None,
     use_cache: bool = True,
 ) -> pd.DataFrame:
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+    reject_noncanonical_operative_surface(surface="fetch_ohlcv_df")
     """
     Holt OHLCV-Daten von Kraken mit optionalem Caching.
 

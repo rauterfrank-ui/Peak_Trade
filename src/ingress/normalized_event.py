@@ -18,7 +18,7 @@ class NormalizedEvent:
     Minimal contract (Runbook A2):
       event_id: stable unique id (string)
       ts_ms: event timestamp in milliseconds since epoch (int)
-      source: origin descriptor (e.g. "binance.ws", "kraken.rest", "shadow.sim")
+      source: origin descriptor (e.g. "okx.ws", "shadow.sim")
       kind: event kind (e.g. "trade", "orderbook_snapshot", "balance_update")
       scope: namespace-like routing key (e.g. "market.BTCUSDT", "account.main")
       tags: small list of labels (e.g. ["shadow", "testnet"])

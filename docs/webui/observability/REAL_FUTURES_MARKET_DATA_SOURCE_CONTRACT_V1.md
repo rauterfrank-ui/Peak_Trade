@@ -65,7 +65,7 @@ MANIFEST_VERIFY_RC=0
 | Readmodel persistence | [UNIVERSE_SELECTION_READMODEL_V1.md](UNIVERSE_SELECTION_READMODEL_V1.md) |
 | Provenance (F2) | [FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md](../../ops/specs/FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md) |
 | Instrument metadata (F1) | [FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md](../../ops/specs/FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md) |
-| Public REST capture pattern (spot reference) | `scripts/ops/capture_public_rest_binance_book_ticker_v0.py` |
+| Public REST capture pattern (spot reference) | removed (not a current operative capture surface) |
 | Futures testnet endpoint inventory (offline) | `src/ops/bounded_futures_testnet_adapter_contract_v0.py` |
 | U1 upstream adapter | `src/webui/workflow_dashboard_readmodel_v1/futures_universe_upstream_adapter_v1.py` |
 | U2b loader guard | `src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_real_metadata_source_v1.py` |
@@ -182,7 +182,7 @@ Charter markers remain fail-closed. **U5b probe CLI** is an isolated manual oper
 - urllib-only, one-shot, no daemon, no auth, no readmodel write
 - **Response byte-cap policy (bounded, not unbounded):** CLI default `--max-response-bytes` stays conservative (`262144`). Hard cap `3145728`. Manual Kraken instruments probe requires operator to set an explicit limit **at or above** `2097152` (live instruments payload observed ~1.2 MiB; tickers ~163 KiB). Exceeding cap fails with `INSTRUMENTS_RESPONSE_EXCEEDS_MAX_RESPONSE_BYTES` including observed/required bytes — no retry loop, no host workaround.
 - CI/tests: mocked/offline only; live network requires manual operator CLI with confirm token
-- Sibling pattern: `capture_public_rest_binance_book_ticker_v0.py` (spot reference only)
+- Sibling pattern: public REST one-shot capture (removed as a current operative surface)
 
 ## 10. Implementation slices (reference)
 

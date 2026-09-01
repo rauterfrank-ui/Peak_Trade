@@ -114,7 +114,7 @@ class ExchangeClient(Protocol):
 
     def get_name(self) -> str:
         """
-        Name/ID des Exchanges (z.B. 'kraken', 'binance').
+        Name/ID des Exchanges (z.B. 'okx').
 
         Returns:
             Exchange-ID als String

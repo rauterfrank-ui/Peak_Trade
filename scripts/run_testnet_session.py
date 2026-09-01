@@ -981,6 +981,9 @@ def main() -> int:
     Returns:
         Exit-Code (0 = Success, 1 = Error)
     """
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+    reject_noncanonical_operative_surface(surface="run_testnet_session")
     parser = argparse.ArgumentParser(
         description="Run Peak_Trade Testnet Session with exchange API calls.",
         formatter_class=argparse.RawDescriptionHelpFormatter,

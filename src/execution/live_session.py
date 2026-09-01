@@ -71,11 +71,14 @@ def _config_with_exchange_type(cfg: Any, exchange_type: str) -> Any:
     """
     Wrapper um PeakConfig, der exchange.default_type überschreibt.
 
-    Für bounded_pilot: exchange.default_type=kraken_live erforderlich.
+    Noncanonical venue types are rejected; dummy is simulation-only.
     """
     from copy import deepcopy
 
     from ..core.peak_config import PeakConfig
+
+    if str(exchange_type).strip() != "dummy":
+        raise ValueError(f"noncanonical_venue_rejected: exchange.default_type={exchange_type!r}")
 
     raw = deepcopy(cfg.raw)
     if "exchange" not in raw:
@@ -639,18 +642,11 @@ class LiveSessionRunner:
         from ..live.safety import SafetyGuard
 
         if session_config.mode == "bounded_pilot" and peak_config is not None:
-            # Bounded-Pilot: ExchangeOrderExecutor + KrakenLiveClient (echte Orders)
-            from ..exchange import build_trading_client_from_config
-            from ..orders.exchange import create_order_executor
-
-            # Config mit exchange.default_type=kraken_live für bounded pilot
-            cfg = _config_with_exchange_type(peak_config, "kraken_live")
-            trading_client = build_trading_client_from_config(cfg)
-            executor = create_order_executor(env_config, trading_client=trading_client)
-            pipeline = ExecutionPipeline(executor=executor)
-            logger.info(
-                "[LIVE SESSION] Bounded-Pilot: Pipeline mit KrakenLiveClient "
-                f"({trading_client.get_name()})"
+            raise SessionRuntimeError(
+                "bounded_pilot_noncanonical_venue_rejected: "
+                "this legacy session path is not a current operative venue alternative; "
+                "canonical execution remains the existing OKX contracts "
+                "(no silent venue substitution)"
             )
         elif session_config.mode == "shadow":
             # Shadow-Mode: ShadowOrderExecutor (keine echten API-Calls)
@@ -687,36 +683,18 @@ class LiveSessionRunner:
         """
         Baut eine Datenquelle basierend auf der Config.
 
-        Args:
-            session_config: LiveSessionConfig
-
-        Returns:
-            CandleSource oder kompatible Datenquelle
+        Current operative market data is the canonical OKX path, not this
+        legacy session helper. This runner uses an in-memory dummy source
+        (simulation, not a venue).
         """
-        try:
-            from ..data.kraken_live import (
-                KrakenLiveCandleSource,
-                ShadowPaperConfig,
-                LiveExchangeConfig,
-            )
-
-            # Für Shadow-/Testnet-Mode: KrakenLiveCandleSource mit Public-API
-            data_source = KrakenLiveCandleSource(
-                symbol=session_config.symbol,
-                timeframe=session_config.timeframe,
-                warmup_candles=session_config.warmup_candles,
-            )
-            return data_source
-
-        except ImportError:
-            # Fallback: Einfache In-Memory-Source für Tests
-            logger.warning(
-                "[LIVE SESSION] KrakenLiveCandleSource nicht verfügbar, verwende Dummy-Source"
-            )
-            return _DummyCandleSource(
-                symbol=session_config.symbol,
-                timeframe=session_config.timeframe,
-            )
+        logger.info(
+            "[LIVE SESSION] Using dummy candle source; "
+            "canonical public MD remains the existing OKX contracts"
+        )
+        return _DummyCandleSource(
+            symbol=session_config.symbol,
+            timeframe=session_config.timeframe,
+        )
 
     # =========================================================================
     # Lifecycle Methods

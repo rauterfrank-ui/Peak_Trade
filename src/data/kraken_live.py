@@ -157,17 +157,17 @@ class LiveExchangeConfig:
     Konfiguration für Live-Exchange-Verbindung.
 
     Attributes:
-        name: Exchange-Name (z.B. "kraken")
+        name: Exchange-Name (explicit; no implicit venue)
         use_sandbox: Sandbox/Public-Only Modus
-        base_url: Basis-URL für API
+        base_url: Basis-URL für API (explicit; no implicit venue host)
         rate_limit_ms: Rate-Limit in Millisekunden
         max_retries: Maximale Retry-Versuche
         retry_delay_seconds: Wartezeit zwischen Retries
     """
 
-    name: str = "kraken"
+    name: str
+    base_url: str
     use_sandbox: bool = True
-    base_url: str = "https://api.kraken.com"
     rate_limit_ms: int = 1000
     max_retries: int = 3
     retry_delay_seconds: float = 5.0
@@ -266,7 +266,7 @@ class KrakenLiveCandleSource:
         self,
         symbol: str = "BTC/EUR",
         timeframe: str = "1m",
-        base_url: str = "https://api.kraken.com",
+        base_url: str = "",
         warmup_candles: int = 200,
         max_buffer_size: int = 1000,
         max_retries: int = 3,
@@ -274,6 +274,9 @@ class KrakenLiveCandleSource:
         rate_limit_ms: int = 1000,
         session: Optional[requests.Session] = None,
     ) -> None:
+        from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+        reject_noncanonical_operative_surface(surface="KrakenLiveCandleSource")
         """
         Initialisiert die Kraken Live Candle Source.
 
@@ -673,6 +676,9 @@ def create_kraken_source_from_config(
     shadow_cfg: ShadowPaperConfig,
     exchange_cfg: LiveExchangeConfig,
 ) -> KrakenLiveCandleSource:
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+    reject_noncanonical_operative_surface(surface="create_kraken_source_from_config")
     """
     Factory-Funktion für KrakenLiveCandleSource aus Config-Objekten.
 
@@ -728,10 +734,16 @@ def load_live_exchange_config(cfg: Any) -> LiveExchangeConfig:
     Returns:
         LiveExchangeConfig mit Werten aus Config
     """
+    name = cfg.get("live_exchange.name")
+    if name is None or str(name).strip() == "":
+        raise ValueError("live_exchange.name is required; no implicit venue default is authorized")
+    base_url = cfg.get("live_exchange.base_url")
+    if base_url is None or str(base_url).strip() == "":
+        raise ValueError("live_exchange.base_url is required; no implicit venue host is authorized")
     return LiveExchangeConfig(
-        name=cfg.get("live_exchange.name", "kraken"),
+        name=str(name).strip(),
         use_sandbox=cfg.get("live_exchange.use_sandbox", True),
-        base_url=cfg.get("live_exchange.base_url", "https://api.kraken.com"),
+        base_url=str(base_url).strip(),
         rate_limit_ms=cfg.get("live_exchange.rate_limit_ms", 1000),
         max_retries=cfg.get("live_exchange.max_retries", 3),
         retry_delay_seconds=cfg.get("live_exchange.retry_delay_seconds", 5.0),

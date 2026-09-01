@@ -24,8 +24,11 @@ class ResilientExchangeClient:
     """
 
     def __init__(self, exchange_id: str, config: Optional[Dict[str, Any]] = None):
+        from src.exchange.operative_venue_boundary_v1 import assert_operative_ccxt_venue_id
+
         if not isinstance(exchange_id, str) or not exchange_id.strip():
             raise ValueError("exchange_id is required; no implicit venue default is authorized")
+        exchange_id = assert_operative_ccxt_venue_id(exchange_id.strip())
         self.exchange_id = exchange_id
         self.config = config or {}
 

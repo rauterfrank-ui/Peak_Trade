@@ -276,7 +276,7 @@ def test_08_builder_drift_reject() -> None:
 @pytest.mark.parametrize(
     ("field", "bad", "code"),
     [
-        ("venue", "BINANCE", "venue_binding_mismatch"),
+        ("venue", "UNDECLARED_VENUE", "venue_binding_mismatch"),
         ("instrument", "BTC-USD_UM_XPERP-1", "instrument_binding_mismatch"),
         ("network_scope", "OTHER", "network_scope_binding_mismatch"),
         ("session_scope", "OTHER_SCOPE", "session_scope_binding_mismatch"),

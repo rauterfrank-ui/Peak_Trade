@@ -78,10 +78,12 @@ def build_exchange_client_from_config(cfg) -> ExchangeClientProtocol:
         >>> client = build_exchange_client_from_config(cfg)
         >>> ticker = client.fetch_ticker("BTC/EUR")
     """
+    from src.exchange.operative_venue_boundary_v1 import assert_operative_ccxt_venue_id
+
     exchange_id = cfg.get("exchange.id")
     if exchange_id is None or str(exchange_id).strip() == "":
         raise ValueError("exchange.id is required; no implicit venue fallback is authorized")
-    exchange_id = str(exchange_id).strip()
+    exchange_id = assert_operative_ccxt_venue_id(str(exchange_id).strip())
     sandbox = cfg.get("exchange.sandbox", True)
     enable_rate_limit = cfg.get("exchange.enable_rate_limit", True)
 
@@ -119,9 +121,7 @@ def build_trading_client_from_config(cfg) -> TradingExchangeClient:
 
     Liest [exchange].default_type aus der Config und erstellt den
     entsprechenden Client:
-    - "dummy": DummyExchangeClient (In-Memory, für Tests)
-    - "kraken_testnet": KrakenTestnetClient (echte Testnet-API)
-    - "kraken_live": KrakenLiveClient (echte Kraken Live-API)
+    - "dummy": DummyExchangeClient (In-Memory, Test/Simulation — keine Venue)
 
     Args:
         cfg: PeakConfig-Objekt (oder kompatibel mit .get())
@@ -155,18 +155,8 @@ def build_trading_client_from_config(cfg) -> TradingExchangeClient:
             slippage_bps=slippage_bps,
         )
 
-    elif default_type == "kraken_testnet":
-        from .kraken_testnet import create_kraken_testnet_client_from_config
-
-        return create_kraken_testnet_client_from_config(cfg)
-
-    elif default_type == "kraken_live":
-        from .kraken_live import create_kraken_live_client_from_config
-
-        return create_kraken_live_client_from_config(cfg)
-
-    else:
-        raise ValueError(
-            f"Unbekannter exchange.default_type: {default_type!r}. "
-            f"Verfügbar: 'dummy', 'kraken_testnet', 'kraken_live'"
-        )
+    raise ValueError(
+        f"noncanonical_venue_rejected: exchange.default_type={default_type!r}. "
+        "Only dummy (test/simulation, not a venue) is authorized in this factory. "
+        "Canonical execution remains the existing OKX contracts."
+    )

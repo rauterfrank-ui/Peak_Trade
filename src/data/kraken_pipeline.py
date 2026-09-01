@@ -34,6 +34,9 @@ class KrakenDataPipeline:
     """
 
     def __init__(self, cache_dir: Optional[str] = None, use_cache: bool = True) -> None:
+        from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+        reject_noncanonical_operative_surface(surface="KrakenDataPipeline")
         """
         Args:
             cache_dir: Cache-Verzeichnis (default: aus config.toml)
@@ -216,44 +219,14 @@ class KrakenDataPipeline:
 def fetch_kraken_data(
     symbol: str, timeframe: str = "1h", limit: int = 720, use_cache: bool = True
 ) -> pd.DataFrame:
-    """
-    Convenience-Funktion: Holt Kraken-Daten mit voller Pipeline.
+    """Historical Kraken pipeline entry; current operative use is rejected."""
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
 
-    Args:
-        symbol: Trading-Pair (z.B. "BTC/USD")
-        timeframe: Zeitrahmen
-        limit: Anzahl Bars
-        use_cache: Cache verwenden?
-
-    Returns:
-        Normalisierter DataFrame
-
-    Example:
-        >>> from src.data import fetch_kraken_data
-        >>> df = fetch_kraken_data("BTC/USD", "1h", limit=100)
-    """
-    pipeline = KrakenDataPipeline(use_cache=use_cache)
-    return pipeline.fetch_and_prepare(symbol=symbol, timeframe=timeframe, limit=limit)
+    reject_noncanonical_operative_surface(surface="fetch_kraken_data")
 
 
 def test_kraken_connection() -> bool:
-    """
-    Testet Kraken-Verbindung.
+    """Historical Kraken connectivity probe; current operative use is rejected."""
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
 
-    Returns:
-        True wenn Verbindung OK, sonst False
-
-    Example:
-        >>> from src.data import test_kraken_connection
-        >>> if test_kraken_connection():
-        ...     print("Kraken OK!")
-    """
-    try:
-        client = get_kraken_client()
-        # Teste mit minimalem Request
-        client.fetch_ticker("BTC/USD")
-        logger.info("✅ Kraken-Verbindung OK")
-        return True
-    except Exception as e:
-        logger.error(f"❌ Kraken-Verbindung fehlgeschlagen: {e}")
-        return False
+    reject_noncanonical_operative_surface(surface="test_kraken_connection")

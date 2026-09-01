@@ -209,7 +209,7 @@ def test_autonomy_scope_limits_positive_renewal_and_negative_extensions() -> Non
     with pytest.raises(AutonomyScopeViolationError, match="CAPITAL_LIMIT"):
         refuse_capital_limit_increase_v1(binding)
     with pytest.raises(AutonomyScopeViolationError, match="VENUE_ENABLEMENT"):
-        refuse_venue_enablement_v1(binding, new_venue="BINANCE")
+        refuse_venue_enablement_v1(binding, new_venue="UNDECLARED_VENUE")
     with pytest.raises(AutonomyScopeViolationError, match="TESTNET_TO_LIVE"):
         refuse_testnet_to_live_transition_v1(binding)
     assert prove_autonomy_scope_limits_v1(binding)["ok"] is True

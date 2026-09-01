@@ -264,6 +264,9 @@ def _validate_input(inp: OrderCapabilityPayloadInput) -> float:
 
 
 def build_order_capability_payload(inp: OrderCapabilityPayloadInput) -> OrderCapabilityPayload:
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+    reject_noncanonical_operative_surface(surface="build_order_capability_payload")
     computed_notional = _validate_input(inp)
     evidence_correlation_id = _resolve_evidence_correlation_id(inp)
     client_order_id = _deterministic_client_order_id(inp, evidence_correlation_id)

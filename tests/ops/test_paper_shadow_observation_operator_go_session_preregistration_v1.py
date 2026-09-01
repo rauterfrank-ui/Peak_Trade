@@ -181,7 +181,7 @@ def test_negative_venue_spot_btc_instrument_portfolio_sha_duration() -> None:
     go = _load_go()
 
     bad_go = parse_operator_go_contract_v1(
-        {**go.to_dict(), "venue": "BINANCE", "arming_state": "armed"}
+        {**go.to_dict(), "venue": "UNDECLARED_VENUE", "arming_state": "armed"}
     )
     assert "VENUE_FORBIDDEN" in ",".join(
         validate_operator_go_contract_v1(bad_go, prereg=prereg, now_unix=NOW).blockers

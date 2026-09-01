@@ -177,7 +177,7 @@ def test_10_venue_mismatch_rejected() -> None:
     with pytest.raises(
         AdditionalEvidenceSessionAuthorizationV2Error, match="venue_binding_mismatch"
     ):
-        _build_from_readiness(venue="BINANCE")
+        _build_from_readiness(venue="UNDECLARED_VENUE")
 
 
 def test_11_code_baseline_mismatch_rejected() -> None:

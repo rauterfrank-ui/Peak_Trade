@@ -87,7 +87,7 @@ HARNESS_VERSION = "archive_futures_testnet_harness_v0"
 DEFAULT_MODE = "zero_order_reachability_only"
 DEFAULT_FUTURES_SYMBOL = DEFAULT_INSTRUMENT
 DEFAULT_REST_BASE_URL = f"{DEFAULT_FUTURES_TESTNET_NETWORK_HOST}/derivatives/api/v3"
-DEFAULT_EXCHANGE = "kraken_futures_demo"
+DEFAULT_EXCHANGE = ""
 DEFAULT_MARKET_TYPE_LABEL = DEFAULT_MARKET_TYPE
 DEFAULT_ORDER_CAP = 0
 DEFAULT_VALIDATE_ONLY_ORDER_CAP = 0
@@ -758,6 +758,9 @@ def main(
     private_fetcher: PrivateReadonlyRestFetcher | None = None,
     environ: Mapping[str, str] | None = None,
 ) -> int:
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+    reject_noncanonical_operative_surface(surface="archive_futures_testnet_harness_v0")
     if FUTURES_SESSION_AUTHORIZED_NOW:
         _die("ERR: FUTURES_SESSION_AUTHORIZED_NOW must be false")
     if RUNTIME_HARNESS_EXECUTE_ALLOWED or RUNTIME_HARNESS_NETWORK_ALLOWED:

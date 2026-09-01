@@ -30,7 +30,7 @@ def test_replay_collector_contract(tmp_path: Path) -> None:
                     "source": "replay",
                     "venue_type": "ccxt",
                     "observed_at": "2026-02-09T12:00:00Z",
-                    "payload": {"exchange": "kraken", "symbol": "BTC/EUR", "ticker": {"last": 1.0}},
+                    "payload": {"exchange": "okx", "symbol": "BTC/EUR", "ticker": {"last": 1.0}},
                 }
             ]
         ),
@@ -72,14 +72,14 @@ def test_ccxt_ticker_collector_contract_mock() -> None:
     }
     mock_klass = MagicMock(return_value=mock_exchange)
     mock_ccxt = MagicMock()
-    mock_ccxt.kraken = mock_klass
+    mock_ccxt.okx = mock_klass
     mock_ccxt.NetworkError = Exception
     mock_ccxt.ExchangeError = Exception
 
     cfg = {
         "sources": {
             "ccxt": {
-                "exchange": "kraken",
+                "exchange": "okx",
                 "max_markets": 10,
                 "rate_limit_ms": 1200,
                 "enabled": True,
@@ -96,24 +96,22 @@ def test_ccxt_ticker_collector_contract_mock() -> None:
     assert e.source == "ccxt_ticker"
     assert e.venue_type == "ccxt"
     assert "observed_at" in e.payload
-    assert e.payload.get("exchange") == "kraken"
+    assert e.payload.get("exchange") == "okx"
     assert e.payload.get("symbol") == "BTC/EUR"
     mock_exchange.fetch_markets.assert_called_once()
     mock_exchange.fetch_tickers.assert_called_once()
 
 
 def test_get_ccxt_config_defaults() -> None:
-    assert _get_ccxt_config({})["exchange"] == "kraken"
+    assert _get_ccxt_config({})["exchange"] == ""
     assert _get_ccxt_config({})["enabled"] is True
     assert _get_ccxt_config({})["max_markets"] == 50
     assert (
-        _get_ccxt_config({"sources": {"ccxt": {"exchange": "binance", "max_markets": 5}}})[
-            "exchange"
-        ]
-        == "binance"
+        _get_ccxt_config({"sources": {"ccxt": {"exchange": "okx", "max_markets": 5}}})["exchange"]
+        == "okx"
     )
     assert (
-        _get_ccxt_config({"sources": {"ccxt": {"exchange": "binance", "max_markets": 5}}})[
+        _get_ccxt_config({"sources": {"ccxt": {"exchange": "okx", "max_markets": 5}}})[
             "max_markets"
         ]
         == 5

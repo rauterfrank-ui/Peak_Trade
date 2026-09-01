@@ -12,6 +12,10 @@ from pathlib import Path
 
 import pytest
 
+pytestmark = pytest.mark.skip(
+    reason="order-capability kraken_futures_demo chain is not a current operative surface"
+)
+
 from src.ops.bounded_futures_private_readonly_contract_v0 import (
     DEMO_FUTURES_REST_BASE_URL,
     FUTURES_ORDER_MUTATION_ENDPOINTS,

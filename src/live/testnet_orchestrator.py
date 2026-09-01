@@ -308,8 +308,6 @@ class TestnetOrchestrator:
         from ..core.environment import get_environment_from_config
         from ..data.kraken_live import (
             ShadowPaperConfig,
-            LiveExchangeConfig,
-            create_kraken_source_from_config,
         )
         from ..strategies.registry import create_strategy_from_config
         from ..execution.pipeline import ExecutionPipeline
@@ -328,11 +326,15 @@ class TestnetOrchestrator:
             warmup_candles=200,
         )
 
-        # Exchange-Config (keine symbol/timeframe Parameter - diese sind in shadow_cfg)
-        exchange_cfg = LiveExchangeConfig()
+        exchange_cfg = None
 
-        # Data-Source
-        data_source = create_kraken_source_from_config(shadow_cfg, exchange_cfg)
+        # Data-Source must be provided by a canonical MD contract; this
+        # orchestrator does not instantiate a non-OKX venue source.
+        raise RuntimeError(
+            "testnet_orchestrator_noncanonical_venue_rejected: "
+            "implicit venue market-data construction is not authorized; "
+            "canonical public MD remains the existing OKX contracts"
+        )
 
         # Strategie
         strategy = create_strategy_from_config(strategy_name, self._config)

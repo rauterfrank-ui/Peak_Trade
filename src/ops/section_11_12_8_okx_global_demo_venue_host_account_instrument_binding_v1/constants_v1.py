@@ -49,7 +49,6 @@ FORBIDDEN_GENERIC_SYMBOL_SUBSTITUTION = True
 FORBIDDEN_VENUE_FALLBACKS: tuple[str, ...] = (
     "okx_eea",
     "okx_europe",
-    "binance_usdm_testnet",
     "bybit_testnet",
     "kraken_futures_demo",
 )

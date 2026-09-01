@@ -180,19 +180,9 @@ class TestnetExchangeOrderExecutor:
         risk_limits: Optional["LiveRiskLimits"] = None,
         env_config: Optional[EnvironmentConfig] = None,
     ) -> None:
-        """
-        Initialisiert den TestnetExchangeOrderExecutor.
+        from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
 
-        Args:
-            exchange_client: KrakenTestnetClient fuer API-Calls
-            safety_guard: SafetyGuard fuer Safety-Pruefungen
-            risk_limits: Optionale LiveRiskLimits fuer Risk-Pruefungen
-            env_config: Optionale EnvironmentConfig (sonst aus safety_guard)
-
-        Raises:
-            EnvironmentNotTestnetError: Wenn Environment nicht TESTNET ist
-        """
-        self._client = exchange_client
+        reject_noncanonical_operative_surface(surface="TestnetExchangeOrderExecutor")
         self._safety_guard = safety_guard
         self._risk_limits = risk_limits
         self._env_config = env_config or safety_guard.env_config
@@ -616,6 +606,9 @@ def create_testnet_executor_from_config(
     exchange_client: Optional["KrakenTestnetClient"] = None,
     risk_limits: Optional["LiveRiskLimits"] = None,
 ) -> TestnetExchangeOrderExecutor:
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+    reject_noncanonical_operative_surface(surface="create_testnet_executor_from_config")
     """
     Factory-Funktion fuer TestnetExchangeOrderExecutor aus PeakConfig.
 

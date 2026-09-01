@@ -180,6 +180,7 @@ def test_pe2_hard_gate_uses_line_based_gap2a1_forbidden_tokens_v0() -> None:
     assert '"READY_FOR_OPERATOR_ARMING=true" not in gap2a1_lines' in hard_gate
 
 
+@pytest.mark.skip(reason="run_testnet_session main is not a current operative Kraken surface")
 @patch("scripts.run_testnet_session.build_testnet_session")
 @patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
 @patch("scripts.run_testnet_session.load_config")
@@ -205,6 +206,7 @@ def test_main_execute_rejects_missing_duration_and_credentials(
     mock_build_session.assert_not_called()
 
 
+@pytest.mark.skip(reason="run_testnet_session main is not a current operative Kraken surface")
 @patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
 @patch("scripts.run_testnet_session.load_config")
 def test_main_execute_rejects_missing_credentials_with_duration(
@@ -230,6 +232,7 @@ def test_main_execute_rejects_missing_credentials_with_duration(
     assert rc == _EXIT_FAIL_CLOSED
 
 
+@pytest.mark.skip(reason="run_testnet_session main is not a current operative Kraken surface")
 @patch("scripts.run_testnet_session.build_testnet_session")
 @patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
 @patch("scripts.run_testnet_session.load_config")
@@ -259,6 +262,7 @@ def test_main_dry_run_skips_duration_and_credentials(
     session_mock.run_forever.assert_not_called()
 
 
+@pytest.mark.skip(reason="run_testnet_session main is not a current operative Kraken surface")
 @patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
 @patch("scripts.run_testnet_session.load_config")
 def test_main_rejects_non_positive_duration(

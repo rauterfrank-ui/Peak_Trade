@@ -383,24 +383,10 @@ def load_kraken_ohlcv(
     timeframe: str = "1h",
     use_cache: bool = True,
 ) -> pd.DataFrame:
-    """
-    Öffentliche Kraken-OHLCV über ``fetch_ohlcv_df`` (CCXT-Backend).
+    """Historical Kraken OHLCV loader; current operative use is rejected."""
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
 
-    Keine API-Keys für reine Kursabfragen nötig. Pro Request maximal
-    ``KRAKEN_OHLCV_MAX_BARS`` Bars; bei ``n_bars`` darüber: Pagination vorwärts
-    ab ``now - n_bars * bar_duration`` (``since_ms``), zusammenführen und
-    ``tail(n_bars)``. Paginations-Requests nutzen ``use_cache=False``, weil der
-    Parquet-Cache in ``fetch_ohlcv_df`` ein Voll-Snapshot ohne ``since``/``limit``
-    ist.
-
-    Cache/``data_dir``: wie ``src.data.kraken`` (ConfigRegistry / ``get_config()``)
-    nur bei einzelnem Abruf ``n_bars <= KRAKEN_OHLCV_MAX_BARS``.
-    """
-    df, _ = _load_kraken_ohlcv_inner(
-        symbol, n_bars=n_bars, timeframe=timeframe, use_cache=use_cache
-    )
-    # Warnung erfolgt bereits in _load_kraken_ohlcv_inner
-    return df
+    reject_noncanonical_operative_surface(surface="load_kraken_ohlcv")
 
 
 def load_ohlcv(
@@ -466,23 +452,9 @@ def load_ohlcv_with_meta(
         }
         return df, meta
     if src == OHLCV_SOURCE_KRAKEN:
-        df, pagination_used = _load_kraken_ohlcv_inner(
-            symbol, n_bars=n_bars, timeframe=timeframe, use_cache=use_cache
-        )
-        loaded = int(len(df))
-        shortfall = loaded < n_bars
-        meta = {
-            "symbol": symbol,
-            "ohlcv_source": OHLCV_SOURCE_KRAKEN,
-            "timeframe": timeframe,
-            "n_bars_requested": n_bars,
-            "bars_loaded": loaded,
-            "kraken_pagination_used": pagination_used,
-            "kraken_bars_shortfall": shortfall,
-            "ohlcv_csv_resolved": None,
-            "csv_bars_shortfall": None,
-        }
-        return df, meta
+        from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+        reject_noncanonical_operative_surface(surface="load_ohlcv_with_meta")
     if src == OHLCV_SOURCE_CSV:
         if not ohlcv_csv_path:
             raise ValueError("OHLCV-Quelle csv erfordert ohlcv_csv_path (CLI: --ohlcv-csv).")

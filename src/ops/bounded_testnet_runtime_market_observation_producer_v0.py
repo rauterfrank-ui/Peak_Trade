@@ -37,7 +37,7 @@ PACKAGE_MARKER = "BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_V0=true"
 CANONICAL_TESTNET_BASE_URL = "https://demo-futures.kraken.com"
 CANONICAL_TICKER_ENDPOINT = "/derivatives/api/v3/tickers"
 CANONICAL_PUBLIC_TESTNET_READ_ONLY_CLASS = "PUBLIC_TESTNET_READ_ONLY"
-DEFAULT_EXCHANGE = "kraken_futures_demo"
+DEFAULT_EXCHANGE = ""
 DEFAULT_DATASET_ID = "bounded_testnet_runtime_public_ticker_v0"
 DEFAULT_PRICE_SOURCE = "demo_futures_public_ticker"
 DEFAULT_TIMEOUT_SECONDS = 10.0
@@ -333,6 +333,9 @@ def fetch_bounded_testnet_pf_ethusd_ticker_tick_v0(
     max_staleness_seconds: float = DEFAULT_MAX_STALENESS_SECONDS,
 ) -> BoundedTestnetRuntimeTickerFetchResultV0:
     """Perform exactly one bounded public testnet ticker fetch for PF_ETHUSD."""
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+    reject_noncanonical_operative_surface(surface="fetch_bounded_testnet_pf_ethusd_ticker_tick_v0")
     if instrument != REPO_GROUNDED_ETH_PERP_SELECTED_FUTURE_ID:
         return _failure(
             RuntimeMarketObservationFailureClass.INSTRUMENT_MAPPING_MISMATCH,

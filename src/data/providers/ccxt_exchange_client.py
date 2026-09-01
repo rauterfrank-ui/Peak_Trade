@@ -35,6 +35,9 @@ class CcxtExchangeClient:
         sandbox: bool = False,
         extra_config: Optional[Dict[str, Any]] = None,
     ) -> None:
+        from src.exchange.operative_venue_boundary_v1 import assert_operative_ccxt_venue_id
+
+        exchange_id = assert_operative_ccxt_venue_id(str(exchange_id))
         if not hasattr(ccxt, exchange_id):
             available = [x for x in dir(ccxt) if not x.startswith("_") and x.islower()]
             raise ValueError(

@@ -106,7 +106,7 @@ class KrakenTestnetConfig:
         rate_limit_ms: Rate-Limit-Pause zwischen Requests in ms
     """
 
-    base_url: str = "https://api.kraken.com"
+    base_url: str = ""
     api_key_env_var: str = "KRAKEN_TESTNET_API_KEY"
     api_secret_env_var: str = "KRAKEN_TESTNET_API_SECRET"
     validate_only: bool = True  # WICHTIG: Default ist True fuer Safety
@@ -277,16 +277,9 @@ class KrakenTestnetClient:
     """
 
     def __init__(self, config: KrakenTestnetConfig) -> None:
-        """
-        Initialisiert den Kraken Testnet Client.
+        from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
 
-        Args:
-            config: KrakenTestnetConfig mit API-Einstellungen
-
-        Raises:
-            ExchangeAuthenticationError: Wenn keine API-Credentials gefunden
-        """
-        self._config = config
+        reject_noncanonical_operative_surface(surface="KrakenTestnetClient")
         self._api_key, self._api_secret = config.load_credentials()
 
         # Session fuer Connection-Pooling
@@ -777,6 +770,9 @@ def create_kraken_testnet_client_from_config(
     cfg: "PeakConfig",
     config_prefix: str = "exchange.kraken_testnet",
 ) -> KrakenTestnetClient:
+    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+    reject_noncanonical_operative_surface(surface="create_kraken_testnet_client_from_config")
     """
     Factory-Funktion fuer KrakenTestnetClient aus PeakConfig.
 

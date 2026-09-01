@@ -106,7 +106,7 @@ def _eligible_panel() -> tuple[RawInstrumentRecordV1, ...]:
         ("AVAX", "AVAX-USDT-SWAP", "avax"),
         ("LINK", "LINK-USDT-SWAP", "link"),
         ("DOT", "DOT-USDT-SWAP", "dot"),
-        ("ADA", "ADAUSDT", "ada", "binance_usdm"),
+        ("ADA", "ADAUSDT", "ada", "other_venue"),
     ]
     records = []
     for item in specs:
@@ -157,7 +157,7 @@ def _build_input(
         bar_interval="PT1H",
         minimum_history_bars=_MIN_HISTORY,
         minimum_required_member_count=5,
-        venue_scope=("binance_usdm", "okx"),
+        venue_scope=("other_venue", "okx"),
         source_snapshot_refs=(_DATASET_REF,),
         source_digests=(_record_digest({"source_dataset_refs": [_DATASET_REF]}),),
         period_binding_ref=_PERIOD_REF,

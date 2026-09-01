@@ -652,7 +652,7 @@ enabled = true
 # - paper: Vollständige Paper-Trading-Simulation
 mode = "paper"
 
-# Trading-Symbol (Kraken-Format)
+# Trading-Symbol
 symbol = "BTC/EUR"
 
 # Timeframe für Candles ("1m", "5m", "15m", "1h", "4h", "1d")
@@ -965,8 +965,7 @@ auto_refresh_seconds = 5
 #
 # Verfügbare Typen:
 # - "dummy": In-Memory-Client für Tests (keine echten API-Calls)
-# - "kraken_testnet": Kraken Testnet/Demo-API
-# - "kraken_live": Echte Kraken Live-API (Option A Slice 5)
+# Kraken trading types are not selectable.
 # ============================================================================
 
 [exchange]
@@ -984,64 +983,9 @@ slippage_bps = 5.0
 # ============================================================================
 # PHASE 35: TESTNET EXCHANGE INTEGRATION
 # ============================================================================
-# Konfiguration fuer die Testnet-/Demo-Exchange-Integration.
-# WICHTIG: Dies ist KEIN echtes Live-Trading! Nur Testnet/Demo-Modus.
-#
-# Sicherheitshinweise:
-# - API-Keys werden NUR aus Environment-Variablen gelesen
-# - Default: validate_only=true (Orders werden nur validiert, nicht ausgefuehrt)
-# - Echtes Live-Trading erfordert weitere Phasen (40+)
+# Kraken testnet/live exchange tables are not selectable. Canonical venue
+# configuration is [exchange.okx_europe_eea] below.
 # ============================================================================
-
-[exchange.kraken_testnet]
-# Kraken venue decommissioned — retained for historical adapter/tests only.
-enabled = false
-
-# Kraken API Base-URL
-# Hinweis: Kraken hat kein echtes Testnet, daher nutzen wir validate_only=true
-base_url = "https://api.kraken.com"
-
-# Environment-Variable fuer den API-Key (NICHT der Key selbst!)
-api_key_env_var = "KRAKEN_TESTNET_API_KEY"
-
-# Environment-Variable fuer das API-Secret (NICHT das Secret selbst!)
-api_secret_env_var = "KRAKEN_TESTNET_API_SECRET"
-
-# WICHTIG: validate_only=true bedeutet:
-# - Orders werden an die API geschickt und validiert
-# - Orders werden NICHT tatsaechlich ausgefuehrt
-# - Ideal fuer Tests ohne echtes Kapitalrisiko
-# Setze auf false NUR wenn du echte Testnet-Orders willst!
-validate_only = true
-
-# HTTP-Request Timeout in Sekunden
-timeout_seconds = 30.0
-
-# Max. Retries bei Netzwerkfehlern
-max_retries = 3
-
-# Rate-Limit: Mindestabstand zwischen Requests in Millisekunden
-rate_limit_ms = 1000
-
-# ============================================================================
-# OPTION A SLICE 5: KRAKEN LIVE EXCHANGE INTEGRATION
-# ============================================================================
-# Konfiguration fuer echte Kraken Live-Orders.
-# WICHTIG: Sendet ECHTE Orders! Nur nach Governance-Freigabe und Entry Contract.
-#
-# Sicherheitshinweise:
-# - API-Keys NUR aus Environment-Variablen (KRAKEN_API_KEY, KRAKEN_API_SECRET)
-# - Strikte Trennung von kraken_testnet (andere ENV-Variablen)
-# ============================================================================
-
-[exchange.kraken_live]
-enabled = false
-base_url = "https://api.kraken.com"
-api_key_env_var = "KRAKEN_API_KEY"
-api_secret_env_var = "KRAKEN_API_SECRET"
-timeout_seconds = 30.0
-max_retries = 3
-rate_limit_ms = 1000
 
 # ============================================================================
 # OKX EUROPE EEA (Package E / INV-033) — target venue (credentials external)

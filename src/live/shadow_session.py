@@ -831,7 +831,6 @@ def create_shadow_paper_session(
     from ..data.kraken_live import (
         load_shadow_paper_config,
         load_live_exchange_config,
-        create_kraken_source_from_config,
     )
     from ..live.run_logging import (
         create_run_logger_from_config,
@@ -846,7 +845,9 @@ def create_shadow_paper_session(
 
     # Datenquelle erstellen falls nicht übergeben
     if data_source is None:
-        data_source = create_kraken_source_from_config(shadow_cfg, exchange_cfg)
+        raise ValueError(
+            "data_source is required; no implicit venue market-data default is authorized"
+        )
 
     # Shadow-Executor erstellen
     market_context = ShadowMarketContext(

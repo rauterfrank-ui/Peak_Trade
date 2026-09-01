@@ -35,10 +35,6 @@ _IMPLICIT_VENUE_VALUES = frozenset(
     {
         "kraken",
         "okx",
-        "binance",
-        "coinbase",
-        "coinbasepro",
-        "bitstamp",
         "kraken_ws",
         "okx_ws",
         "okx_europe_eea",
@@ -74,8 +70,6 @@ def test_a_resilient_exchange_client_requires_explicit_exchange_id() -> None:
     for src in (impl_src, shim_src):
         assert 'exchange_id: str = "kraken"' not in src
         assert 'exchange_id: str = "okx"' not in src
-        assert 'exchange_id: str = "binance"' not in src
-        assert 'exchange_id: str = "coinbase"' not in src
 
 
 def test_a_impl_resilient_exchange_client_requires_explicit_exchange_id() -> None:
@@ -192,8 +186,6 @@ def test_i_slice1_introduces_no_replacement_venue_defaults() -> None:
     )
     assert 'exchange: str = "kraken"' not in live_feed_src
     assert 'exchange: str = "okx"' not in live_feed_src
-    assert 'exchange: str = "binance"' not in live_feed_src
-    assert 'exchange: str = "coinbase"' not in live_feed_src
 
     models_src = (REPO_ROOT / "src" / "data" / "shadow" / "models.py").read_text(encoding="utf-8")
     assert 'source: str = "kraken_ws"' not in models_src
@@ -206,8 +198,6 @@ def test_i_slice1_introduces_no_replacement_venue_defaults() -> None:
     pydantic_src = (REPO_ROOT / "src" / "core" / "config_pydantic.py").read_text(encoding="utf-8")
     assert 'default="kraken"' not in pydantic_src
     assert 'default="okx"' not in pydantic_src
-    assert 'default="binance"' not in pydantic_src
-    assert 'default="coinbase"' not in pydantic_src
 
 
 def test_j_forbidden_venue_fallbacks_preserved() -> None:

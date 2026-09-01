@@ -380,7 +380,7 @@ def test_btc_spot_venue_instrument_rejected(tmp_workspace) -> None:
             revision_sha="r",
             go_token=GO_TOKEN,
         )
-        build["venue"] = "BINANCE"
+        build["venue"] = "UNDECLARED_VENUE"
         path = tmp_workspace["auth_dir"] / "venue.json"
         path.write_text(json.dumps(build), encoding="utf-8")
         load_authorization_contract_v1(path)

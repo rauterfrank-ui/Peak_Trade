@@ -181,7 +181,7 @@ def test_non_testnet_and_binding_mismatches_fail_closed() -> None:
     )
     assert (
         build_owner_auth_artifact_testnet_credential_scope_private_network_v1(
-            **_complete_kwargs(expected_venue="BINANCE")
+            **_complete_kwargs(expected_venue="UNDECLARED_VENUE")
         ).owner_auth_artifact_admissible
         is False
     )

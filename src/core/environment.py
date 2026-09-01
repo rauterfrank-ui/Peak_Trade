@@ -8,7 +8,7 @@ zugehörige Konfiguration für das Safety-System.
 
 Environments:
 - PAPER: Simulation ohne echte Orders (Backtests, Paper-Trading)
-- TESTNET: Testnet-Orders (z.B. Kraken/Binance Testnet) - aktuell Dry-Run
+- TESTNET: Testnet-Orders (venue-specific demo/testnet) - aktuell Dry-Run
 - LIVE: Echte Orders an Börsen (NICHT implementiert in Phase 17)
 
 WICHTIG: In Phase 17 werden KEINE echten Orders gesendet.

@@ -1216,7 +1216,7 @@ ENTRY_POINT=ExecutionRouterV1.place_order
 FILE=src/execution/router/router_v1.py
 SYMBOL_OR_FUNCTION=place_order
 EXECUTION_CLASS=B
-DOWNSTREAM_TRANSPORT=currently mock adapters only (okx_v1 / bybit_v1 / coinbase_v1 MOCKS ONLY); router modes limited to shadow/paper
+DOWNSTREAM_TRANSPORT=currently mock adapters only (okx_v1 / bybit_v1 MOCKS ONLY); router modes limited to shadow/paper
 ENVIRONMENT_SCOPE=NONE
 CURRENTLY_REACHABLE=true
 CURRENT_REACHABILITY_REASON=router exists; bound adapters are mocks; no OKX Live/Testnet POST
@@ -1268,7 +1268,7 @@ Class C dry-run &#47; simulation-only (not Owner-GO submit surfaces):
 
 Class D fixture &#47; test &#47; mock:
 
-- `OKXExecutionAdapterV1` / Bybit / Coinbase v1 (`MOCKS ONLY`)
+- `OKXExecutionAdapterV1` / Bybit v1 (`MOCKS ONLY`)
 - `FakeBroker.place_order`
 - `src&#47;execution&#47;adapters&#47;mock_v1.py`
 - Cap 11.1 / Cap 11.4 construction-forbidden ports

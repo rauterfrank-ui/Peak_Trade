@@ -24,7 +24,7 @@ class ExecutionSessionContextV1:
     out_base: str = "out/ops/execution_sessions"
     ts_utc: str | None = None
 
-    adapters: tuple[str, ...] = ("mock", "coinbase", "okx", "bybit")
+    adapters: tuple[str, ...] = ("mock", "okx", "bybit")
     intents: tuple[str, ...] = ("place_order", "cancel_all")
 
     market: str = "BTC-USD"
@@ -44,15 +44,9 @@ class ExecutionSessionContextV1:
     )
     secret_vars: tuple[str, ...] = (
         "API_KEY",
-        "KRAKEN_API_KEY",
-        "BINANCE_API_KEY",
-        "COINBASE_API_KEY",
         "OKX_API_KEY",
         "BYBIT_API_KEY",
         "API_SECRET",
-        "KRAKEN_API_SECRET",
-        "BINANCE_API_SECRET",
-        "COINBASE_API_SECRET",
         "OKX_API_SECRET",
         "BYBIT_API_SECRET",
     )

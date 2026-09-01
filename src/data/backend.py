@@ -175,9 +175,9 @@ def build_data_backend_from_config(cfg: Any) -> DataBackend:
 # IMPORTANT:
 # Do NOT import provider modules at import time (e.g. Kraken via ccxt).
 # Keep src.data.backend importable in minimal envs.
-REGISTRY: dict[str, tuple[str, str]] = {
-    "kraken_ccxt": ("src.data.providers.kraken_ccxt_backend", "KrakenCcxtBackend"),
-}
+# Provider registry is empty: no non-OKX backend is a current operative factory key.
+# Historical provider modules remain importable directly for research/offline use.
+REGISTRY: dict[str, tuple[str, str]] = {}
 
 
 def get_backend(backend_id: str, **kwargs: Any) -> Any:

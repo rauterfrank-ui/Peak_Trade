@@ -77,7 +77,7 @@ def synthetic_eligible_members() -> tuple[PointInTimeFuturesUniverseMemberV1, ..
         ("okx:linear_perpetual:AVAX:USDT:USDT:perp", "okx", "AVAX-USDT-SWAP", "AVAX"),
         ("okx:linear_perpetual:LINK:USDT:USDT:perp", "okx", "LINK-USDT-SWAP", "LINK"),
         ("okx:linear_perpetual:DOT:USDT:USDT:perp", "okx", "DOT-USDT-SWAP", "DOT"),
-        ("binance_usdm:linear_perpetual:ADA:USDT:USDT:perp", "binance_usdm", "ADAUSDT", "ADA"),
+        ("other_venue:linear_perpetual:ADA:USDT:USDT:perp", "other_venue", "ADAUSDT", "ADA"),
     ]
     members = tuple(
         _member(
@@ -152,7 +152,7 @@ def build_synthetic_manifest(
         hypothesis_id="CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0",
         universe_policy_id="synthetic_cross_sectional_okx_non_btc_perp_v0",
         universe_policy_version="v0",
-        venue_scope=("binance_usdm", "okx"),
+        venue_scope=("other_venue", "okx"),
         market_type=MARKET_TYPE,
         generated_at=generated_at,
         score_epoch_semantics=SCORE_EPOCH_SEMANTICS,

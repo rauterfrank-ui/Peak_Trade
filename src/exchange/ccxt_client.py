@@ -8,20 +8,16 @@ Dieses Modul implementiert das `ExchangeClient`-Protokoll mit ccxt als Backend.
 Alle Methoden sind ausschließlich lesend – keine Order-Platzierung!
 
 Unterstützte Exchanges:
-    Alle von ccxt unterstützten Exchanges (140+), z.B.:
-    - kraken
-    - binance
-    - coinbasepro
-    - bitstamp
+    Productive CCXT dispatch is bound to the existing OKX class only.
 
 Verwendung:
-    >>> client = CcxtExchangeClient("kraken")
+    >>> client = CcxtExchangeClient("okx")
     >>> ticker = client.fetch_ticker("BTC/EUR")
     >>> print(f"BTC: {ticker.last}")
 
     >>> # Mit API-Key für Balance-Abfragen
     >>> client = CcxtExchangeClient(
-    ...     "kraken",
+    ...     "okx",
     ...     api_key="...",
     ...     secret="...",
     ...     sandbox=True,
@@ -79,6 +75,9 @@ class CcxtExchangeClient:
         sandbox: bool = False,
         extra_config: Optional[Dict[str, Any]] = None,
     ) -> None:
+        from src.exchange.operative_venue_boundary_v1 import assert_operative_ccxt_venue_id
+
+        exchange_id = assert_operative_ccxt_venue_id(str(exchange_id))
         impl_cls = _load_impl()
         self._impl = impl_cls(
             exchange_id=exchange_id,
