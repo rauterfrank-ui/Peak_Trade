@@ -9,14 +9,13 @@ modified_by: PENDING_CHANGE
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  WP-02 offline observation/proposal contract fences inventory only.
-  Registers RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1
-  and reviews TERM:focused_full_noop for the existing selector package addition.
-  No learning, promotion, trading, selection, runtime, or live authority.
-  No new relations. Atlas is not canonical authority.
+  WP-04 Decision-Map / Map-of-Truth current-vs-historical selection navigation
+  inventory only. Adds MASTER_V2_DECISION_AUTHORITY_MAP_V1.md as a navigation
+  evidence source on NAVIGATION_INDEX:map_of_truth. No new relations. No
+  selection, Landscape, Atlas, USP, WebUI, DDO, learning, or promotion
+  authority. Atlas is not canonical authority.
 changed_entities:
-  - RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1
-  - TERM:focused_full_noop
+  - NAVIGATION_INDEX:map_of_truth
 changed_relations: []
 new_relations: []
 removed_relations: []

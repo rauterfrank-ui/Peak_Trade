@@ -64,7 +64,12 @@ entities:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md
       - docs/ops/specs/PEAK_TRADE_BIND_CURRENT_SUI_L4_FAIL_CLOSED_MAX_AVAILABLE_ZERO_END_STATE_NO_REPAIR_V1.md
+    notes: >-
+      WP-04 mechanical navigation inventory only. Decision Map is listed as a
+      navigation sibling, not a second SSOT and not selection authority.
+      Current Selection Owner remains Cap 2.3. Atlas authority remains NONE.
 
   - id: FORENSIC_REFERENCE:information_corpus_persistence_base
     kind: FORENSIC_REFERENCE
