@@ -46,6 +46,28 @@ def _git_changed_files(repo_root: Path, base: str) -> list[str]:
     return [line.strip() for line in result.stdout.splitlines() if line.strip()]
 
 
+def _git_file_diffs(repo_root: Path, base: str, changed: list[str]) -> dict[str, str]:
+    diffs: dict[str, str] = {}
+    for path in changed:
+        result = subprocess.run(
+            ["git", "diff", "-U20", f"{base}...HEAD", "--", path],
+            cwd=repo_root,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            result = subprocess.run(
+                ["git", "diff", "-U20", base, "HEAD", "--", path],
+                cwd=repo_root,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+        diffs[path] = result.stdout if result.returncode == 0 else ""
+    return diffs
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
@@ -85,13 +107,39 @@ def main() -> int:
             if args.changed_file
             else _git_changed_files(repo_root, args.base)
         )
+        file_diffs = None if args.changed_file else _git_file_diffs(repo_root, args.base, changed)
+        diff_base_sha = None
+        if file_diffs is not None:
+            resolved = subprocess.run(
+                ["git", "rev-parse", args.base],
+                cwd=repo_root,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            if resolved.returncode == 0:
+                diff_base_sha = resolved.stdout.strip()
     except Exception as exc:
         print(f"ERR: {exc}", file=sys.stderr)
         return 2
 
-    report = build_boundary_report(changed, repo_root=repo_root)
+    report = build_boundary_report(
+        changed,
+        repo_root=repo_root,
+        file_diffs=file_diffs,
+        diff_base_sha=diff_base_sha,
+    )
     payload = report.to_dict()
     payload["FORBIDDEN_SURFACE_CHANGED_COUNT"] = forbidden_surface_changed_count(report)
+    payload["ECONOMIC_GUARD_PROTECTED_TOUCH_COUNT"] = len(
+        {match.matched_path for match in report.forbidden_surface_matches}
+    )
+    payload["DECOMMISSION_ADMISSION_COUNT"] = report.decommission_admission_count
+    payload["OWNER_ADJUDICATED_NONPRODUCTIVE_CHANGE_COUNT"] = (
+        report.owner_adjudicated_nonproductive_change_count
+    )
+    payload["ECONOMIC_GUARD_UNCLASSIFIED_TOUCH_COUNT"] = report.unclassified_touch_count
+    payload["ECONOMIC_GUARD_BLOCK_COUNT"] = 0 if report.admissible else 1
 
     if args.json_out is not None:
         args.json_out.write_text(

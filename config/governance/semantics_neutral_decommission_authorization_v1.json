@@ -1,0 +1,120 @@
+{
+  "TOKEN_ALONE_IS_INSUFFICIENT": true,
+  "allowed_paths": [
+    "src/governance/promotion_loop/safety.py",
+    "src/trading/master_v2/pr4985_runtime_activation_materiality_classifier_v0.py",
+    "tests/governance/promotion_loop/test_safety_manifest_era_v1.py",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/fixture_builder.py",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_btc_base.json",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_digest_mismatch.json",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_duplicate_instrument.json",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_insufficient_history.json",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_spot.json",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_synthetic_spot.json",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_xbt_base.json",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/valid_multi_epoch.json",
+    "tests/research/fixtures/pit_futures_universe_manifest_v1/valid_single_epoch.json",
+    "tests/research/new_listings/test_p9_normalize_ccxt_tickers.py",
+    "tests/research/test_instrument_id_canonicalization_v1.py",
+    "tests/research/test_pit_futures_universe_manifest_generator_registry_consumer_binding_v1.py",
+    "tests/research/test_pit_futures_universe_manifest_generator_v1.py",
+    "tests/trading/master_v2/test_canonical_volatility_typed_runtime_producer_scaffold_v1.py",
+    "tests/trading/master_v2/test_pr4985_runtime_activation_materiality_classifier_v0.py"
+  ],
+  "allowed_surface_classes": [
+    "MASTER_V2",
+    "PROMOTION_RUNTIME_ORDER_CREDENTIAL_SCHEDULER_AUTHORITY"
+  ],
+  "authority_effect": "NONE",
+  "authorization_token": "SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1",
+  "authorized_evidence_digest": "7ca0623a46dad4bc9346a240bcea30a66c00fcde108ada875f8cea979f84dc81",
+  "authorized_path_prefixes": [],
+  "authorized_scope_class": "SEMANTICS_NEUTRAL_DECOMMISSION_ONLY",
+  "blanket_allowlist": false,
+  "bound_boundary_contract": "config/governance/economic_diagnostic_optimization_boundary_v0.json",
+  "bound_boundary_guard": "src/governance/economic_diagnostic_optimization_boundary_v0.py",
+  "branch_protection_bypass": false,
+  "branch_specific_exception": false,
+  "broad_master_v2_grant": false,
+  "canonical_governance_owner": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md",
+  "claim_epistemics": {
+    "AUTHORIZED_EVIDENCE_DIGEST": "MACHINE_VALIDATED",
+    "DECOMMISSION_PREDICATES": "MACHINE_VALIDATED",
+    "EXACT_FILE_SCOPE": "MACHINE_VALIDATED",
+    "FAIL_CLOSED_SEMANTICS_WEAKENED": "MACHINE_VALIDATED",
+    "PRODUCTIVE_REACHABILITY_INCREASED": "MACHINE_VALIDATED",
+    "TRADING_SEMANTICS_CHANGED": "MACHINE_VALIDATED"
+  },
+  "class_attestation": "docs/ops/specs/SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1.md",
+  "contract_version": "semantics_neutral_decommission_authorization_v1",
+  "decommission_predicates": {
+    "require_at_least_one": [
+      "DELETED_COMPONENT_REFERENCE_REMOVED",
+      "NEGATIVE_TEST_TOKEN_NEUTRALIZED",
+      "NONCANONICAL_LITERAL_NEUTRALIZED",
+      "OBSOLETE_REFERENCE_REMOVED",
+      "REMOVED_TARGET_NO_LONGER_EXISTS"
+    ]
+  },
+  "directory_grant": false,
+  "economic_evaluation": false,
+  "evidence_digest_algorithm": "sha256",
+  "evidence_digest_canonicalization": "decommission_evidence_digest_v1",
+  "fail_closed_validation_rules": [
+    "TOKEN_ALONE_IS_INSUFFICIENT",
+    "EXACT_FILE_SCOPE_ONLY",
+    "NO_DIRECTORY_OR_BROAD_MASTER_V2_GRANT",
+    "NO_PR_NUMBER_OR_BRANCH_HARDCODE",
+    "NO_REQUIRED_CHECK_WAIVER",
+    "EMPTY_ALLOWED_PATHS_WHEN_GRANT_INACTIVE",
+    "EMPTY_EVIDENCE_DIGEST_WHEN_GRANT_INACTIVE",
+    "DIFF_EVIDENCE_REQUIRED_WHEN_GRANT_ACTIVE",
+    "AUTHORIZED_EVIDENCE_DIGEST_REQUIRED_WHEN_GRANT_ACTIVE",
+    "AT_LEAST_ONE_DECOMMISSION_PREDICATE_REQUIRED"
+  ],
+  "forbidden_effects": {
+    "AUTHORITY_EFFECT": "NONE",
+    "CREDENTIAL_EFFECT": "NONE",
+    "ORDER_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "SCHEDULER_EFFECT": "NONE"
+  },
+  "grant_active": true,
+  "mutation_purpose_class": "SEMANTICS_NEUTRAL_DECOMMISSION",
+  "notes": [
+    "Active exact-file grant bound to the canonical SHA-256 evidence digest of the attested unified diffs and diff base. A later unrelated diff on the same paths does not reuse the grant.",
+    "Does not waive MASTER_V2_MUTATION_ALLOWED=false as a global default.",
+    "Does not authorize live, testnet, canary, orders, or productive reachability increases.",
+    "Token alone is insufficient. Diff evidence must prove at least one decommission predicate and no forbidden semantic delta."
+  ],
+  "parallel_ssot_created": false,
+  "pr_specific_exception": false,
+  "required_capability_invariants": {
+    "CANARY_CAPABILITY_INCREASED": false,
+    "LIVE_CAPABILITY_INCREASED": false,
+    "NEW_EXECUTION_AUTHORITY_CREATED": false,
+    "NEW_RISK_AUTHORITY_CREATED": false,
+    "NEW_SELECTION_AUTHORITY_CREATED": false,
+    "NEW_TRADING_AUTHORITY_CREATED": false,
+    "PRODUCTIVE_REACHABILITY_INCREASED": false,
+    "TESTNET_CAPABILITY_INCREASED": false
+  },
+  "required_check_waiver": false,
+  "required_semantic_invariants": {
+    "AUTHORITY_EFFECT": "NONE",
+    "CREDENTIAL_EFFECT": "NONE",
+    "ECONOMIC_SEMANTICS_CHANGED": false,
+    "EXECUTION_SEMANTICS_CHANGED": false,
+    "FAIL_CLOSED_SEMANTICS_WEAKENED": false,
+    "ORDER_EFFECT": "NONE",
+    "PLANNING_SEMANTICS_CHANGED": false,
+    "RISK_SEMANTICS_CHANGED": false,
+    "RUNTIME_EFFECT": "NONE",
+    "SCHEDULER_EFFECT": "NONE",
+    "SELECTION_SEMANTICS_CHANGED": false,
+    "TRADING_SEMANTICS_CHANGED": false
+  },
+  "runtime_activation": false,
+  "runtime_effect": "NONE",
+  "scope_id": "SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1"
+}
