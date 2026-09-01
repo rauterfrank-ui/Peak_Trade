@@ -9,18 +9,20 @@ modified_by: PENDING_CHANGE
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Additive PHASE:z2cw catalog navigation for §11.13.5.Z2CW FX
-  remaining unranked SUI offline reproof persist. Fail-closed
-  NOT_REPROVEN_MISSING_EVIDENCE. Does not prove an FX operator. Does not
-  treat idxPx=1 or USD≈USDC as conversion proof. Does not adjudicate
-  COVER_USDC, ROUNDING, finished RISK_ENVELOPE_NUMERIC, or
-  USD_USDC_ACCOUNT_SETTLEMENT. GATE:flatten_execute_authority deny-list
-  records the Z2CW Owner-GO as not execute. Atlas is not trading authority.
-  No GET, POST, secret mutation, HMAC, or flatten execute mutation.
+  Additive PHASE:z2cx catalog navigation for §11.13.5.Z2CX remaining
+  unranked SUI offline reproof bundle persist. ROUNDING,
+  FINISHED_RISK_ENVELOPE_NUMERIC, and USD_USDC_ACCOUNT_SETTLEMENT
+  separately fail-closed NOT_REPROVEN_MISSING_EVIDENCE. Does not reopen
+  FX. Does not adjudicate COVER_USDC. Does not mix classes. Does not
+  treat idxPx=1, USD≈USDC, tickSz, identity, or Z2J semantic
+  denomination as proof. GATE:flatten_execute_authority deny-list
+  records the Z2CX Owner-GO as not execute. Atlas is not trading
+  authority. No GET, POST, secret mutation, HMAC, or flatten execute
+  mutation.
 changed_entities:
   - GATE:flatten_execute_authority
-  - PHASE:z2cv
   - PHASE:z2cw
+  - PHASE:z2cx
 changed_relations: []
 new_relations: []
 removed_relations: []
