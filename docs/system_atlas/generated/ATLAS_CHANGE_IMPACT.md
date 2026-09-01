@@ -41,8 +41,8 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `GATE:flatten_execute_authority` |
-| `PHASE:z2cu` |
 | `PHASE:z2cv` |
+| `PHASE:z2cw` |
 
 ## CHANGED_RELATIONS
 
@@ -94,7 +94,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Additive PHASE:z2cv catalog navigation for §11.13.5.Z2CV COVER_USDC remaining unranked SUI offline reproof persist. Fail-closed NOT_REPROVEN_MISSING_EVIDENCE. Does not instantiate COVER_USDC. Does not adjudicate FX, ROUNDING, finished RISK_ENVELOPE_NUMERIC, or USD_USDC_ACCOUNT_SETTLEMENT. GATE:flatten_execute_authority deny-list records the Z2CV Owner-GO as not execute. Atlas is not trading authority. No GET, POST, secret mutation, HMAC, or flatten execute mutation.
+- Additive PHASE:z2cw catalog navigation for §11.13.5.Z2CW FX remaining unranked SUI offline reproof persist. Fail-closed NOT_REPROVEN_MISSING_EVIDENCE. Does not prove an FX operator. Does not treat idxPx=1 or USD≈USDC as conversion proof. Does not adjudicate COVER_USDC, ROUNDING, finished RISK_ENVELOPE_NUMERIC, or USD_USDC_ACCOUNT_SETTLEMENT. GATE:flatten_execute_authority deny-list records the Z2CW Owner-GO as not execute. Atlas is not trading authority. No GET, POST, secret mutation, HMAC, or flatten execute mutation.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
