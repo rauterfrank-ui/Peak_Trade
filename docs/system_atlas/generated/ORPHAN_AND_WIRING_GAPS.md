@@ -66,6 +66,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_scope_events | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_scope_events | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_strategy_identity | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_strategy_identity | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_surface_p | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_surface_p | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:operative_venue_boundary_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:operative_venue_boundary_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ops_evaluate_double_play | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ops_evaluate_double_play | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces | STATUS=OPEN (not proven) |  |

@@ -204,7 +204,9 @@ terms:
       - scripts/ops/ci_test_selection_v1.py
     notes: >-
       Navigation-only. PR_BOUNDED_FULL remains the pull_request bounded FULL
-      class owned by the existing selector. Atlas is not CI or trading authority.
+      class owned by the existing selector. WP-02 adds a PR_BOUNDED_FULL package
+      for offline observation/proposal fences without changing FOCUSED, FULL, or
+      NO_OP class semantics. Atlas is not CI or trading authority.
 
   - id: TERM:ddo_offline_contract_and_ledger
     kind: TERM
