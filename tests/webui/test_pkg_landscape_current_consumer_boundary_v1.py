@@ -49,6 +49,9 @@ SHELL_ROUTER = REPO_ROOT / "src" / "webui" / "market_dashboard_landscape_shell_r
 PRODUCER_BINDING = REPO_ROOT / "src" / "webui" / "market_dashboard_landscape_producer_binding_v2.py"
 APP_PATH = REPO_ROOT / "src" / "webui" / "app.py"
 LANDSCAPE_TEMPLATE = REPO_ROOT / "templates" / "peak_trade_dashboard" / "market_landscape_v2.html"
+LANDSCAPE_CHART_JS = REPO_ROOT / "static" / "js" / "market_dashboard_landscape_v2.js"
+R_AND_D_CHARTS_TEMPLATE = REPO_ROOT / "templates" / "peak_trade_dashboard" / "r_and_d_charts.html"
+CHARTJS_VENDOR_PRIMARY = "/static/vendor/chartjs/4.4.1/chart.umd.min.js"
 LANDSCAPE_RUNBOOK = (
     REPO_ROOT
     / "docs"
@@ -260,3 +263,54 @@ def test_landscape_package_has_no_trading_selection_risk_execution_or_live_permi
     assert LANDSCAPE_PLANNING_AUTHORITY is False
     assert LANDSCAPE_EXECUTION_AUTHORITY is False
     assert LANDSCAPE_LIVE_PERMIT_AUTHORITY is False
+
+
+def test_landscape_consumer_census_has_no_connectable_current_gap() -> None:
+    """Adjudicate current Landscape consumer census. No new slot bindings."""
+    by_slot = owner_registry_by_slot()
+    reused = tuple(slot for slot, entry in by_slot.items() if entry.reuse_status == "REUSED")
+    not_bound = tuple(slot for slot, entry in by_slot.items() if entry.reuse_status == "NOT_BOUND")
+    assert reused == (
+        "market_instrument",
+        "universe_ranking",
+        "dynamic_scope",
+        "regime_bull_bear_switch",
+        "canonical_decision",
+        "double_play",
+        "risk_sizing_capital",
+        "safety_authority",
+        "execution_reconciliation",
+        "economic_summary",
+        "source_health",
+    )
+    assert not_bound == ("autonomy_stage", "diagnostics_summary")
+    assert "event_decision_timeline" not in by_slot
+    assert "vendor_fallback" not in by_slot
+    assert "last_paper_run" not in by_slot
+    assert "paper_shadow_summary" not in by_slot
+    assert "observability_hub" not in by_slot
+
+    runbook = LANDSCAPE_RUNBOOK.read_text(encoding="utf-8")
+    assert "CANONICAL_TIMELINE_SOURCE_EXISTS=false" in runbook
+    assert "TASK_4_STATE_TRANSITION_TIMELINE=DEFERRED" in runbook
+    assert "CURRENT_VISUAL_CONSUMER=LANDSCAPE_V2" in runbook
+
+
+def test_vendor_fallback_is_chartjs_ui_infrastructure_not_a_landscape_slot() -> None:
+    """Vendor fallback is Chart.js self-hosted primary for R&D charts, not Landscape."""
+    landscape_html = LANDSCAPE_TEMPLATE.read_text(encoding="utf-8")
+    landscape_js = LANDSCAPE_CHART_JS.read_text(encoding="utf-8")
+    rnd_html = R_AND_D_CHARTS_TEMPLATE.read_text(encoding="utf-8")
+
+    assert 'src="/static/js/market_dashboard_landscape_v2.js"' in landscape_html
+    assert 'data-mdl-chart-canvas="true"' in landscape_html
+    assert CHARTJS_VENDOR_PRIMARY not in landscape_html
+    assert "peak-trade-chartjs-vendor-fallback-ready" not in landscape_html
+    assert "chart.umd.min.js" not in landscape_js
+    assert "Chart(" not in landscape_js
+
+    assert CHARTJS_VENDOR_PRIMARY in rnd_html
+    assert 'data-chartjs-vendor-primary-v1="true"' in rnd_html
+    assert "peak-trade-chartjs-vendor-fallback-ready" in rnd_html
+    assert LANDSCAPE_CONSUMER_ONLY is True
+    assert DASHBOARD_AUTHORITY_EFFECT == "NONE"
