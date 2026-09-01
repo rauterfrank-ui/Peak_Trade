@@ -16,6 +16,7 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     freeze_record,
     optional_ref,
     optional_string_or_unknown,
+    parse_evidence_source_refs_v0,
     reject_unknown_fields,
     require_enum,
     require_mapping,
@@ -59,6 +60,14 @@ VALIDATION_ARTIFACT_ALLOWED_FIELDS_V0: Final[frozenset[str]] = frozenset(
         "predicate_id",
         "status",
         "notes",
+        "producer_id",
+        "producer_schema_version",
+        "producer_path",
+        "run_identity",
+        "provenance_refs",
+        "compatibility_status",
+        "failure_semantics",
+        "claimed_artifact_hash",
     }
 )
 HARD_NON_COMPENSABLE_GATES_V0: Final[frozenset[str]] = frozenset(
@@ -94,6 +103,24 @@ def validate_validation_artifact_v0(payload: Mapping[str, Any]) -> MappingProxyT
         ),
         "status": status,
         "notes": optional_string_or_unknown(raw.get("notes"), "notes"),
+        "producer_id": optional_string_or_unknown(raw.get("producer_id"), "producer_id"),
+        "producer_schema_version": optional_string_or_unknown(
+            raw.get("producer_schema_version"), "producer_schema_version"
+        ),
+        "producer_path": optional_string_or_unknown(raw.get("producer_path"), "producer_path"),
+        "run_identity": optional_string_or_unknown(raw.get("run_identity"), "run_identity"),
+        "provenance_refs": parse_evidence_source_refs_v0(raw.get("provenance_refs"))
+        if raw.get("provenance_refs") is not None
+        else [],
+        "compatibility_status": optional_string_or_unknown(
+            raw.get("compatibility_status"), "compatibility_status"
+        ),
+        "failure_semantics": optional_string_or_unknown(
+            raw.get("failure_semantics"), "failure_semantics"
+        ),
+        "claimed_artifact_hash": optional_string_or_unknown(
+            raw.get("claimed_artifact_hash"), "claimed_artifact_hash"
+        ),
     }
     return freeze_record(canonical)
 

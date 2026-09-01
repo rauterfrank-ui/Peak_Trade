@@ -82,7 +82,13 @@ _CANDIDATE_EXTRA: Final[tuple[FieldSpecV0, ...]] = (
         "artifact_hash", "REQUIRED", "sha256|UNKNOWN", True, "Exact candidate artifact checksum."
     ),
     FieldSpecV0("dataset_ref", "OPTIONAL", "ref|null", True, "Opaque dataset identity."),
-    FieldSpecV0("experiment_ref", "OPTIONAL", "ref|null", True, "Opaque experiment identity."),
+    FieldSpecV0(
+        "experiment_ref",
+        "OPTIONAL",
+        "ref|null",
+        True,
+        "Optional opaque experiment ref. Canonical equivalence is proven only via canonical_experiment_identity_ref; unbound refs remain explicit non-equivalence.",
+    ),
     FieldSpecV0(
         "rollback_compatibility_ref",
         "OPTIONAL",

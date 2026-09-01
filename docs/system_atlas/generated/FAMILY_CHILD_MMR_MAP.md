@@ -47,6 +47,7 @@ These terms have multiple observed meanings. They are not a single hierarchy.
 | TERM:ddo_offline_control_plane | TERM | CURRENT_NONCANONICAL |  |
 | TERM:ddo_offline_evaluation_engine | TERM | CURRENT_NONCANONICAL |  |
 | TERM:ddo_offline_learning_validation_shadow | TERM | CURRENT_NONCANONICAL |  |
+| TERM:ddo_offline_owner_bindings_and_drift | TERM | CURRENT_NONCANONICAL |  |
 | TERM:document_class | TERM | FORENSIC_REFERENCE_ONLY |  |
 | TERM:double_play | TERM | STILL_CURRENT_AND_CANONICALLY_SUPPORTED | ops.double_play.evaluate_double_play (quarantined projection); dashboard family_id double_play |
 | TERM:dynamic_scope | TERM | CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT | dashboard family_id dynamic_scope |

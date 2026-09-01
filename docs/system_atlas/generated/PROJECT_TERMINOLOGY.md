@@ -87,6 +87,7 @@ Seed vocabulary is not complete. Status OPEN means expansion/definition is unpro
 | TERM:ddo_offline_control_plane | TERM | DDO offline control plane | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
 | TERM:ddo_offline_evaluation_engine | TERM | DDO offline evaluation engine | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
 | TERM:ddo_offline_learning_validation_shadow | TERM | DDO offline learning validation shadow | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
+| TERM:ddo_offline_owner_bindings_and_drift | TERM | DDO offline owner bindings and drift contracts | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
 | TERM:document_class | TERM | DOCUMENT_CLASS | FORENSIC_REFERENCE_ONLY | STATUS=FORENSIC_RAW |  |
 | TERM:double_play | TERM | Double Play | STILL_CURRENT_AND_CANONICALLY_SUPPORTED | STATUS=CANONICAL_AUTHORITY | ops.double_play.evaluate_double_play (quarantined projection); dashboard family_ |
 | TERM:dynamic_scope | TERM | Dynamic Scope | CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT | STATUS=ADJUDICATED | dashboard family_id dynamic_scope |

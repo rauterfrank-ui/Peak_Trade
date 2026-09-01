@@ -11,8 +11,10 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_COUNTERFACTUAL_RECORD,
     SCHEMA_NAME_DECISION_EVENT,
     SCHEMA_NAME_DEPLOYMENT_RECORD,
+    SCHEMA_NAME_DRIFT_OBSERVATION,
     SCHEMA_NAME_HEALTH_SNAPSHOT,
     SCHEMA_NAME_INCIDENT_RECORD,
+    SCHEMA_NAME_KNOWN_GOOD_REFERENCE,
     SCHEMA_NAME_LEARNING_HYPOTHESIS,
     SCHEMA_NAME_OUTCOME_RECORD,
     SCHEMA_NAME_PROMOTION_ELIGIBILITY,
@@ -39,12 +41,15 @@ _OPTIONAL_TYPED_REFS: tuple[tuple[str, str], ...] = (
     ("previous_known_good_ref", SCHEMA_NAME_RELEASE_ARTIFACT),
     ("known_good_artifact_ref", SCHEMA_NAME_RELEASE_ARTIFACT),
     ("health_snapshot_ref", SCHEMA_NAME_HEALTH_SNAPSHOT),
+    ("claimed_candidate_ref", SCHEMA_NAME_CANDIDATE_ARTIFACT),
+    ("known_good_ref", SCHEMA_NAME_KNOWN_GOOD_REFERENCE),
 )
 
 _LIST_TYPED_REFS: tuple[tuple[str, str], ...] = (
     ("attribution_refs", SCHEMA_NAME_ATTRIBUTION_RECORD),
     ("counterfactual_refs", SCHEMA_NAME_COUNTERFACTUAL_RECORD),
     ("candidate_refs", SCHEMA_NAME_CANDIDATE_ARTIFACT),
+    ("observation_refs", SCHEMA_NAME_DRIFT_OBSERVATION),
 )
 
 _REQUIRED_TYPED_REFS: dict[str, tuple[tuple[str, str], ...]] = {

@@ -231,6 +231,11 @@ RECORD_TYPE_V0: Final[tuple[str, ...]] = (
     "rollback_record",
     "autonomy_cycle_record",
     "health_snapshot",
+    "canonical_experiment_identity_ref",
+    "drift_observation_record",
+    "drift_assessment_record",
+    "known_good_reference",
+    "drift_policy",
 )
 
 NULLABILITY_V0: Final[tuple[str, ...]] = (
@@ -258,6 +263,63 @@ VALIDATION_GATE_IDS_V0: Final[tuple[str, ...]] = (
 HARD_ELIGIBILITY_GATES_V0: Final[tuple[str, ...]] = (
     "safety_regression_pass",
     "authority_invariants_pass",
+)
+
+EXPERIMENT_IDENTITY_BINDING_STATUS_V0: Final[tuple[str, ...]] = (
+    "BOUND",
+    "UNKNOWN",
+    "REJECTED_NONCANONICAL",
+    "REJECTED_INCOMPLETE",
+    "REJECTED_NONEQUIVALENT",
+)
+
+DRIFT_DOMAIN_V0: Final[tuple[str, ...]] = (
+    "DATA_DRIFT",
+    "FEATURE_DRIFT",
+    "MODEL_OUTPUT_DRIFT",
+    "PERFORMANCE_DRIFT",
+    "CALIBRATION_DRIFT",
+    "EXECUTION_OBSERVATION_DRIFT",
+    "SCHEMA_DRIFT",
+    "AUTHORITY_DRIFT",
+    "SAFETY_DRIFT",
+    UNKNOWN,
+)
+
+HARD_NON_COMPENSABLE_DRIFT_DOMAINS_V0: Final[frozenset[str]] = frozenset(
+    {
+        "AUTHORITY_DRIFT",
+        "SAFETY_DRIFT",
+    }
+)
+
+DRIFT_VERDICT_V0: Final[tuple[str, ...]] = (
+    "DRIFT_DETECTED",
+    "NO_DRIFT",
+    "INSUFFICIENT_EVIDENCE",
+    UNKNOWN,
+)
+
+DRIFT_REASON_CODE_V0: Final[tuple[str, ...]] = (
+    "REFERENCE_MISMATCH",
+    "HORIZON_EXCEEDED",
+    "SCHEMA_INCOMPATIBLE",
+    "AUTHORITY_REGRESSION",
+    "SAFETY_REGRESSION",
+    "INSUFFICIENT_EVIDENCE",
+    UNKNOWN,
+)
+
+COMPATIBILITY_STATUS_V0: Final[tuple[str, ...]] = (
+    "COMPATIBLE",
+    "INCOMPATIBLE",
+    UNKNOWN,
+)
+
+PRODUCER_FAILURE_SEMANTICS_V0: Final[tuple[str, ...]] = (
+    "FAIL_CLOSED",
+    "INSUFFICIENT_EVIDENCE",
+    UNKNOWN,
 )
 
 OPEN_UNBOUND_ENUMS_V0: Final[tuple[str, ...]] = (

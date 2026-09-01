@@ -17,11 +17,16 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_ATTRIBUTION_RECORD,
     SCHEMA_NAME_AUTONOMY_CYCLE,
     SCHEMA_NAME_CANDIDATE_ARTIFACT,
+    SCHEMA_NAME_CANONICAL_EXPERIMENT_IDENTITY_REF,
     SCHEMA_NAME_COUNTERFACTUAL_RECORD,
     SCHEMA_NAME_DECISION_EVENT,
     SCHEMA_NAME_DEPLOYMENT_RECORD,
+    SCHEMA_NAME_DRIFT_ASSESSMENT,
+    SCHEMA_NAME_DRIFT_OBSERVATION,
+    SCHEMA_NAME_DRIFT_POLICY,
     SCHEMA_NAME_HEALTH_SNAPSHOT,
     SCHEMA_NAME_INCIDENT_RECORD,
+    SCHEMA_NAME_KNOWN_GOOD_REFERENCE,
     SCHEMA_NAME_LEARNING_HYPOTHESIS,
     SCHEMA_NAME_LEDGER_ENVELOPE,
     SCHEMA_NAME_OUTCOME_RECORD,
@@ -33,11 +38,16 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_VERSION_ATTRIBUTION_RECORD_V0,
     SCHEMA_VERSION_AUTONOMY_CYCLE_V0,
     SCHEMA_VERSION_CANDIDATE_ARTIFACT_V0,
+    SCHEMA_VERSION_CANONICAL_EXPERIMENT_IDENTITY_REF_V0,
     SCHEMA_VERSION_COUNTERFACTUAL_RECORD_V0,
     SCHEMA_VERSION_DECISION_EVENT_V0,
     SCHEMA_VERSION_DEPLOYMENT_RECORD_V0,
+    SCHEMA_VERSION_DRIFT_ASSESSMENT_V0,
+    SCHEMA_VERSION_DRIFT_OBSERVATION_V0,
+    SCHEMA_VERSION_DRIFT_POLICY_V0,
     SCHEMA_VERSION_HEALTH_SNAPSHOT_V0,
     SCHEMA_VERSION_INCIDENT_RECORD_V0,
+    SCHEMA_VERSION_KNOWN_GOOD_REFERENCE_V0,
     SCHEMA_VERSION_LEARNING_HYPOTHESIS_V0,
     SCHEMA_VERSION_LEDGER_ENVELOPE_V0,
     SCHEMA_VERSION_OUTCOME_RECORD_V0,
@@ -52,6 +62,12 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
 from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
     validate_decision_event_v0,
 )
+from src.learning.deterministic_decision_outcome_v0.drift_contracts_v0 import (
+    validate_drift_assessment_record_v0,
+    validate_drift_observation_record_v0,
+    validate_drift_policy_v0,
+    validate_known_good_reference_v0,
+)
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
     DdoDuplicateConflictError,
     DdoIntegrityError,
@@ -64,6 +80,9 @@ from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
 from src.learning.deterministic_decision_outcome_v0.evaluation_records_v0 import (
     validate_attribution_record_v0,
     validate_counterfactual_record_v0,
+)
+from src.learning.deterministic_decision_outcome_v0.experiment_identity_binding_v0 import (
+    validate_canonical_experiment_identity_ref_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.incident_record_v0 import (
     validate_incident_record_v0,
@@ -133,6 +152,23 @@ _VALIDATORS = {
         validate_autonomy_cycle_record_v0
     ),
     (SCHEMA_NAME_HEALTH_SNAPSHOT, SCHEMA_VERSION_HEALTH_SNAPSHOT_V0): validate_health_snapshot_v0,
+    (
+        SCHEMA_NAME_CANONICAL_EXPERIMENT_IDENTITY_REF,
+        SCHEMA_VERSION_CANONICAL_EXPERIMENT_IDENTITY_REF_V0,
+    ): validate_canonical_experiment_identity_ref_v0,
+    (
+        SCHEMA_NAME_DRIFT_OBSERVATION,
+        SCHEMA_VERSION_DRIFT_OBSERVATION_V0,
+    ): validate_drift_observation_record_v0,
+    (
+        SCHEMA_NAME_DRIFT_ASSESSMENT,
+        SCHEMA_VERSION_DRIFT_ASSESSMENT_V0,
+    ): validate_drift_assessment_record_v0,
+    (
+        SCHEMA_NAME_KNOWN_GOOD_REFERENCE,
+        SCHEMA_VERSION_KNOWN_GOOD_REFERENCE_V0,
+    ): validate_known_good_reference_v0,
+    (SCHEMA_NAME_DRIFT_POLICY, SCHEMA_VERSION_DRIFT_POLICY_V0): validate_drift_policy_v0,
 }
 
 _KNOWN_SCHEMA_NAMES = {schema for schema, _version in _VALIDATORS}

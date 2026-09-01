@@ -54,6 +54,18 @@ SCHEMA_NAME_AUTONOMY_CYCLE: Final[str] = "autonomy_cycle_record"
 SCHEMA_VERSION_AUTONOMY_CYCLE_V0: Final[str] = "autonomy_cycle_record_v0"
 SCHEMA_NAME_HEALTH_SNAPSHOT: Final[str] = "health_snapshot"
 SCHEMA_VERSION_HEALTH_SNAPSHOT_V0: Final[str] = "health_snapshot_v0"
+SCHEMA_NAME_CANONICAL_EXPERIMENT_IDENTITY_REF: Final[str] = "canonical_experiment_identity_ref"
+SCHEMA_VERSION_CANONICAL_EXPERIMENT_IDENTITY_REF_V0: Final[str] = (
+    "canonical_experiment_identity_ref_v0"
+)
+SCHEMA_NAME_DRIFT_OBSERVATION: Final[str] = "drift_observation_record"
+SCHEMA_VERSION_DRIFT_OBSERVATION_V0: Final[str] = "drift_observation_record_v0"
+SCHEMA_NAME_DRIFT_ASSESSMENT: Final[str] = "drift_assessment_record"
+SCHEMA_VERSION_DRIFT_ASSESSMENT_V0: Final[str] = "drift_assessment_record_v0"
+SCHEMA_NAME_KNOWN_GOOD_REFERENCE: Final[str] = "known_good_reference"
+SCHEMA_VERSION_KNOWN_GOOD_REFERENCE_V0: Final[str] = "known_good_reference_v0"
+SCHEMA_NAME_DRIFT_POLICY: Final[str] = "drift_policy"
+SCHEMA_VERSION_DRIFT_POLICY_V0: Final[str] = "drift_policy_v0"
 
 RECORD_ID_RE: Final[re.Pattern[str]] = re.compile(r"^[A-Za-z0-9._:-]{8,128}$")
 SHA256_OR_UNKNOWN_RE: Final[re.Pattern[str]] = re.compile(rf"^(?:{UNKNOWN}|[0-9a-f]{{64}})$")
