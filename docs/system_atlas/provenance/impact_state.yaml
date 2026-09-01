@@ -13,12 +13,18 @@ note: >-
   Bind INTRODUCED_BY / MODIFIED_BY to the origin/main commit/PR after merge.
   This snapshot is not live git classification.
 changed_entities:
-  - SCRIPT:check_system_atlas_impact
+  - VENUE:okx
+  - VENUE:okx_eea
+  - REGISTRY:execution_adapters_v1
+  - RUNTIME_COMPONENT:operative_venue_boundary_v1
+  - ADAPTER:kraken_live_client
+  - OKX_FEATURE:execution_adapter_mocks_only
 changed_relations: []
 new_relations: []
 removed_relations: []
 affected_dependency_closures: []
-affected_okx_surfaces: []
+affected_okx_surfaces:
+  - OKX_FEATURE:execution_adapter_mocks_only
 affected_safety_surfaces: []
 affected_schemas:
   - SCHEMA:atlas_v1

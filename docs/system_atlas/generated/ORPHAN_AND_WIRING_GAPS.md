@@ -23,6 +23,7 @@
 | GAP:schema_field_enumeration | CENSUS_CLOSED_FOR_DECLARED_SCOPE | SCHEMA:pure_stack_numeric_policy_evidence_pack_v1 | STATUS=ADJUDICATED | JSON Schema field inventory plus src schema-like classification closed; remaining VERSION_TOKEN payloads are not SCHEMA  |
 | GAP:ssot_child_undefined | TERM_WITHOUT_FORMAL_KIND | TERM:ssot_child_unproven | STATUS=OPEN (not proven) | Owner-requested SSOT child has no formal in-repo definition |
 | GAP:sui_xperp_gfu_membership | PRODUCTIVE_MEMBERSHIP_UNPROVEN | UNIVERSE:governed_futures_universe | STATUS=OPEN (not proven) | GAP-U-CAN-006 SUI XPERP blocked by missing quote and source_event_time. NO XPERP REPAIR in this workpackage. |
+| GAP_AUTO:NO_CONSUMER:ADAPTER:kraken_live_client | DEFINED_BUT_NO_CONSUMER | ADAPTER:kraken_live_client | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:ADAPTER:okx_europe_lifecycle_contract | DEFINED_BUT_NO_CONSUMER | ADAPTER:okx_europe_lifecycle_contract | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:ADAPTER:okx_execution_mock_v1 | DEFINED_BUT_NO_CONSUMER | ADAPTER:okx_execution_mock_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap_11_13_5_live_canary | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap_11_13_5_live_canary | STATUS=OPEN (not proven) |  |
@@ -63,6 +64,9 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_scope_events | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_scope_events | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_strategy_identity | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_strategy_identity | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_surface_p | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_surface_p | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:operative_venue_boundary_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:operative_venue_boundary_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ops_evaluate_double_play | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ops_evaluate_double_play | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:promotion_loop_safety | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:promotion_loop_safety | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:TRANSPORT:bound_okx_testnet_http | DEFINED_BUT_NO_CONSUMER | TRANSPORT:bound_okx_testnet_http | STATUS=OPEN (not proven) |  |
 

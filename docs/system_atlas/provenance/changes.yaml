@@ -18,3 +18,10 @@ changes:
     type: REMOVAL_SEARCH
     epistemic_status: OPEN
     evidence: docs/system_atlas/census/census_meta.yaml
+  - id: CHANGE:pr6181_non_okx_runtime_removed
+    from: CURRENT_NONCANONICAL
+    to: REMOVED
+    type: REMOVAL
+    epistemic_status: ADJUDICATED
+    evidence: src/exchange/operative_venue_boundary_v1.py
+    notes: Current-tree non-OKX runtime adapters/clients removed. Sole operative venue remains OKX EEA. Historical names are not restated as current components. Atlas is not trading authority.
