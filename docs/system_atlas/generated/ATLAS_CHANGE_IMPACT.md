@@ -41,9 +41,9 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `GATE:flatten_execute_authority` |
-| `GATE:target_position_state` |
-| `PHASE:z2cp` |
+| `PHASE:z2cn` |
 | `PHASE:z2cq` |
+| `PHASE:z2cr` |
 
 ## CHANGED_RELATIONS
 
@@ -80,7 +80,6 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `GATE:flatten_execute_authority` |
-| `GATE:target_position_state` |
 
 ## AFFECTED_SCHEMAS
 
@@ -96,7 +95,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Additive PHASE:z2cq catalog navigation for §11.13.5.Z2CQ persist of the post-Z2CP EXECUTION_PREREQUISITE_08 flatten dependency cluster census plus offline fail-closed TARGET_POSITION_STATE gating. PHASE:z2cn remains the last canonically closed 11.13.5 slice. GATE:flatten_execute_authority deny-list records the Z2CQ Owner-GO as not execute. Atlas is not trading authority. No venue, secret, HMAC, or flatten execute mutation.
+- Additive PHASE:z2cr catalog navigation for §11.13.5.Z2CR one authenticated unfiltered positions GET persist plus Prerequisite-08 window re-evaluation. Empty data is not zero. Prerequisite 08 remains unresolved. GATE:flatten_execute_authority deny-list records the Z2CR Owner-GO as not execute. Atlas is not trading authority. No POST, secret mutation, HMAC, or flatten execute mutation.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
