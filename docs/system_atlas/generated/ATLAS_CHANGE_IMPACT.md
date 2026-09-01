@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=10
+ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,13 +40,23 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `BINDER:bound_instrument_v1` |
+| `CAPABILITY:cap_2_1_gfu` |
+| `CAPABILITY:cap_2_4_runtime_binding` |
+| `SELECTOR:single_selected_future_policy` |
 | `TERM:ddo_non_semantic_capture` |
+| `TERM:ddo_offline_control_plane` |
+| `TERM:document_class` |
+| `TERM:focused_full_noop` |
+| `TERM:information_corpus` |
+| `UNIVERSE:governed_futures_universe` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_cap21_produces_universe` |
+| `REL:r_cap24_binds` |
 
 ## NEW_RELATIONS
 
@@ -64,7 +74,9 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| _(none)_ |
+| `CLOSURE:native_instrument_binding` |
+| `CLOSURE:productive_selection` |
+| `CLOSURE:productive_universe` |
 
 ## AFFECTED_OKX_SURFACES
 
@@ -92,7 +104,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Navigation-only TERM:ddo_non_semantic_capture sync after WP-FA-04 added observation-only decision-spine capture adapters and productive host hooks. No Atlas trading, promotion, risk, safety, or execution semantics. Atlas is not canonical authority.
+- Navigation-only TERM:ddo_non_semantic_capture sync after WP-FA-04 added observation-only decision-spine capture adapters and fail-open productive host hooks. Host-hook src/ops paths are tracked as capture evidence only. No Atlas trading, promotion, risk, safety, or execution semantics. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

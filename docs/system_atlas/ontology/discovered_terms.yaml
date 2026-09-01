@@ -249,9 +249,15 @@ terms:
     evidence_sources:
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
       - src/learning/deterministic_decision_outcome_v0/authority_v0.py
+      - src/ops/productive_futures_ranking_producer_v1/producer_v1.py
+      - src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py
+      - src/ops/single_future_stateful_no_order_runtime_activation_v1/simulated_execution_port_v1.py
+      - src/ops/single_selected_future_policy_v1/selection_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
     notes: >-
       Navigation-only. Atlas does not confer trading, promotion, risk, safety,
-      or execution authority. Capture is observation-only.
+      or execution authority. Capture is observation-only. Listed src/ops paths
+      are fail-open host hooks, not new trading or execution semantics.
 
   - id: TERM:document_class
     kind: TERM
