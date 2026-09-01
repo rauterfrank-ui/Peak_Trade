@@ -2,7 +2,7 @@
 # File inventory of origin/main Master V2 Python modules and capability spec files.
 # File inventory plus semantic cluster mapping. entity_mapping_complete=true.
 schema_version: system_atlas.v1
-origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+origin_main_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
 scope: origin/main src/trading/master_v2/**/*.py plus docs/ops/specs/MASTER_V2_CAPABILITY_*.md
 file_inventory_complete: true
 entity_mapping_complete: true

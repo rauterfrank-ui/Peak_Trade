@@ -25,7 +25,7 @@ SYSTEM_ATLAS_GRAPH_RELATIONS_BACKED_BY_MODEL=true
 
 Navigation: `README.md` explains Atlas authority. This file is the complete overview. Specialized generated files are drill-down. YAML under `docs/system_atlas/` is the source model. Canonical authority remains the Master Runbook, external to the Atlas.
 
-Census SHA: `afbae518b67eb1b789c835e219db37f5b15f308b`. Worktree dirty records are not origin/main truth.
+Census SHA: `615de3b307132b73a60df33fd3bedfac811c8cce`. Worktree dirty records are not origin/main truth.
 
 ## Integrated current topology (model-backed)
 
@@ -400,7 +400,7 @@ Architectural-kind count in this bucket: `19`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `56`.
+Architectural-kind count in this bucket: `57`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -424,6 +424,7 @@ Architectural-kind count in this bucket: `56`.
 | GATE:flatten_live_wire | GATE | DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:position_observation_freshness | GATE | POSITION_OBSERVATION_FRESHNESS | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:target_position_state | GATE | TARGET_POSITION_STATE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| PHASE:ddo_offline_foundation | PHASE | 11.13.5 Parallel-track DDO offline foundation | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:z2cn | PHASE | 11.13.5.Z2CN | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:z2co | PHASE | 11.13.5.Z2CO | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:z2cp | PHASE | 11.13.5.Z2CP | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -443,9 +444,8 @@ Architectural-kind count in this bucket: `56`.
 | SCHEMA:bound_instrument_dataclass_v1 | SCHEMA | BoundInstrumentV1 dataclass shape | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | SCHEMA:gfu_snapshot_v1 | SCHEMA | governed_futures_universe_snapshot.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | SCHEMA:pure_stack_numeric_policy_evidence_pack_v1 | SCHEMA | productive_pure_stack_numeric_policy_evidence_pack/v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:pure_stack_stage2_surface_b_owner_sta_candle_mark_instrument_authority | SCHEMA | productive_pure_stack_stage2_surface_b_owner_sta_candle_mark | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `56` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `57` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -679,8 +679,8 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 ## 20. Coverage / completeness status
 
 ```text
-CURRENT_ORIGIN_MAIN_SHA=afbae518b67eb1b789c835e219db37f5b15f308b
-ENTITY_TOTAL=344
+CURRENT_ORIGIN_MAIN_SHA=615de3b307132b73a60df33fd3bedfac811c8cce
+ENTITY_TOTAL=346
 HUB_RELATION_COUNT=63
 STRUCTURAL_RELATION_COUNT=80
 RUNTIME_RELATION_COUNT=20
@@ -774,7 +774,7 @@ Remaining census domains:
 | OKX_HOST | 8 |
 | OKX_RESPONSE_SHAPE | 6 |
 | OWNER_DECISION | 2 |
-| PHASE | 14 |
+| PHASE | 15 |
 | REGISTRY | 1 |
 | RUNBOOK | 4 |
 | RUNTIME_COMPONENT | 40 |
@@ -783,7 +783,7 @@ Remaining census domains:
 | SELECTOR | 2 |
 | SUBSYSTEM | 2 |
 | SYSTEM | 1 |
-| TERM | 51 |
+| TERM | 52 |
 | TEST | 1 |
 | TRANSPORT | 1 |
 | UNIVERSE | 1 |

@@ -1,7 +1,7 @@
 # ATLAS_AUTHORITY=NONE
 # origin/main git archaeology after unshallow. Not SSOT. Not restoration.
 schema_version: system_atlas.v1
-origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+origin_main_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
 search_scope: origin/main full history after git fetch --unshallow; not unmerged feature-branch-only blobs
 okx_named_path_deletions_on_origin_main: 0
 git_is_shallow: false

@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=13
+ATLAS_CHANGED_ENTITY_COUNT=16
 ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -43,8 +43,11 @@ Do not manually patch generated Markdown.
 | `BINDER:bound_instrument_v1` |
 | `CAPABILITY:cap_2_1_gfu` |
 | `CAPABILITY:cap_2_4_runtime_binding` |
+| `PHASE:ddo_offline_foundation` |
+| `PHASE:z2da` |
 | `SELECTOR:single_selected_future_policy` |
 | `TERM:ddo_non_semantic_capture` |
+| `TERM:ddo_offline_contract_and_ledger` |
 | `TERM:ddo_offline_control_plane` |
 | `TERM:ddo_offline_evaluation_engine` |
 | `TERM:ddo_offline_learning_validation_shadow` |
@@ -107,7 +110,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Navigation-only TERM:ddo_offline_owner_bindings_and_drift sync after WP-FA-07 added canonical experiment-identity references, existing-owner validation evidence bindings, and an offline non-activating drift-contract foundation. No Atlas trading, promotion, risk, safety, or execution semantics. Atlas is not canonical authority.
+- Navigation-only census SHA rebind to current origin/main after WP-FA-01..07, plus TERM:ddo_offline_contract_and_ledger and PHASE:ddo_offline_foundation catalog binding of the already-present offline DDO contract foundation. Parallel to live CURRENT_CANONICAL_SECTION=11.13.5.Z2DA. No Atlas trading, promotion, risk, safety, or execution semantics. Atlas is not canonical authority. Census discovery does not create authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

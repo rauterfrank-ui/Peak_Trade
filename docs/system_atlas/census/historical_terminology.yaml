@@ -1,7 +1,7 @@
 # ATLAS_AUTHORITY=NONE
 # Full origin/main history search for scoped terms. Expansions never invented.
 schema_version: system_atlas.v1
-origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+origin_main_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
 search_scope: git log -S / git grep origin/main after unshallow
 ssot_child_literal_found_in_origin_main_history: false
 has_functional_core_literal_found_in_origin_main_history: false

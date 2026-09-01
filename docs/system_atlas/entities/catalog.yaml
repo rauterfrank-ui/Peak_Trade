@@ -820,7 +820,26 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/post_z2cz_position_creation_autonomy_semantic_rebind_v1.py
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-    notes: Additive post-Z2CZ offline position-creation / autonomy semantic rebind persist. Prerequisite 08 remains a positive observation-proof gate. Position-creation seam remains MISSING_OR_UNAUTHORIZED. Does not create a position, GET, POST, flatten, consume Class D or Z2AP, or mint execution or live permission. Full autonomy is not a second trading authority. Atlas is not trading authority.
+    notes: Additive post-Z2CZ offline position-creation / autonomy semantic rebind persist. Prerequisite 08 remains a positive observation-proof gate. Position-creation seam remains MISSING_OR_UNAUTHORIZED. Does not create a position, GET, POST, flatten, consume Class D or Z2AP, or mint execution or live permission. Full autonomy is not a second trading authority. Remains CURRENT_CANONICAL_SECTION for the live track. Parallel DDO offline-foundation persist does not succeed or replace this slice. Atlas is not trading authority.
+
+  - id: PHASE:ddo_offline_foundation
+    kind: PHASE
+    name: 11.13.5 Parallel-track DDO offline foundation
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - src/learning/deterministic_decision_outcome_v0/authority_v0.py
+      - src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py
+      - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
+    notes: >-
+      Parallel Full-Autonomy/DDO track. Canonical binding of already-present
+      WP-FA-01 through WP-FA-07 offline DDO contract foundation. Does not
+      replace CURRENT_CANONICAL_SECTION=11.13.5.Z2DA. Does not rewrite the
+      live next-pointer. Does not implement WP-FA-08. Does not mint trading,
+      risk, safety, promotion, or execution authority. Atlas catalog presence
+      is navigation only and is not activation. Atlas is not trading authority.
 
   - id: GATE:target_position_state
     kind: GATE

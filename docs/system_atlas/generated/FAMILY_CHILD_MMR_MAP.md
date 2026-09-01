@@ -44,6 +44,7 @@ These terms have multiple observed meanings. They are not a single hierarchy.
 | TERM:confirm_token | TERM | CURRENT_NONCANONICAL |  |
 | TERM:confirm_token_family_matrix | TERM | CURRENT_NONCANONICAL | projection octet family_id; strategy Family; Gate-Familien F1-F6 |
 | TERM:ddo_non_semantic_capture | TERM | CURRENT_NONCANONICAL |  |
+| TERM:ddo_offline_contract_and_ledger | TERM | CURRENT_NONCANONICAL |  |
 | TERM:ddo_offline_control_plane | TERM | CURRENT_NONCANONICAL |  |
 | TERM:ddo_offline_evaluation_engine | TERM | CURRENT_NONCANONICAL |  |
 | TERM:ddo_offline_learning_validation_shadow | TERM | CURRENT_NONCANONICAL |  |
