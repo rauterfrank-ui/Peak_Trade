@@ -49,6 +49,7 @@ Z2CS_HEADING = (
 Z2CT_HEADING = (
     "### 11.13.5.Z2CT Post-Z2CS single unfiltered Prerequisite-08 position observation persist"
 )
+Z2CU_HEADING = "### 11.13.5.Z2CU Post-Z2CT named progression-track adjudication persist"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = (
     "PEAK_TRADE_OWNER_GO_SECTION_11_13_5_PREREQUISITE_08_SINGLE_UNFILTERED_POSITION_OBSERVATION_V1"
@@ -66,8 +67,8 @@ def _read(path: Path) -> str:
 def _z2ct_section(text: str) -> str:
     start = text.find(Z2CT_HEADING)
     assert start >= 0, "missing §11.13.5.Z2CT heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2CT"
+    end = text.find(Z2CU_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2CU boundary after Z2CT"
     return text[start:end]
 
 
@@ -84,8 +85,9 @@ def test_z2ct_heading_is_unique_and_follows_z2cs() -> None:
     assert text.count(Z2CT_HEADING) == 1
     z2cs = text.find(Z2CS_HEADING)
     z2ct = text.find(Z2CT_HEADING)
+    z2cu = text.find(Z2CU_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= z2cs < z2ct < ladder
+    assert 0 <= z2cs < z2ct < z2cu < ladder
 
 
 def test_z2cs_historical_adjudication_slice_was_not_rewritten() -> None:
