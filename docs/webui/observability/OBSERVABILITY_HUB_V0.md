@@ -59,7 +59,7 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 
 ### Kraken Futures Metadata Coverage panel — removed from current WebUI
 
-This panel is **not** implemented in current `src&#47;webui`. Structure-contract tests assert the markers are absent from `/observability` HTML.
+This panel is **not** implemented in current `src&#47;webui`. Structure-contract tests assert the markers are absent from `/observability` HTML. <!-- pt:ref-target-ignore -->
 
 Historical marker names (`data-workflow-panel-kraken-metadata-coverage-v1`, etc.) must not be read as a current dashboard surface.
 
