@@ -46,6 +46,28 @@ def _git_changed_files(repo_root: Path, base: str) -> list[str]:
     return [line.strip() for line in result.stdout.splitlines() if line.strip()]
 
 
+def _git_file_diffs(repo_root: Path, base: str, changed: list[str]) -> dict[str, str]:
+    diffs: dict[str, str] = {}
+    for path in changed:
+        result = subprocess.run(
+            ["git", "diff", "-U20", f"{base}...HEAD", "--", path],
+            cwd=repo_root,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            result = subprocess.run(
+                ["git", "diff", "-U20", base, "HEAD", "--", path],
+                cwd=repo_root,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+        diffs[path] = result.stdout if result.returncode == 0 else ""
+    return diffs
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
@@ -85,11 +107,12 @@ def main() -> int:
             if args.changed_file
             else _git_changed_files(repo_root, args.base)
         )
+        file_diffs = None if args.changed_file else _git_file_diffs(repo_root, args.base, changed)
     except Exception as exc:
         print(f"ERR: {exc}", file=sys.stderr)
         return 2
 
-    report = build_boundary_report(changed, repo_root=repo_root)
+    report = build_boundary_report(changed, repo_root=repo_root, file_diffs=file_diffs)
     payload = report.to_dict()
     payload["FORBIDDEN_SURFACE_CHANGED_COUNT"] = forbidden_surface_changed_count(report)
 

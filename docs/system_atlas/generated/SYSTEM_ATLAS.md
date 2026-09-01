@@ -316,6 +316,7 @@ Fail-closed is the default. Live/Testnet/orders require scoped Owner-GO. Confirm
 | GATE:flatten_live_wire | GATE | DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:live_authorized_false | GATE | LIVE_AUTHORIZED=false standing | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | GATE:max_positions_1 | GATE | CURRENT_MAX_POSITIONS=1 | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
+| GUARD:economic_diagnostic_optimization_boundary | GUARD | Economic diagnostic optimization boundary guard | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
 Safety chains recorded: `3`. Drill-down: [SAFETY_GOVERNANCE_MAP.md](SAFETY_GOVERNANCE_MAP.md).
 
@@ -676,7 +677,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=afbae518b67eb1b789c835e219db37f5b15f308b
-ENTITY_TOTAL=317
+ENTITY_TOTAL=318
 HUB_RELATION_COUNT=63
 STRUCTURAL_RELATION_COUNT=80
 RUNTIME_RELATION_COUNT=20
@@ -760,6 +761,7 @@ Remaining census domains:
 | FORENSIC_REFERENCE | 2 |
 | FUNCTIONAL_CORE | 1 |
 | GATE | 5 |
+| GUARD | 1 |
 | HOST | 1 |
 | INVARIANT | 1 |
 | NAVIGATION_INDEX | 1 |

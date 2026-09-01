@@ -10,6 +10,11 @@ waive MASTER_V2_MUTATION_ALLOWED=false as a global default.
 Second, semantically distinct override: HISTORICALLY_ATTESTED_CANONICAL_SEMANTIC_RESTORATION.
 It is not semantics-neutral technical wiring. CURRENT_SYSTEM_SEMANTIC_DELTA=true is required
 for that class. RISK_SIZING_SEMANTICS_CHANGED=false is neither required nor representable.
+
+Third, semantically distinct override: SEMANTICS_NEUTRAL_DECOMMISSION_ONLY. Exact-file,
+evidence-bound obsolete-reference cleanup. Token alone is insufficient. Does not waive
+MASTER_V2_MUTATION_ALLOWED=false. Does not create trading, selection, risk, or execution
+authority.
 """
 
 from __future__ import annotations
@@ -20,6 +25,14 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Sequence
+
+from .semantics_neutral_decommission_authorization_v1 import (
+    DEFAULT_DECOMMISSION_AUTH_PATH,
+    REASON_DECOMMISSION_AUTHORIZED,
+    DecommissionAuthorizationDecision,
+    evaluate_decommission_authorization,
+    validate_decommission_authorization,
+)
 
 CONTRACT_VERSION = "economic_diagnostic_optimization_boundary_v0"
 PACKAGE_MARKER = "ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_V0=true"
@@ -202,6 +215,10 @@ class BoundaryReport:
     restoration_authorization_applied: bool = False
     restoration_authorization_version: str | None = None
     restoration_mutation_purpose_class: str | None = None
+    semantics_neutral_decommission_authorization_applied: bool = False
+    semantics_neutral_decommission_authorization_version: str | None = None
+    semantics_neutral_decommission_mutation_purpose_class: str | None = None
+    semantics_neutral_decommission_proven_predicates: tuple[str, ...] = ()
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -237,6 +254,18 @@ class BoundaryReport:
             "restoration_authorization_applied": self.restoration_authorization_applied,
             "restoration_authorization_version": self.restoration_authorization_version,
             "restoration_mutation_purpose_class": self.restoration_mutation_purpose_class,
+            "semantics_neutral_decommission_authorization_applied": (
+                self.semantics_neutral_decommission_authorization_applied
+            ),
+            "semantics_neutral_decommission_authorization_version": (
+                self.semantics_neutral_decommission_authorization_version
+            ),
+            "semantics_neutral_decommission_mutation_purpose_class": (
+                self.semantics_neutral_decommission_mutation_purpose_class
+            ),
+            "semantics_neutral_decommission_proven_predicates": list(
+                self.semantics_neutral_decommission_proven_predicates
+            ),
         }
 
 
@@ -316,6 +345,35 @@ def load_restoration_authorization(
 ) -> dict[str, Any] | None:
     root = repo_root or repo_root_from_module()
     path = authorization_path or resolve_restoration_authorization_path(contract, root)
+    if not path.is_file():
+        return None
+    return load_json(path)
+
+
+def resolve_decommission_authorization_path(
+    contract: Mapping[str, Any] | None = None,
+    repo_root: Path | None = None,
+) -> Path:
+    root = repo_root or repo_root_from_module()
+    relative = DEFAULT_DECOMMISSION_AUTH_PATH
+    if contract is not None:
+        relative = str(
+            contract.get(
+                "semantics_neutral_decommission_authorization",
+                relative,
+            )
+        )
+    return root / relative
+
+
+def load_decommission_authorization(
+    repo_root: Path | None = None,
+    *,
+    contract: Mapping[str, Any] | None = None,
+    authorization_path: Path | None = None,
+) -> dict[str, Any] | None:
+    root = repo_root or repo_root_from_module()
+    path = authorization_path or resolve_decommission_authorization_path(contract, root)
     if not path.is_file():
         return None
     return load_json(path)
@@ -823,6 +881,11 @@ def build_boundary_report(
     restoration_authorization: Mapping[str, Any] | None = None,
     restoration_authorization_path: Path | None = None,
     skip_restoration_authorization: bool = False,
+    decommission_authorization: Mapping[str, Any] | None = None,
+    decommission_authorization_path: Path | None = None,
+    skip_decommission_authorization: bool = False,
+    file_diffs: Mapping[str, str] | None = None,
+    evidence_repo_root: Path | None = None,
 ) -> BoundaryReport:
     root = repo_root or repo_root_from_module()
     contract = load_contract(root)
@@ -865,6 +928,18 @@ def build_boundary_report(
             authorization_path=restoration_authorization_path,
         )
 
+    decommission_payload: Mapping[str, Any] | None
+    if skip_decommission_authorization:
+        decommission_payload = None
+    elif decommission_authorization is not None:
+        decommission_payload = decommission_authorization
+    else:
+        decommission_payload = load_decommission_authorization(
+            root,
+            contract=contract,
+            authorization_path=decommission_authorization_path,
+        )
+
     for path in normalized_files:
         if is_boundary_governed_path(path):
             any_boundary_governed = True
@@ -902,6 +977,15 @@ def build_boundary_report(
         authorized_paths=(),
         unauthorized_forbidden_paths=(),
     )
+    decommission_decision = DecommissionAuthorizationDecision(
+        applied=False,
+        valid=True,
+        version=None,
+        reason_codes=(),
+        authorized_paths=(),
+        unauthorized_forbidden_paths=(),
+        grant_active=False,
+    )
     blocking_forbidden = list(forbidden_matches)
     if forbidden_matches:
         auth_decision = evaluate_technical_wiring_authorization(
@@ -919,13 +1003,16 @@ def build_boundary_report(
                 if path in authorized_path_set:
                     allowed_hits.update(classify_allowed_surfaces(path, rules))
         else:
-            restoration_decision = evaluate_restoration_authorization(
-                forbidden_matches,
-                auth=restoration_payload,
-                repo_root=root,
-            )
-            if restoration_decision.applied:
-                authorized_path_set = frozenset(restoration_decision.authorized_paths)
+            if not skip_decommission_authorization:
+                decommission_decision = evaluate_decommission_authorization(
+                    forbidden_matches,
+                    auth=decommission_payload,
+                    repo_root=root,
+                    file_diffs=file_diffs,
+                    evidence_repo_root=evidence_repo_root or root,
+                )
+            if decommission_decision.applied:
+                authorized_path_set = frozenset(decommission_decision.authorized_paths)
                 blocking_forbidden = [
                     match
                     for match in forbidden_matches
@@ -934,6 +1021,24 @@ def build_boundary_report(
                 for path in normalized_files:
                     if path in authorized_path_set:
                         allowed_hits.update(classify_allowed_surfaces(path, rules))
+            elif decommission_decision.grant_active or not decommission_decision.valid:
+                blocking_forbidden = list(forbidden_matches)
+            else:
+                restoration_decision = evaluate_restoration_authorization(
+                    forbidden_matches,
+                    auth=restoration_payload,
+                    repo_root=root,
+                )
+                if restoration_decision.applied:
+                    authorized_path_set = frozenset(restoration_decision.authorized_paths)
+                    blocking_forbidden = [
+                        match
+                        for match in forbidden_matches
+                        if match.matched_path not in authorized_path_set
+                    ]
+                    for path in normalized_files:
+                        if path in authorized_path_set:
+                            allowed_hits.update(classify_allowed_surfaces(path, rules))
 
     if restoration_decision.applied:
         flag_source = forbidden_matches
@@ -966,6 +1071,7 @@ def build_boundary_report(
     admissible = True
     auth_applied = auth_decision.applied
     restoration_applied = restoration_decision.applied
+    decommission_applied = decommission_decision.applied
 
     if all_governance_self and normalized_files:
         reason_codes.append(REASON_GOVERNANCE_SELF)
@@ -988,11 +1094,16 @@ def build_boundary_report(
             for code in restoration_decision.reason_codes:
                 if code not in reason_codes:
                     reason_codes.append(code)
+        if decommission_decision.reason_codes:
+            for code in decommission_decision.reason_codes:
+                if code not in reason_codes:
+                    reason_codes.append(code)
         fail_closed = True
         admissible = False
         economic_or_diagnostic_only = False
         auth_applied = False
         restoration_applied = False
+        decommission_applied = False
     elif unclassified:
         reason_codes.append(REASON_IMPACT_UNKNOWN)
         impact_unknown = True
@@ -1001,6 +1112,7 @@ def build_boundary_report(
         economic_or_diagnostic_only = any_boundary_governed
         auth_applied = False
         restoration_applied = False
+        decommission_applied = False
     elif restoration_decision.applied:
         reason_codes.append(REASON_RESTORATION_AUTHORIZED)
         if allowed_hits:
@@ -1008,6 +1120,15 @@ def build_boundary_report(
         economic_or_diagnostic_only = False
         auth_applied = False
         restoration_applied = True
+        decommission_applied = False
+    elif decommission_decision.applied:
+        reason_codes.append(REASON_DECOMMISSION_AUTHORIZED)
+        if allowed_hits:
+            reason_codes.append(REASON_ALLOWED_ONLY)
+        economic_or_diagnostic_only = False
+        auth_applied = False
+        restoration_applied = False
+        decommission_applied = True
     elif auth_decision.applied:
         reason_codes.append(REASON_TECHNICAL_WIRING_AUTHORIZED)
         if allowed_hits:
@@ -1055,6 +1176,16 @@ def build_boundary_report(
         restoration_mutation_purpose_class=(
             restoration_decision.mutation_purpose_class if restoration_applied else None
         ),
+        semantics_neutral_decommission_authorization_applied=decommission_applied,
+        semantics_neutral_decommission_authorization_version=(
+            decommission_decision.version if decommission_applied else None
+        ),
+        semantics_neutral_decommission_mutation_purpose_class=(
+            decommission_decision.mutation_purpose_class if decommission_applied else None
+        ),
+        semantics_neutral_decommission_proven_predicates=(
+            decommission_decision.proven_predicates if decommission_applied else ()
+        ),
     )
 
 
@@ -1074,7 +1205,11 @@ def evaluate_diff_admissibility(
 def forbidden_surface_changed_count(report: BoundaryReport) -> int:
     # Authorized wiring/restoration applications keep forbidden matches for audit but do
     # not count them as blocking forbidden surface changes.
-    if report.technical_wiring_authorization_applied or report.restoration_authorization_applied:
+    if (
+        report.technical_wiring_authorization_applied
+        or report.restoration_authorization_applied
+        or report.semantics_neutral_decommission_authorization_applied
+    ):
         return 0
     return len({match.matched_path for match in report.forbidden_surface_matches})
 
@@ -1088,6 +1223,10 @@ def export_canonical_owner_inventory(repo_root: Path | None = None) -> dict[str,
     restoration = load_restoration_authorization(root, contract=contract)
     restoration_valid, restoration_reasons = validate_restoration_authorization(
         restoration, repo_root=root
+    )
+    decommission = load_decommission_authorization(root, contract=contract)
+    decommission_valid, decommission_reasons = validate_decommission_authorization(
+        decommission, repo_root=root
     )
     return {
         "contract_version": CONTRACT_VERSION,
@@ -1136,5 +1275,21 @@ def export_canonical_owner_inventory(repo_root: Path | None = None) -> dict[str,
             "binds_to_current_a06_code": (
                 None if restoration is None else restoration.get("binds_to_current_a06_code")
             ),
+        },
+        "semantics_neutral_decommission_authorization": {
+            "path": contract.get("semantics_neutral_decommission_authorization"),
+            "present": decommission is not None,
+            "valid": decommission_valid,
+            "validation_reasons": list(decommission_reasons),
+            "contract_version": None
+            if decommission is None
+            else decommission.get("contract_version"),
+            "authorized_scope_class": (
+                None if decommission is None else decommission.get("authorized_scope_class")
+            ),
+            "mutation_purpose_class": (
+                None if decommission is None else decommission.get("mutation_purpose_class")
+            ),
+            "grant_active": None if decommission is None else decommission.get("grant_active"),
         },
     }

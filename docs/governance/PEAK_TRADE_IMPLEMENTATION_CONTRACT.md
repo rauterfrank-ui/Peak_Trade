@@ -323,6 +323,7 @@ config/governance/economic_diagnostic_optimization_boundary_v0.json
 config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json
 config/governance/technical_canonical_wiring_authorization_v1.json
 config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json
+config/governance/semantics_neutral_decommission_authorization_v1.json
 src/governance/economic_diagnostic_optimization_boundary_v0.py
 scripts/ops/check_economic_diagnostic_optimization_boundary_guard_v0.py
 ```
@@ -359,6 +360,25 @@ TOKEN_ALONE_INSUFFICIENT=true
 
 Owner: `config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json`.
 Attestation: `docs/ops/specs/HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_ADMISSION_V1.md`.
+
+Eng begrenzte Semantics-Neutral-Decommission-Authorization
+(`SEMANTICS_NEUTRAL_DECOMMISSION_ONLY`) — **eigene Klasse, kein PR-Bypass,
+kein directory grant, keine Trading Authority**:
+
+```text
+DECOMMISSION_AUTHORIZATION_VERSION=semantics_neutral_decommission_authorization_v1
+AUTHORIZED_SCOPE_CLASS=SEMANTICS_NEUTRAL_DECOMMISSION_ONLY
+MUTATION_PURPOSE_CLASS=SEMANTICS_NEUTRAL_DECOMMISSION
+GRANT_ACTIVE=false
+TOKEN_ALONE_INSUFFICIENT=true
+PR_SPECIFIC_EXCEPTION=false
+BRANCH_SPECIFIC_EXCEPTION=false
+BLANKET_ALLOWLIST=false
+MASTER_V2_MUTATION_ALLOWED=false
+```
+
+Owner: `config/governance/semantics_neutral_decommission_authorization_v1.json`.
+Attestation: `docs/ops/specs/SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1.md`.
 
 ## 13. Trend Following v2 Recovery Wiring (v0)
 

@@ -1116,3 +1116,23 @@ entities:
       - docs/forensics/preservation/PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md
       - docs/system_atlas/census/master_v2_semantic_map.yaml
     notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+
+  - id: GUARD:economic_diagnostic_optimization_boundary
+    kind: GUARD
+    name: Economic diagnostic optimization boundary guard
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    fail_closed: true
+    source_paths:
+      - src/governance/economic_diagnostic_optimization_boundary_v0.py
+      - src/governance/semantics_neutral_decommission_authorization_v1.py
+    authority_sources:
+      - docs/governance/ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_LOGIC_IMMUTABILITY_CONTRACT_V0.md
+    evidence_sources:
+      - src/governance/economic_diagnostic_optimization_boundary_v0.py
+      - src/governance/semantics_neutral_decommission_authorization_v1.py
+      - config/governance/semantics_neutral_decommission_authorization_v1.json
+      - docs/governance/ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_LOGIC_IMMUTABILITY_CONTRACT_V0.md
+      - docs/ops/specs/SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1.md
+    notes: Atlas inventory only. Not a trading authority. Default grant remains fail-closed. ATLAS_AUTHORITY=NONE.
