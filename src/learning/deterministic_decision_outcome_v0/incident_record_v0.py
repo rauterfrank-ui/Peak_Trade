@@ -30,10 +30,7 @@ from src.learning.deterministic_decision_outcome_v0.enums_v0 import (
     KILL_SWITCH_TIMING_LABEL_V0,
     STALE_ROOT_CAUSE_V0,
 )
-from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
-    DdoUnsupportedLineageSlotError,
-    DdoValidationError,
-)
+from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
 from src.learning.deterministic_decision_outcome_v0.reason_codes_v0 import (
     validate_hard_block_reasons_v0,
     validate_reason_codes_v0,
@@ -104,22 +101,19 @@ INCIDENT_RECORD_FIELD_SPECS_V0: Final[tuple[FieldSpecV0, ...]] = (
     FieldSpecV0("evidence_source_refs", "REQUIRED", "ref[]", True, "Opaque source refs."),
     FieldSpecV0("supersedes_id", "OPTIONAL", "record_id|null", True, "Append-only supersession."),
     FieldSpecV0("corrects_id", "OPTIONAL", "record_id|null", True, "Append-only correction."),
-    FieldSpecV0("attribution_refs", "OPTIONAL", "record_id[]", True, "Reserved; empty in v0."),
-    FieldSpecV0("counterfactual_refs", "OPTIONAL", "record_id[]", True, "Reserved; empty in v0."),
-    FieldSpecV0("candidate_refs", "OPTIONAL", "record_id[]", True, "Reserved; empty in v0."),
+    FieldSpecV0(
+        "attribution_refs", "OPTIONAL", "record_id[]", True, "Forward refs; empty allowed."
+    ),
+    FieldSpecV0(
+        "counterfactual_refs", "OPTIONAL", "record_id[]", True, "Forward refs; empty allowed."
+    ),
+    FieldSpecV0("candidate_refs", "OPTIONAL", "record_id[]", True, "Forward refs; empty allowed."),
     FieldSpecV0("content_hash", "REQUIRED", "sha256", False, "Computed; excluded from hash scope."),
 )
 
 INCIDENT_RECORD_ALLOWED_FIELDS: Final[frozenset[str]] = frozenset(
     spec.name for spec in INCIDENT_RECORD_FIELD_SPECS_V0
 )
-
-
-def _empty_reserved(value: Any, field: str) -> list[str]:
-    ids = [] if value is None else value
-    if ids:
-        raise DdoUnsupportedLineageSlotError(f"RESERVED_LINEAGE_SLOT_MUST_BE_EMPTY:{field}")
-    return []
 
 
 def _evidence_refs(value: Any) -> list[str]:
@@ -202,11 +196,11 @@ def build_incident_record_v0(payload: Mapping[str, Any]) -> MappingProxyType[str
         "corrects_id": None
         if raw.get("corrects_id") is None
         else require_record_id(raw.get("corrects_id"), "corrects_id"),
-        "attribution_refs": _empty_reserved(raw.get("attribution_refs"), "attribution_refs"),
-        "counterfactual_refs": _empty_reserved(
+        "attribution_refs": require_id_list(raw.get("attribution_refs"), "attribution_refs"),
+        "counterfactual_refs": require_id_list(
             raw.get("counterfactual_refs"), "counterfactual_refs"
         ),
-        "candidate_refs": _empty_reserved(raw.get("candidate_refs"), "candidate_refs"),
+        "candidate_refs": require_id_list(raw.get("candidate_refs"), "candidate_refs"),
     }
     hashed = attach_content_hash(canonical)
     if "content_hash" in raw and raw["content_hash"] != hashed["content_hash"]:

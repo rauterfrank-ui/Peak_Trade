@@ -206,6 +206,30 @@ terms:
       Navigation-only. PR_BOUNDED_FULL remains the pull_request bounded FULL
       class owned by the existing selector. Atlas is not CI or trading authority.
 
+  - id: TERM:ddo_offline_control_plane
+    kind: TERM
+    name: DDO offline control plane
+    exact_observed_spellings:
+      - deterministic_decision_outcome_v0
+      - WP-FA-03
+      - PromotionEligibilityRecord
+      - AutonomyCycleRecord
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: >-
+      Offline Decision-Outcome Learning remaining section-24/45 record contracts,
+      replay/registry/challenger evaluators, and non-activating supervisor plus
+      promotion-eligibility controller. No runtime, promotion-activation, or
+      execution authority.
+    definition_source: src/learning/deterministic_decision_outcome_v0/authority_v0.py
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/authority_v0.py
+      - src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py
+    notes: >-
+      Navigation-only. Atlas does not confer trading, promotion, risk, safety,
+      or execution authority. Promotion authority activation remains false.
+
   - id: TERM:document_class
     kind: TERM
     name: DOCUMENT_CLASS

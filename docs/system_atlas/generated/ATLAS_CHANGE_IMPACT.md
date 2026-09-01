@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `TERM:focused_full_noop` |
+| `TERM:ddo_offline_control_plane` |
 
 ## CHANGED_RELATIONS
 
@@ -92,7 +92,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Navigation-only TERM:focused_full_noop sync after an existing CI selector owner added a PR_BOUNDED_FULL testowner for the offline DDO contract ledger package. No new Atlas trading, promotion, risk, safety, or execution semantics. Atlas is not canonical authority.
+- Navigation-only TERM:ddo_offline_control_plane sync after the offline DDO package added remaining section-24/45 record contracts and a non-activating control plane. No Atlas trading, promotion, risk, safety, or execution semantics. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

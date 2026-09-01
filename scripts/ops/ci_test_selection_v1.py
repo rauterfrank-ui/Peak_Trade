@@ -1356,27 +1356,42 @@ PR_BOUNDED_FULL_PACKAGE_A_META_TARGETS: tuple[str, ...] = (
 PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER: str = (
     "tests/learning/test_deterministic_decision_outcome_event_contract_v0.py"
 )
+PR_BOUNDED_FULL_PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER: str = (
+    "tests/learning/test_deterministic_decision_outcome_control_plane_v0.py"
+)
 PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TRIGGER_PATHS: frozenset[str] = frozenset(
     {
         "src/learning/__init__.py",
         "src/learning/deterministic_decision_outcome_v0/__init__.py",
         "src/learning/deterministic_decision_outcome_v0/authority_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/challenger_v0.py",
         "src/learning/deterministic_decision_outcome_v0/common_v0.py",
         "src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py",
         "src/learning/deterministic_decision_outcome_v0/decision_event_v0.py",
         "src/learning/deterministic_decision_outcome_v0/enums_v0.py",
         "src/learning/deterministic_decision_outcome_v0/errors_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/evaluation_records_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/evaluation_v0.py",
         "src/learning/deterministic_decision_outcome_v0/incident_record_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/learning_records_v0.py",
         "src/learning/deterministic_decision_outcome_v0/ledger_v0.py",
         "src/learning/deterministic_decision_outcome_v0/lineage_v0.py",
         "src/learning/deterministic_decision_outcome_v0/outcome_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/promotion_controller_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/promotion_records_v0.py",
         "src/learning/deterministic_decision_outcome_v0/reason_codes_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/registry_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/replay_evaluator_v0.py",
         "src/learning/deterministic_decision_outcome_v0/serialization_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/supervisor_records_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/supervisor_v0.py",
         PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER,
+        PR_BOUNDED_FULL_PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER,
     }
 )
 PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TARGETS: tuple[str, ...] = (
     PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER,
+    PR_BOUNDED_FULL_PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER,
 )
 
 PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TRIGGER_PATHS: frozenset[str] = frozenset(

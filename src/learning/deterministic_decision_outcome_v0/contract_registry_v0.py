@@ -16,16 +16,40 @@ from src.learning.deterministic_decision_outcome_v0.authority_v0 import (
     RUNTIME_EFFECT,
 )
 from src.learning.deterministic_decision_outcome_v0.common_v0 import (
+    SCHEMA_NAME_ATTRIBUTION_RECORD,
+    SCHEMA_NAME_AUTONOMY_CYCLE,
+    SCHEMA_NAME_CANDIDATE_ARTIFACT,
+    SCHEMA_NAME_COUNTERFACTUAL_RECORD,
     SCHEMA_NAME_DECISION_EVENT,
+    SCHEMA_NAME_DEPLOYMENT_RECORD,
+    SCHEMA_NAME_HEALTH_SNAPSHOT,
     SCHEMA_NAME_INCIDENT_RECORD,
+    SCHEMA_NAME_LEARNING_HYPOTHESIS,
     SCHEMA_NAME_LEDGER_ENVELOPE,
     SCHEMA_NAME_OUTCOME_RECORD,
     SCHEMA_NAME_OUTCOME_REF,
+    SCHEMA_NAME_PROMOTION_ELIGIBILITY,
+    SCHEMA_NAME_PROMOTION_POLICY,
+    SCHEMA_NAME_RELEASE_ARTIFACT,
+    SCHEMA_NAME_ROLLBACK_RECORD,
+    SCHEMA_NAME_VALIDATION_EVIDENCE_PACK,
+    SCHEMA_VERSION_ATTRIBUTION_RECORD_V0,
+    SCHEMA_VERSION_AUTONOMY_CYCLE_V0,
+    SCHEMA_VERSION_CANDIDATE_ARTIFACT_V0,
+    SCHEMA_VERSION_COUNTERFACTUAL_RECORD_V0,
     SCHEMA_VERSION_DECISION_EVENT_V0,
+    SCHEMA_VERSION_DEPLOYMENT_RECORD_V0,
+    SCHEMA_VERSION_HEALTH_SNAPSHOT_V0,
     SCHEMA_VERSION_INCIDENT_RECORD_V0,
+    SCHEMA_VERSION_LEARNING_HYPOTHESIS_V0,
     SCHEMA_VERSION_LEDGER_ENVELOPE_V0,
     SCHEMA_VERSION_OUTCOME_RECORD_V0,
     SCHEMA_VERSION_OUTCOME_REF_V0,
+    SCHEMA_VERSION_PROMOTION_ELIGIBILITY_V0,
+    SCHEMA_VERSION_PROMOTION_POLICY_V0,
+    SCHEMA_VERSION_RELEASE_ARTIFACT_V0,
+    SCHEMA_VERSION_ROLLBACK_RECORD_V0,
+    SCHEMA_VERSION_VALIDATION_EVIDENCE_PACK_V0,
     FieldSpecV0,
 )
 from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
@@ -36,25 +60,52 @@ from src.learning.deterministic_decision_outcome_v0.enums_v0 import (
     DECISION_RESULT_V0,
     DECISION_TYPE_V0,
     ENUM_COMPATIBILITY_POLICY_V0,
+    GATE_RESULT_V0,
     INCIDENT_CLASS_V0,
     KILL_SWITCH_CORRECTNESS_V0,
     KILL_SWITCH_TIMING_LABEL_V0,
     OPEN_UNBOUND_ENUMS_V0,
     OUTCOME_LINK_STATUS_V0,
     OUTCOME_ROOT_CAUSE_V0,
+    PROMOTION_CLASS_V0,
     SCHEMA_VERSION_COMPATIBILITY_POLICY_V0,
     STALE_ROOT_CAUSE_V0,
+    SUPERVISOR_ACTION_V0,
+    SUPERVISOR_EVENT_V0,
+    SUPERVISOR_OUTCOME_V0,
+    SUPERVISOR_STATE_V0,
+    VALIDATION_GATE_IDS_V0,
 )
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
     DdoUnsupportedSchemaVersionError,
     DdoValidationError,
 )
+from src.learning.deterministic_decision_outcome_v0.evaluation_records_v0 import (
+    ATTRIBUTION_RECORD_FIELD_SPECS_V0,
+    COUNTERFACTUAL_RECORD_FIELD_SPECS_V0,
+)
 from src.learning.deterministic_decision_outcome_v0.incident_record_v0 import (
     INCIDENT_RECORD_FIELD_SPECS_V0,
+)
+from src.learning.deterministic_decision_outcome_v0.learning_records_v0 import (
+    CANDIDATE_ARTIFACT_FIELD_SPECS_V0,
+    LEARNING_HYPOTHESIS_FIELD_SPECS_V0,
+    VALIDATION_EVIDENCE_PACK_FIELD_SPECS_V0,
 )
 from src.learning.deterministic_decision_outcome_v0.outcome_v0 import (
     OUTCOME_RECORD_FIELD_SPECS_V0,
     OUTCOME_REF_FIELD_SPECS_V0,
+)
+from src.learning.deterministic_decision_outcome_v0.promotion_records_v0 import (
+    DEPLOYMENT_RECORD_FIELD_SPECS_V0,
+    PROMOTION_ELIGIBILITY_FIELD_SPECS_V0,
+    PROMOTION_POLICY_FIELD_SPECS_V0,
+    RELEASE_ARTIFACT_FIELD_SPECS_V0,
+    ROLLBACK_RECORD_FIELD_SPECS_V0,
+)
+from src.learning.deterministic_decision_outcome_v0.supervisor_records_v0 import (
+    AUTONOMY_CYCLE_FIELD_SPECS_V0,
+    HEALTH_SNAPSHOT_FIELD_SPECS_V0,
 )
 from src.learning.deterministic_decision_outcome_v0.reason_codes_v0 import (
     BLUEPRINT_HARD_BLOCK_CODES_V0,
@@ -179,6 +230,102 @@ CONTRACT_REGISTRY_V0: Final[Mapping[str, Any]] = MappingProxyType(
                         "fields": _specs_as_dicts(LEDGER_ENVELOPE_FIELD_SPECS_V0),
                     }
                 ),
+                SCHEMA_NAME_COUNTERFACTUAL_RECORD: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_COUNTERFACTUAL_RECORD,
+                        "supported_versions": (SCHEMA_VERSION_COUNTERFACTUAL_RECORD_V0,),
+                        "current_version": SCHEMA_VERSION_COUNTERFACTUAL_RECORD_V0,
+                        "fields": _specs_as_dicts(COUNTERFACTUAL_RECORD_FIELD_SPECS_V0),
+                    }
+                ),
+                SCHEMA_NAME_ATTRIBUTION_RECORD: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_ATTRIBUTION_RECORD,
+                        "supported_versions": (SCHEMA_VERSION_ATTRIBUTION_RECORD_V0,),
+                        "current_version": SCHEMA_VERSION_ATTRIBUTION_RECORD_V0,
+                        "fields": _specs_as_dicts(ATTRIBUTION_RECORD_FIELD_SPECS_V0),
+                    }
+                ),
+                SCHEMA_NAME_LEARNING_HYPOTHESIS: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_LEARNING_HYPOTHESIS,
+                        "supported_versions": (SCHEMA_VERSION_LEARNING_HYPOTHESIS_V0,),
+                        "current_version": SCHEMA_VERSION_LEARNING_HYPOTHESIS_V0,
+                        "fields": _specs_as_dicts(LEARNING_HYPOTHESIS_FIELD_SPECS_V0),
+                    }
+                ),
+                SCHEMA_NAME_CANDIDATE_ARTIFACT: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_CANDIDATE_ARTIFACT,
+                        "supported_versions": (SCHEMA_VERSION_CANDIDATE_ARTIFACT_V0,),
+                        "current_version": SCHEMA_VERSION_CANDIDATE_ARTIFACT_V0,
+                        "fields": _specs_as_dicts(CANDIDATE_ARTIFACT_FIELD_SPECS_V0),
+                    }
+                ),
+                SCHEMA_NAME_VALIDATION_EVIDENCE_PACK: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_VALIDATION_EVIDENCE_PACK,
+                        "supported_versions": (SCHEMA_VERSION_VALIDATION_EVIDENCE_PACK_V0,),
+                        "current_version": SCHEMA_VERSION_VALIDATION_EVIDENCE_PACK_V0,
+                        "fields": _specs_as_dicts(VALIDATION_EVIDENCE_PACK_FIELD_SPECS_V0),
+                    }
+                ),
+                SCHEMA_NAME_PROMOTION_POLICY: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_PROMOTION_POLICY,
+                        "supported_versions": (SCHEMA_VERSION_PROMOTION_POLICY_V0,),
+                        "current_version": SCHEMA_VERSION_PROMOTION_POLICY_V0,
+                        "fields": _specs_as_dicts(PROMOTION_POLICY_FIELD_SPECS_V0),
+                    }
+                ),
+                SCHEMA_NAME_PROMOTION_ELIGIBILITY: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_PROMOTION_ELIGIBILITY,
+                        "supported_versions": (SCHEMA_VERSION_PROMOTION_ELIGIBILITY_V0,),
+                        "current_version": SCHEMA_VERSION_PROMOTION_ELIGIBILITY_V0,
+                        "fields": _specs_as_dicts(PROMOTION_ELIGIBILITY_FIELD_SPECS_V0),
+                    }
+                ),
+                SCHEMA_NAME_RELEASE_ARTIFACT: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_RELEASE_ARTIFACT,
+                        "supported_versions": (SCHEMA_VERSION_RELEASE_ARTIFACT_V0,),
+                        "current_version": SCHEMA_VERSION_RELEASE_ARTIFACT_V0,
+                        "fields": _specs_as_dicts(RELEASE_ARTIFACT_FIELD_SPECS_V0),
+                    }
+                ),
+                SCHEMA_NAME_DEPLOYMENT_RECORD: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_DEPLOYMENT_RECORD,
+                        "supported_versions": (SCHEMA_VERSION_DEPLOYMENT_RECORD_V0,),
+                        "current_version": SCHEMA_VERSION_DEPLOYMENT_RECORD_V0,
+                        "fields": _specs_as_dicts(DEPLOYMENT_RECORD_FIELD_SPECS_V0),
+                    }
+                ),
+                SCHEMA_NAME_ROLLBACK_RECORD: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_ROLLBACK_RECORD,
+                        "supported_versions": (SCHEMA_VERSION_ROLLBACK_RECORD_V0,),
+                        "current_version": SCHEMA_VERSION_ROLLBACK_RECORD_V0,
+                        "fields": _specs_as_dicts(ROLLBACK_RECORD_FIELD_SPECS_V0),
+                    }
+                ),
+                SCHEMA_NAME_AUTONOMY_CYCLE: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_AUTONOMY_CYCLE,
+                        "supported_versions": (SCHEMA_VERSION_AUTONOMY_CYCLE_V0,),
+                        "current_version": SCHEMA_VERSION_AUTONOMY_CYCLE_V0,
+                        "fields": _specs_as_dicts(AUTONOMY_CYCLE_FIELD_SPECS_V0),
+                    }
+                ),
+                SCHEMA_NAME_HEALTH_SNAPSHOT: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_HEALTH_SNAPSHOT,
+                        "supported_versions": (SCHEMA_VERSION_HEALTH_SNAPSHOT_V0,),
+                        "current_version": SCHEMA_VERSION_HEALTH_SNAPSHOT_V0,
+                        "fields": _specs_as_dicts(HEALTH_SNAPSHOT_FIELD_SPECS_V0),
+                    }
+                ),
             }
         ),
         "enums": MappingProxyType(
@@ -192,6 +339,12 @@ CONTRACT_REGISTRY_V0: Final[Mapping[str, Any]] = MappingProxyType(
                 "OUTCOME_ROOT_CAUSE_V0": OUTCOME_ROOT_CAUSE_V0,
                 "COUNTERFACTUAL_ADMISSIBILITY_V0": COUNTERFACTUAL_ADMISSIBILITY_V0,
                 "OUTCOME_LINK_STATUS_V0": OUTCOME_LINK_STATUS_V0,
+                "PROMOTION_CLASS_V0": PROMOTION_CLASS_V0,
+                "GATE_RESULT_V0": GATE_RESULT_V0,
+                "SUPERVISOR_STATE_V0": SUPERVISOR_STATE_V0,
+                "SUPERVISOR_EVENT_V0": SUPERVISOR_EVENT_V0,
+                "SUPERVISOR_OUTCOME_V0": SUPERVISOR_OUTCOME_V0,
+                "SUPERVISOR_ACTION_V0": SUPERVISOR_ACTION_V0,
             }
         ),
         "reason_taxonomies": MappingProxyType(
@@ -202,7 +355,8 @@ CONTRACT_REGISTRY_V0: Final[Mapping[str, Any]] = MappingProxyType(
             }
         ),
         "existing_source_taxonomy_refs": EXISTING_SOURCE_TAXONOMY_REFS_V0,
-        "reserved_lineage_slots_v0_must_be_empty": (
+        "validation_gate_ids_v0": VALIDATION_GATE_IDS_V0,
+        "bound_forward_lineage_slots_v0": (
             "attribution_refs",
             "counterfactual_refs",
             "candidate_refs",
