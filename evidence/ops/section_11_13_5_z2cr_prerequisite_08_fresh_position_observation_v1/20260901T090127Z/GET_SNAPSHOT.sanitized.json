@@ -1,0 +1,86 @@
+{
+  "AUTHENTICATED_GET_STATUS": "SUCCESS",
+  "AUTHORITY": "NONE",
+  "AUTH_PATH": {
+    "CREDENTIAL_CLASS": "LIVE_SHADOW_RECONCILIATION_READ_ONLY_API_KEY",
+    "HEADER_NAMES_ONLY": [
+      "Content-Type",
+      "OK-ACCESS-KEY",
+      "OK-ACCESS-PASSPHRASE",
+      "OK-ACCESS-SIGN",
+      "OK-ACCESS-TIMESTAMP",
+      "User-Agent"
+    ],
+    "HTTP_CLIENT": "LiveShadowReconHttpClientV1",
+    "SECRETREF_URI": "secretref://vault/peak-trade/live-shadow-recon/okx",
+    "SIGNER": "build_okx_live_ro_get_auth_headers_v1",
+    "TRANSPORT": "ProvenanceUrllibLiveTransportV1",
+    "VAULT_BACKEND": "FileSecretRefVaultBackendV1"
+  },
+  "BODY_BYTES": 31,
+  "BODY_SHA256": "fc24d69479edbb84f22c7d5bd4525349734056ad3baf7a5adf7e553f68c06a3a",
+  "BYTE_IDENTICAL_EMPTY_ENVELOPE_SHA_ALSO_USED_BY_HISTORICAL_Z2CN": true,
+  "BYTE_IDENTICAL_EMPTY_ENVELOPE_SHA_DOES_NOT_MERGE_SOURCE_IDENTITIES": true,
+  "CANARY_AUTHORIZED": false,
+  "CAPTURE_FINISHED_AT": "2026-09-01T09:01:27.871865+00:00",
+  "CAPTURE_STARTED_AT": "2026-09-01T09:01:27.562909+00:00",
+  "CLOCK_DOMAIN": "LOCAL_MONOTONIC_ELAPSED_TIME",
+  "COUNTERS": {
+    "AMEND_REQUEST_COUNT": 0,
+    "CANCEL_REQUEST_COUNT": 0,
+    "GET_REQUEST_COUNT": 1,
+    "ORDER_REQUEST_COUNT": 0,
+    "REQUEST_COUNT": 1,
+    "TRANSFER_REQUEST_COUNT": 0,
+    "WITHDRAW_REQUEST_COUNT": 0,
+    "WRITE_REQUEST_COUNT": 0,
+    "endpoints_used": [
+      "/api/v5/account/positions"
+    ],
+    "http_result_classes": [
+      "HTTP_200_OK"
+    ],
+    "methods_used": [
+      "GET"
+    ]
+  },
+  "DATA_COUNT": 0,
+  "DOCUMENT_CLASS": "SECTION_11_13_5_Z2CR_FRESH_UNFILTERED_TARGET_POSITION_GET_SNAPSHOT_V1",
+  "DOCUMENT_ROLE": "RAW_SANITIZED_RUNTIME_EVIDENCE_NOT_SSOT",
+  "ENDPOINT": "/api/v5/account/positions",
+  "GET_ERROR": null,
+  "GET_REQUEST_COUNT": 1,
+  "HOST": "eea.okx.com",
+  "HTTP_METHOD": "GET",
+  "HTTP_STATUS": 200,
+  "INSTID_FILTER_USED": false,
+  "LIVE_AUTHORIZED": false,
+  "LOCAL_RESPONSE_RECEIVED_AT": 81527682,
+  "OBSERVATION_TIMESTAMP_UTC": "2026-09-01T09:01:27.871865+00:00",
+  "OKX_CODE": "0",
+  "OKX_MSG": "",
+  "OWNER_GO": "PEAK_TRADE_OWNER_GO_SECTION_11_13_5_PREREQUISITE_08_FRESH_POSITION_OBSERVATION_CLUSTER_V1",
+  "POST_COUNT": 0,
+  "QUERY_PARAMETERS": {},
+  "RAW_DATA_SHAPE": "DATA_LIST",
+  "REDACTED_PAYLOAD": {
+    "code": "0",
+    "data": [],
+    "msg": ""
+  },
+  "REQUEST_ELAPSED_SECONDS": 0.30881516699446365,
+  "SAFE_RESPONSE_HEADERS": {
+    "Content-Type": "application/json",
+    "Date": "Tue, 01 Sep 2026 09:01:27 GMT",
+    "Server": "cloudflare"
+  },
+  "SECRET_VALUES_INCLUDED": false,
+  "SEMANTIC_AUTHORITY": false,
+  "TARGET_INSTRUMENT": "SUI-USD_UM_XPERP-310404",
+  "TESTNET_AUTHORIZED": false,
+  "THIS_ARTIFACT_IS_NOT_CANONICAL": true,
+  "UID_REDACTED": true,
+  "VENUE": "OKX_EEA_PRODUCTION",
+  "WRITE_REQUEST_COUNT": 0,
+  "bound_origin_main_sha": "032fd7f377891beb2dc4823d51ce31a3803028e8"
+}

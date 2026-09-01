@@ -405,7 +405,7 @@ entities:
     fail_closed: true
     evidence_sources:
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO, the §11.13.5.Z2CP freshness persist/implement Owner-GO, and the §11.13.5.Z2CQ post-Z2CP prerequisite-08 cluster Owner-GO. Not execute enablement. Atlas is not trading authority.
+    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO, the §11.13.5.Z2CP freshness persist/implement Owner-GO, the §11.13.5.Z2CQ post-Z2CP prerequisite-08 cluster Owner-GO, and the §11.13.5.Z2CR prerequisite-08 fresh position-observation Owner-GO. Not execute enablement. Atlas is not trading authority.
 
   - id: GATE:btc_exclusion
     kind: GATE
@@ -656,7 +656,7 @@ entities:
     current_status: CURRENT_NONCANONICAL
     evidence_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
-    notes: Last canonically closed 11.13.5 slice. Predecessor of additive PHASE:z2co. Embedded CURRENT_ORIGIN_MAIN_SHA in slice may differ from census SHA. Atlas is not trading authority.
+    notes: Historical last canonically closed 11.13.5 GET-observation slice before additive Z2CO/Z2CP/Z2CQ. Current last closed observation persist is PHASE:z2cr. Empty observation is not zero. Atlas is not trading authority.
 
   - id: PHASE:z2co
     kind: PHASE
@@ -695,7 +695,20 @@ entities:
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/execution_prerequisite_08_cluster_contract_v1.py
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_pre_send_gate_v1.py
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-    notes: Additive post-Z2CP forensic census plus offline fail-closed gating of the EXECUTION_PREREQUISITE_08 flatten dependency cluster. Does not supersede Z2CN as last canonically closed 11.13.5 slice. Does not close prerequisite 08. Atlas is not trading authority.
+    notes: Additive post-Z2CP forensic census plus offline fail-closed gating of the EXECUTION_PREREQUISITE_08 flatten dependency cluster. Does not supersede Z2CN as last canonically closed 11.13.5 slice. Does not close prerequisite 08. Predecessor of additive PHASE:z2cr. Atlas is not trading authority.
+
+  - id: PHASE:z2cr
+    kind: PHASE
+    name: 11.13.5.Z2CR
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - evidence/ops/section_11_13_5_z2cr_prerequisite_08_fresh_position_observation_v1/20260901T090127Z/GET_SNAPSHOT.sanitized.json
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/prerequisite_08_fresh_position_observation_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+    notes: Additive post-Z2CQ one authenticated unfiltered positions GET persist. Empty data is not zero. Does not close prerequisite 08. Does not merge byte-identical Z2CN empty SHA. Not flatten execute. Atlas is not trading authority.
 
   - id: GATE:target_position_state
     kind: GATE
