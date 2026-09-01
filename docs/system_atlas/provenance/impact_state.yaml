@@ -9,17 +9,17 @@ modified_by: PENDING_CHANGE
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Additive PHASE:z2cu catalog navigation for §11.13.5.Z2CU post-Z2CT named
-  progression-track adjudication persist. P3 leaves successor selection to
-  Owner. No unique canonical next. Recommended offline track is remaining
-  unranked Z2AR SUI reproof. Identical unfiltered GET is a permitted
-  observation path only. GATE:flatten_execute_authority deny-list records the
-  Z2CU Owner-GO as not execute. Atlas is not trading authority. No GET, POST,
-  secret mutation, HMAC, or flatten execute mutation.
+  Additive PHASE:z2cv catalog navigation for §11.13.5.Z2CV COVER_USDC
+  remaining unranked SUI offline reproof persist. Fail-closed
+  NOT_REPROVEN_MISSING_EVIDENCE. Does not instantiate COVER_USDC. Does not
+  adjudicate FX, ROUNDING, finished RISK_ENVELOPE_NUMERIC, or
+  USD_USDC_ACCOUNT_SETTLEMENT. GATE:flatten_execute_authority deny-list
+  records the Z2CV Owner-GO as not execute. Atlas is not trading authority.
+  No GET, POST, secret mutation, HMAC, or flatten execute mutation.
 changed_entities:
   - GATE:flatten_execute_authority
-  - PHASE:z2ct
   - PHASE:z2cu
+  - PHASE:z2cv
 changed_relations: []
 new_relations: []
 removed_relations: []
