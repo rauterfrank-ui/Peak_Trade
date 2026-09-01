@@ -7,6 +7,8 @@ configs:
     consumers: OKX EEA adapter / testnet bindings
     runtime_effect: Venue enablement; does not confer LIVE_AUTHORIZED
     current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    notes: Comment-only config.toml correction after Kraken residual decommission. Runtime defaults unchanged. Atlas is not trading authority.
   - id: CFG:live_authorized
     key: LIVE_AUTHORIZED
     source: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md

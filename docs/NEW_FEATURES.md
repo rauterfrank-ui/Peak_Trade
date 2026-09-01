@@ -1,12 +1,16 @@
 # Peak_Trade - Neue Features (Dezember 2024)
 
+> **CURRENT TRUTH:** Kraken data adapters are **absent** and not selectable.
+> Sections below that describe a Kraken pipeline, `fetch_kraken_data`, or `demo_kraken_simple.py` are **historical 2024 notes**, not current operative guidance.
+> Do not retarget those samples to OKX live credentials.
+
 ## Übersicht
 
-Diese Dokumentation beschreibt die neu implementierten Features:
+Diese Dokumentation beschreibt historisch neu implementierte Features (Dezember 2024):
 
 1. **Erweiterter Risk-Layer** (Position Sizing + Portfolio Limits)
 2. **TOML-basiertes Config-System** (bereits vorhanden, erweitert)
-3. **Kraken Data Pipeline** (nahtlose Integration mit Data-Layer)
+3. **Kraken Data Pipeline** — **REMOVED**; not a current surface
 
 ---
 
@@ -157,11 +161,14 @@ print(params['fast_period'])             # 10
 
 ---
 
-## 3. Kraken Data Pipeline
+## 3. Kraken Data Pipeline — REMOVED (historical 2024 note)
 
-**Dateien:**
-- `src/data/kraken_pipeline.py` - Vollständige Pipeline
-- `src/data/kraken.py` - Kraken-Client (bereits vorhanden)
+**Current truth:** `src&#47;data&#47;kraken_pipeline.py` and `src&#47;data&#47;kraken.py` are **absent**. <!-- pt:ref-target-ignore -->
+The samples below are historical and must not be copied as current setup.
+
+**Historical files (absent):**
+- `src&#47;data&#47;kraken_pipeline.py` — removed <!-- pt:ref-target-ignore -->
+- `src&#47;data&#47;kraken.py` — removed <!-- pt:ref-target-ignore -->
 
 **Features:**
 
@@ -239,28 +246,20 @@ python3 scripts/demo_complete_pipeline.py
 1. Config-System
 2. Position Sizing (Fixed Fractional + Kelly)
 3. Portfolio Risk Limits
-4. Kraken Data Pipeline
+4. Local OHLCV sample (Kraken pipeline decommissioned)
 5. Vollständiger Backtest mit allem
 
-### 2. Kraken-Pipeline Demo
+### 2. Kraken-Pipeline Demo — REMOVED
 
-Fokus auf Daten-Beschaffung:
-
-```bash
-python3 scripts/demo_kraken_simple.py
-```
-
-**Zeigt:**
-- Kraken-Verbindung testen
-- Daten holen und cachen
-- Resampling
-- Convenience-Funktionen
+`scripts&#47;demo_kraken_simple.py` is **absent**. Do not run it as a current demo. <!-- pt:ref-target-ignore -->
 
 ---
 
 ## Integration in bestehenden Code
 
-### Beispiel: Backtest mit neuem Risk-Layer
+Historical sample only. `fetch_kraken_data` is **absent**. Do not copy as current data-loading guidance.
+
+### Beispiel: Backtest mit neuem Risk-Layer (historical; Kraken import absent)
 
 ```python
 from src.core import get_config
@@ -325,7 +324,9 @@ print(f"Total Return: {result.stats['total_return']:.2%}")
    - Max. 2-3 parallele Positionen für Retail
    - Max. 75% Total Exposure (25% Cash-Buffer)
 
-### Kraken Integration
+### Kraken Integration — historical only
+
+Kraken adapters are **absent**. The cache/rate-limit notes below are not current operative setup.
 
 1. **Cache verwenden**
    - Spart API-Requests
@@ -382,7 +383,7 @@ class RiskLimitChecker:
     ) -> LimitCheckResult
 ```
 
-### Kraken Pipeline
+### Kraken Pipeline — historical API (module absent)
 
 ```python
 # KrakenDataPipeline
@@ -413,7 +414,9 @@ def fetch_kraken_data(
 
 ## Troubleshooting
 
-### Kraken-Verbindungsfehler
+### Kraken-Verbindungsfehler — historical only
+
+Kraken adapters are **absent**. Do not treat this as a current connection runbook.
 
 **Problem:** `NetworkError` oder `ExchangeError`
 
@@ -472,5 +475,5 @@ Bei Fragen oder Problemen:
 **Wichtige Dateien:**
 - `src/risk/position_sizer.py` - Position Sizing
 - `src/risk/limits.py` - Risk Limits
-- `src/data/kraken_pipeline.py` - Kraken Integration
+- `src&#47;data&#47;kraken_pipeline.py` - historical; module absent <!-- pt:ref-target-ignore -->
 - `config.toml` - Zentrale Konfiguration

@@ -6,7 +6,7 @@ Demonstriert die vollständige Integration:
 
 1. Risk-Layer (Position Sizing + Limits)
 2. Config-System (TOML)
-3. Kraken-Integration (Data-Layer)
+3. Local OHLCV sample (Kraken pipeline decommissioned)
 4. Backtest mit allem zusammen
 
 Usage:
@@ -31,7 +31,6 @@ from src.risk import (
     RiskLimitsConfig,
     PortfolioState,
 )
-from src.data import KrakenDataPipeline, fetch_kraken_data
 from src.strategies import load_strategy
 
 MA_CROSSOVER_STRATEGY_KEY = "ma_crossover"
@@ -204,55 +203,17 @@ def demo_3_risk_limits():
 
 
 def demo_4_kraken_pipeline():
-    """Demo 4: Kraken Data Pipeline."""
+    """Demo 4: local OHLCV sample. Kraken pipeline is not an operative surface."""
     print("\n" + "=" * 70)
-    print("DEMO 4: Kraken Data Pipeline")
+    print("DEMO 4: Local OHLCV sample (Kraken pipeline decommissioned)")
     print("=" * 70)
 
-    print("\n⚠️  HINWEIS: Dieses Demo benötigt eine Internetverbindung zu Kraken.")
-    print("Falls keine Verbindung besteht, wird ein Fehler angezeigt.")
-
-    try:
-        # Test Kraken-Verbindung
-        from src.data import test_kraken_connection
-
-        print("\n🔌 Teste Kraken-Verbindung...")
-
-        if not test_kraken_connection():
-            print("❌ Keine Verbindung zu Kraken möglich.")
-            print("   Nutze stattdessen Dummy-Daten für Demo.\n")
-            print("\n📊 Erstelle Dummy-Daten...")
-            df = load_ohlcv_data(None, None, None, n_bars=200)
-            print(f"  ✅ {len(df)} Dummy-Bars erstellt")
-            return df
-
-        # Pipeline erstellen
-        print("\n📡 Erstelle Kraken-Pipeline...")
-        pipeline = KrakenDataPipeline(use_cache=True)
-
-        # Daten holen
-        print("\n📥 Hole BTC/USD 1h Daten (100 Bars)...")
-        df = pipeline.fetch_and_prepare(symbol="BTC/USD", timeframe="1h", limit=100)
-
-        print(f"\n✅ Daten erfolgreich geladen:")
-        print(f"  Bars:      {len(df)}")
-        print(f"  Zeitraum:  {df.index[0]} bis {df.index[-1]}")
-        print(f"  Spalten:   {list(df.columns)}")
-        print(f"\n  Erste 3 Zeilen:")
-        print(df.head(3).to_string())
-        print(f"\n  Stats:")
-        print(df.describe().to_string())
-
-        print("\n✅ Kraken-Pipeline funktioniert!")
-        return df
-
-    except Exception as e:
-        print(f"\n⚠️  Kraken-Fehler: {e}")
-        print("   Nutze Dummy-Daten für Demo.\n")
-        print("\n📊 Erstelle Dummy-Daten...")
-        df = load_ohlcv_data(None, None, None, n_bars=200)
-        print(f"  ✅ {len(df)} Dummy-Bars erstellt")
-        return df
+    print("\nKraken data adapters are absent and not selectable.")
+    print("This demo does not inject Kraken credentials or call Kraken.")
+    print("Using local dummy OHLCV for remaining demos.")
+    df = load_ohlcv_data(None, None, None, n_bars=200)
+    print(f"  {len(df)} Dummy-Bars erstellt")
+    return df
 
 
 def demo_5_complete_backtest(df: pd.DataFrame):
@@ -345,7 +306,7 @@ def main():
     print("  1. Config-System (TOML)")
     print("  2. Position Sizing (Fixed Fractional + Kelly)")
     print("  3. Portfolio Risk Limits")
-    print("  4. Kraken Data Pipeline")
+    print("  4. Local OHLCV sample (Kraken pipeline decommissioned)")
     print("  5. Vollständiger Backtest")
 
     try:
@@ -358,7 +319,7 @@ def main():
         # Demo 3: Risk Limits
         demo_3_risk_limits()
 
-        # Demo 4: Kraken Pipeline (liefert Daten für Demo 5)
+        # Demo 4: local OHLCV sample (liefert Daten für Demo 5)
         df = demo_4_kraken_pipeline()
 
         # Demo 5: Kompletter Backtest
@@ -371,7 +332,7 @@ def main():
         print("\n📚 Weitere Infos:")
         print("  - Risk-Layer:      src/risk/position_sizer.py + limits.py")
         print("  - Config-System:   src/core/config.py + config.toml")
-        print("  - Kraken-Pipeline: src/data/kraken_pipeline.py")
+        print("  - Data-Layer:      src/data/loader.py (Kraken pipeline absent)")
         print("  - Backtest-Engine: src/backtest/engine.py")
 
     except KeyboardInterrupt:

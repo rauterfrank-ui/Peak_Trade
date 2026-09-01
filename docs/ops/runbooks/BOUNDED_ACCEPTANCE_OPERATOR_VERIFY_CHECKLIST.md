@@ -26,9 +26,8 @@ Mark each item PASS / FAIL.
 
 3. Launch path
 - canonical path selected:
-  `scripts&#47;ops&#47;run_bounded_pilot_with_local_secrets.py`
-- `.bounded_pilot.env` present
-- `--dry-check` passes
+  `scripts/ops/run_bounded_pilot_session.py`
+- Kraken secret launcher is **absent**; do not require `.bounded_pilot.env` Kraken keys
 
 4. Governance / Ops gates
 - Entry Contract confirmed

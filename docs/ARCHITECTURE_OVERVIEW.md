@@ -28,7 +28,7 @@ graph TD
         D1[Market Data Loader]
         D2[Normalizer]
         D3[Cache / Parquet]
-        D4[Kraken API]
+        D4[OKX EEA public MD]
     end
 
     subgraph Backtest & Simulation
@@ -98,8 +98,8 @@ graph TD
 - `src/data/loader.py` – Zentraler Data-Loader
 - `src/data/normalizer.py` – Daten-Normalisierung (OHLCV-Format)
 - `src/data/cache.py` – Parquet-basierter Cache
-- `src/data/kraken.py` – Kraken-API-Integration
-- `src/data/kraken_pipeline.py` – Kraken-Daten-Pipeline
+
+Kraken modules `src&#47;data&#47;kraken.py` and `src&#47;data&#47;kraken_pipeline.py` are **absent** and not current. <!-- pt:ref-target-ignore -->
 
 **Integration:**
 - Backtest-Engine nutzt Data-Loader für historische Daten
@@ -292,7 +292,7 @@ graph TD
 
 | Pfad               | Inhalt / Verantwortung                               |
 | ------------------ | ---------------------------------------------------- |
-| `src/data/`        | Daten-Layer (Loader, Normalizer, Cache, Kraken)      |
+| `src/data/`        | Daten-Layer (Loader, Normalizer, Cache)              |
 | `src/backtest/`    | BacktestEngine, Stats, Walk-Forward                  |
 | `src/strategies/`  | Strategiemodule (MA, Momentum, RSI, etc.)           |
 | `src/portfolio/`   | Portfolio-Manager, Allocation-Methoden               |

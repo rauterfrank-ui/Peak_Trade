@@ -42,9 +42,10 @@ hosts:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
     evidence_sources:
       - config/config.toml
-    notes: WS host configured; no proven live WS client
+    notes: WS host configured; no proven live WS client. Comment-only config.toml rebind; no live WS client added.
   - id: OKX_HOST:static_okx_com
     kind: OKX_HOST
     name: static.okx.com

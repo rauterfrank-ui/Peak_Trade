@@ -500,6 +500,8 @@ features:
     open_gaps: census_not_complete
     evidence_sources:
       - config/config.toml
+    modified_by: PENDING_CHANGE
+    notes: Host inventory rebind after current-doc Kraken residual decommission. No live WS client. Atlas is not trading authority.
   - id: OKX_FEATURE:execution_adapter_mocks_only
     kind: OKX_FEATURE
     name: execution_adapter_mocks_only

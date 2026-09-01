@@ -15,6 +15,8 @@ closures:
       - CAPABILITY:cap_2_2_ranking
     evidence: docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
     open: GFU membership of SUI XPERP / quoteCcy empty; spec vs _extract_base_quote contradiction
+    modified_by: PENDING_CHANGE
+    notes: Closure membership unchanged. Current-doc Kraken residual decommission does not alter productive-universe topology. Atlas is not trading authority.
 
   - id: CLOSURE:productive_selection
     title: PRODUCTIVE_SELECTION

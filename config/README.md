@@ -175,10 +175,9 @@ config = load_config("config/config.toml", overrides={
 - `secrets.toml` (in .gitignore)
 
 **Beispiel `.env`:**
-```bash
-KRAKEN_API_KEY=your_key_here
-KRAKEN_API_SECRET=your_secret_here
-```
+Venue credentials belong in operator-local env files, not in Git.
+Do not use `KRAKEN_API_KEY` / `KRAKEN_API_SECRET` as current operative credentials.
+This README does not prescribe a live credential set and does not retarget Kraken names to OKX.
 
 ---
 

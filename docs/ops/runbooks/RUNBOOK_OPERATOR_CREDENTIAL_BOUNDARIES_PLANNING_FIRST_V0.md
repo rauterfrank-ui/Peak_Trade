@@ -63,22 +63,26 @@ Use **only** clearly fake names for illustrations in docs and examples:
 
 - **Untracked:** real `.env`, `.cursor&#47;.env`, `docker&#47;.env`, `.bounded_pilot.env`, `.bounded_launch.env` (see `.gitignore`).
 - **Tracked examples only:** placeholder names — e.g. `docker&#47;.env.example`, `.cursor&#47;.env.example` — **no** real credentials.
-- **Bounded pilot / acceptance:** follow [LOCAL_BOUNDED_SECRET_ENV_FILE_CONTRACT.md](../specs/LOCAL_BOUNDED_SECRET_ENV_FILE_CONTRACT.md) and [LOCAL_BOUNDED_SECRET_LAUNCHER_RUNBOOK.md](LOCAL_BOUNDED_SECRET_LAUNCHER_RUNBOOK.md).
+- **Bounded pilot / acceptance:** the former Kraken local-secret launcher is **removed**. See the decommissioned notes in [LOCAL_BOUNDED_SECRET_ENV_FILE_CONTRACT.md](../specs/LOCAL_BOUNDED_SECRET_ENV_FILE_CONTRACT.md) and [LOCAL_BOUNDED_SECRET_LAUNCHER_RUNBOOK.md](LOCAL_BOUNDED_SECRET_LAUNCHER_RUNBOOK.md). Do not inject Kraken credentials. Do not retarget those names to OKX.
 
 ---
 
-## 7. Kraken credential classification (names-only)
+## 7. Kraken credential classification (names-only; not current operative readiness)
 
-**`operator-stated`:** Kraken-related credentials may already exist in the operator environment. **Secret Handling** is therefore **active boundary management**, not hypothetical future work. This subsection lists **categories** and **reference ENV identifiers** that appear in **tracked** repo sources — **never** values, never live key material.
+**Current truth:** `src&#47;exchange&#47;kraken_live.py` and `src&#47;exchange&#47;kraken_testnet.py` are **absent**. <!-- pt:ref-target-ignore -->
+`KRAKEN_API_KEY` / `KRAKEN_API_SECRET` / `KRAKEN_TESTNET_*` are **not** current live- or testnet-readiness predicates.
+This subsection lists historical **names** that still appear in repo sources — **never** values. It does **not** retarget Kraken names to OKX and does **not** authorize live use.
 
-**Not derivable from Git (`unverified` in-repo):** Kraken account settings, per-key **permissions** (e.g. trade vs. read-only vs. withdraw), effective **scopes**, **rotation** cadence, and whether **separate** keys are used per use-case. Operators must verify in the **Kraken / account UI** and out-of-band records.
+**`operator-stated`:** Kraken-related credentials may still exist in an operator environment as leftovers. **Secret Handling** remains boundary management for leftover names, not a current venue grant.
+
+**Not derivable from Git (`unverified` in-repo):** any leftover Kraken account settings. Operators must not treat leftover names as current Peak_Trade live authorization.
 
 | Category | Reference ENV names (`documented` in repo) | Relative risk | Default / note |
 |----------|----------------------------------------------|---------------|----------------|
-| Private / authenticated **market data** | May require exchange keys for some feeds; public OHLCV paths often need **none** (`unverified` per deployment) | Medium–High if over-permissioned | Least privilege on Kraken side; do not infer from code alone |
-| **Testnet / paper** exchange API | `KRAKEN_TESTNET_API_KEY`, `KRAKEN_TESTNET_API_SECRET` (e.g. `src/exchange/kraken_testnet.py`, CI workflows referencing `secrets.*`) | Medium (real API; not prod cash) | Must stay inside **Research → Shadow → Testnet → Live** ordering |
-| Live **read-only** monitoring | No fixed repo-wide convention — operators may use dedicated read-only keys (`operator-stated`) | Medium if keys are not read-only | If introduced, pick **distinct** `*_ENV` names via **human** decision + separate small docs PR — do not overload live-trading names |
-| **Live trading** | `KRAKEN_API_KEY`, `KRAKEN_API_SECRET` (e.g. `src/exchange/kraken_live.py`, bounded local launcher contract) | **Highest** | **Unusable by default** for Cursor, agents, or ad-hoc tests; requires separate Peak_Trade **gates** — **not** permitted by reading this runbook |
+| Private / authenticated **market data** | Historical Kraken names may still appear in docs/tests; public OHLCV paths often need **none** | Medium–High if over-permissioned leftover keys | Least privilege; do not infer a current Kraken adapter |
+| **Testnet / paper** exchange API | `KRAKEN_TESTNET_API_KEY`, `KRAKEN_TESTNET_API_SECRET` (historical names; `src&#47;exchange&#47;kraken_testnet.py` is **absent**) | Medium if leftover real API keys remain | Not a current testnet-ready signal | <!-- pt:ref-target-ignore -->
+| Live **read-only** monitoring | No fixed repo-wide convention | Medium if leftover keys are not read-only | Do not overload live-trading names |
+| **Live trading** | `KRAKEN_API_KEY`, `KRAKEN_API_SECRET` (historical names; `src&#47;exchange&#47;kraken_live.py` is **absent**; bounded local launcher removed) | **Highest** if leftover keys remain | **Not** a current live-ready signal; **unusable by default** for Cursor, agents, or ad-hoc tests | <!-- pt:ref-target-ignore -->
 | Vault / secret-manager **machine** identity (future) | Illustrative only: §5 `PEAK_TRADE_EXAMPLE_*` — not live names | Varies | Real issuance **human-only**; Cursor never holds values |
 
 **Exchange-side order permission ≠ Peak_Trade live approval (`operator-stated` nuance):** An exchange API identity may **intentionally** retain **Kraken-side** permission to **query**, **create/modify**, and **cancel** orders — aligned with a **long-term** Peak_Trade goal of **autonomous** execution **within** this codebase’s governance model. That exchange permission is **only technical capability** at the venue; it does **not**, by itself, constitute **current** live trading authorization, nor does it bypass Peak_Trade.

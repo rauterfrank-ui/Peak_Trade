@@ -44,6 +44,31 @@ if str(ROOT_DIR) not in sys.path:
 from src.core.peak_config import load_config_with_bounded_live, PeakConfig
 from src.live.risk_limits import LiveRiskLimits
 
+# Kraken is not an operative venue. These names must not produce readiness PASS.
+_NONCANONICAL_KRAKEN_EXCHANGE_TYPES = frozenset(
+    {
+        "kraken",
+        "kraken_live",
+        "kraken_testnet",
+    }
+)
+_KRAKEN_CREDENTIAL_ENV_NAMES = (
+    "KRAKEN_API_KEY",
+    "KRAKEN_API_SECRET",
+    "KRAKEN_TESTNET_API_KEY",
+    "KRAKEN_TESTNET_API_SECRET",
+)
+
+
+def _is_noncanonical_kraken_exchange_type(exchange_type: str) -> bool:
+    raw = str(exchange_type or "").strip().lower()
+    return raw in _NONCANONICAL_KRAKEN_EXCHANGE_TYPES or raw.startswith("kraken")
+
+
+def _present_kraken_credential_env_names() -> list[str]:
+    return [name for name in _KRAKEN_CREDENTIAL_ENV_NAMES if os.environ.get(name)]
+
+
 # =============================================================================
 # Check Results
 # =============================================================================
@@ -206,9 +231,16 @@ def check_exchange_config(cfg: PeakConfig, stage: str) -> CheckResult:
     exchange_type = cfg.get("exchange.default_type", "dummy")
     details.append(f"exchange.default_type: {exchange_type}")
 
+    if _is_noncanonical_kraken_exchange_type(str(exchange_type)):
+        return CheckResult(
+            name="Exchange-Config",
+            passed=False,
+            message="Kraken exchange types are not an operative readiness signal",
+            details=details + ["noncanonical_venue_rejected: kraken is not selectable"],
+        )
+
     if stage == "testnet":
-        # Für Testnet: dummy oder kraken_testnet OK
-        if exchange_type in ("dummy", "kraken_testnet"):
+        if exchange_type == "dummy":
             return CheckResult(
                 name="Exchange-Config",
                 passed=True,
@@ -219,12 +251,11 @@ def check_exchange_config(cfg: PeakConfig, stage: str) -> CheckResult:
             name="Exchange-Config",
             passed=False,
             message=f"Unerwarteter Exchange-Type für Testnet: {exchange_type}",
-            details=details + ["Erwartet: 'dummy' oder 'kraken_testnet'"],
+            details=details + ["Erwartet: 'dummy'"],
         )
 
     elif stage == "live":
-        # Für Live: kraken_live oder ähnlich
-        if exchange_type.endswith("_live") or exchange_type == "kraken":
+        if exchange_type.endswith("_live"):
             return CheckResult(
                 name="Exchange-Config",
                 passed=True,
@@ -256,59 +287,33 @@ def check_api_credentials(stage: str) -> CheckResult:
             message="Nicht erforderlich für Shadow",
         )
 
-    details = []
-
-    # Testnet
-    testnet_key = os.environ.get("KRAKEN_TESTNET_API_KEY")
-    testnet_secret = os.environ.get("KRAKEN_TESTNET_API_SECRET")
-
-    if testnet_key:
-        details.append("KRAKEN_TESTNET_API_KEY: ✓ gesetzt")
-    else:
-        details.append("KRAKEN_TESTNET_API_KEY: ✗ nicht gesetzt")
-
-    if testnet_secret:
-        details.append("KRAKEN_TESTNET_API_SECRET: ✓ gesetzt")
-    else:
-        details.append("KRAKEN_TESTNET_API_SECRET: ✗ nicht gesetzt")
-
-    if stage == "testnet":
-        # Für Testnet mit DummyClient sind Keys optional
+    present_kraken = _present_kraken_credential_env_names()
+    if present_kraken:
         return CheckResult(
             name="API-Credentials",
-            passed=True,  # Nicht kritisch bei DummyClient
-            message="API-Keys geprüft (optional bei DummyClient)",
-            details=details,
+            passed=False,
+            message="Kraken credentials are not an operative readiness signal",
+            details=[f"{name}: present (noncanonical)" for name in present_kraken],
         )
 
-    elif stage == "live":
-        # Live-Keys prüfen
-        live_key = os.environ.get("KRAKEN_API_KEY")
-        live_secret = os.environ.get("KRAKEN_API_SECRET")
+    if stage == "testnet":
+        return CheckResult(
+            name="API-Credentials",
+            passed=True,
+            message="Kraken credentials are not required and must not be set",
+        )
 
-        if live_key:
-            details.append("KRAKEN_API_KEY: ✓ gesetzt")
-        else:
-            details.append("KRAKEN_API_KEY: ✗ nicht gesetzt")
-
-        if live_secret:
-            details.append("KRAKEN_API_SECRET: ✓ gesetzt")
-        else:
-            details.append("KRAKEN_API_SECRET: ✗ nicht gesetzt")
-
-        if not live_key or not live_secret:
-            return CheckResult(
-                name="API-Credentials",
-                passed=False,
-                message="Live-API-Keys fehlen",
-                details=details,
-            )
+    if stage == "live":
+        return CheckResult(
+            name="API-Credentials",
+            passed=True,
+            message="Kraken credentials are not an operative live-ready signal",
+        )
 
     return CheckResult(
         name="API-Credentials",
         passed=True,
         message="API-Credentials geprüft",
-        details=details,
     )
 
 

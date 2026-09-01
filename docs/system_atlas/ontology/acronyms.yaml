@@ -117,9 +117,11 @@ acronyms:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
     evidence_sources:
       - config/config.toml
       - src/ops/section_11_12_8_okx_eea_demo_xperp_campaign_private_write_gate_v1/constants_v1.py
+      - docs/ARCHITECTURE.md
 
   - id: ACRONYM:C1
     kind: ACRONYM
@@ -278,6 +280,8 @@ acronyms:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
     evidence_sources:
       - config/config.toml
       - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+      - docs/ARCHITECTURE_OVERVIEW.md

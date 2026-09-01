@@ -230,10 +230,22 @@ class TestCheckExchangeConfig:
         assert result.passed is True
 
     def test_testnet_type_for_testnet(self):
-        """kraken_testnet für Testnet -> passed."""
+        """kraken_testnet für Testnet -> failed (noncanonical)."""
         cfg = PeakConfig(raw={"exchange": {"default_type": "kraken_testnet"}})
         result = check_exchange_config(cfg, "testnet")
-        assert result.passed is True
+        assert result.passed is False
+
+    def test_kraken_live_type_for_live_fails(self):
+        """kraken_live für Live -> failed (noncanonical)."""
+        cfg = PeakConfig(raw={"exchange": {"default_type": "kraken_live"}})
+        result = check_exchange_config(cfg, "live")
+        assert result.passed is False
+
+    def test_kraken_type_for_live_fails(self):
+        """exchange_type kraken für Live -> failed (noncanonical)."""
+        cfg = PeakConfig(raw={"exchange": {"default_type": "kraken"}})
+        result = check_exchange_config(cfg, "live")
+        assert result.passed is False
 
     def test_dummy_for_live_fails(self, mock_peak_config: PeakConfig):
         """Dummy für Live -> failed."""
@@ -256,10 +268,28 @@ class TestCheckApiCredentials:
         assert result.passed is True
 
     def test_live_credentials_missing(self):
-        """Live ohne Credentials -> failed."""
+        """Live without Kraken credentials does not create a Kraken-ready pass."""
         with patch.dict("os.environ", {}, clear=True):
             result = check_api_credentials("live")
-            assert result.passed is False
+            assert result.passed is True
+            assert "Kraken" in result.message
+
+    def test_kraken_live_credentials_present_fail_closed(self):
+        """KRAKEN_LIVE_READY_SUCCESS_PATH=false."""
+        with patch.dict(
+            "os.environ",
+            {
+                "KRAKEN_API_KEY": "x",
+                "KRAKEN_API_SECRET": "y",
+                "KRAKEN_TESTNET_API_KEY": "x",
+                "KRAKEN_TESTNET_API_SECRET": "y",
+            },
+            clear=True,
+        ):
+            live = check_api_credentials("live")
+            testnet = check_api_credentials("testnet")
+            assert live.passed is False
+            assert testnet.passed is False
 
 
 class TestCheckTests:

@@ -151,10 +151,7 @@ def test_demo_4_kraken_pipeline_fallback_wires_canonical_loader() -> None:
     with patch.dict(sys.modules, {"src.risk": risk_mock}):
         import scripts.demo_complete_pipeline as demo_script
 
-    with (
-        patch.object(demo_script, "load_ohlcv_data", side_effect=capture_loader),
-        patch("src.data.test_kraken_connection", return_value=False),
-    ):
+    with patch.object(demo_script, "load_ohlcv_data", side_effect=capture_loader):
         result = demo_script.demo_4_kraken_pipeline()
 
     assert result is sample_df

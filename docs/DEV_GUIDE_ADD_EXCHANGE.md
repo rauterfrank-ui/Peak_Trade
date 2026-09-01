@@ -20,14 +20,15 @@ Neuen Exchange/Market-Adapter hinzufügen, der Data-Layer und ggf. Live-Layer nu
 ### 1. Market Data Adapter
 
 **Optional Dependencies (z.B. ccxt):**
-- Exchange-Provider wie Kraken über `ccxt` sollten als **optionale Dependencies** eingebunden werden.
+- Exchange-Provider (historically including Kraken) over `ccxt` sollten als **optionale Dependencies** eingebunden werden.
 - Der Core sollte ohne `ccxt` importierbar bleiben; Provider-Imports daher **lazy/optional** gestalten.
 - **Jede neue Exchange-SDK-Dependency** muss in `src&#47;data&#47;providers&#47;**` leben + via lazy Shim/Factory geladen werden.
+- Kraken is **not** a current operative venue. Do not copy deleted Kraken adapters as the current reference. Current operative venue target is OKX EEA. This guide does **not** authorize adding Kraken back or renaming Kraken to OKX.
 
 **Neue Datei erstellen**, z.B.:
 - `src&#47;data&#47;my_exchange.py` (illustrative) <!-- pt:ref-target-ignore -->
 
-**Schnittstelle an vorhandene Adapter angleichen** (z.B. `src/data/kraken.py`):
+**Schnittstelle an vorhandene Adapter angleichen** (illustrative only — do **not** use deleted `src&#47;data&#47;kraken.py` as a current reference): <!-- pt:ref-target-ignore -->
 
 ```python
 """
@@ -122,7 +123,7 @@ def load_data_from_exchange(
     Lädt Daten von einem Exchange.
 
     Args:
-        exchange: Exchange-Name ("kraken", "my_exchange", etc.)
+        exchange: Exchange-Name ("my_exchange", etc.; "kraken" is not selectable)
         symbol: Trading-Pair
         timeframe: Timeframe
         **kwargs: Weitere Parameter
@@ -131,8 +132,7 @@ def load_data_from_exchange(
         DataFrame mit OHLCV-Daten
     """
     if exchange == "kraken":
-        from .kraken import load_ohlcv_cached
-        return load_ohlcv_cached(symbol, timeframe, **kwargs)
+        raise ValueError("noncanonical_venue_rejected: kraken is not selectable")
     elif exchange == "my_exchange":
         from .my_exchange import load_ohlcv_cached
         return load_ohlcv_cached(symbol, timeframe, **kwargs)
@@ -187,7 +187,7 @@ Füge Exchange-Settings in `config/config.toml` hinzu:
 
 ```toml
 [live.exchange]
-type = "my_exchange"  # oder "kraken", etc.
+type = "my_exchange"  # "kraken" is not selectable
 sandbox = true  # Testnet-Modus
 
 [live.exchange.my_exchange]
@@ -346,7 +346,7 @@ Kurze Beschreibung der My Exchange-Integration.
 
 ## Beispiel-Integrationen als Referenz
 
-- **Data-Layer**: `src/data/kraken.py` – Kraken-Data-Adapter
+- **Data-Layer**: `src/data/loader.py` – current data loader. Deleted Kraken adapters are **not** a current reference.
 - **Order-Layer**: `src/orders/exchange.py` – Exchange-Order-Execution
 
 ---
@@ -367,6 +367,6 @@ Kurze Beschreibung der My Exchange-Integration.
 ## Siehe auch
 
 - `ARCHITECTURE_OVERVIEW.md` – Architektur-Übersicht
-- `src/data/kraken.py` – Kraken-Data-Adapter als Referenz
+- `src/data/loader.py` – current data-loader reference (Kraken adapters are absent)
 - `src/orders/exchange.py` – Exchange-Order-Execution
 - `docs/LIVE_TESTNET_PREPARATION.md` – Live-/Testnet-Vorbereitung

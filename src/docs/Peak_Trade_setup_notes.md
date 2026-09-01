@@ -1,15 +1,20 @@
 # Peak_Trade – Setup & Code-Notizen für neuen Chat
 
-Diese Datei fasst den aktuellen Stand deines Projekts **Peak_Trade** zusammen, damit du sie in einem neuen Chat (z.B. bei Claude oder hier) posten kannst.
+> **CURRENT TRUTH (2026-09):** This file is a historical setup snapshot, not current SSOT.
+> Kraken adapters (`src&#47;data&#47;kraken.py`, `kraken_live.py`, `kraken_testnet.py`) are **absent** and not selectable. <!-- pt:ref-target-ignore -->
+> `KRAKEN_API_KEY` / `KRAKEN_API_SECRET` are **not** current operative credentials or live-readiness signals.
+> Current operative venue target is OKX EEA. This note does **not** retarget Kraken names to OKX live credentials.
+
+Diese Datei fasst einen **historischen** Projektstand von Peak_Trade zusammen. Nicht als aktuelle operative Anleitung verwenden.
 
 ---
 
 ## 1. Ziel des Projekts
 
-- Python-Projekt **Peak_Trade** für Backtests und später Live-Trading (z.B. über Kraken).
+- Python-Projekt **Peak_Trade** für Backtests und später Live-Trading.
 - Zentrale **Konfiguration über `config.toml`** + `src/core/config.py`.
 - Sichere Behandlung von API-Credentials (nur über **Environment-Variablen**, keine Keys in Dateien).
-- Datenmodul `src&#47;data&#47;kraken.py` lädt OHLCV-Daten via **ccxt** in ein `pandas.DataFrame`. <!-- pt:ref-target-ignore -->
+- Historical note: a Kraken OHLCV module used to live under `src/data/`. That module is **absent** and not current. <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -28,7 +33,7 @@ Im Verzeichnis `~/Peak_Trade`:
     │   └── config.py
     ├── data/
     │   ├── __init__.py
-    │   └── kraken.py
+    │   └── (Kraken adapter removed; not current)
     ├── backtest/
     │   └── __init__.py
     ├── risk/
@@ -82,9 +87,10 @@ data_dir = "data"
 results_dir = "results"
 
 [exchange]
-name = "kraken"
-api_key_env = "KRAKEN_API_KEY"
-api_secret_env = "KRAKEN_API_SECRET"
+name = "dummy"
+# Historical Kraken env names are not current operative credentials.
+api_key_env = ""
+api_secret_env = ""
 rate_limit_ms = 1000
 testnet = true
 
@@ -97,7 +103,9 @@ parameters = { rsi_period = 14, rsi_oversold = 30, rsi_overbought = 70 }
 
 ---
 
-## 5. `src/core/config.py` – wichtigste Ideen
+## 5. `src/core/config.py` – wichtigste Ideen (historical snapshot)
+
+The embedded source below is a **historical snapshot**. Default exchange name `kraken` and `KRAKEN_API_*` env names in that dump are **not** current operative defaults.
 
 Die Datei enthält:
 
@@ -382,9 +390,12 @@ __version__ = "0.1.0"
 
 ---
 
-## 7. `src&#47;data&#47;kraken.py` – OHLCV-Daten holen <!-- pt:ref-target-ignore -->
+## 7. Historical sample only — `src&#47;data&#47;kraken.py` is ABSENT <!-- pt:ref-target-ignore -->
+
+The following code dump is a **historical sample**. It is **not** a current adapter, setup path, or operative venue client. Do not copy it as current guidance. Do not retarget it to OKX credentials.
 
 ```python
+# HISTORICAL SAMPLE ONLY — MODULE ABSENT
 import time
 from typing import Optional
 
@@ -480,20 +491,23 @@ source .venv/bin/activate
 # Konfiguration testen
 python -m src.core.config
 
-# Daten holen
-python -m src.data.kraken BTC/EUR 1h
+# Historical command only — module absent:
+# python -m src.data.kraken BTC/EUR 1h
 ```
 
 ---
 
 ## 8. API-Keys per Environment-Variable
 
-```bash
-export KRAKEN_API_KEY="dein_key"
-export KRAKEN_API_SECRET="dein_secret"
-```
+Do **not** export `KRAKEN_API_KEY` / `KRAKEN_API_SECRET` as current operative setup.
+Those names are not live-readiness signals and must not be copied as current guidance.
+This note does not prescribe OKX live credentials.
 
-Später dauerhaft in `~/.zshrc` eintragen.
+```bash
+# HISTORICAL NAMES ONLY — not a current setup path
+# export KRAKEN_API_KEY="dein_key"
+# export KRAKEN_API_SECRET="dein_secret"
+```
 
 ---
 

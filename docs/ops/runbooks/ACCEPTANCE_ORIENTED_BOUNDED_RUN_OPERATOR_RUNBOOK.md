@@ -23,8 +23,8 @@ Does not apply to:
 - `main` clean and synchronized
 - no active bounded-pilot processes
 - supervisor stopped unless explicitly required
-- valid Kraken credentials available through the approved launcher path
-- `PT_EXEC_EVENTS_ENABLED=true`
+- `PT_EXEC_EVENTS_ENABLED=true` when execution-event capture is required
+- preflight checklist reviewed
 - preflight checklist reviewed
 - Entry Contract confirmed
 - Go/No-Go confirmed
@@ -33,27 +33,25 @@ Does not apply to:
 
 ## Approved Launch Paths
 
-### A. Primary: Local Secret Launcher
-Use this path by default. No shell export of secrets required.
+### A. Primary: Bounded Pilot Session (no Kraken secret injection)
+
+The former local Kraken secret launcher is **removed**.
+Do not export `KRAKEN_API_KEY` / `KRAKEN_API_SECRET` as a current setup step.
+This path does **not** retarget Kraken names to OKX credentials.
 
 ```bash
 cd ~/Peak_Trade
-python3 scripts/ops/run_bounded_pilot_with_local_secrets.py --dry-check
-python3 scripts/ops/run_bounded_pilot_with_local_secrets.py --steps 25 --position-fraction 0.0005
+python3 scripts/ops/run_bounded_pilot_session.py --steps 25 --position-fraction 0.0005
 ```
 
-The local secret launcher sets `PT_EXEC_EVENTS_ENABLED=true` automatically and reads credentials from `.bounded_pilot.env`.
+The former `scripts&#47;ops&#47;run_bounded_pilot_with_local_secrets.py` path is absent. <!-- pt:ref-target-ignore -->
 
-Reference:
-- `docs&#47;ops&#47;runbooks&#47;LOCAL_BOUNDED_SECRET_LAUNCHER_RUNBOOK.md`
+### B. Historical fallback (do not use as current Kraken credential injection)
 
-### B. Fallback: Shell Export + Direct Bounded Pilot Session
-Use only when the local secret launcher is unavailable. Requires manual export of credentials; avoid if possible (secrets may end up in shell history).
+Do not use shell export of Kraken credentials as a current bounded-pilot success path.
 
 ```bash
 cd ~/Peak_Trade
-export KRAKEN_API_KEY='...'
-export KRAKEN_API_SECRET='...'
 export PT_EXEC_EVENTS_ENABLED=true
 python3 scripts/ops/run_bounded_pilot_session.py --steps 25 --position-fraction 0.0005
 ```
