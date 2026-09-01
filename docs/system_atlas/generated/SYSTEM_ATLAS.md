@@ -400,7 +400,7 @@ Architectural-kind count in this bucket: `19`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `48`.
+Architectural-kind count in this bucket: `49`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -430,6 +430,7 @@ Architectural-kind count in this bucket: `48`.
 | PHASE:z2cq | PHASE | 11.13.5.Z2CQ | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:z2cr | PHASE | 11.13.5.Z2CR | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:z2cs | PHASE | 11.13.5.Z2CS | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| PHASE:z2ct | PHASE | 11.13.5.Z2CT | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | RUNBOOK:cybersecurity_v2_1 | RUNBOOK | Canonical Cybersecurity Runbook V2.1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | RUNBOOK:presentation_implementation | RUNBOOK | Canonical Presentation Implementation Runbook | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | SCHEMA:bound_instrument_dataclass_v1 | SCHEMA | BoundInstrumentV1 dataclass shape | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -443,9 +444,8 @@ Architectural-kind count in this bucket: `48`.
 | SCHEMA:pure_stack_stage2_surface_b_owner_sta_regime_coverage_producer | SCHEMA | productive_pure_stack_stage2_surface_b_owner_sta_regime_cove | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | SCHEMA:pure_stack_stage2_surface_b_owner_sta_regime_coverage_sta_open_inputs_closeout | SCHEMA | productive_pure_stack_stage2_surface_b_owner_sta_regime_cove | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | SCHEMA:pure_stack_stage2_surface_b_raw_pt1m_input_pack | SCHEMA | productive_pure_stack_stage2_surface_b_raw_pt1m_input_pack_d | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout | SCHEMA | productive_pure_stack_stage2_surface_b_regime_coverage_and_d | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `48` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `49` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -680,7 +680,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=afbae518b67eb1b789c835e219db37f5b15f308b
-ENTITY_TOTAL=331
+ENTITY_TOTAL=332
 HUB_RELATION_COUNT=63
 STRUCTURAL_RELATION_COUNT=80
 RUNTIME_RELATION_COUNT=20
@@ -774,7 +774,7 @@ Remaining census domains:
 | OKX_HOST | 8 |
 | OKX_RESPONSE_SHAPE | 6 |
 | OWNER_DECISION | 2 |
-| PHASE | 6 |
+| PHASE | 7 |
 | REGISTRY | 1 |
 | RUNBOOK | 4 |
 | RUNTIME_COMPONENT | 40 |
