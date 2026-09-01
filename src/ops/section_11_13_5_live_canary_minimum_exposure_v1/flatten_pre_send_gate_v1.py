@@ -10,7 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass, field
-from typing import Any, Mapping
+from typing import Any, Callable, Mapping
 
 from src.ops.pre_submit_open_position_cap_v1 import (
     PreSubmitOpenPositionCapErrorV1,
@@ -46,6 +46,11 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_submit_tran
     LiveCanaryFlattenSubmitTransportError,
     build_canary_flatten_submit_request_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.position_observation_freshness_contract_v1 import (
+    PositionObservationFreshnessEvidenceV1,
+    evaluate_position_observation_freshness_v1,
+    resolve_monotonic_ms_clock_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_submit_state_v1 import (
     LiveCanaryPositionObservationError,
     LiveCanaryPreSubmitStateError,
@@ -73,6 +78,7 @@ GATE_NAMES: tuple[str, ...] = (
     "REDUCE_ONLY",
     "LIMIT_ONLY",
     "QUOTE_FRESHNESS_5000MS",
+    "POSITION_OBSERVATION_FRESHNESS",
     "LIMIT_PRICE_POLICY",
     "OVERSHOOT_FLIP",
     "ONE_SHOT_NO_RETRY",
@@ -133,6 +139,9 @@ class FlattenPreSendGateInputV1:
     instrument_id: str = DEFAULT_INSTRUMENT_ID
     one_shot_no_retry: bool = True
     duplicate_post_protection: bool = True
+    flatten_pre_send_decision_id: str | None = None
+    position_observation_freshness_evidence: PositionObservationFreshnessEvidenceV1 | None = None
+    monotonic_ms_clock: Callable[[], int] | None = None
 
 
 @dataclass(frozen=True)
@@ -459,6 +468,25 @@ def evaluate_flatten_pre_send_gate_v1(
         )
     else:
         decisions.append(_decision("DUPLICATE_POST_PROTECTION", True))
+
+    clock = resolve_monotonic_ms_clock_v1(gate.monotonic_ms_clock)
+    evaluation_ms = clock()
+    freshness = evaluate_position_observation_freshness_v1(
+        evidence=gate.position_observation_freshness_evidence,
+        evaluation_monotonic_ms=evaluation_ms,
+        current_decision_id=gate.flatten_pre_send_decision_id,
+    )
+    if not freshness.allowed:
+        reasons.append(freshness.reject_reason)
+        decisions.append(
+            _decision(
+                "POSITION_OBSERVATION_FRESHNESS",
+                False,
+                freshness.reject_reason,
+            )
+        )
+    else:
+        decisions.append(_decision("POSITION_OBSERVATION_FRESHNESS", True))
 
     allowed = not reasons
     digest_material = json.dumps(

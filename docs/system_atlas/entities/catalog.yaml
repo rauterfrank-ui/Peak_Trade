@@ -405,7 +405,7 @@ entities:
     fail_closed: true
     evidence_sources:
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO. Not execute enablement. Atlas is not trading authority.
+    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO and the §11.13.5.Z2CP freshness persist/implement Owner-GO. Not execute enablement. Atlas is not trading authority.
 
   - id: GATE:btc_exclusion
     kind: GATE
@@ -666,7 +666,39 @@ entities:
     current_status: CURRENT_NONCANONICAL
     evidence_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
-    notes: Latest additive ### 11.13.5.Z2* persist. Does not supersede Z2CN as last canonically closed 11.13.5 slice. Atlas is not trading authority.
+    notes: Additive persist after Z2CN. Does not supersede Z2CN as last canonically closed 11.13.5 slice. Predecessor of additive PHASE:z2cp. Atlas is not trading authority.
+
+  - id: PHASE:z2cp
+    kind: PHASE
+    name: 11.13.5.Z2CP
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/position_observation_freshness_contract_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_pre_send_gate_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_gated_submit_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_post_action_proof_contract_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/runner_v1.py
+    notes: Additive persist of Owner-ratified flatten pre-send position-observation freshness 5000ms plus offline fail-closed enforcement. Does not supersede Z2CN as last canonically closed 11.13.5 slice. Does not transfer Z2AN quote-lock authority. Atlas is not trading authority.
+
+  - id: GATE:position_observation_freshness
+    kind: GATE
+    name: POSITION_OBSERVATION_FRESHNESS
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    fail_closed: true
+    evidence_sources:
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/position_observation_freshness_contract_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_pre_send_gate_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_gated_submit_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_post_action_proof_contract_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/runner_v1.py
+    notes: Flatten pre-send only. Local monotonic response-received sample. Not quote-lock. Not post-action readback. Atlas is not trading authority.
 
   - id: FORENSIC_REFERENCE:historical_child_ledger
     kind: FORENSIC_REFERENCE
