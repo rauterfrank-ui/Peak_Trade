@@ -405,7 +405,7 @@ entities:
     fail_closed: true
     evidence_sources:
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO, the §11.13.5.Z2CP freshness persist/implement Owner-GO, the §11.13.5.Z2CQ post-Z2CP prerequisite-08 cluster Owner-GO, the §11.13.5.Z2CR prerequisite-08 fresh position-observation Owner-GO, the §11.13.5.Z2CS prerequisite-08 resolution-authority adjudication Owner-GO, the §11.13.5.Z2CT prerequisite-08 single unfiltered position-observation Owner-GO, the §11.13.5.Z2CU post-Z2CT named progression-track adjudication Owner-GO, the §11.13.5.Z2CV COVER_USDC remaining unranked SUI offline reproof Owner-GO, the §11.13.5.Z2CW FX remaining unranked SUI offline reproof Owner-GO, the §11.13.5.Z2CX remaining unranked ROUNDING / FINISHED_RISK_ENVELOPE_NUMERIC / USD_USDC_ACCOUNT_SETTLEMENT offline reproof bundle Owner-GO, the §11.13.5.Z2CY post-Z2CX P3 dependency reconciliation Owner-GO, and the §11.13.5.Z2CZ post-Z2CY single unfiltered Prerequisite-08 position-observation Owner-GO. Not execute enablement. Atlas is not trading authority.
+    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO, the §11.13.5.Z2CP freshness persist/implement Owner-GO, the §11.13.5.Z2CQ post-Z2CP prerequisite-08 cluster Owner-GO, the §11.13.5.Z2CR prerequisite-08 fresh position-observation Owner-GO, the §11.13.5.Z2CS prerequisite-08 resolution-authority adjudication Owner-GO, the §11.13.5.Z2CT prerequisite-08 single unfiltered position-observation Owner-GO, the §11.13.5.Z2CU post-Z2CT named progression-track adjudication Owner-GO, the §11.13.5.Z2CV COVER_USDC remaining unranked SUI offline reproof Owner-GO, the §11.13.5.Z2CW FX remaining unranked SUI offline reproof Owner-GO, the §11.13.5.Z2CX remaining unranked ROUNDING / FINISHED_RISK_ENVELOPE_NUMERIC / USD_USDC_ACCOUNT_SETTLEMENT offline reproof bundle Owner-GO, the §11.13.5.Z2CY post-Z2CX P3 dependency reconciliation Owner-GO, the §11.13.5.Z2CZ post-Z2CY single unfiltered Prerequisite-08 position-observation Owner-GO, and the §11.13.5.Z2DA post-Z2CZ position-creation / autonomy semantic-rebind persist Owner-GO. Not execute enablement. Atlas is not trading authority.
 
   - id: GATE:btc_exclusion
     kind: GATE
@@ -808,7 +808,19 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/prerequisite_08_fresh_position_observation_v1.py
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-    notes: Additive post-Z2CY one-shot unfiltered GET /api/v5/account/positions. Empty data[] classified TARGET_POSITION_NOT_OBSERVED. Does not promote empty to zero. Does not close EXECUTION_PREREQUISITE_08. Does not reopen FX. Does not adjudicate COVER_USDC. Does not flatten, POST, consume Class D, or set EXECUTION_READY. Atlas is not trading authority.
+    notes: Additive post-Z2CY one-shot unfiltered GET /api/v5/account/positions. Empty data[] classified TARGET_POSITION_NOT_OBSERVED. Does not promote empty to zero. Does not close EXECUTION_PREREQUISITE_08. Does not reopen FX. Does not adjudicate COVER_USDC. Does not flatten, POST, consume Class D, or set EXECUTION_READY. Predecessor of additive PHASE:z2da. Atlas is not trading authority.
+
+  - id: PHASE:z2da
+    kind: PHASE
+    name: 11.13.5.Z2DA
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/post_z2cz_position_creation_autonomy_semantic_rebind_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+    notes: Additive post-Z2CZ offline position-creation / autonomy semantic rebind persist. Prerequisite 08 remains a positive observation-proof gate. Position-creation seam remains MISSING_OR_UNAUTHORIZED. Does not create a position, GET, POST, flatten, consume Class D or Z2AP, or mint execution or live permission. Full autonomy is not a second trading authority. Atlas is not trading authority.
 
   - id: GATE:target_position_state
     kind: GATE

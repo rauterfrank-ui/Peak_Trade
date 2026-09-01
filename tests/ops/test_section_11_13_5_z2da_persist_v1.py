@@ -1,0 +1,302 @@
+"""§11.13.5.Z2DA persist invariants. Docs/governance plus offline rebind. No runtime."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+    BLOCKS_NEW_ENTRY,
+    DEFAULT_INSTRUMENT_ID,
+    LIVE_ARMED,
+    LIVE_AUTHORIZED,
+    LIVE_ENABLED,
+    LIVE_RECONCILIATION_PROVEN,
+    SUBMIT_UNLOCKED,
+    TESTNET_AUTHORIZED,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_execute_authority_v1 import (
+    FORBIDDEN_FLATTEN_EXECUTE_OWNER_GOS,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_pre_send_gate_v1 import (
+    GATE_NAMES,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.post_z2cz_position_creation_autonomy_semantic_rebind_v1 import (
+    ADJUDICATION,
+    ADDENDUM_CONSUMED,
+    ADDENDUM_ID,
+    AI_CAN_DIRECTLY_SUBMIT_ORDER,
+    AI_PRODUCTIVE_COMPONENT_COUNT,
+    ATLAS_MUTATION,
+    ATLAS_REPAIR_REQUIRED,
+    AUTONOMY_ORCHESTRATOR_FOUND,
+    BLOCKER_CLASS,
+    BLOCKS_NEW_ENTRY_DRIFT_STATUS,
+    CORE_AI_BASED,
+    EARLIEST_REAL_UNRESOLVED_DEPENDENCY,
+    FULL_AUTONOMY_SEMANTIC_BINDING,
+    LIVE_RECONCILIATION_PROVEN_DRIFT_STATUS,
+    NEXT_ACTIONABLE_BLOCKER,
+    OWNER_GO as REBIND_OWNER_GO,
+    PARENT_PERSIST_PLAN_VERDICT,
+    POSITION_CREATION_CURRENTLY_AUTHORIZED,
+    POSITION_CREATION_PRODUCER,
+    POSITION_CREATION_SEAM_STATUS,
+    PREREQUISITE_08_EXPECTS_PREEXISTING_POSITION,
+    PREREQUISITE_08_ROLE,
+    SECTION_11_13_5_CLASS,
+    SELF_LEARNING_CLOSED_LOOP_EXISTS,
+    SELF_LEARNING_SEMANTIC_BINDING,
+)
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+MASTER_RUNBOOK = REPO_ROOT / "docs" / "runbooks" / "canonical" / "PEAK_TRADE_MASTER_RUNBOOK.md"
+MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
+
+Z2CZ_HEADING = (
+    "### 11.13.5.Z2CZ Post-Z2CY single unfiltered Prerequisite-08 position observation persist"
+)
+Z2DA_HEADING = "### 11.13.5.Z2DA Post-Z2CZ position-creation / autonomy semantic rebind persist"
+LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
+OWNER_GO = "PEAK_TRADE_OWNER_GO_POST_Z2CZ_POSITION_CREATION_AUTONOMY_SEMANTIC_REBIND_PERSIST_V1"
+BASELINE_SHA = "d7fea676d5a93cc4091e1247e59950e6a077b2ce"
+CURRENT_SUI = "SUI-USD_UM_XPERP-310404"
+
+
+def _read(path: Path) -> str:
+    assert path.is_file(), f"missing canonical path: {path}"
+    return path.read_text(encoding="utf-8")
+
+
+def _z2da_section(text: str) -> str:
+    start = text.find(Z2DA_HEADING)
+    assert start >= 0, "missing §11.13.5.Z2DA heading"
+    end = text.find(LADDER_HEADING, start)
+    assert end > start, "missing §11.14 boundary after Z2DA"
+    return text[start:end]
+
+
+def _z2cz_section(text: str) -> str:
+    start = text.find(Z2CZ_HEADING)
+    assert start >= 0, "missing §11.13.5.Z2CZ heading"
+    end = text.find(Z2DA_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2DA boundary after Z2CZ"
+    return text[start:end]
+
+
+def test_z2da_heading_is_unique_and_follows_z2cz() -> None:
+    text = _read(MASTER_RUNBOOK)
+    assert text.count(Z2DA_HEADING) == 1
+    z2cz = text.find(Z2CZ_HEADING)
+    z2da = text.find(Z2DA_HEADING)
+    ladder = text.find(LADDER_HEADING)
+    assert 0 <= z2cz < z2da < ladder
+
+
+def test_z2cz_historical_observation_slice_was_not_rewritten() -> None:
+    section = _z2cz_section(_read(MASTER_RUNBOOK))
+    assert "GET_EXECUTED_UNDER_THIS_OWNER_GO=true" in section
+    assert "CLASSIFICATION_RESULT=TARGET_POSITION_NOT_OBSERVED" in section
+    assert (
+        "EARLIEST_UNRESOLVED_DEPENDENCY=EXECUTION_PREREQUISITE_08_TARGET_POSITION_NONZERO_PROVEN"
+        in (section)
+    )
+    assert "BLOCKER_CLASS=NEW_FIRST_PARTY_GET_REQUIRED" in section
+    assert "LAST_CANONICALLY_CLOSED_STEP=SECTION_11_13_5_Z2CZ" in section
+    assert "Z2DA" not in section
+
+
+def test_z2da_docs_bind_upstream_seam_before_08() -> None:
+    section = _z2da_section(_read(MASTER_RUNBOOK))
+    required = (
+        "AUTHORIZED_SCOPE=A_Z2DA_POST_Z2CZ_POSITION_CREATION_AUTONOMY_SEMANTIC_REBIND_PERSIST_ONLY",
+        f"OWNER_GO={OWNER_GO}",
+        "OWNER_GO_STATUS=CONSUMED",
+        f"CURRENT_ORIGIN_MAIN_SHA={BASELINE_SHA}",
+        f"EXPECTED_STARTING_ORIGIN_MAIN_SHA={BASELINE_SHA}",
+        "EXPECTED_ORIGIN_MAIN_SHA_MATCH=true",
+        "LAST_MERGED_PR=6200",
+        "PREDECESSOR_SLICE=11.13.5.Z2CZ",
+        "LAST_CANONICALLY_CLOSED_STEP=SECTION_11_13_5_Z2DA",
+        "GET_EXECUTED_THIS_PERSIST=false",
+        "GET_EXECUTED_UNDER_THIS_OWNER_GO=false",
+        "AUTHENTICATED_GET_CALLS=0",
+        "VENUE_API_CALLS=0",
+        "POST_EXECUTED=false",
+        "FLATTEN_EXECUTED=false",
+        "POSITION_OBSERVATION_NE_POSITION_EXISTENCE=true",
+        "POSITION_EXISTENCE_NE_POSITION_CREATION=true",
+        "POSITION_CREATION_NE_EXECUTION_AUTHORITY=true",
+        "PREREQUISITE_08_ROLE=POSITIVE_OBSERVATION_PROOF_GATE",
+        "PREREQUISITE_08_CREATES_POSITION=false",
+        "PREREQUISITE_08_EXPECTS_PREEXISTING_POSITION=true",
+        "POSITION_CREATION_SEAM_STATUS=MISSING_OR_UNAUTHORIZED",
+        "POSITION_CREATION_PRODUCER=CURRENTLY_NONE_AUTHORIZED_REACHABLE",
+        "POSITION_CREATION_CURRENTLY_AUTHORIZED=false",
+        "POSITION_CREATION_REQUIRED_BEFORE_POSITIVE_08=true",
+        "POSITION_CREATION_IS_NOT_OBSERVATION=true",
+        "EARLIEST_REAL_UNRESOLVED_DEPENDENCY="
+        "NO_AUTHORIZED_REACHABLE_PRODUCER_OF_NONZERO_VENUE_POSITION_REQUIRED_BY_PREREQUISITE_08",
+        "NEXT_ACTIONABLE_BLOCKER="
+        "NO_AUTHORIZED_REACHABLE_PRODUCER_OF_NONZERO_VENUE_POSITION_REQUIRED_BY_PREREQUISITE_08",
+        "BLOCKER_CLASS=ARCHITECTURAL_MISSING_UPSTREAM_SEAM",
+        "NEXT_IDENTICAL_GET_INFORMATION_VALUE=LOW_EXPECTED_INFORMATION_GAIN",
+        "EMPTY_WINDOWS_CAUSALLY_EXPLAINED=UNPROVEN",
+        "FOUR_EMPTY_WINDOWS_DO_NOT_PROVE_NEVER_HELD=true",
+        "FOUR_EMPTY_WINDOWS_DO_NOT_PROVE_ZERO=true",
+        "FOUR_EMPTY_WINDOWS_DO_NOT_PROVE_CAUSAL_ABSENCE=true",
+        "SECTION_11_13_5_CLASS=MIXED_SURFACE_FLATTEN_TRACK_CURRENT_ENTRY_AUTHORING_HISTORICAL",
+        "CURRENT_FLATTEN_TRACK_HAS_POSITION_CREATION_RIGHT=false",
+        "CURRENT_FLATTEN_TRACK_HAS_ENTRY_RIGHT=false",
+        "CURRENT_FLATTEN_TRACK_HAS_SUBMIT_RIGHT=false",
+        "ENTRY_POSITION_CREATION_TRACK_CURRENTLY_AUTHORIZED=false",
+        "CAPABILITY_11_9_REMAINS_FIXTURE_ONLY=true",
+        "FULL_AUTONOMY_IS_SECOND_TRADING_AUTHORITY=false",
+        "CURRENT_LIVE_FULL_AUTONOMY_READY=false",
+        "CURRENT_LIVE_FULL_AUTONOMY_ACTIVATED=false",
+        "SELF_LEARNING_EQUALS_SELF_AUTHORIZING=false",
+        "MASTER_V2_DOUBLE_PLAY_SOLE_TRADING_DECISION_CORE=true",
+        "STEP_29P_SOLE_PRODUCTIVE_RISK_SIZING_OWNER=true",
+        "REPLAY_SAFETY_SOLE_SAFETY_OWNER=true",
+        "STEP_29Q_SOLE_PLAN_ONLY_OWNER_IN_NO_ORDER_GRAPH=true",
+        "MAPPER_TRANSLATOR_ONLY=true",
+        "SIMULATED_EXECUTION_PORT_VENUE_SIDE_NON_MUTATING=true",
+        "BLOCKS_NEW_ENTRY_DRIFT_STATUS=NOT_A_CONTRADICTION",
+        "LIVE_RECONCILIATION_PROVEN_DRIFT_STATUS=NOT_A_CONTRADICTION",
+        "ATLAS_MUTATION=false",
+        "ATLAS_REPAIR_REQUIRED=true",
+        "ATLAS_CENSUS_SHA_STALE=true",
+        "LANDSCAPE_MUTATION=false",
+        "LANDSCAPE_AUTHORITY=NONE",
+        "LANDSCAPE_ROLE=READ_ONLY_VISUAL_CONSUMER",
+        "ADDENDUM_ID=PEAK_TRADE_FULL_AUTONOMY_AI_LAYER_PRE_PERSIST_READ_ONLY_CENSUS_ADDENDUM_V1",
+        "ADDENDUM_CONSUMED=true",
+        "PARENT_PERSIST_PLAN_VERDICT=NEEDS_ADDITIVE_REFINEMENT",
+        "AUTONOMY_ORCHESTRATOR_FOUND=false",
+        "AUTONOMY_ORCHESTRATOR_AUTHORITY=NONE",
+        "SRC_AUTONOMOUS_IS_TRADING_ORCHESTRATOR=false",
+        "AI_ORCH_EXEC_LAYER_FORBIDDEN=true",
+        "CAP_11_12_FIXTURE_ONLY=true",
+        "IS_SYSTEM_CURRENTLY_FULLY_AUTONOMOUS=false",
+        "CAN_SYSTEM_AUTONOMOUSLY_TRADE_END_TO_END_TODAY=false",
+        "CAN_SYSTEM_AUTONOMOUSLY_LEARN_AND_APPLY_CHANGES=false",
+        "CORE_AI_BASED=false",
+        "CORE_USES_LEARNED_INPUTS=false",
+        "CORE_USES_STATIC_RULES=true",
+        "AI_PRODUCTIVE_COMPONENT_COUNT=0",
+        "AI_AUTHORITY_CONFLICT_COUNT=0",
+        "SELF_LEARNING_CLOSED_LOOP_EXISTS=PARTIAL_OFFLINE_NON_APPLYING",
+        "SELF_LEARNING_CAN_SELF_PROMOTE=false",
+        "SELF_LEARNING_CAN_AFFECT_LIVE=false",
+        "AI_CAN_DIRECTLY_SUBMIT_ORDER=false",
+        "AI_CAN_MODIFY_LIVE_ENABLED=false",
+        "AI_CAN_BYPASS_OWNER_GO=false",
+        "AI_MAY_REPLACE_MASTER_V2=false",
+        "AI_MAY_BYPASS_29P=false",
+        "AI_MAY_BYPASS_SAFETY=false",
+        "AI_MAY_BYPASS_29Q=false",
+        "AI_MAY_MINT_EXECUTION_PERMISSION=false",
+        "AI_MAY_MINT_LIVE_PERMISSION=false",
+        "ATLAS_USED=true",
+        "ATLAS_AI_ENTITY_COUNT=0",
+        "ATLAS_AI_COVERAGE_STATUS=INCOMPLETE_WORKING_NODES_ONLY_NOT_FIRST_CLASS_CATALOG",
+        "LANDSCAPE_AUTONOMY_STAGE=NOT_BOUND",
+        "LANDSCAPE_READ_ONLY_CONSUMER_INVARIANT=PASS",
+        "CLASS_D_CONSUMED=false",
+        "Z2AP_CONSUMED=false",
+        "EXECUTION_READY=false",
+        "LIVE_AUTHORIZED=false",
+        "NO_MAP_OF_TRUTH_MUTATION=true",
+        "Z2CZ_TEXT_REWRITTEN=false",
+        "RUNTIME_AUTHORIZATION_EFFECT=NONE",
+        f"CURRENT_CANONICAL_INSTRUMENT={CURRENT_SUI}",
+        "VENUE_SUBMIT_EDGE=AUTHORITY_BLOCKED",
+        "NONZERO_VENUE_POSITION_EDGE=MISSING_OR_UNAUTHORIZED_PRODUCER",
+    )
+    for token in required:
+        assert token in section, token
+
+
+def test_z2da_docs_forbid_activation_and_overclaim() -> None:
+    section = _z2da_section(_read(MASTER_RUNBOOK))
+    forbidden = (
+        "\nLIVE_AUTHORIZED=true\n",
+        "\nCLASS_D_CONSUMED=true\n",
+        "\nZ2AP_CONSUMED=true\n",
+        "\nEXECUTION_READY=true\n",
+        "\nPOST_EXECUTED=true\n",
+        "\nFLATTEN_EXECUTED=true\n",
+        "\nGET_EXECUTED_THIS_PERSIST=true\n",
+        "\nPOSITION_CREATION_CURRENTLY_AUTHORIZED=true\n",
+        "\nPREREQUISITE_08_CREATES_POSITION=true\n",
+        "\nFULL_AUTONOMY_IS_SECOND_TRADING_AUTHORITY=true\n",
+        "\nSELF_LEARNING_EQUALS_SELF_AUTHORIZING=true\n",
+        "\nCURRENT_LIVE_FULL_AUTONOMY_READY=true\n",
+        "\nCURRENT_LIVE_FULL_AUTONOMY_ACTIVATED=true\n",
+        "\nATLAS_MUTATION=true\n",
+        "\nLANDSCAPE_MUTATION=true\n",
+        "\nCORE_AI_BASED=true\n",
+        "\nAUTONOMY_ORCHESTRATOR_FOUND=true\n",
+        "\nAI_CAN_DIRECTLY_SUBMIT_ORDER=true\n",
+        "\nAI_CAN_BYPASS_OWNER_GO=true\n",
+        "\nSELF_LEARNING_CAN_SELF_PROMOTE=true\n",
+        "\nCAN_SYSTEM_AUTONOMOUSLY_TRADE_END_TO_END_TODAY=true\n",
+        "\nIS_SYSTEM_CURRENTLY_FULLY_AUTONOMOUS=true\n",
+        "\nAI_MUTATION=true\n",
+        "\nLEARNING_MUTATION=true\n",
+        "\nCORE_MUTATION=true\n",
+        "\nTARGET_POSITION_NONZERO_PROVEN=true\n",
+        "\nEMPTY_DATA_IS_ZERO=true\n",
+        "\nFOUR_EMPTY_WINDOWS_DO_NOT_PROVE_NEVER_HELD=false\n",
+    )
+    for token in forbidden:
+        assert token not in section, token
+
+
+def test_map_of_truth_remains_navigation_only() -> None:
+    text = _read(MAP_OF_TRUTH)
+    assert "DOCUMENT_ROLE=NAVIGATION_ONLY_NO_SEMANTICS" in text
+    assert "Z2DA" not in text
+    assert "11.13.5.Z2DA" not in text
+
+
+def test_safety_non_regression_and_forbidden_go() -> None:
+    assert LIVE_AUTHORIZED is False
+    assert LIVE_ENABLED is False
+    assert LIVE_ARMED is False
+    assert TESTNET_AUTHORIZED is False
+    assert SUBMIT_UNLOCKED is False
+    assert DEFAULT_INSTRUMENT_ID == CURRENT_SUI
+    assert BLOCKS_NEW_ENTRY is False
+    assert LIVE_RECONCILIATION_PROVEN is True
+    assert "CATEGORY_C" not in GATE_NAMES
+    assert OWNER_GO == REBIND_OWNER_GO
+    assert OWNER_GO in FORBIDDEN_FLATTEN_EXECUTE_OWNER_GOS
+    assert PREREQUISITE_08_ROLE == "POSITIVE_OBSERVATION_PROOF_GATE"
+    assert PREREQUISITE_08_EXPECTS_PREEXISTING_POSITION is True
+    assert POSITION_CREATION_SEAM_STATUS == "MISSING_OR_UNAUTHORIZED"
+    assert POSITION_CREATION_PRODUCER == "CURRENTLY_NONE_AUTHORIZED_REACHABLE"
+    assert POSITION_CREATION_CURRENTLY_AUTHORIZED is False
+    assert FULL_AUTONOMY_SEMANTIC_BINDING == (
+        "ORCHESTRATION_LAYER_AROUND_CANONICAL_CORE_NOT_SECOND_TRADING_AUTHORITY"
+    )
+    assert SELF_LEARNING_SEMANTIC_BINDING == "RESEARCH_ONLY_NOT_SELF_AUTHORIZING"
+    assert BLOCKS_NEW_ENTRY_DRIFT_STATUS == "NOT_A_CONTRADICTION"
+    assert LIVE_RECONCILIATION_PROVEN_DRIFT_STATUS == "NOT_A_CONTRADICTION"
+    assert EARLIEST_REAL_UNRESOLVED_DEPENDENCY == NEXT_ACTIONABLE_BLOCKER
+    assert BLOCKER_CLASS == "ARCHITECTURAL_MISSING_UPSTREAM_SEAM"
+    assert ADJUDICATION == "UPSTREAM_POSITION_CREATION_SEAM_REBOUND_BEFORE_PREREQUISITE_08"
+    assert SECTION_11_13_5_CLASS == (
+        "MIXED_SURFACE_FLATTEN_TRACK_CURRENT_ENTRY_AUTHORING_HISTORICAL"
+    )
+    assert ATLAS_MUTATION is False
+    assert ATLAS_REPAIR_REQUIRED is True
+    assert ADDENDUM_CONSUMED is True
+    assert ADDENDUM_ID == (
+        "PEAK_TRADE_FULL_AUTONOMY_AI_LAYER_PRE_PERSIST_READ_ONLY_CENSUS_ADDENDUM_V1"
+    )
+    assert PARENT_PERSIST_PLAN_VERDICT == "NEEDS_ADDITIVE_REFINEMENT"
+    assert AUTONOMY_ORCHESTRATOR_FOUND is False
+    assert CORE_AI_BASED is False
+    assert AI_PRODUCTIVE_COMPONENT_COUNT == 0
+    assert AI_CAN_DIRECTLY_SUBMIT_ORDER is False
+    assert SELF_LEARNING_CLOSED_LOOP_EXISTS == "PARTIAL_OFFLINE_NON_APPLYING"
