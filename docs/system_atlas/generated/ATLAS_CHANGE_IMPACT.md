@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,8 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1` |
-| `TERM:focused_full_noop` |
+| `NAVIGATION_INDEX:map_of_truth` |
 
 ## CHANGED_RELATIONS
 
@@ -93,7 +92,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- WP-02 offline observation/proposal contract fences inventory only. Registers RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1 and reviews TERM:focused_full_noop for the existing selector package addition. No learning, promotion, trading, selection, runtime, or live authority. No new relations. Atlas is not canonical authority.
+- WP-04 Decision-Map / Map-of-Truth current-vs-historical selection navigation inventory only. Adds MASTER_V2_DECISION_AUTHORITY_MAP_V1.md as a navigation evidence source on NAVIGATION_INDEX:map_of_truth. No new relations. No selection, Landscape, Atlas, USP, WebUI, DDO, learning, or promotion authority. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
