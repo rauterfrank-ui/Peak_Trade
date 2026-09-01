@@ -227,6 +227,8 @@ Joint validation (Token allein reicht nicht):
 - class attestation file
 - exact-file `allowed_paths` when a later grant is active
 - empty `allowed_paths` while `grant_active=false`
+- `authorized_evidence_digest` required and SHA-256-bound when a later grant is active
+- empty digest while `grant_active=false`
 - required semantic invariants remain false
 - capability invariants remain false (no live/testnet/canary/reachability increase)
 - forbidden effects = NONE

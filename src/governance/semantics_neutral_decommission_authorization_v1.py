@@ -1,13 +1,17 @@
 """Semantics-neutral decommission authorization v1.
 
 Fail-closed exact-file admission for obsolete-reference cleanup. Not a trading
-authority. Token alone is insufficient. Diff evidence is machine-validated.
+authority. Token alone is insufficient. Diff evidence is machine-validated and
+bound to a canonical evidence digest so a persisted grant cannot admit a later
+unrelated change to the same paths.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -31,6 +35,22 @@ REASON_DECOMMISSION_AUTH_MISSING = "SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION
 REASON_DECOMMISSION_EVIDENCE_INSUFFICIENT = "SEMANTICS_NEUTRAL_DECOMMISSION_EVIDENCE_INSUFFICIENT"
 REASON_DECOMMISSION_PATH_UNAUTHORIZED = "SEMANTICS_NEUTRAL_DECOMMISSION_PATH_UNAUTHORIZED"
 REASON_DECOMMISSION_SEMANTIC_CHANGE = "SEMANTICS_NEUTRAL_DECOMMISSION_SEMANTIC_CHANGE"
+REASON_DECOMMISSION_DIGEST_MISSING = "SEMANTICS_NEUTRAL_DECOMMISSION_DIGEST_MISSING"
+REASON_DECOMMISSION_DIGEST_MALFORMED = "SEMANTICS_NEUTRAL_DECOMMISSION_DIGEST_MALFORMED"
+REASON_DECOMMISSION_DIGEST_MISMATCH = "SEMANTICS_NEUTRAL_DECOMMISSION_DIGEST_MISMATCH"
+
+EVIDENCE_DIGEST_ALGORITHM = "sha256"
+EVIDENCE_DIGEST_CANONICALIZATION = "decommission_evidence_digest_v1"
+_SHA256_HEX_RE = re.compile(r"^[0-9a-f]{64}$")
+_GIT_OBJECT_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+_VOLATILE_DIFF_PREFIXES = (
+    "diff ",
+    "index ",
+    "new file",
+    "deleted file",
+    "--- ",
+    "+++ ",
+)
 
 DECOMMISSION_PREDICATES = (
     "DELETED_COMPONENT_REFERENCE_REMOVED",
@@ -92,6 +112,28 @@ _CAPABILITY_INCREASE_RE = re.compile(
 )
 _FAIL_CLOSED_RE = re.compile(r"\b(raise|assert|fail_closed|reject_|DENIED|BLOCK)\b")
 _BEHAVIOR_ADDED_RE = re.compile(r"^\s*(def |class |return |yield |import |from )")
+_IDENT_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
+_FAIL_CLOSED_SHAPE_KEYWORDS = frozenset(
+    {
+        "assert",
+        "raise",
+        "not",
+        "and",
+        "or",
+        "is",
+        "in",
+        "True",
+        "False",
+        "None",
+        "if",
+        "else",
+        "pass",
+        "with",
+        "as",
+        "from",
+        "import",
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -119,6 +161,46 @@ class DecommissionAuthorizationDecision:
 
 def _normalize_path(path: str) -> str:
     return str(path).replace("\\", "/").strip().lstrip("./")
+
+
+def canonicalize_decommission_unified_diff(diff_text: str) -> str:
+    """Keep hunk body only. Drop volatile git headers. Normalize to LF."""
+    normalized = (diff_text or "").replace("\r\n", "\n").replace("\r", "\n")
+    kept: list[str] = []
+    for raw in normalized.split("\n"):
+        if raw.startswith(_VOLATILE_DIFF_PREFIXES):
+            continue
+        kept.append(raw)
+    while kept and kept[-1] == "":
+        kept.pop()
+    return "\n".join(kept)
+
+
+def compute_decommission_evidence_digest(
+    *,
+    file_diffs: Mapping[str, str],
+    diff_base_sha: str,
+    paths: Sequence[str],
+) -> str:
+    """SHA-256 over canonical JSON of base SHA plus sorted per-file hunk bodies."""
+    files = []
+    for path in sorted({_normalize_path(item) for item in paths}):
+        raw = file_diffs.get(path)
+        if raw is None:
+            raw = file_diffs.get(_normalize_path(path), "")
+        files.append(
+            {
+                "normalized_diff": canonicalize_decommission_unified_diff(raw),
+                "path": path,
+            }
+        )
+    payload = {
+        "canonicalization": EVIDENCE_DIGEST_CANONICALIZATION,
+        "diff_base_sha": str(diff_base_sha).strip().lower(),
+        "files": files,
+    }
+    blob = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+    return hashlib.sha256(blob.encode("utf-8")).hexdigest()
 
 
 def _is_exact_file_path(path: str) -> bool:
@@ -152,6 +234,19 @@ def _detect_broad_master_v2_grant(allowed_paths: Sequence[str]) -> bool:
 def _is_comment_or_blank(text: str) -> bool:
     stripped = text.strip()
     return (not stripped) or stripped.startswith("#")
+
+
+def _fail_closed_shape(line: str) -> str:
+    """Normalize a fail-closed line so identifier/literal retokenization can pair."""
+    no_strings = _STRING_LITERAL_RE.sub("$STR", line.strip())
+
+    def _repl(match: re.Match[str]) -> str:
+        token = match.group(0)
+        if token in _FAIL_CLOSED_SHAPE_KEYWORDS:
+            return token
+        return "$ID"
+
+    return " ".join(_IDENT_RE.sub(_repl, no_strings).split())
 
 
 def _content_lines(diff_text: str) -> tuple[list[str], list[str]]:
@@ -190,13 +285,26 @@ def classify_decommission_diff(
     fail_closed_weakened = False
     productive_increase = False
     trading_changed = False
-
-    for line in removed:
-        if _is_comment_or_blank(line):
-            continue
-        if _FAIL_CLOSED_RE.search(line):
+    is_test = _normalize_path(path).startswith("tests/")
+    removed_fc_lines = [
+        line for line in removed if not _is_comment_or_blank(line) and _FAIL_CLOSED_RE.search(line)
+    ]
+    added_fc_lines = [
+        line for line in added if not _is_comment_or_blank(line) and _FAIL_CLOSED_RE.search(line)
+    ]
+    paired_fc_shapes: Counter[str] = Counter()
+    if is_test:
+        removed_shapes = Counter(_fail_closed_shape(line) for line in removed_fc_lines)
+        added_shapes = Counter(_fail_closed_shape(line) for line in added_fc_lines)
+        paired_fc_shapes = removed_shapes & added_shapes
+        if removed_shapes - added_shapes:
             fail_closed_weakened = True
-            notes.append("FAIL_CLOSED_LINE_REMOVED")
+            notes.append("FAIL_CLOSED_SHAPE_UNMATCHED")
+    elif removed_fc_lines:
+        fail_closed_weakened = True
+        notes.append("FAIL_CLOSED_LINE_REMOVED")
+    removed_fc_budget = Counter(paired_fc_shapes)
+    added_fc_budget = Counter(paired_fc_shapes)
 
     for line in added:
         if _is_comment_or_blank(line):
@@ -217,6 +325,12 @@ def classify_decommission_diff(
             if _STRING_LITERAL_RE.search(line):
                 predicates.add("NONCANONICAL_LITERAL_NEUTRALIZED")
             continue
+        if is_test and _FAIL_CLOSED_RE.search(line):
+            shape = _fail_closed_shape(line)
+            if removed_fc_budget[shape] > 0:
+                removed_fc_budget[shape] -= 1
+                predicates.add("NEGATIVE_TEST_TOKEN_NEUTRALIZED")
+                continue
         paths = _REPO_PATH_RE.findall(line)
         if paths:
             missing = [item for item in paths if not (repo_root / item).is_file()]
@@ -228,7 +342,7 @@ def classify_decommission_diff(
                 notes.append("REMOVED_PATH_STILL_EXISTS")
             continue
         if _STRING_LITERAL_RE.search(line):
-            if _normalize_path(path).startswith("tests/"):
+            if is_test:
                 predicates.add("NEGATIVE_TEST_TOKEN_NEUTRALIZED")
             else:
                 predicates.add("NONCANONICAL_LITERAL_NEUTRALIZED")
@@ -242,8 +356,14 @@ def classify_decommission_diff(
             if _STRING_LITERAL_RE.search(line):
                 predicates.add("NONCANONICAL_LITERAL_NEUTRALIZED")
             continue
+        if is_test and _FAIL_CLOSED_RE.search(line):
+            shape = _fail_closed_shape(line)
+            if added_fc_budget[shape] > 0:
+                added_fc_budget[shape] -= 1
+                predicates.add("NEGATIVE_TEST_TOKEN_NEUTRALIZED")
+                continue
         if _STRING_LITERAL_RE.search(line) and not _BEHAVIOR_ADDED_RE.search(line):
-            if _normalize_path(path).startswith("tests/"):
+            if is_test:
                 predicates.add("NEGATIVE_TEST_TOKEN_NEUTRALIZED")
             else:
                 predicates.add("NONCANONICAL_LITERAL_NEUTRALIZED")
@@ -256,8 +376,11 @@ def classify_decommission_diff(
         notes.append("UNEXPLAINED_EXECUTABLE_DELTA")
 
     remaining = repo_root / _normalize_path(path)
+    remaining_name = Path(_normalize_path(path)).name
     if (
         _normalize_path(path).startswith("tests/")
+        and remaining_name.startswith("test_")
+        and remaining_name.endswith(".py")
         and remaining.is_file()
         and not _FAIL_CLOSED_RE.search(remaining.read_text(encoding="utf-8"))
     ):
@@ -351,6 +474,7 @@ def validate_decommission_authorization(
         for key in (
             "EXACT_FILE_SCOPE",
             "DECOMMISSION_PREDICATES",
+            "AUTHORIZED_EVIDENCE_DIGEST",
             "TRADING_SEMANTICS_CHANGED",
             "FAIL_CLOSED_SEMANTICS_WEAKENED",
             "PRODUCTIVE_REACHABILITY_INCREASED",
@@ -359,6 +483,8 @@ def validate_decommission_authorization(
                 reasons.append("DECOMMISSION_EPISTEMIC_INVALID")
                 break
         if epistemics.get("DECOMMISSION_PREDICATES") != "MACHINE_VALIDATED":
+            reasons.append("DECOMMISSION_EPISTEMIC_NOT_MACHINE_VALIDATED")
+        if epistemics.get("AUTHORIZED_EVIDENCE_DIGEST") != "MACHINE_VALIDATED":
             reasons.append("DECOMMISSION_EPISTEMIC_NOT_MACHINE_VALIDATED")
 
     predicates = auth.get("decommission_predicates")
@@ -393,13 +519,29 @@ def validate_decommission_authorization(
     surface_classes = auth.get("allowed_surface_classes")
     if not isinstance(surface_classes, list):
         reasons.append("DECOMMISSION_SURFACE_CLASSES_MISSING")
-    elif grant_active is True and not surface_classes:
-        reasons.append("DECOMMISSION_SURFACE_CLASSES_EMPTY_WHILE_ACTIVE")
     elif grant_active is False and surface_classes:
         reasons.append("DECOMMISSION_SURFACE_CLASSES_NONEMPTY_WHILE_INACTIVE")
 
+    if auth.get("evidence_digest_algorithm") != EVIDENCE_DIGEST_ALGORITHM:
+        reasons.append("DECOMMISSION_DIGEST_ALGORITHM_INVALID")
+    if auth.get("evidence_digest_canonicalization") != EVIDENCE_DIGEST_CANONICALIZATION:
+        reasons.append("DECOMMISSION_DIGEST_CANONICALIZATION_INVALID")
+    digest = auth.get("authorized_evidence_digest")
+    if grant_active is True:
+        if digest in (None, ""):
+            reasons.append(REASON_DECOMMISSION_DIGEST_MISSING)
+        elif not isinstance(digest, str) or _SHA256_HEX_RE.fullmatch(digest) is None:
+            reasons.append(REASON_DECOMMISSION_DIGEST_MALFORMED)
+    elif grant_active is False and digest not in ("", None):
+        reasons.append("DECOMMISSION_DIGEST_NONEMPTY_WHILE_INACTIVE")
+
     rules = auth.get("fail_closed_validation_rules")
-    if not isinstance(rules, list) or "TOKEN_ALONE_IS_INSUFFICIENT" not in rules:
+    required_rules = {
+        "TOKEN_ALONE_IS_INSUFFICIENT",
+        "AUTHORIZED_EVIDENCE_DIGEST_REQUIRED_WHEN_GRANT_ACTIVE",
+        "EMPTY_EVIDENCE_DIGEST_WHEN_GRANT_INACTIVE",
+    }
+    if not isinstance(rules, list) or not required_rules.issubset(set(rules)):
         reasons.append("DECOMMISSION_FAIL_CLOSED_RULES_INCOMPLETE")
 
     if _detect_pr_or_branch_hardcode(auth):
@@ -418,15 +560,23 @@ def evaluate_decommission_authorization(
     repo_root: Path,
     file_diffs: Mapping[str, str] | None,
     evidence_repo_root: Path | None = None,
+    unclassified_paths: Sequence[str] = (),
+    diff_base_sha: str | None = None,
 ) -> DecommissionAuthorizationDecision:
-    """Apply decommission admission only after forbidden surfaces were identified."""
+    """Apply decommission admission to forbidden and unclassified boundary paths."""
     evidence_root = evidence_repo_root or repo_root
     valid, validation_reasons = validate_decommission_authorization(auth, repo_root=repo_root)
     purpose = None if auth is None else str(auth.get("mutation_purpose_class") or "") or None
     grant_active = bool(auth and auth.get("grant_active") is True)
     matched_paths = tuple(
-        sorted({str(getattr(match, "matched_path", match)) for match in forbidden_matches})
+        sorted(
+            {
+                _normalize_path(str(getattr(match, "matched_path", match)))
+                for match in forbidden_matches
+            }
+        )
     )
+    unclassified = tuple(sorted({_normalize_path(path) for path in unclassified_paths if path}))
     matched_classes = {
         str(getattr(match, "surface_id", ""))
         for match in forbidden_matches
@@ -440,7 +590,7 @@ def evaluate_decommission_authorization(
             version=None if auth is None else str(auth.get("contract_version")),
             reason_codes=validation_reasons,
             authorized_paths=(),
-            unauthorized_forbidden_paths=matched_paths,
+            unauthorized_forbidden_paths=tuple(sorted(set(matched_paths).union(unclassified))),
             grant_active=grant_active,
             mutation_purpose_class=purpose,
         )
@@ -460,7 +610,9 @@ def evaluate_decommission_authorization(
     assert auth is not None
     allowed = frozenset(_normalize_path(str(p)) for p in auth.get("allowed_paths") or [])
     allowed_classes = frozenset(str(item) for item in (auth.get("allowed_surface_classes") or []))
-    unauthorized = sorted(path for path in matched_paths if _normalize_path(path) not in allowed)
+    granted_unclassified = tuple(path for path in unclassified if path in allowed)
+    evidence_paths = tuple(sorted(set(matched_paths).union(granted_unclassified)))
+    unauthorized = sorted(path for path in matched_paths if path not in allowed)
     unauthorized_classes = sorted(item for item in matched_classes if item not in allowed_classes)
     if unauthorized or unauthorized_classes:
         return DecommissionAuthorizationDecision(
@@ -473,6 +625,18 @@ def evaluate_decommission_authorization(
             ),
             authorized_paths=tuple(sorted(allowed)),
             unauthorized_forbidden_paths=tuple(unauthorized),
+            grant_active=True,
+            mutation_purpose_class=purpose,
+        )
+
+    if not evidence_paths:
+        return DecommissionAuthorizationDecision(
+            applied=False,
+            valid=True,
+            version=DECOMMISSION_AUTH_VERSION,
+            reason_codes=(),
+            authorized_paths=tuple(sorted(allowed)),
+            unauthorized_forbidden_paths=(),
             grant_active=True,
             mutation_purpose_class=purpose,
         )
@@ -492,10 +656,47 @@ def evaluate_decommission_authorization(
             mutation_purpose_class=purpose,
         )
 
+    base_sha = str(diff_base_sha or "").strip().lower()
+    if _GIT_OBJECT_SHA_RE.fullmatch(base_sha) is None:
+        return DecommissionAuthorizationDecision(
+            applied=False,
+            valid=True,
+            version=DECOMMISSION_AUTH_VERSION,
+            reason_codes=(
+                REASON_DECOMMISSION_AUTH_VALID,
+                REASON_DECOMMISSION_DIGEST_MISMATCH,
+            ),
+            authorized_paths=tuple(sorted(allowed)),
+            unauthorized_forbidden_paths=(),
+            grant_active=True,
+            mutation_purpose_class=purpose,
+        )
+
+    computed = compute_decommission_evidence_digest(
+        file_diffs=file_diffs,
+        diff_base_sha=base_sha,
+        paths=tuple(sorted(allowed)),
+    )
+    expected = str(auth.get("authorized_evidence_digest") or "")
+    if computed != expected:
+        return DecommissionAuthorizationDecision(
+            applied=False,
+            valid=True,
+            version=DECOMMISSION_AUTH_VERSION,
+            reason_codes=(
+                REASON_DECOMMISSION_AUTH_VALID,
+                REASON_DECOMMISSION_DIGEST_MISMATCH,
+            ),
+            authorized_paths=tuple(sorted(allowed)),
+            unauthorized_forbidden_paths=(),
+            grant_active=True,
+            mutation_purpose_class=purpose,
+        )
+
     proven: set[str] = set()
     semantic_fail = False
     insufficient = False
-    for path in matched_paths:
+    for path in evidence_paths:
         evidence = classify_decommission_diff(
             path=path,
             diff_text=file_diffs.get(path) or file_diffs.get(_normalize_path(path)) or "",

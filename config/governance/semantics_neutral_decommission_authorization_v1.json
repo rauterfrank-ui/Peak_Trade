@@ -4,6 +4,7 @@
   "allowed_surface_classes": [],
   "authority_effect": "NONE",
   "authorization_token": "SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1",
+  "authorized_evidence_digest": "",
   "authorized_path_prefixes": [],
   "authorized_scope_class": "SEMANTICS_NEUTRAL_DECOMMISSION_ONLY",
   "blanket_allowlist": false,
@@ -14,6 +15,7 @@
   "broad_master_v2_grant": false,
   "canonical_governance_owner": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md",
   "claim_epistemics": {
+    "AUTHORIZED_EVIDENCE_DIGEST": "MACHINE_VALIDATED",
     "DECOMMISSION_PREDICATES": "MACHINE_VALIDATED",
     "EXACT_FILE_SCOPE": "MACHINE_VALIDATED",
     "FAIL_CLOSED_SEMANTICS_WEAKENED": "MACHINE_VALIDATED",
@@ -33,6 +35,8 @@
   },
   "directory_grant": false,
   "economic_evaluation": false,
+  "evidence_digest_algorithm": "sha256",
+  "evidence_digest_canonicalization": "decommission_evidence_digest_v1",
   "fail_closed_validation_rules": [
     "TOKEN_ALONE_IS_INSUFFICIENT",
     "EXACT_FILE_SCOPE_ONLY",
@@ -40,7 +44,9 @@
     "NO_PR_NUMBER_OR_BRANCH_HARDCODE",
     "NO_REQUIRED_CHECK_WAIVER",
     "EMPTY_ALLOWED_PATHS_WHEN_GRANT_INACTIVE",
+    "EMPTY_EVIDENCE_DIGEST_WHEN_GRANT_INACTIVE",
     "DIFF_EVIDENCE_REQUIRED_WHEN_GRANT_ACTIVE",
+    "AUTHORIZED_EVIDENCE_DIGEST_REQUIRED_WHEN_GRANT_ACTIVE",
     "AT_LEAST_ONE_DECOMMISSION_PREDICATE_REQUIRED"
   ],
   "forbidden_effects": {
@@ -53,7 +59,8 @@
   "grant_active": false,
   "mutation_purpose_class": "SEMANTICS_NEUTRAL_DECOMMISSION",
   "notes": [
-    "Inactive default grant. Exact-file allowed_paths stay empty until a later decommission PR activates this class.",
+    "Inactive default grant. Exact-file allowed_paths and authorized_evidence_digest stay empty until a later decommission PR activates this class.",
+    "An active grant is bound to the canonical SHA-256 evidence digest of the attested unified diffs and diff base. A later unrelated diff on the same paths does not reuse the grant.",
     "Does not waive MASTER_V2_MUTATION_ALLOWED=false as a global default.",
     "Does not authorize live, testnet, canary, orders, or productive reachability increases.",
     "Token alone is insufficient. Diff evidence must prove at least one decommission predicate and no forbidden semantic delta."

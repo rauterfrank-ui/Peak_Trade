@@ -65,16 +65,33 @@ semantics-neutral decommission, for example:
 
 ## 4) Evidence
 
-When `grant_active=true`, every forbidden matched path must:
+When `grant_active=true`, every admitted path must:
 
 1. be an exact file in `allowed_paths`
 2. have a unified diff
 3. contain only decommission-shaped line changes
 4. prove at least one predicate from `decommission_predicates.require_at_least_one`
+5. match `authorized_evidence_digest` (SHA-256 over `decommission_evidence_digest_v1`:
+   sorted exact files, canonical hunk bodies, and the 40-hex `diff_base_sha`)
 
+The digest drops volatile git headers (`diff `, `index `, `--- `, `+++ `,
+`new file`, `deleted file`) and normalizes CRLF to LF. Path order does not
+change the digest. A later unrelated hunk, path, or base SHA cannot reuse the
+grant.
+
+Missing digest is `SEMANTICS_NEUTRAL_DECOMMISSION_DIGEST_MISSING` (BLOCK).
+Malformed digest is `SEMANTICS_NEUTRAL_DECOMMISSION_DIGEST_MALFORMED` (BLOCK).
+Digest mismatch is `SEMANTICS_NEUTRAL_DECOMMISSION_DIGEST_MISMATCH` (BLOCK).
 Missing or incomplete evidence is `SEMANTICS_NEUTRAL_DECOMMISSION_EVIDENCE_INSUFFICIENT` (BLOCK).
-
 Malformed contracts are `SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_INVALID` (BLOCK).
+
+Unclassified boundary-governed paths (for example research fixtures) are admitted
+only when they are exact files in the same digest-bound grant and their diffs
+prove a decommission predicate. Paths outside the grant remain `IMPACT_UNKNOWN`.
+This is not a directory allowlist and not a PR- or branch-specific exception.
+
+JSON fixtures and non-`test_*.py` helpers are not required to contain Python
+`assert`/`raise` tokens. Pytest modules (`test_*.py`) must remain fail-closed.
 
 ## 5) Fail-closed default
 

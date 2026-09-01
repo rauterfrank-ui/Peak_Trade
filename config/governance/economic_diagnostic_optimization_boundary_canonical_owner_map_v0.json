@@ -2017,6 +2017,6 @@
     "mutation_purpose_class": "SEMANTICS_NEUTRAL_DECOMMISSION",
     "contract_path": "config/governance/semantics_neutral_decommission_authorization_v1.json",
     "grant_active": false,
-    "note": "Exact-file evidence-bound obsolete-reference cleanup. Not a trading authority. Not a PR or branch exception. Does not waive MASTER_V2_MUTATION_ALLOWED=false."
+    "note": "Exact-file evidence-digest-bound obsolete-reference cleanup. Active grants require authorized_evidence_digest over canonical unified diffs and the diff base SHA. Same paths with a different diff cannot reuse a grant. Not a trading authority. Not a PR or branch exception. Does not waive MASTER_V2_MUTATION_ALLOWED=false."
   }
 }

@@ -108,11 +108,27 @@ def main() -> int:
             else _git_changed_files(repo_root, args.base)
         )
         file_diffs = None if args.changed_file else _git_file_diffs(repo_root, args.base, changed)
+        diff_base_sha = None
+        if file_diffs is not None:
+            resolved = subprocess.run(
+                ["git", "rev-parse", args.base],
+                cwd=repo_root,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            if resolved.returncode == 0:
+                diff_base_sha = resolved.stdout.strip()
     except Exception as exc:
         print(f"ERR: {exc}", file=sys.stderr)
         return 2
 
-    report = build_boundary_report(changed, repo_root=repo_root, file_diffs=file_diffs)
+    report = build_boundary_report(
+        changed,
+        repo_root=repo_root,
+        file_diffs=file_diffs,
+        diff_base_sha=diff_base_sha,
+    )
     payload = report.to_dict()
     payload["FORBIDDEN_SURFACE_CHANGED_COUNT"] = forbidden_surface_changed_count(report)
 
