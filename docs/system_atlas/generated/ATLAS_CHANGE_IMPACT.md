@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `TERM:ddo_offline_control_plane` |
+| `TERM:ddo_non_semantic_capture` |
 
 ## CHANGED_RELATIONS
 
@@ -92,7 +92,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Navigation-only TERM:ddo_offline_control_plane sync after the offline DDO package added remaining section-24/45 record contracts and a non-activating control plane. No Atlas trading, promotion, risk, safety, or execution semantics. Atlas is not canonical authority.
+- Navigation-only TERM:ddo_non_semantic_capture sync after WP-FA-04 added observation-only decision-spine capture adapters and productive host hooks. No Atlas trading, promotion, risk, safety, or execution semantics. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

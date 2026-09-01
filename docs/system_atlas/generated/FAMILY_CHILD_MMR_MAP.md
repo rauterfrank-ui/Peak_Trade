@@ -43,6 +43,7 @@ These terms have multiple observed meanings. They are not a single hierarchy.
 | TERM:child_unproven_kind | TERM | OPEN |  |
 | TERM:confirm_token | TERM | CURRENT_NONCANONICAL |  |
 | TERM:confirm_token_family_matrix | TERM | CURRENT_NONCANONICAL | projection octet family_id; strategy Family; Gate-Familien F1-F6 |
+| TERM:ddo_non_semantic_capture | TERM | CURRENT_NONCANONICAL |  |
 | TERM:ddo_offline_control_plane | TERM | CURRENT_NONCANONICAL |  |
 | TERM:document_class | TERM | FORENSIC_REFERENCE_ONLY |  |
 | TERM:double_play | TERM | STILL_CURRENT_AND_CANONICALLY_SUPPORTED | ops.double_play.evaluate_double_play (quarantined projection); dashboard family_id double_play |

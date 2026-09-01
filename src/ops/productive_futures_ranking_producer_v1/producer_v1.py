@@ -6,6 +6,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from src.ops.governed_futures_universe_producer_v1.models_v1 import (
     GovernedFuturesUniverseSnapshotV1,
 )
@@ -190,6 +193,7 @@ def _validate_universe_dict_v1(
     return snap, (), SNAPSHOT_STATE_VALID
 
 
+@observe_after_producer_v0(seam_id="selection.ranking")
 def produce_productive_futures_ranking_v1(
     *,
     universe_snapshot: Mapping[str, Any] | None,

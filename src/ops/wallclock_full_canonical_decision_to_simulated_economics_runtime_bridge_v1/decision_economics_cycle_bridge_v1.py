@@ -15,6 +15,11 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    DdoCaptureBindingV0,
+    record_productive_cycle_capture_v0,
+    with_ddo_capture_session_v0,
+)
 from src.ops.bounded_futures_testnet_venue_binding_v0 import PRODUCTION_INSTRUMENT_ID
 from src.ops.phase_9_2_productive_decision_graph_actionability_forensic_telemetry_v1.host_binding_v1 import (
     ActionabilityTelemetryBindingV1,
@@ -406,6 +411,9 @@ class BridgeSessionStateV1:
         default_factory=ActionabilityTelemetryBindingV1
     )
     last_actionability_telemetry: Optional[dict[str, Any]] = None
+    # WP-FA-04 — observation-only DDO capture (never decision/risk/safety/selection authority).
+    ddo_capture_binding: DdoCaptureBindingV0 = field(default_factory=DdoCaptureBindingV0)
+    last_ddo_capture: Optional[dict[str, Any]] = None
     # Productive archive-binding capture: last cycle CanonicalTradingDecisionEvidenceV1
     # export payload (wiring only; no decision recomputation).
     last_canonical_decision_evidence: Optional[dict[str, Any]] = None
@@ -913,6 +921,7 @@ def ensure_productive_reconciliation_startup_gate_v1(
     return gate
 
 
+@with_ddo_capture_session_v0
 def run_bridge_cycle_v1(
     state: BridgeSessionStateV1,
     *,
@@ -1737,6 +1746,33 @@ def run_bridge_cycle_v1(
         state.last_actionability_telemetry = {
             "ok": False,
             "error": f"{type(_telemetry_exc).__name__}:{_telemetry_exc}",
+            "decision_unchanged": True,
+        }
+
+    # WP-FA-04 — observe-only DDO capture after the authoritative producer decision.
+    # CAPTURE_FAILURE_CHANGES_DECISION=false: never alter the already-computed cycle.
+    try:
+        state.last_ddo_capture = dict(
+            record_productive_cycle_capture_v0(
+                state.ddo_capture_binding,
+                repository_sha=repository_sha,
+                session_id=session_id,
+                cycle_index=int(state.cycle_index),
+                event_ts_unix=float(event_ts_unix),
+                observation_acceptance_result=observation_acceptance_result,
+                features=features,
+                replay=replay,
+                intended=intended,
+                fill=fill_dict,
+                confirmation_binding=state.confirmation_binding,
+                dynamic_scope_binding=state.dynamic_scope_binding,
+                exit_policy_binding=state.exit_policy_binding,
+            )
+        )
+    except Exception as _ddo_exc:  # noqa: BLE001
+        state.last_ddo_capture = {
+            "ok": False,
+            "error": f"{type(_ddo_exc).__name__}:{_ddo_exc}",
             "decision_unchanged": True,
         }
 

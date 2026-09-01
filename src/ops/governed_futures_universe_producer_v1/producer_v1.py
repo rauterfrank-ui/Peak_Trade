@@ -40,6 +40,9 @@ from src.ops.governed_futures_universe_producer_v1.persistence_v1 import (
     persist_universe_bundle_atomic_v1,
 )
 from src.ops.governed_futures_universe_producer_v1.reason_codes_v1 import UniverseFailureCodeV1
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from src.ops.governed_futures_universe_producer_v1.single_writer_v1 import (
     DuplicateUniverseWriterError,
     GovernedUniverseSingleWriterV1,
@@ -50,6 +53,7 @@ def _rfc3339(unix: float) -> str:
     return datetime.fromtimestamp(unix, tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+@observe_after_producer_v0(seam_id="selection.universe")
 def produce_governed_futures_universe_v1(
     *,
     source_payload: Mapping[str, Any] | None,
