@@ -45,6 +45,13 @@ Z2CM_HEADING = (
 Z2CN_HEADING = (
     "### 11.13.5.Z2CN Post-Z2CM fresh unfiltered target-position runtime observation persist"
 )
+Z2CO_HEADING = (
+    "### 11.13.5.Z2CO Post-Z2CN Z2AP flatten non-position contract residuals persist "
+    "(BOUND; DOCS-ONLY; PERSIST-ONLY; NO GET; NO POST; NO MUTATION; "
+    "FRESHNESS FORM RATIFIED THRESHOLD UNBOUND; "
+    "PREREQUISITES 18/19/21/24 CURRENT SSOT WITH PROVENANCE; "
+    "NOT CLASS D; NOT FLATTEN; NOT LIVE)"
+)
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = (
     "PEAK_TRADE_POST_Z2CM_FRESH_UNFILTERED_TARGET_POSITION_RUNTIME_OBSERVATION_AND_PERSIST_V1"
@@ -63,8 +70,8 @@ def _read(path: Path) -> str:
 def _z2cn_section(text: str) -> str:
     start = text.find(Z2CN_HEADING)
     assert start >= 0, "missing §11.13.5.Z2CN heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2CN"
+    end = text.find(Z2CO_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2CO boundary after Z2CN"
     return text[start:end]
 
 
@@ -81,8 +88,9 @@ def test_z2cn_heading_is_unique_and_follows_z2cm() -> None:
     assert text.count(Z2CN_HEADING) == 1
     z2cm = text.find(Z2CM_HEADING)
     z2cn = text.find(Z2CN_HEADING)
+    z2co = text.find(Z2CO_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= z2cm < z2cn < ladder
+    assert 0 <= z2cm < z2cn < z2co < ladder
 
 
 def test_z2cm_historical_slice_was_not_rewritten() -> None:
