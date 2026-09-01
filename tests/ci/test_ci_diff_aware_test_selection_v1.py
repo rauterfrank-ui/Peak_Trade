@@ -5174,6 +5174,12 @@ PACKAGE_DDO_EVALUATION_ENGINE_V0_PRODUCTION = (
 PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER = (
     "tests/learning/test_deterministic_decision_outcome_evaluation_engine_v0.py"
 )
+PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_PRODUCTION = (
+    "src/learning/deterministic_decision_outcome_v0/validation_pack_engine_v0.py"
+)
+PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER = (
+    "tests/learning/test_deterministic_decision_outcome_learning_validation_shadow_v0.py"
+)
 
 
 def test_selector_ddo_contract_ledger_v0_production_pr_bounded_full_includes_testowner() -> None:
@@ -5184,10 +5190,12 @@ def test_selector_ddo_contract_ledger_v0_production_pr_bounded_full_includes_tes
     assert PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER in bounded
     assert PACKAGE_DDO_CAPTURE_V0_TESTOWNER in bounded
     assert PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER in bounded
+    assert PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER in bounded
     assert bounded.count(PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER) == 1
     assert bounded.count(PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER) == 1
     assert bounded.count(PACKAGE_DDO_CAPTURE_V0_TESTOWNER) == 1
     assert bounded.count(PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER) == 1
+    assert bounded.count(PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER) == 1
 
 
 def test_selector_ddo_control_plane_v0_production_pr_bounded_full_includes_testowners() -> None:
@@ -5198,6 +5206,7 @@ def test_selector_ddo_control_plane_v0_production_pr_bounded_full_includes_testo
     assert PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER in bounded
     assert PACKAGE_DDO_CAPTURE_V0_TESTOWNER in bounded
     assert PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER in bounded
+    assert PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER in bounded
 
 
 def test_selector_ddo_capture_v0_production_pr_bounded_full_includes_testowners() -> None:
@@ -5208,6 +5217,7 @@ def test_selector_ddo_capture_v0_production_pr_bounded_full_includes_testowners(
     assert PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER in bounded
     assert PACKAGE_DDO_CAPTURE_V0_TESTOWNER in bounded
     assert PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER in bounded
+    assert PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER in bounded
     assert bounded.count(PACKAGE_DDO_CAPTURE_V0_TESTOWNER) == 1
 
 
@@ -5219,7 +5229,22 @@ def test_selector_ddo_evaluation_engine_v0_production_pr_bounded_full_includes_t
     assert PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER in bounded
     assert PACKAGE_DDO_CAPTURE_V0_TESTOWNER in bounded
     assert PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER in bounded
+    assert PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER in bounded
     assert bounded.count(PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER) == 1
+
+
+def test_selector_ddo_learning_validation_shadow_v0_production_pr_bounded_full_includes_testowners() -> (
+    None
+):
+    sel = _run_selector(PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    assert PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER in bounded
+    assert PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER in bounded
+    assert PACKAGE_DDO_CAPTURE_V0_TESTOWNER in bounded
+    assert PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER in bounded
+    assert PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER in bounded
+    assert bounded.count(PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER) == 1
 
 
 def test_selector_ddo_contract_ledger_v0_combined_diff_pr_bounded_full_includes_testowner_once() -> (
@@ -5230,10 +5255,12 @@ def test_selector_ddo_contract_ledger_v0_combined_diff_pr_bounded_full_includes_
         PACKAGE_DDO_CONTRACT_LEDGER_V0_LEDGER,
         PACKAGE_DDO_CAPTURE_V0_PRODUCTION,
         PACKAGE_DDO_EVALUATION_ENGINE_V0_PRODUCTION,
+        PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_PRODUCTION,
         PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER,
         PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER,
         PACKAGE_DDO_CAPTURE_V0_TESTOWNER,
         PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER,
+        PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER,
     )
     assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     bounded = _bounded_targets(sel)
@@ -5241,6 +5268,7 @@ def test_selector_ddo_contract_ledger_v0_combined_diff_pr_bounded_full_includes_
     assert bounded.count(PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER) == 1
     assert bounded.count(PACKAGE_DDO_CAPTURE_V0_TESTOWNER) == 1
     assert bounded.count(PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER) == 1
+    assert bounded.count(PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER) == 1
 
 
 def test_selector_package_a_governance_production_pr_bounded_full_includes_lineage_testowner() -> (

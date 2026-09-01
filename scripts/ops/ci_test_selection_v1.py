@@ -1365,6 +1365,9 @@ PR_BOUNDED_FULL_PACKAGE_DDO_CAPTURE_SPINE_V0_TESTOWNER: str = (
 PR_BOUNDED_FULL_PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER: str = (
     "tests/learning/test_deterministic_decision_outcome_evaluation_engine_v0.py"
 )
+PR_BOUNDED_FULL_PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER: str = (
+    "tests/learning/test_deterministic_decision_outcome_learning_validation_shadow_v0.py"
+)
 PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TRIGGER_PATHS: frozenset[str] = frozenset(
     {
         "src/learning/__init__.py",
@@ -1395,10 +1398,13 @@ PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TRIGGER_PATHS: frozenset[str] = f
         "src/learning/deterministic_decision_outcome_v0/serialization_v0.py",
         "src/learning/deterministic_decision_outcome_v0/supervisor_records_v0.py",
         "src/learning/deterministic_decision_outcome_v0/supervisor_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/validation_artifacts_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/validation_pack_engine_v0.py",
         PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER,
         PR_BOUNDED_FULL_PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER,
         PR_BOUNDED_FULL_PACKAGE_DDO_CAPTURE_SPINE_V0_TESTOWNER,
         PR_BOUNDED_FULL_PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER,
+        PR_BOUNDED_FULL_PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER,
     }
 )
 PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TARGETS: tuple[str, ...] = (
@@ -1406,6 +1412,7 @@ PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TARGETS: tuple[str, ...] = (
     PR_BOUNDED_FULL_PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER,
     PR_BOUNDED_FULL_PACKAGE_DDO_CAPTURE_SPINE_V0_TESTOWNER,
     PR_BOUNDED_FULL_PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER,
+    PR_BOUNDED_FULL_PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER,
 )
 
 PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TRIGGER_PATHS: frozenset[str] = frozenset(

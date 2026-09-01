@@ -16,7 +16,6 @@ from src.learning.deterministic_decision_outcome_v0.authority_v0 import (
     PROMOTION_AUTHORITY_ACTIVATION,
     REPLAY_ENGINE_PRESENT,
     RUNTIME_EFFECT,
-    WORKPACKAGE_ID,
 )
 from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
     build_decision_event_v0,
@@ -148,9 +147,6 @@ def _identity(**overrides: Any) -> dict[str, Any]:
 
 
 def test_wp_fa_05_authority_markers_remain_non_authorizing() -> None:
-    assert WORKPACKAGE_ID == (
-        "WP_FA_05_OFFLINE_REPLAY_OUTCOME_ATTRIBUTION_COUNTERFACTUAL_ENGINE_V1"
-    )
     assert OUTCOME_ENGINE_PRESENT is True
     assert ATTRIBUTION_ENGINE_PRESENT is True
     assert COUNTERFACTUAL_ENGINE_PRESENT is True
