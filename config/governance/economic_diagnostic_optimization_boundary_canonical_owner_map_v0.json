@@ -1996,7 +1996,8 @@
     "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md",
     "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md",
     "config/governance/technical_canonical_wiring_authorization_v1.json",
-    "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json"
+    "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json",
+    "config/governance/semantics_neutral_decommission_authorization_v1.json"
   ],
   "technical_canonical_wiring_authorization": {
     "authorized_scope_class": "TECHNICAL_CANONICAL_WIRING_ONLY",
@@ -2010,5 +2011,12 @@
     "binds_to_restoration_target": true,
     "binds_to_current_a06_code": false,
     "note": "Separate fail-closed restoration admission to MASTER_V2_DOUBLE_PLAY_CONSERVED_REFERENCE_V1. Not semantics-neutral technical wiring. No slice grant in this prerequisite."
+  },
+  "semantics_neutral_decommission_authorization": {
+    "authorized_scope_class": "SEMANTICS_NEUTRAL_DECOMMISSION_ONLY",
+    "mutation_purpose_class": "SEMANTICS_NEUTRAL_DECOMMISSION",
+    "contract_path": "config/governance/semantics_neutral_decommission_authorization_v1.json",
+    "grant_active": false,
+    "note": "Exact-file evidence-bound obsolete-reference cleanup. Not a trading authority. Not a PR or branch exception. Does not waive MASTER_V2_MUTATION_ALLOWED=false."
   }
 }
