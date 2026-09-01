@@ -34,6 +34,9 @@ from src.learning.deterministic_decision_outcome_v0.validation_artifacts_v0 impo
     HARD_NON_COMPENSABLE_GATES_V0,
     validate_validation_artifact_set_v0,
 )
+from src.learning.deterministic_decision_outcome_v0.validation_producer_bindings_v0 import (
+    admit_validation_producer_bindings_v0,
+)
 
 VALIDATION_PACK_ENGINE_ID: Final[str] = "peak_trade.learning.ddo.validation_pack_engine_v0"
 VALIDATION_PACK_ENGINE_PRODUCER_VERSION: Final[str] = "validation_pack_engine_v0"
@@ -83,6 +86,7 @@ def evaluate_validation_evidence_pack_v0(
     incumbent: Mapping[str, Any] | None = None,
     authority_owner: str = UNKNOWN,
     causal_parent_ids: list[str] | None = None,
+    require_existing_owner_bindings: bool = False,
 ) -> MappingProxyType[str, Any]:
     candidate_rec = validate_candidate_artifact_v0(candidate)
     if candidate_rec["artifact_hash"] == UNKNOWN:
@@ -91,7 +95,11 @@ def evaluate_validation_evidence_pack_v0(
         # Rejected candidates remain auditable and may still be packed.
         pass
     identity_rec = _require_identity(identity)
-    artifact_set = validate_validation_artifact_set_v0(artifacts)
+    artifact_set = (
+        admit_validation_producer_bindings_v0(artifacts)
+        if require_existing_owner_bindings
+        else validate_validation_artifact_set_v0(artifacts)
+    )
     gates = {gate: str(artifact_set[gate]["status"]) for gate in VALIDATION_GATE_IDS_V0}
     hard_failed = hard_gate_failures_v0(gates)
     economic_pass = gates["economic_policy_pass"] == "PASS"

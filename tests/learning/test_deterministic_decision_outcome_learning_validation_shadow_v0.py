@@ -174,9 +174,7 @@ def _identity(**overrides: Any) -> dict[str, Any]:
 
 
 def test_wp_fa_06_authority_markers_remain_non_authorizing() -> None:
-    assert WORKPACKAGE_ID == (
-        "WP_FA_06_OFFLINE_LEARNING_REGISTRY_VALIDATION_PACKS_AND_SHADOW_CHALLENGER_V1"
-    )
+    assert WORKPACKAGE_ID == ("WP_FA_07_OFFLINE_OWNER_BINDINGS_AND_DRIFT_CONTRACTS_V1")
     assert LEARNING_REGISTRY_ENGINE_PRESENT is True
     assert VALIDATION_PACK_ENGINE_PRESENT is True
     assert SHADOW_CHALLENGER_ENGINE_PRESENT is True

@@ -1368,6 +1368,9 @@ PR_BOUNDED_FULL_PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER: str = (
 PR_BOUNDED_FULL_PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER: str = (
     "tests/learning/test_deterministic_decision_outcome_learning_validation_shadow_v0.py"
 )
+PR_BOUNDED_FULL_PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER: str = (
+    "tests/learning/test_deterministic_decision_outcome_owner_bindings_and_drift_v0.py"
+)
 PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TRIGGER_PATHS: frozenset[str] = frozenset(
     {
         "src/learning/__init__.py",
@@ -1378,12 +1381,14 @@ PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TRIGGER_PATHS: frozenset[str] = f
         "src/learning/deterministic_decision_outcome_v0/common_v0.py",
         "src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py",
         "src/learning/deterministic_decision_outcome_v0/decision_event_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/drift_contracts_v0.py",
         "src/learning/deterministic_decision_outcome_v0/enums_v0.py",
         "src/learning/deterministic_decision_outcome_v0/errors_v0.py",
         "src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py",
         "src/learning/deterministic_decision_outcome_v0/evaluation_observation_v0.py",
         "src/learning/deterministic_decision_outcome_v0/evaluation_records_v0.py",
         "src/learning/deterministic_decision_outcome_v0/evaluation_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py",
         "src/learning/deterministic_decision_outcome_v0/hindsight_guard_v0.py",
         "src/learning/deterministic_decision_outcome_v0/incident_record_v0.py",
         "src/learning/deterministic_decision_outcome_v0/learning_records_v0.py",
@@ -1400,11 +1405,13 @@ PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TRIGGER_PATHS: frozenset[str] = f
         "src/learning/deterministic_decision_outcome_v0/supervisor_v0.py",
         "src/learning/deterministic_decision_outcome_v0/validation_artifacts_v0.py",
         "src/learning/deterministic_decision_outcome_v0/validation_pack_engine_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py",
         PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER,
         PR_BOUNDED_FULL_PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER,
         PR_BOUNDED_FULL_PACKAGE_DDO_CAPTURE_SPINE_V0_TESTOWNER,
         PR_BOUNDED_FULL_PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER,
         PR_BOUNDED_FULL_PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER,
+        PR_BOUNDED_FULL_PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER,
     }
 )
 PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TARGETS: tuple[str, ...] = (
@@ -1413,6 +1420,7 @@ PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TARGETS: tuple[str, ...] = (
     PR_BOUNDED_FULL_PACKAGE_DDO_CAPTURE_SPINE_V0_TESTOWNER,
     PR_BOUNDED_FULL_PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER,
     PR_BOUNDED_FULL_PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER,
+    PR_BOUNDED_FULL_PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER,
 )
 
 PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TRIGGER_PATHS: frozenset[str] = frozenset(

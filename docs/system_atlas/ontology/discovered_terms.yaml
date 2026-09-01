@@ -313,6 +313,34 @@ terms:
       non-authorizing. Existing experiment robustness and champion-challenger
       owners are not replaced.
 
+  - id: TERM:ddo_offline_owner_bindings_and_drift
+    kind: TERM
+    name: DDO offline owner bindings and drift contracts
+    exact_observed_spellings:
+      - WP_FA_07_OFFLINE_OWNER_BINDINGS_AND_DRIFT_CONTRACTS_V1
+      - canonical_experiment_identity_ref
+      - DriftObservationRecord
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: >-
+      Offline DDO adapters that reference Canonical Experiment Identity v1 and
+      existing robustness/safety evidence producers, plus a non-activating
+      drift-contract foundation. DDO remains an aggregator/consumer. No runtime
+      monitor, promotion activation, or productive learning authority.
+    definition_source: src/learning/deterministic_decision_outcome_v0/authority_v0.py
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/authority_v0.py
+      - src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py
+      - src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py
+      - src/learning/deterministic_decision_outcome_v0/drift_contracts_v0.py
+      - src/experiments/canonical_experiment_identity_v1.py
+    notes: >-
+      Navigation-only. Atlas does not confer trading, promotion, risk, safety,
+      or execution authority. Existing experiment identity and robustness owners
+      are not replaced. Drift contracts cannot promote, deploy, rollback, or
+      mutate runtime.
+
   - id: TERM:document_class
     kind: TERM
     name: DOCUMENT_CLASS

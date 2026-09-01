@@ -22,8 +22,12 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_COUNTERFACTUAL_RECORD,
     SCHEMA_NAME_DECISION_EVENT,
     SCHEMA_NAME_DEPLOYMENT_RECORD,
+    SCHEMA_NAME_DRIFT_ASSESSMENT,
+    SCHEMA_NAME_DRIFT_OBSERVATION,
+    SCHEMA_NAME_DRIFT_POLICY,
     SCHEMA_NAME_HEALTH_SNAPSHOT,
     SCHEMA_NAME_INCIDENT_RECORD,
+    SCHEMA_NAME_KNOWN_GOOD_REFERENCE,
     SCHEMA_NAME_LEARNING_HYPOTHESIS,
     SCHEMA_NAME_LEDGER_ENVELOPE,
     SCHEMA_NAME_OUTCOME_RECORD,
@@ -33,14 +37,20 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_RELEASE_ARTIFACT,
     SCHEMA_NAME_ROLLBACK_RECORD,
     SCHEMA_NAME_VALIDATION_EVIDENCE_PACK,
+    SCHEMA_NAME_CANONICAL_EXPERIMENT_IDENTITY_REF,
     SCHEMA_VERSION_ATTRIBUTION_RECORD_V0,
     SCHEMA_VERSION_AUTONOMY_CYCLE_V0,
     SCHEMA_VERSION_CANDIDATE_ARTIFACT_V0,
+    SCHEMA_VERSION_CANONICAL_EXPERIMENT_IDENTITY_REF_V0,
     SCHEMA_VERSION_COUNTERFACTUAL_RECORD_V0,
     SCHEMA_VERSION_DECISION_EVENT_V0,
     SCHEMA_VERSION_DEPLOYMENT_RECORD_V0,
+    SCHEMA_VERSION_DRIFT_ASSESSMENT_V0,
+    SCHEMA_VERSION_DRIFT_OBSERVATION_V0,
+    SCHEMA_VERSION_DRIFT_POLICY_V0,
     SCHEMA_VERSION_HEALTH_SNAPSHOT_V0,
     SCHEMA_VERSION_INCIDENT_RECORD_V0,
+    SCHEMA_VERSION_KNOWN_GOOD_REFERENCE_V0,
     SCHEMA_VERSION_LEARNING_HYPOTHESIS_V0,
     SCHEMA_VERSION_LEDGER_ENVELOPE_V0,
     SCHEMA_VERSION_OUTCOME_RECORD_V0,
@@ -55,13 +65,23 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
 from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
     DECISION_EVENT_FIELD_SPECS_V0,
 )
+from src.learning.deterministic_decision_outcome_v0.drift_contracts_v0 import (
+    DRIFT_ASSESSMENT_FIELD_SPECS_V0,
+    DRIFT_OBSERVATION_FIELD_SPECS_V0,
+    DRIFT_POLICY_FIELD_SPECS_V0,
+    KNOWN_GOOD_REFERENCE_FIELD_SPECS_V0,
+)
 from src.learning.deterministic_decision_outcome_v0.enums_v0 import (
     COUNTERFACTUAL_ADMISSIBILITY_V0,
     DECISION_RESULT_V0,
     DECISION_SCORE_V0,
     DECISION_TYPE_V0,
+    DRIFT_DOMAIN_V0,
+    DRIFT_REASON_CODE_V0,
+    DRIFT_VERDICT_V0,
     ENUM_COMPATIBILITY_POLICY_V0,
     EVALUATION_HORIZON_V0,
+    EXPERIMENT_IDENTITY_BINDING_STATUS_V0,
     GATE_RESULT_V0,
     INCIDENT_CLASS_V0,
     KILL_SWITCH_CORRECTNESS_V0,
@@ -87,6 +107,9 @@ from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
 from src.learning.deterministic_decision_outcome_v0.evaluation_records_v0 import (
     ATTRIBUTION_RECORD_FIELD_SPECS_V0,
     COUNTERFACTUAL_RECORD_FIELD_SPECS_V0,
+)
+from src.learning.deterministic_decision_outcome_v0.experiment_identity_binding_v0 import (
+    CANONICAL_EXPERIMENT_IDENTITY_REF_FIELD_SPECS_V0,
 )
 from src.learning.deterministic_decision_outcome_v0.incident_record_v0 import (
     INCIDENT_RECORD_FIELD_SPECS_V0,
@@ -330,6 +353,48 @@ CONTRACT_REGISTRY_V0: Final[Mapping[str, Any]] = MappingProxyType(
                         "fields": _specs_as_dicts(HEALTH_SNAPSHOT_FIELD_SPECS_V0),
                     }
                 ),
+                SCHEMA_NAME_CANONICAL_EXPERIMENT_IDENTITY_REF: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_CANONICAL_EXPERIMENT_IDENTITY_REF,
+                        "supported_versions": (
+                            SCHEMA_VERSION_CANONICAL_EXPERIMENT_IDENTITY_REF_V0,
+                        ),
+                        "current_version": SCHEMA_VERSION_CANONICAL_EXPERIMENT_IDENTITY_REF_V0,
+                        "fields": _specs_as_dicts(CANONICAL_EXPERIMENT_IDENTITY_REF_FIELD_SPECS_V0),
+                    }
+                ),
+                SCHEMA_NAME_DRIFT_OBSERVATION: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_DRIFT_OBSERVATION,
+                        "supported_versions": (SCHEMA_VERSION_DRIFT_OBSERVATION_V0,),
+                        "current_version": SCHEMA_VERSION_DRIFT_OBSERVATION_V0,
+                        "fields": _specs_as_dicts(DRIFT_OBSERVATION_FIELD_SPECS_V0),
+                    }
+                ),
+                SCHEMA_NAME_DRIFT_ASSESSMENT: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_DRIFT_ASSESSMENT,
+                        "supported_versions": (SCHEMA_VERSION_DRIFT_ASSESSMENT_V0,),
+                        "current_version": SCHEMA_VERSION_DRIFT_ASSESSMENT_V0,
+                        "fields": _specs_as_dicts(DRIFT_ASSESSMENT_FIELD_SPECS_V0),
+                    }
+                ),
+                SCHEMA_NAME_KNOWN_GOOD_REFERENCE: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_KNOWN_GOOD_REFERENCE,
+                        "supported_versions": (SCHEMA_VERSION_KNOWN_GOOD_REFERENCE_V0,),
+                        "current_version": SCHEMA_VERSION_KNOWN_GOOD_REFERENCE_V0,
+                        "fields": _specs_as_dicts(KNOWN_GOOD_REFERENCE_FIELD_SPECS_V0),
+                    }
+                ),
+                SCHEMA_NAME_DRIFT_POLICY: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_DRIFT_POLICY,
+                        "supported_versions": (SCHEMA_VERSION_DRIFT_POLICY_V0,),
+                        "current_version": SCHEMA_VERSION_DRIFT_POLICY_V0,
+                        "fields": _specs_as_dicts(DRIFT_POLICY_FIELD_SPECS_V0),
+                    }
+                ),
             }
         ),
         "enums": MappingProxyType(
@@ -353,6 +418,10 @@ CONTRACT_REGISTRY_V0: Final[Mapping[str, Any]] = MappingProxyType(
                 "SUPERVISOR_EVENT_V0": SUPERVISOR_EVENT_V0,
                 "SUPERVISOR_OUTCOME_V0": SUPERVISOR_OUTCOME_V0,
                 "SUPERVISOR_ACTION_V0": SUPERVISOR_ACTION_V0,
+                "EXPERIMENT_IDENTITY_BINDING_STATUS_V0": EXPERIMENT_IDENTITY_BINDING_STATUS_V0,
+                "DRIFT_DOMAIN_V0": DRIFT_DOMAIN_V0,
+                "DRIFT_VERDICT_V0": DRIFT_VERDICT_V0,
+                "DRIFT_REASON_CODE_V0": DRIFT_REASON_CODE_V0,
             }
         ),
         "reason_taxonomies": MappingProxyType(
