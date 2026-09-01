@@ -62,6 +62,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.execution_prerequis
     SEND_TIME_PASS_18_19_21_24,
     UNIT_CHAIN_VERDICT,
     Z2AP_CONSUMED,
+    Z2CN_COMMITTED_BODY_SHA256,
     evaluate_execution_prerequisite_08_cluster_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.position_observation_freshness_contract_v1 import (
@@ -79,6 +80,18 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_submit_state_v1
 OWNER_GO = (
     "PEAK_TRADE_OWNER_GO_SECTION_11_13_5_PREREQUISITE_08_FRESH_POSITION_OBSERVATION_CLUSTER_V1"
 )
+THIS_WINDOW_OWNER_GO = (
+    "PEAK_TRADE_OWNER_GO_SECTION_11_13_5_PREREQUISITE_08_SINGLE_UNFILTERED_POSITION_OBSERVATION_V1"
+)
+AUTHORIZED_OBSERVATION_OWNER_GOS = frozenset({OWNER_GO, THIS_WINDOW_OWNER_GO})
+Z2CR_SNAPSHOT_DOCUMENT_CLASS = (
+    "SECTION_11_13_5_Z2CR_FRESH_UNFILTERED_TARGET_POSITION_GET_SNAPSHOT_V1"
+)
+Z2CR_ADJUDICATION_DOCUMENT_CLASS = "SECTION_11_13_5_Z2CR_PREREQUISITE_08_WINDOW_ADJUDICATION_V1"
+Z2CT_SNAPSHOT_DOCUMENT_CLASS = (
+    "SECTION_11_13_5_Z2CT_FRESH_UNFILTERED_TARGET_POSITION_GET_SNAPSHOT_V1"
+)
+Z2CT_ADJUDICATION_DOCUMENT_CLASS = "SECTION_11_13_5_Z2CT_PREREQUISITE_08_WINDOW_ADJUDICATION_V1"
 SHADOW_RECON_SECRETREF = "secretref://vault/peak-trade/live-shadow-recon/okx"
 SHADOW_RECON_CREDENTIAL_CLASS = "LIVE_SHADOW_RECONCILIATION_READ_ONLY_API_KEY"
 PRODUCTION_REST_BASE = f"https://{REUSED_BINDING_REST_HOST}"
@@ -365,8 +378,18 @@ def run_authorized_fresh_position_observation_v1(
 ) -> dict[str, Any]:
     """Perform exactly one unfiltered authenticated positions GET and persist evidence."""
     owned = str(owner_go or "").strip()
-    if owned != OWNER_GO:
+    if owned not in AUTHORIZED_OBSERVATION_OWNER_GOS:
         raise LiveCanaryPrerequisite08FreshObservationError("OWNER_GO_MISMATCH")
+    snapshot_document_class = (
+        Z2CT_SNAPSHOT_DOCUMENT_CLASS
+        if owned == THIS_WINDOW_OWNER_GO
+        else Z2CR_SNAPSHOT_DOCUMENT_CLASS
+    )
+    adjudication_document_class = (
+        Z2CT_ADJUDICATION_DOCUMENT_CLASS
+        if owned == THIS_WINDOW_OWNER_GO
+        else Z2CR_ADJUDICATION_DOCUMENT_CLASS
+    )
     query = build_account_positions_query_v1()
     if query.query or query.inst_id_filter_present or query.pos_id_filter_present:
         raise LiveCanaryPrerequisite08FreshObservationError("INSTID_FILTER_FORBIDDEN")
@@ -483,7 +506,7 @@ def run_authorized_fresh_position_observation_v1(
     pack = Path(evidence_root) / run_id
     pack.mkdir(parents=True, exist_ok=False)
     snapshot = {
-        "DOCUMENT_CLASS": "SECTION_11_13_5_Z2CR_FRESH_UNFILTERED_TARGET_POSITION_GET_SNAPSHOT_V1",
+        "DOCUMENT_CLASS": snapshot_document_class,
         "DOCUMENT_ROLE": "RAW_SANITIZED_RUNTIME_EVIDENCE_NOT_SSOT",
         "AUTHORITY": "NONE",
         "SEMANTIC_AUTHORITY": False,
@@ -510,6 +533,11 @@ def run_authorized_fresh_position_observation_v1(
         "GET_ERROR": get_error,
         "BODY_BYTES": len(body_bytes),
         "BODY_SHA256": body_sha256,
+        "UNIQUE_WINDOW_IDENTITY_PRESERVED": True,
+        "BYTE_IDENTICAL_EMPTY_ENVELOPE_SHA_ALSO_USED_BY_HISTORICAL_Z2CN": (
+            body_sha256 == Z2CN_COMMITTED_BODY_SHA256 if body_sha256 else False
+        ),
+        "BYTE_IDENTICAL_EMPTY_ENVELOPE_SHA_DOES_NOT_MERGE_SOURCE_IDENTITIES": True,
         "RAW_DATA_SHAPE": data_shape,
         "DATA_COUNT": data_count,
         "TARGET_INSTRUMENT": DEFAULT_INSTRUMENT_ID,
@@ -534,7 +562,7 @@ def run_authorized_fresh_position_observation_v1(
         "CANARY_AUTHORIZED": False,
     }
     adjudication_doc = {
-        "DOCUMENT_CLASS": "SECTION_11_13_5_Z2CR_PREREQUISITE_08_WINDOW_ADJUDICATION_V1",
+        "DOCUMENT_CLASS": adjudication_document_class,
         "DOCUMENT_ROLE": "INTERPRETATION_NOT_RAW_EVIDENCE_NOT_SSOT",
         "AUTHORITY": "NONE",
         "OWNER_GO": owned,
@@ -551,6 +579,11 @@ def run_authorized_fresh_position_observation_v1(
         "HTTP_STATUS": http_status,
         "OKX_CODE": okx_code,
         "RAW_BODY_SHA256": body_sha256,
+        "POSITION_QTY_UNIT_STATUS": "UNPROVEN",
+        "BYTE_IDENTICAL_Z2CN_EMPTY_SHA": (
+            body_sha256 == Z2CN_COMMITTED_BODY_SHA256 if body_sha256 else False
+        ),
+        "BYTE_IDENTICAL_Z2CN_EMPTY_SHA_DOES_NOT_MERGE_THIS_WINDOW": True,
         "CLASS_D_CONSUMED": False,
         "Z2AP_CONSUMED": False,
         "EXECUTION_READY": False,

@@ -35,6 +35,9 @@ Z2CR_HEADING = "### 11.13.5.Z2CR Post-Z2CQ fresh unfiltered target-position obse
 Z2CS_HEADING = (
     "### 11.13.5.Z2CS Post-Z2CR Prerequisite-08 resolution-authority adjudication persist"
 )
+Z2CT_HEADING = (
+    "### 11.13.5.Z2CT Post-Z2CS single unfiltered Prerequisite-08 position observation persist"
+)
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = (
     "PEAK_TRADE_OWNER_GO_SECTION_11_13_5_PREREQUISITE_08_RESOLUTION_AUTHORITY_ADJUDICATION_V1"
@@ -52,8 +55,8 @@ def _read(path: Path) -> str:
 def _z2cs_section(text: str) -> str:
     start = text.find(Z2CS_HEADING)
     assert start >= 0, "missing §11.13.5.Z2CS heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2CS"
+    end = text.find(Z2CT_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2CT boundary after Z2CS"
     return text[start:end]
 
 
@@ -70,8 +73,9 @@ def test_z2cs_heading_is_unique_and_follows_z2cr() -> None:
     assert text.count(Z2CS_HEADING) == 1
     z2cr = text.find(Z2CR_HEADING)
     z2cs = text.find(Z2CS_HEADING)
+    z2ct = text.find(Z2CT_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= z2cr < z2cs < ladder
+    assert 0 <= z2cr < z2cs < z2ct < ladder
 
 
 def test_z2cr_historical_observation_slice_was_not_rewritten() -> None:

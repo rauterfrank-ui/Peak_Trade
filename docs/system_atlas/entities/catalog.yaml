@@ -405,7 +405,7 @@ entities:
     fail_closed: true
     evidence_sources:
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO, the §11.13.5.Z2CP freshness persist/implement Owner-GO, the §11.13.5.Z2CQ post-Z2CP prerequisite-08 cluster Owner-GO, the §11.13.5.Z2CR prerequisite-08 fresh position-observation Owner-GO, and the §11.13.5.Z2CS prerequisite-08 resolution-authority adjudication Owner-GO. Not execute enablement. Atlas is not trading authority.
+    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO, the §11.13.5.Z2CP freshness persist/implement Owner-GO, the §11.13.5.Z2CQ post-Z2CP prerequisite-08 cluster Owner-GO, the §11.13.5.Z2CR prerequisite-08 fresh position-observation Owner-GO, the §11.13.5.Z2CS prerequisite-08 resolution-authority adjudication Owner-GO, and the §11.13.5.Z2CT prerequisite-08 single unfiltered position-observation Owner-GO. Not execute enablement. Atlas is not trading authority.
 
   - id: GATE:btc_exclusion
     kind: GATE
@@ -720,7 +720,20 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/prerequisite_08_resolution_authority_adjudication_v1.py
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-    notes: Additive post-Z2CR offline resolution-authority adjudication. Unfiltered positions GET plus classifier is the already-canonical 08 path. Current runtime GO for that path is NONE. NOT_OBSERVED is fail-closed, not a zero-semantics gap. Does not supersede Z2CR as last canonically closed 11.13.5 slice. Does not close prerequisite 08. Atlas is not trading authority.
+    notes: Additive post-Z2CR offline resolution-authority adjudication. Unfiltered positions GET plus classifier is the already-canonical 08 path. Current runtime GO for that path is NONE. NOT_OBSERVED is fail-closed, not a zero-semantics gap. Does not supersede Z2CR as last canonically closed 11.13.5 slice. Does not close prerequisite 08. Predecessor of additive PHASE:z2ct. Atlas is not trading authority.
+
+  - id: PHASE:z2ct
+    kind: PHASE
+    name: 11.13.5.Z2CT
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - evidence/ops/section_11_13_5_z2ct_prerequisite_08_single_unfiltered_position_observation_v1/20260901T095111Z/GET_SNAPSHOT.sanitized.json
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/prerequisite_08_fresh_position_observation_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+    notes: Additive post-Z2CS one authenticated unfiltered positions GET persist on the already-canonical 08 resolution path. Empty data is not zero. Unique window identity preserved even where BODY_SHA256 equals historical Z2CN/Z2CR empty envelope. Does not close prerequisite 08. Does not evaluate Flatten-Pre-Send or claim send-time PASS. Not flatten execute. Atlas is not trading authority.
 
   - id: GATE:target_position_state
     kind: GATE
