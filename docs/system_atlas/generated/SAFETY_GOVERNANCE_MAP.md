@@ -20,6 +20,7 @@
 | GATE:flatten_live_wire | GATE | True | CURRENT_NONCANONICAL |
 | GATE:live_authorized_false | GATE | True | CURRENT_CANONICAL |
 | GATE:max_positions_1 | GATE | True | CURRENT_CANONICAL |
+| GATE:position_observation_freshness | GATE | True | CURRENT_NONCANONICAL |
 | GUARD:economic_diagnostic_optimization_boundary | GUARD | True | CURRENT_NONCANONICAL |
 
 ## Mutation-path chains (actual wiring; missing edges explicit)

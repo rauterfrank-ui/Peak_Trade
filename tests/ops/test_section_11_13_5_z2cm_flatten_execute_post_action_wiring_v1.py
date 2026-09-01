@@ -41,6 +41,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_productive_
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
     LiveCanaryHttpResponseV1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.position_observation_freshness_contract_v1 import (
+    PRE_SEND_EVIDENCE_KIND,
+    PositionObservationFreshnessEvidenceV1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_submit_state_v1 import (
     TARGET_POSITION_NONZERO_PROVEN,
     TARGET_POSITION_NOT_OBSERVED,
@@ -51,6 +55,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.runner_v1 import (
 
 OWNER_GO = "OWNER_GO_LIVE_CANARY_MINIMUM_EXPOSURE"
 ORIGIN_SHA = "c3614ec0ef5d2c964e2de2f6b0df97db9b7331ab"
+Z2CM_DECISION_ID = "z2cm-flatten-pre-send-decision-1"
 TARGET = DEFAULT_INSTRUMENT_ID
 QUOTE_TS = "1787145055768"
 EVAL_TS = "1787145056000"
@@ -117,6 +122,13 @@ def _run(**overrides: Any) -> Any:
         "pending_orders_payload": _pending(),
         "price_input": _price(),
         "transport": RecordingProductiveFlattenTransportV1(),
+        "flatten_pre_send_decision_id": Z2CM_DECISION_ID,
+        "position_observation_freshness_evidence": PositionObservationFreshnessEvidenceV1(
+            response_received_monotonic_ms=0,
+            decision_id=Z2CM_DECISION_ID,
+            evidence_kind=PRE_SEND_EVIDENCE_KIND,
+        ),
+        "monotonic_ms_clock": (lambda: 0),
     }
     payload.update(overrides)
     return run_section_11_13_5_live_canary_minimum_exposure_v1(**payload)

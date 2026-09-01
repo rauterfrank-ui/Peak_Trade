@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=4
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -41,8 +41,9 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `GATE:flatten_execute_authority` |
-| `PHASE:z2cn` |
+| `GATE:position_observation_freshness` |
 | `PHASE:z2co` |
+| `PHASE:z2cp` |
 
 ## CHANGED_RELATIONS
 
@@ -78,7 +79,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| _(none)_ |
+| `GATE:flatten_execute_authority` |
+| `GATE:position_observation_freshness` |
 
 ## AFFECTED_SCHEMAS
 
@@ -94,7 +96,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Additive PHASE:z2co catalog navigation for §11.13.5.Z2CO docs/contract persist of freshness form plus prerequisites 18/19/21/24. PHASE:z2cn remains the last canonically closed 11.13.5 slice. GATE:flatten_execute_authority deny-list records the same Owner-GO as not execute. Atlas is not trading authority. No runtime, live, flatten, venue, or secret mutation.
+- Additive PHASE:z2cp catalog navigation for §11.13.5.Z2CP persist of the Owner-ratified flatten pre-send position-observation freshness 5000ms policy plus offline fail-closed enforcement. GATE:position_observation_freshness indexes the new pre-send gate. PHASE:z2cn remains the last canonically closed 11.13.5 slice. GATE:flatten_execute_authority deny-list records the Z2CP Owner-GO as not execute. Atlas is not trading authority. No venue, secret, HMAC, or flatten execute mutation.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

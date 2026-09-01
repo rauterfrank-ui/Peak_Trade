@@ -15,9 +15,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_execute_authority_v1 import (
     FORBIDDEN_FLATTEN_EXECUTE_OWNER_GOS,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_post_action_proof_contract_v1 import (
-    POSITION_OBSERVATION_FRESHNESS_POLICY,
-)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_pre_send_gate_v1 import (
     GATE_NAMES,
 )
@@ -44,6 +41,10 @@ Z2CO_HEADING = (
     "PREREQUISITES 18/19/21/24 CURRENT SSOT WITH PROVENANCE; "
     "NOT CLASS D; NOT FLATTEN; NOT LIVE)"
 )
+Z2CP_HEADING = (
+    "### 11.13.5.Z2CP Post-Z2CO position-observation freshness numeric policy persist "
+    "and offline fail-closed enforcement"
+)
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = (
     "PEAK_TRADE_OWNER_GO_SECTION_11_13_5_Z2AP_FLATTEN_NON_POSITION_CONTRACT_RESIDUALS_DOCS_ONLY_V1"
@@ -60,8 +61,8 @@ def _read(path: Path) -> str:
 def _z2co_section(text: str) -> str:
     start = text.find(Z2CO_HEADING)
     assert start >= 0, "missing §11.13.5.Z2CO heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2CO"
+    end = text.find(Z2CP_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2CP boundary after Z2CO"
     return text[start:end]
 
 
@@ -88,6 +89,8 @@ def test_z2co_heading_is_unique_and_follows_z2cn() -> None:
     z2co = text.find(Z2CO_HEADING)
     ladder = text.find(LADDER_HEADING)
     assert 0 <= z2cn < z2co < ladder
+    z2cp = text.find(Z2CP_HEADING)
+    assert z2co < z2cp < ladder
 
 
 def test_z2cn_historical_slice_was_not_rewritten() -> None:
@@ -232,8 +235,10 @@ def test_map_of_truth_remains_navigation_only() -> None:
     assert "11.13.5.Z2CO" not in text
 
 
-def test_python_freshness_token_remains_unproven() -> None:
-    assert POSITION_OBSERVATION_FRESHNESS_POLICY == "UNPROVEN"
+def test_z2co_docs_preserve_historical_python_token_unproven() -> None:
+    section = _z2co_section(_read(MASTER_RUNBOOK))
+    assert "PYTHON_CONTRACT_TOKEN_REMAINS=UNPROVEN" in section
+    assert "POSITION_OBSERVATION_FRESHNESS_POLICY_STATUS=FORM_RATIFIED_THRESHOLD_UNBOUND" in section
 
 
 def test_safety_non_regression_standing_flags_and_forbidden_go() -> None:

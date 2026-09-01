@@ -58,6 +58,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     LiveCanaryHttpResponseV1,
     RecordingFakeCanaryTransportV1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.position_observation_freshness_contract_v1 import (
+    PRE_SEND_EVIDENCE_KIND,
+    PositionObservationFreshnessEvidenceV1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.runner_v1 import (
     run_section_11_13_5_live_canary_minimum_exposure_v1,
 )
@@ -125,6 +129,13 @@ def _valid_gate(**overrides: Any) -> FlattenPreSendGateInputV1:
         "instrument_id": TARGET,
         "one_shot_no_retry": True,
         "duplicate_post_protection": True,
+        "flatten_pre_send_decision_id": "wiring-pre-send-decision-1",
+        "position_observation_freshness_evidence": PositionObservationFreshnessEvidenceV1(
+            response_received_monotonic_ms=0,
+            decision_id="wiring-pre-send-decision-1",
+            evidence_kind=PRE_SEND_EVIDENCE_KIND,
+        ),
+        "monotonic_ms_clock": (lambda: 0),
     }
     payload.update(overrides)
     return FlattenPreSendGateInputV1(**payload)
@@ -493,6 +504,13 @@ def test_runner_flatten_execute_reaches_recording_transport_only_when_fully_gate
         pending_orders_payload=_pending(),
         price_input=_price(),
         transport=transport,
+        flatten_pre_send_decision_id="wiring-pre-send-decision-1",
+        position_observation_freshness_evidence=PositionObservationFreshnessEvidenceV1(
+            response_received_monotonic_ms=0,
+            decision_id="wiring-pre-send-decision-1",
+            evidence_kind=PRE_SEND_EVIDENCE_KIND,
+        ),
+        monotonic_ms_clock=(lambda: 0),
     )
     assert result.payload.get("send_completed") is True
     assert result.payload.get("network_used") is False

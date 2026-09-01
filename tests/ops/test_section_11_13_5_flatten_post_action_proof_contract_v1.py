@@ -87,7 +87,9 @@ def test_contract_flags_remain_fail_closed() -> None:
     assert POST_ACTION_REQUIRES_CAUSAL_SUBMIT_BINDING is True
     assert POST_ACTION_SCOPE == "FLATTEN_POST_ACTION_SUCCESS_EVALUATOR_ONLY"
     assert P7_3_EMPTY_DATA_IS_ZERO is False
-    assert POSITION_OBSERVATION_FRESHNESS_POLICY == "UNPROVEN"
+    assert POSITION_OBSERVATION_FRESHNESS_POLICY == (
+        "POLICY_BOUND_ENFORCEMENT_IMPLEMENTED_OFFLINE_SEND_TIME_UNPROVEN"
+    )
 
 
 def test_offline_satisfied_pre_nonzero_post_flat_pending_empty() -> None:

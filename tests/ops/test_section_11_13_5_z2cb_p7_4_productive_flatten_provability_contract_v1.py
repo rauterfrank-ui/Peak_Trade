@@ -60,6 +60,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_productive_
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_submit_transport_v1 import (
     DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.position_observation_freshness_contract_v1 import (
+    PRE_SEND_EVIDENCE_KIND,
+    PositionObservationFreshnessEvidenceV1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.position_value_fx_rounding_chain_v1 import (
     MULTI_FUTURE_AUTHORIZED,
 )
@@ -76,6 +80,7 @@ P7_4_OWNER_GO = (
 HISTORICAL_BTC = "BTC-USD_UM_XPERP-310404"
 CURRENT_SUI = "SUI-USD_UM_XPERP-310404"
 ORIGIN_SHA = "e410f5b413e33f8183fc2b15876755b8c1fe4be4"
+P7_4_DECISION_ID = "p7-4-flatten-pre-send-decision-1"
 QUOTE_TS = "1787145055768"
 EVAL_TS = "1787145056000"
 
@@ -137,6 +142,13 @@ def _gate(
         origin_main_sha=ORIGIN_SHA,
         flatten_execute_bound_origin_main_sha=ORIGIN_SHA,
         instrument_id=instrument_id,
+        flatten_pre_send_decision_id=P7_4_DECISION_ID,
+        position_observation_freshness_evidence=PositionObservationFreshnessEvidenceV1(
+            response_received_monotonic_ms=0,
+            decision_id=P7_4_DECISION_ID,
+            evidence_kind=PRE_SEND_EVIDENCE_KIND,
+        ),
+        monotonic_ms_clock=(lambda: 0),
     )
 
 

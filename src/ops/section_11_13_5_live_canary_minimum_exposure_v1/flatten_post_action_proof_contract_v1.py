@@ -35,6 +35,13 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_limit_price
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_submit_transport_v1 import (
     DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.position_observation_freshness_contract_v1 import (
+    POSITION_OBSERVATION_FRESHNESS_POLICY as _POSITION_OBSERVATION_FRESHNESS_POLICY,
+    PositionObservationFreshnessEvidenceV1,
+    REASON_POST_ACTION_CONSUME,
+    REASON_SAME_GET_DUAL_USE,
+    reject_same_get_pre_send_and_post_readback_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_submit_state_v1 import (
     LiveCanaryPositionObservationError,
     LiveCanaryPreSubmitStateError,
@@ -54,7 +61,7 @@ POST_ACTION_SCOPE = "FLATTEN_POST_ACTION_SUCCESS_EVALUATOR_ONLY"
 POST_ACTION_REQUIRES_EXPLICIT_PRE_NONZERO = True
 POST_ACTION_REQUIRES_CAUSAL_SUBMIT_BINDING = True
 P7_3_EMPTY_DATA_IS_ZERO = False
-POSITION_OBSERVATION_FRESHNESS_POLICY = "UNPROVEN"
+POSITION_OBSERVATION_FRESHNESS_POLICY = _POSITION_OBSERVATION_FRESHNESS_POLICY
 NETWORK_EFFECT_NONE = "none"
 ORDER_EFFECT_NONE = "none"
 ACCOUNT_MUTATION_EFFECT_NONE = "none"
@@ -76,6 +83,9 @@ class FlattenPostActionSubmitEvidenceV1:
     post_readback_after_submit: bool
     flatten_position_proven: bool = False
     venue_acceptance_proven: bool = False
+    pre_send_freshness_evidence: PositionObservationFreshnessEvidenceV1 | None = None
+    pre_send_get_identity: str | None = None
+    post_readback_get_identity: str | None = None
 
 
 def flatten_post_action_submit_evidence_from_submit_result_v1(
@@ -103,6 +113,9 @@ def flatten_post_action_submit_evidence_from_submit_result_v1(
         post_readback_after_submit=bool(post_readback_after_submit),
         flatten_position_proven=bool(getattr(result, "flatten_position_proven", False)),
         venue_acceptance_proven=bool(getattr(result, "venue_acceptance_proven", False)),
+        pre_send_freshness_evidence=getattr(result, "pre_send_freshness_evidence", None),
+        pre_send_get_identity=getattr(result, "pre_send_get_identity", None),
+        post_readback_get_identity=getattr(result, "post_readback_get_identity", None),
     )
 
 
@@ -339,6 +352,42 @@ def evaluate_canary_flatten_post_action_proof_contract_v1(
         raise LiveCanaryFlattenPostActionProofError("TARGET_INSTRUMENT_REQUIRED")
     if target != DEFAULT_INSTRUMENT_ID:
         raise LiveCanaryFlattenPostActionProofError("INSTRUMENT_BINDING_MISMATCH")
+
+    if submit_evidence is not None and submit_evidence.pre_send_freshness_evidence is not None:
+        return _verdict(
+            instrument_id=target,
+            contract_state="FLATTEN_PROOF_FAIL_CLOSED",
+            already_flat_noop=False,
+            offline_contract_satisfied=False,
+            pre_pos=Decimal("0"),
+            post_pos=Decimal("0"),
+            pending_empty=False,
+            no_flip=False,
+            no_related=False,
+            related=(),
+            open_orders=(),
+            blocking_reasons=(REASON_POST_ACTION_CONSUME,),
+        )
+    if submit_evidence is not None:
+        dual = reject_same_get_pre_send_and_post_readback_v1(
+            pre_send_get_identity=submit_evidence.pre_send_get_identity,
+            post_readback_get_identity=submit_evidence.post_readback_get_identity,
+        )
+        if dual == REASON_SAME_GET_DUAL_USE:
+            return _verdict(
+                instrument_id=target,
+                contract_state="FLATTEN_PROOF_FAIL_CLOSED",
+                already_flat_noop=False,
+                offline_contract_satisfied=False,
+                pre_pos=Decimal("0"),
+                post_pos=Decimal("0"),
+                pending_empty=False,
+                no_flip=False,
+                no_related=False,
+                related=(),
+                open_orders=(),
+                blocking_reasons=(REASON_SAME_GET_DUAL_USE,),
+            )
 
     pre_rows, pre_err = _require_valid_envelope_rows(pre_positions_payload, label="PRE")
     if pre_err:
