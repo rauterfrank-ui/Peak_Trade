@@ -25,6 +25,7 @@ from scripts.ops.primary_evidence_retention_v0 import (
     verify_manifest_sha256,
     write_manifest_sha256,
 )
+from src.ops.bounded_futures_testnet_contract_v0 import DEFAULT_INSTRUMENT
 from src.ops.bounded_testnet_order_cap_contract_v0 import default_bounded_normal_v0_spec
 from src.ops.order_capability_dry_validation_contract_v1 import (
     OrderCapabilityDryValidationInputs,
@@ -190,11 +191,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--archive-root", type=Path, required=True)
     parser.add_argument("--run-id", type=str, default="")
-    parser.add_argument("--instrument", type=str, default="PF_XBTUSD")
+    parser.add_argument("--instrument", type=str, default=DEFAULT_INSTRUMENT)
     parser.add_argument(
         "--venue",
         type=str,
-        default="Kraken Futures Demo / demo-futures.kraken.com",
+        default="okx_europe_eea / eea.okx.com",
     )
     parser.add_argument("--max-loss-cap-eur", type=float, default=1.0)
     parser.add_argument("--max-notional-eur", type=float, default=spec.max_notional_eur)

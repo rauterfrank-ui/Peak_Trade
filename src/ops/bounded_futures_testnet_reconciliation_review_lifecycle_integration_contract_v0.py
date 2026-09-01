@@ -1334,7 +1334,7 @@ def default_minimal_integration_input(
     source_revision: str = "abcdef0123456789abcdef0123456789abcdef01",
     adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
     integration_id: str = "reconciliation-review-lifecycle-integration-001",
-    instrument: str = "PF_ETHUSD",
+    instrument: str = "ETH-USD_UM_XPERP-310404",
     lifecycle_state_digest: str | None = None,
 ) -> ReconciliationReviewLifecycleIntegrationInput:
     """Minimal valid futures-generic PE-31 integration input for offline tests."""

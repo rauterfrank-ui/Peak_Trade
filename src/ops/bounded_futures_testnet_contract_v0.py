@@ -14,10 +14,15 @@ PACKAGE_MARKER = "BOUNDED_FUTURES_TESTNET_CONTRACT_V0=true"
 FUTURES_SESSION_AUTHORIZED_NOW = False
 DEFAULT_SESSION_CLASS = "bounded-futures-normal-testnet-v0"
 DEFAULT_ORDER_POLICY = "normal-testnet-futures-bounded"
-DEFAULT_INSTRUMENT = "PF_ETHUSD"
+# Bound to existing Package E / INV-033 offline production instrument
+# (src/ops/bounded_futures_testnet_venue_binding_v0.py PRODUCTION_INSTRUMENT_ID).
+# Not imported from that module to avoid a circular import.
+DEFAULT_INSTRUMENT = "ETH-USD_UM_XPERP-310404"
 DEFAULT_MARKET_TYPE = "futures"
 # Concatenated invalid futures placeholder — must not be used as bounded futures testnet default.
 REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS: frozenset[str] = frozenset({"BTCUSDT"})
+# Retired Kraken Futures native symbols — exclusion-only; not current defaults.
+REJECTED_KRAKEN_FUTURES_SYMBOLS: frozenset[str] = frozenset({"PF_ETHUSD", "PF_XBTUSD", "PF_BTCUSD"})
 DEFAULT_MARGIN_MODE = "isolated"
 DEFAULT_POSITION_MODE = "one_way"
 DEFAULT_MAX_LEVERAGE = 5.0
@@ -44,9 +49,22 @@ SPOT_SESSION_CLASSES: frozenset[str] = frozenset(
 )
 SPOT_INSTRUMENTS: frozenset[str] = frozenset({"BTC/EUR", "ETH/EUR"})
 
+# Existing OKX EEA public GET paths from bounded_futures_testnet_venue_binding_v0.
 ZERO_ORDER_REQUIRED_PUBLIC_ENDPOINTS: tuple[str, ...] = (
-    "/derivatives/api/v3/tickers",
-    "/derivatives/api/v3/instruments",
+    "/api/v5/public/instruments",
+    "/api/v5/market/tickers",
+)
+FORBIDDEN_KRAKEN_FUTURES_ENDPOINT_PREFIXES: frozenset[str] = frozenset(
+    {
+        "/derivatives/api/v3/tickers",
+        "/derivatives/api/v3/instruments",
+        "/derivatives/api/v3/accounts",
+        "/derivatives/api/v3/openpositions",
+        "/derivatives/api/v3/openorders",
+        "/derivatives/api/v3/sendorder",
+        "/derivatives/api/v3/cancelorder",
+        "/derivatives/api/v3/cancelallorders",
+    }
 )
 
 REQUIRED_FUTURES_EVIDENCE_FIELD_NAMES: tuple[str, ...] = (
@@ -162,8 +180,10 @@ def spot_evidence_misclassified_as_futures(evidence: dict[str, Any]) -> list[str
         reasons.append(f"session_class {session_class!r} is spot-tier, not futures")
     instrument = evidence.get("instrument")
     if instrument in REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS:
+        reasons.append(f"instrument {instrument!r} is a rejected futures placeholder")
+    if instrument in REJECTED_KRAKEN_FUTURES_SYMBOLS:
         reasons.append(
-            f"instrument {instrument!r} is a rejected futures placeholder (use Kraken-native symbol)"
+            f"instrument {instrument!r} is a retired Kraken Futures symbol, not a current default"
         )
     if instrument in SPOT_INSTRUMENTS:
         reasons.append(f"instrument {instrument!r} is spot, not futures perpetual")

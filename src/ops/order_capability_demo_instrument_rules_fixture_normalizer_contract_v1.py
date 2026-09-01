@@ -27,7 +27,7 @@ PACKAGE_MARKER = "ORDER_CAPABILITY_DEMO_INSTRUMENT_RULES_FIXTURE_NORMALIZER_CONT
 SCHEMA_VERSION = "order_capability_demo_instrument_rules_fixture_normalizer_result.v1"
 FIXTURE_SCHEMA_VERSION = "order_capability_demo_instrument_rules_fixture.v1"
 REQUIRED_DEMO_HOST = DEMO_FUTURES_HOST
-DEFAULT_VENUE = "kraken_futures_demo"
+DEFAULT_VENUE = "okx_europe_eea"
 
 FORBIDDEN_HOST_MARKERS = frozenset(
     {

@@ -1,8 +1,9 @@
 """
-Local Kraken parquet cache health for Ops Cockpit ``dependencies_state`` — read-only.
+Local parquet cache health for Ops Cockpit ``dependencies_state`` — read-only.
 
 Uses ``check_data_health_only`` from ``market_data_cache_loader`` (offline filesystem reads only).
 Does **not** call exchanges or assert live market data quality — **local cache file / QC only**.
+This reader is not a current venue market-data source.
 """
 
 from __future__ import annotations
@@ -104,11 +105,11 @@ def read_market_data_cache_observation(
     if rollout == "unknown":
         return _unknown(
             "unmapped_health_status",
-            kraken_health_status=raw_status,
+            cache_health_status=raw_status,
         )
 
-    provenance["data_source"] = "kraken_parquet_cache_local"
-    provenance["kraken_health_status"] = raw_status
+    provenance["data_source"] = "local_parquet_cache"
+    provenance["cache_health_status"] = raw_status
 
     last_utc = None
     if health.end_ts is not None:
@@ -118,18 +119,18 @@ def read_market_data_cache_observation(
             last_utc = str(health.end_ts)
 
     details = {
-        "kraken_health_status": raw_status,
+        "cache_health_status": raw_status,
         "num_bars": health.num_bars,
         "notes": (health.notes or "")[:500] if health.notes else None,
         "file_path": health.file_path,
     }
 
-    obs_reason = f"kraken_cache_health_{raw_status}"
+    obs_reason = f"local_cache_health_{raw_status}"
 
     return {
         "reader_schema_version": READER_SCHEMA_VERSION,
         "market_data_cache": rollout,
-        "data_source": "kraken_parquet_cache_local",
+        "data_source": "local_parquet_cache",
         "observation_reason": obs_reason,
         "provenance": provenance,
         "details": details,

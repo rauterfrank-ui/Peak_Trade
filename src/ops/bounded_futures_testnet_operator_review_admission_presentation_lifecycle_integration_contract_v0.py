@@ -1142,7 +1142,7 @@ def default_minimal_integration_input(
     source_revision: str = "abcdef0123456789abcdef0123456789abcdef01",
     adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
     integration_id: str = "operator-review-admission-presentation-lifecycle-integration-001",
-    instrument: str = "PF_ETHUSD",
+    instrument: str = "ETH-USD_UM_XPERP-310404",
     review_identity: str = "glb-016-bounded-futures-testnet-operator-review",
 ) -> OperatorReviewAdmissionPresentationLifecycleIntegrationInput:
     """Minimal valid futures-generic lifecycle integration input for offline tests."""

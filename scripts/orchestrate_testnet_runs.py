@@ -31,7 +31,7 @@ Usage:
     python -m scripts.orchestrate_testnet_runs --budget
 
 Voraussetzungen:
-    - Environment-Variablen KRAKEN_TESTNET_API_KEY und KRAKEN_TESTNET_API_SECRET
+    - No current Kraken testnet credential contract. Do not set KRAKEN_TESTNET_API_KEY.
     - config/config.toml mit [testnet_limits], [testnet_profiles], [testnet_orchestration]
     - config/config.toml mit [environment] mode = "testnet"
 

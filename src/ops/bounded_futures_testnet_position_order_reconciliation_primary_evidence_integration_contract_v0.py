@@ -1196,7 +1196,7 @@ def default_minimal_safety_snapshot() -> IntegrationSafetySnapshot:
 def _default_order_record(
     *,
     order_id: str = "offline-order-001",
-    instrument: str = "PF_ETHUSD",
+    instrument: str = "ETH-USD_UM_XPERP-310404",
 ) -> OrderRecord:
     return OrderRecord(
         order_id=order_id,
@@ -1207,7 +1207,9 @@ def _default_order_record(
     )
 
 
-def _default_position_binding(*, instrument: str = "PF_ETHUSD") -> PositionStateBinding:
+def _default_position_binding(
+    *, instrument: str = "ETH-USD_UM_XPERP-310404"
+) -> PositionStateBinding:
     binding = PositionStateBinding(
         snapshot_id="position-snapshot-001",
         snapshot_digest="",
@@ -1230,7 +1232,7 @@ def _default_fill_record(
     *,
     fill_id: str = "offline-fill-001",
     order_id: str = "offline-order-001",
-    instrument: str = "PF_ETHUSD",
+    instrument: str = "ETH-USD_UM_XPERP-310404",
 ) -> FillRecord:
     return FillRecord(
         fill_id=fill_id,
@@ -1302,7 +1304,7 @@ def default_minimal_integration_input(
     *,
     source_revision: str = "abcdef0123456789abcdef0123456789abcdef01",
     adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
-    instrument: str = "PF_ETHUSD",
+    instrument: str = "ETH-USD_UM_XPERP-310404",
     lifecycle_state_digest: str | None = None,
 ) -> ReconciliationPrimaryEvidenceIntegrationInput:
     """Minimal valid futures-generic integration input for offline tests."""

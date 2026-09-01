@@ -23,7 +23,7 @@ MAX_CANCEL_ATTEMPTS = 1
 
 ALLOWED_ENVIRONMENTS = frozenset(
     {
-        "kraken_futures_demo",
+        "okx_europe_eea",
         "demo",
         "testnet",
         "demo_testnet_only",

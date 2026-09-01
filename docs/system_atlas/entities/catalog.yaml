@@ -1403,11 +1403,46 @@ entities:
     modified_by: PENDING_CHANGE
     source_paths:
       - src/ops/bounded_futures_private_readonly_contract_v0.py
+      - src/ops/bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py
+      - src/ops/bounded_futures_testnet_adapter_contract_v0.py
+      - src/ops/bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0.py
+      - src/ops/bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0.py
       - src/ops/bounded_futures_testnet_contract_v0.py
+      - src/ops/bounded_futures_testnet_cross_slice_proof_coherence_integration_contract_v0.py
+      - src/ops/bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0.py
+      - src/ops/bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py
+      - src/ops/bounded_futures_testnet_operator_review_admission_presentation_boundary_contract_v0.py
+      - src/ops/bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0.py
+      - src/ops/bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0.py
+      - src/ops/bounded_futures_testnet_operator_review_handoff_boundary_contract_v0.py
+      - src/ops/bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0.py
+      - src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py
+      - src/ops/bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0.py
+      - src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py
+      - src/ops/bounded_futures_testnet_preflight_packet_builder_contract_v0.py
+      - src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py
+      - src/ops/bounded_futures_testnet_private_readonly_lifecycle_integration_contract_v0.py
+      - src/ops/bounded_futures_testnet_readiness_decision_lifecycle_integration_contract_v0.py
+      - src/ops/bounded_futures_testnet_readiness_review_admission_presentation_lifecycle_bridge_contract_v0.py
+      - src/ops/bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py
+      - src/ops/bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py
+      - src/ops/bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py
+      - src/ops/bounded_futures_testnet_validate_only_lifecycle_integration_contract_v0.py
+      - src/ops/bounded_futures_testnet_zero_order_lifecycle_integration_contract_v0.py
+      - src/ops/bounded_network_testnet_preflight_contract_v0.py
+      - src/ops/bounded_testnet_market_input_admission_wiring_v0.py
       - src/ops/bounded_testnet_runtime_market_observation_producer_v0.py
       - src/ops/capability_11_2_credential_authorization_and_account_identity_boundary_v1/autonomy_scope_limits_v1.py
       - src/ops/market_data_cache_observation_reader.py
+      - src/ops/order_capability_cancel_cleanup_failclosed_contract_v1.py
+      - src/ops/order_capability_demo_instrument_rules_binding_contract_v1.py
+      - src/ops/order_capability_demo_instrument_rules_fixture_normalizer_contract_v1.py
+      - src/ops/order_capability_dry_validation_contract_v1.py
+      - src/ops/order_capability_killswitch_abort_binding_contract_v1.py
       - src/ops/order_capability_payload_builder_contract_v1.py
+      - src/ops/order_capability_private_endpoint_boundary_contract_v1.py
+      - src/ops/order_capability_safety_cancel_under_killswitch_contract_v1.py
+      - src/ops/order_capability_side_price_qty_rules_contract_v1.py
       - src/ops/p67/recorded_price_series_v0.py
       - src/ops/p85/run_live_data_ingest_readiness_v1.py
       - src/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/constants_v1.py
@@ -1417,7 +1452,7 @@ entities:
       - src/ops/section_11_13_4_live_dry_run_order_plan_v1/constants_v1.py
     evidence_sources:
       - src/ops/bounded_futures_private_readonly_contract_v0.py
-    notes: Fail-closed / decommission token cleanup on existing contracts. No new live, testnet, or canary capability. Atlas is not trading authority.
+    notes: Fail-closed / decommission token cleanup on existing contracts, including current-system Kraken remnant removal. No new live, testnet, or canary capability. Atlas is not trading authority.
 
   - id: GUARD:economic_diagnostic_optimization_boundary
     kind: GUARD

@@ -129,3 +129,26 @@ def test_kraken_bounded_pilot_secret_success_path_is_absent() -> None:
     """KRAKEN_BOUNDED_PILOT_SECRET_SUCCESS_PATH=false."""
     launcher = REPO_ROOT / "scripts/ops/run_bounded_pilot_with_local_secrets.py"
     assert not launcher.is_file()
+
+
+def test_current_ops_defaults_are_not_kraken() -> None:
+    from src.ops.bounded_futures_testnet_adapter_contract_v0 import (
+        DEFAULT_FUTURES_TESTNET_NETWORK_HOST,
+    )
+    from src.ops.bounded_futures_testnet_contract_v0 import DEFAULT_INSTRUMENT
+    from src.ops.bounded_futures_testnet_venue_binding_v0 import (
+        API_HOST_OKX_EEA,
+        PRODUCTION_INSTRUMENT_ID,
+    )
+    from src.ops.bounded_futures_private_readonly_contract_v0 import DEMO_FUTURES_HOST
+    from scripts.run_testnet_session import _testnet_credentials_present
+
+    pyproject = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    assert "kraken = [" not in pyproject
+    assert DEFAULT_INSTRUMENT == PRODUCTION_INSTRUMENT_ID
+    assert DEFAULT_FUTURES_TESTNET_NETWORK_HOST == API_HOST_OKX_EEA
+    assert DEMO_FUTURES_HOST == "eea.okx.com"
+    assert _testnet_credentials_present() is False
+    import scripts.run_testnet_session as run_testnet_session
+
+    assert not hasattr(run_testnet_session, "create_kraken_testnet_client_from_config")

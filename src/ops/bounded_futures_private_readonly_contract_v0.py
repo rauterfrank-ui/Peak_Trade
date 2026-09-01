@@ -1,15 +1,17 @@
-"""Kraken Futures Demo private-readonly reachability contract (v0).
+"""Bounded futures private-readonly reachability contract (v0).
 
 Offline policy for private_readonly_reachability_only harness mode: GET allowlist,
 order/host blocklist, response redaction rules. Does not authorize network, private
 API execute, credentials read, or orders.
+
+Kraken Futures Demo host/HMAC/v3-path defaults are retired. Current host/path
+defaults reuse already-bound OKX EEA identifiers. Signed Kraken Authent is not
+offered as a current transport helper.
 """
 
 from __future__ import annotations
 
-import base64
 import hashlib
-import hmac
 import json
 import socket
 import time
@@ -20,7 +22,6 @@ from urllib.parse import urlparse
 
 from src.ops.bounded_futures_testnet_adapter_contract_v0 import (
     DEFAULT_FUTURES_TESTNET_NETWORK_HOST,
-    FUTURES_TESTNET_ENDPOINT_ALLOWLIST,
     LIVE_FUTURES_HOST_PREFIXES,
     SPOT_KRAKEN_ENDPOINT_PREFIXES,
 )
@@ -31,6 +32,7 @@ from src.ops.bounded_futures_testnet_contract_v0 import (
     DEFAULT_ORDER_POLICY,
     DEFAULT_POSITION_MODE,
     EVIDENCE_SOURCE_FUTURES_HARNESS,
+    FORBIDDEN_KRAKEN_FUTURES_ENDPOINT_PREFIXES,
     FUTURES_SESSION_AUTHORIZED_NOW,
 )
 
@@ -43,21 +45,24 @@ PRIVATE_READONLY_SESSION_CLASS = "bounded-futures-private-readonly-reachability-
 PRIVATE_READONLY_MAX_REQUEST_COUNT = 3
 FETCH_FAILURE_CLASS_NETWORK = "network_timeout_or_fetch_exception"
 
-DEMO_FUTURES_HOST = "demo-futures.kraken.com"
-DEMO_FUTURES_REST_BASE_URL = f"{DEFAULT_FUTURES_TESTNET_NETWORK_HOST}/derivatives/api/v3"
+DEMO_FUTURES_HOST = "eea.okx.com"
+DEMO_FUTURES_REST_BASE_URL = DEFAULT_FUTURES_TESTNET_NETWORK_HOST
 
+# Existing OKX EEA private GET path names (section 11.13.2 allowlist identifiers).
+# Network execute remains unauthorized by this module.
 FUTURES_PRIVATE_READONLY_GET_ENDPOINTS: frozenset[str] = frozenset(
     {
-        "/derivatives/api/v3/accounts",
-        "/derivatives/api/v3/openpositions",
-        "/derivatives/api/v3/openorders",
+        "/api/v5/account/balance",
+        "/api/v5/account/config",
+        "/api/v5/account/positions",
+        "/api/v5/trade/orders-pending",
     }
 )
 
 PRIVATE_READONLY_ENDPOINT_ORDER: tuple[str, ...] = (
-    "/derivatives/api/v3/accounts",
-    "/derivatives/api/v3/openpositions",
-    "/derivatives/api/v3/openorders",
+    "/api/v5/account/config",
+    "/api/v5/account/balance",
+    "/api/v5/account/positions",
 )
 
 FUTURES_PRIVATE_READONLY_FORBIDDEN_PATH_SUBSTRINGS: tuple[str, ...] = (
@@ -70,10 +75,18 @@ FUTURES_PRIVATE_READONLY_FORBIDDEN_PATH_SUBSTRINGS: tuple[str, ...] = (
     "batchorder",
     "withdraw",
     "transfer",
+    "/trade/cancel-order",
+    "/trade/amend-order",
+    "/trade/close-position",
+    "/asset/withdrawal",
 )
 
 FUTURES_ORDER_MUTATION_ENDPOINTS: frozenset[str] = frozenset(
     {
+        "/api/v5/trade/order",
+        "/api/v5/trade/cancel-order",
+        "/api/v5/trade/amend-order",
+        "/api/v5/trade/close-position",
         "/derivatives/api/v3/sendorder",
         "/derivatives/api/v3/cancelorder",
         "/derivatives/api/v3/cancelallorders",
@@ -181,8 +194,8 @@ def path_contains_forbidden_substring(path: str) -> str | None:
 def validate_private_readonly_endpoint_path(path: str) -> list[str]:
     """Fail-closed path validation for private-readonly stage."""
     reasons: list[str] = []
-    if not path.startswith("/derivatives/api/v3/"):
-        reasons.append(f"path must be under /derivatives/api/v3/: {path!r}")
+    if not path.startswith("/api/v5/"):
+        reasons.append(f"path must be under /api/v5/: {path!r}")
     forbidden = path_contains_forbidden_substring(path)
     if forbidden:
         reasons.append(f"forbidden path substring: {forbidden}")
@@ -190,8 +203,8 @@ def validate_private_readonly_endpoint_path(path: str) -> list[str]:
         reasons.append(f"order/mutation endpoint forbidden: {path}")
     if path in SPOT_KRAKEN_ENDPOINT_PREFIXES:
         reasons.append(f"spot endpoint forbidden: {path}")
-    if path not in FUTURES_TESTNET_ENDPOINT_ALLOWLIST:
-        reasons.append(f"path not on futures adapter allowlist: {path}")
+    if path in FORBIDDEN_KRAKEN_FUTURES_ENDPOINT_PREFIXES:
+        reasons.append(f"retired Kraken futures endpoint forbidden: {path}")
     if path not in FUTURES_PRIVATE_READONLY_GET_ENDPOINTS:
         reasons.append(f"path not on private-readonly GET allowlist: {path}")
     return reasons
@@ -212,13 +225,13 @@ def validate_private_readonly_rest_base_url(rest_base: str) -> list[str]:
     if parsed.netloc != DEMO_FUTURES_HOST:
         reasons.append(f"rest_base_url host must be {DEMO_FUTURES_HOST!r}")
     path = (parsed.path or "").rstrip("/")
-    if path != "/derivatives/api/v3":
-        reasons.append("rest_base_url path must be /derivatives/api/v3")
+    if path not in ("",):
+        reasons.append("rest_base_url path must be empty (host-only OKX EEA base)")
     for prefix in LIVE_FUTURES_HOST_PREFIXES:
         if rest_base.startswith(prefix):
-            reasons.append(f"live host forbidden: {prefix}")
-    if rest_base.startswith("https://api.kraken.com"):
-        reasons.append("spot kraken.com host forbidden")
+            reasons.append(f"Kraken host forbidden: {prefix}")
+    if "kraken.com" in rest_base:
+        reasons.append("kraken.com host forbidden")
     return reasons
 
 
@@ -229,20 +242,14 @@ def compute_futures_private_authent(
     post_data: str = "",
     nonce: str = "",
 ) -> str:
-    """Kraken Futures v3 Authent (offline helper; secret must not be logged)."""
-    sha = hashlib.sha256()
-    sha.update(post_data.encode())
-    sha.update(nonce.encode())
-    sha.update(endpoint_path.encode())
-    digest = sha.digest()
-    secret = base64.b64decode(api_secret_b64)
-    sig = hmac.new(secret, digest, hashlib.sha512).digest()
-    return base64.b64encode(sig).decode().strip()
+    """Retired Kraken Futures v3 Authent helper.
+
+    Not a current transport. Callers must fail closed rather than sign.
+    """
+    raise ValueError("KRAKEN_FUTURES_AUTHENT_RETIRED")
 
 
 def _endpoint_path_suffix(full_path: str) -> str:
-    if full_path.startswith("/derivatives/api/v3"):
-        return full_path.split("/derivatives/api/v3", 1)[-1] or ""
     return full_path
 
 
@@ -262,33 +269,9 @@ def build_private_readonly_http_request(
     api_secret_b64: str,
     nonce: str | None = None,
 ) -> PrivateReadonlyHttpRequest:
-    """Build a single authenticated GET request (fail-closed on blocklisted paths)."""
-    method_reasons = validate_private_readonly_http_method("GET")
-    if method_reasons:
-        raise ValueError(method_reasons[0])
-    url = build_private_readonly_get_url(rest_base_url, endpoint_path)
-    url_reasons = validate_private_readonly_url(url, rest_base_url=rest_base_url)
-    if url_reasons:
-        raise ValueError(url_reasons[0])
-    nonce_value = nonce if nonce is not None else str(int(time.time() * 1000))
-    sign_path = _endpoint_path_suffix(endpoint_path)
-    authent = compute_futures_private_authent(
-        api_secret_b64=api_secret_b64,
-        endpoint_path=sign_path,
-        post_data="",
-        nonce=nonce_value,
-    )
-    headers = {
-        "APIKey": api_key,
-        "Authent": authent,
-        "Nonce": nonce_value,
-    }
-    return PrivateReadonlyHttpRequest(
-        method="GET",
-        url=url,
-        endpoint_path=endpoint_path,
-        headers=headers,
-        auth_header_names=("APIKey", "Authent", "Nonce"),
+    """Fail closed: signed Kraken Authent transport is retired; network remains unauthorized."""
+    raise ValueError(
+        "KRAKEN_FUTURES_AUTHENT_RETIRED; signed private-readonly transport is not authorized"
     )
 
 
@@ -721,7 +704,7 @@ def evaluate_private_readonly_policy(
         bool(eps) and set(eps) <= FUTURES_PRIVATE_READONLY_GET_ENDPOINTS
     ) or not eps
     result["demo_host_only"] = not any(
-        r for r in result["fail_reasons"] if "host" in r and "demo-futures" not in r
+        "host" in r and DEMO_FUTURES_HOST not in r for r in result["fail_reasons"]
     )
     result["private_readonly_policy_pass"] = not result["fail_reasons"]
     return result

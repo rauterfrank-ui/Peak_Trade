@@ -876,7 +876,7 @@ def build_coherent_proof_slots_from_pe32_default(
     *,
     source_revision: str,
     adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
-    instrument: str = "PF_ETHUSD",
+    instrument: str = "ETH-USD_UM_XPERP-310404",
     lifecycle_state_digest: str | None = None,
 ) -> tuple[ProofSlotBinding, ...]:
     """Build coherent PE-21..PE-32 proof slots from the canonical PE-32 default chain."""
@@ -1018,7 +1018,7 @@ def default_minimal_integration_input(
     source_revision: str = "abcdef0123456789abcdef0123456789abcdef01",
     adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
     integration_id: str = "cross-slice-proof-coherence-integration-001",
-    instrument: str = "PF_ETHUSD",
+    instrument: str = "ETH-USD_UM_XPERP-310404",
     lifecycle_state_digest: str | None = None,
 ) -> CrossSliceProofCoherenceIntegrationInput:
     """Minimal valid futures-generic PE-33 cross-slice coherence input for offline tests."""

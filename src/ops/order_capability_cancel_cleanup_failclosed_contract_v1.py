@@ -20,7 +20,7 @@ ABORT_BINDING_PASS_VERDICT = "PASS_FOR_DRY_SUBMIT_CANDIDATE_ONLY"
 
 ALLOWED_ENVIRONMENTS = frozenset(
     {
-        "kraken_futures_demo",
+        "okx_europe_eea",
         "demo",
         "testnet",
         "demo_testnet_only",

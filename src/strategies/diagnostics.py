@@ -49,7 +49,7 @@ except ImportError:
 
 
 # Type alias for data source
-DataSource = Literal["synthetic", "kraken_cache"]
+DataSource = Literal["synthetic"]
 
 
 @dataclass
@@ -60,7 +60,7 @@ class StrategySmokeResult:
     Attributes:
         name: Strategie-Name (z.B. "ma_crossover")
         status: "ok" wenn Test erfolgreich, "fail" bei Fehler
-        data_source: Datenquelle ("synthetic" oder "kraken_cache")
+        data_source: Datenquelle ("synthetic")
         symbol: Verwendetes Symbol (z.B. "BTC/EUR")
         timeframe: Verwendetes Timeframe (z.B. "1h")
         num_bars: Anzahl der verwendeten Bars
@@ -247,113 +247,9 @@ def create_synthetic_ohlcv(
     return df[["open", "high", "low", "close", "volume"]]
 
 
-def load_kraken_cache_ohlcv(
-    symbol: str = "BTC/EUR",
-    timeframe: str = "1h",
-    lookback_days: int = 30,
-    n_bars: Optional[int] = None,
-    config_path: str = "config/config.toml",
-) -> pd.DataFrame:
-    """
-    Laedt OHLCV-Daten aus dem lokalen Kraken-Cache.
-
-    Keine Netzwerk-Aufrufe - nur lokale Parquet-Dateien.
-
-    Args:
-        symbol: Trading-Pair (z.B. "BTC/EUR")
-        timeframe: Zeitrahmen ("1h", "4h", "1d")
-        lookback_days: Anzahl Tage (wird nur verwendet wenn n_bars None)
-        n_bars: Explizite Anzahl Bars (ueberschreibt lookback_days)
-        config_path: Pfad zur Config-Datei
-
-    Returns:
-        DataFrame mit UTC-DatetimeIndex
-        Spalten: [open, high, low, close, volume]
-
-    Raises:
-        FileNotFoundError: Wenn Cache-Datei nicht existiert
-        ValueError: Wenn nicht genuegend Daten vorhanden sind
-    """
-    # Config laden fuer data_dir
-    cfg_path = Path(config_path)
-    if cfg_path.exists():
-        with open(cfg_path, "rb") as f:
-            config = tomllib.load(f)
-        data_dir = config.get("data", {}).get("data_dir", "data")
-    else:
-        data_dir = "data"
-
-    cache_dir = Path(data_dir) / "cache"
-
-    # Cache-Dateiname: BTC/EUR -> BTC_EUR
-    safe_symbol = symbol.replace("/", "_")
-    cache_filename = f"{safe_symbol}_{timeframe}.parquet"
-    cache_path = cache_dir / cache_filename
-
-    if not cache_path.exists():
-        # Versuche alternative Naming-Konventionen
-        alt_candidates = list(cache_dir.glob(f"{safe_symbol}_{timeframe}*.parquet"))
-        if alt_candidates:
-            cache_path = alt_candidates[0]
-        else:
-            available_files = list(cache_dir.glob("*.parquet"))
-            available_str = (
-                ", ".join([f.name for f in available_files]) if available_files else "keine"
-            )
-            raise FileNotFoundError(
-                f"Kraken cache nicht gefunden: {cache_filename}\n"
-                f"Gesuchter Pfad: {cache_path}\n"
-                f"Verfuegbare Cache-Dateien: {available_str}"
-            )
-
-    # Cache laden
-    df = pd.read_parquet(cache_path)
-
-    # Sicherstellen, dass Index DatetimeIndex ist
-    if not isinstance(df.index, pd.DatetimeIndex):
-        raise ValueError(f"Cache hat keinen DatetimeIndex: {type(df.index)}")
-
-    # UTC sicherstellen
-    if df.index.tz is None:
-        df.index = df.index.tz_localize("UTC")
-    else:
-        df.index = df.index.tz_convert("UTC")
-
-    # Anzahl Bars berechnen
-    if n_bars is not None:
-        required_bars = n_bars
-    else:
-        # lookback_days in Bars umrechnen (je nach timeframe)
-        timeframe_hours = {
-            "1m": 1 / 60,
-            "5m": 5 / 60,
-            "15m": 0.25,
-            "30m": 0.5,
-            "1h": 1,
-            "4h": 4,
-            "1d": 24,
-        }
-        hours_per_bar = timeframe_hours.get(timeframe, 1)
-        required_bars = int(lookback_days * 24 / hours_per_bar)
-
-    # Mindestens 200 Bars fuer Strategien mit grossen Lookbacks
-    required_bars = max(required_bars, 200)
-
-    if len(df) < required_bars:
-        raise ValueError(
-            f"Nicht genuegend Daten im Cache: {len(df)} Bars vorhanden, {required_bars} benoetigt"
-        )
-
-    # Nur die letzten n_bars zurueckgeben
-    df = df.tail(required_bars)
-
-    # Spalten normalisieren
-    expected_cols = ["open", "high", "low", "close", "volume"]
-    missing = set(expected_cols) - set(df.columns)
-    if missing:
-        raise ValueError(f"Fehlende Spalten im Cache: {missing}")
-
-    return df[expected_cols]
+def load_kraken_cache_ohlcv(*_args: Any, **_kwargs: Any) -> pd.DataFrame:
+    """Retired Kraken cache loader. Not a current venue or smoke-test source."""
+    raise ValueError("kraken_cache is not a current data source")
 
 
 def _load_ohlcv_for_smoke(
@@ -369,7 +265,7 @@ def _load_ohlcv_for_smoke(
     Laedt OHLCV-Daten basierend auf der Datenquelle.
 
     Args:
-        data_source: "synthetic" oder "kraken_cache"
+        data_source: "synthetic" only; kraken_cache is not a current data source
         market: Symbol (z.B. "BTC/EUR")
         timeframe: Zeitrahmen
         lookback_days: Anzahl Tage
@@ -392,44 +288,10 @@ def _load_ohlcv_for_smoke(
         return create_synthetic_ohlcv(n_bars=n_bars), None
 
     elif data_source == "kraken_cache":
-        # Phase 79: echte Daten aus Kraken-Cache mit Data-QC
-        from src.data.market_data_cache_loader import (
-            load_market_data_cache_window,
-            get_real_market_smokes_config,
-        )
-
-        # Config laden fuer base_path
-        rms_cfg = get_real_market_smokes_config(config_path)
-        base_path = Path(rms_cfg["base_path"])
-
-        # Falls test_base_path gesetzt und existiert, verwende diesen
-        test_base_path = Path(rms_cfg.get("test_base_path", "tests/data/kraken_smoke"))
-        if test_base_path.exists() and not base_path.exists():
-            base_path = test_base_path
-
-        # QC-Threshold: Parameter hat Prioritaet, dann Config
-        # Verwende immer den uebergebenen min_bars Parameter
-        qc_min_bars = min_bars
-
-        df, health = load_market_data_cache_window(
-            base_path=base_path,
-            market=market,
-            timeframe=timeframe,
-            lookback_days=lookback_days,
-            min_bars=qc_min_bars,
-            n_bars=n_bars,
-        )
-
-        # Bei Data-QC-Fehler: Exception werfen (wird im Aufrufer gefangen)
-        if not health.is_ok:
-            raise ValueError(f"Data-QC fehlgeschlagen: {health.status}. {health.notes or ''}")
-
-        return df, health
+        raise ValueError("kraken_cache is not a current data source")
 
     else:
-        raise ValueError(
-            f"Unbekannte Datenquelle: '{data_source}'. Erlaubt: 'synthetic', 'kraken_cache'"
-        )
+        raise ValueError(f"Unbekannte Datenquelle: '{data_source}'. Erlaubt: 'synthetic'")
 
 
 def run_single_strategy_smoke(
@@ -447,7 +309,7 @@ def run_single_strategy_smoke(
         strategy_name: Name der Strategie
         df: OHLCV-DataFrame fuer den Backtest
         config_path: Pfad zur Config
-        data_source: Datenquelle ("synthetic" oder "kraken_cache")
+        data_source: Datenquelle ("synthetic")
         symbol: Verwendetes Symbol (fuer Metadata)
         timeframe: Verwendetes Timeframe (fuer Metadata)
 
@@ -584,7 +446,7 @@ def run_strategy_smoke_tests(
         timeframe: Timeframe (z.B. "1h", "4h")
         lookback_days: Anzahl Tage fuer Backtest (beeinflusst n_bars)
         n_bars: Explizite Anzahl Bars (ueberschreibt lookback_days)
-        data_source: Datenquelle ("synthetic" oder "kraken_cache")
+        data_source: Datenquelle ("synthetic")
         min_bars: Minimum benoetigte Bars fuer Data-QC (Phase 79)
 
     Returns:
@@ -592,9 +454,7 @@ def run_strategy_smoke_tests(
 
     Notes:
         - data_source="synthetic" (Default): Synthetische OHLCV-Daten
-        - data_source="kraken_cache": Echte Daten aus lokalem Kraken-Cache
-          (keine Netzwerk-Aufrufe, nur lokale Parquet-Dateien)
-        - Bei kraken_cache werden Data-Health-Felder gefuellt (Phase 79)
+        - kraken_cache is not a current data source
     """
     # Strategien ermitteln
     if strategy_names is None:
@@ -652,7 +512,7 @@ def run_strategy_smoke_tests(
             for name in strategy_names
         ]
 
-    # Health-Info extrahieren (fuer kraken_cache)
+    # Health-Info extrahieren (synthetic path has none)
     health_status_str = None
     health_notes_str = None
     if data_health is not None:

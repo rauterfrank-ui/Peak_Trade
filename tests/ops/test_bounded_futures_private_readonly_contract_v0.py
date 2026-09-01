@@ -72,9 +72,10 @@ def test_authority_flags_blocked() -> None:
 def test_allowlist_exactly_three_get_endpoints() -> None:
     assert FUTURES_PRIVATE_READONLY_GET_ENDPOINTS == frozenset(
         {
-            "/derivatives/api/v3/accounts",
-            "/derivatives/api/v3/openpositions",
-            "/derivatives/api/v3/openorders",
+            "/api/v5/account/balance",
+            "/api/v5/account/config",
+            "/api/v5/account/positions",
+            "/api/v5/trade/orders-pending",
         }
     )
 
@@ -121,7 +122,7 @@ def test_redaction_contract_no_raw_body() -> None:
         }
     ).encode()
     record = summarize_private_response_for_evidence(
-        endpoint="/derivatives/api/v3/accounts",
+        endpoint="/api/v5/account/config",
         http_status=200,
         body=body,
     )
@@ -132,7 +133,7 @@ def test_redaction_contract_no_raw_body() -> None:
 
 def test_redaction_fails_if_raw_values_emitted_flag_set() -> None:
     bad = {
-        "endpoint": "/derivatives/api/v3/openorders",
+        "endpoint": "/api/v5/trade/orders-pending",
         "http_method": "GET",
         "http_status": 200,
         "http_status_class": "2xx",

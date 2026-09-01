@@ -505,45 +505,37 @@ class TestKrakenCacheDataSource:
         return tmp_path
 
     def test_load_kraken_cache_ohlcv_success(self, kraken_cache_dir):
-        """Kraken-Cache OHLCV-Loader funktioniert mit gueltigen Daten."""
+        """Retired Kraken cache loader is not a current data source."""
         from src.strategies.diagnostics import load_kraken_cache_ohlcv
 
-        # Temporaere Config erstellen
         config_path = kraken_cache_dir / "config.toml"
         config_path.write_text(f'[data]\ndata_dir = "{kraken_cache_dir / "data"}"\n')
 
-        df = load_kraken_cache_ohlcv(
-            symbol="BTC/EUR",
-            timeframe="1h",
-            n_bars=200,
-            config_path=str(config_path),
-        )
-
-        assert isinstance(df, pd.DataFrame)
-        assert len(df) == 200
-        assert list(df.columns) == ["open", "high", "low", "close", "volume"]
-        assert isinstance(df.index, pd.DatetimeIndex)
+        with pytest.raises(ValueError, match="kraken_cache is not a current data source"):
+            load_kraken_cache_ohlcv(
+                symbol="BTC/EUR",
+                timeframe="1h",
+                n_bars=200,
+                config_path=str(config_path),
+            )
 
     def test_load_kraken_cache_ohlcv_not_found(self, tmp_path):
-        """Kraken-Cache wirft FileNotFoundError bei fehlenden Daten."""
+        """Retired Kraken cache loader fails closed even when files are absent."""
         from src.strategies.diagnostics import load_kraken_cache_ohlcv
 
-        # Leeres Cache-Verzeichnis
         cache_dir = tmp_path / "data" / "cache"
         cache_dir.mkdir(parents=True)
 
         config_path = tmp_path / "config.toml"
         config_path.write_text(f'[data]\ndata_dir = "{tmp_path / "data"}"\n')
 
-        with pytest.raises(FileNotFoundError) as exc_info:
+        with pytest.raises(ValueError, match="kraken_cache is not a current data source"):
             load_kraken_cache_ohlcv(
                 symbol="ETH/EUR",
                 timeframe="1h",
                 n_bars=100,
                 config_path=str(config_path),
             )
-
-        assert "ETH_EUR_1h" in str(exc_info.value)
 
     def test_run_strategy_smoke_tests_with_kraken_cache(self, kraken_cache_dir):
         """run_strategy_smoke_tests funktioniert mit kraken_cache data_source."""
@@ -575,17 +567,8 @@ min_bars = 100
         result = results[0]
         assert result.name == "ma_crossover"
         assert result.data_source == "kraken_cache"
-        assert result.symbol == "BTC/EUR"
-        assert result.timeframe == "1h"
-
-        # Sollte OK sein (echte Daten mit min_bars=100)
-        if result.status == "ok":
-            assert result.num_bars == 200
-            assert result.return_pct is not None
-            assert result.start_ts is not None
-            assert result.end_ts is not None
-            # Phase 79: Data-Health sollte gesetzt sein
-            assert result.data_health == "ok"
+        assert result.status == "fail"
+        assert "kraken_cache is not a current data source" in (result.error or "")
 
     def test_run_strategy_smoke_tests_kraken_cache_missing_data(self, tmp_path):
         """Bei fehlenden Kraken-Cache-Daten werden alle Strategien als fail markiert."""
@@ -610,7 +593,7 @@ min_bars = 100
         for r in results:
             assert r.status == "fail"
             assert r.data_source == "kraken_cache"
-            assert "nicht gefunden" in r.error or "not found" in r.error.lower()
+            assert "kraken_cache is not a current data source" in (r.error or "")
 
     def test_data_source_synthetic_default(self):
         """Default data_source ist synthetic."""
@@ -885,11 +868,11 @@ class TestPhase79CLIDataQCOnly:
             timeout=30,
         )
 
-        assert result.returncode == 0
-        assert "WARNUNG" in result.stdout or "nur sinnvoll" in result.stdout
+        assert result.returncode == 2
+        assert "not bound to a current venue cache source" in result.stdout
 
     def test_cli_check_data_only_kraken_cache(self):
-        """CLI --check-data-only mit kraken_cache zeigt QC-Ergebnis."""
+        """CLI --check-data-only mit kraken_cache bleibt fail-closed."""
         result = subprocess.run(
             [
                 sys.executable,
@@ -908,10 +891,8 @@ class TestPhase79CLIDataQCOnly:
             timeout=30,
         )
 
-        # Sollte ohne Crash laufen (Exit 0 oder 1)
-        assert result.returncode in [0, 1]
-        assert "DATA-QC" in result.stdout
-        assert "Status:" in result.stdout
+        assert result.returncode == 2
+        assert "invalid choice" in result.stderr or "kraken_cache" in result.stderr
 
     def test_cli_min_bars_parameter(self):
         """CLI --min-bars Parameter wird akzeptiert."""

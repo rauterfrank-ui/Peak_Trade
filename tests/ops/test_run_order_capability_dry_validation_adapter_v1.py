@@ -51,7 +51,7 @@ def _base_argv(archive: Path, *, run_id: str = "order_cap_dry_validation_test_ru
         "--instrument",
         DEFAULT_INSTRUMENT,
         "--venue",
-        "Kraken Futures Demo / demo-futures.kraken.com",
+        "okx_europe_eea / eea.okx.com",
         "--max-loss-cap-eur",
         "1.00",
         "--max-notional-eur",

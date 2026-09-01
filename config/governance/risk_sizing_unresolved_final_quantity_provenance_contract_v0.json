@@ -268,7 +268,7 @@
         "related_bypass_stable_id": "BYPASS_LIVE_SHADOW_POSITION_FRACTION",
         "related_topology_edge_id": "COMPANION_SHADOW_POSITION_FRACTION",
         "factory": "ShadowPaperConfig.position_fraction",
-        "factory_source_path": "src/data/kraken_live.py"
+        "factory_source_path": "src/data/simulation_candles.py"
       },
       "input_quantity_dimension": "FRACTION_DECIMAL_0_1",
       "received_sizing_values": [
@@ -333,7 +333,7 @@
       "related_consumption_edge_ids": ["CONS_SHADOW_POSITION_FRACTION_HANDOFF"],
       "evidence_anchors": [
         {
-          "file": "src/data/kraken_live.py",
+          "file": "src/data/simulation_candles.py",
           "symbol": "ShadowPaperConfig.position_fraction",
           "lines": "177-201"
         },

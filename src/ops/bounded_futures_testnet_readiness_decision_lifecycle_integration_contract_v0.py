@@ -2390,7 +2390,7 @@ def _coherent_default_minimal_integration_input(
     source_revision: str = "abcdef0123456789abcdef0123456789abcdef01",
     adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
     integration_id: str = "readiness-decision-lifecycle-integration-001",
-    instrument: str = "PF_ETHUSD",
+    instrument: str = "ETH-USD_UM_XPERP-310404",
     lifecycle_state_digest: str | None = None,
     operator_name: str = "Frank Rauter",
 ) -> ReadinessDecisionLifecycleIntegrationInput:
@@ -2501,7 +2501,7 @@ def default_minimal_integration_input(
     source_revision: str = "abcdef0123456789abcdef0123456789abcdef01",
     adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
     integration_id: str = "readiness-decision-lifecycle-integration-001",
-    instrument: str = "PF_ETHUSD",
+    instrument: str = "ETH-USD_UM_XPERP-310404",
     lifecycle_state_digest: str | None = None,
     operator_name: str = "Frank Rauter",
 ) -> ReadinessDecisionLifecycleIntegrationInput:
@@ -2522,7 +2522,7 @@ def default_minimal_integration_input(
         source_revision == "abcdef0123456789abcdef0123456789abcdef01"
         and adapter_id == "offline_bounded_futures_testnet_adapter_v0"
         and integration_id == "readiness-decision-lifecycle-integration-001"
-        and instrument == "PF_ETHUSD"
+        and instrument == "ETH-USD_UM_XPERP-310404"
         and lifecycle_state_digest is None
         and operator_name == "Frank Rauter"
     )

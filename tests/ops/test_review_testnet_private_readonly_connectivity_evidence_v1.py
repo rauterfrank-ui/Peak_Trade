@@ -52,9 +52,9 @@ def _write_path_c_bundle(staging: Path, *, connectivity_proven: bool = True) -> 
         encoding="utf-8",
     )
     endpoints = [
-        "/derivatives/api/v3/accounts",
-        "/derivatives/api/v3/openpositions",
-        "/derivatives/api/v3/openorders",
+        "/api/v5/account/config",
+        "/api/v5/account/balance",
+        "/api/v5/account/positions",
     ]
     (evidence / "manifest.json").write_text(
         json.dumps(
@@ -118,7 +118,7 @@ def test_review_fail_on_forbidden_endpoint(tmp_path: Path) -> None:
     staging.mkdir()
     _write_path_c_bundle(staging)
     manifest = json.loads((staging / "wrapper_evidence" / "manifest.json").read_text())
-    manifest["endpoints_called"] = ["/derivatives/api/v3/sendorder"]
+    manifest["endpoints_called"] = ["/api/v5/trade/order"]
     (staging / "wrapper_evidence" / "manifest.json").write_text(
         json.dumps(manifest) + "\n", encoding="utf-8"
     )

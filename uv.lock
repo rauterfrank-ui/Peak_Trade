@@ -3348,9 +3348,6 @@ dev = [
 knowledge = [
     { name = "chromadb" },
 ]
-kraken = [
-    { name = "ccxt" },
-]
 monitoring = [
     { name = "prometheus-client" },
 ]
@@ -3395,7 +3392,6 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "black", marker = "extra == 'dev'", specifier = ">=23.0.0" },
-    { name = "ccxt", marker = "extra == 'kraken'", specifier = ">=4" },
     { name = "chromadb", marker = "extra == 'knowledge'", specifier = ">=0.4.0" },
     { name = "fastapi", marker = "extra == 'web'", specifier = ">=0.135.1" },
     { name = "httpx", marker = "extra == 'dev'" },
@@ -3426,7 +3422,7 @@ requires-dist = [
     { name = "urllib3", specifier = ">=2.7.0,<3" },
     { name = "uvicorn", marker = "extra == 'web'", specifier = ">=0.24.0" },
 ]
-provides-extras = ["kraken", "dev", "test", "web", "webui-browser", "viz", "otel", "knowledge", "monitoring", "tracking"]
+provides-extras = ["dev", "test", "web", "webui-browser", "viz", "otel", "knowledge", "monitoring", "tracking"]
 
 [package.metadata.requires-dev]
 dev = [

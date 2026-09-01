@@ -308,7 +308,7 @@
       ],
       "evidence_anchors": [
         {
-          "file": "src/data/kraken_live.py",
+          "file": "src/data/simulation_candles.py",
           "symbol": "ShadowPaperConfig.position_fraction",
           "lines": "177-201"
         },

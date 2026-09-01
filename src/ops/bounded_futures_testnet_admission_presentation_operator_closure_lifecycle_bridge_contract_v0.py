@@ -1071,7 +1071,7 @@ def default_minimal_bridge_input(
     source_revision: str = "abcdef0123456789abcdef0123456789abcdef01",
     adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
     bridge_id: str = "admission-presentation-operator-closure-lifecycle-bridge-001",
-    instrument: str = "PF_ETHUSD",
+    instrument: str = "ETH-USD_UM_XPERP-310404",
 ) -> AdmissionPresentationOperatorClosureLifecycleBridgeInput:
     """Minimal valid futures-generic bridge input for offline tests."""
     from src.ops.bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0 import (

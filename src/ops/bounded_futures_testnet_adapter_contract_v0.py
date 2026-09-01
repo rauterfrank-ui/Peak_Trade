@@ -16,8 +16,10 @@ from src.ops.bounded_futures_testnet_contract_v0 import (
     DEFAULT_MARKET_TYPE,
     DEFAULT_MAX_LEVERAGE,
     DEFAULT_POSITION_MODE,
+    FORBIDDEN_KRAKEN_FUTURES_ENDPOINT_PREFIXES,
     FUTURES_SESSION_AUTHORIZED_NOW,
     REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS,
+    REJECTED_KRAKEN_FUTURES_SYMBOLS,
     SPOT_KRAKEN_ENDPOINT_PREFIXES,
 )
 
@@ -25,31 +27,30 @@ PACKAGE_MARKER = "BOUNDED_FUTURES_TESTNET_ADAPTER_CONTRACT_V0=true"
 ADAPTER_NETWORK_CALLS_ALLOWED = False
 FUTURES_TESTNET_INSTRUMENT_EXCHANGE_PROVEN = False
 
-# Contract-default testnet futures host (planning placeholder; not live spot Kraken).
-DEFAULT_FUTURES_TESTNET_NETWORK_HOST = "https://demo-futures.kraken.com"
+# Bound to existing Package E / INV-033 API_HOST_OKX_EEA.
+DEFAULT_FUTURES_TESTNET_NETWORK_HOST = "https://eea.okx.com"
 
-# Futures REST paths — separate from spot SPOT_KRAKEN_ENDPOINT_PREFIXES.
-# Private-readonly GET subset (policy): bounded_futures_private_readonly_contract_v0.py
-# accounts, openpositions, openorders — not sendorder/cancel*.
+# Existing OKX EEA public GET paths from bounded_futures_testnet_venue_binding_v0.
+# Retired Kraken /derivatives/api/v3 paths are exclusion-only (see FORBIDDEN_*).
 FUTURES_TESTNET_ENDPOINT_ALLOWLIST: frozenset[str] = frozenset(
     {
-        "/derivatives/api/v3/tickers",
-        "/derivatives/api/v3/instruments",
-        "/derivatives/api/v3/accounts",
-        "/derivatives/api/v3/openpositions",
-        "/derivatives/api/v3/openorders",
-        "/derivatives/api/v3/sendorder",
-        "/derivatives/api/v3/cancelorder",
-        "/derivatives/api/v3/cancelallorders",
+        "/api/v5/public/time",
+        "/api/v5/public/instruments",
+        "/api/v5/public/mark-price",
+        "/api/v5/market/ticker",
+        "/api/v5/market/tickers",
     }
 )
 
-LIVE_FUTURES_HOST_PREFIXES: frozenset[str] = frozenset(
+# Kraken hosts remain exclusion-only. They are not selectable defaults.
+FORBIDDEN_KRAKEN_FUTURES_HOST_PREFIXES: frozenset[str] = frozenset(
     {
+        "https://demo-futures.kraken.com",
         "https://futures.kraken.com",
         "https://api.kraken.com",
     }
 )
+LIVE_FUTURES_HOST_PREFIXES: frozenset[str] = FORBIDDEN_KRAKEN_FUTURES_HOST_PREFIXES
 
 
 @dataclass(frozen=True)
@@ -109,6 +110,10 @@ def validate_futures_testnet_adapter_binding(
         result["fail_reasons"].append(
             f"instrument {binding.instrument!r} is a rejected futures placeholder"
         )
+    if binding.instrument in REJECTED_KRAKEN_FUTURES_SYMBOLS:
+        result["fail_reasons"].append(
+            f"instrument {binding.instrument!r} is a retired Kraken Futures symbol"
+        )
     if binding.margin_mode != DEFAULT_MARGIN_MODE:
         result["fail_reasons"].append(f"margin_mode must be {DEFAULT_MARGIN_MODE!r}")
     if binding.margin_mode == "cross":
@@ -125,12 +130,14 @@ def validate_futures_testnet_adapter_binding(
         result["fail_reasons"].append("testnet_scoped must be true")
 
     host = binding.network_host.strip().rstrip("/")
-    if any(host.startswith(prefix) for prefix in LIVE_FUTURES_HOST_PREFIXES):
+    if any(host.startswith(prefix) for prefix in FORBIDDEN_KRAKEN_FUTURES_HOST_PREFIXES):
         result["fail_reasons"].append(
-            "live or spot Kraken host not allowed for bounded futures testnet"
+            "Kraken futures/spot host is not a current bounded futures testnet default"
         )
-    if host == "https://api.kraken.com":
-        result["fail_reasons"].append("spot kraken.com host forbidden for futures bounded adapter")
+    if "kraken.com" in host:
+        result["fail_reasons"].append(
+            "kraken.com host forbidden for current bounded futures adapter"
+        )
 
     if not binding.endpoint_allowlist:
         result["fail_reasons"].append("endpoint_allowlist must be non-empty")
@@ -141,6 +148,8 @@ def validate_futures_testnet_adapter_binding(
     for ep in endpoints:
         if ep in SPOT_KRAKEN_ENDPOINT_PREFIXES:
             result["fail_reasons"].append(f"spot endpoint not allowed: {ep}")
+        if ep in FORBIDDEN_KRAKEN_FUTURES_ENDPOINT_PREFIXES:
+            result["fail_reasons"].append(f"retired Kraken futures endpoint not allowed: {ep}")
         if ep not in FUTURES_TESTNET_ENDPOINT_ALLOWLIST:
             result["fail_reasons"].append(f"endpoint not on futures testnet allowlist: {ep}")
 

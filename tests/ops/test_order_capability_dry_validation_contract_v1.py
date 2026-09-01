@@ -35,7 +35,7 @@ def _valid_inputs(**overrides: object) -> OrderCapabilityDryValidationInputs:
     spec = default_bounded_normal_v0_spec()
     base = {
         "instrument": DEFAULT_INSTRUMENT,
-        "venue": f"Kraken Futures Demo / {DEFAULT_VENUE_HOST}",
+        "venue": f"okx_europe_eea / {DEFAULT_VENUE_HOST}",
         "max_loss_cap_eur": 1.0,
         "max_notional_eur": spec.max_notional_eur,
         "order_type": DEFAULT_ORDER_TYPE,
@@ -116,15 +116,15 @@ def test_fail_closed_pf_xbtusd_instrument() -> None:
     assert any("instrument must be" in r for r in result["fail_reasons"])
 
 
-def test_pass_pf_ethusd_with_kraken_futures_demo_venue() -> None:
+def test_fail_closed_retired_kraken_pf_ethusd_instrument() -> None:
     result = evaluate_order_capability_dry_validation(
         _valid_inputs(
             instrument="PF_ETHUSD",
-            venue="kraken_futures_demo / demo-futures.kraken.com",
+            venue="okx_europe_eea / eea.okx.com",
         )
     )
-    assert result["verdict"] == "PASS"
-    assert result["fail_reasons"] == []
+    assert result["verdict"] == "FAIL_CLOSED"
+    assert any("instrument must be" in r for r in result["fail_reasons"])
 
 
 def test_build_result_contains_machine_fields() -> None:

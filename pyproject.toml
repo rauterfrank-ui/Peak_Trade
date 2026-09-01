@@ -24,9 +24,6 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-kraken = [
-    "ccxt>=4",
-]
 dev = [
     "optuna>=3.0,<4",
     "pytest>=7.4.0",

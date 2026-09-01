@@ -723,9 +723,9 @@ def validate_builder_inputs(inputs: PreflightPacketBuilderInput) -> list[str]:
 def default_minimal_builder_input(
     *,
     source_revision: str = "offline-planning-revision",
-    instrument: str = "PF_ETHUSD",
+    instrument: str = "ETH-USD_UM_XPERP-310404",
     adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
-    exchange_id: str = "kraken_futures_demo",
+    exchange_id: str = "okx_europe_eea",
     created_at: str | None = "1970-01-01T00:00:00Z",
     durable_archive_target: str = "Peak_Trade_runtime_evidence_archive",
 ) -> PreflightPacketBuilderInput:

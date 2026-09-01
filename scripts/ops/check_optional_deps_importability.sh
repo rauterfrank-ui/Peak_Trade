@@ -20,7 +20,7 @@ fi
 
 TMP_BASE="${ROOT_DIR}/.tmp_optional_deps_gate"
 VENV_CORE="${TMP_BASE}/venv_core"
-VENV_KRAKEN="${TMP_BASE}/venv_kraken"
+VENV_OPTIONAL="${TMP_BASE}/venv_optional"
 
 cleanup() {
   rm -rf "${TMP_BASE}" || true
@@ -34,12 +34,12 @@ mkdir -p "${TMP_BASE}"
 cd "${ROOT_DIR}"
 
 "${PYTHON_BIN}" -m venv "${VENV_CORE}"
-"${PYTHON_BIN}" -m venv "${VENV_KRAKEN}"
+"${PYTHON_BIN}" -m venv "${VENV_OPTIONAL}"
 
 PIP_CORE="${VENV_CORE}/bin/pip"
 PY_CORE="${VENV_CORE}/bin/python"
-PIP_KRAKEN="${VENV_KRAKEN}/bin/pip"
-PY_KRAKEN="${VENV_KRAKEN}/bin/python"
+PIP_OPTIONAL="${VENV_OPTIONAL}/bin/pip"
+PY_OPTIONAL="${VENV_OPTIONAL}/bin/python"
 
 echo
 echo "============================================================"
@@ -56,14 +56,15 @@ echo "OK: core imports"
 
 echo
 echo "============================================================"
-echo "B) Optional install ([kraken]): pip install -e .[kraken]"
+echo "B) Optional install (ccxt, not a named venue extra): pip install ccxt"
 echo "============================================================"
-"${PIP_KRAKEN}" -q install -U pip setuptools wheel
-"${PIP_KRAKEN}" -q install -e ".[kraken]"
+"${PIP_OPTIONAL}" -q install -U pip setuptools wheel
+"${PIP_OPTIONAL}" -q install -e .
+"${PIP_OPTIONAL}" -q install "ccxt>=4"
 
 echo
 echo "-- CCXT client import smoke (no network)"
-"${PY_KRAKEN}" -c "from src.exchange.ccxt_client import CcxtExchangeClient; CcxtExchangeClient('okx')"
+"${PY_OPTIONAL}" -c "from src.exchange.ccxt_client import CcxtExchangeClient; CcxtExchangeClient('okx')"
 echo "OK: ccxt OKX client import + init"
 
 echo

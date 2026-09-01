@@ -891,10 +891,11 @@ EXIT_FAIL_CLOSED_ENTRYPOINT = 2
 
 
 def _testnet_credentials_present() -> bool:
-    """True when both testnet credential env vars are set (values not inspected)."""
-    return bool(
-        os.environ.get("KRAKEN_TESTNET_API_KEY") and os.environ.get("KRAKEN_TESTNET_API_SECRET")
-    )
+    """Fail-closed: no current authorized testnet credential contract.
+
+    Retired Kraken env vars are not accepted as a current credential gate.
+    """
+    return False
 
 
 def _enforce_bounded_order_cap_cli(
@@ -943,7 +944,8 @@ def _enforce_fail_closed_entrypoint(
     if not _testnet_credentials_present():
         logger.error(
             "Testnet credentials required for session execute. "
-            "Set KRAKEN_TESTNET_API_KEY and KRAKEN_TESTNET_API_SECRET."
+            "No authorized current testnet credential contract is bound; "
+            "KRAKEN_TESTNET_API_KEY / KRAKEN_TESTNET_API_SECRET are not accepted."
         )
         return EXIT_FAIL_CLOSED_ENTRYPOINT
     if args.duration is None and not args.allow_unbounded_session:
@@ -970,9 +972,6 @@ def main() -> int:
     Returns:
         Exit-Code (0 = Success, 1 = Error)
     """
-    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
-
-    reject_noncanonical_operative_surface(surface="run_testnet_session")
     parser = argparse.ArgumentParser(
         description="Run Peak_Trade Testnet Session with exchange API calls.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -991,7 +990,8 @@ Beispiele:
   python -m scripts.run_testnet_session --duration 30
 
 Voraussetzungen:
-  - KRAKEN_TESTNET_API_KEY und KRAKEN_TESTNET_API_SECRET gesetzt
+  - No authorized current testnet credential contract is bound (fail-closed).
+  - KRAKEN_TESTNET_API_KEY / KRAKEN_TESTNET_API_SECRET are not accepted.
   - config.toml: [environment] mode = "testnet"
 
 WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!

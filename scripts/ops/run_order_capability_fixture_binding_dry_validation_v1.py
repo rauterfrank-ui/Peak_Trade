@@ -157,7 +157,7 @@ def _browser_render_input_from_disposition(
         raw_payload_hash=raw_hash,
         normalized_payload_hash=raw_hash,
         schema_version=FIXTURE_SCHEMA_VERSION,
-        venue="kraken_futures_demo",
+        venue="okx_europe_eea",
         host=REQUIRED_DEMO_HOST,
         instrument=DEFAULT_INSTRUMENT,
         value_redacted=True,

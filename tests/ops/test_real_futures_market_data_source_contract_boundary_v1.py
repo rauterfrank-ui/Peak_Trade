@@ -67,8 +67,13 @@ def test_market_data_source_contract_no_runtime_wiring_claims() -> None:
 def test_market_data_source_contract_links_u5b_probe_module() -> None:
     doc = MARKET_DATA_SOURCE_DOC.read_text(encoding="utf-8")
     assert "probe_kraken_futures_public_market_data_v1.py" in doc
+    assert "ABSENT" in doc
     assert "CONFIRM_VIEW_ONLY_PUBLIC_MARKET_DATA_PROBE_V1" in doc
-    assert "test_probe_kraken_futures_public_market_data_v1.py" in doc
+    from pathlib import Path
+
+    repo = Path(__file__).resolve().parents[2]
+    assert not (repo / "scripts/ops/probe_kraken_futures_public_market_data_v1.py").is_file()
+    assert not (repo / "tests/ops/test_probe_kraken_futures_public_market_data_v1.py").is_file()
 
 
 GOVERNED_SNAPSHOT_TEMPLATE_DOC = (
@@ -180,12 +185,18 @@ def test_governed_snapshot_template_links_u5c_transform_contract() -> None:
     assert "not** direct report-only intake" in doc
 
 
-def test_u5d_offline_transform_script_referenced_in_contract() -> None:
+def test_u5d_offline_transform_script_is_absent_from_current_workflow() -> None:
     doc = MARKET_DATA_SOURCE_DOC.read_text(encoding="utf-8")
+    assert "ABSENT" in doc
+    assert "not a current operative CLI" in doc
     assert "transform_kraken_futures_raw_to_u2c_candidate_v1.py" in doc
-    assert "CONFIRM_U5D_OFFLINE_TRANSFORM_VALIDATION_V1" in doc or "U5d" in doc
-    assert "test_transform_kraken_futures_raw_to_u2c_candidate_v1.py" in doc
-    assert "u5d_u2c_candidate_validation_v1" in doc or "U5d offline" in doc
+    from pathlib import Path
+
+    repo = Path(__file__).resolve().parents[2]
+    assert not (repo / "scripts/ops/transform_kraken_futures_raw_to_u2c_candidate_v1.py").is_file()
+    assert not (
+        repo / "tests/ops/test_transform_kraken_futures_raw_to_u2c_candidate_v1.py"
+    ).is_file()
 
 
 def test_real_futures_contract_documents_public_view_min_notional_permanent_block() -> None:

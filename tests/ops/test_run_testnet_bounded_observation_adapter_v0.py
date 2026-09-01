@@ -1173,7 +1173,7 @@ def _valid_market_observation(
     base = {
         "selected_future_id": REPO_GROUNDED_ETH_PERP_SELECTED_FUTURE_ID,
         "venue_symbol": REPO_GROUNDED_ETH_PERP_VENUE_SYMBOL,
-        "exchange": "kraken_futures",
+        "exchange": "okx_europe_eea",
         "market_type": FuturesMarketType.PERPETUAL,
         "source_run_id": "testnet-closeout-binding-run",
         "dataset_id": "testnet-bounded-observation-v0",
@@ -1357,18 +1357,20 @@ class _AdapterFakeTickerFetcher:
 
     def fetch(self, url: str, *, timeout_seconds: float) -> tuple[int, bytes]:
         self.calls += 1
-        assert url == build_canonical_testnet_public_ticker_url("https://demo-futures.kraken.com")
+        assert url == build_canonical_testnet_public_ticker_url("https://eea.okx.com")
         if self.body is not None:
             return self.status, self.body
         payload = {
-            "result": "success",
-            "tickers": [
+            "code": "0",
+            "data": [
                 {
-                    "symbol": "PF_ETHUSD",
-                    "markPrice": 3500.0,
-                    "last": 3499.5,
-                    "indexPrice": 3500.1,
-                    "lastTime": "2026-06-23T11:59:30Z",
+                    "instId": "ETH-USD_UM_XPERP-310404",
+                    "markPx": "3500.0",
+                    "last": "3499.5",
+                    "idxPx": "3500.1",
+                    "ts": str(
+                        int(datetime(2026, 6, 23, 12, 0, 0, tzinfo=timezone.utc).timestamp() * 1000)
+                    ),
                 }
             ],
         }
@@ -1463,7 +1465,7 @@ def test_execute_collect_http_503_fail_closed(tmp_path: Path) -> None:
 
 def test_ci_selector_runtime_market_observation_producer_five_file_diff_focused() -> None:
     sel = _run_selector(*RUNTIME_PRODUCER_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert (
         sel["test_selection_reason"]
         == "bounded_testnet_runtime_market_observation_producer_focused"

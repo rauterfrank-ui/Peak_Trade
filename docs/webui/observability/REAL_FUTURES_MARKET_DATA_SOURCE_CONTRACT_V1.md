@@ -184,9 +184,9 @@ Charter markers remain fail-closed. **U5b probe CLI** is an isolated manual oper
 | U2c | Governed metadata snapshot template | on main |
 | U2b | Real metadata loader guard | on main |
 | **U5** | This market-data source charter (docs-only) | this document |
-| **U5b** | Kraken Futures public probe (isolated CLI + mocked tests) | `probe_kraken_futures_public_market_data_v1.py` |
-| **U5c** | U5b raw evidence → U2c governed snapshot candidate transform contract (docs/tests-only) | §12 this document |
-| **U5d** | Offline transform candidate validation CLI (no network; confirm token) | `transform_kraken_futures_raw_to_u2c_candidate_v1.py` |
+| **U5b** | Historical Kraken Futures public probe CLI | **ABSENT** — `probe_kraken_futures_public_market_data_v1.py` is not a current operative script |
+| **U5c** | Historical U5b→U2c transform contract (docs/tests-only; not current intake) | §12 this document (historical Kraken evidence path only) |
+| **U5d** | Historical offline transform candidate validation CLI | **ABSENT** — `transform_kraken_futures_raw_to_u2c_candidate_v1.py` is not a current operative CLI |
 | **OKX producer charter** | Sealed OKX → `futures_producer_packet_governed.v1` boundary (docs-only) | [OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md](OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md) |
 | U2b write / Truth-GO | Governed snapshot intake | not authorized |
 
@@ -196,8 +196,7 @@ Charter markers remain fail-closed. **U5b probe CLI** is an isolated manual oper
 |-------------|---------|
 | `tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py` | Doc existence, machine markers, U4b cross-link |
 | `tests/ops/test_real_futures_market_data_source_contract_boundary_v1.py` | Charter boundary, U5c transform contract, forbidden provider ids, no dummy substitution |
-| `tests&#47;ops&#47;test_probe_kraken_futures_public_market_data_v1.py` | U5b probe CLI boundary, mocked HTTP, confirm token, no network in CI |
-| `tests&#47;ops&#47;test_transform_kraken_futures_raw_to_u2c_candidate_v1.py` | U5d offline transform validation CLI, fixture-only, no network |
+| `tests/ops/test_real_futures_market_data_source_contract_boundary_v1.py` | Charter boundary; U5b/U5d scripts are documented as ABSENT current CLIs |
 
 ## 12. U5C Transform Contract to U2c Governed Snapshot Candidate
 
@@ -236,7 +235,7 @@ U5b raw evidence
 
 | Layer | Canonical reuse — **no new owner** |
 |-------|--------------------------------------|
-| U5 charter + U5b probe | This document §9–§10, `probe_kraken_futures_public_market_data_v1.py` |
+| U5 charter + historical U5b probe | This document §9–§10; `probe_kraken_futures_public_market_data_v1.py` is **ABSENT** as a current CLI |
 | U2c governed snapshot template | [FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md](FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md) §6–§10 |
 | U4b real-source charter | [FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md](FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md) |
 | U2b loader guard | `src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_real_metadata_source_v1.py` |
@@ -321,7 +320,7 @@ Missing Kraken fields must remain in `missing_fields` — **no BTC&#47;USD subst
 | Gate | Marker / outcome |
 |------|------------------|
 | 1. Raw Capture PASS | U5b bundle + raw JSON artifacts + `MANIFEST_VERIFY_RC=0` |
-| 2. Transform Validation PASS | U5d offline validation CLI (`transform_kraken_futures_raw_to_u2c_candidate_v1.py`) — manual operator GO only; **no transform execution in CI** |
+| 2. Transform Validation PASS | Historical U5d CLI is **ABSENT** (`transform_kraken_futures_raw_to_u2c_candidate_v1.py` is not a current operative step) |
 | 3. Candidate MANIFEST RC=0 | Candidate bundle integrity |
 | 4. Operator Acceptance | Explicit durable acceptance — `GOVERNED_SNAPSHOT_ACCEPTED=true` only then |
 | 5. U2b Loader Validation PASS | `futures_producer_packet_real_metadata_source_v1.py` |
@@ -339,13 +338,12 @@ Missing Kraken fields must remain in `missing_fields` — **no BTC&#47;USD subst
 | Test module | Purpose |
 |-------------|---------|
 | `tests/ops/test_real_futures_market_data_source_contract_boundary_v1.py` | U5c §12 markers, intake-not-ready, forbidden shortcuts, reuse chain |
-| `tests&#47;ops&#47;test_probe_kraken_futures_public_market_data_v1.py` | U5b probe remains view-only, preview not governed |
-| `tests&#47;ops&#47;test_transform_kraken_futures_raw_to_u2c_candidate_v1.py` | U5d offline validation artifact markers, no network, no intake |
+| `tests/ops/test_real_futures_market_data_source_contract_boundary_v1.py` | U5b/U5d scripts remain ABSENT; historical Kraken public-view min_notional block stays documented |
 | `tests/webui/test_futures_producer_packet_real_metadata_source_v1.py` | U2b loader rejection reasons (unchanged — referenced by gates) |
 
 ### 12.11 U5D Offline Transform Validation CLI
 
-**U5d offline validation record:** Manual operator CLI `transform_kraken_futures_raw_to_u2c_candidate_v1.py` reads durable U5C raw instruments/tickers + U5B probe report and emits **`u5d_u2c_candidate_validation.v1`** validation artifact only. Requires confirm token **`CONFIRM_U5D_OFFLINE_TRANSFORM_VALIDATION_V1`**. No network, no snapshot intake, no loader, no readmodel write, no dashboard wiring. **`GOVERNED_SNAPSHOT_ACCEPTED=false`** until separate operator acceptance.
+**U5d offline validation record:** The historical CLI `transform_kraken_futures_raw_to_u2c_candidate_v1.py` is **ABSENT** and is **not** a current operator workflow stage. No replacement transform CLI is introduced here. **`GOVERNED_SNAPSHOT_ACCEPTED=false`** until a separately authorized operator acceptance.
 
 ### 12.12 Kraken Public View — min_notional Permanent Block (normative)
 
@@ -405,5 +403,5 @@ CVC and diagnostic surfaces **must not** weaken strict upstream gates or promote
 |-------------|---------|
 | `tests/ops/test_u2c_packet_shape_v1.py` | `MISSING_PROVIDER_METADATA_NOT_IN_PUBLIC_VIEW`; `impactMidSize` ≠ `min_notional` |
 | `tests/ops/test_real_futures_market_data_source_contract_boundary_v1.py` | §12.12 markers present; no forbidden heuristic language |
-| `tests&#47;ops&#47;test_transform_kraken_futures_raw_to_u2c_candidate_v1.py` | U5d rows keep `missing_provider_metadata=["min_notional"]` |
+| `tests/ops/test_real_futures_market_data_source_contract_boundary_v1.py` | §12.12 markers present; U5d transform script remains ABSENT |
 | `tests/webui/test_candidate_validation_readmodel_projection_v1.py` | Strict path still blocked for CVC bundles |

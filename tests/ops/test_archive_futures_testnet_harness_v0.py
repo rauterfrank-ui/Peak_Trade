@@ -60,8 +60,8 @@ class _FakeFetcher:
         status_by_path: dict[str, int] | None = None,
     ) -> None:
         self.urls: list[str] = []
-        default_tickers = b'{"tickers":[{"symbol":"PF_ETHUSD"}]}'
-        default_instruments = b'{"instruments":[{"symbol":"PF_ETHUSD"}]}'
+        default_tickers = b'{"data":[{"instId":"ETH-USD_UM_XPERP-310404"}]}'
+        default_instruments = b'{"data":[{"instId":"ETH-USD_UM_XPERP-310404"}]}'
         if body is not None:
             self._tickers_body = body
             self._instruments_body = body
@@ -75,10 +75,10 @@ class _FakeFetcher:
     def fetch(self, url: str, *, timeout_seconds: float) -> tuple[int, bytes]:
         self.urls.append(url)
         if "tickers" in url:
-            path = "/derivatives/api/v3/tickers"
+            path = "/api/v5/market/tickers"
             body = self._tickers_body
         elif "instruments" in url:
-            path = "/derivatives/api/v3/instruments"
+            path = "/api/v5/public/instruments"
             body = self._instruments_body
         else:
             path = url
@@ -127,10 +127,10 @@ def test_authority_flags_remain_blocked() -> None:
     assert ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW is False
 
 
-def test_defaults_pf_ethusd_and_demo_futures_rest_base() -> None:
-    assert harness.DEFAULT_FUTURES_SYMBOL == "PF_ETHUSD"
-    assert harness.DEFAULT_INSTRUMENT == "PF_ETHUSD"
-    assert harness.DEFAULT_REST_BASE_URL == ("https://demo-futures.kraken.com/derivatives/api/v3")
+def test_defaults_okx_eea_xperp_and_eea_rest_base() -> None:
+    assert harness.DEFAULT_FUTURES_SYMBOL == "ETH-USD_UM_XPERP-310404"
+    assert harness.DEFAULT_INSTRUMENT == "ETH-USD_UM_XPERP-310404"
+    assert harness.DEFAULT_REST_BASE_URL == "https://eea.okx.com"
     assert _validate_harness_defaults_pass()
 
 
@@ -258,13 +258,13 @@ def test_fake_fetcher_network_path_no_sendorder(tmp_path: Path) -> None:
     assert rc == 0
     assert fetcher.urls
     for url in fetcher.urls:
-        assert "demo-futures.kraken.com" in url
+        assert "eea.okx.com" in url
         assert "sendorder" not in url
         assert "api.kraken.com" not in url
     bundle = list((archive / "runtime").iterdir())[0]
     evidence = json.loads((bundle / "FUTURES_EVIDENCE.json").read_text(encoding="utf-8"))
     assert evidence["request_count"] == 2
-    assert "/derivatives/api/v3/tickers" in evidence["endpoints_called"]
+    assert "/api/v5/market/tickers" in evidence["endpoints_called"]
     assert evidence["order_attempted"] is False
     assert evidence["fills"] == 0
     assert evidence["pf_xbtusd_symbol_visibility"] == "visible"
@@ -300,8 +300,8 @@ def test_assert_network_url_rejects_non_allowlisted_path() -> None:
 
 def test_tickers_path_increments_request_count_and_endpoints() -> None:
     fetcher = _FakeFetcher(
-        tickers_body=b'{"tickers":[{"symbol":"PF_ETHUSD"}]}',
-        instruments_body=b'{"instruments":[{"symbol":"PF_ETHUSD"}]}',
+        tickers_body=b'{"data":[{"instId":"ETH-USD_UM_XPERP-310404"}]}',
+        instruments_body=b'{"data":[{"instId":"ETH-USD_UM_XPERP-310404"}]}',
     )
     result = harness.run_zero_order_public_reachability(
         rest_base_url=harness.DEFAULT_REST_BASE_URL,
@@ -309,15 +309,15 @@ def test_tickers_path_increments_request_count_and_endpoints() -> None:
         fetcher=fetcher,
     )
     assert result.request_count == 2
-    assert "/derivatives/api/v3/tickers" in result.endpoints_called
+    assert "/api/v5/market/tickers" in result.endpoints_called
     assert result.pf_xbtusd_symbol_visibility == "visible"
     assert result.network_reachability_proven is True
 
 
 def test_pf_ethusd_not_visible_when_response_lacks_default_symbol() -> None:
     fetcher = _FakeFetcher(
-        tickers_body=b'{"tickers":[{"symbol":"PF_XBTUSD"}]}',
-        instruments_body=b'{"instruments":[{"symbol":"PF_XBTUSD"}]}',
+        tickers_body=b'{"data":[{"instId":"PF_XBTUSD"}]}',
+        instruments_body=b'{"data":[{"instId":"PF_XBTUSD"}]}',
     )
     result = harness.run_zero_order_public_reachability(
         rest_base_url=harness.DEFAULT_REST_BASE_URL,
@@ -359,14 +359,14 @@ def test_pe8_zero_order_spec_accepts_harness_evidence() -> None:
     )
     network_calls = [
         {
-            "endpoint": "/derivatives/api/v3/tickers",
+            "endpoint": "/api/v5/market/tickers",
             "http_status": 200,
             "http_status_class": "2xx",
             "response_size_bytes": 32,
             "response_sha256": "a" * 64,
         },
         {
-            "endpoint": "/derivatives/api/v3/instruments",
+            "endpoint": "/api/v5/public/instruments",
             "http_status": 200,
             "http_status_class": "2xx",
             "response_size_bytes": 36,
@@ -377,7 +377,7 @@ def test_pe8_zero_order_spec_accepts_harness_evidence() -> None:
         timing=timing,
         endpoints_called=list(harness.ZERO_ORDER_PUBLIC_ENDPOINT_ORDER),
         request_count=2,
-        network_host="https://demo-futures.kraken.com",
+        network_host="https://eea.okx.com",
         run_id="offline",
         pe8_pass=False,
         network_reachability_proven=True,
@@ -402,7 +402,7 @@ def test_pe8_zero_order_spec_accepts_harness_evidence() -> None:
 
 def test_rejected_placeholder_set_unchanged() -> None:
     assert "BTCUSDT" in REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS
-    assert DEFAULT_INSTRUMENT == "PF_ETHUSD"
+    assert DEFAULT_INSTRUMENT == "ETH-USD_UM_XPERP-310404"
 
 
 def test_private_readonly_mode_plan_only_writes_evidence(tmp_path: Path) -> None:
@@ -432,48 +432,32 @@ def test_private_readonly_mode_plan_only_writes_evidence(tmp_path: Path) -> None
     ]
 
 
-def test_private_readonly_timeout_writes_durable_failure_evidence(tmp_path: Path) -> None:
+def test_private_readonly_execute_network_fail_closed_without_credential_contract(
+    tmp_path: Path,
+) -> None:
     archive = _durable_test_archive_root(tmp_path)
     secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
-    rc = harness.main(
-        [
-            "--archive-root",
-            str(archive),
-            "--run-id",
-            "privrotimeout",
-            "--mode",
-            PRIVATE_READONLY_MODE,
-            "--execute-network",
-            "--confirm-futures-private-readonly-reachability",
-            CONFIRM_TOKEN_PRIVATE_READONLY_REACHABILITY,
-        ],
-        private_fetcher=_PrivateTimeoutFetcher(),
-        environ={
-            "KRAKEN_FUTURES_DEMO_API_KEY": "k",
-            "KRAKEN_FUTURES_DEMO_API_SECRET": secret,
-        },
-    )
-    assert rc == harness.USAGE_EXIT
-    bundle = list((archive / "runtime").iterdir())[0]
-    assert bundle.name.startswith("bounded_futures_private_readonly_privrotimeout_")
-    evidence = json.loads((bundle / "FUTURES_EVIDENCE.json").read_text(encoding="utf-8"))
-    assert evidence["fetch_failure"] is True
-    assert evidence["failure_class"] == "network_timeout_or_fetch_exception"
-    assert evidence["failed_endpoint"] == "/derivatives/api/v3/accounts"
-    assert evidence["request_count_attempted"] == 1
-    assert evidence["completed_request_count"] == 0
-    assert evidence["private_readonly_reachability_proven"] is False
-    assert evidence["partial_policy_accepted"] is True
-    assert evidence["credential_values_logged"] is False
-    dumped = json.dumps(evidence)
-    assert "test-secret" not in dumped
-    assert "Authent" not in dumped or evidence["network_calls"][0].get("auth_header_names") == [
-        "APIKey",
-        "Authent",
-        "Nonce",
-    ]
-    assert "response_body" not in dumped
-    assert (bundle / "MANIFEST.sha256").exists()
+    with pytest.raises(SystemExit) as exc:
+        harness.main(
+            [
+                "--archive-root",
+                str(archive),
+                "--run-id",
+                "privrotimeout",
+                "--mode",
+                PRIVATE_READONLY_MODE,
+                "--execute-network",
+                "--confirm-futures-private-readonly-reachability",
+                CONFIRM_TOKEN_PRIVATE_READONLY_REACHABILITY,
+            ],
+            private_fetcher=_PrivateTimeoutFetcher(),
+            environ={
+                "KRAKEN_FUTURES_DEMO_API_KEY": "k",
+                "KRAKEN_FUTURES_DEMO_API_SECRET": secret,
+            },
+        )
+    assert exc.value.code == harness.USAGE_EXIT
+    assert not (archive / "runtime").exists() or not list((archive / "runtime").iterdir())
 
 
 def test_private_readonly_execute_network_requires_confirm_token(tmp_path: Path) -> None:
@@ -581,8 +565,8 @@ def test_execute_network_both_endpoints_503_fail_closed(tmp_path: Path) -> None:
     archive = _durable_test_archive_root(tmp_path)
     fetcher = _FakeFetcher(
         status_by_path={
-            "/derivatives/api/v3/tickers": 503,
-            "/derivatives/api/v3/instruments": 503,
+            "/api/v5/market/tickers": 503,
+            "/api/v5/public/instruments": 503,
         },
     )
     rc = harness.main(
@@ -614,8 +598,8 @@ def test_execute_network_mixed_200_and_503_fail_closed(tmp_path: Path) -> None:
     archive = _durable_test_archive_root(tmp_path)
     fetcher = _FakeFetcher(
         status_by_path={
-            "/derivatives/api/v3/tickers": 200,
-            "/derivatives/api/v3/instruments": 503,
+            "/api/v5/market/tickers": 200,
+            "/api/v5/public/instruments": 503,
         },
     )
     rc = harness.main(
@@ -644,8 +628,8 @@ def test_execute_network_http_429_fail_closed(tmp_path: Path) -> None:
     archive = _durable_test_archive_root(tmp_path)
     fetcher = _FakeFetcher(
         status_by_path={
-            "/derivatives/api/v3/tickers": 429,
-            "/derivatives/api/v3/instruments": 429,
+            "/api/v5/market/tickers": 429,
+            "/api/v5/public/instruments": 429,
         },
     )
     rc = harness.main(
@@ -700,7 +684,7 @@ def test_execute_network_invalid_json_fail_closed(tmp_path: Path) -> None:
 def test_execute_network_missing_pf_ethusd_fail_closed(tmp_path: Path) -> None:
     archive = _durable_test_archive_root(tmp_path)
     fetcher = _FakeFetcher(
-        tickers_body=b'{"tickers":[{"symbol":"PF_XBTUSD"}]}',
+        tickers_body=b'{"data":[{"instId":"PF_XBTUSD"}]}',
         instruments_body=b'{"instruments":[{"symbol":"PF_XBTUSD"}]}',
     )
     rc = harness.main(

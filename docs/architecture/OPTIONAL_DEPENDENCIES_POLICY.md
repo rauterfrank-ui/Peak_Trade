@@ -18,7 +18,7 @@ Sonst bricht ein „Core“-Install (ohne Extras) bereits beim `import src...` �
   - `_load_impl()` in Shim-Modulen
 - **Fehlermeldungen**:
   - Fehler wegen fehlender optionaler Dependency **dürfen nur on-demand** passieren (z.B. bei Instanziierung oder bei tatsächlichem Call wie `fetch_ohlcv`).
-  - Fehlermeldung muss **hilfreich** sein: enthält mindestens „`ccxt`“ + Install-Hinweis (`pip install ccxt` / `pip install -e ".[kraken]"`).
+  - Fehlermeldung muss **hilfreich** sein: enthält mindestens „`ccxt`“ + Install-Hinweis (`pip install ccxt`).
 
 ## Enforcement (Gates)
 - **Leak-Scan (harte Policy)**: `scripts/ops/check_optional_deps_leaks.sh`
@@ -26,7 +26,7 @@ Sonst bricht ein „Core“-Install (ohne Extras) bereits beim `import src...` �
 - **Importability Gate (Packaging, E2E)**: `scripts/ops/check_optional_deps_importability.sh`
   - erstellt 2 venvs:
     - core: `pip install -e .`
-    - extras: `pip install -e ".[kraken]"`
+    - extras: `pip install ccxt` (no named venue extra)
   - führt nur Imports/Init aus (kein Netzwerk).
 - **Unit Tests (Importgraph)**:
   - `tests/data/test_optional_deps_imports.py`
