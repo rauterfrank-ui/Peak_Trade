@@ -41,8 +41,8 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `GATE:flatten_execute_authority` |
-| `PHASE:z2cs` |
 | `PHASE:z2ct` |
+| `PHASE:z2cu` |
 
 ## CHANGED_RELATIONS
 
@@ -94,7 +94,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Additive PHASE:z2ct catalog navigation for §11.13.5.Z2CT one authenticated unfiltered positions GET persist on the already-canonical Prerequisite-08 resolution path. Empty data is not zero. Unique window identity is preserved even where BODY_SHA256 equals historical Z2CN/Z2CR empty envelope. GATE:flatten_execute_authority deny-list records the Z2CT Owner-GO as not execute. Atlas is not trading authority. No POST, secret mutation, HMAC, or flatten execute mutation.
+- Additive PHASE:z2cu catalog navigation for §11.13.5.Z2CU post-Z2CT named progression-track adjudication persist. P3 leaves successor selection to Owner. No unique canonical next. Recommended offline track is remaining unranked Z2AR SUI reproof. Identical unfiltered GET is a permitted observation path only. GATE:flatten_execute_authority deny-list records the Z2CU Owner-GO as not execute. Atlas is not trading authority. No GET, POST, secret mutation, HMAC, or flatten execute mutation.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
