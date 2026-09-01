@@ -586,6 +586,8 @@ entities:
     do_not_confuse_with: "strategy visual-map Family; confirm-token FAMILY_*; OKX instFamily"
     evidence_sources:
       - docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/FAMILY_MATRIX.json
+      - docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md
+      - docs/runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4.md
 
   - id: FAMILY:dashboard_safety_authority
     kind: FAMILY
