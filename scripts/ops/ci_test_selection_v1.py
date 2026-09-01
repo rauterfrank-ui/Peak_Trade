@@ -1423,6 +1423,25 @@ PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TARGETS: tuple[str, ...] = (
     PR_BOUNDED_FULL_PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER,
 )
 
+PR_BOUNDED_FULL_PACKAGE_WP02_OFFLINE_OBSERVATION_PROPOSAL_FENCES_V1_TESTOWNER: str = (
+    "tests/governance/test_offline_observation_proposal_contract_fences_v1.py"
+)
+PR_BOUNDED_FULL_PACKAGE_WP02_OFFLINE_OBSERVATION_PROPOSAL_FENCES_V1_TRIGGER_PATHS: frozenset[
+    str
+] = frozenset(
+    {
+        "src/governance/offline_observation_proposal_contract_fences_v1.py",
+        PR_BOUNDED_FULL_PACKAGE_WP02_OFFLINE_OBSERVATION_PROPOSAL_FENCES_V1_TESTOWNER,
+        "docs/governance/OFFLINE_OBSERVATION_PROPOSAL_CONTRACT_FENCES_V1.md",
+    }
+)
+PR_BOUNDED_FULL_PACKAGE_WP02_OFFLINE_OBSERVATION_PROPOSAL_FENCES_V1_TARGETS: tuple[str, ...] = (
+    PR_BOUNDED_FULL_PACKAGE_WP02_OFFLINE_OBSERVATION_PROPOSAL_FENCES_V1_TESTOWNER,
+    "tests/governance/test_promotion_economic_gate_v1.py",
+    "tests/governance/promotion_loop/test_apply_proposals_to_live_overrides_fail_closed_v1.py",
+    PR_BOUNDED_FULL_PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER,
+)
+
 PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TRIGGER_PATHS: frozenset[str] = frozenset(
     {
         "scripts/run_promotion_proposal_cycle.py",
@@ -2317,6 +2336,13 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TRIGGER_PATHS:
         for path in PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TARGETS:
+            add(path)
+
+    if (
+        normalized
+        & PR_BOUNDED_FULL_PACKAGE_WP02_OFFLINE_OBSERVATION_PROPOSAL_FENCES_V1_TRIGGER_PATHS
+    ):
+        for path in PR_BOUNDED_FULL_PACKAGE_WP02_OFFLINE_OBSERVATION_PROPOSAL_FENCES_V1_TARGETS:
             add(path)
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_A_GOVERNANCE_TRIGGER_PATHS:

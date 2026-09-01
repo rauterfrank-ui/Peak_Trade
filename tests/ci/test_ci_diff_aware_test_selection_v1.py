@@ -5186,6 +5186,27 @@ PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_PRODUCTION = (
 PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER = (
     "tests/learning/test_deterministic_decision_outcome_owner_bindings_and_drift_v0.py"
 )
+PACKAGE_WP02_OFFLINE_OBSERVATION_PROPOSAL_FENCES_V1_PRODUCTION = (
+    "src/governance/offline_observation_proposal_contract_fences_v1.py"
+)
+PACKAGE_WP02_OFFLINE_OBSERVATION_PROPOSAL_FENCES_V1_TESTOWNER = (
+    "tests/governance/test_offline_observation_proposal_contract_fences_v1.py"
+)
+PACKAGE_WP02_SURFACE_M_GATE_TESTOWNER = "tests/governance/test_promotion_economic_gate_v1.py"
+PACKAGE_WP02_LIVE_OVERRIDE_FAIL_CLOSED_TESTOWNER = (
+    "tests/governance/promotion_loop/test_apply_proposals_to_live_overrides_fail_closed_v1.py"
+)
+
+
+def test_selector_wp02_offline_observation_proposal_fences_v1_pr_bounded_full() -> None:
+    sel = _run_selector(PACKAGE_WP02_OFFLINE_OBSERVATION_PROPOSAL_FENCES_V1_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    assert PACKAGE_WP02_OFFLINE_OBSERVATION_PROPOSAL_FENCES_V1_TESTOWNER in bounded
+    assert PACKAGE_WP02_SURFACE_M_GATE_TESTOWNER in bounded
+    assert PACKAGE_WP02_LIVE_OVERRIDE_FAIL_CLOSED_TESTOWNER in bounded
+    assert PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER in bounded
+    assert bounded.count(PACKAGE_WP02_OFFLINE_OBSERVATION_PROPOSAL_FENCES_V1_TESTOWNER) == 1
 
 
 def test_selector_ddo_contract_ledger_v0_production_pr_bounded_full_includes_testowner() -> None:
