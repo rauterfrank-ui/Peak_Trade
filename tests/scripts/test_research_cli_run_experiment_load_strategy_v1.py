@@ -257,12 +257,13 @@ def test_load_strategy_no_network_calls() -> None:
 
 
 def test_ruff_format_check() -> None:
+    # pytest interpreter, not scripts/pt: GitHub tests matrix has no .venv.
     targets = [
         str(project_root / "scripts/research_cli.py"),
         str(project_root / "tests/scripts/test_research_cli_run_experiment_load_strategy_v1.py"),
     ]
     subprocess.run(
-        [str(project_root / "scripts/pt"), "-m", "ruff", "format", "--check", *targets],
+        [sys.executable, "-m", "ruff", "format", "--check", *targets],
         check=True,
         cwd=project_root,
     )
@@ -274,7 +275,7 @@ def test_ruff_check() -> None:
         str(project_root / "tests/scripts/test_research_cli_run_experiment_load_strategy_v1.py"),
     ]
     subprocess.run(
-        [str(project_root / "scripts/pt"), "-m", "ruff", "check", *targets],
+        [sys.executable, "-m", "ruff", "check", *targets],
         check=True,
         cwd=project_root,
     )

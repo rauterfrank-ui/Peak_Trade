@@ -3,7 +3,8 @@
 Tests für Phase 81: Research Golden Paths
 
 Testet:
-- Golden-Path-Skript ist ausführbar via scripts/pt
+- Golden-Path-Skript --help über den pytest-Interpreter (CI ohne .venv)
+- Operator-Kinderprozesse binden an scripts/pt
 - Command builders bind research_cli subcommands and dummy-data flags
 - Golden-Path-Dokumentation beschreibt den heutigen Research-Contract
 - Helper-Funktionen funktionieren korrekt
@@ -13,6 +14,7 @@ Testet:
 import argparse
 import ast
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -39,9 +41,15 @@ FORBIDDEN_OWNERSHIP_MARKERS = (
 )
 
 
-def _pt_run(*args: str) -> subprocess.CompletedProcess[str]:
+def _pytest_interpreter_run(*args: str) -> subprocess.CompletedProcess[str]:
+    """Execute wrapper argparse via the pytest interpreter.
+
+    GitHub ``tests`` jobs use setup-python without ``.venv``. ``scripts/pt``
+    therefore cannot launch help in that matrix. Operator children still bind
+    to ``scripts/pt`` (see ``test_canonical_argv_uses_scripts_pt``).
+    """
     return subprocess.run(
-        [str(PT_LAUNCHER), *args],
+        [sys.executable, *args],
         capture_output=True,
         text=True,
         cwd=PROJECT_ROOT,
@@ -56,27 +64,27 @@ class TestGoldenPathScript:
         assert GOLDEN_PATH_SCRIPT.exists(), f"Script not found: {GOLDEN_PATH_SCRIPT}"
 
     def test_script_help_runs(self):
-        """Skript --help funktioniert über scripts/pt."""
-        result = _pt_run(str(GOLDEN_PATH_SCRIPT), "--help")
+        """Skript --help funktioniert über den pytest-Interpreter."""
+        result = _pytest_interpreter_run(str(GOLDEN_PATH_SCRIPT), "--help")
         assert result.returncode == 0, f"Help failed: {result.stderr}"
         assert "Golden Path" in result.stdout or "golden_path" in result.stdout
 
     def test_new_strategy_help(self):
         """new_strategy subcommand help funktioniert."""
-        result = _pt_run(str(GOLDEN_PATH_SCRIPT), "new_strategy", "--help")
+        result = _pytest_interpreter_run(str(GOLDEN_PATH_SCRIPT), "new_strategy", "--help")
         assert result.returncode == 0
         assert "--strategy-id" in result.stdout
         assert "--sweep-name" in result.stdout
 
     def test_optimize_help(self):
         """optimize subcommand help funktioniert."""
-        result = _pt_run(str(GOLDEN_PATH_SCRIPT), "optimize", "--help")
+        result = _pytest_interpreter_run(str(GOLDEN_PATH_SCRIPT), "optimize", "--help")
         assert result.returncode == 0
         assert "--sweep-name" in result.stdout
 
     def test_portfolio_help(self):
         """portfolio subcommand help funktioniert."""
-        result = _pt_run(str(GOLDEN_PATH_SCRIPT), "portfolio", "--help")
+        result = _pytest_interpreter_run(str(GOLDEN_PATH_SCRIPT), "portfolio", "--help")
         assert result.returncode == 0
         assert "--preset" in result.stdout
 
