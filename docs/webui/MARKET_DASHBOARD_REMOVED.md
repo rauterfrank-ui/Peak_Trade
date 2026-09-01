@@ -1,58 +1,42 @@
-# Market Dashboard — Legacy Product Fully Removed
-
-**STATUS:** `REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS`
+# Market Dashboard — Historical Removal Evidence
 
 ```text
-Legacy market_surface is fully removed and is not an architectural component.
-Negative non-regression guards exist solely to prevent its reintroduction.
-No tombstone route, module, presenter, template, source, slot, fallback, compatibility path, authority, producer, read model, or runtime path exists.
+DOCUMENT_CLASS=HISTORICAL_EVIDENCE_ONLY
+CURRENT_ARCHITECTURE_AUTHORITY=false
+CURRENT_TOMBSTONE_CONTRACT=false
+CURRENT_NEGATIVE_NON_REGRESSION_GUARD=false
+CURRENT_LIVE_GUARD=false
+CURRENT_BOUNDARY_CONTRACT=false
 ```
 
-Legacy `market_surface` is fully removed and is not an architectural component.
-Negative non-regression guards exist solely to prevent its reintroduction.
-No tombstone route, module, presenter, template, source, slot, fallback,
-compatibility path, authority, producer, read model, or runtime path exists.
+This file is **historical evidence only**. It is not current architecture,
+not a live guard, not a current boundary contract, and not a current
+negative non-regression requirement.
 
-## Canonical removal facts
-
-The Peak Trade **legacy** Market Dashboard product (including legacy
-`market_surface`) was intentionally removed and completely deleted.
-
-- Legacy packages, templates, Chart.js market shells, OHLCV/depth APIs, and
-  reset-shell markers remain deleted.
-- Legacy aliases (`&#47;market&#47;double-play`, `&#47;market&#47;futures`,
-  `&#47;api&#47;market&#47;ohlcv`, `&#47;api&#47;market&#47;depth`) remain
-  intentionally absent (normal not-found).
-- There is **no** registry slot, contract, route, module, template, presenter,
-  binder, read model, producer, fallback, authority, runtime path, or
-  reactivation option for legacy `market_surface`.
-- Independent domain producers (trading, risk, execution, economic,
-  diagnostics, market-data) remain domain-owned.
-
-**Current authorized read-only surface (already on main):**  
-`GET &#47;market` remains the **Market Dashboard Landscape V2** read-only
-consumer shell. Exact route/template/static/bindings stay owned by the
-canonical Landscape V2 master runbook; this removal notice does **not**
-redefine them.
-
-- Pure read-only GET route; no write/action/order/runtime controls.
-- Unbound or missing producers render as `NOT_BOUND` / `MISSING` / `STALE` /
-  `INVALID`.
-- Does **not** authorize runtime activation, orders, scheduler,
-  shadow/paper/testnet, capital changes, promotion, or live trading.
-- `OPERATOR_PRODUCT_GATE=true` is recorded from the Operator Product Review on
-  exact commit `88f2241819dcc160c3ce688a9c7397e7cc8becec` (post PR #5568;
-  read-only daily observation surface). PR #5569 later added docs-only
-  Consumer / Anti-SSOT wording and did not invalidate that review. PR #5577
-  bound Regime/Bull-Bear/Switch read-only (explicit injection). Final closeout
-  docs hygiene reconciles Class-C drift only (`NEXT_CANONICAL_ACTION=STOP_IDLE`).
-  Technical or Chrome evidence alone must **not** be re-inferred as a new
-  Product PASS. Dashboard remains non-authority / non-SSOT / non-truth-owner.
-  Documentation Anchor = documentary index only.
-
-Canonical planning/execution authority:  
+**Current visual/operator consumer (authoritative for today):**
 [`docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md`](../ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md)
 
-Do not resurrect deleted legacy Dashboard / `market_surface` code from Git
-history without explicit operator authorization. Absence is enforced by
-negative non-regression guards only; absence is not a reactivatable surface.
+Current path:
+
+- Landscape V2 package `src/webui/market_dashboard_landscape_v2/`
+- Shell router `src/webui/market_dashboard_landscape_shell_router_v2.py`
+- Route `GET &#47;market`
+- Template `templates/peak_trade_dashboard/market_landscape_v2.html`
+
+`DASHBOARD_AUTHORITY_EFFECT=NONE`. Landscape is a read-only consumer. It
+does not own trading, signal, selection, risk, planning, execution, or
+live-permit authority.
+
+## Historical facts (non-authoritative)
+
+The former **legacy** Market Dashboard product, including legacy
+`market_surface`, was intentionally removed. That removal is Git history.
+Git history may remain. This document does **not** require a current
+tombstone test, `DELETED_PACKAGES` invariant, or negative non-regression
+guard to keep Landscape valid.
+
+Do not treat this file as a reason to resurrect the legacy product.
+Do not treat this file as a reason to keep a current tombstone contract.
+Resurrection of deleted legacy Dashboard code from Git history still
+requires explicit operator authorization; that is a future GO, not a
+standing current tombstone architecture.

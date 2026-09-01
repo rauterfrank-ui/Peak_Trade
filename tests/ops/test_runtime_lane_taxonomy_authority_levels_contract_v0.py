@@ -29,8 +29,6 @@ MARKET_DASHBOARD_SPEC = (
 )
 MARKET_SURFACE_V0 = REPO_ROOT / "docs" / "webui" / "MARKET_SURFACE_V0.md"
 MARKET_DASHBOARD_REMOVAL_NOTICE = REPO_ROOT / "docs" / "webui" / "MARKET_DASHBOARD_REMOVED.md"
-# Historical alias retained for guard-name stability.
-MARKET_DASHBOARD_TOMBSTONE = MARKET_DASHBOARD_REMOVAL_NOTICE
 READINESS_LEDGER_SCRIPT = REPO_ROOT / "scripts" / "ops" / "build_readiness_evidence_ledger_v0.py"
 READINESS_MIRROR_SCRIPT = (
     REPO_ROOT / "scripts" / "ops" / "report_readiness_ledger_preflight_mirror_v0.py"
@@ -697,16 +695,17 @@ def test_market_dashboard_product_removal_notice_present_deleted_surfaces_absent
     assert not MARKET_SURFACE_V0.is_file()
     notice = MARKET_DASHBOARD_REMOVAL_NOTICE.read_text(encoding="utf-8")
     assert "Market Dashboard" in notice
-    assert "removed" in notice.lower()
-    assert "REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS" in notice
-    assert "No tombstone route" in notice
+    assert "DOCUMENT_CLASS=HISTORICAL_EVIDENCE_ONLY" in notice
+    assert "CURRENT_TOMBSTONE_CONTRACT=false" in notice
+    assert "CURRENT_NEGATIVE_NON_REGRESSION_GUARD=false" in notice
+    assert "REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS" not in notice
     # Docs token policy requires illustrative path encoding (GET &#47;market).
     assert "GET &#47;market" in notice
     assert "GET /market" not in notice
 
 
-def test_market_dashboard_product_tombstone_present_deleted_surfaces_absent() -> None:
-    """Historical name retained; asserts removal notice + deleted surfaces."""
+def test_market_dashboard_product_historical_evidence_present_deleted_surfaces_absent() -> None:
+    """Asserts historical evidence notice + deleted legacy spec surfaces."""
     test_market_dashboard_product_removal_notice_present_deleted_surfaces_absent()
 
 
@@ -743,13 +742,15 @@ def test_market_dashboard_removal_notice_taxonomy_cross_ref_aligned() -> None:
     assert "FORBIDDEN_PROMOTION_DASHBOARD_NOTION_DOCS_AI_TO_APPROVAL" in taxonomy
     assert "non-authorizing" in taxonomy.lower()
     assert "does not" in taxonomy.lower() or "do not" in taxonomy.lower()
-    assert "REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS" in taxonomy
+    assert "DOCUMENT_CLASS=HISTORICAL_EVIDENCE_ONLY" in notice
+    assert "CURRENT_TOMBSTONE_CONTRACT=false" in notice
+    assert "REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS" not in taxonomy
     assert "product tombstone" not in taxonomy.lower()
     assert "is the tombstone" not in taxonomy.lower()
 
 
-def test_market_dashboard_tombstone_taxonomy_cross_ref_aligned() -> None:
-    """Historical name retained; asserts removal-notice / taxonomy alignment."""
+def test_market_dashboard_historical_evidence_taxonomy_cross_ref_aligned() -> None:
+    """Asserts historical-evidence notice / taxonomy alignment; not a tombstone contract."""
     test_market_dashboard_removal_notice_taxonomy_cross_ref_aligned()
 
 

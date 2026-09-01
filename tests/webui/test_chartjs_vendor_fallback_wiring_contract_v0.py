@@ -87,8 +87,9 @@ def test_market_surface_docs_removed_for_chartjs_contract() -> None:
     assert not (project_root / "docs/webui/MARKET_SURFACE_V0.md").exists()
     text = removal_notice.read_text(encoding="utf-8")
     assert "intentionally removed" in text.lower() or "intentionally absent" in text.lower()
-    assert "REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS" in text
-    assert "No tombstone route" in text
+    assert "DOCUMENT_CLASS=HISTORICAL_EVIDENCE_ONLY" in text
+    assert "CURRENT_TOMBSTONE_CONTRACT=false" in text
+    assert "REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS" not in text
 
 
 def test_docs_truth_map_chartjs_phase_1b_vendor_primary_v1() -> None:

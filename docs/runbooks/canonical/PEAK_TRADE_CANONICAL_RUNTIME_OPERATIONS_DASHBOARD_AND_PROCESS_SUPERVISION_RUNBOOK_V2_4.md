@@ -230,12 +230,17 @@ OTHER_OBSERVER_SURFACES:
   health and CI/ops surfaces
 ```
 
-The former legacy Market Dashboard product / `market_surface` is fully removed
-(`REMOVED_WITH_NEGATIVE_NON_REGRESSION_GUARDS`) and is not an architectural
-component. Negative non-regression guards exist solely to prevent
-reintroduction. No tombstone route, module, presenter, template, source, slot,
-fallback, compatibility path, authority, producer, read model, or runtime path
-exists. Do not resurrect it without explicit Owner authorization.
+Current visual/operator presentation is Market Dashboard Landscape V2, a
+read-only consumer (`DASHBOARD_AUTHORITY_EFFECT=NONE`). Canonical current path:
+`src/webui/market_dashboard_landscape_v2/`, shell
+`src/webui/market_dashboard_landscape_shell_router_v2.py`, route
+`GET &#47;market`, template
+`templates/peak_trade_dashboard/market_landscape_v2.html`. Landscape does not
+own trading, signal, selection, risk, planning, execution, or live-permit
+authority. The former legacy Market Dashboard product / `market_surface` is
+historical Git evidence only and is not a current architectural component,
+current tombstone, or current negative non-regression contract. Do not
+resurrect it without explicit Owner authorization.
 
 ## 3A.2 Runtime launch families
 

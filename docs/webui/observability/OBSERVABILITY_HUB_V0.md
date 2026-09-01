@@ -88,7 +88,7 @@ Additive Workflow Dashboard V1 panel — **diagnostic-only**, **not** observabil
 - **Readmodel:** `last_paper_run_panel_readmodel.v0` — builder `src/webui/last_paper_run_panel_readmodel_v0/`.
 - **Markers:** `data-observability-last-paper-run-panel-v0="true"`, `data-observability-last-paper-run-readonly="true"`, `data-observability-last-paper-run-authority="false"`, `data-observability-last-paper-run-instrument-truth="<status>"`.
 - **Instrument rule:** When run evidence lacks `selected_instrument` / `selected_future` / `selected_symbol`, UI shows **`NOT_PERSISTED`** — **never** `BTC&#47;USD` or removed Market Dashboard defaults as paper truth.
-- **Market separation:** Market Dashboard removed — see [`MARKET_DASHBOARD_REMOVED.md`](../MARKET_DASHBOARD_REMOVED.md).
+- **Market separation:** Current visual consumer is Landscape V2 `GET &#47;market`. Historical legacy Market Dashboard evidence: [`MARKET_DASHBOARD_REMOVED.md`](../MARKET_DASHBOARD_REMOVED.md) (`DOCUMENT_CLASS=HISTORICAL_EVIDENCE_ONLY`).
 - **Boundaries:** SSR only when gate on; no POST, no fetch/polling, no runtime/scheduler/paper start, no trading authority. `stale=true`, `stale_reason=archive_snapshot` for archive-backed reads.
 - **Tests:** `tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py`, `tests/webui/test_last_paper_run_panel_readmodel_v0.py`.
 
@@ -240,4 +240,4 @@ uv run python -m uvicorn src.webui.app:app --reload --host 127.0.0.1 --port 8000
 Sichere Beispiel-URLs (nach Start):
 
 - `http://127.0.0.1:8000/observability` — entspricht **`GET &#47;observability`**
-- `http://127.0.0.1:8000/` — general WebUI root (Market Dashboard removed; see [`MARKET_DASHBOARD_REMOVED.md`](../MARKET_DASHBOARD_REMOVED.md))
+- `http://127.0.0.1:8000/` — general WebUI root (current visual consumer: Landscape V2 `GET &#47;market`; historical evidence [`MARKET_DASHBOARD_REMOVED.md`](../MARKET_DASHBOARD_REMOVED.md))
