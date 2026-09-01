@@ -41,8 +41,8 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `GATE:flatten_execute_authority` |
-| `PHASE:z2cx` |
 | `PHASE:z2cy` |
+| `PHASE:z2cz` |
 
 ## CHANGED_RELATIONS
 
@@ -94,7 +94,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Additive PHASE:z2cy catalog navigation for §11.13.5.Z2CY post-Z2CX P3 dependency reconciliation persist. Remaining unranked Z2AR offline surface exhausted. Five named classes remain separately NOT_REPROVEN_MISSING_EVIDENCE, not unadjudicated. Flatten-path earliest unresolved remains EXECUTION_PREREQUISITE_08. Offline resolution of 08 is impossible. Does not reopen FX. Does not adjudicate COVER_USDC. Does not select non-critical offline remainder as busywork. GATE:flatten_execute_authority deny-list records the Z2CY Owner-GO as not execute. Atlas is not trading authority. No GET, POST, secret mutation, HMAC, or flatten execute mutation.
+- Additive PHASE:z2cz catalog navigation for §11.13.5.Z2CZ post-Z2CY single unfiltered Prerequisite-08 position observation persist. Empty data[] classified TARGET_POSITION_NOT_OBSERVED. Does not promote empty to zero. Does not close EXECUTION_PREREQUISITE_08. GATE:flatten_execute_authority deny-list records the Z2CZ Owner-GO as not execute. Atlas is not trading authority. No POST, secret mutation, HMAC, or flatten execute mutation.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

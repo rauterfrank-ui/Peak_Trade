@@ -83,7 +83,10 @@ OWNER_GO = (
 THIS_WINDOW_OWNER_GO = (
     "PEAK_TRADE_OWNER_GO_SECTION_11_13_5_PREREQUISITE_08_SINGLE_UNFILTERED_POSITION_OBSERVATION_V1"
 )
-AUTHORIZED_OBSERVATION_OWNER_GOS = frozenset({OWNER_GO, THIS_WINDOW_OWNER_GO})
+POST_Z2CY_WINDOW_OWNER_GO = "PEAK_TRADE_OWNER_GO_PREREQUISITE_08_SINGLE_UNFILTERED_POSITIONS_GET_V1"
+AUTHORIZED_OBSERVATION_OWNER_GOS = frozenset(
+    {OWNER_GO, THIS_WINDOW_OWNER_GO, POST_Z2CY_WINDOW_OWNER_GO}
+)
 Z2CR_SNAPSHOT_DOCUMENT_CLASS = (
     "SECTION_11_13_5_Z2CR_FRESH_UNFILTERED_TARGET_POSITION_GET_SNAPSHOT_V1"
 )
@@ -92,6 +95,10 @@ Z2CT_SNAPSHOT_DOCUMENT_CLASS = (
     "SECTION_11_13_5_Z2CT_FRESH_UNFILTERED_TARGET_POSITION_GET_SNAPSHOT_V1"
 )
 Z2CT_ADJUDICATION_DOCUMENT_CLASS = "SECTION_11_13_5_Z2CT_PREREQUISITE_08_WINDOW_ADJUDICATION_V1"
+Z2CZ_SNAPSHOT_DOCUMENT_CLASS = (
+    "SECTION_11_13_5_Z2CZ_FRESH_UNFILTERED_TARGET_POSITION_GET_SNAPSHOT_V1"
+)
+Z2CZ_ADJUDICATION_DOCUMENT_CLASS = "SECTION_11_13_5_Z2CZ_PREREQUISITE_08_WINDOW_ADJUDICATION_V1"
 SHADOW_RECON_SECRETREF = "secretref://vault/peak-trade/live-shadow-recon/okx"
 SHADOW_RECON_CREDENTIAL_CLASS = "LIVE_SHADOW_RECONCILIATION_READ_ONLY_API_KEY"
 PRODUCTION_REST_BASE = f"https://{REUSED_BINDING_REST_HOST}"
@@ -142,6 +149,14 @@ ROW_FIELD_ALLOWLIST = frozenset(
     }
 )
 EVIDENCE_DIRNAME = "section_11_13_5_z2cr_prerequisite_08_fresh_position_observation_v1"
+
+
+def _document_classes_for_owner_go(owned: str) -> tuple[str, str]:
+    if owned == POST_Z2CY_WINDOW_OWNER_GO:
+        return Z2CZ_SNAPSHOT_DOCUMENT_CLASS, Z2CZ_ADJUDICATION_DOCUMENT_CLASS
+    if owned == THIS_WINDOW_OWNER_GO:
+        return Z2CT_SNAPSHOT_DOCUMENT_CLASS, Z2CT_ADJUDICATION_DOCUMENT_CLASS
+    return Z2CR_SNAPSHOT_DOCUMENT_CLASS, Z2CR_ADJUDICATION_DOCUMENT_CLASS
 
 
 class LiveCanaryPrerequisite08FreshObservationError(RuntimeError):
@@ -380,16 +395,7 @@ def run_authorized_fresh_position_observation_v1(
     owned = str(owner_go or "").strip()
     if owned not in AUTHORIZED_OBSERVATION_OWNER_GOS:
         raise LiveCanaryPrerequisite08FreshObservationError("OWNER_GO_MISMATCH")
-    snapshot_document_class = (
-        Z2CT_SNAPSHOT_DOCUMENT_CLASS
-        if owned == THIS_WINDOW_OWNER_GO
-        else Z2CR_SNAPSHOT_DOCUMENT_CLASS
-    )
-    adjudication_document_class = (
-        Z2CT_ADJUDICATION_DOCUMENT_CLASS
-        if owned == THIS_WINDOW_OWNER_GO
-        else Z2CR_ADJUDICATION_DOCUMENT_CLASS
-    )
+    snapshot_document_class, adjudication_document_class = _document_classes_for_owner_go(owned)
     query = build_account_positions_query_v1()
     if query.query or query.inst_id_filter_present or query.pos_id_filter_present:
         raise LiveCanaryPrerequisite08FreshObservationError("INSTID_FILTER_FORBIDDEN")

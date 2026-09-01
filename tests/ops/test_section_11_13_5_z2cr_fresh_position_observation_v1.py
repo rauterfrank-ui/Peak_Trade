@@ -13,6 +13,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.execution_prerequis
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.prerequisite_08_fresh_position_observation_v1 import (
     AUTHORIZED_OBSERVATION_OWNER_GOS,
     OWNER_GO,
+    POST_Z2CY_WINDOW_OWNER_GO,
     THIS_WINDOW_OWNER_GO,
     LiveCanaryPrerequisite08FreshObservationError,
     adjudicate_prerequisite_08_window_v1,
@@ -135,5 +136,9 @@ def test_owner_go_token_is_exact() -> None:
     assert THIS_WINDOW_OWNER_GO == (
         "PEAK_TRADE_OWNER_GO_SECTION_11_13_5_PREREQUISITE_08_SINGLE_UNFILTERED_POSITION_OBSERVATION_V1"
     )
+    assert POST_Z2CY_WINDOW_OWNER_GO == (
+        "PEAK_TRADE_OWNER_GO_PREREQUISITE_08_SINGLE_UNFILTERED_POSITIONS_GET_V1"
+    )
     assert OWNER_GO in AUTHORIZED_OBSERVATION_OWNER_GOS
     assert THIS_WINDOW_OWNER_GO in AUTHORIZED_OBSERVATION_OWNER_GOS
+    assert POST_Z2CY_WINDOW_OWNER_GO in AUTHORIZED_OBSERVATION_OWNER_GOS

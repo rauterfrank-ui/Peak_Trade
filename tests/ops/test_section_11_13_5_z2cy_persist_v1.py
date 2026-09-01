@@ -33,6 +33,9 @@ MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 
 Z2CX_HEADING = "### 11.13.5.Z2CX remaining unranked SUI offline reproof bundle persist"
 Z2CY_HEADING = "### 11.13.5.Z2CY Post-Z2CX P3 dependency reconciliation and next-blocker persist"
+Z2CZ_HEADING = (
+    "### 11.13.5.Z2CZ Post-Z2CY single unfiltered Prerequisite-08 position observation persist"
+)
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_POST_Z2CX_P3_DEPENDENCY_RECONCILIATION_AND_NEXT_BLOCKER_V1"
 BASELINE_SHA = "00910a2f67f94ad3ebc84b48d441648cc04b1ea1"
@@ -47,8 +50,8 @@ def _read(path: Path) -> str:
 def _z2cy_section(text: str) -> str:
     start = text.find(Z2CY_HEADING)
     assert start >= 0, "missing §11.13.5.Z2CY heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2CY"
+    end = text.find(Z2CZ_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2CZ boundary after Z2CY"
     return text[start:end]
 
 
@@ -65,8 +68,9 @@ def test_z2cy_heading_is_unique_and_follows_z2cx() -> None:
     assert text.count(Z2CY_HEADING) == 1
     z2cx = text.find(Z2CX_HEADING)
     z2cy = text.find(Z2CY_HEADING)
+    z2cz = text.find(Z2CZ_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= z2cx < z2cy < ladder
+    assert 0 <= z2cx < z2cy < z2cz < ladder
 
 
 def test_z2cx_historical_bundle_slice_was_not_rewritten() -> None:
@@ -78,6 +82,7 @@ def test_z2cx_historical_bundle_slice_was_not_rewritten() -> None:
     assert "REMAINING_UNRANKED_AFTER_THIS_BUNDLE=NONE" in section
     assert "GET_EXECUTED_THIS_PERSIST=false" in section
     assert "Z2CY" not in section
+    assert "Z2CZ" not in section
 
 
 def test_z2cy_docs_bind_critical_path_without_get_or_flatten() -> None:
