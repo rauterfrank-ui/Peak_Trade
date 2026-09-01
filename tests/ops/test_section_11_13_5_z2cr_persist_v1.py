@@ -45,6 +45,9 @@ ADJUDICATION = EVIDENCE_PACK / "ADJUDICATION.json"
 
 Z2CQ_HEADING = "### 11.13.5.Z2CQ Post-Z2CP EXECUTION_PREREQUISITE_08 flatten dependency cluster "
 Z2CR_HEADING = "### 11.13.5.Z2CR Post-Z2CQ fresh unfiltered target-position observation persist"
+Z2CS_HEADING = (
+    "### 11.13.5.Z2CS Post-Z2CR Prerequisite-08 resolution-authority adjudication persist"
+)
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = (
     "PEAK_TRADE_OWNER_GO_SECTION_11_13_5_PREREQUISITE_08_FRESH_POSITION_OBSERVATION_CLUSTER_V1"
@@ -62,8 +65,8 @@ def _read(path: Path) -> str:
 def _z2cr_section(text: str) -> str:
     start = text.find(Z2CR_HEADING)
     assert start >= 0, "missing §11.13.5.Z2CR heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2CR"
+    end = text.find(Z2CS_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2CS boundary after Z2CR"
     return text[start:end]
 
 
@@ -80,8 +83,9 @@ def test_z2cr_heading_is_unique_and_follows_z2cq() -> None:
     assert text.count(Z2CR_HEADING) == 1
     z2cq = text.find(Z2CQ_HEADING)
     z2cr = text.find(Z2CR_HEADING)
+    z2cs = text.find(Z2CS_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= z2cq < z2cr < ladder
+    assert 0 <= z2cq < z2cr < z2cs < ladder
 
 
 def test_z2cq_historical_slice_was_not_rewritten() -> None:
