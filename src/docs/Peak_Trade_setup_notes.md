@@ -501,6 +501,6 @@ Später dauerhaft in `~/.zshrc` eintragen.
 
 In einem neuen Chat kannst du z.B. schreiben:
 
-> Hier ist mein aktuelles Projekt *Peak_Trade* (Struktur + Code). Hilf mir, auf Basis davon den Backtest-Layer in `src/backtest` zu entwerfen.
+> Hier ist mein aktuelles Projekt *Peak_Trade* (Struktur + Code). Hilf mir, auf Basis davon den Backtest-Layer zu entwerfen.
 
 Dann diese `.md` Datei (oder die relevanten Abschnitte) einfügen.
