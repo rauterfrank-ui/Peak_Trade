@@ -1135,4 +1135,4 @@ entities:
       - config/governance/semantics_neutral_decommission_authorization_v1.json
       - docs/governance/ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_LOGIC_IMMUTABILITY_CONTRACT_V0.md
       - docs/ops/specs/SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1.md
-    notes: Atlas inventory only. Not a trading authority. Default grant remains fail-closed. ATLAS_AUTHORITY=NONE.
+    notes: Atlas inventory only. Not a trading authority. Default grant remains fail-closed. Active grants require a SHA-256 evidence digest over canonical unified diffs and the diff base SHA. Same paths with a different diff cannot reuse a grant. ATLAS_AUTHORITY=NONE.

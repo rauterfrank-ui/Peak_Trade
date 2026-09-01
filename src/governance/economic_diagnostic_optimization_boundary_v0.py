@@ -886,6 +886,7 @@ def build_boundary_report(
     skip_decommission_authorization: bool = False,
     file_diffs: Mapping[str, str] | None = None,
     evidence_repo_root: Path | None = None,
+    diff_base_sha: str | None = None,
 ) -> BoundaryReport:
     root = repo_root or repo_root_from_module()
     contract = load_contract(root)
@@ -987,6 +988,7 @@ def build_boundary_report(
         grant_active=False,
     )
     blocking_forbidden = list(forbidden_matches)
+    remaining_unclassified = list(unclassified)
     if forbidden_matches:
         auth_decision = evaluate_technical_wiring_authorization(
             forbidden_matches,
@@ -1002,17 +1004,46 @@ def build_boundary_report(
             for path in normalized_files:
                 if path in authorized_path_set:
                     allowed_hits.update(classify_allowed_surfaces(path, rules))
-        else:
-            if not skip_decommission_authorization:
-                decommission_decision = evaluate_decommission_authorization(
-                    forbidden_matches,
-                    auth=decommission_payload,
-                    repo_root=root,
-                    file_diffs=file_diffs,
-                    evidence_repo_root=evidence_repo_root or root,
-                )
-            if decommission_decision.applied:
-                authorized_path_set = frozenset(decommission_decision.authorized_paths)
+    if not auth_decision.applied and (forbidden_matches or remaining_unclassified):
+        if not skip_decommission_authorization:
+            decommission_decision = evaluate_decommission_authorization(
+                forbidden_matches,
+                auth=decommission_payload,
+                repo_root=root,
+                file_diffs=file_diffs,
+                evidence_repo_root=evidence_repo_root or root,
+                unclassified_paths=remaining_unclassified,
+                diff_base_sha=diff_base_sha,
+            )
+        if decommission_decision.applied:
+            authorized_path_set = frozenset(decommission_decision.authorized_paths)
+            blocking_forbidden = [
+                match
+                for match in forbidden_matches
+                if match.matched_path not in authorized_path_set
+            ]
+            remaining_unclassified = [
+                path for path in remaining_unclassified if path not in authorized_path_set
+            ]
+            for path in normalized_files:
+                if path in authorized_path_set:
+                    allowed_hits.update(classify_allowed_surfaces(path, rules))
+        elif not decommission_decision.valid:
+            blocking_forbidden = list(forbidden_matches)
+        elif (
+            decommission_decision.grant_active
+            and forbidden_matches
+            and not decommission_decision.unauthorized_forbidden_paths
+        ):
+            blocking_forbidden = list(forbidden_matches)
+        elif forbidden_matches:
+            restoration_decision = evaluate_restoration_authorization(
+                forbidden_matches,
+                auth=restoration_payload,
+                repo_root=root,
+            )
+            if restoration_decision.applied:
+                authorized_path_set = frozenset(restoration_decision.authorized_paths)
                 blocking_forbidden = [
                     match
                     for match in forbidden_matches
@@ -1021,24 +1052,8 @@ def build_boundary_report(
                 for path in normalized_files:
                     if path in authorized_path_set:
                         allowed_hits.update(classify_allowed_surfaces(path, rules))
-            elif decommission_decision.grant_active or not decommission_decision.valid:
-                blocking_forbidden = list(forbidden_matches)
-            else:
-                restoration_decision = evaluate_restoration_authorization(
-                    forbidden_matches,
-                    auth=restoration_payload,
-                    repo_root=root,
-                )
-                if restoration_decision.applied:
-                    authorized_path_set = frozenset(restoration_decision.authorized_paths)
-                    blocking_forbidden = [
-                        match
-                        for match in forbidden_matches
-                        if match.matched_path not in authorized_path_set
-                    ]
-                    for path in normalized_files:
-                        if path in authorized_path_set:
-                            allowed_hits.update(classify_allowed_surfaces(path, rules))
+
+    unclassified = remaining_unclassified
 
     if restoration_decision.applied:
         flag_source = forbidden_matches
@@ -1106,6 +1121,10 @@ def build_boundary_report(
         decommission_applied = False
     elif unclassified:
         reason_codes.append(REASON_IMPACT_UNKNOWN)
+        if decommission_decision.reason_codes:
+            for code in decommission_decision.reason_codes:
+                if code not in reason_codes:
+                    reason_codes.append(code)
         impact_unknown = True
         fail_closed = True
         admissible = False
