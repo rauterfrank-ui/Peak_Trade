@@ -405,7 +405,7 @@ entities:
     fail_closed: true
     evidence_sources:
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO, the §11.13.5.Z2CP freshness persist/implement Owner-GO, the §11.13.5.Z2CQ post-Z2CP prerequisite-08 cluster Owner-GO, the §11.13.5.Z2CR prerequisite-08 fresh position-observation Owner-GO, the §11.13.5.Z2CS prerequisite-08 resolution-authority adjudication Owner-GO, the §11.13.5.Z2CT prerequisite-08 single unfiltered position-observation Owner-GO, the §11.13.5.Z2CU post-Z2CT named progression-track adjudication Owner-GO, the §11.13.5.Z2CV COVER_USDC remaining unranked SUI offline reproof Owner-GO, the §11.13.5.Z2CW FX remaining unranked SUI offline reproof Owner-GO, the §11.13.5.Z2CX remaining unranked ROUNDING / FINISHED_RISK_ENVELOPE_NUMERIC / USD_USDC_ACCOUNT_SETTLEMENT offline reproof bundle Owner-GO, and the §11.13.5.Z2CY post-Z2CX P3 dependency reconciliation Owner-GO. Not execute enablement. Atlas is not trading authority.
+    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO, the §11.13.5.Z2CP freshness persist/implement Owner-GO, the §11.13.5.Z2CQ post-Z2CP prerequisite-08 cluster Owner-GO, the §11.13.5.Z2CR prerequisite-08 fresh position-observation Owner-GO, the §11.13.5.Z2CS prerequisite-08 resolution-authority adjudication Owner-GO, the §11.13.5.Z2CT prerequisite-08 single unfiltered position-observation Owner-GO, the §11.13.5.Z2CU post-Z2CT named progression-track adjudication Owner-GO, the §11.13.5.Z2CV COVER_USDC remaining unranked SUI offline reproof Owner-GO, the §11.13.5.Z2CW FX remaining unranked SUI offline reproof Owner-GO, the §11.13.5.Z2CX remaining unranked ROUNDING / FINISHED_RISK_ENVELOPE_NUMERIC / USD_USDC_ACCOUNT_SETTLEMENT offline reproof bundle Owner-GO, the §11.13.5.Z2CY post-Z2CX P3 dependency reconciliation Owner-GO, and the §11.13.5.Z2CZ post-Z2CY single unfiltered Prerequisite-08 position-observation Owner-GO. Not execute enablement. Atlas is not trading authority.
 
   - id: GATE:btc_exclusion
     kind: GATE
@@ -796,7 +796,19 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/post_z2cx_p3_dependency_reconciliation_v1.py
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-    notes: Additive post-Z2CX offline P3 dependency reconciliation. Remaining unranked Z2AR offline surface exhausted. Five named classes remain separately NOT_REPROVEN_MISSING_EVIDENCE, not unadjudicated. Flatten-path earliest unresolved remains EXECUTION_PREREQUISITE_08. Offline resolution of 08 is impossible. Does not reopen FX. Does not adjudicate COVER_USDC. Does not select non-critical offline remainder as busywork. Does not supersede Z2CT as last canonically closed 11.13.5 slice. Atlas is not trading authority.
+    notes: Additive post-Z2CX offline P3 dependency reconciliation. Remaining unranked Z2AR offline surface exhausted. Five named classes remain separately NOT_REPROVEN_MISSING_EVIDENCE, not unadjudicated. Flatten-path earliest unresolved remains EXECUTION_PREREQUISITE_08. Offline resolution of 08 is impossible. Does not reopen FX. Does not adjudicate COVER_USDC. Does not select non-critical offline remainder as busywork. Does not supersede Z2CT as last canonically closed 11.13.5 slice. Predecessor of additive PHASE:z2cz. Atlas is not trading authority.
+
+  - id: PHASE:z2cz
+    kind: PHASE
+    name: 11.13.5.Z2CZ
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/prerequisite_08_fresh_position_observation_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+    notes: Additive post-Z2CY one-shot unfiltered GET /api/v5/account/positions. Empty data[] classified TARGET_POSITION_NOT_OBSERVED. Does not promote empty to zero. Does not close EXECUTION_PREREQUISITE_08. Does not reopen FX. Does not adjudicate COVER_USDC. Does not flatten, POST, consume Class D, or set EXECUTION_READY. Atlas is not trading authority.
 
   - id: GATE:target_position_state
     kind: GATE
