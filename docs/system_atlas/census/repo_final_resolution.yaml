@@ -2,7 +2,7 @@
 # Repo-local resolution classes for open gaps, contradictions, and unresolved terms.
 # Unresolved system facts are not Atlas incompleteness.
 schema_version: system_atlas.v1
-origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+origin_main_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
 locally_resolvable_unsearched_count: 0
 requires_external_corpus_count: 0
 requires_owner_decision_count: 7

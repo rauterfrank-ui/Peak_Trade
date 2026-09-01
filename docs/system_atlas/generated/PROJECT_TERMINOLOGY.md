@@ -84,6 +84,7 @@ Seed vocabulary is not complete. Status OPEN means expansion/definition is unpro
 | TERM:confirm_token | TERM | confirm-token | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
 | TERM:confirm_token_family_matrix | TERM | confirm-token FAMILY_* matrix | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW | projection octet family_id; strategy Family; Gate-Familien F1-F6 |
 | TERM:ddo_non_semantic_capture | TERM | DDO non-semantic decision-spine capture | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
+| TERM:ddo_offline_contract_and_ledger | TERM | DDO offline contract and ledger foundation | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
 | TERM:ddo_offline_control_plane | TERM | DDO offline control plane | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
 | TERM:ddo_offline_evaluation_engine | TERM | DDO offline evaluation engine | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
 | TERM:ddo_offline_learning_validation_shadow | TERM | DDO offline learning validation shadow | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |

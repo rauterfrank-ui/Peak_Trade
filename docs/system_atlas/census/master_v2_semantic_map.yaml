@@ -1,7 +1,7 @@
 # ATLAS_AUTHORITY=NONE
 # Semantic file-to-entity map. Generated from origin/main AST. Not SSOT.
 schema_version: system_atlas.v1
-origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+origin_main_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
 python_file_count_inventoried: 102
 python_file_count_semantically_mapped: 102
 unmapped_file_count: 0

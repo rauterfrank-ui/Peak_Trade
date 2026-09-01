@@ -1,7 +1,7 @@
 # ATLAS_AUTHORITY=NONE
 # Reconcile 69 raw /api/v5 hits vs 49 modeled VENUE_ENDPOINT rows.
 schema_version: system_atlas.v1
-origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+origin_main_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
 okx_raw_api_path_hit_count: 69
 okx_unique_endpoint_candidate_count: 48
 okx_modeled_endpoint_count: 49

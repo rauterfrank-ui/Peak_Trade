@@ -1,10 +1,10 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
-origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
-origin_main_subject: "Revert \"feat(ops): add Master V2 minimal selector policy V1 (#6165)\" (#6166)"
+origin_main_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
+origin_main_subject: "feat(learning): bind DDO to existing experiment identity and offline drift contracts (WP-FA-07)"
 census_date_role: "workpackage_bound_not_runtime_truth"
-worktree_dirty: true
-worktree_note: "Local HEAD behind origin/main; dirty Master Runbook ignored; census from origin/main."
+worktree_dirty: false
+worktree_note: "Navigation census SHA rebound to current origin/main after WP-FA-01..07. Domain census payloads are workpackage-bound navigation, not a claim of exhaustive recensus of OKX/Master-V2/historical inventories. Atlas AUTHORITY=NONE."
 okx_census_complete: true
 okx_current_tree_census_complete: true
 okx_historical_census_complete: true
@@ -95,4 +95,4 @@ named_gaps:
   - Cyber header PRE_LIVE_GATE=PASS vs ratification JSON NOT_PASSED
   - Exact token HAS_FUNCTIONAL_CORE / FUNCTIONAL_CORE not found; Modul-Owner of one Trading Core is proven
   - Flatten transport implemented but LIVE_WIRE_DISABLED; LIVE_FLATTEN_PROVABILITY not PROVEN
-source_files_scanned_note: "origin/main census after unshallow; untracked Atlas working model."
+source_files_scanned_note: "Navigation census SHA rebound to origin/main 615de3b307132b73a60df33fd3bedfac811c8cce after WP-FA-01..07. Not a fresh exhaustive recensus of OKX/Master-V2/historical inventories. Atlas AUTHORITY=NONE."

@@ -206,6 +206,32 @@ terms:
       Navigation-only. PR_BOUNDED_FULL remains the pull_request bounded FULL
       class owned by the existing selector. Atlas is not CI or trading authority.
 
+  - id: TERM:ddo_offline_contract_and_ledger
+    kind: TERM
+    name: DDO offline contract and ledger foundation
+    exact_observed_spellings:
+      - WP-FA-01
+      - WP-FA-02
+      - AppendOnlyDdoLedgerV0
+      - CONTRACT_REGISTRY_V0
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: >-
+      Offline Deterministic Decision Outcome contract registry, canonical
+      record hashing, lineage, and append-only ledger foundation. No runtime,
+      promotion, trading, risk, safety, or execution authority.
+    definition_source: src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py
+      - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
+      - src/learning/deterministic_decision_outcome_v0/decision_event_v0.py
+      - src/learning/deterministic_decision_outcome_v0/authority_v0.py
+    notes: >-
+      Navigation-only. Atlas does not confer trading, promotion, risk, safety,
+      or execution authority. WP-FA-01/WP-FA-02 remain offline contract
+      foundation. Catalog presence is not activation.
+
   - id: TERM:ddo_offline_control_plane
     kind: TERM
     name: DDO offline control plane

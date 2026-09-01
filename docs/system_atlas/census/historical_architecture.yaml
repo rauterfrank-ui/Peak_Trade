@@ -1,7 +1,7 @@
 # ATLAS_AUTHORITY=NONE
 # origin/main chronology. Not a reinterpretation of owner-bound Master V2 / Double Play relation.
 schema_version: system_atlas.v1
-origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+origin_main_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
 c_dp_order_001_status_changed: false
 c_functional_core_token_001_status_changed: false
 functional_core_token_hits_on_origin_main: 0
@@ -56,7 +56,7 @@ events:
     classification: RESTORED
   - id: HIST:selector_policy_reverted
     when: "2026-08-30"
-    commit: afbae518b67eb1b789c835e219db37f5b15f308b
+    commit: 615de3b307132b73a60df33fd3bedfac811c8cce
     pr: "#6166"
     what: Revert Master V2 minimal selector policy (#6165)
     current_status: REJECTED

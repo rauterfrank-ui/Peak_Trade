@@ -1,7 +1,7 @@
 # ATLAS_AUTHORITY=NONE
 # Schema-like contract census of origin/main src/**. Not every dataclass is SCHEMA.
 schema_version: system_atlas.v1
-origin_main_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+origin_main_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
 scope: origin/main src/** schema-like constructs (read-only)
 schema_census_complete: true
 json_schema_inventory_complete: true
