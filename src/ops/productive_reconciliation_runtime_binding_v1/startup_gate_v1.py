@@ -7,6 +7,9 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Optional
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from src.ops.productive_reconciliation_runtime_binding_v1.classifier_v1 import (
     classify_productive_reconciliation_v1,
 )
@@ -84,6 +87,7 @@ def _map_master_v2_state(
     return _MV2_UNKNOWN
 
 
+@observe_after_producer_v0(seam_id="recon.startup_gate")
 def run_productive_reconciliation_startup_gate_v1(
     *,
     state_root: Path,

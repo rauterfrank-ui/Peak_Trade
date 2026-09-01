@@ -6,6 +6,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from src.ops.governed_futures_universe_producer_v1.persistence_v1 import (
     load_and_validate_universe_snapshot_v1,
 )
@@ -143,6 +146,7 @@ def _fail(
     )
 
 
+@observe_after_producer_v0(seam_id="selection.runtime_binding")
 def run_single_selected_future_runtime_binding_gate_v1(
     *,
     selection_state_root: Path,

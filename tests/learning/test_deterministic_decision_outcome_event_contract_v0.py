@@ -10,7 +10,11 @@ from typing import Any, Mapping
 import pytest
 
 from src.learning.deterministic_decision_outcome_v0.authority_v0 import (
+    CAPTURE_ADAPTER_PRESENT,
     LEARNING_PRODUCTIVE_AUTHORITY,
+    PRODUCTIVE_CAPTURE_ADAPTERS,
+    PRODUCTIVE_RUNTIME_WIRING,
+    PROMOTION_AUTHORITY_ACTIVATION,
     PROMOTION_AUTHORITY_EFFECT,
     RUNTIME_EFFECT,
     SECTION_11_13_5_DEPENDENCY,
@@ -186,6 +190,10 @@ def test_runtime_effect_remains_none() -> None:
     assert PROMOTION_AUTHORITY_EFFECT == "NONE"
     assert LEARNING_PRODUCTIVE_AUTHORITY == "NONE"
     assert SECTION_11_13_5_DEPENDENCY == "NONE"
+    assert PROMOTION_AUTHORITY_ACTIVATION is False
+    assert CAPTURE_ADAPTER_PRESENT is True
+    assert PRODUCTIVE_CAPTURE_ADAPTERS is True
+    assert PRODUCTIVE_RUNTIME_WIRING is True
     assert CONTRACT_REGISTRY_V0["runtime_effect"] == "NONE"
     assert LEARNING_LOOP_ENSURE_ASCII_FALSE_DIALECT_IMPORTED is False
     assert CANONICAL_JSON_ALGORITHM_ID.endswith("ensure_ascii_true")

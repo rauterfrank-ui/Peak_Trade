@@ -5,6 +5,9 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any, Mapping, Optional
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from src.ops.productive_futures_ranking_producer_v1.models_v1 import (
     ProductiveFuturesRankingSnapshotV1,
 )
@@ -245,6 +248,7 @@ def _pick_top_eligible(
     )
 
 
+@observe_after_producer_v0(seam_id="selection.single_future")
 def produce_single_selected_future_v1(
     *,
     ranking_snapshot: Mapping[str, Any] | None,

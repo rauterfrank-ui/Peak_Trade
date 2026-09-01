@@ -7,6 +7,9 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from src.ops.productive_futures_accounting_runtime_binding_v1.bridge_binding_v1 import (
     apply_intended_action_via_canonical_accounting_v1,
 )
@@ -63,6 +66,7 @@ class SimulatedExecutionPortV1:
         self.owner = OWNER
         self.last_apply: dict[str, Any] = {}
 
+    @observe_after_producer_v0(seam_id="execution.simulated_outcome")
     def apply_intended_action(
         self,
         *,

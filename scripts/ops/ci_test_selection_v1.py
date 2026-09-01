@@ -1359,11 +1359,15 @@ PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER: str = (
 PR_BOUNDED_FULL_PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER: str = (
     "tests/learning/test_deterministic_decision_outcome_control_plane_v0.py"
 )
+PR_BOUNDED_FULL_PACKAGE_DDO_CAPTURE_SPINE_V0_TESTOWNER: str = (
+    "tests/learning/test_deterministic_decision_outcome_capture_spine_v0.py"
+)
 PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TRIGGER_PATHS: frozenset[str] = frozenset(
     {
         "src/learning/__init__.py",
         "src/learning/deterministic_decision_outcome_v0/__init__.py",
         "src/learning/deterministic_decision_outcome_v0/authority_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
         "src/learning/deterministic_decision_outcome_v0/challenger_v0.py",
         "src/learning/deterministic_decision_outcome_v0/common_v0.py",
         "src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py",
@@ -1387,11 +1391,13 @@ PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TRIGGER_PATHS: frozenset[str] = f
         "src/learning/deterministic_decision_outcome_v0/supervisor_v0.py",
         PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER,
         PR_BOUNDED_FULL_PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER,
+        PR_BOUNDED_FULL_PACKAGE_DDO_CAPTURE_SPINE_V0_TESTOWNER,
     }
 )
 PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TARGETS: tuple[str, ...] = (
     PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER,
     PR_BOUNDED_FULL_PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER,
+    PR_BOUNDED_FULL_PACKAGE_DDO_CAPTURE_SPINE_V0_TESTOWNER,
 )
 
 PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TRIGGER_PATHS: frozenset[str] = frozenset(

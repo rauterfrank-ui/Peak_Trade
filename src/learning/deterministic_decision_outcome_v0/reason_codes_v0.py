@@ -85,6 +85,129 @@ EXISTING_SOURCE_TAXONOMY_REFS_V0: Final[tuple[dict[str, str], ...]] = (
         "integration": "REFERENCE_ONLY",
         "codes_copied": "false",
     },
+    {
+        "taxonomy_ref_id": "existing.ops.governed_futures_universe_producer",
+        "source_path": "src/ops/governed_futures_universe_producer_v1/reason_codes_v1.py",
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
+    {
+        "taxonomy_ref_id": "existing.ops.productive_futures_ranking_producer",
+        "source_path": "src/ops/productive_futures_ranking_producer_v1/reason_codes_v1.py",
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
+    {
+        "taxonomy_ref_id": "existing.ops.single_selected_future_policy",
+        "source_path": "src/ops/single_selected_future_policy_v1/reason_codes_v1.py",
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
+    {
+        "taxonomy_ref_id": "existing.ops.single_selected_future_runtime_binding",
+        "source_path": "src/ops/single_selected_future_runtime_binding_v1/reason_codes_v1.py",
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
+    {
+        "taxonomy_ref_id": "existing.trading.market_state.observation_acceptor",
+        "source_path": "src/trading/market_state/distinct_market_observation_acceptor_v1.py",
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
+    {
+        "taxonomy_ref_id": "existing.ops.feature_regime_pipeline",
+        "source_path": (
+            "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/"
+            "feature_regime_pipeline_v1.py"
+        ),
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
+    {
+        "taxonomy_ref_id": "existing.ops.stateful_confirmation_c1_binding",
+        "source_path": (
+            "src/ops/stateful_confirmation_and_c1_productive_binding_v1/reason_codes_v1.py"
+        ),
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
+    {
+        "taxonomy_ref_id": "existing.trading.master_v2.double_play_entry_exit",
+        "source_path": "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
+    {
+        "taxonomy_ref_id": "existing.trading.master_v2.scope_event_generator",
+        "source_path": "src/trading/master_v2/deterministic_scope_event_generator_v1.py",
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
+    {
+        "taxonomy_ref_id": "existing.trading.master_v2.double_play_composition",
+        "source_path": "src/trading/master_v2/double_play_composition_matrix_v1.py",
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
+    {
+        "taxonomy_ref_id": "existing.ops.exit_policy_producer_binding",
+        "source_path": "src/ops/exit_policy_producer_binding_v1/reason_codes_v1.py",
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
+    {
+        "taxonomy_ref_id": "existing.governance.capital_risk_sizing",
+        "source_path": "src/governance/capital_risk_sizing_v1.py",
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
+    {
+        "taxonomy_ref_id": "existing.governance.canonical_order_intent",
+        "source_path": "src/governance/canonical_order_intent_v1.py",
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
+    {
+        "taxonomy_ref_id": "existing.ops.intended_action_mapper",
+        "source_path": (
+            "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/"
+            "intended_action_mapper_v1.py"
+        ),
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
+    {
+        "taxonomy_ref_id": "existing.ops.productive_reconciliation_taxonomy",
+        "source_path": "src/ops/productive_reconciliation_runtime_binding_v1/taxonomy_v1.py",
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
+    {
+        "taxonomy_ref_id": "existing.ops.simulated_execution_port",
+        "source_path": (
+            "src/ops/single_future_stateful_no_order_runtime_activation_v1/"
+            "simulated_execution_port_v1.py"
+        ),
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
 )
 
 _ALLOWED_EXISTING_SOURCE_PATHS: Final[frozenset[str]] = frozenset(
