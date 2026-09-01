@@ -5149,6 +5149,38 @@ def test_selector_package_a_meta_production_pr_bounded_full_includes_meta_testow
     assert PACKAGE_A_CANDIDATE_LINEAGE_TESTOWNER not in bounded
 
 
+PACKAGE_DDO_CONTRACT_LEDGER_V0_PRODUCTION = (
+    "src/learning/deterministic_decision_outcome_v0/decision_event_v0.py"
+)
+PACKAGE_DDO_CONTRACT_LEDGER_V0_LEDGER = (
+    "src/learning/deterministic_decision_outcome_v0/ledger_v0.py"
+)
+PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER = (
+    "tests/learning/test_deterministic_decision_outcome_event_contract_v0.py"
+)
+
+
+def test_selector_ddo_contract_ledger_v0_production_pr_bounded_full_includes_testowner() -> None:
+    sel = _run_selector(PACKAGE_DDO_CONTRACT_LEDGER_V0_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    assert PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER in bounded
+    assert bounded.count(PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER) == 1
+
+
+def test_selector_ddo_contract_ledger_v0_combined_diff_pr_bounded_full_includes_testowner_once() -> (
+    None
+):
+    sel = _run_selector(
+        PACKAGE_DDO_CONTRACT_LEDGER_V0_PRODUCTION,
+        PACKAGE_DDO_CONTRACT_LEDGER_V0_LEDGER,
+        PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER,
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    assert bounded.count(PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER) == 1
+
+
 def test_selector_package_a_governance_production_pr_bounded_full_includes_lineage_testowner() -> (
     None
 ):

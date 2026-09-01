@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,9 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `GATE:flatten_execute_authority` |
-| `PHASE:z2cz` |
-| `PHASE:z2da` |
+| `TERM:focused_full_noop` |
 
 ## CHANGED_RELATIONS
 
@@ -78,7 +76,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `GATE:flatten_execute_authority` |
+| _(none)_ |
 
 ## AFFECTED_SCHEMAS
 
@@ -94,7 +92,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Additive PHASE:z2da catalog navigation for §11.13.5.Z2DA post-Z2CZ position-creation / autonomy semantic rebind persist. Prerequisite 08 remains a positive observation-proof gate. Position-creation seam remains MISSING_OR_UNAUTHORIZED. GATE:flatten_execute_authority deny-list records the Z2DA persist Owner-GO as not execute. Atlas is not trading authority. No GET, POST, secret mutation, HMAC, flatten execute, entry, or live permission mutation.
+- Navigation-only TERM:focused_full_noop sync after an existing CI selector owner added a PR_BOUNDED_FULL testowner for the offline DDO contract ledger package. No new Atlas trading, promotion, risk, safety, or execution semantics. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
