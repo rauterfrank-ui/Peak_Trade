@@ -105,3 +105,27 @@ def test_trading_factory_signature_has_no_kraken_branches() -> None:
     src = inspect.getsource(build_trading_client_from_config)
     assert "kraken_live" not in src
     assert "kraken_testnet" not in src
+
+
+def test_kraken_live_and_testnet_readiness_success_paths_are_absent(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """KRAKEN_LIVE_READY_SUCCESS_PATH=false and KRAKEN_TESTNET_READY_SUCCESS_PATH=false."""
+    from scripts.check_live_readiness import check_api_credentials, check_exchange_config
+
+    live_cfg = PeakConfig(raw={"exchange": {"default_type": "kraken_live"}})
+    testnet_cfg = PeakConfig(raw={"exchange": {"default_type": "kraken_testnet"}})
+    assert check_exchange_config(live_cfg, "live").passed is False
+    assert check_exchange_config(testnet_cfg, "testnet").passed is False
+    monkeypatch.setenv("KRAKEN_API_KEY", "x")
+    monkeypatch.setenv("KRAKEN_API_SECRET", "y")
+    monkeypatch.setenv("KRAKEN_TESTNET_API_KEY", "x")
+    monkeypatch.setenv("KRAKEN_TESTNET_API_SECRET", "y")
+    assert check_api_credentials("live").passed is False
+    assert check_api_credentials("testnet").passed is False
+
+
+def test_kraken_bounded_pilot_secret_success_path_is_absent() -> None:
+    """KRAKEN_BOUNDED_PILOT_SECRET_SUCCESS_PATH=false."""
+    launcher = REPO_ROOT / "scripts/ops/run_bounded_pilot_with_local_secrets.py"
+    assert not launcher.is_file()

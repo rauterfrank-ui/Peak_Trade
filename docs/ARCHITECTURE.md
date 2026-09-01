@@ -62,24 +62,19 @@ The `reports&#47;` directory contains generated artifacts (HTML/PNG/JSON logs, v
 ## 4. Data Layer (`src/data/`)
 
 **Verantwortung:**
-- Laden von Market-Daten (Kraken API, CSV)
+- Laden von Market-Daten (lokaler Cache, CSV; operative venue target is OKX EEA)
 - Caching (Parquet/CSV)
 - Normalisierung zu OHLCV-DataFrames
 
 **Wichtige Module:**
-- `kraken.py` – API-Client für Kraken
-- `kraken_pipeline.py` – High-Level Data Pipeline
+- `loader.py` – zentraler Data-Loader
 - `cache.py` – Disk-basiertes Caching
 
-**Beispiel:**
-```python
-from src.data import fetch_kraken_data
+Kraken adapters (`kraken.py`, `kraken_pipeline.py`) are **absent** and not selectable. Do not treat historical Kraken samples as current. <!-- pt:ref-target-ignore -->
 
-df = fetch_kraken_data(
-    symbol="BTC/EUR",
-    timeframe="1h",
-    limit=500
-)
+**Beispiel (current):**
+```python
+from scripts.run_backtest import load_ohlcv_data
 ```
 
 ---

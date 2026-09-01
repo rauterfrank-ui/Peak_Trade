@@ -55,10 +55,12 @@ Alle Punkte müssen **vor** dem ersten Aufruf mit echten Orders erfüllt sein.
 - Sektion **`[live_risk]`** mit greifbaren Caps (siehe `scripts/check_live_readiness.py` und `src/live/risk_limits.py`).
 - Pilot-spezifische Caps: siehe `docs/ops/runbooks/live_pilot_caps.md` und `config/ops/live_pilot_caps.toml` (Empfehlungen im Live-Pilot-Plan: sehr kleine Notionale, wenige Orders pro Session).
 
-### 2.3 Börse (Kraken Live im Bounded-Pilot-Pfad)
+### 2.3 Börse (Kraken is not an operative live-readiness path)
 
-- `exchange.default_type` muss zum **Live-Kraken-Pfad** passen (siehe Kommentare in `live_session.py`: u. a. **`kraken_live`** für Bounded Pilot).
-- Umgebungsvariablen für echte API-Zugänge müssen **vom Operator gesetzt** sein (siehe `check_live_readiness.py` für Live: u. a. `KRAKEN_API_KEY`, `KRAKEN_API_SECRET`). **Keine** Schlüssel in Git.
+- `exchange.default_type` must **not** be `kraken`, `kraken_live`, or `kraken_testnet`. Those types are noncanonical and fail closed.
+- `KRAKEN_API_KEY` / `KRAKEN_API_SECRET` are **not** current live-readiness signals. Do not set them to produce a ready state. Do not retarget those names to OKX in this runbook.
+- `scripts/check_live_readiness.py` must fail closed if Kraken credentials or Kraken exchange types are used as a success signal.
+- This section does **not** authorize live, canary, orders, or credential substitution.
 
 ### 2.4 Kill-Switch & Operativer Schutz
 

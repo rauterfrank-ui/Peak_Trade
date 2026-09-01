@@ -12,7 +12,7 @@ Ultra-compact operator reference for bounded / acceptance runs.
 
 ## Canonical Path
 - runbook: `docs&#47;ops&#47;runbooks&#47;ACCEPTANCE_ORIENTED_BOUNDED_RUN_OPERATOR_RUNBOOK.md`
-- launcher: `scripts&#47;ops&#47;run_bounded_pilot_with_local_secrets.py`
+- launcher: `scripts/ops/run_bounded_pilot_session.py` (Kraken secret launcher removed)
 - standard: `docs&#47;ops&#47;specs&#47;ACCEPTANCE_EVIDENCE_STANDARD.md`
 - canonical example: `docs&#47;ops&#47;evidence&#47;CANONICAL_ACCEPTANCE_RUN_20260319_CLOSEOUT.md`
 
@@ -24,14 +24,12 @@ Ultra-compact operator reference for bounded / acceptance runs.
 - Go/No-Go confirmed
 - Dry Validation confirmed
 - Ops Cockpit reviewed
-- `.bounded_pilot.env` present
-- `python3 scripts/ops/run_bounded_pilot_with_local_secrets.py --dry-check`
+- canonical session: `python3 scripts/ops/run_bounded_pilot_session.py` (no Kraken secret injection)
 
 ## Canonical Start
 ```bash
 cd ~/Peak_Trade
-python3 scripts/ops/run_bounded_pilot_with_local_secrets.py --dry-check
-python3 scripts/ops/run_bounded_pilot_with_local_secrets.py --steps 25 --position-fraction 0.0005
+python3 scripts/ops/run_bounded_pilot_session.py --steps 25 --position-fraction 0.0005
 ```
 
 ## After Run

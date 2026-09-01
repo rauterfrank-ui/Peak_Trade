@@ -8,12 +8,12 @@
 # ============================================================================
 # PHASE 79: REAL-MARKET SMOKES CONFIGURATION
 # ============================================================================
-# Konfiguration für Real-Market-Smoke-Tests mit lokalem Kraken-Cache.
+# Konfiguration für Real-Market-Smoke-Tests mit lokalem Market-Data-Cache (Parquet).
 # WICHTIG: Rein Offline - keine Netzwerk-Calls, nur lokale Parquet-Dateien!
 # ============================================================================
 
 [real_market_smokes]
-# Basis-Pfad für Kraken-Cache-Files (Produktiv)
+# Basis-Pfad für lokale Market-Data-Cache-Files (Produktiv)
 base_path = "data/cache"
 
 # Override-Base für Tests (in pytest über Fixture gesetzt)
@@ -424,7 +424,7 @@ auto_switch_enabled = false
 require_confirmation = true
 
 # Target venue: OKX Europe EEA (credentials via OKX_EEA_* env vars — separate operator setup).
-# Kraken live profile decommissioned 2026-06; adapter code retained as DORMANT/HISTORICAL only.
+# Kraken live profile decommissioned; Kraken adapter modules are removed and not selectable.
 exchange = "okx_europe_eea"
 default_pair = "ETH/USD"
 
@@ -679,7 +679,7 @@ slippage_bps = 5.0
 [live_exchange]
 # Exchange-Konfiguration für Live-Marktdaten
 # WICHTIG: Nur public market data! Keine Order-APIs!
-# Kraken public OHLCV path DORMANT — OKX EEA is the active venue target.
+# Kraken public OHLCV path is not selectable — OKX EEA is the active venue target.
 name = "okx_europe_eea"
 
 # Sandbox/Public-Only Modus (MUSS true sein für Phase 31)
