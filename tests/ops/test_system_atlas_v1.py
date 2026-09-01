@@ -623,3 +623,94 @@ def test_repo_atlas_v1_final_closure(atlas: dict) -> None:
         for row in atlas["records"]["census/incompleteness.yaml"]["remaining_domains"]
     }
     assert remaining_ids == {"acronym_census_complete"}
+
+
+def test_census_navigation_rebind_distinct_from_domain_payloads(atlas: dict) -> None:
+    meta = atlas["records"]["census/census_meta.yaml"]
+    assert meta["origin_main_sha"] == "46d2c1734746d6d1332de0dfb03840d3bd8c31b1"
+    assert meta["navigation_rebind_sha"] == "46d2c1734746d6d1332de0dfb03840d3bd8c31b1"
+    assert meta["navigation_rebind_kind"] == "FRESH_NAVIGATION_REBIND_NOT_DOMAIN_RECENSUS"
+    assert meta["domain_census_payloads_bound_sha"] == "615de3b307132b73a60df33fd3bedfac811c8cce"
+    assert meta["domain_census_payloads_fresh_exhaustive_recensus"] is False
+    inv = atlas["records"]["census/master_v2_module_inventory.yaml"]
+    assert inv["origin_main_sha"] == meta["origin_main_sha"]
+    assert inv["domain_census_payloads_fresh_exhaustive_recensus"] is False
+
+
+def test_hist_selector_policy_reverted_uses_proven_6166_sha(atlas: dict) -> None:
+    events = atlas["records"]["census/historical_architecture.yaml"]["events"]
+    by_id = {str(row["id"]): row for row in events}
+    revert = by_id["HIST:selector_policy_reverted"]
+    assert revert["commit"] == "afbae518b67eb1b789c835e219db37f5b15f308b"
+    assert revert["pr"] == "#6166"
+    wp = by_id["HIST:wp_fa_07"]
+    assert wp["commit"] == "615de3b307132b73a60df33fd3bedfac811c8cce"
+    assert wp["pr"] == "#6209"
+
+
+def test_ddo_navigation_is_observation_only_without_authority(atlas: dict) -> None:
+    entities = {str(e["id"]): e for e in iter_entities(atlas)}
+    required = (
+        "PHASE:ddo_offline_foundation",
+        "RUNTIME_COMPONENT:ddo_capture_v0",
+        "RUNTIME_COMPONENT:ddo_ledger_v0",
+        "RUNTIME_COMPONENT:ddo_experiment_identity_binding",
+        "HOST:wallclock_decision_economics_cycle",
+        "RUNTIME_COMPONENT:recon_startup_gate_v1",
+        "RUNTIME_COMPONENT:simulated_execution_port_v1",
+        "EXPERIMENT:canonical_experiment_identity_v1",
+    )
+    for eid in required:
+        assert eid in entities
+        notes = str(entities[eid].get("notes") or "")
+        assert entities[eid].get("current_canonical") is False
+        if eid.startswith("PHASE:") or eid.startswith("RUNTIME_COMPONENT:ddo_"):
+            assert "AUTHORITY_OWNER=NONE" in notes
+            assert "PRODUCTIVE_AI_AUTHORITY_COUNT=0" in notes
+            assert "SECOND_TRADING_AUTHORITY=false" in notes
+            assert "SECOND_RISK_AUTHORITY=false" in notes
+            assert "SECOND_SAFETY_AUTHORITY=false" in notes
+            assert "SECOND_PROMOTION_AUTHORITY=false" in notes
+            assert "RUNTIME_LINEAGE_PARTIAL=true" in notes
+    rels = list(iter_relations(atlas))
+    ddo_out = [r for r in rels if str(r.get("source")) == "RUNTIME_COMPONENT:ddo_capture_v0"]
+    types = {str(r.get("type")) for r in ddo_out}
+    assert "OBSERVES" in types
+    assert "PERSISTS" in types
+    assert "PRODUCES" not in types
+    assert "CONSUMES" not in types
+    assert "AUTHORIZES" not in types
+    assert "BINDS" not in types
+    observes = {(str(r["target"]),) for r in ddo_out if str(r.get("type")) == "OBSERVES"}
+    assert ("CAPABILITY:cap_2_1_gfu",) in observes
+    assert ("SELECTOR:productive_futures_ranking",) in observes
+    assert ("SELECTOR:single_selected_future_policy",) in observes
+    assert ("BINDER:bound_instrument_v1",) in observes
+    assert ("RUNTIME_COMPONENT:recon_startup_gate_v1",) in observes
+    assert ("RUNTIME_COMPONENT:simulated_execution_port_v1",) in observes
+    rel_triples = {(str(r.get("source")), str(r.get("type")), str(r.get("target"))) for r in rels}
+    assert (
+        "RUNTIME_COMPONENT:ddo_experiment_identity_binding",
+        "REFERENCE_OF",
+        "EXPERIMENT:canonical_experiment_identity_v1",
+    ) in rel_triples
+    assert (
+        "FORENSIC_REFERENCE:information_corpus_persistence_base",
+        "HAS_CHILD",
+        "CHILD:nested_structural_child",
+    ) in rel_triples
+    forbidden_targets = {
+        "RUNTIME_COMPONENT:dp_composition",
+        "RUNTIME_COMPONENT:dp_survival",
+        "GATE:flatten_execute_authority",
+        "CAPABILITY:cap_11_13_5_live_canary",
+    }
+    for r in ddo_out:
+        assert str(r.get("target")) not in forbidden_targets
+    kraken = entities["ADAPTER:kraken_live_client"]
+    assert kraken["current_status"] == "REMOVED"
+    assert kraken["temporal_class"] == "HISTORICAL_ONLY"
+    assert "#6203" in str(kraken.get("notes") or "")
+    gaps = atlas["records"]["wiring/gaps.yaml"]["gaps"]
+    gap_ids = {str(g.get("id")) for g in gaps}
+    assert "GAP:ddo_declared_seams_without_host_decorator" in gap_ids

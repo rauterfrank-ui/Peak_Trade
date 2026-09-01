@@ -689,6 +689,51 @@ relations:
       - docs/system_atlas/census/master_v2_semantic_map.yaml
     notes: Same Trading Core membership. HAS_FUNCTIONAL_CORE remains ADJUDICATED census label.
 
+  - id: REL:s_ddo_phase_contains_capture
+    source: PHASE:ddo_offline_foundation
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:ddo_capture_v0
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+      - src/learning/deterministic_decision_outcome_v0/authority_v0.py
+    notes: >-
+      Package containment. Observation adapter only. AUTHORITY_OWNER=NONE.
+      Not a second trading core. Atlas is not trading authority.
+
+  - id: REL:s_ddo_phase_contains_ledger
+    source: PHASE:ddo_offline_foundation
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:ddo_ledger_v0
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
+    notes: Package containment of the append-only offline ledger. Atlas is not trading authority.
+
+  - id: REL:s_ddo_phase_contains_experiment_identity_binding
+    source: PHASE:ddo_offline_foundation
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:ddo_experiment_identity_binding
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py
+    notes: Package containment of the existing-owner identity ref adapter. Atlas is not trading authority.
+
+  - id: REL:s_ddo_experiment_identity_reference_of_canonical_owner
+    source: RUNTIME_COMPONENT:ddo_experiment_identity_binding
+    type: REFERENCE_OF
+    target: EXPERIMENT:canonical_experiment_identity_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py
+      - src/experiments/canonical_experiment_identity_v1.py
+      - src/learning/deterministic_decision_outcome_v0/authority_v0.py
+    notes: >-
+      Ontology has no BINDS_TO_EXISTING_OWNER type. REFERENCE_OF records that
+      DDO references already-serialized Canonical Experiment Identity v1
+      records and does not mint a competing identity. Not Cap-2.4 BINDS.
+      Atlas is not trading authority.
+
   - id: REL:s_forensic_has_nested_child
     source: FORENSIC_REFERENCE:information_corpus_persistence_base
     type: HAS_CHILD

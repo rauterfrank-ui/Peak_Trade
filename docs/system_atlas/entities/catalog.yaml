@@ -834,12 +834,147 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
     notes: >-
-      Parallel Full-Autonomy/DDO track. Canonical binding of already-present
-      WP-FA-01 through WP-FA-07 offline DDO contract foundation. Does not
-      replace CURRENT_CANONICAL_SECTION=11.13.5.Z2DA. Does not rewrite the
-      live next-pointer. Does not implement WP-FA-08. Does not mint trading,
-      risk, safety, promotion, or execution authority. Atlas catalog presence
-      is navigation only and is not activation. Atlas is not trading authority.
+      Parallel Full-Autonomy/DDO track covering
+      src/learning/deterministic_decision_outcome_v0. Offline learning /
+      decision-outcome observation and evaluation contract surface.
+      AUTHORITY_OWNER=NONE. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
+      SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
+      SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false.
+      RUNTIME_LINEAGE_PARTIAL=true. Does not replace
+      CURRENT_CANONICAL_SECTION=11.13.5.Z2DA. Does not implement WP-FA-08.
+      Not a second trading, risk, safety, planning, execution, promotion, or
+      deployment owner. Atlas catalog presence is navigation only and is not
+      activation. Atlas is not trading authority.
+
+  - id: RUNTIME_COMPONENT:ddo_capture_v0
+    kind: RUNTIME_COMPONENT
+    name: DDO capture adapter v0
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+      - src/learning/deterministic_decision_outcome_v0/authority_v0.py
+    notes: >-
+      Offline observation adapter. AUTHORITY_OWNER=NONE.
+      PRODUCTIVE_AI_AUTHORITY_COUNT=0. SECOND_TRADING_AUTHORITY=false.
+      SECOND_RISK_AUTHORITY=false. SECOND_SAFETY_AUTHORITY=false.
+      SECOND_PROMOTION_AUTHORITY=false. RUNTIME_LINEAGE_PARTIAL=true.
+      observe_after_producer_v0 is a no-op unless an enabled
+      DdoCaptureBindingV0 session is bound. Does not mutate producer results.
+      Declared IMPLEMENTED_CAPTURE_SEAMS_V0 without a proven host decorator
+      are not runtime graph edges. Not WP-FA-08. Atlas is not trading authority.
+
+  - id: RUNTIME_COMPONENT:ddo_ledger_v0
+    kind: RUNTIME_COMPONENT
+    name: DDO append-only ledger v0
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      Append-only offline ledger. Persist occurs only when a capture binding
+      has ledger_path set. AUTHORITY_OWNER=NONE. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
+      SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
+      SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false.
+      RUNTIME_LINEAGE_PARTIAL=true. Atlas is not trading authority.
+
+  - id: RUNTIME_COMPONENT:ddo_experiment_identity_binding
+    kind: RUNTIME_COMPONENT
+    name: DDO canonical experiment identity ref adapter
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py
+      - src/learning/deterministic_decision_outcome_v0/authority_v0.py
+      - src/experiments/canonical_experiment_identity_v1.py
+    notes: >-
+      Binds to the existing Canonical Experiment Identity v1 owner. Does not
+      mint a competing identity. Does not import src.experiments.
+      AUTHORITY_OWNER=NONE. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
+      SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
+      SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false.
+      RUNTIME_LINEAGE_PARTIAL=true. Atlas is not trading authority.
+
+  - id: HOST:wallclock_decision_economics_cycle
+    kind: HOST
+    name: Wallclock decision-to-simulated-economics cycle
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+    evidence_sources:
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      Establishes DdoCaptureBindingV0 session context via
+      with_ddo_capture_session_v0 and may call
+      record_productive_cycle_capture_v0. Observation only. Does not confer
+      DDO trading, risk, safety, or promotion authority.
+      AUTHORITY_OWNER=NONE. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
+      SECOND_TRADING_AUTHORITY=false. Atlas is not trading authority.
+
+  - id: RUNTIME_COMPONENT:recon_startup_gate_v1
+    kind: RUNTIME_COMPONENT
+    name: Productive reconciliation startup gate
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py
+    evidence_sources:
+      - src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py
+    notes: >-
+      Host of observe_after_producer_v0 seam recon.startup_gate. DDO observes
+      this producer; DDO does not own reconciliation. Atlas is not trading
+      authority.
+
+  - id: RUNTIME_COMPONENT:simulated_execution_port_v1
+    kind: RUNTIME_COMPONENT
+    name: Cap 7.2 simulated execution port
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/single_future_stateful_no_order_runtime_activation_v1/simulated_execution_port_v1.py
+    evidence_sources:
+      - src/ops/single_future_stateful_no_order_runtime_activation_v1/simulated_execution_port_v1.py
+    notes: >-
+      Host of observe_after_producer_v0 seam execution.simulated_outcome. DDO
+      observes this producer; DDO does not own execution. Not venue submit.
+      Atlas is not trading authority.
+
+  - id: EXPERIMENT:canonical_experiment_identity_v1
+    kind: EXPERIMENT
+    name: Canonical Experiment Identity v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/experiments/canonical_experiment_identity_v1.py
+    evidence_sources:
+      - src/experiments/canonical_experiment_identity_v1.py
+      - src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py
+    notes: >-
+      Existing experiment-identity owner. DDO references this owner and does
+      not mint a second identity. Atlas is not experiment or trading authority.
 
   - id: GATE:target_position_state
     kind: GATE
@@ -1411,7 +1546,13 @@ entities:
       - src/ops/kraken_futures_demo_credential_presence_contract_v0.py
     evidence_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
-    notes: Removed from the current tree. Not an operative venue. Not relabeled to OKX. Historical traceability only.
+    notes: >-
+      Historical existence proven; current productive tree absence proven
+      after #6203 commit d01b76e4d428586dbcc37aa8e00e083fc68b230d. The three
+      source_paths are absent on origin/main. Not an operative venue. Not
+      relabeled to OKX. Not restored. Atlas auto-orphan remains because
+      orphan detection ignores OBSERVES and does not skip REMOVED adapters.
+      Historical traceability only. Atlas is not trading authority.
 
   - id: RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces
     kind: RUNTIME_COMPONENT

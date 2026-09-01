@@ -1,7 +1,10 @@
 # ATLAS_AUTHORITY=NONE
 # origin/main chronology. Not a reinterpretation of owner-bound Master V2 / Double Play relation.
 schema_version: system_atlas.v1
-origin_main_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
+origin_main_sha: 46d2c1734746d6d1332de0dfb03840d3bd8c31b1
+navigation_rebind_sha: 46d2c1734746d6d1332de0dfb03840d3bd8c31b1
+domain_census_payloads_bound_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
+domain_census_payloads_fresh_exhaustive_recensus: false
 c_dp_order_001_status_changed: false
 c_functional_core_token_001_status_changed: false
 functional_core_token_hits_on_origin_main: 0
@@ -56,10 +59,24 @@ events:
     classification: RESTORED
   - id: HIST:selector_policy_reverted
     when: "2026-08-30"
-    commit: 615de3b307132b73a60df33fd3bedfac811c8cce
+    commit: afbae518b67eb1b789c835e219db37f5b15f308b
     pr: "#6166"
     what: Revert Master V2 minimal selector policy (#6165)
     current_status: REJECTED
+    notes: >-
+      Git-proven revert commit of #6165 via #6166. SHA
+      615de3b307132b73a60df33fd3bedfac811c8cce is WP-FA-07, not this revert.
+      Evidence class C (git history). Atlas AUTHORITY=NONE.
+  - id: HIST:wp_fa_07
+    when: "2026-09-01"
+    commit: 615de3b307132b73a60df33fd3bedfac811c8cce
+    pr: "#6209"
+    what: Bind DDO to existing experiment identity and offline drift contracts (WP-FA-07)
+    current_status: CURRENT_NONCANONICAL
+    notes: >-
+      Git-proven WP-FA-07 persist. Not selector-policy revert #6166. Does not
+      implement WP-FA-08. Does not mint trading, risk, safety, or promotion
+      authority. Evidence class C (git history). Atlas AUTHORITY=NONE.
 relation_changes:
   - id: REL_HIST:ops_dp_before_master_v2
     old_relation: Double Play specialists exist without Master V2 package
