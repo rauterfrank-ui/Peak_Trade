@@ -463,7 +463,7 @@ class TestSessionIntegration:
         """Test: Session mit Run-Logger erstellen."""
         from src.live.shadow_session import ShadowPaperSession
         from src.core.environment import EnvironmentConfig, TradingEnvironment
-        from src.data.kraken_live import (
+        from src.data.simulation_candles import (
             ShadowPaperConfig,
             LiveExchangeConfig,
             FakeCandleSource,

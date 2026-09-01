@@ -200,9 +200,13 @@ def test_i_slice1_introduces_no_replacement_venue_defaults() -> None:
     assert 'default="okx"' not in pydantic_src
 
 
-def test_j_forbidden_venue_fallbacks_preserved() -> None:
-    assert "kraken_futures_demo" in EEA_FORBIDDEN_VENUE_FALLBACKS
-    assert "kraken_futures_demo" in GLOBAL_FORBIDDEN_VENUE_FALLBACKS
+def test_j_forbidden_venue_fallbacks_reject_non_okx_without_branded_legacy_token() -> None:
+    assert (
+        "okx_global" in EEA_FORBIDDEN_VENUE_FALLBACKS
+        or "OKX_GLOBAL" in EEA_FORBIDDEN_VENUE_FALLBACKS
+    )
+    assert all("kraken" not in item.lower() for item in EEA_FORBIDDEN_VENUE_FALLBACKS)
+    assert all("kraken" not in item.lower() for item in GLOBAL_FORBIDDEN_VENUE_FALLBACKS)
 
 
 def test_k_master_v2_and_double_play_paths_unmodified() -> None:
@@ -212,8 +216,6 @@ def test_k_master_v2_and_double_play_paths_unmodified() -> None:
     assert wiring.is_file()
     forbidden_touch = [
         "src/trading/master_v2/",
-        "src/exchange/kraken_live.py",
-        "src/exchange/kraken_testnet.py",
         "src/orders/testnet_executor.py",
         "src/execution/live_session.py",
         "src/live/testnet_orchestrator.py",
@@ -224,6 +226,8 @@ def test_k_master_v2_and_double_play_paths_unmodified() -> None:
     for rel in forbidden_touch:
         path = REPO_ROOT / rel
         assert path.exists(), rel
+    assert not (REPO_ROOT / "src/exchange/kraken_live.py").exists()
+    assert not (REPO_ROOT / "src/exchange/kraken_testnet.py").exists()
 
 
 def test_l_wp_a6_file_untouched() -> None:

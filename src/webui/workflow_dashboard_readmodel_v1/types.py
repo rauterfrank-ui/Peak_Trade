@@ -147,7 +147,7 @@ class UniverseSelectionDashboardSliceV1:
 
 
 @dataclass(frozen=True)
-class KrakenMetadataCoverageCardV1:
+class MetadataCoverageCardV1:
     loaded: bool
     load_errors: tuple[str, ...]
     provider: str | None = None
@@ -206,7 +206,7 @@ class WorkflowDashboardReadModelV1:
     future_detail_missing: MissingTruthCardV1
     universe_selection: UniverseSelectionDashboardSliceV1
     universe_selection_projection_coverage: ProjectionCoverageCardV1
-    kraken_metadata_coverage: KrakenMetadataCoverageCardV1
+    metadata_coverage: MetadataCoverageCardV1
     pipeline: WorkflowPipelineAggregateV1
     orders_fills_pnl: OrdersFillsPnlCardV1
     evidence_explorer: EvidenceCardV1
@@ -351,29 +351,29 @@ def to_json_dict(model: WorkflowDashboardReadModelV1) -> dict[str, Any]:
             ],
             "evidence_links": list(model.universe_selection_projection_coverage.evidence_links),
         },
-        "kraken_metadata_coverage": {
-            "loaded": model.kraken_metadata_coverage.loaded,
-            "load_errors": list(model.kraken_metadata_coverage.load_errors),
-            "provider": model.kraken_metadata_coverage.provider,
-            "packet_count": model.kraken_metadata_coverage.packet_count,
+        "metadata_coverage": {
+            "loaded": model.metadata_coverage.loaded,
+            "load_errors": list(model.metadata_coverage.load_errors),
+            "provider": model.metadata_coverage.provider,
+            "packet_count": model.metadata_coverage.packet_count,
             "candidate_validation_complete_count": (
-                model.kraken_metadata_coverage.candidate_validation_complete_count
+                model.metadata_coverage.candidate_validation_complete_count
             ),
             "candidate_validation_total_count": (
-                model.kraken_metadata_coverage.candidate_validation_total_count
+                model.metadata_coverage.candidate_validation_total_count
             ),
             "strict_instrument_complete_count": (
-                model.kraken_metadata_coverage.strict_instrument_complete_count
+                model.metadata_coverage.strict_instrument_complete_count
             ),
-            "min_notional_unknown_count": model.kraken_metadata_coverage.min_notional_unknown_count,
-            "strict_upstream_blocked": model.kraken_metadata_coverage.strict_upstream_blocked,
-            "observability_truth_allowed": model.kraken_metadata_coverage.observability_truth_allowed,
-            "diagnostic_only": model.kraken_metadata_coverage.diagnostic_only,
-            "not_truth": model.kraken_metadata_coverage.not_truth,
-            "not_selected_future": model.kraken_metadata_coverage.not_selected_future,
-            "source_run_id": model.kraken_metadata_coverage.source_run_id,
-            "generated_at": model.kraken_metadata_coverage.generated_at,
-            "evidence_links": list(model.kraken_metadata_coverage.evidence_links),
+            "min_notional_unknown_count": model.metadata_coverage.min_notional_unknown_count,
+            "strict_upstream_blocked": model.metadata_coverage.strict_upstream_blocked,
+            "observability_truth_allowed": model.metadata_coverage.observability_truth_allowed,
+            "diagnostic_only": model.metadata_coverage.diagnostic_only,
+            "not_truth": model.metadata_coverage.not_truth,
+            "not_selected_future": model.metadata_coverage.not_selected_future,
+            "source_run_id": model.metadata_coverage.source_run_id,
+            "generated_at": model.metadata_coverage.generated_at,
+            "evidence_links": list(model.metadata_coverage.evidence_links),
         },
         "pipeline": {
             "readmodel_id": model.pipeline.readmodel_id,

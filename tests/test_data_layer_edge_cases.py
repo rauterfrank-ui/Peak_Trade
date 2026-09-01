@@ -30,7 +30,6 @@ from tests.utils.dt import normalize_dt_index
 from src.data import (
     DataNormalizer,
     CsvLoader,
-    KrakenCsvLoader,
     ParquetCache,
     REQUIRED_OHLCV_COLUMNS,
 )

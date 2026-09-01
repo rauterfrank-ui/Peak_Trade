@@ -1125,7 +1125,7 @@ EVIDENCE=src/orders/exchange.py execute_order; _execute_via_trading_client
 ``` text
 SUBMIT_PATH_ID=SP-10-KRAKEN-LIVE-ADDORDER
 ENTRY_POINT=KrakenLiveClient.place_order
-FILE=src/exchange/kraken_live.py
+FILE=src/exchange/kraken_live.py <!-- pt:ref-target-ignore -->
 SYMBOL_OR_FUNCTION=place_order
 EXECUTION_CLASS=A
 DOWNSTREAM_TRANSPORT=Kraken REST POST /0/private/AddOrder
@@ -1139,7 +1139,7 @@ MINIMUM_FUTURE_OWNER_GO_SCOPE=explicit Owner-GO naming KrakenLiveClient.place_or
 GO_SCOPE_MUST_NOT_AUTHORIZE=OKX Canary SP-01; OKX Testnet SP-04; funding; general Live autonomy
 RELATED_RUNBOOK_SECTION=§2.3 / historical bounded-pilot contracts
 CAN_SUBMIT_ORDER_TODAY=false
-EVIDENCE=src/exchange/kraken_live.py place_order
+EVIDENCE=src/exchange/kraken_live.py place_order <!-- pt:ref-target-ignore -->
 ```
 
 #### SP-11 Kraken Testnet create_order
@@ -1147,7 +1147,7 @@ EVIDENCE=src/exchange/kraken_live.py place_order
 ``` text
 SUBMIT_PATH_ID=SP-11-KRAKEN-TESTNET-CREATE-ORDER
 ENTRY_POINT=KrakenTestnetClient.create_order
-FILE=src/exchange/kraken_testnet.py
+FILE=src/exchange/kraken_testnet.py <!-- pt:ref-target-ignore -->
 SYMBOL_OR_FUNCTION=create_order
 EXECUTION_CLASS=A
 DOWNSTREAM_TRANSPORT=Kraken Testnet REST create-order
@@ -1161,7 +1161,7 @@ MINIMUM_FUTURE_OWNER_GO_SCOPE=explicit Owner-GO naming KrakenTestnetClient.creat
 GO_SCOPE_MUST_NOT_AUTHORIZE=OKX Canary; OKX Demo XPerp; Live; funding
 RELATED_RUNBOOK_SECTION=§11.12 (non-canonical relative to §11.12.8 OKX path)
 CAN_SUBMIT_ORDER_TODAY=false
-EVIDENCE=src/exchange/kraken_testnet.py create_order
+EVIDENCE=src/exchange/kraken_testnet.py create_order <!-- pt:ref-target-ignore -->
 ```
 
 #### SP-12 TestnetExchangeOrderExecutor
@@ -1216,7 +1216,7 @@ ENTRY_POINT=ExecutionRouterV1.place_order
 FILE=src/execution/router/router_v1.py
 SYMBOL_OR_FUNCTION=place_order
 EXECUTION_CLASS=B
-DOWNSTREAM_TRANSPORT=currently mock adapters only (okx_v1 / bybit_v1 MOCKS ONLY); router modes limited to shadow/paper
+DOWNSTREAM_TRANSPORT=currently mock adapters only (okx_v1 MOCKS ONLY); router modes limited to shadow/paper
 ENVIRONMENT_SCOPE=NONE
 CURRENTLY_REACHABLE=true
 CURRENT_REACHABILITY_REASON=router exists; bound adapters are mocks; no OKX Live/Testnet POST
@@ -1268,7 +1268,7 @@ Class C dry-run &#47; simulation-only (not Owner-GO submit surfaces):
 
 Class D fixture &#47; test &#47; mock:
 
-- `OKXExecutionAdapterV1` / Bybit v1 (`MOCKS ONLY`)
+- `OKXExecutionAdapterV1` (`MOCKS ONLY`)
 - `FakeBroker.place_order`
 - `src&#47;execution&#47;adapters&#47;mock_v1.py`
 - Cap 11.1 / Cap 11.4 construction-forbidden ports

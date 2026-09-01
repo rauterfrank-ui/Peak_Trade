@@ -49,9 +49,5 @@ def test_clarified_kraken_docs_do_not_claim_current_target_venue_ssot_v0() -> No
         assert "okx_europe_eea" in normalized
 
 
-def test_legacy_kraken_demo_script_docstring_marks_non_canonical_v0() -> None:
-    text = (REPO_ROOT / "scripts" / "demo_kraken_simple.py").read_text(encoding="utf-8")
-    assert "legacy" in text.lower()
-    assert "not the current canonical target venue" in text.lower()
-    for phrase in POSITIVE_CLAIM_PHRASES:
-        assert phrase not in text
+def test_legacy_kraken_demo_script_removed_v0() -> None:
+    assert not (REPO_ROOT / "scripts" / "demo_kraken_simple.py").is_file()

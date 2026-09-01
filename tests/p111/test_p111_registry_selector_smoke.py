@@ -14,7 +14,7 @@ def test_registry_has_expected_adapters() -> None:
     reg = build_adapter_registry_v1()
     assert "mock" in reg
     assert "okx" in reg
-    assert "bybit" in reg
+    assert set(reg) == {"mock", "okx"}
 
 
 def test_select_okx_perp_ok() -> None:

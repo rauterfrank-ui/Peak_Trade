@@ -107,14 +107,14 @@ class ExchangeClient(Protocol):
     - `CcxtExchangeClient`: Konkrete Implementierung mit ccxt
 
     Example:
-        >>> client: ExchangeClient = CcxtExchangeClient("kraken")
+        >>> client: ExchangeClient = CcxtExchangeClient("okx")
         >>> ticker = client.fetch_ticker("BTC/EUR")
         >>> print(f"BTC/EUR: {ticker.last}")
     """
 
     def get_name(self) -> str:
         """
-        Name/ID des Exchanges (z.B. 'okx').
+        Name/ID des Exchanges (operative ccxt id string).
 
         Returns:
             Exchange-ID als String
@@ -263,9 +263,7 @@ class TradingExchangeClient(Protocol):
              NICHT selbst durchführen - das ist Aufgabe des OrderExecutors.
 
     Implementierungen:
-    - `DummyExchangeClient`: In-Memory-Simulation für Tests
-    - `KrakenTestnetClient`: Kraken Testnet/Demo-API
-    - `KrakenLiveClient`: Kraken Live-API (Option A Slice 5)
+    - `DummyExchangeClient`: In-Memory-Simulation für Tests (kein Venue)
 
     Verwendung:
         >>> client: TradingExchangeClient = DummyExchangeClient(prices={"BTC/EUR": 50000})
@@ -284,7 +282,7 @@ class TradingExchangeClient(Protocol):
 
     def get_name(self) -> str:
         """
-        Name/ID des Exchanges (z.B. 'dummy', 'kraken_testnet').
+        Name/ID des Exchanges (z.B. 'dummy').
 
         Returns:
             Exchange-Name als String

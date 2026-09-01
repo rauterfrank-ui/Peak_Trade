@@ -17,7 +17,7 @@
     "CANONICAL_EXECUTION_AUTHORITY_OWNER": "UNRESOLVED",
     "PRODUCTIVE_ORDER_INTENT_DECISION_OWNER_COUNT": 3,
     "PRODUCTIVE_BYPASS_PATH_COUNT": 4,
-    "DIRECT_SUBMISSION_BYPASS_COUNT": 5,
+    "DIRECT_SUBMISSION_BYPASS_COUNT": 4,
     "AUTHORITY_LEAK_DETECTED": false,
     "THIS_DOCUMENT_IS_INVENTORY_SSOT_NOT_RUNTIME_AUTHORITY": true,
     "NO_RUNTIME_REWIRE_IN_THIS_SLICE": true,
@@ -45,7 +45,7 @@
   "canonical_execution_authority_owner": "UNRESOLVED",
   "productive_order_intent_decision_owner_count": 3,
   "productive_bypass_path_count": 4,
-  "direct_submission_bypass_count": 5,
+  "direct_submission_bypass_count": 4,
   "authority_leak_detected": false,
   "consolidation_status": "NOT_STARTED",
   "decommission_status": "NOT_STARTED",
@@ -105,7 +105,7 @@
       "reachability": "REACHABLE_PRODUCTIVE",
       "authoritative_order_intent_decision": false,
       "can_submit_orders": false,
-      "rationale": "CRS\u2192COI\u2192firewall\u2192plan-only orchestrator; submission_blocked; status BOUND_NOT_ACTIVATED."
+      "rationale": "CRS→COI→firewall→plan-only orchestrator; submission_blocked; status BOUND_NOT_ACTIVATED."
     },
     {
       "owner_id": "src.governance.intent_compatibility_firewall_v1",
@@ -117,7 +117,7 @@
       "reachability": "REACHABLE_PRODUCTIVE",
       "authoritative_order_intent_decision": false,
       "can_submit_orders": false,
-      "rationale": "Fail-closed adapter-compatibility firewall for canonical\u2192adapter transform."
+      "rationale": "Fail-closed adapter-compatibility firewall for canonical→adapter transform."
     },
     {
       "owner_id": "src.execution_pipeline.plan_only_boundary_v0",
@@ -231,18 +231,6 @@
       "authoritative_order_intent_decision": true,
       "can_submit_orders": true,
       "rationale": "Ops/shadow scripts construct legacy intents/pipelines without COI."
-    },
-    {
-      "owner_id": "submission.kraken_live_client",
-      "module_path": "src/exchange/kraken_live.py",
-      "primary_symbols": [
-        "KrakenLiveClient"
-      ],
-      "role": "PRODUCTIVE_BYPASS",
-      "reachability": "REACHABLE_PRODUCTIVE",
-      "authoritative_order_intent_decision": false,
-      "can_submit_orders": true,
-      "rationale": "Direct real AddOrder API client; library reachable; productive live entrypoints currently guarded \u2014 not counted as authority leak."
     },
     {
       "owner_id": "submission.execution_pipeline_submit_order",
@@ -377,7 +365,6 @@
   "direct_submission_bypasses": [
     "submission.execution_pipeline_submit_order",
     "bypass.orders_exchange_executor",
-    "submission.kraken_live_client",
     "bypass.execution_router_order_intent_v1",
     "submission.execution_pipeline_adapter_submit"
   ],
@@ -397,7 +384,7 @@
     "Should OrderIntentV1 producers be forced through COI transform only?",
     "How to retire or hard-deauthorize unguarded shadow/paper scripts and ExchangeOrderExecutor without changing semantics yet?",
     "Who is the single execution-authority owner once Operator-GO selects one?",
-    "Keep KrakenLiveClient as library-only until canonical submission authority exists?"
+    "Historical KrakenLiveClient library path is ABSENT from current tree; do not restore as a second venue."
   ],
   "next_plan_item": "P2_LEGACY_ORDER_INTENT_DECOMMISSION_REQUIRES_OPERATOR_GO",
   "prior_plan_item": "P2_RISK_SIZING_INVENTORY",
@@ -408,13 +395,12 @@
     "contract_version": "v1",
     "semantics": "INVENTORY_ONLY_NOT_EXECUTION_PERMISSION",
     "semantics_clarification": "This frozen set is a static inventory/drift contract only. It is NOT an execution allowlist, NOT authorization, NOT activation, NOT canonicalization, and NOT a safety approval. can_submit_orders=true and REACHABLE_PRODUCTIVE describe technical capability/reachability only.",
-    "expected_surface_count": 5,
+    "expected_surface_count": 4,
     "surface_ids_sorted": [
       "bypass.execution_router_order_intent_v1",
       "bypass.orders_exchange_executor",
       "submission.execution_pipeline_adapter_submit",
-      "submission.execution_pipeline_submit_order",
-      "submission.kraken_live_client"
+      "submission.execution_pipeline_submit_order"
     ],
     "surfaces": [
       {
@@ -493,26 +479,6 @@
         "reachability": "REACHABLE_PRODUCTIVE",
         "capability_note": "Technical API capability only; not authorization.",
         "inventory_pin_reason": "Inventory-pinned legacy ExecutionPipeline.submit_order outside COI authority chain.",
-        "authority_owner_status": "UNRESOLVED",
-        "consolidation_status": "NOT_STARTED",
-        "decommission_status": "NOT_STARTED"
-      },
-      {
-        "surface_id": "submission.kraken_live_client",
-        "module": "src.exchange.kraken_live",
-        "source_path": "src/exchange/kraken_live.py",
-        "symbol_or_callable": "KrakenLiveClient.place_order",
-        "classification": "LEGACY_DIRECT_SUBMISSION_BYPASS",
-        "canonical": false,
-        "authorized": false,
-        "enabled": false,
-        "execution_authority": false,
-        "decommissioned": false,
-        "inventory_only": true,
-        "can_submit_orders": true,
-        "reachability": "REACHABLE_PRODUCTIVE",
-        "capability_note": "Library API capability only; productive entrypoints guarded. NOT authorized/enabled/canonical.",
-        "inventory_pin_reason": "Inventory-pinned KrakenLiveClient.place_order as legacy/direct-submission bypass for drift visibility only.",
         "authority_owner_status": "UNRESOLVED",
         "consolidation_status": "NOT_STARTED",
         "decommission_status": "NOT_STARTED"

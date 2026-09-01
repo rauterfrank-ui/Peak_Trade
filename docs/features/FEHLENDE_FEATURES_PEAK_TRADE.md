@@ -50,7 +50,7 @@ Bewusst **nicht** in v1.0 enthalten:
 |---------|-------------------|
 | **Live/Execution** | Echte Live-Order-Ausführung (blockiert durch SafetyGuard / LiveNotImplementedError) |
 | **Live/Execution** | Testnet ohne Dry-Run (echte Testnet-Orders) |
-| **Exchange** | Multi-Exchange (nur Kraken; Binance, Coinbase etc. fehlen) |
+| **Exchange** | Multi-Exchange (noncanonical venues are absent) |
 | **Web-Dashboard** | Authentifizierung, Access-Control, Benutzerverwaltung |
 | **Web-Dashboard** | POST/PUT/DELETE (Order-Erzeugung, Start/Stop aus Web-UI) |
 | **Web-Dashboard** | SSE/WebSocket (nur Polling) |

@@ -19,7 +19,6 @@ from src.webui.workflow_dashboard_readmodel_v1.futures_producer_packet_real_meta
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 _BUILD = _REPO_ROOT / "scripts/ops/build_u2c_governed_snapshot_candidate_v1.py"
-_U5D_FIXTURES = _REPO_ROOT / "tests/fixtures/u5d_offline_transform_v1/minimal"
 _CONFIRM_BUILD = "CONFIRM_U2C_GOVERNED_SNAPSHOT_CANDIDATE_BUILD_V1"
 _SCRATCH = _REPO_ROOT / "tests" / "_durable_archive_scratch"
 
@@ -47,8 +46,8 @@ def _complete_flat_row(symbol: str, *, vol24h: float, rank: int) -> dict[str, An
     return {
         "symbol": symbol,
         "instrument_id": symbol,
-        "provider": "kraken_futures",
-        "exchange": "kraken_futures",
+        "provider": "undeclared_provider",
+        "exchange": "undeclared_provider",
         "market_type": "perpetual",
         "contract_type": "perpetual",
         "base_currency": symbol[3:6],
@@ -103,7 +102,7 @@ def test_build_writes_manifest_verify_rc_zero(build_mod: Any, tmp_path: Path) ->
         json.dumps(
             {
                 "schema": "u5d_u2c_candidate_validation_v1",
-                "provider": "kraken_futures",
+                "provider": "undeclared_provider",
                 "fetched_at": "2026-06-08T18:00:00Z",
                 "packet_candidates": rows,
                 "top20_ranking_candidate": [
@@ -153,7 +152,7 @@ def test_u2b_validate_only_parses_built_fixture_bundle(build_mod: Any, tmp_path:
         json.dumps(
             {
                 "schema": "u5d_u2c_candidate_validation_v1",
-                "provider": "kraken_futures",
+                "provider": "undeclared_provider",
                 "fetched_at": "2026-06-08T18:00:00Z",
                 "packet_candidates": rows,
                 "top20_ranking_candidate": [
@@ -199,7 +198,7 @@ def test_u2b_rejects_per_file_ok_only_manifest_on_fixture_path(
         json.dumps(
             {
                 "schema": "u5d_u2c_candidate_validation_v1",
-                "provider": "kraken_futures",
+                "provider": "undeclared_provider",
                 "fetched_at": "2026-06-08T18:00:00Z",
                 "packet_candidates": rows,
                 "top20_ranking_candidate": [{"rank": 1, "symbol": "PF_ETHUSD", "vol24h": 100.0}],
@@ -226,70 +225,7 @@ def test_u2b_rejects_per_file_ok_only_manifest_on_fixture_path(
         load_futures_producer_packet_governed(bundle_path, archive_root=archive)
 
 
-def test_build_from_u5d_minimal_fixture_nested_shape(build_mod: Any, tmp_path: Path) -> None:
-    transform = importlib.util.spec_from_file_location(
-        "_u5d",
-        _REPO_ROOT / "scripts/ops/transform_kraken_futures_raw_to_u2c_candidate_v1.py",
-    )
-    assert transform is not None and transform.loader is not None
-    u5d_mod = importlib.util.module_from_spec(transform)
-    transform.loader.exec_module(u5d_mod)
-
-    archive = _durable_archive_root(tmp_path)
-    u5d_out = archive / "runtime" / "u5d_minimal"
-    artifact = u5d_mod.run_offline_transform_validation(
-        confirm="CONFIRM_U5D_OFFLINE_TRANSFORM_VALIDATION_V1",
-        raw_instruments=_U5D_FIXTURES / "kraken_futures_instruments.raw.v1.json",
-        raw_tickers=_U5D_FIXTURES / "kraken_futures_tickers.raw.v1.json",
-        probe_report=_U5D_FIXTURES / "kraken_futures_public_market_data_probe_report.v1.json",
-        output_dir=u5d_out,
-    )
-    assert len(artifact["packet_candidates"]) == 3
-
-    out_dir = archive / "governed_metadata" / "from_minimal_u5d_v1"
-    summary = build_mod.build_governed_snapshot_candidate_bundle(
-        confirm=_CONFIRM_BUILD,
-        u5d_validation_path=u5d_out / "u5d_u2c_candidate_validation.v1.json",
-        output_dir=out_dir,
-        archive_root=archive,
-        bundle_id="from_minimal_u5d_v1",
-    )
-    assert summary["nested_packet_shape"] is True
-    governed = json.loads((out_dir / "futures_producer_packet_governed.v1.json").read_text())
-    assert all("candidate" in p for p in governed["packets"])
-    assert "BTC/USD" not in json.dumps(governed)
-    assert governed["u2b_candidate_validation_only"] is True
-    assert all(p["instrument"]["candidate_validation_complete"] for p in governed["packets"])
-    assert all(p["instrument"]["complete"] is False for p in governed["packets"])
-
-    evidence = archive / "runs" / "paper" / "minimal_evidence"
-    evidence.mkdir(parents=True)
-    (evidence / "CLOSEOUT.md").write_text("# evidence\n", encoding="utf-8")
-    u5d_for_u2b = archive / "runtime" / "u5d_minimal_u2b"
-    u5d_for_u2b.mkdir(parents=True)
-    artifact = json.loads((u5d_out / "u5d_u2c_candidate_validation.v1.json").read_text())
-    artifact.pop("input_paths", None)
-    (u5d_for_u2b / "u5d_u2c_candidate_validation.v1.json").write_text(
-        json.dumps(artifact) + "\n",
-        encoding="utf-8",
-    )
-    out_dir2 = archive / "governed_metadata" / "from_minimal_u5d_u2b_v1"
-    build_mod.build_governed_snapshot_candidate_bundle(
-        confirm=_CONFIRM_BUILD,
-        u5d_validation_path=u5d_for_u2b / "u5d_u2c_candidate_validation.v1.json",
-        output_dir=out_dir2,
-        archive_root=archive,
-        bundle_id="from_minimal_u5d_u2b_v1",
-        evidence_links=(str(evidence.resolve()),),
-    )
-    bundle = load_futures_producer_packet_governed(
-        out_dir2 / "futures_producer_packet_governed.v1.json",
-        archive_root=archive,
-    )
-    assert len(bundle.packets) == 3
-    assert all(
-        raw["instrument"]["candidate_validation_complete"]
-        for raw in json.loads((out_dir2 / "futures_producer_packet_governed.v1.json").read_text())[
-            "packets"
-        ]
-    )
+def test_removed_u5d_transform_script_is_absent() -> None:
+    assert not (
+        _REPO_ROOT / "scripts/ops/transform_kraken_futures_raw_to_u2c_candidate_v1.py"
+    ).is_file()

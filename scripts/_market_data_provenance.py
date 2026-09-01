@@ -12,7 +12,6 @@ from typing import Any
 from _shared_ohlcv_loader import (
     OHLCV_SOURCE_CSV,
     OHLCV_SOURCE_DUMMY,
-    OHLCV_SOURCE_KRAKEN,
     normalize_ohlcv_source,
 )
 
@@ -31,7 +30,6 @@ def build_market_data_provenance_v1(
 
     Semantik (v1):
     - ``dummy``: synthetische interne Reihe (kein Exchange).
-    - ``kraken``: öffentliche REST-OHLCV (historische Kerzen), kein Order-Trading.
     - ``csv`` (inkl. normalisiertes ``fixture``): lokale Datei — ``local_file``, kein „live real“-Claim.
     """
     src = normalize_ohlcv_source(ohlcv_source)
@@ -41,12 +39,6 @@ def build_market_data_provenance_v1(
         provider = "dummy"
         exchange = "none"
         is_synthetic = True
-        is_fixture = False
-    elif src == OHLCV_SOURCE_KRAKEN:
-        source_kind = "historical_real"
-        provider = "kraken"
-        exchange = "kraken"
-        is_synthetic = False
         is_fixture = False
     elif src == OHLCV_SOURCE_CSV:
         source_kind = "local_file"

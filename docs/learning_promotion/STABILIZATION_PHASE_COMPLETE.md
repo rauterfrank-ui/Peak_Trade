@@ -92,11 +92,11 @@ Datenvielfalt:        100%
 
 ### P0: Blacklist-Implementation fehlt
 
-**Test-Fall:** Cycle #10 - `live.api_keys.binance`
+**Test-Fall:** Cycle #10 - `live.api_keys.foreign_venue`
 
 ```yaml
 Patch:
-  Target: live.api_keys.binance
+  Target: live.api_keys.foreign_venue
   Confidence: 0.990 (sehr hoch!)
 
 Erwartet: ❌ REJECTED (Blacklist)

@@ -30,7 +30,11 @@ def test_replay_collector_contract(tmp_path: Path) -> None:
                     "source": "replay",
                     "venue_type": "ccxt",
                     "observed_at": "2026-02-09T12:00:00Z",
-                    "payload": {"exchange": "okx", "symbol": "BTC/EUR", "ticker": {"last": 1.0}},
+                    "payload": {
+                        "exchange": "venue_a",
+                        "symbol": "BTC/EUR",
+                        "ticker": {"last": 1.0},
+                    },
                 }
             ]
         ),
@@ -107,11 +111,13 @@ def test_get_ccxt_config_defaults() -> None:
     assert _get_ccxt_config({})["enabled"] is True
     assert _get_ccxt_config({})["max_markets"] == 50
     assert (
-        _get_ccxt_config({"sources": {"ccxt": {"exchange": "okx", "max_markets": 5}}})["exchange"]
-        == "okx"
+        _get_ccxt_config({"sources": {"ccxt": {"exchange": "venue_a", "max_markets": 5}}})[
+            "exchange"
+        ]
+        == "venue_a"
     )
     assert (
-        _get_ccxt_config({"sources": {"ccxt": {"exchange": "okx", "max_markets": 5}}})[
+        _get_ccxt_config({"sources": {"ccxt": {"exchange": "venue_a", "max_markets": 5}}})[
             "max_markets"
         ]
         == 5

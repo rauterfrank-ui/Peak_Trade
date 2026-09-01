@@ -33,14 +33,10 @@ from src.ops.bounded_futures_testnet_contract_v0 import (
     EVIDENCE_SOURCE_FUTURES_HARNESS,
     FUTURES_SESSION_AUTHORIZED_NOW,
 )
-from src.ops.kraken_futures_demo_credential_presence_contract_v0 import (
-    build_checker_boundary_v0,
-)
 
 PACKAGE_MARKER = "BOUNDED_FUTURES_PRIVATE_READONLY_CONTRACT_V0=true"
 PRIVATE_READONLY_HTTP_WIRING_PRESENT = True
-KRAKEN_FUTURES_DEMO_API_KEY_ENV_NAME = "KRAKEN_FUTURES_DEMO_API_KEY"
-KRAKEN_FUTURES_DEMO_API_SECRET_ENV_NAME = "KRAKEN_FUTURES_DEMO_API_SECRET"
+FOREIGN_OR_UNBOUND_SECRET_ENV_SUFFIXES = ("_API_KEY", "_API_SECRET", "_API_PASSPHRASE")
 PRIVATE_READONLY_MODE = "private_readonly_reachability_only"
 DEFAULT_PRIVATE_READONLY_GET_TIMEOUT_SECONDS = 10.0
 PRIVATE_READONLY_SESSION_CLASS = "bounded-futures-private-readonly-reachability-v0"
@@ -510,11 +506,11 @@ def run_private_readonly_reachability(
 def resolve_private_readonly_credentials_from_environ(
     environ: Mapping[str, str],
 ) -> tuple[str, str] | None:
-    """Read demo key names from environ only (never log values; no env-file I/O)."""
-    api_key = (environ.get(KRAKEN_FUTURES_DEMO_API_KEY_ENV_NAME) or "").strip()
-    api_secret = (environ.get(KRAKEN_FUTURES_DEMO_API_SECRET_ENV_NAME) or "").strip()
-    if api_key and api_secret:
-        return api_key, api_secret
+    """Foreign or unbound secrets never satisfy current operative credentials."""
+    for key, value in environ.items():
+        if any(key.endswith(suffix) for suffix in FOREIGN_OR_UNBOUND_SECRET_ENV_SUFFIXES):
+            if str(value or "").strip():
+                return None
     return None
 
 
@@ -545,8 +541,32 @@ def validate_redacted_network_call_record(record: dict[str, Any]) -> list[str]:
     return reasons
 
 
+def build_non_authorizing_credential_checker_boundary() -> dict[str, Any]:
+    """Venue-neutral fail-closed flags. Does not authorize private API or execute."""
+    return {
+        "non_authorizing": True,
+        "credential_namespace": "unbound_or_foreign_rejected",
+        "futures_execute_authorized": False,
+        "futures_validate_only_authorized": False,
+        "futures_private_api_authorized": False,
+        "futures_session_authorized_now": False,
+        "credential_read_authorized": False,
+        "credential_presence_check_authorized": False,
+        "private_api_authorized": False,
+        "next_execute_allowed": False,
+        "live_not_authorized": True,
+        "preflight_remains_blocked": True,
+        "ready_for_operator_arming": False,
+        "order_submission_authorized": False,
+        "checker_does_not_connect_to_exchange": True,
+        "checker_does_not_validate_credentials": True,
+        "checker_does_not_read_credential_values": True,
+        "checker_does_not_hash_credential_values": True,
+    }
+
+
 def build_private_readonly_checker_boundary() -> dict[str, Any]:
-    boundary = build_checker_boundary_v0()
+    boundary = build_non_authorizing_credential_checker_boundary()
     boundary["private_readonly_harness_mode"] = PRIVATE_READONLY_MODE
     boundary["credential_presence_implies_execute"] = False
     return boundary

@@ -264,7 +264,7 @@ In `config/config.toml`:
 
 ```toml
 [exchange]
-id = "kraken"              # Exchange-ID (kraken, binance, etc.)
+id = "kraken"              # Exchange-ID (canonical setup uses the operative venue; noncanonical ids are rejected)
 sandbox = true             # Sandbox/Testnet (falls unterstützt)
 enable_rate_limit = true   # Rate-Limiting (empfohlen)
 

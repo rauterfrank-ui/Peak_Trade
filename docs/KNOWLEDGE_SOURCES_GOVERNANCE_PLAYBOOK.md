@@ -52,7 +52,7 @@ Dieses Playbook definiert den Prozess zur systematischen Überprüfung und Einpf
 ### 2.2 Öffentliche Marktdaten (Vertrauensstufe: Mittel-Hoch)
 
 **Beispiele:**
-- Exchange-OHLCV-Daten (Kraken, Binance)
+- Exchange-OHLCV-Daten (Kraken)
 - On-Chain-Metriken (Glassnode, CoinMetrics)
 - Sentiment-Daten (Fear & Greed Index)
 

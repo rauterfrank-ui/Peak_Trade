@@ -24,7 +24,7 @@ Diese Features schützen das System vor ungewollten oder gefährlichen Änderung
 **Zweck:** Verhindert Auto-Promotion von kritischen/sensiblen Config-Targets
 
 **Implementierung:**
-- Prefix-Matching auf `target` (z.B., `live.api_keys` blockt auch `live.api_keys.binance`)
+- Prefix-Matching auf `target` (z.B., `live.api_keys` blockt auch `live.api_keys.foreign_venue`)
 - Tag-basierte Blacklist (z.B., `r_and_d`, `experimental`)
 
 **Konfiguration:**
@@ -58,12 +58,12 @@ blacklist_tags = [
 ```python
 # Dieser Patch wird rejected, egal wie hoch die Confidence ist
 patch = ConfigPatch(
-    target="live.api_keys.binance",
+    target="live.api_keys.foreign_venue",
     old_value="old_key",
     new_value="new_key",
     confidence_score=0.99,  # Selbst 99% reicht nicht!
 )
-# → P0_BLACKLIST: Target 'live.api_keys.binance' matches blacklisted pattern 'live.api_keys'
+# → P0_BLACKLIST: Target 'live.api_keys.foreign_venue' matches blacklisted pattern 'live.api_keys'
 ```
 
 ---
@@ -295,12 +295,12 @@ Reports unter `reports&#47;live_promotion&#47;<run_id>&#47;OPERATOR_CHECKLIST.md
 ## Patches
 
 ### Patch 1: patch_demo_001
-- Target: `live.api_keys.binance`
+- Target: `live.api_keys.foreign_venue`
 - Old value: `old_key`
 - New value: `new_key`
 - Confidence: `0.990`
 - Tags: api_keys
-- **Safety Flags:** P0_BLACKLIST: Target 'live.api_keys.binance' matches blacklisted pattern 'live.api_keys'
+- **Safety Flags:** P0_BLACKLIST: Target 'live.api_keys.foreign_venue' matches blacklisted pattern 'live.api_keys'
 - Decision notes: candidate has P0 safety violations
 ```
 

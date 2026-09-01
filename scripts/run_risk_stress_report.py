@@ -38,28 +38,8 @@ def load_ohlcv_sample(symbol: str = "BTC/EUR", days: int = 365) -> pd.DataFrame:
     Note:
         Nutzt vorhandenen Data-Loader falls vorhanden, sonst synthetische Daten.
     """
-    try:
-        # Versuche, echten Data-Loader zu nutzen (kanonisch: src/data/kraken.py)
-        from src.data.kraken import fetch_ohlcv_df
-
-        end_date = datetime.now()
-        start_date = end_date - timedelta(days=days)
-        since_ms = int(start_date.timestamp() * 1000)
-
-        df = fetch_ohlcv_df(
-            symbol=symbol,
-            timeframe="1d",
-            limit=min(days, 720),
-            since_ms=since_ms,
-            use_cache=True,
-        )
-
-        if df is not None and not df.empty:
-            print(f"✓ Loaded {len(df)} bars for {symbol} (real data)")
-            return df
-
-    except (ImportError, Exception) as e:
-        print(f"⚠ Could not load real data ({e}), using synthetic data")
+    # Current operative market data is not this CLI helper.
+    print("⚠ Real venue OHLCV is not a current operative path here; using synthetic data")
 
     # Fallback: Synthetische Daten
     dates = pd.date_range(end=datetime.now(), periods=days, freq="D")

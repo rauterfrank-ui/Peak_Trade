@@ -47,7 +47,7 @@ def test_shadow_247_futures_wrapper_skeleton_script_exists() -> None:
         "requests",
         "aiohttp",
         "websocket",
-        "binance",
+        "other_venue",
         "subprocess",
         "os.system",
         "Popen",

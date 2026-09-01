@@ -3,16 +3,11 @@
 Gemeinsame CLI-Defaults und Argument-Gruppe für Forward-/Portfolio-OHLCV (J1).
 
 Drei Skripte teilen denselben Parametervertrag für ``--n-bars``/``--bars``,
-``--ohlcv-source`` und ``--timeframe`` (optional legacy Kraken; Dummy ignoriert
-``timeframe`` intern 1h).
+``--ohlcv-source`` und ``--timeframe``.
 
-Gemeinsame CLI-Normalisierung inkl. lokaler CSV (``--ohlcv-csv``); legacy Kraken-Pagination
-für große ``n-bars`` liegt im Loader.
+Gemeinsame CLI-Normalisierung inkl. lokaler CSV (``--ohlcv-csv``).
 
-Legacy note: Kraken is not the current canonical target venue. ``--ohlcv-source=kraken`` is
-historical/guarded public OHLCV infrastructure only unless separately ratified.
-
-NO-LIVE: keine Order-Ausführung; Kraken-Pfad nur öffentliche OHLCV (Stub), siehe Epilog-Helfer unten.
+NO-LIVE: keine Order-Ausführung.
 """
 
 from __future__ import annotations
@@ -21,7 +16,6 @@ import argparse
 from pathlib import Path
 
 from _shared_ohlcv_loader import (
-    KRAKEN_OHLCV_MAX_BARS,
     OHLCV_SOURCE_CSV,
     OHLCV_SOURCE_DUMMY,
     OHLCV_SOURCES,
@@ -35,8 +29,7 @@ DEFAULT_OHLCV_TIMEFRAME = "1h"
 FORWARD_PIPELINE_OHLCV_SCOPE_EPILOG = """
 Scope (J1, NO-LIVE):
   Kein Live-Handel und keine Order-Ausführung (kein C1-/Execution-Scope).
-  OHLCV: Default --ohlcv-source=dummy (offline); kraken = öffentliche REST-OHLCV nur zum
-  Laden von Kursreihen; opt-in, Netzwerk nötig. csv/fixture = lokale Datei (--ohlcv-csv), kein Netzwerk.
+  OHLCV: Default --ohlcv-source=dummy (offline); csv/fixture = lokale Datei (--ohlcv-csv), kein Netzwerk.
   Kein neuer Anbieter.
 """.strip()
 
@@ -100,8 +93,7 @@ def add_shared_ohlcv_cli_group(
         help=(
             f"Anzahl OHLCV-Bars pro Symbol (Default: {DEFAULT_FORWARD_N_BARS}). "
             "Gleiche Semantik in generate_forward_signals, evaluate_forward_signals "
-            "und run_portfolio_backtest_v2. Kraken: bis "
-            f"{KRAKEN_OHLCV_MAX_BARS} Bars pro Request; bei größerem Wert Pagination im Loader."
+            "und run_portfolio_backtest_v2."
         ),
     )
     parser.add_argument(
@@ -110,8 +102,7 @@ def add_shared_ohlcv_cli_group(
         default=OHLCV_SOURCE_DUMMY,
         metavar="|".join(OHLCV_SOURCES),
         help=(
-            "OHLCV-Quelle: dummy (offline, Default, NO-LIVE), kraken (öffentliche REST-OHLCV; "
-            f"Netzwerk nötig; große Fenster: mehrere Abrufe à max. {KRAKEN_OHLCV_MAX_BARS} Bars), "
+            "OHLCV-Quelle: dummy (offline, Default, NO-LIVE) "
             "oder csv (Alias fixture; lokale CSV, setzt --ohlcv-csv). "
             "Groß-/Kleinschreibung egal. Keine Orders."
         ),
@@ -132,7 +123,7 @@ def add_shared_ohlcv_cli_group(
         choices=OHLCV_TIMEFRAME_CHOICES,
         default=DEFAULT_OHLCV_TIMEFRAME,
         help=(
-            "OHLCV-Timeframe für Kraken. Bei ohlcv-source=dummy bleibt die Serie synthetisch "
+            "OHLCV-Timeframe. Bei ohlcv-source=dummy bleibt die Serie synthetisch "
             "1h-getaktet; das Argument dient dem Abgleich mit Generate/Evaluate/Portfolio."
         ),
     )

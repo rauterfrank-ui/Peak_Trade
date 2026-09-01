@@ -38,7 +38,6 @@ def test_negative_contract_authority_literals_classified_as_fixtures_v0() -> Non
 
 def test_docstring_examples_not_material_v0() -> None:
     for rel_path in (
-        "src/exchange/kraken_live.py",
         "src/exchange/__init__.py",
         "src/execution/pipeline.py",
     ):

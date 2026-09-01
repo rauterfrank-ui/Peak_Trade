@@ -736,86 +736,11 @@ class ExperimentRunner:
             Dict mit Metriken
         """
         try:
-            from src.backtest.engine import run_single_strategy_from_registry
-            from src.backtest.strategy_signal_binding_v1 import (
-                RUN_BACKTEST_PATH_CLASSIFICATION,
-                declare_legacy_raw_signal_research_path_v1,
-            )
-            from src.data.kraken import fetch_ohlcv_df
-            from src.core.config_registry import get_config
-            import pandas as pd
-
-            # Inherit C3 boundary: RAW_SIGNAL_RESEARCH / LEGACY_NON_AUTHORITATIVE.
-            declare_legacy_raw_signal_research_path_v1(
-                system_economic_evidence_requested=False,
-                path_classification=RUN_BACKTEST_PATH_CLASSIFICATION,
+            from src.exchange.operative_venue_boundary_v1 import (
+                reject_noncanonical_operative_surface,
             )
 
-            # Setze initial_capital in der Config
-            cfg = get_config()
-            original_initial_cash = cfg["backtest"]["initial_cash"]
-            cfg["backtest"]["initial_cash"] = initial_capital
-
-            try:
-                # Lade OHLCV-Daten
-                # Konvertiere Symbol-Format falls nötig (z.B. "BTC/EUR" -> "BTC/EUR")
-                # Kraken verwendet "/" als Separator
-                kraken_symbol = symbol.replace("-", "/")
-
-                # Berechne limit basierend auf start_date/end_date oder verwende Default
-                limit = 720  # Default für Kraken API
-
-                # Wenn start_date gegeben, berechne since_ms
-                since_ms = None
-                if start_date:
-                    try:
-                        start_dt = pd.to_datetime(start_date)
-                        since_ms = int(start_dt.timestamp() * 1000)
-                    except Exception:
-                        logger.warning(
-                            f"Konnte start_date nicht parsen: {start_date}, verwende Default"
-                        )
-
-                # Lade Daten
-                df = fetch_ohlcv_df(
-                    symbol=kraken_symbol,
-                    timeframe=timeframe,
-                    limit=limit,
-                    since_ms=since_ms,
-                    use_cache=True,
-                )
-
-                # Filtere nach end_date falls gegeben
-                if end_date:
-                    try:
-                        end_dt = pd.to_datetime(end_date)
-                        df = df[df.index <= end_dt]
-                    except Exception:
-                        logger.warning(
-                            f"Konnte end_date nicht parsen: {end_date}, ignoriere Filter"
-                        )
-
-                if df.empty:
-                    raise ValueError(f"Keine Daten für {symbol} {timeframe} gefunden")
-
-                # Führe Backtest aus
-                # run_single_strategy_from_registry ist eine Standalone-Funktion, keine Methode
-                result = run_single_strategy_from_registry(
-                    df=df,
-                    strategy_name=strategy_name,
-                    custom_params=params,
-                )
-            finally:
-                # Stelle original initial_cash wieder her
-                cfg["backtest"]["initial_cash"] = original_initial_cash
-
-            # Extrahiere Metriken aus dem Result
-            if result and hasattr(result, "stats"):
-                return result.stats
-            elif isinstance(result, dict):
-                return result.get("stats", result)
-            else:
-                return {}
+            reject_noncanonical_operative_surface(surface="BaseExperiment.fetch_ohlcv")
 
         except Exception as e:
             logger.error(f"Backtest-Fehler: {e}")

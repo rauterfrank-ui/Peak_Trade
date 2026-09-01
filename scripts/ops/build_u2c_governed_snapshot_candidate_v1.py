@@ -220,7 +220,7 @@ def build_governed_snapshot_candidate_bundle(
         "bundle_id": bundle_id,
         "source_kind": GOVERNED_SOURCE_KIND,
         "producer_id": PRODUCER_ID,
-        "provider": u5d.get("provider") or "kraken_futures",
+        "provider": u5d.get("provider") or "undeclared_provider",
         "generated_at": generated_at,
         "source_run_id": bundle_id,
         "source_stage": SOURCE_STAGE,

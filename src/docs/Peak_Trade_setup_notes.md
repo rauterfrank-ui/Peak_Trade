@@ -9,7 +9,7 @@ Diese Datei fasst den aktuellen Stand deines Projekts **Peak_Trade** zusammen, d
 - Python-Projekt **Peak_Trade** für Backtests und später Live-Trading (z.B. über Kraken).
 - Zentrale **Konfiguration über `config.toml`** + `src/core/config.py`.
 - Sichere Behandlung von API-Credentials (nur über **Environment-Variablen**, keine Keys in Dateien).
-- Datenmodul `src/data/kraken.py` lädt OHLCV-Daten via **ccxt** in ein `pandas.DataFrame`.
+- Datenmodul `src&#47;data&#47;kraken.py` lädt OHLCV-Daten via **ccxt** in ein `pandas.DataFrame`. <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -187,11 +187,10 @@ class ExchangeConfig:
     testnet: bool = True
 
     def __post_init__(self):
-        supported = ["kraken", "binance"]
-        if self.name not in supported:
-            raise ConfigError(
-                f"Exchange '{self.name}' nicht unterstützt. Erlaubt: {', '.join(supported)}"
-            )
+        if not self.name.strip():
+            raise ConfigError("exchange name must be non-empty")
+        # Historical multi-venue lists are not current options.
+        # Operative venue binding remains the existing OKX EEA contracts.
         if self.rate_limit_ms < 50:
             raise ConfigError("rate_limit_ms zu niedrig (mind. 50ms)")
 
@@ -383,7 +382,7 @@ __version__ = "0.1.0"
 
 ---
 
-## 7. `src/data/kraken.py` – OHLCV-Daten holen
+## 7. `src&#47;data&#47;kraken.py` – OHLCV-Daten holen <!-- pt:ref-target-ignore -->
 
 ```python
 import time

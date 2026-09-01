@@ -30,10 +30,10 @@ proposal_accepted: true
 lifecycle_state: DISPOSITION_DECIDED
 identity_fusion_performed: false
 safety_critical: true
-final_reason: preserve domain-specific operational health concept; no old CCXT Kraken/Binance/Coinbase or live-enable semantics
-positive_reason: preserve domain-specific operational health concept; no old CCXT Kraken/Binance/Coinbase or live-enable semantics
+final_reason: preserve domain-specific operational health concept; no old CCXT Kraken or live-enable semantics
+positive_reason: preserve domain-specific operational health concept; no old CCXT Kraken or live-enable semantics
 preserve_capability: DOMAIN_SPECIFIC_OPERATIONAL_HEALTH (module probes with explicit fail states)
-do_not_restore_or_preserve: CCXT Kraken/Binance/Coinbase exchange_check; old enable_live_trading flags; hist package identity
+do_not_restore_or_preserve: CCXT Kraken exchange_check; old enable_live_trading flags; hist package identity
   as live gate
 target_current_architectural_home: ops.gates / core.resilience HealthCheck registrations bound to current OKX/no-order predicates
 adaptation_boundary: no multi-venue ccxt; no live enablement semantics

@@ -266,7 +266,7 @@ python3 scripts/run_backtest.py \
 **⚠️ Hinweis zu Daten:**
 Falls `data&#47;ohlcv&#47;btcusdt_1d.csv` nicht existiert:
 1. Erstelle das Verzeichnis: `mkdir -p data&#47;ohlcv`
-2. Lade Daily-OHLCV-Daten herunter (z.B. von Binance, Kraken, CoinGecko)
+2. Lade Daily-OHLCV-Daten herunter (z.B. von Kraken, CoinGecko)
 3. Format: CSV mit Spalten `timestamp,open,high,low,close,volume`
 
 **Erwartete Outputs:**

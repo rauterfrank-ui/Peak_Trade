@@ -39,9 +39,7 @@ from src.ops.bounded_futures_private_readonly_contract_v0 import (
 ADAPTER_VERSION = "cli_testnet_private_readonly_connectivity_flow_v1"
 HARNESS_SCRIPT = "scripts/ops/archive_futures_testnet_harness_v0.py"
 REVIEW_SCRIPT = "scripts/ops/review_testnet_private_readonly_connectivity_evidence_v1.py"
-CREDENTIAL_PRESENCE_SCRIPT = (
-    "scripts/ops/check_kraken_futures_demo_credentials_presence_readonly_v0.py"
-)
+CREDENTIAL_PRESENCE_SCRIPT = ""
 WRAPPER_EVIDENCE_DIR = "wrapper_evidence"
 
 SESSION_CLASS = "path_c_private_readonly_connectivity_v0"
@@ -273,26 +271,15 @@ def default_credential_presence_checker(
     repo_root: Path,
     environ: Mapping[str, str],
 ) -> tuple[bool, str]:
-    """Wire credential presence checker; never logs secret values."""
-    script = (repo_root / CREDENTIAL_PRESENCE_SCRIPT).resolve()
-    if not script.is_file():
-        return False, f"credential presence script missing: {script}"
-
-    from scripts.ops import (
-        check_kraken_futures_demo_credentials_presence_readonly_v0 as presence_mod,
-    )
-
-    payload, code = presence_mod.run_presence_check(
-        get_env_value=lambda key: environ.get(key, ""),
-    )
-    if code != 0:
-        return False, "credential presence checker returned invalid input"
-    if payload.get("status") == "BLOCKED" or payload.get("missing_count", 0) > 0:
-        missing = payload.get("missing") or []
-        return False, f"credential presence BLOCKED; missing keys: {', '.join(missing)}"
-    if payload.get("forbidden_alternate_keys_present"):
-        return False, "forbidden alternate credential env keys present"
-    return True, ""
+    """Foreign or unbound secrets never satisfy current operative credential presence."""
+    del repo_root
+    for key, value in environ.items():
+        if (
+            key.endswith(("_API_KEY", "_API_SECRET", "_API_PASSPHRASE"))
+            and str(value or "").strip()
+        ):
+            return False, "foreign_or_unbound_secret_rejected"
+    return False, "credential_presence_not_satisfied_for_current_operative_venue"
 
 
 def _harness_duration_cap(duration_seconds: int) -> int:
@@ -558,7 +545,7 @@ def build_plan(
     archive_dest = archive_root / "runs" / "testnet" / run_id
     retention_steps = [
         f"delegate private-readonly reachability via {HARNESS_SCRIPT}",
-        f"wire credential presence via {CREDENTIAL_PRESENCE_SCRIPT} (execute gate only)",
+        "reject foreign or unbound secrets at the execute gate",
         f"materialize wrapper evidence under {staging_root / WRAPPER_EVIDENCE_DIR}",
         f"review PASS required at {review_out.parent}",
         f"generate MANIFEST.sha256 under {staging_root}",
@@ -578,11 +565,6 @@ def build_plan(
     ]
     commands = {
         "archive_harness_delegate": harness_cmd,
-        "credential_presence_reference": [
-            sys.executable,
-            str((repo_root / CREDENTIAL_PRESENCE_SCRIPT).resolve()),
-            "--json",
-        ],
         "review": review_cmd,
         "archive_copy": ["copytree", str(staging_root), str(archive_dest)],
     }

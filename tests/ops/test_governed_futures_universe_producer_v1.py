@@ -513,6 +513,6 @@ def test_venue_not_okx_eea() -> None:
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
         source_event_time=SOURCE_EVENT,
-        venue="binance",
+        venue="other_venue",
     )
     assert UniverseFailureCodeV1.VENUE_NOT_OKX_EEA.value in result.failure_codes

@@ -197,7 +197,7 @@ def test_build_exchange_client_noncanonical_rejected(tmp_path):
     pytest.importorskip("ccxt")
     config_text = """
 [exchange]
-id = "kraken"
+id = "noncanonical_venue"
 sandbox = true
 """
     cfg_path = tmp_path / "config.toml"
@@ -318,7 +318,7 @@ def test_integration_noncanonical_ccxt_id_rejected():
     """Former public-HTTP integration path is not a current operative venue."""
     pytest.importorskip("ccxt")
     with pytest.raises(ValueError, match="noncanonical_venue_rejected"):
-        CcxtExchangeClient("kraken")
+        CcxtExchangeClient("noncanonical_venue")
 
 
 def test_integration_from_config_requires_explicit_exchange_id():

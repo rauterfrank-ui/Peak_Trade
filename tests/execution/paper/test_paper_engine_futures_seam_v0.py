@@ -115,7 +115,7 @@ def test_paper_execution_engine_source_has_no_futures_accounting_type_references
 
 
 def test_paper_execution_engine_source_has_no_um_paper_prep_or_snapshot_wire_tokens_v0() -> None:
-    """BTC/ETH paper-prep charters (Binance UM-style labels / slot language) remain external."""
+    """BTC/ETH paper-prep charters (UM-style labels / slot language) remain external."""
 
     forbidden_names = frozenset(
         {

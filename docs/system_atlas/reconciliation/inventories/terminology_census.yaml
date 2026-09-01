@@ -10,8 +10,8 @@ identity_fusion_forbidden: true
 disposition_performed: false
 bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
 method: origin/main markdown H1-H3 tokens plus reachable path-name tokens; Atlas terms are navigation only
-current_heading_token_count: 9391
-reachable_path_token_count: 12184
+current_heading_token_count: 9388
+reachable_path_token_count: 12178
 current_heading_tokens:
 - ABSENCE
 - ABSENT
@@ -816,7 +816,6 @@ current_heading_tokens:
 - Bidi
 - Biggest
 - Bilder
-- Binance
 - Binary
 - Bind
 - Binder
@@ -911,7 +910,6 @@ current_heading_tokens:
 - Burn
 - Button
 - Buttons
-- Bybit
 - Bypass
 - Bypassing
 - Bytes
@@ -1309,7 +1307,6 @@ current_heading_tokens:
 - Coding
 - Coherence
 - CoinMetrics
-- Coinbase
 - Collaborators
 - Collapse
 - Collateral
@@ -12901,7 +12898,6 @@ reachable_path_tokens:
 - bundle_prbj_exec_events
 - bundle_v1
 - bundle_verifier_v1
-- bybit_v1
 - bypass_and_competing_authority_findings
 - bypass_identity
 - bypass_inventory
@@ -13218,7 +13214,6 @@ reachable_path_tokens:
 - capsule_min_v0
 - capsule_schema
 - capture_product_recovery_evidence_v1
-- capture_public_rest_binance_book_ticker_v0
 - capture_raw
 - capture_v1
 - case_aligned
@@ -13381,7 +13376,6 @@ reachable_path_tokens:
 - code_config_hashes
 - code_level_balance_model_boundary_audit
 - code_level_balance_model_boundary_audit_findings
-- coinbase_v1
 - collect_cursor_logs
 - collect_docs_reference_targets_fullscan
 - collect_okx_self_accumulated_forward_open_interest_one_shot_v0
@@ -19761,9 +19755,7 @@ reachable_path_tokens:
 - test_p104_soak_watch_exists
 - test_p105_workbook_exists
 - test_p106_mock_adapter_smoke
-- test_p107_coinbase_adapter_smoke
 - test_p108_okx_adapter_smoke
-- test_p109_bybit_adapter_smoke
 - test_p10_cex_risk_score_export
 - test_p10_smoke
 - test_p110_provider_matrix_smoke
@@ -20235,7 +20227,6 @@ reachable_path_tokens:
 - test_pt_python_runtime_contract_v1
 - test_pt_python_runtime_operative_surfaces_contract_v1
 - test_pt_worktree_environment_bootstrap_v1
-- test_public_rest_binance_book_ticker_capture_v0
 - test_public_rest_to_supervised_observer_bridge_v0
 - test_pull_latest_prbg_syntax
 - test_quadrant_2x2_heatmap

@@ -10,7 +10,7 @@ identity_fusion_forbidden: true
 disposition_performed: false
 bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
 method: git grep class/def/import on origin/main *.py; historical module names from path inventory
-current_class_count: 6379
+current_class_count: 6375
 current_function_count: 40056
 current_imported_top_module_count: 160
 historical_src_python_family_count: 1297
@@ -1761,8 +1761,6 @@ current_classes:
 - BundleManifestV1
 - BundleRegistryV1
 - BundleResult
-- BybitAdapterConfigV1
-- BybitExecutionAdapterV1
 - CMESFactsValidationError
 - CacheCorruptionError
 - CacheError
@@ -2017,8 +2015,6 @@ current_classes:
 - ClosureEvidenceV1
 - CmeEquityIndexSessionSpec
 - CmeFuturesContract
-- CoinbaseAdapterConfigV1
-- CoinbaseExecutionAdapterV1
 - CollectingAlertSink
 - CollectionMode
 - Collector

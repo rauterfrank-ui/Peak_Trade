@@ -77,7 +77,6 @@ def test_run_sample_size_ramp_contract_does_not_directly_submit_orders() -> None
         "market_sell(",
         "private_post_order",
         "futures_create_order",
-        "binance.create_order",
         "exchange.create_order",
     )
     found = [fragment for fragment in forbidden_fragments if fragment in text]

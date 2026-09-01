@@ -146,7 +146,7 @@ Teste Edge-Cases: leere Daten, einzelne Bar, NaN-Werte."
 
 ```
 Beispiel-Prompt:
-"Aktualisiere docs/PHASE_XX_NEW_FEATURE.md mit der implementierten Funktionalität.
+"Aktualisiere docs/PHASE_XX_NEW_FEATURE.md mit der implementierten Funktionalität. <!-- pt:ref-target-ignore -->
 Füge CLI-Beispiele und Verweise auf verwandte Dokus hinzu."
 ```
 
@@ -172,7 +172,7 @@ Analysiere den Fehler und schlage eine Lösung vor."
 
 ```
 Beispiel-Prompt:
-"Erstelle einen Phasen-Plan für die Integration von Binance als zweiten Exchange.
+"Erstelle keinen zweiten Exchange. Noncanonical venues are rejected.
 Berücksichtige DEV_GUIDE_ADD_EXCHANGE.md und Safety-Anforderungen."
 ```
 

@@ -152,7 +152,7 @@ def build_synthetic_manifest(
         hypothesis_id="CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0",
         universe_policy_id="synthetic_cross_sectional_okx_non_btc_perp_v0",
         universe_policy_version="v0",
-        venue_scope=("other_venue", "okx"),
+        venue_scope=("okx", "other_venue"),
         market_type=MARKET_TYPE,
         generated_at=generated_at,
         score_epoch_semantics=SCORE_EPOCH_SEMANTICS,

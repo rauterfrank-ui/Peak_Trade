@@ -62,7 +62,6 @@ if TYPE_CHECKING:
     from ..core.peak_config import PeakConfig
     from ..strategies.base import BaseStrategy
     from ..exchange.dummy_client import DummyExchangeClient
-    from ..exchange.kraken_testnet import KrakenTestnetClient
 
 logger = logging.getLogger(__name__)
 
@@ -98,7 +97,7 @@ class SessionMode(str, Enum):
 
     Values:
         SHADOW: Shadow/Paper-Trading mit DummyExchangeClient (keine echten API-Calls)
-        TESTNET: Testnet-Orders via KrakenTestnetClient (validate_only=True)
+        TESTNET: simulation pipeline only; no noncanonical venue client
         LIVE: NICHT ERLAUBT in Phase 80 - wirft Exception!
     """
 
@@ -348,7 +347,7 @@ class LiveSessionRunner:
 
     Modi:
     - "shadow": Verwendet DummyExchangeClient / ShadowOrderExecutor (keine API-Calls)
-    - "testnet": Verwendet KrakenTestnetClient mit validate_only=True
+    - "testnet": Shadow-Pipeline (kein Venue-Client)
 
     WICHTIG:
     - LIVE-Mode ist NICHT erlaubt (Phase 80)
@@ -632,7 +631,7 @@ class LiveSessionRunner:
         Args:
             session_config: LiveSessionConfig
             env_config: EnvironmentConfig
-            peak_config: Optionale PeakConfig (für bounded_pilot: KrakenLiveClient)
+            peak_config: Optionale PeakConfig
 
         Returns:
             Konfigurierte ExecutionPipeline
@@ -1074,7 +1073,7 @@ class LiveSessionRunner:
 
 class _DummyCandleSource:
     """
-    Minimale Dummy-Datenquelle für Tests wenn KrakenLiveCandleSource nicht verfügbar.
+    Minimale Dummy-Datenquelle für Tests (Simulation, kein Venue).
 
     ACHTUNG: Nur für Unit-Tests! Produziert keine echten Daten.
     """

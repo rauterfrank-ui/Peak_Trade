@@ -237,8 +237,8 @@ def test_main_forwards_config_to_canonical_builder(tmp_path) -> None:
         "timeframe": "1h",
         "n_bars_requested": 200,
         "bars_loaded": 80,
-        "kraken_pagination_used": None,
-        "kraken_bars_shortfall": None,
+        "pagination_used": None,
+        "bars_shortfall": None,
     }
 
     with (
@@ -353,8 +353,8 @@ def test_main_calls_load_strategy_and_passes_full_params(tmp_path, monkeypatch) 
         "timeframe": "1h",
         "n_bars_requested": 200,
         "bars_loaded": 80,
-        "kraken_pagination_used": None,
-        "kraken_bars_shortfall": None,
+        "pagination_used": None,
+        "bars_shortfall": None,
     }
 
     with (
@@ -422,8 +422,8 @@ def test_isolated_signal_fn_binding_per_symbol(tmp_path, monkeypatch) -> None:
         "timeframe": "1h",
         "n_bars_requested": 200,
         "bars_loaded": 80,
-        "kraken_pagination_used": None,
-        "kraken_bars_shortfall": None,
+        "pagination_used": None,
+        "bars_shortfall": None,
     }
 
     with (
@@ -551,8 +551,8 @@ def test_main_invokes_registry_gates_before_strategy_params(tmp_path) -> None:
         "timeframe": "1h",
         "n_bars_requested": 200,
         "bars_loaded": 80,
-        "kraken_pagination_used": None,
-        "kraken_bars_shortfall": None,
+        "pagination_used": None,
+        "bars_shortfall": None,
     }
 
     with (

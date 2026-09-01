@@ -819,7 +819,7 @@ use_experiments_for_daily_pnl = true
 
 [exchange]
 # Exchange-ID (ccxt-kompatibel) must be set explicitly; no implicit venue.
-# Verfügbare: kraken, binance, coinbasepro, bitstamp, etc.
+# Operative CCXT id must be an existing OKX Peak_Trade name; no implicit venue.
 
 # Sandbox/Testnet-Modus (falls vom Exchange unterstützt)
 # EMPFOHLEN: true für Entwicklung!
@@ -831,7 +831,7 @@ enable_rate_limit = true
 [exchange.credentials]
 # API-Credentials für authentifizierte Requests (Balance, Orders lesen)
 # WICHTIG: Keine Secrets hier! Nutze Umgebungsvariablen oder .env!
-# Beispiel: api_key = "${KRAKEN_API_KEY}"
+# Beispiel: api_key kommt aus einer explizit gebundenen ENV, nicht aus diesem File.
 api_key = ""
 secret = ""
 

@@ -143,7 +143,7 @@ python3 -m pytest tests/test_shadow_execution.py -v
 
 Die folgenden Features sind **außerhalb des Scopes** von Phase 24 und werden in zukünftigen Phasen implementiert:
 
-1. **Echte Testnet-Integration**: Verbindung zu Exchange-Testnets (Kraken, Binance)
+1. **Echte Testnet-Integration**: Verbindung zu Exchange-Testnets (Kraken)
 2. **Live-Trading**: Echte Production-Orders (mehrere Safety-Layers erforderlich)
 3. **Order-Book-Simulation**: Realistischere Fill-Simulation mit Liquidität
 4. **Streaming-Daten**: Shadow-Execution mit Echtzeit-Daten

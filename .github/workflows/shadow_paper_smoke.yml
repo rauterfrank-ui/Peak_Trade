@@ -12,7 +12,7 @@ on:
           - paper
           - shadow
       adapters:
-        description: "Comma-separated adapters (e.g. mock,coinbase,bybit). Defaults to mock."
+        description: "Comma-separated adapters (e.g. mock). Defaults to mock."
         required: false
         default: "mock"
       intents:

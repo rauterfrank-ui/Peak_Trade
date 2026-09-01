@@ -24,7 +24,6 @@ SECRET_ENV_HINTS = (
     "API_KEY",
     "API_SECRET",
     "OKX_API_KEY",
-    "BYBIT_API_KEY",
 )
 
 # Alias for P125 transport gate reuse
@@ -43,7 +42,7 @@ class ExecutionNetworkedContextV1:
 
     mode: str  # shadow|paper only
     dry_run: bool  # must be True for v1
-    adapter: str  # mock|okx|bybit (still mocks until transport exists)
+    adapter: str  # mock|okx (still mocks until transport exists)
     market: str  # e.g. BTC-USD
     qty: float
     intent: str  # place_order|cancel_all

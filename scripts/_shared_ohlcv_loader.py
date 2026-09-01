@@ -2,26 +2,16 @@
 """
 Gemeinsamer OHLCV-Loader für Forward-/Paper-Skripte (J1).
 
-Legacy note: Kraken is not the current canonical target venue. ``source="kraken"`` below is
-historical/guarded public OHLCV infrastructure only unless separately ratified.
-
 Gleicher DataFrame-Vertrag für ``generate_forward_signals``, ``evaluate_forward_signals``,
-``run_portfolio_backtest_v2`` (Slice 1–3: Dummy; Slice 4: optional legacy Kraken über ``load_ohlcv``).
+``run_portfolio_backtest_v2``.
 
 - ``DatetimeIndex`` (1h, **UTC**), Spalten open/high/low/close/volume (vgl. ``src.data.REQUIRED_OHLCV_COLUMNS``).
 - Dummy: OHLC-Nachkorrektur zentral; vor Rückgabe ``validate_ohlcv(..., strict=True, require_tz=True)``.
-- Kraken: ``src.data.kraken.fetch_ohlcv_df`` (öffentliche OHLCV, kein Trading; Cache-Pfad via ConfigRegistry).
 - CSV/Fixture: ``source="csv"`` (Alias ``fixture``) — lokale Datei, kein Netzwerk; Pfad über ``ohlcv_csv_path`` (CLI: ``--ohlcv-csv``).
 - Read-only: keine Orders, kein C1-Bezug.
 
-J1 Slice 4: ``source="kraken"`` — bis zu 720 Bars pro **Request** (Kraken/ccxt-Limit), siehe ``KRAKEN_OHLCV_MAX_BARS``.
-
-J1 Pagination: ``n_bars`` > 720 — wiederholte Abrufe (ältere Fenster über ``since_ms``); pro Paginations-Request ``use_cache=False`` (Cache-Datei in ``fetch_ohlcv_df`` ist pro Symbol/TF ein Voll-Snapshot).
-
-``load_ohlcv_with_meta`` liefert dasselbe wie ``load_ohlcv`` plus ein Observability-Dict (u. a. für ``evaluate_forward_signals``); bei Kraken: ``kraken_bars_shortfall`` wenn ``bars_loaded < n_bars_requested``, plus ``UserWarning`` (kein Stillschweigen).
-
-CLI-Defaults für ``--n-bars``, ``--timeframe``, ``--ohlcv-source`` (Forward-/Portfolio-Skripte):
-``scripts/_shared_forward_args.py`` — ``timeframe`` wirkt auf Kraken; Dummy bleibt 1h-synthetisch.
+``load_ohlcv_with_meta`` liefert dasselbe wie ``load_ohlcv`` plus ein Observability-Dict.
+CLI-Defaults: ``scripts/_shared_forward_args.py``.
 """
 
 from __future__ import annotations
@@ -36,24 +26,25 @@ import pandas as pd
 from src.data import REQUIRED_OHLCV_COLUMNS
 from src.data.contracts import validate_ohlcv
 
-# Kraken Public-OHLCV: ccxt/Kraken begrenzt ``limit`` (hier konservativ wie ``fetch_ohlcv_df``).
-KRAKEN_OHLCV_MAX_BARS = 720
-
+# Dummy and local CSV only. Noncanonical venue sources are rejected.
 OHLCV_SOURCE_DUMMY = "dummy"
-OHLCV_SOURCE_KRAKEN = "kraken"
 OHLCV_SOURCE_CSV = "csv"
-OHLCV_SOURCES = (OHLCV_SOURCE_DUMMY, OHLCV_SOURCE_KRAKEN, OHLCV_SOURCE_CSV)
+OHLCV_SOURCES = (OHLCV_SOURCE_DUMMY, OHLCV_SOURCE_CSV)
 
 
 def _normalize_ohlcv_source(source: str) -> str:
     """
-    Trim + lower case; ``dummy`` / ``kraken`` / ``csv`` (Alias ``fixture``).
+    Trim + lower case; ``dummy`` / ``csv`` (Alias ``fixture``).
     """
     if not isinstance(source, str):
         raise TypeError(f"OHLCV-Quelle muss str sein, nicht {type(source).__name__}.")
     key = source.strip().lower()
     if key == "fixture":
         key = OHLCV_SOURCE_CSV
+    if key == "kraken":
+        from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
+
+        reject_noncanonical_operative_surface(surface="load_ohlcv.source")
     if key not in OHLCV_SOURCES:
         raise ValueError(
             f"Unbekannte OHLCV-Quelle {source!r}; erlaubt: {list(OHLCV_SOURCES)} "
@@ -78,31 +69,8 @@ def _timeframe_to_timedelta(timeframe: str) -> pd.Timedelta:
         "1d": pd.Timedelta(days=1),
     }
     if timeframe not in m:
-        raise ValueError(
-            f"Timeframe {timeframe!r} für Kraken-Pagination nicht unterstützt; "
-            f"erlaubt: {sorted(m.keys())}"
-        )
+        raise ValueError(f"Timeframe {timeframe!r} nicht unterstützt; erlaubt: {sorted(m.keys())}")
     return m[timeframe]
-
-
-def _warn_kraken_shortfall_if_needed(
-    symbol: str,
-    timeframe: str,
-    n_bars_requested: int,
-    bars_loaded: int,
-    *,
-    pagination_used: bool,
-) -> None:
-    """Nicht still: weniger Bars als angefordert (History-Ende, dünnes Orderbuch, API-Grenze)."""
-    if bars_loaded >= n_bars_requested:
-        return
-    pag = "ja" if pagination_used else "nein"
-    msg = (
-        f"Kraken-OHLCV: für {symbol!r} ({timeframe}) kamen nur {bars_loaded} "
-        f"von {n_bars_requested} angeforderten Bars zurück "
-        f"(History/Pagination-Ende oder Datenlücke; Pagination={pag})."
-    )
-    warnings.warn(msg, UserWarning, stacklevel=2)
 
 
 def _warn_csv_shortfall_if_needed(
@@ -304,91 +272,6 @@ def load_dummy_ohlcv(symbol: str, n_bars: int = 200) -> pd.DataFrame:
     return df
 
 
-def _load_kraken_ohlcv_inner(
-    symbol: str,
-    n_bars: int = 200,
-    *,
-    timeframe: str = "1h",
-    use_cache: bool = True,
-) -> tuple[pd.DataFrame, bool]:
-    """
-    Liefert DataFrame plus Flag, ob die Pagination-Schleife genutzt wurde
-    (``n_bars`` > ``KRAKEN_OHLCV_MAX_BARS``).
-    """
-    from src.data.kraken import fetch_ohlcv_df
-
-    if n_bars < 1:
-        raise ValueError("n_bars muss >= 1 sein (Kraken-OHLCV).")
-
-    if n_bars <= KRAKEN_OHLCV_MAX_BARS:
-        limit = min(n_bars, KRAKEN_OHLCV_MAX_BARS)
-        df = fetch_ohlcv_df(
-            symbol=symbol,
-            timeframe=timeframe,
-            limit=limit,
-            use_cache=use_cache,
-        )
-        if df.empty:
-            raise ValueError(f"Kraken-OHLCV leer für {symbol!r} ({timeframe}, limit={limit}).")
-        if len(df) > n_bars:
-            df = df.iloc[-n_bars:].copy()
-        validate_ohlcv(df, strict=True, require_tz=True)
-        _warn_kraken_shortfall_if_needed(symbol, timeframe, n_bars, len(df), pagination_used=False)
-        return df, False
-
-    td = _timeframe_to_timedelta(timeframe)
-    td_ms = int(td.total_seconds() * 1000)
-
-    chunks: list[pd.DataFrame] = []
-    since_ms: int | None = None
-    max_loops = (n_bars // KRAKEN_OHLCV_MAX_BARS) + 5
-
-    for _ in range(max_loops):
-        if sum(len(c) for c in chunks) >= n_bars:
-            break
-        df = fetch_ohlcv_df(
-            symbol=symbol,
-            timeframe=timeframe,
-            limit=KRAKEN_OHLCV_MAX_BARS,
-            since_ms=since_ms,
-            use_cache=False,
-        )
-        if df.empty:
-            break
-        chunks.insert(0, df)
-        oldest_ms = int(df.index[0].timestamp() * 1000)
-        since_ms = oldest_ms - KRAKEN_OHLCV_MAX_BARS * td_ms
-        if since_ms < 0:
-            since_ms = 0
-        if len(df) < KRAKEN_OHLCV_MAX_BARS:
-            break
-
-    if not chunks:
-        raise ValueError(f"Kraken-OHLCV leer für {symbol!r} ({timeframe}, Pagination).")
-
-    out = pd.concat(chunks)
-    out = out[~out.index.duplicated(keep="last")]
-    out = out.sort_index()
-    if len(out) > n_bars:
-        out = out.iloc[-n_bars:].copy()
-    validate_ohlcv(out, strict=True, require_tz=True)
-    _warn_kraken_shortfall_if_needed(symbol, timeframe, n_bars, len(out), pagination_used=True)
-    return out, True
-
-
-def load_kraken_ohlcv(
-    symbol: str,
-    n_bars: int = 200,
-    *,
-    timeframe: str = "1h",
-    use_cache: bool = True,
-) -> pd.DataFrame:
-    """Historical Kraken OHLCV loader; current operative use is rejected."""
-    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
-
-    reject_noncanonical_operative_surface(surface="load_kraken_ohlcv")
-
-
 def load_ohlcv(
     symbol: str,
     n_bars: int = 200,
@@ -399,21 +282,19 @@ def load_ohlcv(
     ohlcv_csv_path: str | Path | None = None,
 ) -> pd.DataFrame:
     """
-    Einheitlicher Einstieg: Dummy (Default), Kraken oder lokale CSV.
+    Einheitlicher Einstieg: Dummy (Default) oder lokale CSV.
 
     Args:
         symbol: Trading-Paar (z.B. ``BTC/EUR``).
-        n_bars: Gewünschte Bar-Anzahl (Kraken: mehrere Abrufe bei ``n_bars`` > ``KRAKEN_OHLCV_MAX_BARS``).
-        source: ``dummy`` | ``kraken`` | ``csv`` (Alias ``fixture``; Groß-/Kleinschreibung wird normalisiert).
-        timeframe: Nur Kraken; Default ``1h`` (wie Forward-Pipeline). CSV/Dummy: nur Meta/CLI-Konsistenz.
-        use_cache: Nur Kraken — Parquet-Cache in ``fetch_ohlcv_df``.
+        n_bars: Gewünschte Bar-Anzahl.
+        source: ``dummy`` | ``csv`` (Alias ``fixture``; Groß-/Kleinschreibung wird normalisiert).
+        timeframe: Meta/CLI-Konsistenz (Dummy bleibt synthetisch).
+        use_cache: Ungenutzt für Dummy/CSV.
         ohlcv_csv_path: Pfad zur CSV bei ``source=csv`` (Pfad kann ``{symbol}`` enthalten).
     """
     src = _normalize_ohlcv_source(source)
     if src == OHLCV_SOURCE_DUMMY:
         return load_dummy_ohlcv(symbol, n_bars=n_bars)
-    if src == OHLCV_SOURCE_KRAKEN:
-        return load_kraken_ohlcv(symbol, n_bars=n_bars, timeframe=timeframe, use_cache=use_cache)
     if src == OHLCV_SOURCE_CSV:
         if not ohlcv_csv_path:
             raise ValueError("OHLCV-Quelle csv erfordert ohlcv_csv_path (CLI: --ohlcv-csv).")
@@ -431,9 +312,8 @@ def load_ohlcv_with_meta(
     ohlcv_csv_path: str | Path | None = None,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
     """
-    Wie ``load_ohlcv``, zusätzlich deterministisches Observability-Dict (J1):
-    symbol, Quelle, Timeframe, angeforderte/effektive Bar-Anzahl, Kraken-Pagination-Flag,
-    ``kraken_bars_shortfall`` (nur Kraken: ``True`` wenn ``bars_loaded < n_bars_requested``),
+    Wie ``load_ohlcv``, zusätzlich deterministisches Observability-Dict:
+    symbol, Quelle, Timeframe, angeforderte/effektive Bar-Anzahl,
     bei CSV: ``ohlcv_csv_resolved``, ``csv_bars_shortfall``.
     """
     src = _normalize_ohlcv_source(source)
@@ -445,16 +325,12 @@ def load_ohlcv_with_meta(
             "timeframe": timeframe,
             "n_bars_requested": n_bars,
             "bars_loaded": int(len(df)),
-            "kraken_pagination_used": None,
-            "kraken_bars_shortfall": None,
+            "pagination_used": None,
+            "bars_shortfall": None,
             "ohlcv_csv_resolved": None,
             "csv_bars_shortfall": None,
         }
         return df, meta
-    if src == OHLCV_SOURCE_KRAKEN:
-        from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
-
-        reject_noncanonical_operative_surface(surface="load_ohlcv_with_meta")
     if src == OHLCV_SOURCE_CSV:
         if not ohlcv_csv_path:
             raise ValueError("OHLCV-Quelle csv erfordert ohlcv_csv_path (CLI: --ohlcv-csv).")
@@ -468,8 +344,8 @@ def load_ohlcv_with_meta(
             "timeframe": timeframe,
             "n_bars_requested": n_bars,
             "bars_loaded": loaded,
-            "kraken_pagination_used": None,
-            "kraken_bars_shortfall": None,
+            "pagination_used": None,
+            "bars_shortfall": None,
             "ohlcv_csv_resolved": str(resolved),
             "csv_bars_shortfall": shortfall,
         }

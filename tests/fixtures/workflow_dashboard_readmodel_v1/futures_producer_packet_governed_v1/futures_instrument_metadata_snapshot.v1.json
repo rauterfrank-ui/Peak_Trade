@@ -1,7 +1,7 @@
 [
   {
     "instrument_id": "inst-eth-perp",
-    "exchange": "binance_futures",
+    "exchange": "other_venue",
     "market_type": "perpetual",
     "symbol": "ETHUSDT",
     "status": "active",

@@ -85,7 +85,7 @@ Dieses Dokument listet **bewusst nicht implementierte Features** und **bekannte 
 
 **Details:**
 - Kraken ist die Referenz-Exchange mit vollständiger Integration
-- Weitere Exchanges (z.B. Binance, Coinbase) sind **nicht implementiert**
+- Weitere Exchanges sind **nicht implementiert**
 
 **Begründung:**
 - v1.0 fokussiert auf eine stabile Referenz-Implementation
@@ -96,7 +96,7 @@ Dieses Dokument listet **bewusst nicht implementierte Features** und **bekannte 
 - Aktuell: Kraken als Referenz für Architektur-Patterns
 
 **Referenz:**
-- `src/exchange/kraken_testnet.py` – Kraken Testnet-Adapter
+- `src&#47;exchange&#47;kraken_testnet.py` – historical Kraken Testnet-Adapter (ABSENT from current tree) <!-- pt:ref-target-ignore -->
 - `src/exchange/ccxt_client.py` – CCXT-Basis (vorbereitet für Erweiterungen)
 
 ---
@@ -170,7 +170,7 @@ Dieses Dokument listet **bewusst nicht implementierte Features** und **bekannte 
 **Status:** Nur Kraken vollständig unterstützt
 
 **Details:**
-- Andere Exchanges (Binance, Coinbase, etc.) sind nicht implementiert
+- Andere Exchanges sind nicht implementiert
 - Keine aggregierten Multi-Exchange-Datenfeeds
 
 **Begründung:**

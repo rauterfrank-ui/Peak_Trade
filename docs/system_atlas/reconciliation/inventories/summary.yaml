@@ -20,7 +20,7 @@ tree_content_census_unique_added_path_count: 970
 historical_deleted_path_count_all_refs: 1160
 historical_path_family_count: 78
 reachable_object_path_count: 19428
-import_symbol_class_count: 6379
-terminology_heading_token_count: 9391
+import_symbol_class_count: 6375
+terminology_heading_token_count: 9388
 inner_archive_file_count: 16
 blob_level_scan_performed: false

@@ -564,7 +564,7 @@ class ExchangeOrderExecutor:
             safety_guard: SafetyGuard für Safety-Prüfungen
             simulated_prices: Optionale Preise für Dry-Run-Simulation
             trading_client: Optionaler TradingExchangeClient für echte Order-Aufrufe
-                           (Phase 38: z.B. DummyExchangeClient, KrakenTestnetClient)
+                           (Phase 38: z.B. DummyExchangeClient)
         """
         self._safety_guard = safety_guard
         self._simulated_prices = simulated_prices or {}

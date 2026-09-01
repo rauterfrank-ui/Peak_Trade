@@ -378,9 +378,9 @@ def _load_ohlcv_for_smoke(
         min_bars: Minimum benoetigte Bars fuer Data-QC (Phase 79)
 
     Returns:
-        Tuple von (DataFrame, Optional[KrakenDataHealth])
+        Tuple von (DataFrame, Optional[MarketDataCacheHealth])
         - DataFrame: OHLCV-Daten
-        - KrakenDataHealth: Health-Report (nur bei kraken_cache, sonst None)
+        - MarketDataCacheHealth: Health-Report (nur bei cache, sonst None)
 
     Raises:
         ValueError: Bei unbekannter Datenquelle oder fehlenden Daten
@@ -393,8 +393,8 @@ def _load_ohlcv_for_smoke(
 
     elif data_source == "kraken_cache":
         # Phase 79: echte Daten aus Kraken-Cache mit Data-QC
-        from src.data.kraken_cache_loader import (
-            load_kraken_cache_window,
+        from src.data.market_data_cache_loader import (
+            load_market_data_cache_window,
             get_real_market_smokes_config,
         )
 
@@ -411,7 +411,7 @@ def _load_ohlcv_for_smoke(
         # Verwende immer den uebergebenen min_bars Parameter
         qc_min_bars = min_bars
 
-        df, health = load_kraken_cache_window(
+        df, health = load_market_data_cache_window(
             base_path=base_path,
             market=market,
             timeframe=timeframe,

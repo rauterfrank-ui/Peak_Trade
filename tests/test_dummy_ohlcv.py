@@ -16,10 +16,8 @@ if str(_scripts) not in sys.path:
 from _shared_ohlcv_loader import (  # noqa: E402
     OHLCV_SOURCE_CSV,
     OHLCV_SOURCE_DUMMY,
-    OHLCV_SOURCE_KRAKEN,
     load_csv_ohlcv,
     load_dummy_ohlcv,
-    load_kraken_ohlcv,
     load_ohlcv,
     load_ohlcv_with_meta,
     normalize_ohlcv_source,
@@ -57,101 +55,17 @@ def test_load_ohlcv_with_meta_dummy():
     assert meta["timeframe"] == "1h"
     assert meta["n_bars_requested"] == 42
     assert meta["bars_loaded"] == 42
-    assert meta["kraken_pagination_used"] is None
-    assert meta["kraken_bars_shortfall"] is None
+    assert meta["pagination_used"] is None
+    assert meta["bars_shortfall"] is None
     assert meta["ohlcv_csv_resolved"] is None
     assert meta["csv_bars_shortfall"] is None
 
 
-def test_load_ohlcv_with_meta_kraken_single_request():
-    idx = pd.date_range("2024-06-01", periods=10, freq="1h", tz="UTC")
-    raw = pd.DataFrame(
-        {
-            "open": [1.0] * 10,
-            "high": [2.0] * 10,
-            "low": [0.5] * 10,
-            "close": [1.5] * 10,
-            "volume": [100.0] * 10,
-        },
-        index=idx,
-    )
-    with patch("src.data.kraken.fetch_ohlcv_df", return_value=raw.copy()):
-        df, meta = load_ohlcv_with_meta(
-            "ETH/EUR", n_bars=10, source=OHLCV_SOURCE_KRAKEN, timeframe="1h"
-        )
-    assert len(df) == 10
-    assert meta["kraken_pagination_used"] is False
-    assert meta["kraken_bars_shortfall"] is False
-    assert meta["ohlcv_csv_resolved"] is None
-    assert meta["csv_bars_shortfall"] is None
+def test_load_ohlcv_noncanonical_source_rejected():
+    from src.exchange.operative_venue_boundary_v1 import NoncanonicalVenueRejectedError
 
-
-def test_load_ohlcv_with_meta_kraken_pagination_flag():
-    recent = pd.date_range("2024-03-01", periods=720, freq="1h", tz="UTC")
-    older = pd.date_range("2023-12-01", periods=720, freq="1h", tz="UTC")
-
-    def fake_fetch(*args, **kwargs):
-        since_ms = kwargs.get("since_ms")
-        use_cache = kwargs.get("use_cache", True)
-        assert use_cache is False
-        if since_ms is None:
-            return pd.DataFrame(
-                {
-                    "open": [100.0] * 720,
-                    "high": [101.0] * 720,
-                    "low": [99.0] * 720,
-                    "close": [100.5] * 720,
-                    "volume": [1.0] * 720,
-                },
-                index=recent,
-            )
-        return pd.DataFrame(
-            {
-                "open": [50.0] * 720,
-                "high": [51.0] * 720,
-                "low": [49.0] * 720,
-                "close": [50.5] * 720,
-                "volume": [1.0] * 720,
-            },
-            index=older,
-        )
-
-    with patch("src.data.kraken.fetch_ohlcv_df", side_effect=fake_fetch):
-        df, meta = load_ohlcv_with_meta(
-            "BTC/EUR", n_bars=1000, source=OHLCV_SOURCE_KRAKEN, timeframe="1h"
-        )
-    assert len(df) == 1000
-    assert meta["kraken_pagination_used"] is True
-    assert meta["kraken_bars_shortfall"] is False
-    assert meta["ohlcv_csv_resolved"] is None
-    assert meta["csv_bars_shortfall"] is None
-
-
-def test_load_ohlcv_with_meta_kraken_shortfall_warning_and_meta():
-    """Weniger Bars als angefordert: UserWarning + Meta-Flag (kein Stillschweigen)."""
-    idx = pd.date_range("2024-06-01", periods=12, freq="1h", tz="UTC")
-    raw = pd.DataFrame(
-        {
-            "open": [1.0] * 12,
-            "high": [2.0] * 12,
-            "low": [0.5] * 12,
-            "close": [1.5] * 12,
-            "volume": [100.0] * 12,
-        },
-        index=idx,
-    )
-    with patch("src.data.kraken.fetch_ohlcv_df", return_value=raw.copy()):
-        with pytest.warns(UserWarning, match="nur 12"):
-            df, meta = load_ohlcv_with_meta(
-                "ETH/EUR", n_bars=50, source=OHLCV_SOURCE_KRAKEN, timeframe="1h"
-            )
-    assert len(df) == 12
-    assert meta["n_bars_requested"] == 50
-    assert meta["bars_loaded"] == 12
-    assert meta["kraken_bars_shortfall"] is True
-    assert meta["kraken_pagination_used"] is False
-    assert meta["ohlcv_csv_resolved"] is None
-    assert meta["csv_bars_shortfall"] is None
+    with pytest.raises(NoncanonicalVenueRejectedError):
+        load_ohlcv("BTC/EUR", n_bars=10, source="kraken")
 
 
 def test_load_ohlcv_unknown_source():
@@ -175,100 +89,6 @@ def test_load_ohlcv_source_case_and_whitespace_insensitive():
 def test_load_ohlcv_source_must_be_str():
     with pytest.raises(TypeError, match="str"):
         load_ohlcv("BTC/EUR", source=123)  # type: ignore[arg-type]
-
-
-def test_load_kraken_ohlcv_warns_on_shortfall():
-    idx = pd.date_range("2024-01-01", periods=7, freq="1h", tz="UTC")
-    raw = pd.DataFrame(
-        {
-            "open": [100.0] * 7,
-            "high": [102.0] * 7,
-            "low": [99.0] * 7,
-            "close": [100.5] * 7,
-            "volume": [1.0] * 7,
-        },
-        index=idx,
-    )
-    with patch("src.data.kraken.fetch_ohlcv_df", return_value=raw.copy()):
-        with pytest.warns(UserWarning, match="nur 7"):
-            out = load_kraken_ohlcv("BTC/EUR", n_bars=40, timeframe="1h")
-    assert len(out) == 7
-
-
-def test_load_kraken_ohlcv_trims_tail_and_validates():
-    idx = pd.date_range("2024-01-01", periods=80, freq="1h", tz="UTC")
-    raw = pd.DataFrame(
-        {
-            "open": [100.0 + i * 0.01 for i in range(80)],
-            "high": [102.0 + i * 0.01 for i in range(80)],
-            "low": [99.0 + i * 0.01 for i in range(80)],
-            "close": [100.5 + i * 0.01 for i in range(80)],
-            "volume": [1.0] * 80,
-        },
-        index=idx,
-    )
-
-    with patch("src.data.kraken.fetch_ohlcv_df", return_value=raw.copy()):
-        out = load_kraken_ohlcv("BTC/EUR", n_bars=50)
-
-    assert len(out) == 50
-    assert out.index[0] == idx[-50]
-
-
-def test_load_ohlcv_kraken_path():
-    idx = pd.date_range("2024-06-01", periods=10, freq="1h", tz="UTC")
-    raw = pd.DataFrame(
-        {
-            "open": [1.0] * 10,
-            "high": [2.0] * 10,
-            "low": [0.5] * 10,
-            "close": [1.5] * 10,
-            "volume": [100.0] * 10,
-        },
-        index=idx,
-    )
-    with patch("src.data.kraken.fetch_ohlcv_df", return_value=raw.copy()):
-        out = load_ohlcv("ETH/EUR", n_bars=10, source=OHLCV_SOURCE_KRAKEN)
-    assert len(out) == 10
-    assert list(out.columns) == REQUIRED_OHLCV_COLUMNS
-
-
-def test_load_kraken_ohlcv_pagination_calls_fetch_twice():
-    """n_bars > 720: mehrere fetch_ohlcv_df-Aufrufe, tail auf n_bars."""
-    recent = pd.date_range("2024-03-01", periods=720, freq="1h", tz="UTC")
-    older = pd.date_range("2023-12-01", periods=720, freq="1h", tz="UTC")
-
-    def fake_fetch(*args, **kwargs):
-        since_ms = kwargs.get("since_ms")
-        use_cache = kwargs.get("use_cache", True)
-        assert use_cache is False
-        if since_ms is None:
-            return pd.DataFrame(
-                {
-                    "open": [100.0] * 720,
-                    "high": [101.0] * 720,
-                    "low": [99.0] * 720,
-                    "close": [100.5] * 720,
-                    "volume": [1.0] * 720,
-                },
-                index=recent,
-            )
-        return pd.DataFrame(
-            {
-                "open": [50.0] * 720,
-                "high": [51.0] * 720,
-                "low": [49.0] * 720,
-                "close": [50.5] * 720,
-                "volume": [1.0] * 720,
-            },
-            index=older,
-        )
-
-    with patch("src.data.kraken.fetch_ohlcv_df", side_effect=fake_fetch):
-        out = load_kraken_ohlcv("BTC/EUR", n_bars=1000, timeframe="1h")
-
-    assert len(out) == 1000
-    assert list(out.columns) == REQUIRED_OHLCV_COLUMNS
 
 
 def test_timeframe_to_timedelta_invalid():

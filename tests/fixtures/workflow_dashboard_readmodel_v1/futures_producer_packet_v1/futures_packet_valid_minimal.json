@@ -31,7 +31,7 @@
         "instrument_id": "inst-eth-perp",
         "symbol": "ETHUSDT",
         "market_type": "perpetual",
-        "exchange": "binance_futures",
+        "exchange": "other_venue",
         "base_currency": "ETH",
         "quote_currency": "USDT",
         "live_authorization": false
@@ -105,7 +105,7 @@
         "instrument_id": "inst-sol-perp",
         "symbol": "SOLUSDT",
         "market_type": "perpetual",
-        "exchange": "binance_futures",
+        "exchange": "other_venue",
         "base_currency": "SOL",
         "quote_currency": "USDT",
         "live_authorization": false
@@ -179,7 +179,7 @@
         "instrument_id": "inst-avax-perp",
         "symbol": "AVAXUSDT",
         "market_type": "perpetual",
-        "exchange": "binance_futures",
+        "exchange": "other_venue",
         "base_currency": "AVAX",
         "quote_currency": "USDT",
         "live_authorization": false

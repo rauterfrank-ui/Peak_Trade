@@ -17,7 +17,7 @@
 base_path = "data/cache"
 
 # Override-Base für Tests (in pytest über Fixture gesetzt)
-test_base_path = "tests/data/kraken_smoke"
+test_base_path = "tests/data/market_data_smoke"
 
 # Default-Parameter für Real-Market-Smokes
 default_market = "BTC/EUR"

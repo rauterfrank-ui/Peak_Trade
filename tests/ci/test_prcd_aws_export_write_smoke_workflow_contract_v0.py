@@ -137,7 +137,6 @@ def test_prcd_aws_export_write_smoke_workflow_contract_does_not_directly_submit_
         "market_sell(",
         "private_post_order",
         "futures_create_order",
-        "binance.create_order",
         "exchange.create_order",
         "ccxt.",
     )

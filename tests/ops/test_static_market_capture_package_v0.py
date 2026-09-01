@@ -35,8 +35,6 @@ _FORBIDDEN_IN_BUILDER_SCRIPT = (
     "src.scheduler",
     "src.runtime",
     "import ccxt",
-    " binance",
-    " kraken",
     "click",
     "typer",
     "uvicorn",

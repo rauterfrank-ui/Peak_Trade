@@ -15,8 +15,8 @@ _SAMPLE_META = {
     "timeframe": "1h",
     "n_bars_requested": 200,
     "bars_loaded": 0,
-    "kraken_pagination_used": None,
-    "kraken_bars_shortfall": None,
+    "pagination_used": None,
+    "bars_shortfall": None,
 }
 
 

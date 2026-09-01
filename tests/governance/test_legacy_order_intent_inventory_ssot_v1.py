@@ -36,11 +36,11 @@ SSOT_JSON = REPO_ROOT / "config" / "governance" / "legacy_order_intent_inventory
 EXPECTED_BASE_SHA = "19e4b1f26dcbbfeeef3b7138f15dfa5bc4181319"
 EXPECTED_DECISION_OWNER_COUNT = 3
 EXPECTED_BYPASS_COUNT = 4
-EXPECTED_SUBMISSION_BYPASS_COUNT = 5
+EXPECTED_SUBMISSION_BYPASS_COUNT = 4
 EXPECTED_MV2_OWNER = "src.governance.canonical_order_intent_v1"
 EXPECTED_SURFACE_CONTRACT_SEMANTICS = "INVENTORY_ONLY_NOT_EXECUTION_PERMISSION"
 EXPECTED_DECISION_OWNER_CONTRACT_SEMANTICS = "INVENTORY_ONLY_NOT_AUTHORITY_ASSIGNMENT"
-KRAKEN_SURFACE_ID = "submission.kraken_live_client"
+DRIFT_PROBE_SURFACE_ID = "submission.execution_pipeline_submit_order"
 EXPECTED_DECISION_OWNER_IDS = (
     "src.execution.adapters.base_v1.OrderIntentV1",
     "src.execution.pipeline.OrderIntent",
@@ -418,34 +418,20 @@ def test_direct_submission_surface_symbols_resolve_via_ast_without_import() -> N
         )
 
 
-def test_kraken_surface_present_and_explicitly_non_authorizing() -> None:
+def test_kraken_live_client_absent_from_current_tree_inventory() -> None:
     payload = _load_ssot()
     contract = _surface_contract(payload)
     by_id = {s["surface_id"]: s for s in contract["surfaces"]}
-    assert KRAKEN_SURFACE_ID in by_id
-    kraken = by_id[KRAKEN_SURFACE_ID]
-    assert kraken["source_path"] == "src/exchange/kraken_live.py"
-    assert kraken["symbol_or_callable"] == "KrakenLiveClient.place_order"
-    assert kraken["classification"] == "LEGACY_DIRECT_SUBMISSION_BYPASS"
-    assert kraken["canonical"] is False
-    assert kraken["authorized"] is False
-    assert kraken["enabled"] is False
-    assert kraken["execution_authority"] is False
-    assert kraken["inventory_only"] is True
-    assert kraken["decommissioned"] is False
-    # Capability must remain separated from authorization
-    assert kraken["can_submit_orders"] is True
-    assert (
-        "NOT authorized" in kraken["capability_note"]
-        or "not authorization" in kraken["capability_note"].lower()
-    )
-
+    assert "submission.kraken_live_client" not in by_id
+    assert "submission.kraken_live_client" not in payload["direct_submission_bypasses"]
+    assert not (REPO_ROOT / "src/exchange/kraken_live.py").is_file()
     doc = _read(SSOT_DOC)
     assert "canonical=false" in doc
     assert "authorized=false" in doc
     assert "enabled=false" in doc
     assert "execution_authority=false" in doc
     assert "NOT an execution allowlist" in doc or "not an execution allowlist" in doc.lower()
+    assert "ABSENT from current tree" in doc
 
 
 def test_surface_contract_drift_guards_on_mutated_payload() -> None:
@@ -462,19 +448,19 @@ def test_surface_contract_drift_guards_on_mutated_payload() -> None:
     assert set(mutated_add) != inventory_ids
 
     # removal
-    mutated_remove = [i for i in contract["surface_ids_sorted"] if i != KRAKEN_SURFACE_ID]
+    mutated_remove = [i for i in contract["surface_ids_sorted"] if i != DRIFT_PROBE_SURFACE_ID]
     assert len(mutated_remove) != EXPECTED_SUBMISSION_BYPASS_COUNT
     assert set(mutated_remove) != inventory_ids
 
     # rename
     mutated_rename = [
-        "submission.kraken_live_client_renamed" if i == KRAKEN_SURFACE_ID else i
+        "submission.execution_pipeline_submit_order_renamed" if i == DRIFT_PROBE_SURFACE_ID else i
         for i in contract["surface_ids_sorted"]
     ]
     assert set(mutated_rename) != inventory_ids
 
     # duplicate
-    mutated_dup = list(contract["surface_ids_sorted"]) + [KRAKEN_SURFACE_ID]
+    mutated_dup = list(contract["surface_ids_sorted"]) + [DRIFT_PROBE_SURFACE_ID]
     assert len(mutated_dup) != len(set(mutated_dup))
 
 

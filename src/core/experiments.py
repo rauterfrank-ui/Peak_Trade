@@ -318,7 +318,7 @@ def log_backtest_result(
         strategy_name: Name der Strategie (z.B. "ma_crossover")
         tag: Optionaler Tag für Filterung (z.B. "dev-test", "production")
         config_path: Pfad zur verwendeten Config
-        data_source: Datenquelle (z.B. "okx_csv", "fixture_api")
+        data_source: Datenquelle (z.B. "csv_fixture", "api_fixture")
         symbol: Symbol/Market (z.B. "BTC/EUR")
         timeframe: Timeframe (z.B. "1h", "4h", "1d")
         start_date: Startdatum des Backtests (ISO-Format)

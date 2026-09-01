@@ -14,7 +14,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 _SCRIPT = _REPO_ROOT / "scripts/ops/build_public_rest_to_supervised_observer_bridge_v0.py"
 
 _CONFIRM = "NO_NETWORK_NO_BROKER_NO_EXCHANGE_NO_ORDERS"
-_PROVIDER = "binance_spot_market_data_only"
+_PROVIDER = "supervised_public_rest_market_data_only"
 
 _FORBIDDEN_IN_SCRIPT = (
     "import requests",
@@ -342,7 +342,7 @@ def test_rejects_wrong_capture_manifest_schema(tmp_path: Path) -> None:
     assert cp.returncode != 0
 
 
-def test_rejects_provider_other_than_binance(tmp_path: Path) -> None:
+def test_rejects_provider_mismatch(tmp_path: Path) -> None:
     pkg = write_valid_capture_pkg(tmp_path / "in")
     man = json.loads((pkg / "manifest" / "capture_manifest.json").read_text(encoding="utf-8"))
     man["provider"] = "other"

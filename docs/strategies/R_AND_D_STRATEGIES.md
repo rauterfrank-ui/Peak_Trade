@@ -387,7 +387,7 @@ Schritte:
 **Ziel**: Tick-/Orderbuch-basierte Strategie (falls Dateninfrastruktur verfügbar)
 
 Voraussetzungen:
-- Tick-Daten-Infrastruktur aufbauen (Binance/FTX Tick Replay)
+- Tick-Daten-Infrastruktur aufbauen (venue-neutral Tick Replay)
 - Orderbuch-Snapshots (L2/L3)
 - Niedrige Latenz für Microstructure-Signale
 

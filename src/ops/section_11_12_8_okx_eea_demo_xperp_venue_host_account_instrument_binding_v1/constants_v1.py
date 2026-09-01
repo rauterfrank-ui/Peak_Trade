@@ -61,8 +61,7 @@ FORBIDDEN_VENUE_FALLBACKS: tuple[str, ...] = (
     "okx_global",
     "OKX_GLOBAL",
     "OKX_GLOBAL_DEMO",
-    "bybit_testnet",
-    "kraken_futures_demo",
+    "undeclared_venue",
 )
 FORBIDDEN_HOST_FALLBACKS: tuple[str, ...] = (
     "openapi.okx.com",

@@ -77,7 +77,7 @@ def test_passes_when_ccxt_only_under_allowlisted_new_listings(tmp_path: Path) ->
     _install_script(tmp_path)
     ok_file = tmp_path / "src" / "research" / "new_listings" / "collector.py"
     ok_file.parent.mkdir(parents=True, exist_ok=True)
-    ok_file.write_text("from ccxt import binance\n", encoding="utf-8")
+    ok_file.write_text("import ccxt\n", encoding="utf-8")
     script = tmp_path / "scripts" / "ops" / "check_optional_deps_leaks.sh"
     p = _run(script)
     assert p.returncode == 0

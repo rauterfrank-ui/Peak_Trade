@@ -205,7 +205,7 @@ def test_wrong_instrument_rejected() -> None:
 def test_wrong_venue_rejected() -> None:
     producer = _producer()
     _ingest_range(producer, 0, 2)
-    bad = _sample(3, venue="binance")
+    bad = _sample(3, venue="other_venue")
     result = producer.ingest_finalized_pt1m_mark_sample_v1(sample=bad)
     assert result.outcome is producer_mod.TypedRuntimeProducerOutcomeV1.INVALID_SAMPLE_REJECTED
 

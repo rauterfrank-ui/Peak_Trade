@@ -151,7 +151,7 @@ Zielbild (textuelles „Diagramm"):
 
 6. **Exchange Adapters**
 
-   * Pro Ziel-Exchange (z. B. Kraken, Binance, etc.) ein Adapter-Modul:
+   * Pro Ziel-Exchange (z. B. Kraken) ein Adapter-Modul:
 
      * uniformes Interface (z. B. `submit_order`, `cancel_order`, `fetch_positions`),
      * Umsetzung der Exchange-spezifischen API-Details.

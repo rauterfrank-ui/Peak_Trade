@@ -309,7 +309,7 @@ CME futures-like surfaces may be valuable for offline research or market-specifi
 
 They are not proof of crypto futures exchange readiness.
 
-Do not use CME/NQ/MNQ-style support as evidence that crypto perpetuals, Kraken Futures, Binance Futures, Bybit, OKX, or any other derivatives exchange path is supported.
+Do not use CME/NQ/MNQ-style support as evidence that crypto perpetuals, Kraken Futures, OKX, or any other derivatives exchange path is supported.
 
 ## Dashboard implications
 

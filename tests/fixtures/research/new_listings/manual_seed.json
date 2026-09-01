@@ -1,14 +1,14 @@
 [
   {
     "symbol": "TESTUSDT",
-    "exchange": "binance",
+    "exchange": "venue_a",
     "quote_volume": 123456.0,
     "price": 1.23,
     "timestamp": "2026-02-27T00:00:00Z"
   },
   {
     "symbol": "ALPHAUSDT",
-    "exchange": "bybit",
+    "exchange": "venue_b",
     "quote_volume": 654321.0,
     "price": 2.34,
     "timestamp": "2026-02-27T00:00:00Z"

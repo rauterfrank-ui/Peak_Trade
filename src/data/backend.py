@@ -182,11 +182,11 @@ REGISTRY: dict[str, tuple[str, str]] = {}
 
 def get_backend(backend_id: str, **kwargs: Any) -> Any:
     """
-    Lazy factory for provider backends (e.g. kraken_ccxt).
+    Lazy factory for provider backends.
 
     This function must remain importable without optional dependencies.
     The optional dependency is only required when the provider backend actually
-    performs an operation that needs it (e.g. KrakenCcxtBackend._exchange()).
+    performs an operation that needs it.
     """
     backend_norm = str(backend_id).strip().lower()
     if backend_norm not in REGISTRY:

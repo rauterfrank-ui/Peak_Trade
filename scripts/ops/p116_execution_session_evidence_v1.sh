@@ -3,18 +3,25 @@ set -euo pipefail
 
 MODE="${MODE:-shadow}"
 DRY_RUN="${DRY_RUN:-YES}"
-ADAPTERS="${ADAPTERS:-mock,coinbase,okx,bybit}"
+ADAPTERS="${ADAPTERS:-mock,okx}"
 INTENTS="${INTENTS:-place_order,cancel_all}"
 ROOT="${ROOT:-$(pwd)}"
 OPS_DIR="${OPS_DIR:-$ROOT/out/ops}"
 
-deny_vars=(LIVE RECORD TRADING_ENABLE EXECUTION_ENABLE PT_ARMED PT_CONFIRM_TOKEN KRAKEN_API_KEY BINANCE_API_KEY COINBASE_API_KEY OKX_API_KEY BYBIT_API_KEY API_KEY API_SECRET)
+deny_vars=(LIVE RECORD TRADING_ENABLE EXECUTION_ENABLE PT_ARMED PT_CONFIRM_TOKEN API_KEY API_SECRET)
 for v in "${deny_vars[@]}"; do
   if [[ -n "${!v:-}" ]]; then
     echo "P116_GUARD_FAIL deny_env_var=$v" >&2
     exit 3
   fi
 done
+while IFS= read -r v; do
+  [ -z "$v" ] && continue
+  if [[ -n "${!v:-}" ]]; then
+    echo "P116_GUARD_FAIL deny_env_var=$v" >&2
+    exit 3
+  fi
+done < <(compgen -e | grep -E '_API_(KEY|SECRET)$' || true)
 
 if [[ "$MODE" != "shadow" && "$MODE" != "paper" ]]; then
   echo "P116_GUARD_FAIL mode_invalid=$MODE" >&2

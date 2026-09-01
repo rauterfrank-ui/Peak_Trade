@@ -63,50 +63,36 @@ def test_adapter_registry_has_no_removed_brand_adapter() -> None:
     reg = build_adapter_registry_v1()
     assert "mock" in reg
     assert "okx" in reg
-    assert set(reg) <= {"mock", "okx", "bybit"}
+    assert set(reg) == {"mock", "okx"}
 
 
-def test_kraken_live_and_testnet_constructors_fail_closed() -> None:
-    from src.exchange.kraken_live import KrakenLiveClient, KrakenLiveConfig
-    from src.exchange.kraken_testnet import KrakenTestnetClient, KrakenTestnetConfig
-
-    with pytest.raises(NoncanonicalVenueRejectedError):
-        KrakenLiveClient(KrakenLiveConfig())
-    with pytest.raises(NoncanonicalVenueRejectedError):
-        KrakenTestnetClient(KrakenTestnetConfig())
-
-
-def test_create_kraken_factories_fail_closed() -> None:
-    from src.exchange.kraken_live import create_kraken_live_client_from_config
-    from src.exchange.kraken_testnet import create_kraken_testnet_client_from_config
-    from src.orders.testnet_executor import create_testnet_executor_from_config
-
-    cfg = PeakConfig(raw={})
-    with pytest.raises(NoncanonicalVenueRejectedError):
-        create_kraken_live_client_from_config(cfg)
-    with pytest.raises(NoncanonicalVenueRejectedError):
-        create_kraken_testnet_client_from_config(cfg)
-    with pytest.raises(NoncanonicalVenueRejectedError):
-        create_testnet_executor_from_config(cfg)
-
-
-def test_kraken_ohlcv_and_pipeline_fail_closed() -> None:
-    from src.data.kraken import fetch_ohlcv_df, get_kraken_client
-    from src.data.kraken_pipeline import KrakenDataPipeline, fetch_kraken_data
-    from src.data.kraken_live import KrakenLiveCandleSource, create_kraken_source_from_config
-
-    with pytest.raises(NoncanonicalVenueRejectedError):
-        get_kraken_client()
-    with pytest.raises(NoncanonicalVenueRejectedError):
-        fetch_ohlcv_df("BTC/EUR")
-    with pytest.raises(NoncanonicalVenueRejectedError):
-        KrakenDataPipeline()
-    with pytest.raises(NoncanonicalVenueRejectedError):
-        fetch_kraken_data("BTC/EUR")
-    with pytest.raises(NoncanonicalVenueRejectedError):
-        KrakenLiveCandleSource()
-    with pytest.raises(NoncanonicalVenueRejectedError):
-        create_kraken_source_from_config(None, None)  # type: ignore[arg-type]
+def test_removed_kraken_client_modules_are_absent() -> None:
+    with pytest.raises(ModuleNotFoundError):
+        __import__("src.exchange.kraken_live")
+    with pytest.raises(ModuleNotFoundError):
+        __import__("src.exchange.kraken_testnet")
+    with pytest.raises(ModuleNotFoundError):
+        __import__("src.data.kraken")
+    with pytest.raises(ModuleNotFoundError):
+        __import__("src.data.kraken_pipeline")
+    with pytest.raises(ModuleNotFoundError):
+        __import__("src.data.kraken_live")
+    with pytest.raises(ModuleNotFoundError):
+        __import__("src.data.providers.kraken_ccxt_backend")
+    with pytest.raises(ModuleNotFoundError):
+        __import__("src.data.kraken_cache_loader")
+    with pytest.raises(ModuleNotFoundError):
+        __import__("src.ops.kraken_futures_demo_credential_presence_contract_v0")
+    with pytest.raises(ModuleNotFoundError):
+        __import__("src.webui.workflow_dashboard_readmodel_v1.kraken_metadata_coverage_reader_v1")
+    assert not (
+        REPO_ROOT / "scripts/ops/check_kraken_futures_demo_credentials_presence_readonly_v0.py"
+    ).is_file()
+    assert not (REPO_ROOT / "scripts/ops/probe_kraken_futures_public_market_data_v1.py").is_file()
+    assert not (
+        REPO_ROOT / "scripts/ops/transform_kraken_futures_raw_to_u2c_candidate_v1.py"
+    ).is_file()
+    assert not (REPO_ROOT / "scripts/demo_kraken_simple.py").is_file()
 
 
 def test_data_backend_registry_has_no_kraken_factory_key() -> None:

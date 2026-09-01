@@ -5,7 +5,7 @@
   "collectors": ["manual_seed", "replay"],
   "sources": {
     "ccxt": {
-      "exchange": "kraken",
+      "exchange": "",
       "symbols": null,
       "market_type": "spot",
       "max_markets": 20,

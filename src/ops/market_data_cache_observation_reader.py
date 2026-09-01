@@ -1,7 +1,7 @@
 """
 Local Kraken parquet cache health for Ops Cockpit ``dependencies_state`` — read-only.
 
-Uses ``check_data_health_only`` from ``kraken_cache_loader`` (offline filesystem reads only).
+Uses ``check_data_health_only`` from ``market_data_cache_loader`` (offline filesystem reads only).
 Does **not** call exchanges or assert live market data quality — **local cache file / QC only**.
 """
 
@@ -58,7 +58,7 @@ def read_market_data_cache_observation(
         return _unknown("no_config_path")
 
     try:
-        from src.data.kraken_cache_loader import (
+        from src.data.market_data_cache_loader import (
             check_data_health_only,
             get_real_market_smokes_config,
         )

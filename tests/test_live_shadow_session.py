@@ -26,16 +26,13 @@ from unittest.mock import Mock, patch, MagicMock
 import pandas as pd
 import numpy as np
 
-from src.data.kraken_live import (
+from src.data.simulation_candles import (
     LiveCandle,
     FakeCandleSource,
     ShadowPaperConfig,
     LiveExchangeConfig,
     load_shadow_paper_config,
     load_live_exchange_config,
-    KRAKEN_TIMEFRAME_MAP,
-    _timeframe_to_minutes,
-    _symbol_to_kraken,
 )
 from src.core.environment import EnvironmentConfig, TradingEnvironment
 from src.live.shadow_session import (
@@ -189,28 +186,13 @@ class TestConfigLoading:
         assert config.warmup_candles == 200
         assert config.start_balance == 10000.0
 
-    def test_load_live_exchange_config_defaults(self):
-        """Test: LiveExchangeConfig mit Defaults."""
-        config = LiveExchangeConfig()
-
-        assert config.name == "kraken"
+    def test_load_live_exchange_config_requires_explicit_host(self):
+        """LiveExchangeConfig requires an explicit name and base_url."""
+        config = LiveExchangeConfig(name="explicit", base_url="https://example.test")
+        assert config.name == "explicit"
         assert config.use_sandbox is True
-        assert config.base_url == "https://api.kraken.com"
+        assert config.base_url == "https://example.test"
         assert config.max_retries == 3
-
-    def test_timeframe_to_minutes(self):
-        """Test: Timeframe-Konvertierung."""
-        assert _timeframe_to_minutes("1m") == 1
-        assert _timeframe_to_minutes("5m") == 5
-        assert _timeframe_to_minutes("1h") == 60
-        assert _timeframe_to_minutes("1d") == 1440
-        assert _timeframe_to_minutes("unknown") == 1  # Default
-
-    def test_symbol_to_kraken(self):
-        """Test: Symbol-Konvertierung zu Kraken-Format."""
-        assert _symbol_to_kraken("BTC/EUR") == "XXBTZEUR"
-        assert _symbol_to_kraken("ETH/USD") == "XETHZUSD"
-        assert _symbol_to_kraken("UNKNOWN/PAIR") == "UNKNOWNPAIR"
 
 
 # =============================================================================
@@ -358,7 +340,7 @@ class TestShadowPaperSession:
             enable_live_trading=False,
         )
         shadow_cfg = ShadowPaperConfig()
-        exchange_cfg = LiveExchangeConfig()
+        exchange_cfg = LiveExchangeConfig(name="explicit", base_url="https://example.test")
         source = FakeCandleSource(candles=create_test_candles())
         strategy = DummyStrategy()
         pipeline = ExecutionPipeline.for_shadow()
@@ -394,7 +376,7 @@ class TestShadowPaperSession:
             environment=TradingEnvironment.PAPER,
         )
         shadow_cfg = ShadowPaperConfig()
-        exchange_cfg = LiveExchangeConfig()
+        exchange_cfg = LiveExchangeConfig(name="explicit", base_url="https://example.test")
         source = FakeCandleSource(candles=create_test_candles())
         strategy = DummyStrategy()
         pipeline = ExecutionPipeline.for_shadow()
@@ -431,7 +413,7 @@ class TestShadowPaperSession:
         """Test: warmup setzt is_warmup_done Flag."""
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
         shadow_cfg = ShadowPaperConfig(warmup_candles=50)
-        exchange_cfg = LiveExchangeConfig()
+        exchange_cfg = LiveExchangeConfig(name="explicit", base_url="https://example.test")
         source = FakeCandleSource(candles=create_test_candles(n=100))
         strategy = DummyStrategy()
         pipeline = ExecutionPipeline.for_shadow()
@@ -470,7 +452,7 @@ class TestShadowPaperSession:
         """Test: step_once erhöht Schritt-Zähler."""
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
         shadow_cfg = ShadowPaperConfig()
-        exchange_cfg = LiveExchangeConfig()
+        exchange_cfg = LiveExchangeConfig(name="explicit", base_url="https://example.test")
         source = FakeCandleSource(candles=create_test_candles(n=100))
         strategy = DummyStrategy(signal_pattern=[0, 0, 0])  # Keine Signal-Änderung
         pipeline = ExecutionPipeline.for_shadow()
@@ -513,7 +495,7 @@ class TestShadowPaperSession:
         """Test: run_n_steps führt richtige Anzahl Schritte aus."""
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
         shadow_cfg = ShadowPaperConfig()
-        exchange_cfg = LiveExchangeConfig()
+        exchange_cfg = LiveExchangeConfig(name="explicit", base_url="https://example.test")
         source = FakeCandleSource(candles=create_test_candles(n=100))
         strategy = DummyStrategy(signal_pattern=[0, 0, 0])
         pipeline = ExecutionPipeline.for_shadow()
@@ -552,7 +534,7 @@ class TestShadowPaperSession:
         """Test: run_n_steps wirft Error ohne Warmup."""
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
         shadow_cfg = ShadowPaperConfig()
-        exchange_cfg = LiveExchangeConfig()
+        exchange_cfg = LiveExchangeConfig(name="explicit", base_url="https://example.test")
         source = FakeCandleSource(candles=create_test_candles())
         strategy = DummyStrategy()
         pipeline = ExecutionPipeline.for_shadow()
@@ -599,7 +581,7 @@ class TestRiskLimitIntegration:
         """Test: Risk-Limits blockieren zu große Orders."""
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
         shadow_cfg = ShadowPaperConfig(position_fraction=1.0)  # Große Position
-        exchange_cfg = LiveExchangeConfig()
+        exchange_cfg = LiveExchangeConfig(name="explicit", base_url="https://example.test")
         source = FakeCandleSource(candles=create_crossover_candles(n=100))
 
         # Strategie die Signal-Wechsel erzeugt
@@ -648,7 +630,7 @@ class TestRiskLimitIntegration:
         """Test: Deaktivierte Risk-Limits erlauben alles."""
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
         shadow_cfg = ShadowPaperConfig(position_fraction=0.5)
-        exchange_cfg = LiveExchangeConfig()
+        exchange_cfg = LiveExchangeConfig(name="explicit", base_url="https://example.test")
         source = FakeCandleSource(candles=create_crossover_candles(n=100))
 
         strategy = DummyStrategy(signal_pattern=[0, 1, 0])  # Signal-Wechsel
@@ -733,7 +715,7 @@ class TestSignalToOrderFlow:
         """Test: Signal-Änderung generiert Order."""
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
         shadow_cfg = ShadowPaperConfig(position_fraction=0.1)
-        exchange_cfg = LiveExchangeConfig()
+        exchange_cfg = LiveExchangeConfig(name="explicit", base_url="https://example.test")
 
         # Candles mit genug Daten für Strategie
         candles = create_test_candles(n=100)
@@ -782,7 +764,7 @@ class TestSignalToOrderFlow:
         """Test: Keine Order ohne Signal-Änderung."""
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
         shadow_cfg = ShadowPaperConfig()
-        exchange_cfg = LiveExchangeConfig()
+        exchange_cfg = LiveExchangeConfig(name="explicit", base_url="https://example.test")
         source = FakeCandleSource(candles=create_test_candles(n=100))
 
         # Strategie mit konstantem Signal
@@ -833,7 +815,7 @@ class TestCallbacks:
         """Test: on_step_callback wird aufgerufen."""
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
         shadow_cfg = ShadowPaperConfig()
-        exchange_cfg = LiveExchangeConfig()
+        exchange_cfg = LiveExchangeConfig(name="explicit", base_url="https://example.test")
         source = FakeCandleSource(candles=create_test_candles(n=50))
         strategy = DummyStrategy()
         pipeline = ExecutionPipeline.for_shadow()
@@ -887,7 +869,7 @@ class TestEdgeCases:
         """Test: Leerer Buffer wird sauber behandelt."""
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
         shadow_cfg = ShadowPaperConfig()
-        exchange_cfg = LiveExchangeConfig()
+        exchange_cfg = LiveExchangeConfig(name="explicit", base_url="https://example.test")
 
         # Wenige Candles -> Buffer schnell leer
         source = FakeCandleSource(candles=create_test_candles(n=5))
@@ -929,7 +911,7 @@ class TestEdgeCases:
         """Test: Execution-Summary ist verfügbar."""
         env_config = EnvironmentConfig(environment=TradingEnvironment.PAPER)
         shadow_cfg = ShadowPaperConfig()
-        exchange_cfg = LiveExchangeConfig()
+        exchange_cfg = LiveExchangeConfig(name="explicit", base_url="https://example.test")
         source = FakeCandleSource(candles=create_test_candles())
         strategy = DummyStrategy()
         pipeline = ExecutionPipeline.for_shadow()
