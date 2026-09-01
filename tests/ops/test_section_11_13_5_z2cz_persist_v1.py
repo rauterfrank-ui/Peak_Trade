@@ -47,6 +47,7 @@ Z2CY_HEADING = "### 11.13.5.Z2CY Post-Z2CX P3 dependency reconciliation and next
 Z2CZ_HEADING = (
     "### 11.13.5.Z2CZ Post-Z2CY single unfiltered Prerequisite-08 position observation persist"
 )
+Z2DA_HEADING = "### 11.13.5.Z2DA Post-Z2CZ position-creation / autonomy semantic rebind persist"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_PREREQUISITE_08_SINGLE_UNFILTERED_POSITIONS_GET_V1"
 BASELINE_SHA = "135321d2c6d4af4c0ba68bea37f2c6bcbba5a6ae"
@@ -62,8 +63,8 @@ def _read(path: Path) -> str:
 def _z2cz_section(text: str) -> str:
     start = text.find(Z2CZ_HEADING)
     assert start >= 0, "missing §11.13.5.Z2CZ heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2CZ"
+    end = text.find(Z2DA_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2DA boundary after Z2CZ"
     return text[start:end]
 
 
@@ -80,8 +81,9 @@ def test_z2cz_heading_is_unique_and_follows_z2cy() -> None:
     assert text.count(Z2CZ_HEADING) == 1
     z2cy = text.find(Z2CY_HEADING)
     z2cz = text.find(Z2CZ_HEADING)
+    z2da = text.find(Z2DA_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= z2cy < z2cz < ladder
+    assert 0 <= z2cy < z2cz < z2da < ladder
 
 
 def test_z2cy_historical_reconciliation_slice_was_not_rewritten() -> None:

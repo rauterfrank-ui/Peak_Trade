@@ -41,8 +41,8 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `GATE:flatten_execute_authority` |
-| `PHASE:z2cy` |
 | `PHASE:z2cz` |
+| `PHASE:z2da` |
 
 ## CHANGED_RELATIONS
 
@@ -94,7 +94,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Additive PHASE:z2cz catalog navigation for §11.13.5.Z2CZ post-Z2CY single unfiltered Prerequisite-08 position observation persist. Empty data[] classified TARGET_POSITION_NOT_OBSERVED. Does not promote empty to zero. Does not close EXECUTION_PREREQUISITE_08. GATE:flatten_execute_authority deny-list records the Z2CZ Owner-GO as not execute. Atlas is not trading authority. No POST, secret mutation, HMAC, or flatten execute mutation.
+- Additive PHASE:z2da catalog navigation for §11.13.5.Z2DA post-Z2CZ position-creation / autonomy semantic rebind persist. Prerequisite 08 remains a positive observation-proof gate. Position-creation seam remains MISSING_OR_UNAUTHORIZED. GATE:flatten_execute_authority deny-list records the Z2DA persist Owner-GO as not execute. Atlas is not trading authority. No GET, POST, secret mutation, HMAC, flatten execute, entry, or live permission mutation.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
