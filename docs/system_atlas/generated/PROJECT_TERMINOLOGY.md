@@ -85,6 +85,7 @@ Seed vocabulary is not complete. Status OPEN means expansion/definition is unpro
 | TERM:confirm_token_family_matrix | TERM | confirm-token FAMILY_* matrix | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW | projection octet family_id; strategy Family; Gate-Familien F1-F6 |
 | TERM:ddo_non_semantic_capture | TERM | DDO non-semantic decision-spine capture | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
 | TERM:ddo_offline_control_plane | TERM | DDO offline control plane | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
+| TERM:ddo_offline_evaluation_engine | TERM | DDO offline evaluation engine | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
 | TERM:document_class | TERM | DOCUMENT_CLASS | FORENSIC_REFERENCE_ONLY | STATUS=FORENSIC_RAW |  |
 | TERM:double_play | TERM | Double Play | STILL_CURRENT_AND_CANONICALLY_SUPPORTED | STATUS=CANONICAL_AUTHORITY | ops.double_play.evaluate_double_play (quarantined projection); dashboard family_ |
 | TERM:dynamic_scope | TERM | Dynamic Scope | CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT | STATUS=ADJUDICATED | dashboard family_id dynamic_scope |

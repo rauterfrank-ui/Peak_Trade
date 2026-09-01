@@ -99,6 +99,34 @@ OUTCOME_LINK_STATUS_V0: Final[tuple[str, ...]] = (
     UNKNOWN,
 )
 
+# Explicit evaluation horizons. Numeric bar/count policy remains unbound.
+EVALUATION_HORIZON_V0: Final[tuple[str, ...]] = (
+    "DECISION_TIME",
+    "IMMEDIATE_POST_EVENT",
+    "EVENT_RECOVERY",
+    "N_BARS",
+    "POSITION_LIFECYCLE",
+    UNKNOWN,
+)
+
+PROTECTED_CONDITION_V0: Final[tuple[str, ...]] = (
+    "PRESENT",
+    "ABSENT",
+    UNKNOWN,
+)
+
+SAFETY_SCORE_V0: Final[tuple[str, ...]] = (
+    "SAFETY_CONTRACT_SATISFIED",
+    "SAFETY_CONTRACT_NOT_SATISFIED",
+    "SAFETY_NOT_APPLICABLE",
+    UNKNOWN,
+)
+
+DECISION_SCORE_V0: Final[tuple[str, ...]] = (
+    "REPLAY_CLASSIFICATION_MATCH",
+    UNKNOWN,
+)
+
 PROMOTION_CLASS_V0: Final[tuple[str, ...]] = (
     "P0",
     "P1",
@@ -239,6 +267,8 @@ OPEN_UNBOUND_ENUMS_V0: Final[tuple[str, ...]] = (
     "DEPLOYMENT_RESULT_TOKENS",
     "ROLLBACK_RESULT_TOKENS",
     "HYPOTHESIS_AUTHOR_KIND_TOKENS",
+    "ECONOMIC_SCORE_NUMERIC_POLICY",
+    "EVALUATION_HORIZON_NUMERIC_BAR_COUNT",
 )
 
 DECISION_TYPE_TRADE_SPECIFIC_STATUS: Final[str] = "OPEN"
