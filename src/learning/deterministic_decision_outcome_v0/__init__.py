@@ -16,6 +16,7 @@ from src.learning.deterministic_decision_outcome_v0.authority_v0 import (
     AUTONOMY_SUPERVISOR_EXECUTION_AUTHORITY,
     AUTONOMY_SUPERVISOR_RUNTIME_REACHABILITY,
     LEARNING_PRODUCTIVE_AUTHORITY,
+    OUTCOME_ENGINE_PRESENT,
     PROMOTION_AUTHORITY_ACTIVATION,
     PROMOTION_AUTHORITY_EFFECT,
     RUNTIME_EFFECT,
@@ -40,6 +41,14 @@ from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
     DdoMalformedRecordError,
     DdoUnsupportedSchemaVersionError,
     DdoValidationError,
+)
+from src.learning.deterministic_decision_outcome_v0.evaluation_engine_v0 import (
+    EVALUATION_ENGINE_ID,
+    evaluate_offline_bundle_v0,
+    persist_evaluation_bundle_v0,
+)
+from src.learning.deterministic_decision_outcome_v0.evaluation_observation_v0 import (
+    validate_evaluation_observation_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.evaluation_records_v0 import (
     build_attribution_record_v0,
@@ -84,6 +93,9 @@ from src.learning.deterministic_decision_outcome_v0.promotion_records_v0 import 
 from src.learning.deterministic_decision_outcome_v0.registry_v0 import OfflineLearningRegistryV0
 from src.learning.deterministic_decision_outcome_v0.replay_evaluator_v0 import (
     classify_decision_event_v0,
+    classify_incident_record_v0,
+    replay_ledger_record_v0,
+    replay_same_incident_inputs_same_classification_v0,
     replay_same_inputs_same_classification_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.serialization_v0 import (
@@ -115,7 +127,9 @@ __all__ = [
     "DdoMalformedRecordError",
     "DdoUnsupportedSchemaVersionError",
     "DdoValidationError",
+    "EVALUATION_ENGINE_ID",
     "LEARNING_PRODUCTIVE_AUTHORITY",
+    "OUTCOME_ENGINE_PRESENT",
     "OfflineLearningRegistryV0",
     "PROMOTION_AUTHORITY_ACTIVATION",
     "PROMOTION_AUTHORITY_EFFECT",
@@ -138,19 +152,25 @@ __all__ = [
     "build_validation_evidence_pack_v0",
     "canonical_json_dumps_v0",
     "classify_decision_event_v0",
+    "classify_incident_record_v0",
     "compare_challenger_v0",
     "compute_content_hash_v0",
     "evaluate_attribution_v0",
     "evaluate_counterfactual_v0",
+    "evaluate_offline_bundle_v0",
     "evaluate_outcome_record_v0",
     "evaluate_promotion_eligibility_v0",
     "get_schema_contract_v0",
     "hash_scope_fields_v0",
+    "persist_evaluation_bundle_v0",
+    "replay_ledger_record_v0",
+    "replay_same_incident_inputs_same_classification_v0",
     "replay_same_inputs_same_classification_v0",
     "validate_attribution_record_v0",
     "validate_canonical_record_v0",
     "validate_counterfactual_record_v0",
     "validate_decision_event_v0",
+    "validate_evaluation_observation_v0",
     "validate_incident_record_v0",
     "validate_outcome_record_v0",
     "validate_outcome_ref_v0",

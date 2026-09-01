@@ -22,6 +22,7 @@ from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidati
 from src.learning.deterministic_decision_outcome_v0.incident_record_v0 import (
     validate_incident_record_v0,
 )
+from src.learning.deterministic_decision_outcome_v0.ledger_v0 import AppendOnlyDdoLedgerV0
 from src.learning.deterministic_decision_outcome_v0.serialization_v0 import compute_content_hash_v0
 
 REPLAY_EVALUATOR_ID: Final[str] = "peak_trade.learning.ddo.replay_evaluator_v0"
@@ -73,3 +74,27 @@ def replay_same_inputs_same_classification_v0(
     if compute_content_hash_v0(first) != compute_content_hash_v0(second):
         raise DdoValidationError("REPLAY_INPUT_HASH_DIVERGED")
     return left
+
+
+def replay_same_incident_inputs_same_classification_v0(
+    first: Mapping[str, Any], second: Mapping[str, Any]
+) -> MappingProxyType[str, Any]:
+    left = classify_incident_record_v0(first)
+    right = classify_incident_record_v0(second)
+    if dict(left) != dict(right):
+        raise DdoValidationError("REPLAY_CLASSIFICATION_DIVERGED")
+    if compute_content_hash_v0(first) != compute_content_hash_v0(second):
+        raise DdoValidationError("REPLAY_INPUT_HASH_DIVERGED")
+    return left
+
+
+def replay_ledger_record_v0(
+    ledger: AppendOnlyDdoLedgerV0, record_id: str
+) -> MappingProxyType[str, Any]:
+    record = ledger.get(record_id)
+    schema_name = record["schema_name"]
+    if schema_name == SCHEMA_NAME_DECISION_EVENT:
+        return classify_decision_event_v0(record)
+    if schema_name == SCHEMA_NAME_INCIDENT_RECORD:
+        return classify_incident_record_v0(record)
+    raise DdoValidationError(f"REPLAY_UNSUPPORTED_SCHEMA:{schema_name}")

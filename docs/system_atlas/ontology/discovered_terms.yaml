@@ -259,6 +259,32 @@ terms:
       or execution authority. Capture is observation-only. Listed src/ops paths
       are fail-open host hooks, not new trading or execution semantics.
 
+  - id: TERM:ddo_offline_evaluation_engine
+    kind: TERM
+    name: DDO offline evaluation engine
+    exact_observed_spellings:
+      - WP_FA_05_OFFLINE_REPLAY_OUTCOME_ATTRIBUTION_COUNTERFACTUAL_ENGINE_V1
+      - OUTCOME_ENGINE_PRESENT
+      - evaluate_offline_bundle_v0
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: >-
+      Offline deterministic replay, outcome, attribution, and counterfactual
+      evaluation engine over captured DecisionEvent/IncidentRecord inputs plus an
+      explicit evaluation observation. No runtime wiring, promotion activation,
+      or productive learning authority.
+    definition_source: src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py
+      - src/learning/deterministic_decision_outcome_v0/evaluation_observation_v0.py
+      - src/learning/deterministic_decision_outcome_v0/hindsight_guard_v0.py
+      - src/learning/deterministic_decision_outcome_v0/replay_evaluator_v0.py
+      - src/learning/deterministic_decision_outcome_v0/authority_v0.py
+    notes: >-
+      Navigation-only. Atlas does not confer trading, promotion, risk, safety,
+      or execution authority. Evaluation is offline and non-authorizing.
+
   - id: TERM:document_class
     kind: TERM
     name: DOCUMENT_CLASS
