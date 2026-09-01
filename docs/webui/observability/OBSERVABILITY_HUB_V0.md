@@ -57,16 +57,13 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 - **Boundaries:** SSR only when gate on; no POST, no fetch/polling, no trading controls. `stale=true`, `stale_reason=archive_snapshot`.
 - **Tests:** `tests/webui/test_workflow_dashboard_readmodel_v1.py`, `tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py`, `tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py`.
 
-### Kraken Futures Metadata Coverage panel (diagnostic-only)
+### Kraken Futures Metadata Coverage panel — removed from current WebUI
 
-Additive Workflow Dashboard V1 panel — **diagnostic-only**, **not** observability truth, **not** selection, **not** tradeability.
+This panel is **not** implemented in current `src&#47;webui`. Structure-contract tests assert the markers are absent from `/observability` HTML.
 
-- **Data source:** manifest-verified `futures_producer_packet_governed.v1.json` under `{ARCHIVE_ROOT}&#47;governed_metadata&#47;` — diagnostic coverage only; not a current venue-specific reader and not observability truth.
-- **Display:** completeness summary only (`packet_count`, `candidate_validation_complete`, `strict_instrument_complete`, `min_notional_unknown`) — **no** universe/ranking row tables.
-- **Markers:** `data-workflow-panel-kraken-metadata-coverage-v1="true"`, `data-kraken-metadata-coverage-diagnostic-only="true"`, `data-kraken-metadata-coverage-not-truth="true"`, `data-kraken-metadata-coverage-not-selected-future="true"`, `data-kraken-metadata-coverage-strict-upstream-blocked="true"`.
-- **Coexistence:** separate from Projection Coverage (`data-workflow-panel-projection-coverage-v1`); Missing Truth panels unchanged.
-- **Strict upstream:** `bundle_to_upstream_input` remains blocked when `min_notional_unknown` — panel does not lift upstream or truth gates.
-- **Permanent block reference:** Kraken public `/instruments` supplies no provider-authentic `min_notional` — see [REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md](REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md) §12.12.
+Historical marker names (`data-workflow-panel-kraken-metadata-coverage-v1`, etc.) must not be read as a current dashboard surface.
+
+Permanent historical note: Kraken public `/instruments` had no provider-authentic `min_notional` — see [REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md](REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md) §12.12 (historical Kraken public-view block, not a current venue source).
 
 ### Universe Selection Persistence Contract v1 (Slice 1 — schema/docs only)
 

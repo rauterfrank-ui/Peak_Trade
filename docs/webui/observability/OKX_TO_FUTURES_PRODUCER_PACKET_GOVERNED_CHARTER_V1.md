@@ -97,7 +97,7 @@ This charter extends the U4b → U2c → U2b → U1 → U3 chain for **OKX seale
 | Universe selection / readmodel (existing) | `universe_selection_producer_v1.py` / `UNIVERSE_SELECTION_READMODEL_V1.md` | unchanged; separate GO |
 | Venue SSOT (existing) | `okx_europe_eea` / venue binding owners | unchanged |
 
-Naming follows the existing offline transform convention (`scripts/ops/transform_kraken_futures_raw_to_u2c_candidate_v1.py`) without reusing Kraken as a current source.
+The reserved producer id follows the existing `scripts&#47;ops&#47;` offline-transform family. The historical Kraken-named script `scripts&#47;ops&#47;transform_kraken_futures_raw_to_u2c_candidate_v1.py` is **ABSENT** and is **not** a current CLI, workflow stage, or source. <!-- pt:ref-target-ignore -->
 
 ## 6. Offline sealed OKX inventory (read-only)
 

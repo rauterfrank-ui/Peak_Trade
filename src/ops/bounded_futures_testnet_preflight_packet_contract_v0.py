@@ -207,7 +207,7 @@ def default_minimal_preflight_packet(
             instrument=binding.instrument,
             adapter_id=binding.adapter_id,
             market_type=DEFAULT_MARKET_TYPE,
-            exchange_id="kraken_futures_demo",
+            exchange_id="okx_europe_eea",
             instrument_capability_present=True,
         ),
         pe12_binding=Pe12LifecycleBinding(

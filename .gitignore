@@ -66,6 +66,8 @@ logs/
 .pytest_cache/
 .coverage
 htmlcov/
+# Ephemeral harness/archive output written by local pytest (never commit)
+tests/.pytest_archive_roots/
 
 # Backups
 *.bak

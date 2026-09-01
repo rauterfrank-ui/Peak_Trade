@@ -29,7 +29,7 @@ SCHEMA_VERSION = "order_capability_private_endpoint_boundary_result.v1"
 
 ALLOWED_ENVIRONMENTS = frozenset(
     {
-        "kraken_futures_demo",
+        "okx_europe_eea",
         "demo",
         "testnet",
         "demo_testnet_only",

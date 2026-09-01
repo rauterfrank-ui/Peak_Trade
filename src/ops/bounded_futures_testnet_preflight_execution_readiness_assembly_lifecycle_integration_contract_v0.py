@@ -1927,7 +1927,7 @@ def _default_minimal_pe37_traceability_stub(
         repository_identity=REPOSITORY_IDENTITY,
         handoff_id="operator-review-handoff-boundary-001",
         adapter_id="offline_bounded_futures_testnet_adapter_v0",
-        instrument="PF_ETHUSD",
+        instrument="ETH-USD_UM_XPERP-310404",
         market_type=DEFAULT_MARKET_TYPE,
         contract_versions=Pe34ContractVersionsInput(
             pe12_lifecycle=PE12_CONTRACT_VERSION,
@@ -2588,7 +2588,7 @@ def default_minimal_assembly_input(
     source_revision: str = "abcdef0123456789abcdef0123456789abcdef01",
     adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
     assembly_id: str = "preflight-execution-readiness-assembly-001",
-    instrument: str = "PF_ETHUSD",
+    instrument: str = "ETH-USD_UM_XPERP-310404",
     lifecycle_state_digest: str | None = None,
 ) -> PreflightExecutionReadinessAssemblyInput:
     """Minimal valid futures-generic assembly input for offline tests."""
@@ -2607,7 +2607,7 @@ def default_minimal_assembly_input(
         source_revision == "abcdef0123456789abcdef0123456789abcdef01"
         and adapter_id == "offline_bounded_futures_testnet_adapter_v0"
         and assembly_id == "preflight-execution-readiness-assembly-001"
-        and instrument == "PF_ETHUSD"
+        and instrument == "ETH-USD_UM_XPERP-310404"
         and lifecycle_state_digest is None
     )
     if default_params and _COHERENT_ASSEMBLY_DEFAULT_CACHE is not None:

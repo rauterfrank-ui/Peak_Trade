@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Governed bounded Kraken demo-futures testnet archive harness (zero-order reachability v0).
+"""Governed bounded OKX EEA testnet archive harness (zero-order reachability v0).
 
 Produces durable primary evidence under an archive root. Default is plan-only (no network).
 Network reachability requires explicit confirm token and injectable fetcher (tests use fakes).
+
+Kraken demo-futures hosts and /derivatives/api/v3 paths are not current defaults.
 
 Does not authorize futures execute, orders, scheduler, live, preflight lift, or credentials.
 """
@@ -86,7 +88,7 @@ HARNESS_VERSION = "archive_futures_testnet_harness_v0"
 
 DEFAULT_MODE = "zero_order_reachability_only"
 DEFAULT_FUTURES_SYMBOL = DEFAULT_INSTRUMENT
-DEFAULT_REST_BASE_URL = f"{DEFAULT_FUTURES_TESTNET_NETWORK_HOST}/derivatives/api/v3"
+DEFAULT_REST_BASE_URL = DEFAULT_FUTURES_TESTNET_NETWORK_HOST
 DEFAULT_EXCHANGE = ""
 DEFAULT_MARKET_TYPE_LABEL = DEFAULT_MARKET_TYPE
 DEFAULT_ORDER_CAP = 0
@@ -100,13 +102,13 @@ CONFIRM_TOKEN_ZERO_ORDER_REACHABILITY = (
 # Zero-order public GET allowlist only (no sendorder/cancel/private).
 ZERO_ORDER_PUBLIC_ENDPOINTS: frozenset[str] = frozenset(
     {
-        "/derivatives/api/v3/tickers",
-        "/derivatives/api/v3/instruments",
+        "/api/v5/market/tickers",
+        "/api/v5/public/instruments",
     }
 )
 ZERO_ORDER_PUBLIC_ENDPOINT_ORDER: tuple[str, ...] = (
-    "/derivatives/api/v3/tickers",
-    "/derivatives/api/v3/instruments",
+    "/api/v5/market/tickers",
+    "/api/v5/public/instruments",
 )
 
 DEFAULT_PUBLIC_GET_TIMEOUT_SECONDS = 10.0
@@ -130,6 +132,7 @@ FORBIDDEN_HOST_PREFIXES: frozenset[str] = frozenset(
     {
         "https://api.kraken.com",
         "https://futures.kraken.com",
+        "https://demo-futures.kraken.com",
     }
 )
 
@@ -244,11 +247,11 @@ def _rest_base_url_fail_reason(rest_base: str) -> str | None:
     parsed = urlparse(rest_base)
     if parsed.scheme != "https":
         return "rest_base_url must use https"
-    if parsed.netloc != "demo-futures.kraken.com":
-        return "rest_base_url host must be demo-futures.kraken.com"
+    if parsed.netloc != "eea.okx.com":
+        return "rest_base_url host must be eea.okx.com"
     path = (parsed.path or "").rstrip("/")
-    if path != "/derivatives/api/v3":
-        return "rest_base_url path must be /derivatives/api/v3"
+    if path not in ("",):
+        return "rest_base_url path must be empty (host-only OKX EEA base)"
     return None
 
 
@@ -381,10 +384,12 @@ def classify_pf_xbtusd_symbol_visibility(
 ) -> SymbolVisibility:
     """Classify bound-instrument visibility for tickers or instruments responses."""
     bound_instrument = instrument or DEFAULT_FUTURES_SYMBOL
-    if endpoint == "/derivatives/api/v3/tickers":
-        collection_key = "tickers"
-    elif endpoint == "/derivatives/api/v3/instruments":
-        collection_key = "instruments"
+    if endpoint == "/api/v5/market/tickers":
+        collection_key = "data"
+        id_key = "instId"
+    elif endpoint == "/api/v5/public/instruments":
+        collection_key = "data"
+        id_key = "instId"
     else:
         return "not_checked"
     if not body:
@@ -399,7 +404,9 @@ def classify_pf_xbtusd_symbol_visibility(
     if not isinstance(entries, list) or not entries:
         return "response_unparseable"
     for entry in entries:
-        if isinstance(entry, dict) and entry.get("symbol") == bound_instrument:
+        if isinstance(entry, dict) and (
+            entry.get(id_key) == bound_instrument or entry.get("symbol") == bound_instrument
+        ):
             return "visible"
     return "not_visible"
 
@@ -564,7 +571,7 @@ def default_safe_private_readonly_rest_fetcher() -> SafePrivateReadonlyUrllibRes
 
 def _assert_network_url_allowed(url: str, rest_base: str) -> None:
     parsed = urlparse(url)
-    if parsed.scheme != "https" or parsed.netloc != "demo-futures.kraken.com":
+    if parsed.scheme != "https" or parsed.netloc != "eea.okx.com":
         _die(f"ERR: network host not allowlisted: {url}")
     for prefix in FORBIDDEN_HOST_PREFIXES:
         if url.startswith(prefix):
@@ -591,8 +598,7 @@ def run_zero_order_public_reachability(
             continue
         if time.monotonic() > deadline:
             break
-        suffix = ep.split("/derivatives/api/v3", 1)[-1]
-        url = f"{rest_base_url.rstrip('/')}{suffix}"
+        url = f"{rest_base_url.rstrip('/')}{ep}"
         _assert_network_url_allowed(url, rest_base_url)
         try:
             status, body = fetcher.fetch(
@@ -617,7 +623,7 @@ def run_zero_order_public_reachability(
             endpoint=ep,
             instrument=DEFAULT_FUTURES_SYMBOL,
         )
-        if ep == "/derivatives/api/v3/instruments" and visibility != "not_checked":
+        if ep == "/api/v5/public/instruments" and visibility != "not_checked":
             symbol_visibility = visibility
         network_calls.append(
             NetworkCallRecord(
@@ -758,9 +764,6 @@ def main(
     private_fetcher: PrivateReadonlyRestFetcher | None = None,
     environ: Mapping[str, str] | None = None,
 ) -> int:
-    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
-
-    reject_noncanonical_operative_surface(surface="archive_futures_testnet_harness_v0")
     if FUTURES_SESSION_AUTHORIZED_NOW:
         _die("ERR: FUTURES_SESSION_AUTHORIZED_NOW must be false")
     if RUNTIME_HARNESS_EXECUTE_ALLOWED or RUNTIME_HARNESS_NETWORK_ALLOWED:
@@ -813,8 +816,8 @@ def main(
         credentials = resolve_private_readonly_credentials_from_environ(env)
         if credentials is None:
             _die(
-                "ERR: KRAKEN_FUTURES_DEMO_API_KEY and KRAKEN_FUTURES_DEMO_API_SECRET required "
-                "for private-readonly execute-network"
+                "ERR: no authorized current private-readonly credential contract; "
+                "signed Kraken Authent transport is retired"
             )
         api_key, api_secret = credentials
         active_private_fetcher: PrivateReadonlyRestFetcher = (

@@ -49,7 +49,7 @@ def test_ok_when_health_ok(
     mock_health.return_value = MarketDataCacheHealth(status="ok", num_bars=100)
     out = read_market_data_cache_observation(tmp_path, cfg)
     assert out["market_data_cache"] == "ok"
-    assert out["data_source"] == "kraken_parquet_cache_local"
+    assert out["data_source"] == "local_parquet_cache"
     assert out["reader_schema_version"] == READER_SCHEMA_VERSION
 
 
@@ -132,7 +132,7 @@ def test_unknown_when_health_status_unmapped(
     out = read_market_data_cache_observation(tmp_path, cfg)
     assert out["market_data_cache"] == "unknown"
     assert out["observation_reason"] == "unmapped_health_status"
-    assert out["provenance"].get("kraken_health_status") == "not_a_mapped_status"
+    assert out["provenance"].get("cache_health_status") == "not_a_mapped_status"
 
 
 @patch("src.data.market_data_cache_loader.check_data_health_only")
@@ -155,4 +155,4 @@ def test_warn_when_health_status_other(
     mock_health.return_value = MarketDataCacheHealth(status="other", num_bars=1, notes="n")
     out = read_market_data_cache_observation(tmp_path, cfg)
     assert out["market_data_cache"] == "warn"
-    assert out["observation_reason"] == "kraken_cache_health_other"
+    assert out["observation_reason"] == "local_cache_health_other"

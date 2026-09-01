@@ -9,7 +9,6 @@ from urllib import error
 import pytest
 
 from scripts.ops import archive_futures_testnet_harness_v0 as harness
-from src.exchange.operative_venue_boundary_v1 import NoncanonicalVenueRejectedError
 from src.ops.bounded_futures_private_readonly_contract_v0 import (
     CONFIRM_TOKEN_PRIVATE_READONLY_REACHABILITY,
     DEMO_FUTURES_REST_BASE_URL,
@@ -81,61 +80,40 @@ def test_request_plan_builds_exactly_three_gets() -> None:
     plan = build_private_readonly_get_request_plan()
     assert len(plan) == 3
     assert [row["method"] for row in plan] == ["GET", "GET", "GET"]
-    assert {row["endpoint_path"] for row in plan} == set(FUTURES_PRIVATE_READONLY_GET_ENDPOINTS)
+    assert {row["endpoint_path"] for row in plan} == set(PRIVATE_READONLY_ENDPOINT_ORDER)
     assert list(PRIVATE_READONLY_ENDPOINT_ORDER) == [
-        "/derivatives/api/v3/accounts",
-        "/derivatives/api/v3/openpositions",
-        "/derivatives/api/v3/openorders",
+        "/api/v5/account/config",
+        "/api/v5/account/balance",
+        "/api/v5/account/positions",
     ]
 
 
-@pytest.mark.parametrize(
-    ("full_endpoint_path", "signed_suffix", "expected_url_suffix"),
-    [
-        ("/derivatives/api/v3/accounts", "/accounts", "/accounts"),
-        (
-            "/derivatives/api/v3/openpositions",
-            "/openpositions",
-            "/openpositions",
-        ),
-        ("/derivatives/api/v3/openorders", "/openorders", "/openorders"),
-    ],
-)
-def test_request_builder_signs_suffix_paths(
-    full_endpoint_path: str,
-    signed_suffix: str,
-    expected_url_suffix: str,
-) -> None:
+def test_kraken_futures_authent_is_retired() -> None:
     secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
-    nonce = "1415957147987"
-    http_request = build_private_readonly_http_request(
-        rest_base_url=DEMO_FUTURES_REST_BASE_URL,
-        endpoint_path=full_endpoint_path,
-        api_key="demo-key",
-        api_secret_b64=secret,
-        nonce=nonce,
-    )
-    expected_authent = compute_futures_private_authent(
-        api_secret_b64=secret,
-        endpoint_path=signed_suffix,
-        post_data="",
-        nonce=nonce,
-    )
-    full_path_authent = compute_futures_private_authent(
-        api_secret_b64=secret,
-        endpoint_path=full_endpoint_path,
-        post_data="",
-        nonce=nonce,
-    )
-    assert http_request.headers["Authent"] == expected_authent
-    assert http_request.headers["Authent"] != full_path_authent
-    assert http_request.url == f"{DEMO_FUTURES_REST_BASE_URL}{expected_url_suffix}"
-    assert http_request.endpoint_path == full_endpoint_path
+    with pytest.raises(ValueError, match="KRAKEN_FUTURES_AUTHENT_RETIRED"):
+        compute_futures_private_authent(
+            api_secret_b64=secret,
+            endpoint_path="/api/v5/account/balance",
+            post_data="",
+            nonce="1",
+        )
+
+
+def test_request_builder_does_not_offer_signed_kraken_transport() -> None:
+    secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
+    with pytest.raises(ValueError, match="KRAKEN_FUTURES_AUTHENT_RETIRED"):
+        build_private_readonly_http_request(
+            rest_base_url=DEMO_FUTURES_REST_BASE_URL,
+            endpoint_path="/api/v5/account/balance",
+            api_key="demo-key",
+            api_secret_b64=secret,
+            nonce="1415957147987",
+        )
 
 
 def test_blocklisted_endpoint_cannot_be_built() -> None:
     secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
-    with pytest.raises(ValueError, match="forbidden|not allowed|allowlist"):
+    with pytest.raises(ValueError, match="KRAKEN_FUTURES_AUTHENT_RETIRED|forbidden|not allowed"):
         build_private_readonly_http_request(
             rest_base_url=DEMO_FUTURES_REST_BASE_URL,
             endpoint_path="/derivatives/api/v3/sendorder",
@@ -145,20 +123,11 @@ def test_blocklisted_endpoint_cannot_be_built() -> None:
 
 
 def test_auth_header_names_present_values_not_in_evidence() -> None:
-    secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
-    http_request = build_private_readonly_http_request(
-        rest_base_url=DEMO_FUTURES_REST_BASE_URL,
-        endpoint_path="/derivatives/api/v3/accounts",
-        api_key="demo-key-not-logged",
-        api_secret_b64=secret,
-        nonce="12345",
-    )
-    assert http_request.auth_header_names == ("APIKey", "Authent", "Nonce")
     record = summarize_private_response_for_evidence(
-        endpoint=http_request.endpoint_path,
+        endpoint="/api/v5/account/balance",
         http_status=200,
-        body=b'{"accounts":[{"balance":"999"}],"openPositions":[]}',
-        auth_header_names=http_request.auth_header_names,
+        body=b'{"data":[{"details":[{"availBal":"999"}]}]}',
+        auth_header_names=("APIKey", "Authent", "Nonce"),
     )
     assert record["credential_values_logged"] is False
     assert "999" not in json.dumps(record)
@@ -168,51 +137,40 @@ def test_auth_header_names_present_values_not_in_evidence() -> None:
 
 def test_fetch_timeout_returns_failure_result() -> None:
     secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
-    result = run_private_readonly_reachability(
-        rest_base_url=DEMO_FUTURES_REST_BASE_URL,
-        api_key="demo-key",
-        api_secret_b64=secret,
-        fetcher=_TimeoutOnFirstGetFetcher(),
-        duration_cap_seconds=60,
-    )
-    assert result.fetch_failure is True
-    assert result.failure_class == FETCH_FAILURE_CLASS_NETWORK
-    assert result.failed_endpoint == "/derivatives/api/v3/accounts"
-    assert result.request_count_attempted == 1
-    assert result.completed_request_count == 0
-    assert result.exception_type == "TimeoutError"
-    assert len(result.network_calls) == 1
-    assert "demo-key" not in json.dumps(result.network_calls)
-    assert result.network_calls[0]["http_status_class"] == "unknown"
+    with pytest.raises(ValueError, match="KRAKEN_FUTURES_AUTHENT_RETIRED"):
+        run_private_readonly_reachability(
+            rest_base_url=DEMO_FUTURES_REST_BASE_URL,
+            api_key="demo-key",
+            api_secret_b64=secret,
+            fetcher=_TimeoutOnFirstGetFetcher(),
+            duration_cap_seconds=60,
+        )
 
 
 def test_fetch_urlerror_returns_failure_result() -> None:
     secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
-    result = run_private_readonly_reachability(
-        rest_base_url=DEMO_FUTURES_REST_BASE_URL,
-        api_key="demo-key",
-        api_secret_b64=secret,
-        fetcher=_UrlErrorOnFirstGetFetcher(),
-        duration_cap_seconds=60,
-    )
-    assert result.fetch_failure is True
-    assert result.exception_type == "URLError"
+    with pytest.raises(ValueError, match="KRAKEN_FUTURES_AUTHENT_RETIRED"):
+        run_private_readonly_reachability(
+            rest_base_url=DEMO_FUTURES_REST_BASE_URL,
+            api_key="demo-key",
+            api_secret_b64=secret,
+            fetcher=_UrlErrorOnFirstGetFetcher(),
+            duration_cap_seconds=60,
+        )
 
 
-def test_mocked_reachability_calls_three_endpoints() -> None:
+def test_mocked_reachability_does_not_run_signed_kraken_transport() -> None:
     secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
     fetcher = _FakePrivateFetcher()
-    result = run_private_readonly_reachability(
-        rest_base_url=DEMO_FUTURES_REST_BASE_URL,
-        api_key="demo-key",
-        api_secret_b64=secret,
-        fetcher=fetcher,
-        duration_cap_seconds=60,
-    )
-    assert result.request_count == 3
-    assert set(result.endpoints_called) == set(FUTURES_PRIVATE_READONLY_GET_ENDPOINTS)
-    assert result.private_readonly_reachability_proven is True
-    assert len(fetcher.requests) == 3
+    with pytest.raises(ValueError, match="KRAKEN_FUTURES_AUTHENT_RETIRED"):
+        run_private_readonly_reachability(
+            rest_base_url=DEMO_FUTURES_REST_BASE_URL,
+            api_key="demo-key",
+            api_secret_b64=secret,
+            fetcher=fetcher,
+            duration_cap_seconds=60,
+        )
+    assert fetcher.requests == []
 
 
 def test_credentials_present_does_not_authorize_execute() -> None:
@@ -234,35 +192,35 @@ def test_resolve_credentials_from_environ_rejects_foreign_secrets() -> None:
     assert creds is None
 
 
-def test_harness_private_execute_rejected_as_noncanonical_venue(tmp_path) -> None:
+def test_harness_private_execute_fail_closed_without_current_credential_contract(tmp_path) -> None:
     from tests.ops.test_archive_futures_testnet_harness_v0 import _durable_test_archive_root
 
     archive = _durable_test_archive_root(tmp_path)
-    with pytest.raises(NoncanonicalVenueRejectedError):
-        harness.main(
-            [
-                "--archive-root",
-                str(archive),
-                "--run-id",
-                "no-confirm",
-                "--mode",
-                "private_readonly_reachability_only",
-                "--execute-network",
-            ],
-            environ={
-                "FOREIGN_VENUE_API_KEY": "k",
-                "FOREIGN_VENUE_API_SECRET": base64.b64encode(b"x" * 32).decode(),
-            },
-        )
+    rc = harness.main(
+        [
+            "--archive-root",
+            str(archive),
+            "--run-id",
+            "no-confirm",
+            "--mode",
+            "private_readonly_reachability_only",
+            "--execute-network",
+        ],
+        environ={
+            "FOREIGN_VENUE_API_KEY": "k",
+            "FOREIGN_VENUE_API_SECRET": base64.b64encode(b"x" * 32).decode(),
+        },
+    )
+    assert rc == harness.USAGE_EXIT
 
 
-def test_harness_private_execute_mocked_fetcher_rejected(tmp_path) -> None:
+def test_harness_private_execute_mocked_fetcher_fail_closed(tmp_path) -> None:
     from tests.ops.test_archive_futures_testnet_harness_v0 import _durable_test_archive_root
 
     archive = _durable_test_archive_root(tmp_path)
     fake = _FakePrivateFetcher()
     secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
-    with pytest.raises(NoncanonicalVenueRejectedError):
+    with pytest.raises(SystemExit) as exc:
         harness.main(
             [
                 "--archive-root",
@@ -281,4 +239,5 @@ def test_harness_private_execute_mocked_fetcher_rejected(tmp_path) -> None:
                 "FOREIGN_VENUE_API_SECRET": secret,
             },
         )
+    assert int(exc.value.code) == harness.USAGE_EXIT
     assert fake.requests == []

@@ -1,4 +1,4 @@
-"""U2C → U2B packet shape alignment: flat Kraken rows → nested FuturesProducerPacket JSON."""
+"""U2C → U2B packet shape alignment: flat instrument rows → nested FuturesProducerPacket JSON."""
 
 from __future__ import annotations
 
@@ -223,7 +223,7 @@ def flat_row_to_nested_packet(
             "instrument_id": str(row.get("instrument_id") or symbol),
             "symbol": symbol,
             "market_type": market_type,
-            "exchange": str(row.get("exchange") or row.get("provider") or "kraken_futures"),
+            "exchange": str(row.get("exchange") or row.get("provider") or ""),
             "base_currency": str(row.get("base_currency") or ""),
             "quote_currency": str(row.get("quote_currency") or ""),
             "live_authorization": False,

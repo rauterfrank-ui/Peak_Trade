@@ -23,7 +23,7 @@ from src.ops.order_capability_side_price_qty_rules_contract_v1 import (
 PACKAGE_MARKER = "ORDER_CAPABILITY_PAYLOAD_BUILDER_CONTRACT_V1=true"
 SCHEMA_VERSION = "order_capability_payload_build_result.v1"
 
-CANONICAL_VENUE = "kraken_futures_demo"
+CANONICAL_VENUE = "okx_europe_eea"
 DEFAULT_ORDER_TYPE = "limit"
 DEFAULT_MAX_NOTIONAL_EUR = 10.0
 DEFAULT_MAX_LOSS_CAP_EUR = 1.0
@@ -37,7 +37,7 @@ ALLOWED_ORDER_TYPES = frozenset({DEFAULT_ORDER_TYPE})
 ALLOWED_SIDES = frozenset({"buy", "sell"})
 ALLOWED_ENVIRONMENTS = frozenset(
     {
-        "kraken_futures_demo",
+        "okx_europe_eea",
         "demo",
         "testnet",
         "demo_testnet_only",

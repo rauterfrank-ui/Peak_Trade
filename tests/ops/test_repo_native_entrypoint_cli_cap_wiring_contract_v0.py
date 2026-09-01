@@ -75,11 +75,9 @@ def test_validate_bounded_cap_cli_rejects_non_positive_caps() -> None:
 
 
 @patch("scripts.run_testnet_session.build_testnet_session")
-@patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
 @patch("scripts.run_testnet_session.load_config")
 def test_main_dry_run_emits_bounded_cap_config_evidence(
     mock_load_config: MagicMock,
-    mock_create_client: MagicMock,
     mock_build_session: MagicMock,
 ) -> None:
     from src.core.peak_config import PeakConfig
@@ -89,11 +87,8 @@ def test_main_dry_run_emits_bounded_cap_config_evidence(
         "environment": {"mode": "testnet", "enable_live_trading": False, "testnet_dry_run": True},
         "testnet_session": {"enabled": True, "symbol": "BTC/EUR", "timeframe": "1m"},
         "exchange": {
-            "kraken_testnet": {
+            "dummy": {
                 "enabled": True,
-                "base_url": "https://api.kraken.com",
-                "api_key_env_var": "KRAKEN_TESTNET_API_KEY",
-                "api_secret_env_var": "KRAKEN_TESTNET_API_SECRET",
                 "validate_only": True,
             }
         },
@@ -102,7 +97,6 @@ def test_main_dry_run_emits_bounded_cap_config_evidence(
         "strategy": {"ma_crossover": {"fast_period": 10, "slow_period": 30}},
     }
     mock_load_config.return_value = PeakConfig(raw=testnet_config_dict)
-    mock_create_client.return_value = MagicMock(has_credentials=False)
     mock_build_session.return_value = MagicMock()
 
     env = {k: v for k, v in os.environ.items() if not k.startswith("KRAKEN_TESTNET_API")}

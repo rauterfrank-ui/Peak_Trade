@@ -1,6 +1,6 @@
 """Bounded testnet runtime market observation producer v0.
 
-Canonical repo-owner for one-shot public read-only PF_ETHUSD testnet ticker fetch.
+Canonical repo-owner for one-shot public read-only OKX EEA ticker fetch.
 Fail-closed host/endpoint boundary, typed parsing, no retry, no credentials.
 Does not authorize testnet execute, orders, or live trading.
 """
@@ -34,10 +34,10 @@ BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_OWNER = (
 )
 PACKAGE_MARKER = "BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_V0=true"
 
-CANONICAL_TESTNET_BASE_URL = "https://demo-futures.kraken.com"
-CANONICAL_TICKER_ENDPOINT = "/derivatives/api/v3/tickers"
+CANONICAL_TESTNET_BASE_URL = "https://eea.okx.com"
+CANONICAL_TICKER_ENDPOINT = "/api/v5/market/tickers"
 CANONICAL_PUBLIC_TESTNET_READ_ONLY_CLASS = "PUBLIC_TESTNET_READ_ONLY"
-DEFAULT_EXCHANGE = ""
+DEFAULT_EXCHANGE = "okx_europe_eea"
 DEFAULT_DATASET_ID = "bounded_testnet_runtime_public_ticker_v0"
 DEFAULT_PRICE_SOURCE = "demo_futures_public_ticker"
 DEFAULT_TIMEOUT_SECONDS = 10.0
@@ -46,6 +46,7 @@ DEFAULT_MAX_STALENESS_SECONDS = 120.0
 
 FORBIDDEN_TESTNET_HOST_PREFIXES: frozenset[str] = frozenset(
     {
+        "https://demo-futures.kraken.com",
         "https://futures.kraken.com",
         "https://api.kraken.com",
         "http://",
@@ -157,7 +158,7 @@ def validate_testnet_public_ticker_request_url(
     if endpoint_path != CANONICAL_TICKER_ENDPOINT:
         return RuntimeMarketObservationFailureClass.ENDPOINT_NOT_ALLOWED
     parsed = urlparse(f"{base}{endpoint_path}")
-    if parsed.scheme != "https" or parsed.netloc != "demo-futures.kraken.com":
+    if parsed.scheme != "https" or parsed.netloc != "eea.okx.com":
         return RuntimeMarketObservationFailureClass.TESTNET_HOST_NOT_ALLOWED
     if parsed.path != CANONICAL_TICKER_ENDPOINT:
         return RuntimeMarketObservationFailureClass.ENDPOINT_NOT_ALLOWED
@@ -205,7 +206,7 @@ def _parse_price_field(entry: Mapping[str, object], field: str) -> tuple[float |
 
 
 def _parse_ticker_timestamp_ms(entry: Mapping[str, object]) -> tuple[int | None, str | None]:
-    for key in ("lastTime", "timestamp", "time"):
+    for key in ("ts", "lastTime", "timestamp", "time"):
         if key not in entry:
             continue
         raw = entry[key]
@@ -216,11 +217,18 @@ def _parse_ticker_timestamp_ms(entry: Mapping[str, object]) -> tuple[int | None,
             if ts > 1_000_000_000:
                 return int(ts * 1000), None
         if isinstance(raw, str) and raw.strip():
-            text = raw.strip().replace("Z", "+00:00")
+            text = raw.strip()
+            if text.isdigit():
+                ts = float(text)
+                if ts > 1_000_000_000_000:
+                    return int(ts), None
+                if ts > 1_000_000_000:
+                    return int(ts * 1000), None
+            text = text.replace("Z", "+00:00")
             try:
                 parsed = datetime.fromisoformat(text)
             except ValueError:
-                return None, RuntimeMarketObservationFailureClass.TIMESTAMP_INVALID
+                continue
             if parsed.tzinfo is None:
                 parsed = parsed.replace(tzinfo=timezone.utc)
             return int(parsed.timestamp() * 1000), None
@@ -230,13 +238,13 @@ def _parse_ticker_timestamp_ms(entry: Mapping[str, object]) -> tuple[int | None,
 def _find_pf_ethusd_ticker(payload: object) -> Mapping[str, object] | None:
     if not isinstance(payload, dict):
         return None
-    tickers = payload.get("tickers")
-    if not isinstance(tickers, list):
+    rows = payload.get("data")
+    if not isinstance(rows, list):
         return None
-    for item in tickers:
+    for item in rows:
         if not isinstance(item, dict):
             continue
-        symbol = str(item.get("symbol", "")).strip()
+        symbol = str(item.get("instId") or item.get("symbol") or "").strip()
         if (
             _FORBIDDEN_VENUE_SYMBOL_RE.search(symbol)
             and symbol != REPO_GROUNDED_ETH_PERP_VENUE_SYMBOL
@@ -255,7 +263,7 @@ def parse_pf_ethusd_ticker_entry(
     clock: BoundedTestnetRuntimeClock,
     max_staleness_seconds: float,
 ) -> BoundedTestnetRuntimeTickerFetchResultV0:
-    symbol = str(entry.get("symbol", "")).strip()
+    symbol = str(entry.get("instId") or entry.get("symbol") or "").strip()
     if symbol != REPO_GROUNDED_ETH_PERP_VENUE_SYMBOL:
         return _failure(
             RuntimeMarketObservationFailureClass.INSTRUMENT_MAPPING_MISMATCH,
@@ -267,14 +275,14 @@ def parse_pf_ethusd_ticker_entry(
             "forbidden_venue_symbol",
         )
 
-    mark_price, mark_reason = _parse_price_field(entry, "markPrice")
+    mark_price, mark_reason = _parse_price_field(entry, "markPx")
     if mark_reason is not None:
-        return _failure(mark_reason, "markPrice_invalid")
+        return _failure(mark_reason, "markPx_invalid")
     assert mark_price is not None
 
     last_price, last_reason = _parse_price_field(entry, "last")
     last_available = last_reason is None and last_price is not None
-    index_price, index_reason = _parse_price_field(entry, "indexPrice")
+    index_price, index_reason = _parse_price_field(entry, "idxPx")
     index_available = index_reason is None and index_price is not None
     if not last_available and "bid" in entry:
         bid_price, bid_reason = _parse_price_field(entry, "bid")
@@ -332,10 +340,7 @@ def fetch_bounded_testnet_pf_ethusd_ticker_tick_v0(
     max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
     max_staleness_seconds: float = DEFAULT_MAX_STALENESS_SECONDS,
 ) -> BoundedTestnetRuntimeTickerFetchResultV0:
-    """Perform exactly one bounded public testnet ticker fetch for PF_ETHUSD."""
-    from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
-
-    reject_noncanonical_operative_surface(surface="fetch_bounded_testnet_pf_ethusd_ticker_tick_v0")
+    """Perform exactly one bounded public testnet ticker fetch for the repo-grounded ETH perp."""
     if instrument != REPO_GROUNDED_ETH_PERP_SELECTED_FUTURE_ID:
         return _failure(
             RuntimeMarketObservationFailureClass.INSTRUMENT_MAPPING_MISMATCH,

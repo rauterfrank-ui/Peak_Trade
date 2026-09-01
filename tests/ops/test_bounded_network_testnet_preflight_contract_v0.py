@@ -72,8 +72,8 @@ def _valid_preflight_evidence() -> dict[str, Any]:
         "runtime_allowed": False,
         "testnet_session_allowed": False,
         "network_allowed": True,
-        "network_host": "https://api.kraken.com",
-        "endpoints_called": ["/0/public/Time", "/0/private/Balance"],
+        "network_host": "https://eea.okx.com",
+        "endpoints_called": ["/api/v5/public/time", "/api/v5/account/balance"],
         "public_calls": 2,
         "private_readonly_calls": 1,
         "max_real_order_calls": 0,
@@ -249,12 +249,11 @@ def test_run_testnet_session_not_network_preflight_surface() -> None:
     assert "NETWORK_PREFLIGHT" not in source
 
 
-def test_kraken_testnet_has_order_path_but_preflight_forbids_it() -> None:
-    source = KRAKEN_TESTNET_CLIENT.read_text(encoding="utf-8")
-    assert "/0/private/AddOrder" in source
-    assert "validate_only" in source
+def test_kraken_testnet_client_absent_and_preflight_still_forbids_addorder() -> None:
+    assert not KRAKEN_TESTNET_CLIENT.is_file()
     contract_text = CONTRACT_MODULE.read_text(encoding="utf-8")
     assert "validate_only AddOrder forbidden" in contract_text
+    assert "/0/private/AddOrder" in contract_text
 
 
 def test_valid_preflight_evidence_passes_evaluator() -> None:
@@ -338,7 +337,7 @@ def test_preflight_duration_tier_constants_documented() -> None:
     assert PREFLIGHT_MIN_REQUIRED_WALL_CLOCK_SECONDS == 60
     assert PREFLIGHT_MAX_ACCEPTABLE_WALL_CLOCK_SECONDS == 180
     assert MAX_REAL_ORDER_CALLS == 0
-    assert HOST_ALLOWLIST == frozenset({"https://api.kraken.com"})
+    assert HOST_ALLOWLIST == frozenset({"https://eea.okx.com"})
     assert MAX_PUBLIC_CALLS == 8
     assert MAX_PRIVATE_READONLY_CALLS == 4
     assert MIN_HEARTBEATS_REQUIRED == 2

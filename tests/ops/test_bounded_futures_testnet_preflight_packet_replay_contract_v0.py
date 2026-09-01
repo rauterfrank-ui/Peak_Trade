@@ -69,7 +69,7 @@ _CLASS4_SCOPED_EXCEPTION_MARKER = (
 PLANNING_BUNDLE_SUFFIX = (
     "systemwide_next_major_integration_scope_after_pe14_merge_no_run_v1_20260617T051255Z"
 )
-GENERIC_FUTURES_INSTRUMENT = "PF_ETHUSD"
+GENERIC_FUTURES_INSTRUMENT = "ETH-USD_UM_XPERP-310404"
 
 
 def _minimal_input() -> PreflightPacketBuilderInput:

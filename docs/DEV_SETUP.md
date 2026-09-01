@@ -107,7 +107,7 @@ Diese Gates stellen sicher, dass optionale Dependencies (z.B. `ccxt`) den Import
 # 1) Leak-Scan (ccxt darf nur in src/data/providers/** importiert werden)
 bash scripts/ops/check_optional_deps_leaks.sh
 
-# 2) Packaging Importability Gate (E2E, 2 venvs: core vs .[kraken])
+# 2) Packaging Importability Gate (E2E, 2 venvs: core vs optional ccxt)
 bash scripts/ops/check_optional_deps_importability.sh
 ```
 
@@ -244,11 +244,10 @@ ls config/config.toml
 ### "ccxt not found"
 
 ```bash
-# Optionalen Kraken-Provider installieren
 pip install ccxt
 
-# oder als Extra (wenn installiert im Editable-Mode):
-pip install -e ".[kraken]"
+# No named venue extra. ccxt is installed directly when the optional
+# exchange client path is needed.
 ```
 
 ---
@@ -264,7 +263,7 @@ In `config/config.toml`:
 
 ```toml
 [exchange]
-id = "kraken"              # Exchange-ID (canonical setup uses the operative venue; noncanonical ids are rejected)
+id = "okx"                 # Noncanonical ids (including kraken) are rejected
 sandbox = true             # Sandbox/Testnet (falls unterstützt)
 enable_rate_limit = true   # Rate-Limiting (empfohlen)
 

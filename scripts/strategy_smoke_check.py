@@ -116,9 +116,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--data-source",
         type=str,
-        choices=["synthetic", "kraken_cache"],
+        choices=["synthetic"],
         default="synthetic",
-        help="Datenquelle: 'synthetic' (Default) oder 'kraken_cache' (lokaler Cache)",
+        help="Datenquelle: 'synthetic' (Default). kraken_cache is not a current source.",
     )
 
     parser.add_argument(
@@ -152,7 +152,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--check-data-only",
         action="store_true",
-        help="Nur Data-QC ausfuehren ohne Strategie-Tests (nur bei kraken_cache)",
+        help="Nur Data-QC ausfuehren ohne Strategie-Tests (not a current path)",
     )
 
     parser.add_argument(
@@ -370,101 +370,14 @@ def save_md_report(
 
 
 def run_data_qc_only(args) -> int:
-    """
-    Phase 79: Nur Data-QC ausfuehren ohne Strategie-Tests.
-
-    Args:
-        args: CLI-Argumente
-
-    Returns:
-        Exit-Code (0=OK, 1=QC-Problem, 2=Fehler)
-    """
-    from pathlib import Path
-
+    """Phase 79 data-QC-only is not bound to a current venue cache source."""
     print("-" * 80)
     print("DATA-QC ONLY MODE (Phase 79)")
     print("-" * 80)
     print()
-
-    if args.data_source != "kraken_cache":
-        print("WARNUNG: --check-data-only ist nur sinnvoll mit --data-source kraken_cache")
-        print("         Bei synthetic Daten gibt es keine sinnvolle QC.")
-        return 0
-
-    # Lade QC-Funktionen
-    try:
-        from src.data.market_data_cache_loader import (
-            check_data_health_only,
-            get_real_market_smokes_config,
-            list_available_cache_files,
-        )
-    except ImportError as e:
-        print(f"Fehler beim Import: {e}")
-        return 2
-
-    # Config laden
-    rms_cfg = get_real_market_smokes_config(args.config)
-    base_path = Path(rms_cfg["base_path"])
-
-    # Falls test_base_path existiert und base_path nicht, verwende test_base_path
-    test_base_path = Path(rms_cfg.get("test_base_path", "tests/data/kraken_smoke"))
-    if test_base_path.exists() and not base_path.exists():
-        base_path = test_base_path
-        print(f"INFO: Verwende test_base_path: {base_path}")
-
-    min_bars = args.min_bars if args.min_bars else rms_cfg.get("min_bars", 500)
-
-    print(f"Config: {args.config}")
-    print(f"Base-Path: {base_path}")
-    print(f"Market: {args.market}")
-    print(f"Timeframe: {args.timeframe}")
-    print(f"Min-Bars: {min_bars}")
-    print()
-
-    # Verfuegbare Cache-Dateien anzeigen
-    print("Verfuegbare Cache-Dateien:")
-    available = list_available_cache_files(base_path)
-    if available:
-        for name, info in available.items():
-            print(f"  - {name}: {info['size_kb']:.1f} KB, modified: {info['modified']}")
-    else:
-        print("  (keine)")
-    print()
-
-    # Data-QC ausfuehren
-    print(f"Data-QC fuer {args.market} / {args.timeframe}...")
-    health = check_data_health_only(
-        base_path=base_path,
-        market=args.market,
-        timeframe=args.timeframe,
-        min_bars=min_bars,
-    )
-
-    print()
-    print("-" * 80)
-    print("DATA-QC ERGEBNIS")
-    print("-" * 80)
-    print()
-    print(f"  Status:      {health.status}")
-    print(f"  Num-Bars:    {health.num_bars}")
-    print(f"  Start-TS:    {health.start_ts}")
-    print(f"  End-TS:      {health.end_ts}")
-    print(
-        f"  Lookback:    {health.lookback_days_actual:.1f} Tage"
-        if health.lookback_days_actual
-        else "  Lookback:    N/A"
-    )
-    print(f"  File-Path:   {health.file_path}")
-    if health.notes:
-        print(f"  Notes:       {health.notes}")
-    print()
-
-    if health.is_ok:
-        print("Data-QC: OK")
-        return 0
-    else:
-        print(f"Data-QC: PROBLEM ({health.status})")
-        return 1
+    print("DATA-QC ONLY MODE is not bound to a current venue cache source.")
+    print("kraken_cache is not a current data source.")
+    return 2
 
 
 def main() -> int:

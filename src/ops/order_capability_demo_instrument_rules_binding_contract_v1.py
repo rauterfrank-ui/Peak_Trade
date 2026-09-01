@@ -20,7 +20,7 @@ SCHEMA_VERSION = "order_capability_demo_instrument_rules_binding_result.v1"
 AUTHORITY_IMPACT = "NO_AUTHORITY_CHANGE"
 
 REQUIRED_DEMO_HOST = DEMO_FUTURES_HOST
-ALLOWED_CREDENTIAL_CLASS = "kraken_futures_demo_only"
+ALLOWED_CREDENTIAL_CLASS = "OKX_EEA_DEMO_TRADING_API_KEY_ONLY"
 DEFAULT_MAX_NOTIONAL_EUR = Decimal("10.0")
 
 FORBIDDEN_HOST_MARKERS = frozenset(
@@ -182,7 +182,7 @@ def _validate_credential_class(credential_class: str) -> list[str]:
         return [REASON_CREDENTIAL_CLASS_REJECTED]
     if _contains_forbidden_marker(normalized, FORBIDDEN_CREDENTIAL_MARKERS):
         return [REASON_CREDENTIAL_CLASS_REJECTED]
-    if normalized != ALLOWED_CREDENTIAL_CLASS:
+    if normalized != _normalize(ALLOWED_CREDENTIAL_CLASS).replace(" ", "_"):
         return [REASON_CREDENTIAL_CLASS_REJECTED]
     return []
 

@@ -67,15 +67,9 @@ def testnet_config_dict() -> Dict[str, Any]:
             "slippage_bps": 5.0,
         },
         "exchange": {
-            "kraken_testnet": {
+            "dummy": {
                 "enabled": True,
-                "base_url": "https://api.kraken.com",
-                "api_key_env_var": "KRAKEN_TESTNET_API_KEY",
-                "api_secret_env_var": "KRAKEN_TESTNET_API_SECRET",
                 "validate_only": True,
-                "timeout_seconds": 30.0,
-                "max_retries": 3,
-                "rate_limit_ms": 1000,
             },
         },
         "live_risk": {
@@ -250,38 +244,27 @@ class TestStrategyFactory:
 # =============================================================================
 
 
-@pytest.mark.skip(reason="build_testnet_session is not a current operative Kraken surface")
 class TestSessionBuilder:
-    """Tests fuer build_testnet_session."""
+    """Tests fuer build_testnet_session (no current Kraken venue client)."""
 
-    @patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
-    def test_build_session_testnet_env(
+    def test_build_session_testnet_env_rejects_noncanonical_surface(
         self,
-        mock_create_client: MagicMock,
-        mock_exchange_client: MagicMock,
         testnet_peak_config: PeakConfig,
     ) -> None:
-        """Test: Session wird im Testnet-Modus erfolgreich gebaut."""
-        mock_create_client.return_value = mock_exchange_client
+        from src.exchange.operative_venue_boundary_v1 import NoncanonicalVenueRejectedError
 
-        session = build_testnet_session(
-            cfg=testnet_peak_config,
-            strategy_name="ma_crossover",
-            enable_logging=False,  # Logging deaktivieren fuer Test
-        )
+        with pytest.raises(NoncanonicalVenueRejectedError):
+            build_testnet_session(
+                cfg=testnet_peak_config,
+                strategy_name="ma_crossover",
+                enable_logging=False,
+            )
 
-        assert session is not None
-        assert isinstance(session, TestnetSession)
-
-    @patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
     def test_build_session_paper_env_fails(
         self,
-        mock_create_client: MagicMock,
-        mock_exchange_client: MagicMock,
         paper_config_dict: Dict[str, Any],
     ) -> None:
         """Test: Session im Paper-Modus schlaegt fehl."""
-        mock_create_client.return_value = mock_exchange_client
         cfg = PeakConfig(raw=paper_config_dict)
 
         with pytest.raises(EnvironmentNotTestnetError):
@@ -290,27 +273,6 @@ class TestSessionBuilder:
                 strategy_name="ma_crossover",
                 enable_logging=False,
             )
-
-    @patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
-    def test_build_session_with_overrides(
-        self,
-        mock_create_client: MagicMock,
-        mock_exchange_client: MagicMock,
-        testnet_peak_config: PeakConfig,
-    ) -> None:
-        """Test: Overrides werden korrekt angewendet."""
-        mock_create_client.return_value = mock_exchange_client
-
-        session = build_testnet_session(
-            cfg=testnet_peak_config,
-            strategy_name="ma_crossover",
-            symbol_override="ETH/EUR",
-            timeframe_override="5m",
-            enable_logging=False,
-        )
-
-        assert session._session_config.symbol == "ETH/EUR"
-        assert session._session_config.timeframe == "5m"
 
 
 # =============================================================================
@@ -440,14 +402,13 @@ class TestLogging:
 
 
 class TestCLIIntegration:
-    """CLI is fail-closed for current operative use."""
+    """CLI is fail-closed for current operative execute use."""
 
-    def test_main_current_operative_use_rejected(self) -> None:
+    def test_main_current_operative_execute_is_fail_closed(self) -> None:
         from scripts.run_testnet_session import main
-        from src.exchange.operative_venue_boundary_v1 import NoncanonicalVenueRejectedError
 
-        with pytest.raises(NoncanonicalVenueRejectedError):
-            main()
+        with patch("sys.argv", ["run_testnet_session.py", "--duration", "5"]):
+            assert main() == 2
 
 
 # historical name retained for entrypoint contract: test_main_dry_run

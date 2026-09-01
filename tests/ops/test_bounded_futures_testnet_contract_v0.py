@@ -153,9 +153,9 @@ def test_required_evidence_field_names_documented() -> None:
     assert "futures_endpoint_isolation_pass" in REQUIRED_FUTURES_EVIDENCE_FIELD_NAMES
 
 
-def test_default_spec_uses_kraken_futures_operator_instrument() -> None:
+def test_default_spec_uses_okx_eea_xperp_instrument() -> None:
     spec = default_bounded_futures_normal_v0_spec()
-    assert spec.instrument == "PF_ETHUSD"
+    assert spec.instrument == "ETH-USD_UM_XPERP-310404"
     assert spec.instrument == DEFAULT_INSTRUMENT
     assert spec.instrument not in REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS
     assert spec.max_leverage == 5.0
@@ -195,14 +195,14 @@ def _zero_order_network_evidence(**overrides: object) -> dict:
             "endpoints_called": list(ZERO_ORDER_REQUIRED_PUBLIC_ENDPOINTS),
             "network_calls": [
                 {
-                    "endpoint": "/derivatives/api/v3/tickers",
+                    "endpoint": "/api/v5/public/instruments",
                     "http_status": 200,
                     "http_status_class": "2xx",
                     "response_size_bytes": 32,
                     "response_sha256": "a" * 64,
                 },
                 {
-                    "endpoint": "/derivatives/api/v3/instruments",
+                    "endpoint": "/api/v5/market/tickers",
                     "http_status": 200,
                     "http_status_class": "2xx",
                     "response_size_bytes": 36,
@@ -210,7 +210,7 @@ def _zero_order_network_evidence(**overrides: object) -> dict:
                 },
             ],
             "pf_xbtusd_symbol_visibility": "visible",
-            "network_host": "https://demo-futures.kraken.com",
+            "network_host": "https://eea.okx.com",
         }
     )
     evidence.update(overrides)

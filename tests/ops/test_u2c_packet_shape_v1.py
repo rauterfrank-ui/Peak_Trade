@@ -31,10 +31,10 @@ def test_normalize_market_type_maps_future_labels(shape: Any) -> None:
 
 def test_flat_row_produces_nested_futures_producer_packet_shape(shape: Any) -> None:
     row = {
-        "symbol": "PF_ETHUSD",
-        "instrument_id": "PF_ETHUSD",
+        "symbol": "ETH-USD_UM_XPERP-310404",
+        "instrument_id": "ETH-USD_UM_XPERP-310404",
         "market_type": "perpetual",
-        "exchange": "kraken_futures",
+        "exchange": "okx_europe_eea",
         "base_currency": "ETH",
         "quote_currency": "USD",
         "tick_size": 0.05,
@@ -60,7 +60,7 @@ def test_flat_row_produces_nested_futures_producer_packet_shape(shape: Any) -> N
     }
     packet = shape.flat_row_to_nested_packet(
         row,
-        candidate_id="c-PF_ETHUSD",
+        candidate_id="c-ETH-USD_UM_XPERP-310404",
         source_universe_size=3,
         rank=1,
     )
@@ -68,7 +68,8 @@ def test_flat_row_produces_nested_futures_producer_packet_shape(shape: Any) -> N
     assert "ranking" in packet
     assert "instrument" in packet
     assert "provenance" in packet
-    assert packet["candidate"]["symbol"] == "PF_ETHUSD"
+    assert packet["candidate"]["symbol"] == "ETH-USD_UM_XPERP-310404"
+    assert packet["candidate"]["exchange"] == "okx_europe_eea"
     assert packet["candidate"]["live_authorization"] is False
     assert packet["ranking"]["rank"] == 1
     assert packet["ranking"]["score"] is None
@@ -132,11 +133,11 @@ def test_kraken_like_row_candidate_validation_complete_without_min_notional(shap
 
 def test_incomplete_flat_row_keeps_instrument_incomplete(shape: Any) -> None:
     row = {
-        "symbol": "PF_ADAUSD",
-        "instrument_id": "PF_ADAUSD",
+        "symbol": "ETH-USD_UM_XPERP-310404",
+        "instrument_id": "ETH-USD_UM_XPERP-310404",
         "market_type": "perpetual",
-        "exchange": "kraken_futures",
-        "base_currency": "ADA",
+        "exchange": "okx_europe_eea",
+        "base_currency": "ETH",
         "quote_currency": "USD",
         "tick_size": 0.0001,
         "contract_size": 1,
@@ -147,7 +148,7 @@ def test_incomplete_flat_row_keeps_instrument_incomplete(shape: Any) -> None:
     }
     packet = shape.flat_row_to_nested_packet(
         row,
-        candidate_id="c-PF_ADAUSD",
+        candidate_id="c-ETH-USD_UM_XPERP-310404-incomplete",
         source_universe_size=1,
     )
     assert packet["instrument"]["complete"] is False
@@ -179,3 +180,13 @@ def test_extract_kraken_fields_never_sets_min_notional_from_impact_mid_size(shap
     assert provider["min_qty"] == 5.1
     assert provider["min_qty_source"] == "kraken_instruments.impactMidSize"
     assert provider["missing_provider_metadata"] == ["min_notional"]
+
+
+def test_flat_row_does_not_default_exchange_to_kraken_futures(shape: Any) -> None:
+    packet = shape.flat_row_to_nested_packet(
+        {"symbol": "ETH-USD_UM_XPERP-310404", "instrument_id": "ETH-USD_UM_XPERP-310404"},
+        candidate_id="c-no-exchange",
+        source_universe_size=1,
+    )
+    assert packet["candidate"]["exchange"] != "kraken_futures"
+    assert packet["candidate"]["exchange"] == ""

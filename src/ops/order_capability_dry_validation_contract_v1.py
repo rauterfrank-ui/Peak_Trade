@@ -14,7 +14,7 @@ from src.ops.bounded_testnet_order_cap_contract_v0 import default_bounded_normal
 
 PACKAGE_MARKER = "ORDER_CAPABILITY_DRY_VALIDATION_CONTRACT_V1=true"
 SCHEMA_VERSION = "order_capability_dry_validation_result.v1"
-DEFAULT_VENUE_HOST = "demo-futures.kraken.com"
+DEFAULT_VENUE_HOST = "eea.okx.com"
 DEFAULT_ORDER_TYPE = "limit"
 DEFAULT_MAX_SESSION_DURATION_SECONDS = 60
 ALLOWED_ORDER_TYPES = frozenset({DEFAULT_ORDER_TYPE})
@@ -23,6 +23,7 @@ FORBIDDEN_LIVE_VENUE_MARKERS = frozenset(
         "futures.kraken.com",
         "api.kraken.com",
         "www.kraken.com",
+        "demo-futures.kraken.com",
     }
 )
 
@@ -61,7 +62,7 @@ def validate_order_capability_dry_validation_inputs(
     if inputs.instrument != DEFAULT_INSTRUMENT:
         reasons.append(f"instrument must be {DEFAULT_INSTRUMENT!r}")
     if not venue_is_demo_testnet_only(inputs.venue):
-        reasons.append("venue must be demo/testnet-only and include demo-futures.kraken.com")
+        reasons.append("venue must be demo/testnet-only and include eea.okx.com")
     if inputs.max_loss_cap_eur <= 0:
         reasons.append("max_loss_cap_eur must be > 0")
     if inputs.max_notional_eur <= 0:

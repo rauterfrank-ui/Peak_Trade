@@ -110,7 +110,7 @@ def test_default_missing_rules_fail_closed() -> None:
 
 def test_demo_host_required_accepts_demo_futures() -> None:
     result = evaluate_order_capability_demo_instrument_rules_binding(
-        _valid_input(demo_host="https://demo-futures.kraken.com/derivatives/api/v3")
+        _valid_input(demo_host="https://eea.okx.com")
     )
     assert REASON_DEMO_HOST_MISMATCH not in result.reason_codes
     assert result.verdict == DemoInstrumentRulesBindingVerdictKind.BINDING_SATISFIED_FOR_DRY_ONLY
@@ -134,7 +134,7 @@ def test_live_prod_host_rejected(host: str) -> None:
     )
 
 
-def test_credential_class_kraken_futures_demo_only_accepted() -> None:
+def test_credential_class_okx_eea_demo_only_accepted() -> None:
     result = evaluate_order_capability_demo_instrument_rules_binding(_valid_input())
     assert REASON_CREDENTIAL_CLASS_REJECTED not in result.reason_codes
 

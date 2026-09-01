@@ -27,11 +27,13 @@ ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archiv
 class _FakeFetcher:
     def __init__(self, *, body: bytes | None = None) -> None:
         self.urls: list[str] = []
-        self._body = body if body is not None else b'{"tickers":[{"symbol":"PF_XBTUSD"}]}'
+        self._body = (
+            body if body is not None else b'{"data":[{"instId":"ETH-USD_UM_XPERP-310404"}]}'
+        )
 
     def fetch(self, url: str, *, timeout_seconds: float) -> tuple[int, bytes]:
         self.urls.append(url)
-        if "demo-futures.kraken.com" not in url:
+        if "eea.okx.com" not in url:
             raise AssertionError(f"non-testnet host in fake fetcher: {url}")
         if "sendorder" in url.lower():
             raise AssertionError("order endpoint forbidden")
@@ -221,11 +223,8 @@ def test_fake_fetcher_hits_demo_futures_only(tmp_path: Path) -> None:
     )
     assert rc == 0
     assert fetcher.urls
-    assert all("demo-futures.kraken.com" in url for url in fetcher.urls)
-    assert all(
-        "futures.kraken.com" not in url.replace("demo-futures.kraken.com", "")
-        for url in fetcher.urls
-    )
+    assert all("eea.okx.com" in url for url in fetcher.urls)
+    assert all("kraken.com" not in url for url in fetcher.urls)
 
 
 def test_execute_with_fake_fetcher_produces_durable_manifest(tmp_path: Path) -> None:

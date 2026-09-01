@@ -17,7 +17,7 @@ DEFAULT_ABORT_ACK_MARKER = "CONFIRMED"
 
 ALLOWED_ENVIRONMENTS = frozenset(
     {
-        "kraken_futures_demo",
+        "okx_europe_eea",
         "demo",
         "testnet",
         "demo_testnet_only",

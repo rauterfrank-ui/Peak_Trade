@@ -1058,6 +1058,11 @@ def test_section5_pe11_bounded_futures_reachability_reflection_non_authorizing_v
 
     assert "bounded_futures_private_readonly_contract_v0.py" in text
     assert "kraken_futures_demo_credential_presence_contract_v0.py" in text
+    assert "ABSENT — not a current owner" in text
+    assert not (ROOT / "src/ops/kraken_futures_demo_credential_presence_contract_v0.py").is_file()
+    assert not (
+        ROOT / "tests/ops/test_kraken_futures_demo_credentials_presence_readonly_v0.py"
+    ).is_file()
     assert "private_readonly_final_retry_Frank_Rauter_20260604T183718Z" in pe11
     assert "futures_network_reachability_post_run_evidence_review_v0_20260604T154641Z" in pe11
     assert "Reachability proven ≠ authorization" in pe11 or "Reachability proven" in pe11

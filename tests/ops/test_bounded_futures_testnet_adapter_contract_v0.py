@@ -58,7 +58,7 @@ def test_futures_session_and_network_not_authorized() -> None:
 
 def test_default_binding_passes_offline_validation() -> None:
     binding = default_offline_adapter_binding()
-    assert binding.instrument == "PF_ETHUSD"
+    assert binding.instrument == "ETH-USD_UM_XPERP-310404"
     assert binding.instrument == DEFAULT_INSTRUMENT
     result = validate_futures_testnet_adapter_binding(binding)
     assert result["adapter_binding_pass"] is True
@@ -145,7 +145,8 @@ def test_section5_pe9_crosslink_present() -> None:
 def test_endpoint_allowlist_non_empty_and_testnet_host() -> None:
     assert len(FUTURES_TESTNET_ENDPOINT_ALLOWLIST) >= 5
     assert DEFAULT_FUTURES_TESTNET_NETWORK_HOST.startswith("https://")
-    assert "demo-futures" in DEFAULT_FUTURES_TESTNET_NETWORK_HOST
+    assert "eea.okx.com" in DEFAULT_FUTURES_TESTNET_NETWORK_HOST
+    assert "kraken" not in DEFAULT_FUTURES_TESTNET_NETWORK_HOST
 
 
 def test_charter_bundle_suffix_documented_in_test() -> None:

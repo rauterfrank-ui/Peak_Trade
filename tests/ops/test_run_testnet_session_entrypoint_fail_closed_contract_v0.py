@@ -52,15 +52,9 @@ def testnet_config_dict() -> Dict[str, Any]:
             "slippage_bps": 5.0,
         },
         "exchange": {
-            "kraken_testnet": {
+            "dummy": {
                 "enabled": True,
-                "base_url": "https://api.kraken.com",
-                "api_key_env_var": "KRAKEN_TESTNET_API_KEY",
-                "api_secret_env_var": "KRAKEN_TESTNET_API_SECRET",
                 "validate_only": True,
-                "timeout_seconds": 30.0,
-                "max_retries": 3,
-                "rate_limit_ms": 1000,
             },
         },
         "live_risk": {
@@ -180,13 +174,10 @@ def test_pe2_hard_gate_uses_line_based_gap2a1_forbidden_tokens_v0() -> None:
     assert '"READY_FOR_OPERATOR_ARMING=true" not in gap2a1_lines' in hard_gate
 
 
-@pytest.mark.skip(reason="run_testnet_session main is not a current operative Kraken surface")
 @patch("scripts.run_testnet_session.build_testnet_session")
-@patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
 @patch("scripts.run_testnet_session.load_config")
 def test_main_execute_rejects_missing_duration_and_credentials(
     mock_load_config: MagicMock,
-    mock_create_client: MagicMock,
     mock_build_session: MagicMock,
     testnet_config_dict: Dict[str, Any],
 ) -> None:
@@ -194,7 +185,6 @@ def test_main_execute_rejects_missing_duration_and_credentials(
     from scripts.run_testnet_session import main
 
     mock_load_config.return_value = PeakConfig(raw=testnet_config_dict)
-    mock_create_client.return_value = MagicMock(has_credentials=True)
 
     env = {k: v for k, v in os.environ.items() if not k.startswith("KRAKEN_TESTNET_API")}
     with patch.dict(os.environ, env, clear=True):
@@ -206,19 +196,15 @@ def test_main_execute_rejects_missing_duration_and_credentials(
     mock_build_session.assert_not_called()
 
 
-@pytest.mark.skip(reason="run_testnet_session main is not a current operative Kraken surface")
-@patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
 @patch("scripts.run_testnet_session.load_config")
 def test_main_execute_rejects_missing_credentials_with_duration(
     mock_load_config: MagicMock,
-    mock_create_client: MagicMock,
     testnet_config_dict: Dict[str, Any],
 ) -> None:
     from src.core.peak_config import PeakConfig
     from scripts.run_testnet_session import main
 
     mock_load_config.return_value = PeakConfig(raw=testnet_config_dict)
-    mock_create_client.return_value = MagicMock(has_credentials=True)
 
     env = {k: v for k, v in os.environ.items() if not k.startswith("KRAKEN_TESTNET_API")}
     with patch.dict(os.environ, env, clear=True):
@@ -232,13 +218,10 @@ def test_main_execute_rejects_missing_credentials_with_duration(
     assert rc == _EXIT_FAIL_CLOSED
 
 
-@pytest.mark.skip(reason="run_testnet_session main is not a current operative Kraken surface")
 @patch("scripts.run_testnet_session.build_testnet_session")
-@patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
 @patch("scripts.run_testnet_session.load_config")
 def test_main_dry_run_skips_duration_and_credentials(
     mock_load_config: MagicMock,
-    mock_create_client: MagicMock,
     mock_build_session: MagicMock,
     testnet_config_dict: Dict[str, Any],
 ) -> None:
@@ -247,7 +230,6 @@ def test_main_dry_run_skips_duration_and_credentials(
 
     session_mock = MagicMock()
     mock_load_config.return_value = PeakConfig(raw=testnet_config_dict)
-    mock_create_client.return_value = MagicMock(has_credentials=False)
     mock_build_session.return_value = session_mock
 
     env = {k: v for k, v in os.environ.items() if not k.startswith("KRAKEN_TESTNET_API")}
@@ -260,21 +242,18 @@ def test_main_dry_run_skips_duration_and_credentials(
     session_mock.warmup.assert_not_called()
     session_mock.run_for_duration.assert_not_called()
     session_mock.run_forever.assert_not_called()
+    mock_build_session.assert_not_called()
 
 
-@pytest.mark.skip(reason="run_testnet_session main is not a current operative Kraken surface")
-@patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
 @patch("scripts.run_testnet_session.load_config")
-def test_main_rejects_non_positive_duration(
+def test_main_rejects_non_positive_duration_even_if_retired_kraken_env_is_set(
     mock_load_config: MagicMock,
-    mock_create_client: MagicMock,
     testnet_config_dict: Dict[str, Any],
 ) -> None:
     from src.core.peak_config import PeakConfig
     from scripts.run_testnet_session import main
 
     mock_load_config.return_value = PeakConfig(raw=testnet_config_dict)
-    mock_create_client.return_value = MagicMock(has_credentials=True)
 
     with patch.dict(
         os.environ,

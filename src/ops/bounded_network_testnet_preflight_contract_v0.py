@@ -20,27 +20,30 @@ REQUIRED_EXECUTE_GO = "GO_EXECUTE_BOUNDED_NETWORK_TESTNET_PREFLIGHT_V0"
 
 PUBLIC_ENDPOINTS: frozenset[str] = frozenset(
     {
-        "/0/public/Time",
-        "/0/public/Ticker",
-        "/0/public/AssetPairs",
+        "/api/v5/public/time",
+        "/api/v5/public/instruments",
+        "/api/v5/market/tickers",
     }
 )
 PRIVATE_READONLY_ENDPOINTS: frozenset[str] = frozenset(
     {
-        "/0/private/Balance",
-        "/0/private/OpenOrders",
+        "/api/v5/account/balance",
+        "/api/v5/account/config",
+        "/api/v5/trade/orders-pending",
     }
 )
 FORBIDDEN_ORDER_ENDPOINTS: frozenset[str] = frozenset(
     {
+        "/api/v5/trade/order",
+        "/api/v5/trade/cancel-order",
+        "/api/v5/trade/amend-order",
+        "/api/v5/trade/close-position",
         "/0/private/AddOrder",
         "/0/private/CancelOrder",
-        "/0/private/AmendOrder",
-        "/0/private/QueryOrders",
-        "/0/private/TradeBalance",
+        "/derivatives/api/v3/sendorder",
     }
 )
-HOST_ALLOWLIST: frozenset[str] = frozenset({"https://api.kraken.com"})
+HOST_ALLOWLIST: frozenset[str] = frozenset({"https://eea.okx.com"})
 
 PREFLIGHT_PLANNED_DURATION_SECONDS = 120
 PREFLIGHT_MIN_REQUIRED_WALL_CLOCK_SECONDS = 60

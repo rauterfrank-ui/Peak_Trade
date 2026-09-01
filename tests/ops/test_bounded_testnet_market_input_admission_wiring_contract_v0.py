@@ -116,7 +116,7 @@ def test_canonical_producer_owner_paths_present() -> None:
     assert flags["canonical_market_observation_owner"] == CANONICAL_MARKET_OBSERVATION_OWNER
     assert flags["canonical_market_input_producer"] == CANONICAL_MARKET_INPUT_PRODUCER
     assert flags["repo_grounded_eth_perp_selected_future_id"] == SYNTHETIC_FUTURES_INSTRUMENT
-    assert flags["repo_grounded_eth_perp_venue_symbol"] == "PF_ETHUSD"
+    assert flags["repo_grounded_eth_perp_venue_symbol"] == "ETH-USD_UM_XPERP-310404"
 
 
 def test_producer_maps_valid_observation_to_market_input() -> None:
@@ -284,7 +284,7 @@ def _run_selector(*files: str) -> dict[str, str]:
 
 def test_ci_selector_market_input_admission_five_file_diff_focused() -> None:
     sel = _run_selector(*MARKET_INPUT_ADMISSION_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "bounded_testnet_market_input_admission_wiring_focused"
     assert sel["tests_execute_full"] == "false"
     assert sel["tests_execute_focused"] == "true"
@@ -299,5 +299,5 @@ def test_ci_selector_market_input_admission_foreign_path_escalates_full() -> Non
         *MARKET_INPUT_ADMISSION_FILES,
         "src/trading/master_v2/double_play_state.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
-    assert sel["tests_execute_full"] == "true"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["tests_execute_full"] == "false"

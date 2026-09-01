@@ -42,7 +42,7 @@ CANONICAL_MARKET_INPUT_PRODUCER = (
 )
 
 REPO_GROUNDED_ETH_PERP_SELECTED_FUTURE_ID = SYNTHETIC_FUTURES_INSTRUMENT
-REPO_GROUNDED_ETH_PERP_VENUE_SYMBOL = "PF_ETHUSD"
+REPO_GROUNDED_ETH_PERP_VENUE_SYMBOL = "ETH-USD_UM_XPERP-310404"
 CANONICAL_TESTNET_OBSERVATION_LANE = "testnet_bounded_observation"
 
 _PERMITTED_FUTURES_MARKET_TYPES = frozenset(
@@ -128,7 +128,9 @@ def validate_bounded_testnet_futures_market_observation(
     if not observation.venue_symbol.strip():
         reasons.append("venue_symbol required")
     if observation.venue_symbol != REPO_GROUNDED_ETH_PERP_VENUE_SYMBOL:
-        reasons.append("venue_symbol must match repo-grounded PF_ETHUSD futures venue symbol")
+        reasons.append(
+            "venue_symbol must match repo-grounded ETH-USD_UM_XPERP-310404 futures venue symbol"
+        )
     if _BTC_SPOT_RE.search(observation.selected_future_id):
         reasons.append("selected_future_id must be futures-only (no BTC/XBT/spot)")
     if _BTC_SPOT_RE.search(observation.venue_symbol):
