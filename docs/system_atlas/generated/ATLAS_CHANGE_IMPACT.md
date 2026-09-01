@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=11
+ATLAS_CHANGED_ENTITY_COUNT=12
 ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -47,6 +47,7 @@ Do not manually patch generated Markdown.
 | `TERM:ddo_non_semantic_capture` |
 | `TERM:ddo_offline_control_plane` |
 | `TERM:ddo_offline_evaluation_engine` |
+| `TERM:ddo_offline_learning_validation_shadow` |
 | `TERM:document_class` |
 | `TERM:focused_full_noop` |
 | `TERM:information_corpus` |
@@ -105,7 +106,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Navigation-only TERM:ddo_offline_evaluation_engine sync after WP-FA-05 added the offline replay/outcome/attribution/counterfactual evaluation engine. No Atlas trading, promotion, risk, safety, or execution semantics. Atlas is not canonical authority.
+- Navigation-only TERM:ddo_offline_learning_validation_shadow sync after WP-FA-06 added the offline learning registry, validation evidence pack engine, and zero-authority shadow challenger. No Atlas trading, promotion, risk, safety, or execution semantics. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

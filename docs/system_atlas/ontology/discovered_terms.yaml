@@ -285,6 +285,34 @@ terms:
       Navigation-only. Atlas does not confer trading, promotion, risk, safety,
       or execution authority. Evaluation is offline and non-authorizing.
 
+  - id: TERM:ddo_offline_learning_validation_shadow
+    kind: TERM
+    name: DDO offline learning validation shadow
+    exact_observed_spellings:
+      - WP_FA_06_OFFLINE_LEARNING_REGISTRY_VALIDATION_PACKS_AND_SHADOW_CHALLENGER_V1
+      - VALIDATION_PACK_ENGINE_PRESENT
+      - compare_shadow_challenger_v0
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    definition: >-
+      Offline learning registry, deterministic ValidationEvidencePack evaluation
+      from opaque robustness/safety artifacts, and zero-authority incumbent versus
+      candidate shadow comparison on an identical evidence pack. No runtime,
+      promotion-activation, or productive learning authority.
+    definition_source: src/learning/deterministic_decision_outcome_v0/validation_pack_engine_v0.py
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/validation_pack_engine_v0.py
+      - src/learning/deterministic_decision_outcome_v0/validation_artifacts_v0.py
+      - src/learning/deterministic_decision_outcome_v0/registry_v0.py
+      - src/learning/deterministic_decision_outcome_v0/challenger_v0.py
+      - src/learning/deterministic_decision_outcome_v0/authority_v0.py
+    notes: >-
+      Navigation-only. Atlas does not confer trading, promotion, risk, safety,
+      or execution authority. Learning, validator, and shadow remain
+      non-authorizing. Existing experiment robustness and champion-challenger
+      owners are not replaced.
+
   - id: TERM:document_class
     kind: TERM
     name: DOCUMENT_CLASS
