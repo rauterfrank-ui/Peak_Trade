@@ -20,7 +20,7 @@ ORDERS_ALLOWED=false
 
 Machine owner:
 
-`src&#47;governance&#47;offline_observation_proposal_contract_fences_v1.py`
+[`src/governance/offline_observation_proposal_contract_fences_v1.py`](../../src/governance/offline_observation_proposal_contract_fences_v1.py)
 
 This document does **not** authorize Live, Testnet, Canary, orders, credentials, auto-apply, or productive learning&#47;promotion.
 
@@ -39,11 +39,11 @@ The fence keeps these layers distinct and fail-closed:
 
 | Surface | Role | Authority effect |
 |---|---|---|
-| `src&#47;meta&#47;learning_loop` | Offline observation, comparison, and proposal contracts only | NONE |
+| [`src/meta/learning_loop/runtime_observation_feedback_v1.py`](../../src/meta/learning_loop/runtime_observation_feedback_v1.py) | Offline observation, comparison, and proposal contracts only | NONE |
 | Surface O (`feedback_learning_boundary_*`) | Observation only | NONE |
 | Surface M (`promotion_economic_gate_v1`) | Promotion-gate evaluate only | NONE |
 | Legacy promotion engine | Proposal / manual-only, default-off, ungranted | NONE |
-| DDO (`src&#47;learning&#47;deterministic_decision_outcome_v0`) | Offline observation only; parallel to learning_loop | NONE |
+| DDO ([`src/learning/deterministic_decision_outcome_v0/authority_v0.py`](../../src/learning/deterministic_decision_outcome_v0/authority_v0.py)) | Offline observation only; parallel to learning_loop | NONE |
 
 Surface M `PASS` remains candidate-eligibility evaluation. It does not grant deployment, runtime, activation, or execution.
 
