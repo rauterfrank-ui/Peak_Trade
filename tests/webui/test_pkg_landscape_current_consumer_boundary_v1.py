@@ -12,9 +12,18 @@ MARKET_DASHBOARD_REMOVED.md, or tests/webui/test_market_dashboard_tombstone_v1.p
 
 It inspects the current Landscape structure directly:
 
+    LANDSCAPE_ROLE=VISUAL_READ_ONLY_CONSUMER_ONLY
+    LANDSCAPE_AUTHORITY=NONE
+    LANDSCAPE_DECISION_AUTHORITY=NONE
+    LANDSCAPE_CONTROL_AUTHORITY=NONE
     LANDSCAPE_V2_CURRENT_VISUAL_CONSUMER=true
     LANDSCAPE_CONSUMER_ONLY=true
     DASHBOARD_AUTHORITY_EFFECT=NONE
+    LANDSCAPE_WRITEBACK_SURFACE=false
+    LANDSCAPE_PRODUCER_ROLE=false
+    LANDSCAPE_DECISION_ROLE=false
+    LANDSCAPE_EXECUTION_ROLE=false
+    LANDSCAPE_LIVE_CONTROL_ROLE=false
     LANDSCAPE_TRADING_AUTHORITY=false
     LANDSCAPE_SIGNAL_AUTHORITY=false
     LANDSCAPE_SELECTION_AUTHORITY=false
@@ -84,9 +93,18 @@ _FORBIDDEN_AUTHORITY_TOKENS: frozenset[str] = frozenset(
 )
 
 # Required non-claims. Do not invert these in this surface.
+LANDSCAPE_ROLE = "VISUAL_READ_ONLY_CONSUMER_ONLY"
+LANDSCAPE_AUTHORITY = "NONE"
+LANDSCAPE_DECISION_AUTHORITY = "NONE"
+LANDSCAPE_CONTROL_AUTHORITY = "NONE"
 LANDSCAPE_V2_CURRENT_VISUAL_CONSUMER = True
 LANDSCAPE_CONSUMER_ONLY = True
 DASHBOARD_AUTHORITY_EFFECT = "NONE"
+LANDSCAPE_WRITEBACK_SURFACE = False
+LANDSCAPE_PRODUCER_ROLE = False
+LANDSCAPE_DECISION_ROLE = False
+LANDSCAPE_EXECUTION_ROLE = False
+LANDSCAPE_LIVE_CONTROL_ROLE = False
 LANDSCAPE_TRADING_AUTHORITY = False
 LANDSCAPE_SIGNAL_AUTHORITY = False
 LANDSCAPE_SELECTION_AUTHORITY = False
@@ -97,6 +115,9 @@ LANDSCAPE_LIVE_PERMIT_AUTHORITY = False
 HISTORICAL_DASHBOARD_REQUIRED_FOR_CURRENT_CONTRACT = False
 HISTORICAL_TOMBSTONE_REQUIRED_FOR_CURRENT_CONTRACT = False
 PRODUCTIVE_MUTATION_PERFORMED_BY_THIS_PACKAGE = False
+ALL_NEW_CONNECTIONS_READ_ONLY_CONSUMERS = True
+ALL_NEW_CONNECTIONS_AUTHORITY_EFFECT_NONE = True
+CONNECTABLE_CURRENT_CONSUMER_GAP_COUNT = 0
 
 
 def _iter_python_files(root: Path) -> tuple[Path, ...]:
@@ -129,9 +150,18 @@ def _collected_names(tree: ast.AST) -> set[str]:
 
 
 def test_package_contract_does_not_normalize_authority_claims() -> None:
+    assert LANDSCAPE_ROLE == "VISUAL_READ_ONLY_CONSUMER_ONLY"
+    assert LANDSCAPE_AUTHORITY == "NONE"
+    assert LANDSCAPE_DECISION_AUTHORITY == "NONE"
+    assert LANDSCAPE_CONTROL_AUTHORITY == "NONE"
     assert LANDSCAPE_V2_CURRENT_VISUAL_CONSUMER is True
     assert LANDSCAPE_CONSUMER_ONLY is True
     assert DASHBOARD_AUTHORITY_EFFECT == "NONE"
+    assert LANDSCAPE_WRITEBACK_SURFACE is False
+    assert LANDSCAPE_PRODUCER_ROLE is False
+    assert LANDSCAPE_DECISION_ROLE is False
+    assert LANDSCAPE_EXECUTION_ROLE is False
+    assert LANDSCAPE_LIVE_CONTROL_ROLE is False
     assert LANDSCAPE_TRADING_AUTHORITY is False
     assert LANDSCAPE_SIGNAL_AUTHORITY is False
     assert LANDSCAPE_SELECTION_AUTHORITY is False
@@ -142,6 +172,9 @@ def test_package_contract_does_not_normalize_authority_claims() -> None:
     assert HISTORICAL_DASHBOARD_REQUIRED_FOR_CURRENT_CONTRACT is False
     assert HISTORICAL_TOMBSTONE_REQUIRED_FOR_CURRENT_CONTRACT is False
     assert PRODUCTIVE_MUTATION_PERFORMED_BY_THIS_PACKAGE is False
+    assert CONNECTABLE_CURRENT_CONSUMER_GAP_COUNT == 0
+    assert ALL_NEW_CONNECTIONS_READ_ONLY_CONSUMERS is True
+    assert ALL_NEW_CONNECTIONS_AUTHORITY_EFFECT_NONE is True
 
 
 def test_current_visual_consumer_is_landscape_v2_package_and_route() -> None:
@@ -314,3 +347,36 @@ def test_vendor_fallback_is_chartjs_ui_infrastructure_not_a_landscape_slot() -> 
     assert "peak-trade-chartjs-vendor-fallback-ready" in rnd_html
     assert LANDSCAPE_CONSUMER_ONLY is True
     assert DASHBOARD_AUTHORITY_EFFECT == "NONE"
+    assert LANDSCAPE_ROLE == "VISUAL_READ_ONLY_CONSUMER_ONLY"
+    assert LANDSCAPE_WRITEBACK_SURFACE is False
+
+
+def test_landscape_is_absolute_visual_read_only_consumer_only() -> None:
+    """Addendum 2: Landscape never gains decision, producer, or control authority."""
+    router_text = SHELL_ROUTER.read_text(encoding="utf-8")
+    landscape_js = LANDSCAPE_CHART_JS.read_text(encoding="utf-8")
+    producer_binding = PRODUCER_BINDING.read_text(encoding="utf-8")
+
+    assert "@router.post" not in router_text
+    assert "@router.put" not in router_text
+    assert "@router.patch" not in router_text
+    assert "@router.delete" not in router_text
+    assert "AUTHORITY_EFFECT=NONE" in router_text
+    assert "No POST/PUT/PATCH/DELETE" in router_text
+    assert '"runtime_mutation": False' in router_text
+
+    assert 'method: "GET"' in landscape_js
+    assert 'method: "POST"' not in landscape_js
+    assert 'method: "PUT"' not in landscape_js
+    assert 'method: "PATCH"' not in landscape_js
+    assert 'method: "DELETE"' not in landscape_js
+
+    assert "read-only producer binding" in producer_binding
+    assert CONNECTABLE_CURRENT_CONSUMER_GAP_COUNT == 0
+    assert LANDSCAPE_WRITEBACK_SURFACE is False
+    assert LANDSCAPE_PRODUCER_ROLE is False
+    assert LANDSCAPE_DECISION_ROLE is False
+    assert LANDSCAPE_EXECUTION_ROLE is False
+    assert LANDSCAPE_LIVE_CONTROL_ROLE is False
+    assert ALL_NEW_CONNECTIONS_READ_ONLY_CONSUMERS is True
+    assert ALL_NEW_CONNECTIONS_AUTHORITY_EFFECT_NONE is True
