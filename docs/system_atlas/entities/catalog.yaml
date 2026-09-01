@@ -1637,3 +1637,23 @@ entities:
       - docs/ops/specs/SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1.md
       - docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE_AUTHORIZATION_V1.md
     notes: Atlas inventory only. Not a trading authority. Default grants remain fail-closed unless an exact-file SHA-256 evidence digest over canonical unified diffs and the diff base SHA is bound. Same paths with a different diff cannot reuse a grant. Owner adjudication is necessary and not sufficient. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1
+    kind: RUNTIME_COMPONENT
+    name: Offline observation / proposal contract fences v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/governance/offline_observation_proposal_contract_fences_v1.py
+    evidence_sources:
+      - src/governance/offline_observation_proposal_contract_fences_v1.py
+      - tests/governance/test_offline_observation_proposal_contract_fences_v1.py
+      - docs/governance/OFFLINE_OBSERVATION_PROPOSAL_CONTRACT_FENCES_V1.md
+    notes: >-
+      Inventory and fail-closed evaluator for existing observation, comparison,
+      proposal, and promotion-eligibility contracts. Does not grant learning,
+      promotion, trading, selection, runtime, or live authority. Surface M PASS
+      is not a grant. DDO remains AUTHORITY_OWNER=NONE and parallel to
+      learning_loop. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.

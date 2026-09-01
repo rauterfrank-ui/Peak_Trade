@@ -9,39 +9,16 @@ modified_by: PENDING_CHANGE
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Post-#6210 Atlas/navigation repair. Fresh navigation rebind of
-  origin_main_sha to current origin/main. Domain census payloads remain bound
-  to WP-FA-07 and were not freshly exhaustively rerun. Adds DDO observation
-  navigation and proven host-decorator OBSERVES edges only. Corrects
-  HIST:selector_policy_reverted to git-proven #6166. Kraken remains REMOVED
-  after #6203. No Atlas trading, promotion, risk, safety, or execution
-  semantics. Atlas is not canonical authority. Census discovery does not
-  create authority.
+  WP-02 offline observation/proposal contract fences inventory only.
+  Registers RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1
+  and reviews TERM:focused_full_noop for the existing selector package addition.
+  No learning, promotion, trading, selection, runtime, or live authority.
+  No new relations. Atlas is not canonical authority.
 changed_entities:
-  - ADAPTER:kraken_live_client
-  - EXPERIMENT:canonical_experiment_identity_v1
-  - HOST:wallclock_decision_economics_cycle
-  - PHASE:ddo_offline_foundation
-  - RUNTIME_COMPONENT:ddo_capture_v0
-  - RUNTIME_COMPONENT:ddo_experiment_identity_binding
-  - RUNTIME_COMPONENT:ddo_ledger_v0
-  - RUNTIME_COMPONENT:recon_startup_gate_v1
-  - RUNTIME_COMPONENT:simulated_execution_port_v1
+  - RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1
+  - TERM:focused_full_noop
 changed_relations: []
-new_relations:
-  - REL:r_ddo_capture_observes_binding
-  - REL:r_ddo_capture_observes_ranking
-  - REL:r_ddo_capture_observes_recon_startup
-  - REL:r_ddo_capture_observes_selection
-  - REL:r_ddo_capture_observes_sim_exec
-  - REL:r_ddo_capture_observes_universe
-  - REL:r_ddo_capture_persists_ledger
-  - REL:r_wallclock_calls_ddo_cycle_capture
-  - REL:r_wallclock_injects_ddo_capture_session
-  - REL:s_ddo_experiment_identity_reference_of_canonical_owner
-  - REL:s_ddo_phase_contains_capture
-  - REL:s_ddo_phase_contains_experiment_identity_binding
-  - REL:s_ddo_phase_contains_ledger
+new_relations: []
 removed_relations: []
 affected_dependency_closures: []
 affected_okx_surfaces: []
