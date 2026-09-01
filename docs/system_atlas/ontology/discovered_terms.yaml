@@ -194,7 +194,7 @@ terms:
   - id: TERM:focused_full_noop
     kind: TERM
     name: FOCUSED / FULL / NO_OP
-    exact_observed_spellings: [FOCUSED, FULL, NO_OP]
+    exact_observed_spellings: [FOCUSED, FULL, NO_OP, PR_BOUNDED_FULL]
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
@@ -202,6 +202,9 @@ terms:
     definition_source: scripts/ops/ci_test_selection_v1.py
     evidence_sources:
       - scripts/ops/ci_test_selection_v1.py
+    notes: >-
+      Navigation-only. PR_BOUNDED_FULL remains the pull_request bounded FULL
+      class owned by the existing selector. Atlas is not CI or trading authority.
 
   - id: TERM:document_class
     kind: TERM
