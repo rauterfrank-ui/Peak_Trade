@@ -9,7 +9,7 @@ from dataclasses import dataclass, field, replace
 from typing import Any, Mapping, Protocol
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlsplit, urlunsplit
-from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener, urlopen
+from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
 
 from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.binding_v1 import (
     normalize_rest_host,
@@ -332,7 +332,7 @@ def extract_canary_http_response_evidence_v1(
 
 
 class CanaryPostRedirectFailClosedHandler(HTTPRedirectHandler):
-    """Fail-closed: mutating POST must not follow 301/302/303/307/308."""
+    """Fail-closed: GET and POST must not follow 301/302/303/307/308."""
 
     def http_error_301(self, req: Request, fp: Any, code: int, msg: str, headers: Any) -> Any:
         return self._block_post_or_follow(req, fp, code, msg, headers)
@@ -353,7 +353,7 @@ class CanaryPostRedirectFailClosedHandler(HTTPRedirectHandler):
         self, req: Request, fp: Any, code: int, msg: str, headers: Any
     ) -> Any:
         method = str(req.get_method() or "").upper()
-        if method == "POST":
+        if method in {"GET", "POST"}:
             location = ""
             if headers is not None:
                 location = str(headers.get("location") or headers.get("Location") or "")
@@ -874,25 +874,19 @@ class UrllibLiveCanaryTransportV1:
         header_src: Any = None
         try:
             self.http_exchange_count += 1
-            if str(request.method).upper() == "POST":
-                opener = build_opener(ProxyHandler({}), CanaryPostRedirectFailClosedHandler())
-                try:
-                    with opener.open(req, timeout=request.timeout_seconds) as resp:  # noqa: S310
-                        body = resp.read()
-                        status = int(getattr(resp, "status", 200))
-                        header_src = getattr(resp, "headers", None)
-                except CanaryPostRedirectBlockedError as blocked:
-                    body = blocked.body
-                    status = int(blocked.status_code)
-                    header_src = blocked.headers
-                    redirect_followed = False
-                    redirect_status = status
-                    redirect_location = blocked.location
-            else:
-                with urlopen(req, timeout=request.timeout_seconds) as resp:  # noqa: S310
+            opener = build_opener(ProxyHandler({}), CanaryPostRedirectFailClosedHandler())
+            try:
+                with opener.open(req, timeout=request.timeout_seconds) as resp:  # noqa: S310
                     body = resp.read()
                     status = int(getattr(resp, "status", 200))
                     header_src = getattr(resp, "headers", None)
+            except CanaryPostRedirectBlockedError as blocked:
+                body = blocked.body
+                status = int(blocked.status_code)
+                header_src = blocked.headers
+                redirect_followed = False
+                redirect_status = status
+                redirect_location = blocked.location
         except HTTPError as exc:
             body = exc.read() if hasattr(exc, "read") else b""
             status = int(exc.code)

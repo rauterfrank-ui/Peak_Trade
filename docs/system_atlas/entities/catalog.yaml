@@ -1780,6 +1780,8 @@ entities:
       - tests/ops/test_section_11_13_5_z2dh_persist_v1.py
       - tests/ops/test_section_11_13_5_z2di_persist_v1.py
       - tests/ops/test_section_11_13_5_z2dj_persist_v1.py
+      - tests/ops/test_section_11_13_5_z2dk_persist_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py
       - evidence/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/20260902T143840Z/SUMMARY.json
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
@@ -1796,5 +1798,9 @@ entities:
       management-plane IP-whitelist addition for the existing canary
       SecretRef key only. Management-plane confirmation is not private
       API auth success, not runtime 50110 clearance, and not a Funding
-      GET. No runtime consumer. Atlas is not canonical authority.
+      GET. Additive §11.13.5.Z2DK SSOT persist records offline GET
+      redirect fail-closed hardening of the existing
+      UrllibLiveCanaryTransportV1 only. That persist is not a private
+      GET, not runtime 50110 clearance, and does not consume the Z2DK
+      wire GO. No runtime consumer. Atlas is not canonical authority.
       ATLAS_AUTHORITY=NONE.
