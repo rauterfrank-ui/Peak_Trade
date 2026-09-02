@@ -1695,15 +1695,25 @@ entities:
       - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/reconciliation_hooks_v1.py
       - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/recording_transport_v1.py
       - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/request_producer_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/lineage_assembler_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/composition_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/path_wiring_constants_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/path_wiring_persist_claims_v1.py
     evidence_sources:
       - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/pipeline_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/lineage_assembler_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/composition_v1.py
       - tests/ops/test_offline_execution_permission_and_position_creation_producer_wiring_v1.py
+      - tests/ops/test_canonical_offline_position_creation_path_wiring_v1.py
+      - tests/ops/test_section_11_13_5_z2dm_offline_canonical_position_creation_path_persist_v1.py
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/OFFLINE_CANONICAL_POSITION_CREATION_PATH_WIRING_V1.md
     notes: >-
       Navigation inventory of the offline non-live execution-boundary
-      composition. GRANT_FOR_NON_LIVE_BOUNDARY is not live send. Productive
-      wire remains false. Prerequisite 08 remains unresolved. Atlas is not
-      canonical authority. ATLAS_AUTHORITY=NONE.
+      composition and the canonical offline position-creation path wiring.
+      GRANT_FOR_NON_LIVE_BOUNDARY is not live send. Productive wire remains
+      false. Prerequisite 08 remains unresolved. Atlas is not canonical
+      authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1
     kind: RUNTIME_COMPONENT

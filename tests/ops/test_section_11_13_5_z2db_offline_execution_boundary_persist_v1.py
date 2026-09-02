@@ -56,12 +56,20 @@ def _read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def _z2db_section(text: str) -> str:
-    start = text.find(Z2DB_HEADING)
-    assert start >= 0, "missing §11.13.5.Z2DB heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2DB"
+def _persist_section(text: str, heading: str, *, ladder: str) -> str:
+    start = text.find(heading)
+    assert start >= 0, f"missing heading: {heading}"
+    next_heading = text.find("\n### ", start + len(heading))
+    ladder_at = text.find(ladder, start)
+    end = ladder_at
+    if next_heading != -1 and (end < 0 or next_heading < end):
+        end = next_heading
+    assert end > start, f"missing section boundary after {heading}"
     return text[start:end]
+
+
+def _z2db_section(text: str) -> str:
+    return _persist_section(text, Z2DB_HEADING, ladder=LADDER_HEADING)
 
 
 def test_z2db_heading_is_unique_and_follows_wp_fs_b1() -> None:
