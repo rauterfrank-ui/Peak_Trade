@@ -1040,6 +1040,151 @@ def test_urllib_post_redirect_fail_closed_no_second_request(status: int) -> None
     assert response.wire_body_sha256 == hashlib.sha256(body.encode("utf-8")).hexdigest()
 
 
+def test_urllib_get_200_is_single_exchange() -> None:
+    import threading
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
+        LiveCanaryHttpRequestV1,
+        UrllibLiveCanaryTransportV1,
+    )
+
+    hits: list[dict[str, str]] = []
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self) -> None:
+            hits.append({"method": "GET", "path": self.path})
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(b'{"code":"0","msg":"","data":[]}')
+
+        def log_message(self, format: str, *args: object) -> None:
+            return
+
+    httpd = HTTPServer(("127.0.0.1", 0), Handler)
+    thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+    thread.start()
+    port = httpd.server_address[1]
+    try:
+        transport = UrllibLiveCanaryTransportV1(wire_send_enabled=True)
+        response = transport.send(
+            LiveCanaryHttpRequestV1(
+                method="GET",
+                url=f"http://127.0.0.1:{port}/api/v5/account/config",
+                host="127.0.0.1",
+                endpoint="/api/v5/account/config",
+                headers={},
+                timeout_seconds=2.0,
+            )
+        )
+    finally:
+        httpd.shutdown()
+        httpd.server_close()
+        thread.join(timeout=2)
+    assert len(hits) == 1
+    assert hits[0] == {"method": "GET", "path": "/api/v5/account/config"}
+    assert response.method == "GET"
+    assert response.status_code == 200
+    assert response.redirect_followed is False
+    assert response.redirect_status is None
+    assert transport.http_exchange_count == 1
+
+
+@pytest.mark.parametrize("status", [301, 302, 307, 308])
+def test_urllib_get_redirect_fail_closed_no_second_request(status: int) -> None:
+    import threading
+    import time
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
+        LiveCanaryHttpRequestV1,
+        UrllibLiveCanaryTransportV1,
+    )
+
+    hits: list[dict[str, str]] = []
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self) -> None:
+            hits.append({"method": "GET", "path": self.path})
+            if self.path == "/second":
+                self.send_response(200)
+                self.send_header("Content-Type", "text/plain")
+                self.end_headers()
+                self.wfile.write(b"followed")
+                return
+            self.send_response(status)
+            self.send_header(
+                "Location",
+                f"http://127.0.0.1:{self.server.server_address[1]}/second",
+            )
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"redirect")
+
+        def log_message(self, format: str, *args: object) -> None:
+            return
+
+    httpd = HTTPServer(("127.0.0.1", 0), Handler)
+    thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+    thread.start()
+    port = httpd.server_address[1]
+    try:
+        transport = UrllibLiveCanaryTransportV1(wire_send_enabled=True)
+        response = transport.send(
+            LiveCanaryHttpRequestV1(
+                method="GET",
+                url=f"http://127.0.0.1:{port}/api/v5/account/config",
+                host="127.0.0.1",
+                endpoint="/api/v5/account/config",
+                headers={},
+                timeout_seconds=2.0,
+            )
+        )
+        time.sleep(0.05)
+    finally:
+        httpd.shutdown()
+        httpd.server_close()
+        thread.join(timeout=2)
+    assert [hit["path"] for hit in hits] == ["/api/v5/account/config"]
+    assert hits[0]["method"] == "GET"
+    assert "/second" not in {hit["path"] for hit in hits}
+    assert response.redirect_followed is False
+    assert response.redirect_status == status
+    assert response.method == "GET"
+    assert response.status_code == status
+    assert transport.http_exchange_count == 1
+    assert response.body_bytes == b"redirect"
+
+
+def test_get_max_retries_zero_does_not_retry_timeout() -> None:
+    transport = RecordingFakeCanaryTransportV1(raise_timeout=True)
+    client = LiveCanaryHttpClientV1(
+        rest_base="https://eea.okx.com",
+        rest_host="eea.okx.com",
+        transport=transport,
+        max_request_count=1,
+        max_retries=0,
+        timeout_seconds=1.0,
+    )
+    with pytest.raises(LiveCanaryHttpError, match="TIMEOUT"):
+        client.get(endpoint="/api/v5/account/config")
+    assert len(transport.calls) == 1
+    assert transport.calls[0].method == "GET"
+    assert client.counters.request_count == 0
+    assert client.counters.write_request_count == 0
+    assert client.counters.order_request_count == 0
+
+
+def test_get_method_source_does_not_reach_post_or_order() -> None:
+    source = inspect.getsource(LiveCanaryHttpClientV1.get)
+    assert "self.post(" not in source
+    assert "post_entry_order" not in source
+    assert "post_flatten_order" not in source
+    assert "post_cancel_order" not in source
+    assert 'method="GET"' in source or "method='GET'" in source
+
+
 def test_signed_body_equals_wire_body_evidence_contract() -> None:
     from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
         signed_wire_body_evidence_v1,

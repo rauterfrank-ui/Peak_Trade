@@ -22,6 +22,7 @@ ATLAS_AUTHORITY = REPO_ROOT / "docs" / "system_atlas" / "ATLAS_AUTHORITY_AND_USA
 
 Z2DI_HEADING = "### 11.13.5.Z2DI Post-Z2DH dual-401 whitelist-block census SSOT persist"
 Z2DJ_HEADING = "### 11.13.5.Z2DJ OKX EEA API-key IP whitelist management-plane reconcile"
+Z2DK_HEADING = "### 11.13.5.Z2DK GET redirect fail-closed on existing canary urllib transport"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_Z2DJ_OKX_API_KEY_IP_WHITELIST_RECONCILE_V1"
 Z2DI_OWNER_GO = "PEAK_TRADE_OWNER_GO_Z2DI_POST_Z2DH_DUAL_401_WHITELIST_BLOCK_CENSUS_SSOT_PERSIST_V1"
@@ -42,8 +43,8 @@ def _read(path: Path) -> str:
 def _z2dj_section(text: str) -> str:
     start = text.find(Z2DJ_HEADING)
     assert start >= 0, "missing §11.13.5.Z2DJ heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2DJ"
+    end = text.find(Z2DK_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2DK boundary after Z2DJ"
     return text[start:end]
 
 
@@ -58,7 +59,13 @@ def _z2di_section(text: str) -> str:
 def test_z2dj_heading_is_unique_and_follows_z2di() -> None:
     text = _read(MASTER_RUNBOOK)
     assert text.count(Z2DJ_HEADING) == 1
-    assert 0 <= text.find(Z2DI_HEADING) < text.find(Z2DJ_HEADING) < text.find(LADDER_HEADING)
+    assert (
+        0
+        <= text.find(Z2DI_HEADING)
+        < text.find(Z2DJ_HEADING)
+        < text.find(Z2DK_HEADING)
+        < text.find(LADDER_HEADING)
+    )
 
 
 def test_z2di_text_was_not_rewritten() -> None:
@@ -70,6 +77,7 @@ def test_z2di_text_was_not_rewritten() -> None:
     assert "WHITELIST_MUTATION_ALLOWED=false" in section
     assert "11.13.5.Z2DJ" not in section
     assert OWNER_GO not in section
+    assert "11.13.5.Z2DK" not in section
 
 
 def test_z2dj_docs_bind_management_plane_whitelist_without_get_or_activation() -> None:
