@@ -6,6 +6,9 @@ from src.ops.offline_execution_permission_and_position_creation_producer_wiring_
     PACKAGE_MARKER,
     WORKPACKAGE_ID,
 )
+from src.ops.offline_execution_permission_and_position_creation_producer_wiring_v1.composition_v1 import (
+    run_canonical_offline_position_creation_path_v1,
+)
 from src.ops.offline_execution_permission_and_position_creation_producer_wiring_v1.pipeline_v1 import (
     run_offline_execution_boundary_v1,
 )
@@ -13,5 +16,6 @@ from src.ops.offline_execution_permission_and_position_creation_producer_wiring_
 __all__ = [
     "PACKAGE_MARKER",
     "WORKPACKAGE_ID",
+    "run_canonical_offline_position_creation_path_v1",
     "run_offline_execution_boundary_v1",
 ]

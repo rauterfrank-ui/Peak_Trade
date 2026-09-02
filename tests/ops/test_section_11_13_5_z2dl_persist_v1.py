@@ -38,6 +38,7 @@ EVIDENCE_PACK = (
 
 Z2DK_HEADING = "### 11.13.5.Z2DK GET redirect fail-closed on existing canary urllib transport"
 Z2DL_HEADING = "### 11.13.5.Z2DL Post-remediation single private authenticated GET"
+Z2DM_HEADING = "### 11.13.5.Z2DM Canonical offline position-creation path wiring persist"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_Z2DL_POST_REMEDIATION_SINGLE_PRIVATE_AUTH_GET_V1"
 Z2DK_OWNER_GO = "PEAK_TRADE_OWNER_GO_Z2DK_GET_REDIRECT_FAILCLOSED_TRANSPORT_REMEDIATION_V1"
@@ -57,8 +58,10 @@ def _read(path: Path) -> str:
 def _z2dl_section(text: str) -> str:
     start = text.find(Z2DL_HEADING)
     assert start >= 0, "missing §11.13.5.Z2DL heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2DL"
+    end = text.find(Z2DM_HEADING, start)
+    if end < 0:
+        end = text.find(LADDER_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2DM or §11.14 boundary after Z2DL"
     return text[start:end]
 
 
