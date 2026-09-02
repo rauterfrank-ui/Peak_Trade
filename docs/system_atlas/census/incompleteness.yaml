@@ -227,7 +227,7 @@ completeness_flag_reasons:
   - id: endpoint_inventory_complete
     flag: true
     primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND
-    remaining: 69 raw hits classified; 21 grep noise; 48 unique REST paths; 49 modeled rows (GET/POST /trade/order). finance/funding/system namespaces absent.
+    remaining: 70 raw hits classified; 21 grep noise; 49 unique REST paths; 50 modeled rows (GET/POST /trade/order plus GET /asset/balances). finance/funding/system namespaces absent.
   - id: field_inventory_complete
     flag: true
     primary_class: SEARCHED_BUT_NO_EVIDENCE_FOUND

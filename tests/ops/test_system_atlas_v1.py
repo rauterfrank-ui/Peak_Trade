@@ -506,12 +506,12 @@ def test_local_census_closure_surfaces(atlas: dict) -> None:
     assert like["src_unadjudicated_schema_candidate_count"] == 0
     assert like["src_schema_candidate_count"] == 1626
     assert like["src_accepted_schema_count"] == 5
-    assert ep["okx_raw_api_path_hit_count"] == 69
-    assert ep["okx_unique_endpoint_candidate_count"] == 48
-    assert ep["okx_modeled_endpoint_count"] == 49
+    assert ep["okx_raw_api_path_hit_count"] == 70
+    assert ep["okx_unique_endpoint_candidate_count"] == 49
+    assert ep["okx_modeled_endpoint_count"] == 50
     assert ep["okx_grep_noise_count"] == 21
     assert ep["okx_unclassified_endpoint_count"] == 0
-    assert len(ep["candidates"]) == 69
+    assert len(ep["candidates"]) == 70
     assert fields["okx_field_token_count"] == 42
     assert fields["okx_modeled_field_count"] == 40
     assert fields["okx_unclassified_material_field_count"] == 0
@@ -529,7 +529,7 @@ def test_local_census_closure_surfaces(atlas: dict) -> None:
     assert "OKX_RESPONSE_SHAPE:ticker_row" in ids
     views = generate_views_v1(atlas=atlas, repo_root=REPO_ROOT)
     assert "SRC_SCHEMA_CANDIDATE_COUNT=1626" in views["COVERAGE_REPORT.md"]
-    assert "OKX_RAW_API_PATH_HIT_COUNT=69" in views["OKX_INTEGRATION_MAP.md"]
+    assert "OKX_RAW_API_PATH_HIT_COUNT=70" in views["OKX_INTEGRATION_MAP.md"]
     assert "SCHEMA_CENSUS_COMPLETE=true" in views["SCHEMA_MAP.md"]
     assert "TERMINOLOGY_CENSUS_COMPLETE=true" in views["SYSTEM_ATLAS.md"]
     assert "SCHEMA_CENSUS_COMPLETE=true" in views["SYSTEM_ATLAS.md"]

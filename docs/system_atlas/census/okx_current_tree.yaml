@@ -2,7 +2,7 @@
 # Current origin/main OKX tree inventory. Historical archaeology is census/okx_historical.yaml.
 schema_version: system_atlas.v1
 okx_named_file_count: 381
-okx_api_v5_path_count: 69
+okx_api_v5_path_count: 70
 okx_websocket_mention_file_count: 9
 okx_named_json_or_fixture_like_file_count: 147
 git_is_shallow: false
@@ -31,6 +31,7 @@ api_v5_paths:
   - /api/v5/account/set-position-mode
   - /api/v5/account/trade-fee
   - /api/v5/asset/
+  - /api/v5/asset/balances
   - /api/v5/asset/currencies
   - /api/v5/asset/transfer
   - /api/v5/asset/withdrawal

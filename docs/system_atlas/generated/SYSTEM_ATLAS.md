@@ -387,8 +387,8 @@ Product types below are Peak_Trade evidence, not generic OKX venue capability.
 | xperp | PARTIALLY_IMPLEMENTED | NOT_A_SEPARATE_INSTTYPE | CANARY_HARDCODED_NOT_GFU_MEMBERSHIP_PROVEN |
 
 - hosts: `8`
-- features: `32`
-- endpoints: `49`
+- features: `33`
+- endpoints: `50`
 - fields: `40`
 - `OKX_CENSUS_COMPLETE=true`
 - `REPO_OKX_CENSUS_COMPLETE=true`
@@ -599,7 +599,7 @@ Every remaining `*_COMPLETE=false` flag has exactly one primary incompleteness c
 | tests_search_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | OKX-named tests (73) plus fixture payloads inspected. Full tests/ universe is not every-file entity-mapped. |
 | config_search_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | OKX-named config (48) plus config.toml exchange.okx_europe_eea mapped. Unrelated config keys remain out of OKX census. |
 | raw_response_fixture_search_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | All 147 candidates classified; JSON structures inspected; payloads not copied. External corpus NOT_STARTED. |
-| endpoint_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | 69 raw hits classified; 21 grep noise; 48 unique REST paths; 49 modeled rows (GET/POST /trade/order). finance/funding/system namespaces absent. |
+| endpoint_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | 70 raw hits classified; 21 grep noise; 49 unique REST paths; 50 modeled rows (GET/POST /trade/order plus GET /asset/balances). finance/funding/system namespaces absent. |
 | field_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | 42 seed+observed tokens classified; 40 VENUE_FIELD rows; availPos zero hits; envelope data not a scalar field. Not every undocumented OKX v5 packet field. |
 | product_type_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | SWAP/FUTURES implemented; SPOT explicit GFU reject; MARGIN/OPTION no OKX instType evidence; xperp partial (not a separate instType). |
 | auth_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | HMAC signer, OK-ACCESS-* headers, x-simulated-trading, REST/WS hosts, LIVE_AUTHORIZED gate recorded. Credential values never stored. Other undocumented auth surfaces not claimed. |
@@ -609,7 +609,7 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `11`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `51`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `11`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `52`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
@@ -708,7 +708,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=355
+ENTITY_TOTAL=358
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=84
 RUNTIME_RELATION_COUNT=36
@@ -799,14 +799,14 @@ Remaining census domains:
 | INVARIANT | 1 |
 | NAVIGATION_INDEX | 1 |
 | OBSERVER | 1 |
-| OKX_FEATURE | 32 |
+| OKX_FEATURE | 33 |
 | OKX_HOST | 8 |
 | OKX_RESPONSE_SHAPE | 6 |
 | OWNER_DECISION | 2 |
 | PHASE | 15 |
 | REGISTRY | 1 |
 | RUNBOOK | 4 |
-| RUNTIME_COMPONENT | 47 |
+| RUNTIME_COMPONENT | 48 |
 | SCHEMA | 18 |
 | SCRIPT | 3 |
 | SELECTOR | 2 |
@@ -817,7 +817,7 @@ Remaining census domains:
 | TRANSPORT | 1 |
 | UNIVERSE | 1 |
 | VENUE | 2 |
-| VENUE_ENDPOINT | 49 |
+| VENUE_ENDPOINT | 50 |
 | VENUE_FIELD | 40 |
 
 One-question test: a new engineer can start here and see what exists, how hubs are wired, what Master V2/Double Play/Families/MMR mean (including polyvalence), where OKX/risk/safety live, which data crosses boundaries, current vs historical, and where to drill for proof. Remaining incompleteness is OPEN acronym expansions plus owner-decision/runtime facts that the Atlas faithfully records. External forensic corpus is `NOT_STARTED` and does not invalidate `REPO_ATLAS_CENSUS_COMPLETE`. Therefore `SYSTEM_ATLAS_MASTER_VIEW_COMPLETE=true` while `GLOBAL_CENSUS_EXHAUSTED=false`.

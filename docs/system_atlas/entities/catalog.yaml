@@ -1704,3 +1704,32 @@ entities:
       composition. GRANT_FOR_NON_LIVE_BOUNDARY is not live send. Productive
       wire remains false. Prerequisite 08 remains unresolved. Atlas is not
       canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1
+    kind: RUNTIME_COMPONENT
+    name: Offline Funding Account balance read producer v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/offline_funding_balance_read_producer_v1/__init__.py
+      - src/ops/offline_funding_balance_read_producer_v1/constants_v1.py
+      - src/ops/offline_funding_balance_read_producer_v1/fixtures_v1.py
+      - src/ops/offline_funding_balance_read_producer_v1/observation_v1.py
+      - src/ops/offline_funding_balance_read_producer_v1/persist_claims_v1.py
+      - src/ops/offline_funding_balance_read_producer_v1/producer_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py
+    evidence_sources:
+      - src/ops/offline_funding_balance_read_producer_v1/producer_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py
+      - tests/ops/test_offline_funding_balance_read_producer_v1.py
+      - tests/ops/test_section_11_13_5_z2df_offline_funding_balance_read_producer_persist_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: >-
+      Navigation inventory of the offline Funding Account GET producer.
+      GET /api/v5/asset/balances is allowlisted and distinct from
+      GET /api/v5/account/balance. Absent currency rows are not zero.
+      Implementation is not execution. Productive network remains false.
+      No transfer, deposit, conversion, or live authority. Atlas is not
+      canonical authority. ATLAS_AUTHORITY=NONE.

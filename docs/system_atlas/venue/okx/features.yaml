@@ -525,6 +525,30 @@ features:
       - src/execution/adapters/providers/okx_v1.py
       - src/execution/adapters/registry_v1.py
     notes: Current registry entries are mock and okx only. Non-OKX providers were removed. Not a live unlock.
+  - id: OKX_FEATURE:asset_balances
+    kind: OKX_FEATURE
+    name: asset_balances
+    category: assets
+    current_implementation: GET /api/v5/asset/balances
+    historical_implementation: OPEN
+    product_types: n/a
+    endpoints: GET /api/v5/asset/balances
+    auth_required: true
+    first_proven_occurrence: OPEN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    canonical_support: OPEN
+    runtime_reachable: OPEN
+    tested: OPEN
+    forensic_evidence: bounded
+    open_gaps: census_not_complete
+    evidence_sources:
+      - src/ops/offline_funding_balance_read_producer_v1/producer_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py
+    notes: >-
+      Funding Account read. Not trading-account equity. Not transfer.
+      Implementation is not execution.
   - id: OKX_FEATURE:asset_transfer
     kind: OKX_FEATURE
     name: asset_transfer

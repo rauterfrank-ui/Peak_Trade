@@ -109,12 +109,14 @@ ENDPOINT_ACCOUNT_LEVERAGE_INFO = "/api/v5/account/leverage-info"
 ENDPOINT_ACCOUNT_CONFIG = "/api/v5/account/config"
 ENDPOINT_ACCOUNT_POSITIONS = "/api/v5/account/positions"
 ENDPOINT_ACCOUNT_BALANCE = "/api/v5/account/balance"
+ENDPOINT_ASSET_BALANCES = "/api/v5/asset/balances"
 ENDPOINT_ALLOWLIST_READ: tuple[str, ...] = (
     ENDPOINT_ACCOUNT_BALANCE,
     ENDPOINT_ACCOUNT_CONFIG,
     ENDPOINT_ACCOUNT_POSITIONS,
     ENDPOINT_ACCOUNT_MAX_SIZE,
     ENDPOINT_ACCOUNT_LEVERAGE_INFO,
+    ENDPOINT_ASSET_BALANCES,
     "/api/v5/trade/orders-pending",
     "/api/v5/market/ticker",
     "/api/v5/public/instruments",
@@ -302,6 +304,7 @@ GET_ENDPOINTS_PRIVATE: tuple[str, ...] = (
     ENDPOINT_ACCOUNT_POSITIONS,
     ENDPOINT_ACCOUNT_MAX_SIZE,
     ENDPOINT_ACCOUNT_LEVERAGE_INFO,
+    ENDPOINT_ASSET_BALANCES,
     "/api/v5/trade/orders-pending",
     ENDPOINT_ORDERS_ALGO_PENDING,
     "/api/v5/trade/orders-history",

@@ -14,19 +14,19 @@
 This Atlas does not claim universe completeness because generation succeeded.
 
 ```text
-ENTITY_TOTAL=355
+ENTITY_TOTAL=358
 STRUCTURAL_RELATION_COUNT=84
 RUNTIME_RELATION_COUNT=36
 AUTHORITY_RELATION_COUNT=7
 OPEN_RELATION_COUNT=1
 CONTRADICTED_RELATION_COUNT=1
 HYPOTHESIS_COUNT=0
-OKX_FEATURE_TOTAL=32
-OKX_ENDPOINT_COUNT=49
+OKX_FEATURE_TOTAL=33
+OKX_ENDPOINT_COUNT=50
 OKX_FIELD_COUNT=40
 UNRESOLVED_CONTRADICTION_COUNT=9
 CAPABILITY_DEPENDENCY_CLOSURE_COUNT=9
-ORPHAN_COMPONENT_COUNT=52
+ORPHAN_COMPONENT_COUNT=53
 DATA_LINEAGE_RECORD_COUNT=4
 CONFIG_WIRING_RECORD_COUNT=4
 OKX_CENSUS_COMPLETE=true
@@ -82,11 +82,11 @@ SRC_ACCEPTED_SCHEMA_COUNT=5
 SRC_DATA_CONTRACT_COUNT=2
 SRC_TYPE_ONLY_COUNT=1618
 SRC_UNADJUDICATED_SCHEMA_CANDIDATE_COUNT=0
-OKX_RAW_API_PATH_HIT_COUNT=69
-OKX_UNIQUE_ENDPOINT_CANDIDATE_COUNT=48
+OKX_RAW_API_PATH_HIT_COUNT=70
+OKX_UNIQUE_ENDPOINT_CANDIDATE_COUNT=49
 OKX_GREP_NOISE_COUNT=21
 OKX_UNCLASSIFIED_ENDPOINT_COUNT=0
-OKX_MODELED_ENDPOINT_COUNT=49
+OKX_MODELED_ENDPOINT_COUNT=50
 OKX_FIELD_TOKEN_COUNT=42
 OKX_UNCLASSIFIED_MATERIAL_FIELD_COUNT=0
 OKX_MODELED_FIELD_COUNT=40
@@ -136,14 +136,14 @@ OKX_EVIDENCE_CENSUS_COMPLETE=true
 | INVARIANT | 1 |
 | NAVIGATION_INDEX | 1 |
 | OBSERVER | 1 |
-| OKX_FEATURE | 32 |
+| OKX_FEATURE | 33 |
 | OKX_HOST | 8 |
 | OKX_RESPONSE_SHAPE | 6 |
 | OWNER_DECISION | 2 |
 | PHASE | 15 |
 | REGISTRY | 1 |
 | RUNBOOK | 4 |
-| RUNTIME_COMPONENT | 47 |
+| RUNTIME_COMPONENT | 48 |
 | SCHEMA | 18 |
 | SCRIPT | 3 |
 | SELECTOR | 2 |
@@ -154,7 +154,7 @@ OKX_EVIDENCE_CENSUS_COMPLETE=true
 | TRANSPORT | 1 |
 | UNIVERSE | 1 |
 | VENUE | 2 |
-| VENUE_ENDPOINT | 49 |
+| VENUE_ENDPOINT | 50 |
 | VENUE_FIELD | 40 |
 
 ## Named gaps
@@ -215,7 +215,7 @@ Completeness-flag reasons (`completeness_flags.*`):
 | tests_search_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | OKX-named tests (73) plus fixture payloads inspected. Full tests/ universe is not every-file entity-mapped. |
 | config_search_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | OKX-named config (48) plus config.toml exchange.okx_europe_eea mapped. Unrelated config keys remain out of OKX census. |
 | raw_response_fixture_search_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | All 147 candidates classified; JSON structures inspected; payloads not copied. External corpus NOT_STARTED. |
-| endpoint_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | 69 raw hits classified; 21 grep noise; 48 unique REST paths; 49 modeled rows (GET/POST /trade/order). finance/funding/system namespaces absent. |
+| endpoint_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | 70 raw hits classified; 21 grep noise; 49 unique REST paths; 50 modeled rows (GET/POST /trade/order plus GET /asset/balances). finance/funding/system namespaces absent. |
 | field_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | 42 seed+observed tokens classified; 40 VENUE_FIELD rows; availPos zero hits; envelope data not a scalar field. Not every undocumented OKX v5 packet field. |
 | product_type_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | SWAP/FUTURES implemented; SPOT explicit GFU reject; MARGIN/OPTION no OKX instType evidence; xperp partial (not a separate instType). |
 | auth_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | HMAC signer, OK-ACCESS-* headers, x-simulated-trading, REST/WS hosts, LIVE_AUTHORIZED gate recorded. Credential values never stored. Other undocumented auth surfaces not claimed. |
