@@ -25,6 +25,8 @@
     "src/trading/master_v2/deterministic_scope_event_generator_v1.py",
     "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
     "src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py",
+    "src/governance/capital_risk_sizing_v1.py",
+    "src/governance/canonical_order_intent_v1.py",
     "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
     "src/trading/master_v2/legacy_runtime_entrypoint_guard_v0.py",
     "src/ops/double_play/specialists.py",
@@ -1141,7 +1143,7 @@
     "PRODUCTIVE_TYPED_VOLATILITY_PRODUCER_AND_CMC_HOT_PATH_BINDING_V1: authorize exact-file PT1M mark observation finalizer + focused test only (forbidden MASTER_V2 surfaces). Reuses existing producer/CMC/presence-gate/hardening-bridge authorities. No formula/window/ddof/unit/threshold change; Numeric Max-Age remains non-enforcing; no proxy promotion; CORE_LOGIC_CHANGE=false; no live/testnet/orders.",
     "MASTER_V2_INTEGRATED_REPLAY_APPENDIX_A_CORE_LOGIC_PARITY_POST_6135_V1: authorize exact-file proof-only / test-only / semantics-neutral Appendix A core-logic parity contract test. Non-runtime, non-authoritative. Does not expand historically attested restoration allowed_paths. No replay rewire, no owner change, no live/testnet/orders.",
     "MASTER_V2_DOUBLE_PLAY_HOST_GRAPH_SSOT_AND_OWNER_COMPOSED_FULL_CHAIN_PROOF_V1: authorize exact-file proof-only / docs-only host-graph SSOT classification spec and joined Replay-to-simulated-execution contract test. Non-runtime, non-authoritative. Does not expand historically attested restoration allowed_paths. No replay rewire, no owner change, no live/testnet/orders.",
-    "WP_FS_B1_DDO_OBSERVATION_HOST_DECORATOR_COMPLETION_V1: authorize exact-file observation-only host decorator attachment on already-productive Master-V2 producers (double_play_entry_exit_policy_v0, safety_kernel_offline_replay_binding_adapter_v0). Capture runs after producer return; capture failure does not change the result. No WP-FA-08, no supervisor activation, no core/risk/safety semantic change, no live/testnet/orders."
+    "WP_FS_B1_DDO_OBSERVATION_HOST_DECORATOR_COMPLETION_V1: authorize exact-file observation-only host decorator attachment on already-productive no-order producers (double_play_entry_exit_policy_v0, safety_kernel_offline_replay_binding_adapter_v0, capital_risk_sizing_v1, canonical_order_intent_v1). Capture runs after producer return; capture failure does not change the result. No WP-FA-08, no supervisor activation, no core/risk/safety/promotion semantic change, no live/testnet/orders."
   ],
   "pr_specific_exception": false,
   "required_check_waiver": false,

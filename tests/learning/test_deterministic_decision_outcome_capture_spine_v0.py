@@ -101,11 +101,11 @@ def test_fa_01_producer_output_identical_with_and_without_capture() -> None:
     }
     without = produce_governed_futures_universe_v1(**kwargs)
     binding = _session()
-    token = bind_capture_session_v0(binding)
+    session_handle = bind_capture_session_v0(binding)
     try:
         with_capture = produce_governed_futures_universe_v1(**kwargs)
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(session_handle)
     assert with_capture == without
     assert with_capture.failure_codes == without.failure_codes
     assert with_capture.ok is without.ok
@@ -124,11 +124,11 @@ def test_fa_02_producer_reason_codes_preserved_verbatim() -> None:
     }
     produced = produce_governed_futures_universe_v1(**kwargs)
     binding = _session()
-    token = bind_capture_session_v0(binding)
+    session_handle = bind_capture_session_v0(binding)
     try:
         captured_prod = produce_governed_futures_universe_v1(**kwargs)
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(session_handle)
     assert captured_prod.failure_codes == produced.failure_codes
     record = binding.captured_records[0]
     captured_codes = tuple(item["code"] for item in record["reason_codes"])
@@ -162,7 +162,7 @@ def test_fa_04_capture_occurs_after_authoritative_producer_decision() -> None:
 
     wrapped = observe_after_producer_v0(seam_id=SEAM_SELECTION_UNIVERSE)(producer)
     binding = _session()
-    token = bind_capture_session_v0(binding)
+    session_handle = bind_capture_session_v0(binding)
 
     orig_observe = observe_producer_result_v0
 
@@ -177,7 +177,7 @@ def test_fa_04_capture_occurs_after_authoritative_producer_decision() -> None:
         result = wrapped(producer_observed_at_unix=EVENT_UNIX)
     finally:
         capture_mod.observe_producer_result_v0 = orig_observe
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(session_handle)
     assert result["failure_codes"] == ("OKX_SOURCE_UNAVAILABLE",)
     assert order == ["producer", "capture"]
 
@@ -200,11 +200,11 @@ def test_fa_05_capture_exception_does_not_change_productive_result(monkeypatch: 
     }
     baseline = produce_governed_futures_universe_v1(**kwargs)
     binding = _session()
-    token = bind_capture_session_v0(binding)
+    session_handle = bind_capture_session_v0(binding)
     try:
         result = produce_governed_futures_universe_v1(**kwargs)
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(session_handle)
     assert result == baseline
     assert binding.last_error is not None
     assert "CAPTURE_INJECTED_FAILURE" in binding.last_error
@@ -511,11 +511,11 @@ def test_wp_fs_b1_c1_output_identical_with_and_without_capture() -> None:
     candidate = _c1_candidate()
     without = evaluate_distinct_market_observation_v1(state, candidate)
     binding = _session()
-    token = bind_capture_session_v0(binding)
+    session_handle = bind_capture_session_v0(binding)
     try:
         with_capture = evaluate_distinct_market_observation_v1(state, candidate)
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(session_handle)
     assert with_capture == without
     assert binding.captured_records
     assert all(item["decision_result"] == "NO_ACTION" for item in binding.captured_records)
@@ -537,14 +537,14 @@ def test_wp_fs_b1_mapper_output_identical_with_and_without_capture() -> None:
         instrument_id="ETH-USD-SWAP",
     )
     binding = _session()
-    token = bind_capture_session_v0(binding)
+    session_handle = bind_capture_session_v0(binding)
     try:
         with_capture = map_replay_result_to_intended_analytical_action_v1(
             replay,  # type: ignore[arg-type]
             instrument_id="ETH-USD-SWAP",
         )
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(session_handle)
     assert with_capture == without
     assert binding.captured_records
 
@@ -588,11 +588,11 @@ def test_wp_fs_b1_step_29p_output_identical_with_and_without_capture() -> None:
     )
     without = evaluate_capital_risk_sizing_v1(inp)
     binding = _session()
-    token = bind_capture_session_v0(binding)
+    session_handle = bind_capture_session_v0(binding)
     try:
         with_capture = evaluate_capital_risk_sizing_v1(inp)
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(session_handle)
     assert with_capture == without
 
 
@@ -613,11 +613,11 @@ def test_wp_fs_b1_capture_exception_does_not_change_c1_result(monkeypatch: Any) 
     candidate = _c1_candidate()
     baseline = evaluate_distinct_market_observation_v1(state, candidate)
     binding = _session()
-    token = bind_capture_session_v0(binding)
+    session_handle = bind_capture_session_v0(binding)
     try:
         result = evaluate_distinct_market_observation_v1(state, candidate)
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(session_handle)
     assert result == baseline
     assert binding.last_error is not None
     assert "CAPTURE_INJECTED_FAILURE" in binding.last_error
