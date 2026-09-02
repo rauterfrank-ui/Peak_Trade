@@ -1733,3 +1733,30 @@ entities:
       Implementation is not execution. Productive network remains false.
       No transfer, deposit, conversion, or live authority. Atlas is not
       canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:z2dg_single_actual_read_only_funding_balance_get_v1
+    kind: RUNTIME_COMPONENT
+    name: Z2DG one-shot Funding Account balance GET v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/section_11_13_5_z2dg_single_actual_read_only_funding_balance_get_v1/__init__.py
+      - src/ops/section_11_13_5_z2dg_single_actual_read_only_funding_balance_get_v1/constants_v1.py
+      - src/ops/section_11_13_5_z2dg_single_actual_read_only_funding_balance_get_v1/execute_v1.py
+      - src/ops/section_11_13_5_z2dg_single_actual_read_only_funding_balance_get_v1/persist_claims_v1.py
+      - src/ops/section_11_13_5_z2dg_single_actual_read_only_funding_balance_get_v1/persist_v1.py
+    evidence_sources:
+      - src/ops/section_11_13_5_z2dg_single_actual_read_only_funding_balance_get_v1/execute_v1.py
+      - tests/ops/test_section_11_13_5_z2dg_single_actual_read_only_funding_balance_get_v1.py
+      - tests/ops/test_section_11_13_5_z2dg_persist_v1.py
+      - evidence/ops/section_11_13_5_z2dg_single_actual_read_only_funding_balance_get_v1/20260902T134821Z/SUMMARY.json
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: >-
+      Navigation inventory of the consumed one-shot authenticated
+      GET /api/v5/asset/balances. Venue result HTTP 401 / OKX 50110.
+      Funding rows were not observed. Reuses canary HTTP client, GET
+      signer, and SecretRef. Not a retry, POST, transfer, live unlock,
+      canary activation, or Prerequisite 08 close. Atlas is not
+      canonical authority. ATLAS_AUTHORITY=NONE.

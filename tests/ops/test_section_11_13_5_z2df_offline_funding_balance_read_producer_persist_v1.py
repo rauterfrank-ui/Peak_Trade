@@ -38,6 +38,7 @@ Z2DB_HEADING = (
     "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
 )
 Z2DF_HEADING = "### 11.13.5.Z2DF Offline Funding Account balance read producer persist"
+Z2DG_HEADING = "### 11.13.5.Z2DG Single actual read-only Funding Account balance GET"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_Z2DF_OFFLINE_FUNDING_BALANCE_READ_PRODUCER_V1"
 BASELINE_SHA = "032dfdb9fecc29691bf8d71f8cad8f506280ea28"
@@ -51,8 +52,8 @@ def _read(path: Path) -> str:
 def _z2df_section(text: str) -> str:
     start = text.find(Z2DF_HEADING)
     assert start >= 0, "missing §11.13.5.Z2DF heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2DF"
+    end = text.find(Z2DG_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2DG boundary after Z2DF"
     return text[start:end]
 
 
@@ -69,8 +70,9 @@ def test_z2df_heading_is_unique_and_follows_z2db() -> None:
     assert text.count(Z2DF_HEADING) == 1
     z2db = text.find(Z2DB_HEADING)
     z2df = text.find(Z2DF_HEADING)
+    z2dg = text.find(Z2DG_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= z2db < z2df < ladder
+    assert 0 <= z2db < z2df < z2dg < ladder
 
 
 def test_z2db_text_was_not_rewritten() -> None:
