@@ -14,8 +14,8 @@
 This view is topology change-coupling, not canonical authority.
 
 ```text
-ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_IMPACT=NONE_WITH_PROOF
+ATLAS_CHANGED_ENTITY_COUNT=0
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `NAVIGATION_INDEX:map_of_truth` |
+| _(none)_ |
 
 ## CHANGED_RELATIONS
 
@@ -92,7 +92,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- WP-04 Decision-Map / Map-of-Truth current-vs-historical selection navigation inventory only. Adds MASTER_V2_DECISION_AUTHORITY_MAP_V1.md as a navigation evidence source on NAVIGATION_INDEX:map_of_truth. No new relations. No selection, Landscape, Atlas, USP, WebUI, DDO, learning, or promotion authority. Atlas is not canonical authority.
+- WP-FS-B1 post-merge canonical persist and Atlas current-main navigation census SHA rebind only. CURRENT_REPO_SHA rebound to 14e8a58f32dcb6b521be6b2559b388bf27360194 (#6215). HISTORICAL_EVIDENCE_SHA domain census payloads remain 615de3b307132b73a60df33fd3bedfac811c8cce (WP-FA-07). No catalog entity or relation topology change. No WP-FA-08 definition. No runtime, supervisor, execution, learning, or promotion authority. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

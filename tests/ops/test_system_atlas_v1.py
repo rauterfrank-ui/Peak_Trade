@@ -627,10 +627,11 @@ def test_repo_atlas_v1_final_closure(atlas: dict) -> None:
 
 def test_census_navigation_rebind_distinct_from_domain_payloads(atlas: dict) -> None:
     meta = atlas["records"]["census/census_meta.yaml"]
-    assert meta["origin_main_sha"] == "46d2c1734746d6d1332de0dfb03840d3bd8c31b1"
-    assert meta["navigation_rebind_sha"] == "46d2c1734746d6d1332de0dfb03840d3bd8c31b1"
+    assert meta["origin_main_sha"] == "14e8a58f32dcb6b521be6b2559b388bf27360194"
+    assert meta["navigation_rebind_sha"] == "14e8a58f32dcb6b521be6b2559b388bf27360194"
     assert meta["navigation_rebind_kind"] == "FRESH_NAVIGATION_REBIND_NOT_DOMAIN_RECENSUS"
     assert meta["domain_census_payloads_bound_sha"] == "615de3b307132b73a60df33fd3bedfac811c8cce"
+    assert meta["origin_main_sha"] != meta["domain_census_payloads_bound_sha"]
     assert meta["domain_census_payloads_fresh_exhaustive_recensus"] is False
     inv = atlas["records"]["census/master_v2_module_inventory.yaml"]
     assert inv["origin_main_sha"] == meta["origin_main_sha"]
