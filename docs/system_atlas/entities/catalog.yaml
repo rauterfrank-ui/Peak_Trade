@@ -1781,6 +1781,7 @@ entities:
       - tests/ops/test_section_11_13_5_z2di_persist_v1.py
       - tests/ops/test_section_11_13_5_z2dj_persist_v1.py
       - tests/ops/test_section_11_13_5_z2dk_persist_v1.py
+      - tests/ops/test_section_11_13_5_z2dl_persist_v1.py
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py
       - evidence/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/20260902T143840Z/SUMMARY.json
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
@@ -1798,9 +1799,42 @@ entities:
       management-plane IP-whitelist addition for the existing canary
       SecretRef key only. Management-plane confirmation is not private
       API auth success, not runtime 50110 clearance, and not a Funding
-      GET. Additive §11.13.5.Z2DK SSOT persist records offline GET
+      GET.       Additive §11.13.5.Z2DK SSOT persist records offline GET
       redirect fail-closed hardening of the existing
       UrllibLiveCanaryTransportV1 only. That persist is not a private
       GET, not runtime 50110 clearance, and does not consume the Z2DK
-      wire GO. No runtime consumer. Atlas is not canonical authority.
+      wire GO. Additive §11.13.5.Z2DL SSOT persist records exactly one
+      authenticated GET /api/v5/account/config (HTTP 200 / OKX 0).
+      That persist is not funding, positions, execution, or Prerequisite
+      08 close. No runtime consumer. Atlas is not canonical authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:z2dl_post_remediation_single_private_auth_get_v1
+    kind: RUNTIME_COMPONENT
+    name: Z2DL post-remediation single private Auth GET v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/section_11_13_5_z2dl_post_remediation_single_private_auth_get_v1/__init__.py
+      - src/ops/section_11_13_5_z2dl_post_remediation_single_private_auth_get_v1/constants_v1.py
+      - src/ops/section_11_13_5_z2dl_post_remediation_single_private_auth_get_v1/execute_v1.py
+      - src/ops/section_11_13_5_z2dl_post_remediation_single_private_auth_get_v1/persist_claims_v1.py
+      - src/ops/section_11_13_5_z2dl_post_remediation_single_private_auth_get_v1/persist_v1.py
+    evidence_sources:
+      - src/ops/section_11_13_5_z2dl_post_remediation_single_private_auth_get_v1/execute_v1.py
+      - tests/ops/test_section_11_13_5_z2dl_single_private_auth_get_v1.py
+      - tests/ops/test_section_11_13_5_z2dl_persist_v1.py
+      - evidence/ops/section_11_13_5_z2dl_post_remediation_single_private_auth_get_v1/20260902T193121Z/SUMMARY.json
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: >-
+      Navigation inventory of the consumed one-shot authenticated
+      GET /api/v5/account/config under Z2DL. Venue result HTTP 200 /
+      OKX 0. Private API auth success and runtime 50110 clearance are
+      proven for this request only. Reuses canary HTTP client, GET
+      signer, and SecretRef. Not a funding GET, positions GET, POST,
+      live unlock, canary activation, or Prerequisite 08 close.
+      Account-config field values are not operational claims.
+      No runtime consumer. Atlas is not canonical authority.
       ATLAS_AUTHORITY=NONE.

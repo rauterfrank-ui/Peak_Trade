@@ -39,6 +39,7 @@ Z2DH_HEADING = "### 11.13.5.Z2DH Single actual read-only Funding Account balance
 Z2DI_HEADING = "### 11.13.5.Z2DI Post-Z2DH dual-401 whitelist-block census SSOT persist"
 Z2DJ_HEADING = "### 11.13.5.Z2DJ OKX EEA API-key IP whitelist management-plane reconcile"
 Z2DK_HEADING = "### 11.13.5.Z2DK GET redirect fail-closed on existing canary urllib transport"
+Z2DL_HEADING = "### 11.13.5.Z2DL Post-remediation single private authenticated GET"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_Z2DH_SINGLE_ACTUAL_READ_ONLY_FUNDING_BALANCE_GET_V1"
 BASELINE_SHA = "79bb087a8531714b1fdb8d65d4077bc31068b67b"
@@ -75,6 +76,7 @@ def test_z2dh_heading_is_unique_and_follows_z2dg() -> None:
         < text.find(Z2DI_HEADING)
         < text.find(Z2DJ_HEADING)
         < text.find(Z2DK_HEADING)
+        < text.find(Z2DL_HEADING)
         < text.find(LADDER_HEADING)
     )
 

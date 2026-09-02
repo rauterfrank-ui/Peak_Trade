@@ -38,6 +38,7 @@ HTTP_CLIENT = (
 
 Z2DJ_HEADING = "### 11.13.5.Z2DJ OKX EEA API-key IP whitelist management-plane reconcile"
 Z2DK_HEADING = "### 11.13.5.Z2DK GET redirect fail-closed on existing canary urllib transport"
+Z2DL_HEADING = "### 11.13.5.Z2DL Post-remediation single private authenticated GET"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_Z2DK_GET_REDIRECT_FAILCLOSED_TRANSPORT_REMEDIATION_V1"
 Z2DJ_OWNER_GO = "PEAK_TRADE_OWNER_GO_Z2DJ_OKX_API_KEY_IP_WHITELIST_RECONCILE_V1"
@@ -55,8 +56,8 @@ def _read(path: Path) -> str:
 def _z2dk_section(text: str) -> str:
     start = text.find(Z2DK_HEADING)
     assert start >= 0, "missing §11.13.5.Z2DK heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2DK"
+    end = text.find(Z2DL_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2DL boundary after Z2DK"
     return text[start:end]
 
 
@@ -71,7 +72,13 @@ def _z2dj_section(text: str) -> str:
 def test_z2dk_heading_is_unique_and_follows_z2dj() -> None:
     text = _read(MASTER_RUNBOOK)
     assert text.count(Z2DK_HEADING) == 1
-    assert 0 <= text.find(Z2DJ_HEADING) < text.find(Z2DK_HEADING) < text.find(LADDER_HEADING)
+    assert (
+        0
+        <= text.find(Z2DJ_HEADING)
+        < text.find(Z2DK_HEADING)
+        < text.find(Z2DL_HEADING)
+        < text.find(LADDER_HEADING)
+    )
 
 
 def test_z2dj_text_was_not_rewritten() -> None:
@@ -83,6 +90,7 @@ def test_z2dj_text_was_not_rewritten() -> None:
     assert "PRIVATE_GET_PERFORMED=false" in section
     assert "11.13.5.Z2DK" not in section
     assert OWNER_GO not in section
+    assert "11.13.5.Z2DL" not in section
 
 
 def test_z2dk_docs_bind_transport_remediation_without_get_or_activation() -> None:
@@ -153,6 +161,8 @@ def test_z2dk_docs_bind_transport_remediation_without_get_or_activation() -> Non
     )
     for token in required:
         assert token in section, token
+    assert "11.13.5.Z2DL" not in section
+    assert "PEAK_TRADE_OWNER_GO_Z2DL_POST_REMEDIATION_SINGLE_PRIVATE_AUTH_GET_V1" not in section
 
 
 def test_z2dk_docs_forbid_activation_get_and_overclaim() -> None:
