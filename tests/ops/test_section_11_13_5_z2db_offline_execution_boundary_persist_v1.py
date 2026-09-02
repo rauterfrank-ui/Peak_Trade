@@ -122,6 +122,7 @@ def test_z2db_docs_bind_offline_boundary_without_closing_08() -> None:
         "LIVE_ARMED=false",
         "SUBMIT_UNLOCKED=false",
         "ATLAS_MUTATION=false",
+        "ATLAS_IMPACT=UPDATED",
         "LANDSCAPE_MUTATION=false",
         "NO_MAP_OF_TRUTH_MUTATION=true",
         "RUNTIME_AUTHORIZATION_EFFECT=NONE",

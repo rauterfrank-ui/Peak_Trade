@@ -1673,3 +1673,34 @@ entities:
       promotion, trading, selection, runtime, or live authority. Surface M PASS
       is not a grant. DDO remains AUTHORITY_OWNER=NONE and parallel to
       learning_loop. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:offline_execution_permission_and_position_creation_producer_wiring_v1
+    kind: RUNTIME_COMPONENT
+    name: Offline execution-permission and position-creation producer wiring v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/__init__.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/action_identity_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/constants_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/existing_gate_reuse_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/fixtures_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/models_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/permission_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/persist_claims_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/pipeline_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/prewire_validation_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/reconciliation_hooks_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/recording_transport_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/request_producer_v1.py
+    evidence_sources:
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/pipeline_v1.py
+      - tests/ops/test_offline_execution_permission_and_position_creation_producer_wiring_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: >-
+      Navigation inventory of the offline non-live execution-boundary
+      composition. GRANT_FOR_NON_LIVE_BOUNDARY is not live send. Productive
+      wire remains false. Prerequisite 08 remains unresolved. Atlas is not
+      canonical authority. ATLAS_AUTHORITY=NONE.
