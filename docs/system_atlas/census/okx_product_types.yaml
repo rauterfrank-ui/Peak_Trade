@@ -1,8 +1,8 @@
 # ATLAS_AUTHORITY=NONE
 # Peak_Trade evidence for OKX instType / product tokens. Not generic OKX capability.
 schema_version: system_atlas.v1
-origin_main_sha: 46d2c1734746d6d1332de0dfb03840d3bd8c31b1
-navigation_rebind_sha: 46d2c1734746d6d1332de0dfb03840d3bd8c31b1
+origin_main_sha: 14e8a58f32dcb6b521be6b2559b388bf27360194
+navigation_rebind_sha: 14e8a58f32dcb6b521be6b2559b388bf27360194
 domain_census_payloads_bound_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
 domain_census_payloads_fresh_exhaustive_recensus: false
 okx_product_type_census_complete: true

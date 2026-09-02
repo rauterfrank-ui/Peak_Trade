@@ -44,3 +44,15 @@ changes:
     notes: >-
       Fresh navigation rebind after #6210. Domain census payloads were not
       freshly exhaustively rerun. Atlas is not trading authority.
+  - id: CHANGE:atlas_post_6215_navigation_rebind
+    from: 46d2c1734746d6d1332de0dfb03840d3bd8c31b1
+    to: 14e8a58f32dcb6b521be6b2559b388bf27360194
+    type: NAVIGATION_REBIND
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/system_atlas/census/census_meta.yaml
+    notes: >-
+      Fresh navigation rebind of CURRENT_REPO_SHA after WP-FS-B1 git merge
+      #6215. HISTORICAL_EVIDENCE_SHA / domain census payloads remain
+      615de3b307132b73a60df33fd3bedfac811c8cce (WP-FA-07) and were not
+      freshly exhaustively rerun. Does not define WP-FA-08. Atlas is not
+      trading authority.
