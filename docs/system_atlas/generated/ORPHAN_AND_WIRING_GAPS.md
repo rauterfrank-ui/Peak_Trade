@@ -75,5 +75,6 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:promotion_loop_safety | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:promotion_loop_safety | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:recon_startup_gate_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:recon_startup_gate_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:simulated_execution_port_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:simulated_execution_port_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:z2dg_single_actual_read_only_funding_balance_get_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:z2dg_single_actual_read_only_funding_balance_get_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:TRANSPORT:bound_okx_testnet_http | DEFINED_BUT_NO_CONSUMER | TRANSPORT:bound_okx_testnet_http | STATUS=OPEN (not proven) |  |
 
