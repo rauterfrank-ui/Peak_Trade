@@ -37,6 +37,7 @@ EVIDENCE_PACK = (
 Z2DG_HEADING = "### 11.13.5.Z2DG Single actual read-only Funding Account balance GET"
 Z2DH_HEADING = "### 11.13.5.Z2DH Single actual read-only Funding Account balance GET"
 Z2DI_HEADING = "### 11.13.5.Z2DI Post-Z2DH dual-401 whitelist-block census SSOT persist"
+Z2DJ_HEADING = "### 11.13.5.Z2DJ OKX EEA API-key IP whitelist management-plane reconcile"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_Z2DH_SINGLE_ACTUAL_READ_ONLY_FUNDING_BALANCE_GET_V1"
 BASELINE_SHA = "79bb087a8531714b1fdb8d65d4077bc31068b67b"
@@ -71,6 +72,7 @@ def test_z2dh_heading_is_unique_and_follows_z2dg() -> None:
         <= text.find(Z2DG_HEADING)
         < text.find(Z2DH_HEADING)
         < text.find(Z2DI_HEADING)
+        < text.find(Z2DJ_HEADING)
         < text.find(LADDER_HEADING)
     )
 
@@ -91,6 +93,8 @@ def test_z2dh_text_excludes_z2di_tokens() -> None:
         "PEAK_TRADE_OWNER_GO_Z2DI_POST_Z2DH_DUAL_401_WHITELIST_BLOCK_CENSUS_SSOT_PERSIST_V1"
         not in section
     )
+    assert "11.13.5.Z2DJ" not in section
+    assert "PEAK_TRADE_OWNER_GO_Z2DJ_OKX_API_KEY_IP_WHITELIST_RECONCILE_V1" not in section
 
 
 def test_z2dh_docs_bind_one_get_without_success_or_activation() -> None:

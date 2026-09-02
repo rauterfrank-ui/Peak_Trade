@@ -1779,6 +1779,7 @@ entities:
       - tests/ops/test_section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1.py
       - tests/ops/test_section_11_13_5_z2dh_persist_v1.py
       - tests/ops/test_section_11_13_5_z2di_persist_v1.py
+      - tests/ops/test_section_11_13_5_z2dj_persist_v1.py
       - evidence/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/20260902T143840Z/SUMMARY.json
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
@@ -1791,5 +1792,9 @@ entities:
       Additive §11.13.5.Z2DI SSOT persist binds the identical Z2DG/Z2DH
       BODY_SHA256 for those two observed asset/balances responses only.
       That identity does not prove other endpoints, Positions GET, or
-      whitelist success. No runtime consumer. Atlas is not canonical
-      authority. ATLAS_AUTHORITY=NONE.
+      whitelist success. Additive §11.13.5.Z2DJ SSOT persist records the
+      management-plane IP-whitelist addition for the existing canary
+      SecretRef key only. Management-plane confirmation is not private
+      API auth success, not runtime 50110 clearance, and not a Funding
+      GET. No runtime consumer. Atlas is not canonical authority.
+      ATLAS_AUTHORITY=NONE.
