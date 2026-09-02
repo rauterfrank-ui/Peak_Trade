@@ -36,6 +36,7 @@ EVIDENCE_PACK = (
 
 Z2DG_HEADING = "### 11.13.5.Z2DG Single actual read-only Funding Account balance GET"
 Z2DH_HEADING = "### 11.13.5.Z2DH Single actual read-only Funding Account balance GET"
+Z2DI_HEADING = "### 11.13.5.Z2DI Post-Z2DH dual-401 whitelist-block census SSOT persist"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_Z2DH_SINGLE_ACTUAL_READ_ONLY_FUNDING_BALANCE_GET_V1"
 BASELINE_SHA = "79bb087a8531714b1fdb8d65d4077bc31068b67b"
@@ -49,8 +50,8 @@ def _read(path: Path) -> str:
 def _z2dh_section(text: str) -> str:
     start = text.find(Z2DH_HEADING)
     assert start >= 0, "missing §11.13.5.Z2DH heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2DH"
+    end = text.find(Z2DI_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2DI boundary after Z2DH"
     return text[start:end]
 
 
@@ -65,7 +66,13 @@ def _z2dg_section(text: str) -> str:
 def test_z2dh_heading_is_unique_and_follows_z2dg() -> None:
     text = _read(MASTER_RUNBOOK)
     assert text.count(Z2DH_HEADING) == 1
-    assert 0 <= text.find(Z2DG_HEADING) < text.find(Z2DH_HEADING) < text.find(LADDER_HEADING)
+    assert (
+        0
+        <= text.find(Z2DG_HEADING)
+        < text.find(Z2DH_HEADING)
+        < text.find(Z2DI_HEADING)
+        < text.find(LADDER_HEADING)
+    )
 
 
 def test_z2dg_text_was_not_rewritten() -> None:
@@ -75,6 +82,15 @@ def test_z2dg_text_was_not_rewritten() -> None:
     assert "LAST_CANONICALLY_CLOSED_STEP=SECTION_11_13_5_Z2DG" in section
     assert "11.13.5.Z2DH" not in section
     assert "PEAK_TRADE_OWNER_GO_Z2DH_SINGLE_ACTUAL_READ_ONLY_FUNDING_BALANCE_GET_V1" not in section
+
+
+def test_z2dh_text_excludes_z2di_tokens() -> None:
+    section = _z2dh_section(_read(MASTER_RUNBOOK))
+    assert "11.13.5.Z2DI" not in section
+    assert (
+        "PEAK_TRADE_OWNER_GO_Z2DI_POST_Z2DH_DUAL_401_WHITELIST_BLOCK_CENSUS_SSOT_PERSIST_V1"
+        not in section
+    )
 
 
 def test_z2dh_docs_bind_one_get_without_success_or_activation() -> None:
