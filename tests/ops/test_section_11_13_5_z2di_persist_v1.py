@@ -38,6 +38,7 @@ Z2DH_EVIDENCE_PACK = (
 
 Z2DH_HEADING = "### 11.13.5.Z2DH Single actual read-only Funding Account balance GET"
 Z2DI_HEADING = "### 11.13.5.Z2DI Post-Z2DH dual-401 whitelist-block census SSOT persist"
+Z2DJ_HEADING = "### 11.13.5.Z2DJ OKX EEA API-key IP whitelist management-plane reconcile"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_Z2DI_POST_Z2DH_DUAL_401_WHITELIST_BLOCK_CENSUS_SSOT_PERSIST_V1"
 BASELINE_SHA = "52d144bff3214c000fcdd3b5cac40f2b568a891d"
@@ -57,8 +58,8 @@ def _read(path: Path) -> str:
 def _z2di_section(text: str) -> str:
     start = text.find(Z2DI_HEADING)
     assert start >= 0, "missing §11.13.5.Z2DI heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2DI"
+    end = text.find(Z2DJ_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2DJ boundary after Z2DI"
     return text[start:end]
 
 
@@ -77,7 +78,13 @@ def _snapshot(pack: Path) -> dict[str, object]:
 def test_z2di_heading_is_unique_and_follows_z2dh() -> None:
     text = _read(MASTER_RUNBOOK)
     assert text.count(Z2DI_HEADING) == 1
-    assert 0 <= text.find(Z2DH_HEADING) < text.find(Z2DI_HEADING) < text.find(LADDER_HEADING)
+    assert (
+        0
+        <= text.find(Z2DH_HEADING)
+        < text.find(Z2DI_HEADING)
+        < text.find(Z2DJ_HEADING)
+        < text.find(LADDER_HEADING)
+    )
 
 
 def test_z2dh_text_was_not_rewritten() -> None:
@@ -89,6 +96,14 @@ def test_z2dh_text_was_not_rewritten() -> None:
     assert "VENUE_CODE=50110" in section
     assert "11.13.5.Z2DI" not in section
     assert OWNER_GO not in section
+    assert "11.13.5.Z2DJ" not in section
+
+
+def test_z2di_text_excludes_z2dj_tokens() -> None:
+    section = _z2di_section(_read(MASTER_RUNBOOK))
+    assert "11.13.5.Z2DJ" not in section
+    assert "PEAK_TRADE_OWNER_GO_Z2DJ_OKX_API_KEY_IP_WHITELIST_RECONCILE_V1" not in section
+    assert "WHITELIST_MUTATION_CONFIRMED=true" not in section
 
 
 def test_z2di_docs_bind_census_without_get_or_activation() -> None:
