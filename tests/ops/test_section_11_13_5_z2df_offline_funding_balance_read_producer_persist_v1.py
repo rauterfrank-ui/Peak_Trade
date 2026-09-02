@@ -39,6 +39,7 @@ Z2DB_HEADING = (
 )
 Z2DF_HEADING = "### 11.13.5.Z2DF Offline Funding Account balance read producer persist"
 Z2DG_HEADING = "### 11.13.5.Z2DG Single actual read-only Funding Account balance GET"
+Z2DH_HEADING = "### 11.13.5.Z2DH Single actual read-only Funding Account balance GET"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_Z2DF_OFFLINE_FUNDING_BALANCE_READ_PRODUCER_V1"
 BASELINE_SHA = "032dfdb9fecc29691bf8d71f8cad8f506280ea28"
@@ -71,8 +72,9 @@ def test_z2df_heading_is_unique_and_follows_z2db() -> None:
     z2db = text.find(Z2DB_HEADING)
     z2df = text.find(Z2DF_HEADING)
     z2dg = text.find(Z2DG_HEADING)
+    z2dh = text.find(Z2DH_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= z2db < z2df < z2dg < ladder
+    assert 0 <= z2db < z2df < z2dg < z2dh < ladder
 
 
 def test_z2db_text_was_not_rewritten() -> None:

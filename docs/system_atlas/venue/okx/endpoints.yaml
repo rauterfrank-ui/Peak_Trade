@@ -541,6 +541,7 @@ endpoints:
       - src/ops/offline_funding_balance_read_producer_v1/producer_v1.py
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py
       - src/ops/section_11_13_5_z2dg_single_actual_read_only_funding_balance_get_v1/execute_v1.py
+      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/execute_v1.py
     notes: >-
       Funding Account asset-balance GET. Distinct from GET /api/v5/account/balance.
       Presence != activation. No transfer/deposit/conversion authority.
