@@ -1778,6 +1778,7 @@ entities:
       - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/execute_v1.py
       - tests/ops/test_section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1.py
       - tests/ops/test_section_11_13_5_z2dh_persist_v1.py
+      - tests/ops/test_section_11_13_5_z2di_persist_v1.py
       - evidence/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/20260902T143840Z/SUMMARY.json
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
@@ -1787,4 +1788,8 @@ entities:
       Reuses canary HTTP client, GET signer, and SecretRef. Does not reuse
       the consumed Z2DG GO. Not a retry, whitelist mutation, POST,
       transfer, live unlock, canary activation, or Prerequisite 08 close.
-      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+      Additive §11.13.5.Z2DI SSOT persist binds the identical Z2DG/Z2DH
+      BODY_SHA256 for those two observed asset/balances responses only.
+      That identity does not prove other endpoints, Positions GET, or
+      whitelist success. No runtime consumer. Atlas is not canonical
+      authority. ATLAS_AUTHORITY=NONE.
