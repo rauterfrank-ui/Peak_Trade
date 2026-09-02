@@ -93,9 +93,11 @@ flowchart TB
   n_SELECTOR_single_selected_future_policy -->|"SELECTS (ADJUDICATED)"| n_SELECTOR_productive_futures_ranking
   n_BINDER_bound_instrument_v1 -->|"BINDS (ADJUDICATED)"| n_SELECTOR_single_selected_future_policy
   n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"OBSERVES"| n_BINDER_bound_instrument_v1
+  n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"OBSERVES"| n_RUNTIME_COMPONENT_mv2_integrated_replay
   n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"OBSERVES"| n_SELECTOR_productive_futures_ranking
   n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"OBSERVES"| n_SELECTOR_single_selected_future_policy
   n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"OBSERVES"| n_CAPABILITY_cap_2_1_gfu
+  n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"OBSERVES"| n_HOST_wallclock_decision_economics_cycle
   n_RUNTIME_COMPONENT_ddo_capture_v0 -->|"PERSISTS"| n_RUNTIME_COMPONENT_ddo_ledger_v0
   n_RUNTIME_COMPONENT_dp_composition -->|"CONSUMES"| n_RUNTIME_COMPONENT_dp_suitability
   n_RUNTIME_COMPONENT_dp_composition -->|"CONSUMES"| n_RUNTIME_COMPONENT_dp_survival
@@ -154,7 +156,7 @@ flowchart TB
   n_SYSTEM_peak_trade -->|"HAS_CAPABILITY"| n_CAPABILITY_cap_7_2_stateful_no_order
   n_VENUE_okx -->|"CONTAINS"| n_VENUE_okx_eea
 ```
-Hub relations shown: `72`. Full graphs: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md), [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [AUTHORITY_GRAPH.md](AUTHORITY_GRAPH.md), [FULL_DEPENDENCY_GRAPH.md](FULL_DEPENDENCY_GRAPH.md).
+Hub relations shown: `74`. Full graphs: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md), [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [AUTHORITY_GRAPH.md](AUTHORITY_GRAPH.md), [FULL_DEPENDENCY_GRAPH.md](FULL_DEPENDENCY_GRAPH.md).
 
 | id | source | type | target | epistemic |
 | --- | --- | --- | --- | --- |
@@ -170,9 +172,11 @@ Hub relations shown: `72`. Full graphs: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.m
 | REL:r_cap23_selects | SELECTOR:single_selected_future_policy | SELECTS | SELECTOR:productive_futures_ranking | STATUS=ADJUDICATED |
 | REL:r_cap24_binds | BINDER:bound_instrument_v1 | BINDS | SELECTOR:single_selected_future_policy | STATUS=ADJUDICATED |
 | REL:r_ddo_capture_observes_binding | RUNTIME_COMPONENT:ddo_capture_v0 | OBSERVES | BINDER:bound_instrument_v1 | STATUS=FORENSIC_RAW |
+| REL:r_ddo_capture_observes_integrated_replay | RUNTIME_COMPONENT:ddo_capture_v0 | OBSERVES | RUNTIME_COMPONENT:mv2_integrated_replay | STATUS=FORENSIC_RAW |
 | REL:r_ddo_capture_observes_ranking | RUNTIME_COMPONENT:ddo_capture_v0 | OBSERVES | SELECTOR:productive_futures_ranking | STATUS=FORENSIC_RAW |
 | REL:r_ddo_capture_observes_selection | RUNTIME_COMPONENT:ddo_capture_v0 | OBSERVES | SELECTOR:single_selected_future_policy | STATUS=FORENSIC_RAW |
 | REL:r_ddo_capture_observes_universe | RUNTIME_COMPONENT:ddo_capture_v0 | OBSERVES | CAPABILITY:cap_2_1_gfu | STATUS=FORENSIC_RAW |
+| REL:r_ddo_capture_observes_wallclock_cycle_producers | RUNTIME_COMPONENT:ddo_capture_v0 | OBSERVES | HOST:wallclock_decision_economics_cycle | STATUS=FORENSIC_RAW |
 | REL:r_ddo_capture_persists_ledger | RUNTIME_COMPONENT:ddo_capture_v0 | PERSISTS | RUNTIME_COMPONENT:ddo_ledger_v0 | STATUS=FORENSIC_RAW |
 | REL:r_dp_composition_consumes_suitability | RUNTIME_COMPONENT:dp_composition | CONSUMES | RUNTIME_COMPONENT:dp_suitability | STATUS=FORENSIC_RAW |
 | REL:r_dp_composition_consumes_survival | RUNTIME_COMPONENT:dp_composition | CONSUMES | RUNTIME_COMPONENT:dp_survival | STATUS=FORENSIC_RAW |
@@ -318,7 +322,7 @@ Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md]
 
 ## 7. Runtime call / data flow
 
-Runtime relation count: `29`. Entrypoints recorded: `3`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
+Runtime relation count: `36`. Entrypoints recorded: `3`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
 
 Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md](ENTRYPOINT_RUNTIME_TRACES.md).
 
@@ -611,7 +615,7 @@ Declared gaps: `11`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `50`. Auto
 | --- | --- | --- | --- |
 | GAP:architectural_mmr | TERM_WITHOUT_FORMAL_KIND | TERM:mmr_polyvalent | STATUS=OPEN (not proven) |
 | GAP:cap23_not_wired_to_canary | PARALLEL_INSTRUMENT_AUTHORITY | CAPABILITY:cap_2_3_single_selected_future | STATUS=ADJUDICATED |
-| GAP:ddo_declared_seams_without_host_decorator | DECLARED_SEAM_WITHOUT_PROVEN_HOST_EDGE | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=OPEN (not proven) |
+| GAP:ddo_declared_seams_without_host_decorator | DECLARED_SEAM_WITHOUT_PROVEN_HOST_EDGE | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=ADJUDICATED |
 | GAP:flatten_live_wire_disabled | IMPLEMENTED_BUT_UNREACHABLE | GATE:flatten_live_wire | STATUS=FORENSIC_RAW |
 | GAP:live_ws_client | CONFIGURED_BUT_NO_CLIENT | OKX_FEATURE:websocket_hosts_configured | STATUS=OPEN (not proven) |
 | GAP:no_family_ontology_projection | TERM_WITHOUT_FORMAL_KIND | TERM:family_polyvalent | STATUS=OPEN (not proven) |
@@ -705,9 +709,9 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 ```text
 CURRENT_ORIGIN_MAIN_SHA=46d2c1734746d6d1332de0dfb03840d3bd8c31b1
 ENTITY_TOTAL=354
-HUB_RELATION_COUNT=72
+HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=84
-RUNTIME_RELATION_COUNT=29
+RUNTIME_RELATION_COUNT=36
 AUTHORITY_RELATION_COUNT=7
 UNRESOLVED_CONTRADICTION_COUNT=9
 OKX_CENSUS_COMPLETE=true

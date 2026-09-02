@@ -16,6 +16,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Mapping, Optional, Tuple
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from trading.master_v2.canonical_market_context_v1 import (
     BarFinalityStatus,
     ClockTrustStatus,
@@ -465,6 +468,7 @@ def _finalize_assessment(
     return with_computed_directional_assessment_digest(assessment)
 
 
+@observe_after_producer_v0(seam_id="core.bull_bear")
 def evaluate_directional_assessment_v1(
     inp: DirectionalAssessmentInputV1,
     policy: DirectionalAssessmentPolicyV1,

@@ -21,6 +21,9 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from trading.master_v2.canonical_trading_decision_evidence_v1 import (
     CanonicalTradingDecisionEvidenceV1,
 )
@@ -948,6 +951,7 @@ def evaluate_quantity_chain_v1(
     )
 
 
+@observe_after_producer_v0(seam_id="risk.step_29p")
 def evaluate_capital_risk_sizing_v1(inp: CapitalRiskSizingInputV1) -> CapitalRiskSizingDecisionV1:
     """Legacy adapter: evaluate chain from flat input bundle."""
 

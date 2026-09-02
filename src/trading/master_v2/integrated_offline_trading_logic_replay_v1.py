@@ -34,6 +34,9 @@ from dataclasses import dataclass, replace
 from decimal import Decimal
 from typing import Mapping, Optional, Tuple
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from trading.master_v2.canonical_market_context_v1 import (
     CANONICAL_MARKET_CONTEXT_LAYER_VERSION,
     CanonicalMarketContextBindingOutcome,
@@ -1270,6 +1273,7 @@ def resolve_integrated_reversal_preparation_entry_exit_binding_v0(
     return composition_for_policy, existing_position_side, position_state, venue_flat
 
 
+@observe_after_producer_v0(seam_id="core.master_v2_evidence")
 def run_integrated_offline_trading_logic_replay_v1(
     inp: IntegratedOfflineReplayInputV1,
 ) -> IntegratedOfflineReplayResultV1:

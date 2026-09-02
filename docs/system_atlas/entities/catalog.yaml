@@ -870,8 +870,9 @@ entities:
       SECOND_PROMOTION_AUTHORITY=false. RUNTIME_LINEAGE_PARTIAL=true.
       observe_after_producer_v0 is a no-op unless an enabled
       DdoCaptureBindingV0 session is bound. Does not mutate producer results.
-      Declared IMPLEMENTED_CAPTURE_SEAMS_V0 without a proven host decorator
-      are not runtime graph edges. Not WP-FA-08. Atlas is not trading authority.
+      WP-FS-B1 attached proven host decorators for all
+      IMPLEMENTED_CAPTURE_SEAMS_V0. Capture remains observation-only.
+      Not WP-FA-08. Atlas is not trading authority.
 
   - id: RUNTIME_COMPONENT:ddo_ledger_v0
     kind: RUNTIME_COMPONENT

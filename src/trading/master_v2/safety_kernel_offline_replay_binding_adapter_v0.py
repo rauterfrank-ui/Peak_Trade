@@ -13,6 +13,9 @@ import json
 from dataclasses import dataclass, replace
 from typing import Tuple
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from src.meta.learning_loop.killswitch_writer_fencing_and_independent_read_paths_v1 import (
     KILL_SWITCH_CONTRACT_DIGEST,
     KILL_SWITCH_OWNER_REF,
@@ -154,6 +157,8 @@ def compute_safety_boundary_ref_v0(boundary: SafetyKernelOfflineReplayBoundaryV0
     return boundary.semantic_digest
 
 
+@observe_after_producer_v0(seam_id="safety.killswitch_blocked_flag")
+@observe_after_producer_v0(seam_id="safety.kernel")
 def evaluate_offline_safety_kernel_boundary_v0(
     ctx: SafetyKernelOfflineReplayContextV0,
     *,

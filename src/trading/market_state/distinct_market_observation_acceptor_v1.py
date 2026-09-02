@@ -12,6 +12,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Mapping, Optional, Tuple
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from trading.market_state.observation_identity_v1 import (
     InstrumentObservationKeyV1,
     MarketObservationEpoch,
@@ -312,6 +315,7 @@ def _instrument_conflict_reason(
     return None
 
 
+@observe_after_producer_v0(seam_id="c1.observation_acceptance")
 def evaluate_distinct_market_observation_v1(
     state: ObservationAcceptanceStateV1,
     candidate: ObservationCandidateV1,

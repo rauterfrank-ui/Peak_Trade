@@ -6,6 +6,9 @@ from dataclasses import dataclass
 from decimal import Decimal
 from typing import Any, Mapping, Optional
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     IntegratedOfflineReplayResultV1,
 )
@@ -48,6 +51,7 @@ def _portfolio_signed_qty(portfolio_snapshot: Mapping[str, Any], instrument_id: 
         return _ZERO
 
 
+@observe_after_producer_v0(seam_id="mapper.intended_action")
 def map_replay_result_to_intended_analytical_action_v1(
     result: IntegratedOfflineReplayResultV1,
     *,

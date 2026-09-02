@@ -9,6 +9,9 @@ from __future__ import annotations
 
 from typing import Any, Mapping, Optional
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
     ADVERSE_PRODUCER_OWNER,
     CANONICAL_TIME_EXIT_MAX_HOLD_SECONDS,
@@ -292,6 +295,7 @@ def evaluate_strategy_invalidation_producer_v1(
     )
 
 
+@observe_after_producer_v0(seam_id="core.exit_policy")
 def evaluate_exit_policy_producers_v1(
     *,
     has_open_position: bool,
