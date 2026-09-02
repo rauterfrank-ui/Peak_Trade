@@ -67,6 +67,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_strategy_identity | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_strategy_identity | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_surface_p | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_surface_p | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:offline_execution_permission_and_position_creation_producer_wiring_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:offline_execution_permission_and_position_creation_producer_wiring_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:operative_venue_boundary_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:operative_venue_boundary_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ops_evaluate_double_play | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ops_evaluate_double_play | STATUS=OPEN (not proven) |  |

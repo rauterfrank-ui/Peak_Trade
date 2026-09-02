@@ -17,6 +17,7 @@
 | account_config | OPEN | GET /api/v5/account/config | OPEN | n/a | GET /api/v5/account/config | True | CURRENT_NONCANONICAL | OPEN | OPEN | OPEN | bounded | census_not_complete |
 | account_positions | OPEN | GET /api/v5/account/positions | OPEN | FUTURES | GET /api/v5/account/positions | True | CURRENT_NONCANONICAL | OPEN | OPEN | OPEN | bounded | census_not_complete |
 | algo_order | OPEN | POST /api/v5/trade/order-algo | OPEN | FUTURES | POST /api/v5/trade/order-algo | True | CURRENT_NONCANONICAL | OPEN | OPEN | OPEN | bounded | census_not_complete |
+| asset_balances | OPEN | GET /api/v5/asset/balances | OPEN | n/a | GET /api/v5/asset/balances | True | CURRENT_NONCANONICAL | OPEN | OPEN | OPEN | bounded | census_not_complete |
 | asset_transfer | OPEN | POST /api/v5/asset/transfer | OPEN | n/a | POST /api/v5/asset/transfer | True | CURRENT_NONCANONICAL | OPEN | OPEN | OPEN | bounded | census_not_complete |
 | asset_withdrawal | OPEN | POST /api/v5/asset/withdrawal | OPEN | n/a | POST /api/v5/asset/withdrawal | True | CURRENT_NONCANONICAL | OPEN | OPEN | OPEN | bounded | census_not_complete |
 | cancel_order | OPEN | POST /api/v5/trade/cancel-order | OPEN | FUTURES | POST /api/v5/trade/cancel-order | True | CURRENT_NONCANONICAL | OPEN | OPEN | OPEN | bounded | census_not_complete |

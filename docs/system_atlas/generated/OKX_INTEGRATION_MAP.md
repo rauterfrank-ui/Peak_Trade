@@ -17,9 +17,9 @@ OKX is a first-class venue domain. XPERP is one product/instrument family, not t
 `OKX_CENSUS_SCOPE=current_origin_main_tree_literal_path_and_host_search plus bounded git name-search for *okx* plus forensic persistence inventories plus docs&#47;audits&#47;OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md plus config&#47;config.toml [exchange.okx_europe_eea]; not exhaustive blob-history of every deleted non-okx-named module; in-repo fixture&#47;docs&#47;tests&#47;config&#47;product-type inventories closed. External&#47;temp forensic corpus is NOT_STARTED.`
 
 ```text
-OKX_RAW_API_PATH_HIT_COUNT=69
-OKX_UNIQUE_ENDPOINT_CANDIDATE_COUNT=48
-OKX_MODELED_ENDPOINT_COUNT=49
+OKX_RAW_API_PATH_HIT_COUNT=70
+OKX_UNIQUE_ENDPOINT_CANDIDATE_COUNT=49
+OKX_MODELED_ENDPOINT_COUNT=50
 OKX_GREP_NOISE_COUNT=21
 OKX_UNCLASSIFIED_ENDPOINT_COUNT=0
 OKX_FIELD_TOKEN_COUNT=42
@@ -71,6 +71,7 @@ Scheme `HMAC-SHA256`; signer `sign_okx_request_v1`; demo header `x-simulated-tra
 | OKX_FEATURE:account_config | account | CURRENT_NONCANONICAL | True |
 | OKX_FEATURE:account_positions | positions | CURRENT_NONCANONICAL | True |
 | OKX_FEATURE:algo_order | algo_orders | CURRENT_NONCANONICAL | True |
+| OKX_FEATURE:asset_balances | assets | CURRENT_NONCANONICAL | True |
 | OKX_FEATURE:asset_transfer | assets | CURRENT_NONCANONICAL | True |
 | OKX_FEATURE:asset_withdrawal | assets | CURRENT_NONCANONICAL | True |
 | OKX_FEATURE:cancel_order | orders | CURRENT_NONCANONICAL | True |
@@ -119,6 +120,7 @@ Scheme `HMAC-SHA256`; signer `sign_okx_request_v1`; demo header `x-simulated-tra
 | VENUE_ENDPOINT:okx_account_set_leverage | POST | /api/v5/account/set-leverage | account | MUTATING | CURRENT_NONCANONICAL |
 | VENUE_ENDPOINT:okx_account_set_position_mode | POST | /api/v5/account/set-position-mode | account | MUTATING | CURRENT_NONCANONICAL |
 | VENUE_ENDPOINT:okx_account_trade_fee | GET | /api/v5/account/trade-fee | account | READ_AUTH | CURRENT_NONCANONICAL |
+| VENUE_ENDPOINT:okx_asset_balances | GET | /api/v5/asset/balances | asset | READ_AUTH | CURRENT_NONCANONICAL |
 | VENUE_ENDPOINT:okx_asset_currencies | GET | /api/v5/asset/currencies | asset | READ_AUTH | CURRENT_NONCANONICAL |
 | VENUE_ENDPOINT:okx_asset_transfer | POST | /api/v5/asset/transfer | asset | MUTATING | CURRENT_NONCANONICAL |
 | VENUE_ENDPOINT:okx_asset_withdrawal | POST | /api/v5/asset/withdrawal | asset | MUTATING | CURRENT_NONCANONICAL |

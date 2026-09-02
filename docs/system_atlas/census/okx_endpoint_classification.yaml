@@ -1,13 +1,13 @@
 # ATLAS_AUTHORITY=NONE
-# Reconcile 69 raw /api/v5 hits vs 49 modeled VENUE_ENDPOINT rows.
+# Reconcile 70 raw /api/v5 hits vs 50 modeled VENUE_ENDPOINT rows.
 schema_version: system_atlas.v1
 origin_main_sha: 14e8a58f32dcb6b521be6b2559b388bf27360194
 navigation_rebind_sha: 14e8a58f32dcb6b521be6b2559b388bf27360194
 domain_census_payloads_bound_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
 domain_census_payloads_fresh_exhaustive_recensus: false
-okx_raw_api_path_hit_count: 69
-okx_unique_endpoint_candidate_count: 48
-okx_modeled_endpoint_count: 49
+okx_raw_api_path_hit_count: 70
+okx_unique_endpoint_candidate_count: 49
+okx_modeled_endpoint_count: 50
 okx_grep_noise_count: 21
 okx_unclassified_endpoint_count: 0
 endpoint_inventory_complete: true
@@ -22,10 +22,11 @@ namespaces_absent:
   - token: system
     class: SEARCHED_BUT_NO_EVIDENCE_FOUND
 discrepancy_resolution: >-
-  69 raw hits include 21 grep noise (prefix stubs, trailing-dot artifacts,
-  concat tokens, private/x stubs). 48 unique normalized REST paths remain.
-  Modeled count is 49 because GET and POST /api/v5/trade/order are two
-  VENUE_ENDPOINT rows. Noise is not promoted to VENUE_ENDPOINT.
+  70 raw hits include 21 grep noise (prefix stubs, trailing-dot artifacts,
+  concat tokens, private/x stubs). 49 unique normalized REST paths remain.
+  Modeled count is 50 because GET and POST /api/v5/trade/order are two
+  VENUE_ENDPOINT rows and GET /api/v5/asset/balances is one additional
+  modeled Funding Account read. Noise is not promoted to VENUE_ENDPOINT.
 candidates:
   - path: /api/v5/account
     class: ENDPOINT_TEMPLATE
@@ -146,6 +147,13 @@ candidates:
     signed: true
   - path: /api/v5/asset/
     class: ENDPOINT_TEMPLATE
+  - path: /api/v5/asset/balances
+    class: REAL_OKX_ENDPOINT
+    modeled_id: VENUE_ENDPOINT:okx_asset_balances
+    domain_group: asset
+    http_methods: [GET]
+    auth_required: true
+    signed: true
   - path: /api/v5/asset/currencies
     class: REAL_OKX_ENDPOINT
     modeled_id: VENUE_ENDPOINT:okx_asset_currencies
