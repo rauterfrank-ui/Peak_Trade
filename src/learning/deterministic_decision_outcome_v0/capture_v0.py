@@ -108,6 +108,36 @@ BLOCKED_CAPTURE_SEAMS_V0: tuple[str, ...] = (
     "decision_result_trade_token_expansion",
 )
 
+HOST_DECORATOR_SPINE_COMPLETE_V0: bool = True
+_UNIX_EVENT_TIME_MIN: float = 1_000_000_000.0
+_UNIX_EVENT_TIME_MAX: float = 4_102_444_800.0
+_EVENT_TIME_STRING_KEYS: tuple[str, ...] = (
+    "event_time_utc",
+    "producer_observed_at",
+    "event_time",
+    "as_of_event_time",
+    "generated_at_event_time",
+    "market_event_time",
+    "decision_time",
+)
+_EVENT_TIME_UNIX_KEYS: tuple[str, ...] = (
+    "producer_observed_at_unix",
+    "now_unix",
+    "event_ts_unix",
+    "current_event_time",
+    "venue_event_time",
+)
+_NESTED_TIME_CARRIER_KEYS: tuple[str, ...] = (
+    "evidence",
+    "observation_identity",
+    "canonical_market_context",
+    "intermediate",
+    "candidate",
+    "inp",
+    "build_input",
+    "sizing_input",
+)
+
 SRC_UNIVERSE: str = "src/ops/governed_futures_universe_producer_v1/reason_codes_v1.py"
 SRC_RANKING: str = "src/ops/productive_futures_ranking_producer_v1/reason_codes_v1.py"
 SRC_SELECTION: str = "src/ops/single_selected_future_policy_v1/reason_codes_v1.py"
@@ -356,6 +386,100 @@ SEAM_SPECS_V0: dict[str, SeamSpecV0] = {
 }
 
 
+@dataclass(frozen=True)
+class HostDecoratorBindingV0:
+    seam_id: str
+    source_path: str
+
+
+PROVEN_HOST_DECORATOR_BINDINGS_V0: tuple[HostDecoratorBindingV0, ...] = (
+    HostDecoratorBindingV0(
+        SEAM_SELECTION_UNIVERSE,
+        "src/ops/governed_futures_universe_producer_v1/producer_v1.py",
+    ),
+    HostDecoratorBindingV0(
+        SEAM_SELECTION_RANKING,
+        "src/ops/productive_futures_ranking_producer_v1/producer_v1.py",
+    ),
+    HostDecoratorBindingV0(
+        SEAM_SELECTION_SINGLE_FUTURE,
+        "src/ops/single_selected_future_policy_v1/selection_v1.py",
+    ),
+    HostDecoratorBindingV0(
+        SEAM_SELECTION_RUNTIME_BINDING,
+        "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py",
+    ),
+    HostDecoratorBindingV0(
+        SEAM_C1_OBSERVATION_ACCEPTANCE,
+        SRC_C1,
+    ),
+    HostDecoratorBindingV0(
+        SEAM_FEATURE_REGIME,
+        SRC_FEATURE,
+    ),
+    HostDecoratorBindingV0(
+        SEAM_TYPED_VOLATILITY,
+        SRC_FEATURE,
+    ),
+    HostDecoratorBindingV0(
+        SEAM_BULL_BEAR,
+        SRC_DIRECTIONAL,
+    ),
+    HostDecoratorBindingV0(
+        SEAM_CONFIRMATION_STATE,
+        "src/ops/stateful_confirmation_and_c1_productive_binding_v1/host_binding_v1.py",
+    ),
+    HostDecoratorBindingV0(
+        SEAM_MASTER_V2_EVIDENCE,
+        "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+    ),
+    HostDecoratorBindingV0(
+        SEAM_DOUBLE_PLAY_ENTRY_EXIT,
+        SRC_DOUBLE_PLAY,
+    ),
+    HostDecoratorBindingV0(
+        SEAM_DYNAMIC_SCOPE,
+        SRC_SCOPE,
+    ),
+    HostDecoratorBindingV0(
+        SEAM_SURVIVAL_SUITABILITY_COMPOSITION,
+        SRC_COMPOSITION,
+    ),
+    HostDecoratorBindingV0(
+        SEAM_EXIT_POLICY,
+        "src/ops/exit_policy_producer_binding_v1/producers_v1.py",
+    ),
+    HostDecoratorBindingV0(
+        SEAM_STEP_29P_RISK_SIZING,
+        SRC_29P,
+    ),
+    HostDecoratorBindingV0(
+        SEAM_SAFETY_KERNEL,
+        SRC_SAFETY,
+    ),
+    HostDecoratorBindingV0(
+        SEAM_KILLSWITCH_FLAG,
+        SRC_SAFETY,
+    ),
+    HostDecoratorBindingV0(
+        SEAM_STEP_29Q_PLAN,
+        SRC_29Q,
+    ),
+    HostDecoratorBindingV0(
+        SEAM_MAPPER,
+        SRC_MAPPER,
+    ),
+    HostDecoratorBindingV0(
+        SEAM_RECONCILIATION_STARTUP_GATE,
+        "src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py",
+    ),
+    HostDecoratorBindingV0(
+        SEAM_SIMULATED_EXECUTION_OUTCOME,
+        SRC_SIM_EXEC,
+    ),
+)
+
+
 @dataclass
 class DdoCaptureBindingV0:
     """Fail-open observation cursor. Never a trading or promotion authority."""
@@ -428,6 +552,7 @@ def observe_after_producer_v0(*, seam_id: str) -> Callable[[F], F]:
                     seam_id=seam_id,
                     result=result,
                     kwargs=kwargs,
+                    args=args,
                 )
             except Exception as exc:  # noqa: BLE001
                 binding.last_error = f"{type(exc).__name__}:{exc}"
@@ -450,6 +575,7 @@ def observe_producer_result_v0(
     seam_id: str,
     result: Any,
     kwargs: Mapping[str, Any] | None = None,
+    args: tuple[Any, ...] | None = None,
     event_time_utc: str | None = None,
     correlation_id: str | None = None,
     cycle_id: str | None = None,
@@ -461,7 +587,13 @@ def observe_producer_result_v0(
     spec = SEAM_SPECS_V0[seam_id]
     view = _view(result)
     codes = _codes_from_view(view)
-    event_time = event_time_utc or _event_time_from_kwargs(kwargs) or _event_time_from_view(view)
+    event_time = (
+        event_time_utc
+        or _event_time_from_kwargs(kwargs)
+        or _event_time_from_args(args)
+        or _event_time_from_view(view)
+        or _event_time_from_object(result)
+    )
     if event_time is None:
         raise ValueError("CAPTURE_EVENT_TIME_MISSING")
     decision_type = _decision_type_for_seam(spec, view)
@@ -879,17 +1011,106 @@ def _killswitch_view(evidence: Any) -> dict[str, Any]:
 def _event_time_from_kwargs(kwargs: Mapping[str, Any] | None) -> str | None:
     if not kwargs:
         return None
-    for key in ("producer_observed_at_unix", "now_unix", "event_ts_unix"):
+    for key in ("producer_observed_at_unix", "now_unix", "event_ts_unix", "current_event_time"):
         if key in kwargs and kwargs[key] is not None:
-            return _from_unix(kwargs[key])
+            found = _event_time_from_unixish(kwargs[key])
+            if found is not None:
+                return found
+            found = _event_time_from_rfc3339(kwargs[key])
+            if found is not None:
+                return found
+    for value in kwargs.values():
+        found = _event_time_from_object(value)
+        if found is not None:
+            return found
+    return None
+
+
+def _event_time_from_args(args: tuple[Any, ...] | None) -> str | None:
+    if not args:
+        return None
+    for arg in args:
+        found = _event_time_from_object(arg)
+        if found is not None:
+            return found
     return None
 
 
 def _event_time_from_view(view: Mapping[str, Any]) -> str | None:
-    for key in ("event_time_utc", "producer_observed_at", "event_time"):
-        value = view.get(key)
-        if isinstance(value, str) and UTC_EVENT_TIME_RE.fullmatch(value):
-            return value
+    for key in _EVENT_TIME_STRING_KEYS:
+        found = _event_time_from_rfc3339(view.get(key))
+        if found is not None:
+            return found
+    for key in _EVENT_TIME_UNIX_KEYS:
+        found = _event_time_from_unixish(view.get(key))
+        if found is not None:
+            return found
+    identity = view.get("observation_identity")
+    if isinstance(identity, Mapping):
+        found = _event_time_from_unixish(identity.get("venue_event_time"))
+        if found is not None:
+            return found
+        found = _event_time_from_rfc3339(identity.get("venue_event_time"))
+        if found is not None:
+            return found
+    return None
+
+
+def _event_time_from_object(
+    obj: Any, *, _seen: set[int] | None = None, _depth: int = 0
+) -> str | None:
+    if obj is None or _depth > 4:
+        return None
+    found = _event_time_from_rfc3339(obj) or _event_time_from_unixish(obj)
+    if found is not None:
+        return found
+    if isinstance(obj, datetime):
+        if obj.tzinfo is None:
+            return None
+        return obj.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    oid = id(obj)
+    seen = _seen if _seen is not None else set()
+    if oid in seen:
+        return None
+    carrier_keys = (*_EVENT_TIME_STRING_KEYS, *_NESTED_TIME_CARRIER_KEYS)
+    if not isinstance(obj, (Mapping, tuple, list)) and not hasattr(obj, "__dict__"):
+        if not any(hasattr(obj, key) for key in carrier_keys):
+            return None
+    seen.add(oid)
+    view = _view(obj)
+    found = _event_time_from_view(view)
+    if found is not None:
+        return found
+    for key in (*_EVENT_TIME_STRING_KEYS, *_EVENT_TIME_UNIX_KEYS, *_NESTED_TIME_CARRIER_KEYS):
+        if hasattr(obj, key):
+            found = _event_time_from_object(getattr(obj, key), _seen=seen, _depth=_depth + 1)
+            if found is not None:
+                return found
+        if key in view:
+            found = _event_time_from_object(view[key], _seen=seen, _depth=_depth + 1)
+            if found is not None:
+                return found
+    return None
+
+
+def _event_time_from_unixish(value: Any) -> str | None:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    ts = float(value)
+    if _UNIX_EVENT_TIME_MIN <= ts <= _UNIX_EVENT_TIME_MAX:
+        return _from_unix(ts)
+    return None
+
+
+def _event_time_from_rfc3339(value: Any) -> str | None:
+    if not isinstance(value, str):
+        return None
+    if UTC_EVENT_TIME_RE.fullmatch(value):
+        return value
+    if value.endswith("+00:00"):
+        candidate = value[:-6] + "Z"
+        if UTC_EVENT_TIME_RE.fullmatch(candidate):
+            return candidate
     return None
 
 

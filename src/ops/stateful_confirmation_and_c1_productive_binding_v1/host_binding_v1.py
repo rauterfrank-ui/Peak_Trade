@@ -12,6 +12,9 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from src.ops.stateful_confirmation_and_c1_productive_binding_v1.constants_v1 import (
     DEFAULT_VENUE,
     OWNER,
@@ -336,6 +339,7 @@ def evaluate_host_observation_acceptance_v1(
     return result
 
 
+@observe_after_producer_v0(seam_id="confirmation.state")
 def commit_host_confirmation_after_replay_v1(
     binding: HostConfirmationBindingV1,
     *,

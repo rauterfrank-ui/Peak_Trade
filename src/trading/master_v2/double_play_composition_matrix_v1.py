@@ -16,6 +16,9 @@ from dataclasses import dataclass, replace
 from enum import Enum
 from typing import Mapping, Optional, Tuple
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from trading.master_v2.directional_assessment_v1 import (
     DirectionalAssessmentSide,
     DirectionalAssessmentStatus,
@@ -538,6 +541,7 @@ def _finalize_result(
     return with_computed_composition_result_digest(result)
 
 
+@observe_after_producer_v0(seam_id="core.survival_suitability_composition")
 def evaluate_double_play_composition_matrix_v1(
     inp: DoublePlayCompositionInputV1,
     policy: DoublePlayCompositionPolicyV1,

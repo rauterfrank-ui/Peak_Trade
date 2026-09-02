@@ -15,7 +15,7 @@
 | --- | --- | --- | --- | --- |
 | GAP:architectural_mmr | TERM_WITHOUT_FORMAL_KIND | TERM:mmr_polyvalent | STATUS=OPEN (not proven) | Architectural MMR unproven; OKX mmr is a venue field |
 | GAP:cap23_not_wired_to_canary | PARALLEL_INSTRUMENT_AUTHORITY | CAPABILITY:cap_2_3_single_selected_future | STATUS=ADJUDICATED | Section 11.13.5 canary hardcoded SUI-USD_UM_XPERP-310404; no Cap 2.3 import on origin/main |
-| GAP:ddo_declared_seams_without_host_decorator | DECLARED_SEAM_WITHOUT_PROVEN_HOST_EDGE | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=OPEN (not proven) | Unproven declared seams are retained as OPEN gap metadata. They are not converted into runtime graph edges. WP-FA-08 is  |
+| GAP:ddo_declared_seams_without_host_decorator | DECLARED_SEAM_WITHOUT_PROVEN_HOST_EDGE | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=ADJUDICATED | Host-decorator gap closed by WP-FS-B1. Gap id retained for Atlas membership. Not WP-FA-08. Supervisor host activation re |
 | GAP:flatten_live_wire_disabled | IMPLEMENTED_BUT_UNREACHABLE | GATE:flatten_live_wire | STATUS=FORENSIC_RAW | DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false; LIVE_FLATTEN_PROVABILITY not PROVEN |
 | GAP:live_ws_client | CONFIGURED_BUT_NO_CLIENT | OKX_FEATURE:websocket_hosts_configured | STATUS=OPEN (not proven) | WS hosts configured; no proven live WS client; src/data/feeds/live_feed.py is a stub |
 | GAP:no_family_ontology_projection | TERM_WITHOUT_FORMAL_KIND | TERM:family_polyvalent | STATUS=OPEN (not proven) | CBK-FAMILY-PROJECTION KIND=NO_FAMILY_ONTOLOGY blocks 5-family projection completeness only |

@@ -17,6 +17,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Mapping, Optional, Tuple
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from trading.master_v2.canonical_market_context_v1 import (
     BarFinalityStatus,
     ClockTrustStatus,
@@ -630,6 +633,7 @@ def _build_blocked_evidence(
     )
 
 
+@observe_after_producer_v0(seam_id="core.dynamic_scope")
 def generate_deterministic_scope_event(
     inp: ScopeEventGeneratorInputV1,
     policy: ScopeEventGeneratorPolicyV1,

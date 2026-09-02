@@ -7,9 +7,16 @@ in runbook or status documents. Mapping is test-local only.
 from __future__ import annotations
 
 import ast
+from decimal import Decimal
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
+from src.governance.capital_risk_sizing_v1 import (
+    CapitalRiskSizingInputV1,
+    InstrumentQuantityConstraintsV1,
+    evaluate_capital_risk_sizing_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.authority_v0 import (
     AUTONOMY_SUPERVISOR_RUNTIME_REACHABILITY,
     CAPTURE_ADAPTER_PRESENT,
@@ -19,11 +26,15 @@ from src.learning.deterministic_decision_outcome_v0.authority_v0 import (
     PROMOTION_AUTHORITY_ACTIVATION,
     RUNTIME_EFFECT,
     SECOND_EXECUTION_AUTHORITY_CREATED,
+    SECOND_PROMOTION_AUTHORITY_CREATED,
     SECOND_TRADING_AUTHORITY_CREATED,
+    WORKPACKAGE_ID,
 )
 from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
     BLOCKED_CAPTURE_SEAMS_V0,
+    HOST_DECORATOR_SPINE_COMPLETE_V0,
     IMPLEMENTED_CAPTURE_SEAMS_V0,
+    PROVEN_HOST_DECORATOR_BINDINGS_V0,
     SEAM_BULL_BEAR,
     SEAM_DYNAMIC_SCOPE,
     SEAM_KILLSWITCH_FLAG,
@@ -43,6 +54,15 @@ from src.learning.deterministic_decision_outcome_v0.reason_codes_v0 import (
 from src.ops.governed_futures_universe_producer_v1.producer_v1 import (
     produce_governed_futures_universe_v1,
 )
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.intended_action_mapper_v1 import (
+    map_replay_result_to_intended_analytical_action_v1,
+)
+from trading.market_state.distinct_market_observation_acceptor_v1 import (
+    ObservationCandidateV1,
+    evaluate_distinct_market_observation_v1,
+    initial_observation_acceptance_state_v1,
+)
+from trading.market_state.observation_identity_v1 import InstrumentObservationKeyV1
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PACKAGE_DIR = REPO_ROOT / "src" / "learning" / "deterministic_decision_outcome_v0"
@@ -81,11 +101,11 @@ def test_fa_01_producer_output_identical_with_and_without_capture() -> None:
     }
     without = produce_governed_futures_universe_v1(**kwargs)
     binding = _session()
-    token = bind_capture_session_v0(binding)
+    session_handle = bind_capture_session_v0(binding)
     try:
         with_capture = produce_governed_futures_universe_v1(**kwargs)
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(session_handle)
     assert with_capture == without
     assert with_capture.failure_codes == without.failure_codes
     assert with_capture.ok is without.ok
@@ -104,11 +124,11 @@ def test_fa_02_producer_reason_codes_preserved_verbatim() -> None:
     }
     produced = produce_governed_futures_universe_v1(**kwargs)
     binding = _session()
-    token = bind_capture_session_v0(binding)
+    session_handle = bind_capture_session_v0(binding)
     try:
         captured_prod = produce_governed_futures_universe_v1(**kwargs)
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(session_handle)
     assert captured_prod.failure_codes == produced.failure_codes
     record = binding.captured_records[0]
     captured_codes = tuple(item["code"] for item in record["reason_codes"])
@@ -142,7 +162,7 @@ def test_fa_04_capture_occurs_after_authoritative_producer_decision() -> None:
 
     wrapped = observe_after_producer_v0(seam_id=SEAM_SELECTION_UNIVERSE)(producer)
     binding = _session()
-    token = bind_capture_session_v0(binding)
+    session_handle = bind_capture_session_v0(binding)
 
     orig_observe = observe_producer_result_v0
 
@@ -157,7 +177,7 @@ def test_fa_04_capture_occurs_after_authoritative_producer_decision() -> None:
         result = wrapped(producer_observed_at_unix=EVENT_UNIX)
     finally:
         capture_mod.observe_producer_result_v0 = orig_observe
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(session_handle)
     assert result["failure_codes"] == ("OKX_SOURCE_UNAVAILABLE",)
     assert order == ["producer", "capture"]
 
@@ -180,11 +200,11 @@ def test_fa_05_capture_exception_does_not_change_productive_result(monkeypatch: 
     }
     baseline = produce_governed_futures_universe_v1(**kwargs)
     binding = _session()
-    token = bind_capture_session_v0(binding)
+    session_handle = bind_capture_session_v0(binding)
     try:
         result = produce_governed_futures_universe_v1(**kwargs)
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(session_handle)
     assert result == baseline
     assert binding.last_error is not None
     assert "CAPTURE_INJECTED_FAILURE" in binding.last_error
@@ -405,3 +425,210 @@ def test_execution_authorized_remains_false_and_no_second_authority() -> None:
     assert "TRADE" not in str(record)
     assert LEARNING_PRODUCTIVE_AUTHORITY == "NONE"
     assert SECOND_EXECUTION_AUTHORITY_CREATED is False
+
+
+def _decorator_seam_ids(node: ast.AST) -> set[str]:
+    found: set[str] = set()
+    if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        return found
+    for dec in node.decorator_list:
+        if not isinstance(dec, ast.Call):
+            continue
+        func = dec.func
+        name = ""
+        if isinstance(func, ast.Name):
+            name = func.id
+        elif isinstance(func, ast.Attribute):
+            name = func.attr
+        if name != "observe_after_producer_v0":
+            continue
+        for kw in dec.keywords:
+            if kw.arg == "seam_id" and isinstance(kw.value, ast.Constant):
+                if isinstance(kw.value.value, str):
+                    found.add(kw.value.value)
+    return found
+
+
+def test_wp_fs_b1_all_implemented_seams_have_proven_host_decorator() -> None:
+    assert HOST_DECORATOR_SPINE_COMPLETE_V0 is True
+    assert len(IMPLEMENTED_CAPTURE_SEAMS_V0) == 21
+    bound = {item.seam_id: item for item in PROVEN_HOST_DECORATOR_BINDINGS_V0}
+    assert set(bound) == set(IMPLEMENTED_CAPTURE_SEAMS_V0)
+    for seam_id in IMPLEMENTED_CAPTURE_SEAMS_V0:
+        item = bound[seam_id]
+        path = REPO_ROOT / item.source_path
+        assert path.is_file(), item.source_path
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        seam_ids: set[str] = set()
+        for node in ast.walk(tree):
+            seam_ids.update(_decorator_seam_ids(node))
+        assert seam_id in seam_ids, f"{seam_id} missing host decorator in {item.source_path}"
+
+
+def test_wp_fs_b1_blocked_seams_have_no_host_decorator() -> None:
+    src_root = REPO_ROOT / "src"
+    blocked_hits: list[str] = []
+    for path in src_root.rglob("*.py"):
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        for node in ast.walk(tree):
+            for seam_id in _decorator_seam_ids(node) & set(BLOCKED_CAPTURE_SEAMS_V0):
+                rel = path.relative_to(REPO_ROOT).as_posix()
+                blocked_hits.append(f"{rel}:{getattr(node, 'name', '?')}:{seam_id}")
+    assert blocked_hits == []
+
+
+def test_wp_fs_b1_c1_host_is_acceptor_not_host_wrapper() -> None:
+    host_path = (
+        REPO_ROOT / "src/ops/stateful_confirmation_and_c1_productive_binding_v1/host_binding_v1.py"
+    )
+    tree = ast.parse(host_path.read_text(encoding="utf-8"))
+    for node in ast.walk(tree):
+        if (
+            isinstance(node, ast.FunctionDef)
+            and node.name == "evaluate_host_observation_acceptance_v1"
+        ):
+            assert "c1.observation_acceptance" not in _decorator_seam_ids(node)
+
+
+def _c1_candidate() -> ObservationCandidateV1:
+    return ObservationCandidateV1(
+        venue="okx_eea",
+        canonical_instrument_id="ETH-USD-SWAP-CANON",
+        venue_instrument_id="ETH-USD-SWAP",
+        venue_event_time=EVENT_UNIX,
+        mark_price=3500.25,
+        transport=None,
+    )
+
+
+def test_wp_fs_b1_c1_output_identical_with_and_without_capture() -> None:
+    key = InstrumentObservationKeyV1(
+        venue="okx_eea",
+        canonical_instrument_id="ETH-USD-SWAP-CANON",
+        venue_instrument_id="ETH-USD-SWAP",
+    )
+    state = initial_observation_acceptance_state_v1(bound_instrument_key=key)
+    candidate = _c1_candidate()
+    without = evaluate_distinct_market_observation_v1(state, candidate)
+    binding = _session()
+    session_handle = bind_capture_session_v0(binding)
+    try:
+        with_capture = evaluate_distinct_market_observation_v1(state, candidate)
+    finally:
+        reset_capture_session_v0(session_handle)
+    assert with_capture == without
+    assert binding.captured_records
+    assert all(item["decision_result"] == "NO_ACTION" for item in binding.captured_records)
+
+
+def test_wp_fs_b1_mapper_output_identical_with_and_without_capture() -> None:
+    replay = SimpleNamespace(
+        replay_pass=True,
+        evidence=SimpleNamespace(
+            decision_outcome="no_action",
+            selected_side="",
+            reason_codes=(),
+        ),
+        intermediate=None,
+        as_of_event_time="2024-01-15T12:00:00Z",
+    )
+    without = map_replay_result_to_intended_analytical_action_v1(
+        replay,  # type: ignore[arg-type]
+        instrument_id="ETH-USD-SWAP",
+    )
+    binding = _session()
+    session_handle = bind_capture_session_v0(binding)
+    try:
+        with_capture = map_replay_result_to_intended_analytical_action_v1(
+            replay,  # type: ignore[arg-type]
+            instrument_id="ETH-USD-SWAP",
+        )
+    finally:
+        reset_capture_session_v0(session_handle)
+    assert with_capture == without
+    assert binding.captured_records
+
+
+def test_wp_fs_b1_step_29p_output_identical_with_and_without_capture() -> None:
+    inp = CapitalRiskSizingInputV1(
+        decision_id="decision-b1",
+        instrument_id="ETH-USD-PERP",
+        selected_side="LONG",
+        reference_price=Decimal("2000"),
+        protective_stop_price=Decimal("1900"),
+        stop_distance=None,
+        account_equity=Decimal("500"),
+        scope_capital_limit=Decimal("25"),
+        per_trade_risk_limit=Decimal("25"),
+        total_capital_limit=Decimal("500"),
+        daily_loss_remaining_budget=Decimal("25"),
+        current_reconciled_exposure=Decimal("0"),
+        maximum_positions=1,
+        current_open_positions_count=0,
+        current_open_side=None,
+        configured_quantity_cap=None,
+        leverage_ceiling=Decimal("5"),
+        reconciliation_status="RECONCILED",
+        policy_version="capital_risk_sizing_policy_v1",
+        config_digest="b" * 64,
+        input_digest="a" * 64,
+        instrument=InstrumentQuantityConstraintsV1(
+            instrument_id="ETH-USD-PERP",
+            market_type="futures",
+            contract_kind="LINEAR",
+            contract_multiplier=Decimal("1"),
+            lot_size=Decimal("0.01"),
+            minimum_quantity=Decimal("0.01"),
+            maximum_quantity=Decimal("100"),
+            minimum_notional=Decimal("5"),
+            tick_size=Decimal("0.01"),
+            instrument_metadata_version="futures_metadata_v1_test",
+        ),
+        decision_outcome="enter_long",
+    )
+    without = evaluate_capital_risk_sizing_v1(inp)
+    binding = _session()
+    session_handle = bind_capture_session_v0(binding)
+    try:
+        with_capture = evaluate_capital_risk_sizing_v1(inp)
+    finally:
+        reset_capture_session_v0(session_handle)
+    assert with_capture == without
+
+
+def test_wp_fs_b1_capture_exception_does_not_change_c1_result(monkeypatch: Any) -> None:
+    def boom(*_args: Any, **_kwargs: Any) -> None:
+        raise RuntimeError("CAPTURE_INJECTED_FAILURE")
+
+    monkeypatch.setattr(
+        "src.learning.deterministic_decision_outcome_v0.capture_v0._persist",
+        boom,
+    )
+    key = InstrumentObservationKeyV1(
+        venue="okx_eea",
+        canonical_instrument_id="ETH-USD-SWAP-CANON",
+        venue_instrument_id="ETH-USD-SWAP",
+    )
+    state = initial_observation_acceptance_state_v1(bound_instrument_key=key)
+    candidate = _c1_candidate()
+    baseline = evaluate_distinct_market_observation_v1(state, candidate)
+    binding = _session()
+    session_handle = bind_capture_session_v0(binding)
+    try:
+        result = evaluate_distinct_market_observation_v1(state, candidate)
+    finally:
+        reset_capture_session_v0(session_handle)
+    assert result == baseline
+    assert binding.last_error is not None
+    assert "CAPTURE_INJECTED_FAILURE" in binding.last_error
+
+
+def test_wp_fs_b1_does_not_create_second_authority_or_reach_supervisor() -> None:
+    assert LEARNING_PRODUCTIVE_AUTHORITY == "NONE"
+    assert SECOND_TRADING_AUTHORITY_CREATED is False
+    assert SECOND_EXECUTION_AUTHORITY_CREATED is False
+    assert SECOND_PROMOTION_AUTHORITY_CREATED is False
+    assert PROMOTION_AUTHORITY_ACTIVATION is False
+    assert AUTONOMY_SUPERVISOR_RUNTIME_REACHABILITY is False
+    assert WORKPACKAGE_ID != "WP_FA_08"
+    assert "WP_FA_08" not in WORKPACKAGE_ID

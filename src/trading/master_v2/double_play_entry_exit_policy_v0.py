@@ -16,6 +16,9 @@ from dataclasses import dataclass, replace
 from enum import Enum
 from typing import Mapping, Optional, Tuple
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from trading.master_v2.canonical_market_context_v1 import (
     ClockTrustStatus,
     DataIntegrityStatus,
@@ -597,6 +600,7 @@ def _entry_preconditions_met(inp: DoublePlayEntryExitPolicyInputV0) -> Tuple[boo
     return len(reasons) == 0, tuple(sorted(reasons))
 
 
+@observe_after_producer_v0(seam_id="core.double_play_entry_exit")
 def evaluate_double_play_entry_exit_policy_v0(
     inp: DoublePlayEntryExitPolicyInputV0,
     policy: DoublePlayEntryExitPolicyV0,

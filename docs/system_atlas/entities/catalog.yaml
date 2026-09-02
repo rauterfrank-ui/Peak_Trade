@@ -342,8 +342,12 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    source_paths:
+      - src/trading/master_v2/double_play_composition.py
+      - src/trading/master_v2/double_play_composition_matrix_v1.py
     evidence_sources:
       - src/trading/master_v2/double_play_composition.py
+      - src/trading/master_v2/double_play_composition_matrix_v1.py
 
   - id: RUNTIME_COMPONENT:ops_evaluate_double_play
     kind: RUNTIME_COMPONENT
@@ -863,6 +867,9 @@ entities:
     evidence_sources:
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
       - src/learning/deterministic_decision_outcome_v0/authority_v0.py
+      - src/governance/canonical_order_intent_v1.py
+      - src/governance/capital_risk_sizing_v1.py
+      - src/trading/master_v2/double_play_composition_matrix_v1.py
     notes: >-
       Offline observation adapter. AUTHORITY_OWNER=NONE.
       PRODUCTIVE_AI_AUTHORITY_COUNT=0. SECOND_TRADING_AUTHORITY=false.
@@ -870,8 +877,10 @@ entities:
       SECOND_PROMOTION_AUTHORITY=false. RUNTIME_LINEAGE_PARTIAL=true.
       observe_after_producer_v0 is a no-op unless an enabled
       DdoCaptureBindingV0 session is bound. Does not mutate producer results.
-      Declared IMPLEMENTED_CAPTURE_SEAMS_V0 without a proven host decorator
-      are not runtime graph edges. Not WP-FA-08. Atlas is not trading authority.
+      WP-FS-B1 attached proven host decorators for all
+      IMPLEMENTED_CAPTURE_SEAMS_V0. Capture remains observation-only.
+      Evidence_sources list observation-host producer files, not ownership.
+      Not WP-FA-08. Atlas is not trading authority.
 
   - id: RUNTIME_COMPONENT:ddo_ledger_v0
     kind: RUNTIME_COMPONENT
@@ -1263,10 +1272,12 @@ entities:
     module_role: current_noncanonical
     source_paths:
       - src/trading/master_v2/capital_risk_sizing_intent_restore_v1.py
+      - src/governance/capital_risk_sizing_v1.py
     evidence_sources:
       - src/trading/master_v2/capital_risk_sizing_intent_restore_v1.py
+      - src/governance/capital_risk_sizing_v1.py
       - docs/system_atlas/census/master_v2_semantic_map.yaml
-    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Observation-host decorator on capital_risk_sizing_v1 is not a sizing-semantics change. Implementation is not activation.
 
   - id: RUNTIME_COMPONENT:mv2_surface_p
     kind: RUNTIME_COMPONENT

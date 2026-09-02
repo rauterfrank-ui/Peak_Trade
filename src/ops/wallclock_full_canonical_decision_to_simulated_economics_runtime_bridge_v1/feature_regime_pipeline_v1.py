@@ -9,6 +9,9 @@ import math
 from dataclasses import asdict, dataclass
 from typing import Any, Sequence
 
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.constants_v1 import (
     FEATURE_WINDOW_MIN,
 )
@@ -37,6 +40,8 @@ def _finite(xs: Sequence[float]) -> bool:
     return all(isinstance(x, (int, float)) and math.isfinite(float(x)) and float(x) > 0 for x in xs)
 
 
+@observe_after_producer_v0(seam_id="feature.typed_volatility")
+@observe_after_producer_v0(seam_id="feature.regime")
 def compute_feature_regime_from_mid_prices_v1(
     mid_prices: Sequence[float],
 ) -> FeatureRegimeSnapshotV1:

@@ -24,6 +24,9 @@ from src.governance.capital_risk_sizing_v1 import (
     CapitalRiskSizingOutcome,
     QuantityProvenanceV1,
 )
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    observe_after_producer_v0,
+)
 
 CONTRACT_NAME = "canonical_order_intent_v1"
 CONTRACT_VERSION = "v1"
@@ -498,6 +501,7 @@ def _validate_action_semantics(
     return tuple(dict.fromkeys(reasons))
 
 
+@observe_after_producer_v0(seam_id="plan.step_29q")
 def build_canonical_order_intent_v1(
     build_input: CanonicalOrderIntentBuildInputV1,
 ) -> CanonicalOrderIntentBuildResultV1:

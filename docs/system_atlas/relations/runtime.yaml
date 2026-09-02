@@ -242,6 +242,95 @@ relations:
       Host decorator observe_after_producer_v0 seam execution.simulated_outcome.
       No-op unless an enabled capture session is bound. Not venue submit.
 
+  - id: REL:r_ddo_capture_observes_wallclock_cycle_producers
+    source: RUNTIME_COMPONENT:ddo_capture_v0
+    type: OBSERVES
+    target: HOST:wallclock_decision_economics_cycle
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/market_state/distinct_market_observation_acceptor_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/feature_regime_pipeline_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/intended_action_mapper_v1.py
+      - src/ops/exit_policy_producer_binding_v1/producers_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      WP-FS-B1 host decorators for c1.observation_acceptance, feature.regime,
+      feature.typed_volatility, mapper.intended_action, and core.exit_policy.
+      Observation only. Not PRODUCES/CONSUMES/CALLS.
+
+  - id: REL:r_ddo_capture_observes_directional
+    source: RUNTIME_COMPONENT:ddo_capture_v0
+    type: OBSERVES
+    target: RUNTIME_COMPONENT:mv2_directional_assessment
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/master_v2/directional_assessment_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      Host decorator observe_after_producer_v0 seam core.bull_bear.
+      No-op unless an enabled capture session is bound.
+
+  - id: REL:r_ddo_capture_observes_confirmation
+    source: RUNTIME_COMPONENT:ddo_capture_v0
+    type: OBSERVES
+    target: RUNTIME_COMPONENT:mv2_post_confirmation_ssc
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/stateful_confirmation_and_c1_productive_binding_v1/host_binding_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      Host decorator observe_after_producer_v0 seam confirmation.state.
+      No-op unless an enabled capture session is bound.
+
+  - id: REL:r_ddo_capture_observes_integrated_replay
+    source: RUNTIME_COMPONENT:ddo_capture_v0
+    type: OBSERVES
+    target: RUNTIME_COMPONENT:mv2_integrated_replay
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      Host decorator observe_after_producer_v0 seam core.master_v2_evidence.
+      No-op unless an enabled capture session is bound. Not a second total
+      decision owner.
+
+  - id: REL:r_ddo_capture_observes_entry_exit
+    source: RUNTIME_COMPONENT:ddo_capture_v0
+    type: OBSERVES
+    target: RUNTIME_COMPONENT:dp_entry_exit_policy
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/master_v2/double_play_entry_exit_policy_v0.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      Host decorator observe_after_producer_v0 seam core.double_play_entry_exit.
+      Observation only.
+
+  - id: REL:r_ddo_capture_observes_scope_events
+    source: RUNTIME_COMPONENT:ddo_capture_v0
+    type: OBSERVES
+    target: RUNTIME_COMPONENT:mv2_scope_events
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/master_v2/deterministic_scope_event_generator_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      Host decorator observe_after_producer_v0 seam core.dynamic_scope.
+      Observation only.
+
+  - id: REL:r_ddo_capture_observes_safety_kernel
+    source: RUNTIME_COMPONENT:ddo_capture_v0
+    type: OBSERVES
+    target: RUNTIME_COMPONENT:mv2_offline_boundary_adapters
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+    notes: >-
+      Host decorator observe_after_producer_v0 seams safety.kernel and
+      safety.killswitch_blocked_flag. Observation only. Not killswitch authority.
+
   - id: REL:r_wallclock_injects_ddo_capture_session
     source: HOST:wallclock_decision_economics_cycle
     type: INJECTS
