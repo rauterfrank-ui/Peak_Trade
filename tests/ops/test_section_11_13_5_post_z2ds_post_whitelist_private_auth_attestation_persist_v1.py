@@ -170,12 +170,13 @@ def test_map_of_truth_has_no_attestation_semantic_entry() -> None:
     assert OWNER_GO not in text
 
 
-def test_atlas_was_not_mutated_for_this_slice() -> None:
+def test_atlas_attestation_is_navigation_only() -> None:
     catalog = _read(ATLAS_CATALOG)
-    assert "id: PHASE:post_z2ds_post_whitelist_private_auth_attestation" not in catalog
-    assert (
-        "id: RUNTIME_COMPONENT:post_z2ds_post_whitelist_private_auth_attestation_v1" not in catalog
-    )
+    authority = _read(REPO_ROOT / "docs" / "system_atlas" / "ATLAS_AUTHORITY_AND_USAGE.md")
+    assert "ATLAS_AUTHORITY=NONE" in authority
+    assert "id: PHASE:post_z2ds_post_whitelist_private_auth_attestation" in catalog
+    assert "id: RUNTIME_COMPONENT:post_z2ds_post_whitelist_private_auth_attestation_v1" in catalog
+    assert "ATLAS_AUTHORITY=NONE" in catalog
 
 
 def test_code_claims_remain_fail_closed() -> None:
