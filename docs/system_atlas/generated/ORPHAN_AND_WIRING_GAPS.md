@@ -72,6 +72,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:operative_venue_boundary_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:operative_venue_boundary_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ops_evaluate_double_play | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ops_evaluate_double_play | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:prerequisite_08_position_source_policy_rebind_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:prerequisite_08_position_source_policy_rebind_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:promotion_loop_safety | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:promotion_loop_safety | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:recon_startup_gate_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:recon_startup_gate_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:simulated_execution_port_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:simulated_execution_port_v1 | STATUS=OPEN (not proven) |  |
