@@ -427,7 +427,7 @@ Architectural-kind count in this bucket: `19`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `60`.
+Architectural-kind count in this bucket: `61`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -471,9 +471,8 @@ Architectural-kind count in this bucket: `60`.
 | PHASE:z2do | PHASE | 11.13.5.Z2DO | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:z2dp | PHASE | 11.13.5.Z2DP | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | RUNBOOK:cybersecurity_v2_1 | RUNBOOK | Canonical Cybersecurity Runbook V2.1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| RUNBOOK:presentation_implementation | RUNBOOK | Canonical Presentation Implementation Runbook | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `60` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `61` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -610,7 +609,7 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `11`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `57`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `11`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `58`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
@@ -709,7 +708,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=365
+ENTITY_TOTAL=367
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=84
 RUNTIME_RELATION_COUNT=36
@@ -804,10 +803,10 @@ Remaining census domains:
 | OKX_HOST | 8 |
 | OKX_RESPONSE_SHAPE | 6 |
 | OWNER_DECISION | 2 |
-| PHASE | 17 |
+| PHASE | 18 |
 | REGISTRY | 1 |
 | RUNBOOK | 4 |
-| RUNTIME_COMPONENT | 53 |
+| RUNTIME_COMPONENT | 54 |
 | SCHEMA | 18 |
 | SCRIPT | 3 |
 | SELECTOR | 2 |
