@@ -72,6 +72,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:operative_venue_boundary_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:operative_venue_boundary_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ops_evaluate_double_play | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ops_evaluate_double_play | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p08_position_observation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p08_position_observation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2do_fresh_create_readiness_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2do_fresh_create_readiness_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2dr_runtime_read_only_evidence_max_leverage_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2dr_runtime_read_only_evidence_max_leverage_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2ds_post_whitelist_private_auth_attestation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2ds_post_whitelist_private_auth_attestation_v1 | STATUS=OPEN (not proven) |  |
