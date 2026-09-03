@@ -1,0 +1,93 @@
+{
+  "ACCOUNT_MODE_CURRENT": "AUTH_FAILED",
+  "AVAILABLE_MARGIN_CURRENT": "AUTH_FAILED",
+  "BLOCKER_UPDATES": {
+    "G-CAPACITY": {
+      "current_status": "AUTH_FAILED",
+      "fresh_observation": "AUTH_FAILED",
+      "prior_status": "OPEN",
+      "runtime_get_closable": true
+    },
+    "G-CREATE-AUTH": {
+      "current_status": "OPEN",
+      "mutation_required": true,
+      "prior_status": "OPEN",
+      "runtime_get_closable": false
+    },
+    "G-EXEC-PERMIT": {
+      "current_status": "OPEN",
+      "mutation_required": true,
+      "prior_status": "OPEN",
+      "runtime_get_closable": false
+    },
+    "G-FUNDING-EXPOSURE": {
+      "current_status": "OPEN",
+      "prior_status": "OPEN",
+      "runtime_get_closable": true
+    },
+    "G-P08": {
+      "current_status": "OPEN",
+      "fresh_observation": "AUTH_FAILED",
+      "prior_status": "OPEN",
+      "runtime_get_closable": true
+    },
+    "G-POSITION-MODE-READY": {
+      "current_status": "OPEN",
+      "prior_status": "OPEN",
+      "runtime_get_closable": false
+    },
+    "G-POSMODE": {
+      "current_status": "CLOSED_FAIL_CLOSED",
+      "note": "FIRST_PARTY_CONTRACT_EVIDENCE_INSUFFICIENT_FAIL_CLOSED",
+      "prior_status": "CLOSED_FAIL_CLOSED",
+      "runtime_get_closable": false
+    },
+    "G-PRETRADE-AVAILEQ": {
+      "current_status": "AUTH_FAILED",
+      "fresh_observation": "AUTH_FAILED",
+      "prior_status": "OPEN",
+      "runtime_get_closable": true
+    },
+    "G-WIRE": {
+      "current_status": "OPEN",
+      "mutation_required": true,
+      "prior_status": "OPEN",
+      "runtime_get_closable": false
+    }
+  },
+  "CREATE_PATH_ARCHITECTURALLY_COMPLETE": true,
+  "CREATE_PATH_BLOCKER_COUNT": 8,
+  "CREATE_PATH_CURRENTLY_AUTHORIZED": false,
+  "CREATE_PATH_PRODUCTIVE_WIRE_CAPABLE": false,
+  "CURRENT_PRODUCTIVE_WIRE_REACHABLE": false,
+  "EARLIEST_UNRESOLVED_DEPENDENCY": "EXECUTION_PREREQUISITE_08_TARGET_POSITION_NONZERO_PROVEN",
+  "EMPTY_DATA_IS_NOT_PREREQUISITE_08_ZERO": true,
+  "EMPTY_DATA_IS_NOT_ZERO": true,
+  "EXECUTION_PREREQUISITE_08_STATUS": "UNRESOLVED_TARGET_NOT_OBSERVED_THIS_WINDOW",
+  "EXECUTION_PREREQUISITE_08_TARGET_POSITION_NONZERO_PROVEN": false,
+  "FUNDING_EXPOSURE_SATISFIED": false,
+  "GET_POSMODE_IS_NOT_SUBMIT_BODY_PROOF": true,
+  "G_POSMODE_RESULT_CLASS": "FIRST_PARTY_CONTRACT_EVIDENCE_INSUFFICIENT_FAIL_CLOSED",
+  "G_POSMODE_STATUS": "CLOSED",
+  "G_POSMODE_STATUS_CLOSED_AS": "EVIDENCE_EXHAUSTION_FAIL_CLOSED",
+  "INSTRUMENT_STATE_CURRENT": "OBSERVED",
+  "LEVERAGE_CURRENT": "AUTH_FAILED",
+  "MARGIN_MODE_CURRENT": "AUTH_FAILED",
+  "MAX_AVAILABLE_CURRENT": "AUTH_FAILED",
+  "MAX_SAFE_READ_ONLY_RUNTIME_BUNDLE_REMAINING": 0,
+  "OFFLINE_CLOSED_BLOCKER_COUNT": 1,
+  "POSITION_MODE_CURRENT": "AUTH_FAILED",
+  "POSITION_MODE_FAIL_CLOSED": true,
+  "POSITION_MODE_READY": false,
+  "POSITION_MODE_SUBMIT_BODY_SEMANTICS": "UNPROVEN",
+  "POS_MODE_MATCHES_REQUIRED_NET_MODE": false,
+  "POS_MODE_RAW": "",
+  "PREREQUISITE_08_CLOSED": false,
+  "PRICE_LIMIT_CURRENT": "OBSERVED",
+  "READ_ONLY_CLOSABLE_BLOCKER_COUNT_AFTER_GETS": 4,
+  "REMAINING_MUTATION_REQUIRED_BLOCKER_COUNT": 5,
+  "TARGET_INSTRUMENT_ID": "SUI-USD_UM_XPERP-310404",
+  "TARGET_POSITION_OBSERVATION": "AUTH_FAILED",
+  "VENUE_CAPACITY_POSITIVE": false,
+  "VENUE_CAPACITY_ZERO": false
+}
