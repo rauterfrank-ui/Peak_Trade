@@ -40,6 +40,7 @@ EVIDENCE_PACK = (
 
 DISTINCT_HEADING = "### 11.13.5 P08 distinct first-party evidence maximum-safe-leverage persist"
 CLOSURE_HEADING = "### 11.13.5 P08 read-only closure maximum-safe-leverage persist"
+BOUNDARY_HEADING = "### 11.13.5 P08 post-read-only-exhaustion authority-boundary persist"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 SECRETREF = "secretref://vault/peak-trade/live-canary-minimum-exposure/okx"
 EMPTY_SHA = "fc24d69479edbb84f22c7d5bd4525349734056ad3baf7a5adf7e553f68c06a3a"
@@ -53,8 +54,10 @@ def _read(path: Path) -> str:
 def _closure_section(text: str) -> str:
     start = text.find(CLOSURE_HEADING)
     assert start >= 0, "missing P08 read-only closure heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after read-only closure persist"
+    end = text.find(BOUNDARY_HEADING, start)
+    if end < 0:
+        end = text.find(LADDER_HEADING, start)
+    assert end > start, "missing authority-boundary or §11.14 after read-only closure persist"
     return text[start:end]
 
 
