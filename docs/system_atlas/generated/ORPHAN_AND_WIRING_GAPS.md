@@ -78,6 +78,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p08_position_observation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p08_position_observation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p08_post_read_only_exhaustion_authority_boundary_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p08_post_read_only_exhaustion_authority_boundary_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p08_read_only_closure_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p08_read_only_closure_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p10_target_position_qty_unit_forensic_adjudicate_persist_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p10_target_position_qty_unit_forensic_adjudicate_persist_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2do_fresh_create_readiness_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2do_fresh_create_readiness_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2dr_runtime_read_only_evidence_max_leverage_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2dr_runtime_read_only_evidence_max_leverage_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2ds_post_whitelist_private_auth_attestation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2ds_post_whitelist_private_auth_attestation_v1 | STATUS=OPEN (not proven) |  |
