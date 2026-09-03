@@ -1,0 +1,88 @@
+"""Standing constants for Route-C gated productive submit composition.
+
+This slice binds the existing Z2DM candidate to the existing gated entry-submit
+type surface. It does not mint trading, sizing, selection, or execution
+authority and does not reach a productive wire.
+"""
+
+from __future__ import annotations
+
+from src.ops.offline_execution_permission_and_position_creation_producer_wiring_v1.constants_v1 import (
+    PRODUCTIVE_WIRE_REACHABLE,
+)
+from src.ops.offline_execution_permission_and_position_creation_producer_wiring_v1.path_wiring_constants_v1 import (
+    HOST_GRAPH_ACTIVATION as PATH_HOST_GRAPH_ACTIVATION,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+    DEFAULT_SIDE,
+    POSITION_COUNT_LIMIT,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.venue_contract_count_v1 import (
+    SUI_OPERATIVE_ORDER_SZ,
+)
+
+ROUTE_C_OWNER_GO = "PEAK_TRADE_OWNER_GO_ROUTE_C_OFFLINE_GATED_PRODUCTIVE_SUBMIT_COMPOSITION_V1"
+ROUTE_C_WORKPACKAGE_ID = "OFFLINE_ROUTE_C_GATED_PRODUCTIVE_SUBMIT_COMPOSITION_V1"
+ROUTE_C_THIS_SLICE = "11.13.5.Z2DO"
+ROUTE_C_PREDECESSOR_SLICE = "11.13.5.Z2DN"
+ROUTE_C_CONTRACT_VERSION = "v1"
+SOURCE_ADJUDICATION = (
+    "PEAK_TRADE_OWNER_GO_POST_Z2DN_POSITION_CREATION_AUTHORITY_PACKET_READINESS_V1"
+)
+
+QUANTITY_AUTHORITY_SOURCE_REQUIRED = "STEP_29P"
+SIDE_AUTHORITY_SOURCE_REQUIRED = "MAPPER_FROM_PLAN"
+FORBIDDEN_QUANTITY_AUTHORITY_SOURCES: frozenset[str] = frozenset(
+    {
+        "SUI_OPERATIVE_ORDER_SZ",
+        "CANARY_DEFAULT",
+        "CANARY_MIN_PLAN",
+        "DEFAULT_QTY",
+        "",
+    }
+)
+FORBIDDEN_SIDE_AUTHORITY_SOURCES: frozenset[str] = frozenset(
+    {
+        "DEFAULT_SIDE",
+        "CANARY_DEFAULT",
+        "CANARY_MIN_PLAN",
+        "CANARY_ORDER_PLAN",
+        "",
+    }
+)
+CANARY_DEFAULT_SIDE = DEFAULT_SIDE
+CANARY_OPERATIVE_ORDER_SZ = SUI_OPERATIVE_ORDER_SZ
+MAX_POSITIONS_EFFECTIVE = POSITION_COUNT_LIMIT
+NONZERO_POSITION_STATES: frozenset[str] = frozenset(
+    {
+        "NONZERO",
+        "TARGET_POSITION_NONZERO_PROVEN",
+        "OPEN",
+        "HAS_POSITION",
+    }
+)
+
+GATED_ENTRY_SUBMIT_SURFACE_MODULE = (
+    "src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1"
+)
+GATED_ENTRY_SUBMIT_CLIENT_TYPE_NAME = "LiveCanaryHttpClientV1"
+GATED_ENTRY_SUBMIT_PERMIT_TYPE_NAME = "CanaryEntrySubmitPermitV1"
+GATED_ENTRY_SUBMIT_METHOD_NAME = "post_entry_order"
+GATED_ENTRY_SUBMIT_PERMIT_KIND = "ENTRY_SUBMIT"
+ROUTE_C_FUTURE_EXECUTION_PERMIT_KIND = "ROUTE_C_ENTRY_SUBMIT"
+
+POSITION_MODE_SUBMIT_BODY_SEMANTICS = "UNPROVEN"
+POSITION_MODE_FAIL_CLOSED = True
+HOST_GRAPH_ACTIVATION = PATH_HOST_GRAPH_ACTIVATION
+HOST_COMPOSITION_SEAM_IMPLEMENTED = True
+ROUTE_C_SUBMIT_COMPOSITION_IMPLEMENTED = True
+CREATE_PATH_ARCHITECTURALLY_COMPLETE = True
+CREATE_PATH_PRODUCTIVE_WIRE_CAPABLE = False
+CURRENT_PRODUCTIVE_WIRE_REACHABLE = PRODUCTIVE_WIRE_REACHABLE
+CREATE_PATH_CURRENTLY_AUTHORIZED = False
+PREREQUISITE_08_CLOSED = False
+VENUE_PATH_PROVEN = False
+SECOND_TRADING_AUTHORITY_CREATED = False
+CANARY_PLAN_BUILDER_IS_ROUTE_C_AUTHORITY = False
+RECORDING_TRANSPORT_IS_LIVE_TRANSPORT = False
+GRANT_IMPLIES_LIVE_SEND = False
