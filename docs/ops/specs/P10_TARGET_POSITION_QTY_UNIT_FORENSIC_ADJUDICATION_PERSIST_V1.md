@@ -72,7 +72,7 @@ wire bytes are unavailable.
 No current authoritative source states a single proven physical unit for
 TARGET_POSITION_QTY. No two current authorities claim two different
 proven units for that field. The missing proof is independent identity
-of OKX `account/positions.pos` to Place Order `sz` for
+of OKX `account&#47;positions.pos` to Place Order `sz` for
 `SUI-USD_UM_XPERP-310404`.
 
 ## Out of scope
