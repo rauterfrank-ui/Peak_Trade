@@ -901,6 +901,44 @@ entities:
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
     notes: Additive offline repo-first-party census and fail-closed adjudication for Route-C net-mode posSide submit-body contract. No GET. No POST. posSide submit semantics remain UNPROVEN. Prerequisite 08 remains open. Does not create, flatten, live, or canary. Atlas is not trading authority.
 
+  - id: PHASE:z2dr
+    kind: PHASE
+    name: 11.13.5.Z2DR
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_create_path_blocker_census_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_create_path_blocker_adjudicate_v1.py
+      - evidence/ops/section_11_13_5_z2dr_post_z2dq_route_c_create_path_blocker_census_v1/20260903T174500Z/
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+    notes: Additive offline post-Z2DQ Route-C create-path blocker census. Binds Z2DP and Z2DQ upstream adjudications. OFFLINE_CLOSABLE_GAP_COUNT=0. No GET. No POST. Prerequisite 08 remains open. Does not create, flatten, live, or canary. Atlas is not trading authority.
+
+  - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
+    kind: RUNTIME_COMPONENT
+    name: Route-C create-path blocker census v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_create_path_blocker_census_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_create_path_blocker_adjudicate_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_create_path_blocker_persist_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_create_path_blocker_persist_claims_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_create_path_blocker_constants_v1.py
+    evidence_sources:
+      - tests/ops/test_route_c_create_path_blocker_census_v1.py
+      - tests/ops/test_section_11_13_5_z2dr_persist_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/POST_Z2DQ_ROUTE_C_CREATE_PATH_BLOCKER_CENSUS_V1.md
+      - evidence/ops/section_11_13_5_z2dr_post_z2dq_route_c_create_path_blocker_census_v1/20260903T174500Z/
+    notes: >-
+      Navigation inventory of post-Z2DQ Route-C create-path blocker census.
+      Offline only. No HTTP. MAX_SAFE_OFFLINE_BUNDLE_REMAINING=0.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:route_c_offline_gated_productive_submit_composition_v1
     kind: RUNTIME_COMPONENT
     name: Route-C offline gated productive submit composition v1
