@@ -427,7 +427,7 @@ Architectural-kind count in this bucket: `19`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `62`.
+Architectural-kind count in this bucket: `63`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -472,7 +472,7 @@ Architectural-kind count in this bucket: `62`.
 | PHASE:z2dp | PHASE | 11.13.5.Z2DP | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:z2dq | PHASE | 11.13.5.Z2DQ | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `62` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `63` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -609,7 +609,7 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `11`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `59`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `11`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `60`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
@@ -708,7 +708,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=369
+ENTITY_TOTAL=371
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=84
 RUNTIME_RELATION_COUNT=36
@@ -803,10 +803,10 @@ Remaining census domains:
 | OKX_HOST | 8 |
 | OKX_RESPONSE_SHAPE | 6 |
 | OWNER_DECISION | 2 |
-| PHASE | 19 |
+| PHASE | 20 |
 | REGISTRY | 1 |
 | RUNBOOK | 4 |
-| RUNTIME_COMPONENT | 55 |
+| RUNTIME_COMPONENT | 56 |
 | SCHEMA | 18 |
 | SCRIPT | 3 |
 | SELECTOR | 2 |

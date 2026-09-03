@@ -76,6 +76,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:prerequisite_08_position_source_policy_rebind_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:prerequisite_08_position_source_policy_rebind_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:promotion_loop_safety | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:promotion_loop_safety | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:recon_startup_gate_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:recon_startup_gate_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:route_c_offline_gated_productive_submit_composition_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:route_c_offline_gated_productive_submit_composition_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:simulated_execution_port_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:simulated_execution_port_v1 | STATUS=OPEN (not proven) |  |
