@@ -73,6 +73,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ops_evaluate_double_play | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ops_evaluate_double_play | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2do_fresh_create_readiness_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2do_fresh_create_readiness_evidence_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2dr_runtime_read_only_evidence_max_leverage_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2dr_runtime_read_only_evidence_max_leverage_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:prerequisite_08_position_source_policy_rebind_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:prerequisite_08_position_source_policy_rebind_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:promotion_loop_safety | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:promotion_loop_safety | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:recon_startup_gate_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:recon_startup_gate_v1 | STATUS=OPEN (not proven) |  |
