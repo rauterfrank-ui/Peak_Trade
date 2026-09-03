@@ -57,11 +57,16 @@ def _read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+P08_HEADING = "### 11.13.5 P08 position observation single GET persist"
+
+
 def _attestation_section(text: str) -> str:
     start = text.find(ATTESTATION_HEADING)
     assert start >= 0, "missing post-whitelist private auth attestation heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after attestation persist"
+    end = text.find(P08_HEADING, start)
+    if end < 0:
+        end = text.find(LADDER_HEADING, start)
+    assert end > start, "missing P08 or §11.14 boundary after attestation persist"
     return text[start:end]
 
 
