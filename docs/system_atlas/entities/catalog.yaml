@@ -929,6 +929,31 @@ entities:
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
     notes: Additive post-Z2DR read-only runtime evidence GET bundle. Private GETs auth-failed 50110; public instrument and price-limit observed. MAX_SAFE_READ_ONLY_RUNTIME_BUNDLE_REMAINING=0. Prerequisite 08 remains open. No POST. Atlas is not trading authority.
 
+  - id: PHASE:post_z2ds_50110_egress_capture
+    kind: PHASE
+    name: 11.13.5.POST_Z2DS_50110_EGRESS_CAPTURE
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - evidence/ops/section_11_13_5_post_z2ds_private_get_current_50110_egress_capture_v1/20260903T171133Z/
+      - tests/ops/test_section_11_13_5_post_z2ds_50110_egress_capture_persist_v1.py
+    notes: Additive one-shot private GET 50110 egress capture. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: PHASE:post_z2ds_50110_whitelist_add_from_capture
+    kind: PHASE
+    name: 11.13.5.POST_Z2DS_50110_WHITELIST_ADD_FROM_CAPTURE
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - evidence/ops/section_11_13_5_post_z2ds_50110_whitelist_add_from_capture_v1/20260903T175654Z/
+      - evidence/ops/section_11_13_5_post_z2ds_private_get_current_50110_egress_capture_v1/20260903T171133Z/
+      - tests/ops/test_section_11_13_5_post_z2ds_50110_whitelist_add_from_capture_persist_v1.py
+    notes: Additive management-plane minimum IP whitelist add of captured 50110 IPv4. No GET. No runtime consumer. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
     name: Route-C create-path blocker census v1
@@ -1027,7 +1052,30 @@ entities:
     notes: >-
       Navigation inventory of the additive Z2DS GET-only post-Z2DR runtime
       evidence package. No POST. Private auth may fail 50110. Atlas is not
-      canonical authority. ATLAS_AUTHORITY=NONE.
+      canonical authority.       ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:post_z2ds_private_get_current_50110_egress_capture_v1
+    kind: RUNTIME_COMPONENT
+    name: Post-Z2DS private GET current 50110 egress capture v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_13_5_post_z2ds_private_get_current_50110_egress_capture_v1/__init__.py
+      - src/ops/section_11_13_5_post_z2ds_private_get_current_50110_egress_capture_v1/execute_v1.py
+      - src/ops/section_11_13_5_post_z2ds_private_get_current_50110_egress_capture_v1/constants_v1.py
+      - src/ops/section_11_13_5_post_z2ds_private_get_current_50110_egress_capture_v1/persist_claims_v1.py
+      - src/ops/section_11_13_5_post_z2ds_private_get_current_50110_egress_capture_v1/persist_v1.py
+    evidence_sources:
+      - tests/ops/test_section_11_13_5_post_z2ds_50110_egress_capture_v1.py
+      - tests/ops/test_section_11_13_5_post_z2ds_50110_egress_capture_persist_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/POST_Z2DS_PRIVATE_GET_CURRENT_50110_EGRESS_CAPTURE_V1.md
+      - evidence/ops/section_11_13_5_post_z2ds_private_get_current_50110_egress_capture_v1/20260903T171133Z/
+    notes: >-
+      Navigation inventory of the additive one-shot 50110 egress-capture GET.
+      No POST. No whitelist mutation. Atlas is not canonical authority.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1
     kind: RUNTIME_COMPONENT

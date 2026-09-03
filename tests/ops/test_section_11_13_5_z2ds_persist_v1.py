@@ -50,6 +50,7 @@ EVIDENCE_PACK = (
 
 Z2DR_HEADING = "### 11.13.5.Z2DR Post-Z2DQ Route-C create-path blocker census SSOT persist"
 Z2DS_HEADING = "### 11.13.5.Z2DS Post-Z2DR runtime read-only evidence maximum leverage persist"
+CAPTURE_HEADING = "### 11.13.5 Post-Z2DS one-shot private GET current 50110 egress capture persist"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 NEXT_BOUNDARY = (
     "SEPARATE_OWNER_GO_REQUIRED_BEFORE_ANY_POST_OR_POSITION_CREATION_OR_FLATTEN_OR_LIVE_OR_CANARY"
@@ -64,8 +65,10 @@ def _read(path: Path) -> str:
 def _z2ds_section(text: str) -> str:
     start = text.find(Z2DS_HEADING)
     assert start >= 0, "missing §11.13.5.Z2DS heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2DS"
+    end = text.find(CAPTURE_HEADING, start)
+    if end < 0:
+        end = text.find(LADDER_HEADING, start)
+    assert end > start, "missing capture persist or §11.14 boundary after Z2DS"
     return text[start:end]
 
 
