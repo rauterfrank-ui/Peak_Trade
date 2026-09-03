@@ -414,7 +414,7 @@ entities:
     fail_closed: true
     evidence_sources:
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO, the §11.13.5.Z2CP freshness persist/implement Owner-GO, the §11.13.5.Z2CQ post-Z2CP prerequisite-08 cluster Owner-GO, the §11.13.5.Z2CR prerequisite-08 fresh position-observation Owner-GO, the §11.13.5.Z2CS prerequisite-08 resolution-authority adjudication Owner-GO, the §11.13.5.Z2CT prerequisite-08 single unfiltered position-observation Owner-GO, the §11.13.5.Z2CU post-Z2CT named progression-track adjudication Owner-GO, the §11.13.5.Z2CV COVER_USDC remaining unranked SUI offline reproof Owner-GO, the §11.13.5.Z2CW FX remaining unranked SUI offline reproof Owner-GO, the §11.13.5.Z2CX remaining unranked ROUNDING / FINISHED_RISK_ENVELOPE_NUMERIC / USD_USDC_ACCOUNT_SETTLEMENT offline reproof bundle Owner-GO, the §11.13.5.Z2CY post-Z2CX P3 dependency reconciliation Owner-GO, the §11.13.5.Z2CZ post-Z2CY single unfiltered Prerequisite-08 position-observation Owner-GO, and the §11.13.5.Z2DA post-Z2CZ position-creation / autonomy semantic-rebind persist Owner-GO. Not execute enablement. Atlas is not trading authority.
+    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO, the §11.13.5.Z2CP freshness persist/implement Owner-GO, the §11.13.5.Z2CQ post-Z2CP prerequisite-08 cluster Owner-GO, the §11.13.5.Z2CR prerequisite-08 fresh position-observation Owner-GO, the §11.13.5.Z2CS prerequisite-08 resolution-authority adjudication Owner-GO, the §11.13.5.Z2CT prerequisite-08 single unfiltered position-observation Owner-GO, the §11.13.5.Z2CU post-Z2CT named progression-track adjudication Owner-GO, the §11.13.5.Z2CV COVER_USDC remaining unranked SUI offline reproof Owner-GO, the §11.13.5.Z2CW FX remaining unranked SUI offline reproof Owner-GO, the §11.13.5.Z2CX remaining unranked ROUNDING / FINISHED_RISK_ENVELOPE_NUMERIC / USD_USDC_ACCOUNT_SETTLEMENT offline reproof bundle Owner-GO, the §11.13.5.Z2CY post-Z2CX P3 dependency reconciliation Owner-GO, the §11.13.5.Z2CZ post-Z2CY single unfiltered Prerequisite-08 position-observation Owner-GO, the §11.13.5.Z2DA post-Z2CZ position-creation / autonomy semantic-rebind persist Owner-GO, the §11.13.5.Z2DN Prerequisite-08 position-source policy rebind Owner-GO, and the §11.13.5.Z2DO Route-C offline gated productive submit composition Owner-GO. Not execute enablement. Atlas is not trading authority.
 
   - id: GATE:btc_exclusion
     kind: GATE
@@ -841,7 +841,7 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/prerequisite_08_position_source_policy_rebind_v1.py
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-    notes: Additive offline Prerequisite-08 position-source policy rebind. Resolves Z2DA UNPROVEN_LEFT_OPEN without rewriting Z2DA. Source identity is not part of the 08 proposition. Does not close Prerequisite 08. Does not authorize GET, POST, create, flatten, live, or canary. EXTERNAL_POSITION_ALLOWED remains false. Atlas is not trading authority.
+    notes: Additive offline Prerequisite-08 position-source policy rebind. Resolves Z2DA UNPROVEN_LEFT_OPEN without rewriting Z2DA. Source identity is not part of the 08 proposition. Does not close Prerequisite 08. Does not authorize GET, POST, create, flatten, live, or canary. EXTERNAL_POSITION_ALLOWED remains false. Additive successor PHASE:z2do binds Route-C offline gated submit composition without wire. Atlas is not trading authority.
 
   - id: RUNTIME_COMPONENT:prerequisite_08_position_source_policy_rebind_v1
     kind: RUNTIME_COMPONENT
@@ -860,6 +860,44 @@ entities:
     notes: >-
       Navigation inventory of the additive Z2DN 08 source-policy rebind.
       Does not close Prerequisite 08. Does not GET or create a position.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: PHASE:z2do
+    kind: PHASE
+    name: 11.13.5.Z2DO
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_submit_composition_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+    notes: Additive offline Route-C gated productive submit composition persist. Binds Z2DM candidate to the gated entry-submit type surface. Position-mode body semantics remain UNPROVEN and fail closed. Host seam exists without HOST_GRAPH_ACTIVATION. Does not GET, POST, create, flatten, live, or canary. Atlas is not trading authority.
+
+  - id: RUNTIME_COMPONENT:route_c_offline_gated_productive_submit_composition_v1
+    kind: RUNTIME_COMPONENT
+    name: Route-C offline gated productive submit composition v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_submit_composition_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_submit_composition_constants_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_submit_composition_persist_claims_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_host_composition_seam_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/gated_entry_submit_surface_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/position_mode_submit_body_contract_v1.py
+    evidence_sources:
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_submit_composition_v1.py
+      - tests/ops/test_route_c_offline_gated_productive_submit_composition_v1.py
+      - tests/ops/test_section_11_13_5_z2do_persist_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/ROUTE_C_OFFLINE_GATED_PRODUCTIVE_SUBMIT_COMPOSITION_V1.md
+    notes: >-
+      Navigation inventory of the additive Z2DO Route-C gated submit
+      composition. Candidate only. No HTTP. No secret materialization.
+      posSide remains UNPROVEN fail-closed. Host graph stays inactive.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: PHASE:ddo_offline_foundation
@@ -1730,21 +1768,31 @@ entities:
       - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/composition_v1.py
       - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/path_wiring_constants_v1.py
       - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/path_wiring_persist_claims_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_submit_composition_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_submit_composition_constants_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_submit_composition_persist_claims_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_host_composition_seam_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/gated_entry_submit_surface_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/position_mode_submit_body_contract_v1.py
     evidence_sources:
       - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/pipeline_v1.py
       - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/lineage_assembler_v1.py
       - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/composition_v1.py
+      - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_submit_composition_v1.py
       - tests/ops/test_offline_execution_permission_and_position_creation_producer_wiring_v1.py
       - tests/ops/test_canonical_offline_position_creation_path_wiring_v1.py
+      - tests/ops/test_route_c_offline_gated_productive_submit_composition_v1.py
       - tests/ops/test_section_11_13_5_z2dm_offline_canonical_position_creation_path_persist_v1.py
+      - tests/ops/test_section_11_13_5_z2do_persist_v1.py
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/OFFLINE_CANONICAL_POSITION_CREATION_PATH_WIRING_V1.md
+      - docs/ops/specs/ROUTE_C_OFFLINE_GATED_PRODUCTIVE_SUBMIT_COMPOSITION_V1.md
     notes: >-
       Navigation inventory of the offline non-live execution-boundary
-      composition and the canonical offline position-creation path wiring.
-      GRANT_FOR_NON_LIVE_BOUNDARY is not live send. Productive wire remains
-      false. Prerequisite 08 remains unresolved. Atlas is not canonical
-      authority. ATLAS_AUTHORITY=NONE.
+      composition, the canonical offline position-creation path wiring,
+      and the additive Route-C gated submit composition. GRANT_FOR_NON_LIVE_BOUNDARY
+      is not live send. Productive wire remains false. Prerequisite 08 remains
+      unresolved. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1
     kind: RUNTIME_COMPONENT

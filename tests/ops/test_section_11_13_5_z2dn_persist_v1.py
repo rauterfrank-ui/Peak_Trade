@@ -37,6 +37,7 @@ ATLAS_AUTHORITY = REPO_ROOT / "docs" / "system_atlas" / "ATLAS_AUTHORITY_AND_USA
 Z2DA_HEADING = "### 11.13.5.Z2DA Post-Z2CZ position-creation / autonomy semantic rebind persist"
 Z2DM_HEADING = "### 11.13.5.Z2DM Canonical offline position-creation path wiring persist"
 Z2DN_HEADING = "### 11.13.5.Z2DN Prerequisite-08 position-source policy rebind persist"
+Z2DO_HEADING = "### 11.13.5.Z2DO Route-C offline gated productive submit composition persist"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_PREREQUISITE_08_POSITION_SOURCE_POLICY_PERSIST_IMPLEMENT_PR_V1"
 BASELINE_SHA = "7ba9e9f87dc004f399dcc26a5b444435e94132f4"
@@ -54,8 +55,10 @@ def _read(path: Path) -> str:
 def _z2dn_section(text: str) -> str:
     start = text.find(Z2DN_HEADING)
     assert start >= 0, "missing §11.13.5.Z2DN heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2DN"
+    end = text.find(Z2DO_HEADING, start)
+    if end < 0:
+        end = text.find(LADDER_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2DO or §11.14 boundary after Z2DN"
     return text[start:end]
 
 
@@ -70,7 +73,13 @@ def _z2da_own_section(text: str) -> str:
 def test_z2dn_heading_is_unique_and_follows_z2dm() -> None:
     text = _read(MASTER_RUNBOOK)
     assert text.count(Z2DN_HEADING) == 1
-    assert 0 <= text.find(Z2DM_HEADING) < text.find(Z2DN_HEADING) < text.find(LADDER_HEADING)
+    assert (
+        0
+        <= text.find(Z2DM_HEADING)
+        < text.find(Z2DN_HEADING)
+        < text.find(Z2DO_HEADING)
+        < text.find(LADDER_HEADING)
+    )
 
 
 def test_z2da_historical_unproven_left_open_is_preserved() -> None:
