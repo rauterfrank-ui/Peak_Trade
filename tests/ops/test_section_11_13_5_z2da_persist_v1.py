@@ -70,8 +70,10 @@ def _read(path: Path) -> str:
 def _z2da_section(text: str) -> str:
     start = text.find(Z2DA_HEADING)
     assert start >= 0, "missing §11.13.5.Z2DA heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2DA"
+    end = text.find("### 11.13.5.", start + len(Z2DA_HEADING))
+    if end < 0:
+        end = text.find(LADDER_HEADING, start)
+    assert end > start, "missing successor heading or §11.14 after Z2DA"
     return text[start:end]
 
 

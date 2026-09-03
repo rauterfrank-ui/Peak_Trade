@@ -30,6 +30,7 @@ ATLAS_AUTHORITY = REPO_ROOT / "docs" / "system_atlas" / "ATLAS_AUTHORITY_AND_USA
 
 Z2DL_HEADING = "### 11.13.5.Z2DL Post-remediation single private authenticated GET"
 Z2DM_HEADING = "### 11.13.5.Z2DM Canonical offline position-creation path wiring persist"
+Z2DN_HEADING = "### 11.13.5.Z2DN Prerequisite-08 position-source policy rebind persist"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_OFFLINE_CANONICAL_POSITION_CREATION_PATH_WIRING_V1"
 BASELINE_SHA = "cfce3b0aa66648179f62477fc18bc94fd5ae8236"
@@ -47,15 +48,23 @@ def _read(path: Path) -> str:
 def _z2dm_section(text: str) -> str:
     start = text.find(Z2DM_HEADING)
     assert start >= 0, "missing §11.13.5.Z2DM heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after Z2DM"
+    end = text.find(Z2DN_HEADING, start)
+    if end < 0:
+        end = text.find(LADDER_HEADING, start)
+    assert end > start, "missing §11.13.5.Z2DN or §11.14 boundary after Z2DM"
     return text[start:end]
 
 
 def test_z2dm_heading_is_unique_and_follows_z2dl() -> None:
     text = _read(MASTER_RUNBOOK)
     assert text.count(Z2DM_HEADING) == 1
-    assert 0 <= text.find(Z2DL_HEADING) < text.find(Z2DM_HEADING) < text.find(LADDER_HEADING)
+    assert (
+        0
+        <= text.find(Z2DL_HEADING)
+        < text.find(Z2DM_HEADING)
+        < text.find(Z2DN_HEADING)
+        < text.find(LADDER_HEADING)
+    )
 
 
 def test_z2dm_docs_bind_offline_path_without_venue_or_08() -> None:

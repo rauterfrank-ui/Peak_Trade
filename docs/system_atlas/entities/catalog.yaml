@@ -829,7 +829,38 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/post_z2cz_position_creation_autonomy_semantic_rebind_v1.py
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-    notes: Additive post-Z2CZ offline position-creation / autonomy semantic rebind persist. Prerequisite 08 remains a positive observation-proof gate. Position-creation seam remains MISSING_OR_UNAUTHORIZED. Does not create a position, GET, POST, flatten, consume Class D or Z2AP, or mint execution or live permission. Full autonomy is not a second trading authority. Remains CURRENT_CANONICAL_SECTION for the live track. Parallel DDO offline-foundation persist does not succeed or replace this slice. Atlas is not trading authority.
+    notes: Additive post-Z2CZ offline position-creation / autonomy semantic rebind persist. Prerequisite 08 remains a positive observation-proof gate. Position-creation seam remains MISSING_OR_UNAUTHORIZED. Does not create a position, GET, POST, flatten, consume Class D or Z2AP, or mint execution or live permission. Full autonomy is not a second trading authority. Historical `POSITION_MUST_BE_CREATED_BY_PEAK_TRADE=UNPROVEN_LEFT_OPEN` remains true for this slice. Current 08 source policy is rebound by additive PHASE:z2dn. Atlas is not trading authority.
+
+  - id: PHASE:z2dn
+    kind: PHASE
+    name: 11.13.5.Z2DN
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/prerequisite_08_position_source_policy_rebind_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+    notes: Additive offline Prerequisite-08 position-source policy rebind. Resolves Z2DA UNPROVEN_LEFT_OPEN without rewriting Z2DA. Source identity is not part of the 08 proposition. Does not close Prerequisite 08. Does not authorize GET, POST, create, flatten, live, or canary. EXTERNAL_POSITION_ALLOWED remains false. Atlas is not trading authority.
+
+  - id: RUNTIME_COMPONENT:prerequisite_08_position_source_policy_rebind_v1
+    kind: RUNTIME_COMPONENT
+    name: Prerequisite-08 position-source policy rebind v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/prerequisite_08_position_source_policy_rebind_v1.py
+    evidence_sources:
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/prerequisite_08_position_source_policy_rebind_v1.py
+      - tests/ops/test_section_11_13_5_z2dn_prerequisite_08_position_source_policy_rebind_v1.py
+      - tests/ops/test_section_11_13_5_z2dn_persist_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: >-
+      Navigation inventory of the additive Z2DN 08 source-policy rebind.
+      Does not close Prerequisite 08. Does not GET or create a position.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: PHASE:ddo_offline_foundation
     kind: PHASE
