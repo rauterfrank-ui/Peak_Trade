@@ -1014,6 +1014,18 @@ entities:
       - tests/ops/test_section_11_13_5_p08_read_only_closure_persist_v1.py
     notes: Additive exhaustive remaining read-only identifier-recovery GETs for P08. Empty orders/fills/algo is not zero. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: PHASE:p08_post_read_only_exhaustion_authority_boundary
+    kind: PHASE
+    name: 11.13.5.P08_POST_READ_ONLY_EXHAUSTION_AUTHORITY_BOUNDARY
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - evidence/ops/section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_v1/20260903T212800Z/
+      - tests/ops/test_section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_persist_v1.py
+    notes: Additive offline P08 authority-boundary adjudication after read-only exhaustion. External appearance sufficient. No POST. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
     name: Route-C create-path blocker census v1
@@ -1258,6 +1270,36 @@ entities:
       identifier-recovery GET package. Empty orders/fills/algo is not
       never-held or current zero. No POST. Atlas is not canonical
       authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:p08_post_read_only_exhaustion_authority_boundary_v1
+    kind: RUNTIME_COMPONENT
+    name: P08 post-read-only-exhaustion authority boundary v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_v1/__init__.py
+      - src/ops/section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_v1/assemble_v1.py
+      - src/ops/section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_v1/authority_boundary_v1.py
+      - src/ops/section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_v1/closure_condition_v1.py
+      - src/ops/section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_v1/constants_v1.py
+      - src/ops/section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_v1/future_go_draft_v1.py
+      - src/ops/section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_v1/mechanism_census_v1.py
+      - src/ops/section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_v1/persist_claims_v1.py
+      - src/ops/section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_v1/persist_v1.py
+      - src/ops/section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_v1/readiness_v1.py
+      - src/ops/section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_v1/safety_v1.py
+    evidence_sources:
+      - tests/ops/test_section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_v1.py
+      - tests/ops/test_section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_persist_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/P08_POST_READ_ONLY_EXHAUSTION_AUTHORITY_BOUNDARY_V1.md
+      - evidence/ops/section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_v1/20260903T212800Z/
+    notes: >-
+      Navigation inventory of the additive P08 post-read-only-exhaustion
+      authority-boundary adjudication. External appearance is the minimum
+      higher authority. No POST. Atlas is not canonical authority.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1
     kind: RUNTIME_COMPONENT
