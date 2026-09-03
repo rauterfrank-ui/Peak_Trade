@@ -874,6 +874,19 @@ entities:
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
     notes: Additive offline Route-C gated productive submit composition persist. Binds Z2DM candidate to the gated entry-submit type surface. Position-mode body semantics remain UNPROVEN and fail closed. Host seam exists without HOST_GRAPH_ACTIVATION. Does not GET, POST, create, flatten, live, or canary. Atlas is not trading authority.
 
+  - id: PHASE:z2dp
+    kind: PHASE
+    name: 11.13.5.Z2DP
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/execute_v1.py
+      - evidence/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/20260903T114921Z/
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+    notes: Additive GET-only post-Z2DO Route-C create-readiness evidence persist. Binds LIVE_CANARY_MINIMUM_EXPOSURE_TRADE_API_KEY identity. Position-mode submit body remains UNPROVEN fail-closed. Venue max-available proven zero. Prerequisite 08 remains open. Does not POST, create, flatten, live, or canary. Atlas is not trading authority.
+
   - id: RUNTIME_COMPONENT:route_c_offline_gated_productive_submit_composition_v1
     kind: RUNTIME_COMPONENT
     name: Route-C offline gated productive submit composition v1
@@ -899,6 +912,31 @@ entities:
       composition. Candidate only. No HTTP. No secret materialization.
       posSide remains UNPROVEN fail-closed. Host graph stays inactive.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:post_z2do_fresh_create_readiness_evidence_v1
+    kind: RUNTIME_COMPONENT
+    name: Post-Z2DO fresh create-readiness GET evidence v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/__init__.py
+      - src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/execute_v1.py
+      - src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/adjudicate_v1.py
+      - src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/constants_v1.py
+      - src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/persist_claims_v1.py
+      - src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/persist_v1.py
+      - src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/redaction_v1.py
+    evidence_sources:
+      - tests/ops/test_section_11_13_5_z2dp_fresh_create_readiness_evidence_v1.py
+      - tests/ops/test_section_11_13_5_z2dp_persist_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/POST_Z2DO_FRESH_CREATE_READINESS_EVIDENCE_V1.md
+      - evidence/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/20260903T114921Z/
+    notes: >-
+      Navigation inventory of the additive Z2DP GET-only create-readiness
+      evidence package. No POST. No posSide manufacture. Atlas is not
+      canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: PHASE:ddo_offline_foundation
     kind: PHASE
