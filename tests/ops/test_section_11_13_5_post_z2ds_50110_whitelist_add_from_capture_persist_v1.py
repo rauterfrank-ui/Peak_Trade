@@ -44,6 +44,9 @@ SOURCE_PACK = (
 
 CAPTURE_HEADING = "### 11.13.5 Post-Z2DS one-shot private GET current 50110 egress capture persist"
 WHITELIST_HEADING = "### 11.13.5 Post-Z2DS captured-50110 egress IP whitelist minimum add persist"
+ATTESTATION_HEADING = (
+    "### 11.13.5 Post-Z2DS post-whitelist private auth attestation single GET persist"
+)
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_OKX_EEA_EXTERNAL_IP_WHITELIST_ADD_FROM_CAPTURED_50110_EVIDENCE_20260903T171133Z_V1"
 SUPERSEDED_GO = (
@@ -65,8 +68,10 @@ def _read(path: Path) -> str:
 def _section(text: str) -> str:
     start = text.find(WHITELIST_HEADING)
     assert start >= 0, "missing captured-50110 whitelist-add heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after whitelist-add persist"
+    end = text.find(ATTESTATION_HEADING, start)
+    if end < 0:
+        end = text.find(LADDER_HEADING, start)
+    assert end > start, "missing attestation persist or §11.14 after whitelist-add persist"
     return text[start:end]
 
 
