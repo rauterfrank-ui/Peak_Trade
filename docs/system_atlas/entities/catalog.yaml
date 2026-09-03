@@ -1026,6 +1026,18 @@ entities:
       - tests/ops/test_section_11_13_5_p08_post_read_only_exhaustion_authority_boundary_persist_v1.py
     notes: Additive offline P08 authority-boundary adjudication after read-only exhaustion. External appearance sufficient. No POST. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: PHASE:p08_nonzero_position_adjudication_persist_close
+    kind: PHASE
+    name: 11.13.5.P08
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - evidence/ops/section_11_13_5_p08_nonzero_position_adjudication_persist_close_v1/20260903T223726Z/
+      - tests/ops/test_section_11_13_5_p08_nonzero_position_adjudication_persist_close_persist_v1.py
+    notes: Additive offline CASE_A adjudication of the already-captured unfiltered positions GET. Closes P08. No new GET. No POST. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
     name: Route-C create-path blocker census v1
@@ -1298,8 +1310,34 @@ entities:
     notes: >-
       Navigation inventory of the additive P08 post-read-only-exhaustion
       authority-boundary adjudication. External appearance is the minimum
-      higher authority. No POST. Atlas is not canonical authority.
+      higher authority. No POST.       Atlas is not canonical authority.
       ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:p08_nonzero_position_adjudication_persist_close_v1
+    kind: RUNTIME_COMPONENT
+    name: P08 CASE_A nonzero position adjudication persist close v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_13_5_p08_nonzero_position_adjudication_persist_close_v1/__init__.py
+      - src/ops/section_11_13_5_p08_nonzero_position_adjudication_persist_close_v1/assemble_v1.py
+      - src/ops/section_11_13_5_p08_nonzero_position_adjudication_persist_close_v1/adjudicate_v1.py
+      - src/ops/section_11_13_5_p08_nonzero_position_adjudication_persist_close_v1/captured_payload_v1.py
+      - src/ops/section_11_13_5_p08_nonzero_position_adjudication_persist_close_v1/constants_v1.py
+      - src/ops/section_11_13_5_p08_nonzero_position_adjudication_persist_close_v1/persist_claims_v1.py
+      - src/ops/section_11_13_5_p08_nonzero_position_adjudication_persist_close_v1/persist_v1.py
+    evidence_sources:
+      - tests/ops/test_section_11_13_5_p08_nonzero_position_adjudication_persist_close_v1.py
+      - tests/ops/test_section_11_13_5_p08_nonzero_position_adjudication_persist_close_persist_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/P08_NONZERO_POSITION_ADJUDICATION_PERSIST_CLOSE_V1.md
+      - evidence/ops/section_11_13_5_p08_nonzero_position_adjudication_persist_close_v1/20260903T223726Z/
+    notes: >-
+      Navigation inventory of the additive P08 CASE_A nonzero
+      adjudication persist/close. Binds an already-captured unfiltered
+      positions GET. No new GET. No POST. Atlas is not canonical
+      authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1
     kind: RUNTIME_COMPONENT

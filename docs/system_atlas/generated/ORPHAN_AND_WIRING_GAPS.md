@@ -74,6 +74,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p08_distinct_first_party_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p08_distinct_first_party_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p08_empty_data_not_zero_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p08_empty_data_not_zero_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p08_nonzero_position_adjudication_persist_close_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p08_nonzero_position_adjudication_persist_close_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p08_position_observation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p08_position_observation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p08_post_read_only_exhaustion_authority_boundary_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p08_post_read_only_exhaustion_authority_boundary_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p08_read_only_closure_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p08_read_only_closure_v1 | STATUS=OPEN (not proven) |  |

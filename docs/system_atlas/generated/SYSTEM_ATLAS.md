@@ -427,7 +427,7 @@ Architectural-kind count in this bucket: `19`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `72`.
+Architectural-kind count in this bucket: `73`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -455,6 +455,7 @@ Architectural-kind count in this bucket: `72`.
 | PHASE:ddo_offline_foundation | PHASE | 11.13.5 Parallel-track DDO offline foundation | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:p08_distinct_first_party_evidence | PHASE | 11.13.5.P08_DISTINCT_FIRST_PARTY_EVIDENCE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:p08_empty_data_not_zero | PHASE | 11.13.5.P08_EMPTY_DATA_NOT_ZERO | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| PHASE:p08_nonzero_position_adjudication_persist_close | PHASE | 11.13.5.P08 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:p08_position_observation | PHASE | 11.13.5.P08_POSITION_OBSERVATION | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:p08_post_read_only_exhaustion_authority_boundary | PHASE | 11.13.5.P08_POST_READ_ONLY_EXHAUSTION_AUTHORITY_BOUNDARY | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:p08_read_only_closure | PHASE | 11.13.5.P08_READ_ONLY_CLOSURE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -470,9 +471,8 @@ Architectural-kind count in this bucket: `72`.
 | PHASE:z2ct | PHASE | 11.13.5.Z2CT | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:z2cu | PHASE | 11.13.5.Z2CU | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:z2cv | PHASE | 11.13.5.Z2CV | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| PHASE:z2cw | PHASE | 11.13.5.Z2CW | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `72` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `73` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -609,7 +609,7 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `11`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `68`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `11`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `69`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
@@ -708,7 +708,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=388
+ENTITY_TOTAL=390
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=84
 RUNTIME_RELATION_COUNT=36
@@ -803,10 +803,10 @@ Remaining census domains:
 | OKX_HOST | 8 |
 | OKX_RESPONSE_SHAPE | 6 |
 | OWNER_DECISION | 2 |
-| PHASE | 29 |
+| PHASE | 30 |
 | REGISTRY | 1 |
 | RUNBOOK | 4 |
-| RUNTIME_COMPONENT | 64 |
+| RUNTIME_COMPONENT | 65 |
 | SCHEMA | 18 |
 | SCRIPT | 3 |
 | SELECTOR | 2 |
