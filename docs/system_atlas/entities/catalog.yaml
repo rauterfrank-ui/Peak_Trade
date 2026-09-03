@@ -920,9 +920,13 @@ entities:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     source_paths:
+      - src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/__init__.py
       - src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/execute_v1.py
       - src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/adjudicate_v1.py
       - src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/constants_v1.py
+      - src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/persist_claims_v1.py
+      - src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/persist_v1.py
+      - src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/redaction_v1.py
     evidence_sources:
       - tests/ops/test_section_11_13_5_z2dp_fresh_create_readiness_evidence_v1.py
       - tests/ops/test_section_11_13_5_z2dp_persist_v1.py

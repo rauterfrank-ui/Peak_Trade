@@ -186,6 +186,22 @@ def test_atlas_z2dp_is_navigation_only() -> None:
     assert "current_canonical: false" in block
     assert "ATLAS_AUTHORITY=NONE" in block
     assert "execute_v1.py" in block
+    assert (
+        "src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/__init__.py"
+        in block
+    )
+    assert (
+        "src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/persist_claims_v1.py"
+        in block
+    )
+    assert (
+        "src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/persist_v1.py"
+        in block
+    )
+    assert (
+        "src/ops/section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1/redaction_v1.py"
+        in block
+    )
 
 
 def test_evidence_pack_manifest_verifies_and_matches_adjudication() -> None:
