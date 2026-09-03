@@ -915,6 +915,20 @@ entities:
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
     notes: Additive offline post-Z2DQ Route-C create-path blocker census. Binds Z2DP and Z2DQ upstream adjudications. OFFLINE_CLOSABLE_GAP_COUNT=0. No GET. No POST. Prerequisite 08 remains open. Does not create, flatten, live, or canary. Atlas is not trading authority.
 
+  - id: PHASE:z2ds
+    kind: PHASE
+    name: 11.13.5.Z2DS
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/execute_v1.py
+      - src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/adjudicate_v1.py
+      - evidence/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/20260903T155946Z/
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+    notes: Additive post-Z2DR read-only runtime evidence GET bundle. Private GETs auth-failed 50110; public instrument and price-limit observed. MAX_SAFE_READ_ONLY_RUNTIME_BUNDLE_REMAINING=0. Prerequisite 08 remains open. No POST. Atlas is not trading authority.
+
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
     name: Route-C create-path blocker census v1
@@ -988,6 +1002,31 @@ entities:
     notes: >-
       Navigation inventory of the additive Z2DP GET-only create-readiness
       evidence package. No POST. No posSide manufacture. Atlas is not
+      canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:post_z2dr_runtime_read_only_evidence_max_leverage_v1
+    kind: RUNTIME_COMPONENT
+    name: Post-Z2DR runtime read-only evidence max leverage v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/__init__.py
+      - src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/execute_v1.py
+      - src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/adjudicate_v1.py
+      - src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/constants_v1.py
+      - src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/persist_claims_v1.py
+      - src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/persist_v1.py
+      - src/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/redaction_v1.py
+    evidence_sources:
+      - tests/ops/test_section_11_13_5_z2ds_runtime_read_only_evidence_v1.py
+      - tests/ops/test_section_11_13_5_z2ds_persist_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/POST_Z2DR_RUNTIME_READ_ONLY_EVIDENCE_MAX_LEVERAGE_V1.md
+      - evidence/ops/section_11_13_5_z2ds_post_z2dr_runtime_read_only_evidence_max_leverage_v1/20260903T155946Z/
+    notes: >-
+      Navigation inventory of the additive Z2DS GET-only post-Z2DR runtime
+      evidence package. No POST. Private auth may fail 50110. Atlas is not
       canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1
