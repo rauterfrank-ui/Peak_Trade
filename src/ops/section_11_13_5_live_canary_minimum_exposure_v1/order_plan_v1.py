@@ -16,6 +16,11 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.okx
     OkxResponseMapperError,
     build_venue_native_order_body_v1,
 )
+from src.ops.section_11_13_5_p11_pos_to_sz_unit_identity_independent_proof_v1.contract_v1 import (
+    PosToSzUnitIdentityError,
+    assert_flatten_body_identity_v1,
+    assert_pos_to_sz_identity_applicable_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     DEFAULT_INST_FAMILY,
     DEFAULT_INSTRUMENT_ID,
@@ -739,7 +744,11 @@ def serialize_canary_flatten_venue_native_payload_v1(
     if plan.reduce_only is not True:
         raise LiveCanaryOrderPlanError("FLATTEN_PLAN_REDUCE_ONLY_REQUIRED")
     try:
-        return build_venue_native_order_body_v1(
+        assert_pos_to_sz_identity_applicable_v1(
+            instrument_id=plan.instrument_id,
+            inst_type=DEFAULT_INST_TYPE,
+        )
+        body = build_venue_native_order_body_v1(
             client_order_id=plan.clordid,
             instrument=plan.instrument_id,
             order_type="LIMIT",
@@ -749,5 +758,9 @@ def serialize_canary_flatten_venue_native_payload_v1(
             px=permit_px,
             reduce_only=True,
         )
+        assert_flatten_body_identity_v1(body, quantity=plan.quantity)
+        return body
     except OkxResponseMapperError as exc:
         raise LiveCanaryOrderPlanError(f"FLATTEN_VENUE_NATIVE_BODY:{exc}") from exc
+    except PosToSzUnitIdentityError as exc:
+        raise LiveCanaryOrderPlanError(f"POS_TO_SZ_UNIT:{exc}") from exc

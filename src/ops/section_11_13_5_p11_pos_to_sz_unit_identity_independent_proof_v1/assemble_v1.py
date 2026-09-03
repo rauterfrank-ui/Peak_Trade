@@ -1,0 +1,270 @@
+"""Assemble the P11 POS_TO_SZ unit-identity independent proof pack."""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
+
+from src.ops.section_11_13_5_p11_pos_to_sz_unit_identity_independent_proof_v1.adjudicate_v1 import (
+    adjudicate_pos_to_sz_unit_identity_v1,
+)
+from src.ops.section_11_13_5_p11_pos_to_sz_unit_identity_independent_proof_v1.constants_v1 import (
+    AUTHORIZED_ACCOUNT_UID,
+    AUTHORIZED_HOST,
+    AUTHORIZED_OPERATION,
+    AUTHORIZED_SCOPE,
+    CANONICAL_EVIDENCE_RUN_ID,
+    CASE_VALUE,
+    CONFLICT_COUNT,
+    CONVERSION_FORMULA_VALUE,
+    CURRENT_UNIT_CONTRACT_VALUE,
+    EARLIEST_MISSING_QTY_UNIT_PROOF,
+    EARLIEST_UNRESOLVED_DEPENDENCY,
+    EVIDENCE_DIRNAME,
+    EXECUTION_PREREQUISITE_10_TARGET_POSITION_QTY_UNIT,
+    EXPECTED_ORIGIN_MAIN_SHA,
+    IDENTITY_OR_CONVERSION_VALUE,
+    INSTRUMENT_SCOPE_VALUE,
+    LAST_CANONICALLY_CLOSED_STEP,
+    NEXT_AUTHORITY_BOUNDARY,
+    OWNER_GO,
+    P08_CLOSED,
+    P10_CLOSED,
+    P11_DOES_NOT_AUTHORIZE_FLATTEN,
+    P11_DOES_NOT_GRANT_EXECUTION_READINESS,
+    POS_TO_SZ_UNIT_IDENTITY,
+    POS_UNIT_VALUE,
+    PREDECESSOR_SLICE,
+    PRIOR_OWNER_GO,
+    PRIVATE_AUTH_USED,
+    PUBLIC_SPEC_RETRIEVAL_PERFORMED,
+    QTY_UNIT_CENSUS_COMPLETE,
+    QTY_UNIT_LINEAGE_COMPLETE,
+    RUNTIME_GET_PERFORMED,
+    RUNTIME_GET_REQUIRED,
+    SZ_UNIT_VALUE,
+    TARGET_INSTRUMENT_ID,
+    TARGET_POSITION_QTY_UNIT,
+    THIS_GO_GET_COUNT,
+    THIS_GO_POST_COUNT,
+    THIS_SLICE,
+    UNIT_CHAIN_VERDICT_VALUE,
+    WORKPACKAGE_ID,
+)
+from src.ops.section_11_13_5_p11_pos_to_sz_unit_identity_independent_proof_v1.persist_v1 import (
+    persist_p11_pos_to_sz_evidence_v1,
+)
+
+
+class P11PosToSzAssembleError(RuntimeError):
+    """Fail-closed assemble violation."""
+
+
+def assemble_p11_pos_to_sz_identity_v1(
+    *,
+    origin_main_sha: str,
+    evidence_root: Path | None = None,
+    run_id: str = CANONICAL_EVIDENCE_RUN_ID,
+) -> dict[str, Any]:
+    """Build and optionally persist the independent unit-identity proof. No private GET. No POST."""
+    if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
+        raise P11PosToSzAssembleError("ORIGIN_MAIN_SHA_MISMATCH")
+    verdict = adjudicate_pos_to_sz_unit_identity_v1(origin_main_sha=origin_main_sha)
+    if verdict["TARGET_POSITION_QTY_UNIT"] != "PROVEN":
+        raise P11PosToSzAssembleError("UNIT_MUST_BE_PROVEN")
+    if verdict["POS_TO_SZ_UNIT_IDENTITY"] != "PROVEN":
+        raise P11PosToSzAssembleError("IDENTITY_MUST_BE_PROVEN")
+    census = {
+        "DOCUMENT_CLASS": "P11_POS_TO_SZ_UNIT_IDENTITY_CENSUS_V1",
+        "DOCUMENT_ROLE": "FORENSIC_CENSUS_AUTHORITY_NONE",
+        "AUTHORITY": "NONE",
+        "OWNER_GO": OWNER_GO,
+        "THIS_SLICE": THIS_SLICE,
+        "BOUND_ORIGIN_MAIN_SHA": origin_main_sha,
+        "QTY_UNIT_CENSUS_COMPLETE": QTY_UNIT_CENSUS_COMPLETE,
+        "SEAM_COUNT": verdict["CENSUS"]["SEAM_COUNT"],
+        "EPISTEMIC_CLASS_COUNTS": verdict["CENSUS"]["EPISTEMIC_CLASS_COUNTS"],
+        "TARGET_POSITION_QTY_PROVEN_UNITS_FOUND": verdict["CENSUS"][
+            "TARGET_POSITION_QTY_PROVEN_UNITS_FOUND"
+        ],
+        "EARLIEST_MISSING_QTY_UNIT_PROOF": EARLIEST_MISSING_QTY_UNIT_PROOF,
+        "FORBIDDEN_PROMOTION_ALIASES": verdict["FORBIDDEN_PROMOTION_ALIASES"],
+        "LIVE_EXECUTION": False,
+        "CANARY_EXECUTION": False,
+        "POST_PERFORMED": False,
+        "GET_PERFORMED_THIS_PERSIST": False,
+        "PRIVATE_AUTH_USED": False,
+        "PUBLIC_SPEC_RETRIEVAL_PERFORMED": True,
+    }
+    lineage = {
+        "DOCUMENT_CLASS": "P11_POS_TO_SZ_UNIT_IDENTITY_LINEAGE_V1",
+        "DOCUMENT_ROLE": "FORENSIC_LINEAGE_AUTHORITY_NONE",
+        "AUTHORITY": "NONE",
+        "OWNER_GO": OWNER_GO,
+        "THIS_SLICE": THIS_SLICE,
+        "BOUND_ORIGIN_MAIN_SHA": origin_main_sha,
+        "QTY_UNIT_LINEAGE_COMPLETE": QTY_UNIT_LINEAGE_COMPLETE,
+        "LINEAGE_FIELD_NAMES": verdict["CENSUS"]["LINEAGE_FIELD_NAMES"],
+        "SEAMS": verdict["LINEAGE"],
+        "LIVE_EXECUTION": False,
+        "CANARY_EXECUTION": False,
+        "POST_PERFORMED": False,
+    }
+    official_excerpts = {
+        "DOCUMENT_CLASS": "P11_POS_TO_SZ_OFFICIAL_EXCERPTS_V1",
+        "DOCUMENT_ROLE": "RETRIEVED_OFFICIAL_DOCUMENTATION_MARKDOWN_DERIVATIVE_NOT_ORIGINAL_HTML_BYTES",
+        "AUTHORITY": "NONE",
+        "OWNER_GO": OWNER_GO,
+        "THIS_SLICE": THIS_SLICE,
+        "BOUND_ORIGIN_MAIN_SHA": origin_main_sha,
+        **verdict["OFFICIAL_EXCERPTS"],
+        "LIVE_EXECUTION": False,
+        "CANARY_EXECUTION": False,
+        "POST_PERFORMED": False,
+        "PRIVATE_AUTH_USED": False,
+    }
+    adjudication = {
+        "DOCUMENT_CLASS": "P11_POS_TO_SZ_UNIT_IDENTITY_ADJUDICATION_V1",
+        "DOCUMENT_ROLE": "INTERPRETATION_NOT_RAW_WIRE_NOT_SSOT",
+        "AUTHORITY": "NONE",
+        "OWNER_GO": OWNER_GO,
+        "PRIOR_OWNER_GO": PRIOR_OWNER_GO,
+        "THIS_SLICE": THIS_SLICE,
+        "PREDECESSOR_SLICE": PREDECESSOR_SLICE,
+        "BOUND_ORIGIN_MAIN_SHA": origin_main_sha,
+        "TARGET_INSTRUMENT_ID": TARGET_INSTRUMENT_ID,
+        "TARGET_POSITION_QTY_UNIT": verdict["TARGET_POSITION_QTY_UNIT"],
+        "CURRENT_UNIT_CONTRACT": verdict["CURRENT_UNIT_CONTRACT"],
+        "POS_TO_SZ_UNIT_IDENTITY": verdict["POS_TO_SZ_UNIT_IDENTITY"],
+        "POS_UNIT": verdict["POS_UNIT"],
+        "SZ_UNIT": verdict["SZ_UNIT"],
+        "IDENTITY_OR_CONVERSION": verdict["IDENTITY_OR_CONVERSION"],
+        "CONVERSION_FORMULA": verdict["CONVERSION_FORMULA"],
+        "INSTRUMENT_SCOPE": verdict["INSTRUMENT_SCOPE"],
+        "CASE": verdict["CASE"],
+        "QTY_UNIT_CENSUS_COMPLETE": QTY_UNIT_CENSUS_COMPLETE,
+        "QTY_UNIT_LINEAGE_COMPLETE": QTY_UNIT_LINEAGE_COMPLETE,
+        "EARLIEST_MISSING_QTY_UNIT_PROOF": EARLIEST_MISSING_QTY_UNIT_PROOF,
+        "EARLIEST_UNRESOLVED_DEPENDENCY": EARLIEST_UNRESOLVED_DEPENDENCY,
+        "NEXT_AUTHORITY_BOUNDARY": NEXT_AUTHORITY_BOUNDARY,
+        "EXECUTION_PREREQUISITE_10_TARGET_POSITION_QTY_UNIT": (
+            EXECUTION_PREREQUISITE_10_TARGET_POSITION_QTY_UNIT
+        ),
+        "CONFLICT_COUNT": CONFLICT_COUNT,
+        "UNIT_CHAIN_VERDICT": verdict["UNIT_CHAIN_VERDICT"],
+        "ORDER_PLAN_QTY_IS_NOT_TARGET_POSITION_QTY": verdict[
+            "ORDER_PLAN_QTY_IS_NOT_TARGET_POSITION_QTY"
+        ],
+        "ONE_CONTRACT_EQUALS_ONE_SUI": verdict["ONE_CONTRACT_EQUALS_ONE_SUI"],
+        "NUMERIC_POS_EQUALS_SZ_IS_NOT_UNIT_PROOF": verdict[
+            "NUMERIC_POS_EQUALS_SZ_IS_NOT_UNIT_PROOF"
+        ],
+        "CTVAL_IS_NOT_POS_TO_SZ_FACTOR": verdict["CTVAL_IS_NOT_POS_TO_SZ_FACTOR"],
+        "IDENTITY_NOW_INDEPENDENTLY_PROVEN": verdict["IDENTITY_NOW_INDEPENDENTLY_PROVEN"],
+        "PLACE_ORDER_REQUEST_PARAM_NAMES_UNIT": verdict["PLACE_ORDER_REQUEST_PARAM_NAMES_UNIT"],
+        "POSCCY_PRESENT_IN_AUTHORIZED_P08_CAPTURE": verdict[
+            "POSCCY_PRESENT_IN_AUTHORIZED_P08_CAPTURE"
+        ],
+        "signed_pos": verdict["signed_pos"],
+        "TARGET_POSITION_QTY_RAW": verdict["TARGET_POSITION_QTY_RAW"],
+        "TARGET_POSITION_QTY_NUMERIC": verdict["TARGET_POSITION_QTY_NUMERIC"],
+        "P08_CLOSED": P08_CLOSED,
+        "P10_CLOSED": P10_CLOSED,
+        "LAST_CANONICALLY_CLOSED_STEP": LAST_CANONICALLY_CLOSED_STEP,
+        "THIS_GO_GET_COUNT": THIS_GO_GET_COUNT,
+        "THIS_GO_POST_COUNT": THIS_GO_POST_COUNT,
+        "GET_PERFORMED_THIS_PERSIST": False,
+        "SECOND_GET_PERFORMED": False,
+        "POST_PERFORMED": False,
+        "RUNTIME_GET_REQUIRED": RUNTIME_GET_REQUIRED,
+        "RUNTIME_GET_PERFORMED": RUNTIME_GET_PERFORMED,
+        "PRIVATE_AUTH_USED": PRIVATE_AUTH_USED,
+        "PUBLIC_SPEC_RETRIEVAL_PERFORMED": PUBLIC_SPEC_RETRIEVAL_PERFORMED,
+        "INDEPENDENT_VENUE_SEMANTIC_PROOF": True,
+        "P11_DOES_NOT_GRANT_EXECUTION_READINESS": P11_DOES_NOT_GRANT_EXECUTION_READINESS,
+        "P11_DOES_NOT_AUTHORIZE_FLATTEN": P11_DOES_NOT_AUTHORIZE_FLATTEN,
+        "LIVE_EXECUTION": False,
+        "CANARY_EXECUTION": False,
+        "MERGE_AUTHORIZED_BY_THIS_PERSIST": False,
+        "VENUE_SEMANTIC_PROOF": verdict["VENUE_SEMANTIC_PROOF"],
+    }
+    summary = {
+        "DOCUMENT_CLASS": "P11_POS_TO_SZ_UNIT_IDENTITY_PACKAGE_V1",
+        "DOCUMENT_ROLE": "DERIVED_NON_SSOT",
+        "OWNER_GO": OWNER_GO,
+        "OWNER_GO_CONSUMED": True,
+        "PRIOR_OWNER_GO": PRIOR_OWNER_GO,
+        "THIS_SLICE": THIS_SLICE,
+        "WORKPACKAGE_ID": WORKPACKAGE_ID,
+        "AUTHORIZED_SCOPE": AUTHORIZED_SCOPE,
+        "AUTHORIZED_OPERATION": AUTHORIZED_OPERATION,
+        "HOST": AUTHORIZED_HOST,
+        "AUTHORIZED_ACCOUNT_UID": AUTHORIZED_ACCOUNT_UID,
+        "TARGET_INSTRUMENT_ID": TARGET_INSTRUMENT_ID,
+        "TARGET_POSITION_QTY_UNIT": TARGET_POSITION_QTY_UNIT,
+        "CURRENT_UNIT_CONTRACT": CURRENT_UNIT_CONTRACT_VALUE,
+        "POS_TO_SZ_UNIT_IDENTITY": POS_TO_SZ_UNIT_IDENTITY,
+        "POS_UNIT": POS_UNIT_VALUE,
+        "SZ_UNIT": SZ_UNIT_VALUE,
+        "IDENTITY_OR_CONVERSION": IDENTITY_OR_CONVERSION_VALUE,
+        "CONVERSION_FORMULA": CONVERSION_FORMULA_VALUE,
+        "INSTRUMENT_SCOPE": INSTRUMENT_SCOPE_VALUE,
+        "CASE": CASE_VALUE,
+        "UNIT_CHAIN_VERDICT": UNIT_CHAIN_VERDICT_VALUE,
+        "QTY_UNIT_CENSUS_COMPLETE": QTY_UNIT_CENSUS_COMPLETE,
+        "QTY_UNIT_LINEAGE_COMPLETE": QTY_UNIT_LINEAGE_COMPLETE,
+        "EARLIEST_MISSING_QTY_UNIT_PROOF": EARLIEST_MISSING_QTY_UNIT_PROOF,
+        "CONFLICT_COUNT": CONFLICT_COUNT,
+        "P08_CLOSED": True,
+        "P10_CLOSED": True,
+        "LAST_CANONICALLY_CLOSED_STEP": LAST_CANONICALLY_CLOSED_STEP,
+        "EARLIEST_UNRESOLVED_DEPENDENCY": EARLIEST_UNRESOLVED_DEPENDENCY,
+        "NEXT_AUTHORITY_BOUNDARY": NEXT_AUTHORITY_BOUNDARY,
+        "EXECUTION_PREREQUISITE_10_TARGET_POSITION_QTY_UNIT": (
+            EXECUTION_PREREQUISITE_10_TARGET_POSITION_QTY_UNIT
+        ),
+        "GET_REQUEST_COUNT": THIS_GO_GET_COUNT,
+        "THIS_GO_GET_COUNT": THIS_GO_GET_COUNT,
+        "HTTP_EXCHANGE_COUNT": 0,
+        "POST_COUNT": THIS_GO_POST_COUNT,
+        "WRITE_REQUEST_COUNT": 0,
+        "GET_PERFORMED_THIS_PERSIST": False,
+        "SECOND_GET_PERFORMED": False,
+        "POST_PERFORMED": False,
+        "RUNTIME_GET_REQUIRED": RUNTIME_GET_REQUIRED,
+        "RUNTIME_GET_PERFORMED": RUNTIME_GET_PERFORMED,
+        "PRIVATE_AUTH_USED": PRIVATE_AUTH_USED,
+        "PUBLIC_SPEC_RETRIEVAL_PERFORMED": PUBLIC_SPEC_RETRIEVAL_PERFORMED,
+        "LIVE_EXECUTION": False,
+        "CANARY_EXECUTION": False,
+        "CORE_CHANGED": False,
+        "NEW_AUTHORITY_CREATED": False,
+        "MERGE_AUTHORIZED": False,
+        "P11_DOES_NOT_GRANT_EXECUTION_READINESS": True,
+        "P11_DOES_NOT_AUTHORIZE_FLATTEN": True,
+        "ATLAS_AUTHORITY": "NONE",
+        "LANDSCAPE_AUTHORITY": "NONE",
+    }
+    result: dict[str, Any] = {
+        "verdict": verdict,
+        "census": census,
+        "lineage": lineage,
+        "official_excerpts": official_excerpts,
+        "adjudication": adjudication,
+        "summary": summary,
+    }
+    if evidence_root is not None:
+        pack = Path(evidence_root) / run_id
+        verified = persist_p11_pos_to_sz_evidence_v1(
+            pack=pack,
+            origin_main_sha=origin_main_sha,
+            census=census,
+            lineage=lineage,
+            adjudication=adjudication,
+            official_excerpts=official_excerpts,
+            summary=summary,
+        )
+        result["EVIDENCE_PACK"] = str(pack)
+        result["MANIFEST_VERIFY_RC"] = verified.get("MANIFEST_VERIFY_RC")
+        result["EVIDENCE_DIRNAME"] = EVIDENCE_DIRNAME
+    return result
