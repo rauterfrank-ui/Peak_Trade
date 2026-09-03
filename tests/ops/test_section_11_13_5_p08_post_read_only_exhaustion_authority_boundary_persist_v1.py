@@ -60,18 +60,29 @@ def _read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+CASE_A_HEADING = "### 11.13.5 P08 CASE_A nonzero position adjudication persist close"
+
+
 def _boundary_section(text: str) -> str:
     start = text.find(BOUNDARY_HEADING)
     assert start >= 0, "missing P08 authority-boundary heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after authority-boundary persist"
+    end = text.find(CASE_A_HEADING, start)
+    if end < 0:
+        end = text.find(LADDER_HEADING, start)
+    assert end > start, "missing CASE_A or §11.14 boundary after authority-boundary persist"
     return text[start:end]
 
 
 def test_boundary_heading_is_unique_and_follows_closure() -> None:
     text = _read(MASTER_RUNBOOK)
     assert text.count(BOUNDARY_HEADING) == 1
-    assert 0 <= text.find(CLOSURE_HEADING) < text.find(BOUNDARY_HEADING) < text.find(LADDER_HEADING)
+    case_a = text.find(CASE_A_HEADING)
+    ladder = text.find(LADDER_HEADING)
+    boundary = text.find(BOUNDARY_HEADING)
+    closure = text.find(CLOSURE_HEADING)
+    assert 0 <= closure < boundary < ladder
+    if case_a >= 0:
+        assert boundary < case_a < ladder
 
 
 def test_predecessor_closure_text_was_not_rewritten() -> None:
