@@ -1,4 +1,4 @@
-"""P08 distinct first-party evidence persist invariants."""
+"""P08 read-only closure persist invariants."""
 
 from __future__ import annotations
 
@@ -17,14 +17,15 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import 
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_execute_authority_v1 import (
     FORBIDDEN_FLATTEN_EXECUTE_OWNER_GOS,
 )
-from src.ops.section_11_13_5_p08_distinct_first_party_evidence_v1.constants_v1 import (
+from src.ops.section_11_13_5_p08_read_only_closure_v1.constants_v1 import (
     EXPECTED_ORIGIN_MAIN_SHA,
+    NEXT_AUTHORITY_BOUNDARY_READ_ONLY_EXHAUSTED,
     OWNER_GO,
     PREDECESSOR_SLICE,
     THIS_SLICE,
     WORKPACKAGE_ID,
 )
-from src.ops.section_11_13_5_p08_distinct_first_party_evidence_v1.persist_claims_v1 import (
+from src.ops.section_11_13_5_p08_read_only_closure_v1.persist_claims_v1 import (
     CLAIMS,
 )
 
@@ -32,22 +33,16 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 MASTER_RUNBOOK = REPO_ROOT / "docs" / "runbooks" / "canonical" / "PEAK_TRADE_MASTER_RUNBOOK.md"
 MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 ATLAS_CATALOG = REPO_ROOT / "docs" / "system_atlas" / "entities" / "catalog.yaml"
-SPEC = REPO_ROOT / "docs/ops/specs/P08_DISTINCT_FIRST_PARTY_EVIDENCE_MAX_SAFE_LEVERAGE_V2.md"
+SPEC = REPO_ROOT / "docs/ops/specs/P08_READ_ONLY_CLOSURE_MAX_SAFE_LEVERAGE_V3.md"
 EVIDENCE_PACK = (
-    REPO_ROOT
-    / "evidence"
-    / "ops"
-    / "section_11_13_5_p08_distinct_first_party_evidence_v1"
-    / "20260903T200738Z"
+    REPO_ROOT / "evidence" / "ops" / "section_11_13_5_p08_read_only_closure_v1" / "20260903T210317Z"
 )
 
-EMPTY_DATA_HEADING = "### 11.13.5 P08 empty-data-not-zero maximum-safe-leverage persist"
 DISTINCT_HEADING = "### 11.13.5 P08 distinct first-party evidence maximum-safe-leverage persist"
 CLOSURE_HEADING = "### 11.13.5 P08 read-only closure maximum-safe-leverage persist"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 SECRETREF = "secretref://vault/peak-trade/live-canary-minimum-exposure/okx"
 EMPTY_SHA = "fc24d69479edbb84f22c7d5bd4525349734056ad3baf7a5adf7e553f68c06a3a"
-RISK_SHA = "c43be6927e571d74be5ebe5fd656bb26b827f39b3e1d5300f8df97ea23f7a4f3"
 
 
 def _read(path: Path) -> str:
@@ -55,41 +50,36 @@ def _read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def _distinct_section(text: str) -> str:
-    start = text.find(DISTINCT_HEADING)
-    assert start >= 0, "missing P08 distinct first-party evidence heading"
-    end = text.find(CLOSURE_HEADING, start)
-    if end < 0:
-        end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing read-only-closure or §11.14 boundary after distinct persist"
+def _closure_section(text: str) -> str:
+    start = text.find(CLOSURE_HEADING)
+    assert start >= 0, "missing P08 read-only closure heading"
+    end = text.find(LADDER_HEADING, start)
+    assert end > start, "missing §11.14 boundary after read-only closure persist"
     return text[start:end]
 
 
-def test_distinct_heading_is_unique_and_follows_empty_data() -> None:
+def test_closure_heading_is_unique_and_follows_distinct() -> None:
     text = _read(MASTER_RUNBOOK)
-    assert text.count(DISTINCT_HEADING) == 1
-    assert (
-        0
-        <= text.find(EMPTY_DATA_HEADING)
-        < text.find(DISTINCT_HEADING)
-        < text.find(CLOSURE_HEADING)
-        < text.find(LADDER_HEADING)
-    )
+    assert text.count(CLOSURE_HEADING) == 1
+    assert 0 <= text.find(DISTINCT_HEADING) < text.find(CLOSURE_HEADING) < text.find(LADDER_HEADING)
 
 
-def test_predecessor_empty_data_text_was_not_rewritten() -> None:
+def test_predecessor_distinct_text_was_not_rewritten() -> None:
     text = _read(MASTER_RUNBOOK)
-    empty_start = text.find(EMPTY_DATA_HEADING)
     distinct_start = text.find(DISTINCT_HEADING)
-    empty = text[empty_start:distinct_start]
-    assert "OWNER_GO=PEAK_TRADE_OWNER_GO_P08_EMPTY_DATA_NOT_ZERO_MAXIMUM_SAFE_LEVERAGE_V1" in empty
-    assert "POSITION_OBSERVATION_CLASS=CASE_C_EMPTY_DATA_NOT_ZERO" in empty
-    assert "GET_COUNT=3" in empty
-    assert "P08_EMPTY_DATA_TEXT_REWRITTEN=false" in _distinct_section(text)
+    closure_start = text.find(CLOSURE_HEADING)
+    distinct = text[distinct_start:closure_start]
+    assert (
+        "OWNER_GO=PEAK_TRADE_OWNER_GO_P08_DISTINCT_FIRST_PARTY_EVIDENCE_MAXIMUM_SAFE_LEVERAGE_V2"
+        in distinct
+    )
+    assert "POSITION_OBSERVATION_CLASS=CASE_C_EMPTY_DATA_NOT_ZERO" in distinct
+    assert "GET_COUNT=3" in distinct
+    assert "P08_DISTINCT_TEXT_REWRITTEN=false" in _closure_section(text)
 
 
-def test_distinct_runbook_persist_tokens() -> None:
-    section = _distinct_section(_read(MASTER_RUNBOOK))
+def test_closure_runbook_persist_tokens() -> None:
+    section = _closure_section(_read(MASTER_RUNBOOK))
     required = (
         f"OWNER_GO={OWNER_GO}",
         f"THIS_SLICE={THIS_SLICE}",
@@ -104,20 +94,21 @@ def test_distinct_runbook_persist_tokens() -> None:
         "RESULT_CLASS=HTTP_200_OKX_0",
         "POSITION_OBSERVATION_CLASS=CASE_C_EMPTY_DATA_NOT_ZERO",
         "EMPTY_DATA_IS_ZERO=false",
-        "HISTORY_EMPTY_IS_NEVER_HELD=false",
-        "HISTORY_EMPTY_IS_CURRENT_ZERO=false",
-        "RISK_POSDATA_EMPTY_IS_ZERO=false",
-        "CROSS_CHECK_IS_CANONICAL_AUTHORITY=false",
+        "ORDERS_EMPTY_IS_NEVER_HELD=false",
+        "ORDERS_EMPTY_IS_CURRENT_ZERO=false",
+        "FILLS_EMPTY_IS_NEVER_HELD=false",
+        "FILLS_EMPTY_IS_CURRENT_ZERO=false",
         "HISTORICAL_STATE_IS_CURRENT_STATE=false",
         "P08_CLOSED=false",
-        "P08_VERDICT=P08_NOT_CLOSED_DISTINCT_CHANNELS_DO_NOT_PROVE_CURRENT_ZERO_OR_NONZERO",
+        "P08_READ_ONLY_CLOSURE_RESULT=READ_ONLY_EXHAUSTED",
+        "P08_VERDICT=P08_NOT_CLOSED_READ_ONLY_IDENTIFIER_CHANNELS_DO_NOT_PROVE_CURRENT_NONZERO",
         "TARGET_POSITION_ZERO_PROVEN=false",
         "TARGET_POSITION_NONZERO_PROVEN=false",
         "TARGET_POS_ID_PROVEN=false",
         "POSITION_STATE_OBSERVED=false",
         "G_POSMODE_SUBMIT_BODY_PROVEN=false",
-        "GET_COUNT=3",
-        "HTTP_EXCHANGE_COUNT=3",
+        "GET_COUNT=6",
+        "HTTP_EXCHANGE_COUNT=6",
         "RETRY_COUNT=0",
         "POST_COUNT=0",
         "WRITE_REQUEST_COUNT=0",
@@ -126,9 +117,8 @@ def test_distinct_runbook_persist_tokens() -> None:
         "MERGE_AUTHORIZED_BY_THIS_PERSIST=false",
         "ATLAS_AUTHORITY=NONE",
         "LANDSCAPE_AUTHORITY=NONE",
-        "NEXT_AUTHORITY_BOUNDARY=SEPARATE_OWNER_GO_REQUIRED_P08_STILL_NOT_CLOSED_DISTINCT_CHANNELS_DO_NOT_PROVE_CURRENT_STATE",
-        f"HISTORY_BODY_SHA256={EMPTY_SHA}",
-        f"RISK_BODY_SHA256={RISK_SHA}",
+        f"NEXT_AUTHORITY_BOUNDARY={NEXT_AUTHORITY_BOUNDARY_READ_ONLY_EXHAUSTED}",
+        f"IDENTIFIER_BODY_SHA256={EMPTY_SHA}",
         "BYTE_IDENTICAL_EMPTY_SHA_IS_NOT_CURRENT_08_PROOF=true",
         f"SANITIZED_SECRETREF={SECRETREF}",
     )
@@ -137,9 +127,10 @@ def test_distinct_runbook_persist_tokens() -> None:
     forbidden = (
         "\nP08_CLOSED=true\n",
         "\nEMPTY_DATA_IS_ZERO=true\n",
-        "\nHISTORY_EMPTY_IS_NEVER_HELD=true\n",
-        "\nHISTORY_EMPTY_IS_CURRENT_ZERO=true\n",
-        "\nRISK_POSDATA_EMPTY_IS_ZERO=true\n",
+        "\nORDERS_EMPTY_IS_NEVER_HELD=true\n",
+        "\nORDERS_EMPTY_IS_CURRENT_ZERO=true\n",
+        "\nFILLS_EMPTY_IS_NEVER_HELD=true\n",
+        "\nFILLS_EMPTY_IS_CURRENT_ZERO=true\n",
         "\nTARGET_POSITION_ZERO_PROVEN=true\n",
         "\nTARGET_POSITION_NONZERO_PROVEN=true\n",
         "\nTARGET_POS_ID_PROVEN=true\n",
@@ -151,6 +142,7 @@ def test_distinct_runbook_persist_tokens() -> None:
         "\nLIVE_EXECUTION=true\n",
         "\nCANARY_EXECUTION=true\n",
         "\nRETRY_ALLOWED=true\n",
+        "\nP08_READ_ONLY_CLOSURE_RESULT=CLOSED_NONZERO_PROVEN\n",
     )
     for token in forbidden:
         assert token not in section, token
@@ -159,19 +151,19 @@ def test_distinct_runbook_persist_tokens() -> None:
     assert "ok-access-" not in section.lower()
 
 
-def test_map_of_truth_has_no_distinct_semantic_entry() -> None:
+def test_map_of_truth_has_no_closure_semantic_entry() -> None:
     text = _read(MAP_OF_TRUTH)
     assert "DOCUMENT_ROLE=NAVIGATION_ONLY_NO_SEMANTICS" in text
     assert OWNER_GO not in text
-    assert "P08_DISTINCT_FIRST_PARTY_EVIDENCE_V2" not in text
+    assert "P08_READ_ONLY_CLOSURE_V3" not in text
 
 
-def test_atlas_distinct_is_navigation_only() -> None:
+def test_atlas_closure_is_navigation_only() -> None:
     catalog = _read(ATLAS_CATALOG)
     authority = _read(REPO_ROOT / "docs" / "system_atlas" / "ATLAS_AUTHORITY_AND_USAGE.md")
     assert "ATLAS_AUTHORITY=NONE" in authority
-    assert "id: PHASE:p08_distinct_first_party_evidence" in catalog
-    assert "id: RUNTIME_COMPONENT:p08_distinct_first_party_evidence_v1" in catalog
+    assert "id: PHASE:p08_read_only_closure" in catalog
+    assert "id: RUNTIME_COMPONENT:p08_read_only_closure_v1" in catalog
     assert "ATLAS_AUTHORITY=NONE" in catalog
 
 
@@ -179,9 +171,10 @@ def test_code_claims_remain_fail_closed() -> None:
     assert CLAIMS["OWNER_GO"] == OWNER_GO
     assert CLAIMS["THIS_SLICE"] == THIS_SLICE
     assert CLAIMS["EMPTY_DATA_IS_ZERO"] is False
-    assert CLAIMS["HISTORY_EMPTY_IS_NEVER_HELD"] is False
-    assert CLAIMS["HISTORY_EMPTY_IS_CURRENT_ZERO"] is False
-    assert CLAIMS["RISK_POSDATA_EMPTY_IS_ZERO"] is False
+    assert CLAIMS["ORDERS_EMPTY_IS_NEVER_HELD"] is False
+    assert CLAIMS["ORDERS_EMPTY_IS_CURRENT_ZERO"] is False
+    assert CLAIMS["FILLS_EMPTY_IS_NEVER_HELD"] is False
+    assert CLAIMS["FILLS_EMPTY_IS_CURRENT_ZERO"] is False
     assert CLAIMS["POST_ALLOWED"] is False
     assert CLAIMS["G_POSMODE_SUBMIT_BODY_PROVEN"] is False
     assert CLAIMS["P09_WORK_ALLOWED"] is False
@@ -207,37 +200,33 @@ def test_evidence_pack_manifest_and_channel_fields() -> None:
     assert summary["RESULT_CLASS"] == "HTTP_200_OKX_0"
     assert summary["POSITION_OBSERVATION_CLASS"] == "CASE_C_EMPTY_DATA_NOT_ZERO"
     assert summary["P08_CLOSED"] is False
+    assert summary["P08_READ_ONLY_CLOSURE_RESULT"] == "READ_ONLY_EXHAUSTED"
     assert summary["TARGET_POSITION_ZERO_PROVEN"] is False
     assert summary["TARGET_POSITION_NONZERO_PROVEN"] is False
     assert summary["TARGET_POS_ID_PROVEN"] is False
-    assert summary["POSITION_STATE_OBSERVED"] is False
     assert summary["G_POSMODE_SUBMIT_BODY_PROVEN"] is False
     assert summary["OWNER_GO_CONSUMED"] is True
-    assert summary["GET_REQUEST_COUNT"] == 3
+    assert summary["GET_REQUEST_COUNT"] == 6
     assert summary["POST_COUNT"] == 0
-    raw1 = json.loads((EVIDENCE_PACK / "GET_TARGET_HISTORY.raw.json").read_text(encoding="utf-8"))
-    assert raw1["BODY_SHA256"] == EMPTY_SHA
-    assert raw1["BODY_WAS_JSON_RESERIALIZED"] is False
-    assert raw1["DOCUMENT_ROLE"] == "FORENSIC_RAW_NOT_CANONICAL_NOT_ADJUDICATION"
-    assert raw1["ENDPOINT_PATH"] == "/api/v5/account/positions-history"
-    raw2 = json.loads((EVIDENCE_PACK / "GET_TYPED_HISTORY.raw.json").read_text(encoding="utf-8"))
-    assert raw2["QUERY_PARAMETERS"]["instType"] == "FUTURES"
-    assert "instId" not in raw2["QUERY_PARAMETERS"]
-    raw3 = json.loads(
-        (EVIDENCE_PACK / "GET_ACCOUNT_POSITION_RISK.raw.json").read_text(encoding="utf-8")
+    assert summary["POSID_POSITIONS_GET_PERFORMED"] is False
+    raw_pending = json.loads(
+        (EVIDENCE_PACK / "GET_ORDERS_PENDING.raw.json").read_text(encoding="utf-8")
     )
-    assert raw3["BODY_SHA256"] == RISK_SHA
-    assert raw3["ENDPOINT_PATH"] == "/api/v5/account/account-position-risk"
+    assert raw_pending["BODY_SHA256"] == EMPTY_SHA
+    assert raw_pending["BODY_WAS_JSON_RESERIALIZED"] is False
+    assert raw_pending["DOCUMENT_ROLE"] == "FORENSIC_RAW_NOT_CANONICAL_NOT_ADJUDICATION"
+    assert raw_pending["ENDPOINT_PATH"] == "/api/v5/trade/orders-pending"
+    raw_fills = json.loads((EVIDENCE_PACK / "GET_FILLS.raw.json").read_text(encoding="utf-8"))
+    assert raw_fills["BODY_SHA256"] == EMPTY_SHA
+    assert raw_fills["ENDPOINT_PATH"] == "/api/v5/trade/fills"
     assert not (EVIDENCE_PACK / "GET_POSID_POSITIONS.raw.json").exists()
     adjudication = json.loads((EVIDENCE_PACK / "ADJUDICATION.json").read_text(encoding="utf-8"))
     assert adjudication["DOCUMENT_ROLE"] == "INTERPRETATION_NOT_RAW_EVIDENCE_NOT_SSOT"
-    assert adjudication["HYPOTHESIS_IS_NOT_PROOF"] is True
-    assert adjudication["HISTORY_EMPTY_IS_NEVER_HELD"] is False
-    assert adjudication["RISK_POSDATA_EMPTY_IS_ZERO"] is False
+    assert adjudication["P08_READ_ONLY_CLOSURE_RESULT"] == "READ_ONLY_EXHAUSTED"
     lowered = json.dumps(
         {
             "summary": summary,
-            "raw1": raw1,
+            "raw_pending": raw_pending,
             "claims": claims,
         }
     ).lower()
@@ -250,10 +239,11 @@ def test_evidence_pack_manifest_and_channel_fields() -> None:
 def test_spec_exists() -> None:
     assert SPEC.is_file()
     text = _read(SPEC)
-    assert "GET_REQUEST_COUNT=3" in text
+    assert "GET_REQUEST_COUNT=6" in text
     assert "CASE_C_EMPTY_DATA_NOT_ZERO" in text
     assert "EMPTY_DATA_IS_ZERO=false" in text
-    assert "HISTORY_EMPTY_IS_NEVER_HELD=false" in text
+    assert "ORDERS_EMPTY_IS_NEVER_HELD=false" in text
     assert "P08_CLOSED=false" in text
+    assert "P08_READ_ONLY_CLOSURE_RESULT=READ_ONLY_EXHAUSTED" in text
     assert "TARGET_POSITION_ZERO_PROVEN=false" in text
     assert "TARGET_POS_ID_PROVEN=false" in text
