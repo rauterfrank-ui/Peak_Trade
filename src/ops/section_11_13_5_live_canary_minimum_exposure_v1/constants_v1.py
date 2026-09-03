@@ -112,6 +112,11 @@ ENDPOINT_ACCOUNT_POSITIONS_HISTORY = "/api/v5/account/positions-history"
 ENDPOINT_ACCOUNT_POSITION_RISK = "/api/v5/account/account-position-risk"
 ENDPOINT_ACCOUNT_BALANCE = "/api/v5/account/balance"
 ENDPOINT_ASSET_BALANCES = "/api/v5/asset/balances"
+ENDPOINT_ORDERS_HISTORY = "/api/v5/trade/orders-history"
+ENDPOINT_ORDER_GET = "/api/v5/trade/order"
+ENDPOINT_ORDERS_PENDING = "/api/v5/trade/orders-pending"
+ENDPOINT_ORDERS_ALGO_PENDING = "/api/v5/trade/orders-algo-pending"
+ENDPOINT_TRADE_FILLS = "/api/v5/trade/fills"
 ENDPOINT_ALLOWLIST_READ: tuple[str, ...] = (
     ENDPOINT_ACCOUNT_BALANCE,
     ENDPOINT_ACCOUNT_CONFIG,
@@ -121,7 +126,10 @@ ENDPOINT_ALLOWLIST_READ: tuple[str, ...] = (
     ENDPOINT_ACCOUNT_MAX_SIZE,
     ENDPOINT_ACCOUNT_LEVERAGE_INFO,
     ENDPOINT_ASSET_BALANCES,
-    "/api/v5/trade/orders-pending",
+    ENDPOINT_ORDERS_PENDING,
+    ENDPOINT_ORDERS_HISTORY,
+    ENDPOINT_ORDERS_ALGO_PENDING,
+    ENDPOINT_TRADE_FILLS,
     "/api/v5/market/ticker",
     "/api/v5/public/instruments",
     ENDPOINT_PUBLIC_PRICE_LIMIT,
@@ -294,9 +302,6 @@ CONFIRM_TOKEN_CANONICAL = "I_KNOW_WHAT_I_AM_DOING"
 CLORDID_PREFIX = "pt-canary-"
 CLORDID_WIRE_ALPHANUMERIC_PREFIX = "ptcanary"
 IDEMPOTENCY_POLICY = "ONE_SHOT_CLORDID_PER_OWNER_GO_BINDING"
-ENDPOINT_ORDERS_HISTORY = "/api/v5/trade/orders-history"
-ENDPOINT_ORDER_GET = "/api/v5/trade/order"
-ENDPOINT_ORDERS_ALGO_PENDING = "/api/v5/trade/orders-algo-pending"
 GET_ENDPOINTS_PUBLIC: tuple[str, ...] = (
     "/api/v5/public/instruments",
     "/api/v5/market/ticker",
@@ -311,10 +316,11 @@ GET_ENDPOINTS_PRIVATE: tuple[str, ...] = (
     ENDPOINT_ACCOUNT_MAX_SIZE,
     ENDPOINT_ACCOUNT_LEVERAGE_INFO,
     ENDPOINT_ASSET_BALANCES,
-    "/api/v5/trade/orders-pending",
+    ENDPOINT_ORDERS_PENDING,
     ENDPOINT_ORDERS_ALGO_PENDING,
-    "/api/v5/trade/orders-history",
-    "/api/v5/trade/order",
+    ENDPOINT_ORDERS_HISTORY,
+    ENDPOINT_TRADE_FILLS,
+    ENDPOINT_ORDER_GET,
 )
 POST_ENDPOINTS_GATED: tuple[str, ...] = (
     "/api/v5/trade/order",
