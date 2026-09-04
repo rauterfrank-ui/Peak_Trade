@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any, Mapping, Sequence
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
+    ADMISSIBLE_OFFLINE_SOURCE_KINDS,
     CANONICAL_BASE_SHA,
     CANONICAL_EVIDENCE_RUN_ID,
     EVIDENCE_RECORD_SCHEMA_VERSION,
@@ -61,9 +62,15 @@ def build_evidence_record_v1(
         raise Section1114OfflineSurfaceError(f"UNKNOWN_LADDER_STAGE:{ladder_stage}")
     refuse_forbidden_live_source_v1(field_name=ladder_stage, source_kind=source_kind)
     if claim_value is True:
-        raise Section1114OfflineSurfaceError(
-            f"LIVE_FIELD_TRUE_FORBIDDEN_IN_EVIDENCE_RECORD:{claim_name}"
-        )
+        if ladder_stage != "LIVE_EXECUTION_CODE_EXISTS":
+            raise Section1114OfflineSurfaceError(
+                f"LIVE_FIELD_TRUE_FORBIDDEN_IN_EVIDENCE_RECORD:{claim_name}"
+            )
+        kind = str(source_kind or "").strip().upper()
+        if kind not in ADMISSIBLE_OFFLINE_SOURCE_KINDS:
+            raise Section1114OfflineSurfaceError(
+                f"LIVE_EXECUTION_CODE_EXISTS_TRUE_SOURCE_NOT_ADMISSIBLE:{kind}"
+            )
     payload: dict[str, Any] = {
         "schema_version": EVIDENCE_RECORD_SCHEMA_VERSION,
         "ladder_stage": ladder_stage,

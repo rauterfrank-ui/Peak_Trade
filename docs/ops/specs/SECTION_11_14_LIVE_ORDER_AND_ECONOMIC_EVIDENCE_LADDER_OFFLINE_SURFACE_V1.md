@@ -49,3 +49,8 @@ closure does not authorize §11.14 and does not satisfy observed fields.
 `LIVE_RECONCILIATION_PROVEN` is not `LIVE_POSITION_RECONCILED`.
 §4.9 `CURRENTLY_REACHABLE` is not `LIVE_EXECUTION_PATH_REACHABLE`.
 Code presence is not `LIVE_EXECUTION_CODE_EXISTS`.
+
+Successor slice `11.14.LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION` binds
+`LIVE_EXECUTION_CODE_EXISTS=true` from the static predicate. This
+historical surface persist remains the consumed offline-surface record
+and does not authorize path-reachable or observed fields.

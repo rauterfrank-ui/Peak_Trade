@@ -60839,6 +60839,130 @@ Hard stop. This offline-surface GO is consumed.
 flatten, fund, or claim Live-observed ladder fields without a separate
 Owner-GO.
 
+### 11.14 LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION (BOUND; STATIC/OFFLINE ONLY; PATH_REACHABLE FALSE; SECTION 11.14 NOT COMPLETE)
+
+Additive persist. Does **not** rewrite the §11.14 ladder text or the
+consumed offline-surface slice above. Does **not** collect Live evidence.
+Does **not** GET. Does **not** POST. Does **not** submit, cancel, amend,
+flatten, or fund. Does **not** set `LIVE_EXECUTION_PATH_REACHABLE` or any
+`*_OBSERVED` &#47; `*_PROVEN` ladder field true. Does **not** mark §11.14
+complete. Does **not** authorize runtime execution.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_MAXIMUM_SAFE_LEVERAGE_V1
+OWNER_GO_STATUS=CONSUMED
+OWNER_GO_CONSUMED=true
+PRIOR_OWNER_GO=PEAK_TRADE_OWNER_GO_SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE_MAXIMUM_SAFE_LEVERAGE_V1
+AUTHORIZATION_PRESENT=true
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_SSOT_PERSIST
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+ATLAS_AUTHORITY=NONE
+CHAT_TRANSCRIPT_AUTHORITY=NONE
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=b09cac11f0eaecfc5c6f5c97e8b23e808e186b9a
+EXPECTED_ORIGIN_MAIN_SHA=b09cac11f0eaecfc5c6f5c97e8b23e808e186b9a
+PREDECESSOR_SLICE=11.14.OFFLINE_EVIDENCE_LADDER_SURFACE
+THIS_SLICE=11.14.LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION
+CURRENT_PHASE=11.14.LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION
+CURRENT_CANONICAL_SECTION=11.14.LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION
+LAST_CANONICALLY_CLOSED_STEP=SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE
+SECTION_11_14_OFFLINE_SURFACE_BOUND=true
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+SECTION_11_14_LIVE_EVIDENCE_COLLECTION_AUTHORIZED=false
+LIVE_EXECUTION_CODE_EXISTS=true
+LIVE_EXECUTION_PATH_REACHABLE=false
+LIVE_PRIVATE_READ_ONLY_PROVEN=false
+LIVE_ORDER_PLAN_OBSERVED=false
+LIVE_SUBMIT_ACK_OBSERVED=false
+LIVE_FILL_OBSERVED=false
+LIVE_FEE_OBSERVED=false
+LIVE_POSITION_RECONCILED=false
+LIVE_ACCOUNTING_RECONSTRUCTED=false
+LIVE_RESTART_RECONSTRUCTED=false
+LIVE_AUTONOMOUS_RECOVERY_OBSERVED=false
+LIVE_END_TO_END_EVIDENCE_PROVEN=false
+LADDER_FIELD_COUNT=12
+MANDATORY_LIVE_METRIC_COUNT=20
+PRIOR_CENSUS_REPORTED_METRIC_COUNT=19
+METRIC_COUNT_DISCREPANCY_VS_PRIOR_CENSUS=true
+MANDATORY_LIVE_METRICS=orders_planned,orders_submitted,orders_acknowledged,orders_rejected,orders_unknown,partial_fills,fills,cancels,amends,duplicate_submit_prevented,fees_paid,funding_paid_or_received,realized_pnl,unrealized_pnl,margin_utilization,reconciliation_divergences,autonomous_recoveries,degradation_transitions,kill_switch_events,owner_interventions
+COLLECTOR_ACTIVATED=false
+GET_PERFORMED=false
+POST_PERFORMED=false
+CREDENTIAL_USE=false
+LIVE_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+SUBMIT_UNLOCKED=false
+CANARY_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+G12_DOES_NOT_AUTHORIZE_SECTION_11_14=true
+G12_DOES_NOT_SATISFY_SECTION_11_14_OBSERVED_FIELDS=true
+CURRENTLY_REACHABLE_IS_NOT_LIVE_EXECUTION_PATH_REACHABLE=true
+LIVE_RECONCILIATION_PROVEN_IS_NOT_LIVE_POSITION_RECONCILED=true
+CODE_PRESENCE_IS_NOT_LIVE_EXECUTION_CODE_EXISTS=true
+HISTORICAL_CODE_IS_NOT_LIVE_EXECUTION_CODE_EXISTS=true
+FIXTURE_TESTNET_SIM_IS_NOT_LIVE_EXECUTION_CODE_EXISTS=true
+LIVE_EXECUTION_CODE_EXISTS_DOES_NOT_IMPLY_PATH_REACHABLE=true
+LIVE_EXECUTION_CODE_EXISTS_DOES_NOT_IMPLY_AUTHORIZATION=true
+FIELD_NAME_SIMILARITY_IS_NOT_SEMANTIC_IDENTITY=true
+NO_TESTNET_FIXTURE_OR_SIMULATED_RESULT_MAY_SATISFY_A_LIVE_EVIDENCE_FIELD=true
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_EXECUTION_PATH_REACHABLE
+NEXT_AUTHORITY_BOUNDARY=SEPARATE_OWNER_GO_FOR_LIVE_EXECUTION_PATH_REACHABLE
+NEXT_OWNER_GO_REQUIRED=SEPARATE_OWNER_GO_FOR_LIVE_EXECUTION_PATH_REACHABLE
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CANONICAL_EVIDENCE_RUN_ID=20260904T123100Z
+```
+
+A. Definition. The previous offline-surface GO left this field false because
+§11.14 named the field without a proof criterion and forbade binding true
+from file presence. This slice binds the criterion: a complete integrated
+static Live canary call graph from `evaluate_canary_submit_gates_v1` &#47;
+`refuse_submit_unless_gates_pass_v1` through
+`run_canary_submit_transport_v1`, `build_minimum_valid_canary_order_plan_v1`,
+`build_venue_native_order_body_v1` &#47; `build_client_order_id`,
+`LiveCanaryHttpClientV1.post_entry_order`, and
+`UrllibLiveCanaryTransportV1.send`.
+
+B. Adjudication. `LIVE_EXECUTION_CODE_EXISTS=true` on inspected
+`origin&#47;main` `b09cac11f0eaecfc5c6f5c97e8b23e808e186b9a` because that
+graph is present, classified as current productive &#47; integrated, and
+proven from `REPOSITORY_IMPLEMENTATION`, not fixtures, Testnet,
+simulation, or historical-only surfaces. File presence remains
+inadmissible by itself. Cap 11.7--11.11 remain contracts-only false and
+are not this field's SSOT.
+
+C. Non-promotion. `LIVE_EXECUTION_PATH_REACHABLE=false`. Standing gates
+remain `LIVE_AUTHORIZED=false`, `LIVE_ENABLED=false`, `LIVE_ARMED=false`,
+`SUBMIT_UNLOCKED=false`. §4.9 `CURRENTLY_REACHABLE` is not this field.
+No later `*_OBSERVED` or `*_PROVEN` ladder field is true. Flatten,
+reconciliation, and kill-switch surfaces are inventoried; kill-switch is
+implemented as contract &#47; risk-layer code and is not a static callee of
+the submit orchestrator.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/
+SPEC_OWNER=docs/ops/specs/SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md
+EVIDENCE_ROOT=evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T123100Z/
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_14
+CURRENT_CANONICAL_SECTION=11.14.LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION
+HARD_STOP_AFTER_THIS_TASK=true
+HARD_STOP=true
+```
+
+Hard stop. This LIVE_EXECUTION_CODE_EXISTS adjudication GO is consumed.
+`SECTION_11_14_AUTHORIZED=false`. `SECTION_11_14_COMPLETE=false`.
+`LIVE_EXECUTION_CODE_EXISTS=true`. `LIVE_EXECUTION_PATH_REACHABLE=false`.
+Do **not** GET, POST, submit, flatten, fund, infer reachability, or claim
+Live-observed ladder fields without a separate Owner-GO.
+
 ## 11.15 Full-autonomy observability and audit trail
 
 The autonomous runtime must expose enough telemetry for oversight without

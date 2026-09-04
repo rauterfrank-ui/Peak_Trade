@@ -11,7 +11,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import 
     write_manifest_v1,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
+    EVIDENCE_DIRNAME,
     EXPECTED_ORIGIN_MAIN_SHA,
+    CANONICAL_EVIDENCE_RUN_ID,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -83,3 +85,7 @@ def persist_offline_surface_pack_v1(
     if int(verified.get("MANIFEST_VERIFY_RC", 1)) != 0:
         raise Section1114OfflineSurfaceError("MANIFEST_VERIFY_FAILED")
     return verified
+
+
+def canonical_evidence_pack_path_v1(*, repo_root: Path) -> Path:
+    return repo_root / "evidence" / "ops" / EVIDENCE_DIRNAME / CANONICAL_EVIDENCE_RUN_ID

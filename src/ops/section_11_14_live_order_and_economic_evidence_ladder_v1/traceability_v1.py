@@ -56,11 +56,16 @@ def build_traceability_matrix_v1(
     for field_name in LADDER_FIELDS:
         if field_name not in ladder_values:
             raise Section1114OfflineSurfaceError(f"TRACE_MISSING_LADDER_FIELD:{field_name}")
-        unresolved = (
-            EARLIEST_UNRESOLVED_DEPENDENCY
-            if field_name == EARLIEST_UNRESOLVED_DEPENDENCY
-            else f"BLOCKED_BY_{EARLIEST_UNRESOLVED_DEPENDENCY}"
-        )
+        claimed = bool(ladder_values[field_name] is True)
+        if claimed:
+            unresolved = "NONE"
+            adjudication = "TRUE_STATIC_INTEGRATED_PRODUCTIVE_PATH"
+        elif field_name == EARLIEST_UNRESOLVED_DEPENDENCY:
+            unresolved = EARLIEST_UNRESOLVED_DEPENDENCY
+            adjudication = "FALSE_FAIL_CLOSED_OFFLINE_SURFACE"
+        else:
+            unresolved = f"BLOCKED_BY_{EARLIEST_UNRESOLVED_DEPENDENCY}"
+            adjudication = "FALSE_FAIL_CLOSED_OFFLINE_SURFACE"
         rows.append(
             _row(
                 requirement=field_name,
@@ -68,9 +73,9 @@ def build_traceability_matrix_v1(
                 implementation=f"{PACKAGE}/constants_v1.py",
                 test_path=TESTS,
                 evidence=f"{PACKAGE}/evidence_schema_v1.py",
-                current_value=bool(ladder_values[field_name]),
+                current_value=claimed,
                 epistemic_class="3_ALREADY_ADJUDICATED_CONCLUSION",
-                adjudication="FALSE_FAIL_CLOSED_OFFLINE_SURFACE",
+                adjudication=adjudication,
                 unresolved=unresolved,
             )
         )

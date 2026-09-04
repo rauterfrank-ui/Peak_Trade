@@ -73,25 +73,31 @@ def assemble_offline_surface_v1(
         ladder_values=LADDER_FIELD_DEFAULTS,
         metrics_schema=metrics,
     )
-    evidence_records = [
-        build_evidence_record_v1(
-            ladder_stage=field_name,
-            claim_name=field_name,
-            claim_value=False,
-            evidence_class="3_ALREADY_ADJUDICATED_CONCLUSION",
-            source_kind="GOVERNED_OFFLINE_CONTRACT",
-            source_path_or_runtime_source=(
-                "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
-            ),
-            observed_at=None,
-            predecessor_claims=[PREDECESSOR_SLICE],
-            provenance=OWNER_GO,
-            adjudication_status="FALSE_FAIL_CLOSED",
-            contradiction_status="NONE",
-            authority_scope="R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+    evidence_records = []
+    for field_name in LADDER_FIELDS:
+        claim_true = field_name == "LIVE_EXECUTION_CODE_EXISTS"
+        evidence_records.append(
+            build_evidence_record_v1(
+                ladder_stage=field_name,
+                claim_name=field_name,
+                claim_value=claim_true,
+                evidence_class="3_ALREADY_ADJUDICATED_CONCLUSION",
+                source_kind=(
+                    "REPOSITORY_IMPLEMENTATION" if claim_true else "GOVERNED_OFFLINE_CONTRACT"
+                ),
+                source_path_or_runtime_source=(
+                    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+                ),
+                observed_at=None,
+                predecessor_claims=[PREDECESSOR_SLICE],
+                provenance=OWNER_GO,
+                adjudication_status=(
+                    "TRUE_STATIC_INTEGRATED_PRODUCTIVE_PATH" if claim_true else "FALSE_FAIL_CLOSED"
+                ),
+                contradiction_status="NONE",
+                authority_scope="R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+            )
         )
-        for field_name in LADDER_FIELDS
-    ]
     ladder_state = {
         "schema_version": SCHEMA_VERSION,
         "fields": list(LADDER_FIELDS),
@@ -128,7 +134,7 @@ def assemble_offline_surface_v1(
         "LAST_CANONICALLY_CLOSED_STEP": LAST_CANONICALLY_CLOSED_STEP,
     }
     adjudication = {
-        "DOCUMENT_CLASS": "SECTION_11_14_OFFLINE_SURFACE_ADJUDICATION_V1",
+        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1",
         "AUTHORITY": "NONE",
         "OWNER_GO": OWNER_GO,
         "THIS_SLICE": THIS_SLICE,
@@ -155,7 +161,7 @@ def assemble_offline_surface_v1(
         "SECTION_11_14_COMPLETE": False,
         "LADDER_FIELD_COUNT": LADDER_FIELD_COUNT,
         "MANDATORY_LIVE_METRIC_COUNT": MANDATORY_LIVE_METRIC_COUNT,
-        "LIVE_EXECUTION_CODE_EXISTS": False,
+        "LIVE_EXECUTION_CODE_EXISTS": True,
         "LIVE_EXECUTION_PATH_REACHABLE": False,
         "EARLIEST_UNRESOLVED_DEPENDENCY": EARLIEST_UNRESOLVED_DEPENDENCY,
         "NEXT_OWNER_GO_REQUIRED": NEXT_OWNER_GO_REQUIRED,
@@ -169,6 +175,8 @@ def assemble_offline_surface_v1(
     }
     assert_contract_invariants_v1(claims)
     assert_contract_invariants_v1(summary)
+    graph = static_fields["LIVE_EXECUTION_CODE_EXISTS"].get("static_execution_graph") or {}
+    classification = graph.get("classification_summary") or {}
     return {
         "claims.json": claims,
         "SUMMARY.json": summary,
@@ -179,5 +187,7 @@ def assemble_offline_surface_v1(
         "LADDER_STATE.json": ladder_state,
         "LINEAGE.json": lineage,
         "STATIC_FIELD_ADJUDICATION.json": static_fields,
+        "STATIC_EXECUTION_GRAPH.json": graph,
+        "COMPONENT_CLASSIFICATION.json": classification,
         "MUTATION_BOUNDARY.json": mutation_boundary,
     }
