@@ -68,6 +68,7 @@ def build_evidence_record_v1(
             "LIVE_PRIVATE_READ_ONLY_PROVEN",
             "LIVE_ORDER_PLAN_OBSERVED",
             "LIVE_SUBMIT_ACK_OBSERVED",
+            "LIVE_FILL_OBSERVED",
         }
         if ladder_stage not in allowed_true:
             raise Section1114OfflineSurfaceError(
@@ -99,6 +100,8 @@ def build_evidence_record_v1(
             raise Section1114OfflineSurfaceError(f"ORDER_PLAN_TRUE_SOURCE_NOT_ADMISSIBLE:{kind}")
         if ladder_stage == "LIVE_SUBMIT_ACK_OBSERVED" and kind != "GOVERNED_CURRENT_LIVE_POST":
             raise Section1114OfflineSurfaceError(f"ACK_TRUE_SOURCE_NOT_ADMISSIBLE:{kind}")
+        if ladder_stage == "LIVE_FILL_OBSERVED" and kind != "GOVERNED_CURRENT_PRIVATE_GET":
+            raise Section1114OfflineSurfaceError(f"FILL_TRUE_SOURCE_NOT_ADMISSIBLE:{kind}")
     payload: dict[str, Any] = {
         "schema_version": EVIDENCE_RECORD_SCHEMA_VERSION,
         "ladder_stage": ladder_stage,

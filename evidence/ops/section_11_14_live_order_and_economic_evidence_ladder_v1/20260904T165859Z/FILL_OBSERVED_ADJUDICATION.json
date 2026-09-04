@@ -1,0 +1,144 @@
+{
+  "AMEND_USED": false,
+  "BOUND_ACK_EVIDENCE_RUN_ID": "20260904T160450Z",
+  "BOUND_ACK_SOURCE_KIND": "GOVERNED_CURRENT_LIVE_POST",
+  "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+  "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+  "BOUND_ORDID": "3893505043080286208",
+  "CANCEL_USED": false,
+  "CASE_ADJUDICATION": "CASE_LIVE_FILL_OBSERVED_FEE_INELIGIBLE",
+  "CLORDID_MATCH": true,
+  "CONTRADICTORY_FILL_EVIDENCE": false,
+  "FILL_EVIDENCE_SOURCE": "/api/v5/trade/fills",
+  "FILL_PRODUCER": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/fill_observed_adjudication_v1.py::adjudicate_live_fill_observed_v1",
+  "FILL_PROOF_CONJUNCTION_STATUS": "TRUE_LIVE_FILL_OBSERVED",
+  "FILL_PROOF_CRITERION": "LIVE_FILL_OBSERVED is the sixth \u00a711.14 Live proof-claim field. It is true iff LIVE_SUBMIT_ACK_OBSERVED is already true and a current governed private GET /api/v5/trade/fills on eea.okx.com, scoped to the exact acknowledged ordId, instId, and instType, returns HTTP 200, no redirect, top-level code=0, parseable JSON, and at least one data row whose ordId, clOrdId, and instId equal the bound Peak_Trade Live submit identity and whose fillSz is present and nonempty. That is at least one admissible executed fill bound to that identity. ACK, ordId existence, pending disappearance, position size, balance change, fee fields, and an order-state label are each insufficient. Historical fills, fixture, testnet, and simulated sources are forbidden. PARTIAL_FILL_OBSERVED and FULL_FILL_OBSERVED remain distinct. True does not imply LIVE_FEE_OBSERVED, LIVE_POSITION_RECONCILED, or \u00a711.14 complete.",
+  "FILL_SOURCE_KIND": "GOVERNED_CURRENT_PRIVATE_GET",
+  "FULL_FILL_OBSERVED": true,
+  "INSTRUMENT_MATCH": true,
+  "LIVE_FEE_OBSERVED": false,
+  "LIVE_FILL_ADJUDICATION_REASON": "IDENTITY_BOUND_NONEMPTY_FILLSZ_ROW",
+  "LIVE_FILL_OBSERVED": true,
+  "LIVE_POSITION_RECONCILED": false,
+  "LIVE_SUBMIT_ACK_OBSERVED": true,
+  "NO_FILL_OBSERVED": false,
+  "ORDER_ACCFILLSZ": "1",
+  "ORDER_GET_IDENTITY_MATCH": true,
+  "ORDER_IDENTITY_MATCH": true,
+  "ORDER_STATE": "filled",
+  "ORDID_MATCH": true,
+  "PARTIAL_FILL_OBSERVED": false,
+  "POST_USED": false,
+  "RAW_AVG_FILL_PRICE_IF_OBSERVED": "0.748",
+  "RAW_EXECUTED_QTY_IF_OBSERVED": "1",
+  "RAW_FILL_IDENTIFIERS": [
+    "1055244"
+  ],
+  "RAW_FILL_PRICE_IF_OBSERVED": "0.748",
+  "RAW_FILL_ROW_COUNT": 1,
+  "RAW_FILL_TIMESTAMP_IF_OBSERVED": "1788537892511",
+  "RAW_ORDER_STATE_IF_OBSERVED": "filled",
+  "RAW_ORDER_SZ_IF_OBSERVED": "1",
+  "RAW_REMAINING_QTY_IF_OBSERVED": null,
+  "RAW_TRADE_IDENTIFIERS": [
+    "1055244"
+  ],
+  "SECTION_11_14_COMPLETE": false,
+  "UNRESOLVED_REASON": null,
+  "adjudicated_value": true,
+  "canonical_definition": "LIVE_FILL_OBSERVED is the sixth \u00a711.14 Live proof-claim field. It is true iff LIVE_SUBMIT_ACK_OBSERVED is already true and a current governed private GET /api/v5/trade/fills on eea.okx.com, scoped to the exact acknowledged ordId, instId, and instType, returns HTTP 200, no redirect, top-level code=0, parseable JSON, and at least one data row whose ordId, clOrdId, and instId equal the bound Peak_Trade Live submit identity and whose fillSz is present and nonempty. That is at least one admissible executed fill bound to that identity. ACK, ordId existence, pending disappearance, position size, balance change, fee fields, and an order-state label are each insufficient. Historical fills, fixture, testnet, and simulated sources are forbidden. PARTIAL_FILL_OBSERVED and FULL_FILL_OBSERVED remain distinct. True does not imply LIVE_FEE_OBSERVED, LIVE_POSITION_RECONCILED, or \u00a711.14 complete.",
+  "claim_value": true,
+  "field_conjunction": {
+    "adjudication": "TRUE_LIVE_FILL_OBSERVED",
+    "admissible_live_source_kind": "GOVERNED_CURRENT_PRIVATE_GET",
+    "canonical_definition": "LIVE_FILL_OBSERVED is the sixth \u00a711.14 Live proof-claim field. It is true iff LIVE_SUBMIT_ACK_OBSERVED is already true and a current governed private GET /api/v5/trade/fills on eea.okx.com, scoped to the exact acknowledged ordId, instId, and instType, returns HTTP 200, no redirect, top-level code=0, parseable JSON, and at least one data row whose ordId, clOrdId, and instId equal the bound Peak_Trade Live submit identity and whose fillSz is present and nonempty. That is at least one admissible executed fill bound to that identity. ACK, ordId existence, pending disappearance, position size, balance change, fee fields, and an order-state label are each insufficient. Historical fills, fixture, testnet, and simulated sources are forbidden. PARTIAL_FILL_OBSERVED and FULL_FILL_OBSERVED remain distinct. True does not imply LIVE_FEE_OBSERVED, LIVE_POSITION_RECONCILED, or \u00a711.14 complete.",
+    "claim_value": true,
+    "constituent_count": 6,
+    "false_required": [],
+    "source_kind": "GOVERNED_CURRENT_PRIVATE_GET"
+  },
+  "field_constituent_values": {
+    "ADMISSIBLE_PRIVATE_GET_SOURCE": true,
+    "AT_LEAST_ONE_IDENTITY_BOUND_NONEMPTY_FILLSZ_ROW": true,
+    "CURRENT_GOVERNED_PRIVATE_FILLS_GET": true,
+    "FILLS_HTTP_CONJUNCTION_SATISFIED": true,
+    "LIVE_SUBMIT_ACK_OBSERVED": true,
+    "NOT_FIXTURE_TESTNET_OR_SIMULATED": true
+  },
+  "field_constituents": [
+    "LIVE_SUBMIT_ACK_OBSERVED",
+    "CURRENT_GOVERNED_PRIVATE_FILLS_GET",
+    "FILLS_HTTP_CONJUNCTION_SATISFIED",
+    "AT_LEAST_ONE_IDENTITY_BOUND_NONEMPTY_FILLSZ_ROW",
+    "ADMISSIBLE_PRIVATE_GET_SOURCE",
+    "NOT_FIXTURE_TESTNET_OR_SIMULATED"
+  ],
+  "fills_http_conjunction": {
+    "adjudication": "FILLS_HTTP_CONJUNCTION_SATISFIED",
+    "claim_value": true,
+    "constituent_count": 5,
+    "false_required": []
+  },
+  "fills_http_constituent_count": 5,
+  "fills_http_constituent_values": {
+    "HTTP_STATUS_200": true,
+    "JSON_PARSE_OK": true,
+    "METHOD_GET": true,
+    "NO_REDIRECT": true,
+    "TOP_LEVEL_CODE_0": true
+  },
+  "fills_http_constituents": [
+    "JSON_PARSE_OK",
+    "HTTP_STATUS_200",
+    "NO_REDIRECT",
+    "TOP_LEVEL_CODE_0",
+    "METHOD_GET"
+  ],
+  "producer": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/fill_observed_adjudication_v1.py::adjudicate_live_fill_observed_v1",
+  "proof_criterion_bound": true,
+  "row_classification": {
+    "AT_LEAST_ONE_IDENTITY_BOUND_NONEMPTY_FILLSZ_ROW": true,
+    "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+    "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+    "BOUND_ORDID": "3893505043080286208",
+    "EXECUTED_QTY_CONTRADICTS_SUBMITTED_SZ": false,
+    "EXECUTED_QTY_PARSE_OK": true,
+    "FULL_FILL_OBSERVED": true,
+    "IDENTITY_BOUND_NONEMPTY_FILLSZ_ROW_COUNT": 1,
+    "PARTIAL_FILL_OBSERVED": false,
+    "RAW_AVG_FILL_PRICE_IF_OBSERVED": null,
+    "RAW_EXECUTED_QTY_IF_OBSERVED": "1",
+    "RAW_FILL_IDENTIFIERS": [
+      "1055244"
+    ],
+    "RAW_FILL_ROW_COUNT": 1,
+    "RAW_TRADE_IDENTIFIERS": [
+      "1055244"
+    ],
+    "SUBMITTED_SZ": "1",
+    "UNMATCHED_OR_INSUFFICIENT_ROW_COUNT": 0,
+    "matched_rows": [
+      {
+        "FILLSZ_PRESENT_NONEMPTY": true,
+        "clOrdId": "ptokxeprod1fec928b1fec928b00",
+        "fee": "-0.000374",
+        "feeCcy": "USDC",
+        "fillPx": "0.748",
+        "fillSz": "1",
+        "fillTime": "1788537892511",
+        "identity": {
+          "CLORDID_MATCH": true,
+          "INSTRUMENT_MATCH": true,
+          "ORDER_IDENTITY_MATCH": true,
+          "ORDID_MATCH": true
+        },
+        "instId": "SUI-USD_UM_XPERP-310404",
+        "ordId": "3893505043080286208",
+        "posSide": "net",
+        "side": "buy",
+        "tradeId": "1055244"
+      }
+    ],
+    "unmatched_or_insufficient_rows": []
+  }
+}

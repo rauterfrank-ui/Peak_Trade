@@ -15,7 +15,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     CASE_ADJUDICATION,
+    HISTORICAL_ACK_CASE_ADJUDICATION,
     LADDER_FIELD_DEFAULTS,
+    LIVE_FEE_OBSERVED,
     LIVE_FILL_OBSERVED,
     LIVE_SUBMIT_ACK_OBSERVED,
     LIVE_SUBMIT_ACK_OBSERVED_PRODUCER,
@@ -90,9 +92,11 @@ def _classify(**overrides: object) -> dict[str, object]:
 
 def test_producer_and_criterion_are_bound_without_promoting_ack() -> None:
     assert LIVE_SUBMIT_ACK_PROOF_CRITERION_BOUND is True
-    assert CASE_ADJUDICATION == "CASE_LIVE_SUBMIT_ACK_OBSERVED_FILL_INELIGIBLE"
+    assert HISTORICAL_ACK_CASE_ADJUDICATION == "CASE_LIVE_SUBMIT_ACK_OBSERVED_FILL_INELIGIBLE"
+    assert CASE_ADJUDICATION == "CASE_LIVE_FILL_OBSERVED_FEE_INELIGIBLE"
     assert LIVE_SUBMIT_ACK_OBSERVED is True
-    assert LIVE_FILL_OBSERVED is False
+    assert LIVE_FILL_OBSERVED is True
+    assert LIVE_FEE_OBSERVED is False
     assert LIVE_SUBMIT_ACK_OBSERVED_PRODUCER.endswith(
         "submit_ack_observed_adjudication_v1.py::adjudicate_live_submit_ack_observed_v1"
     )
@@ -217,15 +221,16 @@ def test_read_only_recon_match_cannot_reclassify_as_ack() -> None:
     assert proof["LIVE_SUBMIT_ACK_OBSERVED"] is False
 
 
-def test_fill_remains_ineligible_after_ack() -> None:
+def test_fee_remains_ineligible_after_fill() -> None:
     values = dict(LADDER_FIELD_DEFAULTS)
-    values["LIVE_FEE_OBSERVED"] = True
+    values["LIVE_POSITION_RECONCILED"] = True
     with pytest.raises(
-        Section1114OfflineSurfaceError, match="LADDER_ORDER_VIOLATION:LIVE_FEE_OBSERVED"
+        Section1114OfflineSurfaceError, match="LADDER_ORDER_VIOLATION:LIVE_POSITION_RECONCILED"
     ):
         assert_ladder_order_v1(values)
     assert_ladder_order_v1(LADDER_FIELD_DEFAULTS)
-    assert LIVE_FILL_OBSERVED is False
+    assert LIVE_FILL_OBSERVED is True
+    assert LIVE_FEE_OBSERVED is False
 
 
 def test_post_evidence_is_refused_by_this_go() -> None:
