@@ -9,24 +9,20 @@ modified_by: PENDING_CHANGE
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  MODEL_C dual-use identity split: Cap 6.5 profit-protection distance is its own
-  200.0 owner and is not Cap 6.3 switch-event up_distance. Numeric coincidence
-  preserved. Formula remains recorded, not runtime-bound. Freeze exception
-  unauthorized. hysteresis_multiplier runtime unauthorized. MODEL_B remains
+  Directional mapping core contract persist: docs-only target policy and
+  blast-radius record. Runtime unbound. Productive SHORT trigger unchanged
+  until a later GO. Freeze exception unauthorized. MODEL_C runtime unauthorized.
+  ARMED residual unresolved. last_active_side bind unauthorized. MODEL_B remains
   the productive baseline. CLOSURE:live_readiness is inspected because MOT
   documents the runbook; this pointer does not authorize Live. Atlas is not
   canonical authority.
 changed_entities:
   - NAVIGATION_INDEX:map_of_truth
-  - HOST:wallclock_decision_economics_cycle
   - RUNBOOK:canonical_master_runbook
   - TERM:map_of_truth
 changed_relations:
   - REL:a_map_documents_runbook
   - REL:s_map_navigates_runbook
-  - REL:r_ddo_capture_observes_wallclock_cycle_producers
-  - REL:r_wallclock_calls_ddo_cycle_capture
-  - REL:r_wallclock_injects_ddo_capture_session
 new_relations: []
 removed_relations: []
 affected_dependency_closures:
@@ -37,10 +33,8 @@ affected_schemas: []
 review_required_items: []
 reviewed_ids:
   - id: NAVIGATION_INDEX:map_of_truth
-  - id: HOST:wallclock_decision_economics_cycle
   - id: RUNBOOK:canonical_master_runbook
   - id: TERM:map_of_truth
-  - id: REL:r_ddo_capture_observes_wallclock_cycle_producers
-  - id: REL:r_wallclock_calls_ddo_cycle_capture
-  - id: REL:r_wallclock_injects_ddo_capture_session
+  - id: REL:a_map_documents_runbook
+  - id: REL:s_map_navigates_runbook
   - id: CLOSURE:live_readiness
