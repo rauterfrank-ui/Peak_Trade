@@ -58,7 +58,7 @@ FAIL_CLOSED_IF_MARKED_RUNTIME_PROVEN_FROM_OFFLINE_CODE_ALONE=true
 The remaining productive flatten path starts at named residual
 `BOUNDED_RUNTIME_PERMIT_ISSUANCE`. The terminal productive success of this
 path is `LIVE_FLATTEN_PROVABILITY_PROVEN`: authenticated
-`POST /api/v5/trade/order` reduce-only LIMIT flatten of
+`POST &#47;api&#47;v5&#47;trade&#47;order` reduce-only LIMIT flatten of
 `SUI-USD_UM_XPERP-310404` plus post-action proof `PRE_POS!=0` then `POS==0`,
 pending empty, no flip. HTTP 200, OKX `code=0`, and `sCode=0` are not flatten
 success. `send_completed` is not `LIVE_FLATTEN_PROVABILITY`.
