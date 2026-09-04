@@ -4,7 +4,7 @@ status: active
 scope: exit policy producer binding into productive decision path; no activation; no core-logic mutation
 capability: CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
-last_updated: 2026-08-02
+last_updated: 2026-09-04
 ---
 
 # Capability 6.5 — Exit Policy Producer Binding V1
@@ -35,9 +35,27 @@ RUNTIME_ACTIVATED=false
 | Adverse foundation | `derive_scope_adverse_exit_signal_v0` / host adverse distance eval |
 | Safety / hard-risk input producer (`NOT_SAFETY_OWNER`) | `evaluate_bridge_safety_v2` |
 | Time foundation | `wallclock_time_exit_due_v1` |
-| Decision config distances | Cap 6.3 `adverse_exit_distance` / `up_distance` |
+| Decision config distances | Cap 6.3 `adverse_exit_distance` / switch-event `up_distance` |
+| Profit-protection distance | Cap 6.5 `FROZEN_PROFIT_PROTECTION_DISTANCE=200.0` (own owner; not Cap 6.3 `up_distance`) |
 | Atomic restart boundary | Cap 6.4 coordinator (same host cycle commit) |
 | Productive host | `decision_economics_cycle_bridge_v1.run_bridge_cycle_v1` |
+
+## Profit-protection vs switch-event `up_distance` (MODEL_C dual-use split)
+
+```text
+PROFIT_PROTECTION_DISTANCE_OWNER=CAP_6_5_FROZEN_CONSTANT
+SWITCH_EVENT_UP_DISTANCE_OWNER=CAP_6_3
+PROFIT_PROTECTION_DISTANCE_REUSES_SWITCH_EVENT_UP_DISTANCE=false
+EFFECTIVE_PROFIT_PROTECTION_DISTANCE=200.0
+EFFECTIVE_SWITCH_EVENT_UP_DISTANCE=200.0
+NUMERIC_BEHAVIOR_CHANGE=false
+```
+
+Cap 6.5 `FROZEN_PROFIT_PROTECTION_DISTANCE` is **not** an alias of Cap 6.3
+`up_distance`. Both effective values remain `200.0`. Productive hosts pass
+the Cap 6.5 constant into the profit-protection producer, not
+`decision_cfg.up_distance`. Historical Cap 6.5 evidence JSON may retain the
+prior reuse wording.
 
 ## Restored-baseline producer role
 

@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import ast
 from pathlib import Path
 
 from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
     CANONICAL_ADVERSE_EXIT_DISTANCE,
+    CANONICAL_CONFIRMATION_EPOCHS,
+    CANONICAL_REVERSAL_DISTANCE,
     CANONICAL_UP_DISTANCE,
 )
 from src.ops.exit_policy_producer_binding_v1.authority_matrix_v1 import (
@@ -21,8 +24,11 @@ from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
     CORE_LOGIC_CHANGE,
     FROZEN_ADVERSE_EXIT_DISTANCE,
     FROZEN_PROFIT_PROTECTION_DISTANCE,
+    OWNER,
     PACKAGE_MARKER,
     POSITION_FLIP_ALLOWED,
+    PROFIT_PROTECTION_DISTANCE_CONFIG_OWNER,
+    PROFIT_PROTECTION_DISTANCE_REUSES_SWITCH_EVENT_UP_DISTANCE,
 )
 from src.ops.exit_policy_producer_binding_v1.cycle_harness_v1 import (
     build_capability_evidence_v1,
@@ -57,13 +63,22 @@ def test_constants_and_call_graph_bound() -> None:
     assert CORE_LOGIC_CHANGE is False
     assert POSITION_FLIP_ALLOWED is False
     assert FROZEN_ADVERSE_EXIT_DISTANCE == float(CANONICAL_ADVERSE_EXIT_DISTANCE) == 80.0
-    assert FROZEN_PROFIT_PROTECTION_DISTANCE == float(CANONICAL_UP_DISTANCE) == 200.0
+    assert FROZEN_PROFIT_PROTECTION_DISTANCE == 200.0
+    assert float(CANONICAL_UP_DISTANCE) == 200.0
+    assert float(CANONICAL_REVERSAL_DISTANCE) == 120.0
+    assert int(CANONICAL_CONFIRMATION_EPOCHS) == 2
+    assert PROFIT_PROTECTION_DISTANCE_REUSES_SWITCH_EVENT_UP_DISTANCE is False
+    assert PROFIT_PROTECTION_DISTANCE_CONFIG_OWNER == OWNER
     assert CALL_GRAPH_EXIT_PRODUCER_STEP in CALL_GRAPH_AFTER
     assert CALL_GRAPH_EXIT_STATE_COMMIT_STEP in CALL_GRAPH_AFTER
     assert CALL_GRAPH_EXIT_PRODUCER_STEP not in CALL_GRAPH_BEFORE
-    assert CALL_GRAPH_V1 == REQUIRED_CALL_GRAPH
+    # Full CALL_GRAPH_V1 == REQUIRED_CALL_GRAPH is preexisting label-only drift
+    # (PREEXISTING_CALL_GRAPH_DRIFT_IN_SCOPE=false). Cap 6.5 proves its steps
+    # are present in both graphs; this GO does not repair the label drift.
     assert CALL_GRAPH_EXIT_PRODUCER_STEP in CALL_GRAPH_V1
     assert CALL_GRAPH_EXIT_STATE_COMMIT_STEP in CALL_GRAPH_V1
+    assert CALL_GRAPH_EXIT_PRODUCER_STEP in REQUIRED_CALL_GRAPH
+    assert CALL_GRAPH_EXIT_STATE_COMMIT_STEP in REQUIRED_CALL_GRAPH
     inv = inventory_exit_policy_authority_v1()
     assert inv["parallel_exit_authority_created"] is False
     assert inv["core_logic_changed"] is False
@@ -181,6 +196,43 @@ def test_failure_injection_and_replay(tmp_path: Path) -> None:
     independence = prove_exit_independence_v1()
     assert independence["EXIT_INDEPENDENCE_PROVEN"] is True
     assert independence["EXIT_PATH_RUNTIME_REACHABLE"] is True
+
+
+def test_profit_protection_distance_authority_split_from_switch_event_up_distance() -> None:
+    repo = Path(__file__).resolve().parents[2]
+    constants_path = repo / "src/ops/exit_policy_producer_binding_v1/constants_v1.py"
+    constants_src = constants_path.read_text(encoding="utf-8")
+    assert "FROZEN_PROFIT_PROTECTION_DISTANCE = float(CANONICAL_UP_DISTANCE)" not in constants_src
+    assert "FROZEN_PROFIT_PROTECTION_DISTANCE = 200.0" in constants_src
+    imported_names: list[str] = []
+    for node in ast.walk(ast.parse(constants_src)):
+        if isinstance(node, ast.ImportFrom):
+            imported_names.extend(alias.name for alias in node.names)
+    assert "CANONICAL_UP_DISTANCE" not in imported_names
+    assert "CANONICAL_ADVERSE_EXIT_DISTANCE" in imported_names
+    hosts = (
+        repo
+        / "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1"
+        / "decision_economics_cycle_bridge_v1.py",
+        repo
+        / "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2"
+        / "hardening_cycle_bridge_v2.py",
+    )
+    for host in hosts:
+        src = host.read_text(encoding="utf-8")
+        assert "profit_protection_distance=float(decision_cfg.up_distance)" not in src
+        assert "profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE)" in src
+    parity = prove_trading_logic_parity_v1()
+    assert parity["frozen_thresholds"]["profit_protection_distance"] == 200.0
+    assert parity["frozen_thresholds"]["up_distance"] == 200.0
+    assert parity["frozen_thresholds"]["profit_protection_distance_reuses_up_distance"] is False
+    profit_rows = [
+        row
+        for row in inventory_exit_policy_authority_v1()["matrix"]
+        if row["EXIT_CLASS"] == "Profit Exit"
+    ]
+    assert len(profit_rows) == 1
+    assert "not Cap 6.3 up_distance" in profit_rows[0]["CONFIG_OWNER"]
 
 
 def test_capability_evidence_bundle(tmp_path: Path) -> None:

@@ -10,10 +10,10 @@ from typing import Any, Mapping, Optional
 from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
     CANONICAL_ADVERSE_EXIT_DISTANCE,
     CANONICAL_DECISION_CONFIG_DIGEST,
-    CANONICAL_UP_DISTANCE,
 )
 from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
     CANONICAL_TIME_EXIT_MAX_HOLD_SECONDS,
+    FROZEN_PROFIT_PROTECTION_DISTANCE,
     OWNER,
     STATE_VERSION,
 )
@@ -47,7 +47,7 @@ from trading.market_state.directional_confirmation_progress_v1 import (
 def exit_policy_config_digest_v1(
     *,
     adverse_exit_distance: float = float(CANONICAL_ADVERSE_EXIT_DISTANCE),
-    profit_protection_distance: float = float(CANONICAL_UP_DISTANCE),
+    profit_protection_distance: float = float(FROZEN_PROFIT_PROTECTION_DISTANCE),
     time_exit_max_hold_seconds: float = CANONICAL_TIME_EXIT_MAX_HOLD_SECONDS,
 ) -> str:
     material = (
@@ -192,7 +192,7 @@ def evaluate_host_exit_policy_producers_v1(
     scope_adverse_matched: bool = False,
     scope_adverse_candidate: bool = False,
     adverse_exit_distance: float = float(CANONICAL_ADVERSE_EXIT_DISTANCE),
-    profit_protection_distance: float = float(CANONICAL_UP_DISTANCE),
+    profit_protection_distance: float = float(FROZEN_PROFIT_PROTECTION_DISTANCE),
     killstate_active: bool = False,
     killstate_trigger: str = "",
     warmup_complete: bool = True,

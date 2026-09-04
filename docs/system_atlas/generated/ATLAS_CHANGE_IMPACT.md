@@ -95,7 +95,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR 6271 Atlas follow-up: Map of Truth gained a docs-only navigation pointer to MODEL_C_DYNAMIC_SCOPE_DERIVED_SWITCH_EVENT_THRESHOLDS_CONTRACT_V1. Non-authorizing. Formula unset. Runtime bind unauthorized. Freeze exception unauthorized. hysteresis_multiplier runtime unauthorized. MODEL_B remains the productive baseline. CLOSURE:live_readiness is inspected because MOT documents the runbook; this pointer does not authorize Live. Atlas is not canonical authority.
+- MODEL_C dual-use identity split: Cap 6.5 profit-protection distance is its own 200.0 owner and is not Cap 6.3 switch-event up_distance. Numeric coincidence preserved. Formula remains recorded, not runtime-bound. Freeze exception unauthorized. hysteresis_multiplier runtime unauthorized. MODEL_B remains the productive baseline. CLOSURE:live_readiness is inspected because MOT documents the runbook; this pointer does not authorize Live. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
