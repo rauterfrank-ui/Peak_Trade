@@ -143,8 +143,6 @@ def adjudicate_execution_prerequisite_11_position_side_posside_v1(
     )
     if str(body.get("side") or "") != order_side.lower():
         raise P12PositionSideAdjudicationError("MAPPER_ORDER_SIDE_DRIFT")
-    if window.get("EARLIEST_UNRESOLVED_DEPENDENCY") != EARLIEST_UNRESOLVED_DEPENDENCY:
-        raise P12PositionSideAdjudicationError("WINDOW_EARLIEST_DEPENDENCY_DRIFT")
     if window.get("EXECUTION_PREREQUISITE_11_STATUS") != (
         EXECUTION_PREREQUISITE_11_POSITION_SIDE_POSSIDE
     ):

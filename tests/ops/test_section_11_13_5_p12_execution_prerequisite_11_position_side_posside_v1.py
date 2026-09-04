@@ -183,13 +183,14 @@ def test_origin_main_mismatch_fails_closed() -> None:
         adjudicate_execution_prerequisite_11_position_side_posside_v1(origin_main_sha="deadbeef")
 
 
-def test_live_window_nonzero_advances_to_prerequisite_12() -> None:
+def test_live_window_nonzero_advances_past_prerequisite_12() -> None:
     result = adjudicate_prerequisite_08_window_v1(
         positions_payload={"code": "0", "data": [{"instId": "SUI-USD_UM_XPERP-310404", "pos": "1"}]}
     )
     assert result["EXECUTION_PREREQUISITE_11_STATUS"] == "PASS"
+    assert result["EXECUTION_PREREQUISITE_12_STATUS"] == "PASS"
     assert result["EARLIEST_UNRESOLVED_DEPENDENCY"] == (
-        "EXECUTION_PREREQUISITE_12_EXACT_FLATTEN_PAYLOAD_FROM_OBSERVED_POSITION"
+        "EXECUTION_PREREQUISITE_16_BOUNDED_ACTIVATION_WITHOUT_GLOBAL_LIVE_AUTHORIZED"
     )
     assert result["EXECUTION_READY"] is False
 

@@ -1074,6 +1074,18 @@ entities:
       - tests/ops/test_section_11_13_5_p12_execution_prerequisite_11_position_side_posside_persist_v1.py
     notes: Additive offline EXECUTION_PREREQUISITE_11 position-side / request-posSide closure. Request posSide omitted. No GET. No POST. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: PHASE:p13_execution_prerequisite_12_exact_flatten_payload
+    kind: PHASE
+    name: 11.13.5.P13
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - evidence/ops/section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload_v1/20260904T003800Z/
+      - tests/ops/test_section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload_persist_v1.py
+    notes: Additive offline EXECUTION_PREREQUISITE_12 exact flatten payload closure. Venue-native body from observed position. No GET. No POST. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
     name: Route-C create-path blocker census v1
@@ -1464,6 +1476,40 @@ entities:
       Navigation inventory of the additive P12 EXECUTION_PREREQUISITE_11
       position-side / request-posSide closure. Request posSide omitted.
       No GET. No POST. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:p13_execution_prerequisite_12_exact_flatten_payload_v1
+    kind: RUNTIME_COMPONENT
+    name: P13 EXECUTION_PREREQUISITE_12 exact flatten payload v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload_v1/__init__.py
+      - src/ops/section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload_v1/assemble_v1.py
+      - src/ops/section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload_v1/adjudicate_v1.py
+      - src/ops/section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload_v1/constants_v1.py
+      - src/ops/section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload_v1/contract_v1.py
+      - src/ops/section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload_v1/lineage_v1.py
+      - src/ops/section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload_v1/payload_builder_v1.py
+      - src/ops/section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload_v1/persist_claims_v1.py
+      - src/ops/section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload_v1/persist_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/order_plan_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_submit_state_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/prerequisite_08_fresh_position_observation_v1.py
+    evidence_sources:
+      - tests/ops/test_section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload_v1.py
+      - tests/ops/test_section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload_persist_v1.py
+      - tests/ops/test_section_11_13_5_p12_execution_prerequisite_11_position_side_posside_persist_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/P13_EXECUTION_PREREQUISITE_12_EXACT_FLATTEN_PAYLOAD_V1.md
+      - docs/forensics/persistence/inventories/P13_EXECUTION_PREREQUISITE_12_EXACT_FLATTEN_PAYLOAD_OBSERVATION_V1.json
+      - evidence/ops/section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload_v1/20260904T003800Z/
+    notes: >-
+      Navigation inventory of the additive P13 EXECUTION_PREREQUISITE_12
+      exact flatten payload closure. Venue-native body from observed
+      position. No GET. No POST. Atlas is not canonical authority.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1
     kind: RUNTIME_COMPONENT
