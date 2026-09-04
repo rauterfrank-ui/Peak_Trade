@@ -51,6 +51,7 @@ EVIDENCE_PACK = (
 
 STPR_HEADING = "### 11.13.5 SEND_TIME_POSITION_REOBSERVATION"
 CENSUS_HEADING = "### 11.13.5 REMAINING_EXECUTION_PATH_END_TO_END_CENSUS"
+APRPI_HEADING = "### 11.13.5 AUTHENTICATED_PRIVATE_RUNTIME_READ_AND_RUNTIME_PERMIT_ISSUANCE"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 
 
@@ -62,8 +63,10 @@ def _read(path: Path) -> str:
 def _census_section(text: str) -> str:
     start = text.find(CENSUS_HEADING)
     assert start >= 0, "missing REMAINING_EXECUTION_PATH_END_TO_END_CENSUS persist heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after census persist"
+    end = text.find(APRPI_HEADING, start)
+    if end < 0:
+        end = text.find(LADDER_HEADING, start)
+    assert end > start, "missing APRPI or §11.14 boundary after census persist"
     return text[start:end]
 
 
@@ -71,8 +74,11 @@ def test_census_is_additive_after_stpr() -> None:
     text = _read(MASTER_RUNBOOK)
     stpr_start = text.find(STPR_HEADING)
     census_start = text.find(CENSUS_HEADING)
+    aprpi_start = text.find(APRPI_HEADING)
     ladder = text.find(LADDER_HEADING)
     assert 0 <= stpr_start < census_start < ladder
+    if aprpi_start >= 0:
+        assert census_start < aprpi_start < ladder
     stpr = text[stpr_start:census_start]
     assert "STPR_TEXT_REWRITTEN=true" not in stpr
     assert "SEND_TIME_POSITION_REOBSERVATION=PASS_OFFLINE_CONTRACT" in stpr
