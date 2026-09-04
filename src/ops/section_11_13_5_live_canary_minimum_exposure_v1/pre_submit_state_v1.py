@@ -7,7 +7,14 @@ from decimal import Decimal, InvalidOperation
 from typing import Any, Mapping
 
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+    DEFAULT_INST_TYPE,
     DEFAULT_INSTRUMENT_ID,
+)
+from src.ops.section_11_13_5_p11_pos_to_sz_unit_identity_independent_proof_v1.contract_v1 import (
+    PosToSzUnitIdentityError,
+    assert_identity_sz_equals_abs_pos_v1,
+    assert_pos_to_sz_identity_applicable_v1,
+    identity_flatten_sz_from_signed_pos_v1,
 )
 
 
@@ -249,7 +256,15 @@ def observe_target_position_flatten_candidate_v1(
     if classified.state != TARGET_POSITION_NONZERO_PROVEN or classified.signed_pos is None:
         raise LiveCanaryPositionObservationError(classified.reason)
     signed = Decimal(classified.signed_pos)
-    abs_qty = abs(signed)
+    try:
+        assert_pos_to_sz_identity_applicable_v1(
+            instrument_id=classified.instrument_id,
+            inst_type=DEFAULT_INST_TYPE,
+        )
+        abs_qty = identity_flatten_sz_from_signed_pos_v1(signed)
+        assert_identity_sz_equals_abs_pos_v1(signed_pos=signed, sz=abs_qty)
+    except PosToSzUnitIdentityError as exc:
+        raise LiveCanaryPositionObservationError(f"POS_TO_SZ_UNIT:{exc}") from exc
     side = "SELL" if signed > 0 else "BUY"
     return ObservedTargetPositionFlattenCandidateV1(
         instrument_id=classified.instrument_id,

@@ -59,7 +59,7 @@ def test_empty_payload_does_not_prove_zero_or_08() -> None:
     assert result["EXECUTION_PREREQUISITE_08_TARGET_POSITION_NONZERO_PROVEN"] is False
     assert result["EXECUTION_PREREQUISITE_09_STATUS"] == REASON_DEPENDENT_BLOCKED
     assert result["TARGET_POSITION_QTY_NUMERIC"] == "UNRESOLVED"
-    assert result["TARGET_POSITION_QTY_UNIT"] == "UNPROVEN"
+    assert result["TARGET_POSITION_QTY_UNIT"] == "PROVEN"
     assert result["CLASS_D_CONSUMED"] is False
     assert result["cluster_offline_08_proven_token"] is False
 

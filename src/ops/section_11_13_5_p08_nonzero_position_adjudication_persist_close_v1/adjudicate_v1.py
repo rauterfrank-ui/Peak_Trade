@@ -135,8 +135,8 @@ def adjudicate_captured_nonzero_position_v1(
     )
     if prereq.get("EXECUTION_PREREQUISITE_08_TARGET_POSITION_NONZERO_PROVEN") is not True:
         raise P08NonzeroAdjudicationError("PREREQUISITE_08_NOT_PROVEN")
-    if prereq.get("EARLIEST_UNRESOLVED_DEPENDENCY") != EARLIEST_UNRESOLVED_DEPENDENCY:
-        raise P08NonzeroAdjudicationError("EARLIEST_UNRESOLVED_DEPENDENCY_DRIFT")
+    if prereq.get("TARGET_POSITION_QTY_NUMERIC") != "PASS":
+        raise P08NonzeroAdjudicationError("PREREQUISITE_09_NOT_PASS")
 
     additional_runtime_fact_required = False
     if additional_runtime_fact_required:

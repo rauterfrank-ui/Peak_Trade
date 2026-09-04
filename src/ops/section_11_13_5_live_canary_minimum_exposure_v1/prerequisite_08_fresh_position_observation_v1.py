@@ -60,10 +60,13 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.execution_prerequis
     LIVE_FLATTEN_PROVABILITY,
     REASON_DEPENDENT_BLOCKED,
     SEND_TIME_PASS_18_19_21_24,
-    UNIT_CHAIN_VERDICT,
     Z2AP_CONSUMED,
     Z2CN_COMMITTED_BODY_SHA256,
     evaluate_execution_prerequisite_08_cluster_v1,
+)
+from src.ops.section_11_13_5_p11_pos_to_sz_unit_identity_independent_proof_v1.contract_v1 import (
+    TARGET_POSITION_QTY_UNIT_STATUS,
+    UNIT_CHAIN_VERDICT,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.position_observation_freshness_contract_v1 import (
     POSITION_OBSERVATION_FRESHNESS_MAX_AGE_MS,
@@ -326,7 +329,7 @@ def adjudicate_prerequisite_08_window_v1(
     if state == TARGET_POSITION_NONZERO_PROVEN:
         status_08 = "PASS_TARGET_POSITION_NONZERO_OBSERVED_THIS_WINDOW"
         earliest = (
-            "EXECUTION_PREREQUISITE_10_TARGET_POSITION_QTY_UNIT"
+            "EXECUTION_PREREQUISITE_11_POSITION_SIDE_POSSIDE"
             if qty_numeric == "PASS"
             else "EXECUTION_PREREQUISITE_09_TARGET_POSITION_QTY_NUMERIC"
         )
@@ -359,7 +362,7 @@ def adjudicate_prerequisite_08_window_v1(
         "TARGET_POSITION_STATE": closeout_state,
         "TARGET_POSITION_QTY_RAW": classified.signed_pos,
         "TARGET_POSITION_QTY_NUMERIC": qty_numeric,
-        "TARGET_POSITION_QTY_UNIT": "UNPROVEN",
+        "TARGET_POSITION_QTY_UNIT": TARGET_POSITION_QTY_UNIT_STATUS,
         "UNIT_CHAIN_VERDICT": UNIT_CHAIN_VERDICT,
         "TARGET_ROWS_MATCHED": len(matching),
         "TARGET_ROWS_SUMMARY": matching,
