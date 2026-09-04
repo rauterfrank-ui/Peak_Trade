@@ -1,0 +1,52 @@
+{
+  "AUTHORITY": "NONE",
+  "BODY_BYTES": 552,
+  "BODY_SHA256": "72629b8ff06bc070981768035acdf78437873ac4ad6391ec09a0a53f87ff3d66",
+  "DATA_ROW_COUNT": 1,
+  "DOCUMENT_CLASS": "G12_P5_HISTORY_POSID_V1",
+  "DOCUMENT_ROLE": "SANITIZED_HISTORY_POSID_EVIDENCE_NOT_SSOT",
+  "ENDPOINT": "/api/v5/account/positions-history?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404&limit=100",
+  "ENDPOINT_PATH": "/api/v5/account/positions-history",
+  "EPISTEMIC_CLASS": "HISTORY_POSID_PROVEN_NOT_CURRENT_ZERO",
+  "FORENSIC_LOCAL_IS_NOT_CANONICAL": true,
+  "HISTORY_IS_NOT_TARGET_POSITION_ZERO_PROVEN": true,
+  "HTTP_STATUS": 200,
+  "OBSERVATION_IDENTITY": "3b0e95346685f18c48a51c3782e8e7fb5f7bced5635ab47e448bc77c13bb0e5d",
+  "ORIGINAL_WIRE_BODY_BYTES_AVAILABLE": false,
+  "OWNER_GO": "PEAK_TRADE_OWNER_GO_G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS_V1",
+  "PRIOR_CAPTURE_OWNER_GO": ".ops_local/g12_zero_elicitation_result.sanitized.json",
+  "QUERY": {
+    "instId": "SUI-USD_UM_XPERP-310404",
+    "instType": "FUTURES",
+    "limit": "100"
+  },
+  "REDACTED_PAYLOAD": {
+    "code": "0",
+    "data": [
+      {
+        "cTime": "1788474733205",
+        "closeAvgPx": "0.7675",
+        "closeTotalPos": "1",
+        "direction": "long",
+        "instId": "SUI-USD_UM_XPERP-310404",
+        "instType": "FUTURES",
+        "lever": "3.0",
+        "mgnMode": "cross",
+        "openAvgPx": "0.7774",
+        "pnl": "-0.0099",
+        "pnlRatio": "-0.0396986750707487",
+        "posId": "3891385768441942017",
+        "posSide": "net",
+        "type": "2",
+        "uTime": "1788502713842",
+        "uly": "SUI-USD"
+      }
+    ],
+    "msg": ""
+  },
+  "REDACTED_PAYLOAD_SHA256": "293528d726fadede0e729759f6e23c2638eb1739d2efc4adbd6eb5a88c653d87",
+  "REQUEST_TIME_UTC": "2026-09-04T11:01:48Z",
+  "TARGET_POS_ID": "3891385768441942017",
+  "VENUE_CODE": "0",
+  "VENUE_MSG": ""
+}
