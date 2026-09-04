@@ -50,8 +50,8 @@ LIVE_AUTHORIZED=false
 ORDERS_AUTHORIZED=false
 ```
 
-Parent forensic census path (separate persist; not a runtime owner):
-`docs&#47;ops&#47;specs&#47;DIRECTIONAL_SCOPE_ANCHOR_AND_SIDE_SWITCH_SEMANTICS_CENSUS_V1.md`.
+Parent forensic census (separate persist; not a runtime owner):
+see `PARENT_CENSUS` in §1. That sibling spec is **not** part of this PR.
 
 OQ texts below are **verbatim** from that census §12.
 
