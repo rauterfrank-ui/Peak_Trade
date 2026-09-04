@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from pathlib import Path
 
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
@@ -29,11 +30,21 @@ from src.ops.section_11_13_5_productive_flatten_post_and_reconciliation_v1.const
     NEXT_OWNER_GO_REQUIRED,
     OWNER_GO,
     PREDECESSOR_SLICE,
+    PR_CHANGED_PATHS_FREEZE_BASE_SHA,
+    PR_CHANGED_PATHS_FREEZE_COUNT,
+    PR_CHANGED_PATHS_FREEZE_HEAD_SHA,
+    PR_CHANGED_PATHS_FREEZE_SET_HASH,
     THIS_SLICE,
     WORKPACKAGE_ID,
 )
 from src.ops.section_11_13_5_productive_flatten_post_and_reconciliation_v1.persist_claims_v1 import (
     CLAIMS,
+)
+from src.ops.section_11_13_5_productive_flatten_post_and_reconciliation_v1.pr_changed_paths_freeze_v1 import (
+    canonical_pr_changed_paths_freeze_pack_v1,
+    changed_paths_set_hash_v1,
+    collect_three_dot_changed_paths_v1,
+    persist_pr_changed_paths_freeze_v1,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -45,6 +56,7 @@ EVIDENCE_PACK = REPO_ROOT / "evidence" / "ops" / EVIDENCE_DIRNAME / CANONICAL_EV
 RECOVERY_PACK = (
     REPO_ROOT / "evidence" / "ops" / EVIDENCE_DIRNAME / CANONICAL_RECOVERY_EVIDENCE_RUN_ID
 )
+FREEZE_PACK = canonical_pr_changed_paths_freeze_pack_v1(REPO_ROOT)
 
 APRPI_HEADING = "### 11.13.5 AUTHENTICATED_PRIVATE_RUNTIME_READ_AND_RUNTIME_PERMIT_ISSUANCE"
 FLATTEN_HEADING = "### 11.13.5 PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION"
@@ -149,6 +161,7 @@ def test_atlas_flatten_is_navigation_only() -> None:
     assert "id: PHASE:productive_flatten_post_and_reconciliation" in catalog
     assert "id: RUNTIME_COMPONENT:productive_flatten_post_and_reconciliation_v1" in catalog
     assert "ATLAS_AUTHORITY=NONE" in catalog
+    assert "pr_changed_paths_freeze_v1" in catalog
 
 
 def test_code_claims_remain_fail_closed_for_standing_flags() -> None:
@@ -217,3 +230,74 @@ def test_recovery_pack_empty_data_is_not_zero_and_fill_is_bound() -> None:
     assert recovery["POST_USED"] is False
     assert recovery["RETRY_USED"] is False
     assert recovery["LIVE_AUTHORIZED"] is False
+
+
+def test_pr_changed_paths_freeze_matches_git_three_dot_binding() -> None:
+    verified = verify_manifest_v1(FREEZE_PACK)
+    assert int(verified["MANIFEST_VERIFY_RC"]) == 0
+    freeze = json.loads((FREEZE_PACK / "FREEZE.json").read_text(encoding="utf-8"))
+    text_bytes = (FREEZE_PACK / "CHANGED_PATHS.txt").read_bytes()
+    persisted = tuple(line for line in text_bytes.decode("utf-8").splitlines() if line.strip())
+    reconstructed = collect_three_dot_changed_paths_v1(
+        repo_root=REPO_ROOT,
+        base_sha=PR_CHANGED_PATHS_FREEZE_BASE_SHA,
+        head_sha=PR_CHANGED_PATHS_FREEZE_HEAD_SHA,
+    )
+    assert freeze["BASE_SHA"] == PR_CHANGED_PATHS_FREEZE_BASE_SHA
+    assert freeze["HEAD_SHA"] == PR_CHANGED_PATHS_FREEZE_HEAD_SHA
+    assert freeze["CHANGED_FILE_COUNT"] == PR_CHANGED_PATHS_FREEZE_COUNT
+    assert freeze["CHANGED_FILE_SET_HASH"] == PR_CHANGED_PATHS_FREEZE_SET_HASH
+    assert freeze["TEMP_PATH_IS_AUTHORITY"] is False
+    assert freeze["CREATED_AT_UTC_IN_PATH_SET_HASH"] is False
+    assert freeze["POST_PERFORMED"] is True
+    assert freeze["LIVE_AUTHORIZED"] is False
+    assert persisted == reconstructed
+    assert len(persisted) == PR_CHANGED_PATHS_FREEZE_COUNT
+    assert changed_paths_set_hash_v1(persisted) == PR_CHANGED_PATHS_FREEZE_SET_HASH
+    assert changed_paths_set_hash_v1(reconstructed) == PR_CHANGED_PATHS_FREEZE_SET_HASH
+    assert freeze["CHANGED_PATHS"] == list(reconstructed)
+    runtime_manifest = (EVIDENCE_PACK / "MANIFEST.sha256").read_text(encoding="utf-8")
+    assert "CHANGED_PATHS.txt" not in runtime_manifest
+    assert "pr_changed_paths_freeze_v1" not in runtime_manifest
+
+
+def test_pr_changed_paths_set_hash_ignores_created_at_utc(tmp_path: Path) -> None:
+    first = persist_pr_changed_paths_freeze_v1(
+        repo_root=REPO_ROOT,
+        pack=tmp_path / "a",
+        created_at_utc="2026-09-04T00:00:00Z",
+    )
+    second = persist_pr_changed_paths_freeze_v1(
+        repo_root=REPO_ROOT,
+        pack=tmp_path / "b",
+        created_at_utc="2026-09-04T23:59:59Z",
+    )
+    assert first["CHANGED_FILE_SET_HASH"] == second["CHANGED_FILE_SET_HASH"]
+    assert first["CHANGED_FILE_SET_HASH"] == PR_CHANGED_PATHS_FREEZE_SET_HASH
+    a_paths = (tmp_path / "a" / "CHANGED_PATHS.txt").read_bytes()
+    b_paths = (tmp_path / "b" / "CHANGED_PATHS.txt").read_bytes()
+    assert a_paths == b_paths
+    a_freeze = json.loads((tmp_path / "a" / "FREEZE.json").read_text(encoding="utf-8"))
+    b_freeze = json.loads((tmp_path / "b" / "FREEZE.json").read_text(encoding="utf-8"))
+    assert a_freeze["CREATED_AT_UTC"] != b_freeze["CREATED_AT_UTC"]
+    assert a_freeze["CHANGED_FILE_SET_HASH"] == b_freeze["CHANGED_FILE_SET_HASH"]
+
+
+def test_frozen_changed_paths_selector_remains_pr_bounded_full() -> None:
+    completed = subprocess.run(
+        [
+            str(REPO_ROOT / "scripts" / "pt"),
+            "scripts/ops/ci_test_selection_v1.py",
+            "--files-file",
+            str(FREEZE_PACK / "CHANGED_PATHS.txt"),
+            "--event-name",
+            "pull_request",
+        ],
+        cwd=str(REPO_ROOT),
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert "test_selection_mode=PR_BOUNDED_FULL" in completed.stdout
+    assert "test_selection_reason=category_central_src_requires_full" in completed.stdout
+    assert "tests_execute_pr_bounded_full=true" in completed.stdout

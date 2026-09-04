@@ -1194,6 +1194,7 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - evidence/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/20260904T061816Z/
       - evidence/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/20260904T061816Z_recovery_read_only/
+      - evidence/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/pr_changed_paths_freeze_v1/
       - tests/ops/test_section_11_13_5_productive_flatten_post_and_reconciliation_persist_v1.py
     notes: Additive productive flatten POST and read-only reconciliation. Empty data is not zero. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
@@ -1914,6 +1915,7 @@ entities:
       - docs/forensics/persistence/inventories/PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION_OBSERVATION_V1.json
       - evidence/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/20260904T061816Z/
       - evidence/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/20260904T061816Z_recovery_read_only/
+      - evidence/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/pr_changed_paths_freeze_v1/
     notes: >-
       Navigation inventory of productive flatten POST and read-only
       reconciliation. Empty data is not zero. Atlas is not canonical
