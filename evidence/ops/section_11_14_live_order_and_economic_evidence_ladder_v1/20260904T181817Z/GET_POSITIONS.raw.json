@@ -1,0 +1,37 @@
+{
+  "AUTHORITY": "NONE",
+  "BODY_BYTES": 1243,
+  "BODY_SHA256": "577dd97970f425bd978f6338380f22c2da3edbb4f66504a58b7efbc501e69b82",
+  "BODY_UTF8_EXACT": "{\"code\":\"0\",\"data\":[{\"adl\":\"1\",\"availPos\":\"\",\"avgPx\":\"0.748\",\"baseBal\":\"\",\"baseBorrowed\":\"\",\"baseInterest\":\"\",\"bePx\":\"0.7487483741870935\",\"bizRefId\":\"\",\"bizRefType\":\"\",\"cTime\":\"1788537892511\",\"ccy\":\"USDC\",\"clSpotInUseAmt\":\"\",\"closeAllFlag\":\"0\",\"closeOrderAlgo\":[],\"deltaBS\":\"\",\"deltaPA\":\"\",\"estMaxWin\":\"\",\"fee\":\"-0.000374\",\"fundingFee\":\"0\",\"gammaBS\":\"\",\"gammaPA\":\"\",\"hedgedPos\":\"\",\"idxPx\":\"0.7522000000000000\",\"imr\":\"0.2507\",\"instId\":\"SUI-USD_UM_XPERP-310404\",\"instType\":\"FUTURES\",\"interest\":\"\",\"last\":\"0.7525\",\"lever\":\"3\",\"liab\":\"\",\"liabCcy\":\"\",\"liqPenalty\":\"0\",\"liqPx\":\"\",\"margin\":\"\",\"markPx\":\"0.7521\",\"maxSpotInUseAmt\":\"\",\"mgnMode\":\"cross\",\"mgnRatio\":\"149.92102443000485\",\"mmr\":\"0.015042\",\"nonSettleAvgPx\":\"0.748\",\"notionalUsd\":\"0.7521\",\"optVal\":\"\",\"pendingCloseOrdLiabVal\":\"\",\"pnl\":\"0\",\"pos\":\"1\",\"posCcy\":\"\",\"posId\":\"3891385768441942017\",\"posSide\":\"net\",\"quoteBal\":\"\",\"quoteBorrowed\":\"\",\"quoteInterest\":\"\",\"realizedPnl\":\"-0.000374\",\"ruleType\":\"xperp\",\"settledPnl\":\"0\",\"spotInUseAmt\":\"\",\"spotInUseCcy\":\"\",\"thetaBS\":\"\",\"thetaPA\":\"\",\"tradeId\":\"1055244\",\"uTime\":\"1788537892511\",\"upl\":\"0.0041\",\"uplLastPx\":\"0.0044999999999999\",\"uplRatio\":\"0.0164438502673794\",\"uplRatioLastPx\":\"0.0180481283422456\",\"usdPx\":\"1\",\"vegaBS\":\"\",\"vegaPA\":\"\"}],\"msg\":\"\"}",
+  "BODY_WAS_JSON_RESERIALIZED": false,
+  "DOCUMENT_CLASS": "SECTION_11_14_LIVE_POSITION_RECONCILED_RAW_EXCHANGE_V1",
+  "DOCUMENT_ROLE": "FORENSIC_RAW_NOT_CANONICAL_NOT_ADJUDICATION",
+  "ELAPSED_SECONDS": 0.21865066699683666,
+  "ENDPOINT": "/api/v5/account/positions?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404",
+  "ENDPOINT_PATH": "/api/v5/account/positions",
+  "GET_ERROR": null,
+  "GET_ROLE": "POSITIONS",
+  "HOST": "eea.okx.com",
+  "HTTP_STATUS": 200,
+  "METHOD": "GET",
+  "PARSE_ERROR": null,
+  "QUERY_PARAMETERS": {
+    "instId": "SUI-USD_UM_XPERP-310404",
+    "instType": "FUTURES"
+  },
+  "REDIRECT_FOLLOWED": false,
+  "REDIRECT_STATUS": null,
+  "REQUEST_TIME_UTC": "2026-09-04T18:18:17Z",
+  "RESPONSE_HEADERS_SAFE": {
+    "CF-RAY": "a35efef3fd294e42-MUC",
+    "Content-Type": "application/json;charset=UTF-8",
+    "Date": "Fri, 04 Sep 2026 18:18:17 GMT",
+    "Server": "cloudflare",
+    "cf-cache-status": "DYNAMIC",
+    "x-content-type-options": "nosniff"
+  },
+  "RESPONSE_TIME_UTC": "2026-09-04T18:18:17Z",
+  "SECRET_VALUES_INCLUDED": false,
+  "SEND_ATTEMPTED": true,
+  "THIS_ARTIFACT_IS_NOT_CANONICAL": true
+}

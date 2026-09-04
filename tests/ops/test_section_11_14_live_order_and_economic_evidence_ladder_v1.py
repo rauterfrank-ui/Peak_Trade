@@ -30,6 +30,8 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_PRIVATE_READ_ONLY_PROVEN,
     LIVE_SUBMIT_ACK_OBSERVED,
     LIVE_FILL_OBSERVED,
+    LIVE_FEE_OBSERVED,
+    LIVE_POSITION_RECONCILED,
     MANDATORY_LIVE_METRIC_COUNT,
     MANDATORY_LIVE_METRICS,
     METRIC_COUNT_DISCREPANCY_VS_PRIOR_CENSUS,
@@ -90,6 +92,8 @@ def test_contract_invariants_remain_fail_closed() -> None:
     assert LIVE_ORDER_PLAN_OBSERVED is True
     assert LIVE_SUBMIT_ACK_OBSERVED is True
     assert LIVE_FILL_OBSERVED is True
+    assert LIVE_FEE_OBSERVED is True
+    assert LIVE_POSITION_RECONCILED is True
     for field_name in OBSERVED_OR_PROVEN_FIELDS_MUST_REMAIN_FALSE:
         assert LADDER_FIELD_DEFAULTS[field_name] is False
     assert len(LADDER_FIELDS) == LADDER_FIELD_COUNT == 12
@@ -258,7 +262,7 @@ def test_evidence_record_has_required_keys_and_refuses_true_claim() -> None:
     for key in EVIDENCE_RECORD_KEYS:
         assert key in record
     assert record["content_hash"]
-    with pytest.raises(Section1114OfflineSurfaceError, match="TRUE_FORBIDDEN"):
+    with pytest.raises(Section1114OfflineSurfaceError, match="POSITION_TRUE_SOURCE_NOT_ADMISSIBLE"):
         build_evidence_record_v1(
             ladder_stage="LIVE_POSITION_RECONCILED",
             claim_name="LIVE_POSITION_RECONCILED",
@@ -360,7 +364,7 @@ def test_traceability_has_each_ladder_field_and_metric_once() -> None:
     names = [row["CANONICAL_REQUIREMENT"] for row in matrix["rows"]]
     assert names == list(LADDER_FIELDS) + list(MANDATORY_LIVE_METRICS)
     assert matrix["primary_row_count"] == 32
-    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_POSITION_RECONCILED"
+    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_ACCOUNTING_RECONSTRUCTED"
 
 
 def _successful_read_only_evidence() -> dict[str, object]:
@@ -513,6 +517,37 @@ def _successful_live_fee_evidence() -> dict[str, object]:
     }
 
 
+def _successful_live_position_evidence() -> dict[str, object]:
+    return {
+        "source_kind": FILL_ADMISSIBLE_SOURCE_KIND,
+        "POST_USED": False,
+        "CANCEL_USED": False,
+        "AMEND_USED": False,
+        "FLATTEN_EXECUTE_USED": False,
+        "POSITIONS_GET_PERFORMED": True,
+        "positions_http_status": 200,
+        "positions_okx_code": "0",
+        "positions_json_parse_ok": True,
+        "positions_redirect_followed": False,
+        "positions_method": "GET",
+        "positions_data_is_list": True,
+        "VENUE_REQUESTS": 1,
+        "PRIVATE_GET_USED": True,
+        "RESPONSE_TIME_UTC": "2026-09-04T18:18:17Z",
+        "position_rows": [
+            {
+                "instId": BOUND_INSTID,
+                "instType": "FUTURES",
+                "posSide": "net",
+                "posId": "3891385768441942017",
+                "pos": "1",
+                "mgnMode": "cross",
+            }
+        ],
+        "LIVE_ACCOUNTING_RECONSTRUCTED": False,
+    }
+
+
 def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
     documents = assemble_offline_surface_v1(
         repo_root=REPO_ROOT,
@@ -522,6 +557,7 @@ def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
         submit_ack_evidence=_successful_live_submit_ack_evidence(),
         fill_evidence=_successful_live_fill_evidence(),
         fee_evidence=_successful_live_fee_evidence(),
+        position_evidence=_successful_live_position_evidence(),
     )
     verified = persist_offline_surface_pack_v1(
         pack=tmp_path,
@@ -536,9 +572,11 @@ def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
     assert documents["SUMMARY.json"]["LIVE_SUBMIT_ACK_OBSERVED"] is True
     assert documents["SUMMARY.json"]["LIVE_FILL_OBSERVED"] is True
     assert documents["SUMMARY.json"]["LIVE_FEE_OBSERVED"] is True
+    assert documents["SUMMARY.json"]["LIVE_POSITION_RECONCILED"] is True
+    assert documents["SUMMARY.json"]["LIVE_ACCOUNTING_RECONSTRUCTED"] is False
     assert documents["SUMMARY.json"]["SECTION_11_14_COMPLETE"] is False
     assert documents["SUMMARY.json"]["CASE_ADJUDICATION"] == (
-        "CASE_LIVE_FEE_OBSERVED_POSITION_INELIGIBLE"
+        "CASE_LIVE_POSITION_RECONCILED_ACCOUNTING_INELIGIBLE"
     )
     assert documents["SUMMARY.json"]["GET_USED"] is True
     assert documents["SUMMARY.json"]["POST_USED"] is False
@@ -563,6 +601,10 @@ def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
     assert documents["FILL_OBSERVED_ADJUDICATION.json"]["LIVE_FEE_OBSERVED"] is False
     assert documents["FEE_OBSERVED_ADJUDICATION.json"]["LIVE_FEE_OBSERVED"] is True
     assert documents["FEE_OBSERVED_ADJUDICATION.json"]["LIVE_POSITION_RECONCILED"] is False
+    assert documents["POSITION_RECONCILED_ADJUDICATION.json"]["LIVE_POSITION_RECONCILED"] is True
+    assert (
+        documents["POSITION_RECONCILED_ADJUDICATION.json"]["LIVE_ACCOUNTING_RECONSTRUCTED"] is False
+    )
     assert documents["EXACT_MUTATION_CONTRACT.json"]["endpoint"] == "/api/v5/trade/order"
     assert documents["EXACT_MUTATION_CONTRACT.json"]["http_method"] == "POST"
     assert documents["PRIVATE_GET_BINDING.json"]["METHOD"] == "GET"

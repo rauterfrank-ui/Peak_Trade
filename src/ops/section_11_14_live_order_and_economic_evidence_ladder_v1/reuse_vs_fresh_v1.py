@@ -395,7 +395,7 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
             reason=(
                 "Exact single live POST on eea.okx.com produced "
                 "LIVE_SUBMIT_ACK_OBSERVED=true via the bound producer. "
-                "No second POST. LIVE_POSITION_RECONCILED remains ineligible."
+                "No second POST. LIVE_ACCOUNTING_RECONSTRUCTED remains ineligible."
             ),
             evidence_paths=(
                 "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
@@ -409,7 +409,7 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
             reason=(
                 "Current governed private GET /api/v5/trade/fills on eea.okx.com "
                 "produced LIVE_FILL_OBSERVED=true via the bound producer for the "
-                "exact acknowledged order identity. LIVE_POSITION_RECONCILED "
+                "exact acknowledged order identity. LIVE_ACCOUNTING_RECONSTRUCTED "
                 "remains ineligible. No POST."
             ),
             evidence_paths=(
@@ -426,11 +426,27 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
                 "produced LIVE_FEE_OBSERVED=true via the bound producer from the "
                 "venue-native fee and feeCcy fields on the identity-bound fill "
                 "row. No inference from rate or fillPx times fillSz. No POST. "
-                "LIVE_POSITION_RECONCILED remains ineligible."
+                "LIVE_ACCOUNTING_RECONSTRUCTED remains ineligible."
             ),
             evidence_paths=(
                 "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
                 "20260904T173813Z/",
+            ),
+        ),
+        _row(
+            candidate="SECTION_11_14_LIVE_POSITION_RECONCILED_ADJUDICATION",
+            classification="CURRENT_AND_ADMISSIBLE",
+            target_11_14_field="LIVE_POSITION_RECONCILED",
+            reason=(
+                "Current governed private GET /api/v5/account/positions on "
+                "eea.okx.com produced LIVE_POSITION_RECONCILED=true via the bound "
+                "producer for the identity-bound instrument and posSide whose "
+                "venue-native pos equals the bound fillSz. Empty data was not "
+                "treated as zero. No POST."
+            ),
+            evidence_paths=(
+                "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+                "20260904T181817Z/",
             ),
         ),
         _row(

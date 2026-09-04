@@ -24,6 +24,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_FILL_OBSERVED,
     LIVE_FEE_OBSERVED,
     LIVE_ORDER_PLAN_OBSERVED,
+    LIVE_POSITION_RECONCILED,
     LIVE_PRIVATE_READ_ONLY_PROVEN,
     LIVE_SUBMIT_ACK_OBSERVED,
     LIVE_SUBMIT_ACK_OBSERVED_PRODUCER_BOUND,
@@ -107,11 +108,13 @@ def assert_contract_invariants_v1(payload: Mapping[str, Any] | None = None) -> N
         raise Section1114OfflineSurfaceError("LIVE_FILL_OBSERVED_MUST_BE_TRUE")
     if LIVE_FEE_OBSERVED is not True:
         raise Section1114OfflineSurfaceError("LIVE_FEE_OBSERVED_MUST_BE_TRUE")
+    if LIVE_POSITION_RECONCILED is not True:
+        raise Section1114OfflineSurfaceError("LIVE_POSITION_RECONCILED_MUST_BE_TRUE")
     if AUTHORIZED_PRODUCTIVE_SUBMIT_COUNT_MAX != 1:
         raise Section1114OfflineSurfaceError("SUBMIT_COUNT_MAX_DRIFT")
     if RETRY_DEFAULT is True or SECOND_SUBMIT_DEFAULT is True:
         raise Section1114OfflineSurfaceError("RETRY_OR_SECOND_SUBMIT_DEFAULT_TRUE")
-    if CASE_ADJUDICATION != "CASE_LIVE_FEE_OBSERVED_POSITION_INELIGIBLE":
+    if CASE_ADJUDICATION != "CASE_LIVE_POSITION_RECONCILED_ACCOUNTING_INELIGIBLE":
         raise Section1114OfflineSurfaceError("CASE_ADJUDICATION_DRIFT")
     if LIVE_SUBMIT_ACK_PROOF_CRITERION_BOUND is not True:
         raise Section1114OfflineSurfaceError("ACK_PROOF_CRITERION_MUST_BE_BOUND")
@@ -142,6 +145,8 @@ def assert_contract_invariants_v1(payload: Mapping[str, Any] | None = None) -> N
         raise Section1114OfflineSurfaceError("LIVE_FILL_OBSERVED_PAYLOAD_MUST_BE_TRUE")
     if payload.get("LIVE_FEE_OBSERVED") is not True:
         raise Section1114OfflineSurfaceError("LIVE_FEE_OBSERVED_PAYLOAD_MUST_BE_TRUE")
+    if payload.get("LIVE_POSITION_RECONCILED") is not True:
+        raise Section1114OfflineSurfaceError("LIVE_POSITION_RECONCILED_PAYLOAD_MUST_BE_TRUE")
     if (
         payload.get("LIVE_EXECUTION_PATH_REACHABLE") is True
         and payload.get("LIVE_EXECUTION_CODE_EXISTS") is not True
@@ -168,6 +173,7 @@ def assert_contract_invariants_v1(payload: Mapping[str, Any] | None = None) -> N
         "LIVE_SUBMIT_ACK_OBSERVED",
         "LIVE_FILL_OBSERVED",
         "LIVE_FEE_OBSERVED",
+        "LIVE_POSITION_RECONCILED",
     }
     for field_name in LADDER_FIELDS:
         if field_name in allowed_true:
