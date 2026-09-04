@@ -1210,6 +1210,23 @@ entities:
       - tests/ops/test_section_11_13_5_pr_6252_merge_closeout_persist_v1.py
     notes: Additive offline PR #6252 post-merge closeout. Stale OWNER_MERGE_GO pointer corrected. G12 remains open. Empty data is not zero. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: PHASE:g12_delayed_posid_zero_row_full_conjunction_proof_contract
+    kind: PHASE
+    name: 11.13.5.G12_DELAYED_POSID_ZERO_ROW_FULL_CONJUNCTION_PROOF_CONTRACT
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/G12_DELAYED_POSID_ZERO_ROW_FULL_CONJUNCTION_PROOF_CONTRACT_V1.md
+      - tests/ops/test_section_11_13_5_g12_delayed_posid_zero_row_full_conjunction_proof_persist_v1.py
+    notes: >-
+      Additive offline delayed posId-zero G12 conjunction contract. Does not GET.
+      Does not POST. Does not close G12. Delayed zero does not imply live flatten.
+      posId filter does not prove related completeness. Same-session CHOICE_B
+      evaluator is not this component. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
     name: Route-C create-path blocker census v1
@@ -1961,6 +1978,31 @@ entities:
       OWNER_MERGE_GO pointer correction. G12 remains open. Empty data is
       not zero. Atlas is not canonical authority.
       ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1
+    kind: RUNTIME_COMPONENT
+    name: G12 delayed posId-zero row full conjunction proof contract v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_13_5_g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1/__init__.py
+      - src/ops/section_11_13_5_g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1/constants_v1.py
+      - src/ops/section_11_13_5_g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1/contract_v1.py
+      - src/ops/section_11_13_5_g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1/types_v1.py
+      - src/ops/section_11_13_5_g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1/evaluate_v1.py
+    evidence_sources:
+      - tests/ops/test_section_11_13_5_g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1.py
+      - tests/ops/test_section_11_13_5_g12_delayed_posid_zero_row_full_conjunction_proof_persist_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/G12_DELAYED_POSID_ZERO_ROW_FULL_CONJUNCTION_PROOF_CONTRACT_V1.md
+    notes: >-
+      Navigation inventory of the additive offline delayed G12 conjunction
+      evaluator. Reuses classify_target_position_state_v1. Does not GET.
+      Does not POST. Does not import execute_v1. Does not rewrite CHOICE_B.
+      Does not close G12. Separate observation slots; delayed zero is not
+      pending-empty and not related completeness. Atlas is not canonical
+      authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1
     kind: RUNTIME_COMPONENT

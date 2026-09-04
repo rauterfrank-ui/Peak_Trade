@@ -369,3 +369,16 @@ relations:
       Ontology has no MAY_PERSIST type. PERSISTS is optional at runtime:
       append occurs only when ledger_path is set on an enabled capture
       binding. In-memory captured_records still accumulate without a path.
+
+  - id: REL:r_g12_delayed_conjunction_consumes_target_position_state
+    source: RUNTIME_COMPONENT:g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1
+    type: CONSUMES
+    target: GATE:target_position_state
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_13_5_g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1/evaluate_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_submit_state_v1.py
+    notes: >-
+      Offline delayed G12 evaluator reuses classify_target_position_state_v1.
+      This is classifier reuse, not a GET, not CHOICE_B rewrite, and not G12
+      close. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
