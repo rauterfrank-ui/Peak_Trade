@@ -1,0 +1,75 @@
+---
+docs_token: DOCS_TOKEN_SECTION_11_14_LIVE_ACCOUNTING_RECONSTRUCTED_ADJUDICATION_V1
+status: active
+scope: §11.14 LIVE_ACCOUNTING_RECONSTRUCTED offline reconstruction from identity-bound persisted fill/fee/position path; accounting true; restart ineligible; section 11.14 incomplete
+capability: SECTION_11_14_LIVE_ORDER_AND_ECONOMIC_EVIDENCE_LADDER_V1
+architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
+last_updated: 2026-09-04
+---
+
+# Section 11.14 LIVE_ACCOUNTING_RECONSTRUCTED Adjudication V1
+
+## Goal
+
+Persist the identity-bound Live accounting reconstruction from already
+admissible fill, fee, and position artifacts and the bound
+`LIVE_ACCOUNTING_RECONSTRUCTED` adjudication. Do not GET. Do not POST.
+Do not retry. Do not second-submit. Do not flatten. Do not promote
+`LIVE_RESTART_RECONSTRUCTED`. Do not mark §11.14 complete.
+
+```text
+CORE_LOGIC_CHANGE=false
+ACTIVATION_STATE=none
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+LIVE_EXECUTION_CODE_EXISTS=true
+LIVE_EXECUTION_PATH_REACHABLE=true
+LIVE_PRIVATE_READ_ONLY_PROVEN=true
+LIVE_ORDER_PLAN_OBSERVED=true
+LIVE_SUBMIT_ACK_OBSERVED=true
+LIVE_FILL_OBSERVED=true
+LIVE_FEE_OBSERVED=true
+LIVE_POSITION_RECONCILED=true
+LIVE_ACCOUNTING_RECONSTRUCTED=true
+LIVE_RESTART_RECONSTRUCTED=false
+CASE_ADJUDICATION=CASE_LIVE_ACCOUNTING_RECONSTRUCTED_RESTART_INELIGIBLE
+ACCOUNTING_SOURCE_KIND=GOVERNED_PERSISTED_IDENTITY_BOUND_LIVE_ECONOMIC_PATH
+BOUND_ORDID=3893505043080286208
+BOUND_CLORDID=ptokxeprod1fec928b1fec928b00
+BOUND_INSTID=SUI-USD_UM_XPERP-310404
+ACCOUNTING_RESULT=-0.000374
+ACCOUNTING_RESULT_UNIT=USDC
+ACCOUNTING_RESIDUAL=0
+ACCOUNTING_RESIDUAL_UNIT=USDC
+ACCOUNTING_TOLERANCE=0
+ACCOUNTING_TOLERANCE_AUTHORITY=EXACT_DECIMAL_EQUALITY_NO_INVENTED_TOLERANCE
+POST_PERFORMED=false
+GET_PERFORMED=false
+PRIVATE_GET_USED=false
+CREDENTIAL_USE=false
+RETRY_DEFAULT=false
+SECOND_SUBMIT_DEFAULT=false
+LIVE_AUTHORIZED=false
+SUBMIT_UNLOCKED=false
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_RESTART_RECONSTRUCTED
+NEXT_OWNER_GO_REQUIRED=OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+ATLAS_AUTHORITY=NONE
+```
+
+## Bound outcome
+
+`LIVE_ACCOUNTING_RECONSTRUCTED` is true from the identity-bound persisted
+Live fill/fee/position path, source
+`GOVERNED_PERSISTED_IDENTITY_BOUND_LIVE_ECONOMIC_PATH`, producer
+`adjudicate_live_accounting_reconstructed_v1`, Decimal identity
+`reconstructed_realized_pnl[USDC] = fillPnl + fee + fundingFee + settledPnl`
+equal to venue-native `realizedPnl`, residual `0`, no invented tolerance.
+Raw values `fee=-0.000374`, `fillPnl=0`, `fundingFee=0`, `settledPnl=0`,
+`realizedPnl=-0.000374`, `feeCcy=USDC`. Missing terms are not zero.
+Unrealized PnL is observed and is not the realized identity. Cap 7.1
+`ACCOUNTING_RECONSTRUCTION_MATCH` is not this field. §11.17
+`LIVE_ACCOUNTING_RECONSTRUCTION_PROVEN` is not this field.
+`LIVE_RESTART_RECONSTRUCTED` remains false. `SECTION_11_14_COMPLETE`
+remains false. This GO is consumed. No GET. No POST.

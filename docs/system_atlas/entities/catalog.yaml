@@ -1452,8 +1452,28 @@ entities:
     notes: >-
       Identity-bound private positions GET. LIVE_POSITION_RECONCILED=true.
       CASE_LIVE_POSITION_RECONCILED_ACCOUNTING_INELIGIBLE. No POST. No retry.
-      LIVE_ACCOUNTING_RECONSTRUCTED remains false. Atlas is not trading
-      authority. ATLAS_AUTHORITY=NONE.
+      LIVE_ACCOUNTING_RECONSTRUCTED remained false under that consumed GO.
+      Historical after the accounting reconstruction slice. Atlas is not
+      trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: PHASE:section_11_14_live_accounting_reconstructed_adjudication
+    kind: PHASE
+    name: 11.14.LIVE_ACCOUNTING_RECONSTRUCTED_ADJUDICATION
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/SECTION_11_14_LIVE_ACCOUNTING_RECONSTRUCTED_ADJUDICATION_V1.md
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T185000Z/
+      - tests/ops/test_section_11_14_live_accounting_reconstructed_adjudication_v1.py
+      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
+    notes: >-
+      Offline reconstruction from identity-bound persisted fill/fee/position
+      path. LIVE_ACCOUNTING_RECONSTRUCTED=true.
+      CASE_LIVE_ACCOUNTING_RECONSTRUCTED_RESTART_INELIGIBLE. No GET. No POST.
+      No retry. LIVE_RESTART_RECONSTRUCTED remains false. Atlas is not
+      trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
@@ -2312,6 +2332,10 @@ entities:
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/position_reconciled_adjudication_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/position_reconciled_gets_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/position_reconciled_execute_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/accounting_reconstructed_identity_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/accounting_reconstructed_predicate_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/accounting_reconstructed_adjudication_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/accounting_reconstructed_execute_v1.py
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py
       - src/governance/policy_critic/rules.py
     evidence_sources:
@@ -2326,6 +2350,7 @@ entities:
       - tests/ops/test_section_11_14_live_fill_observed_adjudication_v1.py
       - tests/ops/test_section_11_14_live_fee_observed_adjudication_v1.py
       - tests/ops/test_section_11_14_live_position_reconciled_adjudication_v1.py
+      - tests/ops/test_section_11_14_live_accounting_reconstructed_adjudication_v1.py
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/SECTION_11_14_LIVE_ORDER_AND_ECONOMIC_EVIDENCE_LADDER_OFFLINE_SURFACE_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md
@@ -2338,6 +2363,7 @@ entities:
       - docs/ops/specs/SECTION_11_14_LIVE_FILL_OBSERVED_ADJUDICATION_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_FEE_OBSERVED_ADJUDICATION_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_POSITION_RECONCILED_ADJUDICATION_V1.md
+      - docs/ops/specs/SECTION_11_14_LIVE_ACCOUNTING_RECONSTRUCTED_ADJUDICATION_V1.md
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T121000Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T123100Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T130000Z/
@@ -2349,15 +2375,17 @@ entities:
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T165859Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T173813Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T181817Z/
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T185000Z/
     notes: >-
       Navigation inventory of the §11.14 evidence-ladder surface including
       LIVE_EXECUTION_CODE_EXISTS, LIVE_EXECUTION_PATH_REACHABLE,
       LIVE_PRIVATE_READ_ONLY_PROVEN, LIVE_ORDER_PLAN_OBSERVED, the
       LIVE_SUBMIT_ACK forensic CASE_C contract, the bound ACK proof
       criterion, the exact-single ACK observation, LIVE_FILL_OBSERVED,
-      LIVE_FEE_OBSERVED, and LIVE_POSITION_RECONCILED. Does not POST in
-      the current position GO. Does not activate Cap 11.7-11.11. Does not
-      promote LIVE_ACCOUNTING_RECONSTRUCTED. Atlas is not canonical
+      LIVE_FEE_OBSERVED, LIVE_POSITION_RECONCILED, and
+      LIVE_ACCOUNTING_RECONSTRUCTED. Does not GET or POST in the current
+      accounting GO. Does not activate Cap 11.7-11.11. Does not promote
+      LIVE_RESTART_RECONSTRUCTED. Atlas is not canonical
       authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1

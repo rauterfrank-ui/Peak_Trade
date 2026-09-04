@@ -32,6 +32,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_FILL_OBSERVED,
     LIVE_FEE_OBSERVED,
     LIVE_POSITION_RECONCILED,
+    LIVE_ACCOUNTING_RECONSTRUCTED,
     MANDATORY_LIVE_METRIC_COUNT,
     MANDATORY_LIVE_METRICS,
     METRIC_COUNT_DISCREPANCY_VS_PRIOR_CENSUS,
@@ -94,6 +95,7 @@ def test_contract_invariants_remain_fail_closed() -> None:
     assert LIVE_FILL_OBSERVED is True
     assert LIVE_FEE_OBSERVED is True
     assert LIVE_POSITION_RECONCILED is True
+    assert LIVE_ACCOUNTING_RECONSTRUCTED is True
     for field_name in OBSERVED_OR_PROVEN_FIELDS_MUST_REMAIN_FALSE:
         assert LADDER_FIELD_DEFAULTS[field_name] is False
     assert len(LADDER_FIELDS) == LADDER_FIELD_COUNT == 12
@@ -364,7 +366,7 @@ def test_traceability_has_each_ladder_field_and_metric_once() -> None:
     names = [row["CANONICAL_REQUIREMENT"] for row in matrix["rows"]]
     assert names == list(LADDER_FIELDS) + list(MANDATORY_LIVE_METRICS)
     assert matrix["primary_row_count"] == 32
-    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_ACCOUNTING_RECONSTRUCTED"
+    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_RESTART_RECONSTRUCTED"
 
 
 def _successful_read_only_evidence() -> dict[str, object]:
@@ -548,6 +550,46 @@ def _successful_live_position_evidence() -> dict[str, object]:
     }
 
 
+def _successful_live_accounting_evidence() -> dict[str, object]:
+    return {
+        "source_kind": "GOVERNED_PERSISTED_IDENTITY_BOUND_LIVE_ECONOMIC_PATH",
+        "POST_USED": False,
+        "GET_PERFORMED": False,
+        "PRIVATE_GET_USED": False,
+        "CANCEL_USED": False,
+        "AMEND_USED": False,
+        "FLATTEN_EXECUTE_USED": False,
+        "LIVE_RESTART_RECONSTRUCTED": False,
+        "RESPONSE_TIME_UTC": "2026-09-04T18:18:17Z",
+        "fill_row": {
+            "ordId": BOUND_ORDID,
+            "clOrdId": BOUND_CLORDID,
+            "instId": BOUND_INSTID,
+            "tradeId": "1055244",
+            "fillSz": "1",
+            "fillPx": "0.748",
+            "fillPnl": "0",
+            "fee": "-0.000374",
+            "feeCcy": "USDC",
+        },
+        "position_row": {
+            "instId": BOUND_INSTID,
+            "instType": "FUTURES",
+            "posSide": "net",
+            "posId": "3891385768441942017",
+            "pos": "1",
+            "ccy": "USDC",
+            "fee": "-0.000374",
+            "pnl": "0",
+            "realizedPnl": "-0.000374",
+            "fundingFee": "0",
+            "settledPnl": "0",
+            "tradeId": "1055244",
+            "upl": "0.0041",
+        },
+    }
+
+
 def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
     documents = assemble_offline_surface_v1(
         repo_root=REPO_ROOT,
@@ -558,6 +600,7 @@ def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
         fill_evidence=_successful_live_fill_evidence(),
         fee_evidence=_successful_live_fee_evidence(),
         position_evidence=_successful_live_position_evidence(),
+        accounting_evidence=_successful_live_accounting_evidence(),
     )
     verified = persist_offline_surface_pack_v1(
         pack=tmp_path,
@@ -573,16 +616,16 @@ def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
     assert documents["SUMMARY.json"]["LIVE_FILL_OBSERVED"] is True
     assert documents["SUMMARY.json"]["LIVE_FEE_OBSERVED"] is True
     assert documents["SUMMARY.json"]["LIVE_POSITION_RECONCILED"] is True
-    assert documents["SUMMARY.json"]["LIVE_ACCOUNTING_RECONSTRUCTED"] is False
+    assert documents["SUMMARY.json"]["LIVE_ACCOUNTING_RECONSTRUCTED"] is True
     assert documents["SUMMARY.json"]["SECTION_11_14_COMPLETE"] is False
     assert documents["SUMMARY.json"]["CASE_ADJUDICATION"] == (
-        "CASE_LIVE_POSITION_RECONCILED_ACCOUNTING_INELIGIBLE"
+        "CASE_LIVE_ACCOUNTING_RECONSTRUCTED_RESTART_INELIGIBLE"
     )
-    assert documents["SUMMARY.json"]["GET_USED"] is True
+    assert documents["SUMMARY.json"]["GET_USED"] is False
     assert documents["SUMMARY.json"]["POST_USED"] is False
-    assert documents["SUMMARY.json"]["CREDENTIAL_USE"] is True
+    assert documents["SUMMARY.json"]["CREDENTIAL_USE"] is False
     assert documents["MUTATION_BOUNDARY.json"]["POST"] is False
-    assert documents["MUTATION_BOUNDARY.json"]["THIS_GO_GET"] is True
+    assert documents["MUTATION_BOUNDARY.json"]["THIS_GO_GET"] is False
     assert documents["MUTATION_BOUNDARY.json"]["PREDECESSOR_ORDER_PLAN_ATTACHED"] is True
     assert documents["MUTATION_BOUNDARY.json"]["LIVE_FILL_OBSERVED"] is True
     assert (
@@ -604,6 +647,22 @@ def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
     assert documents["POSITION_RECONCILED_ADJUDICATION.json"]["LIVE_POSITION_RECONCILED"] is True
     assert (
         documents["POSITION_RECONCILED_ADJUDICATION.json"]["LIVE_ACCOUNTING_RECONSTRUCTED"] is False
+    )
+    assert (
+        documents["ACCOUNTING_RECONSTRUCTED_ADJUDICATION.json"]["LIVE_ACCOUNTING_RECONSTRUCTED"]
+        is True
+    )
+    assert (
+        documents["ACCOUNTING_RECONSTRUCTED_ADJUDICATION.json"]["LIVE_RESTART_RECONSTRUCTED"]
+        is False
+    )
+    assert (
+        documents["ACCOUNTING_RECONSTRUCTED_ADJUDICATION.json"]["LIVE_ACCOUNTING_RECONSTRUCTED"]
+        is True
+    )
+    assert (
+        documents["ACCOUNTING_RECONSTRUCTED_ADJUDICATION.json"]["LIVE_RESTART_RECONSTRUCTED"]
+        is False
     )
     assert documents["EXACT_MUTATION_CONTRACT.json"]["endpoint"] == "/api/v5/trade/order"
     assert documents["EXACT_MUTATION_CONTRACT.json"]["http_method"] == "POST"
