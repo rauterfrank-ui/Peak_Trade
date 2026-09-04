@@ -7,21 +7,32 @@ pending_change: true
 introduced_by: PENDING_CHANGE
 modified_by: PENDING_CHANGE
 superseded_by: null
-last_recorded_impact: NONE_WITH_PROOF
+last_recorded_impact: UPDATED
 note: >-
-  WP-FS-B1 post-merge canonical persist and Atlas current-main navigation
-  census SHA rebind only. CURRENT_REPO_SHA rebound to
-  14e8a58f32dcb6b521be6b2559b388bf27360194 (#6215). HISTORICAL_EVIDENCE_SHA
-  domain census payloads remain 615de3b307132b73a60df33fd3bedfac811c8cce
-  (WP-FA-07). No catalog entity or relation topology change. No WP-FA-08
-  definition. No runtime, supervisor, execution, learning, or promotion
-  authority. Atlas is not canonical authority.
-changed_entities: []
-changed_relations: []
+  PR 6271 Atlas follow-up: Map of Truth gained a docs-only navigation pointer
+  to MODEL_C_DYNAMIC_SCOPE_DERIVED_SWITCH_EVENT_THRESHOLDS_CONTRACT_V1.
+  Non-authorizing. Formula unset. Runtime bind unauthorized. Freeze exception
+  unauthorized. hysteresis_multiplier runtime unauthorized. MODEL_B remains
+  the productive baseline. CLOSURE:live_readiness is inspected because MOT
+  documents the runbook; this pointer does not authorize Live. Atlas is not
+  canonical authority.
+changed_entities:
+  - NAVIGATION_INDEX:map_of_truth
+  - RUNBOOK:canonical_master_runbook
+  - TERM:map_of_truth
+changed_relations:
+  - REL:a_map_documents_runbook
+  - REL:s_map_navigates_runbook
 new_relations: []
 removed_relations: []
-affected_dependency_closures: []
+affected_dependency_closures:
+  - CLOSURE:live_readiness
 affected_okx_surfaces: []
 affected_safety_surfaces: []
 affected_schemas: []
 review_required_items: []
+reviewed_ids:
+  - id: NAVIGATION_INDEX:map_of_truth
+  - id: RUNBOOK:canonical_master_runbook
+  - id: TERM:map_of_truth
+  - id: CLOSURE:live_readiness
