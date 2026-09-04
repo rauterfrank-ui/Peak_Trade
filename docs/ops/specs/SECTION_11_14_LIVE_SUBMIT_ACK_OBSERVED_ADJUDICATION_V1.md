@@ -45,7 +45,7 @@ ATLAS_AUTHORITY=NONE
 
 ## Bound outcome
 
-`LIVE_SUBMIT_ACK_OBSERVED` is true from one `POST /api/v5/trade/order` of a
+`LIVE_SUBMIT_ACK_OBSERVED` is true from one `POST &#47;api&#47;v5&#47;trade&#47;order` of a
 fresh plan on `eea.okx.com`, source `GOVERNED_CURRENT_LIVE_POST`, producer
 `adjudicate_live_submit_ack_observed_v1`, conjunction HTTP 200 + code 0 +
 one data row + sCode 0 + nonempty ordId + returned clOrdId equals sent.
