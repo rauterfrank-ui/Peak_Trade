@@ -329,7 +329,7 @@ def adjudicate_prerequisite_08_window_v1(
     if state == TARGET_POSITION_NONZERO_PROVEN:
         status_08 = "PASS_TARGET_POSITION_NONZERO_OBSERVED_THIS_WINDOW"
         earliest = (
-            "EXECUTION_PREREQUISITE_25_NO_ADDITIONAL_OWNER_DECISION_REQUIRED"
+            "SEND_TIME_PASS_18_19_21_24"
             if qty_numeric == "PASS"
             else "EXECUTION_PREREQUISITE_09_TARGET_POSITION_QTY_NUMERIC"
         )

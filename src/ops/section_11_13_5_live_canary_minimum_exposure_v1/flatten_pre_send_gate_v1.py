@@ -53,6 +53,11 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_submit_tran
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.mutation_limited_to_proven_position_v1 import (
     evaluate_mutation_limited_to_proven_position_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.no_additional_owner_decision_required_v1 import (
+    NAMED_REMAINING_HIGHER_AUTHORITY_BOUNDARIES,
+    PASS_OFFLINE_CONTRACT,
+    evaluate_no_additional_owner_decision_required_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.position_observation_freshness_contract_v1 import (
     PositionObservationFreshnessEvidenceV1,
     evaluate_position_observation_freshness_v1,
@@ -93,6 +98,7 @@ GATE_NAMES: tuple[str, ...] = (
     "LIMIT_PRICE_POLICY",
     "OVERSHOOT_FLIP",
     "MUTATION_LIMITED_TO_PROVEN_POSITION",
+    "NO_ADDITIONAL_OWNER_DECISION_REQUIRED",
     "ONE_SHOT_NO_RETRY",
     "DUPLICATE_POST_PROTECTION",
 )
@@ -522,6 +528,34 @@ def evaluate_flatten_pre_send_gate_v1(
         )
     else:
         decisions.append(_decision("MUTATION_LIMITED_TO_PROVEN_POSITION", True))
+
+    p25_ok, p25_reasons = evaluate_no_additional_owner_decision_required_v1(
+        p16_status=PASS_OFFLINE_CONTRACT,
+        p20_status=PASS_OFFLINE_CONTRACT,
+        additional_owner_decisions=(),
+        claimed_remaining_higher_authority=NAMED_REMAINING_HIGHER_AUTHORITY_BOUNDARIES,
+        live_authorized_claim=gate.live_authorized is True,
+        runtime_permit_issuance_claim=False,
+        flatten_execute_authorized_claim=False,
+        network_session_authorized_claim=False,
+        post_performed_claim=False,
+        get_performed_claim=False,
+        flatten_execute_owner_go=gate.flatten_execute_owner_go,
+        instrument_id=target or DEFAULT_INSTRUMENT_ID,
+        expected_instrument_id=DEFAULT_INSTRUMENT_ID,
+        predecessor_lineage_ok=True,
+    )
+    if not p25_ok:
+        reasons.extend(p25_reasons)
+        decisions.append(
+            _decision(
+                "NO_ADDITIONAL_OWNER_DECISION_REQUIRED",
+                False,
+                ",".join(p25_reasons) or "NO_ADDITIONAL_OWNER_DECISION_REQUIRED_DENIED",
+            )
+        )
+    else:
+        decisions.append(_decision("NO_ADDITIONAL_OWNER_DECISION_REQUIRED", True))
 
     if gate.one_shot_no_retry is not True:
         reasons.append("ONE_SHOT_NO_RETRY_REQUIRED")
