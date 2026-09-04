@@ -395,7 +395,7 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
             reason=(
                 "Exact single live POST on eea.okx.com produced "
                 "LIVE_SUBMIT_ACK_OBSERVED=true via the bound producer. "
-                "No second POST. LIVE_ACCOUNTING_RECONSTRUCTED remains ineligible."
+                "No second POST. LIVE_RESTART_RECONSTRUCTED remains ineligible."
             ),
             evidence_paths=(
                 "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
@@ -409,7 +409,7 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
             reason=(
                 "Current governed private GET /api/v5/trade/fills on eea.okx.com "
                 "produced LIVE_FILL_OBSERVED=true via the bound producer for the "
-                "exact acknowledged order identity. LIVE_ACCOUNTING_RECONSTRUCTED "
+                "exact acknowledged order identity. LIVE_RESTART_RECONSTRUCTED "
                 "remains ineligible. No POST."
             ),
             evidence_paths=(
@@ -426,7 +426,7 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
                 "produced LIVE_FEE_OBSERVED=true via the bound producer from the "
                 "venue-native fee and feeCcy fields on the identity-bound fill "
                 "row. No inference from rate or fillPx times fillSz. No POST. "
-                "LIVE_ACCOUNTING_RECONSTRUCTED remains ineligible."
+                "LIVE_RESTART_RECONSTRUCTED remains ineligible."
             ),
             evidence_paths=(
                 "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
@@ -448,6 +448,48 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
                 "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
                 "20260904T181817Z/",
             ),
+        ),
+        _row(
+            candidate="SECTION_11_14_IDENTITY_BOUND_FILL_FEE_POSITION_PATH",
+            classification="CURRENT_AND_ADMISSIBLE",
+            target_11_14_field="LIVE_ACCOUNTING_RECONSTRUCTED",
+            reason=(
+                "The identity-bound fee GET and position GET artifacts already "
+                "contain the venue-native fillPnl, fee, feeCcy, realizedPnl, "
+                "fundingFee, settledPnl, pnl, ccy, and tradeId terms required "
+                "by the bound accounting identity. Fresh private GET is not "
+                "required. LIVE_RESTART_RECONSTRUCTED remains ineligible."
+            ),
+            evidence_paths=(
+                "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+                "20260904T173813Z/GET_FILLS.raw.json",
+                "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+                "20260904T181817Z/GET_POSITIONS.raw.json",
+            ),
+        ),
+        _row(
+            candidate="CAP_7_1_ACCOUNTING_RECONSTRUCTION_MATCH",
+            classification="SEMANTICALLY_DIFFERENT",
+            target_11_14_field="LIVE_ACCOUNTING_RECONSTRUCTED",
+            reason=(
+                "Cap 7.1 ACCOUNTING_RECONSTRUCTION_MATCH is simulated Entry/"
+                "Reduce/Exit accounting. It is not §11.14 "
+                "LIVE_ACCOUNTING_RECONSTRUCTED."
+            ),
+            evidence_paths=(
+                "docs/evidence/capability_7_1_simulated_entry_reduce_exit_actionability_evidence_v1/"
+                "productive_binding/accounting_reconstruction_v1.json",
+            ),
+        ),
+        _row(
+            candidate="SECTION_11_17_LIVE_ACCOUNTING_RECONSTRUCTION_PROVEN",
+            classification="SEMANTICALLY_DIFFERENT",
+            target_11_14_field="LIVE_ACCOUNTING_RECONSTRUCTED",
+            reason=(
+                "§11.17 LIVE_ACCOUNTING_RECONSTRUCTION_PROVEN is an autonomy "
+                "closure criterion. Field-name similarity is not semantic identity."
+            ),
+            evidence_paths=("docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",),
         ),
         _row(
             candidate="SECTION_11_13_4_BLOCKED_DRY_RUN_ORDER_PLAN",

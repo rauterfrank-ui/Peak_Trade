@@ -20,12 +20,16 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     CANONICAL_FILL_OBSERVED_ADJUDICATION_SLICE_HEADING,
     CANONICAL_FEE_OBSERVED_ADJUDICATION_SLICE_HEADING,
     CANONICAL_POSITION_RECONCILED_ADJUDICATION_SLICE_HEADING,
+    CANONICAL_ACCOUNTING_RECONSTRUCTED_ADJUDICATION_SLICE_HEADING,
     CANONICAL_SECTION_HEADING,
     EARLIEST_UNRESOLVED_DEPENDENCY,
     EXPECTED_ORIGIN_MAIN_SHA,
     HISTORICAL_FEE_OBSERVED_OWNER_GO,
     HISTORICAL_FEE_OBSERVED_RUN_ID,
     HISTORICAL_FEE_OBSERVED_SHA,
+    HISTORICAL_POSITION_RECONCILED_OWNER_GO,
+    HISTORICAL_POSITION_RECONCILED_RUN_ID,
+    HISTORICAL_POSITION_RECONCILED_SHA,
     HISTORICAL_FILL_OBSERVED_OWNER_GO,
     HISTORICAL_FILL_OBSERVED_RUN_ID,
     HISTORICAL_FILL_OBSERVED_SHA,
@@ -90,6 +94,9 @@ FEE_OBSERVED_ADJUDICATION_SPEC = (
 )
 POSITION_RECONCILED_ADJUDICATION_SPEC = (
     REPO_ROOT / "docs/ops/specs/SECTION_11_14_LIVE_POSITION_RECONCILED_ADJUDICATION_V1.md"
+)
+ACCOUNTING_RECONSTRUCTED_ADJUDICATION_SPEC = (
+    REPO_ROOT / "docs/ops/specs/SECTION_11_14_LIVE_ACCOUNTING_RECONSTRUCTED_ADJUDICATION_V1.md"
 )
 HISTORICAL_SPEC = (
     REPO_ROOT
@@ -165,18 +172,24 @@ FEE_OBSERVED_EVIDENCE = (
     / "section_11_14_live_order_and_economic_evidence_ladder_v1"
     / HISTORICAL_FEE_OBSERVED_RUN_ID
 )
+POSITION_RECONCILED_EVIDENCE = (
+    REPO_ROOT
+    / "evidence/ops"
+    / "section_11_14_live_order_and_economic_evidence_ladder_v1"
+    / HISTORICAL_POSITION_RECONCILED_RUN_ID
+)
 HEADING_11_15 = "## 11.15 Full-autonomy observability and audit trail"
 
 
-def test_current_slice_constants_target_position_reconciled_adjudication() -> None:
-    assert THIS_SLICE == "11.14.LIVE_POSITION_RECONCILED_ADJUDICATION"
-    assert PREDECESSOR_SLICE == "11.14.LIVE_FEE_OBSERVED_ADJUDICATION"
-    assert OWNER_GO.endswith("LIVE_POSITION_RECONCILED_MAXIMUM_SAFE_LEVERAGE_V2")
-    assert EXPECTED_ORIGIN_MAIN_SHA == "2d46611a4485a5422279e75fc762dd2285f7cc15"
-    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_ACCOUNTING_RECONSTRUCTED"
-    assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_LIVE_ACCOUNTING_RECONSTRUCTED"
-    assert LAST_CANONICALLY_CLOSED_STEP == "SECTION_11_14_LIVE_POSITION_RECONCILED"
-    assert CANONICAL_EVIDENCE_RUN_ID == "20260904T181817Z"
+def test_current_slice_constants_target_accounting_reconstructed_adjudication() -> None:
+    assert THIS_SLICE == "11.14.LIVE_ACCOUNTING_RECONSTRUCTED_ADJUDICATION"
+    assert PREDECESSOR_SLICE == "11.14.LIVE_POSITION_RECONCILED_ADJUDICATION"
+    assert OWNER_GO.endswith("LIVE_ACCOUNTING_RECONSTRUCTED_MAXIMUM_SAFE_LEVERAGE_V1")
+    assert EXPECTED_ORIGIN_MAIN_SHA == "78982a8b09f6e331a3c5e33a3aac70a2d190ca02"
+    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_RESTART_RECONSTRUCTED"
+    assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED"
+    assert LAST_CANONICALLY_CLOSED_STEP == "SECTION_11_14_LIVE_ACCOUNTING_RECONSTRUCTED"
+    assert CANONICAL_EVIDENCE_RUN_ID == "20260904T185000Z"
     assert EVIDENCE.name == CANONICAL_EVIDENCE_RUN_ID
 
 
@@ -477,14 +490,16 @@ def test_runbook_fee_observed_adjudication_slice_binds_fee_without_position() ->
 def test_runbook_position_reconciled_adjudication_slice_binds_position_without_accounting() -> None:
     text = MASTER_RUNBOOK.read_text(encoding="utf-8")
     start = text.find(CANONICAL_POSITION_RECONCILED_ADJUDICATION_SLICE_HEADING)
-    end = text.find(HEADING_11_15, start)
+    end = text.find(CANONICAL_ACCOUNTING_RECONSTRUCTED_ADJUDICATION_SLICE_HEADING, start)
+    if end < 0:
+        end = text.find(HEADING_11_15, start)
     assert start >= 0
     assert end > start
     section = text[start:end]
-    assert OWNER_GO in section
+    assert HISTORICAL_POSITION_RECONCILED_OWNER_GO in section
     assert "THIS_SLICE=11.14.LIVE_POSITION_RECONCILED_ADJUDICATION" in section
     assert "PREDECESSOR_SLICE=11.14.LIVE_FEE_OBSERVED_ADJUDICATION" in section
-    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={HISTORICAL_POSITION_RECONCILED_SHA}" in section
     assert "SECTION_11_14_AUTHORIZED=false" in section
     assert "SECTION_11_14_COMPLETE=false" in section
     assert "LIVE_FEE_OBSERVED=true" in section
@@ -500,7 +515,44 @@ def test_runbook_position_reconciled_adjudication_slice_binds_position_without_a
     assert "RAW_POSITION_QTY_IF_OBSERVED=1" in section
     assert "RAW_POS_ID_IF_OBSERVED=3891385768441942017" in section
     assert "EMPTY_DATA_IS_ZERO=false" in section
-    assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_LIVE_ACCOUNTING_RECONSTRUCTED"
+    assert "NEXT_OWNER_GO_REQUIRED=OWNER_GO_FOR_LIVE_ACCOUNTING_RECONSTRUCTED" in section
+    assert HISTORICAL_POSITION_RECONCILED_RUN_ID in section
+    for field_name in LADDER_FIELDS:
+        assert field_name in section
+
+
+def test_runbook_accounting_reconstructed_adjudication_slice_binds_accounting_without_restart() -> (
+    None
+):
+    text = MASTER_RUNBOOK.read_text(encoding="utf-8")
+    start = text.find(CANONICAL_ACCOUNTING_RECONSTRUCTED_ADJUDICATION_SLICE_HEADING)
+    end = text.find(HEADING_11_15, start)
+    assert start >= 0
+    assert end > start
+    section = text[start:end]
+    assert OWNER_GO in section
+    assert "THIS_SLICE=11.14.LIVE_ACCOUNTING_RECONSTRUCTED_ADJUDICATION" in section
+    assert "PREDECESSOR_SLICE=11.14.LIVE_POSITION_RECONCILED_ADJUDICATION" in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert "SECTION_11_14_AUTHORIZED=false" in section
+    assert "SECTION_11_14_COMPLETE=false" in section
+    assert "LIVE_POSITION_RECONCILED=true" in section
+    assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in section
+    assert "CASE_ADJUDICATION=CASE_LIVE_ACCOUNTING_RECONSTRUCTED_RESTART_INELIGIBLE" in section
+    assert "POST_PERFORMED=false" in section
+    assert "GET_PERFORMED=false" in section
+    assert "PRIVATE_GET_USED=false" in section
+    assert "CREDENTIAL_USE=false" in section
+    assert "RETRY_USED=false" in section
+    assert "SECOND_SUBMIT_USED=false" in section
+    assert "ACCOUNTING_SOURCE_KIND=GOVERNED_PERSISTED_IDENTITY_BOUND_LIVE_ECONOMIC_PATH" in section
+    assert "BOUND_ORDID=3893505043080286208" in section
+    assert "ACCOUNTING_RESULT=-0.000374" in section
+    assert "ACCOUNTING_RESULT_UNIT=USDC" in section
+    assert "ACCOUNTING_RESIDUAL=0" in section
+    assert "ACCOUNTING_TOLERANCE_AUTHORITY=EXACT_DECIMAL_EQUALITY_NO_INVENTED_TOLERANCE" in section
+    assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED"
     assert NEXT_OWNER_GO_REQUIRED in section
     assert CANONICAL_EVIDENCE_RUN_ID in section
     for field_name in LADDER_FIELDS:
@@ -529,6 +581,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "11.14 LIVE_FILL_OBSERVED_ADJUDICATION" in mot
     assert "11.14 LIVE_FEE_OBSERVED_ADJUDICATION" in mot
     assert "11.14 LIVE_POSITION_RECONCILED_ADJUDICATION" in mot
+    assert "11.14 LIVE_ACCOUNTING_RECONSTRUCTED_ADJUDICATION" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION_V1.md" in mot
@@ -542,6 +595,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "SECTION_11_14_LIVE_FILL_OBSERVED_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_FEE_OBSERVED_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_POSITION_RECONCILED_ADJUDICATION_V1.md" in mot
+    assert "SECTION_11_14_LIVE_ACCOUNTING_RECONSTRUCTED_ADJUDICATION_V1.md" in mot
     path_spec = PATH_REACHABLE_SPEC.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1" in path_spec
     assert "LIVE_EXECUTION_PATH_REACHABLE=true" in path_spec
@@ -586,6 +640,15 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "CASE_ADJUDICATION=CASE_LIVE_POSITION_RECONCILED_ACCOUNTING_INELIGIBLE" in position_spec
     assert "LIVE_POSITION_RECONCILED=true" in position_spec
     assert "LIVE_ACCOUNTING_RECONSTRUCTED=false" in position_spec
+    accounting_spec = ACCOUNTING_RECONSTRUCTED_ADJUDICATION_SPEC.read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_LIVE_ACCOUNTING_RECONSTRUCTED_ADJUDICATION_V1" in accounting_spec
+    )
+    assert (
+        "CASE_ADJUDICATION=CASE_LIVE_ACCOUNTING_RECONSTRUCTED_RESTART_INELIGIBLE" in accounting_spec
+    )
+    assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in accounting_spec
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in accounting_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -603,6 +666,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "id: PHASE:section_11_14_live_fill_observed_adjudication" in catalog
     assert "id: PHASE:section_11_14_live_fee_observed_adjudication" in catalog
     assert "id: PHASE:section_11_14_live_position_reconciled_adjudication" in catalog
+    assert "id: PHASE:section_11_14_live_accounting_reconstructed_adjudication" in catalog
     assert (
         "id: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1" in catalog
     )
@@ -641,6 +705,12 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert position_rel >= 0
     position_block = relations[position_rel : position_rel + 1400]
     assert "ATLAS_AUTHORITY=NONE" in position_block
+    accounting_rel = relations.find(
+        "id: REL:r_section_11_14_accounting_reconstructed_adjudication_follows_position"
+    )
+    assert accounting_rel >= 0
+    accounting_block = relations[accounting_rel : accounting_rel + 1400]
+    assert "ATLAS_AUTHORITY=NONE" in accounting_block
     assert CODE_EXISTS_EVIDENCE.is_dir()
     verified = verify_manifest_v1(CODE_EXISTS_EVIDENCE)
     assert int(verified.get("MANIFEST_VERIFY_RC", 1)) == 0
@@ -711,18 +781,32 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert '"CASE_ADJUDICATION": "CASE_LIVE_FEE_OBSERVED_POSITION_INELIGIBLE"' in fee_summary
     assert (FEE_OBSERVED_EVIDENCE / "FEE_OBSERVED_ADJUDICATION.json").is_file()
     assert (FEE_OBSERVED_EVIDENCE / "GET_FILLS.raw.json").is_file()
+    assert POSITION_RECONCILED_EVIDENCE.is_dir()
+    position_verified = verify_manifest_v1(POSITION_RECONCILED_EVIDENCE)
+    assert int(position_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
+    position_summary = (POSITION_RECONCILED_EVIDENCE / "SUMMARY.json").read_text(encoding="utf-8")
+    assert '"LIVE_POSITION_RECONCILED": true' in position_summary
+    assert '"LIVE_ACCOUNTING_RECONSTRUCTED": false' in position_summary
+    assert (
+        '"CASE_ADJUDICATION": "CASE_LIVE_POSITION_RECONCILED_ACCOUNTING_INELIGIBLE"'
+        in position_summary
+    )
+    assert (POSITION_RECONCILED_EVIDENCE / "POSITION_RECONCILED_ADJUDICATION.json").is_file()
+    assert (POSITION_RECONCILED_EVIDENCE / "GET_POSITIONS.raw.json").is_file()
     assert EVIDENCE.is_dir()
     current_verified = verify_manifest_v1(EVIDENCE)
     assert int(current_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
     current_summary = (EVIDENCE / "SUMMARY.json").read_text(encoding="utf-8")
-    assert '"LIVE_FEE_OBSERVED": true' in current_summary
     assert '"LIVE_POSITION_RECONCILED": true' in current_summary
-    assert '"LIVE_ACCOUNTING_RECONSTRUCTED": false' in current_summary
+    assert '"LIVE_ACCOUNTING_RECONSTRUCTED": true' in current_summary
+    assert '"LIVE_RESTART_RECONSTRUCTED": false' in current_summary
     assert '"POST_USED": false' in current_summary
-    assert '"GET_PERFORMED": true' in current_summary
+    assert '"GET_PERFORMED": false' in current_summary
+    assert '"CREDENTIAL_USE": false' in current_summary
     assert (
-        '"CASE_ADJUDICATION": "CASE_LIVE_POSITION_RECONCILED_ACCOUNTING_INELIGIBLE"'
+        '"CASE_ADJUDICATION": "CASE_LIVE_ACCOUNTING_RECONSTRUCTED_RESTART_INELIGIBLE"'
         in current_summary
     )
-    assert (EVIDENCE / "POSITION_RECONCILED_ADJUDICATION.json").is_file()
-    assert (EVIDENCE / "GET_POSITIONS.raw.json").is_file()
+    assert (EVIDENCE / "ACCOUNTING_RECONSTRUCTED_ADJUDICATION.json").is_file()
+    assert (EVIDENCE / "ACCOUNTING_IDENTITY.json").is_file()
+    assert (EVIDENCE / "SOURCE_REFERENCES.json").is_file()

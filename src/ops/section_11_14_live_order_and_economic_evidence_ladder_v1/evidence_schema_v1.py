@@ -71,6 +71,7 @@ def build_evidence_record_v1(
             "LIVE_FILL_OBSERVED",
             "LIVE_FEE_OBSERVED",
             "LIVE_POSITION_RECONCILED",
+            "LIVE_ACCOUNTING_RECONSTRUCTED",
         }
         if ladder_stage not in allowed_true:
             raise Section1114OfflineSurfaceError(
@@ -108,6 +109,11 @@ def build_evidence_record_v1(
             raise Section1114OfflineSurfaceError(f"FEE_TRUE_SOURCE_NOT_ADMISSIBLE:{kind}")
         if ladder_stage == "LIVE_POSITION_RECONCILED" and kind != "GOVERNED_CURRENT_PRIVATE_GET":
             raise Section1114OfflineSurfaceError(f"POSITION_TRUE_SOURCE_NOT_ADMISSIBLE:{kind}")
+        if (
+            ladder_stage == "LIVE_ACCOUNTING_RECONSTRUCTED"
+            and kind != "GOVERNED_PERSISTED_IDENTITY_BOUND_LIVE_ECONOMIC_PATH"
+        ):
+            raise Section1114OfflineSurfaceError(f"ACCOUNTING_TRUE_SOURCE_NOT_ADMISSIBLE:{kind}")
     payload: dict[str, Any] = {
         "schema_version": EVIDENCE_RECORD_SCHEMA_VERSION,
         "ladder_stage": ladder_stage,
