@@ -8,6 +8,7 @@ This boundary never claims LIVE_FLATTEN_PROVABILITY.
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any, Mapping
 
@@ -139,6 +140,8 @@ class FlattenGatedSubmitBoundaryV1:
         *,
         gate_input: FlattenPreSendGateInputV1,
         transport: Any,
+        extra_headers: Mapping[str, str] | None = None,
+        header_builder: Callable[[FlattenPreSendGateReceiptV1], Mapping[str, str]] | None = None,
     ) -> FlattenGatedSubmitResultV1:
         receipt = evaluate_flatten_pre_send_gate_v1(gate_input)
         transport_class = str(getattr(transport, "transport_class", type(transport).__name__))
@@ -191,12 +194,20 @@ class FlattenGatedSubmitBoundaryV1:
         )
         endpoint = str(receipt.approved_endpoint or ENDPOINT_SUBMIT)
         url = str(receipt.approved_url or f"{self.rest_base.rstrip('/')}{endpoint}")
+        headers = {"User-Agent": "PeakTrade-Section-11-13-5-FlattenWiring/1"}
+        built: Mapping[str, str] | None = None
+        if header_builder is not None:
+            built = header_builder(receipt)
+        if extra_headers:
+            headers.update({str(k): str(v) for k, v in extra_headers.items()})
+        if built:
+            headers.update({str(k): str(v) for k, v in built.items()})
         request = LiveCanaryHttpRequestV1(
             method=str(receipt.approved_method or "POST"),
             url=url,
             host=str(receipt.approved_host or self.rest_host),
             endpoint=endpoint,
-            headers={"User-Agent": "PeakTrade-Section-11-13-5-FlattenWiring/1"},
+            headers=headers,
             timeout_seconds=self.timeout_seconds,
             body_text=body_text,
         )
@@ -257,10 +268,17 @@ def submit_productive_flatten_v1(
     transport: Any,
     rest_base: str = DEFAULT_REST_BASE,
     rest_host: str = REUSED_BINDING_REST_HOST,
+    extra_headers: Mapping[str, str] | None = None,
+    header_builder: Callable[[FlattenPreSendGateReceiptV1], Mapping[str, str]] | None = None,
 ) -> FlattenGatedSubmitResultV1:
     """One-shot helper around FlattenGatedSubmitBoundaryV1."""
     boundary = FlattenGatedSubmitBoundaryV1(rest_base=rest_base, rest_host=rest_host)
-    return boundary.submit(gate_input=gate_input, transport=transport)
+    return boundary.submit(
+        gate_input=gate_input,
+        transport=transport,
+        extra_headers=extra_headers,
+        header_builder=header_builder,
+    )
 
 
 def default_flatten_execute_gate_input_from_runner_v1(

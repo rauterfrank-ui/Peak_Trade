@@ -66,6 +66,7 @@ FREEZE_PACK = canonical_pr_changed_paths_freeze_pack_v1(REPO_ROOT)
 
 CENSUS_HEADING = "### 11.13.5 REMAINING_EXECUTION_PATH_END_TO_END_CENSUS"
 APRPI_HEADING = "### 11.13.5 AUTHENTICATED_PRIVATE_RUNTIME_READ_AND_RUNTIME_PERMIT_ISSUANCE"
+FLATTEN_HEADING = "### 11.13.5 PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 
 NONZERO_BODY = (
@@ -82,8 +83,10 @@ def _read(path: Path) -> str:
 def _aprpi_section(text: str) -> str:
     start = text.find(APRPI_HEADING)
     assert start >= 0, "missing AUTHENTICATED_PRIVATE_RUNTIME_READ persist heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after APRPI persist"
+    flatten = text.find(FLATTEN_HEADING, start)
+    ladder = text.find(LADDER_HEADING, start)
+    end = flatten if flatten > start else ladder
+    assert end > start, "missing successor boundary after APRPI persist"
     return text[start:end]
 
 

@@ -437,11 +437,12 @@ class RecordingAuthenticatedProductiveFlattenTransportV1:
 
 @dataclass
 class AuthenticatedGatedProductiveFlattenTransportV1:
-    """Authenticated productive flatten transport. Network session stays false.
+    """Authenticated productive flatten transport.
 
     Reuses the gated flatten identity/lease contract. HMAC header presence is
-    required before urllib would open. This class never sets
-    network_session_authorized true and never invents a signing ontology.
+    required before urllib would open. Urllib opens only when the instance
+    ``network_session_authorized`` flag is independently True. This class
+    never sets that flag true and never invents a signing ontology.
     """
 
     is_productive_flatten_transport: bool = True
@@ -487,9 +488,34 @@ class AuthenticatedGatedProductiveFlattenTransportV1:
             raise LiveCanaryFlattenProductiveTransportError(
                 "PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED"
             )
-        raise LiveCanaryFlattenProductiveTransportError(
-            "AUTHENTICATED_PRODUCTIVE_TRANSPORT_WIRE_SEND_NOT_AUTHORIZED"
+        from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_productive_transport_v1 import (
+            assert_productive_flatten_post_request_v1,
+            open_productive_flatten_urllib_post_v1,
         )
+        from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
+            CanaryPostRedirectBlockedError,
+            LiveCanaryHttpError,
+        )
+        from urllib.error import URLError
+
+        assert_productive_flatten_post_request_v1(request)
+        self.last_wire_attempted = True
+        try:
+            return open_productive_flatten_urllib_post_v1(request)
+        except CanaryPostRedirectBlockedError as exc:
+            raise LiveCanaryFlattenProductiveTransportError(
+                f"POST_REDIRECT_FAIL_CLOSED:{exc.status_code}"
+            ) from exc
+        except TimeoutError as exc:
+            raise LiveCanaryFlattenProductiveTransportError(
+                "PRODUCTIVE_FLATTEN_WIRE_TIMEOUT"
+            ) from exc
+        except LiveCanaryHttpError as exc:
+            raise LiveCanaryFlattenProductiveTransportError(str(exc)) from exc
+        except (URLError, OSError) as exc:
+            raise LiveCanaryFlattenProductiveTransportError(
+                f"PRODUCTIVE_FLATTEN_WIRE_ERROR:{exc}"
+            ) from exc
 
 
 def authenticated_header_presence_doc_v1(headers: Mapping[str, str] | None) -> dict[str, Any]:
