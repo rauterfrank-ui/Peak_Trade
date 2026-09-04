@@ -1,0 +1,19 @@
+{
+  "LIVE_ORDER_PLAN_OBSERVED": true,
+  "LIVE_SUBMIT_ACK_OBSERVED": false,
+  "adjudicated_value": true,
+  "canonical_definition": "LIVE_ORDER_PLAN_OBSERVED is the fourth \u00a711.14 Live proof-claim field. It is true iff a current Live canary order-plan artifact is produced on the productive submit path after refuse_submit_unless_gates_pass_v1 from current venue-derived inputs. Static builder presence, a blocked dry-run, and \u00a711.13.4 LIVE_DRY_RUN_ORDER_PLAN_PROVEN are each insufficient. True does not imply LIVE_SUBMIT_ACK_OBSERVED or POST authorization by itself.",
+  "claim_value": true,
+  "conjunction": {
+    "BLOCKED_DRY_RUN_IS_NOT_LIVE_ORDER_PLAN_OBSERVED": true,
+    "POST_REQUIRED_FOR_LIVE_ORDER_PLAN_OBSERVED": false,
+    "adjudication": "TRUE_CURRENT_LIVE_ORDER_PLAN_OBSERVED",
+    "canonical_definition": "LIVE_ORDER_PLAN_OBSERVED is the fourth \u00a711.14 Live proof-claim field. It is true iff a current Live canary order-plan artifact is produced on the productive submit path after refuse_submit_unless_gates_pass_v1 from current venue-derived inputs. Static builder presence, a blocked dry-run, and \u00a711.13.4 LIVE_DRY_RUN_ORDER_PLAN_PROVEN are each insufficient. True does not imply LIVE_SUBMIT_ACK_OBSERVED or POST authorization by itself.",
+    "claim_value": true,
+    "constituent_count": 10,
+    "false_required": [],
+    "source_kind": "GOVERNED_CURRENT_GATED_SUBMIT_PATH"
+  },
+  "constant_matches_claim": true,
+  "reason": "TRUE_CURRENT_LIVE_ORDER_PLAN_OBSERVED"
+}

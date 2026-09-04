@@ -1,0 +1,83 @@
+{
+  "EARLIEST_MUTATION_BOUNDARY": "LIVE_SUBMIT_ACK_OBSERVED",
+  "EARLIEST_UNRESOLVED_DEPENDENCY": "LIVE_SUBMIT_ACK_OBSERVED",
+  "LIVE_ORDER_PLAN_OBSERVED": true,
+  "LIVE_PRIVATE_READ_ONLY_PROVEN": true,
+  "MINIMUM_EXTERNAL_ACTION_CLASS": "POST_ORDER_SUBMIT",
+  "rows": [
+    {
+      "canonical_definition": "LIVE_ORDER_PLAN_OBSERVED is the fourth \u00a711.14 Live proof-claim field. It is true iff a current Live canary order-plan artifact is produced on the productive submit path after refuse_submit_unless_gates_pass_v1 from current venue-derived inputs. Static builder presence, a blocked dry-run, and \u00a711.13.4 LIVE_DRY_RUN_ORDER_PLAN_PROVEN are each insufficient. True does not imply LIVE_SUBMIT_ACK_OBSERVED or POST authorization by itself.",
+      "claim_value": true,
+      "consumer": "\u00a711.14 LIVE_SUBMIT_ACK_OBSERVED",
+      "external_observation_required": true,
+      "field": "LIVE_ORDER_PLAN_OBSERVED",
+      "live_gate_unlock_required": true,
+      "post_required": false,
+      "private_get_required": true,
+      "producer": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py::run_canary_submit_transport_v1",
+      "productive_state_mutation_required": false,
+      "reuse_allowed": false
+    },
+    {
+      "canonical_definition": "LIVE_SUBMIT_ACK_OBSERVED is the fifth \u00a711.14 Live proof-claim field. The Master Runbook currently states only that canonical ACK requires POST of the observed plan. No \u00a711.14 proof criterion is bound for HTTP status, venue code, sCode, ordId, or clOrdId. The productive transport ok predicate and Cap 11.12.8 / flatten / lifecycle ACK handlers are not this field. No producer may set the field true under this forensic GO. True is not adjudicated. POST remains unauthorized.",
+      "claim_value": false,
+      "field": "LIVE_SUBMIT_ACK_OBSERVED",
+      "minimum_external_action_class": "POST_ORDER_SUBMIT",
+      "post_required": true,
+      "producer_bound": false,
+      "proof_criterion_bound": false,
+      "why_blocked": "CASE_C_CANONICAL_SEMANTIC_GAP. Canonical ACK requires POST of the observed plan, but no \u00a711.14 HTTP/venue/identity criterion is bound. Transport ok is not this field. This GO forbids POST and forbids promoting the field true."
+    },
+    {
+      "canonical_definition": "Current venue fill bound to the Peak_Trade Live submit identity.",
+      "claim_value": false,
+      "field": "LIVE_FILL_OBSERVED",
+      "post_required": true,
+      "why_blocked": "Requires a Live fill after submit ACK. POST unauthorized."
+    },
+    {
+      "canonical_definition": "Current venue fee bound to the observed Live fill/submit identity.",
+      "claim_value": false,
+      "field": "LIVE_FEE_OBSERVED",
+      "post_required": true,
+      "why_blocked": "Requires a Live fee after fill. POST unauthorized."
+    },
+    {
+      "canonical_definition": "Current Live position reconciled to the observed fill/fee path. LIVE_RECONCILIATION_PROVEN is not this field.",
+      "claim_value": false,
+      "field": "LIVE_POSITION_RECONCILED",
+      "why_blocked": "Predecessor fill/fee observations are false."
+    },
+    {
+      "canonical_definition": "Current Live accounting reconstructed from the observed Live economic path.",
+      "claim_value": false,
+      "field": "LIVE_ACCOUNTING_RECONSTRUCTED",
+      "why_blocked": "Predecessor position reconciliation is false."
+    },
+    {
+      "canonical_definition": "Current Live restart reconstruction from persisted Live state.",
+      "claim_value": false,
+      "field": "LIVE_RESTART_RECONSTRUCTED",
+      "why_blocked": "Predecessor accounting reconstruction is false."
+    },
+    {
+      "canonical_definition": "Current Live autonomous recovery observation on the Live path.",
+      "claim_value": false,
+      "field": "LIVE_AUTONOMOUS_RECOVERY_OBSERVED",
+      "why_blocked": "Predecessor restart reconstruction is false."
+    },
+    {
+      "canonical_definition": "Conjunction of the complete \u00a711.14 Live evidence ladder.",
+      "claim_value": false,
+      "field": "LIVE_END_TO_END_EVIDENCE_PROVEN",
+      "why_blocked": "Earlier observed/proven fields remain false."
+    },
+    {
+      "canonical_definition": "True iff every \u00a711.14 ladder field is true.",
+      "claim_value": false,
+      "field": "SECTION_11_14_COMPLETE",
+      "why_blocked": "LIVE_END_TO_END_EVIDENCE_PROVEN is false."
+    }
+  ],
+  "schema_version": "section_11_14_later_field_census.v1"
+}

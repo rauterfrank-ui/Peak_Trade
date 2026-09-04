@@ -320,6 +320,58 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
             ),
         ),
         _row(
+            candidate="SECTION_11_14_LIVE_ORDER_PLAN_OBSERVED_ARTIFACT_20260904T140500Z",
+            classification="REQUIRES_FRESH_OBSERVATION",
+            target_11_14_field="LIVE_SUBMIT_ACK_OBSERVED",
+            reason=(
+                "The bound LIVE_ORDER_PLAN_OBSERVED artifact is current as a ladder "
+                "field and stale as a POST body. px is venue-derived and clOrdId binds "
+                "owner_go:origin_main_sha. Historical SHA eca62c687d7fb42d0fa11c645d5f70bb26916c55 "
+                "is not current origin/main. Reuse of that artifact for POST is forbidden."
+            ),
+            evidence_paths=(
+                "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T140500Z/ORDER_PLAN.sanitized.json",
+            ),
+        ),
+        _row(
+            candidate="CANARY_TRANSPORT_OK_PREDICATE",
+            classification="CURRENT_BUT_INSUFFICIENT",
+            target_11_14_field="LIVE_SUBMIT_ACK_OBSERVED",
+            reason=(
+                "_entry_submit_returned_payload_v1 ok requires HTTP 200, top-level "
+                "code=0, parseable JSON, and no redirect. It does not require sCode, "
+                "ordId, or clOrdId. Transport ok is not LIVE_SUBMIT_ACK_OBSERVED."
+            ),
+            evidence_paths=(
+                "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py",
+            ),
+        ),
+        _row(
+            candidate="CAP_11_12_8_OKX_ORDER_RESPONSE_MAPPER",
+            classification="SEMANTICALLY_DIFFERENT",
+            target_11_14_field="LIVE_SUBMIT_ACK_OBSERVED",
+            reason=(
+                "parse_okx_order_response_v1 accepted requires top-level code=0, "
+                "sCode=0, and ordId. That mapper is Cap 11.12.8 Testnet/campaign "
+                "code and is not the §11.14 ACK producer."
+            ),
+            evidence_paths=(
+                "src/ops/section_11_12_8_actual_productive_testnet_campaign_run_start_v1/okx_response_mapper_v1.py",
+            ),
+        ),
+        _row(
+            candidate="SECTION_11_13_5_LIFECYCLE_ACK_HANDLING_CONTRACT",
+            classification="CURRENT_BUT_INSUFFICIENT",
+            target_11_14_field="LIVE_SUBMIT_ACK_OBSERVED",
+            reason=(
+                "lifecycle_v1 ack_handling=REQUIRE_EXCHANGE_ORDID_OR_EXPLICIT_REJECT_CODE "
+                "but ACTIVATED=false. An inactive contract is not §11.14 observed ACK."
+            ),
+            evidence_paths=(
+                "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/lifecycle_v1.py",
+            ),
+        ),
+        _row(
             candidate="SECTION_11_13_4_BLOCKED_DRY_RUN_ORDER_PLAN",
             classification="SEMANTICALLY_DIFFERENT",
             target_11_14_field="LIVE_ORDER_PLAN_OBSERVED",

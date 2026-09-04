@@ -6,7 +6,9 @@ from typing import Any, Mapping
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     AMEND_ALLOWED,
+    AUTHORIZED_PRODUCTIVE_SUBMIT_COUNT_MAX,
     CANCEL_ALLOWED,
+    CASE_ADJUDICATION,
     COLLECTOR_ACTIVATED,
     CREDENTIAL_USE_ALLOWED,
     FLATTEN_EXECUTE_ALLOWED,
@@ -19,6 +21,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_ENABLED,
     LIVE_EXECUTION_CODE_EXISTS,
     LIVE_EXECUTION_PATH_REACHABLE,
+    LIVE_ORDER_PLAN_OBSERVED,
     LIVE_PRIVATE_READ_ONLY_PROVEN,
     MANDATORY_LIVE_METRIC_COUNT,
     MANDATORY_LIVE_METRICS,
@@ -27,6 +30,8 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     POST_ALLOWED,
     PRIVATE_GET_ALLOWED,
     PUBLIC_GET_ALLOWED,
+    RETRY_DEFAULT,
+    SECOND_SUBMIT_DEFAULT,
     SECTION_11_14_AUTHORIZED,
     SECTION_11_14_COMPLETE,
     SECTION_11_14_LIVE_EVIDENCE_COLLECTION_AUTHORIZED,
@@ -89,6 +94,14 @@ def assert_contract_invariants_v1(payload: Mapping[str, Any] | None = None) -> N
         raise Section1114OfflineSurfaceError("LIVE_EXECUTION_PATH_REACHABLE_MUST_BE_TRUE")
     if LIVE_PRIVATE_READ_ONLY_PROVEN is not True:
         raise Section1114OfflineSurfaceError("LIVE_PRIVATE_READ_ONLY_PROVEN_MUST_BE_TRUE")
+    if LIVE_ORDER_PLAN_OBSERVED is not True:
+        raise Section1114OfflineSurfaceError("LIVE_ORDER_PLAN_OBSERVED_MUST_BE_TRUE")
+    if AUTHORIZED_PRODUCTIVE_SUBMIT_COUNT_MAX != 1:
+        raise Section1114OfflineSurfaceError("SUBMIT_COUNT_MAX_DRIFT")
+    if RETRY_DEFAULT is True or SECOND_SUBMIT_DEFAULT is True:
+        raise Section1114OfflineSurfaceError("RETRY_OR_SECOND_SUBMIT_DEFAULT_TRUE")
+    if CASE_ADJUDICATION != "CASE_C_CANONICAL_SEMANTIC_GAP":
+        raise Section1114OfflineSurfaceError("CASE_ADJUDICATION_DRIFT")
     if LIVE_EXECUTION_PATH_REACHABLE is True and LIVE_EXECUTION_CODE_EXISTS is not True:
         raise Section1114OfflineSurfaceError("PATH_REACHABLE_WITHOUT_CODE_EXISTS")
     if CREDENTIAL_USE_ALLOWED is not True:

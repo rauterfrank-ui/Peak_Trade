@@ -14,6 +14,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     CANONICAL_PATH_REACHABLE_SLICE_HEADING,
     CANONICAL_PRIVATE_READ_ONLY_SLICE_HEADING,
     CANONICAL_ORDER_PLAN_OBSERVED_SLICE_HEADING,
+    CANONICAL_SUBMIT_ACK_FORENSIC_SLICE_HEADING,
     CANONICAL_SECTION_HEADING,
     EARLIEST_UNRESOLVED_DEPENDENCY,
     EXPECTED_ORIGIN_MAIN_SHA,
@@ -23,6 +24,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_OFFLINE_SURFACE_OWNER_GO,
     HISTORICAL_OFFLINE_SURFACE_RUN_ID,
     HISTORICAL_OFFLINE_SURFACE_SHA,
+    HISTORICAL_ORDER_PLAN_OWNER_GO,
+    HISTORICAL_ORDER_PLAN_RUN_ID,
+    HISTORICAL_ORDER_PLAN_SHA,
     HISTORICAL_PATH_REACHABLE_OWNER_GO,
     HISTORICAL_PATH_REACHABLE_RUN_ID,
     HISTORICAL_PATH_REACHABLE_SHA,
@@ -48,6 +52,10 @@ PRIVATE_READ_ONLY_SPEC = (
 )
 ORDER_PLAN_SPEC = (
     REPO_ROOT / "docs/ops/specs/SECTION_11_14_LIVE_ORDER_PLAN_OBSERVED_ADJUDICATION_V1.md"
+)
+SUBMIT_ACK_FORENSIC_SPEC = (
+    REPO_ROOT
+    / "docs/ops/specs/SECTION_11_14_LIVE_SUBMIT_ACK_CONTRACT_AND_MUTATION_BOUNDARY_FORENSIC_ADJUDICATION_V1.md"
 )
 HISTORICAL_SPEC = (
     REPO_ROOT
@@ -87,19 +95,31 @@ PRIVATE_READ_ONLY_EVIDENCE = (
     / "section_11_14_live_order_and_economic_evidence_ladder_v1"
     / HISTORICAL_PRIVATE_READ_ONLY_RUN_ID
 )
+ORDER_PLAN_EVIDENCE = (
+    REPO_ROOT
+    / "evidence/ops"
+    / "section_11_14_live_order_and_economic_evidence_ladder_v1"
+    / HISTORICAL_ORDER_PLAN_RUN_ID
+)
 HEADING_11_15 = "## 11.15 Full-autonomy observability and audit trail"
 
 
-def test_current_slice_constants_target_order_plan_observed() -> None:
-    assert THIS_SLICE == "11.14.LIVE_ORDER_PLAN_OBSERVED_ADJUDICATION"
-    assert PREDECESSOR_SLICE == "11.14.LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION"
-    assert OWNER_GO.endswith(
-        "LIVE_ORDER_PLAN_OBSERVED_EXACT_LIVE_MUTATION_MAXIMUM_SAFE_LEVERAGE_V1"
+def test_current_slice_constants_target_submit_ack_forensic() -> None:
+    assert (
+        THIS_SLICE == "11.14.LIVE_SUBMIT_ACK_CONTRACT_AND_MUTATION_BOUNDARY_FORENSIC_ADJUDICATION"
     )
-    assert EXPECTED_ORIGIN_MAIN_SHA == "eca62c687d7fb42d0fa11c645d5f70bb26916c55"
+    assert PREDECESSOR_SLICE == "11.14.LIVE_ORDER_PLAN_OBSERVED_ADJUDICATION"
+    assert OWNER_GO.endswith(
+        "LIVE_SUBMIT_ACK_CONTRACT_AND_MUTATION_BOUNDARY_FORENSIC_ADJUDICATION_V1"
+    )
+    assert EXPECTED_ORIGIN_MAIN_SHA == "61fbec920741b3c6631e15723092e3b262740c4e"
     assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_SUBMIT_ACK_OBSERVED"
-    assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_EXACT_NEXT_MUTATION"
-    assert LAST_CANONICALLY_CLOSED_STEP == "SECTION_11_14_LIVE_ORDER_PLAN_OBSERVED_ADJUDICATION"
+    assert NEXT_OWNER_GO_REQUIRED == (
+        "OWNER_GO_TO_BIND_LIVE_SUBMIT_ACK_OBSERVED_PROOF_CRITERION_BEFORE_ANY_POST"
+    )
+    assert LAST_CANONICALLY_CLOSED_STEP == (
+        "SECTION_11_14_LIVE_SUBMIT_ACK_CONTRACT_AND_MUTATION_BOUNDARY_FORENSIC_ADJUDICATION"
+    )
     assert CANONICAL_EVIDENCE_RUN_ID
     assert EVIDENCE.name == CANONICAL_EVIDENCE_RUN_ID
 
@@ -204,14 +224,16 @@ def test_runbook_private_read_only_slice_binds_true_without_later_fields() -> No
 def test_runbook_order_plan_observed_slice_binds_true_without_later_fields() -> None:
     text = MASTER_RUNBOOK.read_text(encoding="utf-8")
     start = text.find(CANONICAL_ORDER_PLAN_OBSERVED_SLICE_HEADING)
-    end = text.find(HEADING_11_15, start)
+    end = text.find(CANONICAL_SUBMIT_ACK_FORENSIC_SLICE_HEADING, start)
+    if end < 0:
+        end = text.find(HEADING_11_15, start)
     assert start >= 0
     assert end > start
     section = text[start:end]
-    assert OWNER_GO in section
+    assert HISTORICAL_ORDER_PLAN_OWNER_GO in section
     assert "THIS_SLICE=11.14.LIVE_ORDER_PLAN_OBSERVED_ADJUDICATION" in section
     assert "PREDECESSOR_SLICE=11.14.LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION" in section
-    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={HISTORICAL_ORDER_PLAN_SHA}" in section
     assert "SECTION_11_14_AUTHORIZED=false" in section
     assert "SECTION_11_14_COMPLETE=false" in section
     assert "LIVE_EXECUTION_CODE_EXISTS=true" in section
@@ -228,6 +250,36 @@ def test_runbook_order_plan_observed_slice_binds_true_without_later_fields() -> 
     assert "LIVE_GATES_RETURNED_FAIL_CLOSED=true" in section
     assert "EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_SUBMIT_ACK_OBSERVED" in section
     assert "NEXT_OWNER_GO_REQUIRED=OWNER_GO_FOR_EXACT_NEXT_MUTATION" in section
+    assert HISTORICAL_ORDER_PLAN_RUN_ID in section
+    for field_name in LADDER_FIELDS:
+        assert field_name in section
+
+
+def test_runbook_submit_ack_forensic_slice_binds_case_c_without_ack() -> None:
+    text = MASTER_RUNBOOK.read_text(encoding="utf-8")
+    start = text.find(CANONICAL_SUBMIT_ACK_FORENSIC_SLICE_HEADING)
+    end = text.find(HEADING_11_15, start)
+    assert start >= 0
+    assert end > start
+    section = text[start:end]
+    assert OWNER_GO in section
+    assert (
+        "THIS_SLICE=11.14.LIVE_SUBMIT_ACK_CONTRACT_AND_MUTATION_BOUNDARY_FORENSIC_ADJUDICATION"
+        in section
+    )
+    assert "PREDECESSOR_SLICE=11.14.LIVE_ORDER_PLAN_OBSERVED_ADJUDICATION" in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert "SECTION_11_14_AUTHORIZED=false" in section
+    assert "SECTION_11_14_COMPLETE=false" in section
+    assert "LIVE_ORDER_PLAN_OBSERVED=true" in section
+    assert "LIVE_SUBMIT_ACK_OBSERVED=false" in section
+    assert "CASE_ADJUDICATION=CASE_C_CANONICAL_SEMANTIC_GAP" in section
+    assert "AUTHORIZED_PRODUCTIVE_SUBMIT_COUNT_MAX=1" in section
+    assert "RETRY_DEFAULT=false" in section
+    assert "SECOND_SUBMIT_DEFAULT=false" in section
+    assert "POST_PERFORMED=false" in section
+    assert "GET_PERFORMED=false" in section
+    assert NEXT_OWNER_GO_REQUIRED in section
     assert CANONICAL_EVIDENCE_RUN_ID in section
     for field_name in LADDER_FIELDS:
         assert field_name in section
@@ -249,10 +301,15 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "11.14 LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION" in mot
     assert "11.14 LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION" in mot
     assert "11.14 LIVE_ORDER_PLAN_OBSERVED_ADJUDICATION" in mot
+    assert "11.14 LIVE_SUBMIT_ACK_CONTRACT_AND_MUTATION_BOUNDARY_FORENSIC_ADJUDICATION" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_ORDER_PLAN_OBSERVED_ADJUDICATION_V1.md" in mot
+    assert (
+        "SECTION_11_14_LIVE_SUBMIT_ACK_CONTRACT_AND_MUTATION_BOUNDARY_FORENSIC_ADJUDICATION_V1.md"
+        in mot
+    )
     path_spec = PATH_REACHABLE_SPEC.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1" in path_spec
     assert "LIVE_EXECUTION_PATH_REACHABLE=true" in path_spec
@@ -266,6 +323,13 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "POST_REQUIRED_FOR_LIVE_ORDER_PLAN_OBSERVED=false" in order_plan_spec
     assert "LIVE_ORDER_PLAN_OBSERVED=true" in order_plan_spec
     assert "LIVE_SUBMIT_ACK_OBSERVED=false" in order_plan_spec
+    forensic_spec = SUBMIT_ACK_FORENSIC_SPEC.read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_LIVE_SUBMIT_ACK_CONTRACT_AND_MUTATION_BOUNDARY_FORENSIC_ADJUDICATION_V1"
+        in forensic_spec
+    )
+    assert "CASE_ADJUDICATION=CASE_C_CANONICAL_SEMANTIC_GAP" in forensic_spec
+    assert "LIVE_SUBMIT_ACK_OBSERVED=false" in forensic_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -275,6 +339,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "id: PHASE:section_11_14_live_private_read_only_proven_adjudication" in catalog
     assert "id: PHASE:section_11_14_live_order_plan_observed_adjudication" in catalog
     assert (
+        "id: PHASE:section_11_14_live_submit_ack_contract_and_mutation_boundary_forensic_adjudication"
+        in catalog
+    )
+    assert (
         "id: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1" in catalog
     )
     assert (
@@ -282,7 +350,9 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert "src/governance/policy_critic/rules.py" in catalog
     assert "ATLAS_AUTHORITY=NONE" in catalog
-    start = relations.find("id: REL:r_section_11_14_order_plan_observed_follows_private_read_only")
+    start = relations.find(
+        "id: REL:r_section_11_14_submit_ack_forensic_follows_order_plan_observed"
+    )
     assert start >= 0
     block = relations[start : start + 1400]
     assert (
@@ -309,6 +379,12 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert HISTORICAL_EVIDENCE.is_dir()
     historical_verified = verify_manifest_v1(HISTORICAL_EVIDENCE)
     assert int(historical_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
+    assert ORDER_PLAN_EVIDENCE.is_dir()
+    order_plan_verified = verify_manifest_v1(ORDER_PLAN_EVIDENCE)
+    assert int(order_plan_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
+    order_plan_summary = (ORDER_PLAN_EVIDENCE / "SUMMARY.json").read_text(encoding="utf-8")
+    assert '"LIVE_ORDER_PLAN_OBSERVED": true' in order_plan_summary
+    assert '"LIVE_SUBMIT_ACK_OBSERVED": false' in order_plan_summary
     assert EVIDENCE.is_dir()
     current_verified = verify_manifest_v1(EVIDENCE)
     assert int(current_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
@@ -318,6 +394,8 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert '"LIVE_ORDER_PLAN_OBSERVED": true' in current_summary
     assert '"LIVE_SUBMIT_ACK_OBSERVED": false' in current_summary
     assert '"POST_USED": false' in current_summary
-    assert (EVIDENCE / "ORDER_PLAN.sanitized.json").is_file()
-    assert (EVIDENCE / "GATE_STATE.json").is_file()
-    assert (EVIDENCE / "PREFLIGHT.json").is_file()
+    assert '"CASE_ADJUDICATION": "CASE_C_CANONICAL_SEMANTIC_GAP"' in current_summary
+    assert (EVIDENCE / "SUBMIT_ACK_ADJUDICATION.json").is_file()
+    assert (EVIDENCE / "EXACT_MUTATION_CONTRACT.json").is_file()
+    assert (EVIDENCE / "SUBMIT_ACK_FAILURE_MATRIX.json").is_file()
+    assert (EVIDENCE / "POST_SUBMIT_RECON.json").is_file()
