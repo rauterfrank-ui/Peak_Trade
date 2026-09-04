@@ -21,7 +21,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.submit_gates_v1 imp
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     CANARY_SUBMIT_TRANSPORT_PATH,
     LIVE_EXECUTION_CODE_EXISTS,
-    LIVE_PRIVATE_READ_ONLY_PROVEN,
     SP01_PATH,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
@@ -169,8 +168,6 @@ def adjudicate_live_execution_path_reachable_v1(
         constituent_values=values,
         source_kind=source_kind,
     )
-    if result["claim_value"] is True and LIVE_PRIVATE_READ_ONLY_PROVEN is True:
-        raise Section1114OfflineSurfaceError("PATH_REACHABLE_PROMOTED_PRIVATE_READ_ONLY_PROVEN")
     if get_ev.get("LIVE_PRIVATE_READ_ONLY_PROVEN") is True:
         raise Section1114OfflineSurfaceError("GET_EVIDENCE_PROMOTED_LIVE_PRIVATE_READ_ONLY_PROVEN")
     if get_ev.get("POST_USED") is True:

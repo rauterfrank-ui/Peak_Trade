@@ -15,6 +15,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_EXECUTION_CODE_EXISTS,
     LIVE_EXECUTION_CODE_EXISTS_CANONICAL_DEFINITION,
     LIVE_EXECUTION_CODE_EXISTS_DOES_NOT_IMPLY_PATH_REACHABLE,
+    LIVE_PRIVATE_READ_ONLY_PROVEN_CANONICAL_DEFINITION,
     SECTION_4_9_ANCHOR,
     SP01_PATH,
 )
@@ -169,12 +170,20 @@ def adjudicate_static_fields_v1(
     repo_root: Path,
     credential_presence: Mapping[str, Any] | None = None,
     private_get_evidence: Mapping[str, Any] | None = None,
+    private_read_only_evidence: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
+    from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.private_read_only_adjudication_v1 import (
+        adjudicate_live_private_read_only_proven_v1,
+    )
+
     code_exists = adjudicate_live_execution_code_exists_v1(repo_root=repo_root)
     path_reachable = adjudicate_live_execution_path_reachable_v1(
         repo_root=repo_root,
         credential_presence=credential_presence,
         private_get_evidence=private_get_evidence,
+    )
+    private_read_only = adjudicate_live_private_read_only_proven_v1(
+        private_read_only_evidence=private_read_only_evidence,
     )
     if (
         bool(path_reachable["adjudicated_value"]) is True
@@ -183,9 +192,42 @@ def adjudicate_static_fields_v1(
         raise RuntimeError("PATH_REACHABLE_WITHOUT_CODE_EXISTS")
     if bool(path_reachable["adjudicated_value"]) is True and private_get_evidence is None:
         raise RuntimeError("PATH_REACHABLE_TRUE_WITHOUT_FRESH_GET_EVIDENCE")
+    if (
+        bool(private_read_only["adjudicated_value"]) is True
+        and bool(path_reachable["adjudicated_value"]) is not True
+    ):
+        raise RuntimeError("PRIVATE_READ_ONLY_WITHOUT_PATH_REACHABLE")
+    private_read_only_record = _record(
+        payload={
+            "canonical_definition": LIVE_PRIVATE_READ_ONLY_PROVEN_CANONICAL_DEFINITION,
+            "observed_repo_fact": (
+                f"CONFIG_OK={str(bool((private_read_only_evidence or {}).get('CURRENT_PRIVATE_GET_CONFIG_HTTP_200_OKX_0'))).lower()};"
+                f"BALANCE_OK={str(bool((private_read_only_evidence or {}).get('CURRENT_PRIVATE_GET_BALANCE_HTTP_200_OKX_0'))).lower()};"
+                f"POST_USED={str(bool((private_read_only_evidence or {}).get('POST_USED'))).lower()};"
+                f"CONJUNCTION={private_read_only['reason']}"
+            ),
+            "admissibility_rule": private_read_only["admissibility_predicate"],
+            "evidence_paths": [
+                CANONICAL_RUNBOOK_PATH,
+                "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/private_read_only_predicate_v1.py",
+            ],
+            "contradiction_check": (
+                "NO_CONTRADICTION. Single reachability GET is not this field. "
+                "§11.13.2 historical proof is not this field. "
+                "LIVE_ORDER_PLAN_OBSERVED remains false."
+            ),
+            "adjudicated_value": bool(private_read_only["adjudicated_value"] is True),
+            "reason": private_read_only["reason"],
+            "conjunction": private_read_only["conjunction"],
+            "constituent_values": private_read_only["constituent_values"],
+            "LIVE_ORDER_PLAN_OBSERVED": False,
+        }
+    )
     return {
         "LIVE_EXECUTION_CODE_EXISTS": code_exists,
         "LIVE_EXECUTION_PATH_REACHABLE": path_reachable,
+        "LIVE_PRIVATE_READ_ONLY_PROVEN": private_read_only_record,
         "LIVE_EXECUTION_CODE_EXISTS_VALUE": bool(code_exists["adjudicated_value"]),
         "LIVE_EXECUTION_PATH_REACHABLE_VALUE": bool(path_reachable["adjudicated_value"]),
+        "LIVE_PRIVATE_READ_ONLY_PROVEN_VALUE": bool(private_read_only["adjudicated_value"]),
     }

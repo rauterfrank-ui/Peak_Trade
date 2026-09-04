@@ -438,3 +438,18 @@ relations:
       Conditional private GET only. This is not POST, not submit, and not
       LIVE_PRIVATE_READ_ONLY_PROVEN. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_section_11_14_private_read_only_follows_path_reachable
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_execution_path_reachable_adjudication
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/private_read_only_predicate_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/private_read_only_adjudication_v1.py
+    notes: >-
+      LIVE_PRIVATE_READ_ONLY_PROVEN adjudication follows PATH_REACHABLE.
+      Conditional private GET config+balance only. This is not POST, not
+      submit, and not LIVE_ORDER_PLAN_OBSERVED. Atlas is not trading
+      authority.
+      ATLAS_AUTHORITY=NONE.

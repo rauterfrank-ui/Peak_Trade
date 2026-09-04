@@ -113,7 +113,7 @@ def test_true_does_not_imply_path_reachable_or_authorization_or_later_fields() -
     assert proof["LIVE_EXECUTION_PATH_REACHABLE_VALUE"] is False
     assert LIVE_EXECUTION_PATH_REACHABLE is True
     assert LIVE_AUTHORIZED is False
-    assert LIVE_PRIVATE_READ_ONLY_PROVEN is False
+    assert LIVE_PRIVATE_READ_ONLY_PROVEN is True
     assert LIVE_ORDER_PLAN_OBSERVED is False
     assert LIVE_SUBMIT_ACK_OBSERVED is False
     assert LIVE_FILL_OBSERVED is False

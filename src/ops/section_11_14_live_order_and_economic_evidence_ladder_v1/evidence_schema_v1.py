@@ -62,14 +62,14 @@ def build_evidence_record_v1(
         raise Section1114OfflineSurfaceError(f"UNKNOWN_LADDER_STAGE:{ladder_stage}")
     refuse_forbidden_live_source_v1(field_name=ladder_stage, source_kind=source_kind)
     if claim_value is True:
-        allowed_true = {"LIVE_EXECUTION_CODE_EXISTS", "LIVE_EXECUTION_PATH_REACHABLE"}
+        allowed_true = {
+            "LIVE_EXECUTION_CODE_EXISTS",
+            "LIVE_EXECUTION_PATH_REACHABLE",
+            "LIVE_PRIVATE_READ_ONLY_PROVEN",
+        }
         if ladder_stage not in allowed_true:
             raise Section1114OfflineSurfaceError(
                 f"LIVE_FIELD_TRUE_FORBIDDEN_IN_EVIDENCE_RECORD:{claim_name}"
-            )
-        if ladder_stage == "LIVE_PRIVATE_READ_ONLY_PROVEN":
-            raise Section1114OfflineSurfaceError(
-                "LIVE_PRIVATE_READ_ONLY_PROVEN_PROMOTED_IN_EVIDENCE_RECORD"
             )
         kind = str(source_kind or "").strip().upper()
         if kind not in ADMISSIBLE_OFFLINE_SOURCE_KINDS:
@@ -82,6 +82,13 @@ def build_evidence_record_v1(
         ):
             raise Section1114OfflineSurfaceError(
                 f"PATH_REACHABLE_TRUE_SOURCE_NOT_ADMISSIBLE:{kind}"
+            )
+        if (
+            ladder_stage == "LIVE_PRIVATE_READ_ONLY_PROVEN"
+            and kind != "GOVERNED_CURRENT_PRIVATE_GET"
+        ):
+            raise Section1114OfflineSurfaceError(
+                f"PRIVATE_READ_ONLY_TRUE_SOURCE_NOT_ADMISSIBLE:{kind}"
             )
     payload: dict[str, Any] = {
         "schema_version": EVIDENCE_RECORD_SCHEMA_VERSION,

@@ -119,12 +119,11 @@ def build_authority_boundary_map_v1() -> dict[str, Any]:
         "schema_version": "section_11_14_authority_boundary_map.v1",
         "status": "BOUND",
         "this_go_may": [
-            "BIND_PATH_REACHABLE_PREDICATE",
-            "PROVE_STATIC_CONSTITUENTS",
-            "INSPECT_REPO_DEFAULTS_WITHOUT_MUTATION",
-            "CONDITIONAL_PRIVATE_GET",
+            "BIND_PRIVATE_READ_ONLY_PREDICATE",
+            "CONDITIONAL_PRIVATE_GET_CONFIG_AND_BALANCE",
             "PERSIST_SANITIZED_GET_EVIDENCE",
-            "SET_LIVE_EXECUTION_PATH_REACHABLE_IF_CONJUNCTION_PROVEN",
+            "SET_LIVE_PRIVATE_READ_ONLY_PROVEN_IF_CONJUNCTION_PROVEN",
+            "CENSUS_LATER_LADDER_FIELDS",
         ],
         "this_go_must_not": [
             "POST",
@@ -137,7 +136,7 @@ def build_authority_boundary_map_v1() -> dict[str, Any]:
             "LIVE_ARMED_MUTATION",
             "SUBMIT_UNLOCKED_MUTATION",
             "CANARY_AUTHORIZED_MUTATION",
-            "PROMOTE_LIVE_PRIVATE_READ_ONLY_PROVEN",
+            "PROMOTE_LIVE_ORDER_PLAN_OBSERVED",
             "PROMOTE_LATER_LADDER_FIELDS",
             "MARK_SECTION_11_14_COMPLETE",
         ],
@@ -155,7 +154,7 @@ def build_authority_boundary_map_v1() -> dict[str, Any]:
             {
                 "name": "PRIVATE_READ_ONLY_PROVEN_BOUNDARY",
                 "role": ROLE_REQUIRED_ONLY_FOR_LATER_LADDER_STAGE,
-                "description": "§11.14 LIVE_PRIVATE_READ_ONLY_PROVEN requires a later Owner-GO.",
+                "description": "§11.14 LIVE_ORDER_PLAN_OBSERVED requires the gated submit path.",
             },
         ],
     }

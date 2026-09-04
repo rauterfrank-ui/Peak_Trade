@@ -1,0 +1,794 @@
+{
+  "AUTHORITY": "NONE",
+  "DOCUMENT_CLASS": "SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION_V1",
+  "EARLIEST_UNRESOLVED_DEPENDENCY": "LIVE_ORDER_PLAN_OBSERVED",
+  "EVIDENCE_RECORDS": [
+    {
+      "adjudication_status": "TRUE_STATIC_INTEGRATED_PRODUCTIVE_PATH",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "claim_name": "LIVE_EXECUTION_CODE_EXISTS",
+      "claim_value": true,
+      "content_hash": "c21cad8d2cbacf1e0aec3ca7cdc4251b933166e2a5737a3cee2f3d33de2a0cff",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "ladder_stage": "LIVE_EXECUTION_CODE_EXISTS",
+      "observed_at": null,
+      "persisted_at": "20260904T133200Z",
+      "predecessor_claims": [
+        "11.14.LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_MAXIMUM_SAFE_LEVERAGE_CLOSE_ALL_NON_MUTATING_DEPENDENCIES_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "REPOSITORY_IMPLEMENTATION",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "TRUE_PRE_SUBMIT_PATH_REACHABLE",
+      "authority_scope": "R2_CONDITIONAL_PRIVATE_GET",
+      "canonical_base_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "claim_name": "LIVE_EXECUTION_PATH_REACHABLE",
+      "claim_value": true,
+      "content_hash": "4f6545dc5f8c215509c512486e152ce970d831ccb981f0fa8e9613d1ec84c6ee",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "ladder_stage": "LIVE_EXECUTION_PATH_REACHABLE",
+      "observed_at": "2026-09-04T13:41:52Z",
+      "persisted_at": "20260904T133200Z",
+      "predecessor_claims": [
+        "11.14.LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_MAXIMUM_SAFE_LEVERAGE_CLOSE_ALL_NON_MUTATING_DEPENDENCIES_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_CURRENT_PRIVATE_GET",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "TRUE_CURRENT_PRIVATE_READ_ONLY",
+      "authority_scope": "R2_CONDITIONAL_PRIVATE_GET",
+      "canonical_base_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "claim_name": "LIVE_PRIVATE_READ_ONLY_PROVEN",
+      "claim_value": true,
+      "content_hash": "199db1d6c33fb365f73a58564600ebaa2a3207af3dd932127537f13086d65449",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "ladder_stage": "LIVE_PRIVATE_READ_ONLY_PROVEN",
+      "observed_at": "2026-09-04T13:41:52Z",
+      "persisted_at": "20260904T133200Z",
+      "predecessor_claims": [
+        "11.14.LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_MAXIMUM_SAFE_LEVERAGE_CLOSE_ALL_NON_MUTATING_DEPENDENCIES_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_CURRENT_PRIVATE_GET",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "claim_name": "LIVE_ORDER_PLAN_OBSERVED",
+      "claim_value": false,
+      "content_hash": "72500479d7a006f4dd2c594dd22bda76141322fcd9ce96687142d6f09d386da5",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "ladder_stage": "LIVE_ORDER_PLAN_OBSERVED",
+      "observed_at": null,
+      "persisted_at": "20260904T133200Z",
+      "predecessor_claims": [
+        "11.14.LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_MAXIMUM_SAFE_LEVERAGE_CLOSE_ALL_NON_MUTATING_DEPENDENCIES_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "claim_name": "LIVE_SUBMIT_ACK_OBSERVED",
+      "claim_value": false,
+      "content_hash": "021bd6ec1cf9197a3b5191fab23657acb7fd1b61baff05188563648cb5d796a7",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "ladder_stage": "LIVE_SUBMIT_ACK_OBSERVED",
+      "observed_at": null,
+      "persisted_at": "20260904T133200Z",
+      "predecessor_claims": [
+        "11.14.LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_MAXIMUM_SAFE_LEVERAGE_CLOSE_ALL_NON_MUTATING_DEPENDENCIES_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "claim_name": "LIVE_FILL_OBSERVED",
+      "claim_value": false,
+      "content_hash": "9d57bd065473119e5fb483aa65ff2e7fe820db7b26c3a58d8800de54c3c24a47",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "ladder_stage": "LIVE_FILL_OBSERVED",
+      "observed_at": null,
+      "persisted_at": "20260904T133200Z",
+      "predecessor_claims": [
+        "11.14.LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_MAXIMUM_SAFE_LEVERAGE_CLOSE_ALL_NON_MUTATING_DEPENDENCIES_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "claim_name": "LIVE_FEE_OBSERVED",
+      "claim_value": false,
+      "content_hash": "85155f010a36f5ac1fa2507185d4a09ce1cb9f8fc31be1fb4482ffb5f7a71bbb",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "ladder_stage": "LIVE_FEE_OBSERVED",
+      "observed_at": null,
+      "persisted_at": "20260904T133200Z",
+      "predecessor_claims": [
+        "11.14.LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_MAXIMUM_SAFE_LEVERAGE_CLOSE_ALL_NON_MUTATING_DEPENDENCIES_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "claim_name": "LIVE_POSITION_RECONCILED",
+      "claim_value": false,
+      "content_hash": "7258e1407c05fa310b1e49b36182bb5a5317b4caff0fa173ebd83c55d78b4060",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "ladder_stage": "LIVE_POSITION_RECONCILED",
+      "observed_at": null,
+      "persisted_at": "20260904T133200Z",
+      "predecessor_claims": [
+        "11.14.LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_MAXIMUM_SAFE_LEVERAGE_CLOSE_ALL_NON_MUTATING_DEPENDENCIES_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "claim_name": "LIVE_ACCOUNTING_RECONSTRUCTED",
+      "claim_value": false,
+      "content_hash": "647d651119dfda1b432fdd777e080eea6dbf4631f79886a961ad5faf5f2ff06b",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "ladder_stage": "LIVE_ACCOUNTING_RECONSTRUCTED",
+      "observed_at": null,
+      "persisted_at": "20260904T133200Z",
+      "predecessor_claims": [
+        "11.14.LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_MAXIMUM_SAFE_LEVERAGE_CLOSE_ALL_NON_MUTATING_DEPENDENCIES_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "claim_name": "LIVE_RESTART_RECONSTRUCTED",
+      "claim_value": false,
+      "content_hash": "825e76258c702982278abda044c25b31d1f9088698ec7cb26147700607ea1e85",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "ladder_stage": "LIVE_RESTART_RECONSTRUCTED",
+      "observed_at": null,
+      "persisted_at": "20260904T133200Z",
+      "predecessor_claims": [
+        "11.14.LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_MAXIMUM_SAFE_LEVERAGE_CLOSE_ALL_NON_MUTATING_DEPENDENCIES_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "claim_name": "LIVE_AUTONOMOUS_RECOVERY_OBSERVED",
+      "claim_value": false,
+      "content_hash": "8c93d5f58fc2287ac4b7a11f2a3970c14d22ff5636652240004fe24e79fe441e",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "ladder_stage": "LIVE_AUTONOMOUS_RECOVERY_OBSERVED",
+      "observed_at": null,
+      "persisted_at": "20260904T133200Z",
+      "predecessor_claims": [
+        "11.14.LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_MAXIMUM_SAFE_LEVERAGE_CLOSE_ALL_NON_MUTATING_DEPENDENCIES_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    },
+    {
+      "adjudication_status": "FALSE_FAIL_CLOSED",
+      "authority_scope": "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+      "canonical_base_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "claim_name": "LIVE_END_TO_END_EVIDENCE_PROVEN",
+      "claim_value": false,
+      "content_hash": "b3a496879d7c8197adf8942f9ee204ebbdc2c38e43d003bb1ddbe51717542e67",
+      "contradiction_status": "NONE",
+      "evidence_class": "3_ALREADY_ADJUDICATED_CONCLUSION",
+      "implementation_sha": "6930807523ea7af3aff8cc653d335d5719d38d25",
+      "ladder_stage": "LIVE_END_TO_END_EVIDENCE_PROVEN",
+      "observed_at": null,
+      "persisted_at": "20260904T133200Z",
+      "predecessor_claims": [
+        "11.14.LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION"
+      ],
+      "provenance": "PEAK_TRADE_OWNER_GO_SECTION_11_14_MAXIMUM_SAFE_LEVERAGE_CLOSE_ALL_NON_MUTATING_DEPENDENCIES_V1",
+      "schema_version": "section_11_14_evidence_record.v1",
+      "source_kind": "GOVERNED_OFFLINE_CONTRACT",
+      "source_path_or_runtime_source": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+    }
+  ],
+  "LADDER_VALUES": {
+    "LIVE_ACCOUNTING_RECONSTRUCTED": false,
+    "LIVE_AUTONOMOUS_RECOVERY_OBSERVED": false,
+    "LIVE_END_TO_END_EVIDENCE_PROVEN": false,
+    "LIVE_EXECUTION_CODE_EXISTS": true,
+    "LIVE_EXECUTION_PATH_REACHABLE": true,
+    "LIVE_FEE_OBSERVED": false,
+    "LIVE_FILL_OBSERVED": false,
+    "LIVE_ORDER_PLAN_OBSERVED": false,
+    "LIVE_POSITION_RECONCILED": false,
+    "LIVE_PRIVATE_READ_ONLY_PROVEN": true,
+    "LIVE_RESTART_RECONSTRUCTED": false,
+    "LIVE_SUBMIT_ACK_OBSERVED": false
+  },
+  "LIVE_ORDER_PLAN_OBSERVED": false,
+  "LIVE_PRIVATE_READ_ONLY_PROVEN": true,
+  "NEXT_AUTHORITY_BOUNDARY": "LIVE_ORDER_PLAN_OBSERVED",
+  "NEXT_OWNER_GO_REQUIRED": "OWNER_GO_FOR_EXACT_LIVE_MUTATION",
+  "OWNER_GO": "PEAK_TRADE_OWNER_GO_SECTION_11_14_MAXIMUM_SAFE_LEVERAGE_CLOSE_ALL_NON_MUTATING_DEPENDENCIES_V1",
+  "SECTION_11_14_AUTHORIZED": false,
+  "SECTION_11_14_COMPLETE": false,
+  "SECTION_11_14_OFFLINE_SURFACE_BOUND": true,
+  "STATIC_FIELDS": {
+    "LIVE_EXECUTION_CODE_EXISTS": {
+      "adjudicated_value": true,
+      "admissibility_predicate": {
+        "admissibility_predicate": "LIVE_EXECUTION_CODE_EXISTS is true iff current origin/main contains a complete integrated static call graph from the Live canary decision/gate boundary through order-plan consumption, venue-native payload and client-order-id construction, fail-closed submit gates, the Live HTTP port, and UrllibLiveCanaryTransportV1.send. File presence, historical code, fixture/testnet/sim/paper/shadow sources, Cap 11.7-11.11 contracts-only constants, and \u00a74.9 CURRENTLY_REACHABLE are each insufficient. True does not imply LIVE_EXECUTION_PATH_REACHABLE, authorization, credentials, or any later ladder field.",
+        "admissible": true,
+        "canonical_definition": "LIVE_EXECUTION_CODE_EXISTS is the first \u00a711.14 Live proof-claim field. It is true iff current origin/main contains a complete, integrated, non-historical, non-fixture, non-testnet, non-simulated static call graph from the canonical Live canary execution decision/gate boundary through order-plan consumption, venue-native payload construction including client-order-id, fail-closed submit gates, the Live HTTP execution port, and UrllibLiveCanaryTransportV1.send. File presence alone, historical implementation, Cap 11.7-11.11 contracts-only constants, and \u00a74.9 CURRENTLY_REACHABLE are each insufficient. True does not imply LIVE_EXECUTION_PATH_REACHABLE, authorization, credential availability, runtime observation, or any later ladder field.",
+        "canonical_location": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md ## 11.14 Live order and economic evidence ladder",
+        "claim_value": true,
+        "conjuncts": {
+          "AUTHORIZATION_NOT_INFERRED": true,
+          "CANONICAL_DEFINITION_BOUND": true,
+          "FILE_PRESENCE_ALONE_REJECTED": true,
+          "PATH_REACHABLE_NOT_INFERRED": true,
+          "REQUIRED_NODES_INTEGRATED": true,
+          "REQUIRED_NODES_NOT_DISALLOWED_CLASS": true,
+          "SOURCE_KIND_ADMISSIBLE": true,
+          "SOURCE_KIND_NOT_FIXTURE_TESTNET_SIM": true,
+          "STATIC_EDGE_CHAIN_COMPLETE": true
+        },
+        "disallowed_required_nodes": [],
+        "graph_status": "COMPLETE",
+        "missing_required_nodes": [],
+        "source_kind": "REPOSITORY_IMPLEMENTATION"
+      },
+      "admissibility_rule": "LIVE_EXECUTION_CODE_EXISTS is true iff current origin/main contains a complete integrated static call graph from the Live canary decision/gate boundary through order-plan consumption, venue-native payload and client-order-id construction, fail-closed submit gates, the Live HTTP port, and UrllibLiveCanaryTransportV1.send. File presence, historical code, fixture/testnet/sim/paper/shadow sources, Cap 11.7-11.11 contracts-only constants, and \u00a74.9 CURRENTLY_REACHABLE are each insufficient. True does not imply LIVE_EXECUTION_PATH_REACHABLE, authorization, credentials, or any later ladder field.",
+      "canonical_definition": "LIVE_EXECUTION_CODE_EXISTS is the first \u00a711.14 Live proof-claim field. It is true iff current origin/main contains a complete, integrated, non-historical, non-fixture, non-testnet, non-simulated static call graph from the canonical Live canary execution decision/gate boundary through order-plan consumption, venue-native payload construction including client-order-id, fail-closed submit gates, the Live HTTP execution port, and UrllibLiveCanaryTransportV1.send. File presence alone, historical implementation, Cap 11.7-11.11 contracts-only constants, and \u00a74.9 CURRENTLY_REACHABLE are each insufficient. True does not imply LIVE_EXECUTION_PATH_REACHABLE, authorization, credential availability, runtime observation, or any later ladder field.",
+      "contradiction_check": "NO_CONTRADICTION. Integrated current Live canary path satisfies the bound predicate. File presence remains supporting context only. Cap 11.7-11.11 remain contracts-only false and are not this field's SSOT. PATH_REACHABLE stays false. CODE_PRESENCE_IS_NOT_LIVE_EXECUTION_CODE_EXISTS=true.",
+      "evidence_paths": [
+        "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py",
+        "src/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/execute_v1.py",
+        "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md \u00a74.9.4 SP-01",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "file_presence_alone": {
+        "admissible_as_live_execution_code_exists": false,
+        "all_listed_files_exist": true,
+        "existing_paths": [
+          "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py",
+          "src/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/execute_v1.py",
+          "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py"
+        ],
+        "probe_name": "FILE_PRESENCE_ALONE",
+        "reason": "CODE_PRESENCE_ALONE_INADMISSIBLE"
+      },
+      "observed_repo_fact": "FILE_PRESENCE_ALONE=true;FILE_PRESENCE_ADMISSIBLE=false;STATIC_GRAPH_STATUS=COMPLETE;REQUIRED_NODES_INTEGRATED=true;CHAIN_COMPLETE=true",
+      "reason": "STATIC_INTEGRATED_PRODUCTIVE_PATH_PROVEN;CODE_PRESENCE_ALONE_INADMISSIBLE;PATH_REACHABLE_NOT_INFERRED;AUTHORIZATION_NOT_INFERRED;LATER_LADDER_FIELDS_NOT_PROMOTED;LIVE_EXECUTION_CODE_EXISTS=true",
+      "static_execution_graph": {
+        "STATIC_EDGE_CHAIN": [
+          "DECISION_GATE",
+          "GATE_REFUSAL",
+          "SUBMIT_ORCHESTRATOR",
+          "ORDER_PLAN_CONSUMER",
+          "PAYLOAD_BUILDER",
+          "CLIENT_ORDER_ID",
+          "LIVE_HTTP_PORT",
+          "LIVE_HTTP_TRANSPORT"
+        ],
+        "authorization_inferred": false,
+        "canonical_path": "evaluate_canary_submit_gates_v1 -> refuse_submit_unless_gates_pass_v1 -> run_canary_submit_transport_v1 -> build_minimum_valid_canary_order_plan_v1 -> build_venue_native_order_body_v1 / build_client_order_id -> LiveCanaryHttpClientV1.post_entry_order -> UrllibLiveCanaryTransportV1.send",
+        "chain_complete": true,
+        "classification_summary": {
+          "CLIENT_ORDER_ID": {
+            "classification": "INTEGRATED_COMPONENT",
+            "integrated": true,
+            "required_for_predicate": true
+          },
+          "FAKE_TRANSPORT": {
+            "classification": "FIXTURE_ONLY",
+            "integrated": true,
+            "required_for_predicate": false
+          },
+          "FLATTEN_EXECUTE": {
+            "classification": "INTEGRATED_COMPONENT",
+            "integrated": true,
+            "required_for_predicate": false
+          },
+          "FLATTEN_GATED_SUBMIT": {
+            "classification": "INTEGRATED_COMPONENT",
+            "integrated": true,
+            "required_for_predicate": false
+          },
+          "FORENSIC_RECONCILIATION": {
+            "classification": "INTEGRATED_COMPONENT",
+            "integrated": true,
+            "required_for_predicate": false
+          },
+          "LIFECYCLE_KILL_SWITCH_CONTRACT": {
+            "classification": "IMPLEMENTED_COMPONENT",
+            "integrated": true,
+            "required_for_predicate": false
+          },
+          "RISK_LAYER_KILL_SWITCH": {
+            "classification": "IMPLEMENTED_COMPONENT",
+            "integrated": true,
+            "required_for_predicate": false
+          },
+          "SP01_ACK_EVIDENCE": {
+            "classification": "INTEGRATED_COMPONENT",
+            "integrated": true,
+            "required_for_predicate": true
+          },
+          "SP01_HTTP_PORT": {
+            "classification": "CURRENT_PRODUCTIVE_PATH",
+            "integrated": true,
+            "required_for_predicate": true
+          },
+          "SP01_REQUEST_EVIDENCE": {
+            "classification": "INTEGRATED_COMPONENT",
+            "integrated": true,
+            "required_for_predicate": true
+          },
+          "SP01_URLLIB_TRANSPORT": {
+            "classification": "CURRENT_PRODUCTIVE_PATH",
+            "integrated": true,
+            "required_for_predicate": true
+          },
+          "SP02_ORDER_PLAN": {
+            "classification": "CURRENT_PRODUCTIVE_PATH",
+            "integrated": true,
+            "required_for_predicate": true
+          },
+          "SP02_SUBMIT_GATES_EVALUATE": {
+            "classification": "CURRENT_PRODUCTIVE_PATH",
+            "integrated": true,
+            "required_for_predicate": true
+          },
+          "SP02_SUBMIT_GATES_REFUSE": {
+            "classification": "CURRENT_PRODUCTIVE_PATH",
+            "integrated": true,
+            "required_for_predicate": true
+          },
+          "SP02_SUBMIT_TRANSPORT": {
+            "classification": "CURRENT_PRODUCTIVE_PATH",
+            "integrated": true,
+            "required_for_predicate": true
+          },
+          "SP04_TESTNET_PORT": {
+            "classification": "HISTORICAL_ONLY",
+            "integrated": true,
+            "required_for_predicate": false
+          },
+          "SP10_KRAKEN_LIVE": {
+            "classification": "HISTORICAL_ONLY",
+            "integrated": false,
+            "required_for_predicate": false
+          },
+          "VENUE_NATIVE_PAYLOAD": {
+            "classification": "INTEGRATED_COMPONENT",
+            "integrated": true,
+            "required_for_predicate": true
+          }
+        },
+        "credentials_used": false,
+        "nodes": [
+          {
+            "classification": "CURRENT_PRODUCTIVE_PATH",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "SP02_SUBMIT_GATES_EVALUATE",
+            "notes": "Canonical Live execution decision/gate boundary.",
+            "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_gates_v1.py",
+            "required_for_predicate": true,
+            "role": "DECISION_GATE",
+            "symbol": "evaluate_canary_submit_gates_v1",
+            "symbol_found": true
+          },
+          {
+            "classification": "CURRENT_PRODUCTIVE_PATH",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "SP02_SUBMIT_GATES_REFUSE",
+            "notes": "Fail-closed refusal before transport invocation.",
+            "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_gates_v1.py",
+            "required_for_predicate": true,
+            "role": "GATE_REFUSAL",
+            "symbol": "refuse_submit_unless_gates_pass_v1",
+            "symbol_found": true
+          },
+          {
+            "classification": "CURRENT_PRODUCTIVE_PATH",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "SP02_SUBMIT_TRANSPORT",
+            "notes": "Class-B Live canary orchestrator. Integrates gates, plan, POST.",
+            "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py",
+            "required_for_predicate": true,
+            "role": "SUBMIT_ORCHESTRATOR",
+            "symbol": "run_canary_submit_transport_v1",
+            "symbol_found": true
+          },
+          {
+            "classification": "CURRENT_PRODUCTIVE_PATH",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "SP02_ORDER_PLAN",
+            "notes": "Live canary order-plan builder consumed by the submit orchestrator.",
+            "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/order_plan_v1.py",
+            "required_for_predicate": true,
+            "role": "ORDER_PLAN_CONSUMER",
+            "symbol": "build_minimum_valid_canary_order_plan_v1",
+            "symbol_found": true
+          },
+          {
+            "classification": "INTEGRATED_COMPONENT",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "VENUE_NATIVE_PAYLOAD",
+            "notes": "Canonical REQUEST_BODY_OWNER reused on the Live canary path. Package location is historical Testnet; current Live integration is proven by the order-plan import/call, not by Testnet execution.",
+            "path": "src/ops/section_11_12_8_actual_productive_testnet_campaign_run_start_v1/okx_response_mapper_v1.py",
+            "required_for_predicate": true,
+            "role": "PAYLOAD_BUILDER",
+            "symbol": "build_venue_native_order_body_v1",
+            "symbol_found": true
+          },
+          {
+            "classification": "INTEGRATED_COMPONENT",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "CLIENT_ORDER_ID",
+            "notes": "Idempotency / clOrdId machinery consumed by serialize_canary_clordid_v1.",
+            "path": "src/ops/okx_europe_adapter_lifecycle_contract_v0.py",
+            "required_for_predicate": true,
+            "role": "CLIENT_ORDER_ID",
+            "symbol": "build_client_order_id",
+            "symbol_found": true
+          },
+          {
+            "classification": "CURRENT_PRODUCTIVE_PATH",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "SP01_HTTP_PORT",
+            "notes": "\u00a74.9 SP-01 Live canary HTTP port. Class A.",
+            "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py",
+            "required_for_predicate": true,
+            "role": "LIVE_HTTP_PORT",
+            "symbol": "LiveCanaryHttpClientV1",
+            "symbol_found": true
+          },
+          {
+            "classification": "CURRENT_PRODUCTIVE_PATH",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "SP01_URLLIB_TRANSPORT",
+            "notes": "Concrete urllib Live POST invocation surface.",
+            "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py",
+            "required_for_predicate": true,
+            "role": "LIVE_HTTP_TRANSPORT",
+            "symbol": "UrllibLiveCanaryTransportV1",
+            "symbol_found": true
+          },
+          {
+            "classification": "INTEGRATED_COMPONENT",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "SP01_ACK_EVIDENCE",
+            "notes": "Response/ack extraction used by the submit orchestrator.",
+            "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py",
+            "required_for_predicate": true,
+            "role": "RESPONSE_ACK_HANDLING",
+            "symbol": "extract_canary_http_response_evidence_v1",
+            "symbol_found": true
+          },
+          {
+            "classification": "INTEGRATED_COMPONENT",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "SP01_REQUEST_EVIDENCE",
+            "notes": "Request provenance extraction. Not Live observation.",
+            "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py",
+            "required_for_predicate": true,
+            "role": "EVIDENCE_PROVENANCE",
+            "symbol": "extract_canary_venue_native_request_evidence_v1",
+            "symbol_found": true
+          },
+          {
+            "classification": "INTEGRATED_COMPONENT",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "FLATTEN_EXECUTE",
+            "notes": "Inventoried Live flatten execution. Separate mutation path.",
+            "path": "src/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/execute_v1.py",
+            "required_for_predicate": false,
+            "role": "FLATTEN_EXECUTION",
+            "symbol": "execute_productive_flatten_post_and_reconciliation_v1",
+            "symbol_found": true
+          },
+          {
+            "classification": "INTEGRATED_COMPONENT",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "FLATTEN_GATED_SUBMIT",
+            "notes": "Inventoried flatten submit boundary.",
+            "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_gated_submit_v1.py",
+            "required_for_predicate": false,
+            "role": "FLATTEN_EXECUTION",
+            "symbol": "submit_productive_flatten_v1",
+            "symbol_found": true
+          },
+          {
+            "classification": "INTEGRATED_COMPONENT",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "FORENSIC_RECONCILIATION",
+            "notes": "Inventoried reconciliation hook. Not a Live observed field.",
+            "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/forensic_reconciliation_v1.py",
+            "required_for_predicate": false,
+            "role": "RECONCILIATION_HOOK",
+            "symbol": "classify_from_sealed_evidence_roots_v1",
+            "symbol_found": true
+          },
+          {
+            "classification": "IMPLEMENTED_COMPONENT",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "LIFECYCLE_KILL_SWITCH_CONTRACT",
+            "notes": "Kill-switch interaction is contract-bound on the canary lifecycle. Not a static callee of run_canary_submit_transport_v1.",
+            "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/lifecycle_v1.py",
+            "required_for_predicate": false,
+            "role": "KILL_SWITCH_INTEGRATION",
+            "symbol": "build_lifecycle_and_closeout_contract_v1",
+            "symbol_found": true
+          },
+          {
+            "classification": "IMPLEMENTED_COMPONENT",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "RISK_LAYER_KILL_SWITCH",
+            "notes": "Risk-layer kill switch implementation. Not the \u00a711.14 Live submit chain.",
+            "path": "src/risk_layer/kill_switch/core.py",
+            "required_for_predicate": false,
+            "role": "KILL_SWITCH_INTEGRATION",
+            "symbol": "KillSwitch",
+            "symbol_found": true
+          },
+          {
+            "classification": "FIXTURE_ONLY",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "FAKE_TRANSPORT",
+            "notes": "Inadmissible as Live proof. Must not satisfy the predicate.",
+            "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py",
+            "required_for_predicate": false,
+            "role": "FIXTURE_TRANSPORT",
+            "symbol": "RecordingFakeCanaryTransportV1",
+            "symbol_found": true
+          },
+          {
+            "classification": "HISTORICAL_ONLY",
+            "file_exists": true,
+            "integrated": true,
+            "missing_tokens": [],
+            "node_id": "SP04_TESTNET_PORT",
+            "notes": "\u00a74.9 SP-04 Testnet. Inadmissible as Live execution code.",
+            "path": "src/ops/section_11_12_8_actual_productive_testnet_campaign_run_start_v1/productive_execution_port_v1.py",
+            "required_for_predicate": false,
+            "role": "TESTNET_EXECUTION_PORT",
+            "symbol": "ProductiveTestnetExecutionPortV1",
+            "symbol_found": true
+          },
+          {
+            "classification": "HISTORICAL_ONLY",
+            "file_exists": false,
+            "integrated": false,
+            "missing_tokens": [
+              "place_order"
+            ],
+            "node_id": "SP10_KRAKEN_LIVE",
+            "notes": "\u00a74.9 SP-10 historical bounded-pilot. Not the canonical OKX EEA Live path.",
+            "path": "src/exchange/kraken_live.py",
+            "required_for_predicate": false,
+            "role": "HISTORICAL_LIVE_TRANSPORT",
+            "symbol": "KrakenLiveClient",
+            "symbol_found": false
+          }
+        ],
+        "path_reachable_inferred": false,
+        "required_nodes_integrated": true,
+        "runtime_invoked": false,
+        "schema_version": "section_11_14_static_execution_graph.v1"
+      }
+    },
+    "LIVE_EXECUTION_CODE_EXISTS_VALUE": true,
+    "LIVE_EXECUTION_PATH_REACHABLE": {
+      "LIVE_PRIVATE_READ_ONLY_PROVEN": false,
+      "adjudicated_value": true,
+      "admissibility_rule": "LIVE_EXECUTION_PATH_REACHABLE is true iff every PART_OF_REACHABILITY constituent is proven true on current origin/main using the lowest authority admissible evidence. The field means the current productive Live canary path can be traversed to the pre-submit boundary: the static graph is complete and integrated, the entrypoint is selectable, fail-closed gates are evaluable, the urllib Live transport is constructible, required SecretRef credential material is present, the production EEA host is connectable, and a current authenticated private GET demonstrates functional authentication and account/venue read access, with no static blocker preventing that pre-submit boundary. Submit-authorization gates (LIVE_ENABLED, LIVE_ARMED, SUBMIT_UNLOCKED, CANARY_AUTHORIZED, LIVE_AUTHORIZED, OWNER execute-permit, SECTION_11_14_AUTHORIZED) are not constituents. \u00a74.9 CURRENTLY_REACHABLE, LIVE_EXECUTION_CODE_EXISTS, historical GET success, credential presence alone, configured defaults, and fixture/testnet/sim sources are each insufficient. True does not promote LIVE_PRIVATE_READ_ONLY_PROVEN or any later ladder field, and does not authorize POST or submit.",
+      "canonical_definition": "LIVE_EXECUTION_PATH_REACHABLE is the second \u00a711.14 Live proof-claim field. It is true iff every bound PART_OF_REACHABILITY constituent is proven: the current productive Live canary static graph is complete and the entrypoint is integrated and selectable; fail-closed submit gates are evaluable; UrllibLiveCanaryTransportV1 is constructible; required SecretRef credential material is present without value disclosure; the production EEA host is currently connectable; a current authenticated private GET proves functional authentication and account/venue read access; and no static blocker prevents reaching the pre-submit boundary (refuse_submit_unless_gates_pass_v1). Submit-authorization gates (LIVE_ENABLED, LIVE_ARMED, SUBMIT_UNLOCKED, CANARY_AUTHORIZED, LIVE_AUTHORIZED, Owner execute-permit, SECTION_11_14_AUTHORIZED) are not constituents. File presence, LIVE_EXECUTION_CODE_EXISTS, \u00a74.9 CURRENTLY_REACHABLE, historical GET success, credential presence alone, configured defaults, and fixture/testnet/sim sources are each insufficient. True does not promote LIVE_PRIVATE_READ_ONLY_PROVEN, LIVE_ORDER_PLAN_OBSERVED, any later ladder field, submit authorization, or POST.",
+      "conjunction": {
+        "adjudication": "TRUE_PRE_SUBMIT_PATH_REACHABLE",
+        "admissibility_predicate": "LIVE_EXECUTION_PATH_REACHABLE is true iff every PART_OF_REACHABILITY constituent is proven true on current origin/main using the lowest authority admissible evidence. The field means the current productive Live canary path can be traversed to the pre-submit boundary: the static graph is complete and integrated, the entrypoint is selectable, fail-closed gates are evaluable, the urllib Live transport is constructible, required SecretRef credential material is present, the production EEA host is connectable, and a current authenticated private GET demonstrates functional authentication and account/venue read access, with no static blocker preventing that pre-submit boundary. Submit-authorization gates (LIVE_ENABLED, LIVE_ARMED, SUBMIT_UNLOCKED, CANARY_AUTHORIZED, LIVE_AUTHORIZED, OWNER execute-permit, SECTION_11_14_AUTHORIZED) are not constituents. \u00a74.9 CURRENTLY_REACHABLE, LIVE_EXECUTION_CODE_EXISTS, historical GET success, credential presence alone, configured defaults, and fixture/testnet/sim sources are each insufficient. True does not promote LIVE_PRIVATE_READ_ONLY_PROVEN or any later ladder field, and does not authorize POST or submit.",
+        "canonical_definition": "LIVE_EXECUTION_PATH_REACHABLE is the second \u00a711.14 Live proof-claim field. It is true iff every bound PART_OF_REACHABILITY constituent is proven: the current productive Live canary static graph is complete and the entrypoint is integrated and selectable; fail-closed submit gates are evaluable; UrllibLiveCanaryTransportV1 is constructible; required SecretRef credential material is present without value disclosure; the production EEA host is currently connectable; a current authenticated private GET proves functional authentication and account/venue read access; and no static blocker prevents reaching the pre-submit boundary (refuse_submit_unless_gates_pass_v1). Submit-authorization gates (LIVE_ENABLED, LIVE_ARMED, SUBMIT_UNLOCKED, CANARY_AUTHORIZED, LIVE_AUTHORIZED, Owner execute-permit, SECTION_11_14_AUTHORIZED) are not constituents. File presence, LIVE_EXECUTION_CODE_EXISTS, \u00a74.9 CURRENTLY_REACHABLE, historical GET success, credential presence alone, configured defaults, and fixture/testnet/sim sources are each insufficient. True does not promote LIVE_PRIVATE_READ_ONLY_PROVEN, LIVE_ORDER_PLAN_OBSERVED, any later ladder field, submit authorization, or POST.",
+        "claim_value": true,
+        "constituents": {
+          "AUTHENTICATION_PATH_FUNCTIONAL": true,
+          "CURRENT_ACCOUNT_OR_VENUE_READ_ACCESS_FUNCTIONAL": true,
+          "CURRENT_RUNTIME_PATH_SELECTABLE": true,
+          "ENTRYPOINT_INTEGRATED": true,
+          "NO_STATIC_BLOCKER_PREVENTS_REACHING_PRE_SUBMIT_BOUNDARY": true,
+          "REQUIRED_CREDENTIAL_MATERIAL_AVAILABLE": true,
+          "REQUIRED_FAIL_CLOSED_GATES_EVALUABLE": true,
+          "STATIC_EXECUTION_GRAPH_COMPLETE": true,
+          "TARGET_HOST_RESOLVABLE_OR_CONNECTABLE": true,
+          "TRANSPORT_CONSTRUCTIBLE": true
+        },
+        "false_required": [],
+        "later_ladder_fields_promoted": false,
+        "live_private_read_only_proven_promoted": false,
+        "reason": "FULL_CONJUNCTION_PROVEN",
+        "source_kind": "REPOSITORY_IMPLEMENTATION",
+        "submit_authorization_inferred": false,
+        "unobserved_required": []
+      },
+      "constituent_values": {
+        "AUTHENTICATION_PATH_FUNCTIONAL": true,
+        "CURRENT_ACCOUNT_OR_VENUE_READ_ACCESS_FUNCTIONAL": true,
+        "CURRENT_RUNTIME_PATH_SELECTABLE": true,
+        "ENTRYPOINT_INTEGRATED": true,
+        "NO_STATIC_BLOCKER_PREVENTS_REACHING_PRE_SUBMIT_BOUNDARY": true,
+        "REQUIRED_CREDENTIAL_MATERIAL_AVAILABLE": true,
+        "REQUIRED_FAIL_CLOSED_GATES_EVALUABLE": true,
+        "STATIC_EXECUTION_GRAPH_COMPLETE": true,
+        "TARGET_HOST_RESOLVABLE_OR_CONNECTABLE": true,
+        "TRANSPORT_CONSTRUCTIBLE": true
+      },
+      "contradiction_check": "NO_CONTRADICTION. Submit-authorization gates remain false and are not PATH_REACHABLE constituents. GET evidence does not promote LIVE_PRIVATE_READ_ONLY_PROVEN. CURRENTLY_REACHABLE_IS_NOT_LIVE_EXECUTION_PATH_REACHABLE=true.",
+      "credential_presence": {
+        "CREDENTIAL_CLASS": "LIVE_CANARY_MINIMUM_EXPOSURE_TRADE_API_KEY",
+        "CREDENTIAL_FIELDS_COMPLETE": true,
+        "SECRETREF_URI": "secretref://vault/peak-trade/live-canary-minimum-exposure/okx",
+        "SECRETREF_URI_BOUND": true,
+        "VALUES_INCLUDED": false,
+        "VAULT_FILE_PRESENT": true,
+        "available": true,
+        "reason": "CREDENTIAL_MATERIAL_AVAILABLE"
+      },
+      "evidence_paths": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md \u00a74.9.4 SP-01",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py",
+        "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/path_reachable_predicate_v1.py"
+      ],
+      "observed_repo_fact": "CODE_EXISTS=true;CONJUNCTION=FULL_CONJUNCTION_PROVEN;PRIVATE_GET_PRESENT=true;CREDENTIAL_AVAILABLE=true;LIVE_AUTHORIZED=false;LIVE_EXECUTION_CODE_EXISTS_DOES_NOT_IMPLY_PATH_REACHABLE=true.",
+      "reason": "FULL_CONJUNCTION_PROVEN"
+    },
+    "LIVE_EXECUTION_PATH_REACHABLE_VALUE": true,
+    "LIVE_PRIVATE_READ_ONLY_PROVEN": {
+      "LIVE_ORDER_PLAN_OBSERVED": false,
+      "adjudicated_value": true,
+      "admissibility_rule": "LIVE_PRIVATE_READ_ONLY_PROVEN is true iff every bound constituent is proven on current origin/main: LIVE_EXECUTION_CODE_EXISTS and LIVE_EXECUTION_PATH_REACHABLE are already true; current authenticated private GET /api/v5/account/config and GET /api/v5/account/balance each return HTTP 200 and OKX code 0 with parseable account data; both methods are GET; no POST; no redirect. A single reachability GET, historical \u00a711.13.2 proof, credential presence alone, fixture/testnet/sim sources, and \u00a711.13.2 TRADE=false owner attestation are each insufficient. True does not promote LIVE_ORDER_PLAN_OBSERVED, submit authorization, POST, or any later ladder field.",
+      "canonical_definition": "LIVE_PRIVATE_READ_ONLY_PROVEN is the third \u00a711.14 Live proof-claim field. It is true iff LIVE_EXECUTION_CODE_EXISTS and LIVE_EXECUTION_PATH_REACHABLE are already true and current authenticated private GET /api/v5/account/config and GET /api/v5/account/balance each return HTTP 200 and OKX code 0 with parseable account data, both methods are GET, no POST occurs, and no redirect is followed. A single reachability GET, historical \u00a711.13.2 LIVE_PRIVATE_READ_ONLY_PROVEN, credential presence alone, fixture/testnet/sim sources, and the \u00a711.13.2 TRADE=false owner attestation are each insufficient. True does not promote LIVE_ORDER_PLAN_OBSERVED, submit authorization, POST, Live-gate mutation, or any later ladder field.",
+      "conjunction": {
+        "adjudication": "TRUE_CURRENT_PRIVATE_READ_ONLY",
+        "admissibility_predicate": "LIVE_PRIVATE_READ_ONLY_PROVEN is true iff every bound constituent is proven on current origin/main: LIVE_EXECUTION_CODE_EXISTS and LIVE_EXECUTION_PATH_REACHABLE are already true; current authenticated private GET /api/v5/account/config and GET /api/v5/account/balance each return HTTP 200 and OKX code 0 with parseable account data; both methods are GET; no POST; no redirect. A single reachability GET, historical \u00a711.13.2 proof, credential presence alone, fixture/testnet/sim sources, and \u00a711.13.2 TRADE=false owner attestation are each insufficient. True does not promote LIVE_ORDER_PLAN_OBSERVED, submit authorization, POST, or any later ladder field.",
+        "canonical_definition": "LIVE_PRIVATE_READ_ONLY_PROVEN is the third \u00a711.14 Live proof-claim field. It is true iff LIVE_EXECUTION_CODE_EXISTS and LIVE_EXECUTION_PATH_REACHABLE are already true and current authenticated private GET /api/v5/account/config and GET /api/v5/account/balance each return HTTP 200 and OKX code 0 with parseable account data, both methods are GET, no POST occurs, and no redirect is followed. A single reachability GET, historical \u00a711.13.2 LIVE_PRIVATE_READ_ONLY_PROVEN, credential presence alone, fixture/testnet/sim sources, and the \u00a711.13.2 TRADE=false owner attestation are each insufficient. True does not promote LIVE_ORDER_PLAN_OBSERVED, submit authorization, POST, Live-gate mutation, or any later ladder field.",
+        "claim_value": true,
+        "constituents": {
+          "BOTH_METHODS_GET": true,
+          "CURRENT_PRIVATE_GET_BALANCE_HTTP_200_OKX_0": true,
+          "CURRENT_PRIVATE_GET_CONFIG_HTTP_200_OKX_0": true,
+          "NO_POST": true,
+          "NO_REDIRECT": true,
+          "PARSEABLE_ACCOUNT_BALANCE_DATA": true,
+          "PARSEABLE_ACCOUNT_CONFIG_DATA": true,
+          "PREDECESSOR_LIVE_EXECUTION_CODE_EXISTS": true,
+          "PREDECESSOR_LIVE_EXECUTION_PATH_REACHABLE": true
+        },
+        "false_required": [],
+        "later_ladder_fields_promoted": false,
+        "reason": "FULL_CONJUNCTION_PROVEN",
+        "source_kind": "GOVERNED_CURRENT_PRIVATE_GET",
+        "submit_authorization_inferred": false,
+        "unobserved_required": []
+      },
+      "constituent_values": {
+        "BOTH_METHODS_GET": true,
+        "CURRENT_PRIVATE_GET_BALANCE_HTTP_200_OKX_0": true,
+        "CURRENT_PRIVATE_GET_CONFIG_HTTP_200_OKX_0": true,
+        "NO_POST": true,
+        "NO_REDIRECT": true,
+        "PARSEABLE_ACCOUNT_BALANCE_DATA": true,
+        "PARSEABLE_ACCOUNT_CONFIG_DATA": true,
+        "PREDECESSOR_LIVE_EXECUTION_CODE_EXISTS": true,
+        "PREDECESSOR_LIVE_EXECUTION_PATH_REACHABLE": true
+      },
+      "contradiction_check": "NO_CONTRADICTION. Single reachability GET is not this field. \u00a711.13.2 historical proof is not this field. LIVE_ORDER_PLAN_OBSERVED remains false.",
+      "evidence_paths": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/private_read_only_predicate_v1.py"
+      ],
+      "observed_repo_fact": "CONFIG_OK=true;BALANCE_OK=true;POST_USED=false;CONJUNCTION=FULL_CONJUNCTION_PROVEN",
+      "reason": "FULL_CONJUNCTION_PROVEN"
+    },
+    "LIVE_PRIVATE_READ_ONLY_PROVEN_VALUE": true
+  },
+  "THIS_SLICE": "11.14.LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION"
+}
