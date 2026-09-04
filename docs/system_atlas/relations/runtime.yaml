@@ -382,3 +382,17 @@ relations:
       Offline delayed G12 evaluator reuses classify_target_position_state_v1.
       This is classifier reuse, not a GET, not CHOICE_B rewrite, and not G12
       close. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_g12_canonical_persist_consumes_delayed_conjunction_evaluator
+    source: RUNTIME_COMPONENT:g12_canonical_delayed_zero_persist_and_pending_related_observations_v1
+    type: CONSUMES
+    target: RUNTIME_COMPONENT:g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/adjudicate_v1.py
+      - src/ops/section_11_13_5_g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1/evaluate_v1.py
+    notes: >-
+      Canonical persist/P7/P9 package consumes the merged delayed G12
+      evaluator. This is evaluator reuse, not a POST, not flatten execute,
+      and not section 11.14. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.

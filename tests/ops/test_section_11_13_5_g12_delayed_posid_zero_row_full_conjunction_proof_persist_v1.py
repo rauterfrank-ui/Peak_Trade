@@ -21,13 +21,15 @@ ATLAS_CATALOG = REPO_ROOT / "docs/system_atlas/entities/catalog.yaml"
 ATLAS_AUTHORITY = REPO_ROOT / "docs/system_atlas/ATLAS_AUTHORITY_AND_USAGE.md"
 ATLAS_RUNTIME_RELATIONS = REPO_ROOT / "docs/system_atlas/relations/runtime.yaml"
 HEADING = "### 11.13.5 G12_DELAYED_POSID_ZERO_ROW_FULL_CONJUNCTION_PROOF_CONTRACT"
-LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
+SUCCESSOR_HEADING = (
+    "### 11.13.5 G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS"
+)
 
 
 def test_runbook_slice_keeps_g12_open() -> None:
     text = MASTER_RUNBOOK.read_text(encoding="utf-8")
     start = text.find(HEADING)
-    end = text.find(LADDER_HEADING, start)
+    end = text.find(SUCCESSOR_HEADING, start)
     assert start >= 0
     assert end > start
     section = text[start:end]

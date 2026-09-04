@@ -322,7 +322,7 @@ Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md]
 
 ## 7. Runtime call / data flow
 
-Runtime relation count: `37`. Entrypoints recorded: `3`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
+Runtime relation count: `38`. Entrypoints recorded: `3`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
 
 Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md](ENTRYPOINT_RUNTIME_TRACES.md).
 
@@ -427,7 +427,7 @@ Architectural-kind count in this bucket: `19`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `88`.
+Architectural-kind count in this bucket: `89`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -455,6 +455,7 @@ Architectural-kind count in this bucket: `88`.
 | PHASE:authenticated_private_runtime_read_and_runtime_permit_issuance | PHASE | 11.13.5.AUTHENTICATED_PRIVATE_RUNTIME_READ_AND_RUNTIME_PERMI | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:authenticated_productive_transport | PHASE | 11.13.5.AUTHENTICATED_PRODUCTIVE_TRANSPORT | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:ddo_offline_foundation | PHASE | 11.13.5 Parallel-track DDO offline foundation | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| PHASE:g12_canonical_delayed_zero_persist_and_pending_related_observations | PHASE | 11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELAT | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:g12_delayed_posid_zero_row_full_conjunction_proof_contract | PHASE | 11.13.5.G12_DELAYED_POSID_ZERO_ROW_FULL_CONJUNCTION_PROOF_CO | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:p08_distinct_first_party_evidence | PHASE | 11.13.5.P08_DISTINCT_FIRST_PARTY_EVIDENCE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:p08_empty_data_not_zero | PHASE | 11.13.5.P08_EMPTY_DATA_NOT_ZERO | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -470,9 +471,8 @@ Architectural-kind count in this bucket: `88`.
 | PHASE:p20_execution_prerequisite_20_mutation_limited_to_proven_position | PHASE | 11.13.5.P20 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:p25_execution_prerequisite_25_no_additional_owner_decision | PHASE | 11.13.5.P25 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:post_z2ds_50110_egress_capture | PHASE | 11.13.5.POST_Z2DS_50110_EGRESS_CAPTURE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| PHASE:post_z2ds_50110_whitelist_add_from_capture | PHASE | 11.13.5.POST_Z2DS_50110_WHITELIST_ADD_FROM_CAPTURE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `88` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `89` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -708,10 +708,10 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=420
+ENTITY_TOTAL=422
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=84
-RUNTIME_RELATION_COUNT=37
+RUNTIME_RELATION_COUNT=38
 AUTHORITY_RELATION_COUNT=7
 UNRESOLVED_CONTRADICTION_COUNT=9
 OKX_CENSUS_COMPLETE=true
@@ -803,10 +803,10 @@ Remaining census domains:
 | OKX_HOST | 8 |
 | OKX_RESPONSE_SHAPE | 6 |
 | OWNER_DECISION | 2 |
-| PHASE | 45 |
+| PHASE | 46 |
 | REGISTRY | 1 |
 | RUNBOOK | 4 |
-| RUNTIME_COMPONENT | 80 |
+| RUNTIME_COMPONENT | 81 |
 | SCHEMA | 18 |
 | SCRIPT | 3 |
 | SELECTOR | 2 |

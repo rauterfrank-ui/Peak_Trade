@@ -1227,6 +1227,24 @@ entities:
       evaluator is not this component. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: PHASE:g12_canonical_delayed_zero_persist_and_pending_related_observations
+    kind: PHASE
+    name: 11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS_V1.md
+      - evidence/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/20260904T114059Z/
+      - tests/ops/test_section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_persist_v1.py
+    notes: >-
+      Canonical delayed posId-zero persist plus minimum P7/P9 read-only
+      observations. Closes G12 only through the merged delayed conjunction
+      evaluator. Does not POST. Does not execute section 11.14. P9 empty data
+      is not target-zero. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
     name: Route-C create-path blocker census v1
@@ -2003,6 +2021,35 @@ entities:
       Does not close G12. Separate observation slots; delayed zero is not
       pending-empty and not related completeness. Atlas is not canonical
       authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:g12_canonical_delayed_zero_persist_and_pending_related_observations_v1
+    kind: RUNTIME_COMPONENT
+    name: G12 canonical delayed-zero persist and pending/related observations v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/__init__.py
+      - src/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/constants_v1.py
+      - src/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/contract_v1.py
+      - src/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/verify_local_capture_v1.py
+      - src/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/lineage_bind_v1.py
+      - src/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/execute_v1.py
+      - src/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/adjudicate_v1.py
+      - src/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/persist_v1.py
+      - src/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/persist_claims_v1.py
+    evidence_sources:
+      - tests/ops/test_section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1.py
+      - tests/ops/test_section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_persist_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS_V1.md
+      - evidence/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/20260904T114059Z/
+    notes: >-
+      Navigation inventory of canonical delayed-zero persist and the
+      minimum P7/P9 private read-only GETs. Reuses LiveCanaryHttpClientV1,
+      the canary signer, and evaluate_delayed_g12_conjunction_v1. Does not
+      POST. Does not flatten. Does not execute section 11.14. Atlas is not
+      canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1
     kind: RUNTIME_COMPONENT
