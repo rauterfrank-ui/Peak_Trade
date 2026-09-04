@@ -18,6 +18,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LADDER_FIELDS,
     LIVE_EXECUTION_CODE_EXISTS,
     LIVE_EXECUTION_PATH_REACHABLE,
+    LIVE_ORDER_PLAN_OBSERVED,
     LIVE_PRIVATE_READ_ONLY_PROVEN,
     MANDATORY_LIVE_METRIC_COUNT,
     MANDATORY_LIVE_METRICS,
@@ -76,6 +77,7 @@ def test_contract_invariants_remain_fail_closed() -> None:
     assert LIVE_EXECUTION_CODE_EXISTS is True
     assert LIVE_EXECUTION_PATH_REACHABLE is True
     assert LIVE_PRIVATE_READ_ONLY_PROVEN is True
+    assert LIVE_ORDER_PLAN_OBSERVED is True
     for field_name in OBSERVED_OR_PROVEN_FIELDS_MUST_REMAIN_FALSE:
         assert LADDER_FIELD_DEFAULTS[field_name] is False
     assert len(LADDER_FIELDS) == LADDER_FIELD_COUNT == 12
@@ -316,7 +318,7 @@ def test_traceability_has_each_ladder_field_and_metric_once() -> None:
     names = [row["CANONICAL_REQUIREMENT"] for row in matrix["rows"]]
     assert names == list(LADDER_FIELDS) + list(MANDATORY_LIVE_METRICS)
     assert matrix["primary_row_count"] == 32
-    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_ORDER_PLAN_OBSERVED"
+    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_SUBMIT_ACK_OBSERVED"
 
 
 def _successful_read_only_evidence() -> dict[str, object]:
@@ -342,11 +344,36 @@ def _successful_read_only_evidence() -> dict[str, object]:
     }
 
 
+def _successful_order_plan_evidence() -> dict[str, object]:
+    return {
+        "LIVE_EXECUTION_CODE_EXISTS": True,
+        "LIVE_EXECUTION_PATH_REACHABLE": True,
+        "LIVE_PRIVATE_READ_ONLY_PROVEN": True,
+        "PRODUCED_ON_CANONICAL_SUBMIT_PATH": True,
+        "AFTER_REFUSE_SUBMIT_UNLESS_GATES_PASS": True,
+        "CURRENT_VENUE_DERIVED_INPUTS": True,
+        "ORDER_PLAN_ARTIFACT_PRESENT": True,
+        "NOT_BLOCKED_DRY_RUN": True,
+        "NOT_DIRECT_BUILDER_INVOCATION": True,
+        "NO_POST_REQUIRED": True,
+        "POST_USED": False,
+        "PUBLIC_GET_USED": True,
+        "PRIVATE_GET_USED": True,
+        "CREDENTIAL_USE": True,
+        "LIVE_GATE_ACTIVATION_USED": True,
+        "LIVE_SUBMIT_ACK_OBSERVED": False,
+        "LIVE_ORDER_PLAN_OBSERVED": True,
+        "VENUE_REQUESTS": 9,
+        "RESPONSE_TIME_UTC": "2026-09-04T14:05:00Z",
+    }
+
+
 def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
     documents = assemble_offline_surface_v1(
         repo_root=REPO_ROOT,
         origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
         private_read_only_evidence=_successful_read_only_evidence(),
+        order_plan_evidence=_successful_order_plan_evidence(),
     )
     verified = persist_offline_surface_pack_v1(
         pack=tmp_path,
@@ -357,7 +384,8 @@ def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
     assert documents["SUMMARY.json"]["LIVE_EXECUTION_CODE_EXISTS"] is True
     assert documents["SUMMARY.json"]["LIVE_EXECUTION_PATH_REACHABLE"] is True
     assert documents["SUMMARY.json"]["LIVE_PRIVATE_READ_ONLY_PROVEN"] is True
-    assert documents["SUMMARY.json"]["LIVE_ORDER_PLAN_OBSERVED"] is False
+    assert documents["SUMMARY.json"]["LIVE_ORDER_PLAN_OBSERVED"] is True
+    assert documents["SUMMARY.json"]["LIVE_SUBMIT_ACK_OBSERVED"] is False
     assert documents["SUMMARY.json"]["SECTION_11_14_COMPLETE"] is False
     assert documents["MUTATION_BOUNDARY.json"]["POST"] is False
     assert documents["MUTATION_BOUNDARY.json"]["PRIVATE_GET"] is True

@@ -15,6 +15,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     G12_DOES_NOT_AUTHORIZE_SECTION_11_14,
     G12_DOES_NOT_SATISFY_SECTION_11_14_OBSERVED_FIELDS,
     G12_STATUS_REQUIRED,
+    GATE_STATE_FILENAME,
     IMPLEMENTATION_SHA,
     LADDER_FIELD_COUNT,
     LADDER_FIELD_DEFAULTS,
@@ -22,13 +23,17 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LAST_CANONICALLY_CLOSED_STEP,
     LATER_FIELD_CENSUS_FILENAME,
     LIVE_EXECUTION_PATH_REACHABLE,
+    LIVE_ORDER_PLAN_OBSERVED,
     LIVE_PRIVATE_READ_ONLY_PROVEN,
     MANDATORY_LIVE_METRIC_COUNT,
     NEXT_AUTHORITY_BOUNDARY,
     NEXT_OWNER_GO_REQUIRED,
+    ORDER_PLAN_EVIDENCE_FILENAME,
+    ORDER_PLAN_OBSERVED_ADJUDICATION_FILENAME,
     OWNER_GO,
     PATH_REACHABLE_ADJUDICATION_FILENAME,
     PREDECESSOR_SLICE,
+    PREFLIGHT_FILENAME,
     PRIOR_OWNER_GO,
     PRIVATE_GET_BINDING_FILENAME,
     PRIVATE_GET_EVIDENCE_FILENAME,
@@ -74,6 +79,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.reachabili
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.later_field_census_v1 import (
     build_later_field_census_v1,
 )
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.order_plan_observed_adjudication_v1 import (
+    adjudicate_live_order_plan_observed_v1,
+)
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.private_read_only_gets_v1 import (
     bind_private_read_only_gets_before_request_v1,
     path_reachable_view_from_read_only_pack_v1,
@@ -98,6 +106,7 @@ def assemble_offline_surface_v1(
     origin_main_sha: str,
     private_get_evidence: Mapping[str, Any] | None = None,
     private_read_only_evidence: Mapping[str, Any] | None = None,
+    order_plan_evidence: Mapping[str, Any] | None = None,
 ) -> dict[str, dict[str, Any]]:
     if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
         raise RuntimeError("ORIGIN_MAIN_SHA_MISMATCH")
@@ -129,6 +138,15 @@ def assemble_offline_surface_v1(
         raise RuntimeError("PRIVATE_READ_ONLY_TRUE_WITHOUT_VALID_GET")
     if ro_claim and ro_ev.get("LIVE_ORDER_PLAN_OBSERVED") is True:
         raise RuntimeError("GET_EVIDENCE_PROMOTED_LIVE_ORDER_PLAN_OBSERVED")
+    op_ev = dict(order_plan_evidence) if order_plan_evidence is not None else None
+    order_plan_fields = adjudicate_live_order_plan_observed_v1(order_plan_evidence=op_ev)
+    order_claim = bool(order_plan_fields.get("adjudicated_value") is True)
+    if order_claim is not bool(LIVE_ORDER_PLAN_OBSERVED is True):
+        raise RuntimeError("ORDER_PLAN_CONSTANT_DRIFT_VS_ADJUDICATION")
+    if order_claim and (op_ev is None or op_ev.get("POST_USED") is True):
+        raise RuntimeError("ORDER_PLAN_TRUE_WITHOUT_VALID_GATED_PATH")
+    if order_claim and op_ev.get("LIVE_SUBMIT_ACK_OBSERVED") is True:
+        raise RuntimeError("ORDER_PLAN_EVIDENCE_PROMOTED_SUBMIT_ACK")
     metrics = build_mandatory_live_metrics_schema_v1()
     reuse = build_reuse_vs_fresh_matrix_v1()
     traceability = build_traceability_matrix_v1(
@@ -162,6 +180,16 @@ def assemble_offline_surface_v1(
                 if claim_true
                 else "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK"
             )
+        elif field_name == "LIVE_ORDER_PLAN_OBSERVED":
+            source_kind = (
+                "GOVERNED_CURRENT_GATED_SUBMIT_PATH" if claim_true else "GOVERNED_OFFLINE_CONTRACT"
+            )
+            status = "TRUE_CURRENT_LIVE_ORDER_PLAN_OBSERVED" if claim_true else "FALSE_FAIL_CLOSED"
+            authority = (
+                "R3_SESSION_GATED_SUBMIT_PATH_NO_POST"
+                if claim_true
+                else "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK"
+            )
         else:
             source_kind = "GOVERNED_OFFLINE_CONTRACT"
             status = "FALSE_FAIL_CLOSED"
@@ -178,8 +206,16 @@ def assemble_offline_surface_v1(
                 ),
                 observed_at=None
                 if field_name
-                not in {"LIVE_EXECUTION_PATH_REACHABLE", "LIVE_PRIVATE_READ_ONLY_PROVEN"}
-                else ((ro_ev or path_ev or {}).get("RESPONSE_TIME_UTC")),
+                not in {
+                    "LIVE_EXECUTION_PATH_REACHABLE",
+                    "LIVE_PRIVATE_READ_ONLY_PROVEN",
+                    "LIVE_ORDER_PLAN_OBSERVED",
+                }
+                else (
+                    (op_ev or ro_ev or path_ev or {}).get("RESPONSE_TIME_UTC")
+                    if field_name == "LIVE_ORDER_PLAN_OBSERVED"
+                    else ((ro_ev or path_ev or {}).get("RESPONSE_TIME_UTC"))
+                ),
                 predecessor_claims=[PREDECESSOR_SLICE],
                 provenance=OWNER_GO,
                 adjudication_status=status,
@@ -195,13 +231,19 @@ def assemble_offline_surface_v1(
         "order_enforced": True,
     }
     get_used = bool((ro_ev or path_ev) and (ro_ev or path_ev).get("PRIVATE_GET_USED") is True)
-    venue_requests = int((ro_ev or path_ev or {}).get("VENUE_REQUESTS") or 0)
+    public_get_used = bool(op_ev and op_ev.get("PUBLIC_GET_USED") is True)
+    venue_requests = int(
+        (op_ev or ro_ev or path_ev or {}).get("VENUE_REQUESTS")
+        or (ro_ev or path_ev or {}).get("VENUE_REQUESTS")
+        or 0
+    )
     mutation_boundary = {
         "VENUE_REQUESTS": venue_requests,
-        "PUBLIC_GET": False,
-        "PRIVATE_GET": get_used,
+        "PUBLIC_GET": public_get_used,
+        "PRIVATE_GET": get_used or bool(op_ev and op_ev.get("PRIVATE_GET_USED") is True),
         "CREDENTIAL_USE": bool(
-            (ro_ev or path_ev) and (ro_ev or path_ev).get("CREDENTIAL_USE") is True
+            (op_ev or ro_ev or path_ev)
+            and (op_ev or ro_ev or path_ev).get("CREDENTIAL_USE") is True
         ),
         "POST": False,
         "ORDER_SUBMIT": False,
@@ -212,9 +254,14 @@ def assemble_offline_surface_v1(
         "SECTION_11_14_RUNTIME_EXECUTION": False,
         "COLLECTOR_ACTIVATED": False,
         "LIVE_PRIVATE_READ_ONLY_PROVEN": ro_claim,
-        "LIVE_ORDER_PLAN_OBSERVED": False,
+        "LIVE_ORDER_PLAN_OBSERVED": order_claim,
         "GATE_MUTATION": False,
-        "EARLIEST_MUTATION_BOUNDARY": "LIVE_ORDER_PLAN_OBSERVED",
+        "SESSION_LIVE_GATE_ACTIVATION": bool(
+            op_ev and op_ev.get("LIVE_GATE_ACTIVATION_USED") is True
+        ),
+        "EARLIEST_MUTATION_BOUNDARY": (
+            "LIVE_SUBMIT_ACK_OBSERVED" if order_claim else "LIVE_ORDER_PLAN_OBSERVED"
+        ),
     }
     lineage = {
         "OWNER_GO": OWNER_GO,
@@ -231,7 +278,7 @@ def assemble_offline_surface_v1(
         "LAST_CANONICALLY_CLOSED_STEP": LAST_CANONICALLY_CLOSED_STEP,
     }
     adjudication = {
-        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION_V1",
+        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_ORDER_PLAN_OBSERVED_ADJUDICATION_V1",
         "AUTHORITY": "NONE",
         "OWNER_GO": OWNER_GO,
         "THIS_SLICE": THIS_SLICE,
@@ -244,11 +291,11 @@ def assemble_offline_surface_v1(
         "NEXT_AUTHORITY_BOUNDARY": NEXT_AUTHORITY_BOUNDARY,
         "NEXT_OWNER_GO_REQUIRED": NEXT_OWNER_GO_REQUIRED,
         "LIVE_PRIVATE_READ_ONLY_PROVEN": ro_claim,
-        "LIVE_ORDER_PLAN_OBSERVED": False,
+        "LIVE_ORDER_PLAN_OBSERVED": order_claim,
         "EVIDENCE_RECORDS": evidence_records,
     }
     summary = {
-        "DOCUMENT_CLASS": "SECTION_11_14_PRIVATE_READ_ONLY_SUMMARY_V1",
+        "DOCUMENT_CLASS": "SECTION_11_14_ORDER_PLAN_OBSERVED_SUMMARY_V1",
         "DOCUMENT_ROLE": "DERIVED_NON_SSOT",
         "OWNER_GO": OWNER_GO,
         "THIS_SLICE": THIS_SLICE,
@@ -263,25 +310,30 @@ def assemble_offline_surface_v1(
         "LIVE_EXECUTION_CODE_EXISTS": True,
         "LIVE_EXECUTION_PATH_REACHABLE": path_claim,
         "LIVE_PRIVATE_READ_ONLY_PROVEN": ro_claim,
-        "LIVE_ORDER_PLAN_OBSERVED": False,
+        "LIVE_ORDER_PLAN_OBSERVED": order_claim,
+        "LIVE_SUBMIT_ACK_OBSERVED": False,
         "EARLIEST_UNRESOLVED_DEPENDENCY": EARLIEST_UNRESOLVED_DEPENDENCY,
         "NEXT_OWNER_GO_REQUIRED": NEXT_OWNER_GO_REQUIRED,
         "POST_USED": False,
-        "GET_USED": get_used,
+        "GET_USED": get_used or bool(op_ev and op_ev.get("PRIVATE_GET_USED") is True),
+        "PUBLIC_GET_USED": public_get_used,
         "CREDENTIAL_USE": bool(
-            (ro_ev or path_ev) and (ro_ev or path_ev).get("CREDENTIAL_USE") is True
+            (op_ev or ro_ev or path_ev)
+            and (op_ev or ro_ev or path_ev).get("CREDENTIAL_USE") is True
         ),
     }
     claims = {
         **CLAIMS,
         "CANONICAL_EVIDENCE_RUN_ID": CANONICAL_EVIDENCE_RUN_ID,
-        "GET_PERFORMED": get_used,
+        "GET_PERFORMED": get_used or bool(op_ev and op_ev.get("PRIVATE_GET_USED") is True),
+        "PUBLIC_GET_USED": public_get_used,
         "CREDENTIAL_USE": bool(
-            (ro_ev or path_ev) and (ro_ev or path_ev).get("CREDENTIAL_USE") is True
+            (op_ev or ro_ev or path_ev)
+            and (op_ev or ro_ev or path_ev).get("CREDENTIAL_USE") is True
         ),
         "LIVE_EXECUTION_PATH_REACHABLE": path_claim,
         "LIVE_PRIVATE_READ_ONLY_PROVEN": ro_claim,
-        "LIVE_ORDER_PLAN_OBSERVED": False,
+        "LIVE_ORDER_PLAN_OBSERVED": order_claim,
     }
     assert_contract_invariants_v1(claims)
     assert_contract_invariants_v1(summary)
@@ -309,10 +361,40 @@ def assemble_offline_surface_v1(
         PATH_REACHABLE_ADJUDICATION_FILENAME: static_fields["LIVE_EXECUTION_PATH_REACHABLE"],
         PRIVATE_READ_ONLY_GET_BINDING_FILENAME: bind_private_read_only_gets_before_request_v1(),
         PRIVATE_READ_ONLY_ADJUDICATION_FILENAME: static_fields["LIVE_PRIVATE_READ_ONLY_PROVEN"],
+        ORDER_PLAN_OBSERVED_ADJUDICATION_FILENAME: order_plan_fields,
         LATER_FIELD_CENSUS_FILENAME: build_later_field_census_v1(),
     }
     if path_ev is not None:
         documents[PRIVATE_GET_EVIDENCE_FILENAME] = dict(path_ev)
     if ro_ev is not None:
         documents[PRIVATE_READ_ONLY_GET_EVIDENCE_FILENAME] = dict(ro_ev)
+    if op_ev is not None:
+        documents[ORDER_PLAN_EVIDENCE_FILENAME] = dict(op_ev)
+        documents[GATE_STATE_FILENAME] = {
+            "BEFORE": op_ev.get("GATE_STATE_BEFORE"),
+            "DURING": op_ev.get("GATE_STATE_DURING"),
+            "AFTER": op_ev.get("GATE_STATE_AFTER"),
+            "LIVE_GATE_ACTIVATION_USED": bool(op_ev.get("LIVE_GATE_ACTIVATION_USED") is True),
+            "LIVE_GATES_RETURNED_FAIL_CLOSED": bool(
+                op_ev.get("LIVE_GATES_RETURNED_FAIL_CLOSED") is True
+            ),
+            "STANDING_LIVE_ENABLED": False,
+            "STANDING_LIVE_ARMED": False,
+            "STANDING_SUBMIT_UNLOCKED": False,
+            "STANDING_CANARY_AUTHORIZED": False,
+        }
+        documents[PREFLIGHT_FILENAME] = {
+            "POST_USED": False,
+            "WIRE_SEND_POST": False,
+            "SUBMIT_USED": False,
+            "SUBMIT_COUNT": 0,
+            "RETRY_USED": False,
+            "SECOND_SUBMIT_USED": False,
+            "plan": op_ev.get("plan"),
+            "submit_gate": op_ev.get("submit_gate"),
+            "pre_submit_state": op_ev.get("pre_submit_state"),
+            "CANARY_RESULT": op_ev.get("CANARY_RESULT"),
+            "VENUE_REQUESTS": op_ev.get("VENUE_REQUESTS"),
+            "RESPONSE_TIME_UTC": op_ev.get("RESPONSE_TIME_UTC"),
+        }
     return documents

@@ -273,8 +273,14 @@ def run_canary_submit_transport_v1(
     live_canary_cybersecurity_gate: str = "PASS",
     vault_backend: LiveCanaryVaultBackendPortV1 | None = None,
     credential_handle: LiveCanaryEphemeralCredentialHandleV1 | None = None,
+    observe_order_plan_only: bool = False,
 ) -> dict[str, Any]:
-    """Gated canary execute path. Standing LIVE_AUTHORIZED remains false."""
+    """Gated canary execute path. Standing LIVE_AUTHORIZED remains false.
+
+    ``observe_order_plan_only=True`` produces the canonical order-plan
+    artifact after both ``refuse_submit_unless_gates_pass_v1`` seams and
+    returns without POST. Default remains the historical one-shot POST path.
+    """
     _assert_standing_safety()
     if str(owner_go or "") == OWNER_GO_AUTHORING:
         raise LiveCanarySubmitTransportError("AUTHORING_GO_CANNOT_EXECUTE_CANARY")
@@ -610,6 +616,34 @@ def run_canary_submit_transport_v1(
             recovery_state_clear=bool(pre_state["recovery_state_clear"]),
         )
         refuse_submit_unless_gates_pass_v1(submit_gate)
+
+        if observe_order_plan_only:
+            return {
+                "ok": True,
+                "mode": "observe_order_plan",
+                "CANARY_RESULT": "ORDER_PLAN_OBSERVED_NO_POST",
+                "CANARY_EXECUTED": False,
+                "LIVE_CANARY_MINIMUM_EXPOSURE_EXECUTED": False,
+                "LIVE_AUTHORIZED": False,
+                "SESSION_ENTRY_SUBMITTED": False,
+                "ORDER_COUNT_SUBMITTED": 0,
+                "DUPLICATE_SUBMIT": False,
+                "UNKNOWN_SUBMIT": False,
+                "BLIND_RETRY": False,
+                "POST_USED": False,
+                "WIRE_SEND_POST": False,
+                "SUBMIT_USED": False,
+                "ORDER_PLAN_PRODUCED_AFTER_GATES": True,
+                "plan": plan.to_dict(),
+                "submit_gate": submit_gate.to_dict(),
+                "pre_submit_state": dict(pre_state),
+                "counters": client.counters.to_dict(),
+                "OWNER_GO_CONSUMED": False,
+                "GENERAL_LIVE_SUBMIT_UNLOCKED": False,
+                "SUBMIT_UNLOCKED": False,
+                "CANARY_SUBMIT_TRANSPORT_SCOPE": CANARY_SUBMIT_TRANSPORT_SCOPE,
+                "RETRY_SAFE_NOW": False,
+            }
 
         body_text = serialize_signed_post_body_v1(plan.venue_native_payload)
         venue_native_request = extract_canary_venue_native_request_evidence_v1(body_text=body_text)
