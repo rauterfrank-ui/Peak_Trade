@@ -7,7 +7,6 @@ from typing import Any, Mapping
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     LIVE_EXECUTION_CODE_EXISTS,
     LIVE_EXECUTION_PATH_REACHABLE,
-    LIVE_ORDER_PLAN_OBSERVED,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -57,8 +56,6 @@ def adjudicate_live_private_read_only_proven_v1(
         constituent_values=values,
         source_kind=source_kind,
     )
-    if result["claim_value"] is True and LIVE_ORDER_PLAN_OBSERVED is True:
-        raise Section1114OfflineSurfaceError("PRIVATE_READ_ONLY_PROMOTED_ORDER_PLAN_OBSERVED")
     return {
         "canonical_definition": result["canonical_definition"],
         "admissibility_predicate": ADMISSIBILITY_PREDICATE,

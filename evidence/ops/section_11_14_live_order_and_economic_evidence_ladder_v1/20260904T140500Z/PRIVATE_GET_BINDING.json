@@ -1,0 +1,13 @@
+{
+  "ENDPOINT": "/api/v5/account/config",
+  "EXPECTED_MUTATION": "NONE",
+  "LIVE_PRIVATE_READ_ONLY_PROVEN_PROMOTION": false,
+  "MAXIMUM_REQUEST_COUNT": 1,
+  "METHOD": "GET",
+  "POST": false,
+  "PRIVATE_GET": true,
+  "PUBLIC_GET": false,
+  "REQUIRED_FACT": "CURRENT_AUTHENTICATED_PRIVATE_READ_CONNECTIVITY",
+  "RETRY": false,
+  "WHY_GET_REQUIRED": "TARGET_HOST_RESOLVABLE_OR_CONNECTABLE, AUTHENTICATION_PATH_FUNCTIONAL, and CURRENT_ACCOUNT_OR_VENUE_READ_ACCESS_FUNCTIONAL cannot be proven from current canonical persisted evidence. Historical private GET success is not current authenticated connectivity."
+}

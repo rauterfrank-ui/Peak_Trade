@@ -79,8 +79,8 @@ def assert_contract_invariants_v1(payload: Mapping[str, Any] | None = None) -> N
         raise Section1114OfflineSurfaceError("FLATTEN_MUST_REMAIN_FORBIDDEN")
     if FUNDING_ALLOWED is True:
         raise Section1114OfflineSurfaceError("FUNDING_MUST_REMAIN_FORBIDDEN")
-    if PUBLIC_GET_ALLOWED is True:
-        raise Section1114OfflineSurfaceError("PUBLIC_GET_MUST_REMAIN_FORBIDDEN")
+    if PUBLIC_GET_ALLOWED is not True:
+        raise Section1114OfflineSurfaceError("CONDITIONAL_PUBLIC_GET_MUST_BE_ALLOWED")
     if COLLECTOR_ACTIVATED is True:
         raise Section1114OfflineSurfaceError("LIVE_COLLECTOR_MUST_REMAIN_INACTIVE")
     if LIVE_EXECUTION_CODE_EXISTS is not True:
@@ -118,14 +118,18 @@ def assert_contract_invariants_v1(payload: Mapping[str, Any] | None = None) -> N
         and payload.get("LIVE_EXECUTION_PATH_REACHABLE") is not True
     ):
         raise Section1114OfflineSurfaceError("PRIVATE_READ_ONLY_WITHOUT_PATH_REACHABLE")
-    if payload.get("LIVE_ORDER_PLAN_OBSERVED") is True:
-        raise Section1114OfflineSurfaceError("LIVE_ORDER_PLAN_OBSERVED_PROMOTED")
+    if (
+        payload.get("LIVE_ORDER_PLAN_OBSERVED") is True
+        and payload.get("LIVE_PRIVATE_READ_ONLY_PROVEN") is not True
+    ):
+        raise Section1114OfflineSurfaceError("ORDER_PLAN_WITHOUT_PRIVATE_READ_ONLY")
     if payload.get("POST_USED") is True or payload.get("POST") is True:
-        raise Section1114OfflineSurfaceError("POST_INVOKED_BY_REACHABILITY_PROOF")
+        raise Section1114OfflineSurfaceError("POST_INVOKED_BY_ORDER_PLAN_PROOF")
     allowed_true = {
         "LIVE_EXECUTION_CODE_EXISTS",
         "LIVE_EXECUTION_PATH_REACHABLE",
         "LIVE_PRIVATE_READ_ONLY_PROVEN",
+        "LIVE_ORDER_PLAN_OBSERVED",
     }
     for field_name in LADDER_FIELDS:
         if field_name in allowed_true:

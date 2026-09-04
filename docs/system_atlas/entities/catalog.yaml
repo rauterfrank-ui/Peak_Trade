@@ -1321,6 +1321,25 @@ entities:
       or later observed/proven fields. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: PHASE:section_11_14_live_order_plan_observed_adjudication
+    kind: PHASE
+    name: 11.14.LIVE_ORDER_PLAN_OBSERVED_ADJUDICATION
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/SECTION_11_14_LIVE_ORDER_PLAN_OBSERVED_ADJUDICATION_V1.md
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T140500Z/
+      - tests/ops/test_section_11_14_live_order_plan_observed_adjudication_v1.py
+      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
+    notes: >-
+      LIVE_ORDER_PLAN_OBSERVED gated canary submit-path observation.
+      Session arming only. Does not POST. Does not promote
+      LIVE_SUBMIT_ACK_OBSERVED or later observed/proven fields.
+      Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
     name: Route-C create-path blocker census v1
@@ -2159,27 +2178,35 @@ entities:
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/private_read_only_gets_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/private_read_only_adjudication_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/later_field_census_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/order_plan_observed_predicate_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/order_plan_observed_adjudication_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/order_plan_observe_execute_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py
+      - src/governance/policy_critic/rules.py
     evidence_sources:
       - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_v1.py
       - tests/ops/test_section_11_14_live_execution_code_exists_adjudication_v1.py
       - tests/ops/test_section_11_14_live_execution_path_reachable_adjudication_v1.py
       - tests/ops/test_section_11_14_live_private_read_only_proven_adjudication_v1.py
+      - tests/ops/test_section_11_14_live_order_plan_observed_adjudication_v1.py
       - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/SECTION_11_14_LIVE_ORDER_AND_ECONOMIC_EVIDENCE_LADDER_OFFLINE_SURFACE_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION_V1.md
+      - docs/ops/specs/SECTION_11_14_LIVE_ORDER_PLAN_OBSERVED_ADJUDICATION_V1.md
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T121000Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T123100Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T130000Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T133200Z/
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T140500Z/
     notes: >-
       Navigation inventory of the §11.14 evidence-ladder surface including
-      LIVE_EXECUTION_CODE_EXISTS, LIVE_EXECUTION_PATH_REACHABLE, and
-      LIVE_PRIVATE_READ_ONLY_PROVEN. Does not POST. Does not activate Cap
-      11.7-11.11. Does not promote LIVE_ORDER_PLAN_OBSERVED. Atlas is not
-      canonical authority.
+      LIVE_EXECUTION_CODE_EXISTS, LIVE_EXECUTION_PATH_REACHABLE,
+      LIVE_PRIVATE_READ_ONLY_PROVEN, and LIVE_ORDER_PLAN_OBSERVED.
+      Does not POST. Does not activate Cap 11.7-11.11. Does not promote
+      LIVE_SUBMIT_ACK_OBSERVED. Atlas is not canonical authority.
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1

@@ -307,6 +307,19 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
             ),
         ),
         _row(
+            candidate="SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN",
+            classification="CURRENT_AND_ADMISSIBLE",
+            target_11_14_field="LIVE_PRIVATE_READ_ONLY_PROVEN",
+            reason=(
+                "Predecessor §11.14 config+balance GET conjunction remains bound "
+                "true. This GO does not re-open that field and does not treat "
+                "GET-only evidence as LIVE_ORDER_PLAN_OBSERVED."
+            ),
+            evidence_paths=(
+                "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T133200Z/",
+            ),
+        ),
+        _row(
             candidate="SECTION_11_13_4_BLOCKED_DRY_RUN_ORDER_PLAN",
             classification="SEMANTICALLY_DIFFERENT",
             target_11_14_field="LIVE_ORDER_PLAN_OBSERVED",

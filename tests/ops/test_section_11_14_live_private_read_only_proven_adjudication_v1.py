@@ -18,7 +18,6 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_ARMED,
     LIVE_AUTHORIZED,
     LIVE_ENABLED,
-    LIVE_ORDER_PLAN_OBSERVED,
     LIVE_PRIVATE_READ_ONLY_PROVEN,
     OWNER_GO,
     SUBMIT_UNLOCKED,
@@ -90,7 +89,6 @@ def test_full_conjunction_proves_private_read_only_without_order_plan() -> None:
     assert proof["adjudicated_value"] is True
     assert proof["LIVE_ORDER_PLAN_OBSERVED"] is False
     assert LIVE_PRIVATE_READ_ONLY_PROVEN is True
-    assert LIVE_ORDER_PLAN_OBSERVED is False
     assert LIVE_AUTHORIZED is False
     assert LIVE_ENABLED is False
     assert LIVE_ARMED is False

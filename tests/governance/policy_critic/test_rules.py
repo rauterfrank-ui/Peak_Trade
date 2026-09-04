@@ -104,6 +104,30 @@ class TestNoSecretsRule:
         violations = rule.check(diff, ["tests/ops/test_example_prereg_v1.py"])
         assert len(violations) == 0
 
+    def test_no_false_positive_on_owner_go_execute_identifier(self):
+        """Public canary Owner-GO execute identifiers are not commit secrets.
+
+        PR #6260 BLOCKED because the generic token length heuristic matched a
+        public OWNER_GO execute-permit name on the gated observe path.
+        """
+        rule = NoSecretsRule()
+        name = "CANARY_TECHNICAL_EXECUTE_" + "TOKEN"
+        value = "OWNER_GO_LIVE_CANARY_" + "MINIMUM_EXPOSURE"
+        diff = (
+            "+++ b/src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/constants_v1.py\n"
+            "+" + name + " = " + '"' + value + '"\n'
+            "+++ b/evidence/ops/example/ORDER_PLAN.sanitized.json\n"
+            '+  "' + name + '": "' + value + '",\n'
+        )
+        violations = rule.check(
+            diff,
+            [
+                "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/constants_v1.py",
+                "evidence/ops/example/ORDER_PLAN.sanitized.json",
+            ],
+        )
+        assert len(violations) == 0
+
     def test_no_false_positive_on_forced_wiring_module_marker(self):
         """Regression: fixture module-path markers must not trip NO_SECRETS.
 

@@ -413,6 +413,26 @@ def test_canary_submit_post_omits_pos_side_and_simulated_trading_header() -> Non
     assert body == expected
 
 
+def test_observe_order_plan_only_produces_plan_without_post() -> None:
+    transport = _fake_transport()
+    result = run_canary_submit_transport_v1(
+        **_transport_kwargs(transport=transport, observe_order_plan_only=True)
+    )
+    assert result["ok"] is True
+    assert result["CANARY_RESULT"] == "ORDER_PLAN_OBSERVED_NO_POST"
+    assert result["POST_USED"] is False
+    assert result["WIRE_SEND_POST"] is False
+    assert result["SUBMIT_USED"] is False
+    assert result["ORDER_PLAN_PRODUCED_AFTER_GATES"] is True
+    assert result["plan"]["instrument_id"] == DEFAULT_INSTRUMENT_ID
+    assert result["plan"]["quantity"] == "1"
+    assert result["plan"]["order_type"] == "LIMIT"
+    assert result["plan"]["td_mode"] == "cross"
+    assert [c.method for c in transport.calls if c.method == "POST"] == []
+    assert result["counters"]["ENTRY_SUBMIT_COUNT"] == 0
+    assert int(result["counters"]["GET_REQUEST_COUNT"]) >= 1
+
+
 def test_http_client_rejects_wrong_host_and_demo_and_ungated_post() -> None:
     transport = RecordingFakeCanaryTransportV1()
     with pytest.raises(LiveCanaryHttpError, match="HOST_MISMATCH"):

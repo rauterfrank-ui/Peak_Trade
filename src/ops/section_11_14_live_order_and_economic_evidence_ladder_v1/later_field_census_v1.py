@@ -1,13 +1,11 @@
-"""Census of remaining §11.14 ladder fields after LIVE_PRIVATE_READ_ONLY_PROVEN."""
+"""Census of remaining §11.14 ladder fields after LIVE_ORDER_PLAN_OBSERVED."""
 
 from __future__ import annotations
 
 from typing import Any
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    BLOCKED_DRY_RUN_IS_NOT_LIVE_ORDER_PLAN_OBSERVED,
     LIVE_ORDER_PLAN_OBSERVED_CANONICAL_DEFINITION,
-    LIVE_PRIVATE_READ_ONLY_PROVEN_DOES_NOT_IMPLY_ORDER_PLAN_OBSERVED,
 )
 
 
@@ -15,13 +13,14 @@ def build_later_field_census_v1() -> dict[str, Any]:
     return {
         "schema_version": "section_11_14_later_field_census.v1",
         "LIVE_PRIVATE_READ_ONLY_PROVEN": True,
-        "EARLIEST_UNRESOLVED_DEPENDENCY": "LIVE_ORDER_PLAN_OBSERVED",
-        "EARLIEST_MUTATION_BOUNDARY": "LIVE_ORDER_PLAN_OBSERVED",
-        "MINIMUM_EXTERNAL_ACTION_CLASS": "LIVE_GATE_UNLOCK_THEN_CANONICAL_SUBMIT_PATH",
+        "LIVE_ORDER_PLAN_OBSERVED": True,
+        "EARLIEST_UNRESOLVED_DEPENDENCY": "LIVE_SUBMIT_ACK_OBSERVED",
+        "EARLIEST_MUTATION_BOUNDARY": "LIVE_SUBMIT_ACK_OBSERVED",
+        "MINIMUM_EXTERNAL_ACTION_CLASS": "POST_ORDER_SUBMIT",
         "rows": [
             {
                 "field": "LIVE_ORDER_PLAN_OBSERVED",
-                "claim_value": False,
+                "claim_value": True,
                 "canonical_definition": LIVE_ORDER_PLAN_OBSERVED_CANONICAL_DEFINITION,
                 "producer": (
                     "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/"
@@ -34,21 +33,6 @@ def build_later_field_census_v1() -> dict[str, Any]:
                 "post_required": False,
                 "productive_state_mutation_required": False,
                 "live_gate_unlock_required": True,
-                "why_read_only_evidence_is_insufficient": (
-                    "Canonical producer is the gated Live canary submit path after "
-                    "refuse_submit_unless_gates_pass_v1. Standing LIVE_ENABLED, "
-                    "LIVE_ARMED, SUBMIT_UNLOCKED, and CANARY_AUTHORIZED remain false. "
-                    "This GO forbids Live-gate mutation. Direct builder invocation is "
-                    "not the canonical path. §11.13.4 blocked dry-run is semantically "
-                    "different. "
-                    "BLOCKED_DRY_RUN_IS_NOT_LIVE_ORDER_PLAN_OBSERVED="
-                    f"{str(BLOCKED_DRY_RUN_IS_NOT_LIVE_ORDER_PLAN_OBSERVED).lower()}. "
-                    "LIVE_PRIVATE_READ_ONLY_PROVEN_DOES_NOT_IMPLY_ORDER_PLAN_OBSERVED="
-                    f"{str(LIVE_PRIVATE_READ_ONLY_PROVEN_DOES_NOT_IMPLY_ORDER_PLAN_OBSERVED).lower()}."
-                ),
-                "exact_missing_observation": (
-                    "CURRENT_LIVE_CANARY_ORDER_PLAN_ARTIFACT_ON_PRODUCTIVE_SUBMIT_PATH"
-                ),
             },
             {
                 "field": "LIVE_SUBMIT_ACK_OBSERVED",
@@ -59,7 +43,10 @@ def build_later_field_census_v1() -> dict[str, Any]:
                 ),
                 "post_required": True,
                 "minimum_external_action_class": "POST_ORDER_SUBMIT",
-                "why_blocked": "Predecessor LIVE_ORDER_PLAN_OBSERVED is false; POST unauthorized.",
+                "why_blocked": (
+                    "LIVE_ORDER_PLAN_OBSERVED is true. Canonical ACK requires POST of "
+                    "the observed plan. This GO forbids POST."
+                ),
             },
             {
                 "field": "LIVE_FILL_OBSERVED",
