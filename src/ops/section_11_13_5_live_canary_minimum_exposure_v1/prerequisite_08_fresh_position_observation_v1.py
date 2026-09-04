@@ -329,7 +329,7 @@ def adjudicate_prerequisite_08_window_v1(
     if state == TARGET_POSITION_NONZERO_PROVEN:
         status_08 = "PASS_TARGET_POSITION_NONZERO_OBSERVED_THIS_WINDOW"
         earliest = (
-            "EXECUTION_PREREQUISITE_12_EXACT_FLATTEN_PAYLOAD_FROM_OBSERVED_POSITION"
+            "EXECUTION_PREREQUISITE_16_BOUNDED_ACTIVATION_WITHOUT_GLOBAL_LIVE_AUTHORIZED"
             if qty_numeric == "PASS"
             else "EXECUTION_PREREQUISITE_09_TARGET_POSITION_QTY_NUMERIC"
         )
@@ -339,21 +339,29 @@ def adjudicate_prerequisite_08_window_v1(
             if qty_numeric == "PASS"
             else "UNRESOLVED_DEPENDENT_ON_TARGET_POSITION_QTY_NUMERIC"
         )
+        status_12 = (
+            "PASS"
+            if qty_numeric == "PASS"
+            else "UNRESOLVED_DEPENDENT_ON_TARGET_POSITION_QTY_NUMERIC"
+        )
     elif state == TARGET_POSITION_ZERO_PROVEN:
         status_08 = "UNRESOLVED_TARGET_ZERO_THIS_PAYLOAD"
         earliest = EARLIEST_UNRESOLVED_DEPENDENCY
         status_09 = "PASS_QTY_NUMERIC_ZERO_THIS_WINDOW" if qty_numeric == "PASS" else qty_numeric
         status_11 = "UNRESOLVED_DEPENDENT_ON_TARGET_POSITION_NONZERO"
+        status_12 = "UNRESOLVED_DEPENDENT_ON_TARGET_POSITION_NONZERO"
     elif state == TARGET_POSITION_NOT_OBSERVED:
         status_08 = "UNRESOLVED_TARGET_NOT_OBSERVED_THIS_WINDOW"
         earliest = EARLIEST_UNRESOLVED_DEPENDENCY
         status_09 = REASON_DEPENDENT_BLOCKED
         status_11 = "UNRESOLVED_DEPENDENT_ON_TARGET_POSITION_NONZERO"
+        status_12 = "UNRESOLVED_DEPENDENT_ON_TARGET_POSITION_NONZERO"
     else:
         status_08 = "UNRESOLVED_TARGET_UNKNOWN_THIS_PAYLOAD"
         earliest = EARLIEST_UNRESOLVED_DEPENDENCY
         status_09 = "UNRESOLVED"
         status_11 = "UNRESOLVED"
+        status_12 = "UNRESOLVED"
 
     matching: list[dict[str, Any]] = []
     if isinstance(positions_payload, Mapping) and isinstance(positions_payload.get("data"), list):
@@ -380,6 +388,7 @@ def adjudicate_prerequisite_08_window_v1(
         ),
         "EXECUTION_PREREQUISITE_09_STATUS": status_09,
         "EXECUTION_PREREQUISITE_11_STATUS": status_11,
+        "EXECUTION_PREREQUISITE_12_STATUS": status_12,
         "EARLIEST_UNRESOLVED_DEPENDENCY": earliest,
         "cluster_offline_08_proven_token": cluster.prerequisite_08_proven,
         "cluster_offline_08_status": cluster.prerequisite_08_status,
