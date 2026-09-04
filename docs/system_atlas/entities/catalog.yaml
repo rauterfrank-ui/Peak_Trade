@@ -1404,6 +1404,10 @@ entities:
       - src/ops/section_11_13_5_p11_pos_to_sz_unit_identity_independent_proof_v1/official_excerpts_v1.py
       - src/ops/section_11_13_5_p11_pos_to_sz_unit_identity_independent_proof_v1/persist_claims_v1.py
       - src/ops/section_11_13_5_p11_pos_to_sz_unit_identity_independent_proof_v1/persist_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/order_plan_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_submit_state_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/prerequisite_08_fresh_position_observation_v1.py
     evidence_sources:
       - tests/ops/test_section_11_13_5_p11_pos_to_sz_unit_identity_independent_proof_v1.py
       - tests/ops/test_section_11_13_5_p11_pos_to_sz_unit_identity_independent_proof_persist_v1.py
