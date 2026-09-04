@@ -164,7 +164,7 @@ def test_live_window_nonzero_advances_to_prerequisite_20() -> None:
         positions_payload={"code": "0", "data": [{"instId": TARGET, "pos": "1"}]}
     )
     assert result["EXECUTION_PREREQUISITE_12_STATUS"] == "PASS"
-    assert result["EARLIEST_UNRESOLVED_DEPENDENCY"] == "SEND_TIME_POSITION_REOBSERVATION"
+    assert result["EARLIEST_UNRESOLVED_DEPENDENCY"] == "BOUNDED_RUNTIME_PERMIT_ISSUANCE"
     assert result["EXECUTION_READY"] is False
 
 

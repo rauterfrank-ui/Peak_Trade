@@ -97,6 +97,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:route_c_offline_gated_productive_submit_composition_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:route_c_offline_gated_productive_submit_composition_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:send_time_pass_18_19_21_24_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:send_time_pass_18_19_21_24_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:send_time_position_reobservation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:send_time_position_reobservation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:simulated_execution_port_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:simulated_execution_port_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:z2dg_single_actual_read_only_funding_balance_get_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:z2dg_single_actual_read_only_funding_balance_get_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:z2dh_single_actual_read_only_funding_balance_get_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:z2dh_single_actual_read_only_funding_balance_get_v1 | STATUS=OPEN (not proven) |  |
