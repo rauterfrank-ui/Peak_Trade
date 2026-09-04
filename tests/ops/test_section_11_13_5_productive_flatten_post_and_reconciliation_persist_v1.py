@@ -60,6 +60,7 @@ FREEZE_PACK = canonical_pr_changed_paths_freeze_pack_v1(REPO_ROOT)
 
 APRPI_HEADING = "### 11.13.5 AUTHENTICATED_PRIVATE_RUNTIME_READ_AND_RUNTIME_PERMIT_ISSUANCE"
 FLATTEN_HEADING = "### 11.13.5 PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION"
+CLOSEOUT_HEADING = "### 11.13.5 PR_6252_MERGE_CLOSEOUT"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 
 
@@ -71,8 +72,10 @@ def _read(path: Path) -> str:
 def _flatten_section(text: str) -> str:
     start = text.find(FLATTEN_HEADING)
     assert start >= 0, "missing PRODUCTIVE_FLATTEN persist heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after flatten persist"
+    closeout = text.find(CLOSEOUT_HEADING, start)
+    ladder = text.find(LADDER_HEADING, start)
+    end = closeout if closeout > start else ladder
+    assert end > start, "missing successor boundary after flatten persist"
     return text[start:end]
 
 
@@ -80,8 +83,9 @@ def test_flatten_persist_is_additive_after_aprpi() -> None:
     text = _read(MASTER_RUNBOOK)
     aprpi_start = text.find(APRPI_HEADING)
     flatten_start = text.find(FLATTEN_HEADING)
+    closeout_start = text.find(CLOSEOUT_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= aprpi_start < flatten_start < ladder
+    assert 0 <= aprpi_start < flatten_start < closeout_start < ladder
     aprpi = text[aprpi_start:flatten_start]
     assert "CENSUS_TEXT_REWRITTEN=true" not in aprpi
     assert "PRODUCTIVE_FLATTEN_POST_AUTHORIZED=false" in aprpi
