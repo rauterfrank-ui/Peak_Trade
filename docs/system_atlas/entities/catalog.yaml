@@ -2549,16 +2549,26 @@ entities:
     modified_by: PENDING_CHANGE
     source_paths:
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py
     evidence_sources:
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py
+      - src/ops/exit_policy_producer_binding_v1/constants_v1.py
+      - src/ops/exit_policy_producer_binding_v1/host_binding_v1.py
+      - src/ops/exit_policy_producer_binding_v1/authority_matrix_v1.py
+      - src/ops/exit_policy_producer_binding_v1/parity_v1.py
+      - src/ops/exit_policy_producer_binding_v1/producers_v1.py
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
     notes: >-
       Establishes DdoCaptureBindingV0 session context via
       with_ddo_capture_session_v0 and may call
       record_productive_cycle_capture_v0. Observation only. Does not confer
       DDO trading, risk, safety, or promotion authority.
+      Cap 6.5 profit-protection distance is a host-consumed Cap 6.5 own
+      owner (FROZEN_PROFIT_PROTECTION_DISTANCE=200.0), not Cap 6.3
+      switch-event up_distance. Atlas is not trading authority.
       AUTHORITY_OWNER=NONE. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
-      SECOND_TRADING_AUTHORITY=false. Atlas is not trading authority.
+      SECOND_TRADING_AUTHORITY=false.
 
   - id: RUNTIME_COMPONENT:recon_startup_gate_v1
     kind: RUNTIME_COMPONENT

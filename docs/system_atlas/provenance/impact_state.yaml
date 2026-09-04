@@ -18,11 +18,15 @@ note: >-
   canonical authority.
 changed_entities:
   - NAVIGATION_INDEX:map_of_truth
+  - HOST:wallclock_decision_economics_cycle
   - RUNBOOK:canonical_master_runbook
   - TERM:map_of_truth
 changed_relations:
   - REL:a_map_documents_runbook
   - REL:s_map_navigates_runbook
+  - REL:r_ddo_capture_observes_wallclock_cycle_producers
+  - REL:r_wallclock_calls_ddo_cycle_capture
+  - REL:r_wallclock_injects_ddo_capture_session
 new_relations: []
 removed_relations: []
 affected_dependency_closures:
@@ -33,6 +37,10 @@ affected_schemas: []
 review_required_items: []
 reviewed_ids:
   - id: NAVIGATION_INDEX:map_of_truth
+  - id: HOST:wallclock_decision_economics_cycle
   - id: RUNBOOK:canonical_master_runbook
   - id: TERM:map_of_truth
+  - id: REL:r_ddo_capture_observes_wallclock_cycle_producers
+  - id: REL:r_wallclock_calls_ddo_cycle_capture
+  - id: REL:r_wallclock_injects_ddo_capture_session
   - id: CLOSURE:live_readiness

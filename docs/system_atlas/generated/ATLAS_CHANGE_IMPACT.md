@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
-ATLAS_CHANGED_RELATION_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=4
+ATLAS_CHANGED_RELATION_COUNT=5
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -41,6 +41,7 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `NAVIGATION_INDEX:map_of_truth` |
+| `HOST:wallclock_decision_economics_cycle` |
 | `RUNBOOK:canonical_master_runbook` |
 | `TERM:map_of_truth` |
 
@@ -50,6 +51,9 @@ Do not manually patch generated Markdown.
 | --- |
 | `REL:a_map_documents_runbook` |
 | `REL:s_map_navigates_runbook` |
+| `REL:r_ddo_capture_observes_wallclock_cycle_producers` |
+| `REL:r_wallclock_calls_ddo_cycle_capture` |
+| `REL:r_wallclock_injects_ddo_capture_session` |
 
 ## NEW_RELATIONS
 
