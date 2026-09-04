@@ -50,6 +50,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_submit_tran
     LiveCanaryFlattenSubmitTransportError,
     build_canary_flatten_submit_request_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.mutation_limited_to_proven_position_v1 import (
+    evaluate_mutation_limited_to_proven_position_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.position_observation_freshness_contract_v1 import (
     PositionObservationFreshnessEvidenceV1,
     evaluate_position_observation_freshness_v1,
@@ -89,6 +92,7 @@ GATE_NAMES: tuple[str, ...] = (
     "POSITION_OBSERVATION_FRESHNESS",
     "LIMIT_PRICE_POLICY",
     "OVERSHOOT_FLIP",
+    "MUTATION_LIMITED_TO_PROVEN_POSITION",
     "ONE_SHOT_NO_RETRY",
     "DUPLICATE_POST_PROTECTION",
 )
@@ -500,6 +504,24 @@ def evaluate_flatten_pre_send_gate_v1(
         decisions.append(_decision("OVERSHOOT_FLIP", False, "OVERSHOOT_OR_FLIP_UNPROVEN"))
         if "OVERSHOOT_OR_FLIP_UNPROVEN" not in reasons and body is None:
             reasons.append("OVERSHOOT_OR_FLIP_UNPROVEN")
+
+    p20_ok, p20_reasons = evaluate_mutation_limited_to_proven_position_v1(
+        positions_payload=gate.positions_payload,
+        instrument_id=target or DEFAULT_INSTRUMENT_ID,
+        mutation_body=body,
+        live_authorized_claim=gate.live_authorized is True,
+    )
+    if not p20_ok:
+        reasons.extend(p20_reasons)
+        decisions.append(
+            _decision(
+                "MUTATION_LIMITED_TO_PROVEN_POSITION",
+                False,
+                ",".join(p20_reasons) or "MUTATION_LIMITED_TO_PROVEN_POSITION_DENIED",
+            )
+        )
+    else:
+        decisions.append(_decision("MUTATION_LIMITED_TO_PROVEN_POSITION", True))
 
     if gate.one_shot_no_retry is not True:
         reasons.append("ONE_SHOT_NO_RETRY_REQUIRED")

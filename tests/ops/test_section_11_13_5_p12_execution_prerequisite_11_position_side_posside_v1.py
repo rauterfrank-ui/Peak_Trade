@@ -190,7 +190,7 @@ def test_live_window_nonzero_advances_past_prerequisite_12() -> None:
     assert result["EXECUTION_PREREQUISITE_11_STATUS"] == "PASS"
     assert result["EXECUTION_PREREQUISITE_12_STATUS"] == "PASS"
     assert result["EARLIEST_UNRESOLVED_DEPENDENCY"] == (
-        "EXECUTION_PREREQUISITE_20_MUTATION_LIMITED_TO_PROVEN_POSITION"
+        "EXECUTION_PREREQUISITE_25_NO_ADDITIONAL_OWNER_DECISION_REQUIRED"
     )
     assert result["EXECUTION_READY"] is False
 
