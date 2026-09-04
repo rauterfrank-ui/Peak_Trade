@@ -2182,6 +2182,7 @@ entities:
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/order_plan_observed_adjudication_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/order_plan_observe_execute_v1.py
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py
+      - src/governance/policy_critic/rules.py
     evidence_sources:
       - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_v1.py
       - tests/ops/test_section_11_14_live_execution_code_exists_adjudication_v1.py
