@@ -21,6 +21,11 @@ from src.ops.section_11_13_5_p11_pos_to_sz_unit_identity_independent_proof_v1.co
     assert_flatten_body_identity_v1,
     assert_pos_to_sz_identity_applicable_v1,
 )
+from src.ops.section_11_13_5_p12_execution_prerequisite_11_position_side_posside_v1.contract_v1 import (
+    PositionSidePossideError,
+    assert_no_long_short_buy_sell_conflation_v1,
+    assert_request_pos_side_omitted_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     DEFAULT_INST_FAMILY,
     DEFAULT_INSTRUMENT_ID,
@@ -759,8 +764,12 @@ def serialize_canary_flatten_venue_native_payload_v1(
             reduce_only=True,
         )
         assert_flatten_body_identity_v1(body, quantity=plan.quantity)
+        assert_no_long_short_buy_sell_conflation_v1(plan.side)
+        assert_request_pos_side_omitted_v1(body)
         return body
     except OkxResponseMapperError as exc:
         raise LiveCanaryOrderPlanError(f"FLATTEN_VENUE_NATIVE_BODY:{exc}") from exc
     except PosToSzUnitIdentityError as exc:
         raise LiveCanaryOrderPlanError(f"POS_TO_SZ_UNIT:{exc}") from exc
+    except PositionSidePossideError as exc:
+        raise LiveCanaryOrderPlanError(f"POSITION_SIDE:{exc}") from exc

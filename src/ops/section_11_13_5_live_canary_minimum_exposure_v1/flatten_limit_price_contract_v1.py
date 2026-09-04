@@ -16,6 +16,9 @@ from typing import Any
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.order_plan_v1 import (
     FLATTEN_LIMIT_PRICE_GATE_STATUS,
 )
+from src.ops.section_11_13_5_p12_execution_prerequisite_11_position_side_posside_v1.contract_v1 import (
+    flatten_order_side_from_signed_pos_v1,
+)
 
 
 class LiveCanaryFlattenLimitPriceError(RuntimeError):
@@ -208,7 +211,7 @@ def _parse_timestamp_ms(raw: str) -> int | str:
 
 
 def _expected_flatten_side(signed_pos: Decimal) -> str:
-    return "SELL" if signed_pos > 0 else "BUY"
+    return flatten_order_side_from_signed_pos_v1(signed_pos)
 
 
 def _quantize_to_tick(px: Decimal, tick: Decimal, *, flatten_side: str) -> Decimal | None:

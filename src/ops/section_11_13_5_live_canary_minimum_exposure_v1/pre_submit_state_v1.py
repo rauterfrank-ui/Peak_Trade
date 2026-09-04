@@ -16,6 +16,10 @@ from src.ops.section_11_13_5_p11_pos_to_sz_unit_identity_independent_proof_v1.co
     assert_pos_to_sz_identity_applicable_v1,
     identity_flatten_sz_from_signed_pos_v1,
 )
+from src.ops.section_11_13_5_p12_execution_prerequisite_11_position_side_posside_v1.contract_v1 import (
+    PositionSidePossideError,
+    flatten_order_side_from_signed_pos_v1,
+)
 
 
 class LiveCanaryPreSubmitStateError(RuntimeError):
@@ -265,7 +269,10 @@ def observe_target_position_flatten_candidate_v1(
         assert_identity_sz_equals_abs_pos_v1(signed_pos=signed, sz=abs_qty)
     except PosToSzUnitIdentityError as exc:
         raise LiveCanaryPositionObservationError(f"POS_TO_SZ_UNIT:{exc}") from exc
-    side = "SELL" if signed > 0 else "BUY"
+    try:
+        side = flatten_order_side_from_signed_pos_v1(signed)
+    except PositionSidePossideError as exc:
+        raise LiveCanaryPositionObservationError(f"POSITION_SIDE:{exc}") from exc
     return ObservedTargetPositionFlattenCandidateV1(
         instrument_id=classified.instrument_id,
         signed_pos=signed,

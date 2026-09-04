@@ -1062,6 +1062,18 @@ entities:
       - tests/ops/test_section_11_13_5_p11_pos_to_sz_unit_identity_independent_proof_persist_v1.py
     notes: Additive independent POS_TO_SZ unit-identity proof. Unit PROVEN as NUMBER_OF_CONTRACTS. No private GET. No POST. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: PHASE:p12_execution_prerequisite_11_position_side_posside
+    kind: PHASE
+    name: 11.13.5.P12
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - evidence/ops/section_11_13_5_p12_execution_prerequisite_11_position_side_posside_v1/20260904T001300Z/
+      - tests/ops/test_section_11_13_5_p12_execution_prerequisite_11_position_side_posside_persist_v1.py
+    notes: Additive offline EXECUTION_PREREQUISITE_11 position-side / request-posSide closure. Request posSide omitted. No GET. No POST. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
     name: Route-C create-path blocker census v1
@@ -1418,6 +1430,40 @@ entities:
       Navigation inventory of the additive P11 POS_TO_SZ unit-identity
       independent proof. Unit PROVEN as NUMBER_OF_CONTRACTS. No private
       GET. No POST. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:p12_execution_prerequisite_11_position_side_posside_v1
+    kind: RUNTIME_COMPONENT
+    name: P12 EXECUTION_PREREQUISITE_11 position side posSide v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_13_5_p12_execution_prerequisite_11_position_side_posside_v1/__init__.py
+      - src/ops/section_11_13_5_p12_execution_prerequisite_11_position_side_posside_v1/assemble_v1.py
+      - src/ops/section_11_13_5_p12_execution_prerequisite_11_position_side_posside_v1/adjudicate_v1.py
+      - src/ops/section_11_13_5_p12_execution_prerequisite_11_position_side_posside_v1/constants_v1.py
+      - src/ops/section_11_13_5_p12_execution_prerequisite_11_position_side_posside_v1/contract_v1.py
+      - src/ops/section_11_13_5_p12_execution_prerequisite_11_position_side_posside_v1/lineage_v1.py
+      - src/ops/section_11_13_5_p12_execution_prerequisite_11_position_side_posside_v1/persist_claims_v1.py
+      - src/ops/section_11_13_5_p12_execution_prerequisite_11_position_side_posside_v1/persist_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/order_plan_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_submit_state_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_limit_price_contract_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/prerequisite_08_fresh_position_observation_v1.py
+      - src/ops/section_11_13_5_p11_pos_to_sz_unit_identity_independent_proof_v1/adjudicate_v1.py
+    evidence_sources:
+      - tests/ops/test_section_11_13_5_p12_execution_prerequisite_11_position_side_posside_v1.py
+      - tests/ops/test_section_11_13_5_p12_execution_prerequisite_11_position_side_posside_persist_v1.py
+      - tests/ops/test_section_11_13_5_p11_pos_to_sz_unit_identity_independent_proof_persist_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/P12_EXECUTION_PREREQUISITE_11_POSITION_SIDE_POSSIDE_V1.md
+      - docs/forensics/persistence/inventories/P12_EXECUTION_PREREQUISITE_11_POSITION_SIDE_POSSIDE_OBSERVATION_V1.json
+      - evidence/ops/section_11_13_5_p12_execution_prerequisite_11_position_side_posside_v1/20260904T001300Z/
+    notes: >-
+      Navigation inventory of the additive P12 EXECUTION_PREREQUISITE_11
+      position-side / request-posSide closure. Request posSide omitted.
+      No GET. No POST. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1
     kind: RUNTIME_COMPONENT

@@ -1,0 +1,97 @@
+{
+  "AUTHORITY": "NONE",
+  "BOUND_ORIGIN_MAIN_SHA": "dec8c5bb2fcd25d0c5bed9d6553af4e10da80601",
+  "CANARY_EXECUTION": false,
+  "DOCUMENT_CLASS": "P12_EXECUTION_PREREQUISITE_11_LINEAGE_V1",
+  "DOCUMENT_ROLE": "FORENSIC_LINEAGE_AUTHORITY_NONE",
+  "LINEAGE_FIELD_NAMES": [
+    "producer",
+    "field",
+    "source_path",
+    "status",
+    "semantic_object",
+    "observed_value",
+    "transformation",
+    "output_object",
+    "epistemic_class",
+    "adjudication_status"
+  ],
+  "LIVE_EXECUTION": false,
+  "OWNER_GO": "PEAK_TRADE_OWNER_GO_P11_POSITION_SIDE_POSSIDE_MAXIMUM_SAFE_LEVERAGE_V1",
+  "POST_PERFORMED": false,
+  "SEAMS": [
+    {
+      "adjudication_status": "PROVEN",
+      "epistemic_class": "CURRENT_AUTHORITATIVE_PRODUCER",
+      "field": "signed_pos",
+      "observed_value": "P08_CAPTURE_POS=1",
+      "output_object": "SIGNED_POS",
+      "producer": "observe_target_position_flatten_candidate_v1",
+      "semantic_object": "POSITION_DIRECTION_SIGNED_POS",
+      "source_path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_submit_state_v1.py",
+      "status": "current_bound_producer",
+      "transformation": "NONE_SIGNED_POS_FROM_POSITIONS_ROW"
+    },
+    {
+      "adjudication_status": "PROVEN",
+      "epistemic_class": "CURRENT_AUTHORITATIVE_CONTRACT",
+      "field": "side",
+      "observed_value": "SELL_IF_OBSERVED_SIGNED_POS_GT_0_ELSE_BUY",
+      "output_object": "PLACE_ORDER_SIDE_BUY_OR_SELL",
+      "producer": "flatten_order_side_from_signed_pos_v1",
+      "semantic_object": "FLATTEN_ORDER_SIDE",
+      "source_path": "src/ops/section_11_13_5_p12_execution_prerequisite_11_position_side_posside_v1/contract_v1.py",
+      "status": "current_bound_contract",
+      "transformation": "SELL_IF_SIGNED_POS_GT_0_ELSE_BUY"
+    },
+    {
+      "adjudication_status": "PROVEN",
+      "epistemic_class": "CURRENT_AUTHORITATIVE_MAPPER",
+      "field": "posSide",
+      "observed_value": "OMITTED",
+      "output_object": "VENUE_NATIVE_FLATTEN_BODY_WITHOUT_POSSIDE",
+      "producer": "build_venue_native_order_body_v1",
+      "semantic_object": "REQUEST_POS_SIDE",
+      "source_path": "src/ops/section_11_12_8_actual_productive_testnet_campaign_run_start_v1/okx_response_mapper_v1.py",
+      "status": "current_bound_mapper_omits_field",
+      "transformation": "OMITTED_FROM_VENUE_NATIVE_BODY"
+    },
+    {
+      "adjudication_status": "NOT_PROMOTED",
+      "epistemic_class": "CLASS_B_OBSERVATION_NOT_REQUEST_PROOF",
+      "field": "posSide",
+      "observed_value": "net",
+      "output_object": "NOT_REQUEST_POS_SIDE",
+      "producer": "AUTHORIZED_TARGET_ROW",
+      "semantic_object": "POSITION_ROW_POS_SIDE",
+      "source_path": "src/ops/section_11_13_5_p08_nonzero_position_adjudication_persist_close_v1/captured_payload_v1.py",
+      "status": "historical_p08_position_row",
+      "transformation": "NOT_COPIED_ONTO_PLACE_ORDER"
+    },
+    {
+      "adjudication_status": "NOT_PROMOTED",
+      "epistemic_class": "SEPARATE_CONTRACT_NOT_PREREQUISITE_11",
+      "field": "posMode",
+      "observed_value": "net_mode_required_not_rewritten_to_request_posSide",
+      "output_object": "NOT_REQUEST_POS_SIDE",
+      "producer": "apply_fresh_pos_mode_pretrade_gate_v1",
+      "semantic_object": "ACCOUNT_POS_MODE",
+      "source_path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pos_mode_consumer_v1.py",
+      "status": "separate_account_pos_mode_binding",
+      "transformation": "POS_MODE_IS_NOT_REQUEST_POS_SIDE"
+    },
+    {
+      "adjudication_status": "PROVEN",
+      "epistemic_class": "CANONICAL_AUTHORITY",
+      "field": "FLATTEN_POS_SIDE",
+      "observed_value": "OMITTED_FROM_VENUE_NATIVE_BODY_MAPPER_DOES_NOT_EMIT",
+      "output_object": "EXECUTION_PREREQUISITE_11_PASS",
+      "producer": "Z2CB_FLATTEN_POS_SIDE",
+      "semantic_object": "REQUEST_POS_SIDE_POLICY",
+      "source_path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "status": "canonical_z2cb_already_bound",
+      "transformation": "NONE_ALREADY_BOUND_EXPLICITLY_CLOSED_BY_P12"
+    }
+  ],
+  "THIS_SLICE": "11.13.5.P12"
+}

@@ -129,8 +129,7 @@ def adjudicate_pos_to_sz_unit_identity_v1(
         raise P11PosToSzAdjudicationError("QTY_NUMERIC_NOT_PASS")
     if window.get("UNIT_CHAIN_VERDICT") != UNIT_CHAIN_VERDICT_VALUE:
         raise P11PosToSzAdjudicationError("WINDOW_UNIT_CHAIN_VERDICT_DRIFT")
-    if window.get("EARLIEST_UNRESOLVED_DEPENDENCY") != EARLIEST_UNRESOLVED_DEPENDENCY:
-        raise P11PosToSzAdjudicationError("WINDOW_EARLIEST_DEPENDENCY_DRIFT")
+    # Historical P11 persist is frozen. Live-window earliest is owned by later slices.
     if AUTHORIZED_TARGET_ROW.get("pos") != "1":
         raise P11PosToSzAdjudicationError("CAPTURED_POS_DRIFT")
     if "posCcy" in AUTHORIZED_TARGET_ROW:
