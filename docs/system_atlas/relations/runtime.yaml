@@ -513,6 +513,21 @@ relations:
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T160450Z/
     notes: >-
       LIVE_SUBMIT_ACK_OBSERVED adjudication follows the bound proof
-      criterion. Exact single live POST. ACK true. Fill ineligible.
+      criterion. Exact single live POST. ACK true. Fill ineligible
+      under that consumed GO. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_section_11_14_fill_observed_adjudication_follows_submit_ack
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_submit_ack_observed_adjudication
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/fill_observed_adjudication_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/fill_observed_execute_v1.py
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T165859Z/
+    notes: >-
+      LIVE_FILL_OBSERVED adjudication follows the bound ACK identity.
+      Identity-bound private fills GET. Fill true. Fee ineligible.
       Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.

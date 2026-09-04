@@ -16,6 +16,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_AUTHORIZED,
     LIVE_ENABLED,
     LIVE_EXECUTION_CODE_EXISTS,
+    LIVE_FEE_OBSERVED,
     LIVE_FILL_OBSERVED,
     LIVE_PRIVATE_READ_ONLY_PROVEN,
     LIVE_SUBMIT_ACK_OBSERVED,
@@ -114,7 +115,8 @@ def test_venue_connectivity_does_not_promote_later_ladder_fields() -> None:
     assert proof["LIVE_ORDER_PLAN_OBSERVED"] is False
     assert LIVE_PRIVATE_READ_ONLY_PROVEN is True
     assert LIVE_SUBMIT_ACK_OBSERVED is True
-    assert LIVE_FILL_OBSERVED is False
+    assert LIVE_FILL_OBSERVED is True
+    assert LIVE_FEE_OBSERVED is False
 
 
 def test_false_required_constituent_makes_path_reachable_false() -> None:

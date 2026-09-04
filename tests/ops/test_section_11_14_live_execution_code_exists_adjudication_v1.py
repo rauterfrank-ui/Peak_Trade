@@ -13,6 +13,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_AUTHORIZED,
     LIVE_EXECUTION_CODE_EXISTS,
     LIVE_EXECUTION_PATH_REACHABLE,
+    LIVE_FEE_OBSERVED,
     LIVE_FILL_OBSERVED,
     LIVE_PRIVATE_READ_ONLY_PROVEN,
     LIVE_SUBMIT_ACK_OBSERVED,
@@ -114,4 +115,5 @@ def test_true_does_not_imply_path_reachable_or_authorization_or_later_fields() -
     assert LIVE_AUTHORIZED is False
     assert LIVE_PRIVATE_READ_ONLY_PROVEN is True
     assert LIVE_SUBMIT_ACK_OBSERVED is True
-    assert LIVE_FILL_OBSERVED is False
+    assert LIVE_FILL_OBSERVED is True
+    assert LIVE_FEE_OBSERVED is False

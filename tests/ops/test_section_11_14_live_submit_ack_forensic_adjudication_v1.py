@@ -17,7 +17,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     AUTHORIZED_PRODUCTIVE_SUBMIT_COUNT_MAX,
-    CASE_ADJUDICATION,
+    HISTORICAL_ACK_CASE_ADJUDICATION,
     LIVE_SUBMIT_ACK_OBSERVED,
     RETRY_DEFAULT,
     SECOND_SUBMIT_DEFAULT,
@@ -42,7 +42,7 @@ def test_single_submit_safety_constants() -> None:
     assert SECOND_SUBMIT_DEFAULT is False
     assert TIMEOUT_MUST_NOT_AUTO_POST is True
     assert LIVE_SUBMIT_ACK_OBSERVED is True
-    assert CASE_ADJUDICATION == "CASE_LIVE_SUBMIT_ACK_OBSERVED_FILL_INELIGIBLE"
+    assert HISTORICAL_ACK_CASE_ADJUDICATION == "CASE_LIVE_SUBMIT_ACK_OBSERVED_FILL_INELIGIBLE"
 
 
 def test_refuse_ack_true_promotion() -> None:

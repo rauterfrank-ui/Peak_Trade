@@ -10,7 +10,7 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    CASE_ADJUDICATION,
+    HISTORICAL_ACK_CASE_ADJUDICATION,
     LIVE_ORDER_PLAN_OBSERVED,
     LIVE_SUBMIT_ACK_OBSERVED_CANONICAL_DEFINITION,
     LIVE_SUBMIT_ACK_OBSERVED_PRODUCER,
@@ -151,7 +151,7 @@ def adjudicate_live_submit_ack_observed_v1(
         "read_only_recon_clordid_match": recon_match,
         "POST_USED": bool(post_used) if live_source else False,
         "ACK_SOURCE_KIND": source_kind if live_source else INJECTED_EVIDENCE_SOURCE_KIND,
-        "CASE_ADJUDICATION": CASE_ADJUDICATION,
+        "CASE_ADJUDICATION": HISTORICAL_ACK_CASE_ADJUDICATION,
     }
 
 
