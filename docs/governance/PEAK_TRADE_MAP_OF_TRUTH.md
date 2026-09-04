@@ -208,6 +208,7 @@ Ergänzende Owner-/Wiring-Hinweise (keine parallele Trading-SSOT):
 | [`docs/ops/specs/PEAK_TRADE_VENUE_PRETRADE_LIMIT_GATES_FORENSIC_BINDING_AND_CLOSURE_V1.md`](../ops/specs/PEAK_TRADE_VENUE_PRETRADE_LIMIT_GATES_FORENSIC_BINDING_AND_CLOSURE_V1.md) | VENUE_PRETRADE_LIMIT_GATES Forensic Binding and Closure (navigation only) |
 | [`docs/ops/specs/PEAK_TRADE_CANARY_SUBMIT_AUTHORIZATION_CONTRACT_V1.md`](../ops/specs/PEAK_TRADE_CANARY_SUBMIT_AUTHORIZATION_CONTRACT_V1.md) | CANARY_SUBMIT_AUTHORIZATION Contract (navigation only) |
 | [`docs/ops/specs/PEAK_TRADE_BIND_CURRENT_SUI_L4_FAIL_CLOSED_MAX_AVAILABLE_ZERO_END_STATE_NO_REPAIR_V1.md`](../ops/specs/PEAK_TRADE_BIND_CURRENT_SUI_L4_FAIL_CLOSED_MAX_AVAILABLE_ZERO_END_STATE_NO_REPAIR_V1.md) | Current-SUI L4 fail-closed MAX_AVAILABLE zero end-state bind (navigation only; no repair) |
+| [`docs/ops/specs/MODEL_C_DYNAMIC_SCOPE_DERIVED_SWITCH_EVENT_THRESHOLDS_CONTRACT_V1.md`](../ops/specs/MODEL_C_DYNAMIC_SCOPE_DERIVED_SWITCH_EVENT_THRESHOLDS_CONTRACT_V1.md) | MODEL_C docs-only target: derive switch-event distances from Dynamic Scope SSOT (`FORMULA_UNSET`; non-authorizing; MODEL_B remains productive baseline; navigation only) |
 
 ---
 

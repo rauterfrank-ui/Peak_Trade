@@ -14,9 +14,9 @@
 This view is topology change-coupling, not canonical authority.
 
 ```text
-ATLAS_IMPACT=NONE_WITH_PROOF
-ATLAS_CHANGED_ENTITY_COUNT=0
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_IMPACT=UPDATED
+ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,13 +40,16 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| _(none)_ |
+| `NAVIGATION_INDEX:map_of_truth` |
+| `RUNBOOK:canonical_master_runbook` |
+| `TERM:map_of_truth` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:a_map_documents_runbook` |
+| `REL:s_map_navigates_runbook` |
 
 ## NEW_RELATIONS
 
@@ -64,7 +67,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| _(none)_ |
+| `CLOSURE:live_readiness` |
 
 ## AFFECTED_OKX_SURFACES
 
@@ -92,7 +95,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- WP-FS-B1 post-merge canonical persist and Atlas current-main navigation census SHA rebind only. CURRENT_REPO_SHA rebound to 14e8a58f32dcb6b521be6b2559b388bf27360194 (#6215). HISTORICAL_EVIDENCE_SHA domain census payloads remain 615de3b307132b73a60df33fd3bedfac811c8cce (WP-FA-07). No catalog entity or relation topology change. No WP-FA-08 definition. No runtime, supervisor, execution, learning, or promotion authority. Atlas is not canonical authority.
+- PR 6271 Atlas follow-up: Map of Truth gained a docs-only navigation pointer to MODEL_C_DYNAMIC_SCOPE_DERIVED_SWITCH_EVENT_THRESHOLDS_CONTRACT_V1. Non-authorizing. Formula unset. Runtime bind unauthorized. Freeze exception unauthorized. hysteresis_multiplier runtime unauthorized. MODEL_B remains the productive baseline. CLOSURE:live_readiness is inspected because MOT documents the runbook; this pointer does not authorize Live. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
