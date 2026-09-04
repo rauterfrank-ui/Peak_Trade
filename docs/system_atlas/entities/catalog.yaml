@@ -69,6 +69,7 @@ entities:
       - docs/ops/specs/MODEL_C_DYNAMIC_SCOPE_DERIVED_SWITCH_EVENT_THRESHOLDS_CONTRACT_V1.md
       - docs/ops/specs/MODEL_C_FORMULA_AND_POLICY_ADJUDICATION_V1.md
       - docs/ops/specs/MODEL_C_UP_DISTANCE_SWITCH_VS_PROFIT_PROTECTION_AUTHORITY_SPLIT_V1.md
+      - docs/ops/specs/DIRECTIONAL_MAPPING_CONTRACT_REPAIR_V1.md
     notes: >-
       WP-04 mechanical navigation inventory only. Decision Map is listed as a
       navigation sibling, not a second SSOT and not selection authority.
@@ -77,6 +78,9 @@ entities:
       are docs-only or wiring-identity navigation pointers (formula recorded,
       not runtime-bound; profit-protection 200.0 is not switch-event up_distance;
       MODEL_B remains productive baseline; no freeze exception; no derivation bind).
+      Directional mapping contract repair is docs-only target policy (runtime
+      unbound; freeze exception unauthorized; ARMED residual unresolved;
+      MODEL_B remains productive baseline).
 
   - id: FORENSIC_REFERENCE:information_corpus_persistence_base
     kind: FORENSIC_REFERENCE
