@@ -41,10 +41,9 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
             target_11_14_field="LIVE_PRIVATE_READ_ONLY_PROVEN",
             reason=(
                 "Same field name is bound true as §11.13.2 SSOT on SHA "
-                "d10a44a51d2c3314f80bdc546423c9fd32e0eb5b. This GO forbids "
-                "promoting predecessor proven fields into §11.14. Identity of "
-                "11.14 consumption is unproven; freshness versus current main "
-                "is unproven."
+                "d10a44a51d2c3314f80bdc546423c9fd32e0eb5b dated 20260811. "
+                "Historical proof is not current §11.14 LIVE_PRIVATE_READ_ONLY_PROVEN. "
+                "This GO requires a fresh config+balance GET conjunction on current main."
             ),
             evidence_paths=(
                 "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
@@ -208,7 +207,7 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
             target_11_14_field="LIVE_EXECUTION_PATH_REACHABLE",
             reason=(
                 "LIVE_EXECUTION_CODE_EXISTS=true is current on origin/main "
-                "fa02c54468cc0320fe8c756bb4da08485fb84597 and proves "
+                "6930807523ea7af3aff8cc653d335d5719d38d25 and proves "
                 "STATIC_EXECUTION_GRAPH_COMPLETE / ENTRYPOINT_INTEGRATED. It is "
                 "not sufficient for PATH_REACHABLE."
             ),
@@ -276,6 +275,44 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
                 "§4.9 CURRENTLY_REACHABLE means the Python surface is constructible. "
                 "Canonical distinction: CURRENTLY_REACHABLE is not "
                 "LIVE_EXECUTION_PATH_REACHABLE."
+            ),
+            evidence_paths=("docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",),
+        ),
+        _row(
+            candidate="SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE",
+            classification="CURRENT_AND_ADMISSIBLE",
+            target_11_14_field="LIVE_PRIVATE_READ_ONLY_PROVEN",
+            reason=(
+                "LIVE_EXECUTION_PATH_REACHABLE=true is the predecessor on current "
+                "origin/main. It is necessary but not sufficient. Its single "
+                "GET /api/v5/account/config does not satisfy the config+balance "
+                "conjunction."
+            ),
+            evidence_paths=(
+                "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+                "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T130000Z/",
+            ),
+        ),
+        _row(
+            candidate="SECTION_11_14_PATH_REACHABLE_PRIVATE_GET",
+            classification="CURRENT_BUT_INSUFFICIENT",
+            target_11_14_field="LIVE_PRIVATE_READ_ONLY_PROVEN",
+            reason=(
+                "The PATH_REACHABLE GET proved authenticated connectivity only. "
+                "SINGLE_REACHABILITY_GET_IS_NOT_PRIVATE_READ_ONLY_PROVEN=true. "
+                "Balance GET was not performed under that GO."
+            ),
+            evidence_paths=(
+                "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T130000Z/PRIVATE_GET.sanitized.json",
+            ),
+        ),
+        _row(
+            candidate="SECTION_11_13_4_BLOCKED_DRY_RUN_ORDER_PLAN",
+            classification="SEMANTICALLY_DIFFERENT",
+            target_11_14_field="LIVE_ORDER_PLAN_OBSERVED",
+            reason=(
+                "Blocked dry-run is not LIVE_ORDER_PLAN_OBSERVED. Canonical "
+                "§11.14 observation requires the productive gated submit path."
             ),
             evidence_paths=("docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",),
         ),

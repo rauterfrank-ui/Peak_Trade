@@ -19,6 +19,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_ENABLED,
     LIVE_EXECUTION_CODE_EXISTS,
     LIVE_EXECUTION_PATH_REACHABLE,
+    LIVE_PRIVATE_READ_ONLY_PROVEN,
     MANDATORY_LIVE_METRIC_COUNT,
     MANDATORY_LIVE_METRICS,
     OBSERVED_OR_PROVEN_FIELDS_MUST_REMAIN_FALSE,
@@ -84,6 +85,10 @@ def assert_contract_invariants_v1(payload: Mapping[str, Any] | None = None) -> N
         raise Section1114OfflineSurfaceError("LIVE_COLLECTOR_MUST_REMAIN_INACTIVE")
     if LIVE_EXECUTION_CODE_EXISTS is not True:
         raise Section1114OfflineSurfaceError("LIVE_EXECUTION_CODE_EXISTS_MUST_BE_TRUE")
+    if LIVE_EXECUTION_PATH_REACHABLE is not True:
+        raise Section1114OfflineSurfaceError("LIVE_EXECUTION_PATH_REACHABLE_MUST_BE_TRUE")
+    if LIVE_PRIVATE_READ_ONLY_PROVEN is not True:
+        raise Section1114OfflineSurfaceError("LIVE_PRIVATE_READ_ONLY_PROVEN_MUST_BE_TRUE")
     if LIVE_EXECUTION_PATH_REACHABLE is True and LIVE_EXECUTION_CODE_EXISTS is not True:
         raise Section1114OfflineSurfaceError("PATH_REACHABLE_WITHOUT_CODE_EXISTS")
     if CREDENTIAL_USE_ALLOWED is not True:
@@ -103,11 +108,25 @@ def assert_contract_invariants_v1(payload: Mapping[str, Any] | None = None) -> N
         raise Section1114OfflineSurfaceError("LIVE_COLLECTOR_ACTIVATED")
     if payload.get("LIVE_EXECUTION_CODE_EXISTS") is not True:
         raise Section1114OfflineSurfaceError("LIVE_EXECUTION_CODE_EXISTS_PAYLOAD_MUST_BE_TRUE")
-    if payload.get("LIVE_PRIVATE_READ_ONLY_PROVEN") is True:
-        raise Section1114OfflineSurfaceError("LIVE_PRIVATE_READ_ONLY_PROVEN_PROMOTED")
+    if (
+        payload.get("LIVE_EXECUTION_PATH_REACHABLE") is True
+        and payload.get("LIVE_EXECUTION_CODE_EXISTS") is not True
+    ):
+        raise Section1114OfflineSurfaceError("PATH_REACHABLE_WITHOUT_CODE_EXISTS")
+    if (
+        payload.get("LIVE_PRIVATE_READ_ONLY_PROVEN") is True
+        and payload.get("LIVE_EXECUTION_PATH_REACHABLE") is not True
+    ):
+        raise Section1114OfflineSurfaceError("PRIVATE_READ_ONLY_WITHOUT_PATH_REACHABLE")
+    if payload.get("LIVE_ORDER_PLAN_OBSERVED") is True:
+        raise Section1114OfflineSurfaceError("LIVE_ORDER_PLAN_OBSERVED_PROMOTED")
     if payload.get("POST_USED") is True or payload.get("POST") is True:
         raise Section1114OfflineSurfaceError("POST_INVOKED_BY_REACHABILITY_PROOF")
-    allowed_true = {"LIVE_EXECUTION_CODE_EXISTS", "LIVE_EXECUTION_PATH_REACHABLE"}
+    allowed_true = {
+        "LIVE_EXECUTION_CODE_EXISTS",
+        "LIVE_EXECUTION_PATH_REACHABLE",
+        "LIVE_PRIVATE_READ_ONLY_PROVEN",
+    }
     for field_name in LADDER_FIELDS:
         if field_name in allowed_true:
             continue
