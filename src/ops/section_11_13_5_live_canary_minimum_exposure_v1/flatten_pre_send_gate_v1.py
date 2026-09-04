@@ -58,6 +58,11 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.no_additional_owner
     PASS_OFFLINE_CONTRACT,
     evaluate_no_additional_owner_decision_required_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.authenticated_productive_transport_v1 import (
+    NAMED_REMAINING_AFTER_AUTHENTICATED_PRODUCTIVE_TRANSPORT,
+    PRODUCTIVE_SIGNING_COMPONENT,
+    evaluate_authenticated_productive_transport_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.send_time_pass_18_19_21_24_v1 import (
     NAMED_REMAINING_AFTER_SEND_TIME_PASS,
     evaluate_send_time_pass_18_19_21_24_v1,
@@ -104,6 +109,7 @@ GATE_NAMES: tuple[str, ...] = (
     "MUTATION_LIMITED_TO_PROVEN_POSITION",
     "NO_ADDITIONAL_OWNER_DECISION_REQUIRED",
     "SEND_TIME_PASS_18_19_21_24",
+    "AUTHENTICATED_PRODUCTIVE_TRANSPORT",
     "ONE_SHOT_NO_RETRY",
     "DUPLICATE_POST_PROTECTION",
 )
@@ -599,6 +605,42 @@ def evaluate_flatten_pre_send_gate_v1(
         )
     else:
         decisions.append(_decision("SEND_TIME_PASS_18_19_21_24", True))
+
+    apt_ok, apt_reasons = evaluate_authenticated_productive_transport_v1(
+        stp_status=PASS_OFFLINE_CONTRACT,
+        dedicated_authenticated_transport=True,
+        signing_component=PRODUCTIVE_SIGNING_COMPONENT,
+        signing_ontology_invented=False,
+        hmac_handle_reordered_before_08=False,
+        unsigned_headers_accepted_as_authenticated=False,
+        claimed_remaining_after_authenticated_productive_transport=(
+            NAMED_REMAINING_AFTER_AUTHENTICATED_PRODUCTIVE_TRANSPORT
+        ),
+        runtime_authentication_proven_claim=False,
+        network_proven_claim=False,
+        credential_use_proven_claim=False,
+        private_get_proven_claim=False,
+        post_proven_claim=False,
+        live_authorized_claim=gate.live_authorized is True,
+        runtime_permit_issuance_claim=False,
+        flatten_execute_authorized_claim=False,
+        network_session_authorized_claim=False,
+        post_performed_claim=False,
+        get_performed_claim=False,
+        flatten_execute_owner_go=gate.flatten_execute_owner_go,
+        predecessor_lineage_ok=True,
+    )
+    if not apt_ok:
+        reasons.extend(apt_reasons)
+        decisions.append(
+            _decision(
+                "AUTHENTICATED_PRODUCTIVE_TRANSPORT",
+                False,
+                ",".join(apt_reasons) or "AUTHENTICATED_PRODUCTIVE_TRANSPORT_DENIED",
+            )
+        )
+    else:
+        decisions.append(_decision("AUTHENTICATED_PRODUCTIVE_TRANSPORT", True))
 
     if gate.one_shot_no_retry is not True:
         reasons.append("ONE_SHOT_NO_RETRY_REQUIRED")

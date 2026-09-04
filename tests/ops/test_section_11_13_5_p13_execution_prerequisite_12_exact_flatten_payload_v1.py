@@ -394,7 +394,7 @@ def test_p08_captured_row_is_not_used_as_px() -> None:
 def test_live_window_nonzero_advances_to_prerequisite_20() -> None:
     result = adjudicate_prerequisite_08_window_v1(positions_payload=_envelope(_row(pos="1")))
     assert result["EXECUTION_PREREQUISITE_12_STATUS"] == "PASS"
-    assert result["EARLIEST_UNRESOLVED_DEPENDENCY"] == "AUTHENTICATED_PRODUCTIVE_TRANSPORT"
+    assert result["EARLIEST_UNRESOLVED_DEPENDENCY"] == "SEND_TIME_POSITION_REOBSERVATION"
     assert result["EXECUTION_READY"] is False
 
 
