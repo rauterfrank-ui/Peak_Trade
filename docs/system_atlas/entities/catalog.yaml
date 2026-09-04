@@ -1245,6 +1245,23 @@ entities:
       is not target-zero. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: PHASE:section_11_14_offline_evidence_ladder_surface
+    kind: PHASE
+    name: 11.14.OFFLINE_EVIDENCE_LADDER_SURFACE
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/SECTION_11_14_LIVE_ORDER_AND_ECONOMIC_EVIDENCE_LADDER_OFFLINE_SURFACE_V1.md
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T121000Z/
+      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
+    notes: >-
+      Offline §11.14 evidence-ladder surface. Does not collect Live evidence.
+      Does not GET. Does not POST. All twelve ladder fields remain false.
+      Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
     name: Route-C create-path blocker census v1
@@ -2050,6 +2067,39 @@ entities:
       the canary signer, and evaluate_delayed_g12_conjunction_v1. Does not
       POST. Does not flatten. Does not execute section 11.14. Atlas is not
       canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    kind: RUNTIME_COMPONENT
+    name: Section 11.14 live order and economic evidence ladder offline surface v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/__init__.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/constants_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/contract_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/ladder_order_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/overclaim_guards_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/evidence_schema_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/metrics_schema_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/static_field_adjudication_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/reuse_vs_fresh_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/traceability_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/assemble_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/persist_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/persist_claims_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/hashing_v1.py
+    evidence_sources:
+      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_v1.py
+      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/SECTION_11_14_LIVE_ORDER_AND_ECONOMIC_EVIDENCE_LADDER_OFFLINE_SURFACE_V1.md
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T121000Z/
+    notes: >-
+      Navigation inventory of the offline §11.14 evidence-ladder surface.
+      Does not collect Live evidence. Does not GET. Does not POST. Does not
+      activate Cap 11.7-11.11. Atlas is not canonical authority.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1
     kind: RUNTIME_COMPONENT

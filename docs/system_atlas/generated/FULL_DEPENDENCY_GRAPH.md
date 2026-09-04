@@ -195,6 +195,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `RUNTIME_COMPONENT:dp_core_wiring`
 - transitive_downstream: `(none)`
 
+### RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+
+- direct_upstream: `RUNTIME_COMPONENT:g12_canonical_delayed_zero_persist_and_pending_related_observations_v1`
+- transitive_upstream: `GATE:target_position_state, RUNTIME_COMPONENT:g12_canonical_delayed_zero_persist_and_pending_related_observations_v1, RUNTIME_COMPONENT:g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
 ### SCRIPT:run_cap23_policy
 
 - direct_upstream: `CAPABILITY:cap_2_3_single_selected_future`

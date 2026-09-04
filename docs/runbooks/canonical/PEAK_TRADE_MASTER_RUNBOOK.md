@@ -60718,6 +60718,127 @@ kill_switch_events
 owner_interventions
 ```
 
+The exact SSOT cardinality of that include-block is 20 names.
+A prior pre-authorization census reported 19. That count is not used.
+
+### 11.14 OFFLINE_EVIDENCE_LADDER_SURFACE (BOUND; OFFLINE ONLY; NO LIVE EVIDENCE; SECTION 11.14 NOT COMPLETE)
+
+Additive persist. Does **not** rewrite the §11.14 ladder text above.
+Does **not** collect Live evidence. Does **not** GET. Does **not** POST.
+Does **not** submit, cancel, amend, flatten, or fund. Does **not** set
+any `*_OBSERVED` or `*_PROVEN` ladder field true. Does **not** equate
+predecessor 11.13&#47;G12 facts with §11.14 fields. Does **not** mark
+§11.14 complete. Does **not** authorize runtime execution.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE_MAXIMUM_SAFE_LEVERAGE_V1
+OWNER_GO_STATUS=CONSUMED
+OWNER_GO_CONSUMED=true
+PRIOR_OWNER_GO=PEAK_TRADE_OWNER_GO_G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS_V1
+AUTHORIZATION_PRESENT=true
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=SECTION_11_14_OFFLINE_EVIDENCE_LADDER_SURFACE_SSOT_PERSIST
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+ATLAS_AUTHORITY=NONE
+CHAT_TRANSCRIPT_AUTHORITY=NONE
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=a558c108617d40c12bd1d8c480a6e5d797ccb308
+EXPECTED_ORIGIN_MAIN_SHA=a558c108617d40c12bd1d8c480a6e5d797ccb308
+PREDECESSOR_SLICE=11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS
+THIS_SLICE=11.14.OFFLINE_EVIDENCE_LADDER_SURFACE
+CURRENT_PHASE=11.14.OFFLINE_EVIDENCE_LADDER_SURFACE
+CURRENT_CANONICAL_SECTION=11.14.OFFLINE_EVIDENCE_LADDER_SURFACE
+LAST_CANONICALLY_CLOSED_STEP=SECTION_11_13_5_G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS
+G12_STATUS=CLOSED_LIVE_FLATTEN_PROVABILITY_PROVEN
+SECTION_11_14_OFFLINE_SURFACE_BOUND=true
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+SECTION_11_14_LIVE_EVIDENCE_COLLECTION_AUTHORIZED=false
+LIVE_EXECUTION_CODE_EXISTS=false
+LIVE_EXECUTION_PATH_REACHABLE=false
+LIVE_PRIVATE_READ_ONLY_PROVEN=false
+LIVE_ORDER_PLAN_OBSERVED=false
+LIVE_SUBMIT_ACK_OBSERVED=false
+LIVE_FILL_OBSERVED=false
+LIVE_FEE_OBSERVED=false
+LIVE_POSITION_RECONCILED=false
+LIVE_ACCOUNTING_RECONSTRUCTED=false
+LIVE_RESTART_RECONSTRUCTED=false
+LIVE_AUTONOMOUS_RECOVERY_OBSERVED=false
+LIVE_END_TO_END_EVIDENCE_PROVEN=false
+LADDER_FIELD_COUNT=12
+MANDATORY_LIVE_METRIC_COUNT=20
+PRIOR_CENSUS_REPORTED_METRIC_COUNT=19
+METRIC_COUNT_DISCREPANCY_VS_PRIOR_CENSUS=true
+MANDATORY_LIVE_METRICS=orders_planned,orders_submitted,orders_acknowledged,orders_rejected,orders_unknown,partial_fills,fills,cancels,amends,duplicate_submit_prevented,fees_paid,funding_paid_or_received,realized_pnl,unrealized_pnl,margin_utilization,reconciliation_divergences,autonomous_recoveries,degradation_transitions,kill_switch_events,owner_interventions
+COLLECTOR_ACTIVATED=false
+GET_PERFORMED=false
+POST_PERFORMED=false
+CREDENTIAL_USE=false
+LIVE_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+SUBMIT_UNLOCKED=false
+CANARY_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+G12_DOES_NOT_AUTHORIZE_SECTION_11_14=true
+G12_DOES_NOT_SATISFY_SECTION_11_14_OBSERVED_FIELDS=true
+CURRENTLY_REACHABLE_IS_NOT_LIVE_EXECUTION_PATH_REACHABLE=true
+LIVE_RECONCILIATION_PROVEN_IS_NOT_LIVE_POSITION_RECONCILED=true
+CODE_PRESENCE_IS_NOT_LIVE_EXECUTION_CODE_EXISTS=true
+FIELD_NAME_SIMILARITY_IS_NOT_SEMANTIC_IDENTITY=true
+NO_TESTNET_FIXTURE_OR_SIMULATED_RESULT_MAY_SATISFY_A_LIVE_EVIDENCE_FIELD=true
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_EXECUTION_CODE_EXISTS
+NEXT_AUTHORITY_BOUNDARY=SEPARATE_OWNER_GO_FOR_SECTION_11_14_STATIC_OR_RUNTIME_LADDER_ADVANCE
+NEXT_OWNER_GO_REQUIRED=SEPARATE_OWNER_GO_FOR_LIVE_EXECUTION_CODE_EXISTS_THEN_PATH_REACHABLE_THEN_OBSERVED_FIELDS
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CANONICAL_EVIDENCE_RUN_ID=20260904T121000Z
+```
+
+A. Surface. The named package
+`src&#47;ops&#47;section_11_14_live_order_and_economic_evidence_ladder_v1&#47;`
+binds the exact 12-field ladder, fail-closed order enforcement, evidence
+record schema, mandatory Live-metrics schema, reuse-versus-fresh matrix,
+overclaim guards, and traceability. Cap 11.7--11.11 remain contracts-only
+and are not activated.
+
+B. Static fields. `LIVE_EXECUTION_CODE_EXISTS=false` because this GO
+forbids binding that field true merely because code is present and
+§11.14 does not define a further proof criterion. Supporting context
+includes SP-01, canary submit transport, and flatten `execute_v1.py` on
+the inspected base. `LIVE_EXECUTION_PATH_REACHABLE=false` because
+reachable as a Live proof claim entails runtime gates, authorization,
+credentials, or venue state that this offline GO does not observe.
+§4.9 `CURRENTLY_REACHABLE` is not this field.
+
+C. Predecessor non-reuse. §11.13.2 `LIVE_PRIVATE_READ_ONLY_PROVEN`,
+§11.13.3 shadow, §11.13.4 dry-run plan, §11.13.5.E
+`LIVE_RECONCILIATION_PROVEN`, Canary-I HTTP 401, flatten POST
+acknowledgement, fill&#47;fee observations, and G12 P2&#47;P3&#47;P5&#47;P7&#47;P9 plus
+G12 closeout remain supporting context or semantically different. None
+are reusable as identical §11.14 facts under this GO.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/
+SPEC_OWNER=docs/ops/specs/SECTION_11_14_LIVE_ORDER_AND_ECONOMIC_EVIDENCE_LADDER_OFFLINE_SURFACE_V1.md
+EVIDENCE_ROOT=evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T121000Z/
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_14
+CURRENT_CANONICAL_SECTION=11.14.OFFLINE_EVIDENCE_LADDER_SURFACE
+HARD_STOP_AFTER_THIS_TASK=true
+HARD_STOP=true
+```
+
+Hard stop. This offline-surface GO is consumed.
+`SECTION_11_14_AUTHORIZED=false`. `SECTION_11_14_COMPLETE=false`.
+`LIVE_EXECUTION_CODE_EXISTS=false`. Do **not** GET, POST, submit,
+flatten, fund, or claim Live-observed ladder fields without a separate
+Owner-GO.
+
 ## 11.15 Full-autonomy observability and audit trail
 
 The autonomous runtime must expose enough telemetry for oversight without
