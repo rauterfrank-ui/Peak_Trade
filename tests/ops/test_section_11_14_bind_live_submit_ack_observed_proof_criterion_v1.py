@@ -93,10 +93,10 @@ def _classify(**overrides: object) -> dict[str, object]:
 def test_producer_and_criterion_are_bound_without_promoting_ack() -> None:
     assert LIVE_SUBMIT_ACK_PROOF_CRITERION_BOUND is True
     assert HISTORICAL_ACK_CASE_ADJUDICATION == "CASE_LIVE_SUBMIT_ACK_OBSERVED_FILL_INELIGIBLE"
-    assert CASE_ADJUDICATION == "CASE_LIVE_FILL_OBSERVED_FEE_INELIGIBLE"
+    assert CASE_ADJUDICATION == "CASE_LIVE_FEE_OBSERVED_POSITION_INELIGIBLE"
     assert LIVE_SUBMIT_ACK_OBSERVED is True
     assert LIVE_FILL_OBSERVED is True
-    assert LIVE_FEE_OBSERVED is False
+    assert LIVE_FEE_OBSERVED is True
     assert LIVE_SUBMIT_ACK_OBSERVED_PRODUCER.endswith(
         "submit_ack_observed_adjudication_v1.py::adjudicate_live_submit_ack_observed_v1"
     )
@@ -221,16 +221,16 @@ def test_read_only_recon_match_cannot_reclassify_as_ack() -> None:
     assert proof["LIVE_SUBMIT_ACK_OBSERVED"] is False
 
 
-def test_fee_remains_ineligible_after_fill() -> None:
+def test_position_remains_ineligible_after_fee() -> None:
     values = dict(LADDER_FIELD_DEFAULTS)
-    values["LIVE_POSITION_RECONCILED"] = True
+    values["LIVE_ACCOUNTING_RECONSTRUCTED"] = True
     with pytest.raises(
-        Section1114OfflineSurfaceError, match="LADDER_ORDER_VIOLATION:LIVE_POSITION_RECONCILED"
+        Section1114OfflineSurfaceError, match="LADDER_ORDER_VIOLATION:LIVE_ACCOUNTING_RECONSTRUCTED"
     ):
         assert_ladder_order_v1(values)
     assert_ladder_order_v1(LADDER_FIELD_DEFAULTS)
     assert LIVE_FILL_OBSERVED is True
-    assert LIVE_FEE_OBSERVED is False
+    assert LIVE_FEE_OBSERVED is True
 
 
 def test_post_evidence_is_refused_by_this_go() -> None:

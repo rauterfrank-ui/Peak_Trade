@@ -395,7 +395,7 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
             reason=(
                 "Exact single live POST on eea.okx.com produced "
                 "LIVE_SUBMIT_ACK_OBSERVED=true via the bound producer. "
-                "No second POST. LIVE_FEE_OBSERVED remains ineligible."
+                "No second POST. LIVE_POSITION_RECONCILED remains ineligible."
             ),
             evidence_paths=(
                 "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
@@ -409,12 +409,28 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
             reason=(
                 "Current governed private GET /api/v5/trade/fills on eea.okx.com "
                 "produced LIVE_FILL_OBSERVED=true via the bound producer for the "
-                "exact acknowledged order identity. LIVE_FEE_OBSERVED remains "
-                "ineligible. No POST."
+                "exact acknowledged order identity. LIVE_POSITION_RECONCILED "
+                "remains ineligible. No POST."
             ),
             evidence_paths=(
                 "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
                 "20260904T165859Z/",
+            ),
+        ),
+        _row(
+            candidate="SECTION_11_14_LIVE_FEE_OBSERVED_ADJUDICATION",
+            classification="CURRENT_AND_ADMISSIBLE",
+            target_11_14_field="LIVE_FEE_OBSERVED",
+            reason=(
+                "Current governed private GET /api/v5/trade/fills on eea.okx.com "
+                "produced LIVE_FEE_OBSERVED=true via the bound producer from the "
+                "venue-native fee and feeCcy fields on the identity-bound fill "
+                "row. No inference from rate or fillPx times fillSz. No POST. "
+                "LIVE_POSITION_RECONCILED remains ineligible."
+            ),
+            evidence_paths=(
+                "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+                "20260904T173813Z/",
             ),
         ),
         _row(

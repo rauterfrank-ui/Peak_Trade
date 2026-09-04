@@ -1,0 +1,39 @@
+{
+  "AUTHORITY": "NONE",
+  "BODY_BYTES": 527,
+  "BODY_SHA256": "d52f9ac64eedc0fca09f07bc8830e3a37674ccde9d0500e8d19b2e9be7873512",
+  "BODY_UTF8_EXACT": "{\"code\":\"0\",\"data\":[{\"fillSz\":\"1\",\"fillPxVol\":\"\",\"fillFwdPx\":\"\",\"fee\":\"-0.000374\",\"tradeQuoteCcy\":\"\",\"ordId\":\"3893505043080286208\",\"clOrdId\":\"ptokxeprod1fec928b1fec928b00\",\"posSide\":\"net\",\"fillMarkVol\":\"\",\"tag\":\"\",\"execType\":\"T\",\"fillIdxPx\":\"0.7482\",\"side\":\"buy\",\"fillPx\":\"0.748\",\"fillPnl\":\"0\",\"instType\":\"FUTURES\",\"fillPxUsd\":\"\",\"instId\":\"SUI-USD_UM_XPERP-310404\",\"billId\":\"3893505043080286210\",\"subType\":\"1\",\"fillTime\":\"1788537892511\",\"tradeId\":\"1055244\",\"fillMarkPx\":\"0.7479\",\"feeCcy\":\"USDC\",\"ts\":\"1788537892511\"}],\"msg\":\"\"}",
+  "BODY_WAS_JSON_RESERIALIZED": false,
+  "DOCUMENT_CLASS": "SECTION_11_14_LIVE_FEE_OBSERVED_RAW_EXCHANGE_V1",
+  "DOCUMENT_ROLE": "FORENSIC_RAW_NOT_CANONICAL_NOT_ADJUDICATION",
+  "ELAPSED_SECONDS": 0.15796562501054723,
+  "ENDPOINT": "/api/v5/trade/fills?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404&ordId=3893505043080286208",
+  "ENDPOINT_PATH": "/api/v5/trade/fills",
+  "GET_ERROR": null,
+  "GET_ROLE": "FILLS",
+  "HOST": "eea.okx.com",
+  "HTTP_STATUS": 200,
+  "METHOD": "GET",
+  "PARSE_ERROR": null,
+  "QUERY_PARAMETERS": {
+    "instId": "SUI-USD_UM_XPERP-310404",
+    "instType": "FUTURES",
+    "ordId": "3893505043080286208"
+  },
+  "REDIRECT_FOLLOWED": false,
+  "REDIRECT_STATUS": null,
+  "REQUEST_TIME_UTC": "2026-09-04T17:38:14Z",
+  "RESPONSE_HEADERS_SAFE": {
+    "CF-RAY": "a35ec446fa4f931b-MUC",
+    "Content-Length": "527",
+    "Content-Type": "application/json;charset=UTF-8",
+    "Date": "Fri, 04 Sep 2026 17:38:14 GMT",
+    "Server": "cloudflare",
+    "cf-cache-status": "DYNAMIC",
+    "x-content-type-options": "nosniff"
+  },
+  "RESPONSE_TIME_UTC": "2026-09-04T17:38:14Z",
+  "SECRET_VALUES_INCLUDED": false,
+  "SEND_ATTEMPTED": true,
+  "THIS_ARTIFACT_IS_NOT_CANONICAL": true
+}
