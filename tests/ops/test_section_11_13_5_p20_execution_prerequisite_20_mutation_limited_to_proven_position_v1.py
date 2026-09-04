@@ -185,14 +185,12 @@ def test_adjudicate_module_has_no_network_side_effect() -> None:
     assert "requests" not in gate
 
 
-def test_live_window_nonzero_advances_to_prerequisite_25() -> None:
+def test_live_window_nonzero_advances_to_send_time_pass() -> None:
     result = adjudicate_prerequisite_08_window_v1(
         positions_payload={"code": "0", "data": [{"instId": TARGET, "pos": "1"}]}
     )
     assert result["EXECUTION_PREREQUISITE_12_STATUS"] == "PASS"
-    assert result["EARLIEST_UNRESOLVED_DEPENDENCY"] == (
-        "EXECUTION_PREREQUISITE_25_NO_ADDITIONAL_OWNER_DECISION_REQUIRED"
-    )
+    assert result["EARLIEST_UNRESOLVED_DEPENDENCY"] == "SEND_TIME_PASS_18_19_21_24"
     assert result["EXECUTION_READY"] is False
 
 
