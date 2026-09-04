@@ -167,6 +167,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `RUNTIME_COMPONENT:dp_core_wiring`
 - transitive_downstream: `(none)`
 
+### RUNTIME_COMPONENT:g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1
+
+- direct_upstream: `GATE:target_position_state`
+- transitive_upstream: `GATE:target_position_state`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
 ### RUNTIME_COMPONENT:mv2_decision_packet
 
 - direct_upstream: `(none)`
