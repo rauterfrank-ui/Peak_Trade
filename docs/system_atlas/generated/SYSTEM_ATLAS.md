@@ -427,7 +427,7 @@ Architectural-kind count in this bucket: `19`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `78`.
+Architectural-kind count in this bucket: `79`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -464,15 +464,15 @@ Architectural-kind count in this bucket: `78`.
 | PHASE:p12_execution_prerequisite_11_position_side_posside | PHASE | 11.13.5.P12 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:p13_execution_prerequisite_12_exact_flatten_payload | PHASE | 11.13.5.P13 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:p16_execution_prerequisite_16_bounded_activation | PHASE | 11.13.5.P16 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| PHASE:p20_execution_prerequisite_20_mutation_limited_to_proven_position | PHASE | 11.13.5.P20 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:post_z2ds_50110_egress_capture | PHASE | 11.13.5.POST_Z2DS_50110_EGRESS_CAPTURE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:post_z2ds_50110_whitelist_add_from_capture | PHASE | 11.13.5.POST_Z2DS_50110_WHITELIST_ADD_FROM_CAPTURE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:post_z2ds_post_whitelist_private_auth_attestation | PHASE | 11.13.5.POST_Z2DS_POST_WHITELIST_PRIVATE_AUTH_ATTESTATION | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:z2cn | PHASE | 11.13.5.Z2CN | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:z2co | PHASE | 11.13.5.Z2CO | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:z2cp | PHASE | 11.13.5.Z2CP | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| PHASE:z2cq | PHASE | 11.13.5.Z2CQ | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `78` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `79` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -609,7 +609,7 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `11`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `74`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `11`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `75`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
@@ -708,7 +708,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=400
+ENTITY_TOTAL=402
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=84
 RUNTIME_RELATION_COUNT=36
@@ -803,10 +803,10 @@ Remaining census domains:
 | OKX_HOST | 8 |
 | OKX_RESPONSE_SHAPE | 6 |
 | OWNER_DECISION | 2 |
-| PHASE | 35 |
+| PHASE | 36 |
 | REGISTRY | 1 |
 | RUNBOOK | 4 |
-| RUNTIME_COMPONENT | 70 |
+| RUNTIME_COMPONENT | 71 |
 | SCHEMA | 18 |
 | SCRIPT | 3 |
 | SELECTOR | 2 |

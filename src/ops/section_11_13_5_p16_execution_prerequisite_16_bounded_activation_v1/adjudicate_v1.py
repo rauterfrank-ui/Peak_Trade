@@ -258,7 +258,12 @@ def adjudicate_execution_prerequisite_16_bounded_activation_v1(
     if transport.network_session_authorized is not False:
         raise P16BoundedActivationAdjudicationError("NETWORK_SESSION_DEFAULT_NOT_FALSE")
     window = adjudicate_prerequisite_08_window_v1(positions_payload=_positions())
-    if window.get("EARLIEST_UNRESOLVED_DEPENDENCY") != EARLIEST_UNRESOLVED_DEPENDENCY:
+    window_earliest = str(window.get("EARLIEST_UNRESOLVED_DEPENDENCY") or "")
+    if window_earliest in {
+        "EXECUTION_PREREQUISITE_08_TARGET_POSITION_NONZERO_PROVEN",
+        "EXECUTION_PREREQUISITE_09_TARGET_POSITION_QTY_NUMERIC",
+        "EXECUTION_PREREQUISITE_16_BOUNDED_ACTIVATION_WITHOUT_GLOBAL_LIVE_AUTHORIZED",
+    }:
         raise P16BoundedActivationAdjudicationError("WINDOW_EARLIEST_DEPENDENCY_DRIFT")
     lineage = bounded_activation_lineage_v1()
     census = lineage_census_summary_v1()
