@@ -277,6 +277,9 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert (
         "id: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1" in catalog
     )
+    assert (
+        "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py" in catalog
+    )
     assert "ATLAS_AUTHORITY=NONE" in catalog
     start = relations.find("id: REL:r_section_11_14_order_plan_observed_follows_private_read_only")
     assert start >= 0

@@ -463,6 +463,7 @@ relations:
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/order_plan_observed_predicate_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/order_plan_observed_adjudication_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/order_plan_observe_execute_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py
     notes: >-
       LIVE_ORDER_PLAN_OBSERVED adjudication follows PRIVATE_READ_ONLY.
       Session-armed gated submit path without POST. This is not ACK, not
