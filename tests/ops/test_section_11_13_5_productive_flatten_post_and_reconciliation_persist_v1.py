@@ -1,4 +1,4 @@
-"""Persist invariants for authenticated private read / runtime permit issuance."""
+"""Persist invariants for productive flatten POST and reconciliation."""
 
 from __future__ import annotations
 
@@ -6,36 +6,6 @@ import json
 import subprocess
 from pathlib import Path
 
-from src.ops.section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_v1.constants_v1 import (
-    CANONICAL_EVIDENCE_RUN_ID,
-    EARLIEST_UNRESOLVED_DEPENDENCY,
-    EVIDENCE_DIRNAME,
-    EXPECTED_ORIGIN_MAIN_SHA,
-    LAST_CANONICALLY_CLOSED_STEP,
-    NEXT_AUTHORITY_BOUNDARY,
-    NEXT_OWNER_GO_REQUIRED,
-    OWNER_GO,
-    PREDECESSOR_SLICE,
-    PR_CHANGED_PATHS_FREEZE_BASE_SHA,
-    PR_CHANGED_PATHS_FREEZE_COUNT,
-    PR_CHANGED_PATHS_FREEZE_DIRNAME,
-    PR_CHANGED_PATHS_FREEZE_HEAD_SHA,
-    PR_CHANGED_PATHS_FREEZE_SET_HASH,
-    THIS_SLICE,
-    WORKPACKAGE_ID,
-)
-from src.ops.section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_v1.execute_v1 import (
-    execute_authenticated_private_runtime_read_and_permit_issuance_v1,
-)
-from src.ops.section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_v1.persist_claims_v1 import (
-    CLAIMS,
-)
-from src.ops.section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_v1.pr_changed_paths_freeze_v1 import (
-    canonical_pr_changed_paths_freeze_pack_v1,
-    changed_paths_set_hash_v1,
-    collect_three_dot_changed_paths_v1,
-    persist_pr_changed_paths_freeze_v1,
-)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     LIVE_ARMED,
     LIVE_AUTHORIZED,
@@ -49,30 +19,48 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import 
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_execute_authority_v1 import (
     FORBIDDEN_FLATTEN_EXECUTE_OWNER_GOS,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
-    RecordingFakeCanaryTransportV1,
+from src.ops.section_11_13_5_productive_flatten_post_and_reconciliation_v1.constants_v1 import (
+    CANONICAL_EVIDENCE_RUN_ID,
+    CANONICAL_RECOVERY_EVIDENCE_RUN_ID,
+    EARLIEST_UNRESOLVED_DEPENDENCY,
+    EVIDENCE_DIRNAME,
+    EXPECTED_ORIGIN_MAIN_SHA,
+    LAST_CANONICALLY_CLOSED_STEP,
+    NEXT_AUTHORITY_BOUNDARY,
+    NEXT_OWNER_GO_REQUIRED,
+    OWNER_GO,
+    PREDECESSOR_SLICE,
+    PR_CHANGED_PATHS_FREEZE_BASE_SHA,
+    PR_CHANGED_PATHS_FREEZE_COUNT,
+    PR_CHANGED_PATHS_FREEZE_HEAD_SHA,
+    PR_CHANGED_PATHS_FREEZE_SET_HASH,
+    THIS_SLICE,
+    WORKPACKAGE_ID,
+)
+from src.ops.section_11_13_5_productive_flatten_post_and_reconciliation_v1.persist_claims_v1 import (
+    CLAIMS,
+)
+from src.ops.section_11_13_5_productive_flatten_post_and_reconciliation_v1.pr_changed_paths_freeze_v1 import (
+    canonical_pr_changed_paths_freeze_pack_v1,
+    changed_paths_set_hash_v1,
+    collect_three_dot_changed_paths_v1,
+    persist_pr_changed_paths_freeze_v1,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MASTER_RUNBOOK = REPO_ROOT / "docs" / "runbooks" / "canonical" / "PEAK_TRADE_MASTER_RUNBOOK.md"
 MAP_OF_TRUTH = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_MAP_OF_TRUTH.md"
 ATLAS_CATALOG = REPO_ROOT / "docs" / "system_atlas" / "entities" / "catalog.yaml"
-SPEC = (
-    REPO_ROOT
-    / "docs/ops/specs/AUTHENTICATED_PRIVATE_RUNTIME_READ_AND_RUNTIME_PERMIT_ISSUANCE_V1.md"
-)
+SPEC = REPO_ROOT / "docs/ops/specs/PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION_V1.md"
 EVIDENCE_PACK = REPO_ROOT / "evidence" / "ops" / EVIDENCE_DIRNAME / CANONICAL_EVIDENCE_RUN_ID
+RECOVERY_PACK = (
+    REPO_ROOT / "evidence" / "ops" / EVIDENCE_DIRNAME / CANONICAL_RECOVERY_EVIDENCE_RUN_ID
+)
 FREEZE_PACK = canonical_pr_changed_paths_freeze_pack_v1(REPO_ROOT)
 
-CENSUS_HEADING = "### 11.13.5 REMAINING_EXECUTION_PATH_END_TO_END_CENSUS"
 APRPI_HEADING = "### 11.13.5 AUTHENTICATED_PRIVATE_RUNTIME_READ_AND_RUNTIME_PERMIT_ISSUANCE"
 FLATTEN_HEADING = "### 11.13.5 PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
-
-NONZERO_BODY = (
-    b'{"code":"0","msg":"","data":[{"instId":"SUI-USD_UM_XPERP-310404",'
-    b'"pos":"1","posSide":"net","mgnMode":"isolated"}]}'
-)
 
 
 def _read(path: Path) -> str:
@@ -80,30 +68,27 @@ def _read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def _aprpi_section(text: str) -> str:
-    start = text.find(APRPI_HEADING)
-    assert start >= 0, "missing AUTHENTICATED_PRIVATE_RUNTIME_READ persist heading"
-    flatten = text.find(FLATTEN_HEADING, start)
-    ladder = text.find(LADDER_HEADING, start)
-    end = flatten if flatten > start else ladder
-    assert end > start, "missing successor boundary after APRPI persist"
+def _flatten_section(text: str) -> str:
+    start = text.find(FLATTEN_HEADING)
+    assert start >= 0, "missing PRODUCTIVE_FLATTEN persist heading"
+    end = text.find(LADDER_HEADING, start)
+    assert end > start, "missing §11.14 boundary after flatten persist"
     return text[start:end]
 
 
-def test_aprpi_is_additive_after_census() -> None:
+def test_flatten_persist_is_additive_after_aprpi() -> None:
     text = _read(MASTER_RUNBOOK)
-    census_start = text.find(CENSUS_HEADING)
     aprpi_start = text.find(APRPI_HEADING)
+    flatten_start = text.find(FLATTEN_HEADING)
     ladder = text.find(LADDER_HEADING)
-    assert 0 <= census_start < aprpi_start < ladder
-    census = text[census_start:aprpi_start]
-    assert "CENSUS_TEXT_REWRITTEN=true" not in census
-    assert "REMAINING_EXECUTION_PATH_CENSUS=PASS_OFFLINE_CONTRACT" in census
-    assert "EARLIEST_UNRESOLVED_DEPENDENCY=AUTHENTICATED_PRIVATE_RUNTIME_READ" in census
+    assert 0 <= aprpi_start < flatten_start < ladder
+    aprpi = text[aprpi_start:flatten_start]
+    assert "CENSUS_TEXT_REWRITTEN=true" not in aprpi
+    assert "PRODUCTIVE_FLATTEN_POST_AUTHORIZED=false" in aprpi
 
 
-def test_aprpi_runbook_persist_tokens() -> None:
-    section = _aprpi_section(_read(MASTER_RUNBOOK))
+def test_flatten_runbook_persist_tokens() -> None:
+    section = _flatten_section(_read(MASTER_RUNBOOK))
     required = (
         f"OWNER_GO={OWNER_GO}",
         f"THIS_SLICE={THIS_SLICE}",
@@ -115,55 +100,45 @@ def test_aprpi_runbook_persist_tokens() -> None:
         f"EARLIEST_UNRESOLVED_DEPENDENCY={EARLIEST_UNRESOLVED_DEPENDENCY}",
         f"NEXT_AUTHORITY_BOUNDARY={NEXT_AUTHORITY_BOUNDARY}",
         f"NEXT_OWNER_GO_REQUIRED={NEXT_OWNER_GO_REQUIRED}",
-        "POST_PERFORMED=false",
+        "POST_PERFORMED=true",
+        "POST_RESULT=POST_ACCEPTED",
         "LIVE_AUTHORIZED=false",
         "CANARY_AUTHORIZED=false",
         "SUBMIT_UNLOCKED=false",
         "LIVE_ENABLED=false",
         "LIVE_ARMED=false",
-        "NETWORK_SESSION_AUTHORIZED=false",
-        "FLATTEN_EXECUTE_AUTHORIZED=false",
-        "PRODUCTIVE_FLATTEN_POST_AUTHORIZED=false",
         "EMPTY_DATA_IS_ZERO=false",
         "CENSUS_TEXT_REWRITTEN=false",
         "MERGE_AUTHORIZED_BY_THIS_PERSIST=false",
         "EXECUTION_READY=false",
-        "THIS_GO_DOES_NOT_AUTHORIZE_POST=true",
-        "FAIL_CLOSED_IF_MARKED_FLATTEN_PROVEN_FROM_PERMIT_ALONE=true",
+        "THIS_GO_DOES_NOT_SET_LIVE_AUTHORIZED=true",
+        "TARGET_POSITION_ZERO_PROVEN=false",
+        "LIVE_FLATTEN_PROVABILITY_PROVEN=false",
+        "RETRY_USED=false",
+        "FUNDING_USED=false",
+        "G10_STATUS=CLOSED_PRODUCTIVE_FLATTEN_POST_PERFORMED",
+        "G12_STATUS=OPEN_LIVE_FLATTEN_PROVABILITY_UNPROVEN",
+        f"EVIDENCE_PACK=evidence/ops/{EVIDENCE_DIRNAME}/{CANONICAL_EVIDENCE_RUN_ID}",
+        (
+            f"RECOVERY_EVIDENCE_PACK=evidence/ops/{EVIDENCE_DIRNAME}/"
+            f"{CANONICAL_RECOVERY_EVIDENCE_RUN_ID}"
+        ),
         "ATLAS_AUTHORITY=NONE",
         "LANDSCAPE_AUTHORITY=NONE",
-        "FRESHNESS_POLICY_MAX_AGE_MS=5000",
-        "GET_PERFORMED_THIS_PERSIST=true",
-        "PRIVATE_AUTH_USED=true",
-        "RUNTIME_PERMIT_ISSUED=true",
-        "PERMIT_ISSUANCE_RESULT=PASS",
-        "POSITION_OBSERVATION_CLASS=CASE_A_TARGET_NONZERO",
-        "G05_STATUS=CLOSED_AUTHENTICATED_PRIVATE_GET_PATH",
-        "G06_STATUS=CLOSED_SIZE_AND_OBSERVATION_BINDING",
-        (f"EVIDENCE_PACK=evidence/ops/{EVIDENCE_DIRNAME}/{CANONICAL_EVIDENCE_RUN_ID}"),
-        (
-            "PR_CHANGED_PATHS_FREEZE_PACK=evidence/ops/"
-            f"{EVIDENCE_DIRNAME}/{PR_CHANGED_PATHS_FREEZE_DIRNAME}"
-        ),
-        f"PR_CHANGED_PATHS_FREEZE_BASE_SHA={PR_CHANGED_PATHS_FREEZE_BASE_SHA}",
-        f"PR_CHANGED_PATHS_FREEZE_HEAD_SHA={PR_CHANGED_PATHS_FREEZE_HEAD_SHA}",
-        f"PR_CHANGED_PATHS_FREEZE_COUNT={PR_CHANGED_PATHS_FREEZE_COUNT}",
-        f"PR_CHANGED_PATHS_FREEZE_SET_HASH={PR_CHANGED_PATHS_FREEZE_SET_HASH}",
-        "APRPI_TEMP_ONLY_EVIDENCE_REMAINING=false",
     )
     for token in required:
         assert token in section, token
     forbidden = (
-        "\nPOST_PERFORMED=true\n",
         "\nLIVE_AUTHORIZED=true\n",
         "\nCANARY_AUTHORIZED=true\n",
-        "\nFLATTEN_EXECUTE_AUTHORIZED=true\n",
-        "\nNETWORK_SESSION_AUTHORIZED=true\n",
-        "\nPRODUCTIVE_FLATTEN_POST_AUTHORIZED=true\n",
         "\nEMPTY_DATA_IS_ZERO=true\n",
         "\nMERGE_AUTHORIZED_BY_THIS_PERSIST=true\n",
         "\nEXECUTION_READY=true\n",
         "\nCENSUS_TEXT_REWRITTEN=true\n",
+        "\nLIVE_FLATTEN_PROVABILITY_PROVEN=true\n",
+        "\nTARGET_POSITION_ZERO_PROVEN=true\n",
+        "\nRETRY_USED=true\n",
+        "\nFUNDING_USED=true\n",
         "\nATLAS_AUTHORITY=CANONICAL\n",
     )
     for token in forbidden:
@@ -172,33 +147,30 @@ def test_aprpi_runbook_persist_tokens() -> None:
     assert "ok-access-" not in section.lower()
 
 
-def test_map_of_truth_has_no_aprpi_semantic_entry() -> None:
+def test_map_of_truth_is_navigation_only() -> None:
     text = _read(MAP_OF_TRUTH)
     assert "DOCUMENT_ROLE=NAVIGATION_ONLY_NO_SEMANTICS" in text
     assert OWNER_GO not in text
-    assert "AUTHENTICATED_PRIVATE_RUNTIME_READ_AND_RUNTIME_PERMIT_ISSUANCE_V1" not in text
+    assert "PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION" in text
 
 
-def test_atlas_aprpi_is_navigation_only() -> None:
+def test_atlas_flatten_is_navigation_only() -> None:
     catalog = _read(ATLAS_CATALOG)
     authority = _read(REPO_ROOT / "docs" / "system_atlas" / "ATLAS_AUTHORITY_AND_USAGE.md")
     assert "ATLAS_AUTHORITY=NONE" in authority
-    assert "id: PHASE:authenticated_private_runtime_read_and_runtime_permit_issuance" in catalog
-    assert (
-        "id: RUNTIME_COMPONENT:authenticated_private_runtime_read_and_runtime_permit_issuance_v1"
-        in catalog
-    )
+    assert "id: PHASE:productive_flatten_post_and_reconciliation" in catalog
+    assert "id: RUNTIME_COMPONENT:productive_flatten_post_and_reconciliation_v1" in catalog
     assert "ATLAS_AUTHORITY=NONE" in catalog
     assert "pr_changed_paths_freeze_v1" in catalog
 
 
-def test_code_claims_remain_fail_closed() -> None:
+def test_code_claims_remain_fail_closed_for_standing_flags() -> None:
     assert CLAIMS["OWNER_GO"] == OWNER_GO
     assert CLAIMS["THIS_SLICE"] == THIS_SLICE
-    assert CLAIMS["POST_ALLOWED"] is False
-    assert CLAIMS["FLATTEN_EXECUTE_AUTHORIZED"] is False
-    assert CLAIMS["NETWORK_SESSION_AUTHORIZED"] is False
-    assert CLAIMS["PRODUCTIVE_FLATTEN_POST_AUTHORIZED"] is False
+    assert CLAIMS["PRODUCTIVE_FLATTEN_POST_AUTHORIZED"] is True
+    assert CLAIMS["STANDING_LIVE_AUTHORIZED"] is False
+    assert CLAIMS["RETRY_ALLOWED"] is False
+    assert CLAIMS["EMPTY_DATA_IS_ZERO"] is False
     assert CLAIMS["NEXT_AUTHORITY_BOUNDARY"] == NEXT_AUTHORITY_BOUNDARY
     assert OWNER_GO in FORBIDDEN_FLATTEN_EXECUTE_OWNER_GOS
     assert LIVE_AUTHORIZED is False
@@ -208,16 +180,14 @@ def test_code_claims_remain_fail_closed() -> None:
     assert SUBMIT_UNLOCKED is False
 
 
-def test_spec_token_and_no_execution_unlock() -> None:
+def test_spec_token_and_no_live_unlock() -> None:
     text = _read(SPEC)
-    assert (
-        "docs_token: DOCS_TOKEN_AUTHENTICATED_PRIVATE_RUNTIME_READ_AND_RUNTIME_PERMIT_ISSUANCE_V1"
-        in text
-    )
+    assert "docs_token:" in text
+    assert "DOCS_TOKEN_PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION_V1" in text
     assert "LIVE_AUTHORIZED=false" in text
-    assert "THIS_GO_DOES_NOT_AUTHORIZE_POST=true" in text
     assert "EMPTY_DATA_IS_ZERO=false" in text
-    assert "NEXT_AUTHORITY_BOUNDARY=PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION" in text
+    assert "LIVE_FLATTEN_PROVABILITY_PROVEN=false" in text
+    assert "NEXT_AUTHORITY_BOUNDARY=OWNER_MERGE_GO" in text
 
 
 def test_evidence_pack_manifest_and_claims() -> None:
@@ -226,39 +196,41 @@ def test_evidence_pack_manifest_and_claims() -> None:
     claims = json.loads((EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
     summary = json.loads((EVIDENCE_PACK / "SUMMARY.json").read_text(encoding="utf-8"))
     adjudication = json.loads((EVIDENCE_PACK / "ADJUDICATION.json").read_text(encoding="utf-8"))
-    assert claims["GET_PERFORMED_THIS_PERSIST"] is True
-    assert claims["RUNTIME_PERMIT_ISSUED"] is True
-    assert claims["PERMIT_ISSUANCE_RESULT"] == "PASS"
-    assert summary["POSITION_OBSERVATION_CLASS"] == "CASE_A_TARGET_NONZERO"
-    assert summary["POST_PERFORMED"] is False
-    assert summary["NETWORK_SESSION_AUTHORIZED"] is False
-    assert summary["PRODUCTIVE_FLATTEN_POST_AUTHORIZED"] is False
-    assert summary["FLATTEN_EXECUTE_AUTHORIZED"] is False
+    assert claims["POST_PERFORMED"] is True
+    assert summary["POST_RESULT"] == "POST_ACCEPTED"
     assert summary["LIVE_AUTHORIZED"] is False
     assert summary["CANARY_AUTHORIZED"] is False
-    assert adjudication["G05_STATUS"] == "CLOSED_AUTHENTICATED_PRIVATE_GET_PATH"
-    assert adjudication["G06_STATUS"] == "CLOSED_SIZE_AND_OBSERVATION_BINDING"
-    assert adjudication["RUNTIME_PERMIT_ISSUED"] is True
-    assert (EVIDENCE_PACK / "GET_ACCOUNT_POSITIONS.sanitized.json").is_file()
+    assert summary["TARGET_POSITION_ZERO_PROVEN"] is False
+    assert summary["LIVE_FLATTEN_PROVABILITY_PROVEN"] is False
+    assert summary["RETRY_USED"] is False
+    assert adjudication["G10_STATUS"] == "CLOSED_PRODUCTIVE_FLATTEN_POST_PERFORMED"
+    assert adjudication["G12_STATUS"] == "OPEN_LIVE_FLATTEN_PROVABILITY_UNPROVEN"
+    assert (EVIDENCE_PACK / "OBSERVATIONS.sanitized.json").is_file()
     assert (EVIDENCE_PACK / "RUNTIME_PERMIT.json").is_file()
+    assert (EVIDENCE_PACK / "POST_ACTION.sanitized.json").is_file()
 
 
-def test_assemble_roundtrip(tmp_path: Path) -> None:
-    result = execute_authenticated_private_runtime_read_and_permit_issuance_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
-        evidence_root=tmp_path,
-        transport=RecordingFakeCanaryTransportV1(body=NONZERO_BODY),
-        persist=True,
-    )
-    assert result["MANIFEST_VERIFY_RC"] == 0
-    pack = Path(result["EVIDENCE_PACK"])
-    verified = verify_manifest_v1(pack)
+def test_recovery_pack_empty_data_is_not_zero_and_fill_is_bound() -> None:
+    verified = verify_manifest_v1(RECOVERY_PACK)
     assert int(verified["MANIFEST_VERIFY_RC"]) == 0
-    assert (pack / "GET_ACCOUNT_POSITIONS.sanitized.json").is_file()
-    assert (pack / "RUNTIME_PERMIT.json").is_file()
-    assert result["summary"]["POST_PERFORMED"] is False
-    assert result["adjudication"]["NETWORK_SESSION_AUTHORIZED"] is False
+    recovery = json.loads(
+        (RECOVERY_PACK / "RECOVERY_RECON.sanitized.json").read_text(encoding="utf-8")
+    )
+    assert recovery["OBSERVATION"]["POSITION_OBSERVATION_CLASS"] == "CASE_C_EMPTY_DATA_NOT_ZERO"
+    assert recovery["OBSERVATION"]["TARGET_POSITION_ZERO_PROVEN"] is False
+    fills = recovery["OBSERVATIONS"]["GET_TRADE_FILLS_RECOVERY"]["REDACTED_PAYLOAD"]["data"]
+    bound = [
+        row
+        for row in fills
+        if str(row.get("clOrdId") or "") == "ptokxeprod508b7b41508b7b4101"
+        and str(row.get("side") or "") == "sell"
+        and str(row.get("fillSz") or "") == "1"
+    ]
+    assert len(bound) == 1
+    assert recovery["PENDING_ROW_COUNT"] == 0
+    assert recovery["POST_USED"] is False
+    assert recovery["RETRY_USED"] is False
+    assert recovery["LIVE_AUTHORIZED"] is False
 
 
 def test_pr_changed_paths_freeze_matches_git_three_dot_binding() -> None:
@@ -278,7 +250,8 @@ def test_pr_changed_paths_freeze_matches_git_three_dot_binding() -> None:
     assert freeze["CHANGED_FILE_SET_HASH"] == PR_CHANGED_PATHS_FREEZE_SET_HASH
     assert freeze["TEMP_PATH_IS_AUTHORITY"] is False
     assert freeze["CREATED_AT_UTC_IN_PATH_SET_HASH"] is False
-    assert freeze["POST_PERFORMED"] is False
+    assert freeze["POST_PERFORMED"] is True
+    assert freeze["LIVE_AUTHORIZED"] is False
     assert persisted == reconstructed
     assert len(persisted) == PR_CHANGED_PATHS_FREEZE_COUNT
     assert changed_paths_set_hash_v1(persisted) == PR_CHANGED_PATHS_FREEZE_SET_HASH

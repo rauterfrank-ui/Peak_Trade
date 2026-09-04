@@ -186,11 +186,20 @@ def evaluate_runtime_permit_issuance_v1(
     price_binding_claimed: str | None = None,
     permit_owner_go: str | None = PERMIT_OWNER_GO_CANONICAL,
     implementation_owner_go: str = OWNER_GO,
+    expected_origin_main_sha: str | None = None,
 ) -> tuple[RuntimeIssuedPermitV1 | None, tuple[str, ...]]:
     """Issue only when every required runtime-read gate is fresh PASS."""
     reasons: list[str] = []
     bound_sha = str(origin_main_sha or "").strip().lower()
-    expected = str(EXPECTED_ORIGIN_MAIN_SHA or "").strip().lower()
+    expected = (
+        str(
+            expected_origin_main_sha
+            if expected_origin_main_sha is not None
+            else EXPECTED_ORIGIN_MAIN_SHA or ""
+        )
+        .strip()
+        .lower()
+    )
     if bound_sha != expected:
         reasons.append(REASON_SHA_MISMATCH)
     target = str(instrument_id or "").strip()

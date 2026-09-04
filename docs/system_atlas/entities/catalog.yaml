@@ -1184,6 +1184,20 @@ entities:
       - tests/ops/test_section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_persist_v1.py
     notes: Additive authenticated private GET and runtime permit issuance. No POST. Not flatten. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: PHASE:productive_flatten_post_and_reconciliation
+    kind: PHASE
+    name: 11.13.5.PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - evidence/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/20260904T061816Z/
+      - evidence/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/20260904T061816Z_recovery_read_only/
+      - evidence/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/pr_changed_paths_freeze_v1/
+      - tests/ops/test_section_11_13_5_productive_flatten_post_and_reconciliation_persist_v1.py
+    notes: Additive productive flatten POST and read-only reconciliation. Empty data is not zero. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
     name: Route-C create-path blocker census v1
@@ -1873,6 +1887,39 @@ entities:
     notes: >-
       Navigation inventory of authenticated private GET and runtime permit
       issuance. No POST. Atlas is not canonical authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:productive_flatten_post_and_reconciliation_v1
+    kind: RUNTIME_COMPONENT
+    name: PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/__init__.py
+      - src/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/assemble_v1.py
+      - src/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/adjudicate_v1.py
+      - src/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/constants_v1.py
+      - src/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/contract_v1.py
+      - src/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/execute_v1.py
+      - src/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/gap_adjudication_v1.py
+      - src/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/lineage_v1.py
+      - src/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/persist_claims_v1.py
+      - src/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/persist_v1.py
+      - src/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/pr_changed_paths_freeze_v1.py
+    evidence_sources:
+      - tests/ops/test_section_11_13_5_productive_flatten_post_and_reconciliation_v1.py
+      - tests/ops/test_section_11_13_5_productive_flatten_post_and_reconciliation_persist_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION_V1.md
+      - docs/forensics/persistence/inventories/PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION_OBSERVATION_V1.json
+      - evidence/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/20260904T061816Z/
+      - evidence/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/20260904T061816Z_recovery_read_only/
+      - evidence/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/pr_changed_paths_freeze_v1/
+    notes: >-
+      Navigation inventory of productive flatten POST and read-only
+      reconciliation. Empty data is not zero. Atlas is not canonical
+      authority.
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1
