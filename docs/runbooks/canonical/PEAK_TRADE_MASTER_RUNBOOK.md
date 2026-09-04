@@ -62385,9 +62385,9 @@ CANONICAL_EVIDENCE_RUN_ID=20260904T185000Z
 
 A. Reconstruction. No GET. No POST. No cancel. No amend. No flatten. No funding.
 No credential use. Session arming was not performed. Standing Live gates remained
-false. The identity-bound fee artifact `20260904T173813Z/GET_FILLS.raw.json` and
-position artifact `20260904T181817Z/GET_POSITIONS.raw.json` were read unchanged.
-Raw venue bodies were not rewritten.
+false. The identity-bound fee artifact `20260904T173813Z&#47;GET_FILLS.raw.json`
+and position artifact `20260904T181817Z&#47;GET_POSITIONS.raw.json` were read
+unchanged. Raw venue bodies were not rewritten.
 
 B. Adjudication. `LIVE_ACCOUNTING_RECONSTRUCTED=true` on inspected
 `origin&#47;main` `78982a8b09f6e331a3c5e33a3aac70a2d190ca02` because
