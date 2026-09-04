@@ -7,9 +7,10 @@ from pathlib import Path
 import pytest
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_RESTART_RECONSTRUCTED_OWNER_GO,
+    HISTORICAL_RESTART_RECONSTRUCTED_RUN_ID,
+    HISTORICAL_RESTART_RECONSTRUCTED_SHA,
     LIVE_RESTART_RECONSTRUCTED_CANONICAL_DEFINITION,
-    OWNER_GO,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -159,10 +160,10 @@ def test_synthetic_handoff_on_census_source_cannot_promote() -> None:
 
 def test_execute_censuses_persisted_evidence_without_get() -> None:
     result = execute_live_restart_reconstructed_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        owner_go=HISTORICAL_RESTART_RECONSTRUCTED_OWNER_GO,
+        origin_main_sha=HISTORICAL_RESTART_RECONSTRUCTED_SHA,
         repo_root=REPO_ROOT,
-        run_id="20260904T192000Z",
+        run_id=HISTORICAL_RESTART_RECONSTRUCTED_RUN_ID,
     )
     adjudication = result["adjudication"]
     summary = result["summary"]

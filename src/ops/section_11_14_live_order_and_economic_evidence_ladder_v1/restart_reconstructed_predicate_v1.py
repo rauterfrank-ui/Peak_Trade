@@ -8,6 +8,7 @@ restart reconstruction. Missing handoff facts fail closed.
 
 from __future__ import annotations
 
+from decimal import Decimal, InvalidOperation
 from typing import Any, Mapping
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
@@ -80,14 +81,19 @@ def classify_restart_handoff_v1(
         reconstructed_instid = str(handoff.get("instId") or "").strip()
         reconstructed_pos_side = str(handoff.get("posSide") or "").strip()
         reconstructed_pos = str(handoff.get("pos") or "").strip()
+        parsed_pos: Decimal | None = None
+        try:
+            parsed_pos = Decimal(reconstructed_pos) if reconstructed_pos else None
+        except (InvalidOperation, ValueError):
+            parsed_pos = None
         identity_match = bool(
             reconstructed_clordid == BOUND_CLORDID
             and reconstructed_ordid == BOUND_ORDID
             and reconstructed_instid == BOUND_INSTID
             and reconstructed_pos_side == BOUND_POS_SIDE
-            and reconstructed_pos != ""
+            and parsed_pos is not None
         )
-        silent_reinit = bool(reconstructed_pos in {"", "0"})
+        silent_reinit = bool(parsed_pos is None or parsed_pos == 0)
         reconstructable = bool(identity_match and silent_reinit is False)
     epistemic = "DURABLE_LIVE_PRE_RESTART_HANDOFF_ABSENT"
     if fixture_or_testnet:
