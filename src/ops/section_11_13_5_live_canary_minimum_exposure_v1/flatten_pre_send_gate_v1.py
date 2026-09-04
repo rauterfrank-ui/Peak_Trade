@@ -67,6 +67,11 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.send_time_pass_18_1
     NAMED_REMAINING_AFTER_SEND_TIME_PASS,
     evaluate_send_time_pass_18_19_21_24_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.send_time_position_reobservation_v1 import (
+    NAMED_REMAINING_AFTER_SEND_TIME_POSITION_REOBSERVATION,
+    PRODUCER_CLASS_CALLER_SUPPLIED,
+    evaluate_send_time_position_reobservation_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.position_observation_freshness_contract_v1 import (
     PositionObservationFreshnessEvidenceV1,
     evaluate_position_observation_freshness_v1,
@@ -110,6 +115,7 @@ GATE_NAMES: tuple[str, ...] = (
     "NO_ADDITIONAL_OWNER_DECISION_REQUIRED",
     "SEND_TIME_PASS_18_19_21_24",
     "AUTHENTICATED_PRODUCTIVE_TRANSPORT",
+    "SEND_TIME_POSITION_REOBSERVATION",
     "ONE_SHOT_NO_RETRY",
     "DUPLICATE_POST_PROTECTION",
 )
@@ -641,6 +647,49 @@ def evaluate_flatten_pre_send_gate_v1(
         )
     else:
         decisions.append(_decision("AUTHENTICATED_PRODUCTIVE_TRANSPORT", True))
+
+    freshness_identity = None
+    if gate.position_observation_freshness_evidence is not None:
+        freshness_identity = gate.position_observation_freshness_evidence.observation_get_identity
+    stpr_ok, stpr_reasons = evaluate_send_time_position_reobservation_v1(
+        apt_status=PASS_OFFLINE_CONTRACT,
+        positions_payload=gate.positions_payload,
+        instrument_id=target or DEFAULT_INSTRUMENT_ID,
+        expected_instrument_id=DEFAULT_INSTRUMENT_ID,
+        freshness_evidence=gate.position_observation_freshness_evidence,
+        evaluation_monotonic_ms=evaluation_ms,
+        current_decision_id=gate.flatten_pre_send_decision_id,
+        claimed_remaining_after_send_time_position_reobservation=(
+            NAMED_REMAINING_AFTER_SEND_TIME_POSITION_REOBSERVATION
+        ),
+        producer_class=PRODUCER_CLASS_CALLER_SUPPLIED,
+        observation_identity=freshness_identity,
+        historical_reuse_claim=False,
+        runtime_observation_proven_claim=False,
+        proven_at_send_18=False,
+        proven_at_send_19=False,
+        proven_at_send_21=False,
+        proven_at_send_24=False,
+        live_authorized_claim=gate.live_authorized is True,
+        runtime_permit_issuance_claim=False,
+        flatten_execute_authorized_claim=False,
+        network_session_authorized_claim=False,
+        post_performed_claim=False,
+        get_performed_claim=False,
+        flatten_execute_owner_go=gate.flatten_execute_owner_go,
+        predecessor_lineage_ok=True,
+    )
+    if not stpr_ok:
+        reasons.extend(stpr_reasons)
+        decisions.append(
+            _decision(
+                "SEND_TIME_POSITION_REOBSERVATION",
+                False,
+                ",".join(stpr_reasons) or "SEND_TIME_POSITION_REOBSERVATION_DENIED",
+            )
+        )
+    else:
+        decisions.append(_decision("SEND_TIME_POSITION_REOBSERVATION", True))
 
     if gate.one_shot_no_retry is not True:
         reasons.append("ONE_SHOT_NO_RETRY_REQUIRED")

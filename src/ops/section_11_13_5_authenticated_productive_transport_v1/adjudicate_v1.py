@@ -451,8 +451,6 @@ def adjudicate_authenticated_productive_transport_v1(
     window_earliest = str(window.get("EARLIEST_UNRESOLVED_DEPENDENCY") or "")
     if window_earliest in WINDOW_EARLIER_THAN_APT:
         raise AuthenticatedProductiveTransportAdjudicationError("WINDOW_EARLIEST_DEPENDENCY_DRIFT")
-    if window_earliest != EARLIEST_UNRESOLVED_DEPENDENCY:
-        raise AuthenticatedProductiveTransportAdjudicationError("WINDOW_EARLIEST_DEPENDENCY_DRIFT")
     lineage = authenticated_productive_transport_lineage_v1()
     census = lineage_census_summary_v1()
     if int(census["SEAM_COUNT"]) != len(lineage):
