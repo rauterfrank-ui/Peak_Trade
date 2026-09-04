@@ -116,4 +116,4 @@ def test_true_does_not_imply_path_reachable_or_authorization_or_later_fields() -
     assert LIVE_PRIVATE_READ_ONLY_PROVEN is True
     assert LIVE_SUBMIT_ACK_OBSERVED is True
     assert LIVE_FILL_OBSERVED is True
-    assert LIVE_FEE_OBSERVED is False
+    assert LIVE_FEE_OBSERVED is True

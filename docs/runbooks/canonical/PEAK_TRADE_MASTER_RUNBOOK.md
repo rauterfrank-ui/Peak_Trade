@@ -61949,6 +61949,161 @@ Do **not** POST, retry, cancel, amend, flatten, fund, mutate standing Live
 gates, merge, observe fees as `LIVE_FEE_OBSERVED`, or promote later ladder
 fields. The next canonical dependency is `OWNER_GO_FOR_LIVE_FEE_OBSERVED`.
 
+### 11.14 LIVE_FEE_OBSERVED_ADJUDICATION (BOUND; IDENTITY-BOUND FILLS GET; FEE TRUE; POSITION INELIGIBLE; SECTION 11.14 NOT COMPLETE)
+
+Additive persist. Does **not** rewrite the §11.14 ladder text or the consumed
+slices above. Does **not** POST. Does **not** retry. Does **not** second-submit.
+Does **not** cancel, amend, flatten, or fund. Does **not** mutate standing Live
+gates. Does **not** set `LIVE_POSITION_RECONCILED` or any later `*_OBSERVED`
+&#47; `*_PROVEN` ladder field true. Does **not** mark §11.14 complete. Does
+**not** authorize a venue-native order POST.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_SECTION_11_14_LIVE_FEE_OBSERVED_MAXIMUM_SAFE_LEVERAGE_V1
+OWNER_GO_STATUS=CONSUMED
+OWNER_GO_CONSUMED=true
+PRIOR_OWNER_GO=PEAK_TRADE_OWNER_GO_SECTION_11_14_LIVE_FILL_OBSERVED_MAXIMUM_SAFE_LEVERAGE_V1
+AUTHORIZATION_PRESENT=true
+AUTHORITY_CLASS=R2_CONDITIONAL_PRIVATE_GET
+RISK_CLASS=R2_READ_ONLY_LIVE_FEE_OBSERVATION_NO_MUTATION
+PERSIST_CLASS=SECTION_11_14_LIVE_FEE_OBSERVED_ADJUDICATION_SSOT_PERSIST
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+ATLAS_AUTHORITY=NONE
+CHAT_TRANSCRIPT_AUTHORITY=NONE
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=de053526a5066526a1fd1ebaf5f5c4045a3ad4d5
+EXPECTED_ORIGIN_MAIN_SHA=de053526a5066526a1fd1ebaf5f5c4045a3ad4d5
+PREDECESSOR_SLICE=11.14.LIVE_FILL_OBSERVED_ADJUDICATION
+THIS_SLICE=11.14.LIVE_FEE_OBSERVED_ADJUDICATION
+CURRENT_PHASE=11.14.LIVE_FEE_OBSERVED_ADJUDICATION
+CURRENT_CANONICAL_SECTION=11.14.LIVE_FEE_OBSERVED_ADJUDICATION
+LAST_CANONICALLY_CLOSED_STEP=SECTION_11_14_LIVE_FEE_OBSERVED
+SECTION_11_14_OFFLINE_SURFACE_BOUND=true
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+SECTION_11_14_LIVE_EVIDENCE_COLLECTION_AUTHORIZED=false
+LIVE_EXECUTION_CODE_EXISTS=true
+LIVE_EXECUTION_PATH_REACHABLE=true
+LIVE_PRIVATE_READ_ONLY_PROVEN=true
+LIVE_ORDER_PLAN_OBSERVED=true
+LIVE_SUBMIT_ACK_OBSERVED=true
+LIVE_FILL_OBSERVED=true
+LIVE_FEE_OBSERVED=true
+LIVE_POSITION_RECONCILED=false
+LIVE_ACCOUNTING_RECONSTRUCTED=false
+LIVE_RESTART_RECONSTRUCTED=false
+LIVE_AUTONOMOUS_RECOVERY_OBSERVED=false
+LIVE_END_TO_END_EVIDENCE_PROVEN=false
+LADDER_FIELD_COUNT=12
+MANDATORY_LIVE_METRIC_COUNT=20
+COLLECTOR_ACTIVATED=false
+GET_PERFORMED=true
+PRIVATE_GET_USED=true
+PUBLIC_GET_USED=false
+POST_PERFORMED=false
+POST_USED=false
+WIRE_SEND_POST=false
+SUBMIT_USED=false
+SUBMIT_COUNT=0
+RETRY_USED=false
+SECOND_SUBMIT_USED=false
+CANCEL_USED=false
+AMEND_USED=false
+FLATTEN_EXECUTE_USED=false
+FUNDING_USED=false
+CREDENTIAL_USE=true
+BOUND_ORDID=3893505043080286208
+BOUND_CLORDID=ptokxeprod1fec928b1fec928b00
+BOUND_INSTID=SUI-USD_UM_XPERP-310404
+BOUND_ACK_SOURCE_KIND=GOVERNED_CURRENT_LIVE_POST
+BOUND_ACK_EVIDENCE_RUN_ID=20260904T160450Z
+CANONICAL_FEE_PRODUCER=src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/fee_observed_adjudication_v1.py
+CANONICAL_FEE_PRODUCER_SYMBOL=adjudicate_live_fee_observed_v1
+LIVE_FEE_OBSERVED_PRODUCER_BOUND=true
+LIVE_FEE_PROOF_CRITERION_BOUND=true
+FEE_SOURCE_KIND=GOVERNED_CURRENT_PRIVATE_GET
+FEE_EVIDENCE_SOURCE=&#47;api&#47;v5&#47;trade&#47;fills
+HTTP_STATUS=200
+TOP_LEVEL_CODE=0
+IDENTITY_BOUND_ACTUAL_FEE_AND_FEE_CCY=true
+RAW_FEE_IF_OBSERVED=-0.000374
+RAW_FEE_CCY_IF_OBSERVED=USDC
+FEE_INFERRED_FROM_RATE=false
+FEE_INFERRED_FROM_PRICE_TIMES_QTY=false
+FEE_SUM_COMPUTED=false
+HISTORICAL_FEE_SUBSTITUTION=false
+FILL_IS_NOT_FEE_PROOF=true
+STATIC_RATE_IS_NOT_FEE_PROOF=true
+PRICE_TIMES_QTY_IS_NOT_FEE_PROOF=true
+POSITION_SIZE_IS_NOT_FEE_PROOF=true
+BALANCE_CHANGE_IS_NOT_LIVE_POSITION_RECONCILED=true
+CASE_ADJUDICATION=CASE_LIVE_FEE_OBSERVED_POSITION_INELIGIBLE
+LIVE_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+SUBMIT_UNLOCKED=false
+CANARY_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+G12_DOES_NOT_AUTHORIZE_SECTION_11_14=true
+G12_DOES_NOT_SATISFY_SECTION_11_14_OBSERVED_FIELDS=true
+FIELD_NAME_SIMILARITY_IS_NOT_SEMANTIC_IDENTITY=true
+NO_TESTNET_FIXTURE_OR_SIMULATED_RESULT_MAY_SATISFY_A_LIVE_EVIDENCE_FIELD=true
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_POSITION_RECONCILED
+NEXT_AUTHORITY_BOUNDARY=LIVE_POSITION_RECONCILED
+NEXT_OWNER_GO_REQUIRED=OWNER_GO_FOR_LIVE_POSITION_RECONCILED
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CANONICAL_EVIDENCE_RUN_ID=20260904T173813Z
+```
+
+A. Observation. Two governed private GETs on `eea.okx.com` after proving
+`origin&#47;main` `de053526a5066526a1fd1ebaf5f5c4045a3ad4d5`: supporting
+`GET &#47;api&#47;v5&#47;trade&#47;order` scoped to the bound `ordId`+`instId`,
+and authoritative `GET &#47;api&#47;v5&#47;trade&#47;fills` scoped to the bound
+`ordId`+`instId`+`instType`. No POST. No cancel. No amend. No flatten. No
+funding. Credential use was read-only. Session arming was not performed.
+Standing Live gates remained false. Historical fill evidence was not
+substituted.
+
+B. Adjudication. `LIVE_FEE_OBSERVED=true` on inspected
+`origin&#47;main` `de053526a5066526a1fd1ebaf5f5c4045a3ad4d5` because
+`adjudicate_live_fee_observed_v1` received source
+`GOVERNED_CURRENT_PRIVATE_GET` and the fee conjunction passed: HTTP 200,
+no redirect, top-level `code=0`, parseable JSON, and at least one data row
+whose `ordId`, `clOrdId`, and `instId` equal the bound identity
+`3893505043080286208` &#47; `ptokxeprod1fec928b1fec928b00` &#47;
+`SUI-USD_UM_XPERP-310404` with a present, nonempty, Decimal-parseable
+venue-native `fee` field and nonempty `feeCcy`. Raw observed values are
+`fee=-0.000374` and `feeCcy=USDC`. The fee was not inferred from a static
+rate and was not reconstructed from `fillPx` times `fillSz`.
+
+C. Non-promotion. `LIVE_POSITION_RECONCILED=false`. Balance change, position
+size, and accounting reconstruction are not this field. Retry, second
+submit, cancel, amend, flatten, and funding were not performed. This GO is
+consumed. A separate Owner-GO is required for `LIVE_POSITION_RECONCILED`.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/
+SPEC_OWNER=docs/ops/specs/SECTION_11_14_LIVE_FEE_OBSERVED_ADJUDICATION_V1.md
+EVIDENCE_ROOT=evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T173813Z/
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_14
+CURRENT_CANONICAL_SECTION=11.14.LIVE_FEE_OBSERVED_ADJUDICATION
+HARD_STOP_AFTER_THIS_TASK=true
+HARD_STOP=true
+```
+
+Hard stop. This live-fee-observed read-only GO is consumed.
+`SECTION_11_14_AUTHORIZED=false`. `SECTION_11_14_COMPLETE=false`.
+`LIVE_FILL_OBSERVED=true`. `LIVE_FEE_OBSERVED=true`.
+`LIVE_POSITION_RECONCILED=false`. `CASE_ADJUDICATION=CASE_LIVE_FEE_OBSERVED_POSITION_INELIGIBLE`.
+Do **not** POST, retry, cancel, amend, flatten, fund, mutate standing Live
+gates, merge, reconcile position as `LIVE_POSITION_RECONCILED`, or promote
+later ladder fields. The next canonical dependency is
+`OWNER_GO_FOR_LIVE_POSITION_RECONCILED`.
+
 ## 11.15 Full-autonomy observability and audit trail
 
 The autonomous runtime must expose enough telemetry for oversight without

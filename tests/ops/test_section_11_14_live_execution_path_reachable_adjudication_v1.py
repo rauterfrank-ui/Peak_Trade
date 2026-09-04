@@ -116,7 +116,7 @@ def test_venue_connectivity_does_not_promote_later_ladder_fields() -> None:
     assert LIVE_PRIVATE_READ_ONLY_PROVEN is True
     assert LIVE_SUBMIT_ACK_OBSERVED is True
     assert LIVE_FILL_OBSERVED is True
-    assert LIVE_FEE_OBSERVED is False
+    assert LIVE_FEE_OBSERVED is True
 
 
 def test_false_required_constituent_makes_path_reachable_false() -> None:
