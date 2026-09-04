@@ -482,6 +482,22 @@ relations:
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py
     notes: >-
       LIVE_SUBMIT_ACK forensic contract follows ORDER_PLAN_OBSERVED.
-      Offline only. CASE_C. Does not POST. Transport ok is not
+      Offline only. Historical CASE_C. Does not POST. Transport ok is not
       LIVE_SUBMIT_ACK_OBSERVED. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_section_11_14_submit_ack_proof_criterion_follows_forensic
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_submit_ack_contract_and_mutation_boundary_forensic_adjudication
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/submit_ack_observed_adjudication_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/submit_ack_observed_predicate_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/submit_ack_contract_v1.py
+    notes: >-
+      LIVE_SUBMIT_ACK_OBSERVED proof criterion follows the forensic CASE_C
+      slice. Offline only. CASE_A. Does not POST. Producer and criterion
+      are bound. Standing ACK field remains false. Atlas is not trading
+      authority.
       ATLAS_AUTHORITY=NONE.

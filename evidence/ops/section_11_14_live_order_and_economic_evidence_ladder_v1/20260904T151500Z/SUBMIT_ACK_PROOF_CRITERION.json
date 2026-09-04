@@ -1,0 +1,21 @@
+{
+  "CANARY_EXECUTED_IS_NOT_LIVE_SUBMIT_ACK_OBSERVED": true,
+  "EXACTLY_ONE_DATA_ROW_REQUIRED": true,
+  "HTTP_STATUS_CONTRIBUTES": true,
+  "HTTP_STATUS_REQUIRED": 200,
+  "LIVE_SUBMIT_ACK_OBSERVED": false,
+  "LIVE_SUBMIT_ACK_OBSERVED_PRODUCER_BOUND": true,
+  "LIVE_SUBMIT_ACK_PROOF_CRITERION_BOUND": true,
+  "NONEMPTY_ORDID_REQUIRED": true,
+  "READ_ONLY_RECON_CLORDID_MATCH_IS_NOT_SYNCHRONOUS_ACK": true,
+  "RETURNED_CLORDID_MUST_EQUAL_SENT": true,
+  "RETURNED_CLORDID_REQUIRED": true,
+  "SCODE_0_REQUIRED": true,
+  "TOP_LEVEL_CODE_CONTRIBUTES": true,
+  "TOP_LEVEL_CODE_REQUIRED": "0",
+  "TRANSPORT_OK_IS_NOT_LIVE_SUBMIT_ACK_OBSERVED": true,
+  "UNKNOWN_SUBMIT_IS_NOT_ACK": true,
+  "canonical_definition": "LIVE_SUBMIT_ACK_OBSERVED is the fifth \u00a711.14 Live proof-claim field. It is true iff LIVE_ORDER_PLAN_OBSERVED is already true and a current productive POST /api/v5/trade/order of a fresh plan (not a historical artifact) returns a synchronous parsed response with HTTP 200, no redirect, top-level code=0, exactly one data row, sCode=0, nonempty ordId, and a returned clOrdId that equals the sent clOrdId. Transport ok is not this field. CANARY_EXECUTED is not this field. UNKNOWN_SUBMIT is not ACK. A later read-only recon match by clOrdId may resolve order existence without reclassifying the original submit response as an observed ACK. Fixture, testnet, and simulated sources are forbidden. True does not imply LIVE_FILL_OBSERVED, POST authorization for a second submit, or \u00a711.14 complete.",
+  "producer": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/submit_ack_observed_adjudication_v1.py::adjudicate_live_submit_ack_observed_v1",
+  "schema_version": "section_11_14_submit_ack_proof_criterion.v1"
+}

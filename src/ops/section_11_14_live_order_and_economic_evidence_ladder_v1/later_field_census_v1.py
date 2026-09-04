@@ -40,15 +40,18 @@ def build_later_field_census_v1() -> dict[str, Any]:
                 "claim_value": False,
                 "canonical_definition": LIVE_SUBMIT_ACK_OBSERVED_CANONICAL_STATUS,
                 "post_required": True,
-                "producer_bound": False,
-                "proof_criterion_bound": False,
                 "minimum_external_action_class": "POST_ORDER_SUBMIT",
                 "why_blocked": (
-                    "CASE_C_CANONICAL_SEMANTIC_GAP. Canonical ACK requires POST of the "
-                    "observed plan, but no §11.14 HTTP/venue/identity criterion is bound. "
-                    "Transport ok is not this field. This GO forbids POST and forbids "
-                    "promoting the field true."
+                    "Proof criterion and producer are bound. The standing field remains "
+                    "false because this GO forbids POST. Transport ok is still not this "
+                    "field. LIVE_FILL_OBSERVED remains ineligible until this field is true."
                 ),
+                "producer": (
+                    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+                    "submit_ack_observed_adjudication_v1.py::adjudicate_live_submit_ack_observed_v1"
+                ),
+                "producer_bound": True,
+                "proof_criterion_bound": True,
             },
             {
                 "field": "LIVE_FILL_OBSERVED",
@@ -57,7 +60,10 @@ def build_later_field_census_v1() -> dict[str, Any]:
                     "Current venue fill bound to the Peak_Trade Live submit identity."
                 ),
                 "post_required": True,
-                "why_blocked": "Requires a Live fill after submit ACK. POST unauthorized.",
+                "why_blocked": (
+                    "Requires LIVE_SUBMIT_ACK_OBSERVED=true first. Ladder order forbids "
+                    "fill adjudication while ACK is false. POST unauthorized."
+                ),
             },
             {
                 "field": "LIVE_FEE_OBSERVED",

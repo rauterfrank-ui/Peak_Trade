@@ -23,6 +23,8 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_EXECUTION_PATH_REACHABLE,
     LIVE_ORDER_PLAN_OBSERVED,
     LIVE_PRIVATE_READ_ONLY_PROVEN,
+    LIVE_SUBMIT_ACK_OBSERVED_PRODUCER_BOUND,
+    LIVE_SUBMIT_ACK_PROOF_CRITERION_BOUND,
     MANDATORY_LIVE_METRIC_COUNT,
     MANDATORY_LIVE_METRICS,
     OBSERVED_OR_PROVEN_FIELDS_MUST_REMAIN_FALSE,
@@ -100,8 +102,12 @@ def assert_contract_invariants_v1(payload: Mapping[str, Any] | None = None) -> N
         raise Section1114OfflineSurfaceError("SUBMIT_COUNT_MAX_DRIFT")
     if RETRY_DEFAULT is True or SECOND_SUBMIT_DEFAULT is True:
         raise Section1114OfflineSurfaceError("RETRY_OR_SECOND_SUBMIT_DEFAULT_TRUE")
-    if CASE_ADJUDICATION != "CASE_C_CANONICAL_SEMANTIC_GAP":
+    if CASE_ADJUDICATION != "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO":
         raise Section1114OfflineSurfaceError("CASE_ADJUDICATION_DRIFT")
+    if LIVE_SUBMIT_ACK_PROOF_CRITERION_BOUND is not True:
+        raise Section1114OfflineSurfaceError("ACK_PROOF_CRITERION_MUST_BE_BOUND")
+    if LIVE_SUBMIT_ACK_OBSERVED_PRODUCER_BOUND is not True:
+        raise Section1114OfflineSurfaceError("ACK_PRODUCER_MUST_BE_BOUND")
     if LIVE_EXECUTION_PATH_REACHABLE is True and LIVE_EXECUTION_CODE_EXISTS is not True:
         raise Section1114OfflineSurfaceError("PATH_REACHABLE_WITHOUT_CODE_EXISTS")
     if CREDENTIAL_USE_ALLOWED is not True:
