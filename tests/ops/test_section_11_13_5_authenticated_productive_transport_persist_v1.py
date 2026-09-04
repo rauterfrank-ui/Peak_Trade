@@ -51,6 +51,7 @@ EVIDENCE_PACK = (
 
 STP_HEADING = "### 11.13.5 SEND_TIME_PASS_18_19_21_24"
 APT_HEADING = "### 11.13.5 AUTHENTICATED_PRODUCTIVE_TRANSPORT"
+STPR_HEADING = "### 11.13.5 SEND_TIME_POSITION_REOBSERVATION"
 LADDER_HEADING = "## 11.14 Live order and economic evidence ladder"
 
 
@@ -62,8 +63,12 @@ def _read(path: Path) -> str:
 def _apt_section(text: str) -> str:
     start = text.find(APT_HEADING)
     assert start >= 0, "missing AUTHENTICATED_PRODUCTIVE_TRANSPORT persist heading"
-    end = text.find(LADDER_HEADING, start)
-    assert end > start, "missing §11.14 boundary after AUTHENTICATED_PRODUCTIVE_TRANSPORT persist"
+    end = text.find(STPR_HEADING, start)
+    if end < 0:
+        end = text.find(LADDER_HEADING, start)
+    assert end > start, (
+        "missing successor boundary after AUTHENTICATED_PRODUCTIVE_TRANSPORT persist"
+    )
     return text[start:end]
 
 
