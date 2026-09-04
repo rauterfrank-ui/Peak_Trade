@@ -20,6 +20,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_EXECUTION_PATH_REACHABLE,
     LIVE_ORDER_PLAN_OBSERVED,
     LIVE_PRIVATE_READ_ONLY_PROVEN,
+    LIVE_SUBMIT_ACK_OBSERVED,
     MANDATORY_LIVE_METRIC_COUNT,
     MANDATORY_LIVE_METRICS,
     METRIC_COUNT_DISCREPANCY_VS_PRIOR_CENSUS,
@@ -78,6 +79,7 @@ def test_contract_invariants_remain_fail_closed() -> None:
     assert LIVE_EXECUTION_PATH_REACHABLE is True
     assert LIVE_PRIVATE_READ_ONLY_PROVEN is True
     assert LIVE_ORDER_PLAN_OBSERVED is True
+    assert LIVE_SUBMIT_ACK_OBSERVED is True
     for field_name in OBSERVED_OR_PROVEN_FIELDS_MUST_REMAIN_FALSE:
         assert LADDER_FIELD_DEFAULTS[field_name] is False
     assert len(LADDER_FIELDS) == LADDER_FIELD_COUNT == 12
@@ -318,7 +320,7 @@ def test_traceability_has_each_ladder_field_and_metric_once() -> None:
     names = [row["CANONICAL_REQUIREMENT"] for row in matrix["rows"]]
     assert names == list(LADDER_FIELDS) + list(MANDATORY_LIVE_METRICS)
     assert matrix["primary_row_count"] == 32
-    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_SUBMIT_ACK_OBSERVED"
+    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_FILL_OBSERVED"
 
 
 def _successful_read_only_evidence() -> dict[str, object]:
@@ -368,12 +370,36 @@ def _successful_order_plan_evidence() -> dict[str, object]:
     }
 
 
+def _successful_live_submit_ack_evidence() -> dict[str, object]:
+    return {
+        "source_kind": "GOVERNED_CURRENT_LIVE_POST",
+        "POST_USED": True,
+        "send_attempted": True,
+        "entry_submit_count": 1,
+        "http_status": 200,
+        "okx_code": "0",
+        "json_parse_ok": True,
+        "redirect_followed": False,
+        "redirectish": False,
+        "data_count": 1,
+        "s_code": "0",
+        "ord_id": "3893505043080286208",
+        "returned_clordid": "ptokxeprod1fec928b1fec928b00",
+        "sent_clordid": "ptokxeprod1fec928b1fec928b00",
+        "historical_plan_reused": False,
+        "CURRENT_PRODUCTIVE_POST_OF_FRESH_PLAN": True,
+        "LIVE_FILL_OBSERVED": False,
+        "RESPONSE_TIME_UTC": "2026-09-04T16:04:52Z",
+    }
+
+
 def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
     documents = assemble_offline_surface_v1(
         repo_root=REPO_ROOT,
         origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
         private_read_only_evidence=_successful_read_only_evidence(),
         order_plan_evidence=_successful_order_plan_evidence(),
+        submit_ack_evidence=_successful_live_submit_ack_evidence(),
     )
     verified = persist_offline_surface_pack_v1(
         pack=tmp_path,
@@ -385,15 +411,15 @@ def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
     assert documents["SUMMARY.json"]["LIVE_EXECUTION_PATH_REACHABLE"] is True
     assert documents["SUMMARY.json"]["LIVE_PRIVATE_READ_ONLY_PROVEN"] is True
     assert documents["SUMMARY.json"]["LIVE_ORDER_PLAN_OBSERVED"] is True
-    assert documents["SUMMARY.json"]["LIVE_SUBMIT_ACK_OBSERVED"] is False
+    assert documents["SUMMARY.json"]["LIVE_SUBMIT_ACK_OBSERVED"] is True
     assert documents["SUMMARY.json"]["SECTION_11_14_COMPLETE"] is False
     assert documents["SUMMARY.json"]["CASE_ADJUDICATION"] == (
-        "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO"
+        "CASE_LIVE_SUBMIT_ACK_OBSERVED_FILL_INELIGIBLE"
     )
-    assert documents["SUMMARY.json"]["GET_USED"] is False
-    assert documents["SUMMARY.json"]["CREDENTIAL_USE"] is False
-    assert documents["MUTATION_BOUNDARY.json"]["POST"] is False
-    assert documents["MUTATION_BOUNDARY.json"]["THIS_GO_GET"] is False
+    assert documents["SUMMARY.json"]["GET_USED"] is True
+    assert documents["SUMMARY.json"]["CREDENTIAL_USE"] is True
+    assert documents["MUTATION_BOUNDARY.json"]["POST"] is True
+    assert documents["MUTATION_BOUNDARY.json"]["THIS_GO_GET"] is True
     assert documents["MUTATION_BOUNDARY.json"]["PREDECESSOR_ORDER_PLAN_ATTACHED"] is True
     assert (
         documents["SUBMIT_ACK_ADJUDICATION.json"]["CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO"]
@@ -405,7 +431,7 @@ def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
         documents["SUBMIT_ACK_PROOF_CRITERION.json"]["LIVE_SUBMIT_ACK_PROOF_CRITERION_BOUND"]
         is True
     )
-    assert documents["SUBMIT_ACK_OBSERVED_ADJUDICATION.json"]["LIVE_SUBMIT_ACK_OBSERVED"] is False
+    assert documents["SUBMIT_ACK_OBSERVED_ADJUDICATION.json"]["LIVE_SUBMIT_ACK_OBSERVED"] is True
     assert documents["SUBMIT_ACK_OBSERVED_ADJUDICATION.json"]["LIVE_FILL_OBSERVED"] is False
     assert documents["EXACT_MUTATION_CONTRACT.json"]["endpoint"] == "/api/v5/trade/order"
     assert documents["EXACT_MUTATION_CONTRACT.json"]["http_method"] == "POST"

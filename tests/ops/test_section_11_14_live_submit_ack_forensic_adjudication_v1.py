@@ -41,8 +41,8 @@ def test_single_submit_safety_constants() -> None:
     assert RETRY_DEFAULT is False
     assert SECOND_SUBMIT_DEFAULT is False
     assert TIMEOUT_MUST_NOT_AUTO_POST is True
-    assert LIVE_SUBMIT_ACK_OBSERVED is False
-    assert CASE_ADJUDICATION == "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO"
+    assert LIVE_SUBMIT_ACK_OBSERVED is True
+    assert CASE_ADJUDICATION == "CASE_LIVE_SUBMIT_ACK_OBSERVED_FILL_INELIGIBLE"
 
 
 def test_refuse_ack_true_promotion() -> None:

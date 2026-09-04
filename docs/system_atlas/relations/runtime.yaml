@@ -498,6 +498,21 @@ relations:
     notes: >-
       LIVE_SUBMIT_ACK_OBSERVED proof criterion follows the forensic CASE_C
       slice. Offline only. CASE_A. Does not POST. Producer and criterion
-      are bound. Standing ACK field remains false. Atlas is not trading
-      authority.
+      are bound. Standing ACK field remained false under that GO. Atlas
+      is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_section_11_14_submit_ack_observed_adjudication_follows_proof_criterion
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_submit_ack_observed_proof_criterion
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/submit_ack_observed_adjudication_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/exact_single_live_submit_execute_v1.py
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T160450Z/
+    notes: >-
+      LIVE_SUBMIT_ACK_OBSERVED adjudication follows the bound proof
+      criterion. Exact single live POST. ACK true. Fill ineligible.
+      Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.

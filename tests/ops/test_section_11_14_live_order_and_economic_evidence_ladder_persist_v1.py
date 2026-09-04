@@ -16,11 +16,15 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     CANONICAL_ORDER_PLAN_OBSERVED_SLICE_HEADING,
     CANONICAL_SUBMIT_ACK_FORENSIC_SLICE_HEADING,
     CANONICAL_SUBMIT_ACK_PROOF_CRITERION_SLICE_HEADING,
+    CANONICAL_SUBMIT_ACK_OBSERVED_ADJUDICATION_SLICE_HEADING,
     CANONICAL_SECTION_HEADING,
     EARLIEST_UNRESOLVED_DEPENDENCY,
     EXPECTED_ORIGIN_MAIN_SHA,
     HISTORICAL_FORENSIC_ACK_OWNER_GO,
     HISTORICAL_FORENSIC_ACK_RUN_ID,
+    HISTORICAL_PROOF_CRITERION_OWNER_GO,
+    HISTORICAL_PROOF_CRITERION_RUN_ID,
+    HISTORICAL_PROOF_CRITERION_SHA,
     HISTORICAL_CODE_EXISTS_OWNER_GO,
     HISTORICAL_CODE_EXISTS_RUN_ID,
     HISTORICAL_CODE_EXISTS_SHA,
@@ -62,6 +66,9 @@ SUBMIT_ACK_FORENSIC_SPEC = (
 )
 SUBMIT_ACK_PROOF_CRITERION_SPEC = (
     REPO_ROOT / "docs/ops/specs/SECTION_11_14_LIVE_SUBMIT_ACK_OBSERVED_PROOF_CRITERION_V1.md"
+)
+SUBMIT_ACK_OBSERVED_ADJUDICATION_SPEC = (
+    REPO_ROOT / "docs/ops/specs/SECTION_11_14_LIVE_SUBMIT_ACK_OBSERVED_ADJUDICATION_V1.md"
 )
 HISTORICAL_SPEC = (
     REPO_ROOT
@@ -113,22 +120,24 @@ FORENSIC_ACK_EVIDENCE = (
     / "section_11_14_live_order_and_economic_evidence_ladder_v1"
     / HISTORICAL_FORENSIC_ACK_RUN_ID
 )
+PROOF_CRITERION_EVIDENCE = (
+    REPO_ROOT
+    / "evidence/ops"
+    / "section_11_14_live_order_and_economic_evidence_ladder_v1"
+    / HISTORICAL_PROOF_CRITERION_RUN_ID
+)
 HEADING_11_15 = "## 11.15 Full-autonomy observability and audit trail"
 
 
-def test_current_slice_constants_target_submit_ack_proof_criterion() -> None:
-    assert THIS_SLICE == "11.14.LIVE_SUBMIT_ACK_OBSERVED_PROOF_CRITERION"
-    assert PREDECESSOR_SLICE == (
-        "11.14.LIVE_SUBMIT_ACK_CONTRACT_AND_MUTATION_BOUNDARY_FORENSIC_ADJUDICATION"
-    )
-    assert OWNER_GO.endswith("BIND_LIVE_SUBMIT_ACK_OBSERVED_PROOF_CRITERION_V1")
-    assert EXPECTED_ORIGIN_MAIN_SHA == "61fbec920741b3c6631e15723092e3b262740c4e"
-    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_SUBMIT_ACK_OBSERVED"
-    assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_EXACT_SINGLE_LIVE_SUBMIT_POST"
-    assert LAST_CANONICALLY_CLOSED_STEP == (
-        "SECTION_11_14_BIND_LIVE_SUBMIT_ACK_OBSERVED_PROOF_CRITERION"
-    )
-    assert CANONICAL_EVIDENCE_RUN_ID
+def test_current_slice_constants_target_submit_ack_observed_adjudication() -> None:
+    assert THIS_SLICE == "11.14.LIVE_SUBMIT_ACK_OBSERVED_ADJUDICATION"
+    assert PREDECESSOR_SLICE == "11.14.LIVE_SUBMIT_ACK_OBSERVED_PROOF_CRITERION"
+    assert OWNER_GO.endswith("EXACT_SINGLE_LIVE_SUBMIT_POST_V1")
+    assert EXPECTED_ORIGIN_MAIN_SHA == "d6d3fa2970aafc9517cff9c0b8c1685dabd9791b"
+    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_FILL_OBSERVED"
+    assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_LIVE_FILL_OBSERVED"
+    assert LAST_CANONICALLY_CLOSED_STEP == "SECTION_11_14_EXACT_SINGLE_LIVE_SUBMIT_POST"
+    assert CANONICAL_EVIDENCE_RUN_ID == "20260904T160450Z"
     assert EVIDENCE.name == CANONICAL_EVIDENCE_RUN_ID
 
 
@@ -278,7 +287,7 @@ def test_runbook_submit_ack_forensic_slice_binds_case_c_without_ack() -> None:
         in section
     )
     assert "PREDECESSOR_SLICE=11.14.LIVE_ORDER_PLAN_OBSERVED_ADJUDICATION" in section
-    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={HISTORICAL_PROOF_CRITERION_SHA}" in section
     assert "SECTION_11_14_AUTHORIZED=false" in section
     assert "SECTION_11_14_COMPLETE=false" in section
     assert "LIVE_ORDER_PLAN_OBSERVED=true" in section
@@ -297,17 +306,19 @@ def test_runbook_submit_ack_forensic_slice_binds_case_c_without_ack() -> None:
 def test_runbook_submit_ack_proof_criterion_slice_binds_case_a_without_ack() -> None:
     text = MASTER_RUNBOOK.read_text(encoding="utf-8")
     start = text.find(CANONICAL_SUBMIT_ACK_PROOF_CRITERION_SLICE_HEADING)
-    end = text.find(HEADING_11_15, start)
+    end = text.find(CANONICAL_SUBMIT_ACK_OBSERVED_ADJUDICATION_SLICE_HEADING, start)
+    if end < 0:
+        end = text.find(HEADING_11_15, start)
     assert start >= 0
     assert end > start
     section = text[start:end]
-    assert OWNER_GO in section
+    assert HISTORICAL_PROOF_CRITERION_OWNER_GO in section
     assert "THIS_SLICE=11.14.LIVE_SUBMIT_ACK_OBSERVED_PROOF_CRITERION" in section
     assert (
         "PREDECESSOR_SLICE=11.14.LIVE_SUBMIT_ACK_CONTRACT_AND_MUTATION_BOUNDARY_FORENSIC_ADJUDICATION"
         in section
     )
-    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={HISTORICAL_PROOF_CRITERION_SHA}" in section
     assert "SECTION_11_14_AUTHORIZED=false" in section
     assert "SECTION_11_14_COMPLETE=false" in section
     assert "LIVE_SUBMIT_ACK_OBSERVED=false" in section
@@ -323,6 +334,34 @@ def test_runbook_submit_ack_proof_criterion_slice_binds_case_a_without_ack() -> 
     assert "RETURNED_CLORDID_MUST_EQUAL_SENT=true" in section
     assert "READ_ONLY_RECON_IS_NOT_SYNCHRONOUS_ACK=true" in section
     assert "POST_PERFORMED=false" in section
+    assert "NEXT_OWNER_GO_REQUIRED=OWNER_GO_FOR_EXACT_SINGLE_LIVE_SUBMIT_POST" in section
+    assert HISTORICAL_PROOF_CRITERION_RUN_ID in section
+    for field_name in LADDER_FIELDS:
+        assert field_name in section
+
+
+def test_runbook_submit_ack_observed_adjudication_slice_binds_ack_without_fill() -> None:
+    text = MASTER_RUNBOOK.read_text(encoding="utf-8")
+    start = text.find(CANONICAL_SUBMIT_ACK_OBSERVED_ADJUDICATION_SLICE_HEADING)
+    end = text.find(HEADING_11_15, start)
+    assert start >= 0
+    assert end > start
+    section = text[start:end]
+    assert OWNER_GO in section
+    assert "THIS_SLICE=11.14.LIVE_SUBMIT_ACK_OBSERVED_ADJUDICATION" in section
+    assert "PREDECESSOR_SLICE=11.14.LIVE_SUBMIT_ACK_OBSERVED_PROOF_CRITERION" in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert "SECTION_11_14_AUTHORIZED=false" in section
+    assert "SECTION_11_14_COMPLETE=false" in section
+    assert "LIVE_SUBMIT_ACK_OBSERVED=true" in section
+    assert "LIVE_FILL_OBSERVED=false" in section
+    assert "CASE_ADJUDICATION=CASE_LIVE_SUBMIT_ACK_OBSERVED_FILL_INELIGIBLE" in section
+    assert "POST_PERFORMED=true" in section
+    assert "SUBMIT_COUNT=1" in section
+    assert "RETRY_USED=false" in section
+    assert "SECOND_SUBMIT_USED=false" in section
+    assert "ACK_SOURCE_KIND=GOVERNED_CURRENT_LIVE_POST" in section
+    assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_LIVE_FILL_OBSERVED"
     assert NEXT_OWNER_GO_REQUIRED in section
     assert CANONICAL_EVIDENCE_RUN_ID in section
     for field_name in LADDER_FIELDS:
@@ -347,6 +386,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "11.14 LIVE_ORDER_PLAN_OBSERVED_ADJUDICATION" in mot
     assert "11.14 LIVE_SUBMIT_ACK_CONTRACT_AND_MUTATION_BOUNDARY_FORENSIC_ADJUDICATION" in mot
     assert "11.14 LIVE_SUBMIT_ACK_OBSERVED_PROOF_CRITERION" in mot
+    assert "11.14 LIVE_SUBMIT_ACK_OBSERVED_ADJUDICATION" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION_V1.md" in mot
@@ -356,6 +396,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         in mot
     )
     assert "SECTION_11_14_LIVE_SUBMIT_ACK_OBSERVED_PROOF_CRITERION_V1.md" in mot
+    assert "SECTION_11_14_LIVE_SUBMIT_ACK_OBSERVED_ADJUDICATION_V1.md" in mot
     path_spec = PATH_REACHABLE_SPEC.read_text(encoding="utf-8")
     assert "DOCS_TOKEN_SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1" in path_spec
     assert "LIVE_EXECUTION_PATH_REACHABLE=true" in path_spec
@@ -380,6 +421,11 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "DOCS_TOKEN_SECTION_11_14_LIVE_SUBMIT_ACK_OBSERVED_PROOF_CRITERION_V1" in proof_spec
     assert "CASE_ADJUDICATION=CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO" in proof_spec
     assert "LIVE_SUBMIT_ACK_OBSERVED=false" in proof_spec
+    ack_spec = SUBMIT_ACK_OBSERVED_ADJUDICATION_SPEC.read_text(encoding="utf-8")
+    assert "DOCS_TOKEN_SECTION_11_14_LIVE_SUBMIT_ACK_OBSERVED_ADJUDICATION_V1" in ack_spec
+    assert "CASE_ADJUDICATION=CASE_LIVE_SUBMIT_ACK_OBSERVED_FILL_INELIGIBLE" in ack_spec
+    assert "LIVE_SUBMIT_ACK_OBSERVED=true" in ack_spec
+    assert "LIVE_FILL_OBSERVED=false" in ack_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -393,6 +439,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         in catalog
     )
     assert "id: PHASE:section_11_14_live_submit_ack_observed_proof_criterion" in catalog
+    assert "id: PHASE:section_11_14_live_submit_ack_observed_adjudication" in catalog
     assert (
         "id: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1" in catalog
     )
@@ -409,6 +456,12 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         in block
     )
     assert "ATLAS_AUTHORITY=NONE" in block
+    adj_rel = relations.find(
+        "id: REL:r_section_11_14_submit_ack_observed_adjudication_follows_proof_criterion"
+    )
+    assert adj_rel >= 0
+    adj_block = relations[adj_rel : adj_rel + 1400]
+    assert "ATLAS_AUTHORITY=NONE" in adj_block
     assert CODE_EXISTS_EVIDENCE.is_dir()
     verified = verify_manifest_v1(CODE_EXISTS_EVIDENCE)
     assert int(verified.get("MANIFEST_VERIFY_RC", 1)) == 0
@@ -439,19 +492,27 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert int(forensic_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
     forensic_summary = (FORENSIC_ACK_EVIDENCE / "SUMMARY.json").read_text(encoding="utf-8")
     assert '"CASE_ADJUDICATION": "CASE_C_CANONICAL_SEMANTIC_GAP"' in forensic_summary
+    assert PROOF_CRITERION_EVIDENCE.is_dir()
+    proof_verified = verify_manifest_v1(PROOF_CRITERION_EVIDENCE)
+    assert int(proof_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
+    proof_summary = (PROOF_CRITERION_EVIDENCE / "SUMMARY.json").read_text(encoding="utf-8")
+    assert '"LIVE_SUBMIT_ACK_OBSERVED": false' in proof_summary
+    assert '"CASE_ADJUDICATION": "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO"' in proof_summary
+    assert (PROOF_CRITERION_EVIDENCE / "SUBMIT_ACK_ADJUDICATION.json").is_file()
+    assert (PROOF_CRITERION_EVIDENCE / "SUBMIT_ACK_PROOF_CRITERION.json").is_file()
+    assert (PROOF_CRITERION_EVIDENCE / "SUBMIT_ACK_OBSERVED_ADJUDICATION.json").is_file()
+    assert (PROOF_CRITERION_EVIDENCE / "EXACT_MUTATION_CONTRACT.json").is_file()
+    assert (PROOF_CRITERION_EVIDENCE / "SUBMIT_ACK_FAILURE_MATRIX.json").is_file()
+    assert (PROOF_CRITERION_EVIDENCE / "POST_SUBMIT_RECON.json").is_file()
     assert EVIDENCE.is_dir()
     current_verified = verify_manifest_v1(EVIDENCE)
     assert int(current_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
     current_summary = (EVIDENCE / "SUMMARY.json").read_text(encoding="utf-8")
-    assert '"LIVE_EXECUTION_PATH_REACHABLE": true' in current_summary
-    assert '"LIVE_PRIVATE_READ_ONLY_PROVEN": true' in current_summary
-    assert '"LIVE_ORDER_PLAN_OBSERVED": true' in current_summary
-    assert '"LIVE_SUBMIT_ACK_OBSERVED": false' in current_summary
-    assert '"POST_USED": false' in current_summary
-    assert '"CASE_ADJUDICATION": "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO"' in current_summary
-    assert (EVIDENCE / "SUBMIT_ACK_ADJUDICATION.json").is_file()
-    assert (EVIDENCE / "SUBMIT_ACK_PROOF_CRITERION.json").is_file()
+    assert '"LIVE_SUBMIT_ACK_OBSERVED": true' in current_summary
+    assert '"LIVE_FILL_OBSERVED": false' in current_summary
+    assert '"PRODUCTIVE_POST_ATTEMPTED": true' in current_summary
+    assert '"PRODUCTIVE_POST_ATTEMPT_COUNT": 1' in current_summary
+    assert '"RETRY_PERFORMED": false' in current_summary
+    assert '"SECOND_SUBMIT_PERFORMED": false' in current_summary
+    assert '"ACK_SOURCE_KIND": "GOVERNED_CURRENT_LIVE_POST"' in current_summary
     assert (EVIDENCE / "SUBMIT_ACK_OBSERVED_ADJUDICATION.json").is_file()
-    assert (EVIDENCE / "EXACT_MUTATION_CONTRACT.json").is_file()
-    assert (EVIDENCE / "SUBMIT_ACK_FAILURE_MATRIX.json").is_file()
-    assert (EVIDENCE / "POST_SUBMIT_RECON.json").is_file()
