@@ -24,9 +24,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.accounting
     ADMISSIBLE_SOURCE_KIND,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    CANONICAL_EVIDENCE_RUN_ID,
-    EXPECTED_ORIGIN_MAIN_SHA,
-    OWNER_GO,
+    HISTORICAL_ACCOUNTING_RECONSTRUCTED_OWNER_GO,
+    HISTORICAL_ACCOUNTING_RECONSTRUCTED_RUN_ID,
+    HISTORICAL_ACCOUNTING_RECONSTRUCTED_SHA,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -139,12 +139,12 @@ def execute_live_accounting_reconstructed_v1(
     repo_root: Path,
     run_id: str | None = None,
 ) -> dict[str, Any]:
-    if str(owner_go or "").strip() != OWNER_GO:
+    pack_run_id = str(run_id or HISTORICAL_ACCOUNTING_RECONSTRUCTED_RUN_ID or _utc_now_compact_v1())
+    if str(owner_go or "").strip() != HISTORICAL_ACCOUNTING_RECONSTRUCTED_OWNER_GO:
         raise Section1114OfflineSurfaceError("OWNER_GO_MISMATCH")
-    if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
+    if str(origin_main_sha or "").strip() != HISTORICAL_ACCOUNTING_RECONSTRUCTED_SHA:
         raise Section1114OfflineSurfaceError("ORIGIN_MAIN_SHA_MISMATCH")
     started = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    pack_run_id = str(run_id or CANONICAL_EVIDENCE_RUN_ID or _utc_now_compact_v1())
     evidence = bind_accounting_evidence_from_persisted_path_v1(repo_root=Path(repo_root))
     assert_no_secrets_in_payload_v1(evidence)
     adjudication = adjudicate_live_accounting_reconstructed_v1(accounting_evidence=evidence)
@@ -171,7 +171,7 @@ def execute_live_accounting_reconstructed_v1(
         },
     }
     summary = {
-        "OWNER_GO": OWNER_GO,
+        "OWNER_GO": HISTORICAL_ACCOUNTING_RECONSTRUCTED_OWNER_GO,
         "CANONICAL_EVIDENCE_RUN_ID": pack_run_id,
         "ORIGIN_MAIN_SHA": origin_main_sha,
         "STARTED_AT_UTC": started,

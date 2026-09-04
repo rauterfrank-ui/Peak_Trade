@@ -1,0 +1,341 @@
+{
+  "AMEND_USED": false,
+  "BOUND_ACK_EVIDENCE_RUN_ID": "20260904T160450Z",
+  "BOUND_ACK_SOURCE_KIND": "GOVERNED_CURRENT_LIVE_POST",
+  "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+  "BOUND_FILL_SZ": "1",
+  "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+  "BOUND_ORDID": "3893505043080286208",
+  "BOUND_POS_SIDE": "net",
+  "CANCEL_USED": false,
+  "CANONICAL_EVIDENCE_RUN_ID": "20260904T192000Z",
+  "CASE_ADJUDICATION": "CASE_LIVE_RESTART_RECONSTRUCTED_FAIL_CLOSED_MISSING_DURABLE_HANDOFF",
+  "CREDENTIAL_USE": false,
+  "EARLIEST_MISSING_FACT": "DURABLE_LIVE_PRE_RESTART_HANDOFF",
+  "ENDED_AT_UTC": "2026-09-04T19:36:28Z",
+  "FLATTEN_EXECUTE_USED": false,
+  "FUNDING_USED": false,
+  "GET_PERFORMED": false,
+  "LIVE_ACCOUNTING_RECONSTRUCTED": true,
+  "LIVE_AUTONOMOUS_RECOVERY_OBSERVED": false,
+  "LIVE_RESTART_RECONSTRUCTED": false,
+  "LIVE_RESTART_RECONSTRUCTION_REASON": "DURABLE_LIVE_PRE_RESTART_HANDOFF_ABSENT",
+  "MANIFEST_VERIFY_RC": 0,
+  "ORIGIN_MAIN_SHA": "4ad023a01708d897cd5a49bd06bff7bb02bbf590",
+  "OWNER_GO": "PEAK_TRADE_OWNER_GO_SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_MAXIMUM_SAFE_LEVERAGE_V1",
+  "POST_USED": false,
+  "PRIVATE_GET_USED": false,
+  "PUBLIC_GET_USED": false,
+  "RAW_EVIDENCE_MODIFIED": false,
+  "RESTART_EXECUTION": false,
+  "RESTART_SEMANTICS_STATUS": "DURABLE_LIVE_PRE_RESTART_HANDOFF_ABSENT",
+  "RETRY_USED": false,
+  "SECOND_SUBMIT_USED": false,
+  "SECRET_VALUES_INCLUDED": false,
+  "SECTION_11_14_AUTHORIZED": false,
+  "SECTION_11_14_COMPLETE": false,
+  "STARTED_AT_UTC": "2026-09-04T19:36:28Z",
+  "UNRESOLVED_REASON": "DURABLE_LIVE_PRE_RESTART_HANDOFF_ABSENT",
+  "restart_adjudication": {
+    "ACCOUNTING_CLOSURE_IS_NOT_RESTART": true,
+    "AMEND_USED": false,
+    "BOUND_ACK_EVIDENCE_RUN_ID": "20260904T160450Z",
+    "BOUND_ACK_SOURCE_KIND": "GOVERNED_CURRENT_LIVE_POST",
+    "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+    "BOUND_FILL_SZ": "1",
+    "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+    "BOUND_ORDID": "3893505043080286208",
+    "BOUND_POS_SIDE": "net",
+    "CANCEL_USED": false,
+    "CAP_11_5_FIXTURE_IS_NOT_THIS_FIELD": true,
+    "CASE_ADJUDICATION": "CASE_LIVE_RESTART_RECONSTRUCTED_FAIL_CLOSED_MISSING_DURABLE_HANDOFF",
+    "CENSUS_SOURCE_KIND": "GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF_CENSUS",
+    "EARLIEST_MISSING_FACT": "DURABLE_LIVE_PRE_RESTART_HANDOFF",
+    "FLATTEN_EXECUTE_USED": false,
+    "GET_PERFORMED": false,
+    "LIVE_ACCOUNTING_RECONSTRUCTED": true,
+    "LIVE_AUTONOMOUS_RECOVERY_OBSERVED": false,
+    "LIVE_END_TO_END_EVIDENCE_PROVEN": false,
+    "LIVE_RESTART_RECONSTRUCTED": false,
+    "LIVE_RESTART_RECONSTRUCTION_REASON": "DURABLE_LIVE_PRE_RESTART_HANDOFF_ABSENT",
+    "POST_USED": false,
+    "PRIVATE_GET_USED": false,
+    "RESTART_EVIDENCE_SOURCE": "PERSISTED_LIVE_RESTART_HANDOFF_CENSUS",
+    "RESTART_EXECUTION": false,
+    "RESTART_IDENTITY_EQUATION": "reconstructed_handoff.identity = {clOrdId, ordId, instId, posSide, pos} from durable pre-restart Peak_Trade state, without re-submit and without silent reinitialization, Decimal-equal to the bound Live submit/fill/position identity",
+    "RESTART_PRODUCER": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_adjudication_v1.py::adjudicate_live_restart_reconstructed_v1",
+    "RESTART_PROOF_CRITERION": "LIVE_RESTART_RECONSTRUCTED is the tenth \u00a711.14 Live proof-claim field. It is true iff LIVE_ACCOUNTING_RECONSTRUCTED is already true and persisted Live artifacts for the acknowledged Live submit contain a Peak_Trade durable pre-restart handoff state for that identity, distinct from the fill/fee/position venue-GET artifacts used for LIVE_ACCOUNTING_RECONSTRUCTED, from which an offline reconstruction using canonical restart semantics (reconstruct without re-submit and without silent reinitialization) yields a post-restart identity whose clOrdId, ordId, instId, posSide, and Decimal pos equal the bound Live submit/fill/position identity, and whose reconstructed pos is present, nonempty, Decimal-parseable, and is not zero when bound fillSz is nonzero. Accounting reconstruction, position reconciliation, fill/fee observation, ACK observation, Cap 11.5 and \u00a711.12.6 fixtures, \u00a711.12.9.14 TESTNET_RESTART_PROVEN, \u00a711.17 LIVE_RESTART_PROVEN, historical implementation capability, and fixture/testnet/simulated sources are each insufficient. Absence of a durable Live pre-restart handoff or of a reconstructable post-restart identity fails closed and is not replaced by accounting closure. True does not imply LIVE_AUTONOMOUS_RECOVERY_OBSERVED, LIVE_END_TO_END_EVIDENCE_PROVEN, LIVE_RESTART_PROVEN, or \u00a711.14 complete. A fresh process restart is not required when those persisted Live restart-handoff artifacts already exist; this field does not authorize restart execution.",
+    "RESTART_SEMANTICS_STATUS": "DURABLE_LIVE_PRE_RESTART_HANDOFF_ABSENT",
+    "RESTART_SOURCE_KIND": "GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF_CENSUS",
+    "SECTION_11_12_6_FIXTURE_IS_NOT_THIS_FIELD": true,
+    "SECTION_11_14_COMPLETE": false,
+    "SECTION_11_17_LIVE_RESTART_PROVEN_IS_NOT_THIS_FIELD": true,
+    "TESTNET_RESTART_IS_NOT_THIS_FIELD": true,
+    "UNRESOLVED_REASON": "DURABLE_LIVE_PRE_RESTART_HANDOFF_ABSENT",
+    "adjudicated_value": false,
+    "canonical_definition": "LIVE_RESTART_RECONSTRUCTED is the tenth \u00a711.14 Live proof-claim field. It is true iff LIVE_ACCOUNTING_RECONSTRUCTED is already true and persisted Live artifacts for the acknowledged Live submit contain a Peak_Trade durable pre-restart handoff state for that identity, distinct from the fill/fee/position venue-GET artifacts used for LIVE_ACCOUNTING_RECONSTRUCTED, from which an offline reconstruction using canonical restart semantics (reconstruct without re-submit and without silent reinitialization) yields a post-restart identity whose clOrdId, ordId, instId, posSide, and Decimal pos equal the bound Live submit/fill/position identity, and whose reconstructed pos is present, nonempty, Decimal-parseable, and is not zero when bound fillSz is nonzero. Accounting reconstruction, position reconciliation, fill/fee observation, ACK observation, Cap 11.5 and \u00a711.12.6 fixtures, \u00a711.12.9.14 TESTNET_RESTART_PROVEN, \u00a711.17 LIVE_RESTART_PROVEN, historical implementation capability, and fixture/testnet/simulated sources are each insufficient. Absence of a durable Live pre-restart handoff or of a reconstructable post-restart identity fails closed and is not replaced by accounting closure. True does not imply LIVE_AUTONOMOUS_RECOVERY_OBSERVED, LIVE_END_TO_END_EVIDENCE_PROVEN, LIVE_RESTART_PROVEN, or \u00a711.14 complete. A fresh process restart is not required when those persisted Live restart-handoff artifacts already exist; this field does not authorize restart execution.",
+    "claim_value": false,
+    "field_conjunction": {
+      "adjudication": "FALSE_FAIL_CLOSED_NO_PERSISTED_LIVE_RESTART_HANDOFF",
+      "admissible_live_source_kind": "GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF",
+      "canonical_definition": "LIVE_RESTART_RECONSTRUCTED is the tenth \u00a711.14 Live proof-claim field. It is true iff LIVE_ACCOUNTING_RECONSTRUCTED is already true and persisted Live artifacts for the acknowledged Live submit contain a Peak_Trade durable pre-restart handoff state for that identity, distinct from the fill/fee/position venue-GET artifacts used for LIVE_ACCOUNTING_RECONSTRUCTED, from which an offline reconstruction using canonical restart semantics (reconstruct without re-submit and without silent reinitialization) yields a post-restart identity whose clOrdId, ordId, instId, posSide, and Decimal pos equal the bound Live submit/fill/position identity, and whose reconstructed pos is present, nonempty, Decimal-parseable, and is not zero when bound fillSz is nonzero. Accounting reconstruction, position reconciliation, fill/fee observation, ACK observation, Cap 11.5 and \u00a711.12.6 fixtures, \u00a711.12.9.14 TESTNET_RESTART_PROVEN, \u00a711.17 LIVE_RESTART_PROVEN, historical implementation capability, and fixture/testnet/simulated sources are each insufficient. Absence of a durable Live pre-restart handoff or of a reconstructable post-restart identity fails closed and is not replaced by accounting closure. True does not imply LIVE_AUTONOMOUS_RECOVERY_OBSERVED, LIVE_END_TO_END_EVIDENCE_PROVEN, LIVE_RESTART_PROVEN, or \u00a711.14 complete. A fresh process restart is not required when those persisted Live restart-handoff artifacts already exist; this field does not authorize restart execution.",
+      "claim_value": false,
+      "false_required": [
+        "DURABLE_PRE_RESTART_HANDOFF_PRESENT",
+        "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH",
+        "POST_RESTART_IDENTITY_RECONSTRUCTABLE",
+        "IDENTITY_BOUND_HANDOFF_MATCHES_LIVE_SUBMIT",
+        "NO_SILENT_REINITIALIZATION",
+        "ADMISSIBLE_PERSISTED_LIVE_RESTART_HANDOFF_SOURCE"
+      ],
+      "producer": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_adjudication_v1.py::adjudicate_live_restart_reconstructed_v1",
+      "source_kind": "GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF_CENSUS"
+    },
+    "field_constituent_count": 10,
+    "field_constituent_values": {
+      "ACCOUNTING_CLOSURE_IS_NOT_RESTART": true,
+      "ADMISSIBLE_PERSISTED_LIVE_RESTART_HANDOFF_SOURCE": false,
+      "DURABLE_PRE_RESTART_HANDOFF_PRESENT": false,
+      "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH": false,
+      "IDENTITY_BOUND_HANDOFF_MATCHES_LIVE_SUBMIT": false,
+      "LIVE_ACCOUNTING_RECONSTRUCTED": true,
+      "NOT_FIXTURE_TESTNET_OR_SIMULATED": true,
+      "NO_RESUBMIT": true,
+      "NO_SILENT_REINITIALIZATION": false,
+      "POST_RESTART_IDENTITY_RECONSTRUCTABLE": false
+    },
+    "field_constituents": [
+      "LIVE_ACCOUNTING_RECONSTRUCTED",
+      "DURABLE_PRE_RESTART_HANDOFF_PRESENT",
+      "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH",
+      "POST_RESTART_IDENTITY_RECONSTRUCTABLE",
+      "IDENTITY_BOUND_HANDOFF_MATCHES_LIVE_SUBMIT",
+      "NO_RESUBMIT",
+      "NO_SILENT_REINITIALIZATION",
+      "ADMISSIBLE_PERSISTED_LIVE_RESTART_HANDOFF_SOURCE",
+      "NOT_FIXTURE_TESTNET_OR_SIMULATED",
+      "ACCOUNTING_CLOSURE_IS_NOT_RESTART"
+    ],
+    "path_classification": {
+      "ACCOUNTING_CLOSURE_IS_NOT_RESTART": true,
+      "ACTUAL_RESTART_RECONSTRUCTED": false,
+      "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+      "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+      "BOUND_ORDID": "3893505043080286208",
+      "BOUND_POS_SIDE": "net",
+      "DURABLE_PRE_RESTART_HANDOFF_PRESENT": false,
+      "EPISTEMIC_CLASS": "DURABLE_LIVE_PRE_RESTART_HANDOFF_ABSENT",
+      "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH": false,
+      "IDENTITY_BOUND_HANDOFF_MATCHES_LIVE_SUBMIT": false,
+      "MISSING_NOT_REPLACED_BY_ACCOUNTING": true,
+      "NO_SILENT_REINITIALIZATION": false,
+      "POST_RESTART_IDENTITY_RECONSTRUCTABLE": false,
+      "RESTART_IDENTITY_EQUATION": "reconstructed_handoff.identity = {clOrdId, ordId, instId, posSide, pos} from durable pre-restart Peak_Trade state, without re-submit and without silent reinitialization, Decimal-equal to the bound Live submit/fill/position identity",
+      "TESTNET_RESTART_IS_NOT_THIS_FIELD": true,
+      "TESTNET_RESTART_PROVEN_ENVIRONMENT": "DEMO",
+      "TESTNET_RESTART_PROVEN_INSTID": "BTC-USD_UM_XPERP-310328",
+      "census": {
+        "BOUND_ACCOUNTING_EVIDENCE_RUN_ID": "20260904T185000Z",
+        "BOUND_ACK_EVIDENCE_RUN_ID": "20260904T160450Z",
+        "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+        "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+        "BOUND_ORDID": "3893505043080286208",
+        "DURABLE_PRE_RESTART_HANDOFF_PRESENT": false,
+        "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH": false,
+        "NOT_FIXTURE_TESTNET_OR_SIMULATED": true,
+        "accounting_artifacts_are_not_restart_handoff": true,
+        "durable_handoff_paths": [],
+        "fill_raw_exists": true,
+        "fill_raw_relpath": "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T173813Z/GET_FILLS.raw.json",
+        "fill_raw_sha256": "de429030b71b4db50923deb60731c8d12887300605e0bb194126465e2efe61ef",
+        "inspected_live_packs": [
+          {
+            "durable_handoff_markers": [],
+            "exists": true,
+            "names": [
+              "MANIFEST.sha256",
+              "SUBMIT_ACK_OBSERVED_ADJUDICATION.json",
+              "SUMMARY.json"
+            ],
+            "run_id": "20260904T160450Z"
+          },
+          {
+            "durable_handoff_markers": [],
+            "exists": true,
+            "names": [
+              "FILL_OBSERVED_ADJUDICATION.json",
+              "GET_FILLS.raw.json",
+              "GET_ORDER_STATUS.raw.json",
+              "MANIFEST.sha256",
+              "SUMMARY.json"
+            ],
+            "run_id": "20260904T165859Z"
+          },
+          {
+            "durable_handoff_markers": [],
+            "exists": true,
+            "names": [
+              "FEE_OBSERVED_ADJUDICATION.json",
+              "GET_FILLS.raw.json",
+              "GET_ORDER_STATUS.raw.json",
+              "MANIFEST.sha256",
+              "SUMMARY.json"
+            ],
+            "run_id": "20260904T173813Z"
+          },
+          {
+            "durable_handoff_markers": [],
+            "exists": true,
+            "names": [
+              "GET_POSITIONS.raw.json",
+              "MANIFEST.sha256",
+              "POSITION_RECONCILED_ADJUDICATION.json",
+              "SUMMARY.json"
+            ],
+            "run_id": "20260904T181817Z"
+          },
+          {
+            "durable_handoff_markers": [],
+            "exists": true,
+            "names": [
+              "ACCOUNTING_IDENTITY.json",
+              "ACCOUNTING_RECONSTRUCTED_ADJUDICATION.json",
+              "MANIFEST.sha256",
+              "SOURCE_REFERENCES.json",
+              "SUMMARY.json"
+            ],
+            "run_id": "20260904T185000Z"
+          }
+        ],
+        "position_raw_exists": true,
+        "position_raw_relpath": "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T181817Z/GET_POSITIONS.raw.json",
+        "position_raw_sha256": "a428f9f023f2b130301bfdf11b9d050cf377c4140f2354ead409c4be290c8959",
+        "testnet_durable_paths": [
+          "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/durable_state/restart_with_open_order_pre_restart_v1.json",
+          "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/durable_state/restart_with_open_position_pre_restart_v1.json"
+        ],
+        "testnet_restart_clOrdId": "",
+        "testnet_restart_environment": "DEMO",
+        "testnet_restart_instId": "BTC-USD_UM_XPERP-310328",
+        "testnet_restart_is_not_this_field": true,
+        "testnet_restart_proven_exists": true,
+        "testnet_restart_proven_relpath": "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/"
+      },
+      "handoff": {}
+    },
+    "producer": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_adjudication_v1.py::adjudicate_live_restart_reconstructed_v1",
+    "proof_criterion_bound": true
+  },
+  "restart_handoff_census": {
+    "BOUND_ACCOUNTING_EVIDENCE_RUN_ID": "20260904T185000Z",
+    "BOUND_ACK_EVIDENCE_RUN_ID": "20260904T160450Z",
+    "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+    "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+    "BOUND_ORDID": "3893505043080286208",
+    "DURABLE_PRE_RESTART_HANDOFF_PRESENT": false,
+    "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH": false,
+    "NOT_FIXTURE_TESTNET_OR_SIMULATED": true,
+    "accounting_artifacts_are_not_restart_handoff": true,
+    "durable_handoff_paths": [],
+    "fill_raw_exists": true,
+    "fill_raw_relpath": "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T173813Z/GET_FILLS.raw.json",
+    "fill_raw_sha256": "de429030b71b4db50923deb60731c8d12887300605e0bb194126465e2efe61ef",
+    "inspected_live_packs": [
+      {
+        "durable_handoff_markers": [],
+        "exists": true,
+        "names": [
+          "MANIFEST.sha256",
+          "SUBMIT_ACK_OBSERVED_ADJUDICATION.json",
+          "SUMMARY.json"
+        ],
+        "run_id": "20260904T160450Z"
+      },
+      {
+        "durable_handoff_markers": [],
+        "exists": true,
+        "names": [
+          "FILL_OBSERVED_ADJUDICATION.json",
+          "GET_FILLS.raw.json",
+          "GET_ORDER_STATUS.raw.json",
+          "MANIFEST.sha256",
+          "SUMMARY.json"
+        ],
+        "run_id": "20260904T165859Z"
+      },
+      {
+        "durable_handoff_markers": [],
+        "exists": true,
+        "names": [
+          "FEE_OBSERVED_ADJUDICATION.json",
+          "GET_FILLS.raw.json",
+          "GET_ORDER_STATUS.raw.json",
+          "MANIFEST.sha256",
+          "SUMMARY.json"
+        ],
+        "run_id": "20260904T173813Z"
+      },
+      {
+        "durable_handoff_markers": [],
+        "exists": true,
+        "names": [
+          "GET_POSITIONS.raw.json",
+          "MANIFEST.sha256",
+          "POSITION_RECONCILED_ADJUDICATION.json",
+          "SUMMARY.json"
+        ],
+        "run_id": "20260904T181817Z"
+      },
+      {
+        "durable_handoff_markers": [],
+        "exists": true,
+        "names": [
+          "ACCOUNTING_IDENTITY.json",
+          "ACCOUNTING_RECONSTRUCTED_ADJUDICATION.json",
+          "MANIFEST.sha256",
+          "SOURCE_REFERENCES.json",
+          "SUMMARY.json"
+        ],
+        "run_id": "20260904T185000Z"
+      }
+    ],
+    "position_raw_exists": true,
+    "position_raw_relpath": "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T181817Z/GET_POSITIONS.raw.json",
+    "position_raw_sha256": "a428f9f023f2b130301bfdf11b9d050cf377c4140f2354ead409c4be290c8959",
+    "testnet_durable_paths": [
+      "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/durable_state/restart_with_open_order_pre_restart_v1.json",
+      "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/durable_state/restart_with_open_position_pre_restart_v1.json"
+    ],
+    "testnet_restart_clOrdId": "",
+    "testnet_restart_environment": "DEMO",
+    "testnet_restart_instId": "BTC-USD_UM_XPERP-310328",
+    "testnet_restart_is_not_this_field": true,
+    "testnet_restart_proven_exists": true,
+    "testnet_restart_proven_relpath": "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/"
+  },
+  "source_references": {
+    "DOCUMENT_CLASS": "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_SOURCE_REFERENCES_V1",
+    "DOCUMENT_ROLE": "DERIVED_NON_SSOT",
+    "RAW_EVIDENCE_MODIFIED": false,
+    "durable_live_pre_restart_handoff": {
+      "paths": [],
+      "present": false
+    },
+    "live_fill": {
+      "file_sha256": "de429030b71b4db50923deb60731c8d12887300605e0bb194126465e2efe61ef",
+      "path": "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T173813Z/GET_FILLS.raw.json",
+      "role": "ACCOUNTING_PATH_NOT_RESTART_HANDOFF"
+    },
+    "live_position": {
+      "file_sha256": "a428f9f023f2b130301bfdf11b9d050cf377c4140f2354ead409c4be290c8959",
+      "path": "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T181817Z/GET_POSITIONS.raw.json",
+      "role": "ACCOUNTING_PATH_NOT_RESTART_HANDOFF"
+    },
+    "testnet_restart_proven": {
+      "environment": "DEMO",
+      "instId": "BTC-USD_UM_XPERP-310328",
+      "path": "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/",
+      "role": "SEMANTICALLY_DIFFERENT_TESTNET_RESTART"
+    }
+  }
+}

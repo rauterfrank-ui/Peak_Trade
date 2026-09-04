@@ -14,6 +14,8 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_POSITION_RECONCILED_PRODUCER,
     LIVE_ACCOUNTING_RECONSTRUCTED_CANONICAL_DEFINITION,
     LIVE_ACCOUNTING_RECONSTRUCTED_PRODUCER,
+    LIVE_RESTART_RECONSTRUCTED_CANONICAL_DEFINITION,
+    LIVE_RESTART_RECONSTRUCTED_PRODUCER,
     LIVE_SUBMIT_ACK_OBSERVED_CANONICAL_STATUS,
 )
 
@@ -114,7 +116,8 @@ def build_later_field_census_v1() -> dict[str, Any]:
                 "minimum_external_action_class": "READ_ONLY_ACCOUNTING_RECONSTRUCTION",
                 "why_blocked": (
                     "Reconstructed. Producer and criterion remain bound. "
-                    "LIVE_RESTART_RECONSTRUCTED remains ineligible until a separate Owner-GO."
+                    "LIVE_RESTART_RECONSTRUCTED remains false because a durable Live "
+                    "pre-restart handoff is absent."
                 ),
                 "producer": LIVE_ACCOUNTING_RECONSTRUCTED_PRODUCER,
                 "producer_bound": True,
@@ -123,13 +126,20 @@ def build_later_field_census_v1() -> dict[str, Any]:
             {
                 "field": "LIVE_RESTART_RECONSTRUCTED",
                 "claim_value": False,
-                "canonical_definition": (
-                    "Current Live restart reconstruction from persisted Live state."
-                ),
+                "canonical_definition": LIVE_RESTART_RECONSTRUCTED_CANONICAL_DEFINITION,
                 "why_blocked": (
-                    "Requires a separate Owner-GO after LIVE_ACCOUNTING_RECONSTRUCTED=true. "
-                    "This GO forbids restart reconstruction."
+                    "Criterion bound. Persisted Live evidence for the acknowledged submit "
+                    "contains no Peak_Trade durable pre-restart handoff distinct from the "
+                    "accounting venue-GET path. Accounting closure is not restart. "
+                    "TESTNET_RESTART_PROVEN is not this field. This GO forbids restart "
+                    "execution."
                 ),
+                "producer": LIVE_RESTART_RECONSTRUCTED_PRODUCER,
+                "producer_bound": True,
+                "proof_criterion_bound": True,
+                "post_required": False,
+                "private_get_required": False,
+                "minimum_external_action_class": "READ_ONLY_RESTART_RECONSTRUCTION",
             },
             {
                 "field": "LIVE_AUTONOMOUS_RECOVERY_OBSERVED",

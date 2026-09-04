@@ -576,3 +576,18 @@ relations:
       identity. Persisted identity-bound fill/fee/position path. Accounting
       true. Restart ineligible. No GET. No POST. Atlas is not trading
       authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_section_11_14_restart_reconstructed_adjudication_follows_accounting
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_accounting_reconstructed_adjudication
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_adjudication_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_execute_v1.py
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T192000Z/
+    notes: >-
+      LIVE_RESTART_RECONSTRUCTED fail-closed census follows accounting
+      reconstruction. Criterion bound. No durable Live pre-restart handoff.
+      No GET. No POST. No restart execution. Atlas is not trading
+      authority. ATLAS_AUTHORITY=NONE.
