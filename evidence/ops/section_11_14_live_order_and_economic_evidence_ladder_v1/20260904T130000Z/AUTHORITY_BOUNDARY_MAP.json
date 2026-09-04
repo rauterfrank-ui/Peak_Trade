@@ -1,0 +1,44 @@
+{
+  "boundaries": [
+    {
+      "description": "Gate evaluation plus authenticated read connectivity.",
+      "name": "PRE_SUBMIT_BOUNDARY",
+      "role": "PART_OF_REACHABILITY"
+    },
+    {
+      "description": "LIVE_ENABLED/ARMED/SUBMIT_UNLOCKED/CANARY_AUTHORIZED/execute permit.",
+      "name": "SUBMIT_AUTHORIZATION_BOUNDARY",
+      "role": "REQUIRED_ONLY_FOR_SUBMIT_AUTHORIZATION"
+    },
+    {
+      "description": "\u00a711.14 LIVE_PRIVATE_READ_ONLY_PROVEN requires a later Owner-GO.",
+      "name": "PRIVATE_READ_ONLY_PROVEN_BOUNDARY",
+      "role": "REQUIRED_ONLY_FOR_LATER_LADDER_STAGE"
+    }
+  ],
+  "schema_version": "section_11_14_authority_boundary_map.v1",
+  "status": "BOUND",
+  "this_go_may": [
+    "BIND_PATH_REACHABLE_PREDICATE",
+    "PROVE_STATIC_CONSTITUENTS",
+    "INSPECT_REPO_DEFAULTS_WITHOUT_MUTATION",
+    "CONDITIONAL_PRIVATE_GET",
+    "PERSIST_SANITIZED_GET_EVIDENCE",
+    "SET_LIVE_EXECUTION_PATH_REACHABLE_IF_CONJUNCTION_PROVEN"
+  ],
+  "this_go_must_not": [
+    "POST",
+    "ORDER_SUBMIT",
+    "CANCEL",
+    "AMEND",
+    "FLATTEN_EXECUTE",
+    "FUNDING",
+    "LIVE_ENABLED_MUTATION",
+    "LIVE_ARMED_MUTATION",
+    "SUBMIT_UNLOCKED_MUTATION",
+    "CANARY_AUTHORIZED_MUTATION",
+    "PROMOTE_LIVE_PRIVATE_READ_ONLY_PROVEN",
+    "PROMOTE_LATER_LADDER_FIELDS",
+    "MARK_SECTION_11_14_COMPLETE"
+  ]
+}

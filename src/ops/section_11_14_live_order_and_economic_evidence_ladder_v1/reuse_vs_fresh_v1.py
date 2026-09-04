@@ -202,9 +202,89 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
                 "evidence/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/20260904T114059Z/ADJUDICATION.json",
             ),
         ),
+        _row(
+            candidate="SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS",
+            classification="CURRENT_AND_ADMISSIBLE",
+            target_11_14_field="LIVE_EXECUTION_PATH_REACHABLE",
+            reason=(
+                "LIVE_EXECUTION_CODE_EXISTS=true is current on origin/main "
+                "fa02c54468cc0320fe8c756bb4da08485fb84597 and proves "
+                "STATIC_EXECUTION_GRAPH_COMPLETE / ENTRYPOINT_INTEGRATED. It is "
+                "not sufficient for PATH_REACHABLE."
+            ),
+            evidence_paths=(
+                "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+                "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T123100Z/",
+            ),
+        ),
+        _row(
+            candidate="SECTION_11_13_2_PRIVATE_GET_SUCCESS",
+            classification="STALE_FOR_REACHABILITY",
+            target_11_14_field="LIVE_EXECUTION_PATH_REACHABLE",
+            reason=(
+                "§11.13.2 private-read success is historical (20260811). "
+                "Credential-once-worked is not current authenticated connectivity. "
+                "Also not LIVE_PRIVATE_READ_ONLY_PROVEN for §11.14."
+            ),
+            evidence_paths=(
+                "evidence/ops/section_11_13_2_live_private_read_only_proven_v1/20260811T170310Z/",
+            ),
+        ),
+        _row(
+            candidate="SECTION_11_13_5_P08_READ_ONLY_CLOSURE_GET_20260903T210159Z",
+            classification="STALE_FOR_REACHABILITY",
+            target_11_14_field="LIVE_EXECUTION_PATH_REACHABLE",
+            reason=(
+                "P08 read-only closure GET pack is a different Owner-GO, different "
+                "purpose, and previous-day observation. Historical success does not "
+                "imply current reachable. Supporting context only for credential "
+                "class reuse; REQUIRES_FRESH_OBSERVATION for auth/host/read-access."
+            ),
+            evidence_paths=(
+                "evidence/ops/section_11_13_5_p08_read_only_closure_v1/20260903T210159Z/",
+            ),
+        ),
+        _row(
+            candidate="SECTION_11_13_5_G12_P7_P9_PRIVATE_GET",
+            classification="STALE_FOR_REACHABILITY",
+            target_11_14_field="LIVE_EXECUTION_PATH_REACHABLE",
+            reason=(
+                "G12 P7/P9 private GETs proved flatten-conjunction observations, "
+                "not current §11.14 path reachability."
+            ),
+            evidence_paths=(
+                "evidence/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/20260904T114059Z/",
+            ),
+        ),
+        _row(
+            candidate="CONFIGURED_EEA_HOST_DEFAULT",
+            classification="CURRENT_BUT_INSUFFICIENT",
+            target_11_14_field="LIVE_EXECUTION_PATH_REACHABLE",
+            reason=(
+                "REUSED_BINDING_REST_HOST=eea.okx.com is a configured default. "
+                "Configured host is not current resolvability or connectivity."
+            ),
+            evidence_paths=(
+                "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py",
+            ),
+        ),
+        _row(
+            candidate="SECTION_4_9_CURRENTLY_REACHABLE",
+            classification="SEMANTICALLY_DIFFERENT",
+            target_11_14_field="LIVE_EXECUTION_PATH_REACHABLE",
+            reason=(
+                "§4.9 CURRENTLY_REACHABLE means the Python surface is constructible. "
+                "Canonical distinction: CURRENTLY_REACHABLE is not "
+                "LIVE_EXECUTION_PATH_REACHABLE."
+            ),
+            evidence_paths=("docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",),
+        ),
     ]
-    if any(row["reusable_as_identical_11_14_fact"] for row in rows):
-        raise Section1114OfflineSurfaceError("UNEXPECTED_IDENTICAL_REUSE_IN_OFFLINE_GO")
+    identical = [row for row in rows if row["reusable_as_identical_11_14_fact"]]
+    if identical:
+        names = ",".join(row["candidate"] for row in identical)
+        if names != "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS":
+            raise Section1114OfflineSurfaceError("UNEXPECTED_IDENTICAL_REUSE:" + names)
     return {
         "schema_version": "section_11_14_reuse_vs_fresh.v1",
         "default_rule": "NON_REUSE_WHEN_IDENTITY_NOT_PROVEN",

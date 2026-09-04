@@ -111,7 +111,7 @@ def test_true_does_not_imply_path_reachable_or_authorization_or_later_fields() -
     proof = adjudicate_static_fields_v1(repo_root=REPO_ROOT)
     assert proof["LIVE_EXECUTION_CODE_EXISTS_VALUE"] is True
     assert proof["LIVE_EXECUTION_PATH_REACHABLE_VALUE"] is False
-    assert LIVE_EXECUTION_PATH_REACHABLE is False
+    assert LIVE_EXECUTION_PATH_REACHABLE is True
     assert LIVE_AUTHORIZED is False
     assert LIVE_PRIVATE_READ_ONLY_PROVEN is False
     assert LIVE_ORDER_PLAN_OBSERVED is False

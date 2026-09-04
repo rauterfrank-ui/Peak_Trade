@@ -1,0 +1,235 @@
+{
+  "default_rule": "NON_REUSE_WHEN_IDENTITY_NOT_PROVEN",
+  "promotion_authorized_by_this_go": false,
+  "row_count": 20,
+  "rows": [
+    {
+      "candidate": "SECTION_11_13_2_LIVE_PRIVATE_READ_ONLY_PROVEN",
+      "classification": "REQUIRES_OWNER_POLICY_DECISION",
+      "evidence_paths": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "evidence/ops/section_11_13_2_live_private_read_only_proven_v1/20260811T170310Z/"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "Same field name is bound true as \u00a711.13.2 SSOT on SHA d10a44a51d2c3314f80bdc546423c9fd32e0eb5b. This GO forbids promoting predecessor proven fields into \u00a711.14. Identity of 11.14 consumption is unproven; freshness versus current main is unproven.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_PRIVATE_READ_ONLY_PROVEN"
+    },
+    {
+      "candidate": "SECTION_11_13_3_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION",
+      "classification": "SEMANTICALLY_DIFFERENT",
+      "evidence_paths": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/20260811T211828Z/"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "\u00a711.13.3 proves LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION. That is not LIVE_POSITION_RECONCILED. Historical SHA c9c70233db9787f54b164026501ff3aaad286c38.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_POSITION_RECONCILED"
+    },
+    {
+      "candidate": "SECTION_11_13_4_LIVE_DRY_RUN_ORDER_PLAN_PROVEN",
+      "classification": "SEMANTICALLY_DIFFERENT",
+      "evidence_paths": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "evidence/ops/section_11_13_4_live_dry_run_order_plan_proven_v1/20260811T230805Z/"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "\u00a711.13.4 proves LIVE_DRY_RUN_ORDER_PLAN_PROVEN with ORDER_PLAN_RESULT=BLOCKED_NO_EXECUTE and NO_LIVE_ORDER_SUBMIT. That is not LIVE_ORDER_PLAN_OBSERVED.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_ORDER_PLAN_OBSERVED"
+    },
+    {
+      "candidate": "SECTION_11_13_5_E_LIVE_RECONCILIATION_PROVEN",
+      "classification": "SEMANTICALLY_DIFFERENT",
+      "evidence_paths": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "evidence/ops/section_11_13_5_economic_baseline_and_okx_clearance_v1/20260812T153425Z/"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "\u00a711.13.5.E binds LIVE_RECONCILIATION_PROVEN=true for economic baseline adoption. Canonical distinction: LIVE_RECONCILIATION_PROVEN is not LIVE_POSITION_RECONCILED.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_POSITION_RECONCILED"
+    },
+    {
+      "candidate": "SECTION_11_13_5_I_CANARY_FIRST_SUBMIT_HTTP_401",
+      "classification": "SUPPORTING_CONTEXT_ONLY",
+      "evidence_paths": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "Historical canary first submit HTTP 401 with CANARY_FIRST_SUBMIT_ACKNOWLEDGED=false. Negative submit is not LIVE_SUBMIT_ACK_OBSERVED.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_SUBMIT_ACK_OBSERVED"
+    },
+    {
+      "candidate": "PRODUCTIVE_FLATTEN_POST_ACKNOWLEDGEMENT",
+      "classification": "SUPPORTING_CONTEXT_ONLY",
+      "evidence_paths": [
+        "evidence/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/20260904T061816Z/POST_ACTION.sanitized.json",
+        "evidence/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/20260904T061816Z/SUMMARY.json"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "Flatten POST_RESULT=POST_ACCEPTED is bound under \u00a711.13.5 G10, not as \u00a711.14 LIVE_SUBMIT_ACK_OBSERVED. This GO forbids promotion.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_SUBMIT_ACK_OBSERVED"
+    },
+    {
+      "candidate": "PRODUCTIVE_FILL_OBSERVATIONS",
+      "classification": "SUPPORTING_CONTEXT_ONLY",
+      "evidence_paths": [
+        "evidence/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/20260904T061816Z/OBSERVATIONS.sanitized.json"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "Venue fill rows exist in flatten observations and G12 P3. They are 11.13.5/G12 facts. Empty clOrdId on the buy fill remains unbound as Peak_Trade submit identity. Not \u00a711.14 LIVE_FILL_OBSERVED.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_FILL_OBSERVED"
+    },
+    {
+      "candidate": "PRODUCTIVE_FEE_OBSERVATIONS",
+      "classification": "SUPPORTING_CONTEXT_ONLY",
+      "evidence_paths": [
+        "evidence/ops/section_11_13_5_productive_flatten_post_and_reconciliation_v1/20260904T061816Z/OBSERVATIONS.sanitized.json"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "fee=-0.00015548 feeCcy=USDC appears on a buy fill in the flatten GET pack. Immediate flatten order fee was 0. Supporting context only; not \u00a711.14 LIVE_FEE_OBSERVED.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_FEE_OBSERVED"
+    },
+    {
+      "candidate": "G12_P2_VENUE_ACCEPTED",
+      "classification": "SUPPORTING_CONTEXT_ONLY",
+      "evidence_paths": [
+        "evidence/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/20260904T114059Z/ADJUDICATION.json"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "G12 P2 is flatten-conjunction venue-accepted, not a \u00a711.14 ACK claim.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_SUBMIT_ACK_OBSERVED"
+    },
+    {
+      "candidate": "G12_P3_ORDER_FILLED",
+      "classification": "SUPPORTING_CONTEXT_ONLY",
+      "evidence_paths": [
+        "evidence/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/20260904T114059Z/ADJUDICATION.json"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "G12 P3 FILL_BOUND_TO_CLORDID is flatten-conjunction, not \u00a711.14 LIVE_FILL_OBSERVED.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_FILL_OBSERVED"
+    },
+    {
+      "candidate": "G12_P5_DELAYED_TARGET_ZERO",
+      "classification": "SUPPORTING_CONTEXT_ONLY",
+      "evidence_paths": [
+        "evidence/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/20260904T114059Z/SUMMARY.json"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "P5 is a delayed posId-zero window. It is not LIVE_POSITION_RECONCILED.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_POSITION_RECONCILED"
+    },
+    {
+      "candidate": "G12_P7_PENDING_EMPTY",
+      "classification": "SUPPORTING_CONTEXT_ONLY",
+      "evidence_paths": [
+        "evidence/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/20260904T114059Z/SUMMARY.json"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "P7 pending-empty is not position-zero and not LIVE_POSITION_RECONCILED.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_POSITION_RECONCILED"
+    },
+    {
+      "candidate": "G12_P9_NO_UNEXPECTED_RELATED_NONZERO",
+      "classification": "SUPPORTING_CONTEXT_ONLY",
+      "evidence_paths": [
+        "evidence/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/20260904T114059Z/SUMMARY.json"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "P9 unfiltered no-unexpected-related-nonzero is not LIVE_POSITION_RECONCILED.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_POSITION_RECONCILED"
+    },
+    {
+      "candidate": "G12_CANONICAL_CLOSEOUT",
+      "classification": "SUPPORTING_CONTEXT_ONLY",
+      "evidence_paths": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "evidence/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/20260904T114059Z/ADJUDICATION.json"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "G12_STATUS=CLOSED_LIVE_FLATTEN_PROVABILITY_PROVEN is the predecessor closeout. SECTION_11_14_AUTHORIZED remains false. G12 does not authorize \u00a711.14 and does not satisfy observed fields.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_END_TO_END_EVIDENCE_PROVEN"
+    },
+    {
+      "candidate": "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS",
+      "classification": "CURRENT_AND_ADMISSIBLE",
+      "evidence_paths": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T123100Z/"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "LIVE_EXECUTION_CODE_EXISTS=true is current on origin/main fa02c54468cc0320fe8c756bb4da08485fb84597 and proves STATIC_EXECUTION_GRAPH_COMPLETE / ENTRYPOINT_INTEGRATED. It is not sufficient for PATH_REACHABLE.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_EXECUTION_PATH_REACHABLE"
+    },
+    {
+      "candidate": "SECTION_11_13_2_PRIVATE_GET_SUCCESS",
+      "classification": "STALE_FOR_REACHABILITY",
+      "evidence_paths": [
+        "evidence/ops/section_11_13_2_live_private_read_only_proven_v1/20260811T170310Z/"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "\u00a711.13.2 private-read success is historical (20260811). Credential-once-worked is not current authenticated connectivity. Also not LIVE_PRIVATE_READ_ONLY_PROVEN for \u00a711.14.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_EXECUTION_PATH_REACHABLE"
+    },
+    {
+      "candidate": "SECTION_11_13_5_P08_READ_ONLY_CLOSURE_GET_20260903T210159Z",
+      "classification": "STALE_FOR_REACHABILITY",
+      "evidence_paths": [
+        "evidence/ops/section_11_13_5_p08_read_only_closure_v1/20260903T210159Z/"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "P08 read-only closure GET pack is a different Owner-GO, different purpose, and previous-day observation. Historical success does not imply current reachable. Supporting context only for credential class reuse; REQUIRES_FRESH_OBSERVATION for auth/host/read-access.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_EXECUTION_PATH_REACHABLE"
+    },
+    {
+      "candidate": "SECTION_11_13_5_G12_P7_P9_PRIVATE_GET",
+      "classification": "STALE_FOR_REACHABILITY",
+      "evidence_paths": [
+        "evidence/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/20260904T114059Z/"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "G12 P7/P9 private GETs proved flatten-conjunction observations, not current \u00a711.14 path reachability.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_EXECUTION_PATH_REACHABLE"
+    },
+    {
+      "candidate": "CONFIGURED_EEA_HOST_DEFAULT",
+      "classification": "CURRENT_BUT_INSUFFICIENT",
+      "evidence_paths": [
+        "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "REUSED_BINDING_REST_HOST=eea.okx.com is a configured default. Configured host is not current resolvability or connectivity.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_EXECUTION_PATH_REACHABLE"
+    },
+    {
+      "candidate": "SECTION_4_9_CURRENTLY_REACHABLE",
+      "classification": "SEMANTICALLY_DIFFERENT",
+      "evidence_paths": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "promotion_authorized_by_this_go": false,
+      "reason": "\u00a74.9 CURRENTLY_REACHABLE means the Python surface is constructible. Canonical distinction: CURRENTLY_REACHABLE is not LIVE_EXECUTION_PATH_REACHABLE.",
+      "reusable_as_identical_11_14_fact": false,
+      "target_11_14_field": "LIVE_EXECUTION_PATH_REACHABLE"
+    }
+  ],
+  "schema_version": "section_11_14_reuse_vs_fresh.v1"
+}

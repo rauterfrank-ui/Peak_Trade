@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
+    AUTHORITY_BOUNDARY_MAP_FILENAME,
     CANONICAL_BASE_SHA,
     CANONICAL_EVIDENCE_RUN_ID,
+    CONSTITUENT_MATRIX_FILENAME,
     EARLIEST_UNRESOLVED_DEPENDENCY,
     EXPECTED_ORIGIN_MAIN_SHA,
     G12_DOES_NOT_AUTHORIZE_SECTION_11_14,
@@ -18,16 +20,23 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LADDER_FIELD_DEFAULTS,
     LADDER_FIELDS,
     LAST_CANONICALLY_CLOSED_STEP,
+    LIVE_EXECUTION_PATH_REACHABLE,
     MANDATORY_LIVE_METRIC_COUNT,
     NEXT_AUTHORITY_BOUNDARY,
     NEXT_OWNER_GO_REQUIRED,
     OWNER_GO,
+    PATH_REACHABLE_ADJUDICATION_FILENAME,
     PREDECESSOR_SLICE,
     PRIOR_OWNER_GO,
+    PRIVATE_GET_BINDING_FILENAME,
+    PRIVATE_GET_EVIDENCE_FILENAME,
+    RUNTIME_DEPENDENCY_GRAPH_FILENAME,
+    RUNTIME_GATE_CLASSIFICATION_FILENAME,
     SCHEMA_VERSION,
     SECTION_11_14_AUTHORIZED,
     SECTION_11_14_COMPLETE,
     SECTION_11_14_OFFLINE_SURFACE_BOUND,
+    STATIC_REACHABILITY_GRAPH_FILENAME,
     THIS_SLICE,
     WORKPACKAGE_ID,
 )
@@ -49,6 +58,20 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.persist_cl
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.reuse_vs_fresh_v1 import (
     build_reuse_vs_fresh_matrix_v1,
 )
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.path_reachable_predicate_v1 import (
+    build_constituent_matrix_v1,
+)
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.reachability_graphs_v1 import (
+    build_authority_boundary_map_v1,
+    build_runtime_dependency_graph_v1,
+    build_static_reachability_graph_v1,
+)
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.reachability_private_get_v1 import (
+    bind_private_get_before_request_v1,
+)
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.runtime_gate_classification_v1 import (
+    classify_runtime_gates_v1,
+)
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.static_field_adjudication_v1 import (
     adjudicate_static_fields_v1,
 )
@@ -61,12 +84,24 @@ def assemble_offline_surface_v1(
     *,
     repo_root: Path,
     origin_main_sha: str,
+    private_get_evidence: Mapping[str, Any] | None = None,
 ) -> dict[str, dict[str, Any]]:
     if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
         raise RuntimeError("ORIGIN_MAIN_SHA_MISMATCH")
     assert_contract_invariants_v1()
     assert_ladder_order_v1(LADDER_FIELD_DEFAULTS)
-    static_fields = adjudicate_static_fields_v1(repo_root=repo_root)
+    get_ev = dict(private_get_evidence) if private_get_evidence is not None else None
+    static_fields = adjudicate_static_fields_v1(
+        repo_root=repo_root,
+        private_get_evidence=get_ev,
+    )
+    path_claim = bool(static_fields["LIVE_EXECUTION_PATH_REACHABLE_VALUE"] is True)
+    if path_claim is not bool(LIVE_EXECUTION_PATH_REACHABLE is True):
+        raise RuntimeError("PATH_REACHABLE_CONSTANT_DRIFT_VS_ADJUDICATION")
+    if path_claim and (get_ev is None or get_ev.get("POST_USED") is True):
+        raise RuntimeError("PATH_REACHABLE_TRUE_WITHOUT_VALID_GET")
+    if path_claim and get_ev.get("LIVE_PRIVATE_READ_ONLY_PROVEN") is True:
+        raise RuntimeError("GET_EVIDENCE_PROMOTED_LIVE_PRIVATE_READ_ONLY_PROVEN")
     metrics = build_mandatory_live_metrics_schema_v1()
     reuse = build_reuse_vs_fresh_matrix_v1()
     traceability = build_traceability_matrix_v1(
@@ -75,27 +110,43 @@ def assemble_offline_surface_v1(
     )
     evidence_records = []
     for field_name in LADDER_FIELDS:
-        claim_true = field_name == "LIVE_EXECUTION_CODE_EXISTS"
+        claim_true = bool(LADDER_FIELD_DEFAULTS[field_name] is True)
+        if field_name == "LIVE_EXECUTION_PATH_REACHABLE":
+            source_kind = (
+                "GOVERNED_CURRENT_PRIVATE_GET" if claim_true else "GOVERNED_OFFLINE_CONTRACT"
+            )
+            status = "TRUE_PRE_SUBMIT_PATH_REACHABLE" if claim_true else "FALSE_FAIL_CLOSED"
+            authority = (
+                "R2_CONDITIONAL_PRIVATE_GET"
+                if claim_true
+                else "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK"
+            )
+        elif field_name == "LIVE_EXECUTION_CODE_EXISTS":
+            source_kind = "REPOSITORY_IMPLEMENTATION"
+            status = "TRUE_STATIC_INTEGRATED_PRODUCTIVE_PATH"
+            authority = "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK"
+        else:
+            source_kind = "GOVERNED_OFFLINE_CONTRACT"
+            status = "FALSE_FAIL_CLOSED"
+            authority = "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK"
         evidence_records.append(
             build_evidence_record_v1(
                 ladder_stage=field_name,
                 claim_name=field_name,
                 claim_value=claim_true,
                 evidence_class="3_ALREADY_ADJUDICATED_CONCLUSION",
-                source_kind=(
-                    "REPOSITORY_IMPLEMENTATION" if claim_true else "GOVERNED_OFFLINE_CONTRACT"
-                ),
+                source_kind=source_kind,
                 source_path_or_runtime_source=(
                     "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
                 ),
-                observed_at=None,
+                observed_at=None
+                if field_name != "LIVE_EXECUTION_PATH_REACHABLE"
+                else ((get_ev or {}).get("RESPONSE_TIME_UTC")),
                 predecessor_claims=[PREDECESSOR_SLICE],
                 provenance=OWNER_GO,
-                adjudication_status=(
-                    "TRUE_STATIC_INTEGRATED_PRODUCTIVE_PATH" if claim_true else "FALSE_FAIL_CLOSED"
-                ),
+                adjudication_status=status,
                 contradiction_status="NONE",
-                authority_scope="R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK",
+                authority_scope=authority,
             )
         )
     ladder_state = {
@@ -105,11 +156,12 @@ def assemble_offline_surface_v1(
         "values": dict(LADDER_FIELD_DEFAULTS),
         "order_enforced": True,
     }
+    get_used = bool(get_ev and get_ev.get("PRIVATE_GET_USED") is True)
     mutation_boundary = {
-        "VENUE_REQUESTS": 0,
+        "VENUE_REQUESTS": int((get_ev or {}).get("VENUE_REQUESTS") or 0),
         "PUBLIC_GET": False,
-        "PRIVATE_GET": False,
-        "CREDENTIAL_USE": False,
+        "PRIVATE_GET": get_used,
+        "CREDENTIAL_USE": bool(get_ev and get_ev.get("CREDENTIAL_USE") is True),
         "POST": False,
         "ORDER_SUBMIT": False,
         "CANCEL": False,
@@ -118,6 +170,8 @@ def assemble_offline_surface_v1(
         "FUNDING": False,
         "SECTION_11_14_RUNTIME_EXECUTION": False,
         "COLLECTOR_ACTIVATED": False,
+        "LIVE_PRIVATE_READ_ONLY_PROVEN": False,
+        "GATE_MUTATION": False,
     }
     lineage = {
         "OWNER_GO": OWNER_GO,
@@ -134,7 +188,7 @@ def assemble_offline_surface_v1(
         "LAST_CANONICALLY_CLOSED_STEP": LAST_CANONICALLY_CLOSED_STEP,
     }
     adjudication = {
-        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1",
+        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1",
         "AUTHORITY": "NONE",
         "OWNER_GO": OWNER_GO,
         "THIS_SLICE": THIS_SLICE,
@@ -146,10 +200,11 @@ def assemble_offline_surface_v1(
         "EARLIEST_UNRESOLVED_DEPENDENCY": EARLIEST_UNRESOLVED_DEPENDENCY,
         "NEXT_AUTHORITY_BOUNDARY": NEXT_AUTHORITY_BOUNDARY,
         "NEXT_OWNER_GO_REQUIRED": NEXT_OWNER_GO_REQUIRED,
+        "LIVE_PRIVATE_READ_ONLY_PROVEN": False,
         "EVIDENCE_RECORDS": evidence_records,
     }
     summary = {
-        "DOCUMENT_CLASS": "SECTION_11_14_OFFLINE_SURFACE_SUMMARY_V1",
+        "DOCUMENT_CLASS": "SECTION_11_14_PATH_REACHABLE_SUMMARY_V1",
         "DOCUMENT_ROLE": "DERIVED_NON_SSOT",
         "OWNER_GO": OWNER_GO,
         "THIS_SLICE": THIS_SLICE,
@@ -162,22 +217,27 @@ def assemble_offline_surface_v1(
         "LADDER_FIELD_COUNT": LADDER_FIELD_COUNT,
         "MANDATORY_LIVE_METRIC_COUNT": MANDATORY_LIVE_METRIC_COUNT,
         "LIVE_EXECUTION_CODE_EXISTS": True,
-        "LIVE_EXECUTION_PATH_REACHABLE": False,
+        "LIVE_EXECUTION_PATH_REACHABLE": path_claim,
+        "LIVE_PRIVATE_READ_ONLY_PROVEN": False,
         "EARLIEST_UNRESOLVED_DEPENDENCY": EARLIEST_UNRESOLVED_DEPENDENCY,
         "NEXT_OWNER_GO_REQUIRED": NEXT_OWNER_GO_REQUIRED,
         "POST_USED": False,
-        "GET_USED": False,
-        "CREDENTIAL_USE": False,
+        "GET_USED": get_used,
+        "CREDENTIAL_USE": bool(get_ev and get_ev.get("CREDENTIAL_USE") is True),
     }
     claims = {
         **CLAIMS,
         "CANONICAL_EVIDENCE_RUN_ID": CANONICAL_EVIDENCE_RUN_ID,
+        "GET_PERFORMED": get_used,
+        "CREDENTIAL_USE": bool(get_ev and get_ev.get("CREDENTIAL_USE") is True),
+        "LIVE_EXECUTION_PATH_REACHABLE": path_claim,
+        "LIVE_PRIVATE_READ_ONLY_PROVEN": False,
     }
     assert_contract_invariants_v1(claims)
     assert_contract_invariants_v1(summary)
     graph = static_fields["LIVE_EXECUTION_CODE_EXISTS"].get("static_execution_graph") or {}
     classification = graph.get("classification_summary") or {}
-    return {
+    documents: dict[str, dict[str, Any]] = {
         "claims.json": claims,
         "SUMMARY.json": summary,
         "ADJUDICATION.json": adjudication,
@@ -190,4 +250,14 @@ def assemble_offline_surface_v1(
         "STATIC_EXECUTION_GRAPH.json": graph,
         "COMPONENT_CLASSIFICATION.json": classification,
         "MUTATION_BOUNDARY.json": mutation_boundary,
+        CONSTITUENT_MATRIX_FILENAME: build_constituent_matrix_v1(),
+        STATIC_REACHABILITY_GRAPH_FILENAME: build_static_reachability_graph_v1(),
+        RUNTIME_DEPENDENCY_GRAPH_FILENAME: build_runtime_dependency_graph_v1(),
+        AUTHORITY_BOUNDARY_MAP_FILENAME: build_authority_boundary_map_v1(),
+        RUNTIME_GATE_CLASSIFICATION_FILENAME: classify_runtime_gates_v1(),
+        PRIVATE_GET_BINDING_FILENAME: bind_private_get_before_request_v1(),
+        PATH_REACHABLE_ADJUDICATION_FILENAME: static_fields["LIVE_EXECUTION_PATH_REACHABLE"],
     }
+    if get_ev is not None:
+        documents[PRIVATE_GET_EVIDENCE_FILENAME] = dict(get_ev)
+    return documents

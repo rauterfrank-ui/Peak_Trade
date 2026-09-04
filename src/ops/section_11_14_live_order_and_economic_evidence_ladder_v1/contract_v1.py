@@ -78,18 +78,18 @@ def assert_contract_invariants_v1(payload: Mapping[str, Any] | None = None) -> N
         raise Section1114OfflineSurfaceError("FLATTEN_MUST_REMAIN_FORBIDDEN")
     if FUNDING_ALLOWED is True:
         raise Section1114OfflineSurfaceError("FUNDING_MUST_REMAIN_FORBIDDEN")
-    if CREDENTIAL_USE_ALLOWED is True:
-        raise Section1114OfflineSurfaceError("CREDENTIAL_USE_MUST_REMAIN_FORBIDDEN")
     if PUBLIC_GET_ALLOWED is True:
         raise Section1114OfflineSurfaceError("PUBLIC_GET_MUST_REMAIN_FORBIDDEN")
-    if PRIVATE_GET_ALLOWED is True:
-        raise Section1114OfflineSurfaceError("PRIVATE_GET_MUST_REMAIN_FORBIDDEN")
     if COLLECTOR_ACTIVATED is True:
         raise Section1114OfflineSurfaceError("LIVE_COLLECTOR_MUST_REMAIN_INACTIVE")
     if LIVE_EXECUTION_CODE_EXISTS is not True:
         raise Section1114OfflineSurfaceError("LIVE_EXECUTION_CODE_EXISTS_MUST_BE_TRUE")
-    if LIVE_EXECUTION_PATH_REACHABLE is True:
-        raise Section1114OfflineSurfaceError("LIVE_EXECUTION_PATH_REACHABLE_MUST_REMAIN_FALSE")
+    if LIVE_EXECUTION_PATH_REACHABLE is True and LIVE_EXECUTION_CODE_EXISTS is not True:
+        raise Section1114OfflineSurfaceError("PATH_REACHABLE_WITHOUT_CODE_EXISTS")
+    if CREDENTIAL_USE_ALLOWED is not True:
+        raise Section1114OfflineSurfaceError("CONDITIONAL_CREDENTIAL_USE_MUST_BE_ALLOWED")
+    if PRIVATE_GET_ALLOWED is not True:
+        raise Section1114OfflineSurfaceError("CONDITIONAL_PRIVATE_GET_MUST_BE_ALLOWED")
     for field_name in OBSERVED_OR_PROVEN_FIELDS_MUST_REMAIN_FALSE:
         if LADDER_FIELD_DEFAULTS[field_name] is True:
             raise Section1114OfflineSurfaceError(f"OBSERVED_FIELD_MUST_REMAIN_FALSE:{field_name}")
@@ -103,8 +103,13 @@ def assert_contract_invariants_v1(payload: Mapping[str, Any] | None = None) -> N
         raise Section1114OfflineSurfaceError("LIVE_COLLECTOR_ACTIVATED")
     if payload.get("LIVE_EXECUTION_CODE_EXISTS") is not True:
         raise Section1114OfflineSurfaceError("LIVE_EXECUTION_CODE_EXISTS_PAYLOAD_MUST_BE_TRUE")
+    if payload.get("LIVE_PRIVATE_READ_ONLY_PROVEN") is True:
+        raise Section1114OfflineSurfaceError("LIVE_PRIVATE_READ_ONLY_PROVEN_PROMOTED")
+    if payload.get("POST_USED") is True or payload.get("POST") is True:
+        raise Section1114OfflineSurfaceError("POST_INVOKED_BY_REACHABILITY_PROOF")
+    allowed_true = {"LIVE_EXECUTION_CODE_EXISTS", "LIVE_EXECUTION_PATH_REACHABLE"}
     for field_name in LADDER_FIELDS:
-        if field_name == "LIVE_EXECUTION_CODE_EXISTS":
+        if field_name in allowed_true:
             continue
         if payload.get(field_name) is True:
             raise Section1114OfflineSurfaceError(f"LADDER_FIELD_PROMOTED_TRUE:{field_name}")

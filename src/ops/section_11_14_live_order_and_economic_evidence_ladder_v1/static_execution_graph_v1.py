@@ -396,6 +396,10 @@ def evaluate_live_execution_code_exists_predicate_v1(
         raise Section1114OfflineSurfaceError(
             f"FORBIDDEN_LIVE_SOURCE:{kind}:LIVE_EXECUTION_CODE_EXISTS"
         )
+    if kind == "GOVERNED_CURRENT_PRIVATE_GET":
+        raise Section1114OfflineSurfaceError(
+            "PRIVATE_GET_CANNOT_SATISFY_LIVE_EXECUTION_CODE_EXISTS"
+        )
     if kind not in ADMISSIBLE_OFFLINE_SOURCE_KINDS:
         raise Section1114OfflineSurfaceError(f"SOURCE_KIND_NOT_ADMISSIBLE:{kind}")
     built = (
