@@ -340,7 +340,9 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
             reason=(
                 "_entry_submit_returned_payload_v1 ok requires HTTP 200, top-level "
                 "code=0, parseable JSON, and no redirect. It does not require sCode, "
-                "ordId, or clOrdId. Transport ok is not LIVE_SUBMIT_ACK_OBSERVED."
+                "ordId, clOrdId match, or data cardinality 1. Transport ok remains "
+                "insufficient for LIVE_SUBMIT_ACK_OBSERVED after this GO bound the "
+                "stricter identity conjunction."
             ),
             evidence_paths=(
                 "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py",
@@ -353,7 +355,9 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
             reason=(
                 "parse_okx_order_response_v1 accepted requires top-level code=0, "
                 "sCode=0, and ordId. That mapper is Cap 11.12.8 Testnet/campaign "
-                "code and is not the §11.14 ACK producer."
+                "code and is not the §11.14 ACK producer. This GO explicitly adopts "
+                "those conjuncts plus data cardinality 1 and clOrdId identity onto "
+                "the productive HTTP evidence surface."
             ),
             evidence_paths=(
                 "src/ops/section_11_12_8_actual_productive_testnet_campaign_run_start_v1/okx_response_mapper_v1.py",
@@ -369,6 +373,20 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
             ),
             evidence_paths=(
                 "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/lifecycle_v1.py",
+            ),
+        ),
+        _row(
+            candidate="SECTION_11_14_LIVE_SUBMIT_ACK_OBSERVED_PROOF_CRITERION",
+            classification="CURRENT_AND_ADMISSIBLE",
+            target_11_14_field="LIVE_SUBMIT_ACK_OBSERVED",
+            reason=(
+                "This GO binds the unique §11.14 producer and synchronous proof "
+                "criterion. The standing field remains false because no POST occurred. "
+                "The bound criterion is not a Live observation."
+            ),
+            evidence_paths=(
+                "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+                "submit_ack_observed_adjudication_v1.py",
             ),
         ),
         _row(

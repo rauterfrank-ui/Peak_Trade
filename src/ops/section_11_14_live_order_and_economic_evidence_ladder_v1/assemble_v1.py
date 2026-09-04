@@ -9,6 +9,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     AUTHORITY_BOUNDARY_MAP_FILENAME,
     CANONICAL_BASE_SHA,
     CANONICAL_EVIDENCE_RUN_ID,
+    CASE_ADJUDICATION,
     CONSTITUENT_MATRIX_FILENAME,
     EARLIEST_UNRESOLVED_DEPENDENCY,
     EXPECTED_ORIGIN_MAIN_SHA,
@@ -84,6 +85,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.order_plan
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.submit_ack_contract_v1 import (
     build_submit_ack_forensic_documents_v1,
+)
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.submit_ack_observed_adjudication_v1 import (
+    adjudicate_live_submit_ack_observed_v1,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.private_read_only_gets_v1 import (
     bind_private_read_only_gets_before_request_v1,
@@ -278,7 +282,7 @@ def assemble_offline_surface_v1(
         "LAST_CANONICALLY_CLOSED_STEP": LAST_CANONICALLY_CLOSED_STEP,
     }
     adjudication = {
-        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_SUBMIT_ACK_FORENSIC_ADJUDICATION_V1",
+        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_SUBMIT_ACK_PROOF_CRITERION_V1",
         "AUTHORITY": "NONE",
         "OWNER_GO": OWNER_GO,
         "THIS_SLICE": THIS_SLICE,
@@ -295,7 +299,7 @@ def assemble_offline_surface_v1(
         "EVIDENCE_RECORDS": evidence_records,
     }
     summary = {
-        "DOCUMENT_CLASS": "SECTION_11_14_SUBMIT_ACK_FORENSIC_SUMMARY_V1",
+        "DOCUMENT_CLASS": "SECTION_11_14_SUBMIT_ACK_PROOF_CRITERION_SUMMARY_V1",
         "DOCUMENT_ROLE": "DERIVED_NON_SSOT",
         "OWNER_GO": OWNER_GO,
         "THIS_SLICE": THIS_SLICE,
@@ -318,7 +322,7 @@ def assemble_offline_surface_v1(
         "GET_USED": False,
         "PUBLIC_GET_USED": False,
         "CREDENTIAL_USE": False,
-        "CASE_ADJUDICATION": "CASE_C_CANONICAL_SEMANTIC_GAP",
+        "CASE_ADJUDICATION": CASE_ADJUDICATION,
         "PREDECESSOR_ORDER_PLAN_ATTACHED": op_ev is not None,
     }
     claims = {
@@ -330,7 +334,7 @@ def assemble_offline_surface_v1(
         "LIVE_EXECUTION_PATH_REACHABLE": path_claim,
         "LIVE_PRIVATE_READ_ONLY_PROVEN": ro_claim,
         "LIVE_ORDER_PLAN_OBSERVED": order_claim,
-        "CASE_ADJUDICATION": "CASE_C_CANONICAL_SEMANTIC_GAP",
+        "CASE_ADJUDICATION": CASE_ADJUDICATION,
     }
     assert_contract_invariants_v1(claims)
     assert_contract_invariants_v1(summary)
@@ -362,6 +366,7 @@ def assemble_offline_surface_v1(
         LATER_FIELD_CENSUS_FILENAME: build_later_field_census_v1(),
     }
     documents.update(build_submit_ack_forensic_documents_v1())
+    documents["SUBMIT_ACK_OBSERVED_ADJUDICATION.json"] = adjudicate_live_submit_ack_observed_v1()
     if path_ev is not None:
         documents[PRIVATE_GET_EVIDENCE_FILENAME] = dict(path_ev)
     if ro_ev is not None:

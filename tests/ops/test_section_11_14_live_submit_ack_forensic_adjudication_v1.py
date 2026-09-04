@@ -42,7 +42,7 @@ def test_single_submit_safety_constants() -> None:
     assert SECOND_SUBMIT_DEFAULT is False
     assert TIMEOUT_MUST_NOT_AUTO_POST is True
     assert LIVE_SUBMIT_ACK_OBSERVED is False
-    assert CASE_ADJUDICATION == "CASE_C_CANONICAL_SEMANTIC_GAP"
+    assert CASE_ADJUDICATION == "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO"
 
 
 def test_refuse_ack_true_promotion() -> None:
@@ -131,10 +131,10 @@ def test_post_submit_recon_unknown_sequence_is_pending_then_history() -> None:
     assert recon["unknown_resolution_is_not_live_submit_ack_observed"] is True
 
 
-def test_case_c_forensic_adjudication() -> None:
+def test_case_a_forensic_adjudication_after_proof_criterion_bind() -> None:
     proof = adjudicate_submit_ack_forensic_v1()
-    assert proof["CASE_C_CANONICAL_SEMANTIC_GAP"] is True
-    assert proof["CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO"] is False
+    assert proof["CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO"] is True
+    assert proof["CASE_C_CANONICAL_SEMANTIC_GAP"] is False
     assert proof["LIVE_SUBMIT_ACK_OBSERVED"] is False
     assert proof["HARD_STOP"] is True
 

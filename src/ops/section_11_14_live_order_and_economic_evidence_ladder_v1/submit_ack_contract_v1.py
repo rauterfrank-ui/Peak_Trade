@@ -24,8 +24,10 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_ORDER_PLAN_ARTIFACT_REUSE_FOR_POST,
     LIVE_SUBMIT_ACK_OBSERVED,
     LIVE_SUBMIT_ACK_OBSERVED_CANONICAL_STATUS,
+    LIVE_SUBMIT_ACK_OBSERVED_PRODUCER,
     LIVE_SUBMIT_ACK_OBSERVED_PRODUCER_BOUND,
     LIVE_SUBMIT_ACK_PROOF_CRITERION_BOUND,
+    SUBMIT_ACK_PROOF_CRITERION_FILENAME,
     RETRY_DEFAULT,
     SECOND_SUBMIT_DEFAULT,
     TIMEOUT_MUST_NOT_AUTO_POST,
@@ -35,7 +37,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v
     Section1114OfflineSurfaceError,
 )
 
-ACK_PRODUCER_STATUS = "UNBOUND"
+ACK_PRODUCER_STATUS = LIVE_SUBMIT_ACK_OBSERVED_PRODUCER
 TRANSPORT_OK_PRODUCER = (
     "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/"
     "submit_transport_v1.py::_entry_submit_returned_payload_v1"
@@ -300,7 +302,7 @@ def build_failure_matrix_v1() -> dict[str, Any]:
             recon=recon_unknown,
             hard_stop=(
                 "TRANSPORT_OK_MAY_BE_TRUE_WITHOUT_ORDID_OR_SCODE;"
-                "SECTION_11_14_ACK_CRITERION_UNBOUND;" + halt
+                "ACK_CRITERION_BOUND_IDENTITY_MISSING_IS_UNKNOWN;" + halt
             ),
         ),
         _row(
@@ -312,7 +314,7 @@ def build_failure_matrix_v1() -> dict[str, Any]:
             second_submit_allowed=False,
             recon="NOT_IMPLEMENTED_ON_SUCCESS_RETURN_PATH; LATER_FIELDS_REMAIN_FALSE",
             hard_stop=(
-                "TRANSPORT_OK_IS_NOT_LIVE_SUBMIT_ACK_OBSERVED;NO_SECTION_11_14_PRODUCER;" + halt
+                "TRANSPORT_OK_IS_NOT_LIVE_SUBMIT_ACK_OBSERVED;PRODUCER_BOUND_NO_LIVE_POST;" + halt
             ),
         ),
         _row(
@@ -358,6 +360,7 @@ def build_post_submit_recon_contract_v1() -> dict[str, Any]:
             "UNKNOWN_SUBMIT_UNRESOLVED_HALT",
         ],
         "unknown_resolution_is_not_live_submit_ack_observed": True,
+        "read_only_recon_may_resolve_existence_without_reclassifying_ack": True,
         "success_return_path_has_no_automatic_recon_gets": True,
         "max_request_count": 12,
         "observed_plan_get_count": 9,
@@ -390,19 +393,29 @@ def build_submit_ack_contract_v1() -> dict[str, Any]:
         "orchestrator": CANONICAL_SUBMIT_ORCHESTRATOR,
         "http_submit": HTTP_CLIENT_SUBMIT,
         "transport_ok_predicate": build_transport_ok_predicate_v1(),
-        "ACK_SUCCESS_SEMANTICS": "UNBOUND_AS_SECTION_11_14_FIELD",
+        "ACK_SUCCESS_SEMANTICS": (
+            "HTTP 200 AND top-level code=0 AND json_parse_ok AND no redirect AND "
+            "exactly one data row AND sCode=0 AND nonempty ordId AND returned "
+            "clOrdId nonempty and equal to sent clOrdId. Transport ok is not sufficient."
+        ),
         "ACK_REJECT_SEMANTICS": (
-            "Transport ok is false when parse fails, top-level code!='0', "
-            "http_status!=200, or redirect. That is not a bound §11.14 REJECT."
+            "Parseable response with top-level code nonempty and !=0, or code=0 "
+            "with exactly one data row and sCode present and !=0. Not ACK. No retry."
         ),
         "ACK_UNKNOWN_SEMANTICS": (
-            "UNKNOWN_SUBMIT_TIMEOUT / UNKNOWN_SUBMIT_NETWORK after _entry_send_attempted; "
-            "second POST forbidden. Exchange may have accepted without local ACK."
+            "Timeout/network after send, parse failure, HTTP!=200 without explicit "
+            "reject code, redirect, data_count!=1 on would-be success, missing "
+            "ordId/sCode/clOrdId, clOrdId mismatch, or contradictory response. "
+            "Second POST forbidden. Recon may resolve existence without reclassifying ACK."
         ),
         "lifecycle_contract_ack_handling": "REQUIRE_EXCHANGE_ORDID_OR_EXPLICIT_REJECT_CODE",
         "lifecycle_contract_activated": False,
-        "flatten_ack_sCode_and_single_data_row": "HISTORICAL_SUPPORTING_CONTEXT_ONLY",
-        "cap_11_12_8_mapper_requires_code0_sCode0_ordId": "SEMANTICALLY_DIFFERENT_NOT_SECTION_11_14",
+        "flatten_ack_sCode_and_single_data_row": (
+            "SUPPORTING_CONTEXT_EXPLICITLY_ADOPTED_FOR_DATA_CARDINALITY_AND_SCODE_BY_THIS_GO"
+        ),
+        "cap_11_12_8_mapper_requires_code0_sCode0_ordId": (
+            "SEMANTICALLY_DIFFERENT_NOT_THE_PRODUCER_CONJUNCTS_ADOPTED_BY_THIS_GO"
+        ),
         "successfully_accepted_order_without_local_ack_possible": True,
         "LIVE_SUBMIT_ACK_OBSERVED": False,
     }
@@ -473,28 +486,34 @@ def adjudicate_submit_ack_forensic_v1() -> dict[str, Any]:
         "LIVE_ORDER_PLAN_OBSERVED": True,
         "LIVE_SUBMIT_ACK_OBSERVED": False,
         "CASE_ADJUDICATION": CASE_ADJUDICATION,
-        "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO": False,
+        "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO": True,
         "CASE_B_OFFLINE_IMPLEMENTATION_GAP": False,
-        "CASE_C_CANONICAL_SEMANTIC_GAP": True,
+        "CASE_C_CANONICAL_SEMANTIC_GAP": False,
         "CASE_D_RUNTIME_OR_VENUE_PRECONDITION_GAP": False,
         "CASE_E_CONTRADICTION_REQUIRES_STOP": False,
-        "why_not_case_a": (
-            "No bound §11.14 proof criterion. Transport ok is not the field. "
-            "No producer sets LIVE_SUBMIT_ACK_OBSERVED true."
+        "why_case_a": (
+            "The §11.14 ACK producer and synchronous proof criterion are bound. "
+            "Single-submit and UNKNOWN_SUBMIT_NO_BLIND_RETRY remain in force. "
+            "The standing field is false because this GO forbids POST. Next GO "
+            "is an exact single live submit POST, not this GO."
         ),
         "why_not_case_b": (
             "Single-submit locks already exist: DUPLICATE_ENTRY_SUBMIT_FORBIDDEN and "
-            "UNKNOWN_SUBMIT_NO_BLIND_RETRY. Timeout cannot auto-POST."
+            "UNKNOWN_SUBMIT_NO_BLIND_RETRY. Timeout cannot auto-POST. The producer "
+            "is an offline classifier; live POST wiring is the next Owner-GO."
         ),
-        "why_case_c": LIVE_SUBMIT_ACK_OBSERVED_CANONICAL_STATUS,
+        "why_not_case_c": (
+            "HTTP 200, top-level code=0, exactly one data row, sCode=0, nonempty "
+            "ordId, and returned clOrdId equal to sent clOrdId are now bound."
+        ),
         "why_not_case_d": (
             "This GO is offline and does not re-observe venue preconditions. "
             "Standing Live gates remain false by design."
         ),
         "why_not_case_e": (
-            "Transport ok, flatten sCode, lifecycle ordId, and Cap 11.12.8 mapper "
-            "are different non-SSOT layers. They are not two Master-Runbook statements "
-            "in contradiction. The missing criterion is a semantic gap."
+            "Flatten, Cap 11.12.8, and lifecycle remain non-producers. This GO "
+            "explicitly adopts selected conjuncts onto the productive HTTP evidence "
+            "surface without treating those modules as §11.14 SSOT."
         ),
         "POST_PERFORMED": False,
         "RETRY_DEFAULT": RETRY_DEFAULT,
@@ -509,6 +528,27 @@ def build_submit_ack_forensic_documents_v1() -> dict[str, dict[str, Any]]:
         "SUBMIT_ACK_CONTRACT.json": build_submit_ack_contract_v1(),
         "SUBMIT_ACK_FAILURE_MATRIX.json": build_failure_matrix_v1(),
         "SUBMIT_ACK_ADJUDICATION.json": adjudicate_submit_ack_forensic_v1(),
+        SUBMIT_ACK_PROOF_CRITERION_FILENAME: {
+            "schema_version": "section_11_14_submit_ack_proof_criterion.v1",
+            "producer": ACK_PRODUCER_STATUS,
+            "LIVE_SUBMIT_ACK_OBSERVED_PRODUCER_BOUND": True,
+            "LIVE_SUBMIT_ACK_PROOF_CRITERION_BOUND": True,
+            "LIVE_SUBMIT_ACK_OBSERVED": False,
+            "HTTP_STATUS_CONTRIBUTES": True,
+            "HTTP_STATUS_REQUIRED": 200,
+            "TOP_LEVEL_CODE_CONTRIBUTES": True,
+            "TOP_LEVEL_CODE_REQUIRED": "0",
+            "EXACTLY_ONE_DATA_ROW_REQUIRED": True,
+            "SCODE_0_REQUIRED": True,
+            "NONEMPTY_ORDID_REQUIRED": True,
+            "RETURNED_CLORDID_REQUIRED": True,
+            "RETURNED_CLORDID_MUST_EQUAL_SENT": True,
+            "TRANSPORT_OK_IS_NOT_LIVE_SUBMIT_ACK_OBSERVED": True,
+            "CANARY_EXECUTED_IS_NOT_LIVE_SUBMIT_ACK_OBSERVED": True,
+            "UNKNOWN_SUBMIT_IS_NOT_ACK": True,
+            "READ_ONLY_RECON_CLORDID_MATCH_IS_NOT_SYNCHRONOUS_ACK": True,
+            "canonical_definition": LIVE_SUBMIT_ACK_OBSERVED_CANONICAL_STATUS,
+        },
         "EXACT_MUTATION_CONTRACT.json": build_exact_mutation_contract_v1(),
         "POST_SUBMIT_RECON.json": build_post_submit_recon_contract_v1(),
     }
