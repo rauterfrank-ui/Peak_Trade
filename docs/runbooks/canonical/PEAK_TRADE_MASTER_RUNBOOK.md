@@ -60415,6 +60415,125 @@ Predecessor flatten persist remains unrewritten.
 Do **not** GET, POST, retry, flatten, fund, or merge without a separate
 Owner-GO. Spec owner: `docs&#47;ops&#47;specs&#47;PR_6252_MERGE_CLOSEOUT_V1.md`.
 
+### 11.13.5 G12_DELAYED_POSID_ZERO_ROW_FULL_CONJUNCTION_PROOF_CONTRACT (BOUND; ADDITIVE OFFLINE CONTRACT; G12 REMAINS OPEN; NOT GET; NOT POST; NOT MERGE)
+
+Additive persist. Does **not** rewrite PR_6252_MERGE_CLOSEOUT text.
+Does **not** rewrite PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION text.
+Does **not** rewrite the same-session CHOICE_B evaluator. Does **not**
+close `G12`. Does **not** treat empty `data=[]` as zero. Does **not**
+treat a delayed explicit zero row as live flatten proof. Does **not**
+treat `.ops_local` captures as canonical evidence. Does **not** GET.
+Does **not** POST. Does **not** flatten. Does **not** authorize §11.14.
+Does **not** merge.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_G12_DELAYED_POSID_ZERO_ROW_FULL_CONJUNCTION_PROOF_CONTRACT_V1
+OWNER_GO_STATUS=CONSUMED
+OWNER_GO_CONSUMED=true
+PRIOR_OWNER_GO=PEAK_TRADE_OWNER_GO_PR_6252_MERGE_CLOSEOUT_MAXIMUM_SAFE_LEVERAGE_V1
+AUTHORIZATION_PRESENT=true
+AUTHORITY_CLASS=G12_DELAYED_POSID_ZERO_ROW_FULL_CONJUNCTION_PROOF_CONTRACT
+RISK_CLASS=R0_OFFLINE_CONTRACT_ONLY
+PERSIST_CLASS=G12_DELAYED_POSID_ZERO_CONJUNCTION_CONTRACT_SSOT_PERSIST
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+CHAT_TRANSCRIPT_AUTHORITY=NONE
+FORENSIC_LOCAL_OPS_LOCAL_AUTHORITY=NONE
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=9613c1a5e39f793edde96a83d97c16714350b406
+EXPECTED_ORIGIN_MAIN_SHA=9613c1a5e39f793edde96a83d97c16714350b406
+EXPECTED_ORIGIN_MAIN_SHA_MATCH=true
+PREDECESSOR_SLICE=11.13.5.PR_6252_MERGE_CLOSEOUT
+THIS_SLICE=11.13.5.G12_DELAYED_POSID_ZERO_ROW_FULL_CONJUNCTION_PROOF_CONTRACT
+CURRENT_PHASE=11.13.5.G12_DELAYED_POSID_ZERO_ROW_FULL_CONJUNCTION_PROOF_CONTRACT
+CURRENT_CANONICAL_SECTION=11.13.5.G12_DELAYED_POSID_ZERO_ROW_FULL_CONJUNCTION_PROOF_CONTRACT
+LAST_CANONICALLY_CLOSED_STEP=SECTION_11_13_5_G12_DELAYED_POSID_ZERO_ROW_FULL_CONJUNCTION_PROOF_CONTRACT
+TARGET_INSTRUMENT_ID=SUI-USD_UM_XPERP-310404
+PR_6252_TEXT_REWRITTEN=false
+PRODUCTIVE_FLATTEN_TEXT_REWRITTEN=false
+CHOICE_B_EVALUATOR_REWRITTEN=false
+EMPTY_DATA_IS_ZERO=false
+ABSENT_TARGET_ROW_IS_ZERO=false
+FILL_IS_NOT_POSITION_ZERO_PROVEN=true
+DELAYED_ZERO_DOES_NOT_IMPLY_LIVE_FLATTEN_PROVEN=true
+DELAYED_ZERO_DOES_NOT_IMPLY_PENDING_EMPTY=true
+DELAYED_ZERO_DOES_NOT_IMPLY_RELATED_EMPTY=true
+POSID_FILTERED_ENVELOPE_DOES_NOT_PROVE_RELATED_COMPLETENESS=true
+INSTID_FILTERED_ENVELOPE_DOES_NOT_PROVE_RELATED_COMPLETENESS=true
+IDENTITY_EQUALITY_IS_NOT_CAUSAL_LINEAGE=true
+CAUSAL_LINEAGE_IS_NOT_SAME_SESSION_READBACK=true
+POST_READBACK_IDENTITY_REQUIRED_FOR_DELAYED_PROOF=false
+NO_FLIP_SCOPE=PAIRWISE_PRE_VS_DELAYED_EXPLICIT_ZERO_ROW_NOT_INTERMEDIATE_PATH
+RELATED_COMPLETENESS_SURFACE=UNFILTERED_GET_ACCOUNT_POSITIONS_NONZERO_ORIENTED
+PENDING_EMPTY_SURFACE=GET_TRADE_ORDERS_PENDING
+FORENSIC_LOCAL_OPS_LOCAL_IS_NOT_CANONICAL=true
+G12_STATUS=OPEN_LIVE_FLATTEN_PROVABILITY_UNPROVEN
+TARGET_POSITION_ZERO_PROVEN=false
+LIVE_FLATTEN_PROVABILITY_PROVEN=false
+SECTION_11_14_AUTHORIZED=false
+GET_PERFORMED_THIS_PERSIST=false
+POST_PERFORMED=false
+MERGE_AUTHORIZED_BY_THIS_PERSIST=false
+LIVE_AUTHORIZED=false
+CANARY_AUTHORIZED=false
+FAIL_CLOSED_IF_G12_MARKED_CLOSED=true
+FAIL_CLOSED_IF_EMPTY_DATA_PROMOTED_TO_ZERO=true
+FAIL_CLOSED_IF_DELAYED_ZERO_PROMOTED_TO_LIVE_FLATTEN=true
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_FLATTEN_PROVABILITY_IF_NOT_PROVEN
+NEXT_AUTHORITY_BOUNDARY=SEPARATE_OWNER_GO_FOR_CANONICAL_DELAYED_ZERO_PERSIST_AND_P7_P9_OBSERVATIONS
+NEXT_OWNER_GO_REQUIRED=PEAK_TRADE_OWNER_GO_G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELATED_OBSERVATIONS_V1
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+A. Adjudication. Existing same-session post-action identity cannot
+consume a later `posId`-filtered explicit zero row without treating that
+filtered envelope as related-complete. That would weaken G12. The
+delayed contract is therefore additive. CHOICE_B remains scoped to the
+same-session evaluator.
+
+B. Conjunction. `live_flatten_proven` requires P1 authorized reduce-only
+LIMIT flatten, P2 venue acceptance, P3 bound fill, P4 explicit pre
+nonzero, P5 delayed unique explicit `pos==0` target row, P6 causal
+`posId`&#47;instrument lineage that is **not** identity equality with the
+immediate post-readback, P7 regular pending-empty from
+`GET &#47;api&#47;v5&#47;trade&#47;orders-pending` at or after the delayed
+zero, P8 pairwise no-flip against that explicit zero row, P9 no related
+nonzero from unfiltered `GET &#47;api&#47;v5&#47;account&#47;positions` at
+or after the delayed zero, and P10 temporal order. Delayed zero alone
+is not live flatten proof.
+
+C. Missing canonical observations. The gitignored
+`.ops_local&#47;g12_zero_elicitation_result.sanitized.json` capture is
+FORENSIC_LOCAL_ONLY. Canonical SSOT `TARGET_POSITION_ZERO_PROVEN`
+remains false. Contemporaneous pending and unfiltered related
+observations required by P7 and P9 are not present as admissible
+repo-local persisted evidence. This persist does **not** fabricate
+that evidence and does **not** close `G12`.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+EXECUTE_OWNER=src/ops/section_11_13_5_g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1/evaluate_v1.py
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_13_5
+CURRENT_CANONICAL_SECTION=11.13.5.G12_DELAYED_POSID_ZERO_ROW_FULL_CONJUNCTION_PROOF_CONTRACT
+HARD_STOP_AFTER_THIS_TASK=true
+HARD_STOP_AFTER_PR=true
+HARD_STOP=true
+```
+
+Hard stop. This delayed-conjunction contract GO is consumed as offline
+additive contract, tests, and SSOT persist only.
+`G12_STATUS=OPEN_LIVE_FLATTEN_PROVABILITY_UNPROVEN`.
+`TARGET_POSITION_ZERO_PROVEN=false`.
+`LIVE_FLATTEN_PROVABILITY_PROVEN=false`.
+`EMPTY_DATA_IS_ZERO=false`. `SECTION_11_14_AUTHORIZED=false`.
+`GET_PERFORMED_THIS_PERSIST=false`. `POST_PERFORMED=false`.
+`LIVE_AUTHORIZED=false`. `MERGE_AUTHORIZED_BY_THIS_PERSIST=false`.
+`EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_FLATTEN_PROVABILITY_IF_NOT_PROVEN`.
+Do **not** GET, POST, retry, flatten, fund, or merge without a separate
+Owner-GO. Spec owner:
+`docs&#47;ops&#47;specs&#47;G12_DELAYED_POSID_ZERO_ROW_FULL_CONJUNCTION_PROOF_CONTRACT_V1.md`.
+
 ## 11.14 Live order and economic evidence ladder
 
 Live proof claims must use a stricter ladder:
