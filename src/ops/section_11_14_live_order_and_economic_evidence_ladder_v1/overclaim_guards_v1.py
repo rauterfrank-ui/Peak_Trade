@@ -27,9 +27,11 @@ def refuse_forbidden_live_source_v1(*, field_name: str, source_kind: str) -> Non
 
 def refuse_live_field_true_claim_v1(*, field_name: str, source_kind: str) -> None:
     refuse_forbidden_live_source_v1(field_name=field_name, source_kind=source_kind)
-    raise Section1114OfflineSurfaceError(
-        f"LIVE_FIELD_TRUE_CLAIM_FORBIDDEN_IN_OFFLINE_SURFACE:{field_name}"
-    )
+    if field_name == "LIVE_EXECUTION_PATH_REACHABLE":
+        raise Section1114OfflineSurfaceError(
+            "LIVE_EXECUTION_PATH_REACHABLE_TRUE_MUST_USE_PREDICATE_EVALUATOR"
+        )
+    raise Section1114OfflineSurfaceError(f"LIVE_FIELD_TRUE_CLAIM_FORBIDDEN:{field_name}")
 
 
 def refuse_alias_promotion_v1(*, claimed_alias: str) -> dict[str, Any]:

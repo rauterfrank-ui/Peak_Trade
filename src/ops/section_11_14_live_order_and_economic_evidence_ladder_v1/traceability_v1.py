@@ -58,14 +58,21 @@ def build_traceability_matrix_v1(
             raise Section1114OfflineSurfaceError(f"TRACE_MISSING_LADDER_FIELD:{field_name}")
         claimed = bool(ladder_values[field_name] is True)
         if claimed:
-            unresolved = "NONE"
-            adjudication = "TRUE_STATIC_INTEGRATED_PRODUCTIVE_PATH"
+            if field_name == "LIVE_EXECUTION_CODE_EXISTS":
+                unresolved = "NONE"
+                adjudication = "TRUE_STATIC_INTEGRATED_PRODUCTIVE_PATH"
+            elif field_name == "LIVE_EXECUTION_PATH_REACHABLE":
+                unresolved = "NONE"
+                adjudication = "TRUE_PRE_SUBMIT_PATH_REACHABLE"
+            else:
+                unresolved = "NONE"
+                adjudication = "TRUE_UNEXPECTED"
         elif field_name == EARLIEST_UNRESOLVED_DEPENDENCY:
             unresolved = EARLIEST_UNRESOLVED_DEPENDENCY
-            adjudication = "FALSE_FAIL_CLOSED_OFFLINE_SURFACE"
+            adjudication = "FALSE_FAIL_CLOSED"
         else:
             unresolved = f"BLOCKED_BY_{EARLIEST_UNRESOLVED_DEPENDENCY}"
-            adjudication = "FALSE_FAIL_CLOSED_OFFLINE_SURFACE"
+            adjudication = "FALSE_FAIL_CLOSED"
         rows.append(
             _row(
                 requirement=field_name,

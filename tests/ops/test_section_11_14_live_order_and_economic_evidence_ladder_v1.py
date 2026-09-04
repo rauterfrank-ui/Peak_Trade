@@ -73,7 +73,7 @@ def test_contract_invariants_remain_fail_closed() -> None:
     assert SECTION_11_14_AUTHORIZED is False
     assert SECTION_11_14_COMPLETE is False
     assert LIVE_EXECUTION_CODE_EXISTS is True
-    assert LIVE_EXECUTION_PATH_REACHABLE is False
+    assert LIVE_EXECUTION_PATH_REACHABLE is True
     for field_name in OBSERVED_OR_PROVEN_FIELDS_MUST_REMAIN_FALSE:
         assert LADDER_FIELD_DEFAULTS[field_name] is False
     assert len(LADDER_FIELDS) == LADDER_FIELD_COUNT == 12
@@ -181,8 +181,10 @@ def test_static_fields_bind_code_exists_without_reachability_or_later_fields() -
     assert "CODE_PRESENCE_ALONE_INADMISSIBLE" in code["reason"]
     assert "PATH_REACHABLE_NOT_INFERRED" in code["reason"]
     assert "LIVE_EXECUTION_CODE_EXISTS=true" in code["reason"]
-    assert "NOT_EQUATED_WITH_SECTION_4_9_CURRENTLY_REACHABLE" in path["reason"]
-    assert "NOT_IMPLIED_BY_LIVE_EXECUTION_CODE_EXISTS" in path["reason"]
+    assert path["adjudicated_value"] is False
+    assert "UNOBSERVED_REQUIRED_CONSTITUENT" in path["reason"]
+    assert "CURRENTLY_REACHABLE_IS_NOT_LIVE_EXECUTION_PATH_REACHABLE" in path["contradiction_check"]
+    assert path["LIVE_PRIVATE_READ_ONLY_PROVEN"] is False
     assert "FILE_PRESENCE_ALONE=true" in code["observed_repo_fact"]
     assert "FILE_PRESENCE_ADMISSIBLE=false" in code["observed_repo_fact"]
 
@@ -285,7 +287,9 @@ def test_evidence_record_has_required_keys_and_refuses_true_claim() -> None:
         authority_scope="R1",
     )
     assert allowed["claim_value"] is True
-    with pytest.raises(Section1114OfflineSurfaceError, match="TRUE_FORBIDDEN"):
+    with pytest.raises(
+        Section1114OfflineSurfaceError, match="PATH_REACHABLE_TRUE_SOURCE_NOT_ADMISSIBLE"
+    ):
         build_evidence_record_v1(
             ladder_stage="LIVE_EXECUTION_PATH_REACHABLE",
             claim_name="LIVE_EXECUTION_PATH_REACHABLE",
@@ -310,13 +314,26 @@ def test_traceability_has_each_ladder_field_and_metric_once() -> None:
     names = [row["CANONICAL_REQUIREMENT"] for row in matrix["rows"]]
     assert names == list(LADDER_FIELDS) + list(MANDATORY_LIVE_METRICS)
     assert matrix["primary_row_count"] == 32
-    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_EXECUTION_PATH_REACHABLE"
+    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_PRIVATE_READ_ONLY_PROVEN"
 
 
 def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
+    get_ev = {
+        "TARGET_HOST_RESOLVABLE_OR_CONNECTABLE": True,
+        "AUTHENTICATION_PATH_FUNCTIONAL": True,
+        "CURRENT_ACCOUNT_OR_VENUE_READ_ACCESS_FUNCTIONAL": True,
+        "LIVE_PRIVATE_READ_ONLY_PROVEN": False,
+        "POST_USED": False,
+        "PRIVATE_GET_USED": True,
+        "CREDENTIAL_USE": True,
+        "VENUE_REQUESTS": 1,
+        "METHOD": "GET",
+        "RESPONSE_TIME_UTC": "2026-09-04T13:00:00Z",
+    }
     documents = assemble_offline_surface_v1(
         repo_root=REPO_ROOT,
         origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        private_get_evidence=get_ev,
     )
     verified = persist_offline_surface_pack_v1(
         pack=tmp_path,
@@ -325,9 +342,12 @@ def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
     )
     assert int(verified["MANIFEST_VERIFY_RC"]) == 0
     assert documents["SUMMARY.json"]["LIVE_EXECUTION_CODE_EXISTS"] is True
-    assert documents["SUMMARY.json"]["LIVE_EXECUTION_PATH_REACHABLE"] is False
+    assert documents["SUMMARY.json"]["LIVE_EXECUTION_PATH_REACHABLE"] is True
+    assert documents["SUMMARY.json"]["LIVE_PRIVATE_READ_ONLY_PROVEN"] is False
     assert documents["SUMMARY.json"]["SECTION_11_14_COMPLETE"] is False
     assert documents["MUTATION_BOUNDARY.json"]["POST"] is False
-    assert documents["MUTATION_BOUNDARY.json"]["CREDENTIAL_USE"] is False
+    assert documents["MUTATION_BOUNDARY.json"]["PRIVATE_GET"] is True
+    assert documents["PRIVATE_GET_BINDING.json"]["METHOD"] == "GET"
+    assert documents["PRIVATE_GET_BINDING.json"]["POST"] is False
     with pytest.raises(RuntimeError, match="ORIGIN_MAIN_SHA_MISMATCH"):
         assemble_offline_surface_v1(repo_root=REPO_ROOT, origin_main_sha="deadbeef")

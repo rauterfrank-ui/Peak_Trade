@@ -59,4 +59,7 @@ ladder field.
 Code presence is not `LIVE_EXECUTION_CODE_EXISTS`.
 §4.9 `CURRENTLY_REACHABLE` is not `LIVE_EXECUTION_PATH_REACHABLE`.
 No Testnet, fixture or simulated result may satisfy a Live evidence field.
-Cap 11.7-11.11 remain contracts-only and are not this field's SSOT.
+Successor slice `11.14.LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION` binds
+`LIVE_EXECUTION_PATH_REACHABLE` from the reachability predicate. This
+historical CODE_EXISTS persist remains the consumed first-field record
+and does not by itself prove path-reachable or observed fields.

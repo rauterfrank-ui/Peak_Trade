@@ -1,6 +1,8 @@
-"""Offline §11.14 live order and economic evidence-ladder surface.
+"""§11.14 live order and economic evidence-ladder surface.
 
-Does not collect Live evidence. Does not GET, POST, submit, cancel, flatten,
-or fund. LIVE_EXECUTION_CODE_EXISTS may be true from the static predicate.
-Later observed/proven ladder fields remain false. Atlas has no authority.
+LIVE_EXECUTION_CODE_EXISTS and LIVE_EXECUTION_PATH_REACHABLE may be true from
+their bound predicates. Later observed/proven ladder fields remain false.
+Conditional private GET is authorized only for path-reachability
+connectivity. Does not POST, submit, cancel, flatten, or fund. Atlas has no
+authority.
 """

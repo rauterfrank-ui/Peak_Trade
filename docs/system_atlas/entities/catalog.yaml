@@ -1279,8 +1279,28 @@ entities:
     notes: >-
       Static/offline LIVE_EXECUTION_CODE_EXISTS adjudication. Does not
       collect Live evidence. Does not GET. Does not POST. Path-reachable
-      and later observed/proven fields remain false. Atlas is not trading
-      authority.
+      and later observed/proven fields remain false under that consumed
+      GO. Successor is LIVE_EXECUTION_PATH_REACHABLE adjudication. Atlas
+      is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: PHASE:section_11_14_live_execution_path_reachable_adjudication
+    kind: PHASE
+    name: 11.14.LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T130000Z/
+      - tests/ops/test_section_11_14_live_execution_path_reachable_adjudication_v1.py
+      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
+    notes: >-
+      LIVE_EXECUTION_PATH_REACHABLE pre-submit adjudication. Conditional
+      private GET only. Does not POST. Does not promote
+      LIVE_PRIVATE_READ_ONLY_PROVEN or later observed/proven fields.
+      Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
@@ -2111,20 +2131,29 @@ entities:
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/persist_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/persist_claims_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/hashing_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/path_reachable_predicate_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/path_reachable_adjudication_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/reachability_graphs_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/reachability_private_get_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/runtime_gate_classification_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/credential_presence_v1.py
     evidence_sources:
       - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_v1.py
       - tests/ops/test_section_11_14_live_execution_code_exists_adjudication_v1.py
+      - tests/ops/test_section_11_14_live_execution_path_reachable_adjudication_v1.py
       - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/SECTION_11_14_LIVE_ORDER_AND_ECONOMIC_EVIDENCE_LADDER_OFFLINE_SURFACE_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md
+      - docs/ops/specs/SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T121000Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T123100Z/
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T130000Z/
     notes: >-
       Navigation inventory of the §11.14 evidence-ladder surface including
-      the LIVE_EXECUTION_CODE_EXISTS static predicate. Does not collect Live
-      evidence. Does not GET. Does not POST. Does not activate Cap 11.7-11.11.
-      Path-reachable remains false. Atlas is not canonical authority.
+      LIVE_EXECUTION_CODE_EXISTS and LIVE_EXECUTION_PATH_REACHABLE. Does not
+      POST. Does not activate Cap 11.7-11.11. Does not promote
+      LIVE_PRIVATE_READ_ONLY_PROVEN. Atlas is not canonical authority.
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1
