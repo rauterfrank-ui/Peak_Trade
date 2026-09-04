@@ -34,6 +34,7 @@
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap_3_1_futures_accounting | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap_3_1_futures_accounting | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap_4_1_pre_activation_closure | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap_4_1_pre_activation_closure | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap_7_2_stateful_no_order | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap_7_2_stateful_no_order | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:authenticated_private_runtime_read_and_runtime_permit_issuance_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:authenticated_private_runtime_read_and_runtime_permit_issuance_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:authenticated_productive_transport_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:authenticated_productive_transport_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_experiment_identity_binding | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_experiment_identity_binding | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_capital_slot | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_capital_slot | STATUS=OPEN (not proven) |  |
