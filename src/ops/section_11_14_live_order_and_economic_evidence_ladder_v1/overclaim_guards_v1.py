@@ -45,6 +45,7 @@ def refuse_alias_promotion_v1(*, claimed_alias: str) -> dict[str, Any]:
             CURRENTLY_REACHABLE_IS_NOT_LIVE_EXECUTION_PATH_REACHABLE
         ),
         "FIELD_NAME_SIMILARITY_EQUALS_SEMANTIC_IDENTITY": True,
+        "CODE_PRESENCE_EQUALS_LIVE_EXECUTION_CODE_EXISTS": True,
         "HISTORICAL_EVIDENCE_EQUALS_CURRENT_TRUTH": True,
     }
     if claimed_alias not in aliases:

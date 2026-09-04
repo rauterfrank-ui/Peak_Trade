@@ -72,7 +72,7 @@ def test_contract_invariants_remain_fail_closed() -> None:
     assert_contract_invariants_v1()
     assert SECTION_11_14_AUTHORIZED is False
     assert SECTION_11_14_COMPLETE is False
-    assert LIVE_EXECUTION_CODE_EXISTS is False
+    assert LIVE_EXECUTION_CODE_EXISTS is True
     assert LIVE_EXECUTION_PATH_REACHABLE is False
     for field_name in OBSERVED_OR_PROVEN_FIELDS_MUST_REMAIN_FALSE:
         assert LADDER_FIELD_DEFAULTS[field_name] is False
@@ -123,8 +123,14 @@ def test_ladder_order_rejects_end_to_end_before_predecessors() -> None:
         assert_ladder_order_v1(_true_from("LIVE_END_TO_END_EVIDENCE_PROVEN"))
 
 
+def test_ladder_order_accepts_code_exists_only() -> None:
+    values = _true_from("LIVE_EXECUTION_CODE_EXISTS")
+    assert_ladder_order_v1(values)
+
+
 def test_ladder_order_accepts_all_false() -> None:
-    assert_ladder_order_v1(LADDER_FIELD_DEFAULTS)
+    all_false = {name: False for name in LADDER_FIELDS}
+    assert_ladder_order_v1(all_false)
 
 
 def test_overclaim_guards_forbid_fixture_sim_testnet_shadow() -> None:
@@ -149,14 +155,15 @@ def test_overclaim_guards_forbid_alias_promotions() -> None:
         "CURRENTLY_REACHABLE_EQUALS_LIVE_EXECUTION_PATH_REACHABLE",
         "FIELD_NAME_SIMILARITY_EQUALS_SEMANTIC_IDENTITY",
         "HISTORICAL_EVIDENCE_EQUALS_CURRENT_TRUTH",
+        "CODE_PRESENCE_EQUALS_LIVE_EXECUTION_CODE_EXISTS",
     ):
         with pytest.raises(Section1114OfflineSurfaceError, match="ALIAS_PROMOTION_FORBIDDEN"):
             refuse_alias_promotion_v1(claimed_alias=alias)
 
 
-def test_static_fields_remain_false_and_are_not_equated_with_code_presence() -> None:
+def test_static_fields_bind_code_exists_without_reachability_or_later_fields() -> None:
     proof = adjudicate_static_fields_v1(repo_root=REPO_ROOT)
-    assert proof["LIVE_EXECUTION_CODE_EXISTS_VALUE"] is False
+    assert proof["LIVE_EXECUTION_CODE_EXISTS_VALUE"] is True
     assert proof["LIVE_EXECUTION_PATH_REACHABLE_VALUE"] is False
     code = proof["LIVE_EXECUTION_CODE_EXISTS"]
     path = proof["LIVE_EXECUTION_PATH_REACHABLE"]
@@ -172,8 +179,12 @@ def test_static_fields_remain_false_and_are_not_equated_with_code_presence() -> 
         ):
             assert key in record
     assert "CODE_PRESENCE_ALONE_INADMISSIBLE" in code["reason"]
+    assert "PATH_REACHABLE_NOT_INFERRED" in code["reason"]
+    assert "LIVE_EXECUTION_CODE_EXISTS=true" in code["reason"]
     assert "NOT_EQUATED_WITH_SECTION_4_9_CURRENTLY_REACHABLE" in path["reason"]
-    assert "SP01_FILE_EXISTS=true" in code["observed_repo_fact"]
+    assert "NOT_IMPLIED_BY_LIVE_EXECUTION_CODE_EXISTS" in path["reason"]
+    assert "FILE_PRESENCE_ALONE=true" in code["observed_repo_fact"]
+    assert "FILE_PRESENCE_ADMISSIBLE=false" in code["observed_repo_fact"]
 
 
 def test_reuse_matrix_never_promotes_predecessor_facts() -> None:
@@ -259,6 +270,36 @@ def test_evidence_record_has_required_keys_and_refuses_true_claim() -> None:
             contradiction_status="NONE",
             authority_scope="R1",
         )
+    allowed = build_evidence_record_v1(
+        ladder_stage="LIVE_EXECUTION_CODE_EXISTS",
+        claim_name="LIVE_EXECUTION_CODE_EXISTS",
+        claim_value=True,
+        evidence_class="3_ALREADY_ADJUDICATED_CONCLUSION",
+        source_kind="REPOSITORY_IMPLEMENTATION",
+        source_path_or_runtime_source="src/ops/",
+        observed_at=None,
+        predecessor_claims=[],
+        provenance=OWNER_GO,
+        adjudication_status="TRUE_STATIC_INTEGRATED_PRODUCTIVE_PATH",
+        contradiction_status="NONE",
+        authority_scope="R1",
+    )
+    assert allowed["claim_value"] is True
+    with pytest.raises(Section1114OfflineSurfaceError, match="TRUE_FORBIDDEN"):
+        build_evidence_record_v1(
+            ladder_stage="LIVE_EXECUTION_PATH_REACHABLE",
+            claim_name="LIVE_EXECUTION_PATH_REACHABLE",
+            claim_value=True,
+            evidence_class="3",
+            source_kind="REPOSITORY_IMPLEMENTATION",
+            source_path_or_runtime_source="src/ops/",
+            observed_at=None,
+            predecessor_claims=[],
+            provenance=OWNER_GO,
+            adjudication_status="TRUE",
+            contradiction_status="NONE",
+            authority_scope="R1",
+        )
 
 
 def test_traceability_has_each_ladder_field_and_metric_once() -> None:
@@ -269,7 +310,7 @@ def test_traceability_has_each_ladder_field_and_metric_once() -> None:
     names = [row["CANONICAL_REQUIREMENT"] for row in matrix["rows"]]
     assert names == list(LADDER_FIELDS) + list(MANDATORY_LIVE_METRICS)
     assert matrix["primary_row_count"] == 32
-    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_EXECUTION_CODE_EXISTS"
+    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_EXECUTION_PATH_REACHABLE"
 
 
 def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
@@ -283,7 +324,8 @@ def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
         documents=documents,
     )
     assert int(verified["MANIFEST_VERIFY_RC"]) == 0
-    assert documents["SUMMARY.json"]["LIVE_EXECUTION_CODE_EXISTS"] is False
+    assert documents["SUMMARY.json"]["LIVE_EXECUTION_CODE_EXISTS"] is True
+    assert documents["SUMMARY.json"]["LIVE_EXECUTION_PATH_REACHABLE"] is False
     assert documents["SUMMARY.json"]["SECTION_11_14_COMPLETE"] is False
     assert documents["MUTATION_BOUNDARY.json"]["POST"] is False
     assert documents["MUTATION_BOUNDARY.json"]["CREDENTIAL_USE"] is False

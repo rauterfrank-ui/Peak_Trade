@@ -86,8 +86,8 @@ def assert_contract_invariants_v1(payload: Mapping[str, Any] | None = None) -> N
         raise Section1114OfflineSurfaceError("PRIVATE_GET_MUST_REMAIN_FORBIDDEN")
     if COLLECTOR_ACTIVATED is True:
         raise Section1114OfflineSurfaceError("LIVE_COLLECTOR_MUST_REMAIN_INACTIVE")
-    if LIVE_EXECUTION_CODE_EXISTS is True:
-        raise Section1114OfflineSurfaceError("LIVE_EXECUTION_CODE_EXISTS_MUST_REMAIN_FALSE")
+    if LIVE_EXECUTION_CODE_EXISTS is not True:
+        raise Section1114OfflineSurfaceError("LIVE_EXECUTION_CODE_EXISTS_MUST_BE_TRUE")
     if LIVE_EXECUTION_PATH_REACHABLE is True:
         raise Section1114OfflineSurfaceError("LIVE_EXECUTION_PATH_REACHABLE_MUST_REMAIN_FALSE")
     for field_name in OBSERVED_OR_PROVEN_FIELDS_MUST_REMAIN_FALSE:
@@ -101,6 +101,10 @@ def assert_contract_invariants_v1(payload: Mapping[str, Any] | None = None) -> N
         raise Section1114OfflineSurfaceError("SECTION_11_14_PROMOTED_TO_COMPLETE")
     if payload.get("COLLECTOR_ACTIVATED") is True:
         raise Section1114OfflineSurfaceError("LIVE_COLLECTOR_ACTIVATED")
+    if payload.get("LIVE_EXECUTION_CODE_EXISTS") is not True:
+        raise Section1114OfflineSurfaceError("LIVE_EXECUTION_CODE_EXISTS_PAYLOAD_MUST_BE_TRUE")
     for field_name in LADDER_FIELDS:
+        if field_name == "LIVE_EXECUTION_CODE_EXISTS":
+            continue
         if payload.get(field_name) is True:
             raise Section1114OfflineSurfaceError(f"LADDER_FIELD_PROMOTED_TRUE:{field_name}")
