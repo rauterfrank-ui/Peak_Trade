@@ -1,0 +1,87 @@
+{
+  "BOUND_ACCOUNTING_EVIDENCE_RUN_ID": "20260904T185000Z",
+  "BOUND_ACK_EVIDENCE_RUN_ID": "20260904T160450Z",
+  "BOUND_CLORDID": "ptokxeprod1fec928b1fec928b00",
+  "BOUND_INSTID": "SUI-USD_UM_XPERP-310404",
+  "BOUND_ORDID": "3893505043080286208",
+  "DURABLE_PRE_RESTART_HANDOFF_PRESENT": false,
+  "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH": false,
+  "NOT_FIXTURE_TESTNET_OR_SIMULATED": true,
+  "accounting_artifacts_are_not_restart_handoff": true,
+  "durable_handoff_paths": [],
+  "fill_raw_exists": true,
+  "fill_raw_relpath": "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T173813Z/GET_FILLS.raw.json",
+  "fill_raw_sha256": "de429030b71b4db50923deb60731c8d12887300605e0bb194126465e2efe61ef",
+  "inspected_live_packs": [
+    {
+      "durable_handoff_markers": [],
+      "exists": true,
+      "names": [
+        "MANIFEST.sha256",
+        "SUBMIT_ACK_OBSERVED_ADJUDICATION.json",
+        "SUMMARY.json"
+      ],
+      "run_id": "20260904T160450Z"
+    },
+    {
+      "durable_handoff_markers": [],
+      "exists": true,
+      "names": [
+        "FILL_OBSERVED_ADJUDICATION.json",
+        "GET_FILLS.raw.json",
+        "GET_ORDER_STATUS.raw.json",
+        "MANIFEST.sha256",
+        "SUMMARY.json"
+      ],
+      "run_id": "20260904T165859Z"
+    },
+    {
+      "durable_handoff_markers": [],
+      "exists": true,
+      "names": [
+        "FEE_OBSERVED_ADJUDICATION.json",
+        "GET_FILLS.raw.json",
+        "GET_ORDER_STATUS.raw.json",
+        "MANIFEST.sha256",
+        "SUMMARY.json"
+      ],
+      "run_id": "20260904T173813Z"
+    },
+    {
+      "durable_handoff_markers": [],
+      "exists": true,
+      "names": [
+        "GET_POSITIONS.raw.json",
+        "MANIFEST.sha256",
+        "POSITION_RECONCILED_ADJUDICATION.json",
+        "SUMMARY.json"
+      ],
+      "run_id": "20260904T181817Z"
+    },
+    {
+      "durable_handoff_markers": [],
+      "exists": true,
+      "names": [
+        "ACCOUNTING_IDENTITY.json",
+        "ACCOUNTING_RECONSTRUCTED_ADJUDICATION.json",
+        "MANIFEST.sha256",
+        "SOURCE_REFERENCES.json",
+        "SUMMARY.json"
+      ],
+      "run_id": "20260904T185000Z"
+    }
+  ],
+  "position_raw_exists": true,
+  "position_raw_relpath": "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T181817Z/GET_POSITIONS.raw.json",
+  "position_raw_sha256": "a428f9f023f2b130301bfdf11b9d050cf377c4140f2354ead409c4be290c8959",
+  "testnet_durable_paths": [
+    "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/durable_state/restart_with_open_order_pre_restart_v1.json",
+    "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/durable_state/restart_with_open_position_pre_restart_v1.json"
+  ],
+  "testnet_restart_clOrdId": "",
+  "testnet_restart_environment": "DEMO",
+  "testnet_restart_instId": "BTC-USD_UM_XPERP-310328",
+  "testnet_restart_is_not_this_field": true,
+  "testnet_restart_proven_exists": true,
+  "testnet_restart_proven_relpath": "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/"
+}

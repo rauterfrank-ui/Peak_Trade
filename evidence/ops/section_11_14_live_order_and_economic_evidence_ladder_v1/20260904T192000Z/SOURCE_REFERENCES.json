@@ -1,0 +1,25 @@
+{
+  "DOCUMENT_CLASS": "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_SOURCE_REFERENCES_V1",
+  "DOCUMENT_ROLE": "DERIVED_NON_SSOT",
+  "RAW_EVIDENCE_MODIFIED": false,
+  "durable_live_pre_restart_handoff": {
+    "paths": [],
+    "present": false
+  },
+  "live_fill": {
+    "file_sha256": "de429030b71b4db50923deb60731c8d12887300605e0bb194126465e2efe61ef",
+    "path": "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T173813Z/GET_FILLS.raw.json",
+    "role": "ACCOUNTING_PATH_NOT_RESTART_HANDOFF"
+  },
+  "live_position": {
+    "file_sha256": "a428f9f023f2b130301bfdf11b9d050cf377c4140f2354ead409c4be290c8959",
+    "path": "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T181817Z/GET_POSITIONS.raw.json",
+    "role": "ACCOUNTING_PATH_NOT_RESTART_HANDOFF"
+  },
+  "testnet_restart_proven": {
+    "environment": "DEMO",
+    "instId": "BTC-USD_UM_XPERP-310328",
+    "path": "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/",
+    "role": "SEMANTICALLY_DIFFERENT_TESTNET_RESTART"
+  }
+}

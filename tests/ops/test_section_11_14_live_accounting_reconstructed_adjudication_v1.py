@@ -29,9 +29,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.accounting
     ACCOUNTING_IDENTITY_EQUATION,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_ACCOUNTING_RECONSTRUCTED_OWNER_GO,
+    HISTORICAL_ACCOUNTING_RECONSTRUCTED_SHA,
     LIVE_ACCOUNTING_RECONSTRUCTED_CANONICAL_DEFINITION,
-    OWNER_GO,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -232,8 +232,8 @@ def test_fixture_source_refused() -> None:
 
 def test_execute_reads_persisted_raw_without_get() -> None:
     result = execute_live_accounting_reconstructed_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        owner_go=HISTORICAL_ACCOUNTING_RECONSTRUCTED_OWNER_GO,
+        origin_main_sha=HISTORICAL_ACCOUNTING_RECONSTRUCTED_SHA,
         repo_root=REPO_ROOT,
         run_id="20260904T185000Z",
     )

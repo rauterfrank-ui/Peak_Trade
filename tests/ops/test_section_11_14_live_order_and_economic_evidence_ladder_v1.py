@@ -617,9 +617,10 @@ def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
     assert documents["SUMMARY.json"]["LIVE_FEE_OBSERVED"] is True
     assert documents["SUMMARY.json"]["LIVE_POSITION_RECONCILED"] is True
     assert documents["SUMMARY.json"]["LIVE_ACCOUNTING_RECONSTRUCTED"] is True
+    assert documents["SUMMARY.json"]["LIVE_RESTART_RECONSTRUCTED"] is False
     assert documents["SUMMARY.json"]["SECTION_11_14_COMPLETE"] is False
     assert documents["SUMMARY.json"]["CASE_ADJUDICATION"] == (
-        "CASE_LIVE_ACCOUNTING_RECONSTRUCTED_RESTART_INELIGIBLE"
+        "CASE_LIVE_RESTART_RECONSTRUCTED_FAIL_CLOSED_MISSING_DURABLE_HANDOFF"
     )
     assert documents["SUMMARY.json"]["GET_USED"] is False
     assert documents["SUMMARY.json"]["POST_USED"] is False
@@ -663,6 +664,17 @@ def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
     assert (
         documents["ACCOUNTING_RECONSTRUCTED_ADJUDICATION.json"]["LIVE_RESTART_RECONSTRUCTED"]
         is False
+    )
+    assert (
+        documents["RESTART_RECONSTRUCTED_ADJUDICATION.json"]["LIVE_RESTART_RECONSTRUCTED"] is False
+    )
+    assert (
+        documents["RESTART_RECONSTRUCTED_ADJUDICATION.json"]["LIVE_AUTONOMOUS_RECOVERY_OBSERVED"]
+        is False
+    )
+    assert (
+        documents["RESTART_RECONSTRUCTED_ADJUDICATION.json"]["CASE_ADJUDICATION"]
+        == "CASE_LIVE_RESTART_RECONSTRUCTED_FAIL_CLOSED_MISSING_DURABLE_HANDOFF"
     )
     assert documents["EXACT_MUTATION_CONTRACT.json"]["endpoint"] == "/api/v5/trade/order"
     assert documents["EXACT_MUTATION_CONTRACT.json"]["http_method"] == "POST"

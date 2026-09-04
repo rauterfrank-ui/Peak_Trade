@@ -17,6 +17,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     FEE_OBSERVED_ADJUDICATION_FILENAME,
     POSITION_RECONCILED_ADJUDICATION_FILENAME,
     ACCOUNTING_RECONSTRUCTED_ADJUDICATION_FILENAME,
+    RESTART_RECONSTRUCTED_ADJUDICATION_FILENAME,
     G12_DOES_NOT_AUTHORIZE_SECTION_11_14,
     G12_DOES_NOT_SATISFY_SECTION_11_14_OBSERVED_FIELDS,
     G12_STATUS_REQUIRED,
@@ -33,6 +34,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_ORDER_PLAN_OBSERVED,
     LIVE_POSITION_RECONCILED,
     LIVE_ACCOUNTING_RECONSTRUCTED,
+    LIVE_RESTART_RECONSTRUCTED,
     LIVE_PRIVATE_READ_ONLY_PROVEN,
     LIVE_SUBMIT_ACK_OBSERVED,
     MANDATORY_LIVE_METRIC_COUNT,
@@ -110,6 +112,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.position_r
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.accounting_reconstructed_adjudication_v1 import (
     adjudicate_live_accounting_reconstructed_v1,
 )
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_adjudication_v1 import (
+    adjudicate_live_restart_reconstructed_v1,
+)
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.private_read_only_gets_v1 import (
     bind_private_read_only_gets_before_request_v1,
     path_reachable_view_from_read_only_pack_v1,
@@ -140,6 +145,7 @@ def assemble_offline_surface_v1(
     fee_evidence: Mapping[str, Any] | None = None,
     position_evidence: Mapping[str, Any] | None = None,
     accounting_evidence: Mapping[str, Any] | None = None,
+    restart_evidence: Mapping[str, Any] | None = None,
 ) -> dict[str, dict[str, Any]]:
     if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
         raise RuntimeError("ORIGIN_MAIN_SHA_MISMATCH")
@@ -261,6 +267,24 @@ def assemble_offline_surface_v1(
         raise RuntimeError("ACCOUNTING_TRUE_WITHOUT_VALID_PERSISTED_PATH")
     if accounting_claim and accounting_ev.get("LIVE_RESTART_RECONSTRUCTED") is True:
         raise RuntimeError("ACCOUNTING_EVIDENCE_PROMOTED_RESTART")
+    restart_ev = dict(restart_evidence) if restart_evidence is not None else None
+    if LIVE_RESTART_RECONSTRUCTED is True and restart_ev is None:
+        raise RuntimeError("RESTART_TRUE_WITHOUT_PERSISTED_HANDOFF_EVIDENCE")
+    restart_fields = adjudicate_live_restart_reconstructed_v1(restart_evidence=restart_ev)
+    restart_claim = bool(restart_fields.get("adjudicated_value") is True)
+    if restart_claim is not bool(LIVE_RESTART_RECONSTRUCTED is True):
+        raise RuntimeError("RESTART_CONSTANT_DRIFT_VS_ADJUDICATION")
+    if restart_claim and (
+        restart_ev is None
+        or restart_ev.get("POST_USED") is True
+        or restart_ev.get("GET_PERFORMED") is True
+        or restart_ev.get("PRIVATE_GET_USED") is True
+        or restart_ev.get("RESTART_EXECUTION") is True
+        or str(restart_ev.get("source_kind") or "") != "GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF"
+    ):
+        raise RuntimeError("RESTART_TRUE_WITHOUT_VALID_PERSISTED_HANDOFF")
+    if restart_claim and restart_ev.get("LIVE_AUTONOMOUS_RECOVERY_OBSERVED") is True:
+        raise RuntimeError("RESTART_EVIDENCE_PROMOTED_RECOVERY")
     metrics = build_mandatory_live_metrics_schema_v1()
     reuse = build_reuse_vs_fresh_matrix_v1()
     traceability = build_traceability_matrix_v1(
@@ -363,6 +387,9 @@ def assemble_offline_surface_v1(
             status = "FALSE_FAIL_CLOSED"
             authority = "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK"
         observed_at_by_field = {
+            "LIVE_RESTART_RECONSTRUCTED": (restart_ev or accounting_ev or {}).get(
+                "RESPONSE_TIME_UTC"
+            ),
             "LIVE_ACCOUNTING_RECONSTRUCTED": (accounting_ev or {}).get("RESPONSE_TIME_UTC"),
             "LIVE_POSITION_RECONCILED": (position_ev or fee_ev or fill_ev or {}).get(
                 "RESPONSE_TIME_UTC"
@@ -425,13 +452,12 @@ def assemble_offline_surface_v1(
         "LIVE_FEE_OBSERVED": fee_claim,
         "LIVE_POSITION_RECONCILED": position_claim,
         "LIVE_ACCOUNTING_RECONSTRUCTED": accounting_claim,
+        "LIVE_RESTART_RECONSTRUCTED": restart_claim,
         "GATE_MUTATION": False,
         "SESSION_LIVE_GATE_ACTIVATION": False,
         "THIS_GO_GET": False,
         "PREDECESSOR_ORDER_PLAN_ATTACHED": op_ev is not None,
-        "EARLIEST_MUTATION_BOUNDARY": (
-            "LIVE_RESTART_RECONSTRUCTED" if accounting_claim else "LIVE_ACCOUNTING_RECONSTRUCTED"
-        ),
+        "EARLIEST_MUTATION_BOUNDARY": "LIVE_RESTART_RECONSTRUCTED",
     }
     lineage = {
         "OWNER_GO": OWNER_GO,
@@ -448,7 +474,7 @@ def assemble_offline_surface_v1(
         "LAST_CANONICALLY_CLOSED_STEP": LAST_CANONICALLY_CLOSED_STEP,
     }
     adjudication = {
-        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_ACCOUNTING_RECONSTRUCTED_ADJUDICATION_V1",
+        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_ADJUDICATION_V1",
         "AUTHORITY": "NONE",
         "OWNER_GO": OWNER_GO,
         "THIS_SLICE": THIS_SLICE,
@@ -465,7 +491,7 @@ def assemble_offline_surface_v1(
         "EVIDENCE_RECORDS": evidence_records,
     }
     summary = {
-        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_ACCOUNTING_RECONSTRUCTED_ADJUDICATION_SUMMARY_V1",
+        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_ADJUDICATION_SUMMARY_V1",
         "DOCUMENT_ROLE": "DERIVED_NON_SSOT",
         "OWNER_GO": OWNER_GO,
         "THIS_SLICE": THIS_SLICE,
@@ -486,6 +512,7 @@ def assemble_offline_surface_v1(
         "LIVE_FEE_OBSERVED": fee_claim,
         "LIVE_POSITION_RECONCILED": position_claim,
         "LIVE_ACCOUNTING_RECONSTRUCTED": accounting_claim,
+        "LIVE_RESTART_RECONSTRUCTED": restart_claim,
         "EARLIEST_UNRESOLVED_DEPENDENCY": EARLIEST_UNRESOLVED_DEPENDENCY,
         "NEXT_OWNER_GO_REQUIRED": NEXT_OWNER_GO_REQUIRED,
         "POST_USED": False,
@@ -506,6 +533,7 @@ def assemble_offline_surface_v1(
         "LIVE_FEE_OBSERVED": fee_claim,
         "LIVE_POSITION_RECONCILED": position_claim,
         "LIVE_ACCOUNTING_RECONSTRUCTED": accounting_claim,
+        "LIVE_RESTART_RECONSTRUCTED": restart_claim,
         "CASE_ADJUDICATION": CASE_ADJUDICATION,
     }
     assert_contract_invariants_v1(claims)
@@ -543,6 +571,7 @@ def assemble_offline_surface_v1(
     documents[FEE_OBSERVED_ADJUDICATION_FILENAME] = fee_fields
     documents[POSITION_RECONCILED_ADJUDICATION_FILENAME] = position_fields
     documents[ACCOUNTING_RECONSTRUCTED_ADJUDICATION_FILENAME] = accounting_fields
+    documents[RESTART_RECONSTRUCTED_ADJUDICATION_FILENAME] = restart_fields
     if path_ev is not None:
         documents[PRIVATE_GET_EVIDENCE_FILENAME] = dict(path_ev)
     if ro_ev is not None:

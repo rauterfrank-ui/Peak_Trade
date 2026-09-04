@@ -492,6 +492,58 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
             evidence_paths=("docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",),
         ),
         _row(
+            candidate="SECTION_11_12_9_14_TESTNET_RESTART_PROVEN",
+            classification="SEMANTICALLY_DIFFERENT",
+            target_11_14_field="LIVE_RESTART_RECONSTRUCTED",
+            reason=(
+                "§11.12.9.14 TESTNET_RESTART_PROVEN is Demo XPerp "
+                "BTC-USD_UM_XPERP-310328. No Testnet result may satisfy a Live "
+                "evidence field. Field-name similarity is not semantic identity."
+            ),
+            evidence_paths=(
+                "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/",
+            ),
+        ),
+        _row(
+            candidate="CAP_11_5_AND_SECTION_11_12_6_RESTART_FIXTURE",
+            classification="SEMANTICALLY_DIFFERENT",
+            target_11_14_field="LIVE_RESTART_RECONSTRUCTED",
+            reason=(
+                "Cap 11.5 and §11.12.6 restart-with-open-order/position paths are "
+                "fixture-only. Fixture results cannot satisfy a Live evidence field."
+            ),
+            evidence_paths=(
+                "src/ops/capability_11_5_testnet_restart_recovery_and_kill_switch_closure_v1/"
+                "restart_with_open_order_position_contract_v1.py",
+            ),
+        ),
+        _row(
+            candidate="SECTION_11_17_LIVE_RESTART_PROVEN",
+            classification="SEMANTICALLY_DIFFERENT",
+            target_11_14_field="LIVE_RESTART_RECONSTRUCTED",
+            reason=(
+                "§11.17 LIVE_RESTART_PROVEN is an autonomy closure criterion. "
+                "Field-name similarity is not semantic identity."
+            ),
+            evidence_paths=("docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",),
+        ),
+        _row(
+            candidate="SECTION_11_14_IDENTITY_BOUND_LIVE_ECONOMIC_PATH_AS_RESTART_HANDOFF",
+            classification="CURRENT_BUT_INSUFFICIENT",
+            target_11_14_field="LIVE_RESTART_RECONSTRUCTED",
+            reason=(
+                "The identity-bound fill/fee/position artifacts reconstruct accounting. "
+                "They are not a Peak_Trade durable pre-restart handoff. Absence of that "
+                "handoff is not replaced by accounting closure."
+            ),
+            evidence_paths=(
+                "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+                "20260904T173813Z/GET_FILLS.raw.json",
+                "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+                "20260904T181817Z/GET_POSITIONS.raw.json",
+            ),
+        ),
+        _row(
             candidate="SECTION_11_13_4_BLOCKED_DRY_RUN_ORDER_PLAN",
             classification="SEMANTICALLY_DIFFERENT",
             target_11_14_field="LIVE_ORDER_PLAN_OBSERVED",

@@ -93,7 +93,9 @@ def _classify(**overrides: object) -> dict[str, object]:
 def test_producer_and_criterion_are_bound_without_promoting_ack() -> None:
     assert LIVE_SUBMIT_ACK_PROOF_CRITERION_BOUND is True
     assert HISTORICAL_ACK_CASE_ADJUDICATION == "CASE_LIVE_SUBMIT_ACK_OBSERVED_FILL_INELIGIBLE"
-    assert CASE_ADJUDICATION == "CASE_LIVE_ACCOUNTING_RECONSTRUCTED_RESTART_INELIGIBLE"
+    assert (
+        CASE_ADJUDICATION == "CASE_LIVE_RESTART_RECONSTRUCTED_FAIL_CLOSED_MISSING_DURABLE_HANDOFF"
+    )
     assert LIVE_SUBMIT_ACK_OBSERVED is True
     assert LIVE_FILL_OBSERVED is True
     assert LIVE_FEE_OBSERVED is True
