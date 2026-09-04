@@ -1,0 +1,50 @@
+{
+  "nodes": [
+    {
+      "crosses_pre_submit": false,
+      "id": "DECISION_GATE",
+      "layer": "STATIC",
+      "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_gates_v1.py",
+      "symbol": "evaluate_canary_submit_gates_v1"
+    },
+    {
+      "crosses_pre_submit": false,
+      "id": "GATE_REFUSAL",
+      "layer": "STATIC",
+      "notes": "Hard-blocks POST when submit gates fail. Evaluable while standing flags are false.",
+      "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_gates_v1.py",
+      "symbol": "refuse_submit_unless_gates_pass_v1"
+    },
+    {
+      "crosses_pre_submit": true,
+      "id": "SUBMIT_ORCHESTRATOR",
+      "layer": "STATIC",
+      "notes": "POST occurs only after gates pass. Reachability stops at the refusal seam.",
+      "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py",
+      "symbol": "run_canary_submit_transport_v1"
+    },
+    {
+      "get_constructible": true,
+      "id": "LIVE_HTTP_PORT",
+      "layer": "STATIC",
+      "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py",
+      "post_authorized_by_this_go": false,
+      "post_constructible": true,
+      "symbol": "LiveCanaryHttpClientV1.get / post_entry_order"
+    },
+    {
+      "default_wire_send_enabled": false,
+      "id": "LIVE_HTTP_TRANSPORT",
+      "layer": "STATIC",
+      "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py",
+      "symbol": "UrllibLiveCanaryTransportV1.send",
+      "wire_send_may_be_enabled_for_authorized_get": true
+    }
+  ],
+  "post_not_on_reachability_path": true,
+  "pre_submit_boundary": "refuse_submit_unless_gates_pass_v1",
+  "runtime_proof_begins_at": "CREDENTIAL_PRESENCE_THEN_AUTHENTICATED_PRIVATE_GET",
+  "schema_version": "section_11_14_static_reachability_graph.v1",
+  "static_proof_ends_at": "TRANSPORT_AND_GATE_EVALUATION_CONSTRUCTIBLE",
+  "status": "COMPLETE_TO_PRE_SUBMIT_BOUNDARY"
+}

@@ -47,14 +47,14 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.submit_transport_v1
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     CANARY_TECHNICAL_EXECUTE_TOKEN,
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_ORDER_PLAN_OWNER_GO,
+    HISTORICAL_ORDER_PLAN_SHA,
     LIVE_ARMED,
     LIVE_AUTHORIZED,
     LIVE_ENABLED,
     LIVE_EXECUTION_CODE_EXISTS,
     LIVE_EXECUTION_PATH_REACHABLE,
     LIVE_PRIVATE_READ_ONLY_PROVEN,
-    OWNER_GO,
     POST_ALLOWED,
     POST_REQUIRED_FOR_LIVE_ORDER_PLAN_OBSERVED,
 )
@@ -135,9 +135,9 @@ def execute_order_plan_observe_v1(
     transport: LiveCanaryTransportV1 | None = None,
 ) -> dict[str, Any]:
     assert_contract_invariants_v1()
-    if str(owner_go or "").strip() != OWNER_GO:
+    if str(owner_go or "").strip() != HISTORICAL_ORDER_PLAN_OWNER_GO:
         raise Section1114OfflineSurfaceError("OWNER_GO_MISMATCH")
-    if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
+    if str(origin_main_sha or "").strip() != HISTORICAL_ORDER_PLAN_SHA:
         raise Section1114OfflineSurfaceError("ORIGIN_MAIN_SHA_MISMATCH")
     if POST_ALLOWED is True:
         raise Section1114OfflineSurfaceError("POST_MUST_REMAIN_FORBIDDEN")
@@ -236,7 +236,7 @@ def execute_order_plan_observe_v1(
     if post_count > 0:
         raise Section1114OfflineSurfaceError("POST_COUNT_NONZERO_ON_OBSERVE_PATH")
     evidence = {
-        "OWNER_GO": OWNER_GO,
+        "OWNER_GO": HISTORICAL_ORDER_PLAN_OWNER_GO,
         "CANARY_TECHNICAL_EXECUTE_TOKEN": OWNER_GO_EXECUTE,
         "ORIGIN_MAIN_SHA": origin_main_sha,
         "STARTED_AT_UTC": started,

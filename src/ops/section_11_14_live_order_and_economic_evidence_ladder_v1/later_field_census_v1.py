@@ -6,6 +6,7 @@ from typing import Any
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     LIVE_ORDER_PLAN_OBSERVED_CANONICAL_DEFINITION,
+    LIVE_SUBMIT_ACK_OBSERVED_CANONICAL_STATUS,
 )
 
 
@@ -37,15 +38,16 @@ def build_later_field_census_v1() -> dict[str, Any]:
             {
                 "field": "LIVE_SUBMIT_ACK_OBSERVED",
                 "claim_value": False,
-                "canonical_definition": (
-                    "Current venue acknowledgement of a Peak_Trade Live canary submit "
-                    "bound to the observed order plan. Requires POST."
-                ),
+                "canonical_definition": LIVE_SUBMIT_ACK_OBSERVED_CANONICAL_STATUS,
                 "post_required": True,
+                "producer_bound": False,
+                "proof_criterion_bound": False,
                 "minimum_external_action_class": "POST_ORDER_SUBMIT",
                 "why_blocked": (
-                    "LIVE_ORDER_PLAN_OBSERVED is true. Canonical ACK requires POST of "
-                    "the observed plan. This GO forbids POST."
+                    "CASE_C_CANONICAL_SEMANTIC_GAP. Canonical ACK requires POST of the "
+                    "observed plan, but no §11.14 HTTP/venue/identity criterion is bound. "
+                    "Transport ok is not this field. This GO forbids POST and forbids "
+                    "promoting the field true."
                 ),
             },
             {

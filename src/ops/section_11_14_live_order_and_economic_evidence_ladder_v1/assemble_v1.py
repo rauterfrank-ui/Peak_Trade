@@ -82,6 +82,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.later_fiel
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.order_plan_observed_adjudication_v1 import (
     adjudicate_live_order_plan_observed_v1,
 )
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.submit_ack_contract_v1 import (
+    build_submit_ack_forensic_documents_v1,
+)
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.private_read_only_gets_v1 import (
     bind_private_read_only_gets_before_request_v1,
     path_reachable_view_from_read_only_pack_v1,
@@ -241,10 +244,7 @@ def assemble_offline_surface_v1(
         "VENUE_REQUESTS": venue_requests,
         "PUBLIC_GET": public_get_used,
         "PRIVATE_GET": get_used or bool(op_ev and op_ev.get("PRIVATE_GET_USED") is True),
-        "CREDENTIAL_USE": bool(
-            (op_ev or ro_ev or path_ev)
-            and (op_ev or ro_ev or path_ev).get("CREDENTIAL_USE") is True
-        ),
+        "CREDENTIAL_USE": False,
         "POST": False,
         "ORDER_SUBMIT": False,
         "CANCEL": False,
@@ -256,9 +256,9 @@ def assemble_offline_surface_v1(
         "LIVE_PRIVATE_READ_ONLY_PROVEN": ro_claim,
         "LIVE_ORDER_PLAN_OBSERVED": order_claim,
         "GATE_MUTATION": False,
-        "SESSION_LIVE_GATE_ACTIVATION": bool(
-            op_ev and op_ev.get("LIVE_GATE_ACTIVATION_USED") is True
-        ),
+        "SESSION_LIVE_GATE_ACTIVATION": False,
+        "THIS_GO_GET": False,
+        "PREDECESSOR_ORDER_PLAN_ATTACHED": op_ev is not None,
         "EARLIEST_MUTATION_BOUNDARY": (
             "LIVE_SUBMIT_ACK_OBSERVED" if order_claim else "LIVE_ORDER_PLAN_OBSERVED"
         ),
@@ -278,7 +278,7 @@ def assemble_offline_surface_v1(
         "LAST_CANONICALLY_CLOSED_STEP": LAST_CANONICALLY_CLOSED_STEP,
     }
     adjudication = {
-        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_ORDER_PLAN_OBSERVED_ADJUDICATION_V1",
+        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_SUBMIT_ACK_FORENSIC_ADJUDICATION_V1",
         "AUTHORITY": "NONE",
         "OWNER_GO": OWNER_GO,
         "THIS_SLICE": THIS_SLICE,
@@ -295,7 +295,7 @@ def assemble_offline_surface_v1(
         "EVIDENCE_RECORDS": evidence_records,
     }
     summary = {
-        "DOCUMENT_CLASS": "SECTION_11_14_ORDER_PLAN_OBSERVED_SUMMARY_V1",
+        "DOCUMENT_CLASS": "SECTION_11_14_SUBMIT_ACK_FORENSIC_SUMMARY_V1",
         "DOCUMENT_ROLE": "DERIVED_NON_SSOT",
         "OWNER_GO": OWNER_GO,
         "THIS_SLICE": THIS_SLICE,
@@ -315,25 +315,22 @@ def assemble_offline_surface_v1(
         "EARLIEST_UNRESOLVED_DEPENDENCY": EARLIEST_UNRESOLVED_DEPENDENCY,
         "NEXT_OWNER_GO_REQUIRED": NEXT_OWNER_GO_REQUIRED,
         "POST_USED": False,
-        "GET_USED": get_used or bool(op_ev and op_ev.get("PRIVATE_GET_USED") is True),
-        "PUBLIC_GET_USED": public_get_used,
-        "CREDENTIAL_USE": bool(
-            (op_ev or ro_ev or path_ev)
-            and (op_ev or ro_ev or path_ev).get("CREDENTIAL_USE") is True
-        ),
+        "GET_USED": False,
+        "PUBLIC_GET_USED": False,
+        "CREDENTIAL_USE": False,
+        "CASE_ADJUDICATION": "CASE_C_CANONICAL_SEMANTIC_GAP",
+        "PREDECESSOR_ORDER_PLAN_ATTACHED": op_ev is not None,
     }
     claims = {
         **CLAIMS,
         "CANONICAL_EVIDENCE_RUN_ID": CANONICAL_EVIDENCE_RUN_ID,
-        "GET_PERFORMED": get_used or bool(op_ev and op_ev.get("PRIVATE_GET_USED") is True),
-        "PUBLIC_GET_USED": public_get_used,
-        "CREDENTIAL_USE": bool(
-            (op_ev or ro_ev or path_ev)
-            and (op_ev or ro_ev or path_ev).get("CREDENTIAL_USE") is True
-        ),
+        "GET_PERFORMED": False,
+        "PUBLIC_GET_USED": False,
+        "CREDENTIAL_USE": False,
         "LIVE_EXECUTION_PATH_REACHABLE": path_claim,
         "LIVE_PRIVATE_READ_ONLY_PROVEN": ro_claim,
         "LIVE_ORDER_PLAN_OBSERVED": order_claim,
+        "CASE_ADJUDICATION": "CASE_C_CANONICAL_SEMANTIC_GAP",
     }
     assert_contract_invariants_v1(claims)
     assert_contract_invariants_v1(summary)
@@ -364,6 +361,7 @@ def assemble_offline_surface_v1(
         ORDER_PLAN_OBSERVED_ADJUDICATION_FILENAME: order_plan_fields,
         LATER_FIELD_CENSUS_FILENAME: build_later_field_census_v1(),
     }
+    documents.update(build_submit_ack_forensic_documents_v1())
     if path_ev is not None:
         documents[PRIVATE_GET_EVIDENCE_FILENAME] = dict(path_ev)
     if ro_ev is not None:

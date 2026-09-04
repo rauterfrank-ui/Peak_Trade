@@ -387,8 +387,16 @@ def test_assemble_and_persist_offline_pack(tmp_path: Path) -> None:
     assert documents["SUMMARY.json"]["LIVE_ORDER_PLAN_OBSERVED"] is True
     assert documents["SUMMARY.json"]["LIVE_SUBMIT_ACK_OBSERVED"] is False
     assert documents["SUMMARY.json"]["SECTION_11_14_COMPLETE"] is False
+    assert documents["SUMMARY.json"]["CASE_ADJUDICATION"] == "CASE_C_CANONICAL_SEMANTIC_GAP"
+    assert documents["SUMMARY.json"]["GET_USED"] is False
+    assert documents["SUMMARY.json"]["CREDENTIAL_USE"] is False
     assert documents["MUTATION_BOUNDARY.json"]["POST"] is False
-    assert documents["MUTATION_BOUNDARY.json"]["PRIVATE_GET"] is True
+    assert documents["MUTATION_BOUNDARY.json"]["THIS_GO_GET"] is False
+    assert documents["MUTATION_BOUNDARY.json"]["PREDECESSOR_ORDER_PLAN_ATTACHED"] is True
+    assert documents["SUBMIT_ACK_ADJUDICATION.json"]["CASE_C_CANONICAL_SEMANTIC_GAP"] is True
+    assert documents["SUBMIT_ACK_ADJUDICATION.json"]["LIVE_SUBMIT_ACK_OBSERVED"] is False
+    assert documents["EXACT_MUTATION_CONTRACT.json"]["endpoint"] == "/api/v5/trade/order"
+    assert documents["EXACT_MUTATION_CONTRACT.json"]["http_method"] == "POST"
     assert documents["PRIVATE_GET_BINDING.json"]["METHOD"] == "GET"
     assert documents["PRIVATE_GET_BINDING.json"]["POST"] is False
     with pytest.raises(RuntimeError, match="ORIGIN_MAIN_SHA_MISMATCH"):

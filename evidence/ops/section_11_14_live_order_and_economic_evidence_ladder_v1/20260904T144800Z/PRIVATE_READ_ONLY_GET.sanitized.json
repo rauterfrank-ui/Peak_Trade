@@ -1,0 +1,140 @@
+{
+  "ACCOUNT_SCOPE_MATCH": true,
+  "ACCOUNT_SCOPE_VALUE_INCLUDED": false,
+  "AUTHENTICATION_PATH_FUNCTIONAL": true,
+  "BOTH_METHODS_GET": true,
+  "CREDENTIAL_USE": true,
+  "CURRENT_ACCOUNT_OR_VENUE_READ_ACCESS_FUNCTIONAL": true,
+  "CURRENT_PRIVATE_GET_BALANCE_HTTP_200_OKX_0": true,
+  "CURRENT_PRIVATE_GET_CONFIG_HTTP_200_OKX_0": true,
+  "ENDPOINTS": [
+    "/api/v5/account/config",
+    "/api/v5/account/balance"
+  ],
+  "GET_BINDING": {
+    "ENDPOINTS": [
+      "/api/v5/account/config",
+      "/api/v5/account/balance"
+    ],
+    "EXPECTED_MUTATION": "NONE",
+    "LIVE_ORDER_PLAN_OBSERVED_PROMOTION": false,
+    "MAXIMUM_REQUEST_COUNT": 2,
+    "METHOD": "GET",
+    "POST": false,
+    "PRIVATE_GET": true,
+    "PUBLIC_GET": false,
+    "REQUIRED_FACT": "CURRENT_AUTHENTICATED_PRIVATE_READ_CONFIG_AND_BALANCE",
+    "RETRY": false,
+    "SECTION_11_13_2_TRADE_FALSE_ATTESTATION_NOT_A_1114_CONJUNCT": true,
+    "WHY_GET_REQUIRED": "LIVE_PRIVATE_READ_ONLY_PROVEN requires current authenticated private GET of /api/v5/account/config and /api/v5/account/balance. A single reachability GET is not this field. Historical \u00a711.13.2 success is stale."
+  },
+  "GET_ERROR": null,
+  "HOST": "eea.okx.com",
+  "LIVE_ORDER_PLAN_OBSERVED": false,
+  "LIVE_PRIVATE_READ_ONLY_PROVEN": true,
+  "METHOD": "GET",
+  "NO_POST": true,
+  "NO_REDIRECT": true,
+  "OBSERVATIONS": [
+    {
+      "BODY_BYTE_LEN": 690,
+      "BODY_SHA256": "36876f8378c2029823643ac2caf6b2fd24525b7d41afa0a32b6abef46c72d5fb",
+      "DATA_PRESENT": true,
+      "ELAPSED_SECONDS": 0.31671879198984243,
+      "ENDPOINT": "/api/v5/account/config",
+      "GET_ERROR": null,
+      "HEADER_PRESENCE": {
+        "AUTH_KEY_HEADER_PRESENT": true,
+        "AUTH_PASSPHRASE_HEADER_PRESENT": true,
+        "AUTH_SIGN_HEADER_PRESENT": true,
+        "AUTH_TIMESTAMP_HEADER_PRESENT": true,
+        "SIGNED_METHOD": "GET",
+        "SIMULATION_HEADER_PRESENT": false,
+        "VALUES_INCLUDED": false
+      },
+      "HTTP_STATUS": 200,
+      "METHOD": "GET",
+      "OKX_CODE": "0",
+      "PARSED_OK": true,
+      "REDIRECT_FOLLOWED": false,
+      "REQUEST_TIME_UTC": "2026-09-04T13:41:52Z",
+      "RESPONSE_TIME_UTC": "2026-09-04T13:41:52Z",
+      "SANITIZED_PAYLOAD": {
+        "ROW_FIELDS_REDACTED_TO_ALLOWLIST": true,
+        "UID_VALUES_EXCLUDED": true,
+        "code": "0",
+        "data": [
+          {
+            "UID_PRESENT": true,
+            "UID_VALUE": null,
+            "acctLv": "2",
+            "level": "Lv1",
+            "posMode": "net_mode",
+            "roleType": "0",
+            "type": "0"
+          }
+        ],
+        "msg": ""
+      },
+      "SUCCESS": true,
+      "VALUES_INCLUDED": false
+    },
+    {
+      "BODY_BYTE_LEN": 2173,
+      "BODY_SHA256": "23a1512fce69109fe421bd9d66ce6ea8cc7746d1ec2682c0ba21a772afd2d255",
+      "DATA_PRESENT": true,
+      "ELAPSED_SECONDS": 0.1749979589949362,
+      "ENDPOINT": "/api/v5/account/balance",
+      "GET_ERROR": null,
+      "HEADER_PRESENCE": {
+        "AUTH_KEY_HEADER_PRESENT": true,
+        "AUTH_PASSPHRASE_HEADER_PRESENT": true,
+        "AUTH_SIGN_HEADER_PRESENT": true,
+        "AUTH_TIMESTAMP_HEADER_PRESENT": true,
+        "SIGNED_METHOD": "GET",
+        "SIMULATION_HEADER_PRESENT": false,
+        "VALUES_INCLUDED": false
+      },
+      "HTTP_STATUS": 200,
+      "METHOD": "GET",
+      "OKX_CODE": "0",
+      "PARSED_OK": true,
+      "REDIRECT_FOLLOWED": false,
+      "REQUEST_TIME_UTC": "2026-09-04T13:41:52Z",
+      "RESPONSE_TIME_UTC": "2026-09-04T13:41:52Z",
+      "SANITIZED_PAYLOAD": {
+        "NUMERIC_VALUES_EXCLUDED": true,
+        "ROW_FIELDS_REDACTED_TO_SHAPE": true,
+        "code": "0",
+        "data": [
+          {
+            "AVAILEQ_FIELD_PRESENT": true,
+            "CCY_PRESENT_COUNT": 2,
+            "DETAILS_ROW_COUNT": 2,
+            "EQ_FIELD_PRESENT": false,
+            "NUMERIC_VALUES_EXCLUDED": true
+          }
+        ],
+        "msg": ""
+      },
+      "SUCCESS": true,
+      "VALUES_INCLUDED": false
+    }
+  ],
+  "OWNER_GO": "PEAK_TRADE_OWNER_GO_SECTION_11_14_MAXIMUM_SAFE_LEVERAGE_CLOSE_ALL_NON_MUTATING_DEPENDENCIES_V1",
+  "PARSEABLE_ACCOUNT_BALANCE_DATA": true,
+  "PARSEABLE_ACCOUNT_CONFIG_DATA": true,
+  "POST_USED": false,
+  "PRIVATE_GET_USED": true,
+  "PUBLIC_GET_USED": false,
+  "READ_ACCESS_PROVEN_BY_SUCCESSFUL_PRIVATE_GETS": true,
+  "REDIRECT_FOLLOWED": false,
+  "REQUEST_TIME_UTC": "2026-09-04T13:41:52Z",
+  "RESPONSE_TIME_UTC": "2026-09-04T13:41:52Z",
+  "RETRY_USED": false,
+  "SECTION_11_13_2_TRADE_FALSE_ATTESTATION_USED": false,
+  "SEND_ATTEMPTED": true,
+  "TARGET_HOST_RESOLVABLE_OR_CONNECTABLE": true,
+  "VALUES_INCLUDED": false,
+  "VENUE_REQUESTS": 2
+}

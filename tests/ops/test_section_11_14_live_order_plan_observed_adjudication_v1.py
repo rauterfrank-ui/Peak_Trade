@@ -13,13 +13,13 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     SUBMIT_UNLOCKED as CANARY_SUBMIT_UNLOCKED,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_ORDER_PLAN_OWNER_GO,
+    HISTORICAL_ORDER_PLAN_SHA,
     LIVE_ARMED,
     LIVE_AUTHORIZED,
     LIVE_ENABLED,
     LIVE_ORDER_PLAN_OBSERVED,
     LIVE_SUBMIT_ACK_OBSERVED,
-    OWNER_GO,
     POST_REQUIRED_FOR_LIVE_ORDER_PLAN_OBSERVED,
     SUBMIT_UNLOCKED,
 )
@@ -125,8 +125,8 @@ def test_fixture_source_rejected() -> None:
 def test_execute_observe_path_with_fake_transport_does_not_post() -> None:
     fake = _fake_transport()
     result = execute_order_plan_observe_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        owner_go=HISTORICAL_ORDER_PLAN_OWNER_GO,
+        origin_main_sha=HISTORICAL_ORDER_PLAN_SHA,
         transport=fake,
         vault_backend=_MemVault(),
     )
@@ -142,7 +142,7 @@ def test_execute_observe_path_with_fake_transport_does_not_post() -> None:
     with pytest.raises(Section1114OfflineSurfaceError, match="OWNER_GO_MISMATCH"):
         execute_order_plan_observe_v1(
             owner_go="WRONG",
-            origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+            origin_main_sha=HISTORICAL_ORDER_PLAN_SHA,
             transport=fake,
             vault_backend=_MemVault(),
         )

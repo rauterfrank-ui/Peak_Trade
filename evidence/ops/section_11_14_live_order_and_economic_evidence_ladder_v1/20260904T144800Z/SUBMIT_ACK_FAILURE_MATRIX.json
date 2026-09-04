@@ -1,0 +1,121 @@
+{
+  "AUTHORIZED_PRODUCTIVE_SUBMIT_COUNT_MAX": 1,
+  "LIVE_SUBMIT_ACK_OBSERVED": false,
+  "RETRY_DEFAULT": false,
+  "SECOND_SUBMIT_DEFAULT": false,
+  "TIMEOUT_MUST_NOT_AUTO_POST": true,
+  "row_count": 11,
+  "rows": [
+    {
+      "LIVE_SUBMIT_ACK_OBSERVED": false,
+      "RETRY_ALLOWED": false,
+      "SECOND_SUBMIT_ALLOWED": false,
+      "SEND_ATTEMPTED": false,
+      "SUBMIT_COUNT": "0",
+      "case": "REQUEST_NOT_SENT",
+      "hard_stop": "HALT_NO_POST_NO_RETRY_NO_CANCEL_NO_AMEND_NO_FLATTEN",
+      "required_next_read_only_recon": "NONE_NO_NETWORK_THIS_GO"
+    },
+    {
+      "LIVE_SUBMIT_ACK_OBSERVED": false,
+      "RETRY_ALLOWED": false,
+      "SECOND_SUBMIT_ALLOWED": false,
+      "SEND_ATTEMPTED": false,
+      "SUBMIT_COUNT": "0",
+      "case": "LOCAL_ERROR_BEFORE_WIRE",
+      "hard_stop": "HALT_NO_POST_NO_RETRY_NO_CANCEL_NO_AMEND_NO_FLATTEN",
+      "required_next_read_only_recon": "NONE_NO_NETWORK_THIS_GO"
+    },
+    {
+      "LIVE_SUBMIT_ACK_OBSERVED": false,
+      "RETRY_ALLOWED": false,
+      "SECOND_SUBMIT_ALLOWED": false,
+      "SEND_ATTEMPTED": false,
+      "SUBMIT_COUNT": "0",
+      "case": "CONNECTION_FAILURE_BEFORE_SEND_ATTEMPTED",
+      "hard_stop": "HALT_NO_POST_NO_RETRY_NO_CANCEL_NO_AMEND_NO_FLATTEN",
+      "required_next_read_only_recon": "NONE_NO_NETWORK_THIS_GO"
+    },
+    {
+      "LIVE_SUBMIT_ACK_OBSERVED": false,
+      "RETRY_ALLOWED": false,
+      "SECOND_SUBMIT_ALLOWED": false,
+      "SEND_ATTEMPTED": true,
+      "SUBMIT_COUNT": "0_COUNTER_NOT_INCREMENTED_SEND_MAY_HAVE_LEFT_LOCAL_PROCESS",
+      "case": "CONNECTION_FAILURE_AFTER_SEND_ATTEMPTED",
+      "hard_stop": "UNKNOWN_SUBMIT_NO_BLIND_RETRY;HALT_NO_POST_NO_RETRY_NO_CANCEL_NO_AMEND_NO_FLATTEN",
+      "required_next_read_only_recon": "GET /api/v5/trade/orders-pending then GET /api/v5/trade/orders-history match clOrdId; never a second POST"
+    },
+    {
+      "LIVE_SUBMIT_ACK_OBSERVED": false,
+      "RETRY_ALLOWED": false,
+      "SECOND_SUBMIT_ALLOWED": false,
+      "SEND_ATTEMPTED": true,
+      "SUBMIT_COUNT": "0_COUNTER_NOT_INCREMENTED_WIRE_MAY_HAVE_BEEN_SENT",
+      "case": "TIMEOUT_AFTER_POSSIBLE_SEND",
+      "hard_stop": "UNKNOWN_SUBMIT_TIMEOUT;UNKNOWN_SUBMIT_NO_BLIND_RETRY;HALT_NO_POST_NO_RETRY_NO_CANCEL_NO_AMEND_NO_FLATTEN",
+      "required_next_read_only_recon": "GET /api/v5/trade/orders-pending then GET /api/v5/trade/orders-history match clOrdId; never a second POST"
+    },
+    {
+      "LIVE_SUBMIT_ACK_OBSERVED": false,
+      "RETRY_ALLOWED": false,
+      "SECOND_SUBMIT_ALLOWED": false,
+      "SEND_ATTEMPTED": true,
+      "SUBMIT_COUNT": "1",
+      "case": "HTTP_NON_2XX",
+      "hard_stop": "HALT_NO_POST_NO_RETRY_NO_CANCEL_NO_AMEND_NO_FLATTEN",
+      "required_next_read_only_recon": "GET /api/v5/trade/orders-pending then GET /api/v5/trade/orders-history match clOrdId; never a second POST"
+    },
+    {
+      "LIVE_SUBMIT_ACK_OBSERVED": false,
+      "RETRY_ALLOWED": false,
+      "SECOND_SUBMIT_ALLOWED": false,
+      "SEND_ATTEMPTED": true,
+      "SUBMIT_COUNT": "1",
+      "case": "PARSE_FAILURE",
+      "hard_stop": "HALT_NO_POST_NO_RETRY_NO_CANCEL_NO_AMEND_NO_FLATTEN",
+      "required_next_read_only_recon": "GET /api/v5/trade/orders-pending then GET /api/v5/trade/orders-history match clOrdId; never a second POST"
+    },
+    {
+      "LIVE_SUBMIT_ACK_OBSERVED": false,
+      "RETRY_ALLOWED": false,
+      "SECOND_SUBMIT_ALLOWED": false,
+      "SEND_ATTEMPTED": true,
+      "SUBMIT_COUNT": "1",
+      "case": "VENUE_CODE_NOT_ZERO",
+      "hard_stop": "TRANSPORT_OK_FALSE;HALT_NO_POST_NO_RETRY_NO_CANCEL_NO_AMEND_NO_FLATTEN",
+      "required_next_read_only_recon": "GET /api/v5/trade/orders-pending then GET /api/v5/trade/orders-history match clOrdId; never a second POST"
+    },
+    {
+      "LIVE_SUBMIT_ACK_OBSERVED": false,
+      "RETRY_ALLOWED": false,
+      "SECOND_SUBMIT_ALLOWED": false,
+      "SEND_ATTEMPTED": true,
+      "SUBMIT_COUNT": "1",
+      "case": "VENUE_CODE_ZERO_WITHOUT_ACK_IDENTITY",
+      "hard_stop": "TRANSPORT_OK_MAY_BE_TRUE_WITHOUT_ORDID_OR_SCODE;SECTION_11_14_ACK_CRITERION_UNBOUND;HALT_NO_POST_NO_RETRY_NO_CANCEL_NO_AMEND_NO_FLATTEN",
+      "required_next_read_only_recon": "GET /api/v5/trade/orders-pending then GET /api/v5/trade/orders-history match clOrdId; never a second POST"
+    },
+    {
+      "LIVE_SUBMIT_ACK_OBSERVED": false,
+      "RETRY_ALLOWED": false,
+      "SECOND_SUBMIT_ALLOWED": false,
+      "SEND_ATTEMPTED": true,
+      "SUBMIT_COUNT": "1",
+      "case": "UNIQUE_TRANSPORT_OK",
+      "hard_stop": "TRANSPORT_OK_IS_NOT_LIVE_SUBMIT_ACK_OBSERVED;NO_SECTION_11_14_PRODUCER;HALT_NO_POST_NO_RETRY_NO_CANCEL_NO_AMEND_NO_FLATTEN",
+      "required_next_read_only_recon": "NOT_IMPLEMENTED_ON_SUCCESS_RETURN_PATH; LATER_FIELDS_REMAIN_FALSE"
+    },
+    {
+      "LIVE_SUBMIT_ACK_OBSERVED": false,
+      "RETRY_ALLOWED": false,
+      "SECOND_SUBMIT_ALLOWED": false,
+      "SEND_ATTEMPTED": true,
+      "SUBMIT_COUNT": "0_OR_1_FAIL_CLOSED_AS_UNKNOWN",
+      "case": "CONTRADICTORY_OR_UNCLEAR",
+      "hard_stop": "TREAT_AS_UNKNOWN;HALT_NO_POST_NO_RETRY_NO_CANCEL_NO_AMEND_NO_FLATTEN",
+      "required_next_read_only_recon": "GET /api/v5/trade/orders-pending then GET /api/v5/trade/orders-history match clOrdId; never a second POST"
+    }
+  ],
+  "schema_version": "section_11_14_submit_ack_failure_matrix.v1"
+}
