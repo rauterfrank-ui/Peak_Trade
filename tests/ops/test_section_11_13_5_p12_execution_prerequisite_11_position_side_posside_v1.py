@@ -189,7 +189,7 @@ def test_live_window_nonzero_advances_past_prerequisite_12() -> None:
     )
     assert result["EXECUTION_PREREQUISITE_11_STATUS"] == "PASS"
     assert result["EXECUTION_PREREQUISITE_12_STATUS"] == "PASS"
-    assert result["EARLIEST_UNRESOLVED_DEPENDENCY"] == "AUTHENTICATED_PRODUCTIVE_TRANSPORT"
+    assert result["EARLIEST_UNRESOLVED_DEPENDENCY"] == "SEND_TIME_POSITION_REOBSERVATION"
     assert result["EXECUTION_READY"] is False
 
 
