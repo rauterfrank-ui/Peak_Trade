@@ -536,13 +536,14 @@ def execute_productive_flatten_post_and_reconciliation_v1(
                 if price_input is None:
                     fail_closed_reason = "LIMIT_PRICE_INPUT_MISSING"
                 else:
+                    flatten_confirm = FLATTEN_EXECUTE_CONFIRM_TOKEN_CANONICAL
                     gate_input = FlattenPreSendGateInputV1(
                         live_authorized=False,
                         live_enabled=True,
                         live_armed=True,
                         flatten_live_wire_enabled=True,
                         allow_productive_wire_send=True,
-                        flatten_execute_token=FLATTEN_EXECUTE_CONFIRM_TOKEN_CANONICAL,
+                        flatten_execute_token=flatten_confirm,
                         flatten_execute_purpose=FLATTEN_EXECUTE_PURPOSE_CANONICAL,
                         flatten_execute_owner_go=FLATTEN_EXECUTE_OWNER_GO_CANONICAL,
                         positions_payload=pre_payload if isinstance(pre_payload, Mapping) else {},

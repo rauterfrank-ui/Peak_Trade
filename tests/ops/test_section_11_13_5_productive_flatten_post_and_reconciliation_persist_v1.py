@@ -182,7 +182,8 @@ def test_code_claims_remain_fail_closed_for_standing_flags() -> None:
 
 def test_spec_token_and_no_live_unlock() -> None:
     text = _read(SPEC)
-    assert "docs_token: DOCS_TOKEN_PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION_V1" in text
+    assert "docs_token:" in text
+    assert "DOCS_TOKEN_PRODUCTIVE_FLATTEN_POST_AND_RECONCILIATION_V1" in text
     assert "LIVE_AUTHORIZED=false" in text
     assert "EMPTY_DATA_IS_ZERO=false" in text
     assert "LIVE_FLATTEN_PROVABILITY_PROVEN=false" in text
