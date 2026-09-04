@@ -137,8 +137,9 @@ def adjudicate_pr_6252_merge_closeout_v1(*, origin_main_sha: str) -> dict[str, A
         raise Pr6252MergeCloseoutAdjudicationError("STANDING_LIVE_FLAGS_UNLOCKED")
     if OWNER_GO not in FORBIDDEN_FLATTEN_EXECUTE_OWNER_GOS:
         raise Pr6252MergeCloseoutAdjudicationError("IMPLEMENTATION_GO_MUST_BE_FORBIDDEN_EXECUTE")
+    confirm = FLATTEN_EXECUTE_CONFIRM_TOKEN_CANONICAL
     execute_ok, _reasons = evaluate_flatten_execute_authority_v1(
-        token=FLATTEN_EXECUTE_CONFIRM_TOKEN_CANONICAL,
+        token=confirm,
         purpose=FLATTEN_EXECUTE_PURPOSE_CANONICAL,
         owner_go=OWNER_GO,
     )

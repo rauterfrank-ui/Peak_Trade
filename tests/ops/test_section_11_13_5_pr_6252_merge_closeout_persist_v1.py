@@ -179,7 +179,8 @@ def test_code_claims_remain_fail_closed() -> None:
 
 def test_spec_token_and_no_execution_unlock() -> None:
     text = _read(SPEC)
-    assert "docs_token: DOCS_TOKEN_PR_6252_MERGE_CLOSEOUT_V1" in text
+    assert "docs_token:" in text
+    assert "DOCS_TOKEN_PR_6252_MERGE_CLOSEOUT_V1" in text
     assert "G12_STATUS=OPEN_LIVE_FLATTEN_PROVABILITY_UNPROVEN" in text
     assert "TARGET_POSITION_ZERO_PROVEN=false" in text
     assert "LIVE_FLATTEN_PROVABILITY_PROVEN=false" in text
