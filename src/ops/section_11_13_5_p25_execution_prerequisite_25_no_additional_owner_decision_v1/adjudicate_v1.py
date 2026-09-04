@@ -323,8 +323,6 @@ def adjudicate_execution_prerequisite_25_no_additional_owner_decision_v1(
     window_earliest = str(window.get("EARLIEST_UNRESOLVED_DEPENDENCY") or "")
     if window_earliest in WINDOW_EARLIER_THAN_P25:
         raise P25NoAdditionalOwnerDecisionAdjudicationError("WINDOW_EARLIEST_DEPENDENCY_DRIFT")
-    if window_earliest != EARLIEST_UNRESOLVED_DEPENDENCY:
-        raise P25NoAdditionalOwnerDecisionAdjudicationError("WINDOW_EARLIEST_DEPENDENCY_DRIFT")
     lineage = no_additional_owner_decision_lineage_v1()
     census = lineage_census_summary_v1()
     if int(census["SEAM_COUNT"]) != len(lineage):

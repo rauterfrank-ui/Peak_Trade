@@ -58,6 +58,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.no_additional_owner
     PASS_OFFLINE_CONTRACT,
     evaluate_no_additional_owner_decision_required_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.send_time_pass_18_19_21_24_v1 import (
+    NAMED_REMAINING_AFTER_SEND_TIME_PASS,
+    evaluate_send_time_pass_18_19_21_24_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.position_observation_freshness_contract_v1 import (
     PositionObservationFreshnessEvidenceV1,
     evaluate_position_observation_freshness_v1,
@@ -99,6 +103,7 @@ GATE_NAMES: tuple[str, ...] = (
     "OVERSHOOT_FLIP",
     "MUTATION_LIMITED_TO_PROVEN_POSITION",
     "NO_ADDITIONAL_OWNER_DECISION_REQUIRED",
+    "SEND_TIME_PASS_18_19_21_24",
     "ONE_SHOT_NO_RETRY",
     "DUPLICATE_POST_PROTECTION",
 )
@@ -556,6 +561,44 @@ def evaluate_flatten_pre_send_gate_v1(
         )
     else:
         decisions.append(_decision("NO_ADDITIONAL_OWNER_DECISION_REQUIRED", True))
+
+    stp_ok, stp_reasons = evaluate_send_time_pass_18_19_21_24_v1(
+        p25_status=PASS_OFFLINE_CONTRACT,
+        reduce_only=bool(body is not None and body.get("reduceOnly") is True),
+        flatten_flow_bound=body is not None,
+        dedicated_flatten_transport=True,
+        open_order_conflict="OPEN_ORDER_CONFLICT" in reasons,
+        instrument_id=target or DEFAULT_INSTRUMENT_ID,
+        expected_instrument_id=DEFAULT_INSTRUMENT_ID,
+        duplicate_post_protection=gate.duplicate_post_protection is True,
+        one_shot_no_retry=gate.one_shot_no_retry is True,
+        audit_boundary_present=True,
+        http_200_implies_flatten_success=False,
+        claimed_remaining_after_send_time_pass=NAMED_REMAINING_AFTER_SEND_TIME_PASS,
+        proven_at_send_18=False,
+        proven_at_send_19=False,
+        proven_at_send_21=False,
+        proven_at_send_24=False,
+        live_authorized_claim=gate.live_authorized is True,
+        runtime_permit_issuance_claim=False,
+        flatten_execute_authorized_claim=False,
+        network_session_authorized_claim=False,
+        post_performed_claim=False,
+        get_performed_claim=False,
+        flatten_execute_owner_go=gate.flatten_execute_owner_go,
+        predecessor_lineage_ok=True,
+    )
+    if not stp_ok:
+        reasons.extend(stp_reasons)
+        decisions.append(
+            _decision(
+                "SEND_TIME_PASS_18_19_21_24",
+                False,
+                ",".join(stp_reasons) or "SEND_TIME_PASS_18_19_21_24_DENIED",
+            )
+        )
+    else:
+        decisions.append(_decision("SEND_TIME_PASS_18_19_21_24", True))
 
     if gate.one_shot_no_retry is not True:
         reasons.append("ONE_SHOT_NO_RETRY_REQUIRED")
