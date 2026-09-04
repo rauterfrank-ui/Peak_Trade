@@ -67,6 +67,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.send_time_pass_18_1
     NAMED_REMAINING_AFTER_SEND_TIME_PASS,
     evaluate_send_time_pass_18_19_21_24_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.bounded_runtime_permit_issuance_v1 import (
+    NAMED_REMAINING_AFTER_BOUNDED_RUNTIME_PERMIT_ISSUANCE,
+    evaluate_bounded_runtime_permit_issuance_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.send_time_position_reobservation_v1 import (
     NAMED_REMAINING_AFTER_SEND_TIME_POSITION_REOBSERVATION,
     PRODUCER_CLASS_CALLER_SUPPLIED,
@@ -116,6 +120,7 @@ GATE_NAMES: tuple[str, ...] = (
     "SEND_TIME_PASS_18_19_21_24",
     "AUTHENTICATED_PRODUCTIVE_TRANSPORT",
     "SEND_TIME_POSITION_REOBSERVATION",
+    "BOUNDED_RUNTIME_PERMIT_ISSUANCE",
     "ONE_SHOT_NO_RETRY",
     "DUPLICATE_POST_PROTECTION",
 )
@@ -690,6 +695,32 @@ def evaluate_flatten_pre_send_gate_v1(
         )
     else:
         decisions.append(_decision("SEND_TIME_POSITION_REOBSERVATION", True))
+
+    brpi_ok, brpi_reasons = evaluate_bounded_runtime_permit_issuance_v1(
+        stpr_status=PASS_OFFLINE_CONTRACT,
+        claimed_remaining_after_census=NAMED_REMAINING_AFTER_BOUNDED_RUNTIME_PERMIT_ISSUANCE,
+        runtime_permit_issuance_claim=False,
+        flatten_execute_authorized_claim=False,
+        network_session_authorized_claim=False,
+        post_performed_claim=False,
+        get_performed_claim=False,
+        live_authorized_claim=gate.live_authorized is True,
+        flatten_execute_owner_go=gate.flatten_execute_owner_go,
+        origin_main_sha=str(gate.origin_main_sha or ""),
+        instrument_id=target or DEFAULT_INSTRUMENT_ID,
+        evaluation_monotonic_ms=evaluation_ms,
+    )
+    if not brpi_ok:
+        reasons.extend(brpi_reasons)
+        decisions.append(
+            _decision(
+                "BOUNDED_RUNTIME_PERMIT_ISSUANCE",
+                False,
+                ",".join(brpi_reasons) or "BOUNDED_RUNTIME_PERMIT_ISSUANCE_DENIED",
+            )
+        )
+    else:
+        decisions.append(_decision("BOUNDED_RUNTIME_PERMIT_ISSUANCE", True))
 
     if gate.one_shot_no_retry is not True:
         reasons.append("ONE_SHOT_NO_RETRY_REQUIRED")
