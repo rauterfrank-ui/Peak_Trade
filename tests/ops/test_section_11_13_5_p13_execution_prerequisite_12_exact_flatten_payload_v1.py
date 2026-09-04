@@ -391,11 +391,11 @@ def test_p08_captured_row_is_not_used_as_px() -> None:
     assert payload.px_source_class == "BOUND_EXTERNAL_INPUT_NOT_FROM_OBSERVED_POSITION"
 
 
-def test_live_window_nonzero_advances_to_prerequisite_16() -> None:
+def test_live_window_nonzero_advances_to_prerequisite_20() -> None:
     result = adjudicate_prerequisite_08_window_v1(positions_payload=_envelope(_row(pos="1")))
     assert result["EXECUTION_PREREQUISITE_12_STATUS"] == "PASS"
     assert result["EARLIEST_UNRESOLVED_DEPENDENCY"] == (
-        "EXECUTION_PREREQUISITE_16_BOUNDED_ACTIVATION_WITHOUT_GLOBAL_LIVE_AUTHORIZED"
+        "EXECUTION_PREREQUISITE_20_MUTATION_LIMITED_TO_PROVEN_POSITION"
     )
     assert result["EXECUTION_READY"] is False
 

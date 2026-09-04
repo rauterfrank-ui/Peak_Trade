@@ -16,6 +16,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     LIVE_AUTHORIZED,
     LIVE_ENABLED,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.bounded_activation_permit_v1 import (
+    offline_contract_proof_bounded_activation_permit_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_execute_authority_v1 import (
     FLATTEN_EXECUTE_CONFIRM_TOKEN_CANONICAL,
     FLATTEN_EXECUTE_OWNER_GO_CANONICAL,
@@ -129,6 +132,10 @@ def _run(**overrides: Any) -> Any:
             evidence_kind=PRE_SEND_EVIDENCE_KIND,
         ),
         "monotonic_ms_clock": (lambda: 0),
+        "bounded_activation_permit": offline_contract_proof_bounded_activation_permit_v1(
+            origin_main_sha=ORIGIN_SHA,
+            instrument_id=TARGET,
+        ),
     }
     payload.update(overrides)
     return run_section_11_13_5_live_canary_minimum_exposure_v1(**payload)

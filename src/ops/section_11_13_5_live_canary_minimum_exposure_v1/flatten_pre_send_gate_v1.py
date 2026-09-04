@@ -26,6 +26,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     LiveCanaryInstrumentBindingError,
     assert_live_canary_instrument_binding_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.bounded_activation_permit_v1 import (
+    BoundedActivationPermitV1,
+    evaluate_bounded_activation_permit_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_execute_authority_v1 import (
     evaluate_flatten_execute_authority_v1,
 )
@@ -63,6 +67,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_submit_state_v1
 GATE_NAMES: tuple[str, ...] = (
     "STANDING_LIVE_FLAGS",
     "LIVE_AUTHORIZED_CLAIM",
+    "BOUNDED_ACTIVATION_PERMIT",
     "LIVE_ENABLED_CLAIM",
     "LIVE_ARMED_CLAIM",
     "FLATTEN_LIVE_WIRE_CLAIM",
@@ -145,6 +150,7 @@ class FlattenPreSendGateInputV1:
     flatten_pre_send_decision_id: str | None = None
     position_observation_freshness_evidence: PositionObservationFreshnessEvidenceV1 | None = None
     monotonic_ms_clock: Callable[[], int] | None = None
+    bounded_activation_permit: BoundedActivationPermitV1 | None = None
 
 
 @dataclass(frozen=True)
@@ -216,11 +222,38 @@ def evaluate_flatten_pre_send_gate_v1(
         reasons.append("STANDING_LIVE_FLAGS_MUST_REMAIN_FALSE")
     decisions.append(_decision("STANDING_LIVE_FLAGS", standing_ok, "STANDING_LIVE_FLAGS_UNLOCKED"))
 
-    if gate.live_authorized is not True:
-        reasons.append("LIVE_AUTHORIZED_CLAIM_FALSE")
-        decisions.append(_decision("LIVE_AUTHORIZED_CLAIM", False, "LIVE_AUTHORIZED_CLAIM_FALSE"))
+    clock = resolve_monotonic_ms_clock_v1(gate.monotonic_ms_clock)
+    evaluation_ms = clock()
+
+    if gate.live_authorized is True:
+        reasons.append("GLOBAL_LIVE_AUTHORIZED_CANNOT_SUBSTITUTE_FOR_BOUNDED_PERMIT")
+        decisions.append(
+            _decision(
+                "LIVE_AUTHORIZED_CLAIM",
+                False,
+                "GLOBAL_LIVE_AUTHORIZED_CANNOT_SUBSTITUTE_FOR_BOUNDED_PERMIT",
+            )
+        )
     else:
         decisions.append(_decision("LIVE_AUTHORIZED_CLAIM", True))
+
+    permit_ok, permit_reasons = evaluate_bounded_activation_permit_v1(
+        permit=gate.bounded_activation_permit,
+        origin_main_sha=gate.origin_main_sha,
+        instrument_id=str(gate.instrument_id or DEFAULT_INSTRUMENT_ID),
+        evaluation_monotonic_ms=evaluation_ms,
+    )
+    if not permit_ok:
+        reasons.extend(permit_reasons)
+        decisions.append(
+            _decision(
+                "BOUNDED_ACTIVATION_PERMIT",
+                False,
+                ",".join(permit_reasons) or "BOUNDED_ACTIVATION_PERMIT_DENIED",
+            )
+        )
+    else:
+        decisions.append(_decision("BOUNDED_ACTIVATION_PERMIT", True))
 
     if gate.live_enabled is not True:
         reasons.append("LIVE_ENABLED_CLAIM_FALSE")
@@ -482,8 +515,6 @@ def evaluate_flatten_pre_send_gate_v1(
     else:
         decisions.append(_decision("DUPLICATE_POST_PROTECTION", True))
 
-    clock = resolve_monotonic_ms_clock_v1(gate.monotonic_ms_clock)
-    evaluation_ms = clock()
     freshness = evaluate_position_observation_freshness_v1(
         evidence=gate.position_observation_freshness_evidence,
         evaluation_monotonic_ms=evaluation_ms,

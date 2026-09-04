@@ -241,8 +241,9 @@ def adjudicate_execution_prerequisite_12_exact_flatten_payload_v1(
     signed_raw = window.get("signed_pos")
     if signed_raw is None:
         raise P13ExactFlattenPayloadAdjudicationError("SIGNED_POS_PRODUCER_ABSENT")
-    if window.get("EARLIEST_UNRESOLVED_DEPENDENCY") != EARLIEST_UNRESOLVED_DEPENDENCY:
-        raise P13ExactFlattenPayloadAdjudicationError("WINDOW_EARLIEST_DEPENDENCY_DRIFT")
+    living_earliest = str(window.get("EARLIEST_UNRESOLVED_DEPENDENCY") or "").strip()
+    if not living_earliest:
+        raise P13ExactFlattenPayloadAdjudicationError("WINDOW_EARLIEST_DEPENDENCY_MISSING")
     if window.get("EXECUTION_PREREQUISITE_12_STATUS") != (
         EXECUTION_PREREQUISITE_12_EXACT_FLATTEN_PAYLOAD_FROM_OBSERVED_POSITION
     ):

@@ -82,6 +82,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p11_pos_to_sz_unit_identity_independent_proof_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p11_pos_to_sz_unit_identity_independent_proof_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p12_execution_prerequisite_11_position_side_posside_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p12_execution_prerequisite_11_position_side_posside_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p13_execution_prerequisite_12_exact_flatten_payload_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p13_execution_prerequisite_12_exact_flatten_payload_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p16_execution_prerequisite_16_bounded_activation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p16_execution_prerequisite_16_bounded_activation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2do_fresh_create_readiness_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2do_fresh_create_readiness_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2dr_runtime_read_only_evidence_max_leverage_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2dr_runtime_read_only_evidence_max_leverage_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2ds_post_whitelist_private_auth_attestation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2ds_post_whitelist_private_auth_attestation_v1 | STATUS=OPEN (not proven) |  |

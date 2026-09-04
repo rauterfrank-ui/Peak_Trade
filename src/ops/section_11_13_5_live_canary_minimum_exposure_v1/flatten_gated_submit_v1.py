@@ -283,6 +283,7 @@ def default_flatten_execute_gate_input_from_runner_v1(
     flatten_pre_send_decision_id: str | None = None,
     position_observation_freshness_evidence: Any = None,
     monotonic_ms_clock: Any = None,
+    bounded_activation_permit: Any = None,
 ) -> FlattenPreSendGateInputV1 | None:
     """Build a gate input. Returns None when price_input is absent (do not invent)."""
     if price_input is None:
@@ -306,6 +307,7 @@ def default_flatten_execute_gate_input_from_runner_v1(
         flatten_pre_send_decision_id=flatten_pre_send_decision_id,
         position_observation_freshness_evidence=position_observation_freshness_evidence,
         monotonic_ms_clock=monotonic_ms_clock,
+        bounded_activation_permit=bounded_activation_permit,
     )
 
 

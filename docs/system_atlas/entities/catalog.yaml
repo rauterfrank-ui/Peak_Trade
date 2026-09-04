@@ -414,7 +414,8 @@ entities:
     fail_closed: true
     evidence_sources:
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO, the §11.13.5.Z2CP freshness persist/implement Owner-GO, the §11.13.5.Z2CQ post-Z2CP prerequisite-08 cluster Owner-GO, the §11.13.5.Z2CR prerequisite-08 fresh position-observation Owner-GO, the §11.13.5.Z2CS prerequisite-08 resolution-authority adjudication Owner-GO, the §11.13.5.Z2CT prerequisite-08 single unfiltered position-observation Owner-GO, the §11.13.5.Z2CU post-Z2CT named progression-track adjudication Owner-GO, the §11.13.5.Z2CV COVER_USDC remaining unranked SUI offline reproof Owner-GO, the §11.13.5.Z2CW FX remaining unranked SUI offline reproof Owner-GO, the §11.13.5.Z2CX remaining unranked ROUNDING / FINISHED_RISK_ENVELOPE_NUMERIC / USD_USDC_ACCOUNT_SETTLEMENT offline reproof bundle Owner-GO, the §11.13.5.Z2CY post-Z2CX P3 dependency reconciliation Owner-GO, the §11.13.5.Z2CZ post-Z2CY single unfiltered Prerequisite-08 position-observation Owner-GO, the §11.13.5.Z2DA post-Z2CZ position-creation / autonomy semantic-rebind persist Owner-GO, the §11.13.5.Z2DN Prerequisite-08 position-source policy rebind Owner-GO, the §11.13.5.Z2DO Route-C offline gated productive submit composition Owner-GO, the post-whitelist private auth attestation Owner-GO, the P08 position-observation Owner-GO, and the P08 empty-data-not-zero Owner-GO. Not execute enablement. Atlas is not trading authority.
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/bounded_activation_permit_v1.py
+    notes: Deny-list includes the §11.13.5.Z2CO docs-only persist Owner-GO, the §11.13.5.Z2CP freshness persist/implement Owner-GO, the §11.13.5.Z2CQ post-Z2CP prerequisite-08 cluster Owner-GO, the §11.13.5.Z2CR prerequisite-08 fresh position-observation Owner-GO, the §11.13.5.Z2CS prerequisite-08 resolution-authority adjudication Owner-GO, the §11.13.5.Z2CT prerequisite-08 single unfiltered position-observation Owner-GO, the §11.13.5.Z2CU post-Z2CT named progression-track adjudication Owner-GO, the §11.13.5.Z2CV COVER_USDC remaining unranked SUI offline reproof Owner-GO, the §11.13.5.Z2CW FX remaining unranked SUI offline reproof Owner-GO, the §11.13.5.Z2CX remaining unranked ROUNDING / FINISHED_RISK_ENVELOPE_NUMERIC / USD_USDC_ACCOUNT_SETTLEMENT offline reproof bundle Owner-GO, the §11.13.5.Z2CY post-Z2CX P3 dependency reconciliation Owner-GO, the §11.13.5.Z2CZ post-Z2CY single unfiltered Prerequisite-08 position-observation Owner-GO, the §11.13.5.Z2DA post-Z2CZ position-creation / autonomy semantic-rebind persist Owner-GO, the §11.13.5.Z2DN Prerequisite-08 position-source policy rebind Owner-GO, the §11.13.5.Z2DO Route-C offline gated productive submit composition Owner-GO, the post-whitelist private auth attestation Owner-GO, the P08 position-observation Owner-GO, the P08 empty-data-not-zero Owner-GO, and the P16 bounded-activation implementation Owner-GO. Not execute enablement. Atlas is not trading authority.
 
   - id: GATE:btc_exclusion
     kind: GATE
@@ -1086,6 +1087,18 @@ entities:
       - tests/ops/test_section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload_persist_v1.py
     notes: Additive offline EXECUTION_PREREQUISITE_12 exact flatten payload closure. Venue-native body from observed position. No GET. No POST. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: PHASE:p16_execution_prerequisite_16_bounded_activation
+    kind: PHASE
+    name: 11.13.5.P16
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - evidence/ops/section_11_13_5_p16_execution_prerequisite_16_bounded_activation_v1/20260904T011500Z/
+      - tests/ops/test_section_11_13_5_p16_execution_prerequisite_16_bounded_activation_persist_v1.py
+    notes: Additive offline EXECUTION_PREREQUISITE_16 bounded activation contract. Without global LIVE_AUTHORIZED. No GET. No POST. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
     name: Route-C create-path blocker census v1
@@ -1509,6 +1522,41 @@ entities:
       Navigation inventory of the additive P13 EXECUTION_PREREQUISITE_12
       exact flatten payload closure. Venue-native body from observed
       position. No GET. No POST. Atlas is not canonical authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:p16_execution_prerequisite_16_bounded_activation_v1
+    kind: RUNTIME_COMPONENT
+    name: P16 EXECUTION_PREREQUISITE_16 bounded activation v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_13_5_p16_execution_prerequisite_16_bounded_activation_v1/__init__.py
+      - src/ops/section_11_13_5_p16_execution_prerequisite_16_bounded_activation_v1/assemble_v1.py
+      - src/ops/section_11_13_5_p16_execution_prerequisite_16_bounded_activation_v1/adjudicate_v1.py
+      - src/ops/section_11_13_5_p16_execution_prerequisite_16_bounded_activation_v1/constants_v1.py
+      - src/ops/section_11_13_5_p16_execution_prerequisite_16_bounded_activation_v1/contract_v1.py
+      - src/ops/section_11_13_5_p16_execution_prerequisite_16_bounded_activation_v1/lineage_v1.py
+      - src/ops/section_11_13_5_p16_execution_prerequisite_16_bounded_activation_v1/persist_claims_v1.py
+      - src/ops/section_11_13_5_p16_execution_prerequisite_16_bounded_activation_v1/persist_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/bounded_activation_permit_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_pre_send_gate_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_gated_submit_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/prerequisite_08_fresh_position_observation_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/runner_v1.py
+    evidence_sources:
+      - tests/ops/test_section_11_13_5_p16_execution_prerequisite_16_bounded_activation_v1.py
+      - tests/ops/test_section_11_13_5_p16_execution_prerequisite_16_bounded_activation_persist_v1.py
+      - tests/ops/test_section_11_13_5_productive_flatten_wiring_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/P16_EXECUTION_PREREQUISITE_16_BOUNDED_ACTIVATION_V1.md
+      - docs/forensics/persistence/inventories/P16_EXECUTION_PREREQUISITE_16_BOUNDED_ACTIVATION_OBSERVATION_V1.json
+      - evidence/ops/section_11_13_5_p16_execution_prerequisite_16_bounded_activation_v1/20260904T011500Z/
+    notes: >-
+      Navigation inventory of the additive P16 EXECUTION_PREREQUISITE_16
+      bounded activation contract. Without global LIVE_AUTHORIZED. No GET.
+      No POST. Atlas is not canonical authority.
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1

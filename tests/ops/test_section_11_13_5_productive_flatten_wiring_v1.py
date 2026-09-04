@@ -8,6 +8,9 @@ from typing import Any, Mapping
 
 import pytest
 
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.bounded_activation_permit_v1 import (
+    offline_contract_proof_bounded_activation_permit_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.config_v1 import (
     example_incomplete_config_dict_v1,
 )
@@ -112,7 +115,7 @@ def _price(*, side: str = "SELL", pos: str = "1", **overrides: Any) -> FlattenPr
 
 def _valid_gate(**overrides: Any) -> FlattenPreSendGateInputV1:
     payload: dict[str, Any] = {
-        "live_authorized": True,
+        "live_authorized": False,
         "live_enabled": True,
         "live_armed": True,
         "flatten_live_wire_enabled": True,
@@ -136,6 +139,10 @@ def _valid_gate(**overrides: Any) -> FlattenPreSendGateInputV1:
             evidence_kind=PRE_SEND_EVIDENCE_KIND,
         ),
         "monotonic_ms_clock": (lambda: 0),
+        "bounded_activation_permit": offline_contract_proof_bounded_activation_permit_v1(
+            origin_main_sha=ORIGIN_SHA,
+            instrument_id=TARGET,
+        ),
     }
     payload.update(overrides)
     return FlattenPreSendGateInputV1(**payload)
@@ -220,7 +227,8 @@ def test_default_gate_and_config_cannot_reach_productive_send() -> None:
 @pytest.mark.parametrize(
     "override,needle",
     [
-        ({"live_authorized": False}, "LIVE_AUTHORIZED_CLAIM_FALSE"),
+        ({"live_authorized": True}, "GLOBAL_LIVE_AUTHORIZED_CANNOT_SUBSTITUTE_FOR_BOUNDED_PERMIT"),
+        ({"bounded_activation_permit": None}, "BOUNDED_ACTIVATION_PERMIT_MISSING"),
         ({"live_enabled": False}, "LIVE_ENABLED_CLAIM_FALSE"),
         ({"live_armed": False}, "LIVE_ARMED_CLAIM_FALSE"),
         ({"flatten_live_wire_enabled": False}, "FLATTEN_LIVE_WIRE_CLAIM_FALSE"),
@@ -511,6 +519,10 @@ def test_runner_flatten_execute_reaches_recording_transport_only_when_fully_gate
             evidence_kind=PRE_SEND_EVIDENCE_KIND,
         ),
         monotonic_ms_clock=(lambda: 0),
+        bounded_activation_permit=offline_contract_proof_bounded_activation_permit_v1(
+            origin_main_sha=ORIGIN_SHA,
+            instrument_id=TARGET,
+        ),
     )
     assert result.payload.get("send_completed") is True
     assert result.payload.get("network_used") is False

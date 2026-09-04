@@ -32,6 +32,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     SUBMIT_UNLOCKED,
     TESTNET_AUTHORIZED,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.bounded_activation_permit_v1 import (
+    offline_contract_proof_bounded_activation_permit_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_execute_authority_v1 import (
     FLATTEN_EXECUTE_CONFIRM_TOKEN_CANONICAL,
     FLATTEN_EXECUTE_OWNER_GO_CANONICAL,
@@ -121,7 +124,7 @@ def _gate(
     *,
     positions_payload: Mapping[str, Any],
     instrument_id: str = CURRENT_SUI,
-    live_authorized: bool = True,
+    live_authorized: bool = False,
     flatten_execute_owner_go: str = P7_4_OWNER_GO,
     pending_orders_payload: Mapping[str, Any] | None = None,
     price_input: FlattenPriceInputV1 | None = None,
@@ -149,6 +152,10 @@ def _gate(
             evidence_kind=PRE_SEND_EVIDENCE_KIND,
         ),
         monotonic_ms_clock=(lambda: 0),
+        bounded_activation_permit=offline_contract_proof_bounded_activation_permit_v1(
+            origin_main_sha=ORIGIN_SHA,
+            instrument_id=instrument_id,
+        ),
     )
 
 

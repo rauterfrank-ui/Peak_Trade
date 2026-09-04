@@ -6,6 +6,9 @@ from typing import Any, Mapping
 
 import pytest
 
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.bounded_activation_permit_v1 import (
+    offline_contract_proof_bounded_activation_permit_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     DEFAULT_INSTRUMENT_ID,
     LIVE_ARMED,
@@ -122,7 +125,7 @@ def _evidence(
 def _gate(**overrides: Any) -> FlattenPreSendGateInputV1:
     clock = overrides.pop("monotonic_ms_clock", _MonoClock(0))
     payload: dict[str, Any] = {
-        "live_authorized": True,
+        "live_authorized": False,
         "live_enabled": True,
         "live_armed": True,
         "flatten_live_wire_enabled": True,
@@ -142,6 +145,10 @@ def _gate(**overrides: Any) -> FlattenPreSendGateInputV1:
         "flatten_pre_send_decision_id": DECISION_A,
         "position_observation_freshness_evidence": _evidence(),
         "monotonic_ms_clock": clock,
+        "bounded_activation_permit": offline_contract_proof_bounded_activation_permit_v1(
+            origin_main_sha=ORIGIN_SHA,
+            instrument_id=TARGET,
+        ),
     }
     payload.update(overrides)
     return FlattenPreSendGateInputV1(**payload)

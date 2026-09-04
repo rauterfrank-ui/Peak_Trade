@@ -135,6 +135,7 @@ def run_section_11_13_5_live_canary_minimum_exposure_v1(
     flatten_pre_send_decision_id: str | None = None,
     position_observation_freshness_evidence: Any = None,
     monotonic_ms_clock: Any = None,
+    bounded_activation_permit: Any = None,
 ) -> LiveCanaryRunnerResultV1:
     mode_norm = str(mode or "").strip().lower()
     if mode_norm not in {"preflight", "forensic", "execute", "flatten_execute"}:
@@ -191,6 +192,7 @@ def run_section_11_13_5_live_canary_minimum_exposure_v1(
             flatten_pre_send_decision_id=flatten_pre_send_decision_id,
             position_observation_freshness_evidence=position_observation_freshness_evidence,
             monotonic_ms_clock=monotonic_ms_clock,
+            bounded_activation_permit=bounded_activation_permit,
         )
 
     repo = _repo_root()
@@ -366,6 +368,7 @@ def _run_flatten_execute_mode_v1(
     flatten_pre_send_decision_id: str | None = None,
     position_observation_freshness_evidence: Any = None,
     monotonic_ms_clock: Any = None,
+    bounded_activation_permit: Any = None,
 ) -> LiveCanaryRunnerResultV1:
     """Explicit flatten_execute only. Never runs on preflight/forensic/execute."""
     payload_cfg = dict(getattr(cfg, "payload", {}) or {})
@@ -419,7 +422,7 @@ def _run_flatten_execute_mode_v1(
         )
         return LiveCanaryRunnerResultV1(ok=False, mode="flatten_execute", payload=result_payload)
     gate_input = default_flatten_execute_gate_input_from_runner_v1(
-        live_authorized=bool(live_canary_authorized),
+        live_authorized=False,
         live_enabled=bool(live_enabled),
         live_armed=bool(live_armed),
         flatten_live_wire_enabled=wire,
@@ -437,6 +440,7 @@ def _run_flatten_execute_mode_v1(
         flatten_pre_send_decision_id=flatten_pre_send_decision_id,
         position_observation_freshness_evidence=position_observation_freshness_evidence,
         monotonic_ms_clock=monotonic_ms_clock,
+        bounded_activation_permit=bounded_activation_permit,
     )
     if gate_input is None:
         raise LiveCanaryRunnerError("FLATTEN_GATE_INPUT_UNAVAILABLE")
