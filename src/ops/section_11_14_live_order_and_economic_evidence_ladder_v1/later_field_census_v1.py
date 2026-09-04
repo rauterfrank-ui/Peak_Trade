@@ -10,6 +10,8 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_FILL_OBSERVED_CANONICAL_DEFINITION,
     LIVE_FILL_OBSERVED_PRODUCER,
     LIVE_ORDER_PLAN_OBSERVED_CANONICAL_DEFINITION,
+    LIVE_POSITION_RECONCILED_CANONICAL_DEFINITION,
+    LIVE_POSITION_RECONCILED_PRODUCER,
     LIVE_SUBMIT_ACK_OBSERVED_CANONICAL_STATUS,
 )
 
@@ -19,9 +21,9 @@ def build_later_field_census_v1() -> dict[str, Any]:
         "schema_version": "section_11_14_later_field_census.v1",
         "LIVE_PRIVATE_READ_ONLY_PROVEN": True,
         "LIVE_ORDER_PLAN_OBSERVED": True,
-        "EARLIEST_UNRESOLVED_DEPENDENCY": "LIVE_POSITION_RECONCILED",
-        "EARLIEST_MUTATION_BOUNDARY": "LIVE_POSITION_RECONCILED",
-        "MINIMUM_EXTERNAL_ACTION_CLASS": "READ_ONLY_POSITION_RECONCILIATION",
+        "EARLIEST_UNRESOLVED_DEPENDENCY": "LIVE_ACCOUNTING_RECONSTRUCTED",
+        "EARLIEST_MUTATION_BOUNDARY": "LIVE_ACCOUNTING_RECONSTRUCTED",
+        "MINIMUM_EXTERNAL_ACTION_CLASS": "READ_ONLY_ACCOUNTING_RECONSTRUCTION",
         "rows": [
             {
                 "field": "LIVE_ORDER_PLAN_OBSERVED",
@@ -47,7 +49,7 @@ def build_later_field_census_v1() -> dict[str, Any]:
                 "minimum_external_action_class": "POST_ORDER_SUBMIT",
                 "why_blocked": (
                     "Observed. Producer and criterion remain bound. "
-                    "LIVE_POSITION_RECONCILED remains ineligible until a separate Owner-GO."
+                    "LIVE_ACCOUNTING_RECONSTRUCTED remains ineligible until a separate Owner-GO."
                 ),
                 "producer": (
                     "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
@@ -65,7 +67,7 @@ def build_later_field_census_v1() -> dict[str, Any]:
                 "minimum_external_action_class": "READ_ONLY_FILL_OBSERVATION",
                 "why_blocked": (
                     "Observed. Producer and criterion remain bound. "
-                    "LIVE_POSITION_RECONCILED remains ineligible until a separate Owner-GO."
+                    "LIVE_ACCOUNTING_RECONSTRUCTED remains ineligible until a separate Owner-GO."
                 ),
                 "producer": LIVE_FILL_OBSERVED_PRODUCER,
                 "producer_bound": True,
@@ -80,7 +82,7 @@ def build_later_field_census_v1() -> dict[str, Any]:
                 "minimum_external_action_class": "READ_ONLY_FEE_OBSERVATION",
                 "why_blocked": (
                     "Observed. Producer and criterion remain bound. "
-                    "LIVE_POSITION_RECONCILED remains ineligible until a separate Owner-GO."
+                    "LIVE_ACCOUNTING_RECONSTRUCTED remains ineligible until a separate Owner-GO."
                 ),
                 "producer": LIVE_FEE_OBSERVED_PRODUCER,
                 "producer_bound": True,
@@ -88,15 +90,18 @@ def build_later_field_census_v1() -> dict[str, Any]:
             },
             {
                 "field": "LIVE_POSITION_RECONCILED",
-                "claim_value": False,
-                "canonical_definition": (
-                    "Current Live position reconciled to the observed fill/fee path. "
-                    "LIVE_RECONCILIATION_PROVEN is not this field."
-                ),
+                "claim_value": True,
+                "canonical_definition": LIVE_POSITION_RECONCILED_CANONICAL_DEFINITION,
+                "post_required": False,
+                "private_get_required": True,
+                "minimum_external_action_class": "READ_ONLY_POSITION_RECONCILIATION",
                 "why_blocked": (
-                    "Requires a separate Owner-GO after LIVE_FEE_OBSERVED=true. "
-                    "This GO forbids position reconciliation."
+                    "Reconciled. Producer and criterion remain bound. "
+                    "LIVE_ACCOUNTING_RECONSTRUCTED remains ineligible until a separate Owner-GO."
                 ),
+                "producer": LIVE_POSITION_RECONCILED_PRODUCER,
+                "producer_bound": True,
+                "proof_criterion_bound": True,
             },
             {
                 "field": "LIVE_ACCOUNTING_RECONSTRUCTED",
@@ -104,7 +109,10 @@ def build_later_field_census_v1() -> dict[str, Any]:
                 "canonical_definition": (
                     "Current Live accounting reconstructed from the observed Live economic path."
                 ),
-                "why_blocked": "Predecessor position reconciliation is false.",
+                "why_blocked": (
+                    "Requires a separate Owner-GO after LIVE_POSITION_RECONCILED=true. "
+                    "This GO forbids accounting reconstruction."
+                ),
             },
             {
                 "field": "LIVE_RESTART_RECONSTRUCTED",

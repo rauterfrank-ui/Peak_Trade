@@ -15,6 +15,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     EXPECTED_ORIGIN_MAIN_SHA,
     FILL_OBSERVED_ADJUDICATION_FILENAME,
     FEE_OBSERVED_ADJUDICATION_FILENAME,
+    POSITION_RECONCILED_ADJUDICATION_FILENAME,
     G12_DOES_NOT_AUTHORIZE_SECTION_11_14,
     G12_DOES_NOT_SATISFY_SECTION_11_14_OBSERVED_FIELDS,
     G12_STATUS_REQUIRED,
@@ -29,6 +30,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_FILL_OBSERVED,
     LIVE_FEE_OBSERVED,
     LIVE_ORDER_PLAN_OBSERVED,
+    LIVE_POSITION_RECONCILED,
     LIVE_PRIVATE_READ_ONLY_PROVEN,
     LIVE_SUBMIT_ACK_OBSERVED,
     MANDATORY_LIVE_METRIC_COUNT,
@@ -100,6 +102,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.fill_obser
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.fee_observed_adjudication_v1 import (
     adjudicate_live_fee_observed_v1,
 )
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.position_reconciled_adjudication_v1 import (
+    adjudicate_live_position_reconciled_v1,
+)
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.private_read_only_gets_v1 import (
     bind_private_read_only_gets_before_request_v1,
     path_reachable_view_from_read_only_pack_v1,
@@ -128,6 +133,7 @@ def assemble_offline_surface_v1(
     submit_ack_evidence: Mapping[str, Any] | None = None,
     fill_evidence: Mapping[str, Any] | None = None,
     fee_evidence: Mapping[str, Any] | None = None,
+    position_evidence: Mapping[str, Any] | None = None,
 ) -> dict[str, dict[str, Any]]:
     if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
         raise RuntimeError("ORIGIN_MAIN_SHA_MISMATCH")
@@ -214,6 +220,21 @@ def assemble_offline_surface_v1(
         raise RuntimeError("FEE_TRUE_WITHOUT_VALID_LIVE_GET")
     if fee_claim and fee_ev.get("LIVE_POSITION_RECONCILED") is True:
         raise RuntimeError("FEE_EVIDENCE_PROMOTED_POSITION")
+    position_ev = dict(position_evidence) if position_evidence is not None else None
+    if LIVE_POSITION_RECONCILED is True and position_ev is None:
+        raise RuntimeError("POSITION_TRUE_WITHOUT_LIVE_GET_EVIDENCE")
+    position_fields = adjudicate_live_position_reconciled_v1(position_evidence=position_ev)
+    position_claim = bool(position_fields.get("adjudicated_value") is True)
+    if position_claim is not bool(LIVE_POSITION_RECONCILED is True):
+        raise RuntimeError("POSITION_CONSTANT_DRIFT_VS_ADJUDICATION")
+    if position_claim and (
+        position_ev is None
+        or position_ev.get("POST_USED") is True
+        or str(position_ev.get("source_kind") or "") != "GOVERNED_CURRENT_PRIVATE_GET"
+    ):
+        raise RuntimeError("POSITION_TRUE_WITHOUT_VALID_LIVE_GET")
+    if position_claim and position_ev.get("LIVE_ACCOUNTING_RECONSTRUCTED") is True:
+        raise RuntimeError("POSITION_EVIDENCE_PROMOTED_ACCOUNTING")
     metrics = build_mandatory_live_metrics_schema_v1()
     reuse = build_reuse_vs_fresh_matrix_v1()
     traceability = build_traceability_matrix_v1(
@@ -287,6 +308,16 @@ def assemble_offline_surface_v1(
                 if claim_true
                 else "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK"
             )
+        elif field_name == "LIVE_POSITION_RECONCILED":
+            source_kind = (
+                "GOVERNED_CURRENT_PRIVATE_GET" if claim_true else "GOVERNED_OFFLINE_CONTRACT"
+            )
+            status = "TRUE_CURRENT_LIVE_POSITION_RECONCILED" if claim_true else "FALSE_FAIL_CLOSED"
+            authority = (
+                "R2_CONDITIONAL_PRIVATE_GET"
+                if claim_true
+                else "R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK"
+            )
         else:
             source_kind = "GOVERNED_OFFLINE_CONTRACT"
             status = "FALSE_FAIL_CLOSED"
@@ -310,20 +341,25 @@ def assemble_offline_surface_v1(
                     "LIVE_SUBMIT_ACK_OBSERVED",
                     "LIVE_FILL_OBSERVED",
                     "LIVE_FEE_OBSERVED",
+                    "LIVE_POSITION_RECONCILED",
                 }
                 else (
-                    (fee_ev or fill_ev or {}).get("RESPONSE_TIME_UTC")
-                    if field_name == "LIVE_FEE_OBSERVED"
+                    (position_ev or fee_ev or fill_ev or {}).get("RESPONSE_TIME_UTC")
+                    if field_name == "LIVE_POSITION_RECONCILED"
                     else (
-                        (fill_ev or {}).get("RESPONSE_TIME_UTC")
-                        if field_name == "LIVE_FILL_OBSERVED"
+                        (fee_ev or fill_ev or {}).get("RESPONSE_TIME_UTC")
+                        if field_name == "LIVE_FEE_OBSERVED"
                         else (
-                            (ack_ev or op_ev or ro_ev or path_ev or {}).get("RESPONSE_TIME_UTC")
-                            if field_name == "LIVE_SUBMIT_ACK_OBSERVED"
+                            (fill_ev or {}).get("RESPONSE_TIME_UTC")
+                            if field_name == "LIVE_FILL_OBSERVED"
                             else (
-                                (op_ev or ro_ev or path_ev or {}).get("RESPONSE_TIME_UTC")
-                                if field_name == "LIVE_ORDER_PLAN_OBSERVED"
-                                else ((ro_ev or path_ev or {}).get("RESPONSE_TIME_UTC"))
+                                (ack_ev or op_ev or ro_ev or path_ev or {}).get("RESPONSE_TIME_UTC")
+                                if field_name == "LIVE_SUBMIT_ACK_OBSERVED"
+                                else (
+                                    (op_ev or ro_ev or path_ev or {}).get("RESPONSE_TIME_UTC")
+                                    if field_name == "LIVE_ORDER_PLAN_OBSERVED"
+                                    else ((ro_ev or path_ev or {}).get("RESPONSE_TIME_UTC"))
+                                )
                             )
                         )
                     )
@@ -345,7 +381,8 @@ def assemble_offline_surface_v1(
     get_used = True
     public_get_used = bool(op_ev and op_ev.get("PUBLIC_GET_USED") is True)
     venue_requests = int(
-        (fee_ev or fill_ev or {}).get("VENUE_REQUESTS")
+        (position_ev or fee_ev or fill_ev or {}).get("VENUE_REQUESTS")
+        or (fee_ev or fill_ev or {}).get("VENUE_REQUESTS")
         or (fill_ev or {}).get("VENUE_REQUESTS")
         or (op_ev or ro_ev or path_ev or {}).get("VENUE_REQUESTS")
         or (ro_ev or path_ev or {}).get("VENUE_REQUESTS")
@@ -370,12 +407,13 @@ def assemble_offline_surface_v1(
         "LIVE_SUBMIT_ACK_OBSERVED": ack_claim,
         "LIVE_FILL_OBSERVED": fill_claim,
         "LIVE_FEE_OBSERVED": fee_claim,
+        "LIVE_POSITION_RECONCILED": position_claim,
         "GATE_MUTATION": False,
         "SESSION_LIVE_GATE_ACTIVATION": False,
         "THIS_GO_GET": True,
         "PREDECESSOR_ORDER_PLAN_ATTACHED": op_ev is not None,
         "EARLIEST_MUTATION_BOUNDARY": (
-            "LIVE_POSITION_RECONCILED" if fee_claim else "LIVE_FEE_OBSERVED"
+            "LIVE_ACCOUNTING_RECONSTRUCTED" if position_claim else "LIVE_POSITION_RECONCILED"
         ),
     }
     lineage = {
@@ -393,7 +431,7 @@ def assemble_offline_surface_v1(
         "LAST_CANONICALLY_CLOSED_STEP": LAST_CANONICALLY_CLOSED_STEP,
     }
     adjudication = {
-        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_FEE_OBSERVED_ADJUDICATION_V1",
+        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_POSITION_RECONCILED_ADJUDICATION_V1",
         "AUTHORITY": "NONE",
         "OWNER_GO": OWNER_GO,
         "THIS_SLICE": THIS_SLICE,
@@ -410,7 +448,7 @@ def assemble_offline_surface_v1(
         "EVIDENCE_RECORDS": evidence_records,
     }
     summary = {
-        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_FEE_OBSERVED_ADJUDICATION_SUMMARY_V1",
+        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_POSITION_RECONCILED_ADJUDICATION_SUMMARY_V1",
         "DOCUMENT_ROLE": "DERIVED_NON_SSOT",
         "OWNER_GO": OWNER_GO,
         "THIS_SLICE": THIS_SLICE,
@@ -429,6 +467,8 @@ def assemble_offline_surface_v1(
         "LIVE_SUBMIT_ACK_OBSERVED": LIVE_SUBMIT_ACK_OBSERVED,
         "LIVE_FILL_OBSERVED": fill_claim,
         "LIVE_FEE_OBSERVED": fee_claim,
+        "LIVE_POSITION_RECONCILED": position_claim,
+        "LIVE_ACCOUNTING_RECONSTRUCTED": False,
         "EARLIEST_UNRESOLVED_DEPENDENCY": EARLIEST_UNRESOLVED_DEPENDENCY,
         "NEXT_OWNER_GO_REQUIRED": NEXT_OWNER_GO_REQUIRED,
         "POST_USED": False,
@@ -447,6 +487,7 @@ def assemble_offline_surface_v1(
         "LIVE_SUBMIT_ACK_OBSERVED": LIVE_SUBMIT_ACK_OBSERVED,
         "LIVE_FILL_OBSERVED": fill_claim,
         "LIVE_FEE_OBSERVED": fee_claim,
+        "LIVE_POSITION_RECONCILED": position_claim,
         "CASE_ADJUDICATION": CASE_ADJUDICATION,
     }
     assert_contract_invariants_v1(claims)
@@ -482,6 +523,7 @@ def assemble_offline_surface_v1(
     documents["SUBMIT_ACK_OBSERVED_ADJUDICATION.json"] = ack_fields
     documents[FILL_OBSERVED_ADJUDICATION_FILENAME] = fill_fields
     documents[FEE_OBSERVED_ADJUDICATION_FILENAME] = fee_fields
+    documents[POSITION_RECONCILED_ADJUDICATION_FILENAME] = position_fields
     if path_ev is not None:
         documents[PRIVATE_GET_EVIDENCE_FILENAME] = dict(path_ev)
     if ro_ev is not None:

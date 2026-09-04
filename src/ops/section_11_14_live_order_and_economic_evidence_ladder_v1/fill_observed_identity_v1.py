@@ -13,6 +13,8 @@ BOUND_CLORDID = "ptokxeprod1fec928b1fec928b00"
 BOUND_INSTID = "SUI-USD_UM_XPERP-310404"
 BOUND_INST_TYPE = "FUTURES"
 BOUND_SUBMITTED_SZ = "1"
+BOUND_FILL_SZ = "1"
+BOUND_POS_SIDE = "net"
 BOUND_ACK_SOURCE_KIND = "GOVERNED_CURRENT_LIVE_POST"
 BOUND_ACK_EVIDENCE_RUN_ID = "20260904T160450Z"
 BOUND_SIDE = "buy"
@@ -25,9 +27,25 @@ def bound_live_submit_identity_v1() -> dict[str, str]:
         "instId": BOUND_INSTID,
         "instType": BOUND_INST_TYPE,
         "submitted_sz": BOUND_SUBMITTED_SZ,
+        "fill_sz": BOUND_FILL_SZ,
+        "posSide": BOUND_POS_SIDE,
         "ack_source_kind": BOUND_ACK_SOURCE_KIND,
         "ack_evidence_run_id": BOUND_ACK_EVIDENCE_RUN_ID,
         "side": BOUND_SIDE,
+    }
+
+
+def position_identity_match_v1(
+    *,
+    inst_id: object,
+    pos_side: object,
+) -> dict[str, bool]:
+    inst_match = str(inst_id or "") == BOUND_INSTID
+    pos_side_match = str(pos_side or "") == BOUND_POS_SIDE
+    return {
+        "INSTRUMENT_MATCH": inst_match,
+        "POS_SIDE_MATCH": pos_side_match,
+        "POSITION_IDENTITY_MATCH": bool(inst_match and pos_side_match),
     }
 
 

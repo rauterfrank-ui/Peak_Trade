@@ -543,6 +543,21 @@ relations:
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T173813Z/
     notes: >-
       LIVE_FEE_OBSERVED adjudication follows the bound fill identity.
-      Identity-bound private fills GET. Fee true. Position ineligible.
-      Atlas is not trading authority.
+      Identity-bound private fills GET. Fee true. Position ineligible
+      under that consumed GO. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_section_11_14_position_reconciled_adjudication_follows_fee
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_fee_observed_adjudication
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/position_reconciled_adjudication_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/position_reconciled_execute_v1.py
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T181817Z/
+    notes: >-
+      LIVE_POSITION_RECONCILED adjudication follows the bound fee identity.
+      Identity-bound private positions GET. Position true. Accounting
+      ineligible. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
