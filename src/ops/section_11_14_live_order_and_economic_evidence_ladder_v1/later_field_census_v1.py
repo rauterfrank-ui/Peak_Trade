@@ -15,9 +15,9 @@ def build_later_field_census_v1() -> dict[str, Any]:
         "schema_version": "section_11_14_later_field_census.v1",
         "LIVE_PRIVATE_READ_ONLY_PROVEN": True,
         "LIVE_ORDER_PLAN_OBSERVED": True,
-        "EARLIEST_UNRESOLVED_DEPENDENCY": "LIVE_SUBMIT_ACK_OBSERVED",
-        "EARLIEST_MUTATION_BOUNDARY": "LIVE_SUBMIT_ACK_OBSERVED",
-        "MINIMUM_EXTERNAL_ACTION_CLASS": "POST_ORDER_SUBMIT",
+        "EARLIEST_UNRESOLVED_DEPENDENCY": "LIVE_FILL_OBSERVED",
+        "EARLIEST_MUTATION_BOUNDARY": "LIVE_FILL_OBSERVED",
+        "MINIMUM_EXTERNAL_ACTION_CLASS": "READ_ONLY_FILL_OBSERVATION",
         "rows": [
             {
                 "field": "LIVE_ORDER_PLAN_OBSERVED",
@@ -37,14 +37,13 @@ def build_later_field_census_v1() -> dict[str, Any]:
             },
             {
                 "field": "LIVE_SUBMIT_ACK_OBSERVED",
-                "claim_value": False,
+                "claim_value": True,
                 "canonical_definition": LIVE_SUBMIT_ACK_OBSERVED_CANONICAL_STATUS,
                 "post_required": True,
                 "minimum_external_action_class": "POST_ORDER_SUBMIT",
                 "why_blocked": (
-                    "Proof criterion and producer are bound. The standing field remains "
-                    "false because this GO forbids POST. Transport ok is still not this "
-                    "field. LIVE_FILL_OBSERVED remains ineligible until this field is true."
+                    "Observed. Producer and criterion remain bound. "
+                    "LIVE_FILL_OBSERVED remains ineligible until a separate Owner-GO."
                 ),
                 "producer": (
                     "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
@@ -61,8 +60,8 @@ def build_later_field_census_v1() -> dict[str, Any]:
                 ),
                 "post_required": True,
                 "why_blocked": (
-                    "Requires LIVE_SUBMIT_ACK_OBSERVED=true first. Ladder order forbids "
-                    "fill adjudication while ACK is false. POST unauthorized."
+                    "Requires a separate Owner-GO after LIVE_SUBMIT_ACK_OBSERVED=true. "
+                    "This GO forbids fill promotion."
                 ),
             },
             {
@@ -72,7 +71,7 @@ def build_later_field_census_v1() -> dict[str, Any]:
                     "Current venue fee bound to the observed Live fill/submit identity."
                 ),
                 "post_required": True,
-                "why_blocked": "Requires a Live fee after fill. POST unauthorized.",
+                "why_blocked": "Requires a Live fee after fill. Fill remains ineligible.",
             },
             {
                 "field": "LIVE_POSITION_RECONCILED",

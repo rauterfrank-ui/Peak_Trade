@@ -377,16 +377,29 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
         ),
         _row(
             candidate="SECTION_11_14_LIVE_SUBMIT_ACK_OBSERVED_PROOF_CRITERION",
-            classification="CURRENT_AND_ADMISSIBLE",
+            classification="CURRENT_BUT_INSUFFICIENT",
             target_11_14_field="LIVE_SUBMIT_ACK_OBSERVED",
             reason=(
-                "This GO binds the unique §11.14 producer and synchronous proof "
-                "criterion. The standing field remains false because no POST occurred. "
-                "The bound criterion is not a Live observation."
+                "The unique §11.14 producer and synchronous proof criterion remain "
+                "bound. The criterion itself is not the Live observation."
             ),
             evidence_paths=(
                 "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
                 "submit_ack_observed_adjudication_v1.py",
+            ),
+        ),
+        _row(
+            candidate="SECTION_11_14_LIVE_SUBMIT_ACK_OBSERVED_ADJUDICATION",
+            classification="CURRENT_AND_ADMISSIBLE",
+            target_11_14_field="LIVE_SUBMIT_ACK_OBSERVED",
+            reason=(
+                "Exact single live POST on eea.okx.com produced "
+                "LIVE_SUBMIT_ACK_OBSERVED=true via the bound producer. "
+                "LIVE_FILL_OBSERVED remains ineligible. No second POST."
+            ),
+            evidence_paths=(
+                "evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/"
+                "20260904T160450Z/",
             ),
         ),
         _row(

@@ -113,7 +113,7 @@ def test_venue_connectivity_does_not_promote_later_ladder_fields() -> None:
     assert proof["LIVE_PRIVATE_READ_ONLY_PROVEN"] is False
     assert proof["LIVE_ORDER_PLAN_OBSERVED"] is False
     assert LIVE_PRIVATE_READ_ONLY_PROVEN is True
-    assert LIVE_SUBMIT_ACK_OBSERVED is False
+    assert LIVE_SUBMIT_ACK_OBSERVED is True
     assert LIVE_FILL_OBSERVED is False
 
 

@@ -11,7 +11,6 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_ORDER_PLAN_OBSERVED,
     LIVE_ORDER_PLAN_OBSERVED_CANONICAL_DEFINITION,
     LIVE_PRIVATE_READ_ONLY_PROVEN,
-    LIVE_SUBMIT_ACK_OBSERVED,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -72,8 +71,6 @@ def adjudicate_live_order_plan_observed_v1(
         constituent_values=_constituents_from_evidence_v1(order_plan_evidence)
     )
     claim = bool(conjunction["claim_value"] is True)
-    if claim is True and LIVE_SUBMIT_ACK_OBSERVED is True:
-        raise Section1114OfflineSurfaceError("SUBMIT_ACK_STANDING_TRUE")
     return {
         "canonical_definition": LIVE_ORDER_PLAN_OBSERVED_CANONICAL_DEFINITION,
         "adjudicated_value": claim,

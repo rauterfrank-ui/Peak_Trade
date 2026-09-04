@@ -23,6 +23,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_EXECUTION_PATH_REACHABLE,
     LIVE_ORDER_PLAN_OBSERVED,
     LIVE_PRIVATE_READ_ONLY_PROVEN,
+    LIVE_SUBMIT_ACK_OBSERVED,
     LIVE_SUBMIT_ACK_OBSERVED_PRODUCER_BOUND,
     LIVE_SUBMIT_ACK_PROOF_CRITERION_BOUND,
     MANDATORY_LIVE_METRIC_COUNT,
@@ -98,11 +99,13 @@ def assert_contract_invariants_v1(payload: Mapping[str, Any] | None = None) -> N
         raise Section1114OfflineSurfaceError("LIVE_PRIVATE_READ_ONLY_PROVEN_MUST_BE_TRUE")
     if LIVE_ORDER_PLAN_OBSERVED is not True:
         raise Section1114OfflineSurfaceError("LIVE_ORDER_PLAN_OBSERVED_MUST_BE_TRUE")
+    if LIVE_SUBMIT_ACK_OBSERVED is not True:
+        raise Section1114OfflineSurfaceError("LIVE_SUBMIT_ACK_OBSERVED_MUST_BE_TRUE")
     if AUTHORIZED_PRODUCTIVE_SUBMIT_COUNT_MAX != 1:
         raise Section1114OfflineSurfaceError("SUBMIT_COUNT_MAX_DRIFT")
     if RETRY_DEFAULT is True or SECOND_SUBMIT_DEFAULT is True:
         raise Section1114OfflineSurfaceError("RETRY_OR_SECOND_SUBMIT_DEFAULT_TRUE")
-    if CASE_ADJUDICATION != "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO":
+    if CASE_ADJUDICATION != "CASE_LIVE_SUBMIT_ACK_OBSERVED_FILL_INELIGIBLE":
         raise Section1114OfflineSurfaceError("CASE_ADJUDICATION_DRIFT")
     if LIVE_SUBMIT_ACK_PROOF_CRITERION_BOUND is not True:
         raise Section1114OfflineSurfaceError("ACK_PROOF_CRITERION_MUST_BE_BOUND")
@@ -143,12 +146,14 @@ def assert_contract_invariants_v1(payload: Mapping[str, Any] | None = None) -> N
     ):
         raise Section1114OfflineSurfaceError("ORDER_PLAN_WITHOUT_PRIVATE_READ_ONLY")
     if payload.get("POST_USED") is True or payload.get("POST") is True:
-        raise Section1114OfflineSurfaceError("POST_INVOKED_BY_ORDER_PLAN_PROOF")
+        if payload.get("LIVE_SUBMIT_ACK_OBSERVED") is not True:
+            raise Section1114OfflineSurfaceError("POST_WITHOUT_ACK_FIELD")
     allowed_true = {
         "LIVE_EXECUTION_CODE_EXISTS",
         "LIVE_EXECUTION_PATH_REACHABLE",
         "LIVE_PRIVATE_READ_ONLY_PROVEN",
         "LIVE_ORDER_PLAN_OBSERVED",
+        "LIVE_SUBMIT_ACK_OBSERVED",
     }
     for field_name in LADDER_FIELDS:
         if field_name in allowed_true:

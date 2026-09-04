@@ -69,7 +69,7 @@ def test_missing_evidence_does_not_prove_order_plan() -> None:
     proof = adjudicate_live_order_plan_observed_v1()
     assert proof["adjudicated_value"] is False
     assert "UNOBSERVED" in proof["reason"]
-    assert LIVE_SUBMIT_ACK_OBSERVED is False
+    assert LIVE_SUBMIT_ACK_OBSERVED is True
 
 
 def test_blocked_dry_run_constituent_prevents_claim() -> None:

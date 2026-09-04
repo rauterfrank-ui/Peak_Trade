@@ -1375,9 +1375,28 @@ entities:
       - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
     notes: >-
       LIVE_SUBMIT_ACK_OBSERVED proof criterion and producer bind.
-      CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO. Does not POST. Does not
-      GET. Does not promote LIVE_SUBMIT_ACK_OBSERVED. Atlas is not trading
+      CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO at that consumed GO. Does
+      not POST. Does not GET. Does not promote LIVE_SUBMIT_ACK_OBSERVED.
+      Historical after the ACK adjudication slice. Atlas is not trading
       authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: PHASE:section_11_14_live_submit_ack_observed_adjudication
+    kind: PHASE
+    name: 11.14.LIVE_SUBMIT_ACK_OBSERVED_ADJUDICATION
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/SECTION_11_14_LIVE_SUBMIT_ACK_OBSERVED_ADJUDICATION_V1.md
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T160450Z/
+      - tests/ops/test_section_11_14_bind_live_submit_ack_observed_proof_criterion_v1.py
+      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
+    notes: >-
+      Exact single live POST. LIVE_SUBMIT_ACK_OBSERVED=true.
+      CASE_LIVE_SUBMIT_ACK_OBSERVED_FILL_INELIGIBLE. One POST. No retry.
+      LIVE_FILL_OBSERVED remains false. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1

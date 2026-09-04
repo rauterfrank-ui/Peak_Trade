@@ -90,8 +90,8 @@ def _classify(**overrides: object) -> dict[str, object]:
 
 def test_producer_and_criterion_are_bound_without_promoting_ack() -> None:
     assert LIVE_SUBMIT_ACK_PROOF_CRITERION_BOUND is True
-    assert CASE_ADJUDICATION == "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO"
-    assert LIVE_SUBMIT_ACK_OBSERVED is False
+    assert CASE_ADJUDICATION == "CASE_LIVE_SUBMIT_ACK_OBSERVED_FILL_INELIGIBLE"
+    assert LIVE_SUBMIT_ACK_OBSERVED is True
     assert LIVE_FILL_OBSERVED is False
     assert LIVE_SUBMIT_ACK_OBSERVED_PRODUCER.endswith(
         "submit_ack_observed_adjudication_v1.py::adjudicate_live_submit_ack_observed_v1"
@@ -180,7 +180,7 @@ def test_adjudicator_never_promotes_standing_field_on_injected_success() -> None
     assert proof["classification"]["classification"] == CLASS_ACK_SUCCESS
     assert proof["field_constituent_values"]["CURRENT_PRODUCTIVE_POST_OF_FRESH_PLAN"] is False
     assert proof["field_conjunction"]["claim_value"] is False
-    assert proof["CASE_ADJUDICATION"] == "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO"
+    assert proof["CASE_ADJUDICATION"] == "CASE_LIVE_SUBMIT_ACK_OBSERVED_FILL_INELIGIBLE"
 
 
 def test_injected_source_cannot_satisfy_live_field() -> None:
@@ -194,13 +194,13 @@ def test_injected_source_cannot_satisfy_live_field() -> None:
         )
 
 
-def test_governed_live_post_conjunction_is_bound_but_not_observed() -> None:
+def test_governed_live_post_conjunction_is_bound_and_observed() -> None:
     proof = evaluate_live_submit_ack_observed_conjunction_v1(
         constituent_values={name: True for name in ACK_FIELD_CONSTITUENTS},
         source_kind=ADMISSIBLE_SOURCE_KIND,
     )
     assert proof["claim_value"] is True
-    assert LIVE_SUBMIT_ACK_OBSERVED is False
+    assert LIVE_SUBMIT_ACK_OBSERVED is True
 
 
 def test_read_only_recon_match_cannot_reclassify_as_ack() -> None:
@@ -217,19 +217,35 @@ def test_read_only_recon_match_cannot_reclassify_as_ack() -> None:
     assert proof["LIVE_SUBMIT_ACK_OBSERVED"] is False
 
 
-def test_fill_remains_ineligible_while_ack_is_false() -> None:
+def test_fill_remains_ineligible_after_ack() -> None:
     values = dict(LADDER_FIELD_DEFAULTS)
-    values["LIVE_FILL_OBSERVED"] = True
+    values["LIVE_FEE_OBSERVED"] = True
     with pytest.raises(
-        Section1114OfflineSurfaceError, match="LADDER_ORDER_VIOLATION:LIVE_FILL_OBSERVED"
+        Section1114OfflineSurfaceError, match="LADDER_ORDER_VIOLATION:LIVE_FEE_OBSERVED"
     ):
         assert_ladder_order_v1(values)
     assert_ladder_order_v1(LADDER_FIELD_DEFAULTS)
+    assert LIVE_FILL_OBSERVED is False
 
 
 def test_post_evidence_is_refused_by_this_go() -> None:
     with pytest.raises(Section1114OfflineSurfaceError, match="POST_INVOKED"):
         adjudicate_live_submit_ack_observed_v1(submit_ack_evidence=_success_kwargs(POST_USED=True))
+
+
+def test_governed_live_post_source_can_satisfy_ack_without_recon() -> None:
+    proof = adjudicate_live_submit_ack_observed_v1(
+        submit_ack_evidence=_success_kwargs(
+            POST_USED=True,
+            source_kind=ADMISSIBLE_SOURCE_KIND,
+            CURRENT_PRODUCTIVE_POST_OF_FRESH_PLAN=True,
+            historical_plan_reused=False,
+        )
+    )
+    assert proof["LIVE_SUBMIT_ACK_OBSERVED"] is True
+    assert proof["LIVE_FILL_OBSERVED"] is False
+    assert proof["ACK_SOURCE_KIND"] == ADMISSIBLE_SOURCE_KIND
+    assert proof["classification"]["RETRY_ALLOWED"] is False
 
 
 def test_timeout_after_possible_send_cannot_second_post() -> None:

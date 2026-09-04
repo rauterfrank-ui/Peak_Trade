@@ -20,9 +20,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     AUTHORIZED_PRODUCTIVE_SUBMIT_COUNT_MAX,
-    CASE_ADJUDICATION,
     HISTORICAL_ORDER_PLAN_ARTIFACT_REUSE_FOR_POST,
-    LIVE_SUBMIT_ACK_OBSERVED,
     LIVE_SUBMIT_ACK_OBSERVED_CANONICAL_STATUS,
     LIVE_SUBMIT_ACK_OBSERVED_PRODUCER,
     LIVE_SUBMIT_ACK_OBSERVED_PRODUCER_BOUND,
@@ -86,7 +84,7 @@ FAILURE_CASES: tuple[str, ...] = (
 
 
 def refuse_live_submit_ack_observed_true_v1(*, claimed_true: bool) -> None:
-    if claimed_true is True or LIVE_SUBMIT_ACK_OBSERVED is True:
+    if claimed_true is True:
         raise Section1114OfflineSurfaceError("LIVE_SUBMIT_ACK_OBSERVED_MUST_REMAIN_FALSE")
 
 
@@ -485,7 +483,7 @@ def adjudicate_submit_ack_forensic_v1() -> dict[str, Any]:
         "schema_version": "section_11_14_submit_ack_forensic_adjudication.v1",
         "LIVE_ORDER_PLAN_OBSERVED": True,
         "LIVE_SUBMIT_ACK_OBSERVED": False,
-        "CASE_ADJUDICATION": CASE_ADJUDICATION,
+        "CASE_ADJUDICATION": "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO",
         "CASE_A_READY_FOR_EXACT_SINGLE_POST_OWNER_GO": True,
         "CASE_B_OFFLINE_IMPLEMENTATION_GAP": False,
         "CASE_C_CANONICAL_SEMANTIC_GAP": False,
