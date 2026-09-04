@@ -24,6 +24,7 @@ from src.ops.decision_config_ownership_and_consumer_closure_v1.host_binding_v1 i
 )
 from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
     CALL_GRAPH_EXIT_PRODUCER_STEP,
+    FROZEN_PROFIT_PROTECTION_DISTANCE,
     SAFETY_PRODUCER_OWNER,
 )
 from src.ops.exit_policy_producer_binding_v1.host_binding_v1 import (
@@ -679,7 +680,7 @@ def run_hardened_bridge_cycle_v2(
         ),
         config_digest=exit_policy_config_digest_v1(
             adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
-            profit_protection_distance=float(decision_cfg.up_distance),
+            profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
         ),
         state_root=None,
     )
@@ -708,7 +709,7 @@ def run_hardened_bridge_cycle_v2(
             ),
             data_integrity_trusted=True,
             adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
-            profit_protection_distance=float(decision_cfg.up_distance),
+            profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
             killstate_active=bool(state.killstate_active),
             killstate_trigger=str(state.killstate_trigger or ""),
             warmup_complete=bool(features.warmup_complete),

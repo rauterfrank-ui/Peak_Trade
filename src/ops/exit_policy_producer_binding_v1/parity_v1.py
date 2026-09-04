@@ -89,9 +89,8 @@ def prove_trading_logic_parity_v1() -> dict[str, Any]:
             "up_distance": float(CANONICAL_UP_DISTANCE),
             "adverse_exit_distance": float(CANONICAL_ADVERSE_EXIT_DISTANCE),
             "reversal_distance": float(CANONICAL_REVERSAL_DISTANCE),
-            "profit_protection_distance_reuses_up_distance": float(
-                FROZEN_PROFIT_PROTECTION_DISTANCE
-            ),
+            "profit_protection_distance": float(FROZEN_PROFIT_PROTECTION_DISTANCE),
+            "profit_protection_distance_reuses_up_distance": False,
             "entry_exit_policy_version": entry_exit.policy_version,
         },
         "inserted_wiring_edges_only": sorted(inserted),

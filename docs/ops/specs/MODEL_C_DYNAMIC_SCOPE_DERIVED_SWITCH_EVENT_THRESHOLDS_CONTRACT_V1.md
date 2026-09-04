@@ -23,13 +23,18 @@ This file is the **docs-only, non-authorizing** contract for that target (WP1).
 It does **not**:
 
 - implement MODEL_C
-- bind a derivation formula
+- runtime-bind a derivation formula
 - authorize a Cap 6.2 / 6.3 / 6.5 freeze exception
 - bind `hysteresis_multiplier` at runtime
 - modify `transition_state`, `update_dynamic_boundaries`, or Integrated Replay
 - modify PR `#6270`
 
-**Current productive baseline remains MODEL_B** until a separate Formula GO plus freeze-exception GO are granted and proven.
+**Current productive baseline remains MODEL_B** until a separate freeze-exception GO plus runtime-bind GO are granted and proven.
+
+Formula and policy (OQ-C1..C6) are recorded docs-only in
+[MODEL_C_FORMULA_AND_POLICY_ADJUDICATION_V1.md](MODEL_C_FORMULA_AND_POLICY_ADJUDICATION_V1.md).
+That sibling does **not** authorize runtime, freeze-exception, profit-protection
+rewrite, research rewrite, or `hysteresis_multiplier` runtime.
 
 ## 2. Non-authority note
 
@@ -37,6 +42,7 @@ It does **not**:
 DOCUMENT_CLASS=DOCS_ONLY_NON_AUTHORIZING_CONTRACT
 MODEL_C_ARCHITECTURE_TARGET=AUTHORIZED
 MODEL_C_RUNTIME_IMPLEMENTATION_AUTHORIZED=false
+MODEL_C_FORMULA=ADJUDICATED_DOCS_ONLY_NOT_RUNTIME_BOUND
 MODEL_C_FORMULA_AUTHORIZED=false
 MODEL_C_FREEZE_EXCEPTION_AUTHORIZED=false
 HYSTERESIS_MULTIPLIER_RUNTIME_BINDING_AUTHORIZED=false
@@ -92,9 +98,11 @@ Cap 6.2 explicitly froze those distances while persisting RuntimeScopeState. Cap
 
 Research path `mv2_research_wiring_v1` uses a **parallel** producer (mark-relative 100 bps). That is not this contract's formula and is not retired here.
 
-## 5. MODEL_C target semantics (formula unset)
+## 5. MODEL_C target semantics (formula recorded, runtime unbound)
 
-When (and only when) a later Formula GO binds a mapping:
+When (and only when) a later runtime-bind GO materializes the mapping
+recorded in
+[MODEL_C_FORMULA_AND_POLICY_ADJUDICATION_V1.md](MODEL_C_FORMULA_AND_POLICY_ADJUDICATION_V1.md):
 
 ```text
 RuntimeScopeState_after_update_dynamic_boundaries
@@ -104,7 +112,7 @@ RuntimeScopeState_after_update_dynamic_boundaries
   → transition_state
 ```
 
-Invariants of the target (independent of the unset formula):
+Invariants of the target (independent of runtime-bind status):
 
 1. Dynamic Scope remains stateful trailing SSOT (`SCOPE(t) → SCOPE(t+1)`).
 2. Switch remains event-driven. `transition_state` **must not** compare mark price to `current_downscope_boundary` / `current_upscope_boundary`.
@@ -119,7 +127,7 @@ If later bound, the **only** canonical seam is:
 
 ```text
 update_dynamic_boundaries
-  → [UNBOUND derive_scope_event_distances_v1]
+  → [UNBOUND derive_scope_event_distances_v1]  # mapping recorded; seam must not exist yet
   → generate_deterministic_scope_event
 ```
 
@@ -132,48 +140,54 @@ Not authorized as seams:
 - silent mutation of Cap 6.3 TOML values without freeze-exception GO
 - scenario-adapter fallback `_distance_triplet_from_scope_v0` (TEST/SCENARIO only; not productive host; **not** the MODEL_C formula)
 
-Until Formula GO: the seam **must not exist** in runtime code. Productive host continues to pass Cap 6.3 frozen distances into the generator.
+Until a later runtime-bind GO: the seam **must not exist** in runtime code. Productive host continues to pass Cap 6.3 frozen distances into the generator.
 
 ## 7. Formula status
 
 ```text
-MODEL_C_FORMULA=UNSET
+MODEL_C_FORMULA=ADJUDICATED_DOCS_ONLY_NOT_RUNTIME_BOUND
 MODEL_C_FORMULA_AUTHORIZED=false
+FORMULA_OWNER=docs/ops/specs/MODEL_C_FORMULA_AND_POLICY_ADJUDICATION_V1.md
 ```
 
-Explicitly **not** authorized by this contract (examples of unset choices):
+Recorded mapping (docs-only; not runtime-bound) lives in the sibling
+adjudication. This architecture contract still does **not** authorize
+implementation.
 
-- `up_distance = current_hysteresis_band`
-- `up_distance = |anchor_price - current_downscope_boundary|`
-- any ratio, offset, ATR multiplier, or `hysteresis_multiplier`
-- nested `adverse` / `reversal` mappings from the band
-- using the scenario-adapter `{1.0, 0.8, 2.0}` triplet as default
+Still forbidden here and in runtime:
 
-Fail-closed: do not invent a formula in implementation, tests, or comments as if it were bound.
+- treating the recorded mapping as already bound
+- any ATR multiplier or `hysteresis_multiplier`
+- using the scenario-adapter `{1.0, 0.8, 2.0}` triplet as MODEL_C
+- inventing a different mapping in implementation, tests, or comments
 
-## 8. Mandatory dual-use split (blocker before any MODEL_C runtime)
+## 8. Mandatory dual-use split (implemented; numeric coincidence preserved)
 
 ```text
 MANDATORY_CONTRACT_REQUIREMENT=
   UP_DISTANCE_SWITCH_EVENT_ROLE_AND_PROFIT_PROTECTION_ROLE_MUST_BE_SEPARATED_BEFORE_ANY_MODEL_C_RUNTIME_BINDING
+DUAL_USE_SPLIT_IMPLEMENTED=true
 ```
 
-Today Cap 6.5 reuses Cap 6.3 `up_distance` as `profit_protection_distance`:
+Owner persist:
+[MODEL_C_UP_DISTANCE_SWITCH_VS_PROFIT_PROTECTION_AUTHORITY_SPLIT_V1.md](MODEL_C_UP_DISTANCE_SWITCH_VS_PROFIT_PROTECTION_AUTHORITY_SPLIT_V1.md).
 
-- [`docs/ops/specs/CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1.md`](CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1.md)
-- `FROZEN_PROFIT_PROTECTION_DISTANCE = CANONICAL_UP_DISTANCE` (currently `200.0`)
-- productive bridge passes `profit_protection_distance=decision_cfg.up_distance`
+Cap 6.5 no longer aliases Cap 6.3 `up_distance` as `profit_protection_distance`:
 
-Those are **different roles**:
+- `FROZEN_PROFIT_PROTECTION_DISTANCE = 200.0` (Cap 6.5 own owner)
+- productive bridges pass `profit_protection_distance=FROZEN_PROFIT_PROTECTION_DISTANCE`
+- Cap 6.3 switch-event `up_distance` remains `200.0`
+
+Those remain **different roles**:
 
 | Role | Meaning | Must remain distinct before MODEL_C bind |
 |------|---------|------------------------------------------|
 | Switch-event `up_distance` | Generator threshold vs trailing_anchor | MODEL_C derivation target |
 | Profit-protection distance | Cap 6.5 / Entry-Exit profit-protection producer | **Must not** silently follow derived switch distances |
 
-A MODEL_C runtime bind that derives switch `up_distance` from a trailing band **without** splitting profit-protection would mutate Exit numerics. That is **out of scope** and **forbidden** by this contract.
+A MODEL_C runtime bind that derives switch `up_distance` from a trailing band **without** this split would mutate Exit numerics. That remains **forbidden**.
 
-Profit-protection may keep the frozen `200.0` (or receive its **own** later policy). It must not be the same unbound derived quantity as the switch-event threshold.
+Profit-protection keeps the frozen `200.0` as its own owner. It must not follow derived switch-event thresholds.
 
 ## 9. Mandatory preservations
 
@@ -220,18 +234,21 @@ This contract **does not** grant an exception. Formula GO alone is also insuffic
 | Scenario injected ScopeEvents | TEST_ONLY / SCENARIO_NON_PRODUCTIVE |
 | Scenario `_distance_triplet_from_scope_v0` fallback | Not productive MODEL_C |
 
-Leaving Research BPS in place after a productive MODEL_C bind would re-create Dual Envelope on the research path. That is a **later** Formula-GO question (`OQ-C4`), not a silent default.
+Leaving Research BPS in place after a productive MODEL_C bind would re-create Dual Envelope on the research path. OQ-C4 is now adjudicated docs-only: same derivation at later bind; no rewrite now.
 
-## 12. Open questions (Formula GO only)
+## 12. Open questions (adjudicated docs-only; runtime still unbound)
 
-| ID | Question | Default until Formula GO |
-|----|----------|--------------------------|
-| OQ-C1 | Mapping from RuntimeScopeState band/boundaries to `up_distance` | `UNSET` fail-closed |
-| OQ-C2 | Mapping for `adverse_exit_distance` and `reversal_distance` | `UNSET`; keep Cap 6.3 / research ratios as **baseline**, not as MODEL_C |
-| OQ-C3 | Cap 6.3 distances after bind: retire vs clamp vs floor | Freeze remains |
-| OQ-C4 | Research BPS: replace with same derivation or keep exception | Dual producer remains |
-| OQ-C5 | Profit-protection: forever freeze `200.0` vs own policy | **Split mandatory**; value unset beyond freeze |
-| OQ-C6 | When trailing freezes (`volatility_estimate` missing / `chop_latched`): last derived vs fail-closed vs Cap 6.3 fallback | `UNSET` |
+Owner:
+[MODEL_C_FORMULA_AND_POLICY_ADJUDICATION_V1.md](MODEL_C_FORMULA_AND_POLICY_ADJUDICATION_V1.md).
+
+| ID | Question | Adjudicated policy (docs-only) |
+|----|----------|--------------------------------|
+| OQ-C1 | Mapping from RuntimeScopeState band/boundaries to `up_distance` | `up_distance = current_hysteresis_band` |
+| OQ-C2 | Mapping for `adverse_exit_distance` and `reversal_distance` | Cap 6.3 ratios `0.4` / `0.6` on derived `up_distance` |
+| OQ-C3 | Cap 6.3 distances after bind: retire vs clamp vs floor | Freeze remains now; **retire** as generator inputs after a later freeze-exception; **no clamp** to `200`, `80`, `120` |
+| OQ-C4 | Research BPS: replace with same derivation or keep exception | Dual producer remains now; same derivation at later productive bind |
+| OQ-C5 | Profit-protection: forever freeze `200.0` vs own policy | **Identity split implemented**; keep frozen `200.0` as Cap 6.5 own owner |
+| OQ-C6 | When trailing freezes (`volatility_estimate` missing / `chop_latched`): last derived vs fail-closed vs Cap 6.3 fallback | Last derived if prior band valid; else fail-closed; **no** Cap 6.3 fallback |
 
 ## 13. Relation to existing authorities
 
@@ -243,7 +260,7 @@ Leaving Research BPS in place after a productive MODEL_C bind would re-create Du
 | [MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md](MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md) | Target vocabulary (trailing, confirmation, no naive static thresholds); not a formula bind |
 | [CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1.md](CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1.md) | Persistence + distance freeze |
 | [`docs/ops/CAPABILITY_6_3_DECISION_CONFIG_OWNERSHIP_AND_CONSUMER_CLOSURE_V1.md`](../CAPABILITY_6_3_DECISION_CONFIG_OWNERSHIP_AND_CONSUMER_CLOSURE_V1.md) | Productive distance config owner |
-| [CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1.md](CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1.md) | Dual-use `up_distance` as profit-protection — must split before MODEL_C runtime |
+| [CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1.md](CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1.md) | Dual-use split implemented: Cap 6.5 own `200.0` profit-protection owner |
 | Canonical Master Runbook | Unchanged by this file; this contract does not rewrite SSOT path labels |
 
 Master Runbook §1 path labels and Map of Truth `TRADING_DECISION_CORE` remain **navigation / path labels**, not Intra-Zyklus-Formel. This contract does not “fix” those labels.
@@ -260,10 +277,10 @@ MODEL_C docs and any later implementation **must not** land on `feat&#47;full-co
 
 ## 15. Implementation staging (none authorized by this PR)
 
-1. **This docs contract** (WP1) — current
-2. **Owner Formula adjudication** — `NEXT_STOP`
-3. Dual-use split (switch-event vs profit-protection) — required before runtime, not authorized here
-4. Freeze-exception Cap 6.2 / 6.3 / 6.5 — separate GO
+1. **This docs contract** (WP1) — closed on `e9bd94965` (PR `#6271`)
+2. **Owner Formula and Policy adjudication** — recorded in [MODEL_C_FORMULA_AND_POLICY_ADJUDICATION_V1.md](MODEL_C_FORMULA_AND_POLICY_ADJUDICATION_V1.md)
+3. Dual-use split (switch-event vs profit-protection) — **implemented** (identity split; numeric remains `200.0`)
+4. Freeze-exception Cap 6.2 / 6.3 / 6.5 — **`NEXT_STOP`**
 5. Pure derivation function + golden vectors vs MODEL_B — separate GO
 6. Runtime bind at the Integrated Replay seam — separate GO
 
@@ -276,7 +293,7 @@ MARKER: NON_AUTHORIZING_POSTURE
 MARKER: MODEL_C_ARCHITECTURE_TARGET=AUTHORIZED
 MARKER: MODEL_C_RUNTIME_IMPLEMENTATION_AUTHORIZED=false
 MARKER: MODEL_C_FORMULA_AUTHORIZED=false
-MARKER: MODEL_C_FORMULA=UNSET
+MARKER: MODEL_C_FORMULA=ADJUDICATED_DOCS_ONLY_NOT_RUNTIME_BOUND
 MARKER: MODEL_C_FREEZE_EXCEPTION_AUTHORIZED=false
 MARKER: HYSTERESIS_MULTIPLIER_RUNTIME_BINDING_AUTHORIZED=false
 MARKER: MODEL_A_REJECTED_AS_DIRECT_IMPLEMENTATION_PATH
@@ -285,17 +302,18 @@ MARKER: SWITCH_OWNER_REMAINS_TRANSITION_STATE
 MARKER: TRANSITION_STATE_MUST_NOT_READ_BOUNDARY_FIELDS_AS_PRICE_THRESHOLD
 MARKER: DERIVATION_SEAM_UNBOUND
 MARKER: UP_DISTANCE_SWITCH_EVENT_ROLE_AND_PROFIT_PROTECTION_ROLE_MUST_BE_SEPARATED_BEFORE_RUNTIME
+MARKER: DUAL_USE_SPLIT_IMPLEMENTED=true
 MARKER: CONFIRMATION_EPOCHS_NOT_DERIVED_FROM_BAND
 MARKER: FOUR_STEP_PIPELINE_PRESERVED
 MARKER: LIVE_AUTHORIZED=false
-MARKER: NEXT_STOP=AWAIT_OWNER_MODEL_C_FORMULA_ADJUDICATION
+MARKER: NEXT_STOP=AWAIT_OWNER_GO_MODEL_C_FREEZE_EXCEPTION
 ```
 
 ## 17. STOP conditions
 
-Stop immediately (no runtime, no formula invention) if:
+Stop immediately (no runtime, no second formula) if:
 
-1. Text implies `MODEL_C_FORMULA_AUTHORIZED=true` or binds a numeric mapping
+1. Text implies `MODEL_C_FORMULA_AUTHORIZED=true` or treats the recorded mapping as runtime-bound
 2. `hysteresis_multiplier` is described as runtime-bound
 3. `transition_state` is described as consuming `current_*_boundary` as switch threshold
 4. Profit-protection is allowed to follow derived switch `up_distance` without a split
@@ -303,11 +321,12 @@ Stop immediately (no runtime, no formula invention) if:
 6. PR `#6270` is modified
 7. Live / orders / credentials / execution are implied
 8. Scenario-adapter fallback is cited as the MODEL_C formula
+9. A mapping other than the sibling adjudication is invented in implementation, tests, or comments
 
 ## 18. Next stop
 
 ```text
-NEXT_STOP=AWAIT_OWNER_MODEL_C_FORMULA_ADJUDICATION
+NEXT_STOP=AWAIT_OWNER_GO_MODEL_C_FREEZE_EXCEPTION
 ```
 
-Formula adjudication must also decide OQ-C1..C6 and may not skip the dual-use split or freeze-exception GOs.
+Dual-use identity split is implemented (both values remain `200.0`). Freeze-exception remains required before any MODEL_C runtime bind.

@@ -6,7 +6,6 @@ from pathlib import Path
 
 from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
     CANONICAL_ADVERSE_EXIT_DISTANCE,
-    CANONICAL_UP_DISTANCE,
 )
 
 CAPABILITY_ID = "CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1"
@@ -33,9 +32,14 @@ DIRECT_FILL_INJECTION_ALLOWED = False
 EXIT_END_TO_END_EVIDENCE_PROVEN = False
 POSITION_FLIP_ALLOWED = False
 
-# Reuse Cap 6.3 frozen distances — no new trading numerics introduced.
+# Adverse remains the Cap 6.3 frozen consumer (not part of the MODEL_C dual-use split).
 FROZEN_ADVERSE_EXIT_DISTANCE = float(CANONICAL_ADVERSE_EXIT_DISTANCE)
-FROZEN_PROFIT_PROTECTION_DISTANCE = float(CANONICAL_UP_DISTANCE)
+# Cap 6.5 own profit-protection numeric owner. Independent of Cap 6.3 switch-event
+# up_distance. Effective value remains 200.0 (no numeric behavior change).
+# Do not alias CANONICAL_UP_DISTANCE — MODEL_C dual-use identity split.
+FROZEN_PROFIT_PROTECTION_DISTANCE = 200.0
+PROFIT_PROTECTION_DISTANCE_CONFIG_OWNER = OWNER
+PROFIT_PROTECTION_DISTANCE_REUSES_SWITCH_EVENT_UP_DISTANCE = False
 
 # Cap 6.5 producer-binding constant for wallclock time-exit anchor duration.
 # Binds foundation helper wallclock_time_exit_due_v1; not a Cap 6.3 decision-config key.

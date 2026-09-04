@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
-ATLAS_CHANGED_RELATION_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=4
+ATLAS_CHANGED_RELATION_COUNT=5
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -41,6 +41,7 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `NAVIGATION_INDEX:map_of_truth` |
+| `HOST:wallclock_decision_economics_cycle` |
 | `RUNBOOK:canonical_master_runbook` |
 | `TERM:map_of_truth` |
 
@@ -50,6 +51,9 @@ Do not manually patch generated Markdown.
 | --- |
 | `REL:a_map_documents_runbook` |
 | `REL:s_map_navigates_runbook` |
+| `REL:r_ddo_capture_observes_wallclock_cycle_producers` |
+| `REL:r_wallclock_calls_ddo_cycle_capture` |
+| `REL:r_wallclock_injects_ddo_capture_session` |
 
 ## NEW_RELATIONS
 
@@ -95,7 +99,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR 6271 Atlas follow-up: Map of Truth gained a docs-only navigation pointer to MODEL_C_DYNAMIC_SCOPE_DERIVED_SWITCH_EVENT_THRESHOLDS_CONTRACT_V1. Non-authorizing. Formula unset. Runtime bind unauthorized. Freeze exception unauthorized. hysteresis_multiplier runtime unauthorized. MODEL_B remains the productive baseline. CLOSURE:live_readiness is inspected because MOT documents the runbook; this pointer does not authorize Live. Atlas is not canonical authority.
+- MODEL_C dual-use identity split: Cap 6.5 profit-protection distance is its own 200.0 owner and is not Cap 6.3 switch-event up_distance. Numeric coincidence preserved. Formula remains recorded, not runtime-bound. Freeze exception unauthorized. hysteresis_multiplier runtime unauthorized. MODEL_B remains the productive baseline. CLOSURE:live_readiness is inspected because MOT documents the runbook; this pointer does not authorize Live. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

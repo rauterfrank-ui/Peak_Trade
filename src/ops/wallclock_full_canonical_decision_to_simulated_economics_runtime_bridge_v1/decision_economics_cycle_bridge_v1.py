@@ -128,6 +128,7 @@ from src.ops.dynamic_scope_persistence_binding_v1.constants_v1 import (
 from src.ops.exit_policy_producer_binding_v1.constants_v1 import (
     CALL_GRAPH_EXIT_PRODUCER_STEP,
     CALL_GRAPH_EXIT_STATE_COMMIT_STEP,
+    FROZEN_PROFIT_PROTECTION_DISTANCE,
 )
 from src.ops.exit_policy_producer_binding_v1.host_binding_v1 import (
     HostExitPolicyBindingV1,
@@ -1107,7 +1108,7 @@ def run_bridge_cycle_v1(
         repository_sha=repository_sha,
         config_digest=exit_policy_config_digest_v1(
             adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
-            profit_protection_distance=float(decision_cfg.up_distance),
+            profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
         ),
         state_root=(Path(state.exit_policy_state_root) if state.exit_policy_state_root else None),
     )
@@ -1224,7 +1225,7 @@ def run_bridge_cycle_v1(
             confirmation_binding=state.confirmation_binding,
             data_integrity_trusted=True,
             adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
-            profit_protection_distance=float(decision_cfg.up_distance),
+            profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
             warmup_complete=bool(features.warmup_complete),
             regime_ok=bool(features.ok),
             price_basis_ok=bool(mark > 0),

@@ -167,14 +167,14 @@ def evaluate_profit_protection_producer_v1(
     mark_price: float,
     profit_protection_distance: float = FROZEN_PROFIT_PROTECTION_DISTANCE,
 ) -> ExitPolicySignalEvidenceV1:
-    """Profit protection when favorable move >= Cap 6.3 frozen up_distance."""
+    """Profit protection when favorable move >= Cap 6.5 frozen profit-protection distance."""
     inputs = {
         "has_open_position": has_open_position,
         "existing_position_side": existing_position_side,
         "entry_price": entry_price,
         "mark_price": mark_price,
         "profit_protection_distance": float(profit_protection_distance),
-        "distance_source": "canonical_up_distance_reuse",
+        "distance_source": "cap65_frozen_profit_protection_distance",
     }
     if not has_open_position or entry_price is None:
         return _signal(
