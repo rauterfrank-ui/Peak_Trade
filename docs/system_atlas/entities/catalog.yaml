@@ -1180,6 +1180,7 @@ entities:
     evidence_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - evidence/ops/section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_v1/20260904T052554Z/
+      - evidence/ops/section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_v1/pr_changed_paths_freeze_v1/
       - tests/ops/test_section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_persist_v1.py
     notes: Additive authenticated private GET and runtime permit issuance. No POST. Not flatten. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
@@ -1859,6 +1860,7 @@ entities:
       - src/ops/section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_v1/lineage_v1.py
       - src/ops/section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_v1/persist_claims_v1.py
       - src/ops/section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_v1/persist_v1.py
+      - src/ops/section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_v1/pr_changed_paths_freeze_v1.py
       - src/ops/section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_v1/runtime_permit_v1.py
     evidence_sources:
       - tests/ops/test_section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_v1.py
@@ -1867,6 +1869,7 @@ entities:
       - docs/ops/specs/AUTHENTICATED_PRIVATE_RUNTIME_READ_AND_RUNTIME_PERMIT_ISSUANCE_V1.md
       - docs/forensics/persistence/inventories/AUTHENTICATED_PRIVATE_RUNTIME_READ_AND_RUNTIME_PERMIT_ISSUANCE_OBSERVATION_V1.json
       - evidence/ops/section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_v1/20260904T052554Z/
+      - evidence/ops/section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_v1/pr_changed_paths_freeze_v1/
     notes: >-
       Navigation inventory of authenticated private GET and runtime permit
       issuance. No POST. Atlas is not canonical authority.
