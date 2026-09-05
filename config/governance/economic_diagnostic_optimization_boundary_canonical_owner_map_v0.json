@@ -1999,7 +1999,8 @@
     "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json",
     "config/governance/semantics_neutral_decommission_authorization_v1.json",
     "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json",
-    "config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json"
+    "config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json",
+    "config/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.json"
   ],
   "technical_canonical_wiring_authorization": {
     "authorized_scope_class": "TECHNICAL_CANONICAL_WIRING_ONLY",
@@ -2033,5 +2034,12 @@
     "contract_path": "config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json",
     "grant_active": false,
     "note": "Exact-file evidence-digest-bound Owner-adjudicated productive mapping-contract runtime bind. Distinct from wiring, restoration, decommission, and nonproductive contract change. Inactive by default. Active grants require SHA-256 decommission_evidence_digest_v1 over exact files and the bound diff-base SHA. Does not waive MASTER_V2_MUTATION_ALLOWED=false. Not a PR or branch exception."
+  },
+  "explicit_owner_adjudicated_scope_direction_generator_fallback_authorization": {
+    "authorized_scope_class": "EXPLICIT_OWNER_ADJUDICATED_SCOPE_DIRECTION_GENERATOR_FALLBACK_V1",
+    "mutation_purpose_class": "SCOPE_DIRECTION_GENERATOR_FALLBACK_REPAIR",
+    "contract_path": "config/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.json",
+    "grant_active": true,
+    "note": "Exact-file evidence-digest-bound Owner-adjudicated generator-fallback repair so ScopeDirectionState remains a SideState projection. Distinct from wiring, restoration, decommission, nonproductive contract change, and the fifth mapping-bind class. Does not reopen the closed fifth-class grant. Does not waive MASTER_V2_MUTATION_ALLOWED=false. Not a PR or branch exception."
   }
 }

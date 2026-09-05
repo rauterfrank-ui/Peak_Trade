@@ -7318,13 +7318,103 @@ SideState projection as `inp.scope_direction_state`. Neutral/CHOP/KILL
 rebuild to LONG on that host path independently of previous `selected_side`.
 Cap-7.2 overlay-inert from §11.2.1.D is unchanged. Direct mutation of the
 generator fallback inside `run_integrated_offline_trading_logic_replay_v1`
-remains outside this persist.
+is superseded by §11.2.1.F.
 
 ``` text
 CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
 PACKAGE_OWNER=src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/
 SPEC_OWNER=docs/ops/specs/DIRECTIONAL_MAPPING_CONTRACT_REPAIR_V1.md
 CURRENT_CANONICAL_SECTION=11.2.1.E.HARDENING_V2_SCOPE_DIRECTION_OVERLAY_GENERATOR_INERT_MINIMUM_ATOMIC_REPAIR_V1
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+### 11.2.1.F SCOPE_DIRECTION_GENERATOR_FALLBACK_AND_SIXTH_ECONOMIC_GUARD_ADMISSION_V1 (BOUND; OFFLINE CONTRACTS ONLY; NO WIRE; NO FILEGATE RUNTIME JOIN)
+
+Additive persist. Does **not** rewrite §11.2.1 standing Live flags, §11.13.5
+canary, or §11.14 ladder fields. Does **not** GET. Does **not** POST. Does
+**not** construct `LiveExecutionPort`. Does **not** arm Live. Does **not**
+join durable FILEGATE. Does **not** change Double Play `transition_state`.
+Does **not** change Entry/Exit PENDING tables, C3, Composition-matrix decision
+logic, RuntimeScopeState trailing, 29P, 29Q, Replay Safety, Kill Switch,
+Mapper, Execution, or SideState fail-closed restore. Does **not** reopen the
+closed fifth-class grant. Does **not** introduce LastActiveSide. Does **not**
+bind MODEL_C freeze exception. Does **not** change Cap-7.2 or Hardening-v2
+overlay writers already closed in §11.2.1.D and §11.2.1.E.
+
+Owner-GO
+`OWNER_GO=PEAK_TRADE_OWNER_GO_SCOPE_DIRECTION_GENERATOR_FALLBACK_AND_SIXTH_ECONOMIC_GUARD_ADMISSION_V1`
+(one-shot for this persist) binds the remaining generator fallback inside
+`run_integrated_offline_trading_logic_replay_v1`: `ScopeDirectionState` remains
+a derived runtime projection from `SideState`. Composition `selected_side` and
+`inp.scope_direction_state` must not overwrite that projection as a second
+generator-fallback authority. A sixth Economic-Guard admission class admits
+exactly this Master-V2 slice.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_SCOPE_DIRECTION_GENERATOR_FALLBACK_AND_SIXTH_ECONOMIC_GUARD_ADMISSION_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=SCOPE_DIRECTION_GENERATOR_FALLBACK_AND_SIXTH_ECONOMIC_GUARD_ADMISSION_V1
+CORE_LOGIC_CHANGE=true
+OWNER_RATIFICATION_REQUIRED=true
+DECISION_AUTHORITY_UNCHANGED=true
+SOLE_COMPUTE_OWNER=run_integrated_offline_trading_logic_replay_v1
+SIDESTATE_COMPUTE_OWNER=transition_state
+SCOPE_DIRECTION_STATE_INDEPENDENT_AUTHORITY=false
+SCOPE_DIRECTION_STATE_MODEL=DERIVED_RUNTIME_PROJECTION_FROM_SIDESTATE
+COMPOSITION_SELECTED_SIDE_MAY_WRITE_SCOPE_DIRECTION_STATE=false
+COMPOSITION_SELECTED_SIDE_CAN_MUTATE_GENERATOR_DIRECTION=false
+MASTER_V2_GENERATOR_FALLBACK_SYNCHRONIZED=true
+HARDENING_V2_OVERLAY_SYNCHRONIZED=true
+PERSISTED_SCOPE_DIRECTION_STATE_IS_INDEPENDENT_AUTHORITY=false
+LAST_ACTIVE_SIDE_BINDING_AUTHORIZED=false
+SCOPE_DIRECTION_STATE_RESTART_AUTHORITY=DERIVED_NOT_PERSISTED_INDEPENDENT_TRUTH
+SCOPE_DIRECTION_STATE_REBUILD_OWNER=scope_direction_from_side_state_v1
+NEUTRAL_OBSERVE_CHOP_GUARD_BLOCK_KILL_ALL_FALLBACK=LONG
+NEUTRAL_PLUS_OVERLAY_SHORT_MUST_SURVIVE_RUNTIME=false
+PREVIOUS_DIRECTION_IS_RESTART_AUTHORITATIVE_HISTORY=false
+COMPOSITION_OVERLAY_CLASSIFICATION=GENERATOR_INERT_NOT_SCOPE_DIRECTION_AUTHORITY
+CAP62_SCOPE_DIRECTION_STATE_CLASSIFICATION=REBUILD_DETERMINISTICALLY
+SCOPE_DIRECTION_STATE_FAIL_CLOSED_ANALOG_TO_SIDESTATE=false
+SIDESTATE_RESTORE_INVALID_VALUE_FAILS_CLOSED=true
+DOUBLE_PLAY_SIDE_STATE_OWNER=transition_state
+ENTRY_EXIT_OWNER=entry_exit_policy_v0
+POSITION_SIZING_OWNER=capital_risk_sizing_v1
+NEW_ECONOMIC_GUARD_CLASS_ID=EXPLICIT_OWNER_ADJUDICATED_SCOPE_DIRECTION_GENERATOR_FALLBACK_V1
+NEW_ECONOMIC_GUARD_CLASS_COUNT=1
+GENERIC_MASTER_V2_GRANT_CREATED=false
+EXISTING_CLOSED_GRANT_REOPENED=false
+FIFTH_CLASS_GRANT_CLOSEOUT_IN_THIS_PERSIST=false
+DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=false
+LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
+FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+LIVE_RESTART_RECONSTRUCTED=false
+DURABLE_PRE_RESTART_HANDOFF_PRESENT=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+`run_integrated_offline_trading_logic_replay_v1` projects generator
+`current_direction_state` from `inp.side_state` via
+`scope_direction_from_side_state_v1` with the helper default LONG fallback.
+`inp.scope_direction_state` is not generator-fallback authority. Composition
+`selected_side` may still update composition history / `selected_strategy_ref`
+and must not write `ScopeDirectionState`. Neutral/CHOP/KILL rebuild to LONG
+independently of a SHORT input cursor. PENDING mappings remain departing-side
+orientation. Entry/Exit remains `entry_exit_policy_v0`. Cap-7.2 and
+Hardening-v2 overlay-inert projection from §11.2.1.D and §11.2.1.E is
+unchanged. The sixth Economic-Guard class is bound exclusively to this slice.
+After merge, that class requires its own grant closeout. No automatic
+successor.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+SPEC_OWNER=docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_SCOPE_DIRECTION_GENERATOR_FALLBACK_AUTHORIZATION_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.F.SCOPE_DIRECTION_GENERATOR_FALLBACK_AND_SIXTH_ECONOMIC_GUARD_ADMISSION_V1
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 

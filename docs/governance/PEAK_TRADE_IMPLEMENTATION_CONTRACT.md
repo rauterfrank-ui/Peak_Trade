@@ -326,6 +326,7 @@ config/governance/historically_attested_current_system_semantic_restoration_auth
 config/governance/semantics_neutral_decommission_authorization_v1.json
 config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json
 config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json
+config/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.json
 src/governance/economic_diagnostic_optimization_boundary_v0.py
 scripts/ops/check_economic_diagnostic_optimization_boundary_guard_v0.py
 ```
@@ -434,6 +435,34 @@ GRANT_ACTIVE=false
 
 Owner: `config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json`.
 Attestation: `docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_AUTHORIZATION_V1.md`.
+
+Eng begrenzte Explicit-Owner-Adjudicated ScopeDirection-Generator-Fallback-Authorization
+(`EXPLICIT_OWNER_ADJUDICATED_SCOPE_DIRECTION_GENERATOR_FALLBACK_V1`) — **eigene
+sechste Klasse, kein Wiring, keine Restoration, kein Decommission, keine
+Nonproductive Contract Change, keine Wiedereröffnung der fünften Klasse, keine
+Standing Authorization, keine PR-/Branch-Bindung**:
+
+```text
+GENERATOR_FALLBACK_AUTHORIZATION_VERSION=explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1
+AUTHORIZED_SCOPE_CLASS=EXPLICIT_OWNER_ADJUDICATED_SCOPE_DIRECTION_GENERATOR_FALLBACK_V1
+MUTATION_PURPOSE_CLASS=SCOPE_DIRECTION_GENERATOR_FALLBACK_REPAIR
+TOKEN_ALONE_INSUFFICIENT=true
+OWNER_APPROVED_ALONE_INSUFFICIENT=true
+AUTHORIZED_EVIDENCE_DIGEST_REQUIRED=true
+BOUND_DIFF_BASE_SHA_REQUIRED=true
+UNKNOWN_FIELD_FAIL_CLOSED=true
+STANDING_AUTHORIZATION_ALLOWED=false
+PR_SPECIFIC_EXCEPTION=false
+BRANCH_SPECIFIC_EXCEPTION=false
+BLANKET_ALLOWLIST=false
+DIRECTORY_GRANT=false
+MASTER_V2_MUTATION_ALLOWED=false
+CANONICAL_TRADING_LOGIC_MUTATION_ALLOWED=false
+FIFTH_CLASS_GRANT_REOPENED=false
+```
+
+Owner: `config/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.json`.
+Attestation: `docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_SCOPE_DIRECTION_GENERATOR_FALLBACK_AUTHORIZATION_V1.md`.
 
 ## 13. Trend Following v2 Recovery Wiring (v0)
 

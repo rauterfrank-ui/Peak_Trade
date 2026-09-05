@@ -154,6 +154,7 @@ def _report(
     skip_restoration: bool = True,
     skip_owner: bool = True,
     skip_mapping: bool = False,
+    skip_generator_fallback: bool = True,
     diff_base_sha: str | None = TEST_DIFF_BASE_SHA,
 ) -> object:
     return build_boundary_report(
@@ -161,6 +162,7 @@ def _report(
         repo_root=REPO_ROOT,
         mapping_bind_authorization=auth,
         skip_mapping_bind_authorization=skip_mapping,
+        skip_generator_fallback_authorization=skip_generator_fallback,
         skip_technical_wiring_authorization=skip_wiring,
         skip_decommission_authorization=skip_decommission,
         skip_restoration_authorization=skip_restoration,
@@ -612,6 +614,7 @@ class TestMappingBindLocalPr6274ProofOptionalV1:
             changed,
             repo_root=REPO_ROOT,
             skip_mapping_bind_authorization=True,
+            skip_generator_fallback_authorization=True,
         )
         assert report_before.admissible is False
         diffs: dict[str, str] = {}
