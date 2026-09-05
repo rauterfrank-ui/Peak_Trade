@@ -346,6 +346,7 @@ Fail-closed is the default. Live/Testnet/orders require scoped Owner-GO. Confirm
 | GATE:full_core_live_path_frozen_pretrade_conjunction_v1 | GATE | Frozen offline pretrade conjunction v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_live_path_restart_gate_v1 | GATE | Full-core live path restart gate v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_live_path_standing_live_gates_v1 | GATE | Full-core live path standing Live gates v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:kill_switch_durable_filegate_v1 | GATE | Durable execution-side kill-switch FILEGATE v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:live_authorized_false | GATE | LIVE_AUTHORIZED=false standing | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | GATE:max_positions_1 | GATE | CURRENT_MAX_POSITIONS=1 | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | GATE:position_observation_freshness | GATE | POSITION_OBSERVATION_FRESHNESS | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -433,7 +434,7 @@ Architectural-kind count in this bucket: `19`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `108`.
+Architectural-kind count in this bucket: `109`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -460,6 +461,7 @@ Architectural-kind count in this bucket: `108`.
 | GATE:full_core_live_path_frozen_pretrade_conjunction_v1 | GATE | Frozen offline pretrade conjunction v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_live_path_restart_gate_v1 | GATE | Full-core live path restart gate v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_live_path_standing_live_gates_v1 | GATE | Full-core live path standing Live gates v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:kill_switch_durable_filegate_v1 | GATE | Durable execution-side kill-switch FILEGATE v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:position_observation_freshness | GATE | POSITION_OBSERVATION_FRESHNESS | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:target_position_state | GATE | TARGET_POSITION_STATE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | HOST:wallclock_decision_economics_cycle | HOST | Wallclock decision-to-simulated-economics cycle | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -476,9 +478,8 @@ Architectural-kind count in this bucket: `108`.
 | PHASE:p08_read_only_closure | PHASE | 11.13.5.P08_READ_ONLY_CLOSURE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:p10_target_position_qty_unit_forensic_adjudicate_persist | PHASE | 11.13.5.P10 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:p11_pos_to_sz_unit_identity_independent_proof | PHASE | 11.13.5.P11 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| PHASE:p12_execution_prerequisite_11_position_side_posside | PHASE | 11.13.5.P12 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `108` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `109` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -714,7 +715,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=445
+ENTITY_TOTAL=446
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=85
 RUNTIME_RELATION_COUNT=59
@@ -799,7 +800,7 @@ Remaining census domains:
 | FAMILY | 8 |
 | FORENSIC_REFERENCE | 2 |
 | FUNCTIONAL_CORE | 1 |
-| GATE | 11 |
+| GATE | 12 |
 | GUARD | 1 |
 | HOST | 2 |
 | INVARIANT | 1 |

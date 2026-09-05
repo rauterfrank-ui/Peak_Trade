@@ -53,6 +53,11 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK_RATIFICATION.json
       - docs/ops/specs/PEAK_TRADE_BIND_CURRENT_SUI_L4_FAIL_CLOSED_MAX_AVAILABLE_ZERO_END_STATE_NO_REPAIR_V1.md
+    notes: >-
+      Canonical working authority. Section 11.9.1 precisifies durable
+      execution-side kill authority (StatePersistence writer + FILEGATE
+      reader) without authorizing Live flatten, alias split, or auto-trip
+      wiring. Atlas is not canonical authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
     kind: NAVIGATION_INDEX
@@ -78,6 +83,11 @@ entities:
       MODEL_C contract, formula/policy adjudication, and dual-use identity split
       are docs-only or wiring-identity navigation pointers (formula recorded,
       not runtime-bound; profit-protection 200.0 is not switch-event up_distance;
+      MODEL_B remains productive baseline; no freeze exception; no derivation bind).
+      Directional mapping contract repair is runtime-bound for SHORT reversal
+      polarity and PENDING departing-side generator orientation (ARMED residual
+      unresolved; freeze exception unauthorized; last_active_side unauthorized;
+      MODEL_B remains productive baseline).
       MODEL_B remains productive baseline; no freeze exception; no derivation bind).
       Directional mapping contract repair is runtime-bound for SHORT reversal
       polarity and PENDING departing-side generator orientation (ARMED residual
@@ -3712,6 +3722,41 @@ entities:
       GATE:live_authorized_false. Does not authorize Live, Testnet,
       canary, or orders. Atlas is not canonical authority.
       ATLAS_AUTHORITY=NONE.
+
+  - id: GATE:kill_switch_durable_filegate_v1
+    kind: GATE
+    name: Durable execution-side kill-switch FILEGATE v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    fail_closed: true
+    source_paths:
+      - src/ops/gates/risk_gate.py
+      - src/execution/pipeline.py
+    source_symbols:
+      - kill_switch_should_block_trading
+      - resolve_kill_switch_limit_from_state_file
+      - canonical_kill_switch_state_path
+      - _is_kill_switch_blocking
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - src/ops/gates/risk_gate.py
+      - src/execution/pipeline.py
+      - src/risk_layer/kill_switch/core.py
+      - src/risk_layer/kill_switch/cli.py
+      - src/risk_layer/kill_switch/persistence.py
+      - tests/ops/test_risk_gate.py
+      - tests/risk_layer/kill_switch/test_durable_execution_authority_v1.py
+    notes: >-
+      Inventory of the execution-side durable kill. Canonical block reader is
+      kill_switch_should_block_trading. Operator CLI trigger/recover persist
+      KillSwitchState via StatePersistence. PEAK_KILL_SWITCH=1 is an operator
+      deny overlay, not a second state machine. Threshold/Watchdog/External
+      triggers are not productively wired. Does not split killswitch_blocked.
+      Does not authorize Live flatten. Does not set LIVE_RESTART_RECONSTRUCTED.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1
     kind: RUNTIME_COMPONENT

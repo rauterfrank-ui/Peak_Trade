@@ -9,6 +9,7 @@ from src.ops.gates.risk_gate import (
     RiskContext,
     evaluate_risk,
     RiskDenyReason,
+    canonical_kill_switch_state_path,
     kill_switch_should_block_trading,
     kill_switch_state_path_from_env,
     resolve_kill_switch_limit_from_state_file,
@@ -138,6 +139,12 @@ def test_resolve_kill_switch_invalid_json(tmp_path):
     assert resolve_kill_switch_limit_from_state_file(str(path)) is None
 
 
+def test_resolve_kill_switch_invalid_enum_is_none(tmp_path):
+    path = tmp_path / "state.json"
+    path.write_text(json.dumps({"state": "FOO"}), encoding="utf-8")
+    assert resolve_kill_switch_limit_from_state_file(str(path)) is None
+
+
 def test_kill_switch_state_path_from_env_prefers_canonical(monkeypatch):
     monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", "/a/state.json")
     monkeypatch.setenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", "/b/state.json")
@@ -154,9 +161,17 @@ def test_kill_switch_should_block_trading_explicit():
     assert kill_switch_should_block_trading(explicit_active=True) is True
 
 
-def test_kill_switch_should_block_trading_file_killed(tmp_path, monkeypatch):
+def test_kill_switch_should_block_trading_file_recovering(tmp_path, monkeypatch):
     path = tmp_path / "ks.json"
-    path.write_text(json.dumps({"state": "KILLED"}), encoding="utf-8")
+    path.write_text(json.dumps({"state": "RECOVERING"}), encoding="utf-8")
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(path))
+    monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
+    assert kill_switch_should_block_trading(explicit_active=False) is True
+
+
+def test_kill_switch_should_block_trading_invalid_enum_fail_closed(tmp_path, monkeypatch):
+    path = tmp_path / "ks.json"
+    path.write_text(json.dumps({"state": "NOT_A_STATE"}), encoding="utf-8")
     monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(path))
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
     assert kill_switch_should_block_trading(explicit_active=False) is True
@@ -187,39 +202,38 @@ def test_kill_switch_should_block_trading_env_fallback_strict_literal_one(
     peak_kill_switch: str | None,
     expect_block: bool,
 ) -> None:
-    """When state file is missing, only PEAK_KILL_SWITCH exactly ``1`` blocks (current contract)."""
-    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(tmp_path / "nope.json"))
+    """Unconfigured missing default file: only PEAK_KILL_SWITCH exactly ``1`` blocks."""
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("PEAK_KILL_SWITCH_STATE_PATH", raising=False)
+    monkeypatch.delenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", raising=False)
     if peak_kill_switch is None:
         monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
     else:
         monkeypatch.setenv("PEAK_KILL_SWITCH", peak_kill_switch)
+    assert canonical_kill_switch_state_path() == "data/kill_switch/state.json"
     assert kill_switch_should_block_trading(explicit_active=False) is expect_block
 
 
-def test_char4_pre_split_characterization_missing_state_file_fail_open(
+def test_char4_configured_missing_state_file_fail_closed(
     monkeypatch: pytest.MonkeyPatch, tmp_path
 ) -> None:
-    """CHAR-4: CURRENT_BEHAVIOR=MISSING_STATE_CAN_FAIL_OPEN. TARGET=RESTORE_OR_FAIL_CLOSED_BLOCK.
-
-    Missing file returns None from the file reader and, without PEAK_KILL_SWITCH=1,
-    kill_switch_should_block_trading is currently False (not BLOCKED).
-    """
+    """CHAR-4 TARGET: configured path missing must fail-closed (block)."""
     monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(tmp_path / "absent.json"))
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
     assert resolve_kill_switch_limit_from_state_file(str(tmp_path / "absent.json")) is None
-    assert kill_switch_should_block_trading(explicit_active=False) is False
+    assert kill_switch_should_block_trading(explicit_active=False) is True
 
 
-def test_char4_pre_split_characterization_malformed_state_file_same_as_missing(
+def test_char4_configured_malformed_state_file_fail_closed(
     monkeypatch: pytest.MonkeyPatch, tmp_path
 ) -> None:
-    """CHAR-4: unreadable/malformed JSON currently also returns None (env fallback)."""
+    """CHAR-4 TARGET: existing unreadable JSON fail-closed (block)."""
     path = tmp_path / "bad.json"
     path.write_text("{not json", encoding="utf-8")
     monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(path))
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
     assert resolve_kill_switch_limit_from_state_file(str(path)) is None
-    assert kill_switch_should_block_trading(explicit_active=False) is False
+    assert kill_switch_should_block_trading(explicit_active=False) is True
 
 
 def test_char5_pre_split_characterization_kill_reader_blocks_entry_and_reduce() -> None:

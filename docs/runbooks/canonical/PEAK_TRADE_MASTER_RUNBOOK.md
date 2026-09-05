@@ -7208,6 +7208,25 @@ PERSISTENT_KILL
 
 No emergency command may silently increase risk or re-enable trading.
 
+### 11.9.1 Durable execution-side authority (current binding)
+
+The persistent kill required above is bound on the execution side as
+follows. This subsection precisifies those already claimed properties.
+It does not authorize Live flatten, an alias split of
+`killswitch_blocked`, Dynamic Scope or Bull/Bear mutation, or automatic
+market / integrity auto-trip wiring.
+
+Durable state authority is `KillSwitchState` written by
+`StatePersistence`. The canonical execution-side block reader is
+`kill_switch_should_block_trading`. Operator CLI `trigger` persists
+`KILLED`. The existing `request_recovery` and `complete_recovery`
+contract persists `RECOVERING` then `ACTIVE`. `PEAK_KILL_SWITCH=1`
+remains an explicit operator deny overlay when no valid persisted
+non-blocking state is present; it is not a second kill-state machine.
+A configured or existing unreadable or semantically invalid state file
+must not fail-open. Threshold, watchdog, and external trigger modules
+are library-only and are not productively wired.
+
 ## 11.10 Process, host and dependency resilience
 
 Full autonomy requires that ordinary failures do not require manual
