@@ -222,6 +222,7 @@ from trading.master_v2.double_play_state import SideState
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
     IntegratedOfflineReplayPoliciesV1,
+    _side_state_to_entry_exit_direction,
     build_integrated_offline_replay_input_v1,
     run_integrated_offline_trading_logic_replay_v1,
     scope_direction_from_side_state_v1,
@@ -583,25 +584,9 @@ def _update_session_state_from_replay(
         state.side_state = SideState(inter.state_switch.next_side_state)
     except Exception:  # noqa: BLE001
         pass
-    # Map next side into entry/exit direction for the following cycle.
-    side_map = {
-        SideState.LONG_ARMED: EntryExitDirectionState.LONG_ARMED,
-        SideState.LONG_ARMED_NEUTRAL_START: EntryExitDirectionState.LONG_ARMED,
-        SideState.LONG_ARMED_SWITCH_TERMINAL: EntryExitDirectionState.LONG_ARMED,
-        SideState.LONG_ACTIVE: EntryExitDirectionState.LONG_ACTIVE,
-        SideState.SHORT_ARMED: EntryExitDirectionState.SHORT_ARMED,
-        SideState.SHORT_ARMED_NEUTRAL_START: EntryExitDirectionState.SHORT_ARMED,
-        SideState.SHORT_ARMED_SWITCH_TERMINAL: EntryExitDirectionState.SHORT_ARMED,
-        SideState.SHORT_ACTIVE: EntryExitDirectionState.SHORT_ACTIVE,
-        SideState.NEUTRAL_OBSERVE: EntryExitDirectionState.NEUTRAL,
-        SideState.LONG_BLOCKED: EntryExitDirectionState.NEUTRAL,
-        SideState.SHORT_BLOCKED: EntryExitDirectionState.NEUTRAL,
-        SideState.CHOP_GUARD_BLOCK: EntryExitDirectionState.NEUTRAL,
-        SideState.KILL_ALL: EntryExitDirectionState.NEUTRAL,
-        SideState.SWITCH_LONG_TO_SHORT_PENDING: EntryExitDirectionState.LONG_ACTIVE,
-        SideState.SWITCH_SHORT_TO_LONG_PENDING: EntryExitDirectionState.SHORT_ACTIVE,
-    }
-    state.direction_state = side_map.get(state.side_state, state.direction_state)
+    # Next-cycle Entry/Exit cursor consumes the Replay mapping owner.
+    # PENDING rows are not re-adjudicated here.
+    state.direction_state = _side_state_to_entry_exit_direction(state.side_state)
     sel = str(inter.composition_result.selected_side.value).lower()
     if sel == "long":
         state.previous_composition_direction_state = CompositionDirectionState.LONG

@@ -346,13 +346,15 @@ Long→Short pipeline **event names stay** `DOWNSCOPE_CONFIRMED` at every
 step. The PENDING orientation TARGET makes that token remain geometric
 **down** on the frozen Long-era anchor (fixes census §11.2 stall).
 
-### 5.4 Entry/Exit (unchanged by this contract)
+### 5.4 Entry/Exit (unchanged by this contract's original bind)
 
 Integrated Replay / adapter table remains the Entry/Exit owner.
-Productive wallclock bridges carry a **parallel** PENDING map
-(`SWITCH_*_PENDING` → still-`*_ACTIVE`). That parallel map is **not**
-repaired here. It is blast-radius (must not be silently treated as the
-canonical table).
+This contract's original runtime-bind GO did **not** remap Entry/Exit.
+Historical blast-radius: productive wallclock bridges carried a
+**parallel** PENDING map (`SWITCH_*_PENDING` → still-`*_ACTIVE`).
+That parallel map was **not** repaired by §12. See §14 for the later
+single-owner host consumption of the Replay table. PENDING row
+**outputs** were not re-adjudicated.
 
 ## 6. Formula relation (no K choice)
 
@@ -437,14 +439,15 @@ tests stay.
 
 | Surface | Observed fact |
 |---------|----------------|
-| Wallclock `decision_economics_cycle_bridge_v1.py` `_update_session_state_from_replay` | PENDING → still `*_ACTIVE` for Entry/Exit; **also** sets `scope_direction_state` from **composition** `selected_side`, not from `scope_direction_from_side_state_v1` |
-| Wallclock `hardening_cycle_bridge_v2.py` | Same parallel PENDING → `*_ACTIVE` and composition-selected scope direction |
-| `scope_event_generator_scenario_binding_adapter_v0.py` `active_side_to_scope_direction_v0` | `ActiveSide.SHORT` → SHORT else LONG; PENDING is trailing-NEUTRAL → **LONG** (already closer to Long→Short PENDING TARGET; **not** identical to productive table) |
+| Wallclock `decision_economics_cycle_bridge_v1.py` `_update_session_state_from_replay` | **CURRENT (after §14):** Entry/Exit cursor consumes Replay `_side_state_to_entry_exit_direction`. **HISTORICAL:** local PENDING → still `*_ACTIVE`. `scope_direction_state` is a SideState projection via `scope_direction_from_side_state_v1` (bound in §11.2.1.D); the earlier composition-`selected_side` overlay wording is stale. |
+| Wallclock `hardening_cycle_bridge_v2.py` | **CURRENT (after §14):** same Replay-owner consumption. **HISTORICAL:** local PENDING → `*_ACTIVE`. Overlay-inert `scope_direction_state` bound in §11.2.1.E. |
+| `scope_event_generator_scenario_binding_adapter_v0.py` `active_side_to_scope_direction_v0` | `ActiveSide.SHORT` → SHORT else LONG; PENDING is trailing-NEUTRAL → **LONG** (already closer to Long→Short PENDING TARGET; **not** identical to productive table). Unchanged by §14. |
 | Cycle harnesses that assign `ScopeDirectionState.SHORT` literally | Test/scenario injection; not productive owner |
 
 A later runtime GO that remaps only `scope_direction_from_side_state_v1`
 **must** re-adjudicate the wallclock composition overlay. Leaving it
 unexamined would re-create Dual Orientation on the productive host.
+Entry/Exit host consumption is a **separate** later GO; see §14.
 
 ### 7.4 Explicitly out of scope (this family and later bind)
 
@@ -523,7 +526,11 @@ MARKER: NEXT_STOP=AWAIT_OWNER_MERGE_GO_FOR_DIRECTIONAL_MAPPING_RUNTIME_BIND_PR
 
 The persist-slice STOP list below remains the historical bound of the
 docs-only GO. The runtime-bind GO in §12 is the authorized exception to
-item 1 for the minimum atomic set only.
+item 1 for the minimum atomic set only. A later Owner-GO in §14 is the
+authorized exception to item 8 **only** for Wallclock/Hardening
+**consumption** of the existing Replay Entry/Exit mapping owner. It is
+**not** a PENDING-row TARGET rewrite, **not** a composition overlay remap,
+and **not** ARMED history-carry.
 
 Stop immediately if this file is treated as:
 
@@ -535,6 +542,7 @@ Stop immediately if this file is treated as:
 6. PR `#6270` modification
 7. Live / orders / credentials
 8. wallclock composition overlay remap, Entry/Exit remap, or ARMED history-carry
+   (historical; §14 is the later host-consumption exception only)
 
 ## 11. Next stop
 
@@ -613,4 +621,46 @@ Bound authority for that later persist:
 `docs/ops/specs/SIDESTATE_ARMED_IDENTITY_SPLIT_MINIMUM_ATOMIC_REPAIR_V1.md`.
 Legacy persisted `long_armed` / `short_armed` remain parseable as
 legacy-ambiguous identities. Origin is not reconstructed here.
+
+## 14. Entry/Exit single-owner host consumption (later GO; PENDING rows unchanged)
+
+A later Owner-GO materializes §5.4: Cap-7.2 and Hardening-v2 session
+cursors consume Replay `_side_state_to_entry_exit_direction`. This is
+**not** a new mapping table and **not** a PENDING-row TARGET rewrite.
+Generator (`scope_direction_from_side_state_v1`) and trailing
+(`derive_active_side`) remain separate consumer domains. ARMED identity
+split remains as bound in §13.
+
+```text
+ENTRY_EXIT_SINGLE_OWNER_HOST_CONSUMPTION_GO=PEAK_TRADE_OWNER_GO_SIDESTATE_PENDING_ENTRY_EXIT_MAPPING_SINGLE_OWNER_MINIMUM_ATOMIC_REPAIR_V1
+ENTRY_EXIT_MAPPING_OWNER=_side_state_to_entry_exit_direction
+LOCAL_WALLCLOCK_MAPPING_AUTHORITY_REMAINING=false
+PENDING_TARGET_REWRITE_AUTHORIZED=false
+PENDING_OWNER_OUTPUT_UNCHANGED=true
+ARMED_IDENTITY_UNCHANGED=true
+GENERATOR_UNCHANGED=true
+TRAILING_UNCHANGED=true
+NEW_ECONOMIC_GUARD_CLASS_COUNT=0
+SEVENTH_CLASS_GRANT_REOPENED=false
+LIVE_AUTHORIZED=false
+```
+
+Implemented surfaces:
+
+- `src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py`
+  `_update_session_state_from_replay`
+- `src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py`
+  `_update_session_state_from_replay`
+- `tests/ops/test_sidestate_pending_entry_exit_mapping_single_owner_v1.py`
+
+Owner outputs consumed (unchanged Replay table):
+
+```text
+SWITCH_LONG_TO_SHORT_PENDING → SHORT_ARMED
+SWITCH_SHORT_TO_LONG_PENDING → LONG_ARMED
+LONG_ARMED_NEUTRAL_START → LONG_ARMED
+LONG_ARMED_SWITCH_TERMINAL → LONG_ARMED
+SHORT_ARMED_NEUTRAL_START → SHORT_ARMED
+SHORT_ARMED_SWITCH_TERMINAL → SHORT_ARMED
+```
 
