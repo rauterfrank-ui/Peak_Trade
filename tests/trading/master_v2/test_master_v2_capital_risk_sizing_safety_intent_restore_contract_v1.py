@@ -44,6 +44,7 @@ from trading.master_v2.double_play_core_wiring_v1 import (
 from trading.master_v2.double_play_entry_exit_policy_v0 import (
     DecisionOutcome,
     EntryExitDirectionState,
+    PolicySignalV0,
     SafetyMode,
 )
 from trading.master_v2.double_play_sole_authority_quarantine_v1 import (
@@ -53,7 +54,9 @@ from trading.master_v2.double_play_sole_authority_quarantine_v1 import (
 from trading.master_v2.double_play_state import SideState
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_OWNER,
+    run_integrated_offline_trading_logic_replay_v1,
 )
+import trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0 as sk_mod
 from trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0 import (
     SAFETY_BOUNDARY_EFFECT_BOUND_OFFLINE,
 )
@@ -300,3 +303,117 @@ def test_negative_coupling_and_authority_contract() -> None:
     assert "REPLAY_ORDERING_REMEDIATED_THIS_SLICE=false" in spec
     assert "XP03_ACTIVATED=false" in spec
     assert "ADAPTER_COMPUTE_OWNER=false" in spec
+
+
+# ---------------------------------------------------------------------------
+# CHAR-2 PRE_SPLIT_CHARACTERIZATION — Full-Core killswitch_blocked OR alias
+# CURRENT_BEHAVIOR=killswitch_blocked := KILL_ALL OR SafetyMode.BLOCKED OR
+#     safety_exit_signal.triggered
+# ADJUDICATED_TARGET_BEHAVIOR=split sources (DOUBLE_PLAY_KILL_ALL !=
+#     INTEGRITY_BLOCK; EXIT_SIGNAL != INTEGRITY_KILL)
+# CURRENT_BEHAVIOR_EQUALS_TARGET=false
+# ---------------------------------------------------------------------------
+
+
+_CHAR2_ALIAS_OR = (
+    "inp.safety_mode is SafetyMode.BLOCKED",
+    "inp.safety_exit_signal.triggered",
+    "inp.side_state is SideState.KILL_ALL",
+)
+
+
+def test_char2_pre_split_characterization_alias_or_is_present_in_both_producers() -> None:
+    """CHAR-2: mapper and integrated replay currently share the same three-term OR."""
+    restore_src = RESTORE_MODULE.read_text(encoding="utf-8")
+    replay_src = REPLAY_MODULE.read_text(encoding="utf-8")
+    for token in _CHAR2_ALIAS_OR:
+        assert token in restore_src, token
+        assert token in replay_src, token
+    restore_idx = restore_src.index("killswitch_blocked=(")
+    replay_idx = replay_src.index("killswitch_blocked = (")
+    restore_or = restore_src[restore_idx : restore_idx + 220]
+    replay_or = replay_src[replay_idx : replay_idx + 220]
+    for token in _CHAR2_ALIAS_OR:
+        assert token in restore_or
+        assert token in replay_or
+
+
+@pytest.mark.parametrize(
+    ("name", "overrides", "expect_blocked"),
+    [
+        (
+            "A_only_side_state_kill_all",
+            {"side_state": SideState.KILL_ALL},
+            True,
+        ),
+        (
+            "B_only_safety_mode_blocked",
+            {"safety_mode": SafetyMode.BLOCKED},
+            True,
+        ),
+        (
+            "C_only_safety_exit_signal_triggered",
+            {"safety_exit_signal": PolicySignalV0(triggered=True, reason_code="safety")},
+            True,
+        ),
+        (
+            "D_all_false",
+            {},
+            False,
+        ),
+        (
+            "E_kill_all_and_blocked",
+            {"side_state": SideState.KILL_ALL, "safety_mode": SafetyMode.BLOCKED},
+            True,
+        ),
+        (
+            "E_kill_all_and_exit",
+            {
+                "side_state": SideState.KILL_ALL,
+                "safety_exit_signal": PolicySignalV0(triggered=True, reason_code="safety"),
+            },
+            True,
+        ),
+        (
+            "E_blocked_and_exit",
+            {
+                "safety_mode": SafetyMode.BLOCKED,
+                "safety_exit_signal": PolicySignalV0(triggered=True, reason_code="safety"),
+            },
+            True,
+        ),
+        (
+            "E_all_three",
+            {
+                "side_state": SideState.KILL_ALL,
+                "safety_mode": SafetyMode.BLOCKED,
+                "safety_exit_signal": PolicySignalV0(triggered=True, reason_code="safety"),
+            },
+            True,
+        ),
+    ],
+)
+def test_char2_pre_split_characterization_killswitch_blocked_or_alias(
+    monkeypatch: pytest.MonkeyPatch,
+    name: str,
+    overrides: dict,
+    expect_blocked: bool,
+) -> None:
+    """CHAR-2 / CHAR-6 / CHAR-7: mapper freeze of the current OR alias."""
+    inp = _replay_input(**overrides)
+    mapped = safety_context_from_integrated_replay_input_v1(inp)
+    assert mapped.killswitch_blocked is expect_blocked, name
+    assert mapped.safety_decision_allowed is (inp.safety_mode is not SafetyMode.BLOCKED)
+
+    captured: dict = {}
+    real = sk_mod.bind_safety_kernel_offline_replay_evidence_v0
+
+    def _wrap(evidence, *, context):
+        captured["context"] = context
+        return real(evidence, context=context)
+
+    monkeypatch.setattr(sk_mod, "bind_safety_kernel_offline_replay_evidence_v0", _wrap)
+    run_integrated_offline_trading_logic_replay_v1(inp)
+    inline_ctx = captured["context"]
+    assert inline_ctx.killswitch_blocked is expect_blocked, name
+    assert inline_ctx.killswitch_blocked is mapped.killswitch_blocked

@@ -24,7 +24,11 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     PATH_KIND,
     WIRE_SEND_PERMITTED,
 )
+from src.ops.full_core_live_path_composition_root_v1.composition_root_v1 import (
+    compose_core_live_execution_intent_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.models_v1 import (
+    CompositionStatusV1,
     FrozenPretradeEvidenceV1,
     FullCoreLivePathInputV1,
 )
@@ -43,17 +47,22 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     DEFAULT_SIDE,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+from tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1 import (
+    _INSTRUMENT,
+    _replay_input,
+)
 from tests.trading.master_v2.test_master_v2_integrated_replay_safety_before_intent_restore_contract_v1 import (
     _confirmed_replay_input,
     _patch_replay_owners,
 )
-from trading.master_v2.double_play_entry_exit_policy_v0 import DecisionOutcome
+from trading.master_v2.double_play_entry_exit_policy_v0 import (
+    DecisionOutcome,
+    PolicySignalV0,
+    SafetyMode,
+)
+from trading.master_v2.double_play_state import SideState
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     run_integrated_offline_trading_logic_replay_v1,
-)
-from tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1 import (
-    _INSTRUMENT,
-    _replay_input,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -454,3 +463,90 @@ def test_spec_and_runbook_isolation_language() -> None:
     assert "HARD STOP BEFORE WIRE" in spec
     assert "FULL_CORE_LIVE_PATH_COMPOSITION_ROOT" in runbook
     assert PATH_KIND in spec
+
+
+# ---------------------------------------------------------------------------
+# CHAR-3 PRE_SPLIT_CHARACTERIZATION — composition consumption of the alias
+# CURRENT_BEHAVIOR: producer paths short-circuit before REPLAY_SAFETY_DENY;
+#     composition consumes killswitch_blocked as REPLAY_SAFETY_DENY only
+#     after HOLD/BLOCKED and 29P gates.
+# ADJUDICATED_TARGET_BEHAVIOR=split sources; composition must not drift.
+# CURRENT_BEHAVIOR_EQUALS_TARGET=false (alias mixing remains)
+# ---------------------------------------------------------------------------
+
+
+def _compose_replay(replay):
+    return compose_core_live_execution_intent_v1(
+        replay=replay,
+        bound_instrument=_binding(),
+        mode=MODE_TEST,
+        composed_epoch="1",
+    )
+
+
+def test_char3_pre_split_characterization_kill_all_denies_blocked_enter() -> None:
+    """CHAR-3: INPUT=SideState.KILL_ALL. OUTPUT=BLOCKED_ENTER (not REPLAY_SAFETY_DENY)."""
+    replay = run_integrated_offline_trading_logic_replay_v1(
+        replace(_confirmed_replay_input(side="LONG"), side_state=SideState.KILL_ALL)
+    )
+    assert replay.evidence.decision_outcome == DecisionOutcome.BLOCKED.value
+    assert "killswitch_blocked" in replay.evidence.reason_codes
+    assert replay.intermediate.canonical_order_intent is None
+    status, reasons, intent = _compose_replay(replay)
+    assert status is CompositionStatusV1.DENY
+    assert reasons == ("BLOCKED_ENTER",)
+    assert intent is None
+
+
+def test_char3_pre_split_characterization_safety_mode_blocked_denies_blocked_enter() -> None:
+    """CHAR-3 / CHAR-7: INPUT=SafetyMode.BLOCKED. OUTPUT=BLOCKED_ENTER."""
+    replay = run_integrated_offline_trading_logic_replay_v1(
+        replace(_confirmed_replay_input(side="LONG"), safety_mode=SafetyMode.BLOCKED)
+    )
+    assert replay.evidence.decision_outcome == DecisionOutcome.BLOCKED.value
+    assert "killswitch_blocked" in replay.evidence.reason_codes
+    assert replay.intermediate.canonical_order_intent is None
+    status, reasons, intent = _compose_replay(replay)
+    assert status is CompositionStatusV1.DENY
+    assert reasons == ("BLOCKED_ENTER",)
+    assert intent is None
+
+
+def test_char3_pre_split_characterization_safety_exit_denies_29p_before_replay_safety() -> None:
+    """CHAR-3 / CHAR-6: INPUT=safety_exit_signal.triggered. OUTPUT=29P_DENY first."""
+    replay = run_integrated_offline_trading_logic_replay_v1(
+        replace(
+            _confirmed_replay_input(side="LONG"),
+            safety_exit_signal=PolicySignalV0(triggered=True, reason_code="safety"),
+        )
+    )
+    assert replay.evidence.decision_outcome == DecisionOutcome.EXIT.value
+    assert "killswitch_blocked" in replay.evidence.reason_codes
+    assert replay.intermediate.canonical_order_intent is None
+    assert replay.intermediate.capital_risk_sizing_decision.outcome is (
+        CapitalRiskSizingOutcome.BLOCKED
+    )
+    status, reasons, intent = _compose_replay(replay)
+    assert status is CompositionStatusV1.DENY
+    assert reasons[0] == "29P_DENY"
+    assert "REPLAY_SAFETY_DENY" not in reasons
+    assert intent is None
+
+
+def test_char3_pre_split_characterization_killswitch_blocked_reason_is_replay_safety_deny() -> None:
+    """CHAR-3: INPUT_FIELD=killswitch_blocked on ENTER+29P_PASS. OUTPUT=REPLAY_SAFETY_DENY."""
+    replay = run_integrated_offline_trading_logic_replay_v1(_confirmed_replay_input(side="LONG"))
+    assert replay.evidence.decision_outcome == DecisionOutcome.ENTER_LONG.value
+    assert replay.intermediate.canonical_order_intent is not None
+    assert replay.intermediate.capital_risk_sizing_decision.outcome is CapitalRiskSizingOutcome.PASS
+    mutated = replace(
+        replay,
+        evidence=replace(
+            replay.evidence,
+            reason_codes=(*replay.evidence.reason_codes, "killswitch_blocked"),
+        ),
+    )
+    status, reasons, intent = _compose_replay(mutated)
+    assert status is CompositionStatusV1.DENY
+    assert reasons == ("REPLAY_SAFETY_DENY",)
+    assert intent is None

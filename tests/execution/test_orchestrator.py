@@ -562,6 +562,47 @@ def test_recon_handoff_snapshots(orchestrator, sample_intent):
     assert recon_data["audit_log_snapshot"]["total_entries"] > 0
 
 
+def test_char5_pre_split_characterization_orchestrator_kill_blocks_entry_and_exit(
+    tmp_path,
+) -> None:
+    """CHAR-5: orchestrator kill reader rejects BUY and SELL before side/reduce inspection.
+
+    CURRENT_ENTRY_BEHAVIOR=BLOCKED
+    CURRENT_EXIT_BEHAVIOR=BLOCKED
+    TARGET_EXIT_BEHAVIOR=ALLOW_RISK_REDUCTION
+    CURRENT_BEHAVIOR_EQUALS_TARGET=false
+    OrderIntent currently has no reduce_only field; SELL is the risk-reducing proxy.
+    """
+    orchestrator = ExecutionOrchestrator(
+        risk_hook=NullRiskHook(),
+        adapter=NullAdapter(),
+        execution_mode=ExecutionMode.PAPER,
+        kill_switch_active=True,
+        execution_events_log_path=str(tmp_path / "execution_events.jsonl"),
+    )
+    entry = OrderIntent(
+        symbol="BTC/EUR",
+        side=OrderSide.BUY,
+        quantity=Decimal("0.01"),
+        order_type=OrderType.MARKET,
+        strategy_id="char5_entry",
+    )
+    exit_intent = OrderIntent(
+        symbol="BTC/EUR",
+        side=OrderSide.SELL,
+        quantity=Decimal("0.01"),
+        order_type=OrderType.MARKET,
+        strategy_id="char5_exit",
+    )
+    entry_result = orchestrator.submit_intent(entry)
+    exit_result = orchestrator.submit_intent(exit_intent)
+    for result in (entry_result, exit_result):
+        assert result.success is False
+        assert result.reason_code == ReasonCode.RISK_KILL_SWITCH_ACTIVE
+        assert result.stage_reached == "STAGE_1_INTENT_INTAKE"
+        assert result.order is None
+
+
 def test_recon_handoff_snapshot_methods(orchestrator, sample_intent):
     """Test recon snapshot methods"""
     orchestrator.submit_intent(sample_intent)
