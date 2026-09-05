@@ -1515,9 +1515,10 @@ def run_integrated_offline_trading_logic_replay_v1(
         if runtime_scope_pre.anchor_price > 0
         else float(current_scope.trailing_anchor)
     )
-    # Host cursor remains API-compatible input but is not generator authority.
-    # Neutral/CHOP/KILL use the Model-2 explicit LONG default fallback.
-    effective_scope_direction = scope_direction_from_side_state_v1(inp.side_state)
+    effective_scope_direction = scope_direction_from_side_state_v1(
+        inp.side_state,
+        fallback=inp.scope_direction_state,
+    )
 
     scope_event_inp = ScopeEventGeneratorInputV1(
         instrument_id=inp.instrument_id,

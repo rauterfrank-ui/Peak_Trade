@@ -17,7 +17,6 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
     BridgeSessionStateV1,
     _update_session_state_from_replay,
 )
-from tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1 import _run
 from trading.master_v2.deterministic_scope_event_generator_v1 import ScopeDirectionState
 from trading.master_v2.double_play_composition_matrix_v1 import (
     CompositionDirectionState,
@@ -25,7 +24,6 @@ from trading.master_v2.double_play_composition_matrix_v1 import (
 )
 from trading.master_v2.double_play_state import SideState
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
-    run_integrated_offline_trading_logic_replay_v1,
     scope_direction_from_side_state_v1,
 )
 
@@ -59,7 +57,6 @@ _PENDING_UNCHANGED = (
     (SideState.SWITCH_LONG_TO_SHORT_PENDING, ScopeDirectionState.LONG),
     (SideState.SWITCH_SHORT_TO_LONG_PENDING, ScopeDirectionState.SHORT),
 )
-GENERATOR = REPO_ROOT / "src/trading/master_v2" / "integrated_offline_trading_logic_replay_v1.py"
 
 
 def _replay_result(*, next_side: SideState, selected: CompositionSelectedSide) -> SimpleNamespace:
@@ -279,22 +276,27 @@ def test_sidestate_fail_closed_restore_is_unchanged() -> None:
     assert "pass" not in sidestate_block
 
 
-def test_generator_ignores_host_cursor_fallback_for_neutral_chop_kill() -> None:
-    src = inspect.getsource(run_integrated_offline_trading_logic_replay_v1)
-    assert "fallback=inp.scope_direction_state" not in src
-    assert "scope_direction_from_side_state_v1(inp.side_state)" in src
-    generator_file = GENERATOR.read_text(encoding="utf-8")
-    assert "fallback=inp.scope_direction_state" not in generator_file
+def test_cap72_host_projects_before_next_generator_input() -> None:
+    """Cap-7.2 overlay cannot leave a SHORT host cursor on Neutral/CHOP/KILL.
+
+    The next cycle passes ``state.scope_direction_state`` into the generator.
+    After this persist that cursor is the SideState projection, so composition
+    selected_side cannot mutate generator direction on the Cap-7.2 host.
+    """
+    replay_src = inspect.getsource(_update_session_state_from_replay)
+    host_src = HOST.read_text(encoding="utf-8")
+    assert "scope_direction_state=state.scope_direction_state" in host_src
+    assert "scope_direction_from_side_state_v1(state.side_state)" in replay_src
     for side in _FALLBACK_LONG:
-        result = _run(
-            side_state=side,
-            scope_direction_state=ScopeDirectionState.SHORT,
+        state = BridgeSessionStateV1(require_selection_binding=False)
+        state.scope_direction_state = ScopeDirectionState.SHORT
+        _update_session_state_from_replay(
+            state,
+            result=_replay_result(next_side=side, selected=CompositionSelectedSide.SHORT),
         )
-        assert result.intermediate is not None
-        assert (
-            result.intermediate.scope_event.semantic_binding.current_direction_state
-            is ScopeDirectionState.LONG
-        )
+        next_generator_cursor = state.scope_direction_state
+        assert next_generator_cursor is ScopeDirectionState.LONG
+        assert next_generator_cursor is scope_direction_from_side_state_v1(side)
 
 
 def test_core_logic_change_is_adjudicated_honestly() -> None:

@@ -3054,7 +3054,6 @@ entities:
     notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
 
   - id: RUNTIME_COMPONENT:mv2_integrated_replay
-    # SCOPE_DIRECTION_OVERLAY_GENERATOR_INERT_V1: generator ignores host-cursor fallback.
     kind: RUNTIME_COMPONENT
     name: Integrated offline trading-logic replay
     epistemic_class: FORENSIC_RAW
@@ -3076,10 +3075,7 @@ entities:
       and not a second compute owner. Post-29Q KS projection is
       POST_29Q_CONSUMPTION_GUARD (consumption HOLD/DENY of an already produced
       ENTER plan); it does not rewrite decision_outcome and does not grant
-      submission/wire permission. Productive generator orientation is
-      scope_direction_from_side_state_v1(inp.side_state); inp.scope_direction_state
-      is compatibility input, not generator authority. Implementation is not
-      activation.
+      submission/wire permission. Implementation is not activation.
 
   - id: RUNTIME_COMPONENT:mv2_parity_gap_assessment
     kind: RUNTIME_COMPONENT

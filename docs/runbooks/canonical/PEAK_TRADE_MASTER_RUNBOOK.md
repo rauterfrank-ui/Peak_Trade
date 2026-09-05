@@ -7223,13 +7223,14 @@ Cap-7.2 `_update_session_state_from_replay` projects
 `state.scope_direction_state` from the current `state.side_state` via
 `scope_direction_from_side_state_v1`. Composition `selected_side` may still
 update `previous_composition_direction_state` and must not write
-`scope_direction_state`. The productive generator call uses
-`scope_direction_from_side_state_v1(inp.side_state)` with the Model-2 LONG
-default for `NEUTRAL_OBSERVE`, `CHOP_GUARD_BLOCK`, and `KILL_ALL`. The input
-field `inp.scope_direction_state` remains for compatibility and is not
-generator authority. Hardening-v2 overlay writer is not synchronized in this
-persist: after generator-inert binding it cannot mutate generator direction.
-Persisted scope-direction tokens remain schema-compat only.
+`scope_direction_state`. The next Cap-7.2 cycle therefore passes the SideState
+projection as `inp.scope_direction_state`. Neutral/CHOP/KILL rebuild to LONG
+on that host path independently of previous `selected_side`. Direct mutation
+of the generator fallback inside
+`run_integrated_offline_trading_logic_replay_v1` remains outside this persist:
+it is a forbidden Master-V2/Double-Play surface and requires a separate
+Economic-Guard admission class. Hardening-v2 overlay writer is not synchronized
+in this persist. Persisted scope-direction tokens remain schema-compat only.
 
 ``` text
 CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
