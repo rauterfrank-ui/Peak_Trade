@@ -148,6 +148,7 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
             "PRIVATE_AUTH_PREFLIGHT",
             "LIVE_ACCOUNT_BOUND",
             "CAPITAL_ADMISSION",
+            "LIVE_ENABLED",
         }:
             assert node.wiring_authorized is True
         else:
@@ -175,7 +176,7 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
     assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (
         EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY
     )
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == ("LIVE_ENABLED")
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == ("LIVE_ARMED")
     assert dag["MAX_SAFE_REPO_INTERNAL_NEXT_SLICE"] == MAX_SAFE_REPO_INTERNAL_NEXT_SLICE
     assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is False
     assert dag["CANARY_29Q_CONSUMER_WIRING_AUTHORIZED"] is False
@@ -183,8 +184,12 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
     assert "MAX_AVAILABLE" in reusable
     assert "PRIVATE_AUTH_PREFLIGHT" not in reusable
     live_enabled = gap_node_v1("LIVE_ENABLED")
-    assert live_enabled.standing_live_gates_would_change is True
-    assert live_enabled.repo_internal_solvable is False
+    assert live_enabled.standing_live_gates_would_change is False
+    assert live_enabled.repo_internal_solvable is True
+    assert live_enabled.implementation_status == (
+        "STANDING_ADMISSION_SEAM_IMPLEMENTED_DEFAULT_FALSE"
+    )
+    assert live_enabled.wiring_authorized is True
     port = gap_node_v1("LiveExecutionPort")
     assert port.implementation_status == "CONSTRUCTION_FORBIDDEN"
     assert CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY is False

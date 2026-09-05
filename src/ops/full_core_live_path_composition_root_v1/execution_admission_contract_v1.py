@@ -18,10 +18,7 @@ from enum import Enum
 from typing import Optional, Tuple
 
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
-    LIVE_ARMED,
-    LIVE_ENABLED,
     OFFLINE_BOUNDARY_ROLE,
-    WIRE_SEND_PERMITTED,
 )
 
 EXECUTION_ADMISSION_CONTRACT_VERSION = "v1"
@@ -146,7 +143,12 @@ class ExecutionAdmissionDecisionV1:
 def evaluate_execution_admission_v1(
     inputs: ExecutionAdmissionInputsV1,
 ) -> ExecutionAdmissionDecisionV1:
-    """Fail-closed admission. Never a second execution owner."""
+    """Fail-closed admission conjunction. Never a second execution owner.
+
+    LIVE_ENABLED is a standing authorization predicate:
+    false denies; true satisfies only that one predicate and does not admit.
+    Contradiction-lock deny-on-true branches are not used.
+    """
     reasons: list[str] = []
     live_context = inputs.admission_context == ADMISSION_CONTEXT_LIVE
 
@@ -178,12 +180,6 @@ def evaluate_execution_admission_v1(
         reasons.append("LIVE_ARMED_FALSE")
     if inputs.wire_send_permitted is not True:
         reasons.append("WIRE_SEND_NOT_PERMITTED")
-    if LIVE_ENABLED is True or inputs.live_enabled is True:
-        reasons.append("STANDING_OR_INPUT_LIVE_ENABLED")
-    if LIVE_ARMED is True or inputs.live_armed is True:
-        reasons.append("STANDING_OR_INPUT_LIVE_ARMED")
-    if WIRE_SEND_PERMITTED is True or inputs.wire_send_permitted is True:
-        reasons.append("STANDING_OR_INPUT_WIRE_SEND_PERMITTED")
 
     ks_status = str(inputs.durable_kill_switch_evidence_status or "").strip()
     if ks_status == DurableKillSwitchEvidenceStatusV1.CONTRADICTORY.value:
@@ -326,14 +322,18 @@ def evaluate_execution_admission_v1(
         if capital_trusted is not True:
             reasons.append("LIVE_ADMISSION_REQUIRES_CAPITAL_ADMISSION")
         reasons.append("LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P")
+    else:
+        reasons.append("OFFLINE_FULL_CORE_PROOF_NOT_LIVE_ADMISSION")
 
     unique = tuple(dict.fromkeys(reasons))
-    # Standing package constants and missing FILEGATE keep admission closed.
-    admitted = False
+    admitted = len(unique) == 0
+    if not unique:
+        unique = ("EXECUTION_ADMISSION_FAIL_CLOSED",)
+        admitted = False
     return ExecutionAdmissionDecisionV1(
         admitted=admitted,
         fail_closed=True,
-        reason_codes=unique if unique else ("EXECUTION_ADMISSION_FAIL_CLOSED",),
+        reason_codes=unique,
         execution_boundary_ref=EXECUTION_BOUNDARY_REF,
         runtime_authority_effect=RUNTIME_AUTHORITY_EFFECT_NONE,
     )

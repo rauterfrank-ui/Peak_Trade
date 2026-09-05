@@ -107,7 +107,9 @@ def test_runbook_spec_and_mot_bind_without_live_or_phase2() -> None:
     spec = SPEC_PATH.read_text(encoding="utf-8")
     mot = MOT.read_text(encoding="utf-8")
     start = runbook.index("11.2.2 TREASURY_PHASE_1_OFFLINE_CONTRACTS")
-    section = runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    section = runbook[
+        start : runbook.index("11.2.1.O FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM", start)
+    ]
     prior = runbook[runbook.index("11.2.1.N PRE_LIVE_CAPITAL_ADMISSION_CONTRACT") : start]
     assert "TREASURY_PHASE_1_STATUS=CLOSED_OFFLINE_CONTRACTS" in section
     assert "TREASURY_PHASE_2_STATUS=NOT_STARTED" in section

@@ -171,15 +171,17 @@ def test_flags_and_standing_gates_remain_false() -> None:
     assert FULL_CORE_OFFLINE_E2E_PROVEN is True
     assert FULL_CORE_SYSTEM_E2E_PROVEN is False
     assert FULL_CORE_OFFLINE_E2E_EVIDENCE_CLASS == "INJECTED_NON_PRODUCTIVE"
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == "LIVE_ENABLED"
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == "LIVE_ARMED"
     assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is False
     node = gap_node_v1("LIVE_ACCOUNT_BOUND")
     assert node.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
     assert node.wiring_authorized is True
     assert node.standing_live_gates_would_change is False
     live_enabled = gap_node_v1("LIVE_ENABLED")
-    assert live_enabled.implementation_status == "STANDING_FALSE"
-    assert live_enabled.standing_live_gates_would_change is True
+    assert live_enabled.implementation_status == (
+        "STANDING_ADMISSION_SEAM_IMPLEMENTED_DEFAULT_FALSE"
+    )
+    assert live_enabled.standing_live_gates_would_change is False
 
 
 def test_complete_binding_evidence_component_pass() -> None:
