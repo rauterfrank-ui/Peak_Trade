@@ -24,6 +24,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH,
     LIVE_ACCOUNT_BOUND_IMPLEMENTED,
     CAPITAL_ADMISSION_IMPLEMENTED,
+    STEP_29P_CAPITAL_RISK_ADMISSIBILITY_IMPLEMENTED,
     LIVE_ARMED,
     LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED,
     LIVE_ENABLED,
@@ -37,9 +38,11 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
 )
 
 GAP_DAG_VERSION = "v1"
-EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY = "LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P"
-MAX_SAFE_REPO_INTERNAL_NEXT_SLICE = "NO_FURTHER_REPO_INTERNAL_SLICE_PRE_WIRE_BOUNDARY_REACHED"
-FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE = True
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY = "STEP_29P_EQUITY_DIMENSION_BINDING_MISSING"
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE = (
+    "NO_FURTHER_REPO_INTERNAL_SLICE_PRE_CONSTRUCTION_BOUNDARY_REACHED"
+)
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE = False
 NEXT_STEP_REQUIRES_OWNER_GO = True
 HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG = True
 LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN = True
@@ -173,6 +176,23 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
         wiring_authorized=True,
         layer=3,
         dependencies=("LIVE_ACCOUNT_BOUND", "FRESH_GET_PER_PRETRADE_DECISION"),
+    ),
+    _node(
+        component_id="STEP_29P_CAPITAL_RISK_ADMISSIBILITY",
+        authority="capital_risk_sizing_v1/STEP_29P",
+        producer="src.ops.full_core_live_path_composition_root_v1.step_29p_capital_risk_admissibility_v1",
+        contract="Step29PCapitalRiskAdmissibilityV1",
+        consumer="evaluate_execution_admission_v1+capital_risk_sizing_v1/STEP_29P",
+        implementation_status="JOINED_TYPED_EVIDENCE_FAIL_CLOSED",
+        test_status="STEP_29P_RISK_ADMISSIBILITY_SEAM_PROVEN",
+        repo_internal_solvable=True,
+        fresh_external_evidence_required=False,
+        productive_account_access_required=True,
+        standing_live_gates_would_change=False,
+        reusable_mechanism_only=False,
+        wiring_authorized=True,
+        layer=3,
+        dependencies=("CAPITAL_ADMISSION", "FRESH_GET_PER_PRETRADE_DECISION"),
     ),
     _node(
         component_id="PRIVATE_AUTH_PREFLIGHT",
@@ -363,6 +383,7 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
             "DURABLE_FILEGATE_RUNTIME_JOIN",
             "LIVE_ACCOUNT_BOUND",
             "CAPITAL_ADMISSION",
+            "STEP_29P_CAPITAL_RISK_ADMISSIBILITY",
             "FRESH_GET_PER_PRETRADE_DECISION",
             "LIVE_ENABLED",
             "LIVE_ARMED",
@@ -488,6 +509,9 @@ def live_admission_gap_dag_v1() -> dict[str, Any]:
         "FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED": FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED,
         "LIVE_ACCOUNT_BOUND_IMPLEMENTED": LIVE_ACCOUNT_BOUND_IMPLEMENTED,
         "CAPITAL_ADMISSION_IMPLEMENTED": CAPITAL_ADMISSION_IMPLEMENTED,
+        "STEP_29P_CAPITAL_RISK_ADMISSIBILITY_IMPLEMENTED": (
+            STEP_29P_CAPITAL_RISK_ADMISSIBILITY_IMPLEMENTED
+        ),
         "FULL_CORE_OFFLINE_E2E_PROVEN": FULL_CORE_OFFLINE_E2E_PROVEN,
         "FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE": (
             FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE

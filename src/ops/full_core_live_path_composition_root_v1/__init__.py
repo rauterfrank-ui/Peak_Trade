@@ -21,6 +21,11 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH,
     LIVE_ACCOUNT_BOUND_IMPLEMENTED,
     CAPITAL_ADMISSION_IMPLEMENTED,
+    RISK_ADMISSIBLE_DOES_NOT_IMPLY_LIVE_ARMED,
+    RISK_ADMISSIBLE_DOES_NOT_IMPLY_LIVE_ENABLED,
+    RISK_ADMISSIBLE_DOES_NOT_IMPLY_PORT_CONSTRUCTION,
+    RISK_ADMISSIBLE_DOES_NOT_IMPLY_WIRE_SEND,
+    STEP_29P_CAPITAL_RISK_ADMISSIBILITY_IMPLEMENTED,
     LIVE_ARMED,
     LIVE_ENABLED,
     LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED,
@@ -49,6 +54,9 @@ from src.ops.full_core_live_path_composition_root_v1.models_v1 import (
     FullCoreLivePathInputV1,
     FullCoreLivePathResultV1,
 )
+from src.ops.full_core_live_path_composition_root_v1.step_29p_capital_risk_admissibility_v1 import (
+    evaluate_step_29p_capital_risk_admissibility_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import (
     evaluate_capital_admission_v1,
     join_capital_admission_into_admission_inputs_v1,
@@ -69,6 +77,9 @@ from src.ops.full_core_live_path_composition_root_v1.owner_one_shot_permit_v1 im
 from src.ops.full_core_live_path_composition_root_v1.path_identity_v1 import (
     bound_path_identity_v1,
     refuse_competing_productive_live_next_pointer_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.treasury_interference_proof_v1 import (
+    prove_treasury_interference_absent_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.path_v1 import (
     run_full_core_live_path_offline_v1,
@@ -96,6 +107,11 @@ __all__ = [
     "FullCoreLivePathResultV1",
     "LIVE_ACCOUNT_BOUND_IMPLEMENTED",
     "CAPITAL_ADMISSION_IMPLEMENTED",
+    "STEP_29P_CAPITAL_RISK_ADMISSIBILITY_IMPLEMENTED",
+    "RISK_ADMISSIBLE_DOES_NOT_IMPLY_LIVE_ENABLED",
+    "RISK_ADMISSIBLE_DOES_NOT_IMPLY_LIVE_ARMED",
+    "RISK_ADMISSIBLE_DOES_NOT_IMPLY_WIRE_SEND",
+    "RISK_ADMISSIBLE_DOES_NOT_IMPLY_PORT_CONSTRUCTION",
     "LIVE_ARMED",
     "LIVE_ENABLED",
     "LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED",
@@ -112,9 +128,11 @@ __all__ = [
     "evaluate_owner_one_shot_permit_v1",
     "evaluate_live_account_bound_v1",
     "evaluate_capital_admission_v1",
+    "evaluate_step_29p_capital_risk_admissibility_v1",
     "collect_fresh_pretrade_runtime_get_v1",
     "evaluate_live_execution_port_construction_admission_v1",
     "prove_live_execution_port_not_constructible_v1",
+    "prove_treasury_interference_absent_v1",
     "join_durable_filegate_into_admission_inputs_v1",
     "join_fresh_pretrade_runtime_get_into_admission_inputs_v1",
     "join_live_account_bound_into_admission_inputs_v1",

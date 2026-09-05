@@ -126,6 +126,7 @@ class ExecutionAdmissionInputsV1:
     live_account_bound_status: str = LiveAccountBoundStatusV1.MISSING.value
     capital_admission_status: str = CapitalAdmissionStatusV1.MISSING.value
     capital_authority_class: str = CAPITAL_AUTHORITY_NONE
+    step_29p_risk_admissible: bool = False
     provenance_refs: Tuple[str, ...] = ()
     runtime_authority_effect: str = RUNTIME_AUTHORITY_EFFECT_NONE
 
@@ -297,13 +298,14 @@ def evaluate_execution_admission_v1(
         reasons.append("CAPITAL_ADMISSION_MISSING")
         reasons.append("FRESH_GET_ALONE_NOT_CAPITAL_AUTHORITY")
         reasons.append("LIVE_ACCOUNT_BOUND_ALONE_NOT_CAPITAL_AUTHORITY")
-    if capital_authority == CAPITAL_AUTHORITY_RISK_ADMISSIBLE:
+    step_29p_ok = inputs.step_29p_risk_admissible is True
+    if capital_authority == CAPITAL_AUTHORITY_RISK_ADMISSIBLE and step_29p_ok is not True:
         reasons.append("CAPITAL_ADMISSION_CONTRADICTORY")
-        reasons.append("CAPITAL_ADMISSION_RISK_ADMISSIBLE_POLICY_FROZEN")
-        reasons.append("CAPITAL_ADMISSION_CANNOT_OVERRIDE_LIVE_ENABLED")
+        reasons.append("CAPITAL_ADMISSION_RISK_ADMISSIBLE_CONJUNCTION_INCOMPLETE")
+        reasons.append("FORGED_RISK_ADMISSIBLE_WITHOUT_29P_CONTRACT")
     if capital_trusted is True and capital_authority == CAPITAL_AUTHORITY_NONE:
         reasons.append("CAPITAL_ADMISSION_CONTRADICTORY")
-    if capital_trusted is True:
+    if capital_trusted is True and step_29p_ok is not True:
         reasons.append("OBSERVED_CAPITAL_NOT_RISK_ADMISSIBLE")
 
     if live_context:
@@ -321,7 +323,8 @@ def evaluate_execution_admission_v1(
                 reasons.append("FRESH_PRETRADE_GET_MISSING")
         if capital_trusted is not True:
             reasons.append("LIVE_ADMISSION_REQUIRES_CAPITAL_ADMISSION")
-        reasons.append("LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P")
+        if step_29p_ok is not True:
+            reasons.append("LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P")
     else:
         reasons.append("OFFLINE_FULL_CORE_PROOF_NOT_LIVE_ADMISSION")
 

@@ -322,7 +322,7 @@ Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md]
 
 ## 7. Runtime call / data flow
 
-Runtime relation count: `72`. Entrypoints recorded: `4`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
+Runtime relation count: `74`. Entrypoints recorded: `4`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
 
 Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md](ENTRYPOINT_RUNTIME_TRACES.md).
 
@@ -723,11 +723,11 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=454
+ENTITY_TOTAL=455
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=85
-RUNTIME_RELATION_COUNT=72
-AUTHORITY_RELATION_COUNT=9
+RUNTIME_RELATION_COUNT=74
+AUTHORITY_RELATION_COUNT=10
 UNRESOLVED_CONTRADICTION_COUNT=9
 OKX_CENSUS_COMPLETE=true
 MASTER_V2_CENSUS_COMPLETE=true
@@ -821,7 +821,7 @@ Remaining census domains:
 | PHASE | 60 |
 | REGISTRY | 1 |
 | RUNBOOK | 4 |
-| RUNTIME_COMPONENT | 85 |
+| RUNTIME_COMPONENT | 86 |
 | SCHEMA | 18 |
 | SCRIPT | 3 |
 | SELECTOR | 2 |

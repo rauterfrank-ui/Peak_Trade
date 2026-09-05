@@ -119,6 +119,7 @@ def _run(monkeypatch, replay_input, **kwargs):
         fresh_pretrade_get_transport=kwargs.pop("fresh_pretrade_get_transport", None),
         expected_account_identity=kwargs.pop("expected_account_identity", ""),
         capital_admission_claim=kwargs.pop("capital_admission_claim", None),
+        step_29p_risk_claim=kwargs.pop("step_29p_risk_claim", None),
     )
     return run_full_core_live_path_offline_v1(payload, **kwargs), replay
 
@@ -136,6 +137,7 @@ def _path_from_replay(replay, **kwargs):
         fresh_pretrade_get_transport=kwargs.pop("fresh_pretrade_get_transport", None),
         expected_account_identity=kwargs.pop("expected_account_identity", ""),
         capital_admission_claim=kwargs.pop("capital_admission_claim", None),
+        step_29p_risk_claim=kwargs.pop("step_29p_risk_claim", None),
     )
     return run_full_core_live_path_offline_v1(payload, **kwargs)
 

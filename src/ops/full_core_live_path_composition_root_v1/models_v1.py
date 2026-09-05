@@ -175,6 +175,7 @@ class FullCoreLivePathInputV1:
     fresh_pretrade_get_transport: Any = None
     expected_account_identity: str = ""
     capital_admission_claim: Any = None
+    step_29p_risk_claim: Any = None
 
 
 @dataclass(frozen=True)

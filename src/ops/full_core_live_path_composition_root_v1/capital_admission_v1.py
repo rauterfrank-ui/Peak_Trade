@@ -4,7 +4,10 @@ OBSERVED_CAPITAL != RISK_ADMISSIBLE_CAPITAL.
 
 Validates typed capital-evidence envelopes before STEP-29P / Venue-Capital
 sizing may consume them. Does not invent equity formulas, haircuts, reserves,
-or scope_capital derivation. RISK_ADMISSIBLE is never granted in this persist.
+or scope_capital derivation. RISK_ADMISSIBLE is granted only by
+step_29p_capital_risk_admissibility_v1.
+
+This envelope cannot mint RISK_ADMISSIBLE from observed OKX fields.
 
 Fresh GET success alone does not mint capital authority.
 LIVE_ACCOUNT_BOUND identity alone does not mint capital authority.
@@ -192,16 +195,17 @@ def _field_is_forbidden_authority(name: str) -> bool:
     return any(marker in folded for marker in _FORBIDDEN_AUTHORITY_FIELD_MARKERS)
 
 
-def live_venue_capital_may_bind_step_29p_v1(evidence: CapitalAdmissionEvidenceV1) -> bool:
-    """STEP-29P may consume venue capital only as RISK_ADMISSIBLE. Never true here."""
-    return (
-        evidence.evidence_status == CapitalAdmissionStatusV1.TRUSTED_PRESENT.value
-        and evidence.capital_authority_class == CAPITAL_AUTHORITY_RISK_ADMISSIBLE
-        and evidence.risk_admissible is True
-        and LIVE_ENABLED is True
-        and LIVE_ARMED is True
-        and WIRE_SEND_PERMITTED is True
+def live_venue_capital_may_bind_step_29p_v1(
+    evidence: CapitalAdmissionEvidenceV1,
+    *,
+    admissibility: Any = None,
+) -> bool:
+    """Delegate to the STEP-29P conjunction. Envelope alone never binds."""
+    from src.ops.full_core_live_path_composition_root_v1.step_29p_capital_risk_admissibility_v1 import (
+        live_venue_capital_may_bind_step_29p_v1 as _bind,
     )
+
+    return _bind(evidence, admissibility=admissibility)
 
 
 def evaluate_capital_admission_v1(
@@ -517,7 +521,7 @@ def evaluate_capital_admission_v1(
             authority=CAPITAL_AUTHORITY_NONE,
             reasons=(
                 "CAPITAL_ADMISSION_CONTRADICTORY",
-                "CAPITAL_ADMISSION_RISK_ADMISSIBLE_POLICY_FROZEN",
+                "CAPITAL_ADMISSION_CANNOT_MINT_RISK_ADMISSIBLE",
                 "CAPITAL_INCREASE_NOT_AUTO_ADMITTED",
             ),
         )
@@ -579,19 +583,6 @@ def evaluate_capital_admission_v1(
         wire_send_permitted=WIRE_SEND_PERMITTED is True,
         step_29p_live_venue_capital_bound=False,
     )
-    if live_venue_capital_may_bind_step_29p_v1(trusted) is True:
-        return _denied(
-            status=CapitalAdmissionStatusV1.CONTRADICTORY.value,
-            claim=claim,
-            expected_account_identity=expected_account,
-            expected_instrument_id=expected_instrument,
-            source_class=source,
-            authority=CAPITAL_AUTHORITY_NONE,
-            reasons=(
-                "CAPITAL_ADMISSION_CONTRADICTORY",
-                "CAPITAL_ADMISSION_CANNOT_BIND_STEP_29P",
-            ),
-        )
     return trusted
 
 
@@ -616,6 +607,7 @@ def join_capital_admission_into_admission_inputs_v1(
     inst_type: str = "FUTURES",
     expected_account_identity: Any = "",
     capital_admission_claim: CapitalAdmissionClaimV1 | None = None,
+    step_29p_risk_claim: Any = None,
 ) -> ExecutionAdmissionInputsV1:
     inputs = join_live_account_bound_into_admission_inputs_v1(
         plan_identity=plan_identity,
@@ -643,6 +635,16 @@ def join_capital_admission_into_admission_inputs_v1(
         expected_instrument_id=instrument_id,
         admission_context=admission_context,
     )
+    from src.ops.full_core_live_path_composition_root_v1.step_29p_capital_risk_admissibility_v1 import (
+        evaluate_step_29p_capital_risk_admissibility_v1,
+    )
+
+    admissibility = evaluate_step_29p_capital_risk_admissibility_v1(
+        capital=evidence,
+        claim=step_29p_risk_claim,
+    )
+    bound = live_venue_capital_may_bind_step_29p_v1(evidence, admissibility=admissibility)
+    _ = bound
     return ExecutionAdmissionInputsV1(
         plan_identity=inputs.plan_identity,
         venue_plan_identity=inputs.venue_plan_identity,
@@ -663,6 +665,7 @@ def join_capital_admission_into_admission_inputs_v1(
         live_account_bound_status=inputs.live_account_bound_status,
         capital_admission_status=evidence.evidence_status,
         capital_authority_class=evidence.capital_authority_class,
+        step_29p_risk_admissible=admissibility.risk_admissible is True,
         provenance_refs=inputs.provenance_refs
         + (
             OFFLINE_BOUNDARY_ROLE,
@@ -670,5 +673,6 @@ def join_capital_admission_into_admission_inputs_v1(
             CAPITAL_ADMISSION_AUTHORITY,
             LIVE_ACCOUNT_BOUND_JOIN_SEAM_ID,
             *evidence.reason_codes,
+            *admissibility.reason_codes,
         ),
     )

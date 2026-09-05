@@ -1,0 +1,136 @@
+{
+  "rows": [
+    {
+      "AUTH_CLASS": "PUBLIC_UNAUTHENTICATED",
+      "CONSUMER": "capital_risk_sizing_v1/STEP_29P",
+      "ENDPOINT": "/api/v5/public/instruments",
+      "EXPECTED_CURRENCY_SCOPE": "NOT_CURRENCY_SCOPED",
+      "EXPECTED_INSTRUMENT_SCOPE": "SUI-USD_UM_XPERP-310404",
+      "EXPECTED_TD_MODE": "cross",
+      "FAIL_CLOSED_BEHAVIOR": "code!=0 OR HTTP/auth error OR missing expected row \u2192 fail-closed",
+      "FRESHNESS_REQUIREMENT": "FRESH_GET_PER_PRETRADE_DECISION",
+      "REQUIREMENT": "INSTRUMENT_STATE",
+      "SOURCE_AUTHORITY": "REQUIRED_GET_ITEM_SPECS+VENUE_PRETRADE_GATES"
+    },
+    {
+      "AUTH_CLASS": "PUBLIC_UNAUTHENTICATED",
+      "CONSUMER": "capital_risk_sizing_v1/STEP_29P",
+      "ENDPOINT": "/api/v5/public/instruments",
+      "EXPECTED_CURRENCY_SCOPE": "NOT_CURRENCY_SCOPED",
+      "EXPECTED_INSTRUMENT_SCOPE": "SUI-USD_UM_XPERP-310404",
+      "EXPECTED_TD_MODE": "cross",
+      "FAIL_CLOSED_BEHAVIOR": "code!=0 OR HTTP/auth error OR missing expected row \u2192 fail-closed",
+      "FRESHNESS_REQUIREMENT": "FRESH_GET_PER_PRETRADE_DECISION",
+      "REQUIREMENT": "MAX_SIZE",
+      "SOURCE_AUTHORITY": "REQUIRED_GET_ITEM_SPECS+VENUE_PRETRADE_GATES"
+    },
+    {
+      "AUTH_CLASS": "PUBLIC_UNAUTHENTICATED",
+      "CONSUMER": "capital_risk_sizing_v1/STEP_29P",
+      "ENDPOINT": "/api/v5/public/price-limit",
+      "EXPECTED_CURRENCY_SCOPE": "NOT_CURRENCY_SCOPED",
+      "EXPECTED_INSTRUMENT_SCOPE": "SUI-USD_UM_XPERP-310404",
+      "EXPECTED_TD_MODE": "cross",
+      "FAIL_CLOSED_BEHAVIOR": "code!=0 OR HTTP/auth error OR missing expected row \u2192 fail-closed",
+      "FRESHNESS_REQUIREMENT": "FRESH_GET_PER_PRETRADE_DECISION",
+      "REQUIREMENT": "PRICE_BAND",
+      "SOURCE_AUTHORITY": "REQUIRED_GET_ITEM_SPECS+VENUE_PRETRADE_GATES"
+    },
+    {
+      "AUTH_CLASS": "PRIVATE_SIGNED",
+      "CONSUMER": "capital_risk_sizing_v1/STEP_29P",
+      "ENDPOINT": "/api/v5/account/max-size",
+      "EXPECTED_CURRENCY_SCOPE": "NOT_CURRENCY_SCOPED",
+      "EXPECTED_INSTRUMENT_SCOPE": "SUI-USD_UM_XPERP-310404",
+      "EXPECTED_TD_MODE": "cross",
+      "FAIL_CLOSED_BEHAVIOR": "code!=0 OR HTTP/auth error OR missing expected row \u2192 fail-closed",
+      "FRESHNESS_REQUIREMENT": "FRESH_GET_PER_PRETRADE_DECISION",
+      "REQUIREMENT": "MAX_AVAILABLE",
+      "SOURCE_AUTHORITY": "REQUIRED_GET_ITEM_SPECS+VENUE_PRETRADE_GATES"
+    },
+    {
+      "AUTH_CLASS": "PRIVATE_SIGNED",
+      "CONSUMER": "capital_risk_sizing_v1/STEP_29P",
+      "ENDPOINT": "/api/v5/account/leverage-info",
+      "EXPECTED_CURRENCY_SCOPE": "NOT_CURRENCY_SCOPED",
+      "EXPECTED_INSTRUMENT_SCOPE": "SUI-USD_UM_XPERP-310404",
+      "EXPECTED_TD_MODE": "cross",
+      "FAIL_CLOSED_BEHAVIOR": "code!=0 OR HTTP/auth error OR missing expected row \u2192 fail-closed",
+      "FRESHNESS_REQUIREMENT": "FRESH_GET_PER_PRETRADE_DECISION",
+      "REQUIREMENT": "LEVERAGE",
+      "SOURCE_AUTHORITY": "REQUIRED_GET_ITEM_SPECS+VENUE_PRETRADE_GATES"
+    },
+    {
+      "AUTH_CLASS": "PRIVATE_SIGNED",
+      "CONSUMER": "capital_risk_sizing_v1/STEP_29P",
+      "ENDPOINT": "/api/v5/account/config",
+      "EXPECTED_CURRENCY_SCOPE": "NOT_CURRENCY_SCOPED",
+      "EXPECTED_INSTRUMENT_SCOPE": "SUI-USD_UM_XPERP-310404",
+      "EXPECTED_TD_MODE": "cross",
+      "FAIL_CLOSED_BEHAVIOR": "code!=0 OR HTTP/auth error OR missing expected row \u2192 fail-closed",
+      "FRESHNESS_REQUIREMENT": "FRESH_GET_PER_PRETRADE_DECISION",
+      "REQUIREMENT": "POS_MODE",
+      "SOURCE_AUTHORITY": "REQUIRED_GET_ITEM_SPECS+VENUE_PRETRADE_GATES"
+    },
+    {
+      "AUTH_CLASS": "PRIVATE_SIGNED",
+      "CONSUMER": "capital_risk_sizing_v1/STEP_29P",
+      "ENDPOINT": "/api/v5/account/config",
+      "EXPECTED_CURRENCY_SCOPE": "NOT_CURRENCY_SCOPED",
+      "EXPECTED_INSTRUMENT_SCOPE": "SUI-USD_UM_XPERP-310404",
+      "EXPECTED_TD_MODE": "cross",
+      "FAIL_CLOSED_BEHAVIOR": "code!=0 OR HTTP/auth error OR missing expected row \u2192 fail-closed",
+      "FRESHNESS_REQUIREMENT": "FRESH_GET_PER_PRETRADE_DECISION",
+      "REQUIREMENT": "ACCOUNT_MODE",
+      "SOURCE_AUTHORITY": "REQUIRED_GET_ITEM_SPECS+VENUE_PRETRADE_GATES"
+    },
+    {
+      "AUTH_CLASS": "PRIVATE_SIGNED",
+      "CONSUMER": "capital_risk_sizing_v1/STEP_29P",
+      "ENDPOINT": "/api/v5/account/positions",
+      "EXPECTED_CURRENCY_SCOPE": "NOT_CURRENCY_SCOPED",
+      "EXPECTED_INSTRUMENT_SCOPE": "SUI-USD_UM_XPERP-310404",
+      "EXPECTED_TD_MODE": "cross",
+      "FAIL_CLOSED_BEHAVIOR": "code!=0 OR HTTP/auth error \u2192 fail-closed; empty positions data is NOT_OBSERVED (EMPTY_DATA_IS_ZERO=False)",
+      "FRESHNESS_REQUIREMENT": "FRESH_GET_PER_PRETRADE_DECISION",
+      "REQUIREMENT": "MARGIN_MODE",
+      "SOURCE_AUTHORITY": "REQUIRED_GET_ITEM_SPECS+VENUE_PRETRADE_GATES"
+    },
+    {
+      "AUTH_CLASS": "PRIVATE_SIGNED",
+      "CONSUMER": "capital_risk_sizing_v1/STEP_29P",
+      "ENDPOINT": "/api/v5/account/balance",
+      "EXPECTED_CURRENCY_SCOPE": "USDC",
+      "EXPECTED_INSTRUMENT_SCOPE": "SUI-USD_UM_XPERP-310404",
+      "EXPECTED_TD_MODE": "cross",
+      "FAIL_CLOSED_BEHAVIOR": "code!=0 OR HTTP/auth error OR missing USDC details row \u2192 NOT_OBSERVED; availEq is observation only (AVAILEQ_IS_NOT_29P_EQUITY_AUTHORITY=True); never maps to RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING",
+      "FRESHNESS_REQUIREMENT": "FRESH_GET_PER_PRETRADE_DECISION",
+      "REQUIREMENT": "AVAILABLE_MARGIN",
+      "SOURCE_AUTHORITY": "REQUIRED_GET_ITEM_SPECS+VENUE_PRETRADE_GATES"
+    },
+    {
+      "AUTH_CLASS": "PUBLIC_UNAUTHENTICATED",
+      "CONSUMER": "MAX_AVAILABLE_QUERY_PX_ONLY_NOT_29P_PRICE_AUTHORITY",
+      "ENDPOINT": "/api/v5/market/ticker",
+      "EXPECTED_CURRENCY_SCOPE": "NOT_CURRENCY_SCOPED",
+      "EXPECTED_INSTRUMENT_SCOPE": "SUI-USD_UM_XPERP-310404",
+      "EXPECTED_TD_MODE": "cross",
+      "FAIL_CLOSED_BEHAVIOR": "code!=0 OR missing last \u2192 max-size proceeds without px; TICKER_IS_NOT_29P_PRICE_AUTHORITY=True",
+      "FRESHNESS_REQUIREMENT": "FRESH_GET_PER_PRETRADE_DECISION",
+      "REQUIREMENT": "TICKER_LAST_FOR_MAX_SIZE_QUERY_PX",
+      "SOURCE_AUTHORITY": "account/max-size query px helper; not STEP 29P price authority"
+    },
+    {
+      "AUTH_CLASS": "NOT_FETCHABLE",
+      "CONSUMER": "capital_risk_sizing_v1/STEP_29P",
+      "ENDPOINT": "NONE_CANONICAL_VENUE_MAPPING",
+      "EXPECTED_CURRENCY_SCOPE": "USDC",
+      "EXPECTED_INSTRUMENT_SCOPE": "SUI-USD_UM_XPERP-310404",
+      "EXPECTED_TD_MODE": "cross",
+      "FAIL_CLOSED_BEHAVIOR": "ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED; observation fields availEq/totalEq/eq/adjEq/availBal/cashBal are forbidden 29P authority; missing typed equity \u2192 RISK_ADMISSIBLE=false",
+      "FRESHNESS_REQUIREMENT": "FRESH_GET_PER_PRETRADE_DECISION",
+      "REQUIREMENT": "RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING",
+      "SOURCE_AUTHORITY": "capital_risk_sizing_v1/STEP_29P"
+    }
+  ]
+}
