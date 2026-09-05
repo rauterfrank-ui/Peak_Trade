@@ -143,8 +143,8 @@ def test_adapter_calls_canonical_transition_state_only() -> None:
 
 def test_mirrored_bull_bear_behavior_through_canonical_owner() -> None:
     bull_binding, bear_binding = evaluate_bull_bear_parity_fixtures_v0()
-    assert bull_binding.side_state_after == SideState.LONG_ARMED
-    assert bear_binding.side_state_after == SideState.SHORT_ARMED
+    assert bull_binding.side_state_after == SideState.LONG_ARMED_NEUTRAL_START
+    assert bear_binding.side_state_after == SideState.SHORT_ARMED_NEUTRAL_START
     assert mirrored_side_states_parity_ok_v0(
         bull_binding.side_state_after,
         bear_binding.side_state_after,
@@ -163,7 +163,7 @@ def test_harness_fixture_path_reaches_canonical_owner() -> None:
         trading_epoch=48,
         context_reference="narrow-rewire-review-v0",
     )
-    assert binding.side_state_after == SideState.LONG_ARMED
+    assert binding.side_state_after == SideState.LONG_ARMED_NEUTRAL_START
     assert binding.state_switch_ref
     assert state_switch_binding_non_authority_boundary_ok_v0(binding)
 

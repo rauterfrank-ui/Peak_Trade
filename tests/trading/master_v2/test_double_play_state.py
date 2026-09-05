@@ -83,7 +83,7 @@ def test_downscope_pipeline_from_long_active():
     s, st2, d = _t(s, ScopeEvent.DOWNSCOPE_CONFIRMED, st2, 1)
     assert s == SideState.LONG_BLOCKED and d.allowed
     s, st2, d = _t(s, ScopeEvent.DOWNSCOPE_CONFIRMED, st2, 2)
-    assert s == SideState.SHORT_ARMED
+    assert s == SideState.SHORT_ARMED_SWITCH_TERMINAL
     s, st2, d = _t(s, ScopeEvent.DOWNSCOPE_CONFIRMED, st2, 3)
     assert s == SideState.SHORT_ACTIVE and d.reason_code == "SHORT_ACTIVE"
 
@@ -96,7 +96,7 @@ def test_downscope_pipeline_from_short_active():
     s, st2, d = _t(s, ScopeEvent.DOWNSCOPE_CONFIRMED, st2, 1)
     assert s == SideState.SHORT_BLOCKED
     s, st2, d = _t(s, ScopeEvent.DOWNSCOPE_CONFIRMED, st2, 2)
-    assert s == SideState.LONG_ARMED
+    assert s == SideState.LONG_ARMED_SWITCH_TERMINAL
     s, st2, d = _t(s, ScopeEvent.UPSCOPE_CONFIRMED, st2, 3)
     assert s == SideState.LONG_ACTIVE
 

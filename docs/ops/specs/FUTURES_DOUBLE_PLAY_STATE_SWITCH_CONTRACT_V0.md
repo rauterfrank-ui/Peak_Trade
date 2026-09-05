@@ -119,7 +119,7 @@ This contract **does not** redefine DSE vocabulary. Crosslink to DSE §9 for sco
 | DSE input | Side-switch role |
 |-----------|------------------|
 | `DOWNSCOPE_CONFIRMED` | **Required** prerequisite for Long→Short switch pipeline **and** for Short→Long while the generator is SHORT-oriented |
-| `UPSCOPE_CONFIRMED` | **Required** for LONG_ARMED → LONG_ACTIVE (neutral start shared) |
+| `UPSCOPE_CONFIRMED` | **Required** for every Long-armed identity → LONG_ACTIVE (Neutral-Start and switch-terminal share this completion event) |
 
 **Invariant:** `DOWNSCOPE_CONFIRMED_REQUIRED_FOR_LONG_TO_SHORT=true`  
 **Invariant:** `DOWNSCOPE_CONFIRMED_REQUIRED_FOR_SHORT_TO_LONG=true`
@@ -147,9 +147,13 @@ Target side states (manifest §4):
 
 ```text
 NEUTRAL_OBSERVE
+LONG_ARMED_NEUTRAL_START
+LONG_ARMED_SWITCH_TERMINAL
 LONG_ARMED
 LONG_ACTIVE
 LONG_BLOCKED
+SHORT_ARMED_NEUTRAL_START
+SHORT_ARMED_SWITCH_TERMINAL
 SHORT_ARMED
 SHORT_ACTIVE
 SHORT_BLOCKED
@@ -159,11 +163,16 @@ CHOP_GUARD_BLOCK
 KILL_ALL
 ```
 
+`LONG_ARMED` / `SHORT_ARMED` remain parseable **legacy-ambiguous** identities.
+Productive Neutral-Start and pipeline-terminal no longer share those tokens.
+
 | Term | Meaning |
 |------|---------|
 | **Long/Bull side** | Long-oriented strategy layer on the selected future |
 | **Short/Bear side** | Short-oriented strategy layer on the selected future |
-| **Armed** | Side prepared within pre-authorized envelope; not yet active |
+| **Armed Neutral-Start** | First directional adoption from `NEUTRAL_OBSERVE` |
+| **Armed Switch-Terminal** | Pipeline-terminal after the opposite side is blocked |
+| **Armed (legacy)** | Persisted `long_armed` / `short_armed`; origin not reconstructed |
 | **Active** | Side currently active (only one side active at a time) |
 | **Blocked** | Side may not receive new activation |
 | **Pending switch** | Transition in progress; not yet confirmed complete |
@@ -178,20 +187,21 @@ Requires `DOWNSCOPE_CONFIRMED` from DSE.
 LONG_ACTIVE
   → SWITCH_LONG_TO_SHORT_PENDING
   → LONG_BLOCKED
-  → SHORT_ARMED
+  → SHORT_ARMED_SWITCH_TERMINAL
   → SHORT_ACTIVE
 ```
 
 ### Short → Long pipeline (SHORT-oriented reversal)
 
 Requires `DOWNSCOPE_CONFIRMED` from DSE while the generator is SHORT-oriented.
-`LONG_ARMED` completion remains `UPSCOPE_CONFIRMED` (shared with neutral start).
+Long-armed completion remains `UPSCOPE_CONFIRMED` for every Long-armed identity,
+including Neutral-Start and switch-terminal.
 
 ```text
 SHORT_ACTIVE
   → SWITCH_SHORT_TO_LONG_PENDING
   → SHORT_BLOCKED
-  → LONG_ARMED
+  → LONG_ARMED_SWITCH_TERMINAL
   → LONG_ACTIVE
 ```
 
@@ -199,9 +209,9 @@ SHORT_ACTIVE
 
 ```text
 NEUTRAL_OBSERVE
-  → LONG_ARMED → LONG_ACTIVE
+  → LONG_ARMED_NEUTRAL_START → LONG_ACTIVE
   or
-  → SHORT_ARMED → SHORT_ACTIVE
+  → SHORT_ARMED_NEUTRAL_START → SHORT_ACTIVE
 ```
 
 Exact runtime mapping is governed wiring — **not** authorization from this doc alone.

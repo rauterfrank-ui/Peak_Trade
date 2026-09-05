@@ -156,7 +156,7 @@ def test_short_armed_reachable_via_transition_on_downscope_confirmed() -> None:
         envelope=env,
         now_tick=0,
     )
-    assert nxt is SideState.SHORT_ARMED
+    assert nxt is SideState.SHORT_ARMED_NEUTRAL_START
     assert decision.allowed is True
 
 

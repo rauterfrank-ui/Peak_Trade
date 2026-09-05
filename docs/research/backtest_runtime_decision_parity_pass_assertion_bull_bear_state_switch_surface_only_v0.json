@@ -32,10 +32,10 @@
   "source_manifest_verify_rc": 0,
   "implementation_digests": {
     "src/research/owner_bindings/bull_bear_state_switch_owner_binding_v0.py": "5a8c0dbd5ea6743142cd63041f3b229f2751030e6b8b33de3ecb44279fd06f65",
-    "src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py": "5d6254bd9a0d4d717b672ea99875eee1a3894b16ce3cdbe62ebb503464667e17",
-    "src/trading/master_v2/offline_double_play_scenario_replay_v0.py": "6dbb42a17bad653ede336a4b63cdfcb8ff339baa1756ac65a5a18059a10f4598",
-    "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py": "5bac44c97353d4bb2d394fca80119a2cc3567b86f590434104a5633a257a5cee",
-    "src/trading/master_v2/double_play_state.py": "878c35b18b3a99f9f401e01f4fea44e7379fdf29958ec1b95b1422c90e16314a"
+    "src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py": "f4e84a060ff2daa49869db904da02cd1c7b9a0cb7d251cc9a301e1e9754593d0",
+    "src/trading/master_v2/offline_double_play_scenario_replay_v0.py": "5555d6d41f77c1d5167fbecf8b5dbdc6793a0756f6b14f0bb7c4d94f436be581",
+    "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py": "fab3c14bc96377d0a84a41729b367bea42756f4cf832e3acab0ce4b9fb089524",
+    "src/trading/master_v2/double_play_state.py": "04e9b557599ed433ae1d0546f6f3e81c400ef6529c2149237216ae583de6dd6a"
   },
   "deterministic_test_refs": [
     "tests/research/test_bull_bear_state_switch_backtest_parity_narrow_rewire_v0.py",

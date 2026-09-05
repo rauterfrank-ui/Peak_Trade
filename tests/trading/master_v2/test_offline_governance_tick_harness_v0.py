@@ -227,9 +227,21 @@ def _blocked_result(
 
 
 def _recommended_side_label(side: SideState) -> str:
-    if side in (SideState.LONG_ACTIVE, SideState.LONG_ARMED, SideState.LONG_BLOCKED):
+    if side in (
+        SideState.LONG_ACTIVE,
+        SideState.LONG_ARMED,
+        SideState.LONG_ARMED_NEUTRAL_START,
+        SideState.LONG_ARMED_SWITCH_TERMINAL,
+        SideState.LONG_BLOCKED,
+    ):
         return "long"
-    if side in (SideState.SHORT_ACTIVE, SideState.SHORT_ARMED, SideState.SHORT_BLOCKED):
+    if side in (
+        SideState.SHORT_ACTIVE,
+        SideState.SHORT_ARMED,
+        SideState.SHORT_ARMED_NEUTRAL_START,
+        SideState.SHORT_ARMED_SWITCH_TERMINAL,
+        SideState.SHORT_BLOCKED,
+    ):
         return "short"
     if side == SideState.KILL_ALL:
         return "kill_all"
@@ -256,7 +268,7 @@ def test_long_side_confirmed_event_yields_compliance_label_only_no_order() -> No
     )
     _assert_non_authorizing(result)
     assert result.tick_ok is True
-    assert result.side_state_after == SideState.LONG_ARMED
+    assert result.side_state_after == SideState.LONG_ARMED_NEUTRAL_START
     assert result.recommended_side == "long"
     assert "transition_compliance_visible" in result.compliance_labels
 
@@ -270,7 +282,7 @@ def test_short_side_confirmed_event_yields_compliance_label_only_no_order() -> N
     )
     _assert_non_authorizing(result)
     assert result.tick_ok is True
-    assert result.side_state_after == SideState.SHORT_ARMED
+    assert result.side_state_after == SideState.SHORT_ARMED_NEUTRAL_START
     assert result.recommended_side == "short"
 
 
@@ -403,7 +415,7 @@ def test_pure_transition_decision_never_grants_live_authorization() -> None:
         envelope=_GOOD_ENVELOPE,
         now_tick=0,
     )
-    assert side == SideState.LONG_ARMED
+    assert side == SideState.LONG_ARMED_NEUTRAL_START
     assert decision.live_authorization_granted is False
 
 

@@ -245,17 +245,41 @@ def build_scenario_matrix_composition_input_v0(
 
 
 def _position_management_context(side_st: SideState) -> PositionManagementContext:
-    if side_st in (SideState.LONG_ACTIVE, SideState.LONG_ARMED, SideState.LONG_BLOCKED):
+    if side_st in (
+        SideState.LONG_ACTIVE,
+        SideState.LONG_ARMED,
+        SideState.LONG_ARMED_NEUTRAL_START,
+        SideState.LONG_ARMED_SWITCH_TERMINAL,
+        SideState.LONG_BLOCKED,
+    ):
         return PositionManagementContext.LONG_POSITION
-    if side_st in (SideState.SHORT_ACTIVE, SideState.SHORT_ARMED, SideState.SHORT_BLOCKED):
+    if side_st in (
+        SideState.SHORT_ACTIVE,
+        SideState.SHORT_ARMED,
+        SideState.SHORT_ARMED_NEUTRAL_START,
+        SideState.SHORT_ARMED_SWITCH_TERMINAL,
+        SideState.SHORT_BLOCKED,
+    ):
         return PositionManagementContext.SHORT_POSITION
     return PositionManagementContext.FLAT
 
 
 def _previous_direction_state(side_st: SideState) -> CompositionDirectionState:
-    if side_st in (SideState.LONG_ACTIVE, SideState.LONG_ARMED, SideState.LONG_BLOCKED):
+    if side_st in (
+        SideState.LONG_ACTIVE,
+        SideState.LONG_ARMED,
+        SideState.LONG_ARMED_NEUTRAL_START,
+        SideState.LONG_ARMED_SWITCH_TERMINAL,
+        SideState.LONG_BLOCKED,
+    ):
         return CompositionDirectionState.LONG
-    if side_st in (SideState.SHORT_ACTIVE, SideState.SHORT_ARMED, SideState.SHORT_BLOCKED):
+    if side_st in (
+        SideState.SHORT_ACTIVE,
+        SideState.SHORT_ARMED,
+        SideState.SHORT_ARMED_NEUTRAL_START,
+        SideState.SHORT_ARMED_SWITCH_TERMINAL,
+        SideState.SHORT_BLOCKED,
+    ):
         return CompositionDirectionState.SHORT
     return CompositionDirectionState.NEUTRAL
 

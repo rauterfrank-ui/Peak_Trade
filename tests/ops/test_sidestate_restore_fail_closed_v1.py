@@ -25,9 +25,13 @@ HOST = (
     "raw",
     [
         SideState.LONG_ARMED,
+        SideState.LONG_ARMED_NEUTRAL_START,
+        SideState.LONG_ARMED_SWITCH_TERMINAL,
         SideState.NEUTRAL_OBSERVE,
         SideState.KILL_ALL,
         "long_armed",
+        "long_armed_neutral_start",
+        "long_armed_switch_terminal",
         "neutral_observe",
         "kill_all",
     ],

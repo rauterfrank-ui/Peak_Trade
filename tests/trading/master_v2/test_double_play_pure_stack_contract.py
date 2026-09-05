@@ -661,7 +661,7 @@ def _stack_eligible_with_futures_gate(
 
 def test_contract_1_valid_long_bull_path_eligible_model_only() -> None:
     s1, st1, t1 = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
-    assert s1 == SideState.LONG_ARMED
+    assert s1 == SideState.LONG_ARMED_NEUTRAL_START
     s2, st2, t2 = _ts(s1, ScopeEvent.UPSCOPE_CONFIRMED, st1, 1)
     assert s2 == SideState.LONG_ACTIVE
 
@@ -706,7 +706,7 @@ def test_contract_1_valid_long_bull_path_eligible_model_only() -> None:
 
 def test_contract_2_valid_short_bear_path_eligible_model_only() -> None:
     s1, st1, t1 = _ts(SideState.NEUTRAL_OBSERVE, ScopeEvent.DOWNSCOPE_CONFIRMED, EMPTY_ST, 0)
-    assert s1 == SideState.SHORT_ARMED
+    assert s1 == SideState.SHORT_ARMED_NEUTRAL_START
     s2, st2, t2 = _ts(s1, ScopeEvent.DOWNSCOPE_CONFIRMED, st1, 1)
     assert s2 == SideState.SHORT_ACTIVE
 

@@ -224,4 +224,4 @@ def test_transition_state_remains_switch_owner_for_confirmed_events() -> None:
         now_tick=1,
     )
     assert decision.allowed is True
-    assert next_side is SideState.LONG_ARMED
+    assert next_side is SideState.LONG_ARMED_NEUTRAL_START

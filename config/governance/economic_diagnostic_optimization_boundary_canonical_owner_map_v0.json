@@ -2000,7 +2000,8 @@
     "config/governance/semantics_neutral_decommission_authorization_v1.json",
     "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json",
     "config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json",
-    "config/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.json"
+    "config/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.json",
+    "config/governance/explicit_owner_adjudicated_sidestate_armed_identity_split_authorization_v1.json"
   ],
   "technical_canonical_wiring_authorization": {
     "authorized_scope_class": "TECHNICAL_CANONICAL_WIRING_ONLY",
@@ -2041,5 +2042,12 @@
     "contract_path": "config/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.json",
     "grant_active": false,
     "note": "Exact-file evidence-digest-bound Owner-adjudicated generator-fallback repair so ScopeDirectionState remains a SideState projection. Distinct from wiring, restoration, decommission, nonproductive contract change, and the fifth mapping-bind class. Inactive after digest-bound slice closeout. Does not reopen the closed fifth-class grant. Does not waive MASTER_V2_MUTATION_ALLOWED=false. Not a PR or branch exception."
+  },
+  "explicit_owner_adjudicated_sidestate_armed_identity_split_authorization": {
+    "authorized_scope_class": "EXPLICIT_OWNER_ADJUDICATED_SIDESTATE_ARMED_IDENTITY_SPLIT_V1",
+    "mutation_purpose_class": "SIDESTATE_ARMED_IDENTITY_SPLIT_REPAIR",
+    "contract_path": "config/governance/explicit_owner_adjudicated_sidestate_armed_identity_split_authorization_v1.json",
+    "grant_active": true,
+    "note": "Exact-file evidence-digest-bound Owner-adjudicated SideState ARMED identity split so Neutral-Start and pipeline-terminal are distinct identities. Distinct from wiring, restoration, decommission, nonproductive contract change, the fifth mapping-bind class, and the sixth generator-fallback class. Does not reopen those grants. Does not waive MASTER_V2_MUTATION_ALLOWED=false. Not a PR or branch exception."
   }
 }

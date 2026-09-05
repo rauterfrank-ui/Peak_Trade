@@ -153,8 +153,8 @@ def test_mirrored_bull_bear_behavior_and_bypass_exclusion() -> None:
     data = load_contract()
     bull_binding, bear_binding = evaluate_bull_bear_parity_fixtures_v0()
 
-    assert bull_binding.side_state_after == SideState.LONG_ARMED
-    assert bear_binding.side_state_after == SideState.SHORT_ARMED
+    assert bull_binding.side_state_after == SideState.LONG_ARMED_NEUTRAL_START
+    assert bear_binding.side_state_after == SideState.SHORT_ARMED_NEUTRAL_START
     assert mirrored_side_states_parity_ok_v0(
         bull_binding.side_state_after,
         bear_binding.side_state_after,
@@ -171,7 +171,7 @@ def test_mirrored_bull_bear_behavior_and_bypass_exclusion() -> None:
         trading_epoch=48,
         context_reference="surface-only-parity-assertion-v0",
     )
-    assert harness_binding.side_state_after == SideState.LONG_ARMED
+    assert harness_binding.side_state_after == SideState.LONG_ARMED_NEUTRAL_START
     assert state_switch_binding_non_authority_boundary_ok_v0(harness_binding)
     assert data["mirrored_behavior_verified"] is True
     assert data["bypass_authority_excluded"] is True

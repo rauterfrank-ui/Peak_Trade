@@ -33,12 +33,16 @@ HOST = (
 
 _MAPPED_SHORT = (
     SideState.SHORT_ARMED,
+    SideState.SHORT_ARMED_NEUTRAL_START,
+    SideState.SHORT_ARMED_SWITCH_TERMINAL,
     SideState.SHORT_ACTIVE,
     SideState.SHORT_BLOCKED,
     SideState.SWITCH_SHORT_TO_LONG_PENDING,
 )
 _MAPPED_LONG = (
     SideState.LONG_ARMED,
+    SideState.LONG_ARMED_NEUTRAL_START,
+    SideState.LONG_ARMED_SWITCH_TERMINAL,
     SideState.LONG_ACTIVE,
     SideState.LONG_BLOCKED,
     SideState.SWITCH_LONG_TO_SHORT_PENDING,
@@ -124,8 +128,8 @@ def test_overlay_writer_source_is_projection_only() -> None:
     assert "scope_direction_from_side_state_v1(state.side_state)" in text
 
 
-def test_all_eleven_sidestates_runtime_projection_parity() -> None:
-    assert len(_ALL_SIDESTATES) == 11
+def test_all_sidestates_runtime_projection_parity() -> None:
+    assert len(_ALL_SIDESTATES) == 15
     for side in _ALL_SIDESTATES:
         projected = scope_direction_from_side_state_v1(side)
         state = HardenedBridgeSessionStateV2()

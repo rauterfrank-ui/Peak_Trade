@@ -133,7 +133,7 @@ def test_1_bull_only_confirmed_path_bound_v0() -> None:
         trading_epoch=_EPOCH,
         context_reference=_CONTEXT,
     )
-    assert binding.side_state_after == SideState.LONG_ARMED
+    assert binding.side_state_after == SideState.LONG_ARMED_NEUTRAL_START
     env = extract_state_switch_parity_envelope_v0(binding)
     assert_state_switch_non_authority_boundary_v0(env)
     assert state_switch_binding_non_authority_boundary_ok_v0(binding)
@@ -152,7 +152,7 @@ def test_2_bear_only_confirmed_path_bound_v0() -> None:
         trading_epoch=_EPOCH,
         context_reference=_CONTEXT,
     )
-    assert binding.side_state_after == SideState.SHORT_ARMED
+    assert binding.side_state_after == SideState.SHORT_ARMED_NEUTRAL_START
     env = extract_state_switch_parity_envelope_v0(binding)
     assert_state_switch_non_authority_boundary_v0(env)
 
