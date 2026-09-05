@@ -186,7 +186,11 @@ LONG_ACTIVE
   → SHORT_ACTIVE
 ```
 
-### Normale Upscope-Transition
+### Normale Short→Long Transition
+
+While the generator is SHORT-oriented, the State Machine consumes
+`DOWNSCOPE_CONFIRMED` (reversal). `LONG_ARMED` completion remains
+`UPSCOPE_CONFIRMED` (shared with the neutral start).
 
 ```text
 SHORT_ACTIVE

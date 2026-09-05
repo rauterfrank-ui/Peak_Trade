@@ -96,7 +96,7 @@ LONG_ACTIVE
 
 ```text
 SHORT_ACTIVE
-→ bestätigter Upscope
+→ bestätigter Downscope (SHORT reversal)
 → SWITCH_SHORT_TO_LONG_PENDING
 → SHORT_BLOCKED
 → LONG_ARMED
@@ -767,7 +767,7 @@ Risk: kontrollierbar
 
 Erwartung:
 - kein pauschaler Kill-All
-- Upscope-Candidate
+- Downscope-Candidate
 - kontrollierter Short→Long-State-Switch
 ```
 

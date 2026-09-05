@@ -556,7 +556,7 @@ def test_scenario_c_conformance_long_adverse_move_state_switch_not_kill_all() ->
 
 
 def test_scenario_d_conformance_short_adverse_move_state_switch_not_kill_all() -> None:
-    """Scenario D: SHORT adverse move — upscope/state-switch, not pauschaler Kill-All."""
+    """Scenario D: SHORT adverse move — downscope/state-switch, not pauschaler Kill-All."""
     ticks = _default_ticks()[:12] + _default_ticks()[16:20]
     result = _run_ticks(ticks)
     _assert_replay_executed(result)

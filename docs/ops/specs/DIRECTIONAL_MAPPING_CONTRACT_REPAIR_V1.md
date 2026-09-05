@@ -21,31 +21,39 @@ PERSIST_GO_STATUS=GRANTED_CONFIRMED
 AUTHORIZED_SCOPE=DIRECTIONAL_MAPPING_CONTRACT_REPAIR_AND_BLAST_RADIUS_ADJUDICATION_ONLY
 BOUND_ORIGIN_MAIN_SHA=415b3146867d8be1284105639a31bd2dc1e1ca2c
 PARENT_CENSUS=docs/ops/specs/DIRECTIONAL_SCOPE_ANCHOR_AND_SIDE_SWITCH_SEMANTICS_CENSUS_V1.md
-CONTRACT_RUNTIME_BOUND=false
+CONTRACT_RUNTIME_BOUND=true
+RUNTIME_BIND_GO=PEAK_TRADE_OWNER_GO_DIRECTIONAL_MAPPING_RUNTIME_BIND_MINIMUM_ATOMIC_REPAIR_V1
+RUNTIME_BIND_GO_STATUS=GRANTED_CONFIRMED
 ```
 
-This file records **target mapping policy** and **what a later runtime GO
-must co-change**. It does **not** implement the repair, remap the
-generator, change `transition_state`, change Entry/Exit, change anchors
-or boundaries, bind MODEL_C, grant a freeze exception, modify PR `#6270`,
-or authorize Live.
+Historical persist of this file was docs-only. A later Owner runtime-bind GO
+bound the §5 TARGET into productive `transition_state` and
+`scope_direction_from_side_state_v1`. See §12.
+
+This file records **mapping policy**. The original persist GO did **not**
+implement the repair. The runtime-bind GO in §12 implements the minimum
+atomic repair set only. It does **not** remap generator geometry, change
+Entry/Exit, change anchors or boundaries, bind MODEL_C, grant a freeze
+exception, add `last_active_side`, modify PR `#6270`, or authorize Live.
 
 ```text
-DOCUMENT_CLASS=DOCS_ONLY_MAPPING_CONTRACT_AND_BLAST_RADIUS
+DOCUMENT_CLASS=MAPPING_CONTRACT_WITH_MINIMUM_ATOMIC_RUNTIME_BIND
 PARALLEL_SSOT_CREATED=false
 MAPPING_CONTRACT_ADJUDICATED=true
-MAPPING_CONTRACT_RUNTIME_BOUND=false
+MAPPING_CONTRACT_RUNTIME_BOUND=true
 MODEL_C_FREEZE_EXCEPTION_AUTHORIZED=false
 MODEL_C_RUNTIME_BINDING_AUTHORIZED=false
 ANCHOR_RUNTIME_CHANGE_AUTHORIZED=false
 BOUNDARY_FORMULA_CHANGE_AUTHORIZED=false
-TRANSITION_STATE_RUNTIME_CHANGE_AUTHORIZED=false
+TRANSITION_STATE_RUNTIME_CHANGE_AUTHORIZED=true
+TRANSITION_STATE_RUNTIME_CHANGE_SCOPE=SHORT_REVERSAL_EVENT_POLARITY_ONLY
 GENERATOR_RUNTIME_REMAP_AUTHORIZED=false
 ENTRY_EXIT_RUNTIME_CHANGE_AUTHORIZED=false
 PR_6270_MODIFICATION_AUTHORIZED=false
 LIVE_MUTATION_AUTHORIZED=false
 MODEL_B_REMAINS_PRODUCTIVE_BASELINE=true
-CORE_LOGIC_CHANGE=false
+CORE_LOGIC_CHANGE=true
+CORE_LOGIC_CHANGE_SCOPE=MINIMUM_ATOMIC_DIRECTIONAL_MAPPING_RUNTIME_BIND
 LIVE_AUTHORIZED=false
 ORDERS_AUTHORIZED=false
 ```
@@ -65,21 +73,22 @@ BLAST_RADIUS=SECTION_7
 HISTORICAL_INTERMEDIATE=CURRENT_RUNTIME_MAPS_ON_ORIGIN_MAIN
 NAVIGATION_ONLY=MAP_OF_TRUTH
 HYPOTHESIS=NONE_USED_AS_CONCLUSION
-OPEN=RUNTIME_BIND_OF_THIS_CONTRACT
+OPEN=AWAIT_OWNER_MERGE_GO_FOR_DIRECTIONAL_MAPPING_RUNTIME_BIND_PR
 CONFLICTED=NONE_AFTER_THIS_ADJUDICATION
 ```
 
-Current productive maps remain **HISTORICAL_INTERMEDIATE** until a later
-runtime-bind GO. This file does not silently rewrite runtime.
+Historical persist of this file left productive maps as
+**HISTORICAL_INTERMEDIATE**. §12 records the later runtime bind of the
+§5 TARGET. ARMED departing-side authority remains unresolved.
 
 ## 2.1 Epistemic lanes (do not collapse)
 
 ```text
-CURRENT_PRODUCTIVE_RUNTIME=origin/main maps and events (MODEL_B Dual Envelope)
-OWNER_ADJUDICATED_TARGET=this contract §4–§6 (unbound)
-KNOWN_MISMATCH=SHORT_ACTIVE continuation UPSCOPE currently starts Short→Long; PENDING generator orientation is destination-mirrored
-AUTHORIZED_FUTURE_CHANGE=MINIMUM_ATOMIC_RUNTIME_REPAIR_SET after a separate runtime-bind GO
-UNAUTHORIZED_CHANGE=ARMED last_active_side carry; freeze exception; MODEL_C bind; generator un-mirror; trailing-as-destination; PR #6270; Live
+CURRENT_PRODUCTIVE_RUNTIME=origin/main after directional-mapping runtime bind (MODEL_B Dual Envelope; PENDING holds departing side; SHORT reversal consumes DOWNSCOPE)
+OWNER_ADJUDICATED_TARGET=this contract §4–§6 (runtime-bound for the minimum atomic set)
+KNOWN_MISMATCH_BEFORE_BIND=SHORT_ACTIVE continuation UPSCOPE started Short→Long; PENDING generator orientation was destination-mirrored
+AUTHORIZED_COMPLETED_CHANGE=MINIMUM_ATOMIC_RUNTIME_REPAIR_SET
+UNAUTHORIZED_CHANGE=ARMED last_active_side carry; freeze exception; MODEL_C bind; generator un-mirror; trailing-as-destination; PR #6270; Live; wallclock composition overlay remap
 ```
 
 ## 2.2 Core Bull / Bear directional invariants (adjudicated)
@@ -102,10 +111,11 @@ BEAR_SHORT_REVERSAL=DOWNSCOPE
 ```
 
 ```text
-CURRENT_PRODUCTIVE_SHORT_TO_LONG_START_EVENT=UPSCOPE_CONFIRMED
+HISTORICAL_PRODUCTIVE_SHORT_TO_LONG_START_EVENT_BEFORE_BIND=UPSCOPE_CONFIRMED
+CURRENT_PRODUCTIVE_SHORT_TO_LONG_START_EVENT=DOWNSCOPE_CONFIRMED
 TARGET_SHORT_TO_LONG_START_EVENT=DOWNSCOPE_CONFIRMED
-TARGET_UNBOUND=true
-PRODUCTIVE_RUNTIME_REMAINS_CURRENT_UNTIL_LATER_GO=true
+TARGET_UNBOUND=false
+PRODUCTIVE_RUNTIME_REMAINS_CURRENT_UNTIL_LATER_GO=false
 ```
 
 ## 3. Owner-GO bounds (this slice)
@@ -282,11 +292,15 @@ Adjudicating the text here is **not** a runtime bind.
 ```text
 MODEL_C_FREEZE_EXCEPTION_REMAINS_UNAUTHORIZED=true
 THIS_ADJUDICATION_IS_NOT_A_RUNTIME_BIND=true
+RUNTIME_BIND_RECORDED_IN_SECTION_12=true
 ```
 
-## 5. Target mapping (unbound)
+## 5. Target mapping (runtime-bound for the minimum atomic set)
 
-Class: `ALREADY_ADJUDICATED_CONCLUSION`. Not consumed by runtime.
+Class: `ALREADY_ADJUDICATED_CONCLUSION`. Consumed by runtime after §12.
+
+Historical CURRENT columns below record the pre-bind productive map.
+TARGET columns are the bound map.
 
 Vocabulary (mirrored generator, Owner GLOBAL):
 
@@ -356,10 +370,10 @@ adverse = 0.4 × up
 reversal = 0.6 × up
 ```
 
-No selection of `0.5` / `0.75` / `1.25` / `1.5` / `2.0`. After a later
-runtime bind of **this** mapping contract, geometric-up on SHORT lands
-on `DOWNSCOPE` and SM consumes it — then Band-Koinzidenz is polarity-
-safe. Until that bind, freeze-exception stays false.
+No selection of `0.5` / `0.75` / `1.25` / `1.5` / `2.0`. After the
+runtime bind in §12, geometric-up on SHORT lands on `DOWNSCOPE` and SM
+consumes it — then Band-Koinzidenz is polarity-safe. Freeze-exception
+remains unauthorized.
 
 ```text
 MODEL_C_NUMERIC_SHAPE=
@@ -376,16 +390,18 @@ CAP63_PRODUCTIVE_VALUES=
 CAP63_PRODUCTIVE_VALUES_UNCHANGED=true
 ```
 
-## 7. Blast radius (later runtime-bind GO; not this slice)
+## 7. Blast radius
 
-Class: `FORENSIC_RAW_EVIDENCE` of **who must move together**. No edits.
+Class: `FORENSIC_RAW_EVIDENCE` of **who must move together**.
+Historically recorded unbound; the minimum atomic set was implemented
+under §12. Parallel maps in §7.3 remain out of this bind.
 
 ### 7.1 Must co-change if SM Short→Long consumes `DOWNSCOPE_CONFIRMED`
 
 | Surface | Why |
 |---------|-----|
 | `src/trading/master_v2/double_play_state.py` `transition_state` | Sole switch owner; four Short→Long guards |
-| `tests/trading/master_v2/test_double_play_state.py` | Asserts `SHORT_ACTIVE` + `UPSCOPE_CONFIRMED` → PENDING |
+| `tests/trading/master_v2/test_double_play_state.py` | Co-changed under §12: `SHORT_ACTIVE` + `DOWNSCOPE_CONFIRMED` → PENDING |
 | `tests/trading/master_v2/test_double_play_pure_stack_contract.py` | Same pipeline assertions |
 | `tests/trading/master_v2/test_double_play_dashboard_display.py` | Same |
 | `tests/trading/master_v2/test_offline_governance_tick_harness_v0.py` | Same |
@@ -396,12 +412,12 @@ Class: `FORENSIC_RAW_EVIDENCE` of **who must move together**. No edits.
 | `src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py` | Scenario switch envelope |
 | `src/trading/master_v2/flat_before_opposite_side_scenario_binding_adapter_v0.py` | PENDING branch |
 | `src/trading/master_v2/survival_suitability_scenario_binding_adapter_v0.py` | PENDING branch |
-| [FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT_V0.md](FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT_V0.md) | `UPSCOPE_CONFIRMED_REQUIRED_FOR_SHORT_TO_LONG` |
+| [FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT_V0.md](FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT_V0.md) | `DOWNSCOPE_CONFIRMED_REQUIRED_FOR_SHORT_TO_LONG` |
 | `tests/ops/test_master_v2_state_switch_contract_static_v0.py` | Pins that marker; **must move with the contract** |
-| [MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md](MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md) §4 upscope-transition prose | Vocabulary; not runtime |
+| [MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md](MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md) §4 Short→Long vocabulary | Co-changed: DOWNSCOPE while SHORT-oriented; not runtime |
 | `docs/ops/specs/MASTER_V2_DOUBLE_PLAY_KILL_ALL_STATE_SWITCH_FAVORABLE_ADVERSE_EXTREME_MOVES_ACCEPTANCE_V0.md` | Pipeline token |
 
-**Fail-closed rule for later GO:** do not change `transition_state`
+**Fail-closed co-change rule:** do not change `transition_state`
 without the static State-Switch marker test and the docs invariant in
 the same diff. Do not change the docs invariant without runtime.
 
@@ -450,21 +466,22 @@ ARMED_OVERLOAD_BLOCKS_PURE_TABLE_FULL_HOLD=true
 CAP62_LAST_ACTIVE_CARRY_NOT_IN_THIS_FAMILY_YET=true
 ```
 
-### 7.6 Minimum atomic runtime repair set (not implemented here)
+### 7.6 Minimum atomic runtime repair set
 
-A later runtime-bind GO must **not** treat A and B as independent
-repairs. They are one atomic set together with their direct tests.
+Historically recorded here as unbound. Implemented under §12.
+A and B are one atomic set together with their direct tests; they must
+not be treated as independent repairs.
 
 ```text
 MINIMUM_ATOMIC_RUNTIME_REPAIR_SET=
   SHORT_REVERSAL_EVENT_POLARITY_PLUS_PENDING_GENERATOR_ORIENTATION_PLUS_DIRECT_CONTRACT_AND_BEHAVIOR_TESTS
 ```
 
-| Atom | TARGET (unbound) |
+| Atom | TARGET (now runtime-bound; see §12) |
 |------|------------------|
 | A | `SHORT_ACTIVE` reversal consumption: `UPSCOPE_CONFIRMED` → `DOWNSCOPE_CONFIRMED` |
 | B | PENDING generator orientation: `SWITCH_LONG_TO_SHORT_PENDING` → LONG; `SWITCH_SHORT_TO_LONG_PENDING` → SHORT |
-| C | Direct contract / static / behavior tests for A+B, including State-Switch marker `UPSCOPE_CONFIRMED_REQUIRED_FOR_SHORT_TO_LONG` |
+| C | Direct contract / static / behavior tests for A+B, including State-Switch marker `DOWNSCOPE_CONFIRMED_REQUIRED_FOR_SHORT_TO_LONG` |
 
 ARMED semantics, wallclock composition overlay, scenario
 `active_side_to_scope_direction_v0`, and Entry/Exit tables are **outside**
@@ -477,7 +494,7 @@ separate Owner decision authorizes `last_active_side`.
 FINAL_CASE=CASE_2
 DIRECTIONAL_MAPPING_CONTRACT_REPAIR_REQUIRED_BEFORE_FREEZE_EXCEPTION=true
 CONTRACT_REPAIR_ADJUDICATED=true
-CONTRACT_REPAIR_RUNTIME_BOUND=false
+CONTRACT_REPAIR_RUNTIME_BOUND=true
 ANCHOR_OR_PIPELINE_TRAILING_RUNTIME_REPAIR_REQUIRED_BEFORE_FREEZE_EXCEPTION=false
 ```
 
@@ -485,43 +502,94 @@ ANCHOR_OR_PIPELINE_TRAILING_RUNTIME_REPAIR_REQUIRED_BEFORE_FREEZE_EXCEPTION=fals
 
 ```text
 MARKER: DIRECTIONAL_MAPPING_CONTRACT_REPAIR_V1_EXISTS
-MARKER: DOCS_ONLY
 MARKER: MAPPING_CONTRACT_ADJUDICATED=true
-MARKER: MAPPING_CONTRACT_RUNTIME_BOUND=false
+MARKER: MAPPING_CONTRACT_RUNTIME_BOUND=true
 MARKER: OQ_CENSUS_1_ADJUDICATED_KEEP_GENERATOR_MIRROR_SM_CONSUMES_SHORT_REVERSAL_DOWNSCOPE
 MARKER: OQ_CENSUS_2_ADJUDICATED_TRAILING_FREEZE_INTENDED
 MARKER: OQ_CENSUS_3_ADJUDICATED_PRESERVE_THEN_IMPLICIT_REBASE
 MARKER: OQ_CENSUS_4_ADJUDICATED_PARTIAL_PENDING_HOLD_DEPARTING_ACTIVE
 MARKER: OQ_CENSUS_5_ADJUDICATED_FREEZE_EXCEPTION_BLOCKED_UNTIL_RUNTIME_BIND
 MARKER: ARMED_SIDE_STATE_OVERLOAD_RESIDUAL=true
-MARKER: WALLCLOCK_COMPOSITION_SCOPE_DIRECTION_OVERLAY_IN_BLAST_RADIUS=true
+MARKER: WALLCLOCK_COMPOSITION_SCOPE_DIRECTION_OVERLAY_LEFT_UNCHANGED_OUT_OF_MINIMUM_SET=true
 MARKER: STATE_SWITCH_STATIC_MARKER_MUST_COCHANGE_WITH_TRANSITION_STATE
 MARKER: MODEL_C_FREEZE_EXCEPTION_AUTHORIZED=false
 MARKER: PR_6270_MUST_REMAIN_UNTOUCHED=true
 MARKER: LIVE_AUTHORIZED=false
-MARKER: NEXT_STOP=AWAIT_OWNER_GO_DIRECTIONAL_MAPPING_RUNTIME_BIND
+MARKER: LAST_ACTIVE_SIDE_BINDING_AUTHORIZED=false
+MARKER: NEXT_STOP=AWAIT_OWNER_MERGE_GO_FOR_DIRECTIONAL_MAPPING_RUNTIME_BIND_PR
 ```
 
 ## 10. STOP conditions
 
+The persist-slice STOP list below remains the historical bound of the
+docs-only GO. The runtime-bind GO in §12 is the authorized exception to
+item 1 for the minimum atomic set only.
+
 Stop immediately if this file is treated as:
 
-1. runtime bind of `transition_state` or `scope_direction_from_side_state_v1`
+1. authorization to un-mirror generator formulas
 2. freeze exception or MODEL_C derivation seam
-3. authorization to un-mirror generator formulas
-4. authorization to trail as destination during the pipeline
-5. authorization to add Cap 6.2 `last_active_side` in this slice
-6. a rewrite of the State-Switch contract without runtime (docs&#47;runtime drift)
-7. PR `#6270` modification
-8. Live / orders / credentials
+3. authorization to trail as destination during the pipeline
+4. authorization to add Cap 6.2 `last_active_side`
+5. a rewrite of the State-Switch contract without runtime (docs&#47;runtime drift)
+6. PR `#6270` modification
+7. Live / orders / credentials
+8. wallclock composition overlay remap, Entry/Exit remap, or ARMED history-carry
 
 ## 11. Next stop
 
 ```text
-NEXT_STOP=AWAIT_OWNER_GO_DIRECTIONAL_MAPPING_RUNTIME_BIND
+NEXT_STOP=AWAIT_OWNER_MERGE_GO_FOR_DIRECTIONAL_MAPPING_RUNTIME_BIND_PR
 MODEL_C_FREEZE_EXCEPTION_REMAINS_UNAUTHORIZED=true
-REQUIRED_PRE_FREEZE_WORKPACKAGE=DIRECTIONAL_MAPPING_RUNTIME_BIND_OF_THIS_CONTRACT
+ARMED_DEPARTING_SIDE_AUTHORITY_UNRESOLVED=true
+LAST_ACTIVE_SIDE_BINDING_AUTHORIZED=false
 ```
 
-That later GO must be scoped to §5 TARGET plus §7 co-change set. It is
-not this GO.
+Merge of the runtime-bind PR is **not** authorized by the runtime-bind
+GO. Freeze-exception / MODEL_C runtime bind remain blocked until a
+separate Owner GO.
+
+## 12. Runtime bind closeout
+
+```text
+RUNTIME_BIND_GO=PEAK_TRADE_OWNER_GO_DIRECTIONAL_MAPPING_RUNTIME_BIND_MINIMUM_ATOMIC_REPAIR_V1
+RUNTIME_BIND_GO_STATUS=GRANTED_CONFIRMED
+BOUND_ORIGIN_MAIN_SHA=341a005f40d15ab45e2831feffdf1870c83e88df
+CONTRACT_RUNTIME_BOUND=true
+SHORT_REVERSAL_EVENT_POLARITY=DOWNSCOPE_CONFIRMED
+PENDING_LONG_TO_SHORT_GENERATOR=LONG
+PENDING_SHORT_TO_LONG_GENERATOR=SHORT
+LAST_ACTIVE_SIDE_CHANGED=false
+MODEL_C_NUMERIC_SHAPE_UNCHANGED=true
+CAP63_PRODUCTIVE_VALUES_UNCHANGED=true
+PR_6270_TOUCHED=false
+WALLCLOCK_COMPOSITION_OVERLAY_CHANGED=false
+ENTRY_EXIT_TABLE_CHANGED=false
+ARMED_OVERLOAD_UNCHANGED=true
+LIVE_AUTHORIZED=false
+```
+
+Implemented surfaces:
+
+- `src/trading/master_v2/double_play_state.py` `transition_state`
+  SHORT_ACTIVE / SWITCH_SHORT_TO_LONG_PENDING / SHORT_BLOCKED consume
+  `DOWNSCOPE_CONFIRMED`. `LONG_ARMED` remains `UPSCOPE_CONFIRMED`.
+- `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py`
+  `scope_direction_from_side_state_v1` PENDING rows hold the departing
+  ACTIVE side.
+- Direct contract/behavior tests in
+  `tests/trading/master_v2/test_directional_mapping_runtime_bind_v1.py`.
+- State-Switch static marker
+  `DOWNSCOPE_CONFIRMED_REQUIRED_FOR_SHORT_TO_LONG` co-changed with
+  runtime.
+- Default scenario ticks in
+  `src/trading/master_v2/offline_double_play_scenario_replay_v0.py`
+  Phase 4 cooldown flap and Phase 6 SHORT reversal.
+
+Out of this bind (re-adjudicated, not silently repaired):
+
+- wallclock composition `selected_side` overlay
+- Entry/Exit PENDING maps
+- scenario `active_side_to_scope_direction_v0`
+- ARMED last_active_side history
+

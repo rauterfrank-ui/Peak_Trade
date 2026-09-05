@@ -886,15 +886,15 @@ def build_default_bull_bear_bull_scenario_ticks() -> tuple[OfflineDoublePlayScen
     # Phase 4 — flapping attempt within cooldown (candidates + blocked confirmed switch)
     add(95.5, ScopeEvent.UPSCOPE_CANDIDATE, cooldown=5)
     add(96.0, ScopeEvent.DOWNSCOPE_CANDIDATE, cooldown=5)
-    add(96.5, ScopeEvent.UPSCOPE_CONFIRMED, cooldown=5)
+    add(96.5, ScopeEvent.DOWNSCOPE_CONFIRMED, cooldown=5)
 
     # Phase 5 — volatility scope adaptation (reset cooldown)
     add(93.0, ScopeEvent.NOOP, vol=0.08, cooldown=0)
 
-    # Phase 6 — confirmed positive shift → LONG_ACTIVE
-    add(95.0, ScopeEvent.UPSCOPE_CONFIRMED, cooldown=0)
-    add(97.0, ScopeEvent.UPSCOPE_CONFIRMED, cooldown=0)
-    add(99.0, ScopeEvent.UPSCOPE_CONFIRMED, cooldown=0)
+    # Phase 6 — SHORT reversal (DOWNSCOPE while SHORT-oriented) then LONG_ARMED UPSCOPE
+    add(95.0, ScopeEvent.DOWNSCOPE_CONFIRMED, cooldown=0)
+    add(97.0, ScopeEvent.DOWNSCOPE_CONFIRMED, cooldown=0)
+    add(99.0, ScopeEvent.DOWNSCOPE_CONFIRMED, cooldown=0)
     add(101.0, ScopeEvent.UPSCOPE_CONFIRMED, cooldown=0)
 
     # Phase 7 — capital slot ratchet step then loss-following base reduction (no reserve top-up)

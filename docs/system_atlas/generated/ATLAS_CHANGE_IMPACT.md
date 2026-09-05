@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=13
+ATLAS_CHANGED_RELATION_COUNT=3
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,13 +40,27 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `FORENSIC_REFERENCE:information_corpus_persistence_base` |
+| `FUNCTIONAL_CORE:double_play` |
 | `GUARD:economic_diagnostic_optimization_boundary` |
+| `NAVIGATION_INDEX:map_of_truth` |
+| `RUNBOOK:canonical_master_runbook` |
+| `RUNBOOK:vollautonomie_v4_4_12` |
+| `RUNTIME_COMPONENT:ddo_capture_v0` |
+| `RUNTIME_COMPONENT:dp_offline_scenario_replay` |
+| `RUNTIME_COMPONENT:dp_state` |
+| `RUNTIME_COMPONENT:mv2_integrated_replay` |
+| `SUBSYSTEM:master_v2` |
+| `TERM:dynamic_scope` |
+| `TERM:map_of_truth` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:a_map_documents_runbook` |
+| `REL:r_ddo_capture_observes_integrated_replay` |
+| `REL:s_map_navigates_runbook` |
 
 ## NEW_RELATIONS
 
@@ -64,7 +78,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| _(none)_ |
+| `CLOSURE:live_readiness` |
 
 ## AFFECTED_OKX_SURFACES
 
@@ -92,7 +106,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Inventory the fifth Economic Guard admission class for an Owner-adjudicated productive mapping-contract runtime bind. Committed grant remains inactive. Does not waive MASTER_V2_MUTATION_ALLOWED=false. Does not authorize live, testnet, canary, orders, or execution. Atlas is not canonical authority.
+- Directional mapping runtime bind: SHORT reversal polarity and PENDING departing-side generator orientation now consume the §5 TARGET. Active fifth-class slice grant is digest-bound to the current diff base. Freeze exception unauthorized. MODEL_C runtime unauthorized. ARMED residual unresolved. last_active_side bind unauthorized. MODEL_B remains the productive baseline. CLOSURE:live_readiness is inspected because MOT documents the runbook; this pointer does not authorize Live. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

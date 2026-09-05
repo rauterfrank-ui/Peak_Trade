@@ -230,7 +230,7 @@ def test_6_mirrored_bull_bear_price_path_parity_v0() -> None:
     )
     short_binding = evaluate_scenario_state_switch_for_fixture_v0(
         side_state=SideState.SHORT_ACTIVE,
-        scope_event=ScopeEvent.UPSCOPE_CONFIRMED,
+        scope_event=ScopeEvent.DOWNSCOPE_CONFIRMED,
         instrument_id=_INSTRUMENT,
         trading_epoch=_EPOCH,
         context_reference=f"{_CONTEXT}-short",

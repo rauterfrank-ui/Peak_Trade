@@ -549,7 +549,8 @@ def test_e_cooldown_stateful_across_cycles() -> None:
         if side is SideState.SHORT_ACTIVE:
             break
     assert runtime is not None
-    # From SHORT_ACTIVE attempt UPSCOPE immediately — cooldown should block if switch just completed
+    # From SHORT_ACTIVE, geometric-up (price=500) is reversal/DOWNSCOPE;
+    # cooldown should block if the switch just completed.
     blocked = _run_cycle(
         instrument_id=_INSTRUMENT_A,
         epoch=20,

@@ -38,6 +38,7 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - src/trading/master_v2/double_play_composition.py
       - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md
+      - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_KILL_ALL_STATE_SWITCH_FAVORABLE_ADVERSE_EXTREME_MOVES_ACCEPTANCE_V0.md
     notes: Inner functional core census label for Double Play relative to Master V2. Exact token FUNCTIONAL_CORE not found on origin/main; proven as Modul-Owner of one Trading Core.
 
   - id: RUNBOOK:canonical_master_runbook
@@ -78,8 +79,9 @@ entities:
       are docs-only or wiring-identity navigation pointers (formula recorded,
       not runtime-bound; profit-protection 200.0 is not switch-event up_distance;
       MODEL_B remains productive baseline; no freeze exception; no derivation bind).
-      Directional mapping contract repair is docs-only target policy (runtime
-      unbound; freeze exception unauthorized; ARMED residual unresolved;
+      Directional mapping contract repair is runtime-bound for SHORT reversal
+      polarity and PENDING departing-side generator orientation (ARMED residual
+      unresolved; freeze exception unauthorized; last_active_side unauthorized;
       MODEL_B remains productive baseline).
 
   - id: FORENSIC_REFERENCE:information_corpus_persistence_base
