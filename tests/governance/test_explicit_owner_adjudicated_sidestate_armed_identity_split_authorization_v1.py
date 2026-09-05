@@ -48,7 +48,10 @@ TEST_DIFF_BASE_SHA = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 OTHER_DIFF_BASE_SHA = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
 FIXTURE_SLICE_GRANT_ID = "SIDESTATE_ARMED_IDENTITY_SPLIT_FIXTURE_SLICE_V1"
 COMMITTED_SLICE_GRANT_ID = "SIDESTATE_ARMED_IDENTITY_SPLIT_BOUNDED_SLICE_V1"
-COMMITTED_BOUND_DIFF_BASE_SHA = "ba3e50d9b69cd2eb90742e3ae104a2a5e260fb87"
+HISTORICAL_BOUND_DIFF_BASE_SHA = "ba3e50d9b69cd2eb90742e3ae104a2a5e260fb87"
+HISTORICAL_AUTHORIZED_EVIDENCE_DIGEST = (
+    "e515456b91dafacde4035483ec0a73bc2f77697eb26740abb32b28b2972f4ae2"
+)
 COMMITTED_REQUIRED_RUNTIME_PATHS = [
     "src/trading/master_v2/double_play_state.py",
     "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
@@ -149,8 +152,8 @@ def _report(
     )
 
 
-class TestArmedIdentitySplitCommittedGrantV1:
-    def test_committed_artifact_is_valid_active_slice_grant(self) -> None:
+class TestArmedIdentitySplitCommittedInactiveGrantV1:
+    def test_committed_artifact_is_valid_inactive_closed_grant(self) -> None:
         auth = load_armed_identity_split_authorization(REPO_ROOT)
         assert auth is not None
         valid, reasons = validate_armed_identity_split_authorization(auth, repo_root=REPO_ROOT)
@@ -160,13 +163,13 @@ class TestArmedIdentitySplitCommittedGrantV1:
         assert auth["authorized_scope_class"] == ARMED_IDENTITY_SPLIT_SCOPE_CLASS
         assert auth["authorization_token"] == ARMED_IDENTITY_SPLIT_AUTHORIZATION_ID
         assert auth["mutation_purpose_class"] == ARMED_IDENTITY_SPLIT_MUTATION_PURPOSE
-        assert auth["grant_active"] is True
-        assert auth["slice_grant_id"] == COMMITTED_SLICE_GRANT_ID
-        assert auth["bound_diff_base_sha"] == COMMITTED_BOUND_DIFF_BASE_SHA
-        assert isinstance(auth["authorized_evidence_digest"], str)
-        assert len(auth["authorized_evidence_digest"]) == 64
-        assert set(auth["required_runtime_paths"]) == set(COMMITTED_REQUIRED_RUNTIME_PATHS)
-        assert set(COMMITTED_REQUIRED_RUNTIME_PATHS).issubset(set(auth["allowed_paths"]))
+        assert auth["grant_active"] is False
+        assert auth["allowed_paths"] == []
+        assert auth["required_runtime_paths"] == []
+        assert auth["allowed_surface_classes"] == []
+        assert auth["slice_grant_id"] == ""
+        assert auth["authorized_evidence_digest"] == ""
+        assert auth["bound_diff_base_sha"] == ""
         assert auth["authorized_path_prefixes"] == []
         assert auth["pr_specific_exception"] is False
         assert auth["directory_grant"] is False
@@ -190,6 +193,14 @@ class TestArmedIdentitySplitCommittedGrantV1:
         assert claims["HISTORY_RECONSTRUCTED"] is False
         assert claims["FIFTH_CLASS_GRANT_REOPENED"] is False
         assert claims["SIXTH_CLASS_GRANT_REOPENED"] is False
+        notes = " ".join(str(item) for item in auth["notes"])
+        assert COMMITTED_SLICE_GRANT_ID in notes
+        assert HISTORICAL_BOUND_DIFF_BASE_SHA in notes
+        assert HISTORICAL_AUTHORIZED_EVIDENCE_DIGEST in notes
+        assert COMMITTED_REQUIRED_RUNTIME_PATHS == [
+            "src/trading/master_v2/double_play_state.py",
+            "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+        ]
         mapping = load_mapping_bind_authorization(REPO_ROOT)
         assert mapping is not None
         assert mapping["grant_active"] is False
