@@ -33,6 +33,7 @@
 | GATE:max_positions_1 | GATE | True | CURRENT_CANONICAL |
 | GATE:position_observation_freshness | GATE | True | CURRENT_NONCANONICAL |
 | GATE:target_position_state | GATE | True | CURRENT_NONCANONICAL |
+| GATE:treasury_phase_1_offline_contracts_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GUARD:economic_diagnostic_optimization_boundary | GUARD | True | CURRENT_NONCANONICAL |
 
 ## Mutation-path chains (actual wiring; missing edges explicit)

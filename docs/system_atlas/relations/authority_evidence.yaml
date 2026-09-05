@@ -65,3 +65,28 @@ relations:
     epistemic_status: FORENSIC_RAW
     evidence_sources:
       - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+
+  - id: REL:a_treasury_phase_1_does_not_authorize_live
+    source: GATE:treasury_phase_1_offline_contracts_v1
+    type: DOES_NOT_AUTHORIZE
+    target: GATE:live_authorized_false
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/treasury_phase_1_offline_contracts_v1/authority_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: >-
+      Treasury Phase-1 cannot mint LIVE_ENABLED, LIVE_ARMED, or
+      WIRE_SEND_PERMITTED. Atlas is not canonical authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:a_standing_live_does_not_authorize_treasury
+    source: GATE:full_core_live_path_standing_live_gates_v1
+    type: DOES_NOT_AUTHORIZE
+    target: GATE:treasury_phase_1_offline_contracts_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/treasury_phase_1_offline_contracts_v1/authority_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: >-
+      Standing Live gates cannot mint Treasury mutation. Atlas is not
+      canonical authority. ATLAS_AUTHORITY=NONE.

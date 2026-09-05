@@ -797,6 +797,32 @@ relations:
       identity is not capital authority. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_treasury_phase_1_consumes_capital_admission
+    source: GATE:treasury_phase_1_offline_contracts_v1
+    type: CONSUMES
+    target: GATE:full_core_capital_admission_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/treasury_phase_1_offline_contracts_v1/capital_boundary_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
+    notes: >-
+      Treasury Phase-1 reuses Capital Admission semantics and does not
+      mint RISK_ADMISSIBLE. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_full_core_standing_live_gates_deny_treasury_mutation
+    source: GATE:full_core_live_path_standing_live_gates_v1
+    type: DENIES
+    target: GATE:treasury_phase_1_offline_contracts_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/treasury_phase_1_offline_contracts_v1/authority_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
+    notes: >-
+      LIVE_ENABLED, LIVE_ARMED, and WIRE_SEND_PERMITTED cannot mint
+      Treasury mutation authority. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_fresh_pretrade_get_composes_permit
     source: GATE:full_core_fresh_pretrade_runtime_get_v1
     type: CONSUMES

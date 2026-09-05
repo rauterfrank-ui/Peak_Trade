@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=156
+ATLAS_CHANGED_ENTITY_COUNT=157
 ATLAS_CHANGED_RELATION_COUNT=23
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -70,6 +70,7 @@ Do not manually patch generated Markdown.
 | `GATE:full_core_live_path_restart_gate_v1` |
 | `GATE:full_core_live_path_standing_live_gates_v1` |
 | `GATE:full_core_owner_one_shot_permit_v1` |
+| `GATE:treasury_phase_1_offline_contracts_v1` |
 | `GATE:live_authorized_false` |
 | `GATE:max_positions_1` |
 | `HOST:cap72_stateful_host` |
