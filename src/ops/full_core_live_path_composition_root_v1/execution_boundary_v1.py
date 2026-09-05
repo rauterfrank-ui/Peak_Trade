@@ -69,6 +69,7 @@ def halt_at_live_execution_boundary_v1(
     fresh_pretrade_get_transport: FullCoreFreshPretradeGetTransportV1 | None = None,
     expected_account_identity: str = "",
     capital_admission_claim: CapitalAdmissionClaimV1 | None = None,
+    step_29p_risk_claim: object | None = None,
 ) -> ExecutionBoundaryResultV1:
     reasons: list[str] = [
         "HARD_STOP_BEFORE_WIRE",
@@ -129,6 +130,7 @@ def halt_at_live_execution_boundary_v1(
             inst_type="FUTURES",
             expected_account_identity=expected_account_identity,
             capital_admission_claim=capital_admission_claim,
+            step_29p_risk_claim=step_29p_risk_claim,
         )
     admission: ExecutionAdmissionDecisionV1 = evaluate_execution_admission_v1(resolved_inputs)
     reasons.extend(admission.reason_codes)

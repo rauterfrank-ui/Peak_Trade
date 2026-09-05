@@ -95,11 +95,9 @@ def test_standing_defaults_and_pre_wire_flags() -> None:
     assert armed.standing_live_gates_would_change is False
     send = gap_node_v1("WIRE_SEND_PERMITTED")
     assert send.implementation_status == "STANDING_ADMISSION_SEAM_IMPLEMENTED_DEFAULT_FALSE"
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P"
-    )
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == ("STEP_29P_EQUITY_DIMENSION_BINDING_MISSING")
     assert MAX_SAFE_REPO_INTERNAL_NEXT_SLICE == (
-        "NO_FURTHER_REPO_INTERNAL_SLICE_PRE_WIRE_BOUNDARY_REACHED"
+        "NO_FURTHER_REPO_INTERNAL_SLICE_PRE_CONSTRUCTION_BOUNDARY_REACHED"
     )
     assert CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT == (
         "STANDING_GATES_BEFORE_CONSTRUCTION_CAP72_HOST_REMAINS_SIMULATED"
@@ -234,7 +232,7 @@ def test_runbook_and_spec_bind_pre_wire_boundary_without_arming_or_wire() -> Non
     runbook = RUNBOOK.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     start = runbook.index("11.2.1.P FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY")
-    section = runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    section = runbook[start : runbook.index("11.2.1.Q FULL_CORE_STEP_29P", start)]
     assert "LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true" in section
     assert "LIVE_ARMED_DEFAULT=false" in section
     assert "LIVE_ARMED_TRUE_IS_NOT_AUTOMATIC_ADMISSION=true" in section

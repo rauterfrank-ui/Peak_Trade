@@ -105,9 +105,7 @@ def test_standing_live_enabled_default_and_seam_flags() -> None:
     assert node.implementation_status == "STANDING_ADMISSION_SEAM_IMPLEMENTED_DEFAULT_FALSE"
     assert node.wiring_authorized is True
     assert node.standing_live_gates_would_change is False
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P"
-    )
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == ("STEP_29P_EQUITY_DIMENSION_BINDING_MISSING")
     assert HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG is True
     assert LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is True
     assert CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT == (
@@ -117,7 +115,7 @@ def test_standing_live_enabled_default_and_seam_flags() -> None:
     assert dag["LIVE_ENABLED"] is False
     assert dag["LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED"] is True
     assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (
-        "LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P"
+        "STEP_29P_EQUITY_DIMENSION_BINDING_MISSING"
     )
 
 

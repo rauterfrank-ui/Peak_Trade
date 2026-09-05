@@ -864,3 +864,28 @@ relations:
     notes: >-
       Single FILEGATE authority. Join does not write StatePersistence.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_full_core_step_29p_fresh_get_fetches_okx_eea
+    source: RUNTIME_COMPONENT:full_core_step_29p_fresh_venue_evidence_v1
+    type: FETCHES
+    target: GATE:full_core_capital_admission_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/execute_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py
+    notes: >-
+      GET-only sibling produces typed observation for 29P evaluation.
+      Observation is not 29P equity authority. Does not POST. Atlas is
+      not trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_full_core_step_29p_fresh_get_denies_wire
+    source: RUNTIME_COMPONENT:full_core_step_29p_fresh_venue_evidence_v1
+    type: DENIES
+    target: GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/execute_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+    notes: >-
+      Fresh GET execute cannot halt-bypass or construct LiveExecutionPort.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.

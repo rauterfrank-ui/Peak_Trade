@@ -3623,6 +3623,7 @@ entities:
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     # CHAR-3 PRE_SPLIT characterization inventoried in notes; not target architecture.
+    # 11.2.1.Q STEP_29P_PRE_CONSTRUCTION inventory; GET sibling is not a Full-Core HTTP import.
     kind: RUNTIME_COMPONENT
     name: Offline Core-to-Live composition root v1
     epistemic_class: FORENSIC_RAW
@@ -3644,6 +3645,15 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/owner_one_shot_permit_v1.py
       - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
       - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/treasury_interference_proof_v1.py
+      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/__init__.py
+      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/constants_v1.py
+      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/execute_v1.py
+      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/__main__.py
+      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/requirement_matrix_v1.py
+      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/persist_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
@@ -3670,6 +3680,7 @@ entities:
       - tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py
       - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
       - tests/ops/test_full_core_live_admission_to_pre_wire_boundary_v1.py
+      - tests/ops/test_full_core_step_29p_risk_admissibility_pre_construction_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
@@ -3678,6 +3689,7 @@ entities:
       - docs/ops/specs/FULL_CORE_REMAINING_ADMISSION_CHAIN_CLOSEOUT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md
+      - docs/ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -3731,8 +3743,9 @@ entities:
     notes: >-
       TYPE_ONLY / interchange dataclasses for the offline composition root.
       SCHEMA_VERSION is a package version token, not a persistence or wire
-      SCHEMA. Not a second CanonicalOrderIntent. Atlas is not canonical
-      authority. ATLAS_AUTHORITY=NONE.
+      SCHEMA. Not a second CanonicalOrderIntent.
+      11.2.1.Q adds step_29p_risk_claim through these contracts.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1
     kind: RUNTIME_COMPONENT
@@ -3773,6 +3786,7 @@ entities:
       Evaluates frozen offline venue-pretrade evidence. Not a GET. Not a
       Live cache. Core intent is not submit permission. Existing canary
       consumers remain the productive pretrade owner.
+      11.2.1.Q does not make frozen pretrade into STEP-29P equity authority.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
@@ -3802,6 +3816,7 @@ entities:
     notes: >-
       Always HARD STOP BEFORE WIRE. Consumes typed
       ExecutionAdmissionDecisionV1 at this sole Full-Core join point.
+      11.2.1.Q STEP-29P risk-admissibility does not construct LiveExecutionPort.
       Evaluates LiveExecutionPort construction admission as an explicit
       conjunction. Does not construct Cap 11.1 LiveExecutionPort. Does not
       invoke canary HTTP. Does not read durable FILEGATE StatePersistence.
@@ -3828,8 +3843,9 @@ entities:
     notes: >-
       Restart-test surface remains unauthorized. Returns the standing
       FULL_CORE_RESTART_TEST_AUTHORIZED=false constant. Does not implement
-      durable Live restart/handoff. Atlas is not canonical authority.
-      ATLAS_AUTHORITY=NONE.
+      durable Live restart/handoff.
+      11.2.1.Q does not authorize Full-Core restart.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_live_path_standing_live_gates_v1
     kind: GATE
@@ -3861,6 +3877,7 @@ entities:
       Package-local standing constants inventory. LIVE_ENABLED=false,
       LIVE_ARMED=false, WIRE_SEND_PERMITTED=false,
       STANDING_LIVE_AUTHORIZATION=false.
+      11.2.1.Q: RISK_ADMISSIBLE does not imply these standing gates.
       LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true.
       LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true.
       WIRE_SEND_PERMITTED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true.
@@ -3901,6 +3918,7 @@ entities:
       Does not arm Live. Does not GET. Durable FILEGATE join is a later
       Full-Core admission seam, not this identity gate.
       LIVE_ENABLED standing admission seam is implemented with default false.
+      11.2.1.Q earliest unresolved is STEP_29P_EQUITY_DIMENSION_BINDING_MISSING.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_durable_filegate_join_v1
@@ -3927,6 +3945,7 @@ entities:
       Joins durable KillSwitchState into Full-Core admission as typed
       evidence. Does not arm Live. Does not GET. Does not admit.
       PEAK_KILL_SWITCH is overlay only. Replay remains unjoined.
+      11.2.1.Q does not let STEP-29P override FILEGATE.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_owner_one_shot_permit_v1
@@ -3954,6 +3973,7 @@ entities:
       typed permit evidence. Exact token match only. Does not arm Live.
       Does not GET. Does not admit. Does not override FILEGATE.
       Does not consume the token. Canary OWNER_GO_EXECUTE is mismatch.
+      11.2.1.Q does not consume OWNER_ONE_SHOT as Live arming.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_fresh_pretrade_runtime_get_v1
@@ -3981,8 +4001,9 @@ entities:
       admission. Injectable GET-only port. Does not arm Live. Does not
       POST. Does not admit. Does not override FILEGATE or permit.
       Injected test doubles cannot claim venue contact. Canary HTTP is
-      not Full-Core transport. Atlas is not canonical authority.
-      ATLAS_AUTHORITY=NONE.
+      not Full-Core transport.
+      11.2.1.Q productive GETs live in a sibling package, not this seam.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_live_account_bound_v1
     kind: GATE
@@ -4009,6 +4030,7 @@ entities:
       admission. Fresh GET success alone does not prove bound. String
       passthrough is not authority. Does not arm Live. Does not POST.
       Does not admit. Does not override FILEGATE, permit, or GET.
+      11.2.1.Q GET execute does not mint LIVE_ACCOUNT_BOUND.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_capital_admission_v1
@@ -4021,24 +4043,62 @@ entities:
     fail_closed: true
     source_paths:
       - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py
     source_symbols:
       - evaluate_capital_admission_v1
+      - evaluate_step_29p_capital_risk_admissibility_v1
       - join_capital_admission_into_admission_inputs_v1
       - live_venue_capital_may_bind_step_29p_v1
       - halt_at_live_execution_boundary_v1
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py
       - tests/ops/test_full_core_pre_live_capital_admission_contract_v1.py
-      - tests/ops/test_pre_live_treasury_http_isolation_v1.py
+      - tests/ops/test_full_core_step_29p_risk_admissibility_pre_construction_v1.py
       - docs/ops/specs/PRE_LIVE_CAPITAL_ADMISSION_CONTRACT_V1.md
+      - docs/ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md
+      - evidence/ops/full_core_step_29p_fresh_venue_evidence_v1/20260905T212436Z/SUMMARY.json
     notes: >-
       Joins typed Capital Admission evidence into Full-Core admission.
       Observed capital is not risk-admissible. Does not invent economic
       policy. Does not arm Live. Does not POST. Does not admit. Does not
-      override FILEGATE, permit, GET, or LIVE_ACCOUNT_BOUND. Atlas is not
-      canonical authority. ATLAS_AUTHORITY=NONE.
+      override FILEGATE, permit, GET, or LIVE_ACCOUNT_BOUND.
+      11.2.1.Q STEP-29P conjunction is the sole productive risk-admissibility
+      authority. availEq is not 29P equity. Atlas is not canonical
+      authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:full_core_step_29p_fresh_venue_evidence_v1
+    kind: RUNTIME_COMPONENT
+    name: Full-core STEP-29P fresh OKX-EEA GET evidence v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/__init__.py
+      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/constants_v1.py
+      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/execute_v1.py
+      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/__main__.py
+      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/requirement_matrix_v1.py
+      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/persist_v1.py
+      - scripts/ops/run_full_core_step_29p_fresh_venue_evidence_gets_v1.py
+    source_symbols:
+      - execute_step_29p_fresh_venue_evidence_gets_v1
+      - fresh_evidence_requirement_matrix_v1
+    evidence_sources:
+      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/execute_v1.py
+      - tests/ops/test_full_core_step_29p_risk_admissibility_pre_construction_v1.py
+      - evidence/ops/full_core_step_29p_fresh_venue_evidence_v1/20260905T212436Z/SUMMARY.json
+      - docs/ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md
+    notes: >-
+      Sibling GET-only producer against eea.okx.com. Not a Full-Core
+      package import of LiveCanaryHttpClientV1. Not a second capital-
+      admission authority. Empty positions data is NOT_OBSERVED.
+      availEq is observation, not 29P equity. Does not POST. Does not
+      construct LiveExecutionPort. Atlas is not canonical authority.
+      ATLAS_AUTHORITY=NONE.
 
   - id: GATE:treasury_phase_1_offline_contracts_v1
     kind: GATE

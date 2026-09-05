@@ -265,6 +265,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1`
 - transitive_downstream: `(none)`
 
+### RUNTIME_COMPONENT:full_core_step_29p_fresh_venue_evidence_v1
+
+- direct_upstream: `GATE:full_core_capital_admission_v1`
+- transitive_upstream: `GATE:full_core_capital_admission_v1, GATE:full_core_durable_filegate_join_v1, GATE:full_core_fresh_pretrade_runtime_get_v1, GATE:full_core_live_account_bound_v1, GATE:full_core_owner_one_shot_permit_v1, GATE:kill_switch_durable_filegate_v1`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
 ### RUNTIME_COMPONENT:g12_canonical_delayed_zero_persist_and_pending_related_observations_v1
 
 - direct_upstream: `RUNTIME_COMPONENT:g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1`

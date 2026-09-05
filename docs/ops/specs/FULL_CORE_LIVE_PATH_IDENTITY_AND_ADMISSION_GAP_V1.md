@@ -158,7 +158,26 @@ The LIVE_ENABLED standing admission seam is bound in
 [`FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md`](FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md).
 The pre-wire admission closure is bound in
 [`FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md`](FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md).
-Live venue capital / RISK_ADMISSIBLE, productive GET, Cap 11.1
-LiveExecutionPort construction-policy lift, and Cap-7.2 Host-Join to
-LiveExecutionPort remain later Live-authorization layers. Cap-7.2 Host-Join
-is not in this DAG.
+
+Current remaining gap after STEP-29P risk-admissibility pre-construction
+(canonical persist: Master Runbook §11.2.1.Q; derived spec
+[`FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md`](FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md)):
+
+```text
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=STEP_29P_EQUITY_DIMENSION_BINDING_MISSING
+HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG=true
+CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT=false
+LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN=true
+CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT=STANDING_GATES_BEFORE_CONSTRUCTION_CAP72_HOST_REMAINS_SIMULATED
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_PRE_CONSTRUCTION_BOUNDARY_REACHED
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
+NEXT_STEP_REQUIRES_OWNER_GO=true
+STEP_29P_RISK_ADMISSIBLE=false
+ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED
+```
+
+Typed `RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING` remains unbound.
+Cap 11.1 LiveExecutionPort construction-policy lift and Cap-7.2 Host-Join to
+LiveExecutionPort remain later Live-authorization layers and are not the
+next slice while this equity dimension is unbound. Cap-7.2 Host-Join is not
+in this DAG.

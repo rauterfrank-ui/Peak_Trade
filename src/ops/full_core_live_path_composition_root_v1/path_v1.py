@@ -147,6 +147,7 @@ def run_full_core_live_path_offline_v1(
         fresh_pretrade_get_transport=payload.fresh_pretrade_get_transport,
         expected_account_identity=str(payload.expected_account_identity or ""),
         capital_admission_claim=getattr(payload, "capital_admission_claim", None),
+        step_29p_risk_claim=getattr(payload, "step_29p_risk_claim", None),
     )
     halt_reasons = boundary.reason_codes
     if not pretrade.owner_go_valid:

@@ -137,9 +137,7 @@ def test_flags_and_standing_gates_remain_false() -> None:
     assert WIRE_SEND_PERMITTED is False
     assert FULL_CORE_OFFLINE_E2E_PROVEN is True
     assert FULL_CORE_SYSTEM_E2E_PROVEN is False
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P"
-    )
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == ("STEP_29P_EQUITY_DIMENSION_BINDING_MISSING")
     node = gap_node_v1("CAPITAL_ADMISSION")
     assert node.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
     assert node.wiring_authorized is True
@@ -197,7 +195,7 @@ def test_offline_algebra_not_live_capital() -> None:
 def test_contradictory_risk_admissible_claim_deny() -> None:
     evidence = _evaluate(claim=_claim(claimed_risk_admissible_capital="100"))
     assert evidence.evidence_status == CapitalAdmissionStatusV1.CONTRADICTORY.value
-    assert "CAPITAL_ADMISSION_RISK_ADMISSIBLE_POLICY_FROZEN" in evidence.reason_codes
+    assert "CAPITAL_ADMISSION_CANNOT_MINT_RISK_ADMISSIBLE" in evidence.reason_codes
     assert "CAPITAL_INCREASE_NOT_AUTO_ADMITTED" in evidence.reason_codes
 
 
@@ -303,7 +301,8 @@ def test_forged_risk_admissible_cannot_override_gates() -> None:
         )
     )
     assert decision.admitted is False
-    assert "CAPITAL_ADMISSION_RISK_ADMISSIBLE_POLICY_FROZEN" in decision.reason_codes
+    assert "CAPITAL_ADMISSION_RISK_ADMISSIBLE_CONJUNCTION_INCOMPLETE" in decision.reason_codes
+    assert "FORGED_RISK_ADMISSIBLE_WITHOUT_29P_CONTRACT" in decision.reason_codes
     assert "LIVE_ENABLED_FALSE" in decision.reason_codes
     assert "CAPITAL_ADMISSION_MISSING" not in decision.reason_codes
 

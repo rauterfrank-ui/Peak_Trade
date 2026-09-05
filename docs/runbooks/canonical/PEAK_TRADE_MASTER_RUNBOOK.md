@@ -8591,6 +8591,130 @@ CURRENT_CANONICAL_SECTION=11.2.1.P.FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.Q FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION (BOUND; FRESH GET EVIDENCE + CAPITAL/RISK ADMISSION CONTRACT; NO CONSTRUCTION LIFT; NO WIRE; NO POST)
+
+Additive persist. Does **not** rewrite §11.2.1.P standing-gate values, §11.2.1.N
+Capital Admission mathematics, §11.2.2 Treasury Phase-1 contracts, §11.13.5
+canary facts, or §11.14 ladder fields. Does **not** POST. Does **not** construct
+`LiveExecutionPort`. Does **not** set `LIVE_ENABLED=true`. Does **not** set
+`LIVE_ARMED=true`. Does **not** set `WIRE_SEND_PERMITTED=true`. Does **not**
+lift Cap 11.1 construction-forbidden policy. Does **not** join Cap-7.2 Host to
+LiveExecutionPort. Does **not** authorize Canary execute. Does **not** mutate
+Treasury. Does **not** map OKX `availEq`/`totalEq`/`eq` to STEP-29P
+`account_equity`.
+
+Owner-GO
+`OWNER_GO=PEAK_TRADE_OWNER_GO_FRESH_VENUE_EVIDENCE_AND_STEP_29P_RISK_ADMISSIBILITY_TO_PRE_CONSTRUCTION_BOUNDARY_V1`
+authorizes GET-only productive OKX-EEA venue reads and replaces the
+unconditional live-context deny `LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P`
+with an explicit fail-closed STEP-29P capital/risk admissibility conjunction.
+`RISK_ADMISSIBLE=true` requires every required fact to be fresh, contract-valid,
+instrument-bound, currency-bound, internally consistent, and sufficient under
+current STEP-29P input rules, including dimension
+`RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING`. That dimension currently has
+`ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED`. Observation is not authority.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_FRESH_VENUE_EVIDENCE_AND_STEP_29P_RISK_ADMISSIBILITY_TO_PRE_CONSTRUCTION_BOUNDARY_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R2_GET_ONLY_VENUE_EVIDENCE_PLUS_OFFLINE_CONTRACTS
+RISK_CLASS=R2_NO_ORDER_NO_WIRE_NO_FUNDS_MOVEMENT
+PERSIST_CLASS=FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_SSOT_PERSIST
+THIS_SLICE=11.2.1.Q.FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION
+CURRENT_PHASE=11.2.1.Q.FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION
+FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH
+PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY=SECTION_11_2_1
+CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY=false
+FULL_CORE_SYSTEM_E2E_PROVEN=false
+CURRENT_LIVE_CORE_PATH_PROVEN=false
+FULL_CORE_OFFLINE_E2E_PROVEN=true
+STANDING_LIVE_AUTHORIZATION=false
+STEP_29P_CAPITAL_RISK_ADMISSIBILITY_IMPLEMENTED=true
+RISK_ADMISSIBLE_DOES_NOT_IMPLY_LIVE_ENABLED=true
+RISK_ADMISSIBLE_DOES_NOT_IMPLY_LIVE_ARMED=true
+RISK_ADMISSIBLE_DOES_NOT_IMPLY_WIRE_SEND=true
+RISK_ADMISSIBLE_DOES_NOT_IMPLY_PORT_CONSTRUCTION=true
+FULL_CORE_HOST_STANDING_PREDICATE_JOIN_IMPLEMENTED=true
+CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT=false
+LIVE_EXECUTION_PORT_CONSTRUCTIBLE=false
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+CAP_11_1_CONSTRUCTION_POLICY_LIFT_AUTHORIZED=false
+CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_AUTHORIZED=false
+TREASURY_INTERFERENCE_PROOF=PASS
+TREASURY_MUTATION_AUTHORIZED=false
+TREASURY_COMPLETION_AUTHORIZED=false
+CANARY_EXECUTE_AUTHORIZED=false
+STEP_29P_RISK_ADMISSIBLE=false
+ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED
+RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING=UNBOUND
+AVAILEQ_IS_NOT_29P_EQUITY_AUTHORITY=true
+EMPTY_DATA_IS_ZERO=false
+TICKER_IS_NOT_29P_PRICE_AUTHORITY=true
+NETWORK_GET_TO_OKX_OCCURRED=true
+MUTATING_NETWORK_CALL_OCCURRED=false
+GETS_ATTEMPTED=8
+GETS_SUCCEEDED=8
+GETS_FAILED=0
+FRESH_EVIDENCE_FETCHED=true
+FRESH_EVIDENCE_VALIDATED=true
+CAPITAL_EVIDENCE_COMPLETE=true
+STEP_29P_RISK_ADMISSIBLE=false
+STANDING_GATES_SATISFIED=false
+PORT_CONSTRUCTION_AUTHORIZED=false
+PORT_CONSTRUCTED=false
+WIRE_SEND_AUTHORIZED=false
+WIRE_SEND_EXECUTED=false
+EVIDENCE_PACK=evidence/ops/full_core_step_29p_fresh_venue_evidence_v1/20260905T212436Z
+MANIFEST_VERIFY_RC=0
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=STEP_29P_EQUITY_DIMENSION_BINDING_MISSING
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_PRE_CONSTRUCTION_BOUNDARY_REACHED
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
+NEXT_STEP_REQUIRES_OWNER_GO=true
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+LIVE_AUTHORIZED=false
+POST_PERFORMED=false
+ORDER_SUBMIT_OCCURRED=false
+WIRE_SEND_OCCURRED=false
+MUTATING_NETWORK_CALL_OCCURRED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+A. Fresh GET evidence. Authorized GETs are GET-only against `eea.okx.com` for
+the Owner-adjudicated pretrade GET set plus ticker last as max-size query px
+only. Sibling package
+`src/ops/full_core_step_29p_fresh_venue_evidence_v1/` reuses the canary HTTP
+GET mechanism. Full-Core composition root still forbids importing
+`LiveCanaryHttpClientV1`. This slice persisted GET pack
+`evidence/ops/full_core_step_29p_fresh_venue_evidence_v1/20260905T212436Z`
+with `GETS_SUCCEEDED=8` and `NETWORK_GET_TO_OKX_OCCURRED=true`.
+`MUTATING_NETWORK_CALL_OCCURRED=false`.
+
+B. STEP-29P conjunction. `evaluate_step_29p_capital_risk_admissibility_v1`
+replaces the unconditional live-context append of
+`LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P`. That code remains a derived
+deny when the conjunction is incomplete. It is not a hidden unconditional
+false and not a hidden unconditional true.
+
+C. Gate independence. `RISK_ADMISSIBLE=true` does not imply `LIVE_ENABLED`,
+`LIVE_ARMED`, `WIRE_SEND_PERMITTED`, or LiveExecutionPort construction.
+
+D. Remaining unresolved. Typed `RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING`
+has no canonical venue-field mapping. Cap 11.1 construction-policy lift and
+Cap-7.2 Host-Join to LiveExecutionPort remain later tracks requiring new
+Owner-GO and remain blocked while this equity dimension is unbound.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+GET_PRODUCER=src/ops/full_core_step_29p_fresh_venue_evidence_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.Q.FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

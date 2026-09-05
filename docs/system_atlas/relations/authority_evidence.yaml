@@ -90,3 +90,16 @@ relations:
     notes: >-
       Standing Live gates cannot mint Treasury mutation. Atlas is not
       canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:a_step_29p_risk_admissible_does_not_authorize_port_construction
+    source: GATE:full_core_capital_admission_v1
+    type: DOES_NOT_AUTHORIZE
+    target: GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: >-
+      STEP_29P_RISK_ADMISSIBLE cannot mint LiveExecutionPort construction,
+      LIVE_ENABLED, LIVE_ARMED, or WIRE_SEND_PERMITTED. Atlas is not
+      canonical authority. ATLAS_AUTHORITY=NONE.
