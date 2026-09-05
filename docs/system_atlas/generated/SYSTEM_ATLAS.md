@@ -322,7 +322,7 @@ Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md]
 
 ## 7. Runtime call / data flow
 
-Runtime relation count: `59`. Entrypoints recorded: `4`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
+Runtime relation count: `60`. Entrypoints recorded: `4`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
 
 Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md](ENTRYPOINT_RUNTIME_TRACES.md).
 
@@ -344,6 +344,7 @@ Fail-closed is the default. Live/Testnet/orders require scoped Owner-GO. Confirm
 | GATE:flatten_live_wire | GATE | DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_live_path_execution_boundary_halt_before_wire_v1 | GATE | Offline Live execution boundary halt-before-wire v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_live_path_frozen_pretrade_conjunction_v1 | GATE | Frozen offline pretrade conjunction v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:full_core_live_path_identity_v1 | GATE | Full-core productive Live-path identity gate v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_live_path_restart_gate_v1 | GATE | Full-core live path restart gate v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_live_path_standing_live_gates_v1 | GATE | Full-core live path standing Live gates v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:kill_switch_durable_filegate_v1 | GATE | Durable execution-side kill-switch FILEGATE v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -434,7 +435,7 @@ Architectural-kind count in this bucket: `19`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `109`.
+Architectural-kind count in this bucket: `110`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -459,6 +460,7 @@ Architectural-kind count in this bucket: `109`.
 | GATE:flatten_live_wire | GATE | DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_live_path_execution_boundary_halt_before_wire_v1 | GATE | Offline Live execution boundary halt-before-wire v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_live_path_frozen_pretrade_conjunction_v1 | GATE | Frozen offline pretrade conjunction v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:full_core_live_path_identity_v1 | GATE | Full-core productive Live-path identity gate v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_live_path_restart_gate_v1 | GATE | Full-core live path restart gate v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_live_path_standing_live_gates_v1 | GATE | Full-core live path standing Live gates v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:kill_switch_durable_filegate_v1 | GATE | Durable execution-side kill-switch FILEGATE v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -477,9 +479,8 @@ Architectural-kind count in this bucket: `109`.
 | PHASE:p08_post_read_only_exhaustion_authority_boundary | PHASE | 11.13.5.P08_POST_READ_ONLY_EXHAUSTION_AUTHORITY_BOUNDARY | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:p08_read_only_closure | PHASE | 11.13.5.P08_READ_ONLY_CLOSURE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:p10_target_position_qty_unit_forensic_adjudicate_persist | PHASE | 11.13.5.P10 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| PHASE:p11_pos_to_sz_unit_identity_independent_proof | PHASE | 11.13.5.P11 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `109` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `110` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -715,10 +716,10 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=446
+ENTITY_TOTAL=447
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=85
-RUNTIME_RELATION_COUNT=59
+RUNTIME_RELATION_COUNT=60
 AUTHORITY_RELATION_COUNT=7
 UNRESOLVED_CONTRADICTION_COUNT=9
 OKX_CENSUS_COMPLETE=true
@@ -800,7 +801,7 @@ Remaining census domains:
 | FAMILY | 8 |
 | FORENSIC_REFERENCE | 2 |
 | FUNCTIONAL_CORE | 1 |
-| GATE | 12 |
+| GATE | 13 |
 | GUARD | 1 |
 | HOST | 2 |
 | INVARIANT | 1 |

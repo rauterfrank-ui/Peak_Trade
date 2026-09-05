@@ -692,3 +692,16 @@ relations:
       Package-local LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED remain
       false. Does not supersede GATE:live_authorized_false. Atlas is not
       trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_full_core_path_calls_path_identity
+    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    type: CALLS
+    target: GATE:full_core_live_path_identity_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py
+    notes: >-
+      Productive Live-path identity is FULL_CORE_LIVE_PATH. Canary / §11.14
+      remain evidence-domain only. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.

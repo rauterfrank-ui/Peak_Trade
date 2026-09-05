@@ -104,6 +104,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1`
 - transitive_downstream: `(none)`
 
+### GATE:full_core_live_path_identity_v1
+
+- direct_upstream: `(none)`
+- transitive_upstream: `(none)`
+- direct_downstream: `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1`
+- transitive_downstream: `(none)`
+
 ### GATE:full_core_live_path_restart_gate_v1
 
 - direct_upstream: `(none)`
@@ -204,8 +211,8 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 
 ### RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
 
-- direct_upstream: `DATA_CONTRACT:full_core_live_path_models_v1, GATE:full_core_live_path_execution_boundary_halt_before_wire_v1, GATE:full_core_live_path_frozen_pretrade_conjunction_v1, GATE:full_core_live_path_restart_gate_v1, GATE:full_core_live_path_standing_live_gates_v1, RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1, RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1`
-- transitive_upstream: `DATA_CONTRACT:full_core_live_path_models_v1, GATE:full_core_live_path_execution_boundary_halt_before_wire_v1, GATE:full_core_live_path_frozen_pretrade_conjunction_v1, GATE:full_core_live_path_restart_gate_v1, GATE:full_core_live_path_standing_live_gates_v1, RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1, RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1`
+- direct_upstream: `DATA_CONTRACT:full_core_live_path_models_v1, GATE:full_core_live_path_execution_boundary_halt_before_wire_v1, GATE:full_core_live_path_frozen_pretrade_conjunction_v1, GATE:full_core_live_path_identity_v1, GATE:full_core_live_path_restart_gate_v1, GATE:full_core_live_path_standing_live_gates_v1, RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1, RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1`
+- transitive_upstream: `DATA_CONTRACT:full_core_live_path_models_v1, GATE:full_core_live_path_execution_boundary_halt_before_wire_v1, GATE:full_core_live_path_frozen_pretrade_conjunction_v1, GATE:full_core_live_path_identity_v1, GATE:full_core_live_path_restart_gate_v1, GATE:full_core_live_path_standing_live_gates_v1, RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1, RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 

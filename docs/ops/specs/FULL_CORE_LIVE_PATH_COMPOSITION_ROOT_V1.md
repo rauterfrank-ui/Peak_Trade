@@ -95,3 +95,9 @@ Hardening-v2 != decision owner.
 `construct_live_execution_port_v1` remains forbidden. The allowed offline
 boundary is the halt surface above. Historical canary POST remains
 `CANARY_VENUE_PROOF_ONLY` and is not `FULL_CORE_SYSTEM_E2E`.
+
+Path identity and the live-admission gap DAG are bound in
+[`FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md`](FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md).
+`FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH`. Canary / §11.13.5 /
+§11.14 next-pointers remain evidence-domain only and are not a second
+productive Live-execution authority.

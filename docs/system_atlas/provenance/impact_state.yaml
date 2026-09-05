@@ -8,11 +8,9 @@ introduced_by: PENDING_CHANGE
 modified_by: PENDING_CHANGE
 superseded_by: null
 last_recorded_impact: UPDATED
-note: Offline Core-to-Live composition root inventory. New package src/ops/full_core_live_path_composition_root_v1/
-  is classified as halt-before-wire composition, venue translation, frozen pretrade, restart-gate
-  surface, and standing Live-gate constants. MOT/runbook path hits are inspected because MOT
-  documents the runbook; those pointers do not authorize Live, canary, or wire send. CLOSURE:live_readiness
-  is inspected for the same reason. Atlas is not canonical authority.
+note: Offline Core-to-Live composition root inventory plus Full-Core productive
+  Live-path identity and live-admission gap DAG. Canary / §11.14 remain
+  evidence-domain only. No Live GET/POST. Atlas is not canonical authority.
 changed_entities:
 - ACRONYM:C1
 - ACRONYM:C2
@@ -40,6 +38,7 @@ changed_entities:
 - FUNCTIONAL_CORE:double_play
 - GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
 - GATE:full_core_live_path_frozen_pretrade_conjunction_v1
+- GATE:full_core_live_path_identity_v1
 - GATE:full_core_live_path_restart_gate_v1
 - GATE:full_core_live_path_standing_live_gates_v1
 - GATE:live_authorized_false
@@ -190,6 +189,7 @@ new_relations:
 - REL:r_full_core_path_calls_canary_isolation
 - REL:r_full_core_path_consumes_models
 - REL:r_full_core_path_calls_standing_live_gates
+- REL:r_full_core_path_calls_path_identity
 removed_relations: []
 affected_dependency_closures:
 - CLOSURE:canary
@@ -206,6 +206,7 @@ affected_safety_surfaces:
 - GATE:max_positions_1
 - GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
 - GATE:full_core_live_path_frozen_pretrade_conjunction_v1
+- GATE:full_core_live_path_identity_v1
 - GATE:full_core_live_path_restart_gate_v1
 - GATE:full_core_live_path_standing_live_gates_v1
 affected_schemas:
@@ -238,6 +239,7 @@ reviewed_ids:
 - id: FUNCTIONAL_CORE:double_play
 - id: GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
 - id: GATE:full_core_live_path_frozen_pretrade_conjunction_v1
+- id: GATE:full_core_live_path_identity_v1
 - id: GATE:full_core_live_path_restart_gate_v1
 - id: GATE:full_core_live_path_standing_live_gates_v1
 - id: GATE:live_authorized_false
@@ -392,5 +394,6 @@ reviewed_ids:
 - id: REL:r_full_core_path_calls_canary_isolation
 - id: REL:r_full_core_path_consumes_models
 - id: REL:r_full_core_path_calls_standing_live_gates
+- id: REL:r_full_core_path_calls_path_identity
 - id: CHAIN:order_submit_standing_deny
 - id: CHAIN:full_core_live_path_halt_before_wire

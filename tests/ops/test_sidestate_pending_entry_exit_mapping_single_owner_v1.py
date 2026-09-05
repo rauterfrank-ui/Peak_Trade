@@ -104,7 +104,11 @@ def test_runbook_records_single_owner_materialization() -> None:
     section_at = runbook.index(
         "11.2.1.H SIDESTATE_PENDING_ENTRY_EXIT_MAPPING_SINGLE_OWNER_MINIMUM_ATOMIC_REPAIR"
     )
-    section = runbook[section_at : runbook.index("## 11.3 Autonomy state model", section_at)]
+    section = runbook[
+        section_at : runbook.index(
+            "11.2.1.I FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP", section_at
+        )
+    ]
     assert "CORE_LOGIC_CHANGE=true" in section
     assert "ENTRY_EXIT_MAPPING_OWNER=_side_state_to_entry_exit_direction" in section
     assert "PENDING_TARGET_REWRITE_AUTHORIZED=false" in section

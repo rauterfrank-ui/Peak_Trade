@@ -3636,21 +3636,29 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py
       - src/ops/full_core_live_path_composition_root_v1/models_v1.py
       - src/ops/full_core_live_path_composition_root_v1/overclaim_guards_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
       - src/ops/full_core_live_path_composition_root_v1/venue_translation_v1.py
     source_symbols:
       - compose_core_live_execution_intent_v1
       - run_full_core_live_path_offline_v1
+      - bound_path_identity_v1
+      - live_admission_gap_dag_v1
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py
       - tests/ops/test_full_core_live_path_composition_root_v1.py
       - tests/ops/test_full_core_live_path_offline_full_chain_v1.py
+      - tests/ops/test_full_core_live_path_identity_and_admission_gap_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
+      - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -3807,15 +3815,44 @@ entities:
       - LIVE_ARMED
       - WIRE_SEND_PERMITTED
       - FULL_CORE_RESTART_TEST_AUTHORIZED
+      - STANDING_LIVE_AUTHORIZATION
+      - FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Package-local standing constants inventory. LIVE_ENABLED=false,
-      LIVE_ARMED=false, WIRE_SEND_PERMITTED=false. Does not supersede
+      LIVE_ARMED=false, WIRE_SEND_PERMITTED=false,
+      STANDING_LIVE_AUTHORIZATION=false. Does not supersede
       GATE:live_authorized_false. Does not authorize Live, Testnet,
       canary, or orders. Atlas is not canonical authority.
       ATLAS_AUTHORITY=NONE.
+
+  - id: GATE:full_core_live_path_identity_v1
+    kind: GATE
+    name: Full-core productive Live-path identity gate v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    fail_closed: true
+    source_paths:
+      - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py
+    source_symbols:
+      - bound_path_identity_v1
+      - refuse_competing_productive_live_next_pointer_v1
+      - live_admission_gap_dag_v1
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py
+      - tests/ops/test_full_core_live_path_identity_and_admission_gap_v1.py
+      - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
+    notes: >-
+      Binds FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH.
+      §11.13.5 / §11.14 next-pointers remain evidence-domain only.
+      Does not arm Live. Does not GET. Does not join FILEGATE.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:kill_switch_durable_filegate_v1
     # KS_THIN_01 inventory: unwired auto-trip library removed. ATLAS_AUTHORITY=NONE
@@ -3872,5 +3909,7 @@ entities:
     notes: >-
       Isolates bounded canary venue-proof from FULL_CORE_LIVE_PATH.
       Canary DEFAULT_INSTRUMENT_ID / DEFAULT_SIDE / minSz are not
-      admissible as full-core E2E proof. Does not activate canary.
+      admissible as full-core E2E proof. Canary role is
+      HISTORICAL_AND_SCOPED_VENUE_PROOF. Not a parallel productive Live
+      authority. Does not activate canary.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
