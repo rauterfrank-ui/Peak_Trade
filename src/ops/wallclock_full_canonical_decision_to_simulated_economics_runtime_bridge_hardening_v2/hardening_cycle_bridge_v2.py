@@ -173,6 +173,7 @@ from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     IntegratedOfflineReplayPoliciesV1,
     build_integrated_offline_replay_input_v1,
     run_integrated_offline_trading_logic_replay_v1,
+    scope_direction_from_side_state_v1,
 )
 from trading.master_v2.suitability_binding_v1 import (
     SUITABILITY_RANKING_POLICY_VERSION,
@@ -593,12 +594,12 @@ def _update_session_state_from_replay(state: HardenedBridgeSessionStateV2, *, re
     sel = str(inter.composition_result.selected_side.value).lower()
     if sel == "long":
         state.previous_composition_direction_state = CompositionDirectionState.LONG
-        state.scope_direction_state = ScopeDirectionState.LONG
     elif sel == "short":
         state.previous_composition_direction_state = CompositionDirectionState.SHORT
-        state.scope_direction_state = ScopeDirectionState.SHORT
     else:
         state.previous_composition_direction_state = CompositionDirectionState.NEUTRAL
+    # ScopeDirectionState is a SideState projection, not a composition overlay.
+    state.scope_direction_state = scope_direction_from_side_state_v1(state.side_state)
     snap = state.portfolio.snapshot()
     positions = (snap.get("state") or {}).get("positions") or {}
     pos = positions.get(state.instrument_id) or {}

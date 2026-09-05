@@ -2592,7 +2592,8 @@ entities:
       RUNTIME_LINEAGE_PARTIAL=true. Atlas is not trading authority.
 
   - id: HOST:wallclock_decision_economics_cycle
-    # SCOPE_DIRECTION_OVERLAY_GENERATOR_INERT_V1: host projects ScopeDirectionState from SideState.
+    # SCOPE_DIRECTION_OVERLAY_GENERATOR_INERT: Cap-7.2 (§11.2.1.D) and
+    # hardening-v2 (§11.2.1.E) project ScopeDirectionState from SideState.
     kind: HOST
     name: Wallclock decision-to-simulated-economics cycle
     epistemic_class: FORENSIC_RAW
@@ -2627,8 +2628,9 @@ entities:
       rebuilt from SideState via scope_direction_from_side_state_v1;
       persisted tokens are schema-compat only and are not independent
       restart truth. Neutral/CHOP/KILL_ALL rebuild to LONG. Composition
-      selected_side overlay is generator-inert and must not write
-      scope_direction_state; the running host projects from SideState.
+      selected_side overlay is generator-inert on both Cap-7.2 and
+      hardening-v2 overlay writers listed in source_paths and must not
+      write scope_direction_state; both hosts project from SideState.
       Atlas is not trading authority. AUTHORITY_OWNER=NONE.
       PRODUCTIVE_AI_AUTHORITY_COUNT=0. SECOND_TRADING_AUTHORITY=false.
 
