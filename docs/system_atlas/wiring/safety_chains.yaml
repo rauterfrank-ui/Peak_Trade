@@ -34,6 +34,7 @@ chains:
       - GATE:full_core_live_path_frozen_pretrade_conjunction_v1
       - GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
       - GATE:full_core_live_path_standing_live_gates_v1
+      - GATE:full_core_live_path_identity_v1
       - GATE:live_authorized_false
     missing_edges: []
     epistemic_status: FORENSIC_RAW

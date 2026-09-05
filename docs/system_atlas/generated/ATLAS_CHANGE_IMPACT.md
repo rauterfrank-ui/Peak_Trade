@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=154
-ATLAS_CHANGED_RELATION_COUNT=20
+ATLAS_CHANGED_ENTITY_COUNT=155
+ATLAS_CHANGED_RELATION_COUNT=21
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -66,6 +66,7 @@ Do not manually patch generated Markdown.
 | `FUNCTIONAL_CORE:double_play` |
 | `GATE:full_core_live_path_execution_boundary_halt_before_wire_v1` |
 | `GATE:full_core_live_path_frozen_pretrade_conjunction_v1` |
+| `GATE:full_core_live_path_identity_v1` |
 | `GATE:full_core_live_path_restart_gate_v1` |
 | `GATE:full_core_live_path_standing_live_gates_v1` |
 | `GATE:live_authorized_false` |
@@ -224,6 +225,7 @@ Do not manually patch generated Markdown.
 | `REL:r_full_core_path_calls_canary_isolation` |
 | `REL:r_full_core_path_consumes_models` |
 | `REL:r_full_core_path_calls_standing_live_gates` |
+| `REL:r_full_core_path_calls_path_identity` |
 
 ## REMOVED_RELATIONS
 
@@ -258,6 +260,7 @@ Do not manually patch generated Markdown.
 | `GATE:max_positions_1` |
 | `GATE:full_core_live_path_execution_boundary_halt_before_wire_v1` |
 | `GATE:full_core_live_path_frozen_pretrade_conjunction_v1` |
+| `GATE:full_core_live_path_identity_v1` |
 | `GATE:full_core_live_path_restart_gate_v1` |
 | `GATE:full_core_live_path_standing_live_gates_v1` |
 
@@ -275,7 +278,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Offline Core-to-Live composition root inventory. New package src/ops/full_core_live_path_composition_root_v1/ is classified as halt-before-wire composition, venue translation, frozen pretrade, restart-gate surface, and standing Live-gate constants. MOT/runbook path hits are inspected because MOT documents the runbook; those pointers do not authorize Live, canary, or wire send. CLOSURE:live_readiness is inspected for the same reason. Atlas is not canonical authority.
+- Offline Core-to-Live composition root inventory plus Full-Core productive Live-path identity and live-admission gap DAG. Canary / §11.14 remain evidence-domain only. No Live GET/POST. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

@@ -7591,6 +7591,105 @@ CURRENT_CANONICAL_SECTION=11.2.1.H.SIDESTATE_PENDING_ENTRY_EXIT_MAPPING_SINGLE_O
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+Productive Live-execution path identity remaining derivable from competing
+§11.13.5 / §11.14 / §11.2.1 next-pointers after §11.2.1.H is superseded by
+§11.2.1.I. Wallclock Entry/Exit single-owner materialization remains as bound
+in §11.2.1.H. Historical §11.13.5 / §11.14 facts are not rewritten.
+
+### 11.2.1.I FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP (BOUND; OFFLINE CONTRACTS ONLY; NO WIRE; NO FILEGATE RUNTIME JOIN; NO GET)
+
+Additive persist. Does **not** rewrite §11.2.1 standing Live flags, §11.13.5
+canary facts, or §11.14 ladder fields. Does **not** GET. Does **not** POST.
+Does **not** construct `LiveExecutionPort`. Does **not** arm Live. Does **not**
+join durable FILEGATE. Does **not** wire canary as a 29Q consumer. Does **not**
+invalidate observed §11.13.5 / §11.14 Submit / Ack / Fill / Fee / Position /
+Accounting evidence. Does **not** transfer that evidence to
+`FULL_CORE_SYSTEM_E2E`.
+
+Owner-GO
+`OWNER_GO=PEAK_TRADE_OWNER_GO_FULL_CORE_SELECTED_AS_FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH_V1`
+(one-shot for this persist) binds the future productive Live-execution path as
+`FULL_CORE_LIVE_PATH` and persists the live-admission gap DAG from the proven
+offline halt.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_FULL_CORE_SELECTED_AS_FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_SSOT_PERSIST
+THIS_SLICE=11.2.1.I.FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP
+CURRENT_PHASE=11.2.1.I.FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP
+FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH
+PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY=SECTION_11_2_1
+CANARY_VENUE_PROOF_PATH_KIND=CANARY_VENUE_PROOF_ONLY
+CANARY_VENUE_PROOF_PATH_ROLE=HISTORICAL_AND_SCOPED_VENUE_PROOF
+CANARY_VENUE_PROOF_PATH_IS_FULL_CORE_E2E=false
+CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY=false
+SECTION_11_13_5_NEXT_POINTER_DOMAIN=SCOPED_CANARY_VENUE_PROOF_EVIDENCE_ONLY
+SECTION_11_14_NEXT_POINTER_DOMAIN=HISTORICAL_CANARY_LIFECYCLE_EVIDENCE_LADDER_NOT_FULL_CORE_E2E
+SECTION_11_14_POST_IS_NOT_STEP_29Q=true
+SECTION_11_14_ACCOUNTING_IS_NOT_FULL_CORE_E2E=true
+G12_IS_NOT_FULL_CORE_E2E=true
+CANARY_SUBMIT_EVIDENCE_IS_NOT_FULL_CORE_SUBMIT_EVIDENCE=true
+CANARY_29Q_CONSUMER_WIRING_AUTHORIZED=false
+FULL_CORE_SYSTEM_E2E_PROVEN=false
+CURRENT_LIVE_CORE_PATH_PROVEN=false
+STANDING_LIVE_AUTHORIZATION=false
+LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
+FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED=false
+DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=false
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_WITHOUT_LIVE_ARMING_OR_GET
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
+NEXT_STEP_REQUIRES_OWNER_GO=true
+SECTION_11_14_LIVE_RESTART_RECONSTRUCTED=false
+SECTION_11_14_COMPLETE=false
+EARLIEST_UNRESOLVED_11_14_DEPENDENCY=LIVE_RESTART_RECONSTRUCTED
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+LIVE_AUTHORIZED=false
+GET_PERFORMED=false
+POST_PERFORMED=false
+WIRE_SEND_OCCURRED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+A. Path identity. The future productive Live-execution path is
+`FULL_CORE_LIVE_PATH`. §11.13.5 `CURRENT_CANONICAL_NEXT_STEP_AUTHORITY`
+remains canary venue-proof evidence only. §11.14
+`CURRENT_CANONICAL_NEXT_STEP_AUTHORITY` remains the historical canary
+lifecycle-evidence ladder and is not Full-Core E2E. Those historical next
+pointers may not be derived as a second productive Live-execution authority.
+
+B. Isolation. Canary code may remain as a venue-proof mechanism. Canary
+pretrade observation producers are `REUSABLE_MECHANISM_ONLY`. They are not
+wired as Full-Core consumers of STEP-29Q. A canary OrderPlan, canary POST,
+§11.14 accounting reconstruction, or G12 fact cannot satisfy
+`FULL_CORE_SYSTEM_E2E`. The §11.14 POST is not a STEP-29Q product.
+
+C. Gap DAG. The proven offline halt remains Integrated Replay → 29P →
+Replay Safety → 29Q PLAN_ONLY → `compose_core_live_execution_intent_v1` →
+`translate_core_live_intent_to_venue_plan_v1` →
+`evaluate_frozen_pretrade_conjunction_v1` →
+`halt_at_live_execution_boundary_v1`. The earliest remaining Full-Core
+building block that can be closed repo-internally before fresh venue
+evidence is the durable FILEGATE join seam, without Live arming and without
+GET. LIVE_ACCOUNT_BOUND live values, FRESH_GET, PRIVATE_AUTH_PREFLIGHT,
+LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED, and LiveExecutionPort remain
+later layers and are not this slice.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.I.FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
