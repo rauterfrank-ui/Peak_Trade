@@ -601,12 +601,12 @@ def _update_session_state_from_replay(
     sel = str(inter.composition_result.selected_side.value).lower()
     if sel == "long":
         state.previous_composition_direction_state = CompositionDirectionState.LONG
-        state.scope_direction_state = ScopeDirectionState.LONG
     elif sel == "short":
         state.previous_composition_direction_state = CompositionDirectionState.SHORT
-        state.scope_direction_state = ScopeDirectionState.SHORT
     else:
         state.previous_composition_direction_state = CompositionDirectionState.NEUTRAL
+    # ScopeDirectionState is a SideState projection, not a composition overlay.
+    state.scope_direction_state = scope_direction_from_side_state_v1(state.side_state)
     state.last_evaluated_trading_epoch = state.trading_epoch
     state.trading_epoch += 1
     (
