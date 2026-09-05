@@ -116,6 +116,7 @@ def _run(monkeypatch, replay_input, **kwargs):
         seen_semantic_digests=kwargs.pop("seen_semantic_digests", frozenset()),
         expected_trading_epoch=kwargs.pop("expected_trading_epoch", None),
         owner_go=kwargs.pop("owner_go", "OWNER_GO_FULL_CORE_LIVE_PATH_OFFLINE_V1"),
+        fresh_pretrade_get_transport=kwargs.pop("fresh_pretrade_get_transport", None),
     )
     return run_full_core_live_path_offline_v1(payload, **kwargs), replay
 
@@ -130,6 +131,7 @@ def _path_from_replay(replay, **kwargs):
         seen_semantic_digests=kwargs.pop("seen_semantic_digests", frozenset()),
         expected_trading_epoch=kwargs.pop("expected_trading_epoch", None),
         owner_go=kwargs.pop("owner_go", "OWNER_GO_FULL_CORE_LIVE_PATH_OFFLINE_V1"),
+        fresh_pretrade_get_transport=kwargs.pop("fresh_pretrade_get_transport", None),
     )
     return run_full_core_live_path_offline_v1(payload, **kwargs)
 

@@ -140,7 +140,12 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
     for component in REQUIRED_GAP_COMPONENTS:
         assert component in present
         node = gap_node_v1(component)
-        if component in {"DURABLE_FILEGATE_RUNTIME_JOIN", "OWNER_ONE_SHOT_EXECUTION_PERMIT"}:
+        if component in {
+            "DURABLE_FILEGATE_RUNTIME_JOIN",
+            "OWNER_ONE_SHOT_EXECUTION_PERMIT",
+            "FRESH_GET_PER_PRETRADE_DECISION",
+            "PRIVATE_AUTH_PREFLIGHT",
+        }:
             assert node.wiring_authorized is True
         else:
             assert node.wiring_authorized is False
@@ -158,13 +163,13 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
     assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (
         EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY
     )
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == ("FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED")
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == ("LIVE_ACCOUNT_BOUND_IMPLEMENTED")
     assert dag["MAX_SAFE_REPO_INTERNAL_NEXT_SLICE"] == MAX_SAFE_REPO_INTERNAL_NEXT_SLICE
     assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is True
     assert dag["CANARY_29Q_CONSUMER_WIRING_AUTHORIZED"] is False
     reusable = set(dag["REUSABLE_MECHANISM_ONLY_COMPONENTS"])
     assert "MAX_AVAILABLE" in reusable
-    assert "PRIVATE_AUTH_PREFLIGHT" in reusable
+    assert "PRIVATE_AUTH_PREFLIGHT" not in reusable
     live_enabled = gap_node_v1("LIVE_ENABLED")
     assert live_enabled.standing_live_gates_would_change is True
     assert live_enabled.repo_internal_solvable is False

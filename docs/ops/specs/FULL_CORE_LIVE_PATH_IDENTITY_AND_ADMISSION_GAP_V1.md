@@ -38,6 +38,8 @@ join is bound in
 [`FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md`](FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md).
 The typed OWNER_ONE_SHOT permit seam is bound in
 [`FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_V1.md`](FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_V1.md).
+The Fresh Pretrade Runtime GET seam is bound in
+[`FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md`](FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md).
 
 ## Non-claims
 
@@ -85,7 +87,9 @@ FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
 NEXT_STEP_REQUIRES_OWNER_GO=true
 ```
 
-Current remaining gap after the OWNER_ONE_SHOT typed permit seam:
+Current remaining gap after the OWNER_ONE_SHOT typed permit seam
+(superseded for Fresh Pretrade Runtime GET by
+`FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1`):
 
 ```text
 EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED
@@ -94,7 +98,18 @@ FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=true
 NEXT_STEP_REQUIRES_OWNER_GO=true
 ```
 
-Canary observation modules remain `REUSABLE_MECHANISM_ONLY`. They are not
-wired as Full-Core 29Q consumers. Fresh GET, LIVE_ACCOUNT_BOUND live values,
-LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED, and LiveExecutionPort remain
-later layers.
+Current remaining gap after the Fresh Pretrade Runtime GET seam:
+
+```text
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=LIVE_ACCOUNT_BOUND_IMPLEMENTED
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_WITHOUT_LIVE_ACCOUNT_BOUND_OWNER_GO
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=true
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+Canary observation modules remain `REUSABLE_MECHANISM_ONLY` for economic
+consumers. They are not wired as Full-Core 29Q consumers. The Fresh GET join
+is bound in
+[`FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md`](FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md).
+LIVE_ACCOUNT_BOUND live values, LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED,
+and LiveExecutionPort remain later layers.

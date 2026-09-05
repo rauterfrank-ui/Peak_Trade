@@ -3,6 +3,7 @@
 Single intended join point: halt_at_live_execution_boundary_v1.
 Durable FILEGATE evidence is joined via durable_filegate_join_v1.
 OWNER_ONE_SHOT permit evidence is joined via owner_one_shot_permit_v1.
+Fresh pretrade GET evidence is joined via fresh_pretrade_runtime_get_v1.
 Does not construct LiveExecutionPort. Does not send wire.
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
@@ -43,6 +44,7 @@ class PretradeFreshnessStatusV1(str, Enum):
     LIVE_FRESH = "LIVE_FRESH"
     MISSING = "MISSING"
     UNKNOWN = "UNKNOWN"
+    STALE = "STALE"
 
 
 class DurableKillSwitchEvidenceStatusV1(str, Enum):
@@ -58,6 +60,17 @@ class OwnerOneShotPermitStatusV1(str, Enum):
     MALFORMED = "MALFORMED"
     MISMATCH = "MISMATCH"
     CONTRADICTORY = "CONTRADICTORY"
+
+
+class FreshPretradeGetStatusV1(str, Enum):
+    TRUSTED_PRESENT = "TRUSTED_PRESENT"
+    MISSING = "MISSING"
+    MALFORMED = "MALFORMED"
+    STALE = "STALE"
+    CONTRADICTORY = "CONTRADICTORY"
+    AUTH_FAILURE = "AUTH_FAILURE"
+    PUBLIC_FAILURE = "PUBLIC_FAILURE"
+    NOT_REQUIRED_OFFLINE = "NOT_REQUIRED_OFFLINE"
 
 
 @dataclass(frozen=True)
@@ -79,6 +92,7 @@ class ExecutionAdmissionInputsV1:
     owner_authorization_present: bool
     owner_one_shot_permit_status: str
     admission_context: str
+    fresh_pretrade_get_status: str = FreshPretradeGetStatusV1.MISSING.value
     provenance_refs: Tuple[str, ...] = ()
     runtime_authority_effect: str = RUNTIME_AUTHORITY_EFFECT_NONE
 
@@ -157,18 +171,48 @@ def evaluate_execution_admission_v1(
 
     freshness = str(inputs.pretrade_freshness_status or "").strip()
     source_kind = str(inputs.pretrade_source_kind or "").strip()
+    get_status = str(inputs.fresh_pretrade_get_status or "").strip()
+    get_trusted = get_status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
     if freshness in {
         PretradeFreshnessStatusV1.MISSING.value,
         PretradeFreshnessStatusV1.UNKNOWN.value,
         "",
     }:
         reasons.append("PRETRADE_FRESHNESS_MISSING")
+    if freshness == PretradeFreshnessStatusV1.STALE.value:
+        reasons.append("FRESH_PRETRADE_GET_STALE")
     if source_kind == PRETRADE_SOURCE_FROZEN_OFFLINE or freshness == (
         PretradeFreshnessStatusV1.FROZEN_OFFLINE.value
     ):
         reasons.append("FROZEN_OFFLINE_PRETRADE_NOT_LIVE_FRESH")
-    if source_kind == PRETRADE_SOURCE_FRESH_GET:
-        reasons.append("FRESH_PRETRADE_GET_NOT_IMPLEMENTED")
+    get_required = live_context or source_kind == PRETRADE_SOURCE_FRESH_GET
+    if get_trusted is True and (
+        source_kind != PRETRADE_SOURCE_FRESH_GET
+        or freshness != PretradeFreshnessStatusV1.LIVE_FRESH.value
+    ):
+        reasons.append("FRESH_PRETRADE_GET_CONTRADICTORY")
+    if (
+        source_kind == PRETRADE_SOURCE_FRESH_GET
+        and freshness == PretradeFreshnessStatusV1.LIVE_FRESH.value
+        and get_trusted is not True
+    ):
+        reasons.append("FRESH_PRETRADE_GET_CONTRADICTORY")
+    if get_status == FreshPretradeGetStatusV1.MALFORMED.value:
+        reasons.append("FRESH_PRETRADE_GET_MALFORMED")
+    elif get_status == FreshPretradeGetStatusV1.STALE.value:
+        reasons.append("FRESH_PRETRADE_GET_STALE")
+        reasons.append("FRESH_PRETRADE_GET_FIXTURE_REPLAY_NOT_PRODUCTIVE")
+    elif get_status == FreshPretradeGetStatusV1.CONTRADICTORY.value:
+        reasons.append("FRESH_PRETRADE_GET_CONTRADICTORY")
+    elif get_status == FreshPretradeGetStatusV1.AUTH_FAILURE.value:
+        reasons.append("FRESH_PRETRADE_GET_AUTH_FAILURE")
+    elif get_status == FreshPretradeGetStatusV1.PUBLIC_FAILURE.value:
+        reasons.append("FRESH_PRETRADE_GET_PUBLIC_FAILURE")
+    elif get_required and get_status in {
+        FreshPretradeGetStatusV1.MISSING.value,
+        "",
+    }:
+        reasons.append("FRESH_PRETRADE_GET_MISSING")
     if not inputs.pretrade_admissible:
         reasons.append("PRETRADE_NOT_ADMISSIBLE")
 
@@ -185,6 +229,10 @@ def evaluate_execution_admission_v1(
             reasons.append("OFFLINE_ALGEBRA_LIVE_ADMISSION_DENIED")
         if source_kind != PRETRADE_SOURCE_FRESH_GET:
             reasons.append("LIVE_ADMISSION_REQUIRES_FRESH_GET_PRETRADE")
+        if get_trusted is not True:
+            reasons.append("LIVE_ADMISSION_REQUIRES_FRESH_GET_PRETRADE")
+            if get_status == FreshPretradeGetStatusV1.NOT_REQUIRED_OFFLINE.value:
+                reasons.append("FRESH_PRETRADE_GET_MISSING")
 
     unique = tuple(dict.fromkeys(reasons))
     # Standing package constants and missing FILEGATE keep admission closed.
@@ -211,6 +259,7 @@ def default_untrusted_filegate_inputs_v1(
     admission_context: str,
     provenance_refs: Tuple[str, ...] = (),
     owner_one_shot_permit_status: str = OwnerOneShotPermitStatusV1.MISSING.value,
+    fresh_pretrade_get_status: str = FreshPretradeGetStatusV1.MISSING.value,
 ) -> ExecutionAdmissionInputsV1:
     """Explicit untrusted injector. Production halt uses composed join seams."""
     return ExecutionAdmissionInputsV1(
@@ -231,5 +280,6 @@ def default_untrusted_filegate_inputs_v1(
         owner_authorization_present=owner_authorization_present,
         owner_one_shot_permit_status=owner_one_shot_permit_status,
         admission_context=admission_context,
+        fresh_pretrade_get_status=fresh_pretrade_get_status,
         provenance_refs=provenance_refs + (OFFLINE_BOUNDARY_ROLE,),
     )

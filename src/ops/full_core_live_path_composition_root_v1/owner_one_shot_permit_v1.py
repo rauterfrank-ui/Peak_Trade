@@ -181,5 +181,6 @@ def join_owner_one_shot_permit_into_admission_inputs_v1(
         owner_authorization_present=trusted,
         owner_one_shot_permit_status=evidence.evidence_status,
         admission_context=inputs.admission_context,
+        fresh_pretrade_get_status=inputs.fresh_pretrade_get_status,
         provenance_refs=inputs.provenance_refs,
     )

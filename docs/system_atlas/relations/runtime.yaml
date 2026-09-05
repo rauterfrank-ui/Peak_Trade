@@ -731,6 +731,32 @@ relations:
       Live. Does not override FILEGATE. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_full_core_path_calls_fresh_pretrade_runtime_get
+    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    type: CALLS
+    target: GATE:full_core_fresh_pretrade_runtime_get_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+    notes: >-
+      Halt joins typed Fresh Pretrade GET evidence. Does not admit
+      Live. Does not POST. Does not override FILEGATE or permit.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_full_core_fresh_pretrade_get_composes_permit
+    source: GATE:full_core_fresh_pretrade_runtime_get_v1
+    type: CONSUMES
+    target: GATE:full_core_owner_one_shot_permit_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/owner_one_shot_permit_v1.py
+    notes: >-
+      Fresh GET seam composes OWNER_ONE_SHOT permit join. GET cannot
+      override permit or FILEGATE. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_owner_one_shot_permit_composes_filegate
     source: GATE:full_core_owner_one_shot_permit_v1
     type: CONSUMES

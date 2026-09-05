@@ -35,6 +35,7 @@ chains:
       - GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
       - GATE:full_core_durable_filegate_join_v1
       - GATE:full_core_owner_one_shot_permit_v1
+      - GATE:full_core_fresh_pretrade_runtime_get_v1
       - GATE:full_core_live_path_standing_live_gates_v1
       - GATE:full_core_live_path_identity_v1
       - GATE:live_authorized_false

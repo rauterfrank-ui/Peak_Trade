@@ -14,6 +14,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     CAPABILITY_ID,
     CURRENT_LIVE_CORE_PATH_PROVEN,
     DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED,
+    FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED,
     FULL_CORE_RESTART_TEST_AUTHORIZED,
     FULL_CORE_SYSTEM_E2E_PROVEN,
     FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH,
@@ -43,6 +44,10 @@ from src.ops.full_core_live_path_composition_root_v1.models_v1 import (
     FullCoreLivePathInputV1,
     FullCoreLivePathResultV1,
 )
+from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    collect_fresh_pretrade_runtime_get_v1,
+    join_fresh_pretrade_runtime_get_into_admission_inputs_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.owner_one_shot_permit_v1 import (
     evaluate_owner_one_shot_permit_v1,
     join_owner_one_shot_permit_into_admission_inputs_v1,
@@ -61,6 +66,7 @@ __all__ = [
     "CANARY_VENUE_PROOF_PATH_ROLE",
     "CURRENT_LIVE_CORE_PATH_PROVEN",
     "DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED",
+    "FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED",
     "CoreLiveExecutionIntentV1",
     "ExecutionAdmissionDecisionV1",
     "FrozenPretradeEvidenceV1",
@@ -81,7 +87,9 @@ __all__ = [
     "compose_core_live_execution_intent_v1",
     "evaluate_execution_admission_v1",
     "evaluate_owner_one_shot_permit_v1",
+    "collect_fresh_pretrade_runtime_get_v1",
     "join_durable_filegate_into_admission_inputs_v1",
+    "join_fresh_pretrade_runtime_get_into_admission_inputs_v1",
     "join_owner_one_shot_permit_into_admission_inputs_v1",
     "live_admission_gap_dag_v1",
     "read_durable_filegate_join_evidence_v1",
