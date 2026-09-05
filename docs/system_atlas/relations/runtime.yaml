@@ -256,6 +256,7 @@ relations:
     notes: >-
       WP-FS-B1 host decorators for c1.observation_acceptance, feature.regime,
       feature.typed_volatility, mapper.intended_action, and core.exit_policy.
+      Mapper consumes typed ReplayExecutionSafetyV1 when present.
       Observation only. Not PRODUCES/CONSUMES/CALLS.
 
   - id: REL:r_ddo_capture_observes_directional
@@ -641,8 +642,9 @@ relations:
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
     notes: >-
-      Offline path always halts before wire. Atlas is not trading
-      authority. ATLAS_AUTHORITY=NONE.
+      Offline path always halts before wire. Typed ExecutionAdmissionDecisionV1
+      is consumed at this same join point. Not a second execution boundary.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: REL:r_full_core_path_calls_restart_gate
     source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1

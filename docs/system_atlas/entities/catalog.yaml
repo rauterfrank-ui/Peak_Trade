@@ -12,6 +12,7 @@ entities:
     evidence_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: Futures-only trading engine. Master V2 / Double Play target system.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: SUBSYSTEM:master_v2
     kind: SUBSYSTEM
@@ -24,7 +25,8 @@ entities:
     evidence_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
-    notes: Not a competing generation versus Double Play.
+    notes: Not a competing generation versus Double Play. Typed ReplayExecutionSafetyV1
+      is mapper-facing evidence, not a second compute owner. ATLAS_AUTHORITY=NONE.
 
   - id: FUNCTIONAL_CORE:double_play
     kind: FUNCTIONAL_CORE
@@ -39,7 +41,7 @@ entities:
       - src/trading/master_v2/double_play_composition.py
       - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md
       - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_KILL_ALL_STATE_SWITCH_FAVORABLE_ADVERSE_EXTREME_MOVES_ACCEPTANCE_V0.md
-    notes: Inner functional core census label for Double Play relative to Master V2. Exact token FUNCTIONAL_CORE not found on origin/main; proven as Modul-Owner of one Trading Core.
+    notes: Inner functional core census label for Double Play relative to Master V2. Exact token FUNCTIONAL_CORE not found on origin/main; proven as Modul-Owner of one Trading Core. Typed contract hardening does not move Double Play authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNBOOK:canonical_master_runbook
     kind: RUNBOOK
@@ -54,10 +56,13 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK_RATIFICATION.json
       - docs/ops/specs/PEAK_TRADE_BIND_CURRENT_SUI_L4_FAIL_CLOSED_MAX_AVAILABLE_ZERO_END_STATE_NO_REPAIR_V1.md
     notes: >-
-      Canonical working authority. Section 11.9.1 precisifies durable
-      execution-side kill authority (StatePersistence writer + FILEGATE
-      reader) without authorizing Live flatten, alias split, or auto-trip
-      wiring. Atlas is not canonical authority.
+      Canonical working authority. Section 11.2.1.A records typed Full-Core
+      execution admission and Replay Safety/Emergency contracts without
+      Live arming, wire send, or durable FILEGATE runtime join. Section
+      11.9.1 precisifies durable execution-side kill authority
+      (StatePersistence writer + FILEGATE reader) without authorizing
+      Live flatten, alias split, or auto-trip wiring. Atlas is not
+      canonical authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
     kind: NAVIGATION_INDEX
@@ -3046,10 +3051,17 @@ entities:
     module_role: offline_replay
     source_paths:
       - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+      - src/trading/master_v2/replay_execution_safety_contract_v1.py
+      - src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py
+      - src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/intended_action_mapper_v1.py
     evidence_sources:
       - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+      - src/trading/master_v2/replay_execution_safety_contract_v1.py
       - docs/system_atlas/census/master_v2_semantic_map.yaml
-    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml.
+      Typed ReplayExecutionSafetyV1 is mapper-facing evidence, not FILEGATE
+      and not a second compute owner. Implementation is not activation.
 
   - id: RUNTIME_COMPONENT:mv2_parity_gap_assessment
     kind: RUNTIME_COMPONENT
@@ -3551,6 +3563,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
       - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
       - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
       - src/ops/full_core_live_path_composition_root_v1/models_v1.py
       - src/ops/full_core_live_path_composition_root_v1/overclaim_guards_v1.py
@@ -3573,7 +3586,8 @@ entities:
       Composes existing replay plus Cap-2.4 binding into
       CoreLiveExecutionIntentV1. Does not recompute strategy, sizing, or
       safety. Does not construct LiveExecutionPort. Does not arm wire send.
-      Standing package gates remain false.
+      Standing package gates remain false. Typed execution admission is
+      consumed at halt_at_live_execution_boundary_v1 only.
       CURRENT_PRE_SPLIT characterization CHAR-3 (inventory only; not
       target architecture; alias split is not implemented):
       compose_core_live_execution_intent_v1 consumes
@@ -3599,12 +3613,15 @@ entities:
     unit: mixed
     source_paths:
       - src/ops/full_core_live_path_composition_root_v1/models_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py
     source_symbols:
       - FrozenPretradeEvidenceV1
       - CoreLiveExecutionIntentV1
       - VenuePlanCandidateV1
       - FullCoreLivePathInputV1
       - FullCoreLivePathResultV1
+      - ExecutionAdmissionInputsV1
+      - ExecutionAdmissionDecisionV1
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/models_v1.py
       - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
@@ -3665,17 +3682,23 @@ entities:
     fail_closed: true
     source_paths:
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py
     source_symbols:
       - halt_at_live_execution_boundary_v1
       - refuse_wire_send_v1
+      - evaluate_execution_admission_v1
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py
       - src/ops/capability_11_1_execution_domain_and_order_lifecycle_contracts_v1/execution_ports_v1.py
     notes: >-
-      Always HARD STOP BEFORE WIRE. Does not construct Cap 11.1
-      LiveExecutionPort. Does not invoke canary HTTP. Package-local
-      LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED remain false.
-      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+      Always HARD STOP BEFORE WIRE. Consumes typed
+      ExecutionAdmissionDecisionV1 at this sole Full-Core join point.
+      Does not construct Cap 11.1 LiveExecutionPort. Does not invoke
+      canary HTTP. Does not read durable FILEGATE StatePersistence.
+      Package-local LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED
+      remain false. Atlas is not canonical authority.
+      ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_live_path_restart_gate_v1
     kind: GATE

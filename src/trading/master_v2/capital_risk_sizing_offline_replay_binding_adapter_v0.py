@@ -39,6 +39,9 @@ CAPITAL_RISK_SIZING_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER = (
 )
 CANONICAL_CAPITAL_RISK_SIZING_OWNER = "src.governance.capital_risk_sizing_v1"
 
+CAPITAL_RISK_MODE_OFFLINE_ALGEBRA = "OFFLINE_ALGEBRA"
+CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND = "LIVE_ACCOUNT_BOUND"
+
 RISK_SIZING_EFFECT_BOUND_OFFLINE = "BOUND_OFFLINE"
 RISK_SIZING_EFFECT_NONE = "NONE"
 _QUANTITY_STATUS_NOT_BOUND = "NOT_BOUND"
@@ -95,6 +98,7 @@ def default_offline_replay_capital_context_v0(
         current_reconciled_exposure=Decimal("0"),
         instrument=default_offline_replay_instrument_v0(instrument_id),
         config_digest=_OFFLINE_BINDING_CONFIG_DIGEST,
+        capital_risk_mode=CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
     )
 
 
@@ -136,6 +140,7 @@ class CapitalRiskSizingOfflineReplayBindingResultV0:
     risk_sizing_ref: str
     quantity_status: str
     risk_sizing_effect: str
+    capital_risk_mode: str = CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
 
 
 def bind_capital_risk_sizing_offline_replay_evidence_v0(
@@ -152,6 +157,10 @@ def bind_capital_risk_sizing_offline_replay_evidence_v0(
     ctx = capital_context or default_offline_replay_capital_context_v0(
         instrument_id=evidence.instrument_id,
     )
+    capital_risk_mode = str(
+        getattr(ctx, "capital_risk_mode", CAPITAL_RISK_MODE_OFFLINE_ALGEBRA)
+        or CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
+    )
     if not decision_outcome_is_actionable(evidence.decision_outcome):
         finalized = finalize_offline_replay_decision_evidence_v1(evidence)
         return CapitalRiskSizingOfflineReplayBindingResultV0(
@@ -162,6 +171,7 @@ def bind_capital_risk_sizing_offline_replay_evidence_v0(
             risk_sizing_ref="",
             quantity_status=_QUANTITY_STATUS_NOT_BOUND,
             risk_sizing_effect=RISK_SIZING_EFFECT_NONE,
+            capital_risk_mode=capital_risk_mode,
         )
 
     sizing_input, build_errors = build_capital_risk_sizing_input_from_decision_v0(
@@ -183,6 +193,7 @@ def bind_capital_risk_sizing_offline_replay_evidence_v0(
             risk_sizing_ref="",
             quantity_status=_QUANTITY_STATUS_NOT_BOUND,
             risk_sizing_effect=RISK_SIZING_EFFECT_NONE,
+            capital_risk_mode=capital_risk_mode,
         )
 
     sizing_decision = evaluate_capital_risk_sizing_v1(sizing_input)
@@ -209,6 +220,7 @@ def bind_capital_risk_sizing_offline_replay_evidence_v0(
         risk_sizing_ref=risk_sizing_ref,
         quantity_status=quantity_status,
         risk_sizing_effect=RISK_SIZING_EFFECT_BOUND_OFFLINE,
+        capital_risk_mode=capital_risk_mode,
     )
 
 

@@ -1,6 +1,8 @@
 """Offline Live execution boundary: always HARD STOP BEFORE WIRE.
 
+Consumes typed ExecutionAdmissionDecisionV1 at this sole Full-Core join point.
 Does not construct Cap 11.1 LiveExecutionPort. Does not invoke canary HTTP.
+Does not read durable FILEGATE StatePersistence.
 """
 
 from __future__ import annotations
@@ -13,7 +15,17 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     LIVE_ARMED,
     LIVE_ENABLED,
     LIVE_EXECUTION_PORT_ROLE,
+    MODE_LIVE,
     WIRE_SEND_PERMITTED,
+)
+from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
+    ADMISSION_CONTEXT_LIVE,
+    ADMISSION_CONTEXT_OFFLINE_FULL_CORE_PROOF,
+    CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
+    ExecutionAdmissionDecisionV1,
+    ExecutionAdmissionInputsV1,
+    default_untrusted_filegate_inputs_v1,
+    evaluate_execution_admission_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.models_v1 import (
     CompositionStatusV1,
@@ -33,6 +45,12 @@ def halt_at_live_execution_boundary_v1(
     pretrade: PretradeConjunctionResultV1,
     attempt_wire_send: bool = False,
     attempt_construct_live_port: bool = False,
+    admission_inputs: ExecutionAdmissionInputsV1 | None = None,
+    capital_risk_mode: str = CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
+    pretrade_source_kind: str = "FROZEN_OFFLINE_PRETRADE_EVIDENCE",
+    pretrade_freshness_status: str = "FROZEN_OFFLINE",
+    admission_context: str | None = None,
+    path_mode: str = "",
 ) -> ExecutionBoundaryResultV1:
     reasons: list[str] = [
         "HARD_STOP_BEFORE_WIRE",
@@ -62,6 +80,31 @@ def halt_at_live_execution_boundary_v1(
         reasons.append("MISSING_OWNER_GO")
     if not pretrade.pretrade_valid:
         reasons.append("PRETRADE_FAIL")
+
+    context = admission_context
+    if context is None:
+        context = (
+            ADMISSION_CONTEXT_LIVE
+            if str(path_mode).upper() == MODE_LIVE
+            else ADMISSION_CONTEXT_OFFLINE_FULL_CORE_PROOF
+        )
+    resolved_inputs = admission_inputs
+    if resolved_inputs is None:
+        resolved_inputs = default_untrusted_filegate_inputs_v1(
+            plan_identity=str(plan.clordid or plan.instrument_id or ""),
+            venue_plan_identity=str(plan.clordid or ""),
+            instrument_identity_ok=pretrade.instrument_binding_valid
+            and plan.instrument_source == "CAP_2_4_BOUND_INSTRUMENT",
+            pretrade_admissible=bool(pretrade.pretrade_valid),
+            pretrade_source_kind=pretrade_source_kind,
+            pretrade_freshness_status=pretrade_freshness_status,
+            capital_risk_mode=capital_risk_mode,
+            owner_authorization_present=bool(pretrade.owner_go_valid),
+            admission_context=context,
+            provenance_refs=(str(plan.quantity_source), str(plan.side_source)),
+        )
+    admission: ExecutionAdmissionDecisionV1 = evaluate_execution_admission_v1(resolved_inputs)
+    reasons.extend(admission.reason_codes)
     _ = plan
     wire_send_occurred = False
     halt = (
@@ -69,13 +112,15 @@ def halt_at_live_execution_boundary_v1(
         and wire_send_occurred is False
         and LIVE_ENABLED is False
         and WIRE_SEND_PERMITTED is False
+        and admission.admitted is False
     )
     status = CompositionStatusV1.HALT if halt else CompositionStatusV1.DENY
     return ExecutionBoundaryResultV1(
         status=status,
-        reason_codes=tuple(reasons),
+        reason_codes=tuple(dict.fromkeys(reasons)),
         wire_send_occurred=wire_send_occurred,
         live_execution_port_constructed=live_port_constructed,
         canary_http_invoked=False,
         halt_before_wire=halt,
+        admission=admission,
     )

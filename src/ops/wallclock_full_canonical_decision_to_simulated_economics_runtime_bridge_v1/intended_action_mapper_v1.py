@@ -12,6 +12,12 @@ from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     IntegratedOfflineReplayResultV1,
 )
+from trading.master_v2.replay_execution_safety_contract_v1 import (
+    ReplayExecutionSafetyV1,
+    derive_replay_execution_safety_v1,
+    legacy_string_heuristic_safety_blocked_v1,
+    typed_enter_hold_required_v1,
+)
 
 _ZERO = Decimal("0")
 
@@ -51,6 +57,29 @@ def _portfolio_signed_qty(portfolio_snapshot: Mapping[str, Any], instrument_id: 
         return _ZERO
 
 
+def _resolve_replay_execution_safety_v1(
+    result: IntegratedOfflineReplayResultV1,
+) -> tuple[ReplayExecutionSafetyV1 | None, bool]:
+    """Return (typed_contract, used_legacy_fallback)."""
+    typed = getattr(result, "replay_execution_safety", None)
+    if isinstance(typed, ReplayExecutionSafetyV1):
+        return typed, False
+    intermediate = getattr(result, "intermediate", None)
+    safety_boundary = (
+        getattr(intermediate, "safety_kernel_boundary", None) if intermediate else None
+    )
+    ks_boundary = getattr(intermediate, "killswitch_boundary", None) if intermediate else None
+    if safety_boundary is not None or ks_boundary is not None:
+        return (
+            derive_replay_execution_safety_v1(
+                safety_boundary=safety_boundary,
+                killswitch_boundary=ks_boundary,
+            ),
+            False,
+        )
+    return None, True
+
+
 @observe_after_producer_v0(seam_id="mapper.intended_action")
 def map_replay_result_to_intended_analytical_action_v1(
     result: IntegratedOfflineReplayResultV1,
@@ -61,16 +90,24 @@ def map_replay_result_to_intended_analytical_action_v1(
     """Produce analytical BUY/SELL/HOLD from sole decision authority replay result.
 
     Never implies broker submission. execution_eligible remains false by policy.
+    Typed ReplayExecutionSafetyV1 is the primary Safety/Emergency input.
+    String heuristics remain only as LEGACY_STRING_HEURISTIC_FALLBACK when the
+    typed contract is absent (compat for host tests using SimpleNamespace).
     """
     evidence = result.evidence
     outcome = str(evidence.decision_outcome or "").strip().lower()
     selected = str(evidence.selected_side or "").strip().lower()
     reasons = tuple(evidence.reason_codes or ())
 
-    safety_codes = {str(x).lower() for x in reasons}
-    safety_blocked = any(
-        x.startswith("safety") or "kill" in x or x.endswith("_blocked") for x in safety_codes
-    ) or outcome in {"blocked"}
+    typed_safety, _used_legacy_fallback = _resolve_replay_execution_safety_v1(result)
+    if typed_safety is not None:
+        safety_blocked = typed_enter_hold_required_v1(typed_safety)
+    else:
+        # LEGACY_STRING_HEURISTIC_FALLBACK: typed contract absent (compat hosts).
+        safety_blocked = legacy_string_heuristic_safety_blocked_v1(
+            reason_codes=reasons,
+            decision_outcome=outcome,
+        )
 
     intent = None
     qty = _ZERO

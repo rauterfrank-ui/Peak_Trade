@@ -8,6 +8,9 @@ from enum import Enum
 from typing import Any, Mapping, Optional
 
 from src.governance.canonical_order_intent_v1 import CanonicalOrderIntentV1
+from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
+    ExecutionAdmissionDecisionV1,
+)
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     IntegratedOfflineReplayResultV1,
@@ -29,7 +32,11 @@ class PathStageV1(str, Enum):
 
 @dataclass(frozen=True)
 class FrozenPretradeEvidenceV1:
-    """Offline frozen venue-pretrade snapshot. Not a GET. Not a cache for Live."""
+    """Offline frozen venue-pretrade snapshot. Not a GET. Not a cache for Live.
+
+    FROZEN_OFFLINE_PRETRADE_EVIDENCE != FRESH_GET_PER_PRETRADE_DECISION.
+    freshness_status defaults to FROZEN_OFFLINE and is never live-fresh.
+    """
 
     max_available: Decimal
     max_size: Decimal
@@ -41,6 +48,7 @@ class FrozenPretradeEvidenceV1:
     margin_mode_ok: bool
     leverage_ok: bool
     source_kind: str = "FROZEN_OFFLINE_PRETRADE_EVIDENCE"
+    freshness_status: str = "FROZEN_OFFLINE"
 
 
 @dataclass(frozen=True)
@@ -74,6 +82,7 @@ class CoreLiveExecutionIntentV1:
     wire_send_permitted: bool
     execution_eligible: bool
     submission_authorized: bool
+    capital_risk_mode: str = "OFFLINE_ALGEBRA"
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -106,6 +115,7 @@ class CoreLiveExecutionIntentV1:
             "wire_send_permitted": self.wire_send_permitted,
             "execution_eligible": self.execution_eligible,
             "submission_authorized": self.submission_authorized,
+            "capital_risk_mode": self.capital_risk_mode,
         }
 
 
@@ -146,6 +156,7 @@ class ExecutionBoundaryResultV1:
     live_execution_port_constructed: bool
     canary_http_invoked: bool
     halt_before_wire: bool
+    admission: Optional[ExecutionAdmissionDecisionV1] = None
 
 
 @dataclass(frozen=True)

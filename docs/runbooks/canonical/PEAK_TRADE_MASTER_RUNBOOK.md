@@ -6907,6 +6907,88 @@ CURRENT_CANONICAL_SECTION=11.2.1.FULL_CORE_LIVE_PATH_COMPOSITION_ROOT
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.A EXECUTION_ADMISSION_AND_TYPED_CONTRACT_HARDENING_V1 (BOUND; OFFLINE CONTRACTS ONLY; NO WIRE; NO FILEGATE RUNTIME JOIN)
+
+Additive persist. Does **not** rewrite §11.2.1 standing Live flags, §11.13.5
+canary, or §11.14 ladder fields. Does **not** GET. Does **not** POST. Does
+**not** construct `LiveExecutionPort`. Does **not** arm Live. Does **not**
+join durable FILEGATE into Integrated Replay.
+
+Owner-GO
+`OWNER_GO=PEAK_TRADE_OWNER_GO_ARCHITECTURE_CONTRACT_HARDENING_TYPED_ADMISSION_REPLAY_SAFETY_CAPITAL_PRETRADE_V1`
+(one-shot for this persist) records typed contract hardening on the
+already bound Full-Core composition root.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_ARCHITECTURE_CONTRACT_HARDENING_TYPED_ADMISSION_REPLAY_SAFETY_CAPITAL_PRETRADE_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=ARCHITECTURE_CONTRACT_HARDENING_V1_SSOT_PERSIST
+CORE_LOGIC_CHANGE=false
+DECISION_AUTHORITY_UNCHANGED=true
+SOLE_COMPUTE_OWNER=run_integrated_offline_trading_logic_replay_v1
+DOUBLE_PLAY_SIDE_STATE_OWNER=transition_state
+ENTRY_EXIT_OWNER=entry_exit_policy_v0
+POSITION_SIZING_OWNER=capital_risk_sizing_v1
+SAFETY_ORDER=29P_THEN_SAFETY_THEN_29Q
+29Q_PLAN_ONLY=true
+SIDESTATE_KILL_ALL_ROLE=DOUBLE_PLAY_STRATEGY_STATE_MACHINE
+REPLAY_SAFETY_ROLE=PRE_29Q_DECISION_ADMISSION
+REPLAY_EMERGENCY_KS_ROLE=POST_29Q_EVIDENCE_MODE_TAXONOMY
+REPLAY_EMERGENCY_RUNTIME_AUTHORITY_EFFECT=NONE
+DURABLE_FILEGATE_ROLE=RESTART_CAPABLE_EXECUTION_SIDE_PERMISSION_AUTHORITY
+DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=false
+MAPPER_TYPED_SAFETY_CONTRACT=true
+LEGACY_STRING_HEURISTIC_STATUS=FALLBACK_WHEN_TYPED_CONTRACT_ABSENT
+CURRENT_CAPITAL_RISK_MODE=OFFLINE_ALGEBRA
+LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
+OFFLINE_ALGEBRA_LIVE_ADMISSION_ALLOWED=false
+FULL_CORE_EXECUTION_ADMISSION_BOUNDARY=halt_at_live_execution_boundary_v1
+FROZEN_PRETRADE_STATUS=FROZEN_OFFLINE_PRETRADE_EVIDENCE
+FROZEN_PRETRADE_LIVE_ADMISSION_ALLOWED=false
+FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+LIVE_RESTART_RECONSTRUCTED=false
+DURABLE_PRE_RESTART_HANDOFF_PRESENT=false
+CANARY_PATH_DISTINCT_FROM_FULL_CORE=true
+HARDENING_V2_DECISION_OWNER=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+Kill-switch layers remain distinct and must not be collapsed:
+
+1. `SideState.KILL_ALL` is Double Play strategy / state-machine semantics.
+2. Replay Safety is the pre-29Q ENTER hard-block / decision-admission boundary.
+3. Replay Emergency / KS evidence is post-29Q evidence and mode taxonomy with
+   `runtime_authority_effect=NONE`. It is not execution permission.
+4. Durable FILEGATE (`kill_switch_should_block_trading` + `KillSwitchState` +
+   `StatePersistence`) is restart-capable execution-side permission authority.
+   This persist does **not** read that state from Integrated Replay or Full-Core.
+
+STEP-29P on Integrated Replay remains `OFFLINE_ALGEBRA` sizing. It is not Live
+account capital authority. `LIVE_ACCOUNT_BOUND` is typed only; it is not
+implemented and cannot admit Live.
+
+`halt_at_live_execution_boundary_v1` is the single intended Full-Core
+execution-admission join point before wire. Missing durable FILEGATE evidence,
+`OFFLINE_ALGEBRA` sizing in a Live-admission context, and frozen offline
+pretrade in a Live-admission context are fail-closed `NOT_ADMITTED`. Frozen
+offline pretrade remains valid for the current offline Full-Core proof.
+
+Canary remains `CANARY_VENUE_PROOF_ONLY` and is not Full-Core E2E.
+Hardening-v2 remains a host consumption path and is not a decision owner.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.A.EXECUTION_ADMISSION_AND_TYPED_CONTRACT_HARDENING_V1
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
