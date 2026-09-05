@@ -61,6 +61,9 @@ entities:
       Live arming, wire send, or durable FILEGATE runtime join. Section
       11.2.1.G inventories the SideState ARMED identity split without
       LastActiveSide and without changing LIVE_ARMED. Section
+      11.2.1.H inventories Wallclock/Hardening consumption of the Replay
+      Entry/Exit mapping owner without re-adjudicating PENDING rows.
+      Section
       11.9.1 precisifies durable execution-side kill authority
       (StatePersistence writer + FILEGATE reader) without authorizing
       Live flatten, alias split, or auto-trip wiring. Atlas is not
@@ -102,7 +105,9 @@ entities:
       MODEL_B remains productive baseline).
       SideState ARMED identity split (Neutral-Start vs Switch-Terminal)
       is navigation inventory only; last_active_side remains unauthorized;
-      LIVE_ARMED is unchanged. Atlas is not trading authority.
+      LIVE_ARMED is unchanged. Wallclock/Hardening Entry/Exit session
+      cursors consume Replay `_side_state_to_entry_exit_direction`;
+      PENDING rows are not re-adjudicated. Atlas is not trading authority.
 
   - id: FORENSIC_REFERENCE:information_corpus_persistence_base
     kind: FORENSIC_REFERENCE
@@ -2649,7 +2654,10 @@ entities:
       generator-inert and projects from SideState. Neutral-Start and
       Switch-Terminal ARMED identities keep the same bound LONG/SHORT
       destination-prefix projection as the former overloaded ARMED
-      tokens; LIVE_ARMED is unchanged. Atlas is not trading
+      tokens; LIVE_ARMED is unchanged. Both hosts consume Replay
+      `_side_state_to_entry_exit_direction` for the Entry/Exit session
+      cursor; they do not keep a local mapping table. PENDING owner
+      outputs are unchanged. Atlas is not trading
       authority. AUTHORITY_OWNER=NONE.
       PRODUCTIVE_AI_AUTHORITY_COUNT=0. SECOND_TRADING_AUTHORITY=false.
 

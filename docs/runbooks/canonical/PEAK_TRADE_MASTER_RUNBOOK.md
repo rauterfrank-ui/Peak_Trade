@@ -7499,6 +7499,98 @@ CURRENT_CANONICAL_SECTION=11.2.1.G.SIDESTATE_ARMED_IDENTITY_SPLIT_AND_SEVENTH_EC
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+Wallclock Cap-7.2 / Hardening-v2 parallel Entry/Exit PENDING maps remaining
+after §11.2.1.G are superseded by §11.2.1.H. SideState ARMED identities,
+Replay PENDING rows, generator, trailing, and the seventh-class grant
+closeout remain as bound in §11.2.1.G.
+
+### 11.2.1.H SIDESTATE_PENDING_ENTRY_EXIT_MAPPING_SINGLE_OWNER_MINIMUM_ATOMIC_REPAIR_V1 (BOUND; OFFLINE CONTRACTS ONLY; NO WIRE; NO FILEGATE RUNTIME JOIN)
+
+Additive persist. Does **not** rewrite §11.2.1 standing Live flags, §11.13.5
+canary, or §11.14 ladder fields. Does **not** GET. Does **not** POST. Does
+**not** construct `LiveExecutionPort`. Does **not** arm Live. Does **not**
+join durable FILEGATE. Does **not** change Double Play `transition_state`.
+Does **not** change SideState identities, ARMED Neutral-Start vs
+Switch-Terminal split, Replay PENDING table rows, C3, Composition-matrix
+decision logic, RuntimeScopeState trailing, 29P, 29Q, Replay Safety, Kill
+Switch, Mapper, Execution, or SideState fail-closed restore. Does **not**
+reopen the closed fifth-class, sixth-class, or seventh-class grants. Does
+**not** introduce LastActiveSide. Does **not** bind MODEL_C freeze exception.
+Does **not** change Cap-7.2 or Hardening-v2 overlay writers already closed in
+§11.2.1.D and §11.2.1.E. Does **not** change generator-fallback projection
+already closed in §11.2.1.F. Does **not** re-adjudicate PENDING TARGET rows.
+
+Owner-GO
+`OWNER_GO=PEAK_TRADE_OWNER_GO_SIDESTATE_PENDING_ENTRY_EXIT_MAPPING_SINGLE_OWNER_MINIMUM_ATOMIC_REPAIR_V1`
+(one-shot for this persist) binds: Cap-7.2 and Hardening-v2 session cursors
+consume Replay `_side_state_to_entry_exit_direction`. Local Wallclock
+SideState→EntryExitDirectionState tables are removed. PENDING owner outputs
+remain `SWITCH_LONG_TO_SHORT_PENDING` → `SHORT_ARMED` and
+`SWITCH_SHORT_TO_LONG_PENDING` → `LONG_ARMED`. No new Economic-Guard class.
+No eighth-class grant.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_SIDESTATE_PENDING_ENTRY_EXIT_MAPPING_SINGLE_OWNER_MINIMUM_ATOMIC_REPAIR_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=SIDESTATE_PENDING_ENTRY_EXIT_MAPPING_SINGLE_OWNER_MINIMUM_ATOMIC_REPAIR_V1
+CORE_LOGIC_CHANGE=true
+OWNER_RATIFICATION_REQUIRED=true
+DECISION_AUTHORITY_UNCHANGED=true
+SOLE_COMPUTE_OWNER=run_integrated_offline_trading_logic_replay_v1
+SIDESTATE_COMPUTE_OWNER=transition_state
+ENTRY_EXIT_MAPPING_OWNER=_side_state_to_entry_exit_direction
+ENTRY_EXIT_POLICY_OWNER=entry_exit_policy_v0
+LOCAL_WALLCLOCK_MAPPING_AUTHORITY_REMAINING=false
+PENDING_TARGET_REWRITE_AUTHORIZED=false
+PENDING_OWNER_OUTPUT_UNCHANGED=true
+PENDING_ENTRY_ELIGIBILITY_CANONICALLY_DEFINED=false
+WALLCLOCK_MAP_SAME_CYCLE_DECISION_EFFECT=NONE
+ARMED_IDENTITY_UNCHANGED=true
+GENERATOR_UNCHANGED=true
+TRAILING_UNCHANGED=true
+COMPOSITION_SELECTED_SIDE_MAY_WRITE_SCOPE_DIRECTION_STATE=false
+LAST_ACTIVE_SIDE_BINDING_AUTHORIZED=false
+MODEL_C_CHANGED=false
+SIDESTATE_RESTORE_INVALID_VALUE_FAILS_CLOSED=true
+DOUBLE_PLAY_SIDE_STATE_OWNER=transition_state
+ENTRY_EXIT_OWNER=entry_exit_policy_v0
+POSITION_SIZING_OWNER=capital_risk_sizing_v1
+NEW_ECONOMIC_GUARD_CLASS_COUNT=0
+GENERIC_MASTER_V2_GRANT_CREATED=false
+EXISTING_CLOSED_GRANT_REOPENED=false
+FIFTH_CLASS_GRANT_REOPENED=false
+SIXTH_CLASS_GRANT_REOPENED=false
+SEVENTH_CLASS_GRANT_REOPENED=false
+DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=false
+LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
+FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+LIVE_RESTART_RECONSTRUCTED=false
+DURABLE_PRE_RESTART_HANDOFF_PRESENT=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+Cap-7.2 and Hardening-v2 `_update_session_state_from_replay` set
+`state.direction_state` via `_side_state_to_entry_exit_direction(state.side_state)`.
+Same-cycle Entry/Exit remains Replay-remapped and is not a second mapping
+table. Session PENDING cursors change from departing `*_ACTIVE` to opposite
+`*_ARMED` because the existing owner is consumed. Generator
+(`scope_direction_from_side_state_v1`) and trailing (`derive_active_side`)
+remain separate consumer domains. No new Economic-Guard class. Seventh-class
+grant remains closed.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/
+SPEC_OWNER=docs/ops/specs/DIRECTIONAL_MAPPING_CONTRACT_REPAIR_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.H.SIDESTATE_PENDING_ENTRY_EXIT_MAPPING_SINGLE_OWNER_MINIMUM_ATOMIC_REPAIR_V1
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
