@@ -134,6 +134,10 @@ class FreshPretradeGetItemEvidenceV1:
     historical_reuse: bool
     transport_class: str
     venue_live_contact: bool
+    observed_account_uids: Tuple[str, ...] = ()
+    observed_inst_ids: Tuple[str, ...] = ()
+    observed_td_modes: Tuple[str, ...] = ()
+    identity_fields_malformed: bool = False
 
 
 @dataclass(frozen=True)
@@ -159,10 +163,52 @@ def _endpoint_path_only(endpoint: str) -> str:
     return str(endpoint or "").strip().split("?", 1)[0]
 
 
-def _contains_fixture_or_historical_marker(value: str) -> bool:
+def contains_fixture_or_historical_marker_v1(value: str) -> bool:
     text = str(value or "")
     folded = text.upper()
     return any(marker in folded for marker in _HISTORICAL_OR_FIXTURE_MARKERS)
+
+
+_contains_fixture_or_historical_marker = contains_fixture_or_historical_marker_v1
+
+
+def extract_identity_fields_from_payload_v1(
+    payload: Any,
+) -> tuple[Tuple[str, ...], Tuple[str, ...], Tuple[str, ...], bool]:
+    """Extract typed identity fields. Non-string values are malformed, not truthy."""
+    uids: list[str] = []
+    inst_ids: list[str] = []
+    td_modes: list[str] = []
+    malformed = False
+    if not isinstance(payload, Mapping):
+        return (), (), (), False
+    data = payload.get("data")
+    if not isinstance(data, list):
+        return (), (), (), False
+    for row in data:
+        if not isinstance(row, Mapping):
+            continue
+        if "uid" in row:
+            uid = row.get("uid")
+            if not isinstance(uid, str) or uid == "" or uid != uid.strip():
+                malformed = True
+            else:
+                uids.append(uid)
+        if "instId" in row:
+            inst = row.get("instId")
+            if not isinstance(inst, str) or inst == "" or inst != inst.strip():
+                malformed = True
+            else:
+                inst_ids.append(inst)
+        for key in ("tdMode", "mgnMode"):
+            if key not in row:
+                continue
+            mode = row.get(key)
+            if not isinstance(mode, str) or mode == "" or mode != mode.strip():
+                malformed = True
+            else:
+                td_modes.append(mode)
+    return tuple(uids), tuple(inst_ids), tuple(td_modes), malformed
 
 
 def build_required_get_endpoint_v1(
@@ -414,6 +460,10 @@ def collect_fresh_pretrade_runtime_get_v1(
             reasons = reasons + (f"{spec.item_id}_DUPLICATE_AMBIGUOUS_PAYLOAD",)
         else:
             seen_payload_by_group[spec.fetch_group] = body_key
+        payload = result.payload if result is not None else None
+        uids, inst_ids, td_modes, identity_malformed = extract_identity_fields_from_payload_v1(
+            payload
+        )
         items.append(
             FreshPretradeGetItemEvidenceV1(
                 item_id=spec.item_id,
@@ -428,6 +478,10 @@ def collect_fresh_pretrade_runtime_get_v1(
                 historical_reuse=bool(result.historical_reuse) if result is not None else False,
                 transport_class=str(result.transport_class or "") if result is not None else "",
                 venue_live_contact=bool(result.venue_live_contact) if result is not None else False,
+                observed_account_uids=uids,
+                observed_inst_ids=inst_ids,
+                observed_td_modes=td_modes,
+                identity_fields_malformed=identity_malformed,
             )
         )
 
@@ -496,17 +550,20 @@ def join_fresh_pretrade_runtime_get_into_admission_inputs_v1(
     td_mode: str = "",
     limit_px: str = "",
     inst_type: str = "FUTURES",
+    precomputed_evidence: FreshPretradeRuntimeGetEvidenceV1 | None = None,
 ) -> ExecutionAdmissionInputsV1:
     live_context = admission_context == ADMISSION_CONTEXT_LIVE
-    evidence = collect_fresh_pretrade_runtime_get_v1(
-        pretrade_decision_id=pretrade_decision_id or plan_identity,
-        instrument_id=instrument_id,
-        td_mode=td_mode,
-        limit_px=limit_px,
-        inst_type=inst_type,
-        transport=transport,
-        require_collection=live_context,
-    )
+    evidence = precomputed_evidence
+    if evidence is None:
+        evidence = collect_fresh_pretrade_runtime_get_v1(
+            pretrade_decision_id=pretrade_decision_id or plan_identity,
+            instrument_id=instrument_id,
+            td_mode=td_mode,
+            limit_px=limit_px,
+            inst_type=inst_type,
+            transport=transport,
+            require_collection=live_context,
+        )
     if live_context:
         source_kind = evidence.pretrade_source_kind
         freshness = evidence.pretrade_freshness_status
@@ -553,5 +610,6 @@ def join_fresh_pretrade_runtime_get_into_admission_inputs_v1(
         owner_one_shot_permit_status=inputs.owner_one_shot_permit_status,
         admission_context=inputs.admission_context,
         fresh_pretrade_get_status=get_status,
+        live_account_bound_status=inputs.live_account_bound_status,
         provenance_refs=inputs.provenance_refs,
     )

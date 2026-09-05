@@ -16,9 +16,11 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY,
     CURRENT_LIVE_CORE_PATH_PROVEN,
     DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED,
+    FULL_CORE_OFFLINE_E2E_PROVEN,
     FULL_CORE_SYSTEM_E2E_PROVEN,
     FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED,
     FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH,
+    LIVE_ACCOUNT_BOUND_IMPLEMENTED,
     LIVE_ARMED,
     LIVE_ENABLED,
     OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED,
@@ -27,11 +29,9 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
 )
 
 GAP_DAG_VERSION = "v1"
-EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY = "LIVE_ACCOUNT_BOUND_IMPLEMENTED"
-MAX_SAFE_REPO_INTERNAL_NEXT_SLICE = (
-    "NO_FURTHER_REPO_INTERNAL_SLICE_WITHOUT_LIVE_ACCOUNT_BOUND_OWNER_GO"
-)
-FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE = True
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY = "LIVE_ENABLED"
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE = "NO_FURTHER_REPO_INTERNAL_SLICE_WITHOUT_LIVE_ENABLED_OWNER_GO"
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE = False
 NEXT_STEP_REQUIRES_OWNER_GO = True
 
 
@@ -130,17 +130,17 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
     _node(
         component_id="LIVE_ACCOUNT_BOUND",
         authority="capital_risk_sizing_v1/STEP_29P",
-        producer="TYPED_ONLY_OFFLINE_ALGEBRA_EMITTED",
-        contract="CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND",
+        producer="src.ops.full_core_live_path_composition_root_v1.live_account_bound_v1",
+        contract="LiveAccountBoundEvidenceV1",
         consumer="evaluate_execution_admission_v1",
-        implementation_status="TYPED_NOT_IMPLEMENTED",
-        test_status="OFFLINE_ALGEBRA_LIVE_ADMISSION_DENIED_PROVEN",
-        repo_internal_solvable=False,
-        fresh_external_evidence_required=True,
+        implementation_status="JOINED_TYPED_EVIDENCE_FAIL_CLOSED",
+        test_status="LIVE_ACCOUNT_BOUND_SEAM_PROVEN",
+        repo_internal_solvable=True,
+        fresh_external_evidence_required=False,
         productive_account_access_required=True,
         standing_live_gates_would_change=False,
         reusable_mechanism_only=False,
-        wiring_authorized=False,
+        wiring_authorized=True,
         layer=3,
         dependencies=("PRIVATE_AUTH_PREFLIGHT", "FRESH_GET_PER_PRETRADE_DECISION"),
     ),
@@ -406,6 +406,7 @@ def live_admission_gap_dag_v1() -> dict[str, Any]:
             "BOUND_THIS_PERSIST",
             "IMPLEMENTED_FAIL_CLOSED",
             "JOINED_TYPED_EVIDENCE_FAIL_CLOSED",
+            "PRIVATE_GET_AUTH_REQUIRED_FAIL_CLOSED",
         }
     )
     return {
@@ -427,6 +428,8 @@ def live_admission_gap_dag_v1() -> dict[str, Any]:
             OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED
         ),
         "FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED": FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED,
+        "LIVE_ACCOUNT_BOUND_IMPLEMENTED": LIVE_ACCOUNT_BOUND_IMPLEMENTED,
+        "FULL_CORE_OFFLINE_E2E_PROVEN": FULL_CORE_OFFLINE_E2E_PROVEN,
         "FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE": (
             FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE
         ),

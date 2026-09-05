@@ -4,6 +4,7 @@ Single intended join point: halt_at_live_execution_boundary_v1.
 Durable FILEGATE evidence is joined via durable_filegate_join_v1.
 OWNER_ONE_SHOT permit evidence is joined via owner_one_shot_permit_v1.
 Fresh pretrade GET evidence is joined via fresh_pretrade_runtime_get_v1.
+LIVE_ACCOUNT_BOUND evidence is joined via live_account_bound_v1.
 Does not construct LiveExecutionPort. Does not send wire.
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
@@ -73,6 +74,15 @@ class FreshPretradeGetStatusV1(str, Enum):
     NOT_REQUIRED_OFFLINE = "NOT_REQUIRED_OFFLINE"
 
 
+class LiveAccountBoundStatusV1(str, Enum):
+    TRUSTED_PRESENT = "TRUSTED_PRESENT"
+    MISSING = "MISSING"
+    MALFORMED = "MALFORMED"
+    MISMATCH = "MISMATCH"
+    CONTRADICTORY = "CONTRADICTORY"
+    STALE = "STALE"
+
+
 @dataclass(frozen=True)
 class ExecutionAdmissionInputsV1:
     """Caller must inject durable kill-switch and typed OWNER_ONE_SHOT evidence."""
@@ -93,6 +103,7 @@ class ExecutionAdmissionInputsV1:
     owner_one_shot_permit_status: str
     admission_context: str
     fresh_pretrade_get_status: str = FreshPretradeGetStatusV1.MISSING.value
+    live_account_bound_status: str = LiveAccountBoundStatusV1.MISSING.value
     provenance_refs: Tuple[str, ...] = ()
     runtime_authority_effect: str = RUNTIME_AUTHORITY_EFFECT_NONE
 
@@ -217,6 +228,29 @@ def evaluate_execution_admission_v1(
         reasons.append("PRETRADE_NOT_ADMISSIBLE")
 
     mode = str(inputs.capital_risk_mode or "").strip()
+    bound_status = str(inputs.live_account_bound_status or "").strip()
+    bound_trusted = bound_status == LiveAccountBoundStatusV1.TRUSTED_PRESENT.value
+    if bound_status == LiveAccountBoundStatusV1.MALFORMED.value:
+        reasons.append("LIVE_ACCOUNT_BOUND_MALFORMED")
+        reasons.append("CAPITAL_RISK_MODE_NOT_LIVE_ACCOUNT_BOUND")
+    elif bound_status == LiveAccountBoundStatusV1.MISMATCH.value:
+        reasons.append("LIVE_ACCOUNT_BOUND_MISMATCH")
+        reasons.append("CAPITAL_RISK_MODE_NOT_LIVE_ACCOUNT_BOUND")
+    elif bound_status == LiveAccountBoundStatusV1.CONTRADICTORY.value:
+        reasons.append("LIVE_ACCOUNT_BOUND_CONTRADICTORY")
+        reasons.append("CAPITAL_RISK_MODE_NOT_LIVE_ACCOUNT_BOUND")
+    elif bound_status == LiveAccountBoundStatusV1.STALE.value:
+        reasons.append("LIVE_ACCOUNT_BOUND_STALE")
+        reasons.append("LIVE_ACCOUNT_BOUND_FIXTURE_REPLAY_NOT_PRODUCTIVE")
+        reasons.append("CAPITAL_RISK_MODE_NOT_LIVE_ACCOUNT_BOUND")
+    elif bound_status != LiveAccountBoundStatusV1.TRUSTED_PRESENT.value:
+        reasons.append("LIVE_ACCOUNT_BOUND_MISSING")
+        reasons.append("CAPITAL_RISK_MODE_NOT_LIVE_ACCOUNT_BOUND")
+    if bound_trusted is True and mode != CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND:
+        reasons.append("LIVE_ACCOUNT_BOUND_CONTRADICTORY")
+    if bound_trusted is not True and mode == CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND:
+        reasons.append("LIVE_ACCOUNT_BOUND_CONTRADICTORY")
+        reasons.append("LIVE_ACCOUNT_BOUND_STRING_PASSTHROUGH_NOT_AUTHORITY")
     if mode != CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND:
         reasons.append("CAPITAL_RISK_MODE_NOT_LIVE_ACCOUNT_BOUND")
     if mode == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA:
@@ -226,6 +260,8 @@ def evaluate_execution_admission_v1(
         if freshness != PretradeFreshnessStatusV1.LIVE_FRESH.value:
             reasons.append("FROZEN_PRETRADE_LIVE_ADMISSION_DENIED")
         if mode != CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND:
+            reasons.append("OFFLINE_ALGEBRA_LIVE_ADMISSION_DENIED")
+        if bound_trusted is not True:
             reasons.append("OFFLINE_ALGEBRA_LIVE_ADMISSION_DENIED")
         if source_kind != PRETRADE_SOURCE_FRESH_GET:
             reasons.append("LIVE_ADMISSION_REQUIRES_FRESH_GET_PRETRADE")
@@ -281,5 +317,6 @@ def default_untrusted_filegate_inputs_v1(
         owner_one_shot_permit_status=owner_one_shot_permit_status,
         admission_context=admission_context,
         fresh_pretrade_get_status=fresh_pretrade_get_status,
+        live_account_bound_status=LiveAccountBoundStatusV1.MISSING.value,
         provenance_refs=provenance_refs + (OFFLINE_BOUNDARY_ROLE,),
     )

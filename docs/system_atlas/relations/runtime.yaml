@@ -744,6 +744,32 @@ relations:
       Live. Does not POST. Does not override FILEGATE or permit.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_full_core_path_calls_live_account_bound
+    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    type: CALLS
+    target: GATE:full_core_live_account_bound_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+    notes: >-
+      Halt joins typed LIVE_ACCOUNT_BOUND evidence. Does not admit
+      Live. Does not POST. Does not override FILEGATE, permit, or GET.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_full_core_live_account_bound_composes_fresh_get
+    source: GATE:full_core_live_account_bound_v1
+    type: CONSUMES
+    target: GATE:full_core_fresh_pretrade_runtime_get_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
+    notes: >-
+      LIVE_ACCOUNT_BOUND seam consumes Fresh GET identity extracts.
+      Bound cannot override GET, permit, or FILEGATE. Atlas is not
+      trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_fresh_pretrade_get_composes_permit
     source: GATE:full_core_fresh_pretrade_runtime_get_v1
     type: CONSUMES
