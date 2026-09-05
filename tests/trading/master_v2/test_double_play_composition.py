@@ -15,6 +15,7 @@ from trading.master_v2.double_play_capital_slot import (
 from trading.master_v2.double_play_composition import (
     DOUBLE_PLAY_COMPOSITION_LAYER_VERSION,
     DoublePlayCompositionBlockReason,
+    DoublePlayCompositionDecision,
     DoublePlayCompositionInput,
     DoublePlayCompositionStatus,
     RequestedSide,
@@ -593,3 +594,36 @@ def test_live_flag_on_subdecision_blocks() -> None:
     )
     assert d.status is DoublePlayCompositionStatus.BLOCKED
     assert DoublePlayCompositionBlockReason.LIVE_NOT_AUTHORIZED in d.block_reasons
+
+
+# ---------------------------------------------------------------------------
+# CHAR-1 PRE_SPLIT_CHARACTERIZATION — composition IST: no new activation
+# CURRENT_BEHAVIOR=NO_NEW_STRATEGY_ACTIVATION
+# ADJUDICATED_TARGET_BEHAVIOR=NO_NEW_STRATEGY_ACTIVATION (equals current)
+# ---------------------------------------------------------------------------
+
+
+def test_char1_pre_split_characterization_kill_all_blocks_new_activation_not_flatten() -> None:
+    """CHAR-1: KILL_ALL composition status is no-new-activation, not cancel/flatten."""
+    for req in (RequestedSide.LONG_BULL, RequestedSide.SHORT_BEAR, RequestedSide.NEUTRAL_OBSERVE):
+        d = _compose(
+            transition=TransitionDecision(True, "KILL_ALL", False),
+            state=SideState.KILL_ALL,
+            surv=_surv_ok(),
+            suit=_suit(
+                sclass=SuitabilityClass.BOTH_SIDES_CANDIDATE,
+                can_long=True,
+                can_short=True,
+                can_neutral=True,
+                side_c=SideCompatibility.BOTH,
+            ),
+            req=req,
+        )
+        assert d.status is DoublePlayCompositionStatus.KILL_ALL
+        assert DoublePlayCompositionBlockReason.STATE_KILL_ALL in d.block_reasons
+        assert d.reason == "State is KILL_ALL; no new activation."
+        assert d.live_authorization is False
+        assert d.status is not DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
+    names = {f.name for f in DoublePlayCompositionDecision.__dataclass_fields__.values()}
+    for forbidden in ("cancel", "flatten", "kill_switch", "integrity"):
+        assert all(forbidden not in n for n in names)

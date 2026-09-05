@@ -194,3 +194,45 @@ def test_kill_switch_should_block_trading_env_fallback_strict_literal_one(
     else:
         monkeypatch.setenv("PEAK_KILL_SWITCH", peak_kill_switch)
     assert kill_switch_should_block_trading(explicit_active=False) is expect_block
+
+
+def test_char4_pre_split_characterization_missing_state_file_fail_open(
+    monkeypatch: pytest.MonkeyPatch, tmp_path
+) -> None:
+    """CHAR-4: CURRENT_BEHAVIOR=MISSING_STATE_CAN_FAIL_OPEN. TARGET=RESTORE_OR_FAIL_CLOSED_BLOCK.
+
+    Missing file returns None from the file reader and, without PEAK_KILL_SWITCH=1,
+    kill_switch_should_block_trading is currently False (not BLOCKED).
+    """
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(tmp_path / "absent.json"))
+    monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
+    assert resolve_kill_switch_limit_from_state_file(str(tmp_path / "absent.json")) is None
+    assert kill_switch_should_block_trading(explicit_active=False) is False
+
+
+def test_char4_pre_split_characterization_malformed_state_file_same_as_missing(
+    monkeypatch: pytest.MonkeyPatch, tmp_path
+) -> None:
+    """CHAR-4: unreadable/malformed JSON currently also returns None (env fallback)."""
+    path = tmp_path / "bad.json"
+    path.write_text("{not json", encoding="utf-8")
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(path))
+    monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
+    assert resolve_kill_switch_limit_from_state_file(str(path)) is None
+    assert kill_switch_should_block_trading(explicit_active=False) is False
+
+
+def test_char5_pre_split_characterization_kill_reader_blocks_entry_and_reduce() -> None:
+    """CHAR-5: CURRENT_ENTRY_BEHAVIOR=BLOCKED; CURRENT_EXIT_BEHAVIOR=BLOCKED.
+
+    evaluate_risk does not distinguish new-risk vs risk-reducing when kill_switch=True.
+    TARGET_EXIT_BEHAVIOR=ALLOW_RISK_REDUCTION is not current.
+    """
+    limits = RiskLimits(kill_switch=True)
+    entry = evaluate_risk(limits, base_ctx(current_position=0.0, order_size=1.0))
+    reduce_exit = evaluate_risk(limits, base_ctx(current_position=5.0, order_size=-1.0))
+    assert entry.allow is False
+    assert entry.reason == RiskDenyReason.KILL_SWITCH
+    assert reduce_exit.allow is False
+    assert reduce_exit.reason == RiskDenyReason.KILL_SWITCH
+    assert entry.reason == reduce_exit.reason

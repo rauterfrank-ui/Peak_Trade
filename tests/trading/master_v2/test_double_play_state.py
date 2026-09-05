@@ -294,3 +294,78 @@ def test_invalid_rules_fails():
         now_tick=0,
     )
     assert not d.allowed
+
+
+# ---------------------------------------------------------------------------
+# CHAR-1 PRE_SPLIT_CHARACTERIZATION — Double Play SideState.KILL_ALL IST
+# CURRENT_BEHAVIOR=NO_NEW_STRATEGY_ACTIVATION (terminal/absorbing)
+# ADJUDICATED_TARGET_BEHAVIOR=NO_NEW_STRATEGY_ACTIVATION (equals current)
+# ---------------------------------------------------------------------------
+
+
+_CHAR1_SOURCE_PATH = (
+    Path(__file__).resolve().parent.parent.parent.parent
+    / "src"
+    / "trading"
+    / "master_v2"
+    / "double_play_state.py"
+)
+
+
+@pytest.mark.parametrize("from_state", list(SideState))
+def test_char1_pre_split_characterization_kill_all_required_enters_kill_all(
+    from_state: SideState,
+) -> None:
+    """CHAR-1: KILL_ALL_REQUIRED from any SideState yields SideState.KILL_ALL."""
+    side, _, decision = _t(from_state, ScopeEvent.KILL_ALL_REQUIRED, EMPTY_ST, 0)
+    assert side is SideState.KILL_ALL
+    assert decision.live_authorization_granted is False
+    if from_state is SideState.KILL_ALL:
+        assert decision.allowed
+        assert decision.reason_code == "ALREADY_KILL_ALL"
+    else:
+        assert decision.allowed
+        assert decision.reason_code == "KILL_ALL"
+
+
+@pytest.mark.parametrize("event", list(ScopeEvent))
+def test_char1_pre_split_characterization_kill_all_is_absorbing(
+    event: ScopeEvent,
+) -> None:
+    """CHAR-1: KILL_ALL is absorbing; no later event leaves the state."""
+    side, _, decision = _t(SideState.KILL_ALL, event, EMPTY_ST, 1)
+    assert side is SideState.KILL_ALL
+    if event is ScopeEvent.KILL_ALL_REQUIRED:
+        assert decision.allowed
+        assert decision.reason_code == "ALREADY_KILL_ALL"
+    else:
+        assert not decision.allowed
+        assert decision.reason_code == "IN_KILL_ALL"
+
+
+def test_char1_pre_split_characterization_kill_all_has_no_cancel_flatten_or_ks_trip() -> None:
+    """CHAR-1: transition_state is pure; no cancel-all, flatten, or KS-A/KS-B write."""
+    source = _CHAR1_SOURCE_PATH.read_text(encoding="utf-8")
+    lowered = source.lower()
+    for token in (
+        "cancel_all",
+        "cancel all",
+        "flatten",
+        "kill_switch",
+        "killswitch",
+        "ks_a",
+        "ks_b",
+        "integrity_state",
+        "json.dump",
+        "path.open",
+        "write_text",
+    ):
+        assert token not in lowered, token
+    tree = ast.parse(source)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+            assert node.func.id not in {"open", "write"}
+    side, scope, decision = _t(SideState.LONG_ACTIVE, ScopeEvent.KILL_ALL_REQUIRED, EMPTY_ST, 0)
+    assert side is SideState.KILL_ALL
+    assert decision.live_authorization_granted is False
+    assert set(scope.__dataclass_fields__) == set(EMPTY_ST.__dataclass_fields__)
