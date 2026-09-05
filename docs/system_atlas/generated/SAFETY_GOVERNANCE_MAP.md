@@ -18,6 +18,7 @@
 | GATE:btc_exclusion | GATE | True | CURRENT_CANONICAL |
 | GATE:flatten_execute_authority | GATE | True | CURRENT_NONCANONICAL |
 | GATE:flatten_live_wire | GATE | True | CURRENT_NONCANONICAL |
+| GATE:full_core_durable_filegate_join_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:full_core_live_path_execution_boundary_halt_before_wire_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:full_core_live_path_frozen_pretrade_conjunction_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:full_core_live_path_identity_v1 | GATE | True | CURRENT_NONCANONICAL |
@@ -42,7 +43,7 @@
 ### CHAIN:full_core_live_path_halt_before_wire
 
 - epistemic: `STATUS=FORENSIC_RAW`
-- chain: `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1 -> RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1 -> GATE:full_core_live_path_frozen_pretrade_conjunction_v1 -> GATE:full_core_live_path_execution_boundary_halt_before_wire_v1 -> GATE:full_core_live_path_standing_live_gates_v1 -> GATE:full_core_live_path_identity_v1 -> GATE:live_authorized_false`
+- chain: `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1 -> RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1 -> GATE:full_core_live_path_frozen_pretrade_conjunction_v1 -> GATE:full_core_live_path_execution_boundary_halt_before_wire_v1 -> GATE:full_core_durable_filegate_join_v1 -> GATE:full_core_live_path_standing_live_gates_v1 -> GATE:full_core_live_path_identity_v1 -> GATE:live_authorized_false`
 - missing: `(none recorded)`
 - evidence: `src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py`
 

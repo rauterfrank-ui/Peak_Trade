@@ -7690,6 +7690,98 @@ CURRENT_CANONICAL_SECTION=11.2.1.I.FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GA
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+Durable FILEGATE runtime join remaining after §11.2.1.I is superseded by
+§11.2.1.J. Path identity, canary isolation, and standing Live flags remain as
+bound in §11.2.1.I. Historical §11.13.5 / §11.14 facts are not rewritten.
+
+### 11.2.1.J FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM (BOUND; OFFLINE JOIN ONLY; NO WIRE; NO ARMING; NO GET)
+
+Additive persist. Does **not** rewrite §11.2.1 standing Live flags, §11.13.5
+canary facts, or §11.14 ladder fields. Does **not** GET. Does **not** POST.
+Does **not** construct `LiveExecutionPort`. Does **not** arm Live. Does **not**
+treat `PEAK_KILL_SWITCH` as durable FILEGATE evidence. Does **not** join FILEGATE
+into Integrated Replay. Does **not** make `evaluate_execution_admission_v1`
+admit Live. Does **not** transfer §11.14 evidence to `FULL_CORE_SYSTEM_E2E`.
+
+Owner-GO
+`OWNER_GO=OWNER_GO_FOR_FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_WITHOUT_LIVE_ARMING_OR_GET`
+(one-shot for this persist) joins the already durable FILEGATE authority into
+the Full-Core execution-admission seam as typed evidence.
+
+``` text
+OWNER_GO=OWNER_GO_FOR_FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_WITHOUT_LIVE_ARMING_OR_GET
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_SSOT_PERSIST
+THIS_SLICE=11.2.1.J.FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM
+CURRENT_PHASE=11.2.1.J.FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM
+FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH
+PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY=SECTION_11_2_1
+CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY=false
+FULL_CORE_SYSTEM_E2E_PROVEN=false
+CURRENT_LIVE_CORE_PATH_PROVEN=false
+STANDING_LIVE_AUTHORIZATION=false
+DURABLE_FILEGATE_AUTHORITY=kill_switch_should_block_trading+KillSwitchState+StatePersistence
+DURABLE_FILEGATE_PRODUCER=StatePersistence+operator_CLI_trigger
+DURABLE_FILEGATE_READER=kill_switch_should_block_trading
+DURABLE_FILEGATE_JOIN_SEAM=join_durable_filegate_into_admission_inputs_v1
+DURABLE_FILEGATE_CONSUMER=evaluate_execution_admission_v1
+DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=true
+AUTHORITY_COUNT=1
+PARALLEL_PRODUCTIVE_PATH_ADDED=false
+PEAK_KILL_SWITCH_IS_DURABLE_EVIDENCE=false
+MISSING_FILEGATE_FAILS_CLOSED=true
+MALFORMED_FILEGATE_FAILS_CLOSED=true
+CONTRADICTORY_FILEGATE_FAILS_CLOSED=true
+FILEGATE_FRESHNESS_NOT_IN_EXISTING_CONTRACT=true
+TRUSTED_FILEGATE_DOES_NOT_ADMIT_LIVE=true
+LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
+FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED=false
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_WITHOUT_LIVE_ARMING_OR_GET
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
+NEXT_STEP_REQUIRES_OWNER_GO=true
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+LIVE_AUTHORIZED=false
+GET_PERFORMED=false
+POST_PERFORMED=false
+WIRE_SEND_OCCURRED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+A. Join seam. Full-Core halt previously injected `UNKNOWN_BLOCKED` instead of
+reading durable KillSwitchState. The join reads the same persist path as
+`canonical_kill_switch_state_path` / `resolve_kill_switch_limit_from_state_file`
+and maps it to `DurableKillSwitchEvidenceStatusV1` for
+`evaluate_execution_admission_v1`. There is still exactly one FILEGATE
+authority. Integrated Replay remains unjoined.
+
+B. Fail-closed mapping. Missing file => `MISSING`. Unreadable or invalid enum =>
+`UNKNOWN_BLOCKED`. Contradictory payload (`state` vs `status` / `kill_switch`)
+=> `CONTRADICTORY_BLOCKED`. Valid `ACTIVE` / `DISABLED` => `TRUSTED_PRESENT`
+with `blocked=false`. Valid `KILLED` / `RECOVERING` => `TRUSTED_PRESENT` with
+`blocked=true`. `PEAK_KILL_SWITCH=1` remains an operator deny overlay and is not
+durable evidence. `saved_at` age is not a FILEGATE freshness contract.
+
+C. Standing gates unchanged. Trusted FILEGATE evidence does not admit Live.
+`evaluate_execution_admission_v1` remains fail-closed `admitted=false`.
+LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED remain false. Fresh GET,
+LIVE_ACCOUNT_BOUND live values, typed owner one-shot Live permit, and
+LiveExecutionPort remain later layers.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.J.FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

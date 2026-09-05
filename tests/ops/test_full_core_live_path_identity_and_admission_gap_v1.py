@@ -75,7 +75,7 @@ REQUIRED_GAP_COMPONENTS = (
 
 def _section_11_2_1_i(text: str) -> str:
     start = text.index("11.2.1.I FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP")
-    return text[start : text.index("## 11.3 Autonomy state model", start)]
+    return text[start : text.index("11.2.1.J FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM", start)]
 
 
 def test_standing_identity_and_gates_remain_fail_closed() -> None:
@@ -140,17 +140,22 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
     for component in REQUIRED_GAP_COMPONENTS:
         assert component in present
         node = gap_node_v1(component)
-        assert node.wiring_authorized is False
+        if component == "DURABLE_FILEGATE_RUNTIME_JOIN":
+            assert node.wiring_authorized is True
+        else:
+            assert node.wiring_authorized is False
     filegate = gap_node_v1("DURABLE_FILEGATE_RUNTIME_JOIN")
     assert filegate.repo_internal_solvable is True
     assert filegate.fresh_external_evidence_required is False
     assert filegate.productive_account_access_required is False
     assert filegate.standing_live_gates_would_change is False
-    assert filegate.implementation_status == "NOT_JOINED_UNKNOWN_BLOCKED"
+    assert filegate.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
     assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (
         EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY
     )
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == ("DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED")
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
+        "OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT"
+    )
     assert dag["MAX_SAFE_REPO_INTERNAL_NEXT_SLICE"] == MAX_SAFE_REPO_INTERNAL_NEXT_SLICE
     assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is False
     assert dag["CANARY_29Q_CONSUMER_WIRING_AUTHORIZED"] is False

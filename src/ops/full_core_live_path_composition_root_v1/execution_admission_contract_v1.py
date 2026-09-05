@@ -1,7 +1,7 @@
 """Typed Full-Core Execution Admission contract.
 
 Single intended join point: halt_at_live_execution_boundary_v1.
-Does not read durable FILEGATE StatePersistence.
+Durable FILEGATE evidence is joined via durable_filegate_join_v1.
 Does not construct LiveExecutionPort. Does not send wire.
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
@@ -48,6 +48,7 @@ class DurableKillSwitchEvidenceStatusV1(str, Enum):
     TRUSTED_PRESENT = "TRUSTED_PRESENT"
     UNKNOWN_BLOCKED = "UNKNOWN_BLOCKED"
     MISSING = "MISSING"
+    CONTRADICTORY = "CONTRADICTORY_BLOCKED"
 
 
 @dataclass(frozen=True)
@@ -109,7 +110,11 @@ def evaluate_execution_admission_v1(
         reasons.append("STANDING_OR_INPUT_WIRE_SEND_PERMITTED")
 
     ks_status = str(inputs.durable_kill_switch_evidence_status or "").strip()
-    if ks_status in {
+    if ks_status == DurableKillSwitchEvidenceStatusV1.CONTRADICTORY.value:
+        reasons.append("DURABLE_FILEGATE_CONTRADICTORY")
+        reasons.append("DURABLE_FILEGATE_EVIDENCE_MISSING")
+        reasons.append("DURABLE_FILEGATE_UNKNOWN_BLOCKED")
+    elif ks_status in {
         DurableKillSwitchEvidenceStatusV1.UNKNOWN_BLOCKED.value,
         DurableKillSwitchEvidenceStatusV1.MISSING.value,
         "",
@@ -180,7 +185,7 @@ def default_untrusted_filegate_inputs_v1(
     admission_context: str,
     provenance_refs: Tuple[str, ...] = (),
 ) -> ExecutionAdmissionInputsV1:
-    """Current Full-Core caller: FILEGATE evidence is not read; inject UNKNOWN_BLOCKED."""
+    """Explicit untrusted injector. Production halt uses durable_filegate_join_v1."""
     return ExecutionAdmissionInputsV1(
         plan_identity=plan_identity,
         venue_plan_identity=venue_plan_identity,

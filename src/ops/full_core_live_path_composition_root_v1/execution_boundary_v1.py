@@ -1,8 +1,9 @@
 """Offline Live execution boundary: always HARD STOP BEFORE WIRE.
 
 Consumes typed ExecutionAdmissionDecisionV1 at this sole Full-Core join point.
+Joins durable FILEGATE evidence via durable_filegate_join_v1.
 Does not construct Cap 11.1 LiveExecutionPort. Does not invoke canary HTTP.
-Does not read durable FILEGATE StatePersistence.
+Does not arm Live. Does not send wire.
 """
 
 from __future__ import annotations
@@ -18,13 +19,15 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     MODE_LIVE,
     WIRE_SEND_PERMITTED,
 )
+from src.ops.full_core_live_path_composition_root_v1.durable_filegate_join_v1 import (
+    join_durable_filegate_into_admission_inputs_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
     ADMISSION_CONTEXT_LIVE,
     ADMISSION_CONTEXT_OFFLINE_FULL_CORE_PROOF,
     CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
     ExecutionAdmissionDecisionV1,
     ExecutionAdmissionInputsV1,
-    default_untrusted_filegate_inputs_v1,
     evaluate_execution_admission_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.models_v1 import (
@@ -90,7 +93,7 @@ def halt_at_live_execution_boundary_v1(
         )
     resolved_inputs = admission_inputs
     if resolved_inputs is None:
-        resolved_inputs = default_untrusted_filegate_inputs_v1(
+        resolved_inputs = join_durable_filegate_into_admission_inputs_v1(
             plan_identity=str(plan.clordid or plan.instrument_id or ""),
             venue_plan_identity=str(plan.clordid or ""),
             instrument_identity_ok=pretrade.instrument_binding_valid

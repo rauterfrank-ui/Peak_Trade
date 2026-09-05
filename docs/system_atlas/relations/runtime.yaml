@@ -705,3 +705,27 @@ relations:
       Productive Live-path identity is FULL_CORE_LIVE_PATH. Canary / §11.14
       remain evidence-domain only. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_full_core_path_calls_durable_filegate_join
+    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    type: CALLS
+    target: GATE:full_core_durable_filegate_join_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+    notes: >-
+      Halt joins durable FILEGATE as typed admission evidence. Does not
+      admit Live. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_full_core_filegate_join_reads_filegate
+    source: GATE:full_core_durable_filegate_join_v1
+    type: CONSUMES
+    target: GATE:kill_switch_durable_filegate_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
+      - src/ops/gates/risk_gate.py
+    notes: >-
+      Single FILEGATE authority. Join does not write StatePersistence.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.

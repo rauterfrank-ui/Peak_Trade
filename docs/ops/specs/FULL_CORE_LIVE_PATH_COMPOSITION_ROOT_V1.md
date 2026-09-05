@@ -78,7 +78,7 @@ ExecutionAdmissionDecisionV1 = sole Full-Core admission join at
 CURRENT_CAPITAL_RISK_MODE=OFFLINE_ALGEBRA
 LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
 FROZEN_OFFLINE_PRETRADE_EVIDENCE != FRESH_GET_PER_PRETRADE_DECISION
-DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=false
+DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=true
 POST_29Q_KS_ADJUDICATED_ROLE=POST_29Q_CONSUMPTION_GUARD
 LEGACY_STRING_HEURISTIC_STATUS=COMPATIBILITY_DEBT_RETAINED
 SIDESTATE_RESTORE_INVALID_VALUE_FAILS_CLOSED=true
@@ -87,7 +87,8 @@ SIDESTATE_RESTORE_INVALID_VALUE_FAILS_CLOSED=true
 Kill-switch layers remain distinct: `SideState.KILL_ALL` (strategy state);
 Replay Safety (pre-29Q decision admission); Replay KS typed fields
 (`POST_29Q_CONSUMPTION_GUARD`, not FILEGATE); durable FILEGATE (execution-side
-permission, not runtime-joined). Canary != Full-Core E2E.
+permission, joined into Full-Core admission as typed evidence; not Replay;
+does not admit Live). Canary != Full-Core E2E.
 Hardening-v2 != decision owner.
 
 ## Remaining gap
