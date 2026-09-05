@@ -55,20 +55,11 @@ src/risk_layer/kill_switch/
 ├── state.py              # State Machine
 ├── core.py               # KillSwitch Core
 ├── config.py             # Configuration
-│
-├── triggers/             # Trigger System
-│   ├── __init__.py       # TriggerRegistry
-│   ├── base.py           # BaseTrigger
-│   ├── threshold.py      # Threshold Triggers
-│   ├── manual.py         # Manual Triggers
-│   ├── watchdog.py       # Watchdog Triggers
-│   └── external.py       # External Triggers
-│
 ├── recovery.py           # RecoveryManager
 ├── health_check.py       # HealthChecker
 ├── persistence.py        # State Persistence
 ├── audit.py              # Audit Trail
-├── execution_gate.py     # Execution Gate
+├── execution_gate.py    # Execution Gate
 └── cli.py                # CLI Interface
 ```
 
@@ -100,41 +91,10 @@ Alle State-Transitions werden validiert. Ungültige Transitions werfen `StateTra
 
 ---
 
-## 🎯 Trigger-System
+## 🎯 Operator trigger (no auto-trip library)
 
-### Trigger-Typen
-
-#### 1. ThresholdTrigger
-
-Metric-basierte Trigger mit konfigurierbaren Schwellwerten.
-
-**Konfiguration:**
-```toml
-[kill_switch.triggers.drawdown]
-enabled = true
-type = "threshold"
-metric = "portfolio_drawdown"
-threshold = -0.15
-operator = "lt"  # less than
-cooldown_seconds = 0
-```
-
-**Operators:**
-- `lt`: less than
-- `le`: less or equal
-- `gt`: greater than
-- `ge`: greater or equal
-- `eq`: equal
-- `ne`: not equal
-
-**Beispiel-Metriken:**
-- `portfolio_drawdown`: Portfolio Drawdown
-- `daily_pnl`: Tages-PnL
-- `realized_volatility_1h`: Stündliche Volatilität
-
-#### 2. ManualTrigger
-
-Operator-initiierte Trigger via CLI/API.
+Auto-trip Threshold / Watchdog / External / `TriggerRegistry` / `ManualTrigger`
+Klasse wurden mit KS_THIN_01 entfernt. Produktiver Manual-Pfad:
 
 ```python
 from src.risk_layer.kill_switch import KillSwitch
@@ -143,53 +103,9 @@ ks = KillSwitch(config)
 ks.trigger("Manual stop for maintenance", triggered_by="manual_cli")
 ```
 
-#### 3. WatchdogTrigger
+CLI: `python3 -m src.risk_layer.kill_switch.cli trigger --reason "..." --confirm`
 
-System-Health-Monitoring.
-
-**Überwacht:**
-- Heartbeat (Prozess lebt)
-- Memory Usage
-- CPU Usage
-
-**Abhängigkeit:** `psutil` (optional, degrades gracefully)
-
-```bash
-pip install psutil
-```
-
-#### 4. ExternalTrigger
-
-Externe System-Zustände.
-
-**Überwacht:**
-- Exchange Connection Status
-- Price Feed Freshness
-- API Error Rate
-
-### TriggerRegistry
-
-Verwaltet alle Trigger und bietet unified check interface.
-
-```python
-from src.risk_layer.kill_switch.triggers import TriggerRegistry
-
-registry = TriggerRegistry.from_config(config)
-
-# Check all triggers
-context = {
-    "portfolio_drawdown": -0.12,
-    "daily_pnl": -0.03,
-    "exchange_connected": True,
-}
-
-results = registry.check_all(context)
-
-# Act on triggered conditions
-for result in results:
-    if result.should_trigger:
-        kill_switch.trigger(result.reason, triggered_by="threshold")
-```
+Kein produktiver Auto-Trip-Wiring-Pfad. `kill_switch_should_block_trading` bleibt der kanonische execution-side Reader.
 
 ---
 
@@ -388,10 +304,6 @@ recovery_cooldown_seconds = 300
 require_approval_code = true
 approval_code_env = "KILL_SWITCH_APPROVAL_CODE"
 
-[kill_switch.triggers.drawdown]
-enabled = true
-threshold = -0.15  # -15%
-
 [kill_switch.recovery]
 gradual_restart_enabled = true
 initial_position_limit_factor = 0.5
@@ -421,8 +333,8 @@ python3 -m pytest tests/risk_layer/kill_switch/ -v
 # Nur State Machine
 python3 -m pytest tests/risk_layer/kill_switch/test_state_machine.py -v
 
-# Nur Triggers
-python3 -m pytest tests/risk_layer/kill_switch/test_triggers.py -v
+# Durable FILEGATE / no auto-trip wiring
+python3 -m pytest tests/risk_layer/kill_switch/test_durable_execution_authority_v1.py tests/risk_layer/kill_switch/test_no_autotrip_wiring_v1.py -v
 
 # Mit Coverage
 python3 -m pytest tests/risk_layer/kill_switch/ --cov=src/risk_layer/kill_switch

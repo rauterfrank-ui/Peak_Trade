@@ -2,14 +2,15 @@
 
 **Version:** 1.0  
 **Datum:** 2025-12-28  
-**Status:** Library present; productive KS-A path is operator CLI + `StatePersistence` + `kill_switch_should_block_trading`
+**Status:** Productive KS-A path is operator CLI + `StatePersistence` + `kill_switch_should_block_trading`. Auto-trip trigger library removed (KS_THIN_01).
 
-> **Runtime (forensic):** Threshold / Watchdog / External triggers and
-> `TriggerRegistry` are **not** productively wired. Do not treat the Trigger
-> Layer diagram below as live runtime. Manual CLI `trigger` persists
-> `KillSwitchState` via `StatePersistence`. The canonical execution-side
-> block reader is `kill_switch_should_block_trading`. `PEAK_KILL_SWITCH=1`
-> is an operator deny overlay, not a second state machine.
+> **Runtime (forensic):** Auto-trip Threshold / Watchdog / External modules
+> and `TriggerRegistry` are **removed** from the current tree and are **not**
+> productively wired. Do not re-introduce unwired `enabled=true` auto-trip
+> config. Manual CLI `trigger` persists `KillSwitchState` via
+> `StatePersistence`. The canonical execution-side block reader is
+> `kill_switch_should_block_trading`. `PEAK_KILL_SWITCH=1` is an operator
+> deny overlay, not a second state machine.
 
 ---
 
@@ -19,7 +20,7 @@ Der Emergency Kill Switch ist **Layer 4** im Defense-in-Depth Risk Management Sy
 
 **D2 (2026-03):** Die frühere **`KillSwitchAdapter`**-Schicht ist entfernt; Integration nutzt **`KillSwitch`** direkt. Archiv: [`TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`](../../TODO_KILL_SWITCH_ADAPTER_MIGRATION.md).
 
-The mermaid Trigger Layer (Threshold / Watchdog / External / Registry) is a library inventory, not a productive auto-trip runtime.
+**KS_THIN_01:** Die unwired Auto-Trip-Library (`TriggerRegistry` / Threshold / Watchdog / External / ManualTrigger-Klasse) ist entfernt. Produktiver Manual-Pfad bleibt CLI `trigger`.
 
 ## 🏛️ Architektur-Diagramm
 
@@ -28,14 +29,6 @@ graph TB
     subgraph "Kill Switch System"
         Core[KillSwitch Core<br/>State Machine]
         State[State Management<br/>Thread-safe RLock]
-
-        subgraph "Trigger Layer"
-            T1[Threshold Trigger<br/>Drawdown/Loss/Vol]
-            T2[Manual Trigger<br/>CLI/API]
-            T3[Watchdog Trigger<br/>System Health]
-            T4[External Trigger<br/>Exchange/Network]
-            TRegistry[TriggerRegistry]
-        end
 
         subgraph "Recovery Layer"
             RecoveryMgr[RecoveryManager]
@@ -47,12 +40,6 @@ graph TB
             StatePersist[StatePersistence<br/>Atomic Writes]
             AuditTrail[AuditTrail<br/>Append-only JSONL]
         end
-
-        TRegistry --> Core
-        T1 --> TRegistry
-        T2 --> TRegistry
-        T3 --> TRegistry
-        T4 --> TRegistry
 
         Core --> State
         Core --> RecoveryMgr
@@ -82,23 +69,10 @@ src/risk_layer/kill_switch/
 ├── state.py                 # State Machine & Events
 ├── core.py                  # KillSwitch Hauptklasse
 ├── config.py                # Config Schema & Defaults
-│
-├── triggers/
-│   ├── __init__.py          # Trigger Registry
-│   ├── base.py              # BaseTrigger ABC
-│   ├── threshold.py         # Threshold-basierte Trigger
-│   ├── manual.py            # Manuelle Trigger
-│   ├── watchdog.py          # System Watchdog
-│   └── external.py          # Externe Trigger
-│
 ├── recovery.py              # RecoveryManager
 ├── health_check.py          # HealthChecker
-├── gradual_restart.py       # Gradual Restart Logic
-│
 ├── persistence.py           # State Persistence
 ├── audit.py                 # Audit Trail
-│
-├── integration.py           # Risk Layer Integration
 ├── execution_gate.py        # Execution Gate Contract
 └── cli.py                   # CLI Commands
 ```
@@ -160,30 +134,6 @@ class ExecutionGate(Protocol):
         ...
 ```
 
-### Trigger Contract
-
-```python
-class BaseTrigger(ABC):
-    """
-    Abstract Base für alle Trigger.
-
-    Jeder Trigger implementiert check() Methode.
-    """
-
-    @abstractmethod
-    def check(self, context: dict) -> TriggerResult:
-        """
-        Prüft Trigger-Condition.
-
-        Args:
-            context: System-Kontext (Metriken, State)
-
-        Returns:
-            TriggerResult mit Entscheidung
-        """
-        pass
-```
-
 ### Recovery Contract
 
 ```python
@@ -235,38 +185,6 @@ audit_retention_days = 90
 
 # Logging
 log_level = "INFO"
-
-[kill_switch.triggers.drawdown]
-enabled = true
-type = "threshold"
-metric = "portfolio_drawdown"
-threshold = -0.15  # -15%
-operator = "lt"
-cooldown_seconds = 0
-
-[kill_switch.triggers.daily_loss]
-enabled = true
-type = "threshold"
-metric = "daily_pnl"
-threshold = -0.05  # -5%
-operator = "lt"
-cooldown_seconds = 0
-
-[kill_switch.triggers.volatility_spike]
-enabled = true
-type = "threshold"
-metric = "realized_volatility_1h"
-threshold = 0.10  # 10%
-operator = "gt"
-cooldown_seconds = 3600  # 1h
-
-[kill_switch.triggers.system_health]
-enabled = true
-type = "watchdog"
-heartbeat_interval_seconds = 60
-max_missed_heartbeats = 3
-memory_threshold_percent = 90
-cpu_threshold_percent = 95
 
 [kill_switch.recovery]
 cooldown_seconds = 300
@@ -354,7 +272,7 @@ kill_switch_recovery_duration_seconds
 - **CRITICAL**: Trigger-Events
 - **WARNING**: Recovery-Requests
 - **INFO**: State-Transitions, Health Checks
-- **DEBUG**: Trigger-Checks (nicht ausgelöst)
+- **DEBUG**: State reads
 
 ### Alerts
 

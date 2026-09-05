@@ -7224,8 +7224,10 @@ contract persists `RECOVERING` then `ACTIVE`. `PEAK_KILL_SWITCH=1`
 remains an explicit operator deny overlay when no valid persisted
 non-blocking state is present; it is not a second kill-state machine.
 A configured or existing unreadable or semantically invalid state file
-must not fail-open. Threshold, watchdog, and external trigger modules
-are library-only and are not productively wired.
+must not fail-open. Threshold, watchdog, and external auto-trip modules
+are not productively wired. KS_THIN_01 removed that unwired library;
+operator CLI `trigger` remains the productive manual path. This does not
+authorize re-wiring auto-trip.
 
 ## 11.10 Process, host and dependency resilience
 

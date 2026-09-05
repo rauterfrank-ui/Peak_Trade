@@ -3753,8 +3753,9 @@ entities:
       Inventory of the execution-side durable kill. Canonical block reader is
       kill_switch_should_block_trading. Operator CLI trigger/recover persist
       KillSwitchState via StatePersistence. PEAK_KILL_SWITCH=1 is an operator
-      deny overlay, not a second state machine. Threshold/Watchdog/External
-      triggers are not productively wired. Does not split killswitch_blocked.
+      deny overlay, not a second state machine. Auto-trip Threshold/Watchdog/
+      External trigger library was removed (KS_THIN_01); not re-wired. Does
+      not split killswitch_blocked.
       Does not authorize Live flatten. Does not set LIVE_RESTART_RECONSTRUCTED.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
