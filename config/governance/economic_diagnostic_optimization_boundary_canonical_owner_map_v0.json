@@ -2047,7 +2047,7 @@
     "authorized_scope_class": "EXPLICIT_OWNER_ADJUDICATED_SIDESTATE_ARMED_IDENTITY_SPLIT_V1",
     "mutation_purpose_class": "SIDESTATE_ARMED_IDENTITY_SPLIT_REPAIR",
     "contract_path": "config/governance/explicit_owner_adjudicated_sidestate_armed_identity_split_authorization_v1.json",
-    "grant_active": true,
-    "note": "Exact-file evidence-digest-bound Owner-adjudicated SideState ARMED identity split so Neutral-Start and pipeline-terminal are distinct identities. Distinct from wiring, restoration, decommission, nonproductive contract change, the fifth mapping-bind class, and the sixth generator-fallback class. Does not reopen those grants. Does not waive MASTER_V2_MUTATION_ALLOWED=false. Not a PR or branch exception."
+    "grant_active": false,
+    "note": "Exact-file evidence-digest-bound Owner-adjudicated SideState ARMED identity split so Neutral-Start and pipeline-terminal are distinct identities. Distinct from wiring, restoration, decommission, nonproductive contract change, the fifth mapping-bind class, and the sixth generator-fallback class. Inactive after digest-bound slice closeout. Does not reopen those grants. Does not waive MASTER_V2_MUTATION_ALLOWED=false. Not a PR or branch exception."
   }
 }
