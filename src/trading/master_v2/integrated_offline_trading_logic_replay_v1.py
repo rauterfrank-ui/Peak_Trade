@@ -1515,10 +1515,8 @@ def run_integrated_offline_trading_logic_replay_v1(
         if runtime_scope_pre.anchor_price > 0
         else float(current_scope.trailing_anchor)
     )
-    effective_scope_direction = scope_direction_from_side_state_v1(
-        inp.side_state,
-        fallback=inp.scope_direction_state,
-    )
+    # ScopeDirectionState is a SideState projection, not a composition overlay.
+    effective_scope_direction = scope_direction_from_side_state_v1(inp.side_state)
 
     scope_event_inp = ScopeEventGeneratorInputV1(
         instrument_id=inp.instrument_id,

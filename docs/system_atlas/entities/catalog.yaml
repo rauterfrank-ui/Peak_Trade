@@ -2631,7 +2631,10 @@ entities:
       selected_side overlay is generator-inert on both Cap-7.2 and
       hardening-v2 overlay writers listed in source_paths and must not
       write scope_direction_state; both hosts project from SideState.
-      Atlas is not trading authority. AUTHORITY_OWNER=NONE.
+      The Master-V2 generator fallback inside
+      run_integrated_offline_trading_logic_replay_v1 is likewise
+      generator-inert and projects from SideState. Atlas is not trading
+      authority. AUTHORITY_OWNER=NONE.
       PRODUCTIVE_AI_AUTHORITY_COUNT=0. SECOND_TRADING_AUTHORITY=false.
 
   - id: RUNTIME_COMPONENT:recon_startup_gate_v1
@@ -3077,7 +3080,10 @@ entities:
       and not a second compute owner. Post-29Q KS projection is
       POST_29Q_CONSUMPTION_GUARD (consumption HOLD/DENY of an already produced
       ENTER plan); it does not rewrite decision_outcome and does not grant
-      submission/wire permission. Implementation is not activation.
+      submission/wire permission. Generator ScopeDirectionState is a SideState
+      projection via scope_direction_from_side_state_v1; composition
+      selected_side and inp.scope_direction_state are not generator-fallback
+      authority. Implementation is not activation.
 
   - id: RUNTIME_COMPONENT:mv2_parity_gap_assessment
     kind: RUNTIME_COMPONENT
@@ -3337,7 +3343,7 @@ entities:
     notes: Fail-closed / decommission token cleanup on existing contracts, including current-system Kraken remnant removal. No new live, testnet, or canary capability. Atlas is not trading authority.
 
   - id: GUARD:economic_diagnostic_optimization_boundary
-    # inventory: directional mapping slice grant closed; grant_active=false; class remains
+    # inventory: fifth mapping-bind grant closed; sixth generator-fallback class slice-bound
     kind: GUARD
     name: Economic diagnostic optimization boundary guard
     epistemic_class: FORENSIC_RAW
@@ -3350,6 +3356,7 @@ entities:
       - src/governance/semantics_neutral_decommission_authorization_v1.py
       - src/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.py
       - src/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.py
+      - src/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.py
     authority_sources:
       - docs/governance/ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_LOGIC_IMMUTABILITY_CONTRACT_V0.md
     evidence_sources:
@@ -3357,14 +3364,17 @@ entities:
       - src/governance/semantics_neutral_decommission_authorization_v1.py
       - src/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.py
       - src/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.py
+      - src/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.py
       - config/governance/semantics_neutral_decommission_authorization_v1.json
       - config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json
       - config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json
+      - config/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.json
       - docs/governance/ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_LOGIC_IMMUTABILITY_CONTRACT_V0.md
       - docs/ops/specs/SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1.md
       - docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE_AUTHORIZATION_V1.md
       - docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_AUTHORIZATION_V1.md
-    notes: Atlas inventory only. Not a trading authority. Default grants remain fail-closed unless an exact-file SHA-256 evidence digest over canonical unified diffs and the diff base SHA is bound. Same paths with a different diff cannot reuse a grant. Owner adjudication is necessary and not sufficient. The fifth admission class is a productive mapping-contract runtime bind; it does not waive MASTER_V2_MUTATION_ALLOWED=false. ATLAS_AUTHORITY=NONE.
+      - docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_SCOPE_DIRECTION_GENERATOR_FALLBACK_AUTHORIZATION_V1.md
+    notes: Atlas inventory only. Not a trading authority. Default grants remain fail-closed unless an exact-file SHA-256 evidence digest over canonical unified diffs and the diff base SHA is bound. Same paths with a different diff cannot reuse a grant. Owner adjudication is necessary and not sufficient. The fifth admission class remains a closed productive mapping-contract runtime bind. The sixth admission class is a slice-bound generator-fallback repair; it does not waive MASTER_V2_MUTATION_ALLOWED=false. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1
     kind: RUNTIME_COMPONENT
