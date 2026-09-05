@@ -90,7 +90,15 @@ def _load_auth() -> dict:
 
 
 def _inactive_grant() -> dict:
-    return copy.deepcopy(_load_auth())
+    auth = copy.deepcopy(_load_auth())
+    auth["grant_active"] = False
+    auth["allowed_paths"] = []
+    auth["required_runtime_paths"] = []
+    auth["allowed_surface_classes"] = []
+    auth["authorized_evidence_digest"] = ""
+    auth["bound_diff_base_sha"] = ""
+    auth["slice_grant_id"] = ""
+    return auth
 
 
 def _unified_diff(path: str, removed: list[str], added: list[str]) -> str:
@@ -173,8 +181,42 @@ def _sha_exists(sha: str) -> bool:
     return result.returncode == 0 and result.stdout.strip() == "commit"
 
 
-class TestMappingBindCommittedInactiveGrantV1:
-    def test_committed_artifact_is_valid_inactive_grant(self) -> None:
+COMMITTED_SLICE_GRANT_ID = "DIRECTIONAL_MAPPING_CONTRACT_RUNTIME_BIND_BOUNDED_SLICE_V1"
+COMMITTED_ALLOWED_PATHS = [
+    "docs/ops/specs/FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT_V0.md",
+    "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_KILL_ALL_STATE_SWITCH_FAVORABLE_ADVERSE_EXTREME_MOVES_ACCEPTANCE_V0.md",
+    "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md",
+    "src/trading/master_v2/double_play_state.py",
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+    "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
+    "tests/trading/master_v2/test_bull_bear_state_switch_scenario_replay_binding_parity_rewire_contract_v0.py",
+    "tests/trading/master_v2/test_canonical_dynamic_scope_trailing_state_continuity_v1.py",
+    "tests/trading/master_v2/test_chop_scope_event_policy_binding_contract_v1.py",
+    "tests/trading/master_v2/test_directional_mapping_runtime_bind_v1.py",
+    "tests/trading/master_v2/test_double_play_dashboard_display.py",
+    "tests/trading/master_v2/test_double_play_pure_stack_contract.py",
+    "tests/trading/master_v2/test_double_play_state.py",
+    "tests/trading/master_v2/test_offline_governance_tick_harness_v0.py",
+    "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py",
+]
+
+
+def _git_file_diffs(base: str, paths: list[str]) -> dict[str, str]:
+    diffs: dict[str, str] = {}
+    for path in paths:
+        result = subprocess.run(
+            ["git", "diff", "-U20", f"{base}...HEAD", "--", path],
+            cwd=REPO_ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        diffs[path] = result.stdout if result.returncode == 0 else ""
+    return diffs
+
+
+class TestMappingBindCommittedActiveGrantV1:
+    def test_committed_artifact_is_valid_active_digest_bound_grant(self) -> None:
         auth = load_mapping_bind_authorization(REPO_ROOT)
         assert auth is not None
         valid, reasons = validate_mapping_bind_authorization(auth, repo_root=REPO_ROOT)
@@ -184,18 +226,19 @@ class TestMappingBindCommittedInactiveGrantV1:
         assert auth["authorized_scope_class"] == MAPPING_BIND_SCOPE_CLASS
         assert auth["authorization_token"] == MAPPING_BIND_AUTHORIZATION_ID
         assert auth["mutation_purpose_class"] == MAPPING_BIND_MUTATION_PURPOSE
-        assert auth["grant_active"] is False
-        assert auth["allowed_paths"] == []
-        assert auth["required_runtime_paths"] == []
-        assert auth["authorized_evidence_digest"] == ""
-        assert auth["bound_diff_base_sha"] == ""
-        assert auth["slice_grant_id"] == ""
+        assert auth["grant_active"] is True
+        assert auth["allowed_paths"] == COMMITTED_ALLOWED_PATHS
+        assert auth["required_runtime_paths"] == list(REQUIRED_RUNTIME_PATHS)
+        assert auth["allowed_surface_classes"] == [MAPPING_BIND_SCOPE_CLASS]
+        assert auth["slice_grant_id"] == COMMITTED_SLICE_GRANT_ID
         assert auth["authorized_path_prefixes"] == []
         assert auth["pr_specific_exception"] is False
         assert auth["directory_grant"] is False
         assert auth["blanket_allowlist"] is False
         assert "pr_number" not in auth
         assert "branch_name" not in auth
+        assert "MASTER_V2_MUTATION_ALLOWED" not in auth
+        assert "CANONICAL_TRADING_LOGIC_MUTATION_ALLOWED" not in auth
         assert auth["evidence_digest_algorithm"] == EVIDENCE_DIGEST_ALGORITHM
         assert auth["evidence_digest_canonicalization"] == EVIDENCE_DIGEST_CANONICALIZATION
         assert auth["class_attestation"] == MAPPING_BIND_CLASS_ATTESTATION_RELATIVE
@@ -204,9 +247,53 @@ class TestMappingBindCommittedInactiveGrantV1:
         assert (REPO_ROOT / MAPPING_BIND_CONTRACT_SPEC).is_file()
         assert auth["required_semantic_invariants"]["TRADING_SEMANTICS_CHANGED"] is True
         assert auth["required_semantic_invariants"]["ENTRY_EXIT_RUNTIME_CHANGED"] is False
+        assert auth["required_semantic_invariants"]["BULL_BEAR_ASSESSMENT_RUNTIME_CHANGED"] is False
         assert (
             auth["human_adjudicated_slice_claims"]["CONTRACT_RUNTIME_BINDING_PROVEN_SCOPE"]
             == "OFFLINE_FIXTURE_PROOF_ONLY_NOT_LIVE"
+        )
+        bound_sha = subprocess.run(
+            ["git", "rev-parse", "origin/main"],
+            cwd=REPO_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        assert auth["bound_diff_base_sha"] == bound_sha
+        diffs = _git_file_diffs("origin/main", list(auth["allowed_paths"]))
+        expected = compute_mapping_bind_evidence_digest(
+            file_diffs=diffs,
+            diff_base_sha=bound_sha,
+            paths=list(auth["allowed_paths"]),
+        )
+        assert auth["authorized_evidence_digest"] == expected
+        names = subprocess.run(
+            ["git", "diff", "--name-only", "origin/main...HEAD"],
+            cwd=REPO_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.splitlines()
+        changed = [line.strip() for line in names if line.strip()]
+        all_diffs = _git_file_diffs("origin/main", changed)
+        report = build_boundary_report(
+            changed,
+            repo_root=REPO_ROOT,
+            file_diffs=all_diffs,
+            diff_base_sha=bound_sha,
+        )
+        assert report.admissible is True
+        assert report.canonical_trading_semantics_changed is True
+        assert report.productive_mapping_contract_runtime_bind_authorization_applied is True
+        assert REASON_MAPPING_BIND_AUTHORIZED in report.reason_codes
+        assert report.technical_wiring_authorization_applied is False
+        assert report.restoration_authorization_applied is False
+        assert report.semantics_neutral_decommission_authorization_applied is False
+        assert report.owner_adjudicated_nonproductive_contract_change_authorization_applied is False
+        assert load_contract(REPO_ROOT)["immutable_flags"]["MASTER_V2_MUTATION_ALLOWED"] is False
+        assert (
+            load_contract(REPO_ROOT)["immutable_flags"]["CANONICAL_TRADING_LOGIC_MUTATION_ALLOWED"]
+            is False
         )
 
     def test_bound_from_boundary_contract(self) -> None:

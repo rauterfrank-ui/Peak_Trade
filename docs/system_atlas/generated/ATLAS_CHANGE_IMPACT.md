@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=12
+ATLAS_CHANGED_ENTITY_COUNT=13
 ATLAS_CHANGED_RELATION_COUNT=3
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -42,6 +42,7 @@ Do not manually patch generated Markdown.
 | --- |
 | `FORENSIC_REFERENCE:information_corpus_persistence_base` |
 | `FUNCTIONAL_CORE:double_play` |
+| `GUARD:economic_diagnostic_optimization_boundary` |
 | `NAVIGATION_INDEX:map_of_truth` |
 | `RUNBOOK:canonical_master_runbook` |
 | `RUNBOOK:vollautonomie_v4_4_12` |
@@ -89,7 +90,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| _(none)_ |
+| `GUARD:economic_diagnostic_optimization_boundary` |
 
 ## AFFECTED_SCHEMAS
 
@@ -105,7 +106,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Directional mapping runtime bind: SHORT reversal polarity and PENDING departing-side generator orientation now consume the §5 TARGET. Freeze exception unauthorized. MODEL_C runtime unauthorized. ARMED residual unresolved. last_active_side bind unauthorized. MODEL_B remains the productive baseline. CLOSURE:live_readiness is inspected because MOT documents the runbook; this pointer does not authorize Live. Atlas is not canonical authority.
+- Directional mapping runtime bind: SHORT reversal polarity and PENDING departing-side generator orientation now consume the §5 TARGET. Active fifth-class slice grant is digest-bound to the current diff base. Freeze exception unauthorized. MODEL_C runtime unauthorized. ARMED residual unresolved. last_active_side bind unauthorized. MODEL_B remains the productive baseline. CLOSURE:live_readiness is inspected because MOT documents the runbook; this pointer does not authorize Live. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
