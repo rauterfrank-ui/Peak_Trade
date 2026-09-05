@@ -45,6 +45,8 @@ chains:
     evidence: src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
     notes: >-
       Offline Core-to-Live path terminates at halt-before-wire.
-      LIVE_ENABLED standing admission seam does not admit, arm, or send.
-      Does not send. Does not construct LiveExecutionPort.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+      LIVE_ENABLED, LIVE_ARMED, and WIRE_SEND_PERMITTED standing admission
+      seams do not admit, arm productively, or send. LiveExecutionPort
+      construction-admission remains non-constructible under Cap 11.1.
+      Does not send. Does not construct LiveExecutionPort. Atlas is not
+      trading authority. ATLAS_AUTHORITY=NONE.

@@ -132,12 +132,6 @@ class CapitalAdmissionEvidenceV1:
     semantic_class: str = BINDING_SEMANTIC_CLASS
 
 
-def _standing_extra() -> Tuple[str, ...]:
-    if LIVE_ENABLED is True or LIVE_ARMED is True or WIRE_SEND_PERMITTED is True:
-        return ("STANDING_LIVE_GATE_TRUE",)
-    return ()
-
-
 def _denied(
     *,
     status: str,
@@ -148,7 +142,6 @@ def _denied(
     authority: str,
     reasons: Tuple[str, ...],
 ) -> CapitalAdmissionEvidenceV1:
-    extra = _standing_extra()
     observed_account = "" if claim is None else str(claim.account_identity or "")
     observed_inst = "" if claim is None else str(claim.instrument_id or "")
     observed_raw = "" if claim is None else str(claim.observed_capital_raw or "")
@@ -166,10 +159,10 @@ def _denied(
         observed_account_identity=observed_account,
         expected_instrument_id=expected_instrument_id,
         observed_instrument_id=observed_inst,
-        reason_codes=tuple(dict.fromkeys((*reasons, JOIN_SEAM_ID, *extra))),
-        live_enabled=False,
-        live_armed=False,
-        wire_send_permitted=False,
+        reason_codes=tuple(dict.fromkeys((*reasons, JOIN_SEAM_ID))),
+        live_enabled=LIVE_ENABLED is True,
+        live_armed=LIVE_ARMED is True,
+        wire_send_permitted=WIRE_SEND_PERMITTED is True,
         step_29p_live_venue_capital_bound=False,
     )
 
@@ -260,7 +253,6 @@ def evaluate_capital_admission_v1(
                     "LIVE_ACCOUNT_BOUND_ALONE_NOT_CAPITAL_AUTHORITY",
                 ),
             )
-        extra = _standing_extra()
         return CapitalAdmissionEvidenceV1(
             evidence_status=CapitalAdmissionStatusV1.NOT_REQUIRED_OFFLINE.value,
             capital_source_class=CAPITAL_SOURCE_OFFLINE_ALGEBRA,
@@ -279,13 +271,12 @@ def evaluate_capital_admission_v1(
                         "CAPITAL_ADMISSION_NOT_REQUIRED_OFFLINE",
                         "OFFLINE_ALGEBRA_NOT_LIVE_CAPITAL_AUTHORITY",
                         JOIN_SEAM_ID,
-                        *extra,
                     )
                 )
             ),
-            live_enabled=False,
-            live_armed=False,
-            wire_send_permitted=False,
+            live_enabled=LIVE_ENABLED is True,
+            live_armed=LIVE_ARMED is True,
+            wire_send_permitted=WIRE_SEND_PERMITTED is True,
             step_29p_live_venue_capital_bound=False,
         )
 
@@ -559,7 +550,6 @@ def evaluate_capital_admission_v1(
             ),
         )
 
-    extra = _standing_extra()
     trusted = CapitalAdmissionEvidenceV1(
         evidence_status=CapitalAdmissionStatusV1.TRUSTED_PRESENT.value,
         capital_source_class=source,
@@ -581,13 +571,12 @@ def evaluate_capital_admission_v1(
                     "LIVE_ACCOUNT_BOUND_ALONE_NOT_CAPITAL_AUTHORITY",
                     JOIN_SEAM_ID,
                     CAPITAL_ADMISSION_AUTHORITY,
-                    *extra,
                 )
             )
         ),
-        live_enabled=False,
-        live_armed=False,
-        wire_send_permitted=False,
+        live_enabled=LIVE_ENABLED is True,
+        live_armed=LIVE_ARMED is True,
+        wire_send_permitted=WIRE_SEND_PERMITTED is True,
         step_29p_live_venue_capital_bound=False,
     )
     if live_venue_capital_may_bind_step_29p_v1(trusted) is True:
@@ -664,9 +653,9 @@ def join_capital_admission_into_admission_inputs_v1(
         capital_risk_mode=inputs.capital_risk_mode,
         durable_kill_switch_evidence_status=inputs.durable_kill_switch_evidence_status,
         durable_kill_switch_blocked=inputs.durable_kill_switch_blocked,
-        live_enabled=False,
-        live_armed=False,
-        wire_send_permitted=False,
+        live_enabled=LIVE_ENABLED is True,
+        live_armed=LIVE_ARMED is True,
+        wire_send_permitted=WIRE_SEND_PERMITTED is True,
         owner_authorization_present=inputs.owner_authorization_present,
         owner_one_shot_permit_status=inputs.owner_one_shot_permit_status,
         admission_context=inputs.admission_context,

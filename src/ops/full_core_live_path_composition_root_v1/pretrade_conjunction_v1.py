@@ -81,20 +81,14 @@ def evaluate_frozen_pretrade_conjunction_v1(
     owner_go_valid = bool(str(owner_go or "").strip())
     if not owner_go_valid:
         reasons.append("MISSING_OWNER_GO")
-    if LIVE_ENABLED is True:
-        reasons.append("STANDING_LIVE_ENABLED_TRUE")
-    if LIVE_ARMED is True:
-        reasons.append("STANDING_LIVE_ARMED_TRUE")
-    if WIRE_SEND_PERMITTED is True:
-        reasons.append("STANDING_WIRE_SEND_PERMITTED_TRUE")
     return PretradeConjunctionResultV1(
         ok=pretrade_valid and core_intent_valid and instrument_binding_valid,
         reason_codes=tuple(reasons) if reasons else ("PRETRADE_CONJUNCTION_EVALUATED",),
         core_intent_valid=core_intent_valid,
         instrument_binding_valid=instrument_binding_valid,
         pretrade_valid=pretrade_valid,
-        live_enabled=False,
-        live_armed=False,
+        live_enabled=LIVE_ENABLED is True,
+        live_armed=LIVE_ARMED is True,
         owner_go_valid=owner_go_valid,
-        wire_send_permitted=False,
+        wire_send_permitted=WIRE_SEND_PERMITTED is True,
     )

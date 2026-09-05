@@ -182,10 +182,6 @@ def join_durable_filegate_into_admission_inputs_v1(
     owner_one_shot_permit_status: str = "MISSING",
 ) -> ExecutionAdmissionInputsV1:
     evidence = read_durable_filegate_join_evidence_v1(state_path=state_path)
-    if LIVE_ENABLED is True or LIVE_ARMED is True or WIRE_SEND_PERMITTED is True:
-        extra = ("STANDING_LIVE_GATE_TRUE",)
-    else:
-        extra = ()
     return ExecutionAdmissionInputsV1(
         plan_identity=plan_identity,
         venue_plan_identity=venue_plan_identity,
@@ -196,9 +192,9 @@ def join_durable_filegate_into_admission_inputs_v1(
         capital_risk_mode=capital_risk_mode,
         durable_kill_switch_evidence_status=evidence.evidence_status,
         durable_kill_switch_blocked=evidence.blocked,
-        live_enabled=False,
-        live_armed=False,
-        wire_send_permitted=False,
+        live_enabled=LIVE_ENABLED is True,
+        live_armed=LIVE_ARMED is True,
+        wire_send_permitted=WIRE_SEND_PERMITTED is True,
         owner_authorization_present=owner_authorization_present,
         owner_one_shot_permit_status=owner_one_shot_permit_status,
         admission_context=admission_context,
@@ -208,6 +204,5 @@ def join_durable_filegate_into_admission_inputs_v1(
             JOIN_SEAM_ID,
             DURABLE_FILEGATE_AUTHORITY,
             *evidence.reason_codes,
-            *extra,
         ),
     )

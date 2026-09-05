@@ -77,8 +77,10 @@ def test_permit_flag_and_standing_gates_remain_false() -> None:
     assert LIVE_ENABLED is False
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == ("LIVE_ARMED")
-    assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is False
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
+        "LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P"
+    )
+    assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is True
     node = gap_node_v1("OWNER_ONE_SHOT_EXECUTION_PERMIT")
     assert node.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
     assert node.wiring_authorized is True

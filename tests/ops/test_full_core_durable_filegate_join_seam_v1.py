@@ -76,7 +76,9 @@ def test_join_flag_and_standing_gates_remain_false() -> None:
     assert LIVE_ENABLED is False
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == ("LIVE_ARMED")
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
+        "LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P"
+    )
     node = gap_node_v1("DURABLE_FILEGATE_RUNTIME_JOIN")
     assert node.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
     assert node.wiring_authorized is True

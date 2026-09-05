@@ -171,8 +171,10 @@ def test_flags_and_standing_gates_remain_false() -> None:
     assert FULL_CORE_OFFLINE_E2E_PROVEN is True
     assert FULL_CORE_SYSTEM_E2E_PROVEN is False
     assert FULL_CORE_OFFLINE_E2E_EVIDENCE_CLASS == "INJECTED_NON_PRODUCTIVE"
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == "LIVE_ARMED"
-    assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is False
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
+        "LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P"
+    )
+    assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is True
     node = gap_node_v1("LIVE_ACCOUNT_BOUND")
     assert node.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
     assert node.wiring_authorized is True

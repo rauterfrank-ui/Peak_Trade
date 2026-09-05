@@ -83,12 +83,6 @@ class LiveAccountBoundEvidenceV1:
     semantic_class: str = BINDING_SEMANTIC_CLASS
 
 
-def _standing_extra() -> Tuple[str, ...]:
-    if LIVE_ENABLED is True or LIVE_ARMED is True or WIRE_SEND_PERMITTED is True:
-        return ("STANDING_LIVE_GATE_TRUE",)
-    return ()
-
-
 def _denied(
     *,
     status: str,
@@ -98,7 +92,6 @@ def _denied(
     observed_td_modes: Tuple[str, ...] = (),
     reasons: Tuple[str, ...],
 ) -> LiveAccountBoundEvidenceV1:
-    extra = _standing_extra()
     return LiveAccountBoundEvidenceV1(
         evidence_status=status,
         capital_risk_mode=CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
@@ -108,10 +101,10 @@ def _denied(
         observed_inst_ids=observed_inst_ids,
         expected_td_mode=expected.expected_td_mode,
         observed_td_modes=observed_td_modes,
-        reason_codes=tuple(dict.fromkeys((*reasons, JOIN_SEAM_ID, *extra))),
-        live_enabled=False,
-        live_armed=False,
-        wire_send_permitted=False,
+        reason_codes=tuple(dict.fromkeys((*reasons, JOIN_SEAM_ID))),
+        live_enabled=LIVE_ENABLED is True,
+        live_armed=LIVE_ARMED is True,
+        wire_send_permitted=WIRE_SEND_PERMITTED is True,
     )
 
 
@@ -378,7 +371,6 @@ def evaluate_live_account_bound_v1(
                 ),
             )
 
-    extra = _standing_extra()
     return LiveAccountBoundEvidenceV1(
         evidence_status=LiveAccountBoundStatusV1.TRUSTED_PRESENT.value,
         capital_risk_mode=CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
@@ -394,13 +386,12 @@ def evaluate_live_account_bound_v1(
                     "LIVE_ACCOUNT_BOUND_TRUSTED_PRESENT",
                     JOIN_SEAM_ID,
                     LIVE_ACCOUNT_BOUND_AUTHORITY,
-                    *extra,
                 )
             )
         ),
-        live_enabled=False,
-        live_armed=False,
-        wire_send_permitted=False,
+        live_enabled=LIVE_ENABLED is True,
+        live_armed=LIVE_ARMED is True,
+        wire_send_permitted=WIRE_SEND_PERMITTED is True,
     )
 
 
@@ -504,9 +495,9 @@ def join_live_account_bound_into_admission_inputs_v1(
         capital_risk_mode=resolved_mode,
         durable_kill_switch_evidence_status=inputs.durable_kill_switch_evidence_status,
         durable_kill_switch_blocked=inputs.durable_kill_switch_blocked,
-        live_enabled=False,
-        live_armed=False,
-        wire_send_permitted=False,
+        live_enabled=LIVE_ENABLED is True,
+        live_armed=LIVE_ARMED is True,
+        wire_send_permitted=WIRE_SEND_PERMITTED is True,
         owner_authorization_present=inputs.owner_authorization_present,
         owner_one_shot_permit_status=inputs.owner_one_shot_permit_status,
         admission_context=inputs.admission_context,

@@ -641,9 +641,11 @@ relations:
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/live_execution_port_construction_admission_v1.py
     notes: >-
       Offline path always halts before wire. Typed ExecutionAdmissionDecisionV1
-      is consumed at this same join point. Not a second execution boundary.
+      is consumed at this same join point. Construction admission remains
+      non-constructible under Cap 11.1. Not a second execution boundary.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: REL:r_full_core_path_calls_restart_gate
@@ -688,10 +690,12 @@ relations:
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/live_execution_port_construction_admission_v1.py
     notes: >-
       Package-local LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED remain
-      false. LIVE_ENABLED standing admission seam does not automatically
-      admit. Does not supersede GATE:live_authorized_false. Atlas is not
+      false. LIVE_ENABLED and LIVE_ARMED standing admission seams do not
+      automatically admit. WIRE_SEND_PERMITTED remains independently
+      fail-closed. Does not supersede GATE:live_authorized_false. Atlas is not
       trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: REL:r_full_core_path_calls_path_identity
