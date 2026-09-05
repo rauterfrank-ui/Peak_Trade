@@ -128,11 +128,11 @@ def build_later_field_census_v1() -> dict[str, Any]:
                 "claim_value": False,
                 "canonical_definition": LIVE_RESTART_RECONSTRUCTED_CANONICAL_DEFINITION,
                 "why_blocked": (
-                    "Criterion bound. Persisted Live evidence for the acknowledged submit "
-                    "contains no Peak_Trade durable pre-restart handoff distinct from the "
-                    "accounting venue-GET path. Accounting closure is not restart. "
-                    "TESTNET_RESTART_PROVEN is not this field. This GO forbids restart "
-                    "execution."
+                    "Criterion bound. Exhaustive offline census of persisted Live "
+                    "evidence and durable_state trees found no Peak_Trade durable "
+                    "pre-restart handoff distinct from the accounting venue-GET path. "
+                    "Accounting closure is not restart. TESTNET_RESTART_PROVEN is not "
+                    "this field. This GO forbids restart execution."
                 ),
                 "producer": LIVE_RESTART_RECONSTRUCTED_PRODUCER,
                 "producer_bound": True,

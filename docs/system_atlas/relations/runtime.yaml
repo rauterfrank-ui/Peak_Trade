@@ -592,6 +592,22 @@ relations:
       No GET. No POST. No restart execution. Atlas is not trading
       authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_section_11_14_restart_exhaustive_census_follows_restart_adjudication
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_restart_reconstructed_adjudication
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_exhaustive_census_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_exhaustive_execute_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_schema_v1.py
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T195000Z/
+    notes: >-
+      Exhaustive offline LIVE_RESTART_RECONSTRUCTED census follows the
+      fail-closed restart adjudication. Criterion remains bound. No durable
+      Live pre-restart handoff. No GET. No POST. No restart execution.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_path_calls_venue_translation
     source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     type: CALLS

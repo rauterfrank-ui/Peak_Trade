@@ -322,7 +322,7 @@ Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md]
 
 ## 7. Runtime call / data flow
 
-Runtime relation count: `58`. Entrypoints recorded: `4`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
+Runtime relation count: `59`. Entrypoints recorded: `4`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
 
 Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md](ENTRYPOINT_RUNTIME_TRACES.md).
 
@@ -433,7 +433,7 @@ Architectural-kind count in this bucket: `19`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `107`.
+Architectural-kind count in this bucket: `108`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -478,7 +478,7 @@ Architectural-kind count in this bucket: `107`.
 | PHASE:p11_pos_to_sz_unit_identity_independent_proof | PHASE | 11.13.5.P11 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:p12_execution_prerequisite_11_position_side_posside | PHASE | 11.13.5.P12 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `107` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `108` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -714,10 +714,10 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=444
+ENTITY_TOTAL=445
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=85
-RUNTIME_RELATION_COUNT=58
+RUNTIME_RELATION_COUNT=59
 AUTHORITY_RELATION_COUNT=7
 UNRESOLVED_CONTRADICTION_COUNT=9
 OKX_CENSUS_COMPLETE=true
@@ -809,7 +809,7 @@ Remaining census domains:
 | OKX_HOST | 8 |
 | OKX_RESPONSE_SHAPE | 6 |
 | OWNER_DECISION | 2 |
-| PHASE | 59 |
+| PHASE | 60 |
 | REGISTRY | 1 |
 | RUNBOOK | 4 |
 | RUNTIME_COMPONENT | 85 |
