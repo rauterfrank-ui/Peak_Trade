@@ -91,7 +91,8 @@ def test_permit_flag_and_standing_gates_remain_false() -> None:
 def test_valid_owner_one_shot_emits_typed_permit_and_does_not_admit() -> None:
     evidence = evaluate_owner_one_shot_permit_v1(owner_go=OWNER_ONE_SHOT_PERMIT_TOKEN)
     assert evidence.evidence_status == OwnerOneShotPermitStatusV1.TRUSTED_PRESENT.value
-    assert evidence.presented_token == OWNER_ONE_SHOT_PERMIT_TOKEN
+    presented = evidence.presented_token
+    assert presented == OWNER_ONE_SHOT_PERMIT_TOKEN
     assert evidence.consumed is False
     assert evidence.live_enabled is False
     assert evidence.live_armed is False
