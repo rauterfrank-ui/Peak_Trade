@@ -7782,6 +7782,113 @@ CURRENT_CANONICAL_SECTION=11.2.1.J.FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+Typed OWNER_ONE_SHOT Live-permit remaining after §11.2.1.J is superseded by
+§11.2.1.K. Durable FILEGATE join, path identity, canary isolation, and standing
+Live flags remain as bound in §11.2.1.J. Historical §11.13.5 / §11.14 facts are
+not rewritten.
+
+### 11.2.1.K FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM (BOUND; OFFLINE PERMIT EVIDENCE ONLY; NO WIRE; NO ARMING; NO GET)
+
+Additive persist. Does **not** rewrite §11.2.1 standing Live flags, §11.13.5
+canary facts, or §11.14 ladder fields. Does **not** GET. Does **not** POST.
+Does **not** construct `LiveExecutionPort`. Does **not** arm Live. Does **not**
+set `LIVE_ENABLED`. Does **not** set `LIVE_ARMED`. Does **not** override durable
+FILEGATE. Does **not** make `evaluate_execution_admission_v1` admit Live. Does
+**not** consume the token. Does **not** introduce a second token source. Does
+**not** treat canary `OWNER_GO_EXECUTE` as Full-Core authority. Does **not**
+transfer §11.14 evidence to `FULL_CORE_SYSTEM_E2E`.
+
+Owner-GO
+`OWNER_GO=FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_WITHOUT_LIVE_ARMING_OR_GET`
+(one-shot for this persist) joins the already present Full-Core `owner_go`
+string into typed permit evidence.
+
+``` text
+OWNER_GO=FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_WITHOUT_LIVE_ARMING_OR_GET
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_SSOT_PERSIST
+THIS_SLICE=11.2.1.K.FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM
+CURRENT_PHASE=11.2.1.K.FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM
+FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH
+PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY=SECTION_11_2_1
+CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY=false
+FULL_CORE_SYSTEM_E2E_PROVEN=false
+CURRENT_LIVE_CORE_PATH_PROVEN=false
+STANDING_LIVE_AUTHORIZATION=false
+OWNER_ONE_SHOT_AUTHORITY=FullCoreLivePathInputV1.owner_go
+OWNER_ONE_SHOT_SEMANTIC_CLASS=TYPED_PERMIT_EVIDENCE_NOT_LIVE_ARMING
+OWNER_ONE_SHOT_PERMIT_TOKEN=OWNER_GO_FULL_CORE_LIVE_PATH_OFFLINE_V1
+OWNER_ONE_SHOT_JOIN_SEAM=join_owner_one_shot_permit_into_admission_inputs_v1
+OWNER_ONE_SHOT_CONSUMER=evaluate_execution_admission_v1
+OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED=true
+AUTHORITY_COUNT=1
+PARALLEL_PRODUCTIVE_PATH_ADDED=false
+MISSING_PERMIT_FAILS_CLOSED=true
+MALFORMED_PERMIT_FAILS_CLOSED=true
+MISMATCH_PERMIT_FAILS_CLOSED=true
+CONTRADICTORY_PERMIT_FAILS_CLOSED=true
+NO_TRUTHINESS_OR_WHITESPACE_OR_CASE_NORMALIZE=true
+CONSUMPTION_SEMANTICS=NOT_IN_EXISTING_FULL_CORE_CONTRACT
+REUSE_SEMANTICS=NOT_IN_EXISTING_FULL_CORE_CONTRACT
+REPLAY_PROTECTION_PRESENT=false
+VALID_PERMIT_ALONE_CAN_ADMIT=false
+FILEGATE_CAN_BE_OVERRIDDEN_BY_PERMIT=false
+DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=true
+LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
+FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED=false
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_WITHOUT_FRESH_GET_OWNER_GO
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=true
+NEXT_STEP_REQUIRES_OWNER_GO=true
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+LIVE_AUTHORIZED=false
+GET_PERFORMED=false
+POST_PERFORMED=false
+WIRE_SEND_OCCURRED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+A. Permit seam. Full-Core halt previously derived `owner_authorization_present`
+from a truthiness check on `owner_go` (`bool(str(owner_go or "").strip())` in
+`evaluate_frozen_pretrade_conjunction_v1`). The typed seam evaluates the same
+`owner_go` field against the already used Full-Core offline token
+`OWNER_GO_FULL_CORE_LIVE_PATH_OFFLINE_V1` with exact equality. There is still
+exactly one OWNER_ONE_SHOT authority. Canary execute tokens remain a distinct
+historical path and are mismatch, not a second Full-Core authority. The coarse
+pretrade presence flag remains compatibility debt and is not the admission
+authority.
+
+B. Fail-closed mapping. `None` or empty string => `MISSING`. Non-string or
+leading &#47; trailing whitespace => `MALFORMED`. Any other exact string that is
+not the bound token, including case variants and canary tokens => `MISMATCH`.
+Bool vs typed-status disagreement => `CONTRADICTORY`. Exact bound token =>
+`TRUSTED_PRESENT`. No strip. No case-fold. No truthiness. Trusted present does
+not set LIVE_ENABLED, LIVE_ARMED, or WIRE_SEND_PERMITTED.
+
+C. Composition and standing gates. The permit seam composes with
+`join_durable_filegate_into_admission_inputs_v1`. A valid permit cannot override
+FILEGATE missing, unknown, contradictory, or blocked evidence. Trusted FILEGATE
+plus valid permit still cannot admit Live while standing gates remain false.
+`evaluate_execution_admission_v1` remains fail-closed `admitted=false`.
+Consumption, reuse, and replay-protection are **not** in the existing Full-Core
+`owner_go` contract and are not invented here. Fresh GET, LIVE_ACCOUNT_BOUND
+live values, LIVE_ENABLED &#47; LIVE_ARMED &#47; WIRE_SEND_PERMITTED, and
+LiveExecutionPort remain later layers.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.K.FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

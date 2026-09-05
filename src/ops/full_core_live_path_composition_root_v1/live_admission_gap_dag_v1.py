@@ -20,16 +20,15 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH,
     LIVE_ARMED,
     LIVE_ENABLED,
+    OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED,
     STANDING_LIVE_AUTHORIZATION,
     WIRE_SEND_PERMITTED,
 )
 
 GAP_DAG_VERSION = "v1"
-EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY = "OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT"
-MAX_SAFE_REPO_INTERNAL_NEXT_SLICE = (
-    "FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_WITHOUT_LIVE_ARMING_OR_GET"
-)
-FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE = False
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY = "FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED"
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE = "NO_FURTHER_REPO_INTERNAL_SLICE_WITHOUT_FRESH_GET_OWNER_GO"
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE = True
 NEXT_STEP_REQUIRES_OWNER_GO = True
 
 
@@ -110,18 +109,18 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
     ),
     _node(
         component_id="OWNER_ONE_SHOT_EXECUTION_PERMIT",
-        authority="Owner one-shot execution permit",
-        producer="ABSENT_TYPED_LIVE_PERMIT",
-        contract="owner_authorization_present",
+        authority="FullCoreLivePathInputV1.owner_go",
+        producer="src.ops.full_core_live_path_composition_root_v1.owner_one_shot_permit_v1",
+        contract="OwnerOneShotPermitEvidenceV1",
         consumer="evaluate_execution_admission_v1",
-        implementation_status="OFFLINE_OWNER_GO_STRING_ONLY",
-        test_status="MISSING_OWNER_AUTHORIZATION_DENIAL_PROVEN",
+        implementation_status="JOINED_TYPED_EVIDENCE_FAIL_CLOSED",
+        test_status="TYPED_PERMIT_SEAM_PROVEN",
         repo_internal_solvable=True,
         fresh_external_evidence_required=False,
         productive_account_access_required=False,
         standing_live_gates_would_change=False,
         reusable_mechanism_only=False,
-        wiring_authorized=False,
+        wiring_authorized=True,
         layer=1,
         dependencies=("PATH_IDENTITY",),
     ),
@@ -421,6 +420,9 @@ def live_admission_gap_dag_v1() -> dict[str, Any]:
         "EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY": EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY,
         "MAX_SAFE_REPO_INTERNAL_NEXT_SLICE": MAX_SAFE_REPO_INTERNAL_NEXT_SLICE,
         "DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED": DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED,
+        "OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED": (
+            OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED
+        ),
         "FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE": (
             FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE
         ),

@@ -23,6 +23,7 @@ from src.ops.full_core_live_path_composition_root_v1.execution_admission_contrac
     ADMISSION_CONTEXT_OFFLINE_FULL_CORE_PROOF,
     CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
     DurableKillSwitchEvidenceStatusV1,
+    OwnerOneShotPermitStatusV1,
     PRETRADE_SOURCE_FROZEN_OFFLINE,
     PretradeFreshnessStatusV1,
     evaluate_execution_admission_v1,
@@ -62,6 +63,7 @@ def _join_inputs(**overrides):
         "pretrade_freshness_status": PretradeFreshnessStatusV1.FROZEN_OFFLINE.value,
         "capital_risk_mode": CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
         "owner_authorization_present": True,
+        "owner_one_shot_permit_status": OwnerOneShotPermitStatusV1.TRUSTED_PRESENT.value,
         "admission_context": ADMISSION_CONTEXT_OFFLINE_FULL_CORE_PROOF,
         "provenance_refs": (),
     }
@@ -74,9 +76,7 @@ def test_join_flag_and_standing_gates_remain_false() -> None:
     assert LIVE_ENABLED is False
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT"
-    )
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == ("FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED")
     node = gap_node_v1("DURABLE_FILEGATE_RUNTIME_JOIN")
     assert node.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
     assert node.wiring_authorized is True
@@ -234,7 +234,9 @@ def test_runbook_and_spec_bind_join_without_live_arming() -> None:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     start = runbook.index("11.2.1.J FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM")
-    section = runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    section = runbook[
+        start : runbook.index("11.2.1.K FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM", start)
+    ]
     assert "DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=true" in section
     assert "LIVE_ENABLED=false" in section
     assert "LIVE_ARMED=false" in section

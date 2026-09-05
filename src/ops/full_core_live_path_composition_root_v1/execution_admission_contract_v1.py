@@ -2,6 +2,7 @@
 
 Single intended join point: halt_at_live_execution_boundary_v1.
 Durable FILEGATE evidence is joined via durable_filegate_join_v1.
+OWNER_ONE_SHOT permit evidence is joined via owner_one_shot_permit_v1.
 Does not construct LiveExecutionPort. Does not send wire.
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
@@ -51,9 +52,17 @@ class DurableKillSwitchEvidenceStatusV1(str, Enum):
     CONTRADICTORY = "CONTRADICTORY_BLOCKED"
 
 
+class OwnerOneShotPermitStatusV1(str, Enum):
+    TRUSTED_PRESENT = "TRUSTED_PRESENT"
+    MISSING = "MISSING"
+    MALFORMED = "MALFORMED"
+    MISMATCH = "MISMATCH"
+    CONTRADICTORY = "CONTRADICTORY"
+
+
 @dataclass(frozen=True)
 class ExecutionAdmissionInputsV1:
-    """Caller must inject durable kill-switch evidence. Missing => fail-closed."""
+    """Caller must inject durable kill-switch and typed OWNER_ONE_SHOT evidence."""
 
     plan_identity: str
     venue_plan_identity: str
@@ -68,6 +77,7 @@ class ExecutionAdmissionInputsV1:
     live_armed: bool
     wire_send_permitted: bool
     owner_authorization_present: bool
+    owner_one_shot_permit_status: str
     admission_context: str
     provenance_refs: Tuple[str, ...] = ()
     runtime_authority_effect: str = RUNTIME_AUTHORITY_EFFECT_NONE
@@ -94,6 +104,22 @@ def evaluate_execution_admission_v1(
         reasons.append("ADMISSION_RUNTIME_AUTHORITY_NOT_NONE")
     if not inputs.instrument_identity_ok:
         reasons.append("INSTRUMENT_IDENTITY_MISMATCH")
+    permit_status = str(inputs.owner_one_shot_permit_status or "").strip()
+    permit_trusted = permit_status == OwnerOneShotPermitStatusV1.TRUSTED_PRESENT.value
+    if permit_trusted is not bool(inputs.owner_authorization_present):
+        reasons.append("OWNER_ONE_SHOT_PERMIT_CONTRADICTORY")
+    if permit_status == OwnerOneShotPermitStatusV1.MALFORMED.value:
+        reasons.append("OWNER_ONE_SHOT_PERMIT_MALFORMED")
+        reasons.append("MISSING_OWNER_AUTHORIZATION")
+    elif permit_status == OwnerOneShotPermitStatusV1.MISMATCH.value:
+        reasons.append("OWNER_ONE_SHOT_PERMIT_MISMATCH")
+        reasons.append("MISSING_OWNER_AUTHORIZATION")
+    elif permit_status == OwnerOneShotPermitStatusV1.CONTRADICTORY.value:
+        reasons.append("OWNER_ONE_SHOT_PERMIT_CONTRADICTORY")
+        reasons.append("MISSING_OWNER_AUTHORIZATION")
+    elif permit_status != OwnerOneShotPermitStatusV1.TRUSTED_PRESENT.value:
+        reasons.append("OWNER_ONE_SHOT_PERMIT_MISSING")
+        reasons.append("MISSING_OWNER_AUTHORIZATION")
     if not inputs.owner_authorization_present:
         reasons.append("MISSING_OWNER_AUTHORIZATION")
     if inputs.live_enabled is not True:
@@ -184,8 +210,9 @@ def default_untrusted_filegate_inputs_v1(
     owner_authorization_present: bool,
     admission_context: str,
     provenance_refs: Tuple[str, ...] = (),
+    owner_one_shot_permit_status: str = OwnerOneShotPermitStatusV1.MISSING.value,
 ) -> ExecutionAdmissionInputsV1:
-    """Explicit untrusted injector. Production halt uses durable_filegate_join_v1."""
+    """Explicit untrusted injector. Production halt uses composed join seams."""
     return ExecutionAdmissionInputsV1(
         plan_identity=plan_identity,
         venue_plan_identity=venue_plan_identity,
@@ -202,6 +229,7 @@ def default_untrusted_filegate_inputs_v1(
         live_armed=False,
         wire_send_permitted=False,
         owner_authorization_present=owner_authorization_present,
+        owner_one_shot_permit_status=owner_one_shot_permit_status,
         admission_context=admission_context,
         provenance_refs=provenance_refs + (OFFLINE_BOUNDARY_ROLE,),
     )

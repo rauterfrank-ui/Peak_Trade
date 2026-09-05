@@ -21,6 +21,7 @@ from src.ops.full_core_live_path_composition_root_v1.execution_admission_contrac
     CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
     DurableKillSwitchEvidenceStatusV1,
     ExecutionAdmissionInputsV1,
+    OwnerOneShotPermitStatusV1,
     PRETRADE_SOURCE_FRESH_GET,
     PRETRADE_SOURCE_FROZEN_OFFLINE,
     PretradeFreshnessStatusV1,
@@ -54,6 +55,7 @@ def _live_inputs(**overrides) -> ExecutionAdmissionInputsV1:
         "live_armed": False,
         "wire_send_permitted": False,
         "owner_authorization_present": True,
+        "owner_one_shot_permit_status": OwnerOneShotPermitStatusV1.TRUSTED_PRESENT.value,
         "admission_context": ADMISSION_CONTEXT_LIVE,
         "provenance_refs": (),
     }
@@ -97,9 +99,15 @@ def test_instrument_identity_mismatch_not_admitted() -> None:
 
 
 def test_missing_owner_authorization_not_admitted() -> None:
-    decision = evaluate_execution_admission_v1(_live_inputs(owner_authorization_present=False))
+    decision = evaluate_execution_admission_v1(
+        _live_inputs(
+            owner_authorization_present=False,
+            owner_one_shot_permit_status=OwnerOneShotPermitStatusV1.MISSING.value,
+        )
+    )
     assert decision.admitted is False
     assert "MISSING_OWNER_AUTHORIZATION" in decision.reason_codes
+    assert "OWNER_ONE_SHOT_PERMIT_MISSING" in decision.reason_codes
 
 
 def test_missing_pretrade_freshness_not_admitted() -> None:
@@ -133,6 +141,7 @@ def test_default_full_core_caller_injects_unknown_blocked() -> None:
         pretrade_freshness_status=PretradeFreshnessStatusV1.FROZEN_OFFLINE.value,
         capital_risk_mode=CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
         owner_authorization_present=True,
+        owner_one_shot_permit_status=OwnerOneShotPermitStatusV1.TRUSTED_PRESENT.value,
         admission_context=ADMISSION_CONTEXT_OFFLINE_FULL_CORE_PROOF,
     )
     assert inputs.durable_kill_switch_evidence_status == (

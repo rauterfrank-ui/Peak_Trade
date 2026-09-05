@@ -718,6 +718,31 @@ relations:
       Halt joins durable FILEGATE as typed admission evidence. Does not
       admit Live. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_full_core_path_calls_owner_one_shot_permit
+    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    type: CALLS
+    target: GATE:full_core_owner_one_shot_permit_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/owner_one_shot_permit_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+    notes: >-
+      Halt joins typed OWNER_ONE_SHOT permit evidence. Does not admit
+      Live. Does not override FILEGATE. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_full_core_owner_one_shot_permit_composes_filegate
+    source: GATE:full_core_owner_one_shot_permit_v1
+    type: CONSUMES
+    target: GATE:full_core_durable_filegate_join_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/owner_one_shot_permit_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
+    notes: >-
+      Permit seam composes FILEGATE join. Permit cannot override FILEGATE.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_filegate_join_reads_filegate
     source: GATE:full_core_durable_filegate_join_v1
     type: CONSUMES

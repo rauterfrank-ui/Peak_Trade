@@ -20,6 +20,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     LIVE_ARMED,
     LIVE_ENABLED,
     OWNER,
+    OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED,
     PACKAGE_MARKER,
     PATH_KIND,
     STANDING_LIVE_AUTHORIZATION,
@@ -41,6 +42,10 @@ from src.ops.full_core_live_path_composition_root_v1.models_v1 import (
     FrozenPretradeEvidenceV1,
     FullCoreLivePathInputV1,
     FullCoreLivePathResultV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.owner_one_shot_permit_v1 import (
+    evaluate_owner_one_shot_permit_v1,
+    join_owner_one_shot_permit_into_admission_inputs_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.path_identity_v1 import (
     bound_path_identity_v1,
@@ -67,6 +72,7 @@ __all__ = [
     "LIVE_ARMED",
     "LIVE_ENABLED",
     "OWNER",
+    "OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED",
     "PACKAGE_MARKER",
     "PATH_KIND",
     "STANDING_LIVE_AUTHORIZATION",
@@ -74,7 +80,9 @@ __all__ = [
     "bound_path_identity_v1",
     "compose_core_live_execution_intent_v1",
     "evaluate_execution_admission_v1",
+    "evaluate_owner_one_shot_permit_v1",
     "join_durable_filegate_into_admission_inputs_v1",
+    "join_owner_one_shot_permit_into_admission_inputs_v1",
     "live_admission_gap_dag_v1",
     "read_durable_filegate_join_evidence_v1",
     "refuse_canary_plan_as_full_core_e2e_v1",

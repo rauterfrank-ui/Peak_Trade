@@ -179,6 +179,7 @@ def join_durable_filegate_into_admission_inputs_v1(
     admission_context: str,
     provenance_refs: Tuple[str, ...] = (),
     state_path: Optional[str] = None,
+    owner_one_shot_permit_status: str = "MISSING",
 ) -> ExecutionAdmissionInputsV1:
     evidence = read_durable_filegate_join_evidence_v1(state_path=state_path)
     if LIVE_ENABLED is True or LIVE_ARMED is True or WIRE_SEND_PERMITTED is True:
@@ -199,6 +200,7 @@ def join_durable_filegate_into_admission_inputs_v1(
         live_armed=False,
         wire_send_permitted=False,
         owner_authorization_present=owner_authorization_present,
+        owner_one_shot_permit_status=owner_one_shot_permit_status,
         admission_context=admission_context,
         provenance_refs=provenance_refs
         + (
