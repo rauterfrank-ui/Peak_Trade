@@ -3529,6 +3529,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # CHAR-3 PRE_SPLIT characterization inventoried in notes; not target architecture.
     kind: RUNTIME_COMPONENT
     name: Offline Core-to-Live composition root v1
     epistemic_class: FORENSIC_RAW
@@ -3562,8 +3563,21 @@ entities:
       Composes existing replay plus Cap-2.4 binding into
       CoreLiveExecutionIntentV1. Does not recompute strategy, sizing, or
       safety. Does not construct LiveExecutionPort. Does not arm wire send.
-      Standing package gates remain false. Atlas is not canonical
-      authority. ATLAS_AUTHORITY=NONE.
+      Standing package gates remain false.
+      CURRENT_PRE_SPLIT characterization CHAR-3 (inventory only; not
+      target architecture; alias split is not implemented):
+      compose_core_live_execution_intent_v1 consumes
+      replay.evidence.reason_codes. killswitch_blocked is a PRE-SPLIT
+      safety marker. Reachable upstream HOLD, BLOCKED_ENTER, and
+      29P_DENY paths can prevent REPLAY_SAFETY_DENY from being reached.
+      REPLAY_SAFETY_DENY remains a real consumer case when ENTER plus
+      29P PASS plus killswitch_blocked are present. CHAR-3 in
+      tests/ops/test_full_core_live_path_composition_root_v1.py binds
+      this current path. CURRENT_PRE_SPLIT_ALIAS producer inventory:
+      SideState.KILL_ALL OR SafetyMode.BLOCKED OR
+      safety_exit_signal.triggered may emit killswitch_blocked; this is
+      current alias mixing, not a canonical contract.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: DATA_CONTRACT:full_core_live_path_models_v1
     kind: DATA_CONTRACT
