@@ -3634,6 +3634,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
       - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
       - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
       - src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py
@@ -3652,13 +3653,16 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py
       - tests/ops/test_full_core_live_path_composition_root_v1.py
       - tests/ops/test_full_core_live_path_offline_full_chain_v1.py
       - tests/ops/test_full_core_live_path_identity_and_admission_gap_v1.py
+      - tests/ops/test_full_core_durable_filegate_join_seam_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
+      - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -3851,7 +3855,34 @@ entities:
     notes: >-
       Binds FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH.
       §11.13.5 / §11.14 next-pointers remain evidence-domain only.
-      Does not arm Live. Does not GET. Does not join FILEGATE.
+      Does not arm Live. Does not GET. Durable FILEGATE join is a later
+      Full-Core admission seam, not this identity gate.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: GATE:full_core_durable_filegate_join_v1
+    kind: GATE
+    name: Full-core durable FILEGATE join seam v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    fail_closed: true
+    source_paths:
+      - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+      - src/ops/gates/risk_gate.py
+    source_symbols:
+      - read_durable_filegate_join_evidence_v1
+      - join_durable_filegate_into_admission_inputs_v1
+      - halt_at_live_execution_boundary_v1
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
+      - tests/ops/test_full_core_durable_filegate_join_seam_v1.py
+      - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
+    notes: >-
+      Joins durable KillSwitchState into Full-Core admission as typed
+      evidence. Does not arm Live. Does not GET. Does not admit.
+      PEAK_KILL_SWITCH is overlay only. Replay remains unjoined.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:kill_switch_durable_filegate_v1
@@ -3885,7 +3916,9 @@ entities:
     notes: >-
       Inventory of the execution-side durable kill. Canonical block reader is
       kill_switch_should_block_trading. Operator CLI trigger/recover persist
-      KillSwitchState via StatePersistence. PEAK_KILL_SWITCH=1 is an operator
+      KillSwitchState via StatePersistence. Full-Core admission consumes the
+      same FILEGATE via GATE:full_core_durable_filegate_join_v1 as typed
+      evidence without Live arming. PEAK_KILL_SWITCH=1 is an operator
       deny overlay, not a second state machine. Auto-trip Threshold/Watchdog/
       External trigger library was removed (KS_THIN_01); not re-wired. Does
       not split killswitch_blocked.

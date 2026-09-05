@@ -33,7 +33,9 @@ WIRE_SEND_PERMITTED=false
 ```
 
 This package does **not** authorize Live GET, POST, arming, credentials,
-restart, FILEGATE runtime join, or Cap 11.1 `LiveExecutionPort` construction.
+restart, or Cap 11.1 `LiveExecutionPort` construction. Durable FILEGATE runtime
+join is bound in
+[`FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md`](FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md).
 
 ## Non-claims
 
@@ -61,11 +63,21 @@ Integrated Replay
 → halt_at_live_execution_boundary_v1
 ```
 
-## Earliest remaining Full-Core building block
+## Earliest remaining Full-Core building block after identity persist
+
+Historical identity persist remaining-gap (superseded for FILEGATE join by
+`FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1`):
 
 ```text
 EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED
 MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_WITHOUT_LIVE_ARMING_OR_GET
+```
+
+Current remaining gap after the join seam:
+
+```text
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_WITHOUT_LIVE_ARMING_OR_GET
 FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
 NEXT_STEP_REQUIRES_OWNER_GO=true
 ```

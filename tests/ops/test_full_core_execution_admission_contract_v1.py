@@ -1,4 +1,4 @@
-"""Full-Core Execution Admission contract: fail-closed, no FILEGATE runtime join."""
+"""Full-Core Execution Admission contract: fail-closed; FILEGATE join is typed evidence only."""
 
 from __future__ import annotations
 
@@ -143,9 +143,14 @@ def test_default_full_core_caller_injects_unknown_blocked() -> None:
     assert decision.admitted is False
 
 
-def test_full_core_offline_path_halts_without_filegate_join(
+def test_full_core_offline_path_halts_when_filegate_evidence_is_missing(
     monkeypatch: pytest.MonkeyPatch,
+    tmp_path,
 ) -> None:
+    missing = tmp_path / "absent_kill_switch.json"
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(missing))
+    monkeypatch.delenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", raising=False)
+    monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
     result, replay = _run(monkeypatch, _confirmed_replay_input(side="LONG"))
     assert replay.capital_risk_mode == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
     assert result.boundary is not None

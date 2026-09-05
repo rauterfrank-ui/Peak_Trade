@@ -13,6 +13,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     CANARY_VENUE_PROOF_PATH_ROLE,
     CAPABILITY_ID,
     CURRENT_LIVE_CORE_PATH_PROVEN,
+    DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED,
     FULL_CORE_RESTART_TEST_AUTHORIZED,
     FULL_CORE_SYSTEM_E2E_PROVEN,
     FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH,
@@ -23,6 +24,10 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     PATH_KIND,
     STANDING_LIVE_AUTHORIZATION,
     WIRE_SEND_PERMITTED,
+)
+from src.ops.full_core_live_path_composition_root_v1.durable_filegate_join_v1 import (
+    join_durable_filegate_into_admission_inputs_v1,
+    read_durable_filegate_join_evidence_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
     ExecutionAdmissionDecisionV1,
@@ -50,6 +55,7 @@ __all__ = [
     "CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY",
     "CANARY_VENUE_PROOF_PATH_ROLE",
     "CURRENT_LIVE_CORE_PATH_PROVEN",
+    "DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED",
     "CoreLiveExecutionIntentV1",
     "ExecutionAdmissionDecisionV1",
     "FrozenPretradeEvidenceV1",
@@ -68,7 +74,9 @@ __all__ = [
     "bound_path_identity_v1",
     "compose_core_live_execution_intent_v1",
     "evaluate_execution_admission_v1",
+    "join_durable_filegate_into_admission_inputs_v1",
     "live_admission_gap_dag_v1",
+    "read_durable_filegate_join_evidence_v1",
     "refuse_canary_plan_as_full_core_e2e_v1",
     "refuse_competing_productive_live_next_pointer_v1",
     "run_full_core_live_path_offline_v1",

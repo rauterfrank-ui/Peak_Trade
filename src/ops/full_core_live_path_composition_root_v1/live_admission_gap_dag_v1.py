@@ -1,7 +1,8 @@
 """Forensic Full-Core live-admission gap DAG. Offline only. No GET. No wire.
 
-Does not join FILEGATE. Does not arm Live. Does not wire canary as 29Q consumer.
-Canary observation modules are classified REUSABLE_MECHANISM_ONLY.
+Durable FILEGATE is joined as typed admission evidence. Does not arm Live.
+Does not wire canary as 29Q consumer. Canary observation modules are
+classified REUSABLE_MECHANISM_ONLY.
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 """
@@ -14,6 +15,7 @@ from typing import Any, Tuple
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY,
     CURRENT_LIVE_CORE_PATH_PROVEN,
+    DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED,
     FULL_CORE_SYSTEM_E2E_PROVEN,
     FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH,
     LIVE_ARMED,
@@ -23,9 +25,9 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
 )
 
 GAP_DAG_VERSION = "v1"
-EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY = "DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED"
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY = "OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT"
 MAX_SAFE_REPO_INTERNAL_NEXT_SLICE = (
-    "FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_WITHOUT_LIVE_ARMING_OR_GET"
+    "FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_WITHOUT_LIVE_ARMING_OR_GET"
 )
 FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE = False
 NEXT_STEP_REQUIRES_OWNER_GO = True
@@ -92,17 +94,17 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
     _node(
         component_id="DURABLE_FILEGATE_RUNTIME_JOIN",
         authority="kill_switch_should_block_trading+KillSwitchState+StatePersistence",
-        producer="src.ops.gates.risk_gate.kill_switch_should_block_trading",
+        producer="src.ops.full_core_live_path_composition_root_v1.durable_filegate_join_v1",
         contract="DurableKillSwitchEvidenceStatusV1",
         consumer="evaluate_execution_admission_v1",
-        implementation_status="NOT_JOINED_UNKNOWN_BLOCKED",
-        test_status="MISSING_FILEGATE_DENIAL_PROVEN",
+        implementation_status="JOINED_TYPED_EVIDENCE_FAIL_CLOSED",
+        test_status="JOIN_SEAM_PROVEN",
         repo_internal_solvable=True,
         fresh_external_evidence_required=False,
         productive_account_access_required=False,
         standing_live_gates_would_change=False,
         reusable_mechanism_only=False,
-        wiring_authorized=False,
+        wiring_authorized=True,
         layer=1,
         dependencies=("PATH_IDENTITY", "ExecutionAdmissionDecisionV1"),
     ),
@@ -397,7 +399,12 @@ def live_admission_gap_dag_v1() -> dict[str, Any]:
         node.component_id
         for node in LIVE_ADMISSION_GAP_NODES
         if node.repo_internal_solvable
-        and node.implementation_status not in {"BOUND_THIS_PERSIST", "IMPLEMENTED_FAIL_CLOSED"}
+        and node.implementation_status
+        not in {
+            "BOUND_THIS_PERSIST",
+            "IMPLEMENTED_FAIL_CLOSED",
+            "JOINED_TYPED_EVIDENCE_FAIL_CLOSED",
+        }
     )
     return {
         "GAP_DAG_VERSION": GAP_DAG_VERSION,
@@ -413,6 +420,7 @@ def live_admission_gap_dag_v1() -> dict[str, Any]:
         "WIRE_SEND_PERMITTED": WIRE_SEND_PERMITTED,
         "EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY": EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY,
         "MAX_SAFE_REPO_INTERNAL_NEXT_SLICE": MAX_SAFE_REPO_INTERNAL_NEXT_SLICE,
+        "DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED": DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED,
         "FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE": (
             FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE
         ),
