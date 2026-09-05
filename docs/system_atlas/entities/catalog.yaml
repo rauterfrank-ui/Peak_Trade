@@ -4014,9 +4014,16 @@ entities:
     modified_by: PENDING_CHANGE
     fail_closed: true
     source_paths:
+      - src/ops/treasury_phase_1_offline_contracts_v1/__init__.py
       - src/ops/treasury_phase_1_offline_contracts_v1/engine_v1.py
       - src/ops/treasury_phase_1_offline_contracts_v1/lifecycle_v1.py
       - src/ops/treasury_phase_1_offline_contracts_v1/authority_v1.py
+      - src/ops/treasury_phase_1_offline_contracts_v1/identity_v1.py
+      - src/ops/treasury_phase_1_offline_contracts_v1/persistence_v1.py
+      - src/ops/treasury_phase_1_offline_contracts_v1/provenance_v1.py
+      - src/ops/treasury_phase_1_offline_contracts_v1/validators_v1.py
+      - src/ops/treasury_phase_1_offline_contracts_v1/errors_v1.py
+      - src/ops/treasury_phase_1_offline_contracts_v1/capital_boundary_v1.py
     source_symbols:
       - record_treasury_intent_v1
       - apply_treasury_lifecycle_transition_v1
@@ -4045,6 +4052,10 @@ entities:
     source_paths:
       - src/ops/treasury_phase_1_offline_contracts_v1/models_v1.py
       - src/ops/treasury_phase_1_offline_contracts_v1/serialization_v1.py
+      - src/ops/treasury_phase_1_offline_contracts_v1/constants_v1.py
+      - src/ops/treasury_phase_1_offline_contracts_v1/validators_v1.py
+      - src/ops/treasury_phase_1_offline_contracts_v1/identity_v1.py
+      - src/ops/treasury_phase_1_offline_contracts_v1/errors_v1.py
     source_symbols:
       - TreasuryIntentRecordV1
       - TreasuryLifecycleStateV1
