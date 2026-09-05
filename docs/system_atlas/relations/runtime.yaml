@@ -690,7 +690,8 @@ relations:
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
     notes: >-
       Package-local LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED remain
-      false. Does not supersede GATE:live_authorized_false. Atlas is not
+      false. LIVE_ENABLED standing admission seam does not automatically
+      admit. Does not supersede GATE:live_authorized_false. Atlas is not
       trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: REL:r_full_core_path_calls_path_identity

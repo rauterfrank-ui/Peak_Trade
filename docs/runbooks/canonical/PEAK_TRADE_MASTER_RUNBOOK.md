@@ -8218,6 +8218,12 @@ CURRENT_CANONICAL_SECTION=11.2.1.N.PRE_LIVE_CAPITAL_ADMISSION_CONTRACT
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+Full-Core `LIVE_ENABLED` standing admission seam remaining after §11.2.1.N is
+superseded by §11.2.1.O. Capital Admission, observed-versus-risk-admissible
+separation, and Treasury HTTP isolation remain as bound in §11.2.1.N.
+Historical `EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=LIVE_ENABLED` in this
+section is not rewritten.
+
 ### 11.2.2 TREASURY_PHASE_1_OFFLINE_CONTRACTS (BOUND; TYPED DOMAIN CONTRACTS ONLY; NO NETWORK; NO MUTATION; NO PERMISSION-GET; NO LIVE ARMING)
 
 Additive persist. Does **not** rewrite §11.2.1 standing Live flags, §11.2.1.N
@@ -8355,6 +8361,115 @@ CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
 PACKAGE_OWNER=src/ops/treasury_phase_1_offline_contracts_v1/
 SPEC_OWNER=docs/ops/specs/TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1.md
 CURRENT_CANONICAL_SECTION=11.2.2.TREASURY_PHASE_1_OFFLINE_CONTRACTS
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+Full-Core `LIVE_ENABLED` standing admission seam remaining after §11.2.2 is
+superseded by §11.2.1.O. Treasury Phase-1 offline contracts remain as bound
+in §11.2.2. This persist does **not** start Treasury Phase 2.
+
+### 11.2.1.O FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM (BOUND; ADMISSION CONJUNCTION ONLY; NO WIRE; NO ARMING; NO GET; NO POST)
+
+Additive persist. Does **not** rewrite §11.2.1 standing Live flag *values*,
+§11.2.1.N Capital Admission mathematics, §11.2.2 Treasury Phase-1 contracts,
+§11.13.5 canary facts, or §11.14 ladder fields. Does **not** perform a
+productive venue GET. Does **not** POST. Does **not** construct
+`LiveExecutionPort`. Does **not** set `LIVE_ENABLED=true`. Does **not** set
+`LIVE_ARMED`. Does **not** set `WIRE_SEND_PERMITTED`. Does **not** join
+Cap-7.2 Host to LiveExecutionPort. Does **not** bind productive GET
+transport. Does **not** grant `RISK_ADMISSIBLE`. Does **not** authorize
+Canary execute. Does **not** consume `OWNER_GO_FULL_CORE_LIVE_PATH_OFFLINE_V1`
+as a Live execute token.
+
+Owner-GO
+`OWNER_GO=PEAK_TRADE_OWNER_GO_FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1`
+closes the Full-Core `LIVE_ENABLED` standing-admission-seam dependency.
+It is an admission-contract persist, not a Live-activation authorization.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_SSOT_PERSIST
+THIS_SLICE=11.2.1.O.FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM
+CURRENT_PHASE=11.2.1.O.FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM
+FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH
+PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY=SECTION_11_2_1
+CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY=false
+FULL_CORE_SYSTEM_E2E_PROVEN=false
+CURRENT_LIVE_CORE_PATH_PROVEN=false
+FULL_CORE_OFFLINE_E2E_PROVEN=true
+FULL_CORE_OFFLINE_E2E_EVIDENCE_CLASS=INJECTED_NON_PRODUCTIVE
+STANDING_LIVE_AUTHORIZATION=false
+LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true
+LIVE_ENABLED_DEFAULT=false
+LIVE_ENABLED_TRUE_IS_NOT_AUTOMATIC_ADMISSION=true
+LIVE_ENABLED_FALSE_REMAINS_FAIL_CLOSED=true
+LIVE_ENABLED_DOES_NOT_IMPLY_LIVE_ARMED=true
+LIVE_ENABLED_DOES_NOT_IMPLY_WIRE_SEND=true
+LIVE_ENABLED_DOES_NOT_IMPLY_PORT_CONSTRUCTION=true
+CONTRADICTION_LOCK_REMOVED=true
+UNCONDITIONAL_ADMITTED_FALSE_REPLACED_BY_PREDICATE_CONJUNCTION=true
+PRODUCTIVE_WIRE_SEND_REACHABLE=false
+LIVE_EXECUTION_PORT_CONSTRUCTIBLE=false
+OKX_NETWORK_CALL_OCCURRED=false
+SECRET_ACCESS_OCCURRED=false
+CANARY_EXECUTE_AUTHORIZED=false
+RISK_ADMISSIBLE_GRANTED=false
+CAPITAL_ADMISSION_IMPLEMENTED=true
+LIVE_ACCOUNT_BOUND_IMPLEMENTED=true
+FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED=true
+DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=true
+OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED=true
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG=true
+LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN=true
+CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT=OPEN_CONTRADICTION_NOT_NORMALIZED
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=LIVE_ARMED
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_WITHOUT_OWNER_GO_FOR_LIVE_ARMED_OR_HOST_JOIN_OR_LIVE_EXECUTION_PORT
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
+NEXT_STEP_REQUIRES_OWNER_GO=true
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+LIVE_AUTHORIZED=false
+PRODUCTIVE_VENUE_GET_PERFORMED=false
+POST_PERFORMED=false
+WIRE_SEND_OCCURRED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+A. Standing predicate. `evaluate_execution_admission_v1` previously denied
+both `LIVE_ENABLED=false` (`LIVE_ENABLED_FALSE`) and `LIVE_ENABLED=true`
+(`STANDING_OR_INPUT_LIVE_ENABLED`). The same contradiction lock existed for
+`LIVE_ARMED` and `WIRE_SEND_PERMITTED`. Those deny-on-true branches are
+removed. `LIVE_ENABLED=false` remains fail-closed. `LIVE_ENABLED=true`
+satisfies only that one predicate and does not admit. Independent gates
+remain independently required.
+
+B. Admission conjunction. Unconditional `admitted=False` is replaced by the
+conjunction of already authorized or implemented predicates. Live context
+still denies with `LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P` and
+observed-not-risk-admissible capital. Offline proof context still denies
+with `OFFLINE_FULL_CORE_PROOF_NOT_LIVE_ADMISSION`. Standing package
+constants remain `LIVE_ENABLED=false`, `LIVE_ARMED=false`,
+`WIRE_SEND_PERMITTED=false`. Join seams continue to inject those standing
+false values. Productive wire send remains unreachable.
+
+C. Remaining boundaries after this persist. The DAG-named earliest
+unresolved Full-Core standing gate is `LIVE_ARMED`. Cap-7.2 Host-Join is
+not a node in the live-admission gap DAG. `LiveExecutionPort` remains
+`CONSTRUCTION_FORBIDDEN`. The canonical order among Host-Join, `LIVE_ARMED`,
+and `LiveExecutionPort` is an open contradiction and is not normalized.
+Next step requires a separate Owner-GO.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.O.FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 

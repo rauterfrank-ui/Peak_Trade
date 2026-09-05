@@ -3666,19 +3666,23 @@ entities:
       - tests/ops/test_full_core_owner_one_shot_typed_permit_seam_v1.py
       - tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py
       - tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py
+      - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
       - docs/ops/specs/FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_V1.md
       - docs/ops/specs/FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md
       - docs/ops/specs/FULL_CORE_REMAINING_ADMISSION_CHAIN_CLOSEOUT_V1.md
+      - docs/ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
       Composes existing replay plus Cap-2.4 binding into
       CoreLiveExecutionIntentV1. Does not recompute strategy, sizing, or
       safety. Does not construct LiveExecutionPort. Does not arm wire send.
-      Standing package gates remain false. Typed execution admission is
+      Standing package gates remain false. LIVE_ENABLED is a standing
+      admission predicate: false denies; true does not automatically admit.
+      Typed execution admission is
       consumed at halt_at_live_execution_boundary_v1 only.
       CURRENT_PRE_SPLIT characterization CHAR-3 (inventory only; not
       target architecture; alias split is not implemented):
@@ -3713,10 +3717,11 @@ entities:
       - FullCoreLivePathInputV1
       - FullCoreLivePathResultV1
       - ExecutionAdmissionInputsV1
-      - ExecutionAdmissionDecisionV1
+      -       ExecutionAdmissionDecisionV1
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/models_v1.py
       - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
+      - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
     notes: >-
       TYPE_ONLY / interchange dataclasses for the offline composition root.
       SCHEMA_VERSION is a package version token, not a persistence or wire
@@ -3783,13 +3788,15 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py
       - src/ops/capability_11_1_execution_domain_and_order_lifecycle_contracts_v1/execution_ports_v1.py
+      - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
     notes: >-
       Always HARD STOP BEFORE WIRE. Consumes typed
       ExecutionAdmissionDecisionV1 at this sole Full-Core join point.
       Does not construct Cap 11.1 LiveExecutionPort. Does not invoke
       canary HTTP. Does not read durable FILEGATE StatePersistence.
       Package-local LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED
-      remain false. Atlas is not canonical authority.
+      remain false. LIVE_ENABLED=true is not automatic admission and does
+      not construct LiveExecutionPort. Atlas is not canonical authority.
       ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_live_path_restart_gate_v1
@@ -3833,12 +3840,17 @@ entities:
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
+      - docs/ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md
     notes: >-
       Package-local standing constants inventory. LIVE_ENABLED=false,
       LIVE_ARMED=false, WIRE_SEND_PERMITTED=false,
-      STANDING_LIVE_AUTHORIZATION=false. Does not supersede
-      GATE:live_authorized_false. Does not authorize Live, Testnet,
-      canary, or orders. Atlas is not canonical authority.
+      STANDING_LIVE_AUTHORIZATION=false.
+      LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true.
+      LIVE_ENABLED=true is not automatic admission and does not imply
+      LIVE_ARMED, WIRE_SEND_PERMITTED, or LiveExecutionPort construction.
+      Does not supersede GATE:live_authorized_false. Does not authorize Live,
+      Testnet, canary, or orders. Atlas is not canonical authority.
       ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_live_path_identity_v1
@@ -3860,12 +3872,15 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py
       - tests/ops/test_full_core_live_path_identity_and_admission_gap_v1.py
+      - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
+      - docs/ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md
     notes: >-
       Binds FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH.
       §11.13.5 / §11.14 next-pointers remain evidence-domain only.
       Does not arm Live. Does not GET. Durable FILEGATE join is a later
       Full-Core admission seam, not this identity gate.
+      LIVE_ENABLED standing admission seam is implemented with default false.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_durable_filegate_join_v1
