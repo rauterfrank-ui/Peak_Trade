@@ -5,12 +5,17 @@ Defense-in-Depth architecture. It MUST always work, regardless of other
 system failures.
 """
 
+from __future__ import annotations
+
 import logging
 from datetime import datetime, timedelta
 from threading import RLock
-from typing import Callable, List, Optional
+from typing import TYPE_CHECKING, Callable, List, Optional
 
 from .state import KillSwitchEvent, KillSwitchState, validate_transition
+
+if TYPE_CHECKING:
+    from .persistence import StatePersistence
 
 
 class KillSwitch:
@@ -43,17 +48,23 @@ class KillSwitch:
         self,
         config: dict,
         logger: Optional[logging.Logger] = None,
+        persistence: Optional["StatePersistence"] = None,
     ):
         """Initialize Kill Switch.
 
         Args:
             config: Configuration dictionary (from config.toml)
             logger: Optional logger instance
+            persistence: Optional durable store. When omitted and
+                ``persist_state`` is true, binds ``StatePersistence`` at the
+                canonical FILEGATE path.
         """
         self._lock = RLock()
         self._state = KillSwitchState.ACTIVE
         self._config = config
         self._logger = logger or logging.getLogger(__name__)
+        self._trigger_reason: Optional[str] = None
+        self._persistence = self._bind_persistence(persistence, config)
 
         # Compatibility: Override flag for enabled property (does NOT mutate config)
         self._enabled_override: Optional[bool] = None
@@ -79,8 +90,88 @@ class KillSwitch:
         # Cooldown configuration
         self._recovery_cooldown = timedelta(seconds=config.get("recovery_cooldown_seconds", 300))
 
+        if self._persistence is not None:
+            self._restore_from_persistence()
+
         self._logger.info(
             f"KillSwitch initialized: state={self._state.name}, cooldown={self._recovery_cooldown}"
+        )
+
+    def _bind_persistence(
+        self,
+        persistence: Optional[StatePersistence],
+        config: dict,
+    ) -> Optional[StatePersistence]:
+        if persistence is not None:
+            return persistence
+        if not config.get("persist_state"):
+            return None
+        from src.ops.gates.risk_gate import canonical_kill_switch_state_path
+
+        from .persistence import StatePersistence as _StatePersistence
+
+        path = canonical_kill_switch_state_path()
+        self._logger.info("KillSwitch persistence bound at %s", path)
+        return _StatePersistence(path, logger_instance=self._logger)
+
+    @staticmethod
+    def _parse_iso_datetime(value: object) -> Optional[datetime]:
+        if not value:
+            return None
+        try:
+            return datetime.fromisoformat(str(value))
+        except ValueError:
+            return None
+
+    def _restore_from_persistence(self) -> None:
+        """Load durable state. Missing file stays constructor default.
+
+        Existing unreadable or semantically invalid files latch KILLED
+        in-memory (fail-closed) without silently becoming ACTIVE.
+        Persisted KILLED/RECOVERING wins over config mode=disabled.
+        """
+        assert self._persistence is not None
+        data = self._persistence.load()
+        path = self._persistence.state_file
+        if data is None:
+            if path.is_file():
+                self._state = KillSwitchState.KILLED
+                self._logger.critical(
+                    "Unreadable kill-switch state file %s; latching KILLED (fail-closed)",
+                    path,
+                )
+            return
+        name = str(data.get("state", "")).strip().upper()
+        try:
+            restored = KillSwitchState[name]
+        except KeyError:
+            self._state = KillSwitchState.KILLED
+            self._logger.critical(
+                "Invalid kill-switch state %r in %s; latching KILLED (fail-closed)",
+                name,
+                path,
+            )
+            return
+        self._state = restored
+        self._killed_at = self._parse_iso_datetime(data.get("killed_at"))
+        self._recovery_started_at = self._parse_iso_datetime(data.get("recovery_started_at"))
+        reason = data.get("trigger_reason")
+        self._trigger_reason = str(reason) if reason else None
+        self._logger.info("KillSwitch restored from persistence: state=%s", restored.name)
+
+    def _persist_current_state(self) -> None:
+        if self._persistence is None:
+            return
+        with self._lock:
+            state = self._state
+            killed_at = self._killed_at
+            recovery_started_at = self._recovery_started_at
+            trigger_reason = self._trigger_reason
+        self._persistence.save(
+            state,
+            killed_at=killed_at,
+            trigger_reason=trigger_reason,
+            recovery_started_at=recovery_started_at,
         )
 
     @property
@@ -146,6 +237,13 @@ class KillSwitch:
         """True if kill switch is disabled (backtest mode)."""
         return self.state == KillSwitchState.DISABLED
 
+    @property
+    def persistence_path(self) -> Optional[str]:
+        """Durable state file path when persistence is bound, else None."""
+        if self._persistence is None:
+            return None
+        return str(self._persistence.state_file)
+
     def trigger(
         self,
         reason: str,
@@ -172,35 +270,32 @@ class KillSwitch:
 
             if self._state == KillSwitchState.KILLED:
                 self._logger.warning("Kill Switch already KILLED (idempotent)")
-                return True  # Already in desired state
+                callbacks = []
+                event = None
+            else:
+                previous = self._state
+                self._state = KillSwitchState.KILLED
+                self._killed_at = datetime.utcnow()
+                self._trigger_reason = reason
 
-            # State transition
-            previous = self._state
-            self._state = KillSwitchState.KILLED
-            self._killed_at = datetime.utcnow()
+                event = KillSwitchEvent(
+                    timestamp=self._killed_at,
+                    previous_state=previous,
+                    new_state=self._state,
+                    trigger_reason=reason,
+                    triggered_by=triggered_by,
+                    metadata=metadata or {},
+                )
+                self._events.append(event)
 
-            # Log event
-            event = KillSwitchEvent(
-                timestamp=self._killed_at,
-                previous_state=previous,
-                new_state=self._state,
-                trigger_reason=reason,
-                triggered_by=triggered_by,
-                metadata=metadata or {},
-            )
-            self._events.append(event)
+                self._logger.critical(
+                    f"🚨 KILL SWITCH TRIGGERED: {reason} (by={triggered_by}, from={previous.name})"
+                )
+                callbacks = list(self._on_kill_callbacks)
 
-            self._logger.critical(
-                f"🚨 KILL SWITCH TRIGGERED: {reason} (by={triggered_by}, from={previous.name})"
-            )
-
-            # Execute callbacks (outside lock to avoid deadlocks)
-            # We copy the list first
-            callbacks = list(self._on_kill_callbacks)
-
-        # Execute callbacks outside lock
-        self._execute_callbacks(callbacks, event)
-
+        if event is not None:
+            self._execute_callbacks(callbacks, event)
+        self._persist_current_state()
         return True
 
     def request_recovery(
@@ -222,41 +317,38 @@ class KillSwitch:
             # Idempotent: if already RECOVERING, return True
             if self._state == KillSwitchState.RECOVERING:
                 self._logger.info(f"Already RECOVERING (idempotent request by {approved_by})")
-                return True
-
-            if self._state != KillSwitchState.KILLED:
+            elif self._state != KillSwitchState.KILLED:
                 self._logger.warning(
                     f"Recovery only possible from KILLED state, currently: {self._state.name}"
                 )
                 return False
+            elif self._config.get("require_approval_code", False) and not (
+                self._validate_approval_code(approval_code)
+            ):
+                self._logger.error("❌ Invalid Approval Code")
+                return False
+            else:
+                previous = self._state
+                self._state = KillSwitchState.RECOVERING
+                self._recovery_started_at = datetime.utcnow()
 
-            # Validate approval code if required
-            if self._config.get("require_approval_code", False):
-                if not self._validate_approval_code(approval_code):
-                    self._logger.error("❌ Invalid Approval Code")
-                    return False
+                event = KillSwitchEvent(
+                    timestamp=self._recovery_started_at,
+                    previous_state=previous,
+                    new_state=self._state,
+                    trigger_reason=f"Recovery requested by {approved_by}",
+                    triggered_by="manual",
+                    metadata={"approved_by": approved_by},
+                )
+                self._events.append(event)
 
-            # State transition
-            previous = self._state
-            self._state = KillSwitchState.RECOVERING
-            self._recovery_started_at = datetime.utcnow()
+                self._logger.warning(
+                    f"⏳ RECOVERY STARTED: cooldown={self._recovery_cooldown}, "
+                    f"approved_by={approved_by}"
+                )
 
-            event = KillSwitchEvent(
-                timestamp=self._recovery_started_at,
-                previous_state=previous,
-                new_state=self._state,
-                trigger_reason=f"Recovery requested by {approved_by}",
-                triggered_by="manual",
-                metadata={"approved_by": approved_by},
-            )
-            self._events.append(event)
-
-            self._logger.warning(
-                f"⏳ RECOVERY STARTED: cooldown={self._recovery_cooldown}, "
-                f"approved_by={approved_by}"
-            )
-
-            return True
+        self._persist_current_state()
+        return True
 
     def complete_recovery(self) -> bool:
         """Complete recovery (after cooldown).
@@ -300,6 +392,7 @@ class KillSwitch:
             # Reset timestamps
             self._killed_at = None
             self._recovery_started_at = None
+            self._trigger_reason = None
 
             self._logger.info("✅ KILL SWITCH RECOVERED: Trading active again")
 
@@ -308,7 +401,7 @@ class KillSwitch:
 
         # Execute callbacks outside lock
         self._execute_callbacks(callbacks, event)
-
+        self._persist_current_state()
         return True
 
     def check_and_block(self) -> bool:

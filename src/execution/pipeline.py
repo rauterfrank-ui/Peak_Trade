@@ -100,25 +100,30 @@ def _emit_exec_event_safe(**kwargs: Any) -> None:
 
 def _is_kill_switch_blocking(state_path: Optional[str] = None) -> bool:
     """
-    Check if kill switch state file indicates trading should be blocked.
+    Canonical FILEGATE for bounded_pilot.
 
-    Delegates to :func:`resolve_kill_switch_limit_from_state_file` in
-    ``src.ops.gates.risk_gate`` so JSON parsing matches the ops risk gate and
-    live safety. Uses :func:`kill_switch_state_path_from_env` when
-    ``state_path`` is omitted so ``PEAK_KILL_SWITCH_STATE_PATH`` and
-    ``PEAKTRADE_KILL_SWITCH_STATE_PATH`` both apply. Fail-open: returns
-    ``False`` when the resolver yields ``None`` (missing file, unreadable).
-    Does **not** use ``PEAK_KILL_SWITCH`` env (bounded_pilot is file-only).
+    Delegates to :func:`kill_switch_should_block_trading` so persist path,
+    env-path aliases, ``PEAK_KILL_SWITCH=1`` overlay, and fail-closed missing
+    / invalid state match orchestrator, risk hook, and live safety.
+
+    An explicit ``state_path`` is treated as configured/expected: missing or
+    invalid files fail-closed.
 
     Used only for bounded_pilot mode (config: require_kill_switch_active).
     """
     from src.ops.gates.risk_gate import (
-        kill_switch_state_path_from_env,
+        kill_switch_should_block_trading,
         resolve_kill_switch_limit_from_state_file,
     )
 
-    path = state_path if state_path is not None else kill_switch_state_path_from_env()
-    return resolve_kill_switch_limit_from_state_file(path) is True
+    if state_path is not None:
+        resolved = resolve_kill_switch_limit_from_state_file(state_path)
+        if resolved is True:
+            return True
+        if resolved is False:
+            return False
+        return True
+    return kill_switch_should_block_trading(explicit_active=False)
 
 
 def _signal_label_from_int(sig: int) -> str:

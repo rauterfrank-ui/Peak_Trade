@@ -29,8 +29,6 @@ from src.risk_layer.kill_switch.exchange_probe import (
     probe_exchange_http_public,
 )
 from src.risk_layer.kill_switch.health_check import HealthChecker
-from src.risk_layer.kill_switch.persistence import StatePersistence
-from src.risk_layer.kill_switch.recovery import RecoveryManager
 
 
 # Configure logging
@@ -130,11 +128,15 @@ def cmd_trigger(args, kill_switch: KillSwitch):
     # Trigger
     success = kill_switch.trigger(reason, triggered_by="manual_cli")
 
-    if success:
-        print(f"🚨 KILL SWITCH TRIGGERED: {reason}")
-        print("Trading is now BLOCKED.")
-    else:
+    if not success:
         print("❌ Failed to trigger (already killed or disabled)")
+        return
+    persist_path = kill_switch.persistence_path
+    if not persist_path:
+        raise RuntimeError("kill_switch trigger did not persist state")
+    print(f"🚨 KILL SWITCH TRIGGERED: {reason}")
+    print("Trading is now BLOCKED.")
+    print(f"Persisted state: {persist_path}")
 
 
 def cmd_recover(args, kill_switch: KillSwitch):
@@ -152,15 +154,19 @@ def cmd_recover(args, kill_switch: KillSwitch):
         approval_code=code,
     )
 
-    if success:
-        print(f"⏳ RECOVERY STARTED")
-        print(f"Reason: {reason}")
-        print("Cooldown active. Use 'status' to check progress.")
-    else:
+    if not success:
         print("❌ Recovery request failed")
         print("Possible reasons:")
         print("  - Not in KILLED state")
         print("  - Invalid approval code")
+        return
+    persist_path = kill_switch.persistence_path
+    if not persist_path:
+        raise RuntimeError("kill_switch recovery did not persist state")
+    print("⏳ RECOVERY STARTED")
+    print(f"Reason: {reason}")
+    print("Cooldown active. Use 'status' to check progress.")
+    print(f"Persisted state: {persist_path} (RECOVERING still blocks trading)")
 
 
 def cmd_audit(args, config: dict):

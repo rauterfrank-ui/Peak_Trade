@@ -2,7 +2,14 @@
 
 **Version:** 1.0  
 **Datum:** 2025-12-28  
-**Status:** ✅ IMPLEMENTIERT
+**Status:** Library present; productive KS-A path is operator CLI + `StatePersistence` + `kill_switch_should_block_trading`
+
+> **Runtime (forensic):** Threshold / Watchdog / External triggers and
+> `TriggerRegistry` are **not** productively wired. Do not treat the Trigger
+> Layer diagram below as live runtime. Manual CLI `trigger` persists
+> `KillSwitchState` via `StatePersistence`. The canonical execution-side
+> block reader is `kill_switch_should_block_trading`. `PEAK_KILL_SWITCH=1`
+> is an operator deny overlay, not a second state machine.
 
 ---
 
@@ -11,6 +18,8 @@
 Der Emergency Kill Switch ist **Layer 4** im Defense-in-Depth Risk Management System von Peak_Trade. Er ist die letzte Verteidigungslinie und muss **immer funktionieren**, unabhängig von allen anderen Systemkomponenten.
 
 **D2 (2026-03):** Die frühere **`KillSwitchAdapter`**-Schicht ist entfernt; Integration nutzt **`KillSwitch`** direkt. Archiv: [`TODO_KILL_SWITCH_ADAPTER_MIGRATION.md`](../../TODO_KILL_SWITCH_ADAPTER_MIGRATION.md).
+
+The mermaid Trigger Layer (Threshold / Watchdog / External / Registry) is a library inventory, not a productive auto-trip runtime.
 
 ## 🏛️ Architektur-Diagramm
 

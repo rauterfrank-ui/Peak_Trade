@@ -22,6 +22,7 @@
 | GATE:full_core_live_path_frozen_pretrade_conjunction_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:full_core_live_path_restart_gate_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:full_core_live_path_standing_live_gates_v1 | GATE | True | CURRENT_NONCANONICAL |
+| GATE:kill_switch_durable_filegate_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:live_authorized_false | GATE | True | CURRENT_CANONICAL |
 | GATE:max_positions_1 | GATE | True | CURRENT_CANONICAL |
 | GATE:position_observation_freshness | GATE | True | CURRENT_NONCANONICAL |

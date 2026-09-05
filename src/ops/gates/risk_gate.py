@@ -16,6 +16,9 @@ KILL_SWITCH_STATE_PATH_ENV_VARS = (
     "PEAKTRADE_KILL_SWITCH_STATE_PATH",
 )
 
+_KILL_SWITCH_BLOCKING_STATES = frozenset({"KILLED", "RECOVERING"})
+_KILL_SWITCH_NON_BLOCKING_STATES = frozenset({"ACTIVE", "DISABLED"})
+
 
 def kill_switch_state_path_from_env() -> Optional[str]:
     """Return first non-empty path from env, or ``None`` to use the default file path."""
@@ -24,6 +27,11 @@ def kill_switch_state_path_from_env() -> Optional[str]:
         if raw:
             return raw
     return None
+
+
+def canonical_kill_switch_state_path() -> str:
+    """Resolved persist/read path: env alias first, else default file path."""
+    return kill_switch_state_path_from_env() or DEFAULT_KILL_SWITCH_STATE_PATH
 
 
 class RiskDenyReason(str, Enum):
@@ -76,12 +84,11 @@ def resolve_kill_switch_limit_from_state_file(
     Returns:
 
     - ``True`` — state is ``KILLED`` or ``RECOVERING`` (trading should be denied).
-    - ``False`` — file exists, parsed, and state is not blocking (e.g. ``ACTIVE``).
-    - ``None`` — file missing or unreadable; caller should apply env fallback
-      (e.g. ``PEAK_KILL_SWITCH``).
-
-    On parse errors after the file was found, returns ``None`` so operators can
-    still force a block via env without being silently treated as ACTIVE.
+    - ``False`` — file exists, parsed, and state is a valid non-blocking enum
+      (``ACTIVE`` or ``DISABLED``).
+    - ``None`` — file missing, unreadable, or semantically invalid. Callers that
+      treat the path as configured/expected must fail-closed rather than treat
+      this as ACTIVE.
     """
     path = Path(state_path or DEFAULT_KILL_SWITCH_STATE_PATH)
     if not path.is_file():
@@ -92,31 +99,41 @@ def resolve_kill_switch_limit_from_state_file(
         state = str(data.get("state", "")).strip().upper()
     except Exception:
         return None
-    if state in ("KILLED", "RECOVERING"):
+    if state in _KILL_SWITCH_BLOCKING_STATES:
         return True
-    return False
+    if state in _KILL_SWITCH_NON_BLOCKING_STATES:
+        return False
+    return None
 
 
 def kill_switch_should_block_trading(*, explicit_active: bool = False) -> bool:
     """
-    Single source for kill-switch blocking (safety, orchestrator, risk hook).
+    Canonical execution-side kill-switch block reader.
 
     - If ``explicit_active`` is True (e.g. orchestrator constructor), block.
-    - Else read state via :func:`kill_switch_state_path_from_env` (default path
-      if unset) and :func:`resolve_kill_switch_limit_from_state_file`.
-    - If resolver returns ``True``, block.
-    - If ``None`` (missing/unreadable file), fall back to ``PEAK_KILL_SWITCH``.
-    - If ``False`` (file says ACTIVE), do not block.
+    - Else read state via :func:`canonical_kill_switch_state_path` and
+      :func:`resolve_kill_switch_limit_from_state_file`.
+    - ``KILLED`` / ``RECOVERING`` block.
+    - Valid ``ACTIVE`` / ``DISABLED`` do not block from the file.
+    - Configured path missing, or an existing file that is unreadable or
+      semantically invalid, fail-closed (block).
+    - When no state path is configured and the default file is absent,
+      ``PEAK_KILL_SWITCH=1`` remains an explicit operator deny overlay.
+      It is not a second persisted kill-state machine.
     """
     if explicit_active:
         return True
-    path = kill_switch_state_path_from_env()
+    env_path = kill_switch_state_path_from_env()
+    path = env_path or DEFAULT_KILL_SWITCH_STATE_PATH
     resolved = resolve_kill_switch_limit_from_state_file(path)
     if resolved is True:
         return True
-    if resolved is None:
-        return os.getenv("PEAK_KILL_SWITCH", "0") == "1"
-    return False
+    if resolved is False:
+        return False
+    file_present = Path(path).is_file()
+    if file_present or env_path:
+        return True
+    return os.getenv("PEAK_KILL_SWITCH", "0") == "1"
 
 
 def evaluate_risk(limits: RiskLimits, ctx: RiskContext) -> RiskDecision:
