@@ -1,35 +1,17 @@
 {
   "OWNER_APPROVED_ALONE_IS_INSUFFICIENT": true,
   "TOKEN_ALONE_IS_INSUFFICIENT": true,
-  "allowed_paths": [
-    "docs/ops/specs/FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT_V0.md",
-    "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_KILL_ALL_STATE_SWITCH_FAVORABLE_ADVERSE_EXTREME_MOVES_ACCEPTANCE_V0.md",
-    "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md",
-    "src/trading/master_v2/double_play_state.py",
-    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
-    "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
-    "tests/trading/master_v2/test_bull_bear_state_switch_scenario_replay_binding_parity_rewire_contract_v0.py",
-    "tests/trading/master_v2/test_canonical_dynamic_scope_trailing_state_continuity_v1.py",
-    "tests/trading/master_v2/test_chop_scope_event_policy_binding_contract_v1.py",
-    "tests/trading/master_v2/test_directional_mapping_runtime_bind_v1.py",
-    "tests/trading/master_v2/test_double_play_dashboard_display.py",
-    "tests/trading/master_v2/test_double_play_pure_stack_contract.py",
-    "tests/trading/master_v2/test_double_play_state.py",
-    "tests/trading/master_v2/test_offline_governance_tick_harness_v0.py",
-    "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py"
-  ],
-  "allowed_surface_classes": [
-    "EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_V1"
-  ],
+  "allowed_paths": [],
+  "allowed_surface_classes": [],
   "authority_effect": "NONE",
   "authorization_token": "EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_AUTHORIZATION_V1",
-  "authorized_evidence_digest": "e29f8f8d05861dfb0bec567630c6882d6ca1eab00443d0e6f62e777572c53711",
+  "authorized_evidence_digest": "",
   "authorized_path_prefixes": [],
   "authorized_scope_class": "EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_V1",
   "blanket_allowlist": false,
   "bound_boundary_contract": "config/governance/economic_diagnostic_optimization_boundary_v0.json",
   "bound_boundary_guard": "src/governance/economic_diagnostic_optimization_boundary_v0.py",
-  "bound_diff_base_sha": "cbea4b94f8fb55df6522586bc65d59ef13d29e1f",
+  "bound_diff_base_sha": "",
   "branch_protection_bypass": false,
   "branch_specific_exception": false,
   "broad_master_v2_grant": false,
@@ -89,7 +71,7 @@
     "RUNTIME_EFFECT": "NONE",
     "SCHEDULER_EFFECT": "NONE"
   },
-  "grant_active": true,
+  "grant_active": false,
   "human_adjudicated_slice_claims": {
     "CONTRACT_RUNTIME_BINDING_PROVEN_SCOPE": "OFFLINE_FIXTURE_PROOF_ONLY_NOT_LIVE",
     "DEFAULT_TICK_PHASE_4_6_POLARITY_CHANGED": true,
@@ -99,11 +81,11 @@
   "mapping_contract_spec": "docs/ops/specs/DIRECTIONAL_MAPPING_CONTRACT_REPAIR_V1.md",
   "mutation_purpose_class": "PRODUCTIVE_CANONICAL_MAPPING_CONTRACT_RUNTIME_BIND",
   "notes": [
-    "Active exact-file slice grant. SHA-256 decommission_evidence_digest_v1 over the authorized unified diffs and the bound diff-base SHA. Same paths with a different hunk cannot reuse a grant.",
+    "Slice grant closed after merge. Class remains; grant is inactive. Historical slice_grant_id=DIRECTIONAL_MAPPING_CONTRACT_RUNTIME_BIND_BOUNDED_SLICE_V1. Historical bound_diff_base_sha=cbea4b94f8fb55df6522586bc65d59ef13d29e1f. Historical authorized_evidence_digest=e29f8f8d05861dfb0bec567630c6882d6ca1eab00443d0e6f62e777572c53711.",
     "Owner adjudication is necessary and not sufficient. Unknown JSON fields fail closed.",
     "Does not waive MASTER_V2_MUTATION_ALLOWED=false or CANONICAL_TRADING_LOGIC_MUTATION_ALLOWED=false.",
     "Does not authorize live, testnet, canary, orders, or execution. Not wiring, restoration, decommission, or nonproductive contract change.",
-    "After merge, a follow-up must set grant_active=false and empty allowed_paths, required_runtime_paths, digest, bound_diff_base_sha, and slice_grant_id. The class remains; the grant does not."
+    "The class remains; the grant does not. Standing path reuse is forbidden."
   ],
   "parallel_ssot_created": false,
   "pr_specific_exception": false,
@@ -117,11 +99,7 @@
     "TESTNET_CAPABILITY_INCREASED": false
   },
   "required_check_waiver": false,
-  "required_runtime_paths": [
-    "src/trading/master_v2/double_play_state.py",
-    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
-    "src/trading/master_v2/offline_double_play_scenario_replay_v0.py"
-  ],
+  "required_runtime_paths": [],
   "required_semantic_invariants": {
     "ACTIVE_SIDE_TO_SCOPE_DIRECTION_CHANGED": false,
     "ARMED_LAST_ACTIVE_SIDE_CHANGED": false,
@@ -154,5 +132,5 @@
   "runtime_activation": false,
   "runtime_effect": "NONE",
   "scope_id": "EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_AUTHORIZATION_V1",
-  "slice_grant_id": "DIRECTIONAL_MAPPING_CONTRACT_RUNTIME_BIND_BOUNDED_SLICE_V1"
+  "slice_grant_id": ""
 }

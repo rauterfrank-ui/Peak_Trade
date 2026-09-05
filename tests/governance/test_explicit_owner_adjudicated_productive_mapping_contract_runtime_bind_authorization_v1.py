@@ -182,6 +182,10 @@ def _sha_exists(sha: str) -> bool:
 
 
 COMMITTED_SLICE_GRANT_ID = "DIRECTIONAL_MAPPING_CONTRACT_RUNTIME_BIND_BOUNDED_SLICE_V1"
+HISTORICAL_BOUND_DIFF_BASE_SHA = "cbea4b94f8fb55df6522586bc65d59ef13d29e1f"
+HISTORICAL_AUTHORIZED_EVIDENCE_DIGEST = (
+    "e29f8f8d05861dfb0bec567630c6882d6ca1eab00443d0e6f62e777572c53711"
+)
 COMMITTED_ALLOWED_PATHS = [
     "docs/ops/specs/FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT_V0.md",
     "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_KILL_ALL_STATE_SWITCH_FAVORABLE_ADVERSE_EXTREME_MOVES_ACCEPTANCE_V0.md",
@@ -215,8 +219,8 @@ def _git_file_diffs(base: str, paths: list[str]) -> dict[str, str]:
     return diffs
 
 
-class TestMappingBindCommittedActiveGrantV1:
-    def test_committed_artifact_is_valid_active_digest_bound_grant(self) -> None:
+class TestMappingBindCommittedInactiveGrantV1:
+    def test_committed_artifact_is_valid_inactive_closed_grant(self) -> None:
         auth = load_mapping_bind_authorization(REPO_ROOT)
         assert auth is not None
         valid, reasons = validate_mapping_bind_authorization(auth, repo_root=REPO_ROOT)
@@ -226,11 +230,13 @@ class TestMappingBindCommittedActiveGrantV1:
         assert auth["authorized_scope_class"] == MAPPING_BIND_SCOPE_CLASS
         assert auth["authorization_token"] == MAPPING_BIND_AUTHORIZATION_ID
         assert auth["mutation_purpose_class"] == MAPPING_BIND_MUTATION_PURPOSE
-        assert auth["grant_active"] is True
-        assert auth["allowed_paths"] == COMMITTED_ALLOWED_PATHS
-        assert auth["required_runtime_paths"] == list(REQUIRED_RUNTIME_PATHS)
-        assert auth["allowed_surface_classes"] == [MAPPING_BIND_SCOPE_CLASS]
-        assert auth["slice_grant_id"] == COMMITTED_SLICE_GRANT_ID
+        assert auth["grant_active"] is False
+        assert auth["allowed_paths"] == []
+        assert auth["required_runtime_paths"] == []
+        assert auth["allowed_surface_classes"] == []
+        assert auth["slice_grant_id"] == ""
+        assert auth["authorized_evidence_digest"] == ""
+        assert auth["bound_diff_base_sha"] == ""
         assert auth["authorized_path_prefixes"] == []
         assert auth["pr_specific_exception"] is False
         assert auth["directory_grant"] is False
@@ -252,44 +258,11 @@ class TestMappingBindCommittedActiveGrantV1:
             auth["human_adjudicated_slice_claims"]["CONTRACT_RUNTIME_BINDING_PROVEN_SCOPE"]
             == "OFFLINE_FIXTURE_PROOF_ONLY_NOT_LIVE"
         )
-        bound_sha = subprocess.run(
-            ["git", "rev-parse", "origin/main"],
-            cwd=REPO_ROOT,
-            check=True,
-            capture_output=True,
-            text=True,
-        ).stdout.strip()
-        assert auth["bound_diff_base_sha"] == bound_sha
-        diffs = _git_file_diffs("origin/main", list(auth["allowed_paths"]))
-        expected = compute_mapping_bind_evidence_digest(
-            file_diffs=diffs,
-            diff_base_sha=bound_sha,
-            paths=list(auth["allowed_paths"]),
-        )
-        assert auth["authorized_evidence_digest"] == expected
-        names = subprocess.run(
-            ["git", "diff", "--name-only", "origin/main...HEAD"],
-            cwd=REPO_ROOT,
-            check=True,
-            capture_output=True,
-            text=True,
-        ).stdout.splitlines()
-        changed = [line.strip() for line in names if line.strip()]
-        all_diffs = _git_file_diffs("origin/main", changed)
-        report = build_boundary_report(
-            changed,
-            repo_root=REPO_ROOT,
-            file_diffs=all_diffs,
-            diff_base_sha=bound_sha,
-        )
-        assert report.admissible is True
-        assert report.canonical_trading_semantics_changed is True
-        assert report.productive_mapping_contract_runtime_bind_authorization_applied is True
-        assert REASON_MAPPING_BIND_AUTHORIZED in report.reason_codes
-        assert report.technical_wiring_authorization_applied is False
-        assert report.restoration_authorization_applied is False
-        assert report.semantics_neutral_decommission_authorization_applied is False
-        assert report.owner_adjudicated_nonproductive_contract_change_authorization_applied is False
+        notes = " ".join(str(item) for item in auth["notes"])
+        assert COMMITTED_SLICE_GRANT_ID in notes
+        assert HISTORICAL_BOUND_DIFF_BASE_SHA in notes
+        assert HISTORICAL_AUTHORIZED_EVIDENCE_DIGEST in notes
+        assert set(REQUIRED_RUNTIME_PATHS).issubset(COMMITTED_ALLOWED_PATHS)
         assert load_contract(REPO_ROOT)["immutable_flags"]["MASTER_V2_MUTATION_ALLOWED"] is False
         assert (
             load_contract(REPO_ROOT)["immutable_flags"]["CANONICAL_TRADING_LOGIC_MUTATION_ALLOWED"]
