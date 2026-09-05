@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
-ATLAS_CHANGED_RELATION_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=12
+ATLAS_CHANGED_RELATION_COUNT=3
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,8 +40,17 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `FORENSIC_REFERENCE:information_corpus_persistence_base` |
+| `FUNCTIONAL_CORE:double_play` |
 | `NAVIGATION_INDEX:map_of_truth` |
 | `RUNBOOK:canonical_master_runbook` |
+| `RUNBOOK:vollautonomie_v4_4_12` |
+| `RUNTIME_COMPONENT:ddo_capture_v0` |
+| `RUNTIME_COMPONENT:dp_offline_scenario_replay` |
+| `RUNTIME_COMPONENT:dp_state` |
+| `RUNTIME_COMPONENT:mv2_integrated_replay` |
+| `SUBSYSTEM:master_v2` |
+| `TERM:dynamic_scope` |
 | `TERM:map_of_truth` |
 
 ## CHANGED_RELATIONS
@@ -49,6 +58,7 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `REL:a_map_documents_runbook` |
+| `REL:r_ddo_capture_observes_integrated_replay` |
 | `REL:s_map_navigates_runbook` |
 
 ## NEW_RELATIONS

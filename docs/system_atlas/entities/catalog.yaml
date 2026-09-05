@@ -38,6 +38,7 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - src/trading/master_v2/double_play_composition.py
       - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md
+      - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_KILL_ALL_STATE_SWITCH_FAVORABLE_ADVERSE_EXTREME_MOVES_ACCEPTANCE_V0.md
     notes: Inner functional core census label for Double Play relative to Master V2. Exact token FUNCTIONAL_CORE not found on origin/main; proven as Modul-Owner of one Trading Core.
 
   - id: RUNBOOK:canonical_master_runbook

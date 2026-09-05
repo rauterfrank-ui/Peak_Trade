@@ -17,11 +17,21 @@ note: >-
   documents the runbook; this pointer does not authorize Live. Atlas is not
   canonical authority.
 changed_entities:
+  - FORENSIC_REFERENCE:information_corpus_persistence_base
+  - FUNCTIONAL_CORE:double_play
   - NAVIGATION_INDEX:map_of_truth
   - RUNBOOK:canonical_master_runbook
+  - RUNBOOK:vollautonomie_v4_4_12
+  - RUNTIME_COMPONENT:ddo_capture_v0
+  - RUNTIME_COMPONENT:dp_offline_scenario_replay
+  - RUNTIME_COMPONENT:dp_state
+  - RUNTIME_COMPONENT:mv2_integrated_replay
+  - SUBSYSTEM:master_v2
+  - TERM:dynamic_scope
   - TERM:map_of_truth
 changed_relations:
   - REL:a_map_documents_runbook
+  - REL:r_ddo_capture_observes_integrated_replay
   - REL:s_map_navigates_runbook
 new_relations: []
 removed_relations: []
@@ -32,9 +42,19 @@ affected_safety_surfaces: []
 affected_schemas: []
 review_required_items: []
 reviewed_ids:
+  - id: FORENSIC_REFERENCE:information_corpus_persistence_base
+  - id: FUNCTIONAL_CORE:double_play
   - id: NAVIGATION_INDEX:map_of_truth
   - id: RUNBOOK:canonical_master_runbook
+  - id: RUNBOOK:vollautonomie_v4_4_12
+  - id: RUNTIME_COMPONENT:ddo_capture_v0
+  - id: RUNTIME_COMPONENT:dp_offline_scenario_replay
+  - id: RUNTIME_COMPONENT:dp_state
+  - id: RUNTIME_COMPONENT:mv2_integrated_replay
+  - id: SUBSYSTEM:master_v2
+  - id: TERM:dynamic_scope
   - id: TERM:map_of_truth
   - id: REL:a_map_documents_runbook
+  - id: REL:r_ddo_capture_observes_integrated_replay
   - id: REL:s_map_navigates_runbook
   - id: CLOSURE:live_readiness
