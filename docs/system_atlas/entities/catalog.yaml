@@ -4005,6 +4005,59 @@ entities:
       override FILEGATE, permit, GET, or LIVE_ACCOUNT_BOUND. Atlas is not
       canonical authority. ATLAS_AUTHORITY=NONE.
 
+  - id: GATE:treasury_phase_1_offline_contracts_v1
+    kind: GATE
+    name: Treasury Phase-1 offline contracts v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    fail_closed: true
+    source_paths:
+      - src/ops/treasury_phase_1_offline_contracts_v1/engine_v1.py
+      - src/ops/treasury_phase_1_offline_contracts_v1/lifecycle_v1.py
+      - src/ops/treasury_phase_1_offline_contracts_v1/authority_v1.py
+    source_symbols:
+      - record_treasury_intent_v1
+      - apply_treasury_lifecycle_transition_v1
+      - evaluate_remote_mutation_eligibility_v1
+    evidence_sources:
+      - src/ops/treasury_phase_1_offline_contracts_v1/engine_v1.py
+      - tests/ops/test_treasury_phase_1_offline_contracts_v1.py
+      - tests/ops/test_treasury_phase_1_adversarial_and_restart_v1.py
+      - tests/ops/test_treasury_phase_1_canonical_and_authority_v1.py
+      - docs/ops/specs/TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1.md
+    notes: >-
+      Offline Treasury domain contracts. Durable intent before any future
+      remote mutation. OUTCOME_UNKNOWN is not failure and not retryable.
+      Does not send network requests. Does not move funds. Does not mint
+      RISK_ADMISSIBLE. Does not arm Live. Atlas is not canonical authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: DATA_CONTRACT:treasury_phase_1_offline_contracts_v1
+    kind: DATA_CONTRACT
+    name: Treasury Phase-1 offline intent and lifecycle contracts v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    unit: mixed
+    source_paths:
+      - src/ops/treasury_phase_1_offline_contracts_v1/models_v1.py
+      - src/ops/treasury_phase_1_offline_contracts_v1/serialization_v1.py
+    source_symbols:
+      - TreasuryIntentRecordV1
+      - TreasuryLifecycleStateV1
+      - TreasuryOperationKindV1
+    evidence_sources:
+      - src/ops/treasury_phase_1_offline_contracts_v1/models_v1.py
+      - src/ops/treasury_phase_1_offline_contracts_v1/constants_v1.py
+    notes: >-
+      Typed intent, lifecycle, fingerprint, and provenance contracts.
+      SCHEMA_VERSION is a contract version token, not a productive store
+      schema. Not a second order-intent or Capital Admission owner.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
   - id: GATE:kill_switch_durable_filegate_v1
     # KS_THIN_01 inventory: unwired auto-trip library removed. ATLAS_AUTHORITY=NONE
     kind: GATE

@@ -322,7 +322,7 @@ Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md]
 
 ## 7. Runtime call / data flow
 
-Runtime relation count: `70`. Entrypoints recorded: `4`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
+Runtime relation count: `72`. Entrypoints recorded: `4`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
 
 Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md](ENTRYPOINT_RUNTIME_TRACES.md).
 
@@ -357,6 +357,7 @@ Fail-closed is the default. Live/Testnet/orders require scoped Owner-GO. Confirm
 | GATE:max_positions_1 | GATE | CURRENT_MAX_POSITIONS=1 | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | GATE:position_observation_freshness | GATE | POSITION_OBSERVATION_FRESHNESS | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:target_position_state | GATE | TARGET_POSITION_STATE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:treasury_phase_1_offline_contracts_v1 | GATE | Treasury Phase-1 offline contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GUARD:economic_diagnostic_optimization_boundary | GUARD | Economic diagnostic optimization boundary guard | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
 Safety chains recorded: `4`. Drill-down: [SAFETY_GOVERNANCE_MAP.md](SAFETY_GOVERNANCE_MAP.md).
@@ -381,6 +382,7 @@ SCHEMA is not automatically DATA_CONTRACT or dataclass. BoundInstrumentV1 carrie
 | DATA_CONTRACT:bound_instrument_v1 | DATA_CONTRACT | BoundInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:full_core_live_path_models_v1 | DATA_CONTRACT | Full-core live path typed contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:governed_universe_instrument_v1 | DATA_CONTRACT | GovernedUniverseInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| DATA_CONTRACT:treasury_phase_1_offline_contracts_v1 | DATA_CONTRACT | Treasury Phase-1 offline intent and lifecycle contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
 Lineage records: `4`. Drill-down: [DATA_CONTRACT_MAP.md](DATA_CONTRACT_MAP.md), [DATA_LINEAGE_MAP.md](DATA_LINEAGE_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md).
 
@@ -440,7 +442,7 @@ Architectural-kind count in this bucket: `19`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `115`.
+Architectural-kind count in this bucket: `117`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -453,6 +455,7 @@ Architectural-kind count in this bucket: `115`.
 | DATA_CONTRACT:bound_instrument_v1 | DATA_CONTRACT | BoundInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:full_core_live_path_models_v1 | DATA_CONTRACT | Full-core live path typed contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:governed_universe_instrument_v1 | DATA_CONTRACT | GovernedUniverseInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| DATA_CONTRACT:treasury_phase_1_offline_contracts_v1 | DATA_CONTRACT | Treasury Phase-1 offline intent and lifecycle contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | FAMILY:dashboard_canonical_decision | FAMILY | dashboard family_id canonical_decision | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | FAMILY:dashboard_double_play | FAMILY | dashboard family_id double_play | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | FAMILY:dashboard_dynamic_scope | FAMILY | dashboard family_id dynamic_scope | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -476,16 +479,15 @@ Architectural-kind count in this bucket: `115`.
 | GATE:kill_switch_durable_filegate_v1 | GATE | Durable execution-side kill-switch FILEGATE v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:position_observation_freshness | GATE | POSITION_OBSERVATION_FRESHNESS | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:target_position_state | GATE | TARGET_POSITION_STATE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:treasury_phase_1_offline_contracts_v1 | GATE | Treasury Phase-1 offline contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | HOST:wallclock_decision_economics_cycle | HOST | Wallclock decision-to-simulated-economics cycle | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:authenticated_private_runtime_read_and_runtime_permit_issuance | PHASE | 11.13.5.AUTHENTICATED_PRIVATE_RUNTIME_READ_AND_RUNTIME_PERMI | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:authenticated_productive_transport | PHASE | 11.13.5.AUTHENTICATED_PRODUCTIVE_TRANSPORT | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:ddo_offline_foundation | PHASE | 11.13.5 Parallel-track DDO offline foundation | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:g12_canonical_delayed_zero_persist_and_pending_related_observations | PHASE | 11.13.5.G12_CANONICAL_DELAYED_ZERO_PERSIST_AND_PENDING_RELAT | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:g12_delayed_posid_zero_row_full_conjunction_proof_contract | PHASE | 11.13.5.G12_DELAYED_POSID_ZERO_ROW_FULL_CONJUNCTION_PROOF_CO | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| PHASE:p08_distinct_first_party_evidence | PHASE | 11.13.5.P08_DISTINCT_FIRST_PARTY_EVIDENCE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| PHASE:p08_empty_data_not_zero | PHASE | 11.13.5.P08_EMPTY_DATA_NOT_ZERO | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `115` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `117` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -721,11 +723,11 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=452
+ENTITY_TOTAL=454
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=85
-RUNTIME_RELATION_COUNT=70
-AUTHORITY_RELATION_COUNT=7
+RUNTIME_RELATION_COUNT=72
+AUTHORITY_RELATION_COUNT=9
 UNRESOLVED_CONTRADICTION_COUNT=9
 OKX_CENSUS_COMPLETE=true
 MASTER_V2_CENSUS_COMPLETE=true
@@ -799,14 +801,14 @@ Remaining census domains:
 | BINDER | 1 |
 | CAPABILITY | 9 |
 | CHILD | 1 |
-| DATA_CONTRACT | 3 |
+| DATA_CONTRACT | 4 |
 | DOD | 8 |
 | EXECUTION_COMPONENT | 1 |
 | EXPERIMENT | 1 |
 | FAMILY | 8 |
 | FORENSIC_REFERENCE | 2 |
 | FUNCTIONAL_CORE | 1 |
-| GATE | 18 |
+| GATE | 19 |
 | GUARD | 1 |
 | HOST | 2 |
 | INVARIANT | 1 |

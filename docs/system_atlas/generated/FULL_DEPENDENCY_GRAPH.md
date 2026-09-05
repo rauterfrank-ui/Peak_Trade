@@ -160,6 +160,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1`
 - transitive_downstream: `(none)`
 
+### GATE:treasury_phase_1_offline_contracts_v1
+
+- direct_upstream: `GATE:full_core_capital_admission_v1`
+- transitive_upstream: `GATE:full_core_capital_admission_v1, GATE:full_core_durable_filegate_join_v1, GATE:full_core_fresh_pretrade_runtime_get_v1, GATE:full_core_live_account_bound_v1, GATE:full_core_owner_one_shot_permit_v1, GATE:kill_switch_durable_filegate_v1`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
 ### HOST:cap72_stateful_host
 
 - direct_upstream: `BINDER:bound_instrument_v1`

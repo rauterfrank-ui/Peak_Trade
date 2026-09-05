@@ -359,7 +359,7 @@ def test_runbook_and_spec_bind_without_live_arming() -> None:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     start = runbook.index("11.2.1.N PRE_LIVE_CAPITAL_ADMISSION_CONTRACT")
-    section = runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    section = runbook[start : runbook.index("11.2.2 TREASURY_PHASE_1_OFFLINE_CONTRACTS", start)]
     assert "CAPITAL_ADMISSION_IMPLEMENTED=true" in section
     assert "OBSERVED_CAPITAL != RISK_ADMISSIBLE_CAPITAL" in section
     assert "PL_TF_001_STATUS=CLOSED_TYPED_ADMISSION_SEAM" in section
