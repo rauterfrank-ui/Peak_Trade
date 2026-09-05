@@ -3,7 +3,12 @@
 Offline replay adapter: binds Integrated / Scenario replay to canonical
 KillSwitch boundary semantics without duplicating live KillSwitch logic.
 
-Wiring-only parity slice — no runtime authority, no order effects.
+Wiring-only parity slice. Produces post-29Q evidence/mode fields.
+Does not rewrite evidence.decision_outcome.
+Does not grant order, credential, submission, or FILEGATE permission.
+runtime_authority_effect=NONE on this binder means no execution permission.
+Typed consumption of emergency fields is POST_29Q_CONSUMPTION_GUARD in
+ReplayExecutionSafetyV1 — not this binder becoming FILEGATE or a decision owner.
 """
 
 from __future__ import annotations

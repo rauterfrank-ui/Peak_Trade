@@ -6989,6 +6989,104 @@ CURRENT_CANONICAL_SECTION=11.2.1.A.EXECUTION_ADMISSION_AND_TYPED_CONTRACT_HARDEN
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+Post-29Q KS role naming in the 11.2.1.A field block is superseded by
+§11.2.1.B. Standing Live flags in §11.2.1 and §11.2.1.A remain unchanged.
+
+### 11.2.1.B POST_29Q_KS_BOUNDARY_AND_SIDESTATE_RESTORE_HARDENING_V1 (BOUND; OFFLINE CONTRACTS ONLY; NO WIRE; NO FILEGATE RUNTIME JOIN)
+
+Additive persist. Does **not** rewrite §11.2.1 standing Live flags, §11.13.5
+canary, or §11.14 ladder fields. Does **not** GET. Does **not** POST. Does
+**not** construct `LiveExecutionPort`. Does **not** arm Live. Does **not**
+join durable FILEGATE into Integrated Replay. Does **not** change Double Play
+`transition_state`. Does **not** change 29P sizing authority.
+
+Owner-GO
+`OWNER_GO=PEAK_TRADE_OWNER_GO_POST_29Q_KS_BOUNDARY_AND_SIDESTATE_RESTORE_HARDENING_V1`
+(one-shot for this persist) closes the post-29Q KS consumption-role collision
+and hardens Cap-7.2 SideState restore.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_POST_29Q_KS_BOUNDARY_AND_SIDESTATE_RESTORE_HARDENING_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=POST_29Q_KS_BOUNDARY_AND_SIDESTATE_RESTORE_HARDENING_V1
+CORE_LOGIC_CHANGE=false
+DECISION_AUTHORITY_UNCHANGED=true
+SOLE_COMPUTE_OWNER=run_integrated_offline_trading_logic_replay_v1
+DOUBLE_PLAY_SIDE_STATE_OWNER=transition_state
+ENTRY_EXIT_OWNER=entry_exit_policy_v0
+POSITION_SIZING_OWNER=capital_risk_sizing_v1
+SAFETY_ORDER=29P_THEN_SAFETY_THEN_29Q
+NO_29Q_BEFORE_SAFETY=true
+29Q_PLAN_ONLY=true
+SIDESTATE_KILL_ALL_ROLE=DOUBLE_PLAY_STRATEGY_STATE_MACHINE
+REPLAY_SAFETY_ROLE=PRE_29Q_DECISION_ADMISSION
+POST_29Q_KS_ADJUDICATED_ROLE=POST_29Q_CONSUMPTION_GUARD
+POST_29Q_KS_RUNTIME_AUTHORITY_EFFECT=POST_29Q_CONSUMPTION_VALIDATION
+POST_29Q_KS_EXECUTION_PERMISSION_AUTHORITY=NONE
+POST_29Q_KS_CAN_MUTATE_DECISION_OUTCOME=false
+POST_29Q_KS_CAN_AUTHORIZE_SUBMISSION=false
+POST_29Q_KS_IS_DURABLE_FILEGATE=false
+DURABLE_FILEGATE_ROLE=RESTART_CAPABLE_EXECUTION_SIDE_PERMISSION_AUTHORITY
+DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=false
+MAPPER_TYPED_SAFETY_CONTRACT=true
+LEGACY_STRING_HEURISTIC_STATUS=COMPATIBILITY_DEBT_RETAINED
+SIDESTATE_RESTORE_INVALID_VALUE_FAILS_CLOSED=true
+SIDESTATE_RESTORE_NO_SILENT_EXCEPTION_SWALLOW=true
+LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
+FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+LIVE_RESTART_RECONSTRUCTED=false
+DURABLE_PRE_RESTART_HANDOFF_PRESENT=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+Adjudicated owners, one concern each:
+
+1. Strategy decision remains Double Play / `transition_state` /
+   `entry_exit_policy_v0`. `SideState.KILL_ALL` stays strategy state-machine
+   semantics and is not `FILEGATE_KILLED`.
+2. Pre-29Q Replay Safety remains the sole ENTER hard-block /
+   decision-admission authority before STEP-29Q.
+3. Post-29Q KS typed fields (`ReplayExecutionSafetyV1.emergency_boundary_active`)
+   are `POST_29Q_CONSUMPTION_GUARD`. They may HOLD mapper consumption or DENY
+   Full-Core composition of an already produced ENTER plan. They do **not**
+   rewrite `evidence.decision_outcome`. They do **not** authorize submission
+   or wire. They are **not** durable FILEGATE.
+4. Durable FILEGATE (`kill_switch_should_block_trading` + `KillSwitchState` +
+   `StatePersistence`) remains a separate execution-permission authority and
+   is **not** runtime-joined by this persist.
+
+`runtime_authority_effect=NONE` on the KS binder and on
+`ReplayExecutionSafetyV1` continues to mean no execution / order / credential /
+FILEGATE permission. It does **not** mean the typed emergency fields are
+consumption-inert. The consumption effect is named
+`POST_29Q_CONSUMPTION_VALIDATION` / `ENTER_CONSUMPTION_BLOCK`.
+
+The mapper legacy reason-string fallback remains
+`COMPATIBILITY_DEBT_RETAINED` for hosts that do not supply
+`ReplayExecutionSafetyV1`. Productive Integrated Replay always supplies the
+typed contract. Full-Core `_SAFETY_MARKERS` string consumption remains
+CHAR-3 compatibility debt and is not FILEGATE.
+
+Cap-7.2 host restart restore of persisted `SideState` is typed and
+fail-closed. Cap 6.2 forbids silent reinitialization; an invalid / unknown /
+unparseable persisted SideState raises `SIDESTATE_RESTORE_ALPHA_BLOCKED`
+before alpha / decision compute. No implicit fallback SideState. No silent
+`except: pass`. Valid restart / scope persist semantics are unchanged.
+`ScopeDirectionState` restore is out of this Owner-GO scope.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.B.POST_29Q_KS_BOUNDARY_AND_SIDESTATE_RESTORE_HARDENING_V1
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

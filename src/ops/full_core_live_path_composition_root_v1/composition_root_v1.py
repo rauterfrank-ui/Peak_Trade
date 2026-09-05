@@ -28,6 +28,11 @@ from trading.master_v2.double_play_entry_exit_policy_v0 import DecisionOutcome
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     IntegratedOfflineReplayResultV1,
 )
+from trading.master_v2.replay_execution_safety_contract_v1 import (
+    ReplayExecutionSafetyV1,
+    typed_post_29q_consumption_guard_blocks_enter_v1,
+    typed_pre_29q_entry_blocked_v1,
+)
 
 _ENTER = frozenset({DecisionOutcome.ENTER_LONG.value, DecisionOutcome.ENTER_SHORT.value})
 _HOLD_LIKE = frozenset(
@@ -120,11 +125,11 @@ def compose_core_live_execution_intent_v1(
     if reasons & _SAFETY_MARKERS:
         return _deny("REPLAY_SAFETY_DENY")
     typed_safety = getattr(replay, "replay_execution_safety", None)
-    if typed_safety is not None and outcome in _ENTER:
-        if bool(getattr(typed_safety, "entry_blocked", False)) or bool(
-            getattr(typed_safety, "emergency_boundary_active", False)
-        ):
+    if isinstance(typed_safety, ReplayExecutionSafetyV1) and outcome in _ENTER:
+        if typed_pre_29q_entry_blocked_v1(typed_safety):
             return _deny("REPLAY_SAFETY_DENY")
+        if typed_post_29q_consumption_guard_blocks_enter_v1(typed_safety):
+            return _deny("POST_29Q_CONSUMPTION_GUARD")
 
     intent = intermediate.canonical_order_intent
     if outcome in _ENTER and intent is None:

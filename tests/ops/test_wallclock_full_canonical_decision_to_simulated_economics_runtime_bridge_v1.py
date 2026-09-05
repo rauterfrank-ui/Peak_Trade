@@ -72,7 +72,8 @@ def test_full_call_graph_executes_with_fill_and_persistent_portfolio() -> None:
     assert all(c.orders_authorized is False for c in cycles)
     assert all(c.live_authorized is False for c in cycles)
     assert all(set(REQUIRED_CALL_GRAPH).issubset(set(c.call_graph)) for c in cycles)
-    assert CALL_GRAPH_V1 == REQUIRED_CALL_GRAPH
+    # CALL_GRAPH_V1 is a superset: Cap 7.2 activation/no-order prefix nodes are extra.
+    assert set(REQUIRED_CALL_GRAPH).issubset(CALL_GRAPH_V1)
 
     # Cap 1.1+ productive host may remain observe-only on this synthetic mid path;
     # Cap 2.4 preserves no-order authority invariants and call-graph completeness.

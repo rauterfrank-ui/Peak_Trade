@@ -2600,6 +2600,7 @@ entities:
     modified_by: PENDING_CHANGE
     source_paths:
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/sidestate_restore_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py
     evidence_sources:
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
@@ -3060,8 +3061,11 @@ entities:
       - src/trading/master_v2/replay_execution_safety_contract_v1.py
       - docs/system_atlas/census/master_v2_semantic_map.yaml
     notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml.
-      Typed ReplayExecutionSafetyV1 is mapper-facing evidence, not FILEGATE
-      and not a second compute owner. Implementation is not activation.
+      Typed ReplayExecutionSafetyV1 is mapper-facing Safety view, not FILEGATE
+      and not a second compute owner. Post-29Q KS projection is
+      POST_29Q_CONSUMPTION_GUARD (consumption HOLD/DENY of an already produced
+      ENTER plan); it does not rewrite decision_outcome and does not grant
+      submission/wire permission. Implementation is not activation.
 
   - id: RUNTIME_COMPONENT:mv2_parity_gap_assessment
     kind: RUNTIME_COMPONENT
@@ -3145,7 +3149,11 @@ entities:
     evidence_sources:
       - src/trading/master_v2/killswitch_boundary_offline_replay_binding_adapter_v0.py
       - docs/system_atlas/census/master_v2_semantic_map.yaml
-    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml.
+      Offline KS binder produces post-29Q evidence/mode fields with
+      runtime_authority_effect=NONE (no execution/FILEGATE permission). Typed
+      consumption is POST_29Q_CONSUMPTION_GUARD in ReplayExecutionSafetyV1.
+      Implementation is not activation.
 
   - id: CHILD:nested_structural_child
     kind: CHILD

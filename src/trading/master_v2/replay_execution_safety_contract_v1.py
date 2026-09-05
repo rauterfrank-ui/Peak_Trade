@@ -5,7 +5,13 @@ Derives from existing Replay Safety (pre-29Q) and Replay KS evidence (post-29Q).
 Does not change decision_outcome. Does not grant execution permission.
 Does not read durable FILEGATE / StatePersistence.
 
-RUNTIME_AUTHORITY_EFFECT=NONE
+Pre-29Q Replay Safety remains the sole ENTER hard-block / decision-admission
+authority before 29Q. Post-29Q KS typed fields are a POST_29Q_CONSUMPTION_GUARD:
+they may HOLD/DENY consumption of an already produced ENTER plan. They are not
+FILEGATE, not submission/wire permission, and not a second decision owner.
+
+runtime_authority_effect=NONE means no execution/order/credential/FILEGATE
+permission. It does not mean the typed emergency fields are consumption-inert.
 """
 
 from __future__ import annotations
@@ -25,11 +31,24 @@ from trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0 import (
 REPLAY_EXECUTION_SAFETY_CONTRACT_VERSION = "v1"
 REPLAY_EXECUTION_SAFETY_CONTRACT_OWNER = "trading.master_v2.replay_execution_safety_contract_v1"
 LEGACY_STRING_HEURISTIC_FALLBACK = "LEGACY_STRING_HEURISTIC_FALLBACK"
+LEGACY_STRING_HEURISTIC_STATUS = "COMPATIBILITY_DEBT_RETAINED"
+POST_29Q_CONSUMPTION_GUARD_ROLE = "POST_29Q_CONSUMPTION_GUARD"
+POST_29Q_ROLE_NONE = "NONE"
+CONSUMPTION_GUARD_EFFECT_ENTER_BLOCK = "ENTER_CONSUMPTION_BLOCK"
+CONSUMPTION_GUARD_EFFECT_NONE = "NONE"
+PRE_29Q_REPLAY_SAFETY_REASON = "PRE_29Q_REPLAY_SAFETY"
+POST_29Q_CONSUMPTION_GUARD_REASON = "POST_29Q_CONSUMPTION_GUARD"
 
 
 @dataclass(frozen=True)
 class ReplayExecutionSafetyV1:
-    """Mapper-facing typed Safety/Emergency view. Not FILEGATE. Not decision owner."""
+    """Mapper-facing typed Safety/Emergency view. Not FILEGATE. Not decision owner.
+
+    entry_blocked = pre-29Q Replay Safety admission.
+    emergency_boundary_active = post-29Q consumption-guard signal.
+    runtime_authority_effect=NONE = no execution/order/credential/FILEGATE permission.
+    post_29q_role / consumption_guard_effect name the post-29Q consumption role.
+    """
 
     entry_blocked: bool
     emergency_boundary_active: bool
@@ -41,6 +60,8 @@ class ReplayExecutionSafetyV1:
     source_refs: Tuple[str, ...]
     runtime_authority_effect: str = RUNTIME_AUTHORITY_EFFECT_NONE
     contract_version: str = REPLAY_EXECUTION_SAFETY_CONTRACT_VERSION
+    post_29q_role: str = POST_29Q_ROLE_NONE
+    consumption_guard_effect: str = CONSUMPTION_GUARD_EFFECT_NONE
 
 
 def derive_replay_execution_safety_v1(
@@ -50,7 +71,8 @@ def derive_replay_execution_safety_v1(
 ) -> ReplayExecutionSafetyV1:
     """Project existing Safety + KS evidence into an explicit typed contract.
 
-    No new decision semantics. KS remains evidence/mode taxonomy.
+    No new decision semantics. Does not rewrite decision_outcome.
+    Post-29Q KS projection is POST_29Q_CONSUMPTION_GUARD, not FILEGATE.
     """
     safety_hard = tuple(safety_boundary.hard_block_reasons) if safety_boundary is not None else ()
     safety_reasons = tuple(safety_boundary.reason_codes) if safety_boundary is not None else ()
@@ -95,6 +117,12 @@ def derive_replay_execution_safety_v1(
         and ks_authority == RUNTIME_AUTHORITY_EFFECT_NONE
         else RUNTIME_AUTHORITY_EFFECT_NONE
     )
+    post_29q_role = (
+        POST_29Q_CONSUMPTION_GUARD_ROLE if killswitch_boundary is not None else POST_29Q_ROLE_NONE
+    )
+    consumption_guard_effect = (
+        CONSUMPTION_GUARD_EFFECT_ENTER_BLOCK if emergency_active else CONSUMPTION_GUARD_EFFECT_NONE
+    )
     return ReplayExecutionSafetyV1(
         entry_blocked=bool(safety_hard),
         emergency_boundary_active=emergency_active,
@@ -105,6 +133,8 @@ def derive_replay_execution_safety_v1(
         reason_codes=reason_codes,
         source_refs=tuple(source_refs),
         runtime_authority_effect=authority,
+        post_29q_role=post_29q_role,
+        consumption_guard_effect=consumption_guard_effect,
     )
 
 
@@ -121,6 +151,19 @@ def legacy_string_heuristic_safety_blocked_v1(
     ) or outcome in {"blocked"}
 
 
+def typed_pre_29q_entry_blocked_v1(safety: ReplayExecutionSafetyV1) -> bool:
+    """Pre-29Q Replay Safety hard-block. Not post-29Q KS. Not FILEGATE."""
+    return bool(safety.entry_blocked)
+
+
+def typed_post_29q_consumption_guard_blocks_enter_v1(safety: ReplayExecutionSafetyV1) -> bool:
+    """Post-29Q consumption guard: block ENTER consumption without rewriting the plan."""
+    return bool(safety.emergency_boundary_active)
+
+
 def typed_enter_hold_required_v1(safety: ReplayExecutionSafetyV1) -> bool:
-    """ENTER must HOLD when Safety hard-blocked or Replay emergency boundary is active."""
-    return bool(safety.entry_blocked or safety.emergency_boundary_active)
+    """ENTER consumption HOLD when pre-29Q Safety hard-blocked or post-29Q guard active."""
+    return bool(
+        typed_pre_29q_entry_blocked_v1(safety)
+        or typed_post_29q_consumption_guard_blocks_enter_v1(safety)
+    )
