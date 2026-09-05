@@ -288,6 +288,66 @@ Attestation: [`docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_
 
 This class does not create trading, selection, risk, execution, or venue authority.
 
+## 5.5 Explicit Owner-Adjudicated Productive Mapping-Contract Runtime Bind (v1)
+
+Semantisch eigene Admission-Klasse für explizit Owner-adjudizierte produktive
+Bindung eines bereits adjudizierten Directional-Mapping-Vertrags in benannte
+Master-V2-Runtime-Owner. Keine Wiring-Klasse. Keine Restoration-Klasse. Keine
+Decommission-Klasse. Keine Nonproductive-Contract-Change-Klasse. Keine Standing
+Authorization. Keine PR-/Branch-Bindung. Keine Live-/Testnet-/Canary-/Order-/
+Execution-Autorität.
+
+```text
+AUTHORIZED_SCOPE_CLASS=EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_V1
+MUTATION_PURPOSE_CLASS=PRODUCTIVE_CANONICAL_MAPPING_CONTRACT_RUNTIME_BIND
+TOKEN_ALONE_IS_INSUFFICIENT=true
+OWNER_APPROVED_ALONE_IS_INSUFFICIENT=true
+PR_SPECIFIC_EXCEPTION=false
+BRANCH_SPECIFIC_EXCEPTION=false
+BLANKET_ALLOWLIST=false
+DIRECTORY_GRANT=false
+BROAD_MASTER_V2_GRANT=false
+STANDING_AUTHORIZATION_ALLOWED=false
+UNKNOWN_FIELD_FAIL_CLOSED=true
+MASTER_V2_MUTATION_ALLOWED=false
+CANONICAL_TRADING_LOGIC_MUTATION_ALLOWED=false
+```
+
+Precedence: Technical Wiring, then Decommission, then Restoration, then this
+class on remaining forbidden matches, then Nonproductive Owner-Adjudication on
+remaining unclassified paths. This class must not consume unclassified
+nonproductive paths.
+
+Joint validation (Token oder Owner-Approval allein reicht nicht):
+
+- contract version, scope, token, purpose class
+- class attestation file and mapping contract spec
+- exact-file `allowed_paths` when a grant is active
+- empty `allowed_paths` / `required_runtime_paths` / digest / base SHA while `grant_active=false`
+- `required_runtime_paths` is an exact-file subset of `allowed_paths` and present in the current diff
+- `authorized_evidence_digest` required and SHA-256-bound when a grant is active
+  (reuses `decommission_evidence_digest_v1`)
+- `bound_diff_base_sha` required when a grant is active
+- `excluded_paths` absent from the current diff
+- `forbidden_diff_prefixes` fail closed (`src&#47;execution&#47;`, `src&#47;risk&#47;`,
+  `src&#47;ops&#47;full_core_live_path_composition_root_v1&#47;`)
+- unknown JSON fields fail closed
+- no PR-/Branch-Hardcode
+- no directory / path-prefix / broad MASTER_V2 grant
+- no required-check waiver / branch-protection bypass
+- does not waive `MASTER_V2_MUTATION_ALLOWED=false`
+
+Offline evidence scope is `DECLARED_OWNER_POLICY`:
+`CONTRACT_RUNTIME_BINDING_PROVEN_SCOPE=OFFLINE_FIXTURE_PROOF_ONLY_NOT_LIVE`.
+
+Closeout: after a digest-bound slice merges, a follow-up must set
+`grant_active=false` and empty the grant fields. The class remains; the grant
+does not.
+
+Owner: [`config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json`](../../config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json)
+
+Attestation: [`docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_AUTHORIZATION_V1.md`](../ops/specs/EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_AUTHORIZATION_V1.md)
+
 ## 6. Boundary-Report (Pflicht für Research/Economic/Diagnostics/Cost/Target/Feature/Parameter-PRs)
 
 Maschinenlesbar via Guard-CLI. Pflichtfelder:
@@ -319,6 +379,9 @@ Maschinenlesbar via Guard-CLI. Pflichtfelder:
 - `owner_adjudicated_nonproductive_contract_change_authorization_applied`
 - `owner_adjudicated_nonproductive_contract_change_authorization_version`
 - `owner_adjudicated_nonproductive_contract_change_mutation_purpose_class`
+- `productive_mapping_contract_runtime_bind_authorization_applied`
+- `productive_mapping_contract_runtime_bind_authorization_version`
+- `productive_mapping_contract_runtime_bind_mutation_purpose_class`
 
 ## 7. Guard
 
@@ -335,6 +398,7 @@ CI: Lint Gate (always-run). Positiv- und Negativtests:
 - `tests/governance/test_historically_attested_current_system_semantic_restoration_authorization_v1.py`
 - `tests/governance/test_semantics_neutral_decommission_authorization_v1.py`
 - `tests/governance/test_explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.py`
+- `tests/governance/test_explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.py`
 
 ## 8. Normative Referenz
 

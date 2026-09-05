@@ -325,6 +325,7 @@ config/governance/technical_canonical_wiring_authorization_v1.json
 config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json
 config/governance/semantics_neutral_decommission_authorization_v1.json
 config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json
+config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json
 src/governance/economic_diagnostic_optimization_boundary_v0.py
 scripts/ops/check_economic_diagnostic_optimization_boundary_guard_v0.py
 ```
@@ -406,6 +407,33 @@ MASTER_V2_MUTATION_ALLOWED=false
 
 Owner: `config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json`.
 Attestation: `docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE_AUTHORIZATION_V1.md`.
+
+Eng begrenzte Explicit-Owner-Adjudicated Productive-Mapping-Contract-Runtime-Bind-Authorization
+(`EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_V1`) — **eigene
+Klasse, kein Wiring, keine Restoration, kein Decommission, keine Nonproductive
+Contract Change, keine Standing Authorization, keine PR-/Branch-Bindung**:
+
+```text
+MAPPING_BIND_AUTHORIZATION_VERSION=explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1
+AUTHORIZED_SCOPE_CLASS=EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_V1
+MUTATION_PURPOSE_CLASS=PRODUCTIVE_CANONICAL_MAPPING_CONTRACT_RUNTIME_BIND
+TOKEN_ALONE_INSUFFICIENT=true
+OWNER_APPROVED_ALONE_INSUFFICIENT=true
+AUTHORIZED_EVIDENCE_DIGEST_REQUIRED=true
+BOUND_DIFF_BASE_SHA_REQUIRED=true
+UNKNOWN_FIELD_FAIL_CLOSED=true
+STANDING_AUTHORIZATION_ALLOWED=false
+PR_SPECIFIC_EXCEPTION=false
+BRANCH_SPECIFIC_EXCEPTION=false
+BLANKET_ALLOWLIST=false
+DIRECTORY_GRANT=false
+MASTER_V2_MUTATION_ALLOWED=false
+CANONICAL_TRADING_LOGIC_MUTATION_ALLOWED=false
+GRANT_ACTIVE=false
+```
+
+Owner: `config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json`.
+Attestation: `docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_AUTHORIZATION_V1.md`.
 
 ## 13. Trend Following v2 Recovery Wiring (v0)
 

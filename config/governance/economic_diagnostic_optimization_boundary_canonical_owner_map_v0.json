@@ -1998,7 +1998,8 @@
     "config/governance/technical_canonical_wiring_authorization_v1.json",
     "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json",
     "config/governance/semantics_neutral_decommission_authorization_v1.json",
-    "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json"
+    "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json",
+    "config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json"
   ],
   "technical_canonical_wiring_authorization": {
     "authorized_scope_class": "TECHNICAL_CANONICAL_WIRING_ONLY",
@@ -2025,5 +2026,12 @@
     "mutation_purpose_class": "OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE",
     "contract_path": "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json",
     "note": "Exact-file evidence-digest-bound Owner-adjudicated nonproductive contract change. Owner adjudication is necessary and not sufficient. Safety predicates remain machine-validated. Not a research path-prefix allowlist. Not decommission, restoration, technical wiring, or trading authority."
+  },
+  "explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization": {
+    "authorized_scope_class": "EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_V1",
+    "mutation_purpose_class": "PRODUCTIVE_CANONICAL_MAPPING_CONTRACT_RUNTIME_BIND",
+    "contract_path": "config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json",
+    "grant_active": false,
+    "note": "Exact-file evidence-digest-bound Owner-adjudicated productive mapping-contract runtime bind. Distinct from wiring, restoration, decommission, and nonproductive contract change. Inactive by default. Active grants require SHA-256 decommission_evidence_digest_v1 over exact files and the bound diff-base SHA. Does not waive MASTER_V2_MUTATION_ALLOWED=false. Not a PR or branch exception."
   }
 }

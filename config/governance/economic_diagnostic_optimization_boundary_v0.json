@@ -9,6 +9,7 @@
   "technical_canonical_wiring_authorization": "config/governance/technical_canonical_wiring_authorization_v1.json",
   "historically_attested_current_system_semantic_restoration_authorization": "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json",
   "semantics_neutral_decommission_authorization": "config/governance/semantics_neutral_decommission_authorization_v1.json",
+  "explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization": "config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json",
   "explicit_owner_adjudicated_nonproductive_contract_change_authorization": "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json",
   "parallel_ssot_created": false,
   "runtime_effect": "NONE",
@@ -91,7 +92,7 @@
     },
     {
       "rule_id": "FORBIDDEN_SURFACE_FAIL_CLOSED",
-      "condition": "change_affects_any_forbidden_mutation_surface AND NOT valid_technical_canonical_wiring_authorization AND NOT valid_semantics_neutral_decommission_authorization AND NOT valid_historically_attested_restoration_authorization",
+      "condition": "change_affects_any_forbidden_mutation_surface AND NOT valid_technical_canonical_wiring_authorization AND NOT valid_semantics_neutral_decommission_authorization AND NOT valid_historically_attested_restoration_authorization AND NOT valid_explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization",
       "admissible": false,
       "fail_closed": true
     },
@@ -130,6 +131,26 @@
       "risk_sizing_semantics_changed_false_required": false,
       "binds_to_restoration_target": true,
       "binds_to_current_a06_code": false,
+      "master_v2_mutation_allowed_default_preserved": true
+    },
+    {
+      "rule_id": "EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_AUTHORIZATION",
+      "condition": "forbidden_surface_match AND NOT valid_technical_canonical_wiring_authorization_covers_all_matched_paths AND NOT valid_semantics_neutral_decommission_authorization_covers_all_matched_paths AND NOT valid_historically_attested_restoration_authorization_covers_all_matched_paths AND valid_explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_covers_exact_remaining_forbidden_paths AND authorized_evidence_digest_matches_current_canonical_diff AND bound_diff_base_sha_matches AND required_runtime_paths_present_in_diff AND excluded_paths_absent_from_diff AND forbidden_diff_prefixes_absent AND mutation_purpose_class_is_productive_canonical_mapping_contract_runtime_bind",
+      "authorized_scope_class": "EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_V1",
+      "mutation_purpose_class": "PRODUCTIVE_CANONICAL_MAPPING_CONTRACT_RUNTIME_BIND",
+      "admissible": true,
+      "fail_closed": false,
+      "token_alone_insufficient": true,
+      "owner_approved_alone_insufficient": true,
+      "exact_file_scope_only": true,
+      "authorized_evidence_digest_required": true,
+      "bound_diff_base_sha_required": true,
+      "unknown_field_fail_closed": true,
+      "pr_specific_exception": false,
+      "branch_specific_exception": false,
+      "blanket_allowlist": false,
+      "directory_grant": false,
+      "standing_authorization_allowed": false,
       "master_v2_mutation_allowed_default_preserved": true
     },
     {
@@ -184,7 +205,10 @@
     "semantics_neutral_decommission_proven_predicates",
     "owner_adjudicated_nonproductive_contract_change_authorization_applied",
     "owner_adjudicated_nonproductive_contract_change_authorization_version",
-    "owner_adjudicated_nonproductive_contract_change_mutation_purpose_class"
+    "owner_adjudicated_nonproductive_contract_change_mutation_purpose_class",
+    "productive_mapping_contract_runtime_bind_authorization_applied",
+    "productive_mapping_contract_runtime_bind_authorization_version",
+    "productive_mapping_contract_runtime_bind_mutation_purpose_class"
   ],
   "governance_contract_self_paths": [
     "config/governance/economic_diagnostic_optimization_boundary_v0.json",
@@ -193,19 +217,23 @@
     "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json",
     "config/governance/semantics_neutral_decommission_authorization_v1.json",
     "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json",
+    "config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json",
     "docs/governance/ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_LOGIC_IMMUTABILITY_CONTRACT_V0.md",
     "docs/ops/specs/HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_ADMISSION_V1.md",
     "docs/ops/specs/SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1.md",
     "docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE_AUTHORIZATION_V1.md",
+    "docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_AUTHORIZATION_V1.md",
     "src/governance/economic_diagnostic_optimization_boundary_v0.py",
     "src/governance/semantics_neutral_decommission_authorization_v1.py",
     "src/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.py",
+    "src/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.py",
     "scripts/ops/check_economic_diagnostic_optimization_boundary_guard_v0.py",
     "scripts/governance/materialize_economic_diagnostic_optimization_boundary_contract_evidence_v0.py",
     "tests/governance/test_economic_diagnostic_optimization_boundary_guard_v0.py",
     "tests/governance/test_technical_canonical_wiring_authorization_bound_to_boundary_guard_v1.py",
     "tests/governance/test_historically_attested_current_system_semantic_restoration_authorization_v1.py",
     "tests/governance/test_semantics_neutral_decommission_authorization_v1.py",
-    "tests/governance/test_explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.py"
+    "tests/governance/test_explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.py",
+    "tests/governance/test_explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.py"
   ]
 }

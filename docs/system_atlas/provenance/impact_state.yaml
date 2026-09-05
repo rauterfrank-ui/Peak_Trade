@@ -9,32 +9,20 @@ modified_by: PENDING_CHANGE
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Directional mapping core contract persist: docs-only target policy and
-  blast-radius record. Runtime unbound. Productive SHORT trigger unchanged
-  until a later GO. Freeze exception unauthorized. MODEL_C runtime unauthorized.
-  ARMED residual unresolved. last_active_side bind unauthorized. MODEL_B remains
-  the productive baseline. CLOSURE:live_readiness is inspected because MOT
-  documents the runbook; this pointer does not authorize Live. Atlas is not
-  canonical authority.
+  Inventory the fifth Economic Guard admission class for an Owner-adjudicated
+  productive mapping-contract runtime bind. Committed grant remains inactive.
+  Does not waive MASTER_V2_MUTATION_ALLOWED=false. Does not authorize live,
+  testnet, canary, orders, or execution. Atlas is not canonical authority.
 changed_entities:
-  - NAVIGATION_INDEX:map_of_truth
-  - RUNBOOK:canonical_master_runbook
-  - TERM:map_of_truth
-changed_relations:
-  - REL:a_map_documents_runbook
-  - REL:s_map_navigates_runbook
+  - GUARD:economic_diagnostic_optimization_boundary
+changed_relations: []
 new_relations: []
 removed_relations: []
-affected_dependency_closures:
-  - CLOSURE:live_readiness
+affected_dependency_closures: []
 affected_okx_surfaces: []
-affected_safety_surfaces: []
+affected_safety_surfaces:
+  - GUARD:economic_diagnostic_optimization_boundary
 affected_schemas: []
 review_required_items: []
 reviewed_ids:
-  - id: NAVIGATION_INDEX:map_of_truth
-  - id: RUNBOOK:canonical_master_runbook
-  - id: TERM:map_of_truth
-  - id: REL:a_map_documents_runbook
-  - id: REL:s_map_navigates_runbook
-  - id: CLOSURE:live_readiness
+  - id: GUARD:economic_diagnostic_optimization_boundary
