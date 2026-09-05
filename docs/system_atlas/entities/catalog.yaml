@@ -3343,7 +3343,7 @@ entities:
     notes: Fail-closed / decommission token cleanup on existing contracts, including current-system Kraken remnant removal. No new live, testnet, or canary capability. Atlas is not trading authority.
 
   - id: GUARD:economic_diagnostic_optimization_boundary
-    # inventory: fifth mapping-bind grant closed; sixth generator-fallback class slice-bound
+    # inventory: fifth mapping-bind grant closed; sixth generator-fallback slice grant closed; grant_active=false; class remains
     kind: GUARD
     name: Economic diagnostic optimization boundary guard
     epistemic_class: FORENSIC_RAW
