@@ -98,7 +98,9 @@ FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=true
 NEXT_STEP_REQUIRES_OWNER_GO=true
 ```
 
-Current remaining gap after the Fresh Pretrade Runtime GET seam:
+Current remaining gap after the Fresh Pretrade Runtime GET seam
+(superseded for remaining admission-chain closeout by
+`FULL_CORE_REMAINING_ADMISSION_CHAIN_CLOSEOUT_V1`):
 
 ```text
 EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=LIVE_ACCOUNT_BOUND_IMPLEMENTED
@@ -107,9 +109,21 @@ FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=true
 NEXT_STEP_REQUIRES_OWNER_GO=true
 ```
 
+Current remaining gap after the remaining admission-chain closeout:
+
+```text
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=LIVE_ENABLED
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_WITHOUT_LIVE_ENABLED_OWNER_GO
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
 Canary observation modules remain `REUSABLE_MECHANISM_ONLY` for economic
 consumers. They are not wired as Full-Core 29Q consumers. The Fresh GET join
 is bound in
 [`FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md`](FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md).
-LIVE_ACCOUNT_BOUND live values, LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED,
-and LiveExecutionPort remain later layers.
+The remaining admission-chain closeout, including typed LIVE_ACCOUNT_BOUND,
+is bound in
+[`FULL_CORE_REMAINING_ADMISSION_CHAIN_CLOSEOUT_V1.md`](FULL_CORE_REMAINING_ADMISSION_CHAIN_CLOSEOUT_V1.md).
+LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED and LiveExecutionPort remain
+later Live-authorization layers.

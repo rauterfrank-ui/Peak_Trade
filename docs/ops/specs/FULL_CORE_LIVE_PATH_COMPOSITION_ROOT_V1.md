@@ -76,7 +76,7 @@ ExecutionAdmissionDecisionV1 = sole Full-Core admission join at
   FROZEN_OFFLINE_PRETRADE in Live-admission context => NOT_ADMITTED
 
 CURRENT_CAPITAL_RISK_MODE=OFFLINE_ALGEBRA
-LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
+LIVE_ACCOUNT_BOUND_IMPLEMENTED=true
 FROZEN_OFFLINE_PRETRADE_EVIDENCE != FRESH_GET_PER_PRETRADE_DECISION
 DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=true
 OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED=true
@@ -96,13 +96,19 @@ at halt as `OwnerOneShotPermitEvidenceV1`; trusted permit does not admit Live
 and does not override FILEGATE. Fresh Pretrade Runtime GET evidence is joined
 at halt as `FreshPretradeRuntimeGetEvidenceV1`; trusted GET evidence does not
 admit Live and does not override FILEGATE, permit, or standing Live gates.
+Typed LIVE_ACCOUNT_BOUND evidence is joined at halt as
+`LiveAccountBoundEvidenceV1`; trusted bound evidence does not admit Live
+and does not override FILEGATE, permit, GET, or standing Live gates.
 
 ## Remaining gap
 
 `construct_live_execution_port_v1` remains forbidden. The allowed offline
 boundary is the halt surface above. Historical canary POST remains
 `CANARY_VENUE_PROOF_ONLY` and is not `FULL_CORE_SYSTEM_E2E`.
-`LIVE_ACCOUNT_BOUND_IMPLEMENTED=false`. Standing Live gates remain false.
+`LIVE_ACCOUNT_BOUND_IMPLEMENTED=true`. Standing Live gates remain false.
+`FULL_CORE_OFFLINE_E2E_PROVEN=true` uses injected non-productive evidence and
+is not `FULL_CORE_SYSTEM_E2E_PROVEN`. Remaining earliest boundary is
+`LIVE_ENABLED`.
 
 Path identity and the live-admission gap DAG are bound in
 [`FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md`](FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md).

@@ -145,6 +145,7 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
             "OWNER_ONE_SHOT_EXECUTION_PERMIT",
             "FRESH_GET_PER_PRETRADE_DECISION",
             "PRIVATE_AUTH_PREFLIGHT",
+            "LIVE_ACCOUNT_BOUND",
         }:
             assert node.wiring_authorized is True
         else:
@@ -160,12 +161,17 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
     assert permit.wiring_authorized is True
     assert permit.standing_live_gates_would_change is False
     assert permit.fresh_external_evidence_required is False
+    bound = gap_node_v1("LIVE_ACCOUNT_BOUND")
+    assert bound.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
+    assert bound.wiring_authorized is True
+    assert bound.standing_live_gates_would_change is False
+    assert bound.fresh_external_evidence_required is False
     assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (
         EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY
     )
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == ("LIVE_ACCOUNT_BOUND_IMPLEMENTED")
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == ("LIVE_ENABLED")
     assert dag["MAX_SAFE_REPO_INTERNAL_NEXT_SLICE"] == MAX_SAFE_REPO_INTERNAL_NEXT_SLICE
-    assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is True
+    assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is False
     assert dag["CANARY_29Q_CONSUMER_WIRING_AUTHORIZED"] is False
     reusable = set(dag["REUSABLE_MECHANISM_ONLY_COMPONENTS"])
     assert "MAX_AVAILABLE" in reusable

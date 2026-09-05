@@ -3642,6 +3642,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/overclaim_guards_v1.py
       - src/ops/full_core_live_path_composition_root_v1/owner_one_shot_permit_v1.py
       - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
@@ -3664,11 +3665,13 @@ entities:
       - tests/ops/test_full_core_durable_filegate_join_seam_v1.py
       - tests/ops/test_full_core_owner_one_shot_typed_permit_seam_v1.py
       - tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py
+      - tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
       - docs/ops/specs/FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_V1.md
       - docs/ops/specs/FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md
+      - docs/ops/specs/FULL_CORE_REMAINING_ADMISSION_CHAIN_CLOSEOUT_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -3945,6 +3948,33 @@ entities:
       Injected test doubles cannot claim venue contact. Canary HTTP is
       not Full-Core transport. Atlas is not canonical authority.
       ATLAS_AUTHORITY=NONE.
+
+  - id: GATE:full_core_live_account_bound_v1
+    kind: GATE
+    name: Full-core LIVE_ACCOUNT_BOUND seam v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    fail_closed: true
+    source_paths:
+      - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py
+    source_symbols:
+      - evaluate_live_account_bound_v1
+      - join_live_account_bound_into_admission_inputs_v1
+      - halt_at_live_execution_boundary_v1
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
+      - tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py
+      - docs/ops/specs/FULL_CORE_REMAINING_ADMISSION_CHAIN_CLOSEOUT_V1.md
+    notes: >-
+      Joins typed LIVE_ACCOUNT_BOUND identity evidence into Full-Core
+      admission. Fresh GET success alone does not prove bound. String
+      passthrough is not authority. Does not arm Live. Does not POST.
+      Does not admit. Does not override FILEGATE, permit, or GET.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:kill_switch_durable_filegate_v1
     # KS_THIN_01 inventory: unwired auto-trip library removed. ATLAS_AUTHORITY=NONE
