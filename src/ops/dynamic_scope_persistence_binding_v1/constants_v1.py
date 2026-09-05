@@ -273,9 +273,15 @@ DOMAIN_TO_PERSISTENCE_MATRIX = (
     },
     {
         "domain_field": "scope_direction_state",
-        "canonical_owner": OWNER,
-        "classification": "PERSIST_DIRECTLY",
-        "reason": "directional context restore",
+        "canonical_owner": (
+            "trading.master_v2.integrated_offline_trading_logic_replay_v1."
+            "scope_direction_from_side_state_v1"
+        ),
+        "classification": "REBUILD_DETERMINISTICALLY",
+        "reason": (
+            "derived from SideState mapping; Neutral/CHOP/KILL_ALL fallback LONG; "
+            "not restart-authoritative"
+        ),
     },
     {
         "domain_field": "side_state",

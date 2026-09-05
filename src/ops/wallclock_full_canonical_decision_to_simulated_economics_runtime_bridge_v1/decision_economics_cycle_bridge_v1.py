@@ -224,6 +224,7 @@ from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     IntegratedOfflineReplayPoliciesV1,
     build_integrated_offline_replay_input_v1,
     run_integrated_offline_trading_logic_replay_v1,
+    scope_direction_from_side_state_v1,
 )
 from trading.master_v2.suitability_binding_v1 import (
     SUITABILITY_RANKING_POLICY_VERSION,
@@ -1134,12 +1135,9 @@ def run_bridge_cycle_v1(
             raise RuntimeError(
                 "SIDESTATE_RESTORE_ALPHA_BLOCKED:" + exc.reason_code + ":" + exc.detail
             ) from exc
-        try:
-            state.scope_direction_state = ScopeDirectionState(
-                state.dynamic_scope_binding.scope_direction_state
-            )
-        except Exception:  # noqa: BLE001
-            pass
+        # Model 2: ScopeDirectionState is rebuilt from SideState. Persisted tokens
+        # are schema-compat only and must not affect generator orientation.
+        state.scope_direction_state = scope_direction_from_side_state_v1(state.side_state)
         if state.dynamic_scope_binding.price_path_tail and not state.mid_prices:
             state.mid_prices = [float(x) for x in state.dynamic_scope_binding.price_path_tail]
     # Only market samples (incl. duplicate/out-of-order classifications) append price path.
@@ -1503,7 +1501,7 @@ def run_bridge_cycle_v1(
                 "venue_flat": bool(state.venue_flat),
                 "has_open_position": not bool(state.venue_flat),
             },
-            scope_direction_state=str(state.scope_direction_state.value),
+            scope_direction_state=str(scope_direction_from_side_state_v1(state.side_state).value),
             side_state=str(state.side_state.value),
             host_trading_epoch=int(state.trading_epoch),
             price_path_tail=tuple(float(x) for x in state.mid_prices[-PRICE_PATH_MAX_LEN:]),

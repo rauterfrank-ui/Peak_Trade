@@ -7087,6 +7087,74 @@ CURRENT_CANONICAL_SECTION=11.2.1.B.POST_29Q_KS_BOUNDARY_AND_SIDESTATE_RESTORE_HA
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.C SCOPE_DIRECTION_STATE_MODEL_2_REBUILD_DETERMINISTICALLY_FROM_SIDESTATE_V1 (BOUND; OFFLINE CONTRACTS ONLY; NO WIRE; NO FILEGATE RUNTIME JOIN)
+
+Additive persist. Does **not** rewrite §11.2.1 standing Live flags, §11.13.5
+canary, or §11.14 ladder fields. Does **not** GET. Does **not** POST. Does
+**not** construct `LiveExecutionPort`. Does **not** arm Live. Does **not**
+join durable FILEGATE. Does **not** change Double Play `transition_state`.
+Does **not** change Entry/Exit, C3, Composition-matrix decision logic,
+RuntimeScopeState trailing, 29P, 29Q, or SideState fail-closed restore.
+
+Owner-GO
+`OWNER_GO=PEAK_TRADE_OWNER_GO_SCOPE_DIRECTION_STATE_MODEL_2_MINIMUM_ATOMIC_REPAIR_V1`
+(one-shot for this persist) binds Model 2: `ScopeDirectionState` is derived
+from `SideState` via `scope_direction_from_side_state_v1` and is **not**
+independent restart truth.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_SCOPE_DIRECTION_STATE_MODEL_2_MINIMUM_ATOMIC_REPAIR_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=SCOPE_DIRECTION_STATE_MODEL_2_REBUILD_V1
+CORE_LOGIC_CHANGE=false
+DECISION_AUTHORITY_UNCHANGED=true
+SOLE_COMPUTE_OWNER=run_integrated_offline_trading_logic_replay_v1
+SCOPE_DIRECTION_STATE_RESTART_AUTHORITY=DERIVED_NOT_PERSISTED_INDEPENDENT_TRUTH
+SCOPE_DIRECTION_STATE_REBUILD_OWNER=scope_direction_from_side_state_v1
+NEUTRAL_OBSERVE_CHOP_GUARD_BLOCK_KILL_ALL_FALLBACK=LONG
+NEUTRAL_PLUS_PERSISTED_SHORT_MUST_SURVIVE_RESTART=false
+PREVIOUS_DIRECTION_IS_RESTART_AUTHORITATIVE_HISTORY=false
+COMPOSITION_OVERLAY_CLASSIFICATION=IN_MEMORY_RUNTIME_CACHE_ONLY_NOT_RESTART_AUTHORITY
+COMPOSITION_OVERLAY_MAY_WRITE_PERSISTED_SCOPE_DIRECTION_STATE=false
+CAP62_SCOPE_DIRECTION_STATE_CLASSIFICATION=REBUILD_DETERMINISTICALLY
+SERIALIZATION_ADAPTER_MAY_INVENT_DIRECTION=false
+SCOPE_DIRECTION_STATE_FAIL_CLOSED_ANALOG_TO_SIDESTATE=false
+SIDESTATE_RESTORE_INVALID_VALUE_FAILS_CLOSED=true
+DOUBLE_PLAY_SIDE_STATE_OWNER=transition_state
+ENTRY_EXIT_OWNER=entry_exit_policy_v0
+POSITION_SIZING_OWNER=capital_risk_sizing_v1
+DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=false
+LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
+FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+LIVE_RESTART_RECONSTRUCTED=false
+DURABLE_PRE_RESTART_HANDOFF_PRESENT=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+Cap-7.2 host restart rebuilds `ScopeDirectionState` from the already
+fail-closed restored `SideState`. Mapped SideStates use the canonical
+mapping table. `NEUTRAL_OBSERVE`, `CHOP_GUARD_BLOCK`, and `KILL_ALL`
+rebuild to `LONG`. Persisted scope-direction tokens may remain for schema
+compatibility and must not affect generator orientation. Missing or
+name-form tokens (`LONG` / `SHORT`) are not restart inputs. Invalid
+tokens do not raise a ScopeDirection analog of
+`SIDESTATE_RESTORE_ALPHA_BLOCKED`. Composition `selected_side` overlay
+may update the in-memory session cursor and must not be the persist
+writer for this field.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/
+SPEC_OWNER=docs/ops/specs/DIRECTIONAL_MAPPING_CONTRACT_REPAIR_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.C.SCOPE_DIRECTION_STATE_MODEL_2_REBUILD_DETERMINISTICALLY_FROM_SIDESTATE_V1
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

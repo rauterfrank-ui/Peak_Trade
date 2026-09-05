@@ -99,7 +99,7 @@ class HostDynamicScopeBindingV1:
     last_market_event_time: Optional[float] = None
     last_accepted_observation_identity_digest: Optional[str] = None
     position_context: dict[str, Any] = field(default_factory=dict)
-    scope_direction_state: str = "LONG"
+    scope_direction_state: str = ""
     side_state: str = "neutral_observe"
     host_trading_epoch: int = 0
     price_path_tail: tuple[float, ...] = ()
