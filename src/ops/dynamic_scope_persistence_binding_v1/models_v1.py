@@ -257,7 +257,11 @@ class CanonicalDynamicScopeStateV1:
                 else str(payload["last_accepted_observation_identity_digest"])
             ),
             position_context=dict(payload.get("position_context") or {}),
-            scope_direction_state=str(payload.get("scope_direction_state") or "LONG"),
+            scope_direction_state=(
+                ""
+                if payload.get("scope_direction_state") is None
+                else str(payload.get("scope_direction_state"))
+            ),
             side_state=str(payload.get("side_state") or "neutral_observe"),
             host_trading_epoch=int(payload.get("host_trading_epoch") or 0),
             price_path_tail=tuple(float(x) for x in (payload.get("price_path_tail") or ())),
