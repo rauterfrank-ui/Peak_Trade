@@ -630,10 +630,10 @@ def test_snapshot_to_jsonable_switch_long_to_short_pending_prt_boundary() -> Non
 
 
 def test_snapshot_to_jsonable_switch_short_to_long_pending_prt_boundary() -> None:
-    _s, _st, t_pending = _ts(SideState.SHORT_ACTIVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    _s, _st, t_pending = _ts(SideState.SHORT_ACTIVE, ScopeEvent.DOWNSCOPE_CONFIRMED, EMPTY_ST, 0)
     assert _s == SideState.SWITCH_SHORT_TO_LONG_PENDING
     assert t_pending.allowed
-    assert t_pending.reason_code == "UPscope_SWITCH_PENDING"
+    assert t_pending.reason_code == "DOWNscope_SWITCH_PENDING"
     surv = evaluate_survival_envelope(_env_ok())
     meta = StrategyMetadata(
         strategy_id="json-switch-pending-short",
@@ -696,7 +696,7 @@ def test_snapshot_to_jsonable_switch_short_to_long_pending_prt_boundary() -> Non
     st_p = next(p for p in data["panels"] if p["name"] == "state_transition")
     assert st_p["status"] == "display_ready"
     assert st_p["severity_rank"] == 0
-    assert "UPscope_SWITCH_PENDING" in st_p["summary"]
+    assert "DOWNscope_SWITCH_PENDING" in st_p["summary"]
     assert st_p["blockers"] == []
     comp_p = next(p for p in data["panels"] if p["name"] == "composition")
     assert comp_p["status"] == "display_ready"
@@ -718,7 +718,7 @@ def test_snapshot_to_jsonable_switch_pending_blocked_side_prt_boundary() -> None
         ),
         (
             SideState.SWITCH_SHORT_TO_LONG_PENDING,
-            ScopeEvent.UPSCOPE_CONFIRMED,
+            ScopeEvent.DOWNSCOPE_CONFIRMED,
             SideState.SHORT_BLOCKED,
             "SHORT_BLOCKED",
             RequestedSide.SHORT_BEAR,

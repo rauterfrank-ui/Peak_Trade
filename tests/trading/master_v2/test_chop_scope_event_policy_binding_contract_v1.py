@@ -152,7 +152,7 @@ def test_multi_cycle_chop_continuity_and_recovery() -> None:
     assert st.chop_latched is False
     assert d2.reason_code == "CHOP_SCOPE_POLICY_CLEARED"
     # After recovery, switch path may proceed again
-    side, st, d3 = _ts(side, ScopeEvent.UPSCOPE_CONFIRMED, st, 3)
+    side, st, d3 = _ts(side, ScopeEvent.DOWNSCOPE_CONFIRMED, st, 3)
     assert d3.allowed is True
     assert side is SideState.SWITCH_SHORT_TO_LONG_PENDING
 

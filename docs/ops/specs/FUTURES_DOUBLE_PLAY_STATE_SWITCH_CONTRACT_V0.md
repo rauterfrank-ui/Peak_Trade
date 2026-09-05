@@ -2,7 +2,7 @@
 title: "Futures Double Play State-Switch Contract v0"
 status: "DRAFT"
 owner: "ops"
-last_updated: "2026-05-24"
+last_updated: "2026-09-05"
 docs_token: "DOCS_TOKEN_FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT_V0"
 ---
 
@@ -118,11 +118,11 @@ This contract **does not** redefine DSE vocabulary. Crosslink to DSE §9 for sco
 
 | DSE input | Side-switch role |
 |-----------|------------------|
-| `DOWNSCOPE_CONFIRMED` | **Required** prerequisite for Long→Short switch pipeline |
-| `UPSCOPE_CONFIRMED` | **Required** prerequisite for Short→Long switch pipeline |
+| `DOWNSCOPE_CONFIRMED` | **Required** prerequisite for Long→Short switch pipeline **and** for Short→Long while the generator is SHORT-oriented |
+| `UPSCOPE_CONFIRMED` | **Required** for LONG_ARMED → LONG_ACTIVE (neutral start shared) |
 
 **Invariant:** `DOWNSCOPE_CONFIRMED_REQUIRED_FOR_LONG_TO_SHORT=true`  
-**Invariant:** `UPSCOPE_CONFIRMED_REQUIRED_FOR_SHORT_TO_LONG=true`
+**Invariant:** `DOWNSCOPE_CONFIRMED_REQUIRED_FOR_SHORT_TO_LONG=true`
 
 ### Explicitly rejected as sufficient alone
 
@@ -182,9 +182,10 @@ LONG_ACTIVE
   → SHORT_ACTIVE
 ```
 
-### Upscope pipeline (Short → Long)
+### Short → Long pipeline (SHORT-oriented reversal)
 
-Requires `UPSCOPE_CONFIRMED` from DSE.
+Requires `DOWNSCOPE_CONFIRMED` from DSE while the generator is SHORT-oriented.
+`LONG_ARMED` completion remains `UPSCOPE_CONFIRMED` (shared with neutral start).
 
 ```text
 SHORT_ACTIVE
@@ -342,7 +343,7 @@ MARKER: PREFLIGHT_REMAINS_BLOCKED
 MARKER: EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME
 MARKER: DSE_PREDECESSOR_REQUIRED
 MARKER: DOWNSCOPE_CONFIRMED_REQUIRED_FOR_LONG_TO_SHORT
-MARKER: UPSCOPE_CONFIRMED_REQUIRED_FOR_SHORT_TO_LONG
+MARKER: DOWNSCOPE_CONFIRMED_REQUIRED_FOR_SHORT_TO_LONG
 MARKER: CANDIDATE_EVENTS_DO_NOT_AUTHORIZE_SIDE_SWITCH
 MARKER: CANDIDATE_VS_CONFIRMED_SWITCH_EVENTS_DISTINCT
 MARKER: KILLSWITCH_SUPERIOR

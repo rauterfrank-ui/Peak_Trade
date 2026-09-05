@@ -58,7 +58,7 @@ MACHINE_MARKERS: tuple[str, ...] = (
     "MARKER: EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME",
     "MARKER: DSE_PREDECESSOR_REQUIRED",
     "MARKER: DOWNSCOPE_CONFIRMED_REQUIRED_FOR_LONG_TO_SHORT",
-    "MARKER: UPSCOPE_CONFIRMED_REQUIRED_FOR_SHORT_TO_LONG",
+    "MARKER: DOWNSCOPE_CONFIRMED_REQUIRED_FOR_SHORT_TO_LONG",
     "MARKER: CANDIDATE_EVENTS_DO_NOT_AUTHORIZE_SIDE_SWITCH",
     "MARKER: CANDIDATE_VS_CONFIRMED_SWITCH_EVENTS_DISTINCT",
     "MARKER: KILLSWITCH_SUPERIOR",
@@ -140,7 +140,7 @@ def test_state_switch_contract_allowed_dse_inputs_v0() -> None:
     plain = _plain(SS_CONTRACT)
     assert "long" in plain.lower() and "short" in plain.lower()
     assert "DOWNSCOPE_CONFIRMED_REQUIRED_FOR_LONG_TO_SHORT" in text
-    assert "UPSCOPE_CONFIRMED_REQUIRED_FOR_SHORT_TO_LONG" in text
+    assert "DOWNSCOPE_CONFIRMED_REQUIRED_FOR_SHORT_TO_LONG" in text
 
 
 def test_state_switch_contract_candidate_events_rejected_v0() -> None:

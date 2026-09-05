@@ -503,26 +503,26 @@ def test_switch_long_to_short_pending_downscope_confirmed_blocks_long() -> None:
     assert result.recommended_side == "long"
 
 
-def test_short_active_upscope_confirmed_enters_switch_pending_via_harness() -> None:
+def test_short_active_downscope_confirmed_enters_switch_pending_via_harness() -> None:
     result = evaluate_offline_governance_tick_v0(
         OfflineGovernanceTickInputV0(
             side_state=SideState.SHORT_ACTIVE,
-            scope_event=ScopeEvent.UPSCOPE_CONFIRMED,
+            scope_event=ScopeEvent.DOWNSCOPE_CONFIRMED,
         )
     )
     _assert_non_authorizing(result)
     assert result.tick_ok is True
-    assert result.transition_reason_code == "UPscope_SWITCH_PENDING"
+    assert result.transition_reason_code == "DOWNscope_SWITCH_PENDING"
     assert result.side_state_before == SideState.SHORT_ACTIVE
     assert result.side_state_after == SideState.SWITCH_SHORT_TO_LONG_PENDING
     assert "transition_compliance_visible" in result.compliance_labels
 
 
-def test_switch_short_to_long_pending_upscope_confirmed_blocks_short() -> None:
+def test_switch_short_to_long_pending_downscope_confirmed_blocks_short() -> None:
     result = evaluate_offline_governance_tick_v0(
         OfflineGovernanceTickInputV0(
             side_state=SideState.SWITCH_SHORT_TO_LONG_PENDING,
-            scope_event=ScopeEvent.UPSCOPE_CONFIRMED,
+            scope_event=ScopeEvent.DOWNSCOPE_CONFIRMED,
         )
     )
     _assert_non_authorizing(result)

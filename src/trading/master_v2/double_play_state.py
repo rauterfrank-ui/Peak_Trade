@@ -366,7 +366,9 @@ def transition_state(
         )
         return SideState.SHORT_ACTIVE, st2, TransitionDecision(True, "SHORT_ACTIVE")
 
-    if event == ScopeEvent.UPSCOPE_CONFIRMED and side_state == SideState.SHORT_ACTIVE:
+    # SHORT reversal is DOWNSCOPE_CONFIRMED while the generator is SHORT-oriented.
+    # LONG_ARMED completion below stays UPSCOPE_CONFIRMED (shared with neutral start).
+    if event == ScopeEvent.DOWNSCOPE_CONFIRMED and side_state == SideState.SHORT_ACTIVE:
         if not _cooldown_allows_opposite_switch(now_tick=now_tick, st=st, rules=rules):
             return side_state, st, TransitionDecision(False, "COOLDOWN_BLOCK")
         if not _switch_count_ok(rules, st):
@@ -375,16 +377,16 @@ def transition_state(
         return (
             SideState.SWITCH_SHORT_TO_LONG_PENDING,
             st2,
-            TransitionDecision(True, "UPscope_SWITCH_PENDING"),
+            TransitionDecision(True, "DOWNscope_SWITCH_PENDING"),
         )
 
     if (
-        event == ScopeEvent.UPSCOPE_CONFIRMED
+        event == ScopeEvent.DOWNSCOPE_CONFIRMED
         and side_state == SideState.SWITCH_SHORT_TO_LONG_PENDING
     ):
         return SideState.SHORT_BLOCKED, st, TransitionDecision(True, "SHORT_BLOCKED")
 
-    if event == ScopeEvent.UPSCOPE_CONFIRMED and side_state == SideState.SHORT_BLOCKED:
+    if event == ScopeEvent.DOWNSCOPE_CONFIRMED and side_state == SideState.SHORT_BLOCKED:
         return SideState.LONG_ARMED, st, TransitionDecision(True, "LONG_ARMED")
 
     if event == ScopeEvent.UPSCOPE_CONFIRMED and side_state == SideState.LONG_ARMED:

@@ -88,14 +88,14 @@ def test_downscope_pipeline_from_long_active():
     assert s == SideState.SHORT_ACTIVE and d.reason_code == "SHORT_ACTIVE"
 
 
-def test_upscope_pipeline_from_short_active():
-    """Upscope from SHORT_ACTIVE moves through pending/ blocked to LONG (test 3)."""
+def test_downscope_pipeline_from_short_active():
+    """SHORT reversal consumes DOWNSCOPE_CONFIRMED through pending/blocked to LONG."""
     st = EMPTY_ST
-    s, st2, d = _t(SideState.SHORT_ACTIVE, ScopeEvent.UPSCOPE_CONFIRMED, st, 0)
+    s, st2, d = _t(SideState.SHORT_ACTIVE, ScopeEvent.DOWNSCOPE_CONFIRMED, st, 0)
     assert s == SideState.SWITCH_SHORT_TO_LONG_PENDING
-    s, st2, d = _t(s, ScopeEvent.UPSCOPE_CONFIRMED, st2, 1)
+    s, st2, d = _t(s, ScopeEvent.DOWNSCOPE_CONFIRMED, st2, 1)
     assert s == SideState.SHORT_BLOCKED
-    s, st2, d = _t(s, ScopeEvent.UPSCOPE_CONFIRMED, st2, 2)
+    s, st2, d = _t(s, ScopeEvent.DOWNSCOPE_CONFIRMED, st2, 2)
     assert s == SideState.LONG_ARMED
     s, st2, d = _t(s, ScopeEvent.UPSCOPE_CONFIRMED, st2, 3)
     assert s == SideState.LONG_ACTIVE

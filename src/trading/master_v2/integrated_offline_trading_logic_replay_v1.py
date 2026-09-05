@@ -842,19 +842,23 @@ def scope_direction_from_side_state_v1(
     *,
     fallback: ScopeDirectionState = ScopeDirectionState.LONG,
 ) -> ScopeDirectionState:
-    """Derive ScopeDirectionState from SideState for trailing / threshold orientation."""
+    """Derive ScopeDirectionState from SideState for trailing / threshold orientation.
+
+    PENDING rows hold the departing ACTIVE side. ARMED remains overloaded
+    (neutral start vs pipeline terminal) and is not given extra history here.
+    """
     if side in (
         SideState.SHORT_ARMED,
         SideState.SHORT_ACTIVE,
         SideState.SHORT_BLOCKED,
-        SideState.SWITCH_LONG_TO_SHORT_PENDING,
+        SideState.SWITCH_SHORT_TO_LONG_PENDING,
     ):
         return ScopeDirectionState.SHORT
     if side in (
         SideState.LONG_ARMED,
         SideState.LONG_ACTIVE,
         SideState.LONG_BLOCKED,
-        SideState.SWITCH_SHORT_TO_LONG_PENDING,
+        SideState.SWITCH_LONG_TO_SHORT_PENDING,
     ):
         return ScopeDirectionState.LONG
     return fallback

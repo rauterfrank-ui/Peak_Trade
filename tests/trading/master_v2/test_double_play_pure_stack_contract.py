@@ -2114,10 +2114,10 @@ def test_contract_40_switch_long_to_short_pending_pure_stack_to_composition_dash
 
 
 def test_contract_41_switch_short_to_long_pending_pure_stack_to_composition_dashboard() -> None:
-    _s, _st, t_pending = _ts(SideState.SHORT_ACTIVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    _s, _st, t_pending = _ts(SideState.SHORT_ACTIVE, ScopeEvent.DOWNSCOPE_CONFIRMED, EMPTY_ST, 0)
     assert _s == SideState.SWITCH_SHORT_TO_LONG_PENDING
     assert t_pending.allowed
-    assert t_pending.reason_code == "UPscope_SWITCH_PENDING"
+    assert t_pending.reason_code == "DOWNscope_SWITCH_PENDING"
     assert not t_pending.live_authorization_granted
 
     surv = evaluate_survival_envelope(_env_ok())
@@ -2158,7 +2158,7 @@ def test_contract_41_switch_short_to_long_pending_pure_stack_to_composition_dash
     )
     assert snap.panels[1].name == "state_transition"
     assert snap.panels[1].status is DashboardDisplayStatus.DISPLAY_READY
-    assert "UPscope_SWITCH_PENDING" in snap.panels[1].summary
+    assert "DOWNscope_SWITCH_PENDING" in snap.panels[1].summary
     assert snap.panels[6].status is DashboardDisplayStatus.DISPLAY_READY
     assert snap.overall_status is DashboardDisplayStatus.DISPLAY_READY
     _assert_dashboard_snapshot_invariants(snap)
@@ -2195,7 +2195,7 @@ def test_contract_42_switch_pending_blocked_side_pure_stack_to_dashboard() -> No
         ),
         (
             SideState.SWITCH_SHORT_TO_LONG_PENDING,
-            ScopeEvent.UPSCOPE_CONFIRMED,
+            ScopeEvent.DOWNSCOPE_CONFIRMED,
             SideState.SHORT_BLOCKED,
             "SHORT_BLOCKED",
             RequestedSide.SHORT_BEAR,
