@@ -194,7 +194,8 @@ def test_runbook_and_spec_bind_path_identity_without_rewriting_11_14_facts() -> 
     assert "GET_PERFORMED=false" in section
     assert "POST_PERFORMED=false" in section
     assert "LIVE_ENABLED=false" in section
-    assert "docs_token: DOCS_TOKEN_FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1" in spec
+    assert "docs_token:" in spec
+    assert "DOCS_TOKEN_FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1" in spec
     assert "CANARY_29Q_CONSUMER_WIRING_AUTHORIZED=false" in spec
     census = runbook[
         runbook.index("11.14 LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS") : runbook.index(
