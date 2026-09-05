@@ -742,3 +742,16 @@ relations:
     evidence_sources:
       - forensic/lossless_working_runbook_structure_identity_method_v1/build_lossless_structure.py
     notes: Not SSOT_CHILD.
+
+  - id: REL:s_system_contains_full_core_live_path_composition_root
+    source: SYSTEM:peak_trade
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/path_v1.py
+      - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
+    notes: >-
+      Package containment of the offline Core-to-Live composition root.
+      Containment is not Live authorization. Atlas is not trading
+      authority. ATLAS_AUTHORITY=NONE.

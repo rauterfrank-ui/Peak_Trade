@@ -16,6 +16,7 @@
 | id | kind | unit | status |
 | --- | --- | --- | --- |
 | DATA_CONTRACT:bound_instrument_v1 | DATA_CONTRACT | identity | CURRENT_NONCANONICAL |
+| DATA_CONTRACT:full_core_live_path_models_v1 | DATA_CONTRACT | mixed | CURRENT_NONCANONICAL |
 | DATA_CONTRACT:governed_universe_instrument_v1 | DATA_CONTRACT | mixed | CURRENT_NONCANONICAL |
 
 ## Lineage (see DATA_LINEAGE_MAP.md)

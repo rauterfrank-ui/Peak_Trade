@@ -90,6 +90,34 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `RUNTIME_COMPONENT:dp_capital_slot, RUNTIME_COMPONENT:dp_composition, RUNTIME_COMPONENT:dp_core_wiring, RUNTIME_COMPONENT:dp_futures_input, RUNTIME_COMPONENT:dp_state, RUNTIME_COMPONENT:dp_suitability, RUNTIME_COMPONENT:dp_survival`
 - transitive_downstream: `RUNTIME_COMPONENT:dp_capital_slot, RUNTIME_COMPONENT:dp_composition, RUNTIME_COMPONENT:dp_core_wiring, RUNTIME_COMPONENT:dp_futures_input, RUNTIME_COMPONENT:dp_state, RUNTIME_COMPONENT:dp_suitability, RUNTIME_COMPONENT:dp_survival`
 
+### GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
+
+- direct_upstream: `(none)`
+- transitive_upstream: `(none)`
+- direct_downstream: `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1`
+- transitive_downstream: `(none)`
+
+### GATE:full_core_live_path_frozen_pretrade_conjunction_v1
+
+- direct_upstream: `(none)`
+- transitive_upstream: `(none)`
+- direct_downstream: `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1`
+- transitive_downstream: `(none)`
+
+### GATE:full_core_live_path_restart_gate_v1
+
+- direct_upstream: `(none)`
+- transitive_upstream: `(none)`
+- direct_downstream: `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1`
+- transitive_downstream: `(none)`
+
+### GATE:full_core_live_path_standing_live_gates_v1
+
+- direct_upstream: `(none)`
+- transitive_upstream: `(none)`
+- direct_downstream: `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1`
+- transitive_downstream: `(none)`
+
 ### HOST:cap72_stateful_host
 
 - direct_upstream: `BINDER:bound_instrument_v1`
@@ -167,6 +195,27 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `RUNTIME_COMPONENT:dp_core_wiring`
 - transitive_downstream: `(none)`
 
+### RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1
+
+- direct_upstream: `(none)`
+- transitive_upstream: `(none)`
+- direct_downstream: `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1`
+- transitive_downstream: `(none)`
+
+### RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+
+- direct_upstream: `DATA_CONTRACT:full_core_live_path_models_v1, GATE:full_core_live_path_execution_boundary_halt_before_wire_v1, GATE:full_core_live_path_frozen_pretrade_conjunction_v1, GATE:full_core_live_path_restart_gate_v1, GATE:full_core_live_path_standing_live_gates_v1, RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1, RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1`
+- transitive_upstream: `DATA_CONTRACT:full_core_live_path_models_v1, GATE:full_core_live_path_execution_boundary_halt_before_wire_v1, GATE:full_core_live_path_frozen_pretrade_conjunction_v1, GATE:full_core_live_path_restart_gate_v1, GATE:full_core_live_path_standing_live_gates_v1, RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1, RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
+### RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1
+
+- direct_upstream: `(none)`
+- transitive_upstream: `(none)`
+- direct_downstream: `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1`
+- transitive_downstream: `(none)`
+
 ### RUNTIME_COMPONENT:g12_canonical_delayed_zero_persist_and_pending_related_observations_v1
 
 - direct_upstream: `RUNTIME_COMPONENT:g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1`
@@ -227,8 +276,8 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 
 - direct_upstream: `(none)`
 - transitive_upstream: `(none)`
-- direct_downstream: `CAPABILITY:cap_11_13_5_live_canary, CAPABILITY:cap_1_1_reconciliation, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CAPABILITY:cap_3_1_futures_accounting, CAPABILITY:cap_4_1_pre_activation_closure, CAPABILITY:cap_7_2_stateful_no_order, SUBSYSTEM:master_v2`
-- transitive_downstream: `CAPABILITY:cap_11_13_5_live_canary, CAPABILITY:cap_1_1_reconciliation, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CAPABILITY:cap_3_1_futures_accounting, CAPABILITY:cap_4_1_pre_activation_closure, CAPABILITY:cap_7_2_stateful_no_order, FUNCTIONAL_CORE:double_play, RUNTIME_COMPONENT:dp_capital_slot, RUNTIME_COMPONENT:dp_composition, RUNTIME_COMPONENT:dp_core_wiring, RUNTIME_COMPONENT:dp_dashboard_display, RUNTIME_COMPONENT:dp_entry_exit_policy, RUNTIME_COMPONENT:dp_evaluate_authority_boundary, RUNTIME_COMPONENT:dp_futures_input, RUNTIME_COMPONENT:dp_offline_scenario_replay, RUNTIME_COMPONENT:dp_sole_authority_quarantine, RUNTIME_COMPONENT:dp_state, RUNTIME_COMPONENT:dp_suitability, RUNTIME_COMPONENT:dp_survival, RUNTIME_COMPONENT:dp_volatility_presence_gate, RUNTIME_COMPONENT:mv2_arithmetic_decimal, RUNTIME_COMPONENT:mv2_canonical_market_context, RUNTIME_COMPONENT:mv2_canonical_scope, RUNTIME_COMPONENT:mv2_canonical_trading_decision_evidence, RUNTIME_COMPONENT:mv2_canonical_volatility, RUNTIME_COMPONENT:mv2_capital_risk_sizing, RUNTIME_COMPONENT:mv2_decision_packet, RUNTIME_COMPONENT:mv2_directional_assessment, RUNTIME_COMPONENT:mv2_input_happy_path, RUNTIME_COMPONENT:mv2_integrated_replay, RUNTIME_COMPONENT:mv2_local_evaluator, RUNTIME_COMPONENT:mv2_offline_boundary_adapters, RUNTIME_COMPONENT:mv2_package_init, RUNTIME_COMPONENT:mv2_parity_gap_assessment, RUNTIME_COMPONENT:mv2_post_confirmation_ssc, RUNTIME_COMPONENT:mv2_pr4985_materiality_classifier, RUNTIME_COMPONENT:mv2_regime_bull_bear_readmodel, RUNTIME_COMPONENT:mv2_runtime_bridge, RUNTIME_COMPONENT:mv2_scenario_matrix, RUNTIME_COMPONENT:mv2_scope_events, RUNTIME_COMPONENT:mv2_strategy_identity, RUNTIME_COMPONENT:mv2_surface_p, SUBSYSTEM:master_v2, UNIVERSE:governed_futures_universe`
+- direct_downstream: `CAPABILITY:cap_11_13_5_live_canary, CAPABILITY:cap_1_1_reconciliation, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CAPABILITY:cap_3_1_futures_accounting, CAPABILITY:cap_4_1_pre_activation_closure, CAPABILITY:cap_7_2_stateful_no_order, RUNTIME_COMPONENT:full_core_live_path_composition_root_v1, SUBSYSTEM:master_v2`
+- transitive_downstream: `CAPABILITY:cap_11_13_5_live_canary, CAPABILITY:cap_1_1_reconciliation, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CAPABILITY:cap_3_1_futures_accounting, CAPABILITY:cap_4_1_pre_activation_closure, CAPABILITY:cap_7_2_stateful_no_order, FUNCTIONAL_CORE:double_play, RUNTIME_COMPONENT:dp_capital_slot, RUNTIME_COMPONENT:dp_composition, RUNTIME_COMPONENT:dp_core_wiring, RUNTIME_COMPONENT:dp_dashboard_display, RUNTIME_COMPONENT:dp_entry_exit_policy, RUNTIME_COMPONENT:dp_evaluate_authority_boundary, RUNTIME_COMPONENT:dp_futures_input, RUNTIME_COMPONENT:dp_offline_scenario_replay, RUNTIME_COMPONENT:dp_sole_authority_quarantine, RUNTIME_COMPONENT:dp_state, RUNTIME_COMPONENT:dp_suitability, RUNTIME_COMPONENT:dp_survival, RUNTIME_COMPONENT:dp_volatility_presence_gate, RUNTIME_COMPONENT:full_core_live_path_composition_root_v1, RUNTIME_COMPONENT:mv2_arithmetic_decimal, RUNTIME_COMPONENT:mv2_canonical_market_context, RUNTIME_COMPONENT:mv2_canonical_scope, RUNTIME_COMPONENT:mv2_canonical_trading_decision_evidence, RUNTIME_COMPONENT:mv2_canonical_volatility, RUNTIME_COMPONENT:mv2_capital_risk_sizing, RUNTIME_COMPONENT:mv2_decision_packet, RUNTIME_COMPONENT:mv2_directional_assessment, RUNTIME_COMPONENT:mv2_input_happy_path, RUNTIME_COMPONENT:mv2_integrated_replay, RUNTIME_COMPONENT:mv2_local_evaluator, RUNTIME_COMPONENT:mv2_offline_boundary_adapters, RUNTIME_COMPONENT:mv2_package_init, RUNTIME_COMPONENT:mv2_parity_gap_assessment, RUNTIME_COMPONENT:mv2_post_confirmation_ssc, RUNTIME_COMPONENT:mv2_pr4985_materiality_classifier, RUNTIME_COMPONENT:mv2_regime_bull_bear_readmodel, RUNTIME_COMPONENT:mv2_runtime_bridge, RUNTIME_COMPONENT:mv2_scenario_matrix, RUNTIME_COMPONENT:mv2_scope_events, RUNTIME_COMPONENT:mv2_strategy_identity, RUNTIME_COMPONENT:mv2_surface_p, SUBSYSTEM:master_v2, UNIVERSE:governed_futures_universe`
 
 ### VENUE:okx
 

@@ -3497,3 +3497,194 @@ entities:
       Account-config field values are not operational claims.
       No runtime consumer. Atlas is not canonical authority.
       ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    kind: RUNTIME_COMPONENT
+    name: Offline Core-to-Live composition root v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/full_core_live_path_composition_root_v1/__init__.py
+      - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/models_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/overclaim_guards_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/path_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/venue_translation_v1.py
+    source_symbols:
+      - compose_core_live_execution_intent_v1
+      - run_full_core_live_path_offline_v1
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/path_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
+      - tests/ops/test_full_core_live_path_composition_root_v1.py
+      - tests/ops/test_full_core_live_path_offline_full_chain_v1.py
+      - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: >-
+      Navigation inventory of the offline Core-to-Live composition root.
+      Composes existing replay plus Cap-2.4 binding into
+      CoreLiveExecutionIntentV1. Does not recompute strategy, sizing, or
+      safety. Does not construct LiveExecutionPort. Does not arm wire send.
+      Standing package gates remain false. Atlas is not canonical
+      authority. ATLAS_AUTHORITY=NONE.
+
+  - id: DATA_CONTRACT:full_core_live_path_models_v1
+    kind: DATA_CONTRACT
+    name: Full-core live path typed contracts v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    unit: mixed
+    source_paths:
+      - src/ops/full_core_live_path_composition_root_v1/models_v1.py
+    source_symbols:
+      - FrozenPretradeEvidenceV1
+      - CoreLiveExecutionIntentV1
+      - VenuePlanCandidateV1
+      - FullCoreLivePathInputV1
+      - FullCoreLivePathResultV1
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/models_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
+    notes: >-
+      TYPE_ONLY / interchange dataclasses for the offline composition root.
+      SCHEMA_VERSION is a package version token, not a persistence or wire
+      SCHEMA. Not a second CanonicalOrderIntent. Atlas is not canonical
+      authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1
+    kind: RUNTIME_COMPONENT
+    name: Full-core live path venue translation v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/full_core_live_path_composition_root_v1/venue_translation_v1.py
+    source_symbols:
+      - translate_core_live_intent_to_venue_plan_v1
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/venue_translation_v1.py
+      - src/ops/section_11_12_8_actual_productive_testnet_campaign_run_start_v1/okx_response_mapper_v1.py
+    notes: >-
+      Translator-only venue mapping. Does not own instrument, side, or
+      quantity. Does not call canary DEFAULT_* as productive inputs.
+      MAPPER_ROLE remains analytical translator, not Live send.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: GATE:full_core_live_path_frozen_pretrade_conjunction_v1
+    kind: GATE
+    name: Frozen offline pretrade conjunction v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    fail_closed: true
+    source_paths:
+      - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
+    source_symbols:
+      - evaluate_frozen_pretrade_conjunction_v1
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/models_v1.py
+    notes: >-
+      Evaluates frozen offline venue-pretrade evidence. Not a GET. Not a
+      Live cache. Core intent is not submit permission. Existing canary
+      consumers remain the productive pretrade owner.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
+    kind: GATE
+    name: Offline Live execution boundary halt-before-wire v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    fail_closed: true
+    source_paths:
+      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+    source_symbols:
+      - halt_at_live_execution_boundary_v1
+      - refuse_wire_send_v1
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+      - src/ops/capability_11_1_execution_domain_and_order_lifecycle_contracts_v1/execution_ports_v1.py
+    notes: >-
+      Always HARD STOP BEFORE WIRE. Does not construct Cap 11.1
+      LiveExecutionPort. Does not invoke canary HTTP. Package-local
+      LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED remain false.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: GATE:full_core_live_path_restart_gate_v1
+    kind: GATE
+    name: Full-core live path restart gate v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    fail_closed: true
+    source_paths:
+      - src/ops/full_core_live_path_composition_root_v1/overclaim_guards_v1.py
+    source_symbols:
+      - restart_gate_v1
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/overclaim_guards_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
+    notes: >-
+      Restart-test surface remains unauthorized. Returns the standing
+      FULL_CORE_RESTART_TEST_AUTHORIZED=false constant. Does not implement
+      durable Live restart/handoff. Atlas is not canonical authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: GATE:full_core_live_path_standing_live_gates_v1
+    kind: GATE
+    name: Full-core live path standing Live gates v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    fail_closed: true
+    source_paths:
+      - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
+    source_symbols:
+      - LIVE_ENABLED
+      - LIVE_ARMED
+      - WIRE_SEND_PERMITTED
+      - FULL_CORE_RESTART_TEST_AUTHORIZED
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: >-
+      Package-local standing constants inventory. LIVE_ENABLED=false,
+      LIVE_ARMED=false, WIRE_SEND_PERMITTED=false. Does not supersede
+      GATE:live_authorized_false. Does not authorize Live, Testnet,
+      canary, or orders. Atlas is not canonical authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1
+    kind: RUNTIME_COMPONENT
+    name: Full-core versus canary venue-proof isolation v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
+    source_symbols:
+      - refuse_canary_plan_as_full_core_e2e_v1
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py
+    notes: >-
+      Isolates bounded canary venue-proof from FULL_CORE_LIVE_PATH.
+      Canary DEFAULT_INSTRUMENT_ID / DEFAULT_SIDE / minSz are not
+      admissible as full-core E2E proof. Does not activate canary.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.

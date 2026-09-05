@@ -591,3 +591,86 @@ relations:
       reconstruction. Criterion bound. No durable Live pre-restart handoff.
       No GET. No POST. No restart execution. Atlas is not trading
       authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_full_core_path_calls_venue_translation
+    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    type: CALLS
+    target: RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/path_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/venue_translation_v1.py
+    notes: >-
+      Offline path calls translator-only venue mapping. Not wire send.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_full_core_path_calls_frozen_pretrade
+    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    type: CALLS
+    target: GATE:full_core_live_path_frozen_pretrade_conjunction_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/path_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
+    notes: >-
+      Offline path evaluates frozen pretrade evidence. Not a GET.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_full_core_path_calls_execution_boundary
+    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    type: CALLS
+    target: GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/path_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+    notes: >-
+      Offline path always halts before wire. Atlas is not trading
+      authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_full_core_path_calls_restart_gate
+    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    type: CALLS
+    target: GATE:full_core_live_path_restart_gate_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/overclaim_guards_v1.py
+    notes: >-
+      Restart-test surface remains unauthorized. Atlas is not trading
+      authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_full_core_path_calls_canary_isolation
+    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    type: CALLS
+    target: RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
+    notes: >-
+      Canary venue-proof remains distinct from FULL_CORE_LIVE_PATH.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_full_core_path_consumes_models
+    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    type: CONSUMES
+    target: DATA_CONTRACT:full_core_live_path_models_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/models_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/path_v1.py
+    notes: >-
+      Offline path consumes TYPE_ONLY dataclasses. Not a wire SCHEMA.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_full_core_path_calls_standing_live_gates
+    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    type: CALLS
+    target: GATE:full_core_live_path_standing_live_gates_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+    notes: >-
+      Package-local LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED remain
+      false. Does not supersede GATE:live_authorized_false. Atlas is not
+      trading authority. ATLAS_AUTHORITY=NONE.
