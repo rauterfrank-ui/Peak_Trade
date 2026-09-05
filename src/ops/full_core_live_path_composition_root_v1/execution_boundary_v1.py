@@ -2,6 +2,7 @@
 
 Consumes typed ExecutionAdmissionDecisionV1 at this sole Full-Core join point.
 Joins durable FILEGATE evidence via durable_filegate_join_v1.
+Joins OWNER_ONE_SHOT permit evidence via owner_one_shot_permit_v1.
 Does not construct Cap 11.1 LiveExecutionPort. Does not invoke canary HTTP.
 Does not arm Live. Does not send wire.
 """
@@ -19,8 +20,8 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     MODE_LIVE,
     WIRE_SEND_PERMITTED,
 )
-from src.ops.full_core_live_path_composition_root_v1.durable_filegate_join_v1 import (
-    join_durable_filegate_into_admission_inputs_v1,
+from src.ops.full_core_live_path_composition_root_v1.owner_one_shot_permit_v1 import (
+    join_owner_one_shot_permit_into_admission_inputs_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
     ADMISSION_CONTEXT_LIVE,
@@ -54,6 +55,7 @@ def halt_at_live_execution_boundary_v1(
     pretrade_freshness_status: str = "FROZEN_OFFLINE",
     admission_context: str | None = None,
     path_mode: str = "",
+    owner_go: str | None = None,
 ) -> ExecutionBoundaryResultV1:
     reasons: list[str] = [
         "HARD_STOP_BEFORE_WIRE",
@@ -93,7 +95,7 @@ def halt_at_live_execution_boundary_v1(
         )
     resolved_inputs = admission_inputs
     if resolved_inputs is None:
-        resolved_inputs = join_durable_filegate_into_admission_inputs_v1(
+        resolved_inputs = join_owner_one_shot_permit_into_admission_inputs_v1(
             plan_identity=str(plan.clordid or plan.instrument_id or ""),
             venue_plan_identity=str(plan.clordid or ""),
             instrument_identity_ok=pretrade.instrument_binding_valid
@@ -102,7 +104,7 @@ def halt_at_live_execution_boundary_v1(
             pretrade_source_kind=pretrade_source_kind,
             pretrade_freshness_status=pretrade_freshness_status,
             capital_risk_mode=capital_risk_mode,
-            owner_authorization_present=bool(pretrade.owner_go_valid),
+            owner_go=owner_go,
             admission_context=context,
             provenance_refs=(str(plan.quantity_source), str(plan.side_source)),
         )

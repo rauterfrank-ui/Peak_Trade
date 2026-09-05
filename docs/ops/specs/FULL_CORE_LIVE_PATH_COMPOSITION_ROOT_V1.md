@@ -79,6 +79,7 @@ CURRENT_CAPITAL_RISK_MODE=OFFLINE_ALGEBRA
 LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
 FROZEN_OFFLINE_PRETRADE_EVIDENCE != FRESH_GET_PER_PRETRADE_DECISION
 DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=true
+OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED=true
 POST_29Q_KS_ADJUDICATED_ROLE=POST_29Q_CONSUMPTION_GUARD
 LEGACY_STRING_HEURISTIC_STATUS=COMPATIBILITY_DEBT_RETAINED
 SIDESTATE_RESTORE_INVALID_VALUE_FAILS_CLOSED=true
@@ -89,7 +90,9 @@ Replay Safety (pre-29Q decision admission); Replay KS typed fields
 (`POST_29Q_CONSUMPTION_GUARD`, not FILEGATE); durable FILEGATE (execution-side
 permission, joined into Full-Core admission as typed evidence; not Replay;
 does not admit Live). Canary != Full-Core E2E.
-Hardening-v2 != decision owner.
+Hardening-v2 != decision owner. Typed OWNER_ONE_SHOT permit evidence is joined
+at halt as `OwnerOneShotPermitEvidenceV1`; trusted permit does not admit Live
+and does not override FILEGATE.
 
 ## Remaining gap
 

@@ -41,6 +41,7 @@ changed_entities:
 - GATE:full_core_live_path_identity_v1
 - GATE:full_core_live_path_restart_gate_v1
 - GATE:full_core_live_path_standing_live_gates_v1
+- GATE:full_core_owner_one_shot_permit_v1
 - GATE:live_authorized_false
 - GATE:max_positions_1
 - HOST:cap72_stateful_host
@@ -189,6 +190,8 @@ new_relations:
 - REL:r_full_core_path_calls_canary_isolation
 - REL:r_full_core_path_consumes_models
 - REL:r_full_core_path_calls_standing_live_gates
+- REL:r_full_core_path_calls_owner_one_shot_permit
+- REL:r_full_core_owner_one_shot_permit_composes_filegate
 - REL:r_full_core_path_calls_path_identity
 removed_relations: []
 affected_dependency_closures:
@@ -209,6 +212,7 @@ affected_safety_surfaces:
 - GATE:full_core_live_path_identity_v1
 - GATE:full_core_live_path_restart_gate_v1
 - GATE:full_core_live_path_standing_live_gates_v1
+- GATE:full_core_owner_one_shot_permit_v1
 affected_schemas:
 - DATA_CONTRACT:full_core_live_path_models_v1
 review_required_items: []
@@ -242,6 +246,7 @@ reviewed_ids:
 - id: GATE:full_core_live_path_identity_v1
 - id: GATE:full_core_live_path_restart_gate_v1
 - id: GATE:full_core_live_path_standing_live_gates_v1
+- id: GATE:full_core_owner_one_shot_permit_v1
 - id: GATE:live_authorized_false
 - id: GATE:max_positions_1
 - id: HOST:cap72_stateful_host
@@ -394,6 +399,8 @@ reviewed_ids:
 - id: REL:r_full_core_path_calls_canary_isolation
 - id: REL:r_full_core_path_consumes_models
 - id: REL:r_full_core_path_calls_standing_live_gates
+- id: REL:r_full_core_path_calls_owner_one_shot_permit
+- id: REL:r_full_core_owner_one_shot_permit_composes_filegate
 - id: REL:r_full_core_path_calls_path_identity
 - id: CHAIN:order_submit_standing_deny
 - id: CHAIN:full_core_live_path_halt_before_wire

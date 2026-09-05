@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=155
-ATLAS_CHANGED_RELATION_COUNT=21
+ATLAS_CHANGED_ENTITY_COUNT=156
+ATLAS_CHANGED_RELATION_COUNT=23
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -69,6 +69,7 @@ Do not manually patch generated Markdown.
 | `GATE:full_core_live_path_identity_v1` |
 | `GATE:full_core_live_path_restart_gate_v1` |
 | `GATE:full_core_live_path_standing_live_gates_v1` |
+| `GATE:full_core_owner_one_shot_permit_v1` |
 | `GATE:live_authorized_false` |
 | `GATE:max_positions_1` |
 | `HOST:cap72_stateful_host` |
@@ -225,6 +226,8 @@ Do not manually patch generated Markdown.
 | `REL:r_full_core_path_calls_canary_isolation` |
 | `REL:r_full_core_path_consumes_models` |
 | `REL:r_full_core_path_calls_standing_live_gates` |
+| `REL:r_full_core_path_calls_owner_one_shot_permit` |
+| `REL:r_full_core_owner_one_shot_permit_composes_filegate` |
 | `REL:r_full_core_path_calls_path_identity` |
 
 ## REMOVED_RELATIONS
@@ -263,6 +266,7 @@ Do not manually patch generated Markdown.
 | `GATE:full_core_live_path_identity_v1` |
 | `GATE:full_core_live_path_restart_gate_v1` |
 | `GATE:full_core_live_path_standing_live_gates_v1` |
+| `GATE:full_core_owner_one_shot_permit_v1` |
 
 ## AFFECTED_SCHEMAS
 
