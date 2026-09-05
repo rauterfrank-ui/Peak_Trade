@@ -33,6 +33,16 @@
 
 - missing_wiring: `OBSERVER:post_action_canary`
 
+### EP:full_core_live_path_offline — Offline Core-to-Live composition path
+
+- path: `src/ops/full_core_live_path_composition_root_v1/path_v1.py`
+- class: `GATED_OFFLINE_COMPOSITION_PATH`
+- epistemic: `STATUS=FORENSIC_RAW`
+- network: `none_hard_stop_before_wire`
+- evidence: `src/ops/full_core_live_path_composition_root_v1/path_v1.py`
+
+  1. `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` -> `GATE:full_core_live_path_execution_boundary_halt_before_wire_v1` gate=`GATE:full_core_live_path_standing_live_gates_v1` fail=`HARD_STOP_BEFORE_WIRE`
+
 ### EP:gfu_producer — Governed Futures Universe producer
 
 - path: `scripts/ops/run_governed_futures_universe_producer_v1.py`

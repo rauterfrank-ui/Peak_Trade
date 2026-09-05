@@ -8,57 +8,389 @@ introduced_by: PENDING_CHANGE
 modified_by: PENDING_CHANGE
 superseded_by: null
 last_recorded_impact: UPDATED
-note: >-
-  Directional mapping runtime bind: SHORT reversal polarity and PENDING
-  departing-side generator orientation now consume the §5 TARGET.
-  Active fifth-class slice grant is digest-bound to the current diff base.
-  Freeze exception unauthorized. MODEL_C runtime unauthorized. ARMED
-  residual unresolved. last_active_side bind unauthorized. MODEL_B remains
-  the productive baseline. CLOSURE:live_readiness is inspected because MOT
-  documents the runbook; this pointer does not authorize Live. Atlas is not
-  canonical authority.
+note: Offline Core-to-Live composition root inventory. New package src/ops/full_core_live_path_composition_root_v1/
+  is classified as halt-before-wire composition, venue translation, frozen pretrade, restart-gate
+  surface, and standing Live-gate constants. MOT/runbook path hits are inspected because MOT
+  documents the runbook; those pointers do not authorize Live, canary, or wire send. CLOSURE:live_readiness
+  is inspected for the same reason. Atlas is not canonical authority.
 changed_entities:
-  - FORENSIC_REFERENCE:information_corpus_persistence_base
-  - FUNCTIONAL_CORE:double_play
-  - GUARD:economic_diagnostic_optimization_boundary
-  - NAVIGATION_INDEX:map_of_truth
-  - RUNBOOK:canonical_master_runbook
-  - RUNBOOK:vollautonomie_v4_4_12
-  - RUNTIME_COMPONENT:ddo_capture_v0
-  - RUNTIME_COMPONENT:dp_offline_scenario_replay
-  - RUNTIME_COMPONENT:dp_state
-  - RUNTIME_COMPONENT:mv2_integrated_replay
-  - SUBSYSTEM:master_v2
-  - TERM:dynamic_scope
-  - TERM:map_of_truth
+- ACRONYM:C1
+- ACRONYM:C2
+- ACRONYM:C3
+- ACRONYM:CAP
+- ACRONYM:CAP23
+- ACRONYM:DOD
+- ACRONYM:MMR
+- ACRONYM:PENDING
+- ACRONYM:SSOT
+- ADAPTER:kraken_live_client
+- CAPABILITY:cap_11_13_5_live_canary
+- CAPABILITY:cap_7_2_stateful_no_order
+- CFG:live_authorized
+- CFG:max_positions
+- CFG:testnet_authorized
+- DATA_CONTRACT:full_core_live_path_models_v1
+- DOD:capability_closure_standard
+- DOD:cybersecurity_runbook
+- DOD:program_final
+- DOD:vollautonomie_economic_validity
+- DOD:vollautonomie_safety_runtime
+- DOD:vollautonomie_trading_logic
+- EP:full_core_live_path_offline
+- FUNCTIONAL_CORE:double_play
+- GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
+- GATE:full_core_live_path_frozen_pretrade_conjunction_v1
+- GATE:full_core_live_path_restart_gate_v1
+- GATE:full_core_live_path_standing_live_gates_v1
+- GATE:live_authorized_false
+- GATE:max_positions_1
+- HOST:cap72_stateful_host
+- KIND:ACRONYM
+- KIND:DOD
+- KIND:FUNCTIONAL_CORE
+- KIND:MMR
+- KIND:SYSTEM
+- NAVIGATION_INDEX:map_of_truth
+- OWNER_DECISION:cap23_exclusive_selection
+- PHASE:authenticated_private_runtime_read_and_runtime_permit_issuance
+- PHASE:authenticated_productive_transport
+- PHASE:ddo_offline_foundation
+- PHASE:g12_canonical_delayed_zero_persist_and_pending_related_observations
+- PHASE:g12_delayed_posid_zero_row_full_conjunction_proof_contract
+- PHASE:p08_distinct_first_party_evidence
+- PHASE:p08_empty_data_not_zero
+- PHASE:p08_nonzero_position_adjudication_persist_close
+- PHASE:p08_position_observation
+- PHASE:p08_post_read_only_exhaustion_authority_boundary
+- PHASE:p08_read_only_closure
+- PHASE:p10_target_position_qty_unit_forensic_adjudicate_persist
+- PHASE:p11_pos_to_sz_unit_identity_independent_proof
+- PHASE:p12_execution_prerequisite_11_position_side_posside
+- PHASE:p13_execution_prerequisite_12_exact_flatten_payload
+- PHASE:p16_execution_prerequisite_16_bounded_activation
+- PHASE:p20_execution_prerequisite_20_mutation_limited_to_proven_position
+- PHASE:p25_execution_prerequisite_25_no_additional_owner_decision
+- PHASE:post_z2ds_50110_egress_capture
+- PHASE:post_z2ds_50110_whitelist_add_from_capture
+- PHASE:post_z2ds_post_whitelist_private_auth_attestation
+- PHASE:pr_6252_merge_closeout
+- PHASE:productive_flatten_post_and_reconciliation
+- PHASE:remaining_execution_path_end_to_end_census
+- PHASE:section_11_14_live_accounting_reconstructed_adjudication
+- PHASE:section_11_14_live_execution_code_exists_adjudication
+- PHASE:section_11_14_live_execution_path_reachable_adjudication
+- PHASE:section_11_14_live_fee_observed_adjudication
+- PHASE:section_11_14_live_fill_observed_adjudication
+- PHASE:section_11_14_live_order_plan_observed_adjudication
+- PHASE:section_11_14_live_position_reconciled_adjudication
+- PHASE:section_11_14_live_private_read_only_proven_adjudication
+- PHASE:section_11_14_live_restart_reconstructed_adjudication
+- PHASE:section_11_14_live_submit_ack_contract_and_mutation_boundary_forensic_adjudication
+- PHASE:section_11_14_live_submit_ack_observed_adjudication
+- PHASE:section_11_14_live_submit_ack_observed_proof_criterion
+- PHASE:section_11_14_offline_evidence_ladder_surface
+- PHASE:send_time_pass_18_19_21_24
+- PHASE:send_time_position_reobservation
+- PHASE:z2cn
+- PHASE:z2co
+- PHASE:z2cp
+- PHASE:z2cq
+- PHASE:z2cr
+- PHASE:z2cs
+- PHASE:z2ct
+- PHASE:z2cu
+- PHASE:z2cv
+- PHASE:z2cw
+- PHASE:z2cx
+- PHASE:z2cy
+- PHASE:z2cz
+- PHASE:z2da
+- PHASE:z2dn
+- PHASE:z2do
+- PHASE:z2dp
+- PHASE:z2dq
+- PHASE:z2dr
+- PHASE:z2ds
+- RUNBOOK:canonical_master_runbook
+- RUNBOOK:vollautonomie_v4_4_12
+- RUNTIME_COMPONENT:authenticated_private_runtime_read_and_runtime_permit_issuance_v1
+- RUNTIME_COMPONENT:authenticated_productive_transport_v1
+- RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1
+- RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+- RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1
+- RUNTIME_COMPONENT:g12_canonical_delayed_zero_persist_and_pending_related_observations_v1
+- RUNTIME_COMPONENT:g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1
+- RUNTIME_COMPONENT:offline_execution_permission_and_position_creation_producer_wiring_v1
+- RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1
+- RUNTIME_COMPONENT:p08_distinct_first_party_evidence_v1
+- RUNTIME_COMPONENT:p08_empty_data_not_zero_v1
+- RUNTIME_COMPONENT:p08_nonzero_position_adjudication_persist_close_v1
+- RUNTIME_COMPONENT:p08_position_observation_v1
+- RUNTIME_COMPONENT:p08_post_read_only_exhaustion_authority_boundary_v1
+- RUNTIME_COMPONENT:p08_read_only_closure_v1
+- RUNTIME_COMPONENT:p10_target_position_qty_unit_forensic_adjudicate_persist_v1
+- RUNTIME_COMPONENT:p11_pos_to_sz_unit_identity_independent_proof_v1
+- RUNTIME_COMPONENT:p12_execution_prerequisite_11_position_side_posside_v1
+- RUNTIME_COMPONENT:p13_execution_prerequisite_12_exact_flatten_payload_v1
+- RUNTIME_COMPONENT:p16_execution_prerequisite_16_bounded_activation_v1
+- RUNTIME_COMPONENT:p20_execution_prerequisite_20_mutation_limited_to_proven_position_v1
+- RUNTIME_COMPONENT:p25_execution_prerequisite_25_no_additional_owner_decision_v1
+- RUNTIME_COMPONENT:post_z2do_fresh_create_readiness_evidence_v1
+- RUNTIME_COMPONENT:post_z2dr_runtime_read_only_evidence_max_leverage_v1
+- RUNTIME_COMPONENT:post_z2ds_post_whitelist_private_auth_attestation_v1
+- RUNTIME_COMPONENT:post_z2ds_private_get_current_50110_egress_capture_v1
+- RUNTIME_COMPONENT:pr_6252_merge_closeout_v1
+- RUNTIME_COMPONENT:prerequisite_08_position_source_policy_rebind_v1
+- RUNTIME_COMPONENT:productive_flatten_post_and_reconciliation_v1
+- RUNTIME_COMPONENT:remaining_execution_path_end_to_end_census_v1
+- RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
+- RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1
+- RUNTIME_COMPONENT:route_c_offline_gated_productive_submit_composition_v1
+- RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+- RUNTIME_COMPONENT:send_time_pass_18_19_21_24_v1
+- RUNTIME_COMPONENT:send_time_position_reobservation_v1
+- RUNTIME_COMPONENT:z2dg_single_actual_read_only_funding_balance_get_v1
+- RUNTIME_COMPONENT:z2dh_single_actual_read_only_funding_balance_get_v1
+- RUNTIME_COMPONENT:z2dl_post_remediation_single_private_auth_get_v1
+- SUBSYSTEM:master_v2
+- SUBSYSTEM:trading_decision_core
+- SYSTEM:peak_trade
+- TERM:btc_productive_proof_do_not_run
+- TERM:canary
+- TERM:cap23
+- TERM:capability_closure_standard
+- TERM:document_class
+- TERM:double_play
+- TERM:fail_closed
+- TERM:live_authorized
+- TERM:map_of_truth
+- TERM:master_v2
+- TERM:mmr_polyvalent
+- TERM:owner_go
+- TERM:shadow
 changed_relations:
-  - REL:a_map_documents_runbook
-  - REL:r_ddo_capture_observes_integrated_replay
-  - REL:s_map_navigates_runbook
-new_relations: []
+- REL:a_map_documents_runbook
+- REL:a_runbook_does_not_authorize_live
+- REL:a_runbook_governs_system
+- REL:r_live_auth_denies
+- REL:s_map_navigates_runbook
+- REL:s_master_v2_has_dp
+- REL:s_runbook_has_closure_std
+- REL:s_runbook_has_program_dod
+- REL:s_runbook_supersedes_vollautonomie
+- REL:s_system_contains_master_v2
+- REL:s_system_has_cap11135
+- REL:s_system_has_cap72
+new_relations:
+- REL:s_system_contains_full_core_live_path_composition_root
+- REL:r_full_core_path_calls_venue_translation
+- REL:r_full_core_path_calls_frozen_pretrade
+- REL:r_full_core_path_calls_execution_boundary
+- REL:r_full_core_path_calls_restart_gate
+- REL:r_full_core_path_calls_canary_isolation
+- REL:r_full_core_path_consumes_models
+- REL:r_full_core_path_calls_standing_live_gates
 removed_relations: []
 affected_dependency_closures:
-  - CLOSURE:live_readiness
+- CLOSURE:canary
+- CLOSURE:flatten
+- CLOSURE:live_readiness
+- CLOSURE:native_instrument_binding
+- CLOSURE:order_submit
+- CLOSURE:productive_selection
 affected_okx_surfaces: []
 affected_safety_surfaces:
-  - GUARD:economic_diagnostic_optimization_boundary
-affected_schemas: []
+- CHAIN:order_submit_standing_deny
+- CHAIN:full_core_live_path_halt_before_wire
+- GATE:live_authorized_false
+- GATE:max_positions_1
+- GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
+- GATE:full_core_live_path_frozen_pretrade_conjunction_v1
+- GATE:full_core_live_path_restart_gate_v1
+- GATE:full_core_live_path_standing_live_gates_v1
+affected_schemas:
+- DATA_CONTRACT:full_core_live_path_models_v1
 review_required_items: []
 reviewed_ids:
-  - id: FORENSIC_REFERENCE:information_corpus_persistence_base
-  - id: FUNCTIONAL_CORE:double_play
-  - id: GUARD:economic_diagnostic_optimization_boundary
-  - id: NAVIGATION_INDEX:map_of_truth
-  - id: RUNBOOK:canonical_master_runbook
-  - id: RUNBOOK:vollautonomie_v4_4_12
-  - id: RUNTIME_COMPONENT:ddo_capture_v0
-  - id: RUNTIME_COMPONENT:dp_offline_scenario_replay
-  - id: RUNTIME_COMPONENT:dp_state
-  - id: RUNTIME_COMPONENT:mv2_integrated_replay
-  - id: SUBSYSTEM:master_v2
-  - id: TERM:dynamic_scope
-  - id: TERM:map_of_truth
-  - id: REL:a_map_documents_runbook
-  - id: REL:r_ddo_capture_observes_integrated_replay
-  - id: REL:s_map_navigates_runbook
-  - id: CLOSURE:live_readiness
+- id: ACRONYM:C1
+- id: ACRONYM:C2
+- id: ACRONYM:C3
+- id: ACRONYM:CAP
+- id: ACRONYM:CAP23
+- id: ACRONYM:DOD
+- id: ACRONYM:MMR
+- id: ACRONYM:PENDING
+- id: ACRONYM:SSOT
+- id: ADAPTER:kraken_live_client
+- id: CAPABILITY:cap_11_13_5_live_canary
+- id: CAPABILITY:cap_7_2_stateful_no_order
+- id: CFG:live_authorized
+- id: CFG:max_positions
+- id: CFG:testnet_authorized
+- id: DATA_CONTRACT:full_core_live_path_models_v1
+- id: DOD:capability_closure_standard
+- id: DOD:cybersecurity_runbook
+- id: DOD:program_final
+- id: DOD:vollautonomie_economic_validity
+- id: DOD:vollautonomie_safety_runtime
+- id: DOD:vollautonomie_trading_logic
+- id: EP:full_core_live_path_offline
+- id: FUNCTIONAL_CORE:double_play
+- id: GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
+- id: GATE:full_core_live_path_frozen_pretrade_conjunction_v1
+- id: GATE:full_core_live_path_restart_gate_v1
+- id: GATE:full_core_live_path_standing_live_gates_v1
+- id: GATE:live_authorized_false
+- id: GATE:max_positions_1
+- id: HOST:cap72_stateful_host
+- id: KIND:ACRONYM
+- id: KIND:DOD
+- id: KIND:FUNCTIONAL_CORE
+- id: KIND:MMR
+- id: KIND:SYSTEM
+- id: NAVIGATION_INDEX:map_of_truth
+- id: OWNER_DECISION:cap23_exclusive_selection
+- id: PHASE:authenticated_private_runtime_read_and_runtime_permit_issuance
+- id: PHASE:authenticated_productive_transport
+- id: PHASE:ddo_offline_foundation
+- id: PHASE:g12_canonical_delayed_zero_persist_and_pending_related_observations
+- id: PHASE:g12_delayed_posid_zero_row_full_conjunction_proof_contract
+- id: PHASE:p08_distinct_first_party_evidence
+- id: PHASE:p08_empty_data_not_zero
+- id: PHASE:p08_nonzero_position_adjudication_persist_close
+- id: PHASE:p08_position_observation
+- id: PHASE:p08_post_read_only_exhaustion_authority_boundary
+- id: PHASE:p08_read_only_closure
+- id: PHASE:p10_target_position_qty_unit_forensic_adjudicate_persist
+- id: PHASE:p11_pos_to_sz_unit_identity_independent_proof
+- id: PHASE:p12_execution_prerequisite_11_position_side_posside
+- id: PHASE:p13_execution_prerequisite_12_exact_flatten_payload
+- id: PHASE:p16_execution_prerequisite_16_bounded_activation
+- id: PHASE:p20_execution_prerequisite_20_mutation_limited_to_proven_position
+- id: PHASE:p25_execution_prerequisite_25_no_additional_owner_decision
+- id: PHASE:post_z2ds_50110_egress_capture
+- id: PHASE:post_z2ds_50110_whitelist_add_from_capture
+- id: PHASE:post_z2ds_post_whitelist_private_auth_attestation
+- id: PHASE:pr_6252_merge_closeout
+- id: PHASE:productive_flatten_post_and_reconciliation
+- id: PHASE:remaining_execution_path_end_to_end_census
+- id: PHASE:section_11_14_live_accounting_reconstructed_adjudication
+- id: PHASE:section_11_14_live_execution_code_exists_adjudication
+- id: PHASE:section_11_14_live_execution_path_reachable_adjudication
+- id: PHASE:section_11_14_live_fee_observed_adjudication
+- id: PHASE:section_11_14_live_fill_observed_adjudication
+- id: PHASE:section_11_14_live_order_plan_observed_adjudication
+- id: PHASE:section_11_14_live_position_reconciled_adjudication
+- id: PHASE:section_11_14_live_private_read_only_proven_adjudication
+- id: PHASE:section_11_14_live_restart_reconstructed_adjudication
+- id: PHASE:section_11_14_live_submit_ack_contract_and_mutation_boundary_forensic_adjudication
+- id: PHASE:section_11_14_live_submit_ack_observed_adjudication
+- id: PHASE:section_11_14_live_submit_ack_observed_proof_criterion
+- id: PHASE:section_11_14_offline_evidence_ladder_surface
+- id: PHASE:send_time_pass_18_19_21_24
+- id: PHASE:send_time_position_reobservation
+- id: PHASE:z2cn
+- id: PHASE:z2co
+- id: PHASE:z2cp
+- id: PHASE:z2cq
+- id: PHASE:z2cr
+- id: PHASE:z2cs
+- id: PHASE:z2ct
+- id: PHASE:z2cu
+- id: PHASE:z2cv
+- id: PHASE:z2cw
+- id: PHASE:z2cx
+- id: PHASE:z2cy
+- id: PHASE:z2cz
+- id: PHASE:z2da
+- id: PHASE:z2dn
+- id: PHASE:z2do
+- id: PHASE:z2dp
+- id: PHASE:z2dq
+- id: PHASE:z2dr
+- id: PHASE:z2ds
+- id: RUNBOOK:canonical_master_runbook
+- id: RUNBOOK:vollautonomie_v4_4_12
+- id: RUNTIME_COMPONENT:authenticated_private_runtime_read_and_runtime_permit_issuance_v1
+- id: RUNTIME_COMPONENT:authenticated_productive_transport_v1
+- id: RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1
+- id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+- id: RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1
+- id: RUNTIME_COMPONENT:g12_canonical_delayed_zero_persist_and_pending_related_observations_v1
+- id: RUNTIME_COMPONENT:g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1
+- id: RUNTIME_COMPONENT:offline_execution_permission_and_position_creation_producer_wiring_v1
+- id: RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1
+- id: RUNTIME_COMPONENT:p08_distinct_first_party_evidence_v1
+- id: RUNTIME_COMPONENT:p08_empty_data_not_zero_v1
+- id: RUNTIME_COMPONENT:p08_nonzero_position_adjudication_persist_close_v1
+- id: RUNTIME_COMPONENT:p08_position_observation_v1
+- id: RUNTIME_COMPONENT:p08_post_read_only_exhaustion_authority_boundary_v1
+- id: RUNTIME_COMPONENT:p08_read_only_closure_v1
+- id: RUNTIME_COMPONENT:p10_target_position_qty_unit_forensic_adjudicate_persist_v1
+- id: RUNTIME_COMPONENT:p11_pos_to_sz_unit_identity_independent_proof_v1
+- id: RUNTIME_COMPONENT:p12_execution_prerequisite_11_position_side_posside_v1
+- id: RUNTIME_COMPONENT:p13_execution_prerequisite_12_exact_flatten_payload_v1
+- id: RUNTIME_COMPONENT:p16_execution_prerequisite_16_bounded_activation_v1
+- id: RUNTIME_COMPONENT:p20_execution_prerequisite_20_mutation_limited_to_proven_position_v1
+- id: RUNTIME_COMPONENT:p25_execution_prerequisite_25_no_additional_owner_decision_v1
+- id: RUNTIME_COMPONENT:post_z2do_fresh_create_readiness_evidence_v1
+- id: RUNTIME_COMPONENT:post_z2dr_runtime_read_only_evidence_max_leverage_v1
+- id: RUNTIME_COMPONENT:post_z2ds_post_whitelist_private_auth_attestation_v1
+- id: RUNTIME_COMPONENT:post_z2ds_private_get_current_50110_egress_capture_v1
+- id: RUNTIME_COMPONENT:pr_6252_merge_closeout_v1
+- id: RUNTIME_COMPONENT:prerequisite_08_position_source_policy_rebind_v1
+- id: RUNTIME_COMPONENT:productive_flatten_post_and_reconciliation_v1
+- id: RUNTIME_COMPONENT:remaining_execution_path_end_to_end_census_v1
+- id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
+- id: RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1
+- id: RUNTIME_COMPONENT:route_c_offline_gated_productive_submit_composition_v1
+- id: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+- id: RUNTIME_COMPONENT:send_time_pass_18_19_21_24_v1
+- id: RUNTIME_COMPONENT:send_time_position_reobservation_v1
+- id: RUNTIME_COMPONENT:z2dg_single_actual_read_only_funding_balance_get_v1
+- id: RUNTIME_COMPONENT:z2dh_single_actual_read_only_funding_balance_get_v1
+- id: RUNTIME_COMPONENT:z2dl_post_remediation_single_private_auth_get_v1
+- id: SUBSYSTEM:master_v2
+- id: SUBSYSTEM:trading_decision_core
+- id: SYSTEM:peak_trade
+- id: TERM:btc_productive_proof_do_not_run
+- id: TERM:canary
+- id: TERM:cap23
+- id: TERM:capability_closure_standard
+- id: TERM:document_class
+- id: TERM:double_play
+- id: TERM:fail_closed
+- id: TERM:live_authorized
+- id: TERM:map_of_truth
+- id: TERM:master_v2
+- id: TERM:mmr_polyvalent
+- id: TERM:owner_go
+- id: TERM:shadow
+- id: REL:a_map_documents_runbook
+- id: REL:a_runbook_does_not_authorize_live
+- id: REL:a_runbook_governs_system
+- id: REL:r_live_auth_denies
+- id: REL:s_map_navigates_runbook
+- id: REL:s_master_v2_has_dp
+- id: REL:s_runbook_has_closure_std
+- id: REL:s_runbook_has_program_dod
+- id: REL:s_runbook_supersedes_vollautonomie
+- id: REL:s_system_contains_master_v2
+- id: REL:s_system_has_cap11135
+- id: REL:s_system_has_cap72
+- id: CLOSURE:canary
+- id: CLOSURE:flatten
+- id: CLOSURE:live_readiness
+- id: CLOSURE:native_instrument_binding
+- id: CLOSURE:order_submit
+- id: CLOSURE:productive_selection
+- id: REL:s_system_contains_full_core_live_path_composition_root
+- id: REL:r_full_core_path_calls_venue_translation
+- id: REL:r_full_core_path_calls_frozen_pretrade
+- id: REL:r_full_core_path_calls_execution_boundary
+- id: REL:r_full_core_path_calls_restart_gate
+- id: REL:r_full_core_path_calls_canary_isolation
+- id: REL:r_full_core_path_consumes_models
+- id: REL:r_full_core_path_calls_standing_live_gates
+- id: CHAIN:order_submit_standing_deny
+- id: CHAIN:full_core_live_path_halt_before_wire
