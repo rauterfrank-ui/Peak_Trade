@@ -1,22 +1,18 @@
 {
   "OWNER_APPROVED_ALONE_IS_INSUFFICIENT": true,
   "TOKEN_ALONE_IS_INSUFFICIENT": true,
-  "allowed_paths": [
-    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
-  ],
-  "allowed_surface_classes": [
-    "EXPLICIT_OWNER_ADJUDICATED_SCOPE_DIRECTION_GENERATOR_FALLBACK_V1"
-  ],
+  "allowed_paths": [],
+  "allowed_surface_classes": [],
   "authority_effect": "NONE",
   "authorization_token": "EXPLICIT_OWNER_ADJUDICATED_SCOPE_DIRECTION_GENERATOR_FALLBACK_AUTHORIZATION_V1",
-  "authorized_evidence_digest": "0f89944190f567fd93604d88fd81f422034433c7c4228caa69340b7c936b9f6b",
+  "authorized_evidence_digest": "",
   "authorized_path_prefixes": [],
   "authorized_scope_class": "EXPLICIT_OWNER_ADJUDICATED_SCOPE_DIRECTION_GENERATOR_FALLBACK_V1",
   "blanket_allowlist": false,
   "bound_authority_spec": "docs/ops/specs/DIRECTIONAL_MAPPING_CONTRACT_REPAIR_V1.md",
   "bound_boundary_contract": "config/governance/economic_diagnostic_optimization_boundary_v0.json",
   "bound_boundary_guard": "src/governance/economic_diagnostic_optimization_boundary_v0.py",
-  "bound_diff_base_sha": "386ff5efd1b716fb3334f5360e2784a493563fba",
+  "bound_diff_base_sha": "",
   "branch_protection_bypass": false,
   "branch_specific_exception": false,
   "broad_master_v2_grant": false,
@@ -80,7 +76,7 @@
     "RUNTIME_EFFECT": "NONE",
     "SCHEDULER_EFFECT": "NONE"
   },
-  "grant_active": true,
+  "grant_active": false,
   "human_adjudicated_slice_claims": {
     "COMPOSITION_SELECTED_SIDE_MAY_WRITE_SCOPE_DIRECTION_STATE": false,
     "CONTRACT_RUNTIME_BINDING_PROVEN_SCOPE": "OFFLINE_FIXTURE_PROOF_ONLY_NOT_LIVE",
@@ -91,11 +87,11 @@
   },
   "mutation_purpose_class": "SCOPE_DIRECTION_GENERATOR_FALLBACK_REPAIR",
   "notes": [
-    "Sixth Economic Guard admission class. Exact-file slice grant for generator-fallback ScopeDirectionState authority only.",
+    "Slice grant closed after merge. Class remains; grant is inactive. Historical slice_grant_id=SCOPE_DIRECTION_GENERATOR_FALLBACK_BOUNDED_SLICE_V1. Historical bound_diff_base_sha=386ff5efd1b716fb3334f5360e2784a493563fba. Historical authorized_evidence_digest=0f89944190f567fd93604d88fd81f422034433c7c4228caa69340b7c936b9f6b.",
     "Owner adjudication is necessary and not sufficient. Unknown JSON fields fail closed.",
     "Does not waive MASTER_V2_MUTATION_ALLOWED=false or CANONICAL_TRADING_LOGIC_MUTATION_ALLOWED=false.",
     "Does not authorize live, testnet, canary, orders, or execution. Not wiring, restoration, decommission, nonproductive contract change, or the fifth mapping-bind class.",
-    "Does not reopen the closed fifth-class grant. Closeout after merge must set grant_active=false and empty grant fields. The class remains; the grant does not."
+    "Does not reopen the closed fifth-class grant. The class remains; the grant does not. Standing path reuse is forbidden."
   ],
   "parallel_ssot_created": false,
   "pr_specific_exception": false,
@@ -109,9 +105,7 @@
     "TESTNET_CAPABILITY_INCREASED": false
   },
   "required_check_waiver": false,
-  "required_runtime_paths": [
-    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
-  ],
+  "required_runtime_paths": [],
   "required_semantic_invariants": {
     "ACTIVE_SIDE_TO_SCOPE_DIRECTION_CHANGED": false,
     "ARMED_LAST_ACTIVE_SIDE_CHANGED": false,
@@ -145,5 +139,5 @@
   "runtime_activation": false,
   "runtime_effect": "NONE",
   "scope_id": "EXPLICIT_OWNER_ADJUDICATED_SCOPE_DIRECTION_GENERATOR_FALLBACK_AUTHORIZATION_V1",
-  "slice_grant_id": "SCOPE_DIRECTION_GENERATOR_FALLBACK_BOUNDED_SLICE_V1"
+  "slice_grant_id": ""
 }

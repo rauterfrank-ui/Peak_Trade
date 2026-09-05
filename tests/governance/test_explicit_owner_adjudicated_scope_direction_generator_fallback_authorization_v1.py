@@ -47,6 +47,11 @@ TEST_DIFF_BASE_SHA = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 OTHER_DIFF_BASE_SHA = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
 FIXTURE_SLICE_GRANT_ID = "SCOPE_DIRECTION_GENERATOR_FALLBACK_FIXTURE_SLICE_V1"
 COMMITTED_SLICE_GRANT_ID = "SCOPE_DIRECTION_GENERATOR_FALLBACK_BOUNDED_SLICE_V1"
+HISTORICAL_BOUND_DIFF_BASE_SHA = "386ff5efd1b716fb3334f5360e2784a493563fba"
+HISTORICAL_AUTHORIZED_EVIDENCE_DIGEST = (
+    "0f89944190f567fd93604d88fd81f422034433c7c4228caa69340b7c936b9f6b"
+)
+COMMITTED_ALLOWED_PATHS = [RUNTIME_PATH]
 
 
 def _load_auth() -> dict:
@@ -145,8 +150,8 @@ def _report(
     )
 
 
-class TestGeneratorFallbackCommittedActiveGrantV1:
-    def test_committed_artifact_is_valid_active_exact_slice(self) -> None:
+class TestGeneratorFallbackCommittedInactiveGrantV1:
+    def test_committed_artifact_is_valid_inactive_closed_grant(self) -> None:
         auth = load_generator_fallback_authorization(REPO_ROOT)
         assert auth is not None
         valid, reasons = validate_generator_fallback_authorization(auth, repo_root=REPO_ROOT)
@@ -156,11 +161,13 @@ class TestGeneratorFallbackCommittedActiveGrantV1:
         assert auth["authorized_scope_class"] == GENERATOR_FALLBACK_SCOPE_CLASS
         assert auth["authorization_token"] == GENERATOR_FALLBACK_AUTHORIZATION_ID
         assert auth["mutation_purpose_class"] == GENERATOR_FALLBACK_MUTATION_PURPOSE
-        assert auth["grant_active"] is True
-        assert auth["allowed_paths"] == [RUNTIME_PATH]
-        assert auth["required_runtime_paths"] == [RUNTIME_PATH]
-        assert auth["allowed_surface_classes"] == [GENERATOR_FALLBACK_SCOPE_CLASS]
-        assert auth["slice_grant_id"] == COMMITTED_SLICE_GRANT_ID
+        assert auth["grant_active"] is False
+        assert auth["allowed_paths"] == []
+        assert auth["required_runtime_paths"] == []
+        assert auth["allowed_surface_classes"] == []
+        assert auth["slice_grant_id"] == ""
+        assert auth["authorized_evidence_digest"] == ""
+        assert auth["bound_diff_base_sha"] == ""
         assert auth["authorized_path_prefixes"] == []
         assert auth["pr_specific_exception"] is False
         assert auth["directory_grant"] is False
@@ -168,6 +175,7 @@ class TestGeneratorFallbackCommittedActiveGrantV1:
         assert "pr_number" not in auth
         assert "branch_name" not in auth
         assert "MASTER_V2_MUTATION_ALLOWED" not in auth
+        assert "CANONICAL_TRADING_LOGIC_MUTATION_ALLOWED" not in auth
         assert auth["class_attestation"] == GENERATOR_FALLBACK_CLASS_ATTESTATION_RELATIVE
         assert auth["bound_authority_spec"] == GENERATOR_FALLBACK_BOUND_AUTHORITY_SPEC
         assert (REPO_ROOT / GENERATOR_FALLBACK_CLASS_ATTESTATION_RELATIVE).is_file()
@@ -180,10 +188,19 @@ class TestGeneratorFallbackCommittedActiveGrantV1:
             ]
             is False
         )
+        notes = " ".join(str(item) for item in auth["notes"])
+        assert COMMITTED_SLICE_GRANT_ID in notes
+        assert HISTORICAL_BOUND_DIFF_BASE_SHA in notes
+        assert HISTORICAL_AUTHORIZED_EVIDENCE_DIGEST in notes
+        assert COMMITTED_ALLOWED_PATHS == [RUNTIME_PATH]
         mapping = load_mapping_bind_authorization(REPO_ROOT)
         assert mapping is not None
         assert mapping["grant_active"] is False
         assert load_contract(REPO_ROOT)["immutable_flags"]["MASTER_V2_MUTATION_ALLOWED"] is False
+        assert (
+            load_contract(REPO_ROOT)["immutable_flags"]["CANONICAL_TRADING_LOGIC_MUTATION_ALLOWED"]
+            is False
+        )
 
 
 class TestGeneratorFallbackAdmissionPositiveV1:

@@ -2039,7 +2039,7 @@
     "authorized_scope_class": "EXPLICIT_OWNER_ADJUDICATED_SCOPE_DIRECTION_GENERATOR_FALLBACK_V1",
     "mutation_purpose_class": "SCOPE_DIRECTION_GENERATOR_FALLBACK_REPAIR",
     "contract_path": "config/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.json",
-    "grant_active": true,
-    "note": "Exact-file evidence-digest-bound Owner-adjudicated generator-fallback repair so ScopeDirectionState remains a SideState projection. Distinct from wiring, restoration, decommission, nonproductive contract change, and the fifth mapping-bind class. Does not reopen the closed fifth-class grant. Does not waive MASTER_V2_MUTATION_ALLOWED=false. Not a PR or branch exception."
+    "grant_active": false,
+    "note": "Exact-file evidence-digest-bound Owner-adjudicated generator-fallback repair so ScopeDirectionState remains a SideState projection. Distinct from wiring, restoration, decommission, nonproductive contract change, and the fifth mapping-bind class. Inactive after digest-bound slice closeout. Does not reopen the closed fifth-class grant. Does not waive MASTER_V2_MUTATION_ALLOWED=false. Not a PR or branch exception."
   }
 }
