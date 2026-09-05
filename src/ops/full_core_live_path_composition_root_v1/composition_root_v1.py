@@ -119,6 +119,12 @@ def compose_core_live_execution_intent_v1(
     reasons = {str(x) for x in (replay.evidence.reason_codes or ())}
     if reasons & _SAFETY_MARKERS:
         return _deny("REPLAY_SAFETY_DENY")
+    typed_safety = getattr(replay, "replay_execution_safety", None)
+    if typed_safety is not None and outcome in _ENTER:
+        if bool(getattr(typed_safety, "entry_blocked", False)) or bool(
+            getattr(typed_safety, "emergency_boundary_active", False)
+        ):
+            return _deny("REPLAY_SAFETY_DENY")
 
     intent = intermediate.canonical_order_intent
     if outcome in _ENTER and intent is None:
@@ -185,6 +191,7 @@ def compose_core_live_execution_intent_v1(
         wire_send_permitted=False,
         execution_eligible=False,
         submission_authorized=False,
+        capital_risk_mode=str(getattr(replay, "capital_risk_mode", "") or "OFFLINE_ALGEBRA"),
     )
     if mode == MODE_LIVE:
         # Mode may be named LIVE for identity, but standing gates stay false.

@@ -56,8 +56,33 @@ Cap-2.3 selection identity + Cap-2.4 BoundInstrument
 → translate_core_live_intent_to_venue_plan_v1
 → evaluate_frozen_pretrade_conjunction_v1
 → halt_at_live_execution_boundary_v1
-→ HARD STOP BEFORE WIRE
+   (typed ExecutionAdmissionDecisionV1; HARD STOP BEFORE WIRE)
 ```
+
+## Typed contracts (hardening; no Live arming)
+
+```text
+ReplayExecutionSafetyV1 = mapper-facing typed Safety/Emergency view
+  derived from Replay Safety (pre-29Q) + Replay KS evidence (post-29Q)
+  runtime_authority_effect=NONE
+  not FILEGATE, not decision owner
+
+ExecutionAdmissionDecisionV1 = sole Full-Core admission join at
+  halt_at_live_execution_boundary_v1
+  missing durable FILEGATE evidence => NOT_ADMITTED
+  OFFLINE_ALGEBRA in Live-admission context => NOT_ADMITTED
+  FROZEN_OFFLINE_PRETRADE in Live-admission context => NOT_ADMITTED
+
+CURRENT_CAPITAL_RISK_MODE=OFFLINE_ALGEBRA
+LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
+FROZEN_OFFLINE_PRETRADE_EVIDENCE != FRESH_GET_PER_PRETRADE_DECISION
+DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=false
+```
+
+Kill-switch layers remain distinct: `SideState.KILL_ALL` (strategy state);
+Replay Safety (pre-29Q); Replay Emergency/KS evidence (post-29Q taxonomy);
+durable FILEGATE (execution-side permission). Canary != Full-Core E2E.
+Hardening-v2 != decision owner.
 
 ## Remaining gap
 

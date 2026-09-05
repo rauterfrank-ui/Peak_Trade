@@ -20,6 +20,10 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     PATH_KIND,
     WIRE_SEND_PERMITTED,
 )
+from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
+    ExecutionAdmissionDecisionV1,
+    evaluate_execution_admission_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.models_v1 import (
     CoreLiveExecutionIntentV1,
     FrozenPretradeEvidenceV1,
@@ -34,6 +38,7 @@ __all__ = [
     "CAPABILITY_ID",
     "CURRENT_LIVE_CORE_PATH_PROVEN",
     "CoreLiveExecutionIntentV1",
+    "ExecutionAdmissionDecisionV1",
     "FrozenPretradeEvidenceV1",
     "FULL_CORE_RESTART_TEST_AUTHORIZED",
     "FULL_CORE_SYSTEM_E2E_PROVEN",
@@ -46,6 +51,7 @@ __all__ = [
     "PATH_KIND",
     "WIRE_SEND_PERMITTED",
     "compose_core_live_execution_intent_v1",
+    "evaluate_execution_admission_v1",
     "refuse_canary_plan_as_full_core_e2e_v1",
     "run_full_core_live_path_offline_v1",
 ]

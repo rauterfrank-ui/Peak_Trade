@@ -125,11 +125,24 @@ def run_full_core_live_path_offline_v1(
             pretrade=pretrade,
             recon=(UNKNOWN_OUTCOME_RECON, PRE_SUBMIT_RECON),
         )
+    frozen = payload.frozen_pretrade
+    capital_risk_mode = "OFFLINE_ALGEBRA"
+    replay = payload.replay
+    if replay is not None:
+        mode = str(getattr(replay, "capital_risk_mode", "") or "")
+        if not mode and replay.intermediate is not None:
+            mode = str(getattr(replay.intermediate, "capital_risk_mode", "") or "")
+        if mode:
+            capital_risk_mode = mode
     boundary = halt_at_live_execution_boundary_v1(
         plan=plan,
         pretrade=pretrade,
         attempt_wire_send=attempt_wire_send,
         attempt_construct_live_port=attempt_construct_live_port,
+        capital_risk_mode=capital_risk_mode,
+        pretrade_source_kind=str(frozen.source_kind or "FROZEN_OFFLINE_PRETRADE_EVIDENCE"),
+        pretrade_freshness_status=str(getattr(frozen, "freshness_status", "") or "FROZEN_OFFLINE"),
+        path_mode=payload.mode,
     )
     halt_reasons = boundary.reason_codes
     if not pretrade.owner_go_valid:

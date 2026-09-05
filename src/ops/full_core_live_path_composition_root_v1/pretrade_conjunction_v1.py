@@ -35,6 +35,9 @@ def evaluate_frozen_pretrade_conjunction_v1(
         reasons.append("INSTRUMENT_BINDING_INVALID")
     if frozen.source_kind != "FROZEN_OFFLINE_PRETRADE_EVIDENCE":
         reasons.append("PRETRADE_SOURCE_NOT_FROZEN_OFFLINE")
+    freshness = str(getattr(frozen, "freshness_status", "") or "")
+    if frozen.source_kind == "FROZEN_OFFLINE_PRETRADE_EVIDENCE" and freshness == "LIVE_FRESH":
+        reasons.append("FROZEN_PRETRADE_CANNOT_CLAIM_LIVE_FRESH")
     planned = Decimal(str(plan.quantity))
     if frozen.max_available <= 0:
         reasons.append("MAX_AVAILABLE_ZERO")
@@ -71,6 +74,7 @@ def evaluate_frozen_pretrade_conjunction_v1(
             "MARGIN_MODE_FAIL",
             "LEVERAGE_FAIL",
             "PRETRADE_SOURCE_NOT_FROZEN_OFFLINE",
+            "FROZEN_PRETRADE_CANNOT_CLAIM_LIVE_FRESH",
         }
         for code in reasons
     )

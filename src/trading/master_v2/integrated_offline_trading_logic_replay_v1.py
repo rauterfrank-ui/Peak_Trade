@@ -63,6 +63,10 @@ from trading.master_v2.canonical_trading_decision_evidence_v1 import (
     derive_decision_id,
     with_computed_evidence_semantic_digest,
 )
+from trading.master_v2.replay_execution_safety_contract_v1 import (
+    ReplayExecutionSafetyV1,
+    derive_replay_execution_safety_v1,
+)
 from trading.master_v2.deterministic_scope_event_generator_v1 import (
     DETERMINISTIC_SCOPE_EVENT_GENERATOR_LAYER_VERSION,
     CanonicalScopeEventType,
@@ -372,6 +376,7 @@ class IntegratedOfflineReplayIntermediateV1:
     # Pure-Stack display passthrough: identical TransitionDecision from transition_state.
     # Not reconstructed from StateSwitchEvidenceV1. Optional for additive V1 compatibility.
     transition_decision: Optional[TransitionDecision] = None
+    capital_risk_mode: str = "OFFLINE_ALGEBRA"
 
 
 @dataclass(frozen=True)
@@ -387,6 +392,8 @@ class IntegratedOfflineReplayResultV1:
     registry_snapshot_digest: str = ""
     strategy_identity_enforcement: str = "EXPLICIT_INJECTION"
     decision_packet_role: str = "HANDOFF_EVIDENCE_ONLY"
+    replay_execution_safety: Optional[ReplayExecutionSafetyV1] = None
+    capital_risk_mode: str = "OFFLINE_ALGEBRA"
 
 
 def _annotated_replay_result(
@@ -397,6 +404,8 @@ def _annotated_replay_result(
     evidence: CanonicalTradingDecisionEvidenceV1,
     intermediate: Optional[IntegratedOfflineReplayIntermediateV1] = None,
     regime_bull_bear_switch_evidence_readmodel: Optional[object] = None,
+    replay_execution_safety: Optional[ReplayExecutionSafetyV1] = None,
+    capital_risk_mode: str = "OFFLINE_ALGEBRA",
 ) -> IntegratedOfflineReplayResultV1:
     return IntegratedOfflineReplayResultV1(
         replay_pass=replay_pass,
@@ -409,6 +418,8 @@ def _annotated_replay_result(
         registry_snapshot_digest=inp.registry_snapshot_digest,
         strategy_identity_enforcement=inp.strategy_identity_enforcement,
         decision_packet_role="HANDOFF_EVIDENCE_ONLY",
+        replay_execution_safety=replay_execution_safety,
+        capital_risk_mode=capital_risk_mode,
     )
 
 
@@ -1943,7 +1954,15 @@ def run_integrated_offline_trading_logic_replay_v1(
         ),
         # Identical object from transition_state — display passthrough only.
         transition_decision=transition,
+        capital_risk_mode=str(
+            getattr(sizing_binding, "capital_risk_mode", "OFFLINE_ALGEBRA") or "OFFLINE_ALGEBRA"
+        ),
     )
+    replay_execution_safety = derive_replay_execution_safety_v1(
+        safety_boundary=safety_binding.boundary,
+        killswitch_boundary=killswitch_binding.boundary,
+    )
+    capital_risk_mode = intermediate.capital_risk_mode
 
     boundary_ok = (
         not entry_exit_decision.execution_eligible
@@ -1970,4 +1989,6 @@ def run_integrated_offline_trading_logic_replay_v1(
         evidence=evidence,
         intermediate=intermediate,
         regime_bull_bear_switch_evidence_readmodel=regime_bull_bear_switch_evidence_readmodel,
+        replay_execution_safety=replay_execution_safety,
+        capital_risk_mode=capital_risk_mode,
     )

@@ -148,6 +148,9 @@ class CanonicalCoreRuntimeCapitalContextV0:
     reconciliation_status: str = "RECONCILED"
     policy_digest: str = _BRIDGE_CONFIG_DIGEST
     config_digest: str = _BRIDGE_CONFIG_DIGEST
+    # Explicit sizing-input mode. Current Integrated Replay is OFFLINE_ALGEBRA only.
+    # LIVE_ACCOUNT_BOUND is typed for later admission; it is not implemented here.
+    capital_risk_mode: str = "OFFLINE_ALGEBRA"
 
 
 @dataclass(frozen=True)
