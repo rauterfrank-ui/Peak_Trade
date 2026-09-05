@@ -20,6 +20,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     FULL_CORE_SYSTEM_E2E_PROVEN,
     FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH,
     LIVE_ACCOUNT_BOUND_IMPLEMENTED,
+    CAPITAL_ADMISSION_IMPLEMENTED,
     LIVE_ARMED,
     LIVE_ENABLED,
     OWNER,
@@ -45,6 +46,11 @@ from src.ops.full_core_live_path_composition_root_v1.models_v1 import (
     FrozenPretradeEvidenceV1,
     FullCoreLivePathInputV1,
     FullCoreLivePathResultV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import (
+    evaluate_capital_admission_v1,
+    join_capital_admission_into_admission_inputs_v1,
+    live_venue_capital_may_bind_step_29p_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.live_account_bound_v1 import (
     evaluate_live_account_bound_v1,
@@ -83,6 +89,7 @@ __all__ = [
     "FullCoreLivePathInputV1",
     "FullCoreLivePathResultV1",
     "LIVE_ACCOUNT_BOUND_IMPLEMENTED",
+    "CAPITAL_ADMISSION_IMPLEMENTED",
     "LIVE_ARMED",
     "LIVE_ENABLED",
     "OWNER",
@@ -96,12 +103,15 @@ __all__ = [
     "evaluate_execution_admission_v1",
     "evaluate_owner_one_shot_permit_v1",
     "evaluate_live_account_bound_v1",
+    "evaluate_capital_admission_v1",
     "collect_fresh_pretrade_runtime_get_v1",
     "join_durable_filegate_into_admission_inputs_v1",
     "join_fresh_pretrade_runtime_get_into_admission_inputs_v1",
     "join_live_account_bound_into_admission_inputs_v1",
+    "join_capital_admission_into_admission_inputs_v1",
     "join_owner_one_shot_permit_into_admission_inputs_v1",
     "live_admission_gap_dag_v1",
+    "live_venue_capital_may_bind_step_29p_v1",
     "read_durable_filegate_join_evidence_v1",
     "refuse_canary_plan_as_full_core_e2e_v1",
     "refuse_competing_productive_live_next_pointer_v1",

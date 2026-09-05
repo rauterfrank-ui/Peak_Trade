@@ -174,6 +174,7 @@ class FullCoreLivePathInputV1:
     run_id: str = "offline-full-core-run"
     fresh_pretrade_get_transport: Any = None
     expected_account_identity: str = ""
+    capital_admission_claim: Any = None
 
 
 @dataclass(frozen=True)

@@ -5,6 +5,7 @@ Durable FILEGATE evidence is joined via durable_filegate_join_v1.
 OWNER_ONE_SHOT permit evidence is joined via owner_one_shot_permit_v1.
 Fresh pretrade GET evidence is joined via fresh_pretrade_runtime_get_v1.
 LIVE_ACCOUNT_BOUND evidence is joined via live_account_bound_v1.
+Capital Admission evidence is joined via capital_admission_v1.
 Does not construct LiveExecutionPort. Does not send wire.
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
@@ -83,6 +84,28 @@ class LiveAccountBoundStatusV1(str, Enum):
     STALE = "STALE"
 
 
+class CapitalAdmissionStatusV1(str, Enum):
+    TRUSTED_PRESENT = "TRUSTED_PRESENT"
+    MISSING = "MISSING"
+    MALFORMED = "MALFORMED"
+    STALE = "STALE"
+    CONTRADICTORY = "CONTRADICTORY"
+    WRONG_CONTEXT = "WRONG_CONTEXT"
+    NOT_REQUIRED_OFFLINE = "NOT_REQUIRED_OFFLINE"
+
+
+CAPITAL_SOURCE_OFFLINE_ALGEBRA = "OFFLINE_ALGEBRA"
+CAPITAL_SOURCE_OBSERVED_VENUE = "OBSERVED_VENUE"
+CAPITAL_SOURCE_FIXTURE = "FIXTURE"
+CAPITAL_SOURCE_REPLAY = "REPLAY"
+CAPITAL_SOURCE_HISTORICAL = "HISTORICAL"
+
+CAPITAL_AUTHORITY_NONE = "NONE"
+CAPITAL_AUTHORITY_NON_PRODUCTIVE_OFFLINE_ALGEBRA = "NON_PRODUCTIVE_OFFLINE_ALGEBRA"
+CAPITAL_AUTHORITY_OBSERVED_NOT_RISK_ADMISSIBLE = "OBSERVED_NOT_RISK_ADMISSIBLE"
+CAPITAL_AUTHORITY_RISK_ADMISSIBLE = "RISK_ADMISSIBLE"
+
+
 @dataclass(frozen=True)
 class ExecutionAdmissionInputsV1:
     """Caller must inject durable kill-switch and typed OWNER_ONE_SHOT evidence."""
@@ -104,6 +127,8 @@ class ExecutionAdmissionInputsV1:
     admission_context: str
     fresh_pretrade_get_status: str = FreshPretradeGetStatusV1.MISSING.value
     live_account_bound_status: str = LiveAccountBoundStatusV1.MISSING.value
+    capital_admission_status: str = CapitalAdmissionStatusV1.MISSING.value
+    capital_authority_class: str = CAPITAL_AUTHORITY_NONE
     provenance_refs: Tuple[str, ...] = ()
     runtime_authority_effect: str = RUNTIME_AUTHORITY_EFFECT_NONE
 
@@ -256,6 +281,35 @@ def evaluate_execution_admission_v1(
     if mode == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA:
         reasons.append("OFFLINE_ALGEBRA_NOT_LIVE_CAPITAL_AUTHORITY")
 
+    capital_status = str(inputs.capital_admission_status or "").strip()
+    capital_authority = str(inputs.capital_authority_class or "").strip()
+    capital_trusted = capital_status == CapitalAdmissionStatusV1.TRUSTED_PRESENT.value
+    if capital_status == CapitalAdmissionStatusV1.MALFORMED.value:
+        reasons.append("CAPITAL_ADMISSION_MALFORMED")
+    elif capital_status == CapitalAdmissionStatusV1.STALE.value:
+        reasons.append("CAPITAL_ADMISSION_STALE")
+        reasons.append("CAPITAL_ADMISSION_FIXTURE_REPLAY_NOT_PRODUCTIVE")
+    elif capital_status == CapitalAdmissionStatusV1.CONTRADICTORY.value:
+        reasons.append("CAPITAL_ADMISSION_CONTRADICTORY")
+    elif capital_status == CapitalAdmissionStatusV1.WRONG_CONTEXT.value:
+        reasons.append("CAPITAL_ADMISSION_WRONG_CONTEXT")
+    elif capital_status == CapitalAdmissionStatusV1.NOT_REQUIRED_OFFLINE.value:
+        if live_context:
+            reasons.append("CAPITAL_ADMISSION_CONTRADICTORY")
+            reasons.append("OFFLINE_ALGEBRA_NOT_LIVE_CAPITAL_AUTHORITY")
+    elif capital_status != CapitalAdmissionStatusV1.TRUSTED_PRESENT.value:
+        reasons.append("CAPITAL_ADMISSION_MISSING")
+        reasons.append("FRESH_GET_ALONE_NOT_CAPITAL_AUTHORITY")
+        reasons.append("LIVE_ACCOUNT_BOUND_ALONE_NOT_CAPITAL_AUTHORITY")
+    if capital_authority == CAPITAL_AUTHORITY_RISK_ADMISSIBLE:
+        reasons.append("CAPITAL_ADMISSION_CONTRADICTORY")
+        reasons.append("CAPITAL_ADMISSION_RISK_ADMISSIBLE_POLICY_FROZEN")
+        reasons.append("CAPITAL_ADMISSION_CANNOT_OVERRIDE_LIVE_ENABLED")
+    if capital_trusted is True and capital_authority == CAPITAL_AUTHORITY_NONE:
+        reasons.append("CAPITAL_ADMISSION_CONTRADICTORY")
+    if capital_trusted is True:
+        reasons.append("OBSERVED_CAPITAL_NOT_RISK_ADMISSIBLE")
+
     if live_context:
         if freshness != PretradeFreshnessStatusV1.LIVE_FRESH.value:
             reasons.append("FROZEN_PRETRADE_LIVE_ADMISSION_DENIED")
@@ -269,6 +323,9 @@ def evaluate_execution_admission_v1(
             reasons.append("LIVE_ADMISSION_REQUIRES_FRESH_GET_PRETRADE")
             if get_status == FreshPretradeGetStatusV1.NOT_REQUIRED_OFFLINE.value:
                 reasons.append("FRESH_PRETRADE_GET_MISSING")
+        if capital_trusted is not True:
+            reasons.append("LIVE_ADMISSION_REQUIRES_CAPITAL_ADMISSION")
+        reasons.append("LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P")
 
     unique = tuple(dict.fromkeys(reasons))
     # Standing package constants and missing FILEGATE keep admission closed.
@@ -318,5 +375,7 @@ def default_untrusted_filegate_inputs_v1(
         admission_context=admission_context,
         fresh_pretrade_get_status=fresh_pretrade_get_status,
         live_account_bound_status=LiveAccountBoundStatusV1.MISSING.value,
+        capital_admission_status=CapitalAdmissionStatusV1.MISSING.value,
+        capital_authority_class=CAPITAL_AUTHORITY_NONE,
         provenance_refs=provenance_refs + (OFFLINE_BOUNDARY_ROLE,),
     )

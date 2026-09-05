@@ -118,6 +118,7 @@ def _run(monkeypatch, replay_input, **kwargs):
         owner_go=kwargs.pop("owner_go", "OWNER_GO_FULL_CORE_LIVE_PATH_OFFLINE_V1"),
         fresh_pretrade_get_transport=kwargs.pop("fresh_pretrade_get_transport", None),
         expected_account_identity=kwargs.pop("expected_account_identity", ""),
+        capital_admission_claim=kwargs.pop("capital_admission_claim", None),
     )
     return run_full_core_live_path_offline_v1(payload, **kwargs), replay
 
@@ -134,6 +135,7 @@ def _path_from_replay(replay, **kwargs):
         owner_go=kwargs.pop("owner_go", "OWNER_GO_FULL_CORE_LIVE_PATH_OFFLINE_V1"),
         fresh_pretrade_get_transport=kwargs.pop("fresh_pretrade_get_transport", None),
         expected_account_identity=kwargs.pop("expected_account_identity", ""),
+        capital_admission_claim=kwargs.pop("capital_admission_claim", None),
     )
     return run_full_core_live_path_offline_v1(payload, **kwargs)
 

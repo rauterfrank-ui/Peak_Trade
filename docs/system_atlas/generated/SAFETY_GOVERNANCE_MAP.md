@@ -18,6 +18,7 @@
 | GATE:btc_exclusion | GATE | True | CURRENT_CANONICAL |
 | GATE:flatten_execute_authority | GATE | True | CURRENT_NONCANONICAL |
 | GATE:flatten_live_wire | GATE | True | CURRENT_NONCANONICAL |
+| GATE:full_core_capital_admission_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:full_core_durable_filegate_join_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:full_core_fresh_pretrade_runtime_get_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:full_core_live_account_bound_v1 | GATE | True | CURRENT_NONCANONICAL |

@@ -21,6 +21,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED,
     FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH,
     LIVE_ACCOUNT_BOUND_IMPLEMENTED,
+    CAPITAL_ADMISSION_IMPLEMENTED,
     LIVE_ARMED,
     LIVE_ENABLED,
     OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED,
@@ -143,6 +144,23 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
         wiring_authorized=True,
         layer=3,
         dependencies=("PRIVATE_AUTH_PREFLIGHT", "FRESH_GET_PER_PRETRADE_DECISION"),
+    ),
+    _node(
+        component_id="CAPITAL_ADMISSION",
+        authority="capital_admission_contract_v1",
+        producer="src.ops.full_core_live_path_composition_root_v1.capital_admission_v1",
+        contract="CapitalAdmissionEvidenceV1",
+        consumer="evaluate_execution_admission_v1+capital_risk_sizing_v1/STEP_29P",
+        implementation_status="JOINED_TYPED_EVIDENCE_FAIL_CLOSED",
+        test_status="CAPITAL_ADMISSION_SEAM_PROVEN",
+        repo_internal_solvable=True,
+        fresh_external_evidence_required=False,
+        productive_account_access_required=True,
+        standing_live_gates_would_change=False,
+        reusable_mechanism_only=False,
+        wiring_authorized=True,
+        layer=3,
+        dependencies=("LIVE_ACCOUNT_BOUND", "FRESH_GET_PER_PRETRADE_DECISION"),
     ),
     _node(
         component_id="PRIVATE_AUTH_PREFLIGHT",
@@ -332,6 +350,7 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
         dependencies=(
             "DURABLE_FILEGATE_RUNTIME_JOIN",
             "LIVE_ACCOUNT_BOUND",
+            "CAPITAL_ADMISSION",
             "FRESH_GET_PER_PRETRADE_DECISION",
             "LIVE_ENABLED",
             "LIVE_ARMED",
@@ -353,7 +372,11 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
         reusable_mechanism_only=False,
         wiring_authorized=False,
         layer=4,
-        dependencies=("DURABLE_FILEGATE_RUNTIME_JOIN", "OWNER_ONE_SHOT_EXECUTION_PERMIT"),
+        dependencies=(
+            "DURABLE_FILEGATE_RUNTIME_JOIN",
+            "OWNER_ONE_SHOT_EXECUTION_PERMIT",
+            "CAPITAL_ADMISSION",
+        ),
     ),
     _node(
         component_id="LIVE_ARMED",
@@ -429,6 +452,7 @@ def live_admission_gap_dag_v1() -> dict[str, Any]:
         ),
         "FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED": FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED,
         "LIVE_ACCOUNT_BOUND_IMPLEMENTED": LIVE_ACCOUNT_BOUND_IMPLEMENTED,
+        "CAPITAL_ADMISSION_IMPLEMENTED": CAPITAL_ADMISSION_IMPLEMENTED,
         "FULL_CORE_OFFLINE_E2E_PROVEN": FULL_CORE_OFFLINE_E2E_PROVEN,
         "FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE": (
             FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE
