@@ -86,6 +86,14 @@ AUTHORIZED_REGIME_BULL_BEAR_SWITCH_EVIDENCE_READMODEL_FIXTURE = [
     "config/governance/technical_canonical_wiring_authorization_v1.json",
 ]
 
+AUTHORIZED_CHARACTERIZATION_TEST_EXACT_FILE_ADMISSION_FIXTURE = [
+    "tests/trading/master_v2/test_double_play_state.py",
+    "tests/trading/master_v2/test_double_play_composition.py",
+    "tests/trading/master_v2/test_master_v2_capital_risk_sizing_safety_intent_restore_contract_v1.py",
+    "config/governance/technical_canonical_wiring_authorization_v1.json",
+]
+
+
 AUTHORIZED_MV2_DP_CORE_WIRING_RESTORE_FIXTURE = [
     "src/ops/double_play/specialists.py",
     "src/trading/master_v2/decision_packet_from_integrated_replay_v1.py",
@@ -326,6 +334,24 @@ class TestTechnicalCanonicalWiringAuthorizationPositiveV1:
         assert report.promotion_runtime_authority_changed is False
         assert report.risk_sizing_changed is False
         assert report.safety_killswitch_reconciliation_changed is False
+
+    def test_authorized_characterization_test_exact_file_admission_fixture_passes(self) -> None:
+        report = build_boundary_report(
+            AUTHORIZED_CHARACTERIZATION_TEST_EXACT_FILE_ADMISSION_FIXTURE,
+            repo_root=REPO_ROOT,
+        )
+        assert report.admissible is True
+        assert report.fail_closed is False
+        assert report.technical_wiring_authorization_applied is True
+        assert "TECHNICAL_CANONICAL_WIRING_AUTHORIZED" in report.reason_codes
+        assert forbidden_surface_changed_count(report) == 0
+        assert report.canonical_trading_semantics_changed is False
+        assert report.master_v2_changed is False
+        assert report.double_play_changed is False
+        assert report.promotion_runtime_authority_changed is False
+        assert report.risk_sizing_changed is False
+        assert report.safety_killswitch_reconciliation_changed is False
+        assert len(report.forbidden_surface_matches) >= 1
 
     def test_authorized_mv2_dp_core_wiring_restore_fixture_passes(self) -> None:
         report = build_boundary_report(
