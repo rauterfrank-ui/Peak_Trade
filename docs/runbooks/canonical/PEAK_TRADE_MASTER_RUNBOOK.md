@@ -8473,6 +8473,124 @@ CURRENT_CANONICAL_SECTION=11.2.1.O.FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEA
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.P FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY (BOUND; STANDING PREDICATES + CONSTRUCTION ADMISSION CONTRACT; NO WIRE; NO ARMING; NO GET; NO POST)
+
+Additive persist. Does **not** rewrite §11.2.1 standing Live flag *values*,
+§11.2.1.O LIVE_ENABLED seam persist, §11.2.1.N Capital Admission mathematics,
+§11.2.2 Treasury Phase-1 contracts, §11.13.5 canary facts, or §11.14 ladder
+fields. Does **not** perform a productive venue GET. Does **not** POST.
+Does **not** construct `LiveExecutionPort`. Does **not** set
+`LIVE_ENABLED=true`. Does **not** set `LIVE_ARMED=true`. Does **not** set
+`WIRE_SEND_PERMITTED=true`. Does **not** join Cap-7.2 Host to
+LiveExecutionPort. Does **not** bind productive GET transport. Does **not**
+grant `RISK_ADMISSIBLE`. Does **not** authorize Canary execute. Does **not**
+lift Cap 11.1 construction-forbidden policy.
+
+Owner-GO
+`OWNER_GO=PEAK_TRADE_OWNER_GO_MAX_SAFE_REPO_INTERNAL_FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1`
+closes the repo-internal Full-Core standing-admission seams through
+`LIVE_ARMED` and `WIRE_SEND_PERMITTED`, joins those standing predicates into
+the Full-Core host/composition path, and adds a LiveExecutionPort
+construction-admission contract that remains non-constructible. It is an
+admission-contract persist, not a Live-activation authorization.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_MAX_SAFE_REPO_INTERNAL_FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_SSOT_PERSIST
+THIS_SLICE=11.2.1.P.FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY
+CURRENT_PHASE=11.2.1.P.FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY
+FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH
+PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY=SECTION_11_2_1
+CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY=false
+FULL_CORE_SYSTEM_E2E_PROVEN=false
+CURRENT_LIVE_CORE_PATH_PROVEN=false
+FULL_CORE_OFFLINE_E2E_PROVEN=true
+FULL_CORE_OFFLINE_E2E_EVIDENCE_CLASS=INJECTED_NON_PRODUCTIVE
+STANDING_LIVE_AUTHORIZATION=false
+LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true
+LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true
+LIVE_ARMED_DEFAULT=false
+LIVE_ARMED_TRUE_IS_NOT_AUTOMATIC_ADMISSION=true
+LIVE_ARMED_FALSE_REMAINS_FAIL_CLOSED=true
+LIVE_ARMED_DOES_NOT_IMPLY_RISK_ADMISSIBLE=true
+LIVE_ARMED_DOES_NOT_IMPLY_WIRE_SEND=true
+LIVE_ARMED_DOES_NOT_IMPLY_PORT_CONSTRUCTION=true
+WIRE_SEND_PERMITTED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true
+WIRE_SEND_PERMITTED_TRUE_IS_NOT_AUTOMATIC_SEND=true
+WIRE_SEND_PERMITTED_FALSE_REMAINS_FAIL_CLOSED=true
+FULL_CORE_HOST_STANDING_PREDICATE_JOIN_IMPLEMENTED=true
+CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT=false
+LIVE_EXECUTION_PORT_CONSTRUCTION_ADMISSION_CONTRACT_IMPLEMENTED=true
+CONTRADICTION_LOCK_REMOVED=true
+PRODUCTIVE_WIRE_SEND_REACHABLE=false
+LIVE_EXECUTION_PORT_CONSTRUCTIBLE=false
+OKX_NETWORK_CALL_OCCURRED=false
+SECRET_ACCESS_OCCURRED=false
+CANARY_EXECUTE_AUTHORIZED=false
+RISK_ADMISSIBLE_GRANTED=false
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG=true
+LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN=true
+CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT=STANDING_GATES_BEFORE_CONSTRUCTION_CAP72_HOST_REMAINS_SIMULATED
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_PRE_WIRE_BOUNDARY_REACHED
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=true
+NEXT_STEP_REQUIRES_OWNER_GO=true
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+LIVE_AUTHORIZED=false
+IMPLEMENTED=true
+DEFAULT=false
+STRUCTURALLY_REACHABLE=false
+RUNTIME_SATISFIED=false
+AUTHORIZED=false
+EXECUTED=false
+PRODUCTIVE_VENUE_GET_PERFORMED=false
+POST_PERFORMED=false
+WIRE_SEND_OCCURRED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+A. Standing predicates. `LIVE_ARMED=false` remains fail-closed
+(`LIVE_ARMED_FALSE`). `LIVE_ARMED=true` satisfies only that one predicate
+and does not admit. `LIVE_ENABLED` and `LIVE_ARMED` remain independent
+conjunctive predicates. `WIRE_SEND_PERMITTED=false` remains fail-closed.
+Join seams inject standing constants instead of a disconnected hardcoded
+`False` plus `STANDING_LIVE_GATE_TRUE`. Full-Core composition no longer
+denies identity because a standing gate is true; it still leaves
+`execution_eligible=false` and `submission_authorized=false`.
+
+B. Construction admission. `evaluate_live_execution_port_construction_admission_v1`
+is an explicit conjunction. Cap 11.1 still forbids construction.
+`constructible=false`. `constructed=false`. Productive credentials, sessions,
+and network remain forbidden.
+
+C. Ordering. Existing Cap-7.2 invariants require `SimulatedExecutionPort` as
+the sole reachable host port. Cap 11.1 forbids LiveExecutionPort
+construction. Therefore standing gates precede construction, and Cap-7.2
+Host-Join to LiveExecutionPort remains after a future construction-policy
+Owner-GO. That ordering is persisted as
+`STANDING_GATES_BEFORE_CONSTRUCTION_CAP72_HOST_REMAINS_SIMULATED`.
+
+D. Remaining unresolved. Live admission still denies
+`LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P` and
+`OBSERVED_CAPITAL_NOT_RISK_ADMISSIBLE`. Productive GET, RISK_ADMISSIBLE,
+Cap 11.1 construction-policy lift, and Cap-7.2 Host-Join to LiveExecutionPort
+are not repo-internal under this GO.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.P.FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

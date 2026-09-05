@@ -3674,14 +3674,17 @@ entities:
       - docs/ops/specs/FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md
       - docs/ops/specs/FULL_CORE_REMAINING_ADMISSION_CHAIN_CLOSEOUT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md
+      - docs/ops/specs/FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
       Composes existing replay plus Cap-2.4 binding into
       CoreLiveExecutionIntentV1. Does not recompute strategy, sizing, or
       safety. Does not construct LiveExecutionPort. Does not arm wire send.
-      Standing package gates remain false. LIVE_ENABLED is a standing
-      admission predicate: false denies; true does not automatically admit.
+      Standing package gates remain false. LIVE_ENABLED and LIVE_ARMED are
+      standing admission predicates: false denies; true does not automatically
+      admit. WIRE_SEND_PERMITTED remains an independent fail-closed predicate.
+      LiveExecutionPort construction remains Cap-11.1 forbidden.
       Typed execution admission is
       consumed at halt_at_live_execution_boundary_v1 only.
       CURRENT_PRE_SPLIT characterization CHAR-3 (inventory only; not
@@ -3841,14 +3844,20 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
+      - tests/ops/test_full_core_live_admission_to_pre_wire_boundary_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md
+      - docs/ops/specs/FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md
     notes: >-
       Package-local standing constants inventory. LIVE_ENABLED=false,
       LIVE_ARMED=false, WIRE_SEND_PERMITTED=false,
       STANDING_LIVE_AUTHORIZATION=false.
       LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true.
+      LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true.
+      WIRE_SEND_PERMITTED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true.
       LIVE_ENABLED=true is not automatic admission and does not imply
       LIVE_ARMED, WIRE_SEND_PERMITTED, or LiveExecutionPort construction.
+      LIVE_ARMED=true is not automatic admission and does not imply
+      RISK_ADMISSIBLE, WIRE_SEND_PERMITTED, or LiveExecutionPort construction.
       Does not supersede GATE:live_authorized_false. Does not authorize Live,
       Testnet, canary, or orders. Atlas is not canonical authority.
       ATLAS_AUTHORITY=NONE.
@@ -3875,6 +3884,7 @@ entities:
       - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md
+      - docs/ops/specs/FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md
     notes: >-
       Binds FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH.
       §11.13.5 / §11.14 next-pointers remain evidence-domain only.

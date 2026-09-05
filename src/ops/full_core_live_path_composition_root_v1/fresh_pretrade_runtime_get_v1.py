@@ -350,8 +350,6 @@ def collect_fresh_pretrade_runtime_get_v1(
     transport: FullCoreFreshPretradeGetTransportV1 | None,
     require_collection: bool,
 ) -> FreshPretradeRuntimeGetEvidenceV1:
-    standing_true = LIVE_ENABLED is True or LIVE_ARMED is True or WIRE_SEND_PERMITTED is True
-    extra: Tuple[str, ...] = ("STANDING_LIVE_GATE_TRUE",) if standing_true else ()
     decision = str(pretrade_decision_id or "")
     if require_collection is not True:
         return FreshPretradeRuntimeGetEvidenceV1(
@@ -360,12 +358,12 @@ def collect_fresh_pretrade_runtime_get_v1(
             pretrade_freshness_status=PretradeFreshnessStatusV1.FROZEN_OFFLINE.value,
             pretrade_decision_id=decision,
             items=(),
-            reason_codes=("FRESH_PRETRADE_GET_NOT_REQUIRED_OFFLINE", JOIN_SEAM_ID, *extra),
+            reason_codes=("FRESH_PRETRADE_GET_NOT_REQUIRED_OFFLINE", JOIN_SEAM_ID),
             get_performed=False,
             venue_live_contact=False,
-            live_enabled=False,
-            live_armed=False,
-            wire_send_permitted=False,
+            live_enabled=LIVE_ENABLED is True,
+            live_armed=LIVE_ARMED is True,
+            wire_send_permitted=WIRE_SEND_PERMITTED is True,
             post_attempted=False,
         )
     if not isinstance(decision, str) or decision == "" or decision != decision.strip():
@@ -375,12 +373,12 @@ def collect_fresh_pretrade_runtime_get_v1(
             pretrade_freshness_status=PretradeFreshnessStatusV1.UNKNOWN.value,
             pretrade_decision_id=decision,
             items=(),
-            reason_codes=("FRESH_PRETRADE_GET_DECISION_ID_MALFORMED", *extra),
+            reason_codes=("FRESH_PRETRADE_GET_DECISION_ID_MALFORMED",),
             get_performed=False,
             venue_live_contact=False,
-            live_enabled=False,
-            live_armed=False,
-            wire_send_permitted=False,
+            live_enabled=LIVE_ENABLED is True,
+            live_armed=LIVE_ARMED is True,
+            wire_send_permitted=WIRE_SEND_PERMITTED is True,
             post_attempted=False,
         )
     if not str(instrument_id or "").strip() or not str(td_mode or "").strip():
@@ -390,12 +388,12 @@ def collect_fresh_pretrade_runtime_get_v1(
             pretrade_freshness_status=PretradeFreshnessStatusV1.UNKNOWN.value,
             pretrade_decision_id=decision,
             items=(),
-            reason_codes=("FRESH_PRETRADE_GET_REQUEST_IDENTITY_MALFORMED", *extra),
+            reason_codes=("FRESH_PRETRADE_GET_REQUEST_IDENTITY_MALFORMED",),
             get_performed=False,
             venue_live_contact=False,
-            live_enabled=False,
-            live_armed=False,
-            wire_send_permitted=False,
+            live_enabled=LIVE_ENABLED is True,
+            live_armed=LIVE_ARMED is True,
+            wire_send_permitted=WIRE_SEND_PERMITTED is True,
             post_attempted=False,
         )
 
@@ -521,12 +519,12 @@ def collect_fresh_pretrade_runtime_get_v1(
         pretrade_freshness_status=freshness,
         pretrade_decision_id=decision,
         items=tuple(items),
-        reason_codes=tuple(dict.fromkeys((*aggregate_reasons, JOIN_SEAM_ID, *extra))),
+        reason_codes=tuple(dict.fromkeys((*aggregate_reasons, JOIN_SEAM_ID))),
         get_performed=any_performed,
         venue_live_contact=False,
-        live_enabled=False,
-        live_armed=False,
-        wire_send_permitted=False,
+        live_enabled=LIVE_ENABLED is True,
+        live_armed=LIVE_ARMED is True,
+        wire_send_permitted=WIRE_SEND_PERMITTED is True,
         post_attempted=post_attempted,
     )
 
@@ -603,9 +601,9 @@ def join_fresh_pretrade_runtime_get_into_admission_inputs_v1(
         capital_risk_mode=inputs.capital_risk_mode,
         durable_kill_switch_evidence_status=inputs.durable_kill_switch_evidence_status,
         durable_kill_switch_blocked=inputs.durable_kill_switch_blocked,
-        live_enabled=False,
-        live_armed=False,
-        wire_send_permitted=False,
+        live_enabled=LIVE_ENABLED is True,
+        live_armed=LIVE_ARMED is True,
+        wire_send_permitted=WIRE_SEND_PERMITTED is True,
         owner_authorization_present=inputs.owner_authorization_present,
         owner_one_shot_permit_status=inputs.owner_one_shot_permit_status,
         admission_context=inputs.admission_context,

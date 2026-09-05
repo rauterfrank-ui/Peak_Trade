@@ -149,6 +149,8 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
             "LIVE_ACCOUNT_BOUND",
             "CAPITAL_ADMISSION",
             "LIVE_ENABLED",
+            "LIVE_ARMED",
+            "WIRE_SEND_PERMITTED",
         }:
             assert node.wiring_authorized is True
         else:
@@ -176,9 +178,11 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
     assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (
         EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY
     )
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == ("LIVE_ARMED")
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
+        "LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P"
+    )
     assert dag["MAX_SAFE_REPO_INTERNAL_NEXT_SLICE"] == MAX_SAFE_REPO_INTERNAL_NEXT_SLICE
-    assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is False
+    assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is True
     assert dag["CANARY_29Q_CONSUMER_WIRING_AUTHORIZED"] is False
     reusable = set(dag["REUSABLE_MECHANISM_ONLY_COMPONENTS"])
     assert "MAX_AVAILABLE" in reusable

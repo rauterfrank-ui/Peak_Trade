@@ -14,8 +14,10 @@ from typing import Any, Tuple
 
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY,
+    CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT,
     CURRENT_LIVE_CORE_PATH_PROVEN,
     DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED,
+    FULL_CORE_HOST_STANDING_PREDICATE_JOIN_IMPLEMENTED,
     FULL_CORE_OFFLINE_E2E_PROVEN,
     FULL_CORE_SYSTEM_E2E_PROVEN,
     FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED,
@@ -23,21 +25,27 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     LIVE_ACCOUNT_BOUND_IMPLEMENTED,
     CAPITAL_ADMISSION_IMPLEMENTED,
     LIVE_ARMED,
+    LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED,
     LIVE_ENABLED,
     LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED,
+    LIVE_EXECUTION_PORT_CONSTRUCTION_ADMISSION_CONTRACT_IMPLEMENTED,
     OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED,
+    PRODUCTIVE_WIRE_SEND_REACHABLE,
     STANDING_LIVE_AUTHORIZATION,
     WIRE_SEND_PERMITTED,
+    WIRE_SEND_PERMITTED_STANDING_ADMISSION_SEAM_IMPLEMENTED,
 )
 
 GAP_DAG_VERSION = "v1"
-EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY = "LIVE_ARMED"
-MAX_SAFE_REPO_INTERNAL_NEXT_SLICE = "NO_FURTHER_REPO_INTERNAL_SLICE_WITHOUT_OWNER_GO_FOR_LIVE_ARMED_OR_HOST_JOIN_OR_LIVE_EXECUTION_PORT"
-FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE = False
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY = "LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P"
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE = "NO_FURTHER_REPO_INTERNAL_SLICE_PRE_WIRE_BOUNDARY_REACHED"
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE = True
 NEXT_STEP_REQUIRES_OWNER_GO = True
 HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG = True
 LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN = True
-CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT = "OPEN_CONTRADICTION_NOT_NORMALIZED"
+CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT = (
+    "STANDING_GATES_BEFORE_CONSTRUCTION_CAP72_HOST_REMAINS_SIMULATED"
+)
 
 
 @dataclass(frozen=True)
@@ -343,7 +351,7 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
         contract="LIVE_EXECUTION_PORT_ROLE",
         consumer="later Full-Core transport boundary",
         implementation_status="CONSTRUCTION_FORBIDDEN",
-        test_status="CONSTRUCTION_FORBIDDEN_PROVEN",
+        test_status="CONSTRUCTION_ADMISSION_CONTRACT_PROVEN_STILL_FORBIDDEN",
         repo_internal_solvable=False,
         fresh_external_evidence_required=False,
         productive_account_access_required=False,
@@ -388,14 +396,14 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
         producer="src.ops.full_core_live_path_composition_root_v1.constants_v1",
         contract="LIVE_ARMED",
         consumer="evaluate_execution_admission_v1",
-        implementation_status="STANDING_FALSE",
-        test_status="STANDING_FALSE_PROVEN",
-        repo_internal_solvable=False,
+        implementation_status="STANDING_ADMISSION_SEAM_IMPLEMENTED_DEFAULT_FALSE",
+        test_status="STANDING_ADMISSION_SEAM_PROVEN",
+        repo_internal_solvable=True,
         fresh_external_evidence_required=False,
         productive_account_access_required=False,
-        standing_live_gates_would_change=True,
+        standing_live_gates_would_change=False,
         reusable_mechanism_only=False,
-        wiring_authorized=False,
+        wiring_authorized=True,
         layer=4,
         dependencies=("LIVE_ENABLED",),
     ),
@@ -404,15 +412,15 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
         authority="LIVE_EXECUTION_BOUNDARY",
         producer="src.ops.full_core_live_path_composition_root_v1.constants_v1",
         contract="WIRE_SEND_PERMITTED",
-        consumer="halt_at_live_execution_boundary_v1",
-        implementation_status="STANDING_FALSE",
-        test_status="STANDING_FALSE_PROVEN",
-        repo_internal_solvable=False,
+        consumer="evaluate_execution_admission_v1",
+        implementation_status="STANDING_ADMISSION_SEAM_IMPLEMENTED_DEFAULT_FALSE",
+        test_status="STANDING_ADMISSION_SEAM_PROVEN",
+        repo_internal_solvable=True,
         fresh_external_evidence_required=False,
         productive_account_access_required=False,
-        standing_live_gates_would_change=True,
+        standing_live_gates_would_change=False,
         reusable_mechanism_only=False,
-        wiring_authorized=False,
+        wiring_authorized=True,
         layer=4,
         dependencies=("LIVE_ARMED",),
     ),
@@ -451,7 +459,21 @@ def live_admission_gap_dag_v1() -> dict[str, Any]:
             LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED
         ),
         "LIVE_ARMED": LIVE_ARMED,
+        "LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED": (
+            LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED
+        ),
         "WIRE_SEND_PERMITTED": WIRE_SEND_PERMITTED,
+        "WIRE_SEND_PERMITTED_STANDING_ADMISSION_SEAM_IMPLEMENTED": (
+            WIRE_SEND_PERMITTED_STANDING_ADMISSION_SEAM_IMPLEMENTED
+        ),
+        "FULL_CORE_HOST_STANDING_PREDICATE_JOIN_IMPLEMENTED": (
+            FULL_CORE_HOST_STANDING_PREDICATE_JOIN_IMPLEMENTED
+        ),
+        "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT": CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT,
+        "LIVE_EXECUTION_PORT_CONSTRUCTION_ADMISSION_CONTRACT_IMPLEMENTED": (
+            LIVE_EXECUTION_PORT_CONSTRUCTION_ADMISSION_CONTRACT_IMPLEMENTED
+        ),
+        "PRODUCTIVE_WIRE_SEND_REACHABLE": PRODUCTIVE_WIRE_SEND_REACHABLE,
         "EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY": EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY,
         "HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG": HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG,
         "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN": (LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN),

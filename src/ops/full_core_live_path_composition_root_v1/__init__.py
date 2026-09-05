@@ -24,6 +24,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     LIVE_ARMED,
     LIVE_ENABLED,
     LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED,
+    LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED,
     OWNER,
     OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED,
     PACKAGE_MARKER,
@@ -72,6 +73,10 @@ from src.ops.full_core_live_path_composition_root_v1.path_identity_v1 import (
 from src.ops.full_core_live_path_composition_root_v1.path_v1 import (
     run_full_core_live_path_offline_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.live_execution_port_construction_admission_v1 import (
+    evaluate_live_execution_port_construction_admission_v1,
+    prove_live_execution_port_not_constructible_v1,
+)
 
 __all__ = [
     "CAPABILITY_ID",
@@ -94,6 +99,7 @@ __all__ = [
     "LIVE_ARMED",
     "LIVE_ENABLED",
     "LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED",
+    "LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED",
     "OWNER",
     "OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED",
     "PACKAGE_MARKER",
@@ -107,6 +113,8 @@ __all__ = [
     "evaluate_live_account_bound_v1",
     "evaluate_capital_admission_v1",
     "collect_fresh_pretrade_runtime_get_v1",
+    "evaluate_live_execution_port_construction_admission_v1",
+    "prove_live_execution_port_not_constructible_v1",
     "join_durable_filegate_into_admission_inputs_v1",
     "join_fresh_pretrade_runtime_get_into_admission_inputs_v1",
     "join_live_account_bound_into_admission_inputs_v1",

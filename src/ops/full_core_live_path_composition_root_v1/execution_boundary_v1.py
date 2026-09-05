@@ -38,6 +38,9 @@ from src.ops.full_core_live_path_composition_root_v1.execution_admission_contrac
     ExecutionAdmissionInputsV1,
     evaluate_execution_admission_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.live_execution_port_construction_admission_v1 import (
+    evaluate_live_execution_port_construction_admission_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.models_v1 import (
     CompositionStatusV1,
     ExecutionBoundaryResultV1,
@@ -129,13 +132,22 @@ def halt_at_live_execution_boundary_v1(
         )
     admission: ExecutionAdmissionDecisionV1 = evaluate_execution_admission_v1(resolved_inputs)
     reasons.extend(admission.reason_codes)
+    construction = evaluate_live_execution_port_construction_admission_v1(
+        admission=admission,
+        live_enabled=resolved_inputs.live_enabled,
+        live_armed=resolved_inputs.live_armed,
+        wire_send_permitted=resolved_inputs.wire_send_permitted,
+        attempt_with_credentials=False,
+        attempt_network_session=False,
+    )
+    reasons.extend(construction.reason_codes)
     _ = plan
     wire_send_occurred = False
     halt = (
         live_port_constructed is False
+        and construction.constructed is False
+        and construction.constructible is False
         and wire_send_occurred is False
-        and LIVE_ENABLED is False
-        and WIRE_SEND_PERMITTED is False
         and admission.admitted is False
     )
     status = CompositionStatusV1.HALT if halt else CompositionStatusV1.DENY

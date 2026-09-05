@@ -105,16 +105,20 @@ def test_standing_live_enabled_default_and_seam_flags() -> None:
     assert node.implementation_status == "STANDING_ADMISSION_SEAM_IMPLEMENTED_DEFAULT_FALSE"
     assert node.wiring_authorized is True
     assert node.standing_live_gates_would_change is False
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == "LIVE_ARMED"
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
+        "LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P"
+    )
     assert HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG is True
     assert LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is True
     assert CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT == (
-        "OPEN_CONTRADICTION_NOT_NORMALIZED"
+        "STANDING_GATES_BEFORE_CONSTRUCTION_CAP72_HOST_REMAINS_SIMULATED"
     )
     dag = live_admission_gap_dag_v1()
     assert dag["LIVE_ENABLED"] is False
     assert dag["LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED"] is True
-    assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == "LIVE_ARMED"
+    assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (
+        "LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P"
+    )
 
 
 def test_case1_live_enabled_false_denies_with_named_reason() -> None:
@@ -199,7 +203,9 @@ def test_runbook_and_spec_bind_standing_seam_without_arming_or_wire() -> None:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     start = runbook.index("11.2.1.O FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM")
-    section = runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    section = runbook[
+        start : runbook.index("11.2.1.P FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY", start)
+    ]
     assert "LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true" in section
     assert "LIVE_ENABLED_DEFAULT=false" in section
     assert "LIVE_ENABLED_TRUE_IS_NOT_AUTOMATIC_ADMISSION=true" in section

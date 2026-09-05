@@ -73,8 +73,6 @@ def compose_core_live_execution_intent_v1(
 ) -> tuple[CompositionStatusV1, tuple[str, ...], Optional[CoreLiveExecutionIntentV1]]:
     if mode not in ALLOWED_MODES:
         return _deny("MODE_UNSUPPORTED")
-    if LIVE_ENABLED is True or LIVE_ARMED is True or WIRE_SEND_PERMITTED is True:
-        return _deny("STANDING_LIVE_GATE_TRUE")
     if injected_instrument_id is not None:
         return _deny("HARDCODED_INSTRUMENT_INJECTION_FORBIDDEN")
     if injected_side is not None:
@@ -191,15 +189,16 @@ def compose_core_live_execution_intent_v1(
         mode=mode,
         path_kind=PATH_KIND,
         composed_epoch=composed_epoch,
-        live_enabled=False,
-        live_armed=False,
-        wire_send_permitted=False,
+        live_enabled=LIVE_ENABLED is True,
+        live_armed=LIVE_ARMED is True,
+        wire_send_permitted=WIRE_SEND_PERMITTED is True,
         execution_eligible=False,
         submission_authorized=False,
         capital_risk_mode=str(getattr(replay, "capital_risk_mode", "") or "OFFLINE_ALGEBRA"),
     )
     if mode == MODE_LIVE:
-        # Mode may be named LIVE for identity, but standing gates stay false.
-        if composed.live_enabled or composed.wire_send_permitted:
-            return _deny("STANDING_LIVE_GATE_TRUE")
+        # Mode may be named LIVE for identity. Standing gates remain admission
+        # predicates and do not make the composed intent execution-eligible.
+        if composed.execution_eligible or composed.submission_authorized:
+            return _deny("INTENT_MUST_REMAIN_PLAN_ONLY")
     return CompositionStatusV1.PASS, ("PASS",), composed

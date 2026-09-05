@@ -53,79 +53,77 @@ class OwnerOneShotPermitEvidenceV1:
 
 def evaluate_owner_one_shot_permit_v1(*, owner_go: Any) -> OwnerOneShotPermitEvidenceV1:
     expected = OWNER_ONE_SHOT_PERMIT_TOKEN
-    standing_true = LIVE_ENABLED is True or LIVE_ARMED is True or WIRE_SEND_PERMITTED is True
-    extra: Tuple[str, ...] = ("STANDING_LIVE_GATE_TRUE",) if standing_true else ()
 
     if owner_go is None:
         return OwnerOneShotPermitEvidenceV1(
             evidence_status=OwnerOneShotPermitStatusV1.MISSING.value,
             presented_token=None,
             expected_token=expected,
-            reason_codes=("OWNER_ONE_SHOT_PERMIT_MISSING", *extra),
+            reason_codes=("OWNER_ONE_SHOT_PERMIT_MISSING",),
             contradictory=False,
             consumed=False,
-            live_enabled=False,
-            live_armed=False,
-            wire_send_permitted=False,
+            live_enabled=LIVE_ENABLED is True,
+            live_armed=LIVE_ARMED is True,
+            wire_send_permitted=WIRE_SEND_PERMITTED is True,
         )
     if not isinstance(owner_go, str):
         return OwnerOneShotPermitEvidenceV1(
             evidence_status=OwnerOneShotPermitStatusV1.MALFORMED.value,
             presented_token=None,
             expected_token=expected,
-            reason_codes=("OWNER_ONE_SHOT_PERMIT_MALFORMED", *extra),
+            reason_codes=("OWNER_ONE_SHOT_PERMIT_MALFORMED",),
             contradictory=False,
             consumed=False,
-            live_enabled=False,
-            live_armed=False,
-            wire_send_permitted=False,
+            live_enabled=LIVE_ENABLED is True,
+            live_armed=LIVE_ARMED is True,
+            wire_send_permitted=WIRE_SEND_PERMITTED is True,
         )
     if owner_go == "":
         return OwnerOneShotPermitEvidenceV1(
             evidence_status=OwnerOneShotPermitStatusV1.MISSING.value,
             presented_token="",
             expected_token=expected,
-            reason_codes=("OWNER_ONE_SHOT_PERMIT_MISSING", *extra),
+            reason_codes=("OWNER_ONE_SHOT_PERMIT_MISSING",),
             contradictory=False,
             consumed=False,
-            live_enabled=False,
-            live_armed=False,
-            wire_send_permitted=False,
+            live_enabled=LIVE_ENABLED is True,
+            live_armed=LIVE_ARMED is True,
+            wire_send_permitted=WIRE_SEND_PERMITTED is True,
         )
     if owner_go != owner_go.strip():
         return OwnerOneShotPermitEvidenceV1(
             evidence_status=OwnerOneShotPermitStatusV1.MALFORMED.value,
             presented_token=owner_go,
             expected_token=expected,
-            reason_codes=("OWNER_ONE_SHOT_PERMIT_MALFORMED", *extra),
+            reason_codes=("OWNER_ONE_SHOT_PERMIT_MALFORMED",),
             contradictory=False,
             consumed=False,
-            live_enabled=False,
-            live_armed=False,
-            wire_send_permitted=False,
+            live_enabled=LIVE_ENABLED is True,
+            live_armed=LIVE_ARMED is True,
+            wire_send_permitted=WIRE_SEND_PERMITTED is True,
         )
     if owner_go != expected:
         return OwnerOneShotPermitEvidenceV1(
             evidence_status=OwnerOneShotPermitStatusV1.MISMATCH.value,
             presented_token=owner_go,
             expected_token=expected,
-            reason_codes=("OWNER_ONE_SHOT_PERMIT_MISMATCH", *extra),
+            reason_codes=("OWNER_ONE_SHOT_PERMIT_MISMATCH",),
             contradictory=False,
             consumed=False,
-            live_enabled=False,
-            live_armed=False,
-            wire_send_permitted=False,
+            live_enabled=LIVE_ENABLED is True,
+            live_armed=LIVE_ARMED is True,
+            wire_send_permitted=WIRE_SEND_PERMITTED is True,
         )
     return OwnerOneShotPermitEvidenceV1(
         evidence_status=OwnerOneShotPermitStatusV1.TRUSTED_PRESENT.value,
         presented_token=owner_go,
         expected_token=expected,
-        reason_codes=("OWNER_ONE_SHOT_PERMIT_TRUSTED_PRESENT", JOIN_SEAM_ID, *extra),
+        reason_codes=("OWNER_ONE_SHOT_PERMIT_TRUSTED_PRESENT", JOIN_SEAM_ID),
         contradictory=False,
         consumed=False,
-        live_enabled=False,
-        live_armed=False,
-        wire_send_permitted=False,
+        live_enabled=LIVE_ENABLED is True,
+        live_armed=LIVE_ARMED is True,
+        wire_send_permitted=WIRE_SEND_PERMITTED is True,
     )
 
 
@@ -175,9 +173,9 @@ def join_owner_one_shot_permit_into_admission_inputs_v1(
         capital_risk_mode=inputs.capital_risk_mode,
         durable_kill_switch_evidence_status=inputs.durable_kill_switch_evidence_status,
         durable_kill_switch_blocked=inputs.durable_kill_switch_blocked,
-        live_enabled=False,
-        live_armed=False,
-        wire_send_permitted=False,
+        live_enabled=LIVE_ENABLED is True,
+        live_armed=LIVE_ARMED is True,
+        wire_send_permitted=WIRE_SEND_PERMITTED is True,
         owner_authorization_present=trusted,
         owner_one_shot_permit_status=evidence.evidence_status,
         admission_context=inputs.admission_context,
