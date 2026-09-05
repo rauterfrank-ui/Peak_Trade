@@ -5,6 +5,7 @@ Joins durable FILEGATE evidence via durable_filegate_join_v1.
 Joins OWNER_ONE_SHOT permit evidence via owner_one_shot_permit_v1.
 Joins Fresh Pretrade Runtime GET evidence via fresh_pretrade_runtime_get_v1.
 Joins LIVE_ACCOUNT_BOUND evidence via live_account_bound_v1.
+Joins Capital Admission evidence via capital_admission_v1.
 Does not construct Cap 11.1 LiveExecutionPort. Does not invoke canary HTTP.
 Does not arm Live. Does not send wire.
 """
@@ -22,8 +23,9 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     MODE_LIVE,
     WIRE_SEND_PERMITTED,
 )
-from src.ops.full_core_live_path_composition_root_v1.live_account_bound_v1 import (
-    join_live_account_bound_into_admission_inputs_v1,
+from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import (
+    CapitalAdmissionClaimV1,
+    join_capital_admission_into_admission_inputs_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     FullCoreFreshPretradeGetTransportV1,
@@ -63,6 +65,7 @@ def halt_at_live_execution_boundary_v1(
     owner_go: str | None = None,
     fresh_pretrade_get_transport: FullCoreFreshPretradeGetTransportV1 | None = None,
     expected_account_identity: str = "",
+    capital_admission_claim: CapitalAdmissionClaimV1 | None = None,
 ) -> ExecutionBoundaryResultV1:
     reasons: list[str] = [
         "HARD_STOP_BEFORE_WIRE",
@@ -103,7 +106,7 @@ def halt_at_live_execution_boundary_v1(
     resolved_inputs = admission_inputs
     if resolved_inputs is None:
         payload = plan.venue_native_payload if isinstance(plan.venue_native_payload, dict) else {}
-        resolved_inputs = join_live_account_bound_into_admission_inputs_v1(
+        resolved_inputs = join_capital_admission_into_admission_inputs_v1(
             plan_identity=str(plan.clordid or plan.instrument_id or ""),
             venue_plan_identity=str(plan.clordid or ""),
             instrument_identity_ok=pretrade.instrument_binding_valid
@@ -122,6 +125,7 @@ def halt_at_live_execution_boundary_v1(
             limit_px=str(payload.get("px") or ""),
             inst_type="FUTURES",
             expected_account_identity=expected_account_identity,
+            capital_admission_claim=capital_admission_claim,
         )
     admission: ExecutionAdmissionDecisionV1 = evaluate_execution_admission_v1(resolved_inputs)
     reasons.extend(admission.reason_codes)

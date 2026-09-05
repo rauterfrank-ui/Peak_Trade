@@ -3976,6 +3976,35 @@ entities:
       Does not admit. Does not override FILEGATE, permit, or GET.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
+  - id: GATE:full_core_capital_admission_v1
+    kind: GATE
+    name: Full-core Pre-Live Capital Admission seam v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    fail_closed: true
+    source_paths:
+      - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py
+    source_symbols:
+      - evaluate_capital_admission_v1
+      - join_capital_admission_into_admission_inputs_v1
+      - live_venue_capital_may_bind_step_29p_v1
+      - halt_at_live_execution_boundary_v1
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
+      - tests/ops/test_full_core_pre_live_capital_admission_contract_v1.py
+      - tests/ops/test_pre_live_treasury_http_isolation_v1.py
+      - docs/ops/specs/PRE_LIVE_CAPITAL_ADMISSION_CONTRACT_V1.md
+    notes: >-
+      Joins typed Capital Admission evidence into Full-Core admission.
+      Observed capital is not risk-admissible. Does not invent economic
+      policy. Does not arm Live. Does not POST. Does not admit. Does not
+      override FILEGATE, permit, GET, or LIVE_ACCOUNT_BOUND. Atlas is not
+      canonical authority. ATLAS_AUTHORITY=NONE.
+
   - id: GATE:kill_switch_durable_filegate_v1
     # KS_THIN_01 inventory: unwired auto-trip library removed. ATLAS_AUTHORITY=NONE
     kind: GATE

@@ -53,6 +53,7 @@ RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md"
 REQUIRED_GAP_COMPONENTS = (
     "LIVE_ACCOUNT_BOUND",
+    "CAPITAL_ADMISSION",
     "FRESH_GET_PER_PRETRADE_DECISION",
     "PRIVATE_AUTH_PREFLIGHT",
     "MAX_AVAILABLE",
@@ -146,6 +147,7 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
             "FRESH_GET_PER_PRETRADE_DECISION",
             "PRIVATE_AUTH_PREFLIGHT",
             "LIVE_ACCOUNT_BOUND",
+            "CAPITAL_ADMISSION",
         }:
             assert node.wiring_authorized is True
         else:
@@ -166,6 +168,10 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
     assert bound.wiring_authorized is True
     assert bound.standing_live_gates_would_change is False
     assert bound.fresh_external_evidence_required is False
+    capital = gap_node_v1("CAPITAL_ADMISSION")
+    assert capital.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
+    assert capital.wiring_authorized is True
+    assert capital.standing_live_gates_would_change is False
     assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (
         EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY
     )
