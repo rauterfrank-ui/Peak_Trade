@@ -3724,6 +3724,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: GATE:kill_switch_durable_filegate_v1
+    # KS_THIN_01 inventory: unwired auto-trip library removed. ATLAS_AUTHORITY=NONE
     kind: GATE
     name: Durable execution-side kill-switch FILEGATE v1
     epistemic_class: FORENSIC_RAW
@@ -3742,6 +3743,7 @@ entities:
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     evidence_sources:
+      - tests/risk_layer/kill_switch/test_no_autotrip_wiring_v1.py
       - src/ops/gates/risk_gate.py
       - src/execution/pipeline.py
       - src/risk_layer/kill_switch/core.py
