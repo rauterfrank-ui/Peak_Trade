@@ -72,8 +72,8 @@ Kill-Switch-Ebenen sind **nicht** dieselbe Autorität und dürfen nicht zusammen
 
 1. `SideState.KILL_ALL` = Double-Play Strategy-/State-Machine-Semantik.
 2. Replay Safety = pre-29Q Decision Admission (ENTER hard-block).
-3. Replay Emergency/KS Evidence = post-29Q evidence/mode taxonomy; `runtime_authority_effect=NONE`; keine Execution Permission.
-4. Durable FILEGATE = restartfähige execution-side permission authority. Operator-CLI `trigger` schreibt `KillSwitchState` über `StatePersistence`; kanonischer Block-Reader ist `kill_switch_should_block_trading`. `src&#47;execution&#47;pipeline.py` (bounded_pilot) delegiert an denselben FILEGATE.
+3. Replay KS typed fields = `POST_29Q_CONSUMPTION_GUARD`: dürfen Consumption eines bereits erzeugten ENTER-Plans HOLD/DENY; `runtime_authority_effect=NONE` bedeutet keine Execution-/Order-/FILEGATE-Permission, nicht Konsumtions-Inertheit; `evidence.decision_outcome` bleibt unverändert; keine Submission-/Wire-Autorisierung.
+4. Durable FILEGATE = restartfähige execution-side permission authority. Operator-CLI `trigger` schreibt `KillSwitchState` über `StatePersistence`; kanonischer Block-Reader ist `kill_switch_should_block_trading`. `src&#47;execution&#47;pipeline.py` (bounded_pilot) delegiert an denselben FILEGATE. Aktuell **nicht** in Replay/Full-Core runtime-joined.
 
 Integrated Replay STEP-29P ist `OFFLINE_ALGEBRA` und **nicht** Live-Account-Capital-Authority. Full-Core Execution Admission Boundary (`halt_at_live_execution_boundary_v1`) ist der vorgesehene einzige Joinpunkt vor Wire; durable FILEGATE und fresh pretrade sind vor Live erforderlich und in diesem Stand **nicht** runtime-verdrahtet. Frozen Pretrade bleibt Offline-Evidence und ist **nicht** live-fresh. Canary != Full-Core E2E. Hardening-v2 != Decision Owner. Konfigurierter oder unlesbarer persistenter State fail-closed. `PEAK_KILL_SWITCH=1` bleibt Operator-Deny-Overlay, keine zweite State-Maschine. Die Auto-Trip Threshold-/Watchdog-/External-Library ist entfernt (KS_THIN_01) und nicht produktiv verdrahtet. Kein Live-Flatten; `LIVE_RESTART_RECONSTRUCTED=false`.
 

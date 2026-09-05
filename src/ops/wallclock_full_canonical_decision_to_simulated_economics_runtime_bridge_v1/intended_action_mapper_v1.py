@@ -13,10 +13,14 @@ from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     IntegratedOfflineReplayResultV1,
 )
 from trading.master_v2.replay_execution_safety_contract_v1 import (
+    POST_29Q_CONSUMPTION_GUARD_REASON,
+    PRE_29Q_REPLAY_SAFETY_REASON,
     ReplayExecutionSafetyV1,
     derive_replay_execution_safety_v1,
     legacy_string_heuristic_safety_blocked_v1,
     typed_enter_hold_required_v1,
+    typed_post_29q_consumption_guard_blocks_enter_v1,
+    typed_pre_29q_entry_blocked_v1,
 )
 
 _ZERO = Decimal("0")
@@ -91,8 +95,10 @@ def map_replay_result_to_intended_analytical_action_v1(
 
     Never implies broker submission. execution_eligible remains false by policy.
     Typed ReplayExecutionSafetyV1 is the primary Safety/Emergency input.
+    Pre-29Q entry_blocked and post-29Q consumption-guard HOLD are distinct.
     String heuristics remain only as LEGACY_STRING_HEURISTIC_FALLBACK when the
-    typed contract is absent (compat for host tests using SimpleNamespace).
+    typed contract is absent (COMPATIBILITY_DEBT_RETAINED for SimpleNamespace hosts).
+    Does not rewrite evidence.decision_outcome. Does not authorize submission.
     """
     evidence = result.evidence
     outcome = str(evidence.decision_outcome or "").strip().lower()
@@ -100,8 +106,21 @@ def map_replay_result_to_intended_analytical_action_v1(
     reasons = tuple(evidence.reason_codes or ())
 
     typed_safety, _used_legacy_fallback = _resolve_replay_execution_safety_v1(result)
+    hold_reasons: tuple[str, ...] = ()
+    quantity_source_hold = "safety_or_fail_closed"
     if typed_safety is not None:
+        pre_29q_blocked = typed_pre_29q_entry_blocked_v1(typed_safety)
+        post_29q_blocked = typed_post_29q_consumption_guard_blocks_enter_v1(typed_safety)
         safety_blocked = typed_enter_hold_required_v1(typed_safety)
+        if pre_29q_blocked and post_29q_blocked:
+            hold_reasons = (PRE_29Q_REPLAY_SAFETY_REASON, POST_29Q_CONSUMPTION_GUARD_REASON)
+            quantity_source_hold = "pre_29q_replay_safety_and_post_29q_consumption_guard"
+        elif pre_29q_blocked:
+            hold_reasons = (PRE_29Q_REPLAY_SAFETY_REASON,)
+            quantity_source_hold = "pre_29q_replay_safety"
+        elif post_29q_blocked:
+            hold_reasons = (POST_29Q_CONSUMPTION_GUARD_REASON,)
+            quantity_source_hold = "post_29q_consumption_guard"
     else:
         # LEGACY_STRING_HEURISTIC_FALLBACK: typed contract absent (compat hosts).
         safety_blocked = legacy_string_heuristic_safety_blocked_v1(
@@ -149,9 +168,9 @@ def map_replay_result_to_intended_analytical_action_v1(
             decision_outcome=outcome or "blocked",
             selected_side=selected or "neutral",
             intent_action=intent_action,
-            quantity_source="safety_or_fail_closed",
+            quantity_source=quantity_source_hold,
             safety_blocked=True,
-            reason_codes=reasons or ("FAIL_CLOSED_HOLD",),
+            reason_codes=tuple(dict.fromkeys((*reasons, *hold_reasons))) or ("FAIL_CLOSED_HOLD",),
         )
 
     # ENTER without CanonicalOrderIntent must not become BUY/SELL via sizing fallback.

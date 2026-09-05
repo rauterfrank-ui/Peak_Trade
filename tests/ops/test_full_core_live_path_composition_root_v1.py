@@ -550,3 +550,65 @@ def test_char3_pre_split_characterization_killswitch_blocked_reason_is_replay_sa
     assert status is CompositionStatusV1.DENY
     assert reasons == ("REPLAY_SAFETY_DENY",)
     assert intent is None
+
+
+def test_post_29q_consumption_guard_denies_enter_without_rewriting_outcome() -> None:
+    from dataclasses import replace as dc_replace
+
+    from trading.master_v2.replay_execution_safety_contract_v1 import (
+        CONSUMPTION_GUARD_EFFECT_ENTER_BLOCK,
+        POST_29Q_CONSUMPTION_GUARD_ROLE,
+        ReplayExecutionSafetyV1,
+    )
+
+    replay = run_integrated_offline_trading_logic_replay_v1(_confirmed_replay_input(side="LONG"))
+    assert replay.evidence.decision_outcome == DecisionOutcome.ENTER_LONG.value
+    assert replay.intermediate.canonical_order_intent is not None
+    original_outcome = replay.evidence.decision_outcome
+    original_submission = replay.intermediate.canonical_order_intent.submission_authorized
+    guarded = dc_replace(
+        replay,
+        replay_execution_safety=ReplayExecutionSafetyV1(
+            entry_blocked=False,
+            emergency_boundary_active=True,
+            emergency_mode="emergency_flatten",
+            flatten_only=True,
+            reduce_only=False,
+            cancel_only=False,
+            reason_codes=("killswitch_emergency_flatten_boundary",),
+            source_refs=("killswitch:test",),
+            runtime_authority_effect="NONE",
+            post_29q_role=POST_29Q_CONSUMPTION_GUARD_ROLE,
+            consumption_guard_effect=CONSUMPTION_GUARD_EFFECT_ENTER_BLOCK,
+        ),
+    )
+    status, reasons, intent = _compose_replay(guarded)
+    assert guarded.evidence.decision_outcome == original_outcome
+    assert original_submission is False
+    assert guarded.intermediate.canonical_order_intent.submission_authorized is False
+    assert status is CompositionStatusV1.DENY
+    assert reasons == ("POST_29Q_CONSUMPTION_GUARD",)
+    assert intent is None
+    assert "FILEGATE_KILLED" not in reasons
+    assert "REPLAY_SAFETY_DENY" not in reasons
+
+
+def test_post_29q_guard_does_not_imitate_filegate_or_kill_all() -> None:
+    replay = run_integrated_offline_trading_logic_replay_v1(_confirmed_replay_input(side="LONG"))
+    status, reasons, intent = _compose_replay(replay)
+    assert "FILEGATE_KILLED" not in reasons
+    if replay.replay_execution_safety is not None:
+        assert replay.replay_execution_safety.runtime_authority_effect == "NONE"
+    _ = status, intent
+
+
+def test_sidestate_kill_all_remains_distinct_from_filegate_killed() -> None:
+    replay = run_integrated_offline_trading_logic_replay_v1(
+        replace(_confirmed_replay_input(side="LONG"), side_state=SideState.KILL_ALL)
+    )
+    assert replay.evidence.decision_outcome == DecisionOutcome.BLOCKED.value
+    status, reasons, intent = _compose_replay(replay)
+    assert reasons == ("BLOCKED_ENTER",)
+    assert "FILEGATE_KILLED" not in reasons
+    assert "POST_29Q_CONSUMPTION_GUARD" not in reasons
+    assert intent is None

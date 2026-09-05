@@ -161,6 +161,10 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
     IntendedAnalyticalActionV1,
     map_replay_result_to_intended_analytical_action_v1,
 )
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.sidestate_restore_v1 import (
+    SideStateRestoreError,
+    parse_persisted_side_state_v1,
+)
 from trading.master_v2.canonical_market_context_v1 import (
     CANONICAL_MARKET_CONTEXT_LAYER_VERSION,
     FEATURE_CONTRACT_VERSION,
@@ -1125,9 +1129,11 @@ def run_bridge_cycle_v1(
         state.cycle_index = int(state.dynamic_scope_binding.runtime_scope_state.now_tick)
         state.trading_epoch = int(state.dynamic_scope_binding.host_trading_epoch)
         try:
-            state.side_state = SideState(state.dynamic_scope_binding.side_state)
-        except Exception:  # noqa: BLE001
-            pass
+            state.side_state = parse_persisted_side_state_v1(state.dynamic_scope_binding.side_state)
+        except SideStateRestoreError as exc:
+            raise RuntimeError(
+                "SIDESTATE_RESTORE_ALPHA_BLOCKED:" + exc.reason_code + ":" + exc.detail
+            ) from exc
         try:
             state.scope_direction_state = ScopeDirectionState(
                 state.dynamic_scope_binding.scope_direction_state

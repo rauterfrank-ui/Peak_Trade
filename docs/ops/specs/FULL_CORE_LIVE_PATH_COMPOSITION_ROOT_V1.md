@@ -64,8 +64,10 @@ Cap-2.3 selection identity + Cap-2.4 BoundInstrument
 ```text
 ReplayExecutionSafetyV1 = mapper-facing typed Safety/Emergency view
   derived from Replay Safety (pre-29Q) + Replay KS evidence (post-29Q)
-  runtime_authority_effect=NONE
-  not FILEGATE, not decision owner
+  runtime_authority_effect=NONE means no execution/order/FILEGATE permission
+  post_29q_role=POST_29Q_CONSUMPTION_GUARD when KS evidence is projected
+  consumption_guard_effect=ENTER_CONSUMPTION_BLOCK when emergency_boundary_active
+  not FILEGATE, not decision owner, does not rewrite decision_outcome
 
 ExecutionAdmissionDecisionV1 = sole Full-Core admission join at
   halt_at_live_execution_boundary_v1
@@ -77,11 +79,15 @@ CURRENT_CAPITAL_RISK_MODE=OFFLINE_ALGEBRA
 LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
 FROZEN_OFFLINE_PRETRADE_EVIDENCE != FRESH_GET_PER_PRETRADE_DECISION
 DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=false
+POST_29Q_KS_ADJUDICATED_ROLE=POST_29Q_CONSUMPTION_GUARD
+LEGACY_STRING_HEURISTIC_STATUS=COMPATIBILITY_DEBT_RETAINED
+SIDESTATE_RESTORE_INVALID_VALUE_FAILS_CLOSED=true
 ```
 
 Kill-switch layers remain distinct: `SideState.KILL_ALL` (strategy state);
-Replay Safety (pre-29Q); Replay Emergency/KS evidence (post-29Q taxonomy);
-durable FILEGATE (execution-side permission). Canary != Full-Core E2E.
+Replay Safety (pre-29Q decision admission); Replay KS typed fields
+(`POST_29Q_CONSUMPTION_GUARD`, not FILEGATE); durable FILEGATE (execution-side
+permission, not runtime-joined). Canary != Full-Core E2E.
 Hardening-v2 != decision owner.
 
 ## Remaining gap
