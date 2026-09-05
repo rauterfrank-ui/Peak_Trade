@@ -80,6 +80,7 @@ LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
 FROZEN_OFFLINE_PRETRADE_EVIDENCE != FRESH_GET_PER_PRETRADE_DECISION
 DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=true
 OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED=true
+FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED=true
 POST_29Q_KS_ADJUDICATED_ROLE=POST_29Q_CONSUMPTION_GUARD
 LEGACY_STRING_HEURISTIC_STATUS=COMPATIBILITY_DEBT_RETAINED
 SIDESTATE_RESTORE_INVALID_VALUE_FAILS_CLOSED=true
@@ -92,13 +93,16 @@ permission, joined into Full-Core admission as typed evidence; not Replay;
 does not admit Live). Canary != Full-Core E2E.
 Hardening-v2 != decision owner. Typed OWNER_ONE_SHOT permit evidence is joined
 at halt as `OwnerOneShotPermitEvidenceV1`; trusted permit does not admit Live
-and does not override FILEGATE.
+and does not override FILEGATE. Fresh Pretrade Runtime GET evidence is joined
+at halt as `FreshPretradeRuntimeGetEvidenceV1`; trusted GET evidence does not
+admit Live and does not override FILEGATE, permit, or standing Live gates.
 
 ## Remaining gap
 
 `construct_live_execution_port_v1` remains forbidden. The allowed offline
 boundary is the halt surface above. Historical canary POST remains
 `CANARY_VENUE_PROOF_ONLY` and is not `FULL_CORE_SYSTEM_E2E`.
+`LIVE_ACCOUNT_BOUND_IMPLEMENTED=false`. Standing Live gates remain false.
 
 Path identity and the live-admission gap DAG are bound in
 [`FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md`](FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md).

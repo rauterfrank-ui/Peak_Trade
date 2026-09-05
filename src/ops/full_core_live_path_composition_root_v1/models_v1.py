@@ -172,6 +172,7 @@ class FullCoreLivePathInputV1:
     td_mode: str = "cross"
     session_id: str = "offline-full-core"
     run_id: str = "offline-full-core-run"
+    fresh_pretrade_get_transport: Any = None
 
 
 @dataclass(frozen=True)

@@ -119,7 +119,7 @@ def test_missing_pretrade_freshness_not_admitted() -> None:
     assert "FROZEN_PRETRADE_LIVE_ADMISSION_DENIED" in decision.reason_codes
 
 
-def test_fresh_get_source_is_not_implemented() -> None:
+def test_fresh_get_source_requires_typed_get_status() -> None:
     decision = evaluate_execution_admission_v1(
         _live_inputs(
             pretrade_source_kind=PRETRADE_SOURCE_FRESH_GET,
@@ -128,7 +128,9 @@ def test_fresh_get_source_is_not_implemented() -> None:
         )
     )
     assert decision.admitted is False
-    assert "FRESH_PRETRADE_GET_NOT_IMPLEMENTED" in decision.reason_codes
+    assert "FRESH_PRETRADE_GET_NOT_IMPLEMENTED" not in decision.reason_codes
+    assert "FRESH_PRETRADE_GET_CONTRADICTORY" in decision.reason_codes
+    assert "FRESH_PRETRADE_GET_MISSING" in decision.reason_codes
 
 
 def test_default_full_core_caller_injects_unknown_blocked() -> None:

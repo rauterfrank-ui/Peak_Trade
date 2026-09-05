@@ -7877,15 +7877,127 @@ FILEGATE missing, unknown, contradictory, or blocked evidence. Trusted FILEGATE
 plus valid permit still cannot admit Live while standing gates remain false.
 `evaluate_execution_admission_v1` remains fail-closed `admitted=false`.
 Consumption, reuse, and replay-protection are **not** in the existing Full-Core
-`owner_go` contract and are not invented here. Fresh GET, LIVE_ACCOUNT_BOUND
-live values, LIVE_ENABLED &#47; LIVE_ARMED &#47; WIRE_SEND_PERMITTED, and
-LiveExecutionPort remain later layers.
+`owner_go` contract and are not invented here. Fresh GET is bound in §11.2.1.L.
+LIVE_ACCOUNT_BOUND live values, LIVE_ENABLED &#47; LIVE_ARMED &#47;
+WIRE_SEND_PERMITTED, and LiveExecutionPort remain later layers.
 
 ``` text
 CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
 PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
 SPEC_OWNER=docs/ops/specs/FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_V1.md
 CURRENT_CANONICAL_SECTION=11.2.1.K.FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+Fresh Pretrade Runtime GET remaining after §11.2.1.K is superseded by
+§11.2.1.L. Typed OWNER_ONE_SHOT permit, durable FILEGATE join, path identity,
+canary isolation, and standing Live flags remain as bound in §11.2.1.K.
+Historical §11.13.5 / §11.14 facts are not rewritten.
+
+### 11.2.1.L FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM (BOUND; TYPED GET EVIDENCE ONLY; NO PRODUCTIVE VENUE GET; NO WIRE; NO ARMING; NO POST)
+
+Additive persist. Does **not** rewrite §11.2.1 standing Live flags, §11.13.5
+canary facts, or §11.14 ladder fields. Does **not** perform a productive venue
+GET. Does **not** POST. Does **not** construct `LiveExecutionPort`. Does **not**
+arm Live. Does **not** set `LIVE_ENABLED`. Does **not** set `LIVE_ARMED`. Does
+**not** set `WIRE_SEND_PERMITTED`. Does **not** wire `LiveCanaryHttpClientV1` as
+Full-Core transport. Does **not** override durable FILEGATE or OWNER_ONE_SHOT
+permit. Does **not** make `evaluate_execution_admission_v1` admit Live. Does
+**not** implement `LIVE_ACCOUNT_BOUND`. Does **not** transfer §11.14 evidence to
+`FULL_CORE_SYSTEM_E2E`.
+
+Owner-GO
+`OWNER_GO=PEAK_TRADE_OWNER_GO_FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTATION_WITHOUT_LIVE_ARMING_WIRE_SEND_OR_ORDER_SUBMIT_V1`
+(one-shot for this persist) implements the Full-Core Fresh Pretrade Runtime GET
+path as typed evidence consumed at halt.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTATION_WITHOUT_LIVE_ARMING_WIRE_SEND_OR_ORDER_SUBMIT_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_SSOT_PERSIST
+THIS_SLICE=11.2.1.L.FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM
+CURRENT_PHASE=11.2.1.L.FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM
+FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH
+PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY=SECTION_11_2_1
+CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY=false
+FULL_CORE_SYSTEM_E2E_PROVEN=false
+CURRENT_LIVE_CORE_PATH_PROVEN=false
+STANDING_LIVE_AUTHORIZATION=false
+FRESH_PRETRADE_GET_AUTHORITY=VENUE_PRETRADE_GATES
+FRESH_PRETRADE_GET_SEMANTIC_CLASS=TYPED_GET_EVIDENCE_NOT_LIVE_ARMING
+FRESHNESS_POLICY=FRESH_GET_PER_PRETRADE_DECISION
+FRESH_PRETRADE_GET_JOIN_SEAM=join_fresh_pretrade_runtime_get_into_admission_inputs_v1
+FRESH_PRETRADE_GET_CONSUMER=evaluate_execution_admission_v1
+FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED=true
+FRESH_PRETRADE_GET_TRANSPORT=INJECTABLE_GET_ONLY_PORT_NOT_CANARY_HTTP
+AUTHORITY_COUNT=1
+PARALLEL_PRODUCTIVE_PATH_ADDED=false
+MISSING_GET_FAILS_CLOSED=true
+MALFORMED_GET_FAILS_CLOSED=true
+STALE_GET_FAILS_CLOSED=true
+CONTRADICTORY_GET_FAILS_CLOSED=true
+AUTH_FAILURE_FAILS_CLOSED=true
+PUBLIC_FAILURE_FAILS_CLOSED=true
+ONE_REQUIRED_ITEM_MISSING_FAILS_CLOSED=true
+FIXTURE_REPLAY_CANNOT_IMPERSONATE_PRODUCTIVE_FRESH=true
+NO_TRUTHINESS_OR_INT_ZERO_CODE=true
+POST_FORBIDDEN=true
+FRESH_GET_ALONE_CAN_ADMIT=false
+FRESH_GET_CAN_OVERRIDE_OTHER_GATES=false
+DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=true
+OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED=true
+LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=LIVE_ACCOUNT_BOUND_IMPLEMENTED
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_WITHOUT_LIVE_ACCOUNT_BOUND_OWNER_GO
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=true
+NEXT_STEP_REQUIRES_OWNER_GO=true
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+LIVE_AUTHORIZED=false
+PRODUCTIVE_VENUE_GET_PERFORMED=false
+POST_PERFORMED=false
+WIRE_SEND_OCCURRED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+A. GET seam. Full-Core halt previously appended `FRESH_PRETRADE_GET_NOT_IMPLEMENTED`
+whenever `pretrade_source_kind=FRESH_GET_PER_PRETRADE_DECISION`. The typed seam
+collects the Owner-adjudicated required GET set through an injectable GET-only
+port and maps it to `FreshPretradeRuntimeGetEvidenceV1` for
+`evaluate_execution_admission_v1`. Canary observation parsers remain
+`REUSABLE_MECHANISM_ONLY` and are not imported. `LiveCanaryHttpClientV1` remains
+non-Full-Core transport. There is still exactly one Fresh-GET authority.
+
+B. Required set and freshness. Unique endpoints are public
+`/api/v5/public/instruments`, `/api/v5/public/price-limit` and private
+`/api/v5/account/max-size`, `/api/v5/account/leverage-info`,
+`/api/v5/account/config`, `/api/v5/account/positions`,
+`/api/v5/account/balance`. INSTRUMENT_STATE and MAX_SIZE share one instruments
+GET. POS_MODE and ACCOUNT_MODE share one config GET. Freshness is
+`FRESH_GET_PER_PRETRADE_DECISION` (decision-bound). No TTL is invented.
+`historical_reuse`, fixture/replay markers, and injected doubles claiming
+venue contact are stale or contradictory. Venue `code` must be the exact string
+`0`. Integer `0` or truthy dicts do not prove freshness.
+
+C. Composition and standing gates. The GET seam composes with
+`join_owner_one_shot_permit_into_admission_inputs_v1` and durable FILEGATE.
+Trusted GET evidence cannot override FILEGATE, permit, LIVE_ENABLED,
+LIVE_ARMED, or WIRE_SEND_PERMITTED. LIVE context without collection, missing
+transport, auth failure on a private GET, or public GET failure is fail-closed.
+`evaluate_execution_admission_v1` remains fail-closed `admitted=false`.
+LIVE_ACCOUNT_BOUND live values, LIVE_ENABLED &#47; LIVE_ARMED &#47;
+WIRE_SEND_PERMITTED, and LiveExecutionPort remain later layers.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.L.FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 

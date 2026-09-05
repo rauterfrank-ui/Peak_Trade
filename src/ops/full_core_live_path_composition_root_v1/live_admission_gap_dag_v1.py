@@ -17,6 +17,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     CURRENT_LIVE_CORE_PATH_PROVEN,
     DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED,
     FULL_CORE_SYSTEM_E2E_PROVEN,
+    FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED,
     FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH,
     LIVE_ARMED,
     LIVE_ENABLED,
@@ -26,8 +27,10 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
 )
 
 GAP_DAG_VERSION = "v1"
-EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY = "FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED"
-MAX_SAFE_REPO_INTERNAL_NEXT_SLICE = "NO_FURTHER_REPO_INTERNAL_SLICE_WITHOUT_FRESH_GET_OWNER_GO"
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY = "LIVE_ACCOUNT_BOUND_IMPLEMENTED"
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE = (
+    "NO_FURTHER_REPO_INTERNAL_SLICE_WITHOUT_LIVE_ACCOUNT_BOUND_OWNER_GO"
+)
 FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE = True
 NEXT_STEP_REQUIRES_OWNER_GO = True
 
@@ -143,35 +146,35 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
     ),
     _node(
         component_id="PRIVATE_AUTH_PREFLIGHT",
-        authority="Full-Core private auth preflight (not canary HTTP as Full-Core transport)",
-        producer="CANARY_VENUE_PROOF_ADAPTER_NOT_FULL_CORE",
-        contract="PRIVATE_AUTH_PREFLIGHT_NOT_BOUND_ON_FULL_CORE",
+        authority="Full-Core private GET auth required fail-closed",
+        producer="src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1",
+        contract="PRIVATE_GET_AUTH_REQUIRED_FAIL_CLOSED",
         consumer="FRESH_GET_PER_PRETRADE_DECISION",
-        implementation_status="NOT_BOUND_ON_FULL_CORE",
-        test_status="CANARY_TRANSPORT_ISOLATION_PROVEN",
-        repo_internal_solvable=False,
-        fresh_external_evidence_required=True,
+        implementation_status="PRIVATE_GET_AUTH_REQUIRED_FAIL_CLOSED",
+        test_status="AUTH_FAILURE_DENIAL_PROVEN",
+        repo_internal_solvable=True,
+        fresh_external_evidence_required=False,
         productive_account_access_required=True,
         standing_live_gates_would_change=False,
-        reusable_mechanism_only=True,
-        wiring_authorized=False,
+        reusable_mechanism_only=False,
+        wiring_authorized=True,
         layer=2,
         dependencies=("PATH_IDENTITY",),
     ),
     _node(
         component_id="FRESH_GET_PER_PRETRADE_DECISION",
         authority="VENUE_PRETRADE_GATES",
-        producer="ABSENT_ON_FULL_CORE",
+        producer="src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1",
         contract="PRETRADE_SOURCE_FRESH_GET",
         consumer="evaluate_execution_admission_v1",
-        implementation_status="NOT_IMPLEMENTED_ON_FULL_CORE",
-        test_status="FRESH_PRETRADE_GET_NOT_IMPLEMENTED_DENIAL_PROVEN",
-        repo_internal_solvable=False,
-        fresh_external_evidence_required=True,
+        implementation_status="JOINED_TYPED_EVIDENCE_FAIL_CLOSED",
+        test_status="FRESH_PRETRADE_RUNTIME_GET_SEAM_PROVEN",
+        repo_internal_solvable=True,
+        fresh_external_evidence_required=False,
         productive_account_access_required=True,
         standing_live_gates_would_change=False,
         reusable_mechanism_only=False,
-        wiring_authorized=False,
+        wiring_authorized=True,
         layer=2,
         dependencies=("PRIVATE_AUTH_PREFLIGHT",),
     ),
@@ -423,6 +426,7 @@ def live_admission_gap_dag_v1() -> dict[str, Any]:
         "OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED": (
             OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED
         ),
+        "FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED": FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED,
         "FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE": (
             FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE
         ),
