@@ -2,6 +2,7 @@
   "OWNER_APPROVED_ALONE_IS_INSUFFICIENT": true,
   "TOKEN_ALONE_IS_INSUFFICIENT": true,
   "allowed_paths": [
+    "docs/ops/specs/FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT_V0.md",
     "src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py",
     "src/trading/master_v2/double_play_composition_scenario_matrix_adapter_v0.py",
     "src/trading/master_v2/double_play_entry_exit_scenario_binding_adapter_v0.py",
@@ -27,7 +28,7 @@
   ],
   "authority_effect": "NONE",
   "authorization_token": "EXPLICIT_OWNER_ADJUDICATED_SIDESTATE_ARMED_IDENTITY_SPLIT_AUTHORIZATION_V1",
-  "authorized_evidence_digest": "65e135aaeb9ff79085006d641b2f907eda325856f2e9fb253670aa867162f7dd",
+  "authorized_evidence_digest": "e515456b91dafacde4035483ec0a73bc2f77697eb26740abb32b28b2972f4ae2",
   "authorized_path_prefixes": [],
   "authorized_scope_class": "EXPLICIT_OWNER_ADJUDICATED_SIDESTATE_ARMED_IDENTITY_SPLIT_V1",
   "blanket_allowlist": false,
