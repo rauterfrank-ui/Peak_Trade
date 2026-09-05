@@ -2538,6 +2538,7 @@ entities:
       SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false.
       RUNTIME_LINEAGE_PARTIAL=true. Does not replace
       CURRENT_CANONICAL_SECTION=11.13.5.Z2DA. Does not implement WP-FA-08.
+      Typed Double-Play observation projection is DDO capture parity only.
       Not a second trading, risk, safety, planning, execution, promotion, or
       deployment owner. Atlas catalog presence is navigation only and is not
       activation. Atlas is not trading authority.
@@ -2551,8 +2552,10 @@ entities:
     modified_by: PENDING_CHANGE
     source_paths:
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+      - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
     evidence_sources:
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+      - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
       - src/learning/deterministic_decision_outcome_v0/authority_v0.py
       - src/governance/canonical_order_intent_v1.py
       - src/governance/capital_risk_sizing_v1.py
@@ -2566,6 +2569,11 @@ entities:
       DdoCaptureBindingV0 session is bound. Does not mutate producer results.
       WP-FS-B1 attached proven host decorators for all
       IMPLEMENTED_CAPTURE_SEAMS_V0. Capture remains observation-only.
+      Double-Play seam core.double_play_entry_exit now persists a sibling
+      typed observation projection v1 of EntryExitPolicyDecisionV0.
+      Generic DecisionResult stays NO_ACTION or UNKNOWN; exact producer
+      tokens live in the projection. selected_side is not SideState-after.
+      Durable ledger_path remains unbound on the productive host.
       Evidence_sources list observation-host producer files, not ownership.
       Not WP-FA-08. Atlas is not trading authority.
 
@@ -2637,7 +2645,8 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
     notes: >-
       Establishes DdoCaptureBindingV0 session context via
-      with_ddo_capture_session_v0 and may call
+      with_ddo_capture_session_v0, binds cycle capture identity via
+      bind_host_cycle_capture_context_v0, and may call
       record_productive_cycle_capture_v0. Observation only. Does not confer
       DDO trading, risk, safety, or promotion authority.
       Cap 6.5 profit-protection distance is a host-consumed Cap 6.5 own

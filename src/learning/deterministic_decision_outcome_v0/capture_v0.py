@@ -29,6 +29,13 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
 from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
     build_decision_event_v0,
 )
+from src.learning.deterministic_decision_outcome_v0.double_play_observation_projection_v1 import (
+    generic_decision_result_for_producer_outcome_v1,
+    generic_decision_type_for_producer_outcome_v1,
+    is_typed_entry_exit_policy_decision_v1,
+    producer_canonical_payload_from_decision_v1,
+    project_entry_exit_policy_decision_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.enums_v0 import (
     DECISION_TYPE_V0,
     UNKNOWN,
@@ -171,9 +178,6 @@ SRC_SIM_EXEC: str = (
 _LONG_SIDE_TOKENS: frozenset[str] = frozenset({"long", "bull", "long_armed", "long_active", "buy"})
 _SHORT_SIDE_TOKENS: frozenset[str] = frozenset(
     {"short", "bear", "short_armed", "short_active", "sell"}
-)
-_NO_ENTRY_OUTCOMES: frozenset[str] = frozenset(
-    {"no_action", "observe", "hold", "blocked", "cancel_pending", "reconcile_only", "NO_ACTION"}
 )
 _VIEW_KEYS: tuple[str, ...] = (
     "ok",
@@ -490,6 +494,10 @@ class DdoCaptureBindingV0:
     captured_ids: list[str] = field(default_factory=list)
     last_error: str | None = None
     last_result: dict[str, Any] | None = None
+    capture_event_time_utc: str | None = None
+    capture_correlation_id: str | None = None
+    capture_cycle_id: str | None = None
+    capture_repository_sha: str | None = None
     _ledger: AppendOnlyDdoLedgerV0 | None = field(default=None, repr=False)
 
     def ledger(self) -> AppendOnlyDdoLedgerV0 | None:
@@ -534,6 +542,26 @@ def with_ddo_capture_session_v0(fn: F) -> F:
             reset_capture_session_v0(token)
 
     return wrapped  # type: ignore[return-value]
+
+
+def bind_host_cycle_capture_context_v0(
+    binding: DdoCaptureBindingV0 | None,
+    *,
+    event_ts_unix: float,
+    session_id: str,
+    cycle_index: int,
+    repository_sha: str,
+) -> None:
+    """Share host cycle identity with in-cycle producer decorators.
+
+    Observation plumbing only. Does not bind a durable ledger path.
+    """
+    if binding is None or not binding.enabled:
+        return
+    binding.capture_event_time_utc = _from_unix(event_ts_unix)
+    binding.capture_correlation_id = _as_record_id(f"ddo.corr.{session_id}"[:128])
+    binding.capture_cycle_id = _optional_record_id(f"{session_id}:cycle:{cycle_index}")
+    binding.capture_repository_sha = repository_sha
 
 
 def observe_after_producer_v0(*, seam_id: str) -> Callable[[F], F]:
@@ -586,17 +614,39 @@ def observe_producer_result_v0(
         return {"ok": True, "skipped": True, "reason": "CAPTURE_DISABLED"}
     spec = SEAM_SPECS_V0[seam_id]
     view = _view(result)
-    codes = _codes_from_view(view)
+    typed_double_play = spec.seam_id == SEAM_DOUBLE_PLAY_ENTRY_EXIT and (
+        is_typed_entry_exit_policy_decision_v1(result)
+    )
+    producer_canonical: dict[str, Any] | None = None
+    if typed_double_play:
+        producer_canonical = producer_canonical_payload_from_decision_v1(result)
+        codes = tuple(str(item) for item in producer_canonical["reason_codes"])
+        producer_outcome = str(producer_canonical["decision_outcome"])
+        decision_type = generic_decision_type_for_producer_outcome_v1(producer_outcome)
+        decision_result = generic_decision_result_for_producer_outcome_v1(producer_outcome)
+        policy_decision_id = str(producer_canonical["policy_decision_id"])
+    else:
+        codes = _codes_from_view(view)
+        decision_type = _decision_type_for_seam(spec, view)
+        decision_result = "NO_ACTION"
+        policy_decision_id = UNKNOWN
+        if spec.seam_id == SEAM_DOUBLE_PLAY_ENTRY_EXIT:
+            producer_outcome = _token(view.get("decision_outcome")).lower() or UNKNOWN
+            decision_type = generic_decision_type_for_producer_outcome_v1(producer_outcome)
+            decision_result = generic_decision_result_for_producer_outcome_v1(producer_outcome)
     event_time = (
         event_time_utc
         or _event_time_from_kwargs(kwargs)
         or _event_time_from_args(args)
         or _event_time_from_view(view)
         or _event_time_from_object(result)
+        or binding.capture_event_time_utc
     )
     if event_time is None:
         raise ValueError("CAPTURE_EVENT_TIME_MISSING")
-    decision_type = _decision_type_for_seam(spec, view)
+    correlation_id = correlation_id or binding.capture_correlation_id
+    cycle_id = cycle_id or binding.capture_cycle_id
+    repository_sha = repository_sha or binding.capture_repository_sha
     hard_stop = bool(view.get("hard_stop"))
     opaque = _opaque_codes(codes, spec.source_taxonomy_ref)
     if not opaque:
@@ -608,7 +658,7 @@ def observe_producer_result_v0(
             }
         ]
     hard_blocks = list(opaque) if hard_stop else []
-    identity = {
+    identity: dict[str, Any] = {
         "seam_id": spec.seam_id,
         "event_time_utc": event_time,
         "codes": [item["code"] for item in opaque],
@@ -618,6 +668,8 @@ def observe_producer_result_v0(
         "correlation_id": correlation_id or "ddo.corr.default",
         "repository_sha": repository_sha or UNKNOWN,
     }
+    if spec.seam_id == SEAM_DOUBLE_PLAY_ENTRY_EXIT:
+        identity["policy_decision_id"] = policy_decision_id
     record_id = _stable_record_id("ddo.dec", identity)
     event_id = _stable_record_id("ddo.evt", identity)
     corr = _as_record_id(correlation_id or "ddo.corr.default")
@@ -631,7 +683,7 @@ def observe_producer_result_v0(
         "cycle_id": cycle_ref,
         "event_time_utc": event_time,
         "decision_type": decision_type,
-        "decision_result": "NO_ACTION",
+        "decision_result": decision_result,
         "reason_codes": opaque,
         "hard_block_reasons": hard_blocks,
         "decision_time_information_set_ref": None,
@@ -651,6 +703,22 @@ def observe_producer_result_v0(
     }
     record = dict(build_decision_event_v0(payload))
     _persist(binding, record)
+    observation_record = None
+    if spec.seam_id == SEAM_DOUBLE_PLAY_ENTRY_EXIT:
+        observation_identity = dict(identity)
+        observation_identity["kind"] = "double_play_entry_exit_observation_v1"
+        observation_id = _stable_record_id("ddo.dpo", observation_identity)
+        observation_record = dict(
+            project_entry_exit_policy_decision_v1(
+                result,
+                record_id=observation_id,
+                event_time_utc=event_time,
+                correlation_id=corr,
+                cycle_id=cycle_ref,
+                decision_event_ref=record_id,
+            )
+        )
+        _persist(binding, observation_record)
     incident_record = None
     if _should_emit_incident(spec, view, hard_stop):
         incident_identity = dict(identity)
@@ -690,7 +758,7 @@ def observe_producer_result_v0(
         "record_id": record_id,
         "content_hash": record["content_hash"],
         "decision_type": decision_type,
-        "decision_result": "NO_ACTION",
+        "decision_result": decision_result,
         "decision_unchanged": True,
         "incident_id": None if incident_record is None else incident_record["record_id"],
     }
@@ -803,8 +871,11 @@ def record_productive_cycle_capture_v0(
 
 def _persist(binding: DdoCaptureBindingV0, record: Mapping[str, Any]) -> None:
     frozen = dict(record)
+    record_id = str(frozen["record_id"])
+    if record_id in binding.captured_ids:
+        return
     binding.captured_records.append(frozen)
-    binding.captured_ids.append(str(frozen["record_id"]))
+    binding.captured_ids.append(record_id)
     ledger = binding.ledger()
     if ledger is not None:
         ledger.append(frozen)
@@ -887,10 +958,8 @@ def _decision_type_for_seam(spec: SeamSpecV0, view: Mapping[str, Any]) -> str:
     if spec.seam_id == SEAM_BULL_BEAR:
         return _bull_bear_decision_type(view)
     if spec.seam_id == SEAM_DOUBLE_PLAY_ENTRY_EXIT:
-        outcome = _token(view.get("decision_outcome")).lower()
-        if outcome in {item.lower() for item in _NO_ENTRY_OUTCOMES}:
-            return "NO_ENTRY"
-        return UNKNOWN
+        outcome = _token(view.get("decision_outcome")).lower() or UNKNOWN
+        return generic_decision_type_for_producer_outcome_v1(outcome)
     if spec.seam_id == SEAM_STEP_29P_RISK_SIZING:
         if _token(view.get("outcome")).upper() == "BLOCKED":
             return "RISK_BLOCK"
@@ -960,7 +1029,9 @@ def _bull_bear_view(intermediate: Any) -> dict[str, Any]:
     bear = getattr(intermediate, "bear_assessment", None)
     view = _view(entry)
     view["previous_direction_state"] = getattr(entry, "previous_direction_state", None)
-    view["next_direction_state"] = getattr(entry, "selected_side", None)
+    view["next_direction_state"] = getattr(intermediate, "next_side_state", None)
+    if view["next_direction_state"] is None:
+        view["next_direction_state"] = getattr(entry, "next_direction_state", None)
     view["bull_status"] = getattr(bull, "status", None)
     view["bear_status"] = getattr(bear, "status", None)
     view["reason_codes"] = tuple(
