@@ -7155,6 +7155,90 @@ CURRENT_CANONICAL_SECTION=11.2.1.C.SCOPE_DIRECTION_STATE_MODEL_2_REBUILD_DETERMI
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+Composition `selected_side` overlay generator authority in the §11.2.1.C
+in-memory cursor wording is superseded by §11.2.1.D. Restart rebuild from
+SideState, Neutral/CHOP/KILL LONG fallback, and SideState fail-closed restore
+remain as bound in §11.2.1.C.
+
+### 11.2.1.D SCOPE_DIRECTION_OVERLAY_GENERATOR_INERT_MINIMUM_ATOMIC_REPAIR_V1 (BOUND; OFFLINE CONTRACTS ONLY; NO WIRE; NO FILEGATE RUNTIME JOIN)
+
+Additive persist. Does **not** rewrite §11.2.1 standing Live flags, §11.13.5
+canary, or §11.14 ladder fields. Does **not** GET. Does **not** POST. Does
+**not** construct `LiveExecutionPort`. Does **not** arm Live. Does **not**
+join durable FILEGATE. Does **not** change Double Play `transition_state`.
+Does **not** change Entry/Exit PENDING tables, C3, Composition-matrix decision
+logic, RuntimeScopeState trailing, 29P, 29Q, Replay Safety, Kill Switch,
+Mapper, Execution, or SideState fail-closed restore. Does **not** introduce
+LastActiveSide / LastSelectedSide persistency. Does **not** remove the Cap-6.2
+`scope_direction_state` schema field.
+
+Owner-GO
+`OWNER_GO=PEAK_TRADE_OWNER_GO_SCOPE_DIRECTION_OVERLAY_GENERATOR_INERT_MINIMUM_ATOMIC_REPAIR_V1`
+(one-shot for this persist) binds: `ScopeDirectionState` is a derived runtime
+projection from `SideState`. Composition `selected_side` must not overwrite
+that projection as generator-fallback authority. Restart and the running
+process must emit the same orientation for the same `SideState`.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_SCOPE_DIRECTION_OVERLAY_GENERATOR_INERT_MINIMUM_ATOMIC_REPAIR_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=SCOPE_DIRECTION_OVERLAY_GENERATOR_INERT_V1
+CORE_LOGIC_CHANGE=true
+OWNER_RATIFICATION_REQUIRED=true
+DECISION_AUTHORITY_UNCHANGED=true
+SOLE_COMPUTE_OWNER=run_integrated_offline_trading_logic_replay_v1
+SIDESTATE_COMPUTE_OWNER=transition_state
+SCOPE_DIRECTION_STATE_INDEPENDENT_AUTHORITY=false
+SCOPE_DIRECTION_STATE_MODEL=DERIVED_RUNTIME_PROJECTION_FROM_SIDESTATE
+COMPOSITION_SELECTED_SIDE_MAY_WRITE_SCOPE_DIRECTION_STATE=false
+COMPOSITION_SELECTED_SIDE_CAN_MUTATE_GENERATOR_DIRECTION=false
+PERSISTED_SCOPE_DIRECTION_STATE_IS_INDEPENDENT_AUTHORITY=false
+LAST_ACTIVE_SIDE_BINDING_AUTHORIZED=false
+SCOPE_DIRECTION_STATE_RESTART_AUTHORITY=DERIVED_NOT_PERSISTED_INDEPENDENT_TRUTH
+SCOPE_DIRECTION_STATE_REBUILD_OWNER=scope_direction_from_side_state_v1
+NEUTRAL_OBSERVE_CHOP_GUARD_BLOCK_KILL_ALL_FALLBACK=LONG
+NEUTRAL_PLUS_OVERLAY_SHORT_MUST_SURVIVE_RUNTIME=false
+PREVIOUS_DIRECTION_IS_RESTART_AUTHORITATIVE_HISTORY=false
+COMPOSITION_OVERLAY_CLASSIFICATION=GENERATOR_INERT_NOT_SCOPE_DIRECTION_AUTHORITY
+CAP62_SCOPE_DIRECTION_STATE_CLASSIFICATION=REBUILD_DETERMINISTICALLY
+SCOPE_DIRECTION_STATE_FAIL_CLOSED_ANALOG_TO_SIDESTATE=false
+SIDESTATE_RESTORE_INVALID_VALUE_FAILS_CLOSED=true
+DOUBLE_PLAY_SIDE_STATE_OWNER=transition_state
+ENTRY_EXIT_OWNER=entry_exit_policy_v0
+POSITION_SIZING_OWNER=capital_risk_sizing_v1
+DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=false
+LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
+FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+LIVE_RESTART_RECONSTRUCTED=false
+DURABLE_PRE_RESTART_HANDOFF_PRESENT=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+Cap-7.2 `_update_session_state_from_replay` projects
+`state.scope_direction_state` from the current `state.side_state` via
+`scope_direction_from_side_state_v1`. Composition `selected_side` may still
+update `previous_composition_direction_state` and must not write
+`scope_direction_state`. The productive generator call uses
+`scope_direction_from_side_state_v1(inp.side_state)` with the Model-2 LONG
+default for `NEUTRAL_OBSERVE`, `CHOP_GUARD_BLOCK`, and `KILL_ALL`. The input
+field `inp.scope_direction_state` remains for compatibility and is not
+generator authority. Hardening-v2 overlay writer is not synchronized in this
+persist: after generator-inert binding it cannot mutate generator direction.
+Persisted scope-direction tokens remain schema-compat only.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/
+SPEC_OWNER=docs/ops/specs/DIRECTIONAL_MAPPING_CONTRACT_REPAIR_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.D.SCOPE_DIRECTION_OVERLAY_GENERATOR_INERT_MINIMUM_ATOMIC_REPAIR_V1
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

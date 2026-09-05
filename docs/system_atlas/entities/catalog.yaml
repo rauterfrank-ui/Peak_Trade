@@ -2592,6 +2592,7 @@ entities:
       RUNTIME_LINEAGE_PARTIAL=true. Atlas is not trading authority.
 
   - id: HOST:wallclock_decision_economics_cycle
+    # SCOPE_DIRECTION_OVERLAY_GENERATOR_INERT_V1: host projects ScopeDirectionState from SideState.
     kind: HOST
     name: Wallclock decision-to-simulated-economics cycle
     epistemic_class: FORENSIC_RAW
@@ -2625,8 +2626,10 @@ entities:
       switch-event up_distance. ScopeDirectionState restart is Model 2:
       rebuilt from SideState via scope_direction_from_side_state_v1;
       persisted tokens are schema-compat only and are not independent
-      restart truth. Neutral/CHOP/KILL_ALL rebuild to LONG. Atlas is not
-      trading authority. AUTHORITY_OWNER=NONE.
+      restart truth. Neutral/CHOP/KILL_ALL rebuild to LONG. Composition
+      selected_side overlay is generator-inert and must not write
+      scope_direction_state; the running host projects from SideState.
+      Atlas is not trading authority. AUTHORITY_OWNER=NONE.
       PRODUCTIVE_AI_AUTHORITY_COUNT=0. SECOND_TRADING_AUTHORITY=false.
 
   - id: RUNTIME_COMPONENT:recon_startup_gate_v1
@@ -3051,6 +3054,7 @@ entities:
     notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
 
   - id: RUNTIME_COMPONENT:mv2_integrated_replay
+    # SCOPE_DIRECTION_OVERLAY_GENERATOR_INERT_V1: generator ignores host-cursor fallback.
     kind: RUNTIME_COMPONENT
     name: Integrated offline trading-logic replay
     epistemic_class: FORENSIC_RAW
@@ -3072,7 +3076,10 @@ entities:
       and not a second compute owner. Post-29Q KS projection is
       POST_29Q_CONSUMPTION_GUARD (consumption HOLD/DENY of an already produced
       ENTER plan); it does not rewrite decision_outcome and does not grant
-      submission/wire permission. Implementation is not activation.
+      submission/wire permission. Productive generator orientation is
+      scope_direction_from_side_state_v1(inp.side_state); inp.scope_direction_state
+      is compatibility input, not generator authority. Implementation is not
+      activation.
 
   - id: RUNTIME_COMPONENT:mv2_parity_gap_assessment
     kind: RUNTIME_COMPONENT

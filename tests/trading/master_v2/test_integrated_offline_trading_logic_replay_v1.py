@@ -351,6 +351,7 @@ def test_no_runtime_order_imports_in_replay_owner() -> None:
     allowed_adapter_modules = (
         "scope_event_generator_scenario_binding_adapter_v0",
         "reversal_preparation_scenario_binding_adapter_v0",
+        "replay_execution_safety_contract_v1",
     )
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):

@@ -1,8 +1,10 @@
-"""Model 2: ScopeDirectionState is rebuilt from SideState, not restart truth."""
+"""Model 2 plus overlay-inert: ScopeDirectionState is a SideState projection."""
 
 from __future__ import annotations
 
+import inspect
 from pathlib import Path
+from types import SimpleNamespace
 
 from src.ops.dynamic_scope_persistence_binding_v1.constants_v1 import (
     DOMAIN_TO_PERSISTENCE_MATRIX,
@@ -11,9 +13,19 @@ from src.ops.dynamic_scope_persistence_binding_v1.constants_v1 import (
 from src.ops.dynamic_scope_persistence_binding_v1.models_v1 import (
     CanonicalDynamicScopeStateV1,
 )
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.decision_economics_cycle_bridge_v1 import (
+    BridgeSessionStateV1,
+    _update_session_state_from_replay,
+)
+from tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1 import _run
 from trading.master_v2.deterministic_scope_event_generator_v1 import ScopeDirectionState
+from trading.master_v2.double_play_composition_matrix_v1 import (
+    CompositionDirectionState,
+    CompositionSelectedSide,
+)
 from trading.master_v2.double_play_state import SideState
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
+    run_integrated_offline_trading_logic_replay_v1,
     scope_direction_from_side_state_v1,
 )
 
@@ -42,6 +54,21 @@ _FALLBACK_LONG = (
     SideState.CHOP_GUARD_BLOCK,
     SideState.KILL_ALL,
 )
+_ALL_SIDESTATES = tuple(SideState)
+_PENDING_UNCHANGED = (
+    (SideState.SWITCH_LONG_TO_SHORT_PENDING, ScopeDirectionState.LONG),
+    (SideState.SWITCH_SHORT_TO_LONG_PENDING, ScopeDirectionState.SHORT),
+)
+GENERATOR = REPO_ROOT / "src/trading/master_v2" / "integrated_offline_trading_logic_replay_v1.py"
+
+
+def _replay_result(*, next_side: SideState, selected: CompositionSelectedSide) -> SimpleNamespace:
+    return SimpleNamespace(
+        intermediate=SimpleNamespace(
+            state_switch=SimpleNamespace(next_side_state=next_side),
+            composition_result=SimpleNamespace(selected_side=selected),
+        )
+    )
 
 
 def test_mapped_sidestates_rebuild_from_canonical_table() -> None:
@@ -139,3 +166,143 @@ def test_invalid_scope_direction_token_is_not_sidestate_alpha_block() -> None:
     text = HOST.read_text(encoding="utf-8")
     assert "SIDESTATE_RESTORE_ALPHA_BLOCKED" in text
     assert "SCOPE_DIRECTION_RESTORE_ALPHA_BLOCKED" not in text
+
+
+def test_all_eleven_sidestates_runtime_restart_projection_parity() -> None:
+    assert len(_ALL_SIDESTATES) == 11
+    for side in _ALL_SIDESTATES:
+        projected = scope_direction_from_side_state_v1(side)
+        state = BridgeSessionStateV1(require_selection_binding=False)
+        state.side_state = SideState.LONG_ACTIVE
+        state.scope_direction_state = ScopeDirectionState.SHORT
+        _update_session_state_from_replay(
+            state,
+            result=_replay_result(next_side=side, selected=CompositionSelectedSide.SHORT),
+        )
+        restart = scope_direction_from_side_state_v1(state.side_state)
+        assert state.side_state is side
+        assert state.scope_direction_state is projected
+        assert restart is projected
+        assert state.scope_direction_state is restart
+
+
+def test_neutral_observe_after_selected_side_short_is_long() -> None:
+    state = BridgeSessionStateV1(require_selection_binding=False)
+    state.scope_direction_state = ScopeDirectionState.SHORT
+    _update_session_state_from_replay(
+        state,
+        result=_replay_result(
+            next_side=SideState.NEUTRAL_OBSERVE,
+            selected=CompositionSelectedSide.SHORT,
+        ),
+    )
+    assert state.side_state is SideState.NEUTRAL_OBSERVE
+    assert state.scope_direction_state is ScopeDirectionState.LONG
+    assert state.previous_composition_direction_state is CompositionDirectionState.SHORT
+
+
+def test_chop_guard_block_after_selected_side_short_is_long() -> None:
+    state = BridgeSessionStateV1(require_selection_binding=False)
+    state.scope_direction_state = ScopeDirectionState.SHORT
+    _update_session_state_from_replay(
+        state,
+        result=_replay_result(
+            next_side=SideState.CHOP_GUARD_BLOCK,
+            selected=CompositionSelectedSide.SHORT,
+        ),
+    )
+    assert state.side_state is SideState.CHOP_GUARD_BLOCK
+    assert state.scope_direction_state is ScopeDirectionState.LONG
+    assert state.previous_composition_direction_state is CompositionDirectionState.SHORT
+
+
+def test_kill_all_after_selected_side_short_is_long() -> None:
+    state = BridgeSessionStateV1(require_selection_binding=False)
+    state.scope_direction_state = ScopeDirectionState.SHORT
+    _update_session_state_from_replay(
+        state,
+        result=_replay_result(
+            next_side=SideState.KILL_ALL,
+            selected=CompositionSelectedSide.SHORT,
+        ),
+    )
+    assert state.side_state is SideState.KILL_ALL
+    assert state.scope_direction_state is ScopeDirectionState.LONG
+    assert state.previous_composition_direction_state is CompositionDirectionState.SHORT
+
+
+def test_composition_overlay_cannot_mutate_scope_direction() -> None:
+    state = BridgeSessionStateV1(require_selection_binding=False)
+    _update_session_state_from_replay(
+        state,
+        result=_replay_result(
+            next_side=SideState.LONG_ACTIVE,
+            selected=CompositionSelectedSide.SHORT,
+        ),
+    )
+    assert state.previous_composition_direction_state is CompositionDirectionState.SHORT
+    assert state.scope_direction_state is ScopeDirectionState.LONG
+    text = inspect.getsource(_update_session_state_from_replay)
+    assert "state.scope_direction_state = ScopeDirectionState.LONG" not in text
+    assert "state.scope_direction_state = ScopeDirectionState.SHORT" not in text
+    assert "scope_direction_from_side_state_v1(state.side_state)" in text
+
+
+def test_pending_mappings_remain_unchanged() -> None:
+    for side, expected in _PENDING_UNCHANGED:
+        assert scope_direction_from_side_state_v1(side) is expected
+        state = BridgeSessionStateV1(require_selection_binding=False)
+        _update_session_state_from_replay(
+            state,
+            result=_replay_result(next_side=side, selected=CompositionSelectedSide.SHORT),
+        )
+        assert state.scope_direction_state is expected
+
+
+def test_persisted_short_token_remains_restart_inert() -> None:
+    rebuilt = scope_direction_from_side_state_v1(SideState.NEUTRAL_OBSERVE)
+    assert rebuilt is ScopeDirectionState.LONG
+    text = HOST.read_text(encoding="utf-8")
+    restore_at = text.index("parse_persisted_side_state_v1(")
+    rebuild_at = text.index("scope_direction_from_side_state_v1(state.side_state)", restore_at)
+    restore_block = text[restore_at:rebuild_at]
+    assert "state.dynamic_scope_binding.scope_direction_state" not in restore_block
+
+
+def test_sidestate_fail_closed_restore_is_unchanged() -> None:
+    text = HOST.read_text(encoding="utf-8")
+    restore_at = text.index("parse_persisted_side_state_v1(")
+    sidestate_block = text[restore_at : text.index("state.scope_direction_state", restore_at)]
+    assert "except SideStateRestoreError" in sidestate_block
+    assert "SIDESTATE_RESTORE_ALPHA_BLOCKED" in text
+    assert "except Exception" not in sidestate_block
+    assert "pass" not in sidestate_block
+
+
+def test_generator_ignores_host_cursor_fallback_for_neutral_chop_kill() -> None:
+    src = inspect.getsource(run_integrated_offline_trading_logic_replay_v1)
+    assert "fallback=inp.scope_direction_state" not in src
+    assert "scope_direction_from_side_state_v1(inp.side_state)" in src
+    generator_file = GENERATOR.read_text(encoding="utf-8")
+    assert "fallback=inp.scope_direction_state" not in generator_file
+    for side in _FALLBACK_LONG:
+        result = _run(
+            side_state=side,
+            scope_direction_state=ScopeDirectionState.SHORT,
+        )
+        assert result.intermediate is not None
+        assert (
+            result.intermediate.scope_event.semantic_binding.current_direction_state
+            is ScopeDirectionState.LONG
+        )
+
+
+def test_core_logic_change_is_adjudicated_honestly() -> None:
+    runbook = (REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md").read_text(
+        encoding="utf-8"
+    )
+    section_at = runbook.index("11.2.1.D SCOPE_DIRECTION_OVERLAY_GENERATOR_INERT")
+    section = runbook[section_at : section_at + 4000]
+    assert "CORE_LOGIC_CHANGE=true" in section
+    assert "OWNER_RATIFICATION_REQUIRED=true" in section
+    assert "COMPOSITION_SELECTED_SIDE_CAN_MUTATE_GENERATOR_DIRECTION=false" in section
