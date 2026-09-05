@@ -260,7 +260,7 @@ def test_injection_does_not_bypass_transition_state_for_switch() -> None:
         now_tick=1,
     )
     assert decision.allowed is True
-    assert next_side is SideState.LONG_ARMED
+    assert next_side is SideState.LONG_ARMED_NEUTRAL_START
     assert CANONICAL_SWITCH_AUTHORITY.endswith("transition_state")
     assert "RuntimeScopeState" in CANONICAL_SCOPE_STATE_OWNER
     assert OFFLINE_SCENARIO_TICK_PROVENANCE_OWNER.endswith("OfflineScenarioTickProvenanceV1")

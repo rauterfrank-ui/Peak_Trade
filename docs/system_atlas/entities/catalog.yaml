@@ -41,7 +41,7 @@ entities:
       - src/trading/master_v2/double_play_composition.py
       - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md
       - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_KILL_ALL_STATE_SWITCH_FAVORABLE_ADVERSE_EXTREME_MOVES_ACCEPTANCE_V0.md
-    notes: Inner functional core census label for Double Play relative to Master V2. Exact token FUNCTIONAL_CORE not found on origin/main; proven as Modul-Owner of one Trading Core. Typed contract hardening does not move Double Play authority. ATLAS_AUTHORITY=NONE.
+    notes: Inner functional core census label for Double Play relative to Master V2. Exact token FUNCTIONAL_CORE not found on origin/main; proven as Modul-Owner of one Trading Core. Typed contract hardening does not move Double Play authority. SideState remains the directional/lifecycle authority; Neutral-Start ARMED and Switch-Terminal ARMED are distinct identities. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNBOOK:canonical_master_runbook
     kind: RUNBOOK
@@ -59,6 +59,8 @@ entities:
       Canonical working authority. Section 11.2.1.A records typed Full-Core
       execution admission and Replay Safety/Emergency contracts without
       Live arming, wire send, or durable FILEGATE runtime join. Section
+      11.2.1.G inventories the SideState ARMED identity split without
+      LastActiveSide and without changing LIVE_ARMED. Section
       11.9.1 precisifies durable execution-side kill authority
       (StatePersistence writer + FILEGATE reader) without authorizing
       Live flatten, alias split, or auto-trip wiring. Atlas is not
@@ -98,6 +100,9 @@ entities:
       polarity and PENDING departing-side generator orientation (ARMED residual
       unresolved; freeze exception unauthorized; last_active_side unauthorized;
       MODEL_B remains productive baseline).
+      SideState ARMED identity split (Neutral-Start vs Switch-Terminal)
+      is navigation inventory only; last_active_side remains unauthorized;
+      LIVE_ARMED is unchanged. Atlas is not trading authority.
 
   - id: FORENSIC_REFERENCE:information_corpus_persistence_base
     kind: FORENSIC_REFERENCE
@@ -336,6 +341,14 @@ entities:
     current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
     evidence_sources:
       - src/trading/master_v2/double_play_state.py
+    notes: >-
+      SideState is the directional/lifecycle authority. Neutral-Start
+      ARMED (LONG_ARMED_NEUTRAL_START / SHORT_ARMED_NEUTRAL_START) and
+      Switch-Terminal ARMED (LONG_ARMED_SWITCH_TERMINAL /
+      SHORT_ARMED_SWITCH_TERMINAL) are distinct identities. Legacy
+      long_armed/short_armed remain parseable as LEGACY_AMBIGUOUS and
+      are not origin-reconstructed. LIVE_ARMED is unchanged. Atlas is
+      not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:dp_survival
     kind: RUNTIME_COMPONENT
@@ -2633,7 +2646,10 @@ entities:
       write scope_direction_state; both hosts project from SideState.
       The Master-V2 generator fallback inside
       run_integrated_offline_trading_logic_replay_v1 is likewise
-      generator-inert and projects from SideState. Atlas is not trading
+      generator-inert and projects from SideState. Neutral-Start and
+      Switch-Terminal ARMED identities keep the same bound LONG/SHORT
+      destination-prefix projection as the former overloaded ARMED
+      tokens; LIVE_ARMED is unchanged. Atlas is not trading
       authority. AUTHORITY_OWNER=NONE.
       PRODUCTIVE_AI_AUTHORITY_COUNT=0. SECOND_TRADING_AUTHORITY=false.
 
@@ -2855,10 +2871,20 @@ entities:
     module_role: double_play_offline_replay
     source_paths:
       - src/trading/master_v2/offline_double_play_scenario_replay_v0.py
+      - src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py
+      - src/trading/master_v2/double_play_composition_scenario_matrix_adapter_v0.py
+      - src/trading/master_v2/double_play_entry_exit_scenario_binding_adapter_v0.py
+      - src/trading/master_v2/survival_suitability_scenario_binding_adapter_v0.py
     evidence_sources:
       - src/trading/master_v2/offline_double_play_scenario_replay_v0.py
+      - src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py
+      - src/trading/master_v2/double_play_composition_scenario_matrix_adapter_v0.py
+      - src/trading/master_v2/double_play_entry_exit_scenario_binding_adapter_v0.py
+      - src/trading/master_v2/survival_suitability_scenario_binding_adapter_v0.py
       - docs/system_atlas/census/master_v2_semantic_map.yaml
-    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml.
+      Scenario adapters consume split SideState ARMED identities without a
+      second directional authority. Implementation is not activation.
 
   - id: RUNTIME_COMPONENT:mv2_post_confirmation_ssc
     kind: RUNTIME_COMPONENT
@@ -3083,7 +3109,9 @@ entities:
       submission/wire permission. Generator ScopeDirectionState is a SideState
       projection via scope_direction_from_side_state_v1; composition
       selected_side and inp.scope_direction_state are not generator-fallback
-      authority. Implementation is not activation.
+      authority. Neutral-Start and Switch-Terminal ARMED identities keep
+      the same bound LONG/SHORT destination-prefix projection; LIVE_ARMED
+      is unchanged. Implementation is not activation.
 
   - id: RUNTIME_COMPONENT:mv2_parity_gap_assessment
     kind: RUNTIME_COMPONENT
@@ -3343,7 +3371,7 @@ entities:
     notes: Fail-closed / decommission token cleanup on existing contracts, including current-system Kraken remnant removal. No new live, testnet, or canary capability. Atlas is not trading authority.
 
   - id: GUARD:economic_diagnostic_optimization_boundary
-    # inventory: fifth mapping-bind grant closed; sixth generator-fallback slice grant closed; grant_active=false; class remains
+    # inventory: fifth mapping-bind grant closed; sixth generator-fallback slice grant closed; seventh ARMED identity-split class slice-bound
     kind: GUARD
     name: Economic diagnostic optimization boundary guard
     epistemic_class: FORENSIC_RAW
@@ -3357,6 +3385,7 @@ entities:
       - src/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.py
       - src/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.py
       - src/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.py
+      - src/governance/explicit_owner_adjudicated_sidestate_armed_identity_split_authorization_v1.py
     authority_sources:
       - docs/governance/ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_LOGIC_IMMUTABILITY_CONTRACT_V0.md
     evidence_sources:
@@ -3365,16 +3394,19 @@ entities:
       - src/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.py
       - src/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.py
       - src/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.py
+      - src/governance/explicit_owner_adjudicated_sidestate_armed_identity_split_authorization_v1.py
       - config/governance/semantics_neutral_decommission_authorization_v1.json
       - config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json
       - config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json
       - config/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.json
+      - config/governance/explicit_owner_adjudicated_sidestate_armed_identity_split_authorization_v1.json
       - docs/governance/ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_LOGIC_IMMUTABILITY_CONTRACT_V0.md
       - docs/ops/specs/SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1.md
       - docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE_AUTHORIZATION_V1.md
       - docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_PRODUCTIVE_MAPPING_CONTRACT_RUNTIME_BIND_AUTHORIZATION_V1.md
       - docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_SCOPE_DIRECTION_GENERATOR_FALLBACK_AUTHORIZATION_V1.md
-    notes: Atlas inventory only. Not a trading authority. Default grants remain fail-closed unless an exact-file SHA-256 evidence digest over canonical unified diffs and the diff base SHA is bound. Same paths with a different diff cannot reuse a grant. Owner adjudication is necessary and not sufficient. The fifth admission class remains a closed productive mapping-contract runtime bind. The sixth admission class is a slice-bound generator-fallback repair; it does not waive MASTER_V2_MUTATION_ALLOWED=false. ATLAS_AUTHORITY=NONE.
+      - docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_SIDESTATE_ARMED_IDENTITY_SPLIT_AUTHORIZATION_V1.md
+    notes: Atlas inventory only. Not a trading authority. Default grants remain fail-closed unless an exact-file SHA-256 evidence digest over canonical unified diffs and the diff base SHA is bound. Same paths with a different diff cannot reuse a grant. Owner adjudication is necessary and not sufficient. The fifth admission class remains a closed productive mapping-contract runtime bind. The sixth admission class remains a closed generator-fallback repair. The seventh admission class is a slice-bound SideState ARMED identity-split repair; it does not waive MASTER_V2_MUTATION_ALLOWED=false. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1
     kind: RUNTIME_COMPONENT

@@ -7418,6 +7418,87 @@ CURRENT_CANONICAL_SECTION=11.2.1.F.SCOPE_DIRECTION_GENERATOR_FALLBACK_AND_SIXTH_
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.G SIDESTATE_ARMED_IDENTITY_SPLIT_AND_SEVENTH_ECONOMIC_GUARD_ADMISSION_V1 (BOUND; OFFLINE CONTRACTS ONLY; NO WIRE; NO FILEGATE RUNTIME JOIN)
+
+Additive persist. Does **not** rewrite §11.2.1 standing Live flags, §11.13.5
+canary, or §11.14 ladder fields. Does **not** GET. Does **not** POST. Does
+**not** construct `LiveExecutionPort`. Does **not** arm Live. Does **not**
+join durable FILEGATE. Does **not** change LIVE_ARMED. Does **not** add
+LastActiveSide. Does **not** change Entry/Exit PENDING tables, C3,
+Composition-matrix decision logic, RuntimeScopeState trailing, 29P, 29Q,
+Replay Safety, Kill Switch, Mapper, Execution, or SideState fail-closed restore
+for invalid values. Does **not** reopen the closed fifth-class or sixth-class
+grants. Does **not** bind MODEL_C freeze exception. Does **not** change Cap-7.2
+or Hardening-v2 overlay writers already closed in §11.2.1.D and §11.2.1.E.
+Does **not** change generator-fallback projection already closed in §11.2.1.F.
+
+Owner-GO
+`OWNER_GO=PEAK_TRADE_OWNER_GO_SIDESTATE_ARMED_IDENTITY_SPLIT_MINIMUM_ATOMIC_REPAIR_V1`
+(one-shot for this persist) splits overloaded `SideState.LONG_ARMED` /
+`SideState.SHORT_ARMED` so Neutral-Start and pipeline-terminal are distinct
+identities. `SideState` remains the directional and lifecycle authority. A
+seventh Economic-Guard admission class admits exactly this Master-V2 slice.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_SIDESTATE_ARMED_IDENTITY_SPLIT_MINIMUM_ATOMIC_REPAIR_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=SIDESTATE_ARMED_IDENTITY_SPLIT_MINIMUM_ATOMIC_REPAIR_V1
+CORE_LOGIC_CHANGE=true
+OWNER_RATIFICATION_REQUIRED=true
+DECISION_AUTHORITY_UNCHANGED=true
+SOLE_COMPUTE_OWNER=run_integrated_offline_trading_logic_replay_v1
+SIDESTATE_COMPUTE_OWNER=transition_state
+DOUBLE_PLAY_SIDE_STATE_OWNER=transition_state
+NEUTRAL_START_AND_SWITCH_TERMINAL_ARE_DISTINCT=true
+LONG_ARMED_LEGACY_AMBIGUOUS_RETAINED=true
+SHORT_ARMED_LEGACY_AMBIGUOUS_RETAINED=true
+HISTORY_RECONSTRUCTED=false
+LAST_ACTIVE_SIDE_BINDING_AUTHORIZED=false
+LIVE_ARMED_CHANGED=false
+PENDING_SEMANTICS_UNCHANGED=true
+ENTRY_EXIT_SEMANTICS_UNCHANGED=true
+TRAILING_POLICY_CHANGED=false
+SCOPE_DIRECTION_DESTINATION_PREFIX_UNCHANGED=true
+MODEL_C_CHANGED=false
+SIDESTATE_RESTORE_INVALID_VALUE_FAILS_CLOSED=true
+ENTRY_EXIT_OWNER=entry_exit_policy_v0
+POSITION_SIZING_OWNER=capital_risk_sizing_v1
+NEW_ECONOMIC_GUARD_CLASS_ID=EXPLICIT_OWNER_ADJUDICATED_SIDESTATE_ARMED_IDENTITY_SPLIT_V1
+NEW_ECONOMIC_GUARD_CLASS_COUNT=1
+GENERIC_MASTER_V2_GRANT_CREATED=false
+EXISTING_CLOSED_GRANT_REOPENED=false
+FIFTH_CLASS_GRANT_REOPENED=false
+SIXTH_CLASS_GRANT_REOPENED=false
+DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED=false
+LIVE_ACCOUNT_BOUND_IMPLEMENTED=false
+FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+LIVE_RESTART_RECONSTRUCTED=false
+DURABLE_PRE_RESTART_HANDOFF_PRESENT=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+Productive Neutral-Start destinations are `LONG_ARMED_NEUTRAL_START` and
+`SHORT_ARMED_NEUTRAL_START`. Productive pipeline-terminal destinations are
+`LONG_ARMED_SWITCH_TERMINAL` and `SHORT_ARMED_SWITCH_TERMINAL`. Persisted
+`long_armed` / `short_armed` restore as legacy-ambiguous identities; origin is
+not reconstructed. Invalid restore remains fail-closed. ScopeDirection prefix,
+ActiveSide freeze, and Entry/Exit ARMED eligibility stay as previously bound.
+The seventh Economic-Guard class is bound exclusively to this slice. After
+merge, that class requires its own grant closeout. No automatic successor.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/trading/master_v2/double_play_state.py
+SPEC_OWNER=docs/ops/specs/SIDESTATE_ARMED_IDENTITY_SPLIT_MINIMUM_ATOMIC_REPAIR_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.G.SIDESTATE_ARMED_IDENTITY_SPLIT_AND_SEVENTH_ECONOMIC_GUARD_ADMISSION_V1
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

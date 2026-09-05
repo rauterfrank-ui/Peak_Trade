@@ -1198,12 +1198,16 @@ def _derive_existing_position_side_and_venue_flat_v1(
         if side_state in (
             SideState.LONG_ACTIVE,
             SideState.LONG_ARMED,
+            SideState.LONG_ARMED_NEUTRAL_START,
+            SideState.LONG_ARMED_SWITCH_TERMINAL,
             SideState.SWITCH_SHORT_TO_LONG_PENDING,
         ):
             return ExistingPositionSide.LONG, False
         if side_state in (
             SideState.SHORT_ACTIVE,
             SideState.SHORT_ARMED,
+            SideState.SHORT_ARMED_NEUTRAL_START,
+            SideState.SHORT_ARMED_SWITCH_TERMINAL,
             SideState.SWITCH_LONG_TO_SHORT_PENDING,
         ):
             return ExistingPositionSide.SHORT, False

@@ -84,7 +84,7 @@
     "src/trading/master_v2/double_play_entry_exit_scenario_binding_adapter_v0.py": "33f9249086758476cb6cd9d56c7c51ead0c5f23a730c0dc8a0451d49c96c4507",
     "src/trading/master_v2/flat_before_opposite_side_scenario_binding_adapter_v0.py": "8129ea21af7a25c8410c543e6b2c24d7b4b1e49d9532f65e15d480b57efbbccc",
     "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py": "906530ad16f4e2a6d9c09e652740b0749c3c9e1c1e4b8ea99d39e0ea71f1681c",
-    "src/trading/master_v2/offline_double_play_scenario_replay_v0.py": "6dbb42a17bad653ede336a4b63cdfcb8ff339baa1756ac65a5a18059a10f4598",
+    "src/trading/master_v2/offline_double_play_scenario_replay_v0.py": "5555d6d41f77c1d5167fbecf8b5dbdc6793a0756f6b14f0bb7c4d94f436be581",
     "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py": "5bac44c97353d4bb2d394fca80119a2cc3567b86f590434104a5633a257a5cee"
   },
   "live_authorized": false,

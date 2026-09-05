@@ -141,12 +141,22 @@ def legacy_side_to_assessment_statuses_v0(
             DirectionalAssessmentStatus.CONFIRMED,
             DirectionalAssessmentStatus.CONFIRMED,
         )
-    if side_st in (SideState.LONG_ACTIVE, SideState.LONG_ARMED):
+    if side_st in (
+        SideState.LONG_ACTIVE,
+        SideState.LONG_ARMED,
+        SideState.LONG_ARMED_NEUTRAL_START,
+        SideState.LONG_ARMED_SWITCH_TERMINAL,
+    ):
         return (
             DirectionalAssessmentStatus.CONFIRMED,
             DirectionalAssessmentStatus.OBSERVE,
         )
-    if side_st in (SideState.SHORT_ACTIVE, SideState.SHORT_ARMED):
+    if side_st in (
+        SideState.SHORT_ACTIVE,
+        SideState.SHORT_ARMED,
+        SideState.SHORT_ARMED_NEUTRAL_START,
+        SideState.SHORT_ARMED_SWITCH_TERMINAL,
+    ):
         return (
             DirectionalAssessmentStatus.OBSERVE,
             DirectionalAssessmentStatus.CONFIRMED,

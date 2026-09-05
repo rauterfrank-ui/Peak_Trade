@@ -175,7 +175,7 @@ def test_adverse_plus_valid_downscope_preserves_both_dimensions() -> None:
     )
     assert mapped2 is ScopeEvent.DOWNSCOPE_CONFIRMED
     nxt, _, dec = _transition(SideState.NEUTRAL_OBSERVE, mapped2, now=2)
-    assert nxt is SideState.SHORT_ARMED
+    assert nxt is SideState.SHORT_ARMED_NEUTRAL_START
     assert dec.allowed is True
     assert derive_scope_adverse_exit_signal_v0(second).triggered is True
 

@@ -41,8 +41,8 @@ def test_rewire_binding_reuses_canonical_owner_without_parallel_owner() -> None:
 
 def test_bull_bear_parity_fixtures_reach_canonical_owner_symmetrically() -> None:
     bull_binding, bear_binding = evaluate_bull_bear_parity_fixtures_v0()
-    assert bull_binding.side_state_after == SideState.LONG_ARMED
-    assert bear_binding.side_state_after == SideState.SHORT_ARMED
+    assert bull_binding.side_state_after == SideState.LONG_ARMED_NEUTRAL_START
+    assert bear_binding.side_state_after == SideState.SHORT_ARMED_NEUTRAL_START
     assert bull_binding.state_switch_ref
     assert bear_binding.state_switch_ref
 

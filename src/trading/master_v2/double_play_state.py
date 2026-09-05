@@ -15,19 +15,45 @@ DOUBLE_PLAY_STATE_LAYER_VERSION = "v0"
 
 
 class SideState(str, Enum):
-    """High-level double-play / scope side machine (manifest §4)."""
+    """High-level double-play / scope side machine (manifest §4).
+
+    ``LONG_ARMED`` / ``SHORT_ARMED`` remain parseable **legacy-ambiguous**
+    identities. Productive transitions no longer collapse Neutral-Start and
+    pipeline-terminal into those tokens. Historical origin of a persisted
+    ``long_armed`` / ``short_armed`` value is not reconstructed.
+    """
 
     NEUTRAL_OBSERVE = "neutral_observe"
     LONG_ARMED = "long_armed"
+    LONG_ARMED_NEUTRAL_START = "long_armed_neutral_start"
+    LONG_ARMED_SWITCH_TERMINAL = "long_armed_switch_terminal"
     LONG_ACTIVE = "long_active"
     LONG_BLOCKED = "long_blocked"
     SHORT_ARMED = "short_armed"
+    SHORT_ARMED_NEUTRAL_START = "short_armed_neutral_start"
+    SHORT_ARMED_SWITCH_TERMINAL = "short_armed_switch_terminal"
     SHORT_ACTIVE = "short_active"
     SHORT_BLOCKED = "short_blocked"
     SWITCH_LONG_TO_SHORT_PENDING = "switch_long_to_short_pending"
     SWITCH_SHORT_TO_LONG_PENDING = "switch_short_to_long_pending"
     CHOP_GUARD_BLOCK = "chop_guard_block"
     KILL_ALL = "kill_all"
+
+
+# Projection groups: identity is not collapsed. Consumers that previously
+# matched ARMED must include every identity that keeps the same bound policy.
+LEGACY_AMBIGUOUS_LONG_ARMED_STATES = (SideState.LONG_ARMED,)
+LEGACY_AMBIGUOUS_SHORT_ARMED_STATES = (SideState.SHORT_ARMED,)
+LONG_ARMED_POLICY_STATES = (
+    SideState.LONG_ARMED,
+    SideState.LONG_ARMED_NEUTRAL_START,
+    SideState.LONG_ARMED_SWITCH_TERMINAL,
+)
+SHORT_ARMED_POLICY_STATES = (
+    SideState.SHORT_ARMED,
+    SideState.SHORT_ARMED_NEUTRAL_START,
+    SideState.SHORT_ARMED_SWITCH_TERMINAL,
+)
 
 
 class ScopeEvent(str, Enum):
@@ -356,9 +382,13 @@ def transition_state(
         )
 
     if event == ScopeEvent.DOWNSCOPE_CONFIRMED and side_state == SideState.LONG_BLOCKED:
-        return SideState.SHORT_ARMED, st, TransitionDecision(True, "SHORT_ARMED")
+        return (
+            SideState.SHORT_ARMED_SWITCH_TERMINAL,
+            st,
+            TransitionDecision(True, "SHORT_ARMED_SWITCH_TERMINAL"),
+        )
 
-    if event == ScopeEvent.DOWNSCOPE_CONFIRMED and side_state == SideState.SHORT_ARMED:
+    if event == ScopeEvent.DOWNSCOPE_CONFIRMED and side_state in SHORT_ARMED_POLICY_STATES:
         st2 = replace(
             st,
             last_completed_side_switch_tick=now_tick,
@@ -367,7 +397,7 @@ def transition_state(
         return SideState.SHORT_ACTIVE, st2, TransitionDecision(True, "SHORT_ACTIVE")
 
     # SHORT reversal is DOWNSCOPE_CONFIRMED while the generator is SHORT-oriented.
-    # LONG_ARMED completion below stays UPSCOPE_CONFIRMED (shared with neutral start).
+    # Long-armed completion stays UPSCOPE_CONFIRMED for every Long-armed identity.
     if event == ScopeEvent.DOWNSCOPE_CONFIRMED and side_state == SideState.SHORT_ACTIVE:
         if not _cooldown_allows_opposite_switch(now_tick=now_tick, st=st, rules=rules):
             return side_state, st, TransitionDecision(False, "COOLDOWN_BLOCK")
@@ -387,9 +417,13 @@ def transition_state(
         return SideState.SHORT_BLOCKED, st, TransitionDecision(True, "SHORT_BLOCKED")
 
     if event == ScopeEvent.DOWNSCOPE_CONFIRMED and side_state == SideState.SHORT_BLOCKED:
-        return SideState.LONG_ARMED, st, TransitionDecision(True, "LONG_ARMED")
+        return (
+            SideState.LONG_ARMED_SWITCH_TERMINAL,
+            st,
+            TransitionDecision(True, "LONG_ARMED_SWITCH_TERMINAL"),
+        )
 
-    if event == ScopeEvent.UPSCOPE_CONFIRMED and side_state == SideState.LONG_ARMED:
+    if event == ScopeEvent.UPSCOPE_CONFIRMED and side_state in LONG_ARMED_POLICY_STATES:
         st2 = replace(
             st,
             last_completed_side_switch_tick=now_tick,
@@ -399,10 +433,18 @@ def transition_state(
 
     # Neutral start (manifest: neutral -> armed -> active)
     if event == ScopeEvent.UPSCOPE_CONFIRMED and side_state == SideState.NEUTRAL_OBSERVE:
-        return SideState.LONG_ARMED, st, TransitionDecision(True, "NEUTRAL_TO_LONG_ARMED")
+        return (
+            SideState.LONG_ARMED_NEUTRAL_START,
+            st,
+            TransitionDecision(True, "NEUTRAL_TO_LONG_ARMED"),
+        )
 
     if event == ScopeEvent.DOWNSCOPE_CONFIRMED and side_state == SideState.NEUTRAL_OBSERVE:
-        return SideState.SHORT_ARMED, st, TransitionDecision(True, "NEUTRAL_TO_SHORT_ARMED")
+        return (
+            SideState.SHORT_ARMED_NEUTRAL_START,
+            st,
+            TransitionDecision(True, "NEUTRAL_TO_SHORT_ARMED"),
+        )
 
     if event in (ScopeEvent.DOWNSCOPE_CANDIDATE, ScopeEvent.UPSCOPE_CANDIDATE):
         st2 = replace(st, scope_stability_ticks=st.scope_stability_ticks + 1)

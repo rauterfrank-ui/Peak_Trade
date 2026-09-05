@@ -47,9 +47,13 @@ def side_state_to_entry_exit_direction(side: SideState) -> EntryExitDirectionSta
     table = {
         SideState.NEUTRAL_OBSERVE: EntryExitDirectionState.NEUTRAL,
         SideState.LONG_ARMED: EntryExitDirectionState.LONG_ARMED,
+        SideState.LONG_ARMED_NEUTRAL_START: EntryExitDirectionState.LONG_ARMED,
+        SideState.LONG_ARMED_SWITCH_TERMINAL: EntryExitDirectionState.LONG_ARMED,
         SideState.LONG_ACTIVE: EntryExitDirectionState.LONG_ACTIVE,
         SideState.LONG_BLOCKED: EntryExitDirectionState.NEUTRAL,
         SideState.SHORT_ARMED: EntryExitDirectionState.SHORT_ARMED,
+        SideState.SHORT_ARMED_NEUTRAL_START: EntryExitDirectionState.SHORT_ARMED,
+        SideState.SHORT_ARMED_SWITCH_TERMINAL: EntryExitDirectionState.SHORT_ARMED,
         SideState.SHORT_ACTIVE: EntryExitDirectionState.SHORT_ACTIVE,
         SideState.SHORT_BLOCKED: EntryExitDirectionState.NEUTRAL,
         SideState.SWITCH_LONG_TO_SHORT_PENDING: EntryExitDirectionState.SHORT_ARMED,

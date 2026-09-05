@@ -464,6 +464,37 @@ FIFTH_CLASS_GRANT_REOPENED=false
 Owner: `config/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.json`.
 Attestation: `docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_SCOPE_DIRECTION_GENERATOR_FALLBACK_AUTHORIZATION_V1.md`.
 
+Eng begrenzte Explicit-Owner-Adjudicated SideState-ARMED-Identity-Split-Authorization
+(`EXPLICIT_OWNER_ADJUDICATED_SIDESTATE_ARMED_IDENTITY_SPLIT_V1`) — **eigene
+siebte Klasse, kein Wiring, keine Restoration, kein Decommission, keine
+Nonproductive Contract Change, keine Wiedereröffnung der fünften oder
+sechsten Klasse, keine Standing Authorization, keine PR-/Branch-Bindung**:
+
+```text
+ARMED_IDENTITY_SPLIT_AUTHORIZATION_VERSION=explicit_owner_adjudicated_sidestate_armed_identity_split_authorization_v1
+AUTHORIZED_SCOPE_CLASS=EXPLICIT_OWNER_ADJUDICATED_SIDESTATE_ARMED_IDENTITY_SPLIT_V1
+MUTATION_PURPOSE_CLASS=SIDESTATE_ARMED_IDENTITY_SPLIT_REPAIR
+TOKEN_ALONE_INSUFFICIENT=true
+OWNER_APPROVED_ALONE_INSUFFICIENT=true
+AUTHORIZED_EVIDENCE_DIGEST_REQUIRED=true
+BOUND_DIFF_BASE_SHA_REQUIRED=true
+UNKNOWN_FIELD_FAIL_CLOSED=true
+STANDING_AUTHORIZATION_ALLOWED=false
+PR_SPECIFIC_EXCEPTION=false
+BRANCH_SPECIFIC_EXCEPTION=false
+BLANKET_ALLOWLIST=false
+DIRECTORY_GRANT=false
+MASTER_V2_MUTATION_ALLOWED=false
+CANONICAL_TRADING_LOGIC_MUTATION_ALLOWED=false
+FIFTH_CLASS_GRANT_REOPENED=false
+SIXTH_CLASS_GRANT_REOPENED=false
+LAST_ACTIVE_SIDE_BINDING_AUTHORIZED=false
+HISTORY_RECONSTRUCTED=false
+```
+
+Owner: `config/governance/explicit_owner_adjudicated_sidestate_armed_identity_split_authorization_v1.json`.
+Attestation: `docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_SIDESTATE_ARMED_IDENTITY_SPLIT_AUTHORIZATION_V1.md`.
+
 ## 13. Trend Following v2 Recovery Wiring (v0)
 
 Additive Navigationserweiterung — **keine Parallel-SSOT**:

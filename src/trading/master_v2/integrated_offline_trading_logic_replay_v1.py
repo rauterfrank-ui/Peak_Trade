@@ -855,11 +855,14 @@ def scope_direction_from_side_state_v1(
 ) -> ScopeDirectionState:
     """Derive ScopeDirectionState from SideState for trailing / threshold orientation.
 
-    PENDING rows hold the departing ACTIVE side. ARMED remains overloaded
-    (neutral start vs pipeline terminal) and is not given extra history here.
+    PENDING rows hold the departing ACTIVE side. Armed identities keep the
+    bound destination-prefix orientation (LONG / SHORT). The identity split
+    does not change that prefix mapping.
     """
     if side in (
         SideState.SHORT_ARMED,
+        SideState.SHORT_ARMED_NEUTRAL_START,
+        SideState.SHORT_ARMED_SWITCH_TERMINAL,
         SideState.SHORT_ACTIVE,
         SideState.SHORT_BLOCKED,
         SideState.SWITCH_SHORT_TO_LONG_PENDING,
@@ -867,6 +870,8 @@ def scope_direction_from_side_state_v1(
         return ScopeDirectionState.SHORT
     if side in (
         SideState.LONG_ARMED,
+        SideState.LONG_ARMED_NEUTRAL_START,
+        SideState.LONG_ARMED_SWITCH_TERMINAL,
         SideState.LONG_ACTIVE,
         SideState.LONG_BLOCKED,
         SideState.SWITCH_LONG_TO_SHORT_PENDING,
@@ -954,9 +959,13 @@ def _side_state_to_entry_exit_direction(side: SideState) -> EntryExitDirectionSt
     table = {
         SideState.NEUTRAL_OBSERVE: EntryExitDirectionState.NEUTRAL,
         SideState.LONG_ARMED: EntryExitDirectionState.LONG_ARMED,
+        SideState.LONG_ARMED_NEUTRAL_START: EntryExitDirectionState.LONG_ARMED,
+        SideState.LONG_ARMED_SWITCH_TERMINAL: EntryExitDirectionState.LONG_ARMED,
         SideState.LONG_ACTIVE: EntryExitDirectionState.LONG_ACTIVE,
         SideState.LONG_BLOCKED: EntryExitDirectionState.NEUTRAL,
         SideState.SHORT_ARMED: EntryExitDirectionState.SHORT_ARMED,
+        SideState.SHORT_ARMED_NEUTRAL_START: EntryExitDirectionState.SHORT_ARMED,
+        SideState.SHORT_ARMED_SWITCH_TERMINAL: EntryExitDirectionState.SHORT_ARMED,
         SideState.SHORT_ACTIVE: EntryExitDirectionState.SHORT_ACTIVE,
         SideState.SHORT_BLOCKED: EntryExitDirectionState.NEUTRAL,
         SideState.SWITCH_LONG_TO_SHORT_PENDING: EntryExitDirectionState.SHORT_ARMED,

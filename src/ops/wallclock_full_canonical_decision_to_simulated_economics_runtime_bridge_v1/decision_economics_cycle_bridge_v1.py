@@ -586,8 +586,12 @@ def _update_session_state_from_replay(
     # Map next side into entry/exit direction for the following cycle.
     side_map = {
         SideState.LONG_ARMED: EntryExitDirectionState.LONG_ARMED,
+        SideState.LONG_ARMED_NEUTRAL_START: EntryExitDirectionState.LONG_ARMED,
+        SideState.LONG_ARMED_SWITCH_TERMINAL: EntryExitDirectionState.LONG_ARMED,
         SideState.LONG_ACTIVE: EntryExitDirectionState.LONG_ACTIVE,
         SideState.SHORT_ARMED: EntryExitDirectionState.SHORT_ARMED,
+        SideState.SHORT_ARMED_NEUTRAL_START: EntryExitDirectionState.SHORT_ARMED,
+        SideState.SHORT_ARMED_SWITCH_TERMINAL: EntryExitDirectionState.SHORT_ARMED,
         SideState.SHORT_ACTIVE: EntryExitDirectionState.SHORT_ACTIVE,
         SideState.NEUTRAL_OBSERVE: EntryExitDirectionState.NEUTRAL,
         SideState.LONG_BLOCKED: EntryExitDirectionState.NEUTRAL,

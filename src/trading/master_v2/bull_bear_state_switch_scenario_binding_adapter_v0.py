@@ -74,11 +74,19 @@ def project_bull_layer_side_state_v0(side: SideState) -> SideState:
     if side in (
         SideState.LONG_ACTIVE,
         SideState.LONG_ARMED,
+        SideState.LONG_ARMED_NEUTRAL_START,
+        SideState.LONG_ARMED_SWITCH_TERMINAL,
         SideState.LONG_BLOCKED,
         SideState.SWITCH_LONG_TO_SHORT_PENDING,
     ):
         return side
-    if side in (SideState.SHORT_ACTIVE, SideState.SHORT_ARMED, SideState.SHORT_BLOCKED):
+    if side in (
+        SideState.SHORT_ACTIVE,
+        SideState.SHORT_ARMED,
+        SideState.SHORT_ARMED_NEUTRAL_START,
+        SideState.SHORT_ARMED_SWITCH_TERMINAL,
+        SideState.SHORT_BLOCKED,
+    ):
         return SideState.LONG_BLOCKED
     return SideState.NEUTRAL_OBSERVE
 
@@ -88,11 +96,19 @@ def project_bear_layer_side_state_v0(side: SideState) -> SideState:
     if side in (
         SideState.SHORT_ACTIVE,
         SideState.SHORT_ARMED,
+        SideState.SHORT_ARMED_NEUTRAL_START,
+        SideState.SHORT_ARMED_SWITCH_TERMINAL,
         SideState.SHORT_BLOCKED,
         SideState.SWITCH_SHORT_TO_LONG_PENDING,
     ):
         return side
-    if side in (SideState.LONG_ACTIVE, SideState.LONG_ARMED, SideState.LONG_BLOCKED):
+    if side in (
+        SideState.LONG_ACTIVE,
+        SideState.LONG_ARMED,
+        SideState.LONG_ARMED_NEUTRAL_START,
+        SideState.LONG_ARMED_SWITCH_TERMINAL,
+        SideState.LONG_BLOCKED,
+    ):
         return SideState.SHORT_BLOCKED
     return SideState.NEUTRAL_OBSERVE
 

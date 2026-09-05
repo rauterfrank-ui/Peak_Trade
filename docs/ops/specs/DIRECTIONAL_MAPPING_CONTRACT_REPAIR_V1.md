@@ -593,3 +593,24 @@ Out of this bind (re-adjudicated, not silently repaired):
 - scenario `active_side_to_scope_direction_v0`
 - ARMED last_active_side history
 
+## 13. Residual identity-split closeout (later GO; prefix parity kept)
+
+A later Owner-GO split productive Neutral-Start and pipeline-terminal
+identities. This mapping contract's historical CURRENT/TARGET tables above
+are not rewritten. Destination-prefix rows for ARMED remain LONG/SHORT.
+
+```text
+ARMED_STATE_OVERLOAD_PERSISTED=false
+ARMED_IDENTITY_SPLIT_RUNTIME_BOUND=true
+LAST_ACTIVE_SIDE_BINDING_AUTHORIZED=false
+HISTORY_RECONSTRUCTED=false
+SCOPE_DIRECTION_DESTINATION_PREFIX_UNCHANGED=true
+PENDING_SEMANTICS_UNCHANGED=true
+ENTRY_EXIT_SEMANTICS_UNCHANGED=true
+```
+
+Bound authority for that later persist:
+`docs/ops/specs/SIDESTATE_ARMED_IDENTITY_SPLIT_MINIMUM_ATOMIC_REPAIR_V1.md`.
+Legacy persisted `long_armed` / `short_armed` remain parseable as
+legacy-ambiguous identities. Origin is not reconstructed here.
+

@@ -6,7 +6,7 @@ bound by OWNER_GO_DIRECTIONAL_MAPPING_RUNTIME_BIND_MINIMUM_ATOMIC_REPAIR_V1.
 These tests prove the canonical mapping, not helper-return trivia:
 - SHORT→LONG starts on DOWNSCOPE_CONFIRMED, not UPSCOPE_CONFIRMED
 - PENDING generator orientation holds the departing side
-- ARMED remains overloaded and is not given last_active_side history
+- Armed identities keep destination-prefix ScopeDirection and are distinct
 """
 
 from __future__ import annotations
@@ -101,7 +101,7 @@ def test_e_short_to_long_full_pipeline_behavior() -> None:
     side, st, d1 = _t(side, ScopeEvent.DOWNSCOPE_CONFIRMED, st, 1)
     assert side is SideState.SHORT_BLOCKED and d1.allowed
     side, st, d2 = _t(side, ScopeEvent.DOWNSCOPE_CONFIRMED, st, 2)
-    assert side is SideState.LONG_ARMED and d2.allowed
+    assert side is SideState.LONG_ARMED_SWITCH_TERMINAL and d2.allowed
     side, st, d3 = _t(side, ScopeEvent.UPSCOPE_CONFIRMED, st, 3)
     assert side is SideState.LONG_ACTIVE and d3.allowed
     assert d3.reason_code == "LONG_ACTIVE"
@@ -115,24 +115,29 @@ def test_e_long_to_short_full_pipeline_behavior_unchanged() -> None:
     side, st, d1 = _t(side, ScopeEvent.DOWNSCOPE_CONFIRMED, st, 1)
     assert side is SideState.LONG_BLOCKED and d1.allowed
     side, st, d2 = _t(side, ScopeEvent.DOWNSCOPE_CONFIRMED, st, 2)
-    assert side is SideState.SHORT_ARMED and d2.allowed
+    assert side is SideState.SHORT_ARMED_SWITCH_TERMINAL and d2.allowed
     side, st, d3 = _t(side, ScopeEvent.DOWNSCOPE_CONFIRMED, st, 3)
     assert side is SideState.SHORT_ACTIVE and d3.allowed
     assert d3.reason_code == "SHORT_ACTIVE"
 
 
 def test_f_unaffected_neutral_and_long_armed_still_use_upscope() -> None:
-    """F. Neutral start and LONG_ARMED completion remain UPSCOPE_CONFIRMED."""
+    """F. Neutral start and Long-armed completion remain UPSCOPE_CONFIRMED."""
     side, _st, d_n = _t(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, _ST, 0)
-    assert side is SideState.LONG_ARMED and d_n.allowed
+    assert side is SideState.LONG_ARMED_NEUTRAL_START and d_n.allowed
     side, _st, d_d = _t(SideState.NEUTRAL_OBSERVE, ScopeEvent.DOWNSCOPE_CONFIRMED, _ST, 0)
-    assert side is SideState.SHORT_ARMED and d_d.allowed
-    side, _st, d_a = _t(SideState.LONG_ARMED, ScopeEvent.UPSCOPE_CONFIRMED, _ST, 0)
-    assert side is SideState.LONG_ACTIVE and d_a.allowed
-    side, _st, d_wrong = _t(SideState.LONG_ARMED, ScopeEvent.DOWNSCOPE_CONFIRMED, _ST, 0)
-    assert side is SideState.LONG_ARMED
-    assert d_wrong.allowed is False
-    assert d_wrong.reason_code == "NO_TRANSITION"
+    assert side is SideState.SHORT_ARMED_NEUTRAL_START and d_d.allowed
+    for armed in (
+        SideState.LONG_ARMED,
+        SideState.LONG_ARMED_NEUTRAL_START,
+        SideState.LONG_ARMED_SWITCH_TERMINAL,
+    ):
+        nxt, _st, d_a = _t(armed, ScopeEvent.UPSCOPE_CONFIRMED, _ST, 0)
+        assert nxt is SideState.LONG_ACTIVE and d_a.allowed
+        nxt, _st, d_wrong = _t(armed, ScopeEvent.DOWNSCOPE_CONFIRMED, _ST, 0)
+        assert nxt is armed
+        assert d_wrong.allowed is False
+        assert d_wrong.reason_code == "NO_TRANSITION"
 
 
 def test_f_unaffected_active_side_and_non_pending_generator_rows() -> None:
@@ -147,17 +152,38 @@ def test_f_unaffected_active_side_and_non_pending_generator_rows() -> None:
     assert scope_direction_from_side_state_v1(SideState.SHORT_BLOCKED) is ScopeDirectionState.SHORT
 
 
-def test_g_armed_overload_is_not_departing_side_authority() -> None:
-    """G. ARMED is not claimed to carry departing-side history / last_active_side."""
+def test_g_armed_identities_keep_bound_destination_prefix() -> None:
+    """G. Armed identities keep destination-prefix ScopeDirection; no last_active_side."""
     assert scope_direction_from_side_state_v1(SideState.LONG_ARMED) is ScopeDirectionState.LONG
+    assert (
+        scope_direction_from_side_state_v1(SideState.LONG_ARMED_NEUTRAL_START)
+        is ScopeDirectionState.LONG
+    )
+    assert (
+        scope_direction_from_side_state_v1(SideState.LONG_ARMED_SWITCH_TERMINAL)
+        is ScopeDirectionState.LONG
+    )
     assert scope_direction_from_side_state_v1(SideState.SHORT_ARMED) is ScopeDirectionState.SHORT
+    assert (
+        scope_direction_from_side_state_v1(SideState.SHORT_ARMED_NEUTRAL_START)
+        is ScopeDirectionState.SHORT
+    )
+    assert (
+        scope_direction_from_side_state_v1(SideState.SHORT_ARMED_SWITCH_TERMINAL)
+        is ScopeDirectionState.SHORT
+    )
     assert derive_active_side(SideState.LONG_ARMED) is ActiveSide.NEUTRAL
+    assert derive_active_side(SideState.LONG_ARMED_NEUTRAL_START) is ActiveSide.NEUTRAL
+    assert derive_active_side(SideState.LONG_ARMED_SWITCH_TERMINAL) is ActiveSide.NEUTRAL
     assert derive_active_side(SideState.SHORT_ARMED) is ActiveSide.NEUTRAL
-    # Neutral start and Short→Long terminal share LONG_ARMED; a pure SideState
-    # table cannot recover the departing side without extra history.
+    assert derive_active_side(SideState.SHORT_ARMED_NEUTRAL_START) is ActiveSide.NEUTRAL
+    assert derive_active_side(SideState.SHORT_ARMED_SWITCH_TERMINAL) is ActiveSide.NEUTRAL
     side, _st, decision = _t(SideState.SHORT_BLOCKED, ScopeEvent.DOWNSCOPE_CONFIRMED, _ST, 0)
-    assert side is SideState.LONG_ARMED and decision.allowed
+    assert side is SideState.LONG_ARMED_SWITCH_TERMINAL and decision.allowed
     assert scope_direction_from_side_state_v1(side) is ScopeDirectionState.LONG
+    start, _st, _d = _t(SideState.NEUTRAL_OBSERVE, ScopeEvent.UPSCOPE_CONFIRMED, _ST, 0)
+    assert start is SideState.LONG_ARMED_NEUTRAL_START
+    assert start is not side
 
 
 def test_research_pending_consumer_delegates_to_bound_owner() -> None:

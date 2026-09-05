@@ -31,12 +31,16 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 REPLAY = REPO_ROOT / "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
 _MAPPED_SHORT = (
     SideState.SHORT_ARMED,
+    SideState.SHORT_ARMED_NEUTRAL_START,
+    SideState.SHORT_ARMED_SWITCH_TERMINAL,
     SideState.SHORT_ACTIVE,
     SideState.SHORT_BLOCKED,
     SideState.SWITCH_SHORT_TO_LONG_PENDING,
 )
 _MAPPED_LONG = (
     SideState.LONG_ARMED,
+    SideState.LONG_ARMED_NEUTRAL_START,
+    SideState.LONG_ARMED_SWITCH_TERMINAL,
     SideState.LONG_ACTIVE,
     SideState.LONG_BLOCKED,
     SideState.SWITCH_LONG_TO_SHORT_PENDING,

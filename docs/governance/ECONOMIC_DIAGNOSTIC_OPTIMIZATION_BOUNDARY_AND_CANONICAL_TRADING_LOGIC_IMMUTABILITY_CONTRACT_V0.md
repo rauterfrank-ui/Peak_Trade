@@ -411,6 +411,69 @@ Owner: [`config/governance/explicit_owner_adjudicated_scope_direction_generator_
 
 Attestation: [`docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_SCOPE_DIRECTION_GENERATOR_FALLBACK_AUTHORIZATION_V1.md`](../ops/specs/EXPLICIT_OWNER_ADJUDICATED_SCOPE_DIRECTION_GENERATOR_FALLBACK_AUTHORIZATION_V1.md)
 
+## 5.7 Explicit Owner-Adjudicated SideState ARMED Identity Split (v1)
+
+Semantisch eigene siebte Admission-Klasse für die Trennung von Neutral-Start
+und Pipeline-Terminal in `SideState`. Keine Wiring-Klasse. Keine Restoration-
+Klasse. Keine Decommission-Klasse. Keine Nonproductive-Contract-Change-Klasse.
+Keine fünfte Mapping-Bind-Klasse. Keine sechste Generator-Fallback-Klasse. Keine
+Standing Authorization. Keine PR-/Branch-Bindung. Keine Live-/Testnet-/Canary-/
+Order-/Execution-Autorität. Kein LastActiveSide.
+
+```text
+AUTHORIZED_SCOPE_CLASS=EXPLICIT_OWNER_ADJUDICATED_SIDESTATE_ARMED_IDENTITY_SPLIT_V1
+MUTATION_PURPOSE_CLASS=SIDESTATE_ARMED_IDENTITY_SPLIT_REPAIR
+TOKEN_ALONE_IS_INSUFFICIENT=true
+OWNER_APPROVED_ALONE_IS_INSUFFICIENT=true
+PR_SPECIFIC_EXCEPTION=false
+BRANCH_SPECIFIC_EXCEPTION=false
+BLANKET_ALLOWLIST=false
+DIRECTORY_GRANT=false
+BROAD_MASTER_V2_GRANT=false
+STANDING_AUTHORIZATION_ALLOWED=false
+UNKNOWN_FIELD_FAIL_CLOSED=true
+FIFTH_CLASS_GRANT_REOPENED=false
+SIXTH_CLASS_GRANT_REOPENED=false
+LAST_ACTIVE_SIDE_BINDING_AUTHORIZED=false
+HISTORY_RECONSTRUCTED=false
+MASTER_V2_MUTATION_ALLOWED=false
+CANONICAL_TRADING_LOGIC_MUTATION_ALLOWED=false
+```
+
+Precedence: Technical Wiring, then Decommission, then Restoration, then fifth
+class, then sixth class, then this class on remaining forbidden matches, then
+Nonproductive Owner-Adjudication on remaining unclassified paths. This class
+must not reopen the closed fifth-class or sixth-class grants.
+
+Joint validation (Token oder Owner-Approval allein reicht nicht):
+
+- contract version, scope, token, purpose class
+- class attestation file and bound authority spec
+- exact-file `allowed_paths` when a grant is active
+- empty `allowed_paths` / `required_runtime_paths` / digest / base SHA while `grant_active=false`
+- `required_runtime_paths` is an exact-file subset of `allowed_paths` and present in the current diff
+- `authorized_evidence_digest` required and SHA-256-bound when a grant is active
+  (reuses `decommission_evidence_digest_v1`)
+- `bound_diff_base_sha` required when a grant is active
+- `excluded_paths` absent from the current diff
+- `forbidden_diff_prefixes` fail closed (`src&#47;execution&#47;`, `src&#47;risk&#47;`,
+  `src&#47;ops&#47;full_core_live_path_composition_root_v1&#47;`)
+- unknown JSON fields fail closed
+- no PR-/Branch-Hardcode
+- no directory / path-prefix / broad MASTER_V2 grant
+- does not waive `MASTER_V2_MUTATION_ALLOWED=false`
+
+Offline evidence scope is `DECLARED_OWNER_POLICY`:
+`CONTRACT_RUNTIME_BINDING_PROVEN_SCOPE=OFFLINE_FIXTURE_PROOF_ONLY_NOT_LIVE`.
+
+Closeout: after a digest-bound slice merges, a follow-up must set
+`grant_active=false` and empty the grant fields. The class remains; the grant
+does not.
+
+Owner: [`config/governance/explicit_owner_adjudicated_sidestate_armed_identity_split_authorization_v1.json`](../../config/governance/explicit_owner_adjudicated_sidestate_armed_identity_split_authorization_v1.json)
+
+Attestation: [`docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_SIDESTATE_ARMED_IDENTITY_SPLIT_AUTHORIZATION_V1.md`](../ops/specs/EXPLICIT_OWNER_ADJUDICATED_SIDESTATE_ARMED_IDENTITY_SPLIT_AUTHORIZATION_V1.md)
+
 ## 6. Boundary-Report (Pflicht für Research/Economic/Diagnostics/Cost/Target/Feature/Parameter-PRs)
 
 Maschinenlesbar via Guard-CLI. Pflichtfelder:
@@ -448,6 +511,9 @@ Maschinenlesbar via Guard-CLI. Pflichtfelder:
 - `scope_direction_generator_fallback_authorization_applied`
 - `scope_direction_generator_fallback_authorization_version`
 - `scope_direction_generator_fallback_mutation_purpose_class`
+- `sidestate_armed_identity_split_authorization_applied`
+- `sidestate_armed_identity_split_authorization_version`
+- `sidestate_armed_identity_split_mutation_purpose_class`
 
 ## 7. Guard
 
@@ -466,6 +532,7 @@ CI: Lint Gate (always-run). Positiv- und Negativtests:
 - `tests/governance/test_explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.py`
 - `tests/governance/test_explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.py`
 - `tests/governance/test_explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.py`
+- `tests/governance/test_explicit_owner_adjudicated_sidestate_armed_identity_split_authorization_v1.py`
 
 ## 8. Normative Referenz
 
