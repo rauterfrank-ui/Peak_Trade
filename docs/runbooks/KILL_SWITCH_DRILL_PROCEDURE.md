@@ -94,36 +94,23 @@ This procedure documents **regular kill switch drills** to ensure:
 
 ---
 
-### Scenario 2: Threshold Trigger (Automatic)
+### Scenario 2: Threshold Trigger (Automatic) — NOT PRODUCTIVE
 
-**Objective:** Verify threshold-based triggers work (e.g., drawdown limit)
+**Objective:** Confirm auto-trip is **not** a current runtime path (KS_THIN_01).
 
-**Setup:**
-```python
-# In test environment, configure threshold trigger
-from src.risk_layer.kill_switch.triggers import ThresholdTrigger
-
-trigger = ThresholdTrigger(
-    threshold=100.0,  # $100 loss
-    metric="daily_loss",
-    kill_switch=ks
-)
-```
+Do **not** import `src.risk_layer.kill_switch.triggers`. That package is
+removed. Productive kill is operator CLI `trigger` plus
+`kill_switch_should_block_trading`.
 
 **Steps:**
 
-1. **Simulate Drawdown**
-   - Run backtest/sim with known losing scenario
-   - Monitor threshold trigger
+1. Confirm the trigger package is absent.
+2. Use Scenario 1 (CLI trigger) for a productive kill.
+3. Record that automatic threshold auto-trip is not wired.
 
-2. **Verify Automatic Trigger**
-   - Check kill switch status
-   - Verify trigger reason mentions "threshold"
-
-3. **Record Results**
-   - [ ] Threshold detected correctly
-   - [ ] Kill switch triggered automatically
-   - [ ] No orders executed after trigger
+   - [ ] `src.risk_layer.kill_switch.triggers` cannot be imported
+   - [ ] No `[kill_switch.triggers.*]` enabled auto-trip stanzas in current `config/risk/kill_switch.toml`
+   - [ ] CLI trigger still persists durable kill state
 
 ---
 

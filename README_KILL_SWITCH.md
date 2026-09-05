@@ -15,7 +15,7 @@ Der **Emergency Kill Switch** wurde vollständig gemäß Roadmap v1.0 implementi
 ### Was wurde implementiert?
 
 ✅ **Core System** - State Machine, KillSwitch Core, Config  
-✅ **Trigger System** - Threshold, Manual, Watchdog, External, Registry  
+✅ **Operator CLI trigger** - durable `KillSwitchState` via `StatePersistence` (KS_THIN_01: auto-trip library removed)  
 ✅ **Recovery System** - RecoveryManager, HealthChecker, Gradual Restart  
 ✅ **Persistence & Audit** - State Persistence, Audit Trail  
 ✅ **CLI & Ops** - CLI Interface, Execution Gate, Operator Script  
@@ -34,15 +34,6 @@ src/risk_layer/kill_switch/
 ├── state.py                 ✅ State Machine (KillSwitchState, Event, Validation)
 ├── core.py                  ✅ KillSwitch Core (RLock, Transitions, Callbacks)
 ├── config.py                ✅ Configuration Loader (TOML)
-│
-├── triggers/
-│   ├── __init__.py          ✅ TriggerRegistry
-│   ├── base.py              ✅ BaseTrigger Abstract Class
-│   ├── threshold.py         ✅ Threshold-basierte Trigger
-│   ├── manual.py            ✅ Manuelle Trigger
-│   ├── watchdog.py          ✅ System Health Watchdog
-│   └── external.py          ✅ Externe Trigger (Exchange, Network)
-│
 ├── recovery.py              ✅ RecoveryManager (Multi-Stage Recovery)
 ├── health_check.py          ✅ HealthChecker (Pre-Recovery Validation)
 ├── persistence.py           ✅ StatePersistence (Atomic Writes, Backups)
@@ -74,7 +65,7 @@ tests/risk_layer/kill_switch/
 ├── __init__.py              ✅ Test Package
 ├── conftest.py              ✅ Pytest Fixtures
 ├── test_state_machine.py    ✅ State Machine Tests (100+ assertions)
-├── test_triggers.py         ✅ Trigger Tests (alle Typen)
+├── test_no_autotrip_wiring_v1.py ✅ KS_THIN_01 no auto-trip / FILEGATE contract
 └── test_integration.py      ✅ Integration Tests (End-to-End)
 ```
 
@@ -222,30 +213,15 @@ with gate:
 result = gate.execute_with_gate(execute_order, order)
 ```
 
-#### Trigger System
+#### Operator CLI trigger
 
 ```python
-from src.risk_layer.kill_switch.triggers import TriggerRegistry
+from src.risk_layer.kill_switch import KillSwitch
 
-# Load triggers from config
-registry = TriggerRegistry.from_config(config)
-
-# Check all triggers
-context = {
-    "portfolio_drawdown": -0.12,
-    "daily_pnl": -0.03,
-    "exchange_connected": True,
-    "last_price_update": datetime.utcnow(),
-}
-
-results = registry.check_all(context)
-
-# Act on triggered conditions
-for result in results:
-    if result.should_trigger:
-        kill_switch.trigger(result.reason, triggered_by="threshold")
-        break
+kill_switch.trigger("Manual stop", triggered_by="manual_cli")
 ```
+
+Auto-trip `TriggerRegistry` / Threshold / Watchdog / External are removed (KS_THIN_01).
 
 #### Recovery System
 
@@ -291,8 +267,8 @@ pytest tests/risk_layer/kill_switch/ -v
 # Nur State Machine Tests
 pytest tests/risk_layer/kill_switch/test_state_machine.py -v
 
-# Nur Trigger Tests
-pytest tests/risk_layer/kill_switch/test_triggers.py -v
+# Durable FILEGATE / no auto-trip wiring
+pytest tests/risk_layer/kill_switch/test_durable_execution_authority_v1.py tests/risk_layer/kill_switch/test_no_autotrip_wiring_v1.py -v
 
 # Integration Tests
 pytest tests/risk_layer/kill_switch/test_integration.py -v
@@ -369,14 +345,6 @@ def test_my_feature(kill_switch, test_context):
 enabled = true
 mode = "active"  # "active" | "disabled" (backtest only)
 recovery_cooldown_seconds = 300  # 5 Minuten
-
-[kill_switch.triggers.drawdown]
-enabled = true
-threshold = -0.15  # -15% Portfolio Drawdown
-
-[kill_switch.triggers.daily_loss]
-enabled = true
-threshold = -0.05  # -5% Tagesverlust
 
 [kill_switch.recovery]
 gradual_restart_enabled = true

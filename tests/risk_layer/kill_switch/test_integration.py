@@ -9,7 +9,6 @@ from pathlib import Path
 
 from src.risk_layer.kill_switch import KillSwitch
 from src.risk_layer.kill_switch.execution_gate import ExecutionGate, TradingBlockedError
-from src.risk_layer.kill_switch.triggers import TriggerRegistry, ThresholdTrigger
 from src.risk_layer.kill_switch.state import KillSwitchState
 from src.risk_layer.kill_switch.persistence import StatePersistence
 from src.risk_layer.kill_switch.audit import AuditTrail
@@ -99,69 +98,6 @@ class TestExecutionGateIntegration:
         with pytest.raises(TradingBlockedError):
             with gate:
                 pass
-
-
-class TestTriggerIntegration:
-    """Test trigger integration with kill switch."""
-
-    def test_threshold_trigger_activates_kill_switch(self, kill_switch):
-        """Threshold trigger should activate kill switch."""
-        registry = TriggerRegistry()
-
-        config = {
-            "enabled": True,
-            "metric": "portfolio_drawdown",
-            "threshold": -0.15,
-            "operator": "lt",
-            "cooldown_seconds": 0,
-        }
-        trigger = ThresholdTrigger("drawdown", config)
-        registry.register("drawdown", trigger)
-
-        # Check with bad drawdown
-        context = {"portfolio_drawdown": -0.20}
-        results = registry.check_all(context)
-
-        # If any triggered, activate kill switch
-        for result in results:
-            if result.should_trigger:
-                kill_switch.trigger(result.reason, triggered_by="threshold")
-
-        assert kill_switch.is_killed
-
-    def test_multiple_triggers_can_fire(self):
-        """Multiple triggers can fire simultaneously."""
-        registry = TriggerRegistry()
-
-        # Add multiple triggers
-        config1 = {
-            "enabled": True,
-            "metric": "portfolio_drawdown",
-            "threshold": -0.15,
-            "operator": "lt",
-            "cooldown_seconds": 0,
-        }
-        config2 = {
-            "enabled": True,
-            "metric": "daily_pnl",
-            "threshold": -0.05,
-            "operator": "lt",
-            "cooldown_seconds": 0,
-        }
-
-        registry.register("drawdown", ThresholdTrigger("drawdown", config1))
-        registry.register("daily_loss", ThresholdTrigger("daily_loss", config2))
-
-        # Context that triggers both
-        context = {
-            "portfolio_drawdown": -0.20,
-            "daily_pnl": -0.08,
-        }
-
-        results = registry.check_all(context)
-        triggered = [r for r in results if r.should_trigger]
-
-        assert len(triggered) == 2
 
 
 class TestConcurrency:

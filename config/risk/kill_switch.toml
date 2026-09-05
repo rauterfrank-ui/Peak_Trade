@@ -1,6 +1,11 @@
 # Peak_Trade Emergency Kill Switch Configuration
 # Version: 1.0
 # Dokumentation: docs/risk/KILL_SWITCH_ARCHITECTURE.md
+#
+# Auto-trip Threshold / Watchdog / External trigger stanzas were removed
+# by KS_THIN_01. Productive kill remains operator CLI + StatePersistence +
+# kill_switch_should_block_trading. Do not re-add unwired enabled=true
+# auto-trip claims.
 
 [kill_switch]
 # Core Settings
@@ -20,53 +25,6 @@ audit_retention_days = 90
 
 # Logging
 log_level = "INFO"  # DEBUG | INFO | WARNING | ERROR | CRITICAL
-
-# =============================================================================
-# TRIGGER CONFIGURATION
-# =============================================================================
-
-# Drawdown Trigger: -15% Portfolio Drawdown
-[kill_switch.triggers.drawdown]
-enabled = true
-type = "threshold"
-metric = "portfolio_drawdown"
-threshold = -0.15  # -15%
-operator = "lt"    # less than
-cooldown_seconds = 0  # Sofort triggern, kein Cooldown
-
-# Daily Loss Trigger: -5% Tagesverlust
-[kill_switch.triggers.daily_loss]
-enabled = true
-type = "threshold"
-metric = "daily_pnl"
-threshold = -0.05  # -5%
-operator = "lt"
-cooldown_seconds = 0
-
-# Volatility Spike Trigger: >10% stündliche Volatilität
-[kill_switch.triggers.volatility_spike]
-enabled = false  # Disabled per default (kann zu False Positives führen)
-type = "threshold"
-metric = "realized_volatility_1h"
-threshold = 0.10  # 10%
-operator = "gt"    # greater than
-cooldown_seconds = 3600  # 1 Stunde Cooldown nach Trigger
-
-# System Health Watchdog
-[kill_switch.triggers.system_health]
-enabled = true
-type = "watchdog"
-heartbeat_interval_seconds = 60
-max_missed_heartbeats = 3
-memory_threshold_percent = 90  # Trigger bei >90% Memory Usage
-cpu_threshold_percent = 95     # Trigger bei >95% CPU Usage
-
-# Exchange Disconnect Trigger
-[kill_switch.triggers.exchange_disconnect]
-enabled = true
-type = "external"
-check_interval_seconds = 30
-max_consecutive_failures = 3  # 3 aufeinanderfolgende Fehler → Trigger
 
 # =============================================================================
 # RECOVERY CONFIGURATION
