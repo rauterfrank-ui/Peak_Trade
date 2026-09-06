@@ -12,7 +12,8 @@ entities:
     evidence_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: Futures-only trading engine. Master V2 / Double Play target system.
-      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+      DDO durable evidence storage owner is evidence-domain storage only and
+      is not trading authority. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: SUBSYSTEM:master_v2
     kind: SUBSYSTEM
@@ -107,7 +108,9 @@ entities:
       is navigation inventory only; last_active_side remains unauthorized;
       LIVE_ARMED is unchanged. Wallclock/Hardening Entry/Exit session
       cursors consume Replay `_side_state_to_entry_exit_direction`;
-      PENDING rows are not re-adjudicated. Atlas is not trading authority.
+      PENDING rows are not re-adjudicated. DDO durable evidence storage owner
+      contract is a navigation pointer only; no productive host ledger_path.
+      Atlas is not trading authority.
 
   - id: FORENSIC_REFERENCE:information_corpus_persistence_base
     kind: FORENSIC_REFERENCE
@@ -2539,9 +2542,11 @@ entities:
       RUNTIME_LINEAGE_PARTIAL=true. Does not replace
       CURRENT_CANONICAL_SECTION=11.13.5.Z2DA. Does not implement WP-FA-08.
       Typed Double-Play observation projection is DDO capture parity only.
-      Not a second trading, risk, safety, planning, execution, promotion, or
-      deployment owner. Atlas catalog presence is navigation only and is not
-      activation. Atlas is not trading authority.
+      DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is bound as evidence-domain
+      storage owner. PRODUCTIVE_HOST_LEDGER_BINDING remains false. Not a second
+      trading, risk, safety, planning, execution, promotion, or deployment owner.
+      Atlas catalog presence is navigation only and is not activation. Atlas is
+      not trading authority.
 
   - id: RUNTIME_COMPONENT:ddo_capture_v0
     kind: RUNTIME_COMPONENT
@@ -2591,7 +2596,10 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
     notes: >-
       Append-only offline ledger. Persist occurs only when a capture binding
-      has ledger_path set. AUTHORITY_OWNER=NONE. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
+      has ledger_path set. DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is
+      bound as evidence-domain storage owner. PRODUCTIVE_HOST_LEDGER_BINDING
+      remains false. Durable ledger_path remains unbound on the productive
+      host. AUTHORITY_OWNER=NONE for trading. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
       SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
       SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false.
       RUNTIME_LINEAGE_PARTIAL=true. Atlas is not trading authority.

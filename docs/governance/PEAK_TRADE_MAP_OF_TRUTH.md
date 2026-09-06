@@ -154,6 +154,7 @@ Weitere Architektur-Landkarten (deep dives, keine parallele Trading-SSOT):
 | [`docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md`](../ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md) | Navigation-only Full-Core path-identity and live-admission gap DAG spec (non-SSOT; `FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH`; canary / §11.14 not a second productive Live authority; no GET; no POST) |
 | [`docs/ops/specs/PRE_LIVE_CAPITAL_ADMISSION_CONTRACT_V1.md`](../ops/specs/PRE_LIVE_CAPITAL_ADMISSION_CONTRACT_V1.md) | Navigation-only Pre-Live Capital Admission spec (non-SSOT; typed admission seam; Treasury HTTP isolation preserved; no GET; no POST) |
 | [`docs/ops/specs/TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1.md`](../ops/specs/TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1.md) | Navigation-only Treasury Phase-1 offline contract spec (non-SSOT; typed intent/lifecycle/idempotency/provenance; no network; no mutation; no GET; no POST) |
+| [`docs/ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md`](../ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md) | Navigation-only DDO durable evidence storage-owner contract (non-SSOT; evidence-domain storage owner; no productive host `ledger_path`; no trading authority; no GET; no POST) |
 | [`docs/ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md`](../ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md) | Navigation-only Full-Core LIVE_ENABLED standing admission seam spec (non-SSOT; predicate conjunction; default false; true is not automatic admission; no GET; no POST) |
 | [`docs/ops/specs/FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md`](../ops/specs/FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md) | Navigation-only Full-Core pre-wire admission closure spec (non-SSOT; LIVE_ARMED and WIRE_SEND_PERMITTED standing predicates; construction-admission contract; Cap 11.1 construction remains forbidden; no GET; no POST) |
 | [`docs/ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md`](../ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md) | Navigation-only Full-Core STEP-29P risk-admissibility pre-construction spec (non-SSOT; fresh GET evidence; equity dimension unbound; Cap 11.1 construction remains forbidden) |
@@ -1603,6 +1604,8 @@ WEBUI_ROLE=READ_ONLY_CONSUMER
 WEBUI_AUTHORITY_EFFECT=NONE
 DDO_ROLE=OFFLINE_OBSERVATION_ONLY
 DDO_AUTHORITY_EFFECT=NONE
+DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_NAV=docs/ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md
+DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_ROLE=NAVIGATION_POINTER_ONLY
 PRODUCTIVE_LEARNING_AUTHORITY=NONE
 PRODUCTIVE_PROMOTION_AUTHORITY=NONE
 ```
