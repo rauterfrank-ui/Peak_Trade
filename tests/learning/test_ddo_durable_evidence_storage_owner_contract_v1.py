@@ -57,6 +57,16 @@ def _ledger_binding_persist_section(text: str) -> str:
         "### 11.13.5 Parallel-track DDO productive host durable ledger binding persist"
     )
     end = text.index(
+        "### 11.13.5 Parallel-track DDO A1 unattended durability policy boundary persist"
+    )
+    return text[start:end]
+
+
+def _a1_policy_persist_section(text: str) -> str:
+    start = text.index(
+        "### 11.13.5 Parallel-track DDO A1 unattended durability policy boundary persist"
+    )
+    end = text.index(
         "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
     )
     return text[start:end]
@@ -106,6 +116,9 @@ def test_contract_discoverable_and_bound() -> None:
     assert "NO_LEDGER_PATH_IN_HOST=true" in spec
     assert "NO_SECOND_DDO_LEDGER=true" in spec
     assert "PEAK_TRADE_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1=BOUND" in spec
+    assert "PEAK_TRADE_DDO_A1_UNATTENDED_DURABILITY_POLICY_BOUNDARY_V1=BOUND" in spec
+    assert "A1_UNATTENDED_DURABILITY_RUNTIME_AUTHORIZED=false" in spec
+    assert "IMPLEMENTATION_GO_IS_RUNTIME_AUTHORIZATION=false" in spec
     assert "PATH_RESOLVER_CONSUMED_BY_PRODUCTIVE_HOST=true" in spec
     assert "DURABLE_APPEND_REACHABLE_FROM_HOST=true" in spec
     assert "HOST_SCOPE_INPUT_SEAM=BOUND" in spec
@@ -160,10 +173,13 @@ def test_master_runbook_refers_to_valid_spec() -> None:
     ledger_start = runbook.index(
         "### 11.13.5 Parallel-track DDO productive host durable ledger binding persist"
     )
+    a1_start = runbook.index(
+        "### 11.13.5 Parallel-track DDO A1 unattended durability policy boundary persist"
+    )
     live_z2db = runbook.index(
         "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
     )
-    assert persist_start < hardening_start < scope_start < ledger_start < live_z2db
+    assert persist_start < hardening_start < scope_start < ledger_start < a1_start < live_z2db
     hardening = _hardening_persist_section(runbook)
     assert "DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1=COMPLETE" in hardening
     assert "CAPTURED_IDS_DURABLE_WRITE_BUG_STATUS=CLOSED" in hardening
@@ -203,6 +219,23 @@ def test_master_runbook_refers_to_valid_spec() -> None:
     assert "CRASH_DURABILITY_FULLY_PROVEN=false" in ledger_binding
     assert "CURRENT_CANONICAL_SECTION_REPLACED=false" in ledger_binding
     assert "CANONICAL_LIVE_NEXT_POINTER_CHANGED=false" in ledger_binding
+    a1_policy = _a1_policy_persist_section(runbook)
+    assert "PEAK_TRADE_DDO_A1_UNATTENDED_DURABILITY_POLICY_BOUNDARY_V1=BOUND" in a1_policy
+    assert (
+        "OWNER_GO=PEAK_TRADE_OWNER_GO_DDO_A1_UNATTENDED_DURABILITY_POLICY_BOUNDARY_V1" in a1_policy
+    )
+    assert "A1_UNATTENDED_DURABILITY_POLICY_DEFINED=true" in a1_policy
+    assert "A1_UNATTENDED_DURABILITY_RUNTIME_AUTHORIZED=false" in a1_policy
+    assert "IMPLEMENTATION_GO_IS_RUNTIME_AUTHORIZATION=false" in a1_policy
+    assert "RUNTIME_OPERATIONAL_AUTHORIZATION_SOURCE=NONE" in a1_policy
+    assert "A1_TRADING_AUTHORITY=false" in a1_policy
+    assert "A1_EXECUTION_AUTHORITY=false" in a1_policy
+    assert "DDO_LEARNING_PRODUCTIVE_AUTHORITY=false" in a1_policy
+    assert "CRASH_DURABILITY_FULLY_PROVEN=false" in a1_policy
+    assert "SILENT_LEDGER_RESET_ALLOWED=false" in a1_policy
+    assert "FALLBACK_LEDGER_ALLOWED=false" in a1_policy
+    assert "CURRENT_CANONICAL_SECTION_REPLACED=false" in a1_policy
+    assert "CANONICAL_LIVE_NEXT_POINTER_CHANGED=false" in a1_policy
 
 
 def test_map_and_atlas_remain_navigation_only() -> None:
@@ -217,6 +250,7 @@ def test_map_and_atlas_remain_navigation_only() -> None:
     )
     assert "DDO_PRODUCTIVE_HOST_SCOPE_INPUT_BINDING_ROLE=NAVIGATION_POINTER_ONLY" in mot
     assert "DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_ROLE=NAVIGATION_POINTER_ONLY" in mot
+    assert "DDO_A1_UNATTENDED_DURABILITY_POLICY_BOUNDARY_ROLE=NAVIGATION_POINTER_ONLY" in mot
     assert "DDO_AUTHORITY_EFFECT=NONE" in mot
     assert "MAP_OF_TRUTH_AUTHORITY=NAVIGATION_ONLY" in mot
     assert "DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is" in atlas

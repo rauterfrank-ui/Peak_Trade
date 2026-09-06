@@ -2549,7 +2549,12 @@ entities:
       PEAK_TRADE_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1 is bound:
       injected scopes resolve ledger_path through the existing path
       primitive onto AppendOnlyDdoLedgerV0. Default host scope remains
-      unbound until explicit injection. Not a second
+      unbound until explicit injection.
+      PEAK_TRADE_DDO_A1_UNATTENDED_DURABILITY_POLICY_BOUNDARY_V1 is bound
+      as a fail-closed policy boundary: unattended durability is not
+      trading, execution, or promotion authority; runtime unattended
+      durability remains unauthorized; crash durability remains unproven.
+      Not a second
       trading, risk, safety, planning, execution, promotion, or deployment owner.
       Atlas catalog presence is navigation only and is not activation. Atlas is
       not trading authority.
@@ -2587,7 +2592,9 @@ entities:
       Injected host scopes resolve and bind ledger_path onto the existing
       AppendOnlyDdoLedgerV0 capture binding. Default uninjected host
       construction still leaves ledger_path unbound. Durability claims are
-      not upgraded. Host scope input seam binds existing ExecutionEnvironment
+      not upgraded. A1 unattended durability policy is defined and
+      runtime-unauthorized; capture failure still does not change the
+      trading return. Host scope input seam binds existing ExecutionEnvironment
       and Cap 11.2 account identity plus the named runtime-state-root config
       key, then consumes the path resolver.
       Evidence_sources list observation-host producer files, not ownership.
@@ -2616,7 +2623,11 @@ entities:
       host-binding prep are complete (captured/persisted id split; classified
       write failures; exclusive append lock; path primitive present).
       Productive host scope input seam is bound; the path resolver is
-      consumed by that seam. AUTHORITY_OWNER=NONE for trading. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
+      consumed by that seam. A1 unattended durability policy boundary is
+      defined; runtime unattended durability remains unauthorized;
+      recovery is fail-closed with no silent ledger reset and no fallback
+      path. Crash durability remains unproven.
+      AUTHORITY_OWNER=NONE for trading. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
       SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
       SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false.
       RUNTIME_LINEAGE_PARTIAL=true. Atlas is not trading authority.
@@ -2697,7 +2708,8 @@ entities:
       consume existing ExecutionEnvironment, Cap 11.2 account identity, and
       the named DDO runtime-state-root config key; injected scopes resolve
       ledger_path onto AppendOnlyDdoLedgerV0. Default construction remains
-      unbound. Atlas is not trading
+      unbound. A1 unattended durability policy is stamped as defined and
+      runtime-unauthorized. Atlas is not trading
       authority. AUTHORITY_OWNER=NONE.
       PRODUCTIVE_AI_AUTHORITY_COUNT=0. SECOND_TRADING_AUTHORITY=false.
 

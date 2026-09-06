@@ -154,7 +154,7 @@ Weitere Architektur-Landkarten (deep dives, keine parallele Trading-SSOT):
 | [`docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md`](../ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md) | Navigation-only Full-Core path-identity and live-admission gap DAG spec (non-SSOT; `FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH`; canary / §11.14 not a second productive Live authority; no GET; no POST) |
 | [`docs/ops/specs/PRE_LIVE_CAPITAL_ADMISSION_CONTRACT_V1.md`](../ops/specs/PRE_LIVE_CAPITAL_ADMISSION_CONTRACT_V1.md) | Navigation-only Pre-Live Capital Admission spec (non-SSOT; typed admission seam; Treasury HTTP isolation preserved; no GET; no POST) |
 | [`docs/ops/specs/TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1.md`](../ops/specs/TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1.md) | Navigation-only Treasury Phase-1 offline contract spec (non-SSOT; typed intent/lifecycle/idempotency/provenance; no network; no mutation; no GET; no POST) |
-| [`docs/ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md`](../ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md) | Navigation-only DDO durable evidence storage-owner contract (non-SSOT; evidence-domain storage owner; productive host ledger path bound from injected scopes; default host remains unbound; no trading authority; no GET; no POST) |
+| [`docs/ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md`](../ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md) | Navigation-only DDO durable evidence storage-owner contract (non-SSOT; evidence-domain storage owner; productive host ledger path bound from injected scopes; A1 unattended durability policy boundary defined and runtime-unauthorized; default host remains unbound; no trading authority; no GET; no POST) |
 | [`docs/ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md`](../ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md) | Navigation-only Full-Core LIVE_ENABLED standing admission seam spec (non-SSOT; predicate conjunction; default false; true is not automatic admission; no GET; no POST) |
 | [`docs/ops/specs/FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md`](../ops/specs/FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md) | Navigation-only Full-Core pre-wire admission closure spec (non-SSOT; LIVE_ARMED and WIRE_SEND_PERMITTED standing predicates; construction-admission contract; Cap 11.1 construction remains forbidden; no GET; no POST) |
 | [`docs/ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md`](../ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md) | Navigation-only Full-Core STEP-29P risk-admissibility pre-construction spec (non-SSOT; fresh GET evidence; equity dimension unbound; Cap 11.1 construction remains forbidden) |
@@ -1612,6 +1612,8 @@ DDO_PRODUCTIVE_HOST_SCOPE_INPUT_BINDING_NAV=docs/ops/specs/DDO_DURABLE_EVIDENCE_
 DDO_PRODUCTIVE_HOST_SCOPE_INPUT_BINDING_ROLE=NAVIGATION_POINTER_ONLY
 DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_NAV=docs/ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md
 DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_ROLE=NAVIGATION_POINTER_ONLY
+DDO_A1_UNATTENDED_DURABILITY_POLICY_BOUNDARY_NAV=docs/ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md
+DDO_A1_UNATTENDED_DURABILITY_POLICY_BOUNDARY_ROLE=NAVIGATION_POINTER_ONLY
 PRODUCTIVE_LEARNING_AUTHORITY=NONE
 PRODUCTIVE_PROMOTION_AUTHORITY=NONE
 ```
