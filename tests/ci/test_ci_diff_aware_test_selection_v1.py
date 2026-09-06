@@ -5211,6 +5211,9 @@ PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_WAL_ADAPTER_V1_TESTOWNER = (
 PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_CRASH_REPROOF_V1_TESTOWNER = (
     "tests/learning/test_ddo_a1_mutation_critical_control_state_durable_storage_crash_reproof_v1.py"
 )
+PACKAGE_DDO_A1_HOST_CRASH_DURABILITY_CLOSURE_V1_TESTOWNER = (
+    "tests/learning/test_ddo_a1_host_crash_durability_closure_v1.py"
+)
 PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_V1_PRODUCTION = (
     "src/learning/mutation_critical_control_state_storage_v1/wal_adapter_v1.py"
 )
@@ -5432,6 +5435,7 @@ def test_selector_ddo_a1_mutation_critical_control_state_storage_pr_bounded_full
     )
     assert PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_WAL_ADAPTER_V1_TESTOWNER in bounded
     assert PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_CRASH_REPROOF_V1_TESTOWNER in bounded
+    assert PACKAGE_DDO_A1_HOST_CRASH_DURABILITY_CLOSURE_V1_TESTOWNER in bounded
     assert PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER in bounded
     assert (
         PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER

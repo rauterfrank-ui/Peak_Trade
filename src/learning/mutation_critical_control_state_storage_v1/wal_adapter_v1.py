@@ -1,7 +1,8 @@
 """Isolated custom-file WAL adapter for mutation-critical control state.
 
 No productive host binding. No DDO ledger reuse as owner. No SQLite.
-Host-crash and power-loss durability remain UNPROVEN.
+File/directory durability syscalls are requested. Host-crash and
+power-loss durability remain UNPROVEN.
 """
 
 from __future__ import annotations
@@ -18,6 +19,9 @@ from typing import Any, Final, Mapping
 
 from src.learning.mutation_critical_control_state_storage_v1.authority_v1 import (
     STORAGE_OWNER_NAME,
+)
+from src.learning.mutation_critical_control_state_storage_v1.durability_primitives_v1 import (
+    request_fd_durability_v1,
 )
 from src.learning.mutation_critical_control_state_storage_v1.errors_v1 import (
     ControlStateAmbiguousRetryError,
@@ -190,11 +194,14 @@ class MutationCriticalControlStateWalAdapterV1:
             flags = os.O_RDWR | os.O_CREAT
             if hasattr(os, "O_CLOEXEC"):
                 flags |= os.O_CLOEXEC
+            journal_existed = self.journal_path().exists()
             try:
                 self._journal_fd = os.open(str(self.journal_path()), flags, 0o644)
                 os.lseek(self._journal_fd, 0, os.SEEK_END)
             except OSError as exc:
                 raise classify_oserror_v1(exc, operation="journal_open") from exc
+            if not journal_existed:
+                self._durable_sync_directory()
             self._open = True
             return report
         except Exception:
@@ -423,9 +430,22 @@ class MutationCriticalControlStateWalAdapterV1:
         assert self._journal_fd is not None
         try:
             apply_wal_fault_v1(boundary)
-            os.fsync(self._journal_fd)
+            request_fd_durability_v1(self._journal_fd)
         except OSError as exc:
             raise classify_oserror_v1(exc, operation="journal_fsync") from exc
+
+    def _durable_sync_directory(self) -> None:
+        try:
+            flags = os.O_RDONLY
+            if hasattr(os, "O_DIRECTORY"):
+                flags |= os.O_DIRECTORY
+            dir_fd = os.open(str(self._root), flags)
+            try:
+                request_fd_durability_v1(dir_fd)
+            finally:
+                os.close(dir_fd)
+        except OSError as exc:
+            raise classify_oserror_v1(exc, operation="directory_fsync") from exc
 
     def _fsync_directory(self, boundary: str, *, unknown_ok: bool = False) -> bool:
         try:
@@ -435,15 +455,11 @@ class MutationCriticalControlStateWalAdapterV1:
                 return False
             raise classify_oserror_v1(exc, operation="directory_fsync") from exc
         try:
-            dir_fd = os.open(str(self._root), os.O_RDONLY)
-            try:
-                os.fsync(dir_fd)
-            finally:
-                os.close(dir_fd)
-        except OSError as exc:
+            self._durable_sync_directory()
+        except MutationCriticalControlStateStorageError:
             if unknown_ok:
                 return False
-            raise classify_oserror_v1(exc, operation="directory_fsync") from exc
+            raise
         return True
 
     def _ensure_header(self) -> None:
@@ -483,9 +499,10 @@ class MutationCriticalControlStateWalAdapterV1:
             fd = os.open(str(path), flags, 0o644)
             try:
                 os.write(fd, encoded)
-                os.fsync(fd)
+                request_fd_durability_v1(fd)
             finally:
                 os.close(fd)
+            self._durable_sync_directory()
         except FileExistsError:
             return
         except OSError as exc:

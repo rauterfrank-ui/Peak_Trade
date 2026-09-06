@@ -70,6 +70,7 @@ OWNER_PERSIST_HEADING = (
 Z2DB_HEADING = (
     "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
 )
+CLOSURE_HEADING = "### 11.13.5 Parallel-track DDO A1 host-crash durability closure persist"
 
 
 def _spawn_child(root: Path, mode: str, record_id: str) -> subprocess.Popen[str]:
@@ -223,9 +224,10 @@ def test_canonical_reproof_persist_and_spec_exist() -> None:
     assert PERSIST_HEADING in runbook
     owner = runbook.index(OWNER_PERSIST_HEADING)
     reproof = runbook.index(PERSIST_HEADING)
+    closure = runbook.index(CLOSURE_HEADING)
     z2db = runbook.index(Z2DB_HEADING)
-    assert owner < reproof < z2db
-    section = runbook[reproof:z2db]
+    assert owner < reproof < closure < z2db
+    section = runbook[reproof:closure]
     assert "NEW_STORAGE_AUTHORITY_CREATED=false" in section
     assert "HOST_CRASH_DURABILITY=UNPROVEN" in section
     assert "DEPENDENT_MUTATION_ALLOWED=false" in section
