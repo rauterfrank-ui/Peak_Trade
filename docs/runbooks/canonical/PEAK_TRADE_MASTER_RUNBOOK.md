@@ -67944,7 +67944,7 @@ vs venue-raw vs accounting remains unbound. Unit remains unbound. Sign
 remains unbound.
 
 B. Token name. Venue response field `pos` on
-`GET /api/v5/account/positions` is not Peak_Trade handoff `pos`.
+`GET &#47;api&#47;v5&#47;account&#47;positions` is not Peak_Trade handoff `pos`.
 `TOKEN_NAME_IDENTITY_IS_NOT_SEMANTIC_IDENTITY=true`. Using venue GET `pos`
 would violate `HANDOFF_MUST_BE_DISTINCT_FROM_VENUE_GET` and
 `HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH`. GET timing is post-fill
