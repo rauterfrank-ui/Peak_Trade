@@ -67826,6 +67826,182 @@ architecture slice is
 `SECTION_11_14_LIVE_HANDOFF_POS_SEMANTICS_CANONICAL_BINDING_V1` and is
 **not** authorized by this GO. Merge requires a separate `OWNER_MERGE_GO`.
 
+### 11.14 LIVE_HANDOFF_POS_SEMANTICS_CANONICAL_BINDING (BOUND; UNIQUE MEANING UNPROVEN; UNIT UNPROVEN; SIGN UNPROVEN; ZERO ACCEPTABLE PRODUCERS; NEW CONTEMPORANEOUS PRODUCER REQUIRED; CAPTURE SEAM UNPROVEN; OWNER NONE; NO WRITER JOIN; RESTART FALSE; SECTION 11.14 NOT COMPLETE)
+
+Additive persist. Does **not** rewrite the consumed slices above. Does **not**
+GET. Does **not** POST. Does **not** retry. Does **not** second-submit. Does
+**not** cancel, amend, flatten, or fund. Does **not** execute a process or
+host restart. Does **not** mutate standing Live gates. Does **not** set
+`LIVE_RESTART_RECONSTRUCTED` true. Does **not** mark §11.14 complete. Does
+**not** mint a storage owner. Does **not** implement a productive Live
+handoff writer or reader. Does **not** invent `pos` semantics from
+plausibility. Does **not** implement a new producer. Does **not** invent a
+complete capture seam. Does **not** activate admission or supervisor. Does
+**not** authorize later mini-slices.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_SECTION_11_14_LIVE_HANDOFF_POS_SEMANTICS_CANONICAL_BINDING_V1
+OWNER_GO_STATUS=CONSUMED
+OWNER_GO_CONSUMED=true
+PRIOR_OWNER_GO=PEAK_TRADE_OWNER_GO_SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_AND_CAPTURE_ARCHITECTURE_ADJUDICATION_V1
+AUTHORIZATION_PRESENT=true
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=SECTION_11_14_LIVE_HANDOFF_POS_SEMANTICS_CANONICAL_BINDING_SSOT_PERSIST
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+ATLAS_AUTHORITY=NONE
+CHAT_TRANSCRIPT_AUTHORITY=NONE
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=b51226715d4eb8b72ec21d9a3ce00c1281e66035
+EXPECTED_ORIGIN_MAIN_SHA=b51226715d4eb8b72ec21d9a3ce00c1281e66035
+PREDECESSOR_SLICE=11.14.LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_AND_CAPTURE_ARCHITECTURE_ADJUDICATION
+THIS_SLICE=11.14.LIVE_HANDOFF_POS_SEMANTICS_CANONICAL_BINDING
+CURRENT_PHASE=11.14.LIVE_HANDOFF_POS_SEMANTICS_CANONICAL_BINDING
+CURRENT_CANONICAL_SECTION=11.14.LIVE_HANDOFF_POS_SEMANTICS_CANONICAL_BINDING
+LAST_CANONICALLY_CLOSED_STEP=SECTION_11_14_LIVE_HANDOFF_POS_SEMANTICS_CANONICAL_BINDING
+SECTION_11_14_OFFLINE_SURFACE_BOUND=true
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+SECTION_11_14_LIVE_EVIDENCE_COLLECTION_AUTHORIZED=false
+LIVE_EXECUTION_CODE_EXISTS=true
+LIVE_EXECUTION_PATH_REACHABLE=true
+LIVE_PRIVATE_READ_ONLY_PROVEN=true
+LIVE_ORDER_PLAN_OBSERVED=true
+LIVE_SUBMIT_ACK_OBSERVED=true
+LIVE_FILL_OBSERVED=true
+LIVE_FEE_OBSERVED=true
+LIVE_POSITION_RECONCILED=true
+LIVE_ACCOUNTING_RECONSTRUCTED=true
+LIVE_RESTART_RECONSTRUCTED=false
+LIVE_AUTONOMOUS_RECOVERY_OBSERVED=false
+LIVE_END_TO_END_EVIDENCE_PROVEN=false
+SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT=NONE
+FIRST_OWNER_PRODUCTIVELY_BOUND=false
+POS_SEMANTICS=UNPROVEN
+POS_SEMANTICS_STATUS=UNPROVEN
+POS_CANONICAL_MEANING=UNPROVEN
+POS_UNIT=UNPROVEN
+POS_SIGN_SEMANTICS=UNPROVEN
+POS_POS_SIDE_RELATION=UNPROVEN
+POS_INSTRUMENT_BINDING=MUST_EQUAL_BOUND_INSTID;UNIT_DIMENSION_UNPROVEN
+POS_POSITION_MODE_BINDING=UNPROVEN
+POS_ACCOUNT_MODE_BINDING=UNPROVEN
+POS_ACCEPTABLE_PRODUCER_COUNT=0
+POS_ACCEPTABLE_PRODUCERS=NONE
+POS_UNPROVEN_PRODUCER_COUNT=0
+POS_SEMANTICS_CAN_BE_BOUND_FROM_EXISTING_AUTHORITY=false
+NEW_CONTEMPORANEOUS_POS_PRODUCER_REQUIRED=true
+TOKEN_NAME_IDENTITY_IS_NOT_SEMANTIC_IDENTITY=true
+COMPLETE_CAPTURE_SEAM=UNPROVEN
+EARLIEST_COMPLETE_HANDOFF_CAPTURE_SEAM=UNPROVEN
+EARLIEST_COMPLETE_HANDOFF_CAPTURE_PROVEN=false
+HOST_CRASH_DURABILITY=UNPROVEN
+POWER_LOSS_DURABILITY=UNPROVEN
+DURABILITY_PROVEN_EFFECTIVE=false
+STORAGE_OWNER_MINTED=false
+WRITER_BOUND=false
+READER_BOUND=false
+CAPTURE_SEAM_BOUND=false
+PRODUCTIVE_BINDING_PRESENT=false
+COMPLETE_CAPTURE_SEAM_CAN_NOW_BE_ADJUDICATED=false
+OWNER_MINT_CAN_NOW_BE_ADJUDICATED=false
+WRITER_BIND_CAN_NOW_BE_ADJUDICATED=false
+READER_BIND_CAN_NOW_BE_ADJUDICATED=false
+LIVE_RESTART_RECONSTRUCTION_CAN_NOW_BE_ADJUDICATED=false
+ADMISSION_TRUE=false
+SUPERVISOR_ACTIVATED=false
+DEPENDENT_MUTATION_ALLOWED=false
+PRODUCTIVE_HOST_BINDING=false
+ARCHITECTURE_ADJUDICATION_COMPLETE=true
+IMPLEMENTATION_AUTHORIZED=false
+RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED=false
+NO_TIMESTAMP_BACKFILL=true
+NO_SYNTHETIC_PRE_RESTART_PROVENANCE=true
+POST_PERFORMED=false
+GET_PERFORMED=false
+RESTART_EXECUTION=false
+WIRE_SEND=false
+LIVE_ACTION=NONE
+EARLIEST_UNRESOLVED_DEPENDENCY=LIVE_RESTART_RECONSTRUCTED
+NEXT_OWNER_GO_REQUIRED=OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED
+PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_SEMANTICS_AND_CONTRACT_V1
+```
+
+A. Binding question. Can existing canonical authority uniquely bind the
+`pos` semantics required for a §11.14 Live durable pre-restart handoff?
+
+No. `POS_SEMANTICS_CAN_BE_BOUND_FROM_EXISTING_AUTHORITY=false`.
+`POS_SEMANTICS=UNPROVEN`. Proven constraints (required nonempty
+Decimal-parseable string; nonzero when bound `fillSz` is nonzero;
+Peak_Trade-owned contemporaneous pre-restart capture; Decimal-equal to
+bound Live identity once produced; `instId` must equal `BOUND_INSTID`;
+must not be venue GET copy, accounting, `fillSz`, submitted `sz`, or retro
+synthesis) are **not** a unique meaning. Intended vs acknowledged vs filled
+vs venue-raw vs accounting remains unbound. Unit remains unbound. Sign
+remains unbound.
+
+B. Token name. Venue response field `pos` on
+`GET &#47;api&#47;v5&#47;account&#47;positions` is not Peak_Trade handoff `pos`.
+`TOKEN_NAME_IDENTITY_IS_NOT_SEMANTIC_IDENTITY=true`. Using venue GET `pos`
+would violate `HANDOFF_MUST_BE_DISTINCT_FROM_VENUE_GET` and
+`HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH`. GET timing is post-fill
+accounting, not Peak_Trade-owned pre-restart capture.
+
+C. Producer census. Twenty-one candidates were re-examined against current
+authority, including the explicit required set (submitted `sz`, order-plan
+quantity, acknowledged `sz`, `fillSz`, accumulated fills, OKX GET `pos`,
+accounting, productive portfolio, execution ledger, live canary return
+payload, A1 WAL, DDO, FILEGATE, Cap-7.2 SideState, Testnet durable state,
+evidence-pack values, offline codec placeholders). PR #6317 rejections were
+not reused blindly. Fresh change: `LIVE_CANARY_RETURN_PAYLOAD` moves from
+historical `UNPROVEN` to `REJECTED` because the ACK allowlist
+`sCode,sMsg,ordId,clOrdId,tag` proves `pos` is omitted. A future payload
+field would be a new producer. `POS_ACCEPTABLE_PRODUCER_COUNT=0`.
+`POS_UNPROVEN_PRODUCER_COUNT=0`.
+`NEW_CONTEMPORANEOUS_POS_PRODUCER_REQUIRED=true`.
+
+D. Unit and sign. `POS_UNIT=UNPROVEN`. Order-plan `contracts` is not
+handoff `POS_UNIT`. P10 `TARGET_POSITION_QTY_UNIT=UNPROVEN`. Numeric `1`
+across plan `sz` / `fillSz` / venue `pos` does not bind kind. No handoff
+conversion exists. `POS_SIGN_SEMANTICS=UNPROVEN`. Sign must not be derived
+from `fillSz`. Bound `posSide=net` is fill identity, not handoff `pos`.
+
+E. Downstream. While `POS_SEMANTICS` remains `UNPROVEN`, capture seam,
+owner mint, writer bind, reader bind, and Live restart reconstruction
+cannot be adjudicated. `IMPLEMENTATION_AUTHORIZED=false`.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/
+SPEC_OWNER=docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_POS_SEMANTICS_CANONICAL_BINDING_V1.md
+EVIDENCE_ROOT=evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260906T221200Z/
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_14
+CURRENT_CANONICAL_SECTION=11.14.LIVE_HANDOFF_POS_SEMANTICS_CANONICAL_BINDING
+HARD_STOP_AFTER_THIS_TASK=true
+HARD_STOP=true
+```
+
+Hard stop. This pos-semantics canonical binding GO is consumed.
+`SECTION_11_14_AUTHORIZED=false`. `SECTION_11_14_COMPLETE=false`.
+`LIVE_ACCOUNTING_RECONSTRUCTED=true`. `LIVE_RESTART_RECONSTRUCTED=false`.
+`POS_SEMANTICS=UNPROVEN`. `COMPLETE_CAPTURE_SEAM=UNPROVEN`.
+`SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT=NONE`.
+`FIRST_OWNER_PRODUCTIVELY_BOUND=false`.
+`POS_SEMANTICS_CAN_BE_BOUND_FROM_EXISTING_AUTHORITY=false`.
+`NEW_CONTEMPORANEOUS_POS_PRODUCER_REQUIRED=true`.
+`IMPLEMENTATION_AUTHORIZED=false`.
+Do **not** POST, retry, cancel, amend, flatten, fund, mutate standing Live
+gates, merge, execute a Live restart, implement a productive Live handoff
+writer, mint a storage owner, promote later ladder fields, or auto-execute
+the proposed producer-semantics contract slice. The next canonical
+dependency remains `OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED`. The earliest
+proposed bounded architecture slice is
+`SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_SEMANTICS_AND_CONTRACT_V1` and is
+**not** authorized by this GO. Merge requires a separate `OWNER_MERGE_GO`.
+
 ## 11.15 Full-autonomy observability and audit trail
 
 The autonomous runtime must expose enough telemetry for oversight without

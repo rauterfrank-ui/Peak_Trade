@@ -22,10 +22,9 @@ from src.ops.full_core_live_path_composition_root_v1.live_admission_gap_dag_v1 i
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     EXPECTED_ORIGIN_MAIN_SHA,
     FULL_CORE_29P_REQUIRED_FOR_THIS_FIELD,
+    HISTORICAL_ARCHITECTURE_ADJUDICATION_OWNER_GO,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
     SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
-    THIS_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_adjudication_v1 import (
     adjudicate_live_restart_reconstructed_v1,
@@ -144,7 +143,7 @@ def test_step_29p_is_orthogonal_to_this_handoff_owner() -> None:
 def test_architecture_execute_is_offline_and_does_not_authorize_implementation() -> None:
     result = (
         execute_live_durable_pre_restart_handoff_owner_and_capture_architecture_adjudication_v1(
-            owner_go=OWNER_GO,
+            owner_go=HISTORICAL_ARCHITECTURE_ADJUDICATION_OWNER_GO,
             origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
             repo_root=REPO_ROOT,
             run_id="20260906T213200Z-test",
@@ -167,7 +166,9 @@ def test_architecture_execute_is_offline_and_does_not_authorize_implementation()
     assert summary["SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT"] == "NONE"
     assert summary["PROPOSED_NEXT_SLICE"] == PROPOSED_NEXT_SLICE
     assert result["raw_exchanges"] == []
-    assert THIS_SLICE.endswith("ARCHITECTURE_ADJUDICATION")
+    assert HISTORICAL_ARCHITECTURE_ADJUDICATION_OWNER_GO.endswith(
+        "OWNER_AND_CAPTURE_ARCHITECTURE_ADJUDICATION_V1"
+    )
     assert SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT == "NONE"
     assert IMPLEMENTATION_AUTHORIZED is False
     assert DEPENDENT_MUTATION_ALLOWED is False

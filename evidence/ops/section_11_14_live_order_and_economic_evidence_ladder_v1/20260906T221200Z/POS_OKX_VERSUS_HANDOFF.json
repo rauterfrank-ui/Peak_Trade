@@ -1,0 +1,36 @@
+{
+  "CONTEMPORANEOUS_PRODUCER_OF_HANDOFF_SEMANTICS": "NONE",
+  "DOCUMENT_CLASS": "SECTION_11_14_OKX_POS_VERSUS_HANDOFF_POS_V1",
+  "PEAK_TRADE_HANDOFF_SEMANTICS": {
+    "POS_CANONICAL_MEANING": "UNPROVEN",
+    "POS_SEMANTICS": "UNPROVEN",
+    "POS_UNIT": "UNPROVEN",
+    "required_fields": [
+      "clOrdId",
+      "ordId",
+      "instId",
+      "posSide",
+      "pos"
+    ],
+    "unique_meaning_from_existing_authority": false
+  },
+  "TOKEN_NAME_IDENTITY_IS_NOT_SEMANTIC_IDENTITY": true,
+  "VENUE_RESPONSE_FIELD": {
+    "HANDOFF_MUST_BE_DISTINCT_FROM_VENUE_GET": true,
+    "VENUE_GET_COPY_IS_NOT_CONTEMPORANEOUS_HANDOFF": true,
+    "account_position_mode_assumptions": "UNPROVEN_FOR_HANDOFF",
+    "contract_vs_base": "UNPROVEN_AS_HANDOFF_DIMENSION",
+    "endpoint": "GET /api/v5/account/positions",
+    "get_timing_contemporaneous_pre_restart": false,
+    "instrument_dependency": "row instId must equal BOUND_INSTID for reconciled",
+    "net_vs_long_short": "UNPROVEN_AS_HANDOFF_SEMANTICS",
+    "posSide_behavior": "BOUND_POS_SIDE=net is fill/reconcile identity not handoff pos",
+    "schema_field": "pos",
+    "sign_behavior": "UNPROVEN_AS_HANDOFF_SIGN",
+    "source_kind": "GOVERNED_CURRENT_PRIVATE_GET",
+    "unit": "UNPROVEN_AS_HANDOFF_POS_UNIT",
+    "used_by": "LIVE_POSITION_RECONCILED",
+    "violates_handoff_distinct_from_accounting_venue_get": true,
+    "zero_missing_empty_distinguishable": "LIVE_POSITION_RECONCILED fail-closed distinctions are not this field"
+  }
+}
