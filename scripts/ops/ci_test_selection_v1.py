@@ -1378,6 +1378,13 @@ PR_BOUNDED_FULL_PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY
 PR_BOUNDED_FULL_PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER: str = (
     "tests/learning/test_ddo_durable_evidence_storage_owner_contract_v1.py"
 )
+PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER: str = "tests/learning/test_ddo_a1_mutation_critical_control_state_storage_owner_contract_v1.py"
+PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_WAL_ADAPTER_V1_TESTOWNER: str = (
+    "tests/learning/test_ddo_a1_mutation_critical_control_state_wal_adapter_v1.py"
+)
+PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_V1_PRODUCTION: str = (
+    "src/learning/mutation_critical_control_state_storage_v1/"
+)
 PR_BOUNDED_FULL_PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_PRODUCTION: str = (
     "src/learning/deterministic_decision_outcome_v0/"
     "a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py"
@@ -1440,6 +1447,34 @@ PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TARGETS: tuple[str, ...] = (
     PR_BOUNDED_FULL_PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER,
     PR_BOUNDED_FULL_PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER,
     PR_BOUNDED_FULL_PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER,
+)
+
+PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_V1_TRIGGER_PATHS: frozenset[
+    str
+] = frozenset(
+    {
+        "src/learning/mutation_critical_control_state_storage_v1/__init__.py",
+        "src/learning/mutation_critical_control_state_storage_v1/authority_v1.py",
+        "src/learning/mutation_critical_control_state_storage_v1/errors_v1.py",
+        "src/learning/mutation_critical_control_state_storage_v1/fault_injection_v1.py",
+        "src/learning/mutation_critical_control_state_storage_v1/medium_binding_v1.py",
+        "src/learning/mutation_critical_control_state_storage_v1/records_v1.py",
+        "src/learning/mutation_critical_control_state_storage_v1/serialization_v1.py",
+        "src/learning/mutation_critical_control_state_storage_v1/wal_adapter_v1.py",
+        PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_V1_PRODUCTION,
+        PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER,
+        PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_WAL_ADAPTER_V1_TESTOWNER,
+        "docs/ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1.md",
+    }
+)
+PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_V1_TARGETS: tuple[
+    str, ...
+] = (
+    PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER,
+    PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_WAL_ADAPTER_V1_TESTOWNER,
+    PR_BOUNDED_FULL_PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER,
+    PR_BOUNDED_FULL_PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER,
+    "tests/learning/test_ddo_ledger_durability_hardening_and_host_binding_prep_v1.py",
 )
 
 PR_BOUNDED_FULL_PACKAGE_WP02_OFFLINE_OBSERVATION_PROPOSAL_FENCES_V1_TESTOWNER: str = (
@@ -2355,6 +2390,15 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TRIGGER_PATHS:
         for path in PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TARGETS:
+            add(path)
+
+    if (
+        normalized
+        & PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_V1_TRIGGER_PATHS
+    ):
+        for (
+            path
+        ) in PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_V1_TARGETS:
             add(path)
 
     if (

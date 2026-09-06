@@ -115,7 +115,7 @@ def _a1_crash_proof_persist_section(text: str) -> str:
         "### 11.13.5 Parallel-track DDO A1 crash durability proof or explicit non-provability closure persist"
     )
     end = text.index(
-        "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
+        "### 11.13.5 Parallel-track DDO A1 mutation-critical control-state storage owner contract persist"
     )
     return text[start:end]
 
@@ -263,6 +263,9 @@ def test_master_runbook_refers_to_valid_spec() -> None:
     a1_crash_proof_start = runbook.index(
         "### 11.13.5 Parallel-track DDO A1 crash durability proof or explicit non-provability closure persist"
     )
+    a1_control_state_start = runbook.index(
+        "### 11.13.5 Parallel-track DDO A1 mutation-critical control-state storage owner contract persist"
+    )
     live_z2db = runbook.index(
         "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
     )
@@ -275,6 +278,7 @@ def test_master_runbook_refers_to_valid_spec() -> None:
         < a1_runtime_start
         < a1_crash_start
         < a1_crash_proof_start
+        < a1_control_state_start
         < live_z2db
     )
     hardening = _hardening_persist_section(runbook)
@@ -474,6 +478,10 @@ def test_map_and_atlas_remain_navigation_only() -> None:
         "DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_ROLE=NAVIGATION_POINTER_ONLY"
         in mot
     )
+    assert (
+        "DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_ROLE=NAVIGATION_POINTER_ONLY"
+        in mot
+    )
     assert "DDO_AUTHORITY_EFFECT=NONE" in mot
     assert "MAP_OF_TRUTH_AUTHORITY=NAVIGATION_ONLY" in mot
     assert "DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is" in atlas
@@ -538,6 +546,7 @@ def test_no_productive_host_ledger_path_and_no_second_store() -> None:
     ).splitlines()
     allowed_src_prefixes = (
         "src/learning/deterministic_decision_outcome_v0/",
+        "src/learning/mutation_critical_control_state_storage_v1/",
         "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/",
     )
     unexpected = [
