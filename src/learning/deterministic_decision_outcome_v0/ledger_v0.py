@@ -6,12 +6,15 @@ explicit ledger path. Silent overwrite is forbidden.
 
 from __future__ import annotations
 
+import fcntl
 import json
 import os
+import threading
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from types import MappingProxyType
-from typing import Any, Final, Mapping
+from typing import Any, Final, Iterator, Mapping
 
 from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_ATTRIBUTION_RECORD,
@@ -74,6 +77,7 @@ from src.learning.deterministic_decision_outcome_v0.drift_contracts_v0 import (
     validate_known_good_reference_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
+    DdoConcurrentWriterError,
     DdoDuplicateConflictError,
     DdoIntegrityError,
     DdoLedgerCorruptionError,
@@ -81,6 +85,7 @@ from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
     DdoSilentOverwriteError,
     DdoUnsupportedSchemaVersionError,
     DdoValidationError,
+    classify_oserror_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.evaluation_records_v0 import (
     validate_attribution_record_v0,
@@ -118,6 +123,9 @@ from src.learning.deterministic_decision_outcome_v0.supervisor_records_v0 import
 
 GENESIS_LEDGER_HASH: Final[str] = "GENESIS"
 LEDGER_FILENAME_DEFAULT: Final[str] = "ddo_ledger_v0.jsonl"
+_WRITER_LOCK_SUFFIX: Final[str] = ".writer.lock"
+_IN_PROCESS_APPEND_LOCKS: dict[str, threading.Lock] = {}
+_IN_PROCESS_APPEND_LOCKS_GUARD = threading.Lock()
 
 _VALIDATORS = {
     (SCHEMA_NAME_DECISION_EVENT, SCHEMA_VERSION_DECISION_EVENT_V0): validate_decision_event_v0,
@@ -297,11 +305,18 @@ def _decode_envelope_line(line: str, *, expected_sequence: int) -> dict[str, Any
     return {"envelope": payload, "record": dict(record)}
 
 
+def _in_process_append_lock(path_key: str) -> threading.Lock:
+    with _IN_PROCESS_APPEND_LOCKS_GUARD:
+        return _IN_PROCESS_APPEND_LOCKS.setdefault(path_key, threading.Lock())
+
+
 class AppendOnlyDdoLedgerV0:
     """File-backed append-only JSONL ledger for DDO v0 records."""
 
     def __init__(self, ledger_path: Path | str) -> None:
         path = Path(ledger_path)
+        if not path.is_absolute():
+            raise DdoValidationError("LEDGER_PATH_MUST_BE_ABSOLUTE")
         if path.exists() and path.is_dir():
             raise DdoValidationError("LEDGER_PATH_MUST_BE_FILE")
         self._path = path
@@ -310,6 +325,9 @@ class AppendOnlyDdoLedgerV0:
     def ledger_path(self) -> Path:
         return self._path
 
+    def writer_lock_path(self) -> Path:
+        return Path(str(self._path) + _WRITER_LOCK_SUFFIX)
+
     def append(
         self,
         payload: Mapping[str, Any],
@@ -317,6 +335,15 @@ class AppendOnlyDdoLedgerV0:
         ingested_at_utc: str | None = None,
     ) -> AppendResultV0:
         record = validate_canonical_record_v0(payload)
+        with self._exclusive_writer():
+            return self._append_locked(record, ingested_at_utc=ingested_at_utc)
+
+    def _append_locked(
+        self,
+        record: Mapping[str, Any],
+        *,
+        ingested_at_utc: str | None,
+    ) -> AppendResultV0:
         envelopes, by_id = self._load()
         existing = by_id.get(str(record["record_id"]))
         if existing is not None:
@@ -375,6 +402,36 @@ class AppendOnlyDdoLedgerV0:
             ledger_entry_hash=entry_hash,
         )
 
+    @contextmanager
+    def _exclusive_writer(self) -> Iterator[None]:
+        path_key = str(self._path)
+        in_process = _in_process_append_lock(path_key)
+        if not in_process.acquire(blocking=False):
+            raise DdoConcurrentWriterError("CONCURRENT_WRITER_VIOLATION")
+        lock_fd: int | None = None
+        try:
+            try:
+                self._path.parent.mkdir(parents=True, exist_ok=True)
+            except OSError as exc:
+                raise classify_oserror_v0(exc) from exc
+            lock_path = self.writer_lock_path()
+            try:
+                lock_fd = os.open(str(lock_path), os.O_CREAT | os.O_RDWR, 0o644)
+                fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError as exc:
+                raise DdoConcurrentWriterError("CONCURRENT_WRITER_VIOLATION") from exc
+            except OSError as exc:
+                raise classify_oserror_v0(exc) from exc
+            yield
+        finally:
+            if lock_fd is not None:
+                try:
+                    fcntl.flock(lock_fd, fcntl.LOCK_UN)
+                except OSError:
+                    pass
+                os.close(lock_fd)
+            in_process.release()
+
     def read_all(self) -> tuple[MappingProxyType[str, Any], ...]:
         envelopes, _by_id = self._load()
         return tuple(MappingProxyType(item["record"]) for item in envelopes)
@@ -430,14 +487,23 @@ class AppendOnlyDdoLedgerV0:
         return envelopes, by_id
 
     def _append_line(self, line: str) -> None:
-        self._path.parent.mkdir(parents=True, exist_ok=True)
+        encoded = line.encode("utf-8")
+        try:
+            self._path.parent.mkdir(parents=True, exist_ok=True)
+        except OSError as exc:
+            raise classify_oserror_v0(exc) from exc
         if self._path.exists() and not self._path.is_file():
             raise DdoSilentOverwriteError("LEDGER_PATH_NOT_FILE")
         flags = os.O_WRONLY | os.O_CREAT | os.O_APPEND
-        fd = os.open(str(self._path), flags, 0o644)
         try:
-            os.write(fd, line.encode("utf-8"))
+            fd = os.open(str(self._path), flags, 0o644)
+        except OSError as exc:
+            raise classify_oserror_v0(exc) from exc
+        try:
+            os.write(fd, encoded)
             os.fsync(fd)
+        except OSError as exc:
+            raise classify_oserror_v0(exc) from exc
         finally:
             os.close(fd)
         try:

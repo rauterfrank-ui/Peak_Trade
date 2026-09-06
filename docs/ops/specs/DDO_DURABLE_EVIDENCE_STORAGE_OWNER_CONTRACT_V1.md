@@ -96,7 +96,7 @@ DDO_DURABLE_EVIDENCE_PATH_OWNER=DDO_DURABLE_EVIDENCE_STORAGE_OWNER
 RUNTIME_STATE_ROOT_SEMANTICS=OUTSIDE_REPOSITORY_CHECKOUT
 PATH_SOURCE_CLASS=EXPLICIT_ABSOLUTE_RUNTIME_STATE_ROOT
 LOGICAL_CONFIG_KEY=ddo.durable_evidence.runtime_state_root
-PATH_SOURCE_IMPLEMENTATION=UNBOUND
+PATH_SOURCE_IMPLEMENTATION=PRIMITIVE_PRESENT_PRODUCTIVE_UNBOUND
 FORBIDDEN_GIT_TREE_MUTABLE_RUNTIME_STATE=true
 FORBIDDEN_RESEARCH_TREE=true
 FORBIDDEN_DOCS_TREE=true
@@ -115,8 +115,9 @@ host may silently apply:
 `<RUNTIME_STATE_ROOT>&#47;ddo&#47;<environment>&#47;<account_scope>&#47;<system_scope>&#47;ddo_ledger_v0.jsonl`
 
 The later binding slice must supply an **absolute** runtime-state root from
-`LOGICAL_CONFIG_KEY`. Until `PATH_SOURCE_IMPLEMENTATION` is bound, productive
-host binding remains blocked.
+`LOGICAL_CONFIG_KEY`. The path-resolution primitive is present. Productive
+host binding remains blocked until a later Owner-GO supplies the required
+scopes and sets `ledger_path`.
 
 ## 4. Environment / account / system scoping
 
@@ -142,7 +143,9 @@ EVIDENCE_MIXING_ACROSS_ENVIRONMENT_OR_ACCOUNT_FORBIDDEN=true
 Reuse existing identity owners. Do **not** mint a parallel identity domain.
 The current observation-only host does not already expose a proven
 `ExecutionEnvironment` member or Cap 11.2 account identity for DDO evidence.
-Those values stay `REQUIRED_BUT_UNBOUND`. A later binding slice stays blocked
+Those values stay `REQUIRED_BUT_UNBOUND`. Host binding status is explicit:
+`HOST_ENVIRONMENT_BINDING_STATUS=UNBOUND` and
+`HOST_ACCOUNT_BINDING_STATUS=UNBOUND`. A later binding slice stays blocked
 until they are bound to those existing owners.
 
 `SYSTEM_SCOPE_TOKEN=canonical_trading_path` reuses the already canonical
@@ -192,15 +195,20 @@ REQUIRED_PRE_BINDING_CORRUPTION_DETECTION=true
 REQUIRED_PRE_BINDING_SINGLE_WRITER_ASSUMPTION_BOUND=true
 ```
 
-This slice documents those requirements. It does **not** implement them.
+This storage-owner contract documents those requirements. The hardening
+slice implements the technical preconditions without productive host
+`ledger_path` activation.
 
-Known library/host gap that remains open:
+Closed library/host gap:
 
 ```text
-CAPTURED_IDS_DURABLE_WRITE_BUG_STATUS=OPEN
-CAPTURED_IDS_MARKED_BEFORE_LEDGER_APPEND=true
-DURABLE_LOSS_ON_APPEND_FAILURE_THEN_CYCLE_SKIP=PROVEN_IN_CAPTURE_ADAPTER
-REQUIRED_FIX_BEFORE_HOST_BINDING=true
+CAPTURED_IDS_DURABLE_WRITE_BUG_STATUS=CLOSED
+OBSERVED_IDS_MARKED_ON_IN_MEMORY_CAPTURE=true
+PERSISTED_IDS_MARKED_ONLY_AFTER_SUCCESSFUL_APPEND=true
+CAPTURED_IDS_NO_LONGER_IMPLIES_DURABLE_PERSIST=true
+FAILED_APPEND_DOES_NOT_POISON_RETRY=true
+FAILED_APPEND_DOES_NOT_CAUSE_SILENT_DURABLE_LOSS=true
+REQUIRED_FIX_BEFORE_HOST_BINDING=false
 ```
 
 ## 7. Concurrency
@@ -209,15 +217,17 @@ REQUIRED_FIX_BEFORE_HOST_BINDING=true
 DDO_LEDGER_SINGLE_WRITER_REQUIRED=true
 MULTI_PROCESS_SHARED_LEDGER_WRITES_ALLOWED=false
 MULTI_PROCESS_SHARED_WRITES_ALLOWED=false
-LOCK_IMPLEMENTATION_ADDED_BY_THIS_SLICE=false
+LOCK_IMPLEMENTATION_ADDED_BY_THIS_SLICE=true
 FENCING_IMPLEMENTATION_ADDED_BY_THIS_SLICE=false
 NEW_SINGLE_WRITER_OWNER_CREATED=false
+SINGLE_WRITER_ENFORCEMENT=APPEND_EXCLUSIVE_LOCK_NB
+MULTI_WRITER_SILENT_ACCEPTANCE=false
 ```
 
-`AppendOnlyDdoLedgerV0` has no lock. This contract binds the authority
-assumption only. Existing trading-state single-writer helpers are **not**
-reused as DDO owners. A later hardening slice may enforce the assumption
-without creating a second fencing authority domain.
+`AppendOnlyDdoLedgerV0` now fail-fast exclusive-locks the sibling writer-lock
+file for the duration of load-plus-append. In-process overlapping appends
+are also rejected. Existing trading-state single-writer helpers are **not**
+reused as DDO owners. This is not a second fencing authority domain.
 
 ## 8. Fsync / atomicity classification
 
@@ -227,7 +237,8 @@ DIRECTORY_FSYNC_HARD_GUARANTEE=false
 ATOMIC_RECORD_APPEND=PARTIAL
 CRASH_DURABILITY_FULLY_PROVEN=false
 DDO_LEDGER_DURABILITY_HARDENING_REQUIRED_BEFORE_STRONG_DURABLE_AUTHORITY_CLAIM=true
-DURABILITY_HARDENING_REQUIRED=true
+DURABILITY_HARDENING_REQUIRED=false
+DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1=COMPLETE
 ```
 
 The library has file `fsync` after append. Directory `fsync` is best-effort
@@ -280,13 +291,36 @@ CURRENT_CANONICAL_SECTION_REPLACED=false
 ## 11. Next DDO step
 
 ```text
-NEXT_DDO_STEP=PEAK_TRADE_DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1
-NEXT_DDO_STEP_IS_NOT_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1=true
+DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1=COMPLETE
+DDO_PRODUCTIVE_HOST_LEDGER_BOUND=false
+DDO_RUNTIME_PATH_BOUND=false
+DDO_BINDING_READY=true
+NEXT_DDO_STEP=PEAK_TRADE_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1
+NEXT_DDO_STEP_IS_NOT_AUTHORIZED_BY_THIS_SLICE=true
 NEXT_OWNER_GO_REQUIRED=true
 PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1_AUTHORIZED_BY_THIS_SLICE=false
 ```
 
-Do **not** jump to `PEAK_TRADE_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1`.
-The hardening/prep slice must still keep productive `ledger_path` unbound
-unless a later Owner-GO explicitly authorizes that binding after the
-pre-binding contract is satisfied.
+Do **not** jump to `PEAK_TRADE_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1`
+without a separate Owner-GO. Productive `ledger_path` remains unbound.
+
+## 12. Hardening / host-binding prep facts
+
+```text
+PATH_RESOLUTION_PRIMITIVE_PRESENT=true
+PRODUCTIVE_RUNTIME_PATH_BOUND=false
+HOST_LEDGER_PATH_DEFAULT=None
+HOST_ENVIRONMENT_BINDING=UNBOUND
+HOST_ACCOUNT_BINDING=UNBOUND
+HOST_ENVIRONMENT_BINDING_STATUS=EXPLICIT
+HOST_ACCOUNT_BINDING_STATUS=EXPLICIT
+DEFAULT_PRODUCTIVE_BEHAVIOR_UNCHANGED=true
+DURABILITY_FAILURE_CLASSIFICATION_PRESENT=true
+CAPTURE_FAILURE_EXPLICITLY_OBSERVABLE=true
+CAPTURE_FAILURE_CHANGES_CURRENT_DECISION=false
+TRADING_DECISION_DEPENDS_ON_LEDGER_WRITE=false
+DDO_STORAGE_AUTHORITY_IS_TRADING_AUTHORITY=false
+MASTER_V2_DOUBLE_PLAY_SOLE_TRADING_AUTHORITY=true
+A1_DURABILITY_FAILURE_POLICY=UNBOUND_NOT_AUTHORIZED
+CURRENT_STAGE_DURABILITY_FAILURE_POLICY=FAIL_OPEN_CAPTURE_WITH_EXPLICIT_DURABILITY_FAILURE_EVIDENCE
+```
