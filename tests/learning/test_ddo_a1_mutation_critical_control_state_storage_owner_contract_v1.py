@@ -83,7 +83,7 @@ def _new_persist_section(text: str) -> str:
         "### 11.13.5 Parallel-track DDO A1 mutation-critical control-state storage owner contract persist"
     )
     end = text.index(
-        "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
+        "### 11.13.5 Parallel-track DDO A1 mutation-critical control-state durable storage implementation and crash reproof persist"
     )
     return text[start:end]
 
@@ -204,10 +204,13 @@ def test_master_runbook_additive_persist() -> None:
     new_persist = runbook.index(
         "### 11.13.5 Parallel-track DDO A1 mutation-critical control-state storage owner contract persist"
     )
+    reproof = runbook.index(
+        "### 11.13.5 Parallel-track DDO A1 mutation-critical control-state durable storage implementation and crash reproof persist"
+    )
     z2db = runbook.index(
         "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
     )
-    assert crash_proof < new_persist < z2db
+    assert crash_proof < new_persist < reproof < z2db
 
 
 def test_map_and_atlas_remain_navigation_only() -> None:

@@ -2710,13 +2710,16 @@ entities:
       - src/learning/mutation_critical_control_state_storage_v1/wal_adapter_v1.py
       - src/learning/mutation_critical_control_state_storage_v1/authority_v1.py
       - src/learning/mutation_critical_control_state_storage_v1/medium_binding_v1.py
+      - src/learning/mutation_critical_control_state_storage_v1/crash_reproof_v1.py
       - docs/ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1.md
+      - docs/ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_DURABLE_STORAGE_IMPLEMENTATION_AND_CRASH_REPROOF_V1.md
     notes: >-
       Isolated MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER with
       CUSTOM_FILE_WAL_JOURNAL_V1. Not DDO_DURABLE_EVIDENCE_STORAGE_OWNER.
       Not trading, execution, supervisor, or promotion authority. No
-      productive host binding. Host-crash and power-loss remain UNPROVEN.
-      Atlas is not trading authority.
+      productive host binding. Process-boundary SIGKILL reproof does not
+      prove host-crash or power-loss. Host-crash and power-loss remain
+      UNPROVEN. Atlas is not trading authority.
 
   - id: RUNTIME_COMPONENT:ddo_experiment_identity_binding
     kind: RUNTIME_COMPONENT
