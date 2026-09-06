@@ -266,6 +266,9 @@ def test_master_runbook_refers_to_valid_spec() -> None:
     a1_control_state_start = runbook.index(
         "### 11.13.5 Parallel-track DDO A1 mutation-critical control-state storage owner contract persist"
     )
+    a1_reproof_start = runbook.index(
+        "### 11.13.5 Parallel-track DDO A1 mutation-critical control-state durable storage implementation and crash reproof persist"
+    )
     live_z2db = runbook.index(
         "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
     )
@@ -279,6 +282,7 @@ def test_master_runbook_refers_to_valid_spec() -> None:
         < a1_crash_start
         < a1_crash_proof_start
         < a1_control_state_start
+        < a1_reproof_start
         < live_z2db
     )
     hardening = _hardening_persist_section(runbook)
@@ -480,6 +484,10 @@ def test_map_and_atlas_remain_navigation_only() -> None:
     )
     assert (
         "DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_ROLE=NAVIGATION_POINTER_ONLY"
+        in mot
+    )
+    assert (
+        "DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_DURABLE_STORAGE_IMPLEMENTATION_AND_CRASH_REPROOF_ROLE=NAVIGATION_POINTER_ONLY"
         in mot
     )
     assert "DDO_AUTHORITY_EFFECT=NONE" in mot
