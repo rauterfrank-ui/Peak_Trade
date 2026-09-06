@@ -506,11 +506,12 @@ class AppendOnlyDdoLedgerV0:
             raise classify_oserror_v0(exc) from exc
         finally:
             os.close(fd)
+        dir_fd: int | None = None
         try:
             dir_fd = os.open(str(self._path.parent), os.O_RDONLY)
-            try:
-                os.fsync(dir_fd)
-            finally:
+            os.fsync(dir_fd)
+        except OSError as exc:
+            raise classify_oserror_v0(exc) from exc
+        finally:
+            if dir_fd is not None:
                 os.close(dir_fd)
-        except OSError:
-            pass
