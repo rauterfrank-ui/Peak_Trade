@@ -95,6 +95,16 @@ def _a1_failure_policy_persist_section(text: str) -> str:
         "### 11.13.5 Parallel-track DDO A1 durability failure policy binding persist"
     )
     end = text.index(
+        "### 11.13.5 Parallel-track DDO A1 durability-to-admission and replay binding persist"
+    )
+    return text[start:end]
+
+
+def _a1_admission_replay_persist_section(text: str) -> str:
+    start = text.index(
+        "### 11.13.5 Parallel-track DDO A1 durability-to-admission and replay binding persist"
+    )
+    end = text.index(
         "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
     )
     return text[start:end]
@@ -151,6 +161,7 @@ def test_contract_discoverable_and_bound() -> None:
         in spec
     )
     assert "PEAK_TRADE_DDO_A1_DURABILITY_FAILURE_POLICY_BINDING_V1=BOUND" in spec
+    assert "PEAK_TRADE_DDO_A1_DURABILITY_TO_ADMISSION_AND_REPLAY_BINDING_V1=BOUND" in spec
     assert (
         "A1_DURABILITY_FAILURE_POLICY=BOUND_FAIL_CLOSED_DEPENDENT_MUTATION_FORBIDDEN_ON_UNPROVEN_DURABILITY"
         in spec
@@ -361,6 +372,30 @@ def test_master_runbook_refers_to_valid_spec() -> None:
         "NEXT_DDO_STEP=OWNER_GO_REQUIRED_SEPARATE_SCOPED_DDO_A1_CONTINUATION_NOT_AUTHORIZED_BY_THIS_PERSIST"
         in a1_failure_policy
     )
+    a1_admission_replay = _a1_admission_replay_persist_section(runbook)
+    assert (
+        "PEAK_TRADE_DDO_A1_DURABILITY_TO_ADMISSION_AND_REPLAY_BINDING_V1=BOUND"
+        in a1_admission_replay
+    )
+    assert (
+        "OWNER_GO=PEAK_TRADE_OWNER_GO_DDO_A1_DURABILITY_TO_ADMISSION_AND_REPLAY_BINDING_V1"
+        in a1_admission_replay
+    )
+    assert "ADMISSION_BINDING_STATUS=BOUND_FAIL_CLOSED" in a1_admission_replay
+    assert "REPLAY_AMBIGUITY_BINDING_STATUS=BOUND_WITHOUT_AUTOMATIC_RETRY" in a1_admission_replay
+    assert "ADMISSION_OWNER_REUSED=true" in a1_admission_replay
+    assert "NEW_ADMISSION_AUTHORITY_CREATED=false" in a1_admission_replay
+    assert "CAPTURE_OK_EQUALS_ADMISSION=false" in a1_admission_replay
+    assert "CURRENT_STAGE_CAPTURE_FAIL_OPEN=true" in a1_admission_replay
+    assert "AUTOMATIC_RETRY_LOOP_ADDED=false" in a1_admission_replay
+    assert "IDEMPOTENT_REPLAY_EQUALS_CRASH_DURABILITY_PROOF=false" in a1_admission_replay
+    assert "CRASH_DURABILITY_FULLY_PROVEN=false" in a1_admission_replay
+    assert "RUNTIME_AUTHORIZED=false" in a1_admission_replay
+    assert "NEW_STORAGE_AUTHORITY_CREATED=false" in a1_admission_replay
+    assert (
+        "NEXT_DDO_STEP=OWNER_GO_REQUIRED_SEPARATE_SCOPED_DDO_A1_CONTINUATION_NOT_AUTHORIZED_BY_THIS_PERSIST"
+        in a1_admission_replay
+    )
 
 
 def test_map_and_atlas_remain_navigation_only() -> None:
@@ -382,6 +417,7 @@ def test_map_and_atlas_remain_navigation_only() -> None:
         in mot
     )
     assert "DDO_A1_DURABILITY_FAILURE_POLICY_BINDING_ROLE=NAVIGATION_POINTER_ONLY" in mot
+    assert "DDO_A1_DURABILITY_TO_ADMISSION_AND_REPLAY_BINDING_ROLE=NAVIGATION_POINTER_ONLY" in mot
     assert "DDO_AUTHORITY_EFFECT=NONE" in mot
     assert "MAP_OF_TRUTH_AUTHORITY=NAVIGATION_ONLY" in mot
     assert "DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is" in atlas
@@ -390,6 +426,7 @@ def test_map_and_atlas_remain_navigation_only() -> None:
         "PEAK_TRADE_DDO_A1_CRASH_DURABILITY_ATOMIC_REPLACE_OR_EXPLICIT_NONREQUIREMENT_V1" in atlas
     )
     assert "PEAK_TRADE_DDO_A1_DURABILITY_FAILURE_POLICY_BINDING_V1 is bound" in atlas
+    assert "PEAK_TRADE_DDO_A1_DURABILITY_TO_ADMISSION_AND_REPLAY_BINDING_V1 is" in atlas
     assert "PRODUCTIVE_HOST_LEDGER_BINDING" in atlas
     assert "Atlas is not trading authority" in atlas
     assert (

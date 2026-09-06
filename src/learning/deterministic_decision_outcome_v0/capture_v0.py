@@ -43,6 +43,9 @@ from src.learning.deterministic_decision_outcome_v0.enums_v0 import (
 from src.learning.deterministic_decision_outcome_v0.a1_durability_failure_policy_binding_v1 import (
     bind_a1_durability_failure_policy_v1,
 )
+from src.learning.deterministic_decision_outcome_v0.a1_durability_to_admission_and_replay_binding_v1 import (
+    classify_a1_persist_attempt_for_admission_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
     DdoDurabilityWriteError,
     FAILURE_CLASS_CORRUPTION_UNREADABLE,
@@ -1015,12 +1018,17 @@ def _persist(binding: DdoCaptureBindingV0, record: Mapping[str, Any]) -> None:
     if record_id in binding.persisted_ids:
         return
     try:
-        ledger.append(frozen)
+        append_result = ledger.append(frozen)
     except Exception as exc:  # noqa: BLE001
         classified = classify_ddo_write_failure_v0(exc)
         policy = bind_a1_durability_failure_policy_v1(
             operation=_a1_policy_operation_for(classified),
             failure=classified,
+            record_id=record_id,
+        )
+        classification = classify_a1_persist_attempt_for_admission_v1(
+            persist_error=classified,
+            policy_result=policy,
             record_id=record_id,
         )
         binding.last_durability_evidence = _durability_evidence(
@@ -1030,12 +1038,20 @@ def _persist(binding: DdoCaptureBindingV0, record: Mapping[str, Any]) -> None:
             record=frozen,
             capture_stage="durable_append",
             retryable=classified.retryable,
-            policy_fields=policy.as_observability(),
+            policy_fields={
+                **policy.as_observability(),
+                **classification.as_observability(),
+            },
         )
         raise classified from exc
     policy = bind_a1_durability_failure_policy_v1(
         operation=OPERATION_DURABLE_APPEND,
         failure=None,
+        record_id=record_id,
+    )
+    classification = classify_a1_persist_attempt_for_admission_v1(
+        append_result=append_result,
+        policy_result=policy,
         record_id=record_id,
     )
     binding.persisted_ids.append(record_id)
@@ -1046,7 +1062,10 @@ def _persist(binding: DdoCaptureBindingV0, record: Mapping[str, Any]) -> None:
         record=frozen,
         capture_stage="durable_append",
         retryable=None,
-        policy_fields=policy.as_observability(),
+        policy_fields={
+            **policy.as_observability(),
+            **classification.as_observability(),
+        },
     )
 
 

@@ -10,6 +10,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Final
 
+from src.learning.deterministic_decision_outcome_v0.a1_durability_to_admission_and_replay_binding_v1 import (
+    EVIDENCE_MUST_BE_DURABLE_BEFORE_DEPENDENT_MUTATION as EVIDENCE_MUST_BE_DURABLE_BEFORE_DEPENDENT_MUTATION_BOUND,
+)
 from src.learning.deterministic_decision_outcome_v0.a1_unattended_durability_policy_boundary_v1 import (
     A1_DURABILITY_FAILURE_POLICY,
     A1_EXECUTION_AUTHORITY,
@@ -61,7 +64,7 @@ DEPENDENT_MUTATION_CLASS: Final[str] = (
 )
 DEPENDENT_MUTATION_CURRENTLY_AUTHORIZED: Final[bool] = False
 EVIDENCE_MUST_BE_DURABLE_BEFORE_DEPENDENT_MUTATION: Final[str] = (
-    "UNBOUND_FAIL_CLOSED_NOT_A_CURRENT_TRADING_PRECONDITION"
+    EVIDENCE_MUST_BE_DURABLE_BEFORE_DEPENDENT_MUTATION_BOUND
 )
 CRASH_DURABILITY_REQUIRED: Final[bool] = True
 EXPLICIT_NONREQUIREMENT_PROVEN: Final[bool] = False
