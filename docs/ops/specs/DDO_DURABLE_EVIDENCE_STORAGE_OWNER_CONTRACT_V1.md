@@ -238,17 +238,20 @@ reused as DDO owners. This is not a second fencing authority domain.
 ```text
 FILE_FSYNC_PRESENT=true
 DIRECTORY_FSYNC_HARD_GUARANTEE=false
+DIRECTORY_FSYNC_STATUS=FAIL_CLOSED_ATTEMPTED_NO_PLATFORM_HARD_GUARANTEE
 ATOMIC_RECORD_APPEND=PARTIAL
 CRASH_DURABILITY_FULLY_PROVEN=false
+DURABILITY_CLASS=PLATFORM_HARD_GUARANTEE_NOT_PROVABLE
 DDO_LEDGER_DURABILITY_HARDENING_REQUIRED_BEFORE_STRONG_DURABLE_AUTHORITY_CLAIM=true
 DURABILITY_HARDENING_REQUIRED=false
 DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1=COMPLETE
 ```
 
-The library has file `fsync` after append. Directory `fsync` is best-effort
-and swallows `OSError`. Append is `O_APPEND` of one JSONL line, not
-tempfile-replace. This contract **must not** claim stronger crash safety
-than that implementation.
+The library has file `fsync` after append. Directory `fsync` is attempted
+and classified fail-closed; it is **not** a platform hard crash-durability
+guarantee. Append is `O_APPEND` of one JSONL line, not tempfile-replace.
+This contract **must not** claim stronger crash safety than that
+implementation.
 
 ## 9. Correction / lineage
 
@@ -454,3 +457,62 @@ risk-increasing trading cycles. Current-stage capture remains fail-open
 with explicit durability evidence. Recovery of a bound scope-derived
 ledger stays fail-closed: same path, existing history, no silent reset,
 no fallback path. Crash durability remains unproven.
+
+## 16. A1 unattended durability runtime authorization
+
+```text
+PEAK_TRADE_DDO_A1_UNATTENDED_DURABILITY_RUNTIME_AUTHORIZATION_V1=BOUND
+A1_UNATTENDED_DURABILITY_POLICY_DEFINED=true
+A1_UNATTENDED_DURABILITY_RUNTIME_AUTHORIZED=false
+IMPLEMENTATION_COMPLETE=true
+PRECONDITIONS_PROVEN=false
+RUNTIME_AUTHORIZATION_ELIGIBLE=false
+RUNTIME_AUTHORIZED=false
+OPERATION_STARTED=false
+UNATTENDED_OPERATION_STARTED=false
+IMPLEMENTATION_GO_IS_RUNTIME_AUTHORIZATION=false
+IMPLEMENTATION_AUTHORIZATION_SOURCE=PEAK_TRADE_OWNER_GO_DDO_A1_UNATTENDED_DURABILITY_RUNTIME_AUTHORIZATION_V1
+RUNTIME_OPERATIONAL_AUTHORIZATION_SOURCE=NONE
+AUTHORIZATION_SOURCE_FOUND=true
+AUTHORIZATION_SOURCE=NONE
+AUTHORIZATION_SOURCE_CLASS=NONE
+AUTHORIZATION_FAILURE_REASON=A1_RUNTIME_AUTHORIZATION_PRECONDITIONS_UNPROVEN
+DURABILITY_CLASS=PLATFORM_HARD_GUARANTEE_NOT_PROVABLE
+ATOMIC_WRITE_STATUS=PARTIAL
+FILE_FSYNC_STATUS=PRESENT
+DIRECTORY_FSYNC_STATUS=FAIL_CLOSED_ATTEMPTED_NO_PLATFORM_HARD_GUARANTEE
+DIRECTORY_FSYNC_HARD_GUARANTEE=false
+CRASH_DURABILITY_FULLY_PROVEN=false
+RENAME_ATOMIC_REPLACE_PRESENT=false
+APPEND_ONLY_STATUS=ENFORCED_O_APPEND
+A1_RISK_INCREASING_DURABLE_PRECONDITION_AUTHORIZED=false
+A1_DURABILITY_FAILURE_POLICY=UNBOUND_NOT_AUTHORIZED
+CURRENT_STAGE_DURABILITY_FAILURE_POLICY=FAIL_OPEN_CAPTURE_WITH_EXPLICIT_DURABILITY_FAILURE_EVIDENCE
+EXISTING_STORAGE_OWNER_FOUND=true
+EXISTING_STORAGE_OWNER=DDO_DURABLE_EVIDENCE_STORAGE_OWNER
+NEW_STORAGE_AUTHORITY_CREATED=false
+MASTER_V2_DOUBLE_PLAY_SOLE_TRADING_AUTHORITY=true
+DDO_STORAGE_AUTHORITY_IS_TRADING_AUTHORITY=false
+DDO_LEARNING_PRODUCTIVE_AUTHORITY=false
+TRADING_DECISION_DEPENDS_ON_LEDGER_WRITE=false
+CAPTURE_FAILURE_CHANGES_CURRENT_DECISION=false
+PRODUCTIVE_RETURN_VALUE_UNCHANGED=true
+A1_TRADING_AUTHORITY=false
+A1_EXECUTION_AUTHORITY=false
+A1_LEARNING_AUTHORITY=false
+A1_UNATTENDED_AUTHORITY=false
+NEXT_DDO_STEP=PEAK_TRADE_DDO_A1_CRASH_DURABILITY_ATOMIC_REPLACE_OR_EXPLICIT_NONREQUIREMENT_V1
+NEXT_OWNER_GO_REQUIRED=true
+```
+
+This slice adjudicates A1 runtime authorization. The canonical operational
+authorization source is `NONE`. Crash durability is class
+`PLATFORM_HARD_GUARANTEE_NOT_PROVABLE` on the existing `O_APPEND` ledger:
+file `fsync` is present, directory `fsync` is fail-closed when attempted,
+and neither yields a hard crash guarantee. Directory `fsync` errors are no
+longer swallowed. This is **not** a tempfile-replace atomic-write owner.
+`IMPLEMENTATION_COMPLETE=true` coexists with `RUNTIME_AUTHORIZED=false`.
+Unattended operation is not started. Durable evidence is not a
+precondition for risk-increasing trading cycles. A later Owner-GO is
+required before any Class-C atomic-replace durability authority or an
+explicit Class-E non-requirement rationale.

@@ -2533,6 +2533,7 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
       - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
+      - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_runtime_authorization_v1.py
     notes: >-
       Parallel Full-Autonomy/DDO track covering
       src/learning/deterministic_decision_outcome_v0. Offline learning /
@@ -2555,7 +2556,11 @@ entities:
       as a fail-closed policy boundary: unattended durability is not
       trading, execution, or promotion authority; runtime unattended
       durability remains unauthorized; crash durability remains unproven.
-      Not a second
+      PEAK_TRADE_DDO_A1_UNATTENDED_DURABILITY_RUNTIME_AUTHORIZATION_V1 is
+      bound as a fail-closed adjudication: implementation complete;
+      preconditions unproven; runtime unauthorized; directory fsync
+      fail-closed without a platform hard guarantee; no new storage
+      authority. Not a second
       trading, risk, safety, planning, execution, promotion, or deployment owner.
       Atlas catalog presence is navigation only and is not activation. Atlas is
       not trading authority.
@@ -2594,7 +2599,8 @@ entities:
       AppendOnlyDdoLedgerV0 capture binding. Default uninjected host
       construction still leaves ledger_path unbound. Durability claims are
       not upgraded. A1 unattended durability policy is defined and
-      runtime-unauthorized; capture failure still does not change the
+      runtime-unauthorized; A1 runtime authorization is adjudicated
+      fail-closed without activation; capture failure still does not change the
       trading return. Host scope input seam binds existing ExecutionEnvironment
       and Cap 11.2 account identity plus the named runtime-state-root config
       key, then consumes the path resolver.
@@ -2612,11 +2618,13 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
       - src/learning/deterministic_decision_outcome_v0/durable_evidence_path_v0.py
       - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
+      - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_runtime_authorization_v1.py
     evidence_sources:
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
       - src/learning/deterministic_decision_outcome_v0/durable_evidence_path_v0.py
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
       - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
+      - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_runtime_authorization_v1.py
     notes: >-
       Append-only offline ledger. Persist occurs only when a capture binding
       has ledger_path set. DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is
@@ -2629,7 +2637,10 @@ entities:
       consumed by that seam. A1 unattended durability policy boundary is
       defined; runtime unattended durability remains unauthorized;
       recovery is fail-closed with no silent ledger reset and no fallback
-      path. Crash durability remains unproven.
+      path. A1 runtime authorization is adjudicated fail-closed:
+      implementation complete, preconditions unproven, directory fsync
+      fail-closed without a platform hard guarantee. Crash durability
+      remains unproven.
       AUTHORITY_OWNER=NONE for trading. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
       SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
       SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false.
@@ -2713,7 +2724,8 @@ entities:
       the named DDO runtime-state-root config key; injected scopes resolve
       ledger_path onto AppendOnlyDdoLedgerV0. Default construction remains
       unbound. A1 unattended durability policy is stamped as defined and
-      runtime-unauthorized. Atlas is not trading
+      runtime-unauthorized. A1 runtime authorization is adjudicated
+      fail-closed and is not activation. Atlas is not trading
       authority. AUTHORITY_OWNER=NONE.
       PRODUCTIVE_AI_AUTHORITY_COUNT=0. SECOND_TRADING_AUTHORITY=false.
 

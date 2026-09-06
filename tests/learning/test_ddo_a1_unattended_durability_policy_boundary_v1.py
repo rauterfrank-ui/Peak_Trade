@@ -375,12 +375,14 @@ def test_crash_durability_claim_not_upgraded() -> None:
     assert CRASH_DURABILITY_FULLY_PROVEN is False
     assert ATOMIC_WRITE_STATUS == "PARTIAL"
     assert FILE_FSYNC_STATUS == "PRESENT"
-    assert DIRECTORY_FSYNC_STATUS == "BEST_EFFORT_NO_HARD_GUARANTEE"
+    assert DIRECTORY_FSYNC_STATUS == "FAIL_CLOSED_ATTEMPTED_NO_PLATFORM_HARD_GUARANTEE"
     ledger = LEDGER_SRC.read_text(encoding="utf-8")
     assert "os.O_APPEND" in ledger
     assert "os.fsync(fd)" in ledger
     assert "os.fsync(dir_fd)" in ledger
-    assert "except OSError:\n            pass" in ledger
+    dir_fsync_block = ledger[ledger.rindex("os.fsync(dir_fd)") :]
+    assert "raise classify_oserror_v0(exc) from exc" in dir_fsync_block
+    assert "except OSError:\n            pass" not in dir_fsync_block
     assert AUTHORITY_OWNER == "NONE"
     assert SECOND_TRADING_AUTHORITY_CREATED is False
     assert SECOND_EXECUTION_AUTHORITY_CREATED is False
