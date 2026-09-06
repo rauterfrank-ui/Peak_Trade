@@ -113,6 +113,7 @@ from src.learning.deterministic_decision_outcome_v0.outcome_v0 import (
     validate_outcome_ref_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.promotion_controller_v0 import (
+    evaluate_promotion_eligibility_dry_run_v0,
     evaluate_promotion_eligibility_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.promotion_records_v0 import (
@@ -120,6 +121,7 @@ from src.learning.deterministic_decision_outcome_v0.promotion_records_v0 import 
     build_promotion_eligibility_record_v0,
     build_promotion_policy_v0,
     build_release_artifact_v0,
+    build_release_deployment_rollback_dry_run_v0,
     build_rollback_record_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.registry_v0 import OfflineLearningRegistryV0
@@ -147,10 +149,13 @@ from src.learning.deterministic_decision_outcome_v0.validation_artifacts_v0 impo
 )
 from src.learning.deterministic_decision_outcome_v0.validation_pack_engine_v0 import (
     VALIDATION_PACK_ENGINE_ID,
+    evaluate_validation_evidence_pack_from_ingested_owners_v0,
     evaluate_validation_evidence_pack_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.validation_producer_bindings_v0 import (
+    admit_ingested_owner_validation_artifacts_v0,
     admit_validation_producer_bindings_v0,
+    ingest_existing_owner_artifact_v0,
 )
 
 __all__ = [
@@ -198,6 +203,7 @@ __all__ = [
     "VALIDATION_PACK_ENGINE_PRESENT",
     "VALIDATOR_PRODUCTIVE_AUTHORITY",
     "WORKPACKAGE_ID",
+    "admit_ingested_owner_validation_artifacts_v0",
     "admit_validation_producer_bindings_v0",
     "bind_canonical_experiment_identity_ref_v0",
     "build_attribution_record_v0",
@@ -217,6 +223,7 @@ __all__ = [
     "build_promotion_eligibility_record_v0",
     "build_promotion_policy_v0",
     "build_release_artifact_v0",
+    "build_release_deployment_rollback_dry_run_v0",
     "build_rollback_record_v0",
     "build_validation_evidence_pack_v0",
     "canonical_json_dumps_v0",
@@ -229,10 +236,13 @@ __all__ = [
     "evaluate_counterfactual_v0",
     "evaluate_offline_bundle_v0",
     "evaluate_outcome_record_v0",
+    "evaluate_promotion_eligibility_dry_run_v0",
     "evaluate_promotion_eligibility_v0",
+    "evaluate_validation_evidence_pack_from_ingested_owners_v0",
     "evaluate_validation_evidence_pack_v0",
     "get_schema_contract_v0",
     "hash_scope_fields_v0",
+    "ingest_existing_owner_artifact_v0",
     "observe_unbound_experiment_ref_v0",
     "persist_evaluation_bundle_v0",
     "replay_ledger_record_v0",

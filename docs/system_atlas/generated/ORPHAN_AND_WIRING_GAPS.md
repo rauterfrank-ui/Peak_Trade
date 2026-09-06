@@ -37,6 +37,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:authenticated_private_runtime_read_and_runtime_permit_issuance_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:authenticated_private_runtime_read_and_runtime_permit_issuance_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:authenticated_productive_transport_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:authenticated_productive_transport_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_experiment_identity_binding | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_experiment_identity_binding | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_validation_producer_bindings | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_validation_producer_bindings | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_capital_slot | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_capital_slot | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_dashboard_display | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_dashboard_display | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_entry_exit_policy | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_entry_exit_policy | STATUS=OPEN (not proven) |  |

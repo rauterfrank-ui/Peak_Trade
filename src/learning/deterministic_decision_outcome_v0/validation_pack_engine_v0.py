@@ -35,6 +35,11 @@ from src.learning.deterministic_decision_outcome_v0.validation_artifacts_v0 impo
     validate_validation_artifact_set_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.validation_producer_bindings_v0 import (
+    DDO_EXECUTES_EXISTING_OWNER_ENGINES,
+    MISSING_EVIDENCE_IS_NOT_PASS,
+    OPAQUE_ARTIFACT_IS_NOT_ENGINE_EXECUTION,
+    UNKNOWN_IS_VALID,
+    admit_ingested_owner_validation_artifacts_v0,
     admit_validation_producer_bindings_v0,
 )
 
@@ -43,6 +48,8 @@ VALIDATION_PACK_ENGINE_PRODUCER_VERSION: Final[str] = "validation_pack_engine_v0
 VALIDATOR_PRODUCTIVE_AUTHORITY: Final[str] = "NONE"
 VALIDATION_PACK_RUNTIME_WIRING: Final[bool] = False
 ECONOMIC_IMPROVEMENT_CANNOT_COMPENSATE_HARD_GATES: Final[bool] = True
+UNKNOWN_PRESERVED: Final[bool] = True
+MISSING_EVIDENCE_FAILS_CLOSED: Final[bool] = True
 
 _REQUIRED_IDENTITY_FIELDS: Final[frozenset[str]] = frozenset(
     {
@@ -151,11 +158,33 @@ def evaluate_validation_evidence_pack_v0(
             "gates": gates,
         }
     )
+    unknown_gates = [gate for gate in VALIDATION_GATE_IDS_V0 if gates[gate] == UNKNOWN]
+    insufficient_gates = [
+        gate for gate in VALIDATION_GATE_IDS_V0 if gates[gate] == "INSUFFICIENT_EVIDENCE"
+    ]
+    failed_gates = [gate for gate in VALIDATION_GATE_IDS_V0 if gates[gate] == "FAIL"]
+    gate_source_refs = {
+        gate: {
+            "gate_id": gate,
+            "producer_id": artifact_set[gate].get("producer_id") or UNKNOWN,
+            "producer_path": artifact_set[gate].get("producer_path") or UNKNOWN,
+            "producer_schema_version": artifact_set[gate].get("producer_schema_version") or UNKNOWN,
+            "artifact_hash": artifact_set[gate]["artifact_hash"],
+            "status": artifact_set[gate]["status"],
+            "compatibility_status": artifact_set[gate].get("compatibility_status") or UNKNOWN,
+            "source": "existing_owner_artifact_status_token",
+        }
+        for gate in VALIDATION_GATE_IDS_V0
+    }
     return freeze_record(
         {
             "validation_evidence_pack": dict(pack),
             "artifacts": artifact_payloads,
+            "gate_source_refs": gate_source_refs,
             "hard_gate_failures": list(hard_failed),
+            "failed_gates": failed_gates,
+            "unknown_gates": unknown_gates,
+            "insufficient_evidence_gates": insufficient_gates,
             "economic_improvement_cannot_compensate_hard_gates": (
                 ECONOMIC_IMPROVEMENT_CANNOT_COMPENSATE_HARD_GATES
             ),
@@ -163,5 +192,32 @@ def evaluate_validation_evidence_pack_v0(
             "validator_productive_authority": VALIDATOR_PRODUCTIVE_AUTHORITY,
             "runtime_wiring": VALIDATION_PACK_RUNTIME_WIRING,
             "unknown_collapsed": False,
+            "unknown_is_valid": UNKNOWN_IS_VALID,
+            "unknown_preserved": UNKNOWN_PRESERVED,
+            "missing_evidence_is_not_pass": MISSING_EVIDENCE_IS_NOT_PASS,
+            "missing_evidence_fails_closed": MISSING_EVIDENCE_FAILS_CLOSED,
+            "opaque_artifact_is_not_engine_execution": OPAQUE_ARTIFACT_IS_NOT_ENGINE_EXECUTION,
+            "ddo_executes_existing_owner_engines": DDO_EXECUTES_EXISTING_OWNER_ENGINES,
         }
+    )
+
+
+def evaluate_validation_evidence_pack_from_ingested_owners_v0(
+    *,
+    candidate: Mapping[str, Any],
+    ingested_artifacts: Mapping[str, Any] | list[Any],
+    identity: Mapping[str, Any],
+    incumbent: Mapping[str, Any] | None = None,
+    authority_owner: str = UNKNOWN,
+    causal_parent_ids: list[str] | None = None,
+) -> MappingProxyType[str, Any]:
+    artifact_set = admit_ingested_owner_validation_artifacts_v0(ingested_artifacts)
+    return evaluate_validation_evidence_pack_v0(
+        candidate=candidate,
+        artifacts=[dict(artifact_set[gate]) for gate in VALIDATION_GATE_IDS_V0],
+        identity=identity,
+        incumbent=incumbent,
+        authority_owner=authority_owner,
+        causal_parent_ids=causal_parent_ids,
+        require_existing_owner_bindings=True,
     )

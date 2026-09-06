@@ -199,8 +199,8 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 
 - direct_upstream: `(none)`
 - transitive_upstream: `(none)`
-- direct_downstream: `RUNTIME_COMPONENT:ddo_capture_v0, RUNTIME_COMPONENT:ddo_experiment_identity_binding, RUNTIME_COMPONENT:ddo_ledger_v0`
-- transitive_downstream: `RUNTIME_COMPONENT:ddo_capture_v0, RUNTIME_COMPONENT:ddo_experiment_identity_binding, RUNTIME_COMPONENT:ddo_ledger_v0`
+- direct_downstream: `RUNTIME_COMPONENT:ddo_capture_v0, RUNTIME_COMPONENT:ddo_experiment_identity_binding, RUNTIME_COMPONENT:ddo_ledger_v0, RUNTIME_COMPONENT:ddo_validation_producer_bindings`
+- transitive_downstream: `RUNTIME_COMPONENT:ddo_capture_v0, RUNTIME_COMPONENT:ddo_experiment_identity_binding, RUNTIME_COMPONENT:ddo_ledger_v0, RUNTIME_COMPONENT:ddo_validation_producer_bindings`
 
 ### RUNBOOK:canonical_master_runbook
 

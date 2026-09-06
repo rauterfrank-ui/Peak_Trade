@@ -23,6 +23,7 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SHARED_IDENTITY_FIELD_SPECS_V0,
     FieldSpecV0,
     finalize_record_v0,
+    freeze_record,
     optional_ref,
     optional_string_or_unknown,
     parse_shared_envelope_v0,
@@ -33,7 +34,7 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     require_record_id,
     require_sha256_or_unknown,
 )
-from src.learning.deterministic_decision_outcome_v0.enums_v0 import PROMOTION_CLASS_V0
+from src.learning.deterministic_decision_outcome_v0.enums_v0 import PROMOTION_CLASS_V0, UNKNOWN
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
 
 _POLICY_EXTRA: Final[tuple[FieldSpecV0, ...]] = (
@@ -195,6 +196,10 @@ DEPLOYMENT_RECORD_ALLOWED_FIELDS: Final[frozenset[str]] = frozenset(
 ROLLBACK_RECORD_ALLOWED_FIELDS: Final[frozenset[str]] = frozenset(
     spec.name for spec in ROLLBACK_RECORD_FIELD_SPECS_V0
 )
+RELEASE_ARTIFACT_DRY_RUN_ONLY: Final[bool] = True
+DEPLOYMENT_AUTHORIZED: Final[bool] = False
+EXECUTION_AUTHORIZED: Final[bool] = False
+PRODUCTIVE_ACTIVATION: Final[bool] = False
 
 
 def _class_list(value: Any, field: str) -> list[str]:
@@ -400,3 +405,87 @@ def build_rollback_record_v0(payload: Mapping[str, Any]) -> MappingProxyType[str
 
 def validate_rollback_record_v0(payload: Mapping[str, Any]) -> MappingProxyType[str, Any]:
     return build_rollback_record_v0(payload)
+
+
+def build_release_deployment_rollback_dry_run_v0(
+    release_payload: Mapping[str, Any],
+    *,
+    eligibility_record_ref: str,
+    previous_known_good_ref: str | None = None,
+    environment: str = UNKNOWN,
+    rollback_trigger: str = UNKNOWN,
+    deployment_record_id: str | None = None,
+    rollback_record_id: str | None = None,
+) -> MappingProxyType[str, Any]:
+    """Schema-only dry-run lineage. Does not activate deployment or rollback."""
+    release = build_release_artifact_v0(release_payload)
+    eligibility_ref = require_record_id(eligibility_record_ref, "eligibility_record_ref")
+    deployment = None
+    rollback = None
+    if previous_known_good_ref is not None:
+        known_good = require_record_id(previous_known_good_ref, "previous_known_good_ref")
+        deploy_id = deployment_record_id or f"dry-deploy-{release['record_id']}"
+        rollback_id = rollback_record_id or f"dry-rollback-{release['record_id']}"
+        deployment = build_deployment_record_v0(
+            {
+                "schema_name": SCHEMA_NAME_DEPLOYMENT_RECORD,
+                "schema_version": SCHEMA_VERSION_DEPLOYMENT_RECORD_V0,
+                "record_id": deploy_id,
+                "event_time_utc": release["event_time_utc"],
+                "correlation_id": release["correlation_id"],
+                "cycle_id": release.get("cycle_id"),
+                "causal_parent_ids": [release["record_id"], eligibility_ref, known_good],
+                "producer_id": release["producer_id"],
+                "authority_owner": release["authority_owner"],
+                "code_sha": release["code_sha"],
+                "config_hash": release["config_hash"],
+                "evidence_hash": release["evidence_hash"],
+                "evidence_source_refs": list(release["evidence_source_refs"]),
+                "release_artifact_ref": release["record_id"],
+                "previous_known_good_ref": known_good,
+                "environment": environment,
+                "result": UNKNOWN,
+                "activation_authorized": False,
+            }
+        )
+        rollback = build_rollback_record_v0(
+            {
+                "schema_name": SCHEMA_NAME_ROLLBACK_RECORD,
+                "schema_version": SCHEMA_VERSION_ROLLBACK_RECORD_V0,
+                "record_id": rollback_id,
+                "event_time_utc": release["event_time_utc"],
+                "correlation_id": release["correlation_id"],
+                "cycle_id": release.get("cycle_id"),
+                "causal_parent_ids": [deployment["record_id"], known_good],
+                "producer_id": release["producer_id"],
+                "authority_owner": release["authority_owner"],
+                "code_sha": release["code_sha"],
+                "config_hash": release["config_hash"],
+                "evidence_hash": release["evidence_hash"],
+                "evidence_source_refs": list(release["evidence_source_refs"]),
+                "deployment_record_ref": deployment["record_id"],
+                "known_good_artifact_ref": known_good,
+                "trigger": rollback_trigger,
+                "result": UNKNOWN,
+                "productive_rollback_authorized": False,
+            }
+        )
+    return freeze_record(
+        {
+            "release_artifact": dict(release),
+            "deployment_record": dict(deployment) if deployment is not None else None,
+            "rollback_record": dict(rollback) if rollback is not None else None,
+            "candidate_artifact_ref": release["candidate_artifact_ref"],
+            "validation_evidence_pack_ref": release["validation_evidence_pack_ref"],
+            "eligibility_record_ref": eligibility_ref,
+            "compatibility_contract_ref": release.get("compatibility_contract_ref"),
+            "known_good_ref": previous_known_good_ref,
+            "deployment_authorized": False,
+            "execution_authorized": False,
+            "productive_activation": False,
+            "productive_rollback_authorized": False,
+            "dry_run": True,
+            "schema_only_deployment_rollback": True,
+            "release_artifact_dry_run_only": True,
+        }
+    )
