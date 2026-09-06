@@ -2544,7 +2544,10 @@ entities:
       Typed Double-Play observation projection is DDO capture parity only.
       DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is bound as evidence-domain
       storage owner. DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1 is
-      complete. PRODUCTIVE_HOST_LEDGER_BINDING remains false. Not a second
+      complete. PEAK_TRADE_DDO_PRODUCTIVE_HOST_SCOPE_INPUT_BINDING_V1 is bound
+      as an explicit typed host injection seam over existing owners.
+      PRODUCTIVE_HOST_LEDGER_BINDING remains false. Default host scope remains
+      unbound until explicit injection. Not a second
       trading, risk, safety, planning, execution, promotion, or deployment owner.
       Atlas catalog presence is navigation only and is not activation. Atlas is
       not trading authority.
@@ -2581,6 +2584,9 @@ entities:
       tokens live in the projection. selected_side is not SideState-after.
       Durable ledger_path remains unbound on the productive host.
       Durability hardening does not activate host persistence.
+      Host scope input seam binds existing ExecutionEnvironment and Cap 11.2
+      account identity plus the named runtime-state-root config key; it does
+      not resolve or set ledger_path.
       Evidence_sources list observation-host producer files, not ownership.
       Not WP-FA-08. Atlas is not trading authority.
 
@@ -2605,7 +2611,9 @@ entities:
       remains false. Durable ledger_path remains unbound on the productive
       host. Durability hardening and host-binding prep are complete
       (captured/persisted id split; classified write failures; exclusive
-      append lock; path primitive present). AUTHORITY_OWNER=NONE for trading. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
+      append lock; path primitive present). Productive host scope input
+      seam is bound; path resolver remains unconsumed and ledger_path
+      remains None. AUTHORITY_OWNER=NONE for trading. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
       SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
       SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false.
       RUNTIME_LINEAGE_PARTIAL=true. Atlas is not trading authority.
@@ -2641,7 +2649,9 @@ entities:
     current_status: CURRENT_NONCANONICAL
     modified_by: PENDING_CHANGE
     source_paths:
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/__init__.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_observation_host_scope_binding_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/sidestate_restore_v1.py
       - src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py
       - src/ops/dynamic_scope_persistence_binding_v1/host_binding_v1.py
@@ -2680,7 +2690,10 @@ entities:
       tokens; LIVE_ARMED is unchanged. Both hosts consume Replay
       `_side_state_to_entry_exit_direction` for the Entry/Exit session
       cursor; they do not keep a local mapping table. PENDING owner
-      outputs are unchanged. Atlas is not trading
+      outputs are unchanged. Explicit DDO observation-host scope inputs
+      consume existing ExecutionEnvironment, Cap 11.2 account identity, and
+      the named DDO runtime-state-root config key; they do not resolve
+      ledger_path. Atlas is not trading
       authority. AUTHORITY_OWNER=NONE.
       PRODUCTIVE_AI_AUTHORITY_COUNT=0. SECOND_TRADING_AUTHORITY=false.
 

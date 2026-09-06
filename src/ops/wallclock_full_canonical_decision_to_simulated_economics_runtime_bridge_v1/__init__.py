@@ -23,6 +23,11 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
     run_bridge_cycle_v1,
     run_bridge_cycles_from_mids_v1,
 )
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_observation_host_scope_binding_v1 import (
+    DdoHostScopeInputError,
+    DdoObservationHostScopeInputsV1,
+    bind_ddo_observation_host_scope_v1,
+)
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.full_economic_reconstruction_verifier_v1 import (
     verify_full_economic_reconstruction_v1,
 )
@@ -38,6 +43,9 @@ __all__ = (
     "PRODUCER_FAMILY",
     "SCHEMA_VERSION",
     "BridgeSessionStateV1",
+    "DdoHostScopeInputError",
+    "DdoObservationHostScopeInputsV1",
+    "bind_ddo_observation_host_scope_v1",
     "run_bridge_cycle_v1",
     "run_bridge_cycles_from_mids_v1",
     "verify_full_economic_reconstruction_v1",

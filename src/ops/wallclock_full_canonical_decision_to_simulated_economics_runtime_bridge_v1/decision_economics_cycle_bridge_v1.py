@@ -15,11 +15,23 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
+from src.governance.live_mode_gate import ExecutionEnvironment
 from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
     DdoCaptureBindingV0,
     bind_host_cycle_capture_context_v0,
     record_productive_cycle_capture_v0,
     with_ddo_capture_session_v0,
+)
+from src.ops.capability_11_2_credential_authorization_and_account_identity_boundary_v1.account_identity_boundary_v1 import (
+    AccountIdentityRecordV1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_observation_host_scope_binding_v1 import (
+    DdoHostScopeInputError,
+    DdoObservationHostScopeInputsV1,
+    apply_ddo_observation_host_scope_to_capture_binding_v1,
+    assert_ddo_observation_host_scope_stable_v1,
+    maybe_bind_ddo_observation_host_scope_from_optional_inputs_v1,
+    observe_ddo_host_scope_conflict_v1,
 )
 from src.ops.bounded_futures_testnet_venue_binding_v0 import PRODUCTION_INSTRUMENT_ID
 from src.ops.phase_9_2_productive_decision_graph_actionability_forensic_telemetry_v1.host_binding_v1 import (
@@ -422,12 +434,14 @@ class BridgeSessionStateV1:
     # WP-FA-04 — observation-only DDO capture (never decision/risk/safety/selection authority).
     ddo_capture_binding: DdoCaptureBindingV0 = field(default_factory=DdoCaptureBindingV0)
     last_ddo_capture: Optional[dict[str, Any]] = None
-    # DDO durable-evidence host-binding prep. Explicitly unbound. Not a productive ledger_path.
+    # DDO durable-evidence host-binding prep. Explicitly unbound until
+    # bind_ddo_observation_host_scope_v1. Not a productive ledger_path.
     ddo_durable_evidence_runtime_state_root: Optional[str] = None
     ddo_evidence_environment: Optional[str] = None
     ddo_evidence_account_scope: Optional[str] = None
     ddo_evidence_environment_binding_status: str = "UNBOUND"
     ddo_evidence_account_binding_status: str = "UNBOUND"
+    ddo_observation_host_scope: Optional[DdoObservationHostScopeInputsV1] = None
     # Productive archive-binding capture: last cycle CanonicalTradingDecisionEvidenceV1
     # export payload (wiring only; no decision recomputation).
     last_canonical_decision_evidence: Optional[dict[str, Any]] = None
@@ -948,10 +962,21 @@ def run_bridge_cycle_v1(
     persist_exit_policy: bool = True,
     activation_state_root: Optional[Path] = None,
     activation_config_path: Optional[Path] = None,
+    ddo_durable_evidence_runtime_state_root: Optional[Path] = None,
+    ddo_evidence_environment: Optional[ExecutionEnvironment] = None,
+    ddo_account_identity_record: Optional[AccountIdentityRecordV1] = None,
+    ddo_runtime_state_root_config: Optional[Mapping[str, Any]] = None,
 ) -> BridgeCycleResultV1:
     """Execute one full analytical decision→economics cycle on a mid tick."""
     if ORDERS_AUTHORIZED or LIVE_AUTHORIZED or TESTNET_AUTHORIZED or PAPER_EXECUTION_AUTHORIZED:
         raise RuntimeError("INVARIANT_VIOLATION_AUTHORITY_FLAGS")
+    maybe_bind_ddo_observation_host_scope_from_optional_inputs_v1(
+        state,
+        runtime_state_root=ddo_durable_evidence_runtime_state_root,
+        environment=ddo_evidence_environment,
+        account_identity_record=ddo_account_identity_record,
+        runtime_state_root_config=ddo_runtime_state_root_config,
+    )
 
     if reconciliation_state_root is not None:
         state.reconciliation_state_root = str(reconciliation_state_root)
@@ -1761,6 +1786,12 @@ def run_bridge_cycle_v1(
 
     # WP-FA-04 — observe-only DDO capture after the authoritative producer decision.
     # CAPTURE_FAILURE_CHANGES_DECISION=false: never alter the already-computed cycle.
+    scope_conflict: DdoHostScopeInputError | None = None
+    try:
+        assert_ddo_observation_host_scope_stable_v1(state)
+        apply_ddo_observation_host_scope_to_capture_binding_v1(state)
+    except DdoHostScopeInputError as exc:
+        scope_conflict = exc
     try:
         state.last_ddo_capture = dict(
             record_productive_cycle_capture_v0(
@@ -1802,6 +1833,19 @@ def run_bridge_cycle_v1(
                 "BOUND" if binding.ledger_path is not None else "UNBOUND"
             )
         state.last_ddo_capture = payload
+    if scope_conflict is not None:
+        observe_ddo_host_scope_conflict_v1(state, scope_conflict)
+    elif state.last_ddo_capture is not None:
+        capture_payload = dict(state.last_ddo_capture)
+        capture_payload["ddo_ledger_path_unresolved"] = "DDO_LEDGER_PATH_UNRESOLVED"
+        capture_payload["path_binding_state"] = (
+            "BOUND" if state.ddo_capture_binding.ledger_path is not None else "UNBOUND"
+        )
+        capture_payload["environment_binding_status"] = (
+            state.ddo_evidence_environment_binding_status
+        )
+        capture_payload["account_binding_status"] = state.ddo_evidence_account_binding_status
+        state.last_ddo_capture = capture_payload
 
     state.cycle_ledger.append(cycle.to_dict())
     return cycle
@@ -1822,6 +1866,10 @@ def run_bridge_cycles_from_mids_v1(
     require_selection_binding: bool = True,
     allow_direct_instrument_override: bool = False,
     accounting_state_root: Optional[Path] = None,
+    ddo_durable_evidence_runtime_state_root: Optional[Path] = None,
+    ddo_evidence_environment: Optional[ExecutionEnvironment] = None,
+    ddo_account_identity_record: Optional[AccountIdentityRecordV1] = None,
+    ddo_runtime_state_root_config: Optional[Mapping[str, Any]] = None,
 ) -> tuple[BridgeSessionStateV1, list[BridgeCycleResultV1]]:
     if require_selection_binding and instrument_id != PRODUCTION_INSTRUMENT_ID:
         if not allow_direct_instrument_override:
@@ -1842,6 +1890,13 @@ def run_bridge_cycles_from_mids_v1(
         state.mark_price_by_native_id = dict(mark_price_by_native_id)
     if accounting_state_root is not None:
         state.accounting_state_root = str(accounting_state_root)
+    maybe_bind_ddo_observation_host_scope_from_optional_inputs_v1(
+        state,
+        runtime_state_root=ddo_durable_evidence_runtime_state_root,
+        environment=ddo_evidence_environment,
+        account_identity_record=ddo_account_identity_record,
+        runtime_state_root_config=ddo_runtime_state_root_config,
+    )
     results: list[BridgeCycleResultV1] = []
     for i, mid in enumerate(mid_prices):
         results.append(
