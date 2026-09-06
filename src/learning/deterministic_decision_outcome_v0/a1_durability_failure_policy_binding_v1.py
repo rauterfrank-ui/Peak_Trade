@@ -349,14 +349,34 @@ def reject_a1_dependent_mutation_on_unproven_durability_v1(
     *,
     dependent_mutation_requested: bool = False,
     durability_proven: bool | None = None,
+    policy_result: DdoA1DurabilityFailurePolicyResultV1 | None = None,
 ) -> None:
-    """Fail closed if any caller tries to mutate on unproven durability."""
+    """Fail closed if any caller tries to mutate on unproven durability.
+
+    This is the sole A1-dependent-mutation admission owner. A later binding
+    may consume this helper; it must not create a second admission authority.
+    `durability_proven is True` remains an overclaim under the current policy,
+    which deliberately never produces True while crash durability is unproven.
+    """
+    proven = durability_proven
+    if policy_result is not None:
+        if durability_proven is not None and durability_proven != policy_result.durability_proven:
+            raise DdoA1DurabilityFailurePolicyError(
+                "A1_DEPENDENT_MUTATION_FORBIDDEN_UNPROVEN_DURABILITY",
+                "A1_DEPENDENT_MUTATION_FORBIDDEN_UNPROVEN_DURABILITY",
+            )
+        proven = policy_result.durability_proven
+        if policy_result.dependent_mutation_allowed:
+            raise DdoA1DurabilityFailurePolicyError(
+                "A1_DEPENDENT_MUTATION_FORBIDDEN_UNPROVEN_DURABILITY",
+                "A1_DEPENDENT_MUTATION_FORBIDDEN_UNPROVEN_DURABILITY",
+            )
     if dependent_mutation_requested:
         raise DdoA1DurabilityFailurePolicyError(
             "A1_DEPENDENT_MUTATION_FORBIDDEN_UNPROVEN_DURABILITY",
             "A1_DEPENDENT_MUTATION_FORBIDDEN_UNPROVEN_DURABILITY",
         )
-    if durability_proven is True:
+    if proven is True:
         raise DdoA1DurabilityFailurePolicyError(
             "A1_CRASH_DURABILITY_OVERCLAIM_FORBIDDEN",
             "A1_CRASH_DURABILITY_OVERCLAIM_FORBIDDEN",
