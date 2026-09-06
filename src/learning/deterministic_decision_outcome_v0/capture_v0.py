@@ -40,6 +40,10 @@ from src.learning.deterministic_decision_outcome_v0.enums_v0 import (
     DECISION_TYPE_V0,
     UNKNOWN,
 )
+from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
+    DdoDurabilityWriteError,
+    classify_ddo_write_failure_v0,
+)
 from src.learning.deterministic_decision_outcome_v0.incident_record_v0 import (
     build_incident_record_v0,
 )
@@ -492,13 +496,23 @@ class DdoCaptureBindingV0:
     ledger_path: Path | str | None = None
     captured_records: list[dict[str, Any]] = field(default_factory=list)
     captured_ids: list[str] = field(default_factory=list)
+    persisted_ids: list[str] = field(default_factory=list)
     last_error: str | None = None
     last_result: dict[str, Any] | None = None
+    last_durability_evidence: dict[str, Any] | None = None
     capture_event_time_utc: str | None = None
     capture_correlation_id: str | None = None
     capture_cycle_id: str | None = None
     capture_repository_sha: str | None = None
+    evidence_environment: str | None = None
+    evidence_account_scope: str | None = None
+    evidence_environment_binding_status: str = "UNBOUND"
+    evidence_account_binding_status: str = "UNBOUND"
     _ledger: AppendOnlyDdoLedgerV0 | None = field(default=None, repr=False)
+
+    @property
+    def observed_ids(self) -> list[str]:
+        return self.captured_ids
 
     def ledger(self) -> AppendOnlyDdoLedgerV0 | None:
         if self.ledger_path is None:
@@ -584,12 +598,19 @@ def observe_after_producer_v0(*, seam_id: str) -> Callable[[F], F]:
                 )
             except Exception as exc:  # noqa: BLE001
                 binding.last_error = f"{type(exc).__name__}:{exc}"
-                binding.last_result = {
+                payload: dict[str, Any] = {
                     "ok": False,
                     "error": binding.last_error,
                     "decision_unchanged": True,
+                    "capture_failure_changes_current_decision": False,
                     "seam_id": seam_id,
                 }
+                if isinstance(exc, DdoDurabilityWriteError):
+                    payload["failure_class"] = exc.failure_class
+                    payload["retryability"] = exc.retryable
+                if binding.last_durability_evidence is not None:
+                    payload["durability"] = dict(binding.last_durability_evidence)
+                binding.last_result = payload
             return result
 
         return wrapper  # type: ignore[return-value]
@@ -702,7 +723,7 @@ def observe_producer_result_v0(
         "evidence_source_refs": [spec.source_taxonomy_ref],
     }
     record = dict(build_decision_event_v0(payload))
-    _persist(binding, record)
+    durable_failure = _persist_and_classify(binding, record)
     observation_record = None
     if spec.seam_id == SEAM_DOUBLE_PLAY_ENTRY_EXIT:
         observation_identity = dict(identity)
@@ -718,7 +739,9 @@ def observe_producer_result_v0(
                 decision_event_ref=record_id,
             )
         )
-        _persist(binding, observation_record)
+        observation_failure = _persist_and_classify(binding, observation_record)
+        if observation_failure is not None:
+            durable_failure = observation_failure
     incident_record = None
     if _should_emit_incident(spec, view, hard_stop):
         incident_identity = dict(identity)
@@ -751,18 +774,34 @@ def observe_producer_result_v0(
             "evidence_source_refs": [spec.source_taxonomy_ref],
         }
         incident_record = dict(build_incident_record_v0(incident_payload))
-        _persist(binding, incident_record)
+        incident_failure = _persist_and_classify(binding, incident_record)
+        if incident_failure is not None:
+            durable_failure = incident_failure
+    ledger_bound = binding.ledger_path is not None
+    durable_ok: bool | None = None if not ledger_bound else durable_failure is None
     summary = {
-        "ok": True,
+        "ok": durable_failure is None,
+        "durable_ok": durable_ok,
         "seam_id": spec.seam_id,
         "record_id": record_id,
         "content_hash": record["content_hash"],
         "decision_type": decision_type,
         "decision_result": decision_result,
         "decision_unchanged": True,
+        "capture_failure_changes_current_decision": False,
+        "ledger_bound": ledger_bound,
+        "path_binding_state": "BOUND" if ledger_bound else "UNBOUND",
         "incident_id": None if incident_record is None else incident_record["record_id"],
     }
-    binding.last_error = None
+    if durable_failure is not None:
+        summary["failure_class"] = durable_failure.failure_class
+        summary["retryability"] = durable_failure.retryable
+        summary["error"] = f"{type(durable_failure).__name__}:{durable_failure}"
+        binding.last_error = str(summary["error"])
+    else:
+        binding.last_error = None
+    if binding.last_durability_evidence is not None:
+        summary["durability"] = dict(binding.last_durability_evidence)
     binding.last_result = dict(summary)
     return summary
 
@@ -823,6 +862,7 @@ def record_productive_cycle_capture_v0(
             (SEAM_SIMULATED_EXECUTION_OUTCOME, fill),
         ]
         captured: list[str] = []
+        durable_failed = False
         for seam_id, obj in observations:
             if obj is None:
                 continue
@@ -847,15 +887,29 @@ def record_productive_cycle_capture_v0(
                 repository_sha=repository_sha,
             )
             captured.append(str(summary.get("record_id") or ""))
+            if summary.get("durable_ok") is False:
+                durable_failed = True
         # Cycle-level safety/risk strings are already-computed host labels, not new authority.
         if safety_result is not None or risk_sizing_result is not None or cycle is not None:
             _ = (safety_result, risk_sizing_result, cycle)
+        ledger_bound = binding.ledger_path is not None
         result = {
             "ok": True,
             "captured_count": len(captured),
             "record_ids": captured,
             "decision_unchanged": True,
+            "capture_failure_changes_current_decision": False,
+            "ledger_bound": ledger_bound,
+            "path_binding_state": "BOUND" if ledger_bound else "UNBOUND",
+            "durable_ok": None if not ledger_bound else (not durable_failed),
+            "environment_binding_status": binding.evidence_environment_binding_status,
+            "account_binding_status": binding.evidence_account_binding_status,
         }
+        if binding.last_durability_evidence is not None:
+            result["durability"] = dict(binding.last_durability_evidence)
+        if durable_failed and binding.last_durability_evidence is not None:
+            result["failure_class"] = binding.last_durability_evidence.get("failure_class")
+            result["retryability"] = binding.last_durability_evidence.get("retryability")
         binding.last_result = dict(result)
         return result
     except Exception as exc:  # noqa: BLE001
@@ -864,21 +918,102 @@ def record_productive_cycle_capture_v0(
             "ok": False,
             "error": binding.last_error,
             "decision_unchanged": True,
+            "capture_failure_changes_current_decision": False,
+            "ledger_bound": binding.ledger_path is not None,
+            "path_binding_state": "BOUND" if binding.ledger_path is not None else "UNBOUND",
+            "durable_ok": False if binding.ledger_path is not None else None,
+            "environment_binding_status": binding.evidence_environment_binding_status,
+            "account_binding_status": binding.evidence_account_binding_status,
         }
+        if isinstance(exc, DdoDurabilityWriteError):
+            result["failure_class"] = exc.failure_class
+            result["retryability"] = exc.retryable
+        if binding.last_durability_evidence is not None:
+            result["durability"] = dict(binding.last_durability_evidence)
         binding.last_result = dict(result)
         return result
+
+
+def _durability_evidence(
+    binding: DdoCaptureBindingV0,
+    *,
+    success: bool,
+    failure_class: str | None,
+    record: Mapping[str, Any],
+    capture_stage: str,
+    retryable: bool | None,
+) -> dict[str, Any]:
+    ledger_bound = binding.ledger_path is not None
+    return {
+        "success": success,
+        "failure_class": failure_class,
+        "record_id": str(record.get("record_id") or ""),
+        "event_id": record.get("event_id"),
+        "capture_stage": capture_stage,
+        "decision_unchanged": True,
+        "capture_failure_changes_current_decision": False,
+        "retryability": retryable,
+        "ledger_bound": ledger_bound,
+        "path_binding_state": "BOUND" if ledger_bound else "UNBOUND",
+        "cycle_id": binding.capture_cycle_id,
+        "captured_at_utc": binding.capture_event_time_utc or record.get("event_time_utc"),
+        "environment_binding_status": binding.evidence_environment_binding_status,
+        "account_binding_status": binding.evidence_account_binding_status,
+    }
+
+
+def _persist_and_classify(
+    binding: DdoCaptureBindingV0,
+    record: Mapping[str, Any],
+) -> DdoDurabilityWriteError | None:
+    try:
+        _persist(binding, record)
+    except DdoDurabilityWriteError as exc:
+        return exc
+    return None
 
 
 def _persist(binding: DdoCaptureBindingV0, record: Mapping[str, Any]) -> None:
     frozen = dict(record)
     record_id = str(frozen["record_id"])
-    if record_id in binding.captured_ids:
-        return
-    binding.captured_records.append(frozen)
-    binding.captured_ids.append(record_id)
+    if record_id not in binding.captured_ids:
+        binding.captured_records.append(frozen)
+        binding.captured_ids.append(record_id)
     ledger = binding.ledger()
-    if ledger is not None:
+    if ledger is None:
+        binding.last_durability_evidence = _durability_evidence(
+            binding,
+            success=True,
+            failure_class=None,
+            record=frozen,
+            capture_stage="in_memory_observation",
+            retryable=None,
+        )
+        return
+    if record_id in binding.persisted_ids:
+        return
+    try:
         ledger.append(frozen)
+    except Exception as exc:  # noqa: BLE001
+        classified = classify_ddo_write_failure_v0(exc)
+        binding.last_durability_evidence = _durability_evidence(
+            binding,
+            success=False,
+            failure_class=classified.failure_class,
+            record=frozen,
+            capture_stage="durable_append",
+            retryable=classified.retryable,
+        )
+        raise classified from exc
+    binding.persisted_ids.append(record_id)
+    binding.last_durability_evidence = _durability_evidence(
+        binding,
+        success=True,
+        failure_class=None,
+        record=frozen,
+        capture_stage="durable_append",
+        retryable=None,
+    )
 
 
 def _view(obj: Any) -> dict[str, Any]:

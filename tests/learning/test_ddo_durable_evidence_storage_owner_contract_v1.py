@@ -26,9 +26,19 @@ OWNER_GO = "PEAK_TRADE_OWNER_GO_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1"
 BOUND_SHA = "c14730e99f1b1303b69a117fdc0d6896ee1c1e51"
 
 
-def _persist_section(text: str) -> str:
+def _owner_contract_persist_section(text: str) -> str:
     start = text.index(
         "### 11.13.5 Parallel-track DDO durable evidence storage owner contract persist"
+    )
+    end = text.index(
+        "### 11.13.5 Parallel-track DDO ledger durability hardening and host-binding prep persist"
+    )
+    return text[start:end]
+
+
+def _hardening_persist_section(text: str) -> str:
+    start = text.index(
+        "### 11.13.5 Parallel-track DDO ledger durability hardening and host-binding prep persist"
     )
     end = text.index(
         "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
@@ -66,22 +76,24 @@ def test_contract_discoverable_and_bound() -> None:
     assert "ACCOUNT_SCOPE_VALUE_CURRENT_OBSERVATION_HOST" in spec
     assert "SYSTEM_SCOPE_TOKEN" in spec
     assert "canonical_trading_path" in spec
-    assert "CAPTURED_IDS_DURABLE_WRITE_BUG_STATUS=OPEN" in spec
-    assert "PATH_SOURCE_IMPLEMENTATION=UNBOUND" in spec
+    assert "CAPTURED_IDS_DURABLE_WRITE_BUG_STATUS=CLOSED" in spec
+    assert "PATH_SOURCE_IMPLEMENTATION=PRIMITIVE_PRESENT_PRODUCTIVE_UNBOUND" in spec
+    assert "DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1=COMPLETE" in spec
+    assert "DDO_BINDING_READY=true" in spec
+    assert "PATH_RESOLUTION_PRIMITIVE_PRESENT=true" in spec
+    assert "LOCK_IMPLEMENTATION_ADDED_BY_THIS_SLICE=true" in spec
     assert "FILE_FSYNC_PRESENT=true" in spec
     assert "DIRECTORY_FSYNC_HARD_GUARANTEE=false" in spec
     assert "ATOMIC_RECORD_APPEND=PARTIAL" in spec
     assert "CRASH_DURABILITY_FULLY_PROVEN=false" in spec
-    assert (
-        "NEXT_DDO_STEP=PEAK_TRADE_DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1" in spec
-    )
+    assert "NEXT_DDO_STEP=PEAK_TRADE_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1" in spec
     assert "NO_LEDGER_PATH_IN_HOST=true" in spec
     assert "NO_SECOND_DDO_LEDGER=true" in spec
 
 
 def test_master_runbook_refers_to_valid_spec() -> None:
     runbook = MASTER_RUNBOOK.read_text(encoding="utf-8")
-    section = _persist_section(runbook)
+    section = _owner_contract_persist_section(runbook)
     assert SPEC_PATH.is_file()
     assert "docs&#47;ops&#47;specs&#47;DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md" in section
     assert f"OWNER_GO={OWNER_GO}" in section
@@ -111,13 +123,23 @@ def test_master_runbook_refers_to_valid_spec() -> None:
     assert "DDO_CAPTURE_RUNTIME_EFFECT=OBSERVATION_ONLY" in section
     assert "MASTER_V2_DOUBLE_PLAY_SOLE_TRADING_AUTHORITY=true" in section
     assert "WP_FA_08_AUTHORIZED=false" in section
-    live_z2db = runbook.index(
-        "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
-    )
     persist_start = runbook.index(
         "### 11.13.5 Parallel-track DDO durable evidence storage owner contract persist"
     )
-    assert persist_start < live_z2db
+    hardening_start = runbook.index(
+        "### 11.13.5 Parallel-track DDO ledger durability hardening and host-binding prep persist"
+    )
+    live_z2db = runbook.index(
+        "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
+    )
+    assert persist_start < hardening_start < live_z2db
+    hardening = _hardening_persist_section(runbook)
+    assert "DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1=COMPLETE" in hardening
+    assert "CAPTURED_IDS_DURABLE_WRITE_BUG_STATUS=CLOSED" in hardening
+    assert "DDO_PRODUCTIVE_HOST_LEDGER_BOUND=false" in hardening
+    assert "DDO_RUNTIME_PATH_BOUND=false" in hardening
+    assert "CURRENT_CANONICAL_SECTION_REPLACED=false" in hardening
+    assert "CANONICAL_LIVE_NEXT_POINTER_CHANGED=false" in hardening
 
 
 def test_map_and_atlas_remain_navigation_only() -> None:
@@ -126,6 +148,9 @@ def test_map_and_atlas_remain_navigation_only() -> None:
     assert "DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md" in mot
     assert "DOCUMENT_ROLE=NAVIGATION_POINTER_ONLY" in mot or (
         "DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_ROLE=NAVIGATION_POINTER_ONLY" in mot
+    )
+    assert (
+        "DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_ROLE=NAVIGATION_POINTER_ONLY" in mot
     )
     assert "DDO_AUTHORITY_EFFECT=NONE" in mot
     assert "MAP_OF_TRUTH_AUTHORITY=NAVIGATION_ONLY" in mot
@@ -152,17 +177,33 @@ def test_no_productive_host_ledger_path_and_no_second_store() -> None:
     assert 'AUTHORITY_OWNER: Final[str] = "NONE"' in authority
     persist_fn = capture[capture.index("def _persist(") :]
     persist_fn = persist_fn[: persist_fn.index("\ndef _view(")]
-    captured_ids_at = persist_fn.index("binding.captured_ids.append(record_id)")
+    persisted_at = persist_fn.index("binding.persisted_ids.append(record_id)")
     ledger_append_at = persist_fn.index("ledger.append(frozen)")
-    assert captured_ids_at < ledger_append_at
+    assert ledger_append_at < persisted_at
     src_learning = REPO_ROOT / "src/learning/deterministic_decision_outcome_v0"
     ledger_py_files = sorted(path.name for path in src_learning.glob("*ledger*.py"))
     assert ledger_py_files == ["ledger_v0.py"]
     sqlite_hits = list(src_learning.glob("*.sqlite"))
     assert sqlite_hits == []
+    host_default = (
+        "ddo_capture_binding: DdoCaptureBindingV0 = field(default_factory=DdoCaptureBindingV0)"
+    )
+    assert host_default in host
+    assert "ddo_durable_evidence_runtime_state_root: Optional[str] = None" in host
+    assert 'ddo_evidence_environment_binding_status: str = "UNBOUND"' in host
+    assert "resolve_ddo_durable_evidence_path_v1(" not in host
     changed = subprocess.check_output(
         ["git", "diff", "--name-only", "origin/main"],
         cwd=REPO_ROOT,
         text=True,
     ).splitlines()
-    assert not any(path.startswith("src/") for path in changed)
+    allowed_src_prefixes = (
+        "src/learning/deterministic_decision_outcome_v0/",
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/",
+    )
+    unexpected = [
+        path
+        for path in changed
+        if path.startswith("src/") and not path.startswith(allowed_src_prefixes)
+    ]
+    assert unexpected == []

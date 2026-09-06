@@ -2543,7 +2543,8 @@ entities:
       CURRENT_CANONICAL_SECTION=11.13.5.Z2DA. Does not implement WP-FA-08.
       Typed Double-Play observation projection is DDO capture parity only.
       DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is bound as evidence-domain
-      storage owner. PRODUCTIVE_HOST_LEDGER_BINDING remains false. Not a second
+      storage owner. DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1 is
+      complete. PRODUCTIVE_HOST_LEDGER_BINDING remains false. Not a second
       trading, risk, safety, planning, execution, promotion, or deployment owner.
       Atlas catalog presence is navigation only and is not activation. Atlas is
       not trading authority.
@@ -2579,6 +2580,7 @@ entities:
       Generic DecisionResult stays NO_ACTION or UNKNOWN; exact producer
       tokens live in the projection. selected_side is not SideState-after.
       Durable ledger_path remains unbound on the productive host.
+      Durability hardening does not activate host persistence.
       Evidence_sources list observation-host producer files, not ownership.
       Not WP-FA-08. Atlas is not trading authority.
 
@@ -2591,15 +2593,19 @@ entities:
     modified_by: PENDING_CHANGE
     source_paths:
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
+      - src/learning/deterministic_decision_outcome_v0/durable_evidence_path_v0.py
     evidence_sources:
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
+      - src/learning/deterministic_decision_outcome_v0/durable_evidence_path_v0.py
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
     notes: >-
       Append-only offline ledger. Persist occurs only when a capture binding
       has ledger_path set. DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is
       bound as evidence-domain storage owner. PRODUCTIVE_HOST_LEDGER_BINDING
       remains false. Durable ledger_path remains unbound on the productive
-      host. AUTHORITY_OWNER=NONE for trading. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
+      host. Durability hardening and host-binding prep are complete
+      (captured/persisted id split; classified write failures; exclusive
+      append lock; path primitive present). AUTHORITY_OWNER=NONE for trading. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
       SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
       SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false.
       RUNTIME_LINEAGE_PARTIAL=true. Atlas is not trading authority.
