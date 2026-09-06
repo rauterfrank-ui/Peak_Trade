@@ -1,0 +1,16 @@
+{
+  "BOUND_FILL_SZ": "1",
+  "DOCUMENT_CLASS": "SECTION_11_14_POS_SIGN_PROOF_V1",
+  "POS_POS_SIDE_RELATION": "UNPROVEN",
+  "POS_SIGN_SEMANTICS": "UNPROVEN",
+  "derivation_from_fillSz_forbidden": true,
+  "fill_direction": "NOT_HANDOFF_POS",
+  "long_short_mode": "UNPROVEN_FOR_HANDOFF",
+  "net_mode": "BOUND_FOR_FILL_IDENTITY_ONLY",
+  "order_side": "NOT_HANDOFF_POS",
+  "posSide": "net",
+  "posSide_is_not_pos": true,
+  "sign_in_pos": "UNPROVEN",
+  "signed_required": "UNPROVEN",
+  "unsigned_magnitude_plus_posSide_required": "UNPROVEN"
+}

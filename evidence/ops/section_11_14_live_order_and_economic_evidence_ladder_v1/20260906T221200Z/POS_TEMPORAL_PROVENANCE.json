@@ -1,0 +1,240 @@
+{
+  "ACCEPTABLE_CONTEMPORANEOUS_PRODUCER_COUNT": 0,
+  "DOCUMENT_CLASS": "SECTION_11_14_POS_TEMPORAL_PROVENANCE_V1",
+  "NO_SYNTHETIC_PRE_RESTART_PROVENANCE": true,
+  "NO_TIMESTAMP_BACKFILL": true,
+  "RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED": false,
+  "rows": [
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C01_ORDER_PLAN_QTY",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "Order-plan sz is intended submit quantity. Authority does not equate submitted quantity with filled or handoff pos. ORDER_PLAN_QTY_UNIT=contracts is entry/order-plan, not POS_UNIT.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C02_SUBMITTED_ORDER_SZ",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "Submitted sz is the order size sent. FILL_IS_NOT_POSITION_PROOF and submitted quantity is not filled position. Not a handoff pos producer.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C03_ACKNOWLEDGED_SZ",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "ACK allowlist is sCode,sMsg,ordId,clOrdId,tag. sz, pos, posSide, and instId are omitted. Acknowledged size is absent, not unproven.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": true,
+      "CANDIDATE_ID": "C04_FILL_SZ",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "fillSz is bound Live fill identity. FILL_IS_NOT_POSITION_PROOF. Handoff required field is pos, not fillSz. Sign must not be derived from fillSz. Numeric equality with venue pos under LIVE_POSITION_RECONCILED is that field only.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C05_ACCUMULATED_FILLS",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "false",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "Accumulated fills are still fill quantity. Post-hoc arithmetic is POST_HOC_DERIVATION. Retroactive synthesis is forbidden.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C06_OKX_POSITION_GET_POS",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "false",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "Token name pos in a venue response is not Peak_Trade handoff pos. VENUE_GET_COPY_IS_NOT_CONTEMPORANEOUS_HANDOFF. Using GET pos would violate HANDOFF_MUST_BE_DISTINCT_FROM_VENUE_GET and HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH. GET timing is post-fill accounting, not Peak_Trade-owned pre-restart capture. Zero/missing/empty distinctions belong to LIVE_POSITION_RECONCILED, not this field. POS_UNIT remains UNPROVEN even if venue documents contract count; that documentation is not Peak_Trade handoff authority.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C07_ACCOUNTING_POSITION",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "ACCOUNTING_ONLY_IS_NOT_RESTART. Accounting is predecessor, not handoff pos.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C08_PRODUCTIVE_PORTFOLIO_POSITION",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "Productive portfolio position is not the \u00a711.14 Live canary handoff pos producer and is not identity-bound contemporaneous pre-restart capture.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C09_EXECUTION_LEDGER_DDO",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "DDO/execution-ledger outcomes are not identity-bound Live canary handoff pos. Forbidden owner reuse includes DDO storage owner.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C10_LIVE_CANARY_RETURN_PAYLOAD",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "Fresh re-adjudication vs PR #6317 UNPROVEN: ACK allowlist proves pos is omitted. Partial ACK identity plus plan sz is not handoff pos. A future payload field would be a new producer, not this existing one.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C11_A1_WAL",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "A1_WAL_AS_LIVE_HANDOFF_ALLOWED=false. A1 WAL is not Live identity-bound pre-restart handoff.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C12_FILEGATE",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "FILEGATE is a kill-switch, not a quantity producer. Forbidden owner reuse.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C13_CAP72_SIDESTATE",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "Cap-7.2 SideState is not this Live canary handoff pos producer. Forbidden owner reuse.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C14_TESTNET_DURABLE_STATE",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "TESTNET_RESTART_PROVEN is not this Live field. No Testnet result may satisfy a Live evidence field.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C15_EVIDENCE_PACK_VALUES",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "NO_RECLASSIFICATION_OF_EVIDENCE_PACK_AS_CONTROL_HANDOFF. Pack values are not a contemporaneous producer.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C16_OFFLINE_CODEC_PLACEHOLDER",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "Offline codec consumes pos. It does not produce contemporaneous handoff pos.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C17_P08_HISTORICAL_CAPTURED_POS",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "UNPROVEN",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "P08 historical captured pos belongs to another window and another field. It is not contemporaneous \u00a711.14 Live pre-restart handoff pos for the bound canary identity. Retroactive reuse is forbidden.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C18_EXECUTION_LEDGER_POSITION_MODEL",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "Execution ledger Position is not the \u00a711.14 Live canary handoff pos producer. This slice does not mutate src/execution/**.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": true,
+      "CANDIDATE_ID": "C19_OWNER_BIND_FILLSZ_PLACEHOLDER",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "Offline placeholder copies fillSz into pos. Forbidden as productive handoff producer. No sign derivation from fillSz. No retro synthesis.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C20_ABSENT_DURABLE_LIVE_WRITER",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "false",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "No Live canary durable_state writer exists. Absence is not a producer.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    },
+    {
+      "ATTEMPT_SESSION_IDENTITY_PRESENT": false,
+      "BOUND_INSTID_PRESENT": false,
+      "CANDIDATE_ID": "C21_SIMULATED_EXECUTION_POSITION",
+      "CAN_EMIT_WITHOUT_RETRO_SYNTHESIS": false,
+      "CONTEMPORANEOUS_AT_HANDOFF": "false",
+      "PEAK_TRADE_OWNED": "true",
+      "PROVENANCE_PRESENT": false,
+      "REJECTION_REASON": "No Testnet, fixture or simulated result may satisfy a Live evidence field.",
+      "SEMANTICALLY_CORRECT_IS_NOT_AUTOMATICALLY_ACCEPTABLE_PRODUCER": true
+    }
+  ]
+}

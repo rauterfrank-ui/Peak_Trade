@@ -1,4 +1,4 @@
-"""Execute architecture adjudication persist. No GET. No POST. No writer join."""
+"""Execute pos-semantics canonical binding persist. No GET. No POST. No writer join."""
 
 from __future__ import annotations
 
@@ -9,53 +9,47 @@ from typing import Any
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     CANONICAL_EVIDENCE_RUN_ID,
     EXPECTED_ORIGIN_MAIN_SHA,
-    HISTORICAL_ARCHITECTURE_ADJUDICATION_OWNER_GO,
     LIVE_RESTART_RECONSTRUCTED,
+    OWNER_GO,
     SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
     assert_contract_invariants_v1,
 )
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.persist_claims_v1 import (
+    CLAIMS,
+)
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_adjudication_v1 import (
     adjudicate_live_restart_reconstructed_v1,
 )
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_owner_and_capture_architecture_adjudication_v1 import (
-    bind_capture_seam_graph_census_v1,
-    bind_durability_contract_adjudication_v1,
-    bind_owner_and_capture_architecture_adjudication_v1,
-    bind_owner_contract_adjudication_v1,
-    bind_pos_semantics_adjudication_v1,
-    bind_proposed_slice_sequence_v1,
-    bind_restart_admission_predicate_v1,
-    bind_step_29p_handoff_relation_v1,
-    bind_writer_reader_contract_adjudication_v1,
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_pos_semantics_canonical_binding_v1 import (
+    bind_okx_pos_versus_handoff_pos_v1,
+    bind_pos_downstream_effect_v1,
+    bind_pos_semantics_canonical_binding_v1,
+    bind_pos_sign_proof_v1,
+    bind_pos_temporal_provenance_v1,
+    bind_pos_unit_proof_v1,
+    bind_required_new_producer_contract_v1,
 )
 
 
-def execute_live_durable_pre_restart_handoff_owner_and_capture_architecture_adjudication_v1(
+def execute_live_handoff_pos_semantics_canonical_binding_v1(
     *,
     owner_go: str,
     origin_main_sha: str,
     repo_root: Path,
     run_id: str | None = None,
 ) -> dict[str, Any]:
-    if str(owner_go or "").strip() != HISTORICAL_ARCHITECTURE_ADJUDICATION_OWNER_GO:
+    if str(owner_go or "").strip() != OWNER_GO:
         raise Section1114OfflineSurfaceError("OWNER_GO_MISMATCH")
     if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
         raise Section1114OfflineSurfaceError("ORIGIN_MAIN_SHA_MISMATCH")
     assert_contract_invariants_v1()
     started = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     pack_run_id = str(run_id or CANONICAL_EVIDENCE_RUN_ID)
-    architecture = bind_owner_and_capture_architecture_adjudication_v1()
-    owner = bind_owner_contract_adjudication_v1()
-    pos = bind_pos_semantics_adjudication_v1()
-    seams = bind_capture_seam_graph_census_v1()
-    durability = bind_durability_contract_adjudication_v1()
-    writer_reader = bind_writer_reader_contract_adjudication_v1()
-    admission = bind_restart_admission_predicate_v1()
-    step_29p = bind_step_29p_handoff_relation_v1()
-    sequence = bind_proposed_slice_sequence_v1()
+    binding = bind_pos_semantics_canonical_binding_v1()
+    downstream = bind_pos_downstream_effect_v1()
     adjudication = adjudicate_live_restart_reconstructed_v1(
         restart_evidence={"source_kind": "GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF_CENSUS"}
     )
@@ -63,13 +57,17 @@ def execute_live_durable_pre_restart_handoff_owner_and_capture_architecture_adju
         raise Section1114OfflineSurfaceError("LIVE_RESTART_RECONSTRUCTED_MUST_REMAIN_FALSE")
     if LIVE_RESTART_RECONSTRUCTED is True:
         raise Section1114OfflineSurfaceError("LIVE_RESTART_RECONSTRUCTED_MUST_REMAIN_FALSE")
-    if architecture["ADMISSION_TRUE"] is True:
-        raise Section1114OfflineSurfaceError("ADMISSION_TRUE_MUST_REMAIN_FALSE")
-    if architecture["IMPLEMENTATION_AUTHORIZED"] is True:
+    if binding["POS_SEMANTICS"] != "UNPROVEN":
+        raise Section1114OfflineSurfaceError("POS_SEMANTICS_MUST_REMAIN_UNPROVEN")
+    if binding["POS_ACCEPTABLE_PRODUCER_COUNT"] != 0:
+        raise Section1114OfflineSurfaceError("POS_ACCEPTABLE_PRODUCER_MUST_REMAIN_ZERO")
+    if binding["IMPLEMENTATION_AUTHORIZED"] is True:
         raise Section1114OfflineSurfaceError("IMPLEMENTATION_MUST_REMAIN_UNAUTHORIZED")
+    if downstream["COMPLETE_CAPTURE_SEAM_CAN_NOW_BE_ADJUDICATED"] is True:
+        raise Section1114OfflineSurfaceError("CAPTURE_SEAM_MUST_REMAIN_UNADJUDICABLE")
     ended = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     summary = {
-        "OWNER_GO": HISTORICAL_ARCHITECTURE_ADJUDICATION_OWNER_GO,
+        "OWNER_GO": OWNER_GO,
         "CANONICAL_EVIDENCE_RUN_ID": pack_run_id,
         "ORIGIN_MAIN_SHA": origin_main_sha,
         "STARTED_AT_UTC": started,
@@ -80,34 +78,38 @@ def execute_live_durable_pre_restart_handoff_owner_and_capture_architecture_adju
         "SECTION_11_14_AUTHORIZED": False,
         "SECTION_11_14_COMPLETE": False,
         "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
-        "PROPOSED_FIRST_OWNER_ID": architecture["PROPOSED_FIRST_OWNER_ID"],
-        "PROPOSED_FIRST_OWNER_ADJUDICATION": architecture["PROPOSED_FIRST_OWNER_ADJUDICATION"],
-        "FIRST_OWNER_CONTRACT_DECLARED": architecture["FIRST_OWNER_CONTRACT_DECLARED"],
-        "FIRST_OWNER_PRODUCTIVELY_BOUND": architecture["FIRST_OWNER_PRODUCTIVELY_BOUND"],
-        "POS_SEMANTICS": architecture["POS_SEMANTICS"],
-        "POS_ACCEPTABLE_PRODUCER_COUNT": architecture["POS_ACCEPTABLE_PRODUCER_COUNT"],
-        "EARLIEST_COMPLETE_HANDOFF_CAPTURE_MOMENT": architecture[
-            "EARLIEST_COMPLETE_HANDOFF_CAPTURE_MOMENT"
+        "FIRST_OWNER_PRODUCTIVELY_BOUND": False,
+        "POS_SEMANTICS": binding["POS_SEMANTICS"],
+        "POS_SEMANTICS_STATUS": binding["POS_SEMANTICS_STATUS"],
+        "POS_CANONICAL_MEANING": binding["POS_CANONICAL_MEANING"],
+        "POS_UNIT": binding["POS_UNIT"],
+        "POS_SIGN_SEMANTICS": binding["POS_SIGN_SEMANTICS"],
+        "POS_POS_SIDE_RELATION": binding["POS_POS_SIDE_RELATION"],
+        "POS_INSTRUMENT_BINDING": binding["POS_INSTRUMENT_BINDING"],
+        "POS_POSITION_MODE_BINDING": binding["POS_POSITION_MODE_BINDING"],
+        "POS_ACCOUNT_MODE_BINDING": binding["POS_ACCOUNT_MODE_BINDING"],
+        "POS_ACCEPTABLE_PRODUCER_COUNT": binding["POS_ACCEPTABLE_PRODUCER_COUNT"],
+        "POS_ACCEPTABLE_PRODUCERS": binding["POS_ACCEPTABLE_PRODUCERS"],
+        "POS_REJECTED_PRODUCER_COUNT": binding["POS_REJECTED_PRODUCER_COUNT"],
+        "POS_UNPROVEN_PRODUCER_COUNT": binding["POS_UNPROVEN_PRODUCER_COUNT"],
+        "POS_UNPROVEN_PRODUCERS": binding["POS_UNPROVEN_PRODUCERS"],
+        "POS_SEMANTICS_CAN_BE_BOUND_FROM_EXISTING_AUTHORITY": binding[
+            "POS_SEMANTICS_CAN_BE_BOUND_FROM_EXISTING_AUTHORITY"
         ],
-        "EARLIEST_COMPLETE_HANDOFF_CAPTURE_SEAM": architecture[
-            "EARLIEST_COMPLETE_HANDOFF_CAPTURE_SEAM"
+        "NEW_CONTEMPORANEOUS_POS_PRODUCER_REQUIRED": binding[
+            "NEW_CONTEMPORANEOUS_POS_PRODUCER_REQUIRED"
         ],
-        "EARLIEST_COMPLETE_HANDOFF_CAPTURE_PROVEN": architecture[
-            "EARLIEST_COMPLETE_HANDOFF_CAPTURE_PROVEN"
-        ],
-        "COMPLETE_CAPTURE_SEAM": architecture["COMPLETE_CAPTURE_SEAM"],
-        "HOST_CRASH_DURABILITY": architecture["HOST_CRASH_DURABILITY"],
-        "POWER_LOSS_DURABILITY": architecture["POWER_LOSS_DURABILITY"],
-        "DURABILITY_PROVEN_EFFECTIVE": architecture["DURABILITY_PROVEN_EFFECTIVE"],
+        "COMPLETE_CAPTURE_SEAM": "UNPROVEN",
+        "EARLIEST_COMPLETE_HANDOFF_CAPTURE_SEAM": "UNPROVEN",
+        "EARLIEST_COMPLETE_HANDOFF_CAPTURE_PROVEN": False,
+        "HOST_CRASH_DURABILITY": "UNPROVEN",
+        "POWER_LOSS_DURABILITY": "UNPROVEN",
+        "DURABILITY_PROVEN_EFFECTIVE": False,
         "STORAGE_OWNER_MINTED": False,
         "WRITER_BOUND": False,
         "READER_BOUND": False,
         "CAPTURE_SEAM_BOUND": False,
         "PRODUCTIVE_BINDING_PRESENT": False,
-        "STEP_29P_EQUITY_DIMENSION_BINDING_STATUS": architecture[
-            "STEP_29P_EQUITY_DIMENSION_BINDING_STATUS"
-        ],
-        "STEP_29P_HANDOFF_RELATION": architecture["STEP_29P_HANDOFF_RELATION"],
         "RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED": False,
         "NO_TIMESTAMP_BACKFILL": True,
         "NO_SYNTHETIC_PRE_RESTART_PROVENANCE": True,
@@ -117,8 +119,7 @@ def execute_live_durable_pre_restart_handoff_owner_and_capture_architecture_adju
         "SUPERVISOR_ACTIVATED": False,
         "ARCHITECTURE_ADJUDICATION_COMPLETE": True,
         "IMPLEMENTATION_AUTHORIZED": False,
-        "MINIMAL_SAFE_ARCHITECTURE": architecture["MINIMAL_SAFE_ARCHITECTURE"],
-        "PROPOSED_NEXT_SLICE": architecture["PROPOSED_NEXT_SLICE"],
+        "PROPOSED_NEXT_SLICE": binding["PROPOSED_NEXT_SLICE"],
         "SEQUENCE_AUTO_EXECUTED": False,
         "POST_USED": False,
         "GET_PERFORMED": False,
@@ -141,15 +142,15 @@ def execute_live_durable_pre_restart_handoff_owner_and_capture_architecture_adju
     return {
         "pack": str(pack),
         "summary": summary,
-        "architecture": architecture,
-        "owner": owner,
-        "pos": pos,
-        "seams": seams,
-        "durability": durability,
-        "writer_reader": writer_reader,
-        "admission": admission,
-        "step_29p": step_29p,
-        "sequence": sequence,
+        "binding": binding,
+        "candidate_matrix": {"rows": binding["candidates"]},
+        "unit_proof": bind_pos_unit_proof_v1(),
+        "sign_proof": bind_pos_sign_proof_v1(),
+        "temporal_provenance": bind_pos_temporal_provenance_v1(),
+        "okx_versus_handoff": bind_okx_pos_versus_handoff_pos_v1(),
+        "required_new_producer": bind_required_new_producer_contract_v1(),
+        "downstream": downstream,
+        "claims": dict(CLAIMS),
         "adjudication": adjudication,
         "raw_exchanges": [],
     }
