@@ -2532,6 +2532,7 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/authority_v0.py
       - src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
+      - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
     notes: >-
       Parallel Full-Autonomy/DDO track covering
       src/learning/deterministic_decision_outcome_v0. Offline learning /
@@ -2610,10 +2611,12 @@ entities:
     source_paths:
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
       - src/learning/deterministic_decision_outcome_v0/durable_evidence_path_v0.py
+      - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
     evidence_sources:
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
       - src/learning/deterministic_decision_outcome_v0/durable_evidence_path_v0.py
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+      - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
     notes: >-
       Append-only offline ledger. Persist occurs only when a capture binding
       has ledger_path set. DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is
@@ -2672,6 +2675,7 @@ entities:
       - src/ops/dynamic_scope_persistence_binding_v1/models_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py
     evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py
       - src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py
