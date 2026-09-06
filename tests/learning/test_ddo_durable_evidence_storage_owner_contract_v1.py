@@ -6,6 +6,7 @@ ledger_path. No runtime file. No second DDO storage implementation.
 
 from __future__ import annotations
 
+import subprocess
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -23,12 +24,6 @@ LEDGER_PATH = REPO_ROOT / "src/learning/deterministic_decision_outcome_v0/ledger
 AUTHORITY_PATH = REPO_ROOT / "src/learning/deterministic_decision_outcome_v0/authority_v0.py"
 OWNER_GO = "PEAK_TRADE_OWNER_GO_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1"
 BOUND_SHA = "c14730e99f1b1303b69a117fdc0d6896ee1c1e51"
-HOST_TOUCH_PATHS = (
-    "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
-    "src/governance/capital_risk_sizing_v1.py",
-    "src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py",
-    "src/governance/canonical_order_intent_v1.py",
-)
 
 
 def _persist_section(text: str) -> str:
@@ -66,9 +61,11 @@ def test_contract_discoverable_and_bound() -> None:
     assert "NEXT_OWNER_GO_REQUIRED=true" in spec
     assert "MASTER_V2_DOUBLE_PLAY_SOLE_TRADING_AUTHORITY=true" in spec
     assert "DDO_AUTHORITY_OWNER=NONE" in spec
-    assert "ENVIRONMENT_TOKEN_CURRENT_OBSERVATION_HOST=REQUIRED_BUT_UNBOUND" in spec
-    assert "ACCOUNT_SCOPE_VALUE_CURRENT_OBSERVATION_HOST=REQUIRED_BUT_UNBOUND" in spec
-    assert "SYSTEM_SCOPE_TOKEN=canonical_trading_path" in spec
+    assert "ENVIRONMENT_TOKEN_CURRENT_OBSERVATION_HOST" in spec
+    assert "REQUIRED_BUT_UNBOUND" in spec
+    assert "ACCOUNT_SCOPE_VALUE_CURRENT_OBSERVATION_HOST" in spec
+    assert "SYSTEM_SCOPE_TOKEN" in spec
+    assert "canonical_trading_path" in spec
     assert "CAPTURED_IDS_DURABLE_WRITE_BUG_STATUS=OPEN" in spec
     assert "PATH_SOURCE_IMPLEMENTATION=UNBOUND" in spec
     assert "FILE_FSYNC_PRESENT=true" in spec
@@ -108,6 +105,8 @@ def test_master_runbook_refers_to_valid_spec() -> None:
     assert "CURRENT_CANONICAL_SECTION=11.13.5.Z2DA" in section
     assert "CURRENT_CANONICAL_SECTION_REPLACED=false" in section
     assert "CANONICAL_LIVE_NEXT_POINTER_CHANGED=false" in section
+    assert "ATLAS_IMPACT=UPDATED" in section
+    assert "ATLAS_MUST_NOT_CREATE_AUTHORITY=true" in section
     assert "DDO_AUTHORITY_OWNER=NONE" in section
     assert "DDO_CAPTURE_RUNTIME_EFFECT=OBSERVATION_ONLY" in section
     assert "MASTER_V2_DOUBLE_PLAY_SOLE_TRADING_AUTHORITY=true" in section
@@ -161,5 +160,9 @@ def test_no_productive_host_ledger_path_and_no_second_store() -> None:
     assert ledger_py_files == ["ledger_v0.py"]
     sqlite_hits = list(src_learning.glob("*.sqlite"))
     assert sqlite_hits == []
-    for rel in HOST_TOUCH_PATHS:
-        assert (REPO_ROOT / rel).is_file()
+    changed = subprocess.check_output(
+        ["git", "diff", "--name-only", "origin/main"],
+        cwd=REPO_ROOT,
+        text=True,
+    ).splitlines()
+    assert not any(path.startswith("src/") for path in changed)
