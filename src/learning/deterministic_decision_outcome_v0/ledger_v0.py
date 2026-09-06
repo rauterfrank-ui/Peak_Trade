@@ -11,6 +11,7 @@ import json
 import os
 import threading
 from contextlib import contextmanager
+from contextvars import ContextVar, Token
 from dataclasses import dataclass
 from pathlib import Path
 from types import MappingProxyType
@@ -134,6 +135,100 @@ LEDGER_FILENAME_DEFAULT: Final[str] = "ddo_ledger_v0.jsonl"
 _WRITER_LOCK_SUFFIX: Final[str] = ".writer.lock"
 _IN_PROCESS_APPEND_LOCKS: dict[str, threading.Lock] = {}
 _IN_PROCESS_APPEND_LOCKS_GUARD = threading.Lock()
+
+# Test-only write-boundary fault injection. Productive callers never set this.
+# Default None is a no-op: no extra I/O, no swallowed errors, no temp files.
+BOUNDARY_BEFORE_WRITE: Final[str] = "before_write"
+BOUNDARY_DURING_WRITE: Final[str] = "during_write"
+BOUNDARY_AFTER_WRITE_BEFORE_FILE_FSYNC: Final[str] = "after_write_before_file_fsync"
+BOUNDARY_FILE_FSYNC: Final[str] = "file_fsync"
+BOUNDARY_AFTER_FILE_FSYNC_BEFORE_CLOSE: Final[str] = "after_file_fsync_before_close"
+BOUNDARY_AFTER_CLOSE_BEFORE_DIRECTORY_FSYNC: Final[str] = "after_close_before_directory_fsync"
+BOUNDARY_DIRECTORY_FSYNC: Final[str] = "directory_fsync"
+BOUNDARY_AFTER_DIRECTORY_FSYNC_BEFORE_RETURN: Final[str] = "after_directory_fsync_before_return"
+FAULT_ACTION_RAISE: Final[str] = "raise"
+FAULT_ACTION_SHORT_WRITE: Final[str] = "short_write"
+FAULT_ACTION_PARTIAL_WRITE_THEN_RAISE: Final[str] = "partial_write_then_raise"
+_LEDGER_WRITE_BOUNDARIES: Final[frozenset[str]] = frozenset(
+    {
+        BOUNDARY_BEFORE_WRITE,
+        BOUNDARY_DURING_WRITE,
+        BOUNDARY_AFTER_WRITE_BEFORE_FILE_FSYNC,
+        BOUNDARY_FILE_FSYNC,
+        BOUNDARY_AFTER_FILE_FSYNC_BEFORE_CLOSE,
+        BOUNDARY_AFTER_CLOSE_BEFORE_DIRECTORY_FSYNC,
+        BOUNDARY_DIRECTORY_FSYNC,
+        BOUNDARY_AFTER_DIRECTORY_FSYNC_BEFORE_RETURN,
+    }
+)
+_LEDGER_FAULT_ACTIONS: Final[frozenset[str]] = frozenset(
+    {
+        FAULT_ACTION_RAISE,
+        FAULT_ACTION_SHORT_WRITE,
+        FAULT_ACTION_PARTIAL_WRITE_THEN_RAISE,
+    }
+)
+
+
+class DdoLedgerFaultInjectorV1:
+    """Deterministic test-only fault at one write-path boundary. Not a storage owner."""
+
+    def __init__(
+        self,
+        *,
+        boundary: str,
+        action: str,
+        errno_code: int = 5,
+    ) -> None:
+        if boundary not in _LEDGER_WRITE_BOUNDARIES:
+            raise DdoValidationError(f"UNKNOWN_LEDGER_FAULT_BOUNDARY:{boundary}")
+        if action not in _LEDGER_FAULT_ACTIONS:
+            raise DdoValidationError(f"UNKNOWN_LEDGER_FAULT_ACTION:{action}")
+        if action in {FAULT_ACTION_SHORT_WRITE, FAULT_ACTION_PARTIAL_WRITE_THEN_RAISE}:
+            if boundary != BOUNDARY_DURING_WRITE:
+                raise DdoValidationError("LEDGER_FAULT_SHORT_WRITE_REQUIRES_DURING_WRITE")
+        self.boundary = boundary
+        self.action = action
+        self.errno_code = errno_code
+        self.fired = False
+
+    def consume(self, boundary: str) -> bool:
+        if boundary != self.boundary or self.fired:
+            return False
+        self.fired = True
+        return True
+
+
+_LEDGER_FAULT_INJECTOR: ContextVar[DdoLedgerFaultInjectorV1 | None] = ContextVar(
+    "ddo_ledger_fault_injector_v1", default=None
+)
+
+
+def _raise_injected_oserror(injector: DdoLedgerFaultInjectorV1, boundary: str) -> None:
+    raise OSError(injector.errno_code, f"injected_ledger_fault:{boundary}")
+
+
+def _apply_ledger_fault_v1(boundary: str) -> None:
+    injector = _LEDGER_FAULT_INJECTOR.get()
+    if injector is None:
+        return
+    if not injector.consume(boundary):
+        return
+    if injector.action == FAULT_ACTION_RAISE:
+        _raise_injected_oserror(injector, boundary)
+
+
+@contextmanager
+def ddo_ledger_fault_injection_v1(
+    injector: DdoLedgerFaultInjectorV1,
+) -> Iterator[DdoLedgerFaultInjectorV1]:
+    """Install a test-only ledger fault. Productive code must not call this."""
+    token: Token[DdoLedgerFaultInjectorV1 | None] = _LEDGER_FAULT_INJECTOR.set(injector)
+    try:
+        yield injector
+    finally:
+        _LEDGER_FAULT_INJECTOR.reset(token)
+
 
 _VALIDATORS = {
     (SCHEMA_NAME_DECISION_EVENT, SCHEMA_VERSION_DECISION_EVENT_V0): validate_decision_event_v0,
@@ -515,7 +610,8 @@ class AppendOnlyDdoLedgerV0:
             raise classify_oserror_v0(exc, operation=OPERATION_LEDGER_OPEN_CREATE) from exc
         try:
             try:
-                written = os.write(fd, encoded)
+                _apply_ledger_fault_v1(BOUNDARY_BEFORE_WRITE)
+                written = self._write_encoded(fd, encoded)
             except OSError as exc:
                 raise classify_oserror_v0(exc, operation=OPERATION_WRITE) from exc
             if written != len(encoded):
@@ -526,17 +622,46 @@ class AppendOnlyDdoLedgerV0:
                     operation=OPERATION_WRITE,
                 )
             try:
+                _apply_ledger_fault_v1(BOUNDARY_AFTER_WRITE_BEFORE_FILE_FSYNC)
+            except OSError as exc:
+                raise classify_oserror_v0(exc, operation=OPERATION_WRITE) from exc
+            try:
+                _apply_ledger_fault_v1(BOUNDARY_FILE_FSYNC)
                 os.fsync(fd)
+            except OSError as exc:
+                raise classify_oserror_v0(exc, operation=OPERATION_FILE_FSYNC) from exc
+            try:
+                _apply_ledger_fault_v1(BOUNDARY_AFTER_FILE_FSYNC_BEFORE_CLOSE)
             except OSError as exc:
                 raise classify_oserror_v0(exc, operation=OPERATION_FILE_FSYNC) from exc
         finally:
             os.close(fd)
+        try:
+            _apply_ledger_fault_v1(BOUNDARY_AFTER_CLOSE_BEFORE_DIRECTORY_FSYNC)
+        except OSError as exc:
+            raise classify_oserror_v0(exc, operation=OPERATION_FILE_FSYNC) from exc
         dir_fd: int | None = None
         try:
             dir_fd = os.open(str(self._path.parent), os.O_RDONLY)
+            _apply_ledger_fault_v1(BOUNDARY_DIRECTORY_FSYNC)
             os.fsync(dir_fd)
+            _apply_ledger_fault_v1(BOUNDARY_AFTER_DIRECTORY_FSYNC_BEFORE_RETURN)
         except OSError as exc:
             raise classify_oserror_v0(exc, operation=OPERATION_DIRECTORY_FSYNC) from exc
         finally:
             if dir_fd is not None:
                 os.close(dir_fd)
+
+    def _write_encoded(self, fd: int, encoded: bytes) -> int:
+        injector = _LEDGER_FAULT_INJECTOR.get()
+        if injector is not None and injector.consume(BOUNDARY_DURING_WRITE):
+            if injector.action == FAULT_ACTION_SHORT_WRITE:
+                if not encoded:
+                    return 0
+                return 1 if len(encoded) > 1 else 0
+            if injector.action == FAULT_ACTION_PARTIAL_WRITE_THEN_RAISE:
+                cut = max(1, len(encoded) // 2)
+                os.write(fd, encoded[:cut])
+                _raise_injected_oserror(injector, BOUNDARY_DURING_WRITE)
+            _raise_injected_oserror(injector, BOUNDARY_DURING_WRITE)
+        return os.write(fd, encoded)
