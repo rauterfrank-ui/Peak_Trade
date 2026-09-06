@@ -79,12 +79,20 @@ from src.learning.deterministic_decision_outcome_v0.drift_contracts_v0 import (
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
     DdoConcurrentWriterError,
     DdoDuplicateConflictError,
+    DdoDurabilityWriteError,
     DdoIntegrityError,
     DdoLedgerCorruptionError,
     DdoMalformedRecordError,
     DdoSilentOverwriteError,
     DdoUnsupportedSchemaVersionError,
     DdoValidationError,
+    FAILURE_CLASS_UNKNOWN_IO,
+    OPERATION_DIRECTORY_FSYNC,
+    OPERATION_FILE_FSYNC,
+    OPERATION_LEDGER_OPEN_CREATE,
+    OPERATION_PARENT_MKDIR,
+    OPERATION_WRITE,
+    OPERATION_WRITER_LOCK,
     classify_oserror_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.evaluation_records_v0 import (
@@ -407,21 +415,27 @@ class AppendOnlyDdoLedgerV0:
         path_key = str(self._path)
         in_process = _in_process_append_lock(path_key)
         if not in_process.acquire(blocking=False):
-            raise DdoConcurrentWriterError("CONCURRENT_WRITER_VIOLATION")
+            raise DdoConcurrentWriterError(
+                "CONCURRENT_WRITER_VIOLATION",
+                operation=OPERATION_WRITER_LOCK,
+            )
         lock_fd: int | None = None
         try:
             try:
                 self._path.parent.mkdir(parents=True, exist_ok=True)
             except OSError as exc:
-                raise classify_oserror_v0(exc) from exc
+                raise classify_oserror_v0(exc, operation=OPERATION_PARENT_MKDIR) from exc
             lock_path = self.writer_lock_path()
             try:
                 lock_fd = os.open(str(lock_path), os.O_CREAT | os.O_RDWR, 0o644)
                 fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError as exc:
-                raise DdoConcurrentWriterError("CONCURRENT_WRITER_VIOLATION") from exc
+                raise DdoConcurrentWriterError(
+                    "CONCURRENT_WRITER_VIOLATION",
+                    operation=OPERATION_WRITER_LOCK,
+                ) from exc
             except OSError as exc:
-                raise classify_oserror_v0(exc) from exc
+                raise classify_oserror_v0(exc, operation=OPERATION_WRITER_LOCK) from exc
             yield
         finally:
             if lock_fd is not None:
@@ -491,19 +505,30 @@ class AppendOnlyDdoLedgerV0:
         try:
             self._path.parent.mkdir(parents=True, exist_ok=True)
         except OSError as exc:
-            raise classify_oserror_v0(exc) from exc
+            raise classify_oserror_v0(exc, operation=OPERATION_PARENT_MKDIR) from exc
         if self._path.exists() and not self._path.is_file():
             raise DdoSilentOverwriteError("LEDGER_PATH_NOT_FILE")
         flags = os.O_WRONLY | os.O_CREAT | os.O_APPEND
         try:
             fd = os.open(str(self._path), flags, 0o644)
         except OSError as exc:
-            raise classify_oserror_v0(exc) from exc
+            raise classify_oserror_v0(exc, operation=OPERATION_LEDGER_OPEN_CREATE) from exc
         try:
-            os.write(fd, encoded)
-            os.fsync(fd)
-        except OSError as exc:
-            raise classify_oserror_v0(exc) from exc
+            try:
+                written = os.write(fd, encoded)
+            except OSError as exc:
+                raise classify_oserror_v0(exc, operation=OPERATION_WRITE) from exc
+            if written != len(encoded):
+                raise DdoDurabilityWriteError(
+                    FAILURE_CLASS_UNKNOWN_IO,
+                    "UNKNOWN_UNCLASSIFIED_IO_FAILURE",
+                    retryable=None,
+                    operation=OPERATION_WRITE,
+                )
+            try:
+                os.fsync(fd)
+            except OSError as exc:
+                raise classify_oserror_v0(exc, operation=OPERATION_FILE_FSYNC) from exc
         finally:
             os.close(fd)
         dir_fd: int | None = None
@@ -511,7 +536,7 @@ class AppendOnlyDdoLedgerV0:
             dir_fd = os.open(str(self._path.parent), os.O_RDONLY)
             os.fsync(dir_fd)
         except OSError as exc:
-            raise classify_oserror_v0(exc) from exc
+            raise classify_oserror_v0(exc, operation=OPERATION_DIRECTORY_FSYNC) from exc
         finally:
             if dir_fd is not None:
                 os.close(dir_fd)

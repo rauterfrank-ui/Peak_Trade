@@ -40,8 +40,16 @@ from src.learning.deterministic_decision_outcome_v0.enums_v0 import (
     DECISION_TYPE_V0,
     UNKNOWN,
 )
+from src.learning.deterministic_decision_outcome_v0.a1_durability_failure_policy_binding_v1 import (
+    bind_a1_durability_failure_policy_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
     DdoDurabilityWriteError,
+    FAILURE_CLASS_CORRUPTION_UNREADABLE,
+    FAILURE_CLASS_SERIALIZATION_VALIDATION,
+    OPERATION_DURABLE_APPEND,
+    OPERATION_LEDGER_LOAD,
+    OPERATION_SERIALIZE_VALIDATE,
     classify_ddo_write_failure_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.incident_record_v0 import (
@@ -942,9 +950,10 @@ def _durability_evidence(
     record: Mapping[str, Any],
     capture_stage: str,
     retryable: bool | None,
+    policy_fields: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     ledger_bound = binding.ledger_path is not None
-    return {
+    payload = {
         "success": success,
         "failure_class": failure_class,
         "record_id": str(record.get("record_id") or ""),
@@ -960,6 +969,19 @@ def _durability_evidence(
         "environment_binding_status": binding.evidence_environment_binding_status,
         "account_binding_status": binding.evidence_account_binding_status,
     }
+    if policy_fields is not None:
+        payload.update(dict(policy_fields))
+    return payload
+
+
+def _a1_policy_operation_for(classified: DdoDurabilityWriteError) -> str:
+    if classified.operation:
+        return classified.operation
+    if classified.failure_class == FAILURE_CLASS_SERIALIZATION_VALIDATION:
+        return OPERATION_SERIALIZE_VALIDATE
+    if classified.failure_class == FAILURE_CLASS_CORRUPTION_UNREADABLE:
+        return OPERATION_LEDGER_LOAD
+    return OPERATION_DURABLE_APPEND
 
 
 def _persist_and_classify(
@@ -996,6 +1018,11 @@ def _persist(binding: DdoCaptureBindingV0, record: Mapping[str, Any]) -> None:
         ledger.append(frozen)
     except Exception as exc:  # noqa: BLE001
         classified = classify_ddo_write_failure_v0(exc)
+        policy = bind_a1_durability_failure_policy_v1(
+            operation=_a1_policy_operation_for(classified),
+            failure=classified,
+            record_id=record_id,
+        )
         binding.last_durability_evidence = _durability_evidence(
             binding,
             success=False,
@@ -1003,8 +1030,14 @@ def _persist(binding: DdoCaptureBindingV0, record: Mapping[str, Any]) -> None:
             record=frozen,
             capture_stage="durable_append",
             retryable=classified.retryable,
+            policy_fields=policy.as_observability(),
         )
         raise classified from exc
+    policy = bind_a1_durability_failure_policy_v1(
+        operation=OPERATION_DURABLE_APPEND,
+        failure=None,
+        record_id=record_id,
+    )
     binding.persisted_ids.append(record_id)
     binding.last_durability_evidence = _durability_evidence(
         binding,
@@ -1013,6 +1046,7 @@ def _persist(binding: DdoCaptureBindingV0, record: Mapping[str, Any]) -> None:
         record=frozen,
         capture_stage="durable_append",
         retryable=None,
+        policy_fields=policy.as_observability(),
     )
 
 

@@ -12,6 +12,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Final, Mapping
 
+from src.learning.deterministic_decision_outcome_v0.a1_durability_failure_policy_binding_v1 import (
+    A1_DURABILITY_FAILURE_POLICY as A1_DURABILITY_FAILURE_POLICY_BOUND,
+)
 from src.learning.deterministic_decision_outcome_v0.authority_v0 import (
     AUTHORITY_OWNER,
     LEARNING_PRODUCTIVE_AUTHORITY,
@@ -48,7 +51,7 @@ A1_EXECUTION_AUTHORITY: Final[bool] = False
 A1_LEARNING_AUTHORITY: Final[bool] = False
 A1_UNATTENDED_AUTHORITY: Final[bool] = False
 A1_RISK_INCREASING_DURABLE_PRECONDITION_AUTHORIZED: Final[bool] = False
-A1_DURABILITY_FAILURE_POLICY: Final[str] = "UNBOUND_NOT_AUTHORIZED"
+A1_DURABILITY_FAILURE_POLICY: Final[str] = A1_DURABILITY_FAILURE_POLICY_BOUND
 CURRENT_STAGE_DURABILITY_FAILURE_POLICY: Final[str] = (
     "FAIL_OPEN_CAPTURE_WITH_EXPLICIT_DURABILITY_FAILURE_EVIDENCE"
 )
@@ -151,10 +154,15 @@ class DdoA1UnattendedDurabilityPolicyBoundaryV1:
                 "A1_RUNTIME_AUTHORIZATION_SOURCE_FORBIDDEN",
                 "A1_RUNTIME_AUTHORIZATION_SOURCE_FORBIDDEN",
             )
-        if self.a1_durability_failure_policy != "UNBOUND_NOT_AUTHORIZED":
+        if self.a1_durability_failure_policy != A1_DURABILITY_FAILURE_POLICY:
             raise DdoA1PolicyAuthorizationError(
-                "A1_RISK_INCREASING_POLICY_MUST_REMAIN_UNBOUND",
-                "A1_RISK_INCREASING_POLICY_MUST_REMAIN_UNBOUND",
+                "A1_DURABILITY_FAILURE_POLICY_MUST_REMAIN_BOUND",
+                "A1_DURABILITY_FAILURE_POLICY_MUST_REMAIN_BOUND",
+            )
+        if self.a1_durability_failure_policy == "UNBOUND_NOT_AUTHORIZED":
+            raise DdoA1PolicyAuthorizationError(
+                "A1_DURABILITY_FAILURE_POLICY_MUST_REMAIN_BOUND",
+                "A1_DURABILITY_FAILURE_POLICY_MUST_REMAIN_BOUND",
             )
 
 
