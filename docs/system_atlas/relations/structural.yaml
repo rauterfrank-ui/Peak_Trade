@@ -734,6 +734,20 @@ relations:
       records and does not mint a competing identity. Not Cap-2.4 BINDS.
       Atlas is not trading authority.
 
+  - id: REL:s_ddo_phase_contains_validation_producer_bindings
+    source: PHASE:ddo_offline_foundation
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:ddo_validation_producer_bindings
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py
+      - src/learning/deterministic_decision_outcome_v0/validation_pack_engine_v0.py
+      - src/learning/deterministic_decision_outcome_v0/promotion_controller_v0.py
+    notes: >-
+      Package containment of the existing-owner artifact ingest and pack
+      aggregation surface. DDO does not execute owner engines. Atlas is not
+      trading authority.
+
   - id: REL:s_forensic_has_nested_child
     source: FORENSIC_REFERENCE:information_corpus_persistence_base
     type: HAS_CHILD

@@ -4,18 +4,29 @@ from __future__ import annotations
 
 import ast
 import hashlib
+import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
 
 from src.learning.deterministic_decision_outcome_v0.authority_v0 import (
+    DDO_EXECUTES_EXISTING_OWNER_ENGINES,
+    DDO_EXISTING_OWNER_ARTIFACT_INGEST,
+    DDO_TRADING_AUTHORITY,
     LEARNING_PRODUCTIVE_AUTHORITY,
     LEARNING_REGISTRY_ENGINE_PRESENT,
+    MASTER_V2_DOUBLE_PLAY_SOLE_TRADING_AUTHORITY,
+    PRODUCTIVE_DEPLOYMENT_ALLOWED,
+    PRODUCTIVE_ROLLBACK_ALLOWED,
     PROMOTION_AUTHORITY_ACTIVATION,
     RUNTIME_EFFECT,
+    SECOND_SAFETY_REPLAY_ENGINE_CREATED,
+    SECOND_STORAGE_OWNER_CREATED,
+    SECOND_WF_ENGINE_CREATED,
     SHADOW_CHALLENGER_ENGINE_PRESENT,
     SHADOW_PRODUCTIVE_AUTHORITY,
+    VALIDATION_EXISTING_OWNER_BINDINGS,
     VALIDATION_PACK_ENGINE_PRESENT,
     VALIDATOR_PRODUCTIVE_AUTHORITY,
     WORKPACKAGE_ID,
@@ -31,6 +42,7 @@ from src.learning.deterministic_decision_outcome_v0.learning_records_v0 import (
 )
 from src.learning.deterministic_decision_outcome_v0.ledger_v0 import AppendOnlyDdoLedgerV0
 from src.learning.deterministic_decision_outcome_v0.promotion_controller_v0 import (
+    evaluate_promotion_eligibility_dry_run_v0,
     evaluate_promotion_eligibility_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.promotion_records_v0 import (
@@ -43,7 +55,19 @@ from src.learning.deterministic_decision_outcome_v0.validation_artifacts_v0 impo
 )
 from src.learning.deterministic_decision_outcome_v0.validation_pack_engine_v0 import (
     VALIDATION_PACK_ENGINE_ID,
+    evaluate_validation_evidence_pack_from_ingested_owners_v0,
     evaluate_validation_evidence_pack_v0,
+)
+from src.learning.deterministic_decision_outcome_v0.validation_producer_bindings_v0 import (
+    PRODUCER_EXPERIMENT_MONTE_CARLO,
+    PRODUCER_O6_FAULT_HEALTH,
+    PRODUCER_PATH_BY_ID_V0,
+    PRODUCER_ROLLBACK_READINESS,
+    PRODUCER_SAFETY_REPLAY,
+    PRODUCER_SCHEMA_BY_ID_V0,
+    PRODUCER_STRESS,
+    PRODUCER_WALK_FORWARD,
+    ingest_existing_owner_artifact_v0,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -457,3 +481,328 @@ def test_learning_hypothesis_roundtrip_hash_stable() -> None:
     second = build_learning_hypothesis_v0(_hypothesis())
     assert first["content_hash"] == second["content_hash"]
     assert first["productive_authority"] == "NONE"
+
+
+_MANDATORY_INGEST_PRODUCER = {
+    "walk_forward_pass": PRODUCER_WALK_FORWARD,
+    "monte_carlo_pass": PRODUCER_EXPERIMENT_MONTE_CARLO,
+    "stress_pass": PRODUCER_STRESS,
+    "fault_injection_pass": PRODUCER_O6_FAULT_HEALTH,
+    "safety_regression_pass": PRODUCER_SAFETY_REPLAY,
+    "rollback_ready": PRODUCER_ROLLBACK_READINESS,
+}
+
+_BANNED_OWNER_ENGINE_MODULES = (
+    "src.backtest.walkforward",
+    "src.experiments.monte_carlo",
+    "src.risk.monte_carlo",
+    "src.experiments.stress_tests",
+    "src.experiments.canonical_robustness_suite_v1",
+    "src.execution.fault_injection",
+    "src.trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0",
+    "src.meta.learning_loop.runtime_eligibility_v1",
+    "src.ops.runtime_health_recovery_and_failure_injection_closure_v1",
+)
+
+
+def _ingest_envelope(gate: str, *, status: str = "PASS", **overrides: Any) -> dict[str, Any]:
+    digest = _sha(f"ingest:{gate}:{status}")
+    payload: dict[str, Any] = {
+        "gate_id": gate,
+        "artifact_kind": ARTIFACT_KIND_BY_GATE_V0[gate],
+        "status": status,
+        "content_hash": digest if status == "PASS" else UNKNOWN,
+        "artifact_ref": f"ref-{gate}",
+        "artifact_id": f"id-{gate}",
+        "predicate_id": f"predicate.{gate}.v0",
+        "dataset_ref": "dataset-wp06-v1",
+        "environment_fingerprint": "env-wp06-offline",
+        "env_identity": "env-wp06-offline",
+        "opaque_payload": {"owner_token": f"opaque-{gate}", "nested": {"kept": "as-is"}},
+        "metric_refs": [f"metric-{gate}"],
+    }
+    if status in {UNKNOWN, "INSUFFICIENT_EVIDENCE"}:
+        payload["content_hash"] = UNKNOWN
+        payload["artifact_ref"] = UNKNOWN
+    producer_id = _MANDATORY_INGEST_PRODUCER.get(gate)
+    if producer_id is not None:
+        payload.update(
+            {
+                "producer_id": producer_id,
+                "producer_path": PRODUCER_PATH_BY_ID_V0[producer_id],
+                "producer_schema_version": PRODUCER_SCHEMA_BY_ID_V0[producer_id],
+                "source_owner": producer_id,
+                "compatibility_status": "COMPATIBLE",
+                "failure_semantics": "FAIL_CLOSED",
+                "claimed_artifact_hash": payload["content_hash"],
+                "run_identity": f"run-{gate}",
+            }
+        )
+    else:
+        payload.update(
+            {
+                "producer_id": UNKNOWN,
+                "compatibility_status": UNKNOWN,
+                "failure_semantics": UNKNOWN,
+            }
+        )
+    payload.update(overrides)
+    return payload
+
+
+def _ingested_artifacts(**status_overrides: str) -> list[dict[str, Any]]:
+    return [
+        _ingest_envelope(gate, status=status_overrides.get(gate, "PASS"))
+        for gate in VALIDATION_GATE_IDS_V0
+    ]
+
+
+def test_existing_owner_ingest_accepts_valid_artifact_identity() -> None:
+    envelope = _ingest_envelope("walk_forward_pass")
+    ingested = ingest_existing_owner_artifact_v0(envelope)
+    assert ingested["producer_id"] == PRODUCER_WALK_FORWARD
+    assert ingested["content_hash"] == envelope["content_hash"]
+    assert ingested["opaque_payload"] == {
+        "owner_token": "opaque-walk_forward_pass",
+        "nested": {"kept": "as-is"},
+    }
+    assert ingested["ddo_executes_existing_owner_engines"] is False
+    assert ingested["ingest_identity_hash"] != UNKNOWN
+    again = ingest_existing_owner_artifact_v0(envelope)
+    assert again["ingest_identity_hash"] == ingested["ingest_identity_hash"]
+    assert VALIDATION_EXISTING_OWNER_BINDINGS == "BOUND_ARTIFACT_INGEST_NO_ENGINE_EXECUTE"
+    assert DDO_EXISTING_OWNER_ARTIFACT_INGEST is True
+    assert DDO_EXECUTES_EXISTING_OWNER_ENGINES is False
+
+
+def test_existing_owner_ingest_rejects_unknown_producer() -> None:
+    with pytest.raises(DdoValidationError, match="UNKNOWN_EXISTING_OWNER_PRODUCER"):
+        ingest_existing_owner_artifact_v0(
+            _ingest_envelope("walk_forward_pass", producer_id="src.invented.second_wf_engine")
+        )
+
+
+def test_existing_owner_ingest_schema_mismatch_is_explicit() -> None:
+    with pytest.raises(DdoValidationError, match="PRODUCER_SCHEMA_MISMATCH"):
+        ingest_existing_owner_artifact_v0(
+            _ingest_envelope(
+                "rollback_ready",
+                producer_schema_version="not-the-owner-schema",
+                artifact_schema_version="not-the-owner-schema",
+            )
+        )
+
+
+def test_existing_owner_ingest_missing_required_path_is_explicit() -> None:
+    with pytest.raises(DdoValidationError, match="MISSING_REQUIRED_REF:producer_path"):
+        ingest_existing_owner_artifact_v0(
+            _ingest_envelope("walk_forward_pass", producer_path=UNKNOWN)
+        )
+
+
+def test_existing_owner_ingest_keeps_opaque_payload_opaque() -> None:
+    ingested = ingest_existing_owner_artifact_v0(
+        _ingest_envelope(
+            "stress_pass",
+            opaque_payload={"raw_owner_blob": "do-not-reinterpret", "status_token": "PASS"},
+        )
+    )
+    assert ingested["opaque_payload"]["raw_owner_blob"] == "do-not-reinterpret"
+    assert ingested["status"] == "PASS"
+    assert "raw_owner_blob" not in ingested["producer_id"]
+
+
+def test_ingest_path_does_not_import_or_execute_owner_engines() -> None:
+    before = {name for name in _BANNED_OWNER_ENGINE_MODULES if name in sys.modules}
+    ingest_existing_owner_artifact_v0(_ingest_envelope("walk_forward_pass"))
+    evaluate_validation_evidence_pack_from_ingested_owners_v0(
+        candidate=_candidate(),
+        ingested_artifacts=_ingested_artifacts(),
+        identity=_identity(),
+    )
+    after = {name for name in _BANNED_OWNER_ENGINE_MODULES if name in sys.modules}
+    assert after == before
+    hits: list[str] = []
+    for path in sorted(PACKAGE_DIR.glob("*.py")):
+        source = path.read_text(encoding="utf-8")
+        if "mutation_critical_control_state_storage_v1" in source and path.name in {
+            "validation_producer_bindings_v0.py",
+            "validation_pack_engine_v0.py",
+            "promotion_controller_v0.py",
+            "promotion_records_v0.py",
+        }:
+            hits.append(path.name)
+        tree = ast.parse(source)
+        for node in ast.walk(tree):
+            names: list[str] = []
+            if isinstance(node, ast.Import):
+                names.extend(alias.name for alias in node.names)
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                names.append(node.module)
+            for name in names:
+                if any(
+                    name == prefix or name.startswith(prefix + ".")
+                    for prefix in _BANNED_OWNER_ENGINE_MODULES
+                ):
+                    hits.append(f"{path.name}:{name}")
+    assert hits == []
+
+
+def test_ingested_pack_complete_passing_and_failed_gate() -> None:
+    passing = evaluate_validation_evidence_pack_from_ingested_owners_v0(
+        candidate=_candidate(),
+        ingested_artifacts=_ingested_artifacts(),
+        identity=_identity(),
+    )
+    pack = passing["validation_evidence_pack"]
+    assert all(pack["gates"][gate] == "PASS" for gate in VALIDATION_GATE_IDS_V0)
+    assert passing["unknown_preserved"] is True
+    assert passing["missing_evidence_fails_closed"] is True
+    assert passing["ddo_executes_existing_owner_engines"] is False
+    assert passing["gate_source_refs"]["walk_forward_pass"]["producer_id"] == PRODUCER_WALK_FORWARD
+    failed = evaluate_validation_evidence_pack_from_ingested_owners_v0(
+        candidate=_candidate(),
+        ingested_artifacts=_ingested_artifacts(safety_regression_pass="FAIL"),
+        identity=_identity(record_id="pack-wp06-fail1"),
+    )
+    assert failed["validation_evidence_pack"]["gates"]["safety_regression_pass"] == "FAIL"
+    assert "safety_regression_pass" in failed["hard_gate_failures"]
+    assert failed["validation_evidence_pack"]["gates"]["economic_policy_pass"] == "PASS"
+
+
+def test_ingested_pack_missing_mandatory_gate_is_not_pass() -> None:
+    incomplete = [item for item in _ingested_artifacts() if item["gate_id"] != "walk_forward_pass"]
+    with pytest.raises(DdoValidationError, match="MISSING_EVIDENCE_ARTIFACT"):
+        evaluate_validation_evidence_pack_from_ingested_owners_v0(
+            candidate=_candidate(),
+            ingested_artifacts=incomplete,
+            identity=_identity(),
+        )
+
+
+def test_ingested_pack_unknown_is_preserved_and_hash_is_stable() -> None:
+    first = evaluate_validation_evidence_pack_from_ingested_owners_v0(
+        candidate=_candidate(),
+        ingested_artifacts=_ingested_artifacts(monte_carlo_pass=UNKNOWN),
+        identity=_identity(),
+    )
+    second = evaluate_validation_evidence_pack_from_ingested_owners_v0(
+        candidate=_candidate(),
+        ingested_artifacts=_ingested_artifacts(monte_carlo_pass=UNKNOWN),
+        identity=_identity(),
+    )
+    assert first["validation_evidence_pack"]["gates"]["monte_carlo_pass"] == UNKNOWN
+    assert first["unknown_collapsed"] is False
+    assert "monte_carlo_pass" in first["unknown_gates"]
+    assert (
+        first["validation_evidence_pack"]["content_hash"]
+        == second["validation_evidence_pack"]["content_hash"]
+    )
+
+
+def test_promotion_eligibility_dry_run_fail_closed_and_no_deployment() -> None:
+    passing = evaluate_validation_evidence_pack_from_ingested_owners_v0(
+        candidate=_candidate(),
+        ingested_artifacts=_ingested_artifacts(),
+        identity=_identity(),
+    )
+    eligible = evaluate_promotion_eligibility_dry_run_v0(
+        policy=build_promotion_policy_v0(_policy()),
+        candidate=build_candidate_artifact_v0(_candidate()),
+        evidence_pack=passing["validation_evidence_pack"],
+        eligibility_record_id="elig-wp06-dry1",
+        event_time_utc="2026-09-01T20:00:00Z",
+        correlation_id="cor-wp06-0001",
+        producer_id="offline-wp06-producer",
+        code_sha=_sha("code"),
+        config_hash=_sha("config"),
+        evidence_hash=passing["validation_evidence_pack"]["evidence_hash"],
+        release_record_id="rel-wp06-dry1",
+        checksum=_sha("release"),
+        previous_known_good_ref="rel-wp06-good",
+        environment=UNKNOWN,
+    )
+    assert eligible["eligibility_record"]["eligible"] is True
+    assert eligible["deployment_authorized"] is False
+    assert eligible["execution_authorized"] is False
+    assert eligible["productive_activation"] is False
+    assert eligible["promotion_authority_activation"] is False
+    lineage = eligible["release_deployment_rollback_dry_run"]
+    assert lineage["candidate_artifact_ref"] == "cand-wp06-0001"
+    assert lineage["validation_evidence_pack_ref"] == "pack-wp06-0001"
+    assert lineage["eligibility_record_ref"] == "elig-wp06-dry1"
+    assert lineage["deployment_authorized"] is False
+    assert lineage["productive_activation"] is False
+    assert lineage["deployment_record"]["activation_authorized"] is False
+    assert lineage["rollback_record"]["productive_rollback_authorized"] is False
+    failed = evaluate_validation_evidence_pack_from_ingested_owners_v0(
+        candidate=_candidate(),
+        ingested_artifacts=_ingested_artifacts(authority_invariants_pass="FAIL"),
+        identity=_identity(record_id="pack-wp06-authf"),
+    )
+    ineligible = evaluate_promotion_eligibility_dry_run_v0(
+        policy=build_promotion_policy_v0(_policy()),
+        candidate=build_candidate_artifact_v0(_candidate()),
+        evidence_pack=failed["validation_evidence_pack"],
+        eligibility_record_id="elig-wp06-dry2",
+        event_time_utc="2026-09-01T20:00:00Z",
+        correlation_id="cor-wp06-0001",
+        producer_id="offline-wp06-producer",
+    )
+    assert ineligible["eligibility_record"]["eligible"] is False
+    assert "authority_invariants_pass" in ineligible["hard_gate_failures"]
+    unknown = evaluate_validation_evidence_pack_from_ingested_owners_v0(
+        candidate=_candidate(),
+        ingested_artifacts=_ingested_artifacts(rollback_ready=UNKNOWN),
+        identity=_identity(record_id="pack-wp06-unk1"),
+    )
+    unknown_elig = evaluate_promotion_eligibility_dry_run_v0(
+        policy=build_promotion_policy_v0(_policy()),
+        candidate=build_candidate_artifact_v0(_candidate()),
+        evidence_pack=unknown["validation_evidence_pack"],
+        eligibility_record_id="elig-wp06-dry3",
+        event_time_utc="2026-09-01T20:00:00Z",
+        correlation_id="cor-wp06-0001",
+        producer_id="offline-wp06-producer",
+    )
+    assert unknown_elig["eligibility_record"]["eligible"] is False
+    assert "rollback_ready" in unknown_elig["unknown_gates"]
+
+
+def test_authority_and_durability_invariants_remain_fail_closed() -> None:
+    from src.learning.deterministic_decision_outcome_v0.a1_crash_durability_proof_or_explicit_nonprovability_closure_v1 import (
+        DURABILITY_PROVEN_TRUE_MANUFACTURABLE,
+        HOST_CRASH_DURABILITY,
+        POWER_LOSS_DURABILITY,
+    )
+    from src.learning.mutation_critical_control_state_storage_v1.authority_v1 import (
+        ADMISSION_TRUE,
+        DEPENDENT_MUTATION_ALLOWED,
+        PRODUCTIVE_HOST_BINDING,
+    )
+    from src.learning.mutation_critical_control_state_storage_v1.crash_reproof_v1 import (
+        DEPENDENT_MUTATION_ALLOWED as CRASH_DEPENDENT_MUTATION_ALLOWED,
+        HOST_CRASH_DURABILITY as CRASH_HOST_CRASH_DURABILITY,
+        POWER_LOSS_DURABILITY as CRASH_POWER_LOSS_DURABILITY,
+    )
+
+    assert WORKPACKAGE_ID == "WP_FA_07_OFFLINE_OWNER_BINDINGS_AND_DRIFT_CONTRACTS_V1"
+    assert DDO_TRADING_AUTHORITY == "NONE"
+    assert MASTER_V2_DOUBLE_PLAY_SOLE_TRADING_AUTHORITY is True
+    assert SECOND_WF_ENGINE_CREATED is False
+    assert SECOND_SAFETY_REPLAY_ENGINE_CREATED is False
+    assert SECOND_STORAGE_OWNER_CREATED is False
+    assert PROMOTION_AUTHORITY_ACTIVATION is False
+    assert PRODUCTIVE_DEPLOYMENT_ALLOWED is False
+    assert PRODUCTIVE_ROLLBACK_ALLOWED is False
+    assert LEARNING_PRODUCTIVE_AUTHORITY == "NONE"
+    assert RUNTIME_EFFECT == "NONE"
+    assert HOST_CRASH_DURABILITY == "UNPROVEN"
+    assert POWER_LOSS_DURABILITY == "UNPROVEN"
+    assert DURABILITY_PROVEN_TRUE_MANUFACTURABLE is False
+    assert DEPENDENT_MUTATION_ALLOWED is False
+    assert PRODUCTIVE_HOST_BINDING is False
+    assert ADMISSION_TRUE is False
+    assert CRASH_HOST_CRASH_DURABILITY == "UNPROVEN"
+    assert CRASH_POWER_LOSS_DURABILITY == "UNPROVEN"
+    assert CRASH_DEPENDENT_MUTATION_ALLOWED is False

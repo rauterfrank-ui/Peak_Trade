@@ -10,10 +10,15 @@ from types import MappingProxyType
 from typing import Any, Final, Mapping
 
 from src.learning.deterministic_decision_outcome_v0.authority_v0 import (
+    LEARNING_PRODUCTIVE_AUTHORITY,
+    PRODUCTIVE_DEPLOYMENT_ALLOWED,
+    PRODUCTIVE_ROLLBACK_ALLOWED,
     PROMOTION_AUTHORITY_ACTIVATION,
     PROMOTION_AUTHORITY_EFFECT,
 )
+from src.learning.deterministic_decision_outcome_v0.common_v0 import freeze_record
 from src.learning.deterministic_decision_outcome_v0.enums_v0 import (
+    UNKNOWN,
     VALIDATION_GATE_IDS_V0,
 )
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
@@ -25,11 +30,14 @@ from src.learning.deterministic_decision_outcome_v0.learning_records_v0 import (
 )
 from src.learning.deterministic_decision_outcome_v0.promotion_records_v0 import (
     build_promotion_eligibility_record_v0,
+    build_release_deployment_rollback_dry_run_v0,
     validate_promotion_policy_v0,
 )
 
 PROMOTION_CONTROLLER_CAN_CHANGE_OWN_POLICY: Final[bool] = False
 PROMOTION_ELIGIBLE_EQUALS_DEPLOYMENT_AUTHORIZED: Final[bool] = False
+PROMOTION_ELIGIBILITY_DRY_RUN: Final[bool] = True
+LEARNING_HAS_PRODUCTIVE_AUTHORITY: Final[bool] = False
 
 
 def evaluate_promotion_eligibility_v0(
@@ -105,5 +113,112 @@ def evaluate_promotion_eligibility_v0(
             "failed_gates": failed,
             "deployment_authorized": False,
             "execution_authorized": False,
+        }
+    )
+
+
+def evaluate_promotion_eligibility_dry_run_v0(
+    *,
+    policy: Mapping[str, Any],
+    candidate: Mapping[str, Any],
+    evidence_pack: Mapping[str, Any],
+    eligibility_record_id: str,
+    event_time_utc: str,
+    correlation_id: str,
+    producer_id: str,
+    causal_parent_ids: list[str] | None = None,
+    cycle_id: str | None = None,
+    code_sha: str = "UNKNOWN",
+    config_hash: str = "UNKNOWN",
+    evidence_hash: str = "UNKNOWN",
+    evidence_source_refs: list[str] | None = None,
+    authority_owner: str = "UNKNOWN",
+    release_record_id: str | None = None,
+    checksum: str = UNKNOWN,
+    compatibility_contract_ref: str | None = None,
+    previous_known_good_ref: str | None = None,
+    environment: str = UNKNOWN,
+    rollback_trigger: str = UNKNOWN,
+) -> MappingProxyType[str, Any]:
+    if PROMOTION_AUTHORITY_ACTIVATION or PROMOTION_AUTHORITY_EFFECT != "NONE":
+        raise DdoValidationError("PROMOTION_AUTHORITY_ACTIVATION_MUST_REMAIN_FALSE")
+    if PRODUCTIVE_DEPLOYMENT_ALLOWED or PRODUCTIVE_ROLLBACK_ALLOWED:
+        raise DdoValidationError("PRODUCTIVE_DEPLOYMENT_OR_ROLLBACK_MUST_REMAIN_FALSE")
+    eligibility = evaluate_promotion_eligibility_v0(
+        policy=policy,
+        candidate=candidate,
+        evidence_pack=evidence_pack,
+        eligibility_record_id=eligibility_record_id,
+        event_time_utc=event_time_utc,
+        correlation_id=correlation_id,
+        producer_id=producer_id,
+        causal_parent_ids=causal_parent_ids,
+        cycle_id=cycle_id,
+        code_sha=code_sha,
+        config_hash=config_hash,
+        evidence_hash=evidence_hash,
+        evidence_source_refs=evidence_source_refs,
+        authority_owner=authority_owner,
+    )
+    pack = validate_validation_evidence_pack_v0(evidence_pack)
+    unknown_gates = [gate for gate in VALIDATION_GATE_IDS_V0 if pack["gates"][gate] == UNKNOWN]
+    insufficient_gates = [
+        gate for gate in VALIDATION_GATE_IDS_V0 if pack["gates"][gate] == "INSUFFICIENT_EVIDENCE"
+    ]
+    failed_status_gates = [gate for gate in VALIDATION_GATE_IDS_V0 if pack["gates"][gate] == "FAIL"]
+    required_unresolved = unknown_gates + insufficient_gates
+    if required_unresolved and eligibility["eligible"] is True:
+        raise DdoValidationError("MISSING_OR_UNKNOWN_REQUIRED_GATE_MUST_FAIL_CLOSED")
+    dry_run_records = None
+    if release_record_id is not None:
+        dry_run_records = build_release_deployment_rollback_dry_run_v0(
+            {
+                "schema_name": "release_artifact",
+                "schema_version": "release_artifact_v0",
+                "record_id": release_record_id,
+                "event_time_utc": event_time_utc,
+                "correlation_id": correlation_id,
+                "cycle_id": cycle_id,
+                "causal_parent_ids": [
+                    eligibility["candidate_artifact_ref"],
+                    eligibility["validation_evidence_pack_ref"],
+                    eligibility["record_id"],
+                ],
+                "producer_id": producer_id,
+                "authority_owner": authority_owner,
+                "code_sha": code_sha,
+                "config_hash": config_hash,
+                "evidence_hash": evidence_hash,
+                "evidence_source_refs": evidence_source_refs or [],
+                "candidate_artifact_ref": eligibility["candidate_artifact_ref"],
+                "validation_evidence_pack_ref": eligibility["validation_evidence_pack_ref"],
+                "checksum": checksum,
+                "compatibility_contract_ref": compatibility_contract_ref,
+            },
+            eligibility_record_ref=str(eligibility["record_id"]),
+            previous_known_good_ref=previous_known_good_ref,
+            environment=environment,
+            rollback_trigger=rollback_trigger,
+        )
+    return freeze_record(
+        {
+            "eligibility_record": dict(eligibility),
+            "failed_gates": list(eligibility["failed_gates"]),
+            "failed_status_gates": failed_status_gates,
+            "unknown_gates": unknown_gates,
+            "insufficient_evidence_gates": insufficient_gates,
+            "hard_gate_failures": list(hard_gate_failures_v0(pack["gates"])),
+            "dry_run": True,
+            "promotion_authority_activation": False,
+            "deployment_authorized": False,
+            "execution_authorized": False,
+            "productive_activation": False,
+            "productive_deployment_allowed": False,
+            "productive_rollback_allowed": False,
+            "promotion_eligible_equals_deployment_authorized": False,
+            "learning_has_productive_authority": LEARNING_HAS_PRODUCTIVE_AUTHORITY,
+            "release_deployment_rollback_dry_run": (
+                dict(dry_run_records) if dry_run_records is not None else None
+            ),
         }
     )
