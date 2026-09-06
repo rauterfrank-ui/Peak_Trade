@@ -77,6 +77,16 @@ def _a1_runtime_authorization_persist_section(text: str) -> str:
         "### 11.13.5 Parallel-track DDO A1 unattended durability runtime authorization persist"
     )
     end = text.index(
+        "### 11.13.5 Parallel-track DDO A1 crash durability atomic replace or explicit non-requirement persist"
+    )
+    return text[start:end]
+
+
+def _a1_crash_durability_persist_section(text: str) -> str:
+    start = text.index(
+        "### 11.13.5 Parallel-track DDO A1 crash durability atomic replace or explicit non-requirement persist"
+    )
+    end = text.index(
         "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
     )
     return text[start:end]
@@ -128,6 +138,14 @@ def test_contract_discoverable_and_bound() -> None:
     assert "PEAK_TRADE_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1=BOUND" in spec
     assert "PEAK_TRADE_DDO_A1_UNATTENDED_DURABILITY_POLICY_BOUNDARY_V1=BOUND" in spec
     assert "PEAK_TRADE_DDO_A1_UNATTENDED_DURABILITY_RUNTIME_AUTHORIZATION_V1=BOUND" in spec
+    assert (
+        "PEAK_TRADE_DDO_A1_CRASH_DURABILITY_ATOMIC_REPLACE_OR_EXPLICIT_NONREQUIREMENT_V1=BOUND"
+        in spec
+    )
+    assert "ADJUDICATION_CLASS=PLATFORM_FULL_GUARANTEE_STILL_NOT_PROVABLE" in spec
+    assert "ATOMIC_REPLACE_IMPLEMENTED=false" in spec
+    assert "EXPLICIT_NONREQUIREMENT_PROVEN=false" in spec
+    assert "POWER_LOSS_DURABILITY=UNPROVEN" in spec
     assert "A1_UNATTENDED_DURABILITY_RUNTIME_AUTHORIZED=false" in spec
     assert "IMPLEMENTATION_GO_IS_RUNTIME_AUTHORIZATION=false" in spec
     assert "RUNTIME_AUTHORIZATION_ELIGIBLE=false" in spec
@@ -193,6 +211,9 @@ def test_master_runbook_refers_to_valid_spec() -> None:
     a1_runtime_start = runbook.index(
         "### 11.13.5 Parallel-track DDO A1 unattended durability runtime authorization persist"
     )
+    a1_crash_start = runbook.index(
+        "### 11.13.5 Parallel-track DDO A1 crash durability atomic replace or explicit non-requirement persist"
+    )
     live_z2db = runbook.index(
         "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
     )
@@ -203,6 +224,7 @@ def test_master_runbook_refers_to_valid_spec() -> None:
         < ledger_start
         < a1_start
         < a1_runtime_start
+        < a1_crash_start
         < live_z2db
     )
     hardening = _hardening_persist_section(runbook)
@@ -286,6 +308,25 @@ def test_master_runbook_refers_to_valid_spec() -> None:
         "NEXT_DDO_STEP=PEAK_TRADE_DDO_A1_CRASH_DURABILITY_ATOMIC_REPLACE_OR_EXPLICIT_NONREQUIREMENT_V1"
         in a1_runtime
     )
+    a1_crash = _a1_crash_durability_persist_section(runbook)
+    assert (
+        "PEAK_TRADE_DDO_A1_CRASH_DURABILITY_ATOMIC_REPLACE_OR_EXPLICIT_NONREQUIREMENT_V1=BOUND"
+        in a1_crash
+    )
+    assert (
+        "OWNER_GO=PEAK_TRADE_OWNER_GO_DDO_A1_CRASH_DURABILITY_ATOMIC_REPLACE_OR_EXPLICIT_NONREQUIREMENT_V1"
+        in a1_crash
+    )
+    assert "ADJUDICATION_CLASS=PLATFORM_FULL_GUARANTEE_STILL_NOT_PROVABLE" in a1_crash
+    assert "EXPLICIT_NONREQUIREMENT_PROVEN=false" in a1_crash
+    assert "ATOMIC_REPLACE_IMPLEMENTED=false" in a1_crash
+    assert "CRASH_DURABILITY_FULLY_PROVEN=false" in a1_crash
+    assert "RUNTIME_AUTHORIZED=false" in a1_crash
+    assert "NEW_STORAGE_AUTHORITY_CREATED=false" in a1_crash
+    assert "POWER_LOSS_DURABILITY=UNPROVEN" in a1_crash
+    assert "NEXT_DDO_STEP=PEAK_TRADE_DDO_A1_DURABILITY_FAILURE_POLICY_BINDING_V1" in a1_crash
+    assert "CURRENT_CANONICAL_SECTION_REPLACED=false" in a1_crash
+    assert "CANONICAL_LIVE_NEXT_POINTER_CHANGED=false" in a1_crash
 
 
 def test_map_and_atlas_remain_navigation_only() -> None:
@@ -302,10 +343,17 @@ def test_map_and_atlas_remain_navigation_only() -> None:
     assert "DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_ROLE=NAVIGATION_POINTER_ONLY" in mot
     assert "DDO_A1_UNATTENDED_DURABILITY_POLICY_BOUNDARY_ROLE=NAVIGATION_POINTER_ONLY" in mot
     assert "DDO_A1_UNATTENDED_DURABILITY_RUNTIME_AUTHORIZATION_ROLE=NAVIGATION_POINTER_ONLY" in mot
+    assert (
+        "DDO_A1_CRASH_DURABILITY_ATOMIC_REPLACE_OR_EXPLICIT_NONREQUIREMENT_ROLE=NAVIGATION_POINTER_ONLY"
+        in mot
+    )
     assert "DDO_AUTHORITY_EFFECT=NONE" in mot
     assert "MAP_OF_TRUTH_AUTHORITY=NAVIGATION_ONLY" in mot
     assert "DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is" in atlas
     assert "PEAK_TRADE_DDO_A1_UNATTENDED_DURABILITY_RUNTIME_AUTHORIZATION_V1 is" in atlas
+    assert (
+        "PEAK_TRADE_DDO_A1_CRASH_DURABILITY_ATOMIC_REPLACE_OR_EXPLICIT_NONREQUIREMENT_V1" in atlas
+    )
     assert "PRODUCTIVE_HOST_LEDGER_BINDING" in atlas
     assert "Atlas is not trading authority" in atlas
     assert (
