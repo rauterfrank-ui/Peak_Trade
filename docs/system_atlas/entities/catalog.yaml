@@ -2591,7 +2591,10 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
     notes: >-
       Append-only offline ledger. Persist occurs only when a capture binding
-      has ledger_path set. AUTHORITY_OWNER=NONE. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
+      has ledger_path set. DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is
+      bound as evidence-domain storage owner. PRODUCTIVE_HOST_LEDGER_BINDING
+      remains false. Durable ledger_path remains unbound on the productive
+      host. AUTHORITY_OWNER=NONE for trading. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
       SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
       SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false.
       RUNTIME_LINEAGE_PARTIAL=true. Atlas is not trading authority.
