@@ -1,0 +1,78 @@
+{
+  "A1_WAL_AS_LIVE_HANDOFF_ALLOWED": false,
+  "DOCUMENT_CLASS": "SECTION_11_14_LIVE_HANDOFF_OWNER_BIND_V1",
+  "DOCUMENT_ROLE": "DERIVED_NON_SSOT_OWNER_BIND_CONTRACT",
+  "FORBIDDEN_OWNER_REUSE": [
+    "DDO_DURABLE_EVIDENCE_STORAGE_OWNER",
+    "MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER",
+    "SECTION_11_14_EVIDENCE_PACKS",
+    "TESTNET_CAMPAIGN_DURABLE_STATE",
+    "PHASE_9_2_MD_DURABLE_STATE",
+    "CAP_72_SIDESTATE_PERSIST",
+    "FILEGATE_KILL_SWITCH",
+    "VENUE_OKX_EEA"
+  ],
+  "FORBIDDEN_OWNER_REUSE_ROWS": [
+    {
+      "ALLOWED_AS_SECTION_11_14_LIVE_HANDOFF_OWNER": false,
+      "FORBIDDEN_REUSE": true,
+      "OWNER": "DDO_DURABLE_EVIDENCE_STORAGE_OWNER",
+      "REASON": "DDO durable evidence ledger is observation-only evidence storage. It is not Peak_Trade Live durable pre-restart handoff control-state."
+    },
+    {
+      "ALLOWED_AS_SECTION_11_14_LIVE_HANDOFF_OWNER": false,
+      "FORBIDDEN_REUSE": true,
+      "OWNER": "MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER",
+      "REASON": "A1 WAL / mutation-critical control-state storage is not a Live identity-bound pre-restart handoff owner."
+    },
+    {
+      "ALLOWED_AS_SECTION_11_14_LIVE_HANDOFF_OWNER": false,
+      "FORBIDDEN_REUSE": true,
+      "OWNER": "SECTION_11_14_EVIDENCE_PACKS",
+      "REASON": "\u00a711.14 evidence packs are forensic ladder artifacts. They are not a contemporaneous Peak_Trade durable pre-restart handoff owner."
+    },
+    {
+      "ALLOWED_AS_SECTION_11_14_LIVE_HANDOFF_OWNER": false,
+      "FORBIDDEN_REUSE": true,
+      "OWNER": "TESTNET_CAMPAIGN_DURABLE_STATE",
+      "REASON": "Testnet campaign durable_state is not this Live field."
+    },
+    {
+      "ALLOWED_AS_SECTION_11_14_LIVE_HANDOFF_OWNER": false,
+      "FORBIDDEN_REUSE": true,
+      "OWNER": "PHASE_9_2_MD_DURABLE_STATE",
+      "REASON": "Phase 9.2 market-data durable_state is not this Live field."
+    },
+    {
+      "ALLOWED_AS_SECTION_11_14_LIVE_HANDOFF_OWNER": false,
+      "FORBIDDEN_REUSE": true,
+      "OWNER": "CAP_72_SIDESTATE_PERSIST",
+      "REASON": "Cap 7.2 SideState persist/restore is strategy lifecycle state, not a Live submit-identity pre-restart handoff."
+    },
+    {
+      "ALLOWED_AS_SECTION_11_14_LIVE_HANDOFF_OWNER": false,
+      "FORBIDDEN_REUSE": true,
+      "OWNER": "FILEGATE_KILL_SWITCH",
+      "REASON": "FILEGATE kill-switch persistence is safety-gate state, not a Live pre-restart handoff owner."
+    },
+    {
+      "ALLOWED_AS_SECTION_11_14_LIVE_HANDOFF_OWNER": false,
+      "FORBIDDEN_REUSE": true,
+      "OWNER": "VENUE_OKX_EEA",
+      "REASON": "VENUE_OKX_EEA remains authority over venue state. It is not owner of the required Peak_Trade durable pre-restart handoff."
+    }
+  ],
+  "FUTURE_HANDOFF_OWNER_REQUIRES_SEPARATE_EXPLICIT_OWNER_GO": true,
+  "GENERIC_STORAGE_ABSTRACTION_LAYER_CREATED": false,
+  "IMPLICIT_OWNER_REUSE_ALLOWED": false,
+  "NEW_HANDOFF_WRITER_CREATED": false,
+  "NEW_STORAGE_OWNER_CREATED": false,
+  "PLACEHOLDER_WRITER_CREATED": false,
+  "SECTION_11_14_LIVE_HANDOFF_OWNER_BOUND": false,
+  "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": "NONE",
+  "SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_BINDING": false,
+  "SECTION_11_14_LIVE_HANDOFF_READER_PRESENT": false,
+  "SECTION_11_14_LIVE_HANDOFF_WRITER_PRESENT": false,
+  "VENUE_OKX_EEA_IS_PEAK_TRADE_PRE_RESTART_HANDOFF_OWNER": false,
+  "VENUE_OKX_EEA_IS_VENUE_STATE_AUTHORITY": true
+}
