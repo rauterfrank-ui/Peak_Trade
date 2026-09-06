@@ -2534,6 +2534,7 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
       - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_runtime_authorization_v1.py
+      - src/learning/deterministic_decision_outcome_v0/a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py
     notes: >-
       Parallel Full-Autonomy/DDO track covering
       src/learning/deterministic_decision_outcome_v0. Offline learning /
@@ -2560,7 +2561,11 @@ entities:
       bound as a fail-closed adjudication: implementation complete;
       preconditions unproven; runtime unauthorized; directory fsync
       fail-closed without a platform hard guarantee; no new storage
-      authority. Not a second
+      authority.
+      PEAK_TRADE_DDO_A1_CRASH_DURABILITY_ATOMIC_REPLACE_OR_EXPLICIT_NONREQUIREMENT_V1
+      is bound as a fail-closed Class-D adjudication: atomic replace is
+      not implemented; explicit non-requirement is not proven; crash
+      durability remains unproven. Not a second
       trading, risk, safety, planning, execution, promotion, or deployment owner.
       Atlas catalog presence is navigation only and is not activation. Atlas is
       not trading authority.
@@ -2601,7 +2606,8 @@ entities:
       not upgraded. A1 unattended durability policy is defined and
       runtime-unauthorized; A1 runtime authorization is adjudicated
       fail-closed without activation; capture failure still does not change the
-      trading return. Host scope input seam binds existing ExecutionEnvironment
+      trading return. Crash-durability atomic replace remains unimplemented
+      and explicit non-requirement remains unproven. Host scope input seam binds existing ExecutionEnvironment
       and Cap 11.2 account identity plus the named runtime-state-root config
       key, then consumes the path resolver.
       Evidence_sources list observation-host producer files, not ownership.
@@ -2619,12 +2625,14 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/durable_evidence_path_v0.py
       - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_runtime_authorization_v1.py
+      - src/learning/deterministic_decision_outcome_v0/a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py
     evidence_sources:
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
       - src/learning/deterministic_decision_outcome_v0/durable_evidence_path_v0.py
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
       - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_runtime_authorization_v1.py
+      - src/learning/deterministic_decision_outcome_v0/a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py
     notes: >-
       Append-only offline ledger. Persist occurs only when a capture binding
       has ledger_path set. DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is
@@ -2639,7 +2647,9 @@ entities:
       recovery is fail-closed with no silent ledger reset and no fallback
       path. A1 runtime authorization is adjudicated fail-closed:
       implementation complete, preconditions unproven, directory fsync
-      fail-closed without a platform hard guarantee. Crash durability
+      fail-closed without a platform hard guarantee. A1 crash-durability
+      atomic-replace-or-nonrequirement is Class D: atomic replace is not
+      implemented; explicit non-requirement is not proven. Crash durability
       remains unproven.
       AUTHORITY_OWNER=NONE for trading. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
       SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
