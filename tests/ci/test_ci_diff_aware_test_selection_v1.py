@@ -5202,6 +5202,15 @@ PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TEST
 PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER = (
     "tests/learning/test_ddo_durable_evidence_storage_owner_contract_v1.py"
 )
+PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER = (
+    "tests/learning/test_ddo_a1_mutation_critical_control_state_storage_owner_contract_v1.py"
+)
+PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_WAL_ADAPTER_V1_TESTOWNER = (
+    "tests/learning/test_ddo_a1_mutation_critical_control_state_wal_adapter_v1.py"
+)
+PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_V1_PRODUCTION = (
+    "src/learning/mutation_critical_control_state_storage_v1/wal_adapter_v1.py"
+)
 PACKAGE_WP02_OFFLINE_OBSERVATION_PROPOSAL_FENCES_V1_PRODUCTION = (
     "src/governance/offline_observation_proposal_contract_fences_v1.py"
 )
@@ -5408,6 +5417,25 @@ def test_selector_ddo_contract_ledger_v0_combined_diff_pr_bounded_full_includes_
         == 1
     )
     assert bounded.count(PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER) == 1
+
+
+def test_selector_ddo_a1_mutation_critical_control_state_storage_pr_bounded_full() -> None:
+    sel = _run_selector(PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_V1_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    assert (
+        PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER
+        in bounded
+    )
+    assert PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_WAL_ADAPTER_V1_TESTOWNER in bounded
+    assert PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER in bounded
+    assert (
+        PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER
+        in bounded
+    )
+    assert (
+        bounded.count(PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_WAL_ADAPTER_V1_TESTOWNER) == 1
+    )
 
 
 def test_selector_package_a_governance_production_pr_bounded_full_includes_lineage_testowner() -> (

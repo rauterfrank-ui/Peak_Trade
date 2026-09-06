@@ -155,6 +155,7 @@ Weitere Architektur-Landkarten (deep dives, keine parallele Trading-SSOT):
 | [`docs/ops/specs/PRE_LIVE_CAPITAL_ADMISSION_CONTRACT_V1.md`](../ops/specs/PRE_LIVE_CAPITAL_ADMISSION_CONTRACT_V1.md) | Navigation-only Pre-Live Capital Admission spec (non-SSOT; typed admission seam; Treasury HTTP isolation preserved; no GET; no POST) |
 | [`docs/ops/specs/TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1.md`](../ops/specs/TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1.md) | Navigation-only Treasury Phase-1 offline contract spec (non-SSOT; typed intent/lifecycle/idempotency/provenance; no network; no mutation; no GET; no POST) |
 | [`docs/ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md`](../ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md) | Navigation-only DDO durable evidence storage-owner contract (non-SSOT; evidence-domain storage owner; productive host ledger path bound from injected scopes; A1 unattended durability policy defined; A1 runtime authorization adjudicated fail-closed and unauthorized; crash durability unproven; default host remains unbound; no trading authority; no GET; no POST) |
+| [`docs/ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1.md`](../ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1.md) | Navigation-only mutation-critical control-state storage-owner contract (non-SSOT; new isolated WAL owner; not DDO observation ledger; no productive host; host-crash unproven; no GET; no POST) |
 | [`docs/ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md`](../ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md) | Navigation-only Full-Core LIVE_ENABLED standing admission seam spec (non-SSOT; predicate conjunction; default false; true is not automatic admission; no GET; no POST) |
 | [`docs/ops/specs/FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md`](../ops/specs/FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md) | Navigation-only Full-Core pre-wire admission closure spec (non-SSOT; LIVE_ARMED and WIRE_SEND_PERMITTED standing predicates; construction-admission contract; Cap 11.1 construction remains forbidden; no GET; no POST) |
 | [`docs/ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md`](../ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md) | Navigation-only Full-Core STEP-29P risk-admissibility pre-construction spec (non-SSOT; fresh GET evidence; equity dimension unbound; Cap 11.1 construction remains forbidden) |
@@ -1624,6 +1625,8 @@ DDO_A1_DURABILITY_TO_ADMISSION_AND_REPLAY_BINDING_NAV=docs/ops/specs/DDO_DURABLE
 DDO_A1_DURABILITY_TO_ADMISSION_AND_REPLAY_BINDING_ROLE=NAVIGATION_POINTER_ONLY
 DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_NAV=docs/ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md
 DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_ROLE=NAVIGATION_POINTER_ONLY
+DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_NAV=docs/ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1.md
+DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_ROLE=NAVIGATION_POINTER_ONLY
 PRODUCTIVE_LEARNING_AUTHORITY=NONE
 PRODUCTIVE_PROMOTION_AUTHORITY=NONE
 ```

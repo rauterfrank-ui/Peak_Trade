@@ -2538,6 +2538,8 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py
+      - src/learning/mutation_critical_control_state_storage_v1/authority_v1.py
+      - docs/ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1.md
     notes: >-
       Parallel Full-Autonomy/DDO track covering
       src/learning/deterministic_decision_outcome_v0. Offline learning /
@@ -2586,6 +2588,11 @@ entities:
       is partial; host-crash and power-loss remain unproven;
       durability_proven=True is not manufacturable; a separate storage
       durability architecture is required before host-crash can be claimed.
+      PEAK_TRADE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1
+      is bound as an isolated mutation-critical control-state storage owner
+      with CUSTOM_FILE_WAL_JOURNAL_V1. It is not the DDO observation ledger
+      owner, not trading/execution/supervisor/promotion authority, and not
+      a productive host binding. Host-crash and power-loss remain unproven.
       Atlas catalog presence is navigation only and is not activation. Atlas is
       not trading authority.
 
@@ -2688,6 +2695,28 @@ entities:
       SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
       SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false.
       RUNTIME_LINEAGE_PARTIAL=true. Atlas is not trading authority.
+
+  - id: RUNTIME_COMPONENT:mutation_critical_control_state_storage_v1
+    kind: RUNTIME_COMPONENT
+    name: Mutation-critical control-state WAL storage v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/learning/mutation_critical_control_state_storage_v1/wal_adapter_v1.py
+      - src/learning/mutation_critical_control_state_storage_v1/authority_v1.py
+    evidence_sources:
+      - src/learning/mutation_critical_control_state_storage_v1/wal_adapter_v1.py
+      - src/learning/mutation_critical_control_state_storage_v1/authority_v1.py
+      - src/learning/mutation_critical_control_state_storage_v1/medium_binding_v1.py
+      - docs/ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1.md
+    notes: >-
+      Isolated MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER with
+      CUSTOM_FILE_WAL_JOURNAL_V1. Not DDO_DURABLE_EVIDENCE_STORAGE_OWNER.
+      Not trading, execution, supervisor, or promotion authority. No
+      productive host binding. Host-crash and power-loss remain UNPROVEN.
+      Atlas is not trading authority.
 
   - id: RUNTIME_COMPONENT:ddo_experiment_identity_binding
     kind: RUNTIME_COMPONENT
