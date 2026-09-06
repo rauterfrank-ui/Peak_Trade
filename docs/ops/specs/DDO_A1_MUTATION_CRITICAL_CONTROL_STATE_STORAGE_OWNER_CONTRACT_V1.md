@@ -145,4 +145,4 @@ NEXT_DDO_STEP=OWNER_GO_REQUIRED_SEPARATE_SCOPED_DDO_A1_CONTINUATION_NOT_AUTHORIZ
 ```
 
 Implementation path:
-`src&#47;learning&#47;mutation_critical_control_state_storage_v1`.
+`src&#47;learning&#47;mutation_critical_control_state_storage_v1&#47;wal_adapter_v1.py`.
