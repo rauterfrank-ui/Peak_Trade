@@ -70,11 +70,17 @@ def test_happy_path_complete_handoff_promotes_only_on_admissible_source() -> Non
             "FLATTEN_EXECUTE_USED": False,
             "RESTART_EXECUTION": False,
             "LIVE_RESTART_RECONSTRUCTED": False,
-            "durable_handoff": _complete_handoff(),
+            "durable_handoff": {
+                **_complete_handoff(),
+                "contemporaneous_capture_proven": True,
+                "provenance_class": "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_CAPTURE",
+            },
             "census": {
                 "DURABLE_PRE_RESTART_HANDOFF_PRESENT": True,
                 "HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH": True,
                 "NOT_FIXTURE_TESTNET_OR_SIMULATED": True,
+                "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED": True,
+                "provenance_class": "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_CAPTURE",
             },
         }
     )

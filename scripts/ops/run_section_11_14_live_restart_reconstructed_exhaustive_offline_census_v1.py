@@ -16,9 +16,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import 
     write_manifest_v1,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (  # noqa: E402
-    CANONICAL_EVIDENCE_RUN_ID,
-    EXPECTED_ORIGIN_MAIN_SHA,
-    OWNER_GO,
+    HISTORICAL_EXHAUSTIVE_CENSUS_OWNER_GO,
+    HISTORICAL_EXHAUSTIVE_CENSUS_RUN_ID,
+    HISTORICAL_EXHAUSTIVE_CENSUS_SHA,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_exhaustive_execute_v1 import (  # noqa: E402
     execute_live_restart_reconstructed_exhaustive_census_v1,
@@ -39,16 +39,17 @@ def _origin_main_sha(repo_root: Path) -> str:
 def main() -> int:
     repo_root = Path(__file__).resolve().parents[2]
     origin_main_sha = _origin_main_sha(repo_root)
-    if origin_main_sha != EXPECTED_ORIGIN_MAIN_SHA:
+    if origin_main_sha != HISTORICAL_EXHAUSTIVE_CENSUS_SHA:
         print(
-            f"ORIGIN_MAIN_SHA_MISMATCH actual={origin_main_sha} expected={EXPECTED_ORIGIN_MAIN_SHA}"
+            "HISTORICAL_EXHAUSTIVE_CENSUS_SHA_MISMATCH "
+            f"actual={origin_main_sha} expected={HISTORICAL_EXHAUSTIVE_CENSUS_SHA}"
         )
         return 2
     result = execute_live_restart_reconstructed_exhaustive_census_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=origin_main_sha,
+        owner_go=HISTORICAL_EXHAUSTIVE_CENSUS_OWNER_GO,
+        origin_main_sha=HISTORICAL_EXHAUSTIVE_CENSUS_SHA,
         repo_root=repo_root,
-        run_id=CANONICAL_EVIDENCE_RUN_ID,
+        run_id=HISTORICAL_EXHAUSTIVE_CENSUS_RUN_ID,
     )
     pack = Path(result["pack"])
     pack.mkdir(parents=True, exist_ok=True)

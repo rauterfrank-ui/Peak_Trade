@@ -614,6 +614,22 @@ relations:
       Live pre-restart handoff. No GET. No POST. No restart execution.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_section_11_14_restart_handoff_owner_bind_follows_exhaustive_census
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_restart_reconstructed_exhaustive_offline_census
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_owner_bind_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_owner_bind_execute_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_validators_v1.py
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260906T201500Z/
+    notes: >-
+      Live restart handoff owner bind NONE and retroactive synthesis
+      refusal follow the exhaustive offline census. Owner remains NONE.
+      No GET. No POST. No restart execution. Atlas is not trading
+      authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_path_calls_venue_translation
     source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     type: CALLS
