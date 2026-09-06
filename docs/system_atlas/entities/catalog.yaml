@@ -2546,7 +2546,9 @@ entities:
       storage owner. DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1 is
       complete. PEAK_TRADE_DDO_PRODUCTIVE_HOST_SCOPE_INPUT_BINDING_V1 is bound
       as an explicit typed host injection seam over existing owners.
-      PRODUCTIVE_HOST_LEDGER_BINDING remains false. Default host scope remains
+      PEAK_TRADE_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1 is bound:
+      injected scopes resolve ledger_path through the existing path
+      primitive onto AppendOnlyDdoLedgerV0. Default host scope remains
       unbound until explicit injection. Not a second
       trading, risk, safety, planning, execution, promotion, or deployment owner.
       Atlas catalog presence is navigation only and is not activation. Atlas is
@@ -2582,11 +2584,12 @@ entities:
       typed observation projection v1 of EntryExitPolicyDecisionV0.
       Generic DecisionResult stays NO_ACTION or UNKNOWN; exact producer
       tokens live in the projection. selected_side is not SideState-after.
-      Durable ledger_path remains unbound on the productive host.
-      Durability hardening does not activate host persistence.
-      Host scope input seam binds existing ExecutionEnvironment and Cap 11.2
-      account identity plus the named runtime-state-root config key; it does
-      not resolve or set ledger_path.
+      Injected host scopes resolve and bind ledger_path onto the existing
+      AppendOnlyDdoLedgerV0 capture binding. Default uninjected host
+      construction still leaves ledger_path unbound. Durability claims are
+      not upgraded. Host scope input seam binds existing ExecutionEnvironment
+      and Cap 11.2 account identity plus the named runtime-state-root config
+      key, then consumes the path resolver.
       Evidence_sources list observation-host producer files, not ownership.
       Not WP-FA-08. Atlas is not trading authority.
 
@@ -2608,12 +2611,12 @@ entities:
       Append-only offline ledger. Persist occurs only when a capture binding
       has ledger_path set. DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is
       bound as evidence-domain storage owner. PRODUCTIVE_HOST_LEDGER_BINDING
-      remains false. Durable ledger_path remains unbound on the productive
-      host. Durability hardening and host-binding prep are complete
-      (captured/persisted id split; classified write failures; exclusive
-      append lock; path primitive present). Productive host scope input
-      seam is bound; path resolver remains unconsumed and ledger_path
-      remains None. AUTHORITY_OWNER=NONE for trading. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
+      is true when the existing-owner triple is injected; default host
+      construction still leaves ledger_path None. Durability hardening and
+      host-binding prep are complete (captured/persisted id split; classified
+      write failures; exclusive append lock; path primitive present).
+      Productive host scope input seam is bound; the path resolver is
+      consumed by that seam. AUTHORITY_OWNER=NONE for trading. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
       SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
       SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false.
       RUNTIME_LINEAGE_PARTIAL=true. Atlas is not trading authority.
@@ -2692,8 +2695,9 @@ entities:
       cursor; they do not keep a local mapping table. PENDING owner
       outputs are unchanged. Explicit DDO observation-host scope inputs
       consume existing ExecutionEnvironment, Cap 11.2 account identity, and
-      the named DDO runtime-state-root config key; they do not resolve
-      ledger_path. Atlas is not trading
+      the named DDO runtime-state-root config key; injected scopes resolve
+      ledger_path onto AppendOnlyDdoLedgerV0. Default construction remains
+      unbound. Atlas is not trading
       authority. AUTHORITY_OWNER=NONE.
       PRODUCTIVE_AI_AUTHORITY_COUNT=0. SECOND_TRADING_AUTHORITY=false.
 

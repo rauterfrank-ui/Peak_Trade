@@ -28,6 +28,7 @@ from src.ops.capability_11_2_credential_authorization_and_account_identity_bound
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_observation_host_scope_binding_v1 import (
     DdoHostScopeInputError,
     DdoObservationHostScopeInputsV1,
+    annotate_ddo_host_ledger_binding_on_capture_v1,
     apply_ddo_observation_host_scope_to_capture_binding_v1,
     assert_ddo_observation_host_scope_stable_v1,
     maybe_bind_ddo_observation_host_scope_from_optional_inputs_v1,
@@ -434,14 +435,16 @@ class BridgeSessionStateV1:
     # WP-FA-04 — observation-only DDO capture (never decision/risk/safety/selection authority).
     ddo_capture_binding: DdoCaptureBindingV0 = field(default_factory=DdoCaptureBindingV0)
     last_ddo_capture: Optional[dict[str, Any]] = None
-    # DDO durable-evidence host-binding prep. Explicitly unbound until
-    # bind_ddo_observation_host_scope_v1. Not a productive ledger_path.
+    # DDO durable-evidence host binding. Explicitly unbound until
+    # bind_ddo_observation_host_scope_v1 injects the existing-owner triple
+    # and resolves ledger_path. Default construction remains None.
     ddo_durable_evidence_runtime_state_root: Optional[str] = None
     ddo_evidence_environment: Optional[str] = None
     ddo_evidence_account_scope: Optional[str] = None
     ddo_evidence_environment_binding_status: str = "UNBOUND"
     ddo_evidence_account_binding_status: str = "UNBOUND"
     ddo_observation_host_scope: Optional[DdoObservationHostScopeInputsV1] = None
+    ddo_durable_ledger_path: Optional[str] = None
     # Productive archive-binding capture: last cycle CanonicalTradingDecisionEvidenceV1
     # export payload (wiring only; no decision recomputation).
     last_canonical_decision_evidence: Optional[dict[str, Any]] = None
@@ -1816,10 +1819,6 @@ def run_bridge_cycle_v1(
             "error": f"{type(_ddo_exc).__name__}:{_ddo_exc}",
             "decision_unchanged": True,
             "capture_failure_changes_current_decision": False,
-            "ledger_bound": False,
-            "path_binding_state": "UNBOUND",
-            "environment_binding_status": state.ddo_evidence_environment_binding_status,
-            "account_binding_status": state.ddo_evidence_account_binding_status,
         }
         failure_class = getattr(_ddo_exc, "failure_class", None)
         if isinstance(failure_class, str):
@@ -1828,24 +1827,12 @@ def run_bridge_cycle_v1(
         binding = state.ddo_capture_binding
         if isinstance(binding, DdoCaptureBindingV0) and binding.last_durability_evidence:
             payload["durability"] = dict(binding.last_durability_evidence)
-            payload["ledger_bound"] = bool(binding.ledger_path is not None)
-            payload["path_binding_state"] = (
-                "BOUND" if binding.ledger_path is not None else "UNBOUND"
-            )
         state.last_ddo_capture = payload
+        annotate_ddo_host_ledger_binding_on_capture_v1(state)
     if scope_conflict is not None:
         observe_ddo_host_scope_conflict_v1(state, scope_conflict)
     elif state.last_ddo_capture is not None:
-        capture_payload = dict(state.last_ddo_capture)
-        capture_payload["ddo_ledger_path_unresolved"] = "DDO_LEDGER_PATH_UNRESOLVED"
-        capture_payload["path_binding_state"] = (
-            "BOUND" if state.ddo_capture_binding.ledger_path is not None else "UNBOUND"
-        )
-        capture_payload["environment_binding_status"] = (
-            state.ddo_evidence_environment_binding_status
-        )
-        capture_payload["account_binding_status"] = state.ddo_evidence_account_binding_status
-        state.last_ddo_capture = capture_payload
+        annotate_ddo_host_ledger_binding_on_capture_v1(state)
 
     state.cycle_ledger.append(cycle.to_dict())
     return cycle

@@ -1,8 +1,9 @@
-"""Explicit DDO observation-host scope input binding v1.
+"""Explicit DDO observation-host scope input and durable ledger binding v1.
 
-Consumes existing owners only. Does not resolve a ledger path. Does not
-set DdoCaptureBindingV0.ledger_path. Does not invent cwd/home/repo/tmp
-defaults, fixture account IDs, or credentials-as-identity.
+Consumes existing owners only. Resolves ledger_path solely from the frozen
+scope tuple via resolve_ddo_durable_evidence_path_v1. Binds
+AppendOnlyDdoLedgerV0 through DdoCaptureBindingV0. Does not invent
+cwd/home/repo/tmp defaults, fixture account IDs, or credentials-as-identity.
 """
 
 from __future__ import annotations
@@ -20,7 +21,9 @@ from src.learning.deterministic_decision_outcome_v0.durable_evidence_path_v0 imp
     DDO_EVIDENCE_ENVIRONMENT_TOKENS,
     DDO_EVIDENCE_SYSTEM_SCOPE_TOKEN,
     LOGICAL_CONFIG_KEY_DDO_DURABLE_EVIDENCE_RUNTIME_STATE_ROOT,
+    resolve_ddo_durable_evidence_path_v1,
 )
+from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoPathResolutionError
 from src.ops.capability_11_2_credential_authorization_and_account_identity_boundary_v1.account_identity_boundary_v1 import (
     AccountIdentityRecordV1,
 )
@@ -31,6 +34,7 @@ from src.ops.capability_11_2_credential_authorization_and_account_identity_bound
 SCOPE_INPUT_MISSING: Final[str] = "SCOPE_INPUT_MISSING"
 SCOPE_INPUT_INVALID: Final[str] = "SCOPE_INPUT_INVALID"
 SCOPE_INPUT_CONFLICT: Final[str] = "SCOPE_INPUT_CONFLICT"
+PATH_BINDING_FAILURE: Final[str] = "PATH_BINDING_FAILURE"
 DDO_LEDGER_PATH_UNRESOLVED: Final[str] = "DDO_LEDGER_PATH_UNRESOLVED"
 
 RUNTIME_STATE_ROOT_OWNER: Final[str] = "DDO_DURABLE_EVIDENCE_STORAGE_OWNER"
@@ -55,7 +59,7 @@ class DdoHostScopeInputError(Exception):
 
 @dataclass(frozen=True)
 class DdoObservationHostScopeInputsV1:
-    """Frozen explicit host scope inputs. Not a ledger path. Not a trading authority."""
+    """Frozen explicit host scope inputs. Not a trading authority."""
 
     runtime_state_root: str
     environment: ExecutionEnvironment
@@ -114,7 +118,7 @@ def bind_ddo_observation_host_scope_v1(
     account_identity_record: AccountIdentityRecordV1 | None = None,
     runtime_state_root_config: Mapping[str, Any] | None = None,
 ) -> DdoObservationHostScopeInputsV1:
-    """Bind once from existing owners. Does not resolve or set ledger_path."""
+    """Bind once from existing owners, then resolve and bind the durable ledger path."""
     resolved_root = _resolve_runtime_state_root_input(
         runtime_state_root=runtime_state_root,
         runtime_state_root_config=runtime_state_root_config,
@@ -125,41 +129,81 @@ def bind_ddo_observation_host_scope_v1(
         runtime_state_root=str(resolved_root),
         environment=resolved_environment,
         account_identity=resolved_account,
+        ledger_path_resolved=True,
     )
+    resolved_path = resolve_ddo_observation_host_durable_ledger_path_v1(incoming)
     existing = getattr(state, "ddo_observation_host_scope", None)
     if existing is not None:
         if existing != incoming:
             raise DdoHostScopeInputError(SCOPE_INPUT_CONFLICT, "HOST_SCOPE_REBIND_CONFLICT")
         _assert_host_scope_matches_frozen(state, existing)
+        _bind_ledger_path_once(state, resolved_path)
         return existing
     _write_scope_onto_host(state, incoming)
+    _bind_ledger_path_once(state, resolved_path)
     apply_ddo_observation_host_scope_to_capture_binding_v1(state)
     return incoming
 
 
+def resolve_ddo_observation_host_durable_ledger_path_v1(
+    scope: DdoObservationHostScopeInputsV1,
+) -> Path:
+    """Derive the ledger path from the frozen host scope. No fallback source."""
+    try:
+        return resolve_ddo_durable_evidence_path_v1(
+            runtime_state_root=scope.runtime_state_root,
+            environment=scope.environment.value,
+            account_scope=scope.account_identity,
+            system_scope=scope.system_scope,
+        )
+    except DdoPathResolutionError as exc:
+        raise DdoHostScopeInputError(PATH_BINDING_FAILURE, str(exc)) from exc
+
+
 def apply_ddo_observation_host_scope_to_capture_binding_v1(state: Any) -> None:
-    """Copy bound scope onto capture observability fields. Never sets ledger_path."""
+    """Copy bound scope onto capture fields and bind-once the scope-derived ledger path."""
     scope = getattr(state, "ddo_observation_host_scope", None)
     binding = getattr(state, "ddo_capture_binding", None)
     if scope is None or not isinstance(binding, DdoCaptureBindingV0):
         return
-    if binding.ledger_path is not None:
-        raise DdoHostScopeInputError(SCOPE_INPUT_CONFLICT, "LEDGER_PATH_MUST_REMAIN_UNBOUND")
     binding.evidence_environment = scope.environment.value
     binding.evidence_account_scope = scope.account_identity
     binding.evidence_environment_binding_status = "BOUND"
     binding.evidence_account_binding_status = "BOUND"
+    _bind_ledger_path_once(state, resolve_ddo_observation_host_durable_ledger_path_v1(scope))
 
 
 def assert_ddo_observation_host_scope_stable_v1(state: Any) -> None:
-    """Fail closed if bound scope fields were mutated mid-lifecycle."""
+    """Fail closed if bound scope fields or the bound ledger path were mutated mid-lifecycle."""
     scope = getattr(state, "ddo_observation_host_scope", None)
     if scope is None:
         return
     _assert_host_scope_matches_frozen(state, scope)
+    resolved = resolve_ddo_observation_host_durable_ledger_path_v1(scope)
+    _assert_ledger_path_matches(state, resolved)
+
+
+def annotate_ddo_host_ledger_binding_on_capture_v1(state: Any) -> None:
+    """Stamp path-binding observability onto last_ddo_capture. Never changes the cycle."""
+    payload = dict(getattr(state, "last_ddo_capture") or {})
     binding = getattr(state, "ddo_capture_binding", None)
-    if isinstance(binding, DdoCaptureBindingV0) and binding.ledger_path is not None:
-        raise DdoHostScopeInputError(SCOPE_INPUT_CONFLICT, "LEDGER_PATH_MUST_REMAIN_UNBOUND")
+    ledger_bound = isinstance(binding, DdoCaptureBindingV0) and binding.ledger_path is not None
+    payload["ledger_bound"] = bool(ledger_bound)
+    payload["path_binding_state"] = "BOUND" if ledger_bound else "UNBOUND"
+    payload["resolved_path_is_scope_derived"] = bool(
+        ledger_bound and getattr(state, "ddo_observation_host_scope", None) is not None
+    )
+    if ledger_bound:
+        payload.pop("ddo_ledger_path_unresolved", None)
+    else:
+        payload["ddo_ledger_path_unresolved"] = DDO_LEDGER_PATH_UNRESOLVED
+    payload["environment_binding_status"] = getattr(
+        state, "ddo_evidence_environment_binding_status", "UNBOUND"
+    )
+    payload["account_binding_status"] = getattr(
+        state, "ddo_evidence_account_binding_status", "UNBOUND"
+    )
+    state.last_ddo_capture = payload
 
 
 def observe_ddo_host_scope_conflict_v1(state: Any, exc: DdoHostScopeInputError) -> None:
@@ -169,10 +213,8 @@ def observe_ddo_host_scope_conflict_v1(state: Any, exc: DdoHostScopeInputError) 
     payload["capture_failure_changes_current_decision"] = False
     payload["scope_input_failure_class"] = exc.failure_class
     payload["scope_input_error"] = f"{type(exc).__name__}:{exc}"
-    payload["ledger_bound"] = False
-    payload["path_binding_state"] = "UNBOUND"
-    payload["ddo_ledger_path_unresolved"] = DDO_LEDGER_PATH_UNRESOLVED
     state.last_ddo_capture = payload
+    annotate_ddo_host_ledger_binding_on_capture_v1(state)
 
 
 def _extract_runtime_state_root_raw(config: Mapping[str, Any]) -> Any:
@@ -254,6 +296,31 @@ def _write_scope_onto_host(state: Any, scope: DdoObservationHostScopeInputsV1) -
     state.ddo_evidence_account_binding_status = "BOUND"
 
 
+def _bind_ledger_path_once(state: Any, resolved: Path) -> None:
+    binding = getattr(state, "ddo_capture_binding", None)
+    if not isinstance(binding, DdoCaptureBindingV0):
+        raise DdoHostScopeInputError(PATH_BINDING_FAILURE, "CAPTURE_BINDING_REQUIRED")
+    existing = binding.ledger_path
+    if existing is not None and Path(existing) != resolved:
+        raise DdoHostScopeInputError(SCOPE_INPUT_CONFLICT, "LEDGER_PATH_REBIND_CONFLICT")
+    host_path = getattr(state, "ddo_durable_ledger_path", None)
+    if host_path is not None and str(host_path) != str(resolved):
+        raise DdoHostScopeInputError(SCOPE_INPUT_CONFLICT, "LEDGER_PATH_REBIND_CONFLICT")
+    binding.ledger_path = resolved
+    state.ddo_durable_ledger_path = str(resolved)
+
+
+def _assert_ledger_path_matches(state: Any, resolved: Path) -> None:
+    binding = getattr(state, "ddo_capture_binding", None)
+    if not isinstance(binding, DdoCaptureBindingV0) or binding.ledger_path is None:
+        raise DdoHostScopeInputError(SCOPE_INPUT_CONFLICT, "LEDGER_PATH_UNBOUND_AFTER_SCOPE")
+    if Path(binding.ledger_path) != resolved:
+        raise DdoHostScopeInputError(SCOPE_INPUT_CONFLICT, "LEDGER_PATH_REBIND_CONFLICT")
+    host_path = getattr(state, "ddo_durable_ledger_path", None)
+    if host_path is None or str(host_path) != str(resolved):
+        raise DdoHostScopeInputError(SCOPE_INPUT_CONFLICT, "LEDGER_PATH_CONFLICT")
+
+
 def _assert_host_scope_matches_frozen(state: Any, scope: DdoObservationHostScopeInputsV1) -> None:
     if (
         str(getattr(state, "ddo_durable_evidence_runtime_state_root", None))
@@ -268,3 +335,5 @@ def _assert_host_scope_matches_frozen(state: Any, scope: DdoObservationHostScope
         raise DdoHostScopeInputError(SCOPE_INPUT_CONFLICT, "ENVIRONMENT_BINDING_STATUS_CONFLICT")
     if str(getattr(state, "ddo_evidence_account_binding_status", None)) != "BOUND":
         raise DdoHostScopeInputError(SCOPE_INPUT_CONFLICT, "ACCOUNT_BINDING_STATUS_CONFLICT")
+    if scope.system_scope != DDO_EVIDENCE_SYSTEM_SCOPE_TOKEN:
+        raise DdoHostScopeInputError(SCOPE_INPUT_CONFLICT, "SYSTEM_SCOPE_CONFLICT")
