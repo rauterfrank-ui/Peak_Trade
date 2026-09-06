@@ -2532,6 +2532,7 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/authority_v0.py
       - src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
+      - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
     notes: >-
       Parallel Full-Autonomy/DDO track covering
       src/learning/deterministic_decision_outcome_v0. Offline learning /
@@ -2549,7 +2550,12 @@ entities:
       PEAK_TRADE_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1 is bound:
       injected scopes resolve ledger_path through the existing path
       primitive onto AppendOnlyDdoLedgerV0. Default host scope remains
-      unbound until explicit injection. Not a second
+      unbound until explicit injection.
+      PEAK_TRADE_DDO_A1_UNATTENDED_DURABILITY_POLICY_BOUNDARY_V1 is bound
+      as a fail-closed policy boundary: unattended durability is not
+      trading, execution, or promotion authority; runtime unattended
+      durability remains unauthorized; crash durability remains unproven.
+      Not a second
       trading, risk, safety, planning, execution, promotion, or deployment owner.
       Atlas catalog presence is navigation only and is not activation. Atlas is
       not trading authority.
@@ -2587,7 +2593,9 @@ entities:
       Injected host scopes resolve and bind ledger_path onto the existing
       AppendOnlyDdoLedgerV0 capture binding. Default uninjected host
       construction still leaves ledger_path unbound. Durability claims are
-      not upgraded. Host scope input seam binds existing ExecutionEnvironment
+      not upgraded. A1 unattended durability policy is defined and
+      runtime-unauthorized; capture failure still does not change the
+      trading return. Host scope input seam binds existing ExecutionEnvironment
       and Cap 11.2 account identity plus the named runtime-state-root config
       key, then consumes the path resolver.
       Evidence_sources list observation-host producer files, not ownership.
@@ -2603,10 +2611,12 @@ entities:
     source_paths:
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
       - src/learning/deterministic_decision_outcome_v0/durable_evidence_path_v0.py
+      - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
     evidence_sources:
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
       - src/learning/deterministic_decision_outcome_v0/durable_evidence_path_v0.py
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+      - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
     notes: >-
       Append-only offline ledger. Persist occurs only when a capture binding
       has ledger_path set. DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is
@@ -2616,7 +2626,11 @@ entities:
       host-binding prep are complete (captured/persisted id split; classified
       write failures; exclusive append lock; path primitive present).
       Productive host scope input seam is bound; the path resolver is
-      consumed by that seam. AUTHORITY_OWNER=NONE for trading. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
+      consumed by that seam. A1 unattended durability policy boundary is
+      defined; runtime unattended durability remains unauthorized;
+      recovery is fail-closed with no silent ledger reset and no fallback
+      path. Crash durability remains unproven.
+      AUTHORITY_OWNER=NONE for trading. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
       SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
       SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false.
       RUNTIME_LINEAGE_PARTIAL=true. Atlas is not trading authority.
@@ -2661,6 +2675,7 @@ entities:
       - src/ops/dynamic_scope_persistence_binding_v1/models_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py
     evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py
       - src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py
@@ -2697,7 +2712,8 @@ entities:
       consume existing ExecutionEnvironment, Cap 11.2 account identity, and
       the named DDO runtime-state-root config key; injected scopes resolve
       ledger_path onto AppendOnlyDdoLedgerV0. Default construction remains
-      unbound. Atlas is not trading
+      unbound. A1 unattended durability policy is stamped as defined and
+      runtime-unauthorized. Atlas is not trading
       authority. AUTHORITY_OWNER=NONE.
       PRODUCTIVE_AI_AUTHORITY_COUNT=0. SECOND_TRADING_AUTHORITY=false.
 
