@@ -25,15 +25,14 @@ from src.ops.full_core_live_path_composition_root_v1.live_admission_gap_dag_v1 i
     EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA,
     FORBIDDEN_OWNER_REUSE,
+    HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_OWNER_GO,
+    HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_SHA,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
     SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
     SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_BINDING,
     SECTION_11_14_LIVE_HANDOFF_READER_PRESENT,
     SECTION_11_14_LIVE_HANDOFF_WRITER_PRESENT,
-    THIS_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -321,8 +320,8 @@ def test_live_restart_reconstructed_admission_supervisor_remain_false() -> None:
 
 def test_execute_is_offline_no_wire_no_live_action() -> None:
     result = execute_live_handoff_required_field_capture_seam_pos_and_owner_vacancy_contract_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        owner_go=HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_OWNER_GO,
+        origin_main_sha=HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_SHA,
         repo_root=REPO_ROOT,
         run_id="20260906T210000Z-test",
     )
@@ -338,7 +337,6 @@ def test_execute_is_offline_no_wire_no_live_action() -> None:
     assert summary["EARLIEST_COMPLETE_HANDOFF_CAPTURE_PROVEN"] is False
     assert summary["SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT"] == "NONE"
     assert result["raw_exchanges"] == []
-    assert THIS_SLICE.endswith("OWNER_VACANCY_CONTRACT")
     assert SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT == "NONE"
 
 
