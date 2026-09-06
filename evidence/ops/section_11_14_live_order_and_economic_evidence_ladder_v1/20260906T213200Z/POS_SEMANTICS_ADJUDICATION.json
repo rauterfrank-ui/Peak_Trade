@@ -1,0 +1,162 @@
+{
+  "ABSOLUTE_QUANTITY_UNPROVEN": true,
+  "BOUND_FILL_SZ": "1",
+  "BOUND_IDENTITY_HAS_FILL_SZ_NOT_POS": true,
+  "BOUND_POS_FIELD_PRESENT": false,
+  "CONTRACT_COUNT_UNPROVEN": true,
+  "DOCUMENT_CLASS": "SECTION_11_14_POS_SEMANTICS_ARCHITECTURE_ADJUDICATION_V1",
+  "NET_MODE_SEMANTICS_UNPROVEN_FOR_HANDOFF_POS": true,
+  "NORMALIZATION_FROM_PLAUSIBILITY_FORBIDDEN": true,
+  "NORMALIZED_BASE_QUANTITY_UNPROVEN": true,
+  "NO_UNIQUE_CANONICAL_MEANING_FROM_AUTHORITY": true,
+  "POSSIDE_NET_IS_BOUND_FILL_IDENTITY_NOT_HANDOFF_POS": true,
+  "POS_ACCEPTABLE_PRODUCERS": [],
+  "POS_ACCEPTABLE_PRODUCER_COUNT": 0,
+  "POS_CANONICAL_MEANING": "UNPROVEN",
+  "POS_EQUALS_BOUND_FILL_SZ_IS_LIVE_POSITION_RECONCILED_ONLY": true,
+  "POS_INSTRUMENT_BINDING": "MUST_EQUAL_BOUND_INSTID;UNIT_DIMENSION_UNPROVEN",
+  "POS_REJECTED_PRODUCERS_WITH_REASON": [
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/order_plan_v1.py",
+      "PRODUCER_ID": "ORDER_PLAN_QTY",
+      "REASON": "Submitted/planned sz is not handoff pos. Authority does not equate them.",
+      "VALUE_SEMANTICS": "intended_order_size_contracts"
+    },
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py",
+      "PRODUCER_ID": "SUBMITTED_ORDER_SZ",
+      "REASON": "Wire sz is submitted quantity, not filled or venue position.",
+      "VALUE_SEMANTICS": "wire_submitted_order_size"
+    },
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py",
+      "PRODUCER_ID": "ACKNOWLEDGED_ORDER_SZ",
+      "REASON": "ACK allowlist is sCode,sMsg,ordId,clOrdId,tag. sz and pos are omitted.",
+      "VALUE_SEMANTICS": "absent_from_ack_allowlist"
+    },
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/fill_observed_predicate_v1.py",
+      "PRODUCER_ID": "FILL_SZ",
+      "REASON": "Fill quantity is not position proof and is a venue GET artifact.",
+      "VALUE_SEMANTICS": "venue_reported_executed_fill_quantity"
+    },
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_post_submit_evidence_state_v1.py",
+      "PRODUCER_ID": "ACCUMULATED_FILLS",
+      "REASON": "Accumulated fills remain fill quantity, not handoff pos.",
+      "VALUE_SEMANTICS": "accumulated_venue_fill_quantity"
+    },
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/position_reconciled_predicate_v1.py",
+      "PRODUCER_ID": "POSITION_GET_POS",
+      "REASON": "Venue GET pos is LIVE_POSITION_RECONCILED, not contemporaneous Peak_Trade handoff.",
+      "VALUE_SEMANTICS": "venue_native_GET_account_positions_pos"
+    },
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/accounting_reconstructed_predicate_v1.py",
+      "PRODUCER_ID": "ACCOUNTING_POSITION",
+      "REASON": "Accounting reconstruction is predecessor, not restart handoff.",
+      "VALUE_SEMANTICS": "accounting_reconstructed_from_venue_get_path"
+    },
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "src/portfolio/base.py",
+      "PRODUCER_ID": "PRODUCTIVE_PORTFOLIO",
+      "REASON": "Portfolio position is accounting/internal state, not Live handoff pos.",
+      "VALUE_SEMANTICS": "internal_portfolio_units"
+    },
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "src/learning/deterministic_decision_outcome_v0/",
+      "PRODUCER_ID": "EXECUTION_LEDGER",
+      "REASON": "DDO ledger is observation-only. Forbidden owner reuse.",
+      "VALUE_SEMANTICS": "observation_ledger"
+    },
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/position_reconciled_adjudication_v1.py",
+      "PRODUCER_ID": "RECONCILIATION_BUNDLE",
+      "REASON": "Evidence packs are forensic artifacts, not control handoff.",
+      "VALUE_SEMANTICS": "position_reconciliation_claim"
+    },
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/sidestate_restore_v1.py",
+      "PRODUCER_ID": "SIDESTATE",
+      "REASON": "SideState is strategy lifecycle, not Live submit-identity handoff.",
+      "VALUE_SEMANTICS": "strategy_lifecycle_side_state"
+    },
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/submit_ack_observed_predicate_v1.py",
+      "PRODUCER_ID": "ORDER_LIFECYCLE_STATE",
+      "REASON": "Order-state is not position proof and does not produce pos.",
+      "VALUE_SEMANTICS": "ack_or_order_state_label"
+    },
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_submit_state_v1.py",
+      "PRODUCER_ID": "VENUE_POSITION_SNAPSHOT",
+      "REASON": "Fresh venue GET is not contemporaneous handoff.",
+      "VALUE_SEMANTICS": "pre_submit_or_reobservation_venue_pos"
+    },
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/",
+      "PRODUCER_ID": "SIMULATED_EXECUTION_POSITION",
+      "REASON": "No Testnet, fixture or simulated result may satisfy a Live evidence field.",
+      "VALUE_SEMANTICS": "internal_simulated_position"
+    },
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "NONE",
+      "PRODUCER_ID": "DURABLE_LIVE_STATE",
+      "REASON": "No Live canary durable_state writer exists.",
+      "VALUE_SEMANTICS": "absent"
+    },
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "src/learning/mutation_critical_control_state_storage_v1/",
+      "PRODUCER_ID": "A1_WAL",
+      "REASON": "A1 WAL is not Live identity-bound pre-restart handoff.",
+      "VALUE_SEMANTICS": "mutation_critical_control_wal"
+    },
+    {
+      "DISPOSITION": "POS_DERIVATION_REJECTED",
+      "PATH": "evidence/ops/section_11_12_testnet_restart_proven_v1/",
+      "PRODUCER_ID": "TESTNET_DURABLE_STATE",
+      "REASON": "TESTNET_RESTART_PROVEN is not this Live field.",
+      "VALUE_SEMANTICS": "testnet_restart_handoff"
+    }
+  ],
+  "POS_SEMANTICS": "UNPROVEN",
+  "POS_SEMANTICS_STATUS": "UNPROVEN",
+  "POS_SIGN_SEMANTICS": "UNPROVEN",
+  "POS_TYPE": "DECIMAL_PARSEABLE_NONEMPTY_STRING_CONSTRAINT_PROVEN;QUANTITY_KIND_UNPROVEN",
+  "POS_UNIT": "UNPROVEN",
+  "POS_UNPROVEN_PRODUCERS_WITH_REASON": [
+    {
+      "DISPOSITION": "POS_DERIVATION_UNPROVEN",
+      "PATH": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py",
+      "PRODUCER_ID": "LIVE_CANARY_RETURN_PAYLOAD",
+      "REASON": "Return payload has ACK identity and plan sz. Complete identity including pos is unproven.",
+      "VALUE_SEMANTICS": "partial_ack_identity_plus_plan"
+    }
+  ],
+  "RESTART_IDENTITY_EQUATION": "reconstructed_handoff.identity = {clOrdId, ordId, instId, posSide, pos} from durable pre-restart Peak_Trade state, without re-submit and without silent reinitialization, Decimal-equal to the bound Live submit/fill/position identity",
+  "SETTLEMENT_UNIT_DIMENSION_UNPROVEN": true,
+  "SIGNED_POSITION_UNPROVEN": true,
+  "VENUE_RAW_POS_IS_NOT_THIS_HANDOFF_FIELD": true,
+  "derivation_adjudication": {
+    "ALLOWED_COUNT": 0,
+    "REJECTED_COUNT": 9,
+    "UNPROVEN_COUNT": 1
+  }
+}

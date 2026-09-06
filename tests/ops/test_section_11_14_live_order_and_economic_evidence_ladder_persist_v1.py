@@ -25,6 +25,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     CANONICAL_RESTART_RECONSTRUCTED_EXHAUSTIVE_CENSUS_SLICE_HEADING,
     CANONICAL_RESTART_HANDOFF_OWNER_BIND_SLICE_HEADING,
     CANONICAL_REQUIRED_FIELD_CAPTURE_SEAM_SLICE_HEADING,
+    CANONICAL_ARCHITECTURE_ADJUDICATION_SLICE_HEADING,
     CANONICAL_SECTION_HEADING,
     EARLIEST_UNRESOLVED_DEPENDENCY,
     EXPECTED_ORIGIN_MAIN_SHA,
@@ -54,6 +55,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_OWNER_BIND_OWNER_GO,
     HISTORICAL_OWNER_BIND_RUN_ID,
     HISTORICAL_OWNER_BIND_SHA,
+    HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_OWNER_GO,
+    HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_RUN_ID,
+    HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_SHA,
     HISTORICAL_CODE_EXISTS_OWNER_GO,
     HISTORICAL_CODE_EXISTS_RUN_ID,
     HISTORICAL_CODE_EXISTS_SHA,
@@ -128,6 +132,10 @@ RESTART_HANDOFF_OWNER_BIND_SPEC = (
 REQUIRED_FIELD_CAPTURE_SEAM_SPEC = (
     REPO_ROOT
     / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_REQUIRED_FIELD_CAPTURE_SEAM_POS_AND_OWNER_VACANCY_CONTRACT_V1.md"
+)
+ARCHITECTURE_ADJUDICATION_SPEC = (
+    REPO_ROOT
+    / "docs/ops/specs/SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_AND_CAPTURE_ARCHITECTURE_ADJUDICATION_V1.md"
 )
 HISTORICAL_SPEC = (
     REPO_ROOT
@@ -233,26 +241,30 @@ HISTORICAL_OWNER_BIND_EVIDENCE = (
     / "section_11_14_live_order_and_economic_evidence_ladder_v1"
     / HISTORICAL_OWNER_BIND_RUN_ID
 )
+HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_EVIDENCE = (
+    REPO_ROOT
+    / "evidence/ops"
+    / "section_11_14_live_order_and_economic_evidence_ladder_v1"
+    / HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_RUN_ID
+)
 HEADING_11_15 = "## 11.15 Full-autonomy observability and audit trail"
 
 
-def test_current_slice_constants_target_required_field_capture_seam() -> None:
+def test_current_slice_constants_target_architecture_adjudication() -> None:
     assert THIS_SLICE == (
-        "11.14.LIVE_HANDOFF_REQUIRED_FIELD_CAPTURE_SEAM_POS_AND_OWNER_VACANCY_CONTRACT"
+        "11.14.LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_AND_CAPTURE_ARCHITECTURE_ADJUDICATION"
     )
     assert PREDECESSOR_SLICE == (
-        "11.14.LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL"
+        "11.14.LIVE_HANDOFF_REQUIRED_FIELD_CAPTURE_SEAM_POS_AND_OWNER_VACANCY_CONTRACT"
     )
-    assert OWNER_GO.endswith(
-        "LIVE_HANDOFF_REQUIRED_FIELD_CAPTURE_SEAM_POS_AND_OWNER_VACANCY_CONTRACT_V1"
-    )
-    assert EXPECTED_ORIGIN_MAIN_SHA == "8d7a513a0d295e18b38eea3c429d2ffd63b3f97c"
+    assert OWNER_GO.endswith("OWNER_AND_CAPTURE_ARCHITECTURE_ADJUDICATION_V1")
+    assert EXPECTED_ORIGIN_MAIN_SHA == "90a428c1f858d30a1856b486fbd58e3ae2077dd4"
     assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_RESTART_RECONSTRUCTED"
     assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED"
     assert LAST_CANONICALLY_CLOSED_STEP == (
-        "SECTION_11_14_LIVE_HANDOFF_REQUIRED_FIELD_CAPTURE_SEAM_POS_AND_OWNER_VACANCY_CONTRACT"
+        "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_AND_CAPTURE_ARCHITECTURE_ADJUDICATION"
     )
-    assert CANONICAL_EVIDENCE_RUN_ID == "20260906T210000Z"
+    assert CANONICAL_EVIDENCE_RUN_ID == "20260906T213200Z"
     assert EVIDENCE.name == CANONICAL_EVIDENCE_RUN_ID
 
 
@@ -742,11 +754,13 @@ def test_runbook_restart_handoff_owner_bind_slice_binds_owner_none() -> None:
 def test_runbook_required_field_capture_seam_slice_binds_pos_unproven() -> None:
     text = MASTER_RUNBOOK.read_text(encoding="utf-8")
     start = text.find(CANONICAL_REQUIRED_FIELD_CAPTURE_SEAM_SLICE_HEADING)
-    end = text.find(HEADING_11_15, start)
+    end = text.find(CANONICAL_ARCHITECTURE_ADJUDICATION_SLICE_HEADING, start)
+    if end < 0:
+        end = text.find(HEADING_11_15, start)
     assert start >= 0
     assert end > start
     section = text[start:end]
-    assert OWNER_GO in section
+    assert HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_OWNER_GO in section
     assert (
         "THIS_SLICE=11.14.LIVE_HANDOFF_REQUIRED_FIELD_CAPTURE_SEAM_POS_AND_OWNER_VACANCY_CONTRACT"
         in section
@@ -755,7 +769,7 @@ def test_runbook_required_field_capture_seam_slice_binds_pos_unproven() -> None:
         "PREDECESSOR_SLICE=11.14.LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL"
         in section
     )
-    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_SHA}" in section
     assert "SECTION_11_14_AUTHORIZED=false" in section
     assert "SECTION_11_14_COMPLETE=false" in section
     assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
@@ -770,6 +784,52 @@ def test_runbook_required_field_capture_seam_slice_binds_pos_unproven() -> None:
     assert "LATER_WRITER_CLAIMED_POSSIBLE=false" in section
     assert "PRODUCTIVE_WRITER_JOIN_CREATED=false" in section
     assert "PRODUCTIVE_READER_JOIN_CREATED=false" in section
+    assert "RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED=false" in section
+    assert "POST_PERFORMED=false" in section
+    assert "GET_PERFORMED=false" in section
+    assert "RESTART_EXECUTION=false" in section
+    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_RUN_ID in section
+    for field_name in LADDER_FIELDS:
+        assert field_name in section
+
+
+def test_runbook_architecture_adjudication_slice_binds_fail_closed_dag() -> None:
+    text = MASTER_RUNBOOK.read_text(encoding="utf-8")
+    start = text.find(CANONICAL_ARCHITECTURE_ADJUDICATION_SLICE_HEADING)
+    end = text.find(HEADING_11_15, start)
+    assert start >= 0
+    assert end > start
+    section = text[start:end]
+    assert OWNER_GO in section
+    assert (
+        "THIS_SLICE=11.14.LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_AND_CAPTURE_ARCHITECTURE_ADJUDICATION"
+        in section
+    )
+    assert (
+        "PREDECESSOR_SLICE=11.14.LIVE_HANDOFF_REQUIRED_FIELD_CAPTURE_SEAM_POS_AND_OWNER_VACANCY_CONTRACT"
+        in section
+    )
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert "SECTION_11_14_AUTHORIZED=false" in section
+    assert "SECTION_11_14_COMPLETE=false" in section
+    assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in section
+    assert "POS_SEMANTICS=UNPROVEN" in section
+    assert "COMPLETE_CAPTURE_SEAM=UNPROVEN" in section
+    assert "EARLIEST_COMPLETE_HANDOFF_CAPTURE_MOMENT=NONE" in section
+    assert "EARLIEST_COMPLETE_HANDOFF_CAPTURE_PROVEN=false" in section
+    assert "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT=NONE" in section
+    assert (
+        "PROPOSED_FIRST_OWNER_ADJUDICATION=ELIGIBLE_AS_FIRST_LOGICAL_OWNER_ID_NOT_PRODUCTIVELY_BOUND"
+        in section
+    )
+    assert "FIRST_OWNER_PRODUCTIVELY_BOUND=false" in section
+    assert "ARCHITECTURE_ADJUDICATION_COMPLETE=true" in section
+    assert "IMPLEMENTATION_AUTHORIZED=false" in section
+    assert "STEP_29P_HANDOFF_RELATION=ORTHOGONAL_TO_SECTION_11_14_LIVE_CANARY_HANDOFF" in section
+    assert "ADMISSION_TRUE=false" in section
+    assert "SUPERVISOR_ACTIVATED=false" in section
     assert "RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED=false" in section
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
@@ -807,6 +867,9 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "11.14 LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS" in mot
     assert "11.14 LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL" in mot
     assert "11.14 LIVE_HANDOFF_REQUIRED_FIELD_CAPTURE_SEAM_POS_AND_OWNER_VACANCY_CONTRACT" in mot
+    assert (
+        "11.14 LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_AND_CAPTURE_ARCHITECTURE_ADJUDICATION" in mot
+    )
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -814,6 +877,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "SECTION_11_14_LIVE_HANDOFF_REQUIRED_FIELD_CAPTURE_SEAM_POS_AND_OWNER_VACANCY_CONTRACT_V1.md"
+        in mot
+    )
+    assert (
+        "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_AND_CAPTURE_ARCHITECTURE_ADJUDICATION_V1.md"
         in mot
     )
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
@@ -922,6 +989,16 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "COMPLETE_CAPTURE_SEAM=UNPROVEN" in vacancy_spec
     assert "OWNER_VACANCY_CONTRACT_STATUS=BOUND_CAPTURE_SEAM_UNPROVEN" in vacancy_spec
     assert "LIVE_RESTART_RECONSTRUCTED=false" in vacancy_spec
+    architecture_spec = ARCHITECTURE_ADJUDICATION_SPEC.read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_AND_CAPTURE_ARCHITECTURE_ADJUDICATION_V1"
+        in architecture_spec
+    )
+    assert "POS_SEMANTICS=UNPROVEN" in architecture_spec
+    assert "COMPLETE_CAPTURE_SEAM=UNPROVEN" in architecture_spec
+    assert "ARCHITECTURE_ADJUDICATION_COMPLETE=true" in architecture_spec
+    assert "IMPLEMENTATION_AUTHORIZED=false" in architecture_spec
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in architecture_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -948,6 +1025,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "id: PHASE:section_11_14_live_handoff_required_field_capture_seam_pos_and_owner_vacancy_contract"
+        in catalog
+    )
+    assert (
+        "id: PHASE:section_11_14_live_durable_pre_restart_handoff_owner_and_capture_architecture_adjudication"
         in catalog
     )
     assert (
@@ -1018,6 +1099,12 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert vacancy_rel >= 0
     vacancy_block = relations[vacancy_rel : vacancy_rel + 2200]
     assert "ATLAS_AUTHORITY=NONE" in vacancy_block
+    architecture_rel = relations.find(
+        "id: REL:r_section_11_14_architecture_adjudication_follows_required_field_capture_seam"
+    )
+    assert architecture_rel >= 0
+    architecture_block = relations[architecture_rel : architecture_rel + 2200]
+    assert "ATLAS_AUTHORITY=NONE" in architecture_block
     assert CODE_EXISTS_EVIDENCE.is_dir()
     verified = verify_manifest_v1(CODE_EXISTS_EVIDENCE)
     assert int(verified.get("MANIFEST_VERIFY_RC", 1)) == 0
@@ -1144,6 +1231,26 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert (HISTORICAL_OWNER_BIND_EVIDENCE / "OWNER_CENSUS_MATRIX.json").is_file()
     assert (HISTORICAL_OWNER_BIND_EVIDENCE / "RETROACTIVE_SYNTHESIS_REFUSAL.json").is_file()
     assert (HISTORICAL_OWNER_BIND_EVIDENCE / "HISTORICAL_UNPROVABILITY_BIND.json").is_file()
+    assert HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_EVIDENCE.is_dir()
+    historical_vacancy_verified = verify_manifest_v1(
+        HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_EVIDENCE
+    )
+    assert int(historical_vacancy_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
+    historical_vacancy_summary = (
+        HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_EVIDENCE / "SUMMARY.json"
+    ).read_text(encoding="utf-8")
+    assert '"LIVE_ACCOUNTING_RECONSTRUCTED": true' in historical_vacancy_summary
+    assert '"LIVE_RESTART_RECONSTRUCTED": false' in historical_vacancy_summary
+    assert '"SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": "NONE"' in historical_vacancy_summary
+    assert '"POS_SEMANTICS": "UNPROVEN"' in historical_vacancy_summary
+    assert '"COMPLETE_CAPTURE_SEAM": "UNPROVEN"' in historical_vacancy_summary
+    assert (
+        '"OWNER_VACANCY_CONTRACT_STATUS": "BOUND_CAPTURE_SEAM_UNPROVEN"'
+        in historical_vacancy_summary
+    )
+    assert (
+        HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_EVIDENCE / "OWNER_VACANCY_CONTRACT.json"
+    ).is_file()
     assert EVIDENCE.is_dir()
     current_verified = verify_manifest_v1(EVIDENCE)
     assert int(current_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
@@ -1158,13 +1265,20 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert '"SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": "NONE"' in current_summary
     assert '"POS_SEMANTICS": "UNPROVEN"' in current_summary
     assert '"COMPLETE_CAPTURE_SEAM": "UNPROVEN"' in current_summary
-    assert '"OWNER_VACANCY_CONTRACT_STATUS": "BOUND_CAPTURE_SEAM_UNPROVEN"' in current_summary
-    assert '"PRODUCTIVE_WRITER_JOIN_CREATED": false' in current_summary
-    assert '"LATER_WRITER_CLAIMED_POSSIBLE": false' in current_summary
-    assert (EVIDENCE / "REQUIRED_FIELD_CONTRACT.json").is_file()
-    assert (EVIDENCE / "CAPTURE_MOMENT_CENSUS.json").is_file()
-    assert (EVIDENCE / "POS_PRODUCER_CENSUS.json").is_file()
-    assert (EVIDENCE / "POS_DERIVATION_ADJUDICATION.json").is_file()
-    assert (EVIDENCE / "OWNER_VACANCY_CONTRACT.json").is_file()
-    assert (EVIDENCE / "HANDOFF_OWNER_BIND.json").is_file()
+    assert '"ARCHITECTURE_ADJUDICATION_COMPLETE": true' in current_summary
+    assert '"IMPLEMENTATION_AUTHORIZED": false' in current_summary
+    assert '"ADMISSION_TRUE": false' in current_summary
+    assert '"FIRST_OWNER_PRODUCTIVELY_BOUND": false' in current_summary
+    assert '"STEP_29P_HANDOFF_RELATION": "ORTHOGONAL_TO_SECTION_11_14_LIVE_CANARY_HANDOFF"' in (
+        current_summary
+    )
+    assert (EVIDENCE / "ARCHITECTURE_ADJUDICATION.json").is_file()
+    assert (EVIDENCE / "OWNER_CONTRACT.json").is_file()
+    assert (EVIDENCE / "POS_SEMANTICS_ADJUDICATION.json").is_file()
+    assert (EVIDENCE / "CAPTURE_SEAM_GRAPH_CENSUS.json").is_file()
+    assert (EVIDENCE / "DURABILITY_CONTRACT.json").is_file()
+    assert (EVIDENCE / "WRITER_READER_CONTRACT.json").is_file()
+    assert (EVIDENCE / "RESTART_ADMISSION_PREDICATE.json").is_file()
+    assert (EVIDENCE / "STEP_29P_HANDOFF_RELATION.json").is_file()
+    assert (EVIDENCE / "SLICE_SEQUENCE.json").is_file()
     assert (EVIDENCE / "RESTART_RECONSTRUCTED_ADJUDICATION.json").is_file()

@@ -33,7 +33,6 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_OWNER_BIND_OWNER_GO,
     HISTORICAL_OWNER_BIND_SHA,
     LIVE_RESTART_RECONSTRUCTED,
-    PREDECESSOR_SLICE,
     SECTION_11_14_LIVE_HANDOFF_OWNER_BOUND,
     SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
     SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_BINDING,
@@ -361,10 +360,7 @@ def test_no_second_restart_state_or_reconciliation_engine_owner_created() -> Non
         "FILEGATE_KILL_SWITCH",
         "VENUE_OKX_EEA",
     }
-    assert PREDECESSOR_SLICE == (
-        "11.14.LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL"
-    )
-    assert THIS_SLICE != PREDECESSOR_SLICE
+    assert THIS_SLICE != ("11.14.LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL")
     for name in FORBIDDEN_OWNER_REUSE:
         classified = classify_forbidden_owner_reuse_v1(name)
         assert classified["ALLOWED_AS_SECTION_11_14_LIVE_HANDOFF_OWNER"] is False

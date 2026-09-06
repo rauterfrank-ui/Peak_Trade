@@ -652,6 +652,22 @@ relations:
       No restart execution. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_section_11_14_architecture_adjudication_follows_required_field_capture_seam
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_handoff_required_field_capture_seam_pos_and_owner_vacancy_contract
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_owner_and_capture_architecture_adjudication_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_architecture_adjudication_execute_v1.py
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260906T213200Z/
+    notes: >-
+      Owner-and-capture architecture adjudication follows the required-field
+      capture-seam vacancy contract. pos semantics remain UNPROVEN.
+      Complete capture seam remains UNPROVEN. Owner remains NONE.
+      IMPLEMENTATION_AUTHORIZED=false. No GET. No POST. No restart
+      execution. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_path_calls_venue_translation
     source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     type: CALLS

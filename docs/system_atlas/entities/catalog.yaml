@@ -1619,6 +1619,30 @@ entities:
       Vacancy contract bound not minted. No productive writer/reader join.
       LIVE_RESTART_RECONSTRUCTED=false. No GET. No POST. No restart
       execution. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+      Historical after the owner-and-capture architecture adjudication slice.
+
+  - id: PHASE:section_11_14_live_durable_pre_restart_handoff_owner_and_capture_architecture_adjudication
+    kind: PHASE
+    name: 11.14.LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_AND_CAPTURE_ARCHITECTURE_ADJUDICATION
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_AND_CAPTURE_ARCHITECTURE_ADJUDICATION_V1.md
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260906T213200Z/
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_owner_and_capture_architecture_adjudication_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_architecture_adjudication_execute_v1.py
+      - tests/ops/test_section_11_14_live_durable_pre_restart_handoff_owner_and_capture_architecture_adjudication_v1.py
+      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
+    notes: >-
+      Architecture adjudication of the first §11.14 Live durable
+      pre-restart handoff owner and capture DAG.
+      POS_SEMANTICS=UNPROVEN. COMPLETE_CAPTURE_SEAM=UNPROVEN.
+      SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT=NONE.
+      Proposed first owner eligible as logical ID not productively bound.
+      IMPLEMENTATION_AUTHORIZED=false. No GET. No POST. No restart
+      execution. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
@@ -2500,6 +2524,8 @@ entities:
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_owner_vacancy_contract_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_offline_codec_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_required_field_capture_execute_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_owner_and_capture_architecture_adjudication_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_architecture_adjudication_execute_v1.py
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py
       - src/governance/policy_critic/rules.py
     evidence_sources:
@@ -2519,6 +2545,7 @@ entities:
       - tests/ops/test_section_11_14_live_restart_reconstructed_exhaustive_offline_census_v1.py
       - tests/ops/test_section_11_14_live_restart_handoff_owner_bind_and_retroactive_synthesis_refusal_v1.py
       - tests/ops/test_section_11_14_live_handoff_required_field_capture_seam_pos_and_owner_vacancy_contract_v1.py
+      - tests/ops/test_section_11_14_live_durable_pre_restart_handoff_owner_and_capture_architecture_adjudication_v1.py
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/SECTION_11_14_LIVE_ORDER_AND_ECONOMIC_EVIDENCE_LADDER_OFFLINE_SURFACE_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md
@@ -2536,6 +2563,7 @@ entities:
       - docs/ops/specs/SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_REQUIRED_FIELD_CAPTURE_SEAM_POS_AND_OWNER_VACANCY_CONTRACT_V1.md
+      - docs/ops/specs/SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_AND_CAPTURE_ARCHITECTURE_ADJUDICATION_V1.md
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T121000Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T123100Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T130000Z/
@@ -2552,6 +2580,7 @@ entities:
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T195000Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260906T201500Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260906T210000Z/
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260906T213200Z/
     notes: >-
       Navigation inventory of the §11.14 evidence-ladder surface including
       LIVE_EXECUTION_CODE_EXISTS, LIVE_EXECUTION_PATH_REACHABLE,
