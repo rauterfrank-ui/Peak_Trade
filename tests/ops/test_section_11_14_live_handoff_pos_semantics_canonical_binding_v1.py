@@ -9,10 +9,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_POS_SEMANTICS_CANONICAL_BINDING_OWNER_GO,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
+    PREDECESSOR_SLICE,
     SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
-    THIS_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_adjudication_v1 import (
     adjudicate_live_restart_reconstructed_v1,
@@ -134,7 +134,7 @@ def test_downstream_stays_fail_closed_while_pos_unproven() -> None:
 
 def test_execute_is_offline_and_does_not_authorize_implementation() -> None:
     result = execute_live_handoff_pos_semantics_canonical_binding_v1(
-        owner_go=OWNER_GO,
+        owner_go=HISTORICAL_POS_SEMANTICS_CANONICAL_BINDING_OWNER_GO,
         origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
         repo_root=REPO_ROOT,
         run_id="20260906T221200Z-test",
@@ -156,7 +156,7 @@ def test_execute_is_offline_and_does_not_authorize_implementation() -> None:
     assert summary["SEQUENCE_AUTO_EXECUTED"] is False
     assert summary["PROPOSED_NEXT_SLICE"] == PROPOSED_NEXT_SLICE
     assert result["raw_exchanges"] == []
-    assert THIS_SLICE.endswith("POS_SEMANTICS_CANONICAL_BINDING")
+    assert PREDECESSOR_SLICE.endswith("POS_SEMANTICS_CANONICAL_BINDING")
     assert SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT == "NONE"
     assert LIVE_RESTART_RECONSTRUCTED is False
     adjudication = adjudicate_live_restart_reconstructed_v1(
