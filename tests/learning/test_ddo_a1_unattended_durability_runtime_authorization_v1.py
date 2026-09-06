@@ -193,7 +193,7 @@ def test_crash_durability_class_d_not_overclaimed() -> None:
     assert "os.replace" not in ledger
     assert "NamedTemporaryFile" not in ledger
     dir_fsync_block = ledger[ledger.rindex("os.fsync(dir_fd)") :]
-    assert "raise classify_oserror_v0(exc) from exc" in dir_fsync_block
+    assert "classify_oserror_v0(exc, operation=OPERATION_DIRECTORY_FSYNC)" in dir_fsync_block
     assert "except OSError:\n            pass" not in dir_fsync_block
     with pytest.raises(DdoA1RuntimeAuthorizationError):
         DdoA1UnattendedDurabilityRuntimeAuthorizationV1(crash_durability_fully_proven=True)

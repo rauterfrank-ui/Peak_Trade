@@ -86,6 +86,14 @@ def _a1_crash_durability_persist_section(text: str) -> str:
     start = text.index(
         "### 11.13.5 Parallel-track DDO A1 crash durability atomic replace or explicit non-requirement persist"
     )
+    end = text.index("### 11.13.5 Parallel-track DDO A1 durability failure policy binding persist")
+    return text[start:end]
+
+
+def _a1_failure_policy_persist_section(text: str) -> str:
+    start = text.index(
+        "### 11.13.5 Parallel-track DDO A1 durability failure policy binding persist"
+    )
     end = text.index(
         "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
     )
@@ -140,6 +148,11 @@ def test_contract_discoverable_and_bound() -> None:
     assert "PEAK_TRADE_DDO_A1_UNATTENDED_DURABILITY_RUNTIME_AUTHORIZATION_V1=BOUND" in spec
     assert (
         "PEAK_TRADE_DDO_A1_CRASH_DURABILITY_ATOMIC_REPLACE_OR_EXPLICIT_NONREQUIREMENT_V1=BOUND"
+        in spec
+    )
+    assert "PEAK_TRADE_DDO_A1_DURABILITY_FAILURE_POLICY_BINDING_V1=BOUND" in spec
+    assert (
+        "A1_DURABILITY_FAILURE_POLICY=BOUND_FAIL_CLOSED_DEPENDENT_MUTATION_FORBIDDEN_ON_UNPROVEN_DURABILITY"
         in spec
     )
     assert "ADJUDICATION_CLASS=PLATFORM_FULL_GUARANTEE_STILL_NOT_PROVABLE" in spec
@@ -327,6 +340,27 @@ def test_master_runbook_refers_to_valid_spec() -> None:
     assert "NEXT_DDO_STEP=PEAK_TRADE_DDO_A1_DURABILITY_FAILURE_POLICY_BINDING_V1" in a1_crash
     assert "CURRENT_CANONICAL_SECTION_REPLACED=false" in a1_crash
     assert "CANONICAL_LIVE_NEXT_POINTER_CHANGED=false" in a1_crash
+    a1_failure_policy = _a1_failure_policy_persist_section(runbook)
+    assert "PEAK_TRADE_DDO_A1_DURABILITY_FAILURE_POLICY_BINDING_V1=BOUND" in a1_failure_policy
+    assert (
+        "OWNER_GO=PEAK_TRADE_OWNER_GO_DDO_A1_DURABILITY_FAILURE_POLICY_BINDING_V1"
+        in a1_failure_policy
+    )
+    assert (
+        "A1_DURABILITY_FAILURE_POLICY=BOUND_FAIL_CLOSED_DEPENDENT_MUTATION_FORBIDDEN_ON_UNPROVEN_DURABILITY"
+        in a1_failure_policy
+    )
+    assert "DEPENDENT_MUTATION_ON_UNPROVEN_DURABILITY=FORBIDDEN" in a1_failure_policy
+    assert "AMBIGUOUS_RETRY_ALLOWED=false" in a1_failure_policy
+    assert "UNKNOWN_PRESERVED=true" in a1_failure_policy
+    assert "PRIMARY_LEDGER_FAILURE_MASKED_BY_LOGGING=false" in a1_failure_policy
+    assert "CRASH_DURABILITY_FULLY_PROVEN=false" in a1_failure_policy
+    assert "RUNTIME_AUTHORIZED=false" in a1_failure_policy
+    assert "NEW_STORAGE_AUTHORITY_CREATED=false" in a1_failure_policy
+    assert (
+        "NEXT_DDO_STEP=OWNER_GO_REQUIRED_SEPARATE_SCOPED_DDO_A1_CONTINUATION_NOT_AUTHORIZED_BY_THIS_PERSIST"
+        in a1_failure_policy
+    )
 
 
 def test_map_and_atlas_remain_navigation_only() -> None:
@@ -347,6 +381,7 @@ def test_map_and_atlas_remain_navigation_only() -> None:
         "DDO_A1_CRASH_DURABILITY_ATOMIC_REPLACE_OR_EXPLICIT_NONREQUIREMENT_ROLE=NAVIGATION_POINTER_ONLY"
         in mot
     )
+    assert "DDO_A1_DURABILITY_FAILURE_POLICY_BINDING_ROLE=NAVIGATION_POINTER_ONLY" in mot
     assert "DDO_AUTHORITY_EFFECT=NONE" in mot
     assert "MAP_OF_TRUTH_AUTHORITY=NAVIGATION_ONLY" in mot
     assert "DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is" in atlas
@@ -354,6 +389,7 @@ def test_map_and_atlas_remain_navigation_only() -> None:
     assert (
         "PEAK_TRADE_DDO_A1_CRASH_DURABILITY_ATOMIC_REPLACE_OR_EXPLICIT_NONREQUIREMENT_V1" in atlas
     )
+    assert "PEAK_TRADE_DDO_A1_DURABILITY_FAILURE_POLICY_BINDING_V1 is bound" in atlas
     assert "PRODUCTIVE_HOST_LEDGER_BINDING" in atlas
     assert "Atlas is not trading authority" in atlas
     assert (

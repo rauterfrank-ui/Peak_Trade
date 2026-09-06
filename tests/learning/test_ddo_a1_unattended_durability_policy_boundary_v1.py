@@ -157,7 +157,9 @@ def test_a1_unattended_durability_policy_typed_and_default_fail_closed() -> None
     assert A1_EXECUTION_AUTHORITY is False
     assert A1_LEARNING_AUTHORITY is False
     assert A1_UNATTENDED_AUTHORITY is False
-    assert A1_DURABILITY_FAILURE_POLICY == "UNBOUND_NOT_AUTHORIZED"
+    assert A1_DURABILITY_FAILURE_POLICY == (
+        "BOUND_FAIL_CLOSED_DEPENDENT_MUTATION_FORBIDDEN_ON_UNPROVEN_DURABILITY"
+    )
     assert CURRENT_STAGE_DURABILITY_FAILURE_POLICY == (
         "FAIL_OPEN_CAPTURE_WITH_EXPLICIT_DURABILITY_FAILURE_EVIDENCE"
     )
@@ -381,7 +383,7 @@ def test_crash_durability_claim_not_upgraded() -> None:
     assert "os.fsync(fd)" in ledger
     assert "os.fsync(dir_fd)" in ledger
     dir_fsync_block = ledger[ledger.rindex("os.fsync(dir_fd)") :]
-    assert "raise classify_oserror_v0(exc) from exc" in dir_fsync_block
+    assert "classify_oserror_v0(exc, operation=OPERATION_DIRECTORY_FSYNC)" in dir_fsync_block
     assert "except OSError:\n            pass" not in dir_fsync_block
     assert AUTHORITY_OWNER == "NONE"
     assert SECOND_TRADING_AUTHORITY_CREATED is False
