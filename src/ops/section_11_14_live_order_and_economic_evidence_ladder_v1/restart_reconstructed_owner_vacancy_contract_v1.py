@@ -1,0 +1,201 @@
+"""Vacancy contract for the first §11.14 Live durable pre-restart handoff owner.
+
+Defines the contract of a first owner without minting it, without joining a
+productive writer/reader, and without claiming the later writer is possible.
+Capture seam and `pos` semantics remain UNPROVEN, so write preconditions
+fail closed.
+"""
+
+from __future__ import annotations
+
+from typing import Any
+
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
+    A1_WAL_AS_LIVE_HANDOFF_ALLOWED,
+    ACCOUNTING_ONLY_IS_NOT_RESTART,
+    FORBIDDEN_OWNER_REUSE,
+    FRESH_PROCESS_RESTART_REQUIRED_FOR_THIS_FIELD,
+    HOST_CRASH_DURABILITY_REQUIRED_FOR_THIS_FIELD,
+    LIVE_RESTART_RECONSTRUCTED,
+    NO_SYNTHETIC_PRE_RESTART_PROVENANCE,
+    NO_TIMESTAMP_BACKFILL,
+    RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED,
+    SECTION_11_14_LIVE_HANDOFF_OWNER_BOUND,
+    SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+    SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_BINDING,
+    SECTION_11_14_LIVE_HANDOFF_READER_PRESENT,
+    SECTION_11_14_LIVE_HANDOFF_WRITER_PRESENT,
+    VENUE_GET_COPY_IS_NOT_CONTEMPORANEOUS_HANDOFF,
+)
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
+    Section1114OfflineSurfaceError,
+)
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_handoff_schema_v1 import (
+    HANDOFF_DOCUMENT_CLASS,
+    REQUIRED_HANDOFF_FIELDS,
+)
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_required_field_contract_v1 import (
+    COMPLETE_CAPTURE_SEAM,
+    EARLIEST_COMPLETE_HANDOFF_CAPTURE_PROVEN,
+    POS_SEMANTICS,
+    POST_RESTART_READ_SEAM,
+)
+
+PROPOSED_FIRST_OWNER_ID = "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_V1"
+OWNER_DOMAIN = "SECTION_11_14_LIVE_RESTART_HANDOFF_CAPTURE_AND_STORAGE"
+OWNER_VACANCY_CONTRACT_STATUS = "BOUND_CAPTURE_SEAM_UNPROVEN"
+NEW_OWNER_REQUIRED = True
+
+
+def refuse_productive_writer_join_v1() -> dict[str, Any]:
+    if SECTION_11_14_LIVE_HANDOFF_WRITER_PRESENT is True:
+        raise Section1114OfflineSurfaceError("PRODUCTIVE_WRITER_JOIN_FORBIDDEN")
+    return {
+        "PRODUCTIVE_WRITER_PRESENT": False,
+        "PRODUCTIVE_WRITER_JOIN_CREATED": False,
+        "REASON": "CAPTURE_SEAM_UNPROVEN_WRITER_JOIN_FORBIDDEN",
+    }
+
+
+def refuse_productive_reader_join_v1() -> dict[str, Any]:
+    if SECTION_11_14_LIVE_HANDOFF_READER_PRESENT is True:
+        raise Section1114OfflineSurfaceError("PRODUCTIVE_READER_JOIN_FORBIDDEN")
+    return {
+        "PRODUCTIVE_READER_PRESENT": False,
+        "PRODUCTIVE_READER_JOIN_CREATED": False,
+        "NAMED_READ_SEAM": POST_RESTART_READ_SEAM,
+        "NAMED_READ_SEAM_IS_NOT_PRODUCTIVE_BINDING": True,
+    }
+
+
+def refuse_second_owner_reuse_v1(*, claimed_owner: str) -> dict[str, Any]:
+    name = str(claimed_owner or "").strip()
+    if name in FORBIDDEN_OWNER_REUSE or (
+        name and name not in {PROPOSED_FIRST_OWNER_ID, "NONE", ""}
+    ):
+        return {
+            "ALLOWED": False,
+            "CLAIMED_OWNER": name or "NONE",
+            "REASON": "REJECT_SECOND_OWNER_REUSE",
+            "OWNER_IS_SECOND_RESTART_OWNER": False,
+        }
+    if name == PROPOSED_FIRST_OWNER_ID:
+        return {
+            "ALLOWED": False,
+            "CLAIMED_OWNER": name,
+            "REASON": "PROPOSED_OWNER_ID_IS_NOT_BOUND_CURRENT_REMAINS_NONE",
+            "OWNER_IS_SECOND_RESTART_OWNER": False,
+        }
+    return {
+        "ALLOWED": False,
+        "CLAIMED_OWNER": name or "NONE",
+        "REASON": "CURRENT_OWNER_IS_NONE",
+        "OWNER_IS_SECOND_RESTART_OWNER": False,
+    }
+
+
+def bind_section_11_14_live_handoff_owner_vacancy_contract_v1() -> dict[str, Any]:
+    if EARLIEST_COMPLETE_HANDOFF_CAPTURE_PROVEN is True:
+        raise Section1114OfflineSurfaceError("CAPTURE_SEAM_MUST_REMAIN_UNPROVEN")
+    if POS_SEMANTICS != "UNPROVEN":
+        raise Section1114OfflineSurfaceError("POS_SEMANTICS_MUST_REMAIN_UNPROVEN")
+    writer = refuse_productive_writer_join_v1()
+    reader = refuse_productive_reader_join_v1()
+    return {
+        "DOCUMENT_CLASS": "SECTION_11_14_LIVE_HANDOFF_OWNER_VACANCY_CONTRACT_V1",
+        "DOCUMENT_ROLE": "DERIVED_NON_SSOT_VACANCY_CONTRACT_NOT_OWNER_MINT",
+        "OWNER_VACANCY_CONTRACT_STATUS": OWNER_VACANCY_CONTRACT_STATUS,
+        "OWNER_ID": "NONE",
+        "PROPOSED_FIRST_OWNER_ID": PROPOSED_FIRST_OWNER_ID,
+        "PROPOSED_FIRST_OWNER_IS_NOT_BOUND": True,
+        "OWNER_DOMAIN": OWNER_DOMAIN,
+        "OWNER_IS_FIRST_LIVE_HANDOFF_OWNER": True,
+        "OWNER_IS_SECOND_RESTART_OWNER": False,
+        "NEW_OWNER_REQUIRED": NEW_OWNER_REQUIRED,
+        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+        "SECTION_11_14_LIVE_HANDOFF_OWNER_BOUND": SECTION_11_14_LIVE_HANDOFF_OWNER_BOUND,
+        "WRITER_AUTHORITY": "NONE_UNTIL_CAPTURE_SEAM_AND_POS_SEMANTICS_PROVEN",
+        "READER_AUTHORITY": POST_RESTART_READ_SEAM,
+        "STORAGE_AUTHORITY": "NONE",
+        "ALLOWED_INPUT_SOURCE_KINDS": (
+            "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_CAPTURE_WHEN_SEAM_PROVEN"
+        ),
+        "FORBIDDEN_INPUT_SOURCE_KINDS": (
+            "VENUE_GET_COPY",
+            "ACCOUNTING_ONLY",
+            "A1_WAL",
+            "EVIDENCE_PACK_RECLASSIFIED_AS_CONTROL_HANDOFF",
+            "TESTNET_STATE",
+            "RETROACTIVE_SYNTHESIS",
+            "TIMESTAMP_BACKFILL",
+            "SUBMITTED_SZ",
+            "FILL_SZ",
+            "SIGNED_SUBMITTED_SZ",
+            "ORDER_LIFECYCLE_STATE",
+            "RECONCILIATION_RESULT",
+            "PREEXISTING_POSITION_PLUS_FILLS",
+        ),
+        "REQUIRED_FIELDS": list(REQUIRED_HANDOFF_FIELDS),
+        "FIELD_SCHEMA": HANDOFF_DOCUMENT_CLASS,
+        "CAPTURE_PROVENANCE": "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_CAPTURE",
+        "CAPTURE_TIMESTAMP": "MUST_BE_CONTEMPORANEOUS_NO_BACKFILL",
+        "RESTART_SESSION_IDENTITY": "MUST_MATCH_BOUND_LIVE_SUBMIT_FILL_POSITION_IDENTITY",
+        "BOUND_INSTRUMENT_IDENTITY": "MUST_EQUAL_BOUND_INSTID",
+        "WRITE_PRECONDITIONS": (
+            "FAIL_CLOSED_WHILE_COMPLETE_CAPTURE_SEAM_UNPROVEN_OR_POS_SEMANTICS_UNPROVEN"
+        ),
+        "READ_PRECONDITIONS": (
+            "GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF plus complete identity "
+            "plus contemporaneous provenance plus no forbidden substitution"
+        ),
+        "VALIDATION_RULES": (
+            "REQUIRED_FIELDS present; pos Decimal-parseable and nonzero when "
+            "fillSz nonzero; identity match; contemporaneous provenance; "
+            "distinct from venue-GET accounting path."
+        ),
+        "STALE_REJECTION": True,
+        "MALFORMED_REJECTION": True,
+        "MISSING_STATE_POLICY": "FAIL_CLOSED",
+        "RETROACTIVE_SYNTHESIS_ALLOWED": RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED,
+        "TIMESTAMP_BACKFILL_ALLOWED": not NO_TIMESTAMP_BACKFILL,
+        "VENUE_GET_SUBSTITUTION_ALLOWED": not VENUE_GET_COPY_IS_NOT_CONTEMPORANEOUS_HANDOFF,
+        "ACCOUNTING_SUBSTITUTION_ALLOWED": not ACCOUNTING_ONLY_IS_NOT_RESTART,
+        "A1_WAL_SUBSTITUTION_ALLOWED": A1_WAL_AS_LIVE_HANDOFF_ALLOWED,
+        "EVIDENCE_PACK_SUBSTITUTION_ALLOWED": False,
+        "TESTNET_STATE_SUBSTITUTION_ALLOWED": False,
+        "PROCESS_RESTART_CLAIM": (
+            "NOT_REQUIRED_FOR_THIS_FIELD; INSUFFICIENT_WITHOUT_HANDOFF; "
+            "DOES_NOT_PROVE_HOST_CRASH_OR_POWER_LOSS"
+        ),
+        "HOST_CRASH_CLAIM": "UNPROVEN_AND_NOT_REQUIRED_FOR_THIS_FIELD",
+        "POWER_LOSS_CLAIM": "UNPROVEN_AND_NOT_REQUIRED_FOR_THIS_FIELD",
+        "FRESH_PROCESS_RESTART_REQUIRED_FOR_THIS_FIELD": (
+            FRESH_PROCESS_RESTART_REQUIRED_FOR_THIS_FIELD
+        ),
+        "HOST_CRASH_DURABILITY_REQUIRED_FOR_THIS_FIELD": (
+            HOST_CRASH_DURABILITY_REQUIRED_FOR_THIS_FIELD
+        ),
+        "ADMISSION_PROMOTION_ALLOWED": False,
+        "SUPERVISOR_PROMOTION_ALLOWED": False,
+        "LIVE_RESTART_PROMOTION_ALLOWED": False,
+        "LIVE_RESTART_RECONSTRUCTED": LIVE_RESTART_RECONSTRUCTED,
+        "PRODUCTIVE_WRITER_PRESENT": SECTION_11_14_LIVE_HANDOFF_WRITER_PRESENT,
+        "PRODUCTIVE_READER_PRESENT": SECTION_11_14_LIVE_HANDOFF_READER_PRESENT,
+        "PRODUCTIVE_BINDING_PRESENT": SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_BINDING,
+        "PRODUCTIVE_WRITER_JOIN_CREATED": writer["PRODUCTIVE_WRITER_JOIN_CREATED"],
+        "PRODUCTIVE_READER_JOIN_CREATED": reader["PRODUCTIVE_READER_JOIN_CREATED"],
+        "NEW_STORAGE_OWNER_CREATED": False,
+        "NEW_RECONCILIATION_ENGINE_CREATED": False,
+        "NEW_EXECUTION_STATE_MACHINE_CREATED": False,
+        "SECOND_RESTART_STATE_OWNER_CREATED": False,
+        "TRANSPORT_OWNERSHIP_CREATED": False,
+        "STRATEGY_STATE_OWNERSHIP_CREATED": False,
+        "VENUE_STATE_OWNERSHIP_CREATED": False,
+        "ACCOUNTING_RECLASSIFICATION_CREATED": False,
+        "COMPLETE_CAPTURE_SEAM": COMPLETE_CAPTURE_SEAM,
+        "POS_SEMANTICS": POS_SEMANTICS,
+        "LATER_WRITER_CLAIMED_POSSIBLE": False,
+        "FORBIDDEN_OWNER_REUSE": list(FORBIDDEN_OWNER_REUSE),
+        "writer_refusal": writer,
+        "reader_refusal": reader,
+    }

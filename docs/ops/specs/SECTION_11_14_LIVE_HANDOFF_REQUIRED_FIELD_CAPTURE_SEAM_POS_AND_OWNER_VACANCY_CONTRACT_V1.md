@@ -1,0 +1,68 @@
+---
+docs_token: DOCS_TOKEN_SECTION_11_14_LIVE_HANDOFF_REQUIRED_FIELD_CAPTURE_SEAM_POS_AND_OWNER_VACANCY_CONTRACT_V1
+status: active
+scope: §11.14 required-field capture-seam and owner-vacancy contract; pos semantics UNPROVEN; complete capture seam UNPROVEN; vacancy contract bound; no productive writer/reader join; restart remains false; section 11.14 incomplete
+capability: SECTION_11_14_LIVE_ORDER_AND_ECONOMIC_EVIDENCE_LADDER_V1
+architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
+last_updated: 2026-09-06
+---
+
+# Section 11.14 Live Handoff Required Field Capture Seam Pos And Owner Vacancy Contract V1
+
+## Goal
+
+Bind the required-field contract, census every proven `pos` producer, adjudicate
+derivation A-J, and encode the first §11.14 Live handoff owner vacancy contract.
+Do not mint a storage owner. Do not join a productive writer or reader. Do not
+claim the later writer is possible while `pos` and the capture seam remain
+unproven. Do not GET. Do not POST. Do not execute a restart.
+
+```text
+CORE_LOGIC_CHANGE=false
+ACTIVATION_STATE=none
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+LIVE_ACCOUNTING_RECONSTRUCTED=true
+LIVE_RESTART_RECONSTRUCTED=false
+LIVE_AUTONOMOUS_RECOVERY_OBSERVED=false
+CURRENT_PHASE=11.14.LIVE_HANDOFF_REQUIRED_FIELD_CAPTURE_SEAM_POS_AND_OWNER_VACANCY_CONTRACT
+POS_SEMANTICS=UNPROVEN
+POS_TYPE=DECIMAL_PARSEABLE_NONEMPTY_STRING_CONSTRAINT_PROVEN;QUANTITY_KIND_UNPROVEN
+POS_CAPTURE_TIME_REQUIREMENT=CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_CAPTURE
+POS_PEAK_TRADE_OWNERSHIP_REQUIRED=true
+COMPLETE_CAPTURE_SEAM=UNPROVEN
+EARLIEST_COMPLETE_HANDOFF_CAPTURE_MOMENT=NONE
+EARLIEST_COMPLETE_HANDOFF_CAPTURE_PROVEN=false
+PRE_RESTART_CAPTURE_SEAM=CANARY_ACK_RETURN_PARTIAL_IDENTITY_ONLY;COMPLETE_IDENTITY_INCLUDING_POS=UNPROVEN
+POST_RESTART_READ_SEAM=adjudicate_live_restart_reconstructed_v1
+SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT=NONE
+NEW_OWNER_REQUIRED=true
+OWNER_VACANCY_CONTRACT_STATUS=BOUND_CAPTURE_SEAM_UNPROVEN
+PROPOSED_FIRST_OWNER_ID=SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_V1
+PRODUCTIVE_WRITER_PRESENT=false
+PRODUCTIVE_READER_PRESENT=false
+PRODUCTIVE_BINDING_PRESENT=false
+PRODUCTIVE_WRITER_JOIN_CREATED=false
+LATER_WRITER_CLAIMED_POSSIBLE=false
+RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED=false
+NO_TIMESTAMP_BACKFILL=true
+VENUE_GET_SUBSTITUTION_ALLOWED=false
+ACCOUNTING_SUBSTITUTION_ALLOWED=false
+A1_WAL_SUBSTITUTION_ALLOWED=false
+POST_PERFORMED=false
+GET_PERFORMED=false
+WIRE_SEND=false
+LIVE_ACTION=NONE
+RESTART_EXECUTION=false
+NEXT_OWNER_GO_REQUIRED=OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+ATLAS_AUTHORITY=NONE
+```
+
+## Bound outcome
+
+`pos` remains semantically UNPROVEN as intended vs acknowledged vs filled vs
+venue vs accounting position. The ACK return is partial identity only. No
+complete contemporaneous Peak_Trade-owned capture seam exists. The vacancy
+contract of a first owner is bound, not minted. `LIVE_RESTART_RECONSTRUCTED`
+remains false. No GET. No POST. No restart execution.

@@ -28,11 +28,12 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     A1_WAL_AS_LIVE_HANDOFF_ALLOWED,
     ACCOUNTING_ONLY_IS_NOT_RESTART,
     CANARY_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY,
-    EXPECTED_ORIGIN_MAIN_SHA,
     FORBIDDEN_OWNER_REUSE,
     HISTORICAL_LIVE_RESTART_HANDOFF_STATUS,
+    HISTORICAL_OWNER_BIND_OWNER_GO,
+    HISTORICAL_OWNER_BIND_SHA,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
+    PREDECESSOR_SLICE,
     SECTION_11_14_LIVE_HANDOFF_OWNER_BOUND,
     SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
     SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_BINDING,
@@ -97,8 +98,8 @@ def test_current_handoff_owner_is_none() -> None:
 def test_live_restart_reconstructed_remains_false() -> None:
     assert LIVE_RESTART_RECONSTRUCTED is False
     result = execute_live_restart_handoff_owner_bind_and_retroactive_synthesis_refusal_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        owner_go=HISTORICAL_OWNER_BIND_OWNER_GO,
+        origin_main_sha=HISTORICAL_OWNER_BIND_SHA,
         repo_root=REPO_ROOT,
         run_id="20260906T201500Z-test",
     )
@@ -329,8 +330,8 @@ def test_full_core_29p_authority_remains_unchanged() -> None:
 
 def test_no_live_writer_or_transport_reachability_created() -> None:
     result = execute_live_restart_handoff_owner_bind_and_retroactive_synthesis_refusal_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        owner_go=HISTORICAL_OWNER_BIND_OWNER_GO,
+        origin_main_sha=HISTORICAL_OWNER_BIND_SHA,
         repo_root=REPO_ROOT,
         run_id="20260906T201500Z-test",
     )
@@ -360,7 +361,10 @@ def test_no_second_restart_state_or_reconciliation_engine_owner_created() -> Non
         "FILEGATE_KILL_SWITCH",
         "VENUE_OKX_EEA",
     }
-    assert THIS_SLICE == "11.14.LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL"
+    assert PREDECESSOR_SLICE == (
+        "11.14.LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL"
+    )
+    assert THIS_SLICE != PREDECESSOR_SLICE
     for name in FORBIDDEN_OWNER_REUSE:
         classified = classify_forbidden_owner_reuse_v1(name)
         assert classified["ALLOWED_AS_SECTION_11_14_LIVE_HANDOFF_OWNER"] is False

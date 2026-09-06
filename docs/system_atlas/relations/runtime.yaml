@@ -632,6 +632,26 @@ relations:
       No GET. No POST. No restart execution. Atlas is not trading
       authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_section_11_14_required_field_capture_seam_follows_owner_bind
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_restart_handoff_owner_bind_and_retroactive_synthesis_refusal
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_required_field_contract_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_pos_producer_census_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_pos_derivation_refusal_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_owner_vacancy_contract_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_offline_codec_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_required_field_capture_execute_v1.py
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260906T210000Z/
+    notes: >-
+      Required-field capture-seam and owner-vacancy contract follow the
+      owner-bind NONE slice. pos semantics remain UNPROVEN. Complete
+      capture seam remains UNPROVEN. Owner remains NONE. No GET. No POST.
+      No restart execution. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_path_calls_venue_translation
     source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     type: CALLS
