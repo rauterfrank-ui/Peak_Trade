@@ -23,6 +23,9 @@ from src.learning.deterministic_decision_outcome_v0.a1_crash_durability_atomic_r
 from src.learning.deterministic_decision_outcome_v0.a1_durability_failure_policy_binding_v1 import (
     a1_durability_failure_policy_observability_v1,
 )
+from src.learning.deterministic_decision_outcome_v0.a1_crash_durability_proof_or_explicit_nonprovability_closure_v1 import (
+    a1_crash_durability_proof_or_nonprovability_observability_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.a1_durability_to_admission_and_replay_binding_v1 import (
     a1_durability_to_admission_and_replay_observability_v1,
 )
@@ -223,6 +226,7 @@ def annotate_ddo_host_ledger_binding_on_capture_v1(state: Any) -> None:
     payload.update(a1_crash_durability_adjudication_observability_v1())
     payload.update(a1_durability_failure_policy_observability_v1())
     payload.update(a1_durability_to_admission_and_replay_observability_v1())
+    payload.update(a1_crash_durability_proof_or_nonprovability_observability_v1())
     state.last_ddo_capture = payload
 
 

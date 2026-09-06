@@ -5192,6 +5192,16 @@ PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_PRODUCTION = (
 PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER = (
     "tests/learning/test_deterministic_decision_outcome_owner_bindings_and_drift_v0.py"
 )
+PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_PRODUCTION = (
+    "src/learning/deterministic_decision_outcome_v0/"
+    "a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py"
+)
+PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER = (
+    "tests/learning/test_ddo_a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py"
+)
+PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER = (
+    "tests/learning/test_ddo_durable_evidence_storage_owner_contract_v1.py"
+)
 PACKAGE_WP02_OFFLINE_OBSERVATION_PROPOSAL_FENCES_V1_PRODUCTION = (
     "src/governance/offline_observation_proposal_contract_fences_v1.py"
 )
@@ -5226,12 +5236,24 @@ def test_selector_ddo_contract_ledger_v0_production_pr_bounded_full_includes_tes
     assert PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER in bounded
     assert PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER in bounded
     assert PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_TESTOWNER in bounded
+    assert (
+        PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER
+        in bounded
+    )
+    assert PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER in bounded
     assert bounded.count(PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER) == 1
     assert bounded.count(PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER) == 1
     assert bounded.count(PACKAGE_DDO_CAPTURE_V0_TESTOWNER) == 1
     assert bounded.count(PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER) == 1
     assert bounded.count(PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER) == 1
     assert bounded.count(PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER) == 1
+    assert (
+        bounded.count(
+            PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER
+        )
+        == 1
+    )
+    assert bounded.count(PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER) == 1
 
 
 def test_selector_ddo_control_plane_v0_production_pr_bounded_full_includes_testowners() -> None:
@@ -5312,6 +5334,42 @@ def test_selector_ddo_current_double_play_capture_parity_v1_pr_bounded_full() ->
     assert bounded.count(PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_TESTOWNER) == 1
 
 
+def test_selector_ddo_a1_crash_durability_closure_v1_production_pr_bounded_full_includes_testowner() -> (
+    None
+):
+    sel = _run_selector(
+        PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_PRODUCTION
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    assert (
+        PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER
+        in bounded
+    )
+    assert PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER in bounded
+    assert (
+        bounded.count(
+            PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER
+        )
+        == 1
+    )
+    assert bounded.count(PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER) == 1
+
+
+def test_selector_ddo_durable_evidence_storage_owner_contract_v1_pr_bounded_full_includes_testowner() -> (
+    None
+):
+    sel = _run_selector(PACKAGE_DDO_CONTRACT_LEDGER_V0_LEDGER)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    assert PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER in bounded
+    assert (
+        PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER
+        in bounded
+    )
+    assert bounded.count(PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER) == 1
+
+
 def test_selector_ddo_contract_ledger_v0_combined_diff_pr_bounded_full_includes_testowner_once() -> (
     None
 ):
@@ -5323,6 +5381,7 @@ def test_selector_ddo_contract_ledger_v0_combined_diff_pr_bounded_full_includes_
         PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_PRODUCTION,
         PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_PRODUCTION,
         PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_PRODUCTION,
+        PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_PRODUCTION,
         PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER,
         PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER,
         PACKAGE_DDO_CAPTURE_V0_TESTOWNER,
@@ -5330,6 +5389,8 @@ def test_selector_ddo_contract_ledger_v0_combined_diff_pr_bounded_full_includes_
         PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER,
         PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER,
         PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_TESTOWNER,
+        PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER,
+        PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER,
     )
     assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     bounded = _bounded_targets(sel)
@@ -5340,6 +5401,13 @@ def test_selector_ddo_contract_ledger_v0_combined_diff_pr_bounded_full_includes_
     assert bounded.count(PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER) == 1
     assert bounded.count(PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER) == 1
     assert bounded.count(PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_TESTOWNER) == 1
+    assert (
+        bounded.count(
+            PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER
+        )
+        == 1
+    )
+    assert bounded.count(PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER) == 1
 
 
 def test_selector_package_a_governance_production_pr_bounded_full_includes_lineage_testowner() -> (

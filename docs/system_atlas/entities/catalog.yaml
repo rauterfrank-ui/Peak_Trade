@@ -2537,6 +2537,7 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py
+      - src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py
     notes: >-
       Parallel Full-Autonomy/DDO track covering
       src/learning/deterministic_decision_outcome_v0. Offline learning /
@@ -2579,6 +2580,12 @@ entities:
       IDEMPOTENT_REPLAY is not crash durability proof; no automatic retry
       loop; A1 runtime remains unauthorized. Not a second
       trading, risk, safety, planning, execution, promotion, or deployment owner.
+      PEAK_TRADE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1
+      is bound as fail-closed non-provability closure: process-restart
+      durability is proven with bound assumptions; process-crash durability
+      is partial; host-crash and power-loss remain unproven;
+      durability_proven=True is not manufacturable; a separate storage
+      durability architecture is required before host-crash can be claimed.
       Atlas catalog presence is navigation only and is not activation. Atlas is
       not trading authority.
 
@@ -2640,6 +2647,7 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py
+      - src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py
     evidence_sources:
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
       - src/learning/deterministic_decision_outcome_v0/durable_evidence_path_v0.py
@@ -2649,6 +2657,7 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py
+      - src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py
     notes: >-
       Append-only offline ledger. Persist occurs only when a capture binding
       has ledger_path set. DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is
@@ -2670,7 +2679,11 @@ entities:
       A1 durability-to-admission and replay binding is bound fail-closed:
       existing admission owner reused; capture ok is not mutation
       permission; IDEMPOTENT_REPLAY is not crash proof; no automatic retry
-      loop. Crash durability remains unproven.
+      loop. A1 crash-durability proof-or-nonprovability closure is bound:
+      process-restart durability is proven with bound assumptions;
+      process-crash durability is partial; host-crash and power-loss remain
+      unproven; durability_proven=True is not manufacturable. Crash
+      durability remains unproven.
       AUTHORITY_OWNER=NONE for trading. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
       SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
       SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false.

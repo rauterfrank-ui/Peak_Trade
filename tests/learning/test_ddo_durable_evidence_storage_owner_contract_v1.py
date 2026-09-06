@@ -105,6 +105,16 @@ def _a1_admission_replay_persist_section(text: str) -> str:
         "### 11.13.5 Parallel-track DDO A1 durability-to-admission and replay binding persist"
     )
     end = text.index(
+        "### 11.13.5 Parallel-track DDO A1 crash durability proof or explicit non-provability closure persist"
+    )
+    return text[start:end]
+
+
+def _a1_crash_proof_persist_section(text: str) -> str:
+    start = text.index(
+        "### 11.13.5 Parallel-track DDO A1 crash durability proof or explicit non-provability closure persist"
+    )
+    end = text.index(
         "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
     )
     return text[start:end]
@@ -162,6 +172,18 @@ def test_contract_discoverable_and_bound() -> None:
     )
     assert "PEAK_TRADE_DDO_A1_DURABILITY_FAILURE_POLICY_BINDING_V1=BOUND" in spec
     assert "PEAK_TRADE_DDO_A1_DURABILITY_TO_ADMISSION_AND_REPLAY_BINDING_V1=BOUND" in spec
+    assert (
+        "PEAK_TRADE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1=BOUND"
+        in spec
+    )
+    assert (
+        "DURABILITY_CLOSURE=CURRENT_STORAGE_CONTRACT_EXHAUSTED_HOST_CRASH_DURABILITY_UNPROVEN"
+        in spec
+    )
+    assert "PROCESS_RESTART_DURABILITY=PROVEN_WITH_BOUND_ASSUMPTIONS" in spec
+    assert "PROCESS_CRASH_DURABILITY=PARTIAL" in spec
+    assert "DURABILITY_PROVEN_TRUE_MANUFACTURABLE=false" in spec
+    assert "SEPARATE_STORAGE_DURABILITY_ARCHITECTURE_REQUIRED=true" in spec
     assert (
         "A1_DURABILITY_FAILURE_POLICY=BOUND_FAIL_CLOSED_DEPENDENT_MUTATION_FORBIDDEN_ON_UNPROVEN_DURABILITY"
         in spec
@@ -238,6 +260,9 @@ def test_master_runbook_refers_to_valid_spec() -> None:
     a1_crash_start = runbook.index(
         "### 11.13.5 Parallel-track DDO A1 crash durability atomic replace or explicit non-requirement persist"
     )
+    a1_crash_proof_start = runbook.index(
+        "### 11.13.5 Parallel-track DDO A1 crash durability proof or explicit non-provability closure persist"
+    )
     live_z2db = runbook.index(
         "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
     )
@@ -249,6 +274,7 @@ def test_master_runbook_refers_to_valid_spec() -> None:
         < a1_start
         < a1_runtime_start
         < a1_crash_start
+        < a1_crash_proof_start
         < live_z2db
     )
     hardening = _hardening_persist_section(runbook)
@@ -396,6 +422,32 @@ def test_master_runbook_refers_to_valid_spec() -> None:
         "NEXT_DDO_STEP=OWNER_GO_REQUIRED_SEPARATE_SCOPED_DDO_A1_CONTINUATION_NOT_AUTHORIZED_BY_THIS_PERSIST"
         in a1_admission_replay
     )
+    a1_crash_proof = _a1_crash_proof_persist_section(runbook)
+    assert (
+        "PEAK_TRADE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1=BOUND"
+        in a1_crash_proof
+    )
+    assert (
+        "OWNER_GO=PEAK_TRADE_OWNER_GO_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1"
+        in a1_crash_proof
+    )
+    assert (
+        "DURABILITY_CLOSURE=CURRENT_STORAGE_CONTRACT_EXHAUSTED_HOST_CRASH_DURABILITY_UNPROVEN"
+        in a1_crash_proof
+    )
+    assert "PROCESS_RESTART_DURABILITY=PROVEN_WITH_BOUND_ASSUMPTIONS" in a1_crash_proof
+    assert "PROCESS_CRASH_DURABILITY=PARTIAL" in a1_crash_proof
+    assert "HOST_CRASH_DURABILITY=UNPROVEN" in a1_crash_proof
+    assert "POWER_LOSS_DURABILITY=UNPROVEN" in a1_crash_proof
+    assert "CRASH_DURABILITY_FULLY_PROVEN=false" in a1_crash_proof
+    assert "DURABILITY_PROVEN_TRUE_MANUFACTURABLE=false" in a1_crash_proof
+    assert "SEPARATE_STORAGE_DURABILITY_ARCHITECTURE_REQUIRED=true" in a1_crash_proof
+    assert "DEPENDENT_MUTATION_ON_UNPROVEN_DURABILITY=FORBIDDEN" in a1_crash_proof
+    assert "RUNTIME_AUTHORIZED=false" in a1_crash_proof
+    assert "NEW_STORAGE_AUTHORITY_CREATED=false" in a1_crash_proof
+    assert "NEW_ADMISSION_AUTHORITY_CREATED=false" in a1_crash_proof
+    assert "CURRENT_CANONICAL_SECTION_REPLACED=false" in a1_crash_proof
+    assert "CANONICAL_LIVE_NEXT_POINTER_CHANGED=false" in a1_crash_proof
 
 
 def test_map_and_atlas_remain_navigation_only() -> None:
@@ -418,6 +470,10 @@ def test_map_and_atlas_remain_navigation_only() -> None:
     )
     assert "DDO_A1_DURABILITY_FAILURE_POLICY_BINDING_ROLE=NAVIGATION_POINTER_ONLY" in mot
     assert "DDO_A1_DURABILITY_TO_ADMISSION_AND_REPLAY_BINDING_ROLE=NAVIGATION_POINTER_ONLY" in mot
+    assert (
+        "DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_ROLE=NAVIGATION_POINTER_ONLY"
+        in mot
+    )
     assert "DDO_AUTHORITY_EFFECT=NONE" in mot
     assert "MAP_OF_TRUTH_AUTHORITY=NAVIGATION_ONLY" in mot
     assert "DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is" in atlas
@@ -427,6 +483,7 @@ def test_map_and_atlas_remain_navigation_only() -> None:
     )
     assert "PEAK_TRADE_DDO_A1_DURABILITY_FAILURE_POLICY_BINDING_V1 is bound" in atlas
     assert "PEAK_TRADE_DDO_A1_DURABILITY_TO_ADMISSION_AND_REPLAY_BINDING_V1 is" in atlas
+    assert "PEAK_TRADE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1" in atlas
     assert "PRODUCTIVE_HOST_LEDGER_BINDING" in atlas
     assert "Atlas is not trading authority" in atlas
     assert (
