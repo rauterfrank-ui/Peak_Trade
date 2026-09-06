@@ -67,6 +67,21 @@ def classify_restart_handoff_v1(
     distinct = bool(
         present and observed.get("HANDOFF_DISTINCT_FROM_ACCOUNTING_VENUE_GET_PATH") is True
     )
+    contemporaneous = bool(
+        observed.get("CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED") is True
+        or handoff.get("contemporaneous_capture_proven") is True
+    )
+    provenance = str(
+        handoff.get("provenance_class") or observed.get("provenance_class") or ""
+    ).strip()
+    retroactive_provenance = provenance in {
+        "RETROACTIVE_SYNTHESIS",
+        "VENUE_GET_COPY",
+        "TIMESTAMP_BACKFILL",
+        "POST_HOC_IDENTITY_MATCH",
+        "ACCOUNTING_ONLY",
+        "EVIDENCE_PACK_RECLASSIFIED_AS_CONTROL_HANDOFF",
+    }
     testnet_same_identity = bool(
         str(observed.get("testnet_restart_instId") or "") == BOUND_INSTID
         and str(observed.get("testnet_restart_clOrdId") or "") == BOUND_CLORDID
@@ -104,6 +119,10 @@ def classify_restart_handoff_v1(
         epistemic = "DURABLE_LIVE_PRE_RESTART_HANDOFF_ABSENT"
     elif not distinct:
         epistemic = "HANDOFF_NOT_DISTINCT_FROM_ACCOUNTING_PATH"
+    elif retroactive_provenance:
+        epistemic = "NO_SYNTHETIC_PRE_RESTART_PROVENANCE"
+    elif reconstructable and contemporaneous is not True:
+        epistemic = "POST_HOC_IDENTITY_MATCH_DOES_NOT_PROVE_PRE_RESTART_CAPTURE"
     elif reconstructable:
         epistemic = "RECONSTRUCTED"
     else:
@@ -114,6 +133,8 @@ def classify_restart_handoff_v1(
         and reconstructable
         and identity_match
         and silent_reinit is False
+        and contemporaneous is True
+        and retroactive_provenance is False
         and epistemic == "RECONSTRUCTED"
     )
     return {
@@ -132,6 +153,9 @@ def classify_restart_handoff_v1(
         "TESTNET_RESTART_IS_NOT_THIS_FIELD": True,
         "ACCOUNTING_CLOSURE_IS_NOT_RESTART": True,
         "MISSING_NOT_REPLACED_BY_ACCOUNTING": True,
+        "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED": contemporaneous,
+        "RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED": False,
+        "POST_HOC_IDENTITY_MATCH_DOES_NOT_PROVE_PRE_RESTART_CAPTURE": True,
         "EPISTEMIC_CLASS": epistemic,
         "ACTUAL_RESTART_RECONSTRUCTED": claim,
         "census": observed,

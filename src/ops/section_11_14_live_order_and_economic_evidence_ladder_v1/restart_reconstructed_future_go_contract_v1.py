@@ -9,7 +9,9 @@ from __future__ import annotations
 from typing import Any
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
+    FUTURE_HANDOFF_OWNER_REQUIRES_SEPARATE_EXPLICIT_OWNER_GO,
     NEXT_OWNER_GO_REQUIRED,
+    SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_handoff_schema_v1 import (
     HANDOFF_DOCUMENT_CLASS,
@@ -28,15 +30,25 @@ def bind_future_live_restart_owner_go_contract_v1() -> dict[str, Any]:
         "THIS_CENSUS_DOES_NOT_AUTHORIZE_THE_FUTURE_GO": True,
         "FUTURE_OWNER_GO_REQUIRED": NEXT_OWNER_GO_REQUIRED,
         "FUTURE_LIVE_OR_RESTART_OWNER_GO_REQUIRED": True,
+        "FUTURE_HANDOFF_OWNER_REQUIRES_SEPARATE_EXPLICIT_OWNER_GO": (
+            FUTURE_HANDOFF_OWNER_REQUIRES_SEPARATE_EXPLICIT_OWNER_GO
+        ),
+        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
         "EARLIEST_MISSING_FACT": "DURABLE_LIVE_PRE_RESTART_HANDOFF",
         "FUTURE_MINIMUM_OPERATION": (
             "PERSIST_IDENTITY_BOUND_PEAK_TRADE_DURABLE_PRE_RESTART_HANDOFF"
+        ),
+        "FUTURE_MINIMUM_OPERATION_PREREQUISITE": (
+            "Bind a Live-scoped identity-bound contemporaneous durable handoff "
+            "owner via a separate explicit Owner-GO. Implicit reuse of existing "
+            "owners is forbidden. Then persist the handoff contemporaneously."
         ),
         "FUTURE_MINIMUM_OPERATION_DETAIL": (
             "Persist a Peak_Trade durable pre-restart handoff for the bound Live "
             "submit identity, distinct from venue-GET fill/fee/position artifacts, "
             "then adjudicate LIVE_RESTART_RECONSTRUCTED offline from that handoff "
-            "using source_kind GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF."
+            "using source_kind GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF. Retroactive "
+            "synthesis from later venue GET or accounting artifacts is forbidden."
         ),
         "FRESH_PROCESS_RESTART_REQUIRED_FOR_THIS_FIELD": False,
         "FRESH_PROCESS_RESTART_INSUFFICIENT_WITHOUT_HANDOFF": True,
@@ -53,6 +65,7 @@ def bind_future_live_restart_owner_go_contract_v1() -> dict[str, Any]:
         "RETRY_DEFAULT": False,
         "SECOND_SUBMIT_DEFAULT": False,
         "ACCOUNTING_CLOSURE_IS_NOT_RESTART": True,
+        "RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED": False,
         "TESTNET_RESTART_PROVEN_IS_NOT_THIS_FIELD": True,
         "SECTION_11_17_LIVE_RESTART_PROVEN_IS_NOT_THIS_FIELD": True,
         "LIVE_DURABLE_STATE_WRITER_ON_SECTION_11_14_CANARY_EXISTS": False,

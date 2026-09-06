@@ -9,6 +9,8 @@ from typing import Any
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     CANONICAL_EVIDENCE_RUN_ID,
     EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_EXHAUSTIVE_CENSUS_OWNER_GO,
+    HISTORICAL_EXHAUSTIVE_CENSUS_SHA,
     OWNER_GO,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
@@ -50,9 +52,11 @@ def execute_live_restart_reconstructed_exhaustive_census_v1(
     repo_root: Path,
     run_id: str | None = None,
 ) -> dict[str, Any]:
-    if str(owner_go or "").strip() != OWNER_GO:
+    allowed_owner_gos = {OWNER_GO, HISTORICAL_EXHAUSTIVE_CENSUS_OWNER_GO}
+    allowed_shas = {EXPECTED_ORIGIN_MAIN_SHA, HISTORICAL_EXHAUSTIVE_CENSUS_SHA}
+    if str(owner_go or "").strip() not in allowed_owner_gos:
         raise Section1114OfflineSurfaceError("OWNER_GO_MISMATCH")
-    if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
+    if str(origin_main_sha or "").strip() not in allowed_shas:
         raise Section1114OfflineSurfaceError("ORIGIN_MAIN_SHA_MISMATCH")
     started = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     pack_run_id = str(run_id or CANONICAL_EVIDENCE_RUN_ID or _utc_now_compact_v1())
