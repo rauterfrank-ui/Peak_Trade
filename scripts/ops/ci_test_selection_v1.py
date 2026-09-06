@@ -1382,6 +1382,9 @@ PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CON
 PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_WAL_ADAPTER_V1_TESTOWNER: str = (
     "tests/learning/test_ddo_a1_mutation_critical_control_state_wal_adapter_v1.py"
 )
+PR_BOUNDED_FULL_PACKAGE_DDO_A1_HOST_CRASH_DURABILITY_CLOSURE_V1_TESTOWNER: str = (
+    "tests/learning/test_ddo_a1_host_crash_durability_closure_v1.py"
+)
 PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_V1_PRODUCTION: str = (
     "src/learning/mutation_critical_control_state_storage_v1/"
 )
@@ -1462,12 +1465,18 @@ PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_V1_TRIGGE
         "src/learning/mutation_critical_control_state_storage_v1/serialization_v1.py",
         "src/learning/mutation_critical_control_state_storage_v1/wal_adapter_v1.py",
         "src/learning/mutation_critical_control_state_storage_v1/crash_reproof_v1.py",
+        "src/learning/mutation_critical_control_state_storage_v1/durability_primitives_v1.py",
+        "src/learning/mutation_critical_control_state_storage_v1/host_crash_durability_claim_matrix_v1.py",
+        "src/learning/mutation_critical_control_state_storage_v1/host_crash_durability_closure_v1.py",
+        "src/learning/mutation_critical_control_state_storage_v1/host_filesystem_capability_v1.py",
         PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_V1_PRODUCTION,
         PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER,
         PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_WAL_ADAPTER_V1_TESTOWNER,
+        PR_BOUNDED_FULL_PACKAGE_DDO_A1_HOST_CRASH_DURABILITY_CLOSURE_V1_TESTOWNER,
         "tests/learning/test_ddo_a1_mutation_critical_control_state_durable_storage_crash_reproof_v1.py",
         "docs/ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1.md",
         "docs/ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_DURABLE_STORAGE_IMPLEMENTATION_AND_CRASH_REPROOF_V1.md",
+        "docs/ops/specs/DDO_A1_HOST_CRASH_DURABILITY_CLOSURE_V1.md",
     }
 )
 PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_V1_TARGETS: tuple[
@@ -1475,6 +1484,7 @@ PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_V1_TARGET
 ] = (
     PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER,
     PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_WAL_ADAPTER_V1_TESTOWNER,
+    PR_BOUNDED_FULL_PACKAGE_DDO_A1_HOST_CRASH_DURABILITY_CLOSURE_V1_TESTOWNER,
     "tests/learning/test_ddo_a1_mutation_critical_control_state_durable_storage_crash_reproof_v1.py",
     PR_BOUNDED_FULL_PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER,
     PR_BOUNDED_FULL_PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER,
