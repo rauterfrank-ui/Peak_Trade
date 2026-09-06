@@ -40,6 +40,12 @@ def _hardening_persist_section(text: str) -> str:
     start = text.index(
         "### 11.13.5 Parallel-track DDO ledger durability hardening and host-binding prep persist"
     )
+    end = text.index("### 11.13.5 Parallel-track DDO productive host scope input binding persist")
+    return text[start:end]
+
+
+def _scope_input_persist_section(text: str) -> str:
+    start = text.index("### 11.13.5 Parallel-track DDO productive host scope input binding persist")
     end = text.index(
         "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
     )
@@ -89,6 +95,13 @@ def test_contract_discoverable_and_bound() -> None:
     assert "NEXT_DDO_STEP=PEAK_TRADE_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1" in spec
     assert "NO_LEDGER_PATH_IN_HOST=true" in spec
     assert "NO_SECOND_DDO_LEDGER=true" in spec
+    assert "PEAK_TRADE_DDO_PRODUCTIVE_HOST_SCOPE_INPUT_BINDING_V1=BOUND" in spec
+    assert "HOST_SCOPE_INPUT_SEAM=BOUND" in spec
+    assert "BINDING_INPUTS_PROVEN=true" in spec
+    assert "PATH_RESOLVER_CONSUMED_BY_PRODUCTIVE_HOST=false" in spec
+    assert "DEFAULT_PRODUCTIVE_HOST_SCOPE_UNBOUND_UNTIL_EXPLICIT_INJECTION=true" in spec
+    assert "NEW_ENVIRONMENT_IDENTITY_DOMAIN_CREATED=false" in spec
+    assert "NEW_ACCOUNT_IDENTITY_DOMAIN_CREATED=false" in spec
 
 
 def test_master_runbook_refers_to_valid_spec() -> None:
@@ -129,10 +142,13 @@ def test_master_runbook_refers_to_valid_spec() -> None:
     hardening_start = runbook.index(
         "### 11.13.5 Parallel-track DDO ledger durability hardening and host-binding prep persist"
     )
+    scope_start = runbook.index(
+        "### 11.13.5 Parallel-track DDO productive host scope input binding persist"
+    )
     live_z2db = runbook.index(
         "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
     )
-    assert persist_start < hardening_start < live_z2db
+    assert persist_start < hardening_start < scope_start < live_z2db
     hardening = _hardening_persist_section(runbook)
     assert "DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1=COMPLETE" in hardening
     assert "CAPTURED_IDS_DURABLE_WRITE_BUG_STATUS=CLOSED" in hardening
@@ -140,6 +156,19 @@ def test_master_runbook_refers_to_valid_spec() -> None:
     assert "DDO_RUNTIME_PATH_BOUND=false" in hardening
     assert "CURRENT_CANONICAL_SECTION_REPLACED=false" in hardening
     assert "CANONICAL_LIVE_NEXT_POINTER_CHANGED=false" in hardening
+    scope = _scope_input_persist_section(runbook)
+    assert "PEAK_TRADE_DDO_PRODUCTIVE_HOST_SCOPE_INPUT_BINDING_V1=BOUND" in scope
+    assert "OWNER_GO=PEAK_TRADE_OWNER_GO_DDO_PRODUCTIVE_HOST_SCOPE_INPUT_BINDING_V1" in scope
+    assert "HOST_RUNTIME_STATE_ROOT_BINDING=BOUND" in scope
+    assert "HOST_ENVIRONMENT_BINDING=BOUND" in scope
+    assert "HOST_ACCOUNT_BINDING=BOUND" in scope
+    assert "BINDING_INPUTS_PROVEN=true" in scope
+    assert "DDO_PRODUCTIVE_HOST_LEDGER_BOUND=false" in scope
+    assert "DDO_RUNTIME_PATH_BOUND=false" in scope
+    assert "PATH_RESOLVER_CONSUMED_BY_PRODUCTIVE_HOST=false" in scope
+    assert "CURRENT_CANONICAL_SECTION_REPLACED=false" in scope
+    assert "CANONICAL_LIVE_NEXT_POINTER_CHANGED=false" in scope
+    assert "NEXT_DDO_STEP=PEAK_TRADE_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1" in scope
 
 
 def test_map_and_atlas_remain_navigation_only() -> None:
@@ -152,6 +181,7 @@ def test_map_and_atlas_remain_navigation_only() -> None:
     assert (
         "DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_ROLE=NAVIGATION_POINTER_ONLY" in mot
     )
+    assert "DDO_PRODUCTIVE_HOST_SCOPE_INPUT_BINDING_ROLE=NAVIGATION_POINTER_ONLY" in mot
     assert "DDO_AUTHORITY_EFFECT=NONE" in mot
     assert "MAP_OF_TRUTH_AUTHORITY=NAVIGATION_ONLY" in mot
     assert "DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is" in atlas
@@ -191,7 +221,16 @@ def test_no_productive_host_ledger_path_and_no_second_store() -> None:
     assert host_default in host
     assert "ddo_durable_evidence_runtime_state_root: Optional[str] = None" in host
     assert 'ddo_evidence_environment_binding_status: str = "UNBOUND"' in host
+    assert "ddo_observation_host_scope: Optional[DdoObservationHostScopeInputsV1] = None" in host
     assert "resolve_ddo_durable_evidence_path_v1(" not in host
+    binding_path = (
+        REPO_ROOT
+        / "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1"
+        / "ddo_observation_host_scope_binding_v1.py"
+    )
+    binding = binding_path.read_text(encoding="utf-8")
+    assert "resolve_ddo_durable_evidence_path_v1(" not in binding
+    assert "class DdoObservationHostScopeInputsV1" in binding
     changed = subprocess.check_output(
         ["git", "diff", "--name-only", "origin/main"],
         cwd=REPO_ROOT,
