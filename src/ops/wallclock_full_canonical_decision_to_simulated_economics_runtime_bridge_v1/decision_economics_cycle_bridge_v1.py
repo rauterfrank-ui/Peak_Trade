@@ -17,6 +17,7 @@ from typing import Any, Mapping, Optional, Sequence
 
 from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
     DdoCaptureBindingV0,
+    bind_host_cycle_capture_context_v0,
     record_productive_cycle_capture_v0,
     with_ddo_capture_session_v0,
 )
@@ -1138,6 +1139,15 @@ def run_bridge_cycle_v1(
     elif kind is ObservationCycleKindV1.OUT_OF_ORDER:
         state.append_mid(mid_price)
     state.cycle_index += 1
+    bind_host_cycle_capture_context_v0(
+        state.ddo_capture_binding
+        if isinstance(state.ddo_capture_binding, DdoCaptureBindingV0)
+        else None,
+        event_ts_unix=float(event_ts_unix),
+        session_id=session_id,
+        cycle_index=int(state.cycle_index),
+        repository_sha=repository_sha,
+    )
     observation_acceptance_result = evaluate_host_observation_acceptance_v1(
         state.confirmation_binding,
         mid_price=float(mid_price),

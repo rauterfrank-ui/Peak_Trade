@@ -236,6 +236,7 @@ RECORD_TYPE_V0: Final[tuple[str, ...]] = (
     "drift_assessment_record",
     "known_good_reference",
     "drift_policy",
+    "double_play_entry_exit_observation",
 )
 
 NULLABILITY_V0: Final[tuple[str, ...]] = (

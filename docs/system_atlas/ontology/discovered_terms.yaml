@@ -286,6 +286,8 @@ terms:
       Navigation-only. Atlas does not confer trading, promotion, risk, safety,
       or execution authority. Capture is observation-only. Listed src/ops paths
       are fail-open host hooks, not new trading or execution semantics.
+      Double-Play typed observation projection v1 stores exact producer tokens
+      without copying them into DECISION_TYPE_V0 / DECISION_RESULT_V0.
 
   - id: TERM:ddo_offline_evaluation_engine
     kind: TERM

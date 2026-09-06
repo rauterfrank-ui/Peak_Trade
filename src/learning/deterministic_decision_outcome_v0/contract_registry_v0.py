@@ -25,6 +25,7 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_DRIFT_ASSESSMENT,
     SCHEMA_NAME_DRIFT_OBSERVATION,
     SCHEMA_NAME_DRIFT_POLICY,
+    SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION,
     SCHEMA_NAME_HEALTH_SNAPSHOT,
     SCHEMA_NAME_INCIDENT_RECORD,
     SCHEMA_NAME_KNOWN_GOOD_REFERENCE,
@@ -48,6 +49,7 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_VERSION_DRIFT_ASSESSMENT_V0,
     SCHEMA_VERSION_DRIFT_OBSERVATION_V0,
     SCHEMA_VERSION_DRIFT_POLICY_V0,
+    SCHEMA_VERSION_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION_V1,
     SCHEMA_VERSION_HEALTH_SNAPSHOT_V0,
     SCHEMA_VERSION_INCIDENT_RECORD_V0,
     SCHEMA_VERSION_KNOWN_GOOD_REFERENCE_V0,
@@ -64,6 +66,9 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
 )
 from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
     DECISION_EVENT_FIELD_SPECS_V0,
+)
+from src.learning.deterministic_decision_outcome_v0.double_play_observation_projection_v1 import (
+    DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION_FIELD_SPECS_V1,
 )
 from src.learning.deterministic_decision_outcome_v0.drift_contracts_v0 import (
     DRIFT_ASSESSMENT_FIELD_SPECS_V0,
@@ -393,6 +398,18 @@ CONTRACT_REGISTRY_V0: Final[Mapping[str, Any]] = MappingProxyType(
                         "supported_versions": (SCHEMA_VERSION_DRIFT_POLICY_V0,),
                         "current_version": SCHEMA_VERSION_DRIFT_POLICY_V0,
                         "fields": _specs_as_dicts(DRIFT_POLICY_FIELD_SPECS_V0),
+                    }
+                ),
+                SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION,
+                        "supported_versions": (
+                            SCHEMA_VERSION_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION_V1,
+                        ),
+                        "current_version": SCHEMA_VERSION_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION_V1,
+                        "fields": _specs_as_dicts(
+                            DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION_FIELD_SPECS_V1
+                        ),
                     }
                 ),
             }

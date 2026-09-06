@@ -11,6 +11,7 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_COUNTERFACTUAL_RECORD,
     SCHEMA_NAME_DECISION_EVENT,
     SCHEMA_NAME_DEPLOYMENT_RECORD,
+    SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION,
     SCHEMA_NAME_DRIFT_OBSERVATION,
     SCHEMA_NAME_HEALTH_SNAPSHOT,
     SCHEMA_NAME_INCIDENT_RECORD,
@@ -75,6 +76,9 @@ _REQUIRED_TYPED_REFS: dict[str, tuple[tuple[str, str], ...]] = {
     SCHEMA_NAME_ROLLBACK_RECORD: (
         ("deployment_record_ref", SCHEMA_NAME_DEPLOYMENT_RECORD),
         ("known_good_artifact_ref", SCHEMA_NAME_RELEASE_ARTIFACT),
+    ),
+    SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION: (
+        ("decision_event_ref", SCHEMA_NAME_DECISION_EVENT),
     ),
 }
 
