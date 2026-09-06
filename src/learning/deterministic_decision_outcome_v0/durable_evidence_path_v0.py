@@ -1,9 +1,10 @@
 """DDO durable-evidence path resolution primitive v0.
 
 Resolves a ledger path only from caller-supplied authoritative inputs.
-Does not bind a productive host ledger_path. Does not invent cwd, home,
-repo-root, or temp-dir fallbacks. Does not import trading, ops, live,
-or ExecutionEnvironment (owner is reused by token membership only).
+Does not invent cwd, home, repo-root, or temp-dir fallbacks. Does not
+import trading, ops, live, or ExecutionEnvironment (owner is reused by
+token membership only). Productive host consumption is owned by the
+observation-host binding module, not by this primitive.
 
 TESTNET_EFFECT and CANARY_EFFECT remain NONE. Mentioning environment
 member tokens here does not confer Testnet or Canary authority.
@@ -50,7 +51,9 @@ def resolve_ddo_durable_evidence_path_v1(
 ) -> Path:
     """Derive the DDO ledger path from explicit scopes. Fail closed if any required input is missing.
 
-    Productive hosts must not call this unless a later Owner-GO binds the inputs.
+    Productive hosts may call this only through the observation-host binding
+    after the four scope inputs are already bound. This primitive still does
+    not invent fallbacks or bind a host itself.
     """
     if runtime_state_root is None or str(runtime_state_root).strip() == "":
         raise DdoPathResolutionError("RUNTIME_STATE_ROOT_REQUIRED")

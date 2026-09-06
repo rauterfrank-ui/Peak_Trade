@@ -365,3 +365,42 @@ The typed host inputs consume existing owners only. Default
 `run_bridge_cycles_from_mids_v1` remains unbound. This slice does **not**
 call `resolve_ddo_durable_evidence_path_v1` and does **not** set
 `ledger_path`.
+
+## 14. Productive host durable ledger binding
+
+```text
+PEAK_TRADE_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1=BOUND
+PATH_RESOLVER_CONSUMED_BY_PRODUCTIVE_HOST=true
+RESOLVED_PATH_IS_SCOPE_DERIVED=true
+PRODUCTIVE_RUNTIME_PATH_BOUND=true
+PRODUCTIVE_HOST_LEDGER_BOUND=true
+DURABLE_APPEND_REACHABLE_FROM_HOST=true
+HOST_LEDGER_PATH_DEFAULT=None
+DEFAULT_PRODUCTIVE_HOST_SCOPE_UNBOUND_UNTIL_EXPLICIT_INJECTION=true
+UNBOUNDED_PATH_FALLBACK_PRESENT=false
+HOST_BIND_ONCE_SEMANTICS=STARTUP_SCOPE_TUPLE_BIND_ONCE_REBIND_CONFLICT_FAIL_CLOSED
+DDO_DURABLE_LEDGER_IMPLEMENTATION=AppendOnlyDdoLedgerV0
+NEW_DDO_STORAGE_IMPLEMENTATION_CREATED=false
+MASTER_V2_DOUBLE_PLAY_SOLE_TRADING_AUTHORITY=true
+DDO_STORAGE_AUTHORITY_IS_TRADING_AUTHORITY=false
+DDO_LEARNING_PRODUCTIVE_AUTHORITY=false
+TRADING_DECISION_DEPENDS_ON_LEDGER_WRITE=false
+CAPTURE_FAILURE_CHANGES_CURRENT_DECISION=false
+PRODUCTIVE_RETURN_VALUE_UNCHANGED=true
+APPEND_ONLY_STATUS=ENFORCED_O_APPEND
+ATOMIC_WRITE_STATUS=PARTIAL
+FILE_FSYNC_STATUS=PRESENT
+DIRECTORY_FSYNC_STATUS=BEST_EFFORT_NO_HARD_GUARANTEE
+CRASH_DURABILITY_FULLY_PROVEN=false
+A1_DURABILITY_FAILURE_POLICY=UNBOUND_NOT_AUTHORIZED
+NEXT_DDO_STEP=PEAK_TRADE_DDO_A1_UNATTENDED_DURABILITY_POLICY_BOUNDARY_V1
+NEXT_OWNER_GO_REQUIRED=true
+```
+
+When the existing-owner triple is injected, the productive observation
+host consumes `resolve_ddo_durable_evidence_path_v1` with
+`system_scope=canonical_trading_path` and binds `AppendOnlyDdoLedgerV0`
+through `DdoCaptureBindingV0.ledger_path`. Default uninjected
+construction still leaves `ledger_path=None`. Capture or append failure
+does not change the Master-V2 / Double-Play return. This slice does
+**not** prove crash durability and does **not** bind A1 policy.

@@ -1,6 +1,6 @@
 """DDO productive observation-host scope input binding v1.
 
-Consumes existing owners only. No productive ledger_path. No trading authority.
+Consumes existing owners only. Default construction remains unbound.
 """
 
 from __future__ import annotations
@@ -22,7 +22,9 @@ from src.learning.deterministic_decision_outcome_v0.authority_v0 import (
 from src.learning.deterministic_decision_outcome_v0.durable_evidence_path_v0 import (
     DDO_EVIDENCE_ACCOUNT_OWNER,
     DDO_EVIDENCE_ENVIRONMENT_OWNER,
+    DDO_EVIDENCE_SYSTEM_SCOPE_TOKEN,
     LOGICAL_CONFIG_KEY_DDO_DURABLE_EVIDENCE_RUNTIME_STATE_ROOT,
+    resolve_ddo_durable_evidence_path_v1,
 )
 from src.ops.capability_11_2_credential_authorization_and_account_identity_boundary_v1.account_identity_boundary_v1 import (
     AccountIdentityRecordV1,
@@ -159,13 +161,21 @@ def test_host_scope_fields_explicit_after_injection(tmp_path: Path) -> None:
     assert state.ddo_evidence_account_scope == ACCOUNT_TEST_IDENTITY
     assert state.ddo_evidence_environment_binding_status == "BOUND"
     assert state.ddo_evidence_account_binding_status == "BOUND"
+    expected_path = resolve_ddo_durable_evidence_path_v1(
+        runtime_state_root=tmp_path,
+        environment=ExecutionEnvironment.SHADOW.value,
+        account_scope=ACCOUNT_TEST_IDENTITY,
+        system_scope=DDO_EVIDENCE_SYSTEM_SCOPE_TOKEN,
+    )
     assert state.ddo_capture_binding.evidence_environment == "shadow"
     assert state.ddo_capture_binding.evidence_account_scope == ACCOUNT_TEST_IDENTITY
-    assert state.ddo_capture_binding.ledger_path is None
+    assert Path(state.ddo_capture_binding.ledger_path) == expected_path
+    assert state.ddo_durable_ledger_path == str(expected_path)
     assert state.last_ddo_capture is not None
-    assert state.last_ddo_capture["path_binding_state"] == "UNBOUND"
-    assert state.last_ddo_capture["ddo_ledger_path_unresolved"] == DDO_LEDGER_PATH_UNRESOLVED
-    assert state.last_ddo_capture["ledger_bound"] is False
+    assert state.last_ddo_capture["path_binding_state"] == "BOUND"
+    assert "ddo_ledger_path_unresolved" not in state.last_ddo_capture
+    assert state.last_ddo_capture["ledger_bound"] is True
+    assert state.last_ddo_capture["resolved_path_is_scope_derived"] is True
 
 
 def test_missing_each_scope_input_fails_closed(tmp_path: Path) -> None:
@@ -291,41 +301,37 @@ def test_host_scope_immutable_or_conflict_explicit(tmp_path: Path) -> None:
     _ = baseline_state
 
 
-def test_productive_host_ledger_still_unbound_and_resolver_not_consumed(
-    tmp_path: Path,
-) -> None:
+def test_default_uninjected_host_remains_unbound() -> None:
     default_state, _ = run_bridge_cycles_from_mids_v1(
         [3500.0], session_id="ddo-scope-default", require_selection_binding=False
     )
-    bound_state, _ = run_bridge_cycles_from_mids_v1(
-        [3500.0],
-        session_id="ddo-scope-default",
-        require_selection_binding=False,
-        ddo_durable_evidence_runtime_state_root=tmp_path,
-        ddo_evidence_environment=ExecutionEnvironment.DEV,
-        ddo_account_identity_record=_account_record(),
+    assert default_state.ddo_capture_binding.ledger_path is None
+    assert default_state.ddo_durable_ledger_path is None
+    assert default_state.last_ddo_capture is not None
+    assert default_state.last_ddo_capture["ledger_bound"] is False
+    assert default_state.last_ddo_capture["path_binding_state"] == "UNBOUND"
+    assert (
+        default_state.last_ddo_capture["ddo_ledger_path_unresolved"] == DDO_LEDGER_PATH_UNRESOLVED
     )
-    for state in (default_state, bound_state):
-        assert state.ddo_capture_binding.ledger_path is None
-        assert state.last_ddo_capture is not None
-        assert state.last_ddo_capture["ledger_bound"] is False
-        assert state.last_ddo_capture["path_binding_state"] == "UNBOUND"
-        assert state.last_ddo_capture["ddo_ledger_path_unresolved"] == DDO_LEDGER_PATH_UNRESOLVED
-        assert list(tmp_path.glob("**/*.jsonl")) == []
     assert default_state.ddo_observation_host_scope is None
     assert default_state.ddo_durable_evidence_runtime_state_root is None
     assert default_state.ddo_evidence_environment is None
     assert default_state.ddo_evidence_account_scope is None
     assert "resolve_ddo_durable_evidence_path_v1" not in _call_names(HOST_PATH)
-    assert "resolve_ddo_durable_evidence_path_v1" not in _call_names(BINDING_PATH)
     host = HOST_PATH.read_text(encoding="utf-8")
     binding = BINDING_PATH.read_text(encoding="utf-8")
     assert "resolve_ddo_durable_evidence_path_v1(" not in host
-    assert "resolve_ddo_durable_evidence_path_v1(" not in binding
+    assert "resolve_ddo_durable_evidence_path_v1(" in binding
     assert "ledger_path=resolver" not in host
     assert (
         inspect.signature(BridgeSessionStateV1.__init__)
         .parameters["ddo_durable_evidence_runtime_state_root"]
+        .default
+        is None
+    )
+    assert (
+        inspect.signature(BridgeSessionStateV1.__init__)
+        .parameters["ddo_durable_ledger_path"]
         .default
         is None
     )
@@ -355,6 +361,6 @@ def test_trading_decision_and_authority_unchanged_with_bound_scope(tmp_path: Pat
     assert unbound_state.last_ddo_capture["decision_unchanged"] is True
     assert bound_state.last_ddo_capture["decision_unchanged"] is True
     assert bound_state.ddo_observation_host_scope is not None
-    assert bound_state.ddo_observation_host_scope.ledger_path_resolved is False
+    assert bound_state.ddo_observation_host_scope.ledger_path_resolved is True
     assert ACCOUNT_TEST_IDENTITY != "acct-uid-demo"
     _ = BINDING_PACKAGE

@@ -47,6 +47,16 @@ def _hardening_persist_section(text: str) -> str:
 def _scope_input_persist_section(text: str) -> str:
     start = text.index("### 11.13.5 Parallel-track DDO productive host scope input binding persist")
     end = text.index(
+        "### 11.13.5 Parallel-track DDO productive host durable ledger binding persist"
+    )
+    return text[start:end]
+
+
+def _ledger_binding_persist_section(text: str) -> str:
+    start = text.index(
+        "### 11.13.5 Parallel-track DDO productive host durable ledger binding persist"
+    )
+    end = text.index(
         "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
     )
     return text[start:end]
@@ -95,7 +105,9 @@ def test_contract_discoverable_and_bound() -> None:
     assert "NEXT_DDO_STEP=PEAK_TRADE_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1" in spec
     assert "NO_LEDGER_PATH_IN_HOST=true" in spec
     assert "NO_SECOND_DDO_LEDGER=true" in spec
-    assert "PEAK_TRADE_DDO_PRODUCTIVE_HOST_SCOPE_INPUT_BINDING_V1=BOUND" in spec
+    assert "PEAK_TRADE_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1=BOUND" in spec
+    assert "PATH_RESOLVER_CONSUMED_BY_PRODUCTIVE_HOST=true" in spec
+    assert "DURABLE_APPEND_REACHABLE_FROM_HOST=true" in spec
     assert "HOST_SCOPE_INPUT_SEAM=BOUND" in spec
     assert "BINDING_INPUTS_PROVEN=true" in spec
     assert "PATH_RESOLVER_CONSUMED_BY_PRODUCTIVE_HOST=false" in spec
@@ -145,10 +157,13 @@ def test_master_runbook_refers_to_valid_spec() -> None:
     scope_start = runbook.index(
         "### 11.13.5 Parallel-track DDO productive host scope input binding persist"
     )
+    ledger_start = runbook.index(
+        "### 11.13.5 Parallel-track DDO productive host durable ledger binding persist"
+    )
     live_z2db = runbook.index(
         "### 11.13.5.Z2DB Offline execution-permission and position-creation producer wiring persist"
     )
-    assert persist_start < hardening_start < scope_start < live_z2db
+    assert persist_start < hardening_start < scope_start < ledger_start < live_z2db
     hardening = _hardening_persist_section(runbook)
     assert "DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1=COMPLETE" in hardening
     assert "CAPTURED_IDS_DURABLE_WRITE_BUG_STATUS=CLOSED" in hardening
@@ -169,6 +184,25 @@ def test_master_runbook_refers_to_valid_spec() -> None:
     assert "CURRENT_CANONICAL_SECTION_REPLACED=false" in scope
     assert "CANONICAL_LIVE_NEXT_POINTER_CHANGED=false" in scope
     assert "NEXT_DDO_STEP=PEAK_TRADE_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1" in scope
+    ledger_binding = _ledger_binding_persist_section(runbook)
+    assert "PEAK_TRADE_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1=BOUND" in ledger_binding
+    assert (
+        "OWNER_GO=PEAK_TRADE_OWNER_GO_DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_V1"
+        in ledger_binding
+    )
+    assert "PATH_RESOLVER_CONSUMED_BY_PRODUCTIVE_HOST=true" in ledger_binding
+    assert "RESOLVED_PATH_IS_SCOPE_DERIVED=true" in ledger_binding
+    assert "PRODUCTIVE_RUNTIME_PATH_BOUND=true" in ledger_binding
+    assert "PRODUCTIVE_HOST_LEDGER_BOUND=true" in ledger_binding
+    assert "DURABLE_APPEND_REACHABLE_FROM_HOST=true" in ledger_binding
+    assert "DDO_DURABLE_LEDGER_IMPLEMENTATION=AppendOnlyDdoLedgerV0" in ledger_binding
+    assert "MASTER_V2_DOUBLE_PLAY_SOLE_TRADING_AUTHORITY=true" in ledger_binding
+    assert "DDO_STORAGE_AUTHORITY_IS_TRADING_AUTHORITY=false" in ledger_binding
+    assert "DDO_LEARNING_PRODUCTIVE_AUTHORITY=false" in ledger_binding
+    assert "TRADING_DECISION_DEPENDS_ON_LEDGER_WRITE=false" in ledger_binding
+    assert "CRASH_DURABILITY_FULLY_PROVEN=false" in ledger_binding
+    assert "CURRENT_CANONICAL_SECTION_REPLACED=false" in ledger_binding
+    assert "CANONICAL_LIVE_NEXT_POINTER_CHANGED=false" in ledger_binding
 
 
 def test_map_and_atlas_remain_navigation_only() -> None:
@@ -182,6 +216,7 @@ def test_map_and_atlas_remain_navigation_only() -> None:
         "DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_ROLE=NAVIGATION_POINTER_ONLY" in mot
     )
     assert "DDO_PRODUCTIVE_HOST_SCOPE_INPUT_BINDING_ROLE=NAVIGATION_POINTER_ONLY" in mot
+    assert "DDO_PRODUCTIVE_HOST_DURABLE_LEDGER_BINDING_ROLE=NAVIGATION_POINTER_ONLY" in mot
     assert "DDO_AUTHORITY_EFFECT=NONE" in mot
     assert "MAP_OF_TRUTH_AUTHORITY=NAVIGATION_ONLY" in mot
     assert "DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is" in atlas
@@ -229,8 +264,9 @@ def test_no_productive_host_ledger_path_and_no_second_store() -> None:
         / "ddo_observation_host_scope_binding_v1.py"
     )
     binding = binding_path.read_text(encoding="utf-8")
-    assert "resolve_ddo_durable_evidence_path_v1(" not in binding
+    assert "resolve_ddo_durable_evidence_path_v1(" in binding
     assert "class DdoObservationHostScopeInputsV1" in binding
+    assert "ddo_durable_ledger_path: Optional[str] = None" in host
     changed = subprocess.check_output(
         ["git", "diff", "--name-only", "origin/main"],
         cwd=REPO_ROOT,
