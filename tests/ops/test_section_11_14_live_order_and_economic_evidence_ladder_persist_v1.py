@@ -46,6 +46,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     CANONICAL_EXACT_FEE_RESTART_DURABILITY_CLOSURE_SLICE_HEADING,
     CANONICAL_GET_ONLY_TRADE_FEE_REFRESH_SLICE_HEADING,
     CANONICAL_EXACT_SINGLE_LIVE_FILL_SLICE_HEADING,
+    CANONICAL_CURRENT_FLATTEN_REPAIR_SLICE_HEADING,
     CANONICAL_SECTION_HEADING,
     CLOSURE_EVIDENCE_RUN_ID,
     GET_REFRESH_EVIDENCE_RUN_ID,
@@ -53,6 +54,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     EARLIEST_UNRESOLVED_DEPENDENCY,
     ENVELOPE_EVIDENCE_RUN_ID,
     EXPECTED_ORIGIN_MAIN_SHA,
+    CURRENT_FLATTEN_REPAIR_ORIGIN_MAIN_SHA,
     HISTORICAL_ACCOUNTING_RECONSTRUCTED_OWNER_GO,
     HISTORICAL_ACCOUNTING_RECONSTRUCTED_RUN_ID,
     HISTORICAL_ACCOUNTING_RECONSTRUCTED_SHA,
@@ -164,6 +166,11 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_SUBMIT_ACK_OBSERVED_SHA,
     LADDER_FIELDS,
     LAST_CANONICALLY_CLOSED_STEP,
+    HISTORICAL_EXACT_SINGLE_LIVE_FILL_OWNER_GO,
+    HISTORICAL_EXACT_SINGLE_LIVE_FILL_SLICE,
+    HISTORICAL_EXACT_SINGLE_LIVE_FILL_SHA,
+    HISTORICAL_EXACT_SINGLE_LIVE_FILL_LAST_CLOSED,
+    HISTORICAL_EXACT_SINGLE_LIVE_FILL_NEXT_OWNER_GO_REQUIRED,
     NEXT_OWNER_GO_REQUIRED,
     OWNER_GO,
     PREDECESSOR_SLICE,
@@ -551,21 +558,24 @@ HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_EVIDENCE = (
 HEADING_11_15 = "## 11.15 Full-autonomy observability and audit trail"
 
 
-def test_current_slice_constants_target_exact_single_live_fill_consumed_no_submit() -> None:
+def test_current_slice_constants_target_flatten_authority_pre_execution_repair() -> None:
     assert THIS_SLICE == (
-        "11.14.LIVE_HANDOFF_EXACT_SINGLE_LIVE_FILL_REQUIRES_SEPARATE_OWNER_EXECUTION_GO"
+        "11.14.CURRENT_SUI_XPERP_POS_1_FLATTEN_AUTHORITY_AND_PRE_EXECUTION_REPAIR"
     )
     assert PREDECESSOR_SLICE == (
-        "11.14.CURRENT_ORIGIN_MAIN_8605BF_GET_ONLY_TRADE_FEE_AND_STALE_PRETRADE_PREDICATE_REFRESH"
+        "11.14.LIVE_HANDOFF_EXACT_SINGLE_LIVE_FILL_REQUIRES_SEPARATE_OWNER_EXECUTION_GO"
     )
-    assert OWNER_GO.endswith("PRE_EXISTING_POSITION_POS_1_V1")
+    assert OWNER_GO == "NONE_THIS_REPAIR_SLICE_DOES_NOT_CONSUME_OR_ISSUE_OWNER_GO"
+    assert HISTORICAL_EXACT_SINGLE_LIVE_FILL_OWNER_GO.endswith("PRE_EXISTING_POSITION_POS_1_V1")
     assert EXPECTED_ORIGIN_MAIN_SHA == "705a063d0fddb60bc6d94693e029bb57669108dc"
+    assert CURRENT_FLATTEN_REPAIR_ORIGIN_MAIN_SHA == "eb07fa66f96bb3f25786f32f844a5dc99719478e"
+    assert HISTORICAL_EXACT_SINGLE_LIVE_FILL_SHA == "705a063d0fddb60bc6d94693e029bb57669108dc"
     assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_RESTART_RECONSTRUCTED"
     assert NEXT_OWNER_GO_REQUIRED == (
-        "OWNER_MERGE_GO_THEN_SEPARATE_OWNER_EXECUTION_GO_NOT_THIS_TOKEN"
+        "OWNER_MERGE_GO_FOR_THIS_REPAIR_PR_THEN_SEPARATE_OWNER_FLATTEN_GO_NOT_ENTRY_TOKEN"
     )
     assert LAST_CANONICALLY_CLOSED_STEP == (
-        "SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_FILL_REQUIRES_SEPARATE_OWNER_EXECUTION_GO"
+        "SECTION_11_14_CURRENT_SUI_XPERP_POS_1_FLATTEN_AUTHORITY_AND_PRE_EXECUTION_REPAIR"
     )
     assert CANONICAL_EVIDENCE_RUN_ID == "20260907T184500Z"
     assert ENVELOPE_EVIDENCE_RUN_ID == "20260907T204800Z"
@@ -2214,14 +2224,19 @@ def test_runbook_get_only_trade_fee_and_stale_pretrade_refresh_slice() -> None:
 def test_runbook_exact_single_live_fill_consumed_no_submit_slice() -> None:
     text = MASTER_RUNBOOK.read_text(encoding="utf-8")
     start = text.find(CANONICAL_EXACT_SINGLE_LIVE_FILL_SLICE_HEADING)
-    end = text.find(HEADING_11_15, start)
+    end = text.find(CANONICAL_CURRENT_FLATTEN_REPAIR_SLICE_HEADING, start)
+    if end < 0:
+        end = text.find(HEADING_11_15, start)
     assert start >= 0
     assert end > start
     section = text[start:end]
-    assert OWNER_GO in section
-    assert THIS_SLICE in section
-    assert PREDECESSOR_SLICE in section
-    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert HISTORICAL_EXACT_SINGLE_LIVE_FILL_OWNER_GO in section
+    assert HISTORICAL_EXACT_SINGLE_LIVE_FILL_SLICE in section
+    assert (
+        "11.14.CURRENT_ORIGIN_MAIN_8605BF_GET_ONLY_TRADE_FEE_AND_STALE_PRETRADE_PREDICATE_REFRESH"
+        in section
+    )
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={HISTORICAL_EXACT_SINGLE_LIVE_FILL_SHA}" in section
     assert "SECTION_11_14_AUTHORIZED=false" in section
     assert "SECTION_11_14_COMPLETE=false" in section
     assert "OWNER_EXECUTION_GO_STATUS=CONSUMED_NO_SUBMIT" in section
@@ -2242,9 +2257,39 @@ def test_runbook_exact_single_live_fill_consumed_no_submit_slice() -> None:
     assert "OWNER_EXECUTION_AUTHORIZED=false" in section
     assert "NEXT_SLICE_AUTHORIZED=false" in section
     assert "LIVE_RESTART_RECONSTRUCTED=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_EXACT_SINGLE_LIVE_FILL_LAST_CLOSED in section
     assert EARLIEST_UNRESOLVED_DEPENDENCY in section
     assert EXACT_SINGLE_LIVE_FILL_EVIDENCE_RUN_ID in section
+    for field_name in LADDER_FIELDS:
+        assert field_name in section
+
+
+def test_runbook_current_flatten_authority_pre_execution_repair_slice() -> None:
+    text = MASTER_RUNBOOK.read_text(encoding="utf-8")
+    start = text.find(CANONICAL_CURRENT_FLATTEN_REPAIR_SLICE_HEADING)
+    end = text.find(HEADING_11_15, start)
+    assert start >= 0
+    assert end > start
+    section = text[start:end]
+    assert THIS_SLICE in section
+    assert PREDECESSOR_SLICE in section
+    assert OWNER_GO in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={CURRENT_FLATTEN_REPAIR_ORIGIN_MAIN_SHA}" in section
+    assert "SECTION_11_14_AUTHORIZED=false" in section
+    assert "SECTION_11_14_COMPLETE=false" in section
+    assert "FLATTEN_AUTHORIZED=false" in section
+    assert "OWNER_EXECUTION_AUTHORIZED=false" in section
+    assert "OWNER_FLATTEN_GO_PRESENT=false" in section
+    assert "POST_PERFORMED=false" in section
+    assert "FLATTEN_EXECUTED=false" in section
+    assert "ENTRY_OWNER_GO_CANNOT_AUTHORIZE_FLATTEN=true" in section
+    assert "FLATTEN_OWNER_GO_CANNOT_AUTHORIZE_ENTRY=true" in section
+    assert "CONSUMED_GO_CANNOT_BE_REUSED=true" in section
+    assert "VENUE_REDUCE_ONLY_NO_FLIP=UNPROVEN" in section
+    assert "HOST_CRASH_DURABILITY=UNPROVEN" in section
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in section
+    assert NEXT_OWNER_GO_REQUIRED in section
+    assert EARLIEST_UNRESOLVED_DEPENDENCY in section
     for field_name in LADDER_FIELDS:
         assert field_name in section
 
@@ -2328,6 +2373,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         in mot
     )
     assert "11.14 LIVE_HANDOFF_EXACT_SINGLE_LIVE_FILL_REQUIRES_SEPARATE_OWNER_EXECUTION_GO" in mot
+    assert "11.14 CURRENT_SUI_XPERP_POS_1_FLATTEN_AUTHORITY_AND_PRE_EXECUTION_REPAIR" in mot
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -2405,6 +2451,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_FILL_REQUIRES_SEPARATE_OWNER_EXECUTION_GO_V1.md"
+        in mot
+    )
+    assert (
+        "SECTION_11_14_CURRENT_SUI_XPERP_POS_1_FLATTEN_AUTHORITY_AND_PRE_EXECUTION_REPAIR_V1.md"
         in mot
     )
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
@@ -2812,6 +2862,18 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "SUBMIT_ATTEMPT_COUNT=0" in fill_spec
     assert "LIVE_SUBMIT_EXECUTED=false" in fill_spec
     assert "POST_PERFORMED=false" in fill_spec
+    flatten_spec = (
+        REPO_ROOT
+        / "docs/ops/specs/SECTION_11_14_CURRENT_SUI_XPERP_POS_1_FLATTEN_AUTHORITY_AND_PRE_EXECUTION_REPAIR_V1.md"
+    ).read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_CURRENT_SUI_XPERP_POS_1_FLATTEN_AUTHORITY_AND_PRE_EXECUTION_REPAIR_V1"
+        in flatten_spec
+    )
+    assert "OWNER_FLATTEN_GO_PRESENT=false" in flatten_spec
+    assert "FLATTEN_AUTHORIZED=false" in flatten_spec
+    assert "ENTRY_OWNER_GO_CANNOT_AUTHORIZE_FLATTEN=true" in flatten_spec
+    assert "POST_PERFORMED=false" in flatten_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -2913,6 +2975,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "id: PHASE:section_11_14_live_handoff_exact_single_live_fill_requires_separate_owner_execution_go"
+        in catalog
+    )
+    assert (
+        "id: PHASE:section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair"
         in catalog
     )
     assert (

@@ -106,6 +106,7 @@ def test_contract_invariants_remain_fail_closed() -> None:
         OWNER_GO.startswith("PEAK_TRADE_OWNER_GO_SECTION_11_14_")
         or OWNER_GO.startswith("PEAK_TRADE_OWNER_GET_ONLY_GO_SECTION_11_14_")
         or OWNER_GO.startswith("PEAK_TRADE_OWNER_EXECUTION_GO_SECTION_11_14_")
+        or OWNER_GO == "NONE_THIS_REPAIR_SLICE_DOES_NOT_CONSUME_OR_ISSUE_OWNER_GO"
     )
 
 

@@ -1,0 +1,11 @@
+{
+  "FLATTEN_EXECUTED": false,
+  "METHODS_USED": [
+    "GET"
+  ],
+  "OWNER_TOKEN_CONSUMED": false,
+  "POSITION_MUTATION_EXECUTED": false,
+  "POST_PERFORMED": false,
+  "SESSION_ARMING": false,
+  "WIRE_SEND_EXECUTED": false
+}
