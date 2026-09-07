@@ -1,0 +1,225 @@
+{
+  "ACCOUNT_MODE_CURRENT": {
+    "body_sha256": "36876f8378c2029823643ac2caf6b2fd24525b7d41afa0a32b6abef46c72d5fb",
+    "endpoint": "/api/v5/account/config",
+    "extracted": {
+      "acctLv": "2",
+      "required": "2",
+      "uid_matches_intended_account_scope": true,
+      "uid_sha256": "2444af6ea59bad87ee2aa709df3aa6888607cb3ba31f1946729f3f4f4697fb2c"
+    },
+    "freshness_policy": "CURRENT_GET_ONLY_NO_HISTORICAL_SUBSTITUTION",
+    "freshness_status": "CURRENT",
+    "historical_reuse": false,
+    "http_status": 200,
+    "observed_at_utc": "2026-09-07T18:21:41.971465Z",
+    "reason": "",
+    "status": "PASS",
+    "venue_code": "0"
+  },
+  "AVAILABLE_MARGIN_CURRENT": {
+    "body_sha256": "a22146fc1821b47b14c93f1e33655a4009195b3d4a5bec5234e04f8dae3e84ef",
+    "endpoint": "/api/v5/account/balance",
+    "extracted": {
+      "availEq": "2.1076094140463697",
+      "avail_eq_status": "OBSERVED",
+      "selected_ccy": "USDC"
+    },
+    "freshness_policy": "CURRENT_GET_ONLY_NO_HISTORICAL_SUBSTITUTION",
+    "freshness_status": "CURRENT",
+    "historical_reuse": false,
+    "http_status": 200,
+    "observed_at_utc": "2026-09-07T18:21:42.265721Z",
+    "reason": "",
+    "status": "PASS",
+    "venue_code": "0"
+  },
+  "EXACT_PRICE_SEMANTICS_BOUND": {
+    "body_sha256": "40474aa1883a1bb17e282c4a1deef014b3a8a1312a4e5cbbafd65ec745c21b4b",
+    "endpoint": "/api/v5/public/price-limit?instId=SUI-USD_UM_XPERP-310404",
+    "extracted": {
+      "EXECUTION_LIMIT_PRICE": "0.8237",
+      "PRICE_OR_PRICE_POLICY": "LIMIT px = quantize_limit_price_v1(extract_reference_price_v1(GET /api/v5/market/ticker last|askPx), tickSz from GET /api/v5/public/instruments) ROUND_DOWN; BUY requires px <= buyLmt from GET /api/v5/public/price-limit; then GET /api/v5/account/max-size?px=",
+      "band_check": "WITHIN_BUY_LMT",
+      "buyLmt": "0.8277",
+      "reference_price": "0.8237",
+      "tickSz": "0.0001"
+    },
+    "freshness_policy": "CURRENT_GET_ONLY_NO_HISTORICAL_SUBSTITUTION",
+    "freshness_status": "CURRENT",
+    "historical_reuse": false,
+    "http_status": 200,
+    "observed_at_utc": "2026-09-07T18:21:41.971304Z",
+    "reason": "",
+    "status": "PASS",
+    "venue_code": "0"
+  },
+  "EXPECTED_PRE_EXISTING_POSITION": {
+    "body_sha256": "e1f58c56878b821f87dd513bbfdb412c06afabc1ec6fcb372509a3ad6c0c9b78",
+    "endpoint": "/api/v5/account/positions",
+    "extracted": {
+      "pos": "1",
+      "posSide": "net",
+      "row_count": "1",
+      "status": "OBSERVED"
+    },
+    "freshness_policy": "CURRENT_GET_ONLY_NO_HISTORICAL_SUBSTITUTION",
+    "freshness_status": "CURRENT",
+    "historical_reuse": false,
+    "http_status": 200,
+    "observed_at_utc": "2026-09-07T18:21:42.424027Z",
+    "reason": "",
+    "status": "PASS",
+    "venue_code": "0"
+  },
+  "INSTRUMENT_STATE_CURRENT": {
+    "body_sha256": "038f2bf82f18f2d42ed26dca281cc7733e4ef7d07206fd0b19637189ec3e4cd2",
+    "endpoint": "/api/v5/public/instruments?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404",
+    "extracted": {
+      "ctVal": "1",
+      "instType": "FUTURES",
+      "ruleType": "xperp",
+      "state": "live",
+      "tickSz": "0.0001"
+    },
+    "freshness_policy": "CURRENT_GET_ONLY_NO_HISTORICAL_SUBSTITUTION",
+    "freshness_status": "CURRENT",
+    "historical_reuse": false,
+    "http_status": 200,
+    "observed_at_utc": "2026-09-07T18:21:41.359486Z",
+    "reason": "",
+    "status": "PASS",
+    "venue_code": "0"
+  },
+  "LEVERAGE_CURRENT": {
+    "body_sha256": "fbfc9480218e15b0a15a5aac5b662b222108336d71501da82436b8df60b42ef7",
+    "endpoint": "/api/v5/account/leverage-info?instId=SUI-USD_UM_XPERP-310404&mgnMode=cross",
+    "extracted": {
+      "lever": "3",
+      "mgnMode": "cross",
+      "posSide": "net"
+    },
+    "freshness_policy": "CURRENT_GET_ONLY_NO_HISTORICAL_SUBSTITUTION",
+    "freshness_status": "CURRENT",
+    "historical_reuse": false,
+    "http_status": 200,
+    "observed_at_utc": "2026-09-07T18:21:42.654525Z",
+    "reason": "",
+    "status": "PASS",
+    "venue_code": "0"
+  },
+  "MARGIN_MODE_CURRENT": {
+    "body_sha256": "e1f58c56878b821f87dd513bbfdb412c06afabc1ec6fcb372509a3ad6c0c9b78",
+    "endpoint": "/api/v5/account/positions",
+    "extracted": {
+      "mgnMode": "cross",
+      "planned_td_mode": "cross",
+      "position_mgn_mode_status": "OBSERVED"
+    },
+    "freshness_policy": "CURRENT_GET_ONLY_NO_HISTORICAL_SUBSTITUTION",
+    "freshness_status": "CURRENT",
+    "historical_reuse": false,
+    "http_status": 200,
+    "observed_at_utc": "2026-09-07T18:21:42.424027Z",
+    "reason": "",
+    "status": "PASS",
+    "venue_code": "0"
+  },
+  "MAX_AVAILABLE_MAX_SIZE_CURRENT": {
+    "body_sha256": "d43e222f6a8543e39e1a76ad836bfe9aea9de8c3c615cefbe48253be19c69395",
+    "endpoint": "/api/v5/account/max-size?instId=SUI-USD_UM_XPERP-310404&tdMode=cross&px=0.8237",
+    "extracted": {
+      "maxBuy": "7",
+      "maxSell": "9",
+      "px_sent": "0.8237"
+    },
+    "freshness_policy": "CURRENT_GET_ONLY_NO_HISTORICAL_SUBSTITUTION",
+    "freshness_status": "CURRENT",
+    "historical_reuse": false,
+    "http_status": 200,
+    "observed_at_utc": "2026-09-07T18:21:42.811088Z",
+    "reason": "",
+    "status": "PASS",
+    "venue_code": "0"
+  },
+  "NETWORK_EGRESS_COMPATIBILITY_CURRENT": {
+    "body_sha256": "36876f8378c2029823643ac2caf6b2fd24525b7d41afa0a32b6abef46c72d5fb",
+    "endpoint": "/api/v5/account/config",
+    "extracted": {
+      "rest_base": "https://eea.okx.com",
+      "rest_host": "eea.okx.com"
+    },
+    "freshness_policy": "CURRENT_GET_ONLY_NO_HISTORICAL_SUBSTITUTION",
+    "freshness_status": "CURRENT",
+    "historical_reuse": false,
+    "http_status": 200,
+    "observed_at_utc": "2026-09-07T18:21:41.971465Z",
+    "reason": "",
+    "status": "PASS",
+    "venue_code": "0"
+  },
+  "POSITION_MODE_CURRENT": {
+    "body_sha256": "36876f8378c2029823643ac2caf6b2fd24525b7d41afa0a32b6abef46c72d5fb",
+    "endpoint": "/api/v5/account/config",
+    "extracted": {
+      "posMode": "net_mode",
+      "required": "net_mode"
+    },
+    "freshness_policy": "CURRENT_GET_ONLY_NO_HISTORICAL_SUBSTITUTION",
+    "freshness_status": "CURRENT",
+    "historical_reuse": false,
+    "http_status": 200,
+    "observed_at_utc": "2026-09-07T18:21:41.971465Z",
+    "reason": "",
+    "status": "PASS",
+    "venue_code": "0"
+  },
+  "PRICE_BAND_CURRENT": {
+    "body_sha256": "40474aa1883a1bb17e282c4a1deef014b3a8a1312a4e5cbbafd65ec745c21b4b",
+    "endpoint": "/api/v5/public/price-limit?instId=SUI-USD_UM_XPERP-310404",
+    "extracted": {
+      "buyLmt": "0.8277",
+      "enabled": "true",
+      "sellLmt": "0.8194"
+    },
+    "freshness_policy": "CURRENT_GET_ONLY_NO_HISTORICAL_SUBSTITUTION",
+    "freshness_status": "CURRENT",
+    "historical_reuse": false,
+    "http_status": 200,
+    "observed_at_utc": "2026-09-07T18:21:41.823320Z",
+    "reason": "",
+    "status": "PASS",
+    "venue_code": "0"
+  },
+  "PRICE_SOURCE_CURRENT": {
+    "body_sha256": "c1c88fdf4b649160e31aeff7c12380406e7b288d5c1fcef2d214e6fa88c86b42",
+    "endpoint": "/api/v5/market/ticker?instId=SUI-USD_UM_XPERP-310404",
+    "extracted": {
+      "reference_price": "0.8237",
+      "source": "GET /api/v5/market/ticker last|askPx"
+    },
+    "freshness_policy": "CURRENT_GET_ONLY_NO_HISTORICAL_SUBSTITUTION",
+    "freshness_status": "CURRENT",
+    "historical_reuse": false,
+    "http_status": 200,
+    "observed_at_utc": "2026-09-07T18:21:41.666887Z",
+    "reason": "",
+    "status": "PASS",
+    "venue_code": "0"
+  },
+  "SESSION_AUTH_CURRENT": {
+    "body_sha256": "36876f8378c2029823643ac2caf6b2fd24525b7d41afa0a32b6abef46c72d5fb",
+    "endpoint": "/api/v5/account/config",
+    "extracted": {
+      "auth_header_sent": true
+    },
+    "freshness_policy": "CURRENT_GET_ONLY_NO_HISTORICAL_SUBSTITUTION",
+    "freshness_status": "CURRENT",
+    "historical_reuse": false,
+    "http_status": 200,
+    "observed_at_utc": "2026-09-07T18:21:41.971465Z",
+    "reason": "",
+    "status": "PASS",
+    "venue_code": "0"
+  }
+}
