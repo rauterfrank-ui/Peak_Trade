@@ -1,0 +1,616 @@
+{
+  "ACCEPTABLE_COMPLETE_SEAM_COUNT": 0,
+  "CAPTURE_TRIGGER_BOUND": false,
+  "CAPTURE_TRIGGER_STATUS": "REQUIRED_WINDOW_BOUND_PRODUCTIVE_TRIGGER_UNBOUND",
+  "CAPTURE_TRIGGER_UNRESOLVED_AS_PRODUCTIVE_EVENT": true,
+  "DOCUMENT_CLASS": "SECTION_11_14_COMPLETE_CAPTURE_SEAM_CAPTURE_TRIGGER_V1",
+  "EARLIEST_COMPLETE_HANDOFF_CAPTURE_MOMENT": "NONE",
+  "NO_TIMESTAMP_INVENTION": true,
+  "POST_HOC_ASSEMBLY_ACROSS_MOMENTS_IS_RETROACTIVE_SYNTHESIS": true,
+  "REQUIRED_ORDER": "mutation-critical venue effect THEN bound fill identity exists THEN Peak_Trade-owned S05 resulting current position qty available THEN handoff record construction THEN durable write THEN durability success acknowledgement THEN process/host restart may occur",
+  "REQUIRED_TEMPORAL_WINDOW": "HANDOFF_COMMIT_IMMEDIATELY_BEFORE_RESTART_DESCRIBING_RESULTING_POSITION_AFTER_BOUND_FILL_AND_BEFORE_RESTART",
+  "SEAM_CANDIDATE_COUNT": 16,
+  "SELECTED_CAPTURE_TRIGGER": "REQUIRED_WINDOW_HANDOFF_COMMIT_AFTER_BOUND_FILL_BEFORE_RESTART",
+  "candidates": [
+    {
+      "ACCEPTABLE": "false",
+      "MOMENT": "T0_T3",
+      "REASON": "ordId and S05 resulting pos do not exist before venue mutation.",
+      "TRIGGER_ID": "BEFORE_MUTATION"
+    },
+    {
+      "ACCEPTABLE": "false",
+      "MOMENT": "T3_WIRE_SEND",
+      "REASON": "ordId absent. Request sz is not S05 pos. Live-transport join forbidden.",
+      "TRIGGER_ID": "AFTER_MUTATION_BEFORE_ACK"
+    },
+    {
+      "ACCEPTABLE": "false",
+      "MOMENT": "T4_HTTP_VENUE_ACKNOWLEDGEMENT",
+      "REASON": "ACK omits pos and posSide. Resulting position after fill does not yet exist.",
+      "TRIGGER_ID": "AFTER_VENUE_ACK"
+    },
+    {
+      "ACCEPTABLE": "false",
+      "MOMENT": "T5_ORDER_ACCEPTED_OPEN",
+      "REASON": "Order-state is not position proof. pos absent.",
+      "TRIGGER_ID": "AFTER_VENUE_ACCEPT_OPEN"
+    },
+    {
+      "ACCEPTABLE": "false",
+      "MOMENT": "T6_PARTIAL_OR_FULL_FILLS",
+      "REASON": "fillSz is not S05. Venue GET is not contemporaneous Peak_Trade handoff.",
+      "TRIGGER_ID": "AFTER_FILL_GET"
+    },
+    {
+      "ACCEPTABLE": "false",
+      "MOMENT": "T8_PEAK_TRADE_ACCOUNTING_RECONCILIATION_OBSERVATION",
+      "REASON": "Venue GET pos is LIVE_POSITION_RECONCILED, not handoff pos.",
+      "TRIGGER_ID": "AFTER_POSITION_RECONCILIATION"
+    },
+    {
+      "ACCEPTABLE": "false",
+      "MOMENT": "NONE_IMPLEMENTED",
+      "REASON": "No Peak_Trade-owned S05 resulting-current-qty producer exists.",
+      "TRIGGER_ID": "AFTER_LOCAL_RESULT_STATE"
+    },
+    {
+      "ACCEPTABLE": "false",
+      "MOMENT": "T9_RESTART_BOUNDARY",
+      "REASON": "Shutdown/restart is the consumption boundary, not the capture moment.",
+      "TRIGGER_ID": "AT_SHUTDOWN"
+    },
+    {
+      "ACCEPTABLE": "false",
+      "MOMENT": "NONE",
+      "REASON": "No periodic Live handoff capture exists. Periodicity would not create S05.",
+      "TRIGGER_ID": "PERIODIC"
+    },
+    {
+      "ACCEPTABLE": "unproven",
+      "MOMENT": "REQUIRED_NOT_IMPLEMENTED",
+      "REASON": "S05 temporal meaning requires handoff-commit immediately before restart describing resulting position after bound fill. No productive event, caller, or writer exists.",
+      "TRIGGER_ID": "EVENT_DRIVEN_HANDOFF_COMMIT_AFTER_BOUND_FILL"
+    }
+  ],
+  "historical_seams": [
+    {
+      "ACCEPTABLE": "false",
+      "AVAILABLE_FIELDS": [
+        "clOrdId",
+        "instId"
+      ],
+      "BEFORE_OR_AFTER_EXTERNAL_EFFECT": "BEFORE",
+      "BEFORE_OR_AFTER_MUTATION": "BEFORE",
+      "CRASH_WINDOW": "in-memory plan lost; no durable handoff writer",
+      "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/order_plan_v1.py",
+      "MISSING_FIELDS": [
+        "ordId",
+        "posSide",
+        "pos"
+      ],
+      "POWER_LOSS_WINDOW": "in-memory plan lost; no durable handoff writer",
+      "REASON": "Plan sz is not handoff pos. posSide omitted. ordId absent.",
+      "RETROACTIVE_SYNTHESIS_REQUIRED": true,
+      "SEAM_ID": "S01_CANARY_ORDER_PLAN",
+      "UPSTREAM_PRODUCERS": [
+        "LiveCanaryOrderPlanV1"
+      ]
+    },
+    {
+      "ACCEPTABLE": "false",
+      "AVAILABLE_FIELDS": [
+        "clOrdId",
+        "instId"
+      ],
+      "BEFORE_OR_AFTER_EXTERNAL_EFFECT": "BEFORE",
+      "BEFORE_OR_AFTER_MUTATION": "BEFORE",
+      "CRASH_WINDOW": "gate evaluation is ephemeral",
+      "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_gates_v1.py::evaluate_canary_submit_gates_v1",
+      "MISSING_FIELDS": [
+        "ordId",
+        "posSide",
+        "pos"
+      ],
+      "POWER_LOSS_WINDOW": "gate evaluation is ephemeral",
+      "REASON": "Pre-submit gates do not produce ordId, posSide, or pos.",
+      "RETROACTIVE_SYNTHESIS_REQUIRED": true,
+      "SEAM_ID": "S02_PRE_SUBMIT_GATES",
+      "UPSTREAM_PRODUCERS": [
+        "order_plan_v1",
+        "refuse_submit_unless_gates_pass_v1"
+      ]
+    },
+    {
+      "ACCEPTABLE": "false",
+      "AVAILABLE_FIELDS": [
+        "clOrdId",
+        "instId"
+      ],
+      "BEFORE_OR_AFTER_EXTERNAL_EFFECT": "AT_EXTERNAL_EFFECT",
+      "BEFORE_OR_AFTER_MUTATION": "AT_MUTATION",
+      "CRASH_WINDOW": "unknown-submit window; joining would touch Live transport",
+      "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py::run_canary_submit_transport_v1 / UrllibLiveCanaryTransportV1.send",
+      "MISSING_FIELDS": [
+        "ordId",
+        "posSide",
+        "pos"
+      ],
+      "POWER_LOSS_WINDOW": "unknown-submit window; joining would touch Live transport",
+      "REASON": "Request sz is not pos. posSide omitted. ordId absent. Live-transport join forbidden here.",
+      "RETROACTIVE_SYNTHESIS_REQUIRED": true,
+      "SEAM_ID": "S03_WIRE_SEND",
+      "UPSTREAM_PRODUCERS": [
+        "LiveCanaryHttpClientV1.post_entry_order"
+      ]
+    },
+    {
+      "ACCEPTABLE": "false",
+      "AVAILABLE_FIELDS": [
+        "clOrdId",
+        "ordId"
+      ],
+      "BEFORE_OR_AFTER_EXTERNAL_EFFECT": "AFTER",
+      "BEFORE_OR_AFTER_MUTATION": "AFTER",
+      "CRASH_WINDOW": "ACK in memory only; no Live durable_state writer",
+      "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py::OKX_ORDER_DATA_ENTRY_FIELDS_V1",
+      "MISSING_FIELDS": [
+        "posSide",
+        "pos"
+      ],
+      "POWER_LOSS_WINDOW": "ACK in memory only; no Live durable_state writer",
+      "REASON": "Allowlist is sCode,sMsg,ordId,clOrdId,tag. pos and posSide omitted. instId is request-owned, not ACK data.",
+      "RETROACTIVE_SYNTHESIS_REQUIRED": true,
+      "SEAM_ID": "S04_HTTP_ACK_PARSE",
+      "UPSTREAM_PRODUCERS": [
+        "synchronous venue ACK data-entry allowlist"
+      ]
+    },
+    {
+      "ACCEPTABLE": "false",
+      "AVAILABLE_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "instId"
+      ],
+      "BEFORE_OR_AFTER_EXTERNAL_EFFECT": "AFTER",
+      "BEFORE_OR_AFTER_MUTATION": "AFTER",
+      "CRASH_WINDOW": "return payload is process-local; CONTEMPORANEOUS_PERSIST_RELIABLE=false",
+      "LOCATION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py::_entry_submit_returned_payload_v1",
+      "MISSING_FIELDS": [
+        "posSide",
+        "pos"
+      ],
+      "POWER_LOSS_WINDOW": "return payload is process-local; CONTEMPORANEOUS_PERSIST_RELIABLE=false",
+      "REASON": "PRE_RESTART_CAPTURE_SEAM is partial identity only. Complete identity including pos is unproven.",
+      "RETROACTIVE_SYNTHESIS_REQUIRED": true,
+      "SEAM_ID": "S05_CANARY_ACK_RETURN",
+      "UPSTREAM_PRODUCERS": [
+        "S04_HTTP_ACK_PARSE",
+        "S01_CANARY_ORDER_PLAN"
+      ]
+    },
+    {
+      "ACCEPTABLE": "false",
+      "AVAILABLE_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "instId",
+        "posSide"
+      ],
+      "BEFORE_OR_AFTER_EXTERNAL_EFFECT": "AFTER",
+      "BEFORE_OR_AFTER_MUTATION": "AFTER",
+      "CRASH_WINDOW": "venue GET artifact; not Peak_Trade contemporaneous handoff",
+      "LOCATION": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/fill_observed_predicate_v1.py",
+      "MISSING_FIELDS": [
+        "pos"
+      ],
+      "POWER_LOSS_WINDOW": "venue GET artifact; not Peak_Trade contemporaneous handoff",
+      "REASON": "fillSz is not position proof. Venue GET is not contemporaneous Peak_Trade handoff.",
+      "RETROACTIVE_SYNTHESIS_REQUIRED": true,
+      "SEAM_ID": "S06_FILL_GET",
+      "UPSTREAM_PRODUCERS": [
+        "GOVERNED_CURRENT_PRIVATE_GET fills"
+      ]
+    },
+    {
+      "ACCEPTABLE": "false",
+      "AVAILABLE_FIELDS": [
+        "instId",
+        "posSide"
+      ],
+      "BEFORE_OR_AFTER_EXTERNAL_EFFECT": "AFTER",
+      "BEFORE_OR_AFTER_MUTATION": "AFTER",
+      "CRASH_WINDOW": "venue-owned position row; Peak_Trade ownership false",
+      "LOCATION": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/position_reconciled_predicate_v1.py::ADMISSIBLE_POS_FIELD",
+      "MISSING_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "pos"
+      ],
+      "POWER_LOSS_WINDOW": "venue-owned position row; Peak_Trade ownership false",
+      "REASON": "Venue-native pos is LIVE_POSITION_RECONCILED, not handoff pos.",
+      "RETROACTIVE_SYNTHESIS_REQUIRED": true,
+      "SEAM_ID": "S07_POSITION_GET",
+      "UPSTREAM_PRODUCERS": [
+        "GET /api/v5/account/positions"
+      ]
+    },
+    {
+      "ACCEPTABLE": "false",
+      "AVAILABLE_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "instId",
+        "posSide"
+      ],
+      "BEFORE_OR_AFTER_EXTERNAL_EFFECT": "AFTER",
+      "BEFORE_OR_AFTER_MUTATION": "AFTER",
+      "CRASH_WINDOW": "accounting path is predecessor, not restart handoff",
+      "LOCATION": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/accounting_reconstructed_adjudication_v1.py",
+      "MISSING_FIELDS": [
+        "pos"
+      ],
+      "POWER_LOSS_WINDOW": "accounting path is predecessor, not restart handoff",
+      "REASON": "ACCOUNTING_ONLY_IS_NOT_RESTART.",
+      "RETROACTIVE_SYNTHESIS_REQUIRED": true,
+      "SEAM_ID": "S08_ACCOUNTING_RECONSTRUCTION",
+      "UPSTREAM_PRODUCERS": [
+        "S06_FILL_GET",
+        "S07_POSITION_GET"
+      ]
+    },
+    {
+      "ACCEPTABLE": "false",
+      "AVAILABLE_FIELDS": [],
+      "BEFORE_OR_AFTER_EXTERNAL_EFFECT": "AFTER",
+      "BEFORE_OR_AFTER_MUTATION": "AFTER",
+      "CRASH_WINDOW": "forensic pack is not control-state durability",
+      "LOCATION": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/persist_v1.py",
+      "MISSING_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "instId",
+        "posSide",
+        "pos"
+      ],
+      "POWER_LOSS_WINDOW": "forensic pack is not control-state durability",
+      "REASON": "Evidence packs must not be reclassified as control handoff.",
+      "RETROACTIVE_SYNTHESIS_REQUIRED": true,
+      "SEAM_ID": "S09_EVIDENCE_PACK_PERSIST",
+      "UPSTREAM_PRODUCERS": [
+        "SECTION_11_14_EVIDENCE_PACKS"
+      ]
+    },
+    {
+      "ACCEPTABLE": "false",
+      "AVAILABLE_FIELDS": [],
+      "BEFORE_OR_AFTER_EXTERNAL_EFFECT": "NOT_THIS_PATH",
+      "BEFORE_OR_AFTER_MUTATION": "NOT_THIS_PATH",
+      "CRASH_WINDOW": "observation ledger only; forbidden owner reuse",
+      "LOCATION": "src/learning/deterministic_decision_outcome_v0/",
+      "MISSING_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "instId",
+        "posSide",
+        "pos"
+      ],
+      "POWER_LOSS_WINDOW": "observation ledger only; forbidden owner reuse",
+      "REASON": "FORBIDDEN_OWNER_REUSE DDO_DURABLE_EVIDENCE_STORAGE_OWNER.",
+      "RETROACTIVE_SYNTHESIS_REQUIRED": true,
+      "SEAM_ID": "S10_DDO_LEDGER",
+      "UPSTREAM_PRODUCERS": [
+        "DDO_DURABLE_EVIDENCE_STORAGE_OWNER"
+      ]
+    },
+    {
+      "ACCEPTABLE": "false",
+      "AVAILABLE_FIELDS": [],
+      "BEFORE_OR_AFTER_EXTERNAL_EFFECT": "NOT_THIS_PATH",
+      "BEFORE_OR_AFTER_MUTATION": "NOT_THIS_PATH",
+      "CRASH_WINDOW": "A1 host-crash remains UNPROVEN and is not this owner",
+      "LOCATION": "src/learning/mutation_critical_control_state_storage_v1/wal_adapter_v1.py",
+      "MISSING_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "instId",
+        "posSide",
+        "pos"
+      ],
+      "POWER_LOSS_WINDOW": "A1 power-loss remains UNPROVEN and is not this owner",
+      "REASON": "A1_WAL_AS_LIVE_HANDOFF_ALLOWED=false. Process-kill proof is not inherited.",
+      "RETROACTIVE_SYNTHESIS_REQUIRED": true,
+      "SEAM_ID": "S11_A1_WAL",
+      "UPSTREAM_PRODUCERS": [
+        "MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER"
+      ]
+    },
+    {
+      "ACCEPTABLE": "false",
+      "AVAILABLE_FIELDS": [],
+      "BEFORE_OR_AFTER_EXTERNAL_EFFECT": "NOT_THIS_PATH",
+      "BEFORE_OR_AFTER_MUTATION": "NOT_THIS_PATH",
+      "CRASH_WINDOW": "safety-gate state is not Live handoff",
+      "LOCATION": "src/risk_layer/kill_switch/persistence.py",
+      "MISSING_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "instId",
+        "posSide",
+        "pos"
+      ],
+      "POWER_LOSS_WINDOW": "safety-gate state is not Live handoff",
+      "REASON": "FILEGATE is safety-gate persistence, not Live pre-restart handoff.",
+      "RETROACTIVE_SYNTHESIS_REQUIRED": true,
+      "SEAM_ID": "S12_FILEGATE",
+      "UPSTREAM_PRODUCERS": [
+        "FILEGATE_KILL_SWITCH"
+      ]
+    },
+    {
+      "ACCEPTABLE": "false",
+      "AVAILABLE_FIELDS": [],
+      "BEFORE_OR_AFTER_EXTERNAL_EFFECT": "NOT_THIS_PATH",
+      "BEFORE_OR_AFTER_MUTATION": "NOT_THIS_PATH",
+      "CRASH_WINDOW": "strategy lifecycle, not Live submit-identity handoff",
+      "LOCATION": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/sidestate_restore_v1.py",
+      "MISSING_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "instId",
+        "posSide",
+        "pos"
+      ],
+      "POWER_LOSS_WINDOW": "strategy lifecycle, not Live submit-identity handoff",
+      "REASON": "Cap 7.2 SideState is not the Live handoff owner.",
+      "RETROACTIVE_SYNTHESIS_REQUIRED": true,
+      "SEAM_ID": "S13_CAP72_SIDESTATE",
+      "UPSTREAM_PRODUCERS": [
+        "CAP_72_SIDESTATE_PERSIST"
+      ]
+    },
+    {
+      "ACCEPTABLE": "false",
+      "AVAILABLE_FIELDS": [],
+      "BEFORE_OR_AFTER_EXTERNAL_EFFECT": "NOT_THIS_PATH",
+      "BEFORE_OR_AFTER_MUTATION": "NOT_THIS_PATH",
+      "CRASH_WINDOW": "Testnet restart is not this Live field",
+      "LOCATION": "evidence/ops/section_11_12_testnet_restart_proven_v1/",
+      "MISSING_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "instId",
+        "posSide",
+        "pos"
+      ],
+      "POWER_LOSS_WINDOW": "Testnet restart is not this Live field",
+      "REASON": "No Testnet, fixture or simulated result may satisfy a Live evidence field.",
+      "RETROACTIVE_SYNTHESIS_REQUIRED": true,
+      "SEAM_ID": "S14_TESTNET_DURABLE_STATE",
+      "UPSTREAM_PRODUCERS": [
+        "TESTNET_CAMPAIGN_DURABLE_STATE"
+      ]
+    },
+    {
+      "ACCEPTABLE": "false",
+      "AVAILABLE_FIELDS": [],
+      "BEFORE_OR_AFTER_EXTERNAL_EFFECT": "NOT_THIS_PATH",
+      "BEFORE_OR_AFTER_MUTATION": "NOT_THIS_PATH",
+      "CRASH_WINDOW": "supervisor not activated; no handoff capture join",
+      "LOCATION": "NONE_FOR_SECTION_11_14_LIVE_HANDOFF",
+      "MISSING_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "instId",
+        "posSide",
+        "pos"
+      ],
+      "POWER_LOSS_WINDOW": "supervisor not activated; no handoff capture join",
+      "REASON": "SUPERVISOR_ACTIVATED=false. No productive supervisor capture seam exists.",
+      "RETROACTIVE_SYNTHESIS_REQUIRED": true,
+      "SEAM_ID": "S15_SUPERVISOR",
+      "UPSTREAM_PRODUCERS": []
+    },
+    {
+      "ACCEPTABLE": "false",
+      "AVAILABLE_FIELDS": [],
+      "BEFORE_OR_AFTER_EXTERNAL_EFFECT": "NOT_THIS_PATH",
+      "BEFORE_OR_AFTER_MUTATION": "NOT_THIS_PATH",
+      "CRASH_WINDOW": "launcher/single-writer is not Live identity-bound handoff",
+      "LOCATION": "src/ops/canonical_local_launcher_and_process_supervision_v1/",
+      "MISSING_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "instId",
+        "posSide",
+        "pos"
+      ],
+      "POWER_LOSS_WINDOW": "launcher/single-writer is not Live identity-bound handoff",
+      "REASON": "Process supervision is not the Peak_Trade Live pre-restart handoff owner.",
+      "RETROACTIVE_SYNTHESIS_REQUIRED": true,
+      "SEAM_ID": "S16_HOST_PROCESS_SUPERVISION",
+      "UPSTREAM_PRODUCERS": [
+        "single_writer_v1"
+      ]
+    }
+  ],
+  "timeline_moments": [
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": false,
+      "MISSING_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "instId",
+        "posSide",
+        "pos"
+      ],
+      "MOMENT": "T0_DECISION",
+      "PEAK_TRADE_OWNED": false,
+      "clOrdId": false,
+      "instId": false,
+      "ordId": false,
+      "pos": false,
+      "posSide": false
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": false,
+      "MISSING_FIELDS": [
+        "ordId",
+        "posSide",
+        "pos"
+      ],
+      "MOMENT": "T1_ORDER_PLAN",
+      "NOTE": "Plan sz exists. Plan sz is not handoff pos. posSide omitted.",
+      "PEAK_TRADE_OWNED": true,
+      "clOrdId": true,
+      "instId": true,
+      "ordId": false,
+      "pos": false,
+      "posSide": false
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": false,
+      "MISSING_FIELDS": [
+        "ordId",
+        "posSide",
+        "pos"
+      ],
+      "MOMENT": "T2_PRE_SUBMIT_GATES",
+      "PEAK_TRADE_OWNED": true,
+      "clOrdId": true,
+      "instId": true,
+      "ordId": false,
+      "pos": false,
+      "posSide": false
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": true,
+      "MISSING_FIELDS": [
+        "ordId",
+        "posSide",
+        "pos"
+      ],
+      "MOMENT": "T3_WIRE_SEND",
+      "NOTE": "Request body sz is not handoff pos. posSide omitted on net-mode plan.",
+      "PEAK_TRADE_OWNED": true,
+      "clOrdId": true,
+      "instId": true,
+      "ordId": false,
+      "pos": false,
+      "posSide": false
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": true,
+      "MISSING_FIELDS": [
+        "posSide",
+        "pos"
+      ],
+      "MOMENT": "T4_HTTP_VENUE_ACKNOWLEDGEMENT",
+      "NOTE": "ACK data-entry allowlist is sCode,sMsg,ordId,clOrdId,tag. instId is Peak_Trade-owned from the request/plan, not ACK data.",
+      "PEAK_TRADE_OWNED": true,
+      "clOrdId": true,
+      "instId": true,
+      "ordId": true,
+      "pos": false,
+      "posSide": false
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": true,
+      "MISSING_FIELDS": [
+        "posSide",
+        "pos"
+      ],
+      "MOMENT": "T5_ORDER_ACCEPTED_OPEN",
+      "NOTE": "Order-state is not position proof.",
+      "PEAK_TRADE_OWNED": false,
+      "clOrdId": true,
+      "instId": true,
+      "ordId": true,
+      "pos": false,
+      "posSide": false
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": true,
+      "MISSING_FIELDS": [
+        "pos"
+      ],
+      "MOMENT": "T6_PARTIAL_OR_FULL_FILLS",
+      "NOTE": "fillSz and fill posSide are venue GET fills. Fill is not position proof.",
+      "PEAK_TRADE_OWNED": false,
+      "clOrdId": true,
+      "instId": true,
+      "ordId": true,
+      "pos": false,
+      "posSide": true
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": true,
+      "MISSING_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "pos"
+      ],
+      "MOMENT": "T7_VENUE_POSITION_MUTATION",
+      "NOTE": "Venue owns venue position. VENUE_OKX_EEA is not Peak_Trade handoff owner.",
+      "PEAK_TRADE_OWNED": false,
+      "clOrdId": false,
+      "instId": true,
+      "ordId": false,
+      "pos": false,
+      "posSide": true
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": true,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": true,
+      "MISSING_FIELDS": [
+        "pos"
+      ],
+      "MOMENT": "T8_PEAK_TRADE_ACCOUNTING_RECONCILIATION_OBSERVATION",
+      "NOTE": "GET /account/positions.pos is venue-native accounting path. VENUE_GET_COPY_IS_NOT_CONTEMPORANEOUS_HANDOFF. ACCOUNTING_ONLY_IS_NOT_RESTART.",
+      "PEAK_TRADE_OWNED": false,
+      "clOrdId": true,
+      "instId": true,
+      "ordId": true,
+      "pos": false,
+      "posSide": true
+    },
+    {
+      "BEFORE_RESTART_BOUNDARY": false,
+      "CONTEMPORANEOUS_PERSIST_RELIABLE": false,
+      "LIVE_TRANSPORT_TOUCH_IF_JOIN": false,
+      "MISSING_FIELDS": [
+        "clOrdId",
+        "ordId",
+        "instId",
+        "posSide",
+        "pos"
+      ],
+      "MOMENT": "T9_RESTART_BOUNDARY",
+      "NOTE": "No Peak_Trade durable pre-restart handoff exists.",
+      "PEAK_TRADE_OWNED": false,
+      "clOrdId": false,
+      "instId": false,
+      "ordId": false,
+      "pos": false,
+      "posSide": false
+    }
+  ]
+}

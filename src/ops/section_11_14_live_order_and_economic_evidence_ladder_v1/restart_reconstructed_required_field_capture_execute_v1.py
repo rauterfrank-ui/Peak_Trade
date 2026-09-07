@@ -13,7 +13,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_SHA,
     LIVE_RESTART_RECONSTRUCTED,
     OWNER_GO,
-    SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+    HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -81,7 +81,7 @@ def execute_live_handoff_required_field_capture_seam_pos_and_owner_vacancy_contr
         "LIVE_AUTONOMOUS_RECOVERY_OBSERVED": False,
         "SECTION_11_14_AUTHORIZED": False,
         "SECTION_11_14_COMPLETE": False,
-        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
         "POS_SEMANTICS": field_contract["POS_SEMANTICS"],
         "POS_TYPE": field_contract["POS_TYPE"],
         "POS_SOURCE_AUTHORITY": field_contract["POS_SOURCE_AUTHORITY"],

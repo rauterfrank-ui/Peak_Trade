@@ -11,7 +11,7 @@ from typing import Any
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     FUTURE_HANDOFF_OWNER_REQUIRES_SEPARATE_EXPLICIT_OWNER_GO,
     NEXT_OWNER_GO_REQUIRED,
-    SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+    HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_handoff_schema_v1 import (
     HANDOFF_DOCUMENT_CLASS,
@@ -33,7 +33,7 @@ def bind_future_live_restart_owner_go_contract_v1() -> dict[str, Any]:
         "FUTURE_HANDOFF_OWNER_REQUIRES_SEPARATE_EXPLICIT_OWNER_GO": (
             FUTURE_HANDOFF_OWNER_REQUIRES_SEPARATE_EXPLICIT_OWNER_GO
         ),
-        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
         "EARLIEST_MISSING_FACT": "DURABLE_LIVE_PRE_RESTART_HANDOFF",
         "FUTURE_MINIMUM_OPERATION": (
             "PERSIST_IDENTITY_BOUND_PEAK_TRADE_DURABLE_PRE_RESTART_HANDOFF"

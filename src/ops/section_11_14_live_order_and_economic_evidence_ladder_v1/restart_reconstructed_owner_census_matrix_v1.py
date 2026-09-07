@@ -9,7 +9,7 @@ from typing import Any
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     FORBIDDEN_OWNER_REUSE,
-    SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+    HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_owner_bind_v1 import (
     FORBIDDEN_OWNER_REUSE_REASONS,
@@ -21,7 +21,7 @@ _OWNER_MATRIX_ROWS: tuple[dict[str, Any], ...] = (
     {
         "SYMBOL": "SECTION_11_14_LIVE_HANDOFF_OWNER",
         "canonical_source": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md §11.14",
-        "implementation_owner": SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+        "implementation_owner": HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
         "read_path": "NONE",
         "write_path": "NONE",
         "tests": "tests/ops/test_section_11_14_live_restart_handoff_owner_bind_and_retroactive_synthesis_refusal_v1.py",
@@ -161,7 +161,7 @@ def bind_section_11_14_live_handoff_owner_census_matrix_v1() -> dict[str, Any]:
     ]
     return {
         "DOCUMENT_CLASS": "SECTION_11_14_LIVE_HANDOFF_OWNER_CENSUS_MATRIX_V1",
-        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
         "FORBIDDEN_OWNER_REUSE": list(FORBIDDEN_OWNER_REUSE),
         "LIVE_SCOPED_IDENTITY_BOUND_CONTEMPORANEOUS_HANDOFF_OWNER_FOUND": bool(allowed),
         "ALLOWED_HANDOFF_OWNER_COUNT": len(allowed),

@@ -9,9 +9,11 @@ from typing import Any
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     CANONICAL_EVIDENCE_RUN_ID,
     EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_OWNER_GO,
+    HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_SHA,
     LIVE_RESTART_RECONSTRUCTED,
     OWNER_GO,
-    SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+    HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -42,9 +44,11 @@ def execute_live_handoff_pos_producer_semantics_and_contract_v1(
     repo_root: Path,
     run_id: str | None = None,
 ) -> dict[str, Any]:
-    if str(owner_go or "").strip() != OWNER_GO:
+    allowed_owner_gos = {OWNER_GO, HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_OWNER_GO}
+    if str(owner_go or "").strip() not in allowed_owner_gos:
         raise Section1114OfflineSurfaceError("OWNER_GO_MISMATCH")
-    if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
+    allowed_shas = {EXPECTED_ORIGIN_MAIN_SHA, HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_SHA}
+    if str(origin_main_sha or "").strip() not in allowed_shas:
         raise Section1114OfflineSurfaceError("ORIGIN_MAIN_SHA_MISMATCH")
     assert_contract_invariants_v1()
     started = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -85,7 +89,7 @@ def execute_live_handoff_pos_producer_semantics_and_contract_v1(
         "LIVE_AUTONOMOUS_RECOVERY_OBSERVED": False,
         "SECTION_11_14_AUTHORIZED": False,
         "SECTION_11_14_COMPLETE": False,
-        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
         "FIRST_OWNER_PRODUCTIVELY_BOUND": False,
         "POS_SEMANTICS": binding["POS_SEMANTICS"],
         "POS_SEMANTICS_STATUS": binding["POS_SEMANTICS_STATUS"],

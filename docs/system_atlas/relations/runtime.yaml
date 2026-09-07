@@ -703,6 +703,40 @@ relations:
       IMPLEMENTATION_AUTHORIZED=false. No GET. No POST. No restart
       execution. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_section_11_14_complete_capture_seam_proof_follows_pos_producer_semantics_and_contract
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_handoff_pos_producer_semantics_and_contract
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_complete_capture_seam_proof_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_complete_capture_seam_proof_execute_v1.py
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T001700Z/
+    notes: >-
+      Complete-capture-seam proof follows pos producer-semantics and
+      contract. COMPLETE_CAPTURE_SEAM remains UNPROVEN without invention.
+      Owner remains NONE. IMPLEMENTATION_AUTHORIZED=false. No GET. No
+      POST. No restart execution. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_section_11_14_pos_producer_capture_record_owner_and_writer_implementation_follows_complete_capture_seam_proof
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_handoff_complete_capture_seam_proof
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_implementation_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_implementation_execute_v1.py
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T014000Z/
+    notes: >-
+      S05 producer / owner / writer implementation follows
+      complete-capture-seam proof. NEW_PRODUCER_IMPLEMENTED=true.
+      STORAGE_OWNER_MINTED=true. WRITER_BOUND=true. READER_BOUND=false.
+      COMPLETE_CAPTURE_SEAM remains UNPROVEN. HOST_CRASH_DURABILITY
+      remains UNPROVEN. LIVE_RESTART_RECONSTRUCTED remains false.
+      IMPLEMENTATION_AUTHORIZED=false. No GET. No POST. No restart
+      execution. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_path_calls_venue_translation
     source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     type: CALLS

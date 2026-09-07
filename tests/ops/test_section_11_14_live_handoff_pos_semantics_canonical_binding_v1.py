@@ -11,8 +11,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     EXPECTED_ORIGIN_MAIN_SHA,
     HISTORICAL_POS_SEMANTICS_CANONICAL_BINDING_OWNER_GO,
     LIVE_RESTART_RECONSTRUCTED,
-    PREDECESSOR_SLICE,
-    SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+    HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_adjudication_v1 import (
     adjudicate_live_restart_reconstructed_v1,
@@ -156,8 +155,7 @@ def test_execute_is_offline_and_does_not_authorize_implementation() -> None:
     assert summary["SEQUENCE_AUTO_EXECUTED"] is False
     assert summary["PROPOSED_NEXT_SLICE"] == PROPOSED_NEXT_SLICE
     assert result["raw_exchanges"] == []
-    assert PREDECESSOR_SLICE.endswith("POS_SEMANTICS_CANONICAL_BINDING")
-    assert SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT == "NONE"
+    assert HISTORICAL_HANDOFF_OWNER_CURRENT_NONE == "NONE"
     assert LIVE_RESTART_RECONSTRUCTED is False
     adjudication = adjudicate_live_restart_reconstructed_v1(
         restart_evidence={"source_kind": "GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF_CENSUS"}
