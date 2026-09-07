@@ -87,6 +87,7 @@ entities:
       - docs/ops/specs/MODEL_C_FORMULA_AND_POLICY_ADJUDICATION_V1.md
       - docs/ops/specs/MODEL_C_UP_DISTANCE_SWITCH_VS_PROFIT_PROTECTION_AUTHORITY_SPLIT_V1.md
       - docs/ops/specs/DIRECTIONAL_MAPPING_CONTRACT_REPAIR_V1.md
+      - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_CURRENT_ORIGIN_MAIN_BOUND_GET_ONLY_PRETRADE_ACCOUNT_NETWORK_AND_INSTRUMENT_READINESS_V1.md
     notes: >-
       WP-04 mechanical navigation inventory only. Decision Map is listed as a
       navigation sibling, not a second SSOT and not selection authority.
@@ -2151,6 +2152,31 @@ entities:
       No GET. No POST. No submit. No wire send. No position mutation. No
       restart execution. Repair merge not authorized. Atlas is not
       trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: PHASE:section_11_14_live_handoff_current_origin_main_bound_get_only_pretrade_readiness
+    kind: PHASE
+    name: 11.14.LIVE_HANDOFF_CURRENT_ORIGIN_MAIN_BOUND_GET_ONLY_PRETRADE_ACCOUNT_NETWORK_AND_INSTRUMENT_READINESS
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_14_live_handoff_current_origin_main_bound_get_only_pretrade_readiness_v1/__init__.py
+      - src/ops/section_11_14_live_handoff_current_origin_main_bound_get_only_pretrade_readiness_v1/constants_v1.py
+      - src/ops/section_11_14_live_handoff_current_origin_main_bound_get_only_pretrade_readiness_v1/http_get_only_v1.py
+      - src/ops/section_11_14_live_handoff_current_origin_main_bound_get_only_pretrade_readiness_v1/orchestrator_v1.py
+      - scripts/ops/run_section_11_14_live_handoff_current_origin_main_bound_get_only_pretrade_readiness_v1.py
+    evidence_sources:
+      - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_CURRENT_ORIGIN_MAIN_BOUND_GET_ONLY_PRETRADE_ACCOUNT_NETWORK_AND_INSTRUMENT_READINESS_V1.md
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - tests/ops/test_section_11_14_live_handoff_current_origin_main_bound_get_only_pretrade_readiness_v1.py
+      - evidence/ops/section_11_14_live_handoff_current_origin_main_bound_get_only_pretrade_readiness_v1/20260907T182140Z/
+    notes: >-
+      Derived §11.14 current-origin/main bound GET-only pretrade readiness
+      surface. GET-only. No POST. No submit. No Owner-GO consumption. No
+      Live/canary arming mutation. No Master Runbook SSOT rewrite. Standing
+      LIVE_ENABLED/LIVE_ARMED/CANARY_AUTHORIZED/POST_ALLOWED remain false.
+      OWNER_EXECUTION_AUTHORIZED=false. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
