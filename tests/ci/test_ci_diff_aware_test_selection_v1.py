@@ -4945,6 +4945,11 @@ def test_tests_job_has_pr_bounded_full_step() -> None:
     )[0]
     assert 'pytest tests/"' not in bounded_block
     assert "pytest tests/ -v" not in bounded_block
+    assert "PYTHONUNBUFFERED=1" in bounded_block
+    assert 'PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")' in bounded_block
+    assert "PR_BOUNDED_FULL validated targets empty — fail closed" in bounded_block
+    assert "PR_BOUNDED_FULL_VALIDATED_TARGET_COUNT=" in bounded_block
+    assert "(( ${#VALIDATED_TARGETS[@]} )) ||" in bounded_block
 
 
 VAR_SUITE_ADAPTER_PRODUCTION = "src/risk/validation/var_suite_adapter.py"
