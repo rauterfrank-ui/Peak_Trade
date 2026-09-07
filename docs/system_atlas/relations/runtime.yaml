@@ -780,6 +780,30 @@ relations:
       handoff write. No restart execution. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_section_11_14_future_authorized_contemporaneous_capture_window_follows_observation
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_restart_reconstructed_contemporaneous_pre_restart_observation
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_future_authorized_contemporaneous_capture_window_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_future_authorized_contemporaneous_capture_window_execute_v1.py
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T062800Z/
+    notes: >-
+      Future-authorized contemporaneous capture-window adjudication
+      follows contemporaneous pre-restart observability prove-or-refute.
+      PRODUCTIVE_CAPTURE_OWNER_STATUS=ABSENT.
+      PRODUCTIVE_CAPTURE_HOOK_STATUS=ABSENT.
+      CAPTURE_WINDOW_ORDERING=UNPROVEN.
+      MINIMUM_FUTURE_CAPTURE_WINDOW_SURFACE=UNPROVEN.
+      PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE=false.
+      COMPLETE_CAPTURE_SEAM remains UNPROVEN. HOST_CRASH_DURABILITY remains
+      UNPROVEN. LIVE_RESTART_RECONSTRUCTED remains false.
+      CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED remains false.
+      IMPLEMENTATION_AUTHORIZED=false. No GET. No POST. No productive
+      handoff write. No restart execution. No productive runtime join.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_path_calls_venue_translation
     source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     type: CALLS
