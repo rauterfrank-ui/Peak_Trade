@@ -2080,6 +2080,42 @@ entities:
       LIVE_RESTART_RECONSTRUCTED=false. IMPLEMENTATION_AUTHORIZED=true.
       No GET. No POST. No productive capture executed. No restart
       execution. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+      Historical after the live-identity-bound venue-fill readiness and
+      exact-execution-contract slice.
+
+  - id: PHASE:section_11_14_live_handoff_live_identity_bound_venue_fill_readiness_and_exact_execution_contract
+    kind: PHASE
+    name: 11.14.LIVE_HANDOFF_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_AND_EXACT_EXECUTION_CONTRACT
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_AND_EXACT_EXECUTION_CONTRACT_V1.md
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T181000Z/
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_live_identity_bound_venue_fill_readiness_and_exact_execution_contract_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_live_identity_bound_venue_fill_readiness_and_exact_execution_contract_execute_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_caller_v1.py
+      - tests/ops/test_section_11_14_live_handoff_live_identity_bound_venue_fill_readiness_and_exact_execution_contract_v1.py
+      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
+    notes: >-
+      §11.14 LIVE_IDENTITY_BOUND_VENUE_FILL readiness and exact execution
+      contract persist. LIVE_FILL_READINESS_MATRIX_STATUS=COMPLETE.
+      LIVE_FILL_READINESS=false.
+      MINIMAL_ECONOMIC_ACTION_CONTRACT_STATUS=BLOCKED.
+      LIVE_FILL_EXECUTION_AUTHORIZED=false. LIVE_FILL_EXECUTED=false.
+      CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION=NOT_EXECUTED.
+      CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false.
+      OWNER_GO_IS_NOT_GATE_BYPASS=true.
+      CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false.
+      AUTHORIZED_RUNTIME_SURFACE=NONE.
+      HOST_CRASH_DURABILITY=UNPROVEN.
+      CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED=false.
+      LIVE_RESTART_RECONSTRUCTED=false. IMPLEMENTATION_AUTHORIZED=true.
+      No GET. No POST. No submit. No wire send. No position mutation. No
+      restart execution. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
@@ -3052,6 +3088,7 @@ entities:
       - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_REQUIRED_FIELD_PROVENANCE_AND_NO_BACKFILL_CONTRACT_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_AND_NON_EXECUTION_AUTHORIZATION_BOUNDARY_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_AND_NON_EXECUTION_PROOF_V1.md
+      - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_AND_EXACT_EXECUTION_CONTRACT_V1.md
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T121000Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T123100Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T130000Z/
@@ -3083,6 +3120,7 @@ entities:
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T140000Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T160000Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T171500Z/
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T181000Z/
     notes: >-
       Navigation inventory of the §11.14 evidence-ladder surface including
       LIVE_EXECUTION_CODE_EXISTS, LIVE_EXECUTION_PATH_REACHABLE,

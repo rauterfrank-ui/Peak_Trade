@@ -16,11 +16,11 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_restart_handoff
     PRODUCTIVE_HOOK_CALLER,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    CANONICAL_EVIDENCE_RUN_ID,
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_OWNER_GO,
+    HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_RUN_ID,
+    HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SHA,
     LADDER_FIELD_DEFAULTS,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
     SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
@@ -59,13 +59,19 @@ def execute_live_handoff_contemporaneous_pre_restart_capture_observation_and_non
     run_id: str | None = None,
     storage_root: Path | None = None,
 ) -> dict[str, Any]:
-    if str(owner_go or "").strip() != OWNER_GO:
+    if (
+        str(owner_go or "").strip()
+        != HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_OWNER_GO
+    ):
         raise Section1114OfflineSurfaceError("OWNER_GO_MISMATCH")
-    if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
+    if (
+        str(origin_main_sha or "").strip()
+        != HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SHA
+    ):
         raise Section1114OfflineSurfaceError("ORIGIN_MAIN_SHA_MISMATCH")
     assert_contract_invariants_v1()
     started = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    pack_run_id = str(run_id or CANONICAL_EVIDENCE_RUN_ID)
+    pack_run_id = str(run_id or HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_RUN_ID)
     adjudication = bind_contemporaneous_pre_restart_capture_observation_and_non_execution_proof_v1(
         repo_root=repo_root,
         storage_root=storage_root,
@@ -87,7 +93,7 @@ def execute_live_handoff_contemporaneous_pre_restart_capture_observation_and_non
     ended = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     summary = {
         **dict(LADDER_FIELD_DEFAULTS),
-        "OWNER_GO": OWNER_GO,
+        "OWNER_GO": HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_OWNER_GO,
         "CANONICAL_EVIDENCE_RUN_ID": pack_run_id,
         "ORIGIN_MAIN_SHA": origin_main_sha,
         "STARTED_AT_UTC": started,
@@ -185,10 +191,14 @@ def execute_live_handoff_contemporaneous_pre_restart_capture_observation_and_non
         "host_graph": dict(adjudication["host_graph"]),
         "call_path": dict(adjudication["call_path"]),
         "baseline": {
-            "EXPECTED_ORIGIN_MAIN_SHA": EXPECTED_ORIGIN_MAIN_SHA,
+            "EXPECTED_ORIGIN_MAIN_SHA": (
+                HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SHA
+            ),
             "ORIGIN_MAIN_SHA": origin_main_sha,
-            "EXPECTED_ORIGIN_MAIN_MATCH": origin_main_sha == EXPECTED_ORIGIN_MAIN_SHA,
-            "OWNER_GO": OWNER_GO,
+            "EXPECTED_ORIGIN_MAIN_MATCH": (
+                origin_main_sha == HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SHA
+            ),
+            "OWNER_GO": HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_OWNER_GO,
             "CANONICAL_EVIDENCE_RUN_ID": pack_run_id,
         },
         "changed_path_census": {
