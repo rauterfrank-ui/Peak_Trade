@@ -36,6 +36,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     CANONICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_SLICE_HEADING,
     CANONICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_SLICE_HEADING,
     CANONICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_SLICE_HEADING,
+    CANONICAL_PRODUCTIVE_HOOK_CALLER_BINDING_SLICE_HEADING,
     CANONICAL_SECTION_HEADING,
     EARLIEST_UNRESOLVED_DEPENDENCY,
     EXPECTED_ORIGIN_MAIN_SHA,
@@ -98,6 +99,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_OWNER_GO,
     HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_RUN_ID,
     HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_SHA,
+    HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_OWNER_GO,
+    HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_RUN_ID,
+    HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_SHA,
     HISTORICAL_CODE_EXISTS_OWNER_GO,
     HISTORICAL_CODE_EXISTS_RUN_ID,
     HISTORICAL_CODE_EXISTS_SHA,
@@ -214,6 +218,10 @@ CREATE_OWNER_HOOK_SPEC = (
 COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_SPEC = (
     REPO_ROOT
     / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_AND_REQUIRED_FIELD_PROVENANCE_V1.md"
+)
+PRODUCTIVE_HOOK_CALLER_BINDING_SPEC = (
+    REPO_ROOT
+    / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_CAPTURE_HOOK_CALLER_BINDING_AND_OFFLINE_CALL_PATH_PROOF_V1.md"
 )
 HISTORICAL_SPEC = (
     REPO_ROOT
@@ -385,29 +393,35 @@ HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_EVIDENCE = (
     / "section_11_14_live_order_and_economic_evidence_ladder_v1"
     / HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_RUN_ID
 )
+HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_EVIDENCE = (
+    REPO_ROOT
+    / "evidence/ops"
+    / "section_11_14_live_order_and_economic_evidence_ladder_v1"
+    / HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_RUN_ID
+)
 HEADING_11_15 = "## 11.15 Full-autonomy observability and audit trail"
 
 
-def test_current_slice_constants_target_complete_contemporaneous_capture_seam_and_required_field_provenance() -> (
+def test_current_slice_constants_target_productive_capture_hook_caller_binding_and_offline_call_path_proof() -> (
     None
 ):
     assert THIS_SLICE == (
-        "11.14.LIVE_HANDOFF_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_AND_REQUIRED_FIELD_PROVENANCE"
+        "11.14.LIVE_HANDOFF_PRODUCTIVE_CAPTURE_HOOK_CALLER_BINDING_AND_OFFLINE_CALL_PATH_PROOF"
     )
     assert PREDECESSOR_SLICE == (
-        "11.14.LIVE_HANDOFF_CREATE_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK"
+        "11.14.LIVE_HANDOFF_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_AND_REQUIRED_FIELD_PROVENANCE"
     )
     assert OWNER_GO.endswith(
-        "COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_AND_REQUIRED_FIELD_PROVENANCE_V1"
+        "PRODUCTIVE_CAPTURE_HOOK_CALLER_BINDING_AND_OFFLINE_CALL_PATH_PROOF_V1"
     )
-    assert EXPECTED_ORIGIN_MAIN_SHA == "4437d3e48fb900202fb87e349a7f1b81df4bb6b5"
+    assert EXPECTED_ORIGIN_MAIN_SHA == "97c015c352467413e292785f2349120e38b43e73"
     assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_RESTART_RECONSTRUCTED"
     assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED"
     assert LAST_CANONICALLY_CLOSED_STEP == (
-        "SECTION_11_14_LIVE_HANDOFF_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_"
-        "AND_REQUIRED_FIELD_PROVENANCE"
+        "SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_CAPTURE_HOOK_CALLER_BINDING_"
+        "AND_OFFLINE_CALL_PATH_PROOF"
     )
-    assert CANONICAL_EVIDENCE_RUN_ID == "20260907T120000Z"
+    assert CANONICAL_EVIDENCE_RUN_ID == "20260907T130000Z"
     assert EVIDENCE.name == CANONICAL_EVIDENCE_RUN_ID
 
 
@@ -1519,14 +1533,25 @@ def test_runbook_complete_contemporaneous_capture_seam_and_required_field_proven
 ):
     text = MASTER_RUNBOOK.read_text(encoding="utf-8")
     start = text.find(CANONICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_SLICE_HEADING)
-    end = text.find(HEADING_11_15, start)
+    end = text.find(CANONICAL_PRODUCTIVE_HOOK_CALLER_BINDING_SLICE_HEADING, start)
+    if end < 0:
+        end = text.find(HEADING_11_15, start)
     assert start >= 0
     assert end > start
     section = text[start:end]
-    assert OWNER_GO in section
-    assert THIS_SLICE in section
-    assert PREDECESSOR_SLICE in section
-    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_OWNER_GO in section
+    assert (
+        "THIS_SLICE=11.14.LIVE_HANDOFF_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_AND_REQUIRED_FIELD_PROVENANCE"
+        in section
+    )
+    assert (
+        "PREDECESSOR_SLICE=11.14.LIVE_HANDOFF_CREATE_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK"
+        in section
+    )
+    assert (
+        f"EXPECTED_ORIGIN_MAIN_SHA={HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_SHA}"
+        in section
+    )
     assert "SECTION_11_14_AUTHORIZED=false" in section
     assert "SECTION_11_14_COMPLETE=false" in section
     assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
@@ -1543,6 +1568,50 @@ def test_runbook_complete_contemporaneous_capture_seam_and_required_field_proven
     assert "PROVEN_COMPLETE_FIELD_COUNT=0" in section
     assert "PARTIAL_CAPTURE_ALLOWED=false" in section
     assert "RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED=false" in section
+    assert "POST_PERFORMED=false" in section
+    assert "GET_PERFORMED=false" in section
+    assert "RESTART_EXECUTION=false" in section
+    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_RUN_ID in section
+    assert (
+        "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_REQUIRES_SEPARATE_OWNER_GO_V1"
+        in section
+    )
+    for field_name in LADDER_FIELDS:
+        assert field_name in section
+
+
+def test_runbook_productive_capture_hook_caller_binding_and_offline_call_path_proof_slice() -> None:
+    text = MASTER_RUNBOOK.read_text(encoding="utf-8")
+    start = text.find(CANONICAL_PRODUCTIVE_HOOK_CALLER_BINDING_SLICE_HEADING)
+    end = text.find(HEADING_11_15, start)
+    assert start >= 0
+    assert end > start
+    section = text[start:end]
+    assert OWNER_GO in section
+    assert THIS_SLICE in section
+    assert PREDECESSOR_SLICE in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert "SECTION_11_14_AUTHORIZED=false" in section
+    assert "SECTION_11_14_COMPLETE=false" in section
+    assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in section
+    assert "COMPLETE_CAPTURE_SEAM=UNPROVEN" in section
+    assert "COMPLETE_CAPTURE_SEAM_ACCEPTANCE_CONTRACT_BOUND=true" in section
+    assert "REQUIRED_FIELD_PROVENANCE_MATRIX_BOUND=true" in section
+    assert "PRODUCTIVE_HOOK_CALLER=call_pre_restart_handoff_capture_after_bound_fill_v1" in section
+    assert "PRODUCTIVE_HOOK_CALLER_BINDING_PROVEN=true" in section
+    assert "PRODUCTIVE_CALL_PATH_OFFLINE_PROOF=true" in section
+    assert (
+        "PRODUCTIVE_LIFECYCLE_EVENT=REQUIRED_WINDOW_HANDOFF_COMMIT_AFTER_BOUND_FILL_BEFORE_RESTART"
+        in section
+    )
+    assert "PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL=false" in section
+    assert "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false" in section
+    assert "CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false" in section
+    assert "AUTHORIZED_RUNTIME_SURFACE=NONE" in section
+    assert "HOST_CRASH_DURABILITY=UNPROVEN" in section
+    assert "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED=false" in section
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
@@ -1599,6 +1668,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         "11.14 LIVE_HANDOFF_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_AND_REQUIRED_FIELD_PROVENANCE"
         in mot
     )
+    assert (
+        "11.14 LIVE_HANDOFF_PRODUCTIVE_CAPTURE_HOOK_CALLER_BINDING_AND_OFFLINE_CALL_PATH_PROOF"
+        in mot
+    )
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -1636,6 +1709,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "SECTION_11_14_LIVE_HANDOFF_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_AND_REQUIRED_FIELD_PROVENANCE_V1.md"
+        in mot
+    )
+    assert (
+        "SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_CAPTURE_HOOK_CALLER_BINDING_AND_OFFLINE_CALL_PATH_PROOF_V1.md"
         in mot
     )
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
@@ -1891,6 +1968,22 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "PARTIAL_CAPTURE_ALLOWED=false" in complete_seam_spec
     assert "IMPLEMENTATION_AUTHORIZED=true" in complete_seam_spec
     assert "LIVE_RESTART_RECONSTRUCTED=false" in complete_seam_spec
+    caller_spec = PRODUCTIVE_HOOK_CALLER_BINDING_SPEC.read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_CAPTURE_HOOK_CALLER_BINDING_AND_OFFLINE_CALL_PATH_PROOF_V1"
+        in caller_spec
+    )
+    assert "PRODUCTIVE_HOOK_CALLER=call_pre_restart_handoff_capture_after_bound_fill_v1" in (
+        caller_spec
+    )
+    assert "PRODUCTIVE_HOOK_CALLER_BINDING_PROVEN=true" in caller_spec
+    assert "PRODUCTIVE_CALL_PATH_OFFLINE_PROOF=true" in caller_spec
+    assert "COMPLETE_CAPTURE_SEAM=UNPROVEN" in caller_spec
+    assert "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false" in caller_spec
+    assert "CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false" in caller_spec
+    assert "AUTHORIZED_RUNTIME_SURFACE=NONE" in caller_spec
+    assert "IMPLEMENTATION_AUTHORIZED=true" in caller_spec
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in caller_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -1952,6 +2045,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "id: PHASE:section_11_14_live_handoff_complete_contemporaneous_capture_seam_and_required_field_provenance"
+        in catalog
+    )
+    assert (
+        "id: PHASE:section_11_14_live_handoff_productive_capture_hook_caller_binding_and_offline_call_path_proof"
         in catalog
     )
     assert (
@@ -2482,6 +2579,22 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert (
         HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_EVIDENCE / "OWNER_HOOK_CENSUS.json"
     ).is_file()
+    assert HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_EVIDENCE.is_dir()
+    historical_complete_seam_verified = verify_manifest_v1(
+        HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_EVIDENCE
+    )
+    assert int(historical_complete_seam_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
+    assert (
+        HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_EVIDENCE / "DATAFLOW_CENSUS.json"
+    ).is_file()
+    assert (
+        HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_EVIDENCE
+        / "REQUIRED_FIELD_PROVENANCE_MATRIX.json"
+    ).is_file()
+    assert (
+        HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_EVIDENCE
+        / "CONTEMPORANEOUSNESS_ADJUDICATION.json"
+    ).is_file()
     assert EVIDENCE.is_dir()
     current_verified = verify_manifest_v1(EVIDENCE)
     assert int(current_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
@@ -2511,6 +2624,12 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         '"PRODUCTIVE_LIFECYCLE_HOOK": "run_capture_hook_after_bound_fill_before_restart_v1"'
         in current_summary
     )
+    assert (
+        '"PRODUCTIVE_HOOK_CALLER": "call_pre_restart_handoff_capture_after_bound_fill_v1"'
+        in current_summary
+    )
+    assert '"PRODUCTIVE_HOOK_CALLER_BINDING_PROVEN": true' in current_summary
+    assert '"PRODUCTIVE_CALL_PATH_OFFLINE_PROOF": true' in current_summary
     assert '"STRUCTURAL_RUNTIME_BINDING_PROVEN": true' in current_summary
     assert '"CURRENT_RUNTIME_EXECUTION_AUTHORIZED": false' in current_summary
     assert '"AUTHORIZED_RUNTIME_SURFACE": "NONE"' in current_summary
@@ -2520,7 +2639,8 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert '"ADMISSION_TRUE": false' in current_summary
     assert (EVIDENCE / "DATAFLOW_CENSUS.json").is_file()
     assert (EVIDENCE / "REQUIRED_FIELD_PROVENANCE_MATRIX.json").is_file()
-    assert (EVIDENCE / "CONTEMPORANEOUSNESS_ADJUDICATION.json").is_file()
+    assert (EVIDENCE / "CALLER_CENSUS.json").is_file()
+    assert (EVIDENCE / "HOST_GRAPH.json").is_file()
     assert (EVIDENCE / "COMPLETE_CAPTURE_SEAM_PREDICATE.json").is_file()
     assert (EVIDENCE / "ADJUDICATION.json").is_file()
     assert (EVIDENCE / "SAFETY.json").is_file()

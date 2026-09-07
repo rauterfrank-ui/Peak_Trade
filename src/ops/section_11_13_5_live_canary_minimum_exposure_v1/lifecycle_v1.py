@@ -56,6 +56,18 @@ def build_lifecycle_and_closeout_contract_v1() -> dict[str, Any]:
         "emergency_kill_switch_interaction": (
             "KILL_SWITCH_OR_HALT_TRIGGERS_IMMEDIATE_CANCEL_FLATTEN_PATH;NO_NEW_ENTRY_WHILE_HALTED"
         ),
+        "pre_restart_handoff_capture": {
+            "LIFECYCLE_EVENT": ("REQUIRED_WINDOW_HANDOFF_COMMIT_AFTER_BOUND_FILL_BEFORE_RESTART"),
+            "PRODUCTIVE_HOOK_CALLER": ("call_pre_restart_handoff_capture_after_bound_fill_v1"),
+            "HOST_JOIN": "run_live_order_pre_restart_handoff_capture_v1",
+            "HOOK": "run_capture_hook_after_bound_fill_before_restart_v1",
+            "CAPTURE_OWNER": "SECTION_11_14_LIVE_PRODUCTIVE_CAPTURE_OWNER_V1",
+            "AFTER_STATE": "FILLED",
+            "BOUND_FILL_KIND": "LIVE_IDENTITY_BOUND_VENUE_FILL",
+            "BEFORE": "SupervisorLifecycle.restart",
+            "WIRE_SEND": False,
+            "CURRENTLY_AUTHORIZED": False,
+        },
         "bounded_timeout_retry_policy": {
             "submit_timeout_seconds": 15.0,
             "unknown_submit_poll_timeout_seconds": 60.0,

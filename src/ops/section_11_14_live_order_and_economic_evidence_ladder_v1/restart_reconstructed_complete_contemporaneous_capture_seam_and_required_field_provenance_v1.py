@@ -10,6 +10,7 @@ PROVEN_STRUCTURALLY. Does not promote LIVE_RESTART_RECONSTRUCTED.
 from __future__ import annotations
 
 from decimal import Decimal, InvalidOperation
+from pathlib import Path
 from typing import Any, Mapping
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
@@ -39,6 +40,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_re
     PRODUCER_SYMBOL,
     WRITER_RELPATH,
     WRITER_SYMBOL,
+    census_symbol_call_graph_v1,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_handoff_owner_and_writer_v1 import (
     FIRST_OWNER_ID,
@@ -145,6 +147,11 @@ IDENTITY_HANDOFF_FIELDS: tuple[str, ...] = ("clOrdId", "ordId", "instId", "posSi
 HOOK_CONSUMER_SYMBOL = "run_capture_hook_after_bound_fill_before_restart_v1"
 CAPTURE_OWNER_ACCEPTANCE_SYMBOL = "accept_complete_contemporaneous_capture_inputs_v1"
 READER_SYMBOL = "read_validated_durable_pre_restart_handoff_v1"
+PRODUCTIVE_HOOK_CALLER_SYMBOL = "call_pre_restart_handoff_capture_after_bound_fill_v1"
+PRODUCTIVE_HOOK_CALLER_RELPATH = (
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/"
+    "pre_restart_handoff_capture_caller_v1.py"
+)
 
 
 def _text(value: object) -> str:
@@ -164,16 +171,33 @@ def _decimal(value: object) -> Decimal | None:
     return parsed
 
 
-def census_productive_capture_dataflow_v1() -> dict[str, Any]:
+def census_productive_capture_dataflow_v1(*, repo_root: object | None = None) -> dict[str, Any]:
+    root = Path(repo_root) if repo_root is not None else Path(__file__).resolve().parents[3]
+    hook_census = census_symbol_call_graph_v1(
+        repo_root=root,
+        symbol=HOOK_CONSUMER_SYMBOL,
+        definition_relpath=HOOK_RELPATH,
+    )
+    productive_hook_callers = [
+        row for row in hook_census["rows"] if row["PRODUCTIVE_OR_TEST_ONLY"] == "PRODUCTIVE_RUNTIME"
+    ]
+    hook_caller_count = len(productive_hook_callers)
+    upstream_join = (
+        "PROVEN"
+        if hook_caller_count == 1
+        and productive_hook_callers[0]["FILE"] == PRODUCTIVE_HOOK_CALLER_RELPATH
+        else "UNPROVEN_NO_PRODUCTIVE_HOOK_CALLER"
+    )
     transitions = (
         {
             "TRANSITION_ID": "T1_PRODUCTIVE_BOUND_FILL",
             "PRODUCER": "LIVE_ORDER::LIVE_IDENTITY_BOUND_VENUE_FILL",
             "CONSUMER": HOOK_CONSUMER_SYMBOL,
             "CONCRETE_SYMBOL": CANONICAL_BOUND_FILL_KIND,
-            "CONCRETE_PATH": "LIVE_ORDER path; no productive caller of the capture hook exists",
+            "CONCRETE_PATH": (f"{PRODUCTIVE_HOOK_CALLER_RELPATH}::{PRODUCTIVE_HOOK_CALLER_SYMBOL}"),
             "INVOCATION_BINDING_RELATION": (
-                "STRUCTURAL_PARAMETERIZATION_ONLY; HOOK_PRODUCTIVE_CALLER_COUNT=0"
+                "STRUCTURAL_PARAMETERIZATION_VIA_UNIQUE_PRODUCTIVE_HOOK_CALLER; "
+                f"HOOK_PRODUCTIVE_CALLER_COUNT={hook_caller_count}"
             ),
             "DATA_TYPE_SCHEMA": "bound_fill_identity={clOrdId,ordId,instId,posSide,fillSz}",
             "OPTIONAL_OR_REQUIRED": "REQUIRED_AT_CAPTURE_OWNER_ACCEPTANCE",
@@ -211,7 +235,8 @@ def census_productive_capture_dataflow_v1() -> dict[str, Any]:
             "CONCRETE_SYMBOL": PRODUCTIVE_LIFECYCLE_HOOK,
             "CONCRETE_PATH": HOOK_RELPATH,
             "INVOCATION_BINDING_RELATION": (
-                "UNIQUE_PRODUCTIVE_CALLER_OF_WRITER; HOOK_HAS_NO_PRODUCTIVE_CALLER"
+                "UNIQUE_PRODUCTIVE_CALLER_OF_WRITER; "
+                f"UNIQUE_PRODUCTIVE_HOOK_CALLER={PRODUCTIVE_HOOK_CALLER_SYMBOL}"
             ),
             "DATA_TYPE_SCHEMA": "hook kwargs including bound_fill_identity and S05 qty",
             "OPTIONAL_OR_REQUIRED": "REQUIRED",
@@ -269,7 +294,9 @@ def census_productive_capture_dataflow_v1() -> dict[str, Any]:
         "AUTHORITY_CLASS": "FORENSIC_OBSERVATION",
         "NAMING_SIMILARITY_IS_NOT_BINDING": True,
         "POST_FILL_NORMALIZATION_OWNER": "NONE",
-        "HOOK_PRODUCTIVE_CALLER_COUNT": 0,
+        "HOOK_PRODUCTIVE_CALLER_COUNT": hook_caller_count,
+        "PRODUCTIVE_HOOK_CALLER": PRODUCTIVE_HOOK_CALLER_SYMBOL,
+        "UPSTREAM_LIVE_ORDER_JOIN_TO_HOOK": upstream_join,
         "WRITER_PRODUCTIVE_CALLER": HOOK_RELPATH,
         "PRODUCER_REMAINS_INTERNAL_TO_WRITER": True,
         "STORAGE_OWNER_IS_NOT_CAPTURE_OWNER": True,
@@ -328,7 +355,7 @@ def bind_required_field_provenance_matrix_v1() -> dict[str, Any]:
                     "restart_reconstructed_create_productive_capture_owner_and_lifecycle_hook_v1.py"
                 ),
                 "STATUS": FIELD_STATUS_PROVEN_FAIL_CLOSED_IF_ABSENT,
-                "UPSTREAM_LIVE_ORDER_JOIN_TO_HOOK": "UNPROVEN_NO_PRODUCTIVE_HOOK_CALLER",
+                "UPSTREAM_LIVE_ORDER_JOIN_TO_HOOK": "PROVEN",
                 "HISTORICAL_BOUND_IDENTITY_IS_NOT_CURRENT_PRODUCER": True,
             }
         else:
@@ -364,7 +391,7 @@ def bind_required_field_provenance_matrix_v1() -> dict[str, Any]:
                     f"{PRODUCER_RELPATH}; PRODUCTIVE_S05_QTY_SOURCE={PRODUCTIVE_S05_QTY_SOURCE}"
                 ),
                 "STATUS": FIELD_STATUS_PROVEN_FAIL_CLOSED_IF_ABSENT,
-                "UPSTREAM_LIVE_ORDER_JOIN_TO_HOOK": "UNPROVEN_NO_PRODUCTIVE_HOOK_CALLER",
+                "UPSTREAM_LIVE_ORDER_JOIN_TO_HOOK": "PROVEN",
                 "HISTORICAL_BOUND_IDENTITY_IS_NOT_CURRENT_PRODUCER": True,
             }
         if row["STATUS"] not in ALLOWED_FIELD_STATUSES:
@@ -700,8 +727,7 @@ def bind_complete_contemporaneous_capture_seam_and_required_field_provenance_v1(
     *,
     repo_root: object | None = None,
 ) -> dict[str, Any]:
-    del repo_root
-    dataflow = census_productive_capture_dataflow_v1()
+    dataflow = census_productive_capture_dataflow_v1(repo_root=repo_root)
     matrix = bind_required_field_provenance_matrix_v1()
     contemporaneous = adjudicate_contemporaneousness_v1()
     reader_binding = bind_restart_reader_provenance_and_consumer_v1()

@@ -1,4 +1,4 @@
-"""Execute complete contemporaneous capture-seam and required-field provenance persist.
+"""Execute productive capture-hook caller binding and offline call-path persist.
 
 No GET. No POST. No restart execution. No productive hook execution as Live.
 No productive handoff write during this persist. COMPLETE_CAPTURE_SEAM remains
@@ -12,10 +12,10 @@ from pathlib import Path
 from typing import Any
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_OWNER_GO,
-    HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_RUN_ID,
-    HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_SHA,
+    CANONICAL_EVIDENCE_RUN_ID,
+    EXPECTED_ORIGIN_MAIN_SHA,
     LIVE_RESTART_RECONSTRUCTED,
+    OWNER_GO,
     SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
@@ -24,18 +24,6 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.persist_claims_v1 import (
     CLAIMS,
-)
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_complete_contemporaneous_capture_seam_and_required_field_provenance_v1 import (
-    CASE_ADJUDICATION,
-    COMPLETE_CAPTURE_SEAM,
-    COMPLETE_CAPTURE_SEAM_ACCEPTANCE_CONTRACT_BOUND,
-    CONTEMPORANEOUS_IDENTITY_BINDING,
-    CONTEMPORANEOUS_PROVENANCE_BINDING,
-    PARTIAL_CAPTURE_ALLOWED,
-    PROPOSED_NEXT_SLICE,
-    REQUIRED_FIELD_PROVENANCE_MATRIX_BOUND,
-    RETROACTIVE_SYNTHESIS_ALLOWED,
-    bind_complete_contemporaneous_capture_seam_and_required_field_provenance_v1,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_create_productive_capture_owner_and_lifecycle_hook_v1 import (
     PRODUCTIVE_CAPTURE_OWNER,
@@ -56,26 +44,34 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_re
     HANDOFF_SCHEMA_VERSION,
     SELECTED_SEMANTIC_ID,
 )
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_productive_capture_hook_caller_binding_and_offline_call_path_proof_v1 import (
+    CASE_ADJUDICATION,
+    PRODUCTIVE_CALL_PATH_OFFLINE_PROOF,
+    PRODUCTIVE_HOOK_CALLER,
+    PRODUCTIVE_HOOK_CALLER_BINDING_PROVEN,
+    PRODUCTIVE_LIFECYCLE_EVENT,
+    PROPOSED_NEXT_SLICE,
+    PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL,
+    bind_productive_capture_hook_caller_and_offline_call_path_v1,
+)
 
 
-def execute_live_handoff_complete_contemporaneous_capture_seam_and_required_field_provenance_v1(
+def execute_live_handoff_productive_capture_hook_caller_binding_and_offline_call_path_proof_v1(
     *,
     owner_go: str,
     origin_main_sha: str,
     repo_root: Path,
     run_id: str | None = None,
 ) -> dict[str, Any]:
-    if str(owner_go or "").strip() != HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_OWNER_GO:
+    if str(owner_go or "").strip() != OWNER_GO:
         raise Section1114OfflineSurfaceError("OWNER_GO_MISMATCH")
-    if str(origin_main_sha or "").strip() != HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_SHA:
+    if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
         raise Section1114OfflineSurfaceError("ORIGIN_MAIN_SHA_MISMATCH")
     assert_contract_invariants_v1()
     started = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    pack_run_id = str(run_id or HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_RUN_ID)
-    adjudication = bind_complete_contemporaneous_capture_seam_and_required_field_provenance_v1(
-        repo_root=repo_root
-    )
-    if adjudication["COMPLETE_CAPTURE_SEAM"] != COMPLETE_CAPTURE_SEAM:
+    pack_run_id = str(run_id or CANONICAL_EVIDENCE_RUN_ID)
+    adjudication = bind_productive_capture_hook_caller_and_offline_call_path_v1(repo_root=repo_root)
+    if adjudication["COMPLETE_CAPTURE_SEAM"] != "UNPROVEN":
         raise Section1114OfflineSurfaceError("CAPTURE_SEAM_MUST_REMAIN_UNPROVEN")
     if adjudication["CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED"] is True:
         raise Section1114OfflineSurfaceError("PRODUCTIVE_CAPTURE_MUST_NOT_BE_CLAIMED")
@@ -83,13 +79,13 @@ def execute_live_handoff_complete_contemporaneous_capture_seam_and_required_fiel
         raise Section1114OfflineSurfaceError("LIVE_RESTART_RECONSTRUCTED_MUST_REMAIN_FALSE")
     if LIVE_RESTART_RECONSTRUCTED is True:
         raise Section1114OfflineSurfaceError("LIVE_RESTART_RECONSTRUCTED_MUST_REMAIN_FALSE")
-    if adjudication["UNPROVEN_FIELD_COUNT"] != 0:
-        raise Section1114OfflineSurfaceError("REQUIRED_FIELD_PROVENANCE_UNPROVEN")
-    if adjudication["CONTRADICTORY_FIELD_COUNT"] != 0:
-        raise Section1114OfflineSurfaceError("REQUIRED_FIELD_PROVENANCE_CONTRADICTION")
+    if adjudication["PRODUCTIVE_HOOK_CALLER"] != PRODUCTIVE_HOOK_CALLER:
+        raise Section1114OfflineSurfaceError("PRODUCTIVE_HOOK_CALLER_DRIFT")
+    if adjudication["PRODUCTIVE_CALL_PATH_OFFLINE_PROOF"] is not True:
+        raise Section1114OfflineSurfaceError("OFFLINE_CALL_PATH_PROOF_MISSING")
     ended = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     summary = {
-        "OWNER_GO": HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_OWNER_GO,
+        "OWNER_GO": OWNER_GO,
         "CANONICAL_EVIDENCE_RUN_ID": pack_run_id,
         "ORIGIN_MAIN_SHA": origin_main_sha,
         "STARTED_AT_UTC": started,
@@ -116,37 +112,38 @@ def execute_live_handoff_complete_contemporaneous_capture_seam_and_required_fiel
         "SCHEMA_CHANGE_REQUIRED": False,
         "PRODUCTIVE_CAPTURE_OWNER": PRODUCTIVE_CAPTURE_OWNER,
         "PRODUCTIVE_LIFECYCLE_HOOK": PRODUCTIVE_LIFECYCLE_HOOK,
+        "PRODUCTIVE_HOOK_CALLER": PRODUCTIVE_HOOK_CALLER,
+        "PRODUCTIVE_HOOK_CALLER_SYMBOL": PRODUCTIVE_HOOK_CALLER,
+        "PRODUCTIVE_HOOK_CALLER_BINDING_PROVEN": PRODUCTIVE_HOOK_CALLER_BINDING_PROVEN,
+        "PRODUCTIVE_LIFECYCLE_EVENT": PRODUCTIVE_LIFECYCLE_EVENT,
+        "PRODUCTIVE_CALL_PATH_OFFLINE_PROOF": PRODUCTIVE_CALL_PATH_OFFLINE_PROOF,
         "STRUCTURAL_RUNTIME_BINDING_PROVEN": STRUCTURAL_RUNTIME_BINDING_PROVEN,
         "CURRENT_RUNTIME_EXECUTION_AUTHORIZED": False,
         "AUTHORIZED_RUNTIME_SURFACE": "NONE",
         "COMPLETE_CAPTURE_SEAM": "UNPROVEN",
-        "COMPLETE_CAPTURE_SEAM_ACCEPTANCE_CONTRACT_BOUND": (
-            COMPLETE_CAPTURE_SEAM_ACCEPTANCE_CONTRACT_BOUND
-        ),
-        "REQUIRED_FIELD_PROVENANCE_MATRIX_BOUND": REQUIRED_FIELD_PROVENANCE_MATRIX_BOUND,
+        "COMPLETE_CAPTURE_SEAM_ACCEPTANCE_CONTRACT_BOUND": True,
+        "REQUIRED_FIELD_PROVENANCE_MATRIX_BOUND": True,
         "COMPLETE_CAPTURE_SEAM_MISSING_PREDICATES": list(
             adjudication["COMPLETE_CAPTURE_SEAM_MISSING_PREDICATES"]
         ),
-        "PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL": False,
-        "CONTEMPORANEOUS_IDENTITY_BINDING": CONTEMPORANEOUS_IDENTITY_BINDING,
-        "CONTEMPORANEOUS_PROVENANCE_BINDING": CONTEMPORANEOUS_PROVENANCE_BINDING,
-        "RETROACTIVE_SYNTHESIS_ALLOWED": RETROACTIVE_SYNTHESIS_ALLOWED,
-        "PARTIAL_CAPTURE_ALLOWED": PARTIAL_CAPTURE_ALLOWED,
+        "PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL": (
+            PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL
+        ),
         "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED": False,
         "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED": False,
         "HOST_CRASH_DURABILITY": "UNPROVEN",
+        "LIVE_SUBMIT_EXECUTED": False,
+        "WIRE_SEND_EXECUTED": False,
+        "RESTART_EXECUTED": False,
         "PROVEN_COMPLETE_FIELD_COUNT": adjudication["PROVEN_COMPLETE_FIELD_COUNT"],
         "PROVEN_FAIL_CLOSED_FIELD_COUNT": adjudication["PROVEN_FAIL_CLOSED_FIELD_COUNT"],
-        "UNPROVEN_FIELD_COUNT": adjudication["UNPROVEN_FIELD_COUNT"],
-        "CONTRADICTORY_FIELD_COUNT": adjudication["CONTRADICTORY_FIELD_COUNT"],
-        "CAN_STRUCTURALLY_CONSTRUCT_COMPLETE_RECORD": True,
-        "HAS_PRODUCTIVELY_CONSTRUCTED_COMPLETE_RECORD": False,
+        "PARTIAL_CAPTURE_ALLOWED": False,
+        "RETROACTIVE_SYNTHESIS_ALLOWED": False,
         "CASE_ADJUDICATION": CASE_ADJUDICATION,
-        "OBSERVATION_STATUS": "ACCEPTANCE_CONTRACT_BOUND_NOT_LIVE_OBSERVED",
+        "OBSERVATION_STATUS": "PRODUCTIVE_HOOK_CALLER_BOUND_OFFLINE_NOT_LIVE_OBSERVED",
         "AUTHORIZED_NON_LIVE_RUNTIME_SURFACE_PRESENT": False,
         "PRODUCTIVE_CAPTURE_WRITE_EXECUTED": False,
         "HANDOFF_WRITTEN": False,
-        "RESTART_EXECUTED": False,
         "HISTORICAL_DATA_REINTERPRETATION_ALLOWED": False,
         "NO_TIMESTAMP_BACKFILL": True,
         "NO_SYNTHETIC_PRE_RESTART_PROVENANCE": True,
@@ -176,27 +173,27 @@ def execute_live_handoff_complete_contemporaneous_capture_seam_and_required_fiel
     )
     return {
         "summary": summary,
+        "caller_census": dict(adjudication["caller_census"]),
+        "host_graph": dict(adjudication["host_graph"]),
         "dataflow": dict(adjudication["dataflow"]),
         "required_field_provenance_matrix": dict(adjudication["required_field_provenance_matrix"]),
-        "contemporaneousness": dict(adjudication["contemporaneousness"]),
         "seam_predicate": {
             "COMPLETE_CAPTURE_SEAM": "UNPROVEN",
             "MISSING_PREDICATES": list(adjudication["COMPLETE_CAPTURE_SEAM_MISSING_PREDICATES"]),
             "COMPLETE_CAPTURE_SEAM_ACCEPTANCE_CONTRACT_BOUND": True,
+            "PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL": False,
         },
         "baseline": {
-            "EXPECTED_ORIGIN_MAIN_SHA": HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_SHA,
+            "EXPECTED_ORIGIN_MAIN_SHA": EXPECTED_ORIGIN_MAIN_SHA,
             "ORIGIN_MAIN_SHA": origin_main_sha,
-            "EXPECTED_ORIGIN_MAIN_MATCH": (
-                origin_main_sha == HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_SHA
-            ),
-            "OWNER_GO": HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_OWNER_GO,
+            "EXPECTED_ORIGIN_MAIN_MATCH": origin_main_sha == EXPECTED_ORIGIN_MAIN_SHA,
+            "OWNER_GO": OWNER_GO,
             "CANONICAL_EVIDENCE_RUN_ID": pack_run_id,
         },
         "changed_path_census": {
             "SCOPE": (
-                "SECTION_11_14_LIVE_HANDOFF_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_"
-                "AND_REQUIRED_FIELD_PROVENANCE_V1"
+                "SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_CAPTURE_HOOK_CALLER_BINDING_"
+                "AND_OFFLINE_CALL_PATH_PROOF_V1"
             ),
             "UNTRACKED_FOREIGN_EVIDENCE_UNTOUCHED": True,
         },
@@ -216,6 +213,8 @@ def execute_live_handoff_complete_contemporaneous_capture_seam_and_required_fiel
             "CURRENT_RUNTIME_EXECUTION_AUTHORIZED": False,
             "STRUCTURAL_RUNTIME_BINDING_PROVEN": True,
             "COMPLETE_CAPTURE_SEAM": "UNPROVEN",
+            "PRODUCTIVE_HOOK_CALLER_BINDING_PROVEN": True,
+            "PRODUCTIVE_CALL_PATH_OFFLINE_PROOF": True,
         },
         "claims": dict(CLAIMS),
         "adjudication": dict(adjudication),
