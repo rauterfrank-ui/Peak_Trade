@@ -7,13 +7,12 @@ from pathlib import Path
 import pytest
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_IMPLEMENTATION_OWNER_GO,
+    HISTORICAL_IMPLEMENTATION_SHA,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
     SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
     SECTION_11_14_LIVE_HANDOFF_READER_PRESENT,
     SECTION_11_14_LIVE_HANDOFF_WRITER_PRESENT,
-    THIS_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -143,7 +142,7 @@ def test_owner_is_minted_and_writer_is_bound_reader_unbound() -> None:
     assert mint["READER_BOUND"] is False
     assert SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT == FIRST_OWNER_ID
     assert SECTION_11_14_LIVE_HANDOFF_WRITER_PRESENT is True
-    assert SECTION_11_14_LIVE_HANDOFF_READER_PRESENT is False
+    assert SECTION_11_14_LIVE_HANDOFF_READER_PRESENT is True
     assert binding["WRITER_BOUND"] is True
     assert binding["WRITER_SEAM_ID"] == WRITER_SEAM_ID
     assert binding["CAPTURE_TRIGGER_PRODUCTIVELY_BOUND"] is True
@@ -161,9 +160,6 @@ def test_owner_is_minted_and_writer_is_bound_reader_unbound() -> None:
     assert NEW_PRODUCER_IMPLEMENTED is True
     assert PRODUCER_SEMANTICS_EXACT_S05_IMPLEMENTED is True
     assert POS_SEMANTICS == "PROVEN"
-    assert THIS_SLICE == (
-        "11.14.LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION"
-    )
     assert binding["PROPOSED_NEXT_SLICE"] == PROPOSED_NEXT_SLICE
 
 
@@ -274,8 +270,8 @@ def test_malformed_wrong_unit_wrong_instrument_and_forbidden_sources_fail_closed
 
 def test_execute_is_offline_and_does_not_prove_restart_or_complete_seam() -> None:
     result = execute_live_handoff_pos_producer_capture_record_owner_and_writer_implementation_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        owner_go=HISTORICAL_IMPLEMENTATION_OWNER_GO,
+        origin_main_sha=HISTORICAL_IMPLEMENTATION_SHA,
         repo_root=REPO_ROOT,
         run_id="20260907T014000Z-test",
     )

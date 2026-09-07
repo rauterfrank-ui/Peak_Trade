@@ -1,0 +1,7 @@
+{
+  "EVIDENCE_PACK_FALLBACK": false,
+  "READER_BOUND": true,
+  "SELECTED_PRODUCTIVE_READER": "read_validated_durable_pre_restart_handoff_v1",
+  "STORAGE_OWNER_ID": "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_V1",
+  "VENUE_GET_FALLBACK": false
+}

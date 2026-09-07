@@ -10,10 +10,10 @@ from pathlib import Path
 from typing import Any
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    CANONICAL_EVIDENCE_RUN_ID,
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_IMPLEMENTATION_OWNER_GO,
+    HISTORICAL_IMPLEMENTATION_RUN_ID,
+    HISTORICAL_IMPLEMENTATION_SHA,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
     SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
@@ -57,13 +57,13 @@ def execute_live_handoff_pos_producer_capture_record_owner_and_writer_implementa
     repo_root: Path,
     run_id: str | None = None,
 ) -> dict[str, Any]:
-    if str(owner_go or "").strip() != OWNER_GO:
+    if str(owner_go or "").strip() != HISTORICAL_IMPLEMENTATION_OWNER_GO:
         raise Section1114OfflineSurfaceError("OWNER_GO_MISMATCH")
-    if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
+    if str(origin_main_sha or "").strip() != HISTORICAL_IMPLEMENTATION_SHA:
         raise Section1114OfflineSurfaceError("ORIGIN_MAIN_SHA_MISMATCH")
     assert_contract_invariants_v1()
     started = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    pack_run_id = str(run_id or CANONICAL_EVIDENCE_RUN_ID)
+    pack_run_id = str(run_id or HISTORICAL_IMPLEMENTATION_RUN_ID)
     binding = bind_pos_producer_capture_record_owner_and_writer_implementation_v1()
     mint = mint_section_11_14_live_durable_pre_restart_handoff_owner_v1()
     adjudication = adjudicate_live_restart_reconstructed_v1(
@@ -85,7 +85,7 @@ def execute_live_handoff_pos_producer_capture_record_owner_and_writer_implementa
         raise Section1114OfflineSurfaceError("READER_MUST_REMAIN_UNBOUND")
     ended = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     summary = {
-        "OWNER_GO": OWNER_GO,
+        "OWNER_GO": HISTORICAL_IMPLEMENTATION_OWNER_GO,
         "CANONICAL_EVIDENCE_RUN_ID": pack_run_id,
         "ORIGIN_MAIN_SHA": origin_main_sha,
         "STARTED_AT_UTC": started,

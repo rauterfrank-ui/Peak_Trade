@@ -30,6 +30,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     CANONICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_SLICE_HEADING,
     CANONICAL_COMPLETE_CAPTURE_SEAM_PROOF_SLICE_HEADING,
     CANONICAL_IMPLEMENTATION_SLICE_HEADING,
+    CANONICAL_READER_BIND_SLICE_HEADING,
     CANONICAL_SECTION_HEADING,
     EARLIEST_UNRESOLVED_DEPENDENCY,
     EXPECTED_ORIGIN_MAIN_SHA,
@@ -47,6 +48,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_FILL_OBSERVED_SHA,
     HISTORICAL_FORENSIC_ACK_OWNER_GO,
     HISTORICAL_FORENSIC_ACK_RUN_ID,
+    HISTORICAL_IMPLEMENTATION_OWNER_GO,
+    HISTORICAL_IMPLEMENTATION_RUN_ID,
+    HISTORICAL_IMPLEMENTATION_SHA,
     HISTORICAL_PROOF_CRITERION_OWNER_GO,
     HISTORICAL_PROOF_CRITERION_RUN_ID,
     HISTORICAL_PROOF_CRITERION_SHA,
@@ -166,6 +170,10 @@ COMPLETE_CAPTURE_SEAM_PROOF_SPEC = (
 IMPLEMENTATION_SPEC = (
     REPO_ROOT
     / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION_V1.md"
+)
+READER_BIND_SPEC = (
+    REPO_ROOT
+    / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_RESTART_READER_PROVENANCE_AND_CONSUMER_BIND_V1.md"
 )
 HISTORICAL_SPEC = (
     REPO_ROOT
@@ -301,22 +309,28 @@ HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_EVIDENCE = (
     / "section_11_14_live_order_and_economic_evidence_ladder_v1"
     / HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_RUN_ID
 )
+HISTORICAL_IMPLEMENTATION_EVIDENCE = (
+    REPO_ROOT
+    / "evidence/ops"
+    / "section_11_14_live_order_and_economic_evidence_ladder_v1"
+    / HISTORICAL_IMPLEMENTATION_RUN_ID
+)
 HEADING_11_15 = "## 11.15 Full-autonomy observability and audit trail"
 
 
-def test_current_slice_constants_target_producer_owner_writer_implementation() -> None:
-    assert THIS_SLICE == (
+def test_current_slice_constants_target_restart_reader_provenance_and_consumer_bind() -> None:
+    assert THIS_SLICE == "11.14.LIVE_HANDOFF_RESTART_READER_PROVENANCE_AND_CONSUMER_BIND"
+    assert PREDECESSOR_SLICE == (
         "11.14.LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION"
     )
-    assert PREDECESSOR_SLICE == "11.14.LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_PROOF"
-    assert OWNER_GO.endswith("OWNER_AND_WRITER_IMPLEMENTATION_V1")
-    assert EXPECTED_ORIGIN_MAIN_SHA == "4e4aeec08136a20a31eb3e47785b87ca16e6e21a"
+    assert OWNER_GO.endswith("RESTART_READER_PROVENANCE_AND_CONSUMER_BIND_V1")
+    assert EXPECTED_ORIGIN_MAIN_SHA == "bb36c6fb4154411df8701863e55e81603e6aa15b"
     assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_RESTART_RECONSTRUCTED"
     assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED"
     assert LAST_CANONICALLY_CLOSED_STEP == (
-        "SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION"
+        "SECTION_11_14_LIVE_HANDOFF_RESTART_READER_PROVENANCE_AND_CONSUMER_BIND"
     )
-    assert CANONICAL_EVIDENCE_RUN_ID == "20260907T014000Z"
+    assert CANONICAL_EVIDENCE_RUN_ID == "20260907T025500Z"
     assert EVIDENCE.name == CANONICAL_EVIDENCE_RUN_ID
 
 
@@ -1041,17 +1055,19 @@ def test_runbook_complete_capture_seam_proof_slice_remains_unproven_without_inve
 def test_runbook_producer_owner_writer_implementation_slice_binds_s05_without_reader() -> None:
     text = MASTER_RUNBOOK.read_text(encoding="utf-8")
     start = text.find(CANONICAL_IMPLEMENTATION_SLICE_HEADING)
-    end = text.find(HEADING_11_15, start)
+    end = text.find(CANONICAL_READER_BIND_SLICE_HEADING, start)
+    if end < 0:
+        end = text.find(HEADING_11_15, start)
     assert start >= 0
     assert end > start
     section = text[start:end]
-    assert OWNER_GO in section
+    assert HISTORICAL_IMPLEMENTATION_OWNER_GO in section
     assert (
         "THIS_SLICE=11.14.LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION"
         in section
     )
     assert "PREDECESSOR_SLICE=11.14.LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_PROOF" in section
-    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={HISTORICAL_IMPLEMENTATION_SHA}" in section
     assert "SECTION_11_14_AUTHORIZED=false" in section
     assert "SECTION_11_14_COMPLETE=false" in section
     assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
@@ -1081,9 +1097,66 @@ def test_runbook_producer_owner_writer_implementation_slice_binds_s05_without_re
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
     assert NEXT_OWNER_GO_REQUIRED in section
-    assert CANONICAL_EVIDENCE_RUN_ID in section
+    assert HISTORICAL_IMPLEMENTATION_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_RESTART_READER_PROVENANCE_AND_CONSUMER_BIND_V1"
+        in section
+    )
+    for field_name in LADDER_FIELDS:
+        assert field_name in section
+
+
+def test_runbook_restart_reader_provenance_and_consumer_bind_slice_binds_reader_without_restart() -> (
+    None
+):
+    text = MASTER_RUNBOOK.read_text(encoding="utf-8")
+    start = text.find(CANONICAL_READER_BIND_SLICE_HEADING)
+    end = text.find(HEADING_11_15, start)
+    assert start >= 0
+    assert end > start
+    section = text[start:end]
+    assert OWNER_GO in section
+    assert "THIS_SLICE=11.14.LIVE_HANDOFF_RESTART_READER_PROVENANCE_AND_CONSUMER_BIND" in section
+    assert (
+        "PREDECESSOR_SLICE=11.14.LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION"
+        in section
+    )
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert "SECTION_11_14_AUTHORIZED=false" in section
+    assert "SECTION_11_14_COMPLETE=false" in section
+    assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in section
+    assert "POS_SEMANTICS=PROVEN" in section
+    assert "NEW_PRODUCER_IMPLEMENTED=true" in section
+    assert "STORAGE_OWNER_MINTED=true" in section
+    assert "WRITER_BOUND=true" in section
+    assert "READER_BOUND=true" in section
+    assert "RESTART_CONSUMER_BOUND=true" in section
+    assert "PROVENANCE_VALIDATION=CONTRACT_PROVEN" in section
+    assert "FRESHNESS_VALIDATION=PARTIAL" in section
+    assert "PRODUCTIVE_BINDING_PRESENT=true" in section
+    assert "COMPLETE_CAPTURE_SEAM=UNPROVEN" in section
+    assert (
+        "COMPLETE_CAPTURE_SEAM_MISSING_PREDICATES=PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL"
+        in section
+    )
+    assert "HOST_CRASH_DURABILITY=UNPROVEN" in section
+    assert "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED=false" in section
+    assert (
+        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT=SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_V1"
+        in section
+    )
+    assert "IMPLEMENTATION_AUTHORIZED=false" in section
+    assert "ADMISSION_TRUE=false" in section
+    assert "SUPERVISOR_ACTIVATED=false" in section
+    assert "RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED=false" in section
+    assert "POST_PERFORMED=false" in section
+    assert "GET_PERFORMED=false" in section
+    assert "RESTART_EXECUTION=false" in section
+    assert NEXT_OWNER_GO_REQUIRED in section
+    assert CANONICAL_EVIDENCE_RUN_ID in section
+    assert (
+        "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_CONTEMPORANEOUS_PRE_RESTART_OBSERVATION_V1"
         in section
     )
     for field_name in LADDER_FIELDS:
@@ -1124,6 +1197,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "11.14 LIVE_HANDOFF_POS_PRODUCER_SEMANTICS_AND_CONTRACT" in mot
     assert "11.14 LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_PROOF" in mot
     assert "11.14 LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION" in mot
+    assert "11.14 LIVE_HANDOFF_RESTART_READER_PROVENANCE_AND_CONSUMER_BIND" in mot
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -1144,6 +1218,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         "SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION_V1.md"
         in mot
     )
+    assert "SECTION_11_14_LIVE_HANDOFF_RESTART_READER_PROVENANCE_AND_CONSUMER_BIND_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION_V1.md" in mot
@@ -1302,6 +1377,20 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "HOST_CRASH_DURABILITY=UNPROVEN" in implementation_spec
     assert "IMPLEMENTATION_AUTHORIZED=false" in implementation_spec
     assert "LIVE_RESTART_RECONSTRUCTED=false" in implementation_spec
+    reader_bind_spec = READER_BIND_SPEC.read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_LIVE_HANDOFF_RESTART_READER_PROVENANCE_AND_CONSUMER_BIND_V1"
+        in reader_bind_spec
+    )
+    assert "READER_BOUND=true" in reader_bind_spec
+    assert "RESTART_CONSUMER_BOUND=true" in reader_bind_spec
+    assert "PROVENANCE_VALIDATION=CONTRACT_PROVEN" in reader_bind_spec
+    assert "FRESHNESS_VALIDATION=PARTIAL" in reader_bind_spec
+    assert "COMPLETE_CAPTURE_SEAM=UNPROVEN" in reader_bind_spec
+    assert "HOST_CRASH_DURABILITY=UNPROVEN" in reader_bind_spec
+    assert "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED=false" in reader_bind_spec
+    assert "IMPLEMENTATION_AUTHORIZED=false" in reader_bind_spec
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in reader_bind_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -1339,6 +1428,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "id: PHASE:section_11_14_live_handoff_complete_capture_seam_proof" in catalog
     assert (
         "id: PHASE:section_11_14_live_handoff_pos_producer_capture_record_owner_and_writer_implementation"
+        in catalog
+    )
+    assert (
+        "id: PHASE:section_11_14_live_handoff_restart_reader_provenance_and_consumer_bind"
         in catalog
     )
     assert (
@@ -1439,6 +1532,12 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert implementation_rel >= 0
     implementation_block = relations[implementation_rel : implementation_rel + 2200]
     assert "ATLAS_AUTHORITY=NONE" in implementation_block
+    reader_bind_rel = relations.find(
+        "id: REL:r_section_11_14_restart_reader_provenance_and_consumer_bind_follows_producer_owner_writer_implementation"
+    )
+    assert reader_bind_rel >= 0
+    reader_bind_block = relations[reader_bind_rel : reader_bind_rel + 2200]
+    assert "ATLAS_AUTHORITY=NONE" in reader_bind_block
     assert CODE_EXISTS_EVIDENCE.is_dir()
     verified = verify_manifest_v1(CODE_EXISTS_EVIDENCE)
     assert int(verified.get("MANIFEST_VERIFY_RC", 1)) == 0
@@ -1673,6 +1772,25 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert (
         HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_EVIDENCE / "COMPLETE_CAPTURE_SEAM_PREDICATE.json"
     ).is_file()
+    assert HISTORICAL_IMPLEMENTATION_EVIDENCE.is_dir()
+    historical_implementation_verified = verify_manifest_v1(HISTORICAL_IMPLEMENTATION_EVIDENCE)
+    assert int(historical_implementation_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
+    historical_implementation_summary = (
+        HISTORICAL_IMPLEMENTATION_EVIDENCE / "SUMMARY.json"
+    ).read_text(encoding="utf-8")
+    assert '"LIVE_ACCOUNTING_RECONSTRUCTED": true' in historical_implementation_summary
+    assert '"LIVE_RESTART_RECONSTRUCTED": false' in historical_implementation_summary
+    assert '"NEW_PRODUCER_IMPLEMENTED": true' in historical_implementation_summary
+    assert '"STORAGE_OWNER_MINTED": true' in historical_implementation_summary
+    assert '"WRITER_BOUND": true' in historical_implementation_summary
+    assert '"READER_BOUND": false' in historical_implementation_summary
+    assert '"COMPLETE_CAPTURE_SEAM": "UNPROVEN"' in historical_implementation_summary
+    assert '"HOST_CRASH_DURABILITY": "UNPROVEN"' in historical_implementation_summary
+    assert '"IMPLEMENTATION_AUTHORIZED": false' in historical_implementation_summary
+    assert (HISTORICAL_IMPLEMENTATION_EVIDENCE / "IMPLEMENTATION_BINDING.json").is_file()
+    assert (HISTORICAL_IMPLEMENTATION_EVIDENCE / "OWNER_MINT.json").is_file()
+    assert (HISTORICAL_IMPLEMENTATION_EVIDENCE / "PRODUCER.json").is_file()
+    assert (HISTORICAL_IMPLEMENTATION_EVIDENCE / "WRITER_BINDING.json").is_file()
     assert EVIDENCE.is_dir()
     current_verified = verify_manifest_v1(EVIDENCE)
     assert int(current_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
@@ -1692,15 +1810,21 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert '"NEW_PRODUCER_IMPLEMENTED": true' in current_summary
     assert '"STORAGE_OWNER_MINTED": true' in current_summary
     assert '"WRITER_BOUND": true' in current_summary
-    assert '"READER_BOUND": false' in current_summary
+    assert '"READER_BOUND": true' in current_summary
+    assert '"RESTART_CONSUMER_BOUND": true' in current_summary
+    assert '"PROVENANCE_VALIDATION": "CONTRACT_PROVEN"' in current_summary
+    assert '"FRESHNESS_VALIDATION": "PARTIAL"' in current_summary
     assert '"COMPLETE_CAPTURE_SEAM": "UNPROVEN"' in current_summary
     assert '"HOST_CRASH_DURABILITY": "UNPROVEN"' in current_summary
+    assert '"CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED": false' in current_summary
     assert '"IMPLEMENTATION_AUTHORIZED": false' in current_summary
     assert '"ADMISSION_TRUE": false' in current_summary
-    assert (EVIDENCE / "IMPLEMENTATION_BINDING.json").is_file()
+    assert (EVIDENCE / "READER_BINDING.json").is_file()
+    assert (EVIDENCE / "READER_CENSUS.json").is_file()
+    assert (EVIDENCE / "CONSUMER_BINDING.json").is_file()
+    assert (EVIDENCE / "VALIDATION_MATRIX.json").is_file()
+    assert (EVIDENCE / "FAILURE_MATRIX.json").is_file()
+    assert (EVIDENCE / "COMPLETE_CAPTURE_SEAM_PREDICATE.json").is_file()
     assert (EVIDENCE / "OWNER_MINT.json").is_file()
-    assert (EVIDENCE / "PRODUCER.json").is_file()
-    assert (EVIDENCE / "WRITER_BINDING.json").is_file()
-    assert (EVIDENCE / "DURABILITY.json").is_file()
-    assert (EVIDENCE / "FAILURE_SEMANTICS.json").is_file()
     assert (EVIDENCE / "RESTART_RECONSTRUCTED_ADJUDICATION.json").is_file()
+    assert (EVIDENCE / "SAFETY.json").is_file()
