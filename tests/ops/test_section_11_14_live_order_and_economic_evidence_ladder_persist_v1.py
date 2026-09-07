@@ -33,6 +33,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     CANONICAL_READER_BIND_SLICE_HEADING,
     CANONICAL_CONTEMPORANEOUS_OBSERVATION_SLICE_HEADING,
     CANONICAL_FUTURE_CAPTURE_WINDOW_SLICE_HEADING,
+    CANONICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_SLICE_HEADING,
     CANONICAL_SECTION_HEADING,
     EARLIEST_UNRESOLVED_DEPENDENCY,
     EXPECTED_ORIGIN_MAIN_SHA,
@@ -86,6 +87,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_CONTEMPORANEOUS_OBSERVATION_OWNER_GO,
     HISTORICAL_CONTEMPORANEOUS_OBSERVATION_RUN_ID,
     HISTORICAL_CONTEMPORANEOUS_OBSERVATION_SHA,
+    HISTORICAL_FUTURE_CAPTURE_WINDOW_OWNER_GO,
+    HISTORICAL_FUTURE_CAPTURE_WINDOW_RUN_ID,
+    HISTORICAL_FUTURE_CAPTURE_WINDOW_SHA,
     HISTORICAL_CODE_EXISTS_OWNER_GO,
     HISTORICAL_CODE_EXISTS_RUN_ID,
     HISTORICAL_CODE_EXISTS_SHA,
@@ -190,6 +194,10 @@ OBSERVATION_SPEC = (
 CAPTURE_WINDOW_SPEC = (
     REPO_ROOT
     / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW_V1.md"
+)
+OWNER_HOOK_BINDING_SPEC = (
+    REPO_ROOT
+    / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK_BINDING_V1.md"
 )
 HISTORICAL_SPEC = (
     REPO_ROOT
@@ -343,22 +351,30 @@ HISTORICAL_CONTEMPORANEOUS_OBSERVATION_EVIDENCE = (
     / "section_11_14_live_order_and_economic_evidence_ladder_v1"
     / HISTORICAL_CONTEMPORANEOUS_OBSERVATION_RUN_ID
 )
+HISTORICAL_FUTURE_CAPTURE_WINDOW_EVIDENCE = (
+    REPO_ROOT
+    / "evidence/ops"
+    / "section_11_14_live_order_and_economic_evidence_ladder_v1"
+    / HISTORICAL_FUTURE_CAPTURE_WINDOW_RUN_ID
+)
 HEADING_11_15 = "## 11.15 Full-autonomy observability and audit trail"
 
 
-def test_current_slice_constants_target_future_authorized_capture_window() -> None:
-    assert THIS_SLICE == ("11.14.LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW")
+def test_current_slice_constants_target_productive_capture_owner_and_lifecycle_hook_binding() -> (
+    None
+):
+    assert THIS_SLICE == ("11.14.LIVE_HANDOFF_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK_BINDING")
     assert PREDECESSOR_SLICE == (
-        "11.14.LIVE_RESTART_RECONSTRUCTED_CONTEMPORANEOUS_PRE_RESTART_OBSERVATION"
+        "11.14.LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW"
     )
-    assert OWNER_GO.endswith("CONTEMPORANEOUS_CAPTURE_WINDOW_V1")
-    assert EXPECTED_ORIGIN_MAIN_SHA == "f5dbcdc14ab7c0c2f9748c10d451487077998f08"
+    assert OWNER_GO.endswith("LIFECYCLE_HOOK_BINDING_V1")
+    assert EXPECTED_ORIGIN_MAIN_SHA == "480f27bd43e9fe1fdf9d2b3587f515599c77ebc6"
     assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_RESTART_RECONSTRUCTED"
     assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED"
     assert LAST_CANONICALLY_CLOSED_STEP == (
-        "SECTION_11_14_LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW"
+        "SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK_BINDING"
     )
-    assert CANONICAL_EVIDENCE_RUN_ID == "20260907T062800Z"
+    assert CANONICAL_EVIDENCE_RUN_ID == "20260907T081200Z"
     assert EVIDENCE.name == CANONICAL_EVIDENCE_RUN_ID
 
 
@@ -1260,11 +1276,11 @@ def test_runbook_contemporaneous_pre_restart_observation_slice_closes_refute() -
 def test_runbook_future_authorized_capture_window_slice_closes_without_runtime_join() -> None:
     text = MASTER_RUNBOOK.read_text(encoding="utf-8")
     start = text.find(CANONICAL_FUTURE_CAPTURE_WINDOW_SLICE_HEADING)
-    end = text.find(HEADING_11_15, start)
+    end = text.find(CANONICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_SLICE_HEADING, start)
     assert start >= 0
     assert end > start
     section = text[start:end]
-    assert OWNER_GO in section
+    assert HISTORICAL_FUTURE_CAPTURE_WINDOW_OWNER_GO in section
     assert (
         "THIS_SLICE=11.14.LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW" in section
     )
@@ -1272,7 +1288,7 @@ def test_runbook_future_authorized_capture_window_slice_closes_without_runtime_j
         "PREDECESSOR_SLICE=11.14.LIVE_RESTART_RECONSTRUCTED_CONTEMPORANEOUS_PRE_RESTART_OBSERVATION"
         in section
     )
-    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={HISTORICAL_FUTURE_CAPTURE_WINDOW_SHA}" in section
     assert "SECTION_11_14_AUTHORIZED=false" in section
     assert "SECTION_11_14_COMPLETE=false" in section
     assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
@@ -1311,9 +1327,74 @@ def test_runbook_future_authorized_capture_window_slice_closes_without_runtime_j
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
     assert NEXT_OWNER_GO_REQUIRED in section
-    assert CANONICAL_EVIDENCE_RUN_ID in section
+    assert HISTORICAL_FUTURE_CAPTURE_WINDOW_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_CAPTURE_OWNER_HOOK_AND_FUTURE_IDENTITY_CONTRACT_V1"
+        in section
+    )
+    for field_name in LADDER_FIELDS:
+        assert field_name in section
+
+
+def test_runbook_productive_capture_owner_and_lifecycle_hook_binding_slice_closes_case_b() -> None:
+    text = MASTER_RUNBOOK.read_text(encoding="utf-8")
+    start = text.find(CANONICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_SLICE_HEADING)
+    end = text.find(HEADING_11_15, start)
+    assert start >= 0
+    assert end > start
+    section = text[start:end]
+    assert OWNER_GO in section
+    assert (
+        "THIS_SLICE=11.14.LIVE_HANDOFF_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK_BINDING"
+        in section
+    )
+    assert (
+        "PREDECESSOR_SLICE=11.14.LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW"
+        in section
+    )
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert "SECTION_11_14_AUTHORIZED=false" in section
+    assert "SECTION_11_14_COMPLETE=false" in section
+    assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in section
+    assert "POS_SEMANTICS=PROVEN" in section
+    assert "NEW_PRODUCER_IMPLEMENTED=true" in section
+    assert "STORAGE_OWNER_MINTED=true" in section
+    assert "WRITER_BOUND=true" in section
+    assert "READER_BOUND=true" in section
+    assert "RESTART_CONSUMER_BOUND=true" in section
+    assert "CAPTURE_TRIGGER_JOINED_TO_AUTHORIZED_RUNTIME=false" in section
+    assert "PRODUCTIVE_CAPTURE_OWNER_STATUS=REFUTED" in section
+    assert "PRODUCTIVE_LIFECYCLE_HOOK_STATUS=REFUTED" in section
+    assert "AUTHORIZED_RUNTIME_SURFACE=NONE" in section
+    assert "AUTHORIZED_RUNTIME_SURFACE_PROVEN=false" in section
+    assert "BINDING_CASE=CASE_B" in section
+    assert "MINIMAL_FAIL_CLOSED_BINDING_ALLOWED=false" in section
+    assert "PRODUCTIVE_BINDING_IMPLEMENTED=false" in section
+    assert "CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_PRODUCER=0" in section
+    assert "CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_WRITER=0" in section
+    assert "COMPLETE_CAPTURE_SEAM=UNPROVEN" in section
+    assert (
+        "COMPLETE_CAPTURE_SEAM_MISSING_PREDICATES=PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL"
+        in section
+    )
+    assert "HOST_CRASH_DURABILITY=UNPROVEN" in section
+    assert "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED=false" in section
+    assert (
+        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT=SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_V1"
+        in section
+    )
+    assert "IMPLEMENTATION_AUTHORIZED=false" in section
+    assert "ADMISSION_TRUE=false" in section
+    assert "SUPERVISOR_ACTIVATED=false" in section
+    assert "RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED=false" in section
+    assert "POST_PERFORMED=false" in section
+    assert "GET_PERFORMED=false" in section
+    assert "RESTART_EXECUTION=false" in section
+    assert NEXT_OWNER_GO_REQUIRED in section
+    assert CANONICAL_EVIDENCE_RUN_ID in section
+    assert (
+        "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_CREATE_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK_REQUIRES_SEPARATE_OWNER_GO_V1"
         in section
     )
     for field_name in LADDER_FIELDS:
@@ -1357,6 +1438,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "11.14 LIVE_HANDOFF_RESTART_READER_PROVENANCE_AND_CONSUMER_BIND" in mot
     assert "11.14 LIVE_RESTART_RECONSTRUCTED_CONTEMPORANEOUS_PRE_RESTART_OBSERVATION" in mot
     assert "11.14 LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW" in mot
+    assert "11.14 LIVE_HANDOFF_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK_BINDING" in mot
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -1384,6 +1466,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "SECTION_11_14_LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW_V1.md" in mot
+    )
+    assert (
+        "SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK_BINDING_V1.md"
+        in mot
     )
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md" in mot
@@ -1583,6 +1669,22 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED=false" in capture_window_spec
     assert "IMPLEMENTATION_AUTHORIZED=false" in capture_window_spec
     assert "LIVE_RESTART_RECONSTRUCTED=false" in capture_window_spec
+    owner_hook_spec = OWNER_HOOK_BINDING_SPEC.read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK_BINDING_V1"
+        in owner_hook_spec
+    )
+    assert "PRODUCTIVE_CAPTURE_OWNER_STATUS=REFUTED" in owner_hook_spec
+    assert "PRODUCTIVE_LIFECYCLE_HOOK_STATUS=REFUTED" in owner_hook_spec
+    assert "AUTHORIZED_RUNTIME_SURFACE=NONE" in owner_hook_spec
+    assert "AUTHORIZED_RUNTIME_SURFACE_PROVEN=false" in owner_hook_spec
+    assert "BINDING_CASE=CASE_B" in owner_hook_spec
+    assert "MINIMAL_FAIL_CLOSED_BINDING_ALLOWED=false" in owner_hook_spec
+    assert "PRODUCTIVE_BINDING_IMPLEMENTED=false" in owner_hook_spec
+    assert "COMPLETE_CAPTURE_SEAM=UNPROVEN" in owner_hook_spec
+    assert "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED=false" in owner_hook_spec
+    assert "IMPLEMENTATION_AUTHORIZED=false" in owner_hook_spec
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in owner_hook_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -1632,6 +1734,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "id: PHASE:section_11_14_live_handoff_future_authorized_contemporaneous_capture_window"
+        in catalog
+    )
+    assert (
+        "id: PHASE:section_11_14_live_handoff_productive_capture_owner_and_lifecycle_hook_binding"
         in catalog
     )
     assert (
@@ -1750,6 +1856,12 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert capture_window_rel >= 0
     capture_window_block = relations[capture_window_rel : capture_window_rel + 2200]
     assert "ATLAS_AUTHORITY=NONE" in capture_window_block
+    owner_hook_rel = relations.find(
+        "id: REL:r_section_11_14_productive_capture_owner_and_lifecycle_hook_binding_follows_capture_window"
+    )
+    assert owner_hook_rel >= 0
+    owner_hook_block = relations[owner_hook_rel : owner_hook_rel + 2200]
+    assert "ATLAS_AUTHORITY=NONE" in owner_hook_block
     assert CODE_EXISTS_EVIDENCE.is_dir()
     verified = verify_manifest_v1(CODE_EXISTS_EVIDENCE)
     assert int(verified.get("MANIFEST_VERIFY_RC", 1)) == 0
@@ -2059,6 +2171,39 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert (
         HISTORICAL_CONTEMPORANEOUS_OBSERVATION_EVIDENCE / "OBSERVABILITY_ADJUDICATION.json"
     ).is_file()
+    assert HISTORICAL_FUTURE_CAPTURE_WINDOW_EVIDENCE.is_dir()
+    historical_capture_window_verified = verify_manifest_v1(
+        HISTORICAL_FUTURE_CAPTURE_WINDOW_EVIDENCE
+    )
+    assert int(historical_capture_window_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
+    historical_capture_window_summary = (
+        HISTORICAL_FUTURE_CAPTURE_WINDOW_EVIDENCE / "SUMMARY.json"
+    ).read_text(encoding="utf-8")
+    assert '"LIVE_ACCOUNTING_RECONSTRUCTED": true' in historical_capture_window_summary
+    assert '"LIVE_RESTART_RECONSTRUCTED": false' in historical_capture_window_summary
+    assert '"PRODUCTIVE_CAPTURE_OWNER_STATUS": "ABSENT"' in historical_capture_window_summary
+    assert '"PRODUCTIVE_CAPTURE_HOOK_STATUS": "ABSENT"' in historical_capture_window_summary
+    assert '"CAPTURE_WINDOW_ORDERING": "UNPROVEN"' in historical_capture_window_summary
+    assert (
+        '"MINIMUM_FUTURE_CAPTURE_WINDOW_SURFACE": "UNPROVEN"' in historical_capture_window_summary
+    )
+    assert (
+        '"PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE": false'
+        in historical_capture_window_summary
+    )
+    assert '"PRODUCTIVE_BINDING_IMPLEMENTED": false' in historical_capture_window_summary
+    assert (HISTORICAL_FUTURE_CAPTURE_WINDOW_EVIDENCE / "RUNTIME_GRAPH.json").is_file()
+    assert (HISTORICAL_FUTURE_CAPTURE_WINDOW_EVIDENCE / "BOUND_FILL_SEMANTICS.json").is_file()
+    assert (HISTORICAL_FUTURE_CAPTURE_WINDOW_EVIDENCE / "CAPTURE_WINDOW_SEMANTICS.json").is_file()
+    assert (
+        HISTORICAL_FUTURE_CAPTURE_WINDOW_EVIDENCE / "AUTHORIZATION_SURFACE_MATRIX.json"
+    ).is_file()
+    assert (
+        HISTORICAL_FUTURE_CAPTURE_WINDOW_EVIDENCE / "MINIMUM_FUTURE_CAPTURE_WINDOW.json"
+    ).is_file()
+    assert (
+        HISTORICAL_FUTURE_CAPTURE_WINDOW_EVIDENCE / "PRODUCTIVE_BINDING_DECISION.json"
+    ).is_file()
     assert EVIDENCE.is_dir()
     current_verified = verify_manifest_v1(EVIDENCE)
     assert int(current_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
@@ -2083,21 +2228,21 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert '"COMPLETE_CAPTURE_SEAM": "UNPROVEN"' in current_summary
     assert '"HOST_CRASH_DURABILITY": "UNPROVEN"' in current_summary
     assert '"CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED": false' in current_summary
-    assert '"PRODUCTIVE_CAPTURE_OWNER_STATUS": "ABSENT"' in current_summary
-    assert '"PRODUCTIVE_CAPTURE_HOOK_STATUS": "ABSENT"' in current_summary
-    assert '"CAPTURE_WINDOW_ORDERING": "UNPROVEN"' in current_summary
-    assert '"MINIMUM_FUTURE_CAPTURE_WINDOW_SURFACE": "UNPROVEN"' in current_summary
-    assert '"PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE": false' in current_summary
+    assert '"PRODUCTIVE_CAPTURE_OWNER_STATUS": "REFUTED"' in current_summary
+    assert '"PRODUCTIVE_LIFECYCLE_HOOK_STATUS": "REFUTED"' in current_summary
+    assert '"AUTHORIZED_RUNTIME_SURFACE": "NONE"' in current_summary
+    assert '"AUTHORIZED_RUNTIME_SURFACE_PROVEN": false' in current_summary
+    assert '"BINDING_CASE": "CASE_B"' in current_summary
+    assert '"MINIMAL_FAIL_CLOSED_BINDING_ALLOWED": false' in current_summary
     assert '"PRODUCTIVE_BINDING_IMPLEMENTED": false' in current_summary
     assert '"CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_PRODUCER": 0' in current_summary
     assert '"CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_WRITER": 0' in current_summary
     assert '"IMPLEMENTATION_AUTHORIZED": false' in current_summary
     assert '"ADMISSION_TRUE": false' in current_summary
-    assert (EVIDENCE / "RUNTIME_GRAPH.json").is_file()
-    assert (EVIDENCE / "BOUND_FILL_SEMANTICS.json").is_file()
-    assert (EVIDENCE / "CAPTURE_WINDOW_SEMANTICS.json").is_file()
+    assert (EVIDENCE / "PATH_GRAPH.json").is_file()
+    assert (EVIDENCE / "OWNER_CENSUS.json").is_file()
+    assert (EVIDENCE / "HOOK_CENSUS.json").is_file()
     assert (EVIDENCE / "AUTHORIZATION_SURFACE_MATRIX.json").is_file()
-    assert (EVIDENCE / "MINIMUM_FUTURE_CAPTURE_WINDOW.json").is_file()
     assert (EVIDENCE / "PRODUCTIVE_BINDING_DECISION.json").is_file()
     assert (EVIDENCE / "COMPLETE_CAPTURE_SEAM_PREDICATE.json").is_file()
     assert (EVIDENCE / "ADJUDICATION.json").is_file()

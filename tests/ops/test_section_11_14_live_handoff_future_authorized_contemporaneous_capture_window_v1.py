@@ -5,10 +5,10 @@ from __future__ import annotations
 from pathlib import Path
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_FUTURE_CAPTURE_WINDOW_OWNER_GO,
+    HISTORICAL_FUTURE_CAPTURE_WINDOW_SHA,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
-    THIS_SLICE,
+    PREDECESSOR_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_future_authorized_contemporaneous_capture_window_execute_v1 import (
     execute_live_handoff_future_authorized_contemporaneous_capture_window_v1,
@@ -124,7 +124,9 @@ def test_productive_binding_is_forbidden_because_owner_and_hook_are_absent() -> 
 
 def test_slice_adjudication_closes_without_capture_or_restart() -> None:
     adjudication = bind_future_authorized_contemporaneous_capture_window_v1(repo_root=REPO_ROOT)
-    assert THIS_SLICE == "11.14.LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW"
+    assert PREDECESSOR_SLICE == (
+        "11.14.LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW"
+    )
     assert adjudication["CASE_ADJUDICATION"] == CASE_ADJUDICATION
     assert adjudication["SELECTED_CAPTURE_TRIGGER"] == REQUIRED_CAPTURE_TRIGGER
     assert adjudication["PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE"] is False
@@ -139,8 +141,8 @@ def test_slice_adjudication_closes_without_capture_or_restart() -> None:
 
 def test_execute_is_offline_and_does_not_bind_or_capture() -> None:
     result = execute_live_handoff_future_authorized_contemporaneous_capture_window_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        owner_go=HISTORICAL_FUTURE_CAPTURE_WINDOW_OWNER_GO,
+        origin_main_sha=HISTORICAL_FUTURE_CAPTURE_WINDOW_SHA,
         repo_root=REPO_ROOT,
         run_id="20260907T062800Z-test",
     )

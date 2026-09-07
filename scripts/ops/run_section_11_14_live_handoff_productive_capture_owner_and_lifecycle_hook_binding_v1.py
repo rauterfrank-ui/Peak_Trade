@@ -1,4 +1,4 @@
-"""One-shot runner for §11.14 future-authorized contemporaneous capture-window adjudication."""
+"""One-shot runner for §11.14 productive capture-owner and lifecycle-hook binding."""
 
 from __future__ import annotations
 
@@ -16,12 +16,12 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import 
     write_manifest_v1,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (  # noqa: E402
-    HISTORICAL_FUTURE_CAPTURE_WINDOW_OWNER_GO,
-    HISTORICAL_FUTURE_CAPTURE_WINDOW_RUN_ID,
-    HISTORICAL_FUTURE_CAPTURE_WINDOW_SHA,
+    CANONICAL_EVIDENCE_RUN_ID,
+    EXPECTED_ORIGIN_MAIN_SHA,
+    OWNER_GO,
 )
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_future_authorized_contemporaneous_capture_window_execute_v1 import (  # noqa: E402
-    execute_live_handoff_future_authorized_contemporaneous_capture_window_v1,
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_productive_capture_owner_and_lifecycle_hook_binding_execute_v1 import (  # noqa: E402
+    execute_live_handoff_productive_capture_owner_and_lifecycle_hook_binding_v1,
 )
 
 
@@ -39,17 +39,16 @@ def _origin_main_sha(repo_root: Path) -> str:
 def main() -> int:
     repo_root = Path(__file__).resolve().parents[2]
     origin_main_sha = _origin_main_sha(repo_root)
-    if origin_main_sha != HISTORICAL_FUTURE_CAPTURE_WINDOW_SHA:
+    if origin_main_sha != EXPECTED_ORIGIN_MAIN_SHA:
         print(
-            "ORIGIN_MAIN_SHA_MISMATCH actual="
-            f"{origin_main_sha} expected={HISTORICAL_FUTURE_CAPTURE_WINDOW_SHA}"
+            f"ORIGIN_MAIN_SHA_MISMATCH actual={origin_main_sha} expected={EXPECTED_ORIGIN_MAIN_SHA}"
         )
         return 2
-    result = execute_live_handoff_future_authorized_contemporaneous_capture_window_v1(
-        owner_go=HISTORICAL_FUTURE_CAPTURE_WINDOW_OWNER_GO,
-        origin_main_sha=HISTORICAL_FUTURE_CAPTURE_WINDOW_SHA,
+    result = execute_live_handoff_productive_capture_owner_and_lifecycle_hook_binding_v1(
+        owner_go=OWNER_GO,
+        origin_main_sha=origin_main_sha,
         repo_root=repo_root,
-        run_id=HISTORICAL_FUTURE_CAPTURE_WINDOW_RUN_ID,
+        run_id=CANONICAL_EVIDENCE_RUN_ID,
     )
     pack = Path(result["pack"])
     pack.mkdir(parents=True, exist_ok=True)
@@ -57,11 +56,10 @@ def main() -> int:
         "SUMMARY.json": dict(result["summary"]),
         "BASELINE.json": dict(result["baseline"]),
         "CHANGED_PATH_CENSUS.json": dict(result["changed_path_census"]),
-        "RUNTIME_GRAPH.json": dict(result["runtime_graph"]),
-        "BOUND_FILL_SEMANTICS.json": dict(result["bound_fill"]),
-        "CAPTURE_WINDOW_SEMANTICS.json": dict(result["capture_window"]),
+        "PATH_GRAPH.json": dict(result["path_graph"]),
+        "OWNER_CENSUS.json": dict(result["owner_census"]),
+        "HOOK_CENSUS.json": dict(result["hook_census"]),
         "AUTHORIZATION_SURFACE_MATRIX.json": dict(result["authorization_surfaces"]),
-        "MINIMUM_FUTURE_CAPTURE_WINDOW.json": dict(result["minimum_future_window"]),
         "PRODUCTIVE_BINDING_DECISION.json": dict(result["binding_decision"]),
         "COMPLETE_CAPTURE_SEAM_PREDICATE.json": dict(result["seam_predicate"]),
         "SAFETY.json": dict(result["safety"]),
@@ -79,14 +77,13 @@ def main() -> int:
     write_manifest_v1(pack, tuple(names))
     print(f"EVIDENCE_PACK={pack}")
     print(f"CASE_ADJUDICATION={summary.get('CASE_ADJUDICATION')}")
+    print(f"BINDING_CASE={summary.get('BINDING_CASE')}")
     print(
-        f"PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE={summary.get('PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE')}"
+        f"MINIMAL_FAIL_CLOSED_BINDING_ALLOWED={summary.get('MINIMAL_FAIL_CLOSED_BINDING_ALLOWED')}"
     )
     print(f"PRODUCTIVE_CAPTURE_OWNER_STATUS={summary.get('PRODUCTIVE_CAPTURE_OWNER_STATUS')}")
-    print(f"PRODUCTIVE_CAPTURE_HOOK_STATUS={summary.get('PRODUCTIVE_CAPTURE_HOOK_STATUS')}")
-    print(
-        f"MINIMUM_FUTURE_CAPTURE_WINDOW_SURFACE={summary.get('MINIMUM_FUTURE_CAPTURE_WINDOW_SURFACE')}"
-    )
+    print(f"PRODUCTIVE_LIFECYCLE_HOOK_STATUS={summary.get('PRODUCTIVE_LIFECYCLE_HOOK_STATUS')}")
+    print(f"AUTHORIZED_RUNTIME_SURFACE={summary.get('AUTHORIZED_RUNTIME_SURFACE')}")
     print(f"COMPLETE_CAPTURE_SEAM={summary.get('COMPLETE_CAPTURE_SEAM')}")
     print(f"LIVE_RESTART_RECONSTRUCTED={summary.get('LIVE_RESTART_RECONSTRUCTED')}")
     print(f"IMPLEMENTATION_AUTHORIZED={summary.get('IMPLEMENTATION_AUTHORIZED')}")

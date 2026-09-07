@@ -1,0 +1,76 @@
+{
+  "AUTHORITY_CLASS": "FORENSIC_OBSERVATION",
+  "DOCUMENT_CLASS": "SECTION_11_14_PRODUCTIVE_CAPTURE_OWNER_CENSUS_V1",
+  "OWNER_CANDIDATE_CONFLICT": false,
+  "PRODUCER_PRODUCTIVE_RUNTIME_CALLER_COUNT": 0,
+  "PRODUCTIVE_CAPTURE_OWNER": "NONE",
+  "PRODUCTIVE_CAPTURE_OWNER_STATUS": "REFUTED",
+  "STORAGE_OWNER_IS_NOT_PRODUCTIVE_CAPTURE_OWNER": true,
+  "UNIQUE_OWNER_COUNT": 0,
+  "WRITER_PRODUCTIVE_RUNTIME_CALLER_COUNT": 0,
+  "candidates": [
+    {
+      "CANDIDATE": "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_V1",
+      "OWNS_BOUND_FILL_PROVEN_AND_RESTART_NOT_YET_OCCURRED": false,
+      "PATH": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_owner_and_writer_v1.py::mint_section_11_14_live_durable_pre_restart_handoff_owner_v1",
+      "REASON": "Minted storage owner of durable records, not a runtime state owner.",
+      "STATUS": "REFUTED_NOT_OWNER"
+    },
+    {
+      "CANDIDATE": "commit_handoff_after_bound_fill_before_restart_v1",
+      "OWNS_BOUND_FILL_PROVEN_AND_RESTART_NOT_YET_OCCURRED": false,
+      "PATH": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_owner_and_writer_v1.py",
+      "REASON": "Writer exists and is unjoined; zero productive callers.",
+      "STATUS": "REFUTED_NOT_OWNER"
+    },
+    {
+      "CANDIDATE": "emit_s05_handoff_pos_v1",
+      "OWNS_BOUND_FILL_PROVEN_AND_RESTART_NOT_YET_OCCURRED": false,
+      "PATH": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_pos_producer_v1.py",
+      "REASON": "Producer emits S05 only when the unjoined writer calls it.",
+      "STATUS": "REFUTED_NOT_OWNER"
+    },
+    {
+      "CANDIDATE": "run_canary_submit_transport_v1",
+      "OWNS_BOUND_FILL_PROVEN_AND_RESTART_NOT_YET_OCCURRED": false,
+      "PATH": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py",
+      "REASON": "Owns SUBMIT through ACK. Does not wait for fill. Does not call the writer.",
+      "STATUS": "REFUTED_NOT_OWNER"
+    },
+    {
+      "CANDIDATE": "adjudicate_live_fill_observed_v1",
+      "OWNS_BOUND_FILL_PROVEN_AND_RESTART_NOT_YET_OCCURRED": false,
+      "PATH": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/fill_observed_adjudication_v1.py",
+      "REASON": "Later GET evidence collector. Can run after process end. Not contemporaneous.",
+      "STATUS": "REFUTED_NOT_OWNER"
+    },
+    {
+      "CANDIDATE": "build_lifecycle_and_closeout_contract_v1",
+      "OWNS_BOUND_FILL_PROVEN_AND_RESTART_NOT_YET_OCCURRED": false,
+      "PATH": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/lifecycle_v1.py",
+      "REASON": "Documentary FILLED state. ACTIVATED=false. refuse_ungated_lifecycle_transition_v1.",
+      "STATUS": "REFUTED_NOT_OWNER"
+    },
+    {
+      "CANDIDATE": "ExecutionOrchestrator.submit_intent",
+      "OWNS_BOUND_FILL_PROVEN_AND_RESTART_NOT_YET_OCCURRED": false,
+      "PATH": "src/execution/orchestrator.py",
+      "REASON": "Simulated/paper pipeline. SIMULATED_FILL is not PRODUCTIVE_BOUND_FILL.",
+      "STATUS": "REFUTED_NOT_OWNER"
+    },
+    {
+      "CANDIDATE": "SupervisorLifecycle.restart",
+      "OWNS_BOUND_FILL_PROVEN_AND_RESTART_NOT_YET_OCCURRED": false,
+      "PATH": "src/ops/canonical_local_launcher_and_process_supervision_v1/lifecycle_v1.py",
+      "REASON": "Process stop/start. Does not observe bound fill. Does not call the writer.",
+      "STATUS": "REFUTED_NOT_OWNER"
+    },
+    {
+      "CANDIDATE": "LiveSessionOrchestrator.run_dryrun",
+      "OWNS_BOUND_FILL_PROVEN_AND_RESTART_NOT_YET_OCCURRED": false,
+      "PATH": "src/execution/live/orchestrator.py",
+      "REASON": "DRYRUN snapshot-only. NO-LIVE. No broker. No fill.",
+      "STATUS": "REFUTED_NOT_OWNER"
+    }
+  ]
+}

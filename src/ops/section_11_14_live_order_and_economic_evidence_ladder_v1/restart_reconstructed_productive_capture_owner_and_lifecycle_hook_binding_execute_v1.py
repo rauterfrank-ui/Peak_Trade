@@ -1,7 +1,8 @@
-"""Execute future-authorized contemporaneous capture-window persist.
+"""Execute productive capture-owner and lifecycle-hook binding persist.
 
 No GET. No POST. No restart execution. No productive handoff write.
 No historical canary rewrite. No timestamp backfill. No runtime join.
+CASE_B: no productive binding.
 """
 
 from __future__ import annotations
@@ -11,10 +12,10 @@ from pathlib import Path
 from typing import Any
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    HISTORICAL_FUTURE_CAPTURE_WINDOW_OWNER_GO,
-    HISTORICAL_FUTURE_CAPTURE_WINDOW_RUN_ID,
-    HISTORICAL_FUTURE_CAPTURE_WINDOW_SHA,
+    CANONICAL_EVIDENCE_RUN_ID,
+    EXPECTED_ORIGIN_MAIN_SHA,
     LIVE_RESTART_RECONSTRUCTED,
+    OWNER_GO,
     SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
@@ -23,21 +24,6 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.persist_claims_v1 import (
     CLAIMS,
-)
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_future_authorized_contemporaneous_capture_window_v1 import (
-    CASE_ADJUDICATION,
-    COMPLETE_CAPTURE_SEAM,
-    MINIMUM_FUTURE_CAPTURE_WINDOW_SURFACE,
-    MISSING_PREDICATES,
-    PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE,
-    PRODUCTIVE_BINDING_IMPLEMENTED,
-    PRODUCTIVE_CAPTURE_HOOK,
-    PRODUCTIVE_CAPTURE_HOOK_STATUS,
-    PRODUCTIVE_CAPTURE_OWNER,
-    PRODUCTIVE_CAPTURE_OWNER_STATUS,
-    PROPOSED_NEXT_SLICE,
-    REQUIRED_NEXT_AUTHORITY,
-    bind_future_authorized_contemporaneous_capture_window_v1,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_handoff_owner_and_writer_v1 import (
     FIRST_OWNER_ID,
@@ -53,28 +39,49 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_re
     HANDOFF_SCHEMA_VERSION,
     SELECTED_SEMANTIC_ID,
 )
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_productive_capture_owner_and_lifecycle_hook_binding_v1 import (
+    AUTHORIZED_RUNTIME_SURFACE,
+    AUTHORIZED_RUNTIME_SURFACE_PROVEN,
+    BINDING_CASE,
+    BOUND_FILL_BEFORE_HOOK_PROVEN,
+    CASE_ADJUDICATION,
+    HOOK_BEFORE_RESTART_PROVEN,
+    HOOK_ORDERING_PROVEN,
+    MINIMAL_FAIL_CLOSED_BINDING_ALLOWED,
+    MISSING_PREDICATES,
+    PRODUCTIVE_BINDING_IMPLEMENTED,
+    PRODUCTIVE_CAPTURE_OWNER,
+    PRODUCTIVE_CAPTURE_OWNER_STATUS,
+    PRODUCTIVE_LIFECYCLE_HOOK,
+    PRODUCTIVE_LIFECYCLE_HOOK_STATUS,
+    PROPOSED_NEXT_SLICE,
+    REQUIRED_NEXT_AUTHORITY,
+    bind_productive_capture_owner_and_lifecycle_hook_binding_v1,
+)
 
 
-def execute_live_handoff_future_authorized_contemporaneous_capture_window_v1(
+def execute_live_handoff_productive_capture_owner_and_lifecycle_hook_binding_v1(
     *,
     owner_go: str,
     origin_main_sha: str,
     repo_root: Path,
     run_id: str | None = None,
 ) -> dict[str, Any]:
-    if str(owner_go or "").strip() != HISTORICAL_FUTURE_CAPTURE_WINDOW_OWNER_GO:
+    if str(owner_go or "").strip() != OWNER_GO:
         raise Section1114OfflineSurfaceError("OWNER_GO_MISMATCH")
-    if str(origin_main_sha or "").strip() != HISTORICAL_FUTURE_CAPTURE_WINDOW_SHA:
+    if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
         raise Section1114OfflineSurfaceError("ORIGIN_MAIN_SHA_MISMATCH")
     assert_contract_invariants_v1()
     started = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    pack_run_id = str(run_id or HISTORICAL_FUTURE_CAPTURE_WINDOW_RUN_ID)
-    adjudication = bind_future_authorized_contemporaneous_capture_window_v1(repo_root=repo_root)
-    if adjudication["PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE"] is True:
-        raise Section1114OfflineSurfaceError("PRODUCTIVE_BINDING_MUST_REMAIN_FORBIDDEN")
+    pack_run_id = str(run_id or CANONICAL_EVIDENCE_RUN_ID)
+    adjudication = bind_productive_capture_owner_and_lifecycle_hook_binding_v1(repo_root=repo_root)
+    if adjudication["BINDING_CASE"] != BINDING_CASE:
+        raise Section1114OfflineSurfaceError("BINDING_CASE_MUST_REMAIN_CASE_B")
+    if adjudication["MINIMAL_FAIL_CLOSED_BINDING_ALLOWED"] is True:
+        raise Section1114OfflineSurfaceError("BINDING_MUST_REMAIN_FORBIDDEN")
     if adjudication["PRODUCTIVE_BINDING_IMPLEMENTED"] is True:
         raise Section1114OfflineSurfaceError("PRODUCTIVE_BINDING_MUST_REMAIN_UNIMPLEMENTED")
-    if adjudication["COMPLETE_CAPTURE_SEAM"] != COMPLETE_CAPTURE_SEAM:
+    if adjudication["COMPLETE_CAPTURE_SEAM"] != "UNPROVEN":
         raise Section1114OfflineSurfaceError("CAPTURE_SEAM_MUST_REMAIN_UNPROVEN")
     if adjudication["CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED"] is True:
         raise Section1114OfflineSurfaceError("CONTEMPORANEOUS_OBSERVATION_MUST_REMAIN_UNOBSERVED")
@@ -82,18 +89,18 @@ def execute_live_handoff_future_authorized_contemporaneous_capture_window_v1(
         raise Section1114OfflineSurfaceError("LIVE_RESTART_RECONSTRUCTED_MUST_REMAIN_FALSE")
     if LIVE_RESTART_RECONSTRUCTED is True:
         raise Section1114OfflineSurfaceError("LIVE_RESTART_RECONSTRUCTED_MUST_REMAIN_FALSE")
-    if PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE is True:
-        raise Section1114OfflineSurfaceError("PRODUCTIVE_BINDING_MUST_REMAIN_FORBIDDEN")
+    if MINIMAL_FAIL_CLOSED_BINDING_ALLOWED is True:
+        raise Section1114OfflineSurfaceError("BINDING_MUST_REMAIN_FORBIDDEN")
     if PRODUCTIVE_BINDING_IMPLEMENTED is True:
         raise Section1114OfflineSurfaceError("PRODUCTIVE_BINDING_MUST_REMAIN_UNIMPLEMENTED")
-    graph = dict(adjudication["runtime_graph"])
-    bound_fill = dict(adjudication["bound_fill"])
-    window = dict(adjudication["capture_window"])
-    minimum = dict(adjudication["minimum_future_window"])
+    path_graph = dict(adjudication["path_graph"])
+    owner = dict(adjudication["owner_census"])
+    hook = dict(adjudication["hook_census"])
+    surfaces = dict(adjudication["authorization_surfaces"])
     decision = dict(adjudication["binding_decision"])
     ended = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     summary = {
-        "OWNER_GO": HISTORICAL_FUTURE_CAPTURE_WINDOW_OWNER_GO,
+        "OWNER_GO": OWNER_GO,
         "CANONICAL_EVIDENCE_RUN_ID": pack_run_id,
         "ORIGIN_MAIN_SHA": origin_main_sha,
         "STARTED_AT_UTC": started,
@@ -137,37 +144,23 @@ def execute_live_handoff_future_authorized_contemporaneous_capture_window_v1(
         "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED": False,
         "OBSERVATION_STATUS": "CLOSED_REFUTED",
         "CASE_ADJUDICATION": CASE_ADJUDICATION,
-        "BOUND_FILL_CANONICAL_SYMBOL": bound_fill["BOUND_FILL_CANONICAL_SYMBOL"],
-        "BOUND_FILL_IS_PRODUCTIVE_RUNTIME_EVENT": True,
-        "BOUND_FILL_REQUIRES_VENUE_ACK": True,
-        "BOUND_FILL_REQUIRES_WIRE_SEND": True,
-        "BOUND_FILL_CAN_EXIST_OFFLINE": False,
-        "BOUND_FILL_CAN_EXIST_IN_SHADOW": False,
-        "BOUND_FILL_CAN_EXIST_IN_TESTNET": False,
+        "BINDING_CASE": BINDING_CASE,
         "PRODUCTIVE_CAPTURE_OWNER": PRODUCTIVE_CAPTURE_OWNER,
         "PRODUCTIVE_CAPTURE_OWNER_STATUS": PRODUCTIVE_CAPTURE_OWNER_STATUS,
-        "PRODUCTIVE_CAPTURE_HOOK": PRODUCTIVE_CAPTURE_HOOK,
-        "PRODUCTIVE_CAPTURE_HOOK_STATUS": PRODUCTIVE_CAPTURE_HOOK_STATUS,
-        "CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_PRODUCER": graph[
-            "CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_emit_s05_handoff_pos_v1"
+        "PRODUCTIVE_LIFECYCLE_HOOK": PRODUCTIVE_LIFECYCLE_HOOK,
+        "PRODUCTIVE_LIFECYCLE_HOOK_STATUS": PRODUCTIVE_LIFECYCLE_HOOK_STATUS,
+        "HOOK_ORDERING_PROVEN": HOOK_ORDERING_PROVEN,
+        "BOUND_FILL_BEFORE_HOOK_PROVEN": BOUND_FILL_BEFORE_HOOK_PROVEN,
+        "HOOK_BEFORE_RESTART_PROVEN": HOOK_BEFORE_RESTART_PROVEN,
+        "AUTHORIZED_RUNTIME_SURFACE": AUTHORIZED_RUNTIME_SURFACE,
+        "AUTHORIZED_RUNTIME_SURFACE_PROVEN": AUTHORIZED_RUNTIME_SURFACE_PROVEN,
+        "CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_PRODUCER": path_graph[
+            "PRODUCER_PRODUCTIVE_RUNTIME_CALLER_COUNT"
         ],
-        "CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_WRITER": graph[
-            "CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_commit_handoff_after_bound_fill_before_restart_v1"
+        "CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_WRITER": path_graph[
+            "WRITER_PRODUCTIVE_RUNTIME_CALLER_COUNT"
         ],
-        "CAPTURE_WINDOW_ORDERING": window["CAPTURE_WINDOW_ORDERING"],
-        "MINIMUM_FUTURE_CAPTURE_WINDOW_SURFACE": MINIMUM_FUTURE_CAPTURE_WINDOW_SURFACE,
-        "MINIMUM_REQUIRED_RUNTIME": minimum["MINIMUM_REQUIRED_RUNTIME"],
-        "MINIMUM_REQUIRED_OWNER_AUTHORITY": minimum["MINIMUM_REQUIRED_OWNER_AUTHORITY"],
-        "LIVE_ENABLED_REQUIRED": True,
-        "LIVE_ARMED_REQUIRED": True,
-        "CANARY_AUTHORIZED_REQUIRED": True,
-        "ORDER_SUBMIT_GO_REQUIRED": True,
-        "WIRE_SEND_REQUIRED": True,
-        "VENUE_FILL_REQUIRED": True,
-        "PRIVATE_GET_REQUIRED": True,
-        "NETWORK_AUTH_REQUIRED": True,
-        "CREDENTIAL_ACCESS_REQUIRED": True,
-        "PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE": False,
+        "MINIMAL_FAIL_CLOSED_BINDING_ALLOWED": False,
         "PRODUCTIVE_BINDING_IMPLEMENTED": False,
         "PRODUCTIVE_BINDING_FAIL_CLOSED": False,
         "MISSING_PREDICATES": list(MISSING_PREDICATES),
@@ -206,37 +199,34 @@ def execute_live_handoff_future_authorized_contemporaneous_capture_window_v1(
     )
     return {
         "summary": summary,
-        "runtime_graph": graph,
-        "bound_fill": bound_fill,
-        "capture_window": window,
-        "authorization_surfaces": dict(adjudication["authorization_surfaces"]),
-        "minimum_future_window": minimum,
+        "path_graph": path_graph,
+        "owner_census": owner,
+        "hook_census": hook,
+        "authorization_surfaces": surfaces,
         "binding_decision": decision,
         "seam_predicate": {
             "COMPLETE_CAPTURE_SEAM": "UNPROVEN",
             "MISSING_PREDICATES": list(adjudication["COMPLETE_CAPTURE_SEAM_MISSING_PREDICATES"]),
         },
         "baseline": {
-            "EXPECTED_ORIGIN_MAIN_SHA": HISTORICAL_FUTURE_CAPTURE_WINDOW_SHA,
+            "EXPECTED_ORIGIN_MAIN_SHA": EXPECTED_ORIGIN_MAIN_SHA,
             "ORIGIN_MAIN_SHA": origin_main_sha,
-            "EXPECTED_ORIGIN_MAIN_MATCH": origin_main_sha == HISTORICAL_FUTURE_CAPTURE_WINDOW_SHA,
-            "OWNER_GO": HISTORICAL_FUTURE_CAPTURE_WINDOW_OWNER_GO,
+            "EXPECTED_ORIGIN_MAIN_MATCH": origin_main_sha == EXPECTED_ORIGIN_MAIN_SHA,
+            "OWNER_GO": OWNER_GO,
             "CANONICAL_EVIDENCE_RUN_ID": pack_run_id,
         },
         "changed_path_census": {
-            "SCOPE": "SECTION_11_14_LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW_V1",
+            "SCOPE": "SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK_BINDING_V1",
             "UNTRACKED_FOREIGN_EVIDENCE_UNTOUCHED": True,
             "paths": [
                 "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/constants_v1.py",
                 "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/__init__.py",
-                "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_contemporaneous_pre_restart_observation_execute_v1.py",
-                "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_future_authorized_contemporaneous_capture_window_v1.py",
-                "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_future_authorized_contemporaneous_capture_window_execute_v1.py",
-                "scripts/ops/run_section_11_14_live_handoff_future_authorized_contemporaneous_capture_window_v1.py",
-                "tests/ops/test_section_11_14_live_restart_reconstructed_contemporaneous_pre_restart_observation_v1.py",
-                "tests/ops/test_section_11_14_live_handoff_future_authorized_contemporaneous_capture_window_v1.py",
+                "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_productive_capture_owner_and_lifecycle_hook_binding_v1.py",
+                "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_productive_capture_owner_and_lifecycle_hook_binding_execute_v1.py",
+                "scripts/ops/run_section_11_14_live_handoff_productive_capture_owner_and_lifecycle_hook_binding_v1.py",
+                "tests/ops/test_section_11_14_live_handoff_productive_capture_owner_and_lifecycle_hook_binding_v1.py",
                 "tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py",
-                "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW_V1.md",
+                "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK_BINDING_V1.md",
                 "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
                 "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
                 "docs/system_atlas/entities/catalog.yaml",
@@ -256,6 +246,7 @@ def execute_live_handoff_future_authorized_contemporaneous_capture_window_v1(
             "NEXT_SLICE_AUTHORIZED": False,
             "PRODUCTIVE_CAPTURE_WRITE_EXECUTED": False,
             "PRODUCTIVE_BINDING_IMPLEMENTED": False,
+            "MINIMAL_FAIL_CLOSED_BINDING_ALLOWED": False,
         },
         "claims": dict(CLAIMS),
         "adjudication": dict(adjudication),
