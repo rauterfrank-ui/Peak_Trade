@@ -1,0 +1,28 @@
+{
+  "SCOPE": "SECTION_11_14_LIVE_HANDOFF_CREATE_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK_V1",
+  "UNTRACKED_FOREIGN_EVIDENCE_UNTOUCHED": true,
+  "paths": [
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/constants_v1.py",
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/__init__.py",
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_pos_producer_v1.py",
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_owner_and_writer_v1.py",
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_validators_v1.py",
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_future_authorized_contemporaneous_capture_window_v1.py",
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_productive_capture_owner_and_lifecycle_hook_binding_v1.py",
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_productive_capture_owner_and_lifecycle_hook_binding_execute_v1.py",
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_create_productive_capture_owner_and_lifecycle_hook_v1.py",
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_create_productive_capture_owner_and_lifecycle_hook_execute_v1.py",
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py",
+    "scripts/ops/run_section_11_14_live_handoff_create_productive_capture_owner_and_lifecycle_hook_v1.py",
+    "scripts/ops/run_section_11_14_live_handoff_productive_capture_owner_and_lifecycle_hook_binding_v1.py",
+    "tests/ops/test_section_11_14_live_handoff_create_productive_capture_owner_and_lifecycle_hook_v1.py",
+    "tests/ops/test_section_11_14_live_handoff_future_authorized_contemporaneous_capture_window_v1.py",
+    "tests/ops/test_section_11_14_live_handoff_productive_capture_owner_and_lifecycle_hook_binding_v1.py",
+    "tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py",
+    "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_CREATE_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK_V1.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/relations/runtime.yaml"
+  ]
+}

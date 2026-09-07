@@ -62,16 +62,37 @@ def validate_handoff_completeness_v1(handoff: Mapping[str, Any] | None) -> dict[
     }
 
 
-def validate_handoff_identity_binding_v1(handoff: Mapping[str, Any] | None) -> dict[str, Any]:
+def validate_handoff_identity_binding_v1(
+    handoff: Mapping[str, Any] | None,
+    *,
+    expected_identity: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
     payload = dict(handoff or {})
+    if expected_identity is None:
+        expected_clordid = BOUND_CLORDID
+        expected_ordid = BOUND_ORDID
+        expected_instid = BOUND_INSTID
+        expected_pos_side = BOUND_POS_SIDE
+        expected_fill_sz = BOUND_FILL_SZ
+    else:
+        expected = dict(expected_identity)
+        expected_clordid = str(expected.get("clOrdId") or "").strip()
+        expected_ordid = str(expected.get("ordId") or "").strip()
+        expected_instid = str(expected.get("instId") or "").strip()
+        expected_pos_side = str(expected.get("posSide") or "").strip()
+        expected_fill_sz = str(expected.get("fillSz") or "").strip()
     pos = parse_handoff_pos_v1(payload.get("pos"))
-    fill_sz = parse_handoff_pos_v1(BOUND_FILL_SZ)
+    fill_sz = parse_handoff_pos_v1(expected_fill_sz)
     identity_match = bool(
-        str(payload.get("clOrdId") or "").strip() == BOUND_CLORDID
-        and str(payload.get("ordId") or "").strip() == BOUND_ORDID
-        and str(payload.get("instId") or "").strip() == BOUND_INSTID
-        and str(payload.get("posSide") or "").strip() == BOUND_POS_SIDE
+        str(payload.get("clOrdId") or "").strip() == expected_clordid
+        and str(payload.get("ordId") or "").strip() == expected_ordid
+        and str(payload.get("instId") or "").strip() == expected_instid
+        and str(payload.get("posSide") or "").strip() == expected_pos_side
         and pos is not None
+        and expected_clordid != ""
+        and expected_ordid != ""
+        and expected_instid != ""
+        and expected_pos_side != ""
     )
     silent_reinit = bool(pos is None or pos == 0)
     nonzero_fill_requires_nonzero_pos = bool(fill_sz is not None and fill_sz != 0)

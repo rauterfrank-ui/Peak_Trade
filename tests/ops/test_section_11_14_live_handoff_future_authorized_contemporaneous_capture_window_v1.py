@@ -8,7 +8,6 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_FUTURE_CAPTURE_WINDOW_OWNER_GO,
     HISTORICAL_FUTURE_CAPTURE_WINDOW_SHA,
     LIVE_RESTART_RECONSTRUCTED,
-    PREDECESSOR_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_future_authorized_contemporaneous_capture_window_execute_v1 import (
     execute_live_handoff_future_authorized_contemporaneous_capture_window_v1,
@@ -38,15 +37,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_re
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
-def test_productive_runtime_caller_counts_remain_zero() -> None:
+def test_productive_runtime_caller_counts_keep_producer_internal() -> None:
     graph = census_productive_runtime_graph_v1(repo_root=REPO_ROOT)
     assert graph["CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_emit_s05_handoff_pos_v1"] == 0
-    assert (
-        graph[
-            "CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_commit_handoff_after_bound_fill_before_restart_v1"
-        ]
-        == 0
-    )
     assert graph["INTERNAL_WRITER_TO_PRODUCER_CALL_PRESENT"] is True
     assert graph["CAPTURE_TRIGGER_JOINED_TO_AUTHORIZED_RUNTIME"] is False
     assert graph["PRODUCTIVE_S05_QTY_SOURCE_STATUS"] == "ABSENT"
@@ -124,9 +117,6 @@ def test_productive_binding_is_forbidden_because_owner_and_hook_are_absent() -> 
 
 def test_slice_adjudication_closes_without_capture_or_restart() -> None:
     adjudication = bind_future_authorized_contemporaneous_capture_window_v1(repo_root=REPO_ROOT)
-    assert PREDECESSOR_SLICE == (
-        "11.14.LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW"
-    )
     assert adjudication["CASE_ADJUDICATION"] == CASE_ADJUDICATION
     assert adjudication["SELECTED_CAPTURE_TRIGGER"] == REQUIRED_CAPTURE_TRIGGER
     assert adjudication["PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE"] is False
@@ -154,7 +144,6 @@ def test_execute_is_offline_and_does_not_bind_or_capture() -> None:
     assert summary["PRODUCTIVE_CAPTURE_HOOK_STATUS"] == "ABSENT"
     assert summary["MINIMUM_FUTURE_CAPTURE_WINDOW_SURFACE"] == "UNPROVEN"
     assert summary["CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_PRODUCER"] == 0
-    assert summary["CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_WRITER"] == 0
     assert summary["COMPLETE_CAPTURE_SEAM"] == "UNPROVEN"
     assert summary["LIVE_RESTART_RECONSTRUCTED"] is False
     assert summary["CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED"] is False

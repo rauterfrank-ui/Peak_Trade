@@ -828,6 +828,33 @@ relations:
       handoff write. No restart execution. No productive runtime join.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_section_11_14_create_productive_capture_owner_and_lifecycle_hook_follows_case_b
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_handoff_productive_capture_owner_and_lifecycle_hook_binding
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_create_productive_capture_owner_and_lifecycle_hook_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_create_productive_capture_owner_and_lifecycle_hook_execute_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T090500Z/
+    notes: >-
+      Create productive capture-owner and lifecycle-hook persist follows
+      CASE_B unique-owner and unique-hook refutation.
+      PRODUCTIVE_CAPTURE_OWNER_UNIQUE=true.
+      PRODUCTIVE_LIFECYCLE_HOOK_UNIQUE=true.
+      STRUCTURAL_RUNTIME_BINDING_PROVEN=true.
+      CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false.
+      AUTHORIZED_RUNTIME_SURFACE=NONE.
+      BINDING_CASE=CASE_A_CREATED.
+      PRODUCTIVE_BINDING_IMPLEMENTED=true.
+      COMPLETE_CAPTURE_SEAM remains UNPROVEN. HOST_CRASH_DURABILITY remains
+      UNPROVEN. LIVE_RESTART_RECONSTRUCTED remains false.
+      CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED remains false.
+      IMPLEMENTATION_AUTHORIZED=true. No GET. No POST. No productive
+      handoff write during persist. No restart execution.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_path_calls_venue_translation
     source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     type: CALLS

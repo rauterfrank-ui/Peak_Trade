@@ -82,6 +82,7 @@ def construct_five_field_handoff_record_v1(
     producer_output: Mapping[str, Any],
     attempt_identity: object,
     captured_at_utc: object,
+    bound_fill_identity: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     produced = dict(producer_output or {})
     missing = [
@@ -92,7 +93,10 @@ def construct_five_field_handoff_record_v1(
     completeness = validate_handoff_completeness_v1(produced)
     if completeness["COMPLETE"] is not True:
         raise Section1114OfflineSurfaceError(str(completeness["REASON"]))
-    identity = validate_handoff_identity_binding_v1(produced)
+    identity = validate_handoff_identity_binding_v1(
+        produced,
+        expected_identity=bound_fill_identity,
+    )
     if identity["IDENTITY_BOUND"] is not True:
         raise Section1114OfflineSurfaceError(str(identity["REASON"]))
     if identity["NO_SILENT_REINITIALIZATION"] is not True:
@@ -240,6 +244,7 @@ def commit_handoff_after_bound_fill_before_restart_v1(
     capture_trigger: object = REQUIRED_CAPTURE_TRIGGER,
     restart_already_occurred: bool = False,
     extra_fields: Mapping[str, Any] | None = None,
+    bound_fill_identity: Mapping[str, Any] | None = None,
     now_utc: str | None = None,
     dumps_fn: DumpsFn | None = None,
     fsync_file_fn: FsyncFn | None = None,
@@ -267,11 +272,13 @@ def commit_handoff_after_bound_fill_before_restart_v1(
             provenance_class=provenance_class,
             restart_already_occurred=restart_already_occurred,
             extra_fields=extra_fields,
+            bound_fill_identity=bound_fill_identity,
         )
         record = construct_five_field_handoff_record_v1(
             producer_output=produced,
             attempt_identity=attempt_identity,
             captured_at_utc=captured_at,
+            bound_fill_identity=bound_fill_identity,
         )
         record["written_at_utc"] = captured_at
         encoded = (dumps_fn or _canonical_dumps)(record)
