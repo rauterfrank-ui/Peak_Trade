@@ -1,0 +1,13 @@
+{
+  "CANARY_AUTHORIZED": false,
+  "CREDENTIAL_USE": false,
+  "GET_PERFORMED": false,
+  "IMPLEMENTATION_AUTHORIZED": false,
+  "LIVE_ACTION": "NONE",
+  "LIVE_ARMED": false,
+  "LIVE_ENABLED": false,
+  "NEXT_SLICE_AUTHORIZED": false,
+  "POST_USED": false,
+  "PRODUCTIVE_CAPTURE_WRITE_EXECUTED": false,
+  "WIRE_SEND": false
+}

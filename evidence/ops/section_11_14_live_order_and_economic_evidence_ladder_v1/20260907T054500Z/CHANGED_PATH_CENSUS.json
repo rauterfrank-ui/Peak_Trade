@@ -1,0 +1,21 @@
+{
+  "SCOPE": "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_CONTEMPORANEOUS_PRE_RESTART_OBSERVATION_V1",
+  "UNTRACKED_FOREIGN_EVIDENCE_UNTOUCHED": true,
+  "paths": [
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/constants_v1.py",
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/__init__.py",
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_contemporaneous_pre_restart_observation_v1.py",
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_contemporaneous_pre_restart_observation_execute_v1.py",
+    "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_reader_bind_execute_v1.py",
+    "scripts/ops/run_section_11_14_live_restart_reconstructed_contemporaneous_pre_restart_observation_v1.py",
+    "scripts/ops/run_section_11_14_live_handoff_restart_reader_provenance_and_consumer_bind_v1.py",
+    "tests/ops/test_section_11_14_live_restart_reconstructed_contemporaneous_pre_restart_observation_v1.py",
+    "tests/ops/test_section_11_14_live_handoff_restart_reader_provenance_and_consumer_bind_v1.py",
+    "tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py",
+    "docs/ops/specs/SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_CONTEMPORANEOUS_PRE_RESTART_OBSERVATION_V1.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/relations/runtime.yaml"
+  ]
+}

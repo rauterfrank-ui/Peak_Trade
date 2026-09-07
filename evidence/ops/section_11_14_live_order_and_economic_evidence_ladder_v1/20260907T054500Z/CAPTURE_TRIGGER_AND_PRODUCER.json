@@ -1,0 +1,26 @@
+{
+  "AUTHORIZED_NON_LIVE_RUNTIME_SURFACES": [],
+  "AUTHORIZED_NON_LIVE_RUNTIME_SURFACE_PRESENT": false,
+  "CAP72_SIMULATED_MAY_SATISFY_LIVE_FIELD": false,
+  "CAPTURE_TRIGGER_JOINED_TO_AUTHORIZED_RUNTIME": false,
+  "CAPTURE_TRIGGER_PRODUCTIVELY_BOUND": true,
+  "CAPTURE_TRIGGER_STATUS": "REQUIRED_WINDOW_BOUND_PRODUCTIVE_TRIGGER_BOUND",
+  "DOCUMENT_CLASS": "SECTION_11_14_PRODUCTIVE_PRE_RESTART_CAPTURE_TRIGGER_AND_PRODUCER_V1",
+  "PRODUCER_ID": "SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_V1",
+  "PRODUCER_PATH": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_pos_producer_v1.py",
+  "PRODUCER_SYMBOL": "emit_s05_handoff_pos_v1",
+  "PRODUCTIVE_RUNTIME_CALLER_COUNT": 0,
+  "SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED": false,
+  "SELECTED_CAPTURE_TRIGGER": "REQUIRED_WINDOW_HANDOFF_COMMIT_AFTER_BOUND_FILL_BEFORE_RESTART",
+  "SELECTED_SEMANTIC_ID": "S05_PEAK_TRADE_OWNED_RESULTING_CURRENT_POSITION_QTY_VENUE_CONTRACT_COUNT_UNSIGNED",
+  "TESTNET_MAY_SATISFY_LIVE_FIELD": false,
+  "TEST_ONLY_CALLERS": [
+    "tests/ops/test_section_11_14_live_handoff_pos_producer_capture_record_owner_and_writer_implementation_v1.py",
+    "tests/ops/test_section_11_14_live_handoff_restart_reader_provenance_and_consumer_bind_v1.py"
+  ],
+  "TEST_ONLY_CALLER_COUNT": 2,
+  "TEST_TMP_PATH_MAY_SATISFY_LIVE_FIELD": false,
+  "WRITER_PATH": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_owner_and_writer_v1.py",
+  "WRITER_SEAM_ID": "REQUIRED_WINDOW_HANDOFF_COMMIT_AFTER_BOUND_FILL_BEFORE_RESTART",
+  "WRITER_SYMBOL": "commit_handoff_after_bound_fill_before_restart_v1"
+}

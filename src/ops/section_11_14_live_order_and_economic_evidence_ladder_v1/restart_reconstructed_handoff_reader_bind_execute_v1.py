@@ -10,10 +10,10 @@ from pathlib import Path
 from typing import Any
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    CANONICAL_EVIDENCE_RUN_ID,
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_READER_BIND_OWNER_GO,
+    HISTORICAL_READER_BIND_RUN_ID,
+    HISTORICAL_READER_BIND_SHA,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
     SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
@@ -52,13 +52,13 @@ def execute_live_handoff_restart_reader_provenance_and_consumer_bind_v1(
     repo_root: Path,
     run_id: str | None = None,
 ) -> dict[str, Any]:
-    if str(owner_go or "").strip() != OWNER_GO:
+    if str(owner_go or "").strip() != HISTORICAL_READER_BIND_OWNER_GO:
         raise Section1114OfflineSurfaceError("OWNER_GO_MISMATCH")
-    if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
+    if str(origin_main_sha or "").strip() != HISTORICAL_READER_BIND_SHA:
         raise Section1114OfflineSurfaceError("ORIGIN_MAIN_SHA_MISMATCH")
     assert_contract_invariants_v1()
     started = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    pack_run_id = str(run_id or CANONICAL_EVIDENCE_RUN_ID)
+    pack_run_id = str(run_id or HISTORICAL_READER_BIND_RUN_ID)
     binding = bind_restart_reader_provenance_and_consumer_v1()
     adjudication = adjudicate_live_restart_reconstructed_v1(
         restart_evidence={"source_kind": "GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF_CENSUS"}
@@ -77,7 +77,7 @@ def execute_live_handoff_restart_reader_provenance_and_consumer_bind_v1(
         raise Section1114OfflineSurfaceError("HISTORICAL_CANARY_MUST_REMAIN_UNOBSERVED")
     ended = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     summary = {
-        "OWNER_GO": OWNER_GO,
+        "OWNER_GO": HISTORICAL_READER_BIND_OWNER_GO,
         "CANONICAL_EVIDENCE_RUN_ID": pack_run_id,
         "ORIGIN_MAIN_SHA": origin_main_sha,
         "STARTED_AT_UTC": started,
@@ -197,10 +197,10 @@ def execute_live_handoff_restart_reader_provenance_and_consumer_bind_v1(
             "PREDICATES": dict(binding["COMPLETE_CAPTURE_SEAM_PREDICATES"]),
         },
         "baseline": {
-            "EXPECTED_ORIGIN_MAIN_SHA": EXPECTED_ORIGIN_MAIN_SHA,
+            "EXPECTED_ORIGIN_MAIN_SHA": HISTORICAL_READER_BIND_SHA,
             "ORIGIN_MAIN_SHA": origin_main_sha,
-            "EXPECTED_ORIGIN_MAIN_MATCH": origin_main_sha == EXPECTED_ORIGIN_MAIN_SHA,
-            "OWNER_GO": OWNER_GO,
+            "EXPECTED_ORIGIN_MAIN_MATCH": origin_main_sha == HISTORICAL_READER_BIND_SHA,
+            "OWNER_GO": HISTORICAL_READER_BIND_OWNER_GO,
             "CANONICAL_EVIDENCE_RUN_ID": pack_run_id,
         },
         "changed_path_census": {
