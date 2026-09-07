@@ -1,0 +1,354 @@
+{
+  "rows": [
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": false,
+      "FRESHNESS": "THIS_WORKPACKAGE",
+      "NOTES": "matches EXPECTED_ORIGIN_MAIN_SHA and PR_6334 merge commit",
+      "PREDICATE": "ORIGIN_MAIN_BOUND",
+      "SOURCE": "git rev-parse origin/main after fetch",
+      "STATUS": "PROVEN",
+      "VALUE": "0731a62bec6dd7ef87d80b1c7959d30381f1b983"
+    },
+    {
+      "AUTHORITY": "FORENSIC_RAW_EVIDENCE",
+      "BLOCKING": false,
+      "FRESHNESS": "THIS_WORKPACKAGE_PRE_MUTATION",
+      "NOTES": "untracked artifacts exist and were not touched",
+      "PREDICATE": "TRACKED_TREE_CLEAN",
+      "SOURCE": "git rev-parse origin/main^{tree}; git diff HEAD origin/main empty",
+      "STATUS": "PROVEN",
+      "VALUE": "0033a378a9ca223f6ad34e75ed1f5276794f4198"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": false,
+      "FRESHNESS": "THIS_WORKPACKAGE",
+      "NOTES": "additive persist; predecessor standing-fee envelope remains bound",
+      "PREDICATE": "CURRENT_PHASE",
+      "SOURCE": "this workpackage persist",
+      "STATUS": "PROVEN",
+      "VALUE": "11.14.LIVE_HANDOFF_EXACT_FEE_RESTART_DURABILITY_AND_PRE_EXECUTION_READINESS_CLOSURE"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": false,
+      "FRESHNESS": "POLICY_CURRENT_OBSERVATION_STALE_RELATIVE_TO_THIS_WP",
+      "NOTES": "instrument identity bound; live state observation not refreshed here",
+      "PREDICATE": "CURRENT_INSTRUMENT_BOUND",
+      "SOURCE": "Master Runbook latest persist; pretrade GET pack",
+      "STATUS": "PROVEN",
+      "VALUE": "SUI-USD_UM_XPERP-310404"
+    },
+    {
+      "AUTHORITY": "FORENSIC_RAW_EVIDENCE",
+      "BLOCKING": false,
+      "FRESHNESS": "20260907T182140Z",
+      "NOTES": "historical current-as-of 20260907T182140Z; not re-GET this WP",
+      "PREDICATE": "CURRENT_ACCOUNT_BOUND",
+      "SOURCE": "pretrade GET pack 20260907T182140Z account/config",
+      "STATUS": "PROVEN",
+      "VALUE": "uid_sha256=2444af6ea59bad87ee2aa709df3aa6888607cb3ba31f1946729f3f4f4697fb2c"
+    },
+    {
+      "AUTHORITY": "FORENSIC_RAW_EVIDENCE",
+      "BLOCKING": true,
+      "FRESHNESS": "STALE_NOT_THIS_WP",
+      "NOTES": "no current GET this WP; previous pack is not this WP's observation",
+      "PREDICATE": "NETWORK_READINESS",
+      "SOURCE": "20260907T182140Z NETWORK_EGRESS_COMPATIBILITY_CURRENT",
+      "STATUS": "UNPROVEN",
+      "VALUE": "PASS_AT_20260907T182140Z"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": true,
+      "FRESHNESS": "NOT_OBSERVED_THIS_WP",
+      "NOTES": "optional GET not executed; NEW_GET_EXECUTED=false",
+      "PREDICATE": "PRIVATE_GET_READINESS",
+      "SOURCE": "GET-only orchestrator allowlist",
+      "STATUS": "UNPROVEN",
+      "VALUE": "SURFACE_EXISTS_NOT_INVOKED"
+    },
+    {
+      "AUTHORITY": "FORENSIC_RAW_EVIDENCE",
+      "BLOCKING": true,
+      "FRESHNESS": "STALE_NOT_THIS_WP",
+      "NOTES": "observed live at 18:21Z; not re-proven here",
+      "PREDICATE": "INSTRUMENT_STATE",
+      "SOURCE": "20260907T182140Z INSTRUMENT_STATE_CURRENT",
+      "STATUS": "UNPROVEN",
+      "VALUE": "live"
+    },
+    {
+      "AUTHORITY": "FORENSIC_RAW_EVIDENCE",
+      "BLOCKING": true,
+      "FRESHNESS": "STALE_NOT_THIS_WP",
+      "NOTES": "acctLv=2 at prior GET; not re-proven here",
+      "PREDICATE": "ACCOUNT_MODE",
+      "SOURCE": "20260907T182140Z ACCOUNT_MODE_CURRENT",
+      "STATUS": "UNPROVEN",
+      "VALUE": "2"
+    },
+    {
+      "AUTHORITY": "FORENSIC_RAW_EVIDENCE",
+      "BLOCKING": true,
+      "FRESHNESS": "STALE_NOT_THIS_WP",
+      "NOTES": "posMode=net_mode at prior GET; not re-proven here",
+      "PREDICATE": "POSITION_MODE",
+      "SOURCE": "20260907T182140Z POSITION_MODE_CURRENT",
+      "STATUS": "UNPROVEN",
+      "VALUE": "net_mode"
+    },
+    {
+      "AUTHORITY": "FORENSIC_RAW_EVIDENCE",
+      "BLOCKING": true,
+      "FRESHNESS": "STALE_NOT_THIS_WP",
+      "NOTES": "mgnMode=cross at prior GET; not re-proven here",
+      "PREDICATE": "MARGIN_MODE",
+      "SOURCE": "20260907T182140Z MARGIN_MODE_CURRENT",
+      "STATUS": "UNPROVEN",
+      "VALUE": "cross"
+    },
+    {
+      "AUTHORITY": "FORENSIC_RAW_EVIDENCE",
+      "BLOCKING": true,
+      "FRESHNESS": "STALE_NOT_THIS_WP",
+      "NOTES": "lever=3 cross net at prior GET; not re-proven here",
+      "PREDICATE": "LEVERAGE",
+      "SOURCE": "20260907T182140Z LEVERAGE_CURRENT",
+      "STATUS": "UNPROVEN",
+      "VALUE": "3"
+    },
+    {
+      "AUTHORITY": "FORENSIC_RAW_EVIDENCE",
+      "BLOCKING": true,
+      "FRESHNESS": "STALE_NOT_THIS_WP",
+      "NOTES": "price-limit is time-varying; not re-GET",
+      "PREDICATE": "PRICE_BAND",
+      "SOURCE": "20260907T182140Z PRICE_BAND_CURRENT",
+      "STATUS": "UNPROVEN",
+      "VALUE": "buyLmt=0.8277 sellLmt=0.8194 at prior GET"
+    },
+    {
+      "AUTHORITY": "FORENSIC_RAW_EVIDENCE",
+      "BLOCKING": true,
+      "FRESHNESS": "STALE_NOT_THIS_WP",
+      "NOTES": "max-size depends on px and margin; not re-GET",
+      "PREDICATE": "MAX_SIZE",
+      "SOURCE": "20260907T182140Z MAX_AVAILABLE_MAX_SIZE_CURRENT",
+      "STATUS": "UNPROVEN",
+      "VALUE": "maxBuy=7 at px=0.8237 prior GET"
+    },
+    {
+      "AUTHORITY": "FORENSIC_RAW_EVIDENCE",
+      "BLOCKING": true,
+      "FRESHNESS": "STALE_NOT_THIS_WP",
+      "NOTES": "same observation as MAX_SIZE",
+      "PREDICATE": "MAX_AVAILABLE",
+      "SOURCE": "20260907T182140Z",
+      "STATUS": "UNPROVEN",
+      "VALUE": "maxBuy=7"
+    },
+    {
+      "AUTHORITY": "FORENSIC_RAW_EVIDENCE",
+      "BLOCKING": true,
+      "FRESHNESS": "STALE_NOT_THIS_WP",
+      "NOTES": "balance is time-varying; not re-GET",
+      "PREDICATE": "AVAILABLE_MARGIN",
+      "SOURCE": "20260907T182140Z AVAILABLE_MARGIN_CURRENT",
+      "STATUS": "UNPROVEN",
+      "VALUE": "availEq=2.1076094140463697 USDC at prior GET"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": false,
+      "FRESHNESS": "POLICY_BOUND",
+      "NOTES": "model is not OEM exact formula",
+      "PREDICATE": "EXPECTED_FEE_MODEL",
+      "SOURCE": "standing fee policy",
+      "STATUS": "PROVEN",
+      "VALUE": "conservative_max_debit_internal_notional"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": true,
+      "FRESHNESS": "CURRENT",
+      "NOTES": "single historical fill algebra is hypothesis only",
+      "PREDICATE": "EXACT_OKX_FEE_FORMULA",
+      "SOURCE": "Master Runbook; fee_policy_v1; this forensic census",
+      "STATUS": "UNPROVEN",
+      "VALUE": "UNPROVEN"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": true,
+      "FRESHNESS": "NUMERIC_ABSENT",
+      "NOTES": "BOUNDED_FEE_ENVELOPE_POLICY_BOUND=true; current numeric false",
+      "PREDICATE": "FEE_ENVELOPE",
+      "SOURCE": "policy bound; current SUI trade-fee GET absent",
+      "STATUS": "UNPROVEN",
+      "VALUE": false
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": false,
+      "FRESHNESS": "POLICY_BOUND",
+      "NOTES": "numeric worst price still requires current ticker/limit; not refreshed here",
+      "PREDICATE": "SLIPPAGE_BOUND",
+      "SOURCE": "standing slippage policy",
+      "STATUS": "PROVEN",
+      "VALUE": "LIMIT_WORST_FILL_EQUALS_LIMIT_PX"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": false,
+      "FRESHNESS": "CURRENT_CODE",
+      "NOTES": "fail-closed static path proven; successful empirical reconstruction unproven",
+      "PREDICATE": "LIVE_RESTART_STATIC_RECONSTRUCTION",
+      "SOURCE": "writer/reader/validators fail-closed missing handoff",
+      "STATUS": "PROVEN",
+      "VALUE": true
+    },
+    {
+      "AUTHORITY": "ALREADY_ADJUDICATED_RESULTS",
+      "BLOCKING": true,
+      "FRESHNESS": "CURRENT",
+      "NOTES": "cannot close without contemporaneous capture then restart observation",
+      "PREDICATE": "LIVE_RESTART_EMPIRICAL_RECONSTRUCTION",
+      "SOURCE": "HANDOFF_WRITTEN=false; no restart executed",
+      "STATUS": "UNPROVEN",
+      "VALUE": false
+    },
+    {
+      "AUTHORITY": "INTERPRETATION",
+      "BLOCKING": false,
+      "FRESHNESS": "STATIC_MODEL",
+      "NOTES": "static model supported; empirical process-kill on this owner not executed",
+      "PREDICATE": "PROCESS_CRASH_DURABILITY",
+      "SOURCE": "atomic replace + fsync(file) + fsync(dir)",
+      "STATUS": "UNPROVEN",
+      "VALUE": "STATIC_MODEL_SUPPORTED_EMPIRICAL_UNPROVEN"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": false,
+      "FRESHNESS": "CURRENT",
+      "NOTES": "HOST_CRASH_DURABILITY_REQUIRED_FOR_LIVE_RESTART_RECONSTRUCTED=false; still unproven",
+      "PREDICATE": "HOST_CRASH_DURABILITY",
+      "SOURCE": "DDO_A1 plus 11.14 writer; no crash/power-loss test",
+      "STATUS": "UNPROVEN",
+      "VALUE": "UNPROVEN"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": true,
+      "FRESHNESS": "CURRENT",
+      "NOTES": "required for LIVE_RESTART_RECONSTRUCTED success path",
+      "PREDICATE": "CAPTURE_PROVENANCE",
+      "SOURCE": "complete capture seam proven offline; productive capture false",
+      "STATUS": "UNPROVEN",
+      "VALUE": "COMPLETE_SEAM_OFFLINE_NO_PRODUCTIVE_CAPTURE"
+    },
+    {
+      "AUTHORITY": "ALREADY_ADJUDICATED_RESULTS",
+      "BLOCKING": false,
+      "FRESHNESS": "HISTORICAL_NOT_CURRENT_FILL",
+      "NOTES": "historical fill/fee/position/accounting remain true; not a new fill",
+      "PREDICATE": "POST_FILL_RECONCILIATION",
+      "SOURCE": "LIVE_POSITION_RECONCILED/ACCOUNTING historical",
+      "STATUS": "UNPROVEN",
+      "VALUE": "HISTORICAL_IDENTITY_BOUND_TRUE_NOT_CURRENT_FILL"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": true,
+      "FRESHNESS": "CURRENT",
+      "NOTES": "standing false; this GO must not set true",
+      "PREDICATE": "LIVE_ENABLED",
+      "SOURCE": "constants_v1.LIVE_ENABLED",
+      "STATUS": "PROVEN",
+      "VALUE": false
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": true,
+      "FRESHNESS": "CURRENT",
+      "NOTES": "standing false",
+      "PREDICATE": "LIVE_ARMED",
+      "SOURCE": "constants_v1.LIVE_ARMED",
+      "STATUS": "PROVEN",
+      "VALUE": false
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": true,
+      "FRESHNESS": "CURRENT",
+      "NOTES": "related gate; not reconstructed as CANARY_AUTHORIZED persist field",
+      "PREDICATE": "CANARY_EXECUTE_AUTHORIZED",
+      "SOURCE": "Master Runbook \u00a74.9 standing fail-closed",
+      "STATUS": "PROVEN",
+      "VALUE": false
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": true,
+      "FRESHNESS": "CURRENT",
+      "NOTES": "this GO is not OWNER_EXECUTION_GO",
+      "PREDICATE": "OWNER_EXECUTION_AUTHORIZED",
+      "SOURCE": "this GO and predecessor persist",
+      "STATUS": "PROVEN",
+      "VALUE": false
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": true,
+      "FRESHNESS": "CURRENT",
+      "NOTES": "remains false",
+      "PREDICATE": "SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED",
+      "SOURCE": "constants_v1 and this persist",
+      "STATUS": "PROVEN",
+      "VALUE": false
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": true,
+      "FRESHNESS": "CURRENT",
+      "NOTES": "related standing gate",
+      "PREDICATE": "ORDER_SUBMIT_AUTHORIZED",
+      "SOURCE": "Master Runbook \u00a74.9",
+      "STATUS": "PROVEN",
+      "VALUE": false
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": true,
+      "FRESHNESS": "CURRENT",
+      "NOTES": "standing false",
+      "PREDICATE": "SUBMIT_UNLOCKED",
+      "SOURCE": "constants_v1.SUBMIT_UNLOCKED",
+      "STATUS": "PROVEN",
+      "VALUE": false
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": false,
+      "FRESHNESS": "CURRENT_PERSIST_ABSENT",
+      "NOTES": "code constant POST_ALLOWED=false exists; persist token absent so not reconstructed",
+      "PREDICATE": "POST_ALLOWED_EXACT_FIELD",
+      "SOURCE": "absent from latest Master Runbook persist block 71122-71217",
+      "STATUS": "INDETERMINATE",
+      "VALUE": "INDETERMINATE_ABSENT"
+    },
+    {
+      "AUTHORITY": "CANONICAL_AUTHORITY",
+      "BLOCKING": false,
+      "FRESHNESS": "CURRENT_PERSIST_ABSENT",
+      "NOTES": "code constant CANARY_AUTHORIZED=false exists; persist token absent so not reconstructed",
+      "PREDICATE": "CANARY_AUTHORIZED_EXACT_FIELD",
+      "SOURCE": "absent from latest Master Runbook persist block 71122-71217",
+      "STATUS": "INDETERMINATE",
+      "VALUE": "INDETERMINATE_ABSENT"
+    }
+  ]
+}

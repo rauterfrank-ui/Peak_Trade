@@ -43,7 +43,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     CANONICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_SLICE_HEADING,
     CANONICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SLICE_HEADING,
     CANONICAL_STANDING_FEE_SLIPPAGE_EXACT_ENVELOPE_SLICE_HEADING,
+    CANONICAL_EXACT_FEE_RESTART_DURABILITY_CLOSURE_SLICE_HEADING,
     CANONICAL_SECTION_HEADING,
+    CLOSURE_EVIDENCE_RUN_ID,
     EARLIEST_UNRESOLVED_DEPENDENCY,
     ENVELOPE_EVIDENCE_RUN_ID,
     EXPECTED_ORIGIN_MAIN_SHA,
@@ -126,6 +128,11 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_RUN_ID,
     HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SHA,
     HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SLICE,
+    HISTORICAL_STANDING_FEE_SLIPPAGE_OWNER_GO,
+    HISTORICAL_STANDING_FEE_SLIPPAGE_PREDECESSOR_SLICE,
+    HISTORICAL_STANDING_FEE_SLIPPAGE_RUN_ID,
+    HISTORICAL_STANDING_FEE_SLIPPAGE_SHA,
+    HISTORICAL_STANDING_FEE_SLIPPAGE_SLICE,
     HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_OWNER_GO,
     HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED,
     HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_RUN_ID,
@@ -275,6 +282,10 @@ STANDING_FEE_SLIPPAGE_EXACT_ENVELOPE_SPEC = (
     REPO_ROOT
     / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_STANDING_FEE_SLIPPAGE_AND_COMPLETE_NON_EXECUTING_EXACT_SINGLE_FILL_EXECUTION_ENVELOPE_V1.md"
 )
+EXACT_FEE_RESTART_DURABILITY_CLOSURE_SPEC = (
+    REPO_ROOT
+    / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_EXACT_FEE_RESTART_DURABILITY_AND_PRE_EXECUTION_READINESS_CLOSURE_V1.md"
+)
 HISTORICAL_SPEC = (
     REPO_ROOT
     / "docs/ops/specs/SECTION_11_14_LIVE_ORDER_AND_ECONOMIC_EVIDENCE_LADDER_OFFLINE_SURFACE_V1.md"
@@ -294,6 +305,15 @@ ENVELOPE_EVIDENCE = (
     / "evidence/ops"
     / "section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1"
     / ENVELOPE_EVIDENCE_RUN_ID
+)
+CLOSURE_EVIDENCE = (
+    REPO_ROOT
+    / "evidence/ops"
+    / (
+        "section_11_14_live_handoff_exact_fee_restart_durability_"
+        "and_pre_execution_readiness_closure_v1"
+    )
+    / CLOSURE_EVIDENCE_RUN_ID
 )
 CODE_EXISTS_EVIDENCE = (
     REPO_ROOT
@@ -490,31 +510,28 @@ HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_EVIDENCE = (
 HEADING_11_15 = "## 11.15 Full-autonomy observability and audit trail"
 
 
-def test_current_slice_constants_target_standing_fee_slippage_and_exact_execution_envelope() -> (
-    None
-):
+def test_current_slice_constants_target_exact_fee_restart_durability_closure() -> None:
     assert THIS_SLICE == (
+        "11.14.LIVE_HANDOFF_EXACT_FEE_RESTART_DURABILITY_AND_PRE_EXECUTION_READINESS_CLOSURE"
+    )
+    assert PREDECESSOR_SLICE == (
         "11.14.LIVE_HANDOFF_STANDING_FEE_SLIPPAGE_AND_COMPLETE_NON_EXECUTING_"
         "EXACT_SINGLE_FILL_EXECUTION_ENVELOPE"
     )
-    assert PREDECESSOR_SLICE == (
-        "11.14.LIVE_HANDOFF_CURRENT_ORIGIN_MAIN_BOUND_GET_ONLY_"
-        "PRETRADE_ACCOUNT_NETWORK_AND_INSTRUMENT_READINESS"
-    )
-    assert OWNER_GO.endswith(
-        "STANDING_FEE_SLIPPAGE_AND_COMPLETE_NON_EXECUTING_EXACT_SINGLE_FILL_EXECUTION_ENVELOPE_V1"
-    )
-    assert EXPECTED_ORIGIN_MAIN_SHA == "99d3bdff7e30b0efb452f89af24bb1eb3a19580f"
+    assert OWNER_GO.endswith("EXACT_FEE_RESTART_DURABILITY_AND_PRE_EXECUTION_READINESS_CLOSURE_V1")
+    assert EXPECTED_ORIGIN_MAIN_SHA == "0731a62bec6dd7ef87d80b1c7959d30381f1b983"
     assert EARLIEST_UNRESOLVED_DEPENDENCY == "OWNER_EXECUTION_AUTHORIZED"
     assert NEXT_OWNER_GO_REQUIRED == "OWNER_MERGE_GO_THEN_SEPARATE_OWNER_EXECUTION_GO"
     assert LAST_CANONICALLY_CLOSED_STEP == (
-        "SECTION_11_14_LIVE_HANDOFF_STANDING_FEE_SLIPPAGE_AND_COMPLETE_NON_EXECUTING_"
-        "EXACT_SINGLE_FILL_EXECUTION_ENVELOPE"
+        "SECTION_11_14_LIVE_HANDOFF_EXACT_FEE_RESTART_DURABILITY_"
+        "AND_PRE_EXECUTION_READINESS_CLOSURE"
     )
     assert CANONICAL_EVIDENCE_RUN_ID == "20260907T184500Z"
     assert ENVELOPE_EVIDENCE_RUN_ID == "20260907T204800Z"
+    assert CLOSURE_EVIDENCE_RUN_ID == "20260907T193200Z"
     assert EVIDENCE.name == CANONICAL_EVIDENCE_RUN_ID
     assert ENVELOPE_EVIDENCE.name == ENVELOPE_EVIDENCE_RUN_ID
+    assert CLOSURE_EVIDENCE.name == CLOSURE_EVIDENCE_RUN_ID
 
 
 def test_runbook_historical_offline_slice_remains_false_for_that_consumed_go() -> None:
@@ -2023,14 +2040,14 @@ def test_runbook_standing_fee_slippage_and_complete_non_executing_exact_executio
 ):
     text = MASTER_RUNBOOK.read_text(encoding="utf-8")
     start = text.find(CANONICAL_STANDING_FEE_SLIPPAGE_EXACT_ENVELOPE_SLICE_HEADING)
-    end = text.find(HEADING_11_15, start)
+    end = text.find(CANONICAL_EXACT_FEE_RESTART_DURABILITY_CLOSURE_SLICE_HEADING, start)
     assert start >= 0
     assert end > start
     section = text[start:end]
-    assert OWNER_GO in section
-    assert THIS_SLICE in section
-    assert PREDECESSOR_SLICE in section
-    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert HISTORICAL_STANDING_FEE_SLIPPAGE_OWNER_GO in section
+    assert HISTORICAL_STANDING_FEE_SLIPPAGE_SLICE in section
+    assert HISTORICAL_STANDING_FEE_SLIPPAGE_PREDECESSOR_SLICE in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={HISTORICAL_STANDING_FEE_SLIPPAGE_SHA}" in section
     assert "SECTION_11_14_AUTHORIZED=false" in section
     assert "SECTION_11_14_COMPLETE=false" in section
     assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
@@ -2061,7 +2078,52 @@ def test_runbook_standing_fee_slippage_and_complete_non_executing_exact_executio
     assert "NEXT_SLICE_AUTHORIZED=false" in section
     assert NEXT_OWNER_GO_REQUIRED in section
     assert EARLIEST_UNRESOLVED_DEPENDENCY in section
-    assert ENVELOPE_EVIDENCE_RUN_ID in section
+    assert HISTORICAL_STANDING_FEE_SLIPPAGE_RUN_ID in section
+    assert (
+        "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_FILL_REQUIRES_SEPARATE_OWNER_EXECUTION_GO_V1"
+        in section
+    )
+    for field_name in LADDER_FIELDS:
+        assert field_name in section
+
+
+def test_runbook_exact_fee_restart_durability_and_pre_execution_readiness_closure_slice() -> None:
+    text = MASTER_RUNBOOK.read_text(encoding="utf-8")
+    start = text.find(CANONICAL_EXACT_FEE_RESTART_DURABILITY_CLOSURE_SLICE_HEADING)
+    end = text.find(HEADING_11_15, start)
+    assert start >= 0
+    assert end > start
+    section = text[start:end]
+    assert OWNER_GO in section
+    assert THIS_SLICE in section
+    assert PREDECESSOR_SLICE in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert "SECTION_11_14_AUTHORIZED=false" in section
+    assert "SECTION_11_14_COMPLETE=false" in section
+    assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in section
+    assert "EXACT_OKX_FEE_FORMULA_UNPROVEN=true" in section
+    assert "BOUNDED_FEE_ENVELOPE_PROVEN=false" in section
+    assert "LIVE_RESTART_STATIC_RECONSTRUCTION_PROVEN=true" in section
+    assert "LIVE_RESTART_EMPIRICAL_RECONSTRUCTION_PROVEN=false" in section
+    assert "HOST_CRASH_DURABILITY=UNPROVEN" in section
+    assert "CODE_GAP_FOUND=false" in section
+    assert "CANARY_AUTHORIZED_EXACT_FIELD=INDETERMINATE_ABSENT" in section
+    assert "POST_ALLOWED_EXACT_FIELD=INDETERMINATE_ABSENT" in section
+    assert "TECHNICAL_PRE_EXECUTION_READINESS=false" in section
+    assert "TECHNICAL_EXECUTION_READY=false" in section
+    assert "OWNER_EXECUTION_AUTHORIZED=false" in section
+    assert "LIVE_EXECUTION_AUTHORIZED=false" in section
+    assert "GET_PERFORMED=false" in section
+    assert "POST_PERFORMED=false" in section
+    assert "LIVE_SUBMIT_EXECUTED=false" in section
+    assert "WIRE_SEND_EXECUTED=false" in section
+    assert "RESTART_EXECUTED=false" in section
+    assert "CRASH_TEST_EXECUTED=false" in section
+    assert "NEXT_SLICE_AUTHORIZED=false" in section
+    assert NEXT_OWNER_GO_REQUIRED in section
+    assert EARLIEST_UNRESOLVED_DEPENDENCY in section
+    assert CLOSURE_EVIDENCE_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_FILL_REQUIRES_SEPARATE_OWNER_EXECUTION_GO_V1"
         in section
@@ -2141,6 +2203,9 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         "11.14 LIVE_HANDOFF_STANDING_FEE_SLIPPAGE_AND_COMPLETE_NON_EXECUTING_EXACT_SINGLE_FILL_EXECUTION_ENVELOPE"
         in mot
     )
+    assert (
+        "11.14 LIVE_HANDOFF_EXACT_FEE_RESTART_DURABILITY_AND_PRE_EXECUTION_READINESS_CLOSURE" in mot
+    )
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -2206,6 +2271,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "SECTION_11_14_LIVE_HANDOFF_STANDING_FEE_SLIPPAGE_AND_COMPLETE_NON_EXECUTING_EXACT_SINGLE_FILL_EXECUTION_ENVELOPE_V1.md"
+        in mot
+    )
+    assert (
+        "SECTION_11_14_LIVE_HANDOFF_EXACT_FEE_RESTART_DURABILITY_AND_PRE_EXECUTION_READINESS_CLOSURE_V1.md"
         in mot
     )
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
@@ -2578,6 +2647,21 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "LIVE_EXECUTION_AUTHORIZED=false" in envelope_spec
     assert "LIVE_SUBMIT_EXECUTED=false" in envelope_spec
     assert "WIRE_SEND_EXECUTED=false" in envelope_spec
+    closure_spec = EXACT_FEE_RESTART_DURABILITY_CLOSURE_SPEC.read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_LIVE_HANDOFF_EXACT_FEE_RESTART_DURABILITY_AND_PRE_EXECUTION_READINESS_CLOSURE_V1"
+        in closure_spec
+    )
+    assert "EXACT_OKX_FEE_FORMULA_UNPROVEN=true" in closure_spec
+    assert "BOUNDED_FEE_ENVELOPE_PROVEN=false" in closure_spec
+    assert "LIVE_RESTART_STATIC_RECONSTRUCTION_PROVEN=true" in closure_spec
+    assert "LIVE_RESTART_EMPIRICAL_RECONSTRUCTION_PROVEN=false" in closure_spec
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in closure_spec
+    assert "HOST_CRASH_DURABILITY_UNPROVEN=true" in closure_spec
+    assert "TECHNICAL_PRE_EXECUTION_READINESS=false" in closure_spec
+    assert "OWNER_EXECUTION_AUTHORIZED=false" in closure_spec
+    assert "CANARY_AUTHORIZED_EXACT_FIELD=INDETERMINATE_ABSENT" in closure_spec
+    assert "POST_ALLOWED_EXACT_FIELD=INDETERMINATE_ABSENT" in closure_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -2667,6 +2751,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "id: PHASE:section_11_14_live_handoff_standing_fee_slippage_and_complete_non_executing_exact_single_fill_execution_envelope"
+        in catalog
+    )
+    assert (
+        "id: PHASE:section_11_14_live_handoff_exact_fee_restart_durability_and_pre_execution_readiness_closure"
         in catalog
     )
     assert (
@@ -3395,3 +3483,21 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert '"POST_PERFORMED": false' in envelope_summary
     assert '"RESTART_EXECUTED": false' in envelope_summary
     assert '"EARLIEST_UNRESOLVED_DEPENDENCY": "OWNER_EXECUTION_AUTHORIZED"' in envelope_summary
+    assert CLOSURE_EVIDENCE.is_dir()
+    closure_verified = verify_manifest_v1(CLOSURE_EVIDENCE)
+    assert int(closure_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
+    closure_summary = (CLOSURE_EVIDENCE / "SUMMARY.json").read_text(encoding="utf-8")
+    assert '"EXACT_OKX_FEE_FORMULA_UNPROVEN": true' in closure_summary
+    assert '"BOUNDED_FEE_ENVELOPE_PROVEN": false' in closure_summary
+    assert '"LIVE_RESTART_STATIC_RECONSTRUCTION_PROVEN": true' in closure_summary
+    assert '"LIVE_RESTART_EMPIRICAL_RECONSTRUCTION_PROVEN": false' in closure_summary
+    assert '"LIVE_RESTART_RECONSTRUCTED": false' in closure_summary
+    assert '"HOST_CRASH_DURABILITY_UNPROVEN": true' in closure_summary
+    assert '"TECHNICAL_PRE_EXECUTION_READINESS": false' in closure_summary
+    assert '"OWNER_EXECUTION_AUTHORIZED": false' in closure_summary
+    assert '"CANARY_AUTHORIZED_EXACT_FIELD": "INDETERMINATE_ABSENT"' in closure_summary
+    assert '"POST_ALLOWED_EXACT_FIELD": "INDETERMINATE_ABSENT"' in closure_summary
+    assert '"GET_PERFORMED": false' in closure_summary
+    assert '"POST_PERFORMED": false' in closure_summary
+    assert '"RESTART_EXECUTED": false' in closure_summary
+    assert '"CRASH_TEST_EXECUTED": false' in closure_summary
