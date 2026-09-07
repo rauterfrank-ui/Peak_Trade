@@ -1,0 +1,112 @@
+{
+  "GETS": [
+    {
+      "auth_header_sent": false,
+      "body_sha256": "038f2bf82f18f2d42ed26dca281cc7733e4ef7d07206fd0b19637189ec3e4cd2",
+      "endpoint": "/api/v5/public/instruments?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "INSTRUMENT_STATE",
+      "observed_at_utc": "2026-09-07T21:12:31.678784Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": false,
+      "body_sha256": "6e955ab0083b92e4cecedfbb20eac6f01c81828fd809004608086ed3182d50b9",
+      "endpoint": "/api/v5/market/ticker?instId=SUI-USD_UM_XPERP-310404",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "PRICE_SOURCE",
+      "observed_at_utc": "2026-09-07T21:12:31.963092Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": false,
+      "body_sha256": "0ec8852d286be80b609fc5b84546213478803eeeab03dfd3d9805d700e991c77",
+      "endpoint": "/api/v5/public/price-limit?instId=SUI-USD_UM_XPERP-310404",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "PRICE_BAND",
+      "observed_at_utc": "2026-09-07T21:12:32.131830Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "36876f8378c2029823643ac2caf6b2fd24525b7d41afa0a32b6abef46c72d5fb",
+      "endpoint": "/api/v5/account/config",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "ACCOUNT_CONFIG",
+      "observed_at_utc": "2026-09-07T21:12:32.283581Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "590dbbd4397908f6529d5cdb30104f8de7b50edf271e6f2d6a496c11094fd145",
+      "endpoint": "/api/v5/account/balance",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "AVAILABLE_MARGIN",
+      "observed_at_utc": "2026-09-07T21:12:32.487750Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "262bea2bce8e76155e69db36c5a48344c5bb7eeb23b4246040aa39f4a592de6d",
+      "endpoint": "/api/v5/account/positions",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "POSITIONS",
+      "observed_at_utc": "2026-09-07T21:12:32.644146Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "fbfc9480218e15b0a15a5aac5b662b222108336d71501da82436b8df60b42ef7",
+      "endpoint": "/api/v5/account/leverage-info?instId=SUI-USD_UM_XPERP-310404&mgnMode=cross",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "LEVERAGE",
+      "observed_at_utc": "2026-09-07T21:12:32.811174Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "d43e222f6a8543e39e1a76ad836bfe9aea9de8c3c615cefbe48253be19c69395",
+      "endpoint": "/api/v5/account/max-size?instId=SUI-USD_UM_XPERP-310404&tdMode=cross&px=0.831",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "MAX_SIZE",
+      "observed_at_utc": "2026-09-07T21:12:33.010345Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "07e2e5f2735eb37ea5d3367d571b898dcb16e52806d9e6a0a745d555bcf71c3a",
+      "endpoint": "/api/v5/account/trade-fee?instType=FUTURES&instFamily=SUI-USD_UM_XPERP",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "TRADE_FEE",
+      "observed_at_utc": "2026-09-07T21:12:33.173056Z",
+      "timeout": false,
+      "venue_code": "0"
+    }
+  ]
+}

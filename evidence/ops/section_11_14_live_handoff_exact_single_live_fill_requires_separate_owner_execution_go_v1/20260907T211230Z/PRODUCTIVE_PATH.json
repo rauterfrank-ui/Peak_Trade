@@ -1,0 +1,15 @@
+{
+  "ARMING_NOT_REACHED": true,
+  "EXECUTION_PORT": "LiveCanaryHttpClientV1.POST /api/v5/trade/order",
+  "MAX_POSITIONS_EFFECTIVE": 1,
+  "MAX_SUBMITS_THIS_WP": 1,
+  "PRODUCTIVE_EXECUTION_PATH_PROVEN": true,
+  "PRODUCTIVE_RUNNER": "run_canary_submit_transport_v1",
+  "PRODUCTIVE_SUBMIT_CALLER": "execute_exact_single_live_submit_post_v1",
+  "RAW_POST_BYPASS_USED": false,
+  "SESSION_ARMING_CONTRACT_EXISTS": true,
+  "SOURCE_PATCH_TO_UNLOCK": false,
+  "STANDING_ARMING_USED": false,
+  "WRAPPER_ACCEPTS_CURRENT_GO": false,
+  "WRAPPER_ACCEPTS_CURRENT_SHA": false
+}

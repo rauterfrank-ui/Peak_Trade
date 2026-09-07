@@ -102,8 +102,10 @@ def test_contract_invariants_remain_fail_closed() -> None:
     assert len(MANDATORY_LIVE_METRICS) == MANDATORY_LIVE_METRIC_COUNT == 20
     assert PRIOR_CENSUS_REPORTED_METRIC_COUNT == 19
     assert METRIC_COUNT_DISCREPANCY_VS_PRIOR_CENSUS is True
-    assert OWNER_GO.startswith("PEAK_TRADE_OWNER_GO_SECTION_11_14_") or OWNER_GO.startswith(
-        "PEAK_TRADE_OWNER_GET_ONLY_GO_SECTION_11_14_"
+    assert (
+        OWNER_GO.startswith("PEAK_TRADE_OWNER_GO_SECTION_11_14_")
+        or OWNER_GO.startswith("PEAK_TRADE_OWNER_GET_ONLY_GO_SECTION_11_14_")
+        or OWNER_GO.startswith("PEAK_TRADE_OWNER_EXECUTION_GO_SECTION_11_14_")
     )
 
 
@@ -368,7 +370,7 @@ def test_traceability_has_each_ladder_field_and_metric_once() -> None:
     names = [row["CANONICAL_REQUIREMENT"] for row in matrix["rows"]]
     assert names == list(LADDER_FIELDS) + list(MANDATORY_LIVE_METRICS)
     assert matrix["primary_row_count"] == 32
-    assert EARLIEST_UNRESOLVED_DEPENDENCY == "OWNER_EXECUTION_AUTHORIZED"
+    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_RESTART_RECONSTRUCTED"
 
 
 def _successful_read_only_evidence() -> dict[str, object]:
