@@ -1,4 +1,4 @@
-"""One-shot runner for §11.14 complete contemporaneous capture-seam provenance."""
+"""One-shot runner for §11.14 productive capture-hook caller binding persist."""
 
 from __future__ import annotations
 
@@ -16,12 +16,12 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import 
     write_manifest_v1,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (  # noqa: E402
-    HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_OWNER_GO,
-    HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_RUN_ID,
-    HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_SHA,
+    CANONICAL_EVIDENCE_RUN_ID,
+    EXPECTED_ORIGIN_MAIN_SHA,
+    OWNER_GO,
 )
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_complete_contemporaneous_capture_seam_and_required_field_provenance_execute_v1 import (  # noqa: E402
-    execute_live_handoff_complete_contemporaneous_capture_seam_and_required_field_provenance_v1,
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_productive_capture_hook_caller_binding_and_offline_call_path_proof_execute_v1 import (  # noqa: E402
+    execute_live_handoff_productive_capture_hook_caller_binding_and_offline_call_path_proof_v1,
 )
 
 
@@ -39,18 +39,17 @@ def _origin_main_sha(repo_root: Path) -> str:
 def main() -> int:
     repo_root = Path(__file__).resolve().parents[2]
     origin_main_sha = _origin_main_sha(repo_root)
-    if origin_main_sha != HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_SHA:
+    if origin_main_sha != EXPECTED_ORIGIN_MAIN_SHA:
         print(
-            "ORIGIN_MAIN_SHA_MISMATCH actual="
-            f"{origin_main_sha} expected={HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_SHA}"
+            f"ORIGIN_MAIN_SHA_MISMATCH actual={origin_main_sha} expected={EXPECTED_ORIGIN_MAIN_SHA}"
         )
         return 2
     result = (
-        execute_live_handoff_complete_contemporaneous_capture_seam_and_required_field_provenance_v1(
-            owner_go=HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_OWNER_GO,
+        execute_live_handoff_productive_capture_hook_caller_binding_and_offline_call_path_proof_v1(
+            owner_go=OWNER_GO,
             origin_main_sha=origin_main_sha,
             repo_root=repo_root,
-            run_id=HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_RUN_ID,
+            run_id=CANONICAL_EVIDENCE_RUN_ID,
         )
     )
     pack = Path(result["pack"])
@@ -59,9 +58,10 @@ def main() -> int:
         "SUMMARY.json": dict(result["summary"]),
         "BASELINE.json": dict(result["baseline"]),
         "CHANGED_PATH_CENSUS.json": dict(result["changed_path_census"]),
+        "CALLER_CENSUS.json": dict(result["caller_census"]),
+        "HOST_GRAPH.json": dict(result["host_graph"]),
         "DATAFLOW_CENSUS.json": dict(result["dataflow"]),
         "REQUIRED_FIELD_PROVENANCE_MATRIX.json": dict(result["required_field_provenance_matrix"]),
-        "CONTEMPORANEOUSNESS_ADJUDICATION.json": dict(result["contemporaneousness"]),
         "COMPLETE_CAPTURE_SEAM_PREDICATE.json": dict(result["seam_predicate"]),
         "SAFETY.json": dict(result["safety"]),
         "claims.json": dict(result["claims"]),
@@ -78,11 +78,13 @@ def main() -> int:
     write_manifest_v1(pack, tuple(names))
     print(f"EVIDENCE_PACK={pack}")
     print(f"CASE_ADJUDICATION={summary.get('CASE_ADJUDICATION')}")
-    print(f"COMPLETE_CAPTURE_SEAM={summary.get('COMPLETE_CAPTURE_SEAM')}")
+    print(f"PRODUCTIVE_HOOK_CALLER={summary.get('PRODUCTIVE_HOOK_CALLER')}")
     print(
-        "COMPLETE_CAPTURE_SEAM_ACCEPTANCE_CONTRACT_BOUND="
-        f"{summary.get('COMPLETE_CAPTURE_SEAM_ACCEPTANCE_CONTRACT_BOUND')}"
+        "PRODUCTIVE_HOOK_CALLER_BINDING_PROVEN="
+        f"{summary.get('PRODUCTIVE_HOOK_CALLER_BINDING_PROVEN')}"
     )
+    print(f"PRODUCTIVE_CALL_PATH_OFFLINE_PROOF={summary.get('PRODUCTIVE_CALL_PATH_OFFLINE_PROOF')}")
+    print(f"COMPLETE_CAPTURE_SEAM={summary.get('COMPLETE_CAPTURE_SEAM')}")
     print(
         "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED="
         f"{summary.get('CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED')}"

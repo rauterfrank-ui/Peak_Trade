@@ -1,0 +1,417 @@
+{
+  "AUTHORIZED_RUNTIME_SURFACE": "NONE",
+  "CASE_ADJUDICATION": "CASE_PRODUCTIVE_HOOK_CALLER_BOUND_OFFLINE_CALL_PATH_PROVEN_COMPLETE_CAPTURE_SEAM_REMAINS_UNPROVEN",
+  "COMPLETE_CAPTURE_SEAM": "UNPROVEN",
+  "COMPLETE_CAPTURE_SEAM_ACCEPTANCE_CONTRACT_BOUND": true,
+  "COMPLETE_CAPTURE_SEAM_MISSING_PREDICATES": [
+    "PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL"
+  ],
+  "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED": false,
+  "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED": false,
+  "CURRENT_RUNTIME_EXECUTION_AUTHORIZED": false,
+  "DOCUMENT_CLASS": "SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_CAPTURE_HOOK_CALLER_BINDING_AND_OFFLINE_CALL_PATH_PROOF_V1",
+  "HOST_CRASH_DURABILITY": "UNPROVEN",
+  "HOST_JOIN_SYMBOL": "run_live_order_pre_restart_handoff_capture_v1",
+  "LIVE_RESTART_RECONSTRUCTED": false,
+  "LIVE_SUBMIT_EXECUTED": false,
+  "PARTIAL_CAPTURE_ALLOWED": false,
+  "PRODUCTIVE_CALL_PATH_OFFLINE_PROOF": true,
+  "PRODUCTIVE_CAPTURE_OWNER": "SECTION_11_14_LIVE_PRODUCTIVE_CAPTURE_OWNER_V1",
+  "PRODUCTIVE_HOOK_CALLER": "call_pre_restart_handoff_capture_after_bound_fill_v1",
+  "PRODUCTIVE_HOOK_CALLER_BINDING_PROVEN": true,
+  "PRODUCTIVE_HOOK_CALLER_SYMBOL": "call_pre_restart_handoff_capture_after_bound_fill_v1",
+  "PRODUCTIVE_HOOK_CALLER_UNIQUE": true,
+  "PRODUCTIVE_LIFECYCLE_EVENT": "REQUIRED_WINDOW_HANDOFF_COMMIT_AFTER_BOUND_FILL_BEFORE_RESTART",
+  "PRODUCTIVE_LIFECYCLE_HOOK": "run_capture_hook_after_bound_fill_before_restart_v1",
+  "PROPOSED_NEXT_SLICE": "SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_REQUIRES_SEPARATE_OWNER_GO_V1",
+  "PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL": false,
+  "PROVEN_COMPLETE_FIELD_COUNT": 0,
+  "PROVEN_FAIL_CLOSED_FIELD_COUNT": 5,
+  "REQUIRED_FIELD_PROVENANCE_MATRIX_BOUND": true,
+  "RESTART_EXECUTED": false,
+  "RETROACTIVE_SYNTHESIS_ALLOWED": false,
+  "STRUCTURAL_RUNTIME_BINDING_PROVEN": true,
+  "WIRE_SEND_EXECUTED": false,
+  "caller_census": {
+    "AUTHORITY_CLASS": "FORENSIC_OBSERVATION",
+    "CALLER_PRODUCTIVE_RUNTIME_CALLER_COUNT": 1,
+    "DOCUMENT_CLASS": "SECTION_11_14_PRODUCTIVE_HOOK_CALLER_CENSUS_V1",
+    "HOOK_PRODUCTIVE_RUNTIME_CALLER_COUNT": 1,
+    "HOST_JOIN_PRODUCTIVE_RUNTIME_CALLER_COUNT": 0,
+    "HOST_JOIN_SYMBOL": "run_live_order_pre_restart_handoff_capture_v1",
+    "PRODUCTIVE_HOOK_CALLER": "call_pre_restart_handoff_capture_after_bound_fill_v1",
+    "PRODUCTIVE_HOOK_CALLER_UNIQUE": true,
+    "PRODUCTIVE_LIFECYCLE_EVENT": "REQUIRED_WINDOW_HANDOFF_COMMIT_AFTER_BOUND_FILL_BEFORE_RESTART",
+    "PRODUCTIVE_LIFECYCLE_HOOK": "run_capture_hook_after_bound_fill_before_restart_v1",
+    "caller_census": {
+      "CALL_SITE_COUNT": 1,
+      "DEFINITION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_caller_v1.py",
+      "PRODUCTIVE_RUNTIME_CALLER_COUNT": 1,
+      "SYMBOL": "call_pre_restart_handoff_capture_after_bound_fill_v1",
+      "TEST_ONLY_CALL_SITE_COUNT": 0,
+      "rows": [
+        {
+          "AUTHORITY_CLASS": "FORENSIC_RAW_EVIDENCE",
+          "BOUND_OR_UNBOUND": "UNBOUND_FROM_PRODUCTIVE_ENTRYPOINT",
+          "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+          "FILE": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/runner_v1.py",
+          "LINE_RANGE": "122-122",
+          "NODE_ID": "call_pre_restart_handoff_capture_after_bound_fill_v1@src/ops/section_11_13_5_live_canary_minimum_exposure_v1/runner_v1.py:122",
+          "PRODUCTIVE_OR_TEST_ONLY": "PRODUCTIVE_RUNTIME",
+          "REACHABLE_FROM_PRODUCTIVE_ENTRYPOINT": false,
+          "REQUIRES_CREDENTIALS": false,
+          "REQUIRES_LIVE_SURFACE": false,
+          "REQUIRES_VENUE_RESPONSE": false,
+          "REQUIRES_WIRE_SEND": false,
+          "SYMBOL": "call_pre_restart_handoff_capture_after_bound_fill_v1"
+        }
+      ]
+    },
+    "hook_census": {
+      "CALL_SITE_COUNT": 1,
+      "DEFINITION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py",
+      "PRODUCTIVE_RUNTIME_CALLER_COUNT": 1,
+      "SYMBOL": "run_capture_hook_after_bound_fill_before_restart_v1",
+      "TEST_ONLY_CALL_SITE_COUNT": 0,
+      "rows": [
+        {
+          "AUTHORITY_CLASS": "FORENSIC_RAW_EVIDENCE",
+          "BOUND_OR_UNBOUND": "UNBOUND_FROM_PRODUCTIVE_ENTRYPOINT",
+          "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+          "FILE": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_caller_v1.py",
+          "LINE_RANGE": "373-396",
+          "NODE_ID": "run_capture_hook_after_bound_fill_before_restart_v1@src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_caller_v1.py:373",
+          "PRODUCTIVE_OR_TEST_ONLY": "PRODUCTIVE_RUNTIME",
+          "REACHABLE_FROM_PRODUCTIVE_ENTRYPOINT": false,
+          "REQUIRES_CREDENTIALS": false,
+          "REQUIRES_LIVE_SURFACE": false,
+          "REQUIRES_VENUE_RESPONSE": false,
+          "REQUIRES_WIRE_SEND": false,
+          "SYMBOL": "run_capture_hook_after_bound_fill_before_restart_v1"
+        }
+      ]
+    },
+    "host_join_census": {
+      "CALL_SITE_COUNT": 0,
+      "DEFINITION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/runner_v1.py",
+      "PRODUCTIVE_RUNTIME_CALLER_COUNT": 0,
+      "SYMBOL": "run_live_order_pre_restart_handoff_capture_v1",
+      "TEST_ONLY_CALL_SITE_COUNT": 0,
+      "rows": []
+    },
+    "writer_graph": {
+      "EXACTLY_ONE_PRODUCTIVE_WRITER_CALLER": true,
+      "WRITER_PRODUCTIVE_RUNTIME_CALLER_COUNT": 1
+    }
+  },
+  "dataflow": {
+    "AUTHORITY_CLASS": "FORENSIC_OBSERVATION",
+    "DOCUMENT_CLASS": "SECTION_11_14_PRODUCTIVE_CAPTURE_DATAFLOW_CENSUS_V1",
+    "HOOK_PRODUCTIVE_CALLER_COUNT": 1,
+    "NAMING_SIMILARITY_IS_NOT_BINDING": true,
+    "POST_FILL_NORMALIZATION_OWNER": "NONE",
+    "PRODUCER_ID": "SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_V1",
+    "PRODUCER_PATH": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_pos_producer_v1.py",
+    "PRODUCER_REMAINS_INTERNAL_TO_WRITER": true,
+    "PRODUCTIVE_CAPTURE_OWNER": "SECTION_11_14_LIVE_PRODUCTIVE_CAPTURE_OWNER_V1",
+    "PRODUCTIVE_HOOK_CALLER": "call_pre_restart_handoff_capture_after_bound_fill_v1",
+    "PRODUCTIVE_LIFECYCLE_HOOK": "run_capture_hook_after_bound_fill_before_restart_v1",
+    "READER_IS_NOT_A_PRE_RESTART_SOURCE": true,
+    "READER_SYMBOL": "read_validated_durable_pre_restart_handoff_v1",
+    "SELECTED_CAPTURE_TRIGGER": "REQUIRED_WINDOW_HANDOFF_COMMIT_AFTER_BOUND_FILL_BEFORE_RESTART",
+    "STORAGE_OWNER": "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_V1",
+    "STORAGE_OWNER_IS_NOT_CAPTURE_OWNER": true,
+    "UPSTREAM_LIVE_ORDER_JOIN_TO_HOOK": "PROVEN",
+    "WRITER_PRODUCTIVE_CALLER": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py",
+    "WRITER_SEAM_ID": "REQUIRED_WINDOW_HANDOFF_COMMIT_AFTER_BOUND_FILL_BEFORE_RESTART",
+    "transitions": [
+      {
+        "CONCRETE_PATH": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_caller_v1.py::call_pre_restart_handoff_capture_after_bound_fill_v1",
+        "CONCRETE_SYMBOL": "LIVE_IDENTITY_BOUND_VENUE_FILL",
+        "CONSUMER": "run_capture_hook_after_bound_fill_before_restart_v1",
+        "DATA_TYPE_SCHEMA": "bound_fill_identity={clOrdId,ordId,instId,posSide,fillSz}",
+        "ERROR_BEHAVIOR": "CAPTURE_BEFORE_BOUND_FILL_PROVEN or BOUND_FILL_KIND_REJECTED",
+        "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+        "FRESHNESS_SEMANTICS": "BOUND_FILL_PROVEN_AT <= CAPTURE_STARTED_AT",
+        "IDENTITY_SEMANTICS": "FUTURE_BOUND_IDENTITY_PARAMETERIZED_NOT_HISTORICAL_HARDCODE",
+        "INVOCATION_BINDING_RELATION": "STRUCTURAL_PARAMETERIZATION_VIA_UNIQUE_PRODUCTIVE_HOOK_CALLER; HOOK_PRODUCTIVE_CALLER_COUNT=1",
+        "OPTIONAL_OR_REQUIRED": "REQUIRED_AT_CAPTURE_OWNER_ACCEPTANCE",
+        "PRODUCER": "LIVE_ORDER::LIVE_IDENTITY_BOUND_VENUE_FILL",
+        "PROVENANCE_PRESERVATION": "MUST_REMAIN_PARAMETERIZED_FROM_SAME_BOUND_FILL",
+        "RUNTIME_EXECUTION_REQUIRED_FOR_PRODUCTIVE_VALUE": true,
+        "RUNTIME_EXECUTION_REQUIRED_FOR_PROOF": false,
+        "TRANSITION_ID": "T1_PRODUCTIVE_BOUND_FILL"
+      },
+      {
+        "CONCRETE_PATH": "NONE",
+        "CONCRETE_SYMBOL": "ABSENT",
+        "CONSUMER": "NONE",
+        "DATA_TYPE_SCHEMA": "NONE",
+        "ERROR_BEHAVIOR": "NOT_INVENTED",
+        "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED_BY_ABSENCE_NOT_NORMALIZED",
+        "FRESHNESS_SEMANTICS": "NOT_APPLICABLE",
+        "IDENTITY_SEMANTICS": "NOT_APPLICABLE",
+        "INVOCATION_BINDING_RELATION": "NO_SEPARATE_POST_FILL_NORMALIZATION_OWNER_BETWEEN_BOUND_FILL_AND_HOOK",
+        "OPTIONAL_OR_REQUIRED": "NOT_A_CANONICAL_SEAM",
+        "PRODUCER": "NONE",
+        "PROVENANCE_PRESERVATION": "NOT_APPLICABLE",
+        "RUNTIME_EXECUTION_REQUIRED_FOR_PRODUCTIVE_VALUE": false,
+        "RUNTIME_EXECUTION_REQUIRED_FOR_PROOF": false,
+        "TRANSITION_ID": "T2_POST_FILL_NORMALIZATION"
+      },
+      {
+        "CONCRETE_PATH": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py",
+        "CONCRETE_SYMBOL": "run_capture_hook_after_bound_fill_before_restart_v1",
+        "CONSUMER": "accept_complete_contemporaneous_capture_inputs_v1",
+        "DATA_TYPE_SCHEMA": "hook kwargs including bound_fill_identity and S05 qty",
+        "ERROR_BEHAVIOR": "Section1114OfflineSurfaceError; no partial record",
+        "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+        "FRESHNESS_SEMANTICS": "CAPTURE_WINDOW_TIMESTAMP_ORDERING=CONTRACT_PROVEN",
+        "IDENTITY_SEMANTICS": "SAME_LIFECYCLE_AS_BOUND_FILL",
+        "INVOCATION_BINDING_RELATION": "UNIQUE_PRODUCTIVE_CALLER_OF_WRITER; UNIQUE_PRODUCTIVE_HOOK_CALLER=call_pre_restart_handoff_capture_after_bound_fill_v1",
+        "OPTIONAL_OR_REQUIRED": "REQUIRED",
+        "PRODUCER": "run_capture_hook_after_bound_fill_before_restart_v1",
+        "PROVENANCE_PRESERVATION": "MUST_PASS_ACCEPTANCE_CONTRACT_BEFORE_WRITER",
+        "RUNTIME_EXECUTION_REQUIRED_FOR_PRODUCTIVE_VALUE": true,
+        "RUNTIME_EXECUTION_REQUIRED_FOR_PROOF": false,
+        "TRANSITION_ID": "T3_LIFECYCLE_HOOK"
+      },
+      {
+        "CONCRETE_PATH": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_create_productive_capture_owner_and_lifecycle_hook_v1.py",
+        "CONCRETE_SYMBOL": "evaluate_productive_capture_gates_v1",
+        "CONSUMER": "commit_handoff_after_bound_fill_before_restart_v1",
+        "DATA_TYPE_SCHEMA": "writer_kwargs plus identity and capture_window",
+        "ERROR_BEHAVIOR": "hard fail; no synthesis; no defaulting",
+        "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+        "FRESHNESS_SEMANTICS": "NO_STALE_CACHE; NO_TIMESTAMP_BACKFILL",
+        "IDENTITY_SEMANTICS": "clOrdId,ordId,instId,posSide,fillSz must equal bound_fill_identity",
+        "INVOCATION_BINDING_RELATION": "OWNER_GATES_THEN_WRITER_KWARGS",
+        "OPTIONAL_OR_REQUIRED": "REQUIRED",
+        "PRODUCER": "SECTION_11_14_LIVE_PRODUCTIVE_CAPTURE_OWNER_V1",
+        "PROVENANCE_PRESERVATION": "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_CAPTURE",
+        "RUNTIME_EXECUTION_REQUIRED_FOR_PRODUCTIVE_VALUE": true,
+        "RUNTIME_EXECUTION_REQUIRED_FOR_PROOF": false,
+        "TRANSITION_ID": "T4_CAPTURE_OWNER"
+      },
+      {
+        "CONCRETE_PATH": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_owner_and_writer_v1.py",
+        "CONCRETE_SYMBOL": "commit_handoff_after_bound_fill_before_restart_v1",
+        "CONSUMER": "durable_state/section_11_14_live_durable_pre_restart_handoff_v1/pre_restart",
+        "DATA_TYPE_SCHEMA": "HANDOFF_DOCUMENT_CLASS five required fields plus envelope",
+        "ERROR_BEHAVIOR": "MISSING_REQUIRED_HANDOFF_FIELDS; no partial persist",
+        "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+        "FRESHNESS_SEMANTICS": "captured_at_utc from capture_started_at; no backfill",
+        "IDENTITY_SEMANTICS": "record identity copied from producer output",
+        "INVOCATION_BINDING_RELATION": "commit_handoff_after_bound_fill_before_restart_v1 calls emit_s05_handoff_pos_v1 then construct_five_field_handoff_record_v1 then atomic persist",
+        "OPTIONAL_OR_REQUIRED": "REQUIRED",
+        "PRODUCER": "emit_s05_handoff_pos_v1",
+        "PROVENANCE_PRESERVATION": "envelope provenance_class stamped contemporaneous",
+        "RUNTIME_EXECUTION_REQUIRED_FOR_PRODUCTIVE_VALUE": true,
+        "RUNTIME_EXECUTION_REQUIRED_FOR_PROOF": false,
+        "TRANSITION_ID": "T5_PRODUCER_AND_PERSIST"
+      }
+    ]
+  },
+  "host_graph": {
+    "AUTHORIZED_RUNTIME_SURFACE": "NONE",
+    "CURRENT_RUNTIME_EXECUTION_AUTHORIZED": false,
+    "DOCUMENT_CLASS": "SECTION_11_14_LIVE_ORDER_PRE_RESTART_CAPTURE_HOST_GRAPH_V1",
+    "HOST_JOIN_SYMBOL": "run_live_order_pre_restart_handoff_capture_v1",
+    "LIVE_ARMED": false,
+    "LIVE_ENABLED": false,
+    "POST_ALLOWED": false,
+    "PRODUCTIVE_CAPTURE_OWNER": "SECTION_11_14_LIVE_PRODUCTIVE_CAPTURE_OWNER_V1",
+    "PRODUCTIVE_HOOK_CALLER": "call_pre_restart_handoff_capture_after_bound_fill_v1",
+    "PRODUCTIVE_HOOK_CALLER_UNIQUE": true,
+    "PRODUCTIVE_LIFECYCLE_EVENT": "REQUIRED_WINDOW_HANDOFF_COMMIT_AFTER_BOUND_FILL_BEFORE_RESTART",
+    "PRODUCTIVE_LIFECYCLE_HOOK": "run_capture_hook_after_bound_fill_before_restart_v1",
+    "STRUCTURAL_RUNTIME_BINDING_PROVEN": true,
+    "WIRE_SEND": false,
+    "edges": [
+      {
+        "event": "REQUIRED_WINDOW_HANDOFF_COMMIT_AFTER_BOUND_FILL_BEFORE_RESTART",
+        "from": "BOUND_FILL",
+        "to": "HOST_JOIN"
+      },
+      {
+        "from": "HOST_JOIN",
+        "to": "PRODUCTIVE_HOOK_CALLER"
+      },
+      {
+        "from": "PRODUCTIVE_HOOK_CALLER",
+        "to": "PRODUCTIVE_LIFECYCLE_HOOK"
+      },
+      {
+        "from": "PRODUCTIVE_LIFECYCLE_HOOK",
+        "to": "PRODUCTIVE_CAPTURE_OWNER"
+      },
+      {
+        "from": "PRODUCTIVE_LIFECYCLE_HOOK",
+        "order": "BEFORE",
+        "to": "RESTART_BOUNDARY"
+      }
+    ],
+    "nodes": [
+      {
+        "CURRENTLY_AUTHORIZED": false,
+        "PRODUCTION_REACHABLE": true,
+        "id": "BOUND_FILL",
+        "kind": "LIVE_IDENTITY_BOUND_VENUE_FILL"
+      },
+      {
+        "CURRENTLY_AUTHORIZED": false,
+        "PRODUCTION_REACHABLE": true,
+        "id": "PRODUCTIVE_HOOK_CALLER",
+        "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_caller_v1.py",
+        "symbol": "call_pre_restart_handoff_capture_after_bound_fill_v1"
+      },
+      {
+        "CURRENTLY_AUTHORIZED": false,
+        "PRODUCTION_REACHABLE": true,
+        "id": "HOST_JOIN",
+        "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/runner_v1.py",
+        "symbol": "run_live_order_pre_restart_handoff_capture_v1"
+      },
+      {
+        "CURRENTLY_AUTHORIZED": false,
+        "PRODUCTION_REACHABLE": true,
+        "id": "PRODUCTIVE_LIFECYCLE_HOOK",
+        "path": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py",
+        "symbol": "run_capture_hook_after_bound_fill_before_restart_v1"
+      },
+      {
+        "CURRENTLY_AUTHORIZED": false,
+        "PRODUCTION_REACHABLE": true,
+        "id": "PRODUCTIVE_CAPTURE_OWNER",
+        "symbol": "SECTION_11_14_LIVE_PRODUCTIVE_CAPTURE_OWNER_V1"
+      },
+      {
+        "CURRENTLY_AUTHORIZED": false,
+        "PRODUCTION_REACHABLE": true,
+        "id": "RESTART_BOUNDARY",
+        "path": "src/ops/canonical_local_launcher_and_process_supervision_v1/lifecycle_v1.py",
+        "symbol": "SupervisorLifecycle.restart"
+      }
+    ]
+  },
+  "reader_binding": {
+    "COMPLETE_CAPTURE_SEAM": "UNPROVEN",
+    "COMPLETE_CAPTURE_SEAM_MISSING_PREDICATES": [
+      "PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL"
+    ]
+  },
+  "required_field_provenance_matrix": {
+    "CONTRADICTORY_FIELD_COUNT": 0,
+    "DOCUMENT_CLASS": "SECTION_11_14_REQUIRED_FIELD_PROVENANCE_MATRIX_V1",
+    "HANDOFF_REQUIRED_FIELD_COUNT": 5,
+    "PARTIAL_CAPTURE_ALLOWED": false,
+    "PROVEN_COMPLETE_FIELD_COUNT": 0,
+    "PROVEN_FAIL_CLOSED_FIELD_COUNT": 5,
+    "RETROACTIVE_SYNTHESIS_ALLOWED": false,
+    "SCHEMA_CHANGE_REQUIRED": false,
+    "SELECTED_SEMANTIC_ID": "S05_PEAK_TRADE_OWNED_RESULTING_CURRENT_POSITION_QTY_VENUE_CONTRACT_COUNT_UNSIGNED",
+    "UNPROVEN_FIELD_COUNT": 0,
+    "rows": [
+      {
+        "AMBIGUITY_BEHAVIOR": "HARD_FAIL",
+        "CANONICAL_REQUIREMENT_SOURCE": "REQUIRED_HANDOFF_FIELDS+LIVE_RESTART_RECONSTRUCTED identity equation+FUTURE_BOUND_IDENTITY_PARAMETERIZATION",
+        "CAPTURE_OWNER_ACCEPTANCE_RULE": "nonempty exact string from the same bound-fill identity; no historical BOUND_* hardcode; no restart-reader source",
+        "CONSUMER_SYMBOL": "run_capture_hook_after_bound_fill_before_restart_v1",
+        "EVIDENCE": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py; src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_pos_producer_v1.py; restart_reconstructed_create_productive_capture_owner_and_lifecycle_hook_v1.py",
+        "FIELD": "clOrdId",
+        "FRESHNESS_BINDING": "CONTEMPORANEOUS_WITH_BOUND_FILL_PROVEN_AT",
+        "HISTORICAL_BOUND_IDENTITY_IS_NOT_CURRENT_PRODUCER": true,
+        "IDENTITY_BINDING": "MUST_EQUAL_SAME_BOUND_FILL_LIFECYCLE",
+        "MISSING_BEHAVIOR": "HARD_FAIL",
+        "NULLABILITY": "FORBIDDEN",
+        "PRODUCER_SYMBOL": "require_future_bound_fill_identity_v1",
+        "PRODUCER_VALUE_SEMANTICS": "Peak_Trade client order identity sent on the Live POST and returned on the synchronous ACK.",
+        "PRODUCTIVE_PRODUCER": "LIVE_IDENTITY_BOUND_VENUE_FILL::bound_fill_identity parameterized into SECTION_11_14_LIVE_PRODUCTIVE_CAPTURE_OWNER_V1",
+        "PROVENANCE_BINDING": "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_CAPTURE",
+        "STATUS": "PROVEN_FAIL_CLOSED_IF_ABSENT",
+        "TRANSFER_PATH": "bound_fill_identity -> accept_complete_contemporaneous_capture_inputs_v1 -> evaluate_productive_capture_gates_v1 -> emit_s05_handoff_pos_v1 -> construct_five_field_handoff_record_v1",
+        "UPSTREAM_LIVE_ORDER_JOIN_TO_HOOK": "PROVEN"
+      },
+      {
+        "AMBIGUITY_BEHAVIOR": "HARD_FAIL",
+        "CANONICAL_REQUIREMENT_SOURCE": "REQUIRED_HANDOFF_FIELDS+LIVE_RESTART_RECONSTRUCTED identity equation+FUTURE_BOUND_IDENTITY_PARAMETERIZATION",
+        "CAPTURE_OWNER_ACCEPTANCE_RULE": "nonempty exact string from the same bound-fill identity; no historical BOUND_* hardcode; no restart-reader source",
+        "CONSUMER_SYMBOL": "run_capture_hook_after_bound_fill_before_restart_v1",
+        "EVIDENCE": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py; src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_pos_producer_v1.py; restart_reconstructed_create_productive_capture_owner_and_lifecycle_hook_v1.py",
+        "FIELD": "ordId",
+        "FRESHNESS_BINDING": "CONTEMPORANEOUS_WITH_BOUND_FILL_PROVEN_AT",
+        "HISTORICAL_BOUND_IDENTITY_IS_NOT_CURRENT_PRODUCER": true,
+        "IDENTITY_BINDING": "MUST_EQUAL_SAME_BOUND_FILL_LIFECYCLE",
+        "MISSING_BEHAVIOR": "HARD_FAIL",
+        "NULLABILITY": "FORBIDDEN",
+        "PRODUCER_SYMBOL": "require_future_bound_fill_identity_v1",
+        "PRODUCER_VALUE_SEMANTICS": "Venue order identity returned on the synchronous ACK. Absent before HTTP acknowledgement.",
+        "PRODUCTIVE_PRODUCER": "LIVE_IDENTITY_BOUND_VENUE_FILL::bound_fill_identity parameterized into SECTION_11_14_LIVE_PRODUCTIVE_CAPTURE_OWNER_V1",
+        "PROVENANCE_BINDING": "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_CAPTURE",
+        "STATUS": "PROVEN_FAIL_CLOSED_IF_ABSENT",
+        "TRANSFER_PATH": "bound_fill_identity -> accept_complete_contemporaneous_capture_inputs_v1 -> evaluate_productive_capture_gates_v1 -> emit_s05_handoff_pos_v1 -> construct_five_field_handoff_record_v1",
+        "UPSTREAM_LIVE_ORDER_JOIN_TO_HOOK": "PROVEN"
+      },
+      {
+        "AMBIGUITY_BEHAVIOR": "HARD_FAIL",
+        "CANONICAL_REQUIREMENT_SOURCE": "REQUIRED_HANDOFF_FIELDS+LIVE_RESTART_RECONSTRUCTED identity equation+FUTURE_BOUND_IDENTITY_PARAMETERIZATION",
+        "CAPTURE_OWNER_ACCEPTANCE_RULE": "nonempty exact string from the same bound-fill identity; no historical BOUND_* hardcode; no restart-reader source",
+        "CONSUMER_SYMBOL": "run_capture_hook_after_bound_fill_before_restart_v1",
+        "EVIDENCE": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py; src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_pos_producer_v1.py; restart_reconstructed_create_productive_capture_owner_and_lifecycle_hook_v1.py",
+        "FIELD": "instId",
+        "FRESHNESS_BINDING": "CONTEMPORANEOUS_WITH_BOUND_FILL_PROVEN_AT",
+        "HISTORICAL_BOUND_IDENTITY_IS_NOT_CURRENT_PRODUCER": true,
+        "IDENTITY_BINDING": "MUST_EQUAL_SAME_BOUND_FILL_LIFECYCLE",
+        "MISSING_BEHAVIOR": "HARD_FAIL",
+        "NULLABILITY": "FORBIDDEN",
+        "PRODUCER_SYMBOL": "require_future_bound_fill_identity_v1",
+        "PRODUCER_VALUE_SEMANTICS": "Bound Live instrument identity from the Peak_Trade order plan and venue-native request body.",
+        "PRODUCTIVE_PRODUCER": "LIVE_IDENTITY_BOUND_VENUE_FILL::bound_fill_identity parameterized into SECTION_11_14_LIVE_PRODUCTIVE_CAPTURE_OWNER_V1",
+        "PROVENANCE_BINDING": "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_CAPTURE",
+        "STATUS": "PROVEN_FAIL_CLOSED_IF_ABSENT",
+        "TRANSFER_PATH": "bound_fill_identity -> accept_complete_contemporaneous_capture_inputs_v1 -> evaluate_productive_capture_gates_v1 -> emit_s05_handoff_pos_v1 -> construct_five_field_handoff_record_v1",
+        "UPSTREAM_LIVE_ORDER_JOIN_TO_HOOK": "PROVEN"
+      },
+      {
+        "AMBIGUITY_BEHAVIOR": "HARD_FAIL",
+        "CANONICAL_REQUIREMENT_SOURCE": "REQUIRED_HANDOFF_FIELDS+LIVE_RESTART_RECONSTRUCTED identity equation+FUTURE_BOUND_IDENTITY_PARAMETERIZATION",
+        "CAPTURE_OWNER_ACCEPTANCE_RULE": "nonempty exact string from the same bound-fill identity; no historical BOUND_* hardcode; no restart-reader source",
+        "CONSUMER_SYMBOL": "run_capture_hook_after_bound_fill_before_restart_v1",
+        "EVIDENCE": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py; src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_pos_producer_v1.py; restart_reconstructed_create_productive_capture_owner_and_lifecycle_hook_v1.py",
+        "FIELD": "posSide",
+        "FRESHNESS_BINDING": "CONTEMPORANEOUS_WITH_BOUND_FILL_PROVEN_AT",
+        "HISTORICAL_BOUND_IDENTITY_IS_NOT_CURRENT_PRODUCER": true,
+        "IDENTITY_BINDING": "MUST_EQUAL_SAME_BOUND_FILL_LIFECYCLE",
+        "MISSING_BEHAVIOR": "HARD_FAIL",
+        "NULLABILITY": "FORBIDDEN",
+        "PRODUCER_SYMBOL": "require_future_bound_fill_identity_v1",
+        "PRODUCER_VALUE_SEMANTICS": "Bound fill posSide identity. Observed Live net-mode plan omits posSide from the Place Order body.",
+        "PRODUCTIVE_PRODUCER": "LIVE_IDENTITY_BOUND_VENUE_FILL::bound_fill_identity parameterized into SECTION_11_14_LIVE_PRODUCTIVE_CAPTURE_OWNER_V1",
+        "PROVENANCE_BINDING": "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_CAPTURE",
+        "STATUS": "PROVEN_FAIL_CLOSED_IF_ABSENT",
+        "TRANSFER_PATH": "bound_fill_identity -> accept_complete_contemporaneous_capture_inputs_v1 -> evaluate_productive_capture_gates_v1 -> emit_s05_handoff_pos_v1 -> construct_five_field_handoff_record_v1",
+        "UPSTREAM_LIVE_ORDER_JOIN_TO_HOOK": "PROVEN"
+      },
+      {
+        "AMBIGUITY_BEHAVIOR": "HARD_FAIL",
+        "CANONICAL_REQUIREMENT_SOURCE": "REQUIRED_HANDOFF_FIELDS+S05_PEAK_TRADE_OWNED_RESULTING_CURRENT_POSITION_QTY",
+        "CAPTURE_OWNER_ACCEPTANCE_RULE": "nonempty unsigned Decimal; source_kind must be CONTEMPORANEOUS_PEAK_TRADE_OWNED_RESULTING_CURRENT_POSITION_QTY; unit must be VENUE_CONTRACT_COUNT_NUMBER_OF_CONTRACTS; must Decimal-equal fillSz; FILL_SZ_COPY forbidden",
+        "CONSUMER_SYMBOL": "run_capture_hook_after_bound_fill_before_restart_v1",
+        "EVIDENCE": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_pos_producer_v1.py; PRODUCTIVE_S05_QTY_SOURCE=SECTION_11_14_LIVE_PRODUCTIVE_CAPTURE_OWNER_V1::peak_trade_owned_resulting_current_position_qty",
+        "FIELD": "pos",
+        "FRESHNESS_BINDING": "CONTEMPORANEOUS_AT_HANDOFF_COMMIT_AFTER_BOUND_FILL",
+        "HISTORICAL_BOUND_IDENTITY_IS_NOT_CURRENT_PRODUCER": true,
+        "IDENTITY_BINDING": "POS_MUST_DECIMAL_EQUAL_BOUND_FILL_SZ_OF_SAME_LIFECYCLE",
+        "MISSING_BEHAVIOR": "HARD_FAIL",
+        "NULLABILITY": "FORBIDDEN",
+        "PRODUCER_SYMBOL": "emit_s05_handoff_pos_v1",
+        "PRODUCER_VALUE_SEMANTICS": "Peak_Trade-owned resulting/current position qty; unsigned venue contract count; Decimal-equal fillSz; not fillSz copy",
+        "PRODUCTIVE_PRODUCER": "SECTION_11_14_LIVE_PRODUCTIVE_CAPTURE_OWNER_V1::peak_trade_owned_resulting_current_position_qty",
+        "PROVENANCE_BINDING": "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_CAPTURE",
+        "STATUS": "PROVEN_FAIL_CLOSED_IF_ABSENT",
+        "TRANSFER_PATH": "peak_trade_owned_resulting_current_position_qty -> accept_complete_contemporaneous_capture_inputs_v1 -> emit_s05_handoff_pos_v1 -> construct_five_field_handoff_record_v1.pos",
+        "UPSTREAM_LIVE_ORDER_JOIN_TO_HOOK": "PROVEN"
+      }
+    ]
+  }
+}

@@ -14,13 +14,12 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_restart_handoff
     run_capture_hook_after_bound_fill_before_restart_v1,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_OWNER_GO,
+    HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_SHA,
     LIVE_ENABLED,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
     POST_ALLOWED,
     SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED,
-    THIS_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -97,19 +96,19 @@ def _accept_kwargs(**overrides: object) -> dict[str, object]:
 
 
 def test_current_slice_and_owner_go_match_this_workpackage() -> None:
-    assert THIS_SLICE == (
-        "11.14.LIVE_HANDOFF_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_AND_REQUIRED_FIELD_PROVENANCE"
-    )
-    assert OWNER_GO.endswith(
+    assert HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_OWNER_GO.endswith(
         "COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_AND_REQUIRED_FIELD_PROVENANCE_V1"
     )
-    assert EXPECTED_ORIGIN_MAIN_SHA == "4437d3e48fb900202fb87e349a7f1b81df4bb6b5"
+    assert HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_SHA == (
+        "4437d3e48fb900202fb87e349a7f1b81df4bb6b5"
+    )
 
 
 def test_dataflow_census_does_not_invent_post_fill_normalization() -> None:
     census = census_productive_capture_dataflow_v1()
     assert census["POST_FILL_NORMALIZATION_OWNER"] == "NONE"
-    assert census["HOOK_PRODUCTIVE_CALLER_COUNT"] == 0
+    assert census["HOOK_PRODUCTIVE_CALLER_COUNT"] == 1
+    assert census["UPSTREAM_LIVE_ORDER_JOIN_TO_HOOK"] == "PROVEN"
     assert census["READER_IS_NOT_A_PRE_RESTART_SOURCE"] is True
     assert census["NAMING_SIMILARITY_IS_NOT_BINDING"] is True
 
@@ -127,7 +126,7 @@ def test_required_field_matrix_is_fail_closed_and_not_complete_production() -> N
         assert row["STATUS"] == FIELD_STATUS_PROVEN_FAIL_CLOSED_IF_ABSENT
         assert row["MISSING_BEHAVIOR"] == "HARD_FAIL"
         assert row["HISTORICAL_BOUND_IDENTITY_IS_NOT_CURRENT_PRODUCER"] is True
-        assert row["UPSTREAM_LIVE_ORDER_JOIN_TO_HOOK"] == "UNPROVEN_NO_PRODUCTIVE_HOOK_CALLER"
+        assert row["UPSTREAM_LIVE_ORDER_JOIN_TO_HOOK"] == "PROVEN"
 
 
 def test_complete_test_fixture_input_constructs_complete_record_without_productive_claim() -> None:
@@ -310,11 +309,10 @@ def test_adjudication_keeps_complete_seam_unproven_and_runtime_unauthorized() ->
     adjudication = bind_complete_contemporaneous_capture_seam_and_required_field_provenance_v1(
         repo_root=REPO_ROOT
     )
-    assert THIS_SLICE.endswith("REQUIRED_FIELD_PROVENANCE")
+    assert adjudication["COMPLETE_CAPTURE_SEAM"] == COMPLETE_CAPTURE_SEAM
     assert adjudication["PRODUCTIVE_CAPTURE_OWNER"] == PRODUCTIVE_CAPTURE_OWNER
     assert adjudication["PRODUCTIVE_LIFECYCLE_HOOK"] == PRODUCTIVE_LIFECYCLE_HOOK
     assert adjudication["STRUCTURAL_RUNTIME_BINDING_PROVEN"] is True
-    assert adjudication["COMPLETE_CAPTURE_SEAM"] == COMPLETE_CAPTURE_SEAM
     assert adjudication["COMPLETE_CAPTURE_SEAM"] == "UNPROVEN"
     assert adjudication["COMPLETE_CAPTURE_SEAM_ACCEPTANCE_CONTRACT_BOUND"] is True
     assert adjudication["REQUIRED_FIELD_PROVENANCE_MATRIX_BOUND"] is True
@@ -334,8 +332,8 @@ def test_adjudication_keeps_complete_seam_unproven_and_runtime_unauthorized() ->
 def test_execute_is_offline_and_does_not_claim_productive_capture() -> None:
     result = (
         execute_live_handoff_complete_contemporaneous_capture_seam_and_required_field_provenance_v1(
-            owner_go=OWNER_GO,
-            origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+            owner_go=HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_OWNER_GO,
+            origin_main_sha=HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_SHA,
             repo_root=REPO_ROOT,
             run_id="20260907T120000Z-test",
         )

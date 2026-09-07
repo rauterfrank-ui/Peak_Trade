@@ -53,6 +53,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_eph
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.lifecycle_v1 import (
     build_lifecycle_and_closeout_contract_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_restart_handoff_capture_caller_v1 import (
+    call_pre_restart_handoff_capture_after_bound_fill_v1,
+    compose_live_order_pre_restart_capture_host_graph_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.submit_gates_v1 import (
     evaluate_canary_submit_gates_v1,
 )
@@ -99,6 +103,28 @@ class LiveCanaryRunnerResultV1:
 
 def _repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
+
+
+def run_live_order_pre_restart_handoff_capture_v1(**kwargs: Any) -> dict[str, Any]:
+    """Production LIVE_ORDER host join: after bound fill, before restart.
+
+    Does not submit. Does not GET. Does not POST. Does not wire-send.
+    Fail-closed unless the production host graph contains the unique caller.
+    """
+    graph = compose_live_order_pre_restart_capture_host_graph_v1()
+    caller_nodes = [
+        row
+        for row in graph["nodes"]
+        if row.get("id") == "PRODUCTIVE_HOOK_CALLER" and row.get("symbol")
+    ]
+    if len(caller_nodes) != 1:
+        raise LiveCanaryRunnerError("PRODUCTION_GRAPH_WITHOUT_UNIQUE_CALLER")
+    result = call_pre_restart_handoff_capture_after_bound_fill_v1(**kwargs)
+    result["host_graph"] = graph
+    result["HOST_JOIN_SYMBOL"] = "run_live_order_pre_restart_handoff_capture_v1"
+    result["WIRE_SEND"] = False
+    result["CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED"] = False
+    return result
 
 
 def run_section_11_13_5_live_canary_minimum_exposure_v1(
@@ -257,6 +283,9 @@ def run_section_11_13_5_live_canary_minimum_exposure_v1(
         execute_payload["forensic"] = forensic
         execute_payload["trade_permission_forensic"] = trade
         execute_payload["lifecycle_contract"] = lifecycle
+        execute_payload["pre_restart_capture_host_graph"] = (
+            compose_live_order_pre_restart_capture_host_graph_v1()
+        )
         execute_payload["LIVE_CANARY_MINIMUM_EXPOSURE_PROVEN"] = False
         execute_payload["LIVE_AUTHORIZED"] = False
         execute_payload["OWNER_GO_CONSUMED"] = False
@@ -331,6 +360,9 @@ def run_section_11_13_5_live_canary_minimum_exposure_v1(
             "forensic": forensic,
             "trade_permission_forensic": trade,
             "lifecycle_contract": lifecycle,
+            "pre_restart_capture_host_graph": (
+                compose_live_order_pre_restart_capture_host_graph_v1()
+            ),
             "submit_gate": gate.to_dict(),
             "claims": claims,
             "summary": summary,
