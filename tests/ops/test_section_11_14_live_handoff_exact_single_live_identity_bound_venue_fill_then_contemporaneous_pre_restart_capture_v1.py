@@ -28,6 +28,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.venue_contract_coun
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     CANARY_AUTHORIZED,
     EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_OWNER_GO,
+    HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SHA,
+    HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SLICE,
     LIVE_ARMED,
     LIVE_ENABLED,
     LIVE_RESTART_RECONSTRUCTED,
@@ -35,7 +38,6 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     POST_ALLOWED,
     SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED,
     TESTNET_AUTHORIZED,
-    THIS_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -66,17 +68,22 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_re
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
-def test_current_slice_and_owner_go_match_this_workpackage() -> None:
-    assert THIS_SLICE == (
+def test_historical_slice_and_owner_go_remain_bound_to_this_workpackage() -> None:
+    assert HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SLICE == (
         "11.14.LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_"
         "THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE"
     )
-    assert OWNER_GO.endswith(
+    assert HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_OWNER_GO.endswith(
         "LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_V1"
     )
-    assert OWNER_GO == FUTURE_EXECUTION_OWNER_GO_PROPOSED_TOKEN
-    assert OWNER_GO != OWNER_GO_EXECUTE
-    assert EXPECTED_ORIGIN_MAIN_SHA == "6d25cd2ced346f760db26ca488183b45d19b3d73"
+    assert (
+        HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_OWNER_GO
+        == FUTURE_EXECUTION_OWNER_GO_PROPOSED_TOKEN
+    )
+    assert HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_OWNER_GO != OWNER_GO_EXECUTE
+    assert HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SHA == (
+        "6d25cd2ced346f760db26ca488183b45d19b3d73"
+    )
     assert LIVE_ENABLED is False
     assert LIVE_ARMED is False
     assert POST_ALLOWED is False
@@ -108,7 +115,7 @@ def test_bind_proves_code_gap_and_does_not_submit(tmp_path: Path) -> None:
     assert result["CAPTURE_CALLER_ACCEPTS_HISTORICAL_FILL"] is False
     assert result["CAPTURE_CALLER_ACCEPTS_FIXTURE_FILL"] is False
     assert result["CAPTURE_CALLER_ACCEPTS_SYNTHETIC_FILL"] is False
-    assert result["OWNER_GO_SCOPE_MATCH"] is True
+    assert result["OWNER_GO_SCOPE_MATCH"] is False
     assert result["non_execution"]["GET_PERFORMED"] is False
     assert result["non_execution"]["POST_USED"] is False
     assert result["code_gap"]["CODE_GAP_ID"] == CODE_GAP_ID
@@ -124,10 +131,11 @@ def test_contemporaneous_matrix_unknown_is_blocking() -> None:
     assert matrix["HISTORICAL_MATRIX_IS_NOT_CONTEMPORANEOUS_PASS"] is True
     by_name = {row["GATE"]: row for row in matrix["rows"]}
     assert tuple(by_name) == GATE_NAMES
-    assert by_name["OWNER_EXECUTION_PERMIT"]["GATE_STATUS"] == "PASS"
+    assert by_name["OWNER_EXECUTION_PERMIT"]["GATE_STATUS"] == "BLOCKED"
     assert by_name["LIVE_ENABLED"]["GATE_STATUS"] == "BLOCKED"
     assert by_name["INSTRUMENT_STATE"]["GATE_STATUS"] == "UNKNOWN"
     assert by_name["INSTRUMENT_STATE"]["BLOCKING"] is True
+    assert "OWNER_EXECUTION_PERMIT" in matrix["BLOCKING_GATES"]
     assert "LIVE_ENABLED" in matrix["BLOCKING_GATES"]
     assert "INSTRUMENT_STATE" in matrix["BLOCKING_GATES"]
     assert matrix["BLOCKING_GATE_COUNT"] >= 24

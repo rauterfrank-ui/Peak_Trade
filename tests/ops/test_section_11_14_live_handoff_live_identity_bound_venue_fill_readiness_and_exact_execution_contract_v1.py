@@ -30,7 +30,6 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     LIVE_ENABLED,
     LIVE_RESTART_RECONSTRUCTED,
     POST_ALLOWED,
-    PREDECESSOR_SLICE,
     SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED,
     TESTNET_AUTHORIZED,
 )
@@ -69,9 +68,6 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_historical_slice_and_owner_go_remain_bound_to_readiness_go() -> None:
-    assert PREDECESSOR_SLICE == (
-        "11.14.LIVE_HANDOFF_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_AND_EXACT_EXECUTION_CONTRACT"
-    )
     assert HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_OWNER_GO.endswith(
         "LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_AND_EXACT_EXECUTION_CONTRACT_V1"
     )

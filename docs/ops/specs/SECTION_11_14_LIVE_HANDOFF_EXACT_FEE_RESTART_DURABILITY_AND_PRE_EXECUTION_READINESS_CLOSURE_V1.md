@@ -1,0 +1,125 @@
+---
+docs_token: DOCS_TOKEN_SECTION_11_14_LIVE_HANDOFF_EXACT_FEE_RESTART_DURABILITY_AND_PRE_EXECUTION_READINESS_CLOSURE_V1
+status: active
+scope: §11.14 forensic closure of exact OKX fee formula, live restart reconstruction, host-crash durability, and pre-execution readiness; no GET; no POST; no submit; no restart; no crash test; no Owner execution authorization
+capability: SECTION_11_14_LIVE_HANDOFF_EXACT_FEE_RESTART_DURABILITY_AND_PRE_EXECUTION_READINESS_CLOSURE_V1
+architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
+last_updated: 2026-09-07
+---
+
+# Section 11.14 Exact Fee Restart Durability And Pre-Execution Readiness Closure V1
+
+```text
+DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
+AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK
+AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE
+ATLAS_AUTHORITY=NONE
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CORE_LOGIC_CHANGE=false
+ACTIVATION_STATE=not_activated
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+OWNER_EXECUTION_AUTHORIZED=false
+LIVE_EXECUTION_AUTHORIZED=false
+LIVE_SUBMIT_EXECUTED=false
+WIRE_SEND_EXECUTED=false
+POSITION_MUTATION_EXECUTED=false
+RESTART_EXECUTED=false
+CRASH_TEST_EXECUTED=false
+GET_PERFORMED=false
+POST_PERFORMED=false
+```
+
+This spec is not SSOT. The Master Runbook persist is SSOT.
+
+## Fee
+
+```text
+EXACT_OKX_FEE_FORMULA_UNPROVEN=true
+EXACT_OKX_FEE_FORMULA_STATUS=UNPROVEN
+BOUNDED_FEE_ENVELOPE_POLICY_BOUND=true
+BOUNDED_FEE_ENVELOPE_CURRENT_NUMERIC_PROVEN=false
+BOUNDED_FEE_ENVELOPE_PROVEN=false
+EXPECTED_FEE_PRETRADE_STATUS=POLICY_BOUND_NUMERIC_UNPROVEN_CURRENT_GET_ABSENT
+VENUE_REPORTED_FEE_POST_FILL_STATUS=PROVEN_HISTORICAL_IDENTITY_BOUND_SINGLE_FILL_ONLY
+LOCAL_FEE_ESTIMATE_STATUS=CONSERVATIVE_INTERNAL_ENVELOPE_NOT_OEM
+EXACT_SETTLED_FEE_STATUS=HISTORICAL_VENUE_REPORTED_SINGLE_FILL_NOT_GENERAL_FORMULA
+```
+
+A historical identity-bound fill `fee=-0.000374 USDC` at `fillPx=0.748`
+`execType=T` matches the hypothesis `0.0005 * qty * ctVal * fillPx`. That
+match is `HYPOTHESIS_NOT_OEM_FORMULA`. It does not close the OEM formula.
+No contemporaneous SUI trade-fee GET exists for that fill. Current SUI
+trade-fee GET remains absent from the 20260907T182140Z pretrade pack.
+
+`EXPECTED_FEE_PRETRADE`, `VENUE_REPORTED_FEE_POST_FILL`,
+`LOCAL_FEE_ESTIMATE`, and `EXACT_SETTLED_FEE` are not synonymous.
+
+## Restart
+
+```text
+CODE_PATH_EXISTS=true
+PRODUCTIVE_BINDING_EXISTS=true
+OFFLINE_RECONSTRUCTION_PROOF_EXISTS=true
+LIVE_RESTART_OBSERVATION_EXISTS=false
+POST_RESTART_RECONCILIATION_PROOF_EXISTS=false
+LIVE_RESTART_STATIC_RECONSTRUCTION_PROVEN=true
+LIVE_RESTART_EMPIRICAL_RECONSTRUCTION_PROVEN=false
+LIVE_RESTART_RECONSTRUCTED=false
+HANDOFF_WRITTEN=false
+CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false
+AUTHORIZATION_INTENTIONALLY_MUST_NOT_SURVIVE_RESTART=true
+```
+
+Static fail-closed reconstruction when the durable handoff is absent is
+proven. Successful identity reconstruction requires a contemporaneous
+handoff that does not exist. No restart was executed.
+
+## Durability
+
+```text
+PROCESS_CRASH_DURABILITY_STATIC_MODEL=SUPPORTED
+PROCESS_CRASH_DURABILITY_STATUS=STATIC_MODEL_SUPPORTED_EMPIRICAL_UNPROVEN
+HOST_CRASH_DURABILITY_UNPROVEN=true
+HOST_CRASH_DURABILITY_STATUS=UNPROVEN
+POWER_LOSS_DURABILITY_STATUS=UNPROVEN
+CODE_GAP_FOUND=false
+REPAIR_IMPLEMENTED=false
+```
+
+The 11.14 writer uses tmp + `os.fsync(file)` + `os.replace` +
+`os.fsync(dir)`. Syscall success is not host-crash proof. DDO A1
+`F_FULLFSYNC` success is not this owner and is not host-crash proof.
+No crash or power-loss test was executed. Missing `F_FULLFSYNC` reuse
+is not a required repair for this closure because it cannot prove
+`HOST_CRASH_DURABILITY`.
+
+## Exact persist-field absence
+
+```text
+CANARY_AUTHORIZED_EXACT_FIELD=INDETERMINATE_ABSENT
+POST_ALLOWED_EXACT_FIELD=INDETERMINATE_ABSENT
+```
+
+These tokens are absent from the current Master Runbook persist block
+for the standing-fee envelope. Related code constants remain false and
+are not reconstructed as current persist fields.
+
+## Technical readiness versus authorization
+
+```text
+TECHNICAL_PRE_EXECUTION_READINESS=false
+TECHNICAL_EXECUTION_READY=false
+OWNER_EXECUTION_AUTHORIZED=false
+EXECUTION_AUTHORIZATION_STATUS=NOT_AUTHORIZED
+EARLIEST_REMAINING_BLOCKER=OWNER_EXECUTION_AUTHORIZED
+EARLIEST_TECHNICAL_BLOCKER=CURRENT_SUI_FAMILY_TRADE_FEE_GET_ABSENT
+EARLIEST_LADDER_BLOCKER=LIVE_RESTART_RECONSTRUCTED
+```
+
+Technical readiness false is not an execution grant. True would also
+not be an execution grant.

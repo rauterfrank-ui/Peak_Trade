@@ -1,0 +1,53 @@
+{
+  "AUTHORIZATION_INTENTIONALLY_MUST_NOT_SURVIVE_RESTART": true,
+  "AUTHORIZATION_RESTORATION_SEMANTICS": "LIVE_ENABLED/LIVE_ARMED/POST_ALLOWED/CANARY_AUTHORIZED/SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED remain compile-time false;no persisted execution grant is reconstituted",
+  "AUTHORIZATION_SURVIVES_RESTART": false,
+  "CAPTURE_READER": "same_as_restart_reader_validated_handoff",
+  "CODE_PATH_EXISTS": true,
+  "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED": false,
+  "DOES_NOT_CLOSE_LIVE_RESTART_RECONSTRUCTED": true,
+  "DURABLE_STATE_SOURCE": "durable_state/section_11_14_live_durable_pre_restart_handoff_v1/pre_restart/restart_with_open_position_pre_restart_v1.json",
+  "FACTS_LOADED_VS_RECOMPUTED": {
+    "loaded_if_present": [
+      "clOrdId",
+      "ordId",
+      "instId",
+      "posSide",
+      "pos"
+    ],
+    "must_fresh_GET": [
+      "account_balance",
+      "positions",
+      "pending_orders",
+      "fills",
+      "trade_fee",
+      "ticker",
+      "price_limit"
+    ],
+    "must_not_reload_as_true": [
+      "LIVE_ENABLED",
+      "LIVE_ARMED",
+      "OWNER_EXECUTION_AUTHORIZED",
+      "SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED"
+    ]
+  },
+  "FAIL_CLOSED_WHEN_EVIDENCE_ABSENT_OR_STALE": true,
+  "HANDOFF_WRITTEN": false,
+  "IDEMPOTENCY_DUPLICATE_SUBMIT_PROTECTION": "writer rejects second identity; empirical restart not observed",
+  "LIFECYCLE_OWNER": "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_V1",
+  "LIVE_RESTART_EMPIRICAL_RECONSTRUCTION_PROVEN": false,
+  "LIVE_RESTART_OBSERVATION_EXISTS": false,
+  "LIVE_RESTART_RECONSTRUCTED": false,
+  "LIVE_RESTART_STATIC_RECONSTRUCTION_PROVEN": true,
+  "OFFLINE_RECONSTRUCTION_PROOF_EXISTS": true,
+  "OUTSTANDING_ORDER_POSITION_RECONCILIATION": "requires_fresh_GET_after_restart_not_performed",
+  "POST_RESTART_RECONCILIATION_PROOF_EXISTS": false,
+  "PRODUCTIVE_BINDING_EXISTS": true,
+  "PRODUCTIVE_HOST_ENTRY_POINT": "NOT_STARTED_THIS_WORKPACKAGE",
+  "RESTART_EXECUTED": false,
+  "RESTART_READER": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_reader_v1.py::read_validated_durable_pre_restart_handoff_v1",
+  "STATE_RESTORATION_PATH": "fail_closed_MISSING_HANDOFF_when_durable_record_absent;identity_restore_only_from_contemporaneous_handoff",
+  "STATIC_FAIL_CLOSED_RECONSTRUCTION_PROVEN": true,
+  "STATIC_SUCCESSFUL_IDENTITY_RECONSTRUCTION_PROVEN": false,
+  "TRANSIENT_ONLY_STATE": "in_memory_runtime_gates;ephemeral_credentials;wire_handle;clOrdId_until_execution_GO"
+}
