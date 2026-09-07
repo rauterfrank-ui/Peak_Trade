@@ -737,6 +737,28 @@ relations:
       IMPLEMENTATION_AUTHORIZED=false. No GET. No POST. No restart
       execution. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_section_11_14_restart_reader_provenance_and_consumer_bind_follows_producer_owner_writer_implementation
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_handoff_pos_producer_capture_record_owner_and_writer_implementation
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_reader_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_reader_bind_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_reader_bind_execute_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_consumer_bind_v1.py
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T025500Z/
+    notes: >-
+      Restart-reader / provenance / consumer bind follows S05 producer /
+      owner / writer implementation. READER_BOUND=true.
+      RESTART_CONSUMER_BOUND=true. PROVENANCE_VALIDATION=CONTRACT_PROVEN.
+      FRESHNESS_VALIDATION=PARTIAL. COMPLETE_CAPTURE_SEAM remains UNPROVEN.
+      HOST_CRASH_DURABILITY remains UNPROVEN. LIVE_RESTART_RECONSTRUCTED
+      remains false. CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED
+      remains false. IMPLEMENTATION_AUTHORIZED=false. No GET. No POST. No
+      restart execution. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_path_calls_venue_translation
     source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     type: CALLS

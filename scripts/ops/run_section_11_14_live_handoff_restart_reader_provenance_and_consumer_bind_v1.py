@@ -1,4 +1,4 @@
-"""One-shot runner for §11.14 Live S05 producer / owner / writer implementation."""
+"""One-shot runner for §11.14 Live restart-reader provenance and consumer bind."""
 
 from __future__ import annotations
 
@@ -16,12 +16,12 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import 
     write_manifest_v1,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (  # noqa: E402
-    HISTORICAL_IMPLEMENTATION_OWNER_GO,
-    HISTORICAL_IMPLEMENTATION_RUN_ID,
-    HISTORICAL_IMPLEMENTATION_SHA,
+    CANONICAL_EVIDENCE_RUN_ID,
+    EXPECTED_ORIGIN_MAIN_SHA,
+    OWNER_GO,
 )
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_handoff_implementation_execute_v1 import (  # noqa: E402
-    execute_live_handoff_pos_producer_capture_record_owner_and_writer_implementation_v1,
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_handoff_reader_bind_execute_v1 import (  # noqa: E402
+    execute_live_handoff_restart_reader_provenance_and_consumer_bind_v1,
 )
 
 
@@ -39,28 +39,35 @@ def _origin_main_sha(repo_root: Path) -> str:
 def main() -> int:
     repo_root = Path(__file__).resolve().parents[2]
     origin_main_sha = _origin_main_sha(repo_root)
-    if origin_main_sha != HISTORICAL_IMPLEMENTATION_SHA:
+    if origin_main_sha != EXPECTED_ORIGIN_MAIN_SHA:
         print(
-            "ORIGIN_MAIN_SHA_MISMATCH "
-            f"actual={origin_main_sha} expected={HISTORICAL_IMPLEMENTATION_SHA}"
+            f"ORIGIN_MAIN_SHA_MISMATCH actual={origin_main_sha} expected={EXPECTED_ORIGIN_MAIN_SHA}"
         )
         return 2
-    result = execute_live_handoff_pos_producer_capture_record_owner_and_writer_implementation_v1(
-        owner_go=HISTORICAL_IMPLEMENTATION_OWNER_GO,
+    result = execute_live_handoff_restart_reader_provenance_and_consumer_bind_v1(
+        owner_go=OWNER_GO,
         origin_main_sha=origin_main_sha,
         repo_root=repo_root,
-        run_id=HISTORICAL_IMPLEMENTATION_RUN_ID,
+        run_id=CANONICAL_EVIDENCE_RUN_ID,
     )
     pack = Path(result["pack"])
     pack.mkdir(parents=True, exist_ok=True)
     documents = {
         "SUMMARY.json": dict(result["summary"]),
-        "IMPLEMENTATION_BINDING.json": dict(result["binding"]),
+        "BASELINE.json": dict(result["baseline"]),
+        "CHANGED_PATH_CENSUS.json": dict(result["changed_path_census"]),
+        "READER_BINDING.json": dict(result["binding"]),
         "OWNER_MINT.json": dict(result["owner_mint"]),
-        "PRODUCER.json": dict(result["producer"]),
-        "WRITER_BINDING.json": dict(result["writer_binding"]),
-        "DURABILITY.json": dict(result["durability"]),
-        "FAILURE_SEMANTICS.json": dict(result["failure_semantics"]),
+        "READER_CENSUS.json": dict(result["reader_census"]),
+        "SELECTED_READER.json": dict(result["selected_reader"]),
+        "READER_RESULT_CONTRACT.json": dict(result["reader_result_contract"]),
+        "CONSUMER_BINDING.json": dict(result["consumer_binding"]),
+        "VALIDATION_MATRIX.json": dict(result["validation_matrix"]),
+        "FAILURE_MATRIX.json": dict(result["failure_matrix"]),
+        "SEMANTIC_READJUDICATION.json": dict(result["semantic_readjudication"]),
+        "PROCESS_RESTART_PROOF.json": dict(result["process_restart_proof"]),
+        "COMPLETE_CAPTURE_SEAM_PREDICATE.json": dict(result["seam_predicate"]),
+        "SAFETY.json": dict(result["safety"]),
         "claims.json": dict(result["claims"]),
         "RESTART_RECONSTRUCTED_ADJUDICATION.json": dict(result["adjudication"]),
     }
@@ -74,13 +81,15 @@ def main() -> int:
     write_json_v1(pack / "SUMMARY.json", summary)
     write_manifest_v1(pack, tuple(names))
     print(f"EVIDENCE_PACK={pack}")
-    print(f"COMPLETE_CAPTURE_SEAM={summary.get('COMPLETE_CAPTURE_SEAM')}")
-    print(f"NEW_PRODUCER_IMPLEMENTED={summary.get('NEW_PRODUCER_IMPLEMENTED')}")
-    print(f"STORAGE_OWNER_MINTED={summary.get('STORAGE_OWNER_MINTED')}")
-    print(f"WRITER_BOUND={summary.get('WRITER_BOUND')}")
     print(f"READER_BOUND={summary.get('READER_BOUND')}")
-    print(f"HOST_CRASH_DURABILITY={summary.get('HOST_CRASH_DURABILITY')}")
+    print(f"RESTART_CONSUMER_BOUND={summary.get('RESTART_CONSUMER_BOUND')}")
+    print(f"COMPLETE_CAPTURE_SEAM={summary.get('COMPLETE_CAPTURE_SEAM')}")
     print(f"LIVE_RESTART_RECONSTRUCTED={summary.get('LIVE_RESTART_RECONSTRUCTED')}")
+    print(
+        "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED="
+        f"{summary.get('CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED')}"
+    )
+    print(f"HOST_CRASH_DURABILITY={summary.get('HOST_CRASH_DURABILITY')}")
     print(f"IMPLEMENTATION_AUTHORIZED={summary.get('IMPLEMENTATION_AUTHORIZED')}")
     print(f"MANIFEST_VERIFY_RC={summary['MANIFEST_VERIFY_RC']}")
     return 0 if summary["MANIFEST_VERIFY_RC"] == 0 else 1
