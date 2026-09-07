@@ -13,10 +13,10 @@ from pathlib import Path
 from typing import Any
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    CANONICAL_EVIDENCE_RUN_ID,
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_OWNER_GO,
+    HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_RUN_ID,
+    HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_SHA,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
     SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
@@ -73,13 +73,13 @@ def execute_live_handoff_create_productive_capture_owner_and_lifecycle_hook_v1(
     repo_root: Path,
     run_id: str | None = None,
 ) -> dict[str, Any]:
-    if str(owner_go or "").strip() != OWNER_GO:
+    if str(owner_go or "").strip() != HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_OWNER_GO:
         raise Section1114OfflineSurfaceError("OWNER_GO_MISMATCH")
-    if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
+    if str(origin_main_sha or "").strip() != HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_SHA:
         raise Section1114OfflineSurfaceError("ORIGIN_MAIN_SHA_MISMATCH")
     assert_contract_invariants_v1()
     started = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    pack_run_id = str(run_id or CANONICAL_EVIDENCE_RUN_ID)
+    pack_run_id = str(run_id or HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_RUN_ID)
     adjudication = bind_create_productive_capture_owner_and_lifecycle_hook_v1(repo_root=repo_root)
     if adjudication["BINDING_CASE"] != BINDING_CASE:
         raise Section1114OfflineSurfaceError("BINDING_CASE_MUST_REMAIN_CASE_A_CREATED")
@@ -100,7 +100,7 @@ def execute_live_handoff_create_productive_capture_owner_and_lifecycle_hook_v1(
     surfaces = dict(adjudication["authorization_surfaces"])
     ended = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     summary = {
-        "OWNER_GO": OWNER_GO,
+        "OWNER_GO": HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_OWNER_GO,
         "CANONICAL_EVIDENCE_RUN_ID": pack_run_id,
         "ORIGIN_MAIN_SHA": origin_main_sha,
         "STARTED_AT_UTC": started,
@@ -213,10 +213,12 @@ def execute_live_handoff_create_productive_capture_owner_and_lifecycle_hook_v1(
             "MISSING_PREDICATES": list(adjudication["COMPLETE_CAPTURE_SEAM_MISSING_PREDICATES"]),
         },
         "baseline": {
-            "EXPECTED_ORIGIN_MAIN_SHA": EXPECTED_ORIGIN_MAIN_SHA,
+            "EXPECTED_ORIGIN_MAIN_SHA": HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_SHA,
             "ORIGIN_MAIN_SHA": origin_main_sha,
-            "EXPECTED_ORIGIN_MAIN_MATCH": origin_main_sha == EXPECTED_ORIGIN_MAIN_SHA,
-            "OWNER_GO": OWNER_GO,
+            "EXPECTED_ORIGIN_MAIN_MATCH": (
+                origin_main_sha == HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_SHA
+            ),
+            "OWNER_GO": HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_OWNER_GO,
             "CANONICAL_EVIDENCE_RUN_ID": pack_run_id,
         },
         "changed_path_census": {

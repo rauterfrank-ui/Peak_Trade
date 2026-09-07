@@ -10,13 +10,12 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_restart_handoff
     run_capture_hook_after_bound_fill_before_restart_v1,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_OWNER_GO,
+    HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_SHA,
     LIVE_ENABLED,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
     POST_ALLOWED,
     SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED,
-    THIS_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -38,6 +37,10 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_re
     evaluate_productive_capture_gates_v1,
     require_future_bound_fill_identity_v1,
 )
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_complete_contemporaneous_capture_seam_and_required_field_provenance_v1 import (
+    INPUT_CLASS_TEST_FIXTURE,
+    build_test_fixture_field_provenance_v1,
+)
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_handoff_pos_producer_v1 import (
     ADMISSIBLE_POS_SOURCE_KIND,
 )
@@ -56,12 +59,13 @@ FUTURE_IDENTITY = {
 
 
 def _hook_kwargs(storage_root: Path, **overrides: object) -> dict[str, object]:
+    identity = dict(overrides.get("bound_fill_identity") or FUTURE_IDENTITY)
     payload: dict[str, object] = {
         "storage_root": storage_root,
         "bound_fill_proven": True,
         "bound_fill_kind": CANONICAL_BOUND_FILL_KIND,
-        "bound_fill_identity": dict(FUTURE_IDENTITY),
-        "peak_trade_owned_resulting_current_position_qty": "2",
+        "bound_fill_identity": identity,
+        "peak_trade_owned_resulting_current_position_qty": identity["fillSz"],
         "source_kind": ADMISSIBLE_POS_SOURCE_KIND,
         "unit": POS_UNIT,
         "restart_already_occurred": False,
@@ -69,8 +73,19 @@ def _hook_kwargs(storage_root: Path, **overrides: object) -> dict[str, object]:
         "bound_fill_proven_at": "2026-09-07T09:00:00Z",
         "capture_started_at": "2026-09-07T09:00:01Z",
         "attempt_identity": "test-create-capture-owner-v1",
+        "input_class": INPUT_CLASS_TEST_FIXTURE,
+        "lifecycle_id": "test-create-capture-owner-lifecycle-v1",
+        "field_provenance": build_test_fixture_field_provenance_v1(
+            bound_fill_identity=identity,
+            lifecycle_id="test-create-capture-owner-lifecycle-v1",
+        ),
     }
     payload.update(overrides)
+    if "field_provenance" not in overrides:
+        payload["field_provenance"] = build_test_fixture_field_provenance_v1(
+            bound_fill_identity=dict(payload["bound_fill_identity"]),
+            lifecycle_id=str(payload["lifecycle_id"]),
+        )
     return payload
 
 
@@ -89,7 +104,6 @@ def test_exactly_one_productive_writer_caller_is_the_unique_hook() -> None:
 
 def test_unique_owner_and_hook_are_created() -> None:
     adjudication = bind_create_productive_capture_owner_and_lifecycle_hook_v1(repo_root=REPO_ROOT)
-    assert THIS_SLICE == "11.14.LIVE_HANDOFF_CREATE_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK"
     assert adjudication["PRODUCTIVE_CAPTURE_OWNER"] == PRODUCTIVE_CAPTURE_OWNER
     assert adjudication["PRODUCTIVE_CAPTURE_OWNER_UNIQUE"] is True
     assert adjudication["PRODUCTIVE_LIFECYCLE_HOOK"] == PRODUCTIVE_LIFECYCLE_HOOK
@@ -270,8 +284,8 @@ def test_qty_mismatch_and_timestamp_inversion_fail_closed(tmp_path: Path) -> Non
 
 def test_execute_is_offline_and_does_not_capture_or_authorize_live() -> None:
     result = execute_live_handoff_create_productive_capture_owner_and_lifecycle_hook_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        owner_go=HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_OWNER_GO,
+        origin_main_sha=HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_SHA,
         repo_root=REPO_ROOT,
         run_id="20260907T090500Z-test",
     )

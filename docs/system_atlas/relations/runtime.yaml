@@ -855,6 +855,35 @@ relations:
       handoff write during persist. No restart execution.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_section_11_14_complete_contemporaneous_capture_seam_and_required_field_provenance_follows_create_owner
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_handoff_create_productive_capture_owner_and_lifecycle_hook
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_complete_contemporaneous_capture_seam_and_required_field_provenance_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_complete_contemporaneous_capture_seam_and_required_field_provenance_execute_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T120000Z/
+    notes: >-
+      Complete contemporaneous capture-seam acceptance contract and
+      required-field provenance persist follows create productive
+      capture-owner and lifecycle-hook.
+      COMPLETE_CAPTURE_SEAM remains UNPROVEN.
+      COMPLETE_CAPTURE_SEAM_ACCEPTANCE_CONTRACT_BOUND=true.
+      REQUIRED_FIELD_PROVENANCE_MATRIX_BOUND=true.
+      CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false.
+      STRUCTURAL_RUNTIME_BINDING_PROVEN=true.
+      CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false.
+      AUTHORIZED_RUNTIME_SURFACE=NONE.
+      PARTIAL_CAPTURE_ALLOWED=false.
+      HOST_CRASH_DURABILITY remains UNPROVEN.
+      LIVE_RESTART_RECONSTRUCTED remains false.
+      CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED remains false.
+      IMPLEMENTATION_AUTHORIZED=true. No GET. No POST. No productive
+      capture executed. No restart execution.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_path_calls_venue_translation
     source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     type: CALLS
