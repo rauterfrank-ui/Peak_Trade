@@ -5,10 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_CONTEMPORANEOUS_OBSERVATION_OWNER_GO,
+    HISTORICAL_CONTEMPORANEOUS_OBSERVATION_SHA,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
-    THIS_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_contemporaneous_pre_restart_observation_execute_v1 import (
     execute_live_restart_reconstructed_contemporaneous_pre_restart_observation_v1,
@@ -96,7 +95,6 @@ def test_observability_adjudication_refutes_without_promoting_restart() -> None:
     adjudication = bind_contemporaneous_pre_restart_observability_adjudication_v1(
         read_back=read_back
     )
-    assert THIS_SLICE == "11.14.LIVE_RESTART_RECONSTRUCTED_CONTEMPORANEOUS_PRE_RESTART_OBSERVATION"
     assert adjudication["OBSERVATION_STATUS"] == OBSERVATION_STATUS
     assert adjudication["CASE_ADJUDICATION"] == OBSERVATION_CASE
     assert adjudication["CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED"] is False
@@ -112,8 +110,8 @@ def test_observability_adjudication_refutes_without_promoting_restart() -> None:
 
 def test_execute_is_offline_and_closes_as_refuted() -> None:
     result = execute_live_restart_reconstructed_contemporaneous_pre_restart_observation_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        owner_go=HISTORICAL_CONTEMPORANEOUS_OBSERVATION_OWNER_GO,
+        origin_main_sha=HISTORICAL_CONTEMPORANEOUS_OBSERVATION_SHA,
         repo_root=REPO_ROOT,
         run_id="20260907T054500Z-test",
     )

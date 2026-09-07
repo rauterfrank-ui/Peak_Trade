@@ -1,7 +1,7 @@
-"""Execute contemporaneous pre-restart observability prove-or-refute persist.
+"""Execute future-authorized contemporaneous capture-window persist.
 
 No GET. No POST. No restart execution. No productive handoff write.
-No historical canary rewrite. No timestamp backfill.
+No historical canary rewrite. No timestamp backfill. No runtime join.
 """
 
 from __future__ import annotations
@@ -11,10 +11,10 @@ from pathlib import Path
 from typing import Any
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    HISTORICAL_CONTEMPORANEOUS_OBSERVATION_OWNER_GO,
-    HISTORICAL_CONTEMPORANEOUS_OBSERVATION_RUN_ID,
-    HISTORICAL_CONTEMPORANEOUS_OBSERVATION_SHA,
+    CANONICAL_EVIDENCE_RUN_ID,
+    EXPECTED_ORIGIN_MAIN_SHA,
     LIVE_RESTART_RECONSTRUCTED,
+    OWNER_GO,
     SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
@@ -24,18 +24,20 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.persist_claims_v1 import (
     CLAIMS,
 )
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_contemporaneous_pre_restart_observation_v1 import (
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_future_authorized_contemporaneous_capture_window_v1 import (
+    CASE_ADJUDICATION,
     COMPLETE_CAPTURE_SEAM,
-    MINIMUM_SAFE_OBSERVATION_CLASS,
-    OBSERVATION_CASE,
-    OBSERVATION_STATUS,
+    MINIMUM_FUTURE_CAPTURE_WINDOW_SURFACE,
+    MISSING_PREDICATES,
+    PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE,
+    PRODUCTIVE_BINDING_IMPLEMENTED,
+    PRODUCTIVE_CAPTURE_HOOK,
+    PRODUCTIVE_CAPTURE_HOOK_STATUS,
+    PRODUCTIVE_CAPTURE_OWNER,
+    PRODUCTIVE_CAPTURE_OWNER_STATUS,
     PROPOSED_NEXT_SLICE,
-    bind_contemporaneous_pre_restart_observability_adjudication_v1,
-    bind_non_synthetic_observation_protocol_v1,
-    bind_restart_boundary_for_contemporaneous_classification_v1,
-    execute_minimum_safe_read_back_observation_v1,
-    inventory_durable_write_point_and_provenance_v1,
-    inventory_productive_pre_restart_capture_trigger_and_producer_v1,
+    REQUIRED_NEXT_AUTHORITY,
+    bind_future_authorized_contemporaneous_capture_window_v1,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_handoff_owner_and_writer_v1 import (
     FIRST_OWNER_ID,
@@ -53,46 +55,45 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_re
 )
 
 
-def execute_live_restart_reconstructed_contemporaneous_pre_restart_observation_v1(
+def execute_live_handoff_future_authorized_contemporaneous_capture_window_v1(
     *,
     owner_go: str,
     origin_main_sha: str,
     repo_root: Path,
     run_id: str | None = None,
 ) -> dict[str, Any]:
-    if str(owner_go or "").strip() != HISTORICAL_CONTEMPORANEOUS_OBSERVATION_OWNER_GO:
+    if str(owner_go or "").strip() != OWNER_GO:
         raise Section1114OfflineSurfaceError("OWNER_GO_MISMATCH")
-    if str(origin_main_sha or "").strip() != HISTORICAL_CONTEMPORANEOUS_OBSERVATION_SHA:
+    if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
         raise Section1114OfflineSurfaceError("ORIGIN_MAIN_SHA_MISMATCH")
     assert_contract_invariants_v1()
     started = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    pack_run_id = str(run_id or HISTORICAL_CONTEMPORANEOUS_OBSERVATION_RUN_ID)
-    trigger = inventory_productive_pre_restart_capture_trigger_and_producer_v1()
-    write_point = inventory_durable_write_point_and_provenance_v1()
-    boundary = bind_restart_boundary_for_contemporaneous_classification_v1()
-    protocol = bind_non_synthetic_observation_protocol_v1()
-    if trigger["AUTHORIZED_NON_LIVE_RUNTIME_SURFACE_PRESENT"] is True:
-        raise Section1114OfflineSurfaceError("UNAUTHORIZED_SURFACE_CLAIM")
-    if protocol["PRODUCTIVE_WRITE_AUTHORIZED"] is True:
-        raise Section1114OfflineSurfaceError("PRODUCTIVE_WRITE_MUST_REMAIN_UNAUTHORIZED")
-    read_back = execute_minimum_safe_read_back_observation_v1(storage_root=repo_root)
-    adjudication = bind_contemporaneous_pre_restart_observability_adjudication_v1(
-        read_back=read_back
-    )
-    restart = dict(adjudication["restart_adjudication"])
-    if restart.get("LIVE_RESTART_RECONSTRUCTED") is True:
-        raise Section1114OfflineSurfaceError("LIVE_RESTART_RECONSTRUCTED_MUST_REMAIN_FALSE")
-    if LIVE_RESTART_RECONSTRUCTED is True:
-        raise Section1114OfflineSurfaceError("LIVE_RESTART_RECONSTRUCTED_MUST_REMAIN_FALSE")
+    pack_run_id = str(run_id or CANONICAL_EVIDENCE_RUN_ID)
+    adjudication = bind_future_authorized_contemporaneous_capture_window_v1(repo_root=repo_root)
+    if adjudication["PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE"] is True:
+        raise Section1114OfflineSurfaceError("PRODUCTIVE_BINDING_MUST_REMAIN_FORBIDDEN")
+    if adjudication["PRODUCTIVE_BINDING_IMPLEMENTED"] is True:
+        raise Section1114OfflineSurfaceError("PRODUCTIVE_BINDING_MUST_REMAIN_UNIMPLEMENTED")
     if adjudication["COMPLETE_CAPTURE_SEAM"] != COMPLETE_CAPTURE_SEAM:
         raise Section1114OfflineSurfaceError("CAPTURE_SEAM_MUST_REMAIN_UNPROVEN")
     if adjudication["CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED"] is True:
         raise Section1114OfflineSurfaceError("CONTEMPORANEOUS_OBSERVATION_MUST_REMAIN_UNOBSERVED")
-    if read_back["READER_RESULT"] != "MISSING_HANDOFF":
-        raise Section1114OfflineSurfaceError("PRODUCTIVE_DURABLE_HANDOFF_MUST_REMAIN_ABSENT")
+    if adjudication["LIVE_RESTART_RECONSTRUCTED"] is True:
+        raise Section1114OfflineSurfaceError("LIVE_RESTART_RECONSTRUCTED_MUST_REMAIN_FALSE")
+    if LIVE_RESTART_RECONSTRUCTED is True:
+        raise Section1114OfflineSurfaceError("LIVE_RESTART_RECONSTRUCTED_MUST_REMAIN_FALSE")
+    if PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE is True:
+        raise Section1114OfflineSurfaceError("PRODUCTIVE_BINDING_MUST_REMAIN_FORBIDDEN")
+    if PRODUCTIVE_BINDING_IMPLEMENTED is True:
+        raise Section1114OfflineSurfaceError("PRODUCTIVE_BINDING_MUST_REMAIN_UNIMPLEMENTED")
+    graph = dict(adjudication["runtime_graph"])
+    bound_fill = dict(adjudication["bound_fill"])
+    window = dict(adjudication["capture_window"])
+    minimum = dict(adjudication["minimum_future_window"])
+    decision = dict(adjudication["binding_decision"])
     ended = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     summary = {
-        "OWNER_GO": HISTORICAL_CONTEMPORANEOUS_OBSERVATION_OWNER_GO,
+        "OWNER_GO": OWNER_GO,
         "CANONICAL_EVIDENCE_RUN_ID": pack_run_id,
         "ORIGIN_MAIN_SHA": origin_main_sha,
         "STARTED_AT_UTC": started,
@@ -109,7 +110,7 @@ def execute_live_restart_reconstructed_contemporaneous_pre_restart_observation_v
         "NEW_PRODUCER_CONTRACT_DEFINED": True,
         "NEW_PRODUCER_IMPLEMENTED": True,
         "PRODUCER_SEMANTICS_EXACT_S05_IMPLEMENTED": True,
-        "CAPTURE_TRIGGER_STATUS": trigger["CAPTURE_TRIGGER_STATUS"],
+        "CAPTURE_TRIGGER_STATUS": "REQUIRED_WINDOW_BOUND_PRODUCTIVE_TRIGGER_BOUND",
         "SELECTED_CAPTURE_TRIGGER": REQUIRED_CAPTURE_TRIGGER,
         "CAPTURE_TRIGGER_PRODUCTIVELY_BOUND": True,
         "CAPTURE_TRIGGER_JOINED_TO_AUTHORIZED_RUNTIME": False,
@@ -121,12 +122,7 @@ def execute_live_restart_reconstructed_contemporaneous_pre_restart_observation_v
         "WRITER_BOUND": True,
         "WRITER_SEAM_ID": WRITER_SEAM_ID,
         "READER_BOUND": True,
-        "READER_IMPLEMENTED": True,
-        "SELECTED_PRODUCTIVE_READER": protocol["READ_BACK_READER"],
-        "RESTART_CONSUMER_SELECTED": protocol["CONSUMER"],
         "RESTART_CONSUMER_BOUND": True,
-        "PROVENANCE_VALIDATION": adjudication["PROVENANCE_VALIDATION"],
-        "FRESHNESS_VALIDATION": adjudication["FRESHNESS_VALIDATION"],
         "CAPTURE_SEAM_BOUND": False,
         "PRODUCTIVE_BINDING_PRESENT": True,
         "PROCESS_RESTART_READABLE_HANDOFF_RECORD": True,
@@ -138,16 +134,48 @@ def execute_live_restart_reconstructed_contemporaneous_pre_restart_observation_v
         "COMPLETE_CAPTURE_SEAM_MISSING_PREDICATES": list(
             adjudication["COMPLETE_CAPTURE_SEAM_MISSING_PREDICATES"]
         ),
-        "LIVE_RESTART_RECONSTRUCTION_CAN_NOW_BE_ADJUDICATED": True,
         "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED": False,
-        "OBSERVATION_STATUS": OBSERVATION_STATUS,
-        "CASE_ADJUDICATION": OBSERVATION_CASE,
-        "MINIMUM_SAFE_OBSERVATION_CLASS": MINIMUM_SAFE_OBSERVATION_CLASS,
-        "PRODUCTIVE_CAPTURE_WRITE_EXECUTED": False,
-        "READ_BACK_EXECUTED": True,
-        "READ_BACK_RESULT": read_back["READER_RESULT"],
+        "OBSERVATION_STATUS": "CLOSED_REFUTED",
+        "CASE_ADJUDICATION": CASE_ADJUDICATION,
+        "BOUND_FILL_CANONICAL_SYMBOL": bound_fill["BOUND_FILL_CANONICAL_SYMBOL"],
+        "BOUND_FILL_IS_PRODUCTIVE_RUNTIME_EVENT": True,
+        "BOUND_FILL_REQUIRES_VENUE_ACK": True,
+        "BOUND_FILL_REQUIRES_WIRE_SEND": True,
+        "BOUND_FILL_CAN_EXIST_OFFLINE": False,
+        "BOUND_FILL_CAN_EXIST_IN_SHADOW": False,
+        "BOUND_FILL_CAN_EXIST_IN_TESTNET": False,
+        "PRODUCTIVE_CAPTURE_OWNER": PRODUCTIVE_CAPTURE_OWNER,
+        "PRODUCTIVE_CAPTURE_OWNER_STATUS": PRODUCTIVE_CAPTURE_OWNER_STATUS,
+        "PRODUCTIVE_CAPTURE_HOOK": PRODUCTIVE_CAPTURE_HOOK,
+        "PRODUCTIVE_CAPTURE_HOOK_STATUS": PRODUCTIVE_CAPTURE_HOOK_STATUS,
+        "CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_PRODUCER": graph[
+            "CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_emit_s05_handoff_pos_v1"
+        ],
+        "CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_WRITER": graph[
+            "CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_commit_handoff_after_bound_fill_before_restart_v1"
+        ],
+        "CAPTURE_WINDOW_ORDERING": window["CAPTURE_WINDOW_ORDERING"],
+        "MINIMUM_FUTURE_CAPTURE_WINDOW_SURFACE": MINIMUM_FUTURE_CAPTURE_WINDOW_SURFACE,
+        "MINIMUM_REQUIRED_RUNTIME": minimum["MINIMUM_REQUIRED_RUNTIME"],
+        "MINIMUM_REQUIRED_OWNER_AUTHORITY": minimum["MINIMUM_REQUIRED_OWNER_AUTHORITY"],
+        "LIVE_ENABLED_REQUIRED": True,
+        "LIVE_ARMED_REQUIRED": True,
+        "CANARY_AUTHORIZED_REQUIRED": True,
+        "ORDER_SUBMIT_GO_REQUIRED": True,
+        "WIRE_SEND_REQUIRED": True,
+        "VENUE_FILL_REQUIRED": True,
+        "PRIVATE_GET_REQUIRED": True,
+        "NETWORK_AUTH_REQUIRED": True,
+        "CREDENTIAL_ACCESS_REQUIRED": True,
+        "PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE": False,
+        "PRODUCTIVE_BINDING_IMPLEMENTED": False,
+        "PRODUCTIVE_BINDING_FAIL_CLOSED": False,
+        "MISSING_PREDICATES": list(MISSING_PREDICATES),
+        "REQUIRED_NEXT_AUTHORITY": REQUIRED_NEXT_AUTHORITY,
         "AUTHORIZED_NON_LIVE_RUNTIME_SURFACE_PRESENT": False,
-        "PRODUCTIVE_RUNTIME_CALLER_COUNT": 0,
+        "PRODUCTIVE_CAPTURE_WRITE_EXECUTED": False,
+        "HANDOFF_WRITTEN": False,
+        "RESTART_EXECUTED": False,
         "HISTORICAL_DATA_REINTERPRETATION_ALLOWED": False,
         "RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED": False,
         "NO_TIMESTAMP_BACKFILL": True,
@@ -178,58 +206,37 @@ def execute_live_restart_reconstructed_contemporaneous_pre_restart_observation_v
     )
     return {
         "summary": summary,
-        "trigger": trigger,
-        "write_point": write_point,
-        "restart_boundary": boundary,
-        "observation_protocol": protocol,
-        "read_back": {
-            "MINIMUM_SAFE_OBSERVATION_CLASS": read_back["MINIMUM_SAFE_OBSERVATION_CLASS"],
-            "PRODUCTIVE_CAPTURE_WRITE_EXECUTED": False,
-            "READ_BACK_EXECUTED": True,
-            "READER_RESULT": read_back["READER_RESULT"],
-            "READER_REASON": read_back["READER_REASON"],
-            "CONSUMER_ACCEPTED": read_back["CONSUMER_ACCEPTED"],
-            "CONSUMER_REASON": read_back["CONSUMER_REASON"],
-            "DURABLE_PATH": read_back["DURABLE_PATH"],
-            "GET_PERFORMED": False,
-            "VENUE_GET_FALLBACK": False,
-            "EVIDENCE_PACK_FALLBACK": False,
-        },
+        "runtime_graph": graph,
+        "bound_fill": bound_fill,
+        "capture_window": window,
+        "authorization_surfaces": dict(adjudication["authorization_surfaces"]),
+        "minimum_future_window": minimum,
+        "binding_decision": decision,
         "seam_predicate": {
             "COMPLETE_CAPTURE_SEAM": "UNPROVEN",
             "MISSING_PREDICATES": list(adjudication["COMPLETE_CAPTURE_SEAM_MISSING_PREDICATES"]),
-            "PREDICATES": dict(adjudication["COMPLETE_CAPTURE_SEAM_PREDICATES"]),
-        },
-        "observability_adjudication": {
-            "OBSERVATION_STATUS": OBSERVATION_STATUS,
-            "CASE_ADJUDICATION": OBSERVATION_CASE,
-            "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED": False,
-            "COMPLETE_CAPTURE_SEAM": "UNPROVEN",
-            "LIVE_RESTART_RECONSTRUCTED": False,
         },
         "baseline": {
-            "EXPECTED_ORIGIN_MAIN_SHA": HISTORICAL_CONTEMPORANEOUS_OBSERVATION_SHA,
+            "EXPECTED_ORIGIN_MAIN_SHA": EXPECTED_ORIGIN_MAIN_SHA,
             "ORIGIN_MAIN_SHA": origin_main_sha,
-            "EXPECTED_ORIGIN_MAIN_MATCH": origin_main_sha
-            == HISTORICAL_CONTEMPORANEOUS_OBSERVATION_SHA,
-            "OWNER_GO": HISTORICAL_CONTEMPORANEOUS_OBSERVATION_OWNER_GO,
+            "EXPECTED_ORIGIN_MAIN_MATCH": origin_main_sha == EXPECTED_ORIGIN_MAIN_SHA,
+            "OWNER_GO": OWNER_GO,
             "CANONICAL_EVIDENCE_RUN_ID": pack_run_id,
         },
         "changed_path_census": {
-            "SCOPE": "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_CONTEMPORANEOUS_PRE_RESTART_OBSERVATION_V1",
+            "SCOPE": "SECTION_11_14_LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW_V1",
             "UNTRACKED_FOREIGN_EVIDENCE_UNTOUCHED": True,
             "paths": [
                 "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/constants_v1.py",
                 "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/__init__.py",
-                "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_contemporaneous_pre_restart_observation_v1.py",
                 "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_contemporaneous_pre_restart_observation_execute_v1.py",
-                "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_reader_bind_execute_v1.py",
-                "scripts/ops/run_section_11_14_live_restart_reconstructed_contemporaneous_pre_restart_observation_v1.py",
-                "scripts/ops/run_section_11_14_live_handoff_restart_reader_provenance_and_consumer_bind_v1.py",
+                "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_future_authorized_contemporaneous_capture_window_v1.py",
+                "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_future_authorized_contemporaneous_capture_window_execute_v1.py",
+                "scripts/ops/run_section_11_14_live_handoff_future_authorized_contemporaneous_capture_window_v1.py",
                 "tests/ops/test_section_11_14_live_restart_reconstructed_contemporaneous_pre_restart_observation_v1.py",
-                "tests/ops/test_section_11_14_live_handoff_restart_reader_provenance_and_consumer_bind_v1.py",
+                "tests/ops/test_section_11_14_live_handoff_future_authorized_contemporaneous_capture_window_v1.py",
                 "tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py",
-                "docs/ops/specs/SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_CONTEMPORANEOUS_PRE_RESTART_OBSERVATION_V1.md",
+                "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW_V1.md",
                 "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
                 "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
                 "docs/system_atlas/entities/catalog.yaml",
@@ -248,10 +255,10 @@ def execute_live_restart_reconstructed_contemporaneous_pre_restart_observation_v
             "IMPLEMENTATION_AUTHORIZED": False,
             "NEXT_SLICE_AUTHORIZED": False,
             "PRODUCTIVE_CAPTURE_WRITE_EXECUTED": False,
+            "PRODUCTIVE_BINDING_IMPLEMENTED": False,
         },
         "claims": dict(CLAIMS),
-        "adjudication": restart,
-        "binding": dict(adjudication["reader_binding"]),
+        "adjudication": dict(adjudication),
         "pack": str(pack),
         "raw_exchanges": [],
     }

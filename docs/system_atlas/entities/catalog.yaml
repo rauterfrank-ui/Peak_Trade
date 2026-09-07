@@ -1797,7 +1797,36 @@ entities:
       CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED=false.
       LIVE_RESTART_RECONSTRUCTED=false. IMPLEMENTATION_AUTHORIZED=false.
       No GET. No POST. No productive handoff write. No restart execution.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE. Historical
+      after the future-authorized contemporaneous capture-window slice.
+
+  - id: PHASE:section_11_14_live_handoff_future_authorized_contemporaneous_capture_window
+    kind: PHASE
+    name: 11.14.LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW_V1.md
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T062800Z/
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_future_authorized_contemporaneous_capture_window_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_future_authorized_contemporaneous_capture_window_execute_v1.py
+      - tests/ops/test_section_11_14_live_handoff_future_authorized_contemporaneous_capture_window_v1.py
+      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
+    notes: >-
+      §11.14 future-authorized contemporaneous capture-window
+      adjudication. PRODUCTIVE_CAPTURE_OWNER_STATUS=ABSENT.
+      PRODUCTIVE_CAPTURE_HOOK_STATUS=ABSENT.
+      CAPTURE_WINDOW_ORDERING=UNPROVEN.
+      MINIMUM_FUTURE_CAPTURE_WINDOW_SURFACE=UNPROVEN.
+      PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE=false.
+      COMPLETE_CAPTURE_SEAM=UNPROVEN. HOST_CRASH_DURABILITY=UNPROVEN.
+      CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED=false.
+      LIVE_RESTART_RECONSTRUCTED=false. IMPLEMENTATION_AUTHORIZED=false.
+      No GET. No POST. No productive handoff write. No restart execution.
+      No productive runtime join. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
@@ -2691,6 +2720,8 @@ entities:
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_owner_and_writer_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_implementation_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_implementation_execute_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_future_authorized_contemporaneous_capture_window_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_future_authorized_contemporaneous_capture_window_execute_v1.py
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py
       - src/governance/policy_critic/rules.py
     evidence_sources:
@@ -2717,6 +2748,7 @@ entities:
       - tests/ops/test_section_11_14_live_handoff_pos_producer_capture_record_owner_and_writer_implementation_v1.py
       - tests/ops/test_section_11_14_live_handoff_restart_reader_provenance_and_consumer_bind_v1.py
       - tests/ops/test_section_11_14_live_restart_reconstructed_contemporaneous_pre_restart_observation_v1.py
+      - tests/ops/test_section_11_14_live_handoff_future_authorized_contemporaneous_capture_window_v1.py
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/SECTION_11_14_LIVE_ORDER_AND_ECONOMIC_EVIDENCE_LADDER_OFFLINE_SURFACE_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md
@@ -2741,6 +2773,7 @@ entities:
       - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_RESTART_READER_PROVENANCE_AND_CONSUMER_BIND_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_CONTEMPORANEOUS_PRE_RESTART_OBSERVATION_V1.md
+      - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW_V1.md
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T121000Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T123100Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T130000Z/
@@ -2764,6 +2797,7 @@ entities:
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T014000Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T025500Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T054500Z/
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T062800Z/
     notes: >-
       Navigation inventory of the §11.14 evidence-ladder surface including
       LIVE_EXECUTION_CODE_EXISTS, LIVE_EXECUTION_PATH_REACHABLE,
