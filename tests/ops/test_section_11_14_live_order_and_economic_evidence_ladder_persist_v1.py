@@ -42,8 +42,10 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     CANONICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SLICE_HEADING,
     CANONICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_SLICE_HEADING,
     CANONICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SLICE_HEADING,
+    CANONICAL_STANDING_FEE_SLIPPAGE_EXACT_ENVELOPE_SLICE_HEADING,
     CANONICAL_SECTION_HEADING,
     EARLIEST_UNRESOLVED_DEPENDENCY,
+    ENVELOPE_EVIDENCE_RUN_ID,
     EXPECTED_ORIGIN_MAIN_SHA,
     HISTORICAL_ACCOUNTING_RECONSTRUCTED_OWNER_GO,
     HISTORICAL_ACCOUNTING_RECONSTRUCTED_RUN_ID,
@@ -119,7 +121,13 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_OWNER_GO,
     HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_RUN_ID,
     HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SHA,
+    HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_OWNER_GO,
+    HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_PREDECESSOR_SLICE,
+    HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_RUN_ID,
+    HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SHA,
+    HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SLICE,
     HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_OWNER_GO,
+    HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED,
     HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_RUN_ID,
     HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_SHA,
     HISTORICAL_CODE_EXISTS_OWNER_GO,
@@ -263,6 +271,10 @@ EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SPEC = (
     REPO_ROOT
     / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_V1.md"
 )
+STANDING_FEE_SLIPPAGE_EXACT_ENVELOPE_SPEC = (
+    REPO_ROOT
+    / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_STANDING_FEE_SLIPPAGE_AND_COMPLETE_NON_EXECUTING_EXACT_SINGLE_FILL_EXECUTION_ENVELOPE_V1.md"
+)
 HISTORICAL_SPEC = (
     REPO_ROOT
     / "docs/ops/specs/SECTION_11_14_LIVE_ORDER_AND_ECONOMIC_EVIDENCE_LADDER_OFFLINE_SURFACE_V1.md"
@@ -276,6 +288,12 @@ EVIDENCE = (
     / "evidence/ops"
     / "section_11_14_live_order_and_economic_evidence_ladder_v1"
     / CANONICAL_EVIDENCE_RUN_ID
+)
+ENVELOPE_EVIDENCE = (
+    REPO_ROOT
+    / "evidence/ops"
+    / "section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1"
+    / ENVELOPE_EVIDENCE_RUN_ID
 )
 CODE_EXISTS_EVIDENCE = (
     REPO_ROOT
@@ -472,28 +490,31 @@ HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_EVIDENCE = (
 HEADING_11_15 = "## 11.15 Full-autonomy observability and audit trail"
 
 
-def test_current_slice_constants_target_exact_single_live_identity_bound_venue_fill_then_contemporaneous_pre_restart_capture() -> (
+def test_current_slice_constants_target_standing_fee_slippage_and_exact_execution_envelope() -> (
     None
 ):
     assert THIS_SLICE == (
-        "11.14.LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_"
-        "THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE"
+        "11.14.LIVE_HANDOFF_STANDING_FEE_SLIPPAGE_AND_COMPLETE_NON_EXECUTING_"
+        "EXACT_SINGLE_FILL_EXECUTION_ENVELOPE"
     )
     assert PREDECESSOR_SLICE == (
-        "11.14.LIVE_HANDOFF_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_AND_EXACT_EXECUTION_CONTRACT"
+        "11.14.LIVE_HANDOFF_CURRENT_ORIGIN_MAIN_BOUND_GET_ONLY_"
+        "PRETRADE_ACCOUNT_NETWORK_AND_INSTRUMENT_READINESS"
     )
     assert OWNER_GO.endswith(
-        "LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_V1"
+        "STANDING_FEE_SLIPPAGE_AND_COMPLETE_NON_EXECUTING_EXACT_SINGLE_FILL_EXECUTION_ENVELOPE_V1"
     )
-    assert EXPECTED_ORIGIN_MAIN_SHA == "6d25cd2ced346f760db26ca488183b45d19b3d73"
-    assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_RESTART_RECONSTRUCTED"
-    assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED"
+    assert EXPECTED_ORIGIN_MAIN_SHA == "99d3bdff7e30b0efb452f89af24bb1eb3a19580f"
+    assert EARLIEST_UNRESOLVED_DEPENDENCY == "OWNER_EXECUTION_AUTHORIZED"
+    assert NEXT_OWNER_GO_REQUIRED == "OWNER_MERGE_GO_THEN_SEPARATE_OWNER_EXECUTION_GO"
     assert LAST_CANONICALLY_CLOSED_STEP == (
-        "SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_"
-        "THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE"
+        "SECTION_11_14_LIVE_HANDOFF_STANDING_FEE_SLIPPAGE_AND_COMPLETE_NON_EXECUTING_"
+        "EXACT_SINGLE_FILL_EXECUTION_ENVELOPE"
     )
     assert CANONICAL_EVIDENCE_RUN_ID == "20260907T184500Z"
+    assert ENVELOPE_EVIDENCE_RUN_ID == "20260907T204800Z"
     assert EVIDENCE.name == CANONICAL_EVIDENCE_RUN_ID
+    assert ENVELOPE_EVIDENCE.name == ENVELOPE_EVIDENCE_RUN_ID
 
 
 def test_runbook_historical_offline_slice_remains_false_for_that_consumed_go() -> None:
@@ -857,7 +878,10 @@ def test_runbook_accounting_reconstructed_adjudication_slice_binds_accounting_wi
     assert "ACCOUNTING_RESULT_UNIT=USDC" in section
     assert "ACCOUNTING_RESIDUAL=0" in section
     assert "ACCOUNTING_TOLERANCE_AUTHORITY=EXACT_DECIMAL_EQUALITY_NO_INVENTED_TOLERANCE" in section
-    assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED"
+    assert (
+        HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED
+        == "OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED"
+    )
     assert "NEXT_OWNER_GO_REQUIRED=OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED" in section
     assert HISTORICAL_ACCOUNTING_RECONSTRUCTED_RUN_ID in section
     for field_name in LADDER_FIELDS:
@@ -932,7 +956,7 @@ def test_runbook_restart_reconstructed_exhaustive_census_slice_binds_fail_closed
         in section
     )
     assert "RUNTIME_CHANGE_REQUIRES_SEPARATE_OWNER_SCOPE=true" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_EXHAUSTIVE_CENSUS_RUN_ID in section
     for field_name in LADDER_FIELDS:
         assert field_name in section
@@ -973,7 +997,7 @@ def test_runbook_restart_handoff_owner_bind_slice_binds_owner_none() -> None:
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_OWNER_BIND_RUN_ID in section
     for field_name in LADDER_FIELDS:
         assert field_name in section
@@ -1016,7 +1040,7 @@ def test_runbook_required_field_capture_seam_slice_binds_pos_unproven() -> None:
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_RUN_ID in section
     for field_name in LADDER_FIELDS:
         assert field_name in section
@@ -1062,7 +1086,7 @@ def test_runbook_architecture_adjudication_slice_binds_fail_closed_dag() -> None
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_ARCHITECTURE_ADJUDICATION_RUN_ID in section
     for field_name in LADDER_FIELDS:
         assert field_name in section
@@ -1108,7 +1132,7 @@ def test_runbook_pos_semantics_canonical_binding_slice_binds_gap_contract() -> N
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_POS_SEMANTICS_CANONICAL_BINDING_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_SEMANTICS_AND_CONTRACT_V1"
@@ -1160,7 +1184,7 @@ def test_runbook_pos_producer_semantics_and_contract_slice_binds_unique_meaning(
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_PROOF_V1" in section
@@ -1204,7 +1228,7 @@ def test_runbook_complete_capture_seam_proof_slice_remains_unproven_without_inve
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION_V1"
@@ -1258,7 +1282,7 @@ def test_runbook_producer_owner_writer_implementation_slice_binds_s05_without_re
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_IMPLEMENTATION_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_RESTART_READER_PROVENANCE_AND_CONSUMER_BIND_V1"
@@ -1315,7 +1339,7 @@ def test_runbook_restart_reader_provenance_and_consumer_bind_slice_binds_reader_
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_READER_BIND_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_CONTEMPORANEOUS_PRE_RESTART_OBSERVATION_V1"
@@ -1381,7 +1405,7 @@ def test_runbook_contemporaneous_pre_restart_observation_slice_closes_refute() -
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_CONTEMPORANEOUS_OBSERVATION_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW_V1"
@@ -1444,7 +1468,7 @@ def test_runbook_future_authorized_capture_window_slice_closes_without_runtime_j
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_FUTURE_CAPTURE_WINDOW_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_CAPTURE_OWNER_HOOK_AND_FUTURE_IDENTITY_CONTRACT_V1"
@@ -1512,7 +1536,7 @@ def test_runbook_productive_capture_owner_and_lifecycle_hook_binding_slice_close
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_CREATE_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK_REQUIRES_SEPARATE_OWNER_GO_V1"
@@ -1589,7 +1613,7 @@ def test_runbook_create_productive_capture_owner_and_lifecycle_hook_slice_closes
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_CREATE_PRODUCTIVE_CAPTURE_OWNER_HOOK_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_REQUIRES_SEPARATE_OWNER_GO_V1"
@@ -1642,7 +1666,7 @@ def test_runbook_complete_contemporaneous_capture_seam_and_required_field_proven
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_COMPLETE_CONTEMPORANEOUS_CAPTURE_SEAM_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_REQUIRES_SEPARATE_OWNER_GO_V1"
@@ -1694,7 +1718,7 @@ def test_runbook_productive_capture_hook_caller_binding_and_offline_call_path_pr
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_PRODUCTIVE_HOOK_CALLER_BINDING_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_REQUIRES_SEPARATE_OWNER_GO_V1"
@@ -1747,7 +1771,7 @@ def test_runbook_complete_capture_seam_required_field_provenance_and_no_backfill
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_COMPLETE_CAPTURE_SEAM_NO_BACKFILL_CONTRACT_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_REQUIRES_SEPARATE_OWNER_GO_V1"
@@ -1807,7 +1831,7 @@ def test_runbook_contemporaneous_capture_runtime_surface_and_non_execution_autho
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_REQUIRES_SEPARATE_OWNER_GO_V1"
@@ -1866,7 +1890,7 @@ def test_runbook_contemporaneous_pre_restart_capture_observation_and_non_executi
     assert "POST_PERFORMED=false" in section
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_REQUIRES_SEPARATE_OWNER_GO_FOR_LIVE_IDENTITY_BOUND_VENUE_FILL_V1"
@@ -1926,7 +1950,7 @@ def test_runbook_live_identity_bound_venue_fill_readiness_and_exact_execution_co
     assert "RESTART_EXECUTION=false" in section
     assert "FUTURE_EXECUTION_OWNER_GO_REQUIRED=true" in section
     assert "NEXT_SLICE_AUTHORIZED=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
     assert HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_REQUIRES_SEPARATE_OWNER_GO_V1"
@@ -1941,14 +1965,17 @@ def test_runbook_exact_single_live_identity_bound_venue_fill_then_contemporaneou
 ):
     text = MASTER_RUNBOOK.read_text(encoding="utf-8")
     start = text.find(CANONICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SLICE_HEADING)
-    end = text.find(HEADING_11_15, start)
+    end = text.find(CANONICAL_STANDING_FEE_SLIPPAGE_EXACT_ENVELOPE_SLICE_HEADING, start)
     assert start >= 0
     assert end > start
     section = text[start:end]
-    assert OWNER_GO in section
-    assert THIS_SLICE in section
-    assert PREDECESSOR_SLICE in section
-    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_OWNER_GO in section
+    assert HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SLICE in section
+    assert HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_PREDECESSOR_SLICE in section
+    assert (
+        f"EXPECTED_ORIGIN_MAIN_SHA={HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SHA}"
+        in section
+    )
     assert "SECTION_11_14_AUTHORIZED=false" in section
     assert "SECTION_11_14_COMPLETE=false" in section
     assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
@@ -1981,10 +2008,62 @@ def test_runbook_exact_single_live_identity_bound_venue_fill_then_contemporaneou
     assert "FUTURE_EXECUTION_OWNER_GO_REQUIRED=true" in section
     assert "NEXT_SLICE_AUTHORIZED=false" in section
     assert "REPAIR_MERGE_AUTHORIZED=false" in section
-    assert NEXT_OWNER_GO_REQUIRED in section
-    assert CANONICAL_EVIDENCE_RUN_ID in section
+    assert HISTORICAL_NEXT_OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED in section
+    assert HISTORICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_AFTER_CAPTURE_SEAM_REPAIR_REQUIRES_SEPARATE_OWNER_GO_V1"
+        in section
+    )
+    for field_name in LADDER_FIELDS:
+        assert field_name in section
+
+
+def test_runbook_standing_fee_slippage_and_complete_non_executing_exact_execution_envelope_slice() -> (
+    None
+):
+    text = MASTER_RUNBOOK.read_text(encoding="utf-8")
+    start = text.find(CANONICAL_STANDING_FEE_SLIPPAGE_EXACT_ENVELOPE_SLICE_HEADING)
+    end = text.find(HEADING_11_15, start)
+    assert start >= 0
+    assert end > start
+    section = text[start:end]
+    assert OWNER_GO in section
+    assert THIS_SLICE in section
+    assert PREDECESSOR_SLICE in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert "SECTION_11_14_AUTHORIZED=false" in section
+    assert "SECTION_11_14_COMPLETE=false" in section
+    assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in section
+    assert "CURRENT_STANDING_FEE_POLICY_BOUND=true" in section
+    assert "CURRENT_STANDING_SLIPPAGE_POLICY_BOUND=true" in section
+    assert "OWNER_EXECUTION_AUTHORIZED=false" in section
+    assert "LIVE_EXECUTION_AUTHORIZED=false" in section
+    assert "LIVE_FILL_READINESS=false" in section
+    assert "MINIMAL_ECONOMIC_ACTION_CONTRACT_STATUS=BLOCKED" in section
+    assert "LIVE_FILL_EXECUTION_AUTHORIZED=false" in section
+    assert "LIVE_FILL_EXECUTED=false" in section
+    assert "CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION=NOT_EXECUTED" in section
+    assert "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false" in section
+    assert "CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false" in section
+    assert "AUTHORIZED_RUNTIME_SURFACE=NONE" in section
+    assert "LIVE_SUBMIT_EXECUTED=false" in section
+    assert "WIRE_SEND_EXECUTED=false" in section
+    assert "RESTART_EXECUTED=false" in section
+    assert "POSITION_MUTATION_EXECUTED=false" in section
+    assert "OWNER_GO_IS_NOT_GATE_BYPASS=true" in section
+    assert "POST_PERFORMED=false" in section
+    assert "GET_PERFORMED=false" in section
+    assert "NEW_GET_EXECUTED=false" in section
+    assert "REDUNDANT_GET_AVOIDED=true" in section
+    assert "RESTART_EXECUTION=false" in section
+    assert "FUTURE_EXECUTION_OWNER_GO_REQUIRED=true" in section
+    assert "NEXT_SLICE_AUTHORIZED=false" in section
+    assert NEXT_OWNER_GO_REQUIRED in section
+    assert EARLIEST_UNRESOLVED_DEPENDENCY in section
+    assert ENVELOPE_EVIDENCE_RUN_ID in section
+    assert (
+        "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_FILL_REQUIRES_SEPARATE_OWNER_EXECUTION_GO_V1"
         in section
     )
     for field_name in LADDER_FIELDS:
@@ -2058,6 +2137,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         "11.14 LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE"
         in mot
     )
+    assert (
+        "11.14 LIVE_HANDOFF_STANDING_FEE_SLIPPAGE_AND_COMPLETE_NON_EXECUTING_EXACT_SINGLE_FILL_EXECUTION_ENVELOPE"
+        in mot
+    )
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -2119,6 +2202,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_V1.md"
+        in mot
+    )
+    assert (
+        "SECTION_11_14_LIVE_HANDOFF_STANDING_FEE_SLIPPAGE_AND_COMPLETE_NON_EXECUTING_EXACT_SINGLE_FILL_EXECUTION_ENVELOPE_V1.md"
         in mot
     )
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
@@ -2480,6 +2567,17 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "LIVE_RESTART_RECONSTRUCTED=false" in exact_spec
     assert "NEXT_SLICE_AUTHORIZED=false" in exact_spec
     assert "REPAIR_MERGE_AUTHORIZED=false" in exact_spec
+    envelope_spec = STANDING_FEE_SLIPPAGE_EXACT_ENVELOPE_SPEC.read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_LIVE_HANDOFF_STANDING_FEE_SLIPPAGE_AND_COMPLETE_NON_EXECUTING_EXACT_SINGLE_FILL_EXECUTION_ENVELOPE_V1"
+        in envelope_spec
+    )
+    assert "CURRENT_STANDING_FEE_POLICY_BOUND=true" in envelope_spec
+    assert "CURRENT_STANDING_SLIPPAGE_POLICY_BOUND=true" in envelope_spec
+    assert "OWNER_EXECUTION_AUTHORIZED=false" in envelope_spec
+    assert "LIVE_EXECUTION_AUTHORIZED=false" in envelope_spec
+    assert "LIVE_SUBMIT_EXECUTED=false" in envelope_spec
+    assert "WIRE_SEND_EXECUTED=false" in envelope_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -2565,6 +2663,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "id: PHASE:section_11_14_live_handoff_exact_single_live_identity_bound_venue_fill_then_contemporaneous_pre_restart_capture"
+        in catalog
+    )
+    assert (
+        "id: PHASE:section_11_14_live_handoff_standing_fee_slippage_and_complete_non_executing_exact_single_fill_execution_envelope"
         in catalog
     )
     assert (
@@ -3277,3 +3379,19 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert (EVIDENCE / "ADJUDICATION.json").is_file()
     assert (EVIDENCE / "SAFETY.json").is_file()
     assert (EVIDENCE / "BASELINE.json").is_file()
+    assert ENVELOPE_EVIDENCE.is_dir()
+    envelope_verified = verify_manifest_v1(ENVELOPE_EVIDENCE)
+    assert int(envelope_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
+    envelope_summary = (ENVELOPE_EVIDENCE / "SUMMARY.json").read_text(encoding="utf-8")
+    assert '"CURRENT_STANDING_FEE_POLICY_BOUND": true' in envelope_summary
+    assert '"CURRENT_STANDING_SLIPPAGE_POLICY_BOUND": true' in envelope_summary
+    assert '"OWNER_EXECUTION_AUTHORIZED": false' in envelope_summary
+    assert '"LIVE_EXECUTION_AUTHORIZED": false' in envelope_summary
+    assert '"LIVE_SUBMIT_EXECUTED": false' in envelope_summary
+    assert '"WIRE_SEND_EXECUTED": false' in envelope_summary
+    assert '"POSITION_MUTATION_EXECUTED": false' in envelope_summary
+    assert '"NEW_GET_EXECUTED": false' in envelope_summary
+    assert '"GET_PERFORMED": false' in envelope_summary
+    assert '"POST_PERFORMED": false' in envelope_summary
+    assert '"RESTART_EXECUTED": false' in envelope_summary
+    assert '"EARLIEST_UNRESOLVED_DEPENDENCY": "OWNER_EXECUTION_AUTHORIZED"' in envelope_summary

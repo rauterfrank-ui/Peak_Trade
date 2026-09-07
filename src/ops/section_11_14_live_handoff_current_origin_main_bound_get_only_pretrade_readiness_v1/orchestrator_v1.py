@@ -27,6 +27,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.available_margin_ob
     acquire_fresh_available_margin_observation_from_payload_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+    DEFAULT_INST_FAMILY,
     DEFAULT_INSTRUMENT_ID,
     REUSED_BINDING_ACCOUNT_SCOPE,
     REUSED_BINDING_REST_HOST,
@@ -127,6 +128,22 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import 
     verify_manifest_v1,
     write_json_v1,
     write_manifest_v1,
+)
+from src.ops.section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1.capture_compat_v1 import (
+    project_envelope_onto_capture_record_v1,
+)
+from src.ops.section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1.execution_envelope_v1 import (
+    ExactExecutionEnvelopeError,
+    build_exact_execution_envelope_v1,
+)
+from src.ops.section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1.fee_policy_v1 import (
+    StandingFeePolicyError,
+    bind_standing_fee_policy_from_trade_fee_payload_v1,
+    trade_fee_query_path_v1,
+)
+from src.ops.section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1.offline_order_plan_v1 import (
+    OfflineExactOrderPlanError,
+    build_offline_exact_order_plan_v1,
 )
 
 
@@ -459,6 +476,9 @@ def run_get_only_pretrade_readiness_v1(
     record_get(inst_attempt, "INSTRUMENT_STATE")
     tick_sz = ""
     ct_val = ""
+    min_sz = ""
+    lot_sz = ""
+    ct_val_ccy = ""
     ref_px = ""
     limit_px = ""
     buy_lmt = ""
@@ -509,6 +529,9 @@ def run_get_only_pretrade_readiness_v1(
             )
             tick_sz = str(constraints.get("tickSz") or "")
             ct_val = str(constraints.get("ctVal") or "")
+            min_sz = str(constraints.get("minSz") or "")
+            lot_sz = str(constraints.get("lotSz") or "")
+            ct_val_ccy = str(constraints.get("ctValCcy") or "")
             state = inst_obs.state_raw
             ok = state == INSTRUMENT_STATE_REQUIRED
             predicates["INSTRUMENT_STATE_CURRENT"] = _predicate(
@@ -1233,6 +1256,69 @@ def run_get_only_pretrade_readiness_v1(
         except (InvalidOperation, TypeError):
             derived_notional = "UNKNOWN"
 
+    trade_fee_ep = trade_fee_query_path_v1(inst_family=DEFAULT_INST_FAMILY)
+    fee_attempt = _one_get(
+        client=client,
+        endpoint=trade_fee_ep,
+        headers=_headers_for_endpoint(
+            endpoint=trade_fee_ep, rest_base=rest_base, header_provider=header_provider
+        ),
+    )
+    record_get(fee_attempt, "TRADE_FEE")
+    fee_policy = None
+    if fee_attempt.timeout:
+        predicates["FEE_POLICY_BOUND"] = _predicate(
+            status="INDETERMINATE_TIMEOUT",
+            extracted=None,
+            reason=fee_attempt.error,
+            observed_at_utc=fee_attempt.observed_at_utc,
+            endpoint=trade_fee_ep,
+            http_status=fee_attempt.http_status,
+            venue_code="",
+            body_sha256="",
+        )
+    elif fee_attempt.payload is None or fee_attempt.http_status != 200:
+        predicates["FEE_POLICY_BOUND"] = _predicate(
+            status="FAIL_CLOSED" if fee_attempt.error else "INDETERMINATE",
+            extracted=None,
+            reason=fee_attempt.error or f"HTTP_{fee_attempt.http_status}",
+            observed_at_utc=fee_attempt.observed_at_utc,
+            endpoint=trade_fee_ep,
+            http_status=fee_attempt.http_status,
+            venue_code=fee_attempt.venue_code,
+            body_sha256=fee_attempt.body_sha256,
+        )
+    else:
+        try:
+            fee_policy = bind_standing_fee_policy_from_trade_fee_payload_v1(
+                payload=fee_attempt.payload,
+                instrument_id=instrument_id,
+                inst_family=DEFAULT_INST_FAMILY,
+                historical_reuse=False,
+                freshness="CURRENT_GET",
+            )
+            predicates["FEE_POLICY_BOUND"] = _predicate(
+                status="PASS",
+                extracted=fee_policy.to_dict(),
+                reason="",
+                observed_at_utc=fee_attempt.observed_at_utc,
+                endpoint=trade_fee_ep,
+                http_status=fee_attempt.http_status,
+                venue_code=fee_attempt.venue_code,
+                body_sha256=fee_attempt.body_sha256,
+            )
+        except StandingFeePolicyError as exc:
+            predicates["FEE_POLICY_BOUND"] = _predicate(
+                status="FAIL_CLOSED",
+                extracted=None,
+                reason=str(exc),
+                observed_at_utc=fee_attempt.observed_at_utc,
+                endpoint=trade_fee_ep,
+                http_status=fee_attempt.http_status,
+                venue_code=fee_attempt.venue_code,
+                body_sha256=fee_attempt.body_sha256,
+            )
+
     required_pass = (
         "SESSION_AUTH_CURRENT",
         "NETWORK_EGRESS_COMPATIBILITY_CURRENT",
@@ -1245,6 +1331,7 @@ def run_get_only_pretrade_readiness_v1(
         "PRICE_BAND_CURRENT",
         "PRICE_SOURCE_CURRENT",
         "EXACT_PRICE_SEMANTICS_BOUND",
+        "FEE_POLICY_BOUND",
     )
     # MARGIN_MODE_CURRENT and EXPECTED_PRE_EXISTING_POSITION may be NOT_OBSERVED
     # on a current empty positions GET; that is current evidence, not PASS.
@@ -1261,11 +1348,186 @@ def run_get_only_pretrade_readiness_v1(
     }:
         missing.append("EXPECTED_PRE_EXISTING_POSITION")
         all_required = False
-    missing.extend(["EXPECTED_FEES", "SLIPPAGE_BOUND"])
-    envelope_complete = all_required and derived_notional != "UNKNOWN"
-    # Standing fee/slippage policy is not bound as CURRENT; keep envelope incomplete.
+
+    expected_fees = "UNKNOWN"
+    slippage_bound = "UNKNOWN"
     envelope_complete = False
     technical_ready = False
+    envelope_dict: dict[str, Any] | None = None
+    offline_plan: dict[str, Any] | None = None
+    capture_compat: dict[str, Any] | None = None
+    envelope_error = ""
+    acct_lv = str(
+        ((predicates.get("ACCOUNT_MODE_CURRENT") or {}).get("extracted") or {}).get("acctLv") or ""
+    )
+    pos_mode_now = str(
+        ((predicates.get("POSITION_MODE_CURRENT") or {}).get("extracted") or {}).get("posMode")
+        or ""
+    )
+    lever_now = str(
+        ((predicates.get("LEVERAGE_CURRENT") or {}).get("extracted") or {}).get("lever") or ""
+    )
+    avail_eq = str(
+        ((predicates.get("AVAILABLE_MARGIN_CURRENT") or {}).get("extracted") or {}).get("availEq")
+        or ""
+    )
+    avail_ccy = str(
+        ((predicates.get("AVAILABLE_MARGIN_CURRENT") or {}).get("extracted") or {}).get(
+            "selected_ccy"
+        )
+        or ""
+    )
+    max_buy = str(
+        ((predicates.get("MAX_AVAILABLE_MAX_SIZE_CURRENT") or {}).get("extracted") or {}).get(
+            "maxBuy"
+        )
+        or ""
+    )
+    inst_state = str(
+        ((predicates.get("INSTRUMENT_STATE_CURRENT") or {}).get("extracted") or {}).get("state")
+        or ""
+    )
+    if fee_policy is None:
+        missing.extend(["EXPECTED_FEES", "FEE_POLICY_BOUND"])
+        predicates.setdefault(
+            "SLIPPAGE_POLICY_BOUND",
+            _predicate(
+                status="FAIL_CLOSED",
+                extracted=None,
+                reason="FEE_POLICY_REQUIRED_BEFORE_ENVELOPE",
+                observed_at_utc=utc_now_iso_v1(),
+                endpoint="",
+                http_status=None,
+                venue_code="",
+                body_sha256="",
+            ),
+        )
+    else:
+        try:
+            envelope = build_exact_execution_envelope_v1(
+                instrument_id=instrument_id,
+                side=SIDE,
+                order_type=ORDER_TYPE,
+                td_mode=PLANNED_TD_MODE,
+                pos_mode=pos_mode_now,
+                leverage=lever_now,
+                qty=ORDER_QTY,
+                qty_unit=ORDER_QTY_UNIT,
+                min_sz=min_sz,
+                lot_sz=lot_sz,
+                tick_sz=tick_sz,
+                ct_val=ct_val,
+                ct_val_ccy=ct_val_ccy,
+                settle_ccy="USDC",
+                reference_price=ref_px,
+                limit_price=limit_px,
+                buy_lmt=buy_lmt,
+                sell_lmt=sell_lmt,
+                max_buy=max_buy,
+                available_margin=avail_eq,
+                available_margin_ccy=avail_ccy,
+                instrument_state=inst_state,
+                account_mode=acct_lv,
+                fee_policy=fee_policy,
+                predicates=predicates,
+                owner_execution_authorized=False,
+            )
+            envelope_dict = envelope.to_dict()
+            expected_fees = str(envelope_dict.get("EXPECTED_FEE_AMOUNT") or "UNKNOWN")
+            slippage_bound = str(envelope_dict.get("SLIPPAGE_ABS") or "UNKNOWN")
+            predicates["SLIPPAGE_POLICY_BOUND"] = _predicate(
+                status="PASS",
+                extracted=dict(envelope_dict.get("SLIPPAGE_POLICY") or {}),
+                reason="",
+                observed_at_utc=utc_now_iso_v1(),
+                endpoint="",
+                http_status=None,
+                venue_code="",
+                body_sha256="",
+            )
+            predicates["EXPECTED_FEES_KNOWN"] = _predicate(
+                status="PASS",
+                extracted={"EXPECTED_FEE_AMOUNT": expected_fees},
+                reason="",
+                observed_at_utc=utc_now_iso_v1(),
+                endpoint=trade_fee_ep,
+                http_status=fee_attempt.http_status,
+                venue_code=fee_attempt.venue_code,
+                body_sha256=fee_attempt.body_sha256,
+            )
+            predicates["WORST_CASE_FILL_PRICE_KNOWN"] = _predicate(
+                status="PASS",
+                extracted={"WORST_FILL_PRICE": envelope_dict.get("WORST_FILL_PRICE")},
+                reason="",
+                observed_at_utc=utc_now_iso_v1(),
+                endpoint="",
+                http_status=None,
+                venue_code="",
+                body_sha256="",
+            )
+            predicates["WORST_CASE_COST_KNOWN"] = _predicate(
+                status="PASS",
+                extracted={"WORST_CASE_COST": envelope_dict.get("WORST_CASE_COST")},
+                reason="",
+                observed_at_utc=utc_now_iso_v1(),
+                endpoint="",
+                http_status=None,
+                venue_code="",
+                body_sha256="",
+            )
+            predicates["MARGIN_SUFFICIENCY_PROVEN"] = _predicate(
+                status="PASS",
+                extracted={"oracle": envelope_dict.get("MARGIN_SUFFICIENCY_ORACLE")},
+                reason="",
+                observed_at_utc=utc_now_iso_v1(),
+                endpoint="",
+                http_status=None,
+                venue_code="",
+                body_sha256="",
+            )
+            envelope_complete = bool(envelope_dict.get("EXACT_EXECUTION_ENVELOPE_COMPLETE"))
+            technical_ready = bool(envelope_dict.get("TECHNICAL_EXECUTION_READY")) and all_required
+            if not all_required:
+                envelope_complete = False
+                technical_ready = False
+            offline_plan = build_offline_exact_order_plan_v1(envelope=envelope_dict)
+            capture_compat = project_envelope_onto_capture_record_v1(envelope=envelope_dict)
+        except (ExactExecutionEnvelopeError, OfflineExactOrderPlanError) as exc:
+            envelope_error = str(exc)
+            envelope_complete = False
+            technical_ready = False
+            missing.append("EXACT_EXECUTION_ENVELOPE")
+            predicates["SLIPPAGE_POLICY_BOUND"] = _predicate(
+                status="FAIL_CLOSED",
+                extracted=None,
+                reason=envelope_error,
+                observed_at_utc=utc_now_iso_v1(),
+                endpoint="",
+                http_status=None,
+                venue_code="",
+                body_sha256="",
+            )
+
+    predicates["OWNER_EXECUTION_AUTHORIZED"] = _predicate(
+        status="FAIL_CLOSED",
+        extracted={"value": False},
+        reason="OWNER_EXECUTION_AUTHORIZED_MUST_REMAIN_FALSE",
+        observed_at_utc=utc_now_iso_v1(),
+        endpoint="",
+        http_status=None,
+        venue_code="",
+        body_sha256="",
+    )
+    predicates["LIVE_EXECUTION_AUTHORIZED"] = _predicate(
+        status="FAIL_CLOSED",
+        extracted={"value": False},
+        reason="LIVE_EXECUTION_AUTHORIZED_MUST_REMAIN_FALSE",
+        observed_at_utc=utc_now_iso_v1(),
+        endpoint="",
+        http_status=None,
+        venue_code="",
+        body_sha256="",
+    )
 
     get_success = sum(
         1 for item in gets if item["http_status"] == 200 and item["venue_code"] == "0"
@@ -1300,8 +1562,13 @@ def run_get_only_pretrade_readiness_v1(
         "PRICE_OR_PRICE_POLICY": price_policy,
         "EXECUTION_LIMIT_PRICE": limit_px or "UNKNOWN",
         "EXPECTED_MAX_NOTIONAL": derived_notional,
-        "EXPECTED_FEES": "UNKNOWN",
-        "SLIPPAGE_BOUND": "UNKNOWN",
+        "EXPECTED_FEES": expected_fees,
+        "SLIPPAGE_BOUND": slippage_bound,
+        "FEE_POLICY": None if fee_policy is None else fee_policy.to_dict(),
+        "EXACT_EXECUTION_ENVELOPE": envelope_dict,
+        "EXACT_EXECUTION_ENVELOPE_ERROR": envelope_error,
+        "OFFLINE_EXACT_ORDER_PLAN": offline_plan,
+        "CAPTURE_COMPAT": capture_compat,
         "EXACT_VENUE_BOUND": True,
         "EXACT_ACCOUNT_CONTEXT_BOUND": predicates.get("ACCOUNT_MODE_CURRENT", {}).get("status")
         == "PASS",

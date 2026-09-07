@@ -52,8 +52,9 @@ MAP_OF_TRUTH_AUTHORITY=NONE
 - Historical evidence is rejected as CURRENT.
 - Missing or invalid responses are `INDETERMINATE` or `FAIL_CLOSED`, never
   implicit PASS.
-- Standing fee and slippage policy remain `UNKNOWN` unless a later canonical
-  bind proves them current.
+- Standing fee and slippage policy are bound by the successor envelope
+  workpackage; this GET-only surface now allowlists `trade-fee` as a
+  read-only input and still does **not** authorize submit.
 
 ## Endpoint allowlist
 
@@ -65,6 +66,7 @@ MAP_OF_TRUTH_AUTHORITY=NONE
 - `&#47;api&#47;v5&#47;account&#47;positions`
 - `&#47;api&#47;v5&#47;account&#47;leverage-info`
 - `&#47;api&#47;v5&#47;account&#47;max-size`
+- `&#47;api&#47;v5&#47;account&#47;trade-fee`
 
 ## Rejected existing surfaces for this workpackage
 

@@ -127,6 +127,22 @@ AVAILABLE_MARGIN = {
 }
 
 
+TRADE_FEE = {
+    "code": "0",
+    "data": [
+        {
+            "instType": "FUTURES",
+            "instFamily": "SUI-USD_UM_XPERP",
+            "taker": "-0.0005",
+            "maker": "-0.0002",
+            "takerUSDC": "-0.0005",
+            "makerUSDC": "-0.0002",
+            "delivery": "0.0003",
+        }
+    ],
+}
+
+
 def _bodies() -> dict[str, bytes]:
     return {
         "/api/v5/public/instruments": json.dumps(INSTRUMENTS).encode(),
@@ -137,6 +153,7 @@ def _bodies() -> dict[str, bytes]:
         "/api/v5/account/leverage-info": json.dumps(LEVERAGE).encode(),
         "/api/v5/account/config": json.dumps(POS_MODE).encode(),
         "/api/v5/account/balance": json.dumps(AVAILABLE_MARGIN).encode(),
+        "/api/v5/account/trade-fee": json.dumps(TRADE_FEE).encode(),
     }
 
 
@@ -207,14 +224,14 @@ def test_obsolete_sha_is_not_an_invocation_gate() -> None:
     assert result["OBSOLETE_FROZEN_ORIGIN_MAIN_SHA"] == OBSOLETE_FROZEN_ORIGIN_MAIN_SHA
 
 
-def test_happy_path_get_only_fixture_does_not_pass_implicit_envelope() -> None:
+def test_happy_path_get_only_fixture_completes_non_executing_envelope() -> None:
     result, transport = _run()
     assert all(call.method == "GET" for call in transport.calls)
     assert result["GET_ONLY_SURFACE_POST_REACHABLE"] is False
     assert result["GET_ONLY_SURFACE_SUBMIT_REACHABLE"] is False
     assert result["COUNTERS"]["WRITE_REQUEST_COUNT"] == 0
-    assert result["GET_ENDPOINT_COUNT"] == 8
-    assert result["GET_SUCCESS_COUNT"] == 8
+    assert result["GET_ENDPOINT_COUNT"] == 9
+    assert result["GET_SUCCESS_COUNT"] == 9
     assert result["PREDICATES"]["ACCOUNT_MODE_CURRENT"]["status"] == "PASS"
     assert result["PREDICATES"]["POSITION_MODE_CURRENT"]["status"] == "PASS"
     assert result["PREDICATES"]["INSTRUMENT_STATE_CURRENT"]["status"] == "PASS"
@@ -224,14 +241,20 @@ def test_happy_path_get_only_fixture_does_not_pass_implicit_envelope() -> None:
     assert result["PREDICATES"]["AVAILABLE_MARGIN_CURRENT"]["status"] == "PASS"
     assert result["PREDICATES"]["MAX_AVAILABLE_MAX_SIZE_CURRENT"]["status"] == "PASS"
     assert result["PREDICATES"]["EXACT_PRICE_SEMANTICS_BOUND"]["status"] == "PASS"
+    assert result["PREDICATES"]["FEE_POLICY_BOUND"]["status"] == "PASS"
+    assert result["PREDICATES"]["SLIPPAGE_POLICY_BOUND"]["status"] == "PASS"
     assert result["PREDICATES"]["MARGIN_MODE_CURRENT"]["status"] == "NOT_OBSERVED"
     assert result["PREDICATES"]["EXPECTED_PRE_EXISTING_POSITION"]["status"] == "NOT_OBSERVED"
-    assert result["EXPECTED_FEES"] == "UNKNOWN"
-    assert result["SLIPPAGE_BOUND"] == "UNKNOWN"
-    assert result["EXACT_EXECUTION_ENVELOPE_COMPLETE"] is False
-    assert result["TECHNICAL_EXECUTION_READY"] is False
+    assert result["EXPECTED_FEES"] != "UNKNOWN"
+    assert result["SLIPPAGE_BOUND"] != "UNKNOWN"
+    assert result["EXACT_EXECUTION_ENVELOPE_COMPLETE"] is True
+    assert result["TECHNICAL_EXECUTION_READY"] is True
     assert result["OWNER_EXECUTION_AUTHORIZED"] is False
-    assert "EXPECTED_FEES" in result["MISSING_EXECUTION_ENVELOPE_FIELDS"]
+    assert result["PREDICATES"]["OWNER_EXECUTION_AUTHORIZED"]["status"] == "FAIL_CLOSED"
+    assert result["PREDICATES"]["LIVE_EXECUTION_AUTHORIZED"]["status"] == "FAIL_CLOSED"
+    assert result["OFFLINE_EXACT_ORDER_PLAN"]["WIRE_SEND_BLOCKED"] is True
+    assert result["OFFLINE_EXACT_ORDER_PLAN"]["WIRE_SEND_EXECUTED"] is False
+    assert result["LIVE_SUBMIT_EXECUTED"] is False
     for item in result["GETS"]:
         assert item["observed_at_utc"]
         assert item["method"] == "GET"
@@ -292,6 +315,7 @@ def test_no_secrets_in_result() -> None:
 
 def test_allowlist_is_explicit_and_census_rejects_mixed_transport() -> None:
     assert "/api/v5/account/leverage-info" in ENDPOINT_PATH_ALLOWLIST
+    assert "/api/v5/account/trade-fee" in ENDPOINT_PATH_ALLOWLIST
     assert "/api/v5/trade/order" not in ENDPOINT_PATH_ALLOWLIST
     dispositions = {row["disposition"] for row in EXISTING_SURFACE_CENSUS}
     assert "REJECT_FOR_THIS_WP" in dispositions
@@ -301,6 +325,22 @@ def test_submit_transport_not_loaded_by_this_package_source() -> None:
     text = (PACKAGE_DIR / "orchestrator_v1.py").read_text(encoding="utf-8")
     assert "submit_transport_v1" not in text
     assert "run_canary_submit_transport_v1" not in text
+
+
+def test_missing_trade_fee_keeps_envelope_incomplete() -> None:
+    bodies = _bodies()
+    del bodies["/api/v5/account/trade-fee"]
+    transport = RecordingFakeGetOnlyTransportV1(bodies_by_path=bodies)
+    result = run_get_only_pretrade_readiness_v1(
+        origin_main_sha=ORIGIN_SHA,
+        transport=transport,
+        header_provider=lambda url: {"User-Agent": "test"},
+    )
+    assert result["PREDICATES"]["FEE_POLICY_BOUND"]["status"] != "PASS"
+    assert result["EXACT_EXECUTION_ENVELOPE_COMPLETE"] is False
+    assert result["TECHNICAL_EXECUTION_READY"] is False
+    assert result["OWNER_EXECUTION_AUTHORIZED"] is False
+    assert result["LIVE_SUBMIT_EXECUTED"] is False
 
 
 def test_persist_manifest_rc_zero(tmp_path: Path) -> None:

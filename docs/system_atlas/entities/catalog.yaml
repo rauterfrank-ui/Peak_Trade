@@ -2178,6 +2178,47 @@ entities:
       OWNER_EXECUTION_AUTHORIZED=false. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: PHASE:section_11_14_live_handoff_standing_fee_slippage_and_complete_non_executing_exact_single_fill_execution_envelope
+    kind: PHASE
+    name: 11.14.LIVE_HANDOFF_STANDING_FEE_SLIPPAGE_AND_COMPLETE_NON_EXECUTING_EXACT_SINGLE_FILL_EXECUTION_ENVELOPE
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1/__init__.py
+      - src/ops/section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1/constants_v1.py
+      - src/ops/section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1/census_v1.py
+      - src/ops/section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1/fee_policy_v1.py
+      - src/ops/section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1/slippage_policy_v1.py
+      - src/ops/section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1/execution_envelope_v1.py
+      - src/ops/section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1/offline_order_plan_v1.py
+      - src/ops/section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1/capture_compat_v1.py
+      - src/ops/section_11_14_live_handoff_current_origin_main_bound_get_only_pretrade_readiness_v1/orchestrator_v1.py
+      - src/ops/section_11_14_live_handoff_current_origin_main_bound_get_only_pretrade_readiness_v1/constants_v1.py
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_STANDING_FEE_SLIPPAGE_AND_COMPLETE_NON_EXECUTING_EXACT_SINGLE_FILL_EXECUTION_ENVELOPE_V1.md
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - tests/ops/test_section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1.py
+      - tests/ops/test_section_11_14_live_handoff_current_origin_main_bound_get_only_pretrade_readiness_v1.py
+      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
+      - evidence/ops/section_11_14_live_handoff_standing_fee_slippage_and_exact_execution_envelope_v1/20260907T204800Z/
+    notes: >-
+      §11.14 standing fee/slippage bind and non-executing exact execution
+      envelope persist. CURRENT_STANDING_FEE_POLICY_BOUND=true.
+      CURRENT_STANDING_SLIPPAGE_POLICY_BOUND=true.
+      OWNER_EXECUTION_AUTHORIZED=false. LIVE_EXECUTION_AUTHORIZED=false.
+      LIVE_SUBMIT_EXECUTED=false. WIRE_SEND_EXECUTED=false.
+      POSITION_MUTATION_EXECUTED=false.
+      CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false.
+      RESTART_EXECUTED=false. NEW_GET_EXECUTED=false.
+      OWNER_GO_IS_NOT_GATE_BYPASS=true.
+      CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false.
+      AUTHORIZED_RUNTIME_SURFACE=NONE.
+      LIVE_RESTART_RECONSTRUCTED=false. IMPLEMENTATION_AUTHORIZED=true.
+      No POST. No submit. No wire send. No position mutation. No restart
+      execution. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
     name: Route-C create-path blocker census v1
