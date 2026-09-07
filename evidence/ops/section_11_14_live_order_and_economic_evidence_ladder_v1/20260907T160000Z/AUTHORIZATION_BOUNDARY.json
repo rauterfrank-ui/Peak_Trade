@@ -1,0 +1,13 @@
+{
+  "DOCUMENT_CLASS": "SECTION_11_14_MINIMAL_FUTURE_AUTHORIZATION_BOUNDARY_V1",
+  "FUTURE_OBSERVATION_GO_MUST_AUTHORIZE_PREDECESSOR": "Identity-bound venue fill of a submitted order, then HOST_JOIN",
+  "MINIMAL_FUTURE_AUTHORIZED_ENTRYPOINT": "NONE_CAPTURE_ONLY",
+  "MINIMAL_REQUIRED_GATES": "FUTURE_OWNER_GO_FOR_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION; PRODUCTIVE_BOUND_FILL_INPUT authorization distinct from TEST_FIXTURE; LIVE_ENABLED/LIVE_ARMED remain independently gated and are not capture-enable tokens",
+  "MINIMAL_REQUIRED_INPUTS": "contemporaneous LIVE_IDENTITY_BOUND_VENUE_FILL + S05 qty + lifecycle timestamps + storage_root",
+  "MINIMAL_REQUIRED_SIDE_EFFECTS": "FILESYSTEM_WRITE of the handoff artifact",
+  "PROHIBITED_TRANSITIVE_EFFECTS": "LIVE_SUBMIT as part of capture; WIRE_SEND as part of capture; ORDER_MUTATION; FUNDING; TESTNET; CANARY_ENABLE; RESTART; PROCESS_EXIT; HOST_REBOOT; HOST_CRASH; LIVE_GATE_ENABLE; LIVE_GATE_ARM; AUTHENTICATION_MUTATION; persistence outside the handoff artifact",
+  "ROLLBACK_SEMANTICS": "Capture persist is identity-idempotent; a different identity is NO_SECOND_IDENTITY fail-closed. Restart is not a rollback.",
+  "STOP_CONDITION": "Any attempt to treat TEST_FIXTURE or historical BOUND_* as productive contemporaneous provenance; any capture after restart; any missing required field",
+  "SUCCESS_EVIDENCE": "DURABLE_SUCCESS_ACK for PRODUCTIVE_BOUND_FILL_INPUT with CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED remaining a separate empirical claim under a future observation GO",
+  "UNAVOIDABLE_EXTERNAL_EFFECTS": "LIVE_IDENTITY_BOUND_VENUE_FILL"
+}
