@@ -18,6 +18,19 @@ OPTIONAL_TEMPORAL_FIELDS: tuple[str, ...] = (
     "captured_at_utc",
     "written_at_utc",
 )
+OPTIONAL_ENVELOPE_PROVENANCE_FIELDS: tuple[str, ...] = (
+    "execution_envelope_id",
+    "execution_envelope_version",
+    "fee_provenance",
+    "slippage_provenance",
+    "expected_fee",
+    "expected_fee_ccy",
+    "planned_fill_price",
+    "worst_case_fill_price",
+    "order_qty",
+    "order_qty_unit",
+    "instrument_id",
+)
 HANDOFF_DOCUMENT_CLASS = "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_V1"
 HANDOFF_MUST_BE_DISTINCT_FROM_VENUE_GET = True
 CONTEMPORANEOUS_PROVENANCE_CLASS = "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_CAPTURE"
