@@ -82,6 +82,8 @@ def run_capture_hook_after_bound_fill_before_restart_v1(
     ack = commit_handoff_after_bound_fill_before_restart_v1(
         storage_root=storage_root,
         **gates["writer_kwargs"],
+        field_provenance=accepted["field_provenance"],
+        lifecycle_id=accepted["LIFECYCLE_ID"],
     )
     committed_at = str((ack.get("record") or {}).get("captured_at_utc") or "").strip()
     window = validate_capture_window_timestamps_v1(

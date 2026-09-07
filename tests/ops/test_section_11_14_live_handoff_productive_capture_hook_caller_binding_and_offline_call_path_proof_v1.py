@@ -23,14 +23,13 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.runner_v1 import (
     run_section_11_13_5_live_canary_minimum_exposure_v1,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_PRODUCTIVE_HOOK_CALLER_BINDING_OWNER_GO,
+    HISTORICAL_PRODUCTIVE_HOOK_CALLER_BINDING_SHA,
     LIVE_ARMED,
     LIVE_ENABLED,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
     POST_ALLOWED,
     SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED,
-    THIS_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -98,14 +97,13 @@ def _caller_kwargs(tmp_path: Path, **overrides: object) -> dict[str, object]:
     return payload
 
 
-def test_current_slice_and_owner_go_match_this_workpackage() -> None:
-    assert THIS_SLICE == (
-        "11.14.LIVE_HANDOFF_PRODUCTIVE_CAPTURE_HOOK_CALLER_BINDING_AND_OFFLINE_CALL_PATH_PROOF"
-    )
-    assert OWNER_GO.endswith(
+def test_historical_slice_and_owner_go_remain_bound_for_that_consumed_go() -> None:
+    assert HISTORICAL_PRODUCTIVE_HOOK_CALLER_BINDING_OWNER_GO.endswith(
         "PRODUCTIVE_CAPTURE_HOOK_CALLER_BINDING_AND_OFFLINE_CALL_PATH_PROOF_V1"
     )
-    assert EXPECTED_ORIGIN_MAIN_SHA == "97c015c352467413e292785f2349120e38b43e73"
+    assert HISTORICAL_PRODUCTIVE_HOOK_CALLER_BINDING_SHA == (
+        "97c015c352467413e292785f2349120e38b43e73"
+    )
     assert PRODUCTIVE_HOOK_CALLER == "call_pre_restart_handoff_capture_after_bound_fill_v1"
     assert PRODUCTIVE_LIFECYCLE_EVENT == REQUIRED_CAPTURE_TRIGGER
     assert LIVE_ENABLED is False
@@ -118,7 +116,7 @@ def test_current_slice_and_owner_go_match_this_workpackage() -> None:
 def test_production_preflight_graph_contains_unique_caller() -> None:
     result = run_section_11_13_5_live_canary_minimum_exposure_v1(
         mode="preflight",
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        origin_main_sha=HISTORICAL_PRODUCTIVE_HOOK_CALLER_BINDING_SHA,
     )
     assert result.ok is True
     graph = result.payload["pre_restart_capture_host_graph"]
@@ -264,7 +262,7 @@ def test_live_gates_remain_false_and_preflight_cannot_execute() -> None:
     assert graph["WIRE_SEND"] is False
     result = run_section_11_13_5_live_canary_minimum_exposure_v1(
         mode="preflight",
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        origin_main_sha=HISTORICAL_PRODUCTIVE_HOOK_CALLER_BINDING_SHA,
         live_enabled=False,
         live_armed=False,
     )
@@ -304,8 +302,8 @@ def test_census_and_bind_prove_unique_productive_caller_without_complete_seam() 
 def test_execute_is_offline_and_does_not_claim_productive_capture() -> None:
     result = (
         execute_live_handoff_productive_capture_hook_caller_binding_and_offline_call_path_proof_v1(
-            owner_go=OWNER_GO,
-            origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+            owner_go=HISTORICAL_PRODUCTIVE_HOOK_CALLER_BINDING_OWNER_GO,
+            origin_main_sha=HISTORICAL_PRODUCTIVE_HOOK_CALLER_BINDING_SHA,
             repo_root=REPO_ROOT,
             run_id="20260907T130000Z-test",
         )
