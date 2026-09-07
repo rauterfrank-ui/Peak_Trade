@@ -1,0 +1,26 @@
+{
+  "DOCUMENT_CLASS": "SECTION_11_14_DURABLE_WRITE_POINT_AND_PROVENANCE_V1",
+  "DURABLE_WRITE_SYMBOL": "commit_handoff_after_bound_fill_before_restart_v1::_atomic_replace_write",
+  "ENVELOPE_PROVENANCE_IS_CONTRACT_NOT_EMPIRICAL_OBSERVATION": true,
+  "HANDOFF_FILENAME": "restart_with_open_position_pre_restart_v1.json",
+  "PRODUCTIVE_DURABLE_RECORD_PRESENT_IN_REPO": false,
+  "PROVENANCE_RECORD_FIELDS": [
+    "owner_id",
+    "claimed_owner",
+    "provenance_class",
+    "attempt_identity",
+    "captured_at_utc",
+    "written_at_utc"
+  ],
+  "RELATIVE_DURABLE_DIR": "durable_state/section_11_14_live_durable_pre_restart_handoff_v1/pre_restart",
+  "REQUIRED_HANDOFF_FIELDS": [
+    "clOrdId",
+    "ordId",
+    "instId",
+    "posSide",
+    "pos"
+  ],
+  "REQUIRED_PROVENANCE_CLASS": "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_CAPTURE",
+  "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_V1",
+  "STORAGE_OWNER": "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_V1"
+}

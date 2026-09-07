@@ -759,6 +759,27 @@ relations:
       restart execution. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_section_11_14_contemporaneous_pre_restart_observation_follows_restart_reader_bind
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_handoff_restart_reader_provenance_and_consumer_bind
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_contemporaneous_pre_restart_observation_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_contemporaneous_pre_restart_observation_execute_v1.py
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T054500Z/
+    notes: >-
+      Contemporaneous pre-restart observability prove-or-refute follows
+      restart-reader / provenance / consumer bind.
+      OBSERVATION_STATUS=CLOSED_REFUTED. READ_BACK_RESULT=MISSING_HANDOFF.
+      AUTHORIZED_NON_LIVE_RUNTIME_SURFACE_PRESENT=false.
+      COMPLETE_CAPTURE_SEAM remains UNPROVEN. HOST_CRASH_DURABILITY remains
+      UNPROVEN. LIVE_RESTART_RECONSTRUCTED remains false.
+      CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED remains false.
+      IMPLEMENTATION_AUTHORIZED=false. No GET. No POST. No productive
+      handoff write. No restart execution. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_path_calls_venue_translation
     source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     type: CALLS

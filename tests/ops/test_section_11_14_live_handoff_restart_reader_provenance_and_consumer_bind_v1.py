@@ -6,11 +6,10 @@ import json
 from pathlib import Path
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_READER_BIND_OWNER_GO,
+    HISTORICAL_READER_BIND_SHA,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
     SECTION_11_14_LIVE_HANDOFF_READER_PRESENT,
-    THIS_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_handoff_consumer_bind_v1 import (
     consume_validated_handoff_for_restart_reconstruction_v1,
@@ -289,7 +288,6 @@ def test_consumer_rejects_every_invalid_reader_result() -> None:
 
 def test_binding_keeps_restart_and_seam_unproven() -> None:
     binding = bind_restart_reader_provenance_and_consumer_v1()
-    assert THIS_SLICE == "11.14.LIVE_HANDOFF_RESTART_READER_PROVENANCE_AND_CONSUMER_BIND"
     assert SECTION_11_14_LIVE_HANDOFF_READER_PRESENT is True
     assert binding["READER_BOUND"] is True
     assert binding["RESTART_CONSUMER_BOUND"] is True
@@ -306,8 +304,8 @@ def test_binding_keeps_restart_and_seam_unproven() -> None:
 
 def test_execute_is_offline_and_does_not_observe_contemporaneous_handoff() -> None:
     result = execute_live_handoff_restart_reader_provenance_and_consumer_bind_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        owner_go=HISTORICAL_READER_BIND_OWNER_GO,
+        origin_main_sha=HISTORICAL_READER_BIND_SHA,
         repo_root=REPO_ROOT,
         run_id="20260907T025500Z-test",
     )

@@ -1,0 +1,84 @@
+---
+docs_token: DOCS_TOKEN_SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_CONTEMPORANEOUS_PRE_RESTART_OBSERVATION_V1
+status: active
+scope: §11.14 contemporaneous pre-restart handoff observability prove-or-refute; reader/consumer already bound; productive writer bound but not runtime-joined; repo-root read-back MISSING_HANDOFF; COMPLETE_CAPTURE_SEAM remains UNPROVEN; LIVE_RESTART_RECONSTRUCTED remains false; no GET; no POST; no synthetic provenance
+capability: SECTION_11_14_LIVE_ORDER_AND_ECONOMIC_EVIDENCE_LADDER_V1
+architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
+last_updated: 2026-09-07
+---
+
+# Section 11.14 Live Restart Reconstructed Contemporaneous Pre-Restart Observation V1
+
+## Goal
+
+Prove or refute contemporaneous Peak_Trade pre-restart handoff observability
+and the remaining complete-capture-seam predicate. Do not synthesize a
+handoff. Do not backfill timestamps. Do not GET. Do not POST. Do not
+execute a restart. Do not write a productive handoff record.
+
+```text
+CORE_LOGIC_CHANGE=false
+ACTIVATION_STATE=none
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+LIVE_ACCOUNTING_RECONSTRUCTED=true
+LIVE_RESTART_RECONSTRUCTED=false
+LIVE_AUTONOMOUS_RECOVERY_OBSERVED=false
+CURRENT_PHASE=11.14.LIVE_RESTART_RECONSTRUCTED_CONTEMPORANEOUS_PRE_RESTART_OBSERVATION
+SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT=SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_V1
+POS_SEMANTICS=PROVEN
+SELECTED_SEMANTIC_ID=S05_PEAK_TRADE_OWNED_RESULTING_CURRENT_POSITION_QTY_VENUE_CONTRACT_COUNT_UNSIGNED
+NEW_PRODUCER_IMPLEMENTED=true
+SELECTED_CAPTURE_TRIGGER=REQUIRED_WINDOW_HANDOFF_COMMIT_AFTER_BOUND_FILL_BEFORE_RESTART
+CAPTURE_TRIGGER_JOINED_TO_AUTHORIZED_RUNTIME=false
+WRITER_BOUND=true
+READER_BOUND=true
+RESTART_CONSUMER_BOUND=true
+SELECTED_PRODUCTIVE_READER=read_validated_durable_pre_restart_handoff_v1
+RESTART_CONSUMER_SELECTED=adjudicate_live_restart_reconstructed_v1::consume_validated_handoff_for_restart_reconstruction_v1
+PROVENANCE_VALIDATION=CONTRACT_PROVEN
+FRESHNESS_VALIDATION=PARTIAL
+AUTHORIZED_NON_LIVE_RUNTIME_SURFACE_PRESENT=false
+MINIMUM_SAFE_OBSERVATION_CLASS=READ_BACK_ONLY_NO_WRITE
+PRODUCTIVE_CAPTURE_WRITE_EXECUTED=false
+READ_BACK_EXECUTED=true
+READ_BACK_RESULT=MISSING_HANDOFF
+OBSERVATION_STATUS=CLOSED_REFUTED
+CASE_ADJUDICATION=CASE_CONTEMPORANEOUS_PRE_RESTART_HANDOFF_OBSERVABILITY_REFUTED_NO_AUTHORIZED_NON_LIVE_SURFACE
+CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED=false
+COMPLETE_CAPTURE_SEAM=UNPROVEN
+COMPLETE_CAPTURE_SEAM_MISSING_PREDICATES=PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL
+HOST_CRASH_DURABILITY=UNPROVEN
+HISTORICAL_DATA_REINTERPRETATION_ALLOWED=false
+RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED=false
+NO_TIMESTAMP_BACKFILL=true
+NO_SYNTHETIC_PRE_RESTART_PROVENANCE=true
+IMPLEMENTATION_AUTHORIZED=false
+ADMISSION_TRUE=false
+SUPERVISOR_ACTIVATED=false
+WIRE_SEND=false
+LIVE_ACTION=NONE
+PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_FUTURE_AUTHORIZED_CONTEMPORANEOUS_CAPTURE_WINDOW_V1
+```
+
+## Bound outcome
+
+The productive capture trigger remains
+`REQUIRED_WINDOW_HANDOFF_COMMIT_AFTER_BOUND_FILL_BEFORE_RESTART`. The
+productive producer remains `SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_V1`
+via `emit_s05_handoff_pos_v1`. The durable write point remains
+`commit_handoff_after_bound_fill_before_restart_v1` into
+`durable_state&#47;section_11_14_live_durable_pre_restart_handoff_v1&#47;pre_restart`.
+Envelope provenance fields remain `{owner_id, claimed_owner,
+provenance_class, attempt_identity, captured_at_utc, written_at_utc}` and
+are contract-validated, not empirical contemporaneous Live observation.
+No authorized non-live runtime surface currently joins the writer.
+Minimum safe observation is therefore read-back only. Repo-root
+`read_validated_durable_pre_restart_handoff_v1` returns `MISSING_HANDOFF`.
+`consume_validated_handoff_for_restart_reconstruction_v1` rejects that
+result. `COMPLETE_CAPTURE_SEAM` remains `UNPROVEN` because
+`PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL` is not empirically
+proven. `LIVE_RESTART_RECONSTRUCTED` remains false.
+`CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED` remains false.
+Host-crash durability remains `UNPROVEN`. No GET. No POST. No restart
+execution. No productive handoff write.

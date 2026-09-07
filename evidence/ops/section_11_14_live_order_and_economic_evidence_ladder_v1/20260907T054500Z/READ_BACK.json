@@ -1,0 +1,13 @@
+{
+  "CONSUMER_ACCEPTED": false,
+  "CONSUMER_REASON": "CONSUMER_REJECTS_INVALID_READER_RESULT",
+  "DURABLE_PATH": "/Users/frnkhrz/Peak_Trade/durable_state/section_11_14_live_durable_pre_restart_handoff_v1/pre_restart/restart_with_open_position_pre_restart_v1.json",
+  "EVIDENCE_PACK_FALLBACK": false,
+  "GET_PERFORMED": false,
+  "MINIMUM_SAFE_OBSERVATION_CLASS": "READ_BACK_ONLY_NO_WRITE",
+  "PRODUCTIVE_CAPTURE_WRITE_EXECUTED": false,
+  "READER_REASON": "DURABLE_HANDOFF_ABSENT",
+  "READER_RESULT": "MISSING_HANDOFF",
+  "READ_BACK_EXECUTED": true,
+  "VENUE_GET_FALLBACK": false
+}
