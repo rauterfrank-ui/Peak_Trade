@@ -70178,7 +70178,7 @@ plus S05 `emit_s05_handoff_pos_v1`. Unique productive caller is
 `run_capture_hook_after_bound_fill_before_restart_v1`. Unique capture
 owner is `SECTION_11_14_LIVE_PRODUCTIVE_CAPTURE_OWNER_V1`. Writer is
 `commit_handoff_after_bound_fill_before_restart_v1`. Persist path is
-`durable_state/section_11_14_live_durable_pre_restart_handoff_v1/pre_restart/restart_with_open_position_pre_restart_v1.json`.
+`durable_state&#47;section_11_14_live_durable_pre_restart_handoff_v1&#47;pre_restart&#47;restart_with_open_position_pre_restart_v1.json`.
 Reader is `read_validated_durable_pre_restart_handoff_v1`.
 Contemporaneous validator is
 `validate_contemporaneous_no_backfill_persisted_record_v1`. Restart
