@@ -1,0 +1,127 @@
+{
+  "ANY_SIDE_EFFECT_AUTHORIZED_BY_THIS_GO": false,
+  "DOCUMENT_CLASS": "SECTION_11_14_EXECUTION_SIDE_EFFECT_GRAPH_V1",
+  "MAX_ECONOMIC_ACTIONS_IF_LATER_AUTHORIZED": 1,
+  "rows": [
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "EFFECT": "PUBLIC_GET",
+      "EXPECTED": true,
+      "FAILURE_MODE": "FAIL_CLOSED_BEFORE_SUBMIT",
+      "REACHABLE": true,
+      "REQUIRED": true
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "EFFECT": "PRIVATE_GET",
+      "EXPECTED": true,
+      "FAILURE_MODE": "FAIL_CLOSED_BEFORE_SUBMIT",
+      "REACHABLE": true,
+      "REQUIRED": true
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "EFFECT": "SESSION_AUTH",
+      "EXPECTED": true,
+      "FAILURE_MODE": "FAIL_CLOSED_NO_HANDLE",
+      "REACHABLE": true,
+      "REQUIRED": true
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "EFFECT": "WIRE_SEND",
+      "EXPECTED": true,
+      "FAILURE_MODE": "FAIL_CLOSED_NO_WIRE_BACKEND_OR_GATE",
+      "REACHABLE": true,
+      "REQUIRED": true
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "EFFECT": "ORDER_SUBMIT",
+      "EXPECTED": true,
+      "FAILURE_MODE": "FAIL_CLOSED_AT_REFUSE_SUBMIT",
+      "REACHABLE": true,
+      "REQUIRED": true
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "EFFECT": "ORDER_ACK",
+      "EXPECTED": true,
+      "FAILURE_MODE": "UNKNOWN_SUBMIT_NO_BLIND_RETRY",
+      "REACHABLE": true,
+      "REQUIRED": true
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "EFFECT": "ORDER_FILL",
+      "EXPECTED": true,
+      "FAILURE_MODE": "ACK_WITHOUT_FILL_IS_NOT_BOUND_FILL",
+      "REACHABLE": true,
+      "REQUIRED": true
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "EFFECT": "POSITION_MUTATION",
+      "EXPECTED": true,
+      "FAILURE_MODE": "VENUE_FILL_IS_IRREVERSIBLE",
+      "REACHABLE": true,
+      "REQUIRED": true
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "EFFECT": "FEE_INCURRED",
+      "EXPECTED": true,
+      "FAILURE_MODE": "MISSING_FEE_FAILS_LATER_LADDER_NOT_THIS_CONTRACT",
+      "REACHABLE": true,
+      "REQUIRED": true
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "EFFECT": "CAPTURE_PERSIST",
+      "EXPECTED": true,
+      "FAILURE_MODE": "EXECUTE_DOES_NOT_INVOKE_HOST_JOIN",
+      "REACHABLE": true,
+      "REQUIRED": true
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "EFFECT": "RESTART",
+      "EXPECTED": false,
+      "FAILURE_MODE": "NOT_AUTHORIZED_SEPARATE_GO_REQUIRED",
+      "REACHABLE": true,
+      "REQUIRED": false
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "EFFECT": "CRASH",
+      "EXPECTED": false,
+      "FAILURE_MODE": "NO_CRASH_INJECTION_ON_PATH",
+      "REACHABLE": false,
+      "REQUIRED": false
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "EFFECT": "EXIT_ORDER",
+      "EXPECTED": false,
+      "FAILURE_MODE": "FLATTEN_PATH_SEPARATE_UNAUTHORIZED",
+      "REACHABLE": true,
+      "REQUIRED": false
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "EFFECT": "STOP_ORDER",
+      "EXPECTED": false,
+      "FAILURE_MODE": "FLATTEN_PATH_SEPARATE_UNAUTHORIZED",
+      "REACHABLE": true,
+      "REQUIRED": false
+    },
+    {
+      "CURRENTLY_AUTHORIZED": false,
+      "EFFECT": "RECONCILIATION_ACTION",
+      "EXPECTED": false,
+      "FAILURE_MODE": "READ_ONLY_RECON_IS_NOT_SYNCHRONOUS_ACK",
+      "REACHABLE": true,
+      "REQUIRED": false
+    }
+  ]
+}

@@ -16,15 +16,14 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_restart_handoff
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     CANARY_AUTHORIZED,
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_OWNER_GO,
+    HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SHA,
     LIVE_ARMED,
     LIVE_ENABLED,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
     POST_ALLOWED,
     SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED,
     TESTNET_AUTHORIZED,
-    THIS_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -52,14 +51,13 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_re
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
-def test_current_slice_and_owner_go_match_this_workpackage() -> None:
-    assert THIS_SLICE == (
-        "11.14.LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_AND_NON_EXECUTION_PROOF"
-    )
-    assert OWNER_GO.endswith(
+def test_historical_slice_owner_go_and_gates_remain_bound() -> None:
+    assert HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_OWNER_GO.endswith(
         "CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_AND_NON_EXECUTION_PROOF_V1"
     )
-    assert EXPECTED_ORIGIN_MAIN_SHA == "d0f5afc4c119aef4b9e2a6c18ca7acbca570dfd7"
+    assert HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SHA == (
+        "d0f5afc4c119aef4b9e2a6c18ca7acbca570dfd7"
+    )
     assert LIVE_ENABLED is False
     assert LIVE_ARMED is False
     assert POST_ALLOWED is False
@@ -154,8 +152,8 @@ def test_non_execution_proof_does_not_synthesize_or_submit(tmp_path: Path) -> No
 
 def test_bind_and_execute_close_observation_as_not_executed(tmp_path: Path) -> None:
     result = execute_live_handoff_contemporaneous_pre_restart_capture_observation_and_non_execution_proof_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        owner_go=HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_OWNER_GO,
+        origin_main_sha=HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SHA,
         repo_root=REPO_ROOT,
         run_id="20260907T171500Z-test",
         storage_root=tmp_path,
@@ -183,7 +181,7 @@ def test_bind_and_execute_close_observation_as_not_executed(tmp_path: Path) -> N
     with pytest.raises(Section1114OfflineSurfaceError, match="OWNER_GO_MISMATCH"):
         execute_live_handoff_contemporaneous_pre_restart_capture_observation_and_non_execution_proof_v1(
             owner_go="WRONG",
-            origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+            origin_main_sha=HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SHA,
             repo_root=REPO_ROOT,
             storage_root=tmp_path,
         )
