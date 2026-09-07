@@ -104,6 +104,24 @@ class TestNoSecretsRule:
         violations = rule.check(diff, ["tests/ops/test_example_prereg_v1.py"])
         assert len(violations) == 0
 
+    def test_no_false_positive_on_flatten_confirm_token_expected_identifier(self):
+        """Public Flatten confirm-token expected constants are not commit secrets.
+
+        PR #6338 BLOCKED because confirm_token=FLATTEN_CONFIRM_TOKEN_EXPECTED matched
+        the generic token length heuristic.
+        """
+        rule = NoSecretsRule()
+        ident = "FLATTEN_CONFIRM_TOKEN_" + "EXPECTED"
+        diff = (
+            "+++ b/tests/ops/test_section_11_14_example_v1.py\n"
+            "+reasons = reject_path(\n"
+            "+    purpose=PURPOSE,\n"
+            "+    confirm_token=" + ident + ",\n"
+            "+)\n"
+        )
+        violations = rule.check(diff, ["tests/ops/test_section_11_14_example_v1.py"])
+        assert len(violations) == 0
+
     def test_no_false_positive_on_owner_go_execute_identifier(self):
         """Public canary Owner-GO execute identifiers are not commit secrets.
 

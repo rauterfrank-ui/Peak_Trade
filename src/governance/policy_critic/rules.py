@@ -80,6 +80,8 @@ class NoSecretsRule(PolicyRule):
             return True
         if re.search(r"""['"]OWNER_GO_[A-Z0-9_]{8,}['"]""", stripped):
             return True
+        if re.search(r"\b[A-Z0-9_]*_CONFIRM_TOKEN_EXPECTED\b", stripped):
+            return True
         return False
 
     def check(

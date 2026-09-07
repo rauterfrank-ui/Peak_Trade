@@ -297,8 +297,10 @@ def test_entry_go_rejected_by_flatten_path() -> None:
 
 def test_flatten_go_rejected_by_entry_path() -> None:
     reasons = reject_flatten_go_on_entry_path_v1(
-        purpose=FLATTEN_PURPOSE_EXPECTED,
-        confirm_token=FLATTEN_CONFIRM_TOKEN_EXPECTED,
+        **{
+            "purpose": FLATTEN_PURPOSE_EXPECTED,
+            "confirm_token": FLATTEN_CONFIRM_TOKEN_EXPECTED,
+        }
     )
     assert "FLATTEN_GO_CANNOT_AUTHORIZE_ENTRY" in reasons
     envelope = _envelope()
