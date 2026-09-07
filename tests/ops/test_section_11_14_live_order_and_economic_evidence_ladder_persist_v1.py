@@ -39,6 +39,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     CANONICAL_PRODUCTIVE_HOOK_CALLER_BINDING_SLICE_HEADING,
     CANONICAL_COMPLETE_CAPTURE_SEAM_NO_BACKFILL_CONTRACT_SLICE_HEADING,
     CANONICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_SLICE_HEADING,
+    CANONICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SLICE_HEADING,
     CANONICAL_SECTION_HEADING,
     EARLIEST_UNRESOLVED_DEPENDENCY,
     EXPECTED_ORIGIN_MAIN_SHA,
@@ -110,6 +111,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_COMPLETE_CAPTURE_SEAM_NO_BACKFILL_CONTRACT_OWNER_GO,
     HISTORICAL_COMPLETE_CAPTURE_SEAM_NO_BACKFILL_CONTRACT_RUN_ID,
     HISTORICAL_COMPLETE_CAPTURE_SEAM_NO_BACKFILL_CONTRACT_SHA,
+    HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_OWNER_GO,
+    HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_RUN_ID,
+    HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_SHA,
     HISTORICAL_CODE_EXISTS_OWNER_GO,
     HISTORICAL_CODE_EXISTS_RUN_ID,
     HISTORICAL_CODE_EXISTS_SHA,
@@ -238,6 +242,10 @@ COMPLETE_CAPTURE_SEAM_NO_BACKFILL_CONTRACT_SPEC = (
 CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_SPEC = (
     REPO_ROOT
     / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_AND_NON_EXECUTION_AUTHORIZATION_BOUNDARY_V1.md"
+)
+CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SPEC = (
+    REPO_ROOT
+    / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_AND_NON_EXECUTION_PROOF_V1.md"
 )
 HISTORICAL_SPEC = (
     REPO_ROOT
@@ -427,30 +435,36 @@ HISTORICAL_COMPLETE_CAPTURE_SEAM_NO_BACKFILL_CONTRACT_EVIDENCE = (
     / "section_11_14_live_order_and_economic_evidence_ladder_v1"
     / HISTORICAL_COMPLETE_CAPTURE_SEAM_NO_BACKFILL_CONTRACT_RUN_ID
 )
+HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_EVIDENCE = (
+    REPO_ROOT
+    / "evidence/ops"
+    / "section_11_14_live_order_and_economic_evidence_ladder_v1"
+    / HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_RUN_ID
+)
 HEADING_11_15 = "## 11.15 Full-autonomy observability and audit trail"
 
 
-def test_current_slice_constants_target_contemporaneous_capture_runtime_surface_and_non_execution_authorization_boundary() -> (
+def test_current_slice_constants_target_contemporaneous_pre_restart_capture_observation_and_non_execution_proof() -> (
     None
 ):
     assert THIS_SLICE == (
+        "11.14.LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_AND_NON_EXECUTION_PROOF"
+    )
+    assert PREDECESSOR_SLICE == (
         "11.14.LIVE_HANDOFF_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_AND_"
         "NON_EXECUTION_AUTHORIZATION_BOUNDARY"
     )
-    assert PREDECESSOR_SLICE == (
-        "11.14.LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_REQUIRED_FIELD_PROVENANCE_AND_NO_BACKFILL_CONTRACT"
-    )
     assert OWNER_GO.endswith(
-        "CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_AND_NON_EXECUTION_AUTHORIZATION_BOUNDARY_V1"
+        "CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_AND_NON_EXECUTION_PROOF_V1"
     )
-    assert EXPECTED_ORIGIN_MAIN_SHA == "f1ce2505cae738ee88d5ce65e2852fcd4a978cb4"
+    assert EXPECTED_ORIGIN_MAIN_SHA == "d0f5afc4c119aef4b9e2a6c18ca7acbca570dfd7"
     assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_RESTART_RECONSTRUCTED"
     assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED"
     assert LAST_CANONICALLY_CLOSED_STEP == (
-        "SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_AND_"
-        "NON_EXECUTION_AUTHORIZATION_BOUNDARY"
+        "SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_"
+        "OBSERVATION_AND_NON_EXECUTION_PROOF"
     )
-    assert CANONICAL_EVIDENCE_RUN_ID == "20260907T160000Z"
+    assert CANONICAL_EVIDENCE_RUN_ID == "20260907T171500Z"
     assert EVIDENCE.name == CANONICAL_EVIDENCE_RUN_ID
 
 
@@ -1720,14 +1734,23 @@ def test_runbook_contemporaneous_capture_runtime_surface_and_non_execution_autho
 ):
     text = MASTER_RUNBOOK.read_text(encoding="utf-8")
     start = text.find(CANONICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_SLICE_HEADING)
-    end = text.find(HEADING_11_15, start)
+    end = text.find(CANONICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SLICE_HEADING, start)
     assert start >= 0
     assert end > start
     section = text[start:end]
-    assert OWNER_GO in section
-    assert THIS_SLICE in section
-    assert PREDECESSOR_SLICE in section
-    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_OWNER_GO in section
+    assert (
+        "THIS_SLICE=11.14.LIVE_HANDOFF_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_AND_NON_EXECUTION_AUTHORIZATION_BOUNDARY"
+        in section
+    )
+    assert (
+        "PREDECESSOR_SLICE=11.14.LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_REQUIRED_FIELD_PROVENANCE_AND_NO_BACKFILL_CONTRACT"
+        in section
+    )
+    assert (
+        f"EXPECTED_ORIGIN_MAIN_SHA={HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_SHA}"
+        in section
+    )
     assert "SECTION_11_14_AUTHORIZED=false" in section
     assert "SECTION_11_14_COMPLETE=false" in section
     assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
@@ -1757,9 +1780,59 @@ def test_runbook_contemporaneous_capture_runtime_surface_and_non_execution_autho
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
     assert NEXT_OWNER_GO_REQUIRED in section
-    assert CANONICAL_EVIDENCE_RUN_ID in section
+    assert HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_REQUIRES_SEPARATE_OWNER_GO_V1"
+        in section
+    )
+    for field_name in LADDER_FIELDS:
+        assert field_name in section
+
+
+def test_runbook_contemporaneous_pre_restart_capture_observation_and_non_execution_proof_slice() -> (
+    None
+):
+    text = MASTER_RUNBOOK.read_text(encoding="utf-8")
+    start = text.find(CANONICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SLICE_HEADING)
+    end = text.find(HEADING_11_15, start)
+    assert start >= 0
+    assert end > start
+    section = text[start:end]
+    assert OWNER_GO in section
+    assert THIS_SLICE in section
+    assert PREDECESSOR_SLICE in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert "SECTION_11_14_AUTHORIZED=false" in section
+    assert "SECTION_11_14_COMPLETE=false" in section
+    assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in section
+    assert "COMPLETE_CAPTURE_SEAM=PROVEN" in section
+    assert "PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL=true" in section
+    assert "CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_REPROVEN=PROVEN" in section
+    assert "CONTEMPORANEOUS_CAPTURE_SIDE_EFFECT_BOUNDARY_REPROVEN=PROVEN" in section
+    assert "CONTEMPORANEOUS_CAPTURE_CAN_BE_ISOLATED_FROM_LIVE_EXECUTION=false" in section
+    assert "CONTEMPORANEOUS_CAPTURE_EXECUTION_PRECONDITIONS_COMPLETE=true" in section
+    assert "AUTHORIZATION_MATRIX_STATUS=COMPLETE" in section
+    assert "NON_CAPTURE_SIDE_EFFECTS_AUTHORIZED=false" in section
+    assert "CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION=NOT_EXECUTED" in section
+    assert "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false" in section
+    assert "CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false" in section
+    assert "AUTHORIZED_RUNTIME_SURFACE=NONE" in section
+    assert "HOST_CRASH_DURABILITY=UNPROVEN" in section
+    assert "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED=false" in section
+    assert "BACKFILL_USED=false" in section
+    assert "RETROACTIVE_SYNTHESIS_USED=false" in section
+    assert "LIVE_SUBMIT_EXECUTED=false" in section
+    assert "WIRE_SEND_EXECUTED=false" in section
+    assert "RESTART_EXECUTED=false" in section
+    assert "OWNER_GO_IS_NOT_GATE_BYPASS=true" in section
+    assert "POST_PERFORMED=false" in section
+    assert "GET_PERFORMED=false" in section
+    assert "RESTART_EXECUTION=false" in section
+    assert NEXT_OWNER_GO_REQUIRED in section
+    assert CANONICAL_EVIDENCE_RUN_ID in section
+    assert (
+        "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_REQUIRES_SEPARATE_OWNER_GO_FOR_LIVE_IDENTITY_BOUND_VENUE_FILL_V1"
         in section
     )
     for field_name in LADDER_FIELDS:
@@ -1821,6 +1894,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         "11.14 LIVE_HANDOFF_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_AND_NON_EXECUTION_AUTHORIZATION_BOUNDARY"
         in mot
     )
+    assert (
+        "11.14 LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_AND_NON_EXECUTION_PROOF"
+        in mot
+    )
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -1870,6 +1947,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_AND_NON_EXECUTION_AUTHORIZATION_BOUNDARY_V1.md"
+        in mot
+    )
+    assert (
+        "SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_AND_NON_EXECUTION_PROOF_V1.md"
         in mot
     )
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
@@ -2173,6 +2254,24 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "AUTHORIZED_RUNTIME_SURFACE=NONE" in runtime_surface_spec
     assert "IMPLEMENTATION_AUTHORIZED=true" in runtime_surface_spec
     assert "LIVE_RESTART_RECONSTRUCTED=false" in runtime_surface_spec
+    observation_spec = CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SPEC.read_text(
+        encoding="utf-8"
+    )
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_AND_NON_EXECUTION_PROOF_V1"
+        in observation_spec
+    )
+    assert "CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION=NOT_EXECUTED" in observation_spec
+    assert "CONTEMPORANEOUS_CAPTURE_CAN_BE_ISOLATED_FROM_LIVE_EXECUTION=false" in observation_spec
+    assert "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false" in observation_spec
+    assert "AUTHORIZATION_MATRIX_STATUS=COMPLETE" in observation_spec
+    assert "NON_CAPTURE_SIDE_EFFECTS_AUTHORIZED=false" in observation_spec
+    assert "BACKFILL_USED=false" in observation_spec
+    assert "RETROACTIVE_SYNTHESIS_USED=false" in observation_spec
+    assert "CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false" in observation_spec
+    assert "AUTHORIZED_RUNTIME_SURFACE=NONE" in observation_spec
+    assert "IMPLEMENTATION_AUTHORIZED=true" in observation_spec
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in observation_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -2246,6 +2345,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "id: PHASE:section_11_14_live_handoff_contemporaneous_capture_runtime_surface_and_non_execution_authorization_boundary"
+        in catalog
+    )
+    assert (
+        "id: PHASE:section_11_14_live_handoff_contemporaneous_pre_restart_capture_observation_and_non_execution_proof"
         in catalog
     )
     assert (
@@ -2845,6 +2948,23 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         HISTORICAL_COMPLETE_CAPTURE_SEAM_NO_BACKFILL_CONTRACT_EVIDENCE
         / "COMPLETE_CAPTURE_SEAM_PREDICATE.json"
     ).is_file()
+    assert HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_EVIDENCE.is_dir()
+    historical_runtime_verified = verify_manifest_v1(
+        HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_EVIDENCE
+    )
+    assert int(historical_runtime_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
+    historical_runtime_summary = (
+        HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_EVIDENCE / "SUMMARY.json"
+    ).read_text(encoding="utf-8")
+    assert '"CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE": "PROVEN"' in historical_runtime_summary
+    assert (
+        '"CONTEMPORANEOUS_CAPTURE_CAN_BE_ISOLATED_FROM_LIVE_EXECUTION": false'
+        in historical_runtime_summary
+    )
+    assert '"CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED": false' in historical_runtime_summary
+    assert (
+        HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_EVIDENCE / "AUTHORIZATION_BOUNDARY.json"
+    ).is_file()
     assert EVIDENCE.is_dir()
     current_verified = verify_manifest_v1(EVIDENCE)
     assert int(current_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
@@ -2868,11 +2988,13 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert '"PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL": true' in current_summary
     assert '"CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE": "PROVEN"' in current_summary
     assert '"CONTEMPORANEOUS_CAPTURE_SIDE_EFFECT_BOUNDARY": "PROVEN"' in current_summary
+    assert '"CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_REPROVEN": "PROVEN"' in current_summary
+    assert '"CONTEMPORANEOUS_CAPTURE_SIDE_EFFECT_BOUNDARY_REPROVEN": "PROVEN"' in current_summary
     assert '"CONTEMPORANEOUS_CAPTURE_CAN_BE_ISOLATED_FROM_LIVE_EXECUTION": false' in current_summary
     assert '"CONTEMPORANEOUS_CAPTURE_EXECUTION_PRECONDITIONS_COMPLETE": true' in current_summary
-    assert '"MINIMAL_FUTURE_AUTHORIZED_ENTRYPOINT": "NONE_CAPTURE_ONLY"' in current_summary
-    assert '"UNAVOIDABLE_EXTERNAL_EFFECTS": "LIVE_IDENTITY_BOUND_VENUE_FILL"' in current_summary
-    assert '"EARLIEST_IRREVERSIBLE_EFFECT": "VENUE_FILL_OF_IDENTITY_BOUND_ORDER"' in current_summary
+    assert '"AUTHORIZATION_MATRIX_STATUS": "COMPLETE"' in current_summary
+    assert '"NON_CAPTURE_SIDE_EFFECTS_AUTHORIZED": false' in current_summary
+    assert '"CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION": "NOT_EXECUTED"' in current_summary
     assert (
         '"PRODUCTIVE_RUNTIME_ENTRYPOINT": "run_live_order_pre_restart_handoff_capture_v1"'
         in current_summary
@@ -2906,7 +3028,8 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert (EVIDENCE / "GATES.json").is_file()
     assert (EVIDENCE / "INPUTS.json").is_file()
     assert (EVIDENCE / "ISOLATION.json").is_file()
-    assert (EVIDENCE / "AUTHORIZATION_BOUNDARY.json").is_file()
+    assert (EVIDENCE / "AUTHORIZATION_MATRIX.json").is_file()
+    assert (EVIDENCE / "OBSERVATION_ADMISSIBILITY.json").is_file()
     assert (EVIDENCE / "NON_EXECUTION.json").is_file()
     assert (EVIDENCE / "HOST_GRAPH.json").is_file()
     assert (EVIDENCE / "ADJUDICATION.json").is_file()

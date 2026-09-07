@@ -22,15 +22,14 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.runner_v1 import (
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     CANARY_AUTHORIZED,
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_OWNER_GO,
+    HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_SHA,
     LIVE_ARMED,
     LIVE_ENABLED,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
     POST_ALLOWED,
     SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED,
     TESTNET_AUTHORIZED,
-    THIS_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -106,15 +105,13 @@ def _fixture_kwargs(tmp_path: Path, **overrides: object) -> dict[str, object]:
     return payload
 
 
-def test_current_slice_and_owner_go_match_this_workpackage() -> None:
-    assert THIS_SLICE == (
-        "11.14.LIVE_HANDOFF_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_AND_"
-        "NON_EXECUTION_AUTHORIZATION_BOUNDARY"
-    )
-    assert OWNER_GO.endswith(
+def test_historical_slice_owner_go_and_gates_remain_bound() -> None:
+    assert HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_OWNER_GO.endswith(
         "CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_AND_NON_EXECUTION_AUTHORIZATION_BOUNDARY_V1"
     )
-    assert EXPECTED_ORIGIN_MAIN_SHA == "f1ce2505cae738ee88d5ce65e2852fcd4a978cb4"
+    assert HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_SHA == (
+        "f1ce2505cae738ee88d5ce65e2852fcd4a978cb4"
+    )
     assert LIVE_ENABLED is False
     assert LIVE_ARMED is False
     assert POST_ALLOWED is False
@@ -255,8 +252,8 @@ def test_non_execution_and_isolation_adjudication(tmp_path: Path) -> None:
 
 def test_execute_is_offline_and_does_not_claim_productive_capture(tmp_path: Path) -> None:
     result = execute_live_handoff_contemporaneous_capture_runtime_surface_and_non_execution_authorization_boundary_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        owner_go=HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_OWNER_GO,
+        origin_main_sha=HISTORICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_SHA,
         repo_root=REPO_ROOT,
         run_id="20260907T160000Z-test",
         storage_root=tmp_path,
