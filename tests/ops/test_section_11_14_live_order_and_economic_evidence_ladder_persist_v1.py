@@ -44,8 +44,10 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     CANONICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SLICE_HEADING,
     CANONICAL_STANDING_FEE_SLIPPAGE_EXACT_ENVELOPE_SLICE_HEADING,
     CANONICAL_EXACT_FEE_RESTART_DURABILITY_CLOSURE_SLICE_HEADING,
+    CANONICAL_GET_ONLY_TRADE_FEE_REFRESH_SLICE_HEADING,
     CANONICAL_SECTION_HEADING,
     CLOSURE_EVIDENCE_RUN_ID,
+    GET_REFRESH_EVIDENCE_RUN_ID,
     EARLIEST_UNRESOLVED_DEPENDENCY,
     ENVELOPE_EVIDENCE_RUN_ID,
     EXPECTED_ORIGIN_MAIN_SHA,
@@ -152,6 +154,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_PRIVATE_READ_ONLY_OWNER_GO,
     HISTORICAL_PRIVATE_READ_ONLY_RUN_ID,
     HISTORICAL_PRIVATE_READ_ONLY_SHA,
+    HISTORICAL_EXACT_FEE_RESTART_DURABILITY_CLOSURE_OWNER_GO,
+    HISTORICAL_EXACT_FEE_RESTART_DURABILITY_CLOSURE_SHA,
+    HISTORICAL_EXACT_FEE_RESTART_DURABILITY_CLOSURE_SLICE,
     HISTORICAL_SUBMIT_ACK_OBSERVED_OWNER_GO,
     HISTORICAL_SUBMIT_ACK_OBSERVED_RUN_ID,
     HISTORICAL_SUBMIT_ACK_OBSERVED_SHA,
@@ -286,6 +291,10 @@ EXACT_FEE_RESTART_DURABILITY_CLOSURE_SPEC = (
     REPO_ROOT
     / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_EXACT_FEE_RESTART_DURABILITY_AND_PRE_EXECUTION_READINESS_CLOSURE_V1.md"
 )
+GET_ONLY_TRADE_FEE_REFRESH_SPEC = (
+    REPO_ROOT
+    / "docs/ops/specs/SECTION_11_14_CURRENT_ORIGIN_MAIN_8605BF_GET_ONLY_TRADE_FEE_AND_STALE_PRETRADE_PREDICATE_REFRESH_V1.md"
+)
 HISTORICAL_SPEC = (
     REPO_ROOT
     / "docs/ops/specs/SECTION_11_14_LIVE_ORDER_AND_ECONOMIC_EVIDENCE_LADDER_OFFLINE_SURFACE_V1.md"
@@ -314,6 +323,21 @@ CLOSURE_EVIDENCE = (
         "and_pre_execution_readiness_closure_v1"
     )
     / CLOSURE_EVIDENCE_RUN_ID
+)
+GET_REFRESH_EVIDENCE = (
+    REPO_ROOT
+    / "evidence/ops"
+    / (
+        "section_11_14_current_origin_main_8605bf_get_only_trade_fee_and_"
+        "stale_pretrade_predicate_refresh_v1"
+    )
+    / GET_REFRESH_EVIDENCE_RUN_ID
+)
+GET_ONLY_PRETRADE_PACK = (
+    REPO_ROOT
+    / "evidence/ops"
+    / ("section_11_14_live_handoff_current_origin_main_bound_get_only_pretrade_readiness_v1")
+    / GET_REFRESH_EVIDENCE_RUN_ID
 )
 CODE_EXISTS_EVIDENCE = (
     REPO_ROOT
@@ -510,28 +534,29 @@ HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_EVIDENCE = (
 HEADING_11_15 = "## 11.15 Full-autonomy observability and audit trail"
 
 
-def test_current_slice_constants_target_exact_fee_restart_durability_closure() -> None:
+def test_current_slice_constants_target_get_only_trade_fee_refresh() -> None:
     assert THIS_SLICE == (
-        "11.14.LIVE_HANDOFF_EXACT_FEE_RESTART_DURABILITY_AND_PRE_EXECUTION_READINESS_CLOSURE"
+        "11.14.CURRENT_ORIGIN_MAIN_8605BF_GET_ONLY_TRADE_FEE_AND_STALE_PRETRADE_PREDICATE_REFRESH"
     )
     assert PREDECESSOR_SLICE == (
-        "11.14.LIVE_HANDOFF_STANDING_FEE_SLIPPAGE_AND_COMPLETE_NON_EXECUTING_"
-        "EXACT_SINGLE_FILL_EXECUTION_ENVELOPE"
+        "11.14.LIVE_HANDOFF_EXACT_FEE_RESTART_DURABILITY_AND_PRE_EXECUTION_READINESS_CLOSURE"
     )
-    assert OWNER_GO.endswith("EXACT_FEE_RESTART_DURABILITY_AND_PRE_EXECUTION_READINESS_CLOSURE_V1")
-    assert EXPECTED_ORIGIN_MAIN_SHA == "0731a62bec6dd7ef87d80b1c7959d30381f1b983"
+    assert OWNER_GO.endswith("GET_ONLY_TRADE_FEE_AND_STALE_PRETRADE_PREDICATE_REFRESH_V1")
+    assert EXPECTED_ORIGIN_MAIN_SHA == "8605bf596ef773419e99157b143befbcb69fa6a7"
     assert EARLIEST_UNRESOLVED_DEPENDENCY == "OWNER_EXECUTION_AUTHORIZED"
     assert NEXT_OWNER_GO_REQUIRED == "OWNER_MERGE_GO_THEN_SEPARATE_OWNER_EXECUTION_GO"
     assert LAST_CANONICALLY_CLOSED_STEP == (
-        "SECTION_11_14_LIVE_HANDOFF_EXACT_FEE_RESTART_DURABILITY_"
-        "AND_PRE_EXECUTION_READINESS_CLOSURE"
+        "SECTION_11_14_CURRENT_ORIGIN_MAIN_8605BF_GET_ONLY_TRADE_FEE_AND_"
+        "STALE_PRETRADE_PREDICATE_REFRESH"
     )
     assert CANONICAL_EVIDENCE_RUN_ID == "20260907T184500Z"
     assert ENVELOPE_EVIDENCE_RUN_ID == "20260907T204800Z"
     assert CLOSURE_EVIDENCE_RUN_ID == "20260907T193200Z"
+    assert GET_REFRESH_EVIDENCE_RUN_ID == "20260907T203636Z"
     assert EVIDENCE.name == CANONICAL_EVIDENCE_RUN_ID
     assert ENVELOPE_EVIDENCE.name == ENVELOPE_EVIDENCE_RUN_ID
     assert CLOSURE_EVIDENCE.name == CLOSURE_EVIDENCE_RUN_ID
+    assert GET_REFRESH_EVIDENCE.name == GET_REFRESH_EVIDENCE_RUN_ID
 
 
 def test_runbook_historical_offline_slice_remains_false_for_that_consumed_go() -> None:
@@ -2090,14 +2115,15 @@ def test_runbook_standing_fee_slippage_and_complete_non_executing_exact_executio
 def test_runbook_exact_fee_restart_durability_and_pre_execution_readiness_closure_slice() -> None:
     text = MASTER_RUNBOOK.read_text(encoding="utf-8")
     start = text.find(CANONICAL_EXACT_FEE_RESTART_DURABILITY_CLOSURE_SLICE_HEADING)
-    end = text.find(HEADING_11_15, start)
+    end = text.find(CANONICAL_GET_ONLY_TRADE_FEE_REFRESH_SLICE_HEADING, start)
     assert start >= 0
     assert end > start
     section = text[start:end]
-    assert OWNER_GO in section
-    assert THIS_SLICE in section
-    assert PREDECESSOR_SLICE in section
-    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert HISTORICAL_EXACT_FEE_RESTART_DURABILITY_CLOSURE_OWNER_GO in section
+    assert HISTORICAL_EXACT_FEE_RESTART_DURABILITY_CLOSURE_SLICE in section
+    assert (
+        f"EXPECTED_ORIGIN_MAIN_SHA={HISTORICAL_EXACT_FEE_RESTART_DURABILITY_CLOSURE_SHA}" in section
+    )
     assert "SECTION_11_14_AUTHORIZED=false" in section
     assert "SECTION_11_14_COMPLETE=false" in section
     assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
@@ -2128,6 +2154,40 @@ def test_runbook_exact_fee_restart_durability_and_pre_execution_readiness_closur
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_FILL_REQUIRES_SEPARATE_OWNER_EXECUTION_GO_V1"
         in section
     )
+    for field_name in LADDER_FIELDS:
+        assert field_name in section
+
+
+def test_runbook_get_only_trade_fee_and_stale_pretrade_refresh_slice() -> None:
+    text = MASTER_RUNBOOK.read_text(encoding="utf-8")
+    start = text.find(CANONICAL_GET_ONLY_TRADE_FEE_REFRESH_SLICE_HEADING)
+    end = text.find(HEADING_11_15, start)
+    assert start >= 0
+    assert end > start
+    section = text[start:end]
+    assert OWNER_GO in section
+    assert THIS_SLICE in section
+    assert PREDECESSOR_SLICE in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert "SECTION_11_14_AUTHORIZED=false" in section
+    assert "SECTION_11_14_COMPLETE=false" in section
+    assert "EXACT_OKX_FEE_FORMULA_UNPROVEN=true" in section
+    assert "BOUNDED_FEE_ENVELOPE_CURRENT_NUMERIC_PROVEN=true" in section
+    assert "TECHNICAL_PRE_EXECUTION_READINESS=true" in section
+    assert "TECHNICAL_EXECUTION_READINESS=true" in section
+    assert "OWNER_EXECUTION_AUTHORIZED=false" in section
+    assert "GET_PERFORMED=true" in section
+    assert "POST_PERFORMED=false" in section
+    assert "LIVE_SUBMIT_EXECUTED=false" in section
+    assert "WIRE_SEND_EXECUTED=false" in section
+    assert "RESTART_EXECUTED=false" in section
+    assert "CRASH_TEST_EXECUTED=false" in section
+    assert "NEXT_SLICE_AUTHORIZED=false" in section
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in section
+    assert "HOST_CRASH_DURABILITY=UNPROVEN" in section
+    assert NEXT_OWNER_GO_REQUIRED in section
+    assert EARLIEST_UNRESOLVED_DEPENDENCY in section
+    assert GET_REFRESH_EVIDENCE_RUN_ID in section
     for field_name in LADDER_FIELDS:
         assert field_name in section
 
@@ -2206,6 +2266,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert (
         "11.14 LIVE_HANDOFF_EXACT_FEE_RESTART_DURABILITY_AND_PRE_EXECUTION_READINESS_CLOSURE" in mot
     )
+    assert (
+        "11.14 CURRENT_ORIGIN_MAIN_8605BF_GET_ONLY_TRADE_FEE_AND_STALE_PRETRADE_PREDICATE_REFRESH"
+        in mot
+    )
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -2275,6 +2339,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "SECTION_11_14_LIVE_HANDOFF_EXACT_FEE_RESTART_DURABILITY_AND_PRE_EXECUTION_READINESS_CLOSURE_V1.md"
+        in mot
+    )
+    assert (
+        "SECTION_11_14_CURRENT_ORIGIN_MAIN_8605BF_GET_ONLY_TRADE_FEE_AND_STALE_PRETRADE_PREDICATE_REFRESH_V1.md"
         in mot
     )
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
@@ -2662,6 +2730,16 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "OWNER_EXECUTION_AUTHORIZED=false" in closure_spec
     assert "CANARY_AUTHORIZED_EXACT_FIELD=INDETERMINATE_ABSENT" in closure_spec
     assert "POST_ALLOWED_EXACT_FIELD=INDETERMINATE_ABSENT" in closure_spec
+    refresh_spec = GET_ONLY_TRADE_FEE_REFRESH_SPEC.read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_CURRENT_ORIGIN_MAIN_8605BF_GET_ONLY_TRADE_FEE_AND_STALE_PRETRADE_PREDICATE_REFRESH_V1"
+        in refresh_spec
+    )
+    assert "EXACT_OKX_FEE_FORMULA_STATUS=UNPROVEN" in refresh_spec
+    assert "TECHNICAL_PRE_EXECUTION_READINESS=true" in refresh_spec
+    assert "OWNER_EXECUTION_AUTHORIZED=false" in refresh_spec
+    assert "GET_PERFORMED=true" in refresh_spec
+    assert "POST_PERFORMED=false" in refresh_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -2755,6 +2833,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "id: PHASE:section_11_14_live_handoff_exact_fee_restart_durability_and_pre_execution_readiness_closure"
+        in catalog
+    )
+    assert (
+        "id: PHASE:section_11_14_current_origin_main_8605bf_get_only_trade_fee_and_stale_pretrade_predicate_refresh"
         in catalog
     )
     assert (
@@ -3501,3 +3583,17 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert '"POST_PERFORMED": false' in closure_summary
     assert '"RESTART_EXECUTED": false' in closure_summary
     assert '"CRASH_TEST_EXECUTED": false' in closure_summary
+    assert GET_REFRESH_EVIDENCE.is_dir()
+    refresh_verified = verify_manifest_v1(GET_REFRESH_EVIDENCE)
+    assert int(refresh_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
+    assert GET_ONLY_PRETRADE_PACK.is_dir()
+    assert int(verify_manifest_v1(GET_ONLY_PRETRADE_PACK).get("MANIFEST_VERIFY_RC", 1)) == 0
+    refresh_summary = (GET_REFRESH_EVIDENCE / "SUMMARY.json").read_text(encoding="utf-8")
+    assert '"EXACT_OKX_FEE_FORMULA_STATUS": "UNPROVEN"' in refresh_summary
+    assert '"BOUNDED_FEE_ENVELOPE_CURRENT_NUMERIC_PROVEN": true' in refresh_summary
+    assert '"TECHNICAL_PRE_EXECUTION_READINESS": true' in refresh_summary
+    assert '"OWNER_EXECUTION_AUTHORIZED": false' in refresh_summary
+    assert '"GET_PERFORMED": true' in refresh_summary
+    assert '"POST_PERFORMED": false' in refresh_summary
+    assert '"RESTART_EXECUTED": false' in refresh_summary
+    assert '"CRASH_TEST_EXECUTED": false' in refresh_summary
