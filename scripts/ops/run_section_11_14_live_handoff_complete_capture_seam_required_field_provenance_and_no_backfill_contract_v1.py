@@ -1,0 +1,101 @@
+"""One-shot runner for §11.14 complete capture-seam provenance persist."""
+
+from __future__ import annotations
+
+from pathlib import Path
+import subprocess
+import sys
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import (  # noqa: E402
+    verify_manifest_v1,
+    write_json_v1,
+    write_manifest_v1,
+)
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (  # noqa: E402
+    CANONICAL_EVIDENCE_RUN_ID,
+    EXPECTED_ORIGIN_MAIN_SHA,
+    OWNER_GO,
+)
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_complete_capture_seam_required_field_provenance_and_no_backfill_contract_execute_v1 import (  # noqa: E402
+    execute_live_handoff_complete_capture_seam_required_field_provenance_and_no_backfill_contract_v1,
+)
+
+
+def _origin_main_sha(repo_root: Path) -> str:
+    result = subprocess.run(
+        ["git", "rev-parse", "origin/main"],
+        cwd=repo_root,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return result.stdout.strip()
+
+
+def main() -> int:
+    repo_root = Path(__file__).resolve().parents[2]
+    origin_main_sha = _origin_main_sha(repo_root)
+    if origin_main_sha != EXPECTED_ORIGIN_MAIN_SHA:
+        print(
+            f"ORIGIN_MAIN_SHA_MISMATCH actual={origin_main_sha} expected={EXPECTED_ORIGIN_MAIN_SHA}"
+        )
+        return 2
+    result = execute_live_handoff_complete_capture_seam_required_field_provenance_and_no_backfill_contract_v1(
+        owner_go=OWNER_GO,
+        origin_main_sha=origin_main_sha,
+        repo_root=repo_root,
+        run_id=CANONICAL_EVIDENCE_RUN_ID,
+    )
+    pack = Path(result["pack"])
+    pack.mkdir(parents=True, exist_ok=True)
+    documents = {
+        "SUMMARY.json": dict(result["summary"]),
+        "BASELINE.json": dict(result["baseline"]),
+        "CHANGED_PATH_CENSUS.json": dict(result["changed_path_census"]),
+        "CALLER_CENSUS.json": dict(result["caller_census"]),
+        "HOST_GRAPH.json": dict(result["host_graph"]),
+        "DATAFLOW_CENSUS.json": dict(result["dataflow"]),
+        "REQUIRED_FIELD_PROVENANCE_MATRIX.json": dict(result["required_field_provenance_matrix"]),
+        "REQUIRED_FIELD_PROVENANCE_TABLE.json": dict(result["required_field_table"]),
+        "COMPLETE_CAPTURE_SEAM_PREDICATE.json": dict(result["seam_predicate"]),
+        "SAFETY.json": dict(result["safety"]),
+        "claims.json": dict(result["claims"]),
+        "ADJUDICATION.json": dict(result["adjudication"]),
+    }
+    names = sorted(documents)
+    for name, payload in documents.items():
+        write_json_v1(pack / name, payload)
+    write_manifest_v1(pack, tuple(names))
+    verified = verify_manifest_v1(pack)
+    summary = dict(result["summary"])
+    summary["MANIFEST_VERIFY_RC"] = int(verified.get("MANIFEST_VERIFY_RC", 1))
+    write_json_v1(pack / "SUMMARY.json", summary)
+    write_manifest_v1(pack, tuple(names))
+    print(f"EVIDENCE_PACK={pack}")
+    print(f"CASE_ADJUDICATION={summary.get('CASE_ADJUDICATION')}")
+    print(f"AUTHORITATIVE_CAPTURE_PRODUCER={summary.get('AUTHORITATIVE_CAPTURE_PRODUCER')}")
+    print(f"PRODUCTIVE_HOOK_CALLER={summary.get('PRODUCTIVE_HOOK_CALLER')}")
+    print(f"CAPTURE_HOOK={summary.get('CAPTURE_HOOK')}")
+    print(f"PRODUCTIVE_CAPTURE_OWNER={summary.get('PRODUCTIVE_CAPTURE_OWNER')}")
+    print(f"COMPLETE_CAPTURE_SEAM={summary.get('COMPLETE_CAPTURE_SEAM')}")
+    print(f"REQUIRED_FIELD_PROVENANCE_COMPLETE={summary.get('REQUIRED_FIELD_PROVENANCE_COMPLETE')}")
+    print(f"NO_BACKFILL_CONTRACT_PROVEN={summary.get('NO_BACKFILL_CONTRACT_PROVEN')}")
+    print(
+        "PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL="
+        f"{summary.get('PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL')}"
+    )
+    print(
+        "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED="
+        f"{summary.get('CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED')}"
+    )
+    print(f"LIVE_RESTART_RECONSTRUCTED={summary.get('LIVE_RESTART_RECONSTRUCTED')}")
+    print(f"MANIFEST_VERIFY_RC={summary['MANIFEST_VERIFY_RC']}")
+    return 0 if summary["MANIFEST_VERIFY_RC"] == 0 else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

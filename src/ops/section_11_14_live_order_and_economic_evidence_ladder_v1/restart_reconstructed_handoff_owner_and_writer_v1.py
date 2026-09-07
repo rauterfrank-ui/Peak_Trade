@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
@@ -77,12 +76,28 @@ def mint_section_11_14_live_durable_pre_restart_handoff_owner_v1() -> dict[str, 
     }
 
 
+def _copy_optional_field_provenance(
+    field_provenance: Mapping[str, Any] | None,
+) -> dict[str, dict[str, str]] | None:
+    if field_provenance is None:
+        return None
+    root = dict(field_provenance)
+    fields = dict(root.get("fields") or root)
+    copied: dict[str, dict[str, str]] = {}
+    for name, row in fields.items():
+        payload = dict(row or {})
+        copied[str(name)] = {str(key): str(value) for key, value in payload.items()}
+    return copied
+
+
 def construct_five_field_handoff_record_v1(
     *,
     producer_output: Mapping[str, Any],
     attempt_identity: object,
     captured_at_utc: object,
     bound_fill_identity: Mapping[str, Any] | None = None,
+    field_provenance: Mapping[str, Any] | None = None,
+    lifecycle_id: object | None = None,
 ) -> dict[str, Any]:
     produced = dict(producer_output or {})
     missing = [
@@ -122,7 +137,14 @@ def construct_five_field_handoff_record_v1(
         "captured_at_utc": captured,
         "HANDOFF_MUST_BE_DISTINCT_FROM_VENUE_GET": HANDOFF_MUST_BE_DISTINCT_FROM_VENUE_GET,
         "SCHEMA_CHANGE_REQUIRED": False,
+        "BACKFILL_ALLOWED": False,
     }
+    provenance_copy = _copy_optional_field_provenance(field_provenance)
+    if provenance_copy is not None:
+        record["field_provenance"] = provenance_copy
+    lifecycle = str(lifecycle_id or "").strip()
+    if lifecycle != "":
+        record["lifecycle_id"] = lifecycle
     return record
 
 
@@ -246,6 +268,8 @@ def commit_handoff_after_bound_fill_before_restart_v1(
     extra_fields: Mapping[str, Any] | None = None,
     bound_fill_identity: Mapping[str, Any] | None = None,
     now_utc: str | None = None,
+    field_provenance: Mapping[str, Any] | None = None,
+    lifecycle_id: object | None = None,
     dumps_fn: DumpsFn | None = None,
     fsync_file_fn: FsyncFn | None = None,
     fsync_dir_fn: FsyncFn | None = None,
@@ -257,7 +281,7 @@ def commit_handoff_after_bound_fill_before_restart_v1(
         raise Section1114OfflineSurfaceError("WRITER_TRIGGER_MISMATCH")
     captured_at = str(now_utc or "").strip()
     if captured_at == "":
-        captured_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        raise Section1114OfflineSurfaceError("CAPTURE_TIMESTAMP_MISSING")
     try:
         produced = emit_s05_handoff_pos_v1(
             resulting_current_position_qty=resulting_current_position_qty,
@@ -279,6 +303,8 @@ def commit_handoff_after_bound_fill_before_restart_v1(
             attempt_identity=attempt_identity,
             captured_at_utc=captured_at,
             bound_fill_identity=bound_fill_identity,
+            field_provenance=field_provenance,
+            lifecycle_id=lifecycle_id,
         )
         record["written_at_utc"] = captured_at
         encoded = (dumps_fn or _canonical_dumps)(record)

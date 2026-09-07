@@ -696,6 +696,8 @@ def accept_complete_contemporaneous_capture_inputs_v1(
         attempt_identity=attempt_identity,
         captured_at_utc=capture_started_at,
         bound_fill_identity=identity,
+        field_provenance=validated_provenance,
+        lifecycle_id=lifecycle,
     )
     if str(record.get("provenance_class") or "").strip() in FORBIDDEN_PROVENANCE_CLASSES:
         raise Section1114OfflineSurfaceError("FORBIDDEN_PROVENANCE")
