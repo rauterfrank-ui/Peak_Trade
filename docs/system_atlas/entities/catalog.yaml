@@ -2042,6 +2042,44 @@ entities:
       LIVE_RESTART_RECONSTRUCTED=false. IMPLEMENTATION_AUTHORIZED=true.
       No GET. No POST. No productive capture executed. No restart
       execution. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+      Historical after the contemporaneous PRE-RESTART capture-observation
+      and non-execution-proof slice.
+
+  - id: PHASE:section_11_14_live_handoff_contemporaneous_pre_restart_capture_observation_and_non_execution_proof
+    kind: PHASE
+    name: 11.14.LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_AND_NON_EXECUTION_PROOF
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_AND_NON_EXECUTION_PROOF_V1.md
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T171500Z/
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_contemporaneous_pre_restart_capture_observation_and_non_execution_proof_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_contemporaneous_pre_restart_capture_observation_and_non_execution_proof_execute_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_caller_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/runner_v1.py
+      - tests/ops/test_section_11_14_live_handoff_contemporaneous_pre_restart_capture_observation_and_non_execution_proof_v1.py
+      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
+    notes: >-
+      §11.14 contemporaneous PRE-RESTART capture observation and
+      non-execution proof persist.
+      CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION=NOT_EXECUTED.
+      CONTEMPORANEOUS_CAPTURE_CAN_BE_ISOLATED_FROM_LIVE_EXECUTION=false.
+      AUTHORIZATION_MATRIX_STATUS=COMPLETE.
+      NON_CAPTURE_SIDE_EFFECTS_AUTHORIZED=false.
+      CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false.
+      BACKFILL_USED=false.
+      RETROACTIVE_SYNTHESIS_USED=false.
+      OWNER_GO_IS_NOT_GATE_BYPASS=true.
+      CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false.
+      AUTHORIZED_RUNTIME_SURFACE=NONE.
+      HOST_CRASH_DURABILITY=UNPROVEN.
+      CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED=false.
+      LIVE_RESTART_RECONSTRUCTED=false. IMPLEMENTATION_AUTHORIZED=true.
+      No GET. No POST. No productive capture executed. No restart
+      execution. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
@@ -3013,6 +3051,7 @@ entities:
       - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_CAPTURE_HOOK_CALLER_BINDING_AND_OFFLINE_CALL_PATH_PROOF_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_REQUIRED_FIELD_PROVENANCE_AND_NO_BACKFILL_CONTRACT_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_AND_NON_EXECUTION_AUTHORIZATION_BOUNDARY_V1.md
+      - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_AND_NON_EXECUTION_PROOF_V1.md
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T121000Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T123100Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T130000Z/
@@ -3043,6 +3082,7 @@ entities:
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T130000Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T140000Z/
       - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T160000Z/
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T171500Z/
     notes: >-
       Navigation inventory of the §11.14 evidence-ladder surface including
       LIVE_EXECUTION_CODE_EXISTS, LIVE_EXECUTION_PATH_REACHABLE,

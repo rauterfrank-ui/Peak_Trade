@@ -7,8 +7,9 @@ LIVE_POSITION_RECONCILED, and LIVE_ACCOUNTING_RECONSTRUCTED are bound
 true. Unique productive capture owner, lifecycle hook, and unique
 productive caller remain structurally bound. COMPLETE_CAPTURE_SEAM=PROVEN
 remains the predecessor offline contract.
-CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE=PROVEN.
-CONTEMPORANEOUS_CAPTURE_CAN_BE_ISOLATED_FROM_LIVE_EXECUTION remains false.
+CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE=PROVEN remains the predecessor
+runtime-surface proof. Isolation from live execution remains false.
+CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION=NOT_EXECUTED.
 CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED remains false.
 CURRENT_RUNTIME_EXECUTION_AUTHORIZED remains false.
 LIVE_RESTART_RECONSTRUCTED remains false. Host-crash durability remains
