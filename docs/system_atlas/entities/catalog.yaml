@@ -2115,7 +2115,42 @@ entities:
       LIVE_RESTART_RECONSTRUCTED=false. IMPLEMENTATION_AUTHORIZED=true.
       No GET. No POST. No submit. No wire send. No position mutation. No
       restart execution. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
+      ATLAS_AUTHORITY=NONE. Historical after the exact-single identity-bound
+      venue-fill then contemporaneous PRE-RESTART capture slice.
+
+  - id: PHASE:section_11_14_live_handoff_exact_single_live_identity_bound_venue_fill_then_contemporaneous_pre_restart_capture
+    kind: PHASE
+    name: 11.14.LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_V1.md
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T184500Z/
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_exact_single_live_identity_bound_venue_fill_then_contemporaneous_pre_restart_capture_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_exact_single_live_identity_bound_venue_fill_then_contemporaneous_pre_restart_capture_execute_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_caller_v1.py
+      - tests/ops/test_section_11_14_live_handoff_exact_single_live_identity_bound_venue_fill_then_contemporaneous_pre_restart_capture_v1.py
+      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
+    notes: >-
+      §11.14 exact-single identity-bound venue-fill then contemporaneous
+      PRE-RESTART capture persist. TERMINAL_STATE=CODE_GAP_FOUND.
+      CODE_CHANGE_REQUIRED=true. LIVE_FILL_READINESS=false.
+      EXACT_ECONOMIC_ACTION_CONTRACT_STATUS=BLOCKED.
+      LIVE_FILL_EXECUTION_AUTHORIZED=false. LIVE_FILL_EXECUTED=false.
+      CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION=NOT_EXECUTED.
+      CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false.
+      OWNER_GO_IS_NOT_GATE_BYPASS=true.
+      CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false.
+      AUTHORIZED_RUNTIME_SURFACE=NONE.
+      HOST_CRASH_DURABILITY=UNPROVEN.
+      CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED=false.
+      LIVE_RESTART_RECONSTRUCTED=false. IMPLEMENTATION_AUTHORIZED=true.
+      No GET. No POST. No submit. No wire send. No position mutation. No
+      restart execution. Repair merge not authorized. Atlas is not
+      trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
