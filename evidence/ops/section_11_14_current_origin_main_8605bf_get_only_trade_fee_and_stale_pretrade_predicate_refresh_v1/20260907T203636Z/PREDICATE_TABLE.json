@@ -1,0 +1,180 @@
+{
+  "rows": [
+    {
+      "BLOCKING": false,
+      "CHANGE_REASON": "RESOLVED_BY_THIS_GET_WP",
+      "CURRENT_PROVENANCE": "/api/v5/account/config",
+      "CURRENT_VALUE": "PASS",
+      "FRESHNESS": "CURRENT",
+      "PREDICATE_ID": "P01",
+      "PREDICATE_NAME": "NETWORK_READINESS",
+      "PREVIOUS_VALUE": "PASS_AT_20260907T182140Z_STALE",
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": false,
+      "CHANGE_REASON": "RESOLVED_BY_THIS_GET_WP",
+      "CURRENT_PROVENANCE": "GET /api/v5/account/config",
+      "CURRENT_VALUE": "PASS",
+      "FRESHNESS": "CURRENT",
+      "PREDICATE_ID": "P02",
+      "PREDICATE_NAME": "SESSION_AUTH",
+      "PREVIOUS_VALUE": "PASS_AT_20260907T182140Z_STALE",
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": false,
+      "CHANGE_REASON": "RESOLVED_BY_THIS_GET_WP",
+      "CURRENT_PROVENANCE": "/api/v5/public/instruments?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404",
+      "CURRENT_VALUE": "live",
+      "FRESHNESS": "CURRENT",
+      "PREDICATE_ID": "P03",
+      "PREDICATE_NAME": "INSTRUMENT_STATE",
+      "PREVIOUS_VALUE": "live@20260907T182140Z_STALE",
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": false,
+      "CHANGE_REASON": "RESOLVED_BY_THIS_GET_WP",
+      "CURRENT_PROVENANCE": "GET /api/v5/account/config",
+      "CURRENT_VALUE": "net_mode",
+      "FRESHNESS": "CURRENT",
+      "PREDICATE_ID": "P04",
+      "PREDICATE_NAME": "POSITION_MODE",
+      "PREVIOUS_VALUE": "net_mode@20260907T182140Z_STALE",
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": false,
+      "CHANGE_REASON": "RESOLVED_BY_THIS_GET_WP",
+      "CURRENT_PROVENANCE": "GET /api/v5/account/positions",
+      "CURRENT_VALUE": "pos=1;status=OBSERVED",
+      "FRESHNESS": "CURRENT",
+      "PREDICATE_ID": "P05",
+      "PREDICATE_NAME": "PRE_EXISTING_POSITION_STATE",
+      "PREVIOUS_VALUE": "pos=1@20260907T182140Z_STALE",
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": false,
+      "CHANGE_REASON": "RESOLVED_BY_THIS_GET_WP",
+      "CURRENT_PROVENANCE": "GET /api/v5/account/config",
+      "CURRENT_VALUE": "2",
+      "FRESHNESS": "CURRENT",
+      "PREDICATE_ID": "P06",
+      "PREDICATE_NAME": "ACCOUNT_MODE",
+      "PREVIOUS_VALUE": "acctLv=2@20260907T182140Z_STALE",
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": false,
+      "CHANGE_REASON": "RESOLVED_BY_THIS_GET_WP",
+      "CURRENT_PROVENANCE": "GET /api/v5/account/positions",
+      "CURRENT_VALUE": "cross",
+      "FRESHNESS": "CURRENT",
+      "PREDICATE_ID": "P07",
+      "PREDICATE_NAME": "MARGIN_MODE",
+      "PREVIOUS_VALUE": "cross@20260907T182140Z_STALE",
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": false,
+      "CHANGE_REASON": "RESOLVED_BY_THIS_GET_WP",
+      "CURRENT_PROVENANCE": "/api/v5/account/leverage-info?instId=SUI-USD_UM_XPERP-310404&mgnMode=cross",
+      "CURRENT_VALUE": "3",
+      "FRESHNESS": "CURRENT",
+      "PREDICATE_ID": "P08",
+      "PREDICATE_NAME": "LEVERAGE",
+      "PREVIOUS_VALUE": "3@20260907T182140Z_STALE",
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": false,
+      "CHANGE_REASON": "RESOLVED_BY_THIS_GET_WP",
+      "CURRENT_PROVENANCE": "GET /api/v5/account/balance",
+      "CURRENT_VALUE": "2.114276080713036",
+      "FRESHNESS": "CURRENT",
+      "PREDICATE_ID": "P09",
+      "PREDICATE_NAME": "AVAILABLE_MARGIN",
+      "PREVIOUS_VALUE": "2.1076094140463697_USDC@20260907T182140Z_STALE",
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": false,
+      "CHANGE_REASON": "RESOLVED_BY_THIS_GET_WP",
+      "CURRENT_PROVENANCE": "/api/v5/public/price-limit?instId=SUI-USD_UM_XPERP-310404",
+      "CURRENT_VALUE": "0.8376",
+      "FRESHNESS": "CURRENT",
+      "PREDICATE_ID": "P10",
+      "PREDICATE_NAME": "PRICE_BAND",
+      "PREVIOUS_VALUE": "buyLmt=0.8277@20260907T182140Z_STALE",
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": false,
+      "CHANGE_REASON": "RESOLVED_BY_THIS_GET_WP",
+      "CURRENT_PROVENANCE": "/api/v5/account/max-size?instId=SUI-USD_UM_XPERP-310404&tdMode=cross&px=0.8337",
+      "CURRENT_VALUE": "7",
+      "FRESHNESS": "CURRENT",
+      "PREDICATE_ID": "P11",
+      "PREDICATE_NAME": "MAX_AVAILABLE",
+      "PREVIOUS_VALUE": "maxBuy=7@px=0.8237_STALE",
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": false,
+      "CHANGE_REASON": "RESOLVED_BY_THIS_GET_WP",
+      "CURRENT_PROVENANCE": "/api/v5/market/ticker?instId=SUI-USD_UM_XPERP-310404",
+      "CURRENT_VALUE": "0.8337",
+      "FRESHNESS": "CURRENT",
+      "PREDICATE_ID": "P12",
+      "PREDICATE_NAME": "CURRENT_PRICE_INPUT",
+      "PREVIOUS_VALUE": "0.8237@20260907T182140Z_STALE",
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": false,
+      "CHANGE_REASON": "RESOLVED_BY_THIS_GET_WP",
+      "CURRENT_PROVENANCE": "/api/v5/account/trade-fee?instType=FUTURES&instFamily=SUI-USD_UM_XPERP",
+      "CURRENT_VALUE": "OBSERVED",
+      "FRESHNESS": "CURRENT",
+      "PREDICATE_ID": "P13",
+      "PREDICATE_NAME": "CURRENT_SUI_FAMILY_TRADE_FEE_GET",
+      "PREVIOUS_VALUE": "NOT_OBSERVED",
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": false,
+      "CHANGE_REASON": "UNCHANGED",
+      "CURRENT_PROVENANCE": "fee_policy_v1 EXACT_OKX_FEE_FORMULA_STATUS; GET is not OEM proof",
+      "CURRENT_VALUE": "UNPROVEN",
+      "FRESHNESS": "UNCHANGED",
+      "PREDICATE_ID": "P14",
+      "PREDICATE_NAME": "EXACT_OKX_FEE_FORMULA",
+      "PREVIOUS_VALUE": "UNPROVEN",
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "CHANGE_REASON": "UNCHANGED",
+      "CURRENT_PROVENANCE": "OWNER_GET_ONLY_GO is not OWNER_EXECUTION_GO",
+      "CURRENT_VALUE": "false",
+      "FRESHNESS": "UNCHANGED",
+      "PREDICATE_ID": "P15",
+      "PREDICATE_NAME": "OWNER_EXECUTION_AUTHORIZED",
+      "PREVIOUS_VALUE": "false",
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": false,
+      "CHANGE_REASON": "UNCHANGED",
+      "CURRENT_PROVENANCE": "this WP must not empirically close restart",
+      "CURRENT_VALUE": "false",
+      "FRESHNESS": "UNCHANGED",
+      "PREDICATE_ID": "P16",
+      "PREDICATE_NAME": "LIVE_RESTART_RECONSTRUCTED",
+      "PREVIOUS_VALUE": "false",
+      "SATISFIED": false
+    }
+  ]
+}
