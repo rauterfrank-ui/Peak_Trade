@@ -28,6 +28,8 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     CANONICAL_ARCHITECTURE_ADJUDICATION_SLICE_HEADING,
     CANONICAL_POS_SEMANTICS_CANONICAL_BINDING_SLICE_HEADING,
     CANONICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_SLICE_HEADING,
+    CANONICAL_COMPLETE_CAPTURE_SEAM_PROOF_SLICE_HEADING,
+    CANONICAL_IMPLEMENTATION_SLICE_HEADING,
     CANONICAL_SECTION_HEADING,
     EARLIEST_UNRESOLVED_DEPENDENCY,
     EXPECTED_ORIGIN_MAIN_SHA,
@@ -66,6 +68,12 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_POS_SEMANTICS_CANONICAL_BINDING_OWNER_GO,
     HISTORICAL_POS_SEMANTICS_CANONICAL_BINDING_RUN_ID,
     HISTORICAL_POS_SEMANTICS_CANONICAL_BINDING_SHA,
+    HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_OWNER_GO,
+    HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_RUN_ID,
+    HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_SHA,
+    HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_OWNER_GO,
+    HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_RUN_ID,
+    HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_SHA,
     HISTORICAL_CODE_EXISTS_OWNER_GO,
     HISTORICAL_CODE_EXISTS_RUN_ID,
     HISTORICAL_CODE_EXISTS_SHA,
@@ -151,6 +159,13 @@ POS_SEMANTICS_CANONICAL_BINDING_SPEC = (
 POS_PRODUCER_SEMANTICS_AND_CONTRACT_SPEC = (
     REPO_ROOT
     / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_SEMANTICS_AND_CONTRACT_V1.md"
+)
+COMPLETE_CAPTURE_SEAM_PROOF_SPEC = (
+    REPO_ROOT / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_PROOF_V1.md"
+)
+IMPLEMENTATION_SPEC = (
+    REPO_ROOT
+    / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION_V1.md"
 )
 HISTORICAL_SPEC = (
     REPO_ROOT
@@ -274,20 +289,34 @@ HISTORICAL_POS_SEMANTICS_CANONICAL_BINDING_EVIDENCE = (
     / "section_11_14_live_order_and_economic_evidence_ladder_v1"
     / HISTORICAL_POS_SEMANTICS_CANONICAL_BINDING_RUN_ID
 )
+HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_EVIDENCE = (
+    REPO_ROOT
+    / "evidence/ops"
+    / "section_11_14_live_order_and_economic_evidence_ladder_v1"
+    / HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_RUN_ID
+)
+HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_EVIDENCE = (
+    REPO_ROOT
+    / "evidence/ops"
+    / "section_11_14_live_order_and_economic_evidence_ladder_v1"
+    / HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_RUN_ID
+)
 HEADING_11_15 = "## 11.15 Full-autonomy observability and audit trail"
 
 
-def test_current_slice_constants_target_pos_producer_semantics_and_contract() -> None:
-    assert THIS_SLICE == "11.14.LIVE_HANDOFF_POS_PRODUCER_SEMANTICS_AND_CONTRACT"
-    assert PREDECESSOR_SLICE == "11.14.LIVE_HANDOFF_POS_SEMANTICS_CANONICAL_BINDING"
-    assert OWNER_GO.endswith("POS_PRODUCER_SEMANTICS_AND_CONTRACT_V1")
-    assert EXPECTED_ORIGIN_MAIN_SHA == "bbba739dd34af4d0d10c12e137ab9e195430592a"
+def test_current_slice_constants_target_producer_owner_writer_implementation() -> None:
+    assert THIS_SLICE == (
+        "11.14.LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION"
+    )
+    assert PREDECESSOR_SLICE == "11.14.LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_PROOF"
+    assert OWNER_GO.endswith("OWNER_AND_WRITER_IMPLEMENTATION_V1")
+    assert EXPECTED_ORIGIN_MAIN_SHA == "4e4aeec08136a20a31eb3e47785b87ca16e6e21a"
     assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_RESTART_RECONSTRUCTED"
     assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED"
     assert LAST_CANONICALLY_CLOSED_STEP == (
-        "SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_SEMANTICS_AND_CONTRACT"
+        "SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION"
     )
-    assert CANONICAL_EVIDENCE_RUN_ID == "20260906T224500Z"
+    assert CANONICAL_EVIDENCE_RUN_ID == "20260907T014000Z"
     assert EVIDENCE.name == CANONICAL_EVIDENCE_RUN_ID
 
 
@@ -916,14 +945,18 @@ def test_runbook_pos_semantics_canonical_binding_slice_binds_gap_contract() -> N
 def test_runbook_pos_producer_semantics_and_contract_slice_binds_unique_meaning() -> None:
     text = MASTER_RUNBOOK.read_text(encoding="utf-8")
     start = text.find(CANONICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_SLICE_HEADING)
-    end = text.find(HEADING_11_15, start)
+    end = text.find(CANONICAL_COMPLETE_CAPTURE_SEAM_PROOF_SLICE_HEADING, start)
+    if end < 0:
+        end = text.find(HEADING_11_15, start)
     assert start >= 0
     assert end > start
     section = text[start:end]
-    assert OWNER_GO in section
+    assert HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_OWNER_GO in section
     assert "THIS_SLICE=11.14.LIVE_HANDOFF_POS_PRODUCER_SEMANTICS_AND_CONTRACT" in section
     assert "PREDECESSOR_SLICE=11.14.LIVE_HANDOFF_POS_SEMANTICS_CANONICAL_BINDING" in section
-    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_SHA}" in (
+        section
+    )
     assert "SECTION_11_14_AUTHORIZED=false" in section
     assert "SECTION_11_14_COMPLETE=false" in section
     assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
@@ -952,9 +985,106 @@ def test_runbook_pos_producer_semantics_and_contract_slice_binds_unique_meaning(
     assert "GET_PERFORMED=false" in section
     assert "RESTART_EXECUTION=false" in section
     assert NEXT_OWNER_GO_REQUIRED in section
-    assert CANONICAL_EVIDENCE_RUN_ID in section
+    assert HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_PROOF_V1" in section
+    )
+    for field_name in LADDER_FIELDS:
+        assert field_name in section
+
+
+def test_runbook_complete_capture_seam_proof_slice_remains_unproven_without_invention() -> None:
+    text = MASTER_RUNBOOK.read_text(encoding="utf-8")
+    start = text.find(CANONICAL_COMPLETE_CAPTURE_SEAM_PROOF_SLICE_HEADING)
+    end = text.find(CANONICAL_IMPLEMENTATION_SLICE_HEADING, start)
+    if end < 0:
+        end = text.find(HEADING_11_15, start)
+    assert start >= 0
+    assert end > start
+    section = text[start:end]
+    assert HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_OWNER_GO in section
+    assert "THIS_SLICE=11.14.LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_PROOF" in section
+    assert "PREDECESSOR_SLICE=11.14.LIVE_HANDOFF_POS_PRODUCER_SEMANTICS_AND_CONTRACT" in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_SHA}" in section
+    assert "SECTION_11_14_AUTHORIZED=false" in section
+    assert "SECTION_11_14_COMPLETE=false" in section
+    assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in section
+    assert "POS_SEMANTICS=PROVEN" in section
+    assert "NEW_PRODUCER_IMPLEMENTED=false" in section
+    assert "COMPLETE_CAPTURE_SEAM=UNPROVEN" in section
+    assert "COMPLETE_CAPTURE_SEAM_PROOF_STATUS=CLOSED_UNPROVEN_NO_INVENTION" in section
+    assert "CAPTURE_TRIGGER_STATUS=REQUIRED_WINDOW_BOUND_PRODUCTIVE_TRIGGER_UNBOUND" in section
+    assert "STORAGE_OWNER_MINTED=false" in section
+    assert "WRITER_BOUND=false" in section
+    assert "READER_BOUND=false" in section
+    assert "CAPTURE_SEAM_BOUND=false" in section
+    assert "PRODUCTIVE_BINDING_PRESENT=false" in section
+    assert "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT=NONE" in section
+    assert "IMPLEMENTATION_AUTHORIZED=false" in section
+    assert "ADMISSION_TRUE=false" in section
+    assert "SUPERVISOR_ACTIVATED=false" in section
+    assert "RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED=false" in section
+    assert "POST_PERFORMED=false" in section
+    assert "GET_PERFORMED=false" in section
+    assert "RESTART_EXECUTION=false" in section
+    assert NEXT_OWNER_GO_REQUIRED in section
+    assert HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_RUN_ID in section
+    assert (
+        "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION_V1"
+        in section
+    )
+    for field_name in LADDER_FIELDS:
+        assert field_name in section
+
+
+def test_runbook_producer_owner_writer_implementation_slice_binds_s05_without_reader() -> None:
+    text = MASTER_RUNBOOK.read_text(encoding="utf-8")
+    start = text.find(CANONICAL_IMPLEMENTATION_SLICE_HEADING)
+    end = text.find(HEADING_11_15, start)
+    assert start >= 0
+    assert end > start
+    section = text[start:end]
+    assert OWNER_GO in section
+    assert (
+        "THIS_SLICE=11.14.LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION"
+        in section
+    )
+    assert "PREDECESSOR_SLICE=11.14.LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_PROOF" in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert "SECTION_11_14_AUTHORIZED=false" in section
+    assert "SECTION_11_14_COMPLETE=false" in section
+    assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in section
+    assert "POS_SEMANTICS=PROVEN" in section
+    assert "NEW_PRODUCER_IMPLEMENTED=true" in section
+    assert "PRODUCER_SEMANTICS_EXACT_S05_IMPLEMENTED=true" in section
+    assert "STORAGE_OWNER_MINTED=true" in section
+    assert "WRITER_BOUND=true" in section
+    assert "READER_BOUND=false" in section
+    assert "CAPTURE_SEAM_BOUND=false" in section
+    assert "PRODUCTIVE_BINDING_PRESENT=false" in section
+    assert "COMPLETE_CAPTURE_SEAM=UNPROVEN" in section
+    assert "CAPTURE_TRIGGER_STATUS=REQUIRED_WINDOW_BOUND_PRODUCTIVE_TRIGGER_BOUND" in section
+    assert "DURABLE_SUCCESS_ACK_BEFORE_MUTATION_SUCCESS_CLAIM=true" in section
+    assert "PROCESS_RESTART_READABLE_HANDOFF_RECORD=true" in section
+    assert "HOST_CRASH_DURABILITY=UNPROVEN" in section
+    assert (
+        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT=SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_V1"
+        in section
+    )
+    assert "IMPLEMENTATION_AUTHORIZED=false" in section
+    assert "ADMISSION_TRUE=false" in section
+    assert "SUPERVISOR_ACTIVATED=false" in section
+    assert "RETROACTIVE_HANDOFF_SYNTHESIS_ALLOWED=false" in section
+    assert "POST_PERFORMED=false" in section
+    assert "GET_PERFORMED=false" in section
+    assert "RESTART_EXECUTION=false" in section
+    assert NEXT_OWNER_GO_REQUIRED in section
+    assert CANONICAL_EVIDENCE_RUN_ID in section
+    assert (
+        "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_RESTART_READER_PROVENANCE_AND_CONSUMER_BIND_V1"
+        in section
     )
     for field_name in LADDER_FIELDS:
         assert field_name in section
@@ -992,6 +1122,8 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert "11.14 LIVE_HANDOFF_POS_SEMANTICS_CANONICAL_BINDING" in mot
     assert "11.14 LIVE_HANDOFF_POS_PRODUCER_SEMANTICS_AND_CONTRACT" in mot
+    assert "11.14 LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_PROOF" in mot
+    assert "11.14 LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION" in mot
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -1007,6 +1139,11 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert "SECTION_11_14_LIVE_HANDOFF_POS_SEMANTICS_CANONICAL_BINDING_V1.md" in mot
     assert "SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_SEMANTICS_AND_CONTRACT_V1.md" in mot
+    assert "SECTION_11_14_LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_PROOF_V1.md" in mot
+    assert (
+        "SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION_V1.md"
+        in mot
+    )
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION_V1.md" in mot
@@ -1144,6 +1281,27 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "COMPLETE_CAPTURE_SEAM_CAN_NOW_BE_ADJUDICATED=true" in producer_spec
     assert "IMPLEMENTATION_AUTHORIZED=false" in producer_spec
     assert "LIVE_RESTART_RECONSTRUCTED=false" in producer_spec
+    capture_spec = COMPLETE_CAPTURE_SEAM_PROOF_SPEC.read_text(encoding="utf-8")
+    assert "DOCS_TOKEN_SECTION_11_14_LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_PROOF_V1" in capture_spec
+    assert "COMPLETE_CAPTURE_SEAM=UNPROVEN" in capture_spec
+    assert "NEW_PRODUCER_IMPLEMENTED=false" in capture_spec
+    assert "STORAGE_OWNER_MINTED=false" in capture_spec
+    assert "WRITER_BOUND=false" in capture_spec
+    assert "IMPLEMENTATION_AUTHORIZED=false" in capture_spec
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in capture_spec
+    implementation_spec = IMPLEMENTATION_SPEC.read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_LIVE_HANDOFF_POS_PRODUCER_CAPTURE_RECORD_OWNER_AND_WRITER_IMPLEMENTATION_V1"
+        in implementation_spec
+    )
+    assert "NEW_PRODUCER_IMPLEMENTED=true" in implementation_spec
+    assert "STORAGE_OWNER_MINTED=true" in implementation_spec
+    assert "WRITER_BOUND=true" in implementation_spec
+    assert "READER_BOUND=false" in implementation_spec
+    assert "COMPLETE_CAPTURE_SEAM=UNPROVEN" in implementation_spec
+    assert "HOST_CRASH_DURABILITY=UNPROVEN" in implementation_spec
+    assert "IMPLEMENTATION_AUTHORIZED=false" in implementation_spec
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in implementation_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -1178,6 +1336,11 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert "id: PHASE:section_11_14_live_handoff_pos_semantics_canonical_binding" in catalog
     assert "id: PHASE:section_11_14_live_handoff_pos_producer_semantics_and_contract" in catalog
+    assert "id: PHASE:section_11_14_live_handoff_complete_capture_seam_proof" in catalog
+    assert (
+        "id: PHASE:section_11_14_live_handoff_pos_producer_capture_record_owner_and_writer_implementation"
+        in catalog
+    )
     assert (
         "id: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1" in catalog
     )
@@ -1264,6 +1427,18 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert producer_rel >= 0
     producer_block = relations[producer_rel : producer_rel + 2200]
     assert "ATLAS_AUTHORITY=NONE" in producer_block
+    capture_rel = relations.find(
+        "id: REL:r_section_11_14_complete_capture_seam_proof_follows_pos_producer_semantics_and_contract"
+    )
+    assert capture_rel >= 0
+    capture_block = relations[capture_rel : capture_rel + 2200]
+    assert "ATLAS_AUTHORITY=NONE" in capture_block
+    implementation_rel = relations.find(
+        "id: REL:r_section_11_14_pos_producer_capture_record_owner_and_writer_implementation_follows_complete_capture_seam_proof"
+    )
+    assert implementation_rel >= 0
+    implementation_block = relations[implementation_rel : implementation_rel + 2200]
+    assert "ATLAS_AUTHORITY=NONE" in implementation_block
     assert CODE_EXISTS_EVIDENCE.is_dir()
     verified = verify_manifest_v1(CODE_EXISTS_EVIDENCE)
     assert int(verified.get("MANIFEST_VERIFY_RC", 1)) == 0
@@ -1451,6 +1626,53 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert (
         HISTORICAL_POS_SEMANTICS_CANONICAL_BINDING_EVIDENCE / "POS_SEMANTICS_CANONICAL_BINDING.json"
     ).is_file()
+    assert HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_EVIDENCE.is_dir()
+    historical_producer_verified = verify_manifest_v1(
+        HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_EVIDENCE
+    )
+    assert int(historical_producer_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
+    historical_producer_summary = (
+        HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_EVIDENCE / "SUMMARY.json"
+    ).read_text(encoding="utf-8")
+    assert '"LIVE_ACCOUNTING_RECONSTRUCTED": true' in historical_producer_summary
+    assert '"LIVE_RESTART_RECONSTRUCTED": false' in historical_producer_summary
+    assert '"SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": "NONE"' in historical_producer_summary
+    assert '"POS_SEMANTICS": "PROVEN"' in historical_producer_summary
+    assert '"NEW_PRODUCER_IMPLEMENTED": false' in historical_producer_summary
+    assert '"COMPLETE_CAPTURE_SEAM": "UNPROVEN"' in historical_producer_summary
+    assert '"COMPLETE_CAPTURE_SEAM_CAN_NOW_BE_ADJUDICATED": true' in historical_producer_summary
+    assert '"IMPLEMENTATION_AUTHORIZED": false' in historical_producer_summary
+    assert (
+        HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_EVIDENCE
+        / "POS_PRODUCER_SEMANTICS_AND_CONTRACT.json"
+    ).is_file()
+    assert HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_EVIDENCE.is_dir()
+    historical_capture_verified = verify_manifest_v1(
+        HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_EVIDENCE
+    )
+    assert int(historical_capture_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
+    historical_capture_summary = (
+        HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_EVIDENCE / "SUMMARY.json"
+    ).read_text(encoding="utf-8")
+    assert '"LIVE_ACCOUNTING_RECONSTRUCTED": true' in historical_capture_summary
+    assert '"LIVE_RESTART_RECONSTRUCTED": false' in historical_capture_summary
+    assert '"SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": "NONE"' in historical_capture_summary
+    assert '"POS_SEMANTICS": "PROVEN"' in historical_capture_summary
+    assert '"NEW_PRODUCER_IMPLEMENTED": false' in historical_capture_summary
+    assert '"STORAGE_OWNER_MINTED": false' in historical_capture_summary
+    assert '"WRITER_BOUND": false' in historical_capture_summary
+    assert '"READER_BOUND": false' in historical_capture_summary
+    assert '"COMPLETE_CAPTURE_SEAM": "UNPROVEN"' in historical_capture_summary
+    assert '"COMPLETE_CAPTURE_SEAM_PROOF_STATUS": "CLOSED_UNPROVEN_NO_INVENTION"' in (
+        historical_capture_summary
+    )
+    assert '"IMPLEMENTATION_AUTHORIZED": false' in historical_capture_summary
+    assert (
+        HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_EVIDENCE / "COMPLETE_CAPTURE_SEAM_PROOF.json"
+    ).is_file()
+    assert (
+        HISTORICAL_COMPLETE_CAPTURE_SEAM_PROOF_EVIDENCE / "COMPLETE_CAPTURE_SEAM_PREDICATE.json"
+    ).is_file()
     assert EVIDENCE.is_dir()
     current_verified = verify_manifest_v1(EVIDENCE)
     assert int(current_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
@@ -1462,23 +1684,23 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert '"GET_PERFORMED": false' in current_summary
     assert '"CREDENTIAL_USE": false' in current_summary
     assert '"RESTART_EXECUTION": false' in current_summary
-    assert '"SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": "NONE"' in current_summary
+    assert (
+        '"SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": "SECTION_11_14_LIVE_DURABLE_PRE_RESTART_HANDOFF_OWNER_V1"'
+        in current_summary
+    )
     assert '"POS_SEMANTICS": "PROVEN"' in current_summary
-    assert '"POS_SEMANTICS_CANONICALLY_BOUND": true' in current_summary
-    assert '"NEW_PRODUCER_CONTRACT_DEFINED": true' in current_summary
-    assert '"NEW_PRODUCER_IMPLEMENTED": false' in current_summary
+    assert '"NEW_PRODUCER_IMPLEMENTED": true' in current_summary
+    assert '"STORAGE_OWNER_MINTED": true' in current_summary
+    assert '"WRITER_BOUND": true' in current_summary
+    assert '"READER_BOUND": false' in current_summary
     assert '"COMPLETE_CAPTURE_SEAM": "UNPROVEN"' in current_summary
-    assert '"COMPLETE_CAPTURE_SEAM_CAN_NOW_BE_ADJUDICATED": true' in current_summary
+    assert '"HOST_CRASH_DURABILITY": "UNPROVEN"' in current_summary
     assert '"IMPLEMENTATION_AUTHORIZED": false' in current_summary
     assert '"ADMISSION_TRUE": false' in current_summary
-    assert '"FIRST_OWNER_PRODUCTIVELY_BOUND": false' in current_summary
-    assert (EVIDENCE / "POS_PRODUCER_SEMANTICS_AND_CONTRACT.json").is_file()
-    assert (EVIDENCE / "POS_MEANING_CANDIDATE_MATRIX.json").is_file()
-    assert (EVIDENCE / "POS_WHAT_RESTART_RECONSTRUCTS.json").is_file()
-    assert (EVIDENCE / "POS_UNIT_PROOF.json").is_file()
-    assert (EVIDENCE / "POS_SIGN_PROOF.json").is_file()
-    assert (EVIDENCE / "POS_ACCOUNT_MODE_PROOF.json").is_file()
-    assert (EVIDENCE / "POS_PRODUCER_CONTRACT.json").is_file()
-    assert (EVIDENCE / "HANDOFF_SCHEMA_VERSION.json").is_file()
-    assert (EVIDENCE / "POS_DOWNSTREAM_EFFECT.json").is_file()
+    assert (EVIDENCE / "IMPLEMENTATION_BINDING.json").is_file()
+    assert (EVIDENCE / "OWNER_MINT.json").is_file()
+    assert (EVIDENCE / "PRODUCER.json").is_file()
+    assert (EVIDENCE / "WRITER_BINDING.json").is_file()
+    assert (EVIDENCE / "DURABILITY.json").is_file()
+    assert (EVIDENCE / "FAILURE_SEMANTICS.json").is_file()
     assert (EVIDENCE / "RESTART_RECONSTRUCTED_ADJUDICATION.json").is_file()

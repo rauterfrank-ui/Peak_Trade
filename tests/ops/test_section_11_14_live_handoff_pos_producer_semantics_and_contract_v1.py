@@ -9,10 +9,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_OWNER_GO,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
-    SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
-    THIS_SLICE,
+    HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_adjudication_v1 import (
     adjudicate_live_restart_reconstructed_v1,
@@ -131,7 +130,7 @@ def test_producer_is_contract_only_and_downstream_stays_fail_closed() -> None:
 
 def test_execute_is_offline_and_does_not_authorize_implementation() -> None:
     result = execute_live_handoff_pos_producer_semantics_and_contract_v1(
-        owner_go=OWNER_GO,
+        owner_go=HISTORICAL_POS_PRODUCER_SEMANTICS_AND_CONTRACT_OWNER_GO,
         origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
         repo_root=REPO_ROOT,
         run_id="20260906T224500Z-test",
@@ -148,9 +147,8 @@ def test_execute_is_offline_and_does_not_authorize_implementation() -> None:
     assert summary["IMPLEMENTATION_AUTHORIZED"] is False
     assert summary["COMPLETE_CAPTURE_SEAM"] == "UNPROVEN"
     assert summary["COMPLETE_CAPTURE_SEAM_CAN_NOW_BE_ADJUDICATED"] is True
-    assert SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT == "NONE"
+    assert HISTORICAL_HANDOFF_OWNER_CURRENT_NONE == "NONE"
     assert LIVE_RESTART_RECONSTRUCTED is False
-    assert THIS_SLICE == "11.14.LIVE_HANDOFF_POS_PRODUCER_SEMANTICS_AND_CONTRACT"
     live = adjudicate_live_restart_reconstructed_v1(
         restart_evidence={"source_kind": "GOVERNED_PERSISTED_LIVE_RESTART_HANDOFF_CENSUS"}
     )

@@ -11,7 +11,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     EXPECTED_ORIGIN_MAIN_SHA,
     HISTORICAL_ARCHITECTURE_ADJUDICATION_OWNER_GO,
     LIVE_RESTART_RECONSTRUCTED,
-    SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+    HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -79,7 +79,7 @@ def execute_live_durable_pre_restart_handoff_owner_and_capture_architecture_adju
         "LIVE_AUTONOMOUS_RECOVERY_OBSERVED": False,
         "SECTION_11_14_AUTHORIZED": False,
         "SECTION_11_14_COMPLETE": False,
-        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
         "PROPOSED_FIRST_OWNER_ID": architecture["PROPOSED_FIRST_OWNER_ID"],
         "PROPOSED_FIRST_OWNER_ADJUDICATION": architecture["PROPOSED_FIRST_OWNER_ADJUDICATION"],
         "FIRST_OWNER_CONTRACT_DECLARED": architecture["FIRST_OWNER_CONTRACT_DECLARED"],

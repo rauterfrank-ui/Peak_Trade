@@ -24,7 +24,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     FULL_CORE_29P_REQUIRED_FOR_THIS_FIELD,
     HISTORICAL_ARCHITECTURE_ADJUDICATION_OWNER_GO,
     LIVE_RESTART_RECONSTRUCTED,
-    SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+    HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_adjudication_v1 import (
     adjudicate_live_restart_reconstructed_v1,
@@ -169,7 +169,7 @@ def test_architecture_execute_is_offline_and_does_not_authorize_implementation()
     assert HISTORICAL_ARCHITECTURE_ADJUDICATION_OWNER_GO.endswith(
         "OWNER_AND_CAPTURE_ARCHITECTURE_ADJUDICATION_V1"
     )
-    assert SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT == "NONE"
+    assert HISTORICAL_HANDOFF_OWNER_CURRENT_NONE == "NONE"
     assert IMPLEMENTATION_AUTHORIZED is False
     assert DEPENDENT_MUTATION_ALLOWED is False
     assert PRODUCTIVE_HOST_BINDING is False

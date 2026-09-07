@@ -29,10 +29,10 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_OWNER_GO,
     HISTORICAL_REQUIRED_FIELD_CAPTURE_SEAM_SHA,
     LIVE_RESTART_RECONSTRUCTED,
-    SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
-    SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_BINDING,
-    SECTION_11_14_LIVE_HANDOFF_READER_PRESENT,
-    SECTION_11_14_LIVE_HANDOFF_WRITER_PRESENT,
+    HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
+    HISTORICAL_HANDOFF_PRODUCTIVE_BINDING,
+    HISTORICAL_HANDOFF_READER_PRESENT,
+    HISTORICAL_HANDOFF_WRITER_PRESENT,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -295,9 +295,9 @@ def test_no_productive_writer_or_reader_binding() -> None:
     vacancy = bind_section_11_14_live_handoff_owner_vacancy_contract_v1()
     assert writer["PRODUCTIVE_WRITER_JOIN_CREATED"] is False
     assert reader["PRODUCTIVE_READER_JOIN_CREATED"] is False
-    assert SECTION_11_14_LIVE_HANDOFF_WRITER_PRESENT is False
-    assert SECTION_11_14_LIVE_HANDOFF_READER_PRESENT is False
-    assert SECTION_11_14_LIVE_HANDOFF_PRODUCTIVE_BINDING is False
+    assert HISTORICAL_HANDOFF_WRITER_PRESENT is False
+    assert HISTORICAL_HANDOFF_READER_PRESENT is False
+    assert HISTORICAL_HANDOFF_PRODUCTIVE_BINDING is False
     assert vacancy["LATER_WRITER_CLAIMED_POSSIBLE"] is False
     assert vacancy["OWNER_ID"] == "NONE"
     assert vacancy["PROPOSED_FIRST_OWNER_ID"] == PROPOSED_FIRST_OWNER_ID
@@ -337,7 +337,7 @@ def test_execute_is_offline_no_wire_no_live_action() -> None:
     assert summary["EARLIEST_COMPLETE_HANDOFF_CAPTURE_PROVEN"] is False
     assert summary["SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT"] == "NONE"
     assert result["raw_exchanges"] == []
-    assert SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT == "NONE"
+    assert HISTORICAL_HANDOFF_OWNER_CURRENT_NONE == "NONE"
 
 
 def test_pos_producer_census_rejects_named_candidates() -> None:

@@ -13,7 +13,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_POS_SEMANTICS_CANONICAL_BINDING_SHA,
     LIVE_RESTART_RECONSTRUCTED,
     OWNER_GO,
-    SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+    HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -81,7 +81,7 @@ def execute_live_handoff_pos_semantics_canonical_binding_v1(
         "LIVE_AUTONOMOUS_RECOVERY_OBSERVED": False,
         "SECTION_11_14_AUTHORIZED": False,
         "SECTION_11_14_COMPLETE": False,
-        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT,
+        "SECTION_11_14_LIVE_HANDOFF_OWNER_CURRENT": HISTORICAL_HANDOFF_OWNER_CURRENT_NONE,
         "FIRST_OWNER_PRODUCTIVELY_BOUND": False,
         "POS_SEMANTICS": binding["POS_SEMANTICS"],
         "POS_SEMANTICS_STATUS": binding["POS_SEMANTICS_STATUS"],
