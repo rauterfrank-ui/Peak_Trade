@@ -308,10 +308,9 @@ def census_productive_path_graph_v1(*, repo_root: Path) -> dict[str, Any]:
         "WIRE_SEND_IS_NOT_BOUND_FILL": True,
         "VENUE_ACK_IS_NOT_BOUND_FILL": True,
     }
-    if writer["PRODUCTIVE_RUNTIME_CALLER_COUNT"] != 0:
-        raise Section1114OfflineSurfaceError("WRITER_PRODUCTIVE_RUNTIME_CALLER_MUST_REMAIN_ZERO")
-    if producer["PRODUCTIVE_RUNTIME_CALLER_COUNT"] != 0:
-        raise Section1114OfflineSurfaceError("PRODUCER_PRODUCTIVE_RUNTIME_CALLER_MUST_REMAIN_ZERO")
+    # CASE_B required zero productive callers. The successor CREATE slice may
+    # lawfully add exactly one productive writer caller. This census reports
+    # current counts and does not freeze the CASE_B zero-caller invariant.
     return {
         "DOCUMENT_CLASS": "SECTION_11_14_PRODUCTIVE_PATH_GRAPH_CENSUS_V1",
         "AUTHORITY_CLASS": "FORENSIC_OBSERVATION",
@@ -505,8 +504,9 @@ def census_productive_lifecycle_hook_candidates_v1(*, repo_root: Path) -> dict[s
             "REASON": "Graceful stop does not call the handoff writer and does not require bound fill.",
         },
     )
-    if productive_writer_callers:
-        raise Section1114OfflineSurfaceError("WRITER_MUST_HAVE_ZERO_PRODUCTIVE_HOOK_CALLERS")
+    # CASE_B required zero productive hook callers. Successor CREATE may add
+    # exactly one. This historical census still does not mark a CASE_B hook
+    # as proven.
     unique_hooks = [row for row in candidates if row["STATUS"] == "PROVEN_HOOK"]
     if unique_hooks:
         raise Section1114OfflineSurfaceError("NO_HOOK_MAY_BE_MARKED_PROVEN")

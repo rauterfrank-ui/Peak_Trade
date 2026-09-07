@@ -247,10 +247,9 @@ def census_productive_runtime_graph_v1(*, repo_root: Path) -> dict[str, Any]:
         definition_relpath=WRITER_RELPATH,
     )
     internal_producer_callers = [row for row in producer["rows"] if row["FILE"] == WRITER_RELPATH]
-    if writer["PRODUCTIVE_RUNTIME_CALLER_COUNT"] != 0:
-        raise Section1114OfflineSurfaceError("WRITER_PRODUCTIVE_RUNTIME_CALLER_MUST_REMAIN_ZERO")
-    if producer["PRODUCTIVE_RUNTIME_CALLER_COUNT"] != 0:
-        raise Section1114OfflineSurfaceError("PRODUCER_PRODUCTIVE_RUNTIME_CALLER_MUST_REMAIN_ZERO")
+    # Historical future-window slice required zero productive callers. The
+    # successor CREATE slice may lawfully add exactly one productive writer
+    # caller. This census reports current counts and does not freeze them.
     if not internal_producer_callers:
         raise Section1114OfflineSurfaceError("WRITER_MUST_CALL_PRODUCER")
     return {
@@ -651,13 +650,9 @@ def bind_future_authorized_contemporaneous_capture_window_v1(
         raise Section1114OfflineSurfaceError("PRODUCTIVE_RUNTIME_CALLER_MUST_REMAIN_ZERO")
     if trigger["CAPTURE_TRIGGER_JOINED_TO_AUTHORIZED_RUNTIME"] is True:
         raise Section1114OfflineSurfaceError("CAPTURE_TRIGGER_MUST_REMAIN_UNJOINED")
-    if (
-        graph[
-            "CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_commit_handoff_after_bound_fill_before_restart_v1"
-        ]
-        != 0
-    ):
-        raise Section1114OfflineSurfaceError("WRITER_PRODUCTIVE_RUNTIME_CALLER_MUST_REMAIN_ZERO")
+    # Historical future-window persist required zero productive writer callers.
+    # The successor CREATE slice may lawfully add exactly one. This bind still
+    # forbids authorized-runtime join and does not freeze the live caller count.
     if CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED is True:
         raise Section1114OfflineSurfaceError("HISTORICAL_CANARY_MUST_REMAIN_UNOBSERVED")
     if LIVE_RESTART_RECONSTRUCTED is True:

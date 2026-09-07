@@ -1,0 +1,66 @@
+{
+  "AUTHORITY_CLASS": "FORENSIC_OBSERVATION",
+  "DOCUMENT_CLASS": "SECTION_11_14_CREATE_CAPTURE_OWNER_CALLER_GRAPH_V1",
+  "EXACTLY_ONE_PRODUCTIVE_WRITER_CALLER": true,
+  "HOOK_CALL_SITE_COUNT": 0,
+  "HOOK_DEFINITION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py",
+  "HOOK_SYMBOL": "run_capture_hook_after_bound_fill_before_restart_v1",
+  "PRODUCER_PRODUCTIVE_RUNTIME_CALLER_COUNT": 0,
+  "WRITER_PRODUCTIVE_RUNTIME_CALLER_COUNT": 1,
+  "hook_census": {
+    "CALL_SITE_COUNT": 0,
+    "DEFINITION": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py",
+    "PRODUCTIVE_RUNTIME_CALLER_COUNT": 0,
+    "SYMBOL": "run_capture_hook_after_bound_fill_before_restart_v1",
+    "TEST_ONLY_CALL_SITE_COUNT": 0,
+    "rows": []
+  },
+  "producer_census": {
+    "CALL_SITE_COUNT": 1,
+    "DEFINITION": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_pos_producer_v1.py",
+    "PRODUCTIVE_RUNTIME_CALLER_COUNT": 0,
+    "SYMBOL": "emit_s05_handoff_pos_v1",
+    "TEST_ONLY_CALL_SITE_COUNT": 0,
+    "rows": [
+      {
+        "AUTHORITY_CLASS": "FORENSIC_RAW_EVIDENCE",
+        "BOUND_OR_UNBOUND": "UNBOUND_FROM_PRODUCTIVE_ENTRYPOINT",
+        "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+        "FILE": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_owner_and_writer_v1.py",
+        "LINE_RANGE": "262-276",
+        "NODE_ID": "emit_s05_handoff_pos_v1@src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_owner_and_writer_v1.py:262",
+        "PRODUCTIVE_OR_TEST_ONLY": "FORENSIC_OFFLINE",
+        "REACHABLE_FROM_PRODUCTIVE_ENTRYPOINT": false,
+        "REQUIRES_CREDENTIALS": false,
+        "REQUIRES_LIVE_SURFACE": false,
+        "REQUIRES_VENUE_RESPONSE": false,
+        "REQUIRES_WIRE_SEND": false,
+        "SYMBOL": "emit_s05_handoff_pos_v1"
+      }
+    ]
+  },
+  "writer_census": {
+    "CALL_SITE_COUNT": 1,
+    "DEFINITION": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_owner_and_writer_v1.py",
+    "PRODUCTIVE_RUNTIME_CALLER_COUNT": 1,
+    "SYMBOL": "commit_handoff_after_bound_fill_before_restart_v1",
+    "TEST_ONLY_CALL_SITE_COUNT": 0,
+    "rows": [
+      {
+        "AUTHORITY_CLASS": "FORENSIC_RAW_EVIDENCE",
+        "BOUND_OR_UNBOUND": "UNBOUND_FROM_PRODUCTIVE_ENTRYPOINT",
+        "FAIL_OPEN_OR_FAIL_CLOSED": "FAIL_CLOSED",
+        "FILE": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py",
+        "LINE_RANGE": "61-64",
+        "NODE_ID": "commit_handoff_after_bound_fill_before_restart_v1@src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py:61",
+        "PRODUCTIVE_OR_TEST_ONLY": "PRODUCTIVE_RUNTIME",
+        "REACHABLE_FROM_PRODUCTIVE_ENTRYPOINT": false,
+        "REQUIRES_CREDENTIALS": false,
+        "REQUIRES_LIVE_SURFACE": false,
+        "REQUIRES_VENUE_RESPONSE": false,
+        "REQUIRES_WIRE_SEND": false,
+        "SYMBOL": "commit_handoff_after_bound_fill_before_restart_v1"
+      }
+    ]
+  }
+}

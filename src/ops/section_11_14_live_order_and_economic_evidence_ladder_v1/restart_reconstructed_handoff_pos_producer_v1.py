@@ -69,6 +69,29 @@ def _parse_unsigned_qty(raw: object) -> Decimal:
     return value
 
 
+def _bound_identity_fields(
+    *,
+    bound_fill_identity: Mapping[str, Any] | None,
+) -> tuple[str, str, str, str, str, bool]:
+    if bound_fill_identity is None:
+        return (
+            BOUND_INSTID,
+            BOUND_CLORDID,
+            BOUND_ORDID,
+            BOUND_POS_SIDE,
+            BOUND_FILL_SZ,
+            False,
+        )
+    inst_id = str(bound_fill_identity.get("instId") or "").strip()
+    clordid = str(bound_fill_identity.get("clOrdId") or "").strip()
+    ord_id = str(bound_fill_identity.get("ordId") or "").strip()
+    pos_side = str(bound_fill_identity.get("posSide") or "").strip()
+    fill_sz = str(bound_fill_identity.get("fillSz") or "").strip()
+    if not inst_id or not clordid or not ord_id or not pos_side or not fill_sz:
+        raise Section1114OfflineSurfaceError("FUTURE_BOUND_IDENTITY_INCOMPLETE")
+    return inst_id, clordid, ord_id, pos_side, fill_sz, True
+
+
 def emit_s05_handoff_pos_v1(
     *,
     resulting_current_position_qty: object,
@@ -83,6 +106,7 @@ def emit_s05_handoff_pos_v1(
     provenance_class: object,
     restart_already_occurred: bool = False,
     extra_fields: Mapping[str, Any] | None = None,
+    bound_fill_identity: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     extras = dict(extra_fields or {})
     forbidden_keys = sorted(name for name in extras if name in FORBIDDEN_INPUT_KEYS)
@@ -106,16 +130,19 @@ def emit_s05_handoff_pos_v1(
         raise Section1114OfflineSurfaceError("NO_SYNTHETIC_PRE_RESTART_PROVENANCE")
     if str(unit or "").strip() != POS_UNIT:
         raise Section1114OfflineSurfaceError("WRONG_UNIT")
-    if str(inst_id or "").strip() != BOUND_INSTID:
+    expected_inst, expected_clordid, expected_ord, expected_pos_side, expected_sz, parameterized = (
+        _bound_identity_fields(bound_fill_identity=bound_fill_identity)
+    )
+    if str(inst_id or "").strip() != expected_inst:
         raise Section1114OfflineSurfaceError("WRONG_INSTRUMENT")
-    if str(clordid or "").strip() != BOUND_CLORDID:
+    if str(clordid or "").strip() != expected_clordid:
         raise Section1114OfflineSurfaceError("IDENTITY_MISMATCH")
-    if str(ord_id or "").strip() != BOUND_ORDID:
+    if str(ord_id or "").strip() != expected_ord:
         raise Section1114OfflineSurfaceError("IDENTITY_MISMATCH")
-    if str(pos_side or "").strip() != BOUND_POS_SIDE:
+    if str(pos_side or "").strip() != expected_pos_side:
         raise Section1114OfflineSurfaceError("IDENTITY_MISMATCH")
     qty = _parse_unsigned_qty(resulting_current_position_qty)
-    fill_sz = parse_handoff_pos_v1(BOUND_FILL_SZ)
+    fill_sz = parse_handoff_pos_v1(expected_sz)
     if fill_sz is not None and fill_sz != 0 and qty == 0:
         raise Section1114OfflineSurfaceError("SILENT_REINITIALIZATION_FORBIDDEN")
     if fill_sz is not None and qty != fill_sz:
@@ -132,12 +159,13 @@ def emit_s05_handoff_pos_v1(
         "source_kind": ADMISSIBLE_POS_SOURCE_KIND,
         "provenance_class": CONTEMPORANEOUS_PROVENANCE_CLASS,
         "capture_trigger": REQUIRED_CAPTURE_TRIGGER,
-        "clOrdId": BOUND_CLORDID,
-        "ordId": BOUND_ORDID,
-        "instId": BOUND_INSTID,
-        "posSide": BOUND_POS_SIDE,
+        "clOrdId": expected_clordid,
+        "ordId": expected_ord,
+        "instId": expected_inst,
+        "posSide": expected_pos_side,
         "PEAK_TRADE_OWNED": True,
         "CONTEMPORANEOUS": True,
         "FILL_SZ_COPY": False,
         "VENUE_GET_USED": False,
+        "FUTURE_BOUND_IDENTITY_PARAMETERIZED": parameterized,
     }

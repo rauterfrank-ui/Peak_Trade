@@ -1,4 +1,4 @@
-"""One-shot runner for §11.14 productive capture-owner and lifecycle-hook binding."""
+"""One-shot runner for §11.14 create productive capture-owner and lifecycle hook."""
 
 from __future__ import annotations
 
@@ -16,12 +16,12 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import 
     write_manifest_v1,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (  # noqa: E402
-    HISTORICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_OWNER_GO,
-    HISTORICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_RUN_ID,
-    HISTORICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_SHA,
+    CANONICAL_EVIDENCE_RUN_ID,
+    EXPECTED_ORIGIN_MAIN_SHA,
+    OWNER_GO,
 )
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_productive_capture_owner_and_lifecycle_hook_binding_execute_v1 import (  # noqa: E402
-    execute_live_handoff_productive_capture_owner_and_lifecycle_hook_binding_v1,
+from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_create_productive_capture_owner_and_lifecycle_hook_execute_v1 import (  # noqa: E402
+    execute_live_handoff_create_productive_capture_owner_and_lifecycle_hook_v1,
 )
 
 
@@ -39,17 +39,16 @@ def _origin_main_sha(repo_root: Path) -> str:
 def main() -> int:
     repo_root = Path(__file__).resolve().parents[2]
     origin_main_sha = _origin_main_sha(repo_root)
-    if origin_main_sha != HISTORICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_SHA:
+    if origin_main_sha != EXPECTED_ORIGIN_MAIN_SHA:
         print(
-            "ORIGIN_MAIN_SHA_MISMATCH actual="
-            f"{origin_main_sha} expected={HISTORICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_SHA}"
+            f"ORIGIN_MAIN_SHA_MISMATCH actual={origin_main_sha} expected={EXPECTED_ORIGIN_MAIN_SHA}"
         )
         return 2
-    result = execute_live_handoff_productive_capture_owner_and_lifecycle_hook_binding_v1(
-        owner_go=HISTORICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_OWNER_GO,
-        origin_main_sha=HISTORICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_SHA,
+    result = execute_live_handoff_create_productive_capture_owner_and_lifecycle_hook_v1(
+        owner_go=OWNER_GO,
+        origin_main_sha=origin_main_sha,
         repo_root=repo_root,
-        run_id=HISTORICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_RUN_ID,
+        run_id=CANONICAL_EVIDENCE_RUN_ID,
     )
     pack = Path(result["pack"])
     pack.mkdir(parents=True, exist_ok=True)
@@ -57,11 +56,9 @@ def main() -> int:
         "SUMMARY.json": dict(result["summary"]),
         "BASELINE.json": dict(result["baseline"]),
         "CHANGED_PATH_CENSUS.json": dict(result["changed_path_census"]),
-        "PATH_GRAPH.json": dict(result["path_graph"]),
-        "OWNER_CENSUS.json": dict(result["owner_census"]),
-        "HOOK_CENSUS.json": dict(result["hook_census"]),
+        "CALLER_GRAPH.json": dict(result["caller_graph"]),
+        "OWNER_HOOK_CENSUS.json": dict(result["owner_hook_census"]),
         "AUTHORIZATION_SURFACE_MATRIX.json": dict(result["authorization_surfaces"]),
-        "PRODUCTIVE_BINDING_DECISION.json": dict(result["binding_decision"]),
         "COMPLETE_CAPTURE_SEAM_PREDICATE.json": dict(result["seam_predicate"]),
         "SAFETY.json": dict(result["safety"]),
         "claims.json": dict(result["claims"]),
@@ -79,15 +76,15 @@ def main() -> int:
     print(f"EVIDENCE_PACK={pack}")
     print(f"CASE_ADJUDICATION={summary.get('CASE_ADJUDICATION')}")
     print(f"BINDING_CASE={summary.get('BINDING_CASE')}")
+    print(f"PRODUCTIVE_CAPTURE_OWNER={summary.get('PRODUCTIVE_CAPTURE_OWNER')}")
+    print(f"PRODUCTIVE_LIFECYCLE_HOOK={summary.get('PRODUCTIVE_LIFECYCLE_HOOK')}")
+    print(f"STRUCTURAL_RUNTIME_BINDING_PROVEN={summary.get('STRUCTURAL_RUNTIME_BINDING_PROVEN')}")
     print(
-        f"MINIMAL_FAIL_CLOSED_BINDING_ALLOWED={summary.get('MINIMAL_FAIL_CLOSED_BINDING_ALLOWED')}"
+        "CURRENT_RUNTIME_EXECUTION_AUTHORIZED="
+        f"{summary.get('CURRENT_RUNTIME_EXECUTION_AUTHORIZED')}"
     )
-    print(f"PRODUCTIVE_CAPTURE_OWNER_STATUS={summary.get('PRODUCTIVE_CAPTURE_OWNER_STATUS')}")
-    print(f"PRODUCTIVE_LIFECYCLE_HOOK_STATUS={summary.get('PRODUCTIVE_LIFECYCLE_HOOK_STATUS')}")
-    print(f"AUTHORIZED_RUNTIME_SURFACE={summary.get('AUTHORIZED_RUNTIME_SURFACE')}")
     print(f"COMPLETE_CAPTURE_SEAM={summary.get('COMPLETE_CAPTURE_SEAM')}")
     print(f"LIVE_RESTART_RECONSTRUCTED={summary.get('LIVE_RESTART_RECONSTRUCTED')}")
-    print(f"IMPLEMENTATION_AUTHORIZED={summary.get('IMPLEMENTATION_AUTHORIZED')}")
     print(f"MANIFEST_VERIFY_RC={summary['MANIFEST_VERIFY_RC']}")
     return 0 if summary["MANIFEST_VERIFY_RC"] == 0 else 1
 

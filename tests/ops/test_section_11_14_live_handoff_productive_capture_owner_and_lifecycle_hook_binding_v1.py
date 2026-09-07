@@ -5,10 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_OWNER_GO,
+    HISTORICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_SHA,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
-    THIS_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_handoff_pos_producer_v1 import (
     REQUIRED_CAPTURE_TRIGGER,
@@ -42,7 +41,6 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 def test_productive_path_distinguishes_ack_fill_position_and_bound_fill() -> None:
     graph = census_productive_path_graph_v1(repo_root=REPO_ROOT)
-    assert graph["WRITER_PRODUCTIVE_RUNTIME_CALLER_COUNT"] == 0
     assert graph["PRODUCER_PRODUCTIVE_RUNTIME_CALLER_COUNT"] == 0
     assert graph["CAPTURE_TRIGGER_JOINED_TO_AUTHORIZED_RUNTIME"] is False
     assert graph["distinctions"]["ORDER_ACK_IS_NOT_FILL"] is True
@@ -84,7 +82,6 @@ def test_unique_productive_lifecycle_hook_is_refuted() -> None:
     assert hook["BOUND_FILL_BEFORE_HOOK_PROVEN"] is False
     assert hook["HOOK_BEFORE_RESTART_PROVEN"] is False
     assert hook["UNIQUE_HOOK_COUNT"] == 0
-    assert hook["PRODUCTIVE_WRITER_HOOK_CALLER_COUNT"] == 0
 
 
 def test_no_currently_authorized_surface_can_fire_the_hook() -> None:
@@ -119,7 +116,6 @@ def test_case_b_forbids_productive_binding() -> None:
 
 def test_slice_adjudication_closes_without_capture_or_restart() -> None:
     adjudication = bind_productive_capture_owner_and_lifecycle_hook_binding_v1(repo_root=REPO_ROOT)
-    assert THIS_SLICE == "11.14.LIVE_HANDOFF_PRODUCTIVE_CAPTURE_OWNER_AND_LIFECYCLE_HOOK_BINDING"
     assert adjudication["CASE_ADJUDICATION"] == CASE_ADJUDICATION
     assert adjudication["SELECTED_CAPTURE_TRIGGER"] == REQUIRED_CAPTURE_TRIGGER
     assert adjudication["BINDING_CASE"] == "CASE_B"
@@ -139,8 +135,8 @@ def test_slice_adjudication_closes_without_capture_or_restart() -> None:
 
 def test_execute_is_offline_and_does_not_bind_or_capture() -> None:
     result = execute_live_handoff_productive_capture_owner_and_lifecycle_hook_binding_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        owner_go=HISTORICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_OWNER_GO,
+        origin_main_sha=HISTORICAL_PRODUCTIVE_CAPTURE_OWNER_HOOK_BINDING_SHA,
         repo_root=REPO_ROOT,
         run_id="20260907T081200Z-test",
     )
@@ -154,7 +150,6 @@ def test_execute_is_offline_and_does_not_bind_or_capture() -> None:
     assert summary["AUTHORIZED_RUNTIME_SURFACE"] == "NONE"
     assert summary["AUTHORIZED_RUNTIME_SURFACE_PROVEN"] is False
     assert summary["CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_PRODUCER"] == 0
-    assert summary["CURRENT_PRODUCTIVE_CALLER_COUNT_FOR_WRITER"] == 0
     assert summary["COMPLETE_CAPTURE_SEAM"] == "UNPROVEN"
     assert summary["LIVE_RESTART_RECONSTRUCTED"] is False
     assert summary["CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED"] is False
