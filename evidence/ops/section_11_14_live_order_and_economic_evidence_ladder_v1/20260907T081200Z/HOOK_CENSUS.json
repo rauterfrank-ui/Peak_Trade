@@ -1,0 +1,81 @@
+{
+  "AUTHORITY_CLASS": "FORENSIC_OBSERVATION",
+  "BOUND_FILL_BEFORE_HOOK_PROVEN": false,
+  "DOCUMENT_CLASS": "SECTION_11_14_PRODUCTIVE_LIFECYCLE_HOOK_CENSUS_V1",
+  "HOOK_BEFORE_RESTART_PROVEN": false,
+  "HOOK_ORDERING_PROVEN": false,
+  "PRODUCTIVE_LIFECYCLE_HOOK": "NONE",
+  "PRODUCTIVE_LIFECYCLE_HOOK_STATUS": "REFUTED",
+  "PRODUCTIVE_WRITER_HOOK_CALLER_COUNT": 0,
+  "UNIQUE_HOOK_COUNT": 0,
+  "candidates": [
+    {
+      "BOUND_FILL_ALREADY_PROVEN_BEFORE_HOOK": false,
+      "CALLS_WRITER": false,
+      "CANDIDATE": "NONE",
+      "HOOK_BEFORE_RESTART": false,
+      "PATH": "NONE",
+      "REASON": "Canary submit returns at ACK. Fill GET is a later slice, not a callback.",
+      "SEARCH_CLASS": "post-bound-fill callback",
+      "STATUS": "REFUTED_ABSENT"
+    },
+    {
+      "BOUND_FILL_ALREADY_PROVEN_BEFORE_HOOK": false,
+      "CALLS_WRITER": false,
+      "CANDIDATE": "refuse_ungated_lifecycle_transition_v1",
+      "HOOK_BEFORE_RESTART": false,
+      "PATH": "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/lifecycle_v1.py",
+      "REASON": "Raises UNGATED_LIFECYCLE_TRANSITION_FORBIDDEN. ACTIVATED=false. FILLED is documentary.",
+      "SEARCH_CLASS": "state transition",
+      "STATUS": "REFUTED_NOT_HOOK"
+    },
+    {
+      "BOUND_FILL_ALREADY_PROVEN_BEFORE_HOOK": false,
+      "CALLS_WRITER": false,
+      "CANDIDATE": "SupervisorLifecycle.restart",
+      "HOOK_BEFORE_RESTART": false,
+      "PATH": "src/ops/canonical_local_launcher_and_process_supervision_v1/lifecycle_v1.py",
+      "REASON": "Restart is the boundary itself. Does not capture before restart. Does not call writer.",
+      "SEARCH_CLASS": "supervisor transition",
+      "STATUS": "REFUTED_NOT_HOOK"
+    },
+    {
+      "BOUND_FILL_ALREADY_PROVEN_BEFORE_HOOK": false,
+      "CALLS_WRITER": false,
+      "CANDIDATE": "ExecutionOrchestrator.submit_intent",
+      "HOOK_BEFORE_RESTART": false,
+      "PATH": "src/execution/orchestrator.py",
+      "REASON": "Simulated pipeline completion is not a Live bound-fill hook.",
+      "SEARCH_CLASS": "execution completion hook",
+      "STATUS": "REFUTED_NOT_HOOK"
+    },
+    {
+      "BOUND_FILL_ALREADY_PROVEN_BEFORE_HOOK": false,
+      "CALLS_WRITER": false,
+      "CANDIDATE": "adjudicate_live_position_reconciled_v1",
+      "HOOK_BEFORE_RESTART": false,
+      "PATH": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/position_reconciled_adjudication_v1.py",
+      "REASON": "Later GET. POSITION_OBSERVATION is not contemporaneous pre-restart capture.",
+      "SEARCH_CLASS": "position reconciliation hook",
+      "STATUS": "REFUTED_NOT_HOOK"
+    },
+    {
+      "BOUND_FILL_ALREADY_PROVEN_BEFORE_HOOK": false,
+      "CALLS_WRITER": false,
+      "CANDIDATE": "SupervisorLifecycle.stop",
+      "HOOK_BEFORE_RESTART": false,
+      "PATH": "src/ops/canonical_local_launcher_and_process_supervision_v1/lifecycle_v1.py",
+      "REASON": "Graceful stop does not call the handoff writer and does not require bound fill.",
+      "SEARCH_CLASS": "pre-restart shutdown hook",
+      "STATUS": "REFUTED_NOT_HOOK"
+    }
+  ],
+  "writer_census": {
+    "CALL_SITE_COUNT": 0,
+    "DEFINITION": "src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_owner_and_writer_v1.py",
+    "PRODUCTIVE_RUNTIME_CALLER_COUNT": 0,
+    "SYMBOL": "commit_handoff_after_bound_fill_before_restart_v1",
+    "TEST_ONLY_CALL_SITE_COUNT": 0,
+    "rows": []
+  }
+}

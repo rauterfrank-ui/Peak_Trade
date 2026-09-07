@@ -10,11 +10,13 @@ is CLOSED_REFUTED: no authorized non-live runtime surface joins the
 writer, and repo-root read-back is MISSING_HANDOFF. The future-authorized
 contemporaneous capture window is adjudicated without a productive runtime
 join: capture owner ABSENT, lifecycle hook ABSENT, timestamp ordering
-UNPROVEN, and MINIMUM_FUTURE_CAPTURE_WINDOW_SURFACE UNPROVEN.
-COMPLETE_CAPTURE_SEAM remains UNPROVEN. LIVE_RESTART_RECONSTRUCTED
-remains false. Host-crash durability remains unproven. Exact-single live
-POST remains consumed. This GO performs no GET, no POST, no restart
-execution, no productive handoff write, no productive runtime binding,
-and no order mutation. Atlas has
+UNPROVEN, and MINIMUM_FUTURE_CAPTURE_WINDOW_SURFACE UNPROVEN. The
+productive capture owner and lifecycle hook are REFUTED as unique
+existing runtime facts. AUTHORIZED_RUNTIME_SURFACE is NONE. CASE_B:
+no productive binding. COMPLETE_CAPTURE_SEAM remains UNPROVEN.
+LIVE_RESTART_RECONSTRUCTED remains false. Host-crash durability remains
+unproven. Exact-single live POST remains consumed. This GO performs no
+GET, no POST, no restart execution, no productive handoff write, no
+productive runtime binding, and no order mutation. Atlas has
 no authority.
 """
