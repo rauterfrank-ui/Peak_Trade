@@ -915,6 +915,33 @@ relations:
       capture executed. No restart execution.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_section_11_14_exact_single_live_identity_bound_venue_fill_then_contemporaneous_pre_restart_capture_follows_readiness
+    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
+    type: CONSUMES
+    target: PHASE:section_11_14_live_handoff_live_identity_bound_venue_fill_readiness_and_exact_execution_contract
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_exact_single_live_identity_bound_venue_fill_then_contemporaneous_pre_restart_capture_v1.py
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_exact_single_live_identity_bound_venue_fill_then_contemporaneous_pre_restart_capture_execute_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_caller_v1.py
+      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T184500Z/
+    notes: >-
+      Exact-single identity-bound venue-fill then contemporaneous
+      PRE-RESTART capture persist follows live-fill readiness.
+      TERMINAL_STATE=CODE_GAP_FOUND. CODE_CHANGE_REQUIRED=true.
+      LIVE_FILL_READINESS=false.
+      EXACT_ECONOMIC_ACTION_CONTRACT_STATUS=BLOCKED.
+      CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false.
+      CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false.
+      AUTHORIZED_RUNTIME_SURFACE=NONE.
+      HOST_CRASH_DURABILITY remains UNPROVEN.
+      LIVE_RESTART_RECONSTRUCTED remains false.
+      IMPLEMENTATION_AUTHORIZED=true. No GET. No POST. No submit. No
+      wire send. No position mutation. No restart execution. Repair
+      merge not authorized. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_path_calls_venue_translation
     source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     type: CALLS

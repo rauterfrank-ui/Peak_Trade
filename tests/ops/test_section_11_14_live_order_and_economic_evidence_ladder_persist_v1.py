@@ -41,6 +41,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     CANONICAL_CONTEMPORANEOUS_CAPTURE_RUNTIME_SURFACE_SLICE_HEADING,
     CANONICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SLICE_HEADING,
     CANONICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_SLICE_HEADING,
+    CANONICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SLICE_HEADING,
     CANONICAL_SECTION_HEADING,
     EARLIEST_UNRESOLVED_DEPENDENCY,
     EXPECTED_ORIGIN_MAIN_SHA,
@@ -118,6 +119,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_OWNER_GO,
     HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_RUN_ID,
     HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SHA,
+    HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_OWNER_GO,
+    HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_RUN_ID,
+    HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_SHA,
     HISTORICAL_CODE_EXISTS_OWNER_GO,
     HISTORICAL_CODE_EXISTS_RUN_ID,
     HISTORICAL_CODE_EXISTS_SHA,
@@ -254,6 +258,10 @@ CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_SPEC = (
 LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_SPEC = (
     REPO_ROOT
     / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_AND_EXACT_EXECUTION_CONTRACT_V1.md"
+)
+EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SPEC = (
+    REPO_ROOT
+    / "docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_V1.md"
 )
 HISTORICAL_SPEC = (
     REPO_ROOT
@@ -455,29 +463,36 @@ HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_EVIDENCE = (
     / "section_11_14_live_order_and_economic_evidence_ladder_v1"
     / HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_RUN_ID
 )
+HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_EVIDENCE = (
+    REPO_ROOT
+    / "evidence/ops"
+    / "section_11_14_live_order_and_economic_evidence_ladder_v1"
+    / HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_RUN_ID
+)
 HEADING_11_15 = "## 11.15 Full-autonomy observability and audit trail"
 
 
-def test_current_slice_constants_target_live_identity_bound_venue_fill_readiness_and_exact_execution_contract() -> (
+def test_current_slice_constants_target_exact_single_live_identity_bound_venue_fill_then_contemporaneous_pre_restart_capture() -> (
     None
 ):
     assert THIS_SLICE == (
-        "11.14.LIVE_HANDOFF_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_AND_EXACT_EXECUTION_CONTRACT"
+        "11.14.LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_"
+        "THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE"
     )
     assert PREDECESSOR_SLICE == (
-        "11.14.LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_AND_NON_EXECUTION_PROOF"
+        "11.14.LIVE_HANDOFF_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_AND_EXACT_EXECUTION_CONTRACT"
     )
     assert OWNER_GO.endswith(
-        "LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_AND_EXACT_EXECUTION_CONTRACT_V1"
+        "LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_V1"
     )
-    assert EXPECTED_ORIGIN_MAIN_SHA == "f0b2cb34d60d2404edbb90a6a025f69534bbe6b1"
+    assert EXPECTED_ORIGIN_MAIN_SHA == "6d25cd2ced346f760db26ca488183b45d19b3d73"
     assert EARLIEST_UNRESOLVED_DEPENDENCY == "LIVE_RESTART_RECONSTRUCTED"
     assert NEXT_OWNER_GO_REQUIRED == "OWNER_GO_FOR_LIVE_RESTART_RECONSTRUCTED"
     assert LAST_CANONICALLY_CLOSED_STEP == (
-        "SECTION_11_14_LIVE_HANDOFF_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_"
-        "AND_EXACT_EXECUTION_CONTRACT"
+        "SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_"
+        "THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE"
     )
-    assert CANONICAL_EVIDENCE_RUN_ID == "20260907T181000Z"
+    assert CANONICAL_EVIDENCE_RUN_ID == "20260907T184500Z"
     assert EVIDENCE.name == CANONICAL_EVIDENCE_RUN_ID
 
 
@@ -1866,14 +1881,23 @@ def test_runbook_live_identity_bound_venue_fill_readiness_and_exact_execution_co
 ):
     text = MASTER_RUNBOOK.read_text(encoding="utf-8")
     start = text.find(CANONICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_SLICE_HEADING)
-    end = text.find(HEADING_11_15, start)
+    end = text.find(CANONICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SLICE_HEADING, start)
     assert start >= 0
     assert end > start
     section = text[start:end]
-    assert OWNER_GO in section
-    assert THIS_SLICE in section
-    assert PREDECESSOR_SLICE in section
-    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_OWNER_GO in section
+    assert (
+        "THIS_SLICE=11.14.LIVE_HANDOFF_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_AND_EXACT_EXECUTION_CONTRACT"
+        in section
+    )
+    assert (
+        "PREDECESSOR_SLICE=11.14.LIVE_HANDOFF_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_AND_NON_EXECUTION_PROOF"
+        in section
+    )
+    assert (
+        f"EXPECTED_ORIGIN_MAIN_SHA={HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_SHA}"
+        in section
+    )
     assert "SECTION_11_14_AUTHORIZED=false" in section
     assert "SECTION_11_14_COMPLETE=false" in section
     assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
@@ -1903,9 +1927,64 @@ def test_runbook_live_identity_bound_venue_fill_readiness_and_exact_execution_co
     assert "FUTURE_EXECUTION_OWNER_GO_REQUIRED=true" in section
     assert "NEXT_SLICE_AUTHORIZED=false" in section
     assert NEXT_OWNER_GO_REQUIRED in section
-    assert CANONICAL_EVIDENCE_RUN_ID in section
+    assert HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_RUN_ID in section
     assert (
         "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_REQUIRES_SEPARATE_OWNER_GO_V1"
+        in section
+    )
+    for field_name in LADDER_FIELDS:
+        assert field_name in section
+
+
+def test_runbook_exact_single_live_identity_bound_venue_fill_then_contemporaneous_pre_restart_capture_slice() -> (
+    None
+):
+    text = MASTER_RUNBOOK.read_text(encoding="utf-8")
+    start = text.find(CANONICAL_EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SLICE_HEADING)
+    end = text.find(HEADING_11_15, start)
+    assert start >= 0
+    assert end > start
+    section = text[start:end]
+    assert OWNER_GO in section
+    assert THIS_SLICE in section
+    assert PREDECESSOR_SLICE in section
+    assert f"EXPECTED_ORIGIN_MAIN_SHA={EXPECTED_ORIGIN_MAIN_SHA}" in section
+    assert "SECTION_11_14_AUTHORIZED=false" in section
+    assert "SECTION_11_14_COMPLETE=false" in section
+    assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in section
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in section
+    assert "COMPLETE_CAPTURE_SEAM=PROVEN" in section
+    assert "PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL=true" in section
+    assert "LIVE_IDENTITY_BOUND_VENUE_FILL_REQUIRED=true" in section
+    assert "LIVE_FILL_READINESS_MATRIX_STATUS=COMPLETE" in section
+    assert "LIVE_FILL_READINESS=false" in section
+    assert "MINIMAL_ECONOMIC_ACTION_CONTRACT_STATUS=BLOCKED" in section
+    assert "EXACT_ECONOMIC_ACTION_CONTRACT_STATUS=BLOCKED" in section
+    assert "LIVE_FILL_EXECUTION_AUTHORIZED=false" in section
+    assert "LIVE_FILL_EXECUTED=false" in section
+    assert "CODE_CHANGE_REQUIRED=true" in section
+    assert "TERMINAL_STATE=CODE_GAP_FOUND" in section
+    assert "CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION=NOT_EXECUTED" in section
+    assert "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false" in section
+    assert "CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false" in section
+    assert "AUTHORIZED_RUNTIME_SURFACE=NONE" in section
+    assert "HOST_CRASH_DURABILITY=UNPROVEN" in section
+    assert "CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED=false" in section
+    assert "LIVE_SUBMIT_EXECUTED=false" in section
+    assert "WIRE_SEND_EXECUTED=false" in section
+    assert "RESTART_EXECUTED=false" in section
+    assert "POSITION_MUTATION_EXECUTED=false" in section
+    assert "OWNER_GO_IS_NOT_GATE_BYPASS=true" in section
+    assert "POST_PERFORMED=false" in section
+    assert "GET_PERFORMED=false" in section
+    assert "RESTART_EXECUTION=false" in section
+    assert "FUTURE_EXECUTION_OWNER_GO_REQUIRED=true" in section
+    assert "NEXT_SLICE_AUTHORIZED=false" in section
+    assert "REPAIR_MERGE_AUTHORIZED=false" in section
+    assert NEXT_OWNER_GO_REQUIRED in section
+    assert CANONICAL_EVIDENCE_RUN_ID in section
+    assert (
+        "PROPOSED_NEXT_SLICE=SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_AFTER_CAPTURE_SEAM_REPAIR_REQUIRES_SEPARATE_OWNER_GO_V1"
         in section
     )
     for field_name in LADDER_FIELDS:
@@ -1975,6 +2054,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         "11.14 LIVE_HANDOFF_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_AND_EXACT_EXECUTION_CONTRACT"
         in mot
     )
+    assert (
+        "11.14 LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE"
+        in mot
+    )
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -2032,6 +2115,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "SECTION_11_14_LIVE_HANDOFF_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_AND_EXACT_EXECUTION_CONTRACT_V1.md"
+        in mot
+    )
+    assert (
+        "SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_V1.md"
         in mot
     )
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
@@ -2371,6 +2458,28 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "IMPLEMENTATION_AUTHORIZED=true" in readiness_spec
     assert "LIVE_RESTART_RECONSTRUCTED=false" in readiness_spec
     assert "NEXT_SLICE_AUTHORIZED=false" in readiness_spec
+    exact_spec = EXACT_SINGLE_BOUND_FILL_THEN_PRE_RESTART_CAPTURE_SPEC.read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_V1"
+        in exact_spec
+    )
+    assert "LIVE_IDENTITY_BOUND_VENUE_FILL_REQUIRED=true" in exact_spec
+    assert "LIVE_FILL_READINESS_MATRIX_STATUS=COMPLETE" in exact_spec
+    assert "LIVE_FILL_READINESS=false" in exact_spec
+    assert "MINIMAL_ECONOMIC_ACTION_CONTRACT_STATUS=BLOCKED" in exact_spec
+    assert "EXACT_ECONOMIC_ACTION_CONTRACT_STATUS=BLOCKED" in exact_spec
+    assert "CODE_CHANGE_REQUIRED=true" in exact_spec
+    assert "TERMINAL_STATE=CODE_GAP_FOUND" in exact_spec
+    assert "LIVE_FILL_EXECUTION_AUTHORIZED=false" in exact_spec
+    assert "LIVE_FILL_EXECUTED=false" in exact_spec
+    assert "CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION=NOT_EXECUTED" in exact_spec
+    assert "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false" in exact_spec
+    assert "CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false" in exact_spec
+    assert "AUTHORIZED_RUNTIME_SURFACE=NONE" in exact_spec
+    assert "IMPLEMENTATION_AUTHORIZED=true" in exact_spec
+    assert "LIVE_RESTART_RECONSTRUCTED=false" in exact_spec
+    assert "NEXT_SLICE_AUTHORIZED=false" in exact_spec
+    assert "REPAIR_MERGE_AUTHORIZED=false" in exact_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -2452,6 +2561,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "id: PHASE:section_11_14_live_handoff_live_identity_bound_venue_fill_readiness_and_exact_execution_contract"
+        in catalog
+    )
+    assert (
+        "id: PHASE:section_11_14_live_handoff_exact_single_live_identity_bound_venue_fill_then_contemporaneous_pre_restart_capture"
         in catalog
     )
     assert (
@@ -3093,6 +3206,21 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         HISTORICAL_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION_EVIDENCE
         / "OBSERVATION_ADMISSIBILITY.json"
     ).is_file()
+    assert HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_EVIDENCE.is_dir()
+    historical_readiness_verified = verify_manifest_v1(
+        HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_EVIDENCE
+    )
+    assert int(historical_readiness_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
+    historical_readiness_summary = (
+        HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_EVIDENCE / "SUMMARY.json"
+    ).read_text(encoding="utf-8")
+    assert '"LIVE_FILL_READINESS": false' in historical_readiness_summary
+    assert '"MINIMAL_ECONOMIC_ACTION_CONTRACT_STATUS": "BLOCKED"' in historical_readiness_summary
+    assert '"LIVE_FILL_EXECUTION_AUTHORIZED": false' in historical_readiness_summary
+    assert (
+        HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_EVIDENCE
+        / "LIVE_FILL_READINESS_MATRIX.json"
+    ).is_file()
     assert EVIDENCE.is_dir()
     current_verified = verify_manifest_v1(EVIDENCE)
     assert int(current_verified.get("MANIFEST_VERIFY_RC", 1)) == 0
@@ -3118,6 +3246,9 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert '"LIVE_FILL_READINESS_MATRIX_STATUS": "COMPLETE"' in current_summary
     assert '"LIVE_FILL_READINESS": false' in current_summary
     assert '"MINIMAL_ECONOMIC_ACTION_CONTRACT_STATUS": "BLOCKED"' in current_summary
+    assert '"EXACT_ECONOMIC_ACTION_CONTRACT_STATUS": "BLOCKED"' in current_summary
+    assert '"CODE_CHANGE_REQUIRED": true' in current_summary
+    assert '"TERMINAL_STATE": "CODE_GAP_FOUND"' in current_summary
     assert '"LIVE_FILL_EXECUTION_AUTHORIZED": false' in current_summary
     assert '"LIVE_FILL_EXECUTED": false' in current_summary
     assert '"CONTEMPORANEOUS_PRE_RESTART_CAPTURE_OBSERVATION": "NOT_EXECUTED"' in current_summary
@@ -3133,12 +3264,14 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert '"POSITION_MUTATION_EXECUTED": false' in current_summary
     assert '"FUTURE_EXECUTION_OWNER_GO_REQUIRED": true' in current_summary
     assert '"NEXT_SLICE_AUTHORIZED": false' in current_summary
+    assert '"REPAIR_MERGE_AUTHORIZED": false' in current_summary
     assert '"OWNER_GO_IS_NOT_GATE_BYPASS": true' in current_summary
     assert (EVIDENCE / "FILL_PRODUCER_CALL_PATH.json").is_file()
     assert (EVIDENCE / "LIVE_FILL_READINESS_MATRIX.json").is_file()
+    assert (EVIDENCE / "CONTEMPORANEOUS_GATE_MATRIX.json").is_file()
     assert (EVIDENCE / "MINIMAL_ECONOMIC_ACTION_CONTRACT.json").is_file()
-    assert (EVIDENCE / "EXECUTION_SIDE_EFFECT_GRAPH.json").is_file()
-    assert (EVIDENCE / "CRITICAL_DISTINCTION.json").is_file()
+    assert (EVIDENCE / "CODE_GAP.json").is_file()
+    assert (EVIDENCE / "CAPTURE_SEAM_REPAIR.json").is_file()
     assert (EVIDENCE / "FUTURE_OWNER_GO_CONTRACT.json").is_file()
     assert (EVIDENCE / "NON_EXECUTION.json").is_file()
     assert (EVIDENCE / "ADJUDICATION.json").is_file()

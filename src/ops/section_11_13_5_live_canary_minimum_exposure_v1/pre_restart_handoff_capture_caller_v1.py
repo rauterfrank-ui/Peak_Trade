@@ -341,6 +341,7 @@ def call_pre_restart_handoff_capture_after_bound_fill_v1(
     restart_derived: bool = False,
     source_is_restart_reader: bool = False,
     source_is_historical_evidence: bool = False,
+    runtime_execution_authorized: bool = False,
     capture_adapter: OfflineNonproductiveCaptureAdapterV1 | None = None,
 ) -> dict[str, Any]:
     owner = require_bound_productive_capture_owner_v1(capture_owner=capture_owner)
@@ -354,6 +355,15 @@ def call_pre_restart_handoff_capture_after_bound_fill_v1(
         raise Section1114OfflineSurfaceError("WRONG_LIFECYCLE_EVENT")
     if LIVE_ENABLED is True or LIVE_ARMED is True:
         raise Section1114OfflineSurfaceError("LIVE_GATES_MUST_REMAIN_FALSE")
+    klass = _text(input_class)
+    authorized = runtime_execution_authorized is True
+    if authorized is True:
+        if klass == INPUT_CLASS_TEST_FIXTURE:
+            raise Section1114OfflineSurfaceError("FIXTURE_FILL_NOT_PRODUCTIVE")
+        if klass != INPUT_CLASS_PRODUCTIVE_BOUND_FILL_INPUT:
+            raise Section1114OfflineSurfaceError("RUNTIME_EXECUTION_UNAUTHORIZED")
+        if source_is_historical_evidence is True:
+            raise Section1114OfflineSurfaceError("HISTORICAL_EVIDENCE_IS_NOT_CURRENT_RUNTIME")
     if capture_adapter is not None:
         if capture_adapter.WIRE_SEND_CAPABLE is True or capture_adapter.POST_CAPABLE is True:
             raise Section1114OfflineSurfaceError("OFFLINE_ADAPTER_MUST_NOT_BE_WIRE_CAPABLE")
@@ -393,9 +403,15 @@ def call_pre_restart_handoff_capture_after_bound_fill_v1(
         restart_derived=restart_derived,
         source_is_restart_reader=source_is_restart_reader,
         source_is_historical_evidence=source_is_historical_evidence,
+        runtime_execution_authorized=authorized,
     )
     if capture_adapter is not None:
         capture_adapter.record_commit(result)
+    productive_executed = (
+        authorized is True
+        and result.get("CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED") is True
+        and klass == INPUT_CLASS_PRODUCTIVE_BOUND_FILL_INPUT
+    )
     return {
         "DOCUMENT_CLASS": "SECTION_11_14_PRODUCTIVE_HOOK_CALLER_RESULT_V1",
         "PRODUCTIVE_HOOK_CALLER": PRODUCTIVE_HOOK_CALLER,
@@ -404,7 +420,8 @@ def call_pre_restart_handoff_capture_after_bound_fill_v1(
         "PRODUCTIVE_CAPTURE_OWNER": owner,
         "PRODUCTIVE_LIFECYCLE_HOOK": PRODUCTIVE_LIFECYCLE_HOOK,
         "PRODUCTIVE_HOOK_CALLER_BINDING_PROVEN": True,
-        "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED": False,
+        "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED": productive_executed,
+        "RUNTIME_EXECUTION_AUTHORIZED_CLAIM": authorized,
         "WIRE_SEND": False,
         "LIVE_ENABLED": False,
         "LIVE_ARMED": False,

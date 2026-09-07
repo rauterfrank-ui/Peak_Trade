@@ -1,0 +1,324 @@
+{
+  "BLOCKING_GATES": [
+    "LIVE_ENABLED",
+    "LIVE_ARMED",
+    "CANARY_AUTHORIZED",
+    "RUNTIME_EXECUTION_AUTHORIZED",
+    "SESSION_AUTH",
+    "PRIVATE_GET_AUTH",
+    "DESTINATION_HOST",
+    "NETWORK_EGRESS_COMPATIBILITY",
+    "INSTRUMENT_STATE",
+    "ACCOUNT_MODE",
+    "POSITION_MODE",
+    "MARGIN_MODE",
+    "LEVERAGE",
+    "PRICE_BAND",
+    "MAX_AVAILABLE_MAX_SIZE",
+    "AVAILABLE_MARGIN",
+    "RISK_SIZING",
+    "EXISTING_POSITION_STATE",
+    "ORDER_QUANTITY",
+    "SLIPPAGE",
+    "KILL_SWITCH",
+    "SUBMIT_TRANSPORT",
+    "WIRE_SEND_GATE",
+    "POST_ACTION_EVIDENCE"
+  ],
+  "BLOCKING_GATE_COUNT": 24,
+  "DOCUMENT_CLASS": "SECTION_11_14_CONTEMPORANEOUS_LIVE_FILL_READINESS_MATRIX_V1",
+  "HISTORICAL_MATRIX_IS_NOT_CONTEMPORANEOUS_PASS": true,
+  "LIVE_FILL_READINESS": false,
+  "LIVE_FILL_READINESS_MATRIX_STATUS": "COMPLETE",
+  "OWNER_GO_IS_NOT_GATE_BYPASS": true,
+  "rows": [
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "section_11_14 constants_v1.LIVE_ENABLED; mutation not authorized",
+      "EVIDENCE_CLASS": "STANDING_CONSTANT",
+      "GATE": "LIVE_ENABLED",
+      "GATE_STATUS": "BLOCKED",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "section_11_14 constants_v1.LIVE_ARMED; mutation not authorized",
+      "EVIDENCE_CLASS": "STANDING_CONSTANT",
+      "GATE": "LIVE_ARMED",
+      "GATE_STATUS": "BLOCKED",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "section_11_14 constants_v1.CANARY_AUTHORIZED",
+      "EVIDENCE_CLASS": "STANDING_CONSTANT",
+      "GATE": "CANARY_AUTHORIZED",
+      "GATE_STATUS": "BLOCKED",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED standing false",
+      "EVIDENCE_CLASS": "STANDING_CONSTANT",
+      "GATE": "RUNTIME_EXECUTION_AUTHORIZED",
+      "GATE_STATUS": "BLOCKED",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": false,
+      "EVIDENCE": "PEAK_TRADE_OWNER_GO_SECTION_11_14_LIVE_HANDOFF_EXACT_SINGLE_LIVE_IDENTITY_BOUND_VENUE_FILL_THEN_CONTEMPORANEOUS_PRE_RESTART_CAPTURE_V1",
+      "EVIDENCE_CLASS": "OWNER_GO_TOKEN_MATCH",
+      "GATE": "OWNER_EXECUTION_PERMIT",
+      "GATE_STATUS": "PASS",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "CREDENTIAL_USE_ALLOWED=false; no current session authorized",
+      "EVIDENCE_CLASS": "STANDING_CONSTANT_NO_CURRENT_SESSION",
+      "GATE": "SESSION_AUTH",
+      "GATE_STATUS": "BLOCKED",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "PRIVATE_GET_ALLOWED=false",
+      "EVIDENCE_CLASS": "STANDING_CONSTANT",
+      "GATE": "PRIVATE_GET_AUTH",
+      "GATE_STATUS": "BLOCKED",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "REUSED_BINDING_REST_HOST=eea.okx.com",
+      "EVIDENCE_CLASS": "CODE_BOUND_CONNECTIVITY_UNKNOWN",
+      "GATE": "DESTINATION_HOST",
+      "GATE_STATUS": "UNKNOWN",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "network observation not authorized by this GO without GET/POST",
+      "EVIDENCE_CLASS": "NO_CURRENT_NETWORK_OBSERVATION",
+      "GATE": "NETWORK_EGRESS_COMPATIBILITY",
+      "GATE_STATUS": "UNKNOWN",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": false,
+      "EVIDENCE": "SUI-USD_UM_XPERP-310404",
+      "EVIDENCE_CLASS": "STANDING_CODE_BINDING",
+      "GATE": "INSTRUMENT_BINDING",
+      "GATE_STATUS": "PASS",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "instrument_state_observation_v1 requires current GET",
+      "EVIDENCE_CLASS": "NO_CURRENT_GET",
+      "GATE": "INSTRUMENT_STATE",
+      "GATE_STATUS": "UNKNOWN",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "account/config GET not authorized",
+      "EVIDENCE_CLASS": "NO_CURRENT_GET",
+      "GATE": "ACCOUNT_MODE",
+      "GATE_STATUS": "UNKNOWN",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "pos_mode_observation_v1 CURRENT=UNKNOWN",
+      "EVIDENCE_CLASS": "NO_CURRENT_GET",
+      "GATE": "POSITION_MODE",
+      "GATE_STATUS": "UNKNOWN",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "REQUIRED=cross CURRENT=UNKNOWN",
+      "EVIDENCE_CLASS": "NO_CURRENT_GET",
+      "GATE": "MARGIN_MODE",
+      "GATE_STATUS": "UNKNOWN",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "leverage_observation_v1 VALUE=UNKNOWN",
+      "EVIDENCE_CLASS": "NO_CURRENT_GET",
+      "GATE": "LEVERAGE",
+      "GATE_STATUS": "UNKNOWN",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "price_band_observation_v1 requires current GET",
+      "EVIDENCE_CLASS": "NO_CURRENT_GET",
+      "GATE": "PRICE_BAND",
+      "GATE_STATUS": "UNKNOWN",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "max_size/max_available observation requires current GET",
+      "EVIDENCE_CLASS": "NO_CURRENT_GET",
+      "GATE": "MAX_AVAILABLE_MAX_SIZE",
+      "GATE_STATUS": "UNKNOWN",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "available_margin observation requires current GET",
+      "EVIDENCE_CLASS": "NO_CURRENT_GET",
+      "GATE": "AVAILABLE_MARGIN",
+      "GATE_STATUS": "UNKNOWN",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "PLANNED_QTY=1; minSz/lotSz admission requires GET",
+      "EVIDENCE_CLASS": "PLANNED_QTY_VENUE_ADMISSION_UNKNOWN",
+      "GATE": "RISK_SIZING",
+      "GATE_STATUS": "UNKNOWN",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": false,
+      "EVIDENCE": "1",
+      "EVIDENCE_CLASS": "STANDING_CODE_BINDING",
+      "GATE": "MAX_POSITIONS",
+      "GATE_STATUS": "PASS",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "OPEN_POSITION_PRESENT unknown; must be zero to submit",
+      "EVIDENCE_CLASS": "NO_CURRENT_GET",
+      "GATE": "EXISTING_POSITION_STATE",
+      "GATE_STATUS": "UNKNOWN",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "SUI_OPERATIVE_ORDER_SZ=1",
+      "EVIDENCE_CLASS": "CODE_BOUND_VENUE_ADMISSION_UNKNOWN",
+      "GATE": "ORDER_QUANTITY",
+      "GATE_STATUS": "UNKNOWN",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": false,
+      "EVIDENCE": "LIMIT",
+      "EVIDENCE_CLASS": "STANDING_CODE_BINDING",
+      "GATE": "ORDER_TYPE",
+      "GATE_STATUS": "PASS",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": false,
+      "EVIDENCE": "trade-fee GET not authorized",
+      "EVIDENCE_CLASS": "NO_CURRENT_GET",
+      "GATE": "FEES",
+      "GATE_STATUS": "UNKNOWN",
+      "REQUIRED_FOR_MINIMAL_FILL": false,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "LIMIT px quantized from current ticker; ticker GET unauthorized",
+      "EVIDENCE_CLASS": "NO_CURRENT_GET",
+      "GATE": "SLIPPAGE",
+      "GATE_STATUS": "UNKNOWN",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": false,
+      "EVIDENCE": "flatten_execute is a distinct unauthorized path",
+      "EVIDENCE_CLASS": "STANDING_CODE_BINDING",
+      "GATE": "STOP_EXIT_SAFETY",
+      "GATE_STATUS": "PASS",
+      "REQUIRED_FOR_MINIMAL_FILL": false,
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "lifecycle_v1 kill-switch contract is not a current observation",
+      "EVIDENCE_CLASS": "NO_CURRENT_RUNTIME_OBSERVATION",
+      "GATE": "KILL_SWITCH",
+      "GATE_STATUS": "UNKNOWN",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": false,
+      "EVIDENCE": "LIVE_RECONCILIATION_PROVEN standing predicate",
+      "EVIDENCE_CLASS": "STANDING_CONSTANT",
+      "GATE": "RECONCILIATION",
+      "GATE_STATUS": "PASS",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": true
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "CANARY_SUBMIT_TRANSPORT_IMPLEMENTED=True; POST_ALLOWED=False",
+      "EVIDENCE_CLASS": "STANDING_CONSTANT",
+      "GATE": "SUBMIT_TRANSPORT",
+      "GATE_STATUS": "BLOCKED",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "allow_productive_wire_send default false; POST_ALLOWED=false",
+      "EVIDENCE_CLASS": "STANDING_CONSTANT",
+      "GATE": "WIRE_SEND_GATE",
+      "GATE_STATUS": "BLOCKED",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": true,
+      "EVIDENCE": "/api/v5/trade/fills is a later GET; PRIVATE_GET_ALLOWED=false",
+      "EVIDENCE_CLASS": "NO_CURRENT_GET",
+      "GATE": "POST_ACTION_EVIDENCE",
+      "GATE_STATUS": "BLOCKED",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": false
+    },
+    {
+      "BLOCKING": false,
+      "EVIDENCE": "RETRY_DEFAULT=false; SECOND_SUBMIT_DEFAULT=false",
+      "EVIDENCE_CLASS": "STANDING_CODE_BINDING",
+      "GATE": "FAILURE_SEMANTICS",
+      "GATE_STATUS": "PASS",
+      "REQUIRED_FOR_MINIMAL_FILL": true,
+      "SATISFIED": true
+    }
+  ]
+}

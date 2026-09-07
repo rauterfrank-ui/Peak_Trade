@@ -17,6 +17,8 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v
     Section1114OfflineSurfaceError,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_complete_contemporaneous_capture_seam_and_required_field_provenance_v1 import (
+    INPUT_CLASS_PRODUCTIVE_BOUND_FILL_INPUT,
+    INPUT_CLASS_TEST_FIXTURE,
     accept_complete_contemporaneous_capture_inputs_v1,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_reconstructed_create_productive_capture_owner_and_lifecycle_hook_v1 import (
@@ -51,6 +53,7 @@ def run_capture_hook_after_bound_fill_before_restart_v1(
     restart_derived: bool = False,
     source_is_restart_reader: bool = False,
     source_is_historical_evidence: bool = False,
+    runtime_execution_authorized: bool = False,
 ) -> dict[str, Any]:
     accepted = accept_complete_contemporaneous_capture_inputs_v1(
         input_class=input_class,
@@ -77,8 +80,18 @@ def run_capture_hook_after_bound_fill_before_restart_v1(
         contemporaneous_productive_capture_executed=False,
     )
     gates = accepted["gates"]
-    if accepted["INPUT_CLASS"] != "TEST_FIXTURE":
-        raise Section1114OfflineSurfaceError("RUNTIME_EXECUTION_UNAUTHORIZED")
+    klass = str(accepted["INPUT_CLASS"] or "").strip()
+    authorized = runtime_execution_authorized is True
+    if authorized is not True:
+        if klass != INPUT_CLASS_TEST_FIXTURE:
+            raise Section1114OfflineSurfaceError("RUNTIME_EXECUTION_UNAUTHORIZED")
+    else:
+        if klass == INPUT_CLASS_TEST_FIXTURE:
+            raise Section1114OfflineSurfaceError("FIXTURE_FILL_NOT_PRODUCTIVE")
+        if klass != INPUT_CLASS_PRODUCTIVE_BOUND_FILL_INPUT:
+            raise Section1114OfflineSurfaceError("RUNTIME_EXECUTION_UNAUTHORIZED")
+        if source_is_historical_evidence is True:
+            raise Section1114OfflineSurfaceError("HISTORICAL_EVIDENCE_IS_NOT_CURRENT_RUNTIME")
     ack = commit_handoff_after_bound_fill_before_restart_v1(
         storage_root=storage_root,
         **gates["writer_kwargs"],
@@ -92,6 +105,13 @@ def run_capture_hook_after_bound_fill_before_restart_v1(
         capture_committed_at=committed_at,
         restart_boundary_at=restart_boundary_at,
     )
+    productive_executed = (
+        authorized is True
+        and klass == INPUT_CLASS_PRODUCTIVE_BOUND_FILL_INPUT
+        and ack.get("DURABLE_SUCCESS_ACK") is True
+    )
+    if authorized is True and productive_executed is not True:
+        raise Section1114OfflineSurfaceError("PRODUCTIVE_CAPTURE_COMMIT_UNPROVEN")
     return {
         "DOCUMENT_CLASS": "SECTION_11_14_PRODUCTIVE_CAPTURE_HOOK_RESULT_V1",
         "PRODUCTIVE_CAPTURE_OWNER": PRODUCTIVE_CAPTURE_OWNER,
@@ -103,9 +123,10 @@ def run_capture_hook_after_bound_fill_before_restart_v1(
         "IDEMPOTENT_REPLAY": ack.get("IDEMPOTENT_REPLAY"),
         "HOST_CRASH_DURABILITY": "UNPROVEN",
         "LIVE_RESTART_RECONSTRUCTED": False,
-        "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED": False,
-        "INPUT_CLASS": accepted["INPUT_CLASS"],
-        "TEST_FIXTURE": True,
+        "CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED": productive_executed,
+        "RUNTIME_EXECUTION_AUTHORIZED_CLAIM": authorized,
+        "INPUT_CLASS": klass,
+        "TEST_FIXTURE": klass == INPUT_CLASS_TEST_FIXTURE,
         "capture_window": window,
         "identity": dict(gates["identity"]),
         "writer_ack": ack,

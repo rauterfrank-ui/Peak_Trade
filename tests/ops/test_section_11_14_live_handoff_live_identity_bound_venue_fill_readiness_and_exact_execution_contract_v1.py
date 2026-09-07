@@ -24,15 +24,15 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.venue_contract_coun
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     CANARY_AUTHORIZED,
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_OWNER_GO,
+    HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_SHA,
     LIVE_ARMED,
     LIVE_ENABLED,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
     POST_ALLOWED,
+    PREDECESSOR_SLICE,
     SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED,
     TESTNET_AUTHORIZED,
-    THIS_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -68,15 +68,17 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.restart_re
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
-def test_current_slice_and_owner_go_match_this_workpackage() -> None:
-    assert THIS_SLICE == (
+def test_historical_slice_and_owner_go_remain_bound_to_readiness_go() -> None:
+    assert PREDECESSOR_SLICE == (
         "11.14.LIVE_HANDOFF_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_AND_EXACT_EXECUTION_CONTRACT"
     )
-    assert OWNER_GO.endswith(
+    assert HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_OWNER_GO.endswith(
         "LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_AND_EXACT_EXECUTION_CONTRACT_V1"
     )
-    assert OWNER_GO != OWNER_GO_EXECUTE
-    assert EXPECTED_ORIGIN_MAIN_SHA == "f0b2cb34d60d2404edbb90a6a025f69534bbe6b1"
+    assert HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_OWNER_GO != OWNER_GO_EXECUTE
+    assert HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_SHA == (
+        "f0b2cb34d60d2404edbb90a6a025f69534bbe6b1"
+    )
     assert LIVE_ENABLED is False
     assert LIVE_ARMED is False
     assert POST_ALLOWED is False
@@ -203,8 +205,8 @@ def test_economic_contract_does_not_estimate_unknown_fields() -> None:
 
 def test_bind_and_execute_remain_non_executing(tmp_path: Path) -> None:
     result = execute_live_handoff_live_identity_bound_venue_fill_readiness_and_exact_execution_contract_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        owner_go=HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_OWNER_GO,
+        origin_main_sha=HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_SHA,
         repo_root=REPO_ROOT,
         run_id="20260907T181000Z-test",
         storage_root=tmp_path,
@@ -226,7 +228,7 @@ def test_bind_and_execute_remain_non_executing(tmp_path: Path) -> None:
     with pytest.raises(Section1114OfflineSurfaceError, match="OWNER_GO_MISMATCH"):
         execute_live_handoff_live_identity_bound_venue_fill_readiness_and_exact_execution_contract_v1(
             owner_go="WRONG",
-            origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+            origin_main_sha=HISTORICAL_LIVE_IDENTITY_BOUND_VENUE_FILL_READINESS_SHA,
             repo_root=REPO_ROOT,
             storage_root=tmp_path,
         )

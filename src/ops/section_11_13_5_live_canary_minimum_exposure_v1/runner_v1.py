@@ -123,7 +123,8 @@ def run_live_order_pre_restart_handoff_capture_v1(**kwargs: Any) -> dict[str, An
     result["host_graph"] = graph
     result["HOST_JOIN_SYMBOL"] = "run_live_order_pre_restart_handoff_capture_v1"
     result["WIRE_SEND"] = False
-    result["CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED"] = False
+    if kwargs.get("runtime_execution_authorized") is not True:
+        result["CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED"] = False
     return result
 
 
