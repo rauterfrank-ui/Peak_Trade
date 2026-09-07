@@ -22,13 +22,12 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.runner_v1 import (
     run_live_order_pre_restart_handoff_capture_v1,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA,
+    HISTORICAL_COMPLETE_CAPTURE_SEAM_NO_BACKFILL_CONTRACT_OWNER_GO,
+    HISTORICAL_COMPLETE_CAPTURE_SEAM_NO_BACKFILL_CONTRACT_SHA,
     LIVE_ENABLED,
     LIVE_RESTART_RECONSTRUCTED,
-    OWNER_GO,
     POST_ALLOWED,
     SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED,
-    THIS_SLICE,
 )
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
@@ -147,13 +146,12 @@ def _caller_kwargs(tmp_path: Path, **overrides: object) -> dict[str, object]:
 
 
 def test_current_slice_and_owner_go_match_this_workpackage() -> None:
-    assert THIS_SLICE == (
-        "11.14.LIVE_HANDOFF_COMPLETE_CAPTURE_SEAM_REQUIRED_FIELD_PROVENANCE_AND_NO_BACKFILL_CONTRACT"
-    )
-    assert OWNER_GO.endswith(
+    assert HISTORICAL_COMPLETE_CAPTURE_SEAM_NO_BACKFILL_CONTRACT_OWNER_GO.endswith(
         "COMPLETE_CAPTURE_SEAM_REQUIRED_FIELD_PROVENANCE_AND_NO_BACKFILL_CONTRACT_V1"
     )
-    assert EXPECTED_ORIGIN_MAIN_SHA == "eafb5f29e36e69f6af996d7eb9f276d0cec195f0"
+    assert HISTORICAL_COMPLETE_CAPTURE_SEAM_NO_BACKFILL_CONTRACT_SHA == (
+        "eafb5f29e36e69f6af996d7eb9f276d0cec195f0"
+    )
     assert COMPLETE_CAPTURE_SEAM == "PROVEN"
     assert PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL is True
     assert REQUIRED_FIELD_PROVENANCE_COMPLETE is True
@@ -463,8 +461,8 @@ def test_adjudication_proves_complete_seam_offline_without_live_claims() -> None
 
 def test_execute_is_offline_and_does_not_claim_productive_capture() -> None:
     result = execute_live_handoff_complete_capture_seam_required_field_provenance_and_no_backfill_contract_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        owner_go=HISTORICAL_COMPLETE_CAPTURE_SEAM_NO_BACKFILL_CONTRACT_OWNER_GO,
+        origin_main_sha=HISTORICAL_COMPLETE_CAPTURE_SEAM_NO_BACKFILL_CONTRACT_SHA,
         repo_root=REPO_ROOT,
         run_id="20260907T140000Z-test",
     )
