@@ -70,6 +70,12 @@ SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION: Final[str] = "double_play_entry_
 SCHEMA_VERSION_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION_V1: Final[str] = (
     "double_play_entry_exit_observation_v1"
 )
+SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE: Final[str] = (
+    "double_play_entry_exit_policy_input_evidence"
+)
+SCHEMA_VERSION_DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE_V1: Final[str] = (
+    "double_play_entry_exit_policy_input_evidence_v1"
+)
 SCHEMA_NAME_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION: Final[str] = (
     "section_11_14_flatten_pre_lease_observation"
 )

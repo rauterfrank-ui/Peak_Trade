@@ -310,7 +310,34 @@ relations:
       Typed producer observation is projected into
       double_play_entry_exit_observation_v1. Exact producer tokens remain
       producer-owned. Generic DDO DecisionResult is not a second trading enum.
-      Observation only.
+      Sibling producer-input evidence is projected into
+      double_play_entry_exit_policy_input_evidence_v1. Observation only.
+
+  - id: REL:r_ddo_capture_observes_entry_exit_input
+    source: RUNTIME_COMPONENT:ddo_capture_v0
+    type: OBSERVES
+    target: RUNTIME_COMPONENT:ddo_double_play_input_evidence_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+      - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
+    notes: >-
+      Host decorator observe_after_producer_v0 seam core.double_play_entry_exit
+      persists sibling producer-input evidence. Observation only. Not trading
+      authority.
+
+  - id: REL:r_ddo_input_evidence_reads_entry_exit_policy
+    source: RUNTIME_COMPONENT:ddo_double_play_input_evidence_v1
+    type: READS
+    target: RUNTIME_COMPONENT:dp_entry_exit_policy
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
+      - src/trading/master_v2/double_play_entry_exit_policy_v0.py
+    notes: >-
+      Reuses producer types plus serialize_entry_exit_policy_input_canonical
+      and compute_entry_exit_policy_input_digest. Does not call
+      evaluate_double_play_entry_exit_policy_v0. Not a second policy owner.
 
   - id: REL:r_ddo_semantic_replay_reads_entry_exit_observation
     source: RUNTIME_COMPONENT:ddo_double_play_semantic_replay_v1

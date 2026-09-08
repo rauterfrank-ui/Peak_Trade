@@ -701,6 +701,17 @@ relations:
       Package containment. Observation adapter only. AUTHORITY_OWNER=NONE.
       Not a second trading core. Atlas is not trading authority.
 
+  - id: REL:s_ddo_phase_contains_input_evidence
+    source: PHASE:ddo_offline_foundation
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:ddo_double_play_input_evidence_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
+    notes: >-
+      Package containment of Double-Play producer-input evidence capture.
+      Observation only. Atlas is not trading authority.
+
   - id: REL:s_ddo_phase_contains_ledger
     source: PHASE:ddo_offline_foundation
     type: CONTAINS

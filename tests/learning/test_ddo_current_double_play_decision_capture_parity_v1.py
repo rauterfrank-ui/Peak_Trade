@@ -510,6 +510,7 @@ def test_no_ddo_import_into_29p_safety_29q_execution_live() -> None:
     for path in (
         PACKAGE_DIR / "capture_v0.py",
         PACKAGE_DIR / "double_play_observation_projection_v1.py",
+        PACKAGE_DIR / "double_play_input_evidence_v1.py",
     ):
         tree = ast.parse(path.read_text(encoding="utf-8"))
         for node in ast.walk(tree):
