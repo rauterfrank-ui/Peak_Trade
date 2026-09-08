@@ -1,7 +1,9 @@
-"""Offline inner.send invocation-seam tests. Fake transport only.
+"""Offline productive inner.send fail-closed receipt-boundary tests.
 
-FAKE_INNER_SEND_REACHED is not REAL_INNER_SEND_EXECUTED. No urllib. No POST.
-No GET. No consume. No position mutation.
+Hard-network-blocked. Productive AuthenticatedGatedProductiveFlattenTransportV1.send
+may be reached with a missing receipt. FIRST_DENY must be RECEIPT_MISSING.
+Fake inner is not the source of that deny. No urllib. No POST. No GET.
+No consume. No receipt mint. No HMAC mint.
 """
 
 from __future__ import annotations
@@ -12,11 +14,11 @@ from pathlib import Path
 
 import pytest
 
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1 import (
+    flatten_productive_transport_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.authenticated_productive_transport_v1 import (
     AuthenticatedGatedProductiveFlattenTransportV1,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
-    LiveCanaryHttpRequestV1,
 )
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.constants_v1 import (
     BOUND_FROZEN_ENVELOPE_ID,
@@ -24,7 +26,6 @@ from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_exe
     FLATTEN_HTTP_ENDPOINT,
     INSTRUMENT_ID,
     PRODUCTIVE_TRANSPORT_BIND_KIND_NO_SEND,
-    REST_SCHEME_HOST,
     SESSION_ARMING_STANDING,
 )
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.network_session_authority_v1 import (
@@ -83,7 +84,6 @@ PACKAGE = (
     / "src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1"
 )
 NO_SEND_ADAPTER_SRC = PACKAGE / "productive_transport_adapter_v1.py"
-ADAPTER_SRC = PACKAGE / "productive_flatten_submit_send_adapter_v1.py"
 REAL_TRANSPORT_SRC = (
     REPO_ROOT
     / "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/authenticated_productive_transport_v1.py"
@@ -91,13 +91,29 @@ REAL_TRANSPORT_SRC = (
 BODY = {"instId": INSTRUMENT_ID}
 
 
-def _boom(*_args: object, **_kwargs: object) -> None:
-    raise AssertionError("REAL_NETWORK_MUST_NOT_OCCUR")
+def _install_network_hard_fail(monkeypatch: pytest.MonkeyPatch) -> list[str]:
+    attempts: list[str] = []
+
+    def _hard_fail(name: str):
+        def _boom(*_args: object, **_kwargs: object) -> None:
+            attempts.append(name)
+            raise AssertionError("NETWORK_CALL_ATTEMPTED")
+
+        return _boom
+
+    monkeypatch.setattr(urllib.request, "urlopen", _hard_fail("urlopen"))
+    monkeypatch.setattr(socket, "create_connection", _hard_fail("create_connection"))
+    monkeypatch.setattr(
+        flatten_productive_transport_v1,
+        "open_productive_flatten_urllib_post_v1",
+        _hard_fail("open_productive_flatten_urllib_post_v1"),
+    )
+    return attempts
 
 
 def _session_artifact() -> dict:
     return issue_owner_network_session_authority_v1(
-        explicit=current_section_11_14_network_session_explicit_v1(issued_at="2026-09-08T06:58:00Z")
+        explicit=current_section_11_14_network_session_explicit_v1(issued_at="2026-09-08T07:09:00Z")
     )["artifact"]
 
 
@@ -107,7 +123,7 @@ def _wire_send_artifact() -> dict:
         "authority_type": AUTHORITY_TYPE_OWNER_PRODUCTIVE_WIRE_SEND,
         "authority_source": AUTHORITY_SOURCE_CANONICAL_OWNER_PRODUCTIVE_WIRE_SEND,
         "issued": True,
-        "issued_at": "2026-09-08T06:58:00Z",
+        "issued_at": "2026-09-08T07:09:00Z",
         "section": "11.14",
         "purpose": PRODUCTIVE_WIRE_SEND_PURPOSE_EXPECTED,
         "action": PRODUCTIVE_WIRE_SEND_ACTION,
@@ -128,7 +144,7 @@ def _wire_send_artifact() -> dict:
     return payload
 
 
-def _bind(*, session: dict, wire: dict, inner: RecordingFakeProductiveSendInnerV1 | None = None):
+def _bind(*, session: dict, wire: dict, inner=None):
     return prepare_productive_transport_bind_send_capable_v1(
         origin_main_sha=BOUND_ORIGIN_MAIN_SHA,
         instrument_id=INSTRUMENT_ID,
@@ -175,7 +191,78 @@ def _permit(*, bind, session: dict, wire: dict) -> None:
     assert result["permitted"] is True
 
 
-def _ready_fake_bind():
+def _ready_real_bind():
+    session = _session_artifact()
+    wire = _wire_send_artifact()
+    bind = _bind(session=session, wire=wire, inner=None)
+    _authorize(bind=bind, session=session)
+    _arm(bind=bind, session=session, wire=wire)
+    _permit(bind=bind, session=session, wire=wire)
+    return session, wire, bind
+
+
+def test_all_predecessor_gates_true_missing_receipt_reaches_real_send(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    attempts = _install_network_hard_fail(monkeypatch)
+    session, wire, bind = _ready_real_bind()
+    real = bind.adapter.inner
+    assert isinstance(real, AuthenticatedGatedProductiveFlattenTransportV1)
+    assert real.network_session_authorized is True
+    assert bind.adapter.session_armed is True
+    assert bind.adapter.send_permitted is True
+    assert real._receipt is None
+    orch = run_productive_wire_send_orchestrator_v1(
+        bind=bind,
+        wire_send=wire,
+        network_session=session,
+        origin_main_sha=BOUND_ORIGIN_MAIN_SHA,
+        instrument_id=INSTRUMENT_ID,
+        exact_envelope_id=BOUND_FROZEN_ENVELOPE_ID,
+        session_armed=False,
+        body=BODY,
+    )
+    assert orch["PRODUCTIVE_INNER_SEND_INVOKED"] is True
+    assert orch["PRODUCTIVE_INNER_SEND_CALL_COUNT"] == 1
+    assert orch["REAL_PRODUCTIVE_TRANSPORT_INVOKED"] is True
+    assert orch["FAKE_INNER_SEND_REACHED"] is False
+    assert orch["FAKE_INNER_SEND_CALL_COUNT"] == 0
+    assert orch["FIRST_DENY"] == "RECEIPT_MISSING"
+    assert orch["RECEIPT_PRESENT"] is False
+    assert orch["HMAC_VALIDATION_REACHED"] is False
+    assert orch["LEASE_VALIDATION_REACHED"] is False
+    assert orch["LEASE_CONSUMED"] is False
+    assert orch["WIRE_SEND_AUTHORITY_ISSUED"] is True
+    assert orch["WIRE_SEND_AUTHORITY_ACCEPTED"] is True
+    assert orch["WIRE_SEND_AUTHORITY_CONSUMED"] is False
+    assert orch["NETWORK_SESSION_AUTHORIZED"] is True
+    assert orch["SESSION_ARMED"] is True
+    assert orch["SEND_PERMITTED"] is True
+    assert orch["INNER_SEND_EXECUTED"] is False
+    assert orch["REAL_INNER_SEND_EXECUTED"] is False
+    assert orch["WIRE_SEND_EXECUTED"] is False
+    assert orch["REAL_POST_COUNT"] == 0
+    assert orch["POST_COUNT"] == 0
+    assert orch["GET_PERFORMED"] is False
+    assert orch["REPRICE_EXECUTED"] is False
+    assert orch["DURABLE_CONSUMED"] is False
+    assert orch["OPEN_GATE_ORDER_POINTS"] == list(OPEN_GATE_ORDER_POINTS)
+    assert real.last_wire_attempted is False
+    assert real._sent is False
+    assert real._receipt is None
+    assert attempts == []
+    assert wire["consumed"] is False
+    assert LIVE_ENABLED is False
+    assert LIVE_ARMED is False
+    assert POST_ALLOWED is False
+    assert CANARY_AUTHORIZED is False
+    assert SESSION_ARMING_STANDING is False
+
+
+def test_fake_inner_is_not_the_source_of_receipt_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    attempts = _install_network_hard_fail(monkeypatch)
     session = _session_artifact()
     wire = _wire_send_artifact()
     inner = RecordingFakeProductiveSendInnerV1(network_session_authorized=False)
@@ -183,15 +270,6 @@ def _ready_fake_bind():
     _authorize(bind=bind, session=session)
     _arm(bind=bind, session=session, wire=wire)
     _permit(bind=bind, session=session, wire=wire)
-    return session, wire, inner, bind
-
-
-def test_all_gates_true_recording_fake_reaches_send_once(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    monkeypatch.setattr(urllib.request, "urlopen", _boom)
-    monkeypatch.setattr(socket, "create_connection", _boom)
-    session, wire, inner, bind = _ready_fake_bind()
     orch = run_productive_wire_send_orchestrator_v1(
         bind=bind,
         wire_send=wire,
@@ -203,38 +281,20 @@ def test_all_gates_true_recording_fake_reaches_send_once(
         body=BODY,
     )
     assert orch["FAKE_INNER_SEND_REACHED"] is True
-    assert orch["FAKE_INNER_SEND_CALL_COUNT"] == 1
-    assert len(inner.send_calls) == 1
-    request = inner.send_calls[0]
-    assert isinstance(request, LiveCanaryHttpRequestV1)
-    assert request.method == "POST"
-    assert request.host == "eea.okx.com"
-    assert request.endpoint == FLATTEN_HTTP_ENDPOINT
-    assert request.url == f"{REST_SCHEME_HOST}{FLATTEN_HTTP_ENDPOINT}"
-    assert request.headers == {}
-    assert "instId" in request.body_text
-    assert orch["REAL_INNER_SEND_EXECUTED"] is False
+    assert orch["PRODUCTIVE_INNER_SEND_INVOKED"] is False
+    assert orch["PRODUCTIVE_INNER_SEND_CALL_COUNT"] == 0
     assert orch["REAL_PRODUCTIVE_TRANSPORT_INVOKED"] is False
-    assert orch["WIRE_SEND_EXECUTED"] is False
-    assert orch["REAL_POST_COUNT"] == 0
-    assert orch["GET_PERFORMED"] is False
-    assert orch["REPRICE_EXECUTED"] is False
-    assert orch["DURABLE_CONSUMED"] is False
     assert orch["FIRST_DENY"] == "PRODUCTIVE_INNER_SEND_EXECUTION_NOT_AUTHORIZED"
-    assert orch["OPEN_GATE_ORDER_POINTS"] == list(OPEN_GATE_ORDER_POINTS)
-    assert wire["consumed"] is False
-    assert LIVE_ENABLED is False
-    assert LIVE_ARMED is False
-    assert POST_ALLOWED is False
-    assert CANARY_AUTHORIZED is False
-    assert SESSION_ARMING_STANDING is False
-    assert bind.adapter.inner_send_executed is False
+    assert orch["FIRST_DENY"] != "RECEIPT_MISSING"
+    assert attempts == []
 
 
-def test_invalid_wire_send_does_not_reach_fake_send(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(urllib.request, "urlopen", _boom)
-    monkeypatch.setattr(socket, "create_connection", _boom)
-    session, wire, inner, bind = _ready_fake_bind()
+def test_invalid_predecessor_gates_do_not_invoke_real_send(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    attempts = _install_network_hard_fail(monkeypatch)
+    session, wire, bind = _ready_real_bind()
+    real = bind.adapter.inner
     bad = dict(wire)
     bad["authority_id"] = "0" * 64
     orch = run_productive_wire_send_orchestrator_v1(
@@ -247,39 +307,60 @@ def test_invalid_wire_send_does_not_reach_fake_send(monkeypatch: pytest.MonkeyPa
         session_armed=False,
         body=BODY,
     )
-    assert orch["FAKE_INNER_SEND_REACHED"] is False
-    assert inner.send_calls == []
-    assert bind.adapter.fake_inner_send_reached is False
+    assert orch["PRODUCTIVE_INNER_SEND_INVOKED"] is False
+    assert orch["PRODUCTIVE_INNER_SEND_CALL_COUNT"] == 0
+    assert orch["REAL_PRODUCTIVE_TRANSPORT_INVOKED"] is False
+    assert orch["FIRST_DENY"] != "RECEIPT_MISSING"
+    assert real.last_wire_attempted is False
+    assert real._sent is False
+    assert attempts == []
 
 
-def test_consumed_authority_does_not_reach_fake_send(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(urllib.request, "urlopen", _boom)
-    monkeypatch.setattr(socket, "create_connection", _boom)
-    session, wire, inner, bind = _ready_fake_bind()
-    consumed = dict(wire)
-    consumed["consumed"] = True
-    orch = run_productive_wire_send_orchestrator_v1(
-        bind=bind,
-        wire_send=consumed,
-        network_session=session,
-        origin_main_sha=BOUND_ORIGIN_MAIN_SHA,
-        instrument_id=INSTRUMENT_ID,
-        exact_envelope_id=BOUND_FROZEN_ENVELOPE_ID,
-        session_armed=False,
-        body=BODY,
-    )
-    assert orch["FAKE_INNER_SEND_REACHED"] is False
-    assert orch["WIRE_SEND_AUTHORITY_CONSUMED"] is True
-    assert inner.send_calls == []
-    assert wire["consumed"] is False
-
-
-def test_unauthorized_inner_does_not_reach_fake_send(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(urllib.request, "urlopen", _boom)
-    monkeypatch.setattr(socket, "create_connection", _boom)
-    inner = RecordingFakeProductiveSendInnerV1(network_session_authorized=False)
+def test_send_permitted_false_does_not_invoke_real_send(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    attempts = _install_network_hard_fail(monkeypatch)
+    real = AuthenticatedGatedProductiveFlattenTransportV1()
     adapter = construct_productive_flatten_submit_send_adapter_v1(
-        inner=inner,
+        inner=real,
+        session_armed=True,
+        send_permitted=False,
+        wire_send_accepted=True,
+        session_accepted=True,
+    )
+    real.network_session_authorized = True
+    with pytest.raises(FlattenProductiveSendAdapterError, match="SEND_PERMITTED_FALSE"):
+        adapter.post(endpoint=FLATTEN_HTTP_ENDPOINT, body=BODY)
+    assert adapter.productive_inner_send_invoked is False
+    assert adapter.productive_inner_send_call_count == 0
+    assert real.last_wire_attempted is False
+    assert real._sent is False
+    assert attempts == []
+
+
+def test_unarmed_session_does_not_invoke_real_send(monkeypatch: pytest.MonkeyPatch) -> None:
+    attempts = _install_network_hard_fail(monkeypatch)
+    real = AuthenticatedGatedProductiveFlattenTransportV1()
+    adapter = construct_productive_flatten_submit_send_adapter_v1(
+        inner=real,
+        session_armed=False,
+        send_permitted=True,
+        wire_send_accepted=True,
+        session_accepted=True,
+    )
+    with pytest.raises(FlattenProductiveSendAdapterError, match="SESSION_NOT_ARMED"):
+        adapter.post(endpoint=FLATTEN_HTTP_ENDPOINT, body=BODY)
+    assert adapter.productive_inner_send_invoked is False
+    assert attempts == []
+
+
+def test_unauthorized_inner_does_not_invoke_real_send(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    attempts = _install_network_hard_fail(monkeypatch)
+    real = AuthenticatedGatedProductiveFlattenTransportV1()
+    adapter = construct_productive_flatten_submit_send_adapter_v1(
+        inner=real,
         session_armed=True,
         send_permitted=True,
         wire_send_accepted=True,
@@ -289,137 +370,12 @@ def test_unauthorized_inner_does_not_reach_fake_send(monkeypatch: pytest.MonkeyP
         FlattenProductiveSendAdapterError, match="PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED"
     ):
         adapter.post(endpoint=FLATTEN_HTTP_ENDPOINT, body=BODY)
-    assert inner.send_calls == []
-    assert adapter.fake_inner_send_reached is False
-
-
-def test_unarmed_session_does_not_reach_fake_send(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(urllib.request, "urlopen", _boom)
-    monkeypatch.setattr(socket, "create_connection", _boom)
-    inner = RecordingFakeProductiveSendInnerV1(network_session_authorized=True)
-    adapter = construct_productive_flatten_submit_send_adapter_v1(
-        inner=inner,
-        session_armed=False,
-        send_permitted=True,
-        wire_send_accepted=True,
-        session_accepted=True,
-    )
-    with pytest.raises(FlattenProductiveSendAdapterError, match="SESSION_NOT_ARMED"):
-        adapter.post(endpoint=FLATTEN_HTTP_ENDPOINT, body=BODY)
-    assert inner.send_calls == []
-    assert adapter.fake_inner_send_reached is False
-
-
-def test_send_permitted_false_does_not_reach_fake_send(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(urllib.request, "urlopen", _boom)
-    monkeypatch.setattr(socket, "create_connection", _boom)
-    inner = RecordingFakeProductiveSendInnerV1(network_session_authorized=True)
-    adapter = construct_productive_flatten_submit_send_adapter_v1(
-        inner=inner,
-        session_armed=True,
-        send_permitted=False,
-        wire_send_accepted=True,
-        session_accepted=True,
-    )
-    with pytest.raises(FlattenProductiveSendAdapterError, match="SEND_PERMITTED_FALSE"):
-        adapter.post(endpoint=FLATTEN_HTTP_ENDPOINT, body=BODY)
-    assert inner.send_calls == []
-    assert adapter.fake_inner_send_reached is False
-
-
-def test_bind_mismatch_does_not_reach_fake_send(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(urllib.request, "urlopen", _boom)
-    monkeypatch.setattr(socket, "create_connection", _boom)
-    session, wire, inner, bind = _ready_fake_bind()
-    orch = run_productive_wire_send_orchestrator_v1(
-        bind=bind,
-        wire_send=wire,
-        network_session=session,
-        origin_main_sha="deadbeef" * 5,
-        instrument_id=INSTRUMENT_ID,
-        exact_envelope_id=BOUND_FROZEN_ENVELOPE_ID,
-        session_armed=False,
-        body=BODY,
-    )
-    assert orch["FAKE_INNER_SEND_REACHED"] is False
-    assert inner.send_calls == []
-
-
-def test_malformed_request_provenance_does_not_reach_fake_send(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    monkeypatch.setattr(urllib.request, "urlopen", _boom)
-    monkeypatch.setattr(socket, "create_connection", _boom)
-    inner = RecordingFakeProductiveSendInnerV1(network_session_authorized=True)
-    adapter = construct_productive_flatten_submit_send_adapter_v1(
-        inner=inner,
-        session_armed=True,
-        send_permitted=True,
-        wire_send_accepted=True,
-        session_accepted=True,
-    )
-    with pytest.raises(FlattenProductiveSendAdapterError, match="REQUEST_BODY_MISSING"):
-        adapter.post(endpoint=FLATTEN_HTTP_ENDPOINT, body={})
-    assert inner.send_calls == []
-    assert adapter.fake_inner_send_reached is False
-    with pytest.raises(
-        FlattenProductiveSendAdapterError, match="REQUEST_BODY_NOT_JSON_SERIALIZABLE"
-    ):
-        adapter.post(endpoint=FLATTEN_HTTP_ENDPOINT, body={"instId": object()})
-    assert inner.send_calls == []
-    assert adapter.fake_inner_send_reached is False
-
-
-def test_real_productive_transport_send_stops_at_receipt_missing(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    monkeypatch.setattr(urllib.request, "urlopen", _boom)
-    monkeypatch.setattr(socket, "create_connection", _boom)
-    session = _session_artifact()
-    wire = _wire_send_artifact()
-    bind = _bind(session=session, wire=wire, inner=None)
-    assert isinstance(bind.adapter.inner, AuthenticatedGatedProductiveFlattenTransportV1)
-    _authorize(bind=bind, session=session)
-    _arm(bind=bind, session=session, wire=wire)
-    _permit(bind=bind, session=session, wire=wire)
-    real = bind.adapter.inner
-    assert real.network_session_authorized is True
-    assert real._receipt is None
-    orch = run_productive_wire_send_orchestrator_v1(
-        bind=bind,
-        wire_send=wire,
-        network_session=session,
-        origin_main_sha=BOUND_ORIGIN_MAIN_SHA,
-        instrument_id=INSTRUMENT_ID,
-        exact_envelope_id=BOUND_FROZEN_ENVELOPE_ID,
-        session_armed=False,
-        body=BODY,
-    )
-    assert orch["FAKE_INNER_SEND_REACHED"] is False
-    assert orch["PRODUCTIVE_INNER_SEND_INVOKED"] is True
-    assert orch["PRODUCTIVE_INNER_SEND_CALL_COUNT"] == 1
-    assert orch["REAL_PRODUCTIVE_TRANSPORT_INVOKED"] is True
-    assert orch["REAL_INNER_SEND_EXECUTED"] is False
-    assert orch["FIRST_DENY"] == "RECEIPT_MISSING"
-    assert orch["RECEIPT_PRESENT"] is False
-    assert orch["HMAC_VALIDATION_REACHED"] is False
-    assert orch["LEASE_VALIDATION_REACHED"] is False
-    assert orch["LEASE_CONSUMED"] is False
-    assert real.last_wire_attempted is False
-    assert real._sent is False
-    assert real._receipt is None
-    assert orch["REAL_POST_COUNT"] == 0
-    assert orch["WIRE_SEND_EXECUTED"] is False
-    assert orch["GET_PERFORMED"] is False
-    assert orch["REPRICE_EXECUTED"] is False
-    assert orch["DURABLE_CONSUMED"] is False
-    assert orch["WIRE_SEND_AUTHORITY_CONSUMED"] is False
-    assert wire["consumed"] is False
+    assert adapter.productive_inner_send_invoked is False
+    assert attempts == []
 
 
 def test_historical_no_send_adapter_remains_no_send(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(urllib.request, "urlopen", _boom)
-    monkeypatch.setattr(socket, "create_connection", _boom)
+    attempts = _install_network_hard_fail(monkeypatch)
     adapter = construct_productive_flatten_submit_adapter_v1()
     with pytest.raises(FlattenProductiveTransportAdapterError, match="NETWORK_SESSION_NOT"):
         adapter.post(endpoint=FLATTEN_HTTP_ENDPOINT, body=BODY)
@@ -429,36 +385,27 @@ def test_historical_no_send_adapter_remains_no_send(monkeypatch: pytest.MonkeyPa
     src = NO_SEND_ADAPTER_SRC.read_text(encoding="utf-8")
     assert "inner.send" not in src
     assert "urlopen" not in src
+    assert attempts == []
 
 
-def test_productive_send_first_deny_is_receipt_missing_before_urllib() -> None:
+def test_receipt_missing_precedes_hmac_lease_and_urllib_in_source() -> None:
     text = REAL_TRANSPORT_SRC.read_text(encoding="utf-8")
     class_at = text.find("class AuthenticatedGatedProductiveFlattenTransportV1")
     send_at = text.find("def send(self, request: LiveCanaryHttpRequestV1)", class_at)
+    last_wire_reset = text.find("self.last_wire_attempted = False", send_at)
     receipt_at = text.find("_require_typed_gate_receipt(self._receipt)", send_at)
     hmac_at = text.find("assert_authenticated_productive_headers_v1", send_at)
-    urllib_at = text.find("open_productive_flatten_urllib_post_v1", send_at)
+    lease_at = text.find("_consume_receipt_lease(receipt)", send_at)
+    last_wire_true = text.find("self.last_wire_attempted = True", send_at)
+    urllib_import_at = text.find("open_productive_flatten_urllib_post_v1", send_at)
+    urllib_call_at = text.find("open_productive_flatten_urllib_post_v1(request)", last_wire_true)
     assert class_at >= 0
     assert send_at > class_at
-    assert receipt_at > send_at
+    assert last_wire_reset > send_at
+    assert receipt_at > last_wire_reset
     assert hmac_at > receipt_at
-    assert urllib_at > hmac_at
+    assert lease_at > hmac_at
+    assert urllib_import_at > lease_at
+    assert last_wire_true > urllib_import_at
+    assert urllib_call_at > last_wire_true
     assert '"RECEIPT_MISSING"' in text
-
-
-def test_adapter_calls_real_send_then_maps_receipt_missing() -> None:
-    text = ADAPTER_SRC.read_text(encoding="utf-8")
-    real_gate = text.find("isinstance(self.inner, AuthenticatedGatedProductiveFlattenTransportV1)")
-    send_at = text.find("self.inner.send(request)", real_gate)
-    refuse_unknown = text.find(
-        "PRODUCTIVE_INNER_SEND_EXECUTION_NOT_AUTHORIZED",
-        send_at,
-    )
-    assert real_gate >= 0
-    assert send_at > real_gate
-    assert refuse_unknown > send_at
-    assert "LiveCanaryFlattenProductiveTransportError" in text
-    assert "urlopen" not in text
-    assert "httpx" not in text
-    assert "requests" not in text
-    assert "open_productive_flatten_urllib_post_v1" not in text

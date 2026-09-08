@@ -1,9 +1,10 @@
-"""Send-capable flatten submit adapter. Fake inner.send only.
+"""Send-capable flatten submit adapter.
 
 Bridges harness post(endpoint, body) to LiveCanaryHttpRequestV1 then
-RecordingFakeProductiveSendInnerV1.send. Never invokes
-AuthenticatedGatedProductiveFlattenTransportV1.send. Distinct from
-ConstructiveProductiveFlattenSubmitAdapterV1.
+inner.send. Fake inner remains RecordingFakeProductiveSendInnerV1.
+Productive AuthenticatedGatedProductiveFlattenTransportV1.send may be
+invoked with a receipt-missing request and must fail-closed at
+RECEIPT_MISSING. Distinct from ConstructiveProductiveFlattenSubmitAdapterV1.
 """
 
 from __future__ import annotations
@@ -18,6 +19,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.authenticated_produ
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     ENDPOINT_SUBMIT,
     REUSED_BINDING_REST_HOST,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_productive_transport_v1 import (
+    LiveCanaryFlattenProductiveTransportError,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
     LiveCanaryHttpRequestV1,
@@ -48,7 +52,7 @@ class ProductiveSendInnerV1(Protocol):
     network_session_authorized: bool
 
     def send(self, request: object) -> object:
-        """Invoked only on RecordingFakeProductiveSendInnerV1 in this WP."""
+        """Invoked on fake inner or receipt-missing productive send."""
 
 
 @dataclass
@@ -144,7 +148,7 @@ def build_live_canary_http_request_from_adapter_post_v1(
 
 
 class ProductiveFlattenSubmitSendAdapterV1:
-    """Harness post() shape. Fake inner.send only. Never calls productive send."""
+    """Harness post() shape. May call productive send; does not mint a receipt."""
 
     def __init__(
         self,
@@ -166,6 +170,8 @@ class ProductiveFlattenSubmitSendAdapterV1:
         self.session_accepted = session_accepted
         self.inner_send_executed = False
         self.fake_inner_send_reached = False
+        self.productive_inner_send_invoked = False
+        self.productive_inner_send_call_count = 0
 
     def post(self, *, endpoint: str, body: Mapping[str, Any]) -> Mapping[str, Any]:
         path = str(endpoint or "").split("?", 1)[0]
@@ -185,6 +191,7 @@ class ProductiveFlattenSubmitSendAdapterV1:
             "body": dict(body),
             "inner_send_invoked": False,
             "FAKE_INNER_SEND_REACHED": False,
+            "PRODUCTIVE_INNER_SEND_INVOKED": False,
             "REQUEST_HEADERS_UNSIGNED": True,
         }
         if self.wire_send_accepted is not True:
@@ -209,9 +216,22 @@ class ProductiveFlattenSubmitSendAdapterV1:
         self.prepared["body_text"] = request.body_text
         self.prepared["timeout_seconds"] = request.timeout_seconds
         if isinstance(self.inner, AuthenticatedGatedProductiveFlattenTransportV1):
-            raise FlattenProductiveSendAdapterError(
-                "PRODUCTIVE_INNER_SEND_EXECUTION_NOT_AUTHORIZED"
-            )
+            try:
+                self.inner.send(request)
+            except LiveCanaryFlattenProductiveTransportError as exc:
+                self.productive_inner_send_invoked = True
+                self.productive_inner_send_call_count += 1
+                self.prepared["inner_send_invoked"] = True
+                self.prepared["PRODUCTIVE_INNER_SEND_INVOKED"] = True
+                self.prepared["FAKE_INNER_SEND_REACHED"] = False
+                self.inner_send_executed = False
+                raise FlattenProductiveSendAdapterError(str(exc)) from exc
+            self.productive_inner_send_invoked = True
+            self.productive_inner_send_call_count += 1
+            self.prepared["inner_send_invoked"] = True
+            self.prepared["PRODUCTIVE_INNER_SEND_INVOKED"] = True
+            self.inner_send_executed = False
+            raise FlattenProductiveSendAdapterError("PRODUCTIVE_INNER_SEND_RETURNED_WITHOUT_DENY")
         if not isinstance(self.inner, RecordingFakeProductiveSendInnerV1):
             raise FlattenProductiveSendAdapterError(
                 "PRODUCTIVE_INNER_SEND_EXECUTION_NOT_AUTHORIZED"

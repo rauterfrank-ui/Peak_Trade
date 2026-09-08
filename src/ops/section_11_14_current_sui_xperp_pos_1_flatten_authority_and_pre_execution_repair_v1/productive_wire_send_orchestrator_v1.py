@@ -1,14 +1,18 @@
 """Productive wire-send orchestrator. Consumes evaluator results.
 
 May reach RecordingFakeProductiveSendInnerV1.send after send_permitted.
-Does not invoke AuthenticatedGatedProductiveFlattenTransportV1.send.
-Does not consume. Does not HTTP POST.
+May invoke AuthenticatedGatedProductiveFlattenTransportV1.send with a
+receipt-missing request and must stop at RECEIPT_MISSING. Does not
+consume. Does not HTTP POST.
 """
 
 from __future__ import annotations
 
 from typing import Any, Mapping
 
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.authenticated_productive_transport_v1 import (
+    AuthenticatedGatedProductiveFlattenTransportV1,
+)
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.constants_v1 import (
     FLATTEN_HTTP_ENDPOINT,
 )
@@ -64,7 +68,7 @@ def run_productive_wire_send_orchestrator_v1(
     endpoint: str = FLATTEN_HTTP_ENDPOINT,
     body: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Evaluate gates in order. Fake inner.send only. Does not consume."""
+    """Evaluate gates in order. Fake send or receipt-missing productive send. Does not consume."""
     if LIVE_ENABLED or LIVE_ARMED or CANARY_AUTHORIZED or POST_ALLOWED:
         raise ProductiveWireSendOrchestratorError("STANDING_LIVE_FLAG_MUST_REMAIN_FALSE")
     gate_order: list[str] = []
@@ -123,6 +127,9 @@ def run_productive_wire_send_orchestrator_v1(
     prepared: Mapping[str, Any] | None = None
     fake_reached = False
     fake_call_count = 0
+    productive_invoked = False
+    productive_call_count = 0
+    receipt_present = False
     if bind is not None and not reasons:
         bind.adapter.wire_send_accepted = wire_verdict.get("accepted") is True
         bind.adapter.session_accepted = session_verdict.get("accepted") is True
@@ -138,9 +145,13 @@ def run_productive_wire_send_orchestrator_v1(
             reasons.append(adapter_error)
         prepared = bind.adapter.prepared
         fake_reached = bind.adapter.fake_inner_send_reached is True
+        productive_invoked = bind.adapter.productive_inner_send_invoked is True
+        productive_call_count = int(bind.adapter.productive_inner_send_call_count or 0)
         inner = bind.adapter.inner
         if isinstance(inner, RecordingFakeProductiveSendInnerV1):
             fake_call_count = len(inner.send_calls)
+        if isinstance(inner, AuthenticatedGatedProductiveFlattenTransportV1):
+            receipt_present = inner._receipt is not None
         if bind.adapter.inner_send_executed is True:
             reasons.append("INNER_SEND_MUST_REMAIN_UNEXECUTED")
 
@@ -164,8 +175,14 @@ def run_productive_wire_send_orchestrator_v1(
         "INNER_SEND_EXECUTED": False,
         "FAKE_INNER_SEND_REACHED": fake_reached,
         "FAKE_INNER_SEND_CALL_COUNT": fake_call_count,
-        "REAL_PRODUCTIVE_TRANSPORT_INVOKED": False,
+        "PRODUCTIVE_INNER_SEND_INVOKED": productive_invoked,
+        "PRODUCTIVE_INNER_SEND_CALL_COUNT": productive_call_count,
+        "REAL_PRODUCTIVE_TRANSPORT_INVOKED": productive_invoked,
         "REAL_INNER_SEND_EXECUTED": False,
+        "RECEIPT_PRESENT": receipt_present,
+        "HMAC_VALIDATION_REACHED": False,
+        "LEASE_VALIDATION_REACHED": False,
+        "LEASE_CONSUMED": False,
         "GET_PERFORMED": False,
         "REPRICE_EXECUTED": False,
         "WIRE_SEND_EXECUTED": False,
