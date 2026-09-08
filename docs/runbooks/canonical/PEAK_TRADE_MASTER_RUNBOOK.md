@@ -73188,6 +73188,161 @@ Hard stop. Fresh Pre-Submit GET is executed and adjudicated.
 **not** reprice, HMAC, POST, wire-send, consume, attach a receipt,
 flatten, or merge from this persist.
 
+The historical FRESH_PRE_SUBMIT_GET next pointer
+`ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND` is **consumed** only as the
+envelope reprice &#47; freshness-at-send persist below
+(§11.14.ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND). That successor
+rebuilds a Flatten SELL envelope from fresh producer GETs. It does
+**not** mint a receipt, does **not** HMAC-sign a POST, does **not**
+HTTP POST, and does **not** decide
+`RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER`.
+
+### 11.14 ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND (BOUND; SEVEN PRODUCER GETS; ENVELOPE REBUILT; NO POST; SECTION 11.14 NOT COMPLETE)
+
+Additive persist. Does **not** rewrite the persist fields above. Does
+**not** mint, bind, or attach a receipt. Does **not** HMAC-sign a POST.
+Does **not** consume durable state. Does **not** decide
+`RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER`. Does **not** mutate
+standing Live gates. Does **not** mark §11.14 complete.
+`ConstructiveProductiveFlattenSubmitAdapterV1` remains NO_SEND.
+
+Census (`ADJUDICATED`): Envelope producer is
+`build_flatten_sell_envelope_v1`. Identity is a SHA-256 of identity
+fields; there is no in-place mutation. Price permit is quote-locked
+LIMIT from `evaluate_canary_flatten_limit_price_contract_v1`: SELL
+selects BID, round down to `tickSz`, freshness 5000 ms, no extra
+deviation collar. Price-band is fresh `sellLmt` from
+`GET &#47;api&#47;v5&#47;public&#47;price-limit` (`px >= sellLmt`).
+Alternative freshness-at-send predicate is `VALID_WITH_FRESH_GET` when
+computed LIMIT equals frozen LIMIT. Required GETs are the producer
+inputs: instruments, ticker, price-limit, positions, trade-fee,
+max-size at the computed LIMIT, and orders-pending. Historical frozen
+values are not reused as fresh.
+
+Fresh GET observation (`ADJUDICATED`): `pos=1`. Bid `0.8185` ask
+`0.8189`. Quantized SELL LIMIT `0.8185`. Frozen envelope LIMIT
+`0.8343`. Fresh `sellLmt=0.8145`. Fresh `maxSell=9`.
+`ENVELOPE_FRESHNESS_STATUS=REPRICE_REQUIRED`. Rebuild produced new
+envelope id
+`0a0133a3b82e4a15bf6986605a9a8e6b47b22665b485ff0f570200803f21cdbe`
+bound to `origin&#47;main=8b1fa60b9256ad28656946ac08d271b35d9fe602`
+and ticker `ts=1788857375964`.
+`ENVELOPE_FRESHNESS_STATUS_AFTER=VALID_WITH_FRESH_GET`.
+`REPRICE_EXECUTED=true`. Producer `allowed=false` because this GO does
+not authorize live&#47;flatten claims. Send first deny remains
+`RECEIPT_MISSING`.
+
+``` text
+OWNER_GO=ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND
+OWNER_GO_STATUS=CONSUMED_ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND_REBUILT_NO_POST
+OWNER_GO_CONSUMED=false
+AUTHORIZATION_PRESENT=true_for_envelope_reprice_or_freshness_at_send_only
+AUTHORITY_CLASS=R1_ENVELOPE_REPRICE_REBUILT_NO_POST
+RISK_CLASS=R1_GET_ONLY_NO_SUBMIT_NO_VENUE_MUTATION
+PERSIST_CLASS=SECTION_11_14_ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND_SSOT_PERSIST
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+ATLAS_AUTHORITY=NONE
+CHAT_TRANSCRIPT_AUTHORITY=NONE
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=8b1fa60b9256ad28656946ac08d271b35d9fe602
+EXPECTED_ORIGIN_MAIN_SHA=8b1fa60b9256ad28656946ac08d271b35d9fe602
+BOUND_ENVELOPE_ORIGIN_MAIN_SHA=565cee16783ba0a3f1aea606626bf6418bad21e8
+PREDECESSOR_SLICE=11.14.FRESH_PRE_SUBMIT_GET_AND_FRESHNESS_ADJUDICATION
+THIS_SLICE=11.14.ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND
+CURRENT_PHASE=11.14.ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND
+CURRENT_CANONICAL_SECTION=11.14.ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND
+LAST_CANONICALLY_CLOSED_STEP=SECTION_11_14_ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+REPRICE_CONTRACT_STATUS=DEFINED
+REPRICE_ALGORITHM_SOURCE=evaluate_canary_flatten_limit_price_contract_v1+build_flatten_sell_envelope_v1
+ROUNDING_RULE=SELL_ROUND_DOWN_TO_TICK
+PRICE_BAND_RULE=LIMIT_PX_MUST_BE_GTE_FRESH_SELL_LMT
+FRESH_GET_REQUIRED=true
+GET_PERFORMED=true
+GET_CALL_COUNT=7
+GET_SUCCESS_COUNT=7
+GET_TIMEOUT_COUNT=0
+POSITION_VALUE=1
+POSITION_STATE=TARGET_POSITION_NONZERO_PROVEN
+QUOTE_BID=0.8185
+QUOTE_ASK=0.8189
+QUOTE_TS_MS=1788857375964
+QUOTE_TICK_SZ=0.0001
+COMPUTED_LIMIT_PX=0.8185
+FRESH_SELL_LMT=0.8145
+FRESH_MAX_SELL=9
+FROZEN_LIMIT_PX=0.8343
+OLD_ENVELOPE_ID=76f0ad245070206d7fe8807fca8d130dbdedbdc3969e7ba42f23ca88901c164a
+NEW_ENVELOPE_ID=0a0133a3b82e4a15bf6986605a9a8e6b47b22665b485ff0f570200803f21cdbe
+NEW_LIMIT_PRICE=0.8185
+ENVELOPE_FRESHNESS_STATUS=REPRICE_REQUIRED
+ENVELOPE_FRESHNESS_STATUS_AFTER=VALID_WITH_FRESH_GET
+REPRICE_REQUIRED=true
+REPRICE_EXECUTED=true
+ENVELOPE_REBUILD_EXECUTED=true
+HISTORICAL_VALUES_REUSED_AS_FRESH=false
+RECEIPT_MINTED=false
+RECEIPT_BOUND=false
+RECEIPT_ATTACHED=false
+RECEIPT_ALLOWED=false
+HMAC_EXECUTED=false
+HMAC_HEADER_GENERATED=false
+LEASE_CONSUMED=false
+POST_PERFORMED=false
+HTTP_POST_EXECUTED=false
+PRODUCTIVE_URLLIB_POST_EXECUTED=false
+WIRE_SEND_EXECUTED=false
+FLATTEN_EXECUTED=false
+DURABLE_CONSUMED=false
+POSITION_MUTATION_EXECUTED=false
+REAL_POST_COUNT=0
+SUBMIT_ATTEMPT_COUNT=0
+OWNER_EXECUTION_AUTHORIZED=false
+FLATTEN_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+CANARY_AUTHORIZED=false
+POST_ALLOWED=false
+GATE_ORDER_STATUS=PARTIAL_PROVEN_WITH_OPEN_POINTS
+OPEN_GATE_ORDER_POINTS=RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER;DURABLE_CONSUME_SUCCESS_OBJECT
+OPEN_GATE_ORDER_BLOCKER=RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER
+CURRENT_CANONICAL_BOUNDARY=RECEIPT_MISSING
+EARLIEST_UNRESOLVED_RUNTIME_GATE=RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER
+NEXT_OWNER_AUTHORITY_REQUIRED=RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER
+NEXT_SLICE_AUTHORIZED=false
+CASE_ADJUDICATION=CASE_A_ENVELOPE_REPRICED_FRESH_AT_SEND
+```
+
+A. GET. Seven producer GETs. GET-only client. POST hard-blocked.
+Place-order GET hard-blocked. GET-auth signer refuses POST.
+
+B. Reprice. Frozen LIMIT `0.8343` is not quote-locked to current BID
+`0.8185`. Full rebuild. New envelope identity. No in-place mutation.
+
+C. Non-execution. `RECEIPT_ATTACHED=false`. `POST_PERFORMED=false`.
+`HMAC_EXECUTED=false`. `WIRE_SEND_EXECUTED=false`.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/
+SPEC_OWNER=docs/ops/specs/SECTION_11_14_ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND_V1.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_14
+CURRENT_CANONICAL_SECTION=11.14.ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND
+HARD_STOP_AFTER_THIS_TASK=true
+HARD_STOP=true
+```
+
+Hard stop. Envelope reprice &#47; freshness-at-send is executed and
+adjudicated. `REPRICE_EXECUTED=true`.
+`ENVELOPE_FRESHNESS_STATUS_AFTER=VALID_WITH_FRESH_GET`.
+`SECTION_11_14_AUTHORIZED=false`. `SECTION_11_14_COMPLETE=false`. Do
+**not** mint a receipt, HMAC, POST, wire-send, consume, flatten, or
+merge from this persist.
+
 ## 11.15 Full-autonomy observability and audit trail
 
 The autonomous runtime must expose enough telemetry for oversight without

@@ -2560,6 +2560,29 @@ entities:
       NO_SEND adapter unchanged. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: PHASE:section_11_14_envelope_reprice_or_freshness_at_send
+    kind: PHASE
+    name: 11.14.ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/envelope_reprice_or_freshness_at_send_v1.py
+      - tests/ops/test_section_11_14_envelope_reprice_or_freshness_at_send_v1.py
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/SECTION_11_14_ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND_V1.md
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - tests/ops/test_section_11_14_envelope_reprice_or_freshness_at_send_v1.py
+      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
+      - evidence/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/20260908T084936Z_envelope_reprice_or_freshness_at_send_v1
+    notes: >-
+      §11.14 envelope reprice or freshness-at-send. Seven producer GETs
+      executed. Position pos=1. Quote bid=0.8185. Frozen LIMIT 0.8343
+      rebuilt to 0.8185. REPRICE_EXECUTED=true. No POST. No HMAC POST.
+      No receipt mint/bind/attach. NO_SEND adapter unchanged. Atlas is
+      not trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
     name: Route-C create-path blocker census v1

@@ -1,0 +1,18 @@
+{
+  "DURABLE_CONSUMED": false,
+  "HMAC_EXECUTED": false,
+  "HMAC_HEADER_GENERATED": false,
+  "HTTP_POST_EXECUTED": false,
+  "LEASE_CONSUMED": false,
+  "METHODS_USED": [
+    "GET"
+  ],
+  "POSITION_MUTATION": false,
+  "PRODUCTIVE_URLLIB_POST_EXECUTED": false,
+  "REAL_POST_COUNT": 0,
+  "RECEIPT_ATTACHED": false,
+  "RECEIPT_BOUND": false,
+  "RECEIPT_MINTED": false,
+  "WIRE_SEND_EXECUTED": false,
+  "WRITE_REQUEST_COUNT": 0
+}
