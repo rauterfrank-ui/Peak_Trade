@@ -77,17 +77,20 @@ Synchronous order inside
    secret verification)
 5. signing-component / host / endpoint allowlist
 6. duplicate-post / lease-consumed check
-7. `_consume_receipt_lease(receipt)` then `self._sent = True`
-8. `network_session_authorized`
-9. `assert_productive_flatten_post_request_v1`
+7. `network_session_authorized`
+8. `assert_productive_flatten_post_request_v1`
+9. `_consume_receipt_lease(receipt)` then `self._sent = True`
 10. `self.last_wire_attempted = True`
 11. `open_productive_flatten_urllib_post_v1(request)` — first network I/O
 
-`ADJUDICATED`: `RECEIPT_MISSING` is before HMAC header presence, lease
-consume, urllib, socket, and HTTP POST. The only write before the receipt
-check is `last_wire_attempted = False`. On a fresh instance that is
-False→False. Classified as a trivial fail-closed reset, not a network-capable
-side effect.
+`ADJUDICATED`: `RECEIPT_MISSING` and HMAC header presence remain before
+lease consume, urllib, socket, and HTTP POST. Local pre-wire session and
+POST-allowlist denies also precede lease consume and `_sent=True`. The
+only write before the receipt check is `last_wire_attempted = False`.
+On a fresh instance that is False→False. Classified as a trivial
+fail-closed reset, not a network-capable side effect. This forensic
+census follows the repaired source order; it does not rewrite the
+historical persist fields above.
 
 ## B. Receipt census (`FORENSIC_RAW`; not minted)
 

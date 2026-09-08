@@ -439,10 +439,11 @@ class RecordingAuthenticatedProductiveFlattenTransportV1:
 class AuthenticatedGatedProductiveFlattenTransportV1:
     """Authenticated productive flatten transport.
 
-    Reuses the gated flatten identity/lease contract. HMAC header presence is
-    required before urllib would open. Urllib opens only when the instance
-    ``network_session_authorized`` flag is independently True. This class
-    never sets that flag true and never invents a signing ontology.
+    Reuses the gated flatten identity/lease contract. HMAC header presence
+    and local pre-wire denies including ``network_session_authorized`` run
+    before lease consume and ``_sent=True``. Urllib opens only after those
+    gates. This class never sets that flag true and never invents a signing
+    ontology. HMAC header generation is not performed here.
     """
 
     is_productive_flatten_transport: bool = True
@@ -462,6 +463,7 @@ class AuthenticatedGatedProductiveFlattenTransportV1:
     def send(self, request: LiveCanaryHttpRequestV1) -> LiveCanaryHttpResponseV1:
         from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_productive_transport_v1 import (
             LiveCanaryFlattenProductiveTransportError,
+            assert_productive_flatten_post_request_v1,
             assert_request_matches_flatten_receipt_v1,
         )
 
@@ -482,14 +484,14 @@ class AuthenticatedGatedProductiveFlattenTransportV1:
             )
         if self._sent or receipt.send_lease.consumed:
             raise LiveCanaryFlattenProductiveTransportError("DUPLICATE_POST_FORBIDDEN")
-        _consume_receipt_lease(receipt)
-        self._sent = True
         if not self.network_session_authorized:
             raise LiveCanaryFlattenProductiveTransportError(
                 "PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED"
             )
+        assert_productive_flatten_post_request_v1(request)
+        _consume_receipt_lease(receipt)
+        self._sent = True
         from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_productive_transport_v1 import (
-            assert_productive_flatten_post_request_v1,
             open_productive_flatten_urllib_post_v1,
         )
         from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
@@ -498,7 +500,6 @@ class AuthenticatedGatedProductiveFlattenTransportV1:
         )
         from urllib.error import URLError
 
-        assert_productive_flatten_post_request_v1(request)
         self.last_wire_attempted = True
         try:
             return open_productive_flatten_urllib_post_v1(request)

@@ -2,12 +2,13 @@
 
 Distinct from RecordingFakeCanaryTransportV1 and UrllibLiveCanaryTransportV1.
 Default: no network session. Send requires a typed passing pre-send receipt
-whose approved request identity matches the wire request. Urllib opens only
-after that identity check, one-shot lease consumption, and an independently
-true network_session_authorized flag. This module never sets that flag true.
-Authenticated OKX header construction is not wired here.
-open_productive_flatten_urllib_post_v1 is an internal POST opener, not
-trading authorization.
+whose approved request identity matches the wire request. Local pre-wire
+denies (receipt, identity, duplicate, network_session_authorized, POST
+allowlist) run before one-shot lease consumption and `_sent=True`. Urllib
+opens only after those gates and after lease consume. This module never
+sets network_session_authorized true. Authenticated OKX header
+construction is not wired here. open_productive_flatten_urllib_post_v1 is
+an internal POST opener, not trading authorization.
 """
 
 from __future__ import annotations
@@ -285,8 +286,9 @@ class GatedProductiveFlattenTransportV1:
     """Productive flatten transport. Network session defaults unauthorized.
 
     This class never sets network_session_authorized true. Urllib opens only
-    when that flag is independently True after a passing receipt and one-shot
-    protection. Request signing is not performed here.
+    when that flag is independently True after a passing receipt, local
+    pre-wire denies, and one-shot lease consume. Request signing is not
+    performed here.
     """
 
     is_productive_flatten_transport: bool = True
@@ -307,13 +309,13 @@ class GatedProductiveFlattenTransportV1:
         assert_request_matches_flatten_receipt_v1(receipt, request)
         if self._sent or receipt.send_lease.consumed:
             raise LiveCanaryFlattenProductiveTransportError("DUPLICATE_POST_FORBIDDEN")
-        _consume_receipt_lease(receipt)
-        self._sent = True
         if not self.network_session_authorized:
             raise LiveCanaryFlattenProductiveTransportError(
                 "PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED"
             )
         assert_productive_flatten_post_request_v1(request)
+        _consume_receipt_lease(receipt)
+        self._sent = True
         self.last_wire_attempted = True
         try:
             return open_productive_flatten_urllib_post_v1(request)

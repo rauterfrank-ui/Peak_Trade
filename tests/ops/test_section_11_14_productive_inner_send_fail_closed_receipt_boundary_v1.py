@@ -395,7 +395,9 @@ def test_receipt_missing_precedes_hmac_lease_and_urllib_in_source() -> None:
     last_wire_reset = text.find("self.last_wire_attempted = False", send_at)
     receipt_at = text.find("_require_typed_gate_receipt(self._receipt)", send_at)
     hmac_at = text.find("assert_authenticated_productive_headers_v1", send_at)
+    session_at = text.find("if not self.network_session_authorized:", send_at)
     lease_at = text.find("_consume_receipt_lease(receipt)", send_at)
+    sent_at = text.find("self._sent = True", send_at)
     last_wire_true = text.find("self.last_wire_attempted = True", send_at)
     urllib_import_at = text.find("open_productive_flatten_urllib_post_v1", send_at)
     urllib_call_at = text.find("open_productive_flatten_urllib_post_v1(request)", last_wire_true)
@@ -404,7 +406,9 @@ def test_receipt_missing_precedes_hmac_lease_and_urllib_in_source() -> None:
     assert last_wire_reset > send_at
     assert receipt_at > last_wire_reset
     assert hmac_at > receipt_at
-    assert lease_at > hmac_at
+    assert session_at > hmac_at
+    assert lease_at > session_at
+    assert sent_at > lease_at
     assert urllib_import_at > lease_at
     assert last_wire_true > urllib_import_at
     assert urllib_call_at > last_wire_true
