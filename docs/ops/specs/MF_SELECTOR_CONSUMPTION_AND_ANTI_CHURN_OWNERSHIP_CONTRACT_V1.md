@@ -149,8 +149,8 @@ PORTFOLIO_SELECTION_NODE=OUT_OF_CORE_MODEL
 
 `PORTFOLIO_SELECTION_CLASSIFICATION=P2_ALIAS_OR_PART_OF_SELECTOR` means
 the historical term maps to the selector's membership-proposal role.
-It does **not** ratify a portfolio-selection capability, `src&#47;portfolio`
-semantics, or Global Portfolio Risk.
+It does **not** ratify a portfolio-selection capability,
+`SRC_PORTFOLIO_SEMANTICS_AUTHORITY`, or Global Portfolio Risk.
 
 `TOP5_STATUS=POSSIBLE_CONFIGURATION_ONLY` is **not** `N=5` ratification.
 Silence remains not `N=5`.
