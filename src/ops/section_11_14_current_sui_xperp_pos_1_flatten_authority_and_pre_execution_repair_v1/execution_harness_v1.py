@@ -41,13 +41,22 @@ from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_exe
     POSITION_RECON_NOT_EXECUTED,
     evaluate_flatten_position_recon_v1,
 )
+from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.productive_flatten_submit_send_adapter_v1 import (
+    ProductiveFlattenSubmitSendAdapterV1,
+)
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.productive_transport_adapter_v1 import (
     ConstructiveProductiveFlattenSubmitAdapterV1,
     construct_productive_flatten_submit_adapter_v1,
 )
+from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.productive_transport_bind_send_capable_v1 import (
+    ProductiveTransportBindSendCapableV1,
+)
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.productive_transport_bind_v1 import (
     ProductiveTransportBindV1,
     assert_productive_transport_bind_no_send_v1,
+)
+from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.productive_wire_send_orchestrator_v1 import (
+    run_productive_wire_send_orchestrator_v1,
 )
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.wrapper_v1 import (
     FlattenSubmitTransportV1,
@@ -177,7 +186,9 @@ def run_flatten_execution_harness_v1(
     frozen_evidence_root: str = "",
     issuance: Mapping[str, Any] | None = None,
     productive_bind: ProductiveTransportBindV1 | None = None,
+    send_capable_bind: ProductiveTransportBindSendCapableV1 | None = None,
     network_session: Mapping[str, Any] | None = None,
+    wire_send: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Orchestrate flatten execution gates. Default dry-run produces zero POSTs."""
     flags = _standing_flags()
@@ -189,6 +200,7 @@ def run_flatten_execution_harness_v1(
         session_armed = False
         transport = None
         productive_bind = None
+        send_capable_bind = None
         positions_get_performed = False
         positions_payload = None
     if session_armed is True and SESSION_ARMING_STANDING is True:
@@ -199,8 +211,16 @@ def run_flatten_execution_harness_v1(
         raise FlattenExecutionHarnessError(
             "PRODUCTIVE_BIND_AND_SUBMIT_TRANSPORT_MUTUALLY_EXCLUSIVE"
         )
+    if send_capable_bind is not None and transport is not None:
+        raise FlattenExecutionHarnessError(
+            "SEND_CAPABLE_BIND_AND_SUBMIT_TRANSPORT_MUTUALLY_EXCLUSIVE"
+        )
+    if productive_bind is not None and send_capable_bind is not None:
+        raise FlattenExecutionHarnessError("NO_SEND_BIND_AND_SEND_CAPABLE_BIND_MUTUALLY_EXCLUSIVE")
     if isinstance(transport, ConstructiveProductiveFlattenSubmitAdapterV1):
         raise FlattenExecutionHarnessError("PRODUCTIVE_ADAPTER_MUST_NOT_BE_USED_TO_SEND")
+    if isinstance(transport, ProductiveFlattenSubmitSendAdapterV1):
+        raise FlattenExecutionHarnessError("SEND_ADAPTER_MUST_NOT_BE_USED_AS_HARNESS_TRANSPORT")
 
     durable = load_flatten_durable_consume_v1(store_root=durable_store)
     capture = capture_readiness_v1(wiring_bound=capture_wired)
@@ -369,6 +389,55 @@ def run_flatten_execution_harness_v1(
                 verdict=verdict,
                 productive_implemented=productive_implemented,
                 mode=mode_n,
+            )
+        )
+
+    if send_capable_bind is not None:
+        orch = run_productive_wire_send_orchestrator_v1(
+            bind=send_capable_bind,
+            wire_send=wire_send,
+            network_session=network_session,
+            origin_main_sha=origin_main_sha,
+            instrument_id=instrument,
+            exact_envelope_id=envelope_id,
+            session_armed=session_armed,
+        )
+        return _persist_and_return(
+            _deny(
+                reasons=list(orch.get("reasons") or []),
+                flags=flags,
+                capture=capture,
+                durable=durable,
+                verdict=verdict,
+                productive_implemented=productive_implemented,
+                mode=mode_n,
+                extra={
+                    "SESSION_ARMED": session_armed is True,
+                    "PRODUCTIVE_TRANSPORT_BOUND": True,
+                    "PRODUCTIVE_TRANSPORT_USED": False,
+                    "SEND_CAPABLE_BIND": True,
+                    "NETWORK_SESSION_AUTHORIZED": False,
+                    "NETWORK_SESSION_AUTHORIZED_CHANGED": False,
+                    "NETWORK_SESSION_AUTHORITY_ISSUED": orch.get("NETWORK_SESSION_AUTHORITY_ISSUED")
+                    is True,
+                    "NETWORK_SESSION_AUTHORITY_ACCEPTED": orch.get(
+                        "NETWORK_SESSION_AUTHORITY_ACCEPTED"
+                    )
+                    is True,
+                    "WIRE_SEND_AUTHORITY_ISSUED": orch.get("WIRE_SEND_AUTHORITY_ISSUED") is True,
+                    "WIRE_SEND_AUTHORITY_ACCEPTED": orch.get("WIRE_SEND_AUTHORITY_ACCEPTED")
+                    is True,
+                    "WIRE_SEND_AUTHORITY_CONSUMED": orch.get("WIRE_SEND_AUTHORITY_CONSUMED")
+                    is True,
+                    "INNER_SEND_EXECUTED": False,
+                    "ORCHESTRATOR": orch.get("ORCHESTRATOR"),
+                    "FIRST_DENY": orch.get("FIRST_DENY"),
+                    "GATE_ORDER": orch.get("GATE_ORDER"),
+                    "OPEN_GATE_ORDER_POINTS": orch.get("OPEN_GATE_ORDER_POINTS"),
+                    "CURRENT_CANONICAL_BOUNDARY": orch.get("FIRST_DENY"),
+                    "NETWORK_SESSION_OWNER_CONTRACT": AUTHORITY_TYPE_OWNER_NETWORK_SESSION,
+                    "WRAPPER": None,
+                },
             )
         )
 

@@ -1,0 +1,17 @@
+{
+  "EXISTING_11_13_5_TRANSPORT_REUSABLE": "true_as_inner_send_class_only",
+  "HARNESS_INTERFACE": "post(*, endpoint, body)",
+  "INNER_INTERFACE": "send(LiveCanaryHttpRequestV1)",
+  "INSERTION_POINT": "harness productive_bind branch after session issued, replacing PRODUCTIVE_WIRE_SEND_NOT_IMPLEMENTED_IN_THIS_REPAIR",
+  "LEASE_HAZARD": "send() consumes receipt lease before network_session_authorized check",
+  "NEW_ORCHESTRATOR_REQUIRED": true,
+  "NEW_SEND_CAPABLE_BIND_REQUIRED": true,
+  "NO_SEND_ADAPTER_SEMANTICS_CHANGED": false,
+  "OUTER_MUST_FAIL_CLOSED_BEFORE_SEND_IF_UNAUTHORIZED": true,
+  "PROPOSED_ORCHESTRATOR_SYMBOL": "ProductiveWireSendOrchestratorV1",
+  "PROPOSED_SEND_CAPABLE_ADAPTER_SYMBOL": "ProductiveFlattenSubmitSendAdapterV1",
+  "PROPOSED_SEND_CAPABLE_BIND_SYMBOL": "ProductiveTransportBindSendCapableV1",
+  "RECEIPT_HMAC_HOST_ENDPOINT": "inside AuthenticatedGatedProductiveFlattenTransportV1.send",
+  "SECTION_11_14_PRODUCTIVE_SEND_ORCHESTRATOR_EXISTS": false,
+  "epistemic": "ADJUDICATED"
+}

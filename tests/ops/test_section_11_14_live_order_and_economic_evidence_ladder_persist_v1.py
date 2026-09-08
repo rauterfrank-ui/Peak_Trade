@@ -2374,6 +2374,13 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert "11.14 LIVE_HANDOFF_EXACT_SINGLE_LIVE_FILL_REQUIRES_SEPARATE_OWNER_EXECUTION_GO" in mot
     assert "11.14 CURRENT_SUI_XPERP_POS_1_FLATTEN_AUTHORITY_AND_PRE_EXECUTION_REPAIR" in mot
+    assert "11.14 PRODUCTIVE_WIRE_SEND_OWNER_CONTRACT_AND_ORCHESTRATOR_SPEC" in mot
+    assert "11.14 PRODUCTIVE_SEND_ORCHESTRATOR_AND_SEND_CAPABLE_BIND_IMPLEMENTATION" in mot
+    assert "11.14 NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG" in mot
+    assert "11.14 SESSION_ARMING" in mot
+    assert "11.14 SEND_PERMITTED" in mot
+    assert "11.14 INNER_SEND_INVOCATION_SEAM" in mot
+    assert "11.14 PRODUCTIVE_INNER_SEND_FAIL_CLOSED_RECEIPT_BOUNDARY" in mot
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -2457,6 +2464,16 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         "SECTION_11_14_CURRENT_SUI_XPERP_POS_1_FLATTEN_AUTHORITY_AND_PRE_EXECUTION_REPAIR_V1.md"
         in mot
     )
+    assert "SECTION_11_14_PRODUCTIVE_WIRE_SEND_OWNER_CONTRACT_AND_ORCHESTRATOR_SPEC_V1.md" in mot
+    assert (
+        "SECTION_11_14_PRODUCTIVE_SEND_ORCHESTRATOR_AND_SEND_CAPABLE_BIND_IMPLEMENTATION_V1.md"
+        in mot
+    )
+    assert "SECTION_11_14_NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG_V1.md" in mot
+    assert "SECTION_11_14_SESSION_ARMING_V1.md" in mot
+    assert "SECTION_11_14_SEND_PERMITTED_V1.md" in mot
+    assert "SECTION_11_14_INNER_SEND_INVOCATION_SEAM_V1.md" in mot
+    assert "SECTION_11_14_PRODUCTIVE_INNER_SEND_FAIL_CLOSED_RECEIPT_BOUNDARY_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION_V1.md" in mot
@@ -2874,6 +2891,82 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "FLATTEN_AUTHORIZED=false" in flatten_spec
     assert "ENTRY_OWNER_GO_CANNOT_AUTHORIZE_FLATTEN=true" in flatten_spec
     assert "POST_PERFORMED=false" in flatten_spec
+    wire_send_spec = (
+        REPO_ROOT
+        / "docs/ops/specs/SECTION_11_14_PRODUCTIVE_WIRE_SEND_OWNER_CONTRACT_AND_ORCHESTRATOR_SPEC_V1.md"
+    ).read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_PRODUCTIVE_WIRE_SEND_OWNER_CONTRACT_AND_ORCHESTRATOR_SPEC_V1"
+        in wire_send_spec
+    )
+    assert "OWNER_PRODUCTIVE_WIRE_SEND_AUTHORITY_ISSUED=false" in wire_send_spec
+    assert "EXISTING_SECTION_11_14_WIRE_SEND_OWNER_SCHEMA=false" in wire_send_spec
+    assert "POST_PERFORMED=false" in wire_send_spec
+    send_orch_spec = (
+        REPO_ROOT
+        / "docs/ops/specs/SECTION_11_14_PRODUCTIVE_SEND_ORCHESTRATOR_AND_SEND_CAPABLE_BIND_IMPLEMENTATION_V1.md"
+    ).read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_PRODUCTIVE_SEND_ORCHESTRATOR_AND_SEND_CAPABLE_BIND_IMPLEMENTATION_V1"
+        in send_orch_spec
+    )
+    assert "ORCHESTRATOR_IMPLEMENTED=true" in send_orch_spec
+    assert "INNER_SEND_EXECUTED=false" in send_orch_spec
+    assert "POST_PERFORMED=false" in send_orch_spec
+    assert "CURRENT_CANONICAL_BOUNDARY=PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED" in send_orch_spec
+    instance_flag_spec = (
+        REPO_ROOT / "docs/ops/specs/SECTION_11_14_NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG_V1.md"
+    ).read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG_V1" in instance_flag_spec
+    )
+    assert "NETWORK_SESSION_INSTANCE_AUTHORIZATION_IMPLEMENTED=true" in instance_flag_spec
+    assert "INNER_SEND_EXECUTED=false" in instance_flag_spec
+    assert "POST_PERFORMED=false" in instance_flag_spec
+    assert "CURRENT_CANONICAL_BOUNDARY=SESSION_NOT_ARMED" in instance_flag_spec
+    session_arming_spec = (
+        REPO_ROOT / "docs/ops/specs/SECTION_11_14_SESSION_ARMING_V1.md"
+    ).read_text(encoding="utf-8")
+    assert "DOCS_TOKEN_SECTION_11_14_SESSION_ARMING_V1" in session_arming_spec
+    assert "SESSION_ARMING_IMPLEMENTED=true" in session_arming_spec
+    assert "INNER_SEND_EXECUTED=false" in session_arming_spec
+    assert "POST_PERFORMED=false" in session_arming_spec
+    assert "CURRENT_CANONICAL_BOUNDARY=SEND_PERMITTED_FALSE" in session_arming_spec
+    send_permitted_spec = (
+        REPO_ROOT / "docs/ops/specs/SECTION_11_14_SEND_PERMITTED_V1.md"
+    ).read_text(encoding="utf-8")
+    assert "DOCS_TOKEN_SECTION_11_14_SEND_PERMITTED_V1" in send_permitted_spec
+    assert "SEND_PERMISSION_IMPLEMENTED=true" in send_permitted_spec
+    assert "INNER_SEND_EXECUTED=false" in send_permitted_spec
+    assert "POST_PERFORMED=false" in send_permitted_spec
+    assert (
+        "CURRENT_CANONICAL_BOUNDARY=INNER_SEND_NOT_INVOKED_IN_THIS_IMPLEMENTATION"
+        in send_permitted_spec
+    )
+    inner_send_spec = (
+        REPO_ROOT / "docs/ops/specs/SECTION_11_14_INNER_SEND_INVOCATION_SEAM_V1.md"
+    ).read_text(encoding="utf-8")
+    assert "DOCS_TOKEN_SECTION_11_14_INNER_SEND_INVOCATION_SEAM_V1" in inner_send_spec
+    assert "INNER_SEND_INVOCATION_SEAM_IMPLEMENTED=true" in inner_send_spec
+    assert "REAL_INNER_SEND_EXECUTED=false" in inner_send_spec
+    assert "POST_PERFORMED=false" in inner_send_spec
+    assert (
+        "CURRENT_CANONICAL_BOUNDARY=PRODUCTIVE_INNER_SEND_EXECUTION_NOT_AUTHORIZED"
+        in inner_send_spec
+    )
+    receipt_boundary_spec = (
+        REPO_ROOT
+        / "docs/ops/specs/SECTION_11_14_PRODUCTIVE_INNER_SEND_FAIL_CLOSED_RECEIPT_BOUNDARY_V1.md"
+    ).read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_PRODUCTIVE_INNER_SEND_FAIL_CLOSED_RECEIPT_BOUNDARY_V1"
+        in receipt_boundary_spec
+    )
+    assert "PRODUCTIVE_INNER_SEND_INVOKED=true" in receipt_boundary_spec
+    assert "REAL_INNER_SEND_EXECUTED=false" in receipt_boundary_spec
+    assert "POST_PERFORMED=false" in receipt_boundary_spec
+    assert "CURRENT_CANONICAL_BOUNDARY=RECEIPT_MISSING" in receipt_boundary_spec
+    assert "FIRST_DENY=RECEIPT_MISSING" in receipt_boundary_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -2981,6 +3074,19 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         "id: PHASE:section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair"
         in catalog
     )
+    assert (
+        "id: PHASE:section_11_14_productive_wire_send_owner_contract_and_orchestrator_spec"
+        in catalog
+    )
+    assert (
+        "id: PHASE:section_11_14_productive_send_orchestrator_and_send_capable_bind_implementation"
+        in catalog
+    )
+    assert "id: PHASE:section_11_14_network_session_authorized_instance_flag" in catalog
+    assert "id: PHASE:section_11_14_session_arming" in catalog
+    assert "id: PHASE:section_11_14_send_permitted" in catalog
+    assert "id: PHASE:section_11_14_inner_send_invocation_seam" in catalog
+    assert "id: PHASE:section_11_14_productive_inner_send_fail_closed_receipt_boundary" in catalog
     assert (
         "id: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1" in catalog
     )
