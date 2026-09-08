@@ -1,11 +1,14 @@
-"""Send-capable flatten submit adapter. Never invokes inner.send in this WP.
+"""Send-capable flatten submit adapter. Fake inner.send only.
 
-Bridges harness post(endpoint, body) toward inner send(LiveCanaryHttpRequestV1)
-without reaching urllib. Distinct from ConstructiveProductiveFlattenSubmitAdapterV1.
+Bridges harness post(endpoint, body) to LiveCanaryHttpRequestV1 then
+RecordingFakeProductiveSendInnerV1.send. Never invokes
+AuthenticatedGatedProductiveFlattenTransportV1.send. Distinct from
+ConstructiveProductiveFlattenSubmitAdapterV1.
 """
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Protocol
 
@@ -16,10 +19,15 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     ENDPOINT_SUBMIT,
     REUSED_BINDING_REST_HOST,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
+    LiveCanaryHttpRequestV1,
+)
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.constants_v1 import (
     CLOSE_POSITION_ENDPOINT,
     FLATTEN_HTTP_ENDPOINT,
     FLATTEN_HTTP_METHOD,
+    REST_SCHEME_HOST,
+    TIMEOUT_SECONDS,
 )
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.wrapper_v1 import (
     FlattenWrapperError,
@@ -40,19 +48,19 @@ class ProductiveSendInnerV1(Protocol):
     network_session_authorized: bool
 
     def send(self, request: object) -> object:
-        """Must never be invoked by this workpackage."""
+        """Invoked only on RecordingFakeProductiveSendInnerV1 in this WP."""
 
 
 @dataclass
 class RecordingFakeProductiveSendInnerV1:
-    """Offline recording inner. No urllib. send() records and refuses wire I/O."""
+    """Offline recording inner. No urllib. send() records. No consume."""
 
     network_session_authorized: bool = False
     send_calls: list[object] = field(default_factory=list)
 
     def send(self, request: object) -> object:
         self.send_calls.append(request)
-        raise AssertionError("INNER_SEND_MUST_NOT_BE_REACHED")
+        return request
 
 
 def construct_productive_flatten_submit_send_adapter_v1(
@@ -92,8 +100,51 @@ def construct_productive_flatten_submit_send_adapter_v1(
     )
 
 
+def build_live_canary_http_request_from_adapter_post_v1(
+    *,
+    endpoint: str,
+    body: Mapping[str, Any],
+) -> tuple[LiveCanaryHttpRequestV1 | None, list[str]]:
+    """Build request from post() fields plus already-bound package constants.
+
+    headers stay empty. This is not HMAC. This is not a receipt. This is not
+    a productively valid signed request.
+    """
+    reasons: list[str] = []
+    path = str(endpoint or "").split("?", 1)[0]
+    if path != FLATTEN_HTTP_ENDPOINT or path != ENDPOINT_SUBMIT:
+        reasons.append("REQUEST_ENDPOINT_NOT_ALLOWLISTED")
+    if not isinstance(body, Mapping) or not dict(body):
+        reasons.append("REQUEST_BODY_MISSING")
+        return None, reasons
+    try:
+        body_text = json.dumps(dict(body), separators=(",", ":"), ensure_ascii=True)
+    except (TypeError, ValueError):
+        reasons.append("REQUEST_BODY_NOT_JSON_SERIALIZABLE")
+        return None, reasons
+    host = REUSED_BINDING_REST_HOST
+    url = f"{REST_SCHEME_HOST}{path}"
+    expected_url = f"https://{REUSED_BINDING_REST_HOST}{path}"
+    if url != expected_url:
+        reasons.append("REQUEST_URL_HOST_ENDPOINT_MISMATCH")
+    if reasons:
+        return None, reasons
+    return (
+        LiveCanaryHttpRequestV1(
+            method=FLATTEN_HTTP_METHOD,
+            url=url,
+            host=host,
+            endpoint=path,
+            headers={},
+            timeout_seconds=float(TIMEOUT_SECONDS),
+            body_text=body_text,
+        ),
+        [],
+    )
+
+
 class ProductiveFlattenSubmitSendAdapterV1:
-    """Harness post() shape. Prepares request material. Never calls inner.send."""
+    """Harness post() shape. Fake inner.send only. Never calls productive send."""
 
     def __init__(
         self,
@@ -114,6 +165,7 @@ class ProductiveFlattenSubmitSendAdapterV1:
         self.wire_send_accepted = wire_send_accepted
         self.session_accepted = session_accepted
         self.inner_send_executed = False
+        self.fake_inner_send_reached = False
 
     def post(self, *, endpoint: str, body: Mapping[str, Any]) -> Mapping[str, Any]:
         path = str(endpoint or "").split("?", 1)[0]
@@ -132,6 +184,8 @@ class ProductiveFlattenSubmitSendAdapterV1:
             "allowlisted_endpoint": ENDPOINT_SUBMIT,
             "body": dict(body),
             "inner_send_invoked": False,
+            "FAKE_INNER_SEND_REACHED": False,
+            "REQUEST_HEADERS_UNSIGNED": True,
         }
         if self.wire_send_accepted is not True:
             raise FlattenProductiveSendAdapterError("WIRE_SEND_AUTHORITY_NOT_ACCEPTED")
@@ -143,4 +197,28 @@ class ProductiveFlattenSubmitSendAdapterV1:
             raise FlattenProductiveSendAdapterError("PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED")
         if self.send_permitted is not True:
             raise FlattenProductiveSendAdapterError("SEND_PERMITTED_FALSE")
-        raise FlattenProductiveSendAdapterError("INNER_SEND_NOT_INVOKED_IN_THIS_IMPLEMENTATION")
+        request, provenance_reasons = build_live_canary_http_request_from_adapter_post_v1(
+            endpoint=path,
+            body=body,
+        )
+        if provenance_reasons or request is None:
+            raise FlattenProductiveSendAdapterError(
+                str(provenance_reasons[0] if provenance_reasons else "REQUEST_PROVENANCE_MISSING")
+            )
+        self.prepared["url"] = request.url
+        self.prepared["body_text"] = request.body_text
+        self.prepared["timeout_seconds"] = request.timeout_seconds
+        if isinstance(self.inner, AuthenticatedGatedProductiveFlattenTransportV1):
+            raise FlattenProductiveSendAdapterError(
+                "PRODUCTIVE_INNER_SEND_EXECUTION_NOT_AUTHORIZED"
+            )
+        if not isinstance(self.inner, RecordingFakeProductiveSendInnerV1):
+            raise FlattenProductiveSendAdapterError(
+                "PRODUCTIVE_INNER_SEND_EXECUTION_NOT_AUTHORIZED"
+            )
+        self.inner.send(request)
+        self.fake_inner_send_reached = True
+        self.prepared["inner_send_invoked"] = True
+        self.prepared["FAKE_INNER_SEND_REACHED"] = True
+        self.inner_send_executed = False
+        raise FlattenProductiveSendAdapterError("PRODUCTIVE_INNER_SEND_EXECUTION_NOT_AUTHORIZED")

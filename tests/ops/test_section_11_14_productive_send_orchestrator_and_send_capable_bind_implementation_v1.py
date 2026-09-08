@@ -414,7 +414,7 @@ def test_new_adapter_network_session_authorized_false_stops_before_inner_send(
     assert adapter.inner_send_executed is False
 
 
-def test_new_adapter_synthetic_authorized_fake_inner_still_does_not_send(
+def test_new_adapter_synthetic_authorized_fake_inner_reaches_fake_send_only(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setattr(urllib.request, "urlopen", _boom)
@@ -428,12 +428,15 @@ def test_new_adapter_synthetic_authorized_fake_inner_still_does_not_send(
         session_accepted=True,
     )
     with pytest.raises(
-        FlattenProductiveSendAdapterError, match="INNER_SEND_NOT_INVOKED_IN_THIS_IMPLEMENTATION"
+        FlattenProductiveSendAdapterError,
+        match="PRODUCTIVE_INNER_SEND_EXECUTION_NOT_AUTHORIZED",
     ):
         adapter.post(endpoint=FLATTEN_HTTP_ENDPOINT, body={"instId": INSTRUMENT_ID})
-    assert inner.send_calls == []
+    assert len(inner.send_calls) == 1
+    assert adapter.fake_inner_send_reached is True
     assert adapter.inner_send_executed is False
     assert adapter.prepared is not None
+    assert adapter.prepared["FAKE_INNER_SEND_REACHED"] is True
 
 
 def test_no_send_harness_path_keeps_not_implemented_deny(

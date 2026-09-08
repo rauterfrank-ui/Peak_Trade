@@ -1,9 +1,8 @@
-"""Productive wire-send orchestrator. Consumes evaluator results. Never sends.
+"""Productive wire-send orchestrator. Consumes evaluator results.
 
-Does not arm. Does not overwrite a bound adapter.session_armed=true with
-a standing caller false. Does not overwrite a bound adapter.send_permitted=true
-with bind.send_permitted false. Does not set network_session_authorized.
-Does not consume. Does not invoke inner.send.
+May reach RecordingFakeProductiveSendInnerV1.send after send_permitted.
+Does not invoke AuthenticatedGatedProductiveFlattenTransportV1.send.
+Does not consume. Does not HTTP POST.
 """
 
 from __future__ import annotations
@@ -18,6 +17,7 @@ from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_exe
 )
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.productive_flatten_submit_send_adapter_v1 import (
     FlattenProductiveSendAdapterError,
+    RecordingFakeProductiveSendInnerV1,
 )
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.wrapper_v1 import (
     FlattenWrapperError,
@@ -64,7 +64,7 @@ def run_productive_wire_send_orchestrator_v1(
     endpoint: str = FLATTEN_HTTP_ENDPOINT,
     body: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Evaluate gates in order. Never invokes inner.send. Does not consume."""
+    """Evaluate gates in order. Fake inner.send only. Does not consume."""
     if LIVE_ENABLED or LIVE_ARMED or CANARY_AUTHORIZED or POST_ALLOWED:
         raise ProductiveWireSendOrchestratorError("STANDING_LIVE_FLAG_MUST_REMAIN_FALSE")
     gate_order: list[str] = []
@@ -121,6 +121,8 @@ def run_productive_wire_send_orchestrator_v1(
 
     adapter_error = ""
     prepared: Mapping[str, Any] | None = None
+    fake_reached = False
+    fake_call_count = 0
     if bind is not None and not reasons:
         bind.adapter.wire_send_accepted = wire_verdict.get("accepted") is True
         bind.adapter.session_accepted = session_verdict.get("accepted") is True
@@ -135,10 +137,14 @@ def run_productive_wire_send_orchestrator_v1(
             adapter_error = str(exc)
             reasons.append(adapter_error)
         prepared = bind.adapter.prepared
+        fake_reached = bind.adapter.fake_inner_send_reached is True
+        inner = bind.adapter.inner
+        if isinstance(inner, RecordingFakeProductiveSendInnerV1):
+            fake_call_count = len(inner.send_calls)
         if bind.adapter.inner_send_executed is True:
             reasons.append("INNER_SEND_MUST_REMAIN_UNEXECUTED")
 
-    first_reason = reasons[0] if reasons else "INNER_SEND_NOT_INVOKED_IN_THIS_IMPLEMENTATION"
+    first_reason = reasons[0] if reasons else "PRODUCTIVE_INNER_SEND_EXECUTION_NOT_AUTHORIZED"
     return {
         "accepted": False,
         "reasons": reasons,
@@ -156,7 +162,9 @@ def run_productive_wire_send_orchestrator_v1(
         "SESSION_ARMING_EXECUTED": False,
         "SEND_PERMITTED": bound_permitted,
         "INNER_SEND_EXECUTED": False,
-        "FAKE_INNER_SEND_REACHED": False,
+        "FAKE_INNER_SEND_REACHED": fake_reached,
+        "FAKE_INNER_SEND_CALL_COUNT": fake_call_count,
+        "REAL_PRODUCTIVE_TRANSPORT_INVOKED": False,
         "REAL_INNER_SEND_EXECUTED": False,
         "GET_PERFORMED": False,
         "REPRICE_EXECUTED": False,

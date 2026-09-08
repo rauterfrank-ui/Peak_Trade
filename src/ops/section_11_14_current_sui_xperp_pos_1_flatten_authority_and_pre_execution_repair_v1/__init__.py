@@ -7,5 +7,6 @@ bind, send adapter, send orchestrator, the network_session_authorized
 instance-flag seam, the bound session-arming seam, and the bound
 send_permitted seam. Does not flatten. Does not POST. Does not invoke
 inner.send. Evaluator does not mint. Constructive NO_SEND adapter
-semantics are unchanged. send_permitted is not inner.send.
+semantics are unchanged. send_permitted is not inner.send. Fake inner.send is not productive
+inner.send.
 """

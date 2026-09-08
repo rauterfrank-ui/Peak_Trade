@@ -2379,6 +2379,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "11.14 NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG" in mot
     assert "11.14 SESSION_ARMING" in mot
     assert "11.14 SEND_PERMITTED" in mot
+    assert "11.14 INNER_SEND_INVOCATION_SEAM" in mot
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -2470,6 +2471,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "SECTION_11_14_NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG_V1.md" in mot
     assert "SECTION_11_14_SESSION_ARMING_V1.md" in mot
     assert "SECTION_11_14_SEND_PERMITTED_V1.md" in mot
+    assert "SECTION_11_14_INNER_SEND_INVOCATION_SEAM_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION_V1.md" in mot
@@ -2939,6 +2941,17 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         "CURRENT_CANONICAL_BOUNDARY=INNER_SEND_NOT_INVOKED_IN_THIS_IMPLEMENTATION"
         in send_permitted_spec
     )
+    inner_send_spec = (
+        REPO_ROOT / "docs/ops/specs/SECTION_11_14_INNER_SEND_INVOCATION_SEAM_V1.md"
+    ).read_text(encoding="utf-8")
+    assert "DOCS_TOKEN_SECTION_11_14_INNER_SEND_INVOCATION_SEAM_V1" in inner_send_spec
+    assert "INNER_SEND_INVOCATION_SEAM_IMPLEMENTED=true" in inner_send_spec
+    assert "REAL_INNER_SEND_EXECUTED=false" in inner_send_spec
+    assert "POST_PERFORMED=false" in inner_send_spec
+    assert (
+        "CURRENT_CANONICAL_BOUNDARY=PRODUCTIVE_INNER_SEND_EXECUTION_NOT_AUTHORIZED"
+        in inner_send_spec
+    )
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -3057,6 +3070,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "id: PHASE:section_11_14_network_session_authorized_instance_flag" in catalog
     assert "id: PHASE:section_11_14_session_arming" in catalog
     assert "id: PHASE:section_11_14_send_permitted" in catalog
+    assert "id: PHASE:section_11_14_inner_send_invocation_seam" in catalog
     assert (
         "id: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1" in catalog
     )

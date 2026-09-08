@@ -74,7 +74,6 @@ PACKAGE = (
 )
 NO_SEND_ADAPTER_SRC = PACKAGE / "productive_transport_adapter_v1.py"
 PERMIT_SRC = PACKAGE / "send_permitted_v1.py"
-ADAPTER_SRC = PACKAGE / "productive_flatten_submit_send_adapter_v1.py"
 
 
 def _boom(*_args: object, **_kwargs: object) -> None:
@@ -417,15 +416,17 @@ def test_orchestrator_after_permission_stops_before_inner_send(
         instrument_id=INSTRUMENT_ID,
         exact_envelope_id=BOUND_FROZEN_ENVELOPE_ID,
         session_armed=False,
+        body={"instId": INSTRUMENT_ID},
     )
     assert orch["SESSION_ARMED"] is True
     assert orch["NETWORK_SESSION_AUTHORIZED"] is True
     assert orch["SEND_PERMITTED"] is True
     assert "SEND_PERMITTED_FALSE" not in orch["reasons"]
-    assert orch["FIRST_DENY"] == "INNER_SEND_NOT_INVOKED_IN_THIS_IMPLEMENTATION"
+    assert orch["FIRST_DENY"] == "PRODUCTIVE_INNER_SEND_EXECUTION_NOT_AUTHORIZED"
     assert orch["SESSION_ARMING_EXECUTED"] is False
     assert orch["INNER_SEND_EXECUTED"] is False
-    assert orch["FAKE_INNER_SEND_REACHED"] is False
+    assert orch["FAKE_INNER_SEND_REACHED"] is True
+    assert orch["FAKE_INNER_SEND_CALL_COUNT"] == 1
     assert orch["REAL_INNER_SEND_EXECUTED"] is False
     assert orch["GET_PERFORMED"] is False
     assert orch["REPRICE_EXECUTED"] is False
@@ -433,12 +434,9 @@ def test_orchestrator_after_permission_stops_before_inner_send(
     assert orch["REAL_POST_COUNT"] == 0
     assert orch["DURABLE_CONSUMED"] is False
     assert orch["OPEN_GATE_ORDER_POINTS"] == list(OPEN_GATE_ORDER_POINTS)
-    assert inner.send_calls == []
+    assert len(inner.send_calls) == 1
     assert bind.adapter.inner_send_executed is False
     assert bind.adapter.send_permitted is True
-    adapter_src = ADAPTER_SRC.read_text(encoding="utf-8")
-    assert "self.inner.send" not in adapter_src
-    assert "inner.send(" not in adapter_src
 
 
 def test_historical_no_send_adapter_remains_no_send(monkeypatch: pytest.MonkeyPatch) -> None:
