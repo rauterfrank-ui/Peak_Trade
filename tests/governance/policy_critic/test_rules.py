@@ -166,6 +166,28 @@ class TestNoSecretsRule:
         violations = rule.check(diff, ["src/ops/example_stub_fallback_scan_v2.py"])
         assert len(violations) == 0
 
+    def test_replay_class_owner_token_composition_avoids_no_secrets_false_positive(self):
+        """PR #6356 BLOCKED on concatenated REPLAY_CLASS_OWNER_TOKEN=<20+>.
+
+        The public A owner identifier is letter + '_' + semantic. A single
+        ``token=<20+ alnum>`` assignment remains BLOCK; composition stays clean.
+        """
+        rule = NoSecretsRule()
+        owner = "A_" + "CURRENT_CODE_REPLAY"
+        replay_py = (
+            "src/learning/deterministic_decision_outcome_v0/"
+            "double_play_producer_function_replay_v1.py"
+        )
+        concatenated = f"+++ b/{replay_py}\n+REPLAY_CLASS_OWNER_TOKEN=" + owner + "\n"
+        composed = (
+            f'+++ b/{replay_py}\n+REPLAY_CLASS_OWNER_TOKEN composed as LETTER + "_" + SEMANTIC\n'
+        )
+        blocked = rule.check(concatenated, [replay_py])
+        assert len(blocked) == 1
+        assert blocked[0].rule_id == "NO_SECRETS"
+        clean = rule.check(composed, [replay_py])
+        assert len(clean) == 0
+
     """Tests for live unlock detection rule."""
 
     def test_detects_enable_live_trading(self):

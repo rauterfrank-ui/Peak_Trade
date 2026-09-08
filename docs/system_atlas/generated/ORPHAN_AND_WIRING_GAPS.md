@@ -36,6 +36,7 @@
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap_7_2_stateful_no_order | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap_7_2_stateful_no_order | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:authenticated_private_runtime_read_and_runtime_permit_issuance_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:authenticated_private_runtime_read_and_runtime_permit_issuance_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:authenticated_productive_transport_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:authenticated_productive_transport_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_double_play_producer_function_replay_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_double_play_producer_function_replay_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_experiment_identity_binding | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_experiment_identity_binding | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_validation_producer_bindings | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_validation_producer_bindings | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_capital_slot | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_capital_slot | STATUS=OPEN (not proven) |  |

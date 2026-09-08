@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1
 status: active
-scope: Owner-policy persist for later current-code Double-Play producer-function replay; not implementation; no trading authority
+scope: Owner-policy plus offline in-memory isolated current-code Double-Play producer-function replay; no productive execution; no trading authority
 capability: DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-08
@@ -13,9 +13,11 @@ last_updated: 2026-09-08
 DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
 AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK
 OWNER_GO_THIS_SLICE=OWNER_GO_DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1_OWNER_POLICY_DECISION_PERSIST_DOCS_ONLY
+OWNER_GO_IMPLEMENTATION_SLICE=DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1_CURRENT_CODE_IN_MEMORY_ISOLATED_INVOCATION
 BOUND_ORIGIN_MAIN_SHA=57c2b49edd8ba23ea1466d30015daf9807898d9b
+IMPLEMENTATION_BOUND_ORIGIN_MAIN_SHA=a6ad2e67b443a8ab022d7f05d07837bc84e39a00
 PREDECESSOR_GIT_FACT=DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURED
-DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1=OWNER_POLICY_BOUND_NOT_IMPLEMENTED
+DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1=IMPLEMENTED_OFFLINE_IN_MEMORY_ISOLATED_NOT_PRODUCTIVE
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 OFFLINE_EVALUATION_AUTHORITY=NONE
 TRADING_AUTHORITY=NONE
@@ -23,14 +25,18 @@ EXECUTION_AUTHORITY=NONE
 PERMISSION_AUTHORITY=NONE
 REPLAY_PRODUCTIVE_AUTHORITY=NONE
 HINDSIGHT_LEAKAGE_ALLOWED=false
-PRODUCER_FUNCTION_REPLAY_IMPLEMENTED=false
+PRODUCER_FUNCTION_REPLAY_IMPLEMENTED=true
+FUNCTION_REPLAY_EXECUTED_IN_TESTS=true
+PRODUCTIVE_FUNCTION_REPLAY_EXECUTED=false
 PRODUCER_FUNCTION_REPLAY_EXECUTED=false
 ```
 
-Navigation-only. Master Runbook remains SSOT. This contract persists the
-Owner policy for a later Function-Replay slice. It does **not** authorize
-implementation, producer invocation, Live, Testnet, orders, credentials,
-outcome-horizon, attribution, promotion, A1, A2, host wiring, or ledger bind.
+Navigation-only. Master Runbook remains SSOT. The Owner-policy persist did
+**not** authorize implementation. A later, separate Owner-GO authorized the
+offline in-memory isolated current-code Function-Replay implementation in
+§10. This contract still does **not** authorize Live, Testnet, orders,
+credentials, outcome-horizon, attribution, promotion, A1, A2, host wiring,
+productive ledger bind, or productive producer-function replay.
 
 ## 1. Owner-bound replay class
 
@@ -259,13 +265,59 @@ PROMOTION_AUTHORITY_ACTIVATED=false
 LEARNED_ARTIFACT_RUNTIME_CONSUMPTION=false
 ```
 
-## 9. Remaining gap
+## 9. Remaining gap (historical at Owner-policy persist)
 
-This persist binds Owner policy only.
+The Owner-policy persist bound policy only. That historical statement remains
+true for that persist. It must not be read as the later implementation status.
 
 ```text
+HISTORICAL_AT_OWNER_POLICY_PERSIST=true
 PRODUCER_FUNCTION_REPLAY_IMPLEMENTED=false
 PRODUCER_FUNCTION_REPLAY_EXECUTED=false
 NEXT_DDO_STEP=DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1_IMPLEMENTATION_OWNER_GO_REQUIRED_NOT_AUTHORIZED_BY_THIS_PERSIST
 IMPLEMENTATION_OWNER_GO_AUTHORIZED_BY_THIS_PERSIST=false
 ```
+
+## 10. Offline in-memory isolated current-code implementation
+
+Separate Owner-GO
+`DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1_CURRENT_CODE_IN_MEMORY_ISOLATED_INVOCATION`
+authorized the bounded A implementation. It does not rewrite the Owner-policy
+persist. C and D remain distinct and are not Function-Replay.
+
+```text
+FUNCTION_REPLAY_IMPLEMENTED=true
+FUNCTION_REPLAY_EXECUTED_IN_TESTS=true
+PRODUCTIVE_FUNCTION_REPLAY_EXECUTED=false
+PRODUCER_FUNCTION_REPLAY_EXECUTED=false
+REPLAY_CLASS_LETTER=A
+REPLAY_CLASS_SEMANTIC=CURRENT_CODE_REPLAY
+REPLAY_CLASS_OWNER_TOKEN=A_CURRENT_CODE_REPLAY
+HISTORICAL_CODE_PARITY_CLAIM=false
+OBSERVATION_ISOLATION=EXPLICIT_CAPTURE_DISABLED_FAIL_CLOSED
+JOIN_RULE=EXACT_TYPED_OUTPUT_OBSERVATION_REF
+RESULT_DURABILITY=IN_MEMORY_NO_WRITE
+REPLAY_TIMEOUT_POLICY=UNSPECIFIED
+REPLAY_OPERATION_ATTEMPT_COUNT=1
+REPLAY_EXCEPTION_BLIND_RETRY_ALLOWED=false
+CODE_SHA_INFERENCE_ALLOWED=false
+NETWORK_SENDS=0
+REAL_POSTS=0
+PRODUCTIVE_LEDGER_WRITES=0
+A1_ACTIVATED=false
+A2_ACTIVATED=false
+PROMOTION_AUTHORITY_ACTIVATED=false
+OWNER_SYMBOL=replay_double_play_producer_function_current_code_v1
+ISOLATION_SYMBOL=ddo_replay_capture_disabled_isolation_reason_v0
+NEXT_DDO_STEP=OWNER_GO_REQUIRED_SEPARATE_SCOPED_DDO_CONTINUATION_NOT_AUTHORIZED_BY_THIS_PERSIST
+```
+
+Isolation PASS requires an explicit bound `DdoCaptureBindingV0` with
+`enabled=false` and `ledger_path is None`. Unbound/None is not isolation.
+The public decorated producer symbol is invoked at most once per replay
+operation. `.__wrapped__` is not a replay API.
+
+Stored `code_sha=UNKNOWN` remains `UNKNOWN`. The in-memory result carries
+`replay_class_semantic=CURRENT_CODE_REPLAY` and
+`historical_code_parity_claim=false`. It does not invent a historical
+`code_sha`.

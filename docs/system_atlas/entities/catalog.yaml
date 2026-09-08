@@ -3788,6 +3788,7 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/promotion_controller_v0.py
       - src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py
       - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
+      - src/learning/deterministic_decision_outcome_v0/double_play_producer_function_replay_v1.py
       - docs/ops/specs/DDO_SEMANTIC_REPLAY_PARITY_V1.md
       - docs/ops/specs/DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1.md
       - docs/ops/specs/DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1.md
@@ -3806,7 +3807,12 @@ entities:
       Double-Play producer-input evidence capture is bound as observation-only
       decision-time input persistence; producer-function replay is not
       implemented by that slice. Owner policy for later current-code
-      Function-Replay is persisted and does not implement or execute replay.
+      Function-Replay was persisted without implementation. A later bounded
+      slice implements offline in-memory isolated current-code Function-Replay
+      (`replay_double_play_producer_function_current_code_v1`) with explicit
+      capture-disabled isolation. Test invocation is not productive runtime
+      invocation. Historical code replay B remains unselected. C and D remain
+      distinct and are not Function-Replay.
       DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is bound as evidence-domain
       storage owner. DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1 is
       complete. PEAK_TRADE_DDO_PRODUCTIVE_HOST_SCOPE_INPUT_BINDING_V1 is bound
@@ -3892,6 +3898,9 @@ entities:
       SECOND_PROMOTION_AUTHORITY=false. RUNTIME_LINEAGE_PARTIAL=true.
       observe_after_producer_v0 is a no-op unless an enabled
       DdoCaptureBindingV0 session is bound. Does not mutate producer results.
+      A-replay isolation predicate
+      ddo_replay_capture_disabled_isolation_reason_v0 is a replay
+      precondition only; it does not change global capture defaults.
       WP-FS-B1 attached proven host decorators for all
       IMPLEMENTED_CAPTURE_SEAMS_V0. Capture remains observation-only.
       Double-Play seam core.double_play_entry_exit now persists a sibling
@@ -3937,8 +3946,9 @@ entities:
       parity, not Function-Replay. Producer input was absent at C persist
       time and is now available via
       DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1; C still does not
-      invoke the producer. Function-replay owner policy is persisted
-      separately and is not implementation.
+      invoke the producer. Function-replay owner policy was persisted
+      separately; offline in-memory isolated current-code Function-Replay is
+      a distinct later implementation and is not C.
       Classifier replay in replay_evaluator_v0 remains distinct.
       OFFLINE_EVALUATION_AUTHORITY=NONE. TRADING_AUTHORITY=NONE.
       EXECUTION_AUTHORITY=NONE. HINDSIGHT_LEAKAGE_ALLOWED=false.
@@ -3966,6 +3976,35 @@ entities:
       redefined. TRADING_AUTHORITY=NONE. RUNTIME_EFFECT=OBSERVATION_ONLY.
       HINDSIGHT_LEAKAGE_ALLOWED=false. Not a second trading authority.
       Not WP-FA-08.
+
+  - id: RUNTIME_COMPONENT:ddo_double_play_producer_function_replay_v1
+    kind: RUNTIME_COMPONENT
+    name: DDO Double-Play producer-function current-code replay v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/learning/deterministic_decision_outcome_v0/double_play_producer_function_replay_v1.py
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/double_play_producer_function_replay_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+      - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
+      - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
+      - src/trading/master_v2/double_play_entry_exit_policy_v0.py
+      - docs/ops/specs/DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1.md
+    notes: >-
+      Offline in-memory isolated current-code Function-Replay A.
+      REPLAY_CLASS_LETTER=A. REPLAY_CLASS_SEMANTIC=CURRENT_CODE_REPLAY.
+      REPLAY_CLASS_OWNER_TOKEN=A_CURRENT_CODE_REPLAY.
+      Invokes public evaluate_double_play_entry_exit_policy_v0 once under
+      explicit capture-disabled isolation (enabled=false, ledger_path=None;
+      unbound is not isolation). Joins stored typed output observation by
+      exact typed_output_observation_ref. Reuses producer serializer/digest
+      owners. Result durability IN_MEMORY_NO_WRITE. No historical parity
+      claim. Stored code_sha UNKNOWN remains UNKNOWN. Test invocation is not
+      productive runtime invocation. Not B. Not C. Not D. Not WP-FA-08.
+      ATLAS_AUTHORITY=NONE. TRADING_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:ddo_ledger_v0
     kind: RUNTIME_COMPONENT
