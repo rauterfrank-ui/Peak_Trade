@@ -1,0 +1,12 @@
+{
+  "DURABLE_CONSUMED": false,
+  "GET_PERFORMED": false,
+  "HMAC_EXECUTED": false,
+  "LEASE_CONSUMED": false,
+  "POSITION_MUTATION_EXECUTED": false,
+  "POST_PERFORMED": false,
+  "RECEIPT_ATTACHED": false,
+  "RECEIPT_MINTED": false,
+  "REPRICE_EXECUTED": false,
+  "WIRE_SEND_EXECUTED": false
+}

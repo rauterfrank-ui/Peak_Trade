@@ -2381,6 +2381,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "11.14 SEND_PERMITTED" in mot
     assert "11.14 INNER_SEND_INVOCATION_SEAM" in mot
     assert "11.14 PRODUCTIVE_INNER_SEND_FAIL_CLOSED_RECEIPT_BOUNDARY" in mot
+    assert "11.14 FLATTEN_PRE_SEND_RECEIPT_AUTHORITY_AND_BINDING" in mot
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -2474,6 +2475,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "SECTION_11_14_SEND_PERMITTED_V1.md" in mot
     assert "SECTION_11_14_INNER_SEND_INVOCATION_SEAM_V1.md" in mot
     assert "SECTION_11_14_PRODUCTIVE_INNER_SEND_FAIL_CLOSED_RECEIPT_BOUNDARY_V1.md" in mot
+    assert "SECTION_11_14_FLATTEN_PRE_SEND_RECEIPT_AUTHORITY_AND_BINDING_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION_V1.md" in mot
@@ -2967,6 +2969,21 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "POST_PERFORMED=false" in receipt_boundary_spec
     assert "CURRENT_CANONICAL_BOUNDARY=RECEIPT_MISSING" in receipt_boundary_spec
     assert "FIRST_DENY=RECEIPT_MISSING" in receipt_boundary_spec
+    receipt_authority_spec = (
+        REPO_ROOT
+        / "docs/ops/specs/SECTION_11_14_FLATTEN_PRE_SEND_RECEIPT_AUTHORITY_AND_BINDING_V1.md"
+    ).read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_FLATTEN_PRE_SEND_RECEIPT_AUTHORITY_AND_BINDING_V1"
+        in receipt_authority_spec
+    )
+    assert "RECEIPT_AUTHORITY_SCHEMA_STATUS=DEFINED" in receipt_authority_spec
+    assert "RECEIPT_MINTED=false" in receipt_authority_spec
+    assert "RECEIPT_WORK_BLOCKED_BY_OPEN_GATE_ORDER=true" in receipt_authority_spec
+    assert "OPEN_GATE_ORDER_BLOCKER=FRESH_PRE_SUBMIT_GET" in receipt_authority_spec
+    assert "CURRENT_CANONICAL_BOUNDARY=RECEIPT_MISSING" in receipt_authority_spec
+    assert "GET_PERFORMED=false" in receipt_authority_spec
+    assert "POST_PERFORMED=false" in receipt_authority_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -3087,6 +3104,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "id: PHASE:section_11_14_send_permitted" in catalog
     assert "id: PHASE:section_11_14_inner_send_invocation_seam" in catalog
     assert "id: PHASE:section_11_14_productive_inner_send_fail_closed_receipt_boundary" in catalog
+    assert "id: PHASE:section_11_14_flatten_pre_send_receipt_authority_and_binding" in catalog
     assert (
         "id: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1" in catalog
     )

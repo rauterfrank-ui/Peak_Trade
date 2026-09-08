@@ -1,0 +1,20 @@
+{
+  "RECEIPT_BIND_FIELDS": [
+    "allowed",
+    "approved_request_identity",
+    "request_body",
+    "approved_method",
+    "approved_host",
+    "approved_endpoint",
+    "approved_url",
+    "approved_body_text",
+    "send_lease"
+  ],
+  "RECEIPT_CONSUMER": "AuthenticatedGatedProductiveFlattenTransportV1.send",
+  "RECEIPT_PRODUCER": "evaluate_flatten_pre_send_gate_v1",
+  "RECEIPT_SCHEMA_CANDIDATES": [
+    "FlattenPreSendGateReceiptV1",
+    "FlattenReceiptSendLeaseV1",
+    "FlattenPreSendGateInputV1"
+  ]
+}
