@@ -5179,6 +5179,12 @@ PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_TESTOWNER = (
 PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_PRODUCTION = (
     "src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py"
 )
+PACKAGE_DDO_DOUBLE_PLAY_SEMANTIC_REPLAY_PARITY_V1_TESTOWNER = (
+    "tests/learning/test_ddo_double_play_semantic_replay_parity_v1.py"
+)
+PACKAGE_DDO_DOUBLE_PLAY_SEMANTIC_REPLAY_PARITY_V1_PRODUCTION = (
+    "src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py"
+)
 PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_V1_PRODUCTION = "src/learning/deterministic_decision_outcome_v0/section_11_14_flatten_pre_lease_observation_v1.py"
 PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_V1_TESTOWNER = (
     "tests/learning/test_section_11_14_flatten_pre_lease_observation_v1.py"
@@ -5263,6 +5269,7 @@ def test_selector_ddo_contract_ledger_v0_production_pr_bounded_full_includes_tes
     assert PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER in bounded
     assert PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER in bounded
     assert PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_TESTOWNER in bounded
+    assert PACKAGE_DDO_DOUBLE_PLAY_SEMANTIC_REPLAY_PARITY_V1_TESTOWNER in bounded
     assert (
         PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER
         in bounded
@@ -5294,6 +5301,7 @@ def test_selector_ddo_control_plane_v0_production_pr_bounded_full_includes_testo
     assert PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER in bounded
     assert PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER in bounded
     assert PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_TESTOWNER in bounded
+    assert PACKAGE_DDO_DOUBLE_PLAY_SEMANTIC_REPLAY_PARITY_V1_TESTOWNER in bounded
 
 
 def test_selector_ddo_capture_v0_production_pr_bounded_full_includes_testowners() -> None:
@@ -5308,6 +5316,7 @@ def test_selector_ddo_capture_v0_production_pr_bounded_full_includes_testowners(
     assert PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER in bounded
     assert bounded.count(PACKAGE_DDO_CAPTURE_V0_TESTOWNER) == 1
     assert PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_TESTOWNER in bounded
+    assert PACKAGE_DDO_DOUBLE_PLAY_SEMANTIC_REPLAY_PARITY_V1_TESTOWNER in bounded
 
 
 def test_selector_ddo_evaluation_engine_v0_production_pr_bounded_full_includes_testowners() -> None:
@@ -5359,6 +5368,15 @@ def test_selector_ddo_current_double_play_capture_parity_v1_pr_bounded_full() ->
     bounded = _bounded_targets(sel)
     assert PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_TESTOWNER in bounded
     assert bounded.count(PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_TESTOWNER) == 1
+
+
+def test_selector_ddo_double_play_semantic_replay_parity_v1_pr_bounded_full() -> None:
+    sel = _run_selector(PACKAGE_DDO_DOUBLE_PLAY_SEMANTIC_REPLAY_PARITY_V1_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    assert PACKAGE_DDO_DOUBLE_PLAY_SEMANTIC_REPLAY_PARITY_V1_TESTOWNER in bounded
+    assert bounded.count(PACKAGE_DDO_DOUBLE_PLAY_SEMANTIC_REPLAY_PARITY_V1_TESTOWNER) == 1
+    assert PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_TESTOWNER in bounded
 
 
 def test_selector_ddo_section_11_14_flatten_pre_lease_observation_v1_pr_bounded_full() -> None:
@@ -5418,6 +5436,7 @@ def test_selector_ddo_contract_ledger_v0_combined_diff_pr_bounded_full_includes_
         PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_PRODUCTION,
         PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_PRODUCTION,
         PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_PRODUCTION,
+        PACKAGE_DDO_DOUBLE_PLAY_SEMANTIC_REPLAY_PARITY_V1_PRODUCTION,
         PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_PRODUCTION,
         PACKAGE_DDO_CONTRACT_LEDGER_V0_TESTOWNER,
         PACKAGE_DDO_CONTROL_PLANE_V0_TESTOWNER,
@@ -5426,6 +5445,7 @@ def test_selector_ddo_contract_ledger_v0_combined_diff_pr_bounded_full_includes_
         PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER,
         PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER,
         PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_TESTOWNER,
+        PACKAGE_DDO_DOUBLE_PLAY_SEMANTIC_REPLAY_PARITY_V1_TESTOWNER,
         PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER,
         PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER,
     )
@@ -5438,6 +5458,7 @@ def test_selector_ddo_contract_ledger_v0_combined_diff_pr_bounded_full_includes_
     assert bounded.count(PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER) == 1
     assert bounded.count(PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER) == 1
     assert bounded.count(PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_TESTOWNER) == 1
+    assert bounded.count(PACKAGE_DDO_DOUBLE_PLAY_SEMANTIC_REPLAY_PARITY_V1_TESTOWNER) == 1
     assert (
         bounded.count(
             PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER

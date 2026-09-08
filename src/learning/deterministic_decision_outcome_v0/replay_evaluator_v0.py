@@ -1,8 +1,10 @@
-"""Offline deterministic replay evaluator v0.
+"""Offline deterministic classifier replay evaluator v0.
 
-Replays stored DecisionEvent/IncidentRecord classification. Does not call the
-trading core, does not invent labels, and does not consume evaluation-time
-information.
+Replays stored DecisionEvent/IncidentRecord classification tokens. This is
+NOT typed Double-Play producer semantic replay. Semantic reconstruction of
+producer output lives in double_play_semantic_replay_v1 and uses a distinct
+evaluator_id. This module does not call the trading core, does not invent
+labels, and does not consume evaluation-time information.
 """
 
 from __future__ import annotations

@@ -312,6 +312,32 @@ relations:
       producer-owned. Generic DDO DecisionResult is not a second trading enum.
       Observation only.
 
+  - id: REL:r_ddo_semantic_replay_reads_entry_exit_observation
+    source: RUNTIME_COMPONENT:ddo_double_play_semantic_replay_v1
+    type: READS
+    target: RUNTIME_COMPONENT:ddo_capture_v0
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py
+      - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
+    notes: >-
+      Offline reconstruction reads immutable typed observation evidence.
+      Does not mutate capture, ledger, or producer results. Not trading
+      authority.
+
+  - id: REL:r_ddo_semantic_replay_reads_entry_exit_policy
+    source: RUNTIME_COMPONENT:ddo_double_play_semantic_replay_v1
+    type: READS
+    target: RUNTIME_COMPONENT:dp_entry_exit_policy
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py
+      - src/trading/master_v2/double_play_entry_exit_policy_v0.py
+    notes: >-
+      Reuses producer types plus serialize_entry_exit_policy_decision_canonical
+      and compute_entry_exit_policy_semantic_digest. Does not call
+      evaluate_double_play_entry_exit_policy_v0. Not a second policy owner.
+
   - id: REL:r_ddo_capture_observes_scope_events
     source: RUNTIME_COMPONENT:ddo_capture_v0
     type: OBSERVES

@@ -27,6 +27,8 @@ Not competing generations. Historical Vollautonomie ordering vs current Master R
 
 | id | source | type | target | epistemic | evidence |
 | --- | --- | --- | --- | --- | --- |
+| REL:r_ddo_semantic_replay_reads_entry_exit_observation | RUNTIME_COMPONENT:ddo_double_play_semantic_replay_v1 | READS | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=FORENSIC_RAW | src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py,src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py |
+| REL:r_ddo_semantic_replay_reads_entry_exit_policy | RUNTIME_COMPONENT:ddo_double_play_semantic_replay_v1 | READS | RUNTIME_COMPONENT:dp_entry_exit_policy | STATUS=FORENSIC_RAW | src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py,src/trading/master_v2/double_play_entry_exit_policy_v0.py |
 | REL:s_dp_contains_dp_capital_slot | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_capital_slot | STATUS=ADJUDICATED | src/trading/master_v2/double_play_composition.py,docs/system_atlas/census/master_v2_semantic_map.yaml |
 | REL:s_dp_contains_dp_composition | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_composition | STATUS=ADJUDICATED | src/trading/master_v2/double_play_composition.py,docs/system_atlas/census/master_v2_semantic_map.yaml |
 | REL:s_dp_contains_dp_core_wiring | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_core_wiring | STATUS=ADJUDICATED | src/trading/master_v2/double_play_composition.py,docs/system_atlas/census/master_v2_semantic_map.yaml |

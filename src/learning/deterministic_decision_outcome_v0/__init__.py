@@ -125,6 +125,10 @@ from src.learning.deterministic_decision_outcome_v0.promotion_records_v0 import 
     build_rollback_record_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.registry_v0 import OfflineLearningRegistryV0
+from src.learning.deterministic_decision_outcome_v0.double_play_semantic_replay_v1 import (
+    classifier_replay_is_distinct_from_semantic_replay_v1,
+    replay_double_play_typed_observation_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.replay_evaluator_v0 import (
     classify_decision_event_v0,
     classify_incident_record_v0,
@@ -227,6 +231,7 @@ __all__ = [
     "build_rollback_record_v0",
     "build_validation_evidence_pack_v0",
     "canonical_json_dumps_v0",
+    "classifier_replay_is_distinct_from_semantic_replay_v1",
     "classify_decision_event_v0",
     "classify_incident_record_v0",
     "compare_challenger_v0",
@@ -245,6 +250,7 @@ __all__ = [
     "ingest_existing_owner_artifact_v0",
     "observe_unbound_experiment_ref_v0",
     "persist_evaluation_bundle_v0",
+    "replay_double_play_typed_observation_v1",
     "replay_ledger_record_v0",
     "replay_same_incident_inputs_same_classification_v0",
     "replay_same_inputs_same_classification_v0",
