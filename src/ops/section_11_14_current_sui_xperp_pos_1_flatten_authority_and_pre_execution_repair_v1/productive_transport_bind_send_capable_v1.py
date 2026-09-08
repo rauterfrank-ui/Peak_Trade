@@ -1,8 +1,8 @@
 """Send-capable productive transport bind. Distinct from NO_SEND bind.
 
 send-capable means this bind may represent a future send path. It does not
-mean send is currently allowed. send_permitted stays false unless a later
-explicit gate sets it. No constructor I/O.
+mean send is currently allowed. Bind-level send_permitted stays false.
+Adapter.send_permitted is the explicit later seam. No constructor I/O.
 """
 
 from __future__ import annotations
@@ -122,6 +122,4 @@ def assert_productive_transport_bind_send_capable_v1(
         return reasons
     if bind.adapter.inner_send_executed is True:
         reasons.append("INNER_SEND_MUST_REMAIN_UNEXECUTED")
-    if bind.adapter.send_permitted is True:
-        reasons.append("SEND_PERMITTED_MUST_NOT_AUTO_PROMOTE")
     return reasons

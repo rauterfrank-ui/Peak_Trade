@@ -1,8 +1,9 @@
 """Productive wire-send orchestrator. Consumes evaluator results. Never sends.
 
 Does not arm. Does not overwrite a bound adapter.session_armed=true with
-a standing caller false. Does not set network_session_authorized. Does not
-consume. Does not invoke inner.send.
+a standing caller false. Does not overwrite a bound adapter.send_permitted=true
+with bind.send_permitted false. Does not set network_session_authorized.
+Does not consume. Does not invoke inner.send.
 """
 
 from __future__ import annotations
@@ -114,7 +115,8 @@ def run_productive_wire_send_orchestrator_v1(
             reasons.append("WIRE_SEND_ENVELOPE_MISMATCH")
 
     gate_order.append("SEND_PERMITTED")
-    if bind is None or bind.send_permitted is not True:
+    bound_permitted = bind is not None and bind.adapter.send_permitted is True
+    if bound_permitted is not True:
         reasons.append("SEND_PERMITTED_FALSE")
 
     adapter_error = ""
@@ -123,7 +125,7 @@ def run_productive_wire_send_orchestrator_v1(
         bind.adapter.wire_send_accepted = wire_verdict.get("accepted") is True
         bind.adapter.session_accepted = session_verdict.get("accepted") is True
         bind.adapter.session_armed = effective_armed
-        bind.adapter.send_permitted = bind.send_permitted is True
+        bind.adapter.send_permitted = bound_permitted
         try:
             bind.adapter.post(endpoint=endpoint, body=dict(body or {}))
         except FlattenWrapperError as exc:
@@ -152,8 +154,12 @@ def run_productive_wire_send_orchestrator_v1(
         "NETWORK_SESSION_AUTHORIZED_CHANGED": False,
         "SESSION_ARMED": effective_armed,
         "SESSION_ARMING_EXECUTED": False,
-        "SEND_PERMITTED": bind.send_permitted is True if bind is not None else False,
+        "SEND_PERMITTED": bound_permitted,
         "INNER_SEND_EXECUTED": False,
+        "FAKE_INNER_SEND_REACHED": False,
+        "REAL_INNER_SEND_EXECUTED": False,
+        "GET_PERFORMED": False,
+        "REPRICE_EXECUTED": False,
         "WIRE_SEND_EXECUTED": False,
         "REAL_POST_COUNT": 0,
         "POST_COUNT": 0,

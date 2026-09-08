@@ -72518,6 +72518,135 @@ The runtime path then stops at `SEND_PERMITTED_FALSE` before `inner.send`.
 or merge from this persist. A later send-permitted GO would still **not**
 authorize wire send.
 
+### 11.14 SEND_PERMITTED (BOUND; ADAPTER SEND_PERMITTED SEAM IMPLEMENTED; NO INNER.SEND; NO POST; SECTION 11.14 NOT COMPLETE)
+
+Additive persist. Does **not** rewrite the persist fields above. Does
+**not** invoke `inner.send`. Does **not** GET. Does **not** POST. Does
+**not** reprice. Does **not** consume durable state. Does **not** change
+`network_session_authorized`. Does **not** change `session_armed`. Does
+**not** mutate standing Live gates. Does **not** flip
+`SESSION_ARMING_STANDING`. Does **not** mark §11.14 complete.
+`ConstructiveProductiveFlattenSubmitAdapterV1` remains NO_SEND.
+Bind-level `bind.send_permitted` remains false.
+
+Census (`FORENSIC_RAW`): no named `OWNER_SEND_PERMITTED` schema existed.
+`send_permitted` was a bind/adapter field with constructor false. This GO
+covers only `permit_productive_send_v1`.
+
+`permit_productive_send_v1` binds to existing send-capable fields:
+`OWNER_PRODUCTIVE_WIRE_SEND_AUTHORITY_V1` issued/accepted/unconsumed,
+predecessor `OWNER_NETWORK_SESSION_AUTHORITY_V1`, bound inner
+`network_session_authorized=true`, bound adapter `session_armed=true`,
+`origin_main_sha`, `instrument_id`, `exact_envelope_id`, send-capable
+bind identity. Mismatch denies.
+
+The orchestrator treats bound `adapter.send_permitted=true` as permitted
+even when bind-level `send_permitted` remains false. It must not
+overwrite that bound true with bind-level false. After successful
+permission the path leaves `SEND_PERMITTED_FALSE` and stops at existing
+`INNER_SEND_NOT_INVOKED_IN_THIS_IMPLEMENTATION` before `inner.send`.
+The adapter does not call `inner.send`.
+
+``` text
+OWNER_GO=OWNER_SEND_PERMITTED_GO
+OWNER_GO_STATUS=CONSUMED_BOUND_SEND_PERMITTED_ONLY_NO_INNER_SEND_NO_POST
+OWNER_GO_CONSUMED=false
+AUTHORIZATION_PRESENT=true_for_bound_send_permitted_only
+AUTHORITY_CLASS=R1_SEND_PERMITTED_IMPLEMENTED_NO_INNER_SEND_NO_POST
+RISK_CLASS=R1_OFFLINE_IMPLEMENTATION_NO_SUBMIT_NO_VENUE_MUTATION
+PERSIST_CLASS=SECTION_11_14_SEND_PERMITTED_SSOT_PERSIST
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+ATLAS_AUTHORITY=NONE
+CHAT_TRANSCRIPT_AUTHORITY=NONE
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=dd13d0308a24d3be3446e3bea9e7d962b6eaf7b1
+EXPECTED_ORIGIN_MAIN_SHA=dd13d0308a24d3be3446e3bea9e7d962b6eaf7b1
+BOUND_ENVELOPE_ORIGIN_MAIN_SHA=565cee16783ba0a3f1aea606626bf6418bad21e8
+PREDECESSOR_SLICE=11.14.SESSION_ARMING
+THIS_SLICE=11.14.SEND_PERMITTED
+CURRENT_PHASE=11.14.SEND_PERMITTED
+CURRENT_CANONICAL_SECTION=11.14.SEND_PERMITTED
+LAST_CANONICALLY_CLOSED_STEP=SECTION_11_14_SEND_PERMITTED
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+SEND_PERMISSION_IMPLEMENTED=true
+SEND_PERMISSION_SYMBOL=permit_productive_send_v1
+SESSION_ARMING_IMPLEMENTED=true
+NETWORK_SESSION_INSTANCE_AUTHORIZATION_IMPLEMENTED=true
+WIRE_SEND_AUTHORITY_EVALUATOR_IMPLEMENTED=true
+ORCHESTRATOR_IMPLEMENTED=true
+SEND_CAPABLE_BIND_IMPLEMENTED=true
+SEND_ADAPTER_IMPLEMENTED=true
+PRODUCER_IMPLEMENTED=false
+NO_SEND_ADAPTER_SEMANTICS_CHANGED=false
+PRODUCTIVE_TRANSPORT_BIND_KIND_NO_SEND_UNCHANGED=true
+INNER_11_13_5_TRANSPORT_CHANGED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+CANARY_AUTHORIZED=false
+POST_ALLOWED=false
+SESSION_ARMING_STANDING=false
+SESSION_ARMED=true
+SESSION_ARMING_EXECUTED=false
+NETWORK_SESSION_AUTHORIZED=true
+BIND_LEVEL_NETWORK_SESSION_AUTHORIZED=false
+SEND_PERMITTED=true
+BIND_LEVEL_SEND_PERMITTED=false
+SEND_PERMISSION_CHANGED=true
+GET_PERFORMED=false
+POST_PERFORMED=false
+INNER_SEND_EXECUTED=false
+FAKE_INNER_SEND_REACHED=false
+REAL_INNER_SEND_EXECUTED=false
+WIRE_SEND_EXECUTED=false
+FLATTEN_EXECUTED=false
+DURABLE_CONSUMED=false
+POSITION_MUTATION_EXECUTED=false
+REPRICE_EXECUTED=false
+REAL_POST_COUNT=0
+SUBMIT_ATTEMPT_COUNT=0
+OWNER_EXECUTION_AUTHORIZED=false
+FLATTEN_AUTHORIZED=false
+GATE_ORDER_STATUS=PARTIAL_PROVEN_WITH_OPEN_POINTS
+OPEN_GATE_ORDER_POINTS=FRESH_PRE_SUBMIT_GET;ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND;RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER;DURABLE_CONSUME_SUCCESS_OBJECT
+CURRENT_CANONICAL_BOUNDARY=INNER_SEND_NOT_INVOKED_IN_THIS_IMPLEMENTATION
+EARLIEST_UNRESOLVED_RUNTIME_GATE=INNER_SEND
+NEXT_OWNER_AUTHORITY_REQUIRED=OWNER_INNER_SEND_GO
+NEXT_SLICE_AUTHORIZED=false
+CASE_ADJUDICATION=CASE_SEND_PERMITTED_FAIL_CLOSED_BEFORE_INNER_SEND
+```
+
+A. Seam. `permit_productive_send_v1` sets only bound
+`adapter.send_permitted`. It does not mint, GET, POST, send, consume,
+arm, or authorize the network session.
+
+B. Binding. Existing send-capable fields only. No invented bind keys.
+No `OWNER_SEND_PERMITTED` schema.
+
+C. Non-execution. `POST_PERFORMED=false`. `INNER_SEND_EXECUTED=false`.
+`FAKE_INNER_SEND_REACHED=false`. `REAL_INNER_SEND_EXECUTED=false`.
+`WIRE_SEND_EXECUTED=false`. `DURABLE_CONSUMED=false`.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/
+SPEC_OWNER=docs/ops/specs/SECTION_11_14_SEND_PERMITTED_V1.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_14
+CURRENT_CANONICAL_SECTION=11.14.SEND_PERMITTED
+HARD_STOP_AFTER_THIS_TASK=true
+HARD_STOP=true
+```
+
+Hard stop. The bound send-capable adapter may represent `send_permitted=true`.
+The runtime path then stops at `INNER_SEND_NOT_INVOKED_IN_THIS_IMPLEMENTATION`
+before `inner.send`. `SECTION_11_14_AUTHORIZED=false`.
+`SECTION_11_14_COMPLETE=false`. Do **not** invoke `inner.send`, GET,
+reprice, POST, wire-send, consume, flatten, push, PR, or merge from this
+persist. A later inner-send GO would still **not** authorize HTTP POST.
+
 ## 11.15 Full-autonomy observability and audit trail
 
 The autonomous runtime must expose enough telemetry for oversight without
