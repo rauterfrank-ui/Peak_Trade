@@ -2307,6 +2307,7 @@ entities:
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: PHASE:section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair
+    # reviewed: frozen-bind rebind GET pack 20260908T020302Z; no Owner Flatten GO; ATLAS_AUTHORITY=NONE
     kind: PHASE
     modified_by: PENDING_CHANGE
     name: 11.14.CURRENT_SUI_XPERP_POS_1_FLATTEN_AUTHORITY_AND_PRE_EXECUTION_REPAIR
@@ -2330,6 +2331,8 @@ entities:
       - src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/position_recon_v1.py
       - src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/productive_transport_adapter_v1.py
       - scripts/ops/run_section_11_14_current_flatten_get_only_preflight_v1.py
+      - scripts/ops/run_section_11_14_canonical_owner_issuance_repair_v1.py
+      - scripts/ops/run_section_11_14_owner_go_pre_wire_validation_v1.py
     evidence_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/SECTION_11_14_CURRENT_SUI_XPERP_POS_1_FLATTEN_AUTHORITY_AND_PRE_EXECUTION_REPAIR_V1.md
@@ -2338,13 +2341,18 @@ entities:
       - tests/ops/test_section_11_14_owner_flatten_issuance_v1.py
       - tests/ops/test_section_11_14_current_flatten_execution_harness_v1.py
       - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
+      - evidence/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/20260908T020302Z/
+      - evidence/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/20260908T003929Z/
     notes: >-
       §11.14 current pos=1 flatten authority and pre-execution repair.
-      Flatten-GO contract defined. No Owner Flatten GO issued.
-      GET-only SELL preflight. Current-SHA wrapper fail-closed.
-      No POST. No flatten. VENUE_REDUCE_ONLY_NO_FLIP=UNPROVEN.
-      HOST_CRASH_DURABILITY=UNPROVEN. OWNER_EXECUTION_AUTHORIZED=false.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+      Flatten-GO contract defined. No Owner Flatten GO issued by this
+      rebind. Current producer bind is GET pack 20260908T020302Z on
+      origin/main 02219bbf. Historical freeze 20260908T003929Z remains
+      historical and is not a current submit grant. GET-only SELL
+      preflight. Current-SHA wrapper fail-closed. No POST. No flatten.
+      VENUE_REDUCE_ONLY_NO_FLIP=UNPROVEN. HOST_CRASH_DURABILITY=UNPROVEN.
+      OWNER_EXECUTION_AUTHORIZED=false. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
