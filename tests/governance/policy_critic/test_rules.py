@@ -180,8 +180,7 @@ class TestNoSecretsRule:
         )
         concatenated = f"+++ b/{replay_py}\n+REPLAY_CLASS_OWNER_TOKEN=" + owner + "\n"
         composed = (
-            f"+++ b/{replay_py}\n"
-            '+REPLAY_CLASS_OWNER_TOKEN composed as LETTER + "_" + SEMANTIC\n'
+            f'+++ b/{replay_py}\n+REPLAY_CLASS_OWNER_TOKEN composed as LETTER + "_" + SEMANTIC\n'
         )
         blocked = rule.check(concatenated, [replay_py])
         assert len(blocked) == 1
