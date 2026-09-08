@@ -73637,6 +73637,155 @@ COMPLETED consume is gated on it. `SECTION_11_14_AUTHORIZED=false`.
 HMAC, POST, wire-send, consume against a live send, flatten, or merge
 from this persist. `RECEIPT_MISSING` remains OPEN.
 
+The historical DURABLE_CONSUME_SUCCESS_OBJECT next pointer
+`RECEIPT_MISSING` is **consumed** only as the attachable receipt-mint
+persist below (§11.14.RECEIPT_MISSING). That successor mints and
+one-shot-attaches an allowed `FlattenPreSendGateReceiptV1` as an
+offline attest. It does **not** generate HMAC or OK-ACCESS headers, does
+**not** HTTP POST, does **not** GET, and does **not** close
+`HMAC_GENERATION`.
+
+### 11.14 RECEIPT_MISSING (BOUND; ATTACHABLE MINT; ONE-SHOT ATTACH; FIRST_DENY_AFTER=UNSIGNED_PRODUCTIVE_HEADERS; NO HMAC; NO POST; SECTION 11.14 NOT COMPLETE)
+
+Additive persist. Does **not** rewrite the persist fields above. Does
+**not** HMAC-sign a POST. Does **not** generate OK-ACCESS headers. Does
+**not** issue, verify-for-send, or consume
+`OWNER_PRODUCTIVE_WIRE_SEND_AUTHORITY_V1`. Does **not** authorize a
+network session. Does **not** GET. Does **not** HTTP POST. Does **not**
+consume durable state against a live send. Does **not** rebind envelope
+`0a0133a3b82e4a15bf6986605a9a8e6b47b22665b485ff0f570200803f21cdbe`.
+Does **not** mutate standing Live gates. Does **not** mark §11.14
+complete. `ConstructiveProductiveFlattenSubmitAdapterV1` remains
+NO_SEND. Historical subordinate `OPEN_GATE_ORDER_POINTS` tuples,
+including `productive_wire_send_orchestrator_v1.OPEN_GATE_ORDER_POINTS`,
+are **not** SSOT and are left unchanged.
+
+Mint (`CANONICAL`):
+
+`mint_flatten_pre_send_attachable_receipt_v1` reuses
+`evaluate_flatten_pre_send_gate_v1`. An attachable mint requires a typed
+`FlattenPreSendGateInputV1`, matching `expected_origin_main_sha` when
+supplied, `allowed=true`, nonempty `approved_request_identity`, nonempty
+`request_body` &#47; `approved_body_text`, and an unconsumed send lease.
+Missing or wrong-type input, stale SHA, producer `allowed=false`,
+missing identity&#47;body, or an already-consumed lease cannot mint.
+Q1 remains: this mint may precede wire-send authority. It is an offline
+attest, not wire-send verify and not wire-send consume.
+
+Attach (`CANONICAL`):
+
+`attach_flatten_pre_send_receipt_once_v1` reuses
+`AuthenticatedGatedProductiveFlattenTransportV1.attach_pre_send_receipt`.
+Duplicate attach is `RECEIPT_ALREADY_ATTACHED_NO_REWRITE`. A consumed
+lease cannot attach. A denied or untyped receipt cannot attach.
+
+Remaining boundary (`CANONICAL`):
+
+After a minted receipt is attached, unsigned `send()` first-denies
+`UNSIGNED_PRODUCTIVE_HEADERS` before lease consume and urllib.
+`HMAC_GENERATION_WIRED=false`. HMAC generation still requires successful
+verify &#47; accept of `OWNER_PRODUCTIVE_WIRE_SEND_AUTHORITY_V1`. The
+orchestrator path that still invokes productive `send` without this mint
+remains fail-closed at `RECEIPT_MISSING` and is not rewritten.
+
+``` text
+OWNER_GO=RECEIPT_MISSING
+OWNER_GO_STATUS=CONSUMED_RECEIPT_MISSING_ATTACHABLE_MINT_UNSIGNED_HEADERS_NO_HMAC_NO_POST
+OWNER_GO_CONSUMED=false
+AUTHORIZATION_PRESENT=true_for_receipt_missing_attachable_mint_only
+AUTHORITY_CLASS=R1_ATTACHABLE_RECEIPT_MINT_NO_HMAC_NO_POST
+RISK_CLASS=R1_NO_SUBMIT_NO_VENUE_MUTATION
+PERSIST_CLASS=SECTION_11_14_RECEIPT_MISSING_SSOT_PERSIST
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+ATLAS_AUTHORITY=NONE
+CHAT_TRANSCRIPT_AUTHORITY=NONE
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=a738004fda83f9b7df477400b8664949589bb52e
+EXPECTED_ORIGIN_MAIN_SHA=a738004fda83f9b7df477400b8664949589bb52e
+PREDECESSOR_SLICE=11.14.DURABLE_CONSUME_SUCCESS_OBJECT
+THIS_SLICE=11.14.RECEIPT_MISSING
+CURRENT_PHASE=11.14.RECEIPT_MISSING
+CURRENT_CANONICAL_SECTION=11.14.RECEIPT_MISSING
+LAST_CANONICALLY_CLOSED_STEP=SECTION_11_14_RECEIPT_MISSING
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+RECEIPT_MISSING=PROVEN
+RECEIPT_TYPE=FlattenPreSendGateReceiptV1
+RECEIPT_PRODUCER=evaluate_flatten_pre_send_gate_v1
+RECEIPT_CONSUMER=AuthenticatedGatedProductiveFlattenTransportV1.send
+RECEIPT_MINT_SOURCE=mint_flatten_pre_send_attachable_receipt_v1
+RECEIPT_ATTACH_SEAM=attach_flatten_pre_send_receipt_once_v1
+RUNTIME_RECEIPT_MINT_EXECUTED=true
+RECEIPT_MINT_IS_OFFLINE_ATTEST=true
+RECEIPT_MINT_IS_NOT_WIRE_SEND_VERIFY=true
+RECEIPT_MINT_IS_NOT_WIRE_SEND_CONSUME=true
+RECEIPT_SINGLE_USE=true
+Q1_CANONICAL=YES
+Q2_CANONICAL=NO
+Q3_CANONICAL=INNER_REPAIR_REQUIRED
+HMAC_GENERATION_WIRED=false
+RUNTIME_HMAC_EXECUTED=false
+HMAC_HEADER_GENERATED=false
+INNER_REPAIR_IMPLEMENTED=true
+LEASE_CONSUME_AFTER_LOCAL_PREWIRE_GATES=true
+LEASE_CONSUMED=false
+GET_PERFORMED=false
+POST_PERFORMED=false
+HTTP_POST_EXECUTED=false
+PRODUCTIVE_URLLIB_POST_EXECUTED=false
+WIRE_SEND_EXECUTED=false
+INNER_SEND_PRODUCTIVE_EXECUTED=false
+FLATTEN_EXECUTED=false
+DURABLE_CONSUMED=false
+POSITION_MUTATION_EXECUTED=false
+ENVELOPE_REBIND_EXECUTED=false
+REAL_POST_COUNT=0
+SUBMIT_ATTEMPT_COUNT=0
+FIRST_DENY_AFTER_ATTACHED_RECEIPT=UNSIGNED_PRODUCTIVE_HEADERS
+OWNER_EXECUTION_AUTHORIZED=false
+FLATTEN_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+CANARY_AUTHORIZED=false
+POST_ALLOWED=false
+GATE_ORDER_STATUS=OPEN_POINTS_CLOSED
+OPEN_GATE_ORDER_POINTS=
+OPEN_GATE_ORDER_BLOCKER=HMAC_GENERATION
+CURRENT_CANONICAL_BOUNDARY=UNSIGNED_PRODUCTIVE_HEADERS
+EARLIEST_UNRESOLVED_RUNTIME_GATE=HMAC_GENERATION
+NEXT_OWNER_AUTHORITY_REQUIRED=HMAC_GENERATION
+NEXT_SLICE_AUTHORIZED=false
+CASE_ADJUDICATION=CASE_A_RECEIPT_MISSING_ATTACHABLE_MINT_UNSIGNED_HEADERS
+```
+
+A. Non-execution. `HMAC_EXECUTED=false`. `POST_PERFORMED=false`.
+`WIRE_SEND_EXECUTED=false`. `LEASE_CONSUMED=false`.
+`DURABLE_CONSUMED=false`. `GET_PERFORMED=false`.
+
+B. Contract. Attachable receipt mint implemented. One-shot attach
+implemented. Duplicate attach remains fail-closed. Unsigned send after
+attach first-denies `UNSIGNED_PRODUCTIVE_HEADERS`.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/
+SPEC_OWNER=docs/ops/specs/SECTION_11_14_RECEIPT_MISSING_V1.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_14
+CURRENT_CANONICAL_SECTION=11.14.RECEIPT_MISSING
+HARD_STOP_AFTER_THIS_TASK=true
+HARD_STOP=true
+```
+
+Hard stop. Attachable pre-send receipt mint and one-shot attach are
+proven. Unsigned productive `send` after attach stops at
+`UNSIGNED_PRODUCTIVE_HEADERS`. `SECTION_11_14_AUTHORIZED=false`.
+`SECTION_11_14_COMPLETE=false`. Do **not** generate HMAC, POST,
+wire-send, consume against a live send, flatten, or merge from this
+persist. `HMAC_GENERATION` remains OPEN.
+
 ## 11.15 Full-autonomy observability and audit trail
 
 The autonomous runtime must expose enough telemetry for oversight without

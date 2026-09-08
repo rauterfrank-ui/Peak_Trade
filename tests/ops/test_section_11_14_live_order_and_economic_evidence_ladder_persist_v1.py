@@ -2386,6 +2386,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "11.14 ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND" in mot
     assert "11.14 RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER" in mot
     assert "11.14 DURABLE_CONSUME_SUCCESS_OBJECT" in mot
+    assert "11.14 RECEIPT_MISSING" in mot
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -2484,6 +2485,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "SECTION_11_14_ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND_V1.md" in mot
     assert "SECTION_11_14_RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER_V1.md" in mot
     assert "SECTION_11_14_DURABLE_CONSUME_SUCCESS_OBJECT_V1.md" in mot
+    assert "SECTION_11_14_RECEIPT_MISSING_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION_V1.md" in mot
@@ -3052,6 +3054,19 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "REAL_POST_COUNT=0" in success_spec
     assert "NEXT_OWNER_AUTHORITY_REQUIRED=RECEIPT_MISSING" in success_spec
     assert "FINAL_STATUS=DURABLE_CONSUME_SUCCESS_OBJECT_PROVEN_NO_POST" in success_spec
+    receipt_missing_spec = (
+        REPO_ROOT / "docs/ops/specs/SECTION_11_14_RECEIPT_MISSING_V1.md"
+    ).read_text(encoding="utf-8")
+    assert "DOCS_TOKEN_SECTION_11_14_RECEIPT_MISSING_V1" in receipt_missing_spec
+    assert "RECEIPT_MISSING=PROVEN" in receipt_missing_spec
+    assert "RUNTIME_RECEIPT_MINT_EXECUTED=true" in receipt_missing_spec
+    assert "HMAC_GENERATION_WIRED=false" in receipt_missing_spec
+    assert "POST_PERFORMED=false" in receipt_missing_spec
+    assert "WIRE_SEND_EXECUTED=false" in receipt_missing_spec
+    assert "REAL_POST_COUNT=0" in receipt_missing_spec
+    assert "CURRENT_CANONICAL_BOUNDARY=UNSIGNED_PRODUCTIVE_HEADERS" in receipt_missing_spec
+    assert "NEXT_OWNER_AUTHORITY_REQUIRED=HMAC_GENERATION" in receipt_missing_spec
+    assert "FINAL_STATUS=RECEIPT_MISSING_PROVEN_UNSIGNED_HEADERS_NO_POST" in receipt_missing_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -3177,6 +3192,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "id: PHASE:section_11_14_envelope_reprice_or_freshness_at_send" in catalog
     assert "id: PHASE:section_11_14_receipt_hmac_vs_wire_send_authority_order" in catalog
     assert "id: PHASE:section_11_14_durable_consume_success_object" in catalog
+    assert "id: PHASE:section_11_14_receipt_missing" in catalog
     assert (
         "id: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1" in catalog
     )

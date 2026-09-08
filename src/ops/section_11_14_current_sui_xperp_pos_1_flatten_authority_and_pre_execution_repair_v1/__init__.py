@@ -5,10 +5,11 @@ transport bind (no send), Owner Network-Session contract schema, Owner
 Productive Wire-Send schema, offline wire-send evaluator, send-capable
 bind, send adapter, send orchestrator, the network_session_authorized
 instance-flag seam, the bound session-arming seam, the bound
-send_permitted seam, the fake inner.send seam, and the productive
-inner.send fail-closed receipt boundary, and the flatten pre-send
-receipt authority adjudication. Does not flatten. Does not POST.
-Does not mint an attachable receipt. Evaluator does not mint.
+send_permitted seam, the fake inner.send seam, the productive
+inner.send fail-closed receipt boundary, the flatten pre-send
+receipt authority adjudication, and the RECEIPT_MISSING attachable
+mint. Does not flatten. Does not POST. Does not HMAC-sign.
 Constructive NO_SEND adapter semantics are unchanged. Productive
-inner.send is not HMAC, lease consume, HTTP POST, or wire-send.
+inner.send is not HMAC generation, lease consume, HTTP POST, or
+wire-send.
 """

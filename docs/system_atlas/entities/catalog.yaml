@@ -2629,6 +2629,28 @@ entities:
       generation. No POST. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: PHASE:section_11_14_receipt_missing
+    kind: PHASE
+    name: 11.14.RECEIPT_MISSING
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/receipt_missing_v1.py
+      - tests/ops/test_section_11_14_receipt_missing_v1.py
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/SECTION_11_14_RECEIPT_MISSING_V1.md
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - tests/ops/test_section_11_14_receipt_missing_v1.py
+      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
+    notes: >-
+      §11.14 RECEIPT_MISSING attachable pre-send receipt mint. Reuses
+      evaluate_flatten_pre_send_gate_v1. One-shot attach. Unsigned send
+      after attach first-denies UNSIGNED_PRODUCTIVE_HEADERS. No HMAC
+      generation. No GET. No POST. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
     name: Route-C create-path blocker census v1
