@@ -3767,7 +3767,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: PHASE:ddo_offline_foundation
-    # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; spec section 10 timeout UNSPECIFIED is historical at implementation persist; current isolation from spec section 10; current timeout policy from spec section 11 EXPLICIT_NONREQUIREMENT and Master Runbook
+    # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; spec section 10 timeout UNSPECIFIED is historical at implementation persist; current isolation from spec section 10; current timeout policy from spec section 11 EXPLICIT_NONREQUIREMENT; spec section 12 open-positions consolidation C_NO_NEXT_SCOPE_SELECTED; B BLOCKED; track not closed; Master Runbook
     kind: PHASE
     name: 11.13.5 Parallel-track DDO offline foundation
     epistemic_class: FORENSIC_RAW
@@ -4001,7 +4001,7 @@ entities:
       Not WP-FA-08.
 
   - id: RUNTIME_COMPONENT:ddo_double_play_producer_function_replay_v1
-    # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; spec section 10 timeout UNSPECIFIED is historical at implementation persist; current isolation from spec section 10; current timeout policy from spec section 11 EXPLICIT_NONREQUIREMENT and Master Runbook
+    # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; spec section 10 timeout UNSPECIFIED is historical at implementation persist; current isolation from spec section 10; current timeout policy from spec section 11 EXPLICIT_NONREQUIREMENT; spec section 12 open-positions consolidation C_NO_NEXT_SCOPE_SELECTED; B BLOCKED; track not closed; Master Runbook
     kind: RUNTIME_COMPONENT
     name: DDO Double-Play producer-function current-code replay v1
     epistemic_class: FORENSIC_RAW
