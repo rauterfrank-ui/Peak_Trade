@@ -2382,6 +2382,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "11.14 INNER_SEND_INVOCATION_SEAM" in mot
     assert "11.14 PRODUCTIVE_INNER_SEND_FAIL_CLOSED_RECEIPT_BOUNDARY" in mot
     assert "11.14 FLATTEN_PRE_SEND_RECEIPT_AUTHORITY_AND_BINDING" in mot
+    assert "11.14 FRESH_PRE_SUBMIT_GET_AND_FRESHNESS_ADJUDICATION" in mot
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -2476,6 +2477,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "SECTION_11_14_INNER_SEND_INVOCATION_SEAM_V1.md" in mot
     assert "SECTION_11_14_PRODUCTIVE_INNER_SEND_FAIL_CLOSED_RECEIPT_BOUNDARY_V1.md" in mot
     assert "SECTION_11_14_FLATTEN_PRE_SEND_RECEIPT_AUTHORITY_AND_BINDING_V1.md" in mot
+    assert "SECTION_11_14_FRESH_PRE_SUBMIT_GET_AND_FRESHNESS_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION_V1.md" in mot
@@ -2984,6 +2986,21 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "CURRENT_CANONICAL_BOUNDARY=RECEIPT_MISSING" in receipt_authority_spec
     assert "GET_PERFORMED=false" in receipt_authority_spec
     assert "POST_PERFORMED=false" in receipt_authority_spec
+    fresh_get_spec = (
+        REPO_ROOT
+        / "docs/ops/specs/SECTION_11_14_FRESH_PRE_SUBMIT_GET_AND_FRESHNESS_ADJUDICATION_V1.md"
+    ).read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_FRESH_PRE_SUBMIT_GET_AND_FRESHNESS_ADJUDICATION_V1"
+        in fresh_get_spec
+    )
+    assert "GET_PERFORMED=true" in fresh_get_spec
+    assert "ENVELOPE_FRESHNESS_STATUS=REPRICE_REQUIRED" in fresh_get_spec
+    assert "REPRICE_EXECUTED=false" in fresh_get_spec
+    assert "RECEIPT_ATTACHED=false" in fresh_get_spec
+    assert "POST_PERFORMED=false" in fresh_get_spec
+    assert "NEXT_OWNER_AUTHORITY_REQUIRED=ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND" in fresh_get_spec
+    assert "FINAL_STATUS=FRESH_GET_COMPLETE_REPRICE_AUTHORITY_REQUIRED" in fresh_get_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -3105,6 +3122,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "id: PHASE:section_11_14_inner_send_invocation_seam" in catalog
     assert "id: PHASE:section_11_14_productive_inner_send_fail_closed_receipt_boundary" in catalog
     assert "id: PHASE:section_11_14_flatten_pre_send_receipt_authority_and_binding" in catalog
+    assert "id: PHASE:section_11_14_fresh_pre_submit_get_and_freshness_adjudication" in catalog
     assert (
         "id: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1" in catalog
     )

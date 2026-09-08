@@ -1,0 +1,41 @@
+{
+  "ENVELOPE_REBUILD_FORBIDDEN": true,
+  "GET_CONTRACT_CANDIDATES": [
+    "/api/v5/account/positions",
+    "/api/v5/trade/orders-pending",
+    "/api/v5/market/ticker",
+    "/api/v5/public/instruments",
+    "/api/v5/public/price-limit",
+    "/api/v5/account/config",
+    "/api/v5/account/balance",
+    "/api/v5/account/leverage-info",
+    "/api/v5/account/max-size",
+    "/api/v5/account/trade-fee",
+    "/api/v5/public/mark-price",
+    "/api/v5/market/books"
+  ],
+  "GET_CONTRACT_CANDIDATE_COUNT": 12,
+  "GET_CONTRACT_STATUS": "DEFINED",
+  "NOT_REQUIRED_BY_RECEIPT_PRODUCER": [
+    "/api/v5/public/price-limit",
+    "/api/v5/account/config",
+    "/api/v5/account/balance",
+    "/api/v5/account/leverage-info",
+    "/api/v5/account/max-size",
+    "/api/v5/account/trade-fee",
+    "/api/v5/public/mark-price",
+    "/api/v5/market/books"
+  ],
+  "OTHER_FRESHNESS_INPUTS": "GET /api/v5/trade/orders-pending contemporaneous (no TTL; None=OPEN_ORDER_STATE_UNAVAILABLE; data=[] code=0 means zero pending rows); GET /api/v5/public/instruments tickSz identity (no TTL freshness predicate)",
+  "POSITION_FRESHNESS_CONTRACT": "GET /api/v5/account/positions unfiltered; classify_target_position_state_v1; EMPTY_DATA_IS_NOT_ZERO; ABSENT_TARGET_ROW_IS_NOT_ZERO; LOCAL_MONOTONIC_MS max-age=5000",
+  "PRE_SUBMIT_FRESH_GET_REQUIRED": true,
+  "QUOTE_FRESHNESS_CONTRACT": "GET /api/v5/market/ticker?instId=SUI-USD_UM_XPERP-310404; bidPx/askPx/ts; QUOTE_FRESHNESS_5000MS threshold_ms=5000; SELL selects BID; tickSz from public/instruments",
+  "REPRICE_FORBIDDEN": true,
+  "REQUIRED_FRESH_GET_COUNT": 4,
+  "REQUIRED_FRESH_GET_ENDPOINTS": [
+    "/api/v5/account/positions",
+    "/api/v5/market/ticker?instId=SUI-USD_UM_XPERP-310404",
+    "/api/v5/trade/orders-pending",
+    "/api/v5/public/instruments?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404"
+  ]
+}
