@@ -123,9 +123,15 @@ CURRENT_MARKET_OR_ACCOUNT_INJECTION_ALLOWED=false
 ENVIRONMENT_INJECTION_ALLOWED=false
 ```
 
-## 3. Observation isolation
+## 3. Observation isolation (historical at Owner-policy persist)
+
+The Owner-policy persist recorded the isolation gap below. That historical
+statement remains true for that persist. It must not be read as the later
+implementation status. Current isolation and implementation follow
+exclusively from §10 and the Master Runbook.
 
 ```text
+HISTORICAL_AT_OWNER_POLICY_PERSIST=true
 OBSERVATION_ISOLATION=GOVERNED_CAPTURE_DISABLED_NO_WRAPPED_BYPASS
 REPLAY_CAPTURE_ENABLED=false
 REPLAY_CAPTURE_SESSION_ISOLATION_REQUIRED=true
