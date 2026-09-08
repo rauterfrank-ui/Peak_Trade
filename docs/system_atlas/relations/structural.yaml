@@ -73,6 +73,17 @@ relations:
       Navigation only. Map of Truth defines no semantics. Atlas is not
       runtime authority.
 
+  - id: REL:s_map_navigates_mf_selector_anti_churn
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:mf_selector_consumption_and_anti_churn_ownership_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
   - id: REL:s_system_has_cap23
     source: SYSTEM:peak_trade
     type: HAS_CAPABILITY
