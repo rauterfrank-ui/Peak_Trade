@@ -72,6 +72,8 @@ def evaluate_current_sha_flatten_wrapper_v1(
     transport: FlattenSubmitTransportV1 | None = None,
     entry_owner_go: str | None = None,
     entry_purpose: str | None = None,
+    issuance: Mapping[str, Any] | None = None,
+    durable_consumed_authority_id: str = "",
 ) -> dict[str, Any]:
     """Structurally exist the flatten submit path. Default is deny / no POST."""
     reasons: list[str] = []
@@ -128,6 +130,8 @@ def evaluate_current_sha_flatten_wrapper_v1(
         order_qty=qty or "1",
         exact_envelope_id=envelope_id,
         entry_path=False,
+        issuance=issuance,
+        durable_consumed_authority_id=durable_consumed_authority_id,
     )
     if verdict.get("accepted") is not True:
         reasons.extend(str(item) for item in (verdict.get("reasons") or []))
