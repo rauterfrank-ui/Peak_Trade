@@ -498,13 +498,16 @@ Isolated domain (hard domain end; not a runtime path; not a host join):
 
 ``` text
 Cap 2.2 Top-20 Candidate Context
-→ future MF Selector
-→ future Active Set N
-→ future Membership Rotation
-→ unresolved Portfolio Selection
+→ MF Selector
+→ Active Set N
+→ Membership Rotation
 → NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY
 → HARD DOMAIN END
 ```
+
+Selector consumption and anti-churn **ownership** for that graph are
+persisted in §4.5.2. They do **not** ratify scoring, `N`, hygiene
+numerics, selector state, or a rotation policy.
 
 Existing productive system, cited **only** as negative constraint
 (must not be violated; not a later fit-target):
@@ -520,11 +523,74 @@ This workpackage creates **no** new edge between those graphs. It does
 **not** design a host adapter, Cap-2.4-compatible DTO, mapping into Cap
 2.3 or Cap 2.4, or authority handoff.
 
-Unresolved remains unresolved: `N` including `N=5`; MF scoring;
-selector policy; rotation numerics; hysteresis/cooldown/turnover;
-Portfolio Selection P1/P2/P3; `P4_UNRESOLVED`; context persistence
-while G13 closed; PHASE-8 runtime semantics. Authority handoff and host
-integration remain `NOT_DESIGNED` / `NOT_IN_SCOPE`.
+Unresolved remains unresolved: `N` including `N=5`; exactly-N vs
+at-most-N; MF scoring; selector state; rotation numerics;
+hysteresis/cooldown/turnover **numerics**; membership-only
+transition-pending; context persistence while G13 closed; PHASE-8
+runtime semantics. Portfolio Selection is classified
+`P2_ALIAS_OR_PART_OF_SELECTOR` and is **not** a core-model node
+(§4.5.2). Authority handoff and host integration remain
+`NOT_DESIGNED` / `NOT_IN_SCOPE`.
+
+### 4.5.2 Isolated MF selector consumption and anti-churn ownership (docs-only; AUTHORITY_EFFECT=NONE)
+
+Owner-GO
+`OWNER_GO_MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_PERSIST_V1`
+persists already-adjudicated isolated-domain selector consumption and
+anti-churn ownership. This subsection does **not** replace §4.5 or
+§4.5.1, does **not** rewire Cap 2.3 or Cap 2.4, does **not** unlock
+G13, and does **not** create a join into the productive system.
+
+Subordinate contract:
+`docs&#47;ops&#47;specs&#47;MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1.md`.
+
+``` text
+CONTRACT_ID=MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1
+CONTRACT_CLASS=NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY
+AUTHORITY_EFFECT=NONE
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CONTEXT_ONLY=true
+SELECTION_AUTHORITY=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+G13_UNLOCK=false
+CAP23_REMAINS_SOLE_SELECTION_OWNER=true
+CAP24_REWIRED=false
+INTEGRATION_STATUS=NOT_IN_SCOPE
+HOST_ADAPTER_STATUS=NOT_DESIGNED
+HOST_CONSUMER_STATUS=NONE
+AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
+NEW_EDGE_TO_PRODUCTIVE_SYSTEM=false
+TOP20_ROLE=CANDIDATE_CONTEXT_ONLY
+SELECTOR_ROLE=PROPOSE_MEMBERSHIP_FROM_TOP20_CANDIDATE_CONTEXT
+SELECTOR_CARDINALITY_OWNER=ACTIVE_SET
+SELECTOR_STATE_OWNER=UNPROVEN
+ACTIVE_SET_ROLE=NON_AUTHORITATIVE_MEMBERSHIP_COMPOSITION
+ACTIVE_SET_N_STATUS=UNRATIFIED
+N_VALUE=UNRESOLVED
+TOP5_STATUS=POSSIBLE_CONFIGURATION_ONLY
+ROTATION_ROLE=MEMBERSHIP_DIFF_ONLY
+ROTATION_IS_MEMBERSHIP_ONLY=true
+ROTATION_IS_NOT_ANTI_CHURN_OWNER=true
+PORTFOLIO_SELECTION_CLASSIFICATION=P2_ALIAS_OR_PART_OF_SELECTOR
+PORTFOLIO_SELECTION_NODE=OUT_OF_CORE_MODEL
+ANTI_CHURN_OWNER=SELECTOR
+TIE_BREAK_CORE_OWNER=UNRESOLVED
+HYSTERESIS_CORE_OWNER=SELECTOR
+MIN_HOLDING_CORE_OWNER=SELECTOR
+FRESHNESS_CORE_OWNER=BOUNDARY
+FAIL_CLOSED_INTEGRITY_CORE_OWNER=BOUNDARY
+NUMERICS_RATIFIED=false
+SSF_SEMANTICS_IMPORTED=false
+MF_SCORING_RATIFIED=false
+ROTATION_POLICY_RATIFIED=false
+POLICY_RATIFIED=false
+RUNTIME_IMPLEMENTATION_CREATED=false
+```
+
+This persist does **not** ratify `N=5`, exactly-N vs at-most-N, MF
+scoring, selector state, hygiene numerics, a membership-only
+transition-pending node, context persistence while G13 closed, or
+whether `rotation_deltas` is a stage versus a derived identity.
 
 ## 4.6 Volatility authority
 

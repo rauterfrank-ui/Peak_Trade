@@ -84,10 +84,9 @@ Isolated domain:
 
 ```text
 Cap 2.2 Top-20 Candidate Context
-→ future MF Selector
-→ future Active Set N
-→ future Membership Rotation
-→ unresolved Portfolio Selection
+→ MF Selector
+→ Active Set N
+→ Membership Rotation
 → NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY
 → HARD DOMAIN END
 ```
@@ -121,8 +120,12 @@ constraint: these invariants must not be violated.
 It must **not** be used as: this contract must later fit that host.
 
 Nodes on the isolated graph after Top-20 candidate context remain
-`UNRESOLVED` / `NOT_AUTHORIZED`. Naming them here is topology, not
-ratification.
+`UNRESOLVED` / `NOT_AUTHORIZED` for scoring, `N`, hygiene **numerics**,
+selector state, and rotation policy. Selector **role** and anti-churn
+**ownership** are persisted in the subordinate contract
+[`MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1.md`](MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1.md).
+Naming them in this boundary file is topology plus that persist
+pointer, not scoring ratification and not host join.
 
 ## 3. Domain boundary
 
@@ -350,11 +353,11 @@ This contract does **not** ratify, default, design, or implicitly close:
 |---|---|
 | `N` including `N=5` | `UNRESOLVED` / `UNRATIFIED` / `NOT_AUTHORIZED` |
 | MF scoring contract | `ABSENT` / `UNRESOLVED` / `NOT_AUTHORIZED` |
-| Selector policy | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` |
+| Selector policy / scoring | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` |
+| Selector role / anti-churn ownership | persisted in `MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1`; not scoring; not numerics |
 | Rotation numerics | `UNRESOLVED` / `NOT_AUTHORIZED` |
-| Hysteresis / cooldown / turnover | `UNRESOLVED` / `NOT_AUTHORIZED` |
-| Portfolio Selection P1 / P2 / P3 | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` |
-| Portfolio Selection P4 | `P4_UNRESOLVED` / `NOT_AUTHORIZED` |
+| Hysteresis / cooldown / turnover **numerics** | `UNRESOLVED` / `NOT_AUTHORIZED` |
+| Portfolio Selection node | `P2_ALIAS_OR_PART_OF_SELECTOR` / `OUT_OF_CORE_MODEL` / `NOT_AUTHORIZED` as a distinct stage |
 | Context persistence while G13 closed | `UNPROVEN` / `UNRESOLVED` / `NOT_AUTHORIZED` |
 | Authority handoff | `NOT_DESIGNED` / `NOT_IN_SCOPE` / `NOT_AUTHORIZED` |
 | Host adapter | `NOT_DESIGNED` / `NOT_IN_SCOPE` |
@@ -370,6 +373,7 @@ ROTATION_POLICY_RATIFIED=false
 ROTATION_NUMERICS_RATIFIED=false
 HYSTERESIS_COOLDOWN_TURNOVER_RATIFIED=false
 PORTFOLIO_SELECTION_RATIFIED=false
+PORTFOLIO_SELECTION_NODE=OUT_OF_CORE_MODEL
 PERSISTENCE_WHILE_G13_CLOSED=UNPROVEN
 AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
 AUTHORITY_HANDOFF_RATIFIED=false
