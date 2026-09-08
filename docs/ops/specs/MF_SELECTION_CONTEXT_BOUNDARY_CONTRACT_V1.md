@@ -1,0 +1,425 @@
+---
+docs_token: DOCS_TOKEN_MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1
+status: active
+scope: Docs-only isolated-domain boundary for NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY; no host adapter; no Cap-2.3/2.4 join
+capability: NONE
+architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
+last_updated: 2026-09-08
+LIVE_AUTHORIZED: false
+ORDERS_ALLOWED: false
+RUNTIME_ACTIVATION_ALLOWED: false
+MULTI_FUTURE_RUNTIME_AUTHORIZED: false
+SELECTION_AUTHORITY: false
+ALPHA_ALLOWED: false
+G13_UNLOCK: false
+HARD_STOP: true
+---
+
+# MF Selection Context Boundary Contract V1
+
+```text
+DOCUMENT_CLASS=DOCS_ONLY_NON_AUTHORIZING_BOUNDARY_CONTRACT
+AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK
+OWNER_GO_THIS_SLICE=OWNER_GO_MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1
+BOUND_ORIGIN_MAIN_SHA=b8bbc6812ec951354981e6628a289e8fe3db06a2
+CONTRACT_ID=MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1
+CONTRACT_CLASS=NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY
+AUTHORITY_EFFECT=NONE
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CONTEXT_ONLY=true
+SELECTION_AUTHORITY=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+ALPHA_ALLOWED=false
+G13_UNLOCK=false
+CAP23_REMAINS_SOLE_SELECTION_OWNER=true
+CAP24_REWIRED=false
+CAPABILITY_CREATED=false
+PRODUCTIVE_SCHEMA_CREATED=false
+RUNTIME_IMPLEMENTATION_CREATED=false
+INTEGRATION_STATUS=NOT_IN_SCOPE
+HOST_ADAPTER_STATUS=NOT_DESIGNED
+HOST_CONSUMER_STATUS=NONE
+AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
+ISOLATION_INVARIANT=HARD_DOMAIN_END
+NEW_EDGE_TO_PRODUCTIVE_SYSTEM=false
+```
+
+This file is the **single docs-only contract** for the isolated-domain
+boundary class `NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY`.
+
+It does **not** create a capability, a productive schema, a producer, a
+consumer, a host adapter, a Cap-2.4-compatible DTO, a mapping into Cap
+2.3 or Cap 2.4, or an authority handoff.
+
+Master Runbook SSOT pointer: §4.5 / §4.5.1.
+
+## 1. Purpose
+
+Name and bound an **isolated** multi-future membership-context class so
+that later work cannot silently treat ranking, dashboard, allowlist,
+rotation reminder, R6 shadow/sim, or portfolio surfaces as selection,
+alpha, multi-future runtime, or **host input**.
+
+This contract exists to keep that class:
+
+- named
+- isolated from the productive Peak_Trade system
+- non-authoritative
+- context-only
+- fail-closed when absent, stale, or over-read
+- terminated at a hard domain end
+
+```text
+PURPOSE=NAME_AND_BOUND_ISOLATED_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY
+NOT_PURPOSE=IMPLEMENT_PRODUCE_CONSUME_SELECT_ROTATE_SCORE_AUTHORIZE_OR_JOIN_HOST
+```
+
+## 2. Isolation invariant (hard requirement)
+
+The multi-future selection domain is **fully isolated** from the
+existing productive Peak_Trade system. This workpackage creates **no**
+new edge between the two graphs.
+
+Isolated domain:
+
+```text
+Cap 2.2 Top-20 Candidate Context
+→ future MF Selector
+→ future Active Set N
+→ future Membership Rotation
+→ unresolved Portfolio Selection
+→ NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY
+→ HARD DOMAIN END
+```
+
+Existing productive system (cited **only** as negative constraint):
+
+```text
+Cap 2.2
+→ Cap 2.3 SINGLE_SELECTED_FUTURE
+→ Cap 2.4
+→ Recon / Master V2 / Double Play / Risk / Safety / Intent / Execution
+```
+
+```text
+ISOLATED_DOMAIN_TERMINUS=HARD_DOMAIN_END
+INTEGRATION_STATUS=NOT_IN_SCOPE
+HOST_ADAPTER_STATUS=NOT_DESIGNED
+HOST_CONSUMER_STATUS=NONE
+AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
+NEW_GRAPH_EDGE_CREATED=false
+CAP24_COMPATIBLE_DTO=NOT_DESIGNED
+MF_TO_CAP23_MAPPING=NOT_DESIGNED
+MF_TO_CAP24_MAPPING=NOT_DESIGNED
+HOST_CONSUMPTION_ANTICIPATED=false
+BOUNDARY_OUTPUT_IS_FUTURE_HOST_INPUT=false
+```
+
+The existing productive system may be used **only** as a negative
+constraint: these invariants must not be violated.
+
+It must **not** be used as: this contract must later fit that host.
+
+Nodes on the isolated graph after Top-20 candidate context remain
+`UNRESOLVED` / `NOT_AUTHORIZED`. Naming them here is topology, not
+ratification.
+
+## 3. Domain boundary
+
+```text
+ISOLATED_DOMAIN_ORIGIN=CAP_2_2_TOP20_CANDIDATE_CONTEXT_ONLY
+MF_DOMAIN=CONTEXT_ONLY
+BOUNDARY_CLASS=NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY
+BOUNDARY_STATUS=HARD_DOMAIN_END
+CURRENT_SELECTION_MODE=SINGLE_SELECTED_FUTURE
+MAX_POSITIONS_EFFECTIVE=1
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+G13_STATUS=INTENTIONAL_SAFETY_BARRIER
+G13_UNLOCK=false
+```
+
+Cap 2.2 Top-20 is **candidate context only**. It is the origin of the
+isolated domain. It is **not** a host adapter, not a join to Cap 2.3,
+and not a join to Cap 2.4.
+
+## 4. Negative constraints from the existing productive system
+
+These are **invariants that must not be violated**. They are **not** a
+target shape for later integration.
+
+```text
+CURRENT_SELECTION_OWNER=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1
+CAP22_ROLE=CANDIDATE_CONTEXT_ONLY
+CAP23_ROLE=SOLE_PRODUCTIVE_SELECTION_OWNER
+CAP24_ROLE=RUNTIME_BINDING_CONSUMER
+CAP24_CONSUMES=CAPABILITY_2_3_ONLY
+SECOND_SELECTION_AUTHORITY=false
+THIS_CONTRACT_MUST_LATER_FIT_THE_HOST=false
+```
+
+Forbidden by this workpackage:
+
+- adapter to the productive system
+- Cap-2.4-compatible DTO
+- boundary output specified as future host input
+- mapping isolated domain → Cap 2.3
+- mapping isolated domain → Cap 2.4
+- authority-handoff design
+- host-consumption anticipation
+- pulling existing runtime components into the isolated domain
+
+## 5. Producer and consumer roles (isolated-domain semantics only)
+
+These roles are **semantic identities inside the isolated domain**.
+This contract does **not** authorize, bind, or implement any producer
+or consumer. Host consumer is not a role of this contract.
+
+| Role | Semantic identity | Authorized by this contract |
+|---|---|---|
+| Isolated-domain producer | Future isolated MF domain **may later** emit `NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY` and still terminate at HARD DOMAIN END | `false` |
+| Host consumer | none | `HOST_CONSUMER_STATUS=NONE` |
+| Productive Cap 2.3 / Cap 2.4 | not a role of this class | n/a |
+
+```text
+PRODUCER_IMPLEMENTED=false
+PRODUCER_AUTHORIZED=false
+CONSUMER_IMPLEMENTED=false
+PRODUCTIVE_CONSUMER_AUTHORIZED=false
+HOST_CONSUMER_STATUS=NONE
+DASHBOARD_AUTHORITY=false
+ALLOWLIST_AUTHORITY=false
+MANUAL_OVERRIDE_AUTHORITY=false
+```
+
+A later isolated-domain producer requires a **separate Owner-GO** and
+remains isolated. That GO is **not** this contract. This contract does
+**not** authorize a host adapter, host consumer, or authority handoff.
+
+## 6. Authority effect and context-only status
+
+```text
+AUTHORITY_EFFECT=NONE
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CONTEXT_ONLY=true
+SELECTION_AUTHORITY=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+ALPHA_ALLOWED=false
+ORDER_AUTHORITY=false
+ENTRY_EXIT_AUTHORITY=false
+SIZING_AUTHORITY=false
+RISK_DECISION_AUTHORITY=false
+RECON_DECISION_AUTHORITY=false
+SAFETY_DECISION_AUTHORITY=false
+INTENT_ARBITRATION_AUTHORITY=false
+EXECUTION_AUTHORITY=false
+G13_UNLOCK=false
+```
+
+Presence of this contract, or of any later isolated membership-context
+artifact, does **not** authorize multi-future runtime, alpha, G13
+unlock, or productive-host consumption.
+
+## 7. Epistemic origin / provenance
+
+```text
+EPISTEMIC_CLASS=OWNER_BOUND_DOCS_ONLY_BOUNDARY_CONTRACT
+PROVENANCE_OWNER=THIS_CONTRACT_PLUS_MASTER_RUNBOOK_SECTION_4_5_1
+BOUND_ORIGIN_MAIN_SHA=b8bbc6812ec951354981e6628a289e8fe3db06a2
+CAP22_TOP20_REMAINS=CANDIDATE_CONTEXT_ONLY
+CAP23_SELECTION_REMAINS=SOLE_PRODUCTIVE_SELECTION_OWNER
+R6_S3_PHASE8_RUNTIME=NOT_AUTHORITY_FOR_THIS_CONTRACT
+R6_S4_SHADOW_SIM=NOT_AUTHORITY_FOR_THIS_CONTRACT
+CAP04_ROTATION_REMINDER=DEFERRED_REQUIRED_CAPABILITY_NOT_RATIFIED_HERE
+ATLAS_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+EXISTING_RUNTIME_COMPONENTS_IMPORTED_INTO_ISOLATED_DOMAIN=false
+```
+
+This contract is **not** inferred from:
+
+- dashboard / Landscape ranking
+- instrument allowlists
+- manual overrides
+- Top-N promotion (see [PHASE_42_TOPN_PROMOTION.md](../../PHASE_42_TOPN_PROMOTION.md); remains non-authority)
+- Cap 0.4 rotation reminder
+- R6 S3 Phase-8 architecture code
+- R6 S4 shadow/sim `ordered_instrument_ids` observation field
+- portfolio-package semantics
+- Global Portfolio Risk
+- Cap 2.3 selection snapshots
+- Cap 2.4 runtime binding
+
+Cap 2.2 ranking-snapshot identity fields such as `event_time`,
+`produced_at_wall_time`, `universe_source_digest`,
+`universe_payload_digest`, `integrity_digest`, and
+`ranked_candidates` remain **Cap-2.2 ranking identity**. This contract
+does **not** rebind them as a membership-context schema and does **not**
+import them as host-adapter fields.
+
+## 8. Minimal semantics (not an implemented schema)
+
+The following names are **semantic identities** for the isolated
+boundary class. They are **not** a productive schema, DTO,
+serialization, persistence layout, or Cap-2.4-compatible shape. Field
+types, encodings, and storage are **UNBOUND**.
+
+| Semantic identity | Meaning | Schema / type | Authority |
+|---|---|---|---|
+| `ordered_instrument_ids` | Ordered listing of instrument identities that constitute the non-authoritative membership context | `UNBOUND` | `NONE` |
+| `provenance` / `source digests` | Identity of the sources from which that listing is bound | `UNBOUND` | `NONE` |
+| `as_of` / `freshness identity` | Identity of when the listing is claimed to be valid | `UNBOUND` | `NONE` |
+| `membership_state` | Identity of the current non-authoritative membership composition | `UNBOUND` | `NONE` |
+| `rotation_deltas` | Identity of membership-change-only differences versus a prior listing | `UNBOUND` | `NONE` |
+
+Mandatory flags on this class, if later materialized **inside the
+isolated domain**:
+
+```text
+SELECTION_AUTHORITY=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+ALPHA_ALLOWED=false
+HOST_CONSUMER_STATUS=NONE
+```
+
+`rotation_deltas` is **membership-change-only** as **adjudicated isolated-domain
+semantics**. That is **not** a ratified runtime rotation policy, not a
+numeric threshold, not authorization to rotate positions, and not a
+handoff into the productive host.
+
+R6 S4 shadow/sim observation of a field named `ordered_instrument_ids`
+is **not** this contract's schema and is **not** promoted by this
+contract.
+
+## 9. Fail-closed interpretation
+
+```text
+ABSENT_CONTEXT=NOT_EMPTY_SET_AUTHORIZATION
+ABSENT_CONTEXT=NOT_FULL_UNIVERSE_AUTHORIZATION
+ABSENT_CONTEXT=NOT_CAP23_SELECTION
+ABSENT_CONTEXT=NOT_CAP24_INPUT
+ABSENT_CONTEXT=NOT_HOST_INPUT
+PRESENT_CONTEXT=NOT_SELECTION
+PRESENT_CONTEXT=NOT_ALPHA
+PRESENT_CONTEXT=NOT_MULTI_FUTURE_RUNTIME
+PRESENT_CONTEXT=NOT_G13_UNLOCK
+PRESENT_CONTEXT=NOT_HOST_INPUT
+STALE_OR_UNBOUND_CONTEXT=FAIL_CLOSED_NON_AUTHORITY
+OVERREAD_AS_SELECTION_OR_RUNTIME=FORBIDDEN
+OVERREAD_AS_FUTURE_HOST_INPUT=FORBIDDEN
+```
+
+If membership context is missing, stale, unbound, unratified, or
+ambiguous:
+
+- do **not** invent a default membership
+- do **not** treat silence as `N=5` or any other `N`
+- do **not** treat the isolated class as Cap-2.3 or Cap-2.4 input
+- do **not** unlock G13
+
+## 10. Explicit non-goals
+
+This contract **excludes** and does **not** grant:
+
+```text
+ORDER_AUTHORITY=false
+ENTRY_EXIT_AUTHORITY=false
+SIZING_AUTHORITY=false
+RISK_DECISION_AUTHORITY=false
+RECON_DECISION_AUTHORITY=false
+SAFETY_DECISION_AUTHORITY=false
+INTENT_ARBITRATION_AUTHORITY=false
+EXECUTION_AUTHORITY=false
+CAP24_SELECTION_INPUT=false
+SECOND_SELECTION_OWNER=false
+DASHBOARD_LANDSCAPE_AUTHORITY=false
+MANUAL_OVERRIDE_AUTHORITY=false
+ALLOWLIST_AUTHORITY=false
+GLOBAL_PORTFOLIO_RISK_AUTHORITY=false
+SRC_PORTFOLIO_SEMANTICS_AUTHORITY=false
+HOST_ADAPTER=false
+CAP24_COMPATIBLE_DTO=false
+MF_TO_HOST_MAPPING=false
+AUTHORITY_HANDOFF=false
+```
+
+## 11. Unresolved remains unresolved
+
+This contract does **not** ratify, default, design, or implicitly close:
+
+| Item | Status |
+|---|---|
+| `N` including `N=5` | `UNRESOLVED` / `UNRATIFIED` / `NOT_AUTHORIZED` |
+| MF scoring contract | `ABSENT` / `UNRESOLVED` / `NOT_AUTHORIZED` |
+| Selector policy | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` |
+| Rotation numerics | `UNRESOLVED` / `NOT_AUTHORIZED` |
+| Hysteresis / cooldown / turnover | `UNRESOLVED` / `NOT_AUTHORIZED` |
+| Portfolio Selection P1 / P2 / P3 | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` |
+| Portfolio Selection P4 | `P4_UNRESOLVED` / `NOT_AUTHORIZED` |
+| Context persistence while G13 closed | `UNPROVEN` / `UNRESOLVED` / `NOT_AUTHORIZED` |
+| Authority handoff | `NOT_DESIGNED` / `NOT_IN_SCOPE` / `NOT_AUTHORIZED` |
+| Host adapter | `NOT_DESIGNED` / `NOT_IN_SCOPE` |
+| Host consumption | `NONE` / `NOT_IN_SCOPE` |
+| Integration with productive system | `NOT_IN_SCOPE` |
+| PHASE-8 runtime semantics | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` |
+
+```text
+N_RATIFIED=false
+MF_SCORING_RATIFIED=false
+SELECTOR_POLICY_RATIFIED=false
+ROTATION_POLICY_RATIFIED=false
+ROTATION_NUMERICS_RATIFIED=false
+HYSTERESIS_COOLDOWN_TURNOVER_RATIFIED=false
+PORTFOLIO_SELECTION_RATIFIED=false
+PERSISTENCE_WHILE_G13_CLOSED=UNPROVEN
+AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
+AUTHORITY_HANDOFF_RATIFIED=false
+INTEGRATION_STATUS=NOT_IN_SCOPE
+HOST_ADAPTER_STATUS=NOT_DESIGNED
+HOST_CONSUMER_STATUS=NONE
+PHASE8_RUNTIME_SEMANTICS_RATIFIED=false
+```
+
+Cap 0.4
+`MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0` remains
+`DEFERRED_REQUIRED_CAPABILITY`. This contract does **not** consume that
+reminder and does **not** ratify anti-churn numerics.
+
+## 12. Governance / Atlas
+
+```text
+MASTER_RUNBOOK_AUTHORITY=SSOT
+SUBORDINATE_CONTRACT=THIS_FILE
+MAP_OF_TRUTH_ROLE=NAVIGATION_ONLY
+ATLAS_AUTHORITY=NONE
+ATLAS_ROLE=NAVIGATION_INDEX_ONLY
+ATLAS_MUST_NOT_CREATE_AUTHORITY=true
+NO_NEW_PRODUCTIVE_OWNER_FROM_ATLAS=true
+NO_ATLAS_EDGE_TO_CAP23_OR_CAP24=true
+```
+
+Atlas inventory of this contract is navigation only. Atlas presence is
+not activation, not selection, not multi-future authorization, and not
+a join into the productive host.
+
+## 13. Hard stop
+
+```text
+RUNTIME_IMPLEMENTATION_CREATED=false
+SRC_PATHS_CHANGED_BY_THIS_CONTRACT=false
+CAP23_REWIRED=false
+CAP24_REWIRED=false
+G13_UNLOCK=false
+TESTNET_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+INTEGRATION_STATUS=NOT_IN_SCOPE
+HOST_ADAPTER_STATUS=NOT_DESIGNED
+HOST_CONSUMER_STATUS=NONE
+AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
+NEXT_IMPLEMENTATION_AUTHORIZED=false
+NEXT_SLICE_AUTHORIZED=false
+HARD_STOP_AFTER_THIS_CONTRACT=true
+```
+
+Any isolated-domain producer, scoring, `N`, rotation policy, or
+persistence requires a **new** Owner-GO and remains isolated. This
+contract does **not** authorize, specify, or prepare host integration.

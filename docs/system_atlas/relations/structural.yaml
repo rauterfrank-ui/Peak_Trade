@@ -62,6 +62,17 @@ relations:
     evidence_sources:
       - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
 
+  - id: REL:s_map_navigates_mf_membership_context
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:mf_selection_context_boundary_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
   - id: REL:s_system_has_cap23
     source: SYSTEM:peak_trade
     type: HAS_CAPABILITY
