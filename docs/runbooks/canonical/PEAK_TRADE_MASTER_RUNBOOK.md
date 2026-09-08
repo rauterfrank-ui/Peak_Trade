@@ -73494,6 +73494,149 @@ inner lease consume is repaired. `SECTION_11_14_AUTHORIZED=false`.
 HMAC, POST, wire-send, consume, flatten, or merge from this persist.
 `DURABLE_CONSUME_SUCCESS_OBJECT` remains OPEN.
 
+The historical RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER next pointer
+`DURABLE_CONSUME_SUCCESS_OBJECT` is **consumed** only as the durable
+consume success-object persist below
+(§11.14.DURABLE_CONSUME_SUCCESS_OBJECT). That successor defines the
+typed success object and gates productive COMPLETED durable consume on
+it. It does **not** mint a receipt at runtime, does **not** generate
+HMAC or OK-ACCESS headers, does **not** HTTP POST, and does **not**
+close `RECEIPT_MISSING`.
+
+### 11.14 DURABLE_CONSUME_SUCCESS_OBJECT (BOUND; SUCCESS OBJECT DEFINED; COMPLETED CONSUME GATED; NO MINT; NO HMAC; NO POST; SECTION 11.14 NOT COMPLETE)
+
+Additive persist. Does **not** rewrite the persist fields above. Does
+**not** mint, bind, or attach a receipt at runtime. Does **not**
+HMAC-sign a POST. Does **not** generate OK-ACCESS headers. Does **not**
+issue, verify-for-send, or consume `OWNER_PRODUCTIVE_WIRE_SEND_AUTHORITY_V1`.
+Does **not** invoke productive `inner.send`. Does **not** HTTP POST.
+Does **not** consume durable state against a live send. Does **not**
+rebind envelope
+`0a0133a3b82e4a15bf6986605a9a8e6b47b22665b485ff0f570200803f21cdbe`.
+Does **not** mutate standing Live gates. Does **not** mark §11.14
+complete. `ConstructiveProductiveFlattenSubmitAdapterV1` remains
+NO_SEND.
+
+Success object (`CANONICAL`):
+
+Productive `inner.send` returns `LiveCanaryHttpResponseV1`. That
+transport result is not a success object. Durable COMPLETED consume on
+the productive path may run only after
+`mint_flatten_productive_send_success_object_v1` returns a typed
+`FlattenProductiveSendSuccessObjectV1` bound to envelope id, origin/main
+SHA, optional authority id, and `approved_request_identity`. Venue
+success reuses flatten `_venue_acceptance_from_response` (HTTP 2xx,
+top-level `code=0`, exactly one data row, `sCode=0`) and additionally
+requires HTTP 200, no redirect, nonempty `ordId`, and `clOrdId` match
+when sent. Missing receipt, transport failure, venue reject, malformed
+payload, missing order/request correlation, or stale/foreign identity
+cannot mint the object and cannot COMPLETED-consume.
+
+Durable consume (`CANONICAL`):
+
+`consume_flatten_durable_on_success_object_v1` is the productive
+COMPLETED consume entry and reuses `persist_flatten_durable_consume_v1`.
+Duplicate persist remains `DURABLE_CONSUME_ALREADY_PRESENT_NO_REWRITE`.
+The fake harness INCOMPLETE ledger for ambiguous fake-transport
+exceptions is unchanged and is not this productive success path.
+
+Remaining boundary (`CANONICAL`):
+
+The four historical `OPEN_GATE_ORDER_POINTS` are closed.
+`CURRENT_CANONICAL_BOUNDARY` remains `RECEIPT_MISSING` because this
+persist does not mint a receipt. Historical subordinate
+`OPEN_GATE_ORDER_POINTS` tuples, including
+`productive_wire_send_orchestrator_v1.OPEN_GATE_ORDER_POINTS`, are
+**not** SSOT and are left unchanged in this persist.
+
+``` text
+OWNER_GO=DURABLE_CONSUME_SUCCESS_OBJECT
+OWNER_GO_STATUS=CONSUMED_DURABLE_CONSUME_SUCCESS_OBJECT_DEFINED_NO_MINT_NO_HMAC_NO_POST
+OWNER_GO_CONSUMED=false
+AUTHORIZATION_PRESENT=true_for_durable_consume_success_object_contract_only
+AUTHORITY_CLASS=R1_SUCCESS_OBJECT_DEFINED_COMPLETED_CONSUME_GATED_NO_POST
+RISK_CLASS=R1_NO_SUBMIT_NO_VENUE_MUTATION
+PERSIST_CLASS=SECTION_11_14_DURABLE_CONSUME_SUCCESS_OBJECT_SSOT_PERSIST
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+ATLAS_AUTHORITY=NONE
+CHAT_TRANSCRIPT_AUTHORITY=NONE
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=287ed348d000bdda2ced929b1940284729b5c66e
+EXPECTED_ORIGIN_MAIN_SHA=287ed348d000bdda2ced929b1940284729b5c66e
+PREDECESSOR_SLICE=11.14.RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER
+THIS_SLICE=11.14.DURABLE_CONSUME_SUCCESS_OBJECT
+CURRENT_PHASE=11.14.DURABLE_CONSUME_SUCCESS_OBJECT
+CURRENT_CANONICAL_SECTION=11.14.DURABLE_CONSUME_SUCCESS_OBJECT
+LAST_CANONICALLY_CLOSED_STEP=SECTION_11_14_DURABLE_CONSUME_SUCCESS_OBJECT
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+DURABLE_CONSUME_SUCCESS_OBJECT=PROVEN
+SUCCESS_OBJECT_TYPE=FlattenProductiveSendSuccessObjectV1
+SUCCESS_OBJECT_IMPLEMENTED=true
+DURABLE_CONSUME_GATED_ON_SUCCESS_OBJECT=true
+Q1_CANONICAL=YES
+Q2_CANONICAL=NO
+Q3_CANONICAL=INNER_REPAIR_REQUIRED
+HMAC_GENERATION_WIRED=false
+RUNTIME_RECEIPT_MINT_EXECUTED=false
+RUNTIME_HMAC_EXECUTED=false
+HMAC_HEADER_GENERATED=false
+INNER_REPAIR_IMPLEMENTED=true
+LEASE_CONSUME_AFTER_LOCAL_PREWIRE_GATES=true
+LEASE_CONSUMED=false
+POST_PERFORMED=false
+HTTP_POST_EXECUTED=false
+PRODUCTIVE_URLLIB_POST_EXECUTED=false
+WIRE_SEND_EXECUTED=false
+INNER_SEND_PRODUCTIVE_EXECUTED=false
+FLATTEN_EXECUTED=false
+DURABLE_CONSUMED=false
+POSITION_MUTATION_EXECUTED=false
+ENVELOPE_REBIND_EXECUTED=false
+REAL_POST_COUNT=0
+SUBMIT_ATTEMPT_COUNT=0
+OWNER_EXECUTION_AUTHORIZED=false
+FLATTEN_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+CANARY_AUTHORIZED=false
+POST_ALLOWED=false
+GATE_ORDER_STATUS=OPEN_POINTS_CLOSED
+OPEN_GATE_ORDER_POINTS=
+OPEN_GATE_ORDER_BLOCKER=RECEIPT_MISSING
+CURRENT_CANONICAL_BOUNDARY=RECEIPT_MISSING
+EARLIEST_UNRESOLVED_RUNTIME_GATE=RECEIPT_MISSING
+NEXT_OWNER_AUTHORITY_REQUIRED=RECEIPT_MISSING
+NEXT_SLICE_AUTHORIZED=false
+CASE_ADJUDICATION=CASE_A_DURABLE_CONSUME_SUCCESS_OBJECT_DEFINED_COMPLETED_CONSUME_GATED
+```
+
+A. Non-execution. `RECEIPT_MINTED=false`. `HMAC_EXECUTED=false`.
+`POST_PERFORMED=false`. `WIRE_SEND_EXECUTED=false`.
+`DURABLE_CONSUMED=false`.
+
+B. Contract. Typed success object implemented. Productive COMPLETED
+consume is gated on that object. Duplicate consume remains fail-closed.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/
+SPEC_OWNER=docs/ops/specs/SECTION_11_14_DURABLE_CONSUME_SUCCESS_OBJECT_V1.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_14
+CURRENT_CANONICAL_SECTION=11.14.DURABLE_CONSUME_SUCCESS_OBJECT
+HARD_STOP_AFTER_THIS_TASK=true
+HARD_STOP=true
+```
+
+Hard stop. Durable-consume success object is defined and productive
+COMPLETED consume is gated on it. `SECTION_11_14_AUTHORIZED=false`.
+`SECTION_11_14_COMPLETE=false`. Do **not** mint a receipt, generate
+HMAC, POST, wire-send, consume against a live send, flatten, or merge
+from this persist. `RECEIPT_MISSING` remains OPEN.
+
 ## 11.15 Full-autonomy observability and audit trail
 
 The autonomous runtime must expose enough telemetry for oversight without
