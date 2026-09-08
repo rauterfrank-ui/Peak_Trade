@@ -16,7 +16,7 @@ from contextvars import ContextVar, Token
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Mapping, TypeVar
+from typing import Any, Callable, Final, Mapping, TypeVar
 
 from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     RECORD_ID_RE,
@@ -576,6 +576,43 @@ _CAPTURE_SESSION: ContextVar[DdoCaptureBindingV0 | None] = ContextVar(
 
 def current_capture_binding_v0() -> DdoCaptureBindingV0 | None:
     return _CAPTURE_SESSION.get()
+
+
+_REPLAY_ISOLATION_USE_CURRENT = object()
+REPLAY_CAPTURE_ISOLATION_PASS: Final[str] = "PASS"
+REPLAY_CAPTURE_ISOLATION_UNBOUND: Final[str] = "CAPTURE_SESSION_UNBOUND"
+REPLAY_CAPTURE_ISOLATION_INVALID: Final[str] = "CAPTURE_BINDING_INVALID"
+REPLAY_CAPTURE_ISOLATION_ENABLED: Final[str] = "CAPTURE_ENABLED"
+REPLAY_CAPTURE_ISOLATION_LEDGER_PATH: Final[str] = "CAPTURE_LEDGER_PATH_PRESENT"
+
+
+def ddo_replay_capture_disabled_isolation_reason_v0(
+    binding: DdoCaptureBindingV0 | None | object = _REPLAY_ISOLATION_USE_CURRENT,
+) -> str | None:
+    """Fail-closed A-replay precondition. Does not mutate capture or session.
+
+    PASS only when an explicit DdoCaptureBindingV0 exists, enabled is false,
+    and ledger_path is None. Unbound/None is not isolation. This is not a
+    global capture-policy change.
+    """
+    if binding is _REPLAY_ISOLATION_USE_CURRENT:
+        binding = current_capture_binding_v0()
+    if binding is None:
+        return REPLAY_CAPTURE_ISOLATION_UNBOUND
+    if not isinstance(binding, DdoCaptureBindingV0):
+        return REPLAY_CAPTURE_ISOLATION_INVALID
+    if binding.enabled:
+        return REPLAY_CAPTURE_ISOLATION_ENABLED
+    if binding.ledger_path is not None:
+        return REPLAY_CAPTURE_ISOLATION_LEDGER_PATH
+    return None
+
+
+def ddo_replay_capture_disabled_isolation_is_pass_v0(
+    binding: DdoCaptureBindingV0 | None | object = _REPLAY_ISOLATION_USE_CURRENT,
+) -> bool:
+    """True only for explicit capture-disabled isolation with no ledger_path."""
+    return ddo_replay_capture_disabled_isolation_reason_v0(binding) is None
 
 
 def bind_capture_session_v0(
