@@ -24,6 +24,7 @@ SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
 LIVE_ENABLED=false
 LIVE_ARMED=false
 CANARY_AUTHORIZED=false
+POST_ALLOWED=false
 OWNER_EXECUTION_AUTHORIZED=false
 OWNER_FLATTEN_GO_PRESENT=false
 FLATTEN_AUTHORIZED=false
@@ -97,8 +98,43 @@ Pending orders are sampled via GET `&#47;api&#47;v5&#47;trade&#47;orders-pending
 Current-SHA wrapper. Historical productive wrapper SHA
 `a23cb998d4d9121a7f06816cc54c0c6ce19a5992` is not unfrozen.
 Without Owner Flatten GO, session arming, capture readiness, and a current
-SELL envelope the wrapper fail-closes. Productive POST is unbound in this
-repair.
+SELL envelope the wrapper fail-closes. Productive POST remains unbound as
+send. Productive transport **bind** is a distinct no-send handle.
+
+## Productive transport bind versus send
+
+Bind and send are distinct:
+
+```text
+BIND != AUTHORIZE != SEND
+PRODUCTIVE_TRANSPORT_BIND_KIND=PRODUCTIVE_TRANSPORT_BIND_NO_SEND
+SEND_PERMITTED=false
+NETWORK_SESSION_AUTHORIZED=false
+```
+
+`prepare_productive_flatten_transport_bind_v1` constructs the productive
+adapter without calling `post()`. Passing the constructive adapter as
+harness `transport` remains forbidden. Standing `LIVE_ENABLED` /
+`LIVE_ARMED` / `POST_ALLOWED` / `CANARY_AUTHORIZED` cannot authorize bind
+or send.
+
+## Owner Network-Session contract
+
+A separate Owner contract `OWNER_NETWORK_SESSION_AUTHORITY_V1` is the
+only mint path for productive network-session authority. The Flatten
+issuance artifact cannot substitute. The evaluator does not mint. Chat,
+env, CLI flags, and standing Live flags are not authority.
+
+```text
+ACTION=AUTHORIZE_PRODUCTIVE_NETWORK_SESSION
+PURPOSE=SECTION_11_14_PRODUCTIVE_NETWORK_SESSION
+CONFIRM_TOKEN=I_AUTHORIZE_SECTION_11_14_PRODUCTIVE_NETWORK_SESSION
+FLATTEN_GRANT_CANNOT_AUTHORIZE_NETWORK_SESSION=true
+WIRE_SEND_NOT_AUTHORIZED_BY_THIS_REPAIR=true
+```
+
+This repair does **not** issue that GO and does **not** implement
+productive wire-send even if an artifact is later issued.
 
 ## Capture and restart
 
@@ -110,6 +146,7 @@ Static restart path defaults to `NO_SUBMIT`.
 
 ## Next authority
 
-Flatten remains unauthorized until a separate Owner Flatten GO is issued
-after this repair is merged. This repair does not consume or mint that GO.
-Merge requires a separate `OWNER_MERGE_GO`.
+Runtime Owner boundary after Flatten issuance and session arming is
+`OWNER_NETWORK_SESSION_AUTHORITY_V1` with Owner-supplied `issued_at`.
+This repair does not consume or mint that GO and does not rewrite persist
+`OWNER_FLATTEN_GO_PRESENT=false`. Merge requires a separate `OWNER_MERGE_GO`.

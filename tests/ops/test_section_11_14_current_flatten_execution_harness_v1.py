@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import socket
 import time
+import urllib.request
 from pathlib import Path
 
 import pytest
@@ -30,7 +32,16 @@ from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_exe
     build_flatten_sell_envelope_v1,
 )
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.execution_harness_v1 import (
+    FlattenExecutionHarnessError,
     run_flatten_execution_harness_v1,
+)
+from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.issuance_v1 import (
+    current_section_11_14_issuance_explicit_v1,
+    issue_owner_flatten_authority_v1,
+)
+from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.network_session_authority_v1 import (
+    current_section_11_14_network_session_explicit_v1,
+    issue_owner_network_session_authority_v1,
 )
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.position_recon_v1 import (
     FLAT_CONFIRMED,
@@ -41,6 +52,9 @@ from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_exe
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.productive_transport_adapter_v1 import (
     FlattenProductiveTransportAdapterError,
     construct_productive_flatten_submit_adapter_v1,
+)
+from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.productive_transport_bind_v1 import (
+    prepare_productive_flatten_transport_bind_v1,
 )
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.wrapper_v1 import (
     RecordingFakeFlattenSubmitTransportV1,
@@ -78,6 +92,10 @@ def _fee_policy():
     return bind_standing_fee_policy_from_trade_fee_payload_v1(
         payload=TRADE_FEE, instrument_id=INSTRUMENT_ID
     )
+
+
+def _frozen_envelope() -> dict:
+    return json.loads((FROZEN_ROOT / "FLATTEN_ENVELOPE.json").read_text(encoding="utf-8"))
 
 
 def _envelope(**overrides: object) -> dict:
@@ -372,6 +390,130 @@ def test_productive_adapter_rejected_as_harness_transport() -> None:
             candidate=_candidate(envelope=envelope),
             envelope=envelope,
             transport=adapter,
+        )
+
+
+def test_productive_bind_prepares_without_post(monkeypatch: pytest.MonkeyPatch) -> None:
+    def _boom(*_args: object, **_kwargs: object) -> None:
+        raise AssertionError("REAL_NETWORK_MUST_NOT_OCCUR")
+
+    monkeypatch.setattr(urllib.request, "urlopen", _boom)
+    monkeypatch.setattr(socket, "create_connection", _boom)
+    bind = prepare_productive_flatten_transport_bind_v1()
+    assert bind.send_permitted is False
+    assert bind.network_session_authorized is False
+    assert bind.adapter.inner.network_session_authorized is False
+    assert bind.adapter.calls == []
+    envelope = _envelope()
+    result = _run(
+        candidate=_candidate(envelope=envelope),
+        envelope=envelope,
+        productive_bind=bind,
+        transport=None,
+    )
+    assert result["PRODUCTIVE_TRANSPORT_BOUND"] is True
+    assert result["PRODUCTIVE_TRANSPORT_USED"] is False
+    assert result["POST_COUNT"] == 0
+    assert result["REAL_POST_COUNT"] == 0
+    assert result["WIRE_SEND"] is False
+    assert result["NETWORK_SESSION_AUTHORIZED"] is False
+    assert result["OWNER_TOKEN_CONSUMED"] is False
+    assert bind.adapter.calls == []
+    assert "NETWORK_SESSION_OWNER_AUTHORITY_MISSING" in result["reasons"]
+
+
+def test_flatten_grant_alone_does_not_authorize_wire_send() -> None:
+    envelope = _frozen_envelope()
+    flatten = issue_owner_flatten_authority_v1(
+        explicit=current_section_11_14_issuance_explicit_v1(issued_at="2026-09-08T02:50:00Z")
+    )["artifact"]
+    bind = prepare_productive_flatten_transport_bind_v1()
+    missing = _run(
+        candidate=_candidate(envelope=envelope),
+        envelope=envelope,
+        issuance=flatten,
+        productive_bind=bind,
+        network_session=None,
+        transport=None,
+    )
+    assert missing["POST_COUNT"] == 0
+    assert missing["REAL_POST_COUNT"] == 0
+    assert missing["WIRE_SEND"] is False
+    assert missing["OWNER_TOKEN_CONSUMED"] is False
+    assert "NETWORK_SESSION_OWNER_AUTHORITY_MISSING" in missing["reasons"]
+    reused = _run(
+        candidate=_candidate(envelope=envelope),
+        envelope=envelope,
+        issuance=flatten,
+        productive_bind=bind,
+        network_session=flatten,
+        transport=None,
+    )
+    assert reused["POST_COUNT"] == 0
+    assert reused["REAL_POST_COUNT"] == 0
+    assert reused["WIRE_SEND"] is False
+    assert reused["OWNER_TOKEN_CONSUMED"] is False
+    assert "FLATTEN_GRANT_CANNOT_AUTHORIZE_NETWORK_SESSION" in reused["reasons"]
+
+
+def test_session_authority_issued_still_does_not_send(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def _boom(*_args: object, **_kwargs: object) -> None:
+        raise AssertionError("REAL_NETWORK_MUST_NOT_OCCUR")
+
+    monkeypatch.setattr(urllib.request, "urlopen", _boom)
+    monkeypatch.setattr(socket, "create_connection", _boom)
+    envelope = _frozen_envelope()
+    session = issue_owner_network_session_authority_v1(
+        explicit=current_section_11_14_network_session_explicit_v1(issued_at="2026-09-08T02:50:00Z")
+    )["artifact"]
+    bind = prepare_productive_flatten_transport_bind_v1()
+    result = _run(
+        candidate=_candidate(envelope=envelope),
+        envelope=envelope,
+        productive_bind=bind,
+        network_session=session,
+        transport=None,
+        durable_store=tmp_path,
+    )
+    assert result["NETWORK_SESSION_AUTHORITY_ISSUED"] is True
+    assert result["NETWORK_SESSION_AUTHORIZED"] is False
+    assert result["POST_COUNT"] == 0
+    assert result["REAL_POST_COUNT"] == 0
+    assert result["WIRE_SEND"] is False
+    assert result["OWNER_TOKEN_CONSUMED"] is False
+    assert "PRODUCTIVE_WIRE_SEND_NOT_IMPLEMENTED_IN_THIS_REPAIR" in result["reasons"]
+    with pytest.raises(FlattenProductiveTransportAdapterError, match="NETWORK_SESSION_NOT"):
+        bind.adapter.post(endpoint=FLATTEN_HTTP_ENDPOINT, body={"instId": INSTRUMENT_ID})
+
+
+def test_standing_live_flag_true_aborts_instead_of_unlocking(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        "src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.execution_harness_v1.LIVE_ENABLED",
+        True,
+    )
+    envelope = _envelope()
+    with pytest.raises(FlattenExecutionHarnessError, match="STANDING_LIVE_FLAG_MUST_REMAIN_FALSE"):
+        _run(
+            candidate=_candidate(envelope=envelope),
+            envelope=envelope,
+            productive_bind=prepare_productive_flatten_transport_bind_v1(),
+            transport=None,
+        )
+
+
+def test_productive_bind_and_fake_transport_are_exclusive() -> None:
+    envelope = _envelope()
+    bind = prepare_productive_flatten_transport_bind_v1()
+    with pytest.raises(Exception, match="PRODUCTIVE_BIND_AND_SUBMIT_TRANSPORT_MUTUALLY_EXCLUSIVE"):
+        _run(
+            candidate=_candidate(envelope=envelope),
+            envelope=envelope,
+            productive_bind=bind,
+            transport=RecordingFakeFlattenSubmitTransportV1(),
         )
 
 

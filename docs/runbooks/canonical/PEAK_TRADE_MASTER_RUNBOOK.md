@@ -72006,6 +72006,16 @@ host-crash durability, or auto-execute the proposed next slice. Merge
 requires a separate `OWNER_MERGE_GO`. A later merge still would **not**
 authorize flatten execution.
 
+Additive later runtime repair. Does **not** rewrite the persist fields
+above. Productive transport bind is distinct from send
+(`PRODUCTIVE_TRANSPORT_BIND_NO_SEND`). A productive network session is
+mintable only via a separate Owner contract
+`OWNER_NETWORK_SESSION_AUTHORITY_V1`. Flatten issuance cannot authorize that
+contract. Standing `LIVE_ENABLED` / `LIVE_ARMED` / `POST_ALLOWED` /
+`CANARY_AUTHORIZED` remain false and are not a release mechanism. This
+repair does not implement productive POST even if that Owner contract is
+later issued.
+
 ## 11.15 Full-autonomy observability and audit trail
 
 The autonomous runtime must expose enough telemetry for oversight without

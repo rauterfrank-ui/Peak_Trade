@@ -3,6 +3,7 @@
 Orchestrates the existing wrapper, capture wiring, durable consume, and
 position-recon classifier. Does not mutate standing Live flags. Does not GET.
 Does not POST unless a caller binds a fake transport and session_armed=True.
+Productive transport bind is distinct from send and never posts.
 """
 
 from __future__ import annotations
@@ -14,6 +15,7 @@ from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_exe
     capture_readiness_v1,
 )
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.constants_v1 import (
+    AUTHORITY_TYPE_OWNER_NETWORK_SESSION,
     BOUND_FROZEN_ENVELOPE_ID,
     EXPECTED_VENUE_NATIVE_BODY,
     FLATTEN_ACTION,
@@ -29,6 +31,9 @@ from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_exe
     load_flatten_durable_consume_v1,
     persist_flatten_durable_consume_v1,
 )
+from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.network_session_authority_v1 import (
+    verify_owner_network_session_authority_v1,
+)
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.persist_v1 import (
     persist_flatten_harness_evidence_v1,
 )
@@ -39,6 +44,10 @@ from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_exe
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.productive_transport_adapter_v1 import (
     ConstructiveProductiveFlattenSubmitAdapterV1,
     construct_productive_flatten_submit_adapter_v1,
+)
+from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.productive_transport_bind_v1 import (
+    ProductiveTransportBindV1,
+    assert_productive_transport_bind_no_send_v1,
 )
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.wrapper_v1 import (
     FlattenSubmitTransportV1,
@@ -132,7 +141,10 @@ def _deny(
         "SESSION_ARMING_REQUIRED": True,
         "SESSION_ARMING_STANDING": SESSION_ARMING_STANDING,
         "PRODUCTIVE_TRANSPORT_IMPLEMENTED": productive_implemented,
+        "PRODUCTIVE_TRANSPORT_BOUND": False,
         "PRODUCTIVE_TRANSPORT_USED": False,
+        "NETWORK_SESSION_OWNER_CONTRACT": AUTHORITY_TYPE_OWNER_NETWORK_SESSION,
+        "NETWORK_SESSION_AUTHORITY_ISSUED": False,
         "DURABLE_SINGLE_USE_IMPLEMENTED": True,
         "POST_SUBMIT_RECON_IMPLEMENTED": True,
         "STANDING_FLAGS": dict(flags),
@@ -164,6 +176,8 @@ def run_flatten_execution_harness_v1(
     positions_get_performed: bool = False,
     frozen_evidence_root: str = "",
     issuance: Mapping[str, Any] | None = None,
+    productive_bind: ProductiveTransportBindV1 | None = None,
+    network_session: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Orchestrate flatten execution gates. Default dry-run produces zero POSTs."""
     flags = _standing_flags()
@@ -174,12 +188,17 @@ def run_flatten_execution_harness_v1(
     if dry_run:
         session_armed = False
         transport = None
+        productive_bind = None
         positions_get_performed = False
         positions_payload = None
     if session_armed is True and SESSION_ARMING_STANDING is True:
         raise FlattenExecutionHarnessError("STANDING_SESSION_ARMING_MUST_REMAIN_FALSE")
     adapter = construct_productive_flatten_submit_adapter_v1()
     productive_implemented = adapter.implemented is True
+    if productive_bind is not None and transport is not None:
+        raise FlattenExecutionHarnessError(
+            "PRODUCTIVE_BIND_AND_SUBMIT_TRANSPORT_MUTUALLY_EXCLUSIVE"
+        )
     if isinstance(transport, ConstructiveProductiveFlattenSubmitAdapterV1):
         raise FlattenExecutionHarnessError("PRODUCTIVE_ADAPTER_MUST_NOT_BE_USED_TO_SEND")
 
@@ -350,6 +369,42 @@ def run_flatten_execution_harness_v1(
                 verdict=verdict,
                 productive_implemented=productive_implemented,
                 mode=mode_n,
+            )
+        )
+
+    if productive_bind is not None:
+        bind_reasons = assert_productive_transport_bind_no_send_v1(productive_bind)
+        session_verdict = verify_owner_network_session_authority_v1(
+            issuance=network_session,
+            origin_main_sha=origin_main_sha,
+            instrument_id=instrument,
+            exact_envelope_id=envelope_id,
+        )
+        session_issued = session_verdict.get("issued") is True
+        deny_reasons = list(bind_reasons)
+        if session_issued is not True:
+            deny_reasons.extend(str(item) for item in (session_verdict.get("reasons") or []))
+        else:
+            deny_reasons.append("PRODUCTIVE_WIRE_SEND_NOT_IMPLEMENTED_IN_THIS_REPAIR")
+        return _persist_and_return(
+            _deny(
+                reasons=deny_reasons,
+                flags=flags,
+                capture=capture,
+                durable=durable,
+                verdict=verdict,
+                productive_implemented=productive_implemented,
+                mode=mode_n,
+                extra={
+                    "SESSION_ARMED": True,
+                    "PRODUCTIVE_TRANSPORT_BOUND": True,
+                    "PRODUCTIVE_TRANSPORT_USED": False,
+                    "NETWORK_SESSION_AUTHORIZED": False,
+                    "NETWORK_SESSION_AUTHORITY_ISSUED": session_issued,
+                    "NETWORK_SESSION_OWNER_CONTRACT": AUTHORITY_TYPE_OWNER_NETWORK_SESSION,
+                    "NEXT_OWNER_AUTHORITY_SYMBOL": AUTHORITY_TYPE_OWNER_NETWORK_SESSION,
+                    "WRAPPER": None,
+                },
             )
         )
 
