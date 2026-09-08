@@ -14,12 +14,12 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-EXPECTED_ORIGIN_MAIN_SHA = "d19a673a31cd5d70a196dba0ad611c1735e2147b"
-EXPECTED_ENVELOPE_ID = "8581cfceb16811a45b2e3c09ed722a7c71b2a8184ab3fb3eb1d30a1a87b9ae93"
-FROZEN_RELATIVE = (
-    "evidence/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_"
-    "and_pre_execution_repair_v1/20260908T003929Z"
+from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.constants_v1 import (  # noqa: E402
+    BOUND_FROZEN_ENVELOPE_ID as EXPECTED_ENVELOPE_ID,
+    BOUND_FROZEN_EVIDENCE_RELATIVE as FROZEN_RELATIVE,
+    BOUND_ORIGIN_MAIN_SHA as EXPECTED_ORIGIN_MAIN_SHA,
 )
+
 EVIDENCE_RELATIVE = (
     "evidence/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_"
     "and_pre_execution_repair_v1/_canonical_owner_issuance_repair"
