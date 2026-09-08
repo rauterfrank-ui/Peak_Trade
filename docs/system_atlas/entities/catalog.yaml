@@ -3787,6 +3787,7 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/validation_pack_engine_v0.py
       - src/learning/deterministic_decision_outcome_v0/promotion_controller_v0.py
       - src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py
+      - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
       - src/learning/mutation_critical_control_state_storage_v1/authority_v1.py
       - docs/ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1.md
     notes: >-
@@ -3799,6 +3800,9 @@ entities:
       RUNTIME_LINEAGE_PARTIAL=true. Does not replace
       CURRENT_CANONICAL_SECTION=11.13.5.Z2DA. Does not implement WP-FA-08.
       Typed Double-Play observation projection is DDO capture parity only.
+      Double-Play producer-input evidence capture is bound as observation-only
+      decision-time input persistence; producer-function replay is not
+      implemented by that slice.
       DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is bound as evidence-domain
       storage owner. DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1 is
       complete. PEAK_TRADE_DDO_PRODUCTIVE_HOST_SCOPE_INPUT_BINDING_V1 is bound
@@ -3864,9 +3868,11 @@ entities:
     source_paths:
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
       - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
+      - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
     evidence_sources:
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
       - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
+      - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
       - src/learning/deterministic_decision_outcome_v0/authority_v0.py
       - src/governance/canonical_order_intent_v1.py
       - src/governance/capital_risk_sizing_v1.py
@@ -3881,7 +3887,10 @@ entities:
       WP-FS-B1 attached proven host decorators for all
       IMPLEMENTED_CAPTURE_SEAMS_V0. Capture remains observation-only.
       Double-Play seam core.double_play_entry_exit now persists a sibling
-      typed observation projection v1 of EntryExitPolicyDecisionV0.
+      typed observation projection v1 of EntryExitPolicyDecisionV0
+      and a sibling producer-input evidence record v1 of
+      DoublePlayEntryExitPolicyInputV0. Input snapshot is observation-only
+      and is taken before the producer call when a capture session is bound.
       Generic DecisionResult stays NO_ACTION or UNKNOWN; exact producer
       tokens live in the projection. selected_side is not SideState-after.
       Injected host scopes resolve and bind ledger_path onto the existing
@@ -3921,6 +3930,29 @@ entities:
       OFFLINE_EVALUATION_AUTHORITY=NONE. TRADING_AUTHORITY=NONE.
       EXECUTION_AUTHORITY=NONE. HINDSIGHT_LEAKAGE_ALLOWED=false.
       Not a second trading authority. Not WP-FA-08.
+
+  - id: RUNTIME_COMPONENT:ddo_double_play_input_evidence_v1
+    kind: RUNTIME_COMPONENT
+    name: DDO Double-Play producer-input evidence v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+      - src/trading/master_v2/double_play_entry_exit_policy_v0.py
+      - docs/ops/specs/DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1.md
+    notes: >-
+      Observation-only serialization of DoublePlayEntryExitPolicyInputV0.
+      Reconstructs the typed input object from immutable DDO evidence.
+      Does not call evaluate_double_play_entry_exit_policy_v0.
+      Producer input_digest remains a reduced canonical scope and is not
+      redefined. TRADING_AUTHORITY=NONE. RUNTIME_EFFECT=OBSERVATION_ONLY.
+      HINDSIGHT_LEAKAGE_ALLOWED=false. Not a second trading authority.
+      Not WP-FA-08.
 
   - id: RUNTIME_COMPONENT:ddo_ledger_v0
     kind: RUNTIME_COMPONENT

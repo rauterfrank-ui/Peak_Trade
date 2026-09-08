@@ -12,6 +12,7 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_DECISION_EVENT,
     SCHEMA_NAME_DEPLOYMENT_RECORD,
     SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION,
+    SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE,
     SCHEMA_NAME_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION,
     SCHEMA_NAME_DRIFT_OBSERVATION,
     SCHEMA_NAME_HEALTH_SNAPSHOT,
@@ -32,6 +33,7 @@ _MAX_LINEAGE_WALK = 1024
 _OPTIONAL_TYPED_REFS: tuple[tuple[str, str], ...] = (
     ("decision_event_ref", SCHEMA_NAME_DECISION_EVENT),
     ("incident_record_ref", SCHEMA_NAME_INCIDENT_RECORD),
+    ("typed_output_observation_ref", SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION),
     ("outcome_record_ref", SCHEMA_NAME_OUTCOME_RECORD),
     ("hypothesis_ref", SCHEMA_NAME_LEARNING_HYPOTHESIS),
     ("candidate_artifact_ref", SCHEMA_NAME_CANDIDATE_ARTIFACT),
@@ -79,6 +81,9 @@ _REQUIRED_TYPED_REFS: dict[str, tuple[tuple[str, str], ...]] = {
         ("known_good_artifact_ref", SCHEMA_NAME_RELEASE_ARTIFACT),
     ),
     SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION: (
+        ("decision_event_ref", SCHEMA_NAME_DECISION_EVENT),
+    ),
+    SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE: (
         ("decision_event_ref", SCHEMA_NAME_DECISION_EVENT),
     ),
     SCHEMA_NAME_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION: (

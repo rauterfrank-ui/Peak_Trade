@@ -29,6 +29,18 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
 from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
     build_decision_event_v0,
 )
+from src.learning.deterministic_decision_outcome_v0.double_play_input_evidence_v1 import (
+    CAPTURE_TIMING_BEFORE_PRODUCER_CALL,
+    CAPTURE_TIMING_FROM_CALL_ARGS,
+    CAPTURE_TIMING_UNAVAILABLE,
+    compute_producer_input_digest_from_canonical_payload_v1,
+    extract_double_play_producer_call_args_v1,
+    is_typed_entry_exit_policy_input_v1,
+    policy_version_from_policy_object_v1,
+    producer_digest_canonical_payload_from_input_v1,
+    project_double_play_entry_exit_policy_input_v1,
+    snapshot_double_play_producer_input_fields_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.double_play_observation_projection_v1 import (
     generic_decision_result_for_producer_outcome_v1,
     generic_decision_type_for_producer_outcome_v1,
@@ -614,11 +626,35 @@ def bind_host_cycle_capture_context_v0(
 
 
 def observe_after_producer_v0(*, seam_id: str) -> Callable[[F], F]:
-    """Compute the producer result first, then observe. Always return the original result."""
+    """Snapshot Double-Play input when enabled, then compute, then observe.
+
+    Always return the original producer result. Snapshot/observe failures
+    never rewrite that result. Producer exceptions are not swallowed.
+    """
 
     def decorator(fn: F) -> F:
         @functools.wraps(fn)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
+            producer_input = None
+            producer_policy = None
+            capture_timing = CAPTURE_TIMING_UNAVAILABLE
+            binding_early = current_capture_binding_v0()
+            if (
+                seam_id == SEAM_DOUBLE_PLAY_ENTRY_EXIT
+                and binding_early is not None
+                and binding_early.enabled
+            ):
+                try:
+                    inp, policy = extract_double_play_producer_call_args_v1(args, kwargs)
+                    if is_typed_entry_exit_policy_input_v1(inp):
+                        snapshot_double_play_producer_input_fields_v1(inp)
+                        producer_input = inp
+                        producer_policy = policy
+                        capture_timing = CAPTURE_TIMING_BEFORE_PRODUCER_CALL
+                except Exception:  # noqa: BLE001
+                    producer_input = None
+                    producer_policy = None
+                    capture_timing = CAPTURE_TIMING_UNAVAILABLE
             result = fn(*args, **kwargs)
             binding = current_capture_binding_v0()
             if binding is None or not binding.enabled:
@@ -630,6 +666,9 @@ def observe_after_producer_v0(*, seam_id: str) -> Callable[[F], F]:
                     result=result,
                     kwargs=kwargs,
                     args=args,
+                    producer_input=producer_input,
+                    producer_policy=producer_policy,
+                    producer_input_capture_timing=capture_timing,
                 )
             except Exception as exc:  # noqa: BLE001
                 binding.last_error = f"{type(exc).__name__}:{exc}"
@@ -664,6 +703,9 @@ def observe_producer_result_v0(
     correlation_id: str | None = None,
     cycle_id: str | None = None,
     repository_sha: str | None = None,
+    producer_input: Any = None,
+    producer_policy: Any = None,
+    producer_input_capture_timing: str | None = None,
 ) -> dict[str, Any]:
     """Build and persist one DecisionEvent (and optional Incident) from producer output."""
     if not binding.enabled:
@@ -790,6 +832,47 @@ def observe_producer_result_v0(
         observation_failure = _persist_and_classify(binding, observation_record)
         if observation_failure is not None:
             durable_failure = observation_failure
+        captured_input = producer_input
+        captured_policy = producer_policy
+        capture_timing = producer_input_capture_timing or CAPTURE_TIMING_UNAVAILABLE
+        if captured_input is None:
+            extracted_input, extracted_policy = extract_double_play_producer_call_args_v1(
+                args, kwargs
+            )
+            if is_typed_entry_exit_policy_input_v1(extracted_input):
+                captured_input = extracted_input
+                captured_policy = extracted_policy
+                capture_timing = CAPTURE_TIMING_FROM_CALL_ARGS
+        if captured_input is not None or (args is not None and len(args) > 0):
+            input_identity = dict(identity)
+            input_identity["kind"] = "double_play_entry_exit_policy_input_evidence_v1"
+            if is_typed_entry_exit_policy_input_v1(captured_input):
+                digest_payload = producer_digest_canonical_payload_from_input_v1(captured_input)
+                input_identity["producer_input_digest"] = (
+                    compute_producer_input_digest_from_canonical_payload_v1(digest_payload)
+                )
+            else:
+                input_identity["producer_input_digest"] = UNKNOWN
+            input_id = _stable_record_id("ddo.dpi", input_identity)
+            observation_id = None if observation_record is None else observation_record["record_id"]
+            input_record = dict(
+                project_double_play_entry_exit_policy_input_v1(
+                    captured_input,
+                    record_id=input_id,
+                    event_time_utc=event_time,
+                    correlation_id=corr,
+                    cycle_id=cycle_ref,
+                    decision_event_ref=record_id,
+                    typed_output_observation_ref=observation_id,
+                    producer_call_policy_version=policy_version_from_policy_object_v1(
+                        captured_policy
+                    ),
+                    capture_timing=capture_timing,
+                )
+            )
+            input_failure = _persist_and_classify(binding, input_record)
+            if input_failure is not None:
+                durable_failure = input_failure
     elif spec.seam_id == SEAM_SECTION_11_14_FLATTEN_PRE_LEASE_SEND_INTENT:
         observation_identity = dict(identity)
         observation_identity["kind"] = "section_11_14_flatten_pre_lease_observation_v1"

@@ -26,6 +26,7 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_DRIFT_OBSERVATION,
     SCHEMA_NAME_DRIFT_POLICY,
     SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION,
+    SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE,
     SCHEMA_NAME_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION,
     SCHEMA_NAME_HEALTH_SNAPSHOT,
     SCHEMA_NAME_INCIDENT_RECORD,
@@ -51,6 +52,7 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_VERSION_DRIFT_OBSERVATION_V0,
     SCHEMA_VERSION_DRIFT_POLICY_V0,
     SCHEMA_VERSION_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION_V1,
+    SCHEMA_VERSION_DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE_V1,
     SCHEMA_VERSION_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_V1,
     SCHEMA_VERSION_HEALTH_SNAPSHOT_V0,
     SCHEMA_VERSION_INCIDENT_RECORD_V0,
@@ -68,6 +70,9 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
 )
 from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
     DECISION_EVENT_FIELD_SPECS_V0,
+)
+from src.learning.deterministic_decision_outcome_v0.double_play_input_evidence_v1 import (
+    DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE_FIELD_SPECS_V1,
 )
 from src.learning.deterministic_decision_outcome_v0.double_play_observation_projection_v1 import (
     DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION_FIELD_SPECS_V1,
@@ -417,6 +422,20 @@ CONTRACT_REGISTRY_V0: Final[Mapping[str, Any]] = MappingProxyType(
                         "current_version": SCHEMA_VERSION_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION_V1,
                         "fields": _specs_as_dicts(
                             DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION_FIELD_SPECS_V1
+                        ),
+                    }
+                ),
+                SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE: MappingProxyType(
+                    {
+                        "schema_name": SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE,
+                        "supported_versions": (
+                            SCHEMA_VERSION_DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE_V1,
+                        ),
+                        "current_version": (
+                            SCHEMA_VERSION_DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE_V1
+                        ),
+                        "fields": _specs_as_dicts(
+                            DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE_FIELD_SPECS_V1
                         ),
                     }
                 ),
