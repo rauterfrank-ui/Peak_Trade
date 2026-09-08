@@ -3788,6 +3788,9 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/promotion_controller_v0.py
       - src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py
       - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
+      - docs/ops/specs/DDO_SEMANTIC_REPLAY_PARITY_V1.md
+      - docs/ops/specs/DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1.md
+      - docs/ops/specs/DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1.md
       - src/learning/mutation_critical_control_state_storage_v1/authority_v1.py
       - docs/ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1.md
     notes: >-
@@ -3802,7 +3805,8 @@ entities:
       Typed Double-Play observation projection is DDO capture parity only.
       Double-Play producer-input evidence capture is bound as observation-only
       decision-time input persistence; producer-function replay is not
-      implemented by that slice.
+      implemented by that slice. Owner policy for later current-code
+      Function-Replay is persisted and does not implement or execute replay.
       DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is bound as evidence-domain
       storage owner. DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1 is
       complete. PEAK_TRADE_DDO_PRODUCTIVE_HOST_SCOPE_INPUT_BINDING_V1 is bound
@@ -3854,7 +3858,11 @@ entities:
       DDO_SEMANTIC_REPLAY_PARITY_V1 is bound as offline typed producer-output
       reconstruction replay from immutable Double-Play observation evidence.
       Classifier/token replay remains distinct. Producer-function replay is
-      NOT_REPLAYABLE because producer input is not in immutable DDO evidence.
+      NOT_REPLAYABLE in C because C is output-semantic parity and does not
+      invoke the producer. Producer input was absent at the time of the C
+      persist and is now available via
+      DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1. Function-replay
+      owner policy is persisted separately and is not implementation.
       Atlas catalog presence is navigation only and is not activation. Atlas is
       not trading authority.
 
@@ -3920,12 +3928,17 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/replay_evaluator_v0.py
       - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
       - docs/ops/specs/DDO_SEMANTIC_REPLAY_PARITY_V1.md
+      - docs/ops/specs/DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1.md
     notes: >-
       Offline typed producer-output semantic replay. Reconstructs
       EntryExitPolicyDecisionV0 from immutable double_play_entry_exit_observation_v1
       evidence and reuses producer serializer/digest helpers. Does not call
-      evaluate_double_play_entry_exit_policy_v0. Producer input is not in
-      current DDO evidence, so producer-function replay is NOT_REPLAYABLE.
+      evaluate_double_play_entry_exit_policy_v0. C remains output-semantic
+      parity, not Function-Replay. Producer input was absent at C persist
+      time and is now available via
+      DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1; C still does not
+      invoke the producer. Function-replay owner policy is persisted
+      separately and is not implementation.
       Classifier replay in replay_evaluator_v0 remains distinct.
       OFFLINE_EVALUATION_AUTHORITY=NONE. TRADING_AUTHORITY=NONE.
       EXECUTION_AUTHORITY=NONE. HINDSIGHT_LEAKAGE_ALLOWED=false.

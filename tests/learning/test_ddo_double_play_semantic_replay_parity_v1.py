@@ -2,7 +2,8 @@
 
 Proves persisted immutable typed observation evidence is sufficient to
 reconstruct producer OUTPUT semantics. Does not re-run the producer
-function (input is not persisted). Classifier replay remains distinct.
+function. Classifier replay remains distinct. C remains output-semantic
+parity even though producer input is now available via a later capture slice.
 """
 
 from __future__ import annotations
@@ -29,6 +30,7 @@ from src.learning.deterministic_decision_outcome_v0.double_play_semantic_replay_
     EXECUTION_AUTHORITY,
     OFFLINE_EVALUATION_AUTHORITY,
     PRODUCER_FUNCTION_REPLAY_REASON,
+    PRODUCER_FUNCTION_REPLAY_REASON_HISTORICAL_AT_C_PERSIST,
     PRODUCER_FUNCTION_REPLAY_STATUS,
     REPLAY_CLASS,
     REPLAY_PRODUCTIVE_AUTHORITY,
@@ -305,6 +307,11 @@ def test_no_productive_authority() -> None:
     assert result["producer_function_invoked"] is False
     assert result["producer_function_replay_status"] == PRODUCER_FUNCTION_REPLAY_STATUS
     assert result["producer_function_replay_reason"] == PRODUCER_FUNCTION_REPLAY_REASON
+    assert (
+        PRODUCER_FUNCTION_REPLAY_REASON != PRODUCER_FUNCTION_REPLAY_REASON_HISTORICAL_AT_C_PERSIST
+    )
+    assert PRODUCER_FUNCTION_REPLAY_REASON != "PRODUCER_INPUT_NOT_IN_IMMUTABLE_EVIDENCE"
+    assert result["producer_function_replay_reason"] != ("PRODUCER_INPUT_NOT_IN_IMMUTABLE_EVIDENCE")
 
 
 def test_no_execution_runtime_import_path_created() -> None:
@@ -328,6 +335,8 @@ def test_no_execution_runtime_import_path_created() -> None:
     assert "producer_function_invoked" in source
     assert "from trading.master_v2.double_play_entry_exit_policy_v0 import (" in source
     assert "evaluate_double_play_entry_exit_policy_v0," not in source
+    assert "evaluate_double_play_entry_exit_policy_v0(" not in source
+    assert "PRODUCER_FUNCTION_REPLAY_REASON_HISTORICAL_AT_C_PERSIST" in source
     assert hits == []
 
 

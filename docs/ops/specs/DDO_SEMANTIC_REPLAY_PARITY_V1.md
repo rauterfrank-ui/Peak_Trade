@@ -39,16 +39,29 @@ persisted projection and generic DecisionEvent mapping.
 SEMANTIC_REPLAY_STATUS=TYPED_PRODUCER_OUTPUT_PARITY_PROVEN_CURRENT
 CLASSIFIER_REPLAY_REMAINS_DISTINCT=true
 PRODUCER_FUNCTION_REPLAY_STATUS=NOT_REPLAYABLE
-PRODUCER_FUNCTION_REPLAY_REASON=PRODUCER_INPUT_NOT_IN_IMMUTABLE_EVIDENCE
+PRODUCER_FUNCTION_REPLAY_REASON=SEMANTIC_REPLAY_IS_OUTPUT_PARITY_NOT_PRODUCER_FUNCTION_REPLAY
+SEMANTIC_REPLAY_PRODUCER_FUNCTION_INVOKED=false
+HISTORICAL_INTERMEDIATE_STATE=true
+PRODUCER_INPUT_NOT_IN_IMMUTABLE_EVIDENCE_AT_TIME_OF_DDO_SEMANTIC_REPLAY_PARITY_V1_PERSIST=true
+CURRENT_STATE=PRODUCER_INPUT_NOW_AVAILABLE_VIA_DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1
+PRODUCER_INPUT_NOW_AVAILABLE_VIA_DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1=true
 ```
 
-## 2. Explicit remaining gap
+## 2. Explicit remaining gap (scope-corrected)
 
-`DoublePlayEntryExitPolicyInputV0` is not persisted on the current DDO
-observation. `input_digest` is a hash, not the input. Capture `args`/`kwargs`
-are not stored. Therefore
-`evaluate_double_play_entry_exit_policy_v0` is **not** invoked by replay.
-That gap is named, not filled by invented inputs.
+At the time of this C persist, `DoublePlayEntryExitPolicyInputV0` was not in
+immutable DDO evidence. That historical intermediate state remains true as a
+time-scoped fact:
+
+```text
+PRODUCER_INPUT_NOT_IN_IMMUTABLE_EVIDENCE_AT_TIME_OF_DDO_SEMANTIC_REPLAY_PARITY_V1_PERSIST=true
+```
+
+Current state: `DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1` now persists
+that input evidence. This C slice still does **not** invoke
+`evaluate_double_play_entry_exit_policy_v0`. C remains output-semantic parity,
+not Function-Replay. Function-Replay is a separate class A and is not
+implemented here.
 
 ## 3. Authority
 

@@ -4,8 +4,18 @@ Reconstructs producer OUTPUT semantics from immutable typed DDO observation
 evidence and compares them with the persisted projection / DecisionEvent.
 
 This is NOT classifier/token replay. It does NOT re-run
-``evaluate_double_play_entry_exit_policy_v0``: producer INPUT is not persisted
-on current DDO evidence, so producer-function replay is NOT_REPLAYABLE.
+``evaluate_double_play_entry_exit_policy_v0``. C remains output-semantic
+parity. Producer INPUT is now available via
+DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1, but this evaluator still
+does not invoke the producer. Function-replay is a separate class A and is
+not implemented here.
+
+HISTORICAL_INTERMEDIATE_STATE:
+PRODUCER_INPUT_NOT_IN_IMMUTABLE_EVIDENCE_AT_TIME_OF_DDO_SEMANTIC_REPLAY_PARITY_V1_PERSIST=true
+
+CURRENT_STATE:
+PRODUCER_INPUT_NOW_AVAILABLE_VIA_DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1=true
+SEMANTIC_REPLAY_PRODUCER_FUNCTION_INVOKED=false
 
 OFFLINE_EVALUATION_AUTHORITY=NONE
 TRADING_AUTHORITY=NONE
@@ -58,7 +68,12 @@ EXECUTION_AUTHORITY: Final[str] = "NONE"
 REPLAY_PRODUCTIVE_AUTHORITY: Final[str] = "NONE"
 HINDSIGHT_LEAKAGE_ALLOWED: Final[bool] = False
 PRODUCER_FUNCTION_REPLAY_STATUS: Final[str] = "NOT_REPLAYABLE"
-PRODUCER_FUNCTION_REPLAY_REASON: Final[str] = "PRODUCER_INPUT_NOT_IN_IMMUTABLE_EVIDENCE"
+PRODUCER_FUNCTION_REPLAY_REASON_HISTORICAL_AT_C_PERSIST: Final[str] = (
+    "PRODUCER_INPUT_NOT_IN_IMMUTABLE_EVIDENCE"
+)
+PRODUCER_FUNCTION_REPLAY_REASON: Final[str] = (
+    "SEMANTIC_REPLAY_IS_OUTPUT_PARITY_NOT_PRODUCER_FUNCTION_REPLAY"
+)
 PRODUCER_FUNCTION_NAME: Final[str] = "evaluate_double_play_entry_exit_policy_v0"
 
 STATUS_REPLAYABLE: Final[str] = "REPLAYABLE"
