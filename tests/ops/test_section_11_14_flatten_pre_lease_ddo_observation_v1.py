@@ -323,7 +323,7 @@ def test_return_parity_and_no_capture_on_session_deny(tmp_path: Path) -> None:
             transport.send(signed)
         without = _deny_text(without_exc.value)
         binding = DdoCaptureBindingV0(enabled=True, ledger_path=None)
-        token = bind_capture_session_v0(binding)
+        capture_session = bind_capture_session_v0(binding)
         try:
             with pytest.raises(
                 LiveCanaryFlattenProductiveTransportError,
@@ -331,7 +331,7 @@ def test_return_parity_and_no_capture_on_session_deny(tmp_path: Path) -> None:
             ) as with_exc:
                 transport.send(signed)
         finally:
-            reset_capture_session_v0(token)
+            reset_capture_session_v0(capture_session)
         assert _deny_text(with_exc.value) == without
         assert receipt.send_lease.consumed is False
         assert transport.last_wire_attempted is False
@@ -354,7 +354,7 @@ def test_hook_runs_before_lease_without_wire_and_preserves_identities(
         ledger_path=None,
         capture_repository_sha="0bf4d93d33b1693bdf43cf176562b9b0cdc3b721",
     )
-    token = bind_capture_session_v0(binding)
+    capture_session = bind_capture_session_v0(binding)
     order: list[str] = []
     original_observe = __import__(
         "src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.flatten_pre_lease_ddo_observation_v1",
@@ -411,7 +411,7 @@ def test_hook_runs_before_lease_without_wire_and_preserves_identities(
         assert observed["hmac_signing_input_digest"] != "UNKNOWN"
         assert len(observed["hmac_signing_input_digest"]) == 64
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(capture_session)
         release_live_canary_ephemeral_material_v1(handle)
 
 
@@ -429,14 +429,14 @@ def test_return_parity_with_successful_capture_before_lease(
             transport.send(signed)
         without = _deny_text(without_exc.value)
         binding = DdoCaptureBindingV0(enabled=True, ledger_path=None)
-        token = bind_capture_session_v0(binding)
+        capture_session = bind_capture_session_v0(binding)
         try:
             with pytest.raises(
                 LiveCanaryFlattenProductiveTransportError, match=STOP_BEFORE_LEASE
             ) as with_exc:
                 transport.send(signed)
         finally:
-            reset_capture_session_v0(token)
+            reset_capture_session_v0(capture_session)
         assert _deny_text(with_exc.value) == without
         assert receipt.send_lease.consumed is False
         assert transport.last_wire_attempted is False
@@ -463,7 +463,7 @@ def test_capture_failure_does_not_change_productive_deny(
     signed = hmac_signed_request_from_artifact_v1(receipt, artifact)
     _bind(transport, receipt, artifact)
     binding = DdoCaptureBindingV0(enabled=True, ledger_path=None)
-    token = bind_capture_session_v0(binding)
+    capture_session = bind_capture_session_v0(binding)
     try:
         with pytest.raises(LiveCanaryFlattenProductiveTransportError, match=STOP_BEFORE_LEASE):
             transport.send(signed)
@@ -478,7 +478,7 @@ def test_capture_failure_does_not_change_productive_deny(
         assert binding.last_result["capture_failure_may_enable_send"] is False
         assert binding.last_result["capture_failure_may_disable_an_otherwise_allowed_send"] is False
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(capture_session)
         release_live_canary_ephemeral_material_v1(handle)
 
 

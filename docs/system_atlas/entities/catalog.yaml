@@ -2694,6 +2694,35 @@ entities:
       consume. No GET. No POST. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: PHASE:section_11_14_pre_lease_ddo_observation
+    kind: PHASE
+    name: 11.14.PRE_LEASE_DDO_OBSERVATION
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/flatten_pre_lease_ddo_observation_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/authenticated_productive_transport_v1.py
+      - src/learning/deterministic_decision_outcome_v0/section_11_14_flatten_pre_lease_observation_v1.py
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+      - tests/ops/test_section_11_14_flatten_pre_lease_ddo_observation_v1.py
+      - tests/learning/test_section_11_14_flatten_pre_lease_observation_v1.py
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/SECTION_11_14_PRE_LEASE_DDO_OBSERVATION_V1.md
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - tests/ops/test_section_11_14_flatten_pre_lease_ddo_observation_v1.py
+      - tests/learning/test_section_11_14_flatten_pre_lease_observation_v1.py
+      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
+    notes: >-
+      §11.14 PRE_LEASE_DDO_OBSERVATION observation-only DDO hook on
+      AuthenticatedGatedProductiveFlattenTransportV1.send after local
+      pre-wire denies and immediately before _consume_receipt_lease.
+      Seam section_11_14.flatten_pre_lease_send_intent. Does not consume
+      the send lease. Does not urllib POST. Does not bind ledger_path.
+      Does not unlock venue_execution. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1
     kind: RUNTIME_COMPONENT
     name: Route-C create-path blocker census v1

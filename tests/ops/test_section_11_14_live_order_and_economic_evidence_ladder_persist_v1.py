@@ -3228,6 +3228,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "id: PHASE:section_11_14_receipt_missing" in catalog
     assert "id: PHASE:section_11_14_hmac_generation" in catalog
     assert "id: PHASE:section_11_14_productive_network_session_not_authorized" in catalog
+    assert "id: PHASE:section_11_14_pre_lease_ddo_observation" in catalog
     assert (
         "id: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1" in catalog
     )

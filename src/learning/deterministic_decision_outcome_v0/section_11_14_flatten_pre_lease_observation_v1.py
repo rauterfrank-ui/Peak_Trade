@@ -56,7 +56,7 @@ SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_FIELD_SPECS_V1: Final[tuple[FieldSpe
         "REQUIRED",
         "string",
         True,
-        "Version token section_11_14_flatten_pre_lease_observation_v1.",
+        "Schema version section_11_14_flatten_pre_lease_observation_v1.",
     ),
     FieldSpecV0("record_id", "REQUIRED", "record_id", True, "Immutable observation identity."),
     FieldSpecV0("event_time_utc", "REQUIRED", "utc_timestamp", True, "Capture event time UTC."),
