@@ -524,6 +524,7 @@ def test_new_modules_have_no_urllib_write() -> None:
         "productive_flatten_submit_send_adapter_v1.py",
         "productive_wire_send_orchestrator_v1.py",
         "network_session_instance_authorization_v1.py",
+        "session_arming_v1.py",
     ):
         text = (PACKAGE / name).read_text(encoding="utf-8")
         assert "urlopen" not in text

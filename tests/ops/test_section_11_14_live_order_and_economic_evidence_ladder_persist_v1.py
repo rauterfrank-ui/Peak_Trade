@@ -2377,6 +2377,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "11.14 PRODUCTIVE_WIRE_SEND_OWNER_CONTRACT_AND_ORCHESTRATOR_SPEC" in mot
     assert "11.14 PRODUCTIVE_SEND_ORCHESTRATOR_AND_SEND_CAPABLE_BIND_IMPLEMENTATION" in mot
     assert "11.14 NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG" in mot
+    assert "11.14 SESSION_ARMING" in mot
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -2466,6 +2467,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         in mot
     )
     assert "SECTION_11_14_NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG_V1.md" in mot
+    assert "SECTION_11_14_SESSION_ARMING_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION_V1.md" in mot
@@ -2916,6 +2918,14 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "INNER_SEND_EXECUTED=false" in instance_flag_spec
     assert "POST_PERFORMED=false" in instance_flag_spec
     assert "CURRENT_CANONICAL_BOUNDARY=SESSION_NOT_ARMED" in instance_flag_spec
+    session_arming_spec = (
+        REPO_ROOT / "docs/ops/specs/SECTION_11_14_SESSION_ARMING_V1.md"
+    ).read_text(encoding="utf-8")
+    assert "DOCS_TOKEN_SECTION_11_14_SESSION_ARMING_V1" in session_arming_spec
+    assert "SESSION_ARMING_IMPLEMENTED=true" in session_arming_spec
+    assert "INNER_SEND_EXECUTED=false" in session_arming_spec
+    assert "POST_PERFORMED=false" in session_arming_spec
+    assert "CURRENT_CANONICAL_BOUNDARY=SEND_PERMITTED_FALSE" in session_arming_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -3032,6 +3042,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         in catalog
     )
     assert "id: PHASE:section_11_14_network_session_authorized_instance_flag" in catalog
+    assert "id: PHASE:section_11_14_session_arming" in catalog
     assert (
         "id: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1" in catalog
     )

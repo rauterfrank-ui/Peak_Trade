@@ -72397,6 +72397,127 @@ The runtime path then stops at `SESSION_NOT_ARMED` before `inner.send`.
 this persist. A later session-arming GO would still **not** authorize
 wire send.
 
+### 11.14 SESSION_ARMING (BOUND; ADAPTER SESSION_ARMED SEAM IMPLEMENTED; NO SEND_PERMITTED; NO POST; NO INNER.SEND; SECTION 11.14 NOT COMPLETE)
+
+Additive persist. Does **not** rewrite the persist fields above. Does
+**not** set `send_permitted=true`. Does **not** change
+`network_session_authorized`. Does **not** GET. Does **not** POST. Does
+**not** invoke `inner.send`. Does **not** consume durable state. Does
+**not** mutate standing Live gates. Does **not** flip
+`SESSION_ARMING_STANDING`. Does **not** mark §11.14 complete.
+`ConstructiveProductiveFlattenSubmitAdapterV1` remains NO_SEND.
+
+Census (`FORENSIC_RAW`): no named `OWNER_SESSION_ARMING` schema existed.
+`session_armed` was a constructor and orchestrator parameter. This GO
+covers only `arm_productive_session_v1`.
+
+`arm_productive_session_v1` binds to existing send-capable fields:
+predecessor `OWNER_NETWORK_SESSION_AUTHORITY_V1`, bound inner
+`network_session_authorized=true`, `OWNER_PRODUCTIVE_WIRE_SEND_AUTHORITY_V1`
+issued/accepted/unconsumed, `origin_main_sha`, `instrument_id`,
+`exact_envelope_id`, send-capable bind identity. Mismatch denies.
+
+The orchestrator treats bound `adapter.session_armed=true` as armed even
+when the standing caller passes `session_armed=false`. It must not
+overwrite that bound true with caller false. After successful arming the
+path leaves `SESSION_NOT_ARMED` and stops at existing
+`SEND_PERMITTED_FALSE` before `inner.send`.
+
+``` text
+OWNER_GO=OWNER_SESSION_ARMING_GO
+OWNER_GO_STATUS=CONSUMED_BOUND_ARMING_ONLY_NO_SEND_PERMITTED_NO_SEND
+OWNER_GO_CONSUMED=false
+AUTHORIZATION_PRESENT=true_for_bound_session_arming_only
+AUTHORITY_CLASS=R1_SESSION_ARMING_IMPLEMENTED_NO_SEND_PERMITTED_NO_SEND
+RISK_CLASS=R1_OFFLINE_IMPLEMENTATION_NO_SUBMIT_NO_VENUE_MUTATION
+PERSIST_CLASS=SECTION_11_14_SESSION_ARMING_SSOT_PERSIST
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+ATLAS_AUTHORITY=NONE
+CHAT_TRANSCRIPT_AUTHORITY=NONE
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=dd13d0308a24d3be3446e3bea9e7d962b6eaf7b1
+EXPECTED_ORIGIN_MAIN_SHA=dd13d0308a24d3be3446e3bea9e7d962b6eaf7b1
+BOUND_ENVELOPE_ORIGIN_MAIN_SHA=565cee16783ba0a3f1aea606626bf6418bad21e8
+PREDECESSOR_SLICE=11.14.NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG
+THIS_SLICE=11.14.SESSION_ARMING
+CURRENT_PHASE=11.14.SESSION_ARMING
+CURRENT_CANONICAL_SECTION=11.14.SESSION_ARMING
+LAST_CANONICALLY_CLOSED_STEP=SECTION_11_14_SESSION_ARMING
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+SESSION_ARMING_IMPLEMENTED=true
+SESSION_ARMING_SYMBOL=arm_productive_session_v1
+NETWORK_SESSION_INSTANCE_AUTHORIZATION_IMPLEMENTED=true
+WIRE_SEND_AUTHORITY_EVALUATOR_IMPLEMENTED=true
+ORCHESTRATOR_IMPLEMENTED=true
+SEND_CAPABLE_BIND_IMPLEMENTED=true
+SEND_ADAPTER_IMPLEMENTED=true
+PRODUCER_IMPLEMENTED=false
+NO_SEND_ADAPTER_SEMANTICS_CHANGED=false
+PRODUCTIVE_TRANSPORT_BIND_KIND_NO_SEND_UNCHANGED=true
+INNER_11_13_5_TRANSPORT_CHANGED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+CANARY_AUTHORIZED=false
+POST_ALLOWED=false
+SESSION_ARMING_STANDING=false
+SESSION_ARMED=true
+SESSION_ARMING_EXECUTED=true
+NETWORK_SESSION_AUTHORIZED=true
+BIND_LEVEL_NETWORK_SESSION_AUTHORIZED=false
+SEND_PERMISSION_CHANGED=false
+GET_PERFORMED=false
+POST_PERFORMED=false
+INNER_SEND_EXECUTED=false
+WIRE_SEND_EXECUTED=false
+FLATTEN_EXECUTED=false
+DURABLE_CONSUMED=false
+POSITION_MUTATION_EXECUTED=false
+REPRICE_EXECUTED=false
+REAL_POST_COUNT=0
+SUBMIT_ATTEMPT_COUNT=0
+OWNER_EXECUTION_AUTHORIZED=false
+FLATTEN_AUTHORIZED=false
+GATE_ORDER_STATUS=PARTIAL_PROVEN_WITH_OPEN_POINTS
+OPEN_GATE_ORDER_POINTS=FRESH_PRE_SUBMIT_GET;ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND;RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER;DURABLE_CONSUME_SUCCESS_OBJECT
+CURRENT_CANONICAL_BOUNDARY=SEND_PERMITTED_FALSE
+EARLIEST_UNRESOLVED_RUNTIME_GATE=SEND_PERMITTED
+NEXT_OWNER_AUTHORITY_REQUIRED=OWNER_SEND_PERMITTED_GO
+NEXT_SLICE_AUTHORIZED=false
+CASE_ADJUDICATION=CASE_SESSION_ARMED_FAIL_CLOSED_BEFORE_INNER_SEND
+```
+
+A. Seam. `arm_productive_session_v1` sets only bound
+`adapter.session_armed`. It does not mint, GET, POST, send, consume, or
+set `send_permitted`.
+
+B. Binding. Existing send-capable fields only. No invented bind keys.
+No `OWNER_SESSION_ARMING` schema.
+
+C. Non-execution. `POST_PERFORMED=false`. `INNER_SEND_EXECUTED=false`.
+`WIRE_SEND_EXECUTED=false`. `DURABLE_CONSUMED=false`.
+`SEND_PERMISSION_CHANGED=false`.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/
+SPEC_OWNER=docs/ops/specs/SECTION_11_14_SESSION_ARMING_V1.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_14
+CURRENT_CANONICAL_SECTION=11.14.SESSION_ARMING
+HARD_STOP_AFTER_THIS_TASK=true
+HARD_STOP=true
+```
+
+Hard stop. The bound send-capable adapter may represent `session_armed=true`.
+The runtime path then stops at `SEND_PERMITTED_FALSE` before `inner.send`.
+`SECTION_11_14_AUTHORIZED=false`. `SECTION_11_14_COMPLETE=false`. Do
+**not** set `send_permitted`, GET, POST, send, consume, flatten, push, PR,
+or merge from this persist. A later send-permitted GO would still **not**
+authorize wire send.
+
 ## 11.15 Full-autonomy observability and audit trail
 
 The autonomous runtime must expose enough telemetry for oversight without

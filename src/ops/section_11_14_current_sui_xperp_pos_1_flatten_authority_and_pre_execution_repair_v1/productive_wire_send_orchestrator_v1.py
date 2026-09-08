@@ -1,7 +1,8 @@
 """Productive wire-send orchestrator. Consumes evaluator results. Never sends.
 
-Does not arm. Does not set network_session_authorized. Does not consume.
-Does not invoke inner.send.
+Does not arm. Does not overwrite a bound adapter.session_armed=true with
+a standing caller false. Does not set network_session_authorized. Does not
+consume. Does not invoke inner.send.
 """
 
 from __future__ import annotations
@@ -88,8 +89,10 @@ def run_productive_wire_send_orchestrator_v1(
     if session_verdict.get("accepted") is not True:
         reasons.extend(str(item) for item in (session_verdict.get("reasons") or []))
 
+    bound_armed = bind is not None and bind.adapter.session_armed is True
+    effective_armed = session_armed is True or bound_armed
     gate_order.append("SESSION_ARMED")
-    if session_armed is not True:
+    if effective_armed is not True:
         reasons.append("SESSION_NOT_ARMED")
 
     inner_authorized = False
@@ -119,7 +122,7 @@ def run_productive_wire_send_orchestrator_v1(
     if bind is not None and not reasons:
         bind.adapter.wire_send_accepted = wire_verdict.get("accepted") is True
         bind.adapter.session_accepted = session_verdict.get("accepted") is True
-        bind.adapter.session_armed = session_armed
+        bind.adapter.session_armed = effective_armed
         bind.adapter.send_permitted = bind.send_permitted is True
         try:
             bind.adapter.post(endpoint=endpoint, body=dict(body or {}))
@@ -147,7 +150,7 @@ def run_productive_wire_send_orchestrator_v1(
         "NETWORK_SESSION_AUTHORITY_ACCEPTED": session_verdict.get("accepted") is True,
         "NETWORK_SESSION_AUTHORIZED": inner_authorized,
         "NETWORK_SESSION_AUTHORIZED_CHANGED": False,
-        "SESSION_ARMED": session_armed is True,
+        "SESSION_ARMED": effective_armed,
         "SESSION_ARMING_EXECUTED": False,
         "SEND_PERMITTED": bind.send_permitted is True if bind is not None else False,
         "INNER_SEND_EXECUTED": False,
