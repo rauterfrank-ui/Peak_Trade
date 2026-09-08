@@ -2307,7 +2307,7 @@ entities:
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: PHASE:section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair
-    # reviewed: frozen-bind rebind GET pack 20260908T022750Z; no Owner Flatten GO; ATLAS_AUTHORITY=NONE
+    # reviewed: productive bind no-send + OWNER_NETWORK_SESSION_AUTHORITY schema; no wire-send; ATLAS_AUTHORITY=NONE
     kind: PHASE
     modified_by: PENDING_CHANGE
     name: 11.14.CURRENT_SUI_XPERP_POS_1_FLATTEN_AUTHORITY_AND_PRE_EXECUTION_REPAIR
@@ -2330,6 +2330,8 @@ entities:
       - src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/execution_harness_v1.py
       - src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/position_recon_v1.py
       - src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/productive_transport_adapter_v1.py
+      - src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/productive_transport_bind_v1.py
+      - src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/network_session_authority_v1.py
       - scripts/ops/run_section_11_14_current_flatten_get_only_preflight_v1.py
       - scripts/ops/run_section_11_14_canonical_owner_issuance_repair_v1.py
       - scripts/ops/run_section_11_14_owner_go_pre_wire_validation_v1.py
@@ -2340,6 +2342,7 @@ entities:
       - tests/ops/test_section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.py
       - tests/ops/test_section_11_14_owner_flatten_issuance_v1.py
       - tests/ops/test_section_11_14_current_flatten_execution_harness_v1.py
+      - tests/ops/test_section_11_14_network_session_authority_v1.py
       - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
       - evidence/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/20260908T022750Z/
       - evidence/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/20260908T020302Z/
