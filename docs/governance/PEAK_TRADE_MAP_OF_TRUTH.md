@@ -158,6 +158,7 @@ Weitere Architektur-Landkarten (deep dives, keine parallele Trading-SSOT):
 | [`docs/ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1.md`](../ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1.md) | Navigation-only mutation-critical control-state storage-owner contract (non-SSOT; new isolated WAL owner; not DDO observation ledger; no productive host; host-crash unproven; no GET; no POST) |
 | [`docs/ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_DURABLE_STORAGE_IMPLEMENTATION_AND_CRASH_REPROOF_V1.md`](../ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_DURABLE_STORAGE_IMPLEMENTATION_AND_CRASH_REPROOF_V1.md) | Navigation-only mutation-critical control-state durable-storage crash-reproof contract (non-SSOT; reuses bound WAL owner; process-boundary SIGKILL is not host-crash; no GET; no POST) |
 | [`docs/ops/specs/DDO_A1_HOST_CRASH_DURABILITY_CLOSURE_V1.md`](../ops/specs/DDO_A1_HOST_CRASH_DURABILITY_CLOSURE_V1.md) | Navigation-only mutation-critical control-state host-crash durability closure contract (non-SSOT; reuses bound WAL owner; host-crash and power-loss remain unproven; no GET; no POST) |
+| [`docs/ops/specs/DDO_SEMANTIC_REPLAY_PARITY_V1.md`](../ops/specs/DDO_SEMANTIC_REPLAY_PARITY_V1.md) | Navigation-only DDO typed Double-Play producer-output semantic replay contract (non-SSOT; offline reconstruction from immutable observation evidence; classifier replay remains distinct; producer-function replay NOT_REPLAYABLE because producer input is not persisted; no GET; no POST) |
 | [`docs/ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md`](../ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md) | Navigation-only Full-Core LIVE_ENABLED standing admission seam spec (non-SSOT; predicate conjunction; default false; true is not automatic admission; no GET; no POST) |
 | [`docs/ops/specs/FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md`](../ops/specs/FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md) | Navigation-only Full-Core pre-wire admission closure spec (non-SSOT; LIVE_ARMED and WIRE_SEND_PERMITTED standing predicates; construction-admission contract; Cap 11.1 construction remains forbidden; no GET; no POST) |
 | [`docs/ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md`](../ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md) | Navigation-only Full-Core STEP-29P risk-admissibility pre-construction spec (non-SSOT; fresh GET evidence; equity dimension unbound; Cap 11.1 construction remains forbidden) |
@@ -1720,6 +1721,8 @@ DDO_VALIDATION_PACK_ENGINE_NAV=src/learning/deterministic_decision_outcome_v0/va
 DDO_VALIDATION_PACK_ENGINE_ROLE=NAVIGATION_POINTER_ONLY
 DDO_PROMOTION_ELIGIBILITY_DRY_RUN_NAV=src/learning/deterministic_decision_outcome_v0/promotion_controller_v0.py
 DDO_PROMOTION_ELIGIBILITY_DRY_RUN_ROLE=NAVIGATION_POINTER_ONLY
+DDO_SEMANTIC_REPLAY_PARITY_NAV=docs/ops/specs/DDO_SEMANTIC_REPLAY_PARITY_V1.md
+DDO_SEMANTIC_REPLAY_PARITY_ROLE=NAVIGATION_POINTER_ONLY
 PRODUCTIVE_LEARNING_AUTHORITY=NONE
 PRODUCTIVE_PROMOTION_AUTHORITY=NONE
 ```

@@ -3786,6 +3786,7 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py
       - src/learning/deterministic_decision_outcome_v0/validation_pack_engine_v0.py
       - src/learning/deterministic_decision_outcome_v0/promotion_controller_v0.py
+      - src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py
       - src/learning/mutation_critical_control_state_storage_v1/authority_v1.py
       - docs/ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1.md
     notes: >-
@@ -3845,8 +3846,13 @@ entities:
       is bound as typed existing-owner artifact ingest plus pack aggregation
       and promotion-eligibility dry-run. DDO does not execute Walk-Forward,
       Monte Carlo, Stress, Fault, or Safety Replay engines and does not
-      activate promotion, deployment, or rollback. Atlas catalog presence is
-      navigation only and is not activation. Atlas is not trading authority.
+      activate promotion, deployment, or rollback.
+      DDO_SEMANTIC_REPLAY_PARITY_V1 is bound as offline typed producer-output
+      reconstruction replay from immutable Double-Play observation evidence.
+      Classifier/token replay remains distinct. Producer-function replay is
+      NOT_REPLAYABLE because producer input is not in immutable DDO evidence.
+      Atlas catalog presence is navigation only and is not activation. Atlas is
+      not trading authority.
 
   - id: RUNTIME_COMPONENT:ddo_capture_v0
     kind: RUNTIME_COMPONENT
@@ -3890,6 +3896,31 @@ entities:
       key, then consumes the path resolver.
       Evidence_sources list observation-host producer files, not ownership.
       Not WP-FA-08. Atlas is not trading authority.
+
+  - id: RUNTIME_COMPONENT:ddo_double_play_semantic_replay_v1
+    kind: RUNTIME_COMPONENT
+    name: DDO Double-Play semantic replay v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py
+      - src/learning/deterministic_decision_outcome_v0/replay_evaluator_v0.py
+      - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
+      - docs/ops/specs/DDO_SEMANTIC_REPLAY_PARITY_V1.md
+    notes: >-
+      Offline typed producer-output semantic replay. Reconstructs
+      EntryExitPolicyDecisionV0 from immutable double_play_entry_exit_observation_v1
+      evidence and reuses producer serializer/digest helpers. Does not call
+      evaluate_double_play_entry_exit_policy_v0. Producer input is not in
+      current DDO evidence, so producer-function replay is NOT_REPLAYABLE.
+      Classifier replay in replay_evaluator_v0 remains distinct.
+      OFFLINE_EVALUATION_AUTHORITY=NONE. TRADING_AUTHORITY=NONE.
+      EXECUTION_AUTHORITY=NONE. HINDSIGHT_LEAKAGE_ALLOWED=false.
+      Not a second trading authority. Not WP-FA-08.
 
   - id: RUNTIME_COMPONENT:ddo_ledger_v0
     kind: RUNTIME_COMPONENT
