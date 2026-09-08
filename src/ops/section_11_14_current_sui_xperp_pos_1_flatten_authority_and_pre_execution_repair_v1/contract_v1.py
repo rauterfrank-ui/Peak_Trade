@@ -5,6 +5,10 @@ from __future__ import annotations
 from typing import Any, Mapping
 
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.constants_v1 import (
+    AUTHORITY_SOURCE_CANONICAL_OWNER_ISSUANCE,
+    AUTHORITY_TYPE_OWNER_FLATTEN_ISSUANCE,
+    BOUND_FROZEN_ENVELOPE_ID,
+    BOUND_ORIGIN_MAIN_SHA,
     CAPTURE_REQUIRED,
     CONSUMED_ENTRY_OWNER_EXECUTION_GO,
     CONSUMED_GO_CANNOT_BE_REUSED,
@@ -16,10 +20,12 @@ from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_exe
     FLATTEN_OWNER_GO_CANNOT_AUTHORIZE_ENTRY,
     FLATTEN_PURPOSE_EXPECTED,
     FLATTEN_SECTION,
+    FORBIDDEN_AUTHORITY_SOURCES,
     HISTORICAL_G12_FLATTEN_OWNER_GO,
     HISTORICAL_G12_FLATTEN_PURPOSE,
     HISTORICAL_PRODUCTIVE_FLATTEN_OWNER_GO,
     INSTRUMENT_ID,
+    ISSUANCE_SCHEMA_VERSION,
     MARGIN_MODE,
     ORDER_QTY_UNIT,
     ORDER_SIDE_FOR_POSITIVE_POS,
@@ -107,12 +113,140 @@ def flatten_go_contract_schema_v1() -> dict[str, Any]:
         "standing_post_allowed": bool(POST_ALLOWED),
         "required_candidate_fields": list(REQUIRED_CANDIDATE_FIELDS),
         "MECHANISM_EXPECTED_VALUES_ARE_NOT_ISSUED_AUTHORITY": True,
+        "EVALUATOR_IS_NOT_ISSUER": True,
+        "CHAT_IS_NOT_AUTHORITY": True,
+        "ENV_IS_NOT_AUTHORITY": True,
+        "CLI_FLAG_IS_NOT_AUTHORITY": True,
     }
 
 
 def _sha_ok(raw: Any) -> bool:
     text = str(raw or "").strip().lower()
     return len(text) == 40 and all(ch in "0123456789abcdef" for ch in text)
+
+
+def verify_owner_flatten_issuance_v1(
+    *,
+    issuance: Mapping[str, Any] | None,
+    origin_main_sha: str,
+    instrument_id: str,
+    expected_signed_position: str,
+    order_side: str,
+    order_qty: str,
+    exact_envelope_id: str,
+    durable_consumed_authority_id: str = "",
+) -> dict[str, Any]:
+    """Verify an issuance artifact. Does not mint issued=true."""
+    from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.issuance_v1 import (
+        ISSUANCE_INPUT_REQUIRED_FIELDS,
+        flatten_authority_id_v1,
+    )
+
+    reasons: list[str] = []
+    if issuance is None:
+        return {
+            "accepted": False,
+            "issued": False,
+            "reasons": ["ISSUANCE_ARTIFACT_MISSING"],
+            "authority_id": "",
+            "EVALUATOR_IS_NOT_ISSUER": True,
+        }
+    missing = [
+        name
+        for name in (*ISSUANCE_INPUT_REQUIRED_FIELDS, "issued", "authority_id")
+        if name not in issuance
+    ]
+    if missing:
+        reasons.append("ISSUANCE_FIELDS_MISSING:" + ",".join(missing))
+    source = str(issuance.get("authority_source") or "").strip()
+    if source != AUTHORITY_SOURCE_CANONICAL_OWNER_ISSUANCE:
+        reasons.append("ISSUANCE_AUTHORITY_SOURCE_NOT_CANONICAL")
+    if source in FORBIDDEN_AUTHORITY_SOURCES:
+        reasons.append("ISSUANCE_AUTHORITY_SOURCE_FORBIDDEN")
+    if str(issuance.get("schema_version") or "") != ISSUANCE_SCHEMA_VERSION:
+        reasons.append("ISSUANCE_SCHEMA_VERSION_MISMATCH")
+    if str(issuance.get("authority_type") or "") != AUTHORITY_TYPE_OWNER_FLATTEN_ISSUANCE:
+        reasons.append("ISSUANCE_AUTHORITY_TYPE_MISMATCH")
+    if issuance.get("issued") is not True:
+        reasons.append("ISSUANCE_ARTIFACT_NOT_ISSUED")
+    if str(issuance.get("section") or "") != FLATTEN_SECTION:
+        reasons.append("ISSUANCE_SECTION_MISMATCH")
+    if str(issuance.get("purpose") or "") != FLATTEN_PURPOSE_EXPECTED:
+        reasons.append("ISSUANCE_PURPOSE_MISMATCH")
+    if str(issuance.get("action") or "") != FLATTEN_ACTION:
+        reasons.append("ISSUANCE_ACTION_MISMATCH")
+    bound_sha = str(issuance.get("origin_main_sha") or "").strip().lower()
+    expected_sha = str(origin_main_sha or "").strip().lower()
+    if not _sha_ok(bound_sha) or not _sha_ok(expected_sha) or bound_sha != expected_sha:
+        reasons.append("ISSUANCE_SHA_MISMATCH")
+    if bound_sha != BOUND_ORIGIN_MAIN_SHA:
+        reasons.append("ISSUANCE_SHA_NOT_CURRENT_BIND")
+    if str(issuance.get("instrument_id") or "").strip() != str(instrument_id or "").strip():
+        reasons.append("ISSUANCE_INSTRUMENT_MISMATCH")
+    if (
+        str(issuance.get("expected_signed_position") or "").strip()
+        != str(expected_signed_position or "").strip()
+    ):
+        reasons.append("ISSUANCE_POSITION_MISMATCH")
+    if str(issuance.get("pos_side") or "").strip() != POS_SIDE_OBSERVED:
+        reasons.append("ISSUANCE_POS_SIDE_MISMATCH")
+    if str(issuance.get("margin_mode") or "").strip() != MARGIN_MODE:
+        reasons.append("ISSUANCE_MARGIN_MODE_MISMATCH")
+    if (
+        str(issuance.get("order_side") or "").strip().upper()
+        != str(order_side or "").strip().upper()
+    ):
+        reasons.append("ISSUANCE_SIDE_MISMATCH")
+    if str(issuance.get("order_qty") or "").strip() != str(order_qty or "").strip():
+        reasons.append("ISSUANCE_QTY_MISMATCH")
+    if str(issuance.get("order_qty_unit") or "").strip() != ORDER_QTY_UNIT:
+        reasons.append("ISSUANCE_QTY_UNIT_MISMATCH")
+    if issuance.get("reduce_only") is not True:
+        reasons.append("ISSUANCE_REDUCE_ONLY_REQUIRED")
+    if str(issuance.get("order_type") or "").strip().upper() != ORDER_TYPE:
+        reasons.append("ISSUANCE_ORDER_TYPE_MISMATCH")
+    if str(issuance.get("exact_envelope_id") or "").strip() != str(exact_envelope_id or "").strip():
+        reasons.append("ISSUANCE_ENVELOPE_MISMATCH")
+    if str(issuance.get("exact_envelope_id") or "") != BOUND_FROZEN_ENVELOPE_ID:
+        reasons.append("ISSUANCE_ENVELOPE_NOT_CURRENT_BIND")
+    if issuance.get("single_use") is not True:
+        reasons.append("ISSUANCE_SINGLE_USE_REQUIRED")
+    if issuance.get("retry_allowed") is not False:
+        reasons.append("ISSUANCE_RETRY_MUST_BE_FALSE")
+    if issuance.get("second_submit_allowed") is not False:
+        reasons.append("ISSUANCE_SECOND_SUBMIT_MUST_BE_FALSE")
+    if issuance.get("consumed") is True:
+        reasons.append("ISSUANCE_CONSUMED")
+    if issuance.get("pre_submit_fresh_get_required") is not True:
+        reasons.append("ISSUANCE_PRE_SUBMIT_GET_REQUIRED")
+    if issuance.get("post_submit_position_recon_required") is not True:
+        reasons.append("ISSUANCE_POST_RECON_REQUIRED")
+    if issuance.get("capture_required") is not True:
+        reasons.append("ISSUANCE_CAPTURE_REQUIRED")
+    if issuance.get("venue_reduce_only_no_flip_acknowledgement") is not True:
+        reasons.append("ISSUANCE_VENUE_NO_FLIP_ACK_REQUIRED")
+    if str(issuance.get("confirm_token") or "") != FLATTEN_CONFIRM_TOKEN_EXPECTED:
+        reasons.append("ISSUANCE_CONFIRM_TOKEN_MISMATCH")
+    authority_id = ""
+    try:
+        authority_id = flatten_authority_id_v1(issuance)
+    except Exception as exc:  # noqa: BLE001
+        reasons.append(f"ISSUANCE_AUTHORITY_ID_UNCOMPUTABLE:{exc}")
+    recorded_id = str(issuance.get("authority_id") or "")
+    if authority_id and recorded_id and recorded_id != authority_id:
+        reasons.append("ISSUANCE_AUTHORITY_ID_MISMATCH")
+    consumed_id = str(durable_consumed_authority_id or "").strip()
+    if consumed_id and authority_id and consumed_id == authority_id:
+        reasons.append("ISSUANCE_DURABLE_CONSUMED")
+    runtime_issued = (not reasons) and issuance.get("issued") is True
+    return {
+        "accepted": not reasons,
+        "issued": runtime_issued,
+        "reasons": reasons,
+        "authority_id": recorded_id or authority_id,
+        "authority_source": source,
+        "EVALUATOR_IS_NOT_ISSUER": True,
+    }
 
 
 def evaluate_flatten_go_candidate_v1(
@@ -125,8 +259,14 @@ def evaluate_flatten_go_candidate_v1(
     order_qty: str,
     exact_envelope_id: str,
     entry_path: bool = False,
+    issuance: Mapping[str, Any] | None = None,
+    durable_consumed_authority_id: str = "",
 ) -> dict[str, Any]:
-    """Validate a future candidate. Missing candidate is a deny, not an issue."""
+    """Validate a candidate and optionally verify an issuance artifact.
+
+    This function never mints issued=true. Runtime issued is true only when a
+    present artifact already carries issued=true and verification passes.
+    """
     reasons: list[str] = []
     if LIVE_ENABLED or LIVE_ARMED or CANARY_AUTHORIZED or POST_ALLOWED:
         reasons.append("STANDING_LIVE_FLAGS_MUST_REMAIN_FALSE")
@@ -137,10 +277,19 @@ def evaluate_flatten_go_candidate_v1(
             "reasons": reasons,
             "present": candidate is not None,
             "issued": False,
+            "EVALUATOR_IS_NOT_ISSUER": True,
+        }
+    if candidate is None and issuance is None:
+        reasons.append("FLATTEN_GO_CANDIDATE_MISSING")
+        return {
+            "accepted": False,
+            "reasons": reasons,
+            "present": False,
+            "issued": False,
+            "EVALUATOR_IS_NOT_ISSUER": True,
         }
     if candidate is None:
-        reasons.append("FLATTEN_GO_CANDIDATE_MISSING")
-        return {"accepted": False, "reasons": reasons, "present": False, "issued": False}
+        candidate = issuance
 
     missing = [name for name in REQUIRED_CANDIDATE_FIELDS if name not in candidate]
     if missing:
@@ -219,16 +368,47 @@ def evaluate_flatten_go_candidate_v1(
         reasons.append("FLATTEN_GO_POST_RECON_REQUIRED")
     if candidate.get("capture_required") is not True:
         reasons.append("FLATTEN_GO_CAPTURE_REQUIRED")
-    ack = str(candidate.get("venue_reduce_only_no_flip_acknowledgement") or "").strip()
-    if ack != VENUE_REDUCE_ONLY_NO_FLIP:
-        reasons.append("FLATTEN_GO_VENUE_NO_FLIP_ACK_REQUIRED_UNPROVEN")
+    ack_value = candidate.get("venue_reduce_only_no_flip_acknowledgement")
+    if issuance is None:
+        ack = str(ack_value or "").strip()
+        if ack != VENUE_REDUCE_ONLY_NO_FLIP:
+            reasons.append("FLATTEN_GO_VENUE_NO_FLIP_ACK_REQUIRED_UNPROVEN")
+    elif ack_value is not True and str(ack_value or "").strip() != VENUE_REDUCE_ONLY_NO_FLIP:
+        reasons.append("FLATTEN_GO_VENUE_NO_FLIP_ACK_REQUIRED")
 
+    issuance_verify: dict[str, Any] = {
+        "accepted": False,
+        "issued": False,
+        "reasons": ["ISSUANCE_ARTIFACT_MISSING"],
+        "authority_id": "",
+        "EVALUATOR_IS_NOT_ISSUER": True,
+    }
+    if issuance is not None:
+        issuance_verify = verify_owner_flatten_issuance_v1(
+            issuance=issuance,
+            origin_main_sha=origin_main_sha,
+            instrument_id=instrument_id,
+            expected_signed_position=expected_signed_position,
+            order_side=order_side,
+            order_qty=order_qty,
+            exact_envelope_id=exact_envelope_id,
+            durable_consumed_authority_id=durable_consumed_authority_id,
+        )
+        reasons.extend(str(item) for item in (issuance_verify.get("reasons") or []))
+    runtime_issued = issuance is not None and issuance_verify.get("issued") is True
+    candidate_accepted = not reasons
+    if issuance is not None:
+        candidate_accepted = candidate_accepted and issuance_verify.get("accepted") is True
     return {
-        "accepted": not reasons,
+        "accepted": candidate_accepted,
         "reasons": reasons,
         "present": True,
-        "issued": False,
+        "issued": runtime_issued,
         "kind": FLATTEN_CONTRACT_KIND,
+        "EVALUATOR_IS_NOT_ISSUER": True,
+        "authority_id": issuance_verify.get("authority_id") or "",
+        "authority_source": issuance_verify.get("authority_source") or "",
+        "issuance_present": issuance is not None,
     }
 
 

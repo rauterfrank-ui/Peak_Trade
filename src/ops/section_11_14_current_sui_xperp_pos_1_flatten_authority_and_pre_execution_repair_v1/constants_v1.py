@@ -188,6 +188,53 @@ ENVELOPE_FILENAME = "FLATTEN_ENVELOPE.json"
 LINEAGE_FILENAME = "LINEAGE.json"
 MANIFEST_FILENAME = "MANIFEST.sha256"
 NON_EXECUTION_FILENAME = "NON_EXECUTION.json"
+CANDIDATE_FILENAME = "CANDIDATE.json"
+HARNESS_FILENAME = "HARNESS.json"
+DURABLE_CONSUME_FILENAME = "DURABLE_CONSUME.json"
+FROZEN_ENVELOPE_REF_FILENAME = "FROZEN_ENVELOPE_REF.json"
+
+EXPECTED_VENUE_NATIVE_BODY: dict[str, object] = {
+    "instId": INSTRUMENT_ID,
+    "tdMode": TD_MODE,
+    "side": "sell",
+    "ordType": "limit",
+    "sz": "1",
+    "px": "0.8229",
+    "reduceOnly": True,
+}
+BOUND_FROZEN_ENVELOPE_ID = "8581cfceb16811a45b2e3c09ed722a7c71b2a8184ab3fb3eb1d30a1a87b9ae93"
+BOUND_ORIGIN_MAIN_SHA = "d19a673a31cd5d70a196dba0ad611c1735e2147b"
+BOUND_FROZEN_EVIDENCE_RELATIVE = (
+    "evidence/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_"
+    "and_pre_execution_repair_v1/20260908T003929Z"
+)
+
+ISSUANCE_SCHEMA_VERSION = "owner_flatten_issuance.v1"
+AUTHORITY_TYPE_OWNER_FLATTEN_ISSUANCE = "OWNER_FLATTEN_ISSUANCE_V1"
+AUTHORITY_SOURCE_CANONICAL_OWNER_ISSUANCE = "CANONICAL_OWNER_ISSUANCE"
+FORBIDDEN_AUTHORITY_SOURCES: frozenset[str] = frozenset(
+    {"CHAT_DECLARATION", "ENV", "CLI_FLAG", "TEST_FIXTURE"}
+)
+VENUE_REDUCE_ONLY_NO_FLIP_OWNER_ACK = True
+ISSUANCE_FILENAME = "OWNER_ISSUANCE_ARTIFACT.json"
+# Identity fields hashed into authority_id. issued/issued_at/consumed/confirm_token
+# are excluded so consume and issuance timestamp do not change the bind identity.
+AUTHORITY_ID_FIELDS: tuple[str, ...] = (
+    "schema_version",
+    "authority_type",
+    "section",
+    "purpose",
+    "action",
+    "origin_main_sha",
+    "exact_envelope_id",
+    "instrument_id",
+    "expected_signed_position",
+    "order_side",
+    "order_qty",
+    "order_qty_unit",
+    "reduce_only",
+    "single_use",
+)
 
 CAPTURE_STAGE_ORDER: tuple[str, ...] = (
     "PRE_ACTION_STATE_CAPTURE",

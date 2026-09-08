@@ -1,0 +1,16 @@
+1. EVALUATOR_MINTS_ISSUED=false  runtime_issued = artifact.issued is True AND verification passes
+2. SOLE_PRODUCTIVE_PRODUCER=issue_owner_flatten_authority_v1
+3. CHAT_IS_NOT_AUTHORITY=true
+4. ENV_IS_NOT_AUTHORITY=true
+5. CLI_FLAG_IS_NOT_AUTHORITY=true
+6. TEST_FIXTURE_FORBIDDEN_AS_PRODUCTIVE_SOURCE=true
+7. BIND=origin_main_sha+exact_envelope_id+instrument_id+section+order fields
+8. DURABLE_CONSUME_BOUND_TO_authority_id=true
+9. CONSUME_PREVENTS_RESUBMIT=true
+10. AUTHORITY_ALONE_CANNOT_POST=true  SESSION_NOT_ARMED and PRODUCTIVE_TRANSPORT_NOT_BOUND remain
+11. PRODUCTIVE_SEND_LOGIC_NOT_RELAXED=true  adapter.post raises; harness forbids productive adapter
+12. NO_FORCE=true
+13. NO_RETRY_SWITCH=true
+14. NO_SECOND_SUBMIT_SWITCH=true
+15. NO_DEFAULTIZATION_OF_MISSING_AUTHORITY_FIELDS=true
+16. NO_SECRET_PERSISTENCE=true  confirm_token is non-secret authorization phrase already in source
