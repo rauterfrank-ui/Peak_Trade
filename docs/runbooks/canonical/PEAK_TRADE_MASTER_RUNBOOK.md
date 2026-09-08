@@ -457,6 +457,75 @@ SINGLE_SELECTED_FUTURE = current trading selection authority
 TOP_N_ACTIVE_SET = future multi-future authority, currently unauthorized
 ```
 
+### 4.5.1 Non-authoritative membership context-only boundary (docs-only; isolated domain; AUTHORITY_EFFECT=NONE)
+
+Owner-GO `OWNER_GO_MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1` binds a
+docs-only **isolated-domain** boundary class. This subsection does
+**not** replace §4.5, does **not** rewire Cap 2.3 or Cap 2.4, does
+**not** unlock G13, and does **not** create a join into the productive
+system.
+
+Subordinate contract:
+`docs&#47;ops&#47;specs&#47;MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1.md`.
+
+``` text
+CONTRACT_ID=MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1
+CONTRACT_CLASS=NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY
+AUTHORITY_EFFECT=NONE
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CONTEXT_ONLY=true
+SELECTION_AUTHORITY=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+ALPHA_ALLOWED=false
+G13_UNLOCK=false
+CAP23_REMAINS_SOLE_SELECTION_OWNER=true
+CAP24_REWIRED=false
+INTEGRATION_STATUS=NOT_IN_SCOPE
+HOST_ADAPTER_STATUS=NOT_DESIGNED
+HOST_CONSUMER_STATUS=NONE
+AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
+NEW_EDGE_TO_PRODUCTIVE_SYSTEM=false
+N_RATIFIED=false
+MF_SCORING_RATIFIED=false
+ROTATION_POLICY_RATIFIED=false
+PORTFOLIO_SELECTION_RATIFIED=false
+PERSISTENCE_WHILE_G13_CLOSED=UNPROVEN
+PHASE8_RUNTIME_SEMANTICS_RATIFIED=false
+RUNTIME_IMPLEMENTATION_CREATED=false
+```
+
+Isolated domain (hard domain end; not a runtime path; not a host join):
+
+``` text
+Cap 2.2 Top-20 Candidate Context
+→ future MF Selector
+→ future Active Set N
+→ future Membership Rotation
+→ unresolved Portfolio Selection
+→ NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY
+→ HARD DOMAIN END
+```
+
+Existing productive system, cited **only** as negative constraint
+(must not be violated; not a later fit-target):
+
+``` text
+Cap 2.2
+→ Cap 2.3 SINGLE_SELECTED_FUTURE
+→ Cap 2.4
+→ Recon / Master V2 / Double Play / Risk / Safety / Intent / Execution
+```
+
+This workpackage creates **no** new edge between those graphs. It does
+**not** design a host adapter, Cap-2.4-compatible DTO, mapping into Cap
+2.3 or Cap 2.4, or authority handoff.
+
+Unresolved remains unresolved: `N` including `N=5`; MF scoring;
+selector policy; rotation numerics; hysteresis/cooldown/turnover;
+Portfolio Selection P1/P2/P3; `P4_UNRESOLVED`; context persistence
+while G13 closed; PHASE-8 runtime semantics. Authority handoff and host
+integration remain `NOT_DESIGNED` / `NOT_IN_SCOPE`.
+
 ## 4.6 Volatility authority
 
 Typed volatility presence may participate in already-ratified Alpha

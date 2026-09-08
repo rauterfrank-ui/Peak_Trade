@@ -183,6 +183,27 @@ entities:
     evidence_sources:
       - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
 
+  - id: CONTRACT:mf_selection_context_boundary_v1
+    kind: CONTRACT
+    name: Non-authoritative membership context-only boundary
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1.md
+    evidence_sources:
+      - docs/ops/specs/MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1.md
+    notes: >-
+      Docs-only isolated-domain boundary class
+      NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY. HARD DOMAIN END.
+      INTEGRATION_STATUS=NOT_IN_SCOPE. HOST_ADAPTER_STATUS=NOT_DESIGNED.
+      HOST_CONSUMER_STATUS=NONE. AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED.
+      AUTHORITY_EFFECT=NONE. Not selection. No Atlas edge to Cap 2.3 or
+      Cap 2.4. N unratified. MF scoring absent. Rotation policy not
+      ratified. G13 remains closed. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: CAPABILITY:cap_2_3_single_selected_future
     kind: CAPABILITY
     name: Single Selected Future Policy
