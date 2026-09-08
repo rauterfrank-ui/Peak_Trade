@@ -9,12 +9,16 @@ from pathlib import Path
 import pytest
 
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.constants_v1 import (
+    BOUND_FROZEN_ENVELOPE_ID,
+    BOUND_FROZEN_EVIDENCE_RELATIVE,
+    BOUND_ORIGIN_MAIN_SHA,
     EXPECTED_SIGNED_POSITION,
     FLATTEN_ACTION,
     FLATTEN_CONFIRM_TOKEN_EXPECTED,
     FLATTEN_HTTP_ENDPOINT,
     FLATTEN_PURPOSE_EXPECTED,
     FLATTEN_SECTION,
+    HISTORICAL_FROZEN_EVIDENCE_RELATIVE,
     INSTRUMENT_ID,
     MARGIN_MODE,
     ORDER_QTY_UNIT,
@@ -51,12 +55,9 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     POST_ALLOWED,
 )
 
-ORIGIN_SHA = "d19a673a31cd5d70a196dba0ad611c1735e2147b"
+ORIGIN_SHA = BOUND_ORIGIN_MAIN_SHA
 NOW_MS = str(int(time.time() * 1000))
-FROZEN_ROOT = Path(
-    "evidence/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_"
-    "and_pre_execution_repair_v1/20260908T003929Z"
-)
+FROZEN_ROOT = Path(BOUND_FROZEN_EVIDENCE_RELATIVE)
 TRADE_FEE = {
     "code": "0",
     "data": [
@@ -412,9 +413,7 @@ def test_frozen_envelope_dry_run_offline() -> None:
     assert result["WIRE_SEND"] is False
     assert result["PRODUCTIVE_TRANSPORT_IMPLEMENTED"] is True
     assert result["PRODUCTIVE_TRANSPORT_USED"] is False
-    assert envelope["FLATTEN_ENVELOPE_ID"] == (
-        "8581cfceb16811a45b2e3c09ed722a7c71b2a8184ab3fb3eb1d30a1a87b9ae93"
-    )
+    assert envelope["FLATTEN_ENVELOPE_ID"] == BOUND_FROZEN_ENVELOPE_ID
 
 
 def test_pre_wire_session_armed_never_network_sends_frozen_envelope() -> None:
@@ -489,3 +488,24 @@ def test_pre_wire_session_armed_never_network_sends_frozen_envelope() -> None:
     assert complete["AUTHORITY_RUNTIME_ISSUED"] is False
     assert complete["EVALUATOR_ISSUED"] is False
     assert "NON_FAKE_TRANSPORT_FORBIDDEN_IN_THIS_HARNESS" in complete["reasons"]
+
+
+def test_historical_frozen_envelope_is_not_current_submit_bind() -> None:
+    historical_root = Path(HISTORICAL_FROZEN_EVIDENCE_RELATIVE)
+    envelope = json.loads((historical_root / "FLATTEN_ENVELOPE.json").read_text(encoding="utf-8"))
+    assert envelope["FLATTEN_ENVELOPE_ID"] != BOUND_FROZEN_ENVELOPE_ID
+    candidate = _candidate(envelope=envelope)
+    candidate["origin_main_sha"] = str(envelope["ORIGIN_MAIN_SHA"])
+    result = run_flatten_execution_harness_v1(
+        origin_main_sha=ORIGIN_SHA,
+        candidate=candidate,
+        envelope=envelope,
+        mode="dry-run",
+        frozen_evidence_root=str(historical_root),
+    )
+    assert result["AUTHORITY_CANDIDATE_ACCEPTED"] is False
+    assert result["POST_COUNT"] == 0
+    assert result["REAL_POST_COUNT"] == 0
+    assert result["WIRE_SEND"] is False
+    reasons = {str(item) for item in (result.get("reasons") or [])}
+    assert "FLATTEN_GO_SHA_MISMATCH" in reasons

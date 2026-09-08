@@ -199,14 +199,21 @@ EXPECTED_VENUE_NATIVE_BODY: dict[str, object] = {
     "side": "sell",
     "ordType": "limit",
     "sz": "1",
-    "px": "0.8229",
+    "px": "0.8267",
     "reduceOnly": True,
 }
-BOUND_FROZEN_ENVELOPE_ID = "8581cfceb16811a45b2e3c09ed722a7c71b2a8184ab3fb3eb1d30a1a87b9ae93"
-BOUND_ORIGIN_MAIN_SHA = "d19a673a31cd5d70a196dba0ad611c1735e2147b"
-BOUND_FROZEN_EVIDENCE_RELATIVE = (
+# Historical pre-rebind freeze. Not the current producer/evaluator bind.
+HISTORICAL_BOUND_ORIGIN_MAIN_SHA = "d19a673a31cd5d70a196dba0ad611c1735e2147b"
+HISTORICAL_BOUND_ENVELOPE_ID = "8581cfceb16811a45b2e3c09ed722a7c71b2a8184ab3fb3eb1d30a1a87b9ae93"
+HISTORICAL_FROZEN_EVIDENCE_RELATIVE = (
     "evidence/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_"
     "and_pre_execution_repair_v1/20260908T003929Z"
+)
+BOUND_FROZEN_ENVELOPE_ID = "c6a0156ff5e73b92d1cb23d2bcbf85e7d850ebe91423383b650e92e2feaf8a5a"
+BOUND_ORIGIN_MAIN_SHA = "02219bbf05a09ee3b5c24722a42a8e0b8accce67"
+BOUND_FROZEN_EVIDENCE_RELATIVE = (
+    "evidence/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_"
+    "and_pre_execution_repair_v1/20260908T020302Z"
 )
 
 ISSUANCE_SCHEMA_VERSION = "owner_flatten_issuance.v1"

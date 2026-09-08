@@ -9,8 +9,11 @@ from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_exe
     AUTHORITY_ID_FIELDS,
     AUTHORITY_SOURCE_CANONICAL_OWNER_ISSUANCE,
     BOUND_FROZEN_ENVELOPE_ID,
+    BOUND_FROZEN_EVIDENCE_RELATIVE,
     BOUND_ORIGIN_MAIN_SHA,
     FLATTEN_CONFIRM_TOKEN_EXPECTED,
+    HISTORICAL_BOUND_ENVELOPE_ID,
+    HISTORICAL_BOUND_ORIGIN_MAIN_SHA,
     INSTRUMENT_ID,
 )
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.contract_v1 import (
@@ -38,9 +41,10 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
 )
 
 ISSUED_AT = "2026-09-08T01:10:00.000000Z"
-FROZEN_ROOT = Path(
+FROZEN_ROOT = Path(BOUND_FROZEN_EVIDENCE_RELATIVE)
+HISTORICAL_ISSUANCE_ROOT = Path(
     "evidence/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_"
-    "and_pre_execution_repair_v1/20260908T003929Z"
+    "and_pre_execution_repair_v1/20260908T011645Z_canonical_owner_issuance_repair"
 )
 EVAL_BIND = dict(
     origin_main_sha=BOUND_ORIGIN_MAIN_SHA,
@@ -360,3 +364,33 @@ def test_producer_rejects_missing_field() -> None:
     produced = issue_owner_flatten_authority_v1(explicit=explicit)
     assert produced["issued"] is False
     assert produced["artifact"] is None
+
+
+def test_historical_persisted_issuance_is_not_current_submit_grant() -> None:
+    artifact = json.loads(
+        (HISTORICAL_ISSUANCE_ROOT / "OWNER_ISSUANCE_ARTIFACT.json").read_text(encoding="utf-8")
+    )
+    assert artifact["issued"] is True
+    assert artifact["origin_main_sha"] == HISTORICAL_BOUND_ORIGIN_MAIN_SHA
+    assert artifact["exact_envelope_id"] == HISTORICAL_BOUND_ENVELOPE_ID
+    assert artifact["authority_id"] == (
+        "2c2c228866e6cbfe5aa23ecafe4eec7c747cba230b95057ee2206c2a52bf8041"
+    )
+    verdict = _evaluate(candidate=artifact, issuance=artifact)
+    assert verdict["accepted"] is False
+    assert verdict["issued"] is False
+    assert "ISSUANCE_SHA_MISMATCH" in verdict["reasons"]
+    assert "ISSUANCE_ENVELOPE_MISMATCH" in verdict["reasons"]
+    assert artifact["exact_envelope_id"] != BOUND_FROZEN_ENVELOPE_ID
+    assert artifact["origin_main_sha"] != BOUND_ORIGIN_MAIN_SHA
+
+
+def test_producer_rejects_historical_sha_and_envelope() -> None:
+    explicit = current_section_11_14_issuance_explicit_v1(issued_at=ISSUED_AT)
+    explicit["origin_main_sha"] = HISTORICAL_BOUND_ORIGIN_MAIN_SHA
+    explicit["exact_envelope_id"] = HISTORICAL_BOUND_ENVELOPE_ID
+    produced = issue_owner_flatten_authority_v1(explicit=explicit)
+    assert produced["issued"] is False
+    assert produced["artifact"] is None
+    assert "ISSUANCE_SHA_MISMATCH" in produced["reasons"]
+    assert "ISSUANCE_ENVELOPE_MISMATCH" in produced["reasons"]
