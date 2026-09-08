@@ -14,8 +14,10 @@ DOCUMENT_CLASS=SUBORDINATE_GOVERNANCE_CONTRACT
 AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK
 OWNER_GO_THIS_SLICE=OWNER_GO_DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1_OWNER_POLICY_DECISION_PERSIST_DOCS_ONLY
 OWNER_GO_IMPLEMENTATION_SLICE=DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1_CURRENT_CODE_IN_MEMORY_ISOLATED_INVOCATION
+OWNER_GO_TIMEOUT_POLICY_SLICE=OWNER_GO_DDO_FUNCTION_REPLAY_POST_6357_TIMEOUT_POLICY_V1
 BOUND_ORIGIN_MAIN_SHA=57c2b49edd8ba23ea1466d30015daf9807898d9b
 IMPLEMENTATION_BOUND_ORIGIN_MAIN_SHA=a6ad2e67b443a8ab022d7f05d07837bc84e39a00
+TIMEOUT_POLICY_BOUND_ORIGIN_MAIN_SHA=e8d3e0dcc1461e03230f3464f1f16e7f586f6525
 PREDECESSOR_GIT_FACT=DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURED
 DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1=IMPLEMENTED_OFFLINE_IN_MEMORY_ISOLATED_NOT_PRODUCTIVE
 RUNTIME_AUTHORIZATION_EFFECT=NONE
@@ -29,14 +31,18 @@ PRODUCER_FUNCTION_REPLAY_IMPLEMENTED=true
 FUNCTION_REPLAY_EXECUTED_IN_TESTS=true
 PRODUCTIVE_FUNCTION_REPLAY_EXECUTED=false
 PRODUCER_FUNCTION_REPLAY_EXECUTED=false
+REPLAY_TIMEOUT_POLICY=EXPLICIT_NONREQUIREMENT
+REPLAY_TIMEOUT_REQUIRED=false
 ```
 
 Navigation-only. Master Runbook remains SSOT. The Owner-policy persist did
 **not** authorize implementation. A later, separate Owner-GO authorized the
 offline in-memory isolated current-code Function-Replay implementation in
-§10. This contract still does **not** authorize Live, Testnet, orders,
-credentials, outcome-horizon, attribution, promotion, A1, A2, host wiring,
-productive ledger bind, or productive producer-function replay.
+§10. A later, separate Owner-GO bound timeout policy as explicit
+nonrequirement in §11. This contract still does **not** authorize Live,
+Testnet, orders, credentials, outcome-horizon, attribution, promotion, A1,
+A2, host wiring, productive ledger bind, or productive producer-function
+replay.
 
 ## 1. Owner-bound replay class
 
@@ -291,6 +297,11 @@ Separate Owner-GO
 authorized the bounded A implementation. It does not rewrite the Owner-policy
 persist. C and D remain distinct and are not Function-Replay.
 
+The implementation persist recorded `REPLAY_TIMEOUT_POLICY=UNSPECIFIED`
+inside the block below. That historical statement remains true for that
+persist. It must not be read as the later timeout-policy status. Current
+timeout policy follows exclusively from §11 and the Master Runbook.
+
 ```text
 FUNCTION_REPLAY_IMPLEMENTED=true
 FUNCTION_REPLAY_EXECUTED_IN_TESTS=true
@@ -327,3 +338,71 @@ Stored `code_sha=UNKNOWN` remains `UNKNOWN`. The in-memory result carries
 `replay_class_semantic=CURRENT_CODE_REPLAY` and
 `historical_code_parity_claim=false`. It does not invent a historical
 `code_sha`.
+
+## 11. Timeout policy (explicit nonrequirement)
+
+Separate Owner-GO
+`OWNER_GO_DDO_FUNCTION_REPLAY_POST_6357_TIMEOUT_POLICY_V1`
+authorized docs-only adjudication of the previously unbound
+`REPLAY_TIMEOUT_POLICY=UNSPECIFIED` token. It does not rewrite the
+implementation persist. That persist remains historically correct:
+`REPLAY_TIMEOUT_POLICY=UNSPECIFIED` was true at that time and is not
+retroactively altered. This persist does **not** authorize src change,
+producer invocation, Function-Replay execution, durable writes, Live,
+Testnet, Canary, orders, or send.
+
+```text
+TIMEOUT_ADJUDICATION=B_EXPLICIT_TIMEOUT_NONREQUIREMENT
+A_EXPLICIT_REPLAY_TIMEOUT_REQUIRED=false
+B_EXPLICIT_TIMEOUT_NONREQUIREMENT=true
+REPLAY_TIMEOUT_REQUIRED=false
+REPLAY_TIMEOUT_POLICY=EXPLICIT_NONREQUIREMENT
+REPLAY_TIMEOUT_SECONDS=NONE
+REPLAY_TIMEOUT_OWNER=NONE
+TIMEOUT_VALUE_INFERRED=false
+TIMEOUT_FAILURE_CLASS_IN_EXCEPTION_CONTRACT=false
+```
+
+A is not selected. No existing authority requires a replay wallclock
+timeout or names a timeout owner or duration. Inventing a duration is
+forbidden.
+
+B is proven from the closed A-slice:
+
+```text
+RESULT_DURABILITY=IN_MEMORY_NO_WRITE
+FUNCTION_REPLAY_EXECUTED_IN_TESTS=true
+PRODUCTIVE_FUNCTION_REPLAY_EXECUTED=false
+REPLAY_OPERATION_ATTEMPT_COUNT=1
+REPLAY_EXCEPTION_BLIND_RETRY_ALLOWED=false
+REPLAY_NETWORK_ACCESS_ALLOWED=false
+LIVE_QUERY_ALLOWED=false
+REPLAY_FILESYSTEM_WRITE_ALLOWED=false
+REPLAY_PRODUCTIVE_LEDGER_BIND_ALLOWED=false
+PRODUCER_INVOCATION_MODEL=SINGLE_IN_PROCESS_SYNCHRONOUS_PUBLIC_SYMBOL
+PRODUCER_OWNER=evaluate_double_play_entry_exit_policy_v0
+```
+
+Spec §7 fail-closed mapping has no timeout failure class. Replay
+exceptions remain reconstruction, producer-invocation, or
+serialize-digest failures. A wallclock timeout is a control for unbounded
+wait surfaces (network, poll, lock, host I/O). Those surfaces are
+contractually forbidden on this slice. The public producer is a
+deterministic in-process evaluator over already reconstructed typed input;
+it does not create orders, quantities, or runtime effects. Test
+invocation is bounded by the test runner, not by a replay-timeout policy.
+
+This persist does not retoken the implementation in-memory result field.
+The current code constant remains `UNSPECIFIED` until a separate
+src-authorized slice. That labeling lag is not a remaining timeout-value
+Owner decision.
+
+```text
+CODE_RESULT_FIELD_TOKEN_AT_IMPLEMENTATION_PERSIST=UNSPECIFIED
+CODE_RESULT_FIELD_RETOKEN_NOT_AUTHORIZED_BY_THIS_PERSIST=true
+SRC_CHANGE_THIS_PERSIST=false
+FUNCTION_REPLAY_EXECUTED=false
+PRODUCER_INVOKED=false
+CURRENT_AUTHORITY_CHANGED=true
+NEXT_DDO_STEP=OWNER_GO_REQUIRED_SEPARATE_SCOPED_DDO_CONTINUATION_NOT_AUTHORIZED_BY_THIS_PERSIST
+```

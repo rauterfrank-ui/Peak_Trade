@@ -3767,7 +3767,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: PHASE:ddo_offline_foundation
-    # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; current isolation/implementation from spec section 10 and Master Runbook
+    # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; spec section 10 timeout UNSPECIFIED is historical at implementation persist; current isolation from spec section 10; current timeout policy from spec section 11 EXPLICIT_NONREQUIREMENT and Master Runbook
     kind: PHASE
     name: 11.13.5 Parallel-track DDO offline foundation
     epistemic_class: FORENSIC_RAW
@@ -3816,7 +3816,12 @@ entities:
       distinct and are not Function-Replay. Subordinate spec section 3 owner-policy
       isolation prose is HISTORICAL_AT_OWNER_POLICY_PERSIST and is not current
       isolation. Current isolation and implementation remain spec section 10 and
-      the Master Runbook.
+      the Master Runbook. Spec section 10 `REPLAY_TIMEOUT_POLICY=UNSPECIFIED`
+      is historical at the implementation persist. Current timeout policy is spec
+      section 11 `REPLAY_TIMEOUT_POLICY=EXPLICIT_NONREQUIREMENT`; a replay
+      wallclock timeout is not required for the closed in-memory isolated
+      test-only A-slice. Code result-field retoken is not authorized by that
+      persist.
       DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is bound as evidence-domain
       storage owner. DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1 is
       complete. PEAK_TRADE_DDO_PRODUCTIVE_HOST_SCOPE_INPUT_BINDING_V1 is bound
@@ -3928,7 +3933,7 @@ entities:
       Not WP-FA-08. Atlas is not trading authority.
 
   - id: RUNTIME_COMPONENT:ddo_double_play_semantic_replay_v1
-    # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; current isolation/implementation from spec section 10 and Master Runbook; C is not Function-Replay
+    # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; spec section 10 timeout UNSPECIFIED is historical at implementation persist; current timeout policy from spec section 11 EXPLICIT_NONREQUIREMENT; C is not Function-Replay
     kind: RUNTIME_COMPONENT
     name: DDO Double-Play semantic replay v1
     epistemic_class: FORENSIC_RAW
@@ -3955,6 +3960,9 @@ entities:
       separately; offline in-memory isolated current-code Function-Replay is
       a distinct later implementation and is not C. Spec section 3 owner-policy
       isolation prose is HISTORICAL_AT_OWNER_POLICY_PERSIST and does not redefine C.
+      Spec section 10 timeout UNSPECIFIED is historical at the implementation
+      persist and does not redefine C. Current Function-Replay timeout policy is
+      spec section 11 EXPLICIT_NONREQUIREMENT.
       Classifier replay in replay_evaluator_v0 remains distinct.
       OFFLINE_EVALUATION_AUTHORITY=NONE. TRADING_AUTHORITY=NONE.
       EXECUTION_AUTHORITY=NONE. HINDSIGHT_LEAKAGE_ALLOWED=false.
@@ -3984,7 +3992,7 @@ entities:
       Not WP-FA-08.
 
   - id: RUNTIME_COMPONENT:ddo_double_play_producer_function_replay_v1
-    # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; current isolation/implementation from spec section 10 and Master Runbook
+    # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; spec section 10 timeout UNSPECIFIED is historical at implementation persist; current isolation from spec section 10; current timeout policy from spec section 11 EXPLICIT_NONREQUIREMENT and Master Runbook
     kind: RUNTIME_COMPONENT
     name: DDO Double-Play producer-function current-code replay v1
     epistemic_class: FORENSIC_RAW
@@ -4014,7 +4022,12 @@ entities:
       Spec section 3 owner-policy isolation prose is HISTORICAL_AT_OWNER_POLICY_PERSIST
       and is not current isolation. Current isolation remains spec section 10
       OBSERVATION_ISOLATION=EXPLICIT_CAPTURE_DISABLED_FAIL_CLOSED and the Master
-      Runbook. ATLAS_AUTHORITY=NONE. TRADING_AUTHORITY=NONE.
+      Runbook. Spec section 10 REPLAY_TIMEOUT_POLICY=UNSPECIFIED is historical at
+      the implementation persist. Current timeout policy is spec section 11
+      REPLAY_TIMEOUT_POLICY=EXPLICIT_NONREQUIREMENT. A replay wallclock timeout is
+      not required for this closed in-memory isolated test-only A-slice. Code
+      result-field retoken is not authorized by that persist.
+      ATLAS_AUTHORITY=NONE. TRADING_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:ddo_ledger_v0
     kind: RUNTIME_COMPONENT
