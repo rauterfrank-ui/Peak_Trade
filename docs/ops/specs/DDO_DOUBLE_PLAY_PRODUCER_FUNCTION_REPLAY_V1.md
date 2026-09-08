@@ -15,9 +15,11 @@ AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK
 OWNER_GO_THIS_SLICE=OWNER_GO_DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1_OWNER_POLICY_DECISION_PERSIST_DOCS_ONLY
 OWNER_GO_IMPLEMENTATION_SLICE=DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1_CURRENT_CODE_IN_MEMORY_ISOLATED_INVOCATION
 OWNER_GO_TIMEOUT_POLICY_SLICE=OWNER_GO_DDO_FUNCTION_REPLAY_POST_6357_TIMEOUT_POLICY_V1
+OWNER_GO_OPEN_POSITIONS_CONSOLIDATION_SLICE=OWNER_GO_DDO_FUNCTION_REPLAY_POST_6358_OPEN_POSITIONS_CONSOLIDATION_V1
 BOUND_ORIGIN_MAIN_SHA=57c2b49edd8ba23ea1466d30015daf9807898d9b
 IMPLEMENTATION_BOUND_ORIGIN_MAIN_SHA=a6ad2e67b443a8ab022d7f05d07837bc84e39a00
 TIMEOUT_POLICY_BOUND_ORIGIN_MAIN_SHA=e8d3e0dcc1461e03230f3464f1f16e7f586f6525
+CONSOLIDATION_BOUND_ORIGIN_MAIN_SHA=4241483c6460a35c856d44c23e8819037c1c7d0d
 PREDECESSOR_GIT_FACT=DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURED
 DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1=IMPLEMENTED_OFFLINE_IN_MEMORY_ISOLATED_NOT_PRODUCTIVE
 RUNTIME_AUTHORIZATION_EFFECT=NONE
@@ -33,13 +35,17 @@ PRODUCTIVE_FUNCTION_REPLAY_EXECUTED=false
 PRODUCER_FUNCTION_REPLAY_EXECUTED=false
 REPLAY_TIMEOUT_POLICY=EXPLICIT_NONREQUIREMENT
 REPLAY_TIMEOUT_REQUIRED=false
+CONSOLIDATION_RESULT=C_NO_NEXT_SCOPE_SELECTED_OPEN_ITEMS_EXPLICITLY_DEFERRED_OR_BLOCKED
+NEXT_DDO_SCOPE=NONE
+NEXT_IMPLEMENTATION_AUTHORIZED=false
 ```
 
 Navigation-only. Master Runbook remains SSOT. The Owner-policy persist did
 **not** authorize implementation. A later, separate Owner-GO authorized the
 offline in-memory isolated current-code Function-Replay implementation in
 §10. A later, separate Owner-GO bound timeout policy as explicit
-nonrequirement in §11. This contract still does **not** authorize Live,
+nonrequirement in §11. A later, separate Owner-GO bound the open-position
+consolidation in §12. This contract still does **not** authorize Live,
 Testnet, orders, credentials, outcome-horizon, attribution, promotion, A1,
 A2, host wiring, productive ledger bind, or productive producer-function
 replay.
@@ -406,3 +412,155 @@ PRODUCER_INVOKED=false
 CURRENT_AUTHORITY_CHANGED=true
 NEXT_DDO_STEP=OWNER_GO_REQUIRED_SEPARATE_SCOPED_DDO_CONTINUATION_NOT_AUTHORIZED_BY_THIS_PERSIST
 ```
+
+The timeout persist recorded
+`NEXT_DDO_STEP=OWNER_GO_REQUIRED_SEPARATE_SCOPED_DDO_CONTINUATION_NOT_AUTHORIZED_BY_THIS_PERSIST`
+inside the block above. That historical statement remains true for that
+persist. Current open-position consolidation follows exclusively from §12
+and the Master Runbook.
+
+## 12. Open-positions consolidation (docs-only)
+
+Separate Owner-GO
+`OWNER_GO_DDO_FUNCTION_REPLAY_POST_6358_OPEN_POSITIONS_CONSOLIDATION_V1`
+authorized docs-only adjudication and persist of the open Function-Replay
+decision positions after PR `#6358`. It does not rewrite the Owner-policy,
+implementation, or timeout-policy persists. Those persists remain
+historically correct. This persist does **not** authorize src change,
+producer invocation, Function-Replay execution, durable writes, Live,
+Testnet, Canary, orders, or send.
+
+No position is selected from plausibility. Each disposition below is
+bound from current authority only.
+
+```text
+CONSOLIDATION_RESULT=C_NO_NEXT_SCOPE_SELECTED_OPEN_ITEMS_EXPLICITLY_DEFERRED_OR_BLOCKED
+NEXT_DDO_SCOPE=NONE
+NEXT_DDO_SCOPE_CANONICALLY_NAMED=false
+NEXT_DDO_SCOPE_CONTRACT_COMPLETE=false
+NEXT_IMPLEMENTATION_AUTHORIZED=false
+MULTIPLE_IMPLEMENTATION_SCOPES_AUTHORIZED=false
+IMPLICIT_PRIORITY_ORDER=false
+UNNAMED_NEXT_SCOPE_AFTER_CLOSURE=false
+SRC_CHANGE_THIS_PERSIST=false
+FUNCTION_REPLAY_EXECUTED=false
+PRODUCER_INVOKED=false
+DURABLE_REPLAY_RESULT_CREATED=false
+```
+
+### 12.1 Durable replay result
+
+```text
+POSITION=DURABLE_REPLAY_RESULT
+DISPOSITION=CLOSED_NOT_REQUIRED
+SELECTED_AS_NEXT_SCOPE=false
+CURRENT_RESULT_DURABILITY=IN_MEMORY_NO_WRITE
+REPLAY_RESULT_LEDGER_WRITE=false
+REPLAY_RESULT_FILESYSTEM_WRITE=false
+REPLAY_RESULT_HOST_PERSIST=false
+NEW_STORAGE_OWNER_REQUIRED=false
+PRODUCTIVE_LEDGER_BIND_REQUIRED=false
+DURABLE_REPLAY_RESULT_REQUIRED=false
+DURABLE_WRITE_AUTHORIZED=false
+```
+
+Current A-slice durability is `IN_MEMORY_NO_WRITE`. Spec §4 already
+binds that durable replay evidence, if later desired, requires a
+separate Owner contract and a separate slice. No current authority
+makes durability the next DDO scope. This persist does not invent that
+contract and does not implement a write path.
+
+### 12.2 Productive function replay
+
+```text
+POSITION=PRODUCTIVE_FUNCTION_REPLAY
+DISPOSITION=CLOSED_NOT_REQUIRED
+SELECTED_AS_NEXT_SCOPE=false
+CURRENT_PRODUCTIVE_FUNCTION_REPLAY_AUTHORIZED=false
+PRODUCTIVE_FUNCTION_REPLAY_EXECUTED=false
+REPLAY_PRODUCTIVE_AUTHORITY=NONE
+REPLAY_HOST_WIRING_ALLOWED=false
+REPLAY_RUNTIME_PROMOTION_ALLOWED=false
+PRODUCTIVE_RUNTIME_AUTHORIZED=false
+```
+
+The bound A capability is
+`IMPLEMENTED_OFFLINE_IN_MEMORY_ISOLATED_NOT_PRODUCTIVE`. Productive
+Function-Replay is not a remaining required decision of that A-slice.
+Existing negatives forbid host wiring, runtime promotion, and
+productive producer-function replay. This persist does not execute
+replay, invoke the producer, or open external runtime I/O. A later
+productive authorization would be a new Owner contract, not this
+slice.
+
+### 12.3 Historical code replay B
+
+```text
+POSITION=HISTORICAL_CODE_REPLAY_B
+DISPOSITION=BLOCKED
+SELECTED_AS_NEXT_SCOPE=false
+CURRENT_STATUS=NOT_SELECTED
+CURRENT_BLOCKER=HISTORICAL_CODE_IDENTITY_ABSENT
+CODE_SHA_INFERENCE_ALLOWED=false
+UNKNOWN_NORMALIZATION_ALLOWED=false
+CODE_SHA_UNKNOWN_PRESERVED=true
+BLOCKER_CLOSURE_PROCEDURE_BOUND=false
+```
+
+Owner-bound replay class remains A. B remains `NOT_SELECTED`. The
+blocker `HISTORICAL_CODE_IDENTITY_ABSENT` still holds. Stored
+`code_sha=UNKNOWN` remains `UNKNOWN`. Current authority does not specify
+how that blocker is closed. Therefore B cannot be
+`SELECTED_AS_NEXT_SCOPE`. This persist does not reconstruct historical
+identity, reject B forever, or declare B not required.
+
+### 12.4 Src result-field retoken
+
+```text
+POSITION=CODE_RESULT_FIELD_RETOKEN
+DISPOSITION=CLOSED_NOT_REQUIRED
+SELECTED_AS_NEXT_SCOPE=false
+CURRENT_CODE_TOKEN=UNSPECIFIED
+CURRENT_CANONICAL_TIMEOUT_POLICY=EXPLICIT_NONREQUIREMENT
+RETOKEN_REQUIRED=false
+RETOKEN_IS_REMAINING_TIMEOUT_VALUE_OWNER_DECISION=false
+CODE_RESULT_FIELD_RETOKEN_NOT_AUTHORIZED_BY_THIS_PERSIST=true
+SRC_CHANGE_AUTHORIZED=false
+```
+
+Spec §11 already bound the code-token lag as not a remaining
+timeout-value Owner decision. Current canonical timeout policy is
+`EXPLICIT_NONREQUIREMENT`. The implementation persist token
+`UNSPECIFIED` remains historically true. Retoken is labeling lag, not
+a required next implementation scope. This persist does not change
+`src/`.
+
+### 12.5 Function-Replay track closure
+
+```text
+POSITION=FUNCTION_REPLAY_TRACK_CLOSURE
+DISPOSITION=BLOCKED
+SELECTED_AS_NEXT_SCOPE=false
+TRACK_CLOSED=false
+BLOCKED_BY=HISTORICAL_CODE_REPLAY_B_HISTORICAL_CODE_IDENTITY_ABSENT
+```
+
+After the dispositions above, no position is
+`SELECTED_AS_NEXT_SCOPE`. Durable result, productive Function-Replay,
+and src retoken are `CLOSED_NOT_REQUIRED`. Historical code replay B
+remains `BLOCKED`. The A-track therefore cannot be canonically closed
+in this persist. Open blocked item remains B.
+
+```text
+NEXT_DDO_STEP=NONE
+NEXT_DDO_SCOPE=NONE
+OPEN_BLOCKED_POSITION=HISTORICAL_CODE_REPLAY_B
+OPEN_BLOCKER=HISTORICAL_CODE_IDENTITY_ABSENT
+NEXT_OWNER_GO_REQUIRED=true
+NEXT_OWNER_GO_TOKEN=OWNER_GO_DDO_FUNCTION_REPLAY_B_BLOCKER_OR_TRACK_CLOSE_OWNER_DECISION_V1
+```
+
+The next Owner-GO, if issued, must either bind how the B identity
+blocker is closed, dispose B with a new evidence-backed disposition,
+or close the track. This persist does not authorize that GO and does
+not select B as an implementation slice.
