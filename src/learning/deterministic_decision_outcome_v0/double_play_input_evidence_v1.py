@@ -219,7 +219,7 @@ DOUBLE_PLAY_ENTRY_EXIT_POLICY_INPUT_EVIDENCE_FIELD_SPECS_V1: Final[tuple[FieldSp
         "REQUIRED",
         "string",
         True,
-        "Version token double_play_entry_exit_policy_input_evidence_v1.",
+        "Required schema version for this evidence record.",
     ),
     FieldSpecV0("record_id", "REQUIRED", "record_id", True, "Immutable evidence identity."),
     FieldSpecV0("event_time_utc", "REQUIRED", "utc_timestamp", True, "Capture event time UTC."),

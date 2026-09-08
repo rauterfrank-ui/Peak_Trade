@@ -139,11 +139,11 @@ def _capture_with_decorator(
         cycle_index=1,
         repository_sha=UNKNOWN,
     )
-    token = bind_capture_session_v0(binding)
+    session = bind_capture_session_v0(binding)
     try:
         result = evaluate_double_play_entry_exit_policy_v0(inp, policy)
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(session)
     return result, binding
 
 
@@ -436,7 +436,7 @@ def test_capture_failure_isolation_and_producer_object_unchanged() -> None:
         cycle_index=1,
         repository_sha=UNKNOWN,
     )
-    token = bind_capture_session_v0(binding)
+    session = bind_capture_session_v0(binding)
     import src.learning.deterministic_decision_outcome_v0.capture_v0 as capture_mod
 
     original = capture_mod.observe_producer_result_v0
@@ -449,7 +449,7 @@ def test_capture_failure_isolation_and_producer_object_unchanged() -> None:
         with_capture = evaluate_double_play_entry_exit_policy_v0(inp, policy)
     finally:
         capture_mod.observe_producer_result_v0 = original
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(session)
     assert with_capture == without
     assert id(inp) == before_id
     assert inp.direction_state is EntryExitDirectionState.LONG_ARMED
@@ -466,7 +466,7 @@ def test_producer_exception_semantics_unchanged() -> None:
         cycle_index=1,
         repository_sha=UNKNOWN,
     )
-    token = bind_capture_session_v0(binding)
+    session = bind_capture_session_v0(binding)
     try:
         raised = False
         try:
@@ -475,7 +475,7 @@ def test_producer_exception_semantics_unchanged() -> None:
             raised = True
         assert raised is True
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(session)
 
 
 def test_authority_markers_remain_none() -> None:
