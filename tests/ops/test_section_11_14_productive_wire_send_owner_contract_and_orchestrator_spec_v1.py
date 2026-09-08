@@ -132,8 +132,10 @@ def test_schema_is_not_issued_and_not_a_send_grant() -> None:
     assert schema["ACCEPTED"] is False
     assert schema["CONSUMED"] is False
     assert schema["PRODUCER_IMPLEMENTED"] is False
-    assert schema["ORCHESTRATOR_IMPLEMENTED"] is False
-    assert schema["SEND_CAPABLE_BIND_IMPLEMENTED"] is False
+    assert schema["ORCHESTRATOR_IMPLEMENTED"] is True
+    assert schema["SEND_CAPABLE_BIND_IMPLEMENTED"] is True
+    assert schema["EVALUATOR_IMPLEMENTED"] is True
+    assert schema["SEND_ADAPTER_IMPLEMENTED"] is True
     assert schema["kind"] == AUTHORITY_TYPE_OWNER_PRODUCTIVE_WIRE_SEND
     assert schema["kind"] != AUTHORITY_TYPE_OWNER_NETWORK_SESSION
     assert schema["kind"] != AUTHORITY_TYPE_OWNER_FLATTEN_ISSUANCE

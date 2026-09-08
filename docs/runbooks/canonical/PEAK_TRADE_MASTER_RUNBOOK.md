@@ -72155,6 +72155,128 @@ orchestrator is not implemented. `SECTION_11_14_AUTHORIZED=false`.
 consume, flatten, or merge from this persist. A later mint GO would still
 **not** authorize send.
 
+### 11.14 PRODUCTIVE_SEND_ORCHESTRATOR_AND_SEND_CAPABLE_BIND_IMPLEMENTATION (BOUND; EVALUATOR+ORCHESTRATOR+SEND-CAPABLE BIND+SEND ADAPTER IMPLEMENTED; NO POST; NO INNER.SEND; SECTION 11.14 NOT COMPLETE)
+
+Additive persist. Does **not** rewrite the persist fields above. Does
+**not** arm a session. Does **not** set `network_session_authorized=true`.
+Does **not** GET. Does **not** POST. Does **not** invoke `inner.send`.
+Does **not** consume durable state. Does **not** mutate standing Live
+gates. Does **not** mark §11.14 complete.
+`ConstructiveProductiveFlattenSubmitAdapterV1` remains NO_SEND.
+`AuthenticatedGatedProductiveFlattenTransportV1.send` remains the inner
+transport and is unchanged.
+
+`accepted=true` arises only from `verify_owner_productive_wire_send_authority_v1`.
+Issued ≠ accepted ≠ armed ≠ `network_session_authorized` ≠ send.
+
+The historical NO_SEND harness path still denies
+`PRODUCTIVE_WIRE_SEND_NOT_IMPLEMENTED_IN_THIS_REPAIR`. The send-capable
+path uses existing more exact denies. Standing send-capable execute with
+accepted authorities and caller `session_armed=true` stops at
+`PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED`.
+
+``` text
+OWNER_GO=SECTION_11_14_PRODUCTIVE_SEND_ORCHESTRATOR_AND_SEND_CAPABLE_BIND_IMPLEMENTATION_GO
+OWNER_GO_STATUS=CONSUMED_IMPLEMENTATION_ONLY_NO_SEND
+OWNER_GO_CONSUMED=false
+AUTHORIZATION_PRESENT=true_for_implementation_only
+AUTHORITY_CLASS=R1_WIRE_SEND_EVALUATOR_ORCHESTRATOR_BIND_ADAPTER_IMPLEMENTED_NO_SEND
+RISK_CLASS=R1_OFFLINE_IMPLEMENTATION_NO_SUBMIT_NO_VENUE_MUTATION
+PERSIST_CLASS=SECTION_11_14_PRODUCTIVE_SEND_ORCHESTRATOR_AND_SEND_CAPABLE_BIND_IMPLEMENTATION_SSOT_PERSIST
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+ATLAS_AUTHORITY=NONE
+CHAT_TRANSCRIPT_AUTHORITY=NONE
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=dd13d0308a24d3be3446e3bea9e7d962b6eaf7b1
+EXPECTED_ORIGIN_MAIN_SHA=dd13d0308a24d3be3446e3bea9e7d962b6eaf7b1
+BOUND_ENVELOPE_ORIGIN_MAIN_SHA=565cee16783ba0a3f1aea606626bf6418bad21e8
+PREDECESSOR_SLICE=11.14.PRODUCTIVE_WIRE_SEND_OWNER_CONTRACT_AND_ORCHESTRATOR_SPEC
+THIS_SLICE=11.14.PRODUCTIVE_SEND_ORCHESTRATOR_AND_SEND_CAPABLE_BIND_IMPLEMENTATION
+CURRENT_PHASE=11.14.PRODUCTIVE_SEND_ORCHESTRATOR_AND_SEND_CAPABLE_BIND_IMPLEMENTATION
+CURRENT_CANONICAL_SECTION=11.14.PRODUCTIVE_SEND_ORCHESTRATOR_AND_SEND_CAPABLE_BIND_IMPLEMENTATION
+LAST_CANONICALLY_CLOSED_STEP=SECTION_11_14_PRODUCTIVE_SEND_ORCHESTRATOR_AND_SEND_CAPABLE_BIND_IMPLEMENTATION
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+WIRE_SEND_AUTHORITY_EVALUATOR_IMPLEMENTED=true
+ORCHESTRATOR_IMPLEMENTED=true
+ORCHESTRATOR_SYMBOL=ProductiveWireSendOrchestratorV1
+SEND_CAPABLE_BIND_IMPLEMENTED=true
+SEND_CAPABLE_BIND_SYMBOL=ProductiveTransportBindSendCapableV1
+SEND_ADAPTER_IMPLEMENTED=true
+SEND_ADAPTER_SYMBOL=ProductiveFlattenSubmitSendAdapterV1
+PRODUCER_IMPLEMENTED=false
+NO_SEND_ADAPTER_SEMANTICS_CHANGED=false
+PRODUCTIVE_TRANSPORT_BIND_KIND_NO_SEND_UNCHANGED=true
+INNER_11_13_5_TRANSPORT_CHANGED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+CANARY_AUTHORIZED=false
+POST_ALLOWED=false
+SESSION_ARMING_STANDING=false
+NETWORK_SESSION_AUTHORIZED=false
+SESSION_ARMING_EXECUTED=false
+NETWORK_SESSION_AUTHORIZED_CHANGED=false
+GET_PERFORMED=false
+POST_PERFORMED=false
+INNER_SEND_EXECUTED=false
+WIRE_SEND_EXECUTED=false
+FLATTEN_EXECUTED=false
+DURABLE_CONSUMED=false
+POSITION_MUTATION_EXECUTED=false
+REPRICE_EXECUTED=false
+REAL_POST_COUNT=0
+SUBMIT_ATTEMPT_COUNT=0
+OWNER_EXECUTION_AUTHORIZED=false
+FLATTEN_AUTHORIZED=false
+GATE_ORDER_STATUS=PARTIAL_PROVEN_WITH_OPEN_POINTS
+OPEN_GATE_ORDER_POINTS=FRESH_PRE_SUBMIT_GET;ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND;RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER;DURABLE_CONSUME_SUCCESS_OBJECT
+CURRENT_CANONICAL_BOUNDARY=PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+EARLIEST_UNRESOLVED_RUNTIME_GATE=NETWORK_SESSION_AUTHORIZED
+NEXT_OWNER_AUTHORITY_REQUIRED=OWNER_NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG_GO
+NEXT_SLICE_AUTHORIZED=false
+CASE_ADJUDICATION=CASE_WIRE_SEND_ORCHESTRATOR_IMPLEMENTED_FAIL_CLOSED_BEFORE_INNER_SEND
+```
+
+A. Evaluator. `verify_owner_productive_wire_send_authority_v1` verifies
+offline only. It does not mint, arm, set `network_session_authorized`,
+transport, GET, POST, or consume.
+
+B. Bind. `ProductiveTransportBindSendCapableV1` means this bind may
+represent a future send path. It does not mean send is currently allowed.
+`send_permitted` remains false in this slice.
+
+C. Adapter. `ProductiveFlattenSubmitSendAdapterV1` prepares request
+material and fail-closes before `inner.send`. Synthetic tests that set
+`network_session_authorized=true` must use a recording fake inner with
+no network.
+
+D. Orchestrator. Consumes evaluator results. No Boolean promotion. No
+auto-arm. No auto-authorize. No auto-consume.
+
+E. Non-execution. `POST_PERFORMED=false`. `INNER_SEND_EXECUTED=false`.
+`WIRE_SEND_EXECUTED=false`. `DURABLE_CONSUMED=false`.
+`SESSION_ARMING_EXECUTED=false`. `NETWORK_SESSION_AUTHORIZED=false`.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/
+SPEC_OWNER=docs/ops/specs/SECTION_11_14_PRODUCTIVE_SEND_ORCHESTRATOR_AND_SEND_CAPABLE_BIND_IMPLEMENTATION_V1.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_14
+CURRENT_CANONICAL_SECTION=11.14.PRODUCTIVE_SEND_ORCHESTRATOR_AND_SEND_CAPABLE_BIND_IMPLEMENTATION
+HARD_STOP_AFTER_THIS_TASK=true
+HARD_STOP=true
+```
+
+Hard stop. Evaluator, orchestrator, send-capable bind, and send adapter
+are implemented and remain fail-closed before `inner.send`.
+`SECTION_11_14_AUTHORIZED=false`. `SECTION_11_14_COMPLETE=false`. Do
+**not** arm, GET, POST, send, consume, flatten, push, PR, or merge from
+this persist. A later GO for `network_session_authorized` would still
+**not** authorize wire send.
+
 ## 11.15 Full-autonomy observability and audit trail
 
 The autonomous runtime must expose enough telemetry for oversight without
