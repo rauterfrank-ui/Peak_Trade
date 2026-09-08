@@ -72277,6 +72277,126 @@ are implemented and remain fail-closed before `inner.send`.
 this persist. A later GO for `network_session_authorized` would still
 **not** authorize wire send.
 
+### 11.14 NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG (BOUND; INSTANCE FLAG SEAM IMPLEMENTED; NO ARMING; NO POST; NO INNER.SEND; SECTION 11.14 NOT COMPLETE)
+
+Additive persist. Does **not** rewrite the persist fields above. Does
+**not** arm a session. Does **not** set `send_permitted=true`. Does
+**not** GET. Does **not** POST. Does **not** invoke `inner.send`. Does
+**not** consume durable state. Does **not** mutate standing Live gates.
+Does **not** mark §11.14 complete.
+`ConstructiveProductiveFlattenSubmitAdapterV1` remains NO_SEND.
+`AuthenticatedGatedProductiveFlattenTransportV1.send` remains the inner
+transport and is unchanged.
+
+Census (`FORENSIC_RAW`): issuer/verifier
+`issue_owner_network_session_authority_v1` /
+`verify_owner_network_session_authority_v1` never set the instance flag.
+Issued ≠ authorized.
+
+`authorize_network_session_instance_v1` is the explicit seam. It binds
+to existing send-capable fields only: predecessor
+`OWNER_NETWORK_SESSION_AUTHORITY_V1`, `origin_main_sha`, `instrument_id`,
+`exact_envelope_id`, and send-capable bind identity. Mismatch denies.
+Bind-level `ProductiveTransportBindSendCapableV1.network_session_authorized`
+remains false. The instance flag is `bind.adapter.inner.network_session_authorized`.
+
+Standing `session_armed=false`. After a successful instance authorization
+the send-capable orchestrator leaves
+`PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED` and stops at existing
+`SESSION_NOT_ARMED` before `inner.send`.
+
+``` text
+OWNER_GO=OWNER_NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG_GO
+OWNER_GO_STATUS=CONSUMED_INSTANCE_FLAG_ONLY_NO_ARMING_NO_SEND
+OWNER_GO_CONSUMED=false
+AUTHORIZATION_PRESENT=true_for_instance_flag_only
+AUTHORITY_CLASS=R1_NETWORK_SESSION_INSTANCE_FLAG_IMPLEMENTED_NO_ARMING_NO_SEND
+RISK_CLASS=R1_OFFLINE_IMPLEMENTATION_NO_SUBMIT_NO_VENUE_MUTATION
+PERSIST_CLASS=SECTION_11_14_NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG_SSOT_PERSIST
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+ATLAS_AUTHORITY=NONE
+CHAT_TRANSCRIPT_AUTHORITY=NONE
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=dd13d0308a24d3be3446e3bea9e7d962b6eaf7b1
+EXPECTED_ORIGIN_MAIN_SHA=dd13d0308a24d3be3446e3bea9e7d962b6eaf7b1
+BOUND_ENVELOPE_ORIGIN_MAIN_SHA=565cee16783ba0a3f1aea606626bf6418bad21e8
+PREDECESSOR_SLICE=11.14.PRODUCTIVE_SEND_ORCHESTRATOR_AND_SEND_CAPABLE_BIND_IMPLEMENTATION
+THIS_SLICE=11.14.NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG
+CURRENT_PHASE=11.14.NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG
+CURRENT_CANONICAL_SECTION=11.14.NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG
+LAST_CANONICALLY_CLOSED_STEP=SECTION_11_14_NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+NETWORK_SESSION_INSTANCE_AUTHORIZATION_IMPLEMENTED=true
+NETWORK_SESSION_INSTANCE_AUTHORIZATION_SYMBOL=authorize_network_session_instance_v1
+WIRE_SEND_AUTHORITY_EVALUATOR_IMPLEMENTED=true
+ORCHESTRATOR_IMPLEMENTED=true
+SEND_CAPABLE_BIND_IMPLEMENTED=true
+SEND_ADAPTER_IMPLEMENTED=true
+PRODUCER_IMPLEMENTED=false
+NO_SEND_ADAPTER_SEMANTICS_CHANGED=false
+PRODUCTIVE_TRANSPORT_BIND_KIND_NO_SEND_UNCHANGED=true
+INNER_11_13_5_TRANSPORT_CHANGED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+CANARY_AUTHORIZED=false
+POST_ALLOWED=false
+SESSION_ARMING_STANDING=false
+NETWORK_SESSION_AUTHORIZED=true
+NETWORK_SESSION_AUTHORIZED_CHANGED=true
+BIND_LEVEL_NETWORK_SESSION_AUTHORIZED=false
+SESSION_ARMING_EXECUTED=false
+SEND_PERMISSION_CHANGED=false
+GET_PERFORMED=false
+POST_PERFORMED=false
+INNER_SEND_EXECUTED=false
+WIRE_SEND_EXECUTED=false
+FLATTEN_EXECUTED=false
+DURABLE_CONSUMED=false
+POSITION_MUTATION_EXECUTED=false
+REPRICE_EXECUTED=false
+REAL_POST_COUNT=0
+SUBMIT_ATTEMPT_COUNT=0
+OWNER_EXECUTION_AUTHORIZED=false
+FLATTEN_AUTHORIZED=false
+GATE_ORDER_STATUS=PARTIAL_PROVEN_WITH_OPEN_POINTS
+OPEN_GATE_ORDER_POINTS=FRESH_PRE_SUBMIT_GET;ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND;RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER;DURABLE_CONSUME_SUCCESS_OBJECT
+CURRENT_CANONICAL_BOUNDARY=SESSION_NOT_ARMED
+EARLIEST_UNRESOLVED_RUNTIME_GATE=SESSION_ARMED
+NEXT_OWNER_AUTHORITY_REQUIRED=OWNER_SESSION_ARMING_GO
+NEXT_SLICE_AUTHORIZED=false
+CASE_ADJUDICATION=CASE_NETWORK_SESSION_INSTANCE_AUTHORIZED_FAIL_CLOSED_BEFORE_INNER_SEND
+```
+
+A. Seam. `authorize_network_session_instance_v1` sets only the bound inner
+instance flag. It does not mint, arm, GET, POST, send, or consume.
+
+B. Binding. Existing send-capable fields only. No invented bind keys.
+
+C. Non-execution. `POST_PERFORMED=false`. `INNER_SEND_EXECUTED=false`.
+`WIRE_SEND_EXECUTED=false`. `DURABLE_CONSUMED=false`.
+`SESSION_ARMING_EXECUTED=false`. `SEND_PERMISSION_CHANGED=false`.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/
+SPEC_OWNER=docs/ops/specs/SECTION_11_14_NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG_V1.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_14
+CURRENT_CANONICAL_SECTION=11.14.NETWORK_SESSION_AUTHORIZED_INSTANCE_FLAG
+HARD_STOP_AFTER_THIS_TASK=true
+HARD_STOP=true
+```
+
+Hard stop. The bound inner may represent `network_session_authorized=true`.
+The runtime path then stops at `SESSION_NOT_ARMED` before `inner.send`.
+`SECTION_11_14_AUTHORIZED=false`. `SECTION_11_14_COMPLETE=false`. Do
+**not** arm, GET, POST, send, consume, flatten, push, PR, or merge from
+this persist. A later session-arming GO would still **not** authorize
+wire send.
+
 ## 11.15 Full-autonomy observability and audit trail
 
 The autonomous runtime must expose enough telemetry for oversight without
