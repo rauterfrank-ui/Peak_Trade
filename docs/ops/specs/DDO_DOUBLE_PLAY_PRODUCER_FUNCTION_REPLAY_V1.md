@@ -17,11 +17,13 @@ OWNER_GO_IMPLEMENTATION_SLICE=DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1_CURREN
 OWNER_GO_TIMEOUT_POLICY_SLICE=OWNER_GO_DDO_FUNCTION_REPLAY_POST_6357_TIMEOUT_POLICY_V1
 OWNER_GO_OPEN_POSITIONS_CONSOLIDATION_SLICE=OWNER_GO_DDO_FUNCTION_REPLAY_POST_6358_OPEN_POSITIONS_CONSOLIDATION_V1
 OWNER_GO_B_BLOCKER_OR_TRACK_CLOSE_SLICE=OWNER_GO_DDO_FUNCTION_REPLAY_B_BLOCKER_OR_TRACK_CLOSE_OWNER_DECISION_V1
+OWNER_GO_TRACK_CLOSE_SLICE=OWNER_GO_DDO_FUNCTION_REPLAY_TRACK_CLOSE_OWNER_DECISION_V1
 BOUND_ORIGIN_MAIN_SHA=57c2b49edd8ba23ea1466d30015daf9807898d9b
 IMPLEMENTATION_BOUND_ORIGIN_MAIN_SHA=a6ad2e67b443a8ab022d7f05d07837bc84e39a00
 TIMEOUT_POLICY_BOUND_ORIGIN_MAIN_SHA=e8d3e0dcc1461e03230f3464f1f16e7f586f6525
 CONSOLIDATION_BOUND_ORIGIN_MAIN_SHA=4241483c6460a35c856d44c23e8819037c1c7d0d
 B_BLOCKER_DECISION_BOUND_ORIGIN_MAIN_SHA=9d0583bc548839ccbfb760c35a8be246531b3d4c
+TRACK_CLOSE_BOUND_ORIGIN_MAIN_SHA=38df1cc6a8966907d80e76323aadc98009a17774
 PREDECESSOR_GIT_FACT=DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURED
 DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1=IMPLEMENTED_OFFLINE_IN_MEMORY_ISOLATED_NOT_PRODUCTIVE
 RUNTIME_AUTHORIZATION_EFFECT=NONE
@@ -40,7 +42,8 @@ REPLAY_TIMEOUT_REQUIRED=false
 CONSOLIDATION_RESULT=C_NO_NEXT_SCOPE_SELECTED_OPEN_ITEMS_EXPLICITLY_DEFERRED_OR_BLOCKED
 HISTORICAL_CODE_REPLAY_B_DISPOSITION=B_REJECTED_IDENTITY_NOT_PROVABLE
 HISTORICAL_CODE_REPLAY_B_STATUS=REJECTED
-FUNCTION_REPLAY_TRACK_CLOSED=false
+FUNCTION_REPLAY_TRACK_CLOSED=true
+FUNCTION_REPLAY_TRACK_CLOSURE_DISPOSITION=CLOSED
 NEXT_DDO_SCOPE=NONE
 NEXT_IMPLEMENTATION_AUTHORIZED=false
 ```
@@ -51,7 +54,8 @@ offline in-memory isolated current-code Function-Replay implementation in
 §10. A later, separate Owner-GO bound timeout policy as explicit
 nonrequirement in §11. A later, separate Owner-GO bound the open-position
 consolidation in §12. A later, separate Owner-GO bound the Historical Replay B
-blocker census and owner-decision in §13. This contract still does **not**
+blocker census and owner-decision in §13. A later, separate Owner-GO bound
+the Function-Replay track closure in §14. This contract still does **not**
 authorize Live, Testnet, orders, credentials, outcome-horizon, attribution,
 promotion, A1, A2, host wiring, productive ledger bind, or productive
 producer-function replay.
@@ -778,3 +782,145 @@ Track closure is not selected. This persist is B, not D. The next
 Owner-GO, if issued, must decide Function-Replay track closure after
 B rejection. This persist does not authorize that GO, does not
 implement B, and does not execute replay.
+
+The B-blocker persist recorded `FUNCTION_REPLAY_TRACK_CLOSED=false`
+and
+`NEXT_OWNER_GO_TOKEN=OWNER_GO_DDO_FUNCTION_REPLAY_TRACK_CLOSE_OWNER_DECISION_V1`
+inside the block above. Those historical statements remain true for
+that persist. Current track-closure status follows exclusively from
+§14 and the Master Runbook.
+
+## 14. Function-Replay track closure (docs-only)
+
+Separate Owner-GO
+`OWNER_GO_DDO_FUNCTION_REPLAY_TRACK_CLOSE_OWNER_DECISION_V1`
+authorized docs-only adjudication of Function-Replay track closure
+after PR `#6360` merged onto
+`origin&#47;main=38df1cc6a8966907d80e76323aadc98009a17774`. It does not
+rewrite the Owner-policy, implementation, timeout-policy,
+open-positions consolidation, or B-blocker persists. Those persists
+remain historically correct. This persist does **not** authorize src
+change, producer invocation, Function-Replay execution, Historical
+Replay B implementation, durable writes, Live, Testnet, Canary,
+orders, or send.
+
+Exactly one decision is selected. No new policy is invented.
+
+```text
+TRACK_CLOSE_ADJUDICATION=TRACK_CLOSE_READY
+FUNCTION_REPLAY_TRACK_CLOSED=true
+FUNCTION_REPLAY_TRACK_CLOSURE_DISPOSITION=CLOSED
+A_DISPOSITION=IMPLEMENTED_OFFLINE_IN_MEMORY_ISOLATED_NOT_PRODUCTIVE
+B_DISPOSITION=B_REJECTED_IDENTITY_NOT_PROVABLE
+B_IDENTITY_PROVEN=false
+C_DISPOSITION=CLOSED_NOT_FUNCTION_REPLAY
+D_DISPOSITION=CLOSED_NOT_FUNCTION_REPLAY
+DURABLE_REPLAY_RESULT_DISPOSITION=CLOSED_NOT_REQUIRED
+PRODUCTIVE_FUNCTION_REPLAY_DISPOSITION=CLOSED_NOT_REQUIRED
+CODE_RESULT_FIELD_RETOKEN_DISPOSITION=CLOSED_NOT_REQUIRED
+OPEN_CANONICAL_OBLIGATIONS=NONE
+CONTRADICTIONS=NONE
+IMPLEMENTATION_REQUIRED=false
+NEXT_DDO_SCOPE=NONE
+NEXT_DDO_STEP=NONE
+NEXT_IMPLEMENTATION_AUTHORIZED=false
+NEXT_OWNER_GO_REQUIRED=false
+NEXT_OWNER_GO_TOKEN=NONE
+SRC_CHANGE_THIS_PERSIST=false
+FUNCTION_REPLAY_EXECUTED=false
+PRODUCER_INVOKED=false
+```
+
+### 14.1 CANONICAL_AUTHORITY
+
+```text
+A_CAPABILITY=IMPLEMENTED_OFFLINE_IN_MEMORY_ISOLATED_NOT_PRODUCTIVE
+FUNCTION_REPLAY_IMPLEMENTED=true
+FUNCTION_REPLAY_EXECUTED_IN_TESTS=true
+PRODUCTIVE_FUNCTION_REPLAY_AUTHORIZED=false
+REPLAY_TIMEOUT_POLICY=EXPLICIT_NONREQUIREMENT
+REPLAY_TIMEOUT_REQUIRED=false
+RESULT_DURABILITY=IN_MEMORY_NO_WRITE
+DURABLE_REPLAY_RESULT_REQUIRED=false
+RETOKEN_REQUIRED=false
+HISTORICAL_CODE_REPLAY_B_STATUS=REJECTED
+HISTORICAL_CODE_REPLAY_B_DISPOSED=true
+OPEN_BLOCKER_HISTORICAL_CODE_IDENTITY_ABSENT=false
+C_STATUS=CLOSED
+C_IS_FUNCTION_REPLAY=false
+D_FORENSIC_TYPED_INPUT_RECONSTRUCTION_STATUS=CLOSED
+D_IS_FUNCTION_REPLAY=false
+TRACK_CLOSURE_BLOCKER_AT_CONSOLIDATION=HISTORICAL_CODE_REPLAY_B_HISTORICAL_CODE_IDENTITY_ABSENT
+B_REJECTION_RESOLVES_THAT_BLOCKER=true
+D_TRACK_CLOSE_WITH_B_UNRESOLVED_NOT_USED=true
+NEXT_IMPLEMENTATION_AUTHORIZED=false
+```
+
+Owner-bound replay class remains A. The A-slice is implemented offline,
+in-memory, isolated, and not productive. Productive Function-Replay,
+durable replay result, and src result-field retoken remain
+`CLOSED_NOT_REQUIRED`. C and D remain closed and are not
+Function-Replay. B is `B_REJECTED_IDENTITY_NOT_PROVABLE` and disposed.
+The consolidation blocker of track closure was only B identity
+absence. After B rejection that blocker is resolved. Closing the track
+does not leave B unresolved/nonrequired. No current Function-Replay
+authority names a remaining implementation or execution step.
+
+Later productive replay, durable writes, or a new capture-time
+identity contract would be new Owner contracts. They are not open
+obligations of this track.
+
+### 14.2 FORENSIC_EVIDENCE
+
+```text
+PR_6360_STATE=MERGED
+PR_6360_HEAD_SHA=0e75822ba1c2acc83e8b7f25da9919142f3449fa
+PR_6360_MERGE_COMMIT=38df1cc6a8966907d80e76323aadc98009a17774
+PR_6360_MERGE_METHOD=SQUASH
+CURRENT_ORIGIN_MAIN_SHA=38df1cc6a8966907d80e76323aadc98009a17774
+SRC_PATHS_CHANGED_AT_6360=NONE
+```
+
+### 14.3 HISTORICAL
+
+```text
+HISTORICAL_AT_CONSOLIDATION_TRACK_CLOSURE_DISPOSITION=BLOCKED
+HISTORICAL_AT_B_BLOCKER_PERSIST_TRACK_CLOSED=false
+HISTORICAL_AT_B_BLOCKER_PERSIST_OPEN=FUNCTION_REPLAY_TRACK_NOT_CLOSED
+```
+
+Those historical statements remain true for those persists. They are
+not current track-closure status.
+
+### 14.4 ADJUDICATED
+
+```text
+SELECTED_DECISION=TRACK_CLOSE_READY
+TRACK_CLOSE_BLOCKED_OPEN_CANONICAL_OBLIGATION=false
+TRACK_CLOSE_BLOCKED_CONTRADICTION=false
+TRACK_CLOSE_BLOCKED_INSUFFICIENT_EVIDENCE=false
+FUNCTION_REPLAY_TRACK_CLOSED=true
+NEXT_DDO_STEP=NONE
+```
+
+TRACK_CLOSE_READY is selected because every Function-Replay position
+named by current authority is disposed, B is finally rejected rather
+than unresolved, and no remaining Function-Replay implementation,
+execution, identity, producer, or durability obligation is bound.
+
+### 14.5 INTERPRETATION
+
+```text
+INTERPRETATION_USED_TO_SELECT_DECISION=false
+A1_LEDGER_AND_OTHER_DDO_SLICES_ARE_NOT_THIS_TRACK=true
+```
+
+Closing this Function-Replay track does not close unrelated DDO
+slices (A1, ledger durability, live track). Those remain distinct.
+
+### 14.6 OPEN_OR_CONTRADICTORY
+
+```text
+OPEN_CANONICAL_OBLIGATIONS=NONE
+CONTRADICTIONS=NONE
+```
