@@ -74076,6 +74076,124 @@ Hard stop. HMAC-signed productive network-session bind is proven.
 the send lease, flatten, or merge from this persist.
 `SEND_LEASE_CONSUME` / `WIRE_SEND` remain OPEN.
 
+### 11.14 PRE_LEASE_DDO_OBSERVATION (BOUND; OBSERVATION-ONLY; NO LEASE CONSUME; NO POST)
+
+Additive persist. Does **not** rewrite the persist fields above. Does
+**not** HTTP GET. Does **not** HTTP POST. Does **not** consume
+`SEND_LEASE_CONSUME`. Does **not** invoke urllib. Does **not** bind a
+durable DDO `ledger_path`. Does **not** create a new storage owner.
+Does **not** reuse A1 WAL. Does **not** unlock blocked seams
+`venue_execution`, `execution_permission_controller`, or
+`real_outcome_horizon_engine`. Does **not** mutate Core / Double-Play /
+29P / Safety / 29Q / Mapper semantics. Does **not** mark §11.14
+complete.
+
+`observe_flatten_pre_lease_send_intent_v1` is a host-side adapter. It
+is invoked from `AuthenticatedGatedProductiveFlattenTransportV1.send`
+after current local pre-wire denies and immediately before
+`_consume_receipt_lease`. Capture is fail-open against the productive
+return. Split producer identities are stored in separate fields. No
+singular canonical correlation ID is claimed.
+
+``` text
+OWNER_GO=PEAK_TRADE_OWNER_GO_DDO_SECTION_11_14_PRE_LEASE_EXECUTION_OBSERVATION_BIND_V1
+OWNER_GO_STATUS=CONSUMED_PRE_LEASE_DDO_OBSERVATION_ONLY
+OWNER_GO_CONSUMED=false
+AUTHORIZATION_PRESENT=true_for_pre_lease_ddo_observation_bind_only
+AUTHORITY_CLASS=R1_PRE_LEASE_DDO_OBSERVATION_NO_POST
+RISK_CLASS=R1_NO_SUBMIT_NO_VENUE_MUTATION
+PERSIST_CLASS=SECTION_11_14_PRE_LEASE_DDO_OBSERVATION_SSOT_PERSIST
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+ATLAS_AUTHORITY=NONE
+CHAT_TRANSCRIPT_AUTHORITY=NONE
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=0bf4d93d33b1693bdf43cf176562b9b0cdc3b721
+EXPECTED_ORIGIN_MAIN_SHA=0bf4d93d33b1693bdf43cf176562b9b0cdc3b721
+PREDECESSOR_SLICE=11.14.PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+THIS_SLICE=11.14.PRE_LEASE_DDO_OBSERVATION
+CURRENT_PHASE=11.14.PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+CURRENT_CANONICAL_SECTION=11.14.PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+LAST_CANONICALLY_CLOSED_STEP=SECTION_11_14_PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+DDO_OBSERVATION_ONLY=true
+DDO_TRADING_AUTHORITY=NONE
+DDO_EXECUTION_AUTHORITY=NONE
+DDO_PERMISSION_AUTHORITY=NONE
+DDO_LIVE_AUTHORITY=NONE
+PRE_LEASE_DDO_OBSERVATION_IMPLEMENTED=true
+PRE_LEASE_DDO_OBSERVATION_SEAM=section_11_14.flatten_pre_lease_send_intent
+HOOK_SYMBOL=observe_flatten_pre_lease_send_intent_v1
+HOOK_HOST=AuthenticatedGatedProductiveFlattenTransportV1.send
+HOOK_POSITION=AFTER_LOCAL_PRE_WIRE_DENIES_BEFORE_CONSUME_RECEIPT_LEASE
+VENUE_EXECUTION_BLOCKED_SEAM_UNLOCKED=false
+EXECUTION_PERMISSION_BLOCKED_SEAM_UNLOCKED=false
+REAL_OUTCOME_HORIZON_ENGINE_WIRED=false
+DDO_LEDGER_PATH_BOUND_BY_THIS_WP=false
+NEW_STORAGE_OWNER_CREATED=false
+A1_WAL_REUSED=false
+SINGULAR_CANONICAL_CORRELATION_ID_CLAIMED=false
+IDENTITY_SPLIT_PRESERVED=true
+CAPTURE_FAILURE_CHANGES_PRODUCTIVE_RESULT=false
+CAPTURE_FAILURE_MAY_ENABLE_SEND=false
+CAPTURE_FAILURE_MAY_DISABLE_AN_OTHERWISE_ALLOWED_SEND=false
+SEND_LEASE_CONSUME_NOT_AUTHORIZED_BY_THIS_GO=true
+WIRE_SEND_NOT_AUTHORIZED_BY_THIS_GO=true
+LEASE_CONSUMED=false
+WIRE_SEND_CONSUMED=false
+WIRE_SEND_EXECUTED=false
+GET_PERFORMED=false
+POST_PERFORMED=false
+HTTP_POST_EXECUTED=false
+PRODUCTIVE_URLLIB_POST_EXECUTED=false
+INNER_SEND_PRODUCTIVE_EXECUTED=false
+FLATTEN_EXECUTED=false
+POSITION_MUTATION_EXECUTED=false
+REAL_GET_COUNT=0
+REAL_POST_COUNT=0
+OWNER_EXECUTION_AUTHORIZED=false
+FLATTEN_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+CANARY_AUTHORIZED=false
+POST_ALLOWED=false
+CURRENT_CANONICAL_BOUNDARY=SEND_LEASE_NOT_CONSUMED
+EARLIEST_UNRESOLVED_RUNTIME_GATE=SEND_LEASE_CONSUME
+CURRENT_RUNTIME_GATE_REMAINS=SEND_LEASE_CONSUME
+NEXT_OWNER_AUTHORITY_REQUIRED=WIRE_SEND
+NEXT_SLICE_AUTHORIZED=false
+OPEN_GATE_ORDER_BLOCKER=SEND_LEASE_CONSUME
+```
+
+A. Non-execution. `POST_PERFORMED=false`. `WIRE_SEND_EXECUTED=false`.
+`LEASE_CONSUMED=false`. `REAL_POST_COUNT=0`. Capture is observation
+only and in-memory unless a later Owner workpackage binds a durable
+ledger path.
+
+B. Contract. Pre-lease DDO observation is implemented at the last
+loss-free pre-wire point. Productive deny/return parity is preserved
+on capture success and capture failure. Split identities are not
+normalized. `venue_execution` remains blocked.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/
+SPEC_OWNER=docs/ops/specs/SECTION_11_14_PRE_LEASE_DDO_OBSERVATION_V1.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_14
+CURRENT_CANONICAL_SECTION=11.14.PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+HARD_STOP_AFTER_THIS_TASK=true
+HARD_STOP=true
+```
+
+Hard stop. Pre-lease DDO observation is bound. `send` lease consume
+is not authorized by this GO. `SECTION_11_14_AUTHORIZED=false`.
+`SECTION_11_14_COMPLETE=false`. Do **not** POST, wire-send, consume
+the send lease, flatten, or merge from this persist.
+`SEND_LEASE_CONSUME` / `WIRE_SEND` remain OPEN.
+
 ## 11.15 Full-autonomy observability and audit trail
 
 The autonomous runtime must expose enough telemetry for oversight without

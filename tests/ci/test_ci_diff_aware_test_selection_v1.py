@@ -5179,6 +5179,13 @@ PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_TESTOWNER = (
 PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_PRODUCTION = (
     "src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py"
 )
+PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_V1_PRODUCTION = "src/learning/deterministic_decision_outcome_v0/section_11_14_flatten_pre_lease_observation_v1.py"
+PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_V1_TESTOWNER = (
+    "tests/learning/test_section_11_14_flatten_pre_lease_observation_v1.py"
+)
+PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_HOST_HOOK_V1_TESTOWNER = (
+    "tests/ops/test_section_11_14_flatten_pre_lease_ddo_observation_v1.py"
+)
 PACKAGE_DDO_EVALUATION_ENGINE_V0_PRODUCTION = (
     "src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py"
 )
@@ -5352,6 +5359,16 @@ def test_selector_ddo_current_double_play_capture_parity_v1_pr_bounded_full() ->
     bounded = _bounded_targets(sel)
     assert PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_TESTOWNER in bounded
     assert bounded.count(PACKAGE_DDO_CURRENT_DOUBLE_PLAY_CAPTURE_PARITY_V1_TESTOWNER) == 1
+
+
+def test_selector_ddo_section_11_14_flatten_pre_lease_observation_v1_pr_bounded_full() -> None:
+    sel = _run_selector(PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_V1_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    assert PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_V1_TESTOWNER in bounded
+    assert PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_HOST_HOOK_V1_TESTOWNER in bounded
+    assert bounded.count(PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_V1_TESTOWNER) == 1
+    assert bounded.count(PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_HOST_HOOK_V1_TESTOWNER) == 1
 
 
 def test_selector_ddo_a1_crash_durability_closure_v1_production_pr_bounded_full_includes_testowner() -> (

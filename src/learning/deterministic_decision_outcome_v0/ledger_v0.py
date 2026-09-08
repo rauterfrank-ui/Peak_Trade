@@ -29,6 +29,7 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_DRIFT_OBSERVATION,
     SCHEMA_NAME_DRIFT_POLICY,
     SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION,
+    SCHEMA_NAME_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION,
     SCHEMA_NAME_HEALTH_SNAPSHOT,
     SCHEMA_NAME_INCIDENT_RECORD,
     SCHEMA_NAME_KNOWN_GOOD_REFERENCE,
@@ -51,6 +52,7 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_VERSION_DRIFT_OBSERVATION_V0,
     SCHEMA_VERSION_DRIFT_POLICY_V0,
     SCHEMA_VERSION_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION_V1,
+    SCHEMA_VERSION_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_V1,
     SCHEMA_VERSION_HEALTH_SNAPSHOT_V0,
     SCHEMA_VERSION_INCIDENT_RECORD_V0,
     SCHEMA_VERSION_KNOWN_GOOD_REFERENCE_V0,
@@ -70,6 +72,9 @@ from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
 )
 from src.learning.deterministic_decision_outcome_v0.double_play_observation_projection_v1 import (
     validate_double_play_entry_exit_observation_v1,
+)
+from src.learning.deterministic_decision_outcome_v0.section_11_14_flatten_pre_lease_observation_v1 import (
+    validate_section_11_14_flatten_pre_lease_observation_v1,
 )
 from src.learning.deterministic_decision_outcome_v0.drift_contracts_v0 import (
     validate_drift_assessment_record_v0,
@@ -289,6 +294,10 @@ _VALIDATORS = {
         SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION,
         SCHEMA_VERSION_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION_V1,
     ): validate_double_play_entry_exit_observation_v1,
+    (
+        SCHEMA_NAME_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION,
+        SCHEMA_VERSION_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_V1,
+    ): validate_section_11_14_flatten_pre_lease_observation_v1,
 }
 
 _KNOWN_SCHEMA_NAMES = {schema for schema, _version in _VALIDATORS}

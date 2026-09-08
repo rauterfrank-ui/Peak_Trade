@@ -36,6 +36,9 @@ from src.learning.deterministic_decision_outcome_v0.double_play_observation_proj
     producer_canonical_payload_from_decision_v1,
     project_entry_exit_policy_decision_v1,
 )
+from src.learning.deterministic_decision_outcome_v0.section_11_14_flatten_pre_lease_observation_v1 import (
+    project_section_11_14_flatten_pre_lease_observation_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.enums_v0 import (
     DECISION_TYPE_V0,
     UNKNOWN,
@@ -94,6 +97,9 @@ SEAM_STEP_29Q_PLAN: str = "plan.step_29q"
 SEAM_MAPPER: str = "mapper.intended_action"
 SEAM_RECONCILIATION_STARTUP_GATE: str = "recon.startup_gate"
 SEAM_SIMULATED_EXECUTION_OUTCOME: str = "execution.simulated_outcome"
+SEAM_SECTION_11_14_FLATTEN_PRE_LEASE_SEND_INTENT: str = (
+    "section_11_14.flatten_pre_lease_send_intent"
+)
 
 IMPLEMENTED_CAPTURE_SEAMS_V0: tuple[str, ...] = (
     SEAM_SELECTION_UNIVERSE,
@@ -117,6 +123,13 @@ IMPLEMENTED_CAPTURE_SEAMS_V0: tuple[str, ...] = (
     SEAM_MAPPER,
     SEAM_RECONCILIATION_STARTUP_GATE,
     SEAM_SIMULATED_EXECUTION_OUTCOME,
+)
+
+# Explicit pre-mutation observation. Host adapter calls observe_producer_result_v0
+# immediately before a later mutation. Not an IMPLEMENTED_CAPTURE_SEAMS_V0
+# decorator binding and not a blocked-seam unlock.
+EXPLICIT_PRE_MUTATION_CAPTURE_SEAMS_V0: tuple[str, ...] = (
+    SEAM_SECTION_11_14_FLATTEN_PRE_LEASE_SEND_INTENT,
 )
 
 BLOCKED_CAPTURE_SEAMS_V0: tuple[str, ...] = (
@@ -188,6 +201,10 @@ SRC_MAPPER: str = (
 SRC_RECON: str = "src/ops/productive_reconciliation_runtime_binding_v1/taxonomy_v1.py"
 SRC_SIM_EXEC: str = (
     "src/ops/single_future_stateful_no_order_runtime_activation_v1/simulated_execution_port_v1.py"
+)
+SRC_S1114_PRE_LEASE: str = (
+    "src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/"
+    "flatten_pre_lease_ddo_observation_v1.py"
 )
 
 _LONG_SIDE_TOKENS: frozenset[str] = frozenset({"long", "bull", "long_armed", "long_active", "buy"})
@@ -400,6 +417,13 @@ SEAM_SPECS_V0: dict[str, SeamSpecV0] = {
         "simulated_execution_port_v1",
         "ops.simulated_execution_port_v1",
         SRC_SIM_EXEC,
+        UNKNOWN,
+    ),
+    SEAM_SECTION_11_14_FLATTEN_PRE_LEASE_SEND_INTENT: SeamSpecV0(
+        SEAM_SECTION_11_14_FLATTEN_PRE_LEASE_SEND_INTENT,
+        "authenticated_gated_productive_flatten_transport_v1",
+        "ops.section_11_14.flatten_pre_lease_ddo_observation_v1",
+        SRC_S1114_PRE_LEASE,
         UNKNOWN,
     ),
 }
@@ -702,6 +726,19 @@ def observe_producer_result_v0(
     }
     if spec.seam_id == SEAM_DOUBLE_PLAY_ENTRY_EXIT:
         identity["policy_decision_id"] = policy_decision_id
+    if spec.seam_id == SEAM_SECTION_11_14_FLATTEN_PRE_LEASE_SEND_INTENT:
+        identity["approved_request_identity"] = (
+            _token(view.get("approved_request_identity")) or UNKNOWN
+        )
+        identity["hmac_bind_request_identity"] = (
+            _token(view.get("hmac_bind_request_identity")) or UNKNOWN
+        )
+        identity["hmac_bind_exact_envelope_id"] = (
+            _token(view.get("hmac_bind_exact_envelope_id")) or UNKNOWN
+        )
+        identity["hmac_signing_input_digest"] = (
+            _token(view.get("hmac_signing_input_digest")) or UNKNOWN
+        )
     record_id = _stable_record_id("ddo.dec", identity)
     event_id = _stable_record_id("ddo.evt", identity)
     corr = _as_record_id(correlation_id or "ddo.corr.default")
@@ -748,6 +785,25 @@ def observe_producer_result_v0(
                 correlation_id=corr,
                 cycle_id=cycle_ref,
                 decision_event_ref=record_id,
+            )
+        )
+        observation_failure = _persist_and_classify(binding, observation_record)
+        if observation_failure is not None:
+            durable_failure = observation_failure
+    elif spec.seam_id == SEAM_SECTION_11_14_FLATTEN_PRE_LEASE_SEND_INTENT:
+        observation_identity = dict(identity)
+        observation_identity["kind"] = "section_11_14_flatten_pre_lease_observation_v1"
+        observation_id = _stable_record_id("ddo.s14", observation_identity)
+        observation_record = dict(
+            project_section_11_14_flatten_pre_lease_observation_v1(
+                view,
+                record_id=observation_id,
+                event_time_utc=event_time,
+                correlation_id=corr,
+                cycle_id=cycle_ref,
+                decision_event_ref=record_id,
+                producer_id=spec.producer_id,
+                authority_owner=spec.authority_owner,
             )
         )
         observation_failure = _persist_and_classify(binding, observation_record)

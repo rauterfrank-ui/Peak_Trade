@@ -1378,6 +1378,12 @@ PR_BOUNDED_FULL_PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY
 PR_BOUNDED_FULL_PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER: str = (
     "tests/learning/test_ddo_durable_evidence_storage_owner_contract_v1.py"
 )
+PR_BOUNDED_FULL_PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_V1_TESTOWNER: str = (
+    "tests/learning/test_section_11_14_flatten_pre_lease_observation_v1.py"
+)
+PR_BOUNDED_FULL_PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_HOST_HOOK_V1_TESTOWNER: str = (
+    "tests/ops/test_section_11_14_flatten_pre_lease_ddo_observation_v1.py"
+)
 PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER: str = "tests/learning/test_ddo_a1_mutation_critical_control_state_storage_owner_contract_v1.py"
 PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_WAL_ADAPTER_V1_TESTOWNER: str = (
     "tests/learning/test_ddo_a1_mutation_critical_control_state_wal_adapter_v1.py"
@@ -1403,6 +1409,7 @@ PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TRIGGER_PATHS: frozenset[str] = f
         "src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py",
         "src/learning/deterministic_decision_outcome_v0/decision_event_v0.py",
         "src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py",
+        "src/learning/deterministic_decision_outcome_v0/section_11_14_flatten_pre_lease_observation_v1.py",
         "src/learning/deterministic_decision_outcome_v0/drift_contracts_v0.py",
         "src/learning/deterministic_decision_outcome_v0/enums_v0.py",
         "src/learning/deterministic_decision_outcome_v0/errors_v0.py",
@@ -1438,6 +1445,10 @@ PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TRIGGER_PATHS: frozenset[str] = f
         PR_BOUNDED_FULL_PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_PRODUCTION,
         PR_BOUNDED_FULL_PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER,
         PR_BOUNDED_FULL_PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER,
+        PR_BOUNDED_FULL_PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_V1_TESTOWNER,
+        PR_BOUNDED_FULL_PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_HOST_HOOK_V1_TESTOWNER,
+        "src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/"
+        "flatten_pre_lease_ddo_observation_v1.py",
     }
 )
 PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TARGETS: tuple[str, ...] = (
@@ -1450,6 +1461,8 @@ PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TARGETS: tuple[str, ...] = (
     PR_BOUNDED_FULL_PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER,
     PR_BOUNDED_FULL_PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER,
     PR_BOUNDED_FULL_PACKAGE_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1_TESTOWNER,
+    PR_BOUNDED_FULL_PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_V1_TESTOWNER,
+    PR_BOUNDED_FULL_PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_HOST_HOOK_V1_TESTOWNER,
 )
 
 PR_BOUNDED_FULL_PACKAGE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_V1_TRIGGER_PATHS: frozenset[
