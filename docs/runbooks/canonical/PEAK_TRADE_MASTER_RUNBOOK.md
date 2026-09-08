@@ -73786,6 +73786,160 @@ proven. Unsigned productive `send` after attach stops at
 wire-send, consume against a live send, flatten, or merge from this
 persist. `HMAC_GENERATION` remains OPEN.
 
+The historical RECEIPT_MISSING next pointer `HMAC_GENERATION` is
+**consumed** only as the HMAC-generation persist below
+(§11.14.HMAC_GENERATION). That successor generates a typed
+request-identity-bound HMAC/header artifact from an attached receipt.
+It does **not** HTTP POST, does **not** GET, does **not** consume
+wire-send or send-lease authority, does **not** authorize a network
+session, and does **not** close
+`PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED`.
+
+### 11.14 HMAC_GENERATION (BOUND; TYPED HMAC ARTIFACT; VERIFY NOT CONSUME; FIRST_DENY_AFTER=PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED; NO POST; SECTION 11.14 NOT COMPLETE)
+
+Additive persist. Does **not** rewrite the persist fields above. Does
+**not** HTTP GET. Does **not** HTTP POST. Does **not** consume
+`OWNER_PRODUCTIVE_WIRE_SEND_AUTHORITY_V1`. Does **not** consume the
+send lease. Does **not** authorize a network session. Does **not**
+rebind envelope
+`0a0133a3b82e4a15bf6986605a9a8e6b47b22665b485ff0f570200803f21cdbe`.
+Does **not** mutate standing Live gates. Does **not** mark §11.14
+complete. `ConstructiveProductiveFlattenSubmitAdapterV1` remains
+NO_SEND. Historical subordinate `OPEN_GATE_ORDER_POINTS` tuples,
+including `productive_wire_send_orchestrator_v1.OPEN_GATE_ORDER_POINTS`,
+are **not** SSOT and are left unchanged. HMAC is **not** generated inside
+`AuthenticatedGatedProductiveFlattenTransportV1.send`.
+
+Generation (`CANONICAL`):
+
+`generate_flatten_authenticated_headers_v1` reuses
+`attach_authenticated_headers_via_existing_signer_v1` /
+`build_okx_live_canary_auth_headers_v1`. An HMAC artifact requires an
+attached typed `FlattenPreSendGateReceiptV1`, `allowed=true`, matching
+request identity (method, path, query, body), an unconsumed send lease,
+a credential handle, and successful verify &#47; accept of
+`OWNER_PRODUCTIVE_WIRE_SEND_AUTHORITY_V1`. Missing receipt, unattached
+receipt, identity/body/method/path mismatch, consumed lease, missing
+handle, malformed signing input, invalid OKX timestamp format, or
+origin/main &#47; envelope &#47; instrument mismatch cannot mint.
+`allowed=true` alone cannot mint headers. Q2 remains: HMAC generation
+may occur only after successful verify &#47; accept. Verify is not
+consume.
+
+Artifact (`CANONICAL`):
+
+Output type is `AuthenticatedProductiveFlattenHeadersV1`. It binds
+request identity, method, URL, request path, exact body text, OKX
+ISO-8601 millisecond timestamp, and signing-input digest. Audit and
+repr omit API key, passphrase, and secret. Timestamp freshness is the
+existing OKX ISO-8601-ms format check. No new age window is invented.
+HMAC generation does not consume the send lease. Duplicate generation
+without consume is not send-replay. Duplicate send remains fail-closed
+at transport.
+
+Remaining boundary (`CANONICAL`):
+
+HMAC-signed `send()` first-denies
+`PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED` before lease consume and
+urllib. `HMAC_GENERATION_ON_SEND_PATH=false`.
+
+``` text
+OWNER_GO=HMAC_GENERATION
+OWNER_GO_STATUS=CONSUMED_HMAC_GENERATION_TYPED_ARTIFACT_UNSIGNED_SESSION_NO_POST
+OWNER_GO_CONSUMED=false
+AUTHORIZATION_PRESENT=true_for_hmac_generation_typed_artifact_only
+AUTHORITY_CLASS=R1_HMAC_GENERATION_TYPED_ARTIFACT_NO_POST
+RISK_CLASS=R1_NO_SUBMIT_NO_VENUE_MUTATION
+PERSIST_CLASS=SECTION_11_14_HMAC_GENERATION_SSOT_PERSIST
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+ATLAS_AUTHORITY=NONE
+CHAT_TRANSCRIPT_AUTHORITY=NONE
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=e14587a5b03a13963ffb7524f9c25f0cfea0dfc2
+EXPECTED_ORIGIN_MAIN_SHA=e14587a5b03a13963ffb7524f9c25f0cfea0dfc2
+PREDECESSOR_SLICE=11.14.RECEIPT_MISSING
+THIS_SLICE=11.14.HMAC_GENERATION
+CURRENT_PHASE=11.14.HMAC_GENERATION
+CURRENT_CANONICAL_SECTION=11.14.HMAC_GENERATION
+LAST_CANONICALLY_CLOSED_STEP=SECTION_11_14_HMAC_GENERATION
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+HMAC_GENERATION=PROVEN
+HMAC_GENERATION_WIRED=true
+HMAC_GENERATION_ON_SEND_PATH=false
+HMAC_SOURCE=generate_flatten_authenticated_headers_v1
+HMAC_OUTPUT_TYPE=AuthenticatedProductiveFlattenHeadersV1
+PRODUCTIVE_SIGNING_COMPONENT=build_okx_live_canary_auth_headers_v1
+HMAC_GENERATION_REQUIRES_WIRE_SEND_AUTHORITY_VERIFY_ACCEPT=true
+RUNTIME_HMAC_EXECUTED=true
+HMAC_HEADER_GENERATED=true
+RECEIPT_TYPE=FlattenPreSendGateReceiptV1
+Q1_CANONICAL=YES
+Q2_CANONICAL=NO
+Q3_CANONICAL=INNER_REPAIR_REQUIRED
+LEASE_CONSUMED=false
+WIRE_SEND_CONSUMED=false
+GET_PERFORMED=false
+POST_PERFORMED=false
+HTTP_POST_EXECUTED=false
+PRODUCTIVE_URLLIB_POST_EXECUTED=false
+WIRE_SEND_EXECUTED=false
+INNER_SEND_PRODUCTIVE_EXECUTED=false
+FLATTEN_EXECUTED=false
+DURABLE_CONSUMED=false
+POSITION_MUTATION_EXECUTED=false
+ENVELOPE_REBIND_EXECUTED=false
+REAL_GET_COUNT=0
+REAL_POST_COUNT=0
+SUBMIT_ATTEMPT_COUNT=0
+FIRST_DENY_AFTER_HMAC_SIGNED_SEND=PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+OWNER_EXECUTION_AUTHORIZED=false
+FLATTEN_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+CANARY_AUTHORIZED=false
+POST_ALLOWED=false
+GATE_ORDER_STATUS=OPEN_POINTS_CLOSED
+OPEN_GATE_ORDER_POINTS=
+OPEN_GATE_ORDER_BLOCKER=PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+CURRENT_CANONICAL_BOUNDARY=PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+EARLIEST_UNRESOLVED_RUNTIME_GATE=PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+NEXT_OWNER_AUTHORITY_REQUIRED=PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+NEXT_SLICE_AUTHORIZED=false
+CASE_ADJUDICATION=CASE_A_HMAC_GENERATION_TYPED_ARTIFACT_NETWORK_SESSION_DENY
+```
+
+A. Non-execution. `POST_PERFORMED=false`. `WIRE_SEND_EXECUTED=false`.
+`LEASE_CONSUMED=false`. `WIRE_SEND_CONSUMED=false`.
+`DURABLE_CONSUMED=false`. `GET_PERFORMED=false`.
+`REAL_GET_COUNT=0`. `REAL_POST_COUNT=0`.
+
+B. Contract. Typed HMAC artifact implemented. Receipt, request-identity,
+and wire-send verify/accept bindings are fail-closed. Secrets are
+omitted from audit/repr. Unsigned send after HMAC first-denies
+`PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED`. Send does not generate HMAC.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/
+SPEC_OWNER=docs/ops/specs/SECTION_11_14_HMAC_GENERATION_V1.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_14
+CURRENT_CANONICAL_SECTION=11.14.HMAC_GENERATION
+HARD_STOP_AFTER_THIS_TASK=true
+HARD_STOP=true
+```
+
+Hard stop. Typed request-identity-bound HMAC/header artifact generation
+is proven. HMAC-signed productive `send` after attach stops at
+`PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED`. `SECTION_11_14_AUTHORIZED=false`.
+`SECTION_11_14_COMPLETE=false`. Do **not** POST, wire-send, consume
+against a live send, authorize a network session, flatten, or merge
+from this persist. `PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED` remains
+OPEN.
+
 ## 11.15 Full-autonomy observability and audit trail
 
 The autonomous runtime must expose enough telemetry for oversight without
