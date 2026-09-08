@@ -16,10 +16,12 @@ OWNER_GO_THIS_SLICE=OWNER_GO_DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1_OWNER_P
 OWNER_GO_IMPLEMENTATION_SLICE=DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1_CURRENT_CODE_IN_MEMORY_ISOLATED_INVOCATION
 OWNER_GO_TIMEOUT_POLICY_SLICE=OWNER_GO_DDO_FUNCTION_REPLAY_POST_6357_TIMEOUT_POLICY_V1
 OWNER_GO_OPEN_POSITIONS_CONSOLIDATION_SLICE=OWNER_GO_DDO_FUNCTION_REPLAY_POST_6358_OPEN_POSITIONS_CONSOLIDATION_V1
+OWNER_GO_B_BLOCKER_OR_TRACK_CLOSE_SLICE=OWNER_GO_DDO_FUNCTION_REPLAY_B_BLOCKER_OR_TRACK_CLOSE_OWNER_DECISION_V1
 BOUND_ORIGIN_MAIN_SHA=57c2b49edd8ba23ea1466d30015daf9807898d9b
 IMPLEMENTATION_BOUND_ORIGIN_MAIN_SHA=a6ad2e67b443a8ab022d7f05d07837bc84e39a00
 TIMEOUT_POLICY_BOUND_ORIGIN_MAIN_SHA=e8d3e0dcc1461e03230f3464f1f16e7f586f6525
 CONSOLIDATION_BOUND_ORIGIN_MAIN_SHA=4241483c6460a35c856d44c23e8819037c1c7d0d
+B_BLOCKER_DECISION_BOUND_ORIGIN_MAIN_SHA=9d0583bc548839ccbfb760c35a8be246531b3d4c
 PREDECESSOR_GIT_FACT=DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURED
 DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1=IMPLEMENTED_OFFLINE_IN_MEMORY_ISOLATED_NOT_PRODUCTIVE
 RUNTIME_AUTHORIZATION_EFFECT=NONE
@@ -36,6 +38,9 @@ PRODUCER_FUNCTION_REPLAY_EXECUTED=false
 REPLAY_TIMEOUT_POLICY=EXPLICIT_NONREQUIREMENT
 REPLAY_TIMEOUT_REQUIRED=false
 CONSOLIDATION_RESULT=C_NO_NEXT_SCOPE_SELECTED_OPEN_ITEMS_EXPLICITLY_DEFERRED_OR_BLOCKED
+HISTORICAL_CODE_REPLAY_B_DISPOSITION=B_REJECTED_IDENTITY_NOT_PROVABLE
+HISTORICAL_CODE_REPLAY_B_STATUS=REJECTED
+FUNCTION_REPLAY_TRACK_CLOSED=false
 NEXT_DDO_SCOPE=NONE
 NEXT_IMPLEMENTATION_AUTHORIZED=false
 ```
@@ -45,10 +50,11 @@ Navigation-only. Master Runbook remains SSOT. The Owner-policy persist did
 offline in-memory isolated current-code Function-Replay implementation in
 §10. A later, separate Owner-GO bound timeout policy as explicit
 nonrequirement in §11. A later, separate Owner-GO bound the open-position
-consolidation in §12. This contract still does **not** authorize Live,
-Testnet, orders, credentials, outcome-horizon, attribution, promotion, A1,
-A2, host wiring, productive ledger bind, or productive producer-function
-replay.
+consolidation in §12. A later, separate Owner-GO bound the Historical Replay B
+blocker census and owner-decision in §13. This contract still does **not**
+authorize Live, Testnet, orders, credentials, outcome-horizon, attribution,
+promotion, A1, A2, host wiring, productive ledger bind, or productive
+producer-function replay.
 
 ## 1. Owner-bound replay class
 
@@ -514,6 +520,12 @@ how that blocker is closed. Therefore B cannot be
 `SELECTED_AS_NEXT_SCOPE`. This persist does not reconstruct historical
 identity, reject B forever, or declare B not required.
 
+The consolidation persist recorded `DISPOSITION=BLOCKED` and
+`CURRENT_BLOCKER=HISTORICAL_CODE_IDENTITY_ABSENT` inside the block
+above. Those historical statements remain true for that persist.
+Current B disposition follows exclusively from §13 and the Master
+Runbook.
+
 ### 12.4 Src result-field retoken
 
 ```text
@@ -564,3 +576,205 @@ The next Owner-GO, if issued, must either bind how the B identity
 blocker is closed, dispose B with a new evidence-backed disposition,
 or close the track. This persist does not authorize that GO and does
 not select B as an implementation slice.
+
+The consolidation persist recorded
+`FUNCTION_REPLAY_TRACK_CLOSURE_DISPOSITION=BLOCKED` and
+`NEXT_OWNER_GO_TOKEN=OWNER_GO_DDO_FUNCTION_REPLAY_B_BLOCKER_OR_TRACK_CLOSE_OWNER_DECISION_V1`
+inside the blocks above. Those historical statements remain true for
+that persist. Current B disposition and track-closure status follow
+exclusively from §13 and the Master Runbook.
+
+## 13. Historical Replay B blocker owner-decision (docs-only)
+
+Separate Owner-GO
+`OWNER_GO_DDO_FUNCTION_REPLAY_B_BLOCKER_OR_TRACK_CLOSE_OWNER_DECISION_V1`
+authorized read-only forensic census plus docs-only persist of exactly
+one Owner decision on Historical Replay B after PR `#6359`. It does
+not rewrite the Owner-policy, implementation, timeout-policy, or
+open-positions consolidation persists. Those persists remain historically
+correct. This persist does **not** authorize src change, producer
+invocation, Function-Replay execution, Historical Replay B
+implementation, durable writes, Live, Testnet, Canary, orders, or send.
+
+Exactly one decision is selected. No plausibility choice. Code SHA
+inference remains forbidden.
+
+```text
+B_BLOCKER_OWNER_DECISION=B_REJECTED_IDENTITY_NOT_PROVABLE
+A_B_BLOCKER_CLOSED_IDENTITY_PROVEN=false
+B_REJECTED_IDENTITY_NOT_PROVABLE=true
+C_B_DEFERRED_BLOCKER_REMAINS=false
+D_FUNCTION_REPLAY_TRACK_CLOSED_WITH_B_EXPLICITLY_UNRESOLVED_AND_NONREQUIRED=false
+HISTORICAL_CODE_REPLAY_B_DISPOSITION=B_REJECTED_IDENTITY_NOT_PROVABLE
+HISTORICAL_CODE_REPLAY_B_STATUS=REJECTED
+B_IDENTITY_PROVEN=false
+B_IDENTITY_SHA=NONE
+B_IDENTITY_AMBIGUOUS=true
+FUNCTION_REPLAY_TRACK_CLOSED=false
+NEXT_DDO_SCOPE=NONE
+NEXT_IMPLEMENTATION_AUTHORIZED=false
+SRC_CHANGE_THIS_PERSIST=false
+FUNCTION_REPLAY_EXECUTED=false
+PRODUCER_INVOKED=false
+HISTORICAL_REPLAY_B_IMPLEMENTED=false
+CODE_SHA_INFERENCE_ALLOWED=false
+UNKNOWN_NORMALIZATION_ALLOWED=false
+CODE_SHA_UNKNOWN_PRESERVED=true
+```
+
+### 13.1 CURRENT_AUTHORITY
+
+```text
+REPLAY_CLASS_LETTER=A
+REPLAY_CLASS_SEMANTIC=CURRENT_CODE_REPLAY
+HISTORICAL_CODE_REPLAY=B
+HISTORICAL_CODE_REPLAY_STATUS_AT_CONSOLIDATION=NOT_SELECTED
+HISTORICAL_CODE_REPLAY_B_DISPOSITION_AT_CONSOLIDATION=BLOCKED
+FUNCTION_REPLAY_TRACK_CLOSURE_DISPOSITION_AT_CONSOLIDATION=BLOCKED
+CODE_IDENTITY_RULE=CURRENT_CODE_EXPLICITLY_ACCEPTED_WITH_NO_HISTORICAL_PARITY_CLAIM
+HISTORICAL_CODE_PARITY_CLAIM_ALLOWED=false
+DECISION_TIME_CODE_IDENTITY_CLAIM_ALLOWED=false
+CODE_SHA_INFERENCE_ALLOWED=false
+UNKNOWN_NORMALIZATION_ALLOWED=false
+CODE_SHA_UNKNOWN_PRESERVED=true
+POLICY_IMPLEMENTATION_IDENTITY_BOUND=false
+POLICY_VERSION_SUFFICIENT_FOR_HISTORICAL_IMPLEMENTATION_IDENTITY=false
+BLOCKER_CLOSURE_PROCEDURE_BOUND_AT_CONSOLIDATION=false
+D_TRACK_CLOSE_WITHOUT_B_ALLOWED_BY_CURRENT_AUTHORITY=false
+```
+
+Owner-bound replay class remains A. Consolidation §12.3 bound B as
+`NOT_SELECTED` and `BLOCKED` by `HISTORICAL_CODE_IDENTITY_ABSENT`.
+Consolidation §12.5 bound track closure as `BLOCKED` because B remained
+blocked, and did not declare B not required. Stored `code_sha=UNKNOWN`
+must remain `UNKNOWN`. Policy version reconstructs the typed policy
+object and is not historical implementation identity. Decision D is
+not available: current authority does not allow Function-Replay track
+close while leaving B unresolved/nonrequired.
+
+### 13.2 RAW_EVIDENCE
+
+Repo-bounded surfaces only. No producer invocation. No Function-Replay
+execution. No external runtime I/O. No SHA inference.
+
+```text
+CAPTURE_CODE_SHA_LITERAL=UNKNOWN
+CAPTURE_CODE_SHA_UNKNOWN_INTRODUCED_COMMIT=0a8ec8e8d73558c7b8a340b514fc86c0157dc525
+CAPTURE_CODE_SHA_ASSIGNMENT_LATER_MUTATED=false
+INPUT_EVIDENCE_CODE_SHA_LITERAL=UNKNOWN
+INPUT_EVIDENCE_OWNER_COMMIT=57c2b49edd8ba23ea1466d30015daf9807898d9b
+OBSERVATION_PROJECTION_CODE_SHA_UNKNOWN_INTRODUCED_COMMIT=c14730e99f1b1303b69a117fdc0d6896ee1c1e51
+INPUT_EVIDENCE_FIELD_SPEC=sha256|UNKNOWN
+INPUT_EVIDENCE_UNKNOWN_SEMANTICS=UNKNOWN_IS_EXPLICIT_SEMANTICS
+TRACKED_DDO_LEDGER_JSONL_PRESENT=false
+TRACKED_DOUBLE_PLAY_INPUT_EVIDENCE_RECORDS_PRESENT=false
+PRODUCER_PATH_GIT_COMMIT_COUNT=2
+PRODUCER_PATH_GIT_COMMIT_1=14e8a58f32dcb6b521be6b2559b388bf27360194
+PRODUCER_PATH_GIT_COMMIT_2=36b3110090d2f9961216675550a602e411f07894
+CURRENT_CODE_REPLAY_OWNER_COMMIT=874ed2e6ccf99de8cf7042af65b9b7f453a14142
+REPLAY_TEST_STORED_CODE_SHA_UNKNOWN_NOT_BACKFILLED=true
+REPLAY_RESULT_EXCLUDES_REPOSITORY_SHA=true
+REPLAY_RESULT_EXCLUDES_GIT_AND_CURRENT_HEAD=true
+SECTION_11_13_EXECUTED_CODE_SHA_IS_LIVE_OPS_DOMAIN=true
+SECTION_11_13_EXECUTED_CODE_SHA_IS_NOT_DDO_DOUBLE_PLAY_PRODUCER_IDENTITY=true
+EXPERIMENT_IDENTITY_GIT_SHA_IS_NOT_DOUBLE_PLAY_PRODUCER_FUNCTION_IDENTITY=true
+CAPTURE_REPOSITORY_SHA_IS_NOT_CODE_SHA=true
+PR_6359_ORIGIN_MAIN=9d0583bc548839ccbfb760c35a8be246531b3d4c
+```
+
+`git log -S '"code_sha": UNKNOWN'` on `capture_v0.py` shows only
+`0a8ec8e8d73558c7b8a340b514fc86c0157dc525` (`#6206`). The assignment
+was not later mutated. Input-evidence construction writes the same
+literal at `57c2b49edd8ba23ea1466d30015daf9807898d9b` (`#6354`).
+Observation projection introduced the same literal at
+`c14730e99f1b1303b69a117fdc0d6896ee1c1e51` (`#6300`). No tracked
+`ddo_ledger_v0.jsonl` and no committed Double-Play input-evidence
+records exist in the repository. Producer-path git history contains
+two commits; those SHAs are git history, not a bound historical
+identity. Current-code replay A is
+`874ed2e6ccf99de8cf7042af65b9b7f453a14142` and is not B. Replay tests
+assert stored `code_sha=UNKNOWN` is not backfilled and that
+`repository_sha`, `git`, and `current_head` are absent from the
+in-memory result. Live-ops `executed_code_sha` values and experiment
+`git_sha` are different domains. Capture `repository_sha` is a
+separate field from `code_sha`.
+
+### 13.3 HISTORICAL
+
+```text
+OWNER_POLICY_PERSIST=a6ad2e67b443a8ab022d7f05d07837bc84e39a00
+CONSOLIDATION_PERSIST=9d0583bc548839ccbfb760c35a8be246531b3d4c
+HISTORICAL_AT_OWNER_POLICY_PERSIST_B_STATUS=NOT_SELECTED
+HISTORICAL_AT_OWNER_POLICY_PERSIST_BLOCKED_BY=HISTORICAL_CODE_IDENTITY_ABSENT
+HISTORICAL_AT_CONSOLIDATION_B_DISPOSITION=BLOCKED
+HISTORICAL_AT_CONSOLIDATION_TRACK_CLOSURE_DISPOSITION=BLOCKED
+HISTORICAL_AT_CONSOLIDATION_OPEN_BLOCKER=HISTORICAL_CODE_IDENTITY_ABSENT
+```
+
+Those historical statements remain true for those persists. They are
+not current B disposition.
+
+### 13.4 ADJUDICATED
+
+```text
+SELECTED_DECISION=B_REJECTED_IDENTITY_NOT_PROVABLE
+A_REJECTED_REASON=NO_UNIQUE_BOUND_HISTORICAL_CODE_IDENTITY
+B_SELECTED_REASON=REPO_EVIDENCE_EXHAUSTION_IDENTITY_NOT_LOAD_BEARINGLY_DETERMINABLE
+C_REJECTED_REASON=EXHAUSTION_SUFFICIENT_TO_REJECT_NOT_DEFER
+D_REJECTED_REASON=CURRENT_AUTHORITY_DOES_NOT_ALLOW_TRACK_CLOSE_WITH_B_UNRESOLVED_AND_NONREQUIRED
+B_IDENTITY_PROVEN=false
+B_IDENTITY_SHA=NONE
+B_IDENTITY_AMBIGUOUS=true
+HISTORICAL_CODE_REPLAY_B_STATUS=REJECTED
+FUNCTION_REPLAY_TRACK_CLOSED=false
+```
+
+A is false: no unique historical code identity is forensically proven,
+and no complete authority/evidence chain binds one SHA. Multiple
+producer-path git SHAs exist and none is bound; they are not
+normalized into an identity.
+
+B is true: the identity field on the capture and input-evidence owners
+is the literal `UNKNOWN`; that assignment was never mutated; inference
+and unknown-normalization are forbidden; policy version is
+insufficient; no tracked DDO ledger or input-evidence record supplies
+a non-`UNKNOWN` `code_sha`; adjacent SHA fields are different domains.
+The needed identity is therefore not load-bearingly determinable from
+repo evidence. Historical Replay B is rejected.
+
+C is false: the census is sufficient to reject, not merely to defer.
+
+D is false: current authority does not allow closing the Function-Replay
+track with B explicitly unresolved and nonrequired. This persist
+rejects B; it does not declare B unresolved/nonrequired and does not
+close the track.
+
+### 13.5 INTERPRETATION
+
+```text
+INTERPRETATION_USED_TO_SELECT_DECISION=false
+FUTURE_CAPTURE_CONTRACT_WOULD_BE_A_NEW_OWNER_GO=true
+FUTURE_CAPTURE_CONTRACT_IS_NOT_HISTORICAL_REPLAY_B_OF_EXISTING_UNKNOWN_RECORDS=true
+```
+
+A later Owner-GO may bind a new capture-time identity contract. That
+would not recover Historical Replay B for existing `code_sha=UNKNOWN`
+records and is not authorized here.
+
+### 13.6 OPEN
+
+```text
+OPEN_BLOCKER_HISTORICAL_CODE_IDENTITY_ABSENT=false
+HISTORICAL_CODE_REPLAY_B_DISPOSED=true
+FUNCTION_REPLAY_TRACK_CLOSED=false
+NEXT_DDO_SCOPE=NONE
+NEXT_IMPLEMENTATION_AUTHORIZED=false
+NEXT_OWNER_GO_REQUIRED=true
+NEXT_OWNER_GO_TOKEN=OWNER_GO_DDO_FUNCTION_REPLAY_TRACK_CLOSE_OWNER_DECISION_V1
+CURRENT_AUTHORITY_CHANGED=true
+```
+
+Track closure is not selected. This persist is B, not D. The next
+Owner-GO, if issued, must decide Function-Replay track closure after
+B rejection. This persist does not authorize that GO, does not
+implement B, and does not execute replay.

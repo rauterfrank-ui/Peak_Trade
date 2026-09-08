@@ -3767,7 +3767,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: PHASE:ddo_offline_foundation
-    # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; spec section 10 timeout UNSPECIFIED is historical at implementation persist; current isolation from spec section 10; current timeout policy from spec section 11 EXPLICIT_NONREQUIREMENT; spec section 12 open-positions consolidation C_NO_NEXT_SCOPE_SELECTED; B BLOCKED; track not closed; Master Runbook
+    # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; spec section 10 timeout UNSPECIFIED is historical at implementation persist; current isolation from spec section 10; current timeout policy from spec section 11 EXPLICIT_NONREQUIREMENT; spec section 12 open-positions consolidation C_NO_NEXT_SCOPE_SELECTED historical at that persist; spec section 13 B_REJECTED_IDENTITY_NOT_PROVABLE; track not closed; Master Runbook
     kind: PHASE
     name: 11.13.5 Parallel-track DDO offline foundation
     epistemic_class: FORENSIC_RAW
@@ -3821,16 +3821,14 @@ entities:
       section 11 `REPLAY_TIMEOUT_POLICY=EXPLICIT_NONREQUIREMENT`; a replay
       wallclock timeout is not required for the closed in-memory isolated
       test-only A-slice. Code result-field retoken is not authorized by that
-      persist. Spec section 12 open-positions consolidation binds
-      DURABLE_REPLAY_RESULT=CLOSED_NOT_REQUIRED,
-      PRODUCTIVE_FUNCTION_REPLAY=CLOSED_NOT_REQUIRED,
-      HISTORICAL_CODE_REPLAY_B=BLOCKED,
-      CODE_RESULT_FIELD_RETOKEN=CLOSED_NOT_REQUIRED,
-      FUNCTION_REPLAY_TRACK_CLOSURE=BLOCKED.
-      CONSOLIDATION_RESULT=C_NO_NEXT_SCOPE_SELECTED_OPEN_ITEMS_EXPLICITLY_DEFERRED_OR_BLOCKED.
-      NEXT_DDO_SCOPE=NONE. NEXT_IMPLEMENTATION_AUTHORIZED=false.
-      Historical code replay B remains NOT_SELECTED and blocked by
-      HISTORICAL_CODE_IDENTITY_ABSENT. Track is not closed.
+      persist. Spec section 12 open-positions consolidation is
+      HISTORICAL_AT_CONSOLIDATION_PERSIST for B=BLOCKED and track-closure
+      BLOCKED. Spec section 13 B-blocker owner-decision binds
+      HISTORICAL_CODE_REPLAY_B=B_REJECTED_IDENTITY_NOT_PROVABLE.
+      FUNCTION_REPLAY_TRACK_CLOSED=false. NEXT_DDO_SCOPE=NONE.
+      NEXT_IMPLEMENTATION_AUTHORIZED=false. Historical code replay B is
+      rejected because repo evidence cannot load-bearingly determine
+      historical code identity. Track is not closed.
       DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is bound as evidence-domain
       storage owner. DDO_LEDGER_DURABILITY_HARDENING_AND_HOST_BINDING_PREP_V1 is
       complete. PEAK_TRADE_DDO_PRODUCTIVE_HOST_SCOPE_INPUT_BINDING_V1 is bound
@@ -4001,7 +3999,7 @@ entities:
       Not WP-FA-08.
 
   - id: RUNTIME_COMPONENT:ddo_double_play_producer_function_replay_v1
-    # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; spec section 10 timeout UNSPECIFIED is historical at implementation persist; current isolation from spec section 10; current timeout policy from spec section 11 EXPLICIT_NONREQUIREMENT; spec section 12 open-positions consolidation C_NO_NEXT_SCOPE_SELECTED; B BLOCKED; track not closed; Master Runbook
+    # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; spec section 10 timeout UNSPECIFIED is historical at implementation persist; current isolation from spec section 10; current timeout policy from spec section 11 EXPLICIT_NONREQUIREMENT; spec section 12 open-positions consolidation C_NO_NEXT_SCOPE_SELECTED historical at that persist; spec section 13 B_REJECTED_IDENTITY_NOT_PROVABLE; track not closed; Master Runbook
     kind: RUNTIME_COMPONENT
     name: DDO Double-Play producer-function current-code replay v1
     epistemic_class: FORENSIC_RAW
@@ -4036,15 +4034,13 @@ entities:
       REPLAY_TIMEOUT_POLICY=EXPLICIT_NONREQUIREMENT. A replay wallclock timeout is
       not required for this closed in-memory isolated test-only A-slice. Code
       result-field retoken is not authorized by that persist. Spec section 12
-      open-positions consolidation binds DURABLE_REPLAY_RESULT=CLOSED_NOT_REQUIRED,
-      PRODUCTIVE_FUNCTION_REPLAY=CLOSED_NOT_REQUIRED,
-      HISTORICAL_CODE_REPLAY_B=BLOCKED,
-      CODE_RESULT_FIELD_RETOKEN=CLOSED_NOT_REQUIRED,
-      FUNCTION_REPLAY_TRACK_CLOSURE=BLOCKED.
-      CONSOLIDATION_RESULT=C_NO_NEXT_SCOPE_SELECTED_OPEN_ITEMS_EXPLICITLY_DEFERRED_OR_BLOCKED.
-      NEXT_DDO_SCOPE=NONE. NEXT_IMPLEMENTATION_AUTHORIZED=false.
-      Historical code replay B remains NOT_SELECTED and blocked by
-      HISTORICAL_CODE_IDENTITY_ABSENT. Track is not closed.
+      open-positions consolidation is HISTORICAL_AT_CONSOLIDATION_PERSIST for
+      B=BLOCKED and track-closure BLOCKED. Spec section 13 B-blocker
+      owner-decision binds HISTORICAL_CODE_REPLAY_B=B_REJECTED_IDENTITY_NOT_PROVABLE.
+      FUNCTION_REPLAY_TRACK_CLOSED=false. NEXT_DDO_SCOPE=NONE.
+      NEXT_IMPLEMENTATION_AUTHORIZED=false. Historical code replay B is
+      rejected because repo evidence cannot load-bearingly determine
+      historical code identity. Track is not closed.
       ATLAS_AUTHORITY=NONE. TRADING_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:ddo_ledger_v0
