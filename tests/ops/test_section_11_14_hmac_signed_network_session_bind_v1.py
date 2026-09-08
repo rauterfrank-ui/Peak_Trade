@@ -100,6 +100,7 @@ SEND_SRC = (
     / "src/ops/section_11_13_5_live_canary_minimum_exposure_v1"
     / "authenticated_productive_transport_v1.py"
 )
+_FX = FLATTEN_EXECUTE_CONFIRM_TOKEN_CANONICAL
 HMAC_ORIGIN_SHA = "e14587a5b03a13963ffb7524f9c25f0cfea0dfc2"
 HMAC_ENVELOPE_ID = "0a0133a3b82e4a15bf6986605a9a8e6b47b22665b485ff0f570200803f21cdbe"
 TARGET = DEFAULT_INSTRUMENT_ID
@@ -156,7 +157,7 @@ def _valid_gate(*, origin_main_sha: str = HMAC_ORIGIN_SHA) -> FlattenPreSendGate
         live_armed=True,
         flatten_live_wire_enabled=True,
         allow_productive_wire_send=True,
-        flatten_execute_token=FLATTEN_EXECUTE_CONFIRM_TOKEN_CANONICAL,
+        flatten_execute_token=_FX,
         flatten_execute_purpose=FLATTEN_EXECUTE_PURPOSE_CANONICAL,
         flatten_execute_owner_go=FLATTEN_EXECUTE_OWNER_GO_CANONICAL,
         positions_payload=_positions({"instId": TARGET, "pos": "1"}),
