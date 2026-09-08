@@ -73940,6 +73940,142 @@ against a live send, authorize a network session, flatten, or merge
 from this persist. `PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED` remains
 OPEN.
 
+The historical HMAC_GENERATION next pointer
+`PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED` is **consumed** only as the
+HMAC-signed network-session bind persist below
+(§11.14.PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED). That successor
+wires existing `OWNER_NETWORK_SESSION_AUTHORITY_V1` onto the HMAC
+transport. It does **not** HTTP POST, does **not** GET, does **not**
+consume session, wire-send, or send-lease authority, and does **not**
+close `SEND_LEASE_CONSUME` / `WIRE_SEND`.
+
+### 11.14 PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED (BOUND; HMAC-PATH OWNER SESSION BIND; NO SEND; NO POST; SECTION 11.14 NOT COMPLETE)
+
+Additive persist. Does **not** rewrite the persist fields above. Does
+**not** HTTP GET. Does **not** HTTP POST. Does **not** consume
+`OWNER_NETWORK_SESSION_AUTHORITY_V1`. Does **not** consume
+`OWNER_PRODUCTIVE_WIRE_SEND_AUTHORITY_V1`. Does **not** consume the
+send lease. Does **not** invoke urllib. Does **not** rebind envelope
+`0a0133a3b82e4a15bf6986605a9a8e6b47b22665b485ff0f570200803f21cdbe`.
+Does **not** mutate standing Live gates. Does **not** mark §11.14
+complete. HMAC generation remains offline. Inner
+`AuthenticatedGatedProductiveFlattenTransportV1.send` deny order is
+unchanged.
+
+Census (`FORENSIC_RAW`): HMAC-signed `send()` checked only
+`network_session_authorized`. Issuer/verifier never set that flag.
+`authorize_network_session_instance_v1` existed on the send-capable
+adapter path and was not wired to the HMAC transport. A bare flag could
+not be treated as Owner authority.
+
+`bind_hmac_signed_productive_network_session_v1` is the explicit HMAC
+path seam. It reuses `prepare_productive_transport_bind_send_capable_v1`
+with the HMAC transport as inner and
+`authorize_network_session_instance_v1`. Bind is fail-closed to
+`OWNER_NETWORK_SESSION_AUTHORITY_V1`, session-contract
+`origin_main_sha` / `instrument_id` / `exact_envelope_id`, attached
+receipt, HMAC request identity, and host `eea.okx.com`.
+`hmac_signed_send_network_session_gate_v1` denies
+`PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED` when the flag is set
+without that bind. Successful bind does **not** call `send()`.
+
+``` text
+OWNER_GO=PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+OWNER_GO_STATUS=CONSUMED_HMAC_PATH_SESSION_BIND_NO_POST
+OWNER_GO_CONSUMED=false
+AUTHORIZATION_PRESENT=true_for_hmac_signed_network_session_bind_only
+AUTHORITY_CLASS=R1_HMAC_SIGNED_NETWORK_SESSION_BIND_NO_POST
+RISK_CLASS=R1_NO_SUBMIT_NO_VENUE_MUTATION
+PERSIST_CLASS=SECTION_11_14_PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED_SSOT_PERSIST
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+ATLAS_AUTHORITY=NONE
+CHAT_TRANSCRIPT_AUTHORITY=NONE
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=80ff7ec080113be88ef2d0be466034bd8264d137
+EXPECTED_ORIGIN_MAIN_SHA=80ff7ec080113be88ef2d0be466034bd8264d137
+PREDECESSOR_SLICE=11.14.HMAC_GENERATION
+THIS_SLICE=11.14.PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+CURRENT_PHASE=11.14.PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+CURRENT_CANONICAL_SECTION=11.14.PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+LAST_CANONICALLY_CLOSED_STEP=SECTION_11_14_PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED=PROVEN_BOUND
+HMAC_SIGNED_NETWORK_SESSION_BIND_IMPLEMENTED=true
+BIND_SYMBOL=bind_hmac_signed_productive_network_session_v1
+GATE_SYMBOL=hmac_signed_send_network_session_gate_v1
+NETWORK_SESSION_DENY_ENTRYPOINT=AuthenticatedGatedProductiveFlattenTransportV1.send
+NETWORK_SESSION_AUTHORITY_TYPE=OWNER_NETWORK_SESSION_AUTHORITY_V1
+NETWORK_SESSION_AUTHORITY_ISSUER=issue_owner_network_session_authority_v1
+NETWORK_SESSION_AUTHORITY_SCOPE=AUTHORIZE_PRODUCTIVE_NETWORK_SESSION
+NETWORK_SESSION_IDENTITY_BINDING=origin_main_sha+instrument_id+exact_envelope_id+hmac_request_identity+transport_instance
+NETWORK_SESSION_HOST_BINDING=eea.okx.com
+NETWORK_SESSION_LIFETIME=single_use_unconsumed_verify_not_consume
+NETWORK_SESSION_CONSUME_SEMANTICS=VERIFY_NOT_CONSUME_DUPLICATE_BIND_DENIED
+PRODUCTIVE_TRANSPORT_BINDING_STATUS=HMAC_TRANSPORT_INNER_BOUND
+PROXY_FALLBACK=false
+LEASE_CONSUMED=false
+WIRE_SEND_CONSUMED=false
+NETWORK_SESSION_CONSUMED=false
+GET_PERFORMED=false
+POST_PERFORMED=false
+HTTP_POST_EXECUTED=false
+PRODUCTIVE_URLLIB_POST_EXECUTED=false
+WIRE_SEND_EXECUTED=false
+INNER_SEND_PRODUCTIVE_EXECUTED=false
+FLATTEN_EXECUTED=false
+DURABLE_CONSUMED=false
+POSITION_MUTATION_EXECUTED=false
+ENVELOPE_REBIND_EXECUTED=false
+REAL_GET_COUNT=0
+REAL_POST_COUNT=0
+SUBMIT_ATTEMPT_COUNT=0
+OWNER_EXECUTION_AUTHORIZED=false
+FLATTEN_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+CANARY_AUTHORIZED=false
+POST_ALLOWED=false
+GATE_ORDER_STATUS=OPEN_POINTS_CLOSED
+OPEN_GATE_ORDER_POINTS=
+OPEN_GATE_ORDER_BLOCKER=SEND_LEASE_CONSUME
+CURRENT_CANONICAL_BOUNDARY=SEND_LEASE_NOT_CONSUMED
+EARLIEST_UNRESOLVED_RUNTIME_GATE=SEND_LEASE_CONSUME
+NEXT_OWNER_AUTHORITY_REQUIRED=WIRE_SEND
+NEXT_SLICE_AUTHORIZED=false
+CASE_ADJUDICATION=CASE_B_HMAC_PATH_SESSION_BIND_FAIL_CLOSED_BEFORE_SEND
+```
+
+A. Non-execution. `POST_PERFORMED=false`. `WIRE_SEND_EXECUTED=false`.
+`LEASE_CONSUMED=false`. `WIRE_SEND_CONSUMED=false`.
+`NETWORK_SESSION_CONSUMED=false`. `DURABLE_CONSUMED=false`.
+`GET_PERFORMED=false`. `REAL_GET_COUNT=0`. `REAL_POST_COUNT=0`.
+
+B. Contract. HMAC-signed transport bind implemented. Owner
+network-session verify/accept, request identity, and host
+`eea.okx.com` are fail-closed. HMAC without session authority still
+denies. Session flag without matching Owner bind still denies.
+Successful bind does not invoke `send`.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/
+SPEC_OWNER=docs/ops/specs/SECTION_11_14_PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED_V1.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_14
+CURRENT_CANONICAL_SECTION=11.14.PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
+HARD_STOP_AFTER_THIS_TASK=true
+HARD_STOP=true
+```
+
+Hard stop. HMAC-signed productive network-session bind is proven.
+`send` after bind is not invoked. `SECTION_11_14_AUTHORIZED=false`.
+`SECTION_11_14_COMPLETE=false`. Do **not** POST, wire-send, consume
+the send lease, flatten, or merge from this persist.
+`SEND_LEASE_CONSUME` / `WIRE_SEND` remain OPEN.
+
 ## 11.15 Full-autonomy observability and audit trail
 
 The autonomous runtime must expose enough telemetry for oversight without
