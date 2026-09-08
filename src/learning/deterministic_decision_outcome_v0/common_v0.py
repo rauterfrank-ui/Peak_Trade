@@ -70,6 +70,12 @@ SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION: Final[str] = "double_play_entry_
 SCHEMA_VERSION_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION_V1: Final[str] = (
     "double_play_entry_exit_observation_v1"
 )
+SCHEMA_NAME_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION: Final[str] = (
+    "section_11_14_flatten_pre_lease_observation"
+)
+SCHEMA_VERSION_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_V1: Final[str] = (
+    "section_11_14_flatten_pre_lease_observation_v1"
+)
 
 RECORD_ID_RE: Final[re.Pattern[str]] = re.compile(r"^[A-Za-z0-9._:-]{8,128}$")
 SHA256_OR_UNKNOWN_RE: Final[re.Pattern[str]] = re.compile(rf"^(?:{UNKNOWN}|[0-9a-f]{{64}})$")

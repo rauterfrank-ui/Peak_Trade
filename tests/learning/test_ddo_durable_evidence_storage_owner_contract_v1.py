@@ -557,9 +557,33 @@ def test_no_productive_host_ledger_path_and_no_second_store() -> None:
         "src/learning/mutation_critical_control_state_storage_v1/",
         "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/",
     )
+    # Observation-only §11.14 pre-lease hook. Exact files, not package prefixes.
+    # These may import DDO capture; they must not bind ledger_path or a second store.
+    observation_only_src = (
+        "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/"
+        "authenticated_productive_transport_v1.py",
+        "src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/"
+        "flatten_pre_lease_ddo_observation_v1.py",
+    )
+    forbidden_ledger_tokens = (
+        "resolve_ddo_durable_evidence_path_v1(",
+        "ddo_durable_ledger_path",
+        "AppendOnlyDdoLedgerV0(",
+        "ddo_durable_evidence_runtime_state_root",
+        "ledger_path=",
+    )
+    for rel in observation_only_src:
+        path = REPO_ROOT / rel
+        if not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8")
+        hits = [token for token in forbidden_ledger_tokens if token in text]
+        assert hits == [], rel
     unexpected = [
         path
         for path in changed
-        if path.startswith("src/") and not path.startswith(allowed_src_prefixes)
+        if path.startswith("src/")
+        and not path.startswith(allowed_src_prefixes)
+        and path not in observation_only_src
     ]
     assert unexpected == []

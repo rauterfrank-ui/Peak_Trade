@@ -2389,6 +2389,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "11.14 RECEIPT_MISSING" in mot
     assert "11.14 HMAC_GENERATION" in mot
     assert "11.14 PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED" in mot
+    assert "11.14 PRE_LEASE_DDO_OBSERVATION" in mot
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -2490,6 +2491,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "SECTION_11_14_RECEIPT_MISSING_V1.md" in mot
     assert "SECTION_11_14_HMAC_GENERATION_V1.md" in mot
     assert "SECTION_11_14_PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED_V1.md" in mot
+    assert "SECTION_11_14_PRE_LEASE_DDO_OBSERVATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION_V1.md" in mot
@@ -3226,6 +3228,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "id: PHASE:section_11_14_receipt_missing" in catalog
     assert "id: PHASE:section_11_14_hmac_generation" in catalog
     assert "id: PHASE:section_11_14_productive_network_session_not_authorized" in catalog
+    assert "id: PHASE:section_11_14_pre_lease_ddo_observation" in catalog
     assert (
         "id: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1" in catalog
     )

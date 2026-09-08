@@ -208,6 +208,16 @@ EXISTING_SOURCE_TAXONOMY_REFS_V0: Final[tuple[dict[str, str], ...]] = (
         "integration": "REFERENCE_ONLY",
         "codes_copied": "false",
     },
+    {
+        "taxonomy_ref_id": "existing.ops.section_11_14.flatten_pre_lease_ddo_observation",
+        "source_path": (
+            "src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/"
+            "flatten_pre_lease_ddo_observation_v1.py"
+        ),
+        "status": "NOT_NORMALIZED",
+        "integration": "REFERENCE_ONLY",
+        "codes_copied": "false",
+    },
 )
 
 _ALLOWED_EXISTING_SOURCE_PATHS: Final[frozenset[str]] = frozenset(

@@ -489,6 +489,15 @@ class AuthenticatedGatedProductiveFlattenTransportV1:
                 "PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED"
             )
         assert_productive_flatten_post_request_v1(request)
+        from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.flatten_pre_lease_ddo_observation_v1 import (
+            observe_flatten_pre_lease_send_intent_v1,
+        )
+
+        observe_flatten_pre_lease_send_intent_v1(
+            transport=self,
+            request=request,
+            receipt=receipt,
+        )
         _consume_receipt_lease(receipt)
         self._sent = True
         from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_productive_transport_v1 import (
