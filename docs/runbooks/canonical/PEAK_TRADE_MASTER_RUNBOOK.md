@@ -73343,6 +73343,157 @@ adjudicated. `REPRICE_EXECUTED=true`.
 **not** mint a receipt, HMAC, POST, wire-send, consume, flatten, or
 merge from this persist.
 
+The historical ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND next pointer
+`RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER` is **consumed** only as the
+receipt &#47; HMAC vs wire-send-authority order persist below
+(§11.14.RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER). That successor
+persists the Owner order decision and repairs inner lease consume. It
+does **not** mint a receipt at runtime, does **not** generate HMAC or
+OK-ACCESS headers, does **not** HTTP POST, and does **not** close
+`DURABLE_CONSUME_SUCCESS_OBJECT`.
+
+### 11.14 RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER (BOUND; ORDER DECIDED; INNER LEASE REPAIRED; NO MINT; NO HMAC; NO POST; SECTION 11.14 NOT COMPLETE)
+
+Additive persist. Does **not** rewrite the persist fields above. Does
+**not** mint, bind, or attach a receipt at runtime. Does **not**
+HMAC-sign a POST. Does **not** generate OK-ACCESS headers. Does **not**
+issue, verify-for-send, or consume `OWNER_PRODUCTIVE_WIRE_SEND_AUTHORITY_V1`.
+Does **not** invoke productive `inner.send`. Does **not** HTTP POST.
+Does **not** consume durable state. Does **not** rebind envelope
+`0a0133a3b82e4a15bf6986605a9a8e6b47b22665b485ff0f570200803f21cdbe`.
+Does **not** mutate standing Live gates. Does **not** mark §11.14
+complete. `ConstructiveProductiveFlattenSubmitAdapterV1` remains
+NO_SEND.
+
+Owner order (`CANONICAL`):
+
+``` text
+Q1_ATTACHABLE_RECEIPT_MINT_BEFORE_WIRE_SEND_AUTHORITY=YES
+Q2_HMAC_GENERATION_BEFORE_WIRE_SEND_AUTHORITY=NO
+Q3_INNER_LEASE_BEFORE_SESSION_POLICY=INNER_REPAIR_REQUIRED
+```
+
+A. Receipt mint (`CANONICAL`). An attachable `allowed=true`
+`FlattenPreSendGateReceiptV1` mint may occur before
+`OWNER_PRODUCTIVE_WIRE_SEND_AUTHORITY_V1` is issued or accepted. Receipt
+mint is an offline attest. It is neither wire-send verify nor
+wire-send consume. This persist does **not** execute that mint.
+
+B. HMAC (`CANONICAL`). HMAC signatures and OK-ACCESS headers may be
+generated only after successful verify &#47; accept of
+`OWNER_PRODUCTIVE_WIRE_SEND_AUTHORITY_V1`. HMAC generation remains
+unwired on the gated productive flatten `send()` path.
+`HMAC_GENERATION_WIRED=false`.
+
+C. Inner lease (`ADJUDICATED`). Inner lease consume and `_sent=True`
+must not run before the transport's own local pre-wire authorization
+and session gates. This persist repairs
+`GatedProductiveFlattenTransportV1.send` and
+`AuthenticatedGatedProductiveFlattenTransportV1.send`: lease consume and
+`_sent=True` occur after `network_session_authorized` and the other local
+pre-wire denies, and still before `last_wire_attempted=True` &#47;
+urllib. Receipt-missing and HMAC-presence denies remain pre-consume.
+This repair is not productive `inner.send`, not HTTP POST, and not
+durable consume.
+
+D. Remaining open order point (`CANONICAL`).
+`DURABLE_CONSUME_SUCCESS_OBJECT` remains OPEN. Historical subordinate
+`OPEN_GATE_ORDER_POINTS` tuples, including
+`productive_wire_send_orchestrator_v1.OPEN_GATE_ORDER_POINTS`, are
+**not** SSOT and are left unchanged in this persist. Authority for the
+remaining open point is exclusively this Master Runbook persist.
+
+``` text
+OWNER_GO=RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER
+OWNER_GO_STATUS=CONSUMED_RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER_DECIDED_INNER_LEASE_REPAIRED_NO_MINT_NO_HMAC_NO_POST
+OWNER_GO_CONSUMED=false
+AUTHORIZATION_PRESENT=true_for_receipt_hmac_vs_wire_send_authority_order_and_inner_lease_repair_only
+AUTHORITY_CLASS=R1_ORDER_DECISION_AND_INNER_LEASE_REPAIR_NO_POST
+RISK_CLASS=R1_NO_SUBMIT_NO_VENUE_MUTATION
+PERSIST_CLASS=SECTION_11_14_RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER_SSOT_PERSIST
+MASTER_RUNBOOK_AUTHORITY=SSOT
+NOTION_AUTHORITY=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE_FOR_SEMANTICS
+ATLAS_AUTHORITY=NONE
+CHAT_TRANSCRIPT_AUTHORITY=NONE
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=dabc4abf626c023babe0ee088ad72b15ec146e9f
+EXPECTED_ORIGIN_MAIN_SHA=dabc4abf626c023babe0ee088ad72b15ec146e9f
+PREDECESSOR_SLICE=11.14.ENVELOPE_REPRICE_OR_FRESHNESS_AT_SEND
+THIS_SLICE=11.14.RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER
+CURRENT_PHASE=11.14.RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER
+CURRENT_CANONICAL_SECTION=11.14.RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER
+LAST_CANONICALLY_CLOSED_STEP=SECTION_11_14_RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER
+SECTION_11_14_AUTHORIZED=false
+SECTION_11_14_COMPLETE=false
+SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED=false
+Q1_CANONICAL=YES
+Q2_CANONICAL=NO
+Q3_CANONICAL=INNER_REPAIR_REQUIRED
+ATTACHABLE_RECEIPT_MINT_MAY_PRECEDE_WIRE_SEND_AUTHORITY=true
+RECEIPT_MINT_IS_OFFLINE_ATTEST=true
+RECEIPT_MINT_IS_NOT_WIRE_SEND_VERIFY=true
+RECEIPT_MINT_IS_NOT_WIRE_SEND_CONSUME=true
+HMAC_GENERATION_REQUIRES_WIRE_SEND_AUTHORITY_VERIFY_ACCEPT=true
+HMAC_GENERATION_WIRED=false
+RUNTIME_RECEIPT_MINT_EXECUTED=false
+RUNTIME_HMAC_EXECUTED=false
+HMAC_HEADER_GENERATED=false
+INNER_REPAIR_IMPLEMENTED=true
+LEASE_CONSUME_AFTER_LOCAL_PREWIRE_GATES=true
+LEASE_CONSUMED=false
+POST_PERFORMED=false
+HTTP_POST_EXECUTED=false
+PRODUCTIVE_URLLIB_POST_EXECUTED=false
+WIRE_SEND_EXECUTED=false
+INNER_SEND_PRODUCTIVE_EXECUTED=false
+FLATTEN_EXECUTED=false
+DURABLE_CONSUMED=false
+POSITION_MUTATION_EXECUTED=false
+ENVELOPE_REBIND_EXECUTED=false
+REAL_POST_COUNT=0
+SUBMIT_ATTEMPT_COUNT=0
+OWNER_EXECUTION_AUTHORIZED=false
+FLATTEN_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+CANARY_AUTHORIZED=false
+POST_ALLOWED=false
+GATE_ORDER_STATUS=PARTIAL_PROVEN_WITH_OPEN_POINTS
+OPEN_GATE_ORDER_POINTS=DURABLE_CONSUME_SUCCESS_OBJECT
+OPEN_GATE_ORDER_BLOCKER=DURABLE_CONSUME_SUCCESS_OBJECT
+CURRENT_CANONICAL_BOUNDARY=RECEIPT_MISSING
+EARLIEST_UNRESOLVED_RUNTIME_GATE=DURABLE_CONSUME_SUCCESS_OBJECT
+NEXT_OWNER_AUTHORITY_REQUIRED=DURABLE_CONSUME_SUCCESS_OBJECT
+NEXT_SLICE_AUTHORIZED=false
+CASE_ADJUDICATION=CASE_A_RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER_DECIDED_INNER_LEASE_REPAIRED
+```
+
+A. Non-execution. `RECEIPT_MINTED=false`. `HMAC_EXECUTED=false`.
+`POST_PERFORMED=false`. `WIRE_SEND_EXECUTED=false`.
+`DURABLE_CONSUMED=false`.
+
+B. Inner repair. Session deny does not consume the lease and does not
+irreversibly set `_sent`. Receipt-missing and HMAC-presence denies
+remain pre-consume. A successful gated path consumes the lease exactly
+once, still before urllib. Duplicate send remains fail-closed.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/section_11_13_5_live_canary_minimum_exposure_v1/
+SPEC_OWNER=docs/ops/specs/SECTION_11_14_RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER_V1.md
+CURRENT_CANONICAL_NEXT_STEP_AUTHORITY=SECTION_11_14
+CURRENT_CANONICAL_SECTION=11.14.RECEIPT_HMAC_VS_WIRE_SEND_AUTHORITY_ORDER
+HARD_STOP_AFTER_THIS_TASK=true
+HARD_STOP=true
+```
+
+Hard stop. Receipt &#47; HMAC vs wire-send-authority order is decided and
+inner lease consume is repaired. `SECTION_11_14_AUTHORIZED=false`.
+`SECTION_11_14_COMPLETE=false`. Do **not** mint a receipt, generate
+HMAC, POST, wire-send, consume, flatten, or merge from this persist.
+`DURABLE_CONSUME_SUCCESS_OBJECT` remains OPEN.
+
 ## 11.15 Full-autonomy observability and audit trail
 
 The autonomous runtime must expose enough telemetry for oversight without
