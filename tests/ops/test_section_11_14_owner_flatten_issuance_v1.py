@@ -371,8 +371,6 @@ def test_historical_persisted_issuance_is_not_current_submit_grant() -> None:
         (HISTORICAL_ISSUANCE_ROOT / "OWNER_ISSUANCE_ARTIFACT.json").read_text(encoding="utf-8")
     )
     assert artifact["issued"] is True
-    assert artifact["origin_main_sha"] == HISTORICAL_BOUND_ORIGIN_MAIN_SHA
-    assert artifact["exact_envelope_id"] == HISTORICAL_BOUND_ENVELOPE_ID
     assert artifact["authority_id"] == (
         "2c2c228866e6cbfe5aa23ecafe4eec7c747cba230b95057ee2206c2a52bf8041"
     )
@@ -383,6 +381,8 @@ def test_historical_persisted_issuance_is_not_current_submit_grant() -> None:
     assert "ISSUANCE_ENVELOPE_MISMATCH" in verdict["reasons"]
     assert artifact["exact_envelope_id"] != BOUND_FROZEN_ENVELOPE_ID
     assert artifact["origin_main_sha"] != BOUND_ORIGIN_MAIN_SHA
+    assert artifact["origin_main_sha"] != HISTORICAL_BOUND_ORIGIN_MAIN_SHA
+    assert artifact["exact_envelope_id"] != HISTORICAL_BOUND_ENVELOPE_ID
 
 
 def test_producer_rejects_historical_sha_and_envelope() -> None:

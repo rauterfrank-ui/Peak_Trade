@@ -1,0 +1,124 @@
+{
+  "GETS": [
+    {
+      "auth_header_sent": false,
+      "body_sha256": "038f2bf82f18f2d42ed26dca281cc7733e4ef7d07206fd0b19637189ec3e4cd2",
+      "endpoint": "/api/v5/public/instruments?instType=FUTURES&instId=SUI-USD_UM_XPERP-310404",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "INSTRUMENTS",
+      "observed_at_utc": "2026-09-08T02:27:50.703156Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": false,
+      "body_sha256": "dc8960f6aca2a32eeb51f4993c08e5a32140c19a970e567676f37076e33981cf",
+      "endpoint": "/api/v5/market/ticker?instId=SUI-USD_UM_XPERP-310404",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "TICKER",
+      "observed_at_utc": "2026-09-08T02:27:50.990609Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": false,
+      "body_sha256": "2fc3b1ec74d00e98258c38ac220268b44f517b674151bc844facc3e7b4cecbd9",
+      "endpoint": "/api/v5/public/price-limit?instId=SUI-USD_UM_XPERP-310404",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "PRICE_LIMIT",
+      "observed_at_utc": "2026-09-08T02:27:51.114190Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "36876f8378c2029823643ac2caf6b2fd24525b7d41afa0a32b6abef46c72d5fb",
+      "endpoint": "/api/v5/account/config",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "ACCOUNT_CONFIG",
+      "observed_at_utc": "2026-09-08T02:27:51.247376Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "602872ccf1bfe9be80fc0de4b9ea3954173cc84071f0e75e0d9761affe8f3c96",
+      "endpoint": "/api/v5/account/balance",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "BALANCE",
+      "observed_at_utc": "2026-09-08T02:27:51.436533Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "6fa31335a51363d7082884c1c1e4c67ef6e4326a93f68b715ee1953ef2c28fa4",
+      "endpoint": "/api/v5/account/positions",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "POSITIONS",
+      "observed_at_utc": "2026-09-08T02:27:51.586636Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "fbfc9480218e15b0a15a5aac5b662b222108336d71501da82436b8df60b42ef7",
+      "endpoint": "/api/v5/account/leverage-info?instId=SUI-USD_UM_XPERP-310404&mgnMode=cross",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "LEVERAGE",
+      "observed_at_utc": "2026-09-08T02:27:51.763726Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "0d0d58f3dc6db074b93739bbce61da328d85b72be7e8ddf264df44ff5693c08d",
+      "endpoint": "/api/v5/account/trade-fee?instType=FUTURES&instFamily=SUI-USD_UM_XPERP",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "TRADE_FEE",
+      "observed_at_utc": "2026-09-08T02:27:51.967964Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "d43e222f6a8543e39e1a76ad836bfe9aea9de8c3c615cefbe48253be19c69395",
+      "endpoint": "/api/v5/account/max-size?instId=SUI-USD_UM_XPERP-310404&tdMode=cross&px=0.8343",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "MAX_SIZE",
+      "observed_at_utc": "2026-09-08T02:27:52.144256Z",
+      "timeout": false,
+      "venue_code": "0"
+    },
+    {
+      "auth_header_sent": true,
+      "body_sha256": "fc24d69479edbb84f22c7d5bd4525349734056ad3baf7a5adf7e553f68c06a3a",
+      "endpoint": "/api/v5/trade/orders-pending",
+      "error": "",
+      "http_status": 200,
+      "method": "GET",
+      "name": "ORDERS_PENDING",
+      "observed_at_utc": "2026-09-08T02:27:52.302754Z",
+      "timeout": false,
+      "venue_code": "0"
+    }
+  ]
+}
