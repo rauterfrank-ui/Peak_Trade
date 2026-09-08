@@ -1,0 +1,56 @@
+{
+  "EXISTING_REUSABLE_AUTHORITY_SCHEMA": "OWNER_NETWORK_SESSION_AUTHORITY_V1_PARTIAL_PREDECESSOR_ONLY",
+  "EXISTING_SECTION_11_14_WIRE_SEND_OWNER_SCHEMA": false,
+  "NEW_OWNER_CONTRACT_REQUIRED": true,
+  "OWNER_NETWORK_SESSION_AUTHORITY_REUSED": "true_as_predecessor_name_only",
+  "OWNER_NETWORK_SESSION_AUTHORITY_SEMANTICS_CHANGED": false,
+  "PROPOSED_OWNER_CONTRACT_NAME": "OWNER_PRODUCTIVE_WIRE_SEND_AUTHORITY_V1",
+  "epistemic": "ADJUDICATED",
+  "rows": [
+    {
+      "AUTHORITY_OR_GATE": "flatten_execution",
+      "REUSABLE_FOR_11_14_WIRE_SEND": false,
+      "SYMBOL_OR_SCHEMA": "OWNER_FLATTEN_ISSUANCE_V1"
+    },
+    {
+      "AUTHORITY_OR_GATE": "network_session",
+      "REUSABLE_FOR_11_14_WIRE_SEND": "partial",
+      "SYMBOL_OR_SCHEMA": "OWNER_NETWORK_SESSION_AUTHORITY_V1"
+    },
+    {
+      "AUTHORITY_OR_GATE": "session_arming",
+      "REUSABLE_FOR_11_14_WIRE_SEND": false,
+      "SYMBOL_OR_SCHEMA": "SESSION_ARMING_STANDING"
+    },
+    {
+      "AUTHORITY_OR_GATE": "network_session_authorized",
+      "REUSABLE_FOR_11_14_WIRE_SEND": false,
+      "SYMBOL_OR_SCHEMA": "AuthenticatedGatedProductiveFlattenTransportV1.network_session_authorized"
+    },
+    {
+      "AUTHORITY_OR_GATE": "productive_wire_send",
+      "REUSABLE_FOR_11_14_WIRE_SEND": false,
+      "SYMBOL_OR_SCHEMA": null
+    },
+    {
+      "AUTHORITY_OR_GATE": "live_canary_standing",
+      "REUSABLE_FOR_11_14_WIRE_SEND": false,
+      "SYMBOL_OR_SCHEMA": "LIVE_ENABLED/LIVE_ARMED/POST_ALLOWED/CANARY_AUTHORIZED"
+    },
+    {
+      "AUTHORITY_OR_GATE": "durable_consume",
+      "REUSABLE_FOR_11_14_WIRE_SEND": false,
+      "SYMBOL_OR_SCHEMA": "persist_flatten_durable_consume_v1"
+    },
+    {
+      "AUTHORITY_OR_GATE": "no_send_bind",
+      "REUSABLE_FOR_11_14_WIRE_SEND": false,
+      "SYMBOL_OR_SCHEMA": "PRODUCTIVE_TRANSPORT_BIND_NO_SEND"
+    },
+    {
+      "AUTHORITY_OR_GATE": "full_core_wire_send_owner",
+      "REUSABLE_FOR_11_14_WIRE_SEND": false,
+      "SYMBOL_OR_SCHEMA": "I_WIRE_SEND_OWNER=LIVE_EXECUTION_BOUNDARY"
+    }
+  ]
+}

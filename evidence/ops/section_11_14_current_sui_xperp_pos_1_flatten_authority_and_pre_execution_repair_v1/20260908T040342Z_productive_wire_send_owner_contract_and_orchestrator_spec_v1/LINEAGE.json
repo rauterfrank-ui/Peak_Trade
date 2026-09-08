@@ -1,0 +1,10 @@
+{
+  "BOUND_ENVELOPE_ORIGIN_MAIN_SHA": "565cee16783ba0a3f1aea606626bf6418bad21e8",
+  "BOUND_FROZEN_ENVELOPE_ID": "76f0ad245070206d7fe8807fca8d130dbdedbdc3969e7ba42f23ca88901c164a",
+  "CURRENT_ORIGIN_MAIN_SHA": "dd13d0308a24d3be3446e3bea9e7d962b6eaf7b1",
+  "INSTRUMENT_ID": "SUI-USD_UM_XPERP-310404",
+  "PREDECESSOR_EVIDENCE": "evidence/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/20260908T035320Z_productive_wire_send_authority_and_execution_boundary_prep_v1",
+  "TREE": "d1117338ca87c5dd9c9c354c203755825b84dbbe",
+  "WORKPACKAGE": "SECTION_11_14_PRODUCTIVE_WIRE_SEND_OWNER_CONTRACT_AND_ORCHESTRATOR_SPEC_V1",
+  "epistemic": "FORENSIC_RAW"
+}

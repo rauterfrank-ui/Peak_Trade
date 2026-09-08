@@ -2374,6 +2374,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert "11.14 LIVE_HANDOFF_EXACT_SINGLE_LIVE_FILL_REQUIRES_SEPARATE_OWNER_EXECUTION_GO" in mot
     assert "11.14 CURRENT_SUI_XPERP_POS_1_FLATTEN_AUTHORITY_AND_PRE_EXECUTION_REPAIR" in mot
+    assert "11.14 PRODUCTIVE_WIRE_SEND_OWNER_CONTRACT_AND_ORCHESTRATOR_SPEC" in mot
     assert "SECTION_11_14_LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS_V1.md" in mot
     assert (
         "SECTION_11_14_LIVE_RESTART_HANDOFF_OWNER_BIND_AND_RETROACTIVE_SYNTHESIS_REFUSAL_V1.md"
@@ -2457,6 +2458,7 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
         "SECTION_11_14_CURRENT_SUI_XPERP_POS_1_FLATTEN_AUTHORITY_AND_PRE_EXECUTION_REPAIR_V1.md"
         in mot
     )
+    assert "SECTION_11_14_PRODUCTIVE_WIRE_SEND_OWNER_CONTRACT_AND_ORCHESTRATOR_SPEC_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_CODE_EXISTS_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_EXECUTION_PATH_REACHABLE_ADJUDICATION_V1.md" in mot
     assert "SECTION_11_14_LIVE_PRIVATE_READ_ONLY_PROVEN_ADJUDICATION_V1.md" in mot
@@ -2874,6 +2876,17 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     assert "FLATTEN_AUTHORIZED=false" in flatten_spec
     assert "ENTRY_OWNER_GO_CANNOT_AUTHORIZE_FLATTEN=true" in flatten_spec
     assert "POST_PERFORMED=false" in flatten_spec
+    wire_send_spec = (
+        REPO_ROOT
+        / "docs/ops/specs/SECTION_11_14_PRODUCTIVE_WIRE_SEND_OWNER_CONTRACT_AND_ORCHESTRATOR_SPEC_V1.md"
+    ).read_text(encoding="utf-8")
+    assert (
+        "DOCS_TOKEN_SECTION_11_14_PRODUCTIVE_WIRE_SEND_OWNER_CONTRACT_AND_ORCHESTRATOR_SPEC_V1"
+        in wire_send_spec
+    )
+    assert "OWNER_PRODUCTIVE_WIRE_SEND_AUTHORITY_ISSUED=false" in wire_send_spec
+    assert "EXISTING_SECTION_11_14_WIRE_SEND_OWNER_SCHEMA=false" in wire_send_spec
+    assert "POST_PERFORMED=false" in wire_send_spec
     catalog = ATLAS_CATALOG.read_text(encoding="utf-8")
     authority = ATLAS_AUTHORITY.read_text(encoding="utf-8")
     relations = ATLAS_RUNTIME_RELATIONS.read_text(encoding="utf-8")
@@ -2979,6 +2992,10 @@ def test_spec_mot_atlas_and_evidence_exist() -> None:
     )
     assert (
         "id: PHASE:section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair"
+        in catalog
+    )
+    assert (
+        "id: PHASE:section_11_14_productive_wire_send_owner_contract_and_orchestrator_spec"
         in catalog
     )
     assert (
