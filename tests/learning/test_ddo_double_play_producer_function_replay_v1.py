@@ -254,7 +254,11 @@ def test_valid_immutable_evidence_match() -> None:
     assert result["wrapped_bypass_used"] is False
     assert result["replay_class_letter"] == REPLAY_CLASS_LETTER
     assert result["replay_class_semantic"] == REPLAY_CLASS_SEMANTIC
+    assert REPLAY_CLASS_OWNER_TOKEN == REPLAY_CLASS_LETTER + "_" + REPLAY_CLASS_SEMANTIC
     assert result["replay_class_owner_token"] == REPLAY_CLASS_OWNER_TOKEN
+    assert result["replay_class_owner_token"] == (
+        result["replay_class_letter"] + "_" + result["replay_class_semantic"]
+    )
     assert result["historical_code_parity_claim"] is False
     assert result["stored_code_sha"] == UNKNOWN
     assert result["result_durability"] == RESULT_DURABILITY
