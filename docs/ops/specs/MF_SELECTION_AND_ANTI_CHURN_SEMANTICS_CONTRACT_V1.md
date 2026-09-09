@@ -304,30 +304,65 @@ After this persist, `N` is policy-decidable as a **ceiling** under
 ### 1.4 Isolated selector state (OPEN_DECISION_04)
 
 Owner-GO
+`OWNER_POLICY_CLOSE_MF_OD04_MEMBERSHIP_LISTING_IDENTITY_NOT_SELECTOR_OWNED_STATE_V1`
+closes `OPEN_DECISION_04=SELECTOR_STATE` as an **ownership principle
+only**. Prior fail-closed **boundaries** from
 `OWNER_GO_MF_OPEN_DECISIONS_01_THROUGH_07_BOUNDED_ADJUDICATION_WORKPACKAGE_V1`
-persists fail-closed **boundaries** for
-`OPEN_DECISION_04=SELECTOR_STATE`. It does **not** close that
-decision, does **not** ratify durable selector-owned state, and does
-**not** invent a state machine.
+remain historical provenance. That provenance is **not** a second
+close and does **not** reopen this decision.
+
+This close does **not** ratify a membership artifact, a writer, commit
+semantics, persistence, restore/reload, a bound listing input, prior
+listing existence, a rotation stage, a handoff, a runtime consumer, or
+a membership state machine.
 
 ```text
 OPEN_DECISION_04=SELECTOR_STATE
-OPEN_DECISION_04_CLOSED=false
-SELECTOR_STATE_OWNER=UNPROVEN
-SELECTOR_STATE_NOT_RATIFIED=true
-HYGIENE_CONCEPTS_DO_NOT_FORCE_DURABLE_SELECTOR_STATE=true
+OPEN_DECISION_04_CLOSED=true
+OPEN_DECISION_04_CLOSE_CLASS=OWNERSHIP_PRINCIPLE_ONLY
+MEMBERSHIP_IDENTITY_OWNER_CLASS=ACTIVE_SET_NON_AUTHORITATIVE_MEMBERSHIP_COMPOSITION
+MEMBERSHIP_IDENTITY_SEMANTIC_NAME=membership_state
+SELECTOR_OWNS_MEMBERSHIP_IDENTITY=false
+SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY
+DURABLE_SELECTOR_OWNED_MEMBERSHIP_STORE=NOT_AUTHORIZED
 MEMBERSHIP_STATE_IS_NOT_SELECTOR_OWNED_STATE=true
+HYGIENE_CONCEPTS_DO_NOT_FORCE_DURABLE_SELECTOR_STATE=true
+SELECTOR_ROLE=PROPOSE_MEMBERSHIP_FROM_TOP20_CANDIDATE_CONTEXT
+ANTI_CHURN_OWNER=SELECTOR
+ANTI_CHURN_IS_RATIFIED_POLICY=false
+PROVEN_SELECTOR_INPUT_IDENTITY=CAP_2_2_TOP20_ORDERED_CANDIDATE_CONTEXT
+SELECTOR_MAY_CONSUME_MEMBERSHIP_LISTING_IDENTITY=true
+MEMBERSHIP_LISTING_IDENTITY_BOUND=false
+MEMBERSHIP_LISTING_IDENTITY_IS_NOT_PROVEN_INPUT=true
+ROTATION_ROLE=MEMBERSHIP_DIFF_ONLY
 MEMBERSHIP_STATE_MACHINE_RATIFIED=false
 ALLOWED_STATE_TRANSITIONS=UNBOUND
+SSF_SEMANTICS_IMPORTED=false
+OPEN_DECISION_05_CLOSED=false
+OPEN_DECISION_06_CLOSED=false
+OPEN_DECISION_07_CLOSED=false
+PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=UNPROVEN
 ```
 
-Hysteresis and minimum holding remain selector-owned **concepts**, not
-ratified rules. Their ownership does **not** prove that the isolated
-selector requires durable selector-owned state.
+Current / prior Active-Membership **identity class** is the existing
+non-authoritative Active-Set composition identity. Boundary
+`membership_state` remains that semantic name. Schema, type, and
+authority stay `UNBOUND` / `NONE`. The selector does **not** own that
+identity and must **not** hold a durable private membership store.
 
-Boundary `membership_state` remains an unbound schema field. It is
-**not** selector-owned state and is **not** a ratified membership
-state machine.
+The selector may consume that listing identity together with the Cap-2.2
+ranking origin **when later bound**. That consumption relation is
+**not** a proven input, **not** a bound producer, and **not** a
+consumer implementation. The only proven selector input identity
+remains Cap 2.2 ordered Top-20 candidate context.
+
+Hysteresis and minimum holding remain selector-owned **concepts**, not
+ratified rules. Their ownership does **not** authorize durable
+selector-owned membership state.
+
+OD04 closes **ownership only**. It does **not** prove a membership
+artifact, a writer, persistence, restore/reload, prior-listing
+existence, a rotation stage, a handoff, or a runtime consumer.
 
 ### 1.5 Isolated membership-only transition-pending (OPEN_DECISION_05)
 
@@ -353,9 +388,10 @@ Cap 2.3 `REPLACEMENT_PENDING` remains strictly out of this domain. The
 isolated graph has no position semantics. Absence of a membership-only
 pending analog is **not** proof that none will later be needed.
 Presence of SSF pending is **not** proof that an analog is needed
-here. Closing this item as needed remains blocked unless
-`OPEN_DECISION_04` and independent isolated-domain evidence later
-carry that need.
+here. `OPEN_DECISION_04` is closed as ownership principle only. That
+close is **not** evidence that a membership-only pending analog is
+needed. Closing this item as needed remains blocked unless
+independent isolated-domain evidence later carries that need.
 
 ### 1.6 Isolated rotation identity (OPEN_DECISION_07)
 
@@ -383,8 +419,8 @@ The named graph node `Membership Rotation` is topology, not a
 ratified stage and not a derived-identity close. Rotation remains
 membership-diff-only. A derived reading would need a prior membership
 listing; that prior is **not** proven here (`membership_state`
-unbound; selector state unproven). Silence must **not** infer a
-rotation engine, a stage owner, or a derived close.
+unbound; OD04 does not prove listing existence). Silence must **not**
+infer a rotation engine, a stage owner, or a derived close.
 
 ### 1.7 Isolated persistence while G13 closed (OPEN_DECISION_06)
 
@@ -432,7 +468,7 @@ join, and **not** a close of any decision.
 
 ```text
 DECISION_DAG_CLASS=SEMANTIC_DEPENDENCY_NOT_RUNTIME
-CLOSED_DECISIONS=OPEN_DECISION_02,OPEN_DECISION_03
+CLOSED_DECISIONS=OPEN_DECISION_02,OPEN_DECISION_03,OPEN_DECISION_04
 ```
 
 ```text
@@ -458,7 +494,7 @@ OPEN_DECISION_06=INDEPENDENT_OF_HOST_JOIN
 OPEN_DECISION_06_DOES_NOT_UNLOCK_G13=true
 ```
 
-Current dispositions (this workpackage; not a later close of remaining
+Current dispositions (this Owner-GO; not a later close of remaining
 nodes):
 
 | Decision | Disposition | Closed |
@@ -466,14 +502,15 @@ nodes):
 | `OPEN_DECISION_03` | `CLOSED_CONSUME_CAP22_ORDERING_AS_MEMBERSHIP_ORDER` | `true` |
 | `OPEN_DECISION_02` | `CLOSED_AT_MOST_N` | `true` |
 | `OPEN_DECISION_01` | `UNBLOCKED_FOR_OWNER_NUMERIC_POLICY` / parameter | `false` |
-| `OPEN_DECISION_04` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` | `false` |
+| `OPEN_DECISION_04` | `CLOSED_OWNERSHIP_PRINCIPLE_ONLY` | `true` |
 | `OPEN_DECISION_05` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` / `INSUFFICIENT_EVIDENCE` to close needed vs never-needed | `false` |
 | `OPEN_DECISION_07` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` | `false` |
 | `OPEN_DECISION_06` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` | `false` |
 
 A later close of one node does **not** close a neighbor by inference.
-This persist does **not** close `OPEN_DECISION_04`–`07` and does
-**not** choose `N`.
+This persist closes `OPEN_DECISION_04` as ownership principle only. It
+does **not** close `OPEN_DECISION_05`–`07` and does **not** choose
+`N`.
 
 ## 2. Owner by mechanism
 
@@ -508,7 +545,9 @@ INPUT_IS_NOT_SELECTION_AUTHORITY=true
 INPUT_IS_NOT_HOST_INPUT=true
 MF_SCORING_INPUT=ABSENT
 N_INPUT=UNRATIFIED
-SELECTOR_STATE_INPUT=UNPROVEN
+SELECTOR_STATE_INPUT=NOT_A_MEMBERSHIP_STORE
+MEMBERSHIP_LISTING_IDENTITY_BOUND=false
+MEMBERSHIP_LISTING_IDENTITY_IS_NOT_PROVEN_INPUT=true
 SSF_SELECTION_SNAPSHOT_INPUT=FORBIDDEN
 DASHBOARD_ALLOWLIST_MANUAL_OVERRIDE_INPUT=FORBIDDEN
 ```
@@ -519,6 +558,9 @@ the isolated selector. Owner-GO
 `OWNER_POLICY_CLOSE_MF_OD02_AT_MOST_N_AND_OD03_CONSUME_CAP22_ORDERING_V1`
 authorizes consuming that origin order as membership order. This
 contract still does **not** authorize a second ranking input.
+`SELECTOR_MAY_CONSUME_MEMBERSHIP_LISTING_IDENTITY=true` is an ownership
+relation for a later-bound listing identity. It is **not** a proven
+input and does **not** bind a listing consumer.
 
 ## 4. Outputs
 
@@ -753,6 +795,9 @@ OVERREAD_AS_NUMERIC_PREFIX_UNTIL_OD01=FORBIDDEN
 OVERREAD_AS_N_VALUE=FORBIDDEN
 OVERREAD_AS_DURABLE_SELECTOR_STATE=FORBIDDEN
 OVERREAD_AS_MEMBERSHIP_STATE_EQUALS_SELECTOR_STATE=FORBIDDEN
+OVERREAD_AS_OD04_EQUALS_ARTIFACT_PERSIST=FORBIDDEN
+OVERREAD_AS_OD04_EQUALS_BOUND_LISTING_INPUT=FORBIDDEN
+OVERREAD_AS_OD04_EQUALS_WRITER_OR_RESTORE=FORBIDDEN
 OVERREAD_AS_PENDING_ANALOG_NEEDED=FORBIDDEN
 OVERREAD_AS_PENDING_ANALOG_NEVER_NEEDED=FORBIDDEN
 OVERREAD_AS_ROTATION_STAGE_RATIFICATION=FORBIDDEN
@@ -806,8 +851,9 @@ policy. Citing them here is **negative constraint** only:
 `SSF_SEMANTICS_IMPORTED=false`.
 
 Open decisions remaining after this Owner-policy close. Fail-closed
-**boundaries** for still-open items remain in §1.3–§1.7. OD02 and OD03
-are closed in §1.1–§1.2.
+**boundaries** for still-open items remain in §1.3 and §1.5–§1.7. OD02
+and OD03 are closed in §1.1–§1.2. OD04 is closed in §1.4 as ownership
+principle only.
 
 ```text
 OPEN_DECISION_01=N_VALUE
@@ -820,7 +866,9 @@ OPEN_DECISION_03=CONSUME_CAP22_ORDERING_VS_LATER_OWN_MF_SCORING
 OPEN_DECISION_03_CLOSED=true
 MEMBERSHIP_ORDER_POLICY=CONSUME_CAP22_ORDERING_AS_MEMBERSHIP_ORDER
 OPEN_DECISION_04=SELECTOR_STATE
-OPEN_DECISION_04_CLOSED=false
+OPEN_DECISION_04_CLOSED=true
+OPEN_DECISION_04_CLOSE_CLASS=OWNERSHIP_PRINCIPLE_ONLY
+SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY
 OPEN_DECISION_05=MEMBERSHIP_ONLY_TRANSITION_PENDING_NEEDED
 OPEN_DECISION_05_CLOSED=false
 OPEN_DECISION_06=CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
@@ -899,7 +947,8 @@ NEXT_SLICE_AUTHORIZED=false
 HARD_STOP_AFTER_THIS_CONTRACT=true
 ```
 
-Any later `N` value, selector state, hygiene numerics, membership-only
-pending-state, own MF scoring, or persistence while G13 closed requires
-a **new** Owner-GO and remains isolated. This contract does **not**
-authorize, specify, or prepare host integration.
+Any later `N` value, membership artifact, writer, persistence while G13
+closed, hygiene numerics, membership-only pending-state, own MF
+scoring, or rotation-stage identity requires a **new** Owner-GO and
+remains isolated. This contract does **not** authorize, specify, or
+prepare host integration. OD04 is closed as ownership principle only.
