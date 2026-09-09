@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1
 status: active
-scope: Docs-only persist of adjudicated isolated MF selection and anti-churn mechanism semantics; OD01 closed as Owner-policy ceiling N=5 under AT_MOST_N; OD06 closed as ALLOW permission for non-authoritative membership-context artifact persistence while G13 remains closed; permission is not artifact existence; membership-context artifact semantic identity bound as information classes only; no schema, writer, reader, or artifact existence; no host adapter; no Cap-2.3/2.4 join; hygiene numerics unratified; OD07 unclosed
+scope: Docs-only persist of adjudicated isolated MF selection and anti-churn mechanism semantics; OD01 closed as Owner-policy ceiling N=5 under AT_MOST_N; OD06 closed as ALLOW permission for non-authoritative membership-context artifact persistence while G13 remains closed; permission is not artifact existence; membership-context artifact semantic identity bound as information classes only; artifact existence class bound as required durable non-authoritative membership-context artifact; instance existence unproven; no schema, writer, reader, or artifact instance; no host adapter; no Cap-2.3/2.4 join; hygiene numerics unratified; OD07 unclosed
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-09
@@ -22,8 +22,10 @@ DOCUMENT_CLASS=DOCS_ONLY_NON_AUTHORIZING_SUBORDINATE_CONTRACT
 AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK
 OWNER_GO_THIS_SLICE=OWNER_GO_MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_PERSIST_V1
 OWNER_GO_MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=OWNER_GO_MF_MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY_V1
+OWNER_GO_MEMBERSHIP_CONTEXT_ARTIFACT_EXISTENCE_CLASS=OWNER_GO_MF_MEMBERSHIP_CONTEXT_ARTIFACT_EXISTENCE_CLASS_V1
 BOUND_ORIGIN_MAIN_SHA=a430bd3837a833d56a8029d3c0d5e8c5380708a1
 BOUND_ORIGIN_MAIN_SHA_THIS_IDENTITY_SLICE=c58d8c5a8a7268af74c989aa0fb166f8f6df40b1
+BOUND_ORIGIN_MAIN_SHA_THIS_EXISTENCE_CLASS_SLICE=b364d1a26d927eeb5d143028afd687f6d3183042
 CONTRACT_ID=MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1
 PARENT_BOUNDARY_CONTRACT=MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1
 PARENT_OWNERSHIP_CONTRACT=MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1
@@ -55,6 +57,8 @@ MF_SCORING_RATIFIED=false
 ROTATION_POLICY_RATIFIED=false
 MEMBERSHIP_STATE_MACHINE_RATIFIED=false
 MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
+ARTIFACT_EXISTENCE_CLASS=BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT
+ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
 MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
 SCHEMA_BOUND=false
 WRITER_BOUND=false
@@ -637,15 +641,37 @@ It does **not** prove artifact existence, does **not** close
 Semantic identity of a later membership-context artifact is bound in
 §1.9 as **information classes only**. That bind is **not** an
 `OPEN_DECISION_*` close, **not** artifact existence, and **not** an
-OD07 close.
+OD07 close. Artifact existence **class** is bound in §1.10 as
+`BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT`.
+That class bind is **not** instance existence, **not** schema, writer,
+or reader, **not** prior-listing existence, and **not** an OD07 close.
 
 ```text
 OPEN_DECISION_06
 → MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY_BOUND_INFORMATION_CLASSES_ONLY
-→ ARTIFACT_EXISTENCE_UNPROVEN
+→ ARTIFACT_EXISTENCE_CLASS_BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT
+→ ARTIFACT_INSTANCE_EXISTENCE_UNPROVEN
 → PRIOR_MEMBERSHIP_LISTING_UNPROVEN
 → OD07_UNRESOLVED
 ```
+
+Earliest unresolved DAG node after the §1.10 class bind:
+
+```text
+EARLIEST_UNRESOLVED_DAG_NODE=ARTIFACT_INSTANCE_EXISTENCE
+ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
+NEXT_CANONICALLY_ADJUDICABLE_DECISION=ARTIFACT_INSTANCE_EXISTENCE_UNPROVEN
+SCHEMA_NOT_AUTO_NEXT=true
+WRITER_NOT_AUTO_NEXT=true
+READER_NOT_AUTO_NEXT=true
+PRIOR_LISTING_NOT_AUTO_NEXT=true
+OD07_NOT_AUTO_NEXT=true
+```
+
+Instance existence remaining `UNPROVEN` does **not** authorize schema,
+writer, reader, prior listing, or OD07 as the next slice. Those nodes
+remain later unresolved dependencies. A later Owner-GO must name the
+next authorized decision. This persist does **not** select it.
 
 ### 1.9 Isolated membership-context artifact semantic identity
 
@@ -792,6 +818,131 @@ OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_G13_UNLOCK=FORBIDDEN
 OVERREAD_AS_RETAINED_ENTERED_EXITED_NOW_DERIVABLE=FORBIDDEN
 OVERREAD_AS_FIELD_OR_DTO_INVENTION=FORBIDDEN
 OVERREAD_AS_CAP22_SNAPSHOT_FIELDS_REBOUND_AS_MEMBERSHIP_SCHEMA=FORBIDDEN
+```
+
+### 1.10 Isolated membership-context artifact existence class
+
+Owner-GO
+`OWNER_GO_MF_MEMBERSHIP_CONTEXT_ARTIFACT_EXISTENCE_CLASS_V1`
+adjudicates the **existence class** of a non-authoritative
+membership-context artifact. Prior fail-closed **boundaries** from
+OD06 §1.7 and semantic identity §1.9 remain binding. Those binds are
+**not** re-owned here and are **not** instance existence.
+
+This persist classifies a **required durable artifact class**. It does
+**not** claim that any concrete artifact instance exists. It does
+**not** bind a storage format, path, schema, ID, version, epoch,
+writer, reader, lifecycle, or retention mechanism. It does **not**
+prove prior-listing existence, does **not** close `OPEN_DECISION_07`,
+does **not** unlock G13, and does **not** grant runtime, host-join, or
+execution authority.
+
+```text
+OWNER_GO=OWNER_GO_MF_MEMBERSHIP_CONTEXT_ARTIFACT_EXISTENCE_CLASS_V1
+ARTIFACT_EXISTENCE_CLASS=BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT
+INSTANCE_EXISTENCE_STATUS=UNPROVEN
+ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
+SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
+INSTANCE_IDENTITY_SCHEMA=UNBOUND
+TEMPORAL_IDENTITY_SCHEMA=UNBOUND
+PRIOR_REFERENCE_SCHEMA=UNBOUND
+CAP22_PROVENANCE_FIELD_MAPPING=UNBOUND
+PRIOR_MEMBERSHIP_LISTING_STATUS=UNPROVEN
+PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=UNPROVEN
+SCHEMA_BOUND=false
+WRITER_BOUND=false
+READER_BOUND=false
+MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
+OPEN_DECISION_07_CLOSED=false
+OD07_EFFECT=NONE
+G13_UNLOCK=false
+RUNTIME_AUTHORIZED=false
+EXECUTION_AUTHORITY_EFFECT=NONE
+ATLAS_AUTHORITY=NONE
+```
+
+Bound meaning: the isolated architecture now **requires** that a
+durable non-authoritative membership-context artifact class exist
+before downstream prior/current replay semantics may rely on it. This
+is an existence **requirement / classification** only. No concrete
+artifact instance is claimed to exist.
+
+Semantic identity remains `BOUND_INFORMATION_CLASSES_ONLY` in §1.9.
+Instance-identity schema, temporal-identity schema, prior-reference
+schema, and Cap-2.2 provenance field mapping remain `UNBOUND`.
+Prior-membership listing remains `UNPROVEN`. Schema, writer, and
+reader remain unbound.
+
+Negative existence boundary (this class; not an instance):
+
+```text
+OD06_PERMISSION_ALONE_DID_NOT_PROVE_EXISTENCE=true
+SEMANTIC_IDENTITY_BIND_6373_DID_NOT_PROVE_EXISTENCE=true
+DOC_SPEC_RUNBOOK_ATLAS_RECORDS_ARE_NOT_THE_MEMBERSHIP_ARTIFACT=true
+ATLAS_REMAINS_AUTHORITY_NONE=true
+CAP22_RANKING_SNAPSHOTS_ARE_UPSTREAM_PROVENANCE_NOT_THIS_ARTIFACT=true
+CAP23_SSF_SNAPSHOTS_OUT_OF_DOMAIN_FOR_MF_ARTIFACT_EXISTENCE=true
+R6_EVIDENCE_OUT_OF_DOMAIN_FOR_MF_ARTIFACT_EXISTENCE=true
+EMPTY_PLACEHOLDER_FILE_DTO_OR_CLASS_IS_NOT_DURABLE_INSTANCE_EXISTENCE=true
+REQUIRED_ARTIFACT_CLASS_DOES_NOT_PROVE_PRIOR_LISTING_EXISTENCE=true
+DOC_CONTRACT_PERSISTENCE_IS_NOT_MEMBERSHIP_ARTIFACT_PERSISTENCE=true
+PERMISSION_TO_PERSIST_IS_NOT_EXISTENCE_OF_PERSISTED_ARTIFACT=true
+SEMANTIC_CLASS_BOUND_IS_NOT_INSTANCE_EXISTS=true
+DURABLE_ARTIFACT_CLASS_IS_NOT_SCHEMA_WRITER_OR_READER=true
+```
+
+OD06 permission `ALLOWED` did **not** prove existence. The #6373
+semantic-identity bind did **not** prove existence. Docs, spec,
+runbook, and Atlas records are **not** the membership artifact. Atlas
+remains `AUTHORITY=NONE`. Cap-2.2 ranking snapshots remain upstream
+provenance, not this artifact. Cap-2.3 SSF snapshots and R6 evidence
+remain out-of-domain for MF artifact existence. No empty placeholder
+file, DTO, or class definition may count as durable instance existence
+unless a later Owner-GO binds canonical durability and provenance
+semantics. No prior-listing existence may be inferred from the
+required artifact class.
+
+Tracked origin/main census for an actual MF membership-context
+artifact, store, manifest, ledger, or snapshot that could already
+prove instance existence: **none proven**. Name collision is **not**
+proof.
+
+| Hit | Classification | Why not instance proof |
+|---|---|---|
+| This file; parent boundary; ownership; ranking-universe/egress; Master Runbook §4.5–§4.5.4 | `CURRENT_AUTHORITY` | Docs-contract persistence; not membership-artifact persistence |
+| Map of Truth MF rows | `NAVIGATION_ONLY` | Navigation; no semantics; not an artifact |
+| Atlas catalog / relations / generated graph | `NAVIGATION_ONLY` | `ATLAS_AUTHORITY=NONE`; not an artifact |
+| `docs&#47;forensics&#47;persistence&#47;inventories&#47;P6_5189_HISTORICAL_SOURCE_SET_UNIVERSE_AND_POSITIVE_MEMBERSHIP_LEDGER_AND_THREE_HASH_NON_INFERENCE_OBSERVATION_V1.json` | `FORENSIC_RAW_EVIDENCE` / `HISTORICAL_ONLY` | Historical source-set universe membership ledger; name collision; `AUTHORITY=NONE`; not this class |
+| Cap-2.2 `productive_futures_ranking_snapshot_v1.json` evidence | `OUT_OF_DOMAIN` | Upstream ranking provenance; not this artifact |
+| Cap-2.3 `single_selected_future_selection_v1.json` / selection evidence | `OUT_OF_DOMAIN` | SSF selection; not imported as MF membership |
+| `src&#47;ops&#47;canonical_r6_s3_multi_future_runtime_architecture_v1&#47;active_set_v1.py` | `OUT_OF_DOMAIN` | R6 S3 Phase-8 architecture; excluded by parent boundary |
+| R6 S4 `ordered_instrument_ids` observation | `OUT_OF_DOMAIN` | Shadow/sim evidence; not promoted |
+| `src&#47;research&#47;pit_futures_universe_manifest_v1.py` `MembershipStatus` | `OUT_OF_DOMAIN` | Research universe panel membership; name collision |
+| `tests&#47;research&#47;test_fetch_cross_sectional_bound_period_panel_membership_filter_v0.py` | `OUT_OF_DOMAIN` | Research panel filter; name collision |
+
+```text
+CURRENT_RUNTIME_EXISTENCE_ISOLATED_MEMBERSHIP_CONTEXT_ARTIFACT=false
+NAME_COLLISION_IS_NOT_INSTANCE_PROOF=true
+PLACEHOLDER_IS_NOT_INSTANCE_PROOF=true
+```
+
+Fail-closed after this class bind:
+
+```text
+OVERREAD_AS_EXISTENCE_CLASS_EQUALS_INSTANCE_EXISTENCE=FORBIDDEN
+OVERREAD_AS_EXISTENCE_CLASS_EQUALS_SCHEMA=FORBIDDEN
+OVERREAD_AS_EXISTENCE_CLASS_EQUALS_WRITER_OR_READER=FORBIDDEN
+OVERREAD_AS_EXISTENCE_CLASS_EQUALS_PRIOR_LISTING_EXISTENCE=FORBIDDEN
+OVERREAD_AS_EXISTENCE_CLASS_EQUALS_OD07_CLOSE=FORBIDDEN
+OVERREAD_AS_EXISTENCE_CLASS_EQUALS_G13_UNLOCK=FORBIDDEN
+OVERREAD_AS_OD06_PERMISSION_EQUALS_INSTANCE_EXISTENCE=FORBIDDEN
+OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_INSTANCE_EXISTENCE=FORBIDDEN
+OVERREAD_AS_DOC_CONTRACT_EQUALS_MEMBERSHIP_ARTIFACT=FORBIDDEN
+OVERREAD_AS_ATLAS_RECORD_EQUALS_MEMBERSHIP_ARTIFACT=FORBIDDEN
+OVERREAD_AS_CAP22_SNAPSHOT_EQUALS_MEMBERSHIP_ARTIFACT=FORBIDDEN
+OVERREAD_AS_CAP23_OR_R6_EQUALS_MEMBERSHIP_ARTIFACT=FORBIDDEN
+OVERREAD_AS_EMPTY_PLACEHOLDER_EQUALS_DURABLE_INSTANCE=FORBIDDEN
+OVERREAD_AS_SCHEMA_WRITER_READER_OR_OD07_AUTO_NEXT=FORBIDDEN
 ```
 
 ## 2. Owner by mechanism
@@ -1114,6 +1265,14 @@ OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_WRITER_OR_READER=FORBIDDEN
 OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_PRIOR_LISTING_EXISTENCE=FORBIDDEN
 OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_OD07_CLOSE=FORBIDDEN
 OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_G13_UNLOCK=FORBIDDEN
+OVERREAD_AS_EXISTENCE_CLASS_EQUALS_INSTANCE_EXISTENCE=FORBIDDEN
+OVERREAD_AS_EXISTENCE_CLASS_EQUALS_SCHEMA=FORBIDDEN
+OVERREAD_AS_EXISTENCE_CLASS_EQUALS_WRITER_OR_READER=FORBIDDEN
+OVERREAD_AS_EXISTENCE_CLASS_EQUALS_PRIOR_LISTING_EXISTENCE=FORBIDDEN
+OVERREAD_AS_EXISTENCE_CLASS_EQUALS_OD07_CLOSE=FORBIDDEN
+OVERREAD_AS_EXISTENCE_CLASS_EQUALS_G13_UNLOCK=FORBIDDEN
+OVERREAD_AS_EMPTY_PLACEHOLDER_EQUALS_DURABLE_INSTANCE=FORBIDDEN
+OVERREAD_AS_SCHEMA_WRITER_READER_OR_OD07_AUTO_NEXT=FORBIDDEN
 OVERREAD_AS_RETAINED_ENTERED_EXITED_NOW_DERIVABLE=FORBIDDEN
 INVENTION_OF_THRESHOLDS_FROM_PLAUSIBILITY=FORBIDDEN
 CANDIDATE_COUNT_VS_N=OPERATIVE_AT_MOST_N_CEILING_5
@@ -1171,7 +1330,11 @@ current isolated MF model. OD06 is closed in §1.7 as permission-only
 existence. Membership-context artifact semantic identity is bound in
 §1.9 as information classes only. That bind is not artifact existence,
 not schema, not writer, not prior-listing existence, and not an
-OD07 close.
+OD07 close. Artifact existence class is bound in §1.10 as
+`BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT`.
+That class bind is not instance existence, not schema, not writer,
+not prior-listing existence, and not an OD07 close. Instance existence
+remains `UNPROVEN`.
 
 ```text
 OPEN_DECISION_01=N_VALUE
@@ -1200,6 +1363,8 @@ NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
 PERMISSION_TO_PERSIST_IS_NOT_EXISTENCE_OF_PERSISTED_ARTIFACT=true
 MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
 MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
+ARTIFACT_EXISTENCE_CLASS=BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT
+ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
 TEMPORAL_SCHEMA=UNBOUND
 INSTANCE_ID_SCHEMA=UNBOUND
 PRIOR_MEMBERSHIP_REFERENCE_SCHEMA=UNBOUND
@@ -1221,13 +1386,16 @@ MF_OWN_TIE_BREAK_REQUIRED=false
 | Hysteresis | Ownership locates concept at selector; no MF rule authority | Ownership §5.2; this file §7 | Cap 2.3 SSF hysteresis **not imported**; Cap 0.4 open decision; MV2/strategy hysteresis `OUT_OF_DOMAIN` | Isolated MF selector unimplemented | All numerics; concept-vs-rule remains concept |
 | Min holding | Ownership locates concept at selector; no MF rule authority | Ownership §5.3; this file §8 | Cap 2.3 SSF min holding **not imported**; Cap 0.4 open decision | Isolated MF selector unimplemented | All numerics; residence duration unbound |
 | Replacement-pending | Cap 2.3 only; **not** MF authority | Ownership §5.5 forbids SSF import; this file §9 / §1.5 | Cap 2.3 `REPLACEMENT_PENDING` state machine | Cap 2.3 producer exists **outside** this graph; no MF pending runtime | Independent MF pending class **not required** in the current isolated model (`OPEN_DECISION_05` closed); not never-needed |
-| Membership-context artifact identity | Information classes bound in §1.9; class `NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY`; owner-class Active-Set composition | This file §1.9; parent boundary §8 names remain unbound schema | R6 `ordered_instrument_ids` observation **not promoted**; Cap-2.3 snapshots **not imported**; docs-contract persist **not** membership artifact | Isolated membership artifact unimplemented; `MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN` | Existence, schema, writer, reader, temporal/instance/prior-reference schemas, prior listing, OD07 |
+| Membership-context artifact identity | Information classes bound in §1.9; class `NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY`; owner-class Active-Set composition | This file §1.9; parent boundary §8 names remain unbound schema | R6 `ordered_instrument_ids` observation **not promoted**; Cap-2.3 snapshots **not imported**; docs-contract persist **not** membership artifact | Isolated membership artifact unimplemented; `MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN` | Instance existence, schema, writer, reader, temporal/instance/prior-reference schemas, prior listing, OD07 |
+| Membership-context artifact existence class | Class bound in §1.10 as `BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT`; instance `UNPROVEN` | This file §1.10 | OD06 permission **not** existence; #6373 identity **not** existence; Cap-2.2 snapshots upstream only; Cap-2.3/R6 `OUT_OF_DOMAIN`; P6_5189 ledger name-collision `HISTORICAL_ONLY`; Atlas `AUTHORITY=NONE` | No durable instance on tracked origin/main; empty placeholder **not** instance | Instance existence; schema; writer; reader; prior listing; OD07 |
 
 ```text
 CURRENT_RUNTIME_EXISTENCE_ISOLATED_MF_SELECTOR=false
 CURRENT_RUNTIME_EXISTENCE_ISOLATED_ANTI_CHURN=false
 CURRENT_RUNTIME_EXISTENCE_ISOLATED_MEMBERSHIP_ROTATION_POLICY=false
+CURRENT_RUNTIME_EXISTENCE_ISOLATED_MEMBERSHIP_CONTEXT_ARTIFACT=false
 HISTORICAL_EXISTENCE_IS_NOT_TODAYS_MF_AUTHORITY=true
+NAME_COLLISION_IS_NOT_INSTANCE_PROOF=true
 ```
 
 ## 14. Authority effect
@@ -1292,4 +1460,9 @@ Permission is not artifact existence, schema, writer, or OD07 close.
 Membership-context artifact semantic identity is bound in §1.9 as
 information classes only. That bind is not artifact existence, not
 schema, not writer, not prior-listing existence, and not an OD07
-close.
+close. Artifact existence class is bound in §1.10 as
+`BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT`.
+That class bind is not instance existence, not schema, not writer,
+not prior-listing existence, and not an OD07 close. Instance existence
+remains `UNPROVEN`. Schema, writer, reader, prior listing, and OD07
+are **not** auto-next.

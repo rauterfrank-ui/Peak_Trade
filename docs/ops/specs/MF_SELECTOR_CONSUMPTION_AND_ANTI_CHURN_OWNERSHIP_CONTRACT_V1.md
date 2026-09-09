@@ -420,6 +420,10 @@ is not artifact existence. This file is not the OD06 close owner.
 Membership-context artifact semantic identity is bound in that
 contract §1.9 as information classes only. This file is not the
 identity close owner. That bind is not artifact existence.
+Artifact existence class is bound in that contract §1.10 as
+`BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT`.
+This file is not the existence-class close owner. That class bind is
+not instance existence. Instance existence remains `UNPROVEN`.
 `OPEN_DECISION_07` stays `UNRESOLVED` / `NOT_AUTHORIZED`. This file does
 **not** re-own the numeric ceiling.
 MF-own tie-break is **not required** while the consume-Cap-2.2-order
@@ -448,6 +452,7 @@ OVERREAD_AS_ROTATION_POLICY=FORBIDDEN
 OVERREAD_AS_OD04_EQUALS_ARTIFACT_PERSIST=FORBIDDEN
 OVERREAD_AS_OD04_EQUALS_BOUND_LISTING_INPUT=FORBIDDEN
 OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_ARTIFACT_EXISTENCE=FORBIDDEN
+OVERREAD_AS_EXISTENCE_CLASS_EQUALS_INSTANCE_EXISTENCE=FORBIDDEN
 OVERREAD_AS_PENDING_ANALOG_NEVER_NEEDED=FORBIDDEN
 OVERREAD_AS_ANTI_CHURN_NOT_NEEDED=FORBIDDEN
 ```
@@ -496,3 +501,7 @@ semantics contract §1.7; this file is not the OD06 close owner.
 Membership-context artifact semantic identity is bound in the
 semantics contract §1.9 as information classes only; this file is not
 the identity close owner. That bind is not artifact existence.
+Artifact existence class is bound in the semantics contract §1.10 as
+`BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT`;
+this file is not the existence-class close owner. That class bind is
+not instance existence. Instance existence remains `UNPROVEN`.
