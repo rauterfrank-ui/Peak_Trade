@@ -536,7 +536,9 @@ closed; PHASE-8 runtime semantics. Cardinality mode is closed as
 ordering as specified in §4.5.3. Portfolio Selection is classified
 `P2_ALIAS_OR_PART_OF_SELECTOR` and is **not** a core-model node
 (§4.5.2). Authority handoff and host integration remain
-`NOT_DESIGNED` / `NOT_IN_SCOPE`.
+`NOT_DESIGNED` / `NOT_IN_SCOPE`. Isolated ranking-universe family
+isolation and the single-egress **invariant** (handoff still not
+designed; `N_VALUE` unchanged) are persisted in §4.5.4.
 
 ### 4.5.2 Isolated MF selector consumption and anti-churn ownership (docs-only; AUTHORITY_EFFECT=NONE)
 
@@ -691,6 +693,64 @@ MF-own scoring contract, an MF-own tie-break algorithm, hysteresis or
 minimum-holding numerics, a membership-only pending state machine,
 selector state, rotation identity, or rotation policy. Cap 2.3
 `REPLACEMENT_PENDING` remains not imported. G13 remains closed.
+
+### 4.5.4 Isolated ranking universe and single-egress boundary (docs-only; AUTHORITY_EFFECT=NONE)
+
+Owner-GO
+`OWNER_GO_MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_V1`
+persists already-adjudicated isolation of the ranking /
+portfolio-selection **family** and the **single-egress** invariant.
+This subsection does **not** replace §4.5–§4.5.3, does **not** design
+a handoff, does **not** set `N_VALUE`, does **not** rewire Cap 2.3 or
+Cap 2.4, does **not** unlock G13, and does **not** create a join into
+the productive system.
+
+Subordinate contract:
+`docs&#47;ops&#47;specs&#47;MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_CONTRACT_V1.md`.
+
+``` text
+CONTRACT_ID=MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_CONTRACT_V1
+CONTRACT_CLASS=NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY
+AUTHORITY_EFFECT=NONE
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CONTEXT_ONLY=true
+SELECTION_AUTHORITY=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+G13_UNLOCK=false
+CAP23_REMAINS_SOLE_SELECTION_OWNER=true
+CAP23_IMPORTED=false
+CAP24_REWIRED=false
+INTEGRATION_STATUS=NOT_IN_SCOPE
+HOST_ADAPTER_STATUS=NOT_DESIGNED
+HOST_CONSUMER_STATUS=NONE
+AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
+NEW_EDGE_TO_PRODUCTIVE_SYSTEM=false
+ISOLATED_RANKING_UNIVERSE=true
+CALLER_AUTHORITY_SCOPE=SELECTION_DOMAIN_ONLY
+EXECUTION_AUTHORITY_INSIDE_SELECTION_DOMAIN=false
+SINGLE_EGRESS_REQUIRED=true
+CURRENT_HANDOFF_STATUS=HANDOFF_NOT_YET_CANONICALLY_DEFINED
+HANDOFF_PAYLOAD_STATUS=UNRESOLVED
+HANDOFF_TO_SINGLE_EXECUTION_SELECTION=UNRESOLVED
+DOWNSTREAM_EXECUTION_MUST_NOT_RE_RANK=true
+SECOND_SELECTION_DECISION_DOWNSTREAM=FORBIDDEN
+DOWNSTREAM_EXECUTION_MAY_APPLY_EXISTING_EXECUTION_RISK_AND_ELIGIBILITY_GATES=true
+TOP50_IS_ACTIVE_SET=false
+TOP20_IS_ACTIVE_SET=false
+TOP20_ACTIVE_SET_EQUIVALENT=false
+TOP5_ACTIVE_SET_EQUIVALENT=false
+TOP5_VS_ACTIVE_SET_N=NOT_EQUIVALENT
+CAP22_TOP20_LIMIT_IS_NOT_ACTIVE_SET_CARDINALITY=true
+N_VALUE=UNRESOLVED
+OD01_CHANGED=false
+OD04_TO_OD07_CHANGED=false
+RUNTIME_IMPLEMENTATION_CREATED=false
+```
+
+A named Top-50 stage between universe and Top-20 is **not** canonical.
+Zero isolated egress today is **not** a designed single handoff. Cap
+2.2 → Cap 2.3 remains the productive selection path and is **not** an
+MF egress.
 
 ## 4.6 Volatility authority
 

@@ -51,7 +51,7 @@ It does **not** create a capability, a productive schema, a producer, a
 consumer, a host adapter, a Cap-2.4-compatible DTO, a mapping into Cap
 2.3 or Cap 2.4, or an authority handoff.
 
-Master Runbook SSOT pointer: §4.5 / §4.5.1.
+Master Runbook SSOT pointer: §4.5 / §4.5.1 / §4.5.4.
 
 ## 1. Purpose
 
@@ -126,6 +126,9 @@ selector state, and rotation policy. Selector **role** and anti-churn
 [`MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1.md`](MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1.md).
 Selection and anti-churn **mechanism semantics** are persisted in
 [`MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md`](MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md).
+Isolated ranking-universe family isolation and the single-egress
+**invariant** (handoff still not designed) are persisted in
+[`MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_CONTRACT_V1.md`](MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_CONTRACT_V1.md).
 Naming them in this boundary file is topology plus those persist
 pointers, not scoring ratification, not numerics, and not host join.
 
@@ -366,6 +369,7 @@ This contract does **not** ratify, default, design, or implicitly close:
 | Hysteresis / cooldown / turnover **numerics** | `UNRESOLVED` / `NOT_AUTHORIZED` |
 | Portfolio Selection node | `P2_ALIAS_OR_PART_OF_SELECTOR` / `OUT_OF_CORE_MODEL` / `NOT_AUTHORIZED` as a distinct stage |
 | Context persistence while G13 closed | `UNPROVEN` / `UNRESOLVED` / `NOT_AUTHORIZED`; docs-contract persistence is not membership-artifact persistence, G13 unlock, host join, or runtime; fail-closed in semantics §1.7 |
+| Isolated ranking universe / single egress | persisted in `MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_CONTRACT_V1`; `SINGLE_EGRESS_REQUIRED`; current handoff `NOT_YET_CANONICALLY_DEFINED`; does not design payload; does not set `N` |
 | Authority handoff | `NOT_DESIGNED` / `NOT_IN_SCOPE` / `NOT_AUTHORIZED` |
 | Host adapter | `NOT_DESIGNED` / `NOT_IN_SCOPE` |
 | Host consumption | `NONE` / `NOT_IN_SCOPE` |
