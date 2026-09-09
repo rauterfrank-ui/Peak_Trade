@@ -531,15 +531,18 @@ This workpackage creates **no** new edge between those graphs. It does
 
 Unresolved remains unresolved: rotation numerics;
 hysteresis/cooldown/turnover **numerics**; membership-artifact
-existence / writer / schema / bound listing; PHASE-8 runtime
+instance existence / writer / schema / bound listing; PHASE-8 runtime
 semantics. Non-authoritative membership-context artifact persistence
 while G13 closed is closed as Owner-policy **permission** `ALLOWED`
 in §4.5.3; permission is **not** artifact existence. Membership-context
 artifact **semantic identity** is bound in §4.5.3 as information
-classes only; that bind is **not** artifact existence. Numeric ceiling `N_VALUE=5` is
+classes only; that bind is **not** artifact existence. Artifact
+existence **class** is bound in §4.5.3 as required durable
+non-authoritative membership-context artifact; that class bind is
+**not** instance existence. Numeric ceiling `N_VALUE=5` is
 closed as Owner policy in §4.5.3 under `AT_MOST_N`. Selector-state **ownership**
 for membership identity is closed as principle only in §4.5.3; a
-membership artifact, writer, schema, and bound listing input
+membership artifact instance, writer, schema, and bound listing input
 remain unresolved. Permission for a non-authoritative membership-context
 artifact to persist while G13 remains closed is `ALLOWED` in §4.5.3;
 that permission is **not** artifact existence. Isolated membership-only pending analog is closed
@@ -708,6 +711,8 @@ OPEN_DECISION_06_CLOSED=true
 OPEN_DECISION_06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
 NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
 MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
+ARTIFACT_EXISTENCE_CLASS=BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT
+ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
 MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
 TEMPORAL_SCHEMA=UNBOUND
 INSTANCE_ID_SCHEMA=UNBOUND
@@ -759,6 +764,15 @@ semantics contract §1.9 as information classes only. That bind is
 **not** artifact existence, does **not** bind schema, writer, reader,
 store, or listing, does **not** prove prior-listing existence, does
 **not** unlock G13, and does **not** close `OPEN_DECISION_07`.
+Owner-GO
+`OWNER_GO_MF_MEMBERSHIP_CONTEXT_ARTIFACT_EXISTENCE_CLASS_V1`
+adjudicates membership-context artifact existence **class** in the
+subordinate semantics contract §1.10 as
+`BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT`.
+That class bind is **not** instance existence, does **not** bind
+schema, writer, reader, store, or listing, does **not** prove
+prior-listing existence, does **not** unlock G13, and does **not**
+close `OPEN_DECISION_07`. Instance existence remains `UNPROVEN`.
 
 This persist does **not** ratify a `TOP5` product, an
 MF-own scoring contract, an MF-own tie-break algorithm, hysteresis or
@@ -768,7 +782,9 @@ membership artifact, rotation identity, or rotation policy. Cap 2.3
 OD06 permission to persist a non-authoritative membership-context
 artifact while G13 remains closed is **ALLOWED**; permission is **not**
 artifact existence. Semantic identity bound as information classes is
-**not** artifact existence.
+**not** artifact existence. Artifact existence class bound as required
+durable non-authoritative membership-context artifact is **not**
+instance existence.
 
 ### 4.5.4 Isolated ranking universe and single-egress boundary (docs-only; AUTHORITY_EFFECT=NONE)
 
@@ -786,7 +802,9 @@ ownership principle only. `OPEN_DECISION_05` is closed in §4.5.3 as
 model. `OPEN_DECISION_06` is closed in §4.5.3 as permission-only
 `ALLOWED` while G13 remains closed. Membership-context artifact
 semantic identity is bound in §4.5.3 as information classes only.
-This subsection does **not**
+Artifact existence class is bound in §4.5.3 as required durable
+non-authoritative membership-context artifact. Instance existence
+remains `UNPROVEN`. This subsection does **not**
 re-own those closes and does **not** close `OPEN_DECISION_07`. This
 subsection does **not** collectively close
 `OPEN_DECISION_04`–`07`.
@@ -836,6 +854,8 @@ OD05_MEMBERSHIP_PENDING=CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED
 OD06_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
 OD06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
 MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
+ARTIFACT_EXISTENCE_CLASS=BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT
+ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
 MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
 OD07_ROTATION_IDENTITY=UNCLOSED
 OD04_TO_OD07_CHANGED=false
