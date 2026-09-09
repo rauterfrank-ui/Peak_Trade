@@ -124,8 +124,10 @@ Nodes on the isolated graph after Top-20 candidate context remain
 selector state, and rotation policy. Selector **role** and anti-churn
 **ownership** are persisted in the subordinate contract
 [`MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1.md`](MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1.md).
-Naming them in this boundary file is topology plus that persist
-pointer, not scoring ratification and not host join.
+Selection and anti-churn **mechanism semantics** are persisted in
+[`MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md`](MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md).
+Naming them in this boundary file is topology plus those persist
+pointers, not scoring ratification, not numerics, and not host join.
 
 ## 3. Domain boundary
 
@@ -355,6 +357,7 @@ This contract does **not** ratify, default, design, or implicitly close:
 | MF scoring contract | `ABSENT` / `UNRESOLVED` / `NOT_AUTHORIZED` |
 | Selector policy / scoring | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` |
 | Selector role / anti-churn ownership | persisted in `MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1`; not scoring; not numerics |
+| Selection / anti-churn mechanism semantics | persisted in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1`; not numerics; not SSF import; not scoring |
 | Rotation numerics | `UNRESOLVED` / `NOT_AUTHORIZED` |
 | Hysteresis / cooldown / turnover **numerics** | `UNRESOLVED` / `NOT_AUTHORIZED` |
 | Portfolio Selection node | `P2_ALIAS_OR_PART_OF_SELECTOR` / `OUT_OF_CORE_MODEL` / `NOT_AUTHORIZED` as a distinct stage |
