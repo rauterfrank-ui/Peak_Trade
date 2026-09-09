@@ -68,6 +68,8 @@ OD04_SELECTOR_STATE=CLOSED_OWNERSHIP_PRINCIPLE_ONLY
 OD05_MEMBERSHIP_PENDING=CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED
 OD06_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
 OD06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
+MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
+MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
 OD07_ROTATION_IDENTITY=UNCLOSED
 OD04_TO_OD07_CHANGED=false
 ```
@@ -88,7 +90,10 @@ in that contract §1.3. `OPEN_DECISION_05` is closed as
 `NO_INDEPENDENT_PENDING_STATE_REQUIRED` in that contract §1.5. This
 file records those pointers. `OPEN_DECISION_06` is closed as
 permission-only `ALLOWED` in that contract §1.7; this file is not the
-OD06 close owner. It does **not** close `OPEN_DECISION_07`.
+OD06 close owner. Membership-context artifact semantic identity is bound
+in that contract §1.9 as information classes only; this file is not the
+identity close owner. That bind is not artifact existence. It does
+**not** close `OPEN_DECISION_07`.
 `OD04_TO_OD07_CHANGED=false` is **not** a collective close of OD04–OD07.
 
 Master Runbook SSOT pointer: §4.5 / §4.5.1 / §4.5.4.
@@ -402,7 +407,10 @@ ownership-principle status is a **pointer** to the semantics contract
 semantics contract §1.5; this file is not the OD05 close owner. OD06
 permission-only `ALLOWED` status is a **pointer** to the semantics
 contract §1.7; this file is not the OD06 close owner. Permission is
-not artifact existence.
+not artifact existence. Membership-context artifact semantic identity
+is bound in the semantics contract §1.9 as information classes only;
+this file is not the identity close owner. That bind is not artifact
+existence.
 
 ```text
 OD01_N_VALUE=5
@@ -412,6 +420,8 @@ OD04_SELECTOR_STATE=CLOSED_OWNERSHIP_PRINCIPLE_ONLY
 OD05_MEMBERSHIP_PENDING=CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED
 OD06_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
 OD06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
+MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
+MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
 OD07_ROTATION_IDENTITY=UNCLOSED
 OD04_TO_OD07_CHANGED=false
 NEW_SCORING_POLICY=false
@@ -447,6 +457,7 @@ OVERREAD_AS_CAP22_TO_EXECUTION_MF_BYPASS=FORBIDDEN
 OVERREAD_AS_UNIVERSE_TO_EXECUTION_MF_BYPASS=FORBIDDEN
 OVERREAD_AS_HOST_JOIN=FORBIDDEN
 OVERREAD_AS_G13_UNLOCK=FORBIDDEN
+OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_ARTIFACT_EXISTENCE=FORBIDDEN
 INVENTION_OF_HANDOFF_PAYLOAD=FORBIDDEN
 INVENTION_OF_EXECUTION_SELECTION_FROM_PLAUSIBILITY=FORBIDDEN
 ```
