@@ -144,7 +144,9 @@ TOP20_ROLE=CANDIDATE_CONTEXT_ONLY
 
 SELECTOR_ROLE=PROPOSE_MEMBERSHIP_FROM_TOP20_CANDIDATE_CONTEXT
 SELECTOR_CARDINALITY_OWNER=ACTIVE_SET
-SELECTOR_STATE_OWNER=UNPROVEN
+SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY
+SELECTOR_OWNS_MEMBERSHIP_IDENTITY=false
+MEMBERSHIP_IDENTITY_OWNER_CLASS=ACTIVE_SET_NON_AUTHORITATIVE_MEMBERSHIP_COMPOSITION
 
 ACTIVE_SET_ROLE=NON_AUTHORITATIVE_MEMBERSHIP_COMPOSITION
 ACTIVE_SET_N_STATUS=UNRATIFIED
@@ -174,6 +176,9 @@ SELECTOR_CONSUMES=CAP_2_2_TOP20_ORDERED_CANDIDATE_CONTEXT
 SELECTOR_RE_RANKING_DERIVED_FROM_THIS_CONTRACT=false
 MF_SCORING_RATIFIED=false
 SELECTOR_POLICY_RATIFIED=false
+SELECTOR_MAY_CONSUME_MEMBERSHIP_LISTING_IDENTITY=true
+MEMBERSHIP_LISTING_IDENTITY_BOUND=false
+MEMBERSHIP_LISTING_IDENTITY_IS_NOT_PROVEN_INPUT=true
 ```
 
 The selector's persisted role is to **propose membership** from the
@@ -191,8 +196,13 @@ Cardinality is **not** owned by the selector. The selector is constrained
 by Active Set `N`. Cardinality **mode** is `AT_MOST_N` (OD02 closed).
 `N_VALUE` remains unratified.
 
-Selector state remains `UNPROVEN`. This contract does **not** implement
-or design selector state.
+`OPEN_DECISION_04` is closed in
+[`MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md`](MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md)
+§1.4 as ownership principle only: the selector does **not** own
+membership identity. Proven `SELECTOR_CONSUMES` remains Cap 2.2 Top-20
+candidate context. Listing identity may be consumed **when later
+bound**; that is **not** a bound listing consumer and **not** an
+artifact. This contract does **not** implement selector state.
 
 ## 5. Selection hygiene (concept ownership only)
 
@@ -333,6 +343,9 @@ CARDINALITY_MODE=AT_MOST_N
 MF_SCORING_RATIFIED=false
 MF_SCORING_CONTRACT_REQUIRED=false
 MEMBERSHIP_ORDER_POLICY=CONSUME_CAP22_ORDERING_AS_MEMBERSHIP_ORDER
+SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY
+SELECTOR_OWNS_MEMBERSHIP_IDENTITY=false
+DURABLE_SELECTOR_OWNED_MEMBERSHIP_STORE=NOT_AUTHORIZED
 SELECTOR_STATE_IMPLEMENTED=false
 HYSTERESIS_NUMERICS_RATIFIED=false
 MINIMUM_HOLDING_NUMERICS_RATIFIED=false
@@ -355,7 +368,7 @@ NEW_RUNTIME_POLICY=false
 G13_UNLOCK=false
 ```
 
-## 7. Remaining open questions (OD02 and OD03 closed elsewhere)
+## 7. Remaining open questions (OD02, OD03, and OD04 closed elsewhere)
 
 ```text
 OPEN_DECISION_01=N_VALUE
@@ -368,7 +381,9 @@ OPEN_DECISION_03=CONSUME_CAP22_ORDERING_VS_LATER_OWN_MF_SCORING
 OPEN_DECISION_03_CLOSED=true
 MEMBERSHIP_ORDER_POLICY=CONSUME_CAP22_ORDERING_AS_MEMBERSHIP_ORDER
 OPEN_DECISION_04=SELECTOR_STATE
-OPEN_DECISION_04_CLOSED=false
+OPEN_DECISION_04_CLOSED=true
+OPEN_DECISION_04_CLOSE_CLASS=OWNERSHIP_PRINCIPLE_ONLY
+SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY
 OPEN_DECISION_05=MEMBERSHIP_ONLY_TRANSITION_PENDING_NEEDED
 OPEN_DECISION_05_CLOSED=false
 OPEN_DECISION_06=CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
@@ -379,7 +394,8 @@ OPEN_DECISION_07_CLOSED=false
 
 `OPEN_DECISION_02` and `OPEN_DECISION_03` are closed in
 [`MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md`](MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md)
-§1.1–§1.2. The remaining five items stay `UNRESOLVED` /
+§1.1–§1.2. `OPEN_DECISION_04` is closed in that contract §1.4 as
+ownership principle only. The remaining four items stay `UNRESOLVED` /
 `NOT_AUTHORIZED`. `N_VALUE` is unblocked for a **separate** Owner
 numeric policy and is **not** chosen here. MF-own tie-break is **not
 required** while the consume-Cap-2.2-order policy holds.
@@ -403,6 +419,8 @@ OVERREAD_AS_FUTURE_HOST_INPUT=FORBIDDEN
 OVERREAD_AS_N_EQUALS_5=FORBIDDEN
 OVERREAD_AS_SSF_STATE_MACHINE=FORBIDDEN
 OVERREAD_AS_ROTATION_POLICY=FORBIDDEN
+OVERREAD_AS_OD04_EQUALS_ARTIFACT_PERSIST=FORBIDDEN
+OVERREAD_AS_OD04_EQUALS_BOUND_LISTING_INPUT=FORBIDDEN
 ```
 
 ## 9. Governance / Atlas
@@ -438,7 +456,8 @@ NEXT_SLICE_AUTHORIZED=false
 HARD_STOP_AFTER_THIS_CONTRACT=true
 ```
 
-Any later scoring, `N` value, exactly-N vs at-most-N, selector state,
-hygiene numerics, membership-only pending-state, or persistence while
-G13 closed requires a **new** Owner-GO and remains isolated. This
-contract does **not** authorize, specify, or prepare host integration.
+Any later scoring, `N` value, membership artifact, writer, hygiene
+numerics, membership-only pending-state, or persistence while G13
+closed requires a **new** Owner-GO and remains isolated. This contract
+does **not** authorize, specify, or prepare host integration. OD04 is
+closed as ownership principle only in the semantics contract §1.4.

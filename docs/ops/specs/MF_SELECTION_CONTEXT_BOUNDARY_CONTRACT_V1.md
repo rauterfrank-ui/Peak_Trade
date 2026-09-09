@@ -121,7 +121,10 @@ It must **not** be used as: this contract must later fit that host.
 
 Nodes on the isolated graph after Top-20 candidate context remain
 `UNRESOLVED` / `NOT_AUTHORIZED` for scoring, `N`, hygiene **numerics**,
-selector state, and rotation policy. Selector **role** and anti-churn
+and rotation policy. Selector-state **ownership** for membership
+identity is closed in semantics §1.4 as principle only; a membership
+artifact, writer, persistence, and bound listing input remain
+`UNRESOLVED`. Selector **role** and anti-churn
 **ownership** are persisted in the subordinate contract
 [`MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1.md`](MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1.md).
 Selection and anti-churn **mechanism semantics** are persisted in
@@ -361,8 +364,8 @@ This contract does **not** ratify, default, design, or implicitly close:
 | MF scoring contract | `ABSENT` / `NOT_REQUIRED` while consume-Cap-2.2-order policy holds; OD03 closed in semantics §1.2; no second ranker; MF-own tie-break not required |
 | Selector policy / scoring | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` as a general selector policy; membership-order consume policy is in semantics §1.2 only |
 | Selector role / anti-churn ownership | persisted in `MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1`; not scoring; not numerics |
-| Selection / anti-churn mechanism semantics | persisted in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1`; OD02/OD03 closed in §1.1–§1.2; OD01 and OD04–OD07 remain open; not numerics; not SSF import |
-| Selector state | `UNPROVEN` / `UNRESOLVED`; hygiene concepts do not force durable selector state; `membership_state` is not selector-owned state; fail-closed in semantics §1.4 |
+| Selection / anti-churn mechanism semantics | persisted in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1`; OD02/OD03 closed in §1.1–§1.2; OD04 closed in §1.4 as ownership principle only; OD01 and OD05–OD07 remain open; not numerics; not SSF import; not artifact |
+| Selector state | `CLOSED_OWNERSHIP_PRINCIPLE_ONLY` in semantics §1.4; `SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY`; `membership_state` remains unbound schema / Authority `NONE`; not a durable selector store; not an artifact |
 | Membership-only transition-pending | analog `UNPROVEN`; node `OUT_OF_CORE_MODEL`; Cap-2.3 `REPLACEMENT_PENDING` out of domain; fail-closed in semantics §1.5 |
 | Rotation numerics | `UNRESOLVED` / `NOT_AUTHORIZED` |
 | Rotation identity (`rotation_deltas` stage vs derived) | `UNRESOLVED`; named graph node is not stage ratification; no rotation engine; fail-closed in semantics §1.6 |
