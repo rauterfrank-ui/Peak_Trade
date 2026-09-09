@@ -338,7 +338,8 @@ ROTATION_ROLE=MEMBERSHIP_DIFF_ONLY
 MEMBERSHIP_STATE_MACHINE_RATIFIED=false
 ALLOWED_STATE_TRANSITIONS=UNBOUND
 SSF_SEMANTICS_IMPORTED=false
-OPEN_DECISION_05_CLOSED=false
+OPEN_DECISION_05_CLOSED=true
+OPEN_DECISION_05_CLOSE_CLASS=NO_INDEPENDENT_PENDING_STATE_REQUIRED
 OPEN_DECISION_06_CLOSED=false
 OPEN_DECISION_07_CLOSED=false
 PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=UNPROVEN
@@ -367,31 +368,61 @@ existence, a rotation stage, a handoff, or a runtime consumer.
 ### 1.5 Isolated membership-only transition-pending (OPEN_DECISION_05)
 
 Owner-GO
+`OWNER_POLICY_CLOSE_MF_OD05_NO_INDEPENDENT_PENDING_STATE_REQUIRED_V1`
+closes `OPEN_DECISION_05=MEMBERSHIP_ONLY_TRANSITION_PENDING_NEEDED` as
+`CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the **current
+isolated MF model**. Prior fail-closed **boundaries** from
 `OWNER_GO_MF_OPEN_DECISIONS_01_THROUGH_07_BOUNDED_ADJUDICATION_WORKPACKAGE_V1`
-persists fail-closed **boundaries** for
-`OPEN_DECISION_05=MEMBERSHIP_ONLY_TRANSITION_PENDING_NEEDED`. It does
-**not** close that decision as needed or as never-needed.
+remain historical provenance. That provenance is **not** a second
+close and does **not** reopen this decision.
+
+This close means the current isolated MF ranking / selection model does
+**not** require an independent Membership-Pending state class. Current
+membership identity (when later bound), the selector membership
+proposal, and selector-owned anti-churn admission / non-admission
+already represent deferral of a proposed change. Rotation remains
+membership-diff-only after admission.
+
+This close does **not** mean a pending analog can never exist. It does
+**not** ratify hysteresis, minimum holding, confirmation, cooldown, or
+any anti-churn numeric or behavioral rule. A later introduction of an
+independent pending class requires separate governed evidence and
+policy. Cap 2.3 `REPLACEMENT_PENDING` remains not imported. Cap 0.4
+`MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0` remains an
+unconsumed reminder. This close does **not** bind a membership
+artifact, writer, persistence, rotation identity, or a membership
+state machine.
 
 ```text
 OPEN_DECISION_05=MEMBERSHIP_ONLY_TRANSITION_PENDING_NEEDED
-OPEN_DECISION_05_CLOSED=false
-MEMBERSHIP_ONLY_ANALOG_REQUIRED=UNPROVEN
+OPEN_DECISION_05_CLOSED=true
+OPEN_DECISION_05_CLOSE_CLASS=NO_INDEPENDENT_PENDING_STATE_REQUIRED
+OPEN_DECISION_05_SCOPE=CURRENT_ISOLATED_MF_MODEL
+NO_INDEPENDENT_MEMBERSHIP_PENDING_STATE_REQUIRED=true
+MEMBERSHIP_ONLY_ANALOG_REQUIRED=false
+MEMBERSHIP_ONLY_ANALOG_REQUIRED_SCOPE=CURRENT_ISOLATED_MF_MODEL
+CURRENT_PROPOSED_ADMIT_REJECT_REMAINS_SUFFICIENT=true
 TRANSITION_PENDING_NODE=OUT_OF_CORE_MODEL
 SSF_REPLACEMENT_PENDING_IMPORTED=false
 SSF_REPLACEMENT_PENDING_IS_OUT_OF_DOMAIN=true
 REPLACEMENT_PENDING_IS_NOT_MEMBERSHIP_ROTATION=true
 PENDING_IS_NOT_ANTI_CHURN=true
+MEMBERSHIP_STATE_MACHINE_RATIFIED=false
 INVENTION_OF_PENDING_STATE_MACHINE_FROM_PLAUSIBILITY=FORBIDDEN
+OVERREAD_AS_PENDING_ANALOG_NEVER_NEEDED=FORBIDDEN
+OVERREAD_AS_ANTI_CHURN_NOT_NEEDED=FORBIDDEN
+OVERREAD_AS_HYSTERESIS_NOT_NEEDED=FORBIDDEN
+OVERREAD_AS_MIN_HOLDING_NOT_NEEDED=FORBIDDEN
+OVERREAD_AS_CONFIRMATION_NOT_NEEDED=FORBIDDEN
+OVERREAD_AS_COOLDOWN_NOT_NEEDED=FORBIDDEN
 ```
 
 Cap 2.3 `REPLACEMENT_PENDING` remains strictly out of this domain. The
-isolated graph has no position semantics. Absence of a membership-only
-pending analog is **not** proof that none will later be needed.
-Presence of SSF pending is **not** proof that an analog is needed
-here. `OPEN_DECISION_04` is closed as ownership principle only. That
-close is **not** evidence that a membership-only pending analog is
-needed. Closing this item as needed remains blocked unless
-independent isolated-domain evidence later carries that need.
+isolated graph has no position semantics. Isolated-MF evidence for an
+additional pending object is `NONE`. The productive SSF pending class
+exists only in the forbidden position / exactly-one / alpha-block
+domain. A durable pending class would prejudge an unratified membership
+state machine and OD06 persistence. Those are **not** authorized here.
 
 ### 1.6 Isolated rotation identity (OPEN_DECISION_07)
 
@@ -468,7 +499,7 @@ join, and **not** a close of any decision.
 
 ```text
 DECISION_DAG_CLASS=SEMANTIC_DEPENDENCY_NOT_RUNTIME
-CLOSED_DECISIONS=OPEN_DECISION_02,OPEN_DECISION_03,OPEN_DECISION_04
+CLOSED_DECISIONS=OPEN_DECISION_02,OPEN_DECISION_03,OPEN_DECISION_04,OPEN_DECISION_05
 ```
 
 ```text
@@ -503,14 +534,16 @@ nodes):
 | `OPEN_DECISION_02` | `CLOSED_AT_MOST_N` | `true` |
 | `OPEN_DECISION_01` | `UNBLOCKED_FOR_OWNER_NUMERIC_POLICY` / parameter | `false` |
 | `OPEN_DECISION_04` | `CLOSED_OWNERSHIP_PRINCIPLE_ONLY` | `true` |
-| `OPEN_DECISION_05` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` / `INSUFFICIENT_EVIDENCE` to close needed vs never-needed | `false` |
+| `OPEN_DECISION_05` | `CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED` | `true` |
 | `OPEN_DECISION_07` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` | `false` |
 | `OPEN_DECISION_06` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` | `false` |
 
 A later close of one node does **not** close a neighbor by inference.
-This persist closes `OPEN_DECISION_04` as ownership principle only. It
-does **not** close `OPEN_DECISION_05`–`07` and does **not** choose
-`N`.
+This persist closes `OPEN_DECISION_05` as
+`NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF
+model. It does **not** close `OPEN_DECISION_06`–`07`, does **not**
+reopen `OPEN_DECISION_04`, and does **not** choose `N`. It does
+**not** mean a pending analog can never exist.
 
 ## 2. Owner by mechanism
 
@@ -525,7 +558,7 @@ does **not** re-own them.
 | Minimum holding | `SELECTOR` | `ADJUDICATED_CONCLUSION` of ownership; this file adds concept-vs-rule semantics only |
 | Cooldown / turnover | `SELECTOR` concept-family; unratified | `UNRESOLVED` as a ratified mechanism |
 | Cap 2.3 `REPLACEMENT_PENDING` | Cap 2.3; **not imported** | `CANONICAL_AUTHORITY` of Cap 2.3; `OUT_OF_DOMAIN` here |
-| Membership-only transition-pending | `UNRESOLVED`; node `OUT_OF_CORE_MODEL` | `UNRESOLVED` |
+| Membership-only transition-pending | `NONE_FOR_CURRENT_ISOLATED_MF_MODEL`; node `OUT_OF_CORE_MODEL` | `ADJUDICATED_CONCLUSION` of OD05 close; not never-needed |
 | Rotation | membership-diff-only; **not** anti-churn owner | `ADJUDICATED_CONCLUSION` |
 | Freshness / fail-closed integrity | `BOUNDARY` | `ADJUDICATED_CONCLUSION` of ownership |
 
@@ -589,8 +622,11 @@ ALLOWED_STATE_TRANSITIONS=UNBOUND
 MEMBERSHIP_STATE_MACHINE_RATIFIED=false
 SSF_SELECTION_STATES_NOT_IMPORTED=true
 TRANSITION_PENDING_NODE=OUT_OF_CORE_MODEL
-MEMBERSHIP_ONLY_ANALOG_REQUIRED=UNPROVEN
+MEMBERSHIP_ONLY_ANALOG_REQUIRED=false
+MEMBERSHIP_ONLY_ANALOG_REQUIRED_SCOPE=CURRENT_ISOLATED_MF_MODEL
 OPEN_DECISION_05=MEMBERSHIP_ONLY_TRANSITION_PENDING_NEEDED
+OPEN_DECISION_05_CLOSED=true
+OPEN_DECISION_05_CLOSE_CLASS=NO_INDEPENDENT_PENDING_STATE_REQUIRED
 ```
 
 No isolated-domain membership state machine is ratified. Cap 2.3 states
@@ -705,12 +741,14 @@ authority.
 ## 9. Replacement-pending semantics
 
 ```text
-REPLACEMENT_PENDING_SEMANTICS=SSF_STATE_NOT_IMPORTED_MEMBERSHIP_ANALOG_UNPROVEN
+REPLACEMENT_PENDING_SEMANTICS=SSF_STATE_NOT_IMPORTED_NO_INDEPENDENT_MF_PENDING_STATE_REQUIRED
 CAP23_REPLACEMENT_PENDING_IMPORTED=false
 SSF_REPLACEMENT_STATE_MACHINE_IMPORTED=false
-TRANSITION_PENDING_CORE_OWNER=UNRESOLVED
+TRANSITION_PENDING_CORE_OWNER=NONE_FOR_CURRENT_ISOLATED_MF_MODEL
 TRANSITION_PENDING_NODE=OUT_OF_CORE_MODEL
-MEMBERSHIP_ONLY_ANALOG_REQUIRED=UNPROVEN
+MEMBERSHIP_ONLY_ANALOG_REQUIRED=false
+MEMBERSHIP_ONLY_ANALOG_REQUIRED_SCOPE=CURRENT_ISOLATED_MF_MODEL
+NO_INDEPENDENT_MEMBERSHIP_PENDING_STATE_REQUIRED=true
 REPLACEMENT_PENDING_IS_NOT_MEMBERSHIP_ROTATION=true
 ```
 
@@ -719,8 +757,11 @@ used while an open position exists: no silent instrument switch; no
 alpha for a replacement instrument; replacement persisted only as that
 state. That state machine is **outside** this isolated graph.
 
-A membership-only analog is **not** proven necessary and is **not** a
-core-model node. This persist does **not** invent one.
+A membership-only analog is **not required** by the current isolated MF
+model. Current membership, the selector proposal, and anti-churn
+admission / non-admission already represent deferral. This persist does
+**not** invent a pending state machine and does **not** mean a later
+governed pending class can never exist.
 
 Adjudicated non-equivalence:
 
@@ -754,7 +795,7 @@ OPEN_DECISION_07=ROTATION_DELTAS_STAGE_VS_DERIVED_IDENTITY
 | Hysteresis | Yes, as admission/non-admission of a proposed change (**concept**) | May prevent a diff from being admitted; does **not** own rotation | Yes, as concept | No |
 | Minimum holding | Yes, as tenure before proposed drop/replace (**concept**) | May prevent a diff from being admitted; does **not** own rotation | Yes, as concept | No |
 | Cap 2.3 `REPLACEMENT_PENDING` | Out of domain | Out of domain | Out of domain | Cap 2.3 only; not imported |
-| Membership-only pending analog | `UNPROVEN` | `UNPROVEN`; would still not **be** rotation | `UNPROVEN` | `UNPROVEN` / not core model |
+| Membership-only pending analog | Not required in the current isolated MF model (`OPEN_DECISION_05` closed) | Still would not **be** rotation | Not a second membership identity | No; node remains `OUT_OF_CORE_MODEL` |
 
 Cap 0.4 `MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0` remains
 `DEFERRED_REQUIRED_CAPABILITY`. This contract does **not** consume that
@@ -778,6 +819,7 @@ STALE_OR_UNBOUND_CONTEXT=FAIL_CLOSED_NON_AUTHORITY
 ABSENT_OR_AMBIGUOUS_ORDERING=FAIL_CLOSED_NON_AUTHORITY
 UNRATIFIED_HYSTERESIS_OR_MIN_HOLDING_NUMERICS=NOT_A_DEFAULT
 UNPROVEN_PENDING_ANALOG=NOT_A_STATE_MACHINE
+NO_INDEPENDENT_MEMBERSHIP_PENDING_STATE_REQUIRED=true
 OVERREAD_AS_SELECTION_OR_RUNTIME=FORBIDDEN
 OVERREAD_AS_FUTURE_HOST_INPUT=FORBIDDEN
 OVERREAD_AS_N_EQUALS_5=FORBIDDEN
@@ -800,6 +842,13 @@ OVERREAD_AS_OD04_EQUALS_BOUND_LISTING_INPUT=FORBIDDEN
 OVERREAD_AS_OD04_EQUALS_WRITER_OR_RESTORE=FORBIDDEN
 OVERREAD_AS_PENDING_ANALOG_NEEDED=FORBIDDEN
 OVERREAD_AS_PENDING_ANALOG_NEVER_NEEDED=FORBIDDEN
+OVERREAD_AS_ANTI_CHURN_NOT_NEEDED=FORBIDDEN
+OVERREAD_AS_HYSTERESIS_NOT_NEEDED=FORBIDDEN
+OVERREAD_AS_MIN_HOLDING_NOT_NEEDED=FORBIDDEN
+OVERREAD_AS_CONFIRMATION_NOT_NEEDED=FORBIDDEN
+OVERREAD_AS_COOLDOWN_NOT_NEEDED=FORBIDDEN
+OVERREAD_AS_OD05_EQUALS_STATE_MACHINE=FORBIDDEN
+OVERREAD_AS_OD05_EQUALS_ARTIFACT_PERSIST=FORBIDDEN
 OVERREAD_AS_ROTATION_STAGE_RATIFICATION=FORBIDDEN
 OVERREAD_AS_ROTATION_DERIVED_CLOSE=FORBIDDEN
 OVERREAD_AS_ROTATION_ENGINE=FORBIDDEN
@@ -841,7 +890,7 @@ MIN_CANDIDATE_DURATION=UNRESOLVED
 COOLDOWN=UNRESOLVED
 TURNOVER_BOUND=UNRESOLVED
 REPLACEMENT_MARGIN=UNRESOLVED
-MEMBERSHIP_ONLY_PENDING_STATE_MACHINE=UNRESOLVED
+MEMBERSHIP_ONLY_PENDING_STATE_MACHINE=NOT_REQUIRED_IN_CURRENT_ISOLATED_MF_MODEL
 ```
 
 Cap 2.3 evidence values such as `hysteresis_rank_improvement=1` and
@@ -851,9 +900,11 @@ policy. Citing them here is **negative constraint** only:
 `SSF_SEMANTICS_IMPORTED=false`.
 
 Open decisions remaining after this Owner-policy close. Fail-closed
-**boundaries** for still-open items remain in §1.3 and §1.5–§1.7. OD02
+**boundaries** for still-open items remain in §1.3 and §1.6–§1.7. OD02
 and OD03 are closed in §1.1–§1.2. OD04 is closed in §1.4 as ownership
-principle only.
+principle only. OD05 is closed in §1.5 as
+`NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF
+model.
 
 ```text
 OPEN_DECISION_01=N_VALUE
@@ -870,7 +921,10 @@ OPEN_DECISION_04_CLOSED=true
 OPEN_DECISION_04_CLOSE_CLASS=OWNERSHIP_PRINCIPLE_ONLY
 SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY
 OPEN_DECISION_05=MEMBERSHIP_ONLY_TRANSITION_PENDING_NEEDED
-OPEN_DECISION_05_CLOSED=false
+OPEN_DECISION_05_CLOSED=true
+OPEN_DECISION_05_CLOSE_CLASS=NO_INDEPENDENT_PENDING_STATE_REQUIRED
+OPEN_DECISION_05_SCOPE=CURRENT_ISOLATED_MF_MODEL
+MEMBERSHIP_ONLY_ANALOG_REQUIRED=false
 OPEN_DECISION_06=CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
 OPEN_DECISION_06_CLOSED=false
 OPEN_DECISION_07=ROTATION_DELTAS_STAGE_VS_DERIVED_IDENTITY
@@ -886,7 +940,7 @@ MF_OWN_TIE_BREAK_REQUIRED=false
 | Tie-break | Cap 2.2 origin ordering is membership order after OD03 close; MF-own not required while consume policy holds | Ownership §5.1; this file §6 | Cap 2.2 ranking evidence `tie_break_order`; Cap 2.3 different order **not imported**; research/strategy tie-breaks `OUT_OF_DOMAIN` | Isolated MF selector unimplemented; Cap 2.2 producer exists as TOP20 origin | Numeric `N` (`OPEN_DECISION_01`); hygiene numerics |
 | Hysteresis | Ownership locates concept at selector; no MF rule authority | Ownership §5.2; this file §7 | Cap 2.3 SSF hysteresis **not imported**; Cap 0.4 open decision; MV2/strategy hysteresis `OUT_OF_DOMAIN` | Isolated MF selector unimplemented | All numerics; concept-vs-rule remains concept |
 | Min holding | Ownership locates concept at selector; no MF rule authority | Ownership §5.3; this file §8 | Cap 2.3 SSF min holding **not imported**; Cap 0.4 open decision | Isolated MF selector unimplemented | All numerics; residence duration unbound |
-| Replacement-pending | Cap 2.3 only; **not** MF authority | Ownership §5.5 forbids SSF import; this file §9 | Cap 2.3 `REPLACEMENT_PENDING` state machine | Cap 2.3 producer exists **outside** this graph; no MF pending runtime | Whether a membership-only analog is needed (`OPEN_DECISION_05`) |
+| Replacement-pending | Cap 2.3 only; **not** MF authority | Ownership §5.5 forbids SSF import; this file §9 / §1.5 | Cap 2.3 `REPLACEMENT_PENDING` state machine | Cap 2.3 producer exists **outside** this graph; no MF pending runtime | Independent MF pending class **not required** in the current isolated model (`OPEN_DECISION_05` closed); not never-needed |
 
 ```text
 CURRENT_RUNTIME_EXISTENCE_ISOLATED_MF_SELECTOR=false

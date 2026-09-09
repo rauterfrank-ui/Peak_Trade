@@ -63,7 +63,7 @@ CAP22_TOP20_LIMIT_IS_NOT_ACTIVE_SET_CARDINALITY=true
 N_VALUE=UNRESOLVED
 OD01_CHANGED=false
 OD04_SELECTOR_STATE=CLOSED_OWNERSHIP_PRINCIPLE_ONLY
-OD05_MEMBERSHIP_PENDING=UNCLOSED
+OD05_MEMBERSHIP_PENDING=CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED
 OD06_PERSISTENCE_WHILE_G13_CLOSED=UNCLOSED
 OD07_ROTATION_IDENTITY=UNCLOSED
 OD04_TO_OD07_CHANGED=false
@@ -79,8 +79,10 @@ design a host adapter, a Cap-2.4-compatible DTO, a mapping into Cap 2.3
 or Cap 2.4, or an authority handoff. It does **not** set `N_VALUE`.
 `OPEN_DECISION_04` is closed as ownership principle only in
 [`MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md`](MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md)
-§1.4. This file records that pointer. It does **not** close
-`OPEN_DECISION_05`, `OPEN_DECISION_06`, or `OPEN_DECISION_07`.
+§1.4. `OPEN_DECISION_05` is closed as
+`NO_INDEPENDENT_PENDING_STATE_REQUIRED` in that contract §1.5. This
+file records those pointers. It does **not** close
+`OPEN_DECISION_06` or `OPEN_DECISION_07`.
 `OD04_TO_OD07_CHANGED=false` is **not** a collective close of OD04–OD07.
 
 Master Runbook SSOT pointer: §4.5 / §4.5.1 / §4.5.4.
@@ -387,13 +389,15 @@ inside this isolated universe.
 
 This contract does **not** close or ratify the items below. OD04
 ownership-principle status is a **pointer** to the semantics contract
-§1.4; this file is not the OD04 close owner.
+§1.4; this file is not the OD04 close owner. OD05
+`NO_INDEPENDENT_PENDING_STATE_REQUIRED` status is a **pointer** to the
+semantics contract §1.5; this file is not the OD05 close owner.
 
 ```text
 OD01_N_VALUE=UNRESOLVED
 OD01_CHANGED=false
 OD04_SELECTOR_STATE=CLOSED_OWNERSHIP_PRINCIPLE_ONLY
-OD05_MEMBERSHIP_PENDING=UNCLOSED
+OD05_MEMBERSHIP_PENDING=CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED
 OD06_PERSISTENCE_WHILE_G13_CLOSED=UNCLOSED
 OD07_ROTATION_IDENTITY=UNCLOSED
 OD04_TO_OD07_CHANGED=false
