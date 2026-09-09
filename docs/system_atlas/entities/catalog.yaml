@@ -259,7 +259,10 @@ entities:
       is closed as NO_INDEPENDENT_PENDING_STATE_REQUIRED for the current
       isolated MF model; not never-needed; anti-churn rules remain
       unratified. OD06 is closed as permission-only ALLOWED while G13
-      remains closed; permission is not artifact existence. OD07 remains
+      remains closed; permission is not artifact existence. Membership-context
+      artifact semantic identity is bound as information classes only in
+      semantics §1.9; that bind is not artifact existence, not schema, not
+      writer, not prior-listing existence, and not an OD07 close. OD07 remains
       unclosed. No second ranker.
       No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed. Atlas is
       not runtime authority. ATLAS_AUTHORITY=NONE.
@@ -288,7 +291,10 @@ entities:
       §1.5; this catalog note is a pointer. OD06 is closed as
       permission-only ALLOWED in the semantics contract §1.7; this
       catalog note is a pointer. Permission is not artifact existence.
-      OD07 remains unclosed. OD04_TO_OD07_CHANGED is not a collective close.
+      Membership-context artifact semantic identity is bound as information
+      classes only in the semantics contract §1.9; this catalog note is a
+      pointer. That bind is not artifact existence. OD07 remains unclosed.
+      OD04_TO_OD07_CHANGED is not a collective close.
       CAP23_IMPORTED=false.
       No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed. Atlas is
       not runtime authority. ATLAS_AUTHORITY=NONE.
