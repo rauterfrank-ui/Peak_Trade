@@ -640,12 +640,28 @@ SSF_SEMANTICS_IMPORTED=false
 POLICY_RATIFIED=false
 MEMBERSHIP_STATE_MACHINE_RATIFIED=false
 RUNTIME_IMPLEMENTATION_CREATED=false
+EXACTLY_N_AUTHORITY=NONE
+AT_MOST_N_AUTHORITY=NONE
+EXACTLY_N_VS_AT_MOST_N=UNRESOLVED
+CARDINALITY_MODE_DEFAULT=NONE
+SILENCE_DOES_NOT_SELECT_EXACTLY_OR_AT_MOST=true
+CANDIDATE_COUNT_VS_N_WHILE_N_UNRESOLVED=NON_OPERATIVE
+OD02_GATES_INTERPRETATION_OF_ANY_LATER_N=true
+CAP23_EXACTLY1_IMPORTED=false
+CAP04_N5_IMPORTED=false
+CAP22_TOP20_LIMIT_IS_NOT_ACTIVE_SET_CARDINALITY=true
 ```
+
+Owner-GO
+`OWNER_GO_MF_OPEN_DECISION_02_EXACTLY_N_VS_AT_MOST_N_SEMANTICS_V1`
+binds fail-closed cardinality-mode **boundaries** in the subordinate
+semantics contract §1.1. `OPEN_DECISION_02` remains **unclosed**.
+`OPEN_DECISION_01=N_VALUE` remains `UNRESOLVED`.
 
 This persist does **not** ratify an MF-own tie-break algorithm,
 hysteresis or minimum-holding numerics, a membership-only pending
-state machine, `N=5`, scoring, or rotation policy. Cap 2.3
-`REPLACEMENT_PENDING` remains not imported.
+state machine, `N=5`, exactly-N, at-most-N, scoring, or rotation
+policy. Cap 2.3 `REPLACEMENT_PENDING` remains not imported.
 
 ## 4.6 Volatility authority
 

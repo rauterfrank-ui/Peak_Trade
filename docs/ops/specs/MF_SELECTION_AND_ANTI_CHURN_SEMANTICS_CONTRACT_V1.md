@@ -105,6 +105,80 @@ SILENCE_IS_NOT_N_EQUALS_5=true
 normalized to `TOP5`. A later first ratified configuration **may** use
 `N=5`; that remains unratified.
 
+### 1.1 Isolated Active-Set cardinality mode (OPEN_DECISION_02)
+
+Owner-GO
+`OWNER_GO_MF_OPEN_DECISION_02_EXACTLY_N_VS_AT_MOST_N_SEMANTICS_V1`
+persists fail-closed **boundaries** for
+`OPEN_DECISION_02=EXACTLY_N_VS_AT_MOST_N`. It does **not** close that
+decision, does **not** ratify `N_VALUE`, and does **not** choose
+`EXACTLY_N` or `AT_MOST_N`.
+
+```text
+OPEN_DECISION_02=EXACTLY_N_VS_AT_MOST_N
+OPEN_DECISION_02_CLOSED=false
+EXACTLY_N_AUTHORITY=NONE
+AT_MOST_N_AUTHORITY=NONE
+CARDINALITY_MODE_DEFAULT=NONE
+SILENCE_DOES_NOT_SELECT_EXACTLY_OR_AT_MOST=true
+OD02_GATES_INTERPRETATION_OF_ANY_LATER_N=true
+OPEN_DECISION_01_STATUS=UNRESOLVED
+N_VALUE=UNRESOLVED
+TOP5_VS_ACTIVE_SET_N=NOT_EQUIVALENT
+CAP23_EXACTLY1_IMPORTED=false
+CAP04_N5_IMPORTED=false
+CAP22_TOP20_LIMIT_IS_NOT_ACTIVE_SET_CARDINALITY=true
+CANDIDATE_COUNT_VS_N_WHILE_N_UNRESOLVED=NON_OPERATIVE
+```
+
+Current authority:
+
+| Mode | Current isolated-domain authority | Epistemic class |
+|---|---|---|
+| `EXACTLY_N` | `NONE` | `CANONICAL_AUTHORITY` that the mode is `UNRESOLVED`; not proven |
+| `AT_MOST_N` | `NONE` | `CANONICAL_AUTHORITY` that the mode is `UNRESOLVED`; not proven |
+
+Negative constraints (must not be violated; not a later fit-target):
+
+```text
+TOP5_IS_NOT_ACTIVE_SET_N=true
+CAP_2_3_EXACTLY_1_IS_NOT_MF_CARDINALITY_MODE=true
+CAP_0_4_N_EQUALS_5_REMINDER_IS_NOT_AUTHORITY=true
+CAP_2_2_TOP20_CANDIDATE_CONTEXT_LIMIT_IS_NOT_ACTIVE_SET_CARDINALITY=true
+SILENCE_DOES_NOT_SELECT_EXACTLY_OR_AT_MOST=true
+CANDIDATE_COUNT_DOES_NOT_SELECT_EXACTLY_OR_AT_MOST=true
+PREFIX_N_FROM_TOP20_OR_CANDIDATE_COUNT=FORBIDDEN
+```
+
+Candidate-count cases. `N` remains unresolved, so comparisons against
+`N` are **non-operative**. They do **not** become a mode.
+
+| Case | Operative? | Bound fail-closed (not a mode) |
+|---|---|---|
+| Candidate count &lt; `N` | `NON_OPERATIVE` while `N_VALUE=UNRESOLVED` | Does **not** authorize a smaller membership as complete. Does **not** select `AT_MOST_N`. Does **not** fill from universe, dashboard, allowlist, or Cap 2.3. |
+| Candidate count = `N` | `NON_OPERATIVE` while `N_VALUE=UNRESOLVED` | Equality does **not** prove `EXACTLY_N`. Does **not** authorize membership completeness. |
+| Candidate count &gt; `N` | `NON_OPERATIVE` while `N_VALUE=UNRESOLVED` | Does **not** authorize truncation, prefix-N, or expanding `N` to the candidate count. Does **not** select `EXACTLY_N`. |
+| `N` itself unresolved | current state; comparisons `NON_OPERATIVE` | No candidate-count comparison against `N` may authorize membership, a mode, or a numeric `N`. |
+
+Selector silence (absent, stale, unbound, unratified `N`, or unratified
+mode) must **not** infer:
+
+```text
+SILENCE_IS_NOT_EXACTLY_N=true
+SILENCE_IS_NOT_AT_MOST_N=true
+SILENCE_IS_NOT_N_EQUALS_5=true
+SILENCE_IS_NOT_TOP5=true
+SILENCE_IS_NOT_EMPTY_SET_AUTHORIZATION=true
+SILENCE_IS_NOT_FULL_UNIVERSE_AUTHORIZATION=true
+SILENCE_IS_NOT_CAP22_PREFIX_N=true
+SILENCE_IS_NOT_CAP23_SELECTION=true
+```
+
+`OPEN_DECISION_01=N_VALUE` remains `UNRESOLVED` and is **not** this
+section. A later numeric `N` does **not** select `EXACTLY_N` or
+`AT_MOST_N`. Interpreting any later `N` against candidate counts
+remains gated by this still-open mode decision.
+
 Existing productive system, cited **only** as negative constraint:
 
 ```text
@@ -387,10 +461,18 @@ UNPROVEN_PENDING_ANALOG=NOT_A_STATE_MACHINE
 OVERREAD_AS_SELECTION_OR_RUNTIME=FORBIDDEN
 OVERREAD_AS_FUTURE_HOST_INPUT=FORBIDDEN
 OVERREAD_AS_N_EQUALS_5=FORBIDDEN
+OVERREAD_AS_EXACTLY_N=FORBIDDEN
+OVERREAD_AS_AT_MOST_N=FORBIDDEN
 OVERREAD_AS_SSF_STATE_MACHINE=FORBIDDEN
 OVERREAD_AS_ROTATION_POLICY=FORBIDDEN
 OVERREAD_AS_TOP5_EQUALS_ACTIVE_SET_N=FORBIDDEN
+OVERREAD_AS_CAP22_TOP20_LIMIT_AS_ACTIVE_SET_N=FORBIDDEN
+OVERREAD_AS_CAP23_EXACTLY1_AS_MF_CARDINALITY_MODE=FORBIDDEN
 INVENTION_OF_THRESHOLDS_FROM_PLAUSIBILITY=FORBIDDEN
+CANDIDATE_COUNT_VS_UNRESOLVED_N=FAIL_CLOSED_NON_AUTHORITY
+UNDERFILL_DOES_NOT_AUTHORIZE_MEMBERSHIP_OR_MODE=true
+EXACT_FILL_DOES_NOT_AUTHORIZE_MEMBERSHIP_OR_MODE=true
+OVERFILL_DOES_NOT_AUTHORIZE_TRUNCATION_OR_N_EXPANSION=true
 ```
 
 ## 12. Unresolved parameters
@@ -426,7 +508,9 @@ policy. Citing them here is **negative constraint** only:
 `SSF_SEMANTICS_IMPORTED=false`.
 
 Open decisions preserved from the parent ownership contract (not decided
-here):
+here). `OPEN_DECISION_02` remains **unclosed**; §1.1 only binds
+fail-closed non-inference. `OPEN_DECISION_01` remains a separate
+unresolved parameter.
 
 ```text
 OPEN_DECISION_01=N_VALUE

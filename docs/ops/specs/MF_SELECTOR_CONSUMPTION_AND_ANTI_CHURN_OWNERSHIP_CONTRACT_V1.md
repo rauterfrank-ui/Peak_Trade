@@ -348,6 +348,7 @@ G13_UNLOCK=false
 ```text
 OPEN_DECISION_01=N_VALUE
 OPEN_DECISION_02=EXACTLY_N_VS_AT_MOST_N
+OPEN_DECISION_02_CLOSED=false
 OPEN_DECISION_03=CONSUME_CAP22_ORDERING_VS_LATER_OWN_MF_SCORING
 OPEN_DECISION_04=SELECTOR_STATE
 OPEN_DECISION_05=MEMBERSHIP_ONLY_TRANSITION_PENDING_NEEDED
@@ -357,6 +358,15 @@ OPEN_DECISION_07=ROTATION_DELTAS_STAGE_VS_DERIVED_IDENTITY
 
 These seven items remain `UNRESOLVED` / `NOT_AUTHORIZED`. This persist
 must not be read as closing them.
+
+Fail-closed cardinality-mode **boundaries** for `OPEN_DECISION_02`
+(neither `EXACTLY_N` nor `AT_MOST_N` is default; silence does not
+select a mode; Cap-2.3 exactly-1 and Cap-0.4 `N=5` reminder are not
+this mode; Cap-2.2 Top-20 limit is not Active-Set cardinality) are
+persisted in
+[`MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md`](MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md)
+§1.1. That persist does **not** close `OPEN_DECISION_02` and does
+**not** ratify `OPEN_DECISION_01=N_VALUE`.
 
 ## 8. Fail-closed interpretation
 
