@@ -539,7 +539,11 @@ artifact **semantic identity** is bound in §4.5.3 as information
 classes only; that bind is **not** artifact existence. Artifact
 existence **class** is bound in §4.5.3 as required durable
 non-authoritative membership-context artifact; that class bind is
-**not** instance existence. Numeric ceiling `N_VALUE=5` is
+**not** instance existence. Instance existence remains `UNPROVEN`.
+The instance-existence **decision class** is persisted in §4.5.3 as
+`NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`;
+`UNPROVEN` is **not** `ABSENT`; creation is **not** authorized.
+Numeric ceiling `N_VALUE=5` is
 closed as Owner policy in §4.5.3 under `AT_MOST_N`. Selector-state **ownership**
 for membership identity is closed as principle only in §4.5.3; a
 membership artifact instance, writer, schema, and bound listing input
@@ -713,6 +717,10 @@ NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
 MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
 ARTIFACT_EXISTENCE_CLASS=BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT
 ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
+INSTANCE_DECISION_CLASS=NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
+INSTANCE_CENSUS_VERDICT=NO_INSTANCE_PROOF_FOUND
+UNPROVEN_IS_NOT_ABSENT=true
+CREATION_AUTHORIZED=false
 MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
 TEMPORAL_SCHEMA=UNBOUND
 INSTANCE_ID_SCHEMA=UNBOUND
@@ -773,6 +781,16 @@ That class bind is **not** instance existence, does **not** bind
 schema, writer, reader, store, or listing, does **not** prove
 prior-listing existence, does **not** unlock G13, and does **not**
 close `OPEN_DECISION_07`. Instance existence remains `UNPROVEN`.
+Owner-GO
+`OWNER_GO_MF_MEMBERSHIP_CONTEXT_ARTIFACT_INSTANCE_EXISTENCE_CENSUS_PERSIST_V1`
+persists the instance-existence **decision class** in the subordinate
+semantics contract §1.11 as
+`NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`.
+Census verdict is `NO_INSTANCE_PROOF_FOUND`. `UNPROVEN` is **not**
+`ABSENT`. Creation is **not** authorized. That persist does **not**
+bind schema, writer, reader, store, or listing, does **not** prove
+prior-listing existence, does **not** unlock G13, and does **not**
+close `OPEN_DECISION_07`. Instance existence remains `UNPROVEN`.
 
 This persist does **not** ratify a `TOP5` product, an
 MF-own scoring contract, an MF-own tie-break algorithm, hysteresis or
@@ -784,7 +802,10 @@ artifact while G13 remains closed is **ALLOWED**; permission is **not**
 artifact existence. Semantic identity bound as information classes is
 **not** artifact existence. Artifact existence class bound as required
 durable non-authoritative membership-context artifact is **not**
-instance existence.
+instance existence. Instance-existence decision class
+`NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED` is **not**
+instance existence, **not** `ABSENT`, and **not** creation
+authorization.
 
 ### 4.5.4 Isolated ranking universe and single-egress boundary (docs-only; AUTHORITY_EFFECT=NONE)
 
@@ -804,7 +825,11 @@ model. `OPEN_DECISION_06` is closed in §4.5.3 as permission-only
 semantic identity is bound in §4.5.3 as information classes only.
 Artifact existence class is bound in §4.5.3 as required durable
 non-authoritative membership-context artifact. Instance existence
-remains `UNPROVEN`. This subsection does **not**
+remains `UNPROVEN`. The instance-existence decision class is persisted
+in §4.5.3 as
+`NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`.
+`UNPROVEN` is **not** `ABSENT`. Creation is **not** authorized. This
+subsection does **not**
 re-own those closes and does **not** close `OPEN_DECISION_07`. This
 subsection does **not** collectively close
 `OPEN_DECISION_04`–`07`.
@@ -856,6 +881,10 @@ OD06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_W
 MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
 ARTIFACT_EXISTENCE_CLASS=BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT
 ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
+INSTANCE_DECISION_CLASS=NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
+INSTANCE_CENSUS_VERDICT=NO_INSTANCE_PROOF_FOUND
+UNPROVEN_IS_NOT_ABSENT=true
+CREATION_AUTHORIZED=false
 MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
 OD07_ROTATION_IDENTITY=UNCLOSED
 OD04_TO_OD07_CHANGED=false
