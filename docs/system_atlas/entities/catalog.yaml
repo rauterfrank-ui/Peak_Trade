@@ -280,8 +280,10 @@ entities:
       MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1 is closed in
       semantics §1.14 as SET_CREATION_AUTHORIZED_TRUE;
       CREATION_AUTHORIZED is true as permission-bit only; true is not
-      materialization; naming the class does not set the bit; this
-      persist does not name a next canonical decision. OD07 remains
+      materialization; next canonical decision class named in semantics
+      §1.15 as
+      MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_V1;
+      naming the class does not grant materialization authority. OD07 remains
       unclosed. No second ranker.
       No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed. Atlas is
       not runtime authority. ATLAS_AUTHORITY=NONE.
@@ -329,8 +331,11 @@ entities:
       the semantics contract §1.14 as SET_CREATION_AUTHORIZED_TRUE;
       this catalog note is a pointer. CREATION_AUTHORIZED is true as
       permission-bit only; true is not materialization; naming the
-      class does not set the bit; this persist does not name a next
-      canonical decision. OD07 remains unclosed.
+      class does not set the bit; next canonical decision class named in
+      the semantics contract §1.15 as
+      MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_V1;
+      this catalog note is a pointer. Naming that class does not grant
+      materialization authority. OD07 remains unclosed.
       OD04_TO_OD07_CHANGED is not a collective close.
       CAP23_IMPORTED=false.
       No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed. Atlas is

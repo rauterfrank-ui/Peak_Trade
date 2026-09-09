@@ -372,7 +372,7 @@ This contract does **not** ratify, default, design, or implicitly close:
 | MF scoring contract | `ABSENT` / `NOT_REQUIRED` while consume-Cap-2.2-order policy holds; OD03 closed in semantics §1.2; no second ranker; MF-own tie-break not required |
 | Selector policy / scoring | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` as a general selector policy; membership-order consume policy is in semantics §1.2 only |
 | Selector role / anti-churn ownership | persisted in `MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1`; not scoring; not hygiene numerics |
-| Selection / anti-churn mechanism semantics | persisted in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1`; OD02/OD03 closed in §1.1–§1.2; OD01 closed in §1.3 as Owner-policy ceiling `N_VALUE=5`; OD04 closed in §1.4 as ownership principle only; OD05 closed in §1.5 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF model; OD06 closed in §1.7 as permission-only `ALLOWED` while G13 remains closed; permission is not artifact existence; membership-context artifact semantic identity bound in §1.9 as information classes only; that bind is not artifact existence, not schema, not writer, and not OD07 close; artifact existence class bound in §1.10 as required durable non-authoritative membership-context artifact; that class bind is not instance existence; instance remains `UNPROVEN`; instance-existence decision class persisted in §1.11 as `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`; `UNPROVEN` is not `ABSENT`; creation-authorization predicate bound in §1.12 as `PERMISSION_BIT_ONLY`; named decision class `MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1` closed in §1.14 as `SET_CREATION_AUTHORIZED_TRUE`; `CREATION_AUTHORIZED` is true as permission-bit only; true is not materialization; this persist does not name a next canonical decision; OD07 remains open; not SSF import; not never-needed |
+| Selection / anti-churn mechanism semantics | persisted in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1`; OD02/OD03 closed in §1.1–§1.2; OD01 closed in §1.3 as Owner-policy ceiling `N_VALUE=5`; OD04 closed in §1.4 as ownership principle only; OD05 closed in §1.5 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF model; OD06 closed in §1.7 as permission-only `ALLOWED` while G13 remains closed; permission is not artifact existence; membership-context artifact semantic identity bound in §1.9 as information classes only; that bind is not artifact existence, not schema, not writer, and not OD07 close; artifact existence class bound in §1.10 as required durable non-authoritative membership-context artifact; that class bind is not instance existence; instance remains `UNPROVEN`; instance-existence decision class persisted in §1.11 as `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`; `UNPROVEN` is not `ABSENT`; creation-authorization predicate bound in §1.12 as `PERMISSION_BIT_ONLY`; named decision class `MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1` closed in §1.14 as `SET_CREATION_AUTHORIZED_TRUE`; `CREATION_AUTHORIZED` is true as permission-bit only; true is not materialization; next canonical decision class named in §1.15 as `MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_V1`; naming the class does not grant materialization authority; OD07 remains open; not SSF import; not never-needed |
 | Selector state | `CLOSED_OWNERSHIP_PRINCIPLE_ONLY` in semantics §1.4; `SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY`; `membership_state` remains unbound schema / Authority `NONE`; not a durable selector store; not an artifact |
 | Membership-only transition-pending | `CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED` in semantics §1.5 for the current isolated MF model; analog not required now; node `OUT_OF_CORE_MODEL`; Cap-2.3 `REPLACEMENT_PENDING` out of domain; not never-needed; anti-churn rules remain unratified |
 | Rotation numerics | `UNRESOLVED` / `NOT_AUTHORIZED` |
@@ -385,7 +385,8 @@ This contract does **not** ratify, default, design, or implicitly close:
 | Membership-context artifact instance-existence census | `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED` in semantics §1.11; this boundary file is not the census-persist owner; instance remains `UNPROVEN`; `UNPROVEN` is not `ABSENT`; census class name is not the current permission bit |
 | Membership-context artifact creation-authorization predicate | `PERMISSION_BIT_ONLY` in semantics §1.12; this boundary file is not the predicate close owner; that persist left `CREATION_AUTHORIZED=false`; permission-bit is not materialization; schema/writer/reader/OD07/anti-churn not required before true; not schema; not writer; not OD07 close |
 | Membership-context artifact creation-authorized permission-bit decision class | `MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1` named in semantics §1.13; this boundary file is not the decision-class bind owner; naming the class does not set `CREATION_AUTHORIZED=true`; not materialization; not artifact instance; not true/false choice |
-| Membership-context artifact creation-authorized permission-bit decision | `SET_CREATION_AUTHORIZED_TRUE` in semantics §1.14; this boundary file is not the decision-class close owner; `CREATION_AUTHORIZED=true` as permission-bit only; not materialization; not artifact instance; next decision not named |
+| Membership-context artifact creation-authorized permission-bit decision | `SET_CREATION_AUTHORIZED_TRUE` in semantics §1.14; this boundary file is not the decision-class close owner; `CREATION_AUTHORIZED=true` as permission-bit only; not materialization; not artifact instance; that persist did not name a next decision |
+| Membership-context artifact materialization-authority decision class | `MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_V1` named in semantics §1.15; this boundary file is not the decision-class bind owner; naming the class does not grant materialization authority; not true/false choice; not artifact instance |
 | Isolated ranking universe / single egress | persisted in `MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_CONTRACT_V1`; `SINGLE_EGRESS_REQUIRED`; current handoff `NOT_YET_CANONICALLY_DEFINED`; does not design payload; `N_VALUE=5` is a pointer to semantics §1.3 |
 | Authority handoff | `NOT_DESIGNED` / `NOT_IN_SCOPE` / `NOT_AUTHORIZED` |
 | Host adapter | `NOT_DESIGNED` / `NOT_IN_SCOPE` |
@@ -425,16 +426,22 @@ CREATION_AUTHORIZED_SEMANTICS=PERMISSION_BIT_ONLY
 CREATION_AUTHORIZATION_PREDICATE_BOUND=true
 PRECONDITION_MEMBERSHIP_BOUND=true
 CLOSED_DECISION_CLASS=MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1
-DECISION_CLASS_BOUND=true
-DECISION_CLASS_CLOSED=true
+PRIOR_CLASS_REMAINS_CLOSED=true
 OWNER_DECISION=SET_CREATION_AUTHORIZED_TRUE
 DECISION_CLASS_BIND_DOES_NOT_SET_CREATION_AUTHORIZED_TRUE=true
-NEXT_CANONICAL_DECISION=NOT_NAMED_HERE
-THIS_PERSIST_DOES_NOT_NAME_A_NEXT_CANONICAL_DECISION=true
+DECISION_CLASS=MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_V1
+DECISION_SCOPE=OWNER_DECIDES_MATERIALIZATION_AUTHORITY_GRANTED_TRUE_OR_FALSE_UNDER_EXISTING_PERMISSION_BIT_ONLY_SEMANTICS
+DECISION_CLASS_BOUND=true
+DECISION_CLASS_CLOSED=false
+NEXT_CANONICAL_DECISION=MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_V1
+THIS_PERSIST_NAMES_A_NEXT_CANONICAL_DECISION=true
+CLASS_BIND_IS_NOT_SUBSTANCE_CLOSE=true
+CLASS_BIND_DOES_NOT_SET_MATERIALIZATION_AUTHORITY_TRUE=true
 THIS_FILE_IS_NOT_INSTANCE_CENSUS_PERSIST_OWNER=true
 THIS_FILE_IS_NOT_CREATION_AUTHORIZATION_PREDICATE_CLOSE_OWNER=true
 THIS_FILE_IS_NOT_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_CLASS_BIND_OWNER=true
 THIS_FILE_IS_NOT_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_CLOSE_OWNER=true
+THIS_FILE_IS_NOT_MATERIALIZATION_AUTHORITY_DECISION_CLASS_BIND_OWNER=true
 PERSISTENCE_IS_NOT_G13_UNLOCK=true
 PERSISTENCE_IS_NOT_HOST_JOIN=true
 AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
