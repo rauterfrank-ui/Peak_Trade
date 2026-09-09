@@ -323,7 +323,7 @@ If membership context is missing, stale, unbound, unratified, or
 ambiguous:
 
 - do **not** invent a default membership
-- do **not** treat silence as `N=5` or any other `N`
+- do **not** treat silence as membership of five or any other filled set
 - do **not** treat the isolated class as Cap-2.3 or Cap-2.4 input
 - do **not** unlock G13
 
@@ -359,12 +359,12 @@ This contract does **not** ratify, default, design, or implicitly close:
 
 | Item | Status |
 |---|---|
-| `N` including `N=5` | `UNRESOLVED` / `UNRATIFIED` / `NOT_AUTHORIZED`; unblocked for a separate Owner numeric ceiling policy after OD02 close as `AT_MOST_N`; fail-closed in semantics §1.3; not `N=5`; not `TOP5` |
-| Exactly-N vs at-most-N | `CLOSED_AT_MOST_N` in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1` §1.1; `N` is a ceiling, not a fill target; not `N` ratification |
+| `N` including the Owner-policy ceiling `N=5` | `CLOSED_NUMERIC_CEILING_N5` in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1` §1.3; `AT_MOST_N` ceiling only; not `EXACTLY_5`; not `TOP5`; not Cap-0.4 reminder authority; this boundary file is not the OD01 close owner |
+| Exactly-N vs at-most-N | `CLOSED_AT_MOST_N` in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1` §1.1; `N` is a ceiling, not a fill target; numeric ceiling is in semantics §1.3 |
 | MF scoring contract | `ABSENT` / `NOT_REQUIRED` while consume-Cap-2.2-order policy holds; OD03 closed in semantics §1.2; no second ranker; MF-own tie-break not required |
 | Selector policy / scoring | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` as a general selector policy; membership-order consume policy is in semantics §1.2 only |
-| Selector role / anti-churn ownership | persisted in `MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1`; not scoring; not numerics |
-| Selection / anti-churn mechanism semantics | persisted in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1`; OD02/OD03 closed in §1.1–§1.2; OD04 closed in §1.4 as ownership principle only; OD05 closed in §1.5 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF model; OD01 and OD06–OD07 remain open; not numerics; not SSF import; not artifact; not never-needed |
+| Selector role / anti-churn ownership | persisted in `MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1`; not scoring; not hygiene numerics |
+| Selection / anti-churn mechanism semantics | persisted in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1`; OD02/OD03 closed in §1.1–§1.2; OD01 closed in §1.3 as Owner-policy ceiling `N_VALUE=5`; OD04 closed in §1.4 as ownership principle only; OD05 closed in §1.5 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF model; OD06–OD07 remain open; not SSF import; not artifact; not never-needed |
 | Selector state | `CLOSED_OWNERSHIP_PRINCIPLE_ONLY` in semantics §1.4; `SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY`; `membership_state` remains unbound schema / Authority `NONE`; not a durable selector store; not an artifact |
 | Membership-only transition-pending | `CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED` in semantics §1.5 for the current isolated MF model; analog not required now; node `OUT_OF_CORE_MODEL`; Cap-2.3 `REPLACEMENT_PENDING` out of domain; not never-needed; anti-churn rules remain unratified |
 | Rotation numerics | `UNRESOLVED` / `NOT_AUTHORIZED` |
@@ -372,7 +372,7 @@ This contract does **not** ratify, default, design, or implicitly close:
 | Hysteresis / cooldown / turnover **numerics** | `UNRESOLVED` / `NOT_AUTHORIZED` |
 | Portfolio Selection node | `P2_ALIAS_OR_PART_OF_SELECTOR` / `OUT_OF_CORE_MODEL` / `NOT_AUTHORIZED` as a distinct stage |
 | Context persistence while G13 closed | `UNPROVEN` / `UNRESOLVED` / `NOT_AUTHORIZED`; docs-contract persistence is not membership-artifact persistence, G13 unlock, host join, or runtime; fail-closed in semantics §1.7 |
-| Isolated ranking universe / single egress | persisted in `MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_CONTRACT_V1`; `SINGLE_EGRESS_REQUIRED`; current handoff `NOT_YET_CANONICALLY_DEFINED`; does not design payload; does not set `N` |
+| Isolated ranking universe / single egress | persisted in `MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_CONTRACT_V1`; `SINGLE_EGRESS_REQUIRED`; current handoff `NOT_YET_CANONICALLY_DEFINED`; does not design payload; `N_VALUE=5` is a pointer to semantics §1.3 |
 | Authority handoff | `NOT_DESIGNED` / `NOT_IN_SCOPE` / `NOT_AUTHORIZED` |
 | Host adapter | `NOT_DESIGNED` / `NOT_IN_SCOPE` |
 | Host consumption | `NONE` / `NOT_IN_SCOPE` |
@@ -380,7 +380,11 @@ This contract does **not** ratify, default, design, or implicitly close:
 | PHASE-8 runtime semantics | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` |
 
 ```text
-N_RATIFIED=false
+N_RATIFIED=true
+N_VALUE=5
+N_CLOSE_OWNER=MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1_SECTION_1_3
+THIS_FILE_IS_NOT_OD01_CLOSE_OWNER=true
+N_IS_CEILING_NOT_FILL_TARGET=true
 MF_SCORING_RATIFIED=false
 SELECTOR_POLICY_RATIFIED=false
 ROTATION_POLICY_RATIFIED=false

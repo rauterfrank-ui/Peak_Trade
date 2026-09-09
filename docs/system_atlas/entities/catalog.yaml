@@ -200,7 +200,8 @@ entities:
       INTEGRATION_STATUS=NOT_IN_SCOPE. HOST_ADAPTER_STATUS=NOT_DESIGNED.
       HOST_CONSUMER_STATUS=NONE. AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED.
       AUTHORITY_EFFECT=NONE. Not selection. No Atlas edge to Cap 2.3 or
-      Cap 2.4. N unratified. MF scoring absent. Rotation policy not
+      Cap 2.4. N_VALUE=5 is a pointer to semantics §1.3; this catalog
+      note is not the OD01 close. MF scoring absent. Rotation policy not
       ratified. Selector-state ownership for membership identity is
       closed as principle only in the semantics contract §1.4. Isolated
       membership-only pending analog is closed as
@@ -224,7 +225,8 @@ entities:
     notes: >-
       Docs-only persist of already-adjudicated isolated-domain selector
       consumption and anti-churn ownership. AUTHORITY_EFFECT=NONE. Not
-      selection. Not scoring. Not N ratification. Not hygiene numerics.
+      selection. Not scoring. Not hygiene numerics. N_VALUE=5 is a
+      pointer to semantics §1.3; this catalog note is not the OD01 close.
       No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed.
       OPEN_DECISION_04 is closed as ownership principle only in the
       semantics contract: membership identity is not selector-owned
@@ -246,12 +248,12 @@ entities:
     notes: >-
       Docs-only persist of already-adjudicated isolated-domain selection
       and anti-churn mechanism semantics. AUTHORITY_EFFECT=NONE. Not
-      selection. Not numerics. Not SSF import. Replacement-pending is
+      selection. Not SSF import. Replacement-pending is
       not rotation. Hysteresis and min-holding remain concepts, not
       rules. OPEN_DECISION_02 closed as AT_MOST_N. OPEN_DECISION_03
       closed as consume-Cap-2.2-ordering-as-membership-order.
-      OPEN_DECISION_01 remains unclosed and is unblocked only as a
-      separate Owner numeric ceiling. OPEN_DECISION_04 is closed as
+      OPEN_DECISION_01 is closed as Owner-policy ceiling N_VALUE=5
+      under AT_MOST_N; not EXACTLY_5; not a TOP5 product. OPEN_DECISION_04 is closed as
       ownership principle only: membership identity is non-authoritative
       Active-Set composition, not selector-owned state. OPEN_DECISION_05
       is closed as NO_INDEPENDENT_PENDING_STATE_REQUIRED for the current
@@ -276,7 +278,8 @@ entities:
       and the single-egress invariant. AUTHORITY_EFFECT=NONE. Handoff
       remains NOT_DESIGNED / NOT_YET_CANONICALLY_DEFINED. Downstream
       must not re-rank. Existing execution/risk/eligibility gates may
-      block. N_VALUE unchanged. OPEN_DECISION_04 is closed as ownership
+      block. N_VALUE=5 is a pointer to the semantics contract §1.3;
+      this catalog note is not the OD01 close. OPEN_DECISION_04 is closed as ownership
       principle only in the semantics contract; this catalog note is a
       pointer. OPEN_DECISION_05 is closed as
       NO_INDEPENDENT_PENDING_STATE_REQUIRED in the semantics contract

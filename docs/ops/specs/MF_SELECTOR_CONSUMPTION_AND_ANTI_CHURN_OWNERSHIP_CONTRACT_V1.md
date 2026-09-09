@@ -149,8 +149,8 @@ SELECTOR_OWNS_MEMBERSHIP_IDENTITY=false
 MEMBERSHIP_IDENTITY_OWNER_CLASS=ACTIVE_SET_NON_AUTHORITATIVE_MEMBERSHIP_COMPOSITION
 
 ACTIVE_SET_ROLE=NON_AUTHORITATIVE_MEMBERSHIP_COMPOSITION
-ACTIVE_SET_N_STATUS=UNRATIFIED
-N_VALUE=UNRESOLVED
+ACTIVE_SET_N_STATUS=CEILING_N5_OWNER_POLICY
+N_VALUE=5
 TOP5_STATUS=POSSIBLE_CONFIGURATION_ONLY
 
 ROTATION_ROLE=MEMBERSHIP_DIFF_ONLY
@@ -166,8 +166,10 @@ the historical term maps to the selector's membership-proposal role.
 It does **not** ratify a portfolio-selection capability,
 `SRC_PORTFOLIO_SEMANTICS_AUTHORITY`, or Global Portfolio Risk.
 
-`TOP5_STATUS=POSSIBLE_CONFIGURATION_ONLY` is **not** `N=5` ratification.
-Silence remains not `N=5`.
+`TOP5_STATUS=POSSIBLE_CONFIGURATION_ONLY` is **not** a `TOP5` product.
+Numeric ceiling `N_VALUE=5` is closed in the semantics contract §1.3.
+This ownership file does **not** re-own that close. Silence remains not
+membership of five.
 
 ## 4. Selector consumption (no scoring contract)
 
@@ -194,7 +196,8 @@ holds.
 
 Cardinality is **not** owned by the selector. The selector is constrained
 by Active Set `N`. Cardinality **mode** is `AT_MOST_N` (OD02 closed).
-`N_VALUE` remains unratified.
+Numeric ceiling `N_VALUE=5` is closed in the semantics contract §1.3;
+this file is not the OD01 close owner.
 
 `OPEN_DECISION_04` is closed in
 [`MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md`](MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md)
@@ -344,8 +347,9 @@ differences. It does not own anti-churn.
 This contract does **not** ratify, default, design, or implicitly close:
 
 ```text
-N_VALUE=UNRESOLVED
-N_EQUALS_5=NOT_RATIFIED
+N_VALUE=5
+N_VALUE_CLOSE_OWNER=MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1_SECTION_1_3
+N_EQUALS_5_IS_NOT_RATIFIED_BY_THIS_FILE=true
 EXACTLY_N_VS_AT_MOST_N=CLOSED_AT_MOST_N
 CARDINALITY_MODE=AT_MOST_N
 MF_SCORING_RATIFIED=false
@@ -376,12 +380,13 @@ NEW_RUNTIME_POLICY=false
 G13_UNLOCK=false
 ```
 
-## 7. Remaining open questions (OD02, OD03, OD04, and OD05 closed elsewhere)
+## 7. Remaining open questions (OD01, OD02, OD03, OD04, and OD05 closed elsewhere)
 
 ```text
 OPEN_DECISION_01=N_VALUE
-OPEN_DECISION_01_CLOSED=false
-OD01_UNBLOCKED_FOR_OWNER_NUMERIC_POLICY=true
+OPEN_DECISION_01_CLOSED=true
+OPEN_DECISION_01_CLOSE_CLASS=CLOSED_NUMERIC_CEILING_N5
+N_VALUE=5
 OPEN_DECISION_02=EXACTLY_N_VS_AT_MOST_N
 OPEN_DECISION_02_CLOSED=true
 CARDINALITY_MODE=AT_MOST_N
@@ -403,13 +408,14 @@ OPEN_DECISION_07_CLOSED=false
 
 `OPEN_DECISION_02` and `OPEN_DECISION_03` are closed in
 [`MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md`](MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md)
-§1.1–§1.2. `OPEN_DECISION_04` is closed in that contract §1.4 as
-ownership principle only. `OPEN_DECISION_05` is closed in that
-contract §1.5 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the
-current isolated MF model. The remaining three items stay `UNRESOLVED`
-/ `NOT_AUTHORIZED`. `N_VALUE` is unblocked for a **separate** Owner
-numeric policy and is **not** chosen here. MF-own tie-break is **not
-required** while the consume-Cap-2.2-order policy holds.
+§1.1–§1.2. `OPEN_DECISION_01` is closed in that contract §1.3 as
+Owner-policy ceiling `N_VALUE=5`. `OPEN_DECISION_04` is closed in that
+contract §1.4 as ownership principle only. `OPEN_DECISION_05` is closed
+in that contract §1.5 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the
+current isolated MF model. The remaining two items stay `UNRESOLVED`
+/ `NOT_AUTHORIZED`. This file does **not** re-own the numeric ceiling.
+MF-own tie-break is **not required** while the consume-Cap-2.2-order
+policy holds.
 
 ## 8. Fail-closed interpretation
 
@@ -427,7 +433,8 @@ PRESENT_CONTEXT=NOT_HOST_INPUT
 STALE_OR_UNBOUND_CONTEXT=FAIL_CLOSED_NON_AUTHORITY
 OVERREAD_AS_SELECTION_OR_RUNTIME=FORBIDDEN
 OVERREAD_AS_FUTURE_HOST_INPUT=FORBIDDEN
-OVERREAD_AS_N_EQUALS_5=FORBIDDEN
+OVERREAD_AS_N5_EQUALS_TOP5_PRODUCT=FORBIDDEN
+OVERREAD_AS_THIS_FILE_SETTING_N=FORBIDDEN
 OVERREAD_AS_SSF_STATE_MACHINE=FORBIDDEN
 OVERREAD_AS_ROTATION_POLICY=FORBIDDEN
 OVERREAD_AS_OD04_EQUALS_ARTIFACT_PERSIST=FORBIDDEN
@@ -469,8 +476,10 @@ NEXT_SLICE_AUTHORIZED=false
 HARD_STOP_AFTER_THIS_CONTRACT=true
 ```
 
-Any later scoring, `N` value, membership artifact, writer, hygiene
+Any later scoring, change to `N`, membership artifact, writer, hygiene
 numerics, membership-only pending-state, or persistence while G13
 closed requires a **new** Owner-GO and remains isolated. This contract
-does **not** authorize, specify, or prepare host integration. OD04 is
-closed as ownership principle only in the semantics contract §1.4.
+does **not** authorize, specify, or prepare host integration. OD01 is
+closed as Owner-policy ceiling `N_VALUE=5` in the semantics contract
+§1.3. OD04 is closed as ownership principle only in the semantics
+contract §1.4.

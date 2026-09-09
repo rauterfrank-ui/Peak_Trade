@@ -528,9 +528,10 @@ This workpackage creates **no** new edge between those graphs. It does
 **not** design a host adapter, Cap-2.4-compatible DTO, mapping into Cap
 2.3 or Cap 2.4, or authority handoff.
 
-Unresolved remains unresolved: `N` including `N=5`; rotation numerics;
+Unresolved remains unresolved: rotation numerics;
 hysteresis/cooldown/turnover **numerics**; context persistence while
-G13 closed; PHASE-8 runtime semantics. Selector-state **ownership**
+G13 closed; PHASE-8 runtime semantics. Numeric ceiling `N_VALUE=5` is
+closed as Owner policy in §4.5.3 under `AT_MOST_N`. Selector-state **ownership**
 for membership identity is closed as principle only in §4.5.3; a
 membership artifact, writer, persistence, and bound listing input
 remain unresolved. Isolated membership-only pending analog is closed
@@ -543,7 +544,7 @@ ordering as specified in §4.5.3. Portfolio Selection is classified
 (§4.5.2). Authority handoff and host integration remain
 `NOT_DESIGNED` / `NOT_IN_SCOPE`. Isolated ranking-universe family
 isolation and the single-egress **invariant** (handoff still not
-designed; `N_VALUE` unchanged) are persisted in §4.5.4.
+designed; `N_VALUE` is a pointer to §4.5.3) are persisted in §4.5.4.
 
 ### 4.5.2 Isolated MF selector consumption and anti-churn ownership (docs-only; AUTHORITY_EFFECT=NONE)
 
@@ -580,8 +581,8 @@ SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY
 SELECTOR_OWNS_MEMBERSHIP_IDENTITY=false
 MEMBERSHIP_IDENTITY_OWNER_CLASS=ACTIVE_SET_NON_AUTHORITATIVE_MEMBERSHIP_COMPOSITION
 ACTIVE_SET_ROLE=NON_AUTHORITATIVE_MEMBERSHIP_COMPOSITION
-ACTIVE_SET_N_STATUS=UNRATIFIED
-N_VALUE=UNRESOLVED
+ACTIVE_SET_N_STATUS=CEILING_N5_OWNER_POLICY
+N_VALUE=5
 TOP5_STATUS=POSSIBLE_CONFIGURATION_ONLY
 ROTATION_ROLE=MEMBERSHIP_DIFF_ONLY
 ROTATION_IS_MEMBERSHIP_ONLY=true
@@ -602,10 +603,12 @@ POLICY_RATIFIED=false
 RUNTIME_IMPLEMENTATION_CREATED=false
 ```
 
-This persist does **not** ratify `N=5`, hygiene numerics, a
+This persist does **not** ratify hygiene numerics, a
 membership-only pending state machine, context persistence while G13
 closed, or whether `rotation_deltas` is a stage versus a derived
-identity. `OPEN_DECISION_04` is closed as ownership principle only in
+identity. Numeric ceiling `N_VALUE=5` is closed as Owner policy in
+§4.5.3; this ownership persist does **not** re-own that close.
+`OPEN_DECISION_04` is closed as ownership principle only in
 §4.5.3: membership identity is not selector-owned state.
 `OPEN_DECISION_05` is closed in §4.5.3 as
 `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF
@@ -643,7 +646,8 @@ AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
 NEW_EDGE_TO_PRODUCTIVE_SYSTEM=false
 TOP5_VS_ACTIVE_SET_N=NOT_EQUIVALENT
 TOP5_STATUS=POSSIBLE_CONFIGURATION_ONLY
-ACTIVE_SET_N_STATUS=UNRATIFIED
+ACTIVE_SET_N_STATUS=CEILING_N5_OWNER_POLICY
+N_VALUE=5
 TIE_BREAK_SEMANTICS=CAP22_ORIGIN_CONSUMED_AS_MEMBERSHIP_ORDER
 HYSTERESIS_SEMANTICS=SELECTOR_OWNED_CONCEPT_NOT_RATIFIED_RULE
 MIN_HOLDING_SEMANTICS=SELECTOR_OWNED_CONCEPT_NOT_RATIFIED_RULE
@@ -662,8 +666,8 @@ AT_MOST_N_AUTHORITY=OWNER_POLICY_CLOSE
 EXACTLY_N_VS_AT_MOST_N=CLOSED_AT_MOST_N
 CARDINALITY_MODE=AT_MOST_N
 N_IS_CEILING_NOT_FILL_TARGET=true
-CANDIDATE_COUNT_VS_N_WHILE_N_UNRESOLVED=NON_OPERATIVE
-NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=true
+CANDIDATE_COUNT_VS_N=OPERATIVE_AT_MOST_N_CEILING_5
+NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=false
 CAP23_EXACTLY1_IMPORTED=false
 CAP04_N5_IMPORTED=false
 CAP22_TOP20_LIMIT_IS_NOT_ACTIVE_SET_CARDINALITY=true
@@ -673,7 +677,7 @@ MF_RERANKING_ALLOWED=false
 OWN_MF_SCORING_CONTRACT=ABSENT
 MF_SCORING_CONTRACT_REQUIRED=false
 MF_OWN_TIE_BREAK_REQUIRED=false
-OD01_UNBLOCKED_FOR_OWNER_NUMERIC_POLICY=true
+OPEN_DECISION_01_CLOSE_CLASS=CLOSED_NUMERIC_CEILING_N5
 N_VALUE_NOT_DECIDABLE_WHILE_OD02_UNCLOSED=false
 SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY
 SELECTOR_OWNS_MEMBERSHIP_IDENTITY=false
@@ -685,7 +689,7 @@ NAMED_GRAPH_NODE_IS_NOT_STAGE_RATIFICATION=true
 DOC_CONTRACT_PERSISTENCE_IS_NOT_MEMBERSHIP_ARTIFACT_PERSISTENCE=true
 PERSISTENCE_IS_NOT_G13_UNLOCK=true
 PERSISTENCE_IS_NOT_HOST_JOIN=true
-OPEN_DECISION_01_CLOSED=false
+OPEN_DECISION_01_CLOSED=true
 OPEN_DECISION_02_CLOSED=true
 OPEN_DECISION_03_CLOSED=true
 OPEN_DECISION_04_CLOSED=true
@@ -711,12 +715,17 @@ closes `OPEN_DECISION_05` in that contract §1.5 as
 model: no independent Membership-Pending state class is required.
 That close does **not** mean never-needed, does **not** ratify
 anti-churn numerics or rules, and does **not** import Cap 2.3
-`REPLACEMENT_PENDING`. `OPEN_DECISION_01=N_VALUE` remains `UNRESOLVED`
-and is unblocked for a **separate** Owner numeric ceiling policy.
-Numeric prefix selection remains forbidden until that OD01 close.
+`REPLACEMENT_PENDING`. Owner-GO
+`OWNER_GO_MF_OD01_CLOSE_NUMERIC_CEILING_N5_V1`
+closes `OPEN_DECISION_01` in that contract §1.3 as Owner-policy
+numeric ceiling `N_VALUE=5` under `AT_MOST_N`. That close is **not**
+`EXACTLY_5`, does **not** pad, does **not** create a `TOP5` product,
+does **not** import Cap 0.4 `N=5` as authority, and does **not** bind
+a membership artifact, writer, or persistence. Numeric prefix from
+Cap-2.2 membership order is the overfill cut only.
 `OPEN_DECISION_06` and `OPEN_DECISION_07` remain unclosed.
 
-This persist does **not** ratify a numeric `N`, `N=5`, `TOP5`, an
+This persist does **not** ratify a `TOP5` product, an
 MF-own scoring contract, an MF-own tie-break algorithm, hysteresis or
 minimum-holding numerics, a membership-only pending state machine, a
 membership artifact, rotation identity, or rotation policy. Cap 2.3
@@ -729,9 +738,10 @@ Owner-GO
 persists already-adjudicated isolation of the ranking /
 portfolio-selection **family** and the **single-egress** invariant.
 This subsection does **not** replace §4.5–§4.5.3, does **not** design
-a handoff, does **not** set `N_VALUE`, does **not** rewire Cap 2.3 or
+a handoff, does **not** re-own `N_VALUE`, does **not** rewire Cap 2.3 or
 Cap 2.4, does **not** unlock G13, and does **not** create a join into
-the productive system. `OPEN_DECISION_04` is closed in §4.5.3 as
+the productive system. `OPEN_DECISION_01` is closed in §4.5.3 as
+Owner-policy ceiling `N_VALUE=5`. `OPEN_DECISION_04` is closed in §4.5.3 as
 ownership principle only. `OPEN_DECISION_05` is closed in §4.5.3 as
 `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF
 model. This subsection does **not** collectively close
@@ -773,8 +783,10 @@ TOP20_ACTIVE_SET_EQUIVALENT=false
 TOP5_ACTIVE_SET_EQUIVALENT=false
 TOP5_VS_ACTIVE_SET_N=NOT_EQUIVALENT
 CAP22_TOP20_LIMIT_IS_NOT_ACTIVE_SET_CARDINALITY=true
-N_VALUE=UNRESOLVED
+N_VALUE=5
 OD01_CHANGED=false
+OD01_N_VALUE=5
+OD01_CLOSE_CLASS=CLOSED_NUMERIC_CEILING_N5
 OD04_SELECTOR_STATE=CLOSED_OWNERSHIP_PRINCIPLE_ONLY
 OD05_MEMBERSHIP_PENDING=CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED
 OD06_PERSISTENCE_WHILE_G13_CLOSED=UNCLOSED
