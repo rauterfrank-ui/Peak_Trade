@@ -417,6 +417,9 @@ in that contract §1.5 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the
 current isolated MF model. `OPEN_DECISION_06` is closed in that contract
 §1.7 as permission-only `ALLOWED` while G13 remains closed. Permission
 is not artifact existence. This file is not the OD06 close owner.
+Membership-context artifact semantic identity is bound in that
+contract §1.9 as information classes only. This file is not the
+identity close owner. That bind is not artifact existence.
 `OPEN_DECISION_07` stays `UNRESOLVED` / `NOT_AUTHORIZED`. This file does
 **not** re-own the numeric ceiling.
 MF-own tie-break is **not required** while the consume-Cap-2.2-order
@@ -444,6 +447,7 @@ OVERREAD_AS_SSF_STATE_MACHINE=FORBIDDEN
 OVERREAD_AS_ROTATION_POLICY=FORBIDDEN
 OVERREAD_AS_OD04_EQUALS_ARTIFACT_PERSIST=FORBIDDEN
 OVERREAD_AS_OD04_EQUALS_BOUND_LISTING_INPUT=FORBIDDEN
+OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_ARTIFACT_EXISTENCE=FORBIDDEN
 OVERREAD_AS_PENDING_ANALOG_NEVER_NEEDED=FORBIDDEN
 OVERREAD_AS_ANTI_CHURN_NOT_NEEDED=FORBIDDEN
 ```
@@ -489,3 +493,6 @@ closed as Owner-policy ceiling `N_VALUE=5` in the semantics contract
 §1.3. OD04 is closed as ownership principle only in the semantics
 contract §1.4. OD06 is closed as permission-only `ALLOWED` in the
 semantics contract §1.7; this file is not the OD06 close owner.
+Membership-context artifact semantic identity is bound in the
+semantics contract §1.9 as information classes only; this file is not
+the identity close owner. That bind is not artifact existence.

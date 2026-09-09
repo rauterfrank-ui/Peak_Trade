@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1
 status: active
-scope: Docs-only persist of adjudicated isolated MF selection and anti-churn mechanism semantics; OD01 closed as Owner-policy ceiling N=5 under AT_MOST_N; OD06 closed as ALLOW permission for non-authoritative membership-context artifact persistence while G13 remains closed; permission is not artifact existence; no host adapter; no Cap-2.3/2.4 join; hygiene numerics unratified
+scope: Docs-only persist of adjudicated isolated MF selection and anti-churn mechanism semantics; OD01 closed as Owner-policy ceiling N=5 under AT_MOST_N; OD06 closed as ALLOW permission for non-authoritative membership-context artifact persistence while G13 remains closed; permission is not artifact existence; membership-context artifact semantic identity bound as information classes only; no schema, writer, reader, or artifact existence; no host adapter; no Cap-2.3/2.4 join; hygiene numerics unratified; OD07 unclosed
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-09
@@ -21,7 +21,9 @@ HARD_STOP: true
 DOCUMENT_CLASS=DOCS_ONLY_NON_AUTHORIZING_SUBORDINATE_CONTRACT
 AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK
 OWNER_GO_THIS_SLICE=OWNER_GO_MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_PERSIST_V1
+OWNER_GO_MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=OWNER_GO_MF_MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY_V1
 BOUND_ORIGIN_MAIN_SHA=a430bd3837a833d56a8029d3c0d5e8c5380708a1
+BOUND_ORIGIN_MAIN_SHA_THIS_IDENTITY_SLICE=c58d8c5a8a7268af74c989aa0fb166f8f6df40b1
 CONTRACT_ID=MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1
 PARENT_BOUNDARY_CONTRACT=MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1
 PARENT_OWNERSHIP_CONTRACT=MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1
@@ -52,6 +54,16 @@ SSF_SEMANTICS_IMPORTED=false
 MF_SCORING_RATIFIED=false
 ROTATION_POLICY_RATIFIED=false
 MEMBERSHIP_STATE_MACHINE_RATIFIED=false
+MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
+MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
+SCHEMA_BOUND=false
+WRITER_BOUND=false
+READER_BOUND=false
+TEMPORAL_SCHEMA=UNBOUND
+INSTANCE_ID_SCHEMA=UNBOUND
+PRIOR_MEMBERSHIP_REFERENCE_SCHEMA=UNBOUND
+PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=UNPROVEN
+OPEN_DECISION_07_CLOSED=false
 ```
 
 This file persists **already adjudicated** isolated-domain selection and
@@ -622,6 +634,166 @@ It does **not** prove artifact existence, does **not** close
 `OPEN_DECISION_04`, or `OPEN_DECISION_05`, does **not** create a
 `TOP5` product, and does **not** prove `EXACTLY_5`.
 
+Semantic identity of a later membership-context artifact is bound in
+§1.9 as **information classes only**. That bind is **not** an
+`OPEN_DECISION_*` close, **not** artifact existence, and **not** an
+OD07 close.
+
+```text
+OPEN_DECISION_06
+→ MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY_BOUND_INFORMATION_CLASSES_ONLY
+→ ARTIFACT_EXISTENCE_UNPROVEN
+→ PRIOR_MEMBERSHIP_LISTING_UNPROVEN
+→ OD07_UNRESOLVED
+```
+
+### 1.9 Isolated membership-context artifact semantic identity
+
+Owner-GO
+`OWNER_GO_MF_MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY_V1`
+binds the **semantic identity** of a later non-authoritative
+membership-context artifact at **information-class** level. Prior
+fail-closed **boundaries** from OD06 §1.7 remain binding. That
+permission close is **not** re-owned here and is **not** artifact
+existence.
+
+This bind does **not** create an artifact, does **not** bind a schema,
+DTO, field, type, encoding, version, ID, epoch, timestamp, store,
+writer, reader, or lifecycle, does **not** prove listing existence,
+does **not** close `OPEN_DECISION_07`, does **not** unlock G13, and
+does **not** grant runtime, host-join, or execution authority.
+
+```text
+OWNER_GO=OWNER_GO_MF_MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY_V1
+MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
+SEMANTIC_IDENTITY_CLOSE_CLASS=INFORMATION_CLASSES_ONLY
+ARTIFACT_CLASS=NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY
+SEMANTIC_OWNER_CLASS=ACTIVE_SET_NON_AUTHORITATIVE_MEMBERSHIP_COMPOSITION
+CURRENT_MEMBERSHIP_SEMANTIC_PAYLOAD=ORDERED_ACTIVE_SET_MEMBERSHIP
+CURRENT_MEMBERSHIP_SEMANTIC_PAYLOAD_NAME=ordered_instrument_ids
+MEMBERSHIP_IDENTITY_SEMANTIC_NAME=membership_state
+ORDERING_PROVENANCE=CAP_2_2_TOP20_ORDERED_CANDIDATE_CONTEXT
+ORDERING_RULE=CONSUME_CAP22_ORDERING_AS_MEMBERSHIP_ORDER
+MF_RERANKING_ALLOWED=false
+MF_OWN_TIE_BREAK_REQUIRED=false
+CARDINALITY_MODE=AT_MOST_N
+N_VALUE=5
+EXACTLY_5=false
+NO_PADDING=true
+TEMPORAL_IDENTITY_INFORMATION_CLASS=REQUIRED
+TEMPORAL_SCHEMA=UNBOUND
+AS_OF_FRESHNESS_IDENTITY_NAMED=true
+AS_OF_FRESHNESS_SCHEMA=UNBOUND
+ARTIFACT_INSTANCE_IDENTITY_INFORMATION_CLASS=REQUIRED
+INSTANCE_ID_SCHEMA=UNBOUND
+ARTIFACT_TYPE_VERSION_STORE_IDENTITY=UNBOUND
+PRIOR_MEMBERSHIP_REFERENCE_INFORMATION_CLASS=REQUIRED
+PRIOR_MEMBERSHIP_REFERENCE_SCHEMA=UNBOUND
+PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=UNPROVEN
+SOURCE_PROVENANCE_INFORMATION_CLASS=REQUIRED
+SOURCE_PROVENANCE_CAP22_FIELD_MAPPING=UNBOUND
+REPLAY_MEMBERSHIP_ORDER_DETERMINISM=RECOGNIZED
+PREVIOUS_TO_CURRENT_ARTIFACT_REPLAY=UNBOUND
+MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
+SCHEMA_BOUND=false
+WRITER_BOUND=false
+READER_BOUND=false
+OPEN_DECISION_07_CLOSED=false
+OD07_EFFECT=NONE
+G13_UNLOCK=false
+RUNTIME_AUTHORIZED=false
+EXECUTION_AUTHORITY_EFFECT=NONE
+```
+
+Bound meaning: if a later Owner-GO ratifies existence and schema of a
+non-authoritative membership-context artifact, that artifact **must**
+carry these information classes. This persist does **not** name new
+fields. Existing parent-boundary semantic names
+(`ordered_instrument_ids`, `membership_state`, `provenance`,
+`as_of`) remain **names of information classes**. Their schema, type,
+and authority remain `UNBOUND` / `NONE`.
+
+Current membership payload is the ordered Active-Set membership
+already named `ordered_instrument_ids`. That listing is **not**
+Top-20 candidate context. Ordering provenance is Cap 2.2 ordered
+Top-20 candidate context. Ordering rule remains consume-Cap-2.2
+ordering; MF re-ranking and an MF-own tie-break remain forbidden.
+Cardinality remains `AT_MOST_N` with ceiling `N_VALUE=5`.
+`EXACTLY_5` remains false. Padding remains forbidden.
+
+Temporal identity is a **required information class**. Concrete
+epoch, snapshot, or `as_of` schema remains `UNBOUND`. Artifact
+instance identity is a **required information class**. Concrete ID,
+type, version, and store identity remain `UNBOUND`. Prior membership
+reference is a **required information class** for prior/current
+referability and previous→current replay. Concrete reference schema
+remains `UNBOUND`. Actual prior-listing existence remains `UNPROVEN`.
+Source provenance is a **required information class**. Concrete
+Cap-2.2 field mapping remains `UNBOUND`. Cap-2.2 ranking-snapshot
+identity fields remain Cap-2.2 identity and are **not** rebound as a
+membership schema.
+
+Deterministic membership-order is **recognized** via the already-closed
+consume-Cap-2.2 policy. Previous→current artifact replay remains
+`UNBOUND` until instance identity, temporal identity, and prior
+reference identity exist as bound schemas **and** a prior listing is
+proven. This persist does **not** prove those.
+
+Negative boundary (this identity; not a schema):
+
+```text
+MEMBERSHIP_ARTIFACT_IS_NOT_CAP23_SSF_SNAPSHOT=true
+MEMBERSHIP_ARTIFACT_IS_NOT_R6_SHADOW_SIM_EVIDENCE=true
+MEMBERSHIP_ARTIFACT_IS_NOT_DOC_CONTRACT_PERSISTENCE=true
+MEMBERSHIP_ARTIFACT_IS_NOT_TOP20_CANDIDATE_CONTEXT=true
+TOP20_ROLE=CANDIDATE_CONTEXT_ONLY
+TOP5_VS_ACTIVE_SET_N=NOT_EQUIVALENT
+TOP5_IS_NOT_ACTIVE_SET_AUTHORITY=true
+SCORES_RANKS_REMAIN_CAP22_CANDIDATE_CONTEXT=true
+SCORES_RANKS_ARE_NOT_MEMBERSHIP_AUTHORITY=true
+RETAINED_ENTERED_EXITED_PERSISTED_STAGE=NOT_RATIFIED
+ROTATION_DELTAS_STAGE_VS_DERIVED=UNRESOLVED
+OPEN_DECISION_07=ROTATION_DELTAS_STAGE_VS_DERIVED_IDENTITY
+OPEN_DECISION_07_CLOSED=false
+ANTI_CHURN_POLICY_RATIFIED=false
+HYSTERESIS_IS_RATIFIED_RULE=false
+MIN_HOLDING_IS_RATIFIED_RULE=false
+REPLACEMENT_MARGIN=UNRESOLVED
+HYSTERESIS_CONFIRMATION_COUNT=UNRESOLVED
+REPLACEMENT_PENDING_INDEPENDENT_STATE=FORBIDDEN_UNDER_CURRENT_OD05
+SSF_REPLACEMENT_PENDING_IMPORTED=false
+EXECUTION_FIELDS_INSIDE_MEMBERSHIP_ARTIFACT_IDENTITY=FORBIDDEN
+ORDER_POSITION_VENUE_FIELDS_INSIDE_MEMBERSHIP_ARTIFACT_IDENTITY=FORBIDDEN
+G13_UNLOCK=false
+EXECUTION_AUTHORITY_EFFECT=NONE
+```
+
+`rotation_deltas` remains membership-change-only as **named**
+isolated-domain semantics. Stage versus derived remains OD07 /
+`UNRESOLVED`. Retained / entered / exited are **not** ratified as a
+persisted stage. They are **not** declared derivable: prior listing
+existence is `UNPROVEN`, durable artifact existence is `UNPROVEN`,
+and OD07 remains unclosed.
+
+Anti-churn, hysteresis, minimum holding, replacement margin, and
+consecutive confirmation remain unratified **concepts**. OD05 remains
+`NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF
+model. Cap 2.3 `REPLACEMENT_PENDING` remains not imported.
+
+Fail-closed after this bind:
+
+```text
+OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_ARTIFACT_EXISTENCE=FORBIDDEN
+OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_SCHEMA=FORBIDDEN
+OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_WRITER_OR_READER=FORBIDDEN
+OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_PRIOR_LISTING_EXISTENCE=FORBIDDEN
+OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_OD07_CLOSE=FORBIDDEN
+OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_G13_UNLOCK=FORBIDDEN
+OVERREAD_AS_RETAINED_ENTERED_EXITED_NOW_DERIVABLE=FORBIDDEN
+OVERREAD_AS_FIELD_OR_DTO_INVENTION=FORBIDDEN
+OVERREAD_AS_CAP22_SNAPSHOT_FIELDS_REBOUND_AS_MEMBERSHIP_SCHEMA=FORBIDDEN
+```
+
 ## 2. Owner by mechanism
 
 Owners below are **cited from** the parent ownership contract. This file
@@ -936,6 +1108,13 @@ OVERREAD_AS_PERSISTENCE_EQUALS_G13_UNLOCK=FORBIDDEN
 OVERREAD_AS_PERSISTENCE_EQUALS_HOST_JOIN=FORBIDDEN
 OVERREAD_AS_OD06_EQUALS_SCHEMA_OR_WRITER=FORBIDDEN
 OVERREAD_AS_OD06_EQUALS_OD07_CLOSE=FORBIDDEN
+OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_ARTIFACT_EXISTENCE=FORBIDDEN
+OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_SCHEMA=FORBIDDEN
+OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_WRITER_OR_READER=FORBIDDEN
+OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_PRIOR_LISTING_EXISTENCE=FORBIDDEN
+OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_OD07_CLOSE=FORBIDDEN
+OVERREAD_AS_SEMANTIC_IDENTITY_EQUALS_G13_UNLOCK=FORBIDDEN
+OVERREAD_AS_RETAINED_ENTERED_EXITED_NOW_DERIVABLE=FORBIDDEN
 INVENTION_OF_THRESHOLDS_FROM_PLAUSIBILITY=FORBIDDEN
 CANDIDATE_COUNT_VS_N=OPERATIVE_AT_MOST_N_CEILING_5
 UNDERFILL_DOES_NOT_PAD=true
@@ -989,7 +1168,10 @@ in §1.1–§1.2. OD04 is closed in §1.4 as ownership principle only. OD05
 is closed in §1.5 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the
 current isolated MF model. OD06 is closed in §1.7 as permission-only
 `ALLOWED` while G13 remains closed. Permission is not artifact
-existence.
+existence. Membership-context artifact semantic identity is bound in
+§1.9 as information classes only. That bind is not artifact existence,
+not schema, not writer, not prior-listing existence, and not an
+OD07 close.
 
 ```text
 OPEN_DECISION_01=N_VALUE
@@ -1017,6 +1199,14 @@ OPEN_DECISION_06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_P
 NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
 PERMISSION_TO_PERSIST_IS_NOT_EXISTENCE_OF_PERSISTED_ARTIFACT=true
 MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
+MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
+TEMPORAL_SCHEMA=UNBOUND
+INSTANCE_ID_SCHEMA=UNBOUND
+PRIOR_MEMBERSHIP_REFERENCE_SCHEMA=UNBOUND
+PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=UNPROVEN
+SCHEMA_BOUND=false
+WRITER_BOUND=false
+READER_BOUND=false
 OPEN_DECISION_07=ROTATION_DELTAS_STAGE_VS_DERIVED_IDENTITY
 OPEN_DECISION_07_CLOSED=false
 NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=false
@@ -1031,6 +1221,7 @@ MF_OWN_TIE_BREAK_REQUIRED=false
 | Hysteresis | Ownership locates concept at selector; no MF rule authority | Ownership §5.2; this file §7 | Cap 2.3 SSF hysteresis **not imported**; Cap 0.4 open decision; MV2/strategy hysteresis `OUT_OF_DOMAIN` | Isolated MF selector unimplemented | All numerics; concept-vs-rule remains concept |
 | Min holding | Ownership locates concept at selector; no MF rule authority | Ownership §5.3; this file §8 | Cap 2.3 SSF min holding **not imported**; Cap 0.4 open decision | Isolated MF selector unimplemented | All numerics; residence duration unbound |
 | Replacement-pending | Cap 2.3 only; **not** MF authority | Ownership §5.5 forbids SSF import; this file §9 / §1.5 | Cap 2.3 `REPLACEMENT_PENDING` state machine | Cap 2.3 producer exists **outside** this graph; no MF pending runtime | Independent MF pending class **not required** in the current isolated model (`OPEN_DECISION_05` closed); not never-needed |
+| Membership-context artifact identity | Information classes bound in §1.9; class `NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY`; owner-class Active-Set composition | This file §1.9; parent boundary §8 names remain unbound schema | R6 `ordered_instrument_ids` observation **not promoted**; Cap-2.3 snapshots **not imported**; docs-contract persist **not** membership artifact | Isolated membership artifact unimplemented; `MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN` | Existence, schema, writer, reader, temporal/instance/prior-reference schemas, prior listing, OD07 |
 
 ```text
 CURRENT_RUNTIME_EXISTENCE_ISOLATED_MF_SELECTOR=false
@@ -1098,3 +1289,7 @@ prepare host integration. OD01 is closed as Owner-policy ceiling
 `N_VALUE=5`. OD04 is closed as ownership principle only. OD06 is
 closed as permission-only `ALLOWED` while G13 remains closed.
 Permission is not artifact existence, schema, writer, or OD07 close.
+Membership-context artifact semantic identity is bound in §1.9 as
+information classes only. That bind is not artifact existence, not
+schema, not writer, not prior-listing existence, and not an OD07
+close.

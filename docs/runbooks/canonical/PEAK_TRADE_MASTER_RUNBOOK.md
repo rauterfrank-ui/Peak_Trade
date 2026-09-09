@@ -534,7 +534,9 @@ hysteresis/cooldown/turnover **numerics**; membership-artifact
 existence / writer / schema / bound listing; PHASE-8 runtime
 semantics. Non-authoritative membership-context artifact persistence
 while G13 closed is closed as Owner-policy **permission** `ALLOWED`
-in §4.5.3; permission is **not** artifact existence. Numeric ceiling `N_VALUE=5` is
+in §4.5.3; permission is **not** artifact existence. Membership-context
+artifact **semantic identity** is bound in §4.5.3 as information
+classes only; that bind is **not** artifact existence. Numeric ceiling `N_VALUE=5` is
 closed as Owner policy in §4.5.3 under `AT_MOST_N`. Selector-state **ownership**
 for membership identity is closed as principle only in §4.5.3; a
 membership artifact, writer, schema, and bound listing input
@@ -705,6 +707,15 @@ OPEN_DECISION_05_CLOSED=true
 OPEN_DECISION_06_CLOSED=true
 OPEN_DECISION_06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
 NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
+MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
+MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
+TEMPORAL_SCHEMA=UNBOUND
+INSTANCE_ID_SCHEMA=UNBOUND
+PRIOR_MEMBERSHIP_REFERENCE_SCHEMA=UNBOUND
+PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=UNPROVEN
+SCHEMA_BOUND=false
+WRITER_BOUND=false
+READER_BOUND=false
 OPEN_DECISION_07_CLOSED=false
 ```
 
@@ -741,6 +752,13 @@ permission `ALLOWED`: a non-authoritative membership-context artifact
 That close is **not** artifact existence, does **not** bind schema,
 writer, reader, store, or listing, does **not** unlock G13, and does
 **not** close `OPEN_DECISION_07`. `OPEN_DECISION_07` remains unclosed.
+Owner-GO
+`OWNER_GO_MF_MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY_V1`
+binds membership-context artifact semantic identity in the subordinate
+semantics contract §1.9 as information classes only. That bind is
+**not** artifact existence, does **not** bind schema, writer, reader,
+store, or listing, does **not** prove prior-listing existence, does
+**not** unlock G13, and does **not** close `OPEN_DECISION_07`.
 
 This persist does **not** ratify a `TOP5` product, an
 MF-own scoring contract, an MF-own tie-break algorithm, hysteresis or
@@ -749,7 +767,8 @@ membership artifact, rotation identity, or rotation policy. Cap 2.3
 `REPLACEMENT_PENDING` remains not imported. G13 remains closed.
 OD06 permission to persist a non-authoritative membership-context
 artifact while G13 remains closed is **ALLOWED**; permission is **not**
-artifact existence.
+artifact existence. Semantic identity bound as information classes is
+**not** artifact existence.
 
 ### 4.5.4 Isolated ranking universe and single-egress boundary (docs-only; AUTHORITY_EFFECT=NONE)
 
@@ -765,8 +784,10 @@ Owner-policy ceiling `N_VALUE=5`. `OPEN_DECISION_04` is closed in §4.5.3 as
 ownership principle only. `OPEN_DECISION_05` is closed in §4.5.3 as
 `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF
 model. `OPEN_DECISION_06` is closed in §4.5.3 as permission-only
-`ALLOWED` while G13 remains closed. This subsection does **not**
-re-own that close and does **not** close `OPEN_DECISION_07`. This
+`ALLOWED` while G13 remains closed. Membership-context artifact
+semantic identity is bound in §4.5.3 as information classes only.
+This subsection does **not**
+re-own those closes and does **not** close `OPEN_DECISION_07`. This
 subsection does **not** collectively close
 `OPEN_DECISION_04`–`07`.
 
@@ -814,6 +835,8 @@ OD04_SELECTOR_STATE=CLOSED_OWNERSHIP_PRINCIPLE_ONLY
 OD05_MEMBERSHIP_PENDING=CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED
 OD06_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
 OD06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
+MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
+MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
 OD07_ROTATION_IDENTITY=UNCLOSED
 OD04_TO_OD07_CHANGED=false
 RUNTIME_IMPLEMENTATION_CREATED=false
