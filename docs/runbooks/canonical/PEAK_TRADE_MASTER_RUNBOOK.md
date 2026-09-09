@@ -529,12 +529,14 @@ This workpackage creates **no** new edge between those graphs. It does
 2.3 or Cap 2.4, or authority handoff.
 
 Unresolved remains unresolved: `N` including `N=5`; rotation numerics;
-hysteresis/cooldown/turnover **numerics**; membership-only
-transition-pending; context persistence while G13 closed; PHASE-8
-runtime semantics. Selector-state **ownership** for membership
-identity is closed as principle only in §4.5.3; a membership artifact,
-writer, persistence, and bound listing input remain unresolved.
-Cardinality mode is closed as
+hysteresis/cooldown/turnover **numerics**; context persistence while
+G13 closed; PHASE-8 runtime semantics. Selector-state **ownership**
+for membership identity is closed as principle only in §4.5.3; a
+membership artifact, writer, persistence, and bound listing input
+remain unresolved. Isolated membership-only pending analog is closed
+in §4.5.3 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current
+isolated MF model; that is **not** never-needed and does **not**
+ratify anti-churn rules. Cardinality mode is closed as
 `AT_MOST_N` in §4.5.3. Membership order consumes Cap 2.2 origin
 ordering as specified in §4.5.3. Portfolio Selection is classified
 `P2_ALIAS_OR_PART_OF_SELECTOR` and is **not** a core-model node
@@ -601,12 +603,14 @@ RUNTIME_IMPLEMENTATION_CREATED=false
 ```
 
 This persist does **not** ratify `N=5`, hygiene numerics, a
-membership-only transition-pending node, context persistence while G13
+membership-only pending state machine, context persistence while G13
 closed, or whether `rotation_deltas` is a stage versus a derived
 identity. `OPEN_DECISION_04` is closed as ownership principle only in
-§4.5.3: membership identity is not selector-owned state. Cardinality
-mode and membership-order policy for the same graph are persisted in
-§4.5.3.
+§4.5.3: membership identity is not selector-owned state.
+`OPEN_DECISION_05` is closed in §4.5.3 as
+`NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF
+model. Cardinality mode and membership-order policy for the same graph
+are persisted in §4.5.3.
 
 ### 4.5.3 Isolated MF selection and anti-churn mechanism semantics (docs-only; AUTHORITY_EFFECT=NONE)
 
@@ -643,7 +647,7 @@ ACTIVE_SET_N_STATUS=UNRATIFIED
 TIE_BREAK_SEMANTICS=CAP22_ORIGIN_CONSUMED_AS_MEMBERSHIP_ORDER
 HYSTERESIS_SEMANTICS=SELECTOR_OWNED_CONCEPT_NOT_RATIFIED_RULE
 MIN_HOLDING_SEMANTICS=SELECTOR_OWNED_CONCEPT_NOT_RATIFIED_RULE
-REPLACEMENT_PENDING_SEMANTICS=SSF_STATE_NOT_IMPORTED_MEMBERSHIP_ANALOG_UNPROVEN
+REPLACEMENT_PENDING_SEMANTICS=SSF_STATE_NOT_IMPORTED_NO_INDEPENDENT_MF_PENDING_STATE_REQUIRED
 REPLACEMENT_PENDING_IS_NOT_MEMBERSHIP_ROTATION=true
 ROTATION_ROLE=MEMBERSHIP_DIFF_ONLY
 ROTATION_IS_NOT_ANTI_CHURN_OWNER=true
@@ -674,7 +678,9 @@ N_VALUE_NOT_DECIDABLE_WHILE_OD02_UNCLOSED=false
 SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY
 SELECTOR_OWNS_MEMBERSHIP_IDENTITY=false
 DURABLE_SELECTOR_OWNED_MEMBERSHIP_STORE=NOT_AUTHORIZED
-MEMBERSHIP_ONLY_ANALOG_REQUIRED=UNPROVEN
+MEMBERSHIP_ONLY_ANALOG_REQUIRED=false
+MEMBERSHIP_ONLY_ANALOG_REQUIRED_SCOPE=CURRENT_ISOLATED_MF_MODEL
+NO_INDEPENDENT_MEMBERSHIP_PENDING_STATE_REQUIRED=true
 NAMED_GRAPH_NODE_IS_NOT_STAGE_RATIFICATION=true
 DOC_CONTRACT_PERSISTENCE_IS_NOT_MEMBERSHIP_ARTIFACT_PERSISTENCE=true
 PERSISTENCE_IS_NOT_G13_UNLOCK=true
@@ -683,7 +689,7 @@ OPEN_DECISION_01_CLOSED=false
 OPEN_DECISION_02_CLOSED=true
 OPEN_DECISION_03_CLOSED=true
 OPEN_DECISION_04_CLOSED=true
-OPEN_DECISION_05_CLOSED=false
+OPEN_DECISION_05_CLOSED=true
 OPEN_DECISION_06_CLOSED=false
 OPEN_DECISION_07_CLOSED=false
 ```
@@ -698,11 +704,17 @@ closes `OPEN_DECISION_04` in that contract §1.4 as ownership principle
 only: membership identity is the non-authoritative listing /
 composition class and is **not** selector-owned state. That close does
 **not** bind a listing artifact, writer, persistence, restore, prior
-listing existence, rotation stage, or runtime consumer.
-`OPEN_DECISION_01=N_VALUE` remains `UNRESOLVED` and is unblocked for a
-**separate** Owner numeric ceiling policy. Numeric prefix selection
-remains forbidden until that OD01 close. `OPEN_DECISION_05` through
-`OPEN_DECISION_07` remain unclosed.
+listing existence, rotation stage, or runtime consumer. Owner-GO
+`OWNER_POLICY_CLOSE_MF_OD05_NO_INDEPENDENT_PENDING_STATE_REQUIRED_V1`
+closes `OPEN_DECISION_05` in that contract §1.5 as
+`NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF
+model: no independent Membership-Pending state class is required.
+That close does **not** mean never-needed, does **not** ratify
+anti-churn numerics or rules, and does **not** import Cap 2.3
+`REPLACEMENT_PENDING`. `OPEN_DECISION_01=N_VALUE` remains `UNRESOLVED`
+and is unblocked for a **separate** Owner numeric ceiling policy.
+Numeric prefix selection remains forbidden until that OD01 close.
+`OPEN_DECISION_06` and `OPEN_DECISION_07` remain unclosed.
 
 This persist does **not** ratify a numeric `N`, `N=5`, `TOP5`, an
 MF-own scoring contract, an MF-own tie-break algorithm, hysteresis or
@@ -720,8 +732,10 @@ This subsection does **not** replace §4.5–§4.5.3, does **not** design
 a handoff, does **not** set `N_VALUE`, does **not** rewire Cap 2.3 or
 Cap 2.4, does **not** unlock G13, and does **not** create a join into
 the productive system. `OPEN_DECISION_04` is closed in §4.5.3 as
-ownership principle only. This subsection does **not** collectively
-close `OPEN_DECISION_04`–`07`.
+ownership principle only. `OPEN_DECISION_05` is closed in §4.5.3 as
+`NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF
+model. This subsection does **not** collectively close
+`OPEN_DECISION_04`–`07`.
 
 Subordinate contract:
 `docs&#47;ops&#47;specs&#47;MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_CONTRACT_V1.md`.
@@ -762,7 +776,7 @@ CAP22_TOP20_LIMIT_IS_NOT_ACTIVE_SET_CARDINALITY=true
 N_VALUE=UNRESOLVED
 OD01_CHANGED=false
 OD04_SELECTOR_STATE=CLOSED_OWNERSHIP_PRINCIPLE_ONLY
-OD05_MEMBERSHIP_PENDING=UNCLOSED
+OD05_MEMBERSHIP_PENDING=CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED
 OD06_PERSISTENCE_WHILE_G13_CLOSED=UNCLOSED
 OD07_ROTATION_IDENTITY=UNCLOSED
 OD04_TO_OD07_CHANGED=false
