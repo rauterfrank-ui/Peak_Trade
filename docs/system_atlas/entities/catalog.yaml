@@ -276,7 +276,10 @@ entities:
       UNPROVEN is not ABSENT; creation is not authorized.
       Creation-authorization semantics are bound in semantics §1.12 as
       PERMISSION_BIT_ONLY; CREATION_AUTHORIZED remains false;
-      permission-bit is not materialization. OD07 remains
+      permission-bit is not materialization. The next canonical decision
+      class is named in semantics §1.13 as
+      MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1; naming the class
+      does not set CREATION_AUTHORIZED true. OD07 remains
       unclosed. No second ranker.
       No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed. Atlas is
       not runtime authority. ATLAS_AUTHORITY=NONE.
@@ -319,7 +322,11 @@ entities:
       not authorized. Creation-authorization semantics are bound in
       the semantics contract §1.12 as PERMISSION_BIT_ONLY; this
       catalog note is a pointer. CREATION_AUTHORIZED remains false.
-      Permission-bit is not materialization. OD07 remains unclosed.
+      Permission-bit is not materialization. The next canonical decision
+      class is named in the semantics contract §1.13 as
+      MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1; this catalog
+      note is a pointer. Naming the class does not set
+      CREATION_AUTHORIZED true. OD07 remains unclosed.
       OD04_TO_OD07_CHANGED is not a collective close.
       CAP23_IMPORTED=false.
       No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed. Atlas is
