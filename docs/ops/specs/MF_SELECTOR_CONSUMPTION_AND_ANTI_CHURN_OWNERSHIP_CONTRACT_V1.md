@@ -428,14 +428,15 @@ The instance-existence decision class is persisted in that contract
 §1.11 as
 `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`.
 This file is not the census-persist owner. `UNPROVEN` is not `ABSENT`.
-Creation is not authorized. Creation-authorization semantics are bound
+Creation-authorization semantics are bound
 in that contract §1.12 as `PERMISSION_BIT_ONLY`. This file is not the
-predicate close owner. `CREATION_AUTHORIZED` remains `false`.
-Permission-bit is not materialization. The next canonical decision
-class is named in that contract §1.13 as
-`MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1`. This file is not
-the decision-class bind owner. Naming the class does not set
-`CREATION_AUTHORIZED=true`.
+predicate close owner. The named decision class
+`MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1` is closed in that
+contract §1.14 as `SET_CREATION_AUTHORIZED_TRUE`. This file is not
+the decision-class close owner. `CREATION_AUTHORIZED` is `true` as
+permission-bit only. Permission-bit is not materialization. Naming the
+class does not set the bit. This persist does not name a next
+canonical decision.
 `OPEN_DECISION_07` stays `UNRESOLVED` / `NOT_AUTHORIZED`. This file does
 **not** re-own the numeric ceiling.
 MF-own tie-break is **not required** while the consume-Cap-2.2-order
@@ -471,6 +472,7 @@ OVERREAD_AS_PREDICATE_EQUALS_CREATION_AUTHORIZED_TRUE=FORBIDDEN
 OVERREAD_AS_PERMISSION_BIT_EQUALS_MATERIALIZATION=FORBIDDEN
 OVERREAD_AS_OD06_ALLOWED_EQUALS_CREATION_AUTHORIZED=FORBIDDEN
 OVERREAD_AS_DECISION_CLASS_EQUALS_CREATION_AUTHORIZED_TRUE=FORBIDDEN
+OVERREAD_AS_CREATION_AUTHORIZED_TRUE_EQUALS_MATERIALIZATION=FORBIDDEN
 OVERREAD_AS_PENDING_ANALOG_NEVER_NEEDED=FORBIDDEN
 OVERREAD_AS_ANTI_CHURN_NOT_NEEDED=FORBIDDEN
 ```
@@ -527,11 +529,12 @@ The instance-existence decision class is persisted in the semantics
 contract §1.11 as
 `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`;
 this file is not the census-persist owner. `UNPROVEN` is not `ABSENT`.
-Creation is not authorized. Creation-authorization semantics are bound
+Creation-authorization semantics are bound
 in the semantics contract §1.12 as `PERMISSION_BIT_ONLY`; this file is
-not the predicate close owner. `CREATION_AUTHORIZED` remains `false`.
-Permission-bit is not materialization. The next canonical decision
-class is named in the semantics contract §1.13 as
-`MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1`; this file is not
-the decision-class bind owner. Naming the class does not set
-`CREATION_AUTHORIZED=true`.
+not the predicate close owner. The named decision
+class is closed in the semantics contract §1.14 as
+`SET_CREATION_AUTHORIZED_TRUE`; this file is not
+the decision-class close owner. `CREATION_AUTHORIZED` is `true` as
+permission-bit only.
+Permission-bit is not materialization. Naming the class does not set
+the bit. This persist does not name a next canonical decision.
