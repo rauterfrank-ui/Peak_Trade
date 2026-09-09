@@ -4,7 +4,7 @@ status: active
 scope: Docs-only isolated-domain boundary for NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY; no host adapter; no Cap-2.3/2.4 join
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
-last_updated: 2026-09-08
+last_updated: 2026-09-09
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 RUNTIME_ACTIVATION_ALLOWED: false
@@ -353,16 +353,19 @@ This contract does **not** ratify, default, design, or implicitly close:
 
 | Item | Status |
 |---|---|
-| `N` including `N=5` | `UNRESOLVED` / `UNRATIFIED` / `NOT_AUTHORIZED` |
+| `N` including `N=5` | `UNRESOLVED` / `UNRATIFIED` / `NOT_AUTHORIZED`; not decidable while `OPEN_DECISION_02` unclosed; fail-closed in semantics §1.3 |
 | Exactly-N vs at-most-N | `UNRESOLVED`; fail-closed non-inference in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1` §1.1; neither mode is default; not `N` ratification |
-| MF scoring contract | `ABSENT` / `UNRESOLVED` / `NOT_AUTHORIZED` |
+| MF scoring contract | `ABSENT` / `UNRESOLVED` / `NOT_AUTHORIZED`; consume-as-rank also `NOT_AUTHORIZED`; fail-closed in semantics §1.2; MF-own tie-break blocked until `OPEN_DECISION_03` closes |
 | Selector policy / scoring | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` |
 | Selector role / anti-churn ownership | persisted in `MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1`; not scoring; not numerics |
-| Selection / anti-churn mechanism semantics | persisted in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1`; not numerics; not SSF import; not scoring |
+| Selection / anti-churn mechanism semantics | persisted in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1` §1.1–§1.8 fail-closed boundaries and semantic DAG; none of `OPEN_DECISION_01`–`07` closed; not numerics; not SSF import; not scoring |
+| Selector state | `UNPROVEN` / `UNRESOLVED`; hygiene concepts do not force durable selector state; `membership_state` is not selector-owned state; fail-closed in semantics §1.4 |
+| Membership-only transition-pending | analog `UNPROVEN`; node `OUT_OF_CORE_MODEL`; Cap-2.3 `REPLACEMENT_PENDING` out of domain; fail-closed in semantics §1.5 |
 | Rotation numerics | `UNRESOLVED` / `NOT_AUTHORIZED` |
+| Rotation identity (`rotation_deltas` stage vs derived) | `UNRESOLVED`; named graph node is not stage ratification; no rotation engine; fail-closed in semantics §1.6 |
 | Hysteresis / cooldown / turnover **numerics** | `UNRESOLVED` / `NOT_AUTHORIZED` |
 | Portfolio Selection node | `P2_ALIAS_OR_PART_OF_SELECTOR` / `OUT_OF_CORE_MODEL` / `NOT_AUTHORIZED` as a distinct stage |
-| Context persistence while G13 closed | `UNPROVEN` / `UNRESOLVED` / `NOT_AUTHORIZED` |
+| Context persistence while G13 closed | `UNPROVEN` / `UNRESOLVED` / `NOT_AUTHORIZED`; docs-contract persistence is not membership-artifact persistence, G13 unlock, host join, or runtime; fail-closed in semantics §1.7 |
 | Authority handoff | `NOT_DESIGNED` / `NOT_IN_SCOPE` / `NOT_AUTHORIZED` |
 | Host adapter | `NOT_DESIGNED` / `NOT_IN_SCOPE` |
 | Host consumption | `NONE` / `NOT_IN_SCOPE` |
@@ -379,6 +382,9 @@ HYSTERESIS_COOLDOWN_TURNOVER_RATIFIED=false
 PORTFOLIO_SELECTION_RATIFIED=false
 PORTFOLIO_SELECTION_NODE=OUT_OF_CORE_MODEL
 PERSISTENCE_WHILE_G13_CLOSED=UNPROVEN
+DOC_CONTRACT_PERSISTENCE_IS_NOT_MEMBERSHIP_ARTIFACT_PERSISTENCE=true
+PERSISTENCE_IS_NOT_G13_UNLOCK=true
+PERSISTENCE_IS_NOT_HOST_JOIN=true
 AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
 AUTHORITY_HANDOFF_RATIFIED=false
 INTEGRATION_STATUS=NOT_IN_SCOPE

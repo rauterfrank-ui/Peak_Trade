@@ -4,7 +4,7 @@ status: active
 scope: Docs-only persist of already-adjudicated isolated MF selector consumption and anti-churn ownership; no host adapter; no Cap-2.3/2.4 join
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
-last_updated: 2026-09-08
+last_updated: 2026-09-09
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 RUNTIME_ACTIVATION_ALLOWED: false
@@ -347,26 +347,30 @@ G13_UNLOCK=false
 
 ```text
 OPEN_DECISION_01=N_VALUE
+OPEN_DECISION_01_CLOSED=false
 OPEN_DECISION_02=EXACTLY_N_VS_AT_MOST_N
 OPEN_DECISION_02_CLOSED=false
 OPEN_DECISION_03=CONSUME_CAP22_ORDERING_VS_LATER_OWN_MF_SCORING
+OPEN_DECISION_03_CLOSED=false
 OPEN_DECISION_04=SELECTOR_STATE
+OPEN_DECISION_04_CLOSED=false
 OPEN_DECISION_05=MEMBERSHIP_ONLY_TRANSITION_PENDING_NEEDED
+OPEN_DECISION_05_CLOSED=false
 OPEN_DECISION_06=CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
+OPEN_DECISION_06_CLOSED=false
 OPEN_DECISION_07=ROTATION_DELTAS_STAGE_VS_DERIVED_IDENTITY
+OPEN_DECISION_07_CLOSED=false
 ```
 
 These seven items remain `UNRESOLVED` / `NOT_AUTHORIZED`. This persist
 must not be read as closing them.
 
-Fail-closed cardinality-mode **boundaries** for `OPEN_DECISION_02`
-(neither `EXACTLY_N` nor `AT_MOST_N` is default; silence does not
-select a mode; Cap-2.3 exactly-1 and Cap-0.4 `N=5` reminder are not
-this mode; Cap-2.2 Top-20 limit is not Active-Set cardinality) are
-persisted in
+Fail-closed **boundaries** for `OPEN_DECISION_01` through
+`OPEN_DECISION_07` are persisted in
 [`MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md`](MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md)
-§1.1. That persist does **not** close `OPEN_DECISION_02` and does
-**not** ratify `OPEN_DECISION_01=N_VALUE`.
+§1.1–§1.8. That persist does **not** close any of the seven. `N_VALUE`
+remains not decidable while `OPEN_DECISION_02` is unclosed. MF-own
+tie-break remains blocked until `OPEN_DECISION_03` closes.
 
 ## 8. Fail-closed interpretation
 

@@ -200,6 +200,254 @@ CAP23_SINGLE_SELECTED_FUTURE_POLICY=NEGATIVE_CONSTRAINT_ONLY
 CAP04_ROTATION_REMINDER=DEFERRED_REQUIRED_CAPABILITY_NOT_RATIFIED_HERE
 ```
 
+### 1.2 Isolated consume vs own-scoring fork (OPEN_DECISION_03)
+
+Owner-GO
+`OWNER_GO_MF_OPEN_DECISIONS_01_THROUGH_07_BOUNDED_ADJUDICATION_WORKPACKAGE_V1`
+persists fail-closed **boundaries** for
+`OPEN_DECISION_03=CONSUME_CAP22_ORDERING_VS_LATER_OWN_MF_SCORING`. It
+does **not** close that decision, does **not** ratify an MF scoring
+contract, and does **not** choose consume-as-rank versus later own
+scoring.
+
+```text
+OPEN_DECISION_03=CONSUME_CAP22_ORDERING_VS_LATER_OWN_MF_SCORING
+OPEN_DECISION_03_CLOSED=false
+CAP22_INPUT_ORDERING_IS_NOT_MEMBERSHIP_RANKING_AUTHORITY=true
+OWN_MF_SCORING_CONTRACT=ABSENT
+OWN_MF_SCORING_AUTHORITY=NONE
+CONSUME_CAP22_ORDERING_AS_MEMBERSHIP_RANK=NOT_AUTHORIZED
+LATER_OWN_MF_SCORING=NOT_AUTHORIZED
+PREFIX_N_FROM_CAP22_ORDERING=FORBIDDEN
+MF_OWN_TIE_BREAK_ALGORITHM=BLOCKED_UNTIL_OD03_CLOSE
+MF_OWN_TIE_BREAK_KEYS=NOT_AUTHORIZED
+MF_SCORING_WEIGHTS_FEATURES=NOT_AUTHORIZED
+```
+
+Proven input identity is Cap 2.2 ordered Top-20 **candidate context**.
+That origin ordering is a Cap-2.2 producer property. It is **not**
+isolated-domain membership ranking authority.
+
+Current fork authority:
+
+| Fork | Current isolated-domain authority | Epistemic class |
+|---|---|---|
+| Consume Cap 2.2 ordering as membership rank | `NOT_AUTHORIZED` | `CANONICAL_AUTHORITY` that the fork is `UNRESOLVED`; not proven |
+| Later own MF scoring as membership rank | `ABSENT` / `NOT_AUTHORIZED` | `CANONICAL_AUTHORITY` that no MF scoring contract exists; not proven |
+
+Negative constraints:
+
+```text
+INPUT_ORDERING_IS_NOT_MEMBERSHIP_RANKING_AUTHORITY=true
+ABSENT_MF_SCORING_IS_NOT_A_DEFAULT_RANK=true
+SILENCE_DOES_NOT_SELECT_CONSUME_OR_OWN_SCORING=true
+PREFIX_N_FROM_TOP20_OR_CANDIDATE_COUNT=FORBIDDEN
+INVENTION_OF_MF_SCORING_WEIGHTS_OR_FEATURES=FORBIDDEN
+INVENTION_OF_MF_OWN_TIE_BREAK_FROM_PLAUSIBILITY=FORBIDDEN
+IMPORT_OF_CAP23_TIE_BREAK_AS_MF_POLICY=FORBIDDEN
+```
+
+Selector silence must **not** infer consume-as-rank, own scoring,
+prefix-N, or an MF-own tie-break algorithm. An MF-own tie-break
+algorithm, key order, or numeric rule remains **blocked** until this
+decision is separately closed.
+
+### 1.3 Isolated Active-Set `N_VALUE` (OPEN_DECISION_01)
+
+This subsection follows `OPEN_DECISION_02` on purpose. Owner-GO
+`OWNER_GO_MF_OPEN_DECISIONS_01_THROUGH_07_BOUNDED_ADJUDICATION_WORKPACKAGE_V1`
+persists that `OPEN_DECISION_01=N_VALUE` is **not decidable** while
+`OPEN_DECISION_02` remains unclosed. It does **not** ratify a numeric
+`N`, does **not** import Cap 0.4 `N=5`, and does **not** equate
+`TOP5` with `ACTIVE_SET_N`.
+
+```text
+OPEN_DECISION_01=N_VALUE
+OPEN_DECISION_01_CLOSED=false
+N_VALUE=UNRESOLVED
+N_VALUE_NOT_DECIDABLE_WHILE_OD02_UNCLOSED=true
+NUMERIC_N_AUTHORITY=NONE
+CAP04_N_EQUALS_5_IS_NOT_N_AUTHORITY=true
+SILENCE_IS_NOT_N=true
+SILENCE_IS_NOT_N_EQUALS_5=true
+TOP5_IS_NOT_ACTIVE_SET_N=true
+```
+
+`OPEN_DECISION_02` is not closed in §1.1. Therefore this workpackage
+must **not** examine numeric decidability of `N`. A later Owner numeric
+authority, if any, remains gated by the still-open cardinality mode.
+
+### 1.4 Isolated selector state (OPEN_DECISION_04)
+
+Owner-GO
+`OWNER_GO_MF_OPEN_DECISIONS_01_THROUGH_07_BOUNDED_ADJUDICATION_WORKPACKAGE_V1`
+persists fail-closed **boundaries** for
+`OPEN_DECISION_04=SELECTOR_STATE`. It does **not** close that
+decision, does **not** ratify durable selector-owned state, and does
+**not** invent a state machine.
+
+```text
+OPEN_DECISION_04=SELECTOR_STATE
+OPEN_DECISION_04_CLOSED=false
+SELECTOR_STATE_OWNER=UNPROVEN
+SELECTOR_STATE_NOT_RATIFIED=true
+HYGIENE_CONCEPTS_DO_NOT_FORCE_DURABLE_SELECTOR_STATE=true
+MEMBERSHIP_STATE_IS_NOT_SELECTOR_OWNED_STATE=true
+MEMBERSHIP_STATE_MACHINE_RATIFIED=false
+ALLOWED_STATE_TRANSITIONS=UNBOUND
+```
+
+Hysteresis and minimum holding remain selector-owned **concepts**, not
+ratified rules. Their ownership does **not** prove that the isolated
+selector requires durable selector-owned state.
+
+Boundary `membership_state` remains an unbound schema field. It is
+**not** selector-owned state and is **not** a ratified membership
+state machine.
+
+### 1.5 Isolated membership-only transition-pending (OPEN_DECISION_05)
+
+Owner-GO
+`OWNER_GO_MF_OPEN_DECISIONS_01_THROUGH_07_BOUNDED_ADJUDICATION_WORKPACKAGE_V1`
+persists fail-closed **boundaries** for
+`OPEN_DECISION_05=MEMBERSHIP_ONLY_TRANSITION_PENDING_NEEDED`. It does
+**not** close that decision as needed or as never-needed.
+
+```text
+OPEN_DECISION_05=MEMBERSHIP_ONLY_TRANSITION_PENDING_NEEDED
+OPEN_DECISION_05_CLOSED=false
+MEMBERSHIP_ONLY_ANALOG_REQUIRED=UNPROVEN
+TRANSITION_PENDING_NODE=OUT_OF_CORE_MODEL
+SSF_REPLACEMENT_PENDING_IMPORTED=false
+SSF_REPLACEMENT_PENDING_IS_OUT_OF_DOMAIN=true
+REPLACEMENT_PENDING_IS_NOT_MEMBERSHIP_ROTATION=true
+PENDING_IS_NOT_ANTI_CHURN=true
+INVENTION_OF_PENDING_STATE_MACHINE_FROM_PLAUSIBILITY=FORBIDDEN
+```
+
+Cap 2.3 `REPLACEMENT_PENDING` remains strictly out of this domain. The
+isolated graph has no position semantics. Absence of a membership-only
+pending analog is **not** proof that none will later be needed.
+Presence of SSF pending is **not** proof that an analog is needed
+here. Closing this item as needed remains blocked unless
+`OPEN_DECISION_04` and independent isolated-domain evidence later
+carry that need.
+
+### 1.6 Isolated rotation identity (OPEN_DECISION_07)
+
+Owner-GO
+`OWNER_GO_MF_OPEN_DECISIONS_01_THROUGH_07_BOUNDED_ADJUDICATION_WORKPACKAGE_V1`
+persists fail-closed **boundaries** for
+`OPEN_DECISION_07=ROTATION_DELTAS_STAGE_VS_DERIVED_IDENTITY`. It does
+**not** close that identity, does **not** ratify a rotation engine,
+and does **not** invent a stage owner.
+
+```text
+OPEN_DECISION_07=ROTATION_DELTAS_STAGE_VS_DERIVED_IDENTITY
+OPEN_DECISION_07_CLOSED=false
+ROTATION_ROLE=MEMBERSHIP_DIFF_ONLY
+ROTATION_IS_NOT_ANTI_CHURN=true
+ROTATION_IS_NOT_PENDING=true
+NAMED_GRAPH_NODE_IS_NOT_STAGE_RATIFICATION=true
+ROTATION_ENGINE=NOT_AUTHORIZED
+ROTATION_POLICY_RATIFIED=false
+STAGE_VS_DERIVED=UNRESOLVED
+PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=UNPROVEN
+```
+
+The named graph node `Membership Rotation` is topology, not a
+ratified stage and not a derived-identity close. Rotation remains
+membership-diff-only. A derived reading would need a prior membership
+listing; that prior is **not** proven here (`membership_state`
+unbound; selector state unproven). Silence must **not** infer a
+rotation engine, a stage owner, or a derived close.
+
+### 1.7 Isolated persistence while G13 closed (OPEN_DECISION_06)
+
+Owner-GO
+`OWNER_GO_MF_OPEN_DECISIONS_01_THROUGH_07_BOUNDED_ADJUDICATION_WORKPACKAGE_V1`
+persists fail-closed **boundaries** for
+`OPEN_DECISION_06=CONTEXT_PERSISTENCE_WHILE_G13_CLOSED`. It does
+**not** close that decision, does **not** unlock G13, does **not**
+create a host join, and does **not** activate runtime.
+
+```text
+OPEN_DECISION_06=CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
+OPEN_DECISION_06_CLOSED=false
+DOC_CONTRACT_PERSISTENCE=PRESENT_AUTHORITY_EFFECT_NONE
+MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
+HOST_JOIN=NOT_DESIGNED
+G13_UNLOCK=false
+RUNTIME_AUTHORITY=NONE
+PERSISTENCE_IS_NOT_G13_UNLOCK=true
+PERSISTENCE_IS_NOT_HOST_JOIN=true
+PERSISTENCE_IS_NOT_RUNTIME_ACTIVATION=true
+DOC_CONTRACT_PERSISTENCE_IS_NOT_MEMBERSHIP_ARTIFACT_PERSISTENCE=true
+```
+
+Docs-only contract persistence already exists and has
+`AUTHORITY_EFFECT=NONE`. That is **not** membership-context artifact
+persistence, **not** a producer, and **not** runtime authority.
+Whether a non-authoritative membership-context artifact may persist
+while G13 remains an `INTENTIONAL_SAFETY_BARRIER` stays `UNPROVEN`.
+
+Fail-closed while this item is open:
+
+```text
+DOC_PERSIST_MUST_NOT_BE_READ_AS_ARTIFACT_PERSIST=true
+ARTIFACT_PERSIST_MUST_NOT_BE_READ_AS_G13_UNLOCK=true
+ARTIFACT_PERSIST_MUST_NOT_BE_READ_AS_HOST_JOIN=true
+ARTIFACT_PERSIST_MUST_NOT_BE_READ_AS_RUNTIME_AUTHORITY=true
+```
+
+### 1.8 Cross-decision DAG (semantic; not a runtime path)
+
+This subsection records the **semantic** dependency order among the
+seven open decisions. It is **not** a runtime path, **not** a host
+join, and **not** a close of any decision.
+
+```text
+DECISION_DAG_CLASS=SEMANTIC_DEPENDENCY_NOT_RUNTIME
+CLOSED_DECISIONS=NONE
+```
+
+```text
+TOP20_CANDIDATE_CONTEXT
+→ OPEN_DECISION_03
+→ MF_SELECTOR
+→ OPEN_DECISION_02
+→ OPEN_DECISION_01
+→ ACTIVE_SET_N
+→ OPEN_DECISION_07
+→ MEMBERSHIP_ROTATION
+→ NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY
+→ HARD DOMAIN END
+```
+
+```text
+OPEN_DECISION_04
+→ OPEN_DECISION_05
+```
+
+```text
+OPEN_DECISION_06=INDEPENDENT_OF_HOST_JOIN
+OPEN_DECISION_06_DOES_NOT_UNLOCK_G13=true
+```
+
+Current dispositions (this workpackage; not a later close):
+
+| Decision | Disposition | Closed |
+|---|---|---|
+| `OPEN_DECISION_03` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` | `false` |
+| `OPEN_DECISION_02` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` | `false` |
+| `OPEN_DECISION_01` | `BLOCKED_BY_OTHER_OD` / `OWNER_POLICY_REQUIRED` / parameter | `false` |
+| `OPEN_DECISION_04` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` | `false` |
+| `OPEN_DECISION_05` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` / `INSUFFICIENT_EVIDENCE` to close needed vs never-needed | `false` |
+| `OPEN_DECISION_07` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` | `false` |
+| `OPEN_DECISION_06` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` | `false` |
+
+A later close of one node does **not** close a neighbor by inference.
+
 ## 2. Owner by mechanism
 
 Owners below are **cited from** the parent ownership contract. This file
@@ -468,6 +716,21 @@ OVERREAD_AS_ROTATION_POLICY=FORBIDDEN
 OVERREAD_AS_TOP5_EQUALS_ACTIVE_SET_N=FORBIDDEN
 OVERREAD_AS_CAP22_TOP20_LIMIT_AS_ACTIVE_SET_N=FORBIDDEN
 OVERREAD_AS_CAP23_EXACTLY1_AS_MF_CARDINALITY_MODE=FORBIDDEN
+OVERREAD_AS_CAP22_ORDERING_AS_MEMBERSHIP_RANK=FORBIDDEN
+OVERREAD_AS_OWN_MF_SCORING=FORBIDDEN
+OVERREAD_AS_MF_OWN_TIE_BREAK_ALGORITHM=FORBIDDEN
+OVERREAD_AS_PREFIX_N=FORBIDDEN
+OVERREAD_AS_N_VALUE_WHILE_OD02_UNCLOSED=FORBIDDEN
+OVERREAD_AS_DURABLE_SELECTOR_STATE=FORBIDDEN
+OVERREAD_AS_MEMBERSHIP_STATE_EQUALS_SELECTOR_STATE=FORBIDDEN
+OVERREAD_AS_PENDING_ANALOG_NEEDED=FORBIDDEN
+OVERREAD_AS_PENDING_ANALOG_NEVER_NEEDED=FORBIDDEN
+OVERREAD_AS_ROTATION_STAGE_RATIFICATION=FORBIDDEN
+OVERREAD_AS_ROTATION_DERIVED_CLOSE=FORBIDDEN
+OVERREAD_AS_ROTATION_ENGINE=FORBIDDEN
+OVERREAD_AS_DOC_PERSIST_EQUALS_ARTIFACT_PERSIST=FORBIDDEN
+OVERREAD_AS_PERSISTENCE_EQUALS_G13_UNLOCK=FORBIDDEN
+OVERREAD_AS_PERSISTENCE_EQUALS_HOST_JOIN=FORBIDDEN
 INVENTION_OF_THRESHOLDS_FROM_PLAUSIBILITY=FORBIDDEN
 CANDIDATE_COUNT_VS_UNRESOLVED_N=FAIL_CLOSED_NON_AUTHORITY
 UNDERFILL_DOES_NOT_AUTHORIZE_MEMBERSHIP_OR_MODE=true
@@ -508,18 +771,26 @@ policy. Citing them here is **negative constraint** only:
 `SSF_SEMANTICS_IMPORTED=false`.
 
 Open decisions preserved from the parent ownership contract (not decided
-here). `OPEN_DECISION_02` remains **unclosed**; §1.1 only binds
-fail-closed non-inference. `OPEN_DECISION_01` remains a separate
-unresolved parameter.
+here). Fail-closed **boundaries** are in §1.1–§1.7. None of the seven
+is closed by this persist.
 
 ```text
 OPEN_DECISION_01=N_VALUE
+OPEN_DECISION_01_CLOSED=false
 OPEN_DECISION_02=EXACTLY_N_VS_AT_MOST_N
+OPEN_DECISION_02_CLOSED=false
 OPEN_DECISION_03=CONSUME_CAP22_ORDERING_VS_LATER_OWN_MF_SCORING
+OPEN_DECISION_03_CLOSED=false
 OPEN_DECISION_04=SELECTOR_STATE
+OPEN_DECISION_04_CLOSED=false
 OPEN_DECISION_05=MEMBERSHIP_ONLY_TRANSITION_PENDING_NEEDED
+OPEN_DECISION_05_CLOSED=false
 OPEN_DECISION_06=CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
+OPEN_DECISION_06_CLOSED=false
 OPEN_DECISION_07=ROTATION_DELTAS_STAGE_VS_DERIVED_IDENTITY
+OPEN_DECISION_07_CLOSED=false
+N_VALUE_NOT_DECIDABLE_WHILE_OD02_UNCLOSED=true
+MF_OWN_TIE_BREAK_ALGORITHM=BLOCKED_UNTIL_OD03_CLOSE
 ```
 
 ## 13. Forensic census (bound; not a second SSOT)
