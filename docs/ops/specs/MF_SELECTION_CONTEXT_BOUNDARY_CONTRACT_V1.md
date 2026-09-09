@@ -372,7 +372,7 @@ This contract does **not** ratify, default, design, or implicitly close:
 | MF scoring contract | `ABSENT` / `NOT_REQUIRED` while consume-Cap-2.2-order policy holds; OD03 closed in semantics §1.2; no second ranker; MF-own tie-break not required |
 | Selector policy / scoring | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` as a general selector policy; membership-order consume policy is in semantics §1.2 only |
 | Selector role / anti-churn ownership | persisted in `MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1`; not scoring; not hygiene numerics |
-| Selection / anti-churn mechanism semantics | persisted in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1`; OD02/OD03 closed in §1.1–§1.2; OD01 closed in §1.3 as Owner-policy ceiling `N_VALUE=5`; OD04 closed in §1.4 as ownership principle only; OD05 closed in §1.5 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF model; OD06 closed in §1.7 as permission-only `ALLOWED` while G13 remains closed; permission is not artifact existence; membership-context artifact semantic identity bound in §1.9 as information classes only; that bind is not artifact existence, not schema, not writer, and not OD07 close; artifact existence class bound in §1.10 as required durable non-authoritative membership-context artifact; that class bind is not instance existence; instance remains `UNPROVEN`; OD07 remains open; not SSF import; not never-needed |
+| Selection / anti-churn mechanism semantics | persisted in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1`; OD02/OD03 closed in §1.1–§1.2; OD01 closed in §1.3 as Owner-policy ceiling `N_VALUE=5`; OD04 closed in §1.4 as ownership principle only; OD05 closed in §1.5 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF model; OD06 closed in §1.7 as permission-only `ALLOWED` while G13 remains closed; permission is not artifact existence; membership-context artifact semantic identity bound in §1.9 as information classes only; that bind is not artifact existence, not schema, not writer, and not OD07 close; artifact existence class bound in §1.10 as required durable non-authoritative membership-context artifact; that class bind is not instance existence; instance remains `UNPROVEN`; instance-existence decision class persisted in §1.11 as `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`; `UNPROVEN` is not `ABSENT`; creation not authorized; OD07 remains open; not SSF import; not never-needed |
 | Selector state | `CLOSED_OWNERSHIP_PRINCIPLE_ONLY` in semantics §1.4; `SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY`; `membership_state` remains unbound schema / Authority `NONE`; not a durable selector store; not an artifact |
 | Membership-only transition-pending | `CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED` in semantics §1.5 for the current isolated MF model; analog not required now; node `OUT_OF_CORE_MODEL`; Cap-2.3 `REPLACEMENT_PENDING` out of domain; not never-needed; anti-churn rules remain unratified |
 | Rotation numerics | `UNRESOLVED` / `NOT_AUTHORIZED` |
@@ -382,6 +382,7 @@ This contract does **not** ratify, default, design, or implicitly close:
 | Context persistence while G13 closed | `ALLOWED` permission-only in semantics §1.7; this boundary file is not the OD06 close owner; permission is not artifact existence; `MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE` remains `UNPROVEN`; docs-contract persistence is not membership-artifact persistence, G13 unlock, host join, or runtime |
 | Membership-context artifact semantic identity | `BOUND_INFORMATION_CLASSES_ONLY` in semantics §1.9; this boundary file is not the identity close owner; schema, writer, reader, temporal/instance/prior-reference schemas remain `UNBOUND`; prior listing `UNPROVEN`; not artifact existence |
 | Membership-context artifact existence class | `BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT` in semantics §1.10; this boundary file is not the existence-class close owner; instance `UNPROVEN`; not schema; not writer; not prior listing; not OD07 close |
+| Membership-context artifact instance-existence census | `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED` in semantics §1.11; this boundary file is not the census-persist owner; instance remains `UNPROVEN`; `UNPROVEN` is not `ABSENT`; creation not authorized |
 | Isolated ranking universe / single egress | persisted in `MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_CONTRACT_V1`; `SINGLE_EGRESS_REQUIRED`; current handoff `NOT_YET_CANONICALLY_DEFINED`; does not design payload; `N_VALUE=5` is a pointer to semantics §1.3 |
 | Authority handoff | `NOT_DESIGNED` / `NOT_IN_SCOPE` / `NOT_AUTHORIZED` |
 | Host adapter | `NOT_DESIGNED` / `NOT_IN_SCOPE` |
@@ -413,6 +414,11 @@ ARTIFACT_EXISTENCE_CLASS=BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CON
 THIS_FILE_IS_NOT_EXISTENCE_CLASS_CLOSE_OWNER=true
 ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
 EXISTENCE_CLASS_IS_NOT_INSTANCE_EXISTENCE=true
+INSTANCE_DECISION_CLASS=NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
+INSTANCE_CENSUS_VERDICT=NO_INSTANCE_PROOF_FOUND
+UNPROVEN_IS_NOT_ABSENT=true
+CREATION_AUTHORIZED=false
+THIS_FILE_IS_NOT_INSTANCE_CENSUS_PERSIST_OWNER=true
 PERSISTENCE_IS_NOT_G13_UNLOCK=true
 PERSISTENCE_IS_NOT_HOST_JOIN=true
 AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
