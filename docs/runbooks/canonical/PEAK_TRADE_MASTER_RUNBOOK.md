@@ -543,7 +543,10 @@ non-authoritative membership-context artifact; that class bind is
 The instance-existence **decision class** is persisted in §4.5.3 as
 `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`;
 `UNPROVEN` is **not** `ABSENT`; creation is **not** authorized.
-Numeric ceiling `N_VALUE=5` is
+Creation-authorization **semantics** are bound in §4.5.3 as
+`PERMISSION_BIT_ONLY`; `CREATION_AUTHORIZED` remains `false`;
+permission-bit is **not** materialization; OD06 `ALLOWED` is **not**
+`CREATION_AUTHORIZED`. Numeric ceiling `N_VALUE=5` is
 closed as Owner policy in §4.5.3 under `AT_MOST_N`. Selector-state **ownership**
 for membership identity is closed as principle only in §4.5.3; a
 membership artifact instance, writer, schema, and bound listing input
@@ -721,6 +724,14 @@ INSTANCE_DECISION_CLASS=NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
 INSTANCE_CENSUS_VERDICT=NO_INSTANCE_PROOF_FOUND
 UNPROVEN_IS_NOT_ABSENT=true
 CREATION_AUTHORIZED=false
+CREATION_AUTHORIZED_SEMANTICS=PERMISSION_BIT_ONLY
+CREATION_AUTHORIZATION_PREDICATE_BOUND=true
+PRECONDITION_MEMBERSHIP_BOUND=true
+SCHEMA_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
+WRITER_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
+READER_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
+OD07_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
+ANTI_CHURN_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
 MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
 TEMPORAL_SCHEMA=UNBOUND
 INSTANCE_ID_SCHEMA=UNBOUND
@@ -791,6 +802,19 @@ Census verdict is `NO_INSTANCE_PROOF_FOUND`. `UNPROVEN` is **not**
 bind schema, writer, reader, store, or listing, does **not** prove
 prior-listing existence, does **not** unlock G13, and does **not**
 close `OPEN_DECISION_07`. Instance existence remains `UNPROVEN`.
+Owner-GO
+`OWNER_GO_MF_CREATION_AUTHORIZATION_PREDICATE_AND_PRECONDITION_MEMBERSHIP_V1`
+binds the creation-authorization **predicate** and **precondition
+membership** in the subordinate semantics contract §1.12 as
+`PERMISSION_BIT_ONLY`. `CREATION_AUTHORIZED` remains `false`.
+Permission-bit semantics are **not** materialization authority. OD06
+`ALLOWED` is **not** `CREATION_AUTHORIZED`. Schema, writer, reader,
+OD07, and anti-churn are **not required** before a later
+`CREATION_AUTHORIZED=true`. That membership is **not** a bind of
+those items. That persist does **not** create an artifact, does **not**
+bind schema, writer, or reader, does **not** prove prior-listing
+existence, does **not** unlock G13, and does **not** close
+`OPEN_DECISION_07`. Instance existence remains `UNPROVEN`.
 
 This persist does **not** ratify a `TOP5` product, an
 MF-own scoring contract, an MF-own tie-break algorithm, hysteresis or
@@ -805,7 +829,10 @@ durable non-authoritative membership-context artifact is **not**
 instance existence. Instance-existence decision class
 `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED` is **not**
 instance existence, **not** `ABSENT`, and **not** creation
-authorization.
+authorization. Creation-authorization predicate
+`PERMISSION_BIT_ONLY` is **not** `CREATION_AUTHORIZED=true`, **not**
+materialization, **not** instance existence, and **not** schema,
+writer, reader, OD07 close, or anti-churn ratification.
 
 ### 4.5.4 Isolated ranking universe and single-egress boundary (docs-only; AUTHORITY_EFFECT=NONE)
 
@@ -828,7 +855,10 @@ non-authoritative membership-context artifact. Instance existence
 remains `UNPROVEN`. The instance-existence decision class is persisted
 in §4.5.3 as
 `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`.
-`UNPROVEN` is **not** `ABSENT`. Creation is **not** authorized. This
+`UNPROVEN` is **not** `ABSENT`. Creation is **not** authorized.
+Creation-authorization semantics are bound in §4.5.3 as
+`PERMISSION_BIT_ONLY`. `CREATION_AUTHORIZED` remains `false`.
+Permission-bit is **not** materialization. This
 subsection does **not**
 re-own those closes and does **not** close `OPEN_DECISION_07`. This
 subsection does **not** collectively close
@@ -885,6 +915,9 @@ INSTANCE_DECISION_CLASS=NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
 INSTANCE_CENSUS_VERDICT=NO_INSTANCE_PROOF_FOUND
 UNPROVEN_IS_NOT_ABSENT=true
 CREATION_AUTHORIZED=false
+CREATION_AUTHORIZED_SEMANTICS=PERMISSION_BIT_ONLY
+CREATION_AUTHORIZATION_PREDICATE_BOUND=true
+PRECONDITION_MEMBERSHIP_BOUND=true
 MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
 OD07_ROTATION_IDENTITY=UNCLOSED
 OD04_TO_OD07_CHANGED=false

@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1
 status: active
-scope: Docs-only persist of adjudicated isolated MF selection and anti-churn mechanism semantics; OD01 closed as Owner-policy ceiling N=5 under AT_MOST_N; OD06 closed as ALLOW permission for non-authoritative membership-context artifact persistence while G13 remains closed; permission is not artifact existence; membership-context artifact semantic identity bound as information classes only; artifact existence class bound as required durable non-authoritative membership-context artifact; instance existence unproven; instance-existence decision class persisted as NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED; UNPROVEN is not ABSENT; creation not authorized; no schema, writer, reader, or artifact instance; no host adapter; no Cap-2.3/2.4 join; hygiene numerics unratified; OD07 unclosed
+scope: Docs-only persist of adjudicated isolated MF selection and anti-churn mechanism semantics; OD01 closed as Owner-policy ceiling N=5 under AT_MOST_N; OD06 closed as ALLOW permission for non-authoritative membership-context artifact persistence while G13 remains closed; permission is not artifact existence; membership-context artifact semantic identity bound as information classes only; artifact existence class bound as required durable non-authoritative membership-context artifact; instance existence unproven; instance-existence decision class persisted as NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED; UNPROVEN is not ABSENT; creation not authorized; creation-authorization predicate bound as PERMISSION_BIT_ONLY; CREATION_AUTHORIZED remains false; permission-bit is not materialization; schema, writer, reader, OD07, and anti-churn are not required before a later CREATION_AUTHORIZED=true; no schema, writer, reader, or artifact instance; no host adapter; no Cap-2.3/2.4 join; hygiene numerics unratified; OD07 unclosed
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-09
@@ -24,10 +24,12 @@ OWNER_GO_THIS_SLICE=OWNER_GO_MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_PERSIST_V1
 OWNER_GO_MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=OWNER_GO_MF_MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY_V1
 OWNER_GO_MEMBERSHIP_CONTEXT_ARTIFACT_EXISTENCE_CLASS=OWNER_GO_MF_MEMBERSHIP_CONTEXT_ARTIFACT_EXISTENCE_CLASS_V1
 OWNER_GO_MEMBERSHIP_CONTEXT_ARTIFACT_INSTANCE_EXISTENCE_CENSUS_PERSIST=OWNER_GO_MF_MEMBERSHIP_CONTEXT_ARTIFACT_INSTANCE_EXISTENCE_CENSUS_PERSIST_V1
+OWNER_GO_MEMBERSHIP_CONTEXT_ARTIFACT_CREATION_AUTHORIZATION_PREDICATE=OWNER_GO_MF_CREATION_AUTHORIZATION_PREDICATE_AND_PRECONDITION_MEMBERSHIP_V1
 BOUND_ORIGIN_MAIN_SHA=a430bd3837a833d56a8029d3c0d5e8c5380708a1
 BOUND_ORIGIN_MAIN_SHA_THIS_IDENTITY_SLICE=c58d8c5a8a7268af74c989aa0fb166f8f6df40b1
 BOUND_ORIGIN_MAIN_SHA_THIS_EXISTENCE_CLASS_SLICE=b364d1a26d927eeb5d143028afd687f6d3183042
 BOUND_ORIGIN_MAIN_SHA_THIS_INSTANCE_CENSUS_SLICE=81bd848c7054f2dafe1965b899b79ca809d4c278
+BOUND_ORIGIN_MAIN_SHA_THIS_CREATION_AUTHORIZATION_PREDICATE_SLICE=d5a68a8b1a4c60fc194c8dfe3426c1de047d8a45
 CONTRACT_ID=MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1
 PARENT_BOUNDARY_CONTRACT=MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1
 PARENT_OWNERSHIP_CONTRACT=MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1
@@ -65,6 +67,14 @@ INSTANCE_DECISION_CLASS=NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
 INSTANCE_CENSUS_VERDICT=NO_INSTANCE_PROOF_FOUND
 UNPROVEN_IS_NOT_ABSENT=true
 CREATION_AUTHORIZED=false
+CREATION_AUTHORIZED_SEMANTICS=PERMISSION_BIT_ONLY
+CREATION_AUTHORIZATION_PREDICATE_BOUND=true
+PRECONDITION_MEMBERSHIP_BOUND=true
+SCHEMA_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
+WRITER_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
+READER_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
+OD07_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
+ANTI_CHURN_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
 MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
 INSTANCE_IDENTITY_STATUS=UNBOUND
 TEMPORAL_IDENTITY_STATUS=UNBOUND
@@ -666,15 +676,23 @@ OPEN_DECISION_06
 → ARTIFACT_EXISTENCE_CLASS_BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT
 → ARTIFACT_INSTANCE_EXISTENCE_UNPROVEN
 → INSTANCE_DECISION_CLASS_NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
+→ CREATION_AUTHORIZED_SEMANTICS_PERMISSION_BIT_ONLY
 → PRIOR_MEMBERSHIP_LISTING_UNPROVEN
 → OD07_UNRESOLVED
 ```
 
-After the §1.11 census persist, instance existence remains `UNPROVEN`.
-That status is **not** `ABSENT`. Creation is **not** authorized.
-Schema, writer, reader, prior listing, and OD07 remain later
-unresolved dependencies and are **not** auto-next. This persist does
-**not** name a next canonical decision. A later Owner-GO must name it.
+After the §1.12 predicate persist, `CREATION_AUTHORIZED` remains `false`.
+That bit is **not** set true here. Creation-authorization **semantics**
+are bound as `PERMISSION_BIT_ONLY`. Schema, writer, reader, OD07, and
+anti-churn are **not required** before a later Owner-GO may set
+`CREATION_AUTHORIZED=true`. That membership is **not** a bind of those
+items. Bootstrap, identity schemas, prior listing, provenance mapping,
+durability semantics, provenance semantics, and lifecycle remain
+unbound and are **not** decided here. Instance existence remains
+`UNPROVEN`. That status is **not** `ABSENT`. Permission-bit semantics
+are **not** materialization authority. OD06 `ALLOWED` is **not**
+`CREATION_AUTHORIZED`. This persist does **not** name a next canonical
+decision. A later Owner-GO must name it.
 
 ```text
 ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
@@ -682,12 +700,20 @@ INSTANCE_DECISION_CLASS=NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
 INSTANCE_CENSUS_VERDICT=NO_INSTANCE_PROOF_FOUND
 UNPROVEN_IS_NOT_ABSENT=true
 CREATION_AUTHORIZED=false
+CREATION_AUTHORIZED_SEMANTICS=PERMISSION_BIT_ONLY
+CREATION_AUTHORIZATION_PREDICATE_BOUND=true
+PRECONDITION_MEMBERSHIP_BOUND=true
 NEXT_STEP_IS_AUTOMATIC=false
 SCHEMA_NOT_AUTO_NEXT=true
 WRITER_NOT_AUTO_NEXT=true
 READER_NOT_AUTO_NEXT=true
 PRIOR_LISTING_NOT_AUTO_NEXT=true
 OD07_NOT_AUTO_NEXT=true
+SCHEMA_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
+WRITER_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
+READER_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
+OD07_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
+ANTI_CHURN_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
 ```
 
 ### 1.9 Isolated membership-context artifact semantic identity
@@ -1027,6 +1053,111 @@ OVERREAD_AS_CENSUS_EQUALS_G13_UNLOCK=FORBIDDEN
 OVERREAD_AS_SCHEMA_WRITER_READER_PRIOR_LISTING_OR_OD07_AUTO_NEXT=FORBIDDEN
 ```
 
+### 1.12 Isolated membership-context artifact creation-authorization predicate and precondition membership
+
+Owner-GO
+`OWNER_GO_MF_CREATION_AUTHORIZATION_PREDICATE_AND_PRECONDITION_MEMBERSHIP_V1`
+binds the **creation-authorization predicate** and **precondition
+membership** as Owner-policy principle only. Prior fail-closed
+**boundaries** from OD06 §1.7, semantic identity §1.9, existence class
+§1.10, and instance census §1.11 remain binding. Those binds are **not**
+re-owned here.
+
+This persist does **not** set `CREATION_AUTHORIZED=true`. It does
+**not** create an artifact instance. It does **not** bind a schema,
+writer, or reader. It does **not** prove prior-listing existence, does
+**not** close `OPEN_DECISION_07`, does **not** ratify anti-churn policy,
+does **not** bind durability or provenance semantics, does **not**
+unlock G13, and does **not** grant runtime, execution, or
+materialization authority.
+
+Owner decision:
+`PERMISSION_BIT_WITHOUT_SCHEMA_WRITER_READER_OD07_ANTI_CHURN_PRECONDITION`.
+
+```text
+OWNER_GO=OWNER_GO_MF_CREATION_AUTHORIZATION_PREDICATE_AND_PRECONDITION_MEMBERSHIP_V1
+OWNER_DECISION=PERMISSION_BIT_WITHOUT_SCHEMA_WRITER_READER_OD07_ANTI_CHURN_PRECONDITION
+CREATION_AUTHORIZED_SEMANTICS=PERMISSION_BIT_ONLY
+CREATION_AUTHORIZATION_PREDICATE_BOUND=true
+PRECONDITION_MEMBERSHIP_BOUND=true
+CREATION_AUTHORIZED=false
+CREATION_AUTHORIZED_TRUE_MEANS=LATER_MATERIALIZATION_OF_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT_IS_PERMITTED_SUBJECT_TO_SEPARATE_MATERIALIZATION_AUTHORITY
+CREATION_AUTHORIZED_TRUE_DOES_NOT_MEAN=ARTIFACT_INSTANCE_EXISTS
+CREATION_AUTHORIZED_TRUE_DOES_NOT_MEAN=CREATE_NOW
+CREATION_AUTHORIZED_TRUE_DOES_NOT_MEAN=SCHEMA_BOUND
+CREATION_AUTHORIZED_TRUE_DOES_NOT_MEAN=WRITER_BOUND
+CREATION_AUTHORIZED_TRUE_DOES_NOT_MEAN=READER_BOUND
+CREATION_AUTHORIZED_TRUE_DOES_NOT_MEAN=OD07_CLOSED
+CREATION_AUTHORIZED_TRUE_DOES_NOT_MEAN=ANTI_CHURN_RATIFIED
+CREATION_AUTHORIZED_TRUE_DOES_NOT_MEAN=RUNTIME_AUTHORIZED
+CREATION_AUTHORIZED_TRUE_DOES_NOT_MEAN=EXECUTION_AUTHORITY_GRANTED
+SCHEMA=NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE
+WRITER=NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE
+READER=NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE
+OD07=NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE
+ANTI_CHURN=NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE
+BOOTSTRAP=REMAINS_UNBOUND_NOT_DECIDED_HERE
+INSTANCE_IDENTITY_SCHEMA=REMAINS_UNBOUND_NOT_DECIDED_HERE
+TEMPORAL_IDENTITY_SCHEMA=REMAINS_UNBOUND_NOT_DECIDED_HERE
+PRIOR_REFERENCE_SCHEMA=REMAINS_UNBOUND_NOT_DECIDED_HERE
+PRIOR_MEMBERSHIP_LISTING=REMAINS_UNBOUND_NOT_DECIDED_HERE
+CAP22_PROVENANCE_MAPPING=REMAINS_UNBOUND_NOT_DECIDED_HERE
+CANONICAL_DURABILITY_SEMANTICS=REMAINS_UNBOUND_NOT_DECIDED_HERE
+CANONICAL_PROVENANCE_SEMANTICS=REMAINS_UNBOUND_NOT_DECIDED_HERE
+LIFECYCLE=REMAINS_UNBOUND_NOT_DECIDED_HERE
+ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
+INSTANCE_DECISION_CLASS=NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
+UNPROVEN_IS_NOT_ABSENT=true
+SCHEMA_BOUND=false
+WRITER_BOUND=false
+READER_BOUND=false
+OD07_STATUS=UNCLOSED
+ANTI_CHURN_POLICY_STATUS=UNRATIFIED
+G13_UNLOCK=false
+RUNTIME_AUTHORIZED=false
+EXECUTION_AUTHORITY_EFFECT=NONE
+NEXT_STEP_IS_AUTOMATIC=false
+```
+
+`CREATION_AUTHORIZED` remains `false`. Binding the predicate is **not**
+setting the permission bit true. OD06 `ALLOWED` is **not**
+`CREATION_AUTHORIZED`. Permission-bit semantics are **not**
+materialization authority. Required class is **not** instance and
+**not** create-now. `UNPROVEN` is **not** `ABSENT`. Selector-owned
+durable membership store remains `NOT_AUTHORIZED`.
+
+Schema, writer, reader, OD07, and anti-churn are **not required**
+before a later Owner-GO may set `CREATION_AUTHORIZED=true`. That
+membership is **not** a bind of those items and is **not** an
+auto-next. Bootstrap, instance-identity schema, temporal-identity
+schema, prior-reference schema, prior membership listing, Cap-2.2
+provenance mapping, canonical durability semantics, canonical
+provenance semantics, and lifecycle remain unbound and are **not**
+decided here. Existing tokens `INSTANCE_ID_SCHEMA=UNBOUND`,
+`TEMPORAL_SCHEMA=UNBOUND`, `PRIOR_MEMBERSHIP_REFERENCE_SCHEMA=UNBOUND`,
+and `PRIOR_MEMBERSHIP_LISTING_STATUS=UNPROVEN` remain unchanged.
+
+This persist does **not** name a next canonical decision. A later
+Owner-GO must name it.
+
+Fail-closed after this predicate persist:
+
+```text
+OVERREAD_AS_PREDICATE_EQUALS_CREATION_AUTHORIZED_TRUE=FORBIDDEN
+OVERREAD_AS_PERMISSION_BIT_EQUALS_MATERIALIZATION=FORBIDDEN
+OVERREAD_AS_PERMISSION_BIT_EQUALS_INSTANCE_EXISTS=FORBIDDEN
+OVERREAD_AS_PERMISSION_BIT_EQUALS_CREATE_NOW=FORBIDDEN
+OVERREAD_AS_PERMISSION_BIT_EQUALS_SCHEMA_WRITER_OR_READER=FORBIDDEN
+OVERREAD_AS_PERMISSION_BIT_EQUALS_OD07_CLOSE=FORBIDDEN
+OVERREAD_AS_PERMISSION_BIT_EQUALS_ANTI_CHURN_RATIFICATION=FORBIDDEN
+OVERREAD_AS_OD06_ALLOWED_EQUALS_CREATION_AUTHORIZED=FORBIDDEN
+OVERREAD_AS_NOT_REQUIRED_BEFORE_EQUALS_BOUND=FORBIDDEN
+OVERREAD_AS_NOT_REQUIRED_BEFORE_EQUALS_DECIDED=FORBIDDEN
+OVERREAD_AS_UNPROVEN_EQUALS_ABSENT=FORBIDDEN
+OVERREAD_AS_REQUIRED_CLASS_EQUALS_CREATE_NOW=FORBIDDEN
+OVERREAD_AS_PREDICATE_EQUALS_G13_UNLOCK=FORBIDDEN
+```
+
 ## 2. Owner by mechanism
 
 Owners below are **cited from** the parent ownership contract. This file
@@ -1355,6 +1486,10 @@ OVERREAD_AS_EXISTENCE_CLASS_EQUALS_OD07_CLOSE=FORBIDDEN
 OVERREAD_AS_EXISTENCE_CLASS_EQUALS_G13_UNLOCK=FORBIDDEN
 OVERREAD_AS_EMPTY_PLACEHOLDER_EQUALS_DURABLE_INSTANCE=FORBIDDEN
 OVERREAD_AS_SCHEMA_WRITER_READER_OR_OD07_AUTO_NEXT=FORBIDDEN
+OVERREAD_AS_PREDICATE_EQUALS_CREATION_AUTHORIZED_TRUE=FORBIDDEN
+OVERREAD_AS_PERMISSION_BIT_EQUALS_MATERIALIZATION=FORBIDDEN
+OVERREAD_AS_OD06_ALLOWED_EQUALS_CREATION_AUTHORIZED=FORBIDDEN
+OVERREAD_AS_NOT_REQUIRED_BEFORE_EQUALS_BOUND=FORBIDDEN
 OVERREAD_AS_RETAINED_ENTERED_EXITED_NOW_DERIVABLE=FORBIDDEN
 INVENTION_OF_THRESHOLDS_FROM_PLAUSIBILITY=FORBIDDEN
 CANDIDATE_COUNT_VS_N=OPERATIVE_AT_MOST_N_CEILING_5
@@ -1420,6 +1555,12 @@ remains `UNPROVEN`. The instance-existence decision class is persisted
 in §1.11 as
 `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`.
 `UNPROVEN` is not `ABSENT`. Creation is not authorized.
+Creation-authorization **semantics** are bound in §1.12 as
+`PERMISSION_BIT_ONLY`. `CREATION_AUTHORIZED` remains `false`.
+Permission-bit semantics are not materialization authority. OD06
+`ALLOWED` is not `CREATION_AUTHORIZED`. Schema, writer, reader, OD07,
+and anti-churn are not required before a later `CREATION_AUTHORIZED=true`.
+That membership is not a bind of those items.
 
 ```text
 OPEN_DECISION_01=N_VALUE
@@ -1454,6 +1595,14 @@ INSTANCE_DECISION_CLASS=NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
 INSTANCE_CENSUS_VERDICT=NO_INSTANCE_PROOF_FOUND
 UNPROVEN_IS_NOT_ABSENT=true
 CREATION_AUTHORIZED=false
+CREATION_AUTHORIZED_SEMANTICS=PERMISSION_BIT_ONLY
+CREATION_AUTHORIZATION_PREDICATE_BOUND=true
+PRECONDITION_MEMBERSHIP_BOUND=true
+SCHEMA_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
+WRITER_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
+READER_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
+OD07_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
+ANTI_CHURN_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
 INSTANCE_IDENTITY_STATUS=UNBOUND
 TEMPORAL_IDENTITY_STATUS=UNBOUND
 PRIOR_REFERENCE_STATUS=UNBOUND
@@ -1485,7 +1634,8 @@ MF_OWN_TIE_BREAK_REQUIRED=false
 | Replacement-pending | Cap 2.3 only; **not** MF authority | Ownership §5.5 forbids SSF import; this file §9 / §1.5 | Cap 2.3 `REPLACEMENT_PENDING` state machine | Cap 2.3 producer exists **outside** this graph; no MF pending runtime | Independent MF pending class **not required** in the current isolated model (`OPEN_DECISION_05` closed); not never-needed |
 | Membership-context artifact identity | Information classes bound in §1.9; class `NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY`; owner-class Active-Set composition | This file §1.9; parent boundary §8 names remain unbound schema | R6 `ordered_instrument_ids` observation **not promoted**; Cap-2.3 snapshots **not imported**; docs-contract persist **not** membership artifact | Isolated membership artifact unimplemented; `MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN` | Instance existence, schema, writer, reader, temporal/instance/prior-reference schemas, prior listing, OD07 |
 | Membership-context artifact existence class | Class bound in §1.10 as `BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT`; instance `UNPROVEN` | This file §1.10 | OD06 permission **not** existence; #6373 identity **not** existence; Cap-2.2 snapshots upstream only; Cap-2.3/R6 `OUT_OF_DOMAIN`; P6_5189 ledger name-collision `HISTORICAL_ONLY`; Atlas `AUTHORITY=NONE` | No durable instance on tracked origin/main; empty placeholder **not** instance | Instance existence; schema; writer; reader; prior listing; OD07 |
-| Membership-context artifact instance-existence census | Decision class persisted in §1.11 as `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`; census verdict `NO_INSTANCE_PROOF_FOUND`; instance remains `UNPROVEN`; `UNPROVEN` is not `ABSENT`; creation not authorized | This file §1.11; census table in §1.10 | §1.10 tracked origin/main census: no instance proof found | Isolated membership artifact unimplemented; `CREATION_AUTHORIZED=false` | Schema; writer; reader; prior listing; OD07; creation authorization |
+| Membership-context artifact instance-existence census | Decision class persisted in §1.11 as `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`; census verdict `NO_INSTANCE_PROOF_FOUND`; instance remains `UNPROVEN`; `UNPROVEN` is not `ABSENT`; creation not authorized | This file §1.11; census table in §1.10 | §1.10 tracked origin/main census: no instance proof found | Isolated membership artifact unimplemented; `CREATION_AUTHORIZED=false` | Schema; writer; reader; prior listing; OD07; `CREATION_AUTHORIZED` remains false; materialization authority |
+| Membership-context artifact creation-authorization predicate | Predicate bound in §1.12 as `PERMISSION_BIT_ONLY`; `CREATION_AUTHORIZED` remains `false`; schema/writer/reader/OD07/anti-churn `NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE`; permission-bit is not materialization | This file §1.12 | OD06 permission **not** `CREATION_AUTHORIZED`; census persist **not** predicate | Isolated membership artifact unimplemented; no materialization | Schema; writer; reader; prior listing; OD07; `CREATION_AUTHORIZED=true`; materialization authority; durability/provenance semantics |
 
 ```text
 CURRENT_RUNTIME_EXISTENCE_ISOLATED_MF_SELECTOR=false
@@ -1565,5 +1715,10 @@ not prior-listing existence, and not an OD07 close. Instance existence
 remains `UNPROVEN`. The instance-existence decision class is persisted
 in §1.11 as
 `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`.
-`UNPROVEN` is not `ABSENT`. Creation is not authorized. Schema, writer,
-reader, prior listing, and OD07 are **not** auto-next.
+`UNPROVEN` is not `ABSENT`. Creation is not authorized. Creation-authorization
+semantics are bound in §1.12 as `PERMISSION_BIT_ONLY`.
+`CREATION_AUTHORIZED` remains `false`. Permission-bit semantics are
+not materialization authority. Schema, writer, reader, prior listing,
+and OD07 are **not** auto-next. Schema, writer, reader, OD07, and
+anti-churn are **not required** before a later `CREATION_AUTHORIZED=true`.
+That membership is not a bind of those items.
