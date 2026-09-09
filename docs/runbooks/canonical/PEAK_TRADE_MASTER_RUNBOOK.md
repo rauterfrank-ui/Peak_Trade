@@ -507,7 +507,9 @@ Cap 2.2 Top-20 Candidate Context
 
 Selector consumption and anti-churn **ownership** for that graph are
 persisted in §4.5.2. They do **not** ratify scoring, `N`, hygiene
-numerics, selector state, or a rotation policy.
+numerics, selector state, or a rotation policy. Selection and
+anti-churn **mechanism semantics** are persisted in §4.5.3. They do
+**not** ratify numerics and do **not** import Cap 2.3.
 
 Existing productive system, cited **only** as negative constraint
 (must not be violated; not a later fit-target):
@@ -591,6 +593,59 @@ This persist does **not** ratify `N=5`, exactly-N vs at-most-N, MF
 scoring, selector state, hygiene numerics, a membership-only
 transition-pending node, context persistence while G13 closed, or
 whether `rotation_deltas` is a stage versus a derived identity.
+Mechanism **semantics** for the same graph are persisted in §4.5.3.
+
+### 4.5.3 Isolated MF selection and anti-churn mechanism semantics (docs-only; AUTHORITY_EFFECT=NONE)
+
+Owner-GO
+`OWNER_GO_MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_PERSIST_V1`
+persists already-adjudicated isolated-domain selection and anti-churn
+**mechanism semantics**. This subsection does **not** replace §4.5,
+§4.5.1, or §4.5.2, does **not** rewire Cap 2.3 or Cap 2.4, does
+**not** unlock G13, and does **not** create a join into the productive
+system.
+
+Subordinate contract:
+`docs&#47;ops&#47;specs&#47;MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md`.
+
+``` text
+CONTRACT_ID=MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1
+CONTRACT_CLASS=NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY
+AUTHORITY_EFFECT=NONE
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CONTEXT_ONLY=true
+SELECTION_AUTHORITY=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+G13_UNLOCK=false
+CAP23_REMAINS_SOLE_SELECTION_OWNER=true
+CAP24_REWIRED=false
+INTEGRATION_STATUS=NOT_IN_SCOPE
+HOST_ADAPTER_STATUS=NOT_DESIGNED
+HOST_CONSUMER_STATUS=NONE
+AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
+NEW_EDGE_TO_PRODUCTIVE_SYSTEM=false
+TOP5_VS_ACTIVE_SET_N=NOT_EQUIVALENT
+TOP5_STATUS=POSSIBLE_CONFIGURATION_ONLY
+ACTIVE_SET_N_STATUS=UNRATIFIED
+TIE_BREAK_SEMANTICS=ORIGIN_ORDERING_PROPERTY_PLUS_UNRESOLVED_MF_OWN
+HYSTERESIS_SEMANTICS=SELECTOR_OWNED_CONCEPT_NOT_RATIFIED_RULE
+MIN_HOLDING_SEMANTICS=SELECTOR_OWNED_CONCEPT_NOT_RATIFIED_RULE
+REPLACEMENT_PENDING_SEMANTICS=SSF_STATE_NOT_IMPORTED_MEMBERSHIP_ANALOG_UNPROVEN
+REPLACEMENT_PENDING_IS_NOT_MEMBERSHIP_ROTATION=true
+ROTATION_ROLE=MEMBERSHIP_DIFF_ONLY
+ROTATION_IS_NOT_ANTI_CHURN_OWNER=true
+ALLOWED_STATE_TRANSITIONS=UNBOUND
+NUMERICS_RATIFIED=false
+SSF_SEMANTICS_IMPORTED=false
+POLICY_RATIFIED=false
+MEMBERSHIP_STATE_MACHINE_RATIFIED=false
+RUNTIME_IMPLEMENTATION_CREATED=false
+```
+
+This persist does **not** ratify an MF-own tie-break algorithm,
+hysteresis or minimum-holding numerics, a membership-only pending
+state machine, `N=5`, scoring, or rotation policy. Cap 2.3
+`REPLACEMENT_PENDING` remains not imported.
 
 ## 4.6 Volatility authority
 
