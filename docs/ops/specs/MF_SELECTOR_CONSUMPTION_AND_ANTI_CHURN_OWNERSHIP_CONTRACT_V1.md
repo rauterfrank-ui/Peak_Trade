@@ -176,13 +176,16 @@ The selector's persisted role is to **propose membership** from the
 Top-20 candidate context into Active Set N.
 
 Cap 2.2 already produces a deterministic ordered Top-20 candidate
-context, including deterministic tie-break at that origin. This
-contract does **not** authorize the selector to treat that as a second
-ranking authority. A later own MF scoring contract remains
-`UNRESOLVED` / `NOT_AUTHORIZED` (open question 3).
+context, including deterministic tie-break at that origin. Owner-GO
+`OWNER_POLICY_CLOSE_MF_OD02_AT_MOST_N_AND_OD03_CONSUME_CAP22_ORDERING_V1`
+authorizes consuming that origin order as membership order. This
+contract does **not** authorize a second ranker. An own MF scoring
+contract remains `ABSENT` / `NOT_REQUIRED` while that consume policy
+holds.
 
 Cardinality is **not** owned by the selector. The selector is constrained
-by Active Set `N`. `N` remains unratified.
+by Active Set `N`. Cardinality **mode** is `AT_MOST_N` (OD02 closed).
+`N_VALUE` remains unratified.
 
 Selector state remains `UNPROVEN`. This contract does **not** implement
 or design selector state.
@@ -206,14 +209,16 @@ authority.
 
 ```text
 CONCEPT=DETERMINISTIC_TIE_BREAK
-CORE_OWNER=UNRESOLVED
+CORE_OWNER=CAP_2_2_ORIGIN_WHILE_CONSUME_POLICY
 ROLE=ORDERING_PROPERTY_ALREADY_APPLIED_AT_TOP20_ORIGIN
-REUSE_STATUS=CONCEPT_REUSABLE
+REUSE_STATUS=CONSUMED_AS_MEMBERSHIP_ORDER
 NUMERICS_RATIFIED=false
 SSF_SEMANTICS_IMPORTED=false
 TIE_BREAK_PROVEN_ORIGIN=CAP_2_2_TOP20_ORDERING
-MF_OWN_TIE_BREAK_OWNER=UNRESOLVED
+MF_OWN_TIE_BREAK_OWNER=NOT_REQUIRED_WHILE_CONSUME_CAP22_ORDER_POLICY
+MF_OWN_TIE_BREAK_REQUIRED=false
 SELECTOR_MUST_NOT_DERIVE_RE_RANKING_FROM_THIS_PERSIST=true
+MF_RERANKING_ALLOWED=false
 ```
 
 ### 5.2 Hysteresis
@@ -319,8 +324,11 @@ This contract does **not** ratify, default, design, or implicitly close:
 ```text
 N_VALUE=UNRESOLVED
 N_EQUALS_5=NOT_RATIFIED
-EXACTLY_N_VS_AT_MOST_N=UNRESOLVED
+EXACTLY_N_VS_AT_MOST_N=CLOSED_AT_MOST_N
+CARDINALITY_MODE=AT_MOST_N
 MF_SCORING_RATIFIED=false
+MF_SCORING_CONTRACT_REQUIRED=false
+MEMBERSHIP_ORDER_POLICY=CONSUME_CAP22_ORDERING_AS_MEMBERSHIP_ORDER
 SELECTOR_STATE_IMPLEMENTED=false
 HYSTERESIS_NUMERICS_RATIFIED=false
 MINIMUM_HOLDING_NUMERICS_RATIFIED=false
@@ -343,15 +351,18 @@ NEW_RUNTIME_POLICY=false
 G13_UNLOCK=false
 ```
 
-## 7. Open questions preserved (not decided here)
+## 7. Remaining open questions (OD02 and OD03 closed elsewhere)
 
 ```text
 OPEN_DECISION_01=N_VALUE
 OPEN_DECISION_01_CLOSED=false
+OD01_UNBLOCKED_FOR_OWNER_NUMERIC_POLICY=true
 OPEN_DECISION_02=EXACTLY_N_VS_AT_MOST_N
-OPEN_DECISION_02_CLOSED=false
+OPEN_DECISION_02_CLOSED=true
+CARDINALITY_MODE=AT_MOST_N
 OPEN_DECISION_03=CONSUME_CAP22_ORDERING_VS_LATER_OWN_MF_SCORING
-OPEN_DECISION_03_CLOSED=false
+OPEN_DECISION_03_CLOSED=true
+MEMBERSHIP_ORDER_POLICY=CONSUME_CAP22_ORDERING_AS_MEMBERSHIP_ORDER
 OPEN_DECISION_04=SELECTOR_STATE
 OPEN_DECISION_04_CLOSED=false
 OPEN_DECISION_05=MEMBERSHIP_ONLY_TRANSITION_PENDING_NEEDED
@@ -362,15 +373,12 @@ OPEN_DECISION_07=ROTATION_DELTAS_STAGE_VS_DERIVED_IDENTITY
 OPEN_DECISION_07_CLOSED=false
 ```
 
-These seven items remain `UNRESOLVED` / `NOT_AUTHORIZED`. This persist
-must not be read as closing them.
-
-Fail-closed **boundaries** for `OPEN_DECISION_01` through
-`OPEN_DECISION_07` are persisted in
+`OPEN_DECISION_02` and `OPEN_DECISION_03` are closed in
 [`MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md`](MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md)
-§1.1–§1.8. That persist does **not** close any of the seven. `N_VALUE`
-remains not decidable while `OPEN_DECISION_02` is unclosed. MF-own
-tie-break remains blocked until `OPEN_DECISION_03` closes.
+§1.1–§1.2. The remaining five items stay `UNRESOLVED` /
+`NOT_AUTHORIZED`. `N_VALUE` is unblocked for a **separate** Owner
+numeric policy and is **not** chosen here. MF-own tie-break is **not
+required** while the consume-Cap-2.2-order policy holds.
 
 ## 8. Fail-closed interpretation
 

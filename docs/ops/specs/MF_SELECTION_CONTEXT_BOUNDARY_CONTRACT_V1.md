@@ -353,12 +353,12 @@ This contract does **not** ratify, default, design, or implicitly close:
 
 | Item | Status |
 |---|---|
-| `N` including `N=5` | `UNRESOLVED` / `UNRATIFIED` / `NOT_AUTHORIZED`; not decidable while `OPEN_DECISION_02` unclosed; fail-closed in semantics §1.3 |
-| Exactly-N vs at-most-N | `UNRESOLVED`; fail-closed non-inference in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1` §1.1; neither mode is default; not `N` ratification |
-| MF scoring contract | `ABSENT` / `UNRESOLVED` / `NOT_AUTHORIZED`; consume-as-rank also `NOT_AUTHORIZED`; fail-closed in semantics §1.2; MF-own tie-break blocked until `OPEN_DECISION_03` closes |
-| Selector policy / scoring | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` |
+| `N` including `N=5` | `UNRESOLVED` / `UNRATIFIED` / `NOT_AUTHORIZED`; unblocked for a separate Owner numeric ceiling policy after OD02 close as `AT_MOST_N`; fail-closed in semantics §1.3; not `N=5`; not `TOP5` |
+| Exactly-N vs at-most-N | `CLOSED_AT_MOST_N` in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1` §1.1; `N` is a ceiling, not a fill target; not `N` ratification |
+| MF scoring contract | `ABSENT` / `NOT_REQUIRED` while consume-Cap-2.2-order policy holds; OD03 closed in semantics §1.2; no second ranker; MF-own tie-break not required |
+| Selector policy / scoring | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` as a general selector policy; membership-order consume policy is in semantics §1.2 only |
 | Selector role / anti-churn ownership | persisted in `MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1`; not scoring; not numerics |
-| Selection / anti-churn mechanism semantics | persisted in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1` §1.1–§1.8 fail-closed boundaries and semantic DAG; none of `OPEN_DECISION_01`–`07` closed; not numerics; not SSF import; not scoring |
+| Selection / anti-churn mechanism semantics | persisted in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1`; OD02/OD03 closed in §1.1–§1.2; OD01 and OD04–OD07 remain open; not numerics; not SSF import |
 | Selector state | `UNPROVEN` / `UNRESOLVED`; hygiene concepts do not force durable selector state; `membership_state` is not selector-owned state; fail-closed in semantics §1.4 |
 | Membership-only transition-pending | analog `UNPROVEN`; node `OUT_OF_CORE_MODEL`; Cap-2.3 `REPLACEMENT_PENDING` out of domain; fail-closed in semantics §1.5 |
 | Rotation numerics | `UNRESOLVED` / `NOT_AUTHORIZED` |

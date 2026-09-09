@@ -238,11 +238,12 @@ entities:
       and anti-churn mechanism semantics. AUTHORITY_EFFECT=NONE. Not
       selection. Not numerics. Not SSF import. Replacement-pending is
       not rotation. Hysteresis and min-holding remain concepts, not
-      rules. OPEN_DECISION_01 through OPEN_DECISION_07 remain unclosed;
-      fail-closed boundaries live in the semantics contract §1.1–§1.8.
-      Neither EXACTLY_N nor AT_MOST_N is default. N is not decidable
-      while OD02 is unclosed. No Atlas edge to Cap 2.3 or Cap 2.4. G13
-      remains closed. Atlas is not runtime authority.
+      rules. OPEN_DECISION_02 closed as AT_MOST_N. OPEN_DECISION_03
+      closed as consume-Cap-2.2-ordering-as-membership-order.
+      OPEN_DECISION_01 remains unclosed and is unblocked only as a
+      separate Owner numeric ceiling. OD04 through OD07 remain
+      unclosed. No second ranker. No Atlas edge to Cap 2.3 or Cap 2.4.
+      G13 remains closed. Atlas is not runtime authority.
       ATLAS_AUTHORITY=NONE.
 
   - id: CAPABILITY:cap_2_3_single_selected_future
