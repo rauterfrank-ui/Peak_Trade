@@ -528,11 +528,12 @@ This workpackage creates **no** new edge between those graphs. It does
 **not** design a host adapter, Cap-2.4-compatible DTO, mapping into Cap
 2.3 or Cap 2.4, or authority handoff.
 
-Unresolved remains unresolved: `N` including `N=5`; exactly-N vs
-at-most-N; MF scoring; selector state; rotation numerics;
-hysteresis/cooldown/turnover **numerics**; membership-only
-transition-pending; context persistence while G13 closed; PHASE-8
-runtime semantics. Portfolio Selection is classified
+Unresolved remains unresolved: `N` including `N=5`; selector state;
+rotation numerics; hysteresis/cooldown/turnover **numerics**;
+membership-only transition-pending; context persistence while G13
+closed; PHASE-8 runtime semantics. Cardinality mode is closed as
+`AT_MOST_N` in §4.5.3. Membership order consumes Cap 2.2 origin
+ordering as specified in §4.5.3. Portfolio Selection is classified
 `P2_ALIAS_OR_PART_OF_SELECTOR` and is **not** a core-model node
 (§4.5.2). Authority handoff and host integration remain
 `NOT_DESIGNED` / `NOT_IN_SCOPE`.
@@ -579,7 +580,7 @@ ROTATION_IS_NOT_ANTI_CHURN_OWNER=true
 PORTFOLIO_SELECTION_CLASSIFICATION=P2_ALIAS_OR_PART_OF_SELECTOR
 PORTFOLIO_SELECTION_NODE=OUT_OF_CORE_MODEL
 ANTI_CHURN_OWNER=SELECTOR
-TIE_BREAK_CORE_OWNER=UNRESOLVED
+TIE_BREAK_CORE_OWNER=CAP_2_2_ORIGIN_WHILE_CONSUME_POLICY
 HYSTERESIS_CORE_OWNER=SELECTOR
 MIN_HOLDING_CORE_OWNER=SELECTOR
 FRESHNESS_CORE_OWNER=BOUNDARY
@@ -592,11 +593,11 @@ POLICY_RATIFIED=false
 RUNTIME_IMPLEMENTATION_CREATED=false
 ```
 
-This persist does **not** ratify `N=5`, exactly-N vs at-most-N, MF
-scoring, selector state, hygiene numerics, a membership-only
-transition-pending node, context persistence while G13 closed, or
-whether `rotation_deltas` is a stage versus a derived identity.
-Mechanism **semantics** for the same graph are persisted in §4.5.3.
+This persist does **not** ratify `N=5`, selector state, hygiene
+numerics, a membership-only transition-pending node, context
+persistence while G13 closed, or whether `rotation_deltas` is a stage
+versus a derived identity. Cardinality mode and membership-order
+policy for the same graph are persisted in §4.5.3.
 
 ### 4.5.3 Isolated MF selection and anti-churn mechanism semantics (docs-only; AUTHORITY_EFFECT=NONE)
 
@@ -630,7 +631,7 @@ NEW_EDGE_TO_PRODUCTIVE_SYSTEM=false
 TOP5_VS_ACTIVE_SET_N=NOT_EQUIVALENT
 TOP5_STATUS=POSSIBLE_CONFIGURATION_ONLY
 ACTIVE_SET_N_STATUS=UNRATIFIED
-TIE_BREAK_SEMANTICS=ORIGIN_ORDERING_PROPERTY_PLUS_UNRESOLVED_MF_OWN
+TIE_BREAK_SEMANTICS=CAP22_ORIGIN_CONSUMED_AS_MEMBERSHIP_ORDER
 HYSTERESIS_SEMANTICS=SELECTOR_OWNED_CONCEPT_NOT_RATIFIED_RULE
 MIN_HOLDING_SEMANTICS=SELECTOR_OWNED_CONCEPT_NOT_RATIFIED_RULE
 REPLACEMENT_PENDING_SEMANTICS=SSF_STATE_NOT_IMPORTED_MEMBERSHIP_ANALOG_UNPROVEN
@@ -644,19 +645,23 @@ POLICY_RATIFIED=false
 MEMBERSHIP_STATE_MACHINE_RATIFIED=false
 RUNTIME_IMPLEMENTATION_CREATED=false
 EXACTLY_N_AUTHORITY=NONE
-AT_MOST_N_AUTHORITY=NONE
-EXACTLY_N_VS_AT_MOST_N=UNRESOLVED
-CARDINALITY_MODE_DEFAULT=NONE
-SILENCE_DOES_NOT_SELECT_EXACTLY_OR_AT_MOST=true
+AT_MOST_N_AUTHORITY=OWNER_POLICY_CLOSE
+EXACTLY_N_VS_AT_MOST_N=CLOSED_AT_MOST_N
+CARDINALITY_MODE=AT_MOST_N
+N_IS_CEILING_NOT_FILL_TARGET=true
 CANDIDATE_COUNT_VS_N_WHILE_N_UNRESOLVED=NON_OPERATIVE
-OD02_GATES_INTERPRETATION_OF_ANY_LATER_N=true
+NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=true
 CAP23_EXACTLY1_IMPORTED=false
 CAP04_N5_IMPORTED=false
 CAP22_TOP20_LIMIT_IS_NOT_ACTIVE_SET_CARDINALITY=true
-CAP22_INPUT_ORDERING_IS_NOT_MEMBERSHIP_RANKING_AUTHORITY=true
+MEMBERSHIP_ORDER_POLICY=CONSUME_CAP22_ORDERING_AS_MEMBERSHIP_ORDER
+CAP22_MEMBERSHIP_ORDER_AUTHORIZED=true
+MF_RERANKING_ALLOWED=false
 OWN_MF_SCORING_CONTRACT=ABSENT
-MF_OWN_TIE_BREAK_ALGORITHM=BLOCKED_UNTIL_OD03_CLOSE
-N_VALUE_NOT_DECIDABLE_WHILE_OD02_UNCLOSED=true
+MF_SCORING_CONTRACT_REQUIRED=false
+MF_OWN_TIE_BREAK_REQUIRED=false
+OD01_UNBLOCKED_FOR_OWNER_NUMERIC_POLICY=true
+N_VALUE_NOT_DECIDABLE_WHILE_OD02_UNCLOSED=false
 SELECTOR_STATE_NOT_RATIFIED=true
 MEMBERSHIP_ONLY_ANALOG_REQUIRED=UNPROVEN
 NAMED_GRAPH_NODE_IS_NOT_STAGE_RATIFICATION=true
@@ -664,8 +669,8 @@ DOC_CONTRACT_PERSISTENCE_IS_NOT_MEMBERSHIP_ARTIFACT_PERSISTENCE=true
 PERSISTENCE_IS_NOT_G13_UNLOCK=true
 PERSISTENCE_IS_NOT_HOST_JOIN=true
 OPEN_DECISION_01_CLOSED=false
-OPEN_DECISION_02_CLOSED=false
-OPEN_DECISION_03_CLOSED=false
+OPEN_DECISION_02_CLOSED=true
+OPEN_DECISION_03_CLOSED=true
 OPEN_DECISION_04_CLOSED=false
 OPEN_DECISION_05_CLOSED=false
 OPEN_DECISION_06_CLOSED=false
@@ -673,25 +678,19 @@ OPEN_DECISION_07_CLOSED=false
 ```
 
 Owner-GO
-`OWNER_GO_MF_OPEN_DECISION_02_EXACTLY_N_VS_AT_MOST_N_SEMANTICS_V1`
-binds fail-closed cardinality-mode **boundaries** in the subordinate
-semantics contract §1.1. `OPEN_DECISION_02` remains **unclosed**.
-`OPEN_DECISION_01=N_VALUE` remains `UNRESOLVED`.
+`OWNER_POLICY_CLOSE_MF_OD02_AT_MOST_N_AND_OD03_CONSUME_CAP22_ORDERING_V1`
+closes `OPEN_DECISION_02` as `AT_MOST_N` and `OPEN_DECISION_03` as
+consume-Cap-2.2-ordering-as-membership-order in the subordinate
+semantics contract §1.1–§1.2. `OPEN_DECISION_01=N_VALUE` remains
+`UNRESOLVED` and is unblocked for a **separate** Owner numeric ceiling
+policy. Numeric prefix selection remains forbidden until that OD01
+close. `OPEN_DECISION_04` through `OPEN_DECISION_07` remain unclosed.
 
-Owner-GO
-`OWNER_GO_MF_OPEN_DECISIONS_01_THROUGH_07_BOUNDED_ADJUDICATION_WORKPACKAGE_V1`
-binds additional fail-closed **boundaries** in the subordinate
-semantics contract §1.2–§1.8. `OPEN_DECISION_01` through
-`OPEN_DECISION_07` remain **unclosed**. `N_VALUE` is not decidable
-while `OPEN_DECISION_02` is unclosed. MF-own tie-break remains blocked
-until `OPEN_DECISION_03` closes. Docs-contract persistence is not
-membership-artifact persistence, G13 unlock, host join, or runtime.
-
-This persist does **not** ratify an MF-own tie-break algorithm,
-hysteresis or minimum-holding numerics, a membership-only pending
-state machine, `N=5`, exactly-N, at-most-N, scoring, selector state,
-rotation identity, or rotation policy. Cap 2.3 `REPLACEMENT_PENDING`
-remains not imported. G13 remains closed.
+This persist does **not** ratify a numeric `N`, `N=5`, `TOP5`, an
+MF-own scoring contract, an MF-own tie-break algorithm, hysteresis or
+minimum-holding numerics, a membership-only pending state machine,
+selector state, rotation identity, or rotation policy. Cap 2.3
+`REPLACEMENT_PENDING` remains not imported. G13 remains closed.
 
 ## 4.6 Volatility authority
 
