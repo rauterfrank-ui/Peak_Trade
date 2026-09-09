@@ -246,6 +246,26 @@ entities:
       G13 remains closed. Atlas is not runtime authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:mf_ranking_universe_and_single_egress_boundary_v1
+    kind: CONTRACT
+    name: Isolated ranking universe and single-egress boundary
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_CONTRACT_V1.md
+    evidence_sources:
+      - docs/ops/specs/MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_CONTRACT_V1.md
+    notes: >-
+      Docs-only persist of isolated ranking-universe family isolation
+      and the single-egress invariant. AUTHORITY_EFFECT=NONE. Handoff
+      remains NOT_DESIGNED / NOT_YET_CANONICALLY_DEFINED. Downstream
+      must not re-rank. Existing execution/risk/eligibility gates may
+      block. N_VALUE unchanged. CAP23_IMPORTED=false. No Atlas edge to
+      Cap 2.3 or Cap 2.4. G13 remains closed. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE.
+
   - id: CAPABILITY:cap_2_3_single_selected_future
     kind: CAPABILITY
     name: Single Selected Future Policy

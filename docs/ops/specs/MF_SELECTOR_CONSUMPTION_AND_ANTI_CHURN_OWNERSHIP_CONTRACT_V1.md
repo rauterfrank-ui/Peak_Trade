@@ -59,7 +59,7 @@ consumer, a host adapter, a Cap-2.4-compatible DTO, a mapping into Cap
 2.3 or Cap 2.4, an authority handoff, a scoring contract, or a rotation
 policy.
 
-Master Runbook SSOT pointer: §4.5 / §4.5.1 / §4.5.2 / §4.5.3.
+Master Runbook SSOT pointer: §4.5 / §4.5.1 / §4.5.2 / §4.5.3 / §4.5.4.
 
 Parent boundary:
 [`MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1.md`](MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1.md).
@@ -68,9 +68,13 @@ Mechanism **semantics** (concept versus rule, rotation relation,
 replacement-pending non-equivalence, unresolved parameters) are
 persisted in
 [`MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md`](MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md).
+Isolated ranking-universe family isolation and the single-egress
+**invariant** are persisted in
+[`MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_CONTRACT_V1.md`](MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_CONTRACT_V1.md).
 This ownership contract remains the owner of selector consumption and
 anti-churn **ownership**. The semantics contract does **not** replace
-these ownership tables.
+these ownership tables. The ranking-universe/egress contract does
+**not** replace these ownership tables.
 
 This persist does **not** replace §4.5, does **not** replace §4.5.1, and
 does **not** replace the parent boundary class
