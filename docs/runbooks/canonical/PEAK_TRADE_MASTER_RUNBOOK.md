@@ -546,7 +546,10 @@ The instance-existence **decision class** is persisted in §4.5.3 as
 Creation-authorization **semantics** are bound in §4.5.3 as
 `PERMISSION_BIT_ONLY`; `CREATION_AUTHORIZED` remains `false`;
 permission-bit is **not** materialization; OD06 `ALLOWED` is **not**
-`CREATION_AUTHORIZED`. Numeric ceiling `N_VALUE=5` is
+`CREATION_AUTHORIZED`. The next canonical decision class for whether
+that bit remains `false` or is set `true` is named in §4.5.3 as
+`MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1`. Naming the class
+does **not** set `CREATION_AUTHORIZED=true`. Numeric ceiling `N_VALUE=5` is
 closed as Owner policy in §4.5.3 under `AT_MOST_N`. Selector-state **ownership**
 for membership identity is closed as principle only in §4.5.3; a
 membership artifact instance, writer, schema, and bound listing input
@@ -727,6 +730,12 @@ CREATION_AUTHORIZED=false
 CREATION_AUTHORIZED_SEMANTICS=PERMISSION_BIT_ONLY
 CREATION_AUTHORIZATION_PREDICATE_BOUND=true
 PRECONDITION_MEMBERSHIP_BOUND=true
+NEXT_CANONICAL_DECISION=MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1
+DECISION_SCOPE=OWNER_DECIDES_CREATION_AUTHORIZED_TRUE_OR_FALSE_UNDER_EXISTING_PERMISSION_BIT_ONLY_SEMANTICS
+DECISION_CLASS_BOUND=true
+DECISION_CLASS_BIND_DOES_NOT_SET_CREATION_AUTHORIZED_TRUE=true
+MATERIALIZATION_AUTHORITY_GRANTED=false
+ARTIFACT_INSTANCE_CREATED=false
 SCHEMA_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
 WRITER_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
 READER_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
@@ -815,6 +824,19 @@ those items. That persist does **not** create an artifact, does **not**
 bind schema, writer, or reader, does **not** prove prior-listing
 existence, does **not** unlock G13, and does **not** close
 `OPEN_DECISION_07`. Instance existence remains `UNPROVEN`.
+Owner-GO
+`OWNER_GO_MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_CLASS_V1`
+names the next canonical decision class in the subordinate
+semantics contract §1.13 as
+`MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1`.
+That class is the later Owner decision whether
+`CREATION_AUTHORIZED` remains `false` or is set `true` under the
+already-bound `PERMISSION_BIT_ONLY` semantics. Naming the class
+does **not** set `CREATION_AUTHORIZED=true`, does **not** grant
+materialization authority, does **not** create an artifact, does
+**not** bind schema, writer, or reader, does **not** close
+`OPEN_DECISION_07`, does **not** ratify anti-churn, and does
+**not** grant runtime or execution authority.
 
 This persist does **not** ratify a `TOP5` product, an
 MF-own scoring contract, an MF-own tie-break algorithm, hysteresis or
@@ -832,7 +854,10 @@ instance existence, **not** `ABSENT`, and **not** creation
 authorization. Creation-authorization predicate
 `PERMISSION_BIT_ONLY` is **not** `CREATION_AUTHORIZED=true`, **not**
 materialization, **not** instance existence, and **not** schema,
-writer, reader, OD07 close, or anti-churn ratification.
+writer, reader, OD07 close, or anti-churn ratification. The named
+decision class `MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1`
+is **not** `CREATION_AUTHORIZED=true`, **not** a true/false choice,
+and **not** materialization.
 
 ### 4.5.4 Isolated ranking universe and single-egress boundary (docs-only; AUTHORITY_EFFECT=NONE)
 
@@ -858,7 +883,10 @@ in §4.5.3 as
 `UNPROVEN` is **not** `ABSENT`. Creation is **not** authorized.
 Creation-authorization semantics are bound in §4.5.3 as
 `PERMISSION_BIT_ONLY`. `CREATION_AUTHORIZED` remains `false`.
-Permission-bit is **not** materialization. This
+Permission-bit is **not** materialization. The next canonical
+decision class is named in §4.5.3 as
+`MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1`. Naming the class
+does **not** set `CREATION_AUTHORIZED=true`. This
 subsection does **not**
 re-own those closes and does **not** close `OPEN_DECISION_07`. This
 subsection does **not** collectively close
@@ -918,6 +946,9 @@ CREATION_AUTHORIZED=false
 CREATION_AUTHORIZED_SEMANTICS=PERMISSION_BIT_ONLY
 CREATION_AUTHORIZATION_PREDICATE_BOUND=true
 PRECONDITION_MEMBERSHIP_BOUND=true
+NEXT_CANONICAL_DECISION=MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1
+DECISION_CLASS_BOUND=true
+DECISION_CLASS_BIND_DOES_NOT_SET_CREATION_AUTHORIZED_TRUE=true
 MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
 OD07_ROTATION_IDENTITY=UNCLOSED
 OD04_TO_OD07_CHANGED=false
