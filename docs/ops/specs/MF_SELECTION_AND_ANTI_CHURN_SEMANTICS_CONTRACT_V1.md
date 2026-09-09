@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1
 status: active
-scope: Docs-only persist of adjudicated isolated MF selection and anti-churn mechanism semantics; no host adapter; no Cap-2.3/2.4 join; no numerics
+scope: Docs-only persist of adjudicated isolated MF selection and anti-churn mechanism semantics; OD01 closed as Owner-policy ceiling N=5 under AT_MOST_N; no host adapter; no Cap-2.3/2.4 join; hygiene numerics unratified
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-09
@@ -46,6 +46,8 @@ ISOLATION_INVARIANT=HARD_DOMAIN_END
 NEW_EDGE_TO_PRODUCTIVE_SYSTEM=false
 POLICY_RATIFIED=false
 NUMERICS_RATIFIED=false
+N_VALUE=5
+N_CEILING_RATIFIED=true
 SSF_SEMANTICS_IMPORTED=false
 MF_SCORING_RATIFIED=false
 ROTATION_POLICY_RATIFIED=false
@@ -98,22 +100,26 @@ TOP20_CANDIDATE_CONTEXT
 ```text
 TOP5_VS_ACTIVE_SET_N=NOT_EQUIVALENT
 TOP5_STATUS=POSSIBLE_CONFIGURATION_ONLY
-ACTIVE_SET_N_STATUS=UNRATIFIED
-N_VALUE=UNRESOLVED
-N_EQUALS_5=NOT_RATIFIED
+ACTIVE_SET_N_STATUS=CEILING_N5_OWNER_POLICY
+N_VALUE=5
+N_EQUALS_5=OWNER_POLICY_CEILING_NOT_EXACTLY_5
 SILENCE_IS_NOT_N_EQUALS_5=true
+TOP5_PRODUCT_CREATED=false
 ```
 
 `TOP5` is **not** normalized to `ACTIVE_SET_N`. `ACTIVE_SET_N` is **not**
-normalized to `TOP5`. A later first ratified configuration **may** use
-`N=5`; that remains unratified.
+normalized to `TOP5`. Owner-GO
+`OWNER_GO_MF_OD01_CLOSE_NUMERIC_CEILING_N5_V1` closes `N_VALUE=5` as an
+`AT_MOST_N` ceiling in §1.3. That close does **not** create a `TOP5`
+product.
 
 ### 1.1 Isolated Active-Set cardinality mode (OPEN_DECISION_02)
 
 Owner-GO
 `OWNER_POLICY_CLOSE_MF_OD02_AT_MOST_N_AND_OD03_CONSUME_CAP22_ORDERING_V1`
-closes `OPEN_DECISION_02` as `AT_MOST_N`. It does **not** ratify
-`N_VALUE`, does **not** import `TOP5`, and does **not** import Cap 2.3
+closes `OPEN_DECISION_02` as `AT_MOST_N`. It does **not** itself ratify
+`N_VALUE`. Numeric ceiling `N_VALUE=5` is closed separately in §1.3.
+This section does **not** import `TOP5` and does **not** import Cap 2.3
 exactly-1.
 
 Prior fail-closed non-inference (neither mode was default; silence did
@@ -129,14 +135,14 @@ CARDINALITY_MODE=AT_MOST_N
 N_IS_CEILING_NOT_FILL_TARGET=true
 EXACTLY_N_AUTHORITY=NONE
 AT_MOST_N_AUTHORITY=OWNER_POLICY_CLOSE
-N_VALUE=UNRESOLVED
-OPEN_DECISION_01_STATUS=UNRESOLVED
+N_VALUE=5
+OPEN_DECISION_01_STATUS=CLOSED_NUMERIC_CEILING_N5
 TOP5_VS_ACTIVE_SET_N=NOT_EQUIVALENT
 CAP23_EXACTLY1_IMPORTED=false
 CAP04_N5_IMPORTED=false
 CAP22_TOP20_LIMIT_IS_NOT_ACTIVE_SET_CARDINALITY=true
-CANDIDATE_COUNT_VS_N_WHILE_N_UNRESOLVED=NON_OPERATIVE
-NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=true
+CANDIDATE_COUNT_VS_N_WHILE_N_UNRESOLVED=OPERATIVE_AFTER_OD01_CLOSE
+NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=false
 EMPTY_SET_POLICY=NON_AUTHORITY
 SILENCE_STALE_UNBOUND_POLICY=NON_AUTHORITY
 ```
@@ -148,10 +154,10 @@ Current authority:
 | `EXACTLY_N` | `NONE` | `CANONICAL_AUTHORITY` that this mode is **not** selected |
 | `AT_MOST_N` | `OWNER_POLICY_CLOSE` | `CANONICAL_AUTHORITY` |
 
-`N` is an **upper bound**, not a target or fill cardinality. After a
-later `OPEN_DECISION_01` close, `0 < membership_count <= N` from the
-same valid candidate context is cardinality-conformant. Until that
-numeric close, comparisons against `N` remain `NON_OPERATIVE`.
+`N` is an **upper bound**, not a target or fill cardinality. After the
+§1.3 OD01 close, `0 < membership_count <= 5` from the same valid
+candidate context is cardinality-conformant. Comparisons against `N`
+are **operative**. This section does **not** own that numeric close.
 
 Negative constraints (must not be violated; not a later fit-target):
 
@@ -160,38 +166,35 @@ TOP5_IS_NOT_ACTIVE_SET_N=true
 CAP_2_3_EXACTLY_1_IS_NOT_MF_CARDINALITY_MODE=true
 CAP_0_4_N_EQUALS_5_REMINDER_IS_NOT_AUTHORITY=true
 CAP_2_2_TOP20_CANDIDATE_CONTEXT_LIMIT_IS_NOT_ACTIVE_SET_CARDINALITY=true
-N_EQUALS_5_UNLESS_SEPARATELY_RATIFIED=false
+N_EQUALS_5_IS_CEILING_NOT_EXACTLY_5=true
 FILL_FROM_UNIVERSE_DASHBOARD_ALLOWLIST_OR_CAP23=FORBIDDEN
 EMPTY_SET_IS_NOT_AT_MOST_N_AUTHORIZATION=true
+NO_PADDING=true
 ```
 
-Candidate-count cases after this close. The **mode** is `AT_MOST_N`.
-Numeric comparison against `N` stays non-operative until OD01.
+Candidate-count cases after the §1.3 OD01 close. The **mode** is
+`AT_MOST_N`. `N_VALUE=5`. Numeric comparison against `N` is operative.
 
 | Case | Operative? | Bound semantics |
 |---|---|---|
-| Candidate count &lt; `N` | `NON_OPERATIVE` while `N_VALUE=UNRESOLVED`; underfill **policy** is set | After OD01: underfill from the same valid candidate context may be cardinality-conformant without padding. Does **not** fill from universe, dashboard, allowlist, or Cap 2.3. Does **not** set `N`. |
-| Candidate count = `N` | `NON_OPERATIVE` while `N_VALUE=UNRESOLVED` | After OD01: equality is allowed under `AT_MOST_N`. It does **not** prove `EXACTLY_N`. |
-| Candidate count &gt; `N` | `NON_OPERATIVE` while `N_VALUE=UNRESOLVED` | Overfill requires the closed membership-order policy in §1.2. Numeric prefix selection remains forbidden until OD01. Does **not** expand `N` to the candidate count. |
-| `N` itself unresolved | current numeric state | No candidate-count comparison may authorize a numeric `N`, `N=5`, or `TOP5`. |
+| Candidate count &lt; `N` | `OPERATIVE` | Underfill from the same valid candidate context may be cardinality-conformant without padding. Does **not** fill from universe, dashboard, allowlist, or Cap 2.3. Does **not** expand `N`. Does **not** authorize an empty set. |
+| Candidate count = `N` | `OPERATIVE` | Equality is allowed under `AT_MOST_N`. It does **not** prove `EXACTLY_N` or `EXACTLY_5`. |
+| Candidate count &gt; `N` | `OPERATIVE` | Overfill is cut by consuming Cap-2.2 membership order as a numeric prefix of at most 5. That prefix is **not** a second ranker and is **not** a `TOP5` product. Does **not** expand `N` to the candidate count. |
 
-Selector silence (absent, stale, unbound, or unratified `N`) must
-**not** infer:
+Selector silence (absent, stale, or unbound context) must **not** infer:
 
 ```text
 SILENCE_IS_NOT_N=true
-SILENCE_IS_NOT_N_EQUALS_5=true
+SILENCE_IS_NOT_MEMBERSHIP_OF_FIVE=true
 SILENCE_IS_NOT_TOP5=true
 SILENCE_IS_NOT_EMPTY_SET_AUTHORIZATION=true
 SILENCE_IS_NOT_FULL_UNIVERSE_AUTHORIZATION=true
-SILENCE_IS_NOT_CAP22_PREFIX_N=true
 SILENCE_IS_NOT_CAP23_SELECTION=true
 SILENCE_DOES_NOT_REOPEN_EXACTLY_N=true
 ```
 
-`OPEN_DECISION_01=N_VALUE` remains `UNRESOLVED` and is **not** this
-section. This close unblocks OD01 for a **separate** Owner numeric
-policy. It does **not** choose that number.
+`OPEN_DECISION_01=N_VALUE` is closed in §1.3 as Owner-policy ceiling
+`N=5`. This OD02 section does **not** re-close that decision.
 
 Existing productive system, cited **only** as negative constraint:
 
@@ -244,7 +247,7 @@ ORIGIN_TIE_BREAK_OWNER=CAP_2_2
 MF_OWN_TIE_BREAK_REQUIRED=false
 MF_OWN_TIE_BREAK_KEYS=NOT_AUTHORIZED
 MF_SCORING_WEIGHTS_FEATURES=NOT_AUTHORIZED
-NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=true
+NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=false
 ```
 
 Proven input identity is Cap 2.2 ordered Top-20 **candidate context**.
@@ -267,39 +270,69 @@ ABSENT_MF_SCORING_IS_NOT_A_DEFAULT_RANK=true
 INVENTION_OF_MF_SCORING_WEIGHTS_OR_FEATURES=FORBIDDEN
 INVENTION_OF_MF_OWN_TIE_BREAK_FROM_PLAUSIBILITY=FORBIDDEN
 IMPORT_OF_CAP23_TIE_BREAK_AS_MF_POLICY=FORBIDDEN
-NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=true
+NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=false
 ```
 
-Prefix-N was forbidden while OD01/OD02/OD03 were open. OD02 and OD03
-are now closed; OD01 remains open. Therefore numeric prefix selection
-from the Cap-2.2 order remains forbidden until a separate OD01 close.
-This close does **not** infer `N`.
+Prefix-N from the Cap-2.2 membership order is the overfill cut under
+`AT_MOST_N` after the §1.3 OD01 close (`N_VALUE=5`). It is **not** a
+second ranker, **not** a `TOP5` product, and **not** an `N`
+inference from silence. This OD03 close does **not** itself set `N`.
 
 ### 1.3 Isolated Active-Set `N_VALUE` (OPEN_DECISION_01)
 
 This subsection follows `OPEN_DECISION_02` on purpose. Owner-GO
+`OWNER_GO_MF_OD01_CLOSE_NUMERIC_CEILING_N5_V1`
+closes `OPEN_DECISION_01=N_VALUE` as Owner-policy numeric ceiling
+`N_VALUE=5` under already-closed `AT_MOST_N`. Prior unblock from
 `OWNER_POLICY_CLOSE_MF_OD02_AT_MOST_N_AND_OD03_CONSUME_CAP22_ORDERING_V1`
-unblocks `OPEN_DECISION_01=N_VALUE` for a **separate** Owner numeric
-policy because OD02 is now closed as `AT_MOST_N`. It does **not**
-ratify a numeric `N`, does **not** import Cap 0.4 `N=5`, and does
-**not** equate `TOP5` with `ACTIVE_SET_N`.
+remains historical provenance. That provenance is **not** a second
+close and does **not** reopen this decision.
+
+This close is **Owner policy**, not forensic inference from Cap 0.4,
+Top5 labels, Cap 2.2 Top-20, Cap 2.3 exactly-1, or a prior
+decision-support recommendation. It does **not** import the Cap 0.4
+`N=5` reminder as authority. It does **not** equate `TOP5` with
+`ACTIVE_SET_N`. It does **not** prove `EXACTLY_5`. It does **not**
+authorize padding. It does **not** bind a membership artifact, writer,
+persistence, restore/reload, listing existence, rotation identity,
+anti-churn numerics, G13 unlock, or host join. OD04 and OD05 remain
+unchanged. OD06 remains independently open. OD07 remains unclosed.
 
 ```text
 OPEN_DECISION_01=N_VALUE
-OPEN_DECISION_01_CLOSED=false
-N_VALUE=UNRESOLVED
-OD01_UNBLOCKED_FOR_OWNER_NUMERIC_POLICY=true
-N_VALUE_NOT_DECIDABLE_WHILE_OD02_UNCLOSED=false
-NUMERIC_N_AUTHORITY=NONE
-NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=true
+OPEN_DECISION_01_CLOSED=true
+OPEN_DECISION_01_CLOSE_CLASS=CLOSED_NUMERIC_CEILING_N5
+N_VALUE=5
+CARDINALITY_MODE=AT_MOST_N
+N_IS_CEILING_NOT_FILL_TARGET=true
+NO_PADDING=true
+OWNER_POLICY_NOT_FORENSIC_INFERENCE=true
+CAP04_N_EQUALS_5_REMINDER_USED_AS_AUTHORITY=false
 CAP04_N_EQUALS_5_IS_NOT_N_AUTHORITY=true
-SILENCE_IS_NOT_N=true
-SILENCE_IS_NOT_N_EQUALS_5=true
+TOP5_VS_ACTIVE_SET_N=NOT_EQUIVALENT
 TOP5_IS_NOT_ACTIVE_SET_N=true
+TOP5_PRODUCT_CREATED=false
+EXACTLY_5=false
+CAP22_TOP20_LIMIT_IS_NOT_ACTIVE_SET_CARDINALITY=true
+CAP23_EXACTLY1_IMPORTED=false
+NUMERIC_PREFIX_FROM_CAP22_ORDER_FOR_OVERFILL_CUT=ALLOWED
+NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=false
+MEMBERSHIP_ARTIFACT_ADJUDICATED=false
+EMPTY_SET_IS_NOT_AT_MOST_N_AUTHORIZATION=true
+SILENCE_IS_NOT_MEMBERSHIP_OF_FIVE=true
+OPEN_DECISION_04_CHANGED=false
+OPEN_DECISION_05_CHANGED=false
+OPEN_DECISION_06_CLOSED=false
+OPEN_DECISION_07_CLOSED=false
 ```
 
-After this persist, `N` is policy-decidable as a **ceiling** under
-`AT_MOST_N`. This workpackage does **not** choose that ceiling.
+Bound meaning: `0 < membership_count <= 5` from the same valid Cap-2.2
+candidate context is cardinality-conformant when membership is
+otherwise authorized. Underfill does **not** pad. Equality does
+**not** prove `EXACTLY_5`. Overfill is cut by consuming Cap-2.2
+membership order as a numeric prefix of at most 5. That prefix is
+**not** a second ranker and is **not** a `TOP5` product. Empty, stale,
+or unbound selector context remains non-authority.
 
 ### 1.4 Isolated selector state (OPEN_DECISION_04)
 
@@ -499,7 +532,7 @@ join, and **not** a close of any decision.
 
 ```text
 DECISION_DAG_CLASS=SEMANTIC_DEPENDENCY_NOT_RUNTIME
-CLOSED_DECISIONS=OPEN_DECISION_02,OPEN_DECISION_03,OPEN_DECISION_04,OPEN_DECISION_05
+CLOSED_DECISIONS=OPEN_DECISION_01,OPEN_DECISION_02,OPEN_DECISION_03,OPEN_DECISION_04,OPEN_DECISION_05
 ```
 
 ```text
@@ -507,7 +540,7 @@ TOP20_CANDIDATE_CONTEXT
 → CAP22_ORDER_CONSUMED_AS_MEMBERSHIP_ORDER
 → MF_SELECTOR
 → AT_MOST_N
-→ OD01_N_VALUE_UNRESOLVED
+→ OD01_CLOSED_NUMERIC_CEILING_N5
 → ACTIVE_SET_N
 → OD07_UNRESOLVED
 → MEMBERSHIP_ROTATION
@@ -532,18 +565,18 @@ nodes):
 |---|---|---|
 | `OPEN_DECISION_03` | `CLOSED_CONSUME_CAP22_ORDERING_AS_MEMBERSHIP_ORDER` | `true` |
 | `OPEN_DECISION_02` | `CLOSED_AT_MOST_N` | `true` |
-| `OPEN_DECISION_01` | `UNBLOCKED_FOR_OWNER_NUMERIC_POLICY` / parameter | `false` |
+| `OPEN_DECISION_01` | `CLOSED_NUMERIC_CEILING_N5` | `true` |
 | `OPEN_DECISION_04` | `CLOSED_OWNERSHIP_PRINCIPLE_ONLY` | `true` |
 | `OPEN_DECISION_05` | `CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED` | `true` |
 | `OPEN_DECISION_07` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` | `false` |
 | `OPEN_DECISION_06` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` | `false` |
 
 A later close of one node does **not** close a neighbor by inference.
-This persist closes `OPEN_DECISION_05` as
-`NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF
-model. It does **not** close `OPEN_DECISION_06`–`07`, does **not**
-reopen `OPEN_DECISION_04`, and does **not** choose `N`. It does
-**not** mean a pending analog can never exist.
+This persist closes `OPEN_DECISION_01` as Owner-policy ceiling
+`N_VALUE=5` under `AT_MOST_N`. It does **not** close
+`OPEN_DECISION_06`–`07`, does **not** reopen `OPEN_DECISION_04` or
+`OPEN_DECISION_05`, does **not** create a `TOP5` product, and does
+**not** prove `EXACTLY_5`.
 
 ## 2. Owner by mechanism
 
@@ -822,8 +855,9 @@ UNPROVEN_PENDING_ANALOG=NOT_A_STATE_MACHINE
 NO_INDEPENDENT_MEMBERSHIP_PENDING_STATE_REQUIRED=true
 OVERREAD_AS_SELECTION_OR_RUNTIME=FORBIDDEN
 OVERREAD_AS_FUTURE_HOST_INPUT=FORBIDDEN
-OVERREAD_AS_N_EQUALS_5=FORBIDDEN
+OVERREAD_AS_N5_EQUALS_TOP5_PRODUCT=FORBIDDEN
 OVERREAD_AS_EXACTLY_N=FORBIDDEN
+OVERREAD_AS_EXACTLY_5=FORBIDDEN
 OVERREAD_AS_AT_MOST_N_EQUALS_EMPTY_SET=FORBIDDEN
 OVERREAD_AS_SSF_STATE_MACHINE=FORBIDDEN
 OVERREAD_AS_ROTATION_POLICY=FORBIDDEN
@@ -833,8 +867,8 @@ OVERREAD_AS_CAP23_EXACTLY1_AS_MF_CARDINALITY_MODE=FORBIDDEN
 OVERREAD_AS_SECOND_RANKER=FORBIDDEN
 OVERREAD_AS_OWN_MF_SCORING=FORBIDDEN
 OVERREAD_AS_MF_OWN_TIE_BREAK_ALGORITHM=FORBIDDEN
-OVERREAD_AS_NUMERIC_PREFIX_UNTIL_OD01=FORBIDDEN
-OVERREAD_AS_N_VALUE=FORBIDDEN
+OVERREAD_AS_N5_EQUALS_CAP04_REMINDER_AUTHORITY=FORBIDDEN
+OVERREAD_AS_SILENCE_EQUALS_MEMBERSHIP_OF_FIVE=FORBIDDEN
 OVERREAD_AS_DURABLE_SELECTOR_STATE=FORBIDDEN
 OVERREAD_AS_MEMBERSHIP_STATE_EQUALS_SELECTOR_STATE=FORBIDDEN
 OVERREAD_AS_OD04_EQUALS_ARTIFACT_PERSIST=FORBIDDEN
@@ -856,25 +890,27 @@ OVERREAD_AS_DOC_PERSIST_EQUALS_ARTIFACT_PERSIST=FORBIDDEN
 OVERREAD_AS_PERSISTENCE_EQUALS_G13_UNLOCK=FORBIDDEN
 OVERREAD_AS_PERSISTENCE_EQUALS_HOST_JOIN=FORBIDDEN
 INVENTION_OF_THRESHOLDS_FROM_PLAUSIBILITY=FORBIDDEN
-CANDIDATE_COUNT_VS_UNRESOLVED_N=FAIL_CLOSED_NON_AUTHORITY
+CANDIDATE_COUNT_VS_N=OPERATIVE_AT_MOST_N_CEILING_5
 UNDERFILL_DOES_NOT_PAD=true
 UNDERFILL_DOES_NOT_SET_N=true
 UNDERFILL_DOES_NOT_AUTHORIZE_EMPTY_SET=true
 EXACT_FILL_DOES_NOT_PROVE_EXACTLY_N=true
+EXACT_FILL_DOES_NOT_PROVE_EXACTLY_5=true
 OVERFILL_DOES_NOT_AUTHORIZE_N_EXPANSION=true
-OVERFILL_NUMERIC_CUT_BLOCKED_UNTIL_OD01=true
-NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=true
+OVERFILL_NUMERIC_CUT_FROM_CAP22_ORDER=ALLOWED
+NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=false
 ```
 
 ## 12. Unresolved parameters
 
-No isolated-domain numeric, duration, rank delta, confirmation count,
+No isolated-domain duration, rank delta, confirmation count,
 cooldown, turnover bound, or tie-break key-order for an MF-own scoring
-contract is canonical.
+contract is canonical. Numeric ceiling `N_VALUE=5` is closed in §1.3
+as Owner policy under `AT_MOST_N`. Hygiene numerics remain unresolved.
 
 ```text
-UNRESOLVED_PARAMETERS=ALL_MF_DOMAIN_NUMERICS_AND_ALGORITHMS_BELOW
-N_VALUE=UNRESOLVED
+UNRESOLVED_PARAMETERS=HYGIENE_NUMERICS_AND_MF_OWN_SCORING_ALGORITHMS_BELOW
+N_VALUE=5
 EXACTLY_N_VS_AT_MOST_N=CLOSED_AT_MOST_N
 CARDINALITY_MODE=AT_MOST_N
 MF_TIE_BREAK_ALGORITHM=NOT_REQUIRED_WHILE_CONSUME_CAP22_ORDER_POLICY
@@ -900,16 +936,17 @@ policy. Citing them here is **negative constraint** only:
 `SSF_SEMANTICS_IMPORTED=false`.
 
 Open decisions remaining after this Owner-policy close. Fail-closed
-**boundaries** for still-open items remain in §1.3 and §1.6–§1.7. OD02
-and OD03 are closed in §1.1–§1.2. OD04 is closed in §1.4 as ownership
-principle only. OD05 is closed in §1.5 as
-`NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF
-model.
+**boundaries** for still-open items remain in §1.6–§1.7. OD01 is closed
+in §1.3 as Owner-policy ceiling `N_VALUE=5`. OD02 and OD03 are closed
+in §1.1–§1.2. OD04 is closed in §1.4 as ownership principle only. OD05
+is closed in §1.5 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the
+current isolated MF model.
 
 ```text
 OPEN_DECISION_01=N_VALUE
-OPEN_DECISION_01_CLOSED=false
-OD01_UNBLOCKED_FOR_OWNER_NUMERIC_POLICY=true
+OPEN_DECISION_01_CLOSED=true
+OPEN_DECISION_01_CLOSE_CLASS=CLOSED_NUMERIC_CEILING_N5
+N_VALUE=5
 OPEN_DECISION_02=EXACTLY_N_VS_AT_MOST_N
 OPEN_DECISION_02_CLOSED=true
 CARDINALITY_MODE=AT_MOST_N
@@ -929,7 +966,7 @@ OPEN_DECISION_06=CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
 OPEN_DECISION_06_CLOSED=false
 OPEN_DECISION_07=ROTATION_DELTAS_STAGE_VS_DERIVED_IDENTITY
 OPEN_DECISION_07_CLOSED=false
-NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=true
+NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=false
 MF_OWN_TIE_BREAK_REQUIRED=false
 ```
 
@@ -937,7 +974,7 @@ MF_OWN_TIE_BREAK_REQUIRED=false
 
 | Mechanism | Current authority | Existing contract | Historical evidence | Current runtime existence | Unresolved |
 |---|---|---|---|---|---|
-| Tie-break | Cap 2.2 origin ordering is membership order after OD03 close; MF-own not required while consume policy holds | Ownership §5.1; this file §6 | Cap 2.2 ranking evidence `tie_break_order`; Cap 2.3 different order **not imported**; research/strategy tie-breaks `OUT_OF_DOMAIN` | Isolated MF selector unimplemented; Cap 2.2 producer exists as TOP20 origin | Numeric `N` (`OPEN_DECISION_01`); hygiene numerics |
+| Tie-break | Cap 2.2 origin ordering is membership order after OD03 close; MF-own not required while consume policy holds | Ownership §5.1; this file §6 | Cap 2.2 ranking evidence `tie_break_order`; Cap 2.3 different order **not imported**; research/strategy tie-breaks `OUT_OF_DOMAIN` | Isolated MF selector unimplemented; Cap 2.2 producer exists as TOP20 origin | Hygiene numerics |
 | Hysteresis | Ownership locates concept at selector; no MF rule authority | Ownership §5.2; this file §7 | Cap 2.3 SSF hysteresis **not imported**; Cap 0.4 open decision; MV2/strategy hysteresis `OUT_OF_DOMAIN` | Isolated MF selector unimplemented | All numerics; concept-vs-rule remains concept |
 | Min holding | Ownership locates concept at selector; no MF rule authority | Ownership §5.3; this file §8 | Cap 2.3 SSF min holding **not imported**; Cap 0.4 open decision | Isolated MF selector unimplemented | All numerics; residence duration unbound |
 | Replacement-pending | Cap 2.3 only; **not** MF authority | Ownership §5.5 forbids SSF import; this file §9 / §1.5 | Cap 2.3 `REPLACEMENT_PENDING` state machine | Cap 2.3 producer exists **outside** this graph; no MF pending runtime | Independent MF pending class **not required** in the current isolated model (`OPEN_DECISION_05` closed); not never-needed |
@@ -1001,8 +1038,9 @@ NEXT_SLICE_AUTHORIZED=false
 HARD_STOP_AFTER_THIS_CONTRACT=true
 ```
 
-Any later `N` value, membership artifact, writer, persistence while G13
+Any later change to `N`, membership artifact, writer, persistence while G13
 closed, hygiene numerics, membership-only pending-state, own MF
 scoring, or rotation-stage identity requires a **new** Owner-GO and
 remains isolated. This contract does **not** authorize, specify, or
-prepare host integration. OD04 is closed as ownership principle only.
+prepare host integration. OD01 is closed as Owner-policy ceiling
+`N_VALUE=5`. OD04 is closed as ownership principle only.

@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_CONTRACT_V1
 status: active
-scope: Docs-only isolated ranking-universe family isolation and single-egress invariant; no handoff design; no N ratification; no Cap-2.3/2.4 join
+scope: Docs-only isolated ranking-universe family isolation and single-egress invariant; no handoff design; N_VALUE pointer to semantics §1.3; no Cap-2.3/2.4 join
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-09
@@ -60,8 +60,10 @@ TOP20_ACTIVE_SET_EQUIVALENT=false
 TOP5_ACTIVE_SET_EQUIVALENT=false
 TOP5_VS_ACTIVE_SET_N=NOT_EQUIVALENT
 CAP22_TOP20_LIMIT_IS_NOT_ACTIVE_SET_CARDINALITY=true
-N_VALUE=UNRESOLVED
+N_VALUE=5
 OD01_CHANGED=false
+OD01_N_VALUE=5
+OD01_CLOSE_CLASS=CLOSED_NUMERIC_CEILING_N5
 OD04_SELECTOR_STATE=CLOSED_OWNERSHIP_PRINCIPLE_ONLY
 OD05_MEMBERSHIP_PENDING=CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED
 OD06_PERSISTENCE_WHILE_G13_CLOSED=UNCLOSED
@@ -76,10 +78,12 @@ invariant for the graph bounded by
 
 It does **not** replace §4.5, §4.5.1, §4.5.2, or §4.5.3. It does **not**
 design a host adapter, a Cap-2.4-compatible DTO, a mapping into Cap 2.3
-or Cap 2.4, or an authority handoff. It does **not** set `N_VALUE`.
-`OPEN_DECISION_04` is closed as ownership principle only in
+or Cap 2.4, or an authority handoff. It does **not** re-own `N_VALUE`.
+`N_VALUE=5` is a **pointer** to the semantics contract §1.3; this file
+is not the OD01 close owner. `OPEN_DECISION_04` is closed as ownership principle only in
 [`MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md`](MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md)
-§1.4. `OPEN_DECISION_05` is closed as
+§1.4. `OPEN_DECISION_01` is closed as Owner-policy ceiling `N_VALUE=5`
+in that contract §1.3. `OPEN_DECISION_05` is closed as
 `NO_INDEPENDENT_PENDING_STATE_REQUIRED` in that contract §1.5. This
 file records those pointers. It does **not** close
 `OPEN_DECISION_06` or `OPEN_DECISION_07`.
@@ -201,8 +205,8 @@ Dashboard `universe` ~50 is observation-only.
 | Label `Top50` / ~50 | `OUT_OF_DOMAIN` as canonical stage; dashboard/read-model target; DP context labels | none for MF | dashboard read-model / research mentions | presentation / non-authoritative DP context | none | not Active Set; not Cap 2.1 identity; not isolated-graph node | `docs/webui/observability/UNIVERSE_SELECTION_READMODEL_V1.md`; `docs/ops/specs/MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0.md` |
 | Cap 2.2 Top-20 | isolated-domain **origin**; productive ranking producer | `ops.productive_futures_ranking_producer_v1` | Cap 2.2 snapshot | Cap 2.3 (productive); MF selector (isolated, unimplemented) | candidate context only | not Active-Set ceiling; not selection; not MF egress | `docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md`; parent boundary |
 | Caller / MF selector | `IN_SELECTION_DOMAIN` | selector role in ownership contract | unimplemented | Active Set N (topology) | membership proposal from Top-20 order; no re-rank | not order/position/venue/execution/risk authority | ownership contract §3–§4; semantics §1.2 |
-| Active Set / Top-N | `IN_SELECTION_DOMAIN` | Active Set cardinality owner; `N` unratified | unimplemented | rotation (topology) | non-authoritative membership composition | not Top20; not Top5; not Cap 2.3 exactly-1 | semantics §1.1 / §1.3 |
-| Top5 concept | `HISTORICAL_ONLY` possible configuration label | none | none | none | none | not `ACTIVE_SET_N`; silence is not N=5 | Cap 0.4 register; semantics `TOP5_VS_ACTIVE_SET_N=NOT_EQUIVALENT` |
+| Active Set / Top-N | `IN_SELECTION_DOMAIN` | Active Set cardinality owner; `N_VALUE=5` ceiling under `AT_MOST_N` | unimplemented | rotation (topology) | non-authoritative membership composition | not Top20; not Top5 product; not Cap 2.3 exactly-1; not `EXACTLY_5` | semantics §1.1 / §1.3 |
+| Top5 concept | `HISTORICAL_ONLY` possible configuration label | none | none | none | none | not `ACTIVE_SET_N`; `N=5` ceiling is not a `TOP5` product | Cap 0.4 register; semantics `TOP5_VS_ACTIVE_SET_N=NOT_EQUIVALENT` |
 | Portfolio Selection | `IN_SELECTION_DOMAIN` as `P2_ALIAS_OR_PART_OF_SELECTOR`; distinct stage `OUT_OF_CORE_MODEL` | selector alias | unimplemented | none as distinct stage | none beyond selector membership proposal | not Global Portfolio Risk; not `SRC_PORTFOLIO` authority | ownership contract §3 |
 | Rotation | `IN_SELECTION_DOMAIN` | rotation = membership-diff-only | unimplemented | none productive | membership-change identity only | not anti-churn owner; not pending; not rotation engine | ownership §5.8; semantics §1.6 |
 | Anti-churn | `IN_SELECTION_DOMAIN` concepts | selector | unimplemented | none | concept location only; numerics unratified | not rotation; not SSF hysteresis import | ownership §5 |
@@ -363,12 +367,12 @@ CAP22_TOP20_LIMIT_IS_NOT_ACTIVE_SET_CARDINALITY=true
 TOP5_VS_ACTIVE_SET_N=NOT_EQUIVALENT
 TOP5_ACTIVE_SET_EQUIVALENT=false
 TOP5_STATUS=POSSIBLE_CONFIGURATION_ONLY
-N_VALUE=UNRESOLVED
+N_VALUE=5
 ```
 
-If a later separate OD01 close sets `N=5`, that is a **ceiling** under
+The Owner-policy OD01 close `N_VALUE=5` is a **ceiling** under
 `AT_MOST_N`. It does **not** create a `TOP5` product or a second
-authority named Top5.
+authority named Top5. This file is not the OD01 close owner.
 
 ## 11. No Cap-2.3 / SSF import
 
@@ -387,14 +391,17 @@ inside this isolated universe.
 
 ## 12. No policy leakage
 
-This contract does **not** close or ratify the items below. OD04
+This contract does **not** close or ratify the items below. OD01
+numeric-ceiling status is a **pointer** to the semantics contract
+§1.3; this file is not the OD01 close owner. OD04
 ownership-principle status is a **pointer** to the semantics contract
 §1.4; this file is not the OD04 close owner. OD05
 `NO_INDEPENDENT_PENDING_STATE_REQUIRED` status is a **pointer** to the
 semantics contract §1.5; this file is not the OD05 close owner.
 
 ```text
-OD01_N_VALUE=UNRESOLVED
+OD01_N_VALUE=5
+OD01_CLOSE_CLASS=CLOSED_NUMERIC_CEILING_N5
 OD01_CHANGED=false
 OD04_SELECTOR_STATE=CLOSED_OWNERSHIP_PRINCIPLE_ONLY
 OD05_MEMBERSHIP_PENDING=CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED
@@ -408,12 +415,15 @@ MIN_HOLDING_NUMERICS=UNRESOLVED
 REPLACEMENT_PENDING_SEMANTICS=NOT_IMPORTED
 NEW_PERSISTENCE_SEMANTICS=false
 NEW_EXECUTION_SELECTION_HEURISTIC=false
-NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=true
+NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=false
 RECOMMENDED_N_IS_NOT_AUTHORITY=true
+CAP04_N_EQUALS_5_REMINDER_USED_AS_AUTHORITY=false
 ```
 
 `RECOMMENDED_N=5` from a prior decision-support chat is **not** this
-contract and is **not** persisted as authority.
+contract and is **not** the OD01 close authority. The close owner is
+the semantics contract §1.3 under
+`OWNER_GO_MF_OD01_CLOSE_NUMERIC_CEILING_N5_V1`.
 
 ## 13. Fail-closed interpretation
 
@@ -423,7 +433,7 @@ OVERREAD_AS_SINGLE_PROVEN_EGRESS=FORBIDDEN
 OVERREAD_AS_TOP50_STAGE=FORBIDDEN
 OVERREAD_AS_TOP20_EQUALS_ACTIVE_SET=FORBIDDEN
 OVERREAD_AS_TOP5_EQUALS_ACTIVE_SET=FORBIDDEN
-OVERREAD_AS_N_VALUE=FORBIDDEN
+OVERREAD_AS_THIS_FILE_SETTING_N=FORBIDDEN
 OVERREAD_AS_CAP23_IMPORT=FORBIDDEN
 OVERREAD_AS_SECOND_RANKER=FORBIDDEN
 OVERREAD_AS_DOWNSTREAM_RE_RANK_ALLOWED=FORBIDDEN
@@ -463,12 +473,13 @@ INTEGRATION_STATUS=NOT_IN_SCOPE
 HOST_ADAPTER_STATUS=NOT_DESIGNED
 HOST_CONSUMER_STATUS=NONE
 AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
-N_VALUE=UNRESOLVED
+N_VALUE=5
 NEXT_IMPLEMENTATION_AUTHORIZED=false
 NEXT_SLICE_AUTHORIZED=false
 HARD_STOP_AFTER_THIS_CONTRACT=true
 ```
 
-Any later handoff design, payload, `N` value, or host join requires a
+Any later handoff design, payload, change to `N`, or host join requires a
 **new** Owner-GO and remains isolated until that GO. This contract does
-**not** authorize, specify, or prepare host integration.
+**not** authorize, specify, or prepare host integration. `N_VALUE=5` is
+a pointer to the semantics contract §1.3.
