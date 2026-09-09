@@ -354,6 +354,7 @@ This contract does **not** ratify, default, design, or implicitly close:
 | Item | Status |
 |---|---|
 | `N` including `N=5` | `UNRESOLVED` / `UNRATIFIED` / `NOT_AUTHORIZED` |
+| Exactly-N vs at-most-N | `UNRESOLVED`; fail-closed non-inference in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1` §1.1; neither mode is default; not `N` ratification |
 | MF scoring contract | `ABSENT` / `UNRESOLVED` / `NOT_AUTHORIZED` |
 | Selector policy / scoring | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` |
 | Selector role / anti-churn ownership | persisted in `MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1`; not scoring; not numerics |
