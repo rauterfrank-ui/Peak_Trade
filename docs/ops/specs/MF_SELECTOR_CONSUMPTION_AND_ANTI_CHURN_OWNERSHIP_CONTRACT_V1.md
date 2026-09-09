@@ -380,7 +380,7 @@ NEW_RUNTIME_POLICY=false
 G13_UNLOCK=false
 ```
 
-## 7. Remaining open questions (OD01, OD02, OD03, OD04, and OD05 closed elsewhere)
+## 7. Remaining open questions (OD01, OD02, OD03, OD04, OD05, and OD06 closed elsewhere)
 
 ```text
 OPEN_DECISION_01=N_VALUE
@@ -401,7 +401,9 @@ OPEN_DECISION_05=MEMBERSHIP_ONLY_TRANSITION_PENDING_NEEDED
 OPEN_DECISION_05_CLOSED=true
 OPEN_DECISION_05_CLOSE_CLASS=NO_INDEPENDENT_PENDING_STATE_REQUIRED
 OPEN_DECISION_06=CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
-OPEN_DECISION_06_CLOSED=false
+OPEN_DECISION_06_CLOSED=true
+OPEN_DECISION_06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
+NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
 OPEN_DECISION_07=ROTATION_DELTAS_STAGE_VS_DERIVED_IDENTITY
 OPEN_DECISION_07_CLOSED=false
 ```
@@ -412,8 +414,11 @@ OPEN_DECISION_07_CLOSED=false
 Owner-policy ceiling `N_VALUE=5`. `OPEN_DECISION_04` is closed in that
 contract §1.4 as ownership principle only. `OPEN_DECISION_05` is closed
 in that contract §1.5 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the
-current isolated MF model. The remaining two items stay `UNRESOLVED`
-/ `NOT_AUTHORIZED`. This file does **not** re-own the numeric ceiling.
+current isolated MF model. `OPEN_DECISION_06` is closed in that contract
+§1.7 as permission-only `ALLOWED` while G13 remains closed. Permission
+is not artifact existence. This file is not the OD06 close owner.
+`OPEN_DECISION_07` stays `UNRESOLVED` / `NOT_AUTHORIZED`. This file does
+**not** re-own the numeric ceiling.
 MF-own tie-break is **not required** while the consume-Cap-2.2-order
 policy holds.
 
@@ -476,10 +481,11 @@ NEXT_SLICE_AUTHORIZED=false
 HARD_STOP_AFTER_THIS_CONTRACT=true
 ```
 
-Any later scoring, change to `N`, membership artifact, writer, hygiene
-numerics, membership-only pending-state, or persistence while G13
-closed requires a **new** Owner-GO and remains isolated. This contract
+Any later scoring, change to `N`, membership artifact schema, writer, hygiene
+numerics, membership-only pending-state, or rotation-stage identity
+requires a **new** Owner-GO and remains isolated. This contract
 does **not** authorize, specify, or prepare host integration. OD01 is
 closed as Owner-policy ceiling `N_VALUE=5` in the semantics contract
 §1.3. OD04 is closed as ownership principle only in the semantics
-contract §1.4.
+contract §1.4. OD06 is closed as permission-only `ALLOWED` in the
+semantics contract §1.7; this file is not the OD06 close owner.

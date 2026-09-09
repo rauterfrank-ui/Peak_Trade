@@ -489,8 +489,9 @@ N_RATIFIED=false
 MF_SCORING_RATIFIED=false
 ROTATION_POLICY_RATIFIED=false
 PORTFOLIO_SELECTION_RATIFIED=false
-PERSISTENCE_WHILE_G13_CLOSED=UNPROVEN
+PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
 DOC_CONTRACT_PERSISTENCE_IS_NOT_MEMBERSHIP_ARTIFACT_PERSISTENCE=true
+PERMISSION_TO_PERSIST_IS_NOT_EXISTENCE_OF_PERSISTED_ARTIFACT=true
 PERSISTENCE_IS_NOT_G13_UNLOCK=true
 PERSISTENCE_IS_NOT_HOST_JOIN=true
 PHASE8_RUNTIME_SEMANTICS_RATIFIED=false
@@ -529,12 +530,17 @@ This workpackage creates **no** new edge between those graphs. It does
 2.3 or Cap 2.4, or authority handoff.
 
 Unresolved remains unresolved: rotation numerics;
-hysteresis/cooldown/turnover **numerics**; context persistence while
-G13 closed; PHASE-8 runtime semantics. Numeric ceiling `N_VALUE=5` is
+hysteresis/cooldown/turnover **numerics**; membership-artifact
+existence / writer / schema / bound listing; PHASE-8 runtime
+semantics. Non-authoritative membership-context artifact persistence
+while G13 closed is closed as Owner-policy **permission** `ALLOWED`
+in §4.5.3; permission is **not** artifact existence. Numeric ceiling `N_VALUE=5` is
 closed as Owner policy in §4.5.3 under `AT_MOST_N`. Selector-state **ownership**
 for membership identity is closed as principle only in §4.5.3; a
-membership artifact, writer, persistence, and bound listing input
-remain unresolved. Isolated membership-only pending analog is closed
+membership artifact, writer, schema, and bound listing input
+remain unresolved. Permission for a non-authoritative membership-context
+artifact to persist while G13 remains closed is `ALLOWED` in §4.5.3;
+that permission is **not** artifact existence. Isolated membership-only pending analog is closed
 in §4.5.3 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current
 isolated MF model; that is **not** never-needed and does **not**
 ratify anti-churn rules. Cardinality mode is closed as
@@ -604,9 +610,10 @@ RUNTIME_IMPLEMENTATION_CREATED=false
 ```
 
 This persist does **not** ratify hygiene numerics, a
-membership-only pending state machine, context persistence while G13
-closed, or whether `rotation_deltas` is a stage versus a derived
-identity. Numeric ceiling `N_VALUE=5` is closed as Owner policy in
+membership-only pending state machine, or whether `rotation_deltas` is
+a stage versus a derived identity. Context persistence while G13
+closed is closed as permission-only in §4.5.3; this ownership persist
+does **not** re-own that close. Numeric ceiling `N_VALUE=5` is closed as Owner policy in
 §4.5.3; this ownership persist does **not** re-own that close.
 `OPEN_DECISION_04` is closed as ownership principle only in
 §4.5.3: membership identity is not selector-owned state.
@@ -687,6 +694,7 @@ MEMBERSHIP_ONLY_ANALOG_REQUIRED_SCOPE=CURRENT_ISOLATED_MF_MODEL
 NO_INDEPENDENT_MEMBERSHIP_PENDING_STATE_REQUIRED=true
 NAMED_GRAPH_NODE_IS_NOT_STAGE_RATIFICATION=true
 DOC_CONTRACT_PERSISTENCE_IS_NOT_MEMBERSHIP_ARTIFACT_PERSISTENCE=true
+PERMISSION_TO_PERSIST_IS_NOT_EXISTENCE_OF_PERSISTED_ARTIFACT=true
 PERSISTENCE_IS_NOT_G13_UNLOCK=true
 PERSISTENCE_IS_NOT_HOST_JOIN=true
 OPEN_DECISION_01_CLOSED=true
@@ -694,7 +702,9 @@ OPEN_DECISION_02_CLOSED=true
 OPEN_DECISION_03_CLOSED=true
 OPEN_DECISION_04_CLOSED=true
 OPEN_DECISION_05_CLOSED=true
-OPEN_DECISION_06_CLOSED=false
+OPEN_DECISION_06_CLOSED=true
+OPEN_DECISION_06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
+NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
 OPEN_DECISION_07_CLOSED=false
 ```
 
@@ -723,13 +733,23 @@ numeric ceiling `N_VALUE=5` under `AT_MOST_N`. That close is **not**
 does **not** import Cap 0.4 `N=5` as authority, and does **not** bind
 a membership artifact, writer, or persistence. Numeric prefix from
 Cap-2.2 membership order is the overfill cut only.
-`OPEN_DECISION_06` and `OPEN_DECISION_07` remain unclosed.
+Owner-GO
+`OWNER_GO_OD06_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED_V1`
+closes `OPEN_DECISION_06` in that contract §1.7 as Owner-policy
+permission `ALLOWED`: a non-authoritative membership-context artifact
+**may** persist while G13 remains an `INTENTIONAL_SAFETY_BARRIER`.
+That close is **not** artifact existence, does **not** bind schema,
+writer, reader, store, or listing, does **not** unlock G13, and does
+**not** close `OPEN_DECISION_07`. `OPEN_DECISION_07` remains unclosed.
 
 This persist does **not** ratify a `TOP5` product, an
 MF-own scoring contract, an MF-own tie-break algorithm, hysteresis or
 minimum-holding numerics, a membership-only pending state machine, a
 membership artifact, rotation identity, or rotation policy. Cap 2.3
 `REPLACEMENT_PENDING` remains not imported. G13 remains closed.
+OD06 permission to persist a non-authoritative membership-context
+artifact while G13 remains closed is **ALLOWED**; permission is **not**
+artifact existence.
 
 ### 4.5.4 Isolated ranking universe and single-egress boundary (docs-only; AUTHORITY_EFFECT=NONE)
 
@@ -744,7 +764,10 @@ the productive system. `OPEN_DECISION_01` is closed in §4.5.3 as
 Owner-policy ceiling `N_VALUE=5`. `OPEN_DECISION_04` is closed in §4.5.3 as
 ownership principle only. `OPEN_DECISION_05` is closed in §4.5.3 as
 `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF
-model. This subsection does **not** collectively close
+model. `OPEN_DECISION_06` is closed in §4.5.3 as permission-only
+`ALLOWED` while G13 remains closed. This subsection does **not**
+re-own that close and does **not** close `OPEN_DECISION_07`. This
+subsection does **not** collectively close
 `OPEN_DECISION_04`–`07`.
 
 Subordinate contract:
@@ -789,7 +812,8 @@ OD01_N_VALUE=5
 OD01_CLOSE_CLASS=CLOSED_NUMERIC_CEILING_N5
 OD04_SELECTOR_STATE=CLOSED_OWNERSHIP_PRINCIPLE_ONLY
 OD05_MEMBERSHIP_PENDING=CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED
-OD06_PERSISTENCE_WHILE_G13_CLOSED=UNCLOSED
+OD06_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
+OD06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
 OD07_ROTATION_IDENTITY=UNCLOSED
 OD04_TO_OD07_CHANGED=false
 RUNTIME_IMPLEMENTATION_CREATED=false

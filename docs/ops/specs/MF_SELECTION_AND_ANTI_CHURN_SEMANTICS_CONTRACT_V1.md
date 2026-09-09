@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1
 status: active
-scope: Docs-only persist of adjudicated isolated MF selection and anti-churn mechanism semantics; OD01 closed as Owner-policy ceiling N=5 under AT_MOST_N; no host adapter; no Cap-2.3/2.4 join; hygiene numerics unratified
+scope: Docs-only persist of adjudicated isolated MF selection and anti-churn mechanism semantics; OD01 closed as Owner-policy ceiling N=5 under AT_MOST_N; OD06 closed as ALLOW permission for non-authoritative membership-context artifact persistence while G13 remains closed; permission is not artifact existence; no host adapter; no Cap-2.3/2.4 join; hygiene numerics unratified
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-09
@@ -296,7 +296,8 @@ decision-support recommendation. It does **not** import the Cap 0.4
 authorize padding. It does **not** bind a membership artifact, writer,
 persistence, restore/reload, listing existence, rotation identity,
 anti-churn numerics, G13 unlock, or host join. OD04 and OD05 remain
-unchanged. OD06 remains independently open. OD07 remains unclosed.
+unchanged. OD01 did **not** close OD06 or OD07. OD06 is closed
+separately in §1.7 as permission-only. OD07 remains unclosed.
 
 ```text
 OPEN_DECISION_01=N_VALUE
@@ -322,7 +323,8 @@ EMPTY_SET_IS_NOT_AT_MOST_N_AUTHORIZATION=true
 SILENCE_IS_NOT_MEMBERSHIP_OF_FIVE=true
 OPEN_DECISION_04_CHANGED=false
 OPEN_DECISION_05_CHANGED=false
-OPEN_DECISION_06_CLOSED=false
+OPEN_DECISION_06_CHANGED=false
+OPEN_DECISION_06_CLOSED=true
 OPEN_DECISION_07_CLOSED=false
 ```
 
@@ -373,7 +375,8 @@ ALLOWED_STATE_TRANSITIONS=UNBOUND
 SSF_SEMANTICS_IMPORTED=false
 OPEN_DECISION_05_CLOSED=true
 OPEN_DECISION_05_CLOSE_CLASS=NO_INDEPENDENT_PENDING_STATE_REQUIRED
-OPEN_DECISION_06_CLOSED=false
+OPEN_DECISION_06_CLOSED=true
+OPEN_DECISION_06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
 OPEN_DECISION_07_CLOSED=false
 PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=UNPROVEN
 ```
@@ -489,50 +492,90 @@ infer a rotation engine, a stage owner, or a derived close.
 ### 1.7 Isolated persistence while G13 closed (OPEN_DECISION_06)
 
 Owner-GO
+`OWNER_GO_OD06_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED_V1`
+closes `OPEN_DECISION_06=CONTEXT_PERSISTENCE_WHILE_G13_CLOSED` as
+Owner-policy **permission**: a non-authoritative membership-context
+artifact **may** persist while G13 remains an
+`INTENTIONAL_SAFETY_BARRIER`. Prior fail-closed **boundaries** from
 `OWNER_GO_MF_OPEN_DECISIONS_01_THROUGH_07_BOUNDED_ADJUDICATION_WORKPACKAGE_V1`
-persists fail-closed **boundaries** for
-`OPEN_DECISION_06=CONTEXT_PERSISTENCE_WHILE_G13_CLOSED`. It does
-**not** close that decision, does **not** unlock G13, does **not**
-create a host join, and does **not** activate runtime.
+remain historical provenance. That provenance is **not** a second
+close and does **not** reopen this decision.
+
+This close is **permission only**. Permission to persist is **not**
+existence of a persisted artifact. It does **not** bind a schema, DTO,
+writer, reader, store, lifecycle, restore/reload, listing existence, or
+prior-membership listing. It does **not** implement the selector. It
+does **not** unlock G13, create a host join, activate runtime, or grant
+execution or handoff authority. It does **not** close
+`OPEN_DECISION_07`, ratify a rotation stage, or ratify anti-churn
+policy or numerics. It does **not** equate Top-20 with Active Set, does
+**not** create a `TOP5` product, and does **not** prove `EXACTLY_5`.
+OD01, OD04, and OD05 remain unchanged.
 
 ```text
 OPEN_DECISION_06=CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
-OPEN_DECISION_06_CLOSED=false
-DOC_CONTRACT_PERSISTENCE=PRESENT_AUTHORITY_EFFECT_NONE
+OPEN_DECISION_06_CLOSED=true
+OPEN_DECISION_06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
+NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
+NON_AUTHORITATIVE_ONLY=true
+PERMISSION_TO_PERSIST_IS_NOT_EXISTENCE_OF_PERSISTED_ARTIFACT=true
 MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
+MEMBERSHIP_LISTING_IDENTITY_BOUND=false
+MEMBERSHIP_LISTING_IDENTITY_IS_NOT_PROVEN_INPUT=true
+PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=UNPROVEN
+SCHEMA_BOUND=false
+WRITER_BOUND=false
+READER_BOUND=false
+DOC_CONTRACT_PERSISTENCE=PRESENT_AUTHORITY_EFFECT_NONE
+DOC_CONTRACT_PERSISTENCE_IS_NOT_MEMBERSHIP_ARTIFACT_PERSISTENCE=true
 HOST_JOIN=NOT_DESIGNED
+HOST_JOIN_AUTHORIZED=false
 G13_UNLOCK=false
+G13_REMAINS_CLOSED=true
 RUNTIME_AUTHORITY=NONE
+RUNTIME_AUTHORIZED=false
+EXECUTION_AUTHORITY_EFFECT=NONE
 PERSISTENCE_IS_NOT_G13_UNLOCK=true
 PERSISTENCE_IS_NOT_HOST_JOIN=true
 PERSISTENCE_IS_NOT_RUNTIME_ACTIVATION=true
-DOC_CONTRACT_PERSISTENCE_IS_NOT_MEMBERSHIP_ARTIFACT_PERSISTENCE=true
+OD07_EFFECT=NONE
+OPEN_DECISION_07_CLOSED=false
+ANTI_CHURN_POLICY_EFFECT=NONE
+ROTATION_STAGE_RATIFIED=false
+NAMED_GRAPH_NODE_IS_NOT_STAGE_RATIFICATION=true
+OPEN_DECISION_01_CHANGED=false
+OPEN_DECISION_04_CHANGED=false
+OPEN_DECISION_05_CHANGED=false
 ```
 
 Docs-only contract persistence already exists and has
-`AUTHORITY_EFFECT=NONE`. That is **not** membership-context artifact
-persistence, **not** a producer, and **not** runtime authority.
-Whether a non-authoritative membership-context artifact may persist
-while G13 remains an `INTENTIONAL_SAFETY_BARRIER` stays `UNPROVEN`.
+`AUTHORITY_EFFECT=NONE`. That remains **not** membership-context
+artifact persistence, **not** a producer, and **not** runtime
+authority. This close allows a later non-authoritative
+membership-context artifact to persist while G13 remains closed. It
+does **not** create that artifact.
 
-Fail-closed while this item is open:
+Fail-closed after this close:
 
 ```text
 DOC_PERSIST_MUST_NOT_BE_READ_AS_ARTIFACT_PERSIST=true
+ARTIFACT_PERMISSION_MUST_NOT_BE_READ_AS_ARTIFACT_EXISTENCE=true
 ARTIFACT_PERSIST_MUST_NOT_BE_READ_AS_G13_UNLOCK=true
 ARTIFACT_PERSIST_MUST_NOT_BE_READ_AS_HOST_JOIN=true
 ARTIFACT_PERSIST_MUST_NOT_BE_READ_AS_RUNTIME_AUTHORITY=true
+OVERREAD_AS_SCHEMA_OR_WRITER_BOUND=FORBIDDEN
+OVERREAD_AS_OD07_CLOSE=FORBIDDEN
 ```
 
 ### 1.8 Cross-decision DAG (semantic; not a runtime path)
 
 This subsection records the **semantic** dependency order among the
-seven open decisions. It is **not** a runtime path, **not** a host
-join, and **not** a close of any decision.
+seven decisions. It is **not** a runtime path, **not** a host
+join, and does **not** itself close any decision.
 
 ```text
 DECISION_DAG_CLASS=SEMANTIC_DEPENDENCY_NOT_RUNTIME
-CLOSED_DECISIONS=OPEN_DECISION_01,OPEN_DECISION_02,OPEN_DECISION_03,OPEN_DECISION_04,OPEN_DECISION_05
+CLOSED_DECISIONS=OPEN_DECISION_01,OPEN_DECISION_02,OPEN_DECISION_03,OPEN_DECISION_04,OPEN_DECISION_05,OPEN_DECISION_06
 ```
 
 ```text
@@ -569,14 +612,15 @@ nodes):
 | `OPEN_DECISION_04` | `CLOSED_OWNERSHIP_PRINCIPLE_ONLY` | `true` |
 | `OPEN_DECISION_05` | `CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED` | `true` |
 | `OPEN_DECISION_07` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` | `false` |
-| `OPEN_DECISION_06` | `UNRESOLVED_BUT_BOUNDARIES_SHARPENED` | `false` |
+| `OPEN_DECISION_06` | `CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED` | `true` |
 
 A later close of one node does **not** close a neighbor by inference.
-This persist closes `OPEN_DECISION_01` as Owner-policy ceiling
-`N_VALUE=5` under `AT_MOST_N`. It does **not** close
-`OPEN_DECISION_06`–`07`, does **not** reopen `OPEN_DECISION_04` or
-`OPEN_DECISION_05`, does **not** create a `TOP5` product, and does
-**not** prove `EXACTLY_5`.
+This persist closes `OPEN_DECISION_06` as Owner-policy permission
+`ALLOWED` under `NON_AUTHORITATIVE_ONLY` while G13 remains closed.
+It does **not** prove artifact existence, does **not** close
+`OPEN_DECISION_07`, does **not** reopen `OPEN_DECISION_01`,
+`OPEN_DECISION_04`, or `OPEN_DECISION_05`, does **not** create a
+`TOP5` product, and does **not** prove `EXACTLY_5`.
 
 ## 2. Owner by mechanism
 
@@ -887,8 +931,11 @@ OVERREAD_AS_ROTATION_STAGE_RATIFICATION=FORBIDDEN
 OVERREAD_AS_ROTATION_DERIVED_CLOSE=FORBIDDEN
 OVERREAD_AS_ROTATION_ENGINE=FORBIDDEN
 OVERREAD_AS_DOC_PERSIST_EQUALS_ARTIFACT_PERSIST=FORBIDDEN
+OVERREAD_AS_PERMISSION_EQUALS_ARTIFACT_EXISTENCE=FORBIDDEN
 OVERREAD_AS_PERSISTENCE_EQUALS_G13_UNLOCK=FORBIDDEN
 OVERREAD_AS_PERSISTENCE_EQUALS_HOST_JOIN=FORBIDDEN
+OVERREAD_AS_OD06_EQUALS_SCHEMA_OR_WRITER=FORBIDDEN
+OVERREAD_AS_OD06_EQUALS_OD07_CLOSE=FORBIDDEN
 INVENTION_OF_THRESHOLDS_FROM_PLAUSIBILITY=FORBIDDEN
 CANDIDATE_COUNT_VS_N=OPERATIVE_AT_MOST_N_CEILING_5
 UNDERFILL_DOES_NOT_PAD=true
@@ -936,11 +983,13 @@ policy. Citing them here is **negative constraint** only:
 `SSF_SEMANTICS_IMPORTED=false`.
 
 Open decisions remaining after this Owner-policy close. Fail-closed
-**boundaries** for still-open items remain in §1.6–§1.7. OD01 is closed
+**boundaries** for still-open OD07 remain in §1.6. OD01 is closed
 in §1.3 as Owner-policy ceiling `N_VALUE=5`. OD02 and OD03 are closed
 in §1.1–§1.2. OD04 is closed in §1.4 as ownership principle only. OD05
 is closed in §1.5 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the
-current isolated MF model.
+current isolated MF model. OD06 is closed in §1.7 as permission-only
+`ALLOWED` while G13 remains closed. Permission is not artifact
+existence.
 
 ```text
 OPEN_DECISION_01=N_VALUE
@@ -963,7 +1012,11 @@ OPEN_DECISION_05_CLOSE_CLASS=NO_INDEPENDENT_PENDING_STATE_REQUIRED
 OPEN_DECISION_05_SCOPE=CURRENT_ISOLATED_MF_MODEL
 MEMBERSHIP_ONLY_ANALOG_REQUIRED=false
 OPEN_DECISION_06=CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
-OPEN_DECISION_06_CLOSED=false
+OPEN_DECISION_06_CLOSED=true
+OPEN_DECISION_06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
+NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
+PERMISSION_TO_PERSIST_IS_NOT_EXISTENCE_OF_PERSISTED_ARTIFACT=true
+MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
 OPEN_DECISION_07=ROTATION_DELTAS_STAGE_VS_DERIVED_IDENTITY
 OPEN_DECISION_07_CLOSED=false
 NO_NUMERIC_PREFIX_SELECTION_UNTIL_OD01_CLOSE=false
@@ -1038,9 +1091,10 @@ NEXT_SLICE_AUTHORIZED=false
 HARD_STOP_AFTER_THIS_CONTRACT=true
 ```
 
-Any later change to `N`, membership artifact, writer, persistence while G13
-closed, hygiene numerics, membership-only pending-state, own MF
+Any later change to `N`, membership artifact schema, writer, hygiene numerics, membership-only pending-state, own MF
 scoring, or rotation-stage identity requires a **new** Owner-GO and
 remains isolated. This contract does **not** authorize, specify, or
 prepare host integration. OD01 is closed as Owner-policy ceiling
-`N_VALUE=5`. OD04 is closed as ownership principle only.
+`N_VALUE=5`. OD04 is closed as ownership principle only. OD06 is
+closed as permission-only `ALLOWED` while G13 remains closed.
+Permission is not artifact existence, schema, writer, or OD07 close.

@@ -258,7 +258,9 @@ entities:
       Active-Set composition, not selector-owned state. OPEN_DECISION_05
       is closed as NO_INDEPENDENT_PENDING_STATE_REQUIRED for the current
       isolated MF model; not never-needed; anti-churn rules remain
-      unratified. OD06 through OD07 remain unclosed. No second ranker.
+      unratified. OD06 is closed as permission-only ALLOWED while G13
+      remains closed; permission is not artifact existence. OD07 remains
+      unclosed. No second ranker.
       No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed. Atlas is
       not runtime authority. ATLAS_AUTHORITY=NONE.
 
@@ -283,8 +285,10 @@ entities:
       principle only in the semantics contract; this catalog note is a
       pointer. OPEN_DECISION_05 is closed as
       NO_INDEPENDENT_PENDING_STATE_REQUIRED in the semantics contract
-      §1.5; this catalog note is a pointer. OD06 through OD07 remain
-      unclosed. OD04_TO_OD07_CHANGED is not a collective close.
+      §1.5; this catalog note is a pointer. OD06 is closed as
+      permission-only ALLOWED in the semantics contract §1.7; this
+      catalog note is a pointer. Permission is not artifact existence.
+      OD07 remains unclosed. OD04_TO_OD07_CHANGED is not a collective close.
       CAP23_IMPORTED=false.
       No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed. Atlas is
       not runtime authority. ATLAS_AUTHORITY=NONE.

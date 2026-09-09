@@ -66,7 +66,8 @@ OD01_N_VALUE=5
 OD01_CLOSE_CLASS=CLOSED_NUMERIC_CEILING_N5
 OD04_SELECTOR_STATE=CLOSED_OWNERSHIP_PRINCIPLE_ONLY
 OD05_MEMBERSHIP_PENDING=CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED
-OD06_PERSISTENCE_WHILE_G13_CLOSED=UNCLOSED
+OD06_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
+OD06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
 OD07_ROTATION_IDENTITY=UNCLOSED
 OD04_TO_OD07_CHANGED=false
 ```
@@ -85,8 +86,9 @@ is not the OD01 close owner. `OPEN_DECISION_04` is closed as ownership principle
 §1.4. `OPEN_DECISION_01` is closed as Owner-policy ceiling `N_VALUE=5`
 in that contract §1.3. `OPEN_DECISION_05` is closed as
 `NO_INDEPENDENT_PENDING_STATE_REQUIRED` in that contract §1.5. This
-file records those pointers. It does **not** close
-`OPEN_DECISION_06` or `OPEN_DECISION_07`.
+file records those pointers. `OPEN_DECISION_06` is closed as
+permission-only `ALLOWED` in that contract §1.7; this file is not the
+OD06 close owner. It does **not** close `OPEN_DECISION_07`.
 `OD04_TO_OD07_CHANGED=false` is **not** a collective close of OD04–OD07.
 
 Master Runbook SSOT pointer: §4.5 / §4.5.1 / §4.5.4.
@@ -397,7 +399,10 @@ numeric-ceiling status is a **pointer** to the semantics contract
 ownership-principle status is a **pointer** to the semantics contract
 §1.4; this file is not the OD04 close owner. OD05
 `NO_INDEPENDENT_PENDING_STATE_REQUIRED` status is a **pointer** to the
-semantics contract §1.5; this file is not the OD05 close owner.
+semantics contract §1.5; this file is not the OD05 close owner. OD06
+permission-only `ALLOWED` status is a **pointer** to the semantics
+contract §1.7; this file is not the OD06 close owner. Permission is
+not artifact existence.
 
 ```text
 OD01_N_VALUE=5
@@ -405,7 +410,8 @@ OD01_CLOSE_CLASS=CLOSED_NUMERIC_CEILING_N5
 OD01_CHANGED=false
 OD04_SELECTOR_STATE=CLOSED_OWNERSHIP_PRINCIPLE_ONLY
 OD05_MEMBERSHIP_PENDING=CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED
-OD06_PERSISTENCE_WHILE_G13_CLOSED=UNCLOSED
+OD06_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
+OD06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
 OD07_ROTATION_IDENTITY=UNCLOSED
 OD04_TO_OD07_CHANGED=false
 NEW_SCORING_POLICY=false
