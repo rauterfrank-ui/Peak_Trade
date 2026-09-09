@@ -490,6 +490,9 @@ MF_SCORING_RATIFIED=false
 ROTATION_POLICY_RATIFIED=false
 PORTFOLIO_SELECTION_RATIFIED=false
 PERSISTENCE_WHILE_G13_CLOSED=UNPROVEN
+DOC_CONTRACT_PERSISTENCE_IS_NOT_MEMBERSHIP_ARTIFACT_PERSISTENCE=true
+PERSISTENCE_IS_NOT_G13_UNLOCK=true
+PERSISTENCE_IS_NOT_HOST_JOIN=true
 PHASE8_RUNTIME_SEMANTICS_RATIFIED=false
 RUNTIME_IMPLEMENTATION_CREATED=false
 ```
@@ -650,6 +653,23 @@ OD02_GATES_INTERPRETATION_OF_ANY_LATER_N=true
 CAP23_EXACTLY1_IMPORTED=false
 CAP04_N5_IMPORTED=false
 CAP22_TOP20_LIMIT_IS_NOT_ACTIVE_SET_CARDINALITY=true
+CAP22_INPUT_ORDERING_IS_NOT_MEMBERSHIP_RANKING_AUTHORITY=true
+OWN_MF_SCORING_CONTRACT=ABSENT
+MF_OWN_TIE_BREAK_ALGORITHM=BLOCKED_UNTIL_OD03_CLOSE
+N_VALUE_NOT_DECIDABLE_WHILE_OD02_UNCLOSED=true
+SELECTOR_STATE_NOT_RATIFIED=true
+MEMBERSHIP_ONLY_ANALOG_REQUIRED=UNPROVEN
+NAMED_GRAPH_NODE_IS_NOT_STAGE_RATIFICATION=true
+DOC_CONTRACT_PERSISTENCE_IS_NOT_MEMBERSHIP_ARTIFACT_PERSISTENCE=true
+PERSISTENCE_IS_NOT_G13_UNLOCK=true
+PERSISTENCE_IS_NOT_HOST_JOIN=true
+OPEN_DECISION_01_CLOSED=false
+OPEN_DECISION_02_CLOSED=false
+OPEN_DECISION_03_CLOSED=false
+OPEN_DECISION_04_CLOSED=false
+OPEN_DECISION_05_CLOSED=false
+OPEN_DECISION_06_CLOSED=false
+OPEN_DECISION_07_CLOSED=false
 ```
 
 Owner-GO
@@ -658,10 +678,20 @@ binds fail-closed cardinality-mode **boundaries** in the subordinate
 semantics contract §1.1. `OPEN_DECISION_02` remains **unclosed**.
 `OPEN_DECISION_01=N_VALUE` remains `UNRESOLVED`.
 
+Owner-GO
+`OWNER_GO_MF_OPEN_DECISIONS_01_THROUGH_07_BOUNDED_ADJUDICATION_WORKPACKAGE_V1`
+binds additional fail-closed **boundaries** in the subordinate
+semantics contract §1.2–§1.8. `OPEN_DECISION_01` through
+`OPEN_DECISION_07` remain **unclosed**. `N_VALUE` is not decidable
+while `OPEN_DECISION_02` is unclosed. MF-own tie-break remains blocked
+until `OPEN_DECISION_03` closes. Docs-contract persistence is not
+membership-artifact persistence, G13 unlock, host join, or runtime.
+
 This persist does **not** ratify an MF-own tie-break algorithm,
 hysteresis or minimum-holding numerics, a membership-only pending
-state machine, `N=5`, exactly-N, at-most-N, scoring, or rotation
-policy. Cap 2.3 `REPLACEMENT_PENDING` remains not imported.
+state machine, `N=5`, exactly-N, at-most-N, scoring, selector state,
+rotation identity, or rotation policy. Cap 2.3 `REPLACEMENT_PENDING`
+remains not imported. G13 remains closed.
 
 ## 4.6 Volatility authority
 
