@@ -544,12 +544,13 @@ The instance-existence **decision class** is persisted in §4.5.3 as
 `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`;
 `UNPROVEN` is **not** `ABSENT`; creation is **not** authorized.
 Creation-authorization **semantics** are bound in §4.5.3 as
-`PERMISSION_BIT_ONLY`; `CREATION_AUTHORIZED` remains `false`;
-permission-bit is **not** materialization; OD06 `ALLOWED` is **not**
-`CREATION_AUTHORIZED`. The next canonical decision class for whether
-that bit remains `false` or is set `true` is named in §4.5.3 as
-`MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1`. Naming the class
-does **not** set `CREATION_AUTHORIZED=true`. Numeric ceiling `N_VALUE=5` is
+`PERMISSION_BIT_ONLY`. The named decision class
+`MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1` is closed in
+§4.5.3 as `SET_CREATION_AUTHORIZED_TRUE`. `CREATION_AUTHORIZED` is
+`true` as permission-bit only. That true is **not** materialization;
+OD06 `ALLOWED` is **not** `CREATION_AUTHORIZED`. Naming the class
+did **not** set the bit. This persist does **not** name a next
+canonical decision. Numeric ceiling `N_VALUE=5` is
 closed as Owner policy in §4.5.3 under `AT_MOST_N`. Selector-state **ownership**
 for membership identity is closed as principle only in §4.5.3; a
 membership artifact instance, writer, schema, and bound listing input
@@ -726,14 +727,18 @@ ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
 INSTANCE_DECISION_CLASS=NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
 INSTANCE_CENSUS_VERDICT=NO_INSTANCE_PROOF_FOUND
 UNPROVEN_IS_NOT_ABSENT=true
-CREATION_AUTHORIZED=false
+CREATION_AUTHORIZED=true
 CREATION_AUTHORIZED_SEMANTICS=PERMISSION_BIT_ONLY
 CREATION_AUTHORIZATION_PREDICATE_BOUND=true
 PRECONDITION_MEMBERSHIP_BOUND=true
-NEXT_CANONICAL_DECISION=MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1
+CLOSED_DECISION_CLASS=MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1
 DECISION_SCOPE=OWNER_DECIDES_CREATION_AUTHORIZED_TRUE_OR_FALSE_UNDER_EXISTING_PERMISSION_BIT_ONLY_SEMANTICS
 DECISION_CLASS_BOUND=true
+DECISION_CLASS_CLOSED=true
+OWNER_DECISION=SET_CREATION_AUTHORIZED_TRUE
 DECISION_CLASS_BIND_DOES_NOT_SET_CREATION_AUTHORIZED_TRUE=true
+NEXT_CANONICAL_DECISION=NOT_NAMED_HERE
+THIS_PERSIST_DOES_NOT_NAME_A_NEXT_CANONICAL_DECISION=true
 MATERIALIZATION_AUTHORITY_GRANTED=false
 ARTIFACT_INSTANCE_CREATED=false
 SCHEMA_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
@@ -837,6 +842,16 @@ materialization authority, does **not** create an artifact, does
 **not** bind schema, writer, or reader, does **not** close
 `OPEN_DECISION_07`, does **not** ratify anti-churn, and does
 **not** grant runtime or execution authority.
+Owner-GO
+`OWNER_GO_MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1`
+closes that named class in the subordinate semantics contract §1.14
+as `SET_CREATION_AUTHORIZED_TRUE`. `CREATION_AUTHORIZED` is `true`
+as permission-bit only. That true does **not** grant materialization
+authority, does **not** create an artifact, does **not** prove instance
+existence, does **not** bind schema, writer, or reader, does **not**
+close `OPEN_DECISION_07`, does **not** ratify anti-churn, does **not**
+unlock G13, and does **not** grant runtime or execution authority.
+That persist does **not** name a next canonical decision.
 
 This persist does **not** ratify a `TOP5` product, an
 MF-own scoring contract, an MF-own tie-break algorithm, hysteresis or
@@ -856,8 +871,9 @@ authorization. Creation-authorization predicate
 materialization, **not** instance existence, and **not** schema,
 writer, reader, OD07 close, or anti-churn ratification. The named
 decision class `MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1`
-is **not** `CREATION_AUTHORIZED=true`, **not** a true/false choice,
-and **not** materialization.
+is closed as `SET_CREATION_AUTHORIZED_TRUE`. That true is
+**not** materialization, **not** a true/false class-bind, **not**
+artifact instance, and **not** an automatic next.
 
 ### 4.5.4 Isolated ranking universe and single-egress boundary (docs-only; AUTHORITY_EFFECT=NONE)
 
@@ -880,13 +896,12 @@ non-authoritative membership-context artifact. Instance existence
 remains `UNPROVEN`. The instance-existence decision class is persisted
 in §4.5.3 as
 `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`.
-`UNPROVEN` is **not** `ABSENT`. Creation is **not** authorized.
-Creation-authorization semantics are bound in §4.5.3 as
-`PERMISSION_BIT_ONLY`. `CREATION_AUTHORIZED` remains `false`.
-Permission-bit is **not** materialization. The next canonical
-decision class is named in §4.5.3 as
-`MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1`. Naming the class
-does **not** set `CREATION_AUTHORIZED=true`. This
+`UNPROVEN` is **not** `ABSENT`. Creation-authorization semantics are
+bound in §4.5.3 as `PERMISSION_BIT_ONLY`. The named decision class
+`MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1` is closed in
+§4.5.3 as `SET_CREATION_AUTHORIZED_TRUE`. `CREATION_AUTHORIZED` is
+`true` as permission-bit only. Permission-bit is **not**
+materialization. Naming the class did **not** set the bit. This
 subsection does **not**
 re-own those closes and does **not** close `OPEN_DECISION_07`. This
 subsection does **not** collectively close
@@ -942,13 +957,17 @@ ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
 INSTANCE_DECISION_CLASS=NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
 INSTANCE_CENSUS_VERDICT=NO_INSTANCE_PROOF_FOUND
 UNPROVEN_IS_NOT_ABSENT=true
-CREATION_AUTHORIZED=false
+CREATION_AUTHORIZED=true
 CREATION_AUTHORIZED_SEMANTICS=PERMISSION_BIT_ONLY
 CREATION_AUTHORIZATION_PREDICATE_BOUND=true
 PRECONDITION_MEMBERSHIP_BOUND=true
-NEXT_CANONICAL_DECISION=MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1
+CLOSED_DECISION_CLASS=MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1
 DECISION_CLASS_BOUND=true
+DECISION_CLASS_CLOSED=true
+OWNER_DECISION=SET_CREATION_AUTHORIZED_TRUE
 DECISION_CLASS_BIND_DOES_NOT_SET_CREATION_AUTHORIZED_TRUE=true
+NEXT_CANONICAL_DECISION=NOT_NAMED_HERE
+THIS_PERSIST_DOES_NOT_NAME_A_NEXT_CANONICAL_DECISION=true
 MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
 OD07_ROTATION_IDENTITY=UNCLOSED
 OD04_TO_OD07_CHANGED=false
