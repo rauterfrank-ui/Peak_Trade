@@ -1269,6 +1269,9 @@ NO_DOWNSTREAM_SELECTION=true
 ROTATION_POLICY_STATUS=FAIL_CLOSED_UNTIL_PDF_STEP_5
 ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET=UNRATIFIED
 POLICY_A_IS_NOT_AUTOMATIC_ACTIVE_SET_POLICY=true
+ACTIVE_SET_POLICY_ADOPTION=UNPROVEN
+ACTIVE_SET_POLICY_RATIFIED=false
+CENSUS_CLASS=INVENTORY_ONLY_NO_POLICY_CHOICE
 COOLDOWN_RATIFIED=false
 TURNOVER_RATIFIED=false
 EGRESS_ID=MF_SINGLE_EGRESS_V1
@@ -1277,7 +1280,7 @@ HANDOFF_CURRENT_ENVELOPE_CLASS=BOUND_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_REFERE
 HANDOFF_ENVELOPE_IS_NOT_YET_ACTIVE_SET_DTO=true
 EXECUTING_MODEL_HANDOFF_CONSUMER=UNBOUND
 PDF_STEP_3_MEMBERSHIP_ROTATION_OWNERSHIP=CLOSED
-PDF_STEP_4_ANTI_CHURN_CENSUS=UNRESOLVED
+PDF_STEP_4_ANTI_CHURN_CENSUS=CLOSED
 PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION=UNRESOLVED
 PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED=false
 NEXT_CANONICAL_DECISION=NOT_NAMED_HERE
@@ -1303,6 +1306,15 @@ Active Set; the smallest compatible evolution is an intended-object
 pointer without envelope-schema promotion. Consumer identity remains
 `UNBOUND`. Cap 2.3 remains the sole **productive** selection owner.
 This persist does **not** name a next canonical decision.
+Owner-GO
+`OWNER_GO_PDF_STEP_4_ANTI_CHURN_CENSUS_CANONICAL_CLOSE_V1`
+closes PDF Step 4 as an inventory census only
+(`CENSUS_CLASS=INVENTORY_ONLY_NO_POLICY_CHOICE`). Isolated POLICY_A
+adoption for this Active Set remains `UNPROVEN`. Rotation/anti-churn
+for this Active Set remains unratified. Cooldown and turnover remain
+unratified. This persist does **not** start PDF Step 5, does **not**
+join a host, does **not** rewire Cap 2.3 or Cap 2.4, and does **not**
+unlock G13.
 
 ## 4.6 Volatility authority
 
