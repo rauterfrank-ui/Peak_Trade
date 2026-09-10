@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-09-10T20:56:23.549943+00:00",
-  "git_sha": "a9df51633231cb5e8fff7761d8ccd8d0ddae3230",
+  "generated_at_utc": "2026-09-10T22:29:18.510455+00:00",
+  "git_sha": "beafe9b5663a2e136c7f1641b4ce7509401ea72f",
   "tool_version": "1.0.0",
   "scan_stats": {
     "total_markdown_files": 3084,
@@ -8,7 +8,7 @@
     "scanned_files": 2575,
     "total_references": 15873
   },
-  "missing_count": 118,
+  "missing_count": 127,
   "missing_items": [
     {
       "source_file": "docs/KNOWLEDGE_BASE_INDEX.md",
@@ -113,9 +113,21 @@
       "link_text": null
     },
     {
+      "source_file": "docs/evidence/auth_005_el_karoui_armstrong_non_authority_classification_v1/non_authority_contract.md",
+      "line_number": 25,
+      "target": "src/experiments/armstrong_elkaroui_combi_experiment.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/README.md",
       "line_number": 27,
       "target": "src/strategies/armstrong/armstrong_cycle_strategy.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/README.md",
+      "line_number": 29,
+      "target": "src/experiments/armstrong_elkaroui_combi_experiment.py",
       "link_text": null
     },
     {
@@ -210,6 +222,12 @@
     },
     {
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 141,
+      "target": "src/experiments/armstrong_elkaroui_combi_experiment.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
       "line_number": 147,
       "target": "src/research/armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0.py",
       "link_text": null
@@ -242,6 +260,18 @@
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
       "line_number": 154,
       "target": "src/strategies/armstrong/cycle_model.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 193,
+      "target": "src/experiments/armstrong_elkaroui_combi_experiment.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/combined_effect_analysis.md",
+      "line_number": 10,
+      "target": "src/experiments/armstrong_elkaroui_combi_experiment.py",
       "link_text": null
     },
     {
@@ -300,6 +330,12 @@
     },
     {
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 121,
+      "target": "src/experiments/armstrong_elkaroui_combi_experiment.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
       "line_number": 125,
       "target": "src/research/armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0.py",
       "link_text": null
@@ -314,6 +350,24 @@
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
       "line_number": 131,
       "target": "src/strategies/armstrong/__init__.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 164,
+      "target": "src/experiments/armstrong_elkaroui_combi_experiment.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/false_positive_inventory.md",
+      "line_number": 16,
+      "target": "src/experiments/armstrong_elkaroui_combi_experiment.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/search_terms_and_scope.md",
+      "line_number": 30,
+      "target": "src/experiments/armstrong_elkaroui_combi_experiment.py",
       "link_text": null
     },
     {
