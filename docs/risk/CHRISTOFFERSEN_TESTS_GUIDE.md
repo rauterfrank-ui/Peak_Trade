@@ -551,7 +551,7 @@ pi_11 = max(EPS, min(1 - EPS, pi_11))
 
 - **Kupiec POF:** `docs/risk/KUPIEC_POF_THEORY.md`
 - **CLI Integration:** `docs/ops/archives/repo_root_docs/PHASE8B_CLI_INTEGRATION.md`
-- **Implementation:** `PHASE8B_MERGE_LOG.md`
+- **Implementation:** [`docs/ops/archives/repo_root_docs/PHASE8B_MERGE_LOG.md`](../ops/archives/repo_root_docs/PHASE8B_MERGE_LOG.md)
 - **Theory:** Christoffersen (1998), "Evaluating Interval Forecasts"
 
 ---

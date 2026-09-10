@@ -357,7 +357,7 @@ Docs-only changes, token escaping only, no semantic changes, all gates pass.
 
 - PR: #723 (https://github.com/rauterfrank-ui/Peak_Trade/pull/723)
 - Runbook: docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_QUARTERLY_REVIEW.md
-- Related: docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md
+- Related: docs/ops/runbooks/RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md
 
 ---
 
@@ -661,7 +661,7 @@ gh pr view NNN --json files --jq '.files[].path'
 ## Related Documentation
 
 ### Runbooks
-- [RUNBOOK_POINTER_PATTERN_OPERATIONS.md](RUNBOOK_POINTER_PATTERN_OPERATIONS.md) — Pointer pattern operations
+- [RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md](RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md) — Remaining pointer-pattern example
 - [RUNBOOK_POINTER_PATTERN_QUARTERLY_REVIEW.md](RUNBOOK_POINTER_PATTERN_QUARTERLY_REVIEW.md) — Quarterly review
 - [RUNBOOK_DOCS_TOKEN_POLICY_GATE.md](RUNBOOK_DOCS_TOKEN_POLICY_GATE.md) — Token policy gate
 - [RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md](RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md) — Reference targets gate

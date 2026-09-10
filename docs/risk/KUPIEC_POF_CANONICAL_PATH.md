@@ -201,7 +201,7 @@ python3 -m pytest tests/risk/validation/test_kupiec_delegation.py -v
 
 ## 📖 Verwandte Dokumentation
 
-- **Hauptreport:** [`IMPLEMENTATION_REPORT_KUPIEC_POF.md`](../../IMPLEMENTATION_REPORT_KUPIEC_POF.md)
+- **Canonical engine:** [`src/risk_layer/var_backtest/kupiec_pof.py`](../../src/risk_layer/var_backtest/kupiec_pof.py)
 - **Roadmap:** [`docs/risk/roadmaps/KUPIEC_POF_BACKTEST_ROADMAP.md`](roadmaps/KUPIEC_POF_BACKTEST_ROADMAP.md)
 
 ---

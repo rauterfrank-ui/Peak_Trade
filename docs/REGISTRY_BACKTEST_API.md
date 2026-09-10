@@ -495,7 +495,7 @@ python3 scripts/demo_registry_backtest.py
 - Multi-Portfolio-Support
 
 📚 **Siehe auch:**
-- `README_REGISTRY.md` – Allgemeine Registry-Konzepte
+- `docs/README.md` – Docs-Navigation
 - `docs/CONFIG_REGISTRY_USAGE.md` – Config-API-Referenz
 - `scripts/demo_config_registry.py` – Registry-Basics
 - `scripts/demo_registry_backtest.py` – Backtest-Demos

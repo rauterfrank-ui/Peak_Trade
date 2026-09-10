@@ -6,7 +6,7 @@ Generates a deterministic snapshot of the documentation link graph.
 
 Usage:
     uv run python scripts/ops/docs_graph_snapshot.py \\
-        --roots docs/WORKFLOW_FRONTDOOR.md WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md \\
+        --roots docs/WORKFLOW_FRONTDOOR.md docs/ops/RUNBOOK_INDEX.md \\
         --out docs/_generated/docs_graph_snapshot.json
 
 Exit Codes:
@@ -37,7 +37,7 @@ def main() -> int:
         nargs="+",
         default=[
             "docs/WORKFLOW_FRONTDOOR.md",
-            "WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md",
+            "docs/ops/RUNBOOK_INDEX.md",
             "docs/ops/README.md",
             "docs/INSTALLATION_QUICKSTART.md",
         ],

@@ -37,7 +37,8 @@ Dieses Dokument fasst den aktuellen Stand zusammen und dient als „Einstiegspun
   - Zentrale Definition aller Strategien und Portfolios in `config/config.toml`.
   - Registry‑Modul `src/core/config_registry.py` kapselt Zugriff/Filter/Selektion.
   - Doku und Demo:
-    - `README_REGISTRY.md` (Quick Start)
+    - `docs/README.md` (Docs-Navigation)
+    - `docs/CONFIG_REGISTRY_USAGE.md` (API-Referenz & Beispiele)
     - `docs/CONFIG_REGISTRY_USAGE.md` (API‑Referenz & Beispiele)
     - `scripts/demo_config_registry.py` (Registry‑Demo)
 
@@ -329,7 +330,7 @@ Die folgende Liste dient als Fahrplan, wenn du später am Projekt weiterarbeites
 5. **Doku abrunden**
    - In der Haupt‑`README.md`:
      - Kurzer Abschnitt „Backtests fahren“.
-     - Verweis auf `README_REGISTRY.md` & `docs/CONFIG_REGISTRY_USAGE.md`.
+     - Verweis auf `docs/README.md` & `docs/CONFIG_REGISTRY_USAGE.md`.
    - Optional: Diagramm, das Data‑Layer → Strategy‑Layer → Engine → Stats visualisiert.
 
 ---

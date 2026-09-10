@@ -15,7 +15,7 @@
 - **PR #684** (commit cca48753): Merged
 - **PR #685** (commit ed2640ba): Merged
 - **Current main HEAD:** ed2640ba
-- **Authoritative Root Doc:** [WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md](../../../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md)
+- **Authoritative Root Doc:** [WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md](../RUNBOOK_INDEX.md)
 - **Navigation Hub:** [WORKFLOW_FRONTDOOR.md](../../WORKFLOW_FRONTDOOR.md)
 - **Prior Runbook:** [RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md](./RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md)
 
@@ -447,7 +447,7 @@ git commit -m "docs: Finalize snapshot link in repo cleanup inventory"
 ### Deliverables (This Session)
 - [D1: Snapshot Archive README](../_archive/repo_cleanup/2026-01-12/README.md)
 - [D2: Phase 7 Runbook](./RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md) (this file)
-- [D4.1: WORKFLOW_RUNBOOK_OVERVIEW](../../../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md) (updated)
+- [D4.1: WORKFLOW_RUNBOOK_OVERVIEW](../RUNBOOK_INDEX.md) (updated)
 - [D4.2: WORKFLOW_FRONTDOOR](../../WORKFLOW_FRONTDOOR.md) (updated)
 
 ### Prior Work
@@ -455,7 +455,7 @@ git commit -m "docs: Finalize snapshot link in repo cleanup inventory"
 - [Archive: Workflow Docs Integration Artifacts](../_archive/workflow_docs_integration/2026-01-12/)
 
 ### Root Documentation
-- [WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md](../../../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md) – Authoritative operational reference
+- [WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md](../RUNBOOK_INDEX.md) – Authoritative operational reference
 - [docs/WORKFLOW_NOTES.md](../../WORKFLOW_NOTES.md) – Legacy snapshot (Dec 2025)
 - [docs/WORKFLOW_FRONTDOOR.md](../../WORKFLOW_FRONTDOOR.md) – Navigation hub
 

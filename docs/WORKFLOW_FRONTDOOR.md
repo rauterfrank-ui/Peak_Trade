@@ -8,31 +8,24 @@
 
 ## 🎯 Quick Navigation
 
-### 📘 Authoritative: Operational Reference (2026-Ready)
+### 📘 Current: Operational Runbook Index
 
-**[WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md](../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md)**
+**[docs/ops/RUNBOOK_INDEX.md](./ops/RUNBOOK_INDEX.md)** · **[docs/ops/README.md](./ops/README.md)**
 
-**Status:** ✅ AUTHORITATIVE, 2026-READY, CURRENT OPERATIONAL REFERENCE  
-**Version:** v1.0 (2026-01-12)  
-**Size:** 824 lines  
-**Use Case:** Day-to-day operations, runbook navigation, CLI reference, PR management
+**Status:** CURRENT OPERATIONAL NAVIGATION (runbook index + ops hub)  
+**Use Case:** Day-to-day runbook lookup, ops hierarchy, incident/critical operator paths
 
 **Key Content:**
-- **18+ CLI Command Sections:** Complete command reference for all operations
+- Canonical runbook index and critical operator runbooks
+- Ops hub: complete [docs/ops/](./ops/README.md) hierarchy
 - **12+ Standard & Incident Runbooks:** [LIVE_OPERATIONAL_RUNBOOKS.md](LIVE_OPERATIONAL_RUNBOOKS.md) catalog
-- **Wave3 Control Center:** PR queue management (Top 10), decision trees
-- **AI Autonomy Control Center:** Operator cheatsheet (daily routine, triage)
-- **Operations Structure:** Complete [docs/ops/](./ops/README.md) hierarchy and navigation
-- **Evidence System:** Evidence index, schema, templates (v0.1)
-- **5 Checklists:** Daily operator, pre-session, post-session, PR-merge, incident-response
-- **Status Tables:** Documentation status, architecture principles, tool availability
-- **Cross-Links:** Governance, CI/CD, evidence, audit, phase documentation
+- **CLI command reference:** [CLI Cheatsheet](./CLI_CHEATSHEET.md)
+- **AI Autonomy Control Center:** [Control Center](./ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md)
 
 **When to Use:**
 - Daily operations and monitoring
 - Finding the right runbook for your situation
 - CLI command lookup
-- PR management workflow
 - Evidence and audit trail navigation
 - Control Center operations
 
@@ -115,7 +108,7 @@
 
 ### Governance & Safety
 - **NO-LIVE default posture** (research/backtest/paper/shadow; no live orders by default): [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) · [Finish Plan — Stop Rules](./ops/roadmap/FINISH_PLAN.md#stop-rules-non-negotiable)
-- **Kill-Switch posture + Docs Gates (MVP evidence):** [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) · [README Kill Switch](../README_KILL_SWITCH.md) · [Finish Plan — Level A MVP](./ops/roadmap/FINISH_PLAN.md#finish-level-a-level-a-mvp)
+- **Kill-Switch posture + Docs Gates (MVP evidence):** [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) · [Kill Switch Runbook](./ops/KILL_SWITCH_RUNBOOK.md) · [Finish Plan — Level A MVP](./ops/roadmap/FINISH_PLAN.md#finish-level-a-level-a-mvp)
 - [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) – Governance framework and roles
 - [Safety Policy Testnet and Live](./SAFETY_POLICY_TESTNET_AND_LIVE.md) – Safety policies for testing and live operations
 
@@ -123,10 +116,10 @@
 
 ## 📊 Document Comparison
 
-| Aspect | WORKFLOW_RUNBOOK_OVERVIEW | WORKFLOW_NOTES |
-|--------|---------------------------|----------------|
-| **Status** | ✅ Authoritative (2026) | 🕰️ Legacy (Dec 2025) |
-| **Size** | 824 lines | 178 lines |
+| Aspect | Ops Runbook Index | WORKFLOW_NOTES |
+|--------|-------------------|----------------|
+| **Status** | Current operational navigation | 🕰️ Legacy (Dec 2025) |
+| **Size** | Index / hub | 178 lines |
 | **Scope** | Operational workflows, runbooks, CLI, PR management | Technical layers, chat workflow mechanics |
 | **Audience** | Operators, Developers, PR Managers | Frank, ChatGPT Co-Pilot |
 | **Update Frequency** | Quarterly or after major changes | As needed for chat sessions |
@@ -137,31 +130,29 @@
 ## 🚀 Getting Started
 
 ### For Operators (Daily Routine)
-1. Start with [WORKFLOW_RUNBOOK_OVERVIEW](../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md) Section 3 (AI Autonomy Control Center Operator Cheatsheet)
-2. Follow the daily routine (5-10 minutes)
-3. Use checklists in Section 11 as needed
+1. Start with [AI Autonomy Control Center](./ops/control_center/AI_AUTONOMY_CONTROL_CENTER.md)
+2. Use [docs/ops/RUNBOOK_INDEX.md](./ops/RUNBOOK_INDEX.md) to find the matching runbook
+3. Follow the daily routine in the Control Center as needed
 
 ### For Developers (CLI Commands)
 1. Bookmark [CLI Cheatsheet](./CLI_CHEATSHEET.md) for quick command lookup
-2. Refer to [WORKFLOW_RUNBOOK_OVERVIEW](../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md) Section 9 for complete command reference with examples
+2. Use [docs/ops/README.md](./ops/README.md) for ops scripts and gate navigation
 
-### For PR Managers (Wave3 Queue)
-1. Start with [WORKFLOW_RUNBOOK_OVERVIEW](../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md) Section 2 (Wave3 Control Center Cheatsheet v2)
-2. Follow decision trees for MERGEABLE / CONFLICTING PRs
-3. Use PR-merge checklist (Section 11)
+### For PR Managers
+1. Start with [docs/ops/RUNBOOK_INDEX.md](./ops/RUNBOOK_INDEX.md) and [Ops Hub](./ops/README.md)
+2. Follow merge/post-verify runbooks under [docs/ops/runbooks/](./ops/runbooks/README.md)
 
 ### For Research Team
 1. [CLI Cheatsheet](./CLI_CHEATSHEET.md) Sections 2.1, 3-5 (Portfolio recipes, sweeps, market scans)
-2. [WORKFLOW_RUNBOOK_OVERVIEW](../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md) Section 9 (Backtests & Research commands)
+2. [docs/ops/RUNBOOK_INDEX.md](./ops/RUNBOOK_INDEX.md) for research-adjacent operator runbooks
 
 ---
 
 ## 📝 Maintenance
 
-**WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md:**
-- Update quarterly or after major workflow/runbook changes
-- Version bump on significant structural changes
-- Maintain changelog (Section 13)
+**docs/ops/RUNBOOK_INDEX.md:**
+- Update when canonical runbooks are added, moved, or superseded
+- Keep critical operator runbook links current
 
 **docs/WORKFLOW_NOTES.md:**
 - Update as needed for chat-based development session continuity

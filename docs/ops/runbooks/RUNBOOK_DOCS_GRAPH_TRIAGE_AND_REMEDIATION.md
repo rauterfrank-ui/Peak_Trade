@@ -54,7 +54,7 @@ python3 scripts/ops/docs_graph_snapshot.py \
 
 **Notes:**
 - Snapshot generation is **deterministic** — running twice on same repo state produces identical output
-- Tool includes default roots: `docs&#47;WORKFLOW_FRONTDOOR.md`, `WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md`, `docs&#47;ops&#47;README.md`, `docs&#47;INSTALLATION_QUICKSTART.md`
+- Tool includes default roots: `docs&#47;WORKFLOW_FRONTDOOR.md`, `docs&#47;ops&#47;RUNBOOK_INDEX.md`, `docs&#47;ops&#47;README.md`, `docs&#47;INSTALLATION_QUICKSTART.md`
 
 ---
 

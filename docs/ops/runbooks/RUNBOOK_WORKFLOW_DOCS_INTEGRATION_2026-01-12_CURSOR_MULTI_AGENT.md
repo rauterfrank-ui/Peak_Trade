@@ -366,7 +366,7 @@ git rm -r docs/ops/_archive/workflow_docs_integration/2026-01-12/
 ## 📚 References
 
 ### Documentation
-- [WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md](../../../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md) – Authoritative operational reference
+- [WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md](../RUNBOOK_INDEX.md) – Authoritative operational reference
 - [docs/WORKFLOW_NOTES.md](../../WORKFLOW_NOTES.md) – Legacy snapshot (Dec 2025)
 - [WORKFLOW_FRONTDOOR.md](../../WORKFLOW_FRONTDOOR.md) – Navigation hub (created this session)
 - [docs/ops/README.md](../README.md) – Ops tools index (modified this session)

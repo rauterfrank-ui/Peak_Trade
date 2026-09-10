@@ -51,7 +51,7 @@ Zweck: **Repo-Einstieg**, **CI/Gates Index**, **Governance/Safety-Vertrag** und 
 - [../README.md](../README.md)
 - [PEAK_TRADE_OVERVIEW.md](PEAK_TRADE_OVERVIEW.md)
 - [ARCHITECTURE_OVERVIEW.md](ARCHITECTURE_OVERVIEW.md)
-- [../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md](../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md)
+- [ops/RUNBOOK_INDEX.md](ops/RUNBOOK_INDEX.md)
 - Ops Hub: [ops/README.md](ops/README.md)
 
 **Key run flows:**
@@ -144,7 +144,7 @@ Kernidee: **Research → Evidenz → (Shadow/Paper/Testnet) → erst dann Live**
 - [../README.md](../README.md) (Frontdoor, Quickstart, zentrale Links)
 - [PEAK_TRADE_OVERVIEW.md](PEAK_TRADE_OVERVIEW.md) (Architektur-Map + Extensibility Points)
 - [ARCHITECTURE_OVERVIEW.md](ARCHITECTURE_OVERVIEW.md) (Layer-Deep-Dive)
-- [../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md](../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md) (autoritative Ops-/Runbook-Übersicht)
+- [ops/RUNBOOK_INDEX.md](ops/RUNBOOK_INDEX.md) (aktuelle Ops-/Runbook-Übersicht)
 
 ---
 

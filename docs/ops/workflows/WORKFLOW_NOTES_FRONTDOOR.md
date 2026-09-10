@@ -111,7 +111,7 @@ Missing targets: 3
 ### Workflow & Operations
 - [Ops Hub](../README.md) – Operations center
 - [Documentation Frontdoor](../../README.md) – Main docs navigation
-- [WORKFLOW_RUNBOOK_OVERVIEW](../../../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md) – Comprehensive workflow runbook
+- [RUNBOOK_INDEX](../RUNBOOK_INDEX.md) – Current ops runbook index
 
 ### Developer Workflows
 - [DEVELOPER_WORKFLOW_GUIDE.md](../../DEVELOPER_WORKFLOW_GUIDE.md) – Developer workflows

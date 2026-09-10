@@ -113,7 +113,7 @@ Runbooks for specific phase implementations and workflows:
 - [RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED_CURSOR_MULTI_AGENT.md](RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED_CURSOR_MULTI_AGENT.md) — Phase 5B trend ledger from seed (multi-agent)
 - [RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md](RUNBOOK_PHASE5B_TREND_LEDGER_FROM_SEED.md) — Phase 5B trend ledger from seed
 - [RUNBOOK_PHASE5E_REQUIRED_CHECKS_HYGIENE_GATE_OPERATIONS.md](RUNBOOK_PHASE5E_REQUIRED_CHECKS_HYGIENE_GATE_OPERATIONS.md) — Phase 5E required checks hygiene gate
-- [RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md](RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md) — Phase 6 strategy switch sanity check
+- [STRATEGY_SWITCH_SANITY_CHECK.md](../STRATEGY_SWITCH_SANITY_CHECK.md) — Strategy-switch sanity check (current governance documentation)
 - [RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md](RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md) — Phase 7 workflow docs finish closeout
 - [RUNBOOK_PHASE8_DOCS_INTEGRITY_HARDENING_CURSOR_MULTI_AGENT.md](RUNBOOK_PHASE8_DOCS_INTEGRITY_HARDENING_CURSOR_MULTI_AGENT.md) — Phase 8 docs integrity hardening
 - [RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md](RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md) — Workflow docs integration
@@ -163,7 +163,7 @@ Runbooks for CI operations and general operational procedures:
 - [Stale Branch Hygiene (Local "gone")](RUNBOOK_STALE_BRANCH_HYGIENE_LOCAL_GONE_CURSOR_MULTI_AGENT.md) — Safe cleanup of local branches with deleted upstream refs (DRY-RUN, recovery via reflog, protected branches)
 - [RUNBOOK_BRANCH_CLEANUP_RECOVERY.md](RUNBOOK_BRANCH_CLEANUP_RECOVERY.md) — Branch cleanup recovery (tags + bundles)
 - [Commit Salvage Workflow](RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md) ⭐ — Salvaging commits from wrong branch (feature branch → PR → merge workflow)
-- [Pointer Pattern Operations](RUNBOOK_POINTER_PATTERN_OPERATIONS.md) — Operator runbook for root canonical runbooks integration (pointer pattern maintenance, gates compliance)
+- [Commit Salvage Pointer](RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md) — Remaining pointer-pattern example (archive SSOT body)
 - [Pointer Pattern Quarterly Review](RUNBOOK_POINTER_PATTERN_QUARTERLY_REVIEW.md) — Quarterly drift control and orphan prevention for pointer pattern architecture
 - [github_rulesets_pr_reviews_policy.md](github_rulesets_pr_reviews_policy.md) — GitHub rulesets PR reviews policy
 - [policy_critic_execution_override.md](policy_critic_execution_override.md) — Policy critic execution override
