@@ -6128,6 +6128,23 @@ entities:
       legacy deauthorized. Historical evidence is not rewritten.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
+  - id: EXPERIMENT:armstrong_elkaroui_combi
+    kind: EXPERIMENT
+    name: Armstrong x El-Karoui combi experiment
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: REMOVED
+    source_paths:
+      - src/experiments/armstrong_elkaroui_combi_experiment.py
+    evidence_sources:
+      - docs/ops/specs/I82_EMITTER_CUTOVER_PREPARATION_INVENTORY_V1.json
+    notes: >-
+      Navigation record only. Joint Armstrong×El-Karoui combi producer
+      is retired from the active tree. Historical I82 inventory remains
+      immutable and is not a live producer. Independent El-Karoui
+      surfaces remain preserved. Atlas is not canonical authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: STRATEGY:el_karoui_vol
     kind: STRATEGY
     name: El-Karoui volatility surfaces

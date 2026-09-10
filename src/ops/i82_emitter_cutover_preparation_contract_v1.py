@@ -2,8 +2,10 @@
 
 MU6 producer/emitter cutover: ExperimentConfig.get_experiment_id emits
 the prepared Package-N SHA256 identity. compute_legacy_experiment_id_md5_12
-remains the MD5-12 compatibility alias. No backfill, no legacy
-deprecation, no run-id algorithm rewrite, no runtime/trading/Testnet/Live
+remains the MD5-12 compatibility alias. Historical I82 inventory remains
+immutable, including the retired Armstrong×El-Karoui combi run-id pin.
+That producer is absent from current HEAD and is not rewritten. No
+backfill, no legacy MD5-12 deprecation, no runtime/trading/Testnet/Live
 authority. EG-I82-JOIN remains CLOSED_PROVEN.
 """
 
@@ -53,6 +55,11 @@ PRESERVATION_FIXTURE_CANONICAL_SHA256 = (
 )
 
 INVENTORY_RELATIVE_PATH = "docs/ops/specs/I82_EMITTER_CUTOVER_PREPARATION_INVENTORY_V1.json"
+HISTORICAL_RETIRED_INVENTORY_FILES: frozenset[str] = frozenset(
+    {
+        "src/experiments/armstrong_elkaroui_combi_experiment.py",
+    }
+)
 
 _MD5_12_RE = re.compile(r"^[0-9a-f]{12}$")
 _FORBIDDEN_PROMOTION_KEYS = frozenset(
@@ -398,7 +405,9 @@ def load_i82_cutover_inventory_v1(repo_root: Path | None = None) -> dict[str, An
                 _reject("legacy helper must remain md5_hex_12")
         if "armstrong_elkaroui_combi_experiment.py" in str(entry.get("file")):
             if entry.get("implemented_in_this_go") is True:
-                _reject("armstrong run_id emitter must not be rewritten")
+                _reject("historical armstrong run_id emitter must remain unimplemented")
+            if str(entry.get("file")) not in HISTORICAL_RETIRED_INVENTORY_FILES:
+                _reject("armstrong combi producer must stay a historical retired inventory path")
     forbidden = payload.get("forbidden_in_this_go", [])
     if not isinstance(forbidden, list):
         _reject("inventory forbidden_in_this_go must be a list")
@@ -418,6 +427,10 @@ def validate_inventory_files_exist_v1(
     root = repo_root if repo_root is not None else repo_root_from_here()
     for entry in payload["paths"]:
         rel = str(entry["file"])
+        if rel in HISTORICAL_RETIRED_INVENTORY_FILES:
+            if (root / rel).is_file():
+                _reject(f"retired inventoried producer still present on HEAD: {rel}")
+            continue
         path = root / rel
         if not path.is_file():
             _reject(f"inventoried file missing: {rel}")
@@ -439,6 +452,7 @@ __all__ = [
     "FORBIDDEN_IN_THIS_GO",
     "GET_EXPERIMENT_ID_PRE_CUTOVER_SOURCE_SHA256",
     "GET_EXPERIMENT_ID_SOURCE_SHA256",
+    "HISTORICAL_RETIRED_INVENTORY_FILES",
     "I82EmitterCutoverPreparationError",
     "I82IdentitySidecarV1",
     "I82_FULL_MIGRATION_PROVEN",

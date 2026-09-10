@@ -64,6 +64,7 @@ DECOMMISSION_PREDICATES = (
 _WHOLE_FILE_RETIREMENT_PREFIXES = (
     "src/research/",
     "scripts/research/",
+    "src/experiments/",
 )
 _ACTIVE_CONSUMER_SEARCH_PREFIXES = (
     "src",
