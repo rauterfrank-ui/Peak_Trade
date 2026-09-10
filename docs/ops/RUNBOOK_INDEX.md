@@ -55,7 +55,7 @@
 |-----------|------|---------|
 | **Futures (readiness, non-authority)** | [runbooks/futures/FUTURES_TRADING_READINESS_RUNBOOK_V0.md](runbooks/futures/FUTURES_TRADING_READINESS_RUNBOOK_V0.md) | Krypto-Perp/CME-Readiness-Stufen; **kein** Live-/Execution-Enable |
 | **Ops Runbooks** | [runbooks/](runbooks/) | Standard- und Incident-Runbooks |
-| **Pre-Flight** | [../../PRE_FLIGHT_CHECKLIST_RUNBOOK_OPS.md](../../PRE_FLIGHT_CHECKLIST_RUNBOOK_OPS.md) | Pre-Flight-Checkliste (Repo-Root) |
+| **Pre-Flight** | [archives/repo_root_docs/PRE_FLIGHT_CHECKLIST_RUNBOOK_OPS.md](archives/repo_root_docs/PRE_FLIGHT_CHECKLIST_RUNBOOK_OPS.md) | Pre-Flight-Checkliste (Archive-SSOT) |
 | **Audit** | [../audit/AUDIT_RUNBOOK_COMPLETE.md](../audit/AUDIT_RUNBOOK_COMPLETE.md) | Audit-Runbook |
 
 ---

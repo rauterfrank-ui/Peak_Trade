@@ -443,8 +443,8 @@ git push
 
 ### Documentation
 - **Operator Guide**: [STRATEGY_SWITCH_SANITY_CHECK.md](../STRATEGY_SWITCH_SANITY_CHECK.md) (~500 lines)
-- **Evidence Pack**: [PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md](../../../PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md) (~600 lines)
-- **Operator Summary (DE)**: [PHASE6_OPERATOR_ZUSAMMENFASSUNG.md](../../../PHASE6_OPERATOR_ZUSAMMENFASSUNG.md)
+- **Evidence Pack**: [PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md](../archives/repo_root_docs/PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md) (~600 lines)
+- **Operator Summary (DE)**: [PHASE6_OPERATOR_ZUSAMMENFASSUNG.md](../archives/repo_root_docs/PHASE6_OPERATOR_ZUSAMMENFASSUNG.md)
 - **Patch Documentation**: [PHASE6_PATCH_DOCTOR_TEST_FIX.md](../../../PHASE6_PATCH_DOCTOR_TEST_FIX.md)
 - **Merge Log**: [PR_677_MERGE_LOG.md](../merge_logs/PR_677_MERGE_LOG.md)
 

@@ -1,7 +1,7 @@
 # Commit Salvage Runbook (Pointer)
 
 **Type:** Pointer Document  
-**Canonical Location:** [RUNBOOK_COMMIT_SALVAGE_CB006C4A.md](../../../RUNBOOK_COMMIT_SALVAGE_CB006C4A.md) (repo root)
+**Canonical Location:** [RUNBOOK_COMMIT_SALVAGE_CB006C4A.md](../archives/repo_root_docs/RUNBOOK_COMMIT_SALVAGE_CB006C4A.md) (archive SSOT)
 
 ---
 
@@ -25,7 +25,7 @@ feature branch → PR → CI validation → merge
 
 ## Quick Reference
 
-**Canonical Runbook:** [../../../RUNBOOK_COMMIT_SALVAGE_CB006C4A.md](../../../RUNBOOK_COMMIT_SALVAGE_CB006C4A.md)
+**Canonical Runbook:** [../archives/repo_root_docs/RUNBOOK_COMMIT_SALVAGE_CB006C4A.md](../archives/repo_root_docs/RUNBOOK_COMMIT_SALVAGE_CB006C4A.md)
 
 **Phases:**
 1. **Phase 0**: State Validation & Truth Capture

@@ -630,7 +630,7 @@ Erweitert die VaR Backtest Suite um Clustering-Detection (LR-IND + LR-CC).
 
 **Documentation:**
 - Guide: `docs/risk/CHRISTOFFERSEN_TESTS_GUIDE.md`
-- CLI Integration: `PHASE8B_CLI_INTEGRATION.md`
+- CLI Integration: `docs/ops/archives/repo_root_docs/PHASE8B_CLI_INTEGRATION.md`
 - Merge Log: `PHASE8B_MERGE_LOG.md`
 
 Siehe: `docs/risk/CHRISTOFFERSEN_TESTS_GUIDE.md` für Details.
