@@ -531,8 +531,10 @@ This workpackage creates **no** new edge between those graphs. It does
 2.3 or Cap 2.4, or authority handoff.
 
 Unresolved remains unresolved: cooldown/turnover **numerics**;
-membership-artifact instance existence / writer / schema / bound
-listing; PHASE-8 runtime semantics. Rotation identity is closed in
+PHASE-8 runtime semantics; selector runtime; rotation runtime.
+Membership-context artifact schema, writer, reader, durability,
+provenance, and lifecycle are bound in §4.5.3. The first bootstrap
+instance is proven there. Rotation identity is closed in
 §4.5.3 as derived. Anti-churn POLICY_A is ratified in §4.5.3. Non-authoritative membership-context artifact persistence
 while G13 closed is closed as Owner-policy **permission** `ALLOWED`
 in §4.5.3; permission is **not** artifact existence. Membership-context
@@ -540,11 +542,12 @@ artifact **semantic identity** is bound in §4.5.3 as information
 classes only; that bind is **not** artifact existence. Artifact
 existence **class** is bound in §4.5.3 as required durable
 non-authoritative membership-context artifact; that class bind is
-**not** instance existence. Instance existence remains `UNPROVEN`.
-The instance-existence **decision class** is persisted in §4.5.3 as
+**not** instance existence. Instance existence is `PROVEN` after the
+§4.5.3 WP-MF-02 bind. The instance-existence **decision class**
+historically persisted in §4.5.3 as
 `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`;
-`UNPROVEN` is **not** `ABSENT`; creation is **not** authorized.
-Creation-authorization **semantics** are bound in §4.5.3 as
+`UNPROVEN` is **not** `ABSENT`. Current census verdict is
+`BOOTSTRAP_INSTANCE_PROOF_FOUND`. Creation-authorization **semantics** are bound in §4.5.3 as
 `PERMISSION_BIT_ONLY`. The named decision class
 `MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1` is closed in
 §4.5.3 as `SET_CREATION_AUTHORIZED_TRUE`. `CREATION_AUTHORIZED` is
@@ -557,9 +560,9 @@ is closed in §4.5.3 as `SET_MATERIALIZATION_AUTHORITY_GRANTED_TRUE`.
 grant is **not** materialization, **not** artifact creation, and
 **not** an automatic next. Numeric ceiling `N_VALUE=5` is
 closed as Owner policy in §4.5.3 under `AT_MOST_N`. Selector-state **ownership**
-for membership identity is closed as principle only in §4.5.3; a
-membership artifact instance, writer, schema, and bound listing input
-remain unresolved. Permission for a non-authoritative membership-context
+for membership identity is closed as principle only in §4.5.3. Schema,
+writer, reader, and the first bootstrap instance are bound in §4.5.3.
+Selector runtime and rotation runtime remain unimplemented. Permission for a non-authoritative membership-context
 artifact to persist while G13 remains closed is `ALLOWED` in §4.5.3;
 that permission is **not** artifact existence. Isolated membership-only pending analog is closed
 in §4.5.3 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current
@@ -728,9 +731,9 @@ OPEN_DECISION_06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_P
 NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
 MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
 ARTIFACT_EXISTENCE_CLASS=BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT
-ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
+ARTIFACT_INSTANCE_EXISTENCE=PROVEN
 INSTANCE_DECISION_CLASS=NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
-INSTANCE_CENSUS_VERDICT=NO_INSTANCE_PROOF_FOUND
+INSTANCE_CENSUS_VERDICT=BOOTSTRAP_INSTANCE_PROOF_FOUND
 UNPROVEN_IS_NOT_ABSENT=true
 CREATION_AUTHORIZED=true
 CREATION_AUTHORIZED_SEMANTICS=PERMISSION_BIT_ONLY
@@ -758,20 +761,29 @@ GRANT_DOES_NOT_CLOSE_OD07=true
 GRANT_DOES_NOT_RATIFY_ANTI_CHURN=true
 GRANT_DOES_NOT_AUTHORIZE_RUNTIME=true
 GRANT_DOES_NOT_AUTHORIZE_EXECUTION=true
-ARTIFACT_INSTANCE_CREATED=false
+ARTIFACT_INSTANCE_CREATED=true
 SCHEMA_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
 WRITER_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
 READER_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
 OD07_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
 ANTI_CHURN_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
-MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
-TEMPORAL_SCHEMA=UNBOUND
-INSTANCE_ID_SCHEMA=UNBOUND
-PRIOR_MEMBERSHIP_REFERENCE_SCHEMA=UNBOUND
-PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=UNPROVEN
-SCHEMA_BOUND=false
-WRITER_BOUND=false
-READER_BOUND=false
+MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=PROVEN
+TEMPORAL_SCHEMA=BOUND
+INSTANCE_ID_SCHEMA=BOUND
+PRIOR_MEMBERSHIP_REFERENCE_SCHEMA=BOUND
+PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=BOOTSTRAP_PROVEN
+SCHEMA_BOUND=true
+WRITER_BOUND=true
+READER_BOUND=true
+CANONICAL_DURABILITY_BOUND=true
+CANONICAL_PROVENANCE_BOUND=true
+ARTIFACT_LIFECYCLE_BOUND=true
+ARTIFACT_INSTANCE_ID=mca_bf0255a6007432e2
+ARTIFACT_TYPE=MF_MEMBERSHIP_CONTEXT_V1
+BOOTSTRAP_DIRECT_PREFIX_FILL_IS_CANONICALLY_AUTHORIZED=true
+SELECTOR_RUNTIME_IMPLEMENTED=false
+ROTATION_RUNTIME_IMPLEMENTED=false
+RUNTIME_AUTHORIZED=false
 OPEN_DECISION_07_CLOSED=true
 OPEN_DECISION_07_CLOSE_CLASS=CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY
 ROTATION_DELTAS_STATUS=DERIVED
@@ -923,11 +935,21 @@ multiple replacements per cycle are allowed. That persist does
 **not** materialize, does **not** bind schema, writer, or reader,
 does **not** unlock G13, and does **not** grant runtime or execution
 authority. That persist does **not** name a next canonical decision.
+Owner-GO
+`OWNER_GO_WP_MF_02_ARTIFACT_CONTRACT_AND_FIRST_DURABLE_INSTANCE_V1`
+binds membership-context artifact schema, writer, reader, canonical
+durability, provenance mapping, and minimal lifecycle in the
+subordinate semantics contract §1.18 and materializes the first valid
+bootstrap instance `mca_bf0255a6007432e2`. Bootstrap membership is
+the eligible Cap-2.2 prefix of at most 5. That persist does **not**
+implement selector runtime, does **not** implement rotation runtime,
+does **not** unlock G13, and does **not** grant execution authority.
+That persist does **not** name a next canonical decision.
 
 This persist does **not** ratify a `TOP5` product, an
 MF-own scoring contract, an MF-own tie-break algorithm, cooldown or
-turnover, a membership-only pending state machine, a membership
-artifact instance, or a rotation engine. Cap 2.3
+turnover, a membership-only pending state machine, or a rotation
+engine. Cap 2.3
 `REPLACEMENT_PENDING` remains not imported. G13 remains closed.
 OD06 permission to persist a non-authoritative membership-context
 artifact while G13 remains closed is **ALLOWED**; permission is **not**
@@ -968,10 +990,12 @@ model. `OPEN_DECISION_06` is closed in §4.5.3 as permission-only
 `ALLOWED` while G13 remains closed. Membership-context artifact
 semantic identity is bound in §4.5.3 as information classes only.
 Artifact existence class is bound in §4.5.3 as required durable
-non-authoritative membership-context artifact. Instance existence
-remains `UNPROVEN`. The instance-existence decision class is persisted
-in §4.5.3 as
+non-authoritative membership-context artifact. Schema, writer, reader,
+and the first bootstrap instance are bound in §4.5.3. Instance
+existence is `PROVEN`. The instance-existence decision class
+historically persisted in §4.5.3 as
 `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`.
+Current census verdict is `BOOTSTRAP_INSTANCE_PROOF_FOUND`.
 `UNPROVEN` is **not** `ABSENT`. Creation-authorization semantics are
 bound in §4.5.3 as `PERMISSION_BIT_ONLY`. The named decision class
 `MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1` is closed in
@@ -1034,9 +1058,9 @@ OD06_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
 OD06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
 MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
 ARTIFACT_EXISTENCE_CLASS=BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT
-ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
+ARTIFACT_INSTANCE_EXISTENCE=PROVEN
 INSTANCE_DECISION_CLASS=NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
-INSTANCE_CENSUS_VERDICT=NO_INSTANCE_PROOF_FOUND
+INSTANCE_CENSUS_VERDICT=BOOTSTRAP_INSTANCE_PROOF_FOUND
 UNPROVEN_IS_NOT_ABSENT=true
 CREATION_AUTHORIZED=true
 CREATION_AUTHORIZED_SEMANTICS=PERMISSION_BIT_ONLY
@@ -1060,11 +1084,16 @@ GRANT_IS_NOT_MATERIALIZATION=true
 GRANT_IS_NOT_ARTIFACT_CREATION=true
 GRANT_IS_NOT_INSTANCE_PROOF=true
 GRANT_DOES_NOT_BIND_SCHEMA_WRITER_READER=true
-MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
+MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=PROVEN
+SCHEMA_BOUND=true
+WRITER_BOUND=true
+READER_BOUND=true
 OD07_ROTATION_IDENTITY=CLOSED_DERIVED
 ANTI_CHURN_POLICY_STATUS=RATIFIED
 OD04_TO_OD07_CHANGED=false
 RUNTIME_IMPLEMENTATION_CREATED=false
+SELECTOR_RUNTIME_IMPLEMENTED=false
+ROTATION_RUNTIME_IMPLEMENTED=false
 ```
 
 A named Top-50 stage between universe and Top-20 is **not** canonical.

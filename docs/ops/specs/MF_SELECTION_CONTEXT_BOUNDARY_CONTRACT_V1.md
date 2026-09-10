@@ -379,10 +379,11 @@ This contract does **not** ratify, default, design, or implicitly close:
 | Rotation identity (`rotation_deltas` stage vs derived) | `CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY` in semantics §1.6; derived not durable canonical state; this boundary file is not the OD07 close owner |
 | Hysteresis / cooldown / turnover **numerics** | Anti-churn POLICY_A ratified in semantics §1.17 (rank margin 1, min holding 2 ranking observations, confirmation 1, multiple replacements true); cooldown/turnover remain `UNRATIFIED`; this boundary file is not the POLICY_A close owner |
 | Portfolio Selection node | `P2_ALIAS_OR_PART_OF_SELECTOR` / `OUT_OF_CORE_MODEL` / `NOT_AUTHORIZED` as a distinct stage |
-| Context persistence while G13 closed | `ALLOWED` permission-only in semantics §1.7; this boundary file is not the OD06 close owner; permission is not artifact existence; `MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE` remains `UNPROVEN`; docs-contract persistence is not membership-artifact persistence, G13 unlock, host join, or runtime |
-| Membership-context artifact semantic identity | `BOUND_INFORMATION_CLASSES_ONLY` in semantics §1.9; this boundary file is not the identity close owner; schema, writer, reader, temporal/instance/prior-reference schemas remain `UNBOUND`; prior listing `UNPROVEN`; not artifact existence |
-| Membership-context artifact existence class | `BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT` in semantics §1.10; this boundary file is not the existence-class close owner; instance `UNPROVEN`; not schema; not writer; not prior listing; not OD07 close |
-| Membership-context artifact instance-existence census | `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED` in semantics §1.11; this boundary file is not the census-persist owner; instance remains `UNPROVEN`; `UNPROVEN` is not `ABSENT`; census class name is not the current permission bit |
+| Context persistence while G13 closed | `ALLOWED` permission-only in semantics §1.7; this boundary file is not the OD06 close owner; permission is not artifact existence; `MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE` is `PROVEN` in semantics §1.18; docs-contract persistence is not membership-artifact persistence, G13 unlock, host join, or runtime |
+| Membership-context artifact semantic identity | `BOUND_INFORMATION_CLASSES_ONLY` in semantics §1.9; this boundary file is not the identity close owner; schema, writer, reader, temporal/instance/prior-reference schemas are bound in semantics §1.18; prior listing `BOOTSTRAP_PROVEN`; not artifact existence by identity alone |
+| Membership-context artifact existence class | `BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT` in semantics §1.10; this boundary file is not the existence-class close owner; instance `PROVEN` in semantics §1.18; not OD07 close |
+| Membership-context artifact instance-existence census | Historical class `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED` in semantics §1.11; current census verdict `BOOTSTRAP_INSTANCE_PROOF_FOUND` in semantics §1.18; this boundary file is not the census-persist owner; `UNPROVEN` is not `ABSENT` |
+| Membership-context artifact contract and first durable instance | Bound in semantics §1.18; this boundary file is not the WP-MF-02 owner; bootstrap instance `mca_bf0255a6007432e2`; not selector runtime; not rotation runtime |
 | Membership-context artifact creation-authorization predicate | `PERMISSION_BIT_ONLY` in semantics §1.12; this boundary file is not the predicate close owner; that persist left `CREATION_AUTHORIZED=false`; permission-bit is not materialization; schema/writer/reader/OD07/anti-churn not required before true; not schema; not writer; not OD07 close |
 | Membership-context artifact creation-authorized permission-bit decision class | `MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1` named in semantics §1.13; this boundary file is not the decision-class bind owner; naming the class does not set `CREATION_AUTHORIZED=true`; not materialization; not artifact instance; not true/false choice |
 | Membership-context artifact creation-authorized permission-bit decision | `SET_CREATION_AUTHORIZED_TRUE` in semantics §1.14; this boundary file is not the decision-class close owner; `CREATION_AUTHORIZED=true` as permission-bit only; not materialization; not artifact instance; that persist did not name a next decision |
@@ -419,10 +420,10 @@ THIS_FILE_IS_NOT_IDENTITY_CLOSE_OWNER=true
 SEMANTIC_IDENTITY_IS_NOT_ARTIFACT_EXISTENCE=true
 ARTIFACT_EXISTENCE_CLASS=BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT
 THIS_FILE_IS_NOT_EXISTENCE_CLASS_CLOSE_OWNER=true
-ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
+ARTIFACT_INSTANCE_EXISTENCE=PROVEN
 EXISTENCE_CLASS_IS_NOT_INSTANCE_EXISTENCE=true
 INSTANCE_DECISION_CLASS=NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
-INSTANCE_CENSUS_VERDICT=NO_INSTANCE_PROOF_FOUND
+INSTANCE_CENSUS_VERDICT=BOOTSTRAP_INSTANCE_PROOF_FOUND
 UNPROVEN_IS_NOT_ABSENT=true
 CREATION_AUTHORIZED=true
 CREATION_AUTHORIZED_SEMANTICS=PERMISSION_BIT_ONLY
