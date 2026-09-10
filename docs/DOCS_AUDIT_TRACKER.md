@@ -363,7 +363,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
   - `docs/runbooks/EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md`: fehlendes `smoke_test_paper.py` als Beispiel markiert und gate-sicher neutralisiert (`scripts&#47;...`).
   - `docs/runbooks/OFFLINE_TRIGGER_TRAINING_DRILL_V1.md`: fehlendes `run_offline_paper_drill_with_reports.py` durch vorhandenes `run_offline_trigger_training_drill_example.py` ersetzt.
   - `docs/ops/WAVE3_QUICKSTART.md`: fehlendes `run_live.py` als Beispiel markiert und gate-sicher neutralisiert (`scripts&#47;...`).
-  - `docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md`: exemplarisches `python scripts&#47;run.py` auf reales Beispiel `python3 scripts/run_backtest.py` umgestellt.
+  - `docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md`: exemplarisches `python scripts&#47;run.py` auf reales Beispiel `python3 scripts/run_backtest.py` umgestellt. <!-- pt:ref-target-ignore -->
   - `docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_4B_M2_CURSOR_MULTI_AGENT.md`: Policy-Critic-Call auf reales `python3 scripts/run_policy_critic.py --pr-mode` umgestellt.
   - `docs/ops/workflows/WORKFLOW_NOTES_FRONTDOOR.md`: Log-Beispiel `scripts&#47;my_script.py` auf `scripts&#47;...` neutralisiert. <!-- pt:ref-target-ignore -->
   - `docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md`: „Violation“-Fenced-Blocks auf `scripts&#47;example.py` umgestellt (damit auch in Raw-Scans keine Phantom-Targets entstehen). <!-- pt:ref-target-ignore -->
