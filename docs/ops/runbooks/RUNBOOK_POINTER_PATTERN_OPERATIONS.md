@@ -196,7 +196,7 @@ Save to: `docs/ops/runbooks/RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md`
 ```markdown
 # Commit Salvage Workflow — Pointer
 
-**Canonical Location:** [`../../RUNBOOK_COMMIT_SALVAGE_CB006C4A.md`](../../RUNBOOK_COMMIT_SALVAGE_CB006C4A.md)  
+**Canonical Location:** [`../archives/repo_root_docs/RUNBOOK_COMMIT_SALVAGE_CB006C4A.md`](../archives/repo_root_docs/RUNBOOK_COMMIT_SALVAGE_CB006C4A.md)  
 **Status:** ACTIVE  
 **Pointer Version:** v1.0  
 **Last Updated:** 2026-01-14
@@ -216,7 +216,7 @@ Operational runbook for salvaging local commits from wrong branch (e.g., committ
 
 ## Quick Access
 
-**⭐ Canonical Runbook (Source of Truth):** [`RUNBOOK_COMMIT_SALVAGE_CB006C4A.md`](../../RUNBOOK_COMMIT_SALVAGE_CB006C4A.md)
+**⭐ Canonical Runbook (Source of Truth):** [`RUNBOOK_COMMIT_SALVAGE_CB006C4A.md`](../archives/repo_root_docs/RUNBOOK_COMMIT_SALVAGE_CB006C4A.md)
 
 This pointer document provides navigation only. All operational content, procedures, and troubleshooting are maintained in the canonical root-level runbook.
 
@@ -361,7 +361,7 @@ bash scripts/ops/verify_docs_reference_targets.sh --changed
 ```markdown
 - See [`docs/ops/runbooks/README.md`](docs/ops/runbooks/README.md)
 - Run [`scripts/ops/pt_docs_gates_snapshot.sh`](scripts/ops/pt_docs_gates_snapshot.sh)
-- Refer to [`RUNBOOK_COMMIT_SALVAGE_CB006C4A.md`](RUNBOOK_COMMIT_SALVAGE_CB006C4A.md)
+- Refer to [`RUNBOOK_COMMIT_SALVAGE_CB006C4A.md`](../archives/repo_root_docs/RUNBOOK_COMMIT_SALVAGE_CB006C4A.md)
 ```
 
 **Rationale:** These files exist in the repository. Token Policy Gate classifies them as REAL_REPO_TARGET (exempt from escaping).
@@ -473,7 +473,7 @@ Inline-code token contains `/`?
 <!-- BAD: Pointer contains operational content -->
 # Commit Salvage Workflow — Pointer
 
-**Canonical Location:** [../../RUNBOOK_COMMIT_SALVAGE_CB006C4A.md](../../RUNBOOK_COMMIT_SALVAGE_CB006C4A.md)
+**Canonical Location:** [../archives/repo_root_docs/RUNBOOK_COMMIT_SALVAGE_CB006C4A.md](../archives/repo_root_docs/RUNBOOK_COMMIT_SALVAGE_CB006C4A.md)
 
 ## Quick Start (Pointer-Specific)
 
@@ -490,7 +490,7 @@ Inline-code token contains `/`?
 <!-- GOOD: Pointer defers to canonical -->
 # Commit Salvage Workflow — Pointer
 
-**Canonical Location:** [../../RUNBOOK_COMMIT_SALVAGE_CB006C4A.md](../../RUNBOOK_COMMIT_SALVAGE_CB006C4A.md)
+**Canonical Location:** [../archives/repo_root_docs/RUNBOOK_COMMIT_SALVAGE_CB006C4A.md](../archives/repo_root_docs/RUNBOOK_COMMIT_SALVAGE_CB006C4A.md)
 
 ## Quick Start
 
