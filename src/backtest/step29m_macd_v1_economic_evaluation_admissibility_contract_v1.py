@@ -38,8 +38,8 @@ from src.backtest.strategy_signal_binding_v1 import (
     execute_configured_strategy_signal_series_v1,
     resolve_effective_strategy_params_v1,
 )
-from src.research.external_data_archive_root_v1 import (
-    ENV_DATA_ARCHIVE_ROOT,
+from src.research.longer_chronological_pit_acquisition_v1 import ENV_ARCHIVE_ROOT
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
     ArchiveRootError,
     assert_path_under_archive,
     resolve_archive_root,
@@ -58,7 +58,7 @@ MACD_V1_CANONICAL_PARAMS = {
     "signal_ema": 9,
 }
 
-DATASET_ROOT_CONTRACT = ENV_DATA_ARCHIVE_ROOT
+DATASET_ROOT_CONTRACT = ENV_ARCHIVE_ROOT
 MACD_V1_DATASET_RELPATH = "datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet"
 MACD_V1_DATASET_DIR_RELPATH = "datasets/admissible_futures/inst-eth-usdt-perp/v1"
 MACD_V1_DATASET_MANIFEST_RELPATH = (

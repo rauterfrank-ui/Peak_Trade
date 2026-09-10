@@ -9,13 +9,10 @@ import pandas as pd
 import pytest
 
 from src.backtest import step29m_macd_v1_economic_evaluation_admissibility_contract_v1 as contract
-from src.research.external_data_archive_root_v1 import (
-    ENV_DATA_ARCHIVE_ROOT,
+from src.research.longer_chronological_pit_acquisition_v1 import ENV_ARCHIVE_ROOT
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
     ArchiveRootError,
     resolve_archive_root,
-)
-from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
-    resolve_archive_root as pit_resolve_archive_root,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -29,12 +26,9 @@ LEGACY_DOCUMENTS_PREFIX = (
 )
 
 
-def test_pit_resolver_is_shared_resolver() -> None:
-    assert pit_resolve_archive_root is resolve_archive_root
-
-
-def test_dataset_root_contract_is_existing_env_name() -> None:
-    assert contract.DATASET_ROOT_CONTRACT == ENV_DATA_ARCHIVE_ROOT
+def test_macd_reuses_existing_archive_root_resolver() -> None:
+    assert contract.resolve_archive_root is resolve_archive_root
+    assert contract.DATASET_ROOT_CONTRACT == ENV_ARCHIVE_ROOT
     assert contract.DATASET_ROOT_CONTRACT == "PEAK_TRADE_DATA_ARCHIVE_ROOT"
     assert (
         contract.MACD_V1_DATASET_RELPATH
@@ -57,7 +51,7 @@ def test_configs_and_contract_share_root_semantics() -> None:
 def test_env_unset_does_not_open_legacy_documents(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.delenv(ENV_DATA_ARCHIVE_ROOT, raising=False)
+    monkeypatch.delenv(ENV_ARCHIVE_ROOT, raising=False)
     assert contract.resolve_macd_v1_data_archive_root() is None
     with patch.object(pd, "read_parquet") as read_parquet:
         with pytest.raises(FileNotFoundError, match="dataset_archive_root_unset"):
@@ -68,7 +62,7 @@ def test_env_unset_does_not_open_legacy_documents(
 
 
 def test_env_valid_temp_root_relative_join(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv(ENV_DATA_ARCHIVE_ROOT, str(tmp_path))
+    monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(tmp_path))
     expected = (tmp_path / contract.MACD_V1_DATASET_RELPATH).resolve()
     assert contract.resolve_macd_v1_dataset_bars_path() == expected
     cfg = contract.load_macd_v1_evaluation_config_v1(ROOT, MACD_CONFIGS[0])
@@ -90,7 +84,7 @@ def test_env_valid_temp_root_relative_join(tmp_path: Path, monkeypatch: pytest.M
 def test_temp_root_existing_file_opens_joined_path_not_legacy(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setenv(ENV_DATA_ARCHIVE_ROOT, str(tmp_path))
+    monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(tmp_path))
     bars_path = tmp_path / contract.MACD_V1_DATASET_RELPATH
     bars_path.parent.mkdir(parents=True)
     bars_path.write_bytes(b"not-a-parquet")
@@ -108,7 +102,7 @@ def test_temp_root_existing_file_opens_joined_path_not_legacy(
 
 
 def test_repo_inner_root_rejected(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv(ENV_DATA_ARCHIVE_ROOT, str(ROOT))
+    monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(ROOT))
     with pytest.raises(ArchiveRootError, match="INSIDE_GIT_REPO"):
         contract.resolve_macd_v1_data_archive_root()
     with pytest.raises(FileNotFoundError, match="dataset_archive_root_invalid"):
