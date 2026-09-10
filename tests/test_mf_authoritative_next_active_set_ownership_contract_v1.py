@@ -65,6 +65,10 @@ SOURCE = (
     Path(__file__).resolve().parents[1]
     / "src/ops/mf_authoritative_next_active_set_ownership_contract_v1.py"
 )
+SPEC = (
+    Path(__file__).resolve().parents[1]
+    / "docs/ops/specs/MF_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_CONTRACT_V1.md"
+)
 
 
 def _declaration_payload(**overrides: object) -> dict[str, object]:
@@ -294,3 +298,24 @@ def test_contract_does_not_import_productive_runtime_owners() -> None:
     assert "src.ops.single_selected_future" not in source
     assert "src.execution" not in source
     assert "apply_rotation_runtime" not in source
+
+
+def test_step_5_decision_package_is_prepared_not_ratified() -> None:
+    spec = SPEC.read_text(encoding="utf-8")
+    assert "OWNER_DECISION_SURFACE_STATUS=PREPARED_NOT_RATIFIED" in spec
+    assert "OWNER_DECISION_COUNT=3" in spec
+    assert "DECISION_ID=AS05-D01" in spec
+    assert "DECISION_ID=AS05-D02" in spec
+    assert "DECISION_ID=AS05-D03" in spec
+    assert "NOT_DERIVABLE_FROM_EXISTING_AUTHORITY=true" in spec
+    assert "PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION=UNRESOLVED" in spec
+    assert "ACTIVE_SET_POLICY_RATIFIED=false" in spec
+    assert "ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET=UNRATIFIED" in spec
+    assert "OVERREAD_AS_DECISION_PACKAGE_EQUALS_POLICY_RATIFICATION=FORBIDDEN" in spec
+    assert "OVERREAD_AS_PDF_FIVE_MECHANISMS_ARE_REQUIRED_FIELDS=FORBIDDEN" in spec
+    assert "PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION=CLOSED" not in spec
+    assert "PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED=true" not in spec
+    assert PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION == "UNRESOLVED"
+    assert ACTIVE_SET_POLICY_RATIFIED is False
+    assert PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED is False
+    assert ROTATION_POLICY_STATUS == "FAIL_CLOSED_UNTIL_PDF_STEP_5"

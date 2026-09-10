@@ -1282,9 +1282,12 @@ EXECUTING_MODEL_HANDOFF_CONSUMER=UNBOUND
 PDF_STEP_3_MEMBERSHIP_ROTATION_OWNERSHIP=CLOSED
 PDF_STEP_4_ANTI_CHURN_CENSUS=CLOSED
 PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION=UNRESOLVED
+OWNER_DECISION_SURFACE_STATUS=PREPARED_NOT_RATIFIED
+OWNER_DECISION_COUNT=3
 PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED=false
 NEXT_CANONICAL_DECISION=NOT_NAMED_HERE
 THIS_PERSIST_DOES_NOT_NAME_A_NEXT_CANONICAL_DECISION=true
+THIS_PERSIST_DOES_NOT_CLOSE_PDF_STEP_5=true
 ```
 
 These object classes remain distinct and must not collapse:
@@ -1312,9 +1315,15 @@ closes PDF Step 4 as an inventory census only
 (`CENSUS_CLASS=INVENTORY_ONLY_NO_POLICY_CHOICE`). Isolated POLICY_A
 adoption for this Active Set remains `UNPROVEN`. Rotation/anti-churn
 for this Active Set remains unratified. Cooldown and turnover remain
-unratified. This persist does **not** start PDF Step 5, does **not**
-join a host, does **not** rewire Cap 2.3 or Cap 2.4, and does **not**
-unlock G13.
+unratified. Workpackage
+`PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION_DECISION_PACKAGE_V1`
+persists a non-operative Owner decision surface on the subordinate
+ownership contract (`OWNER_DECISION_SURFACE_STATUS=PREPARED_NOT_RATIFIED`;
+three open decisions AS05-D01, AS05-D02, AS05-D03). That persist does
+**not** close PDF Step 5, does **not** adopt isolated POLICY_A, does
+**not** join a host, does **not** rewire Cap 2.3 or Cap 2.4, does
+**not** unlock G13, and does **not** allow PDF Step 7 runtime
+implementation.
 
 ## 4.6 Volatility authority
 
