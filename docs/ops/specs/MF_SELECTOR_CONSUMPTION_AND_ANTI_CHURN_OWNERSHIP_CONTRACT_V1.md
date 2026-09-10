@@ -439,7 +439,11 @@ class does not set the bit. The next canonical decision class is named
 in that contract §1.15 as
 `MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_V1`.
 This file is not the decision-class bind owner. Naming that class does
-not grant materialization authority.
+not grant materialization authority. The named class is closed in
+that contract §1.16 as `SET_MATERIALIZATION_AUTHORITY_GRANTED_TRUE`.
+This file is not the decision-class close owner.
+`MATERIALIZATION_AUTHORITY_GRANTED` is `true` as grant only. Grant is
+not materialization and does not create an artifact.
 `OPEN_DECISION_07` stays `UNRESOLVED` / `NOT_AUTHORIZED`. This file does
 **not** re-own the numeric ceiling.
 MF-own tie-break is **not required** while the consume-Cap-2.2-order
@@ -477,6 +481,8 @@ OVERREAD_AS_OD06_ALLOWED_EQUALS_CREATION_AUTHORIZED=FORBIDDEN
 OVERREAD_AS_DECISION_CLASS_EQUALS_CREATION_AUTHORIZED_TRUE=FORBIDDEN
 OVERREAD_AS_CREATION_AUTHORIZED_TRUE_EQUALS_MATERIALIZATION=FORBIDDEN
 OVERREAD_AS_DECISION_CLASS_EQUALS_MATERIALIZATION_AUTHORITY_TRUE=FORBIDDEN
+OVERREAD_AS_GRANT_EQUALS_MATERIALIZATION=FORBIDDEN
+OVERREAD_AS_GRANT_EQUALS_CREATE_NOW=FORBIDDEN
 OVERREAD_AS_PENDING_ANALOG_NEVER_NEEDED=FORBIDDEN
 OVERREAD_AS_ANTI_CHURN_NOT_NEEDED=FORBIDDEN
 ```
@@ -545,4 +551,8 @@ the bit. The next canonical decision class is named in the semantics
 contract §1.15 as
 `MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_V1`;
 this file is not the decision-class bind owner. Naming that class does
-not grant materialization authority.
+not grant materialization authority. The named class is closed in
+the semantics contract §1.16 as
+`SET_MATERIALIZATION_AUTHORITY_GRANTED_TRUE`; this file is not the
+decision-class close owner. `MATERIALIZATION_AUTHORITY_GRANTED` is
+`true` as grant only. Grant is not materialization.
