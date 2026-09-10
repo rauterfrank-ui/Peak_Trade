@@ -512,8 +512,9 @@ Cap 2.2 Top-20 Candidate Context
 Selector consumption and anti-churn **ownership** for that graph are
 persisted in §4.5.2. They do **not** ratify scoring, `N`, hygiene
 numerics, selector state, or a rotation policy. Selection and
-anti-churn **mechanism semantics** are persisted in §4.5.3. They do
-**not** ratify numerics and do **not** import Cap 2.3.
+anti-churn **mechanism semantics** are persisted in §4.5.3.
+Anti-churn POLICY_A numerics are ratified there. Cooldown and
+turnover remain unratified. Cap 2.3 is **not** imported.
 
 Existing productive system, cited **only** as negative constraint
 (must not be violated; not a later fit-target):
@@ -529,10 +530,10 @@ This workpackage creates **no** new edge between those graphs. It does
 **not** design a host adapter, Cap-2.4-compatible DTO, mapping into Cap
 2.3 or Cap 2.4, or authority handoff.
 
-Unresolved remains unresolved: rotation numerics;
-hysteresis/cooldown/turnover **numerics**; membership-artifact
-instance existence / writer / schema / bound listing; PHASE-8 runtime
-semantics. Non-authoritative membership-context artifact persistence
+Unresolved remains unresolved: cooldown/turnover **numerics**;
+membership-artifact instance existence / writer / schema / bound
+listing; PHASE-8 runtime semantics. Rotation identity is closed in
+§4.5.3 as derived. Anti-churn POLICY_A is ratified in §4.5.3. Non-authoritative membership-context artifact persistence
 while G13 closed is closed as Owner-policy **permission** `ALLOWED`
 in §4.5.3; permission is **not** artifact existence. Membership-context
 artifact **semantic identity** is bound in §4.5.3 as information
@@ -629,11 +630,11 @@ POLICY_RATIFIED=false
 RUNTIME_IMPLEMENTATION_CREATED=false
 ```
 
-This persist does **not** ratify hygiene numerics, a
-membership-only pending state machine, or whether `rotation_deltas` is
-a stage versus a derived identity. Context persistence while G13
-closed is closed as permission-only in §4.5.3; this ownership persist
-does **not** re-own that close. Numeric ceiling `N_VALUE=5` is closed as Owner policy in
+This persist does **not** re-own hygiene numerics, a
+membership-only pending state machine, or the `rotation_deltas`
+derived-identity close. Those closes live in §4.5.3. Context
+persistence while G13 closed is closed as permission-only in
+§4.5.3; this ownership persist does **not** re-own that close. Numeric ceiling `N_VALUE=5` is closed as Owner policy in
 §4.5.3; this ownership persist does **not** re-own that close.
 `OPEN_DECISION_04` is closed as ownership principle only in
 §4.5.3: membership identity is not selector-owned state.
@@ -676,8 +677,8 @@ TOP5_STATUS=POSSIBLE_CONFIGURATION_ONLY
 ACTIVE_SET_N_STATUS=CEILING_N5_OWNER_POLICY
 N_VALUE=5
 TIE_BREAK_SEMANTICS=CAP22_ORIGIN_CONSUMED_AS_MEMBERSHIP_ORDER
-HYSTERESIS_SEMANTICS=SELECTOR_OWNED_CONCEPT_NOT_RATIFIED_RULE
-MIN_HOLDING_SEMANTICS=SELECTOR_OWNED_CONCEPT_NOT_RATIFIED_RULE
+HYSTERESIS_SEMANTICS=SELECTOR_OWNED_RATIFIED_RULE_POLICY_A
+MIN_HOLDING_SEMANTICS=SELECTOR_OWNED_RATIFIED_RULE_POLICY_A
 REPLACEMENT_PENDING_SEMANTICS=SSF_STATE_NOT_IMPORTED_NO_INDEPENDENT_MF_PENDING_STATE_REQUIRED
 REPLACEMENT_PENDING_IS_NOT_MEMBERSHIP_ROTATION=true
 ROTATION_ROLE=MEMBERSHIP_DIFF_ONLY
@@ -771,8 +772,25 @@ PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=UNPROVEN
 SCHEMA_BOUND=false
 WRITER_BOUND=false
 READER_BOUND=false
-OPEN_DECISION_07_CLOSED=false
-ANTI_CHURN_POLICY_STATUS=UNRATIFIED
+OPEN_DECISION_07_CLOSED=true
+OPEN_DECISION_07_CLOSE_CLASS=CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY
+ROTATION_DELTAS_STATUS=DERIVED
+ROTATION_DELTAS_ARE_NOT_DURABLE_CANONICAL_STATE=true
+ROTATION_DELTAS_DURABLE_STAGE_FORBIDDEN=true
+ANTI_CHURN_POLICY_STATUS=RATIFIED
+ANTI_CHURN_OWNER=SELECTOR
+HYSTERESIS_MODE=RANK_IMPROVEMENT_VS_DISPLACED_INCUMBENT
+CHALLENGER_MARGIN_TYPE=RANK
+CHALLENGER_MARGIN_VALUE=1
+MINIMUM_HOLDING_UNIT=RANKING_OBSERVATIONS
+MINIMUM_HOLDING_VALUE=2
+CONSECUTIVE_CONFIRMATION_COUNT=1
+MULTIPLE_REPLACEMENTS_PER_CYCLE=true
+TIE_BREAK=CAP22_ORIGIN_CONSUMED_AS_MEMBERSHIP_ORDER
+BOOTSTRAP_RULE=PREFIX_FILL_FROM_CAP22_ELIGIBLE_NO_ANTI_CHURN_NO_PADDING
+FORCED_REMOVAL_RULE=ABSENT_OR_INELIGIBLE_BYPASSES_ANTI_CHURN
+COOLDOWN_RATIFIED=false
+TURNOVER_POLICY_RATIFIED=false
 ```
 
 Owner-GO
@@ -894,11 +912,22 @@ reader, does **not** close `OPEN_DECISION_07`, does **not** ratify
 anti-churn, does **not** unlock G13, and does **not** grant runtime or
 execution authority. That persist does **not** name a next canonical
 decision.
+Owner-GO
+`OWNER_GO_WP_MF_01_OD07_AND_ANTI_CHURN_V1`
+closes `OPEN_DECISION_07` in the subordinate semantics contract §1.6
+as `CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY` and ratifies anti-churn
+POLICY_A in that contract §1.17. `rotation_deltas` are derived, not
+durable canonical state. POLICY_A rank-margin is 1, minimum holding
+is 2 ranking observations, consecutive confirmation is 1, and
+multiple replacements per cycle are allowed. That persist does
+**not** materialize, does **not** bind schema, writer, or reader,
+does **not** unlock G13, and does **not** grant runtime or execution
+authority. That persist does **not** name a next canonical decision.
 
 This persist does **not** ratify a `TOP5` product, an
-MF-own scoring contract, an MF-own tie-break algorithm, hysteresis or
-minimum-holding numerics, a membership-only pending state machine, a
-membership artifact, rotation identity, or rotation policy. Cap 2.3
+MF-own scoring contract, an MF-own tie-break algorithm, cooldown or
+turnover, a membership-only pending state machine, a membership
+artifact instance, or a rotation engine. Cap 2.3
 `REPLACEMENT_PENDING` remains not imported. G13 remains closed.
 OD06 permission to persist a non-authoritative membership-context
 artifact while G13 remains closed is **ALLOWED**; permission is **not**
@@ -955,8 +984,8 @@ decision class is closed in §4.5.3 as
 grant is **not** materialization and does **not** create an artifact.
 This
 subsection does **not**
-re-own those closes and does **not** close `OPEN_DECISION_07`. This
-subsection does **not** collectively close
+re-own those closes and does **not** re-own the `OPEN_DECISION_07`
+close. This subsection does **not** collectively close
 `OPEN_DECISION_04`–`07`.
 
 Subordinate contract:
@@ -1032,7 +1061,8 @@ GRANT_IS_NOT_ARTIFACT_CREATION=true
 GRANT_IS_NOT_INSTANCE_PROOF=true
 GRANT_DOES_NOT_BIND_SCHEMA_WRITER_READER=true
 MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
-OD07_ROTATION_IDENTITY=UNCLOSED
+OD07_ROTATION_IDENTITY=CLOSED_DERIVED
+ANTI_CHURN_POLICY_STATUS=RATIFIED
 OD04_TO_OD07_CHANGED=false
 RUNTIME_IMPLEMENTATION_CREATED=false
 ```

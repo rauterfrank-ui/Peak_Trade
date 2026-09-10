@@ -372,12 +372,12 @@ This contract does **not** ratify, default, design, or implicitly close:
 | MF scoring contract | `ABSENT` / `NOT_REQUIRED` while consume-Cap-2.2-order policy holds; OD03 closed in semantics §1.2; no second ranker; MF-own tie-break not required |
 | Selector policy / scoring | `OUT_OF_SCOPE` / `NOT_AUTHORIZED` as a general selector policy; membership-order consume policy is in semantics §1.2 only |
 | Selector role / anti-churn ownership | persisted in `MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1`; not scoring; not hygiene numerics |
-| Selection / anti-churn mechanism semantics | persisted in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1`; OD02/OD03 closed in §1.1–§1.2; OD01 closed in §1.3 as Owner-policy ceiling `N_VALUE=5`; OD04 closed in §1.4 as ownership principle only; OD05 closed in §1.5 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF model; OD06 closed in §1.7 as permission-only `ALLOWED` while G13 remains closed; permission is not artifact existence; membership-context artifact semantic identity bound in §1.9 as information classes only; that bind is not artifact existence, not schema, not writer, and not OD07 close; artifact existence class bound in §1.10 as required durable non-authoritative membership-context artifact; that class bind is not instance existence; instance remains `UNPROVEN`; instance-existence decision class persisted in §1.11 as `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`; `UNPROVEN` is not `ABSENT`; creation-authorization predicate bound in §1.12 as `PERMISSION_BIT_ONLY`; named decision class `MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1` closed in §1.14 as `SET_CREATION_AUTHORIZED_TRUE`; `CREATION_AUTHORIZED` is true as permission-bit only; true is not materialization; named decision class `MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_V1` closed in §1.16 as `SET_MATERIALIZATION_AUTHORITY_GRANTED_TRUE`; `MATERIALIZATION_AUTHORITY_GRANTED` is true as grant only; grant is not materialization; OD07 remains open; not SSF import; not never-needed |
+| Selection / anti-churn mechanism semantics | persisted in `MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1`; OD02/OD03 closed in §1.1–§1.2; OD01 closed in §1.3 as Owner-policy ceiling `N_VALUE=5`; OD04 closed in §1.4 as ownership principle only; OD05 closed in §1.5 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF model; OD06 closed in §1.7 as permission-only `ALLOWED` while G13 remains closed; permission is not artifact existence; membership-context artifact semantic identity bound in §1.9 as information classes only; that bind is not artifact existence, not schema, not writer, and not OD07 close; artifact existence class bound in §1.10 as required durable non-authoritative membership-context artifact; that class bind is not instance existence; instance remains `UNPROVEN`; instance-existence decision class persisted in §1.11 as `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`; `UNPROVEN` is not `ABSENT`; creation-authorization predicate bound in §1.12 as `PERMISSION_BIT_ONLY`; named decision class `MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1` closed in §1.14 as `SET_CREATION_AUTHORIZED_TRUE`; `CREATION_AUTHORIZED` is true as permission-bit only; true is not materialization; named decision class `MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_V1` closed in §1.16 as `SET_MATERIALIZATION_AUTHORITY_GRANTED_TRUE`; `MATERIALIZATION_AUTHORITY_GRANTED` is true as grant only; grant is not materialization; `OPEN_DECISION_07` closed in §1.6 as `CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY`; anti-churn POLICY_A ratified in §1.17; not SSF import; not never-needed |
 | Selector state | `CLOSED_OWNERSHIP_PRINCIPLE_ONLY` in semantics §1.4; `SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY`; `membership_state` remains unbound schema / Authority `NONE`; not a durable selector store; not an artifact |
-| Membership-only transition-pending | `CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED` in semantics §1.5 for the current isolated MF model; analog not required now; node `OUT_OF_CORE_MODEL`; Cap-2.3 `REPLACEMENT_PENDING` out of domain; not never-needed; anti-churn rules remain unratified |
+| Membership-only transition-pending | `CLOSED_NO_INDEPENDENT_PENDING_STATE_REQUIRED` in semantics §1.5 for the current isolated MF model; analog not required now; node `OUT_OF_CORE_MODEL`; Cap-2.3 `REPLACEMENT_PENDING` out of domain; not never-needed; anti-churn POLICY_A ratified in semantics §1.17 |
 | Rotation numerics | `UNRESOLVED` / `NOT_AUTHORIZED` |
-| Rotation identity (`rotation_deltas` stage vs derived) | `UNRESOLVED`; named graph node is not stage ratification; no rotation engine; fail-closed in semantics §1.6 |
-| Hysteresis / cooldown / turnover **numerics** | `UNRESOLVED` / `NOT_AUTHORIZED` |
+| Rotation identity (`rotation_deltas` stage vs derived) | `CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY` in semantics §1.6; derived not durable canonical state; this boundary file is not the OD07 close owner |
+| Hysteresis / cooldown / turnover **numerics** | Anti-churn POLICY_A ratified in semantics §1.17 (rank margin 1, min holding 2 ranking observations, confirmation 1, multiple replacements true); cooldown/turnover remain `UNRATIFIED`; this boundary file is not the POLICY_A close owner |
 | Portfolio Selection node | `P2_ALIAS_OR_PART_OF_SELECTOR` / `OUT_OF_CORE_MODEL` / `NOT_AUTHORIZED` as a distinct stage |
 | Context persistence while G13 closed | `ALLOWED` permission-only in semantics §1.7; this boundary file is not the OD06 close owner; permission is not artifact existence; `MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE` remains `UNPROVEN`; docs-contract persistence is not membership-artifact persistence, G13 unlock, host join, or runtime |
 | Membership-context artifact semantic identity | `BOUND_INFORMATION_CLASSES_ONLY` in semantics §1.9; this boundary file is not the identity close owner; schema, writer, reader, temporal/instance/prior-reference schemas remain `UNBOUND`; prior listing `UNPROVEN`; not artifact existence |
@@ -406,6 +406,8 @@ SELECTOR_POLICY_RATIFIED=false
 ROTATION_POLICY_RATIFIED=false
 ROTATION_NUMERICS_RATIFIED=false
 HYSTERESIS_COOLDOWN_TURNOVER_RATIFIED=false
+ANTI_CHURN_POLICY_A_RATIFIED=true
+ANTI_CHURN_POLICY_CLOSE_OWNER=MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1_SECTION_1_17
 PORTFOLIO_SELECTION_RATIFIED=false
 PORTFOLIO_SELECTION_NODE=OUT_OF_CORE_MODEL
 PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
@@ -463,7 +465,9 @@ PHASE8_RUNTIME_SEMANTICS_RATIFIED=false
 Cap 0.4
 `MULTI_FUTURE_ACTIVE_SET_ROTATION_REPLACEMENT_POLICY_V0` remains
 `DEFERRED_REQUIRED_CAPABILITY`. This contract does **not** consume that
-reminder and does **not** ratify anti-churn numerics.
+reminder. Anti-churn POLICY_A is ratified in the semantics contract
+§1.17; this file is not the close owner. Cooldown and turnover remain
+unratified.
 
 ## 12. Governance / Atlas
 

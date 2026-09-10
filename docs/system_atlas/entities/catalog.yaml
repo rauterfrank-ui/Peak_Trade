@@ -252,24 +252,23 @@ entities:
       Docs-only persist of already-adjudicated isolated-domain selection
       and anti-churn mechanism semantics. AUTHORITY_EFFECT=NONE. Not
       selection. Not SSF import. Replacement-pending is
-      not rotation. Hysteresis and min-holding remain concepts, not
-      rules. OPEN_DECISION_02 closed as AT_MOST_N. OPEN_DECISION_03
+      not rotation. Hysteresis and min-holding are POLICY_A rules,
+      not Cap-2.3 imports. OPEN_DECISION_02 closed as AT_MOST_N. OPEN_DECISION_03
       closed as consume-Cap-2.2-ordering-as-membership-order.
       OPEN_DECISION_01 is closed as Owner-policy ceiling N_VALUE=5
       under AT_MOST_N; not EXACTLY_5; not a TOP5 product. OPEN_DECISION_04 is closed as
       ownership principle only: membership identity is non-authoritative
       Active-Set composition, not selector-owned state. OPEN_DECISION_05
       is closed as NO_INDEPENDENT_PENDING_STATE_REQUIRED for the current
-      isolated MF model; not never-needed; anti-churn rules remain
-      unratified. OD06 is closed as permission-only ALLOWED while G13
+      isolated MF model; not never-needed. OD06 is closed as permission-only ALLOWED while G13
       remains closed; permission is not artifact existence. Membership-context
       artifact semantic identity is bound as information classes only in
       semantics §1.9; that bind is not artifact existence, not schema, not
-      writer, not prior-listing existence, and not an OD07 close. Artifact
+      writer, not prior-listing existence. Artifact
       existence class is bound as required durable non-authoritative
       membership-context artifact in semantics §1.10; that class bind is
       not instance existence, not schema, not writer, not prior-listing
-      existence, and not an OD07 close. Instance existence remains
+      existence. Instance existence remains
       unproven. The instance-existence decision class is persisted in
       semantics §1.11 as
       NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED;
@@ -285,8 +284,9 @@ entities:
       is closed in semantics §1.16 as
       SET_MATERIALIZATION_AUTHORITY_GRANTED_TRUE;
       MATERIALIZATION_AUTHORITY_GRANTED is true as grant only; grant is
-      not materialization. OD07 remains
-      unclosed. No second ranker.
+      not materialization. OPEN_DECISION_07 is closed in semantics §1.6
+      as CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY. Anti-churn POLICY_A is
+      ratified in semantics §1.17. No second ranker.
       No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed. Atlas is
       not runtime authority. ATLAS_AUTHORITY=NONE.
 
@@ -338,7 +338,10 @@ entities:
       is closed in the semantics contract §1.16 as
       SET_MATERIALIZATION_AUTHORITY_GRANTED_TRUE;
       this catalog note is a pointer. Grant is not
-      materialization. OD07 remains unclosed.
+      materialization. OPEN_DECISION_07 is closed in the semantics
+      contract §1.6 as CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY;
+      this catalog note is a pointer. Anti-churn POLICY_A is ratified
+      in the semantics contract §1.17; this catalog note is a pointer.
       OD04_TO_OD07_CHANGED is not a collective close.
       CAP23_IMPORTED=false.
       No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed. Atlas is
