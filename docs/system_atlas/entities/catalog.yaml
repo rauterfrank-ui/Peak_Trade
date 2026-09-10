@@ -250,10 +250,12 @@ entities:
     source_paths:
       - src/ops/mf_membership_context_artifact_contract_v1.py
       - src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py
+      - src/ops/mf_membership_previous_to_current_replay_contract_v1.py
     evidence_sources:
       - docs/ops/specs/MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md
       - src/ops/mf_membership_context_artifact_contract_v1.py
       - src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py
+      - src/ops/mf_membership_previous_to_current_replay_contract_v1.py
     notes: >-
       Docs-only persist of already-adjudicated isolated-domain selection
       and anti-churn mechanism semantics. AUTHORITY_EFFECT=NONE. Not
@@ -295,6 +297,9 @@ entities:
       provenance, and lifecycle are bound in semantics §1.18. First
       bootstrap instance mca_bf0255a6007432e2 is proven. Isolated selector
       and membership-diff rotation are bound in semantics §1.19.
+      Deterministic previous-to-current replay is bound in semantics
+      §1.20. Isolated MF target is complete. Productive integration
+      remains incomplete.
       RUNTIME_AUTHORIZED remains false. No second ranker.
       No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed. Atlas is
       not runtime authority. ATLAS_AUTHORITY=NONE.
