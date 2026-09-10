@@ -97,7 +97,7 @@ GRANT_IS_NOT_ARTIFACT_CREATION=true
 GRANT_IS_NOT_INSTANCE_PROOF=true
 GRANT_DOES_NOT_BIND_SCHEMA_WRITER_READER=true
 MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
-OD07_ROTATION_IDENTITY=UNCLOSED
+OD07_ROTATION_IDENTITY=CLOSED_DERIVED
 OD04_TO_OD07_CHANGED=false
 ```
 
@@ -124,8 +124,9 @@ existence class is bound in that contract §1.10 as
 `BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT`;
 this file is not the existence-class close owner. That class bind is
 not instance existence. Instance existence remains `UNPROVEN`. It does
-**not** close `OPEN_DECISION_07`.
-`OD04_TO_OD07_CHANGED=false` is **not** a collective close of OD04–OD07.
+**not** re-own the `OPEN_DECISION_07` close in the semantics contract
+§1.6. `OD04_TO_OD07_CHANGED=false` is **not** a collective close of
+OD04–OD07.
 
 Master Runbook SSOT pointer: §4.5 / §4.5.1 / §4.5.4.
 
@@ -268,7 +269,7 @@ Dashboard `universe` ~50 is observation-only.
 | Cap 2.1 → Cap 2.2 | Cap 2.1 universe snapshot | Cap 2.2 ranking producer | governed universe | no (universe only) | no | not Active-Set fill; not Top50 stage |
 | Cap 2.2 → MF selector | Cap 2.2 ordered Top-20 | unimplemented isolated selector | candidate context / origin order | ranking already applied at Cap 2.2; selector must not re-rank | no | not selection; not host input; not prefix-N until OD01 |
 | MF selector → Active Set N | unimplemented selector | Active Set (topology) | membership proposal constrained by unratified `N` | no additional ranking | no | not `EXACTLY_N`; not padding; empty set is non-authority |
-| Active Set → Membership Rotation | membership listing | rotation node (topology) | membership-change-only diffs | no | no | not anti-churn; not pending; stage vs derived remains OD07 |
+| Active Set → Membership Rotation | membership listing | rotation node (topology) | membership-change-only diffs | no | no | not anti-churn; not pending; OD07 closed as derived identity |
 | Isolated terminus | membership context class | **none** | `NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY` | no | no | not future host input |
 
 ### 5.2 Productive chain (negative constraint only)
@@ -463,7 +464,11 @@ semantics contract §1.16 as
 `SET_MATERIALIZATION_AUTHORITY_GRANTED_TRUE`;
 this file is not the decision-class close owner.
 `MATERIALIZATION_AUTHORITY_GRANTED` is `true` as grant only. Grant is
-not materialization and does not create an artifact.
+not materialization and does not create an artifact. `OPEN_DECISION_07`
+is closed in the semantics contract §1.6 as
+`CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY`; this file is not the OD07
+close owner. Anti-churn POLICY_A is ratified in the semantics contract
+§1.17; this file is not the POLICY_A close owner.
 
 ```text
 OD01_N_VALUE=5
@@ -502,12 +507,12 @@ GRANT_IS_NOT_ARTIFACT_CREATION=true
 GRANT_IS_NOT_INSTANCE_PROOF=true
 GRANT_DOES_NOT_BIND_SCHEMA_WRITER_READER=true
 MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
-OD07_ROTATION_IDENTITY=UNCLOSED
+OD07_ROTATION_IDENTITY=CLOSED_DERIVED
 OD04_TO_OD07_CHANGED=false
 NEW_SCORING_POLICY=false
 NEW_TIE_BREAK_POLICY=false
-HYSTERESIS_NUMERICS=UNRESOLVED
-MIN_HOLDING_NUMERICS=UNRESOLVED
+HYSTERESIS_NUMERICS=POLICY_A_RATIFIED_POINTER_TO_SEMANTICS_1_17
+MIN_HOLDING_NUMERICS=POLICY_A_RATIFIED_POINTER_TO_SEMANTICS_1_17
 REPLACEMENT_PENDING_SEMANTICS=NOT_IMPORTED
 NEW_PERSISTENCE_SEMANTICS=false
 NEW_EXECUTION_SELECTION_HEURISTIC=false
