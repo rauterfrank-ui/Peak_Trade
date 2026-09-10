@@ -90,6 +90,8 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p16_execution_prerequisite_16_bounded_activation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p16_execution_prerequisite_16_bounded_activation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p20_execution_prerequisite_20_mutation_limited_to_proven_position_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p20_execution_prerequisite_20_mutation_limited_to_proven_position_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p25_execution_prerequisite_25_no_additional_owner_decision_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p25_execution_prerequisite_25_no_additional_owner_decision_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:phase_9_1_strategy_registry_classifications | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:phase_9_1_strategy_registry_classifications | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:phase_9_1_strategy_registry_gates | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:phase_9_1_strategy_registry_gates | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2do_fresh_create_readiness_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2do_fresh_create_readiness_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2dr_runtime_read_only_evidence_max_leverage_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2dr_runtime_read_only_evidence_max_leverage_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2ds_post_whitelist_private_auth_attestation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2ds_post_whitelist_private_auth_attestation_v1 | STATUS=OPEN (not proven) |  |
@@ -106,6 +108,8 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:send_time_pass_18_19_21_24_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:send_time_pass_18_19_21_24_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:send_time_position_reobservation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:send_time_position_reobservation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:simulated_execution_port_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:simulated_execution_port_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:strategy_switch_sanity_check | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:strategy_switch_sanity_check | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:test_health_runner | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:test_health_runner | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:z2dg_single_actual_read_only_funding_balance_get_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:z2dg_single_actual_read_only_funding_balance_get_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:z2dh_single_actual_read_only_funding_balance_get_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:z2dh_single_actual_read_only_funding_balance_get_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:z2dl_post_remediation_single_private_auth_get_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:z2dl_post_remediation_single_private_auth_get_v1 | STATUS=OPEN (not proven) |  |

@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import subprocess
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
@@ -58,6 +59,16 @@ DECOMMISSION_PREDICATES = (
     "NONCANONICAL_LITERAL_NEUTRALIZED",
     "OBSOLETE_REFERENCE_REMOVED",
     "REMOVED_TARGET_NO_LONGER_EXISTS",
+    "WHOLE_FILE_RETIRED",
+)
+_WHOLE_FILE_RETIREMENT_PREFIXES = (
+    "src/research/",
+    "scripts/research/",
+)
+_ACTIVE_CONSUMER_SEARCH_PREFIXES = (
+    "src",
+    "scripts",
+    "config",
 )
 
 _REQUIRED_EFFECT_NONE = (
@@ -262,6 +273,77 @@ def _content_lines(diff_text: str) -> tuple[list[str], list[str]]:
     return removed, added
 
 
+def _is_whole_file_retirement_surface(path: str) -> bool:
+    normalized = _normalize_path(path)
+    if not normalized.endswith(".py"):
+        return False
+    return any(normalized.startswith(prefix) for prefix in _WHOLE_FILE_RETIREMENT_PREFIXES)
+
+
+def _is_complete_file_deletion(
+    *,
+    remaining: Path,
+    removed: Sequence[str],
+    added: Sequence[str],
+) -> bool:
+    if remaining.is_file():
+        return False
+    if any(not _is_comment_or_blank(line) for line in added):
+        return False
+    return bool(removed)
+
+
+def _remaining_active_consumers(path: str, repo_root: Path) -> tuple[str, ...]:
+    """Fail-closed remaining live references in src/scripts/tests/config."""
+    needle = _normalize_path(path)
+    skip = {DEFAULT_DECOMMISSION_AUTH_PATH, needle}
+    git_marker = repo_root / ".git"
+    hits: list[str] = []
+    if git_marker.exists():
+        result = subprocess.run(
+            [
+                "git",
+                "grep",
+                "-l",
+                "-F",
+                "-I",
+                "--",
+                needle,
+                "--",
+                *_ACTIVE_CONSUMER_SEARCH_PREFIXES,
+            ],
+            cwd=repo_root,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode not in (0, 1):
+            return (f"CONSUMER_SCAN_FAILED:{result.returncode}",)
+        for raw in result.stdout.splitlines():
+            candidate = _normalize_path(raw)
+            if candidate and candidate not in skip:
+                hits.append(candidate)
+        return tuple(sorted(set(hits)))
+
+    for prefix in _ACTIVE_CONSUMER_SEARCH_PREFIXES:
+        root = repo_root / prefix
+        if not root.is_dir():
+            continue
+        for candidate in root.rglob("*"):
+            if not candidate.is_file():
+                continue
+            relative = _normalize_path(str(candidate.relative_to(repo_root)))
+            if relative in skip:
+                continue
+            try:
+                text = candidate.read_text(encoding="utf-8")
+            except (OSError, UnicodeDecodeError):
+                return (f"CONSUMER_SCAN_UNREADABLE:{relative}",)
+            if needle in text:
+                hits.append(relative)
+    return tuple(sorted(set(hits)))
+
+
 def classify_decommission_diff(
     *,
     path: str,
@@ -285,7 +367,12 @@ def classify_decommission_diff(
     fail_closed_weakened = False
     productive_increase = False
     trading_changed = False
-    is_test = _normalize_path(path).startswith("tests/")
+    normalized_path = _normalize_path(path)
+    remaining = repo_root / normalized_path
+    whole_file_retirement = _is_whole_file_retirement_surface(
+        normalized_path
+    ) and _is_complete_file_deletion(remaining=remaining, removed=removed, added=added)
+    is_test = normalized_path.startswith("tests/")
     removed_fc_lines = [
         line for line in removed if not _is_comment_or_blank(line) and _FAIL_CLOSED_RE.search(line)
     ]
@@ -300,7 +387,7 @@ def classify_decommission_diff(
         if removed_shapes - added_shapes:
             fail_closed_weakened = True
             notes.append("FAIL_CLOSED_SHAPE_UNMATCHED")
-    elif removed_fc_lines:
+    elif removed_fc_lines and not whole_file_retirement:
         fail_closed_weakened = True
         notes.append("FAIL_CLOSED_LINE_REMOVED")
     removed_fc_budget = Counter(paired_fc_shapes)
@@ -337,6 +424,8 @@ def classify_decommission_diff(
             if missing:
                 predicates.add("REMOVED_TARGET_NO_LONGER_EXISTS")
                 predicates.add("DELETED_COMPONENT_REFERENCE_REMOVED")
+            elif whole_file_retirement:
+                notes.append("WHOLE_FILE_RETIREMENT_DROPS_REMAINING_PATH_REFERENCE")
             else:
                 unexplained_removed += 1
                 notes.append("REMOVED_PATH_STILL_EXISTS")
@@ -346,6 +435,8 @@ def classify_decommission_diff(
                 predicates.add("NEGATIVE_TEST_TOKEN_NEUTRALIZED")
             else:
                 predicates.add("NONCANONICAL_LITERAL_NEUTRALIZED")
+            continue
+        if whole_file_retirement:
             continue
         unexplained_removed += 1
         notes.append("UNEXPLAINED_REMOVED_LINE")
@@ -375,10 +466,9 @@ def classify_decommission_diff(
         trading_changed = True
         notes.append("UNEXPLAINED_EXECUTABLE_DELTA")
 
-    remaining = repo_root / _normalize_path(path)
-    remaining_name = Path(_normalize_path(path)).name
+    remaining_name = Path(normalized_path).name
     if (
-        _normalize_path(path).startswith("tests/")
+        normalized_path.startswith("tests/")
         and remaining_name.startswith("test_")
         and remaining_name.endswith(".py")
         and remaining.is_file()
@@ -387,8 +477,22 @@ def classify_decommission_diff(
         fail_closed_weakened = True
         notes.append("REMAINING_TEST_FAIL_CLOSED_ABSENT")
 
+    active_consumers: tuple[str, ...] = ()
+    if whole_file_retirement:
+        predicates.add("WHOLE_FILE_RETIRED")
+        predicates.add("REMOVED_TARGET_NO_LONGER_EXISTS")
+        predicates.add("DELETED_COMPONENT_REFERENCE_REMOVED")
+        notes.append("WHOLE_FILE_RETIREMENT")
+        active_consumers = _remaining_active_consumers(normalized_path, repo_root)
+        if active_consumers:
+            notes.append("ACTIVE_CONSUMER_REMAINS")
+
     insufficient = (
-        (not predicates) or trading_changed or fail_closed_weakened or productive_increase
+        (not predicates)
+        or trading_changed
+        or fail_closed_weakened
+        or productive_increase
+        or bool(active_consumers)
     )
     return DecommissionEvidence(
         predicates=tuple(sorted(predicates)),

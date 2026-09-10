@@ -1338,54 +1338,67 @@ def build_boundary_report(
             for path in normalized_files:
                 if path in authorized_path_set:
                     allowed_hits.update(classify_allowed_surfaces(path, rules))
-    if not auth_decision.applied and (forbidden_matches or remaining_unclassified):
-        if not skip_decommission_authorization:
-            decommission_decision = evaluate_decommission_authorization(
-                forbidden_matches,
-                auth=decommission_payload,
-                repo_root=root,
-                file_diffs=file_diffs,
-                evidence_repo_root=evidence_repo_root or root,
-                unclassified_paths=remaining_unclassified,
-                diff_base_sha=diff_base_sha,
-            )
+
+    # Sequential composition, not OR-bypass: wiring consumes its forbidden/wiring
+    # surfaces independently. Decommission may still admit remaining unclassified paths
+    # after wiring applied=true, but must not re-authorize already admitted wiring.
+    decommission_forbidden_matches: list[SurfaceMatch] = []
+    evaluate_decommission = False
+    if not skip_decommission_authorization:
+        if auth_decision.applied:
+            evaluate_decommission = bool(remaining_unclassified)
+        elif forbidden_matches or remaining_unclassified:
+            decommission_forbidden_matches = list(forbidden_matches)
+            evaluate_decommission = True
+    if evaluate_decommission:
+        decommission_decision = evaluate_decommission_authorization(
+            decommission_forbidden_matches,
+            auth=decommission_payload,
+            repo_root=root,
+            file_diffs=file_diffs,
+            evidence_repo_root=evidence_repo_root or root,
+            unclassified_paths=remaining_unclassified,
+            diff_base_sha=diff_base_sha,
+        )
         if decommission_decision.applied:
             authorized_path_set = frozenset(decommission_decision.authorized_paths)
-            blocking_forbidden = [
-                match
-                for match in forbidden_matches
-                if match.matched_path not in authorized_path_set
-            ]
+            if decommission_forbidden_matches:
+                blocking_forbidden = [
+                    match
+                    for match in decommission_forbidden_matches
+                    if match.matched_path not in authorized_path_set
+                ]
             remaining_unclassified = [
                 path for path in remaining_unclassified if path not in authorized_path_set
             ]
             for path in normalized_files:
                 if path in authorized_path_set:
                     allowed_hits.update(classify_allowed_surfaces(path, rules))
-        elif not decommission_decision.valid:
-            blocking_forbidden = list(forbidden_matches)
-        elif (
-            decommission_decision.grant_active
-            and forbidden_matches
-            and not decommission_decision.unauthorized_forbidden_paths
-        ):
-            blocking_forbidden = list(forbidden_matches)
-        elif forbidden_matches:
-            restoration_decision = evaluate_restoration_authorization(
-                forbidden_matches,
-                auth=restoration_payload,
-                repo_root=root,
-            )
-            if restoration_decision.applied:
-                authorized_path_set = frozenset(restoration_decision.authorized_paths)
-                blocking_forbidden = [
-                    match
-                    for match in forbidden_matches
-                    if match.matched_path not in authorized_path_set
-                ]
-                for path in normalized_files:
-                    if path in authorized_path_set:
-                        allowed_hits.update(classify_allowed_surfaces(path, rules))
+        elif not auth_decision.applied:
+            if not decommission_decision.valid:
+                blocking_forbidden = list(forbidden_matches)
+            elif (
+                decommission_decision.grant_active
+                and forbidden_matches
+                and not decommission_decision.unauthorized_forbidden_paths
+            ):
+                blocking_forbidden = list(forbidden_matches)
+            elif forbidden_matches:
+                restoration_decision = evaluate_restoration_authorization(
+                    forbidden_matches,
+                    auth=restoration_payload,
+                    repo_root=root,
+                )
+                if restoration_decision.applied:
+                    authorized_path_set = frozenset(restoration_decision.authorized_paths)
+                    blocking_forbidden = [
+                        match
+                        for match in forbidden_matches
+                        if match.matched_path not in authorized_path_set
+                    ]
+                    for path in normalized_files:
+                        if path in authorized_path_set:
+                            allowed_hits.update(classify_allowed_surfaces(path, rules))
 
     if (
         blocking_forbidden
@@ -1624,7 +1637,8 @@ def build_boundary_report(
         fail_closed = True
         admissible = False
         economic_or_diagnostic_only = any_boundary_governed
-        auth_applied = False
+        # Keep a successful wiring admission auditable even when a later class fails.
+        auth_applied = auth_decision.applied
         restoration_applied = False
         decommission_applied = False
         owner_applied = False
@@ -1685,6 +1699,21 @@ def build_boundary_report(
         generator_fallback_applied = False
         armed_identity_split_applied = True
         owner_applied = owner_adjudication_decision.applied
+    elif auth_decision.applied and decommission_decision.applied:
+        reason_codes.append(REASON_TECHNICAL_WIRING_AUTHORIZED)
+        reason_codes.append(REASON_DECOMMISSION_AUTHORIZED)
+        if owner_adjudication_decision.applied:
+            reason_codes.append(REASON_OWNER_ADJUDICATION_AUTHORIZED)
+        if allowed_hits:
+            reason_codes.append(REASON_ALLOWED_ONLY)
+        economic_or_diagnostic_only = False
+        auth_applied = True
+        restoration_applied = False
+        decommission_applied = True
+        owner_applied = owner_adjudication_decision.applied
+        mapping_applied = False
+        generator_fallback_applied = False
+        armed_identity_split_applied = False
     elif decommission_decision.applied or owner_adjudication_decision.applied:
         if decommission_decision.applied:
             reason_codes.append(REASON_DECOMMISSION_AUTHORIZED)

@@ -78,6 +78,7 @@
     "tests/trading/master_v2/test_double_play_state.py",
     "tests/trading/master_v2/test_double_play_composition.py",
     "tests/trading/master_v2/test_master_v2_capital_risk_sizing_safety_intent_restore_contract_v1.py",
+    "tests/trading/master_v2/test_master_v2_a06_capital_risk_sizing_intent_restore_contract_v1.py",
     "tests/trading/master_v2/test_double_play_composition_matrix_v1.py",
     "tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py",
     "tests/trading/master_v2/test_adverse_exit_downscope_priority_v1.py",

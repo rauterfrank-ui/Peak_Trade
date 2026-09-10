@@ -9,6 +9,7 @@ from pathlib import Path
 from src.governance.economic_diagnostic_optimization_boundary_v0 import (
     REASON_IMPACT_UNKNOWN,
     REASON_RESTORATION_AUTHORIZED,
+    REASON_TECHNICAL_WIRING_AUTHORIZED,
     RESTORATION_AUTH_VERSION,
     RESTORATION_MUTATION_PURPOSE,
     RESTORATION_SCOPE_CLASS,
@@ -902,3 +903,250 @@ class TestDecommissionEvidenceDigestBindingV1:
         assert report.restoration_authorization_applied is True
         assert report.semantics_neutral_decommission_authorization_applied is False
         assert REASON_RESTORATION_AUTHORIZED in report.reason_codes
+
+
+RETIRED_RESEARCH_PATH = "src/research/obsolete_offline_materializer_v0.py"
+RETIRED_RESEARCH_BODY = [
+    "def materialize_obsolete_offline_baseline():",
+    "    raise RuntimeError('obsolete_research_surface')",
+    '    return "noncanonical_literal"',
+]
+
+
+def _deleted_file_diff(path: str, removed: list[str]) -> str:
+    lines = [
+        f"diff --git a/{path} b/{path}",
+        "deleted file mode 100644",
+        f"--- a/{path}",
+        "+++ /dev/null",
+        f"@@ -1,{len(removed)} +0,0 @@",
+    ]
+    lines.extend(f"-{line}" for line in removed)
+    return "\n".join(lines) + "\n"
+
+
+class TestWholeFileRetirementClassificationV1:
+    def test_authorized_obsolete_research_delete_can_pass(self, tmp_path: Path) -> None:
+        diffs = {
+            RETIRED_RESEARCH_PATH: _deleted_file_diff(RETIRED_RESEARCH_PATH, RETIRED_RESEARCH_BODY)
+        }
+        auth = _active_grant([RETIRED_RESEARCH_PATH], [], diffs)
+        report = _report(
+            [RETIRED_RESEARCH_PATH],
+            auth=auth,
+            diffs=diffs,
+            evidence_repo_root=tmp_path,
+        )
+        assert report.admissible is True
+        assert report.semantics_neutral_decommission_authorization_applied is True
+        assert "WHOLE_FILE_RETIRED" in report.semantics_neutral_decommission_proven_predicates
+        assert REASON_DECOMMISSION_AUTHORIZED in report.reason_codes
+
+    def test_whole_file_retirement_may_drop_remaining_path_references(self) -> None:
+        body = [
+            "def materialize_obsolete_offline_baseline():",
+            '    target = "src/research/new_listings/collectors/ccxt_ticker.py"',
+            "    raise RuntimeError('obsolete_research_surface')",
+        ]
+        diffs = {RETIRED_RESEARCH_PATH: _deleted_file_diff(RETIRED_RESEARCH_PATH, body)}
+        auth = _active_grant([RETIRED_RESEARCH_PATH], [], diffs)
+        report = _report(
+            [RETIRED_RESEARCH_PATH],
+            auth=auth,
+            diffs=diffs,
+            evidence_repo_root=REPO_ROOT,
+        )
+        assert report.admissible is True
+        assert report.semantics_neutral_decommission_authorization_applied is True
+
+    def test_identical_delete_without_grant_fails_closed(self, tmp_path: Path) -> None:
+        diffs = {
+            RETIRED_RESEARCH_PATH: _deleted_file_diff(RETIRED_RESEARCH_PATH, RETIRED_RESEARCH_BODY)
+        }
+        report = _report(
+            [RETIRED_RESEARCH_PATH],
+            auth=None,
+            diffs=diffs,
+            evidence_repo_root=tmp_path,
+            skip_decommission=True,
+        )
+        assert report.admissible is False
+        assert report.fail_closed is True
+        assert REASON_IMPACT_UNKNOWN in report.reason_codes
+        assert report.semantics_neutral_decommission_authorization_applied is False
+
+    def test_authorized_delete_wrong_digest_fails_closed(self, tmp_path: Path) -> None:
+        diffs = {
+            RETIRED_RESEARCH_PATH: _deleted_file_diff(RETIRED_RESEARCH_PATH, RETIRED_RESEARCH_BODY)
+        }
+        auth = _active_grant([RETIRED_RESEARCH_PATH], [], diffs)
+        auth["authorized_evidence_digest"] = "0" * 64
+        report = _report(
+            [RETIRED_RESEARCH_PATH],
+            auth=auth,
+            diffs=diffs,
+            evidence_repo_root=tmp_path,
+        )
+        assert report.admissible is False
+        assert report.fail_closed is True
+        assert REASON_DECOMMISSION_DIGEST_MISMATCH in report.reason_codes
+        assert report.semantics_neutral_decommission_authorization_applied is False
+
+    def test_partial_raise_assert_delete_still_fails_closed(self, tmp_path: Path) -> None:
+        remaining = tmp_path / RETIRED_RESEARCH_PATH
+        remaining.parent.mkdir(parents=True, exist_ok=True)
+        remaining.write_text(
+            "def materialize_obsolete_offline_baseline():\n    x = 1\n    raise RuntimeError('keep')\n",
+            encoding="utf-8",
+        )
+        diffs = {
+            RETIRED_RESEARCH_PATH: _unified_diff(
+                RETIRED_RESEARCH_PATH,
+                ["    raise RuntimeError('keep')"],
+                [],
+            )
+        }
+        auth = _active_grant([RETIRED_RESEARCH_PATH], [], diffs)
+        report = _report(
+            [RETIRED_RESEARCH_PATH],
+            auth=auth,
+            diffs=diffs,
+            evidence_repo_root=tmp_path,
+        )
+        assert report.admissible is False
+        assert report.semantics_neutral_decommission_authorization_applied is False
+        assert (
+            REASON_DECOMMISSION_SEMANTIC_CHANGE in report.reason_codes
+            or REASON_DECOMMISSION_EVIDENCE_INSUFFICIENT in report.reason_codes
+        )
+
+    def test_complete_master_v2_delete_is_not_decommission(self, tmp_path: Path) -> None:
+        diffs = {
+            PROTECTED_MASTER_V2_PATH: _deleted_file_diff(
+                PROTECTED_MASTER_V2_PATH,
+                [
+                    "def classify_runtime_activation_materiality_v0():",
+                    "    raise RuntimeError('x')",
+                ],
+            )
+        }
+        auth = _active_grant([PROTECTED_MASTER_V2_PATH], [MASTER_V2_SURFACE], diffs)
+        report = _report(
+            [PROTECTED_MASTER_V2_PATH],
+            auth=auth,
+            diffs=diffs,
+            evidence_repo_root=tmp_path,
+        )
+        assert report.admissible is False
+        assert report.semantics_neutral_decommission_authorization_applied is False
+
+    def test_productive_trading_surface_delete_fails_closed(self, tmp_path: Path) -> None:
+        trading_path = "src/trading/master_v2/survival_assessment_v1.py"
+        diffs = {
+            trading_path: _deleted_file_diff(
+                trading_path,
+                ["def assess():", "    raise RuntimeError('productive')"],
+            )
+        }
+        auth = _active_grant([trading_path], [MASTER_V2_SURFACE], diffs)
+        report = _report(
+            [trading_path],
+            auth=auth,
+            diffs=diffs,
+            evidence_repo_root=tmp_path,
+        )
+        assert report.admissible is False
+        assert report.semantics_neutral_decommission_authorization_applied is False
+
+    def test_unknown_additional_path_fails_closed(self, tmp_path: Path) -> None:
+        extra = "src/research/another_unregistered_owner_v0.py"
+        diffs = {
+            RETIRED_RESEARCH_PATH: _deleted_file_diff(RETIRED_RESEARCH_PATH, RETIRED_RESEARCH_BODY),
+            extra: _deleted_file_diff(extra, RETIRED_RESEARCH_BODY),
+        }
+        auth = _active_grant([RETIRED_RESEARCH_PATH], [], diffs)
+        report = _report(
+            [RETIRED_RESEARCH_PATH, extra],
+            auth=auth,
+            diffs=diffs,
+            evidence_repo_root=tmp_path,
+        )
+        assert report.admissible is False
+        assert report.fail_closed is True
+        assert REASON_IMPACT_UNKNOWN in report.reason_codes
+        assert report.unclassified_touch_count == 1
+
+    def test_authorized_delete_with_remaining_consumer_fails_closed(self, tmp_path: Path) -> None:
+        consumer = tmp_path / "src/research/still_bound_consumer_v0.py"
+        consumer.parent.mkdir(parents=True, exist_ok=True)
+        consumer.write_text(
+            f'OWNER = "{RETIRED_RESEARCH_PATH}"\n',
+            encoding="utf-8",
+        )
+        diffs = {
+            RETIRED_RESEARCH_PATH: _deleted_file_diff(RETIRED_RESEARCH_PATH, RETIRED_RESEARCH_BODY)
+        }
+        auth = _active_grant([RETIRED_RESEARCH_PATH], [], diffs)
+        report = _report(
+            [RETIRED_RESEARCH_PATH],
+            auth=auth,
+            diffs=diffs,
+            evidence_repo_root=tmp_path,
+        )
+        assert report.admissible is False
+        assert report.semantics_neutral_decommission_authorization_applied is False
+        assert REASON_DECOMMISSION_EVIDENCE_INSUFFICIENT in report.reason_codes
+
+    def test_wiring_and_decommission_remain_separate_classes(self, tmp_path: Path) -> None:
+        wiring_path = "src/trading/master_v2/double_play_core_wiring_v1.py"
+        diffs = {
+            RETIRED_RESEARCH_PATH: _deleted_file_diff(RETIRED_RESEARCH_PATH, RETIRED_RESEARCH_BODY)
+        }
+        auth = _active_grant([RETIRED_RESEARCH_PATH], [], diffs)
+        report = build_boundary_report(
+            [wiring_path, RETIRED_RESEARCH_PATH],
+            repo_root=REPO_ROOT,
+            decommission_authorization=auth,
+            skip_owner_adjudication_authorization=True,
+            skip_mapping_bind_authorization=True,
+            skip_generator_fallback_authorization=True,
+            skip_armed_identity_split_authorization=True,
+            file_diffs=diffs,
+            evidence_repo_root=tmp_path,
+            diff_base_sha=TEST_DIFF_BASE_SHA,
+        )
+        assert report.admissible is True
+        assert report.technical_wiring_authorization_applied is True
+        assert report.semantics_neutral_decommission_authorization_applied is True
+        assert REASON_TECHNICAL_WIRING_AUTHORIZED in report.reason_codes
+        assert REASON_DECOMMISSION_AUTHORIZED in report.reason_codes
+
+    def test_decommission_cannot_admit_master_v2_wiring_surfaces(self, tmp_path: Path) -> None:
+        wiring_paths = [
+            "src/trading/master_v2/double_play_core_wiring_v1.py",
+            "src/trading/master_v2/strategy_identity_binding_v1.py",
+            "tests/trading/master_v2/test_master_v2_double_play_core_wiring_restore_contract_v1.py",
+            "tests/trading/master_v2/test_master_v2_capital_risk_sizing_safety_intent_restore_contract_v1.py",
+            "tests/trading/master_v2/test_master_v2_a06_capital_risk_sizing_intent_restore_contract_v1.py",
+        ]
+        diffs = {
+            path: _deleted_file_diff(path, ["def restored_wiring():", "    return 1"])
+            for path in wiring_paths
+        }
+        auth = _active_grant(wiring_paths, [MASTER_V2_SURFACE], diffs)
+        report = build_boundary_report(
+            wiring_paths,
+            repo_root=REPO_ROOT,
+            decommission_authorization=auth,
+            skip_technical_wiring_authorization=True,
+            skip_owner_adjudication_authorization=True,
+            skip_mapping_bind_authorization=True,
+            skip_generator_fallback_authorization=True,
+            skip_armed_identity_split_authorization=True,
+            file_diffs=diffs,
+            evidence_repo_root=tmp_path,
+            diff_base_sha=TEST_DIFF_BASE_SHA,
+        )
+        assert report.admissible is False
+        assert report.semantics_neutral_decommission_authorization_applied is False
+        assert report.technical_wiring_authorization_applied is False
