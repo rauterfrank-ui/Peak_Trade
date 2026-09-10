@@ -59,7 +59,8 @@
       "canonical_instrument_id": "inst-eth-usdt-perp",
       "dataset_digest": "39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087",
       "dataset_id": "inst-eth-usdt-perp_v1",
-      "dataset_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet",
+      "dataset_relpath": "datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet",
+      "dataset_root_contract": "PEAK_TRADE_DATA_ARCHIVE_ROOT",
       "dataset_profile": "economic_research_v1",
       "dataset_version": "v1",
       "expected_manifest_digest": "f250627c19f59b1c3245b0a5da69a646671210a1717609367f22b94d3a2a7059",
@@ -72,7 +73,7 @@
     "digest_bindings": {
       "config_digest": {
         "status": "BOUND",
-        "value": "c4db0a42b95156192d8c1fcf486aa3d616ae2f0b5dafa26b9e0d7d9a29c204a6"
+        "value": "9324366b568c47df622deb5f22f78d06827a8369c7f071a0938af0e14d72dfbc"
       },
       "data_digest": {
         "status": "BOUND",

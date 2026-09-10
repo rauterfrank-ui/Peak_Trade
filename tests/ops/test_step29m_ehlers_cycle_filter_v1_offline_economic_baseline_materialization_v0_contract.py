@@ -38,7 +38,7 @@ def test_config_and_strategy_params_digests_unchanged_on_main_config() -> None:
     cfg = json.loads(EVAL_CONFIG.read_text(encoding="utf-8"))
     assert (
         compute_evaluation_config_digest_v1(cfg)
-        == "c4db0a42b95156192d8c1fcf486aa3d616ae2f0b5dafa26b9e0d7d9a29c204a6"
+        == "9324366b568c47df622deb5f22f78d06827a8369c7f071a0938af0e14d72dfbc"
     )
     assert cfg["offline_evaluation_sizing_contract_v1"]["strategy_params_digest"] == (
         "49f8b07e7de872e66f74dd27b5e97a3ae3aaee414e25d3b08cba2674c40cc5b9"

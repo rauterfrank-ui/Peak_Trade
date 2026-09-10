@@ -27,6 +27,12 @@ from src.backtest.strategy_signal_binding_v1 import (
     project_strategy_params_for_binding_v1,
     resolve_effective_strategy_params_v1,
 )
+from src.research.longer_chronological_pit_acquisition_v1 import ENV_ARCHIVE_ROOT
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    ArchiveRootError,
+    assert_path_under_archive,
+    resolve_archive_root,
+)
 from src.strategies.registry import get_strategy_registry_entry, resolve_strategy_id
 
 CONTRACT_LAYER_VERSION = "v1"
@@ -72,6 +78,12 @@ DEFAULT_EVALUATION_CONFIG_PATH = (
     "config/ops/step29m_okx_inst_eth_usdt_perp_ehlers_cycle_filter_v1_economic_evaluation_v1.json"
 )
 CONFIG_SCHEMA_VERSION = "step29m_ehlers_cycle_filter_v1_economic_evaluation_admissibility_v1"
+
+DATASET_ROOT_CONTRACT = ENV_ARCHIVE_ROOT
+EHLERS_V1_DATASET_RELPATH = "datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet"
+EHLERS_V1_DATASET_MANIFEST_RELPATH = (
+    "datasets/admissible_futures/inst-eth-usdt-perp/v1/dataset_manifest.json"
+)
 
 STEP29M_REGISTERED_ECONOMIC_EVALUATION_CONFIGS_V1: tuple[str, ...] = (
     "config/ops/step29m_okx_inst_eth_usdt_perp_economic_evaluation_v1.json",
@@ -164,6 +176,87 @@ def load_ehlers_cycle_filter_v1_evaluation_config_v1(
     if not isinstance(payload, dict):
         raise ValueError("evaluation_config_not_object")
     return payload
+
+
+def resolve_ehlers_v1_data_archive_root(
+    *,
+    env: dict[str, str] | None = None,
+) -> Path | None:
+    """Resolve PEAK_TRADE_DATA_ARCHIVE_ROOT for Ehlers-v1 reads. Unset => None."""
+    return resolve_archive_root(env=env, require_for_write=False)
+
+
+def _join_ehlers_v1_dataset_path(root: Path, relpath: str) -> Path:
+    rel = Path(relpath)
+    if rel.is_absolute() or ".." in rel.parts:
+        raise ArchiveRootError("EHLERS_V1_DATASET_RELPATH_NOT_RELATIVE")
+    return assert_path_under_archive(root / rel, root)
+
+
+def resolve_ehlers_v1_dataset_bars_path(
+    *,
+    env: dict[str, str] | None = None,
+) -> Path:
+    root = resolve_ehlers_v1_data_archive_root(env=env)
+    if root is None:
+        raise FileNotFoundError(f"dataset_archive_root_unset:{DATASET_ROOT_CONTRACT}")
+    return _join_ehlers_v1_dataset_path(root, EHLERS_V1_DATASET_RELPATH)
+
+
+def resolve_ehlers_v1_dataset_manifest_path(
+    *,
+    env: dict[str, str] | None = None,
+) -> Path:
+    root = resolve_ehlers_v1_data_archive_root(env=env)
+    if root is None:
+        raise FileNotFoundError(f"dataset_archive_root_unset:{DATASET_ROOT_CONTRACT}")
+    return _join_ehlers_v1_dataset_path(root, EHLERS_V1_DATASET_MANIFEST_RELPATH)
+
+
+def verify_ehlers_v1_dataset_root_contract_binding_v1(
+    cfg: Mapping[str, Any],
+) -> tuple[str, ...]:
+    reasons: list[str] = []
+    binding = cfg.get("real_admissible_futures_evaluation_binding_v1", {})
+    if not isinstance(binding, Mapping):
+        return ("real_admissible_futures_evaluation_binding_v1_missing",)
+    if binding.get("dataset_root_contract") != DATASET_ROOT_CONTRACT:
+        reasons.append("dataset_root_contract_mismatch")
+    if binding.get("dataset_relpath") != EHLERS_V1_DATASET_RELPATH:
+        reasons.append("dataset_relpath_mismatch")
+    if "dataset_path" in binding:
+        reasons.append("legacy_absolute_dataset_path_forbidden")
+    return tuple(reasons)
+
+
+def resolve_ehlers_v1_dataset_bars_path_from_config(
+    cfg: Mapping[str, Any],
+    *,
+    env: dict[str, str] | None = None,
+) -> Path:
+    reasons = verify_ehlers_v1_dataset_root_contract_binding_v1(cfg)
+    if reasons:
+        raise ValueError("dataset_root_contract_binding_invalid:" + ",".join(reasons))
+    return resolve_ehlers_v1_dataset_bars_path(env=env)
+
+
+def verify_ehlers_v1_dataset_manifest_availability_v1(
+    cfg: Mapping[str, Any],
+    *,
+    env: dict[str, str] | None = None,
+) -> tuple[str, ...]:
+    binding_reasons = verify_ehlers_v1_dataset_root_contract_binding_v1(cfg)
+    if binding_reasons:
+        return binding_reasons
+    try:
+        manifest_path = resolve_ehlers_v1_dataset_manifest_path(env=env)
+    except FileNotFoundError:
+        return ("dataset_archive_root_unset",)
+    except ArchiveRootError:
+        return ("dataset_archive_root_invalid",)
+    if not manifest_path.is_file():
+        return ("dataset_manifest_missing",)
+    return ()
 
 
 def verify_ehlers_cycle_filter_v1_strategy_identity_v1() -> tuple[str, ...]:
@@ -401,6 +494,7 @@ def evaluate_ehlers_cycle_filter_v1_admissibility_contract_v1(
     blocking.extend(verify_ehlers_cycle_filter_v1_config_schema_v1(cfg))
     blocking.extend(verify_ehlers_cycle_filter_v1_sizing_policy_v1(cfg))
     blocking.extend(verify_ehlers_cycle_filter_v1_instrument_binding_v1(cfg))
+    blocking.extend(verify_ehlers_v1_dataset_root_contract_binding_v1(cfg))
     blocking.extend(verify_ehlers_cycle_filter_v1_ratification_authority_v1(cfg))
     blocking.extend(verify_ehlers_cycle_filter_v1_signal_binding_v1(cfg))
 
