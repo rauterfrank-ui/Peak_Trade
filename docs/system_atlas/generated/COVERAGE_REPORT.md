@@ -14,7 +14,7 @@
 This Atlas does not claim universe completeness because generation succeeded.
 
 ```text
-ENTITY_TOTAL=514
+ENTITY_TOTAL=515
 STRUCTURAL_RELATION_COUNT=93
 RUNTIME_RELATION_COUNT=93
 AUTHORITY_RELATION_COUNT=10
@@ -123,7 +123,7 @@ OKX_EVIDENCE_CENSUS_COMPLETE=true
 | BINDER | 1 |
 | CAPABILITY | 9 |
 | CHILD | 1 |
-| CONTRACT | 6 |
+| CONTRACT | 7 |
 | DATA_CONTRACT | 4 |
 | DOD | 8 |
 | EXECUTION_COMPONENT | 1 |
