@@ -29,6 +29,12 @@ from src.backtest.strategy_signal_binding_v1 import (
     project_strategy_params_for_binding_v1,
     resolve_effective_strategy_params_v1,
 )
+from src.research.longer_chronological_pit_acquisition_v1 import ENV_ARCHIVE_ROOT
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    ArchiveRootError,
+    assert_path_under_archive,
+    resolve_archive_root,
+)
 from src.strategies.registry import get_strategy_registry_entry, resolve_strategy_id
 
 CONTRACT_LAYER_VERSION = "v1"
@@ -71,12 +77,12 @@ STEP30A_REGISTERED_ECONOMIC_EVALUATION_CONFIGS_V1: tuple[str, ...] = (
     DEFAULT_EVALUATION_CONFIG_PATH,
 )
 
-STEP30A_DATASET_V2_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/admissible_futures/inst-eth-usdt-perp/v2"
+DATASET_ROOT_CONTRACT = ENV_ARCHIVE_ROOT
+STEP30A_DATASET_V2_RELPATH = "datasets/admissible_futures/inst-eth-usdt-perp/v2/bars.parquet"
+STEP30A_DATASET_V2_DIR_RELPATH = "datasets/admissible_futures/inst-eth-usdt-perp/v2"
+STEP30A_DATASET_V2_MANIFEST_RELPATH = (
+    "datasets/admissible_futures/inst-eth-usdt-perp/v2/dataset_manifest.json"
 )
-STEP30A_DATASET_V2_MANIFEST_PATH = STEP30A_DATASET_V2_ROOT / "dataset_manifest.json"
-STEP30A_DATASET_V2_BARS_PATH = STEP30A_DATASET_V2_ROOT / "bars.parquet"
 
 _FORBIDDEN_INSTRUMENT_SUBSTRINGS = frozenset({"btc", "xbt", "bitcoin", "spot", "synthetic_spot"})
 
@@ -138,6 +144,68 @@ def load_step30a_rsi_reversion_v1_evaluation_config_v1(
     if not isinstance(payload, dict):
         raise ValueError("evaluation_config_not_object")
     return payload
+
+
+def resolve_rsi_v2_data_archive_root(
+    *,
+    env: dict[str, str] | None = None,
+) -> Path | None:
+    """Resolve PEAK_TRADE_DATA_ARCHIVE_ROOT for RSI-v2 reads. Unset => None."""
+    return resolve_archive_root(env=env, require_for_write=False)
+
+
+def _join_rsi_v2_dataset_path(root: Path, relpath: str) -> Path:
+    rel = Path(relpath)
+    if rel.is_absolute() or ".." in rel.parts:
+        raise ArchiveRootError("RSI_V2_DATASET_RELPATH_NOT_RELATIVE")
+    return assert_path_under_archive(root / rel, root)
+
+
+def resolve_rsi_v2_dataset_bars_path(
+    *,
+    env: dict[str, str] | None = None,
+) -> Path:
+    root = resolve_rsi_v2_data_archive_root(env=env)
+    if root is None:
+        raise FileNotFoundError(f"dataset_archive_root_unset:{DATASET_ROOT_CONTRACT}")
+    return _join_rsi_v2_dataset_path(root, STEP30A_DATASET_V2_RELPATH)
+
+
+def resolve_rsi_v2_dataset_manifest_path(
+    *,
+    env: dict[str, str] | None = None,
+) -> Path:
+    root = resolve_rsi_v2_data_archive_root(env=env)
+    if root is None:
+        raise FileNotFoundError(f"dataset_archive_root_unset:{DATASET_ROOT_CONTRACT}")
+    return _join_rsi_v2_dataset_path(root, STEP30A_DATASET_V2_MANIFEST_RELPATH)
+
+
+def verify_rsi_v2_dataset_root_contract_binding_v1(
+    cfg: Mapping[str, Any],
+) -> tuple[str, ...]:
+    reasons: list[str] = []
+    binding = cfg.get("real_admissible_futures_evaluation_binding_v1", {})
+    if not isinstance(binding, Mapping):
+        return ("real_admissible_futures_evaluation_binding_v1_missing",)
+    if binding.get("dataset_root_contract") != DATASET_ROOT_CONTRACT:
+        reasons.append("dataset_root_contract_mismatch")
+    if binding.get("dataset_relpath") != STEP30A_DATASET_V2_RELPATH:
+        reasons.append("dataset_relpath_mismatch")
+    if "dataset_path" in binding:
+        reasons.append("legacy_absolute_dataset_path_forbidden")
+    return tuple(reasons)
+
+
+def resolve_rsi_v2_dataset_bars_path_from_config(
+    cfg: Mapping[str, Any],
+    *,
+    env: dict[str, str] | None = None,
+) -> Path:
+    reasons = verify_rsi_v2_dataset_root_contract_binding_v1(cfg)
+    if reasons:
+        raise ValueError("dataset_root_contract_binding_invalid:" + ",".join(reasons))
+    return resolve_rsi_v2_dataset_bars_path(env=env)
 
 
 def verify_rsi_reversion_v1_strategy_identity_v1() -> tuple[str, ...]:
@@ -370,15 +438,30 @@ def slice_development_partition_bars_v1(bars: pd.DataFrame) -> pd.DataFrame:
     return bars.sort_index().loc[bars.index < holdout_start]
 
 
-def verify_dataset_v2_digest_binding_v1(cfg: Mapping[str, Any]) -> tuple[str, ...]:
+def verify_dataset_v2_digest_binding_v1(
+    cfg: Mapping[str, Any],
+    *,
+    env: dict[str, str] | None = None,
+) -> tuple[str, ...]:
     reasons: list[str] = []
     binding = cfg.get("real_admissible_futures_evaluation_binding_v1")
     if not isinstance(binding, Mapping):
         return ("real_admissible_futures_evaluation_binding_v1_missing",)
-    if not STEP30A_DATASET_V2_MANIFEST_PATH.is_file():
+    binding_reasons = verify_rsi_v2_dataset_root_contract_binding_v1(cfg)
+    if binding_reasons:
+        return binding_reasons
+    try:
+        manifest_path = resolve_rsi_v2_dataset_manifest_path(env=env)
+    except FileNotFoundError:
+        reasons.append("dataset_archive_root_unset")
+        return tuple(reasons)
+    except ArchiveRootError:
+        reasons.append("dataset_archive_root_invalid")
+        return tuple(reasons)
+    if not manifest_path.is_file():
         reasons.append("dataset_v2_manifest_missing")
         return tuple(reasons)
-    manifest = json.loads(STEP30A_DATASET_V2_MANIFEST_PATH.read_text(encoding="utf-8"))
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     expected_dataset_digest = str(binding.get("expected_dataset_digest", ""))
     expected_manifest_digest = str(binding.get("expected_manifest_digest", ""))
     actual_dataset_digest = str(manifest.get("normalized_dataset_digest", ""))
@@ -462,6 +545,7 @@ def evaluate_step30a_rsi_reversion_v1_admissibility_contract_v1(
     blocking.extend(verify_rsi_reversion_v1_config_schema_v1(cfg))
     blocking.extend(verify_rsi_reversion_v1_sizing_policy_v1(cfg))
     blocking.extend(verify_rsi_reversion_v1_instrument_binding_v1(cfg))
+    blocking.extend(verify_rsi_v2_dataset_root_contract_binding_v1(cfg))
     blocking.extend(verify_step30a_policy_ratification_v1(cfg))
     blocking.extend(verify_holdout_separation_v1(cfg))
     blocking.extend(verify_rsi_reversion_v1_signal_binding_v1(cfg))
