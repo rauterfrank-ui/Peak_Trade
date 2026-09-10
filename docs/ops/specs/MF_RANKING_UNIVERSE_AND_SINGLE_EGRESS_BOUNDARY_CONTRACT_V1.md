@@ -598,3 +598,10 @@ selection mapping requires a **new** Owner-GO. This contract does
 **definition** is owned by
 [`MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1.md`](MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1.md).
 `N_VALUE=5` is a pointer to the semantics contract §1.3.
+PDF-Step-3 authoritative Next Active Set **ownership** is bound in
+[`MF_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_CONTRACT_V1.md`](MF_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_CONTRACT_V1.md).
+This file remains the invariant owner and is **not** that ownership
+owner. Historical topology rows in this file are **not** rewritten by
+that bind. Isolated POLICY_A is **not** automatically the policy of
+that Active Set. Rotation policy for that Active Set remains
+fail-closed.

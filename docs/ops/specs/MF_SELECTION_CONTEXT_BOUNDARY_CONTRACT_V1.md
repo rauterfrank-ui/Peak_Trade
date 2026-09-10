@@ -510,3 +510,7 @@ HARD_STOP_AFTER_THIS_CONTRACT=true
 Any isolated-domain producer, scoring, `N`, rotation policy, or
 persistence requires a **new** Owner-GO and remains isolated. This
 contract does **not** authorize, specify, or prepare host integration.
+PDF-Step-3 authoritative Next Active Set **ownership** is bound in
+[`MF_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_CONTRACT_V1.md`](MF_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_CONTRACT_V1.md).
+This boundary class remains `NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY`
+and is **not** rewritten into that Active Set.
